@@ -1,5 +1,5 @@
 //# MSSimulator.cc:  this defines MSSimulator, which simulates a MeasurementSet
-//# Copyright (C) 1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,6 +61,7 @@
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>
 #include <aips/strstream.h>
@@ -613,18 +614,32 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 			      values);
     }
 
-
+    //HAVE TO DO IT FOR EVERY ANTENNA FOR POINTING
     MSFieldColumns& fieldc=msc.field();
+    MSPointingColumns& pointingc=msc.pointing();
     Int nField=0;
     for (Int i=0; i<nSources_p; i++) nField+=nMos_p(0,i)*nMos_p(1,i);
-    ms.field().addRow(nField);
+    if(nAnt_p == 1){
+      ms.field().addRow(nSources_p); //SINGLE DISH CASE
+    }
+    else{
+      ms.field().addRow(nField); //INTERFEROMETER CASE
+    }
+    ms.pointing().addRow(nField*nAnt_p);
     fieldc.code().fillColumn("");
     fieldc.time().fillColumn(Tstart_p);
+    pointingc.time().fillColumn(Tstart_p);
+    pointingc.timeOrigin().fillColumn(Tstart_p);
     fieldc.numPoly().fillColumn(0);
+    pointingc.numPoly().fillColumn(0);
+    pointingc.interval().fillColumn(-1);
+    pointingc.tracking().fillColumn(True);
     Vector<MDirection> direction(1);
 
     Int row=0;
+    Int pointrow=0;
     for (Int i=0; i<nSources_p; i++) {
+      if(nAnt_p==1) row=i;
 	Double lambda = C::c / startFreq_p(0);
 	Double spacing = lambda / (2.0 * antDiam_p(0));
 	if (mosSpacing_p(i) > 0.0) {
@@ -650,22 +665,30 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	      fieldc.phaseDirMeasCol().put(row,direction);
 	      fieldc.referenceDirMeasCol().put(row,direction);
 	      ostrstream name;
-	      if (nMos_p(0,i)*nMos_p(1,i)>1) {
+	      if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
 		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
 	      } else {
 		name << flush <<srcName_p(i) << ends;
 	      }
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
+	      for (Int m=0; m < nAnt_p ; m++){
+		pointingc.antennaId().put(pointrow, m);
+		pointingc.name().put(pointrow, String(pName));
+		pointingc.directionMeasCol().put(pointrow,direction);
+		pointingc.targetMeasCol().put(pointrow,direction);
+		pointrow++;
+	      }
 	      // os << pName << LogIO::POST;
 	      delete pName;
-	      row++;
+	      if(nAnt_p > 1) row++;
 	    }
 	}
     }
     
     // init counters past end
-    Int FldId = nField-1;
+    if(nAnt_p ==1) nField=nSources_p;
+    Int FldId=nField-1;
     Int nSrc = ms.field().nrow();
     Int SrcId = nSrc-1;
     Int FldCount = nIntFld_p(SrcId);
@@ -897,6 +920,499 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 };
 
 
+void MSSimulator::extendMS(MeasurementSet & ms)
+{
+    LogIO os(LogOrigin("MSSimulator", "extendMS()", WHERE));
+    const double forever=1.e30;
+    MSDerivedValues msd;
+    Vector<MPosition> vpos(1);
+    vpos(0) =  refPosition_p;
+    msd.setAntennaPositions(vpos);
+
+    
+    {
+      Tint_p = qIntegrationTime_p.getValue("s");
+      Tgap_p = qGapTime_p.getValue("s");
+      Double t_offset = 0.0;   // This shifts the time forward by less than a day
+                               // until the Tstart_p represents the staring Hour Angle
+      if (useHourAngles_p) {
+	msd.setEpoch( mRefTime_p );
+	Quantity d0(radec_p(0,0), "rad");
+	Quantity d1(radec_p(1,0), "rad");
+	MDirection fc(d0, d1, MDirection::Ref(MDirection::B1950) );
+	msd.setFieldCenter( fc );
+	t_offset = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
+      }
+
+      MEpoch::Ref tref(MEpoch::TAI);
+      MEpoch::Convert tconvert(mRefTime_p, tref);
+      MEpoch taiRefTime = tconvert();      
+
+      Tstart_p = qStartTime_p.getValue("s") + 
+	taiRefTime.get("s").getValue("s") + t_offset;
+      Tend_p = qStopTime_p.getValue("s") + 
+	taiRefTime.get("s").getValue("s") + t_offset;
+    }
+
+
+    //    os<< " calculating Coordinates ..."<<LogIO::POST;
+    
+    // fill Observation Table
+    MSObservation& obs=ms.observation();
+
+    //    // add the position column because the fits writer expects it.
+    //    TableDesc td;
+    //    MSArray::addColumnToDesc(td,MSArray::POSITION,IPosition(1,3),
+    //			     ColumnDesc::Direct);
+    //    StManAipsIO stman;
+    //    arr.addColumn(td,stman);
+
+    MSColumns msc(ms);
+    MSObservationColumns& obsc=msc.observation();
+    Int nobsrow= obsc.nrow();
+    obs.addRow();
+    obsc.telescopeName().put(nobsrow,telescope_p);
+    //    Vector<Double> arrpos(3); arrpos=0.0;
+    //    arrc.position().put(0,arrpos);
+
+    // fill Antenna table
+    MSAntenna& ant=ms.antenna();
+    MSAntennaColumns& antc=msc.antenna();
+    Int numOfAnt=antc.nrow();
+
+    ant.addRow(nAnt_p); // make nAnt_p rows
+    Slicer antSlice(IPosition(1,numOfAnt),IPosition(1, numOfAnt+nAnt_p-1),
+		    IPosition(1,1), Slicer::endIsLast );
+    antc.dishDiameter().putColumnRange(antSlice,antDiam_p);
+    antc.mount().putColumnRange(antSlice, mountType_p);
+    antc.type().fillColumn("GROUND-BASED");
+    antc.name().putColumnRange(antSlice,antName_p);
+    Vector<Double> offsets(3); offsets=0.; 
+    antc.offset().fillColumn(offsets);
+    antc.position().putColumnRange(antSlice, antXYZ_p);
+    antc.station().fillColumn("");
+    antc.flagRow().fillColumn(False);
+    
+    
+
+    // fill Feed table
+    MSFeedColumns& feedc=msc.feed();
+    Int numFeeds=feedc.nrow();
+    Slicer feedSlice(IPosition(1,numFeeds),IPosition(1, nFeed_p+numFeeds-1),
+		     IPosition(1,1), Slicer::endIsLast);
+    ms.feed().addRow(nFeed_p);
+    feedc.antennaId().putColumnRange(feedSlice,feedAntId_p);
+    feedc.feedId().putColumnRange(feedSlice,feedId_p);
+    feedc.spectralWindowId().putColumnRange(feedSlice,feedSpWId_p);
+    //    feedc.time().fillColumn(Tstart_p);
+    //    feedc.interval().fillColumn(forever); //no time dependence
+    feedc.beamId().putColumnRange(feedSlice,feedBeamId_p);
+    feedc.numReceptors().putColumnRange(feedSlice, feedNumRec_p);
+    feedc.position().putColumnRange(feedSlice, feedXYZ_p);
+    for (Int i=numFeeds; i<(nFeed_p+numFeeds); i++) {
+	feedc.beamOffset().put(i,beamOffset_p.xyPlane(i-numFeeds));
+	feedc.polarizationType().put(i,feedPol_p.column(i-numFeeds));
+	feedc.polResponse().put(i,polResp_p.xyPlane(i-numFeeds));
+	feedc.receptorAngle().put(i,feedAngle_p.column(i-numFeeds));
+	feedc.time().put(i, Tstart_p);
+	feedc.interval().put(i, forever);
+    }
+
+    // fill spectralWindow table
+    MSSpWindowColumns& spwc=msc.spectralWindow();
+    Int nSpwid=spwc.nrow();
+    Slicer spwSlice(IPosition(1,nSpwid),IPosition(1, nSpwid+nSpWindows_p-1),
+		    IPosition(1,1), Slicer::endIsLast);
+    
+    MSDataDescColumns& ddc=msc.dataDescription();
+    MSPolarizationColumns& polc=msc.polarization();
+    ms.spectralWindow().addRow(nSpWindows_p);
+    ms.polarization().addRow(nSpWindows_p);
+    ms.dataDescription().addRow(nSpWindows_p);
+    spwc.numChan().putColumnRange(spwSlice,nChan_p);
+    spwc.name().fillColumn("");
+    spwc.netSideband().fillColumn(1);
+    spwc.ifConvChain().fillColumn(0);
+    spwc.freqGroup().fillColumn(0);
+    spwc.freqGroupName().fillColumn("Group 1");
+    spwc.flagRow().fillColumn(False);
+    spwc.measFreqRef().fillColumn(MFrequency::TOPO);
+    polc.flagRow().fillColumn(False);
+    ddc.flagRow().fillColumn(False);
+    polc.numCorr().putColumnRange(spwSlice, nCorr_p);
+    Vector <Double> freqs, freqRes;
+    Vector<Int> StokesTypes; 
+    for (Int i=nSpwid; i< (nSpwid+nSpWindows_p); i++) {
+        ddc.spectralWindowId().put(i,i-nSpwid);
+        ddc.polarizationId().put(i,i-nSpwid);
+	freqs.resize(nChan_p(i-nSpwid));
+	freqRes.resize(nChan_p(i-nSpwid));
+	freqRes=freqRes_p(i-nSpwid);
+	for (Int chan=0; chan<nChan_p(i-nSpwid); chan++) 
+	    freqs(chan)=startFreq_p(i-nSpwid)+chan*freqInc_p(i-nSpwid);
+	StokesTypes.resize(nCorr_p(i-nSpwid));
+	StokesTypes=stokesTypes_p.column(i-nSpwid)(Slice(0,nCorr_p(i-nSpwid)));
+	// translate stokesTypes into receptor products, catch invalId
+	// fallibles.
+	Matrix<Int> corrProduct(uInt(2),uInt(nCorr_p(i-nSpwid)));
+	Fallible<Int> fi;
+	for (Int j=0; j< nCorr_p(i-nSpwid); j++) {
+	    fi=Stokes::receptor1(Stokes::type(StokesTypes(j)));
+	    corrProduct(0,j)=(fi.isValid() ? fi.value() : 0);
+	    fi=Stokes::receptor2(Stokes::type(StokesTypes(j)));
+	    corrProduct(1,j)=(fi.isValid() ? fi.value() : 0);
+	}
+	spwc.refFrequency().put(i,startFreq_p(i-nSpwid));
+	spwc.chanFreq().put(i,freqs);
+	spwc.chanWidth().put(i,freqRes);
+	spwc.effectiveBW().put(i,freqRes);
+	spwc.resolution().put(i,freqRes);
+	spwc.totalBandwidth().put(i,nChan_p(i-nSpwid)*freqInc_p(i-nSpwid));
+	polc.corrType().put(i,StokesTypes);
+	polc.corrProduct().put(i,corrProduct);
+    }
+
+
+    // Now that we know the spectral windows, we can add the appropriate
+    // hypercubes to the table.
+    TiledDataStManAccessor accessor(ms,"TiledData");
+    for (Int i=0; i<nSpWindows_p; i++) {
+	Record values;
+	values.define("DATA_HYPERCUBE_ID",i+nSpwid);
+	// choose a tile size in the channel direction that is <=10
+	// and doesn't waste too much storage.
+	Int tileSize=(nChan_p(i)+nChan_p(i)/10)/(nChan_p(i)/10+1);
+	// make the tile about 32k big
+	accessor.addHypercube(IPosition(3,nCorr_p(i),nChan_p(i),0),
+			      IPosition(3,nCorr_p(i),tileSize,
+					4000/nCorr_p(i)/tileSize),
+			      values);
+    }
+    
+    MSFieldColumns& fieldc=msc.field();
+    Int numField=fieldc.nrow();
+    MSPointingColumns& pointingc=msc.pointing();
+    Int numPointing=pointingc.nrow();
+    Int nField=0; Int newFieldRows;
+    for (Int i=0; i<nSources_p; i++) nField+=nMos_p(0,i)*nMos_p(1,i);
+    if(nAnt_p == 1){
+      ms.field().addRow(nSources_p); //SINGLE DISH CASE
+      newFieldRows=nSources_p;
+    }
+    else{
+      ms.field().addRow(nField); //INTERFEROMETER CASE
+      newFieldRows=nField;
+    }
+    ms.pointing().addRow(nField*nAnt_p);
+    fieldc.code().fillColumn("");
+    for (Int m=numField; m < numField+newFieldRows; m++){
+      fieldc.time().put(m, Tstart_p);
+      fieldc.numPoly().put(m, 0);
+    }
+    for (Int m=numPointing; m < (numPointing+nField*nAnt_p); m++){
+      pointingc.time().put(m,Tstart_p);
+      pointingc.timeOrigin().put(m,Tstart_p);
+      pointingc.numPoly().put(m,0);
+      pointingc.interval().put(m,-1);
+      pointingc.tracking().put(m,True);
+    }
+    Vector<MDirection> direction(1);
+
+    Int row=numField;
+    Int pointrow=numPointing;
+    for (Int i=0; i<nSources_p; i++) {
+      if(nAnt_p==1) row=numField+i;
+	Double lambda = C::c / startFreq_p(0);
+	Double spacing = lambda / (2.0 * antDiam_p(0));
+	if (mosSpacing_p(i) > 0.0) {
+	  spacing *= mosSpacing_p(i);
+	}
+	for (Int j=0; j<nMos_p(0,i); j++) {
+	    for (Int k=0; k<nMos_p(1,i); k++) {
+	      if (radecRefFrame_p == "J2000") {
+		direction(0)=MDirection
+		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			       spacing / cos(radec_p(1,i)),
+			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		   MDirection::J2000);
+	      } else {
+		direction(0)=MDirection
+		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			       spacing / cos(radec_p(1,i)),
+			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		   MDirection::B1950);
+	      } 
+	      fieldc.sourceId().put(row,i);
+	      fieldc.delayDirMeasCol().put(row,direction);
+	      fieldc.phaseDirMeasCol().put(row,direction);
+	      fieldc.referenceDirMeasCol().put(row,direction);
+	      ostrstream name;
+	      if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
+		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	      } else {
+		name << flush <<srcName_p(i) << ends;
+	      }
+	      char* pName=name.str();
+	      fieldc.name().put(row,String(pName));
+	      for (Int m=0; m < nAnt_p ; m++){
+		pointingc.antennaId().put(pointrow, m);
+		pointingc.name().put(pointrow, String(pName));
+		pointingc.directionMeasCol().put(pointrow,direction);
+		pointingc.targetMeasCol().put(pointrow,direction);
+		pointrow++;
+	      }
+	      // os << pName << LogIO::POST;
+	      delete pName;
+	      if(nAnt_p > 1) row++;
+	    }
+	}
+    }
+    
+    // init counters past end
+    if(nAnt_p ==1)nField=nSources_p;
+    Int FldId=nField-1;
+    Int nSrc = ms.field().nrow();
+    Int SrcId = nSrc-1;
+    Int FldCount = nIntFld_p(SrcId);
+    Int SpWId = nIntSpW_p.nelements()-1;
+    Int SpWCount = nIntSpW_p(SpWId);
+    Int loopCount= max(sum(nIntSpW_p),sum(nIntFld_p));
+    Int counter=0;
+    Int scan=0;
+    // os <<" Tstart= "<<Tstart_p<<", Tend="<<Tend_p<<LogIO::POST;
+    
+    row=ms.nrow()-1;
+    Vector<Int> tmpids(row+1);
+    tmpids=msc.observationId().getColumn();
+    Int maxObsId=max(tmpids);
+    tmpids=msc.arrayId().getColumn();
+    Int maxArrayId= max(tmpids);
+    tmpids.resize(0);
+
+    Double Time=Tstart_p;
+    Bool firstTime = True;
+
+    uInt nShadowed = 0;
+    uInt nSubElevation = 0;
+
+    for (Int itime=0; Time<Tend_p; itime++) {
+
+        MEpoch epUT1 (Quantity(Time/C::day, "d"), MEpoch::UT1);
+	MEpoch::Ref refGMST1(MEpoch::GMST1);
+	MEpoch::Convert epGMST1(epUT1, refGMST1);
+	Double gmst = epGMST1().get("d").getValue("d");
+	gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
+
+	Double ra, dec; // current phase center
+
+	// update counters and field/freq info
+	if (++FldCount >= nIntFld_p(SrcId)) {
+	    FldCount = 0;
+	    if (++FldId >= nField) FldId = 0;
+	    SrcId = msc.field().sourceId()(FldId);
+	}
+	if (++SpWCount >= nIntSpW_p(SpWId)) {
+	    SpWCount = 0;
+	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
+	}
+	if (++counter > loopCount) {
+	  // insert gap
+	  Time+=Tgap_p;
+	  counter=0;
+	}
+	MDirection fc = msc.field().phaseDirMeas(FldId);
+	ra = fc.getAngle().getValue()(0);
+	dec = fc.getAngle().getValue()(1);
+
+
+       	Record values;
+	values.define("DATA_HYPERCUBE_ID",SpWId+nSpwid);
+       
+        Bool firstBaseline = True;
+	Vector<Double> uvwvec(3);
+	Matrix<Complex> data(nCorr_p(SpWId),nChan_p(SpWId)); 
+	
+	Matrix<Bool> flag(nCorr_p(SpWId),nChan_p(SpWId)); 
+	flag=False;
+	// random number generator
+	//	MLCG rndGen(1234567);
+	//	Normal normal(0.0, 1.0, &rndGen);
+
+
+	Vector<Bool> isShadowed(nAnt_p);  isShadowed.set(False);
+	Vector<Bool> isTooLow(nAnt_p);    isTooLow.set(False);
+	Double fractionBlocked1=0.0, fractionBlocked2=0.0;
+	Int startingRow = row;
+	Double diamMax2 = square( max(antDiam_p) );
+
+        Matrix<Double> firstRot(Rot3D(2,(gmst-ra +0.25*C::_2pi)));
+	Matrix<Double> secondRot(Rot3D(0,C::pi_2-dec));
+
+        // We can extend the ms and the hypercube by all baselines
+	Int nBase;
+        if(autoCorrelationWt_p > 0.0) {
+	  nBase =nAnt_p*(nAnt_p+1)/2;
+	}
+	else {
+	  nBase =nAnt_p*(nAnt_p-1)/2;
+	}
+	ms.addRow(nBase);
+	
+	accessor.extendHypercube(nBase,values);
+	
+	for (Int ant1=0; ant1<nAnt_p; ant1++) {
+	    Double x1=antXYZ_p(0,ant1), y1=antXYZ_p(1,ant1), z1=antXYZ_p(2,ant1);
+	    for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
+	        if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
+		  row++; 
+		  //		  ms.addRow();
+		  //		  accessor.extendHypercube(1,values);
+		  //		  if (firstBaseline) {
+                    msc.scanNumber().put(row,scan++);
+		    msc.fieldId().put(row,FldId+numField);
+		    msc.dataDescId().put(row,SpWId+nSpwid);
+		    msc.time().put(row,Time+Tint_p/2);
+                    firstBaseline=False;
+		    //	  }
+		  msc.antenna1().put(row,ant1+numOfAnt);
+		  msc.antenna2().put(row,ant2+numOfAnt);
+		  // this is probably wrong...
+		  Double x2=antXYZ_p(0,ant2), y2=antXYZ_p(1,ant2), z2=antXYZ_p(2,ant2);
+		  uvwvec(0) = x2-x1;
+		  uvwvec(1) = y2-y1;
+		  uvwvec(2) = z2-z1;
+		  uvwvec=product(firstRot,uvwvec);
+		  uvwvec=product(secondRot,uvwvec);
+
+		  if (ant1 != ant2) {
+		    blockage(fractionBlocked1, fractionBlocked2,
+			     uvwvec, antDiam_p(ant1), antDiam_p(ant2) );
+		    if (fractionBlocked1 > fractionBlockageLimit_p) {
+		      isShadowed(ant1) = True;
+		    }
+		    if (fractionBlocked2 > fractionBlockageLimit_p) {
+		      isShadowed(ant2) = True;
+		    }
+		  }
+		  
+		  msc.uvw().put(row,uvwvec);
+		  
+		  data.set(Complex(0.,0.));
+		  msc.data().put(row,data);		  
+		  msc.flag().put(row,flag);
+		  msc.flagRow().put(row,False);
+		  
+		  // Deal with differing diameter case
+		  Float sigma1 = diamMax2/(antDiam_p(ant1) * antDiam_p(ant2));
+		  Float wt = 1/square(sigma1);
+		  if  (ant1 == ant2 ) {
+		    wt *= autoCorrelationWt_p;
+		  }		  
+		  Vector<Float> tmp(nCorr_p(SpWId)); tmp=wt;
+		  msc.weight().put(row, tmp);
+		  tmp=sigma1;
+		  msc.sigma().put(row,tmp);
+		  
+		  if (row==(startingRow+1)) {
+		    // we're using the incr stMan so we only need to 
+		    // put these once
+		    msc.arrayId().put(row,maxArrayId+1);
+		    msc.processorId().put(row,0);
+		    msc.exposure().put(row,Tint_p);
+		    msc.feed1().put(row,0);
+		    msc.feed2().put(row,0);
+		    msc.interval().put(row,Tint_p);
+		    msc.observationId().put(row,maxObsId+1);
+		    msc.stateId().put(row,-1);
+	       	  }
+		  
+		}
+	    }
+	}
+
+	// go back and flag weights based on shadowing
+	// Future option: we could increase sigma based on
+	// fraction shadowed.
+	Matrix<Bool> trueFlag(nCorr_p(SpWId),nChan_p(SpWId)); 
+	trueFlag=True;
+	    
+	Int reRow = startingRow;
+	for (Int ant1=0; ant1<nAnt_p; ant1++) {
+	  for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
+	    if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
+	      reRow++; 
+	      if ( isShadowed(ant1) || isShadowed(ant2) ) {
+		msc.flag().put(reRow,trueFlag);
+		msc.flagRow().put(reRow, True);
+		nShadowed++;
+	      }
+	    }
+	  }
+	}
+
+	// This will not work for VLBI! 
+	msd.setAntennaPositions(vpos);
+	  
+	MEpoch ep(Quantity((Time + Tint_p/2), "s"));
+	msd.setEpoch(ep);
+	      
+	msd.setFieldCenter( fc );
+	      
+	Double elevation = msd.azel().getAngle("rad").getValue("rad")(1);
+	
+	// go back and flag weights based on elevationLimit_p
+	for (Int ant1=0; ant1<nAnt_p; ant1++) {
+	  
+	  if (elevation < elevationLimit_p.getValue("rad")) {
+	    isTooLow(ant1) = True;
+	  }
+	  if (firstTime) {
+	    firstTime = False;
+	    Double az1 = msd.azel().getAngle("deg").getValue("deg")(0);
+	    Double el1 = msd.azel().getAngle("deg").getValue("deg")(1);
+	    Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
+	    Double timeDays = Time / C::day;
+	    os << "Starting conditions: " << LogIO::POST;
+	    os << "     az = " << az1 << LogIO::POST;
+	    os << "     el = " << el1 << LogIO::POST;
+	    os << "     ha = " << ha1 << LogIO::POST;
+	    os << "     time = " << timeDays << LogIO::POST;
+	  }
+	}
+	reRow = startingRow;
+	for (Int ant1=0; ant1<nAnt_p; ant1++) {
+	  for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
+	    if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
+	      reRow++; 
+	      if ( isTooLow(ant1) || isTooLow(ant2) ) {
+		msc.flag().put(reRow,trueFlag);
+		msc.flagRow().put(reRow, True);
+		nSubElevation++;
+	      }
+	    }
+	  }
+	}
+
+	Time+=Tint_p; 
+    }
+
+    Double az1 = msd.azel().getAngle("deg").getValue("deg")(0);
+    Double el1 = msd.azel().getAngle("deg").getValue("deg")(1);
+    Double ha1 = msd.hourAngle()  *  180.0/C::pi / 15.0 ;
+    Double timeDays = Time / C::day;
+    os << "Stopping conditions: " << LogIO::POST;
+    os << "     az = " << az1 << LogIO::POST;
+    os << "     el = " << el1 << LogIO::POST;
+    os << "     ha = " << ha1 << LogIO::POST;
+    os << "     time = " << timeDays << LogIO::POST;
+
+
+    os << (row+1) << " visibilities simulated " << LogIO::POST;
+    os << nShadowed << " visibilities flagged due to shadowing " << LogIO::POST;
+    os << nSubElevation << " visibilities flagged due to elevation limit of " << 
+      elevationLimit_p.getValue("deg") << " degrees " << LogIO::POST;
+
+};
 
 // Calculates the fractional blockage of one antenna by another
 // We will want to put this somewhere else eventually, but I don't yet know where!

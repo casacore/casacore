@@ -1,5 +1,5 @@
 //# MSSimulator.h: this defines the MeasurementSet Simulator
-//# Copyright (C) 1995,1996,1998,1999,2000
+//# Copyright (C) 1995,1996,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -154,7 +154,7 @@ public:
 
   // Write out a simulated MeasurementSet with the given name
   void writeMS(const String& msname); 
-
+  void extendMS(MeasurementSet & ms);
 
   
 private:
