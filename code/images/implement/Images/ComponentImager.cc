@@ -205,7 +205,6 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
     list.sample(pixelVals, Unit("Jy"), dirVals, dirRef, pixelLatSize, 
    		pixelLongSize, freqValues, freqRef);
-
     // Modify data by model for this chunk of data
 
     Array<Float>& imageChunk = chunkIter.rwCursor();
@@ -221,9 +220,9 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     d = 0;
     pixelPosition(longAxis) = 0;
     coordIsGood = True;
-    while (pixelPosition(longAxis) <= chunkShape(longAxis)) {
+    while (pixelPosition(longAxis) < chunkShape(longAxis)) {
       pixelPosition(latAxis) = 0;
-      while (pixelPosition(latAxis) <= chunkShape(latAxis)) {
+      while (pixelPosition(latAxis) < chunkShape(latAxis)) {
 	if (coordIsGood(d)) {
 	  for (uInt f = 0; f < nFreqs; f++) {
 	    if (freqAxis >= 0) pixelPosition(freqAxis) = f;
