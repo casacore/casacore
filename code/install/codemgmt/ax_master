@@ -2707,3 +2707,4 @@
 10 030 src rm trial/apps/gmisc/gmisc.cc
 10 030 sys rm bin/gmisc
 10 030 sys rm bindbg/gmisc
+10 032 src mv trial/implement/Guiutils/barchart.help aips/implement/Guiutils/barchart.help
