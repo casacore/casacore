@@ -216,6 +216,7 @@ template<class T> Array<T> fabs(const Array<T> &a);
 // 
 // <group>
 // Find the minimum and maximum values of an array, including their locations.
+// The <src>minPos</src> and <src>maxPos</src> arguments are resized as needed.
 template<class ScalarType>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos, 
 	    IPosition &maxPos, const Array<ScalarType> &array);
