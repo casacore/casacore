@@ -1,5 +1,5 @@
 //# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,8 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
+
+#include <aips/OS/Timer.h>
 
 
 #include <aips/iomanip.h>  
@@ -204,10 +206,10 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
 //
-   AlwaysAssert(nWorld == nWorldAxes(), AipsError);
-   AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
-   AlwaysAssert(nPixel == nPixelAxes(), AipsError);   
-   AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);   
+   DebugAssert(nWorld == nWorldAxes(), AipsError);
+   DebugAssert(worldIn.nelements()==nWorld, AipsError);
+   DebugAssert(nPixel == nPixelAxes(), AipsError);   
+   DebugAssert(pixelIn.nelements()==nPixel, AipsError);   
 //
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {
@@ -351,7 +353,7 @@ String Coordinate::format(String& units,
 //    F means the worldValue should be formatted as relative
 //
 {
-   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+   DebugAssert(worldAxis < nWorldAxes(), AipsError);
  
 // Check format
 
@@ -437,7 +439,7 @@ String Coordinate::formatQuantity (String& units,
                                    Bool showAsAbsolute,
                                    Int precision)
 {
-   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+   DebugAssert(worldAxis < nWorldAxes(), AipsError);
 
 // Use derived class formatter
 
@@ -661,7 +663,7 @@ void Coordinate::makePixelRelative (Vector<Double>& pixel) const
 // rel = abs - ref 
 //
 {
-   AlwaysAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
    pixel -= referencePixel();
 }
 
@@ -672,7 +674,7 @@ void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
 // abs = rel + ref 
 //
 {
-   AlwaysAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
    pixel += referencePixel();
 }
 
@@ -682,7 +684,7 @@ void Coordinate::makeWorldRelative (Vector<Double>& world) const
 // rel = abs - ref 
 //
 {
-   AlwaysAssert(world.nelements()==nWorldAxes(),AipsError);
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    world -= referenceValue();
 }
 
@@ -693,7 +695,7 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
 // abs = rel + ref 
 //
 {
-   AlwaysAssert(world.nelements()==nWorldAxes(),AipsError);
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    world += referenceValue();
 }
 
@@ -710,6 +712,10 @@ void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
 
 void Coordinate::makeWorldRelativeMany (Matrix<Double>& value) const
 {
+
+// 50% goes into {un}packing
+// 50% into conversion
+
     uInt n = value.ncolumn();
     Vector<Double> col(value.nrow());
     for (uInt i=0; i<n; i++) {
@@ -717,7 +723,6 @@ void Coordinate::makeWorldRelativeMany (Matrix<Double>& value) const
 	makeWorldRelative(col);
         value.column(i) = col;
     }
-
 }
 
 void Coordinate::makePixelAbsoluteMany (Matrix<Double>& value) const
