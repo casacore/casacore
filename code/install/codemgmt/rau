@@ -115,8 +115,12 @@
      TARGLIST="$TARGLIST $TARGET,v $TARGET"
   done
 
+  REMOTE_USER=''
+  if [ "$AUID" } ; then
+    REMOTE_USER="-l $AUID"
+  fi
 # Find out which of these are files and which are directories.
-  ARSH=${ARSH-"ssh -C aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh -C aips2.nrao.edu $REMOTE_USER"}
   COMMAND="cd $MSTRDIR && ls -d $TARGLIST 2>/dev/null"
   TARGLIST=`$ARSH -n /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'`
 
