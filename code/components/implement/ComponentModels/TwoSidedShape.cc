@@ -106,6 +106,17 @@ void TwoSidedShape::sample(Vector<Double>& scale,
   ComponentShape::sample(scale, directions, refFrame, pixelSize);
 }
 
+void TwoSidedShape::visibility(Vector<DComplex>& scale,
+			       const Matrix<Double>& uvw,
+			       const Double& frequency) const {
+  ComponentShape::visibility(scale, uvw, frequency);
+}
+
+Bool TwoSidedShape::isSymmetric() const {
+  DebugAssert(ok(), AipsError);
+  return True;
+}
+
 uInt TwoSidedShape::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 3;
