@@ -271,7 +271,7 @@ template <class T> class AutoDiff {
   AutoDiff();
 
   // Construct a constant with a value of v.  Zero derivatives.
-  explicit AutoDiff(const T &v);
+  AutoDiff(const T &v);
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs, the nth derivative is one, and all 

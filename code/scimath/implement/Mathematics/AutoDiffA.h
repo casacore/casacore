@@ -123,7 +123,7 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
   AutoDiffA() : AutoDiff<T>() {};
 
   // Construct a constant with a value of v.  Zero derivatives.
-  explicit AutoDiffA(const T &v) : AutoDiff<T>(v) {};
+  AutoDiffA(const T &v) : AutoDiff<T>(v) {};
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs, the nth derivative is one, and all 
