@@ -1,11 +1,11 @@
 \documentclass[11pt]{article}
 \usepackage{html, epsf}
-\begin{latexonly}
+%\begin{latexonly}
 \setlength{\textheight}{7in}
 \setlength{\textwidth}{8in}
 \setlength{\topmargin}{-0.5in}
 \special{landscape}
-\end{latexonly}
+%\end{latexonly}
 
 %%-----------------------------------------------------------------------------
 
@@ -24,9 +24,10 @@
 \htmladdnormallink{A postscript version of this note is available (100kB).}{../208.ps.gz}
 \end{htmlonly}
 
-\begin{latexonly}
+%\begin{latexonly}
 \newpage
-\end{latexonly}
+%\end{latexonly}
       
-\input{../208.dir/talkslides.tex}
+\input{../notes/208.dir/talkslides.tex}
+
 \end{document}
