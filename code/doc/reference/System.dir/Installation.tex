@@ -14,12 +14,11 @@ instructions are provided for each.
 If you contemplate installing \aipspp\ for the Linux operating system using
 the \gnu\ ``binutils'' package (e.g. \exe{ar}, \exe{ld}), then you should be
 aware that there is a bug in handling large archive (\file{.a}) files in
-versions 2.7 and earlier.  You can find out what version of binutils you have
-by running \exe{ar -V}.  If it is the incorrect version, either upgrade to a
-later version if one has been released (it hasn't as of 1996/12/23) or contact
-\acct{aips2-request@nrao.edu} for a patch (all that is required is to change
-the \code{\#if 1} that occurs at about line 823 of \file{bfd/archive.c} to
-\code{\#if 0}).
+versions 2.7 (and earlier).  You can find out what version of binutils you
+have by running \exe{ar -V}.  If it is the incorrect version, either upgrade
+to version 2.8 (or later) or contact \acct{aips2-request@nrao.edu} for a patch
+(all that is required is to change the \code{\#if 1} that occurs at about line
+823 of \file{bfd/archive.c} to \code{\#if 0}).
 
 % ----------------------------------------------------------------------------
 
@@ -250,7 +249,6 @@ This consists of a few \textsc{c} compilations and installation of some shell
 scripts, the most important of which is \exeref{inhale} itself.  Ignore any
 error message from \exeref{gmake} concerning the non-existence of various
 subdirectories of \file{/aips++/code}.
-
 
 \subsection*{Step 3. Run \aipsexe{inhale}}
 
