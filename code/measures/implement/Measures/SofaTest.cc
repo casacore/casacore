@@ -76,7 +76,7 @@ void SofaTest::put(const Double in) {
   max_p = max(in, max_p);
   min_p = min(in, min_p);
   if (hstep_p <= 0.0) hstep_p = 0.001/hsize_p/2.0;
-  while (abs(in/hstep_p)>hsize_p) {
+  while (std::abs(in/hstep_p)>hsize_p) {
     hstep_p *= 2.0;
     for (uInt i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+i] = histo_p[hsize_p+2*i] + histo_p[hsize_p+2*i+1];
