@@ -54,7 +54,7 @@ class IPosition;
 // <prerequisite>
 //   <li> <linkto class=Coordinate>Coordinate</linkto>
 // </prerequisite>
-//
+
 // <synopsis>
 // <src>CoordinateSystem</src> is the normal interface to coordinate systems,
 // typically attached to an 
@@ -62,7 +62,7 @@ class IPosition;
 // coordinate system can be manipulated on its own. <src>CoordinateSystem</src>
 // is in turn composed from various classes derived from
 // <linkto class=Coordinate>Coordinate</linkto>.
-//
+// <p>
 // The fundamental operations available to the user of a 
 // <src>CoordinateSystem</src> are:
 // <ol>
@@ -81,23 +81,25 @@ class IPosition;
 //   <li> Transpose the world and/or pixel axes.
 //   <li> One or more pixel or world axes may be removed. You are encouraged to
 //        leave all the world axes if you remove a pixel axis.
-//   <li> Calculate the coordinate system that results from a subimage operation.
+//        Removing a world axis also removes the corresponding pixel axis.
+//   <li> Calculate the coordinate system that results from a subimage
+//        operation.
 //   <li> Various convenience functions to create "standard" coordinate systems.
 // </ol>
 //
 // Note that all the knowledge to do with removing and transposing axes is
 // maintained by the CoordinateSystem.  The individual Coordinates, of which it
 // is made, know nothing about this.
-//
+// <p>
 // Although the CoordinateSystem exists in the absence of an image, the usual
 // time you will find one is attached to an object derived from ImageInterface 
-// such as PagedImage.    When you do so, the physical (or pixel) axes in the image
+// such as PagedImage. When you do so, the physical (or pixel) axes in the image
 // map one to one with the pixel axes contained in the CoordinateSystem.
 // It cannot be any other way as when you create a PagedImage, it is checked
 // that there are equal numbers of image and CoordinateSystem pixel axes.
 // It is up to the creator of the PagedImage to make sure that they are
 // in the correct order.
-//
+// <p>
 // However, the CoordinateSystem may have more world axes than pixel axes
 // because it is possible to remove a pixel axis but not its associated
 // world axis.   Now, if you use the CoordinateSystem functions 
@@ -105,7 +107,7 @@ class IPosition;
 // will have more values than the former if a pixel axis has been removed,
 // but not the world axis.  You must use the ancilliary functions provided
 // to find out what is where.
-//
+// <p>
 // Let's consider an example where a CoordinateSystem consisted of
 // a DirectionCoordinate and a SpectralCoordinate.  Let us say that
 // the first two pixel axes of the image associate (roughly of course
@@ -119,60 +121,62 @@ class IPosition;
 // pixel axis.  Thus, CoordinateSystem::referenceValue would return a Vector of
 // length 3 (for RA, DEC and spectral), but CoordinateSystem::referencePixel
 // would return a vector length 2 (for RA and spectral).  
-//
+// <p>
 // Now this CoordinateSystem has two coordinates, a DirectionCoordinate and
 // a SpectralCoordinate, and let us state that that is the order in which
-// they exist in the CoordinayeSystem (you can change them about if you wish);
-// they are coordinates number 0 and 1. The DirectionCoordinate has two axes (RA and DEC)
-// and the SpectralCoordinate has one axis.   Only the CoordinateSystem
-// knows about removed axes, the DirectionCoordinate itself is ignorant that
-// it has been bisected. If you want to find out what axis in the Coordinate
-// system is where, you can use CoordinateSystem::findPixelAxis or
-// CoordinateSystem::findWorldAxis.     If we asked the former to find pixel
-// axis 0, it would tell us that the Coordinate number was 0 (the DirectionCoordinate)
-// and that the axis in that coordinate was 0 (the first axis in a DirectionCoordinate
+// they exist in the CoordinateSystem (you can change them about if you wish);
+// they are coordinates number 0 and 1. The DirectionCoordinate has two axes
+// (RA and DEC) and the SpectralCoordinate has one axis. Only the
+// CoordinateSystem knows about removed axes, the DirectionCoordinate
+// itself is ignorant that it has been bisected. If you want to find
+// out what axis in the Coordinate system is where, you can use
+// CoordinateSystem::findPixelAxis or CoordinateSystem::findWorldAxis.
+// If we asked the former to find pixel axis 0, it would tell us that the
+// Coordinate number was 0 (the DirectionCoordinate) and that the axis in
+// that coordinate was 0 (the first axis in a DirectionCoordinate
 // is always longitude, the second always latitude).  If we asked it to find
-// pxiel axis 1, it would tell us that the Coordinate number was 1 (the SpectralCoordinate)
-// and that the axis in that coordinate was 0 (there is only one axis in 
-// a SpectralCoordinate).  If we asked for pixelAxis 2 that would generate
-// an error because out squashed image only has 2 pixel axes.  
-// Now, if we asked findWorldAxis similar questions,
-// it would tell us that worldAxis 0 in the CoordinateSystem can be found
-// in coordinate 0 (the DirectionCoordinate) in axis 0 of that DirectionCoordinate.
+// pxiel axis 1, it would tell us that the Coordinate number was 1
+// (the SpectralCoordinate) and that the axis in that coordinate was 0
+// (there is only one axis in a SpectralCoordinate). If we asked for
+// pixelAxis 2 that would generate an error because out squashed image
+// only has 2 pixel axes. Now, if we asked findWorldAxis similar questions,
+// it would tell us that worldAxis 0 in the CoordinateSystem can be found in
+// coordinate 0 (the DirectionCoordinate) in axis 0 of that DirectionCoordinate.
 // Similarly, worldAxis 1 in the CoordinateSystem (which has not been removed)
 // is in coordinate 0 (the DirectionCoordinate) in axis 1 of that 
 // Finally, worldAxis 2 in the CoordinateSystem is in coordinate 1 
 // (the SpectralCoordinate) in axis 0 of that SpectralCoordinate.
-//
-// Other handy functions are CoordinateSystem::pixelAxes and CoordinateSystem::worldAxes
-// These list the pixel and world axes in the CoordinateSystem for the specified coordinate.  
-// Thus, if we asked pixelAxes to find the pixel axes for coordinate 0 (the 
-// DirectionCoordinate) in the CoordinateSystem it would return a vector [0, -1] 
-// indicating the second axis of  the DirectionCoordinate has been removed.  However, 
-// the worldAxes function would return [0,1] as no world axis has been removed.  
+// <p>
+// Other handy functions are CoordinateSystem::pixelAxes and
+// CoordinateSystem::worldAxes These list the pixel and world axes in
+// the CoordinateSystem for the specified coordinate. Thus, if we asked
+// pixelAxes to find the pixel axes for coordinate 0 (the  DirectionCoordinate)
+// in the CoordinateSystem it would return a vector [0, -1]  indicating
+// the second axis of  the DirectionCoordinate has been removed.  However, 
+// the worldAxes function would return [0,1] as no world axis has been removed.
 // Similarly, if operated on coordinate 1 (the SpectralCoordinate), pixelAxes
 // would return [1] and worldAxes would return [2].
 //
 // Because you can transpose the CoordinateSystem about, you should never assume
 // anything except that the pixel axes of the CoordinateSystem map to the pixel
 // axes of the image when you first construct the image.
-//
 // </synopsis>
-//
+
 // <example>
 // See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
 // </example>
-//
+
 // <motivation>
 // Coordinate systems for images.
 // </motivation>
-//
+
 // <todo asof="1997/01/13">
 //   <li> Add an equivalent of wcsmix() - either here or at a higher level.
 //   <li> Undelete individual removed axes.
 //   <li> Non-integral pixel shifts/decimations in subimage operations?
 //   <li> Copy-on-write for efficiency?
 // </todo>
+
 
 class CoordinateSystem : public Coordinate
 {
@@ -218,12 +222,21 @@ public:
     // will be considered to not  match if their specific types are 
     // different (e.g. TOPO versus LSR for the <src>SpectralCoordinate</src>, 
     // or J2000 versus GALACTIC for <src>DirectionCoordinate</src>).
-       Bool worldMap (Vector<Int>& worldAxisMap,
-                      Vector<Int>& worldAxisTranspose,
-                      const CoordinateSystem& cSys) const;
+    Bool worldMap (Vector<Int>& worldAxisMap,
+		   Vector<Int>& worldAxisTranspose,
+		   const CoordinateSystem& cSys) const;
 
     // Remove a world or pixel axis. When its value is required for forward or
     // backwards transformations, use <src>replacement</src>
+    // <br>
+    // When a world axis is removed, the corresponding pixel axis is removed
+    // too, because it makes no sense having a pixel axis without world
+    // coordinates.
+    // <br>
+    // Removing a pixel axis without removing the corresponding world axis
+    // is, however, possible and meaningful. It can be used when e.g. a
+    // frequency plane is taken from a cube. The plane has 2 pixel axes, but
+    // the 3rd world axis can still describe the frequency coordinate.
     // <group>
     void removeWorldAxis(uInt axis, Double replacement);
     void removePixelAxis(uInt axis, Double replacement);

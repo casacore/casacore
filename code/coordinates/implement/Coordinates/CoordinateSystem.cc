@@ -424,6 +424,12 @@ void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
 {
     AlwaysAssert(axis < nWorldAxes(), AipsError);
 
+    // Remove the corresponding pixel axis (if there)..
+    Int pixAxis = worldAxisToPixelAxis (axis);
+    if (pixAxis >= 0) {
+	removePixelAxis (pixAxis, replacement);
+    }
+
     const uInt nc = nCoordinates();
 
     Int coord, caxis;
