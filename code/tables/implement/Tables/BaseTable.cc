@@ -81,7 +81,6 @@ BaseTable::~BaseTable()
     delete tdescPtr_p;
     //# Delete the table files (if there) if marked for delete.
     if (isMarkedForDelete()) {
-	File file(name_p);
 	if (madeDir_p) {
 	    Directory directory(name_p);
 	    directory.removeRecursive();
