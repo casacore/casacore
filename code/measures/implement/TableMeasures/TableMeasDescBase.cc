@@ -1,5 +1,5 @@
 //# TableMeasDefBase.cc: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,7 +126,6 @@ TableMeasDescBase& TableMeasDescBase::operator= (const TableMeasDescBase& that)
 void TableMeasDescBase::write (TableDesc& td)
 {
   TableRecord measInfo;
-
   // Create a record from the MeasType and add it to measInfo
   itsMeasType.toRecord (measInfo);
   // Put the units.
@@ -138,6 +137,22 @@ void TableMeasDescBase::write (TableDesc& td)
   itsRef.write (td, measInfo, *this);
   // Write the MEASINFO record into the keywords of the value column.
   itsValue.write (td, measInfo);
+}
+
+void TableMeasDescBase::write (Table& tab)
+{
+  TableRecord measInfo;
+  // Create a record from the MeasType and add it to measInfo
+  itsMeasType.toRecord (measInfo);
+  // Put the units.
+  // Use TableQuantumDesc, so the column can be used that way too.
+  TableQuantumDesc tqdesc(tab.tableDesc(), itsValue.columnName(), itsUnits);
+  tqdesc.write (tab);
+		    
+  // Write the reference.
+  itsRef.write (tab, measInfo, *this);
+  // Write the MEASINFO record into the keywords of the value column.
+  itsValue.write (tab, measInfo);
 }
 
 void TableMeasDescBase::setMeasUnits (const Measure& meas,

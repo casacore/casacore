@@ -1,5 +1,5 @@
 //# TableMeasDesc.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,12 +82,11 @@ class TableMeasValueDesc;
 // Defining a Measure column (that is, steps 1 and 2 above) is the more complex
 // operation.  However, for each Measure column it is a once only operation.
 // After a Measure column has been created its subsequent use is not
-// significantly
-// different to using "ordinary" Table columns. For information
+// much different to using "ordinary" Table columns. For information
 // on how to use a Measure column see the
 // <linkto class="ScalarMeasColumn">(RO)ScalarMeasColumns</linkto> and
 // <linkto class="ArrayMeasColumn">(RO)ArrayMeasColumns</linkto> classes.
-//
+// <p>
 // The TableMeasDesc class hierarchy contains classes for defining each
 // component of the Measures to be contained in column.  A
 // <linkto class="TableMeasOffsetDesc">TableMeasOffsetDesc</linkto> is used
@@ -97,18 +96,23 @@ class TableMeasValueDesc;
 // <linkto class="TableMeasValueDesc">TableMeasValueDesc</linkto> names the
 // column used as the main Measure column through which the
 // Measure column is subsequently accessed.
-//
+// <br>
 // The final step needed to create a Measure column is the creation of a
 // TableMeasDesc object whose
 // constructor takes a TableMeasValueDesc and (optionally) a
 // TableMeasRefDesc.   After construction the TableMeasDesc object's
 // write() member is used to make the
 // the Measure column persistent within the Table.
-//
+// <p>
 // The following examples demonstrate the creation of Measure columns using
 // the above components.  Further details about each of these components
 // is available with each class description.
-
+// <br>
+// All examples write the measure description into a TableDesc object,
+// i.e. the argument used in the TableMeasDesc::write function is a
+// TableDesc object. It is, however, also possible to write them
+// into a Table object which is useful if measure columns are added
+// to an already existing table (see example 2).
 // </synopsis>
 
 // <example>
@@ -135,6 +139,30 @@ class TableMeasValueDesc;
 //    // create the table with 5 rows
 //    SetupNewTable newtab("MeasuresTable", td, Table::New);
 //    Table tab(newtab, 5);
+// </srcblock>
+
+// <li> Same as example above, but for an already existing table.
+// <srcblock>
+//    // Need a table to work with.
+//    TableDesc td("measureTable_desc", "1", TableDesc::New);
+//    td.comment() = "A test of TableMeasures class.";
+//
+//    // Define a column and add it to the table
+//    // The main measure column is always an Array column of type Double
+//    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
+//    td.addColumn(cdtime);
+//
+//    // create the table with 5 rows
+//    SetupNewTable newtab("MeasuresTable", td, Table::New);
+//    Table tab(newtab, 5);
+//
+//    // Create the Measure column for an MEpoch.  The MEpoch in
+//    // the column has reference code MEpoch::TAI
+//    TableMeasRefDesc measRef(MEpoch::TAI);
+//    TableMeasValueDesc measVal(tab.tableDesc(), "Time");
+//    TableMeasDesc<MEpoch> mepochCol(measVal, measRef);
+//    // write makes the Measure column persistent.
+//    mepochCol.write(tab);
 // </srcblock>
 
 // <li> An MEpoch column with a variable reference code with a fixed offset:

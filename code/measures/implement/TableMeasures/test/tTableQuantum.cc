@@ -48,10 +48,16 @@
 #include <iostream.h>
 
 
-int main(int argc)
+int main (int argc, char* argv[])
 {
+  Bool doExcep = (argc<2);
+  uInt nrrow = 5000;
+  if (argc >= 2) {
+    istrstream istr(argv[1]);
+    istr >> nrrow;
+  }
+
   try {
-    Bool doExcep = (argc<2);
 
     cout << "Begin tTableQuantum.cc.\n";
 
@@ -158,12 +164,13 @@ int main(int argc)
       } 
     }
     // ...and make them persistent.
+    // the last one is done later after the table is created
+    // (to test if write() works fine with the Table object).
     tqdSQD.write(td);
     tqdSQC.write(td);
     tqdAQC.write(td);
     tqdAQC2.write(td);
     tqdAQC3.write(td);
-    tqdAQC4.write(td);
 
     cout << "Column's name is: " + tqdSQD.columnName() << endl;
     if (tqdSQD.isUnitVariable()) {
@@ -177,6 +184,9 @@ int main(int argc)
     // create a table with 5 rows.
     SetupNewTable newtab("tTableQuantum_tmp.tab", td, Table::New);
     Table qtab(newtab, 5);
+
+    // 
+    tqdAQC4.write(qtab);
 
     // Check that columns contain quanta.
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
@@ -518,10 +528,10 @@ int main(int argc)
     exit(1);
   } 
 
-  // Now test the performance by putting arrays in 5000 rows.
+  // Now test the performance by putting arrays in nrrow rows.
   try {
     Table qtab ("tTableQuantum_tmp.tab", Table::Update);
-    qtab.addRow(5000);
+    qtab.addRow(nrrow);
     IPosition shape(2, 3, 2);
     Array<Quantum<Double> > aqArr(shape);
     aqArr = Quantum<Double>(1.41212, "GHz");
@@ -532,32 +542,32 @@ int main(int argc)
     ArrayColumn<Double> tabCol(qtab, "ArrQuantDouble");
     cout << ">>>" << endl;
     Timer timer;
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       aqCol.put (i, aqArr);
     }
     timer.show ("put tq var arrays");
     timer.mark();
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       aqCol2.put (i, aqArr);
     }
     timer.show ("put tq fix arrays");
     timer.mark();
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       tabCol.put (i, tabArr);
     }
     timer.show ("put tab    arrays");
     timer.mark();
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       aqCol.get (i, aqArr);
     }
     timer.show ("get tq var arrays");
     timer.mark();
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       aqCol2.get (i, aqArr);
     }
     timer.show ("get tq fix arrays");
     timer.mark();
-    for (uInt i=0; i<5000; i++) {
+    for (uInt i=0; i<nrrow; i++) {
       tabCol.get (i, tabArr);
     }
     timer.show ("get tab    arrays");

@@ -1,5 +1,5 @@
 //# TableMeasValueDesc.h: Definition of a MeasValue in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 
 //# Forward Declarations
 class ColumnDesc;
+class Table;
 class TableDesc;
 class TableRecord;
 
@@ -130,7 +131,10 @@ public:
 
   // Write the type, unit, and MEASINFO record into the column keywords.
   // It checks if the column exists in the given table description.
-  void write (TableDesc& td, const TableRecord& measInfo);
+  // <group>
+  void write (TableDesc&, const TableRecord& measInfo);
+  void write (Table&, const TableRecord& measInfo);
+  // </group>
 
   // Get the name of the underlying column.
   const String& columnName() const
@@ -140,7 +144,11 @@ private:
   String itsColumn;	    //# MeasValue column name.
 
 
-  // Throws an exception if the quantum column doesn't exist or is of the
+  // Write the actual keywords.
+  void writeKeys (TableRecord& columnKeyset,
+		  const TableRecord& measInfo);
+
+  // Throw an exception if the quantum column doesn't exist or is of the
   // wrong type.
   void checkColumn (const TableDesc& td) const;
 };

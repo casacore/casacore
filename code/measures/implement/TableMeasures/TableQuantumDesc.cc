@@ -1,5 +1,5 @@
 //# TableQuantumDesc.cc: Definition of a Quantum in a Table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@
 //# Includes
 #include <aips/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/TableRecord.h>
@@ -133,7 +135,17 @@ TableQuantumDesc* TableQuantumDesc::reconstruct (const TableDesc& td,
 
 void TableQuantumDesc::write (TableDesc& td)
 {
-  TableRecord& columnKeyset = td.rwColumnDesc(itsColName).rwKeywordSet();
+  writeKeys (td.rwColumnDesc(itsColName).rwKeywordSet());
+}
+
+void TableQuantumDesc::write (Table& tab)
+{
+  TableColumn tabcol (tab, itsColName);
+  writeKeys (tabcol.rwKeywordSet());
+}
+
+void TableQuantumDesc::writeKeys (TableRecord& columnKeyset)
+{
   if (isUnitVariable()) {
     columnKeyset.define("VariableUnits", itsUnitsColName);
   } else {

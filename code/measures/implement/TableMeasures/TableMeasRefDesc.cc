@@ -1,5 +1,5 @@
 //# TableMeasRefDef.cc: Definition of a MeasRef in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,14 +109,29 @@ TableMeasRefDesc::TableMeasRefDesc (const TableRecord& measInfo,
 void TableMeasRefDesc::write (TableDesc& td, TableRecord& measInfo, 
 			      const TableMeasDescBase& measDesc)
 {
+  writeKeys (measInfo, measDesc);
+  if (itsOffset != 0) {
+    itsOffset->write (td, measInfo, "RefOff");
+  }
+}
+
+void TableMeasRefDesc::write (Table& tab, TableRecord& measInfo, 
+			      const TableMeasDescBase& measDesc)
+{
+  writeKeys (measInfo, measDesc);
+  if (itsOffset != 0) {
+    itsOffset->write (tab, measInfo, "RefOff");
+  }
+}
+
+void TableMeasRefDesc::writeKeys (TableRecord& measInfo, 
+				  const TableMeasDescBase& measDesc)
+{
   if (isRefCodeVariable()) {
     measInfo.define ("VarRefCol", itsColumn);
   } else {
     measInfo.define ("Ref", measDesc.refType (itsRefCode));
   } 
-  if (itsOffset != 0) {
-    itsOffset->write (td, measInfo, "RefOff");
-  }
 }
 
 void TableMeasRefDesc::checkColumn (const TableDesc& td) const

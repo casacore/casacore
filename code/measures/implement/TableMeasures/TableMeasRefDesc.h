@@ -1,5 +1,5 @@
 //# TableMeasRefDesc.h: Definition of a Measure Reference in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -233,8 +233,10 @@ public:
 
   // Make the Measure value descriptor persistent.  Normally would not be
   // called by the user directly.
-  void write (TableDesc& td, TableRecord& measInfo,
-	      const TableMeasDescBase&);
+  // <group>
+  void write (TableDesc&, TableRecord& measInfo, const TableMeasDescBase&);
+  void write (Table&, TableRecord& measInfo, const TableMeasDescBase&);
+  // </group>
 
 private:
   uInt itsRefCode;
@@ -244,8 +246,12 @@ private:
   TableMeasOffsetDesc* itsOffset; 	
 
 
-  //# Throws an exception if the column doesn't exist or is of the
-  //# wrong type.
+  // Write the actual keywords.
+  void writeKeys (TableRecord& measInfo, 
+		  const TableMeasDescBase& measDesc);
+
+  // Throw an exception if the column doesn't exist or is of the
+  // wrong type.
   void checkColumn (const TableDesc& td) const;
 };
 

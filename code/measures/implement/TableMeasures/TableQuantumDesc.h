@@ -1,5 +1,5 @@
 //# TableQuantumDesc.h: Defines a Quantum column in a Table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,8 @@
 
 //# Forward Declarations
 class TableDesc;
+class Table;
+class TableRecord;
 class ROTableColumn;
 class Unit;
 
@@ -61,8 +63,7 @@ class Unit;
 // TableQuantumDesc objects are analogous to ColumnDesc objects in that they
 // add information, describing the characteristics of a column, to the Table
 // Descriptor before the Table is created.  However, rather than
-// replacing the use of a ColumnDesc object, a
-// TableQuantumDesc is
+// replacing the use of a ColumnDesc object, a TableQuantumDesc is
 // used in conjunction with a ColumnDesc in the definition of
 // Quantum columns.<br>
 //
@@ -83,8 +84,11 @@ class Unit;
 //	and the Unit column from step 2 and update the Table Descriptor.
 // <li> Setup and create the Table.
 // </ol>
+// It is also possible to define a Quantum column after the table is created.
+// which is useful when columns (to be used for quanta) are added to
+// an already existing table. <br>
 //
-// The type of the quantum columns must much the type of the underlying
+// The type of the quantum columns must match the type of the underlying
 // Quanta that are to be stored in the column.  Hence, for a column of
 // Quantum&lt;Complex&gt; a ScalarColumnDesc&lt;Complex&gt; must be used.<br>
 //
@@ -172,7 +176,7 @@ class Unit;
 //
 //
 // After constructing an TableQuantumDesc object use of the write() member
-// updates the Table Descriptor.
+// updates the Table Descriptor or Table object.
 // <linkto class="ScalarQuantColumn">(RO)ScalarQuantColumn&lt;T&gt;</linkto>
 // and
 // <linkto class="ArrayQuantColumn">(RO)ArrayQuantColumn&lt;T&gt;</linkto>
@@ -221,6 +225,20 @@ class Unit;
 //
 //     // Now ScalarQuantColumn and ArrayQuantColumn objects could be
 //     // constructed to access the columns...
+// </srcblock>
+// Note that writing the Quantum description could also be done
+// after the table is created. It is meaningless in this case, but
+// it is useful when columns (to be used for quanta) are added to
+// an already existing table.
+// be used as 
+// <srcblock>
+//     // Setup and create the new table as usual.
+//     SetupNewTable newtab("mtab", td, Table::New);
+//     Table qtab(newtab);
+//
+//     // Update the Table Descriptor
+//     tqdA.write(qtab);
+//     tqdS.write(qtab);
 // </srcblock>
 // </example>
 
@@ -308,7 +326,10 @@ public:
     { return itsUnitsColName; }
 
   // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
-  void write (TableDesc& td);
+  // <group>
+  void write (TableDesc&);
+  void write (Table&);
+  // </group>
 
   // Does this column contain table quanta?
   static Bool hasQuanta (const ROTableColumn& column);
@@ -322,10 +343,13 @@ private:
   String itsUnitsColName;
 
 
-  // Throws an exception if the quantum column doesn't exist.
+  // Write the actual keywords.
+  void writeKeys (TableRecord& columnKeyset);
+
+  // Throw an exception if the quantum column doesn't exist.
   void checkColumn (const TableDesc& td) const;
 
-  // Throws an exception if the variable units column isn't a string column.
+  // Throw an exception if the variable units column isn't a string column.
   void checkUnitsColumn (const TableDesc& td) const;
 };
 

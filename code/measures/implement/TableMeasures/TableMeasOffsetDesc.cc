@@ -1,5 +1,5 @@
 //# TableMeasOffsetDesc.cc: Definition of a offset measure in a Table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,24 @@ const Measure& TableMeasOffsetDesc::getOffset() const
 void TableMeasOffsetDesc::write (TableDesc& td, TableRecord& measInfo, 
 				 const String& prefix)
 {
+  writeKeys (measInfo, prefix);
+  if (itsTMDesc != 0) {
+    itsTMDesc->write (td);
+  }
+}
+
+void TableMeasOffsetDesc::write (Table& tab, TableRecord& measInfo, 
+				 const String& prefix)
+{
+  writeKeys (measInfo, prefix);
+  if (itsTMDesc != 0) {
+    itsTMDesc->write (tab);
+  }
+}
+
+void TableMeasOffsetDesc::writeKeys (TableRecord& measInfo, 
+				     const String& prefix)
+{
   if (! itsMeasure.isEmpty()) {
     String error;
     TableRecord measRec;
@@ -137,7 +155,6 @@ void TableMeasOffsetDesc::write (TableDesc& td, TableRecord& measInfo,
   if (itsTMDesc != 0) {
     measInfo.define (prefix + "Col", itsTMDesc->columnName());
     measInfo.define (prefix + "varPerArr", itsVarPerArr);
-    itsTMDesc->write(td);
   }
 }
 

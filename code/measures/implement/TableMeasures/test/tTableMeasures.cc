@@ -481,7 +481,21 @@ int main(int argc)
 	  cout << x.getMesg() << endl;
 	} 
       }
+    }
 
+
+    // Define some commonly used values.
+    MVEpoch mvobsTime((MVTime(1996, 5, 17, (8+18./60.)/24.)));
+    MEpoch obsTime(mvobsTime, MEpoch::UTC);
+    const uInt tabRows = 5;
+
+    {
+      // Finally create the table
+      SetupNewTable newtab("tTableMeasures_tmp.tab", td, Table::New);
+      Table tab(newtab);
+
+      // Add the last measure definition.
+      // Do that using the Tbale object (to test that part as well).
       // measure reference column and associated offset
       TableMeasRefDesc tmARef_tmp(td, "Time4StrRef", tmOsDesc);
       TableMeasRefDesc tmARef(td, "Time4StrRef");
@@ -501,7 +515,7 @@ int main(int argc)
       TableMeasDesc<MEpoch> tmdArray_tmp(tmAVal, tmARef);
       TableMeasDesc<MEpoch> tmdArray(tmAVal);
       tmdArray = tmdArray_tmp;
-      tmdArray.write(td);
+      tmdArray.write(tab);
 
       // test getting on the new descriptor reference
       TableMeasRefDesc testRef = tmdArray.getRefDesc();
@@ -510,23 +524,12 @@ int main(int argc)
       } else {
 	cout << "FAIL - Reference apparantly doesn't have an offset!\n";
       }
-    }
 
-    // Finally create the table
+      // At this point a table "tTableMeasures_tmp.tab" has been created.
+      // It contains a number of empty Measure columns.  The remainder of this
+      // program tests the usage of Scalar(Array)MeasColumn objects for
+      // putting and getting Measures into and out of the table.
 
-    SetupNewTable newtab("tTableMeasures_tmp.tab", td, Table::New);
-
-    // At this point a table called "tTableMeasures_tmp.tab" has been created.
-    // It contains a number of empty Measure columns.  The remainder of this
-    // program tests the usage of Scalar(Array)MeasColumn objects for
-    // putting and getting Measures into and out of the table.
-
-
-    MVEpoch mvobsTime((MVTime(1996, 5, 17, (8+18./60.)/24.)));
-    MEpoch obsTime(mvobsTime, MEpoch::UTC);
-    const uInt tabRows = 5;
-    {
-      Table tab(newtab);
 
       // Check that columns are measures.
       AlwaysAssertExit (TableMeasDescBase::hasMeasures

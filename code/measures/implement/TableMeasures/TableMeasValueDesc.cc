@@ -1,5 +1,5 @@
 //# TableMeasValueDesc.cc: Definition of a MeasValue in a Table.
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,9 @@
 
 //# Includes
 #include <aips/TableMeasures/TableMeasValueDesc.h>
+#include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions/Error.h>
@@ -61,8 +63,20 @@ TableMeasValueDesc& TableMeasValueDesc::operator=
 
 void TableMeasValueDesc::write (TableDesc& td, const TableRecord& measInfo)
 {
-  checkColumn(td);
-  TableRecord& columnKeyset = td.rwColumnDesc(itsColumn).rwKeywordSet();
+  checkColumn (td);
+  writeKeys (td.rwColumnDesc(itsColumn).rwKeywordSet(), measInfo);
+}
+
+void TableMeasValueDesc::write (Table& tab, const TableRecord& measInfo)
+{
+  checkColumn (tab.tableDesc());
+  TableColumn tabcol(tab, itsColumn);
+  writeKeys (tabcol.rwKeywordSet(), measInfo);
+}
+
+void TableMeasValueDesc::writeKeys (TableRecord& columnKeyset,
+				    const TableRecord& measInfo)
+{
   if (measInfo.nfields() > 0) {
     columnKeyset.defineRecord ("MEASINFO", measInfo);
   }
