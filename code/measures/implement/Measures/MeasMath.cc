@@ -603,8 +603,9 @@ void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
 void MeasMath::getInfo(FrameInfo i) {
   // Frame information groups
   static FrameType InfoType[N_FrameInfo] = {
-    EPOCH, EPOCH, POSITION, POSITION, POSITION,
-    DIRECTION, DIRECTION, DIRECTION };
+    EPOCH, EPOCH, POSITION, POSITION, POSITION, POSITION,
+    DIRECTION, DIRECTION, DIRECTION, DIRECTION, DIRECTION,
+    DIRECTION, DIRECTION, DIRECTION, DIRECTION };
   // Frame information methods
   static FRDINFO InfoDFrame[N_FrameDInfo] = {
     &MCFrame::getTDB,
