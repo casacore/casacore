@@ -196,7 +196,28 @@ public:
     // same transformation vector for both the world and pixel transformations,
     // however this is not required.
     void transpose(const Vector<Int> &newWorldOrder,
-		 const Vector<Int> &newPixelOrder);
+                   const Vector<Int> &newPixelOrder);
+
+    // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
+    // from the current <src>CoordinateSystem</src>.  <src>worldAxisMap(i)</src> 
+    // is the location of world axis <src>i</src> (from the
+    // supplied <src>CoordinateSystem</src>, <src>cSys</src>,
+    // in the current <src>CoordinateSystem</src>.
+    // <src>worldAxisTranspose(i)</src> is the location of world axis 
+    // <src>i</src> (from the current <src>CoordinateSystem</src>) in the supplied 
+    // <src>CoordinateSystem</src>, <src>cSys</src>.  The output vectors
+    // are resized appropriately by this function.   It is allowed that the 
+    // supplied <src>CoordinateSystem</src> has less coordinates/world 
+    // axes than the current <src>CoordinateSystem</src>.
+    // In this case, the <src>worldAxisTranspose</src> vector may contain the
+    // value -1, indicating that this world axis is not present in the
+    // supplied <src>CoordinateSystem</src>.  Conformance (world axis names,
+    // intrinsic units, types) of the <src>CoordinateSystems</src> is checked,
+    // and <src>False</src> is returned if they do not conform.  A message can
+    // be recovered with the function <src>errorMessage</src> indicating why.
+       Bool worldMap (Vector<Int>& worldAxisMap,
+                      Vector<Int>& worldAxisTranspose,
+                      const CoordinateSystem& cSys) const;
 
     // Remove a world or pixel axis. When its value is required for forward or
     // backwards transformations, use <src>replacement</src>
@@ -418,6 +439,13 @@ private:
     PtrBlock<Vector<Double> *> pixel_replacement_values_p;
 
     // Helper functions to group common code.
+    Bool mapOne(String& message, 
+                Vector<Int>& worldAxisMap, 
+                Vector<Int>& worldAxisTranspose, 
+                const CoordinateSystem& cSys,
+                const CoordinateSystem& cSys2,
+                const uInt coord, const uInt coord2) const;
+
     void copy(const CoordinateSystem &other);
     void clear();
 };

@@ -255,6 +255,249 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     }
 }
 
+
+
+Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
+                                Vector<Int>& worldAxisTranspose,
+                                const CoordinateSystem& other) const
+//
+// Make a map from "*this" to "other"
+//
+// . Returns True if a valid match of the coordinate systems is made
+// . If either "*this" or "other" has no world axes, return False.  
+// . The coordinate systems can have arbitrary numbers of coordinates
+//   in any relative order.
+// . Removed world and pixel axes are handled.
+// . If a coordinate is completely removed in "other", we don't
+//   look for it in "*this"
+//
+// . The value of worldAxisMap(i2) is the world axis of "*this" matching 
+//   world axis i2 in "other".  A value of -1 indicates that 
+//   a world axis could not be matched (and False is returned)
+//   
+// . The value of worldAxisTranspose(i1) is the world axis of "other"
+//   matching world axis i1 of "*this"  It tells you how to transpose
+//   "other" to be in the order of "*this".  A value of -1 indicates
+//   that a world axis could not be matched.  Note that True may be returned
+//   even though a -1 is found in worldAxisTranspose.  The primary
+//   target is "other" and it is considered a success if a worldAxisMap
+//   can be found for it. 
+//
+{
+
+// Resize the maps
+
+   worldAxisMap.resize(other.nWorldAxes());
+   worldAxisMap = -1;
+   if (other.nWorldAxes() ==0) {
+      set_error(String("The supplied CoordinateSystem has no valid world axes"));
+      return False;
+   }
+
+   worldAxisTranspose.resize(nWorldAxes());
+   worldAxisTranspose = -1;
+   if (nWorldAxes() ==0) {
+      set_error(String("The current CoordinateSystem has no valid world axes"));
+      return False;
+   }
+
+
+// Loop over "other" coordinates
+
+   const uInt nCoord  =        nCoordinates();
+   const uInt nCoord2 = other.nCoordinates();
+
+   Vector<Bool> usedCoords(nCoordinates(),False);
+   String message;
+
+   for (uInt coord2=0; coord2<nCoord2; coord2++) {
+
+// If all the world axes for this coordinate have been removed,
+// we do not attempt to match with anything.
+
+      if (!allEQ(other.worldAxes(coord2).ac(), -1)) {
+
+      
+// Try and find this coordinate type in "*this". If there
+// is more than one coordinate of this type in "*this", we
+// try them all looking for the first one that conforms.
+// "other" may also contain more than one coordinate of a given
+// type, so make sure we only use a coordinate in "*this" once
+
+//         cout << endl << "coord2 = " << coord2 << ", type = " << other.showType(coord2) << endl;
+         Bool conform = False;
+         Bool match = False;     
+         for (uInt coord=0; coord<nCoord; coord++) {
+//            cout << "  coord1 = " << coord << ", type = " << showType(coord) << endl;
+
+            if (!usedCoords(coord)) {
+               if (type(coord) == other.type(coord2)) {
+                  match = True;
+                  if (mapOne(message, worldAxisMap, worldAxisTranspose, 
+                             *this, other, coord, coord2)) {
+                     usedCoords(coord) = True;
+                     conform = True;
+//                     cout << "  conformance ok: map = " << worldAxisMap.ac() << endl;
+                     break;
+                  }
+               }
+            }
+         }
+
+// break jump
+
+         if (!match) {
+            ostrstream oss;
+            oss << "A coordinate of type " << other.coordinate(coord2).showType()
+                << " could not be found" << ends;
+            set_error(String(oss));
+            return False;
+         } else if (!conform) {
+            set_error(message);
+            return False;
+         }
+      }
+   }
+   return True;
+}
+
+
+
+
+Bool CoordinateSystem::mapOne(String& message,
+                              Vector<Int>& worldAxisMap,
+                              Vector<Int>& worldAxisTranspose,
+                              const CoordinateSystem& cSys1,
+                              const CoordinateSystem& cSys2,
+                              const uInt coord1,
+                              const uInt coord2) const
+//
+// Make some conformance tests (type, units, names). These are not as strict
+// as those imposed by the "near" functions.    In addition,
+// update the world axis mappings from one coordinate system to another.  
+// This function support the function "worldMap"
+//
+{
+
+// Make tests on specific coordinate types here
+
+   ostrstream oss;         
+   if (cSys2.coordinate(coord2).type() == Coordinate::DIRECTION) {
+      if (cSys1.directionCoordinate(coord1).directionType() != 
+          cSys2.directionCoordinate(coord2).directionType()) {
+         oss << "The DirectionCoord types differ ("
+             << MDirection::showType(cSys1.directionCoordinate(coord1).directionType()) 
+             << " & "
+             << MDirection::showType(cSys2.directionCoordinate(coord2).directionType())
+             << ") " << ends;
+         message = String(oss);
+         return False;
+      }
+   } else if (cSys2.coordinate(coord2).type() == Coordinate::SPECTRAL) {
+      if (cSys1.spectralCoordinate(coord1).frequencySystem() != 
+          cSys2.spectralCoordinate(coord2).frequencySystem()) {
+         oss << "The SpectralCoord types differ ("
+             << MFrequency::showType(cSys1.spectralCoordinate(coord1).frequencySystem())
+             << " & "
+             << MFrequency::showType(cSys2.spectralCoordinate(coord2).frequencySystem())
+             << ") " << ends;
+         message = String(oss);
+         return False;
+      }
+   }
+
+
+// How many world and pixel axes for these coordinates
+
+   uInt nWorld1 = cSys1.worldAxes(coord1).nelements();
+   uInt nWorld2 = cSys2.worldAxes(coord2).nelements();
+   uInt nPixel1 = cSys1.pixelAxes(coord1).nelements();
+   uInt nPixel2 = cSys2.pixelAxes(coord2).nelements();
+
+
+// These tests should never fail
+
+   if (nWorld1 != nWorld2) {
+      oss << "Inconsistent nos. of world axes ("
+          << nWorld1 << " & " << nWorld2 << ") for the "
+          << cSys1.coordinate(coord1).showType() << "Coordinate" << ends;
+      message = String(oss);
+      return False;
+   }
+   if (nPixel1 != nPixel2) {
+      oss << "Inconsistent nos. of pixel axes ("
+          << nPixel1 << " & " << nPixel2 << ") for the "
+          << cSys1.coordinate(coord1).showType() << "Coordinate" << ends;
+      message = String(oss);
+      return False;
+   }
+
+// Find their world  and pixel axes
+
+   Vector<Int> world1 = cSys1.worldAxes(coord1);
+   Vector<Int> pixel1 = cSys1.pixelAxes(coord1);
+   Vector<Int> world2 = cSys2.worldAxes(coord2);
+   Vector<Int> pixel2 = cSys2.pixelAxes(coord2);
+
+//   cout << "   world1 = " << world1.ac() << endl;
+//   cout << "   world2 = " << world2.ac() << endl;
+
+ 
+// Compare quantities for the world axes.  
+
+   for (uInt j=0; j<nWorld2; j++) {
+      if (world2(j) != -1) {
+         if (world1(j) != -1) {
+
+// Compare intrinsic axis units
+
+            if (Unit(cSys1.coordinate(coord1).worldAxisUnits()(j)) !=
+                Unit(cSys2.coordinate(coord2).worldAxisUnits()(j))) {
+               oss << "Inconsistent world axis units ("
+                   << cSys1.coordinate(coord1).worldAxisUnits()(j) << " & "
+                   << cSys2.coordinate(coord2).worldAxisUnits()(j) 
+                   << " for the " << cSys1.coordinate(coord1).showType() 
+                   << "Coordinate" << ends;
+               message = String(oss);
+               return False;
+            }
+
+// Compare world axis names
+
+            if (cSys1.coordinate(coord1).worldAxisNames()(j) !=
+                cSys2.coordinate(coord2).worldAxisNames()(j)) {
+               oss << "Inconsistent world axis names ("
+                   << cSys1.coordinate(coord1).worldAxisNames()(j) << " & "
+                   << cSys2.coordinate(coord2).worldAxisNames()(j) 
+                   << " for the " << cSys1.coordinate(coord1).showType()
+                   << "Coordinate" << ends;
+               message = String(oss);
+               return False;
+            }
+
+// Set the world axis maps
+
+            worldAxisMap(world2(j)) = world1(j);
+            worldAxisTranspose(world1(j)) = world2(j);
+
+         } else {
+
+// The world axis is missing in cSys1 and present in cSys2.  
+
+           return False;
+         }
+
+// The world axis has been removed in cSys2 so we aren't interested in it
+     
+      }
+   }
+   return True;
+}
+
+
+
+
+
 void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement) 
 {
     AlwaysAssert(axis < nWorldAxes(), AipsError);
