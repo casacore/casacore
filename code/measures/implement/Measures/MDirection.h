@@ -220,9 +220,9 @@ public:
     virtual uInt type() const;
 // Assert you are a direction
     static void assert(const Measure &in);
-// Tell me your global type (like GRADEC)
-  MDirection::GlobalTypes globalType() const;
-// Translate reference code
+// Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
+  static MDirection::GlobalTypes globalType(uInt tp);
+// Translate reference code tp (should be given as e.g. MDirection::J2000)
     static const String &showType(uInt tp);
 // Translate string to reference code
     Bool giveMe(const String &in, MDirection::Ref &mr);

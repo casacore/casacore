@@ -165,7 +165,7 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
     return True;
 }
 
-MDirection::GlobalTypes MDirection::globalType() const {
+MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 
     static const MDirection::GlobalTypes oname[MDirection::N_Types] = {
 	MDirection::GRADEC,
@@ -179,7 +179,9 @@ MDirection::GlobalTypes MDirection::globalType() const {
 	MDirection::GHADEC,
 	MDirection::GAZEL,
         MDirection::GAZEL};
-    return oname[ref.getType()];
+    DebugAssert(tp < MDirection::N_Types, AipsError);
+
+    return oname[tp];
 }
 
 Quantum<Vector<Double> > MDirection::getAngle() const {
