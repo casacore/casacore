@@ -61,7 +61,9 @@ class LogIO;
 // See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
 // </example>
 //
-// <todo asof="1997/05/20">
+// <todo asof="1997/07/12">
+//   <li> Make the frequency table persistent, and/or use a common "lookup table"
+//        class.
 //   <li> Allow non-regularly gridded axes?
 //   <li> Do velocity calculations directly for the user rather than going
 //        through the measures system?
@@ -133,6 +135,12 @@ public:
     // <group>
     Double restFrequency() const;
     Bool setRestFrequency(Double newFrequency);
+    // </group>
+  
+    // Retrieve/set the frequency system
+    // <group>
+    MFrequency::Types frequencySystem() const;
+    void  setFrequencySystem(MFrequency::Types type);
     // </group>
 
     // Report the value of the requested attributed.
