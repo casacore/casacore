@@ -5939,3 +5939,4 @@
 16 341 src mv trial/implement/Functionals/NQCompoundFunction.cc aips//implement/Functionals/NQCompoundFunction.cc
 16 341 src mv trial/implement/Functionals/NQCompoundFunction.h aips//implement/Functionals/NQCompoundFunction.h
 16 341 src mv trial/implement/Functionals/NQCompoundParam.cc aips//implement/Functionals/NQCompoundParam.cc
+16 341 src mv trial/implement/Functionals/NQCompoundParam.h aips//implement/Functionals/NQCompoundParam.h
