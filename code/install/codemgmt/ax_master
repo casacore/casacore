@@ -2120,3 +2120,4 @@
 08 357 src rm trial/implement/Functionals/test/tmplinst
 08 357 src rm trial/implement/Mathematics/test/tmplinst
 08 362 src rm trial/apps/imager/templates
+08 364 src rm trial/implement/ComponentModels/test/templates
