@@ -2425,3 +2425,4 @@
 09 361 src mv nrao/data/sddemo2.fits nrao/data/dishdemo2.fits
 09 364 src mv trial/implement/guiutils/combobox.g trial/implement/guiutils/oldcombobox.g
 09 365 src rm nrao/apps/dish/dish_avgapp.g
+09 368 src rm aips/fortran/PGWRAP.f
