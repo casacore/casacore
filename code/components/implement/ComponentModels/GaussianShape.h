@@ -30,25 +30,26 @@
 #define AIPS_GAUSSIANSHAPE_H
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
-#include <trial/ComponentModels/ComponentType.h>
 #include <aips/Functionals/Gaussian2D.h>
+#include <aips/Mathematics/Complex.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/TwoSidedShape.h>
 
 class MDirection;
 class MVAngle;
 template <class Qtype> class Quantum;
-template <class T> class Flux;
+template <class T> class Matrix;
 template <class T> class Vector;
 
 // <summary>A Gaussian model for the spatial distribution of emission</summary>
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tDiskShape" demos="dDiskShape">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=ComponentShape>ComponentShape</linkto>
+//   <li> <linkto class=TwoSidedShape>TwoSidedShape</linkto>
 // </prerequisite>
 
 // <synopsis> 
@@ -56,6 +57,12 @@ template <class T> class Vector;
 // A GaussianShape models the spatial distribution of radiation from the sky as
 // a two-dimensional Gaussian function with user specified major axis width,
 // minor axis width and position angle.
+
+// This class like the other component shapes becomes more useful when used
+// through the <linkto class=SkyComponent>SkyComponent</linkto> class, which
+// incorperates the flux and spectral variation of the emission, or through the
+// <linkto class=ComponentList>ComponentList</linkto> class, which handles
+// groups of SkyComponent objects.
 
 // The reference direction is defined in celestial co-ordinates, using a
 // <linkto class=MDirection>MDirection</linkto> object. It indicates where the
@@ -69,6 +76,12 @@ template <class T> class Vector;
 // axial ratio is the ratio of the minor to major axis widths. The major axis
 // MUST not be smaller than the minor axis otherwise an AipsError is thrown.
 
+// These parameters of the Gaussian (width, position angle, direction etc.) can
+// be specified at construction time, using the <src>*inRad</src> functions or
+// through functions in the base classes (TwoSidedShape & ComponentShape). The
+// base classes also implement functions for inter-converting this object into
+// a record representation. 
+
 // The flux, or integrated intensity, is always normalised to one. This class
 // does not model the actual flux or its variation with frequency. It solely
 // models the way the emission varies with position on the sky.
@@ -79,85 +92,56 @@ template <class T> class Vector;
 // specified direction. Ultimatly this function will integrate the emission
 // from the Gaussian over the entire pixel but currently it just assumes the
 // flux can be calculated by the height of the Gaussian at the centre of the
-// pixel scaled by the pixel area. This is <em>NOT<\em> accurate for Gaussians
+// pixel scaled by the pixel area. This is <em>NOT</em> accurate for Gaussians
 // whose width is small compared with the pixel size.
 
 // This class contains functions that return the Fourier transform of the
 // component at a specified spatial frequency. There are described more fully
 // in the description of the <src>visibility</src> functions below.
-
-// This class also contains functions which perform the conversion between
-// records and GaussianShape objects. This defines how a GaussianShape object
-// is represented in glish. The format of the record that is generated and
-// accepted by these functions is:
-// <srcblock>
-// c := [type = "gaussian",
-//       direction = [type = "direction",
-//                    refer = "j2000",
-//                    m0 = [value = 0, unit = "deg"]
-//                    m1 = [value = 0, unit = "deg"]
-//                   ]
-//      ]
-// </srcblock>
-// The direction field contains a record representation of a direction measure
-// and its format is defined in the Measures module. Its refer field defines
-// the reference frame for the direction and the m0 and m1 fields define the
-// latitude and longitude in that frame.
-
 // </synopsis>
-//
+
 // <example>
 // Suppose I had an image of a region of the sky and we wanted to subtract
-// a gaussian source from it. This could be done as follows:
-// <ul> 
-// <li> Construct a GaussianCompRep to represent the gaussian source
+// a extended source from it. This could be done as follows:
+// <li> Construct a SkyComponent with a Gaussian of width that is similar to
+//      the extended source.
 // <li> Project the component onto an image
-// <li> Convolve the image by the gaussian spread function
+// <li> Convolve the image by the point spread function
 // <li> subtract the convolved model from the dirty image.
-// </ul>
-// Shown below is the code to perform the first two steps in this process. See
-// the <linkto class=Convolver>Convolver</linkto> class and the
-// <linkto module=Lattices>Lattice</linkto> module for the functions necessary
-// to perform the last two items. This example is also available in the
-// <src>dGaussianCompRep.cc</src> file.
+// </li>
+// Shown below is the code to perform the first step in this process, ie
+// construct the SkyComponent. This example is also available in the
+// <src>dGaussianShape.cc</src> file.  Note that it is more accurate to do
+// subtraction of components in the (u,v) domain.
 // <srcblock>
-// Quantity J1934_ra = Quantity(19.0/24*360, "deg") + Quantity(39, "'");
-// Quantity J1934_dec = Quantity(-63, "deg") + Quantity(43, "'");
-// MDirection J1934_dir(J1934_ra, J1934_dec, MDirection::J2000);
-// Flux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
-// GaussianCompRep J1934(J1934_flux, J1934_dir);
-// // This component can now be projected onto an image
-// CoordinateSystem coords;
-// {
-//   Double pixInc = Quantity(1, "''").getValue("rad");
-//   Matrix<Double> xform(2,2);
-//   xform = 0.0; xform.diagonal() = 1.0;
-//   Double refPixel = 32.0;
-//   DirectionCoordinate dirCoord(MDirection::J2000,
-// 				 Projection(Projection::SIN),
-// 				 J1934_ra.getValue("rad"),
-// 				 J1934_dec.getValue("rad"),
-// 				 pixInc , pixInc, xform,
-// 				 refPixel, refPixel);
-//   coords.addCoordinate(dirCoord);
-// }
-// CoordinateUtil::addIQUVAxis(coords);
-// CoordinateUtil::addFreqAxis(coords);
-// PagedImage<Float> skyModel(IPosition(4,64,64,4,8), coords, 
-// 			     "model_tmp.image");
-// skyModel.set(0.0f);
-// J1934.project(skyModel);
+//  MDirection blob_dir;
+//  { // get the right direction into blob_dir
+//    Quantity blob_ra; MVAngle::read(blob_ra, "19:39:");
+//    Quantity blob_dec; MVAngle::read(blob_dec, "-63.43.");
+//    blob_dir = MDirection(blob_ra, blob_dec, MDirection::J2000);
+//  }
+//  {
+//    const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
+//    const GaussianShape shape(blob_dir,
+//		Quantity(30, "arcmin"), 
+//		Quantity(2000, "mas"), 
+//		Quantity(C::pi_2, "rad"));
+//    const ConstantSpectrum spectrum;
+//    SkyComponent component(flux, shape, spectrum);
+//    printShape(shape);
+//  }
 // </srcblock>
+// The printShape function is the example shown for the TwoSidedShape class.
 // </example>
 //
-// <todo asof="1997/07/16">
-//   <li> Nothing so far
+// <todo asof="1999/11/12">
+//   <li> Use Measures & Quanta in the interface to the visibility functions.
+//   <li> Use a better way of integrating over the pixel area in the sample
+//   function. 
 // </todo>
 
-// <linkfrom anchor="GaussianShape" 
-//           classes="ComponentShape TwoSidedShape PointShape DiskShape">
-//  <here>GaussianShape</here>
-// - a Gaussian variation in the sky brightness
+// <linkfrom anchor="GaussianShape" classes="ComponentShape TwoSidedShape PointShape DiskShape">
+//  <here>GaussianShape</here> - a Gaussian variation in the sky brightness
 // </linkfrom>
 
 
@@ -168,8 +152,8 @@ public:
   // half maximum (FWHM) on both axes of 1 arc-min.
   GaussianShape();
 
-  // Construct a Gaussian component with specified direction, width and
-  // position angle (North through East).
+  // Construct a Gaussian shape centred in the specified direction, specifying
+  // the widths & position angle.
   // <group>
   GaussianShape(const MDirection& direction,
 		const Quantum<Double>& majorAxis,
@@ -183,7 +167,7 @@ public:
   // The copy constructor uses copy semantics.
   GaussianShape(const GaussianShape& other);
 
-  // The destructor does nothing.
+  // The destructor does nothing special.
   virtual ~GaussianShape();
 
   // The assignment operator uses copy semantics.
@@ -193,11 +177,13 @@ public:
   // ComponentType::GAUSSIAN.
   virtual ComponentType::Shape type() const;
 
-  // set/get the width and orientation of the Gaussian. The width of the major
-  // and minor axies is the full width at half maximum. The position angle is
-  // measured North through East ie a position angle of zero degrees means
-  // that the major axis is North-South and a position angle of 10 degrees
-  // moves the Northern edge to the East. 
+  // set or return the width and orientation of the Gaussian. The width of the
+  // major and minor axes is the full width at half maximum. The position
+  // angle is measured North through East ie a position angle of zero degrees
+  // means that the major axis is North-South and a position angle of 10
+  // degrees moves the Northern edge to the East.  The axial ratio is the ratio
+  // of the minor to major axes widths. Hence it is always between zero and
+  // one. All numerical values are in radians.
   // <group>
   virtual void setWidthInRad(const Double majorAxis,
 			     const Double minorAxis, 
@@ -216,21 +202,19 @@ public:
   // area of the sky subtended by the pixel. Instead it simply samples the
   // Gaussian at the centre of the pixel and scales by the pixel area. This is
   // satisfactory for Gaussians that are large compared with the size of the
-  // pixel. This function will be updated to deal with small Gaussians sometime
-  // in the future.
+  // pixel.
   virtual Double sample(const MDirection& direction, 
 			const MVAngle& pixelSize) const;
 
-  // Calculate the amount of flux that is in the pixels of specified, constant
-  // size centered on the specified directions. The returned values will always
-  // be between zero and one (inclusive). All the supplied directions must have
-  // the same reference frame (that is specified in the refFrame argument). 
+  // Same as the previous function except that many directions can be sampled
+  // at once. The reference frame and pixel size must be the same for all the
+  // specified directions.
   virtual void sample(Vector<Double>& scale, 
 		      const Vector<MDirection::MVType>& directions, 
 		      const MDirection::Ref& refFrame,
 		      const MVAngle& pixelSize) const;
 
-  // Return the Fourier transform of the component at the specified gaussian in
+  // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3 element vector
   // (u,v,w) that has units of meters and the frequency of the observation, in
   // Hertz. These two quantities can be used to derive the required spatial
@@ -240,12 +224,14 @@ public:
   // The reference position for the transform is the direction of the
   // component. As this component is symmetric about this point the transform
   // is always a real value.
-
-  // The total flux of the component must be supplied in the flux variable and
-  // the corresponding visibility is returned in the same variable.
   virtual DComplex visibility(const Vector<Double>& uvw,
 			      const Double& frequency) const;
 
+  // Same as the previous function except that many (u,v,w) points can be
+  // sampled at once. As with the previous function the returned value is
+  // always a constant real vector of one.  The input arguments are ignored
+  // except in debug mode where the shape of the uvw Matrix and the scale
+  // Vector are checked as is the  sign of the frequency variable.
   virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 
@@ -260,8 +246,11 @@ public:
   virtual Bool ok() const;
 
 private:
+  //# Updates the parameters of the itsFT object
   void updateFT();
+  //# A generic Gaussian function
   Gaussian2D<Double> itsShape;
+  //# The FT of a Gaussian is also a Gaussian. Its parameters are stored here
   Gaussian2D<Double> itsFT;
 };
 #endif
