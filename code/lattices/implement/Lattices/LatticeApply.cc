@@ -1,5 +1,5 @@
 //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 }
 
 template <class T>
-void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
+void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
 				      const LatticeRegion& region,
 				      LineCollapser<T>& collapser,
@@ -199,7 +199,7 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 
 
 template <class T>
-void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
+void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
 				      LineCollapser<T>& collapser,
 				      uInt collapseAxis,
@@ -207,14 +207,14 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 {
 // First verify that all the output lattices have the same shape and tile shape
 
-    uInt i;
     const uInt nOut = latticeOut.nelements();
     AlwaysAssert(nOut > 0, AipsError);
     const IPosition shape(latticeOut[0]->shape());
     const uInt outDim = shape.nelements();
-    for (i=1; i<nOut; i++) {
+//
+    for (uInt i=1; i<nOut; i++) {
 	AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
-    }
+    } 
 
 // Make veracity check on input and first output lattice
 // and work out map to translate input and output axes.
@@ -243,7 +243,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
     const IPosition len = inShape;
     IPosition outPos(outDim, 0);
     IPosition outShape(outDim, 1);
-    for (i=0; i<outDim; i++) {
+    for (uInt i=0; i<outDim; i++) {
 	if (ioMap(i) >= 0) {
 	    outShape(i) = len(ioMap(i));
 	}
@@ -297,6 +297,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 	Bool* dataMask = blockMask.storage();
 	Vector<T> result(nOut);
 	Vector<Bool> resultMask(nOut);
+//
 	for (uInt i=0; i<n; i++) {
 	    DebugAssert (! inIter.atEnd(), AipsError);
 	    const IPosition pos (inIter.position());
@@ -328,7 +329,12 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 
 	for (uInt k=0; k<nOut; k++) {
 	    Array<T> tmp (outShape, data + k*n, SHARE);
+	    Array<Bool> tmpMask (outShape, dataMask + k*n, SHARE);
+//
 	    latticeOut[k]->putSlice (tmp, outPos);
+            if (latticeOut[k]->isMaskWritable()) {
+               latticeOut[k]->putMaskSlice (tmpMask, outPos);
+            }
 	}
     }
     if (tellProgress != 0) tellProgress->done();
@@ -346,7 +352,6 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 // Make veracity check on input and first output lattice
 // and work out map to translate input and output axes.
 
-    uInt i,j;
     IPosition ioMap = prepare (latticeIn.shape(), latticeOut.shape(),
 			       collapseAxes, newOutAxis);
 
@@ -376,8 +381,8 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     IPosition iterAxes(iterDim);
     IPosition outShape(latticeOut.shape());
     const uInt outDim = outShape.nelements();
-    j = 0;
-    for (i=0; i<outDim; i++) {
+    uInt j = 0;
+    for (uInt i=0; i<outDim; i++) {
 	if (ioMap(i) >= 0) {
 	    outShape(i) = 1;
 	    iterAxes(j++) = i;
