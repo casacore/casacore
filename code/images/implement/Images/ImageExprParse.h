@@ -251,6 +251,13 @@ public:
     static void setNode (const LatticeExprNode& node)
         { theirNode = node; }
 
+    // Keep track of the nodes allocated while parsing the expression.
+    // <group>
+    static void addNode (LatticeExprNode* node);
+    static void addNode (ImageExprParse* node);
+    static void deleteNodes();
+    // </group>
+
 private:
     // Try if the name represent a lattice or image.
     // Return False if not.
