@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999
+#   Copyright (C) 1992-1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -276,6 +276,18 @@ endif
 
 # Pattern rules.
 #---------------
+$(PCKGOPTD)/%.lcc : $(CODEDIR)/%.l
+	-@ echo ""
+	$(FLEX) -t -P$(<F:.l=) $< > $@
+
+$(PCKGOPTD)/%.lcc : ;
+
+$(PCKGOPTD)/%.ycc : $(CODEDIR)/%.y
+	-@ echo ""
+	$(BISON) -p $(<F:.y=) -o $@ $<
+
+$(PCKGOPTD)/%.ycc : ;
+
 $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
     $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
@@ -288,7 +300,7 @@ $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
 	-@ chmod 775 $@
 
-$(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
+$(BINOPTD)/% : $(CODEDIR)/%.cc $(CODEDIR)/%.lcc $(CODEDIR)/%.ycc $(AIPSINST) \
     $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
@@ -323,6 +335,8 @@ $(ARCHBIND)/% : $(CODEDIR)/%
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
    vpath %.cc $(CODEDIR)
+   vpath %.l  $(CODEDIR)
+   vpath %.y  $(CODEDIR)
    vpath templates $(CODEDIR)
 
    # Paths assumed by the programmer dependency lists.
@@ -352,6 +366,18 @@ ifeq "$(MAKEMODE)" "programmer"
 	-@ $(RM) $@
 	   $(C++) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) -c $(C++FLAGS) -o $@ $<
 
+   %.lcc : %.l
+	-@ echo ""
+	$(FLEX) -t -P$(<F:.l=) $< > $@
+
+   %.lcc : ;
+
+   %.ycc : %.y
+	-@ echo ""
+	$(BISON) -p $(<F:.y=) -o $@ $<
+
+   %.ycc : ;
+
    $(PGMRBIND)/%.i : %.cc $(PGMRTIME)(%)
 	-@ echo ""
 	-@ $(RM) $@
@@ -362,7 +388,7 @@ ifeq "$(MAKEMODE)" "programmer"
 	-@ echo "Programmer dependencies for $<:"
 	-@ sed -n -e '\#^$$(PGMRTIME)($*)#s#.* : #   #p' $(PGMRLIST)
 
-   $(PGMRTIME)(%) : %.cc
+   $(PGMRTIME)(%) : %.cc %.lcc %.ycc
 	-@ echo ""
 	-@ echo "Updating dependencies for $<"
 	 @ for i in 10 9 8 7 6 5 4 3 2 1 ; do \
