@@ -1,5 +1,5 @@
 //# ImageInfo.cc: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -216,4 +216,13 @@ ostream &operator<<(ostream &os, const ImageInfo &info)
     return os;
 }
 
+
+Vector<String> ImageInfo::keywordNamesFITS()
+{
+    Vector<String> vs(3);
+    vs(0) = "bmaj";
+    vs(1) = "bmin";
+    vs(2) = "bpa";
+    return vs;
+}  
 
