@@ -3,7 +3,7 @@
 # mkinst: Generate template instantiation files from a list
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996
+#   Copyright (C) 1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,22 @@
 #
 #   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
 #
+# The 
+#   <ident> <.cc file> <.h file> [<extra .h files>] 
+# part has to be on one line (the first line), the <template declaration>
+# can be on a separate line following the first. Multiple template
+# declarations (on separate lines if wanted) are possible. Each declaration
+# can have either of 3 forms:
+#	template .......
+#	#if .....     (or #ifdef, #ifndef)
+#       #else
+#	#endif
+# An example of a definition could be (shown in format as output by reident):
+# 1020 aips/Arrays/Array.cc aips/Arrays/Vector.h trial/Arrays/SquareMatrix.h 
+#      template class Array<Vector<SquareMatrix<Float, 2> > > 
+#      #if !defined(AIPS_STDLIB) 
+#      template class Array<Vector<SquareMatrix<Float, 4> > > 
+#      #endif 
 # or
 #
 #   <ident> <.h file> [<extra .h files>] <template declaration>
@@ -110,7 +126,7 @@
      shift
   done
 
-  rm -f before after
+  rm -f before after tmp.$$
   trap 'echo "Cleaning up..." ; \
         rm -f before after ; \
         trap 0 ; \
@@ -125,6 +141,17 @@
   REPL=0
   NEW=0
   BAD=0
+
+# Make one line
+  cat 0<&3 | 
+  awk '{if($0 ~ /^[	]*$/) next;
+	if($1 == "template" || $1 ~ /^#if/ || $1 == "#endif" || $1 == "#else") \
+		{val=val " " $0; next} \
+	if(val != "") print val; \
+	val=$0}; \
+	END{print val}' > tmp.$$
+
+  exec 3<tmp.$$
 
   while read ENTRY 0<&3
   do
@@ -150,8 +177,19 @@
         continue
      fi
 
-     TFILE="${BASENAME}_$1.cc"
+     case $1 in
+     [0-9][0-9][0-9][0-9])
+	;;
+     *)
+        echo "   Bad entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+	;;
+     esac
 
+     TFILE="${BASENAME}_$1.cc"
 #    Check for duplicates.
      if grep "^$TFILE" after >/dev/null 2>&1
      then
@@ -163,40 +201,79 @@
      fi
      echo "$TFILE" >> after
 
-     if [ -f "$TFILE" ]
-     then
-        if [ "`sed 1q $TFILE`" = "// $*" ]
-        then
-           [ "$VERBOSE" ] && echo "   $TFILE unchanged"
-           OLD=`expr $OLD + 1`
-           continue
-        else
-           echo "   Replacing $TFILE"
-           REPL=`expr $REPL + 1`
-        fi
-     fi
-
-     NEW=`expr $NEW + 1`
-     echo "// $*" > $TFILE
-
+## (Un)comment next lines to get old(new) head line behaviour - till ###
+##     if [ -f "$TFILE" ]
+##     then
+##        if [ "`sed 1q $TFILE`" = "// $*" ]
+##        then
+##           [ "$VERBOSE" ] && echo "   $TFILE unchanged"
+##           OLD=`expr $OLD + 1`
+##           continue
+##        else
+##           echo "   Replacing $TFILE"
+##           REPL=`expr $REPL + 1`
+##        fi
+##     fi
+##
+##     NEW=`expr $NEW + 1`
+##     echo "// $*" > $TFILE
+###
+## (un)Comment next lines till ### to get (new)old behaviour
+       touch ${TFILE}.$$
+###
      shift
-
+## (un)Comment next lines till ### to get (new)old behaviour
+     echo "$*" |
+     awk '{j=1; k=0; w=""; \
+	  for(i=1; i <= NF; i++) { \
+	    if($(i) ~ /^.*\.cc/ || $(i) ~ /^.*\.h/) { \
+	      print "#include <" $(i) ">"; continue;} \
+	    if($(i) == "template" || $(i) == "#endif" || $(i) ~ /^#if/ || \
+              $(i) == "#else") { \
+	      if(k != 0) {v=""; for(m=j; m < j+k; m++) v = v $(m) " "; \
+	        print v w} \
+	      w=""; if($(i) == "template") w=";"; \
+	      k=1; j=i; continue; } \
+	    k++; } \
+	  if( k!=0 ) {v=""; for(m=j; m < j+k; m++) v = v $(m) " "; \
+	    print v w}}' >> ${TFILE}.$$
+###
+## (un)Comment next lines till ### to get (old)new  behaviour
+##     echo "$*" |
+##     awk '{j=1; k=0; w=""; \
+##	  for(i=1; i <= NF; i++) { \
+##	    if($(i) ~ /^.*\.cc/ || $(i) ~ /^.*\.h/) { \
+##	      print "#include <" $(i) ">"; continue;} \
+##	    if($(i) == "template" || $(i) == "#endif" || $(i) ~ /^#if/ || \
+##		$(i) == "#else") { \
+##	      if(k != 0) {v=""; for(m=j; m < j+k; m++) v = v $(m) " "; \
+##	        print v w} \
+##	      w=""; if($(i) == "template") w=";"; \
+##	      k=1; j=i; continue; } \
+##	    k++; } \
+##	  if( k!=0 ) {v=""; for(m=j; m < j+k; m++) v = v $(m) " "; \
+##	    print v w}}' >> ${TFILE}
+###
      for TOKEN
      do
         case $TOKEN in
         *.cc | *.h)
-           echo "#include <$TOKEN>" >> $TFILE
            ;;
         template)
-           echo "$*;" >> $TFILE
            shift
            [ "$VERBOSE" ] && echo "$*"
            break
            ;;
+	\#if*)
+           [ "$VERBOSE" ] && echo "$*"
+           break
+	   ;;
         *)
            echo "   Bad entry for ${TFILE}:" 1>&2
            echo "        $ENTRY" 1>&2
-           rm -f $TFILE
+## (un)Comment next lines till ### to get (new)old behaviour
+           rm -f ${TFILE}.$$
+###
            NEW=`expr $NEW - 1`
            BAD=`expr $BAD + 1`
            STATUS=1
@@ -206,6 +283,26 @@
 
         shift
      done
+
+## (un)Comment next lines till ### to get (new)old behaviour
+     if [ -f "$TFILE" ]
+     then
+        if tail +2 $TFILE | diff - ${TFILE}.$$ >/dev/null 2>&1
+	then
+	    [ "$VERBOSE" ] && echo "   $TFILE unchanged"
+            OLD=`expr $OLD + 1`
+	    rm -f ${TFILE}.$$
+            continue
+        else
+            echo "   Replacing $TFILE"
+            REPL=`expr $REPL + 1`
+        fi
+     fi
+     rm -f $TFILE
+     echo "// $TFILE -- `date` -- `whoami`" > $TFILE
+     cat ${TFILE}.$$ >> $TFILE
+     NEW=`expr $NEW + 1`
+###
   done
 
 # Delete defunct template instantiation files.
@@ -232,6 +329,6 @@
      echo "   Zap: $ZAP removed"
   }
 
-  rm -f before after
+  rm -f before after tmp.$$
   trap 0
   exit $STATUS
