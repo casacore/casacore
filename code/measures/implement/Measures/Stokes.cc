@@ -156,3 +156,25 @@ Int Stokes::FITSValue(StokesTypes which)
    }
    return retval;
 }
+
+Stokes::StokesTypes Stokes::fromFITSValue(Int which)
+{
+   StokesTypes retval;
+
+   switch (which) {
+   case 1: retval = I; break;
+   case 2: retval = Q; break;
+   case 3: retval = U; break;
+   case 4: retval = V; break;
+   case -1: retval = RR; break;
+   case -2: retval = LL; break;
+   case -3: retval = RL; break;
+   case -4: retval = LR; break;
+   case -5: retval = XX; break;
+   case -6: retval = YY; break;
+   case -7: retval = XY; break;
+   case -8: retval = YX; break;
+   default: retval = Stokes::type(which-100);
+   }
+   return retval;
+}
