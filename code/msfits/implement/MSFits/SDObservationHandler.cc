@@ -213,6 +213,10 @@ void SDObservationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols
 
 void SDObservationHandler::makeIndex() 
 {
+    // ensure that any existing index is first deleted
+    delete index_p;
+    index_p = 0;
+
     Int nKeys = 3;
     if (!nsObsIdCol_p.isNull()) nKeys++;
 
