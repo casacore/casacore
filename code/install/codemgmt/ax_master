@@ -4402,3 +4402,4 @@
 14 287 src rm trial/apps/measures/VTOP/makefile
 14 287 src rm trial/apps/measures/VGEO/
 14 287 src rm trial/apps/measures/VTOP/
+14 293 src rm trial/implement/Ionosphere/test/templates
