@@ -4130,3 +4130,4 @@
 14 065 src mv trial/apps/gDisplay/GTkDisplayData.cc trialdisplay/apps/gDisplay/GTkDisplayData.cc
 14 065 src mv trial/apps/gDisplay/GTkDisplayData.h trialdisplay/apps/gDisplay/GTkDisplayData.h
 14 065 src mv trial/apps/gDisplay/GTkDisplayProxy.cc trialdisplay/apps/gDisplay/GTkDisplayProxy.cc
+14 065 src mv trial/apps/gDisplay/GTkDisplayProxy.h trialdisplay/apps/gDisplay/GTkDisplayProxy.h
