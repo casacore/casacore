@@ -1,5 +1,5 @@
 //# UnitDim.h: defines the (private) class describing basic SI dimensions
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,8 +93,7 @@ class UnitDim {
 
 //# Friends
     friend class UnitVal;
-    friend class UnitDim_init;
-    friend class UnitMap_init;
+    friend class UnitMap;
 // Output the SI dimensions (e.g. 'km/s/g' as 'm kg-1 s-1')
     friend ostream& operator<<(ostream &os, const UnitDim &du);
 
