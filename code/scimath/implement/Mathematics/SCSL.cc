@@ -26,6 +26,10 @@
 
 #include <aips/Mathematics.h>
 
+#if ! defined(AIPS_IRIX)
+#define PN(a)
+#else
+#define PN(a) a
 extern "C" {
   void ccfft_(int*, int*, float*, float*, float*, float*, float*,
 	      int*);
@@ -97,193 +101,247 @@ extern "C" {
   void zdfft3d_(int*, int*, int*, int*, double*, double*, int*,
 		int*, double*, int*, int*, double*, double*, int*); 
 }
+#endif
 
-void ccfft(Int isign, Int n, Float* scale, Float* x, Float* y,
-	   Float* table, Float* work, Int isys) { 
+void ccfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
+	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   ccfft_((int*) &isign, (int*) &n, (float*) scale, (float*) x,
 	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
-  
+#endif
 }
 
-void ccfft(Int isign, Int n, Double* scale, Double* x, Double* y,
-	   Double* table, Double* work, Int isys) { 
+void ccfft(Int PN(isign), Int PN(n), Double* PN(scale), Double* PN(x),
+	   Double* PN(y), Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   zzfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
 	 (double*) y, (double*) table, (double*) work, (int*)
 	 &isys); 
+#endif
 }
 
-void scfft(Int isign, Int n, Float* scale, Float* x, Float* y,
-	   Float* table, Float* work, Int isys) { 
-  scfft_((int*) &isign, (int*) &n, (float*) scale, (float*) x,
+void scfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
+	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
+  scfft_((int*) &PN(isign, (int*) &n, (float*) scale, (float*) x,
 	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void scfft(Int isign, Int n, Double* scale, Double* x, Double* y,
-	   Double* table, Double* work, Int isys) { 
+void scfft(Int PN(isign), Int PN(n), Double* PN(scale), Double* PN(x),
+	   Double* PN(y), Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
 	 (double*) y, (double*) table, (double*) work, (int*)
 	 &isys); 
+#endif
 }
 
-void csfft(Int isign, Int n, Float* scale, Float* x, Float* y,
-	   Float* table, Float* work, Int isys) { 
+void csfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
+	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   csfft_((int*) &isign, (int*) &n, (float*) scale, (float*) x,
 	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void zdfft(Int isign, Int n, Float* scale, Float* x, Float* y,
-	   Float* table, Float* work, Int isys) { 
+void zdfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
+	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   zdfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
 	 (double*) y, (double*) table, (double*) work, (int*)
 	 &isys); 
+#endif
 }
 
-void ccfftm(Int isign, Int n, Int lot, Float* scale, Float* x, Int
-	    ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	    isys) { 
+void ccfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
+	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	    Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   ccfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
 	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	  table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void zzfftm(Int isign, Int n, Int lot, Double* scale, Double* x, Int
-	    ldx, Double* y, Int ldy, Double* table, Double* work, Int
-	    isys) {
+void zzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
+	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	    Double* PN(table), Double* PN(work), Int PN(isys)) {
+#if defined(AIPS_IRIX)
   zzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
 	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	  table, (double*) work, (int*) &isys);
+#endif
 }
 
-void scfftm(Int isign, Int n, Int lot, Float* scale, Float* x, Int
-	    ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	    isys) {
+void scfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
+	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	    Float* PN(table), Float* PN(work), Int PN(isys)) {
+#if defined(AIPS_IRIX)
   scfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
 	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	  table, (float*) work, (int*) &isys);
+#endif
 }
 
-void dzfftm(Int isign, Int n, Int lot, Double* scale, Double* x, Int
-	    ldx, Double* y, Int ldy, Double* table, Double* work, Int
-	    isys) {
+void dzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
+	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	    Double* PN(table), Double* PN(work), Int PN(isys)) {
+#if defined(AIPS_IRIX)
   dzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
 	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	  table, (double*) work, (int*) &isys); 
+#endif
 }
 
-void csfftm(Int isign, Int n, Int lot, Float* scale, Float* x, Int
-	    ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	    isys) { 
+void csfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
+	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	    Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   csfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
 	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	  table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void zdfftm(Int isign, Int n, Int lot, Double* scale, Double* x, Int
-	    ldx, Double* y, Int ldy, Double* table, Double* work, Int
-	    isys) { 
+void zdfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
+	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	    Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
 	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	  table, (double*) work, (int*) &isys); 
+#endif
 }
 
-void ccfft2d(Int isign, Int n1, Int n2, Float* scale, Float* x, Int
-	     ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	     isys) { 
+void ccfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
+	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   ccfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
 	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	   table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void zzfft2d(Int isign, Int n1, Int n2, Float* scale, Float* x, Int
-	     ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	     isys) { 
+void zzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
+	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   zzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
 	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	   table, (double*) work, (int*) &isys); 
+#endif
 }
 
-void scfft2d(Int isign, Int n1, Int n2, Float* scale, Float* x, Int
-	     ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	     isys) { 
+void scfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
+	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   scfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
 	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	   table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void dzfft2d(Int isign, Int n1, Int n2, Double* scale, Double* x, Int
-	     ldx, Double* y, Int ldy, Double* table, Double* work, Int
-	     isys) { 
+void dzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double* PN(scale),
+	     Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	     Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
 	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	   table, (double*) work, (int*) &isys); 
+#endif
 }
 
-void csfft2d(Int isign, Int n1, Int n2, Float* scale, Float* x, Int
-	     ldx, Float* y, Int ldy, Float* table, Float* work, Int
-	     isys) { 
+void csfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
+	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   csfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
 	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
 	   table, (float*) work, (int*) &isys); 
+#endif
 }
 
-void zdfft2d(Int isign, Int n1, Int n2, Double* scale, Double* x, Int
-	     ldx, Double* y, Int ldy, Double* table, Double* work, Int
-	     isys) { 
+void zdfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double* PN(scale),
+	     Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	     Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
 	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
 	   table, (double*) work, (int*) &isys); 
+#endif
 }
 
-void ccfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale, Float*
-	     x, Int ldx, Int ldx2, Float* y, Int ldy, Int ldy2, Float*
-	     table, Float* work, Int isys) { 
+void ccfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+	     Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   ccfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
 	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
 	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
+#endif
 }
 
-void zzfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale, Float*
-	     x, Int ldx, Int ldx2, Float* y, Int ldy, Int ldy2, Float*
-	     table, Float* work, Int isys) { 
+void zzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+	     Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   zzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
 	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
 	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
+#endif
 }
 
-void scfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale, Float*
-	     x, Int ldx, Int ldx2, Float* y, Int ldy, Int ldy2, Float*
-	     table, Float* work, Int isys) { 
+void scfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+	     Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   scfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
 	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
 	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
+#endif
 }
 
-void dzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale, Double*
-	     x, Int ldx, Int ldx2, Double* y, Int ldy, Int ldy2,
-	     Double* table, Double* work, Int isys) { 
+void dzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Double* PN(scale), Double* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Double* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
+	     Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
 	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
 	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
+#endif
 }
 
-void csfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale, Float*
-	     x, Int ldx, Int ldx2, Float* y, Int ldy, Int ldy2, Float*
-	     table, Float* work, Int isys) { 
+void csfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+	     Float* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   csfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
 	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
 	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
+#endif
 }
 
-void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale, Double*
-	     x, Int ldx, Int ldx2, Double* y, Int ldy, Int ldy2,
-	     Double* table, Double* work, Int isys) { 
+void zdfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Double* PN(scale), Double* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Double* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
+	     Double* PN(work), Int PN(isys)) { 
+#if defined(AIPS_IRIX)
   dzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
 	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
 	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
+#endif
 }
