@@ -84,9 +84,10 @@ void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time)
 Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
 				 const MeasurementSet& ms,
 				 const String& column, 
+				 Int startchan, Int nchan, Int stepchan,
 				 Bool writeSysCal,
 				 Bool asMultiSource,
-				 Bool combineSpw,
+				 Bool combineSpw,			       
 				 Bool writeStation,
                                  Double sensitivity)
 {
@@ -155,7 +156,8 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
   Double refFreq, chanbw;
   FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, chanbw,
 				     outfile, ms, column,
-				     spwidMap, nrspw, fieldidMap,
+				     spwidMap, nrspw, startchan, nchan, 
+				     stepchan, fieldidMap,
 				     asMultiSource, combineSpw);
 
   Bool ok = (fitsOutput != 0);
@@ -220,7 +222,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 				    const MeasurementSet &rawms,
 				    const String &column,
 				    const Block<Int>& spwidMap,
-				    Int nrspw,
+				    Int nrspw, Int chanstart, Int nchan,
+				    Int chanstep,
 				    const Block<Int>& fieldidMap,
 				    Bool asMultiSource,
 				    Bool combineSpw)
@@ -313,6 +316,20 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	chanbw = abs(delta);
 	stokes = stokesTypes(p);
       }
+      if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0) 
+	 && ((nchan*chanstep+chanstart) <= numchan0) ){
+
+	f0 = freqs(chanstart);
+	bw0= delta*chanstep;
+	
+
+      }
+      else{
+	nchan=numchan0;
+	chanstep=1; 
+	chanstart=0;
+      }
+ 
       // Check if values match.
       if (numcorr(p) != numcorr0) {
  	os << LogIO::SEVERE << "Number of correlations varies in the MS"
@@ -344,7 +361,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       }
     }
   }
-  Int f0RefPix = numchan0/2;
+  Int f0RefPix = nchan/2;
   refFreq = f0 + f0RefPix * bw0;
   refPixelFreq = f0RefPix;
 
@@ -474,7 +491,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
   ek.define("ctype4", "FREQ"); 
   ek.define("crval4", refFreq);
-  ek.define("cdelt4", delta);
+  ek.define("cdelt4", bw0);
   ek.define("crpix4", Double(1+refPixelFreq));
   ek.define("crota4", 0.0);
 
@@ -719,20 +736,47 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       }
       // We should optimize this loop more, probably do frequency as
       // the inner loop?
-      for (Int k=0; k<numchan0; k++) {
-	for (Int j=0; j<numcorr0; j++) {
-	  Int offset = indptr[j] + k*numcorr0;
-	  outptr[0] = iptr[offset].real();
-	  outptr[1] = iptr[offset].imag();
-	  if (rowFlag || fptr[offset]) {
-	    // FLAGged
-	    outptr[2] = -wptr[k];
-	  } else {
-	    // NOT FLAGged
-	    outptr[2] = wptr[k];
-	  }
-	  outptr += 3;
+      Vector<Float> realcorr(numcorr0); realcorr.set(0);
+      Vector<Float> imagcorr(numcorr0); imagcorr.set(0);
+      Vector<Float> wgtaver(numcorr0);  wgtaver.set(0);
+      Int chancounter=0;
+      for (Int k=chanstart; k<numchan0; k++) {
+	if(chancounter == chanstep){
+	  realcorr.set(0); imagcorr.set(0); wgtaver.set(0);
+	  chancounter=0;
 	}
+	++chancounter;
+	for (Int j=0; j<numcorr0; j++) {
+	  
+	  
+	  Int offset = indptr[j] + k*numcorr0;
+	  if(!fptr[offset]){
+	    realcorr[j] += iptr[offset].real()*wptr[k];
+	    imagcorr[j] += iptr[offset].real()*wptr[k];
+	    wgtaver[j] += wptr[k];
+	  }
+
+	  if(chancounter==chanstep){
+	    if(wgtaver[j] > 0){
+	      outptr[0] = realcorr[j]/wgtaver[j];
+	      outptr[1] = imagcorr[j]/wgtaver[j];
+	    }
+	    else{
+	      outptr[0]=0.0;
+	      outptr[1]=0.0;
+	    }
+	    if (rowFlag) {
+	      // FLAGged
+	      outptr[2] = -wgtaver[j];
+	    } else {
+	      // NOT FLAGged
+	      outptr[2] = wgtaver[j];
+	    }
+	    outptr += 3;
+	  }
+
+	}
+
       }
     }
 
