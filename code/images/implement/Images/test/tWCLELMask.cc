@@ -1,5 +1,5 @@
 //# tWCLELMask.cc:  mechanical test of the WCLELMask class
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <trial/Images/WCLELMask.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageExprParse.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Lattices/LCLELMask.h>
@@ -69,7 +70,7 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 }
 
 
-main ()
+int main ()
 {
   try {
     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
@@ -80,7 +81,19 @@ main ()
     image.put (arr);
     ArrayLattice<Float> arrlat(arr);
     {
-      WCLELMask mask("fmod(floor(tWCLELMask_tmp.img / 4), 2) == 0");
+      WCLELMask mask(String("fmod(floor(tWCLELMask_tmp.img / 4), 2) == 0"));
+      AlwaysAssertExit (mask.ndim() == latticeShape.nelements());
+      LCRegion* lc = mask.toLCRegion (cSys, latticeShape);
+      AlwaysAssertExit (lc->hasMask());
+      AlwaysAssertExit (! lc->isWritable());
+      AlwaysAssertExit (lc->shape() == latticeShape);
+      // Check the mask values using the iterator.
+      testVectorROIter (*lc, True, True);
+      delete lc;
+    }
+    {
+      WCLELMask mask(ImageExprParse::command
+                       ("fmod(floor(tWCLELMask_tmp.img / 4), 2) == 0"));
       AlwaysAssertExit (mask.ndim() == latticeShape.nelements());
       LCRegion* lc = mask.toLCRegion (cSys, latticeShape);
       AlwaysAssertExit (lc->hasMask());
@@ -133,6 +146,30 @@ main ()
       } catch (AipsError x) {
 	cout << "Expected exception: " << x.getMesg() << endl;
       }
+    }
+    {
+      // Test if it works fine for an expression without shape.
+      WCLELMask mask("index1 in [1:4]");
+      AlwaysAssertExit (mask.ndim() == 0);
+      LCRegion* lc = mask.toLCRegion (cSys, latticeShape);
+      AlwaysAssertExit (lc->hasMask());
+      AlwaysAssertExit (! lc->isWritable());
+      AlwaysAssertExit (lc->shape() == latticeShape);
+      // Check the mask values using the iterator.
+      testVectorROIter (*lc, True, False);
+      delete lc;
+    }
+    {
+      // Test if it works fine for an expression without shape.
+      WCLELMask mask("indexnotin(2,[2:8:2])");
+      AlwaysAssertExit (mask.ndim() == 0);
+      LCRegion* lc = mask.toLCRegion (cSys, latticeShape);
+      AlwaysAssertExit (lc->hasMask());
+      AlwaysAssertExit (! lc->isWritable());
+      AlwaysAssertExit (lc->shape() == latticeShape);
+      // Check the mask values using the iterator.
+      testVectorROIter (*lc, True, True);
+      delete lc;
     }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
