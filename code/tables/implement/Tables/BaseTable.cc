@@ -353,6 +353,11 @@ void BaseTable::rename (const String& newName, int tableOption)
 void BaseTable::renameSubTables (const String&, const String&)
 {}
 
+void BaseTable::deepCopy (const String& newName, int tableOption) const
+{
+    copy (newName, tableOption);
+}
+
 void BaseTable::copy (const String& newName, int tableOption) const
 {
     AlwaysAssert (!isNull(), AipsError);

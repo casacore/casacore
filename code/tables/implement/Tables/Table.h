@@ -474,7 +474,12 @@ public:
     void rename (const String& newName, TableOption);
 
     // Copy the table and all its subtables.
-    // The following options can be given:
+    // For RefTables <src>copy</src> and <src>deepCopy</src> behave
+    // differently. <src>copy</src> makes a bitwise copy of the table, thus
+    // the result is still a RefTable. On the other hand <src>deepCopy</src>
+    // makes a physical copy of all referenced table rows and columns, thus
+    // the result is a PlainTable.
+    // <br>The following options can be given:
     // <dl>
     // <dt> Table::New
     // <dd> When a table with this name exists, it will be overwritten.
@@ -484,7 +489,10 @@ public:
     // <dt> Table::Scratch
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
+    // <group>
     void copy (const String& newName, TableOption) const;
+    void deepCopy (const String& newName, TableOption) const;
+    // </group>
 
     // Get the table option.
     int tableOption() const;
@@ -876,6 +884,8 @@ inline void Table::rename (const String& newName, TableOption option)
     { baseTabPtr_p->rename (newName, option); }
 inline void Table::copy (const String& newName, TableOption option) const
     { baseTabPtr_p->copy (newName, option); }
+inline void Table::deepCopy (const String& newName, TableOption option) const
+    { baseTabPtr_p->deepCopy (newName, option); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()
