@@ -1059,6 +1059,7 @@ void FITSTable::fill_row()
 		    String delim(info.asString("DELIM"));
 		    nels = rawValue.freq(delim) + 1;
 		    result.resize(nels);
+		    (*rowRef).resize(result.shape());
 		    for (Int z=0;z<(nels-1);z++) {
 			result(z) = rawValue.before(delim);
 			rawValue = rawValue.after(delim);
