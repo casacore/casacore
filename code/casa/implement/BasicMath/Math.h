@@ -33,7 +33,15 @@
 #include <aips/math.h>
 #include <aips/stdlib.h>
 
-// <summary>AIPS++ interface to math.h and other scalar math functions</summary>
+// the following is needed to get the finite function
+#if defined (AIPS_SOLARIS) || defined(AIPS_IRIX)
+#include <ieeefp.h>
+#endif
+
+
+// <summary>
+// AIPS++ interface to math.h and other scalar math functions
+// </summary>
 
 // <synopsis> 
 
@@ -240,6 +248,19 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
     { return nearAbs(val1, val2, tol); }
 // </group>
 
+
+// Functions to test if a floating point number is finite.
+// It is if it is NaN nor infinity.
+// <group>
+inline Bool isFinite (const Float& val)
+{
+  return finite(val);
+}
+inline Bool isFinite (const Double& val)
+{
+  return finite(val);
+}
+// </group>
 
 // Functions to test for IEEE NaN's.  The Float variant uses an in-line
 // Macro examining the bit pattern (for portability and efficiency). The
