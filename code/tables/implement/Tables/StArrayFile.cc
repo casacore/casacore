@@ -123,6 +123,11 @@ void StManArrayFile::resync()
 	get (version_p);
 	iofil_p->read (1, &leng_p);
     }else{
+        setpos (0);
+	put (version_p);
+	iofil_p->write (1, &leng_p);
+	//# Put a 0 to fill up the buffer and make valgrind happy.
+	put (int(0));
         hasPut_p = True;
     }
 }
