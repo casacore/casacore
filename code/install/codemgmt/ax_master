@@ -3284,3 +3284,4 @@
 13 213 src mv aips/implement/Lattices/Slice.h aips/implement/Arrays/Slice.h
 13 213 src mv aips/implement/Lattices/Slicer.h aips/implement/Arrays/Slicer.h
 13 213 src mv aips/implement/Lattices/IPosition.cc aips/implement/Arrays/IPosition.cc
+13 213 src mv aips/implement/Lattices/IPosition2.cc aips/implement/Arrays/IPosition2.cc
