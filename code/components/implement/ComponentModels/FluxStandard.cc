@@ -66,6 +66,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
   Bool found = False;
   Double fluxDensity = 0.0;
   Double fluxError = 0.0;
+  Double fluxCoeff = 0.0;
+  Double coeffErr = 0.0;
   
   // Get frequency in MHz
   Quantity mvfreq = mfreq.get ("MHz");
@@ -82,12 +84,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = 1.480 + dt * (0.292 + dt * (-0.124));
-      fluxError = square (0.018) + square (0.006*dt) + square (0.001*dt*dt);
+      fluxCoeff = 1.480 + dt * (0.292 + dt * (-0.124));
+      coeffErr = square (0.018) + square (0.006*dt) + square (0.001*dt*dt);
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = 0.50344 + dt * (1.05026 + dt * (-0.31666 + dt * 0.01602));
+      fluxCoeff = 0.50344 + dt * (1.05026 + dt * (-0.31666 + dt * 0.01602));
       break;
     };
     };
@@ -100,12 +102,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = 2.345 + dt * (0.071 + dt * (-0.138));
-      fluxError = square (0.03) + square (0.001*dt) + square (0.001*dt*dt);
+      fluxCoeff = 2.345 + dt * (0.071 + dt * (-0.138));
+      coeffErr = square (0.03) + square (0.001*dt) + square (0.001*dt*dt);
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = 1.16801 + dt * (1.07526 + dt * (-0.42254 + dt * 0.02699));
+      fluxCoeff = 1.16801 + dt * (1.07526 + dt * (-0.42254 + dt * 0.02699));
       break;
     };
     };
@@ -118,12 +120,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = 1.766 + dt * (0.447 + dt * (-0.184));
-      fluxError = square (0.017) + square (0.006*dt) + square (0.001*dt*dt);
+      fluxCoeff = 1.766 + dt * (0.447 + dt * (-0.184));
+      coeffErr = square (0.017) + square (0.006*dt) + square (0.001*dt*dt);
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = 0.05702 + dt * (2.09340 + dt * (-0.7076 + dt * 0.05477));
+      fluxCoeff = 0.05702 + dt * (2.09340 + dt * (-0.7076 + dt * 0.05477));
       break;
     };
     };
@@ -136,12 +138,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = 2.009 + dt * (-0.07176 + dt * (-0.0862));
+      fluxCoeff = 2.009 + dt * (-0.07176 + dt * (-0.0862));
       // No flux density error specified
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = 1.97498 + dt * (-0.23918 + dt * (0.01333 + dt * -0.01389));
+      fluxCoeff = 1.97498 + dt * (-0.23918 + dt * (0.01333 + dt * -0.01389));
       break;
     };
     };
@@ -153,12 +155,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = -23.839 + dt * (19.569 + dt * (-4.8168 + dt * 0.35836));
+      fluxCoeff = -23.839 + dt * (19.569 + dt * (-4.8168 + dt * 0.35836));
       // No flux density error specified
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
+      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
       break;
     };
     };
@@ -171,15 +173,21 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
     found = True;
     switch (itsFluxScale) {
     case BAARS: {
-      fluxDensity = 1.485 + dt * (0.759 + dt * (-0.255));
-      fluxError = square (0.013) + square (0.009*dt) + square (0.001*dt*dt);
+      fluxCoeff = 1.485 + dt * (0.759 + dt * (-0.255));
+      coeffErr = square (0.013) + square (0.009*dt) + square (0.001*dt*dt);
       break;
     };
     case PERLEY_TAYLOR_95: {
-      fluxDensity = 1.28872 + dt * (0.94172 + dt * (-0.31113 + dt * 0.00569));
+      fluxCoeff = 1.28872 + dt * (0.94172 + dt * (-0.31113 + dt * 0.00569));
       break;
     };
     };
+  };
+
+  // Compute the flux density value and its error
+  fluxDensity = pow (10.0, fluxCoeff);
+  if (coeffErr > 0) {
+    fluxError = log (10.0) * fluxDensity * sqrt (coeffErr);
   };
 
   // Set flux density value and its error
