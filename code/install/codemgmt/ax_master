@@ -5530,3 +5530,6 @@
 15 211 src rm trial/apps/oldsditerator/oldsditerator.g
 15 211 src rm trial/apps/oldsditerator/oldsdaverager.help
 15 211 src rm trial/apps/oldsditerator/oldsditerator.help
+15 211 src rm trial/apps/oldsditerator/makefile
+15 211 src rm trial/apps/oldsditerator/changelog
+15 211 src rm trial/apps/oldsditerator/templates
