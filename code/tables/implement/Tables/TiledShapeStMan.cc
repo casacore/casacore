@@ -1,5 +1,5 @@
 //# TiledShapeStMan.cc: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -462,7 +462,9 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
         hypercube = cubeSet_p[cubeMap_p[index]];
 	position = hypercube->cubeShape();
 	// Add the starting position of the hypercube chunk the row is in.
-	position(nrdim_p - 1) = posMap_p[index] - (rowMap_p[index] - rownr);
+	if (position.nelements() > 0) {
+	  position(nrdim_p - 1) = posMap_p[index] - (rowMap_p[index] - rownr);
+	}
     }
     return hypercube;
 }
