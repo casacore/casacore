@@ -214,7 +214,7 @@ getData()
 {
   // Cast away the constness (which is harmless).
   Bool isARef = theData.getSlice (theCursor, theNavPtr->position(),
-				  theNavPtr->endPosition(),
+				  theNavPtr->cursorShape(),
 				  theNavPtr->increment());
   AlwaysAssert (isARef == False, AipsError);
   theReadFlag = True;
