@@ -1,5 +1,5 @@
 //# MSReader.cc: read from an MS, coordinating all of the subtables
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/FITS/FITSUtil.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/Quantum.h>
