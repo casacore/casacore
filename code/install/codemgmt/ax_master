@@ -3170,3 +3170,8 @@
 13 035 src rm nfra/apps/jen/jen_include.g
 13 035 src rm nfra/apps/jen/jen_util.g
 13 035 src rm nfra/apps/jen/jen_math.g
+13 035 sys rm libexec/uvbrick_index.g
+13 035 sys rm libexec/uvbrick_aux.g
+13 035 sys rm libexec/jen_include.g
+13 035 sys rm libexec/jen_util.g
+13 035 sys rm libexec/jen_math.g
