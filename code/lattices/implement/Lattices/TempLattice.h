@@ -35,6 +35,9 @@
 #include <trial/Lattices/TiledShape.h>
 #include <aips/Utilities/CountedPtr.h>
 
+//# Forward Declarations
+class Table;
+
 
 // <summary>
 // A Lattice that can be used for temporary storage
@@ -78,10 +81,16 @@
 // array is less than a quarter of the total system memory otherwise a
 // PagedArray is created. The PagedArray is currently stored in the current
 // working directory and given a unique name that contains the string
-// "pagedArray". This pagedArray will be deleted once the TempArray goes out of
-// scope. So unlike PagedArrays which can be made to exist longer than the time
-// they are used by a process, the PagedArrays created by the TempArray class
-// are always scratch arrays.
+// "pagedArray". This pagedArray will be deleted once the TempLattice goes out
+// of scope. So unlike PagedArrays which can be made to exist longer than the
+// time they are used by a process, the PagedArrays created by the
+// TempLattice class are always scratch arrays.
+// <p>
+// It is possibly to temporarily close a TempLattice, which only takes effect
+// when it is created as a PagedArray. In this way it is possible to reduce
+// the number of open files in case a lot of TempLattice objects are used.
+// A temporarily closed TempLattice will be reopened automatically when needed.
+// It can also be reopened explicitly.
 // </synopsis>
 
 // <example>
@@ -129,7 +138,7 @@ public:
   // The destructor removes the Lattice from memory and if necessary disk.
   virtual ~TempLattice();
 
-  // the assignment operator with reference semantics. As with the copy
+  // The assignment operator with reference semantics. As with the copy
   // constructor assigning by value does not make sense.
   TempLattice<T>& operator= (const TempLattice<T>& other);
 
@@ -142,25 +151,34 @@ public:
   // Is the TempLattice writable? It should be.
   virtual Bool isWritable() const;
 
-  // returns the shape of the Lattice including all degenerate axes
+  // Close the Lattice temporarily (if it is paged to disk).
+  // It'll be reopened automatically when needed or when
+  // <src>reopen</src> is called explicitly.
+  void tempClose();
+
+  // If needed, reopen a temporarily closed TempLattice.
+  void reopen()
+    { doReopen(); }
+
+  // Return the shape of the Lattice including all degenerate axes.
   // (ie. axes with a length of one)
   virtual IPosition shape() const;
   
-  // returns the number of axes in this Lattice. This includes all
-  // degenerate axes
+  // Return the number of axes in this Lattice. This includes all
+  // degenerate axes.
   virtual uInt ndim() const;
   
-  // returns the total number of elements in this Lattice.
+  // Return the total number of elements in this Lattice.
   virtual uInt nelements() const;
   
-  // returns a value of "True" if this instance of Lattice and 'other' have 
+  // Return a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
   virtual Bool conform (const Lattice<T>& other) const;
   
-  // function which sets all of the elements in the Lattice to a value.
+  // Set all of the elements in the Lattice to the given value.
   virtual void set (const T& value);
 
-  // replace every element, x, of the Lattice with the result of f(x).  You
+  // Replace every element, x, of the Lattice with the result of f(x).  You
   // must pass in the address of the function -- so the function must be
   // declared and defined in the scope of your program.  All versions of
   // apply require a function that accepts a single argument of type T (the
@@ -209,7 +227,21 @@ public:
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 private:
-  CountedPtr<Lattice<T> > itsLatticePtr;
+  // Do the reopen of the table (if not open already).
+  // </group>
+  void doReopen() const
+    { if (itsIsClosed) tempReopen(); }
+  void tempReopen() const;
+  // </group>
+
+  // Make sure that the temporary table gets deleted.
+  void deleteTable();
+
+
+  mutable Table*                  itsTablePtr;
+  mutable CountedPtr<Lattice<T> > itsLatticePtr;
+          String                  itsTableName;
+  mutable Bool                    itsIsClosed;
 };
 
 
