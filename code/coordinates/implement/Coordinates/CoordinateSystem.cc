@@ -979,6 +979,7 @@ Vector<Double> CoordinateSystem::referenceValue() const
 
 Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 {
+    AlwaysAssert(names.nelements()==nWorldAxes(), AipsError);
     const uInt nc = nCoordinates();
     Bool ok = True;
 
@@ -1000,6 +1001,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
 					 Bool adjust)
 {
+    AlwaysAssert(units.nelements()==nWorldAxes(), AipsError);
     const uInt nc = nCoordinates();
     Bool ok = True;
 
@@ -1020,6 +1022,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
 
 Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 {
+    AlwaysAssert(refPix.nelements()==nPixelAxes(), AipsError);
     const uInt nc = nCoordinates();
     Bool ok = True;
 
@@ -1062,6 +1065,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 
 Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 {
+    AlwaysAssert(inc.nelements()==nWorldAxes(), AipsError);
     const uInt nc = nCoordinates();
     Bool ok = True;
 
@@ -1082,6 +1086,7 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 
 Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 {
+    AlwaysAssert(refval.nelements()==nWorldAxes(), AipsError);
     const uInt nc = nCoordinates();
     Bool ok = True;
 
