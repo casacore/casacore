@@ -44,14 +44,6 @@ has
 five
 words
 z = join(w, nw, /); z =This/string/has/five/words
-hash(Hello World) = 108758
-hash(Me and you and the dog named boo) = 589374289
-hash(a) = 97
-hash(b) = 98
-hash(aa) = 163
-hash(bb) = 166
-hash(A) = 65
-hash() = 0
 word =Della and the Dealer
  and a dog named Jake,
  and a cat named Kalamazoo length = 70
