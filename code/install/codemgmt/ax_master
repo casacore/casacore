@@ -1968,3 +1968,5 @@
 08 068 src rm nrao/gbt/analysis/makefile
 08 068 src rm nrao/gbt/analysis
 08 068 src rm nrao/gbt
+08 068 src rm nrao/NewMeasures
+08 068 src rm nrao/unreliable
