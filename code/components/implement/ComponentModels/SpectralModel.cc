@@ -31,17 +31,17 @@
 #include <aips/Measures/MFrequency.h>
 
 SpectralModel::~SpectralModel() {
-  DebugAssert(ok(), AipsError);
+  //  DebugAssert(ok(), AipsError);
 }
 
 void SpectralModel::refFrequency(MFrequency & refFreq) const {
-  DebugAssert(ok(), AipsError);
+  //  DebugAssert(ok(), AipsError);
   refFreq = refFrequency();
 }
 
 void SpectralModel::scale(Double & scaleFactor, 
 			  const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
+  //  DebugAssert(ok(), AipsError);
   scaleFactor = scale(centerFrequency);
 }
 
