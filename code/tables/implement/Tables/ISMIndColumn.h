@@ -1,5 +1,5 @@
 //# ISMIndColumn.h: A column in Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_ISMINDCOLUMN_H)
 #define AIPS_ISMINDCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("ISMIndColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -248,9 +245,9 @@ private:
     // Forbid assignment.
     ISMIndColumn& operator= (const ISMIndColumn&);
 
-    // Initialize part of the object.
+    // Initialize part of the object and open/create the file.
     // It is used by doCreate and getFile.
-    void init();
+    void init (ByteIO::OpenOption fileOption);
 
     // Compare the values to check if a value to be put matches the
     // value in the previous or next row.
