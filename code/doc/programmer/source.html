@@ -1,36 +1,108 @@
 <HTML>
 <HEAD>
+
+<SCRIPT LANGUAGE = "JavaScript">
+
+
+<!--
+if (document.images) {                     //if image object is available     
+img1on = new Image();                       // MouseOver Images
+img1on.src = "../images/navigation/howtobaron.gif"; 
+img2on = new Image();
+img2on.src = "../images/navigation/packageaipsbaron.gif";  
+img3on = new Image();
+img3on.src = "../images/navigation/programmersbaron.gif";
+img4on = new Image();
+img4on.src = "../images/navigation/sourcecodebaron.gif";
+img5on = new Image();
+img5on.src = "../images/navigation/systemmanualbaron.gif";
+img6on = new Image();
+img6on.src = "../images/navigation/trialbaron.gif";
+img7on = new Image();
+img7on.src = "../images/navigation/greenhomebaron.gif";
+
+
+img1off = new Image();                                  // MouseOut Images
+img1off.src = "../images/navigation/howtobaroff.gif"; 
+img2off = new Image();          
+img2off.src = "../images/navigation/packageaipsbaroff.gif";
+img3off = new Image();
+img3off.src = "../images/navigation/programmersbaroff.gif";
+img4off = new Image();
+img4off.src = "../images/navigation/sourcecodebaroff.gif";
+img5off = new Image();
+img5off.src = "../images/navigation/systemmanualbaroff.gif";
+img6off = new Image();
+img6off.src = "../images/navigation/trialbaroff.gif";
+img7off = new Image();
+img7off.src = "../images/navigation/greenhomebaroff.gif";
+
+
+}
+
+function imgOn(imgName) {
+        if (document.images) {
+            document[imgName].src = eval(imgName + "on.src");        }}
+                        
+function imgOff(imgName) {
+        if (document.images) {
+            document[imgName].src = eval(imgName + "off.src");        }}
+
+//-->
+
+
+</SCRIPT>
+</HEAD>
+</TITLE>
+
+
 <TITLE>Access to AIPS++ source code</TITLE>
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<IMG SRC="../images/programbar.gif" ALT="Programmer's Navigation Bar" BORDER="0" USEMAP="#programbar">
-<H1 ALIGN="LEFT"><FONT COLOR="#660000">Programmer's Corner</FONT></H1><BR CLEAR="ALL">
+<FONT FACE="Arial,Helvetica">
+<table cellpadding=0 cellspacing=0 border=0 width="550">
+<tr><td>
+<A HREF="http://aips2.nrao.edu/aips++/docs/reference/HowTo/HowTos.html" 
+         onMouseOver="imgOn('img1')" 
+         onMouseOut="imgOff('img1')">
+<IMG NAME="img1" SRC="../images/navigation/howtobaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="http://aips2.nrao.edu/aips++/docs/aips/aips.html" 
+         onMouseOver="imgOn('img2')" 
+         onMouseOut="imgOff('img2')">
+<IMG NAME="img2" SRC="../images/navigation/packageaipsbaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="http://aips2.nrao.edu/aips++/docs/reference/Coding/Coding.html" 
+         onMouseOver="imgOn('img3')" 
+         onMouseOut="imgOff('img3')">
+<IMG NAME="img3" SRC="../images/navigation/programmersbaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="source.html" 
+          onMouseOver="imgOn('img4')" 
+          onMouseOut="imgOff('img4')">
+<IMG NAME="img4" SRC="../images/navigation/sourcecodebaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="http://aips2.nrao.edu/aips++/docs/reference/System/System.html" 
+          onMouseOver="imgOn('img5')" 
+          onMouseOut="imgOff('img5')">
+<IMG NAME="img5" SRC="../images/navigation/systemmanualbaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="http://aips2.nrao.edu/aips++/docs/trial/implement" 
+          onMouseOver="imgOn('img6')" 
+          onMouseOut="imgOff('img6')">
+<IMG NAME="img6"  SRC="../images/navigation/trialbaroff.gif" BORDER=0></A>
+</td><td>
+<A HREF="../firstpage.html" 
+          onMouseOver="imgOn('img7')" 
+          onMouseOut="imgOff('img7')">
+<IMG NAME="img7" SRC="../images/navigation/greenhomebaroff.gif" BORDER=0></A>
 
+</td></tr>
+</table>
 
-<MAP NAME="programbar">
-<AREA SHAPE="RECT" COORDS="2,2,66,25" HREF="HowTo/howtos.html" ALT="How To .* for Programmers">
-
-<AREA SHAPE="RECT" COORDS="83,1,172,26" HREF="../ref/packageaips/aips.html" ALT=Package AIPS">
-
-<AREA SHAPE="RECT" COORDS="191,1,331,26" HREF="http://aips2.nrao.edu/aips++/docs/reference/Coding/Coding.html" ALT="Programmer's Manual">
-
-<AREA SHAPE="RECT" COORDS="349,1,430,26" HREF="source.html" ALT="Source">
-
-<AREA SHAPE="RECT" COORDS="450,1,550,26" HREF="http://aips2.nrao.edu/aips++/docs/reference/System/System.html" ALT="System Reference Manual">
-
-
-<AREA SHAPE="RECT" COORDS="557,1,598,26" HREF="http://aips2.nrao.edu/aips++/docs/trial/implement" ALT="Trial">
-
-
-<AREA SHAPE="RECT" COORDS="608,1,660,26" HREF="../firstpage.html" ALT="First Page">
-
-</MAP>
 
 <br><hr><br>
-
-
-
 
 
 
