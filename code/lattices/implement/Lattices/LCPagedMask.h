@@ -110,7 +110,7 @@ public:
     virtual Bool isWritable() const;
 
 protected:
-    // Construct another LCMask (for e.g. another lattice) by moving
+    // Construct another LCPagedMask (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.
     // A positive translation value indicates "to right".
     virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
