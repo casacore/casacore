@@ -377,6 +377,11 @@ protected:
    virtual void getLabels(String& higherOrderLabel, String& xAxisLabel,
                           const IPosition& dPos) const;
 
+
+// Summarize the statistics found over the entire lattice
+   virtual void summStats(); 
+
+
 // Non-virtual functions
 //
 // Calculate statistic from accumulation lattice and return in an array
@@ -469,11 +474,6 @@ protected:
 
 // Stretch min and max by 5%
    void stretchMinMax (T& dMin, T& dMax) const;
-
-
-// Summarize the statistics found over the entire lattice
-   void summStats(); 
-
 };
 
 
