@@ -36,11 +36,8 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVDirection.h>
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+//# Forward declarations
+#include <aips/iosfwd.h>
 
 // <summary>
 // Store miscellaneous information related to an observation.
