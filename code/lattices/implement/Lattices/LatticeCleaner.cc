@@ -569,7 +569,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   }
 
   itsScalesValid=True;
-  for(Int scale=0; scale<itsNscales;scale++) {
+  for(scale=0; scale<itsNscales;scale++) {
     if(scaleXfr[scale]) delete scaleXfr[scale];
     scaleXfr[scale] = 0;
   }
