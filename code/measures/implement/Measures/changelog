@@ -26,7 +26,7 @@ After the multi-beam and the VLA filler programs had problems, a chnage was made
  <avers> 1.4 </avers>
  <area> Tool </area>
  <package> measures </package>
- <module> measures </module>
+ <module> Measures </module>
  <type> Code Documentation </type>
  <category> Change </category>
  <defects> 1425 </defects>
@@ -92,7 +92,7 @@ A fromString() method was added to the MeasureHolder class. This makes it, trans
  <avers> 1.4 </avers>
  <area> Tool </area>
  <package> measures </package>
- <module> measures </module>
+ <module> Measures </module>
  <type> Code </type>
  <category> Change </category>
  <defects>  </defects>
@@ -211,7 +211,7 @@ Improved the frequency conversions to full precision
  <avers> 1.8 </avers>
  <area> Tool </area>
  <package> measures </package>
- <module> measures </module>
+ <module> Measures </module>
  <type> Code Documentation </type>
  <category> New </category>
  <defects> 4003 </defects>
@@ -230,7 +230,7 @@ A measure given to show() will be displayed using the globally set formats (cf d
  <avers> 1.8 </avers>
  <area> Tool </area>
  <package> measures </package>
- <module> measures </module>
+ <module> Measures </module>
  <type> Code Documentation </type>
  <category> New </category>
  <defects> Enhancement 4012 </defects>
