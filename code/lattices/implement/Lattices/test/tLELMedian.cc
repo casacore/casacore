@@ -1,5 +1,5 @@
-//# tLELMedian.cc:  Tests the median function in LELFunction
-//# Copyright (C) 1999,2000
+//# tLELMedian.cc:  Tests the fractile function in LELFunction
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,19 +29,18 @@
 #include <aips/Lattices/ArrayLattice.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LELFunction.h>
+#include <trial/Lattices/LatticeFractile.h>
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Arrays/IPosition.h>
 #include <aips/OS/Timer.cc>
+#include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   try {
     cout << ">>>" << endl;
@@ -60,56 +59,73 @@ main (int argc, char *argv[])
 //
 
     {
-      IPosition shape(2,nx,ny);
+      // Test lattice with all equal values.
+      IPosition shape(2, nx, ny);
       Array<Float> arr(shape);
-      indgen (arr);
+      arr = 1.;
       ArrayLattice<Float> aF(arr);
 
       cout << median (arr) << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 16).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 4).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 2).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 16) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 4) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 2) << endl;
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LELFunctionReal1D<Float>::maskedMedian(expr).value() << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
     }
 
     {
-      IPosition shape(2,10*nx,10*ny);
+      IPosition shape(2, nx, ny);
       Array<Float> arr(shape);
       indgen (arr);
       ArrayLattice<Float> aF(arr);
 
       cout << median (arr) << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 16).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 4).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 2).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 16) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 4) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 2) << endl;
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LELFunctionReal1D<Float>::maskedMedian(expr).value() << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
     }
 
     {
-      IPosition shape(2,32*nx,32*ny);
+      IPosition shape(2, 10*nx, 10*ny);
       Array<Float> arr(shape);
       indgen (arr);
       ArrayLattice<Float> aF(arr);
 
       cout << median (arr) << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 128).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 16) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 4) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 2) << endl;
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LELFunctionReal1D<Float>::maskedMedian(expr).value() << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
+    }
+
+    {
+      IPosition shape(2, 32*nx, 32*ny);
+      Array<Float> arr(shape);
+      indgen (arr);
+      ArrayLattice<Float> aF(arr);
+
+      cout << median (arr) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 128) << endl;
+      LatticeExprNode afExpr(aF);
+      LatticeExpr<Float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
     }
 
     // Hereafter numbers can be different on different machines.
     // So 'outcomment' it for assay (and also outcomment the timings).
     cout << ">>>" << endl;
     {
-      IPosition shape(2,100*nx,100*ny);
+      IPosition shape(2, 100*nx, 100*ny);
       Array<Float> arr(shape);
       indgen (arr, float(0), float(0.01));
       ArrayLattice<Float> aF(arr);
@@ -119,41 +135,41 @@ main (int argc, char *argv[])
       cout << median (arr) << endl;
       timer.show ("normal median");
       timer.mark();
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
       timer.show ("ArrayLattice ");
       timer.mark();
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 1280).value()
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 1280)
  << endl;
       timer.show ("ArrayLat 1280");
 
       timer.mark();
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LELFunctionReal1D<Float>::maskedMedian(expr).value() << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
       timer.show ("MaskedLattice");
     }
 
     {
-      IPosition shape(2,100*nx,100*ny);
+      IPosition shape(2, 100*nx, 100*ny);
       Array<Float> arr(shape);
       indgen (arr, float(0), float(0.01));
       TempLattice<Float> aF(shape);
       aF.put (arr);
       Timer timer;
 
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
       timer.show ("PagedArray   ");
       timer.mark();
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 4).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 4) << endl;
       timer.show ("PagedArr 4   ");
       timer.mark();
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 1280).value()
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 1280)
  << endl;
       timer.show ("PagedArr 1280");
     }
 
     {
-      IPosition fshape(2,500*nx,500*ny);
+      IPosition fshape(2, 500*nx, 500*ny);
       TempLattice<Float> aF(fshape);
       IPosition shape = aF.niceCursorShape();
       cout << "tileshape = " << shape << endl;
@@ -168,10 +184,10 @@ main (int argc, char *argv[])
       timer.show ("Fill PagedArr");
       timer.mark();
 
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF).value() << endl;
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5) << endl;
       timer.show ("BigPagedArray");
       timer.mark();
-      cout << LELFunctionReal1D<Float>::unmaskedMedian(aF, 1280*25).value()
+      cout << LatticeFractile<Float>::unmaskedFractile(aF, 0.5, 1280*25)
 	   << endl;
       timer.show ("PagedArr 1280");
     }
