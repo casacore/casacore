@@ -1,5 +1,5 @@
 //# tLinearXform.cc: Test program for LinearXform class
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -146,10 +146,6 @@ int main()
          if (!allEQ(px, lxf.pc())) {
             throw(AipsError("Failed pc set/recovery test"));
          }
-//   
-// Nothing I can do with this to test it
-//
-         linprm* lp = lxf.linprmWCS();
       }
 //
 // Test Fourier inverter.  Can only do this by knowing the algorithm...
