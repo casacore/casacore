@@ -36,6 +36,7 @@
 // #include <aips/Lattices/ArrayLattice.h>
 // #include <aips/Lattices/PagedArray.h>
 // #include <aips/Lattices/TempLattice.h>
+// #include <aips/Lattices/LatticeLocker.h>
 // #include <aips/Lattices/TiledShape.h>
 // #include <aips/Lattices/LatticeIterator.h>
 // #include <aips/Lattices/LatticeStepper.h>
@@ -251,67 +252,6 @@
 //
 //  </ul>
 //
-// <li> <linkto class="MaskedLattice">MaskedLattice</linkto> - a
-// Lattice with a mask. It is an abstract base class for
-// various types of MaskedLattices. A MaskedLattice does not need
-// to contain a mask (see e.g. SubLattice below), although the user
-// can always ask for the mask. The function <src>hasMask()</src>
-// tells if there is really a mask. If not, users could take
-// advantage by shortcutting some code for better performance.
-// Of course, doing that requires more coding, so it should only
-// be done where performance is a real issue.
-//  <ul>
-//  <li> A <linkto class="SubLattice">SubLattice</linkto> represents
-//  a rectangular subset of a Lattice. The SubLattice can be a simple
-//  box, but it can also be a circle, polygon, etc..
-//  In the latter case the SubLattice contains a mask
-//  telling which pixels in the bounding box actually belong to the
-//  circle or polygon. In the case of a box there is no mask, because
-//  there is no need to (because a box is already rectangular).
-//  <br> A SubLattice can be constructed from any Lattice and a
-//  <linkto class=LatticeRegion>LatticeRegion</linkto> telling which
-//  part to take from the Lattice.
-//  If the SubLattice is constructed from a <src>const Lattice</src>,
-//  the SubLattice is not writable. Otherwise it is writable if the
-//  lattice is writable.
-//  <p>
-//  There is a rich variety of <linkto class=LCRegion>region</linkto>
-//  classes which can be used to define a LatticeRegion in pixel coordinates.
-//  The elementary ones are <linkto class=LCBox>box</linkto>,
-//  <linkto class=LCEllipsoid>ellipsoid</linkto>, and
-//  <linkto class=LCPolygon>polygon</linkto>.
-//  Compound region classes can be used to make a
-//  <linkto class=LCUnion>union</linkto>,
-//  <linkto class=LCIntersection>intersection</linkto>,
-//  <linkto class=LCDifference>difference</linkto>,
-//  <linkto class=LCConcatenation>concatenation</linkto>,
-//  <linkto class=LCComplement>complement</linkto>, or
-//  <linkto class=LCExtension>extension</linkto>
-//  from one or more regions.
-//  <br>Apart from these region classes class
-//  <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
-//  a box with optional strides. It also offers the opportunity to
-//  define the box in fractions or to define it relative to the
-//  center of the lattice or relative to a reference pixel.
-//  <br>The final, and most general way, to define regions is by
-//  means of the world coordinates region classes in the
-//  <linkto module=Images>Images</linkto> module, in particular
-//  the <linkto class=ImageRegion>ImageRegion</linkto> class.
-//  
-//  <li>A <linkto class=LatticeExpr>LatticeExpr</linkto> represents
-//  a mathematical expression of lattices. All standard operators
-//  and many, many <linkto class=LatticeExprNode>functions</linkto>
-//  can be used in an expression.
-//  <br> An expression is calculated on-the-fly, thus only when
-//  the user gets a part of the lattice, the expression is calculated
-//  for that part. Subexpressions resulting in a scalar are calculated
-//  only once on a get of the first part of the lattice expression.
-//  <br> Note that a lattice expression is not writable, thus using
-//  the put function on such a lattice results in an exception.
-//  <br> <a href="../../notes/223/223.html">Note 223</a> gives a more detailed
-//  explanation of the capabilities of LEL (Lattice Expression Language).
-//  </ul>
-
 // <li> <linkto class="LatticeIterator">LatticeIterator</linkto> - the
 // object which allows iteration through any Lattice's data. This comes in
 // two types: the <src>RO_LatticeIterator</src> which should be used if you
@@ -448,6 +388,77 @@
 // constructing a (RO_)LatticeIterator.
 //
 // </ul>
+//
+// <li> <linkto class="MaskedLattice">MaskedLattice</linkto> - a
+// Lattice with a mask. It is an abstract base class for
+// various types of MaskedLattices. A MaskedLattice does not need
+// to contain a mask (see e.g. SubLattice below), although the user
+// can always ask for the mask. The function <src>isMasked()</src>
+// tells if there is really a mask. If not, users could take
+// advantage by shortcutting some code for better performance.
+// Of course, doing that requires more coding, so it should only
+// be done where performance is a real issue.
+//  <ul>
+//  <li> A <linkto class="SubLattice">SubLattice</linkto> represents
+//  a rectangular subset of a Lattice. The SubLattice can be a simple
+//  box, but it can also be a circle, polygon, etc..
+//  In the latter case the SubLattice contains a mask
+//  telling which pixels in the bounding box actually belong to the
+//  circle or polygon. In the case of a box there is no mask, because
+//  there is no need to (because a box is already rectangular).
+//  <br> A SubLattice can be constructed from any Lattice and a
+//  <linkto class=LatticeRegion>LatticeRegion</linkto> telling which
+//  part to take from the Lattice.
+//  If the SubLattice is constructed from a <src>const Lattice</src>,
+//  the SubLattice is not writable. Otherwise it is writable if the
+//  lattice is writable.
+//  <p>
+//  There is a rich variety of <linkto class=LCRegion>region</linkto>
+//  classes which can be used to define a LatticeRegion in pixel coordinates.
+//  The elementary ones are <linkto class=LCBox>box</linkto>,
+//  <linkto class=LCEllipsoid>ellipsoid</linkto>,
+//  <linkto class=LCPolygon>polygon</linkto>,
+//  <linkto class=LCPixelSet>pixelset</linkto>, and
+//  <linkto class=LCPagedMask>godd/bad mask</linkto>.
+//  Compound region classes can be used to make a
+//  <linkto class=LCUnion>union</linkto>,
+//  <linkto class=LCIntersection>intersection</linkto>,
+//  <linkto class=LCDifference>difference</linkto>,
+//  <linkto class=LCConcatenation>concatenation</linkto>,
+//  <linkto class=LCComplement>complement</linkto>, or
+//  <linkto class=LCExtension>extension</linkto>
+//  from one or more regions.
+//  <br>Apart from these region classes class
+//  <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
+//  a box with optional strides. It also offers the opportunity to
+//  define the box in fractions or to define it relative to the
+//  center of the lattice or relative to a reference pixel.
+//  <br>The final, and most general way, to define regions is by
+//  means of the world coordinates region classes in the
+//  <linkto module=Images>Images</linkto> module, in particular
+//  the <linkto class=WCRegion>WCRegion</linkto> class.
+//  However, world coordinate regions can only be used with images.
+//  
+//  <li>A <linkto class=LatticeExpr>LatticeExpr</linkto> represents
+//  a mathematical expression of lattices. All standard operators, regions,
+//  and many, many <linkto class=LatticeExprNode>functions</linkto>
+//  can be used in an expression.
+//  <br> An expression is calculated on-the-fly, thus only when
+//  the user gets a part of the lattice, the expression is calculated
+//  for that part. Subexpressions resulting in a scalar are calculated
+//  only once on a get of the first part of the lattice expression.
+//  <br> Note that a lattice expression is not writable, thus using
+//  the put function on such a lattice results in an exception.
+//  <br> <a href="../../notes/223/223.html">Note 223</a> gives a more detailed
+//  explanation of the capabilities of LEL (Lattice Expression Language).
+//  <p>
+//  When the expression consists of images, the result can also be
+//  treated as an image using class <linkto class=ImageExpr>ImageExpr</linkto>.
+//  With the <src>command</src> function in
+//  <linkto class=ImageExprParse>ImageExprParse</linkto> it is possible
+//  to parse and execute a LEL expression given as as a string.
+//  </ul>
+
 // </ol>
 //
 // <note role=warning> The following are listed for low-level programmers.  
@@ -469,6 +480,10 @@
 //   define the path the iterator cursor follows, the size of the movement
 //   of the cursor with each iteration, and the behaviour of that cursor
 //   shape as it moves through a Lattice.
+//   <li> <linkto class="LatticeIndexer">LatticeIndexer</linkto> - this
+//   class contains the currently defined Lattice and sub-Lattice shape. It
+//   is used only by navigator classes as it contains
+//   member functions for moving a cursor through a defined sub-Lattice.
 //   <li> The 
 //   <linkto class="LatticeIterInterface">LatticeIterInterface</linkto>
 //   class defines the interface for a specific Lattice's iterator.  This
@@ -485,11 +500,9 @@
 //   the PagedArray's optimized method of iterating. This class is a
 //   "letter" utilized within the LatticeIterator "envelope" and cannot
 //   be instantiated by any user.
-//   <li> <linkto class="LatticeIndexer">LatticeIndexer</linkto> - this
-//   class contains the currently defined Lattice and sub-Lattice shape. It
-//   is used only by navigator classes as it contains
-//   member functions for moving a cursor through a defined sub-Lattice.
-//   </ul>
+//   <li> Class <linkto class=LCRegion> is the abstract base class for
+//   regions in pixel coordinates.
+//  </ul>
 // </ol>
 // </synopsis>
 
