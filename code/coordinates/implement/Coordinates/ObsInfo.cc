@@ -28,6 +28,7 @@
 
 #include <trial/Coordinates/ObsInfo.h>
 #include <aips/Measures/MeasureHolder.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Containers/Record.h>
 #include <trial/FITS/FITSUtil.h>
 
