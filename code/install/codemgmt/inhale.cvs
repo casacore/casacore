@@ -337,6 +337,17 @@
   cvs update -P -d -C  $RELEASE
 
 
+# Clear the template repositories
+  if [ "$MODE" = "cumulative" ]
+  then
+      for tmplinstd in `find . -name tmplinst -print`
+      do 
+         rm -f $$tmplinstd/*.cc 
+      done
+
+  fi
+
+
 
 
 #-----------------------------------------------------------------------------
