@@ -2772,3 +2772,4 @@
 10 098 sys rm libexec/livedatafileserver.g
 10 098 sys rm libexec/livedatagui.g
 10 098 sys rm bin/livedata.glishrc
+10 100 src rm trial/implement/Coordinates/test/templates
