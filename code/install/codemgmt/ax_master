@@ -2856,3 +2856,4 @@
 11 425 src mv aips/implement/Tables/ExprLogic.cc aips/implement/Tables/ExprLogicNode.cc
 11 426 sys rm libexec/simulater.g
 11 426 sys rm libexec/simulater_meta.g
+11 429 src rm atnf/apps/pksgridzilla/templates
