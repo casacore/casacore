@@ -18,7 +18,7 @@ In short the following functionality is supported:
 \item \htmlref{Masking}{LEL:CONDITIONS} using boolean expressions.
 \item Propagation of \htmlref{masks}{LEL:MASKS} through an expression.
 \end{itemize}
-In the nearby future regions will be supported.
+In the near future regions will be supported.
 
 The first section explains the syntax.
 The last sections show the interface to LEL using Glish or C++.
@@ -30,7 +30,7 @@ As said above a particular type of lattice is an image; they
 will be used most often.
 Because lattices can be very large, an expression is only evaluated
 when a chunk of its data is requested. This is similar to reading
-only the requested chunk of data from a disk file
+only the requested chunk of data from a disk file.
 
 LEL is quite efficient and can therefore be used well in
 C++ and glish code. However, it can never be as efficient as
@@ -41,7 +41,7 @@ description how LEL is implemented using various C++ classes.
 
 
 \section{\label{LEL:EXPRESSIONS}Expressions}
-A LEL expression can be as simple or complex as one likes
+A LEL expression can be as simple or as complex as one likes
 using the standard
 \htmlref{arithmetic, comparison, and logical operators}{LEL:OPERATORS}.
 Parentheses can be used to group subexpressions.
@@ -94,7 +94,8 @@ be useful for better performance.
 Scalar constants of the various data types can be formed as follows
 (which is similar to Glish):
 \begin{itemize}
-  \item A Bool constant can be given as T or F (meaning true resp. false).
+  \item A Bool constant can be given as T or F
+	(meaning true and false respectively).
   \item A Float constant can be any integer or floating-point number. E.g.
     \begin{verbatim}
     3
@@ -156,7 +157,7 @@ precedence):
        can be used for real and complex operands.
   \item[] \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
        \\For Bool operands only $==$ and $!=$ can be used.
-       \\A Bool operand cannot be used with a numeric operand.
+       \\A Bool operand cannot be compared with a numeric operand.
        \\The comparison operators use the norm for complex values.
   \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
@@ -250,7 +251,7 @@ The result of these functions is a scalar.
     Return mean of all elements.
   \item[ \texttt{numeric VARIANCE(numeric)}]
     Return variance
-    \\(\\texttt{sum((a(i) - mean(a))**2) / (nelements(a) - 1)}).
+    \\(\texttt{sum((a(i) - mean(a))**2) / (nelements(a) - 1)}).
     \\All calculations are done in double precision.
   \item[ \texttt{numeric STDDEV(numeric)}]
     Return standard deviation (the square root of the variance).
@@ -334,7 +335,7 @@ the second \texttt{sum} function takes all elements into account.
   sum( lat1[lat1<5][lat1>10] )
   (lat1 + lat2[lat3<lat4]) [lat1<5]
 \end{verbatim}
-The second example shows the recursion (which ands the masks).
+The second example shows the recursion (which ANDs the masks).
 It is effectively a (slower) implementation of the
 first example in this section.
 
@@ -354,7 +355,7 @@ Masks are combined and propagated throughout an expression.
 E.g. when two lattices are added, the mask of the result is formed
 by and-ing the masks of the two lattices.
 \\In general the mask of a subexpression is formed by and-ing
-the masks of the operands. This true for e.g. +, *, \texttt{atan2},
+the masks of the operands. This is true for e.g. +, *, \texttt{atan2},
 etc..
 
 There are a few special cases:
@@ -432,7 +433,7 @@ and not over and over again when the user gets chunks.
 
 \item Often the exponent 2 is used in the \texttt{pow} function
 (or operator \verb+^+). This is optimized by using multiplication
-instead of using the system pow function/
+instead of using the system pow function.
 
 \item When LEL finds a \htmlref{masked-off scalar}{LEL:MASKS}
 in a subexpression, it does not evaluate the other operand.
@@ -483,7 +484,7 @@ precision to make the addition possible. Specifying the expression as:
 avoids that (expensive) data type promotion.
 
 \item
-\texttt{POW(LAT,2)} or \texttt{LAT}\verb+^+\texttt{0.5}
+\texttt{POW(LAT,2)} or \texttt{LAT}\verb+^+\texttt{2}
 is faster than \texttt{LAT*LAT}, because it accesses lattice
 \texttt{LAT} only once.
 
@@ -564,8 +565,8 @@ and classes form the programmer interface.
     im.statistics(...);
   \end{verbatim}
   The first command creates an image file \texttt{outimage} filling
-  it with the sum of the input images. The second command is
-  doing statistics on that new image.
+  it with the sum of the input images. The second command does
+  statistics on that new image.
   \\Writing it as
   \begin{verbatim}
     im := expr('inimage1+inimage2')
@@ -653,16 +654,24 @@ and classes form the programmer interface.
     functions in class 
     \htmladdnormallink{LatticeExprNode}
     {../../trial/implement/Lattices/LatticeExprNode.html}
-    take care that the expression is formed in the correct way.
+    ensure that the expression is formed in the correct way.
     \\Note that a \texttt{LatticeExprNode} object is usually
     automatically converted to a templated \texttt{LatticeExpr} object,
     which makes it possible to use it as a normal \texttt{Lattice}.
+    \\So far the expression is only formed, but not evaluated.
+    Evaluation is only done when the expression is used in an
+    operation, e.g. as the source of the copy operation shown below.
+\begin{verbatim}
+  PagedImage<Float> imout("imageout");
+  imout.copyData (expr);
+\end{verbatim}
+
 
   \end{enumerate}
 \end{itemize}
 
 \section{Future developments}
-In the near or far future LEL will be enhanced by adding new
+In the near or distant future LEL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
   \item Handle regions and slices. Possible examples are:
