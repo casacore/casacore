@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@ MVTime::MVTime(Int yy, Int mm, Double dd, Double d) {
     };
     dd += d;
     Int b = 0;
-    if (yy>1582 || (yy==1582 && (mm>10 || (mm==10 && dd > 15)))) { 
+    if (yy>1582 || (yy==1582 && (mm>10 || (mm==10 && dd >= 15)))) { 
 	b = ifloor(yy/100.);
 	b = 2 - b + (Int)(b/4);
     };
