@@ -757,34 +757,39 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 	os << *static_cast<const String*>(ptr);
 	break;
     case TpArrayBool:
-	os << *static_cast<const Array<Bool>*>(ptr);
+	putArray (os, *static_cast<const Array<Bool>*>(ptr), "Array<void>");
 	break;
     case TpArrayUChar:
-	os << *static_cast<const Array<uChar>*>(ptr);
+	putArray (os, *static_cast<const Array<uChar>*>(ptr), "Array<uChar>");
 	break;
     case TpArrayShort:
-	os << *static_cast<const Array<Short>*>(ptr);
+	putArray (os, *static_cast<const Array<Short>*>(ptr), "Array<short>");
 	break;
     case TpArrayInt:
-	os << *static_cast<const Array<Int>*>(ptr);
+	putArray (os, *static_cast<const Array<Int>*>(ptr), "Array<Int>");
 	break;
     case TpArrayUInt:
-	os << *static_cast<const Array<uInt>*>(ptr);
+	putArray (os, *static_cast<const Array<uInt>*>(ptr), "Array<uInt>");
 	break;
     case TpArrayFloat:
-	os << *static_cast<const Array<float>*>(ptr);
+	putArray (os, *static_cast<const Array<float>*>(ptr),
+		  "Array<float>");
 	break;
     case TpArrayDouble:
-	os << *static_cast<const Array<double>*>(ptr);
+	putArray (os, *static_cast<const Array<double>*>(ptr),
+		  "Array<double>");
 	break;
     case TpArrayComplex:
-	os << *static_cast<const Array<Complex>*>(ptr);
+	putArray (os, *static_cast<const Array<Complex>*>(ptr),
+		  "Array<void>");
 	break;
     case TpArrayDComplex:
-	os << *static_cast<const Array<DComplex>*>(ptr);
+	putArray (os, *static_cast<const Array<DComplex>*>(ptr),
+		  "Array<void>");
 	break;
     case TpArrayString:
-	os << *static_cast<const Array<String>*>(ptr);
+	putArray (os, *static_cast<const Array<String>*>(ptr),
+		  "Array<String>");
 	break;
     default:
 	throw (AipsError ("RecordRep::putDataField"));
