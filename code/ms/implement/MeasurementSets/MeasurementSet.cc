@@ -607,47 +607,46 @@ void MeasurementSet::initRefs(Bool clear)
 				      " holding measurements from a Telescope");
     }
     if (this->keywordSet().isDefined("ANTENNA"))
-      antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA", mainLock_p));
+      antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA"));//, mainLock_p));
     if (this->keywordSet().isDefined("DATA_DESCRIPTION"))
       dataDesc_p=MSDataDescription(this->keywordSet().
-				   asTable("DATA_DESCRIPTION", mainLock_p));
+				   asTable("DATA_DESCRIPTION"));//, mainLock_p));
     if (this->keywordSet().isDefined("DOPPLER"))
-      doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER", mainLock_p));
+      doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER"));//, mainLock_p));
     if (this->keywordSet().isDefined("FEED"))
-      feed_p=MSFeed(this->keywordSet().asTable("FEED", mainLock_p));
+      feed_p=MSFeed(this->keywordSet().asTable("FEED"));//, mainLock_p));
     if (this->keywordSet().isDefined("FIELD"))
-      field_p=MSField(this->keywordSet().asTable("FIELD", mainLock_p));
+      field_p=MSField(this->keywordSet().asTable("FIELD"));//, mainLock_p));
     if (this->keywordSet().isDefined("FLAG_CMD"))
-      flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD", mainLock_p));
+      flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD"));//, mainLock_p));
     if (this->keywordSet().isDefined("FREQ_OFFSET"))
       freqOffset_p=MSFreqOffset(this->keywordSet().
-				asTable("FREQ_OFFSET",mainLock_p));
+				asTable("FREQ_OFFSET"));//,mainLock_p));
     if (this->keywordSet().isDefined("HISTORY"))
-      history_p=MSHistory(this->keywordSet().asTable("HISTORY", mainLock_p));
+      history_p=MSHistory(this->keywordSet().asTable("HISTORY"));//, mainLock_p));
     if (this->keywordSet().isDefined("OBSERVATION"))
-      observation_p=MSObservation(this->keywordSet().asTable("OBSERVATION", 
-							     mainLock_p));
+      observation_p=MSObservation(this->keywordSet().asTable("OBSERVATION"));
+    //,mainLock_p));
     if (this->keywordSet().isDefined("POINTING"))
-      pointing_p=MSPointing(this->keywordSet().asTable("POINTING", 
-						       mainLock_p));
+      pointing_p=MSPointing(this->keywordSet().asTable("POINTING")); 
+    //, mainLock_p));
     if (this->keywordSet().isDefined("POLARIZATION"))
-      polarization_p=MSPolarization(this->keywordSet().asTable("POLARIZATION",
-							       mainLock_p));
+      polarization_p=MSPolarization(this->keywordSet().asTable("POLARIZATION"));    //,mainLock_p));
     if (this->keywordSet().isDefined("PROCESSOR"))
-      processor_p=MSProcessor(this->keywordSet().asTable("PROCESSOR", 
-							 mainLock_p));
+      processor_p=MSProcessor(this->keywordSet().asTable("PROCESSOR")); 
+    //, mainLock_p));
     if (this->keywordSet().isDefined("SOURCE"))
-      source_p=MSSource(this->keywordSet().asTable("SOURCE", mainLock_p));
+      source_p=MSSource(this->keywordSet().asTable("SOURCE"));//, mainLock_p));
     if (this->keywordSet().isDefined("SPECTRAL_WINDOW"))
       spectralWindow_p=MSSpectralWindow(this->keywordSet().
-					asTable("SPECTRAL_WINDOW", 
-						mainLock_p));
+					asTable("SPECTRAL_WINDOW")); 
+    //,mainLock_p));
     if (this->keywordSet().isDefined("STATE"))
-      state_p=MSState(this->keywordSet().asTable("STATE", mainLock_p));
+      state_p=MSState(this->keywordSet().asTable("STATE"));//, mainLock_p));
     if (this->keywordSet().isDefined("SYSCAL"))
-      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL", mainLock_p));
+      sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL"));// mainLock_p));
     if (this->keywordSet().isDefined("WEATHER"))
-      weather_p=MSWeather(this->keywordSet().asTable("WEATHER", mainLock_p));
+      weather_p=MSWeather(this->keywordSet().asTable("WEATHER"));//, mainLock_p));
   }
 }
 
