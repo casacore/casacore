@@ -1,5 +1,5 @@
 //# GaussianConvert.cc: Class to convert between pixel and world coordinates for Gaussians
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,15 +48,8 @@ GaussianConvert::GaussianConvert(const CoordinateSystem& cSys,
   itsErrorMessage(""),
   itsValid(True)
 {
-   if (itsWorldAxes.nelements() != 2) {
-      throw(AipsError("GaussianConvert - worldAxes must be of length 2"));
-   }
-//
-   Unit u0(itsCSys.worldAxisUnits()(itsWorldAxes(0)));
-   Unit u1(itsCSys.worldAxisUnits()(itsWorldAxes(1)));
-   if (u0 != u1) {
-      throw(AipsError("GaussianConvert - units of specified axes must be dimensioanlly consistent"));
-   }
+   checkWorldAxes();
+   checkCoordinateSystem();
 }
 
 GaussianConvert::~GaussianConvert()
@@ -87,6 +80,8 @@ GaussianConvert& GaussianConvert::operator=(const GaussianConvert& other)
 void GaussianConvert::setCoordinateSystem (const CoordinateSystem& cSys)
 {
    itsCSys = cSys;
+   checkCoordinateSystem();
+//
    if (itsWorldAxes.nelements()==2) itsValid = True;  
 }
 
@@ -94,6 +89,8 @@ void GaussianConvert::setWorldAxes (const Vector<uInt>& worldAxes)
 {
    itsWorldAxes.resize(0);
    itsWorldAxes = worldAxes;
+   checkWorldAxes();
+//
    if (itsCSys.nCoordinates()!=0) itsValid = True;  
 }
 
@@ -102,7 +99,8 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
                               Double minorAxisIn, const Quantum<Double>& positionAngleIn)
 {
    if (!itsValid) {
-      itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
+      itsErrorMessage = String("the converter state is invalid; ") +
+                        String("use setCoordinateSystem and/or setWorldAxes");
       return False;
    }
 
@@ -134,31 +132,24 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
       return False;
    }
 
-// Find scale factors
- 
-   Vector<Double> deltas(2);
-   deltas(0) = 1.0 / itsCSys.increment()(itsWorldAxes(0));
-   deltas(1) = 1.0 / itsCSys.increment()(itsWorldAxes(1));
-//  
-   Double sinpa = sin(positionAngleIn.getValue("rad"));
-   Double cospa = cos(positionAngleIn.getValue("rad"));
+// Convert 
+   
+   Double minOut, majOut;
+   convertAxes (minOut, majOut, positionAngleOut, 
+                minorAxisIn, majorAxisIn,  positionAngleIn, 
+                itsCSys, String("toWorld"));
 //
-   Double tmp = majorAxisIn * sqrt(square(cospa/deltas(1)) + square(sinpa/deltas(0)));
-   majorAxisOut.setValue(tmp);
-   majorAxisOut.setUnit(Unit(unitAxes));
-//
-   tmp = minorAxisIn * sqrt(square(cospa/deltas(0)) + square(sinpa/deltas(1)));
-   minorAxisOut.setValue(tmp);
+   minorAxisOut.setValue(minOut);
    minorAxisOut.setUnit(Unit(unitAxes));
-//
-   convertPositionAngle(positionAngleOut, positionAngleIn, deltas);
+   majorAxisOut.setValue(majOut);
+   majorAxisOut.setUnit(Unit(unitAxes));
 //
    return True;
 }
 
 
 
-Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
+Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut, 
                               Quantum<Double>& positionAngleOut, const Quantum<Double>& majorAxisIn,
                               const Quantum<Double>& minorAxisIn, const Quantum<Double>& positionAngleIn)
 {
@@ -167,12 +158,13 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
       return False;
    }
 
-// Convert axes to same units
+// Convert axes to same unit
  
    Quantum<Double> majIn(majorAxisIn);
    Quantum<Double> minIn(minorAxisIn);
    majIn.convert(Unit(minIn.getUnit()));
    String unitAxes = majIn.getUnit();
+
 //
 // Set the units of the CoordinateSystem to be the same for the two
 // axes.  We checked in the constructor that they were dimensionally equivalent, 
@@ -186,53 +178,146 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
       return False;
    }
 
-// Find scale factors
- 
-   Vector<Double> deltas(2);
-   deltas(0) = itsCSys.increment()(itsWorldAxes(0));
-   deltas(1) = itsCSys.increment()(itsWorldAxes(1));
-//  
-   Double sinpa = sin(positionAngleIn.getValue("rad"));
-   Double cospa = cos(positionAngleIn.getValue("rad"));
-//
-   majorAxisOut = majorAxisIn.getValue() * sqrt(square(cospa/deltas(1)) + square(sinpa/deltas(0)));
-   minorAxisOut = minorAxisIn.getValue() * sqrt(square(cospa/deltas(0)) + square(sinpa/deltas(1)));
-//
-   convertPositionAngle(positionAngleOut, positionAngleIn, deltas);
+// Convert 
+
+   convertAxes (minorAxisOut, majorAxisOut, positionAngleOut, 
+                minIn.getValue(), majIn.getValue(), positionAngleIn, 
+                itsCSys, String("toPixel"));
 //
    return True;
 }
 
 
-void GaussianConvert::convertPositionAngle(Quantum<Double>& paOut, 
-                                           const Quantum<Double>& paIn,
-                                           const Vector<Double>& deltas)
+void GaussianConvert::convertAxes (Double& minorAxisOut, 
+                                   Double& majorAxisOut,
+                                   Quantum<Double>& positionAngleOut, 
+                                   Double minorAxisIn, Double majorAxisIn, 
+                                   const Quantum<Double>& positionAngleIn, 
+                                   const CoordinateSystem& cSys, 
+                                   String dir)
 {
+//
+// The defined convention for the Gaussian2D functional, with which I should probably
+// be consistent, is positive from +y to -x (ccw).   The normal astronomical convention 
+// for DirectionCoordinates positive +y to +x (N through E).  This means
+// I must flip the sign for DirectionCoordinates on the x axis.
+//
 
-//  FInd output units
-
-   String unitPA = paOut.getUnit();
-   if (unitPA.length()==0) unitPA = paIn.getUnit();
-
-
+//
+// World axes already checked to exist in CS
+//
+   Int coordinate0, coordinate1, axisInCoordinate0, axisInCoordinate1;
+   cSys.findWorldAxis(coordinate0, axisInCoordinate0, itsWorldAxes(0));
+   cSys.findWorldAxis(coordinate1, axisInCoordinate1, itsWorldAxes(1));
+   Bool flipX = False;
+   Bool flipY = False;
+   if (coordinate0==coordinate1 &&
+       cSys.type(coordinate0)==Coordinate::DIRECTION) {
+      if (axisInCoordinate0==0) flipX = True;     // Long is worldAxes(0)
+      if (axisInCoordinate1==0) flipY = True;     // Long is worldAxes(1)
+   }
+//
+   Double dx = cSys.increment()(itsWorldAxes(0));
+   if (flipX) dx *= -1;
+   Double dy  = cSys.increment()(itsWorldAxes(1));
+   if (flipY) dy *= -1;
+//
+   Double sinpa = sin(positionAngleIn.getValue("rad"));
+   Double cospa = cos(positionAngleIn.getValue("rad"));
+//
+   Double alpha = square(cospa/minorAxisIn) + square(sinpa/majorAxisIn);
+   Double beta  = square(sinpa/minorAxisIn) + square(cospa/majorAxisIn);
+   Double gamma = (2/square(minorAxisIn) - 2/square(majorAxisIn))*cospa*sinpa;
+//
+   if (dir=="toWorld") {
+      alpha /= dx*dx;
+      beta  /= dy*dy;
+      gamma /= dx*dy;
+   } else {
+      alpha *= dx*dx;
+      beta  *= dy*dy;
+      gamma *= dx*dy;
+   }
+//
+   Double s = alpha + beta;
+   Double t = sqrt(square(alpha-beta)+square(gamma));
+//
+   minorAxisOut = sqrt(2.0/(s+t));
+   majorAxisOut = sqrt(2.0/(s-t));
+//
+   String unitPA = positionAngleOut.getUnit();
+   if (unitPA.length()==0) unitPA = positionAngleIn.getUnit();
+//
 // Put position angle into the range 0 -> pi (same as that
 // returned by Gaussian2D functional)
-
-   Double pa = paIn.getValue(Unit("rad"));
-   Double pa2 = remainder(pa, C::pi);
-   if (pa2 >  0.5*C::pi) pa2 -= C::pi;
-   if (pa2 < -0.5*C::pi) pa2 += C::pi;
-   if (abs(pa2) <= 0.25*C::pi) {
-      pa2 = atan(deltas(1)/deltas(0) * tan(pa2));
-   } else {
-      pa2 = 0.5*C::pi - atan(deltas(0)/deltas(1) * tan(0.5*C::pi - pa2));
-      if (pa2 >= 0.5*C::pi) pa2 -= C::pi;
-   }
-   pa2 += (C::pi)/2;
 //
-   paOut.setValue(pa2);
-   paOut.setUnit(Unit("rad"));
-   paOut.convert(Unit(unitPA));
+   Double pa2;
+   if (abs(gamma)+abs(alpha-beta)==0.0) {
+       pa2 = 0;
+   } else {
+//
+// -pi -> pi
+//
+       pa2 = 0.5*atan2(gamma,alpha-beta);
+   }
+   Double pa3 = GaussianConvert::positionAngleRange(pa2);
+//
+   positionAngleOut.setValue(pa3);
+   positionAngleOut.setUnit(Unit("rad"));
+   positionAngleOut.convert(Unit(unitPA));
 }
 
+
+Quantum<Double> GaussianConvert::positionAngleRange(const Quantum<Double>& pa)
+{
+   Double pa2 = pa.getValue(Unit("rad"));
+   Double pa3 = GaussianConvert::positionAngleRange(pa2);
+//
+   Quantum<Double> pa4(pa3, Unit("rad"));
+   pa4.convert(pa.getFullUnit());
+   return pa4;
+}
+
+
+Double GaussianConvert::positionAngleRange(Double pa)
+//
+// Put in the range 0->pi 
+//
+{
+   Double pa2 = fmod(pa, C::pi);
+   if (pa2 < 0.0) pa2 += C::pi;
+   return pa2;
+}
+
+
+void GaussianConvert::checkWorldAxes()
+{
+   if (itsWorldAxes.nelements() != 2) {
+      throw(AipsError("GaussianConvert - worldAxes must be of length 2"));
+   }
+   if (itsWorldAxes(0) >= itsCSys.nWorldAxes()) {
+      throw(AipsError("worldAxes(0) is invalid"));
+   }
+   if (itsWorldAxes(1) >= itsCSys.nWorldAxes()) {
+      throw(AipsError("worldAxes(1) is invalid"));
+   }
+   if (itsWorldAxes(0) == itsWorldAxes(1)) {
+      throw(AipsError("worldAxes must be different"));
+   }
+//
+   Unit u0(itsCSys.worldAxisUnits()(itsWorldAxes(0)));
+   Unit u1(itsCSys.worldAxisUnits()(itsWorldAxes(1)));
+   if (u0 != u1) {
+      String msg("GaussianConvert::checkWorldAxes - units of specified axes must be dimensionally consistent");
+      throw(AipsError(msg));
+   }
+}
+
+void GaussianConvert::checkCoordinateSystem()
+{
+   if (itsCSys.nWorldAxes() < 2) {
+      String msg("GaussianConvert::checkCoordinateSystem - the coordinate system must have at least 2 world axes");
+      throw(AipsError(msg));
+   }
+}
 
