@@ -247,7 +247,7 @@ EOT
   chmod g+s $AIPSROOT/import
   cd $AIPSROOT/import
 
-  UTILITIES="gzip gmake bison flex"
+  UTILITIES="gzip gmake bison flex perl"
 
   # We don't need all of these for a binary install... 
 
@@ -304,6 +304,10 @@ EOT
            FLEX="__FLEX"
            KIT="$FLEX"
            ;;
+	perl)
+           PERL="perl-5.000.tar.gz" # need to put in a __PERL sometime
+           KIT="$PERL"
+	   ;;
         esac
 
         for COMPONENT in $KIT
@@ -685,13 +689,13 @@ EOT
   case `uname -s` in
      SunOS)
         case `uname -r` in
-           5*) ARCH=sun4sol_gnu;;
+           5*) ARCH="sun4sol_gnu";;
 	esac;;
-     AIX) ARCH="ibmrs";;
-     HP-UX) ARCH="hpux_gnu";;
+     AIX)        ARCH="ibmrs";;
+     HP-UX)      ARCH="hpux_gnu";;
      OSF1|ALPHA) ARCH="alpha_gnu";;
-     Linux) ARCH="linux_gnu";;
-     IRIX*) ARCH="sgi";;
+     Linux)      ARCH="linux_gnu";;
+     IRIX*)      ARCH="sgi";;
   esac
 
 # Use Classic AIPS HOSTS.LIST file if found...
@@ -712,13 +716,13 @@ EOT
 
 	# translate AIPS ARCH to AIPS++ ARCH
 	case $ARCH in
-	   ALPHA) ARCH="alpha_gnu";;
-	   HP)    ARCH="hpux_gnu";;
-	   IBM)   ARCH="ibmrs";;
-	   LINUX) ARCH="linux_gnu";;
-	   SGI)   ARCH="sgi";;
-	   SOL)   ARCH="sun4sol_gnu";;
-	   *)     ARCH="";;
+	   ALPHA)   ARCH="alpha_gnu";;
+	   HP*)     ARCH="hpux_gnu";;
+	   IBM)     ARCH="ibmrs";;
+	   LINUX)   ARCH="linux_gnu";;
+	   SGI)     ARCH="sgi";;
+	   SOL|SUL) ARCH="sun4sol_gnu";;
+	   *)       ARCH="";;
 	esac
 
 	# only proceed further with translation if it's a known architecture
@@ -777,10 +781,12 @@ EOT
 		    narch = "none"
 		    if ($3 == "alpha") { narch = "alpha_gnu" } 
 		    if ($3 == "hp")    { narch = "hpux_gnu" }
+		    if ($3 == "hp2")   { narch = "hpux_gnu" }
 		    if ($3 == "ibm")   { narch = "ibmrs" }
 		    if ($3 == "linux") { narch = "linux_gnu" }
 		    if ($3 == "sgi")   { narch = "sgi" }
 	            if ($3 == "sol")   { narch = "sun4sol_gnu" }
+	            if ($3 == "sul")   { narch = "sun4sol_gnu" }
 		    if (narch == "none") {
 		       printf("Skipping arch %s for %s\n",$3,$2) | "cat 1>&2"
 		    } else {
@@ -876,13 +882,13 @@ EOT
 	if [ "$AIPS_VERSION" != "" ] ; then
 	   # watch for Classic AIPS's ARCH variable
 	   case $ARCH in
-	      ALPHA) ARCH="alpha_gnu";;
-	      HP)    ARCH="hpux_gnu";;
-	      IBM)   ARCH="ibmrs";;
-	      LINUX) ARCH="linux_gnu";;
-	      SGI)   ARCH="sgi";;
-	      SOL)   ARCH="sun4sol_gnu";;
-	      *)     ARCH="";;
+	      ALPHA)  ARCH="alpha_gnu";;
+	      HP*)    ARCH="hpux_gnu";;
+	      IBM)    ARCH="ibmrs";;
+	      LINUX)  ARCH="linux_gnu";;
+	      SGI)    ARCH="sgi";;
+	      S[OU]L) ARCH="sun4sol_gnu";;
+	      *)      ARCH="";;
 	   esac
 	fi
         echo ""
@@ -893,6 +899,7 @@ EOT
         echo "   ibmrs         IBM/RS6000 AIX, IBM native C++ compiler"
 	echo "   linux_gnu     Linux systems (Intel; Alpha/Sparc untested)"
         echo "   sgi           Silicon Graphics IRIX 7.x, SGI C++ compiler"
+	# Do we still support the native compiler?
         echo "   sun4sol_ntv   Sun/Sparc Solaris 2.x, SUN native C++ compiler"
         echo "   sun4sol_gnu   Sun/Sparc Solaris 2.x, GNU C++ compiler (g++)"
         echo ""
