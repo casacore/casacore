@@ -120,9 +120,15 @@ void SubMS::selectSource(Vector<Int> fieldid){
 
 Bool SubMS::makeSubMS(String& msname, String& colname){
 
-  
+  LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
 
-  makeSelection();
+  if(!makeSelection()){
+    os << LogIO::SEVERE 
+       << "Failed on selection: combination of spw and field chosen may be"
+       << " invalid" 
+       << LogIO::POST;
+    return False;
+  }
   mscIn_p=new MSColumns(mssel_p);
   MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
 				     mscIn_p->observation().telescopeName()(0));
@@ -148,7 +154,7 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
 
 Bool SubMS::makeSelection(){
 
-
+  LogIO os(LogOrigin("SubMS", "makeSelection()", WHERE));
 
   // check that sorted table exists (it should), if not, make it now.
   if (!ms_p.keywordSet().isDefined("SORTED_TABLE")) {
@@ -189,7 +195,9 @@ Bool SubMS::makeSelection(){
   // Now remake the selected ms
   mssel_p = MeasurementSet(sorted(exprNode));
   mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
-
+  if(mssel_p.nrow()==0){
+    return False;
+  }
 
   return True;
 
@@ -361,8 +369,7 @@ Bool SubMS::fillDDTables(){
     if(nchan_p[k] != numChan(spw_p[k])){
       Int totchan=nchan_p[k]*chanStep_p[k]+chanStart_p[k];
       if(totchan >  numChan(spw_p[k])){
-	os << LogIO::SEVERE 
-	   << " Channel settings wrong; exceeding number of channels in spw " 
+	os << " Channel settings wrong; exceeding number of channels in spw "
 	   << spw_p[k]+1 << LogIO::EXCEPTION;
       }
       doChanAver_p=True; 
