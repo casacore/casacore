@@ -28,21 +28,28 @@
 #include <trial/Images/ImageExprParse.h>
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Images/ImageRegion.h>
+#include <trial/Images/RegionHandler.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 
-//# Define a block to hold temporary lattices.
+//# Define pointer blocks holding temporary lattices and regions.
 static const Block<LatticeExprNode>* theTempLattices;
+static const PtrBlock<const ImageRegion*>* theTempRegions;
 
-//# Hold the last table used to lookup unqualified 
+//# Hold the last table used to lookup unqualified region names.
 static Table theLastTable;
+
 
 //# Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
@@ -91,14 +98,18 @@ ImageExprParse::ImageExprParse (const String& value)
 
 LatticeExprNode ImageExprParse::command (const String& str)
 {
-    Block<LatticeExprNode> dummy;
-    return command (str, dummy);
+    Block<LatticeExprNode> dummyLat;
+    PtrBlock<const ImageRegion*> dummyReg;
+    return command (str, dummyLat, dummyReg);
 }
 LatticeExprNode ImageExprParse::command
                            (const String& str,
-			    const Block<LatticeExprNode>& tempLattices)
+			    const Block<LatticeExprNode>& tempLattices,
+			    const PtrBlock<const ImageRegion*>& tempRegions)
 {
     theTempLattices = &tempLattices;
+    theTempRegions  = &tempRegions;
+    theLastTable = Table();
     String message;
     String command = str + '\n';
     Bool error = False;
@@ -114,6 +125,7 @@ LatticeExprNode ImageExprParse::command
     //# Save the resulting expression and clear the common node object.
     LatticeExprNode node = theirNode;
     theirNode = LatticeExprNode();
+    theLastTable = Table();
     //# If an exception was thrown; throw it again with the message.
     if (error) {
 	throw (AipsError(message + '\n' + "Scanned so far: " +
@@ -286,7 +298,7 @@ LatticeExprNode ImageExprParse::makeLiteralNode() const
     return LatticeExprNode();
 }
 
-LatticeExprNode ImageExprParse::makeLatticeNode() const
+LatticeExprNode ImageExprParse::makeLRNode() const
 {
     // When the name is numeric, we have a temporary lattice number.
     // Find it in the block of temporary lattices.
@@ -299,18 +311,80 @@ LatticeExprNode ImageExprParse::makeLatticeNode() const
 	return ((*theTempLattices)[latnr]);
     }
     // A true name has been given.
-    if (! Table::isReadable(itsSval)) {
-	throw (AipsError ("ImageExprParse: '" + itsSval +
-			  "' is not a table or is not readable"));
+    // Split it using : as separator (:: is full separator).
+    // Test if it is a region.
+    Vector<String> names = stringToVector (itsSval, ':');
+    if (names.nelements() != 1) {
+	if ((names.nelements() == 2  &&  names(1).empty())
+	||  (names.nelements() == 3  &&  !names(1).empty()
+         &&  names(2).empty())
+	|| names.nelements() > 3) {
+	    throw (AipsError ("ImageExprParse: '" + itsSval +
+			      "' is an invalid lattice, image, "
+			      "or region name"));
+	}
     }
-    Table table(itsSval);
+    // If 1 element is given, try if it is a lattice or image.
+    // If that does not succeed, it'll be tried later as a region.
+    if (names.nelements() == 1) {
+	LatticeExprNode node;
+	if (tryLatticeNode (node, names(0))) {
+	    return node;
+	}
+    }
+    // If 2 elements given, it should be an image with a mask name.
+    if (names.nelements() == 2) {
+	return makeImageNode (names(0), names(1));
+    }
+    // One or three elements have been given.
+    // If the first one is empty, a table must have been used already.
+    if (names.nelements() == 1  ||  names(0).empty()) {
+	if (theLastTable.isNull()) {
+	    throw (AipsError ("ImageExprParse: unqualified region '" + itsSval +
+			      "' is used before any table is used"));
+	}
+    } else {
+	// The first name is given; see if it is a readable table.
+	if (! Table::isReadable (names(0))) {
+	    throw (AipsError ("ImageExprParse: the table used in region name'"
+			      + itsSval + "' is unknown"));
+	}
+	Table table (names(0));
+	theLastTable = table;
+    }
+    // Now try to find the region in the table.
+    ImageRegion* regPtr;
+    if (names.nelements() == 1) {
+	regPtr = RegionHandler::getRegion (theLastTable, names(0));
+	if (regPtr == 0) {
+	    throw (AipsError ("ImageExprParse: region '" + itsSval +
+			      " is an unknown lattice, image, or region"));
+	}
+    } else {
+	regPtr = RegionHandler::getRegion (theLastTable, names(2));
+	if (regPtr == 0) {
+	    throw (AipsError ("ImageExprParse: region '" + itsSval +
+			      " is an unknown region"));
+	}
+    }
+    LatticeExprNode node (*regPtr);
+    delete regPtr;
+    return node;
+}
+
+Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
+				     const String& name) const
+{
+    if (! Table::isReadable(name)) {
+	return False;
+    }
+    Table table(name);
     Bool isImage = True;
     String type = table.tableInfo().type();
     if (type == TableInfo::type(TableInfo::PAGEDARRAY)) {
 	isImage = False;
     } else if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
-	throw (AipsError ("ImageExprParse: '" + itsSval +
-			  "' is not a PagedArray or PagedImage"));
+	return False;
     }
     if (table.nrow() != 1) {
 	throw (AipsError ("ImageExprParse can only handle Lattices/"
@@ -325,41 +399,131 @@ LatticeExprNode ImageExprParse::makeLatticeNode() const
     }
     if (isImage) {
 	switch (dtype) {
-///	case TpBool:
-///	    return LatticeExprNode (PagedImage<Bool> (table, 0));
 	case TpFloat:
-	    return LatticeExprNode (PagedImage<Float> (table, 0));
+	    node = LatticeExprNode (PagedImage<Float> (table));
+	    break;
 ///	case TpDouble:
-///	    return LatticeExprNode (PagedImage<Double> (table, 0));
+///	    node = LatticeExprNode (PagedImage<Double> (table));
+///	    break;
 	case TpComplex:
-	    return LatticeExprNode (PagedImage<Complex> (table, 0));
+	    node = LatticeExprNode (PagedImage<Complex> (table));
+	    break;
 ///	case TpDComplex:
-///	    return LatticeExprNode (PagedImage<DComplex> (table, 0));
+///	    node = LatticeExprNode (PagedImage<DComplex> (table));
+///	    break;
 	default:
-	    throw (AipsError ("ImageExprParse: " + itsSval + " is a PagedImage "
+	    throw (AipsError ("ImageExprParse: " + name + " is a PagedImage "
 			      "with an unsupported data type"));
 	}
     } else {
 	switch (dtype) {
 	case TpBool:
-	    return LatticeExprNode (PagedArray<Bool> (table, colName, 0));
+	    node = LatticeExprNode (PagedArray<Bool> (table, colName, 0));
+	    break;
 	case TpFloat:
-	    return LatticeExprNode (PagedArray<Float> (table, colName, 0));
+	    node = LatticeExprNode (PagedArray<Float> (table, colName, 0));
+	    break;
 	case TpDouble:
-	    return LatticeExprNode (PagedArray<Double> (table, colName, 0));
+	    node = LatticeExprNode (PagedArray<Double> (table, colName, 0));
+	    break;
 	case TpComplex:
-	    return LatticeExprNode (PagedArray<Complex> (table, colName, 0));
+	    node = LatticeExprNode (PagedArray<Complex> (table, colName, 0));
+	    break;
 	case TpDComplex:
-	    return LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
+	    node = LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
+	    break;
 	default:
-	    throw (AipsError ("ImageExprParse: " + itsSval + " is a PagedArray "
+	    throw (AipsError ("ImageExprParse: " + name + " is a PagedArray "
 			      "with an unsupported data type"));
 	}
     }
-    return LatticeExprNode();
+    // This is now the last table used (for finding unqualified regions).
+    theLastTable = table;
+    return True;
 }
 
-LatticeExprNode ImageExprParse::makeLitLattNode() const
+LatticeExprNode ImageExprParse::makeImageNode (const String& name,
+					       const String& mask) const
+{
+    if (! Table::isReadable(name)) {
+	return False;
+    }
+    Table table(name);
+    String type = table.tableInfo().type();
+    if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
+	throw (AipsError ("ImageExprParse: " + name + " is not a PagedImage"));
+    }
+    if (table.nrow() != 1) {
+	throw (AipsError ("ImageExprParse can only handle Lattices/"
+			  "Images with 1 row"));
+    }
+    DataType dtype = TpOther;
+    ColumnDesc cdesc = table.tableDesc()[0];
+    if (cdesc.isArray()) {
+	dtype = cdesc.dataType();
+    }
+    // Look if we need a mask for the image.
+    // If so, see if it exists.
+    String maskName = mask;
+    maskName.upcase();
+    ImageRegion* regPtr = 0;
+    if (maskName != "NOMASK") {
+	regPtr = RegionHandler::getRegion (table, mask);
+    }
+    // Create the node from the lattice (and optional mask).
+    LatticeExprNode node;
+    switch (dtype) {
+    case TpFloat:
+    {
+	PagedImage<Float> image(table, False);
+	if (regPtr == 0) {
+	    node = LatticeExprNode (image);
+	} else {
+	    node = LatticeExprNode (SubImage<Float> (image, *regPtr));
+	}
+	break;
+    }
+/// case TpDouble:
+/// {
+///	PagedImage<Double> image(table, False);
+///	if (regPtr == 0) {
+///	    node = LatticeExprNode (image);
+///	} else {
+///	    node = LatticeExprNode (SubImage<Double> (image, *regPtr));
+///	}
+///	break;
+/// }
+    case TpComplex:
+    {
+	PagedImage<Complex> image(table, False);
+	if (regPtr == 0) {
+	    node = LatticeExprNode (image);
+	} else {
+	    node = LatticeExprNode (SubImage<Complex> (image, *regPtr));
+	}
+	break;
+    }
+/// case TpDComplex:
+/// {
+///	PagedImage<DComplex> image(table, False);
+///	if (regPtr == 0) {
+///	    node = LatticeExprNode (image);
+///	} else {
+///	    node = LatticeExprNode (SubImage<DComplex> (image, *regPtr));
+///	}
+///	break;
+/// }
+    default:
+	throw (AipsError ("ImageExprParse: " + name + " is a PagedImage "
+			  "with an unsupported data type"));
+    }
+    // This is now the last table used (for finding unqualified regions).
+    theLastTable = table;
+    delete regPtr;
+    return node;
+}
+
+LatticeExprNode ImageExprParse::makeLitLRNode() const
 {
     // The following outcommented code makes it possible to specify
     // a constant without ().
@@ -373,5 +537,19 @@ LatticeExprNode ImageExprParse::makeLitLattNode() const
 ///	return LatticeExprNode (C::e);
 ///    }
     // It is a the name of a constant, so it must be a lattice name.
-    return makeLatticeNode();
+    return makeLRNode();
 }
+
+LatticeExprNode ImageExprParse::makeRegionNode() const
+{
+    // The name should be numeric.
+    // Find it in the block of temporary lattices.
+    AlwaysAssert (itsType == TpInt, AipsError);
+    Int regnr = itsIval-1;
+    if (regnr < 0  ||  regnr >= Int(theTempRegions->nelements())) {
+	throw (AipsError ("ImageExprParse: invalid temporary region "
+			  "number given"));
+    }
+    return *((*theTempRegions)[regnr]);
+}
+
