@@ -331,7 +331,7 @@ int main() {
 		    ComponentType::POINT, AipsError);
        AlwaysAssert(model.component(3).shape().type() == 
 		    ComponentType::GAUSSIAN, AipsError);
-       model.rename("tComponentListRenamed_tmp.model");
+       model.rename("tComponentList_tmp_renamed.model");
        model.component(1).flux().convertUnit("WU");
        model.component(2).flux().convertUnit("WU");
        model.component(3).flux().convertUnit("WU");
@@ -347,7 +347,7 @@ int main() {
   		   AipsError);
 
       // Open (readonly) the renamed model and copy it so we can mess with.
-      const ComponentList model("tComponentListRenamed_tmp.model", True);
+      const ComponentList model("tComponentList_tmp_renamed.model", True);
       AlwaysAssert(model.nelements() == 6, AipsError);
       AlwaysAssert(model.component(2).shape().type() == ComponentType::POINT,
   		   AipsError);
@@ -387,12 +387,12 @@ int main() {
 		   ComponentType::POINT, AipsError);
       AlwaysAssert(RW_Model.component(2).shape().type() == 
 		   ComponentType::GAUSSIAN, AipsError);
-      RW_Model.rename("tComponentListCopied_tmp.model");
+      RW_Model.rename("tComponentList_tmp_copied.model");
       cout << "Passed the Table reading/writing tests" << endl;
     }
     {
-      ComponentList original("tComponentListRenamed_tmp.model");
-      ComponentList modified("tComponentListCopied_tmp.model", False);
+      ComponentList original("tComponentList_tmp_renamed.model");
+      ComponentList modified("tComponentList_tmp_copied.model", False);
       AlwaysAssert(original.nelements() == 6, AipsError);
       AlwaysAssert(original.component(2).shape().type() == 
 		   ComponentType::POINT, AipsError);
