@@ -56,6 +56,8 @@
   fi
 
   AIPSROOT=`echo $AIPSPATH | awk '{print $1}'`
+  ARCH=`echo $AIPSPATH | awk '{ print $2 }'`
+  AIPSARCH=$AIPSROOT/$ARCH
 
 # Check number of arguments.
   if [ $# = 0 ]
@@ -65,9 +67,9 @@
   fi
 
 # Get working directory names.
-  AIPSMSTR=/export/aips++/master
+  AIPSMSTR=""
   AIPSLAVE=$AIPSROOT/slave
-  MSTRDIR=`pwd | sed -e 's#/code$#/code/#' -e "s#.*/code/#$AIPSMSTR/#"`
+  MSTRDIR=`pwd | sed -e 's#/code$#/code/#' -e "s#.*/code/##"`
   SLAVDIR=`pwd | sed -e 's#/code$#/code/#' -e "s#.*/code/#$AIPSLAVE/#"`
   CODEDIR=`echo $SLAVDIR | sed -e 's#/slave#/code#'`
 
@@ -115,14 +117,20 @@
      TARGLIST="$TARGLIST $TARGET,v $TARGET"
   done
 
-  REMOTE_USER=''
-  if [ "$AUID" ] ; then
-    REMOTE_USER="-l $AUID"
+  STARTED_AGENT=''
+  if [ -z "$SSH_AGENT_PID" ]; then
+    eval `ssh-agent -s` > /dev/null
+    trap 'ssh-agent -k > /dev/null 2>&1' 0 1 2 3 15
+    STARTED_AGENT='YES'
   fi
+
+  REMOTE_USER="-l aips2mgr"
+  REMOTE_CP="aips2mgr@aips2.nrao.edu"
+
 # Find out which of these are files and which are directories.
-  ARSH="ssh -C aips2.nrao.edu $REMOTE_USER"
-  COMMAND="cd $MSTRDIR && ls -d $TARGLIST 2>/dev/null"
-  TARGLIST=`$ARSH -n /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'`
+  ARSH="ssh -q -C aips2.nrao.edu $REMOTE_USER"
+  ARCP="scp -q -C $REMOTE_CP"
+  TARGLIST=`$ARSH RAU LIST $MSTRDIR $TARGLIST`
 
   FILES=
   for TARGET in $TARGLIST
@@ -143,9 +151,10 @@
 # Fetch the files.
   if [ "$FILES" != "" ]
   then
-     COMMAND="cd $MSTRDIR && tar cf - $FILES"
-     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' |
-     tar pvxf - > /dev/null
+     file=`$ARSH RAU GET $MSTRDIR $FILES`
+     $ARCP:$file $AIPSARCH/tmp
+     tar pvxf $AIPSARCH/tmp/$file > /dev/null
+     rm -f $AIPSARCH/tmp/$file
   fi
 
 # Process each file and directory.
