@@ -1077,7 +1077,12 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
       }
     }
     for (uInt antnum=0; antnum<nant; antnum++) {
-      *anname = antid(antnum);
+      String nm = inantname(antnum);
+      if (nm == "station") {
+	*anname = antid(antnum);
+      } else {
+	*anname = nm;             //WSRT uses STATION for NAME
+      }
 
       Vector<Double> corstabxyz = inantposition(antnum) - arraypos;
 
