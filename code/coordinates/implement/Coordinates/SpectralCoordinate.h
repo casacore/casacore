@@ -33,10 +33,12 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Quanta/Quantum.h>
 
 class LogIO;
 class MVFrequency;
+class VelocityMachine;
 template<class T> class Quantum;
 
 // <summary>
@@ -209,6 +211,32 @@ public:
     Bool toPixel(Double& pixel, const MVFrequency &world) const;
     // </group>
 
+
+    // Functions to convert to velocity.  There is no reference frame
+    // change but you can specify the velocity definition and the output
+    // units of the velocity.   When the input is a frequency stored 
+    // as a Double it must be  in the current units of the SpectralCoordinate.  
+    // <group>  
+    Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel, 
+                          const String& velUnit=String("km/s"),
+                          MDoppler::Types velType=MDoppler::RADIO);
+    Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel, 
+                          const String& velUnit=String("km/s"), 
+                          MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    // </group>
+
     // Retrieve/set the rest frequency in the current units.
     // <group>
     Double restFrequency() const;
@@ -313,6 +341,12 @@ private:
     MFrequency::Types type_p;
     Double restfreq_p;
     TabularCoordinate worker_p;
+    VelocityMachine* pVelocityMachine_p;
+
+// Make and delete velocity machine
+
+   void makeVelocityMachine (const String& velUnit, MDoppler::Types velType);
+   void deleteVelocityMachine ();
 };
 
 #endif
