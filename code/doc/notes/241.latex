@@ -15,10 +15,12 @@
  
 \maketitle
 %%---------------------------------------------------------------------------
-%\begin{htmlonly}
-\htmladdnormallink{This note is available only in postscript: notes/241.dir/AUG2001report.ps}{AUG2001report.ps}
-%\end{htmlonly}
+This note is available in:
+
+\begin{itemize}
+\item \htmladdnormallink{HTML}{AUG2001report.html}
+\item \htmladdnormallink{Postscript}{AUG2001report.ps}
+\end{itemize}
       
-%\input{AUG2001report.ps}
 \end{document}
 
