@@ -56,6 +56,8 @@ int main() {
  	      (String("Cannot convert class to a Record. The reason is:\n")
 	       + errorMessage));
       }
+      AlwaysAssert(measure.ident() == "meas", AipsError);
+      AlwaysAssert(measure.RecordTransformable::ident() == "", AipsError);
     }
     AlwaysAssert(rec.isDefined("refer"), AipsError);
     AlwaysAssert(rec.isDefined("type"), AipsError);
