@@ -29,6 +29,8 @@
 #define AIPS_NEWMSMAINCOLUMNS_H
 
 #include <aips/aips.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/Muvw.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
@@ -36,8 +38,6 @@
 #include <aips/TableMeasures/ArrayQuantColumn.h>
 
 class NewMeasurementSet;
-class MEpoch;
-class Muvw;
 
 // <summary>
 // A class to provide easy read-only access to NewMeasurementSet main table columns
@@ -179,6 +179,11 @@ protected:
   void attach(const NewMeasurementSet& ms);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSMainColumns(const RONewMSMainColumns&);
+  RONewMSMainColumns& operator=(const RONewMSMainColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMeasurementSet& ms);
   
@@ -485,13 +490,11 @@ public:
     return RONewMSMainColumns::weightSpectrum();}
   // </group>
 
-  // set the EPOCH reference type for the TIME and TIME_CENTROID columns. The
-  // supplied ref must really be a a member of the MEpoch::Types enumerator.
-  void setEpochRef(Int ref);
+  // set the EPOCH reference type for the TIME and TIME_CENTROID columns.
+  void setEpochRef(MEpoch::Types ref);
 
-  // set the UVW reference type for the UVW and UVW2 (if defined) columns. The
-  // supplied ref must really be a a member of the Muvw::Types enumerator.
-  void setUVWRef(Int ref);
+  // set the UVW reference type for the UVW and UVW2 (if defined) columns.
+  void setUVWRef(Muvw::Types ref);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -502,6 +505,11 @@ protected:
   void attach(NewMeasurementSet& ms);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSMainColumns(const NewMSMainColumns&);
+  NewMSMainColumns& operator=(const NewMSMainColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMeasurementSet& ms);
   
