@@ -88,12 +88,12 @@ void StIndArray::decrementRefCount (StManArrayFile& ios)
 #endif
 }
 
-void StIndArray::setShape (StManArrayFile& ios, int dataType,
+Bool StIndArray::setShape (StManArrayFile& ios, int dataType,
 			   const IPosition& shape)
 {
     // Return immediately if the shape is defined and is the same.
     if (arrOffset_p != 0  &&  shape_p.isEqual (shape)) {
-	return;
+	return False;
     }
     // Set the shape.
     shape_p.resize (shape.nelements());
@@ -134,6 +134,7 @@ void StIndArray::setShape (StManArrayFile& ios, int dataType,
 	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (String*)0);
 	break;
     }
+    return True;
 }
 
 
