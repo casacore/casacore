@@ -202,7 +202,7 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 
    LCPagedMask* pMask = 0;
    if (itsImagePtr->isMasked()) {
-      String maskName = findUniqueRegionName (imageOut, String("mask0"));
+      String maskName = imageOut.makeUniqueRegionName (String("mask0"), 0);
       pMask = new LCPagedMask(RegionHandler::makeMask(imageOut, maskName));
       imageOut.defineRegion (maskName, ImageRegion(*pMask), RegionHandler::Masks);
       imageOut.setDefaultMask(maskName);
@@ -343,21 +343,6 @@ void SepImageConvolver<T>::zero()
       }
    }     
 }        
- 
-template <class T> 
-String SepImageConvolver<T>::findUniqueRegionName (const ImageInterface<T>& im,
-                                                   const String& root) const
-{
-   uInt i = 0;
-   while (True) {
-      ostrstream oss;
-      oss << i;
-      String name = root + String(oss);
-      if (!im.hasRegion(name, RegionHandler::Any)) return name;
-      i++;
-   } 
-   return String("");
-}
  
 template <class T>
 void SepImageConvolver<T>::smoothProfiles (ImageInterface<T>& in,
