@@ -26,22 +26,36 @@
 //# $Id$
 
 #include <trial/Lattices/LELLattice.h>
-
+#include <trial/Lattices/Lattice.h>
+#include <trial/Lattices/SubLattice.h>
+#include <aips/Lattices/Slicer.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Exceptions/Error.h> 
-#include <aips/Lattices/IPosition.h>
-#include <aips/Utilities/COWPtr.h>
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/PixelRegion.h>
 #include <iostream.h>
 
 
 
 template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) 
-: pLattice_p (lattice.clone())
+: pLattice_p (new SubLattice<T> (lattice))
 {
-   setAttr(LELAttribute(lattice.shape(), lattice.niceCursorShape(),
+   setAttr(LELAttribute(False, 
+			lattice.shape(), lattice.niceCursorShape(),
+			lattice.latticeCoordinates()));
+
+#if defined(AIPS_TRACE)
+   cout << "LELLattice:: constructor, pLattice_p.nrefs() = "
+	<< pLattice_p.nrefs() << endl;
+#endif
+}
+
+template <class T>
+LELLattice<T>::LELLattice(const MaskedLattice<T>& lattice) 
+: pLattice_p (lattice.cloneML())
+{
+   setAttr(LELAttribute(lattice.isMasked(),
+			lattice.shape(), lattice.niceCursorShape(),
 			lattice.latticeCoordinates()));
 
 #if defined(AIPS_TRACE)
@@ -63,19 +77,15 @@ LELLattice<T>::~LELLattice()
 
 template <class T>
 void LELLattice<T>::eval(Array<T>& result, 
-			 const PixelRegion& region) const
+			 const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELLattice::eval; pLattice_p.nrefs() "
 	<< pLattice_p.nrefs() << endl;
 #endif
 
-// The rwRef function will make a copy when needed (i.e. when ptr
-// contains a reference to the original data).
-
-   COWPtr<Array<T> > ptr;
-   pLattice_p->getSlice(ptr, region.box(), False);
-   result.reference(ptr.rwRef());
+   Array<T> tmp = pLattice_p->getSlice (section);
+   result.reference(tmp);
 }
 
 template <class T>
