@@ -50,26 +50,58 @@ main (int argc, char** argv)
 	istrstream istr(argv[3]);
 	istr >> size;
     }
+    int seek = 0;
+    if (argc > 4) {
+	istrstream istr(argv[4]);
+	istr >> seek;
+    }
     cout << "tFileIO  nrrec=" << nr << " reclength=" << leng
-	 << " buffersize=" << size << endl;
+	 << " buffersize=" << size << " seek=" << seek << endl;
     char* buf = new char[leng];
     int i;
     for (i=0; i<leng; i++) {
 	buf[i] = 0;
     }
-    RegularFileIO file1(RegularFile("tFileIO_tmp.data"), ByteIO::New, size);
-    Timer timer;
-    for (i=0; i<nr; i++) {
-	file1.write (leng, buf);
+    {
+	RegularFileIO file1(RegularFile("tFileIO_tmp.data"), ByteIO::New, size);
+	Timer timer;
+	for (i=0; i<nr; i++) {
+	    if (seek  &&  i%3 == 0) {
+		file1.seek (i*leng, ByteIO::Begin);
+	    }
+	    file1.write (leng, buf);
+	}
+	timer.show ("RegularFileIO write");
+	FiledesIO file2 (FiledesIO::create ("tFileIO_tmp.data"));
+	timer.mark();
+	for (i=0; i<nr; i++) {
+	    if (seek  &&  i%3 == 0) {
+		file2.seek (i*leng, ByteIO::Begin);
+	    }
+	    file2.write (leng, buf);
+	}
+	timer.show ("FiledesIO     write");
     }
-    timer.show ("RegularFileIO");
-    delete [] buf;
-    FiledesIO file2 (FiledesIO::create ("tFileIO_tmp.data"));
-    timer.mark();
-    for (i=0; i<nr; i++) {
-	file2.write (leng, buf);
+    {
+	RegularFileIO file1(RegularFile("tFileIO_tmp.data"), ByteIO::Old, size);
+	Timer timer;
+	for (i=0; i<nr; i++) {
+	    if (seek  &&  i%3 == 0) {
+		file1.seek (i*leng, ByteIO::Begin);
+	    }
+	    file1.read (leng, buf);
+	}
+	timer.show ("RegularFileIO read ");
+	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.data"));
+	timer.mark();
+	for (i=0; i<nr; i++) {
+	    if (seek  &&  i%3 == 0) {
+		file2.seek (i*leng, ByteIO::Begin);
+	    }
+	    file2.read (leng, buf);
+	}
+	timer.show ("FiledesIO     read ");
     }
-    timer.show ("FiledesIO    ");
     delete [] buf;
     return 0;                           // exit with success status
 }
