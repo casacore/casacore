@@ -1,4 +1,4 @@
-//# AsciiFileIO.h: Filling a table from an Ascii file
+//# ReadAsciiTable.h: Filling a table from an Ascii file
 //# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_ASCIIFILEIO_H)
-#define AIPS_ASCIIFILEIO_H
+#if !defined (AIPS_READASCIITABLE_H)
+#define AIPS_READASCIITABLE_H
 
+//# Includes
 #include <aips/aips.h>
+#include <aips/Utilities/String.h>
+
 
 // <summary>
 // Filling a table from an Ascii file.
@@ -52,11 +55,14 @@
 //   <li> The second line contains the data types of each column.
 //        Valid types are:
 //      <ul>
+//        <li>            S     for Short Integer data
+//        <li>            I     for Integer data
 //        <li>            R     for Real data
 //        <li>            D     for Double Precision data
-//        <li>            I     for Integer data
-//        <li>            X     for Complex data (Real followed by Imaginary)
-//        <li>            Z     for Complex data (Amplitude then Phase)
+//        <li>            X     for Complex data (Real, Imaginary)
+//        <li>            DX    for Double Precision Complex data (R,I)
+//        <li>            Z     for Complex data (Amplitude, Phase)
+//        <li>            DZ    for Double Precision Complex data (A,P)
 //        <li>            A     for ASCII data (must be enclosed in quotes
 //                              if it contains one or more blanks)
 //      </ul>
@@ -74,6 +80,10 @@
 //        10     11     12         13   14     15   16    String17
 //       </srcblock>
 //       results in a table with 6 columns and 2 rows.
+//
+//       If the autoHeader argument is True, the column types are
+//       derived from the values in the first line. It can recognize
+//       integer, double, and string types. The column names are column1, etc..
 //  <li> The other form has two input files allowing the definition of
 //       table keywords as well. The second input file contains the
 //       column data. The first input file contains the keywords (if any)
@@ -131,14 +141,20 @@
 // <group name=readAsciiTable>
 
 
-// Create a table with name as given by tableName. The layout of the
-// table is defined in the first 2 lines of the input file. The remaining
-// lines in the input file contain the data.
+// Create a table with name as given by tableName.
+// If auotHeader==True, the format is automatically derived from the
+// first lines. It can recognize integer, double, and String types.
+// The columns will be named column1, column2, etc..
+// If autoHeader==False, the layout of the table has to be defined in
+// the first 2 lines of the input file. The remaining lines in the
+// input file contain the data.
 //
 // When the tableDescName is not blank, the table description will
 // be stored in a table description file with the given name.
-void readAsciiTable (const Char* filein, const Char* tableDescName,
-		     const Char* tableName);
+// <br>It returns a string containing the format of the columns in
+// the form COL1=R, COL2=D, ...
+String readAsciiTable (const String& filein, const String& tableDescName,
+		       const String& tableName, Bool autoHeader = False);
 
 // This form reads TWO Ascii files. The first file may contain 
 // keywords and their values as well as the two lines described above for
@@ -146,8 +162,14 @@ void readAsciiTable (const Char* filein, const Char* tableDescName,
 //
 // When the tableDescName is not blank, the table description will
 // be stored in a table description file with the given name.
-void readAsciiTable (const Char* headerFile, const Char* dataFfile, 
-		     const Char* tableDescName, const Char* tablename);
+// <br>It returns a string containing the format of the columns in
+// the form COL1=R, COL2=D, ...
+// <group>
+String readAsciiTable (const String& headerFile, const String& dataFile, 
+		       const String& tableDescName, const String& tablename);
+String readAsciiTable (const String& headerFile, const String& dataFile, 
+		       const String& tableDescName, const char* tablename);
+// </group>
 
 // </group>
 
