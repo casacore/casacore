@@ -414,7 +414,7 @@ void MVPosition::putVector(const Vector<Double> &in) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (Int i=0; i<in.nelements();i++) xyz(i) = in(i);
+    for (uInt i=0; i<in.nelements();i++) xyz(i) = in(i);
   };
 }
 
@@ -442,14 +442,14 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) &&
 	in(2).check(UnitVal::LENGTH)) {
-      Int j;
+      uInt j;
       for (j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
       };
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
       Vector<Double> tsin(2), tcos(2);
-      Int j;
+      uInt j;
       for (j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
@@ -479,6 +479,8 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
     } else {
       return False;
     };
+  } else {
+    return False;
   };
   return True;
 }

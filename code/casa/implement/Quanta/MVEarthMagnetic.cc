@@ -400,6 +400,23 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
     } else {
       return False;
     };
+  } else if (in(2).check(testUnit)) {
+    if (in(0).check(UnitVal::ANGLE) &&
+	in(1).check(UnitVal::ANGLE)) {
+      Vector<Double> tsin(2), tcos(2);
+      Int j;
+      for (j=0; j < 2; j++) {
+	tsin(j) = (sin(in(j))).getValue(); 
+	tcos(j) = (cos(in(j))).getValue(); 
+      };
+      xyz = Double(0.0);
+      xyz(0) = tcos(0) * tcos(1);
+      xyz(1) = tsin(0) * tcos(1);
+      xyz(2) = tsin(1);
+      readjust(in(2).getBaseValue());
+    } else {
+      return False;
+    };
   } else {
     return False;
   };
