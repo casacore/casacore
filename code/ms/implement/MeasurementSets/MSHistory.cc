@@ -129,8 +129,8 @@ void NewMSHistory::init()
       // APPLICATION
       colMapDef(APPLICATION,"APPLICATION",TpString,
 		"Application name","","");
-      // APP_PARANewMS
-      colMapDef(APP_PARANewMS,"APP_PARANewMS",TpArrayString,
+      // APP_PARAMS
+      colMapDef(APP_PARAMS,"APP_PARAMS",TpArrayString,
 		"Application parameters","","");
       // CLI_COMMAND
       colMapDef(CLI_COMMAND,"CLI_COMMAND",TpArrayString,
@@ -164,7 +164,7 @@ void NewMSHistory::init()
 	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
 	}
 	// define the columns with known dimensionality
-	addColumnToDesc(requiredTD, APP_PARANewMS, 1);
+	addColumnToDesc(requiredTD, APP_PARAMS, 1);
 	addColumnToDesc(requiredTD, CLI_COMMAND, 1);
 	// all required columns 
 	for (i = UNDEFINED_COLUMN+1; 
