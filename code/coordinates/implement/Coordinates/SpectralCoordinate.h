@@ -219,9 +219,10 @@ public:
     // for which the SpectralCoordinate was constructed, no extra
     // conversions occur.   Some conversions will fail.  These are the
     // ones that require extra frame information (radial velocity) such
-    // as to TOPO. This will be added later.
+    // as to REST. This will be added later.  In this case this function
+    // returns False, else it returns True.
     // <group>
-    void setReferenceConversion (MFrequency::Types type,
+    Bool setReferenceConversion (MFrequency::Types type,
                                  const MEpoch& epoch, const MPosition& position,
                                  const MDirection& direction);
     void getReferenceConversion (MFrequency::Types& type,
@@ -536,7 +537,11 @@ private:
     MEpoch epoch_p;                        // They are only private so we can save their state
 
 // Set up pixel<->world conversion machines
-    void makeConversionMachines (MFrequency::Types type,  MFrequency::Types conversionType,
+// Returns: 3 (machines were noOPs, machines deleted)
+//          2 (types the same, machines deleted), 
+//          1 (machines created and functioning)
+//         -1 (machines could not make trial conversion, machines deleted)
+    Int makeConversionMachines (MFrequency::Types type,  MFrequency::Types conversionType,
                                  const MEpoch& epoch, 
                                  const MPosition& position, 
                                  const MDirection& direction);
