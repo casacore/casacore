@@ -43,6 +43,8 @@ $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 
 # Static and static pattern rules.
 #---------------------------------
+.PHONY : wcslib
+
 allsys : wcslib
 
 .cleansys ::
@@ -50,7 +52,7 @@ allsys : wcslib
 
 wcslib: $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
 
-$(WCSLIB).$(SFXSTAT): $(WCSIMPS:%.c=$(WCSLIB).$(SFXSTAT)(%.o))
+$(WCSLIB).$(SFXSTAT) : $(WCSIMPS:%.c=$(WCSLIB).$(SFXSTAT)(%.o)) FORCE
 	-@ cd $(WCSTMPD) ; \
 	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
 	      echo "" ; \
@@ -60,7 +62,7 @@ $(WCSLIB).$(SFXSTAT): $(WCSIMPS:%.c=$(WCSLIB).$(SFXSTAT)(%.o))
 	      $(RM) $(WCSTMPD)/*.o ; \
 	   fi
 
-$(WCSLIB).$(SFXSHAR): $(WCSLIB).$(SFXSTAT)
+$(WCSLIB).$(SFXSHAR) : $(WCSLIB).$(SFXSTAT)
 	-@ cd $(WCSTMPD) ; \
 	   $(AR) x $(WCSLIB).$(SFXSTAT) ; \
 	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
