@@ -275,6 +275,7 @@ private:
 
    Bool goodParameterStatus_p;
    Bool needStorageImage_p;
+   Bool doneSomeGoodPoints_p, someGoodPointsValue_p;
    Int nVirCursorIter_p;   
 
    PagedArray<Double>* pStoreImage_p;
@@ -303,7 +304,7 @@ private:
    void calculateStatistic (Array<T>& slice, const Int& ISTAT);
 
 // Copy the cursor into the output array
-   void copyCursor       (Array<T>& slice, 
+   void copyArray        (Array<T>& slice, 
                           const Array<Double>& cursor);
 
 // Create a new storage image
@@ -375,11 +376,11 @@ private:
                            const Int& prec);
 
 // Retrieve a statistic from the accumulation image and return in an array
-   void retrieveStorageStatistic
-                          (Array<T>& slice, const Int& ISTAT);
+   Bool retrieveStorageStatistic
+                          (Array<Double>& slice, const Int& ISTAT);
 
 // See if there were some valid points found in the accumulation
-   Bool someGoodPoints (const Array<Double>& nPts);
+   Bool someGoodPoints ();
 
 // Summarize the statistics found over the entire image
    void summStats         ();
