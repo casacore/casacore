@@ -1,5 +1,5 @@
 //# imhead.cc: List image header
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@ try {
    Input inputs(1);
    inputs.Version ("$Revision$");
 
-   inputs.Create("in", "","Input image name?");
+   inputs.Create("in", "test_image","Input image name?");
    inputs.Create("type", "RADIO","Velocity type ?");
    inputs.ReadArguments(argc, argv);
    const String in = inputs.GetString("in");
