@@ -2087,3 +2087,4 @@
 11 089 src mv trial/implement/Lattices/test/tExcpB.run aips/implement/Exceptions/test/tExcpB.run
 11 090 src rm doc/html/navpages/ref/glossary/phi_ij.gif
 11 090 src rm doc/html/navpages/ref/glossary/prolsphi.gif
+11 090 src rm doc/html/navpages/ref/glossary/y.html
