@@ -1,5 +1,5 @@
 //# tTableDesc.h: Example class for tTableDesc.cc
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,24 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 
-// Define a class ExampleDesc to be used as a ScalarColumn.
+// <summary>
+// Example for a non-standard column in a table description
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableDesc
+// </prerequisite>
+
+// <synopsis> 
+// ExampleDesc is an example showing how to use a column with
+// a non-standard data type in a table description.
+// </synopsis> 
+
 class ExampleDesc
 {
 public:

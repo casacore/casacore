@@ -66,7 +66,7 @@ private:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
 
 // <prerequisite>
 //# Classes you should understand before using this one.

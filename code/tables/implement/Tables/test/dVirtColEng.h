@@ -43,7 +43,7 @@ template<class T> class ArrayColumn;
 
 // <category lib=aips module="Tables" sect="Virtual Columns">
 // <summary> Demo of a virtual scalar column </summary>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
@@ -147,7 +147,7 @@ private:
 
 // <category lib=aips module="Tables" sect="Virtual Columns">
 // <summary> Dummy example of a virtual array column </summary>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
@@ -250,7 +250,7 @@ private:
 
 // <category lib=aips module="Tables" sect="Virtual Columns">
 // <summary> Dummy example of a virtual column engine </summary>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
 //
 // <prerequisite>
 //# Classes you should understand before using this one.

@@ -1,5 +1,5 @@
 //# dRetypedArrayEngine.h: Example virtual column engines to handle an arbitrary data type
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,13 +41,27 @@ template<class T> class Array;
 template<class T> class Vector;
 
 
+// <summary>
+// Example virtual column engines to handle an arbitrary data type.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="GvD" date="2004/07/09" tests="">
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> RetypedArrayEngine
+// </prerequisite>
+
+// <synopsis> 
 // This class is an example of a class that can be used as the source
 // type in the virtual engine column
 // <src>RetypedArrayEngine<SourceType,TargetType></src>.
 // The target type is in this case a float (because that is the type
 // of the data in this class). So the actual engine to be used is
 // <src>RetypedArrayEngine<RetypedArrayExample,float></src>.
-
+// </synopsis> 
 
 class RetypedArrayEx1
 {
