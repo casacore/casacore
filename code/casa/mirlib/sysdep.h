@@ -1,33 +1,4 @@
 /*
-    sysdep.h: System definitions for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
-/*
  *  History:
  *    pjt 31oct89 _trace_ added as defined() option, BUFALIGN 8.
  *    rjs 21feb90 Added alternate way of defining FORT_TRUE and FALSE
@@ -51,10 +22,12 @@
  *                otherwise it is undefined.  Also added ARGS definition
  *                to aide forward declartion prototyping.
  *    rjs 20nov94 Added "alpha" ifdef.
+ *    rjs 19mar97 Add FORTRAN_LOGICAL define and check that miriad.h declarations
+ *		  have not been done before doing them again.
+ *    pjt 14jun01 use WORDS_BIGENDIAN to figure out the pack routines
+ *                removed 'trace' clutter from the old multiflow
+ *    pjt 24jun01 PPC/powerpc is a BIGENDIAN (linux) machine
  */
-
-#if !defined(BIMA_SYSDEP_H)
-#define BIMA_SYSDEP_H
 
 #ifndef Null
 #define Null '\0'
@@ -73,39 +46,27 @@
  *    extern void keyput_c ARGS((const char *task, char *arg));
  */
 
+#ifndef MIRIAD_TYPES_DEFINED
+#define MIRIAD_TYPES_DEFINED 1
 #ifdef __STDC__
 #if (__STDC__ == 1)
 typedef void Void;
 #define Const const
 #define PROTOTYPE 1
-#define ARGS(alist) alist
+#define ARGS(s) s
 #else
 typedef char Void;
 #define Const /* NULL */
-#define ARGS(alist) ()
+#define ARGS(s) ()
 #endif /* (__STDC__ == 1) */
 #else
 typedef char Void;
 #define Const /* NULL */
-#define ARGS(alist) ()
+#define ARGS(s) ()
 #endif /* __STDC__ */
+#endif
 
 typedef int int2;
-
-/************************************************************************/
-/*									*/
-/*			VMS definitions.				*/
-/*									*/
-/************************************************************************/
-
-#ifdef vaxc
-#define FORT_TRUE -1
-#define FORT_FALSE 0
-#define BUFDBUFF 1
-#define BUFALIGN 512
-#define BUFSIZE 16384
-#define defined_params
-#endif
 
 /************************************************************************/
 /*									*/
@@ -117,6 +78,7 @@ typedef int int2;
 #include <fortran.h>
 #define FORT_TRUE  _btol(1)
 #define FORT_FALSE _btol(0)
+#define FORT_LOGICAL(a) (_ltob((&(a))))
 #define BUFDBUFF 0
 #define BUFALIGN 8
 #define BUFSIZE 16384
@@ -135,30 +97,34 @@ typedef int int2;
 #else
 #  define FORT_TRUE 1
 #endif
+
 #define FORT_FALSE 0
+#define FORT_LOGICAL(a) ((a) != FORT_FALSE)
 
 #define BUFDBUFF 0
-
-#if defined(trace)
-#  define BUFALIGN 8
-#else
-#  define BUFALIGN 2
-#endif
-
+#define BUFALIGN 2
 #define BUFSIZE 16384
 
-/* The Multiflow machine does not have the memcpy routine. Use bcopy
-   instead.								*/
+/*  Short cut routines when no conversion is necessary. These are
+    used for any IEEE floating point machine with FITS ordered bytes.	
 
-#if defined(trace)
-#  define memcpy(a,b,c) bcopy((b),(a),(c))
-#  define memcmp(a,b,c) bcmp((a),(b),(c))
+    WORDS_BIGENDIAN is also defined though the 'autoconf' package
+    and should appear in config.h if it's used (sun's, linuxppc, etc.)
+    two routines, pack16_c() and unpack16_c() are actually defined
+    in pack.c
+
+ */
+
+
+#if defined (sun) || defined (convex) || defined (mips) || defined(sgi) || defined(hpux)
+#define WORDS_BIGENDIAN
 #endif
 
-/*  Short cut routines when no conversion is necessary. These are
-    used for any IEEE floating point machine with FITS ordered bytes.	*/
+#if defined(PPC) || defined(powerpc)
+#define WORDS_BIGENDIAN
+#endif
 
-#if defined(sun) || defined(alliant) || defined(trace) || defined(convex) || defined(hpux) || defined(mips)
+#ifdef WORDS_BIGENDIAN 
 #  define packr_c(a,b,c)    memcpy((b),(char *)(a),sizeof(float)*(c))
 #  define unpackr_c(a,b,c)  memcpy((char *)(b),(a),sizeof(float)*(c))
 #  define packd_c(a,b,c)    memcpy((b),(char *)(a),sizeof(double)*(c))
@@ -167,5 +133,3 @@ typedef int int2;
 #  define unpack32_c(a,b,c) memcpy((char *)(b),(a),sizeof(int)*(c))
 #endif
 #endif
-
-#endif /* BIMA_SYSDEP_H */

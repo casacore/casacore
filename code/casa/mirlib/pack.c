@@ -1,32 +1,3 @@
-/*
-    pack.c: Converts data between disk and internal format for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /*  pack								*/
 /* & mjs								*/
 /* : low-level-i/o							*/
@@ -53,9 +24,16 @@
 /*    mjs  18mar91   Added convex definition.                           */
 /*    mjs  19feb93   Added mips definition.                             */
 /*    pjt  25jan95   linux kludge to include packALPHA.c                */
+/*    pjt  14jun01   packALPHA.c now included in this source code       */
+/*                   and using the standard WORDS_BIGENDIAN macro       */
 /************************************************************************/
 
-#if defined (sun) || defined (convex) || defined (mips)
+#include "sysdep.h"
+
+#if defined(WORDS_BIGENDIAN)
+
+static int words_bigendian = 1;
+
 void	pack16_c(from,to,n)
 	char		*to;
 	register int	*from;
@@ -80,8 +58,206 @@ void	unpack16_c(from,to,n)
 }
 #endif
 
-#ifdef unicos
 
+#ifndef WORDS_BIGENDIAN 
+#ifndef unicos
+static int words_littleendian = 1;
+/************************************************************************/
+/*									*/
+/*  The pack routines -- these convert between the host format and	*/
+/*  the disk format. Disk format is IEEE 32 and 64 bit reals, and 2's	*/
+/*  complement integers. Byte order is the FITS byte order (most	*/
+/*  significant bytes first).						*/
+/*									*/
+/*  This version is for a machine which uses IEEE internally, but which	*/
+/*  uses least significant bytes first (little endian), e.g. PCs and	*/
+/*  Alphas.								*/
+/*									*/
+/*  History:								*/
+/*    rjs  21nov94 Original version.					*/
+/************************************************************************/
+void pack16_c(in,out,n)
+char *out;
+int *in,n;
+/*
+  Pack an integer array into 16 bit integers.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)in;
+  for(i=0; i < n; i++){
+    *out++ = *(s+1);
+    *out++ = *s;
+    s += sizeof(int);
+  }
+}
+/************************************************************************/
+void unpack16_c(in,out,n)
+int *out,n;
+char *in;
+/*
+  Unpack an array of 16 bit integers into integers.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)out;
+  for(i=0; i < n; i++){
+    *s++ = *(in+1);
+    *s++ = *in;
+    if(0x80 & *in){
+      *s++ = 0xFF;
+      *s++ = 0xFF;
+    } else {
+      *s++ = 0;
+      *s++ = 0;
+    }
+    in += 2;
+  }
+}
+/************************************************************************/
+void pack32_c(in,out,n)
+int *in,n;
+char *out;
+/*
+  Pack an array of integers into 32 bit integers.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)in;
+  for(i = 0; i < n; i++){
+    *out++ = *(s+3);
+    *out++ = *(s+2);
+    *out++ = *(s+1);
+    *out++ = *s;
+    s += 4;
+  }
+}
+/************************************************************************/
+void unpack32_c(in,out,n)
+int *out,n;
+char *in;
+/*
+  Unpack an array of 32 bit integers into integers.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)out;
+  for(i = 0; i < n; i++){
+    *s++ = *(in+3);
+    *s++ = *(in+2);
+    *s++ = *(in+1);
+    *s++ = *in;
+    in += 4;
+  }
+}
+/************************************************************************/
+void packr_c(in,out,n)
+int n;
+float *in;
+char *out;
+/*
+  Pack an array of reals into IEEE reals -- just do byte reversal.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)in;
+  for(i = 0; i < n; i++){
+    *out++ = *(s+3);
+    *out++ = *(s+2);
+    *out++ = *(s+1);
+    *out++ = *s;
+    s += 4;
+  }
+}
+/************************************************************************/
+void unpackr_c(in,out,n)
+char *in;
+float *out;
+int n;
+/*
+  Unpack an array of IEEE reals into reals -- just do byte reversal.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)out;
+  for(i = 0; i < n; i++){
+    *s++ = *(in+3);
+    *s++ = *(in+2);
+    *s++ = *(in+1);
+    *s++ = *in;
+    in += 4;
+  }
+}
+/************************************************************************/
+void packd_c(in,out,n)
+double *in;
+char *out;
+int n;
+/*
+  Pack an array of doubles -- this involves simply performing byte
+  reversal.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)in;
+  for(i = 0; i < n; i++){
+    *out++ = *(s+7);
+    *out++ = *(s+6);
+    *out++ = *(s+5);
+    *out++ = *(s+4);
+    *out++ = *(s+3);
+    *out++ = *(s+2);
+    *out++ = *(s+1);
+    *out++ = *s;
+    s += 8;
+  }
+}
+/************************************************************************/
+void unpackd_c(in,out,n)
+char *in;
+double *out;
+int n;
+/*
+  Unpack an array of doubles -- this involves simply performing byte
+  reversal.
+------------------------------------------------------------------------*/
+{
+  int i;
+  char *s;
+
+  s = (char *)out;
+  for(i = 0; i < n; i++){
+    *s++ = *(in+7);
+    *s++ = *(in+6);
+    *s++ = *(in+5);
+    *s++ = *(in+4);
+    *s++ = *(in+3);
+    *s++ = *(in+2);
+    *s++ = *(in+1);
+    *s++ = *in;
+    in += 8;
+  }
+}
+#endif
+#endif
+
+
+#if defined(unicos)
+static int words_unicos = 1;
 #define TWO15  0x8000
 #define TWO16  0x10000
 #define TWO31  0x80000000
@@ -122,7 +298,7 @@ void pack16_c(in,out,n)
 char *out;
 int *in,n;
 /*
-  Pack an integer array into 16 bit integers.
+  Pack an integer array into 16 bit integers for unicos
 ------------------------------------------------------------------------*/
 {
   int temp,offset,*outd,in1,in2,in3,in4,i;
@@ -171,7 +347,7 @@ void unpack16_c(in,out,n)
 int *out,n;
 char *in;
 /*
-  Unpack an array of 16 bit integers into integers.
+  Unpack an array of 16 bit integers into integers for unicos
 ------------------------------------------------------------------------*/
 {
   int temp,offset,*ind,i;
@@ -229,7 +405,7 @@ void pack32_c(in,out,n)
 int *in,n;
 char *out;
 /*
-  Pack an array of integers into 32 bit integers.
+  Pack an array of integers into 32 bit integers for unicos
 ------------------------------------------------------------------------*/
 {
   int temp,offset,*outd,i,in1,in2;
@@ -265,7 +441,7 @@ void unpack32_c(in,out,n)
 int *out,n;
 char *in;
 /*
-  Unpack an array of 32 bit integers into integers.
+  Unpack an array of 32 bit integers into integers for unicos
 ------------------------------------------------------------------------*/
 {
   int temp,offset,*ind,i;
@@ -442,8 +618,4 @@ int n;
   }
 }
 
-#endif
-
-#ifdef linux
-#include "packALPHA.c"
 #endif

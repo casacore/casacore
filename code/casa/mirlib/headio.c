@@ -1,32 +1,3 @@
-/*
-    headio.c: Routines to access "header" variables for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /************************************************************************/
 /*									*/
 /*	Routines to access "header" variables.				*/
@@ -47,6 +18,9 @@
 /*  rjs 10aug93   Use hexists in hdprsnt.				*/
 /*  rjs  6nov94   Change "item handle" to an integer.			*/
 /*  rjs 15may96   Fiddles with roundup macro.				*/
+/*  pjt 27mar99   make history a static, so nobody can see it :-)	*/
+/*  rjs 29apr99   Get hdprobe to check for string buffer overflow.	*/
+/*  dpr 11may01   Descriptive error for hisopen_c                       */
 /************************************************************************/
 
 #include <stdlib.h>
@@ -59,7 +33,7 @@
 #define MAXSIZE 1024
 #define MAXLINE 80
 
-int history[MAXOPEN];
+static int history[MAXOPEN];
 
 void bugno_c(),bug_c();
 #define Sprintf (void)sprintf
@@ -91,7 +65,9 @@ char *status;
 /*----------------------------------------------------------------------*/
 {
   int iostat;
-  haccess_c(tno,&history[tno],"history",status,&iostat);	check(iostat);
+  haccess_c(tno,&history[tno],"history",status,&iostat);
+  if(iostat) {bug_c('e',"Problem with history item");};
+  check(iostat);
 }
 /************************************************************************/
 void hiswrite_c(tno,text)
@@ -675,14 +651,15 @@ int *n,length;
 /*----------------------------------------------------------------------*/
 {
   int item;
-  char s[ITEM_HDR_SIZE];
+  char s[ITEM_HDR_SIZE],buf[MAXSIZE];
   float rtemp,ctemp[2];
-  int iostat,unknown,size,i,itemp,offset;
+  int iostat,unknown,size,i,itemp,offset,bufit;
   double dtemp;
   int2 jtemp;
 
   haccess_c(tno,&item,keyword,"read",&iostat);
   *n = 0;
+  bufit = 0;
   Strcpy(type,"nonexistent");				if(iostat)return;
   size = hsize_c(item);
   unknown = FALSE;
@@ -699,7 +676,8 @@ int *n,length;
       if(size % H_REAL_SIZE) unknown = TRUE;
       else if(size == H_REAL_SIZE){
 	hreadr_c(item,&rtemp,offset,H_REAL_SIZE,&iostat);	check(iostat);
-	Sprintf(descr,"%-14.7g",rtemp);
+	Sprintf(buf,"%-14.7g",rtemp);
+	bufit = 1;
       }
     } else if(!memcmp(s,int_item,ITEM_HDR_SIZE)){
       offset = mroundup(ITEM_HDR_SIZE,H_INT_SIZE);
@@ -709,7 +687,8 @@ int *n,length;
       if(size % H_INT_SIZE) unknown = TRUE;
       else if(size == H_INT_SIZE){
 	hreadi_c(item,&itemp,offset,H_INT_SIZE,&iostat);	check(iostat);
-	Sprintf(descr,"%d",itemp);
+	Sprintf(buf,"%d",itemp);
+	bufit = 1;
       }
     } else if(!memcmp(s,int2_item,ITEM_HDR_SIZE)){
       offset = mroundup(ITEM_HDR_SIZE,H_INT2_SIZE);
@@ -719,7 +698,8 @@ int *n,length;
       if(size % H_INT2_SIZE) unknown = TRUE;
       else if(size == H_INT2_SIZE){
 	hreadj_c(item,&jtemp,offset,H_INT2_SIZE,&iostat);	check(iostat);
-	Sprintf(descr,"%d",jtemp);
+	Sprintf(buf,"%d",jtemp);
+	bufit = 1;
       }
     } else if(!memcmp(s,dble_item,ITEM_HDR_SIZE)){
       offset = mroundup(ITEM_HDR_SIZE,H_DBLE_SIZE);
@@ -729,7 +709,8 @@ int *n,length;
       if(size % H_DBLE_SIZE) unknown = TRUE;
       else if(size == H_DBLE_SIZE){
 	hreadd_c(item,&dtemp,offset,H_DBLE_SIZE,&iostat);	check(iostat);
-	Sprintf(descr,"%-20.10g",dtemp);
+	Sprintf(buf,"%-20.10g",dtemp);
+	bufit = 1;
       }
     } else if(!memcmp(s,cmplx_item,ITEM_HDR_SIZE)){
       offset = mroundup(ITEM_HDR_SIZE,H_CMPLX_SIZE);
@@ -739,16 +720,18 @@ int *n,length;
       if(size % H_CMPLX_SIZE) unknown = TRUE;
       else if(size == H_CMPLX_SIZE){
 	hreadr_c(item,ctemp,offset,H_CMPLX_SIZE,&iostat);	check(iostat);
-	Sprintf(descr,"(%-14.7g,%-14.7g)",ctemp[0],ctemp[1]);
+	Sprintf(buf,"(%-14.7g,%-14.7g)",ctemp[0],ctemp[1]);
+	bufit = 1;
       }
     } else if(!memcmp(s,char_item,ITEM_HDR_SIZE)){
       offset = ITEM_HDR_SIZE;
       size -= offset;
-      size = min(size,length-1);
+      size = min(size,MAXSIZE-1);
       *n = 1;
       Strcpy(type,"character");
-      hreadb_c(item,descr,ITEM_HDR_SIZE,size,&iostat);		check(iostat);
-      *(descr+size) = 0;
+      hreadb_c(item,buf,ITEM_HDR_SIZE,size,&iostat);		check(iostat);
+      *(buf+size) = 0;
+      bufit = 1;
     } else if(!memcmp(s,binary_item,ITEM_HDR_SIZE)){
       *n = size;
        Strcpy(type,"binary");
@@ -763,5 +746,8 @@ int *n,length;
   if(unknown){
     Strcpy(type,"unknown");
     *n = size + ITEM_HDR_SIZE;
+  } else if(bufit){
+    if(strlen(buf) > length - 1)bug_c('f',"Descr buffer overflow in hdprobe");
+    strcpy(descr,buf);
   }
 }

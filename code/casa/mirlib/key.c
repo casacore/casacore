@@ -1,32 +1,3 @@
-/*
-    key.c: Keyword-oriented access for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /***********************************************************************
  *
  *  Key routines provide keyword-oriented access to the command line.
@@ -38,7 +9,14 @@
  *     jm  17nov94 Rewrote #if definitions for ANSI prototypes.  Sun
  *                 machines define __STDC__ even when it is 0!  This
  *                 involved creating and using PROTOTYPE in sysdep.h.
- *
+ *     jm  24oct96 Increased MAXSTRING from 256 to 512 and fixed a
+ *                 few lint complaints.
+ *     jm  01aug97 Changed getKeyValue to properly handle single and
+ *                 double quotes around a value.
+ *    pjt  03sep98 fixed malloc(size+1) bug with interesting side-effects
+ *		   on linux and HP-UX
+ *    pjt   5aug99 increased MAXSTRING to 1024 (also do keyf.f !!!)
+ *    pjt   6mar01 increased MAXSTRING to 2048
  ***********************************************************************
  */
 
@@ -59,7 +37,7 @@ extern int dexpand_c();
 
 #define KEYTRUE        1
 #define KEYFALSE       0
-#define MAXSTRING    256
+#define MAXSTRING   2048
 
 typedef struct ckeys {
     char *key;   /* Pointer to a malloc'd string holding the key name. */
@@ -134,8 +112,9 @@ int doexpand;
 #endif /* PROTOTYPE */
 {
     char *r, *s;
+    char quoted;
     char string[MAXSTRING];
-    int quoted, more;
+    int more;
     size_t size, depth;
     KEYS *t;
     FILE *fp;
@@ -149,16 +128,21 @@ int doexpand;
      *  the end of the parameter value.
      */
     r = s = skipLeading(t->value);
-    quoted = KEYFALSE;
     depth = 0;
     more = KEYTRUE;
+    quoted = Null;               /* Initially, not in a quoted string. */
     while ((*s != Null) && (more == KEYTRUE)) {
-      if (*s == '\'') quoted = ((quoted == KEYTRUE) ? KEYFALSE : KEYTRUE);
-      else if (quoted == KEYFALSE) {
-        if (*s == '(') depth++;
-        else if (*s == ')') depth--;
-        else if (isspace(*s) || (*s == ','))
-          more = (depth > 0) ? KEYTRUE : KEYFALSE;
+      if (quoted == Null) {           /* Not currently within a quote. */
+        if ((*s == '"') || (*s == '\'')) {
+          quoted = *s;    /* Set this to the char that ends the quote. */
+        } else {
+          if (*s == '(') depth++;
+          else if (*s == ')') depth--;
+          else if (isspace(*s) || (*s == ','))
+            more = (depth == 0) ? KEYFALSE : KEYTRUE;
+        }
+      } else if (*s == quoted) { /* Inside a quote; read till matched. */
+        quoted = Null;           /* Reset this to mean not in a quote. */
       }
       if (more == KEYTRUE) s++;
     }
@@ -166,9 +150,11 @@ int doexpand;
     *s-- = Null;          /* Subtract 1 from index for following test. */
 
     /* Remove leading and trailing quotes. */
-    if ((*r != Null) && (s > r) && (*r == '"') && (*s == '"')) {
-      *s = Null;
-      r++;
+    if ((*r != Null) && (s > r)) {
+      if (((*r == '"') && (*s == '"')) || ((*r == '\'') && (*s == '\''))) {
+        *s = Null;
+        r++;
+      }
     }
     /*
      *  If the value starts with a '@' character, then open the
@@ -238,7 +224,7 @@ int doexpand;
       } else {
         if (*(t->value) != Null)
           size += strlen(t->value) + 2;
-        if ((s = (char *)malloc(size)) == (char *)NULL)
+        if ((s = (char *)malloc(size+1)) == (char *)NULL)
           (void)bug_c('f', "Could not allocate memory in the key routines.");
         (void)strcpy(s, string);
         if (*(t->value) != Null) {
@@ -275,9 +261,9 @@ void keyput_c(task, string)
 Const char *task;
 char *string;
 #endif /* PROTOTYPE */
-/** KeyPut -- Store a keyword for later retrieval.
-/*& pjt
-/*: user-input,command-line
+/** KeyPut -- Store a keyword for later retrieval. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyput(task,value)
@@ -301,7 +287,8 @@ char *string;
 
    Output:
      (none)
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *s, *key;
@@ -411,9 +398,9 @@ void keyini_c(argc, argv)
 int argc;
 char *argv[];
 #endif /* PROTOTYPE */
-/** KeyIni_c -- Initialise the `key' routines (C version).
-/*& pjt
-/*: user-input, command-line
+/** KeyIni_c -- Initialise the `key' routines (C version). */
+/*& pjt */
+/*: user-input, command-line */
 /*+
 
         void keyini_c(int argc, char *argv[])
@@ -424,8 +411,8 @@ char *argv[];
 
     NOTE:  This has a different calling sequence than the Fortran
     version.
-
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *task;
@@ -485,9 +472,9 @@ void keyfin_c(void)
 #else
 void keyfin_c()
 #endif /* PROTOTYPE */
-/** KeyFin -- Finish access to the 'key' routines.
-/*& pjt
-/*: user-input,command-line
+/** KeyFin -- Finish access to the 'key' routines. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyfin
@@ -495,7 +482,8 @@ void keyfin_c()
    A call to KeyFin indicates that all of the parameters that the
    program wants have been retrieved from the command line.  KeyFin
    makes sure all command line parameters have been read.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char errmsg[MAXSTRING];
@@ -535,9 +523,9 @@ int keyprsnt_c(Const char *keyword)
 int keyprsnt_c(keyword)
 Const char *keyword;
 #endif /* PROTOTYPE */
-/** KeyPrsnt -- Determine if a keyword is present on the command line.
-/*& pjt
-/*: user-input,command-line
+/** KeyPrsnt -- Determine if a keyword is present on the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         logical function keyprsnt(key)
@@ -550,8 +538,8 @@ Const char *keyword;
 
    Output:
      keyprsnt   Is .TRUE. if the keyword is present; .FALSE. otherwise.
-
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     int isPresent;
@@ -574,9 +562,9 @@ Const char *keyword;
 char *value;
 Const char *keydef;
 #endif /* PROTOTYPE */
-/** Keya -- Retrieve a character string from the command line.
-/*& pjt
-/*: user-input,command-line
+/** Keya -- Retrieve a character string from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keya(key,value,default)
@@ -592,7 +580,8 @@ Const char *keydef;
                 present on the command line.
    Output:
      value      The returned value.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *s;
@@ -611,9 +600,9 @@ Const char *keyword;
 char *value;
 Const char *keydef;
 #endif /* PROTOTYPE */
-/** Keyf -- Retrieve a file name (with wildcards) from the command line.
-/*& pjt
-/*: user-input,command-line
+/** Keyf -- Retrieve a file name (with wildcards) from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyf(key,value,default)
@@ -629,7 +618,8 @@ Const char *keydef;
                 present on the command line.
    Output:
      value      The returned value.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *s;
@@ -649,9 +639,9 @@ Const char *keyword;
 double *value;
 double keydef;
 #endif /* PROTOTYPE */
-/** Keyd -- Retrieve a double precision from the command line.
-/*& pjt
-/*: user-input,command-line
+/** Keyd -- Retrieve a double precision from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyd(key,value,default)
@@ -667,7 +657,8 @@ double keydef;
                 present on the command line.
    Output:
      value      The returned value.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *s, *ptr;
@@ -697,9 +688,9 @@ Const char *keyword;
 float *value;
 float keydef;
 #endif /* PROTOTYPE */
-/** Keyr -- Retrieve a real value from the command line.
-/*& pjt
-/*: user-input,command-line
+/** Keyr -- Retrieve a real value from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyr(key,value,default)
@@ -715,7 +706,8 @@ float keydef;
                 present on the command line.
    Output:
      value      The returned value.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     double retval, defval;
@@ -735,9 +727,9 @@ Const char *keyword;
 int *value;
 int keydef;
 #endif /* PROTOTYPE */
-/** Keyi -- Retrieve an integer from the command line.
-/*& pjt
-/*: user-input,command-line
+/** Keyi -- Retrieve an integer from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyi(key,value,default)
@@ -755,7 +747,8 @@ int keydef;
                 present on the command line.
    Output:
      value      The returned value.
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char *s, *ptr;
@@ -798,9 +791,9 @@ Const char *keyword;
 int *value;
 int keydef;
 #endif /* PROTOTYPE */
-/** keyl -- Retrieve a logical value from the command line.
-/*& pjt
-/*: user-input,command-line
+/** keyl -- Retrieve a logical value from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine keyl(key,value,default)
@@ -819,8 +812,8 @@ int keydef;
               present on the command line.
    Output:
      value    The returned value.
-
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     char string[MAXSTRING];
@@ -913,9 +906,9 @@ double value[];
 int nmax;
 int *n;
 #endif /* PROTOTYPE */
-/** MKeyd -- Retrieve multiple double values from the command line.
-/*& pjt
-/*: user-input,command-line
+/** MKeyd -- Retrieve multiple double values from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine mkeyd(key,value,nmax,n)
@@ -933,7 +926,8 @@ int *n;
    Output:
      n          The number of values returned.
      value      The returned values
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     MULTIGET(keyd_c, 0.0, "MKeyD");
@@ -950,9 +944,9 @@ float value[];
 int nmax;
 int *n;
 #endif /* PROTOTYPE */
-/** MKeyr -- Retrieve multiple real values from the command line.
-/*& pjt
-/*: user-input,command-line
+/** MKeyr -- Retrieve multiple real values from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine mkeyr(key,value,nmax,n)
@@ -970,7 +964,8 @@ int *n;
    Output:
      n          The number of values returned.
      value      The returned values
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     MULTIGET(keyr_c, 0.0, "MKeyR");
@@ -987,9 +982,9 @@ int value[];
 int nmax;
 int *n;
 #endif /* PROTOTYPE */
-/** MKeyi -- Retrieve multiple integer values from the command line.
-/*& pjt
-/*: user-input,command-line
+/** MKeyi -- Retrieve multiple integer values from the command line. */
+/*& pjt */
+/*: user-input,command-line */
 /*+ FORTRAN call sequence:
 
         subroutine mkeyi(key,value,nmax,n)
@@ -1007,7 +1002,8 @@ int *n;
    Output:
      n          The number of values returned.
      value      The returned values
-/*--
+ */
+/*--*/
 /*---------------------------------------------------------------------*/
 {
     MULTIGET(keyi_c, 0, "MKeyI");

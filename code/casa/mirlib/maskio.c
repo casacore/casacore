@@ -1,32 +1,3 @@
-/*
-    maskio.c: Routines to read miriad mask files for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /************************************************************************/
 /*									*/
 /*	A package of routines to read and write masks (bitmaps)		*/
@@ -43,15 +14,19 @@
 /*    rjs   3mar93   Make mkflush a user-callable routine.		*/
 /*    rjs  23dec93   Do not open in read/write mode unless necessary.	*/
 /*    rjs   6nov94   Change item handle to an integer.			*/
+/*    rjs  19apr97   Handle FORTRAN LOGICALs better. Some tidying.      */
 /************************************************************************/
 
 #define BUG(sev,a)   bug_c(sev,a)
 #define ERROR(sev,a) bug_c(sev,((void)sprintf a,message))
 #define CHECK(x) if(x) bugno_c('f',x)
-
 #define private static
 
-char *sprintf();
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 private void mkfill();
 void mkflush_c();
 
@@ -59,7 +34,7 @@ static char message[128];
 
 #define BITS_PER_INT 31
 
-int bits[BITS_PER_INT] = {
+static int bits[BITS_PER_INT] = {
 		0x00000001,0x00000002,0x00000004,0x00000008,
 		0x00000010,0x00000020,0x00000040,0x00000080,
 		0x00000100,0x00000200,0x00000400,0x00000800,
@@ -69,7 +44,7 @@ int bits[BITS_PER_INT] = {
 		0x01000000,0x02000000,0x04000000,0x08000000,
 		0x10000000,0x20000000,0x40000000};
 
-int masks[BITS_PER_INT+1]={
+static int masks[BITS_PER_INT+1]={
 		0x00000000,0x00000001,0x00000003,0x00000007,0x0000000F,
 			   0x0000001F,0x0000003F,0x0000007F,0x000000FF,
 			   0x000001FF,0x000003FF,0x000007FF,0x00000FFF,
@@ -80,8 +55,6 @@ int masks[BITS_PER_INT+1]={
 			   0x1FFFFFFF,0x3FFFFFFF,0x7FFFFFFF};
 
 #include "io.h"
-
-char *malloc();
 
 #define MK_FLAGS 1
 #define MK_RUNS 2
@@ -325,8 +298,9 @@ int offset,n,*flags,nsize;
         blen = min( BITS_PER_INT - boff,len);
         bitmask = *buf;
         for(i=boff; i<boff+blen; i++){
-	  if(*flags++ == FORT_FALSE) bitmask &= ~bits[i];
-	  else			     bitmask |=  bits[i];
+	  if(FORT_LOGICAL(*flags)) bitmask |=  bits[i];
+	  else			       bitmask &= ~bits[i];
+	  flags++;
         }
         *buf++ = bitmask;
         len -= blen;

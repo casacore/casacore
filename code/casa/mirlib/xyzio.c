@@ -1,32 +1,3 @@
-/*
-    xyzio.c: Routines to read and write an image dataset for miriad library.
-    Copyright (C) 1999,2001
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /*******************************************************************************
 
  Routines to read and write an image dataset
@@ -60,7 +31,16 @@
                      6 nov image handles are no longer in sequence.
      bpw  12-feb-96  follow rjs to eliminate nested comments (without using
                      tabs)
-     dar  13-mar-96  Changed "buffe" to "buffer" in get_buflen
+     bpw  12-jun-98  for zero(1,tno) set whole cube mask to FALSE
+     pjt  16-nov-00  Fixed a pretty serious problem of bpw mixing up | w/ ||
+     	             and & w/ &&.
+                     Also forced initialized of mask due, there were some
+                     side-effects here too if no mask was present
+                     (note xyzio writes a mask, even if full mask ok)
+     pjt  11-jun-01  added rjs' 10-jan-96 code changes that seemed lost
+		     "Correct comparision bug in bufferallocation routine." 
+
+
 *******************************************************************************/
 
 /******************************************************************************/
@@ -244,7 +224,7 @@ int  *naxis, axlen[];
     if( access == OLD ) {
         rdhdi_c( tno, "naxis", naxis, 0 );
         if( *naxis > n_axis ) bug_c('f',"xyzopen: Too many axes for this task");
-        if( *naxis<=0|*naxis>MAXNAX ) bug_c('f',"xyzopen: Bad number of axes");
+        if( *naxis<=0||*naxis>MAXNAX ) bug_c('f',"xyzopen: Bad number of axes");
         for( cubesize=1, d=0; d<*naxis; d++ ) {
             axes[5]++; rdhdi_c( tno, axes, &axlen[d], 0 );
             if( axlen[d] <= 0 ) bug_c( 'f', "xyzopen: Bad image dimension" );
@@ -305,7 +285,7 @@ int tno;
     if( imgs[tno].mask ) mkclose_c( imgs[tno].mask );
     hclose_c( tno );
     ntno--;
-    if( ntno == 0 & !neverfree ) {
+    if( ntno == 0 && !neverfree ) {
         free( buffer ); buffer = NULL;
         free( mbuffr ); mbuffr = NULL;
     }
@@ -607,7 +587,7 @@ int coords[];
     dim_sub = dimsub[tno];
     naxes   = bufs[tno].naxis;
     offset  = subcubenr * bufs[tno].cubesize[dim_sub];
-    if( offset < 0 | offset >= bufs[tno].cubesize[naxes] )
+    if( offset < 0 || offset >= bufs[tno].cubesize[naxes] )
         bug_c( 'f', "xyzs2c: Subcube lies outside cube" );
     p2c( offset, bufs[tno].axlen, bufs[tno].cubesize, naxes, coo );
     dim = dim_sub+1;
@@ -669,7 +649,7 @@ int *subcubenr;
          coo[axnum[tno][dim+dim_sub+1]] = coords[dim] - imgs[tno].blc[dim] - 1;
          dim++; }
     offset = c2p( coo, bufs[tno].cubesize, naxes );
-    if( offset < 0 | offset >= bufs[tno].cubesize[naxes] )
+    if( offset < 0 || offset >= bufs[tno].cubesize[naxes] )
         bug_c( 'f', "xyzc2s: Coordinates lie outside cube" );
     *subcubenr = offset / bufs[tno].cubesize[dim_sub];
 
@@ -809,7 +789,7 @@ int   *mask;
     void manage_buffer();
     /*$$if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );$$*/
     virpix_off = pixelnr - 1;
-    if( virpix_off < bufs[tno].filfir | virpix_off > bufs[tno].fillas ) {
+    if( virpix_off < bufs[tno].filfir || virpix_off > bufs[tno].fillas ) {
         MODE=GET; manage_buffer( tno, virpix_off );
     }
     *data = *( buffer + bufs[tno].bufstart + virpix_off );
@@ -1028,7 +1008,7 @@ int   *mask;
     void manage_buffer();
     /*$$if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );$$*/
     virpix_off = pixelnr - 1;
-    if( virpix_off < bufs[tno].filfir | virpix_off > bufs[tno].fillas ) {
+    if( virpix_off < bufs[tno].filfir || virpix_off > bufs[tno].fillas ) {
         MODE=PUT; manage_buffer( tno, virpix_off );
     }
     *( buffer + bufs[tno].bufstart + virpix_off ) = *data;
@@ -1156,11 +1136,12 @@ int    dim_sub;
     void   copy_to_one_d();
     int    i, coo[ARRSIZ], next;
 
+
     virpix_lst = virpix_off + bufs[tno].cubesize[dim_sub] - 1;
     if( MODE==GET ) *ndata = bufs[tno].cubesize[dim_sub];
-    if( MODE==PUT & *ndata < bufs[tno].cubesize[dim_sub] )
+    if( MODE==PUT && *ndata < bufs[tno].cubesize[dim_sub] )
         bug_c( 'f', "xyzio: Input array too small to hold subcube" );
-    if( virpix_off < bufs[tno].filfir | virpix_lst > bufs[tno].fillas ) {
+    if( virpix_off < bufs[tno].filfir || virpix_lst > bufs[tno].fillas ) {
         if(itest)printf("\nNew buffer starts at %d MODE %d\n",virpix_off,MODE);
         if( virpix_off >= bufs[tno].cubesize[bufs[tno].naxis] )   bug_c( 'f',
            "xyzio: Caller tries to access pixel outside datacube");
@@ -1224,7 +1205,9 @@ float *data;
 int   *mask;
 {
     int *mbufpt;
+
     mbufpt = mbuffr + (int)(bufptr-buffer);
+
     if(        DIR == UP ) {
       if( MODE==GET ) {
         while( bufptr<=bufend ) { *data++ = *bufptr++; *mask++ = *mbufpt++; }}
@@ -1402,8 +1385,7 @@ int get_buflen()
       }
     }
     try = (ntno+1) * maxsize;
-
-    if( (buffer ==NULL) | (try>currentallocation) ) try = bufferallocation(try);
+    if( (buffer==NULL) || (try>currentallocation) ) try = bufferallocation(try);
     allocatebuffer = FALSE;
 
     buffersize = try / (ntno+1);
@@ -1432,7 +1414,9 @@ int n;
 
     n  = ( (n < MAXBUF) ? n : MAXBUF );
     n *= 2;
-    while( ( (buffer == NULL) | (mbuffr == NULL) ) & (n>1) ) {
+    while( ( (buffer == NULL) || (mbuffr == NULL) ) && (n>1) ) {
+	if( buffer != NULL ) { free( buffer ); buffer = NULL; }
+        if( mbuffr != NULL ) { free( mbuffr ); mbuffr = NULL; }
         n /= 2;
         if(itest)printf("try %d\n",n);
         buffer = (float *)malloc((unsigned)(n*sizeof(float)));
@@ -1556,7 +1540,7 @@ int  start, last;
                 imgsaxlen, imgscubesize, imgsblc, imgstrc, naxes );
     do_io = FALSE;
     for( dim=1; dim<=naxes && !do_io; dim++ ) {
-        do_io = (  bufs[tno].lower[ dim ] <= imgsupp[ axnumr[dim] ]  )  |
+        do_io = (  bufs[tno].lower[ dim ] <= imgsupp[ axnumr[dim] ]  )  ||
                 (  bufs[tno].upper[ dim ] >= imgslow[ axnumr[dim] ]  );
     }
     if(itest) limprint( "i-ocub", imgslow, imgsupp );
@@ -1642,8 +1626,8 @@ int tno;
 int start, last;
 {
     int length, begin;
-    int bufstart;
-    int iostat;
+    int bufstart, *buf;
+    int i,iostat;
 
     nio++;
     if(itest) printf( "Read %d values: %d to %d\n", last-start+1, start, last );
@@ -1654,10 +1638,14 @@ int start, last;
 /*  hgrab_c(  imgs[tno].itno,(char *)(buffer+bufstart),begin,length,&iostat );*/
     hreadr_c( imgs[tno].itno,(char *)(buffer+bufstart),begin,length,&iostat );
     check(iostat);
+    length = last - start + 1;
+    begin  = start;
     if( imgs[tno].mask ) {
-       length = last - start + 1;
-       begin  = start;
        mkread_c( imgs[tno].mask,1,mbuffr+bufstart,begin,length,length );
+    } else {
+       buf = mbuffr+bufstart;
+       for (i=0; i<length; i++)
+	 buf[i] = FORT_TRUE;
     }
 
     if(vtest){ for( i=0; i<last-start+1; i++ ) {
@@ -1775,7 +1763,7 @@ int *newstart;
     while( bufptr <= bufend ) {
         if( coords[1] <= imgsupper[1] ) {
     /*$$if(rtest)testsearch(1,coords,start+bufptr-buffer,bufoff-buffir);$$*/
-            if( buffir <= bufoff & bufoff <= buflas ) {
+            if( buffir <= bufoff && bufoff <= buflas ) {
                 if( to_in ) { *(buffer+bufoff) = *bufptr;
                               *(mbuffr+bufoff) = *mbufpt; }
                 else        { *bufptr = *(buffer+bufoff);
@@ -1792,7 +1780,7 @@ int *newstart;
             /*$$if(rtest) testsearch(0,coords,0,0);$$*/
             coords[1] = imgslower[1];
             d=2; while( d<=naxes ) {
-                if( coords[d] == imgsupper[d] | coords[d] == imgstrc[d] )
+                if( coords[d] == imgsupper[d] || coords[d] == imgstrc[d] )
                      { coords[d] = imgslower[d]; }
                 else { coords[d]++; break;       }
                 d++;
@@ -1833,6 +1821,7 @@ int tno;
     if(        bl_tr == 1 ) {
         start = 0;
         finis = c2p( imgsblc, imgscubesize, naxes ) - 1;
+        finis = imgscubesize[naxes] - 1;
     } else if( bl_tr == 2 ) {
         start = c2p( imgstrc, imgscubesize, naxes ) + 1;
         finis = imgscubesize[naxes] - 1;
@@ -1843,7 +1832,7 @@ int tno;
         bufend = buffer + last - start;
         mbufpt = mbuffr;
         if(itest) printf("zero part of buffer 0\n");
-        while( bufptr <= bufend ) { *bufptr++ = 0; *mbufpt++ = FORT_TRUE; }
+        while( bufptr <= bufend ) { *bufptr++ = 0.; *mbufpt++ = FORT_FALSE; }
         empty_buffer( tno, start, last );
         start = bufptr - buffer + start;
     }
@@ -2086,3 +2075,9 @@ planes      0.960   0.990   0.997   0.999   1.000
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
+
+
+
+
+
+
