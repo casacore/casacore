@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <trial/Lattices/Lattice.h>
+#include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeExprNode.h>
+#include <trial/Lattices/LatticeRegion.h>
 
 //# Forward Declarations
-class PixelRegion;
 template <class T> class Array;
 
 
@@ -132,7 +132,7 @@ template <class T> class Array;
 // </todo>
 
 
-template <class T> class LatticeExpr : public Lattice<T>
+template <class T> class LatticeExpr : public MaskedLattice<T>
 {
 public:
 
@@ -158,7 +158,16 @@ public:
    LatticeExpr<T>& operator=(const LatticeExpr<T>& other);
 
 // Make a copy of the derived object (reference semantics).
+// <group>
    virtual Lattice<T>* clone() const;
+   virtual MaskedLattice<T>* cloneML() const;
+// </group>
+
+// Has the object really a mask?
+   virtual Bool isMasked() const;
+
+// Get the region used.
+   virtual const LatticeRegion& region() const;
 
 // Returns False, as the LatticeExpr lattice is not writable.
    virtual Bool isWritable() const;
@@ -166,75 +175,27 @@ public:
 // Returns the shape of the Lattice including all degenerate axes
 // (i.e. axes with a length of one)
    virtual IPosition shape() const;
-  
-// Help the user pick a cursor for most efficient access if they only want
-// pixel values and don't care about the order or dimension of the
-// cursor. Usually the tile shape is the best cursor shape, and this can
-// be obtained using:<br>
-// <src>IPosition shape = pa.niceCursorShape()</src> where
-// <src>pa</src> is a PagedArray object.
-// <br>The default argument is the result of <src>maxPixels()</src>.
-// <group>
-   virtual IPosition niceCursorShape (uInt maxPixels) const;
-   IPosition niceCursorShape() const
-      { return niceCursorShape (maxPixels()); }
-// </group>
+
+// Return the best cursor shape.  
+   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 // Returns the coordinates of the lattice expression.
    virtual LatticeCoordinates coordinates() const;
 
-// Functions which extract an Array of values from a Lattice. All the
-// IPosition arguments must have the same number of axes as the underlying
-// Lattice, otherwise, an exception is thrown. <br>
-// The parameters are:
-// <ul>
-// <li> buffer: a <src>COWPtr<Array<T>></src> or an
-//      <src>Array<T></src>. See example two above for an examples.
-// <li> start: The starting position (or Bottom Left Corner), within 
-//      the Lattice, of the data to be extracted.
-// <li> shape: The shape of the data to be extracted.  This is not a
-//      position within the Lattice but the actual shape the buffer will 
-//      have after this function is called.  This argument added
-//      to the "start" argument should be the "Top Right Corner".
-// <li> stride: The increment for each axis.  A stride of
-//      one will return every data element, a stride of two will return
-//      every other element.  The IPosition elements may be different for
-//      each respective axis.  Thus, a stride of IPosition(3,1,2,3) says:
-//      fill the buffer with every element whose position has a first 
-//      index between start(0) and start(0)+shape(0), a second index
-//      which is every other element between start(1) and 
-//      (start(1)+shape(1))*2, and a third index of every third element 
-//      between start(2) and (start(2)+shape(2))*3.
-// <li> section: Another way of specifying the start, shape and stride
-// <li> removeDegenerateAxes: a Bool which dictates whether to remove 
-//      "empty" axis created in buffer. (e.g. extracting an n-dimensional 
-//      from an (n+1)-dimensional will fill 'buffer' with an array that 
-//      has a degenerate axis (i.e. one axis will have a length = 1.) 
-//      Setting removeDegenerateAxes = True will return a buffer with 
-//      a shape that doesn't reflect these superfluous axes.)
-// </ul>
-// 
-// The derived implementations of these functions return  'True' if <src>buffer</src> 
-// is a reference to Lattice data and 'False' if it is a copy. 
-// <group>   
-   virtual Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
-			  const IPosition& shape, const IPosition& stride, 
-			  Bool removeDegenerateAxes=False) const;
-   virtual Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section, 
-			  Bool removeDegenerateAxes=False) const;
-   virtual Bool getSlice (Array<T>& buffer, const IPosition& start,
-			  const IPosition& shape, const IPosition& stride,
-			  Bool removeDegenerateAxes=False);
-   virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
-			  Bool removeDegenerateAxes=False);
-// </group>
+// Do the actual get of the data.
+// The return value is always False, thus the buffer does not reference
+// another array.
+   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
-// An expression is not writable so these functions throw exceptions.
-// <group>   
-   virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
-			  const IPosition& stride);
-   virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
-// </group>   
+// Do the actual get of the mask data.
+// The return value is always False, thus the buffer does not reference
+// another array.
+   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
+// An expression is not writable so this functions throws an exception.
+   virtual void doPutSlice (const Array<T>& sourceBuffer,
+			    const IPosition& where,
+			    const IPosition& stride);
 
 // Copy the data from this lattice to the given lattice.
    virtual void copyDataTo (Lattice<T>& to) const;
@@ -244,6 +205,7 @@ private:
 // This class just contains an object of class LatticeExprNode. 
 // It is untemplated and does not inherit.
    LatticeExprNode expr_p;
+   LatticeRegion   region_p;       // always an empty region
 };
 
 
