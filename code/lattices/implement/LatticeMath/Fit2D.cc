@@ -1,5 +1,5 @@
 //# Fit2D.cc: Class to fit 2D objects to a Lattice or Array
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -146,9 +146,9 @@ uInt Fit2D::addModel (Fit2D::Types type,
          itsLogger << "Fit2D - illegal number of mask parameters in addModel" << LogIO::EXCEPTION;
       }
 //
-// Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 
-// 5 (pa - in radians).  
-// Convert p.a. from posititive +y -> +x to +y -> -x for Gaussian2D
+// Set parameters.  0 (flux), 1 (x), 2 (y), 3 (FWHM major), 4 (FWHM minor), 
+// 5 (pa - in radians).  Convert p.a. from positive +x -> +y
+// to +y -> -x for Gaussian2D
 //
       for (uInt i=0; i<gauss2d.nAvailableParams(); i++) {
          if (i==4) {
@@ -159,7 +159,7 @@ uInt Fit2D::addModel (Fit2D::Types type,
             gauss2d.setAvailableParam(i, AutoDiff<Double>(ratio));
          } else {
             if (i==5) {
-               Double pa = parameters(5) + C::pi_2;        // +y -> -x for Gaussian2D
+               Double pa = paToGauss2D(parameters(5));       // +y -> -x for Gaussian2D
                piRange(pa);
                gauss2d.setAvailableParam(i, AutoDiff<Double>(pa));
             } else {
@@ -561,7 +561,7 @@ Vector<Double> Fit2D::availableSolution (uInt which)
 //
       sol2(3) = major;
       sol2(4) = minor;
-      sol2(5) = pa - C::pi_2;
+      sol2(5) = paFromGauss2D(pa);
       piRange(sol2(5));
    }
 //
@@ -747,6 +747,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       return parameters;
    }
 //
+   Double t2;
    if (type==Fit2D::GAUSSIAN || type==Fit2D::DISK) {
       parameters.resize(6);
 //
@@ -764,7 +765,9 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                         sqrt( square(XXP-YYP) + 4*square(XYP) )));
       parameters(4) = sqrt(fac*(XXP + YYP -
                        sqrt( square(XXP-YYP) + 4*square(XYP) )));
-      parameters(5) = -0.5*atan2(2*XYP,YYP-XXP) + C::pi_2;           // +x -> +y
+
+      t2 = 0.5*atan2(2*XYP,YYP-XXP);
+      parameters(5) = paFromGauss2D(-t2);
       piRange(parameters(5));
 //
       Float sn = 1.0;
