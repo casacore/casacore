@@ -521,13 +521,71 @@ void SkyCompRep::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
 void SkyCompRep::visibilityLinear(Vector<DComplex> & vis, 
  				  const Vector<Double> & uvw,
  				  const Double & frequency) const {
-  // just a stub
+  DebugAssert(vis.nelements() == 4 || vis.nelements() == 0, AipsError);
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), linear(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    linear(0) = Stokes::XX;
+    linear(1) = Stokes::XY;
+    linear(2) = Stokes::YX;
+    linear(3) = Stokes::YY;
+    sc.setConversion(linear, stokes);
+  }
+  Vector<DComplex> doubleStokes(4);
+  visibility(doubleStokes, uvw, frequency);
+  Vector<Complex> singleStokes(4);
+  for (uInt i = 0; i < 4; i++) {
+    singleStokes(i) = doubleStokes(i);
+  }
+
+  Vector<Complex> singleLinear(4);
+  sc.convert(singleLinear, singleStokes);
+
+  vis.resize(4);
+  for (uInt s = 0; s < 4; s++) {
+    vis(s) = singleLinear(s);
+  }
 }
 
 void SkyCompRep::visibilityCircular(Vector<DComplex> & vis, 
  				    const Vector<Double> & uvw,
  				    const Double & frequency) const {
-  // just a stub
+  DebugAssert(vis.nelements() == 4 || vis.nelements() == 0, AipsError);
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), circular(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    circular(0) = Stokes::RR;
+    circular(1) = Stokes::RL;
+    circular(2) = Stokes::LR;
+    circular(3) = Stokes::LL;
+    sc.setConversion(circular, stokes);
+  }
+  Vector<DComplex> doubleStokes(4);
+  visibility(doubleStokes, uvw, frequency);
+  Vector<Complex> singleStokes(4);
+  for (uInt i = 0; i < 4; i++) {
+    singleStokes(i) = doubleStokes(i);
+  }
+
+  Vector<Complex> singleCircular(4);
+  sc.convert(singleCircular, singleStokes);
+
+  vis.resize(4);
+  for (uInt s = 0; s < 4; s++) {
+    vis(s) = singleCircular(s);
+  }
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
