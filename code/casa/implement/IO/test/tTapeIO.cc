@@ -1,5 +1,5 @@
 //# tTapeIO.cc: Test program for TapeIO class
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,25 +41,25 @@
 int main(int argc, char* argv[]) {
   try {
     Input inputs(1);
-    inputs.Create ("device", "", "Tape device name");
-    inputs.Create ("bytes", "32768000", "Number of bytes to transfer", 
+    inputs.create ("device", "", "Tape device name");
+    inputs.create ("bytes", "32768000", "Number of bytes to transfer", 
 		   "Int", "1-10000000000");
-    inputs.Create ("record", "32768", "Number of bytes in each record", 
+    inputs.create ("record", "32768", "Number of bytes in each record", 
 		   "Int", "1-262144");
-    inputs.Create ("check", "False", "Verify if the data read is correct", 
+    inputs.create ("check", "False", "Verify if the data read is correct", 
 		   "Bool");
-    inputs.Create ("interactive", "True", "Don't run this test automatically", 
+    inputs.create ("interactive", "True", "Don't run this test automatically", 
 		   "Bool");
-    inputs.ReadArguments (argc, argv);
+    inputs.readArguments (argc, argv);
 
-    if (inputs.GetBool("interactive") == False) {
+    if (inputs.getBool("interactive") == False) {
       cout << "UNTESTED" << endl;
       return 3;
     }
-    const Path device(inputs.GetString("device"));
-    const uInt recordSize = inputs.GetInt("record");
-    uInt totalBytes = inputs.GetInt("bytes");
-    const Bool checkContents = inputs.GetBool("check");;
+    const Path device(inputs.getString("device"));
+    const uInt recordSize = inputs.getInt("record");
+    uInt totalBytes = inputs.getInt("bytes");
+    const Bool checkContents = inputs.getBool("check");;
     const uInt nRecords = totalBytes/recordSize;
     totalBytes = nRecords * recordSize; // To account for roundoff.
     uChar* writeBuffer = new uChar[recordSize];
