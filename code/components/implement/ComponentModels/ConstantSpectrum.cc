@@ -1,5 +1,5 @@
 //# ConstantSpectrum.cc.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,17 +86,27 @@ uInt ConstantSpectrum::nParameters() const {
 }
 
 void ConstantSpectrum::setParameters(const Vector<Double>& newSpectralParms) {
-  DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
+  DebugAssert(newSpectralParms.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
   // Suppress compiler warning about unused variable
   if (&newSpectralParms == 0) {}; 
 }
 
-void ConstantSpectrum::parameters(Vector<Double>& spectralParms) const {
+Vector<Double> ConstantSpectrum::parameters() const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
+  return Vector<Double>(0);
+}
+
+void ConstantSpectrum::setErrors(const Vector<Double>& newSpectralErrs) {
+  DebugAssert(newSpectralErrs.nelements() == nParameters(), AipsError);
+  DebugAssert(ok(), AipsError);
   // Suppress compiler warning about unused variable
-  if (&spectralParms == 0) {}; 
+  if (&newSpectralErrs == 0) {}; 
+}
+
+Vector<Double> ConstantSpectrum::errors() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(0);
 }
 
 Bool ConstantSpectrum::fromRecord(String& errorMessage, 

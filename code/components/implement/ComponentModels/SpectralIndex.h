@@ -205,7 +205,9 @@ public:
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newSpectralParms);
-  virtual void parameters(Vector<Double>& spectralParms) const;
+  virtual Vector<Double> parameters() const;
+  virtual void setErrors(const Vector<Double>& newSpectralErrs);
+  virtual Vector<Double> errors() const;
   // </group>
 
   // These functions convert between a Record and a SpectralIndex. These

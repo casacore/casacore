@@ -1,5 +1,5 @@
 //# SpectralIndex.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,15 +149,30 @@ uInt SpectralIndex::nParameters() const {
 }
 
 void SpectralIndex::setParameters(const Vector<Double>& newSpectralParms) {
-  DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
+  DebugAssert(newSpectralParms.nelements() == nParameters(), AipsError);
   itsIndex = newSpectralParms(0);
   DebugAssert(ok(), AipsError);
 }
 
-void SpectralIndex::parameters(Vector<Double>& spectralParms) const {
+Vector<Double> SpectralIndex::parameters() const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
-  spectralParms(0) = itsIndex;
+  return Vector<Double>(1, itsIndex);
+}
+
+void SpectralIndex::setErrors(const Vector<Double>& newSpectralErrs) {
+  DebugAssert(newSpectralErrs.nelements() == nParameters(), AipsError);
+  if (newSpectralErrs(0) < 0.0) {
+    LogIO logErr(LogOrigin("SpectralIndex", "setErrors(...)"));
+    logErr << "The errors must be non-negative."
+	   << LogIO::EXCEPTION;
+  }
+  itsIndex = newSpectralErrs(0);
+  DebugAssert(ok(), AipsError);
+}
+
+Vector<Double> SpectralIndex::errors() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(1, itsIndex);
 }
 
 Bool SpectralIndex::fromRecord(String& errorMessage, 

@@ -42,21 +42,24 @@
 
 SpectralModel::SpectralModel()
   :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::DEFAULT),
-   itsFreqUnit("GHz")
+   itsFreqUnit("GHz"),
+   itsFreqErr(0, itsFreqUnit)
 {
   DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 SpectralModel::SpectralModel(const MFrequency& refFreq, const Unit& freqUnit)
   :itsRefFreq(refFreq),
-   itsFreqUnit(freqUnit)
+   itsFreqUnit(freqUnit),
+   itsFreqErr(0, itsFreqUnit)
 {
   DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 SpectralModel::SpectralModel(const SpectralModel& other) 
   :itsRefFreq(other.itsRefFreq),
-   itsFreqUnit(other.itsFreqUnit)
+   itsFreqUnit(other.itsFreqUnit),
+   itsFreqErr(other.itsFreqErr)
 {
   DebugAssert(SpectralModel::ok(), AipsError);
 }
@@ -65,6 +68,7 @@ SpectralModel& SpectralModel::operator=(const SpectralModel& other) {
   if (this != &other) {
     itsRefFreq = other.itsRefFreq;
     itsFreqUnit = other.itsFreqUnit;
+    itsFreqErr = other.itsFreqErr;
   }
   DebugAssert(SpectralModel::ok(), AipsError);
   return *this;
@@ -97,6 +101,20 @@ const Unit& SpectralModel::frequencyUnit() const {
 void SpectralModel::convertFrequencyUnit(const Unit& freqUnit) {
   itsFreqUnit = freqUnit;
   DebugAssert(SpectralModel::ok(), AipsError);
+}
+
+void SpectralModel::setRefFrequencyError(const Quantum<Double>& newRefFreqErr){
+  if (badError(newRefFreqErr)) {
+    LogIO logErr(LogOrigin("SpectralModel", "setRefFrequencyError"));
+    logErr << "The errors must be positive values with units like Hz"
+	   << LogIO::EXCEPTION;
+  }
+  itsFreqErr = newRefFreqErr;
+  DebugAssert(SpectralModel::ok(), AipsError);
+}
+
+const Quantum<Double>& SpectralModel::refFrequencyError() const {
+  return itsFreqErr;
 }
 
 void  SpectralModel::sample(Vector<Double>& scale, 
@@ -207,6 +225,11 @@ Bool SpectralModel::ok() const {
     return False;
   }
   return True;
+}
+
+Bool SpectralModel::badError(const Quantum<Double>& quantum) {
+  const UnitVal hz(1, "Hz");
+  return !(quantum.check(hz)) || (quantum.getValue() < 0.0);
 }
 
 // Local Variables: 

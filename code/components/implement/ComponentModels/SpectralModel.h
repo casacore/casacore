@@ -1,5 +1,5 @@
 //# SpectralModel.h: Base class for Spectral Models
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Utilities/RecordTransformable.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/Quantum.h>
 
 class RecordInterface;
 class String;
@@ -177,6 +178,16 @@ public:
   void convertFrequencyUnit(const Unit& freqUnit);
   // </group>
 
+  // set/get the error in the reference frequency. Values must be positive
+  // angular quantities otherwise an AipsError exception is thrown. The errors
+  // are usually interpreted as the 1-sigma bounds in latitude/longitude and
+  // implicitly assume a Gaussian distribution. They must have units with the
+  // same dimensions as the Hz.
+  // <group>
+  void setRefFrequencyError(const Quantum<Double>& newRefFreqErr);
+  const Quantum<Double>& refFrequencyError() const;
+  // </group>
+
   // Return the scaling factor that indicates what proportion of the flux is at
   // the specified frequency. ie. if the centreFrequency argument is the
   // reference frequency then this function will always return one. At other
@@ -202,7 +213,9 @@ public:
   // <group>
   virtual uInt nParameters() const = 0;
   virtual void setParameters(const Vector<Double>& newParms) = 0;
-  virtual void parameters(Vector<Double>& compParms) const = 0;
+  virtual Vector<Double> parameters() const = 0;
+  virtual void setErrors(const Vector<Double>& newErrors) = 0;
+  virtual Vector<Double> errors() const = 0;
   // </group>
 
   // These functions convert between a record and a SpectralModel. This way
@@ -262,11 +275,16 @@ protected:
   SpectralModel& operator=(const SpectralModel& other);
   // </group>
 
+  // returns True if the quantum is not a non-negative quantity with units
+  // dimensionally identical to the Hz
+  static Bool badError(const Quantum<Double>& quantum);
+
 private:
   //# The reference frequency of the spectral model
   MFrequency itsRefFreq;
   //# the units (Hz, GHz etc.) that the record functions should use for the
   //# reference frequency. 
   Unit itsFreqUnit;
+  Quantity itsFreqErr;
 };
 #endif
