@@ -37,7 +37,7 @@
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/MVBaseline.h>
 #include <aips/Measures/MPosition.h>
-#include <aips/Measures/MCuvw.h>
+#include <trial/Measures/MCuvw.h>
 #include <aips/Measures/Muvw.h>
 #include <aips/Quanta/MVuvw.h>
 #include <aips/Measures/MCFrame.h>
