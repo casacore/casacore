@@ -1,5 +1,5 @@
 //# SDSpWindowFiller.h: fills the SPECTRAL_WINDOW table for the SDFITS filler
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,7 +107,7 @@ public:
     void resetRow(const Record &);
     
     // fill - a circular buffer of last 100 spectral windows is checked
-    void fill(const Record &row, const Vector<Double> &frequency, Double originalFreqAtPix0,
+    void fill(const Record &row, const Vector<Double> &frequency, Double refFrequency,
 	      Double originalFreqDelt, Int freqRefType);
 
     // get the current spWindow ID

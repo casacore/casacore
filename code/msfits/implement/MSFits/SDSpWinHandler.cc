@@ -1,5 +1,5 @@
 //# SDSpWindowFiller.cc: an SPECTRAL_WINDOW filler for SDFITS data  
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,7 +139,7 @@ void SDSpWindowHandler::resetRow(const Record &row)
 }
 
 void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
-			     Double originalFreqAtPix0, Double originalFreqDelt,
+			     Double refFrequency, Double originalFreqDelt,
 			     Int freqRefType)
 {
     // don't bother unless there is something there
@@ -228,7 +228,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 	    if (spWinIdField_p.isAttached() && *spWinIdField_p >= 0 && uInt(*spWinIdField_p) < msSpWin_p->nrow()) {
 		Int rownr = *spWinIdField_p;
 		found = msSpWinCols_p->numChan()(rownr) == nchan;
-		found = found && msSpWinCols_p->refFrequency()(rownr) == 0.0;
+		found = found && msSpWinCols_p->refFrequency()(rownr) == refFrequency;
 		// for SDFITS, these test should be sufficient - i.e. only necessary to look
 		// around the first and last channels, not all of them
 		if (found) {
@@ -263,7 +263,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 		msSpWin_p->addRow();
 		msSpWinCols_p->numChan().put(rownr_p, nchan);
 		msSpWinCols_p->name().put(rownr_p, "");
-		msSpWinCols_p->refFrequency().put(rownr_p, 0.0);
+		msSpWinCols_p->refFrequency().put(rownr_p, refFrequency);
 		msSpWinCols_p->chanFreq().put(rownr_p, frequency);
 		msSpWinCols_p->chanWidth().put(rownr_p, chWidth);
 		msSpWinCols_p->measFreqRef().put(rownr_p, freqRefType);
