@@ -45,9 +45,10 @@ StokesConverter::StokesConverter() {}
 
 StokesConverter::~StokesConverter() {}
 
-StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in)
+StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in,
+				 Bool rescale)
 {
-  setConversion(out,in);
+  setConversion(out,in,rescale);
 }
 
 StokesConverter::StokesConverter(const StokesConverter& other)
@@ -58,14 +59,16 @@ StokesConverter::StokesConverter(const StokesConverter& other)
 StokesConverter& StokesConverter::operator=(const StokesConverter& other)
 {
   if (this!=&other) {
-    setConversion(other.out_p,other.in_p);
+    setConversion(other.out_p,other.in_p,other.rescale_p);
   }
   return *this;
 }
 
 void StokesConverter::setConversion(const Vector<Int>& out, 
-				    const Vector<Int>& in)
+				    const Vector<Int>& in,
+				    Bool rescale)
 {
+  rescale_p=rescale;
   doIQUV_p=False;
   initConvMatrix();
   Int nIn=in.nelements();
@@ -76,12 +79,18 @@ void StokesConverter::setConversion(const Vector<Int>& out,
   in_p=in;
   conv_p.resize(nOut,nIn);
   flagConv_p.resize(nOut,nIn);
-  // analyze the input: for now we assume it will either be 
-  // some linears (XX, XY, YX, YY) or some circulars (RR, RL, LR, RR)
-  // other cases are not yet handled.
+  wtConv_p.resize(nOut,nIn);
+  // Set up the fudge factors for crosscorrelation data that has been 
+  // scaled to the level of Stokes I.
+  Vector<Float> factor(Stokes::YL+1,1.0);
+  if (rescale) {
+    for (uInt i=Stokes::RR; i<=Stokes::YY; i++) factor(i)=0.5;
+    for (uInt i=Stokes::RX; i<=Stokes::YL; i++) factor(i)=sqrt(2)/4.0;
+  }
+  // analyze the input - all inputs have to be in the same frame
   Bool linear=False, circular=False, iquv=False, circlin=False, lincirc=False;
   Int count=0;
-  {for (Int i=0; i<nIn; i++) {
+  for (Int i=0; i<nIn; i++) {
     if (in(i)>=Stokes::I && in(i) <=Stokes::V) {
       if (!iquv) count++;
       iquv=True;
@@ -102,7 +111,7 @@ void StokesConverter::setConversion(const Vector<Int>& out,
       if (!lincirc) count++;
       lincirc=True;
     }
-  }}
+  }
   if (count==0) {
     throw(AipsError("StokesConverter::setConversion - input polarization"
 		    " frame not supported"));
@@ -113,10 +122,11 @@ void StokesConverter::setConversion(const Vector<Int>& out,
   }
   // set up the conversion matrix
   for (Int i=0; i<nOut; i++) {
-    if (out(i)<Stokes::PP) {
+    if (out(i)>0 && out(i)<=Stokes::YL) {
       for (Int j=0; j<nIn; j++) { 
-	conv_p(i,j)=polConv_p(out(i)-1,in(j)-1);
+	conv_p(i,j)=polConv_p(out(i)-1,in(j)-1)*(factor(in(j))/factor(out(i)));
 	flagConv_p(i,j)=(conv_p(i,j)!=Complex(0.));
+	wtConv_p(i,j)=abs(conv_p(i,j));
       }
     } else {
       // if output has Ptotal, Plinear or Pangle (or PFtotal, PFlinear), we
@@ -127,7 +137,7 @@ void StokesConverter::setConversion(const Vector<Int>& out,
 	  iquvConv_p.resize(4,nIn);
 	  for (Int j=0; j<nIn; j++) {
 	    for (Int k=0; k<4; k++) {
-	      iquvConv_p(k,j)=polConv_p(k,in(j)-1);
+	      iquvConv_p(k,j)=polConv_p(k,in(j)-1)*factor(in(j));
 	    }
 	  }
 	}
@@ -137,19 +147,27 @@ void StokesConverter::setConversion(const Vector<Int>& out,
 	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.) ||
 				   iquvConv_p(3,j)!=Complex(0.));
+	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
+	      abs(iquvConv_p(3,j));
 	    break;
 	  case Stokes::Plinear:
 	  case Stokes::Pangle: 
 	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
+	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j));
 	    break;
 	  case Stokes::PFtotal:
 	    flagConv_p(i,j)=True;
+	    // not certain how to compute the weight for this one
+	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
+	      abs(iquvConv_p(3,j));
 	    break;
 	  case Stokes::PFlinear:
 	    flagConv_p(i,j)=(iquvConv_p(0,j)!=Complex(0.) ||
 				   iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
+	    // not certain how to compute the weight for this one
+	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j));
 	    break;
 	  default:
 	    break;
@@ -264,7 +282,7 @@ void StokesConverter::initConvMatrix()
   }
 }
 
-void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
+void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in) const
 {
   IPosition outShape(in.shape()); outShape(0)=out_p.nelements();
   Int nDim=in.ndim();
@@ -346,7 +364,7 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 }
 
 
-void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in)
+void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in) const
 {
   IPosition outShape(in.shape()); outShape(0)=out_p.nelements();
   out.resize(outShape);
@@ -369,7 +387,27 @@ void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in)
   }
 }
 
-void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in)
+void StokesConverter::convert(Array<Float>& out, const Array<Float>& in) const
+{
+  IPosition outShape(in.shape()); outShape(0)=out_p.nelements();
+  out.resize(outShape);
+  Int nCorrIn=in.shape()(0);
+  DebugAssert(nCorrIn==Int(in_p.nelements()),AipsError);
+  Matrix<Float> inMat=in.reform(IPosition(2,nCorrIn,in.nelements()/nCorrIn));
+  
+  Matrix<Float> outMat=out.reform(IPosition(2,outShape(0),
+					   out.nelements()/outShape(0)));
+  for (uInt i=0; i<out_p.nelements(); i++) {
+    for (uInt j=0; j<inMat.ncolumn(); j++) {
+      outMat(i,j)=0.0;
+      for (Int k=0; k<nCorrIn; k++) {
+	outMat(i,j)+=wtConv_p(i,k)*inMat(k,j);
+      }
+    }
+  }
+}
+
+void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in) const
 {
   IPosition outShape(in.shape()); outShape(0)=in_p.nelements();
   out.resize(outShape);
