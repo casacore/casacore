@@ -912,8 +912,10 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
    worldOut.resize(nWorld,False);
    pixelOut.resize(nPixel,False);
 //   
+   Bool noPixelAxes = True;
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i)) {
+         noPixelAxes = False;
 //
 // There is always a world axis for a pixel axis
 //
@@ -924,14 +926,21 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
          }
       }
    }
+   Bool noWorldAxes = True;
    for (uInt i=0; i<nWorld; i++) {
       if (worldAxes(i)) {
+         noWorldAxes = False;
          Int pixelAxis = worldAxisToPixelAxis(i);
          if (pixelAxis!=-1 && pixelAxes(pixelAxis)) {
             set_error("CoordinateSystem::toMix - duplicate world/pixel axes");
             return False;
          }
       }
+   }
+//
+   if (noPixelAxes && noWorldAxes) {
+      set_error ("CoordinateSYstem::toMix - you specified no pixel and no world axes");
+      return False;
    }
 // 
 // Convert pixels to world, except for DirectionCoordinate
