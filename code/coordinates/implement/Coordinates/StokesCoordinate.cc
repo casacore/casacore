@@ -105,7 +105,7 @@ uInt StokesCoordinate::nWorldAxes() const
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-    Double world;
+    static Double world;
     if (toWorld (world, static_cast<Double>(pixel))) {
        stokes = Stokes::type(values_p[pixel]);
        return True;
@@ -116,7 +116,7 @@ Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 
 Bool StokesCoordinate::toPixel(Int& pixel, Stokes::StokesTypes stokes) const
 {
-    Double tmp;
+    static Double tmp;
     if (toPixel(tmp, static_cast<Double>(stokes))) {
        pixel = Int(tmp + 0.5);    
        return True;
@@ -131,7 +131,7 @@ Bool StokesCoordinate::toWorld(Vector<Double>& world,
     AlwaysAssert(pixel.nelements()==1, AipsError);
     if (world.nelements()!=1) world.resize(1);
 //
-    Double tmp;
+    static Double tmp;
     if (toWorld(tmp, pixel(0))) {
        world(0) = tmp;
        return True;
@@ -146,7 +146,7 @@ Bool StokesCoordinate::toPixel(Vector<Double> &pixel,
     AlwaysAssert(world.nelements()==1, AipsError);
     if (pixel.nelements()!=1) pixel.resize(1);
 //
-    Double tmp;
+    static Double tmp;
     if (toPixel(tmp, world(0))) {
        pixel(0) = tmp;
        return True;
@@ -164,12 +164,11 @@ Stokes::StokesTypes StokesCoordinate::toWorld (Double world)
 {
     Int i = Int(world + 0.5);
     if (i < 0 ||  i>=Stokes::NumberOfTypes) {
-       throw(AipsError("Invalid StokesCoordinate world value"));
+       return Stokes::Undefined;
     }
 //
     return static_cast<Stokes::StokesTypes>(i);
 }
-
 
 
 Vector<Int> StokesCoordinate::stokes() const
@@ -252,7 +251,7 @@ Vector<Double> StokesCoordinate::referenceValue() const
 
 Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = (names.nelements()==1);
+    Bool ok = names.nelements()==1;
     if (!ok) {
        set_error ("names vector must be of length 1");
     } else {
@@ -355,7 +354,7 @@ Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 
 {
-    Bool ok = (!container.isDefined(fieldName));
+    Bool ok = !container.isDefined(fieldName);
     if (ok) {
 	Record subrec;
 	subrec.define("axes", worldAxisNames());
@@ -462,7 +461,7 @@ String StokesCoordinate::format(String& units,
                                 Coordinate::formatType,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool abs, Int, Bool) const
+                                Bool abs, Int, Bool) 
 {
    units = worldAxisUnits()(worldAxis);
    Vector<Double> tmp(1); 
@@ -559,7 +558,8 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     }
     if (!found) {
 	ostrstream os;
-        String t = Stokes::name(toWorld(world));
+        Stokes::StokesTypes t0 = toWorld(world);
+        String t = Stokes::name(t0);
 	os << "Stokes value " << t << " is not contained in this StokesCoordinate";
 	set_error(os);
 	return False;
