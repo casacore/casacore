@@ -40,8 +40,6 @@ typedef short Short;
 typedef unsigned short uShort;
 typedef int Int;
 typedef unsigned int uInt;
-typedef long long Int64;
-typedef unsigned long long uInt64;
 typedef long Long;
 typedef unsigned long uLong;
 typedef float Float;
@@ -49,20 +47,5 @@ typedef double Double;
 typedef long double lDouble;
 
 #define ToBool /* empty */
-
-/*
-// This is an inline guaranteed-correct conversion function which converts
-// to Bool any type which has meaning in a C++ logical expression.
-// Will be removed at some stage now Bool is a typedef
-// <group>
-inline Bool ToBool (Bool val) {return val;}
-inline Bool ToBool (const void *val) {return Bool(val!=0);}
-inline Bool ToBool (long val) {return Bool(val!=0);}
-inline Bool ToBool (unsigned long val) {return Bool(val!=0);}
-inline Bool ToBool (int val) {return Bool(val!=0);}
-inline Bool ToBool (unsigned int val) {return Bool(val!=0);}
-inline Bool ToBool (double val) {return Bool(val!=0.0);}
-// </group>
-*/
 
 #endif
