@@ -1059,8 +1059,9 @@ void TableParseSelect::execute (Bool setInGiving)
     if (columnNames_p.nelements() > 0) {
 	table = table.project (columnNames_p);
     }
-    //# Finally give it the given name.
+    //# Finally give it the given name (and flush it).
     if (! resultName_p.empty()) {
+        table.flush();
 	table.rename (resultName_p, Table::New);
     }
     //# Keep the table for later.
