@@ -102,11 +102,11 @@ endif
 
 # Source lists.
 #--------------
-ifdef AIPSRCS
-   AIPSINCS := $(patsubst $(AIPSRCS)/%$(comma)v,%, \
+ifdef AIPSCVS
+   AIPSINCS := $(patsubst $(AIPSCVS)/%$(comma)v,%, \
                   $(foreach PKG,$(sort $(LINK$(PACKAGE))), \
-                     $(wildcard $(AIPSRCS)/$(PKG)/implement/*.h,v) \
-                     $(wildcard $(AIPSRCS)/$(PKG)/implement/*/*.h,v)))
+                     $(wildcard $(AIPSCVS)/$(PKG)/implement/*.h) \
+                     $(wildcard $(AIPSCVS)/$(PKG)/implement/*/*.h)))
 else
    AIPSINCS := $(subst $(AIPSCODE)/,, \
                   $(foreach PKG,$(sort $(LINK$(PACKAGE))), \
@@ -135,7 +135,7 @@ ifeq "$(TEMPLATES)" "diy"
    PGMRINST := $(subst templates,inst,$(wildcard templates))
 
    ifeq "$(notdir $(CODESUBD))" "tmplinst"
-      ifdef AIPSRCS
+      ifdef AIPSCVS
          AIPSIMPS := $(notdir $(wildcard $(CODEDIR)/*.cc))
       endif
    endif
@@ -429,8 +429,9 @@ $(ARCHBIND)/depend : $(CODEINSD)/depend
 	   cp $< $@
 	-@ chmod 775 $@
 
-$(DPNDTIME) : $(addprefix $(CODEDIR)/,$(AIPSIMPS)) \
-    $(addprefix $(AIPSCODE)/,$(AIPSINCS))
+#$(DPNDTIME) : $(addprefix $(CODEDIR)/,$(AIPSIMPS)) \
+#    $(addprefix $(AIPSCODE)/,$(AIPSINCS))
+$(DPNDTIME) : $(addprefix $(CODEDIR)/,$(AIPSIMPS))
 	-@ echo ""
 	-@ $(TIMER)
 	 @ $(ARCHBIND)/depend -p $(PCKGMOD) \
