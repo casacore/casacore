@@ -248,7 +248,7 @@ void MVAngle::print(ostream &oss,
     };
     if (inprec == 0) inprec = oss.precision();
     Char sfill = oss.fill();
-    t1 = 0.5;
+    t1 = 1.0;
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
     if (inprec > 6) t1 /= pow(10., Double(inprec-6));
@@ -262,8 +262,8 @@ void MVAngle::print(ostream &oss,
 	  oss << ' ';
 	};
     };
-    t = abs(t);
-    t += t1;
+    t = abs(floor(t/t1+0.5)*t1);
+    ///    t += t1;
     Int h = ifloor(t);
     if ((intyp & MVAngle::NO_D) != MVAngle::NO_D) {
 	if (i1 == MVAngle::ANGLE) {
@@ -317,7 +317,7 @@ void MVAngle::print(ostream &oss,
 	oss << setfill('0') << setw(2) << h;
     };
     if (inprec > 6) {
-      t -= 59.9*t1;
+      ///     t -= 59.9*t1;
       t = fmod(t, 1.0) *60.;
       Int oprec = oss.precision();
       Long oldb = oss.setf(ios::fixed,ios::floatfield);
