@@ -1,5 +1,5 @@
 //# MeasConvert.cc:  Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,14 @@
 template<class M>
 MeasConvert<M>::MeasConvert() :
   model(0), unit(), outref(), 
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const MeasConvert<M> &other) :
   model(0), unit(), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   copy(other);
 }
@@ -58,7 +58,7 @@ MeasConvert<M> &MeasConvert<M>::operator=(const MeasConvert<M> &other) {
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep) :
   model(0), unit(ep.unit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(ep);
   create();
@@ -67,7 +67,7 @@ MeasConvert<M>::MeasConvert(const M &ep) :
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep, const typename M::Ref &mr) :
   model(0), unit(ep.unit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(ep);
   outref = mr;
@@ -77,7 +77,7 @@ MeasConvert<M>::MeasConvert(const M &ep, const typename M::Ref &mr) :
 template<class M>
 MeasConvert<M>::MeasConvert(const Measure &ep, const typename M::Ref &mr) :
   model(0), unit(ep.getUnit()), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = ep.clone();
   outref = mr;
@@ -87,7 +87,7 @@ MeasConvert<M>::MeasConvert(const Measure &ep, const typename M::Ref &mr) :
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
   model(0), unit(ep.unit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(ep);
   outref = typename M::Ref(mr);
@@ -97,7 +97,7 @@ MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
 template<class M>
 MeasConvert<M>::MeasConvert(const Measure &ep, typename M::Types mr) :
   model(0), unit(ep.getUnit()), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = ep.clone();
   outref = typename M::Ref(mr);
@@ -108,7 +108,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), mrin);
   outref = mr;
@@ -119,7 +119,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
 			    typename M::Types mr) :
   model(0), unit(), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), mrin);
   outref = typename M::Ref(mr);
@@ -130,7 +130,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(typename M::Types mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), typename M::Ref(mrin));
   outref = mr;
@@ -141,7 +141,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(typename M::Types mrin,
 			    typename M::Types mr) :
   model(0), unit(), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M(typename M::MVType(), typename M::Ref(mrin));
   outref = typename M::Ref(mr);
@@ -152,7 +152,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(inunit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), mrin);
   outref = mr;
@@ -163,7 +163,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
 			    typename M::Types mr) :
   model(0), unit(inunit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), mrin);
   outref = typename M::Ref(mr);
@@ -174,7 +174,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(inunit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), typename M::Ref(mrin));
   outref = mr;
@@ -185,7 +185,7 @@ template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
 			    typename M::Types mr) :
   model(0), unit(inunit), outref(),
-  offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   model = new M( typename M::MVType(), typename M::Ref(mrin));
   outref = typename M::Ref(mr);
@@ -293,6 +293,7 @@ void MeasConvert<M>::clear() {
   unit = Unit();
   outref = typename M::Ref();
   crout.resize(0, True);
+  crtype = 0;
   cvdat->clearConvert();
   delete cvdat; cvdat = 0;
   delete offin; offin = 0;
@@ -317,6 +318,11 @@ template<class M>
 void MeasConvert<M>::addMethod(uInt method) {
   crout.resize(crout.nelements() + 1);
   crout[crout.nelements() - 1] = method;
+}
+
+template<class M>
+void MeasConvert<M>::addFrameType(uInt tp) {
+  crtype |= tp;
 }
 
 template<class M>
@@ -363,6 +369,7 @@ void MeasConvert<M>::create() {
     };
   };
   crout.resize(0, True);
+  crtype = 0;
   // Make sure a reference given
   if (model && model->getRefPtr()->empty()) {
     ((MeasBase<typename M::MVType, typename M::Ref > *)model)

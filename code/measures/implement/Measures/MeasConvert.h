@@ -220,6 +220,8 @@ public:
   
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
   virtual void addMethod(uInt method);
+  // Add the frame type (Note: tp should be an MeasFrame::FrameType)
+  void addFrameType(uInt tp);
   // Get number of methods
   virtual Int nMethod() const;
   // Get method
@@ -243,6 +245,8 @@ private:
   typename M::MVType *offout;
   // Vector of conversion routines (length variable)
   Block<uInt> crout;
+  // Coded (with MeasFrame::FrameTypes) frames used in conversion
+  uInt crtype;
   // Local conversion data
   MCBase *cvdat;
   // Cyclic buffer for return values
