@@ -92,10 +92,10 @@ public:
   // to specify the template
   // (use this instead of the actual images, which may be C++/Templated
   // differently than the data image)
-
+  //
   // also, currently outShape does nothing (ie, == templateShape)
   // interpolation order does nothing
-
+  // <group>
   ImageRegrid(const IPosition& templateShape,
 	      const CoordinateSystem& templateCoords,
 	      const uInt interpOrder,
@@ -103,6 +103,7 @@ public:
 
   ImageRegrid(const IPosition& templateShape,
 	      const CoordinateSystem& templateCoords);
+  // </group>
 
   // copy constructor
   ImageRegrid(const ImageRegrid &other);
@@ -114,17 +115,29 @@ public:
   ImageRegrid<T>& operator=(const ImageRegrid& other);
 
   // regrid dataImage onto the grid specified in the state data;
-  // If stokesImageConventions == True, "some restrictions may apply"
+  // If stokesImageConventions == True,  "some restrictions may apply"
   ImageInterface<T>* regrid(ImageInterface<T>& dataImage, Bool stokesImageConventions=False);
 
+  // Fits the dataImage to the currently stored template.
+  // If stokesImageConventions == True, "some restrictions may apply"
   ImageInterface<T>* fitIntoImage(ImageInterface<T>& dataImage, Bool stokesImageConventions=False);
     
+  // class user sets the template shape and coordinate system
   void setTemplate (const IPosition& tShape,
 		    const CoordinateSystem& tCoords);
 
+  // class user sets HGEOM interpolation order : currently nothing
   void setInterpOrder (uInt order);
 
-  void setOutShape (const IPosition& oShape);  // current does nothing
+  // class use sets the output image shape : current does nothing
+  void setOutShape (const IPosition& oShape);  
+
+  // Compares one direction Coordinate with another;
+  // returns True if the two describe the same abstract grid (ie, same projection,
+  // tangent point, and cell size, but possibly different reference pixels
+  // and numbers of cells)
+  static Bool convergentDirCoords(const DirectionCoordinate& one, 
+			       const DirectionCoordinate& other);
 
  private:
 
@@ -137,7 +150,7 @@ public:
   uInt interpOrder;
   IPosition outShape;
 
-  // private methods
+  // private methods:
   
   // Fit imageData into an image which is consistent in
   // size and reference pixel with templateShape and templateCoords.
