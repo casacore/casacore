@@ -69,9 +69,12 @@ typedef class AipsrcVector<String> AipsrcVString;
 //
 // <synopsis>
 // The static Aipsrc class can get information from the aipsrc resource files.
-// It has the same functionality as getrc (in use for aips++ scripts).<br>
+// It has the same functionality as getrc (c program used for aips++ 
+// installation scripts).<br>
 // In addition it acts as a central clearing house between system and
-// software.<br>
+// software by providing functionality to obtain aips++ system parameters (like
+// AIPSPATH elements), and the possibility of storing system wide information
+// provided by a class for reference by other classes. <br>
 // The format of a line in a resource file is:
 // <srcblock>
 //	# Line starting with an # in column 1 is a comment (as is an empty line)
@@ -88,9 +91,9 @@ typedef class AipsrcVector<String> AipsrcVString;
 // and, by preference, in lower case (but
 // search is case sensitive) with an <src>_</src> as word-parts separator. <br>
 // The keyword and value are separated by a <src>:</src>. The value is the string
-// between the first non-whitespace character after the separator and the end of
+// from the first non-whitespace character after the separator to the end of
 // the line. Interpretation of the string is in general the program's 
-// responsibility, but special <src>find()</src> calls (see below) exists to 
+// responsibility, but special <src>find()</src> calls (see below) exist to 
 // aid.<br>
 // Any part of the keyword string can be replaced by a wildcard <src>*</src>
 // to indicate all values with that structure (e.g.
@@ -138,7 +141,7 @@ typedef class AipsrcVector<String> AipsrcVString;
 //   <li> const String &Aipsrc::aipsHome() -- <src>~/aips++</src>
 //  </ul>
 // Other, numeric, system information can be found in
-// <linkto class=AipsrcData>AipsrcData</linkt>.<br>
+// <linkto class=AipsrcData>AipsrcData</linkto>.<br>
 //
 // Given an AIPSPATH of 
 // <srcblock>/epp/aips++ sun4sol_gnu epping norma</srcblock>
@@ -147,7 +150,7 @@ typedef class AipsrcVector<String> AipsrcVString;
 //
 // The basic find above reacts with the aipsrc files available. If regular 
 // access is necessary (e.g. a lot of routines have to check independently a
-// certain integration time limit, keywords can be <em>registered</em> to
+// certain integration time limit), keywords can be <em>registered</em> to
 // enable:
 // <ul>
 //   <li> fast access with integer code, rather than string
@@ -156,7 +159,7 @@ typedef class AipsrcVector<String> AipsrcVString;
 //   <li> (future) option to update the <src>$HOME/.aipsrc</src> keyword list 
 // </ul>
 // <note role=tip> The registered value is never equal to zero, hence a zero
-// value can be used to chcek if registration done. Also, registering the
+// value can be used to check if registration is done. Also, registering the
 // same keyword twice is safe, and will produce the same value.</note>
 // </synopsis>
 //
