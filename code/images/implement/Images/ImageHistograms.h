@@ -261,7 +261,7 @@ private:
    Bool displayHistograms ();
 
 // Display one histogram
-   Bool displayOneHistogram (const Vector<Int>& intCounts,
+   void displayOneHistogram (const Vector<Int>& intCounts,
                              const IPosition& histPos,
                              const Vector<T>& range,
                              const Int& nPts,
@@ -333,7 +333,7 @@ private:
                              const Int& pixelAxis);
 
 // Convert pixel coordinate to world coordinate string
-   Bool pix2World (Vector<String>& sWorld,
+   void pix2World (Vector<String>& sWorld,
                    const Int& worldAxis,
                    const Vector<Double>& pixel,
                    const Int& prec);
@@ -370,7 +370,7 @@ private:
                     const T& datum);
 
 // Write values of display axes on plots
-   Bool writeDispAxesValues (const IPosition& startPos,
+   void writeDispAxesValues (const IPosition& startPos,
                              const Float& xMin,
                              const Float& yMax);
 
