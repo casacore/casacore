@@ -5,7 +5,7 @@
 \setlength{\textwidth}{8in}
 \setlength{\topmargin}{-0.5in}
 \special{landscape}
-\end{latexonly}
+%\end{latexonly}
 
 %%-----------------------------------------------------------------------------
 
