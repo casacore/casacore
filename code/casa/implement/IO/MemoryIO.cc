@@ -128,7 +128,7 @@ Int MemoryIO::read (uInt size, void* buf, Bool throwException) {
     itsPosition += size;
     bytesRead = size;
   } else {
-    if (bytesLeft > 0) { 
+    if (bytesLeft >= 0) { 
       memcpy (buf, itsBuffer + itsPosition, uInt(bytesLeft));
       itsPosition += bytesLeft;
       if (throwException) {
