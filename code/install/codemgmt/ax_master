@@ -3109,3 +3109,4 @@
 12 026 src rm nrao/implement/VLA/vlatoms.g
 12 026 sys rm libexec/vlatoms.g
 12 030 src rm trial/apps/numerics/numerics.g
+12 030 sys rm libexec/numerics.g
