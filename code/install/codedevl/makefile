@@ -42,10 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-SCRIPTS  := apply_module_move apply_module_move.sed1 apply_module_move.sed2 \
-            ar_cpadd depstat do_ar_cpadd do_instchk do_instclean \
-            do_libinstchk do_libinstclean instchk instclean instdepend ldmap \
-            libinstchk libinstclean libinstdepend map mar reident unmap
+SCRIPTS  := depstat ldmap unmap
 
 
 # Pattern rules.
