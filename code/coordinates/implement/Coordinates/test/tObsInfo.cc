@@ -1,5 +1,5 @@
 //# tObsInfo.cc: test program for class ObsInfo
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,60 +38,76 @@
 
 int main()
 {
-    // ObsInfo();
+// Default constructor
+
     ObsInfo oi;
 
-    // String telescope() const;
-    // static String defaultTelescope();
+// Default values
+
     AlwaysAssertExit(oi.telescope() == oi.defaultTelescope());
     AlwaysAssertExit(oi.defaultTelescope() == "UNKNOWN");
-
-    // String observer() const;
-    // static String defaultObserver();
+//
     AlwaysAssertExit(oi.observer() == oi.defaultObserver());
     AlwaysAssertExit(oi.defaultObserver() == "UNKNOWN");
-
-    // MEpoch obsDate() const;
-    // static MEpoch defaultObsDate();
+//
     MEpoch dflt = oi.defaultObsDate();
     AlwaysAssertExit(near(oi.obsDate().get("s").getValue(), 0.0));
+//
+    AlwaysAssertExit(oi.isPointingCenterInitial());
+    MVDirection dmvd = oi.defaultPointingCenter();
+    Vector<Double> v = dmvd.get();
+    AlwaysAssertExit(near(v(0), 0.0));
+    AlwaysAssertExit(near(v(1), 0.0));
 
-    // ObsInfo& setTelescope(const String &telescope);
-    // ObsInfo& setObserver(const String &observer);
-    // ObsInfo &setObsDate(const MEpoch &obsDate);
+// Set items
+
     oi.setTelescope("telescope").setObserver("observer").
-	setObsDate(MVEpoch(1234.0));
+	setObsDate(MVEpoch(1234.0)).setPointingCenter(MVDirection(0.01, 0.02));
     AlwaysAssertExit(oi.telescope() == "telescope" &&
 		     oi.observer() == "observer" &&
-		     near(oi.obsDate().get("d").getValue(), 1234.0));
+		     near(oi.obsDate().get("d").getValue(), 1234.0) &&
+                     near(oi.pointingCenter().get()(0),0.01) &&
+                     near(oi.pointingCenter().get()(1),0.02));
+    AlwaysAssertExit(!oi.isPointingCenterInitial());
 
-    // ObsInfo(const ObsInfo &other);
-    // ObsInfo &operator=(const ObsInfo &other);
+// Copy constructor and assignment
+
     ObsInfo oi2(oi);
     AlwaysAssertExit(oi2.telescope() == "telescope" &&
 		     oi2.observer() == "observer" &&
-		     near(oi2.obsDate().get("d").getValue(), 1234.0));
+		     near(oi2.obsDate().get("d").getValue(), 1234.0) &&
+                     near(oi2.pointingCenter().get()(0),0.01) &&
+                     near(oi2.pointingCenter().get()(1),0.02));
+    AlwaysAssertExit(!oi2.isPointingCenterInitial());
+
 //
     Double dateVal = 55000.5;
     oi2.setTelescope("telescope2").setObserver("observer2").
-	setObsDate(MVEpoch(dateVal));
+	setObsDate(MVEpoch(dateVal)).setPointingCenter(MVDirection(0.03,0.04));
     oi = oi2;
     AlwaysAssertExit(oi.telescope() == "telescope2" &&
 		     oi.observer() == "observer2" &&
-		     near(oi.obsDate().get("d").getValue(), dateVal));
+		     near(oi.obsDate().get("d").getValue(), dateVal) &&
+                     near(oi.pointingCenter().get()(0),0.03) &&
+                     near(oi.pointingCenter().get()(1),0.04));
+    AlwaysAssertExit(!oi.isPointingCenterInitial());
 
-    // Test output.  
+// Test output.  
+
     ostrstream oss;
     oss << oi << endl;
     String x(oss);
-//    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::00:00:00.0000");
-    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::12:00:00.0000");
-    Int iL = x2.length();
-    String x3 = String(x.at(0,iL));
-    AlwaysAssertExit(x2==x3);
+//
+    String x1("Telescope: telescope2 Observer: observer2 ");
+    String x2("Date Observed: Epoch: 55000::12:00:00.0000 ");
+    String x3("Pointing Center: [0.998751, 0.0299715, 0.0399893]");
+    String x4 = x1 + x2 + x3;
+    Int iL = x4.length();
+    String x5 = String(x.at(0,iL));
+    AlwaysAssertExit(x5==x4);
 
-    // Bool toRecord(String & error, RecordInterface & outRecord) const;
-    // Bool fromRecord(String & error, const RecordInterface & inRecord);
+// Record interface
+
     Record rec;
     String error;
     AlwaysAssertExit(oi.toRecord(error, rec));
@@ -99,30 +115,32 @@ int main()
     AlwaysAssertExit(oi3.fromRecord(error, rec));
     AlwaysAssertExit(oi3.telescope() == "telescope2" &&
 		     oi3.observer() == "observer2" &&
-		     near(oi3.obsDate().get("d").getValue(), dateVal));
+		     near(oi3.obsDate().get("d").getValue(), dateVal) &&
+                     near(oi3.pointingCenter().get()(0),0.03) &&
+                     near(oi3.pointingCenter().get()(1),0.04));
 
-    // Bool toFITS(String & error, RecordInterface & outRecord) const;
-    // Bool fromFITS(String & error, const RecordInterface & inRecord);
+// FITS
+
     Record rec2;
     AlwaysAssertExit(oi.toFITS(error, rec2));
     ObsInfo oi4;
     AlwaysAssertExit(oi4.fromFITS(error, rec2));
     AlwaysAssertExit(oi4.telescope() == "telescope2" &&
 		     oi4.observer() == "observer2" &&
-		     near(oi4.obsDate().get("d").getValue(), dateVal));
+		     near(oi4.obsDate().get("d").getValue(), dateVal) &&
+                     near(oi4.pointingCenter().get()(0),0.03) &&
+                     near(oi4.pointingCenter().get()(1),0.04));
 
-    // static Vector<String> keywordNamesFITS();
-    // This is a fragile test, but probably better to do it than not.
+// This is a fragile test, but probably better to do it than not.
+
     Vector<String> vs = ObsInfo::keywordNamesFITS();
-    AlwaysAssertExit(
-		     vs(0) == "telescop" &&
+    AlwaysAssertExit(vs(0) == "telescop" &&
 		     vs(1) == "observer" &&
 		     vs(2) == "date-obs" &&
-		     vs(3) == "timesys");
-
-    // ~ObsInfo();
-    // Implicit at end of execution
-
+		     vs(3) == "timesys" &&
+		     vs(4) == "obsra" &&
+		     vs(5) == "obsdec");
+//
     cout << "OK" << endl;
     return 0;
 }
