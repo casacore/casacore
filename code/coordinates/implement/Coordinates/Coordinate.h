@@ -327,7 +327,8 @@ public:
     //
     // Some derived classes will format in units different from that which
     // currently reflect the state of the CoordinateSystem.  The units of
-    // the formatted number are returned in <src>units</src>.
+    // the formatted number are returned in <src>units</src> (except for
+    // TIME formatting whereupon it is returned empty).
     // You can also use the Quantum interface.  The units can then be anything 
     // consistent with the Coordinate.
     // 
