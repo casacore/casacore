@@ -48,7 +48,7 @@ $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 allsys : wcslib
 
 .cleansys ::
-	-$Q $(RM) $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
+	-$Q $(RM) $(WCSLIB).$(SFXSTAT)
 
 wcslib: $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
 
