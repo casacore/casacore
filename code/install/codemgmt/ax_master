@@ -3290,3 +3290,4 @@
 13 213 src mv aips/implement/Lattices/test/tSlicer.cc aips/implement/Arrays/test/tSlicer.cc
 13 213 src mv aips/implement/Lattices/test/tSlicer.out aips/implement/Arrays/test/tSlicer.out
 13 214 src mv trial/implement/Display/DisplayOptions.h trial/implement/Display/oldDisplayOptions.h
+13 214 src mv trial/implement/Display/DisplayOptions.cc trial/implement/Display/oldDisplayOptions.cc
