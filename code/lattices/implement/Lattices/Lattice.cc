@@ -126,6 +126,58 @@ void Lattice<T>::apply (const Functional<T,T>& function)
 }
 
 template<class T>
+T Lattice<T>::getAt (const IPosition& where) const
+{
+  // Use a temporary 1-element array with the correct dimensionality.
+  // Casting the const away is harmless.
+  T value;
+  Array<T> tmp (IPosition(where.nelements(), 1), &value, SHARE);
+  ((Lattice<T>*)this)->getSlice (tmp, Slicer(where));
+  return value;
+}
+
+template<class T>
+void Lattice<T>::putAt (const T& value, const IPosition& where)
+{
+  // Use a temporary 1-element array with the correct dimensionality.
+  Array<T> tmp (IPosition(where.nelements(), 1), &value);
+  putSlice (tmp, where);
+}
+
+template<class T>
+void Lattice<T>::copyData (const Lattice<T>& from)
+{
+  from.copyDataTo (*this);
+}
+
+template<class T>
+void Lattice<T>::copyDataTo (Lattice<T>& to) const
+{
+  // Check the lattice is writable.
+  // Check the shape conformance.
+  AlwaysAssert (to.isWritable(), AipsError);
+  const IPosition shapeIn  = shape();
+  const IPosition shapeOut = to.shape();
+  AlwaysAssert (shapeIn.isEqual (shapeOut), AipsError);
+  IPosition cursorShape = to.niceCursorShape();
+  LatticeStepper stepper (shapeOut, cursorShape, LatticeStepper::RESIZE);
+  // Create an iterator for the output to setup the cache.
+  // It is not used, because using putSlice directly is faster and as easy.
+  LatticeIterator<T> dummyIter(to, stepper);
+  RO_LatticeIterator<T> iter(*this, stepper);
+  for (iter.reset(); !iter.atEnd(); iter++) {
+    to.putSlice (iter.cursor(), iter.position());
+  }
+}
+
+template<class T>
+LatticeIterInterface<T>* Lattice<T>::makeIter
+                                       (const LatticeNavigator& nav) const
+{
+  return new LatticeIterInterface<T>(*this, nav);
+}
+
+template<class T>
 uInt Lattice<T>::maxPixels() const
 {
   // The returned number of pixels is always a power of two for unknown
@@ -143,7 +195,7 @@ IPosition Lattice<T>::niceCursorShape (uInt maxPixels) const
     cursorShape = 1;
     cursorShape(0) = originalShape(0);
     for (uInt i=1;
-	 i < ndim  &&  cursorShape.product()*originalShape(i) <= maxPixels;
+	 i < ndim  &&  cursorShape.product()*originalShape(i) <= Int(maxPixels);
 	 i++) {
       cursorShape(i) = originalShape(i);
     }
