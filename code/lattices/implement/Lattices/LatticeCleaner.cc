@@ -110,12 +110,12 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   // looks OK so make the convolver
   
   // We need to guess the memory use. For the moment, we'll assume
-  // that about 5 scales will be used, giving about 32 TempLattices
+  // that about 4 scales will be used, giving about 32 TempLattices
   // in all. Also we'll try not to take more that half of the memory
 
   // Ah, but when we are doing a mosaic, its actually worse than this!
   // So, we pass it in
-  itsMemoryMB=Double(AppInfo::memoryInMB())/64.0;
+  itsMemoryMB=Double(AppInfo::memoryInMB())/16.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
@@ -198,6 +198,7 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask)
 
   AlwaysAssert((mask.shape() == itsDirty->shape()), AipsError);
 
+  // This is not needed after the first steps
   itsMask = new TempLattice<T>(mask.shape(), itsMemoryMB);
   itsMask->copyData(mask);
 
@@ -514,6 +515,11 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   }
   // End of iteration
 
+  for (scale=0;scale<nScalesToClean;scale++) {
+    os << "Scale " << scale << ", total flux = "
+       << totalFluxScale(scale) << LogIO::POST;
+  }
+
   if(itsMask) {
     for (Int is=0; is < itsNscales; is++) {
       delete scaleMaskSubs[is];
@@ -624,7 +630,7 @@ Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice,
 template<class T>
 Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc)
 {
-  LogIO os(LogOrigin("deconvolver", "setcales()", WHERE));
+  LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
 
   itsNscales=nscales;
@@ -666,6 +672,16 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   destroyMasks();
 
   itsNscales=scaleSizes.nelements();
+
+  // Residual, psf, and mask, plus cross terms
+  // e.g. for 5 scales this is 45. for 6 it is 60.
+  Int nImages=3*itsNscales+itsNscales*(itsNscales+1);
+  os << "Expect to use "  << nImages << " scratch images" << LogIO::POST;
+
+  // Now we can update the size of memory allocated
+  itsMemoryMB=0.5*Double(AppInfo::memoryInMB())/Double(nImages);
+  os << "Maximum memory allocated per image "  << itsMemoryMB << "MB" << LogIO::POST;
+
   itsScaleSizes.resize(itsNscales);
   itsScaleSizes=scaleSizes;  // make a copy that we can call our own
   GenSort<Float>::sort(itsScaleSizes);
