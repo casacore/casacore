@@ -1,5 +1,5 @@
 //# Quantum.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -278,7 +278,12 @@ Bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
 
 template <class Qtype>
 Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
-  MUString tmp(in);		// Pointed non-const String
+  MUString tmp(in);
+  // The next construct is to cater for an unexplained error in
+  // the Linux egcs stream input library
+  if (!in.empty() && in[0] == 'n') {
+    tmp = MUString(String('0') + in);		// Pointed non-const String
+  };
   return Quantum<Qtype>::read(res, tmp);
 }
 
