@@ -717,9 +717,9 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
 	  counter=0;
 	}
 
-	Vector<Double> dir(2); dir=msc.field().phaseDir()(FldId);
-	ra = dir(0);
-	dec = dir(1);
+	MDirection fc = msc.field().phaseDirMeas(FldId);
+	ra = fc.getAngle().getValue()(0);
+	dec = fc.getAngle().getValue()(1);
 	Record values;
 	values.define("DATA_HYPERCUBE_ID",SpWId);
         Bool firstBaseline = True;
@@ -837,9 +837,6 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
 	  MEpoch ep(Quantity((Time + Tint_p/2), "s"));
 	  msd.setEpoch(ep);
 	      
-	  Quantity d0(dir(0), "rad");
-	  Quantity d1(dir(1), "rad");
-	  MDirection fc(d0, d1, MDirection::Ref(MDirection::B1950) );
 	  msd.setFieldCenter( fc );
 	      
 	  Double elevation = msd.azel().getAngle("rad").getValue("rad")(1);
