@@ -49,7 +49,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+//#include <iostream.h>
 
 SkyCompRep::~SkyCompRep()
 {
@@ -138,8 +138,9 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
       }
       if (dirCoord.toWorld(worldCoord, pixelCoord) == False) {
- 	cerr << " SkyCompRep::Pixel at " << pixelCoord 
- 	     << " cannot be projected" << endl;
+// I am not sure what to do here.
+//  	cerr << " SkyCompRep::Pixel at " << pixelCoord 
+//  	     << " cannot be projected" << endl;
       }
       else {
 	dirVal(0).setValue(worldCoord(0));
