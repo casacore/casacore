@@ -86,12 +86,26 @@ const String dataTileId = "DATA_HYPERCUBE_ID";
 const String scratchDataTileId = "SCRATCH_DATA_HYPERCUBE_ID";
 const String flagTileId = "FLAG_CATEGORY_HYPERCUBE_ID";
 const String imweightTileId = "IMAGING_WEIGHT_HYPERCUBE_ID";
+
+void NewMSSimulator::defaults() {
+  fractionBlockageLimit_p=1e-6;
+  elevationLimit_p=Quantity(8.0, "deg");
+  autoCorrelationWt_p=1.0;
+  telescope_p="Unknown";
+  qIntegrationTime_p=Quantity(10.0, "s");
+  useHourAngle_p=True;
+  Quantity today;
+  MVTime::read(today, "today");
+  mRefTime_p=MEpoch(today, MEpoch::UTC);
+}
   
 NewMSSimulator::NewMSSimulator(const String& MSName) :
   ms_p(0), dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(), imweightAcc_p(),
-  hyperCubeID_p(-1)
+  maxData_p(2e9)
 {
   LogIO os(LogOrigin("NewMSSimulator", "NewMSSimulator<const String& MSName)", WHERE));
+
+  defaults();
 
   // make MS with standard columns
   TableDesc msDesc(MS::requiredTableDesc());
@@ -163,15 +177,14 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
     newMS.bindAll(incrStMan, True);
   }
   
-  // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
+  // Bind ANTENNA1, and ANTENNA2 to the standardStMan 
   // as they may change sufficiently frequently to make the
   // incremental storage manager inefficient for these columns.
   
   {
-    StandardStMan aipsStMan(32768);
-    newMS.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
-    newMS.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
-    newMS.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
+    StandardStMan ssm(32768);
+    newMS.bindColumn(MS::columnName(MS::ANTENNA1), ssm);
+    newMS.bindColumn(MS::columnName(MS::ANTENNA2), ssm);
   }
   
   // These columns contain the bulk of the data so save them in a tiled way
@@ -236,59 +249,43 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   imweightAcc_p = TiledDataStManAccessor(*ms_p, imweightCol);
 
   // We're done - wasn't that easy?
+
+  dataWritten_p=0.0;
+  hyperCubeID_p=-1;
+  lastSpWID_p=-1;
 }
 
 // Add new hypercubes as the shape changes
-void NewMSSimulator::addHyperCubes(const Int nAnt, const Int nChan, const Int nCorr,
-				   const Int obsType)
+void NewMSSimulator::addHyperCubes(const Int id, const Int nBase, const Int nChan,
+				   const Int nCorr)
 {
-  IPosition dataShape(2,nCorr,nChan);
-
-  uInt nBase;
-  if(autoCorrelationWt_p > 0.0) {
-    nBase =nAnt*(nAnt+1)/2;
-  }
-  else {
-    nBase =nAnt*(nAnt-1)/2;
-  }
-  // Tile holds all correlations and channels for all baselines for one time
-  IPosition tileShape = MSTileLayout::tileShape(dataShape, obsType, nBase, 1);
-
-  // For the moment, we add a new hypercolumn each time we are called
   Record tileId;
-  {
-    tileId.define(sigmaTileId, static_cast<Int>(10*hyperCubeID_p));
-    uInt rowTiles = nBase*nChan/nCorr;
-    if (rowTiles < nBase) rowTiles = nBase;
-    sigmaAcc_p.addHypercube(IPosition(2, nCorr, 0), 
-			    IPosition(2, nCorr, rowTiles),
-			    tileId);
-  }
+  const uInt chanTiles=(nChan+7)/8;
   
-  {
-    tileId.define(dataTileId, static_cast<Int>(10*hyperCubeID_p+1));
-    const uInt chanTiles = (nChan+7)/8;
-    uInt rowTiles = nBase*nChan/nCorr/chanTiles;
-    if (rowTiles < nBase) rowTiles = nBase;
-    dataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
-			   IPosition(3, nCorr, chanTiles, rowTiles),
-			   tileId);
-
-    tileId.define(scratchDataTileId, static_cast<Int>(10*hyperCubeID_p+2));
-    scratchDataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
-				  IPosition(3, nCorr, chanTiles, rowTiles),
-				  tileId);
-
-    tileId.define(flagTileId, static_cast<Int>(10*hyperCubeID_p + 3));
-    flagAcc_p.addHypercube(IPosition(4, nCorr, nChan, nCat, 0), 
-			   IPosition(4, nCorr, chanTiles, nCat, rowTiles),
-			   tileId);
-
-    tileId.define(imweightTileId, static_cast<Int>(10*hyperCubeID_p + 4));
-    imweightAcc_p.addHypercube(IPosition(2, nChan, 0), 
-			       IPosition(2, chanTiles, rowTiles),
-			       tileId);
-  }
+  tileId.define(sigmaTileId, static_cast<Int>(10*id));
+  sigmaAcc_p.addHypercube(IPosition(2, nCorr, 0), 
+			  IPosition(2, nCorr, nBase),
+			  tileId);
+  
+  tileId.define(dataTileId, static_cast<Int>(10*id+1));
+  dataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
+			 IPosition(3, nCorr, chanTiles, nBase),
+			 tileId);
+  
+  tileId.define(scratchDataTileId, static_cast<Int>(10*id+2));
+  scratchDataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
+				IPosition(3, nCorr, chanTiles, nBase),
+				tileId);
+  
+  tileId.define(flagTileId, static_cast<Int>(10*id + 3));
+  flagAcc_p.addHypercube(IPosition(4, nCorr, nChan, nCat, 0), 
+			 IPosition(4, nCorr, chanTiles, nCat, nBase),
+			 tileId);
+  
+  tileId.define(imweightTileId, static_cast<Int>(10*id + 4));
+  imweightAcc_p.addHypercube(IPosition(2, nChan, 0), 
+			     IPosition(2, chanTiles, nBase),
+			     tileId);
 }
 
 NewMSSimulator::NewMSSimulator(const NewMSSimulator & mss)
@@ -661,13 +658,26 @@ NewMSSimulator & NewMSSimulator::operator=(const NewMSSimulator & other)
   return *this;
 }
 
+void NewMSSimulator::settimes(const Quantity& qIntegrationTime,
+			      const Bool useHourAngle,
+			      const MEpoch&   mRefTime)
+
+{
+  LogIO os(LogOrigin("NewMSSimulator", "settimes()", WHERE));
+
+  qIntegrationTime_p=qIntegrationTime;
+  useHourAngle_p=useHourAngle;
+  mRefTime_p=mRefTime;
+  if(useHourAngle_p) {
+    hourAngleDefined_p=False;
+  }
+  t_offset_p=0.0;
+}
+
 void NewMSSimulator::observe(const String& sourceName,
 			     const String& spWindowName,
-			     const Quantity& qIntegrationTime, 
-			     const Bool      useHourAngles,
 			     const Quantity& qStartTime, 
-			     const Quantity& qStopTime, 
-			     const MEpoch&   mRefTime) 
+			     const Quantity& qStopTime)
 {
   LogIO os(LogOrigin("NewMSSimulator", "observe()", WHERE));
 
@@ -765,24 +775,27 @@ void NewMSSimulator::observe(const String& sourceName,
   // Now we know where we are and where we are pointing, we can do the time calculations
   Double Tstart, Tend, Tint;
   {
-    Tint = qIntegrationTime.getValue("s");
-    Double t_offset = 0.0;   // This shifts the time forward by less than a day
-    // until the qStartTime represents the starting Hour Angle
-    if (useHourAngles) {
-      os << "Times specified are interpreted as (source-dependent) hour angles" << LogIO::POST;
-      msd.setEpoch( mRefTime );
-      msd.setFieldCenter(fieldCenter);
-      t_offset = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
-    }
-    
+    Tint = qIntegrationTime_p.getValue("s");
+
     MEpoch::Ref tref(MEpoch::TAI);
-    MEpoch::Convert tconvert(mRefTime, tref);
+    MEpoch::Convert tconvert(mRefTime_p, tref);
     MEpoch taiRefTime = tconvert();      
     
+    // until the qStartTime represents the starting Hour Angle
+    if (useHourAngle_p&&!hourAngleDefined_p) {
+      msd.setEpoch( mRefTime_p );
+      msd.setFieldCenter(fieldCenter);
+      t_offset_p = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
+      hourAngleDefined_p=True;
+      os << "Times specified are interpreted as hour angles for first source observed" << endl
+	 << "     offset in time = " << t_offset_p / 3600.0 << " hours from "
+	 << formatTime(taiRefTime.get("s").getValue("s")) << LogIO::POST;
+    }
+    
     Tstart = qStartTime.getValue("s") + 
-      taiRefTime.get("s").getValue("s") + t_offset;
+      taiRefTime.get("s").getValue("s") + t_offset_p;
     Tend = qStopTime.getValue("s") + 
-      taiRefTime.get("s").getValue("s") + t_offset;
+      taiRefTime.get("s").getValue("s") + t_offset_p;
     os << "Time range : " << endl
        << "     start : " << formatTime(Tstart) << endl
        << "     stop  : " << formatTime(Tend) << LogIO::POST;
@@ -790,31 +803,27 @@ void NewMSSimulator::observe(const String& sourceName,
 
   // fill Observation Table for every call. Eventually we should fill
   // in the schedule information
-  if(True) {
-    MSObservation& obs=ms_p->observation();
-    MSObservationColumns& obsc=msc.observation();
-    Int nobsrow= obsc.nrow();
-    obs.addRow();
-    obsc.telescopeName().put(nobsrow,telescope_p);
-    Vector<Double> timeRange(2);
-    timeRange(0)=Tstart;
-    timeRange(1)=Tend;
-    obsc.timeRange().put(nobsrow,timeRange);
-    obsc.observer().put(nobsrow,"AIPS++ simulator");
-  }
-  
-  // init counters past end
-  Int scan=-1;
+  MSObservation& obs=ms_p->observation();
+  MSObservationColumns& obsc=msc.observation();
+  Int nobsrow= obsc.nrow();
+  obs.addRow();
+  obsc.telescopeName().put(nobsrow,telescope_p);
+  Vector<Double> timeRange(2);
+  timeRange(0)=Tstart;
+  timeRange(1)=Tend;
+  obsc.timeRange().put(nobsrow,timeRange);
+  obsc.observer().put(nobsrow,"AIPS++ simulator");
   
   Int row=ms_p->nrow()-1;
-  Vector<Int> tmpids(row+1);
-  tmpids=msc.observationId().getColumn();
   Int maxObsId=-1;
-  if (tmpids.nelements()>0) maxObsId=max(tmpids);
-  tmpids=msc.arrayId().getColumn();
   Int maxArrayId=-1;
-  if (tmpids.nelements()>0) maxArrayId=max(tmpids);
-  tmpids.resize(0);
+  {
+    Vector<Int> tmpids(row+1);
+    tmpids=msc.observationId().getColumn();
+    if (tmpids.nelements()>0) maxObsId=max(tmpids);
+    tmpids=msc.arrayId().getColumn();
+    if (tmpids.nelements()>0) maxArrayId=max(tmpids);
+  }
   
   Double Time=Tstart;
   Bool firstTime = True;
@@ -824,6 +833,10 @@ void NewMSSimulator::observe(const String& sourceName,
   
   // Start scan number from last one (if there was one)
   Int nMSRows=ms_p->nrow();
+
+  // init counters past end
+  Int scan=-1;
+  
   if(nMSRows>0) {
     msc.scanNumber().get(nMSRows-1,scan);
   }
@@ -831,21 +844,44 @@ void NewMSSimulator::observe(const String& sourceName,
   // One call to observe corresponds to one scan
   scan++;
 
-  // Add new hypercubes
-  hyperCubeID_p=scan;
-  addHyperCubes(nAnt, nChan, nCorr, 1);
-
   // We can extend the ms and the hypercubes just once
-  Int nNewRows;
+  Int nBaselines;
   if(autoCorrelationWt_p > 0.0) {
-    nNewRows =nAnt*(nAnt+1)/2;
+    nBaselines =nAnt*(nAnt+1)/2;
   }
   else {
-    nNewRows =nAnt*(nAnt-1)/2;
+    nBaselines =nAnt*(nAnt-1)/2;
   }
-  nNewRows*=max(1, Int(0.5+(Tend-Tstart)/Tint));
-  ms_p->addRow(nNewRows);
+  Int nNewRows=nBaselines;
+  Int nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
+  nNewRows*=nIntegrations;
+
+  // We need to do addition in this order to get a new TSM file.
+
+  // Various conditions for new hypercube
+  Bool needNewHyperCube=False;
+  if(hyperCubeID_p<0) needNewHyperCube=True;
+  if(lastSpWID_p<0) {
+    needNewHyperCube=True;
+  }
+  else if(baseSpWID!=lastSpWID_p) {
+    needNewHyperCube=True;
+  }
+  if((maxData_p>0)&&(dataWritten_p>maxData_p)) {
+    needNewHyperCube=True;
+  }
+
+  if(needNewHyperCube) {
+    hyperCubeID_p++;
+    os << "Creating new hypercube " << hyperCubeID_p+1 << LogIO::POST;
+    addHyperCubes(hyperCubeID_p, nBaselines, nChan, nCorr);
+    dataWritten_p=0;
+  }
+  // ... Next extend the table
   os << "Adding " << nNewRows << " rows" << LogIO::POST;
+  ms_p->addRow(nNewRows);
+
+  // ... Finally extend the hypercubes
   {
     Record tileId;
     tileId.define(sigmaTileId, static_cast<Int>(10*hyperCubeID_p));
@@ -858,16 +894,25 @@ void NewMSSimulator::observe(const String& sourceName,
     flagAcc_p.extendHypercube(nNewRows, tileId);
     tileId.define(imweightTileId, static_cast<Int>(10*hyperCubeID_p + 4));
     imweightAcc_p.extendHypercube(nNewRows, tileId);
+    // Size of scratch columns
+    Double thisChunk=16.0*Double(nChan)*Double(nCorr)*Double(nNewRows);
+    dataWritten_p+=thisChunk;
+    os << "Written " << thisChunk/(1024.0*1024.0) << " Mbytes to scratch columns" << LogIO::POST;
   }
-    
-  os << "Looping over integrations" << LogIO::POST;
 
-  for (Int itime=0; Time<Tend; itime++) {
-    
-    //    os << "     simulating scan " << scan+1
-    //       << " from " << formatTime(Time)
-    //       << " to " << formatTime(Time+Tint) << LogIO::POST;
+  Matrix<Complex> data(nCorr,nChan); 
+  data.set(Complex(0.0));
 
+  Matrix<Bool> flag(nCorr,nChan); 
+  flag=False;
+    
+  Vector<Float> imagingWeight(nChan);
+  imagingWeight.set(1.0);
+
+  os << "Calculating uvw coordinates for " << nIntegrations << " integrations" << LogIO::POST;
+
+  for (Int integration=0; integration<nIntegrations; integration++) {
+    
     MEpoch epUT1 (Quantity(Time/C::day, "d"), MEpoch::UT1);
     MEpoch::Ref refGMST1(MEpoch::GMST1);
     MEpoch::Convert epGMST1(epUT1, refGMST1);
@@ -880,19 +925,7 @@ void NewMSSimulator::observe(const String& sourceName,
     ra = fc.getAngle().getValue()(0);
     dec = fc.getAngle().getValue()(1);
     
-    Record values;
-    values.define("DATA_HYPERCUBE_ID",baseSpWID);
-    
-    Bool firstBaseline = True;
     Vector<Double> uvwvec(3);
-    Matrix<Complex> data(nCorr,nChan); 
-    
-    Matrix<Bool> flag(nCorr,nChan); 
-    flag=False;
-    // random number generator
-    //	MLCG rndGen(1234567);
-    //	Normal normal(0.0, 1.0, &rndGen);
-    
     Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
     Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
     Double fractionBlocked1=0.0, fractionBlocked2=0.0;
@@ -900,87 +933,84 @@ void NewMSSimulator::observe(const String& sourceName,
     Double diamMax2 = square( max(antDiam) );
     
     
-    // rough transformation from antenna position difference (ant2-ant1) to uvw
+    // Transformation from antenna position difference (ant2-ant1) to uvw
     Double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
     Matrix<Double> trans(3,3,0);
     trans(0,0) = -sH0;    trans(0,1) = -cH0;
     trans(1,0) =  sd*cH0; trans(1,1) = -sd*sH0; trans(1,2) = -cd;
     trans(2,0) = -cd*cH0; trans(2,1) = cd*sH0;  trans(2,2) = -sd; 
     
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      Double x1=antXYZ(0,ant1), y1=antXYZ(1,ant1), z1=antXYZ(2,ant1);
-      for (Int ant2=ant1; ant2<nAnt; ant2++) {
-	if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
-	  row++; 
-	  //		  if (firstBaseline) {
-	  msc.scanNumber().put(row,scan);
-	  msc.fieldId().put(row,baseFieldID);
-	  msc.dataDescId().put(row,baseSpWID);
-	  msc.time().put(row,Time+Tint/2);
-	  firstBaseline=False;
-	  //	  }
-	  msc.antenna1().put(row,ant1);
-	  msc.antenna2().put(row,ant2);
-	  // this is probably wrong...
-	  Double x2=antXYZ(0,ant2), y2=antXYZ(1,ant2), z2=antXYZ(2,ant2);
-	  uvwvec(0) = x2-x1;
-	  uvwvec(1) = y2-y1;
-	  uvwvec(2) = z2-z1;
-	  uvwvec=product(trans,uvwvec);
-	  
-	  if (ant1 != ant2) {
-	    blockage(fractionBlocked1, fractionBlocked2,
-		     uvwvec, antDiam(ant1), antDiam(ant2) );
-	    if (fractionBlocked1 > fractionBlockageLimit_p) {
-	      isShadowed(ant1) = True;
-	    }
-	    if (fractionBlocked2 > fractionBlockageLimit_p) {
-	      isShadowed(ant2) = True;
-	    }
-	  }
-	  
-	  msc.uvw().put(row,uvwvec);
-	  
-	  data.set(Complex(0.,0.));
-	  msc.data().put(row,data);		  
-	  msc.data().put(row,data);		  
-	  msc.flag().put(row,flag);
-	  msc.flagRow().put(row,False);
-	  
-	  msc.correctedData().setShape(row, data.shape());
-	  msc.correctedData().put(row,data);
-	  msc.modelData().setShape(row,data.shape());
-	  msc.modelData().put(row, data);
-	  Vector<Float> dummywgt(nChan);
-	  dummywgt.set(1.0);
-	  msc.imagingWeight().setShape(row, data.shape().getLast(1));
-	  msc.imagingWeight().put(row, dummywgt);
+    // Do the first row outside the loop
+    msc.scanNumber().put(row+1,scan);
+    msc.fieldId().put(row+1,baseFieldID);
+    msc.dataDescId().put(row+1,baseSpWID);
+    msc.time().put(row+1,Time+Tint/2);
+    msc.arrayId().put(row+1,maxArrayId+1);
+    msc.processorId().put(row+1,0);
+    msc.exposure().put(row+1,Tint);
+    msc.feed1().put(row+1,0);
+    msc.feed2().put(row+1,0);
+    msc.interval().put(row+1,Tint);
+    msc.observationId().put(row+1,maxObsId+1);
+    msc.stateId().put(row+1,-1);
 
-	  // Deal with differing diameter case
-	  Float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
-	  Float wt = 1/square(sigma1);
-	  if  (ant1 == ant2 ) {
-	    wt *= autoCorrelationWt_p;
-	  }		  
-	  Vector<Float> tmp(nCorr); tmp=wt;
-	  msc.weight().put(row, tmp);
-	  tmp=sigma1;
-	  msc.sigma().put(row,tmp);
-	  
-	  if (row==(startingRow+1)) {
-	    // we're using the incr stMan so we only need to 
-	    // put these once
-	    msc.arrayId().put(row,maxArrayId+1);
-	    msc.processorId().put(row,0);
-	    msc.exposure().put(row,Tint);
-	    msc.feed1().put(row,0);
-	    msc.feed2().put(row,0);
-	    msc.interval().put(row,Tint);
-	    msc.observationId().put(row,maxObsId+1);
-	    msc.stateId().put(row,-1);
+    // Rotate antennas to correct frame
+    Matrix<Double> antUVW(3,nAnt);	
+    Vector<Double> antvec(3);
+    for (Int ant1=0; ant1<nAnt; ant1++) {
+      antUVW.column(ant1)=product(trans,antXYZ.column(ant1));
+    }
+
+    for (Int ant1=0; ant1<nAnt; ant1++) {
+      Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
+      Int startAnt2=ant1+1;
+      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	row++; 
+
+	msc.antenna1().put(row,ant1);
+	msc.antenna2().put(row,ant2);
+	
+	Double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
+	uvwvec(0) = x2-x1;
+	uvwvec(1) = y2-y1;
+	uvwvec(2) = z2-z1;
+	msc.uvw().put(row,uvwvec);
+	
+	data.set(Complex(0.,0.));
+	msc.data().put(row,data);		  
+	msc.data().put(row,data);		  
+	msc.flag().put(row,flag);
+	msc.flagRow().put(row,False);
+	
+	msc.correctedData().setShape(row, data.shape());
+	msc.correctedData().put(row,data);
+	msc.modelData().setShape(row,data.shape());
+	msc.modelData().put(row, data);
+	msc.imagingWeight().setShape(row, data.shape().getLast(1));
+	msc.imagingWeight().put(row, imagingWeight);
+
+	if (ant1 != ant2) {
+	  blockage(fractionBlocked1, fractionBlocked2,
+		   uvwvec, antDiam(ant1), antDiam(ant2) );
+	  if (fractionBlocked1 > fractionBlockageLimit_p) {
+	    isShadowed(ant1) = True;
 	  }
-	  
+	  if (fractionBlocked2 > fractionBlockageLimit_p) {
+	    isShadowed(ant2) = True;
+	  }
 	}
+	
+	// Deal with differing diameter case
+	Float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
+	Float wt = 1/square(sigma1);
+	if  (ant1 == ant2 ) {
+	  wt *= autoCorrelationWt_p;
+	}		  
+	Vector<Float> tmp(nCorr); tmp=wt;
+	msc.weight().put(row, tmp);
+	tmp=sigma1;
+	msc.sigma().put(row,tmp);
       }
     }
     
@@ -989,17 +1019,17 @@ void NewMSSimulator::observe(const String& sourceName,
     // fraction shadowed.
     Matrix<Bool> trueFlag(nCorr,nChan); 
     trueFlag=True;
-    
+
     Int reRow = startingRow;
     for (Int ant1=0; ant1<nAnt; ant1++) {
-      for (Int ant2=ant1; ant2<nAnt; ant2++) {
-	if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
-	  reRow++; 
-	  if ( isShadowed(ant1) || isShadowed(ant2) ) {
-	    msc.flag().put(reRow,trueFlag);
-	    msc.flagRow().put(reRow, True);
-	    nShadowed++;
-	  }
+      Int startAnt2=ant1+1;
+      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	reRow++; 
+	if ( isShadowed(ant1) || isShadowed(ant2) ) {
+	  msc.flag().put(reRow,trueFlag);
+	  msc.flagRow().put(reRow, True);
+	  nShadowed++;
 	}
       }
     }
@@ -1009,13 +1039,14 @@ void NewMSSimulator::observe(const String& sourceName,
     
     msd.setFieldCenter(fc);
     
-    // go back and flag weights based on elevationLimit_p
+    // Find antennas pointing below the elevation limit
+    Vector<Double> azel(2);
     for (Int ant1=0; ant1<nAnt; ant1++) {
       
       // We want to find elevation for each antenna separately (for VLBI)
       msd.setAntenna(ant1);
-      Vector<Double> azel=msd.azel().getAngle("rad").getValue("rad");
-      
+      azel=msd.azel().getAngle("rad").getValue("rad");      
+
       if (azel(1) < elevationLimit_p.getValue("rad")) {
 	isTooLow(ant1) = True;
       }
@@ -1030,16 +1061,18 @@ void NewMSSimulator::observe(const String& sourceName,
 	os << "     ha   = " << ha1 << " hours" << LogIO::POST;
       }
     }
+
+    // Now flag all antennas pointing below the elevation limit
     reRow = startingRow;
     for (Int ant1=0; ant1<nAnt; ant1++) {
-      for (Int ant2=ant1; ant2<nAnt; ant2++) {
-	if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
-	  reRow++; 
-	  if ( isTooLow(ant1) || isTooLow(ant2) ) {
-	    msc.flag().put(reRow,trueFlag);
-	    msc.flagRow().put(reRow, True);
-	    nSubElevation++;
-	  }
+      Int startAnt2=ant1+1;
+      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	reRow++; 
+	if ( isTooLow(ant1) || isTooLow(ant2) ) {
+	  msc.flag().put(reRow,trueFlag);
+	  msc.flagRow().put(reRow, True);
+	  nSubElevation++;
 	}
       }
     }
@@ -1049,7 +1082,7 @@ void NewMSSimulator::observe(const String& sourceName,
     Int numPointing=pointingc.nrow();
     ms_p->pointing().addRow(numpointrows);
     numpointrows += numPointing;
-    Double Tint=qIntegrationTime.getValue("s");
+    Double Tint=qIntegrationTime_p.getValue("s");
     Vector<MDirection> direction(1);
     direction(0)=fieldCenter;
     for (Int m=numPointing; m < (numPointing+nAnt); m++){

@@ -88,7 +88,7 @@ public:
   
   // Constructor from name only
   NewMSSimulator(const String&);
-  
+
   // Copy constructor - for completeness only
   NewMSSimulator(const NewMSSimulator & mss);
   
@@ -98,6 +98,10 @@ public:
 //# Operators
   // Assignment
   NewMSSimulator & operator=(const NewMSSimulator &);
+  
+  // Set maximum amount of data (bytes) to be written into any one
+  // scratch column hypercube
+  void setMaxData(const Double maxData=2e9) {maxData_p=maxData;};
   
   // set the antenna and array data. These are written immediately to the
   // existing MS. The same model is used for the other init infor.
@@ -137,13 +141,14 @@ public:
   void setAutoCorrelationWt(const Float autocorrwt) 
     { autoCorrelationWt_p = autocorrwt; }
 
+  void settimes(const Quantity& qIntegrationTime, 
+		const Bool      useHourAngles,
+		const MEpoch&   mRefTime);
+
   void observe(const String& sourceName,
 	       const String& spWindowName,
-	       const Quantity& qIntegrationTime, 
-	       const Bool      useHourAngles,
 	       const Quantity& qStartTime, 
-	       const Quantity& qStopTime, 
-	       const MEpoch&   mRefTime);
+	       const Quantity& qStopTime);
 
 private:
 
@@ -155,11 +160,20 @@ private:
   Quantity elevationLimit_p;
   Float autoCorrelationWt_p;
   String telescope_p;
+  Quantity qIntegrationTime_p;
+  Bool useHourAngle_p;
+  Bool hourAngleDefined_p;
+  MEpoch mRefTime_p;
+  Double t_offset_p;
+  Double dataWritten_p;
+  Int hyperCubeID_p;
+  Int lastSpWID_p;
 
   MeasurementSet* ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p, imweightAcc_p;
-  Int hyperCubeID_p;
+
+  Double maxData_p;
 
   void local2global(Vector<Double>& xReturned,
 		    Vector<Double>& yReturned,
@@ -190,8 +204,10 @@ private:
   String formatDirection(const MDirection&);
   String formatTime(const Double);
 
-  void addHyperCubes(const Int nChan, const Int nChan, const Int nCorr,
-		     const Int obsType);
+  void addHyperCubes(const Int id, const Int nBase, const Int nChan, const Int nCorr);
+
+  void defaults();
+
 };
 
 #endif
