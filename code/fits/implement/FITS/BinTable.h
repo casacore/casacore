@@ -1,5 +1,5 @@
 //# BinTable.h: The class BinaryTable converts a FITS binary table into an aips++ Table.
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
