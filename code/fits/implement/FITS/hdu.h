@@ -899,6 +899,11 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	char *tunit(int n) const 	{ return tunit_x[n]; }
 	char *tdisp(int n) const 	{ return tdisp_x[n]; }
 	char *tdim(int n) const 	{ return tdim_x[n]; }
+	char *ctype(int n) const 	{ return ctype_x[n]; }
+	double crpix(int n) const 	{ return crpix_x[n]; }
+	double crota(int n) const 	{ return crota_x[n]; }
+	double crval(int n) const 	{ return crval_x[n]; }
+	double cdelt(int n) const 	{ return cdelt_x[n]; }
 	Int theap() const 		{ return theap_x; }
 	char *author() const 		{ return author_x; }
 	char *referenc() const	 	{ return referenc_x; }
@@ -944,6 +949,12 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	char **tunit_x;
 	char **tdisp_x;
 	char **tdim_x;
+	char **ctype_x;
+	double *crpix_x;
+	double *crota_x;
+	double *crval_x;
+	double *cdelt_x;
+	Int nAxis;
 	Int theap_x;
 	char *author_x;
 	char *referenc_x;
