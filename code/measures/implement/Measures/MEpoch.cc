@@ -174,6 +174,43 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
   return MEpoch::giveMe(mr, in);
 }
 
+Bool MEpoch::setOffset(const Measure &in) {
+  if (in.type() != Register((MEpoch *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MEpoch::setRefString(const String &in) {
+  MEpoch::Types tp;
+  String x = in;
+  Bool raze = False;
+  if (x.before(2) == "r_" || x.before(2) == "R_") {
+    raze = True;
+    x = x.from(2);
+  };
+  if (MEpoch::getType(tp, x)) {
+    if (raze) {
+      ref.setType(tp | MEpoch::RAZE);
+    } else {
+      ref.setType(tp);
+    };
+    return True;
+  };
+  ref.setType(MEpoch::DEFAULT);
+  return False;
+}
+
+const String &MEpoch::getDefaultType() const {
+  return MEpoch::showType(MEpoch::DEFAULT);
+}
+
+String MEpoch::getRefString() const {
+  String x;
+  if ((ref.getType() & MEpoch::RAZE) != 0) x = String("R_");
+  x += MEpoch::showType(ref.getType());
+  return x;
+}
+
 
 Quantity MEpoch::get(const Unit &inunit) const {
   return (data.getTime().get(inunit));

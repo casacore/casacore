@@ -205,6 +205,15 @@ public:
 // This one for historic reasons only
   Bool giveMe(const String &in, MRadialVelocity::Ref &mr);
 // </group>
+  // Set the offset in the reference (False if non-matching Measure)
+  virtual Bool setOffset(const Measure &in);
+  // Set the reference type to the specified String. False if illegal
+  // string, reference set to DEFAULT.
+  virtual Bool setRefString(const String &in);
+  // Get the default reference type
+  virtual const String &getDefaultType() const;
+  // Get the reference type (for records, including codes like R_)
+  virtual String getRefString() const;
 
 // Get radial velocity in specified units
     Quantity get(const Unit &un) const;

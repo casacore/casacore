@@ -1,5 +1,5 @@
 //# MeasBase.cc: Base class for all measures
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,6 +135,11 @@ void MeasBase<Mv,Mr>::set(const Unit &inunit) {
 template <class Mv, class Mr>
 void MeasBase<Mv,Mr>::set(const MeasValue &dt) {
   data = *((Mv *) dt.clone());
+}
+
+template <class Mv, class Mr>
+Bool MeasBase<Mv,Mr>::putValue(const Vector<Quantum<Double> > &in) {
+  return data.putValue(in);
 }
 
 template <class Mv, class Mr>

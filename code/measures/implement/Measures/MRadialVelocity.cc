@@ -156,6 +156,30 @@ Bool MRadialVelocity::giveMe(const String &in, MRadialVelocity::Ref &mr) {
   return MRadialVelocity::giveMe(mr, in);
 }
 
+Bool MRadialVelocity::setOffset(const Measure &in) {
+  if (in.type() != Register((MRadialVelocity *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MRadialVelocity::setRefString(const String &in) {
+  MRadialVelocity::Types tp;
+  if (MRadialVelocity::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MRadialVelocity::DEFAULT);
+  return False;
+}
+
+const String &MRadialVelocity::getDefaultType() const {
+  return MRadialVelocity::showType(MRadialVelocity::DEFAULT);
+}
+
+String MRadialVelocity::getRefString() const {
+  return MRadialVelocity::showType(ref.getType());
+}
+
 Quantity MRadialVelocity::get(const Unit &un) const {
     return data.get(un);
 }

@@ -168,6 +168,30 @@ Bool MPosition::giveMe(const String &in, MPosition::Ref &mr) {
   return MPosition::giveMe(mr, in);
 }
 
+Bool MPosition::setOffset(const Measure &in) {
+  if (in.type() != Register((MPosition *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MPosition::setRefString(const String &in) {
+  MPosition::Types tp;
+  if (MPosition::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MPosition::DEFAULT);
+  return False;
+}
+
+const String &MPosition::getDefaultType() const {
+  return MPosition::showType(MPosition::DEFAULT);
+}
+
+String MPosition::getRefString() const {
+  return MPosition::showType(ref.getType());
+}
+
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {
     return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
 }

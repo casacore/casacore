@@ -154,6 +154,30 @@ Bool MFrequency::giveMe(const String &in, MFrequency::Ref &mr) {
   return MFrequency::giveMe(mr, in);
 }
 
+Bool MFrequency::setOffset(const Measure &in) {
+  if (in.type() != Register((MFrequency *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MFrequency::setRefString(const String &in) {
+  MFrequency::Types tp;
+  if (MFrequency::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MFrequency::DEFAULT);
+  return False;
+}
+
+const String &MFrequency::getDefaultType() const {
+  return MFrequency::showType(MFrequency::DEFAULT);
+}
+
+String MFrequency::getRefString() const {
+  return MFrequency::showType(ref.getType());
+}
+
 Quantity MFrequency::get(const Unit &un) const {
     return data.get(un);
 }

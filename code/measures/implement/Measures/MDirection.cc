@@ -259,6 +259,30 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
     return oname[tp];
 }
 
+Bool MDirection::setOffset(const Measure &in) {
+  if (in.type() != Register((MDirection *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MDirection::setRefString(const String &in) {
+  MDirection::Types tp;
+  if (MDirection::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MDirection::DEFAULT);
+  return False;
+}
+
+const String &MDirection::getDefaultType() const {
+  return MDirection::showType(MDirection::DEFAULT);
+}
+
+String MDirection::getRefString() const {
+  return MDirection::showType(ref.getType());
+}
+
 Quantum<Vector<Double> > MDirection::getAngle() const {
     return (data.getAngle());
 }

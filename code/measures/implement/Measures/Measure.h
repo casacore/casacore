@@ -41,6 +41,8 @@ class String;
 class Unit;
 class MeasValue;
 class MRBase;
+template <class T> class Quantum;
+template <class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -287,11 +289,14 @@ public:
   // </srcblock>
   // <group>
   virtual void set(const MeasValue &dt) = 0;
+  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
   // </group>
+  // Set the offset in the reference (False if non-matching Measure)
+  virtual Bool setOffset(const Measure &in) = 0;
   //
   // Check the type of derived Measure entity (e.g. "Epoch")
   virtual Bool areYou(const String &tp) const = 0;
-  // Get the type (== Register(M*)) of derived Measure (faster than Strings)
+  // Get the type (== Register() of derived Measure (faster than Strings)
   virtual uInt type() const = 0;
   // Assert that we are the correct Measure type
   // <thrown>
@@ -318,8 +323,7 @@ public:
   //    static const String &showType(uInt tp);
   // </srcblock>
   // <group>
-  // Dummy for cxx2html
-  void dummy_show() const {;};
+  virtual String getRefString() const = 0;
   // </group>
   //
   // Each derived class should have a string-to-code translation routine
@@ -333,6 +337,12 @@ public:
   // Dummy for cxx2html
   void dummy_giveMe() const {;};
   // </group>
+  //
+  // Set the reference type to the specified String. False if illegal
+  // string, reference set to DEFAULT.
+  virtual Bool setRefString(const String &in) = 0;
+  // Get the default reference type
+  virtual const String &getDefaultType() const = 0;
   //
   // A general string checking routine to be used in derived measures.
   // Its arguments are the string to be converted (in), an array of
@@ -361,7 +371,6 @@ public:
   //    Quantum<Vector<Double> > get(const Unit &unit) const;
   // </srcblock>
   // <group>
-  // Dummy for cxx2html
   void dummy_getValue() const {;};
   // </group>
   //

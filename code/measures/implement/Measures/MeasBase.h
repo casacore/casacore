@@ -1,5 +1,5 @@
 //# MeasBase.h: Base class for all measures
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 #include <aips/Measures/Quantum.h>
 
 //# Forward Declarations
+template <class T> class Vector;
 
 //# Typedefs
 
@@ -125,6 +126,7 @@ public:
   void set(const Mv &dt, const Mr &rf);
   void set(const Unit &inunit);
   virtual void set(const MeasValue &dt);
+  virtual Bool putValue(const Vector<Quantum<Double> > &in);
   // </group>
   
   // Get reference

@@ -146,6 +146,30 @@ Bool MDoppler::giveMe(const String &in, MDoppler::Ref &mr) {
   return MDoppler::giveMe(mr, in);
 }
 
+Bool MDoppler::setOffset(const Measure &in) {
+  if (in.type() != Register((MDoppler *)0)) return False;
+  ref.set(in);
+  return True;
+}
+
+Bool MDoppler::setRefString(const String &in) {
+  MDoppler::Types tp;
+  if (MDoppler::getType(tp, in)) {
+    ref.setType(tp);
+    return True;
+  };
+  ref.setType(MDoppler::DEFAULT);
+  return False;
+}
+
+const String &MDoppler::getDefaultType() const {
+  return MDoppler::showType(MDoppler::DEFAULT);
+}
+
+String MDoppler::getRefString() const {
+  return MDoppler::showType(ref.getType());
+}
+
 Quantity MDoppler::get(const Unit &un) const {
     return data.get(un);
 }
