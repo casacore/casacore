@@ -199,11 +199,22 @@ public:
     RecordInterface (const RecordInterface& other);
 
     // Assignment (copy semantics).
+    // This only assigns the RecordInterface object itself,
+    // thus not the data in a derived class.
+    // To do that the function <src>assign</src> below can be used.
     RecordInterface& operator= (const RecordInterface& other);
 
     // Destruct the record.
     // All attached RecordFieldPtr objects are notified to detach themselves.
     ~RecordInterface();
+
+    // Make a copy of this object.
+    virtual RecordInterface* clone() const = 0;
+
+    // Assign that RecordInterface object to this one.
+    // Unlike <src>operator=</src> it copies all data in the derived
+    // class.
+    virtual void assign (const RecordInterface& that) = 0;
 
     // Is the Record structure fixed (i.e. impossible to restructure or
     // to add or remove fields)?
@@ -215,6 +226,10 @@ public:
     // Get the field number from the field name.
     // -1 is returned if the field name is unknown.
     virtual Int fieldNumber (const String& fieldName) const = 0;
+
+    // Get the field number for the given field id.
+    // It throws an exception when an unknown name was given.
+    Int idToNumber (const RecordFieldId&) const;
 
     // Test if a field name exists.
     //# Is here for backward compatibility with KeywordSet.
@@ -412,10 +427,6 @@ protected:
     // Get the field number for the given field id.
     // It returns -1 when an unknown name was given.
     Int newIdToNumber (const RecordFieldId&) const;
-
-    // Get the field number for the given field id.
-    // It throws an exception when an unknown name was given.
-    Int idToNumber (const RecordFieldId&) const;
 
     // Add a scalar field with the given type and value.
     // An exception is thrown if the record structure is fixed

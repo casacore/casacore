@@ -109,6 +109,18 @@ TableRecord& TableRecord::operator= (const TableRecord& other)
 TableRecord::~TableRecord()
 {}
 
+RecordInterface* TableRecord::clone() const
+{
+    return new TableRecord (*this);
+}
+
+void TableRecord::assign (const RecordInterface& that)
+{
+    TableRecord tmp (that);
+    *this = that;
+}
+
+
 void TableRecord::makeUnique()
 {
     rwRef();

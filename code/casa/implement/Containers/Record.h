@@ -235,6 +235,14 @@ public:
     // Release resources associated with this object.
     ~Record();
 
+    // Make a copy of this object.
+    virtual RecordInterface* clone() const;
+
+    // Assign that RecordInterface object to this one.
+    // Unlike <src>operator=</src> it copies all data in the derived
+    // class.
+    virtual void assign (const RecordInterface& that);
+
     // Get the comment for this field.
     virtual const String& comment (const RecordFieldId&) const;
 

@@ -105,6 +105,18 @@ Record& Record::operator= (const Record& other)
 Record::~Record()
 {}
 
+RecordInterface* Record::clone() const
+{
+    return new Record (*this);
+}
+
+void Record::assign (const RecordInterface& that)
+{
+    Record tmp (that);
+    *this = that;
+}
+
+
 void Record::makeUnique()
 {
     rwRef();
