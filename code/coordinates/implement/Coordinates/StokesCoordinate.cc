@@ -370,6 +370,35 @@ Bool StokesCoordinate::near(const Coordinate& other,
    return True;
 }
 
+Bool StokesCoordinate::doNearPixel (const Coordinate& other,
+                                    const Vector<Bool>&  thisAxes,
+                                    const Vector<Bool>& otherAxes,
+                                    Double tol=1.0e-6) const
+{
+   if (other.type() != Coordinate::STOKES) {
+      set_error("Other Coordinate type is not Stokes");
+      return False;
+   }
+
+//
+// The only other thing that really matters in the STokesCoordinate
+// is the values along the axis.    Nothing else (e.g. crval_p etc)
+// is ever actually used.  However, if we check these, we getinto
+// trouble for things like ImageExpr making P from Q and U say
+// (i.e. the two coordinates have differnet values).  So we
+// simply test that the number of stokes is the same and that
+// is that
+//
+   const StokesCoordinate& sCoord = dynamic_cast<const StokesCoordinate&>(other);
+   if (nValues_p != sCoord.nValues_p) {
+      set_error("The StokesCoordinates have different numbers of Stokes values");
+      return False;
+   }
+//
+   return True;
+}
+
+
 
 Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
