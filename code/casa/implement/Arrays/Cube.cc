@@ -249,9 +249,8 @@ template<class T> void Cube<T>::makeIndexingConstants()
 template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
 {
     DebugAssert(ok(), ArrayError);
-    if (which < 0 || which >= length_p(2)) {
-	throw(ArrayConformanceError("Cube<T>::xyPlane - "
-				    "plane < 0 or > end"));
+    if (Int(which) >= length_p(2)) {
+	throw(ArrayConformanceError("Cube<T>::xyPlane - plane > end"));
     }
     Cube<T> tmp((*this)(Slice(), Slice(), which));
     tmp.ndimen_p = 2;
