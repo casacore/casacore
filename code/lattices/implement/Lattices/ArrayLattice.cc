@@ -1,5 +1,5 @@
 //# ArrayLattice.cc: this defines the Lattice wrapper class for Arrays.
-//# Copyright (C) 1995,1997,1998
+//# Copyright (C) 1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -169,6 +169,12 @@ void ArrayLattice<T>::putAt (const T& value, const IPosition& where)
       throw (AipsError ("ArrayLattice::putAt - non-writable lattice"));
   }
   itsData(where) = value;
+}
+
+template<class T>
+uInt ArrayLattice<T>::maxPixels() const
+{
+  return itsData.nelements();
 }
 
 template<class T>

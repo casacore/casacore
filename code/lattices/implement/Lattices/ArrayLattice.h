@@ -1,5 +1,5 @@
 //# ArrayLattice: Object which converts an Array to a Lattice.
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,6 +197,10 @@ public:
   // something nasty has happened to the ArrayLattice.
   virtual Bool ok() const;
   
+  // Returns the maximum recommended number of pixels for a cursor.
+  // This is the number of pixels in the lattice.
+  virtual uInt maxPixels() const;
+
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use. 
