@@ -60,7 +60,7 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup(fileName, logTableDescription(), Table::New);
 // 	// Bind all to the SSM.
- 	StandardStMan stman("SSM");
+ 	StandardStMan stman("SSM", 32768);
 	setup.bindAll(stman);
 	log_table_p = Table(setup);
 	log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
