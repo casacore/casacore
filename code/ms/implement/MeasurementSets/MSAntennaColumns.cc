@@ -30,7 +30,6 @@
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
 
 RONewMSAntennaColumns::RONewMSAntennaColumns(const NewMSAntenna& msAntenna):
   dishDiameter_p(msAntenna, NewMSAntenna::
@@ -222,6 +221,6 @@ void NewMSAntennaColumns::setOffsetRef(MPosition::Types ref)
   offset_p.rwKeywordSet().rwSubRecord("MEASINFO").
     define("Ref", MPosition::showType(ref));
 }
-
-
-
+// Local Variables: 
+// compile-command: "gmake NewMSAntennaColumns"
+// End: 
