@@ -336,11 +336,6 @@
 
   cd $AIPSCODE
 
-# Build the binaries that are required for later gmakes
-  echo ""
-  echo "sneeze: Running bootstrap makefile..."
-  gmake -C $AIPSCODE/install -f makefile.boot allsys
-
 # Clean up the system areas on cumulative updates.
   if [ "$MODE" = cumulative ]
   then
