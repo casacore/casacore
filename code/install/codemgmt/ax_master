@@ -3465,3 +3465,4 @@
 13 283 src mv trial/implement/Display/WCResampleHandler.cc trial/implement/DisplayCanvas/WCResampleHandler.cc
 13 283 src mv trial/implement/Display/WCResampleHandler.h trial/implement/DisplayCanvas/WCResampleHandler.h
 13 285 src mv trial/implement/Lattices/LatticeBase.cc aips/implement/Lattices/LatticeBase.cc
+13 285 src mv trial/implement/Lattices/LatticeBase.h aips/implement/Lattices/LatticeBase.h
