@@ -31,6 +31,7 @@
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/RegularFile.h>
+#include <aips/OS/Path.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/Exceptions/Error.h>
 #include <unistd.h>
@@ -54,8 +55,7 @@ static const uInt sizeReqId = (1 + 2*nrReqId) * 4;
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist)
-: itsName      (fileName),
-  itsInterval  (inspectInterval),
+: itsInterval  (inspectInterval),
   itsWritable  (True),
   itsAddToList (setRequestFlag),
   itsFileIO    (0),
@@ -65,6 +65,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
   itsHostId    (0),
   itsReqId     (1 + nrReqId*2, (Int)0)
 {
+    itsName = Path(fileName).expandedName();
     //# Create the file if it does not exist yet.
     //# When the flag is set, it is allowed that the file does not
     //# eixst and cannot be created. In that case it is assumed that
