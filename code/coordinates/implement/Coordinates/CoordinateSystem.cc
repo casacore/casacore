@@ -4158,6 +4158,15 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
 
    if (!findWidths) clearFlags(os);
 
+// Caste to get SepctralCoordinate
+
+    SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
+
+// If the rest freq is non-positive, out we go
+
+    Double restFreq = sc0->restFrequency();
+    if (restFreq <=0.0) return;
+
 // Axis number
 
    String string;
@@ -4258,11 +4267,9 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis
 
    if (pixelAxis != -1) {
 
-// Caste the coordinate to a spectral coordinate and get a non-const version
+// Get a non-const version of the SC
 
-     SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
      SpectralCoordinate sc(*sc0);
-
      Double velocityInc;
      if (!velocityIncrement(velocityInc, sc, doppler, velUnits)) {
         string = "Fail";
