@@ -28,9 +28,11 @@
 #if !defined (AIPS_STRING_H)
 #define AIPS_STRING_H
 
-#ifndef USE_OLD_STRING		/* The new String class */
 //# Includes
 #include <aips/aips.h>
+
+#ifndef USE_OLD_STRING		/* The new String class */
+//# Includes
 #include <string>
 
 //# Forward Declarations
@@ -983,7 +985,6 @@ inline ostream &operator<<(ostream &s, const String &x) {
 
 #include <iostream.h>
 #include <strstream.h>
-#include <aips/aips.h>
 #include <aips/Utilities/Regex.h>
 
 extern void stringThrowError(const char *);
