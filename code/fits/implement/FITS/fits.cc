@@ -2413,7 +2413,6 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
-		msgline << std::ends;
 		const char * mptr = msgline.str().data();
 		errhandler(mptr, errlev);
 		// delete [] mptr;
@@ -2432,7 +2431,6 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    	msgline << "FITS card " 
 				<< (count * 36 + cardno) << ": ";
 		    	msgline.write(&buff[i*80],80);
-			msgline << std::ends;
 			const char * mptr = msgline.str().data();
 			errhandler(mptr, FITSError::WARN);
 			// delete [] mptr;

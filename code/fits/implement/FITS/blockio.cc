@@ -38,7 +38,7 @@ void BlockIO::errmsg(IOErrs e, char *s) {
     else
 	msgline << "File " << filename;
     msgline << " Physical record " << block_no
-	    << " logical record " << rec_no << " --\n\t" << s << ends;
+	    << " logical record " << rec_no << " --\n\t" << s;
     err_status = e;
     // all BlockIO messages are SEVERE
     const char * mptr = msgline.str().data();
