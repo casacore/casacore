@@ -80,15 +80,13 @@ class LatticeUtilities
                          Bool dropDegenerateAxes);
 // </group>
 
-// Copy pixels and mask from input to output.  Zero output pixels
-// where mask is False (bad)
-   template <class T>
-   static void copyAndZero(LogIO& os, MaskedLattice<T>& out, MaskedLattice<T>& in);
-
-// Copy data and mask from input to output.
+// Copy data and mask from input to output.  If the input has no mask,
+// that means all True (good), and these values will be transferred
+// to the output.   Mask transfer only  occurs if the output has
+// a writeable mask.
    template <class T>
    static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
-                                const MaskedLattice<T>& in);
+                                const MaskedLattice<T>& in, Bool zeroMasked=False);
 
 // Replicate array through lattice in the specified region
    template <class T>
