@@ -117,7 +117,7 @@ int main()
          CoordinateSystem cSys2 = makeCoordinateSystem(nCoords, types, sTypes,
                                                        iDC, iSpC, iTC, iStC, iLC,
                                                        dC, spC, tC, stC, lC);
-         if (!cSys1.near(&cSys2)) {
+         if (!cSys1.near(cSys2)) {
             String msg = String("Failed near test 1 because ") +
                          cSys1.errorMessage();
             throw(AipsError(msg));
@@ -125,7 +125,7 @@ int main()
          Vector<Int> excludeAxes(2);
          excludeAxes(0) = 0;
          excludeAxes(1) = 2;
-         if (!cSys1.near(&cSys2, excludeAxes)) {
+         if (!cSys1.near(cSys2, excludeAxes)) {
             String msg = String("Failed near test 2 because ") +
                          cSys1.errorMessage();
             throw(AipsError(msg));
@@ -191,7 +191,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 
    {
        CoordinateSystem cSys2(cSys);
-       if (!cSys.near(&cSys2)) {
+       if (!cSys.near(cSys2)) {
             String msg = String("Failed copy constructor test because ") +
                          cSys.errorMessage();
             throw(AipsError(msg));
@@ -203,7 +203,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    {
        CoordinateSystem cSys2;
        cSys2 = cSys;
-       if (!cSys.near(&cSys2)) {
+       if (!cSys.near(cSys2)) {
           String msg = String("Failed assignment test because ") +
                         cSys.errorMessage();   
           throw(AipsError(msg));
@@ -239,7 +239,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (iC != Int(iDC)) {
       throw(AipsError("Failed findCoordinate test 1"));
    }
-   if (!dC.near(&cSys.directionCoordinate(uInt(iC)))) {
+   if (!dC.near(cSys.directionCoordinate(uInt(iC)))) {
       msg = String("Failed directionCoordinate test because ") +
             dC.errorMessage();
       throw(AipsError(msg));
@@ -249,7 +249,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (iC != Int(iSpC)) {
       throw(AipsError("Failed findCoordinate test 2"));
    }
-   if (!spC.near(&cSys.spectralCoordinate(uInt(iC)))) {
+   if (!spC.near(cSys.spectralCoordinate(uInt(iC)))) {
       msg = String("Failed spectralCoordinate test because ") +   
             spC.errorMessage();
       throw(AipsError(msg));
@@ -259,7 +259,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (iC != Int(iTC)) {
       throw(AipsError("Failed findCoordinate test 3"));
    }
-   if (!tC.near(&cSys.tabularCoordinate(uInt(iC)))) {
+   if (!tC.near(cSys.tabularCoordinate(uInt(iC)))) {
       msg = String("Failed tabularCoordinate test because ") +   
             tC.errorMessage();
       throw(AipsError(msg));
@@ -269,7 +269,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (iC != Int(iStC)) {
       throw(AipsError("Failed findCoordinate test 4"));
    }
-   if (!stC.near(&cSys.stokesCoordinate(uInt(iC)))) {
+   if (!stC.near(cSys.stokesCoordinate(uInt(iC)))) {
       msg = String("Failed stokesCoordinate test because ") +   
                    stC.errorMessage();
       throw(AipsError(msg));
@@ -279,7 +279,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (iC != Int(iLC)) {
       throw(AipsError("Failed findCoordinate test 5"));
    }
-   if (!lC.near(&cSys.linearCoordinate(uInt(iC)))) {
+   if (!lC.near(cSys.linearCoordinate(uInt(iC)))) {
       msg = String("Failed linearCoordinate test because ") +   
                    lC.errorMessage();
       throw(AipsError(msg));
@@ -577,7 +577,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header"));
       }
-      if (!cSys2.near(&cSys3)) {
+      if (!cSys2.near(cSys3)) {
          msg = String("Failed to/fromFITS consistency test because ") +   
                       cSys2.errorMessage();
          throw(AipsError(msg));
@@ -591,7 +591,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError("Saving to Record failed"));  
    }  
    CoordinateSystem* pcSys = CoordinateSystem::restore(rec, "coordsys");
-   if (!pcSys->near(&cSys, 1e-6)) {
+   if (!pcSys->near(cSys, 1e-6)) {
       throw(AipsError("Reflection through record interface failed"));  
    }
    delete pcSys;
@@ -599,7 +599,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 // Test clone
 //
    Coordinate* pcSys2 = cSys.clone();
-   if (!pcSys2->near(&cSys, 1e-6)) {
+   if (!pcSys2->near(cSys, 1e-6)) {
       throw(AipsError("Clone function failed"));  
    }
    delete pcSys2;
@@ -621,7 +621,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       cSys2.removePixelAxis(0, 0.0);
       cSys2.removeWorldAxis(2, 0.0);
       cSys2.restoreOriginal();
-      if (!cSys2.near(&cSys3, 1e-6)) {
+      if (!cSys2.near(cSys3, 1e-6)) {
          throw(AipsError("restoreOriginal test failed"));  
       }
    }

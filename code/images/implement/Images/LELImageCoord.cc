@@ -72,7 +72,7 @@ Bool LELImageCoord::doConform (const LELImageCoord& other) const
 {
 // This is the real conformance checker.
 
-    return coordinates().near (&(other.coordinates()));
+    return coordinates().near (other.coordinates());
 }
 
 LatticeExprNode LELImageCoord::makeSubLattice

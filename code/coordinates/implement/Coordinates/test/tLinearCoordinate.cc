@@ -69,11 +69,11 @@ int main()
      {
          LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
          LinearCoordinate lc2 = makeCoordinate(names, units, crpix, crval, cdelt, xform);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed near test 1"));
          }
          Vector<Int> excludeAxes(1, 1);
-         if (!lc.near(&lc2, excludeAxes)) {
+         if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
      } 
@@ -108,7 +108,7 @@ int main()
 //
         LinearCoordinate lc2(names, crval2, cdelt2, xform, crpix);
 //
-        if (!lc1.near(&lc2)) {
+        if (!lc1.near(lc2)) {
            throw(AipsError(String("Quantum interface constructor failed consistency test")));
         }
       }
@@ -119,7 +119,7 @@ int main()
      {
          LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
          LinearCoordinate lc2(lc);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed copy constructor test"));
          }
      } 
@@ -130,7 +130,7 @@ int main()
          LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
          LinearCoordinate lc2;
          lc2 = lc;
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed assignment test"));
          }
      } 
@@ -427,7 +427,7 @@ int main()
             throw(AipsError("Coordinate saving to Record failed"));  
          }  
          LinearCoordinate* plc = LinearCoordinate::restore(rec, "linear");
-         if (!plc->near(&lc, 1e-6)) {
+         if (!plc->near(lc, 1e-6)) {
             throw(AipsError("Coordinate reflection through record interface failed"));  
          }
          delete plc;
@@ -438,7 +438,7 @@ int main()
       {
          LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
          Coordinate* plc = lc.clone();
-         if (!plc->near(&lc, 1e-6)) {
+         if (!plc->near(lc, 1e-6)) {
             throw(AipsError("Clone function failed"));  
          }
          delete plc;

@@ -28,6 +28,7 @@
 #include <trial/Images/WCBox.h>
 
 #include <aips/Arrays/ArrayLogical.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Exceptions/Error.h>
@@ -379,7 +380,7 @@ Bool WCBox::operator== (const WCRegion& other) const
       if (itsPixelAxes(i) != that.itsPixelAxes(i)) return False;
       if (itsAbsRel(i) != that.itsAbsRel(i)) return False;
    }
-   if (!itsCSys.near(&(that.itsCSys))) return False;
+   if (!itsCSys.near(that.itsCSys)) return False;
 
    return True;
 }

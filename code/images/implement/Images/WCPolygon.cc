@@ -1,5 +1,5 @@
 //# WCPolygon.cc: Class to define a 2D polygonal world coordinate region of interest 
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <trial/Images/WCPolygon.h>
 
 #include <aips/Arrays/ArrayLogical.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Exceptions/Error.h>
@@ -267,7 +268,7 @@ Bool WCPolygon::operator== (const WCRegion& other) const
    for (i=0; i<itsPixelAxes.nelements(); i++) {
       if (itsPixelAxes(i) != that.itsPixelAxes(i)) return False;
    }
-   if (!itsCSys.near(&(that.itsCSys))) return False;
+   if (!itsCSys.near(that.itsCSys)) return False;
 
    return True;
 }

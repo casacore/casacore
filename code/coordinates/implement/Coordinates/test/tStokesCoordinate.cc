@@ -71,11 +71,11 @@ int main()
      {
          StokesCoordinate lc  = makeCoordinate(whichStokes, stokesStrings);
          StokesCoordinate lc2 = makeCoordinate(whichStokes, stokesStrings);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed near test 1"));
          }
          Vector<Int> excludeAxes(1, 0);
-         if (!lc.near(&lc2, excludeAxes)) {
+         if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
      } 
@@ -135,7 +135,7 @@ void doit (StokesCoordinate& lc,
 
    {
        StokesCoordinate lc2(lc);
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed copy constructor test"));
        }
    } 
@@ -146,7 +146,7 @@ void doit (StokesCoordinate& lc,
        Vector<Int> whichStokes2(1); whichStokes2(0) = Stokes::I;
        StokesCoordinate lc2 = StokesCoordinate(whichStokes2);
        lc2 = lc;
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed assignment test"));
        }
    } 
@@ -204,7 +204,7 @@ void doit (StokesCoordinate& lc,
       throw(AipsError("Coordinate saving to Record failed"));  
    }  
    StokesCoordinate* plc = StokesCoordinate::restore(rec, "Stokes");
-   if (!plc->near(&lc, 1e-6)) {
+   if (!plc->near(lc, 1e-6)) {
       throw(AipsError("Coordinate reflection through record interface failed"));  
    }
    delete plc;
@@ -213,7 +213,7 @@ void doit (StokesCoordinate& lc,
 // Test clone
 //
    Coordinate* plc2 = lc.clone();
-   if (!plc2->near(&lc, 1e-6)) {
+   if (!plc2->near(lc, 1e-6)) {
       throw(AipsError("Clone function failed"));  
    }
    delete plc2;

@@ -266,7 +266,7 @@ int main()
        cSys2.setWorldAxisUnits(axisUnits);
        pIm.setCoordinateInfo(cSys2);
        CoordinateSystem cSys3 = pIm.coordinates();
-       AlwaysAssert(cSys2.near(&cSys3,1e-6), AipsError);
+       AlwaysAssert(cSys2.near(cSys3,1e-6), AipsError);
 //
        ImageInfo info = pIm.imageInfo();
        AlwaysAssert(info.restoringBeam().nelements()==0, AipsError);

@@ -93,11 +93,11 @@ int main()
          DirectionCoordinate lc2 = makeCoordinate(MDirection::J2000,
                                                  proj, crval, crpix, 
                                                  cdelt, xform);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError(String("Failed near test 1 because") + lc.errorMessage()));
          }
          Vector<Int> excludeAxes(1, 0);
-         if (!lc.near(&lc2, excludeAxes)) {
+         if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError(String("Failed near test 2 because") + lc.errorMessage()));
          }
      } 
@@ -131,7 +131,7 @@ int main()
         DirectionCoordinate dc2(type, proj, lon, lat, dlon, dlat,
                                 xform, crpix(0), crpix(1));
 //
-        if (!dc1.near(&dc2)) {
+        if (!dc1.near(dc2)) {
            throw(AipsError(String("Quantum interface constructor failed consistency test")));
         }
       }
@@ -240,7 +240,7 @@ void doit (DirectionCoordinate& lc,
 
    {
        DirectionCoordinate lc2(lc);
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed copy constructor test"));
        }
    } 
@@ -250,7 +250,7 @@ void doit (DirectionCoordinate& lc,
    {
        DirectionCoordinate lc2;
        lc2 = lc;
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed assignment test"));
        }
    } 
@@ -306,7 +306,7 @@ void doit (DirectionCoordinate& lc,
       throw(AipsError("Coordinate saving to Record failed"));  
    }  
    DirectionCoordinate* plc = DirectionCoordinate::restore(rec, "Direction");
-   if (!plc->near(&lc, 1e-6)) {
+   if (!plc->near(lc, 1e-6)) {
       throw(AipsError("Coordinate reflection through record interface failed"));  
    }
    delete plc;
@@ -315,7 +315,7 @@ void doit (DirectionCoordinate& lc,
 // Test clone
 //
    Coordinate* plc2 = lc.clone();
-   if (!plc2->near(&lc, 1e-6)) {
+   if (!plc2->near(lc, 1e-6)) {
       throw(AipsError("Clone function failed"));  
    }
    delete plc2;

@@ -112,7 +112,7 @@ try {
 //
      ImagePolarimetry pol(*pIm);
      AlwaysAssert(pol.shape()==shape,AipsError);
-     AlwaysAssert(pol.coordinates().near(&(pIm->coordinates())),AipsError);
+     AlwaysAssert(pol.coordinates().near(pIm->coordinates()),AipsError);
      AlwaysAssert(pol.isMasked()==pIm->isMasked(),AipsError);
 //
      CoordinateSystem dCS;

@@ -199,7 +199,7 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
       itsOs << "Image shapes are different" << LogIO::EXCEPTION;
    }
    CoordinateSystem cSys = itsImagePtr->coordinates();
-   if (!cSys.near(&(imageOut.coordinates()))) {
+   if (!cSys.near(imageOut.coordinates())) {
       itsOs << LogIO::WARN << "Image CoordinateSystems differ - this may be unwise"
             << LogIO::POST;
    }

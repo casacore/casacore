@@ -83,12 +83,12 @@ int main()
      {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
          SpectralCoordinate lc2 = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         if (!lc.near(&lc2)) {
-            throw(AipsError("Failed near test 1"));
+         if (!lc.near(lc2)) {
+            throw(AipsError(String("Failed near test 1 because") + lc.errorMessage()));
          }
          Vector<Int> excludeAxes(1, 1);
-         if (!lc.near(&lc2, excludeAxes)) {
-            throw(AipsError("Failed near test 2"));
+         if (!lc.near(lc2, excludeAxes)) {
+            throw(AipsError(String("Failed near test 2 because") + lc.errorMessage()));
          }
      } 
 
@@ -106,8 +106,8 @@ int main()
         Quantum<Double> restFreq2(100*restFreq, "cHz");
         SpectralCoordinate sc2(MFrequency::TOPO, crval2, cdelt2, crpix, restFreq2);
 //
-        if (!sc1.near(&sc2)) {  
-           throw(AipsError(String("Quantum interface (1) constructor failed consistencey test")));
+        if (!sc1.near(sc2)) {  
+           throw(AipsError(String("Quantum interface (1) constructor failed consistency test")));
         }
       }
 
@@ -121,7 +121,7 @@ int main()
         Quantum<Double> restFreq2(100.0*restFreq, "cHz");
         SpectralCoordinate sc2(MFrequency::TOPO, freqs2, restFreq2);
 //
-        if (!sc1.near(&sc2)) {  
+        if (!sc1.near(sc2)) {  
            throw(AipsError(String("Quantum interface (2) constructor failed consistencey test")));
         }
       }
@@ -132,7 +132,7 @@ int main()
      {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
          SpectralCoordinate lc2(lc);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed copy constructor test"));
          }
      } 
@@ -143,7 +143,7 @@ int main()
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
          SpectralCoordinate lc2;
          lc2 = lc;
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed assignment test"));
          }
      } 
@@ -533,7 +533,7 @@ int main()
             throw(AipsError("Coordinate saving to Record failed"));  
          }  
          SpectralCoordinate* plc = SpectralCoordinate::restore(rec, "linear");
-         if (!plc->near(&lc, 1e-6)) {
+         if (!plc->near(lc, 1e-6)) {
             throw(AipsError("Coordinate reflection through record interface failed"));  
          }
          delete plc;
@@ -544,7 +544,7 @@ int main()
       {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
          Coordinate* plc = lc.clone();
-         if (!plc->near(&lc, 1e-6)) {
+         if (!plc->near(lc, 1e-6)) {
             throw(AipsError("Clone function failed"));  
          }
          delete plc;
@@ -566,7 +566,7 @@ int main()
          if (!SpectralCoordinate::fromFITS(lc2, errMsg, rec, 0, os,  True)) {
             throw(AipsError(String("fromFITS function failed because") + errMsg));  
          }
-         if (!lc.near(&lc2, 1e-6)) {
+         if (!lc.near(lc2, 1e-6)) {
             throw(AipsError("FITS reflection failed"));  
          }
       }

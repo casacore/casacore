@@ -94,11 +94,11 @@ int main()
      {
          TabularCoordinate lc  = makeLinearCoordinate(axisName, axisUnit, crval, crpix, cdelt);
          TabularCoordinate lc2 = makeLinearCoordinate(axisName, axisUnit, crval, crpix, cdelt);
-         if (!lc.near(&lc2)) {
+         if (!lc.near(lc2)) {
             throw(AipsError("Failed near test 1"));
          }
          Vector<Int> excludeAxes(1, 0);
-         if (!lc.near(&lc2, excludeAxes)) {
+         if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
      } 
@@ -118,7 +118,7 @@ int main()
         Quantum<Double> cdelt2(100*cdelt, "cm");
         TabularCoordinate tc2(crval2, cdelt2, crpix, name);
 //
-        if (!tc1.near(&tc2)) {
+        if (!tc1.near(tc2)) {
            throw(AipsError(String("Quantum interface (1) constructor failed consistency test")));
         }
       }
@@ -137,7 +137,7 @@ int main()
         Quantum<Vector<Double> > world2(world, unit);
         TabularCoordinate tc2(pixel, world2, name);
 //
-        if (!tc1.near(&tc2)) {
+        if (!tc1.near(tc2)) {
            throw(AipsError(String("Quantum interface (2) constructor failed consistency test")));
         }
       }
@@ -212,7 +212,7 @@ void doit (TabularCoordinate& lc,
 
    {
        TabularCoordinate lc2(lc);
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed copy constructor test"));
        }
    } 
@@ -222,7 +222,7 @@ void doit (TabularCoordinate& lc,
    {
        TabularCoordinate lc2;
        lc2 = lc;
-       if (!lc.near(&lc2)) {
+       if (!lc.near(lc2)) {
           throw(AipsError("Failed assignment test"));
        }
    } 
@@ -305,7 +305,7 @@ void doit (TabularCoordinate& lc,
       throw(AipsError("Coordinate saving to Record failed"));  
    }  
    TabularCoordinate* plc = TabularCoordinate::restore(rec, "Tabular");
-   if (!plc->near(&lc, 1e-6)) {
+   if (!plc->near(lc, 1e-6)) {
       throw(AipsError("Coordinate reflection through record interface failed"));  
    }
    delete plc;
@@ -314,7 +314,7 @@ void doit (TabularCoordinate& lc,
 // Test clone
 //
    Coordinate* plc2 = lc.clone();
-   if (!plc2->near(&lc, 1e-6)) {
+   if (!plc2->near(lc, 1e-6)) {
       throw(AipsError("Clone function failed"));  
    }
    delete plc2;

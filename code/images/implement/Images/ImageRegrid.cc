@@ -1554,7 +1554,7 @@ Bool ImageRegrid<T>::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 //
    const DirectionCoordinate& dirCoordTo = coordsTo.directionCoordinate(coordinateDirTo);
    const DirectionCoordinate& dirCoordFrom = coordsFrom.directionCoordinate(coordinateDirFrom);
-   Bool dirCoordEqual = dirCoordTo.near(&dirCoordFrom);
+   Bool dirCoordEqual = dirCoordTo.near(dirCoordFrom);
 
 // See if we need machine
 
