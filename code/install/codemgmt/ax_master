@@ -4384,3 +4384,4 @@
 14 276 src rm npoi/apps/Cuttlefish/CuttlefishFactory.cc
 14 276 src rm npoi/apps/Cuttlefish/CuttlefishFactory.h
 14 276 src rm npoi/apps/Cuttlefish/COPYRIGHT
+14 282 src rm doc/html/tour/aips++tour.ppt
