@@ -4,7 +4,7 @@
  <date> 2000/05/22 </date>
  <avers> 1.4 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -29,7 +29,7 @@ It adresses the drawbacks of StManAipsIO:
  <date> 2001/01/09 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> Change </category>
@@ -54,7 +54,7 @@ although all 64 bit functions seem to be present in the libc library.
  <date> 2001/01/24 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> Change </category>
@@ -89,7 +89,7 @@ The table system has been extended.
  <date> 2001/02/14 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -111,7 +111,7 @@ array in a FITS image as if it is normal AIPS++ data.
  <date> 2001/02/28 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code Documentation </type>
  <category> Change </category>
@@ -139,7 +139,7 @@ Note 199 has been updated accordingly.
  <date> 2001/03/15 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code Test </type>
  <category> New Change </category>
@@ -176,7 +176,7 @@ It revealed a little bug.
  <date> 2001/07/04 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -205,7 +205,7 @@ So it can look like:
  <date> 2001/07/11 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -233,7 +233,7 @@ This class can also be used to have finer control over the copy process.
  <date> 2002/08/13 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> Change </category>
@@ -255,7 +255,7 @@ Tables stored in little endian format have a few extra fields stored, so they ca
  <date> 2003/03/13 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -274,7 +274,7 @@ See the documentation of the Tables module (Tables.html) for more information.
  <date> 2003/03/31 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -296,7 +296,7 @@ See the documentation of the Tables module (Tables.html) for more information.
  <date> 2003/03/31 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> Change </category>
@@ -317,7 +317,7 @@ This change makes it very easy to add a column using a tiled storage manager to 
  <date> 2003/04/09 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -335,7 +335,7 @@ The class CompressComplexSD has been developed to improve the compression of sin
  <date> 2003/05/21 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
@@ -368,7 +368,7 @@ See note 199 for a full description.
  <date> 2003/08/11 </date>
  <avers> 1.9 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> tables </package>
  <module> Tables </module>
  <type> Code </type>
  <category> New </category>
