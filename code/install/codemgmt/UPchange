@@ -99,7 +99,7 @@ if ($upreal) then
    if (! -r $ldir/${tp}.rcs) then
       touch $ldir/${tp}.rcs
       echo "Specify the message lines for the RCS log"
-      echo 'Example: Moved includesfrom Quanta to Measures'
+      echo 'Example: Moved includes from Quanta to Measures'
       while (1)
          echo -n 'Text line: '
          set x = "$<"
@@ -159,7 +159,9 @@ foreach i (`cat $ldir/${tp}.found`)
        if (-e $i:t) chmod 644 $i:t
     endif
     if (-e $i:t) then
-       if (! $upreal) echo "***** File: $i" >> $ldir/${tp}.diff
+       if (! $upreal) then
+          echo "***** File: $i" >> $ldir/${tp}.diff
+       endif
        $uppath/UPsed $xtst $ldir/${tp}.sed $i:t $i:t
        if ($upreal) then
           $xai $i:t < $ldir/${tp}.rcs
