@@ -269,7 +269,11 @@ void Table::open (const String& name, const String& type, int tableOption,
     }else{
 	//# Check if the table exists.
 	if (! Table::isReadable (name)) {
-	    throw (TableNoFile (name));
+	    if (name.empty()) {
+	        throw (TableError ("Table::open - no name given"));
+	    } else {
+	        throw (TableNoFile (name));
+	    }
 	}
 	// Create the BaseTable object and add a PlainTable to the cache.
 	baseTabPtr_p = makeBaseTable (name, type, tableOption,
