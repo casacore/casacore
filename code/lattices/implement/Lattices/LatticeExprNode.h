@@ -638,6 +638,14 @@ private:
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
 
+// Make (if needed and if possible) the expression nodes such that
+// the dimensionalities are equal. This is only possible if both
+// nodes have a coordinate system.
+// It is done by creating an ExtendLattice object for the node
+// with the lower dimensionality.
+   static Int makeEqualDim (LatticeExprNode& expr0,
+			    LatticeExprNode& expr1);
+
 // Do the preparation for the evaluation.
    void doPrepare() const;
 
