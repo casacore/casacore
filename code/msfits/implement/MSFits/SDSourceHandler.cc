@@ -76,7 +76,7 @@ SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
 				 NewMSSource::columnName(NewMSSource::CODE));
 	msSource_p = new NewMSSource(*(other.msSource_p));
 	AlwaysAssert(msSource_p, AipsError);
-	msSourceCols_p = new NewMSSourceColumns(*(other.msSourceCols_p));
+	msSourceCols_p = new NewMSSourceColumns(*msSource_p);
 	AlwaysAssert(msSourceCols_p, AipsError);
 	
 	sourceId_p = other.sourceId_p;
