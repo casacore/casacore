@@ -236,6 +236,17 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     return 0;
   }
 
+  Bool doWsrt = False;
+  {
+    MSObservation obsTable(rawms.observation());
+    if (obsTable.nrow() > 0) {
+      ROScalarColumn<String> inarrayname(obsTable,
+					 MSObservation::columnName
+					 (MSObservation::TELESCOPE_NAME));
+      doWsrt = inarrayname(0) == "WSRT";
+    }
+  }
+
   MSField fieldTable(rawms.field());
   ROMSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
@@ -315,21 +326,17 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	bw0 = delta;
 	chanbw = abs(delta);
 	stokes = stokesTypes(p);
-      }
 	
-      if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0) 
-	 && ((nchan*chanstep+chanstart) <= numchan0) ){
+	if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0) 
+	&& ((nchan*chanstep+chanstart) <= numchan0) ){
 
-	f0 = freqs(chanstart);
-	bw0= delta*chanstep;
-
-	
-
-      }
-      else{
-	nchan=numchan0;
-	chanstep=1; 
-	chanstart=0;
+	  f0 = freqs(chanstart);
+	  bw0= delta*chanstep;
+	} else {
+	  nchan=numchan0;
+	  chanstep=1; 
+	  chanstart=0;
+	}
       }
  
       // Check if values match.
@@ -364,7 +371,11 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
   }
   Int f0RefPix = nchan/2;
-  refFreq = f0 + (f0RefPix-1) * bw0;
+  if (doWsrt) {
+    refFreq = f0 + f0RefPix * bw0;
+  } else {
+    refFreq = f0 + (f0RefPix-1) * bw0;
+  }
   if(f0RefPix==0) {
     f0RefPix=1;
     refFreq=f0 + bw0/2.0 -delta/2.0;
@@ -499,7 +510,11 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   ek.define("ctype4", "FREQ"); 
   ek.define("crval4", refFreq);
   ek.define("cdelt4", bw0);
-  ek.define("crpix4", Double(refPixelFreq));
+  if (doWsrt) {
+    ek.define("crpix4", Double(1+refPixelFreq));
+  } else {
+    ek.define("crpix4", Double(refPixelFreq));
+  }
   ek.define("crota4", 0.0);
 
   ek.define("ctype5", "IF"); 
@@ -901,13 +916,15 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
       *freqsel = 1 + spwidMap[i];
       Vector<Double> freqs = inchanfreq(i);
-      //      (*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
-      (*iffreq)(inx) = 0.0; 
+      if (doWsrt) {
+	(*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
+      } else {
+	(*iffreq)(inx) = 0.0; 
+      }
       if (freqs.nelements() > 1) {
-	if(doWsrt){
+	if (doWsrt) {
 	  (*ifwidth)(inx) = abs(chanbw);
-	}
-	else{
+	} else {
 	  (*ifwidth)(inx) = (chanbw);
 	}
       } else {
