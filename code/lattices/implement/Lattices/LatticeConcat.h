@@ -1,5 +1,5 @@
 //# LatticeConcat.h: concatenate lattices along an axis
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 //# Forward Declarations
 class IPosition;
 class Slicer;
+
 
 // <summary>
 // Concatenates lattices along a specified axis
@@ -187,6 +188,16 @@ public:
 // If all of the undcontributing lattice masks are writable returns True
    virtual Bool isMaskWritable() const;
 
+// Does the lattice have a pixelmask?
+   virtual Bool hasPixelMask() const;
+
+// Get access to the pixelmask.
+// An exception is thrown if the lattice does not have a pixelmask
+// <group>
+  virtual const Lattice<Bool>& pixelMask() const;
+  virtual Lattice<Bool>& pixelMask();
+  // </group>
+
 // Find the shape that the concatenated lattice will be.
 // Returns a null IPosition if function setLattice has not yet 
 // been called
@@ -229,6 +240,8 @@ private:
    uInt axis_p;
    IPosition shape_p;
    Bool isMasked_p;
+   Bool hasPixelMask_p;
+   MaskedLattice<Bool>* pPixelMask_p;
 //
    void checkAxis(uInt axis, uInt ndim) const;
 //

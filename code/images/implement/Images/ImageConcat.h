@@ -1,5 +1,5 @@
 //# ImageConcat.h: concatenate images along an axis
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 
 
 #include <aips/aips.h>
+#include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeConcat.h>
 #include <trial/Images/ImageInterface.h>
 #include <aips/Tables/TableRecord.h>
@@ -183,6 +184,16 @@ public:
 
 // Has the object really a mask?
    virtual Bool isMasked() const {return latticeConcat_p.isMasked();};
+
+// Does the image have a pixelmask?
+   virtual Bool hasPixelMask() const {return latticeConcat_p.hasPixelMask();};
+
+// Get access to the pixelmask.
+// An exception is thrown if the image does not have a pixelmask
+// <group>
+   virtual const Lattice<Bool>& pixelMask() const {return latticeConcat_p.pixelMask();};
+   virtual Lattice<Bool>& pixelMask() {return latticeConcat_p.pixelMask();};
+  // </group>
   
 // Get the region used (always returns 0)
    virtual const LatticeRegion* getRegionPtr() const {return latticeConcat_p.getRegionPtr();};

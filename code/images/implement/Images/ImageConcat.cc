@@ -222,9 +222,9 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
 
 // Compare coordinate descriptors not on concatenation axis
 
-      ImageSummary<Float> sum1(image);
+      ImageSummary<T> sum1(image);
       const ImageInterface<T>* pIm0 = (ImageInterface<T>*)(latticeConcat_p.lattice(0));
-      ImageSummary<Float> sum2(*pIm0);
+      ImageSummary<T> sum2(*pIm0);
       checkCoordinates (warnRefPix_p, warnRefVal_p, warnInc_p, 
                         os, sum1, sum2, latticeConcat_p.axis(), relax);
 
