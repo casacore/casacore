@@ -144,7 +144,7 @@ AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
     // Write out dimensionality
     ios << a.ndim();
     // Write out length, origin
-    for (Int i=0; i < a.ndim(); i++) {
+    for (uInt i=0; i < a.ndim(); i++) {
 	ios << a.origin()(i);
     }
     for (i=0; i < a.ndim(); i++) {
@@ -453,7 +453,7 @@ Bool read(istream &s, Array<T> &x,
     x.resize(p);
     uInt iptr = p.nelements() - 1;
     IPosition iter(p); iter = Int(0);
-    for (Int i=0; i < x.nelements(); i++) {
+    for (uInt i=0; i < x.nelements(); i++) {
       x(iter) = tmp[i];
       if (!tr) {
 	for (Int j=iptr; j >=0; j--) {
@@ -462,7 +462,7 @@ Bool read(istream &s, Array<T> &x,
 	  iter(j) = 0;
 	};
       } else {
-	for (Int j=0; j <=iptr; j++) {
+	for (uInt j=0; j <=iptr; j++) {
 	  iter(j) += 1;
 	  if (iter(j) < p(j)) break;
 	  iter(j) = 0;
@@ -490,9 +490,9 @@ Bool read(istream &s, Array<T> &x,
     uInt iptr = p.nelements() - 1;
     IPosition iter(p); iter = Int(0);
     Bool deleteIt; T *tmp = tx.getStorage(deleteIt);
-    for (Int i=0; i < tx.nelements(); i++) {
+    for (uInt i=0; i < tx.nelements(); i++) {
       x(iter) = tmp[i];
-      for (Int j=0; j<=iptr; j++) {
+      for (uInt j=0; j<=iptr; j++) {
 	iter(j) += 1;
 	if (iter(j) < p(j)) break;
 	iter(j) = 0;
@@ -508,10 +508,14 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	       IPosition &p,
 	       Block<T> &x, const IPosition *ip, Bool it) {
 
+#if defined(AIPS_STDLIB)
+  if (!s.good()) {
+#else
   if (!s.ipfx(0)) { 			// Copied from Complex.h
+#endif
     s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
     return False;
-  };
+  }
   Bool how = True;
   T r;
   Char ch;
@@ -574,7 +578,11 @@ Bool readArrayBlock(istream &s, Bool &trans,
   if (how && ch != '[') {
     s.putback(ch);
     s >> r;
+#if defined(AIPS_STDLIB)
+    if (!s.good()) {
+#else
     if (!s.ipfx(0)) {
+#endif
       s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
       how = False;
     } else {
@@ -639,14 +647,22 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	  };
 	  x[cnt] = r;
 	  cnt++;
-	};
+	}
+#if defined(AIPS_STDLIB)
+	if (!s.good()) {
+#else
 	if (!s.ipfx(0)) {
+#endif
 	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
 	  how = False;
-	};
+	}
       } else {
 	s >> r;
+#if defined(AIPS_STDLIB)
+	if (!s.good()) {
+#else
 	if (!s.ipfx(0)) {
+#endif
 	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
 	  how = False;
 	} else {
@@ -662,7 +678,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   if (how) {
     if (p.nelements() == 0) {
       p = IPosition(1, cnt);
-    } else if (cnt != p.product()) {
+    } else if (Int(cnt) != p.product()) {
       how = False;
     };
   };
