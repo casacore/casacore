@@ -239,9 +239,12 @@ DirectionCoordinate makeCoordinate(MDirection::Types type,
    xform = 0.0;
    xform.diagonal() = 1.0;
    proj = Projection::SIN;
-   return DirectionCoordinate(type, proj, crval(0), crval(1),
-                              cdelt(0), cdelt(1),
-                              xform, crpix(0), crpix(1), 999.0, 999.0);
+   DirectionCoordinate dc(type, proj, crval(0), crval(1),
+                          cdelt(0), cdelt(1),
+                          xform, crpix(0), crpix(1), 999.0, 999.0);
+//
+   dc.cylindricalFix (100,100);           // A close to useless test
+   return dc;
 }
  
 
