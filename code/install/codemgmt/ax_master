@@ -3108,3 +3108,4 @@
 12 026 src mv nrao/apps/vlafiller/vlafiller.cc nrao/apps/vlatoms/vlatoms.cc
 12 026 src rm nrao/implement/VLA/vlatoms.g
 12 026 sys rm libexec/vlatoms.g
+12 030 src rm trial/apps/numerics/numerics.g
