@@ -185,7 +185,8 @@ main()
 	  MBaseline::Types tp;
 	  MBaseline::Ref mr;
 	  cout << "getType:        " << MBaseline::getType(tp, s0) << ", ";
-	  cout << tp << endl;
+	  // next () to stop egcs warning
+	  cout << (uInt)tp << endl;
 	  cout << "giveMe:         " << mb.giveMe(mr, s0) << ", ";
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
