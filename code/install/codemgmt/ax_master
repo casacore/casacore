@@ -4240,3 +4240,4 @@
 14 093 src mv install/sgi install/sgi_ntv
 14 103 src mv trial/apps/aips2help/CHANGELOG.LAST CHANGELOG.LAST
 14 104 src rm atnf/fortran/fftsubs.f
+14 111 sys rm libexec/pgplotwidget_meta.g
