@@ -272,29 +272,42 @@ private:
    Bool displayHistograms ();
 
 // Display one histogram
-   void displayOneHistogram (const Vector<Int>& intCounts,
+   void displayOneHistogram (const Float &linearSum,
+                             const Float &linearYMax,
                              const IPosition& histPos,
                              const Vector<T>& range,
-                             const Int& nPts,
-                             const Double& statsSum,  
-                             const Double& statsMean,
-                             const Double& statsSigma,
-                             const Double& statsVar);
+                             const Vector<Double> &stats,
+                             const Vector<Float>& values,
+                             const Vector<Float>& counts);
 
-// Fish out and convert to tehg appropriate form one histogram from the
+
+// Fish out and convert to the appropriate form one histogram from the
 // storage image
-   void extractOneHistogram (Vector<Float>& values,
+   void extractOneHistogram (Float &linearSum,
+                             Float &linearYMax,
+                             Vector<Float>& values,
                              Vector<Float>& counts,
                              const Vector<T>& range,
                              const Vector<Int>& intCounts);
 
 // Find minimum and maximum for each cursor chunk
 // and fill minmax storage image
-   void findMinMax (RO_LatticeIterator<T>* imageIterator);
+   void fillMinMax (RO_LatticeIterator<T>* imageIterator);
 
 // Iterate through the image and generate the histogram accumulation image
    void generateStorageImage();
 
+// Get the min and max from the min/max storage image for the current
+// location of either the input image, or the histogram storage image
+   void getMinMax (Vector<T> &range, 
+                   const IPosition &pos,
+                   const Bool &posInImage);
+
+// Get the statsitics from the statistics storage image for the current
+// location of either the input image, or the histogram storage image
+   void getStats(Vector<Double> &stats,
+                 const IPosition &pos,
+                 const Bool &posInImage);
 
 // Determine the histogram bin that this datum falls into and
 // increment the histogram storage vector
