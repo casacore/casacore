@@ -3246,3 +3246,5 @@
 13 133 src mv doc/project/toplevel_readme.html doc/project/toplevel_readme.thtml
 13 143 src mv trial/implement/ComponentModels/test/tGaussianCompRep.cc trial/implement/ComponentModels/test/tGaussianShape.cc
 13 146 src rm trial/implement/Images/ImageBinaryOpEnums.h
+13 156 src rm trial/implement/Display/DisplayUtils.h
+13 156 src rm trial/implement/Display/DisplayUtils.cc
