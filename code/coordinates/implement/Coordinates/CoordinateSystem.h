@@ -270,16 +270,24 @@ public:
     // (the shift is subtracted from the reference pixel)
     // and change of increment (the increments are multipled
     // by the factor). Both vectors should be of length nPixelAxes(). 
+    //
     // The newShape vector is only needed for the StokesCoordinate,
     // if any.  If this vector is of length zero, the new StokesCoordinate
     // is formed from all of the available input Stokes after application
     // of the shift and increment factor.    Otherwise,
     // the new Stokes axis length is equal to that specified after
     // appliction of the shift and increment and excess values 
-    // discarded.  
-    CoordinateSystem subImage(const Vector<Int> &originShift,
-			      const Vector<Int> &incrFac,
+    // discarded.    In addition, for any StokesCoordinate, the
+    // shift and factor must be integer.  So <src>Int(value+0.5)</src>
+    // is taken before they are used.
+    // <group>
+    CoordinateSystem subImage(const Vector<Float> &originShift,
+			      const Vector<Float> &incrFac,
                               const Vector<Int>& newShape) const;
+    void subImageInSitu (const Vector<Float> &originShift,
+                         const Vector<Float> &incrFac,
+                         const Vector<Int>& newShape);
+    // </group>
 
     // Untranspose and undelete all axes. Does not undo the effects of
     // subimaging.
