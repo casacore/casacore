@@ -1,5 +1,5 @@
 //# tLockFile.cc: Program to test classes LockFile and FileLocker
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,52 +40,80 @@
 
 void doIt (const String& name, double interval)
 {
-    //# Create object with given inspection interval.
-    LockFile lock(name, interval);
+    cout << "Choose between 2 locknrs (i.e. parts of file to lock)." << endl;
+    cout << "The first one is a permanent LockFile object." << endl;
+    cout << "The second one is deleted when leaving the inner loop" << endl;
+    cout << "and can be used to check what happens if multiple LockFile" <<endl;
+    cout << "objects are used on the same file and one is deleted" << endl;
+    //# Create 2 lock objects with given inspection interval.
+    //# Let them start at a different offset in the file.
+    LockFile lock1(name, interval, False, True, True, 0);
+    LockFile* lockp;
     Path path(name);
     cout << "LockFile for " << path.absoluteName() << endl;
     cout << "Inspection interval = " << interval << " seconds" << endl;
-    int op;
+    int op, lnr;
     while (True) {
-	cout << "1=readlock, 2=writelock, 3=unlock, 4=inspect" << endl;
-	cout << "5=canreadlock, 6=canwritelock, 7=speed, 8=isMultiUsed" << endl;
-	cout << "9=message, else=end: ";
-	cin >> op;
-	if (op == 1) {
-	    if (lock.acquire (FileLocker::Read, 1)) {
-		cout << "Read lock acquired" << endl;
-	    }else{
-		cout << "Already locked" << endl;
-	    }
-	} else if (op == 2) {
-	    if (lock.acquire (FileLocker::Write, 1)) {
-		cout << "Write lock acquired" << endl;
-	    }else{
-		cout << "Already locked" << endl;
-	    }
-	} else if (op == 3) {
-	    if (! lock.release()) {
-		cout << "Lock could not be released" << endl;
-	    }
-	} else if (op == 4) {
-	    cout << "Request flag is " << lock.inspect() << endl;
-	} else if (op == 5) {
-	    cout << "canReadLock = " << lock.canLock (FileLocker::Read) << endl;
-	} else if (op == 6) {
-	    cout << "canWriteLock = " << lock.canLock (FileLocker::Write)
-		 << endl;
-	} else if (op == 7) {
-	    Timer timer;
-	    for (int i=0; i<500; i++) {
-		lock.acquire (FileLocker::Write, 1);
-	    }
-	    timer.show ("Acquiring 500 locks:");
-	} else if (op == 8) {
-	    cout << "isMultiUsed = " << lock.isMultiUsed() << endl;
-	} else if (op == 9) {
-	    cout << lock.lastError() << ": " << lock.lastMessage() << endl;
+	cout << "locknr (1,2): ";
+	cin >> lnr;
+	if (lnr <= 0) break;
+	if (lnr == 1) {
+	    lockp = &lock1;
 	} else {
-	    break;
+	    lockp = new LockFile (name, interval, False, True, True, 1);
+	}
+	while (True) {
+	    cout << "1=rlock, 2=wlock, 3=rlockw, 4=wlockw, 5=unlock, "
+		    "6=status, 7=speed, else=end: ";
+	    cin >> op;
+	    if (op == 1  ||  op == 3) {
+		uInt nattempt = 1;
+		if (op == 3) {
+		    cout << "nattempts :";
+		    cin >> nattempt;
+		}
+		if (lockp->acquire (FileLocker::Read, nattempt)) {
+		    cout << " Read lock acquired" << endl;
+		}else{
+		    cout << " Already locked by another process" << endl;
+		}
+	    } else if (op == 2  ||  op == 4) {
+		uInt nattempt = 1;
+		if (op == 4) {
+		    cout << "nattempts :";
+		    cin >> nattempt;
+		}
+		if (lockp->acquire (FileLocker::Write, nattempt)) {
+		    cout << " Write lock acquired" << endl;
+		}else{
+		    cout << " Already locked by another process" << endl;
+		}
+	    } else if (op == 5) {
+		if (! lockp->release()) {
+		    cout << " Lock could not be released" << endl;
+		}
+	    } else if (op == 6) {
+		cout << " Last errno " << lockp->lastError() << ": "
+		     << lockp->lastMessage() << endl;
+		cout << " Request flag is " << lockp->inspect() << endl;
+		cout << " canReadLock=" << lockp->canLock (FileLocker::Read);
+		cout << ", canWriteLock=" << lockp->canLock (FileLocker::Write);
+		cout << ", hasReadLock=" << lockp->hasLock (FileLocker::Read);
+		cout << ", hasWriteLock=" << lockp->hasLock (FileLocker::Write);
+		cout << ", isMultiUsed = " << lockp->isMultiUsed();
+		cout << endl;
+	    } else if (op == 7) {
+		Timer timer;
+		for (int i=0; i<500; i++) {
+		    lockp->acquire (FileLocker::Write, 1);
+		}
+		timer.show ("Acquiring 500 locks:");
+	    } else {
+		break;
+	    }
+	}
+	if (lnr == 2) {
+	    delete lockp;
 	}
     }
 }
@@ -93,14 +121,20 @@ void doIt (const String& name, double interval)
 void doTest()
 {
     LockFile lock ("tLockFile_tmp.data", 0, True);
+    AlwaysAssertExit (! lock.hasLock (FileLocker::Read));
+    AlwaysAssertExit (! lock.hasLock (FileLocker::Write));
     MemoryIO memio;
     //# Acquire a lock and get information. No request is pending.
     AlwaysAssertExit (lock.acquire (memio));
     AlwaysAssertExit (memio.length() == 0);
     AlwaysAssertExit (! lock.inspect());
+    AlwaysAssertExit (lock.hasLock (FileLocker::Read));
+    AlwaysAssertExit (lock.hasLock (FileLocker::Write));
     cout << lock.canLock() << endl;
     //# Release the lock and reacquire it.
     AlwaysAssertExit (lock.release());
+    AlwaysAssertExit (! lock.hasLock (FileLocker::Read));
+    AlwaysAssertExit (! lock.hasLock (FileLocker::Write));
     AlwaysAssertExit (lock.acquire());
     AlwaysAssertExit (lock.acquire (memio));
     AlwaysAssertExit (memio.length() == 0);
