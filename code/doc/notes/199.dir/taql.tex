@@ -3,19 +3,19 @@
 The Table Query Language (TaQL, rhymes with bagel) makes
 it possible to select
 rows from an arbitrary table based on the contents of its
-columns and keywords. It allows arbitrary complex
+columns and keywords. It supports arbitrary complex
 expressions including regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
 
 \section{Syntax}
-TaQL is based on SQL. The full command looks like:
+The TaQL syntax is based on SQL. The full command looks like:
 \begin{verbatim}
 SELECT [column_list] FROM table_list [WHERE expression]
-  [ORDERBY sort_list] [GIVING table]
+  [ORDERBY [NODUPLICATES] sort_list] [GIVING table|set]
 \end{verbatim}
 The square brackets shown are not part of the syntax, but indicate
-that the clauses enclosed in them are optional. The command is case
-insensitive, but of course case is important in string values and
+that the clauses enclosed in them are optional. The command is
+case-insensitive, but of course case is important in string values and
 in names of columns and keywords. Whitespace (blanks and tabs) can
 be used at will.
 The various clauses have the following meaning:
@@ -26,8 +26,11 @@ The various clauses have the following meaning:
        is a comma-separated list of column names which have to be selected
        from the primary table in the table\_list (see below).
        If no column\_list is given, all columns will be selected.
-       \\ In the future it may be possible to use expressions to create
+       \\In the future it may be possible to use expressions to create
        a new column based on the contents of other columns.
+       Note that for subqueries the GIVING clause offers an
+       alternative way of specifying the result making it
+       possible to use expressions.
   \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
        is a comma-separated list and indicates which tables are used in
        the SELECT command. The first table in the list is the primary
@@ -48,26 +51,56 @@ The various clauses have the following meaning:
        SELECT FROM mytable,othertable
            WHERE col1>othertable.key
        \end{verbatim}
+       As shown in the example above a qualifying name
+       can be used in the WHERE
+       clause to qualify from which table a field has to be taken.
+       When no qualifying name is given, the keyword (or column) is taken
+       from the primary table (i.e., the first table in the table\_list).
+       This means that qualifying names are only needed in special cases.
+       The qualifying name can not contain special characters like a slash.
+       Therefore a table\_name needs an explicit shorthand when it contains
+       special characters.
        The full table\_list syntax is:
        \\
        \texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
        \\The shorthand defaults to the table\_name.
-       As shown in the example above a shorthand can be used in the WHERE
-       clause to qualify from which table a field has to be taken.
-       When no qualifying name is given, the keyword (or column) is taken
-       from the primary table (i.e. the first table in the table\_list).
-       This means that qualifying names are only needed in special cases.
-       The qualifying name can not contain special characters like a slash.
-       Therefore a table\_name needs an explicit shorthand when it contains
-       special characters. E.g.
+       In the following example shorthand \texttt{my} is only used
+       for demonstration purposes; it is not really needed.
        \begin{verbatim}
-       SELECT FROM mytable,~user/othertable other
-           WHERE col1>other.key
+       SELECT FROM mytable my, ~user/othertable other
+           WHERE my.col1>other.key
        \end{verbatim}
+       A table name can also be taken from a keyword in a previously
+       specified table. This can be useful in a
+       \htmlref{subquery}{TAQL:SUBQUERIES}. The syntax for this is
+       the same as that for specifying \htmlref{keywords}{TAQL:KEYWORDS}
+       in an expression. E.g.
+       \begin{verbatim}
+       SELECT FROM mytable tab
+           WHERE col1 IN [SELECT subcol FROM tab.col2::key]
+       \end{verbatim}
+       In this example \texttt{key} is a table keyword of column
+       \texttt{col2} in table \texttt{mytable} (note that \texttt{tab}
+       is the shorthand for \texttt{mytable} and could be left out).
+       \\It can also be used for another table in the main query. E.g.
+       \begin{verbatim}
+       SELECT FROM mytable, tab.::key subtab
+           WHERE col1 > subtab.key1
+       \end{verbatim}
+       In this example the keyword \texttt{key1} is taken from the
+       subtable given by the table keyword \texttt{key} in the main
+       table.
+       \\When a keyword is used as the table name, the keyword is
+       searched for
+       in one of the tables previously given. The search starts at
+       the current query level and proceeds outwards (i.e., up to the
+       main query level). When a shorthand is given, only tables with
+       that shorthand are taken into account. When no shorthand is
+       given, only primary tables are taken into account.
   \item[WHERE expression]
        defines the selection expression which must have a boolean
-       result. A row in the primary table
-       is selected when the expression is true using the values in that row.
+       scalar result. A row in the primary table
+       is selected when the expression is true for the values in that row.
        The syntax of the expression is explained
        \htmlref{below}{TAQL:EXPRESSIONS}.
   \item[ORDERBY sort\_list]
@@ -75,87 +108,113 @@ The various clauses have the following meaning:
        has to be sorted. The sort\_list is a comma separated list of
        expressions, where each expression is
        optionally followed by \texttt{ASC} or \texttt{DESC}
-       (indicating ascending or descending). Default for each expression is
-       ascending.
-       \\An expression can be simply a scalar column or a pixel from
+       (indicating ascending or descending). The default for each
+       expression is ascending.
+       \\The word ORDERBY can optionally be followed by NODUPLICATES
+       which means that only the first row of multiple rows with
+       equal sort keys is kept in the result.
+       \\An expression can be simply a scalar column or an element from
        an array column. In these cases some optimization is performed
-       by accessing the entire column directly.
-       \\It can also be an arbitrary complex expression
+       by reading the entire column directly.
+       \\It can also be an arbitrarily complex expression
        with exactly the same syntax rules as the expressions in the
        \htmlref{WHERE}{TAQL:EXPRESSIONS} clause.
        The resulting data type of the expression must
-       be a standard one, thus it cannot be a regex or datetime.
+       be a standard scalar one, thus it cannot be a Regex or
+       DateTime. See \htmlref{below}{TAQL:EXPRESSIONS} for a discussion
+       of the available data types.
        E.g.
        \begin{verbatim}
        ORDERBY col1, col2, col3
-       ORDERBY uvw[1] DESC
+       ORDERBY NODUPLICATES uvw[1] DESC
        ORDERBY square(uvw[1]) + square(uvw[2])
        ORDERBY datetime(col)             incorrect data type
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
   \item[GIVING table]
-       indicates that the ultimate result of the SELECT command has to be
+    \label{TAQL:GIVING}
+       indicates that the ultimate result of the SELECT command can be
        written to a table (with the given name). This table is a
        so-called reference table.
        It does not contain data of its own, but only references the
        proper rows in the original table. It can be used
-       as any other table, thus also be used as an input table in
-       another SELECT command.
+       as any other table, thus it can also be used as an input table in
+       another SELECT command. A reference table resulting from
+       a selection (or sort) on another reference table references the
+       original table again. Thus no (expensive) cascade of reference
+       tables is created.
+       \\It is also possible to specify a set instead of a table name.
+       This can be useful when the result of a
+       \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
+       Such a \htmlref{set}{TAQL:SET} can contain only one element.
+       The parts of this element can be any expression resulting in a scalar.
 \end{description}
 Although the clauses column\_list, WHERE, and ORDERBY are optional,
-at least one them has to be used. Otherwise no operation is performed on the
-primary table (which makes no sense).
+at least one of them has to be used. Otherwise no operation is
+performed on the primary table (which makes no sense).
 
 
 \label{TAQL:EXPRESSIONS}
 \section{Expressions}
-An arbitrary expression can be used in the WHERE clause or as a sort
-key in the ORDERBY clause. Note that the expression result must be
-boolean when used in the WHERE clause. When used as a sort key the
-result can be boolean, numeric or string.
+An arbitrary expression can be used in the WHERE clause, as a sort
+key in the ORDERBY clause, or in the set in the GIVING clause.
+Note that the expression result must be
+a boolean scalar when used in the WHERE clause. When used in ORDERBY
+the result can also be a numeric or string scalar. When used in 
+GIVING it can also be a DateTime scalar.
 \\The expression in the clause can be as complex as one likes
 using the standard
 \htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}.
 Parentheses can be used to group subexpressions.
 \\The operands in an expression can be
-\htmlref{table columns}{TAQL:COLUMNS} (scalars and arrays),
+\htmlref{table columns}{TAQL:COLUMNS},
 \htmlref{table keywords}{TAQL:KEYWORDS},
-\htmlref{constants}{TAQL:CONSTANTS}, and
-\htmlref{functions}{TAQL:FUNCTIONS}.
+\htmlref{constants}{TAQL:CONSTANTS},
+\htmlref{functions}{TAQL:FUNCTIONS},
+\htmlref{sets}{TAQL:SETS}, and
+\htmlref{subqueries}{TAQL:SUBQUERIES}.
+\\The \htmlref{index operator}{TAQL:INDEXING} can be used to take a
+single element or a subsection from an array expression.
 E.g.
 \begin{verbatim}
   column1 > 10
-  column1 + column2 >= min (column2, column3)
+  column1 + arraycolumn[index] >= min (column2, column3)
+  column1 IN [expr1 =:< expr2]
 \end{verbatim}
+The last example shows a \htmlref{set}{TAQL:SETS} with a continuous interval.
 
 TaQL knows the following data types:
 \begin{description}
-  \item[Bool]
+  \item[ Bool]
   \item[ Double] which includes integers and times/positions
-  \item[ DComplex ] which includes single precision complex
+  \item[ Complex ] which includes single and double precision complex
   \item[ String ] Operator + can be used (concatenation).
-  \item[ Regex ] which is formed by functions regex and pattern (see below).
+  \item[ Regex ] which is formed by the functions \texttt{regex}
+    and \texttt{pattern} (see below).
   \item[ DateTime ] which represents a date/time. There are several functions
-       acting on a date/time. Also operator + or - can be used.
+       acting on a date/time. Also operator + and - can be used.
 \end{description}
-TaQL can do the following conversions:
-\\- from Double to DComplex
+All these data types can be used for scalars and, except for Regex,
+they can also be used for arrays.
+\\When an operand or function argument with a non-matching data type
+is used TaQL can do the following automatic conversions:
+\\- from Double to Complex
 \\- from String to DateTime
-\\when an operand or function argument with a non-matching data type
-is used.
+
 
 \label{TAQL:CONSTANTS}
 \subsection{Constants}
-Constants of the various data types can be formed as follows
-(which is very similar to glish):
+Scalar constants of the various data types can be formed as follows
+(which is very similar to Glish):
 \begin{itemize}
   \item A Bool constant is not needed and therefore does not exist.
-  \item A Double constant can be any integer or floating number.
+  \item A Double constant can be any integer or floating-point number.
        \\Another way to define a Double constant is by means of
        a Time or Position. Such a constant is always converted to radians.
        It can be given in several ways:
        \begin{itemize}
-         \item An integer or floating number immediately followed by a unit
+         \item An integer or floating-point number immediately
+              followed by a unit
               (thus without whitespace). E.g. \texttt{12deg}
               \\Some valid units are deg, arcmin, arcsec (or as), rad.
               The units can be scaled by preceeding them with a letter
@@ -169,12 +228,13 @@ Constants of the various data types can be formed as follows
        \end{itemize}
   \item The imaginary part of a DComplex constant is formed by a Double
        constant immediately followed by a lowercase \textbf{i}. A full DComplex
-       constant is formed by adding another Double constant. E.g.
+       constant is formed by adding another Double constant as the
+       real part. E.g.
        \begin{verbatim}
        1.5 + 2i
        2i+1.5            is identical
        \end{verbatim}
-       Note that (unlike glish) a full complex constant has to be enclosed
+       Note that a full Complex constant has to be enclosed
        in parentheses when, say, a multiplication is performed on it. E.g.
        \begin{verbatim}
        2 * (1.5+2i)
@@ -185,10 +245,10 @@ Constants of the various data types can be formed as follows
          "this is a string constant"
          'this is a string constant containing a "'
          "ab'cd"'ef"gh'
-                      results in constant  ab'cdef"gh
+             which results in constant  ab'cdef"gh
        \end{verbatim}
-  \item A Regex constant as such does not exist. A Regex is formed from a string
-       by function \texttt{regex} or \texttt{pattern} (see below).
+  \item A Regex constant as such does not exist. A Regex is formed from a String
+       by the function \texttt{regex} or \texttt{pattern} (see below).
        In this way one can form a Regex constant. E.g.
        \begin{verbatim}
          regex ("[a-zA-Z][a-zA-Z0-9]*")
@@ -202,13 +262,13 @@ Constants of the various data types can be formed as follows
               datetime ("11-Dec-1972")
               \end{verbatim}
          \item A more convenient way is to specify it directly. Since this
-              amkes use of the delimiters - or /, it conflicts with the
+              makes use of the delimiters - or /, it conflicts with the
               expression grammar as such. However, such conflicts can be
               solved by using whitespace in a expression and it is believed
               that in practice the convenience surpasses the possible
               conflicts.
-              \\ This way supports a large subset of the MVTime formats.
-              A datetime has to be specified as \texttt{date/time}
+              \\A large subset of the MVTime formats is supported.
+              A DateTime has to be specified as \texttt{date/time}
               or \texttt{date-time}, where the time part (including
               the / or - delimiter) is optional.
               The possible date formats are:
@@ -217,10 +277,10 @@ Constants of the various data types can be formed as follows
               case-insensitive name of the month (at least 3 letters).
               \\- YYYY//DDD or DDD--YYYY where DDD is the day number in
               the year.
-              \\in the DMY format, 2000 is added when year$<$50 and
+              \\In the DMY format, 2000 is added when year$<$50 and
               1900 is added when 50$<=$year$<$100.
               \\When MM$>$12, YYYY will be incremented accordingly.
-              \\The general time format in datetime is:
+              \\The general time format in a DateTime constant is:
               \\- hh:mm:ss.s
               \\where the delimiter \textbf{h} or \textbf{H} can be used
               for the first colon and \textbf{m} or \textbf{M} for the second.
@@ -240,28 +300,34 @@ Constants of the various data types can be formed as follows
               1May96/3h0M
               1May96/3hm0.0
               \end{verbatim}
-              A datetime constant with the current date/time can be made
-              by using function \texttt{datetime} without arguments.
+              A DateTime constant with the current date/time can be made
+              by using the function \texttt{datetime} without arguments.
        \end{enumerate}
 \end{itemize}
+Constant arrays cannot be formed, but it is possible to form a
+constant set. Such a set is transformed to a 1D array and can be used
+as such.
+\\Whenever needed it is easy to implement a Glish-like array function
+to construct a constant array.
 
 \label{TAQL:OPERATORS}
 \subsection{Operators}
-The following operators can be used (with their normal meaning and precedence):
+The following operators can be used (with their normal meaning and
+precedence) for scalars:
 \begin{description}
-  \item[ Unary + and -]
-       Can only be used with double and complex operands.
+  \item[] \textbf{Unary + and -}
+       \\Can only be used with double and complex operands.
        They have a higher precedence than the binary operators.
        E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
-  \item[ Unary ! ]
-       Logical NOT operator.
-       Can only be used with bool operands.
+  \item[] \textbf{Unary !}
+       \\Logical NOT operator.
+       Can only be used with Bool operands.
 %  \item[ Binary \verb+^+, *, /, \%, +, and -] 
-  \item[ Binary $\wedge$, *, /, \%, +, and -] 
-      \% is the modulo operator.
+  \item[] \textbf{Binary $\wedge$, *, /, \%, +, and -}
+       \\\% is the modulo operator.
        E.g. \texttt{3\%1.4} results in \texttt{0.2} and
        \texttt{-10\%3} results in \texttt{-1}.
-       \\\\\verb+^+ is the power operator.
+       \\\verb+^+ is the power operator.
        Note that because of the precedence rules
        \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
        \\All operators are left-associative, except \verb+^+ which is
@@ -269,24 +335,24 @@ The following operators can be used (with their normal meaning and precedence):
        \\Operator \% can only be used for double operands, while the others
        can be used for double and complex operands.
        Operator + can also be used for:
-       \\- Addition (i.e. concatenation) of 2 strings.
-       \\- Addition of a double (unit days) and a datetime
-       (resulting in a datetime).
+       \\- Addition (i.e., concatenation) of 2 strings.
+       \\- Addition of a double (unit days) and a DateTime
+       (resulting in a DateTime).
        \\Operator - can also be used for:
-       \\- Subtraction of a double (unit days) from a datetime
-       (resulting in a datetime).
-       \\- Subtraction of 2 datetimes (resulting in a double with unit days).
-  \item[ ==, $!=$, $>$, $>=$, $<$, and $<=$. ]
-       Can be used with any operand as long as their data types conform.
-       Operator $>$, $>=$, $<$, and $<=$ cannot be used for regex.
-       They use the norm for complex values.
-  \item[ \&\& and $\mid\mid$.]
-       Logical AND and OR operator.
-       Can only be used with bool operands.
+       \\- Subtraction of a double (unit days) from a DateTime
+       (resulting in a DateTime).
+       \\- Subtraction of 2 DateTimes (resulting in a double with unit days).
+  \item[] \textbf{==, $!=$, $>$, $>=$, $<$, and $<=$}
+       \\Can be used with any operand as long as their data types conform.
+       Operator $>$, $>=$, $<$, and $<=$ cannot be used for Regex.
+       They use the norm for Complex values.
+  \item[] \textbf{\&\& and $\mid\mid$}
+       \\Logical AND and OR operator.
+       Can only be used with Bool operands.
 \end{description}
 \begin{description}
-  \item[The precedence order is:]
-       unary \texttt{+, -, !}
+  \item The precedence order is:
+       \\unary \texttt{+, -, !}
        \\\verb+^+
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
@@ -294,15 +360,26 @@ The following operators can be used (with their normal meaning and precedence):
        \\\texttt{\&\&}
        \\\texttt{$\mid\mid$}
 \end{description}
+All these operators can be used in the same way for arrays
+(also a mix of scalar and array).
 
 \label{TAQL:FUNCTIONS}
 \subsection{Functions}
-Some functions have 2 names. One name is the AIPS++/glish name, while the
+Some functions have 2 names. One name is the AIPS++/Glish name, while the
 other is the name as used in SQL.
 In the following tables the function names are shown in uppercase,
 while the result and argument types are shown in lowercase.
 Note, however, that function names are case-insensitive.
+
+\htmlref{Sets}{TAQL:SETS}, and in particular
+\htmlref{subqueries}{TAQL:SUBQUERIES}, can result in an array.
+This means that the functions accepting an array argument can also
+be used on a set or the result of a subquery. E.g.
+\begin{verbatim}
+  WHERE datecol IN date([11-Nov-97,16-Dec-97,14-Jan-98])
+\end{verbatim}
 \subsubsection{String functions}
+These functions can be used on a scalar or an array argument.
 \begin{description}
   \item[ \texttt{double STRLENGTH(string),  double LEN(string)}]
        Returns the number of characters in a string
@@ -318,11 +395,13 @@ Note, however, that function names are case-insensitive.
 \subsubsection{Regex functions}
 The syntax for forming a regex and pattern are explained in class
 \htmladdnormallink{Regex}{../../aips/implement/Utilities/Regex.html}.
+These functions can only be used on a scalar arguments.
+
 \begin{description}
   \item[ \texttt{regex REGEX(string)}]
-      Handle the given string as a regular expression.
+       Handle the given string as a regular expression.
   \item[ \texttt{regex PATTERN(string)}]
-       Handle the given string string as a filename-like pattern and
+       Handle the given string as a filename-like pattern and
        convert it to a regular expression.
 \end{description}
 A regex can only be used in a comparison == or !=. E.g.
@@ -330,49 +409,72 @@ A regex can only be used in a comparison == or !=. E.g.
 \\to find all 3C objects in a catalogue.
 
 \subsubsection{Date/time functions}
+These functions can be used on a scalar or an array argument.
 \begin{description}
-  \item[ \texttt{datetime DATETIME(string),  datetime CTOD(string)} ]
+  \item[ \texttt{DateTime DATETIME(string),  DateTime CTOD(string)} ]
        Parse the string and convert it to a date/time. The syntax of
        date/time is explained in class
        \htmladdnormallink{MVTime}{/../../aips/implement/Measures/MVTime.html}.
-  \item[ \texttt{datetime MJDTODATE(double)} ]
+  \item[ \texttt{DateTime MJDTODATE(double)} ]
        The double value, which has to be a MJD (ModifiedJulianDate), is
-       converted to a datetime.
-  \item[ \texttt{datetime DATE(datetime)}]
-        Get the date (i.e. remove the time part). This function is needed in
+       converted to a DateTime.
+  \item[ \texttt{DateTime DATE(DateTime)}]
+        Get the date (i.e., remove the time part). This function is needed in
        \\\texttt{date(column) == 12Feb1997}
        \\when the column contains date/times with times$>$0.
-  \item[ \texttt{double MJD(datetime)}]
-        Get the datetime as a MJD (ModifiedJulianDate).
-  \item[ \texttt{double YEAR(datetime)}]
+  \item[ \texttt{double MJD(DateTime)}]
+        Get the DateTime as a MJD (ModifiedJulianDate).
+  \item[ \texttt{double YEAR(DateTime)}]
         Get the year (which includes the century).
-  \item[ \texttt{double MONTH(datetime)}]
+  \item[ \texttt{double MONTH(DateTime)}]
         Get the month number (1-12).
-  \item[ \texttt{double DAY(datetime)}]
+  \item[ \texttt{double DAY(DateTime)}]
         Get the day number (1-31).
-  \item[ \texttt{double WEEKDAY(datetime),  double DOW(datetime)}]
+  \item[ \texttt{double WEEKDAY(DateTime),  double DOW(DateTime)}]
         Get the weekday number (0=Sunday, ..., 6=Saturday).
-  \item[ \texttt{string CMONTH(datetime)}]
+  \item[ \texttt{string CMONTH(DateTime)}]
         Get the name of the month (Jan ... Dec).
-  \item[ \texttt{string CWEEKDAY(datetime),  string CDOW(datetime)}]
+  \item[ \texttt{string CWEEKDAY(DateTime),  string CDOW(DateTime)}]
         Get the name of the weekday (Sun .. Sat).
-  \item[ \texttt{double WEEK(datetime)}]
+  \item[ \texttt{double WEEK(DateTime)}]
         Get the week number in the year (0 ... 52).
-  \item[ \texttt{double TIME(datetime)}]
+  \item[ \texttt{double TIME(DateTime)}]
        Get the time part of the day. It is converted to radians to
        be compatible with the internal representation of times/positions.
        In that way the function can easily be used as in:
        \\\texttt{TIME(date) $>$ 12h}
 \end{description}
-All functions can be used without an argument. In that case the current
+All functions can be used without an argument in which case the current
 date/time is used. E.g. \texttt{DATE()} results in the current date.
-\\It is possible to give a string argument instead of a date. In that
-case the string is parsed and converted to a date (i.e. in fact the
+\\It is possible to give a string argument instead of a date. In this
+case the string is parsed and converted to a date (i.e., in fact the
 function DATETIME is used implicitly).
-  
+
+\subsubsection{Comparison functions}
+Two functions make it possible to compare 2 values within a range.
+They can only be used on scalar arguments.
+\begin{description}
+  \item[ \texttt{bool NEAR(numeric val1, numeric val2, double tol)}]
+    Tests in a relative way if a value is near another. Relative
+    means that the
+    magnitude of the numbers is taken into account.
+    Returns \texttt{abs(val2 - val1)/max(abs(val1),abs(val2)) < tol}.
+    If \texttt{tol<=0}, returns \texttt{val1==val2}.
+    If either val is 0.0, takes
+    care of area around the minimum number that can be represented.
+    The default tolerance is 1.0e-13.
+  \item[ \texttt{bool NEARABS(numeric val1, numeric val2, double tol)}]
+    Tests in an absolute way if a value is near another. Absolute
+    means that the
+    magnitude of the numbers is not taken into account.
+    Returns \texttt{abs(val2 - val1) < tol}.
+    The default tolerance is 1.0e-13.
+\end{description}
+
 \subsubsection{Mathematical functions}
 Several functions can operate on double or complex arguments.
 The data types of such functions is given as 'numeric'.
+They can only be used on scalar arguments.
 \begin{description}
   \item[ \texttt{double PI()}] Returns the value of \textbf{pi}.
   \item[ \texttt{double E()}] Returns the value of \textbf{e} (is equal to \texttt{EXP(1)}).
@@ -415,8 +517,46 @@ The data types of such functions is given as 'numeric'.
 \end{description}
 Note that the trigonometric functions need their arguments in radians.
 
+\subsubsection{Array functions}
+These functions can only be used on arrays.
+\begin{description}
+  \item[ \texttt{bool ANY(boolarray)}] Is any element in array true?
+  \item[ \texttt{bool ALL(boolarray)}] Are all elements in array true?
+  \item[ \texttt{double NTRUE(boolarray)}] Number of true elements in array.
+  \item[ \texttt{double NFALSE(boolarray)}] Number of false elements in array.
+  \item[ \texttt{numeric SUM(numericarray)}] Return sum of all array elements.
+  \item[ \texttt{numeric PRODUCT(numericarray)}] Return product
+    of all array elements.
+  \item[ \texttt{double MIN(doublearray)}] Return minimum
+    of all array elements.
+  \item[ \texttt{double MAX(doublearray)}] Return maximum
+    of all array elements.
+  \item[ \texttt{double MEAN(doublearray), double AVG(doublearray)}]
+    Return mean of all array elements.
+  \item[ \texttt{double VARIANCE(doublearray)}] Return variance
+    (the sum of \texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
+  \item[ \texttt{double STDDEV(doublearray)}] Return standard
+    deviation (the square root of the variance).
+  \item[ \texttt{double AVDEV(doublearray)}] Return average deviation.
+    (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
+  \item[ \texttt{double MEDIAN(doublearray)}] Return median (the
+    middle element)..
+    When the array has an even number of elements, the mean of
+    the two middle elements is returned.
+\end{description}
+
 \subsubsection{Miscellaneous functions}
 \begin{description}
+  \item[ \texttt{bool ISDEFINED(anytype)}]
+    Return false if the value in the current row is undefined. Is
+    useful to test if a cell in a column with variable shaped arrays
+    contains an array.
+  \item[ \texttt{double NELEMENTS(anytype), double COUNT(anytype)}]
+    Return number of elements in an array (1 for a scalar).
+  \item[ \texttt{double NDIM(anytype)}]
+    Return dimensionality of an array (0 for a scalar).
+  \item[ \texttt{doublearray SHAPE(anytype)}]
+    Return shape of an array (returns an empty array for a scalar).
   \item[ \texttt{double ROWNUMBER()}]
        Return the row number being tested (first row is row number 1).
        \\This can, for instance, be used to select the first N rows
@@ -432,44 +572,28 @@ Note that the trigonometric functions need their arguments in radians.
 
 \label{TAQL:COLUMNS}
 \subsection{Table Columns}
-Only columns in the primary table can be handled.
-Two types of columns are possible:
-\begin{description}
-  \item[ Scalar column] Its values are used in the normal way.
-  \item[ Array column]
-       It has to be specified which element has to be used from
-       the arrays in each row. This can be done using the index operator
-       \texttt{[index1,index2,...]}. E.g.
-       \begin{verbatim}
-       arraycolumn[1]
-       arraycolumn[1, some_expression]
-       \end{verbatim}
-       The examples show that an index can be a simple constant (as it will
-       usually be), but it can also be an expression which can be as complex
-       as one likes. That expression has to result in a double value.
-       \textbf{Note} that as in glish array indices start at 1.
-       \\For fixed shaped arrays it is checked at parse time whether
-       the array bounds are not exceeded. For variable shaped arrays
-       it can only be done per row. When array bounds are exceeded,
-       an exception is thrown. In the future a special null value
-       is assigned when bounds of variable shaped arrays are exceeded
-       to avoid that the selection process stops because of that exception.
-\end{description}
+A column can contain a scalar or an array value.
+Note that only columns in the primary table can be handled directly.
+A column in another table can be used via a subquery. E.g.
+\begin{verbatim}
+  SELECT FROM tab WHERE col >
+        mean([SELECT othercol FROM othertab])
+\end{verbatim}
 An expression has to contain at least one column, since columns
-are the only variable part in it. I.e. a row can only be selected
+are the only variable part in it. That is, a row can only be selected
 or sorted by means of the column values in each row.
 
 The name of a column can contain alphanumeric characters and underscores.
 It should start with an alphabetic character or underscore.
-A column name is case sensitive.
+A column name is case-sensitive.
 \\It is possible to use other characters in the name by
 escaping them with a backslash. E.g. \texttt{DATE}\verb+\_+\texttt{OBS}.
 \\In the same way a numeric character can be used as the first
 character of the column name. E.g. \verb+\+\texttt{1stDay}.
 \\
-Because several words are used in the language, they cannot directly
-be used as column names. Those reserved words are:
-\\\texttt{ASC DESC FROM GIVING IN ORDERBY SELECT WHERE}.
+Because several words are used in the language, they cannot
+be used directly as column names. The reserved words are:
+\\\texttt{ASC DESC FROM GIVING IN NODUPLICATES ORDERBY SELECT WHERE}.
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
 \\Note that in C++ and Glish a backslash itself has to be escaped
@@ -478,100 +602,381 @@ by another backslash. E.g. in Glish:
 
 \label{TAQL:KEYWORDS}
 \subsection{Table Keywords}
-Currently only a table keyword can be used (thus no column keywords).
-When a keyword is used in an expression, it is read and used as
-a constant.
+It is possible to use table or column keywords, which can have
+a scalar or an array value. A table keyword has to be specified
+as \texttt{::key}. In an expression the \texttt{::} part can be omitted
+when there is no column with such a name.
+A column keyword has to be specified as \texttt{column::key}.
+\\Note that \texttt{::} is similar to the scope operator in C++.
 \\
-As explained \htmlref{above}{TAQL:TABLE_LIST}
-keywords from the primary and secondary tables can be used. When used
+As explained \htmlref{in the beginning}{TAQL:TABLE_LIST},
+keywords from the primary table and from secondary tables can be used. When used
 from a secondary table, it has to be qualified with the (shorthand) name
 of the table. E.g.
-\\\texttt{sh.key}
-\\takes keyword \texttt{key} from the table with the shorthand name
+\\\texttt{sh.key} or \texttt{sh.::key}
+\\takes table keyword \texttt{key} from the table with the shorthand name
 \texttt{sh}.
 
-The rules for a keyword name are the same as those for a column name.
+A keyword can be used in any expression. It is evaluated immediately
+and transformed to a constant value.
 
+\label{TAQL:INDEXING}
+\subsection{Array Index Operator}
+It is possible to take a subsection or a
+single element from an array column, keyword or expression
+using the index operator
+\texttt{[index1,index2,...]}. The rules for this
+are similar to those used in Glish.
+Taking a single element can be done as:
+\begin{verbatim}
+  array[1]
+  array[1, some_expression]
+\end{verbatim}
+Taking a subsection can be done as:
+\texttt{array[start1:end1:incr1, start2:end2:incr2, ...]}.
+When a start value is left out it defaults to the beginning of
+that axis. An end value defaults to the end of the axis and
+an increment defaults to one. When an entire axis is left out,
+it defaults to the entire axis.
+\\E.g. an array with shape [10,15,20] can be subsectioned as:
+\begin{verbatim}
+  [,,3]              resulting in an array [10,15,1]
+  [2:4, ::3, 2:15:2  resulting in an array [3,5,7]
+\end{verbatim}
+The examples show that an index can be a simple constant (as it will
+usually be), but it can also be an expression which can be as complex
+as one likes. The expression has to result in a double value.
+\textbf{Note} that as in Glish, array indices start at 1.
+\\For fixed shaped arrays checking if array bounds are exceeded
+is done at parse time.
+For variable shaped arrays
+it can only be done per row. If array bounds are exceeded,
+an exception is thrown. In the future a special undefined value
+will be assigned when bounds of variable shaped arrays are exceeded
+to prevent the selection process from aborting due to the exception.
+
+Note that the index operator will be applied directly
+to a column. This results in reading only that part of the
+array from the table column on disk.
+It is, however, also possible to apply it to a
+subexpression (enclosed in parentheses) resulting in an array.
+E.g.
+\begin{verbatim}
+  arraycolumn[2,3,4] + 1
+  (arraycolumn + 1)[2,3,4]
+\end{verbatim}
+can both be used and have the same result. However, the first
+form is much faster, because only a single element is read
+(resulting in a scalar) and 1 is added to it.
+The second form results in reading the entire array.
+1 is added to all elements and only then the requested element is taken.
+\\From this example it should be clear that indexing an array
+expression has to be done with care.
+
+\label{TAQL:SETS}
+\subsection{Sets}
+As in SQL the operator \texttt{IN} can be used to do a selection
+based on a set or array. E.g.
+\begin{verbatim}
+  SELECT FROM table WHERE column in [expr1, expr2, expr3]
+\end{verbatim}
+This example shows that (in its simplest form) a set
+consists of one or more values (which
+can be arbitrary expressions) separated by commas and enclosed in
+square brackets. The elements in a set have to be scalars and their
+data types have to be the same.
+\\An element in a set can, however, be more complicated and can
+define multiple values or an interval. The possible forms of
+a set element are:
+\begin{enumerate}
+\item A single value as shown in the example above.
+\item \texttt{start:end:incr}. This is similar to the
+way an array index is specified. Incr defaults to 1.
+End defaults to an open end (i.e., no upper bound) and results
+in an unbounded set. Start and end can be a double or a datetime.
+Incr has to be a double. Some examples:
+\begin{verbatim}
+  1:10     means 1,2,...,10
+  1:10:2   means 1,3,5,7,9
+  1::2     means all odd numbers
+  1:       means all positive integer numbers
+  date('18Aug97')::2   means every other day from 18Aug97 on
+\end{verbatim}
+These examples show constants only, but start, end, and incr can
+be any expression.
+\\Note that :: used here can conflict with the :: in the
+\htmlref{keywords}{TAQL:KEYWORDS}. E.g. \texttt{a::b} is scanned as
+a keyword specification. When the intension is \texttt{start::incr}
+it should be specified as \texttt{a: :b}. In practice this conflict
+will hardly ever occur.
+\item Continuous intervals can be specified for double, string, and datetime.
+The specification of an interval resembles the mathematical notation
+\texttt{1<x<5}, where x is replaced by :. An open interval side
+is indicated by \texttt{<}, while a closed interval side is indicated
+by \texttt{=}.
+The following examples show how bounded and half-bounded intervals
+can be specified.
+\begin{verbatim}
+  1=:=5      means 1<=x<=5
+  1=:<5      means 1<=x<5
+  1<:=5      means 1<x<=5
+  1<:<5      means 1<x<5
+  1=:        means 1<=x
+  1<:        means 1<x
+  :=5        means x<=5
+  :<5        means x<5
+\end{verbatim}
+\end{enumerate}
+Each element in a set can have its own form, i.e., one element can
+be a single value while another can be an interval.
+When a set consists of single or bounded
+\texttt{start:end:incr} values only, the set will be expanded to an
+array.
+This makes it possible for array operators and functions
+(like \texttt{mean}) to be applied to such sets. E.g.
+\begin{verbatim}
+  WHERE column > mean([10,30:100:5])
+\end{verbatim}
+It is very important to note that the 2nd form results in
+discrete values, while the 3rd form results in a continuous interval.
+
+Another form of constructing a set is the
+\htmlref{subquery}{TAQL:SUBQUERIES} shown below.
+
+\label{TAQL:SUBQUERIES}
+\subsection{Subqueries}
+As in SQL it is possible to create a set from a subquery. A
+subquery has the same syntax as a main query, but has to be
+enclosed in square brackets. Basically it looks like:
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT time FROM othertable WHERE windspeed < 5]
+\end{verbatim}
+The subquery on the other table results in a constant set containing the times
+for which the windspeed is okay. Subsequently the main query
+is executed and selects all rows from the main table with times in
+that set.
+Note that like other bounded sets this set is transformed to a
+constant array, so it is possible to apply functions to it (e.g. min, mean).
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT time FROM othertable WHERE windspeed <
+           mean([SELECT windspeed FROM othertable])]
+\end{verbatim}
+This contains another subquery to get all windspeeds and
+to take the mean of them. So the first subquery selects all times
+where the windspeed is less than the average windspeed.
+\\A subquery result should contain only one column, otherwise
+an exception is thrown.
+
+It may happen that a subquery has to be executed twice because
+2 columns from the other table are needed. E.g.
+\begin{verbatim}
+  SELECT FROM maintable WHERE any(time >=
+      [SELECT starttime FROM othertable WHERE windspeed < 5]
+                               && time <=
+      [SELECT endtime FROM othertable WHERE windspeed < 5])
+\end{verbatim}
+In this case the other table contains the time range for each windspeed.
+For big tables it is expensive to execute the subquery twice.
+A better solution
+is to store the result of the subquery in a temporary table and reuse it.
+\begin{verbatim}
+  SELECT FROM othertable WHERE windspeed < 5 GIVING tmptab
+  SELECT FROM maintable WHERE any(time >=
+      [SELECT starttime FROM tmptab]
+                               && time <=
+      [SELECT endtime FROM tmptab]
+\end{verbatim}
+However, this has the disadvantage that the table \texttt{tmptab}
+still exists after the query and has to be deleted explictly by the
+user. Below a better solution for this problem is shown.
+
+TaQL has two extensions to support tables better,
+in particular the AIPS++ measurement sets.
+\begin{enumerate}
+\item
+The time range problem above can be solved elegantly by using
+a set as the result of the subquery. Instead of a table name
+it is possible to define a set in the GIVING clause (as mentioned
+in the \htmlref{syntax section}{TAQL:GIVING}). E.g.
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT starttime FROM othertable WHERE windspeed < 5
+                                   GIVING [starttime=:=endtime]]
+\end{verbatim}
+The set expression in the GIVING clause is filled with the
+results from the subquery and used in the main query. So when
+the subquery results in 5 rows, the resulting set contains 5
+intervals.
+\item
+In AIPS++ the other table will often be the name of a subtable,
+which is stored in a table or column keyword of the main table.
+The standard \htmlref{keyword syntax}{TAQL:KEYWORDS} can be used
+to indicate that the other table is the table in the given keyword.
+Note that for a table keyword the \texttt{::} part has to be given,
+otherwise the name is scanned as an ordinary table name. E.g.
+\begin{verbatim}
+  SELECT FROM my.ms WHERE time IN
+      [SELECT time FROM weather::key WHERE windspeed < 5]
+\end{verbatim}
+In this example the other table is a subtable of table \texttt{my.ms}.
+Its name is stored in keyword \texttt{key} of column
+\texttt{weather}.
+\end{enumerate}
+
+
+\section{Some further remarks}
 \subsection{Time/position considerations}
-Time/position constants (e.g. \texttt{3h4m}) are converted to
-radians. This has the advantage that functions like \texttt{SIN}
-can immediately be applied to them. It has the disadvantage that
-a user usually expects seconds as the units for a time. To accomodate
-for that, the \texttt{TIME} function returns the time in radians,
-so one can do something like \texttt{TIME(datecolumn) $>$ 3h}.
+A position constant (e.g. \texttt{3h4m}) is converted to
+radians, so it can be used easily in functions like \texttt{SIN}.
+Since a time constant has exactly the same format, it is
+also converted to radians, while the user may expect it to be
+expressed in seconds. The user has to take this into account
+when times are used in a comparison. For example, \texttt{timecol $>$ 3h4m}
+is only correct when \texttt{timecol} has unit radians.
+\\To make life easier the function \texttt{TIME} results in a value
+in radians, so it can be used directly in a comparison. For example,
+\texttt{TIME(datecolumn) $>$ 3h4m}.
 \\In the future this may change when units are handled in their full glory.
 
 \subsection{Optimization}
-A lot of effort can be spent on query optimization, but that is hardly
-done (yet). The only optimization is the precalculation of constant
+There remains a lot of work to be done on improving query optimization.
+At this stage the only optimization done is the precalculation of constant
 subexpressions.
 \\
 However, the user can optimize a query by specifying the expression
-carefully. Especially when using operator $\mid\mid$ or \&\&, attention could be
-paid to the contents of the left and right branch of it. Both operators
+carefully. Especially when using operator $\mid\mid$ or \&\&,
+attention should be
+paid to the contents of the left and right branches. Both operators
 evaluate the right branch only when needed, so the left branch
-should be the shortest one, i.e. the fastest to evaluate.
+should be the shortest one, i.e., the fastest to evaluate.
 \\In the future the selection process may do automatic optimization
 by swapping the branches. This means that one should not count on
 the order of evaluation (as you can do in the C(++) language).
 
-Also the user should use functions and operators in a careful way.
-E.g.
-\\\texttt{SQUARE(COL)} is (much) faster than \texttt{COL}\verb+^+\texttt{2}
+The user should also use functions and operators in a careful way.
+\begin{itemize}
+
+\item
+\texttt{SQUARE(COL)} is (much) faster than \texttt{COL}\verb+^+\texttt{2}
 or \texttt{POW(COL,2)}, because SQUARE is faster.
 It is also faster than \texttt{COL*COL}, because it accesses column
 \texttt{COL} only once.
-\\
+\\Similarly \texttt{SQRT(COL)} is faster than \texttt{COL}\verb+^+\texttt{0.5}
+or \texttt{POW(COL,0.5)}
+\item
 \texttt{SQUARE(U) + SQUARE(V) $<$ 1000}\verb+^+\texttt{2} is considerably faster
 than
 \\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
 \texttt{SQRT} function.
 
+\item
+Returning a column from a subquery can be done directly or as a
+set. E.g.
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT time FROM othertable WHERE windspeed < 5]
+\end{verbatim}
+could also be expressed as
+\begin{verbatim}
+  SELECT FROM maintable WHERE time IN
+      [SELECT FROM othertable WHERE windspeed < 5 GIVING [time]]
+\end{verbatim}
+The latter (as a set) is slower. So, if possible, the column should
+be returned directly. This is also easier to write.
+
+\item
+Sometimes operator \texttt{IN} and function \texttt{ANY} can be used to test
+if an element in an array matches a value. E.g.
+\begin{verbatim}
+  WHERE any(arraycolumn == value)
+and
+  WHERE value IN arraycolumn
+\end{verbatim}
+give the same result.
+Operator \texttt{IN} is faster because it stops when it finds a
+match. When using \texttt{ANY} all elements are compared first and thereafter
+\texttt{ANY} tests the resulting bool array.
+
+\item
+It was already shown in the \htmlref{indexing section}{TAQL:INDEXING}
+that indexing arrays should be done with care.
+\end{itemize}
+
 
 \section{Examples}
 \begin{description}
-  \item[\texttt{SELECT FROM mytable WHERE column1 $>$ 0 }]
-       selects the rows in which the value of column1 $>$ 0
-  \item[\texttt{ SELECT column0,column1 FROM mytable } ]
-       selects 2 columns from the table.
-  \item[\texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 } ]
-       is a combination of the previous selections.
-  \item[\texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable
-       \\SELECT FROM outtable WHERE rownumber()$<=$10 } ]
-       selects the 10 highest values of \texttt{column0}
-  \item[\texttt{ SELECT FROM mytable WHERE cos(0d1m) $<$
-       sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) * cos(3h30m - RA) } ]
-       selects observations with an equatorial position (in say J2000)
+  \item[] \texttt{SELECT FROM mytable WHERE column1 $>$ 0 }
+    \\selects the rows in which the value of column1 $>$ 0
+  \item[] \texttt{ SELECT column0,column1 FROM mytable }
+    \\selects 2 columns from the table.
+  \item[] \texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 }
+    \\is a combination of the previous selections.
+  \item[] \texttt{ SELECT FROM mytable WHERE column0 IN}
+       \\\texttt{[SELECT FROM outtable ORDERBY column0 DESC][1:10] }
+       \\selects the 10 highest values of \texttt{column0}
+  \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable}
+       \\\texttt{SELECT FROM outtable WHERE rownumber()$<=$10 }
+       \\is the less elegant SQL solution for the previous problem.
+  \item[] \texttt{ SELECT FROM resource.table WHERE}
+       \\\texttt{any(PValues == pattern('synth*'))}
+       \\selects the rows in which an element in array
+       \texttt{PValues} matches the given regular expression.
+  \item[] \texttt{ SELECT FROM table WHERE ntrue(flags) >= 3}
+    \\selects rows where at least 3 elements of array \texttt{flags}
+    are set.
+  \item[] \texttt{ SELECT FROM book.table WHERE nelements(author) > 1}
+    \\selects books with more than 1 author.
+  \item[] \texttt{ SELECT FROM mytable WHERE}
+       \\\texttt{ cos(0d1m) $<$
+         sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) *
+         cos(3h30m - RA) }
+       \\selects observations with an equatorial position (in say J2000)
        inside a circle with a radius of 1 arcmin around (3h30m, 52deg).
        To find them the condition DISTANCE$<=$RADIUS must be fulfilled,
        which is equivalent to COS(RADIUS)$<=$COS(DISTANCE).
        \\Note that in the future this useful astronomical test could
        be implemented as a function of its own (with better optimization
        possibilities).
-  \item[\texttt{ SELECT FROM mytable WHERE object == pattern("3C*")  \&\&  \\cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) * cos(3h30m - RA) } ]
-       finds all 3C objects inside that circle.
+  \item[] \texttt{ SELECT FROM mytable WHERE object == pattern("3C*") \&\&}
+       \\\texttt{cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) *
+        cos(DEC) * cos(3h30m - RA) }
+       \\finds all 3C objects inside that circle.
 \end{description}
 
 \section{Future developments}
 In the near or far future TaQL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
+  \item When a branch in an \texttt{OR} or \texttt{AND} node is a
+    constant scalar, it might be possible to reduce the node to
+    one of its branches.
+  \item Optimize by removing an \texttt{IN} node when the righthand
+    operand is empty. This cannot be done when the lefthand operand.
+    is variable shaped.
+  \item Handle invalid subexpressions (e.g. exceeding array bounds)
+    as undefined values
+    which can be tested with the function ISDEFINED.
+  \item Develop versions of the array functions that can project
+    an array to an array with a smaller dimensionality. The projection
+    is an operation collapsing slices into single values.
+    The second argument has to be a set giving the
+    dimension(s) forming the slice. E.g.
+    \\\texttt{ntrueproject (array, [2,3])}
+    \\means that slices consisting of the 2nd and 3rd dimensions are
+    taken. When \texttt{array} has dimensionality (n1,n2,n3,n4), the result is
+    an array of dimensionality (n1,n4). Each element in the result is
+    the number of true flags in the corresponding input slice.
   \item Interpret column units defined in a column keyword UNIT.
-  \item Handle invalid values as null values (e.g. exceeding array bounds)
-       and adding a function ISNULL.
   \item Add a function (say POSITIONINCIRCLE or PINC) to search in a circle
        around a position.
   \item Maybe functions to convert positions from one equinox or system
-       to another.
-  \item Use of column keywords and fields in records by means of the
-       scope operators . and ::.
+       to another (using the Measures system).
+  \item Use of fields in records by means of operator \texttt{.}.
   \item Use a temporary table as the input of a selection.
-  \item Value sets using the IN operator and the [] construct (as in SQL).
-  \item Subqueries (also using the [] construct) resulting in a value set.
-  \item Functions on value sets (e.g. MAX, COUNT, ABS, NORM, MEDIAN).
-  \item The ability to operate on full arrays or array slices.
   \item Optimize using a B+ tree index.
   \item Expressions in the selected column-list to calculate new columns. E.g.
-       \\\texttt{SELECT SQUARE(UVW[1])+SQUARE(UVW[2]) UVWNORM FROM }
-       \\\texttt{UVWNORM} is the name for that new column.
+       \\\texttt{SELECT SQUARE(UVW[1])+SQUARE(UVW[2]) UVWNORM FROM ...}
+       \\where \texttt{UVWNORM} is the name for that new column.
 \end{itemize}
