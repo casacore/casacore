@@ -101,6 +101,14 @@ int main()
     } catch(AipsError x) {
 	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
     } end_try;
-    
+    for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
+	if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
+	    != Stokes::type(i)) {
+	    cerr << "Stokes FITS value conversion failed" << endl;
+	    cerr << "  FITSValue(" << i << ") = " << Stokes::FITSValue(Stokes::type(i)) << endl;
+	    cerr << "  fromFITSValue of that value = "
+		 << Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i))) << endl;
+	}
+    }
  return 0;
 }
