@@ -972,22 +972,17 @@ Bool ImageMoments<T>::createMoments()
    for (j=0; j<outDim; j++) outImageShape(j) = latticeShape(ioMap(j));
 
 
-// Account for subsectioning and removal of the collapsed moment pixel axis
-// in the coordinate system.  Tell the output image CoordinateSystem that 
-// when it makes conversions involving the removed axis, to use the average 
-// pixel of that axis.  
+// Account for subsectioning and removal of the collapsed moment axis
+// in the coordinate system.  
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
    outImageCoord.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
-
-   Int coordinate, axisInCoordinate;
-   pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, momentAxis_p);
-   Int momentWorldAxis = pInImage_p->coordinates().worldAxes(coordinate)(axisInCoordinate);
+   Int momentWorldAxis = ImageUtilities::pixelAxisToWorldAxis(outImageCoord, momentAxis_p);
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
         << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
 
-   uInt removeAxis = momentAxis_p;
-   outImageCoord.removePixelAxis(removeAxis, (blc_p(momentAxis_p)+trc_p(momentAxis_p))/2.0);
+   outImageCoord.removePixelAxis(momentAxis_p, Double(0.0));
+   outImageCoord.removeWorldAxis(momentWorldAxis, Double(0.0));
 
 
 // Create array of pointers for output images 
