@@ -54,7 +54,7 @@ using std::less;
 #define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   _Rb_tree<T, pair<T const, U >, \
-  _Select1st<pari<T const, U> >, \
+  _Select1st<pair<T const, U> >, \
   less<T>, allocator<U > >;
 #else
 #if defined(AIPS_SUN_NATIVE)
