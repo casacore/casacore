@@ -44,7 +44,6 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/MeasurementSets/MeasurementSet.h> //
-#include <aips/MeasurementSets/OldMeasurementSet.h> //
 #include <aips/MeasurementSets/MSAntennaColumns.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/MeasurementSets/MSDataDescColumns.h>
@@ -905,7 +904,7 @@ Table FITSIDItoMS1::createMainTable(const String& tabname)
         // Find the tile shape for the data.
         //
 	Vector<Int> datashape = getDescriptor()
-	    .columnDesc(OldMS::columnName(OldMS::DATA))
+	    .columnDesc(MS::columnName(MS::DATA))
 	    .shape()
 	    .asVector();
 	Int nChanPerTile = (datashape(1) + 7) / 8;
@@ -931,13 +930,13 @@ Table FITSIDItoMS1::createMainTable(const String& tabname)
 	//
 	newtab.bindAll (incrStMan);
 	//
-	//newtab.bindColumn(OldMS::columnName(OldMS::ANTENNA1),stanStMan);
-	//newtab.bindColumn(OldMS::columnName(OldMS::ANTENNA2),stanStMan);
-	//newtab.bindColumn(OldMS::columnName(OldMS::SPECTRAL_WINDOW_ID),stanStMan);
-	//newtab.bindColumn(OldMS::columnName(OldMS::UVW),stanStMan);
+	//newtab.bindColumn(MS::columnName(MS::ANTENNA1),stanStMan);
+	//newtab.bindColumn(MS::columnName(MS::ANTENNA2),stanStMan);
+	//newtab.bindColumn(MS::columnName(MS::SPECTRAL_WINDOW_ID),stanStMan);
+	//newtab.bindColumn(MS::columnName(MS::UVW),stanStMan);
 	//
-	//newtab.bindColumn(OldMS::columnName(OldMS::DATA),tiledStMan);
-	//newtab.bindColumn(OldMS::columnName(OldMS::FLAG),tiledStMan);
+	//newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan);
+	//newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan);
     }
 
     Table maintab(newtab);
@@ -1571,10 +1570,10 @@ void FITSIDItoMS1::describeColumns()
 	//
 	itsTableDesc.defineHypercolumn(
 	    "TiledData",7,
-	    //stringToVector(OldMS::columnName(OldMS::DATA)+","+
-	    //		   OldMS::columnName(OldMS::FLAG)));
+	    //stringToVector(MS::columnName(MS::DATA)+","+
+	    //		   MS::columnName(MS::FLAG)));
 
-	    stringToVector(OldMS::columnName(OldMS::DATA)));
+	    stringToVector(MS::columnName(MS::DATA)));
 
 				 
 	//
@@ -1582,7 +1581,7 @@ void FITSIDItoMS1::describeColumns()
 	//
 	itsTableDesc.defineHypercolumn(
 	    "TiledUVW",2,
-	    stringToVector(OldMS::columnName(OldMS::UVW)));
+	    stringToVector(MS::columnName(MS::UVW)));
 	
     }
 */
