@@ -1,0 +1,18 @@
+
+change id: 0014
+ author:   Neil Killeen
+ date:     2000/06/26
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   image,regionmanager,imagefitter
+ type:     Code
+ category: Change
+ summary:  image.coordsys now returns a coordsys tool
+The image tool function 'coordinates' has been renamed 'coordsys'
+This function returns the coordinate system of the image.
+Previously this was a record within an itemcontainer.
+Now it is a coordsys tool which is now the Glish
+binding to a coordinate system DO
+
+Other related  tools have been updated as well
