@@ -40,7 +40,13 @@
 *
 *     The following subroutines are found here:
 *     vvr3 : for the 3x3 level Van Vleck curve
+*     vv3auto : for the 3x3 auto-correlation case (x==y)
+*     vv3zmean: for the 3x3 zero-mean case (mux=muy=0.0)
+*     vv3zauto: for the 3x3 zero-mean, auto correlation case
 *     vvr9 : for the 9x9 level Van Vleck curve
+*     vv9auto : for the 9x9 auto-correlation case (x==y)
+*     vv9zmean: for the 9x9 zero-mean case (mux=muy=0.0)
+*     vv9zauto: for the 9x9 zero-mean, auto correlation case
 *     BVND : bivariate normal integrals
 *     PHID : used by BVND
 *-----------------------------------------------------------------------
@@ -59,6 +65,50 @@
      & erf((-muy+v1y)/rt2)-erf((muy+v1y)/rt2))+
      & L(-mux-v1x,-muy-v1y,rho)+L(-mux-v1x,-muy+v1y,rho)+
      & L(-mux+v1x,-muy-v1y,rho)+L(-mux+v1x,-muy+v1y,rho)-1d0
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr3auto : the Van Vleck curve for the 3x3 level case given 
+*     mux : the mean input level (x and y are the same here)
+*     v1x : the first positive input threshold
+*     rho : the observed correlation
+*     mux, v1x, are in units of the r.m.s.input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr3auto(mux,v1x,rho)
+      double precision mux,v1x,rho,L,h,k,r,bvnd,rt2
+      L(h,k,r)=bvnd(h,k,r)
+      rt2=sqrt(2d0)
+      vvr3auto=erf((-mux+v1x)/rt2)-erf((mux+v1x)/rt2)+
+     &           L(-mux-v1x,-mux-v1x,rho)+
+     &           2d0 * L(-mux-v1x,-mux+v1x,rho)+
+     &           L(-mux+v1x,-mux+v1x,rho)-
+     &      1d0
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr3zmean : the Van Vleck curve for the 3x3 level case given 
+*     v1x, v1y : the first positive input thresholds (zero mean)
+*     rho : the observed correlation
+*     v1x, v1y are in units of the respective r.m.s. input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr3zmean(v1x,v1y,rho)
+      double precision v1x,v1y,rho,L,h,k,r,bvnd
+      L(h,k,r)=bvnd(h,k,r)
+      vvr3zmean=L(-v1x,-v1y,rho)+L(-v1x,v1y,rho)+
+     & L(v1x,-v1y,rho)+L(v1x,v1y,rho)-1d0
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr3zauto : the Van Vleck curve for the 3x3 level case given 
+*     v : the first positive input threshold (zero mean, x==y)
+*     rho : the observed correlation
+*     v is in units of the r.m.s. input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr3zauto(v,rho)
+      double precision v,rho,L,h,k,r,bvnd
+      L(h,k,r)=bvnd(h,k,r)
+      vvr3zauto=L(-v,-v,rho)+L(-v,v,rho)+
+     & L(v,-v,rho)+L(v,v,rho)-1d0
       return
       end
 *-----------------------------------------------------------------------
@@ -113,6 +163,119 @@
      & L(-mux+7*v1x,-muy-3*v1y,rho)+L(-mux+7*v1x,-muy-v1y,rho)+
      & L(-mux+7*v1x,-muy+v1y,rho)+L(-mux+7*v1x,-muy+3*v1y,rho)+
      & L(-mux+7*v1x,-muy+5*v1y,rho)+L(-mux+7*v1x,-muy+7*v1y,rho)
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr9auto : the Van Vleck curve for the 9x9 level case given 
+*     mux : the mean input levels (x and y are the same here)
+*     v1x : the first positive input threshold
+*     rho : the observed correlation
+*     mux, v1x, are in units of the respective r.m.s.
+*     input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr9auto(mux,v1x,rho)
+      double precision mux,v1x,rho,L,h,k,r,bvnd,rt2
+      L(h,k,r)=bvnd(h,k,r)
+      rt2=sqrt(2d0)
+      vvr9auto=-16d0+4d0*(-erf((mux-7*v1x)/rt2)-erf((mux-5*v1x)/rt2)
+     &  -erf((mux-3*v1x)/rt2)+erf((-mux+v1x)/rt2)-erf((mux+v1x)/rt2)
+     &  -erf((mux+3*v1x)/rt2)-erf((mux+5*v1x)/rt2)
+     &  -erf((mux+7*v1x)/rt2))+
+     & L(-mux-7*v1x,-mux-7*v1x,rho)+L(-mux-5*v1x,-mux-5*v1x,rho)+
+     & L(-mux-3*v1x,-mux-3*v1x,rho)+L(-mux-v1x,-mux-v1x,rho)+
+     & L(-mux+v1x,-mux+v1x,rho)+L(-mux+3*v1x,-mux+3*v1x,rho)+
+     & L(-mux+5*v1x,-mux+5*v1x,rho)+L(-mux+7*v1x,-mux+7*v1x,rho)+
+     & 2d0*(L(-mux-7*v1x,-mux-5*v1x,rho)+L(-mux-7*v1x,-mux-3*v1x,rho)+
+     & L(-mux-7*v1x,-mux-v1x,rho)+L(-mux-7*v1x,-mux+v1x,rho)+
+     & L(-mux-7*v1x,-mux+3*v1x,rho)+L(-mux-7*v1x,-mux+5*v1x,rho)+
+     & L(-mux-7*v1x,-mux+7*v1x,rho)+L(-mux-5*v1x,-mux-3*v1x,rho)+
+     & L(-mux-5*v1x,-mux-v1x,rho)+L(-mux-5*v1x,-mux+v1x,rho)+
+     & L(-mux-5*v1x,-mux+3*v1x,rho)+L(-mux-5*v1x,-mux+5*v1x,rho)+
+     & L(-mux-5*v1x,-mux+7*v1x,rho)+L(-mux-3*v1x,-mux-v1x,rho)+
+     & L(-mux-3*v1x,-mux+v1x,rho)+L(-mux-3*v1x,-mux+3*v1x,rho)+
+     & L(-mux-3*v1x,-mux+5*v1x,rho)+L(-mux-3*v1x,-mux+7*v1x,rho)+
+     & L(-mux-v1x,-mux+v1x,rho)+L(-mux-v1x,-mux+3*v1x,rho)+
+     & L(-mux-v1x,-mux+5*v1x,rho)+L(-mux-v1x,-mux+7*v1x,rho)+
+     & L(-mux+v1x,-mux+3*v1x,rho)+L(-mux+v1x,-mux+5*v1x,rho)+
+     & L(-mux+v1x,-mux+7*v1x,rho)+L(-mux+3*v1x,-mux+5*v1x,rho)+
+     & L(-mux+3*v1x,-mux+7*v1x,rho)+L(-mux+7*v1x,-mux+5*v1x,rho))
+
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr9zmean : the Van Vleck curve for the 9x9 level case given 
+*     v1x, v1y : the first positive input thresholds (zero mean)
+*     rho : the observed correlation
+*     v1x, v1y are in units of the respective r.m.s.
+*     input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr9zmean(v1x,v1y,rho)
+      double precision v1x,v1y,rho,L,h,k,r,bvnd,rt2
+      L(h,k,r)=bvnd(h,k,r)
+      rt2=sqrt(2d0)
+      vvr9zmean=-12d0 - erfc(v1x/rt2)/2.0 +
+     & L(-7*v1x,-7*v1y,rho)+L(-7*v1x,-5*v1y,rho)+
+     & L(-7*v1x,-3*v1y,rho)+L(-7*v1x,-v1y,rho)+
+     & L(-7*v1x,v1y,rho)+L(-7*v1x,3*v1y,rho)+
+     & L(-7*v1x,5*v1y,rho)+L(-7*v1x,7*v1y,rho)+
+     & L(-5*v1x,-7*v1y,rho)+L(-5*v1x,-5*v1y,rho)+
+     & L(-5*v1x,-3*v1y,rho)+L(-5*v1x,-v1y,rho)+
+     & L(-5*v1x,v1y,rho)+L(-5*v1x,3*v1y,rho)+
+     & L(-5*v1x,5*v1y,rho)+L(-5*v1x,7*v1y,rho)+
+     & L(-3*v1x,-7*v1y,rho)+L(-3*v1x,-5*v1y,rho)+
+     & L(-3*v1x,-3*v1y,rho)+L(-3*v1x,-v1y,rho)+
+     & L(-3*v1x,v1y,rho)+L(-3*v1x,3*v1y,rho)+
+     & L(-3*v1x,5*v1y,rho)+L(-3*v1x,7*v1y,rho)-
+     & L(v1x,-7*v1y,-rho)+L(v1x,-7*v1y,rho)-
+     & L(v1x,-5*v1y,-rho)+L(v1x,-5*v1y,rho)-
+     & L(v1x,-3*v1y,-rho)+L(v1x,-3*v1y,rho)+
+     & L(v1x,-v1y,rho)-L(v1x,v1y,-rho)+
+     & 2*L(v1x,v1y,rho)-L(v1x,3*v1y,-rho)+
+     & L(v1x,3*v1y,rho)-L(v1x,5*v1y,-rho)+
+     & L(v1x,5*v1y,rho)-L(v1x,7*v1y,-rho)+
+     & L(v1x,7*v1y,rho)+L(3*v1x,-7*v1y,rho)+
+     & L(3*v1x,-5*v1y,rho)+L(3*v1x,-3*v1y,rho)+
+     & L(3*v1x,-v1y,rho)+L(3*v1x,v1y,rho)+
+     & L(3*v1x,3*v1y,rho)+L(3*v1x,5*v1y,rho)+
+     & L(3*v1x,7*v1y,rho)+L(5*v1x,-7*v1y,rho)+
+     & L(5*v1x,-5*v1y,rho)+L(5*v1x,-3*v1y,rho)+
+     & L(5*v1x,-v1y,rho)+L(5*v1x,v1y,rho)+
+     & L(5*v1x,3*v1y,rho)+L(5*v1x,5*v1y,rho)+
+     & L(5*v1x,7*v1y,rho)+L(7*v1x,-7*v1y,rho)+
+     & L(7*v1x,-5*v1y,rho)+L(7*v1x,-3*v1y,rho)+
+     & L(7*v1x,-v1y,rho)+L(7*v1x,v1y,rho)+
+     & L(7*v1x,3*v1y,rho)+L(7*v1x,5*v1y,rho)+
+     & L(7*v1x,7*v1y,rho)
+
+      return
+      end
+*-----------------------------------------------------------------------
+*     vvr9zauto : the Van Vleck curve for the 9x9 level case given 
+*     v : the first positive input threshold (x==y, zero mean)
+*     rho : the observed correlation
+*     v is in units of the r.m.s.
+*     input levels.
+*-----------------------------------------------------------------------
+      double precision function vvr9zauto(v,rho)
+      double precision v,rho,L,h,k,r,bvnd,rt2
+      L(h,k,r)=bvnd(h,k,r)
+      rt2=sqrt(2d0)
+      vvr9zauto=-15d0+erfc((3*v)/rt2)+erfc((5*v)/rt2)+erfc((7*v)/rt2) +
+     &     L(-7*v,-7*v,rho)+L(-5*v,-5*v,rho)+L(-3*v,-3*v,rho)+
+     &     L(3*v,3*v,rho)+L(5*v,5*v,rho)+L(7*v,7*v,rho)+
+     &     2*(L(-7*v,-5*v,rho)+L(-7*v,-3*v,rho)+
+     &     L(-7*v,-v,rho)+L(-7*v,v,rho)+L(-7*v,3*v,rho)+
+     &     L(-7*v,5*v,rho)+L(-7*v,7*v,rho)+
+     &     L(-5*v,-3*v,rho)+L(-5*v,-v,rho)+L(-5*v,v,rho)+
+     &     L(-5*v,3*v,rho)+L(-5*v,5*v,rho)+L(-5*v,7*v,rho)+
+     &     L(-3*v,-1*v,rho)+L(-3*v,v,rho)+
+     &     L(-3*v,3*v,rho)+L(-3*v,5*v,rho)+L(-3*v,7*v,rho)-
+     &     L(v,v,-rho)+L(v,v,rho)-L(v,3*v,-rho)+
+     &     L(v,3*v,rho)-L(v,5*v,-rho)+L(v,5*v,rho)-
+     &     L(v,7*v,-rho)+L(v,7*v,rho)+
+     &     L(3*v,5*v,rho)+L(3*v,7*v,rho)+
+     &     L(5*v,7*v,rho))
+
       return
       end
 *-----------------------------------------------------------------------
