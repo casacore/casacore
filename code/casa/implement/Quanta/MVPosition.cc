@@ -36,6 +36,7 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/QLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
 // MVPosition class
@@ -350,15 +351,13 @@ Double MVPosition::positionAngle(const MVPosition &other) const {
   Vector<Double> t2(3);
   t1 = get();
   t2 = other.get();
-  Double s1,c1;
-  c1 = cos(t1(2)) * sin(t2(2)) -
-    sin(t1(2)) * cos(t2(2)) * cos(t1(1) - t2(1));
-  s1 = -cos(t2(2)) * sin(t1(1) - t2(1));
-  if (s1 != 0 || c1 != 0) {
-    return atan2(s1, c1);
-  } else {
-    return Double(0.0);
-  };
+  Double s1, c1;
+  Double df(t1(1) - t2(1));
+  Double c2(cos(t2(2)));
+  c1 = cos(t1(2)) * sin(t2(2)) - sin(t1(2)) * c2 * cos(df);
+  s1 = -c2 * sin(df);
+  if (s1 != 0 || c1 != 0) return atan2(s1, c1);
+  else return Double(0.0);
 }
 
 Quantity MVPosition::positionAngle(const MVPosition &other, 
@@ -367,11 +366,15 @@ Quantity MVPosition::positionAngle(const MVPosition &other,
 }
 
 Double MVPosition::separation(const MVPosition &other) const {
-  MVPosition t1(*this);
-  MVPosition t2(other);
-  t1.adjust(); t2.adjust();
-  t1 -= t2;
-  Double d1 = t1.radius()/2.0;
+  Vector<Double> t1(3);
+  t1 = this->getValue();
+  Double l1(norm(t1));
+  l1 = l1 > 0 ? l1 : 1.0; 
+  Double l2(norm(other.getValue()));
+  l2 = l2 > 0 ? l2 : 1.0;
+  t1 *= l2/l1;
+  t1 -= other.getValue();
+  Double d1 = norm(t1)/l2/2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
   return (2*asin(d1));
 }

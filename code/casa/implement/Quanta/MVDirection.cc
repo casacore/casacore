@@ -37,6 +37,7 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
 // MVDirection class
@@ -226,6 +227,75 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
     adjust();
   };
   return True;
+}
+
+Double MVDirection::positionAngle(const MVPosition &other) const {
+  Vector<Double> t1(2);
+  Vector<Double> t2(3);
+  t1 = get();
+  t2 = other.get();
+  Double s1, c1;
+  Double df(t1(0) - t2(1));
+  Double c2(cos(t2(2)));
+  c1 = cos(t1(1)) * sin(t2(2)) - sin(t1(1)) * c2 * cos(df);
+  s1 = -c2 * sin(df);
+  if (s1 != 0 || c1 != 0) return atan2(s1, c1);
+  else return Double(0.0);
+}
+
+Double MVDirection::positionAngle(const MVDirection &other) const {
+  Vector<Double> t1(2);
+  Vector<Double> t2(2);
+  t1 = get();
+  t2 = other.get();
+  Double s1, c1;
+  Double df(t1(0) - t2(0));
+  Double c2(cos(t2(1)));
+  c1 = cos(t1(1)) * sin(t2(1)) - sin(t1(1)) * c2 * cos(df);
+  s1 = -c2 * sin(df);
+  if (s1 != 0 || c1 != 0) return atan2(s1, c1);
+  else return Double(0.0);
+}
+
+Quantity MVDirection::positionAngle(const MVPosition &other, 
+				    const Unit &unit) const {
+  return Quantity(positionAngle(other), "rad").get(unit);
+}
+
+Quantity MVDirection::positionAngle(const MVDirection &other, 
+				    const Unit &unit) const {
+  return Quantity(positionAngle(other), "rad").get(unit);
+}
+
+Double MVDirection::separation(const MVPosition &other) const {
+  Vector<Double> t1(3);
+  t1 = this->getValue();
+  Double l2(norm(other.getValue()));
+  l2 = l2 > 0 ? l2 : 1.0;
+  t1 *= l2;
+  t1 -= other.getValue();
+  Double d1 = norm(t1)/l2/2.0;
+  d1 = (d1 < 1.0 ? d1 : 1.0);
+  return (2*asin(d1));
+}
+
+Double MVDirection::separation(const MVDirection &other) const {
+  Vector<Double> t1(3);
+  t1 = this->getValue();
+  t1 -= other.getValue();
+  Double d1 = norm(t1)/2.0;
+  d1 = (d1 < 1.0 ? d1 : 1.0);
+  return (2*asin(d1));
+}
+
+Quantity MVDirection::separation(const MVPosition &other, 
+				 const Unit &unit) const {
+  return Quantity(separation(other), "rad").get(unit);
+}
+
+Quantity MVDirection::separation(const MVDirection &other, 
+				 const Unit &unit) const {
+  return Quantity(separation(other), "rad").get(unit);
 }
 
 MVDirection MVDirection::crossProduct(const MVDirection &other) const {
