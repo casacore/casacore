@@ -615,7 +615,7 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
 //
    Bool hasMask = True;
    if (mask.nelements()==0) hasMask = False;
-   Float minVal, maxVal;
+   Double minVal, maxVal;
    if (hasMask) {
       Bool deleteIt1, deleteIt2;
       const Bool* p1 = mask.getStorage(deleteIt1);
