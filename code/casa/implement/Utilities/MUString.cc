@@ -1,5 +1,5 @@
 //# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,6 @@ MUString::MUString() :
   str(), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {}
 
 MUString::MUString(const String &in) :
-  str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(True), lget() {
-  }
-
-MUString::MUString(const SubString &in) :
   str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(True), lget() {
   }
 

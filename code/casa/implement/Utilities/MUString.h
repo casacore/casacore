@@ -242,7 +242,6 @@ public:
   // Create from String; setting pointer at start
   // <group>
   MUString(const String &in);
-  MUString(const SubString &in);
   MUString(const Char *in);
   MUString(char in);
   // </group>
