@@ -39,6 +39,14 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MeasTable.h>
+//#include <aips/Measures/MCDirection.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Quanta/MVEpoch.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVPosition.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/OS/Time.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Quanta/MVTime.h>
@@ -487,3 +495,304 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
    return cSys;
 } 
 
+
+
+Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+                                          const DirectionCoordinate& dirCoordTo,
+                                          const DirectionCoordinate& dirCoordFrom,
+                                          const ObsInfo& obsTo,
+                                          const ObsInfo& obsFrom) 
+//
+// We need MDirection type, position on earth and epoch.  But 
+// maybe not all of them...
+//
+{
+   const MDirection::Types& typeFrom = dirCoordFrom.directionType();
+   const MDirection::Types& typeTo = dirCoordTo.directionType();
+   Bool typesEqual = (typeTo==typeFrom);
+//
+   MEpoch epochFrom = obsFrom.obsDate();
+   MEpoch epochTo = obsTo.obsDate();
+   Double t1 = epochFrom.getValue().get();
+   Double t2 = epochTo.getValue().get();
+   Bool epochEqual = near(t1,t2);
+//
+   String telFrom = obsFrom.telescope();
+   String telTo = obsTo.telescope();
+   Bool posEqual = (telFrom==telTo);
+
+// Everything is the same for input and output so we don't 
+// need a machine to convert anything
+
+   if (typesEqual && epochEqual && posEqual) return False;
+
+// Start with simplest machine, just MDirection::Types.  If it does 
+// the conversion, that's all we need.  If not, we need more.
+
+   MDirection::Ref refFrom(typeFrom);
+   MDirection::Ref refTo(typeTo);
+   machine = MDirection::Convert(refFrom, refTo);
+//
+   MDirection fromMD;
+   dirCoordFrom.toWorld(fromMD, dirCoordFrom.referencePixel());
+   Bool ok = True;
+   try {
+      MDirection toMD = machine(fromMD);
+   } catch (AipsError x) {
+      ok = False;
+   }
+   if (ok) {
+      if (typeFrom==typeTo) {
+         return False;
+      } else {          
+         return True;
+      }
+   }
+
+// The conversion failed, so we need either or both of epoch 
+// and position in the machine.  
+
+   Double t = epochFrom.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
+   }
+   t = epochTo.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
+   }
+
+// Now add the epoch to the machine and see if that works
+
+   {
+      MeasFrame frameFrom;
+      MeasFrame frameTo;
+//
+      frameFrom.set(epochFrom);
+      frameTo.set(epochTo);
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+      machine = MDirection::Convert(refFrom, refTo);
+//
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (ok) return True;
+   }
+
+// Now add the position to the machine and see if that works
+
+   if (telFrom==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+   if (telTo==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+//
+   MPosition posFrom, posTo;
+   Bool found = MeasTable::Observatory(posFrom, telFrom);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   found = MeasTable::Observatory(posTo, telTo);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+//
+   {
+      MeasFrame frameFrom;
+      MeasFrame frameTo;
+//
+      frameFrom.set(posFrom);
+      frameTo.set(posTo);
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+      machine = MDirection::Convert(refFrom, refTo);
+//
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (ok) return True;
+   }
+
+// Well looks like we need both
+
+   {
+      MeasFrame frameFrom(posFrom, epochFrom);
+      MeasFrame frameTo(posTo, epochTo);
+//
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+//
+      machine = MDirection::Convert(refFrom, refTo);
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (!ok) {
+         os << "Unable to convert between the inputand output  " <<
+               "DirectionCoordinates - this is surprising !" << LogIO::EXCEPTION;
+      }
+   }
+//
+   return True;
+}
+ 
+
+Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+                                          Int coordinateTo, Int coordinateFrom,
+                                          const CoordinateSystem& coordsTo,
+                                          const CoordinateSystem& coordsFrom)
+//
+// We need MDirection type, position on earth and epoch.  But 
+// maybe not all of them...
+//
+{
+   const ObsInfo& obsTo = coordsTo.obsInfo();
+   const ObsInfo& obsFrom = coordsFrom.obsInfo();
+   const SpectralCoordinate& specCoordTo = coordsTo.spectralCoordinate(coordinateTo);
+   const SpectralCoordinate& specCoordFrom = coordsFrom.spectralCoordinate(coordinateFrom);
+//
+// We need to have a DirectionCoordinate without which we can't make any
+// conversions
+
+   Int afterCoord = -1;
+   Int coordinateDirTo = coordsTo.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (coordinateDirTo==-1) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "No DirectionCoordinate was found in the input CoordinateSystem" << LogIO::EXCEPTION;
+   }
+   afterCoord = -1;
+   Int coordinateDirFrom = coordsFrom.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (coordinateDirFrom==-1) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "No DirectionCoordinate was found in the output CoordinateSystem" << LogIO::EXCEPTION;
+   }
+//
+   const DirectionCoordinate& dirCoordTo = coordsTo.directionCoordinate(coordinateDirTo);
+   const DirectionCoordinate& dirCoordFrom = coordsFrom.directionCoordinate(coordinateDirFrom);
+   Bool dirCoordEqual = dirCoordTo.near(dirCoordFrom);
+
+// See if we need machine
+
+   const MFrequency::Types typeTo = specCoordTo.frequencySystem();
+   const MFrequency::Types typeFrom = specCoordFrom.frequencySystem();
+   Bool typesEqual = (typeTo==typeFrom);
+//
+   MEpoch epochFrom = obsFrom.obsDate();
+   MEpoch epochTo = obsTo.obsDate();
+   Double t1 = epochFrom.getValue().get();
+   Double t2 = epochTo.getValue().get();
+   Bool epochEqual = near(t1,t2);
+//
+   String telFrom = obsFrom.telescope();
+   String telTo = obsTo.telescope();
+   Bool posEqual = (telFrom==telTo);
+
+// Bug out if everything is the same
+
+   if (dirCoordEqual && typesEqual && epochEqual && posEqual) return False;
+
+// Create frames
+
+   MeasFrame frameFrom;
+   MeasFrame frameTo;
+
+// Add Direction
+
+   MDirection MDFrom, MDTo;
+   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
+      os << "DirectionCoordinate coordinate conversion failed because " +
+            dirCoordFrom.errorMessage() << LogIO::EXCEPTION;
+   }
+   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
+      os << "DirectionCoordinate coordinate conversion failed because " +
+            dirCoordTo.errorMessage() << LogIO::EXCEPTION;
+   }
+   frameFrom.set(MDFrom);
+   frameTo.set(MDTo);
+
+// Add Epoch   
+
+   Double t = epochFrom.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
+   }
+   t = epochTo.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
+   }
+   frameFrom.set(epochFrom);
+   frameTo.set(epochTo);
+
+// Add the position 
+
+   if (telFrom==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+   if (telTo==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+//
+   MPosition posFrom, posTo;
+   Bool found = MeasTable::Observatory(posFrom, telFrom);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   found = MeasTable::Observatory(posTo, telTo);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   frameFrom.set(posFrom);
+   frameTo.set(posTo);
+
+// Make the machine
+
+   MFrequency::Ref refFrom(typeFrom, frameFrom);
+   MFrequency::Ref refTo(typeTo, frameTo);
+   machine = MFrequency::Convert(refFrom, refTo);
+
+// Test conversion
+
+   Bool ok = True;
+   MFrequency MFTo, MFFrom;
+   if (!specCoordFrom.toWorld(MFFrom, specCoordFrom.referencePixel()(0))) {
+      os << "SpectralCoordinate coordinate conversion failed because " +
+            specCoordFrom.errorMessage() << LogIO::EXCEPTION;
+   }
+   try {
+      MFTo = machine(MFFrom);
+   } catch (AipsError x) {
+      ok = False;
+   }
+   if (!ok) {
+      os << "Unable to convert between the input and output SpectralCoordinates" << endl;
+      os << "SpectralCoordinates - this probably means one is in the REST frame" << endl;
+      os << "which requires the radial velocity (not implemented yet)" << LogIO::EXCEPTION;
+   }
+//
+   return True;
+}
