@@ -162,6 +162,16 @@ public:
   // The assignment operator uses reference semantics
   ComponentList& operator=(const ComponentList& other);
 
+  // Returns True if all the specified components are physically plausable. See
+  // the  isPhysical function in the 
+  // <linkto class="SkyCompBase">SkyCompBase</linkto> class 
+  // for a precise definition of what this means.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  Bool isPhysical(const Vector<Int>& index) const;
+
   // Calculate the integrated flux of all the members of the componentlist at
   // the specified direction & frequency, in a pixel of specified size.
   Flux<Double> sample(const MDirection& sampleDir,
@@ -232,6 +242,7 @@ public:
   Vector<Int> selected() const;
 
   // set the label on the specified components to the specified string
+  // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>

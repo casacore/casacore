@@ -121,6 +121,19 @@ ComponentList& ComponentList::operator=(const ComponentList& other){
   return *this;
 }
 
+Bool ComponentList::isPhysical(const Vector<Int>& indices) const {
+  DebugAssert(ok(), AipsError);
+  DebugAssert(allGE(indices, 0), AipsError);
+  DebugAssert(allLT(indices, static_cast<Int>(nelements())), AipsError);
+  Bool retVal = True;
+  uInt c = indices.nelements();
+  while (retVal && c > 0) {
+    c--;
+    retVal = itsList[indices(c)].isPhysical();
+  }
+  return retVal;
+}
+
 Flux<Double> ComponentList::sample(const MDirection& sampleDir,
 				   const MVAngle& pixelLatSize,
 				   const MVAngle& pixelLongSize,
