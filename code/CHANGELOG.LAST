@@ -35,3 +35,15 @@ change id: 164
  category: New
  summary:  aa
 bb
+
+change id: 165
+ author:   Ger van Diepen
+ date:     2004/12/23
+ avers:    1.9
+ area:     Library
+ package:  casa
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  test
+test
