@@ -3,7 +3,7 @@
 # configure: AIPS++ installation script
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2000
+#   Copyright (C) 1992-1997,1998,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -604,9 +604,9 @@ EOT
 	   fi
 
 	   # ok, the trick here is to figure out destination directory from the
-	   # file name.  Example: "bin-sun4sol_egcs.08.000.tar.gz".  This
+	   # file name.  Example: "bin-sun4sol_gnu.08.000.tar.gz".  This
 	   # sed regexp gets rid of the leading bin- and everything after
-	   # the first dot to get, e.g. "sun4sol_egcs".
+	   # the first dot to get, e.g. "sun4sol_gnu".
 	   NARCH=`echo $FILE | sed -e 's#^bin-\([^\.]*\).*#\1#'`
 	   DIR=$AIPSROOT/$NARCH
 	   if [ -d "$DIR" ]
@@ -689,12 +689,12 @@ EOT
   case `uname -s` in
      SunOS)
         case `uname -r` in
-           5*) ARCH="sun4sol_egcs";;
+           5*) ARCH="sun4sol_gnu";;
 	esac;;
      HP-UX)      ARCH="hpux_gnu";;
      OSF1|ALPHA) ARCH="alpha_gnu";;
-     Linux)      ARCH="linux_egcs";;
-     IRIX*)      ARCH="sgi";;
+     Linux)      ARCH="linux_gnu";;
+     IRIX*)      ARCH="sgi_64b";;
   esac
 
 # Use Classic AIPS HOSTS.LIST file if found...
@@ -717,9 +717,9 @@ EOT
 	case $ARCH in
 	   ALPHA)   ARCH="alpha_gnu";;
 	   HP*)     ARCH="hpux_gnu";;
-	   LINUX)   ARCH="linux_egcs";;
-	   SGI)     ARCH="sgi";;
-	   SOL|SUL) ARCH="sun4sol_egcs";;
+	   LINUX)   ARCH="linux_gnu";;
+	   SGI)     ARCH="sgi_64b";;
+	   SOL|SUL) ARCH="sun4sol_gnu";;
 	   *)       ARCH="";;
 	esac
 
@@ -780,10 +780,10 @@ EOT
 		    if ($3 == "alpha") { narch = "alpha_gnu" } 
 		    if ($3 == "hp")    { narch = "hpux_gnu" }
 		    if ($3 == "hp2")   { narch = "hpux_gnu" }
-		    if ($3 == "linux") { narch = "linux_egcs" }
-		    if ($3 == "sgi")   { narch = "sgi" }
-	            if ($3 == "sol")   { narch = "sun4sol_egcs" }
-	            if ($3 == "sul")   { narch = "sun4sol_egcs" }
+		    if ($3 == "linux") { narch = "linux_gnu" }
+		    if ($3 == "sgi")   { narch = "sgi_64b" }
+	            if ($3 == "sol")   { narch = "sun4sol_gnu" }
+	            if ($3 == "sul")   { narch = "sun4sol_gnu" }
 		    if (narch == "none") {
 		       printf("Skipping arch %s for %s\n",$3,$2) | "cat 1>&2"
 		    } else {
@@ -881,9 +881,9 @@ EOT
 	   case $ARCH in
 	      ALPHA)  ARCH="alpha_gnu";;
 	      HP*)    ARCH="hpux_gnu";;
-	      LINUX)  ARCH="linux_egcs";;
-	      SGI)    ARCH="sgi";;
-	      S[OU]L) ARCH="sun4sol_egcs";;
+	      LINUX)  ARCH="linux_gnu";;
+	      SGI)    ARCH="sgi_64b";;
+	      S[OU]L) ARCH="sun4sol_gnu";;
 	      *)      ARCH="";;
 	   esac
 	fi
@@ -892,12 +892,12 @@ EOT
         echo ""
         echo "   alpha_gnu     DEC/Alpha OSF/1, GNU C++ compiler (g++)"
         echo "   hpux_gnu      Hewlett-Packard/HP9000 HPUX, GNU C++ compiler"
-	echo "   linux_egcs    Linux/RedHat-5.x, x>0 (Intel only) egcs compiler"
-	echo "   linux         same as linux_egcs"
-        echo "   sgi           Silicon Graphics IRIX 7.x, SGI C++ compiler"
+	echo "   linux_gnu    Linux/RedHat-5.x, x>0 (Intel only) gnu compiler"
+	echo "   linux         same as linux_gnu"
+        echo "   sgi_64b       Silicon Graphics IRIX 7.x, SGI C++ compiler"
         echo "   sgi_ntv       same as sgi"
-        echo "   sun4sol_egcs  Sun/Sparc Solaris 2.x, GNU/EGCS C++ compiler (g++)"
-        echo "   sun4sol       same as sun4sol_egcs"
+        echo "   sun4sol_gnu  Sun/Sparc Solaris 2.x, GNU/EGCS C++ compiler (g++)"
+        echo "   sun4sol       same as sun4sol_gnu"
         echo ""
 	if [ "$SOURCE" = yes ] ; then
            echo "Note that CFRONT-based C++ compilers are not supported."
@@ -913,7 +913,7 @@ EOT
         while true
         do
 #          Get this machine's architecture.
-           ARCHS="alpha_gnu hpux_gnu linux linux_egcs sgi_ntv sgi sun4sol_egcs sun4sol"
+           ARCHS="alpha_gnu hpux_gnu linux linux_gnu sgi_ntv sgi_64b sun4sol_gnu sun4sol"
            echo ""
            echo "What is $HOST's architecture?"
            printf "($ARCHS) [$ARCH]: "
