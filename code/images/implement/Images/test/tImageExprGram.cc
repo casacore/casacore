@@ -39,7 +39,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
-#include <aips/Glish/GlishRecord.h>
+#include <aips/Containers/Record.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Logging/LogIO.h>
@@ -48,7 +48,7 @@
 #include <aips/iostream.h>
 
 
-//# This functions simulates the same function in DOImage2.cc.
+//# This function simulates the same function in DOImage2.cc.
 String substituteOID (Block<LatticeExprNode>& nodes,
 		      String& exprName,
 		      const String& expr)
@@ -58,7 +58,7 @@ String substituteOID (Block<LatticeExprNode>& nodes,
   return expr;
 }
 void makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
-		      const GlishRecord&,
+		      const Record&,
 		      LogIO& os)
 {
    for (uInt j=0; j<regions.nelements(); j++) {
@@ -69,7 +69,7 @@ void makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
 
 //# This function is a copy of the expr function in DOImage2.cc, which
 //# failed mysteriously on sneffels (RedHat Linux 5.2) in April 1999.
-void doExpr (const String& expr, const GlishRecord& regions)
+void doExpr (const String& expr, const Record& regions)
 {
   LogIO os(LogOrigin("image", "expr(const String& expr)", WHERE));
 
@@ -89,7 +89,7 @@ void doExpr (const String& expr, const GlishRecord& regions)
   
 // Delete the ImageRegions (by using an empty GlishRecord).
   
-  makeRegionBlock (tempRegs, GlishRecord(), os);
+  makeRegionBlock (tempRegs, Record(), os);
   
 // Make the ImageExpr object.  It will throw an exception if there
 // are no true coordinates
@@ -164,7 +164,7 @@ int main (int argc, char *argv[])
   {
     cout << endl;
     try {
-      doExpr ("xxx", GlishRecord());
+      doExpr ("xxx", Record());
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
     } 
