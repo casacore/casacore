@@ -145,9 +145,6 @@ private:
    void smoothProfiles (ImageInterface<T>& in,
                         const Int& axis,
                         const Vector<T>& psf);
-   String findUniqueRegionName (const ImageInterface<T>& in,
-
-                                const String& root) const;
 };
 
 
