@@ -32,7 +32,7 @@
 
 TableSyncData::TableSyncData()
 : itsNrrow              (0),
-  itsNrcolumn           (0),
+  itsNrcolumn           (-1),
   itsModifyCounter      (0),
   itsTableChangeCounter (0)
 {
@@ -83,7 +83,7 @@ void TableSyncData::write (uInt nrrow, uInt nrcolumn, Bool tableChanged,
     itsAipsIO << itsNrrow;
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
-    if (itsNrcolumn > 0) {
+    if (itsNrcolumn >= 0) {
 	itsAipsIO << itsTableChangeCounter;
 	itsAipsIO << itsDataManChangeCounter;
     }
@@ -94,7 +94,7 @@ void TableSyncData::write (uInt nrrow)
 {
     itsModifyCounter++;
     itsNrrow = nrrow;
-    itsNrcolumn = 0;
+    itsNrcolumn = -1;
     // Now write the data into the memoryIO object.
     // First clear it.
     itsMemIO.clear();
@@ -112,22 +112,24 @@ Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
     // When no columns, don't read the remaining part (then it is used
     // by an external filler).
     uInt i;
-    nrcolumn = 0;
+    Int nrcol = -1;
     if (itsMemIO.length() > 0) {
 	itsAipsIO.getstart ("sync");
 	itsAipsIO >> nrrow;
-	itsAipsIO >> nrcolumn;
+	itsAipsIO >> nrcol;
 	itsAipsIO >> itsModifyCounter;
     }
-    if (nrcolumn == 0) {
+    if (nrcol < 0) {
 	tableChanged = True;
 	dataManChanged.set (True);
 	if (itsMemIO.length() > 0) {
 	    itsAipsIO.getend();
 	    return True;                       // not empty
 	}
+	nrcolumn = 0;
 	return False;                          // empty MemoryIO object
     }
+    nrcolumn = nrcol;
     // The table has changed when the change counter has changed.
     uInt tableChangeCounter;
     Block<uInt> dataManChangeCounter;
