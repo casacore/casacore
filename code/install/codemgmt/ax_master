@@ -4502,3 +4502,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSFlagCmdColumns.h aips/implement/MeasurementSets/MSFlagCmdColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSFlagCmdEnums.h aips/implement/MeasurementSets/MSFlagCmdEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSFreqOffColumns.cc aips/implement/MeasurementSets/MSFreqOffColumns.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSFreqOffColumns.h aips/implement/MeasurementSets/MSFreqOffColumns.h
