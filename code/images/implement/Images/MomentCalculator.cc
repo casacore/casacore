@@ -1289,8 +1289,9 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 
 // Convert
 
+         sc0.updateVelocityMachine (String("km/s"), iMom.velocityType_p);
          if (doCoordProfile) {
-            sc0.frequencyToVelocity (sepWorldCoord, frequency, String("km/s"), iMom.velocityType_p);
+            sc0.frequencyToVelocity (sepWorldCoord, frequency);
          }
 
 // Find increment in world units at reference pixel if needed
@@ -1299,8 +1300,8 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
             Quantum<Double> vel0, vel1;
             Double pix0 = sc0.referencePixel()(0) - 0.5;
             Double pix1 = sc0.referencePixel()(0) + 0.5;
-            sc0.pixelToVelocity (vel0, pix0, String("km/s"), iMom.velocityType_p);
-            sc0.pixelToVelocity (vel1, pix1, String("km/s"), iMom.velocityType_p);
+            sc0.pixelToVelocity (vel0, pix0);
+            sc0.pixelToVelocity (vel1, pix1);
             integratedScaleFactor = abs(vel1.getValue() - vel0.getValue());
             doneIntScale = True;
          }
