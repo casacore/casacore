@@ -137,12 +137,16 @@ int main (int argc, char *argv[])
     ArrayLattice<Float> aF(shape);
     ArrayLattice<Float> bF(shape);
     ArrayLattice<Float> cF(shape);
+    ArrayLattice<Float> nanF(shape);
     Float aFVal = 0.0;
     aF.set(aFVal);
     Float bFVal = 2.0;
     bF.set(bFVal);
     Float cFVal = 3.0;
     cF.set(cFVal);
+    Float nanFVal;
+    setNaN(nanFVal);
+    nanF.set(nanFVal);
 
 
 // Double Lattices
@@ -2186,6 +2190,41 @@ int main (int argc, char *argv[])
     LELFunctionBool expr(LELFunctionEnums::ANY, arga);
     BResult = bBVal;
     if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    Block<LatticeExprNode> argb(1);
+    cout << "   Function isnan" << endl;     
+    {
+      argb[0] = LatticeExprNode(bF);
+      LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);
+      BResult = False;
+      if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
+    }
+    {
+      argb[0] = LatticeExprNode(nanF);
+      LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);
+      BResult = True;
+      if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
+    }
+    {
+      argb[0] = LatticeExprNode(bD);
+      LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);
+      BResult = False;
+      if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
+    }
+    {
+      argb[0] = LatticeExprNode(bC);
+      LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);
+      BResult = False;
+      if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
+    }
+    {
+      argb[0] = LatticeExprNode(bDC);
+      LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);
+      BResult = False;
+      if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
+    }
     }
   }
 //

@@ -401,6 +401,12 @@ LELFunctionBool
       Caught expected exception; message is: LELFunctionBool::eval - unknown function
    Function any
       Caught expected exception; message is: LELFunctionBool::eval - unknown function
+   Function isnan
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
 LELConvert<Float,Double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
