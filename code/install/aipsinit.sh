@@ -218,7 +218,7 @@
         echo "Warning: $a_root/$a_arch does not exist."
      elif [ ! -d "$a_root/$a_arch/$a_site" ]
      then
-        echo "Warning: $a_root/$a_arch does not exist."
+        echo "Warning: $a_root/$a_arch/$a_site does not exist."
      fi
 
 #    Define AIPSPATH.
