@@ -3097,19 +3097,15 @@ Bool ImageMoments<T>::makeOdd (Int& i)
 
 
 template <class T> 
-Bool ImageMoments<T>::makePSF (Array<T>& psf)
+void ImageMoments<T>::makePSF (Array<T>& psf,
+                               Matrix<T>& psfSep)
 //
 // Generate an array containing the convolving function
 //
-// Private data:
-//   kernelTypes_p   One of GAUSSIAN, BOXCAR, HANNING
-//   kernelWidths_p  Convolving kernel width in pixels
-//                      FWHM  for Gaussian
-//                     Width for boxcar
-//                     3     for Hanning
 // Output:
-//   psf           The PSF to convolve by
-//   Bool          True if successfull
+//   psf             PSF 
+//   psfSep          Separable PSF
+//
 {
 
    Int i, j, k;
@@ -3118,22 +3114,37 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
 
    const Int psfDim = max(smoothAxes_p.ac()) + 1;
 
-// Define maximum size.  Use this constant Int to avoid brain ache
-// with pointers to pointers. I must do better one day !
 
-   const Int MAXDIM = 10;
-   if (psfDim > MAXDIM) {
-      os_p << LogIO::SEVERE << "Convolving kernel has too many dimensions" << LogIO::POST;
-      return False;
-   }
-   float* pt[MAXDIM];
-
-
-// Work out the size of the PSF and generate separable kernel arrays
-// Make PSF array as small as possible, as there are advantages to
-// this in the Convolution routines and PSF generation involving speed.  
+// Work out the shape of the PSF.
 
    IPosition psfShape(psfDim);
+   for (i=0,k=0; i<psfDim; i++) {
+      if (ImageUtilities::inVector(i, smoothAxes_p)==-1) {
+         psfShape(i) = 1;
+      } else {
+         if (kernelTypes_p(k) == GAUSSIAN) { 
+            const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
+            psfShape(i) = (Int(5*sigma + 0.5) + 1) * 2;
+         } else if (kernelTypes_p(k) == BOXCAR) {
+            const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
+            psfShape(i) = intKernelWidth + 1;
+         } else if (kernelTypes_p(k) == HANNING) {
+            psfShape(i) = 4;
+         }
+         k++;
+      }
+   }
+
+
+// Resize separable PSF matrix
+
+   Int nAxes = psfDim;
+   Int nPts = max(psfShape.asVector().ac());
+   psfSep.resize(nPts,nAxes);
+
+
+// Now fill the separable PSF
+
    for (i=0,k=0; i<psfDim; i++) {
 
       if (ImageUtilities::inVector(i, smoothAxes_p)==-1) {
@@ -3142,55 +3153,38 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
 // of the PSF array 1
 
          psfShape(i) = 1;
-         pt[i] = new float[1];
-         pt[i][0] = 1.0;
+         psfSep(0,i) = 1.0;
       } else {
-
-
-// Generate separable arrays for each type
-
          if (kernelTypes_p(k) == GAUSSIAN) { 
-
 
 // Gaussian. The volume error is less than 6e-5% for +/- 5 sigma limits
 
             const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
-            psfShape(i) = (Int(5*sigma + 0.5) + 1) * 2;
             const Int refPix = psfShape(i)/2;
 
             const Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
-            const Double gWidth = kernelWidths_p(i);
+            const Double gWidth = kernelWidths_p(k);
             const Gaussian1D<Double> gauss(norm, Double(refPix), gWidth);
 //            os_p << LogIO::NORMAL << "Volume = " << 1/norm << LogIO::POST;
 
-            pt[i] = new float[psfShape(i)];
-            for (j=0; j<psfShape(i); j++) pt[i][j] = gauss(Double(j));
+            for (j=0; j<psfShape(i); j++) psfSep(j,i) = gauss(Double(j));
          } else if (kernelTypes_p(k) == BOXCAR) {
-
-// Boxcar
-
             const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
-            psfShape(i) = intKernelWidth + 1;
             const Int refPix = psfShape(i)/2;
 
             const Int iw = (intKernelWidth-1) / 2;
-            pt[i] = new float[psfShape(i)];
             for (j=0; j<psfShape(i); j++) {
-               if (abs(j-refPix) > iw) 
-                  pt[i][j] = 0.0;
-               else 
-                  pt[i][j] = 1.0 / Float(intKernelWidth);
+               if (abs(j-refPix) > iw) {
+                  psfSep(j,i) = 0.0;
+               } else {
+                  psfSep(j,i) = 1.0 / Float(intKernelWidth);
+               }
             }
          } else if (kernelTypes_p(k) == HANNING) {
-
-// Hanning
-
-            psfShape(i) = 4;
-            pt[i] = new float[psfShape(i)];
-            pt[i][0] = 0.25;
-            pt[i][1] = 0.5;
-            pt[i][2] = 0.25;
-            pt[i][3] = 0.0;
+            psfSep(0,i) = 0.25;
+            psfSep(1,i) = 0.5;
+            psfSep(2,i) = 0.25;
+            psfSep(3,i) = 0.0;
          }
          k++;
       }
@@ -3199,7 +3193,7 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
 //   os_p << LogIO::NORMAL << "PSF shape = " << psfShape << LogIO::POST;
 
 
-// Resize PSF array
+// Resize non-separable PSF array
 
    psf.resize(psfShape);
 
@@ -3209,8 +3203,7 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
    ArrayPositionIterator posIterator (psf.shape(), IPosition(psfDim,0), 0);
 
 
-// Iterate through PSF array and fill it with product of separable 
-// convolving functions
+// Iterate through PSF array and fill it with product of separable PSF
 
    Float val;
    Float sum = 0.0;
@@ -3218,18 +3211,14 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
    for (posIterator.origin(); !posIterator.pastEnd(); posIterator.next()) {
       for (i=0,val=1.0; i<psfDim; i++) {
          index = posIterator.pos()(i);
-         val *= pt[i][index];
+         val *= psfSep(index,i);
       }
       psf(posIterator.pos()) = val;
       sum = sum + val;
    } 
+
 //   os_p << LogIO::NORMAL << "Sum of PSF = " << sum << LogIO::POST;
 
-
-// Delete memory
-
-   for (i=0; i<psfDim; i++) delete [] pt[i];
-   return True;
 }
 
 
@@ -3709,7 +3698,8 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // Generate convolving function
 
    Array<T> psf;
-   if (!makePSF(psf)) return False;
+   Matrix<T> psfSep;
+   makePSF(psf, psfSep);
 
 // Save PSF to disk. It won't be very big generally, so use an ArrayLattice
    
@@ -3752,50 +3742,41 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
    }
 
 
-// Create iterator to work though input image and retrieve slices
-// for convolution.  The convolution classes cannot handle a kernel 
-// like [nx,1,nz] or [1,1,nz] so we have to do some extra 
-// iterating outside of the convolution
+// Convolve.  PSF is separable so convolve by rows for each axis.  
+// First copy input to output then smooth in situ.  
 
-   LatticeStepper imageNavigator(pInImage_p->shape(),
-                                 IPosition(pInImage_p->ndim(),1));   
-   imageNavigator.subSection(blc_p, trc_p);
-   IPosition smLatticeShape = imageNavigator.subLatticeShape();
- 
-   IPosition cursorShape(pInImage_p->ndim(),1);
-   for (Int i=0; i<min(pInImage_p->ndim(),psf.ndim()); i++) {
-      if (psf.shape()(i) > 1) cursorShape(i) = smLatticeShape(i);
+   CopyLattice(pSmoothedImage->lc(), pInImage_p->lc(), blc_p, trc_p);
+   for (Int i=0; i<psf.ndim(); i++) {
+      if (psf.shape()(i) > 1) {
+         os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
+         Vector<T> psfRow = psfSep.column(i);
+         psfRow.resize(psf.shape()(i),0,True);
+         smoothRow (pSmoothedImage, i, psfRow);
+      }
    }
-   imageNavigator.setCursorShape(cursorShape);
-   RO_LatticeIterator<T> imageIterator(*pInImage_p, imageNavigator);
+}
 
 
-// Create iterator for output smoothed image
 
-   LatticeIterator<T> smoothedImageIterator(*pSmoothedImage, cursorShape);
+template <class T> 
+void ImageMoments<T>::smoothRow (PagedImage<T>*& pIn,
+                                 const Int& row,
+                                 const Vector<T>& psf)
+{
 
+  TiledStepper navIn(pIn->shape(),
+                     pIn->niceCursorShape(pIn->maxPixels()),
+                     row);
+  LatticeIterator<T> inIt(*pIn, navIn);
 
-// Iterate and convolve
+  Convolver<T> conv(psf, pIn->shape()(row));
+  Vector<T> result(pIn->shape()(row));
 
-   os_p << LogIO::NORMAL << "Begin convolution" << LogIO::POST;
-   Convolver<T> conv(psf, cursorShape);
-
-   Int nIter = smLatticeShape.product() / cursorShape.product();
-   ProgressMeter clock(0.0, Double(nIter), String("Convolve image"), String(""),
-                       String(""), String(""), True, max(1,Int(nIter/10)));
-   Double meterValue = 0.0;
-
-   while (!imageIterator.atEnd()) {
-      conv.linearConv(smoothedImageIterator.cursor(), imageIterator.cursor());
-
-      clock.update(meterValue);
-      meterValue += 1.0; 
-
-      imageIterator++;
-      smoothedImageIterator++;
-   }
-  
-   return True;
+  while (!inIt.atEnd()) {
+    conv.linearConv(result, inIt.vectorCursor());
+    inIt.vectorCursor() = result;
+    inIt++;
+  }
 }
 
 
