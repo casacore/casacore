@@ -168,7 +168,9 @@ public:
   enum GlobalTypes {GRADEC,
 		    GHADEC,
 		    GAZEL,
-		    GLONGLAT};
+		    GLONGLAT,
+		    N_GTypes};
+
 //# Typedefs
 // MeasRef use
     typedef class MeasRef<MDirection> Ref;
