@@ -37,7 +37,11 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
 #include <ms/MeasurementSets/MSSelection.h>
-//#include <ms/MeasurementSets/MSUvDistParse.h>       // routines used by bison actions
+
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
@@ -57,7 +61,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const MeasurementSet* msMSUvDistGram = 0x0;
-TableExprNode *MSSelection::msTableExprNode = 0;
 static const char*           strpMSUvDistGram = 0;
 static Int                   posMSUvDistGram = 0;
 
