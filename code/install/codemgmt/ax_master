@@ -3266,3 +3266,4 @@
 13 176 src mv trial/implement/Display/NBody.cc trial/implement/DisplayDatas/NBody.cc
 13 176 src mv trial/implement/Display/Galaxy.h trial/implement/DisplayDatas/Galaxy.h
 13 176 src mv trial/implement/Display/Galaxy.cc trial/implement/DisplayDatas/Galaxy.cc
+13 177 src rm trial/implement/Widgets/test/tguientry.g
