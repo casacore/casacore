@@ -1,5 +1,5 @@
 //# MSIter.h: Step through the MeasurementEquation by table
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,23 +77,27 @@ private:
 //
 // <synopsis> 
 // An MSIter is a class to traverse a MeasurementSet in various orders.
-// It keeps track of some internal state so that changes in e.g. frequency
-// or field position can be noticed. It implements iteration by time interval
-// for the use of e.g., calibration tasks that want to calculate solution over
+// It automatically adds four predefined sort columns to your selection
+// of sort columns (see constructor) so that it
+// can keep track of changes in frequency or polarization setup, 
+// field position and sub-array. Note that this can cause iterations
+// to occur in a different way from what you would expect, see examples below.
+// MSIter implements iteration by time interval
+// for the use of e.g., calibration tasks that want to calculate solutions over
 // some interval of time. You can iteratate over multiple MeasurementSets
-// with this class.
+// with this class
 // </synopsis> 
 //
 // <example>
 // <srcblock>
-// // use as follows
-// MeasurementSet ms("myMS"); 
-// Block<int> sort(3);
-//        sort[0] = MS::FIELD_ID;
-//        sort[1] = MS::ARRAY_ID;
-//        sort[2] = MS::DATA_DESCRIPTION_ID;
-//        sort[3] = MS::TIME;
-// Double timeInterval = 30;
+// // The following code iterates by by ARRAY_ID, FIELD_ID, DATA_DESC_ID and
+// // TIME (all implicitly added columns) and then by baseline (antenna pair),
+// // in 3000s intervals.
+// MeasurementSet ms("3C273XC1.ms"); 
+// Block<int> sort(2);
+//        sort[0] = MS::ANTENNA1;
+//        sort[1] = MS::ANTENNA2;
+// Double timeInterval = 3000;
 // MSIter msIter(ms,sort,timeInteval);
 // for (msIter.origin(); msIter.more(); msIter++) {
 // // print out some of the iteration state
@@ -101,7 +105,37 @@ private:
 //    cout << msIter.fieldName() << endl;
 //    cout << msIter.dataDescriptionId() << endl;
 //    cout << msIter.frequency0() << endl;
+//    cout << msIter.table().nrow() << endl;
 //    process(msIter.table()); // process the data in the current iteration
+// }
+// // Output shows only 1 row at a time because the table is sorted on TIME
+// // first and ANTENNA1, ANTENNA2 next and each baseline occurs only once per 
+// // TIME stamp. The interval has no effect in this case.
+// </srcblock>
+// </example>
+
+// <example>
+// <srcblock>
+// // The following code iterates by baseline (antenna pair), TIME, and,
+// // implicitly, by ARRAY_ID, FIELD_ID and DATA_DESC_ID in 3000s
+// // intervals.
+// MeasurementSet ms("3C273XC1.ms"); 
+// Block<int> sort(3);
+//        sort[0] = MS::ANTENNA1;
+//        sort[1] = MS::ANTENNA2;
+//        sort[2] = MS::TIME;
+// Double timeInterval = 3000;
+// MSIter msIter(ms,sort,timeInteval);
+// for (msIter.origin(); msIter.more(); msIter++) {
+// // print out some of the iteration state
+//    cout << msIter.fieldId() << endl;
+//    cout << msIter.fieldName() << endl;
+//    cout << msIter.dataDescriptionId() << endl;
+//    cout << msIter.frequency0() << endl;
+//    cout << msIter.table().nrow() << endl;
+//    process(msIter.table()); // process the data in the current iteration
+// // Now the output shows 7 rows at a time, all with identical ANTENNA1
+// // and ANTENNA2 values and TIME values within a 3000s interval.
 // }
 // </srcblock>
 // </example>
@@ -109,7 +143,8 @@ private:
 // <motivation>
 // This class was originally part of the VisibilityIterator class, but that 
 // class was getting too large and complicated. By splitting out the toplevel
-// iteration into this class the code is much easier to understand.
+// iteration into this class the code is much easier to understand. It is now
+// also available through the ms tool.
 // </motivation>
 //
 // <todo>
@@ -132,14 +167,15 @@ public:
   MSIter();
 
   // Construct from MS and a Block of MS column enums specifying the 
-  // iteration order, if none are specified, time, field and
-  // dataDescription iteration is implicit. 
-  // These will be added (last) if not already specified.
+  // iteration order, if none are specified, ARRAY_ID, FIELD_ID, DATA_DESC_ID,
+  // and TIME iteration is implicit. 
+  // These columns will always be added first if they are not specified.
   // An optional timeInterval can be given to iterate through chunks of time.
   // The default interval of 0 groups all times together.
   // Every 'chunk' of data contains all data within a certain time interval
   // and with identical values of the other iteration columns (e.g.
   // DATA_DESCRIPTION_ID and FIELD_ID).
+  // See the examples above for the effect of different sort orders.
   MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, 
 	 Double timeInterval=0);
 
