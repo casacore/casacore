@@ -1816,3 +1816,4 @@
 07 582 src mv doc/user/Aipsview.dir/avLogo.gif doc/gif/avLogo.gif
 07 584 src rm trial/apps/simulater
 08 003 sys rm bin/aipsview2
+08 003 sys rm bin/display.atoms
