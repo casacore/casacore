@@ -1,5 +1,5 @@
 //# tLatticeStepper.cc:  mechanical test of LatticeLayout class
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -118,13 +118,15 @@ int main()
     AlwaysAssert(huh.endPosition().isEqual(IPosition(4,9,11,3,6)),
  		 AipsError);
     AlwaysAssert(count == 12*4*7, AipsError);
+    AlwaysAssert(huh.nsteps() == 12*4*7, AipsError);
     
     // Now move back again with the same cursor
     for ( ; !huh.atStart(); huh--)
       count--;
     // Should end up where we started
     AlwaysAssert(huh.position().isEqual(IPosition(4,0)), AipsError);
-    AlwaysAssert(count == 1, AipsError);
+    AlwaysAssert(count == 0, AipsError);
+    AlwaysAssert(huh.nsteps() == 2*12*4*7, AipsError);
     
     // Test moving forward with a one-dimensional NON-congruent cursor
     // Check the first few steps manually;
@@ -161,8 +163,8 @@ int main()
       count--;
     // Should end up where we started
     AlwaysAssert(s0.position().isEqual(IPosition(4,0)), AipsError);
-    AlwaysAssert(count == 1, AipsError);
-    AlwaysAssert(s0.nsteps() == 12*4*7*3*2-2, AipsError);
+    AlwaysAssert(count == 0, AipsError);
+    AlwaysAssert(s0.nsteps() == 12*4*7*3*2, AipsError);
 
     // Test the copy constructor and assignment operator use copy semantics
     LatticeStepper s1(s0);
