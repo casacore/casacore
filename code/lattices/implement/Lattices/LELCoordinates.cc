@@ -1,5 +1,5 @@
 //# LELCoordinates.cc: Envelope class for Lattice coordinates
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,19 +26,19 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELCoordinates.h>
-#include <trial/Lattices/LatticeRegion.h>
+#include <aips/Lattices/LELCoordinates.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 // Default constructor
 LELCoordinates::LELCoordinates()
-: coords_p (new LELLattCoord())
 {}
 
 // Construct the object from the given letter class.
 // It takes over the pointer and takes care of destructing
-// the LELLattCoord object.
-LELCoordinates::LELCoordinates (LELLattCoord* coordinates)
+// the LELLattCoordBase object.
+LELCoordinates::LELCoordinates (LELLattCoordBase* coordinates)
 : coords_p (coordinates)
 {}
 
@@ -61,19 +61,26 @@ LELCoordinates& LELCoordinates::operator= (const LELCoordinates& other)
 }
 
 // Return the underlying letter object.
-const LELLattCoord& LELCoordinates::coordinates() const
+const LELLattCoordBase& LELCoordinates::coordinates() const
 {
+    AlwaysAssert (!coords_p.null(), AipsError);
     return *coords_p;
 }
 
 // Does it have coordinates ?
 Bool LELCoordinates::hasCoordinates() const
 {
+    if (coords_p.null()) {
+        return False;
+    }
     return coords_p->hasCoordinates();
 }
 
 // Check if the coordinates of this and that conform.
-Bool LELCoordinates::conform (const LELCoordinates& other) const
+Bool LELCoordinates::conform (const LELCoordinates& that) const
 {
-    return coords_p->conform (*(other.coords_p));
+    if (coords_p.null()  ||  that.coords_p.null()) {
+        return False;
+    }
+    return coords_p->conform (*(that.coords_p));
 } 

@@ -1,5 +1,5 @@
 //# LELCoordinates.h: Envelope class for Lattice coordinates in LEL
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/LELLattCoord.h>
+#include <aips/Lattices/LELLattCoordBase.h>
 #include <aips/Utilities/CountedPtr.h>
 
 
@@ -46,8 +46,7 @@
 //
 // <prerequisite>
 //   <li> <linkto class="Lattice">Lattice</linkto>
-//   <li> <linkto class="LELLattCoord">LELLattCoord</linkto>
-//   <li> <linkto class="LELImageCoord">LELImageCoord</linkto>
+//   <li> <linkto class="LELLattCoordBase">LELLattCoordBase</linkto>
 // </prerequisite>
 //
 // <synopsis> 
@@ -66,7 +65,7 @@
 //  CoordinateSystems.
 //  Lattice objects have a member function called lelCoordinates.
 //  This returns a LELCoordinates object.   This object contains a
-//  pointer (actually a CountedPtr) of type LELLattCoord.  This is the base
+//  pointer (actually a CountedPtr) of type LELLattCoordBase.  This is the base
 //  class of the letter classes.   For Lattices such as ImageInterface,
 //  this pointer actually points at the derived letter class LELImageCoord.
 //  This class in turn contains a pointer (a CountedPtr) to the actual
@@ -84,12 +83,12 @@
 //  Having a LELCoordinates object in hand, the programmer then has access
 //  to the CoordinateSystem that it ultimately contains.  This is via the
 //  LELCoordinates member function coordinates which returns a reference to
-//  the letter base class LELLattCoord. For example, if the actual letter
+//  the letter base class LELLattCoordBase. For example, if the actual letter
 //  class object was LELImageCoord, one has to then cast the reference to
-//  the LELLattCoord returned
+//  the LELLattCoordBase returned
 //  by LELCoordinates::coordinates() to an LELImageCoord.  This is because
 //  the letter class functions that actually return the CoordinateSystem
-//  are not virtual (i.e. they are not defined in LELLattCoord).
+//  are not virtual (i.e. they are not defined in LELLattCoordBase).
 // </synopsis>
 //
 // <example>
@@ -113,13 +112,13 @@
 class LELCoordinates
 {
 public:
-    // The default constructor creates a LELLattCoord object.
+    // The default constructor creates a null object.
     LELCoordinates();
 
     // Construct the object from the given letter class.
     // It takes over the pointer and takes care of destructing
-    // the LELLattCoord object.
-    LELCoordinates (LELLattCoord* coordinates);
+    // the LELLattCoordBase object.
+    LELCoordinates (LELLattCoordBase* coordinates);
 
     // Copy constructor (reference semantics).
     LELCoordinates (const LELCoordinates& that);
@@ -130,20 +129,21 @@ public:
     LELCoordinates& operator= (const LELCoordinates& that);
 
     // Does the class have true coordinates?
+    // It returns False if this is a null object.
     Bool hasCoordinates() const;
 
     // Check if the coordinates of this and that conform.
-    // <br>The default implementation returns False.
+    // It returns False if this or that is a null object.
     Bool conform (const LELCoordinates& that) const;
 
     // Return the underlying letter object.
     // This should in general not be used, but for specific (Image) cases
     // it might be needed.
-    const LELLattCoord& coordinates() const;
+    const LELLattCoordBase& coordinates() const;
 
 private:
     // The pointer to the underlying object.
-    CountedPtr<LELLattCoord> coords_p;
+    CountedPtr<LELLattCoordBase> coords_p;
 };
 
 
