@@ -1,5 +1,5 @@
 //# SquareMatrix.cc: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996,1998,1999,2001
+//# Copyright (C) 1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,11 @@
 #include <trial/Arrays/SquareMatrix.h>
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 inline Float real(Float r) { return r;}
 inline Float conj(Float r) { return r;}
-#ifdef AIPS_USE_NEW_SGI
+#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_KCC)
 inline Complex real(Complex c) { return std::real(c);}
 inline Complex conj(Complex c) { return std::conj(c);}
 #endif
