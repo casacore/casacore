@@ -3130,3 +3130,5 @@
 13 010 src mv nrao/apps/gbtmsfiller/GBTCubeIndex.h nrao/implement/GBTFillers/GBTCubeIndex.h
 13 010 src mv nrao/apps/gbtmsfiller/GBTSimpleTable.h nrao/implement/GBTFillers/GBTSimpleTable.h
 13 010 src mv nrao/apps/gbtmsfiller/GBTSimpleTable.cc nrao/implement/GBTFillers/GBTSimpleTable.cc
+13 010 src rm nrao/apps/gbtmsfiller/GBTMSFillerInputs.h
+13 010 src rm nrao/apps/gbtmsfiller/GBTMSFillerInputs.cc
