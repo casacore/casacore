@@ -375,7 +375,7 @@ void RFFlagCube::setMSFlags()
       out_flagrow(ir) = True;
   }
   chunk.visIter().setFlag(out_flagcube);
-//  chunk.visIter().setRowFlag(out_flagrow);
+  chunk.visIter().setFlagRow(out_flagrow);
 }
 
 const Float tr_trivial_array[] = {-1,1,0,-1,0,1}; 
@@ -529,6 +529,20 @@ void RFFlagCube::plotIfrMap ( PGPlotterInterface &pgp,const Matrix<Float> &img,c
   pgp.sci(1);
 }
 
+Int RFFlagCube::numStatPlots (const RFChunkStats &chunk)
+{
+  Int count = 0;
+  if( anyGT(flagrow,full_corrmask) ) // any row flags?
+    count+=3; // 3 row flag plots
+  if( anyGT(chunk.nfIfrTime(),0u) )   // any pixel flags?
+  {
+    count+=3; // 3 basic pixel flag plots
+    if( chunk.num(CHAN)>1 )
+      count+=2; // 3 freq-dependent pixel flag plots
+  }
+  return count;
+}
+
 void RFFlagCube::plotStats (PGPlotterInterface &pgp)
 {
 // plot only once on a given plotter
@@ -633,63 +647,72 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
       {
       Matrix<Float> img(num(TIME),nval*nval,0); 
       for( uInt ifr=0; ifr<num(IFR); ifr++ )
+        if( row_per_ifr(ifr) )
+        {
+          uInt a1,a2; chunk.ifrToAnt(a1,a2,ifr);
+          for( uInt it=0; it<num(TIME); it++ )
+            if( rowAgentFlagged(ifr,it) )
+            {
+              uInt i1=revant(a1),i2=revant(a2);
+              img(it,i1*nval+i2) = 1;
+              img(it,i2*nval+i1) = 1;
+            }
+        }
+      if( sum(img) )
       {
-        uInt a1,a2; chunk.ifrToAnt(a1,a2,ifr);
-        for( uInt it=0; it<num(TIME); it++ )
-          if( rowAgentFlagged(ifr,it) )
-          {
-            uInt i1=revant(a1),i2=revant(a2);
-            img(it,i1*nval+i2) = 1;
-            img(it,i2*nval+i1) = 1;
-          }
+        plotImage(pgp,img,"Time slot","",title+": Rows flagged, by time-IFR",False,0,nval);
+        plotAntAxis(pgp,antnums,True);
       }
-      plotImage(pgp,img,"Time slot","",title+": Rows flagged, by time-IFR",False,0,nval);
-      plotAntAxis(pgp,antnums,True);
       }
     // draw IFR-Time image
       {
       Matrix<Float> img(num(TIME),nval*nval,0); 
       Double scale = 100./num(CHAN);
       for( uInt ifr=0; ifr<num(IFR); ifr++ )
-      {
-        uInt a1,a2; chunk.ifrToAnt(a1,a2,ifr);
-        for( uInt it=0; it<num(TIME); it++ )
-        {
-          uInt n = chunk.nfIfrTime(ifr,it);
-          if( n )
-          {
-            uInt i1=revant(a1),i2=revant(a2);
-            img(it,i1*nval+i2) += n*scale;
-            if( a1!=a2 )
-              img(it,i2*nval+i1) += n*scale;
-          }
-        }
-      }
-      plotImage(pgp,img,"Time slot","",title+": % pixels flagged, by time-IFR",True,0,nval);
-      plotAntAxis(pgp,antnums,True);
-      }
-    // draw IFR-Channel image
-      {
-      Matrix<Float> img(num(CHAN),nval*nval,0); 
-      for( uInt ifr=0; ifr<num(IFR); ifr++ )
         if( row_per_ifr(ifr) )
         {
-          Double scale = 100./row_per_ifr(ifr);
           uInt a1,a2; chunk.ifrToAnt(a1,a2,ifr);
-          for( uInt ich=0; ich<num(CHAN); ich++ )
+          for( uInt it=0; it<num(TIME); it++ )
           {
-            uInt n = chunk.nfChanIfr(ich,ifr);
+            uInt n = chunk.nfIfrTime(ifr,it);
             if( n )
             {
               uInt i1=revant(a1),i2=revant(a2);
-              img(ich,i1*nval+i2) += n*scale;
+              img(it,i1*nval+i2) += n*scale;
               if( a1!=a2 )
-                img(ich,i2*nval+i1) += n*scale;
+                img(it,i2*nval+i1) += n*scale;
             }
           }
         }
-      plotImage(pgp,img,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-IFR",True,0,nval,True);
-      plotAntAxis(pgp,antnums,True);
+      if( sum(img) )
+      {
+        plotImage(pgp,img,"Time slot","",title+": % pixels flagged, by time-IFR",True,0,nval);
+        plotAntAxis(pgp,antnums,True);
+      }
+      }
+    // draw IFR-Channel image (skip if 1 channel only)
+      if( num(CHAN)>1 )
+      {
+        Matrix<Float> img(num(CHAN),nval*nval,0); 
+        for( uInt ifr=0; ifr<num(IFR); ifr++ )
+          if( row_per_ifr(ifr) )
+          {
+            Double scale = 100./row_per_ifr(ifr);
+            uInt a1,a2; chunk.ifrToAnt(a1,a2,ifr);
+            for( uInt ich=0; ich<num(CHAN); ich++ )
+            {
+              uInt n = chunk.nfChanIfr(ich,ifr);
+              if( n )
+              {
+                uInt i1=revant(a1),i2=revant(a2);
+                img(ich,i1*nval+i2) += n*scale;
+                if( a1!=a2 )
+                  img(ich,i2*nval+i1) += n*scale;
+              }
+            }
+          }
+        plotImage(pgp,img,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-IFR",True,0,nval,True);
+        plotAntAxis(pgp,antnums,True);
       }
     }
     else // too many antennas - use a flat IFR axis
@@ -698,31 +721,36 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
       {
       Matrix<Float> img(num(TIME),num(IFR),0); 
       for( uInt ifr=0; ifr<num(IFR); ifr++ )
-        for( uInt it=0; it<num(TIME); it++ )
-          if( rowAgentFlagged(ifr,it) )
-            img(it,ifr) = 1;
-      plotImage(pgp,img,"Time slot","IFR #",title+": Rows flagged, by time-IFR",False);
+        if( row_per_ifr(ifr) )
+          for( uInt it=0; it<num(TIME); it++ )
+            if( rowAgentFlagged(ifr,it) )
+              img(it,ifr) = 1;
+      if( sum(img) )
+        plotImage(pgp,img,"Time slot","IFR #",title+": Rows flagged, by time-IFR",False);
       }
     // draw IFR-Time image
       {
       Matrix<Float> img(num(TIME),num(IFR),0); 
       Double scale = 100./num(CHAN);
       for( uInt ifr=0; ifr<num(IFR); ifr++ )
-        for( uInt it=0; it<num(TIME); it++ )
-          img(it,ifr) = chunk.nfIfrTime(ifr,it)*scale;
-      plotImage(pgp,img,"Time slot","IFR #",title+": % of pixels flagged, by time-IFR");
-      }
-    // draw IFR-Channel image
-      {
-      Matrix<Float> img(num(CHAN),num(IFR),0); 
-      for( uInt ifr=0; ifr<num(IFR); ifr++ )
         if( row_per_ifr(ifr) )
+          for( uInt it=0; it<num(TIME); it++ )
+            img(it,ifr) = chunk.nfIfrTime(ifr,it)*scale;
+      if( sum(img) )
+        plotImage(pgp,img,"Time slot","IFR #",title+": % of pixels flagged, by time-IFR");
+      // draw IFR-Channel image
+        if( num(CHAN)>1 )
         {
-          Double scale = 100./row_per_ifr(ifr);
-          for( uInt ich=0; ich<num(CHAN); ich++ )
-            img(ich,ifr) = chunk.nfChanIfr(ich,ifr)*scale;
+          Matrix<Float> img(num(CHAN),num(IFR),0); 
+          for( uInt ifr=0; ifr<num(IFR); ifr++ )
+            if( row_per_ifr(ifr) )
+            {
+              Double scale = 100./row_per_ifr(ifr);
+              for( uInt ich=0; ich<num(CHAN); ich++ )
+                img(ich,ifr) = chunk.nfChanIfr(ich,ifr)*scale;
+            }
+          plotImage(pgp,img,"Channel (frequency, MHz)","IFR #",title+": % of pixels flagged, by channel-IFR",True,0,0,True);
         }
-      plotImage(pgp,img,"Channel (frequency, MHz)","IFR #",title+": % of pixels flagged, by channel-IFR",True,0,0,True);
       }
     }
   
@@ -752,23 +780,34 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
             img2(it,revant(a2)) += n*scale2/num(CHAN);
           }
         }
-      for( uInt ich=0; ich<num(CHAN); ich++ )
-        if( row_per_ant(a1) )
-        {
-          uInt n=chunk.nfChanIfr(ich,ifr);
-          if( n )
+      if( num(CHAN)>1 )
+        for( uInt ich=0; ich<num(CHAN); ich++ )
+          if( row_per_ant(a1) )
           {
-            img3(ich,revant(a1)) += n*100./row_per_ant(a1);
-            img3(ich,revant(a2)) += n*100./row_per_ant(a2);
+            uInt n=chunk.nfChanIfr(ich,ifr);
+            if( n )
+            {
+              img3(ich,revant(a1)) += n*100./row_per_ant(a1);
+              img3(ich,revant(a2)) += n*100./row_per_ant(a2);
+            }
           }
-        }
     }
-    plotImage(pgp,img1,"Time slot","",title+": % rows flagged, by time-antenna",True,0,1);
-    plotAntAxis(pgp,antnums,True);
-    plotImage(pgp,img2,"Time slot","",title+": % pixels flagged, by time-antenna",True,0,1);
-    plotAntAxis(pgp,antnums,True);
-    plotImage(pgp,img3,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-antenna",True,0,1,True);
-    plotAntAxis(pgp,antnums,True);
+    if( sum(img1) )
+    {
+      plotImage(pgp,img1,"Time slot","",title+": % rows flagged, by time-antenna",True,0,1);
+      plotAntAxis(pgp,antnums,True);
+    }
+    if( sum(img2) )
+    {
+      plotImage(pgp,img2,"Time slot","",title+": % pixels flagged, by time-antenna",True,0,1);
+      plotAntAxis(pgp,antnums,True);
+      if( num(CHAN)>1 )
+      {
+        plotImage(pgp,img3,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-antenna",True,0,1,True);
+        plotAntAxis(pgp,antnums,True);
+      }
+    }
+    
     }
   } // endif( nval )
 }
