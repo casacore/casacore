@@ -16,6 +16,12 @@
      = casa/BasicSL/Complex.h 
      template class PtrBlock<TempImage<Float> *> 
      template class PtrBlock<TempImage<Complex> *> 
+1000 casa/Containers/SimOrdMap.cc casa/Containers/OrderedPair.cc
+     = casa/Exceptions/Error.cc
+     = images/Images/ImageOpener.h
+     template class SimpleOrderedMap<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*>
+     template class OrderedPair<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*> 
+     template class indexError<ImageOpener::ImageTypes> 
 1000 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
      = images/Images/ImageInterface.h 
      template void objcopy(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt) 
