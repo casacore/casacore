@@ -47,8 +47,8 @@
 #          the log is sent to $AIPSARCH/sneeze.log and the mail to
 #          aips2-inhale@nrao.edu.
 #
-#   -m     Mode of the rebuild, "incremental" (default), "cumulative", or
-#          "base".
+#   -m     Mode of the rebuild, "incremental" (default), "cumulative",
+#          "hybrid", or "base".
 #
 # Status return values correspond to the various phases of the operation
 #    0:  success
@@ -321,13 +321,13 @@
 
   cp $AIPSCODE/install/codemgmt/ax_master $ARCHTMPD/ax_master
   chmod u+rwx $ARCHTMPD/ax_master
-  if [ "$MODE" = cumulative -o "$MODE" = base ]
+  if [ "$MODE" = incremental ]
   then
-#    Apply all deletions.
-     $ARCHTMPD/ax_master -system -s -c
-  else
 #    Apply deletions for the current version onwards.
      $ARCHTMPD/ax_master -system -s
+  else
+#    Apply all deletions.
+     $ARCHTMPD/ax_master -system -s -c
   fi
 
   rm -f $ARCHTMPD/ax_master
@@ -341,15 +341,10 @@
   cd $AIPSCODE
 
 # Clean up the system areas on cumulative updates.
-  if [ "$MODE" = cumulative ]
+  if [ "$MODE" != incremental ]
   then
      echo ""
-     echo "sneeze: Cumulative update, cleaning up the system areas..."
-     gmake NODEP=1 cleansys
-  elif [ "$MODE" = base ]
-  then
-     echo ""
-     echo "sneeze: Base installation, cleaning up the system areas..."
+     echo "sneeze: Cleaning up the system areas..."
      gmake NODEP=1 cleansys
   fi
 
@@ -454,11 +449,11 @@
   cd $AIPSCODE
 
 # Produce diagnostics on cumulative updates.
-  if [ "$MODE" = cumulative ]
+  if [ "$MODE" != incremental ]
   then
      echo ""
-     echo "sneeze: Cumulative update, produce system diagnostics."
-     echo "------------------------------------------------------"
+     echo "sneeze: System diagnostics."
+     echo "---------------------------"
 
      gmake -f $AIPSARCH/makedefs diagnostics
   fi

@@ -46,7 +46,6 @@
 #          from being recorded in the LOGFILE entry for the rebuild.
 #   -l     Latchkey mode; fetch latchkey updates (if any) together with any
 #          other updates intended for general distribution.
-#          (This mode is now pretty much obsolete.)
 #   -m     Do a "mixed" update: (mostly) incremental inhale, cumulative sneeze.
 #   -n     Don't remake the system (allsys).  The "install" and "docsys"
 #          targets will still be remade; see also the "-d" option.
@@ -161,7 +160,6 @@
 # Parse command input.
   BLESSED=""
   MODE=incremental
-  HYBRID=
   DINKUM=
   DOCSYS=docsys
   TARGETS=allsys
@@ -185,7 +183,7 @@
         DOCSYS=""
         ;;
      -m)
-        HYBRID=1
+        MODE=hybrid
         ;;
      -n)
         TARGETS=install
@@ -538,7 +536,7 @@
      fi
 
      FILES="$BASEFILE"
-  elif [ "$MODE" = incremental ]
+  elif [ "$MODE" = incremental -o "$MODE" = hybrid ]
   then
 #    Find the latest incremental updates.
      MINOR=`expr $OLDMINOR + 1001 | sed -e 's/^1//'`
@@ -882,9 +880,7 @@
   chmod 444 VERSION
   rm -f VERSION_
 
-# Clean up.
-# (But don't clean up yet if we'll be calling ourself again: it kills
-# the re-submission if FTP is defeated.)
+# Clean up unless we'll be calling ourself again with prefetched files.
   if [ "$MODE" != base -o "$NEWMINOR" = 000 -o "$FTPLIMIT" -gt 0 ]
   then
      rm -rf $SLAVTMPD
@@ -938,10 +934,10 @@
   cd $AIPSCODE
 
 # Clean up the code areas on cumulative and hybrid updates.
-  if [ "$MODE" = cumulative -o "$HYBRID" != "" ]
+  if [ "$MODE" = cumulative -o "$MODE" = hybrid ]
   then
      echo ""
-     echo "inhale: Cumulative (or hybrid) update, cleaning up the code areas..."
+     echo "inhale: Cleaning up the code areas..."
      gmake NODEP=1 cleancode
   fi
 
@@ -1023,14 +1019,6 @@
 # Rebuild all systems
 #-----------------------------------------------------------------------------
 
-# Determine type of sneeze; hybrid inhale requires cumulative sneeze.
-  if [ "$MODE" = cumulative -o "$HYBRID" != "" ]
-  then
-     SNEEZEMODE=cumulative
-  else
-     SNEEZEMODE=incremental
-  fi
-
   cd $AIPSROOT
 
   echo ""
@@ -1076,7 +1064,7 @@
         EXTLIST="-e $EXTLIST"
         AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
      fi
-     SNEEZE="sneeze $EXTLIST -l -m $SNEEZEMODE $TARGETS"
+     SNEEZE="sneeze $EXTLIST -l -m $MODE $TARGETS"
      $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
   done
 
@@ -1093,13 +1081,13 @@
   fi
   echo "inhale: Initiating synchronous rebuild$TMP..."
   (aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh ; \
-   sneeze $INEXT -l -m $SNEEZEMODE $TARGETS)
+   sneeze $INEXT -l -m $MODE $TARGETS)
 
 
 #-----------------------------------------------------------------------------
 # Wind up.
 #-----------------------------------------------------------------------------
-  if [ "$MODE" = cumulative ]
+  if [ "$MODE" != incremental ]
   then
      echo ""
      if [ -f $AIPSROOT/.rhosts ]
@@ -1121,9 +1109,3 @@
   [ "$MODE" = base -a "$NEWMINOR" != 000 ] && exec inhale $ARGS
 
   exit 0
-
-# Local Variables:
-# indent-tabs-mode: nil
-# ksh-indent: 3
-# ksh-group-offset: -3
-# End:
