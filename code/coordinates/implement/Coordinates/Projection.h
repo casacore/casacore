@@ -1,5 +1,5 @@
 //# Projection.h: Geometric parameters needed for a sky projection to a plane
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,7 +62,8 @@ class DirectionCoordinate;
 // </synopsis>
 //
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// and the test program tProjection.cc
 // </example>
 //
 // <todo asof="1997/1/13">
@@ -130,20 +131,21 @@ public:
 	// as a projection
 	N_PROJ };
 
-    // Create a projection which needs no parameters. SIN is unique in that
+    // Construct a projection which needs no parameters. SIN is unique in that
     // it can be created with 0 or 2 parameters.
     Projection(Projection::Type which=CAR);
 
-    // Create a projection which needs parameters. The parameter vector must be
+    // Construct a projection which needs parameters. The parameter vector must be
     // the length of the required number of parameters.
     Projection(Projection::Type which, const Vector<Double> &parameters);
 
-    // Overwrite this projection with other (copy semantics).
-    // <group>
+    // Copy constructor (copy semantics).
     Projection(const Projection &other);
-    Projection &operator=(const Projection &other);
-    // </group>
 
+    // Assignment (copy semantics)
+    Projection &operator=(const Projection &other);
+
+    // Destructor
     ~Projection();
 
     // What is the Type of this projection?
