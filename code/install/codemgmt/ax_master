@@ -4695,3 +4695,4 @@
 14 304 src rm trial/apps/sdfits2ms/SpecialHandlers.h
 14 304 src rm trial/apps/sdfits2ms/makefile
 14 304 src rm trial/apps/sdfits2ms/sdfits2ms.cc
+14 304 src mv trial/apps/newsdfits2ms/makefile trial/apps/sdfits2ms/makefile
