@@ -38,7 +38,6 @@
 class QBase;
 class String;
 class RecordInterface;
-class GlishRecord;
 template <class Qtype> class Quantum;
 template <class T> class Vector;
 
@@ -190,14 +189,11 @@ public:
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
-  Bool fromRecord(String &error,
-		  const GlishRecord &in);
   // </group>
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
 
 private:
