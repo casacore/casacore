@@ -42,6 +42,7 @@ Slice*           slice;
 %token <val> LITERAL
 %token <val> INDEXN
 %token INDEXIN
+%token INDEXNOTIN
 %token IN
 %token NOT
 %token LPAREN
@@ -187,6 +188,12 @@ simexpr:   LPAREN orexpr RPAREN
 	       ImageExprParse::addNode ($$);
                delete $6;
 	   }
+         | INDEXNOTIN LPAREN orexpr COMMA LBRACKET rangelist RBRACKET RPAREN {
+               LatticeExprNode node (ImageExprParse::makeIndexinNode (*$3, *$6));
+	       $$ = new LatticeExprNode (!node);
+	       ImageExprParse::addNode ($$);
+               delete $6;
+	   }
          | INDEXN IN LBRACKET rangelist RBRACKET {
 	       LatticeExprNode axis($1->makeLiteralNode());
                $$ = new LatticeExprNode (ImageExprParse::makeIndexinNode (axis, *$4));
@@ -196,9 +203,9 @@ simexpr:   LPAREN orexpr RPAREN
          | INDEXN NOT IN LBRACKET rangelist RBRACKET {
 	       LatticeExprNode axis($1->makeLiteralNode());
                LatticeExprNode node(ImageExprParse::makeIndexinNode (axis, *$5));
-               delete $5;
 	       $$ = new LatticeExprNode (!node);
 	       ImageExprParse::addNode ($$);
+               delete $5;
 	   }
          | LATNAME {
 	       $$ = new LatticeExprNode ($1->makeLRNode());
