@@ -262,15 +262,17 @@ public:
 
 private:
 
+   LogIO &os_p;
+   const ImageInterface<T>* pInImage_p;
    PagedArray<Int>* pHistImage_p;
    PagedArray<T>* pMinMaxImage_p;
    PagedArray<Double>* pStatsImage_p;
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
-   const ImageInterface<T>* pInImage_p;
+
    Int nBins_p;
    IPosition  blc_p, trc_p, inc_p;
-   LogIO &os_p;
+
    String device_p; 
    Vector<Int> cursorAxes_p;
    Vector<Int> displayAxes_p;
