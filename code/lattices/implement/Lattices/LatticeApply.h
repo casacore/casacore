@@ -36,6 +36,7 @@
 template <class T> class TiledCollapser;
 template <class T> class LineCollapser;
 template <class T> class Lattice;
+template <class T> class MaskedLattice;
 class LatticeProgress;
 class IPosition;
 class LatticeRegion;
@@ -51,7 +52,7 @@ class LatticeRegion;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Lattice>Lattice</linkto>
+//   <li> <linkto class=Lattice>MaskedLattice</linkto>
 //   <li> <linkto class=LineCollapser>LineCollapser</linkto>
 //   <li> <linkto class=TiledCollapser>TiledCollapser</linkto>
 // </prerequisite>
@@ -135,12 +136,12 @@ public:
 // The default region is the entire input lattice.
 // <group>
     static void lineApply (Lattice<T>& latticeOut, 
-			   const Lattice<T>& latticeIn,
+			   const MaskedLattice<T>& latticeIn,
 			   LineCollapser<T>& collapser,
 			   uInt collapseAxis,
 			   LatticeProgress* tellProgress = 0);
     static void lineApply (Lattice<T>& latticeOut, 
-			   const Lattice<T>& latticeIn,
+			   const MaskedLattice<T>& latticeIn,
 			   const LatticeRegion& region,
 			   LineCollapser<T>& collapser,
 			   uInt collapseAxis,
@@ -156,12 +157,12 @@ public:
 // The default region is the entire input lattice.
 // <group>
     static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
-				const Lattice<T>& latticeIn,
+				const MaskedLattice<T>& latticeIn,
 				LineCollapser<T>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
     static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
-				const Lattice<T>& latticeIn,
+				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
 				LineCollapser<T>& collapser,
 				uInt collapseAxis,
@@ -174,22 +175,47 @@ public:
 // <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
 // axes 1 and 2 (thus y,z planes).
 // The result of the function object is written into the output
-// lattice at the location of the collapsed line. The output lattice must
+// lattice at the location of the collapsed chunk. The output lattice must
 // be supplied with the correct shape (the shape of the supplied region
 // plus the number of values resulting from the collapse).
 // The default region is the entire input lattice.
 // <group>
     static void tiledApply (Lattice<T>& latticeOut,
-			    const Lattice<T>& latticeIn,
+			    const MaskedLattice<T>& latticeIn,
 			    TiledCollapser<T>& collapser,
 			    const IPosition& collapseAxes,
+			    Int newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
     static void tiledApply (Lattice<T>& latticeOut,
-			    const Lattice<T>& latticeIn,
+			    const MaskedLattice<T>& latticeIn,
 			    const LatticeRegion& region,
 			    TiledCollapser<T>& collapser,
 			    const IPosition& collapseAxes,
+			    Int newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
+// </group>
+
+// This function iterates tile by tile through an input lattice and applies
+// a user supplied function object to each chunk along the specified axes.
+// A chunk can be a line, plane, etc. which is determined by the argument
+// <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
+// axes 1 and 2 (thus y,z planes).
+// The result of the function object is written into the output
+// lattices at the location of the collapsed chunk. The output lattices must
+// be supplied with the correct shape (the shape of the supplied region).
+// The default region is the entire input lattice.
+// <group>
+    static void tiledMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+				 const MaskedLattice<T>& latticeIn,
+				 TiledCollapser<T>& collapser,
+				 const IPosition& collapseAxes,
+				 LatticeProgress* tellProgress = 0);
+    static void tiledMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+				 const MaskedLattice<T>& latticeIn,
+				 const LatticeRegion& region,
+				 TiledCollapser<T>& collapser,
+				 const IPosition& collapseAxes,
+				 LatticeProgress* tellProgress = 0);
 // </group>
 
 
@@ -198,9 +224,13 @@ private:
     // It returns an IPosition with the same length as shapeOut.
     // It contains a mapping of output to input axes. A value of -1
     // indicates that the axis is new (to contain the collapse result).
+    // <br>Argument newOutAxis tells the output axis to store the results.
+    // -1 means that the function has to find it out itself; it takes the
+    // first axis with a length mismatching the corresponding input axis.
     static IPosition prepare (const IPosition& shapeIn,
 			      const IPosition& shapeOut,
-			      const IPosition& collapseAxes);
+			      const IPosition& collapseAxes,
+			      Int newOutAxis);
 };
 
 
