@@ -48,6 +48,8 @@
 // compares the results with the reference output file.
 
 void a (const String& dir);
+void aa (const String& dir);
+void ab (const String& dir);
 void a1 (const String& dir, const String& commentMarker,
 	 Int firstLine, Int lastLine);
 void b (const String& dir, const String& suffix, Char separator,
@@ -65,6 +67,8 @@ int main (int argc, char** argv) {
 	    dir = argv[1];
 	}
 	a (dir);
+	aa (dir);
+	ab (dir);
 	a1 (dir, "", -1, -1);
 	a1 (dir, "1 ", -1, -1);
 	a1 (dir, "", 1, 2);
@@ -99,6 +103,56 @@ void a (const String& dir)
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     Table tab("tReadAsciiTable_tmp.data_tab");
+    cout << endl;
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROScalarColumn<Int>     coli (tab,"COLI");
+    ROScalarColumn<float>   colf (tab,"COLF");
+    ROScalarColumn<double>  cold (tab,"COLD");
+    ROScalarColumn<Complex> colx (tab,"COLX");
+    ROScalarColumn<Complex> colz (tab,"COLZ");
+    ROScalarColumn<String>  cols (tab,"COLS");
+    for (uInt i=0; i<tab.nrow(); i++) {
+	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
+	     << colx(i) << " " << colz(i) << " " << cols(i) << endl;
+    }
+}
+
+void aa (const String& dir)
+{
+    cout << ">>>" << endl;
+    String formStr;
+    Table tab = readAsciiTable (formStr, Table::Plain,
+				dir + "tReadAsciiTable.in_tab", "",
+				"tReadAsciiTable_tmp.data_tab1");
+    AlwaysAssertExit (tab.tableType() == Table::Plain);
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
+    cout << endl;
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROScalarColumn<Int>     coli (tab,"COLI");
+    ROScalarColumn<float>   colf (tab,"COLF");
+    ROScalarColumn<double>  cold (tab,"COLD");
+    ROScalarColumn<Complex> colx (tab,"COLX");
+    ROScalarColumn<Complex> colz (tab,"COLZ");
+    ROScalarColumn<String>  cols (tab,"COLS");
+    for (uInt i=0; i<tab.nrow(); i++) {
+	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
+	     << colx(i) << " " << colz(i) << " " << cols(i) << endl;
+    }
+}
+
+void ab (const String& dir)
+{
+    cout << ">>>" << endl;
+    String formStr;
+    Table tab = readAsciiTable (formStr, Table::Memory,
+				dir +  "tReadAsciiTable.in_tab", "",
+				"");
+    AlwaysAssertExit (tab.tableType() == Table::Memory);
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;

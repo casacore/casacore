@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/IPosition.h>
+#include <tables/Tables/Table.h>
 
 // # Forward Declarations
 #include <casa/iosfwd.h>
@@ -241,11 +242,38 @@ String readAsciiTable (const String& headerFile, const String& dataFile,
 		       Char separator = ' ',
 		       const String& commentMarkerRegex = "",
 		       Int firstLine = 1, Int lastLine = -1);
+//# Note that this char* version is needed, because of the first version
+//# Taking a Bool as the 4th argument.
 String readAsciiTable (const String& headerFile, const String& dataFile, 
 		       const String& tableDescName, const char* tablename,
 		       Char separator = ' ',
 		       const String& commentMarkerRegex = "",
 		       Int firstLine = 1, Int lastLine = -1);
+// </group>
+
+// Similar versions as above, but returning a Table object.
+// The format string is returned in the first argument.
+// The type of Table can be given (Plain or Memory).
+// <group>
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& filein, const String& tableDescName,
+		      const String& tableName, Bool autoHeader = False,
+		      Char separator = ' ',
+		      const String& commentMarkerRegex = "",
+		      Int firstLine = 1, Int lastLine = -1,
+		      const IPosition& autoShape = IPosition());
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& headerFile, const String& dataFile, 
+		      const String& tableDescName, const String& tablename,
+		      Char separator = ' ',
+		      const String& commentMarkerRegex = "",
+		      Int firstLine = 1, Int lastLine = -1);
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& headerFile, const String& dataFile, 
+		      const String& tableDescName, const char* tablename,
+		      Char separator = ' ',
+		      const String& commentMarkerRegex = "",
+		      Int firstLine = 1, Int lastLine = -1);
 // </group>
 
 // </group>
@@ -275,6 +303,13 @@ public:
 		     Char separator,
 		     const String& commentMarkerRegex,
 		     Int firstLine, Int lastLine);
+  static Table runt (String& formatString, Table::TableType tableType,
+		     const String& headerfile, const String& filein, 
+		     const String& tableproto, const String& tablename,
+		     Bool autoHeader, const IPosition& autoShape,
+		     Char separator,
+		     const String& commentMarkerRegex,
+		     Int firstLine, Int lastLine);
 
 private:
   // Define types.
@@ -289,6 +324,16 @@ private:
 		       Char separator,
 		       Bool testComment, const Regex& commentMarker,
 		       Int firstLine, Int lastLine);
+
+  // Do the actual work of making and filling the table.
+  static Table makeTab (String& formatString, Table::TableType tableType,
+			const String& headerfile, const String& filein, 
+			const String& tableproto,
+			const String& tablename,
+			Bool autoHeader, const IPosition& autoShape,
+			Char separator,
+			Bool testComment, const Regex& commentMarker,
+			Int firstLine, Int lastLine);
 
   // Get the next line. Skip lines to be ignored.
   // It returns False when no more lines are available.

@@ -976,13 +976,15 @@ void ReadAsciiTable::handleArray (char* string1, Int lineSize, char* first,
 }
 
 
-String ReadAsciiTable::doRun (const String& headerfile, const String& filein, 
-			      const String& tableproto,
-			      const String& tablename,
-			      Bool autoHeader, const IPosition& autoShape,
-			      Char separator,
-			      Bool testComment, const Regex& commentMarker,
-			      Int firstLine, Int lastLine)
+Table ReadAsciiTable::makeTab (String& formatString,
+			       Table::TableType tableType,
+			       const String& headerfile, const String& filein, 
+			       const String& tableproto,
+			       const String& tablename,
+			       Bool autoHeader, const IPosition& autoShape,
+			       Char separator,
+			       Bool testComment, const Regex& commentMarker,
+			       Int firstLine, Int lastLine)
 {
     char  string1[lineSize], string2[lineSize], stringsav[lineSize];
     char  first[lineSize], second[lineSize];
@@ -1200,14 +1202,12 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
 	}
     }
 
-
-
 // PART TWO
 // The TableDesc has now been created.  Start filling in the Table.
 // Use the default storage manager.
 
     SetupNewTable newtab(tablename, td, Table::New);
-    Table tab(newtab);
+    Table tab(newtab, tableType);
 
 // Write keywordsets.
 
@@ -1274,9 +1274,26 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
 
     delete [] tabcol;
     jFile.close();
-    return formStr;
+    formatString = formStr;
+    return tab;
 }
 
+
+String ReadAsciiTable::doRun (const String& headerfile, const String& filein, 
+			      const String& tableproto,
+			      const String& tablename,
+			      Bool autoHeader, const IPosition& autoShape,
+			      Char separator,
+			      Bool testComment, const Regex& commentMarker,
+			      Int firstLine, Int lastLine)
+{
+  String formatString;
+  Table tab = makeTab (formatString, Table::Plain,
+		       headerfile, filein, tableproto, tablename,
+		       autoHeader, autoShape, separator,
+		       testComment, commentMarker, firstLine, lastLine);
+  return formatString;
+}
 
 String ReadAsciiTable::run (const String& headerfile, const String& filein, 
 			    const String& tableproto, const String& tablename,
@@ -1304,6 +1321,38 @@ String ReadAsciiTable::run (const String& headerfile, const String& filein,
 		  autoHeader, autoShape, separator,
 		  True, regex,
 		  firstLine, lastLine);
+  }
+}
+
+Table ReadAsciiTable::runt (String& formatString, Table::TableType tableType,
+			    const String& headerfile, const String& filein, 
+			    const String& tableproto, const String& tablename,
+			    Bool autoHeader, const IPosition& autoShape,
+			    Char separator,
+			    const String& commentMarkerRegex,
+			    Int firstLine, Int lastLine)
+{
+  if (firstLine < 1) {
+    firstLine = 1;
+  }
+  //# The Regex is made here (instead of creating a temporary Regex
+  //# in the doRun call).
+  //# For one reason or another the temporary gives a bus error with gcc-3.3
+  //# on Solaris in the tryerror calls in tReadAsciiTable.
+  Regex regex;
+  if (commentMarkerRegex.empty()) {
+    return makeTab (formatString, tableType,
+		    headerfile, filein, tableproto, tablename,
+		    autoHeader, autoShape, separator,
+		    False, regex,
+		    firstLine, lastLine);
+  } else {
+    regex = Regex(commentMarkerRegex);
+    return makeTab (formatString, tableType,
+		    headerfile, filein, tableproto, tablename,
+		    autoHeader, autoShape, separator,
+		    True, regex,
+		    firstLine, lastLine);
   }
 }
 
@@ -1340,6 +1389,47 @@ String readAsciiTable (const String& headerfile, const String& filein,
 			      False, IPosition(),
 			      separator, commentMarkerRegex,
 			      firstLine, lastLine);
+}
+
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& filein, const String& tableproto,
+		      const String& tablename, Bool autoHeader,
+		      Char separator, const String& commentMarkerRegex,
+		      Int firstLine, Int lastLine,
+		      const IPosition& autoShape)
+{
+  return ReadAsciiTable::runt (formatString, tableType,
+			       filein, filein, tableproto, tablename,
+			       autoHeader, autoShape,
+			       separator, commentMarkerRegex,
+			       firstLine, lastLine);
+}
+
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& headerfile, const String& filein,
+		      const String& tableproto, const String& tablename,
+		      Char separator, const String& commentMarkerRegex,
+		      Int firstLine, Int lastLine)
+{
+  return ReadAsciiTable::runt (formatString, tableType,
+			       headerfile, filein, tableproto, tablename,
+			       False, IPosition(),
+			       separator, commentMarkerRegex,
+			       firstLine, lastLine);
+}
+
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& headerfile, const String& filein,
+		      const String& tableproto, const char* tablename,
+		      Char separator, const String& commentMarkerRegex,
+		      Int firstLine, Int lastLine)
+{
+  return ReadAsciiTable::runt (formatString, tableType,
+			       headerfile, filein, tableproto,
+			       String(tablename),
+			       False, IPosition(),
+			       separator, commentMarkerRegex,
+			       firstLine, lastLine);
 }
 
 } //# NAMESPACE CASA - END
