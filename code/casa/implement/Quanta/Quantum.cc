@@ -308,20 +308,18 @@ void Quantum<Qtype>::convert(const Unit &s) {
 			    qUnit.getValue().getFac()/s.getValue().getFac());
       qUnit = s;
     } else {
-      if (qUnit.getValue() == UnitVal::ANGLE) {
-	if (s.getValue() == UnitVal::TIME) {
-	  at_c(qVal) = (Qtype) (at_cc(qVal) *
-				qUnit.getValue().getFac()/
-				s.getValue().getFac() * C::day/C::circle);
-	  qUnit = s;
-	};
-      } else if (qUnit.getValue() == UnitVal::TIME) {
-	if (s.getValue() == UnitVal::ANGLE) {
-          at_c(qVal) = (Qtype) (at_cc(qVal) *
-                                qUnit.getValue().getFac()/
-				s.getValue().getFac() * C::circle/C::day);
-          qUnit = s;
-        };
+      if (qUnit.getValue() == UnitVal::ANGLE && 
+	  s.getValue() == UnitVal::TIME) {
+	at_c(qVal) = (Qtype) (at_cc(qVal) *
+			      qUnit.getValue().getFac()/
+			      s.getValue().getFac() * C::day/C::circle);
+	qUnit = s;
+      } else if (qUnit.getValue() == UnitVal::TIME &&
+		 s.getValue() == UnitVal::ANGLE) {
+	at_c(qVal) = (Qtype) (at_cc(qVal) *
+			      qUnit.getValue().getFac()/
+			      s.getValue().getFac() * C::circle/C::day);
+	qUnit = s;
       } else {
 	qUnit.setValue(qUnit.getValue() / s.getValue());
 	ostrstream oss;
