@@ -15,7 +15,7 @@
 \renewcommand{\appendix}{}
 \tableofcontents
 
-Copyright \copyright 1992,1993,1994,1995,1996 Associated Universities Inc., Washington, D.C.\\\\
+Copyright copyright 1992,1993,1994,1995,1996,1997 Associated Universities Inc., Washington, D.C.
 
 AIPS++ programming manual.\\
 
@@ -83,17 +83,17 @@ Aips++ is divided into a series of packages.  They are currently
 \begin{itemize}
 \item{\htmladdnormallink{aips}{../../aips/aips.html}}
 \item{\htmladdnormallink{atnf}{../../atnf}}
-\item{\htmladdnormallink{bima}{../../bima}}
-\item{\htmladdnormallink{contrib}{../../contrib}}
+%\item{\htmladdnormallink{bima}{../../bima}}
+%\item{\htmladdnormallink{contrib}{../../contrib}}
 \item{\htmladdnormallink{dish}{../../dish}}
-\item{\htmladdnormallink{drao}{../../drao}}
+%\item{\htmladdnormallink{drao}{../../drao}}
 \item{\htmladdnormallink{nfra}{../../nfra}}
-\item{\htmladdnormallink{nral}{../../nral}}
+%\item{\htmladdnormallink{nral}{../../nral}}
 \item{\htmladdnormallink{nrao}{../../nrao}}
 \item{\htmladdnormallink{synthesis}{../../synthesis}}
-\item{\htmladdnormallink{tifr}{../../tifr}}
+%\item{\htmladdnormallink{tifr}{../../tifr}}
 \item{\htmladdnormallink{trial}{../../trial}}
-\item{\htmladdnormallink{doc}{../../doc}}
+%\item{\htmladdnormallink{doc}{../../doc}}
 \item{\htmladdnormallink{vlbi}{../../vlbi}}
 \end{itemize}
 
