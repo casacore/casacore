@@ -5897,3 +5897,4 @@
 16 304 src mv ./trial/implement/Functionals/G1D.cc ./aips/implement/Functionals/G1D.cc
 16 304 src mv ./trial/implement/Functionals/G1D.h ./aips/implement/Functionals/G1D.h
 16 304 src mv ./trial/implement/Functionals/G1D2.cc ./aips/implement/Functionals/G1D2.cc
+16 304 src mv ./trial/implement/Functionals/G1DParam.cc ./aips/implement/Functionals/G1DParam.cc
