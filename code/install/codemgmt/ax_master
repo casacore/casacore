@@ -4565,3 +4565,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSWeatherColumns.h aips/implement/MeasurementSets/MSWeatherColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSWeatherEnums.h aips/implement/MeasurementSets/MSWeatherEnums.h
 14 297 src mv trial/implement/MeasurementSets/DOms.h trial/implement/MeasurementSets/DOoldms.h
+14 297 src mv trial/implement/MeasurementSets/DOms.cc trial/implement/MeasurementSets/DOoldms.cc
