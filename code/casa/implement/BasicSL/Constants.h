@@ -1,5 +1,5 @@
 //# Constants.h: Mathematical and physical constants
-//# Copyright (C) 1993, 1994, 1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,9 +55,7 @@
 #endif
 #include <aips/aips.h>
 
-// <summary>
-// Constants class for mathematical and physical constants.
-// </summary>
+// <summary>Constants class for mathematical, numerical and physical constants.</summary>
 
 // <use visibility=export>
 
@@ -70,20 +68,19 @@
 //# // </etymology>
 
 // <synopsis>
-// All constants and conversion factors are here defined as double precision
+// The constants and conversion factors are defined here as double precision
 // values.  Where single precision calculations are done in a situation where
 // processing speed is of concern, for example within the inner loop of an
 // expensive algorithm, a separate single precision variable should be defined
 // for use within the loop.
 //
-// See the source file where <linkto class=C>C</linkto> is defined to see
-// what contants are defined, and what their names are.
 // </synopsis>
 
 // <h3> Machine constants </h3>
 //
 // Implementation-defined limits usually defined in <src><limits.h></src>,
-// <src><float.></src>h, and <src><values.h></src> as preprocessor defines.
+// <src><float.></src>h, and <src><values.h></src> as preprocessor
+// defines. They are 
 // Inclusion of <src><aips/Mathematics/Constants.h</src> is
 // sufficient to ensure that they are defined for any particular
 // implementation, and the correct functioning of the <src>tConstants</src>
@@ -336,6 +333,35 @@ struct C {
    //#--------------------------------------------------------------------
    //# </group>
 
+
+   //#--------------------------------------------------------------------
+   //  Machine constants
+   //#--------------------------------------------------------------------
+   //# <group>
+   // floating point limits
+  // <group>
+  // the minimum single precision floating point number, 
+  // excluding denormalised numbers
+   static Double flt_min;
+  // the minimum double precision floating point number,
+  // excluding denormalised numbers
+   static Double dbl_min;
+  // the maximum single precision floating point number 
+   static Double flt_max;
+  // the maximum double precision floating point number 
+   static Double dbl_max;
+  // Minimum single precision floating point number X such that 1+X does not
+  // equal X
+   static Double flt_epsilon;
+  // Minimum double precision floating point number X such that 1+X does not
+  // equal X
+   static Double dbl_epsilon;
+  // </group>
+
+   //#--------------------------------------------------------------------
+   //# Machine constants
+   //#--------------------------------------------------------------------
+   //# </group>
 
    //#--------------------------------------------------------------------
    //#  Physical constants, and quantities

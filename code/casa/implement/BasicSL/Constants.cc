@@ -1,5 +1,5 @@
 //# Constants.cc: Mathematical and physical constants
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,6 +64,16 @@ Double C::gamma               ;
 Double C::lngamma             ;
 Double C::etogamma            ;
 
+
+//----------------------------------------------------------------------------
+// Machine constants
+//----------------------------------------------------------------------------
+Double C::flt_min;
+Double C::dbl_min;
+Double C::flt_max;
+Double C::dbl_max;
+Double C::flt_epsilon;
+Double C::dbl_epsilon;
 
 //----------------------------------------------------------------------------
 // Physical constants and conversion factors
@@ -402,6 +412,16 @@ C::gamma               =  0.577215664901532860606512;
 C::lngamma             = -0.549539312981644822337662;
 C::etogamma            =  1.7810724179901979852;
 
+
+//----------------------------------------------------------------------------
+// Machine constants
+//----------------------------------------------------------------------------
+ C::flt_min = FLT_MIN;
+ C::dbl_min = DBL_MIN;
+ C::flt_max = FLT_MAX;
+ C::dbl_max = DBL_MAX;
+ C::flt_epsilon = FLT_EPSILON;
+ C::dbl_epsilon = DBL_EPSILON;
 
 //----------------------------------------------------------------------------
 // Physical constants and conversion factors
