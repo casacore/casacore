@@ -27,9 +27,21 @@
 #ifndef FITS_BLOCKIO_H
 #define FITS_BLOCKIO_H
 
+//# Define the LFS variables for cfitsio.
+#ifndef AIPS_NOLARGEFILE
+# undef _FILE_OFFSET_BITS
+# define _FILE_OFFSET_BITS 64
+# ifndef _LARGEFILE_SOURCE
+#  define _LARGEFILE_SOURCE
+# endif
+# ifndef _LARGEFILE64_SOURCE
+#  define _LARGEFILE64_SOURCE
+# endif
+#endif
+
 extern "C"{
-#include <cfitsio/fitsio.h>  // header file from cfitsio
-#include <cfitsio/fitsio2.h> // using core functions of cfitsio
+#include <fitsio.h>  // header file from cfitsio
+#include <fitsio2.h> // using core functions of cfitsio
 }
 
 # include <stdlib.h>
