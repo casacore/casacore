@@ -5763,3 +5763,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSSourceEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSSpWindowColumns.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSSpWindowColumns.h
+16 134 src rm aips/implement/MeasurementSets/OldMSSpWindowEnums.h
