@@ -146,6 +146,7 @@ extern Bool aips_debug_on;
 // classes, e.g. from InterViews.
 #define imported /* Nothing */
 
+#if !defined(AIPS_STDLIB)
 // These are new keywords in the upcoming C++ standard.
 // They are defined to an empty string, so they can be used until
 // all compilers interpret them.
@@ -155,5 +156,6 @@ extern Bool aips_debug_on;
 // E.g.    explicit IPosition (uInt);
 #define explicit /* Nothing */
 #define typename /* Nothing */
+#endif
 
 #endif
