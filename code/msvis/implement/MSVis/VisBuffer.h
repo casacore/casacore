@@ -1,5 +1,5 @@
 //# VisBuffer.h: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,6 +65,11 @@ public:
   // current iteration (or reattach)
   VisBuffer& operator=(const VisBuffer& vb);
 
+  // subtraction: return the difference of the visibilities, flags of
+  // this and other are or'ed. An exception is thrown if the number of
+  // rows or channels differs, but no further checks are done.
+  VisBuffer& operator-=(const VisBuffer& vb);
+
   // Attach to a VisIter. Detaches itself first if already attached 
   // to a VisIter. Will remain synchronized with iterator.
   void attachToVisIter(ROVisibilityIterator & iter);
@@ -116,6 +121,9 @@ public:
   Vector<Float>& weight() {return weightOK_p ? weight_p : fillWeight();}
   const Vector<Float>& weight() const {return This->weight();}
   //</group>
+
+  // Frequency average the buffer
+  void freqAverage();
 
 private:
 
@@ -172,3 +180,4 @@ private:
 };
 
 #endif
+
