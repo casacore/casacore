@@ -1,0 +1,81 @@
+#!/usr/local/bin/tcsh
+#-----------------------------------------------------------------------------
+# UPlock script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+set script = "UPlock"
+set usage = 'Usage: UPlock <typ>'
+#
+# UPlock script (must have x allowed)
+# Test for each locked file if it is in the list of files (see UPfind) that
+#      has been found.
+# It checks the <typ>.found (as created with UPfind), and output the
+# result on the <typ>.locked.
+#
+# See UPinfo for details
+#
+#
+# Get general info
+#
+set x = "`which UPinfo`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]
+endif
+unset x
+source $uppath/UPinfo
+if (! $ok) exit 1
+
+if (! -r $ldir/${tp}.found) then
+   echo "No ${tp}.found present. Cannot proceed."
+   echo "Execute UPfind first"
+   exit (1)
+endif
+
+set a = ( `wc ${tp}.found` )
+echo $a[1] files in ${tp}.found
+unset a
+
+echo "Finding locked files..."
+if (-e ${tp}.locked) rm -f ${tp}.locked
+touch ${tp}.locked
+foreach i (`alog -m -L -t | grep ".*/.*/" | grep  -v " "`)
+   grep $i ${tp}.found >> ${tp}.locked
+end
+
+set a = ( `wc ${tp}.locked` )
+echo $a[1] files in ${tp}.locked
+unset a
+
+exit 0
+
+
+
+
