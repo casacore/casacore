@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,6 +168,18 @@ class LogIO;
 // Because you can transpose the CoordinateSystem about, you should NEVER ASSUME
 // ANYTHING except that the pixel axes of the CoordinateSystem map to the pixel
 // axes of the image when you first construct the image.
+//
+// <p>
+// SpectralCoordinate and DirectionCoordinate both have a (non-virtual) function
+// called <src>setReferenceConversion</src>.  This enables an extra conversion
+// layer so that conversion between pixel and world can go to a reference frame
+// other than the construction reference.    When you use the function
+// </src>convert</src>, these layers are active, but ONLY if the 
+// requested conversion is purely between pixel and world. For 
+// a SpectralCoordinate this must always be true (only has one axis)
+// but for the DirectionCoordinate  you might request a mixed
+// pixel/world conversion. In this case, the extra conversion layer
+// is ill-defined and not active (for the DirectionCoordinate part of it).
 // </synopsis>
 
 // <note role=caution>
