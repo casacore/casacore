@@ -344,11 +344,11 @@ take over after all the copying is done.
 We encourage your to check out your help file by doing the following,
 
 \begin{verbatim}
-help2tex myfile.help > myfile.htex
-latex2e myfile.htex
-latex2html -split 0 myfile.htex
+gmake myfile.dvi
 \end{verbatim}
 
+The gmake runs help2tex on the file myfile.help 
+and then runs latex on the resulting ".htex" file.
 It's important to make sure your .help file runs through the process clean. If
 it fails any documentation that follows won't be included in the Refman.  If
 have relative-outside links in your .help file or links to other parts of the
