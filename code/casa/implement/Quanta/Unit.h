@@ -185,7 +185,6 @@ class Unit {
     Unit(const char *other);
     Unit(char other);
     Unit(const char *other, Int len);
-    Unit(const SubString &other);
 // </group>
 // Destructor
     ~Unit();
