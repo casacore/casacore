@@ -62,7 +62,7 @@ template class \
 template class \
   __rwstd::__rb_tree<T, pair<T const, U >, \
   __rwstd::__select1st<pair<T const, U>, T  >, \
-  std::less<T>, allocator<U > >;
+  std::less<T>, allocator<pair<T const, U> > >;
 #else
 
 #define AIPS_MAP_AUX_TEMPLATES(T, U)
