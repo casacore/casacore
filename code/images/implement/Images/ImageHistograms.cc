@@ -1307,16 +1307,16 @@ Bool ImageHistograms<T>::generateStorageImage()
 // Iterate through image and accumulate histogram and statistics images
      
    Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
-   ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""),
-                       String(""), String(""), True, max(1,Int(meterMax/10)));
+   ProgressMeter clock(0.0, meterMax, "Generate Storage Image", "Accumulation iterations",
+                       "", "", True, max(1,Int(meterMax/20)));
    Double meterValue = 0.0;
 
    os_p << LogIO::NORMAL << "Begin accumulating histograms" << LogIO::POST;
    for (pPixelIterator->reset(); !pPixelIterator->atEnd();(*pPixelIterator)++) {
       accumulate (pPixelIterator->position(), pPixelIterator->cursor());
 
-      clock.update(meterValue); 
       meterValue += 1.0; 
+      clock.update(meterValue); 
    }
 
    delete pPixelIterator;
