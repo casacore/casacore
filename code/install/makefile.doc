@@ -208,6 +208,12 @@ $(DOCSAREA)/%.jpg : $(CODEDIR)/%.jpg
 	 cp $< $@
 	 @ chmod 664 $@
 
+$(DOCSAREA)/%.js : $(CODEDIR)/%.js
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
    %.ps : %.dvi %.dir $(CODEDIR)/%.dir
