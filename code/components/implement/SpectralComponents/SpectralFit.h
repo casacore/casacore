@@ -112,11 +112,16 @@ class SpectralFit {
 
   // Fit the elements as given by the specified spectral elements
   // at the frequencies x with values y. Weights of all points are equal.
+  // The mask (if specified) means: use point if True.
   // <group>
   Bool fit(const Vector<Double> &y,
 	   const Vector<Double> &x);
   Bool fit(const Vector<Float> &y,
    	   const Vector<Float> &x);
+  Bool fit(const Vector<Double> &y,
+	   const Vector<Double> &x, const Vector<Bool> &mask);
+  Bool fit(const Vector<Float> &y,
+   	   const Vector<Float> &x, const Vector<Bool> &mask);
   // </group>
 
   // Get the number of iterations last fit
@@ -130,7 +135,15 @@ class SpectralFit {
   uInt iter_p;
 
   //# Member functions
-
+  // Real fitters
+  // <group>
+  Bool fit(const Vector<Double> &y,
+	   const Vector<Double> &x,
+	   const Vector<Bool> *const mask);
+  Bool fit(const Vector<Float> &y,
+   	   const Vector<Float> &x,
+	   const Vector<Bool> *const mask);
+  // </group>
 };
 
 #endif

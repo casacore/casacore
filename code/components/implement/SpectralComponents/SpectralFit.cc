@@ -77,7 +77,28 @@ void SpectralFit::clear() {
 }
 
 Bool SpectralFit::fit(const Vector<Double> &y,
-		      const Vector<Double> &x) {
+	 const Vector<Double> &x) {
+  return fit(y, x, static_cast<const Vector<Bool> *const>(0));
+}
+
+Bool SpectralFit::fit(const Vector<Float> &y,
+		      const Vector<Float> &x) {
+  return fit(y, x, static_cast<const Vector<Bool> *const>(0));
+}
+
+Bool SpectralFit::fit(const Vector<Double> &y,
+		      const Vector<Double> &x, const Vector<Bool> &mask) {
+  return fit(y, x, &mask);
+}
+
+Bool SpectralFit::fit(const Vector<Float> &y,
+		      const Vector<Float> &x, const Vector<Bool> &mask) {
+  return fit(y, x, &mask);
+}
+
+Bool SpectralFit::fit(const Vector<Double> &y,
+		      const Vector<Double> &x,
+		      const Vector<Bool> *const mask) {
   // The fitter
   NonLinearFitLM<Double> fitter;
   iter_p = 0;
@@ -134,7 +155,7 @@ Bool SpectralFit::fit(const Vector<Double> &y,
   Vector<Double> err;
   Vector<Double> sigma(x.nelements());
   sigma = 1.0;
-  sol = fitter.fit(x, y, sigma, &corsol);
+  sol = fitter.fit(x, y, sigma, mask, &corsol);
   // Calculate the errors
   err = fitter.errors();
   // Number of iterations
@@ -160,7 +181,8 @@ Bool SpectralFit::fit(const Vector<Double> &y,
 }
 
 Bool SpectralFit::fit(const Vector<Float> &y,
-		      const Vector<Float> &x) {
+		      const Vector<Float> &x,
+		      const Vector<Bool> *const mask) {
   // The fitter
   NonLinearFitLM<Float> fitter;
   iter_p = 0;
@@ -217,7 +239,7 @@ Bool SpectralFit::fit(const Vector<Float> &y,
   Vector<Double> err;
   Vector<Float> sigma(x.nelements());
   sigma = 1.0;
-  sol = fitter.fit(x, y, sigma, &corsol);
+  sol = fitter.fit(x, y, sigma, mask, &corsol);
   fitter.getErrors(err);
   j = 0;
   Vector<Double> tmp, terr;
