@@ -113,6 +113,8 @@ public:
     FilebufIO (FILE*, Bool takeOver);
 
     // Construct from the given file descriptor.
+    // Note that the destructor and the detach function implicitly close
+    // the file descriptor.
     explicit FilebufIO (int fd, uInt bufferSize=16384);
 
     // Attach the given file pointer which is taken over
@@ -131,6 +133,8 @@ public:
     void attach (FILE*, Bool takeOver);
 
     // Attach to the given file descriptor.
+    // Note that the destructor and the detach function implicitly close
+    // the file descriptor.
     void attach (int fd, uInt bufferSize=16384);
 
     // The destructor closes the file when it was owned and opened and not
