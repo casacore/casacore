@@ -561,12 +561,13 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
     tableChanged_p = True;
 }
 
-void PlainTable::removeColumn (const String&)
+void PlainTable::removeColumn (const String& columnName)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::removeColumn; table is not writable"));
     }
-    throw (TableInvOper ("PlainTable::removeColumn not implemented yet"));
+    colSetPtr_p->removeColumn (columnName);
+    tableChanged_p = True;
 }
 
 void PlainTable::renameColumn (const String& newName, const String& oldName)
