@@ -2557,3 +2557,4 @@
 09 461 src mv trial/apps/measures/measures.g trial/implement/Measures/measures.g
 09 461 src mv trial/apps/measures/measures.help trial/implement/Measures/measures.help
 09 461 src mv trial/apps/measures/test/tmeasures.g trial/implement/Measures/test/tmeasures.g
+09 461 src rm trial/apps/measures/measures_observatories.g
