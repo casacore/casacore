@@ -92,6 +92,7 @@ class ostream;
 // You can use the global function <src>imagePixelType</src> to determine
 // what the pixel type of an image is before you open the image if your
 // code can work with Images of many possible types, or for error checking.
+//
 // </synopsis> 
 
 // <example>
@@ -131,6 +132,13 @@ class ostream;
 // disk pieces of the image appeared to be the way to deal with this problem.
 // </motivation>
 
+//
+// <note>
+//  When you make a new PagedImage, and you are transferring
+//  information from some other PagedImage, be aware that you
+//  must copy, manually, things like miscInfo, imageInfo, units,
+//  logSink (history) to the new file.
+// </note>
 // <todo asof="1996/09/04">
 //   <li> The CoordinateSystem::store() function returns a TableRecord.  That
 // TableRecord should be stored in the same row as our image.  This will 
