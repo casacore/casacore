@@ -59,7 +59,9 @@ const char *wcs_errmsg[] = {
    "One or more of the pixel coordinates were invalid",
    "One or more of the world coordinates were invalid",
    "Invalid world coordinate",
-   "No solution found in the specified interval"};
+   "No solution found in the specified interval",
+   "Invalid subimage specification",
+   "Non-separable subimage coordinate system"};
 
 #define UNDEFINED 987654321.0e99
 #define undefined(value) (value == UNDEFINED)
@@ -494,14 +496,17 @@ struct wcsprm *wcs;
 
 /*--------------------------------------------------------------------------*/
 
-int wcscopy(alloc, wcssrc, wcsdst)
+int wcssub(alloc, wcssrc, nsub, axes, wcsdst)
 
 int alloc;
 const struct wcsprm *wcssrc;
+int *nsub, axes[];
 struct wcsprm *wcsdst;
 
 {
-   int i, j, k, naxis, npvmax, npsmax, status;
+   char *ctypei;
+   int  axis, cubeface, dealloc, dummy, i, j, k, latitude, longitude,
+        *map = 0, msub, naxis, npv, nps, other, spectral, status, stokes;
    const double *srcp;
    double *dstp;
 
@@ -511,49 +516,232 @@ struct wcsprm *wcsdst;
       return 2;
    }
 
-   /* Initialize the destination. */
-   npvmax = NPVMAX;
-   npsmax = NPSMAX;
-   NPVMAX = wcssrc->npvmax;
-   NPSMAX = wcssrc->npsmax;
-   if (status = wcsini(alloc, naxis, wcsdst)) {
-      return status;
+   if (!(map = (int *)calloc(naxis, sizeof(int)))) {
+      return 2;
    }
-   NPVMAX = npvmax;
-   NPSMAX = npsmax;
+
+   if (nsub == 0) {
+      nsub = &dummy;
+   }
+
+   if (*nsub == 0) {
+      *nsub = naxis;
+   }
+
+   if (dealloc = (axes == 0)) {
+      /* Construct an index array. */
+      if (!(axes = (int *)calloc(naxis, sizeof(int)))) {
+         return 2;
+      }
+
+      for (i = 0; i < naxis; i++) {
+         axes[i] = i+1;
+      }
+   }
+
+
+   msub = 0;
+   for (j = 0; j < *nsub; j++) {
+      axis = axes[j];
+
+      if (abs(axis) > 0x1000) {
+         /* Subimage extraction by type. */
+         k = abs(axis) & 0xFF;
+
+         longitude = k & WCSSUB_LONGITUDE;
+         latitude  = k & WCSSUB_LATITUDE;
+         cubeface  = k & WCSSUB_CUBEFACE;
+         spectral  = k & WCSSUB_SPECTRAL;
+         stokes    = k & WCSSUB_STOKES;
+
+         if (other = (axis < 0)) {
+            longitude = !longitude;
+            latitude  = !latitude;
+            cubeface  = !cubeface;
+            spectral  = !spectral;
+            stokes    = !stokes;
+         }
+
+         axis = 0;
+         for (i = 0; i < naxis; i++) {
+            ctypei = (char *)(wcssrc->ctype + i);
+
+            if (
+               strncmp(ctypei,   "RA      ", 8) == 0 ||
+               strncmp(ctypei+1, "LON    ", 7) == 0 ||
+               strncmp(ctypei+2, "LN    ", 6) == 0 ||
+               strncmp(ctypei,   "RA---", 5) == 0 ||
+               strncmp(ctypei+1, "LON-", 4) == 0 ||
+               strncmp(ctypei+2, "LN-", 3) == 0) {
+               if (!longitude) {
+                  continue;
+               }
+
+            } else if (
+               strncmp(ctypei,   "DEC     ", 8) == 0 ||
+               strncmp(ctypei+1, "LAT    ", 7) == 0 ||
+               strncmp(ctypei+2, "LT    ", 6) == 0 ||
+               strncmp(ctypei,   "DEC--", 5) == 0 ||
+               strncmp(ctypei+1, "LAT-", 4) == 0 ||
+               strncmp(ctypei+2, "LT-", 3) == 0) {
+               if (!latitude) {
+                  continue;
+               }
+
+            } else if (strncmp(ctypei, "CUBEFACE", 8) == 0) {
+               if (!cubeface) {
+                  continue;
+               }
+
+            } else if ((
+               strncmp(ctypei, "FREQ", 4) == 0 ||
+               strncmp(ctypei, "ENER", 4) == 0 ||
+               strncmp(ctypei, "WAVN", 4) == 0 ||
+               strncmp(ctypei, "VRAD", 4) == 0 ||
+               strncmp(ctypei, "WAVE", 4) == 0 ||
+               strncmp(ctypei, "VOPT", 4) == 0 ||
+               strncmp(ctypei, "ZOPT", 4) == 0 ||
+               strncmp(ctypei, "AWAV", 4) == 0 ||
+               strncmp(ctypei, "VELO", 4) == 0 ||
+               strncmp(ctypei, "BETA", 4) == 0) &&
+               (ctypei[4] == '-' || strncmp(ctypei+4, "    ", 4) == 0)) {
+               if (!spectral) {
+                  continue;
+               }
+
+            } else if (strncmp(ctypei, "STOKES  ", 8) == 0) {
+               if (!stokes) {
+                  continue;
+               }
+
+            } else if (!other) {
+               continue;
+            }
+
+            /* This axis is wanted, but has it already been added? */
+            for (k = 0; k < msub; k++) {
+               if (map[k] == i+1) {
+                  break;
+               }
+            }
+            if (k == msub) map[msub++] = i+1;
+         }
+
+      } else if (0 < axis && axis <= naxis) {
+         /* Check that the requested axis has not already been added. */
+         for (k = 0; k < msub; k++) {
+            if (map[k] == axis) {
+               break;
+            }
+         }
+         if (k == msub) map[msub++] = axis;
+
+      } else {
+         status = 12;
+         goto dealloc;
+      }
+   }
+
+   if ((*nsub = msub) == 0) {
+      status = 0;
+      goto dealloc;
+   }
+
+   for (i = 0; i < *nsub; i++) {
+      axes[i] = map[i];
+   }
+
+
+   /* Construct the inverse axis map. */
+   for (i = 0; i < naxis; i++) {
+      map[i] = 0;
+   }
+
+   for (i = 0; i < *nsub; i++) {
+      map[axes[i]-1] = i+1;
+   }
+
+   /* Check that the subimage coordinate system is separable. */
+   if (*nsub < naxis) {
+      srcp = wcssrc->pc;
+      for (i = 0; i < naxis; i++) {
+         for (j = 0; j < naxis; j++) {
+            if (*(srcp++) == 0.0 || j == i) continue;
+
+            if ((map[i] == 0) != (map[j] == 0)) {
+               status = 13;
+               goto dealloc;
+            }
+         }
+      }
+   }
+
+
+   /* Initialize the destination. */
+   npv = NPVMAX;
+   nps = NPSMAX;
+
+   NPVMAX = 0;
+   for (k = 0; k < wcssrc->npv; k++) {
+      if (map[wcssrc->pv[k].i-1]) {
+         NPVMAX++;
+      }
+   }
+
+   NPSMAX = 0;
+   for (k = 0; k < wcssrc->nps; k++) {
+      if (map[wcssrc->ps[k].i-1]) {
+         NPSMAX++;
+      }
+   }
+
+   status = wcsini(alloc, *nsub, wcsdst);
+
+   NPVMAX = npv;
+   NPSMAX = nps;
+
+   if (status) {
+      goto dealloc;
+   }
+
 
    /* Linear transformation. */
    srcp = wcssrc->crpix;
    dstp = wcsdst->crpix;
-   for (j = 0; j < naxis; j++) {
-      *(dstp++) = *(srcp++);
+   for (j = 0; j < *nsub; j++) {
+      k = axes[j] - 1;
+      *(dstp++) = *(srcp+k);
    }
 
    srcp = wcssrc->pc;
    dstp = wcsdst->pc;
-   for (i = 0; i < naxis; i++) {
-      for (j = 0; j < naxis; j++) {
-         *(dstp++) = *(srcp++);
+   for (i = 0; i < *nsub; i++) {
+      for (j = 0; j < *nsub; j++) {
+         k = (axes[i]-1)*naxis + (axes[j]-1);
+         *(dstp++) = *(srcp+k);
       }
    }
 
    srcp = wcssrc->cdelt;
    dstp = wcsdst->cdelt;
-   for (i = 0; i < naxis; i++) {
-      *(dstp++) = *(srcp++);
+   for (i = 0; i < *nsub; i++) {
+      k = axes[i] - 1;
+      *(dstp++) = *(srcp+k);
    }
 
    /* Coordinate units and type. */
-   for (i = 0; i < naxis; i++) {
-      strncpy(wcsdst->cunit[i], wcssrc->cunit[i], 72);
-      strncpy(wcsdst->ctype[i], wcssrc->ctype[i], 72);
+   for (i = 0; i < *nsub; i++) {
+      k = axes[i] - 1;
+      strncpy(wcsdst->cunit[i], wcssrc->cunit[k], 72);
+      strncpy(wcsdst->ctype[i], wcssrc->ctype[k], 72);
    }
 
    /* Coordinate reference value. */
    srcp = wcssrc->crval;
    dstp = wcsdst->crval;
-   for (i = 0; i < naxis; i++) {
-      *(dstp++) = *(srcp++);
+   for (i = 0; i < *nsub; i++) {
+      k = axes[i] - 1;
+      *(dstp++) = *(srcp+k);
    }
 
    /* Celestial and spectral transformation parameters. */
@@ -563,35 +751,43 @@ struct wcsprm *wcsdst;
    wcsdst->restwav = wcssrc->restwav;
 
    /* Parameter values. */
-   wcsdst->npv = wcssrc->npv;
-   for (k = 0; k < wcssrc->npvmax; k++) {
-     wcsdst->pv[k].i = wcssrc->pv[k].i;
-     wcsdst->pv[k].m = wcssrc->pv[k].m;
-     wcsdst->pv[k].value = wcssrc->pv[k].value;
+   npv = 0;
+   for (k = 0; k < wcssrc->npv; k++) {
+      if (i = map[wcssrc->pv[k].i-1]) {
+         wcsdst->pv[npv] = wcssrc->pv[k];
+         wcsdst->pv[npv].i = i;
+         npv++;
+      }
    }
+   wcsdst->npv = npv;
 
-   wcsdst->nps = wcssrc->nps;
-   for (k = 0; k < wcssrc->npsmax; k++) {
-     wcsdst->ps[k].i = wcssrc->ps[k].i;
-     wcsdst->ps[k].m = wcssrc->ps[k].m;
-     strncpy(wcsdst->ps[k].value, wcssrc->ps[k].value, 72);
+   nps = 0;
+   for (k = 0; k < wcssrc->nps; k++) {
+      if (i = map[wcssrc->ps[k].i-1]) {
+         wcsdst->ps[nps] = wcssrc->ps[k];
+         wcsdst->ps[nps].i = i;
+         nps++;
+      }
    }
+   wcsdst->nps = nps;
 
    /* Alternate linear transformations. */
    wcsdst->altlin = wcssrc->altlin;
 
    srcp = wcssrc->cd;
    dstp = wcsdst->cd;
-   for (i = 0; i < naxis; i++) {
-      for (j = 0; j < naxis; j++) {
-         *(dstp++) = *(srcp++);
+   for (i = 0; i < *nsub; i++) {
+      for (j = 0; j < *nsub; j++) {
+         k = (axes[i]-1)*naxis + (axes[j]-1);
+         *(dstp++) = *(srcp+k);
       }
    }
 
    srcp = wcssrc->crota;
    dstp = wcsdst->crota;
-   for (i = 0; i < naxis; i++) {
-      *(dstp++) = *(srcp++);
+   for (i = 0; i < *nsub; i++) {
+      k = axes[i] - 1;
+      *(dstp++) = *(srcp+k);
    }
 
    /* Auxiliary coordinate system information. */
@@ -599,10 +795,11 @@ struct wcsprm *wcsdst;
    wcsdst->colnum = wcssrc->colnum;
 
    strncpy(wcsdst->wcsname, wcssrc->wcsname, 72);
-   for (i = 0; i < naxis; i++) {
-      strncpy(wcsdst->cname[i], wcssrc->cname[i], 72);
-      wcsdst->crder[i] = wcssrc->crder[i];
-      wcsdst->csyer[i] = wcssrc->csyer[i];
+   for (i = 0; i < *nsub; i++) {
+      k = axes[i] - 1;
+      strncpy(wcsdst->cname[i], wcssrc->cname[k], 72);
+      wcsdst->crder[i] = wcssrc->crder[k];
+      wcsdst->csyer[i] = wcssrc->csyer[k];
    }
 
    strncpy(wcsdst->radesys, wcssrc->radesys, 72);
@@ -622,7 +819,14 @@ struct wcsprm *wcsdst;
    wcsdst->mjdobs = wcssrc->mjdobs;
    wcsdst->mjdavg = wcssrc->mjdavg;
 
-   return 0;
+
+dealloc:
+   if (map) free(map);
+   if (dealloc) {
+     free(axes);
+   }
+
+   return status;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -784,20 +988,24 @@ const struct wcsprm *wcs;
 
    k = 0;
    printf("         cd: 0x%x\n", (int)wcs->cd);
-   for (i = 0; i < wcs->naxis; i++) {
-      printf("    cd[%d][]:", i);
-      for (j = 0; j < wcs->naxis; j++) {
-         printf("  %- 11.4g", wcs->cd[k++]);
+   if (wcs->cd) {
+      for (i = 0; i < wcs->naxis; i++) {
+         printf("    cd[%d][]:", i);
+         for (j = 0; j < wcs->naxis; j++) {
+            printf("  %- 11.4g", wcs->cd[k++]);
+         }
+         printf("\n");
       }
-      printf("\n");
    }
 
    printf("      crota: 0x%x\n", (int)wcs->crota);
-   printf("            ");
-   for (i = 0; i < wcs->naxis; i++) {
-      printf("  %- 11.4g", wcs->crota[i]);
+   if (wcs->crota) {
+      printf("            ");
+      for (i = 0; i < wcs->naxis; i++) {
+         printf("  %- 11.4g", wcs->crota[i]);
+      }
+      printf("\n");
    }
-   printf("\n");
 
    /* Auxiliary coordinate system information. */
    printf("        alt: '%c'\n", wcs->alt[0]);
@@ -810,35 +1018,41 @@ const struct wcsprm *wcs;
    }
 
    printf("      cname: 0x%x\n", (int)wcs->cname);
-   for (i = 0; i < wcs->naxis; i++) {
-      if (wcs->cname[i][0] == '\0') {
-         printf("             UNDEFINED\n");
-      } else {
-         printf("             \"%s\"\n", wcs->cname[i]);
+   if (wcs->cname) {
+      for (i = 0; i < wcs->naxis; i++) {
+         if (wcs->cname[i][0] == '\0') {
+            printf("             UNDEFINED\n");
+         } else {
+            printf("             \"%s\"\n", wcs->cname[i]);
+         }
       }
    }
 
    printf("      crder: 0x%x\n", (int)wcs->crder);
-   printf("           ");
-   for (i = 0; i < wcs->naxis; i++) {
-      if (undefined(wcs->crder[i])) {
-         printf("  UNDEFINED   ");
-      } else {
-         printf("  %- 11.4g", wcs->crder[i]);
+   if (wcs->crder) {
+      printf("           ");
+      for (i = 0; i < wcs->naxis; i++) {
+         if (undefined(wcs->crder[i])) {
+            printf("  UNDEFINED   ");
+         } else {
+            printf("  %- 11.4g", wcs->crder[i]);
+         }
       }
+      printf("\n");
    }
-   printf("\n");
 
    printf("      csyer: 0x%x\n", (int)wcs->csyer);
-   printf("           ");
-   for (i = 0; i < wcs->naxis; i++) {
-      if (undefined(wcs->csyer[i])) {
-         printf("  UNDEFINED   ");
-      } else {
-         printf("  %- 11.4g", wcs->csyer[i]);
+   if (wcs->csyer) {
+      printf("           ");
+      for (i = 0; i < wcs->naxis; i++) {
+         if (undefined(wcs->csyer[i])) {
+            printf("  UNDEFINED   ");
+         } else {
+            printf("  %- 11.4g", wcs->csyer[i]);
+         }
       }
+      printf("\n");
    }
-   printf("\n");
 
    if (wcs->radesys[0] == '\0') {
       printf("    radesys: UNDEFINED\n");
@@ -882,8 +1096,7 @@ const struct wcsprm *wcs;
       printf("    zsource: %9f\n", wcs->zsource);
    }
 
-   printf("     obsgeo: 0x%x\n", (int)wcs->obsgeo);
-   printf("           ");
+   printf("     obsgeo: ");
    for (i = 0; i < 3; i++) {
       if (undefined(wcs->obsgeo[i])) {
          printf("  UNDEFINED   ");
@@ -1257,6 +1470,9 @@ struct wcsprm *wcs;
       }
    }
 
+   wcs->lin.crpix  = wcs->crpix;
+   wcs->lin.pc     = wcs->pc;
+   wcs->lin.cdelt  = wcs->cdelt;
    if (status = linset(&(wcs->lin))) {
       return status;
    }

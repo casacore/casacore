@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.6 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -46,6 +46,15 @@
 *
 *   Summary of routines
 *   -------------------
+*   Three service routines, wcsini(), wcssub(), and wcsfree() are provided to
+*   manage the wcsprm struct (see "Memory allocation and deallocation" below).
+*   Another, wcsprt(), prints its contents.  See "Coordinate transformation
+*   parameters" below for an explanation of the anticipated usage of these
+*   routines.
+*
+*   A setup routine, wcsset(), computes indices from the ctype array but need
+*   not be called explicitly - see the explanation of wcs.flag below.
+*
 *   wcsp2s() and wcss2p() are high level driver routines for the WCS linear,
 *   celestial, and spectral transformation routines.
 *
@@ -53,36 +62,26 @@
 *   pixel coordinate a hybrid routine, wcsmix(), iteratively solves for the
 *   unknown elements.
 *
-*   An initialization routine, wcsset(), computes indices from the ctype
-*   array but need not be called explicitly - see the explanation of
-*   wcs.flag below.
 *
-*   Three service routines, wcsini(), wcscopy(), and wcsfree() are provided to
-*   manage the wcsprm struct.  A third, wcsprt(), prints its contents.  See
-*   "Coordinate transformation parameters" below for an explanation of the
-*   anticipated usage of these routines.
-*
-*
-*   Service routines for the wcsprm struct; wcsini(), wcscopy(), & wcsfree()
-*   -----------------------------------------------------------------------
-*   These service routines are provided to manage the wcsprm struct (see also
-*   "Memory allocation and deallocation" below).
-*
-*
+*   Default constructor for the wcsprm struct; wcsini()
+*   ---------------------------------------------------
 *   wcsini() allocates memory for the crpix, pc, cdelt, cunit, ctype, crval,
-*   and pv arrays and sets the members of the wcsprm struct to default values.
-*   Memory is allocated for up to NPVMAX PVi_ma cards or NPSMAX PSi_ma cards
-*   per WCS representation.  These may be changed via wcsnpv() and wcsnps()
-*   before wcsini() is called.
+*   pv, ps, cd, crota, cname, crder, and csyer arrays in the wcsprm struct and
+*   sets all members of the wcsprm struct to default values.  Memory is
+*   allocated for up to NPVMAX PVi_ma cards or NPSMAX PSi_ma cards per WCS
+*   representation.  These may be changed via wcsnpv() and wcsnps() before
+*   wcsini() is called.
 *
 *   Given:
-*      alloc    int      If true, allocate memory for the crpix, pc, cdelt,
-*                        cunit, ctype, crval, and pv arrays.  Otherwise, it is
-*                        assumed that pointers to these arrays have been set
-*                        by the caller except if they are null pointers in
-*                        which case memory will be allocated for them
-*                        regardless.  (In other words, setting alloc true
-*                        saves having to initalize these pointers to zero.)
+*      alloc    int      If true, allocate memory for the crpix, etc. arrays
+*                        (see "Memory allocation and deallocation below").
+*                        Otherwise, it is assumed that pointers to these
+*                        arrays have been set by the caller except if they are
+*                        null pointers in which case memory will be allocated
+*                        for them regardless.  (In other words, setting alloc
+*                        true saves having to initalize these pointers to
+*                        zero.)
+*
 *      naxis    int      The number of world coordinate axes.  This is used to
 *                        determine the length of the various wcsprm vectors
 *                        and matrices and therefore the amount of memory to
@@ -97,12 +96,14 @@
 *                        already been initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
+*   Memory allocation for PVi_ma and PSi_ma; wcsnpv() and wcsnps()
+*   --------------------------------------------------------------
 *   wcsnpv() and wcsnps() change the values of NPVMAX (default 64) and
 *   NPSMAX (default 8).  These control the number of PVi_ma and PSi_ma cards
 *   that wcsini() should allocate space for.
@@ -114,34 +115,94 @@
 *               int      Current value of NPVMAX or NPSMAX.
 *
 *
-*   wcscopy() does a deep copy of one wcsprm struct to another, using wcsini()
-*   to allocate memory for its arrays if required.  Only the "information to
-*   be provided" part of the struct is copied; a call to wcsset() is required
-*   to initialize the remainder.
+*   Subimage extraction routine for the wcsprm struct; wcssub()
+*   -----------------------------------------------------------
+*   wcssub() extracts the coordinate description for a subimage from a wcsprm
+*   struct.  It does a deep copy, using wcsini() to allocate memory for its
+*   arrays if required.  Only the "information to be provided" part of the
+*   struct is extracted; a call to wcsset() is required to set up the
+*   remainder.
+*
+*   The world coordinate system of the subimage must be separable in
+*   the sense that the world coordinates at any point in the subimage must
+*   depend only on the pixel coordinates of the axes extracted.  In practice,
+*   this means that the PCi_ja matrix of the original image must not contain
+*   non-zero off-diagonal terms that associate any of the subimage axes with
+*   any of the non-subimage axes.
 *
 *   Given:
-*      alloc    int      If true, allocate memory for the crpix, pc, cdelt,
-*                        cunit, ctype, crval, and pv arrays in the
-*                        destination.  Otherwise, it is assumed that pointers
-*                        to these arrays have been set by the caller except if
-*                        they are null pointers in which case memory will be
-*                        allocated for them regardless.
-*      wcsfrom  const struct wcsprm*
-*                        Struct to copy from.
+*      alloc    int      If true, allocate memory for the crpix, etc. arrays
+*                        in the destination (see "Memory allocation and
+*                        deallocation below").  Otherwise, it is assumed that
+*                        pointers to these arrays have been set by the caller
+*                        except if they are null pointers in which case memory
+*                        will be allocated for them regardless.
+*
+*      wcssrc   const struct wcsprm*
+*                        Struct to extract from.
 *
 *   Given and returned:
-*      wcsto    struct wcsprm*
-*                        Struct to copy to.  wscto->flag should be set to -1
-*                        if wcsto was not previously initialized (memory
-*                        leaks may result if it was previously initialized).
+*      nsub     int*
+*      axes     int[]    Vector of length *nsub containing the image axis
+*                        numbers to extract.  Order is significant; axes[0] is
+*                        the axis number of the input image that corresponds
+*                        to the first axis in the subimage, etc.
+*
+*                        nsub (the pointer) may be set to zero, and so also
+*                        may *nsub, to indicate the number of axes in the
+*                        input image; the number of axes will be returned if
+*                        nsub != 0.  axes itself (the pointer) may be set to
+*                        zero to indicate the first *nsub axes in their
+*                        original order.
+*
+*                        Set both nsub and axes to zero to do a deep copy of
+*                        one wcsprm struct to another.
+*
+*                        Subimage extraction by coordinate axis type may be
+*                        done by setting the elements of axes[] to the
+*                        following special preprocessor macro values:
+*
+*                           WCSSUB_LONGITUDE: Celestial longitude.
+*                           WCSSUB_LATITUDE:  Celestial latitude.
+*                           WCSSUB_CUBEFACE:  Quadcube CUBEFACE axis.
+*                           WCSSUB_SPECTRAL:  Spectral axis.
+*                           WCSSUB_STOKES:    Stokes axis.
+*
+*                        See note 2 below for further usage notes.
+*
+*                        On return, *nsub will contain the number of axes in
+*                        the subimage; this may be zero if there were no axes
+*                        of the required type(s) (in which case no memory will
+*                        be allocated).  axes[] will contain the axis numbers
+*                        that were extracted.  The vector length must be
+*                        sufficient to contain all axis numbers.  No checks
+*                        are performed to verify that the coordinate axes are
+*                        consistent, this is done by wcsset().
+*
+*      wcsdst   struct wcsprm*
+*                        Struct describing the subimage.  wcsdst->flag should
+*                        be set to -1 if wcsdst was not previously initialized
+*                        (memory leaks may result if it was previously
+*                        initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
+*                          12: Invalid subimage specification.
+*                          13: Non-separable subimage coordinate system.
 *
 *
+*   Copy routine for the wcsprm struct; wcscopy()
+*   ---------------------------------------------
+*   wcscopy() does a deep copy of one wcsprm struct to another.  As of
+*   WCSLIB 3.6, it is implemented as a preprocessor macro that invokes
+*   wcssub() with the nsub and axes pointers both set to zero.
+*
+*
+*   Destructor for the wcsprm struct; wcsfree()
+*   -------------------------------------------
 *   wcsfree() frees memory allocated for the wcsprm arrays by wcsini() and/or
 *   wcsset().  wcsini() records the memory it allocates and wcsfree() will
 *   only attempt to free this.
@@ -151,7 +212,7 @@
 *                        Coordinate transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *
@@ -165,15 +226,15 @@
 *                        Coordinate transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *
 *
-*   Initialization routine; wcsset()
-*   --------------------------------
-*   Initializes a wcsprm data structure according to information supplied
-*   within it (see "Coordinate transformation parameters" below).
+*   Setup routine; wcsset()
+*   -----------------------
+*   Sets up a wcsprm data structure according to information supplied within
+*   it (see "Coordinate transformation parameters" below).
 *
 *   wcsset() recognizes the NCP projection and converts it to the equivalent
 *   SIN projection.  It also recognizes GLS as a synonym for SFL.
@@ -187,10 +248,10 @@
 *                        Coordinate transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: Linear transformation matrix is singular.
 *                           4: Inconsistent or unrecognized coordinate axis
 *                              types.
@@ -235,15 +296,15 @@
 *                        spectral coordinate, in SI units.
 *
 *      stat     int[ncoord]
-*                        Error status for each coordinate:
+*                        Status return value for each coordinate:
 *                           0: Success.
 *                           1: Invalid pixel coordinate.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: Linear transformation matrix is singular.
 *                           4: Inconsistent or unrecognized coordinate axis
 *                              types.
@@ -290,16 +351,17 @@
 *
 *      pixcrd   double[ncoord][nelem]
 *                        Array of pixel coordinates.
+*
 *      stat     int[ncoord]
-*                        Error status for each coordinate:
+*                        Status return value for each coordinate:
 *                           0: Success.
 *                           1: Invalid world coordinate.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: Linear transformation matrix is singular.
 *                           4: Inconsistent or unrecognized coordinate axis
 *                              types.
@@ -331,6 +393,7 @@
 *                           2: Celestial latitude is given in
 *                              world[wcs.lat], longitude returned in
 *                              world[wcs.lng].
+*
 *      vspan    const double[2]
 *                        Solution interval for the celestial coordinate, in
 *                        degrees.  The ordering of the two limits is
@@ -339,10 +402,12 @@
 *                        is the same as [240,480], except that the solution
 *                        will be returned with the same normalization, i.e.
 *                        lie within the interval specified.
+*
 *      vstep    const double
 *                        Step size for solution search, in degrees.  If zero,
 *                        a sensible, although perhaps non-optimal default will
 *                        be used.
+*
 *      viter    int      If a solution is not found then the step size will be
 *                        halved and the search recommenced.  viter controls
 *                        how many times the step size is halved.  The allowed
@@ -372,10 +437,10 @@
 *                        given and the remaining elements are returned.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *                           3: Linear transformation matrix is singular.
 *                           4: Inconsistent or unrecognized coordinate axis
 *                              types.
@@ -415,6 +480,39 @@
 *       the single plane representation understood by the lower-level WCSLIB
 *       projection routines.
 *
+*    2) In wcssub(), combinations of subimage axes of particular types may be
+*       extracted in the same order as they occur the input image by combining
+*       preprocessor codes, for example
+*
+*          *nsub = 1;
+*          axes[0] = WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_SPECTRAL;
+*
+*       would extract the longitude, latitude, and spectral axes in the same
+*       order as the input image.  If one of each were present, *nsub = 3
+*       would be returned.
+*
+*       For convenience, WCSSUB_CELESTIAL is defined as the combination
+*       WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_CUBEFACE.
+*
+*       The codes may also be negated to extract all but the types specified,
+*       for example
+*
+*          *nsub = 4;
+*          axes[0] = WCSSUB_LONGITUDE;
+*          axes[1] = WCSSUB_LATITUDE;
+*          axes[2] = WCSSUB_CUBEFACE;
+*          axes[3] = -(WCSSUB_SPECTRAL | WCSSUB_STOKES);
+*
+*       The last of these specifies all axis types other than spectral or
+*       Stokes.  However, as extraction is done in the order specified by
+*       axes[] a longitude axis (if present) would be extracted first (via
+*       axes[0]) and not subsequently (via axes[3]).  Likewise for the
+*       latitude and cubeface axes in this example.
+*
+*       From the foregoing, it is apparent that the value of *nsub returned
+*       may be less than or greater than that given.  However, it will never
+*       exceed the number of axes in the input image.
+*
 *
 *   Coordinate transformation parameters
 *   ------------------------------------
@@ -426,13 +524,13 @@
 *   to allocate memory for arrays in the wcsprm struct and set default
 *   values.  Then as it read and identified each WCS header card it would
 *   load the value into the relevant wcsprm array element.  Finally it would
-*   invoke wcsset(), either directly or indirectly, to initialize the derived
-*   members of the wcsprm struct.
+*   invoke wcsset(), either directly or indirectly, to set the derived members
+*   of the wcsprm struct.
 *
 *      int flag
 *         This flag must be set to zero whenever any of the following members
-*         of the wcsprm struct are set or modified.  This signals the
-*         initialization routine, wcsset(), to recompute intermediaries.
+*         of the wcsprm struct are set or modified.  This signals the setup
+*         routine, wcsset(), to recompute intermediaries.
 *
 *         flag should be set to -1 when wcsini() is called for the first time
 *         for a wcsprm struct in order to initialize memory management.  It
@@ -664,7 +762,7 @@
 *         Location of the observer in a standard terrestrial reference frame,
 *         OBSGEO-X, OBSGEO-Y, OBSGEO-Z (in metres).
 *
-*      char date-obs[72]
+*      char dateobs[72]
 *         The date of observation in ISO format, yyyy-mm-ddThh:mm:ss.  It
 *         refers to the start of the observation unless otherwise explained in
 *         the comment field of the DATE-OBS card.
@@ -728,9 +826,10 @@
 *
 *   Memory allocation and deallocation
 *   ----------------------------------
-*   wcsini() allocates memory for the crpix, pc, and cdelt arrays in the
-*   wcsprm struct.  It is provided as a service routine; usage is optional,
-*   and the caller is at liberty to set these pointers independently.
+*   wcsini() allocates memory for the crpix, pc, cdelt, cunit, ctype, crval,
+*   pv, ps, cd, crota, cname, crder, and csyer arrays in the wcsprm struct.
+*   It is provided as a service routine; usage is optional, and the caller is
+*   at liberty to set these pointers independently.
 *
 *   If the pc matrix is not unity, wcsset() also allocates memory for the
 *   piximg and imgpix arrays.  The caller must not modify these.
@@ -752,12 +851,12 @@
 *   Beware of making a shallow copy of a wcsprm struct by assignment; any
 *   changes made to allocated memory in one would be reflected in the other,
 *   and if the memory allocated for one was free'd the other would reference
-*   unallocated memory.  Use wcscopy() instead to make a deep copy.
+*   unallocated memory.  Use wcssub() instead to make a deep copy.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the wcs_errmsg character array.
 *
 *
@@ -798,6 +897,13 @@
 #include "cel.h"
 #include "spc.h"
 
+#define WCSSUB_LONGITUDE 0x1001
+#define WCSSUB_LATITUDE  0x1002
+#define WCSSUB_CUBEFACE  0x1004
+#define WCSSUB_CELESTIAL 0x1007
+#define WCSSUB_SPECTRAL  0x1008
+#define WCSSUB_STOKES    0x1010
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -811,6 +917,7 @@ extern "C" {
 
 extern const char *wcs_errmsg[];
 #define wcsini_errmsg wcs_errmsg
+#define wcssub_errmsg wcs_errmsg
 #define wcscopy_errmsg wcs_errmsg
 #define wcsfree_errmsg wcs_errmsg
 #define wcsprt_errmsg wcs_errmsg
@@ -920,7 +1027,7 @@ struct wcsprm {
 
    int wcsini(int, int, struct wcsprm *);
 
-   int wcscopy(int, const struct wcsprm *, struct wcsprm *);
+   int wcssub(int, const struct wcsprm *, int *, int[], struct wcsprm *);
 
    int wcsfree(struct wcsprm *);
 
@@ -942,13 +1049,15 @@ struct wcsprm {
    void wcs_setAli(int, int, int *);
 #else
    int wcsnpv(), wcsnps();
-   int wcsini(), wcscopy(), wcsfree(), wcsprt(), wcsset(), wcsp2s(), wcss2p(),
+   int wcsini(), wcssub(), wcsfree(), wcsprt(), wcsset(), wcsp2s(), wcss2p(),
        wcsmix();
    int wcs_allEq();
    void wcs_setAll(), wcs_setAli();
 #endif
 
 #define WCSLEN (sizeof(struct wcsprm)/sizeof(int))
+
+#define wcscopy(alloc, wcssrc, wcsdst) wcssub(alloc, wcssrc, 0, 0, wcsdst)
 
 #ifdef __cplusplus
 };
