@@ -59,7 +59,7 @@ Direction:[0.612372, 0.353553, 0.707107][30, 45] deg
 uvw:      [58.6603, -56.9946, 58.4088][-44.1749, 35.5322] deg
 --------------------------------------
 Testing all conversions forward/backward
-All forward/backward conversions: ok
+All forward/backward uvw conversions: ok
 --------------------------------------
 Exercise all MVuvw functions
 putValue:       [23 m, 23 m, 23 m], [23, 23, 23]

@@ -102,6 +102,7 @@ main()
 
 	Vector<Double> tvec(3);
 	tvec = 0.0;
+	Bool isok = True;
 	for (uInt i=Muvw::ITRF; i<Muvw::N_Types; i++) {
 	  for (uInt j=Muvw::ITRF; j<Muvw::N_Types; j++) {
 	    Muvw::Ref rin(i, mf);
@@ -116,11 +117,15 @@ main()
 		Muvw::showType(j) << ": " <<
 		mb0.getValue().getValue().ac() -
 		backw(forw(mb0)).getValue().getValue().ac() << endl;
+	      isok = False;
 	    };
 	  };
 	};
-
-	cout << "All forward/backward conversions: ok" << endl;
+      if (isok) {
+	cout << "All forward/backward uvw conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward uvw conversions wrong" << endl;
+      };
 	cout << "--------------------------------------" << endl;
 
 	cout << "Exercise all MVuvw functions" << endl;
