@@ -31,12 +31,10 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
 
-void printAsRecord(const RecordTransformable & myClass);
 
 int main() {
   try {
@@ -47,7 +45,6 @@ int main() {
  	const MDirection tmp;
  	measure = MeasureHolder(tmp);
       }
-      printAsRecord(measure);
       String errorMessage;
       if (!measure.toRecord(errorMessage, rec)) {
  	throw(AipsError
@@ -81,20 +78,3 @@ int main() {
   cout << "OK" << endl;
   return 0;
 }
-
-void printAsRecord(const RecordTransformable & myClass) {
-  String errorMessage;
-  Record rec;
-  if (!myClass.toRecord(errorMessage, rec)) {
-    cout << "Cannot convert class to a Record. The reason is:" << endl; 
-    cout << errorMessage << endl;
-  } else {
-    GlishRecord gRec;
-    gRec.fromRecord(rec);
-    cout << gRec.format() << endl;
-  }
-}
-
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 tRecordTransformable"
-// End: 
