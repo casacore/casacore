@@ -37,6 +37,7 @@
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -359,6 +360,17 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		cursor.freeStorage(cptr, deletePtr);
 	    }
         }
+
+// Make sure bscale does not come out to be zero
+
+        if (::near(minPix, maxPix)) {
+           if (::near(0.0, maxPix)) {
+              maxPix = 1.0;
+           } else {
+              maxPix = maxPix + 0.01*maxPix;
+           }
+        } 
+//
 	if (hasBlanks) {
 	    bscale = Double(maxPix - minPix)/Double(Int(maxshort) - 
 						    Int(minshort+1));
@@ -373,6 +385,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
             "BITPIX must be -32 (floating point) or 16 (short integer)";
         return False;
     }
+
 
 // At this point, for 32 floating point, we must apply the given
 // mask.  For 16bit, we may know that there are in fact no blanks
