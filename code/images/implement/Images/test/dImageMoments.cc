@@ -168,6 +168,7 @@
 #include <aips/Logging.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
 
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/PagedImage.h>
@@ -303,8 +304,9 @@ try {
 
 // Convert kernel types to an Int vector
 
+   Regex re("[ \n\t\r\v\f,]+", 1);
    Vector<Int> kernelTypes;
-   kernelTypes = VectorKernel::toKernelTypes(kernels, ",");
+   kernelTypes = VectorKernel::toKernelTypes(kernels, re);
    if (kernelTypes.nelements() != 0) validInputs(SMOOTH) = True;
 
 
