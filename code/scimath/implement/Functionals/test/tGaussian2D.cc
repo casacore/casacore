@@ -258,8 +258,8 @@ int main() {
 					 adfww,
 					 adpa);
       cout << "Value: " << g2(x,y) << endl;
-      AutoDiff<Double> adx(x);
-      AutoDiff<Double> ady(y);
+      Double adx(x);
+      Double ady(y);
       cout << "Specialized:  " << g4(adx, ady) << endl;
       // Test Auto differentiation
       AutoDiffA<Double> adaheight(height,6,0);
@@ -277,9 +277,9 @@ int main() {
       AutoDiffA<Double> adax(x);
       AutoDiffA<Double> aday(y);
       cout << "Generic:      " << g5(adax, aday) << endl;
-      AlwaysAssertExit(nearAbs(g4(adx, ady).value(), g5(adax, aday).value()) &&
-		       allNearAbs(g4(adx, ady).derivatives(),
-				  g5(adax, aday).derivatives(), 1e-13));
+      AlwaysAssertExit(near(g4(adx, ady).value(), g5(adax, aday).value()) &&
+		   allNear(g4(adx, ady).derivatives(),
+			   g5(adax, aday).derivatives(), 1e-13));
    }
     if (anyFailures) {
       cout << "FAIL" << endl;

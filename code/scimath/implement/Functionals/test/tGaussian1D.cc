@@ -101,8 +101,8 @@ int main() {
 		   near(gauss5[NQGaussian1D<AutoDiff<Double> >::HEIGHT] , 
 			1.0/4.0/sqrt(C::pi/log(16.0))));
   gauss5.setHeight(AutoDiff<Double>(2.0,3,0));
-  cout << "Specialized(3):  " << gauss5(AutoDiff<Double>(3.0)) << endl;
-  cout << "Specialized(5):  " << gauss5(AutoDiff<Double>(5.0)) << endl;
+  cout << "Specialized(3):  " << gauss5(3.0) << endl;
+  cout << "Specialized(5):  " << gauss5(5.0) << endl;
   AlwaysAssertExit(near(gauss1(3.0), 2.0));
   
   // Test Auto differentiation
@@ -154,9 +154,9 @@ int main() {
   AlwaysAssertExit(gauss1.height() == 1.0 && gauss1.center() == 2.0 &&
 		   gauss1.width() == 3.0);
   
-  AlwaysAssertExit(near(gauss5(AutoDiff<Double>(5.0)).value(),
+  AlwaysAssertExit(near(gauss5(5.0).value(),
 			gauss6(AutoDiffA<Double>(5.0)).value()) &&
-		   allNear(gauss5(AutoDiff<Double>(5.0)).derivatives(),
+		   allNear(gauss5(5.0).derivatives(),
 			   gauss6(AutoDiffA<Double>(5.0)).derivatives(),
 			   1e-13));
   parms = 11.0;

@@ -130,11 +130,11 @@ int main() {
     sq3[0] = AutoDiff<Double>(1.0,3,0);
     sq3[1] = AutoDiff<Double>(2.0,3,1);
     sq3[2] = AutoDiff<Double>(3.0,3,2);
-    cout << "Specific(3): " << sq3(AutoDiff<Double>(3.0)) << endl;
-    AlwaysAssertExit(near(sq2(AutoDiff<Double>(3.0)).value(),
-			  sq3(AutoDiffA<Double>(3.0)).value()) &&
-		     allNear(sq2(AutoDiff<Double>(3.0)).derivatives(),
-			     sq3(AutoDiffA<Double>(3.0)).derivatives(),
+    cout << "Specific(3): " << sq3(3.0) << endl;
+    AlwaysAssertExit(near(sq2(AutoDiffA<Double>(3.0)).value(),
+			  sq3(3.0).value()) &&
+		     allNear(sq2(AutoDiffA<Double>(3.0)).derivatives(),
+			     sq3(3.0).derivatives(),
 			     1e-13));
     cout << "OK" << endl;
     return 0;
