@@ -820,7 +820,6 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
       
    const uInt nBins = nBins_p;
    const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
-      
    
 // Generate the equivalent Gaussian if desired
       
@@ -1535,9 +1534,15 @@ template <class T>
 T HistTiledCollapser<T>::setBinWidth (const Vector<T>& clip,
                                       uInt nBins)
 //
-// Set the bin width for the current histogram
+// Set the bin width for the current histogram.  If the reange
+// is constant, do someting rather arbitrary to avoid 
+// divide by zeros
 //
 { 
-return ((clip(1) - clip(0)) / nBins);
+   T width = (clip(1) - clip(0)) / nBins;
+   if (near(width,0.0,1e-6)) {
+      width = 0.001;
+   }
+   return width;
 }
 
