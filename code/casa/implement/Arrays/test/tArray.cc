@@ -617,7 +617,25 @@ main()
 	  AlwaysAssertExit(a1.nonDegenerate().shape() == IPosition(2,2,3));
 	  AlwaysAssertExit(a1.nonDegenerate(1).shape() == IPosition(3,1,2,3));
 	}
+ 	{
+ 	  // Test the addDegenerate() function
+ 	  Array<Int> a1(IPosition(2,10,10));
+ 	  indgen(a1);
+ 	  AlwaysAssertExit(a1.addDegenerate(1u).shape()==IPosition(3,10,10,1));
 
+ 	  Matrix<Int> m = a1(IPosition(2,1),IPosition(2,3),IPosition(2,2));
+ 	  AlwaysAssertExit(m(0,0) == 11);
+ 	  AlwaysAssertExit(m(1,1) == 33);
+ 	  Array<Int> md(m.addDegenerate(2u));
+  	  AlwaysAssertExit(md.shape() == IPosition(4,2,2,1,1));
+   	  AlwaysAssertExit(md(IPosition(4,0)) == 11);
+  	  AlwaysAssertExit(md(IPosition(4,1,1,0,0)) == 33);
+  	  md(IPosition(4,0)) = 100;
+  	  AlwaysAssertExit(m(0,0) == 100);
+
+ 	  const Array<Int> a2(m);
+ 	  AlwaysAssertExit(a2.addDegenerate(1u).shape() == IPosition(3,2,2,1));
+ 	}
 	{
 	  // Test 0-dimensioned (not sized) arrays
 	  IPosition shape(0);
