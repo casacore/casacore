@@ -1276,16 +1276,17 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   }
 
 
+  Array<Bool> flag;
   if (wantFlag || wantFlagSum ||average) {
-    Array<Bool> flag;
-    getAveragedFlag(flag,msc.flag());
-    uInt nPol=flag.shape()(0), nChan=flag.shape()(1), nRow=flag.shape()(2);
+    Array<Bool> avFlag;
+    flag=getAveragedFlag(avFlag,msc.flag());
+    uInt nPol=avFlag.shape()(0), nChan=avFlag.shape()(1), nRow=avFlag.shape()(2);
     if (doIfrAxis) {
-      MSSelUtil2<Bool>::reorderData(flag,ifrIndex,nIfr,slot,nSlot,True);
+      MSSelUtil2<Bool>::reorderData(avFlag,ifrIndex,nIfr,slot,nSlot,True);
     }
-    if (average) flags=flag;
+    if (average) flags=avFlag;
     if (wantFlag && !average) {
-      out.add("flag",flag);
+      out.add("flag",avFlag);
     }
     if (wantFlagSum) {
       if (doIfrAxis) {
@@ -1300,7 +1301,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	    for (Int l=0; l<nIfr; l++, indx(2)++) {
 	      Int count=0;
 	      for (indx(3)=0; indx(3)<nSlot; indx(3)++) {
-		if (flag(indx)) count++;
+		if (avFlag(indx)) count++;
 	      }
 	      flagSum(j,k,l)=count;
 	    }
@@ -1310,7 +1311,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       } else {
 	Matrix<Int> flagSum(nPol,nChan);
 	flagSum=0;
-	Cube<Bool> flag2(flag);
+	Cube<Bool> flag2(avFlag);
 	for (uInt j=0; j<nPol; j++) {
 	  for (uInt k=0; k<nChan; k++) {
 	    Int count=0;
@@ -1324,6 +1325,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
     }
   }
+
   Bool wantOR = (wantORAmp || wantORPhase || wantORReal || wantORImag ||
 		       wantORData);
   Bool wantR = (wantRAmp || wantRPhase || wantRReal || wantRImag ||
@@ -1336,7 +1338,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     // get the data
     Array<Float> fdata;
     if (!msc.floatData().isNull()) {
-      getAveragedData(fdata,msc.floatData());
+      getAveragedData(fdata,flag,msc.floatData());
       if (doIfrAxis) MSSelUtil2<Float>::
 	reorderData(fdata,ifrIndex,nIfr,slot,nSlot,Float());
       if (average) MSSelUtil2<Float>::
@@ -1356,7 +1358,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	 << " data may give incorrect results"<< LogIO::POST;
     }
     if (!msc.data().isNull()) {
-      getAveragedData(data,msc.data());
+      getAveragedData(data,flag,msc.data());
       if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
       if (wantOR) {
@@ -1381,7 +1383,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     if (!msc.correctedData().isNull()) {
       // get the data
       Array<Complex> data;
-      getAveragedData(data,msc.correctedData());
+      getAveragedData(data,flag,msc.correctedData());
       if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
       if (wantR || wantRat) {
@@ -1406,7 +1408,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     if (!msc.modelData().isNull()) {
       // get the data
       Array<Complex> data;
-      getAveragedData(data,msc.modelData());
+      getAveragedData(data,flag,msc.modelData());
       if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
       if (wantR || wantOR || wantRat) {
@@ -1732,14 +1734,14 @@ Bool MSSelector::iterEnd()
   selms_p=msIter_p->ms();
   return True;
 }
-void MSSelector::getAveragedData(Array<Complex>& avData, 
+void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
 				 const ROArrayColumn<Complex>& col) const
 {
-  getAveragedData(avData,col,Slicer(Slice()));
+  getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
 
-void MSSelector::getAveragedData(Array<Complex>& avData, 
+void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
 				 const ROArrayColumn<Complex>& col,
 				 const Slicer & rowSlicer) const
 {
@@ -1790,13 +1792,13 @@ void MSSelector::getAveragedData(Array<Complex>& avData,
   }
 }
 
-void MSSelector::getAveragedData(Array<Float>& avData, 
+void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 				 const ROArrayColumn<Float>& col) const
 {
-  getAveragedData(avData,col,Slicer(Slice()));
+  getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
-void MSSelector::getAveragedData(Array<Float>& avData, 
+void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 				 const ROArrayColumn<Float>& col,
 				 const Slicer& rowSlicer) const
 {
@@ -1825,17 +1827,23 @@ void MSSelector::getAveragedData(Array<Float>& avData,
     avData=data;
   } else {
     // Average channel by channel
+    Array<Bool> mask(!flag);
+    Array<Float> wt(flag.shape(),0.0); wt(mask)=1.0;
+    Array<Float> avWt(avData.shape(),0.0);
     for (Int i=0; i<nChan; i++) {
       // if width>1, the slice doesn't have an increment, so we take big steps
       Int chn=i*chanSel(3);
-      Array<Float> ref(avData(IPosition(3,0,i,0),IPosition(3,nPol-1,i,nRow-1)));
-      ref=data(IPosition(3,0,chn,0),IPosition(3,nPol-1,chn,nRow-1));
+      IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
+	cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
+      Array<Float> ref(avData(is,ie));
+      Array<Float> wtref(avWt(is,ie));
       // average over channels
-      // TODO: take flagging into account
-      for (Int j=1; j<chanSel(2); j++) {
-	ref+=data(IPosition(3,0,chn+j,0),IPosition(3,nPol-1,chn+j,nRow-1));
+      for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+	MaskedArray<Float> mdata(data(cs,ce),mask(cs,ce));
+	ref+=mdata;
+	wtref+=wt(cs,ce);
       }
-      ref/=Float(chanSel(2));
+      ref(wtref>Float(0.0))/=wtref(wtref>Float(0.0));
     }
   }
   // do the polarization conversion
@@ -1849,18 +1857,15 @@ void MSSelector::getAveragedData(Array<Float>& avData,
   }
 }
 
-//# TODO: change the flagging to AND instead of OR and do the right
-// thing when averaging the data
-
-void MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-				 const ROArrayColumn<Bool>& col) const
+Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
+					const ROArrayColumn<Bool>& col) const
 {
-  getAveragedFlag(avFlag,col,Slicer(Slice()));
+  return getAveragedFlag(avFlag,col,Slicer(Slice()));
 }
 
-void MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-				 const ROArrayColumn<Bool>& col,
-				 const Slicer& rowSlicer) const
+Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
+					const ROArrayColumn<Bool>& col,
+					const Slicer& rowSlicer) const
 {
   Array<Bool> flag;
   if (useSlicer_p) {
@@ -1886,15 +1891,15 @@ void MSSelector::getAveragedFlag(Array<Bool>& avFlag,
     // no averaging, just copy flags
     avFlag=flag;
   } else {
+    avFlag=True;
     for (Int i=0; i<nChan; i++) {
       Int chn=i*chanSel(3);
+      IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
+	cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
+      Array<Bool> ref(avFlag(is,ie));
       // average over channels
-      for (Int j=0; j<nPol;j++) {
-	for (Int k=0; k<nRow; k++) {
-	  avFlag(IPosition(3,j,i,k))=
-	    (anyEQ(flag(IPosition(3,j,chn,k),
-			      IPosition(3,j,chn+chanSel(2)-1,k)),True));
-	}
+      for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+	ref*=flag(cs,ce);
       }
     }
   }
@@ -1903,6 +1908,7 @@ void MSSelector::getAveragedFlag(Array<Bool>& avFlag,
     stokesConverter_p.convert(out,avFlag);
     avFlag.reference(out);
   }
+  return flag; // return the raw flags for use in data averaging
 }
 
 void MSSelector::putAveragedFlag(const Array<Bool>& avFlag, 
