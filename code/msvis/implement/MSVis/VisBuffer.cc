@@ -490,6 +490,16 @@ void VisBuffer::setCorrectedVisCube(const Cube<Complex>& vis)
   correctedVisCubeOK_p=True;
 }
 
+void VisBuffer::removeScratchCols() 
+{
+  // removes scratch data from the vb
+  modelVisibility_p.resize();
+  modelVisOK_p=False;
+  correctedVisibility_p.resize();
+  correctedVisOK_p=False;
+}
+
+
 Int & VisBuffer::fillnChannel() 
 { 
   nChannelOK_p=True; 

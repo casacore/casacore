@@ -292,6 +292,9 @@ public:
   void setModelVisCube(const Cube<Complex>& vis);
   void setCorrectedVisCube(const Cube<Complex>& vis);
 
+  // Remove scratch cols data from vb
+  void VisBuffer::removeScratchCols(); 
+
   // Access the current ROMSColumns object via VisIter
   const ROMSColumns& msColumns() const
     { return visIter_p->msColumns();}
