@@ -1,5 +1,5 @@
 //# tDirectory.cc: Test program for class Directory
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,6 +231,8 @@ void doIt (Bool doExcp)
     cout << ">>>" << endl;
     cout << "Free Space: " << test7.freeSpace() << ' '
 	 << test8.freeSpace() << endl;
+    cout << "Free Space in MB: " << test7.freeSpaceInMB() << ' '
+	 << test8.freeSpaceInMB() << endl;
     cout << "<<<" << endl;
 
     test8.remove();
