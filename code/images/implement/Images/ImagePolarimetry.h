@@ -38,6 +38,7 @@
 //# Forward Declarations
 template <class T> class SubImage;
 template <class T> class ImageExpr;
+template <class T> class Quantum;
 //
 class CoordinateSystem;
 class IPosition;
@@ -152,7 +153,11 @@ private:
    void cleanup();
    void fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const;
    void fiddleStokesCoordinate(ImageInterface<Complex>& ie, Stokes::StokesTypes type) const;
+   void fiddleTimeCoordinate(ImageInterface<Complex>& ie, const Quantum<Double>& f, Int coord) const;
+//
+   Quantum<Double> findCentralFrequency(const CoordinateSystem& cSys, Int coord, Int shape) const;
    void findStokes();
+//
    LatticeExprNode makePolIntNode(LogIO& os, Bool debias, Float var,
                                   Bool doLin, Bool doCirc) const;
    ImageExpr<Float> makeStokesExpr(ImageInterface<Float>* imPtr,
