@@ -3,7 +3,7 @@
 # rai: Remotely check in AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1999,2000
+#   Copyright (C) 1996,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -83,6 +83,8 @@
   esac
 
 # Get file names.
+  REMOTETAR=a.tmp.tar
+  LOCALTAR=b.tmp.tar
   ARGS=
   AU=
   OPER="chmod a-w"
@@ -103,12 +105,12 @@
      case $i in
      -l)
         OPER="rm -f"
-        SAVE_RESULTS="tar cf o.tmp.tar"
+        SAVE_RESULTS="tar cf $REMOTETAR"
         continue
         ;;
      -u)
         OPER="rm -f"
-        SAVE_RESULTS="tar cf o.tmp.tar"
+        SAVE_RESULTS="tar cf $REMOTETAR"
         continue
         ;;
      -*)
@@ -148,16 +150,16 @@
   COMMAND=
   if [ "$FILES" != "" ]
   then
-     rm -f a.tmp.tar && tar cf a.tmp.tar $FILES
-     scp -qpC a.tmp.tar $AUID@aips2.nrao.edu:$PGMRDIR/a.tmp.tar
-     rm -f a.tmp.tar
+     rm -f $LOCALTAR && tar cf $LOCALTAR $FILES
+     scp -qpC $LOCALTAR $AUID@aips2.nrao.edu:$PGMRDIR/$REMOTETAR
+     rm -f $LOCALTAR
      if [ "$COMMAND" ]
      then
         COMMAND="$COMMAND &&"
      else
         COMMAND="cd $PGMRDIR &&"
      fi
-     COMMAND="$COMMAND tar pvxf a.tmp.tar > /dev/null && rm -f a.tmp.tar"
+     COMMAND="$COMMAND tar pvxf $REMOTETAR > /dev/null && rm -f $REMOTETAR"
   fi
 
 # Transmit directories to the master host.
@@ -185,14 +187,14 @@
      COMMAND="$COMMAND && $SAVE_RESULTS $FILES"
   fi
   COMMAND="$COMMAND && rm -f $FILES"
-  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' && [ "$FILES" ] && $OPER $FILES
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' && [ -e "$FILES" ] && $OPER $FILES
 
 # Retrieve results if they were saved
   if [ "$SAVE_RESULTS" ]
   then
-     scp -qpC $AUID@aips2.nrao.edu:$PGMRDIR/o.tmp.tar o.tmp.tar && tar pvxf o.tmp.tar > /dev/null
-     $ARSH /aips++/weekly/.rshexec sh -c \'\""cd $PGMRDIR && rm -f o.tmp.tar"\"\'
-     rm -f o.tmp.tar
+     scp -qpC $AUID@aips2.nrao.edu:$PGMRDIR/$REMOTETAR $LOCALTAR && tar pvxf $LOCALTAR > /dev/null
+     $ARSH /aips++/weekly/.rshexec sh -c \'\""cd $PGMRDIR && rm -f $REMOTETAR"\"\'
+     rm -f $LOCALTAR
   fi
 
 # Update the local installation?
