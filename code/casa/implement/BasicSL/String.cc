@@ -27,7 +27,7 @@
 
 #include <aips/Utilities/String.h>
 
-#include <aips/Utilities/Regex.h>
+#include <aips/Utilities/RegexBase.h>
 #include <algorithm>
 #include <aips/string.h>
 #include <aips/strstream.h>
@@ -252,86 +252,87 @@ void String::capitalize() {
   };
 }
 
-// Regex related functions
-String::size_type String::find(const Regex &r, size_type pos) const {
+// RegexBase related functions
+String::size_type String::find(const RegexBase &r, size_type pos) const {
   Int unused;
-  return r.search(c_str(), length(), unused, pos);
+  return r.find(c_str(), length(), unused, pos);
 }
 
-String::size_type String::rfind(const Regex &r, size_type pos) const {
+String::size_type String::rfind(const RegexBase &r, size_type pos) const {
   Int unused;
-  return r.search(c_str(), length(), unused, static_cast<Int>(pos)-length());
+  return r.rfind(c_str(), length(), unused, pos-length());
 }
 
-Bool String::contains(const Regex &r) const {
+Bool String::contains(const RegexBase &r) const {
   Int unused;
-  return (static_cast<size_type>(r.search(c_str(), length(), unused, 0)) !=
-	  npos);
+  return (r.find(c_str(), length(), unused, 0)) != npos;
 }
 
-Bool String::matches(const Regex &r, Int pos) const {
-  Int l = (pos < 0) ? -pos : length() - pos;
+Bool String::matches(const RegexBase &r, Int pos) const {
+  String::size_type l = (pos < 0) ? -pos : length() - pos;
+  if (l>length()) return False;
+  if (pos<0) return r.match(c_str(), l, 0) == l;
   return r.match(c_str(), length(), pos) == l;
 }
 
-String::size_type String::index(const Regex &r, Int startpos) const {
+String::size_type String::index(const RegexBase &r, Int startpos) const {
   Int unused;
   return r.search(c_str(), length(), unused, startpos);
 }
 
-SubString String::at(const Regex &r, Int startpos) {
+SubString String::at(const RegexBase &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, mlen);
 }
 
-SubString String::before(const Regex &r, Int startpos) {
+SubString String::before(const RegexBase &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(0, first);
 }
 
-SubString String::through(const Regex &r, Int startpos) {
+SubString String::through(const RegexBase &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(0, first);
 }
 
-SubString String::from(const Regex &r, Int startpos) {
+SubString String::from(const RegexBase &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(first, length()-first);
 }
 
-SubString String::after(const Regex &r, Int startpos) {
+SubString String::after(const RegexBase &r, Int startpos) {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   if (first != npos) first += mlen;
   return _substr(first, length()-first);
 }
 
-void String::del(const Regex &r, size_type startpos) {
+void String::del(const RegexBase &r, size_type startpos) {
   Int mlen;
-  size_type first = r.search(c_str(), length(), mlen, startpos);
+  size_type first = r.find(c_str(), length(), mlen, startpos);
   erase(first, mlen);
 }
 
-Int String::gsub(const Regex &pat, const string &repl) {
+Int String::gsub(const RegexBase &pat, const string &repl) {
   Int nmatches(0);
   if (length() == 0) return nmatches;
   Int pl;
   size_type si(0);
   Int rl(repl.length());
   while (length() > si) {
-    size_type pos = pat.search(c_str(), length(), pl, si);
+    size_type pos = pat.find(c_str(), length(), pl, si);
     if (pos >= npos-1 || pl <= 0) break;
     else {
       nmatches++;
       si = pos + rl;
-      if (pos == 0 && si == 0) { 	// cpuld be problem with anchor at begin
+      if (pos == 0 && si == 0) { 	// could be problem with anchor at begin
 	Int pls;
-	size_type ps = pat.search(c_str(), length(), pls, pl); // try for begin
+	size_type ps = pat.find(c_str(), length(), pls, pl); // try for begin
 	if (ps >= npos-1 || pls <= 0) {
 	  replace(pos, pl, repl);	// finish off if no more (anchored) match
 	  break;
@@ -391,12 +392,12 @@ Int split(const string &str, string res[], Int maxn,
 }
 
 Int split(const string &str, string res[], Int maxn,
-	  const Regex &sep) {
+	  const RegexBase &sep) {
   Int i(0);
   String::size_type pos(0);
   Int matchlen;
   while (i < maxn && pos < str.length()) {
-    String::size_type p = sep.search(str.c_str(), str.length(), matchlen, pos);
+    String::size_type p = sep.find(str.c_str(), str.length(), matchlen, pos);
     if (p == String::npos) p = str.length();
     res[i] = String(str, pos, p-pos);
     i++;

@@ -36,7 +36,7 @@
 
 //# Forward Declarations
 class String;
-class Regex;
+class RegexBase;
 #include <aips/iosstrfwd.h>
 
 // <summary> SubString help class to be used in at, before, ... </summary>
@@ -94,7 +94,7 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> Regex - the regular expressions class
+//   <li> RegexBase - the regular expressions class
 //   <li> the std string class
 // </prerequisite>
 //
@@ -164,7 +164,7 @@ private:
 // </ol>
 // The aips++ addition are:
 // <ol>
-// <li> To standard: some Char function arguments where appropriate; Regex
+// <li> To standard: some Char function arguments where appropriate; RegexBase
 //		arguments in search like methods.
 // <li> Substring additions: at, before, after, from, through functions taking
 //		search String, Char* as arguments can give (hidden) substrings
@@ -574,7 +574,7 @@ class String : public string {
     return String(*this, pos, n); }
 
   // Search functions. Returns either npos (if not found); else position.
-  // <note role=warning> The Regex ones are ** aips++ additions</note>
+  // <note role=warning> The RegexBase ones are ** aips++ additions</note>
   // <group>
   size_type find(const string &str, size_type pos=0) const {
     return string::find(str, pos); }
@@ -584,7 +584,7 @@ class String : public string {
     return string::find(s, pos, n); }
   size_type find(Char c, size_type pos=0) const {
     return string::find(c, pos); }
-  size_type find(const Regex &r, size_type pos=0) const;
+  size_type find(const RegexBase &r, size_type pos=0) const;
   size_type rfind(const string &str, size_type pos=0) const {
     return string::find(str, pos); }
   size_type rfind(const Char *s, size_type pos=0) const {
@@ -593,7 +593,7 @@ class String : public string {
     return string::rfind(s, pos, n); }
   size_type rfind(Char c, size_type pos=0) const {
     return string::rfind(c, pos); }
-  size_type rfind(const Regex &r, size_type pos=0) const;
+  size_type rfind(const RegexBase &r, size_type pos=0) const;
   size_type find_first_of(const string &str, size_type pos=0) const {
     return string::find_first_of(str, pos); }
   size_type find_first_of(const Char *s, size_type pos=0) const {
@@ -636,24 +636,25 @@ class String : public string {
     return (find(str) != npos); }
   Bool contains(const Char *s) const {
     return (find(s) != npos); }
-  Bool contains(const Regex &r) const;
+  Bool contains(const RegexBase &r) const;
   // </group>
   // Containment after (or before if pos negative) pos. ** aips++ addition
   // <group name=contains_pos>
   Bool contains(Char c, Int pos) const;
   Bool contains(const string &str, Int pos) const;
   Bool contains(const Char *s, Int pos) const;
-  Bool contains(const Regex &r, Int pos) const;
+  Bool contains(const RegexBase &r, Int pos) const;
   // </group>
 
-  // Matches entire string. ** aips++ addition
+  // Matches entire string from pos
+  // (or till pos if negative pos). ** aips++ addition
   // <group name=matches>
   Bool matches(const string &str, Int pos = 0) const;
   Bool matches(Char c, Int pos = 0) const {
     return matches(String(c), pos); };
   Bool matches(const Char *s, Int pos = 0) const {
     return matches(String(s), pos); };
-  Bool matches(const Regex &r, Int pos = 0) const;
+  Bool matches(const RegexBase &r, Int pos = 0) const;
   // </group>
 
   // Concatenate by prepending the argument onto String. ** aips++ addition
@@ -675,7 +676,7 @@ class String : public string {
   size_type index(const Char *s, Int startpos = 0) const {
     return ((startpos >= 0) ? find(s, startpos) :
 	    rfind(s, length() + startpos - traits_type::length(s))); }
-  size_type index(const Regex &r, Int startpos = 0) const;
+  size_type index(const RegexBase &r, Int startpos = 0) const;
   // </group>
 
   //  Return the number of occurences of target in String. ** aips++ addition
@@ -695,8 +696,8 @@ class String : public string {
   String at(const Char *s, Int startpos = 0) const;
   SubString at(Char c, Int startpos = 0);
   String at(Char c, Int startpos = 0) const;
-  SubString at(const Regex &r, Int startpos = 0); 
-  String at(const Regex &r, Int startpos = 0) const; 
+  SubString at(const RegexBase &r, Int startpos = 0); 
+  String at(const RegexBase &r, Int startpos = 0) const; 
   // Next ones for overloading reasons. 
   // <note role=tip> It is better to use the <src>substr()</src> method
   // in stead. </note>
@@ -723,7 +724,7 @@ class String : public string {
   SubString before(const string &str, Int startpos = 0);
   SubString before(const Char *s, Int startpos = 0);
   SubString before(Char c, Int startpos = 0);
-  SubString before(const Regex &r, Int startpos = 0);
+  SubString before(const RegexBase &r, Int startpos = 0);
   // Next one for overloading reasons
   SubString before(Int pos) {
     return before(static_cast<size_type>(pos)); };    
@@ -736,7 +737,7 @@ class String : public string {
   SubString through(const string &str, Int startpos = 0);
   SubString through(const Char *s, Int startpos = 0);
   SubString through(Char c, Int startpos = 0);
-  SubString through(const Regex &r, Int startpos = 0);
+  SubString through(const RegexBase &r, Int startpos = 0);
   // Next one for overloading reasons
   SubString through(Int pos) {
     return through(static_cast<size_type>(pos)); }
@@ -749,7 +750,7 @@ class String : public string {
   SubString from(const string &str, Int startpos = 0);
   SubString from(const Char *s, Int startpos = 0);
   SubString from(Char c, Int startpos = 0);
-  SubString from(const Regex &r, Int startpos = 0);
+  SubString from(const RegexBase &r, Int startpos = 0);
   // Next one for overloading reasons
   SubString from(Int pos) {
     return from(static_cast<size_type>(pos));
@@ -763,7 +764,7 @@ class String : public string {
   SubString after(const string &str, Int startpos = 0);
   SubString after(const Char *s, Int startpos = 0);
   SubString after(Char c, Int startpos = 0);
-  SubString after(const Regex &r, Int startpos = 0);
+  SubString after(const RegexBase &r, Int startpos = 0);
   // Next one for overloading reasons
   SubString after(Int pos) {
     return after(static_cast<size_type>(pos));
@@ -790,7 +791,7 @@ class String : public string {
   void del(const string &str, size_type startpos = 0);
   void del(const Char *s, size_type startpos = 0);
   void del(Char c, size_type startpos = 0);
-  void del(const Regex &r, size_type startpos = 0);
+  void del(const RegexBase &r, size_type startpos = 0);
   // Overload problem
   void del(Int pos, Int len) {
     del(static_cast<size_type>(pos), static_cast<size_type>(len)); }
@@ -803,7 +804,7 @@ class String : public string {
   Int gsub(const string &pat, const string &repl);
   Int gsub(const Char *pat, const string &repl);
   Int gsub(const Char *pat, const Char *repl);
-  Int gsub(const Regex &pat, const string &repl);
+  Int gsub(const RegexBase &pat, const string &repl);
   //</group>
 
   // Convert a integer to a String. This is a convenience function. Use the
@@ -906,7 +907,7 @@ Int split(const string &str, string res[], Int maxn,
 Int split(const string &str, string res[], Int maxn,
 	  const Char sep);
 Int split(const string &str, string res[], Int maxn,
-	  const Regex &sep);
+	  const RegexBase &sep);
 //</group> 
 
 // <summary> Some general functions </summary>
@@ -959,7 +960,7 @@ inline Bool String::contains(const string &str, Int pos) const {
   return (index(str, pos) != npos); }
 inline Bool String::contains(const Char *s, Int pos) const {
   return (index(s, pos) != npos); }
-inline Bool String::contains(const Regex &r, Int pos) const {
+inline Bool String::contains(const RegexBase &r, Int pos) const {
   return (index(r, pos) != npos); }
 
 inline Bool String::matches(const string &str, Int pos) const {
