@@ -27,6 +27,7 @@
 
 
 #include <trial/Lattices/LCRegionMulti.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -139,6 +140,52 @@ void LCRegionMulti::multiTranslate (PtrBlock<const LCRegion*>& regions,
 					       newLatticeShape);
     }
 }
+
+
+Bool LCRegionMulti::operator== (const LCRegion& other) const
+{
+   
+// Check below us
+
+   if (LCRegion::operator!=(other)) return False;
+
+// Caste (is safe)
+
+   const LCRegionMulti& that = (const LCRegionMulti&)other;
+
+// Check regions
+
+   if (itsRegions.nelements() != that.itsRegions.nelements()) return False;
+
+// The regions don't have to be in the same order.  This
+// makes it slower
+
+   Vector<Bool> used(itsRegions.nelements(),False);
+   for (uInt i=0; i<itsRegions.nelements(); i++) {
+      Bool found = False;
+      for (uInt j=0; j<that.itsRegions.nelements(); j++) {
+         if (!used(j)) {      
+            if ((*itsRegions[i]) == (*(that.itsRegions[j]))) {
+               used(j) = True;
+               found = True;
+               break;
+            }
+         }
+      }
+      if (!found) return False;
+   }
+
+   return True;
+}
+
+
+Bool LCRegionMulti::operator!= (const LCRegion& other) const
+{
+   if (LCRegionMulti::operator==(other)) return False;
+   return True;
+}
+
+
 
 void LCRegionMulti::init (Bool takeOver)
 {
