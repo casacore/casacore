@@ -31,14 +31,8 @@
 
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/String.h>
-#if !defined(USE_OLD_STRING)
 #include <stdexcept>
 #include <aips/iostream.h>
-#else
-#include <aips/Utilities/RegexError.h>
-#include <aips/iostream.h>
-#include <malloc.h>
-#endif
 
 Regex::Regex() {
   create("",0,0,0); }
@@ -74,11 +68,7 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
   Char* msg = a2_re_compile_pattern((Char*)(exp.chars()), tlen, buf);
   a2_re_set_syntax(orig);
   if (msg != 0) {
-#ifndef USE_OLD_STRING
     throw(invalid_argument("Regex"));
-#else
-    throw(RegexExpressnError(msg));
-#endif
   } else if (fast) a2_re_compile_fastmap(buf);
 }
 

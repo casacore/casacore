@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 
-// Forward declarations.
+//# Forward declarations.
 #include <aips/iosfwd.h>
 
 class  String;
