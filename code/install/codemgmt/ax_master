@@ -2193,3 +2193,4 @@
 11 144 src mv nrao/implement/FITS/GBTRaDec.h nrao/implement/FITS/OldGBTRaDec.h
 11 144 src mv nrao/implement/FITS/GBTRaDec.cc nrao/implement/FITS/OldGBTRaDec.cc
 11 144 src mv nrao/implement/FITS/GBTWeather.h nrao/implement/FITS/OldGBTWeather.h
+11 144 src mv nrao/implement/FITS/GBTWeather.cc nrao/implement/FITS/OldGBTWeather.cc
