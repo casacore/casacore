@@ -1,5 +1,5 @@
 //# TableError.h: Table error classes
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2003
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,9 +53,9 @@
 class TableError : public AipsError {
 public:
     // The default constructor generates the message "Table error".
-    TableError ();
+    TableError (Category c=GENERAL);
     // Construct with given message.
-    TableError (const String& message);
+    TableError (const String& message,Category c=GENERAL);
     ~TableError () throw();
 };
 
@@ -75,7 +75,7 @@ public:
 class TableInternalError : public TableError {
 public:
     // Add given message to string "Internal Table error: ".
-    TableInternalError (const String& message);
+    TableInternalError (const String& message,Category c=GENERAL);
     ~TableInternalError () throw();
 };
 
@@ -95,11 +95,11 @@ class TableDuplFile : public TableError {
 public:
     // This constructor generates a message telling that the a table
     // or description with the given name already exists.
-    TableDuplFile (const String& name);
+    TableDuplFile (const String& name, Category c=INVALID_ARGUMENT);
     // This constructor generates a message telling that the a table
     // or description with the given name already exists.
     // The given message is appended to it.
-    TableDuplFile (const String& name, const String& message);
+    TableDuplFile (const String& name, const String& message,Category c=INVALID_ARGUMENT);
     ~TableDuplFile () throw();
 };
 
@@ -119,7 +119,7 @@ class TableNoFile : public TableError {
 public:
     // This constructor generates a message telling that the a table
     // or description with the given name does not exist.
-    TableNoFile (const String& name);
+    TableNoFile (const String& name,Category c=INVALID_ARGUMENT);
     ~TableNoFile () throw();
 };
 
@@ -139,7 +139,7 @@ public:
 class TableDescNoName : public TableError {
 public:
     // The default constructor generates the message.
-    TableDescNoName ();
+    TableDescNoName (Category c=INITIALIZATION);
     ~TableDescNoName () throw();
 };
 
@@ -160,7 +160,7 @@ public:
     // This constructor generates a message that an invalid option
     // has been given. The class name is either Table or TableDesc.
     // The given message will be appended to the total message.
-    TableInvOpt (const String& className, const String& message);
+    TableInvOpt (const String& className, const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvOpt () throw();
 };
 
@@ -181,7 +181,7 @@ class TableInvType : public TableError {
 public:
     // This constructor generates a message that the in table type
     // mismatches the table type in the file.
-    TableInvType (const String& typeIn, const String& typeFile);
+    TableInvType (const String& typeIn, const String& typeFile, Category c=CONFORMANCE);
     ~TableInvType () throw();
 };
 
@@ -203,7 +203,7 @@ class TableInvColumnDesc : public TableError {
 public:
     // This constructor generates a message that the column
     // with the given name has an invalid description.
-    TableInvColumnDesc (const String& columnName, const String& message);
+    TableInvColumnDesc (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvColumnDesc () throw();
 };
 
@@ -225,7 +225,7 @@ class TableInvHyperDesc : public TableError {
 public:
     // This constructor generates a message that the hypercolumn
     // with the given name has an invalid description.
-    TableInvHyperDesc (const String& hypercolumnName, const String& message);
+    TableInvHyperDesc (const String& hypercolumnName, const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvHyperDesc () throw();
 };
 
@@ -247,7 +247,7 @@ class TableUnknownDesc : public TableError {
 public:
     // This constructor generates a message that the class with the
     // given name is unknown (not registered).
-    TableUnknownDesc (const String& name);
+    TableUnknownDesc (const String& name,Category c=INITIALIZATION);
     ~TableUnknownDesc () throw();
 };
 
@@ -269,9 +269,9 @@ public:
 class TableInvDT : public TableError {
 public:
     // The default constructor generates a generic "invalid data type" message.
-    TableInvDT ();
+    TableInvDT (Category c=CONFORMANCE);
     // Put the name of the offending column in the "invalid data type" message.
-    TableInvDT (const String& columName);
+    TableInvDT (const String& columName,Category c=CONFORMANCE);
     ~TableInvDT () throw();
 };
 
@@ -294,9 +294,9 @@ public:
 class TableInvOper : public TableError {
 public:
     // The default constructor generates a generic "invalid operation" message.
-    TableInvOper ();
+    TableInvOper (Category c=INVALID_ARGUMENT);
     // Add given message to string "Invalid Table operation: ".
-    TableInvOper (const String& message);
+    TableInvOper (const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvOper () throw();
 };
 
@@ -319,7 +319,7 @@ class TableArrayConformanceError : public TableError {
 public:
     // This constructor appends ": Table array conformance error"
     // to the given message.
-    TableArrayConformanceError (const String& message);
+    TableArrayConformanceError (const String& message,Category c=CONFORMANCE);
     ~TableArrayConformanceError () throw();
 };
 
@@ -342,7 +342,7 @@ class TableConformanceError : public TableError {
 public:
     // This constructor appends ": Table conformance error (#rows mismatch)"
     // to the given message.
-    TableConformanceError (const String& message);
+    TableConformanceError (const String& message,Category c=CONFORMANCE);
     ~TableConformanceError () throw();
 };
 
@@ -362,10 +362,10 @@ public:
 class TableInvSort : public TableError {
 public:
     // The default constructor generates a generic "invalid sort" message.
-    TableInvSort ();
+    TableInvSort (Category c=INVALID_ARGUMENT);
     // This constructor appends the given message to the "invalid sort"
     // message.
-    TableInvSort (const String& message);
+    TableInvSort (const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvSort () throw();
 };
 
@@ -387,7 +387,7 @@ public:
 class TableInvLogic : public TableError {
 public:
     // The default constructor generates the message.
-    TableInvLogic ();
+    TableInvLogic (Category c=INVALID_ARGUMENT);
     ~TableInvLogic () throw();
 };
 
@@ -407,10 +407,10 @@ public:
 
 class TableInvExpr : public TableError {
 public:
-    TableInvExpr (const String& message);
+    TableInvExpr (const String& message,Category c=INVALID_ARGUMENT);
     // This constructor generates a message containing the name of
     // the offending column. It appends the given message.
-    TableInvExpr (const String& columnName, const String& message);
+    TableInvExpr (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
     ~TableInvExpr () throw();
 };
 
@@ -429,7 +429,7 @@ public:
 class TableVectorNonConform : public TableError {
 public:
     // The default constructor generates the message.
-    TableVectorNonConform ();
+    TableVectorNonConform (Category c=CONFORMANCE);
     ~TableVectorNonConform () throw();
 };
 
@@ -449,7 +449,7 @@ public:
 class TableParseError : public TableError {
 public:
     // This constructor generates a message containing the table command.
-    TableParseError (const String& commandString);
+    TableParseError (const String& commandString,Category c=INVALID_ARGUMENT);
     ~TableParseError () throw();
 };
 

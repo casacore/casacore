@@ -1,5 +1,5 @@
 //# Error.h: Base class for all AIPS++ errors
-//# Copyright (C) 1993,1994,1995,1999,2000,2001,2003
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,8 +46,7 @@
 // </prerequisite>
 //
 // <synopsis>
-//  This is the base class (derived from std::exception)
-//  for all of the AIPS++ error classes. Because
+//  This is the base class for all of the AIPS++ error classes. Because
 //  all of the errors have a common base class, any error can be caught
 //  with a single catch statement.
 //
@@ -72,31 +71,41 @@
 
 class AipsError: public std::exception
 {
-protected:
-  String message;
 public:
+
+  enum Category {
+    BOUNDARY, INITIALIZATION, INVALID_ARGUMENT, CONFORMANCE,
+    ENVIRONMENT, SYSTEM, PERMISSION, GENERAL
+  };
+
   //
   // Simply returns the stored error message.
   //
+  virtual const char* what() const throw()
+  { return(message.c_str()); }
   const String &getMesg() const
     { return(message); }
-
-  virtual const char* what() const throw()
-    { return(message.c_str()); }
+  const AipsError::Category getCategory( ) const
+    { return(category); }
 
   //
   // Creates an AipsError and initializes the error message from
   // the parameter
   // <group>
-  AipsError (const Char *str);
-  AipsError (const String &str);
-  AipsError () : message() {};
+  AipsError (const Char *str, Category c = GENERAL);
+  AipsError (const String &str, Category c = GENERAL);
+  AipsError (Category c = GENERAL) : message(), category(c) {};
   // </group>
 
   //
   // Destructor which does nothing.
   //
   ~AipsError() throw();
+
+protected:
+  String message;
+  Category category;
+
 };
 
 
@@ -132,8 +141,8 @@ public:
   // allocation size.
   //
   // <group>
-  AllocError(const Char *str, uInt sze) : AipsError(str), Size(sze) {}
-  AllocError(const String &str, uInt sze) : AipsError(str), Size(sze)  {}
+  AllocError(const Char *str, uInt sze) : AipsError(str,SYSTEM), Size(sze) {}
+  AllocError(const String &str, uInt sze) : AipsError(str,SYSTEM), Size(sze)  {}
   // </group>
 
   //
@@ -177,9 +186,9 @@ public:
   // Creates an GeneralIndexError and initializes the error message from
   // the parameter
   // <group>
-  IndexError(const Char *str) : AipsError(str) {}
-  IndexError(const String &str) : AipsError(str) {}
-  IndexError() : AipsError() {}
+  IndexError(const Char *str,Category c=BOUNDARY) : AipsError(str,c) {}
+  IndexError(const String &str,Category c=BOUNDARY) : AipsError(str,c) {}
+  IndexError(Category c=BOUNDARY) : AipsError(c) {}
   // </group>
 
   //
@@ -219,9 +228,9 @@ public:
   // which cause the error to occur.
   //
   // <group>
-  indexError(t oI, const Char *str);
-  indexError(t oI, const String &str);
-  indexError(t oI) : IndexError(), oIndex(oI) {};
+  indexError(t oI, const Char *str, Category c=BOUNDARY);
+  indexError(t oI, const String &str, Category c=BOUNDARY);
+  indexError(t oI, Category c=BOUNDARY) : IndexError(c), oIndex(oI) {};
   // </group>
 
   //
@@ -259,9 +268,9 @@ public:
   // Creates an DuplError and initializes the error message from
   // the parameter
   // <group>
-  DuplError() : AipsError() {}
-  DuplError(const Char *str) : AipsError(str) {}
-  DuplError(const String &str) : AipsError(str) {}
+  DuplError(Category c=BOUNDARY) : AipsError(c) {}
+  DuplError(const Char *str,Category c=BOUNDARY) : AipsError(str,c) {}
+  DuplError(const String &str,Category c=BOUNDARY) : AipsError(str,c) {}
   // </group>
 
   //
@@ -302,9 +311,9 @@ public:
   // optional character string.
   //
   // <group>
-  duplError(t oI, const Char *str);
-  duplError(t oI, const String &str);
-  duplError(t oI) : DuplError(), oKey(oI) {};
+  duplError(t oI, const Char *str,Category c=BOUNDARY);
+  duplError(t oI, const String &str,Category c=BOUNDARY);
+  duplError(t oI,Category c=BOUNDARY) : DuplError(c), oKey(oI) {};
   // </group>
 
   //
@@ -340,8 +349,8 @@ public:
   // This constructs a "AbortError" from the error message.
   //
   // <group>
-  AbortError(const Char *str);
-  AbortError(const String &str);
+  AbortError(const Char *str,Category c=GENERAL);
+  AbortError(const String &str,Category c=GENERAL);
   // </group>
 
   //

@@ -1,5 +1,5 @@
 //# LogSinkInterface.h: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996,2000,2001,2003
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,10 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Logging/LogFilterInterface.h>
+#include <aips/Logging/LogFilter.h>
 
+//# Forward Declarations
+class TableLogSink;
 
 // <summary>
 //Accepts LogMessages and posts them to some destination
@@ -45,7 +47,7 @@
 
 // <prerequisite>
 //   <li> <linkto class=LogMessage>LogMessage</linkto>
-//   <li> <linkto class=LogFilterInterface>LogFilterInterface</linkto>
+//   <li> <linkto class=LogFilter>LogFilter</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -61,8 +63,7 @@
 // This class defines a minimal "posting" interface for all objects which accept
 // log messages. The fundamental model of a <src>LogSinkInterface</src> is:
 // <ol>
-// <li> That it contains a
-//      <linkto class=LogFilterInterface>LogFilterInterface</linkto> that is
+// <li> That it contains a <linkto class=LogFilter>LogFilter</linkto> that is
 //      used to accept or reject messages; and
 // <li> That it has a post message that takes a log message; and, if it passes
 //      the filter, does something with it (prints it to a stream, saves it to
@@ -100,7 +101,7 @@ public:
   // Create with a <src>NORMAL</src> filter.
   LogSinkInterface();
   // Create with the supplied <src>filter</src>.
-  LogSinkInterface(const LogFilterInterface &filter);
+  LogSinkInterface(const LogFilter &filter);
 
   // Copy semantics - copy the filter from <src>other</src> to <src>this</src>
   // <group>
@@ -112,8 +113,8 @@ public:
 
   // Get/set the filter.
   // <group>
-  virtual const LogFilterInterface &filter() const;
-  virtual LogSinkInterface &filter(const LogFilterInterface &filter);
+  virtual const LogFilter &filter() const;
+  virtual LogSinkInterface &filter(const LogFilter &filter);
   // </group>
 
   // Get number of messages in sink.
@@ -134,7 +135,16 @@ public:
   virtual Bool postLocally(const LogMessage &message)= 0;
 
   // Write any pending output.
-  virtual void flush (Bool global=True);
+  virtual void flush();
+
+  // Returns false for every derived class except TableLogSink. This is
+  // useful so you can safely cast a LogSinkInterface to a Table if you
+  // need to, e.g., merge log tables.
+  virtual Bool isTableLogSink() const;
+
+  // It is only valid to call these functions if isTableLogSink() is True.
+  TableLogSink &castToTableLogSink();
+  const TableLogSink &castToTableLogSink() const;
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
@@ -146,9 +156,24 @@ public:
   // The default implementation does nothing.
   virtual void clearLocally();
 
+  // Returns the id for this class...
+  static String localId( );
+  // Returns the id of the LogSink in use...
+  virtual String id( ) const = 0;
+
 private:
-  LogFilterInterface* filter_p;
+  LogFilter filter_p;
 };
+
+inline TableLogSink &LogSinkInterface::castToTableLogSink()
+{
+  return (TableLogSink&)(*this);
+}
+
+inline const TableLogSink &LogSinkInterface::castToTableLogSink() const
+{
+  return (const TableLogSink&)(*this);
+}
 
 
 #endif

@@ -1,5 +1,5 @@
 //# FunctionFactoryErrors:  Exception classes for use by FunctionFactories & clients
-//# Copyright (C) 2002,2003
+//# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,7 @@
 
 class FunctionFactoryError : public AipsError {
 public:
-    FunctionFactoryError(const String& message) : AipsError(message) {}
-
+    FunctionFactoryError(const String& message,Category c=GENERAL) : AipsError(message,c) {}
     virtual ~FunctionFactoryError() throw();
 };
 
@@ -43,14 +42,13 @@ public:
 
     // create an exception indicating that the a function of the given name
     // is not recognized
-    UnrecognizedFunctionError(const String& name) : 
-	FunctionFactoryError(String("Unrecognized function: ") + name), 
+    UnrecognizedFunctionError(const String& name, Category c=INVALID_ARGUMENT) : 
+	FunctionFactoryError(String("Unrecognized function: ") + name,c), 
 	fname(name) 
     {}
+    virtual ~UnrecognizedFunctionError() throw();
 
     const String& getName() { return fname; }
-
-    virtual ~UnrecognizedFunctionError() throw();
 
 private:
     String fname;
@@ -61,12 +59,11 @@ public:
     // create an exception indicating a GlishRecord serialization of a 
     // Function is invalid.  The error message will be a "Invalid function 
     // description in Glish record: " + reason.
-    InvalidGlishSerializationError(const String& reason) : 
-	FunctionFactoryError(preamble + reason), reas(reason) {}
-
-    const String& getReason() { return reas; } 
+    InvalidGlishSerializationError(const String& reason,Category c=GENERAL) : 
+	FunctionFactoryError(preamble + reason,c), reas(reason) {}
 
     virtual ~InvalidGlishSerializationError() throw();
+    const String& getReason() { return reas; } 
 
     static const String preamble;
 
@@ -76,11 +73,10 @@ private:
 
 class GlishFieldNotFoundError : public InvalidGlishSerializationError {
 public:
-    GlishFieldNotFoundError(const String& field) : 
-	InvalidGlishSerializationError(String("No ") + field + " defined"),
+    GlishFieldNotFoundError(const String& field,Category c=GENERAL) : 
+	InvalidGlishSerializationError(String("No ") + field + " defined",c),
 	fname(field)
     {}
-
     virtual ~GlishFieldNotFoundError() throw();
 
 private:

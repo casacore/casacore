@@ -1,5 +1,5 @@
 //# NullLogSink.h: Throw away all messages.
-//# Copyright (C) 1996,2003
+//# Copyright (C) 1996
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,8 +72,7 @@
 class NullLogSink : public LogSinkInterface {
 public:
     NullLogSink();
-    explicit NullLogSink(LogMessage::Priority filter);
-    explicit NullLogSink(const LogFilterInterface &filter);
+    NullLogSink(const LogFilter &filter);
 
     NullLogSink(const NullLogSink &other);
     NullLogSink &operator=(const NullLogSink &other);
@@ -84,6 +83,11 @@ public:
     // <src>False</src> depending on whether or not <src>message</src> passes
     // the filter.
     virtual Bool postLocally(const LogMessage &message);
+
+    // Returns the id for this class...
+    static String localId( );
+    // Returns the id of the LogSink in use...
+    String id( ) const;
 };
 
 #endif

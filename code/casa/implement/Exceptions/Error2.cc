@@ -1,5 +1,5 @@
 //# Error2.cc: Base class for all AIPS++ errors (non-templated classes)
-//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,12 +30,12 @@
 #include <aips/iostream.h>
 
 
-AipsError::AipsError(const Char *str)
-: message(str)
+AipsError::AipsError(const Char *str,Category c)
+  : message(str), category(c)
 {}
 
-AipsError::AipsError(const String &str)
-: message(str)
+AipsError::AipsError(const String &str,Category c)
+: message(str,c)
 {}
 
 AipsError::~AipsError() throw()
@@ -55,16 +55,16 @@ DuplError::~DuplError() throw()
 
 
 // Exception which causes an abort instead of continuing
-AbortError::AbortError(const Char *str)
-: AipsError(str)
+AbortError::AbortError(const Char *str,Category c)
+: AipsError(str,c)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;
     exit(1);
 }
 
-AbortError::AbortError(const String &str)
-: AipsError(str)
+AbortError::AbortError(const String &str,Category c)
+: AipsError(str,c)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;

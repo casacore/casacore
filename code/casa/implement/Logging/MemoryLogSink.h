@@ -1,5 +1,5 @@
 //# MemoryLogSink.h: Save log messages in memory
-//# Copyright (C) 2001,2003
+//# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,10 +73,7 @@ public:
   MemoryLogSink();
 
   // Create an empty sink with the given filter.
-  // <group>
-  explicit MemoryLogSink (LogMessage::Priority filter);
-  explicit MemoryLogSink (const LogFilterInterface& filter);
-  // </group>
+  MemoryLogSink (const LogFilter& filter);
 
   // Copy constructor (copy semantics).
   MemoryLogSink (const MemoryLogSink& other);
@@ -108,6 +105,11 @@ public:
 
   // Clear the local sink (i.e. remove all messages from it).
   virtual void clearLocally();
+
+  // Returns the id for this class...
+  static String localId( );
+  // Returns the id of the LogSink in use...
+  String id( ) const;
 
 private:
   // Avoid duplicating code in copy ctor and assignment operator

@@ -1,5 +1,5 @@
 //# Error.cc: Base class for all AIPS++ errors (templated classes)
-//# Copyright (C) 1993,1994,1995,1996,2000,2001,2003
+//# Copyright (C) 1993,1994,1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,14 +30,14 @@
 
 
 template<class t>
-indexError<t>::indexError(t oI, const Char *str)
-: IndexError(str),
+indexError<t>::indexError( t oI, const Char *str, Category c )
+: IndexError(str,c),
   oIndex    (oI)
 {}
 
 template<class t>
-indexError<t>::indexError(t oI, const String &str)
-: IndexError(str),
+indexError<t>::indexError( t oI, const String &str, Category c )
+: IndexError(str,c),
   oIndex    (oI)
 {}
 
@@ -47,14 +47,14 @@ indexError<t>::~indexError() throw()
 
 
 template<class t>
-duplError<t>::duplError(t oI, const Char *str)
-: DuplError(str),
+duplError<t>::duplError(t oI, const Char *str,Category c)
+: DuplError(str,c),
   oKey     (oI)
 {}
 
 template<class t>
-duplError<t>::duplError(t oI, const String &str)
-: DuplError(str),
+duplError<t>::duplError(t oI, const String &str,Category c)
+: DuplError(str,c),
   oKey     (oI)
 {}
 

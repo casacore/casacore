@@ -1,5 +1,5 @@
 //# LogSinkInterface.cc: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996,2000,2001,2003
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,41 +27,41 @@
 //# $Id$
 
 #include <aips/Logging/LogSinkInterface.h>
-#include <aips/Logging/LogFilter.h>
 #include <aips/Exceptions/Error.h>
 
+String LogSinkInterface::localId( )
+{
+    return String( "LogSinkInterface" );
+}
 
-LogSinkInterface::LogSinkInterface()
-: filter_p (new LogFilter())
+LogSinkInterface::LogSinkInterface() : filter_p(LogMessage::NORMAL)
 {
     // Nothing
 }
 
-LogSinkInterface::LogSinkInterface(const LogFilterInterface &filter)
-: filter_p(filter.clone())
+LogSinkInterface::LogSinkInterface(const LogFilter &filter)
+  : filter_p(filter)
 {
-  // Nothing
+    // Nothing
 }
 
 LogSinkInterface::LogSinkInterface(const LogSinkInterface &other)
-: filter_p(other.filter_p->clone())
+  : filter_p(other.filter_p)
 {
-  // Nothing
+    // Nothing
 }
 
 LogSinkInterface &LogSinkInterface::operator=(const LogSinkInterface &other)
 {
-  if (this != &other) {
-    delete filter_p;
-    filter_p = other.filter_p->clone();
-  }
-  return *this;
+    if (this != &other) {
+        filter_p = other.filter_p;
+    }
+    return *this;
 }
 
 LogSinkInterface::~LogSinkInterface()
 {
-  flush();
-  delete filter_p;
+    flush();
 }
 
 uInt LogSinkInterface::nelements() const
@@ -95,21 +95,25 @@ String LogSinkInterface::getObjectID (uInt i) const
   return "";
 }
 
-const LogFilterInterface &LogSinkInterface::filter() const
+const LogFilter &LogSinkInterface::filter() const
 {
-    return *filter_p;
+    return filter_p;
 }
 
-LogSinkInterface &LogSinkInterface::filter(const LogFilterInterface &filter)
+LogSinkInterface &LogSinkInterface::filter(const LogFilter &filter)
 {
-    delete filter_p;
-    filter_p = filter.clone();;
+    filter_p = filter;
     return *this;
 }
 
-void LogSinkInterface::flush(Bool)
+void LogSinkInterface::flush()
 {
     // Defult implementation is to do nothing.
+}
+
+Bool LogSinkInterface::isTableLogSink() const
+{
+    return False;
 }
 
 void LogSinkInterface::writeLocally (Double,

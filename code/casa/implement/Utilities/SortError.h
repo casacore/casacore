@@ -1,5 +1,5 @@
 //# SortError.h: Error classes for the sort class
-//# Copyright (C) 1993,1994,1995,1999,2000,2003
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,8 +45,8 @@
 // </synopsis> 
 class SortError : public AipsError {
 public:
-    SortError ();
-    SortError (const String&);
+    SortError (Category c=GENERAL);
+    SortError (const String&,Category c=GENERAL);
     ~SortError () throw();
 };
 
@@ -62,7 +62,7 @@ public:
 // </synopsis> 
 class SortInvDT : public SortError {
 public:
-    SortInvDT ();
+    SortInvDT (Category c=INVALID_ARGUMENT);
     ~SortInvDT () throw();
 };
 
@@ -78,7 +78,7 @@ public:
 // </synopsis> 
 class SortInvIncr : public SortError {
 public:
-    SortInvIncr ();
+    SortInvIncr (Category c=INVALID_ARGUMENT);
     ~SortInvIncr () throw();
 };
 
@@ -93,7 +93,7 @@ public:
 // </synopsis> 
 class SortNoData : public SortError {
 public:
-    SortNoData ();
+    SortNoData (Category c=INITIALIZATION);
     ~SortNoData () throw();
 };
 
@@ -108,31 +108,8 @@ public:
 // </synopsis> 
 class SortInvOpt : public SortError {
 public:
-    SortInvOpt ();
+    SortInvOpt (Category c=INVALID_ARGUMENT);
     ~SortInvOpt () throw();
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 //# StackError.h: Error class for the stack class
-//# Copyright (C) 1993,1994,1995,1998,2000,2003
+//# Copyright (C) 1993,1994,1995,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 // <summary> Error class for the Stack class </summary>
 class EmptyStackError : public AipsError {
 public:
-  EmptyStackError(const char *msg = 0);      // normal constructor
+  EmptyStackError(const char *msg = 0,Category c=BOUNDARY);      // normal constructor
   ~EmptyStackError () throw();
 };
 

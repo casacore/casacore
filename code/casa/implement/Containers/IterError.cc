@@ -1,5 +1,5 @@
 //# IterError.cc:
-//# Copyright (C) 1993,1994,1995,2000,2003
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,30 +29,30 @@
 
 
 // The normal constructor when throwing the exception.
-IterError::IterError (const char *msg) : 
-          AipsError(msg ? msg : "Iterator Error.") {}
+IterError::IterError (const char *msg,Category c) : 
+          AipsError(msg ? msg : "Iterator Error.",c) {}
 
 IterError::~IterError () throw()
 { ; }
 
 // The normal constructor when throwing the exception.
-IterBoundaryError::IterBoundaryError (const char *msg) : 
-          IterError(msg ? msg : "Iterator boundaries exceeded.") {}
+IterBoundaryError::IterBoundaryError (const char *msg,Category c) : 
+          IterError(msg ? msg : "Iterator boundaries exceeded.",c) {}
 
 IterBoundaryError::~IterBoundaryError () throw()
 { ; }
 
 
 // The normal constructor when throwing the exception.
-IterInitError::IterInitError (const char *msg) : 
-          IterError(msg ? msg : "Iterator initialization error.") {}
+IterInitError::IterInitError (const char *msg,Category c) : 
+          IterError(msg ? msg : "Iterator initialization error.",c) {}
 
 IterInitError::~IterInitError () throw()
 { ; }
 
 // The normal constructor when throwing the exception.
-InvalidIterError::InvalidIterError (const char *msg) : 
-          IterError(msg ? msg : "Use of invalid iterator.") {}
+InvalidIterError::InvalidIterError (const char *msg,Category c) : 
+          IterError(msg ? msg : "Use of invalid iterator.",c) {}
 
 InvalidIterError::~InvalidIterError () throw()
 { ; }

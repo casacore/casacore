@@ -1,5 +1,5 @@
 //# MemoryLogSink.h: save log messages in memory
-//# Copyright (C) 2001,2003
+//# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,22 +26,24 @@
 //# $Id$
 
 #include <aips/Logging/MemoryLogSink.h>
-#include <aips/Logging/LogFilter.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
 
+String MemoryLogSink::localId( ) {
+    return String("MemoryLogSink");
+}
+
+String MemoryLogSink::id( ) const {
+    return String("MemoryLogSink");
+}
+
 MemoryLogSink::MemoryLogSink()
-: LogSinkInterface(),
+: LogSinkInterface(LogFilter()),
   nmsg_p (0)
 {}
 
-MemoryLogSink::MemoryLogSink (LogMessage::Priority filter)
-: LogSinkInterface(LogFilter(filter)),
-  nmsg_p (0)
-{}
-
-MemoryLogSink::MemoryLogSink (const LogFilterInterface& filter)
+MemoryLogSink::MemoryLogSink (const LogFilter& filter)
 : LogSinkInterface(filter),
   nmsg_p (0)
 {}

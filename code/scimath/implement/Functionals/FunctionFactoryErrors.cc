@@ -1,5 +1,5 @@
 //# FunctionFactoryErrors:  Exception classes for use by FunctionFactories & clients
-//# Copyright (C) 2002,2003
+//# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,14 +29,3 @@
 
 const String InvalidGlishSerializationError::preamble("Invalid function description in Glish record: ");
 
-FunctionFactoryError::~FunctionFactoryError() throw()
-{}
-
-UnrecognizedFunctionError::~UnrecognizedFunctionError() throw()
-{}
-
-InvalidGlishSerializationError::~InvalidGlishSerializationError() throw()
-{}
-
-GlishFieldNotFoundError::~GlishFieldNotFoundError() throw()
-{}

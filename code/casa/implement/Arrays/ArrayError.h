@@ -1,5 +1,5 @@
 //# ArrayError.h: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995,1999,2000,2003
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,11 +56,11 @@ class ArrayError : public AipsError
 {
 public:
     // Initialize with the message "ArrayError."
-    ArrayError();
+    ArrayError(Category c=GENERAL);
     // Initialize with the supplied message.
-    ArrayError(const Char *m);
+    ArrayError(const Char *m,Category c=GENERAL);
     // Initialize with the supplied message.
-    ArrayError(const String &m);
+    ArrayError(const String &m,Category c=GENERAL);
     ~ArrayError() throw();
 };
 
@@ -76,15 +76,15 @@ class ArrayIndexError : public ArrayError
 {
 public:
     // Initialize with the message "ArrayIndexError".
-    ArrayIndexError();
+    ArrayIndexError(Category c=BOUNDARY);
     // Initialize with the supplied message, the index and shape are null.
-    ArrayIndexError(const Char *m);
+    ArrayIndexError(const Char *m,Category c=BOUNDARY);
     // Initialize with the supplied message, the index and shape are null.
-    ArrayIndexError(const String &m);
+    ArrayIndexError(const String &m,Category c=BOUNDARY);
     // Initialize with a given out-of-bounds index, as well as the shape
     // of the array and a supplied message.
     ArrayIndexError(const IPosition &index, const IPosition &shape, 
-		    const Char *m="ArrayIndexError");
+		    const Char *m="ArrayIndexError",Category c=BOUNDARY);
     ~ArrayIndexError() throw();
     // The out-of-bounds index.
     IPosition index() const;
@@ -107,11 +107,11 @@ class ArrayConformanceError : public ArrayError
 {
 public:
     // Initialize the message with "ArrayConformanceError".
-    ArrayConformanceError();
+    ArrayConformanceError(Category c=CONFORMANCE);
     // Initialize with a supplied message.
-    ArrayConformanceError(const Char *m);
+    ArrayConformanceError(const Char *m,Category c=CONFORMANCE);
     // Initialize with a supplied message.
-    ArrayConformanceError(const String &m);
+    ArrayConformanceError(const String &m,Category c=CONFORMANCE);
     ~ArrayConformanceError() throw();
 };
 
@@ -126,7 +126,7 @@ class ArrayNDimError : public ArrayConformanceError
 public:
     // Define the two (presumably different) messages and optionally
     // supply a message.
-    ArrayNDimError(Int dim1, Int dim2, const Char *m="ArrayNDimError");
+    ArrayNDimError(Int dim1, Int dim2, const Char *m="ArrayNDimError",Category c=CONFORMANCE);
     ~ArrayNDimError() throw();
     // Return the stored dimensions. NB modifies arguments.
     void ndims(Int &dim1, Int &dim2) const; // modifies arguments
@@ -146,7 +146,7 @@ public:
     // Define an ArrayShapeError with the two (presumably different) shapes
     // and an optional supplied message.
     ArrayShapeError(const IPosition &shape1, const IPosition &shape2,
-		     const Char *m="ArrayShapeError");
+		     const Char *m="ArrayShapeError",Category c=CONFORMANCE);
     ~ArrayShapeError() throw();
     // Get back the stored shapes. NB modifies arguments.
     void shapes(IPosition &, IPosition &) const;  // modifies arguments
@@ -163,11 +163,11 @@ class ArrayIteratorError : public ArrayError
 {
 public:    
     // Initialize with the message "ArrayIteratorError.
-    ArrayIteratorError();
+    ArrayIteratorError(Category c=BOUNDARY);
     // Initialize with the supplied message
-    ArrayIteratorError(const Char *m);
+    ArrayIteratorError(const Char *m,Category c=BOUNDARY);
     // Initialize with the supplied message
-    ArrayIteratorError(const String &m);
+    ArrayIteratorError(const String &m,Category c=BOUNDARY);
     ~ArrayIteratorError() throw();
 };
 
@@ -179,9 +179,9 @@ class ArraySlicerError : public ArrayError
 {
 public:    
     // Initialize with the message "Slicer error."
-    ArraySlicerError();
+    ArraySlicerError(Category c=GENERAL);
     // Initialize with ArraySlicerError plus the supplied message
-    ArraySlicerError(const String &m);
+    ArraySlicerError(const String &m,Category c=GENERAL);
     ~ArraySlicerError() throw();
 };
 

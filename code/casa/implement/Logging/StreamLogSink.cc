@@ -1,5 +1,5 @@
 //# StreamLogSink.cc: Send log messages to an ostream.
-//# Copyright (C) 1996,2001,2003
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,15 @@
 //# $Id$
 
 #include <aips/Logging/StreamLogSink.h>
-#include <aips/Logging/LogFilter.h>
 #include <aips/iostream.h>
+
+String StreamLogSink::localId( ) {
+    return String("StreamLogSink");
+}
+
+String StreamLogSink::id( ) const {
+    return String("StreamLogSink");
+}
 
 StreamLogSink::StreamLogSink(ostream *theStream) : stream_p(theStream)
 {
@@ -37,17 +44,7 @@ StreamLogSink::StreamLogSink(ostream *theStream) : stream_p(theStream)
     }
 }
 
-StreamLogSink::StreamLogSink(LogMessage::Priority filter,
-			     ostream *theStream)
-  : LogSinkInterface(LogFilter(filter)), stream_p(theStream)
-{
-    if (stream_p == 0) {
-        stream_p = &cerr;
-    }
-}
-
-StreamLogSink::StreamLogSink(const LogFilterInterface &filter,
-			     ostream *theStream)
+StreamLogSink::StreamLogSink(const LogFilter &filter, ostream *theStream)
   : LogSinkInterface(filter), stream_p(theStream)
 {
     if (stream_p == 0) {
@@ -87,7 +84,7 @@ Bool StreamLogSink::postLocally(const LogMessage &message)
     return doPost;
 }
 
-void StreamLogSink::flush(Bool)
+void StreamLogSink::flush()
 {
     stream_p->flush();
 }

@@ -1,5 +1,5 @@
 //# SortError.cc: Error classes for the sort class
-//# Copyright (C) 1993,1994,1995,2000,2003
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,34 +29,34 @@
 
 // Implementation of Sort error classes.
 
-SortError::SortError () : AipsError("Sort error")
+SortError::SortError (Category c) : AipsError("Sort error",c)
 { ; }
-SortError::SortError (const String& str) :
-                            AipsError(str)
+SortError::SortError (const String& str,Category c) :
+                            AipsError(str,c)
 { ; }
 SortError::~SortError () throw()
 { ; }
 
 
-SortInvDT::SortInvDT () : SortError ("Invalid sort data type")
+SortInvDT::SortInvDT (Category c) : SortError ("Invalid sort data type",c)
 { ; }
 SortInvDT::~SortInvDT () throw()
 { ; }
 
 
-SortInvIncr::SortInvIncr () : SortError ("Sort increment < key Incr")
+SortInvIncr::SortInvIncr (Category c) : SortError ("Sort increment < key Incr",c)
 { ; }
 SortInvIncr::~SortInvIncr () throw()
 { ; }
 
 
-SortNoData::SortNoData () : SortError ("No data array given to constructor")
+SortNoData::SortNoData (Category c) : SortError ("No data array given to constructor",c)
 { ; }
 SortNoData::~SortNoData () throw()
 { ; }
 
 
-SortInvOpt::SortInvOpt () : SortError ("Invalid sort option given")
+SortInvOpt::SortInvOpt (Category c) : SortError ("Invalid sort option given",c)
 { ; }
 SortInvOpt::~SortInvOpt () throw()
 { ; }
