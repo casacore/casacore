@@ -40,14 +40,14 @@
 //#	 gmake tHashMapIO 'EXTRA_PGMRLIBS=-llapack -lblas -L/opt/SUNWspro/SC3.0.1/lib -lF77 -lsunmath'
 //#
 
-const char *word_file = "./words"; // "/usr/dict/words";
+const char *word_file = "./tHashMap_tmp.words";  // "/usr/dict/words";
 
-main() {
+int main() {
 
     ifstream inFile( word_file );
-    ofstream hmos1( "tHashMapIO_hm.1st" );
-    ofstream hmos2( "tHashMapIO_hm.2nd" );
-    ofstream hmos3( "tHashMapIO_hm.3rd" );
+    ofstream hmos1( "tHashMapIO_tmp.1st" );
+    ofstream hmos2( "tHashMapIO_tmp.2nd" );
+    ofstream hmos3( "tHashMapIO_tmp.3rd" );
 
     if ( !inFile ) {
 	cerr << "Can't open \"" << word_file << "\"." << endl;

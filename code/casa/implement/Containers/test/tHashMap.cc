@@ -40,9 +40,9 @@
 //#	 gmake tHashMap 'EXTRA_PGMRLIBS=-llapack -lblas -L/opt/SUNWspro/SC3.0.1/lib -lF77 -lsunmath'
 //#
 
-const char *word_file = "./words";  // "/usr/dict/words";
+const char *word_file = "./tHashMap_tmp.words";  // "/usr/dict/words";
 
-main() {
+int main() {
 
     ifstream inFile( word_file );
 
@@ -99,7 +99,7 @@ main() {
     cout << "--- --- --- --- --- --- --- --- --- ---" << endl;
     cout << "bucket utilization:" << endl;
     Block<uInt> b = hash.distribution();
-    for (int i = 0; i < b.nelements();) {
+    for (uInt i = 0; i < b.nelements();) {
 	cout << "[" << i << "]:\t";
 	for (int j = 0; j < 24 && i < b.nelements(); j++)
 	    cout << b[i++] << " ";

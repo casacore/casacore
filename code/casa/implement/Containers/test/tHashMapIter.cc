@@ -37,9 +37,9 @@
 //#	 gmake tHashMapIter 'EXTRA_PGMRLIBS=-llapack -lblas -L/opt/SUNWspro/SC3.0.1/lib -lF77 -lsunmath'
 //#
 
-const char *word_file = "./words"; // "/usr/dict/words";
+const char *word_file = "./tHashMap_tmp.words";  // "/usr/dict/words";
 
-main() {
+int main() {
 
     ifstream inFile( word_file );
 
