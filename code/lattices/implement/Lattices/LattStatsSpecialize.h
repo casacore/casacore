@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.h: specialized functions for LatticeStatistics
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 template <class T> class Vector;
 template <class T> class Array;
 template <class T> class Lattice;
+template <class T> class MaskedLattice;
 class LatticeExprNode;
 class String;
 class IPosition;
@@ -68,17 +69,17 @@ class LattStatsSpecialize
 public:
 //
    static void accumulate (Float& nPts, Double& sum,
-                                  Double& sumSq, Float& dataMin,
-                                  Float& dataMax, Int& minPos,
-                                  Int& maxPos, Bool& minMaxInit,
-                                  Bool fixedMinMax, Float datum,
-                                  uInt& pos, Float useIt);
+                           Double& sumSq, Float& dataMin,
+                           Float& dataMax, Int& minPos,
+                           Int& maxPos, Bool& minMaxInit,
+                           Bool fixedMinMax, Float datum,
+                           uInt& pos, Float useIt);
    static void accumulate (Complex& nPts, DComplex& sum,
-                                  DComplex& sumSq, Complex& dataMin,
-                                  Complex& dataMax, Int& minPos,
-                                  Int& maxPos, Bool& minMaxInit,
-                                  Bool fixedMinMax, Complex datum,
-                                  uInt& pos, Complex useIt);
+                           DComplex& sumSq, Complex& dataMin,
+                           Complex& dataMax, Int& minPos,
+                           Int& maxPos, Bool& minMaxInit,
+                           Bool fixedMinMax, Complex datum,
+                           uInt& pos, Complex useIt);
 //
    static Bool hasSomePoints (Float npts);
    static Bool hasSomePoints (Complex npts);
@@ -129,6 +130,11 @@ public:
                                   Bool& noInclude, Bool& noExclude,
                                   const Vector<Complex>& include,  
                                   const Vector<Complex>& exclude);
+//
+   static Bool minMax (Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
+                       const Vector<Float>& range, Bool noInclude, Bool noExclude);
+   static Bool minMax (Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
+                       const Vector<Complex>& range, Bool noInclude, Bool noExclude);
 };
 
 #endif

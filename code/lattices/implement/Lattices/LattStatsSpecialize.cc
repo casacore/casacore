@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.cc:  
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,15 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/Lattice.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeExprNode.h>
+#include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/MaskedLattice.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
+
+#include <aips/OS/Timer.h>
 
 
 
@@ -429,3 +434,119 @@ Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage,
    return True;
 }
  
+
+Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
+                                 const Vector<Float>& range, Bool noInclude, Bool noExclude)
+
+{  
+  RO_LatticeIterator<Float> it(*pLattice);
+//  
+  dataMin = 1.e30;
+  dataMax = -1.0e30;
+//
+  const Float* pData = 0;
+  Bool deleteData;
+//
+  if (pLattice->isMasked()) {
+     const Bool* pMask = 0;
+     Bool deleteMask;
+//
+     for (it.reset(); !it.atEnd(); it++) {  
+        const Array<Float>& data = it.cursor();
+        const Array<Bool>& mask = pLattice->getMaskSlice(it.position(), it.cursor().shape(), False);
+        pData = data.getStorage(deleteData);
+        pMask = mask.getStorage(deleteMask);
+        uInt n = data.nelements();
+        if (!noInclude) {
+           for (uInt i=0; i<n; i++) {
+              if (pMask[i] &&
+                  LattStatsSpecialize::usePixelInc (range[0], range[1], pData[i]) > 0) {
+                 dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+                 dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+              }
+           }
+        } else if (!noExclude) {
+           for (uInt i=0; i<n; i++) {
+              if (pMask[i] &&
+                  LattStatsSpecialize::usePixelExc (range[0], range[1], pData[i]) > 0) {
+                 dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+                 dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+              }
+           }
+        } else {
+           for (uInt i=0; i<n; i++) {
+              if (pMask[i]) {
+                 dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+                 dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+              }
+           }
+        }
+//
+        data.freeStorage(pData, deleteData);
+        mask.freeStorage(pMask, deleteMask);
+     }
+  } else {
+     for (it.reset(); !it.atEnd(); it++) {  
+        const Array<Float>& data = it.cursor();
+        pData = data.getStorage(deleteData);
+        uInt n = data.nelements();
+        if (!noInclude) {
+           for (uInt i=0; i<n; i++) {
+              if (LattStatsSpecialize::usePixelInc (range[0], range[1], pData[i]) > 0) {
+                 dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+                 dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+              }
+           }
+        } else if (!noExclude) {
+           for (uInt i=0; i<n; i++) {
+              if (LattStatsSpecialize::usePixelExc (range[0], range[1], pData[i]) > 0) {
+                 dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+                 dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+              }
+           }
+        } else {
+           for (uInt i=0; i<n; i++) {
+              dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
+              dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
+           }
+        }
+        data.freeStorage(pData, deleteData);
+     }
+
+  }
+//
+  return (dataMax > dataMin);
+}
+
+Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
+                                 const Vector<Complex>& range, Bool noInclude, Bool noExclude)
+{
+   LatticeExprNode nodeR(real(*pLattice));
+   LatticeExprNode nodeI(imag(*pLattice));
+   LatticeExpr<Float> latR(nodeR);   
+   LatticeExpr<Float> latI(nodeR);   
+//
+   Vector<Float> realRange, imagRange;
+   if (!noInclude && !noExclude) {
+      realRange.resize(2);
+      imagRange.resize(2);
+//
+      realRange[0] = real(range[0]);
+      realRange[1] = real(range[1]);
+      imagRange[0] = imag(range[0]);
+      imagRange[1] = imag(range[1]);
+   }   
+//
+   Float realMin, realMax, imagMin, imagMax;
+   Bool ok = LattStatsSpecialize::minMax(realMin, realMax, &latR, realRange, noInclude, noExclude);
+   if (ok) {
+      ok = LattStatsSpecialize::minMax(imagMin, imagMax, &latI, imagRange, noInclude, noExclude);
+   }
+//
+   if (ok) {
+      dataMin = Complex(realMin, imagMin);
+      dataMax = Complex(realMax, imagMax);
+   }
+   return ok;
+}
+
