@@ -45,16 +45,13 @@ static const String theHyperPrefix ("Hypercolumn_");
 
 
 TableDesc::TableDesc()
-: name_p   (""),
-  vers_p   (""),
-  option_p (Scratch)
+: option_p (Scratch)
 {
     init (TabPath());                      // use default search path
 }
 
 TableDesc::TableDesc (const String& nam, TDOption opt)
 : name_p     (nam),
-  vers_p     (""),
   option_p   (opt)
 {
     init (TabPath());                      // use default search path
@@ -79,30 +76,28 @@ TableDesc::TableDesc (const String& nam, const String& version,
 }
 
 TableDesc::TableDesc (const TableDesc& td, const String& nam,
-		      const String& version, TDOption opt)
+		      const String& version, TDOption opt, Bool copyColumns)
 : name_p     (nam),
   vers_p     (version),
   option_p   (opt)
 {
-    copy (td, TabPath());                  // use default search path
+    copy (td, TabPath(), copyColumns);       // use default search path
 }
 
 TableDesc::TableDesc (const TableDesc& td, const String& nam,
 		      const String& version, const TabPath& tdpath,
-		      TDOption opt)
+		      TDOption opt, Bool copyColumns)
 : name_p     (nam),
   vers_p     (version),
   option_p   (opt)
 {
-    copy (td, tdpath);                       // use given search path
+    copy (td, tdpath, copyColumns);          // use given search path
 }
 
 TableDesc::TableDesc (const TableDesc& td, TDOption opt)
-: name_p     (""),
-  vers_p     (""),
-  option_p   (opt)
+: option_p   (opt)
 {
-    copy (td, TabPath());                    // use default search path
+    copy (td, TabPath(), True);              // use default search path
 }
 
 
@@ -209,7 +204,8 @@ void TableDesc::init (const TabPath& tdpath)
 // <thrown>
 //   <li> TableInvOpt
 // </thrown>
-void TableDesc::copy (const TableDesc& td, const TabPath& tdpath)
+void TableDesc::copy (const TableDesc& td, const TabPath& tdpath,
+		      Bool copyColumns)
 {
     //# Check the options; it has to be a new description.
     if (option_p != New  &&  option_p != NewNoReplace
@@ -227,7 +223,9 @@ void TableDesc::copy (const TableDesc& td, const TabPath& tdpath)
     comm_p = td.comm_p;
     *key_p = *(td.key_p);
     *privKey_p = *(td.privKey_p);
-    col_p  = td.col_p;
+    if (copyColumns) {
+        col_p  = td.col_p;
+    }
 }
 
 

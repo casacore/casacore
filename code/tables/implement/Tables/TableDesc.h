@@ -218,7 +218,7 @@ public:
     // The default table description path is used for the description file.
     // The only options allowed are New, NewNoReplace and Scratch.
     TableDesc (const TableDesc&, const String& type, const String& version,
-	       TDOption);
+	       TDOption, Bool copyColumns=True);
 
     // Create a table description object with the given name (i.e. table type)
     // and version by copying the input table description.
@@ -227,7 +227,7 @@ public:
     // The given table description path is used for the description file.
     // The only options allowed are New, NewNoReplace and Scratch.
     TableDesc (const TableDesc&, const String& type, const String& version,
-	       const TabPath&, TDOption);
+	       const TabPath&, TDOption, Bool copyColumns=True);
 
     // This copy constructor makes a copy of the table description
     // maintaining its name and version. By default a Scratch copy is made.
@@ -477,7 +477,7 @@ private:
     void init (const TabPath&);
 
     // Initialize and copy a table description.
-    void copy (const TableDesc&, const TabPath&);
+    void copy (const TableDesc&, const TabPath&, Bool copyColumns);
 
     // Throw an invalid hypercolumn exception.
     void throwHypercolumn (const String& hyperColumnName,
