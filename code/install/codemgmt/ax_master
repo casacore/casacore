@@ -3306,3 +3306,4 @@
 13 214 src mv trial/apps/dish/dish_tabDialog.g trial/implement/Widgets/tabdialog.g
 13 214 src mv npoi/implement/HDS/HDSFileData.cc npoi/implement/HDS/HDSDataFile.cc
 13 214 src mv npoi/implement/HDS/HDSFileData.h npoi/implement/HDS/HDSDataFile.h
+13 216 sys rm libexec/hdsstack.g
