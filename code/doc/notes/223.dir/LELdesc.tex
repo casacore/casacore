@@ -152,8 +152,6 @@ precedence):
 \begin{description}
   \item[] Unary \textbf{+} and \textbf{-}
        \\Can not be used with Bool operands.
-       They have a higher precedence than the binary operators.
-       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
   \item[] Unary \textbf{!}
        \\Logical NOT operator.
        Can only be used with Bool operands.
@@ -192,6 +190,8 @@ precedence):
        \\\texttt{\&\&}
        \\\texttt{$\mid\mid$}
 \end{description}
+Note that \verb+^+ has a higher precedence than the unary operators.
+\\E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
 
 \subsection{\label{LEL:FUNCTIONS}Functions}
 In the following tables the function names are shown in uppercase,
