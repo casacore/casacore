@@ -133,7 +133,12 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 	header.removeField("bunit");
 	UnitMap::addFITS();
 	if (UnitVal::check(unitString)) {
-	    newImage->setUnits(Unit(unitString));
+
+// Translate units from FITS units to true aips++ units
+// There is no scale factor in this translation.
+
+            Unit tmp = UnitMap::fromFITS(Unit(unitString));
+	    newImage->setUnits(tmp);
 	} else {
 	    os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
 	       << LogIO::POST;
