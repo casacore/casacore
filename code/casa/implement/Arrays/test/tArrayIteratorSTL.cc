@@ -79,19 +79,19 @@ void testIt()
     Array<Int> earr;
     for (Array<Int>::iterator itera1=earr.begin();
 	 itera1!=earr.end(); itera1++) {
-      cout << "error (itera1 should be empty): " << *itera1 << ' ' << endl;
+      cout << "error (itera1 should be empty): " << itera1 << ' ' << endl;
     }
     for (Array<Int>::const_iterator itera2=earr.begin();
 	 itera2!=earr.end(); itera2++) {
-      cout << "error (itera2 should be empty): " << *itera2 << ' ' << endl;
+      cout << "error (itera2 should be empty): " << itera2 << ' ' << endl;
     }
     for (Array<Int>::contiter itera3=earr.cbegin(); 
 	 itera3!=earr.cend(); itera3++) {
-      cout << "error (itera3 should be empty): " << *itera3 << ' ' << endl;
+      cout << "error (itera3 should be empty): " << itera3 << ' ' << endl;
     }
     for (Array<Int>::const_contiter itera4=earr.cbegin();
 	 itera4!=earr.cend(); itera4++) {
-      cout << "error (itera4 should be empty): " << *itera4 << ' ' << endl;
+      cout << "error (itera4 should be empty): " << itera4 << ' ' << endl;
     }
   }
   {
@@ -99,19 +99,19 @@ void testIt()
     Array<Int> earr(eshp);
     for (Array<Int>::iterator iterb1=earr.begin();
 	 iterb1!=earr.end(); iterb1++) {
-      cout << "error (iterb1 should be empty): " << *iterb1 << ' ' << endl;
+      cout << "error (iterb1 should be empty): " << iterb1 << ' ' << endl;
     }
     for (Array<Int>::const_iterator iterb2=earr.begin();
 	 iterb2!=earr.end(); iterb2++) {
-      cout << "error (iterb2 should be empty): " << *iterb2 << ' ' << endl;
+      cout << "error (iterb2 should be empty): " << iterb2 << ' ' << endl;
     }
     for (Array<Int>::contiter iterb3=earr.cbegin(); 
 	 iterb3!=earr.cend(); iterb3++) {
-      cout << "error (iterb3 should be empty): " << *iterb3 << ' ' << endl;
+      cout << "error (iterb3 should be empty): " << iterb3 << ' ' << endl;
     }
     for (Array<Int>::const_contiter iterb4=earr.cbegin();
 	 iterb4!=earr.cend(); iterb4++) {
-      cout << "error (iterb4 should be empty): " << *iterb4 << ' ' << endl;
+      cout << "error (iterb4 should be empty): " << iterb4 << ' ' << endl;
     }
   }
 }
