@@ -1886,7 +1886,7 @@ const Vector<Double> &MeasTable::AberETerm(uInt which) {
 // Diurnal Aberration factor
 Double MeasTable::diurnalAber(Double radius, Double T) {
   static Double res;
-  res = C::_2pi * radius / MeasData::SECinDAY /
+  res = C::_2pi * radius / MeasData::SECinDAY *
     MeasTable::UTtoST(T)/C::c;
   return res;
 }
