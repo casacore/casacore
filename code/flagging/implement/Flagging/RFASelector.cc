@@ -1,5 +1,5 @@
 //# RFASelector.cc: this defines RFASelector
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,12 +80,12 @@ template<class T> Bool RFASelector::parseRange( Matrix<T> &rng,const RecordInter
   return False;
 }
 
-template Bool RFASelector::reformRange( Matrix<Int>&,const Array<Int>& );
-template Bool RFASelector::reformRange( Matrix<Double>&,const Array<Double>& );
-template Bool RFASelector::reformRange( Matrix<String>&,const Array<String>& );
-template Bool RFASelector::parseRange( Matrix<Int>&,const RecordInterface&,const String&);
-template Bool RFASelector::parseRange( Matrix<Double>&,const RecordInterface&,const String&);
-template Bool RFASelector::parseRange( Matrix<String>&,const RecordInterface&,const String&);
+template Bool RFASelector::reformRange<Int>( Matrix<Int>&,const Array<Int>& );
+template Bool RFASelector::reformRange<Double>( Matrix<Double>&,const Array<Double>& );
+template Bool RFASelector::reformRange<String>( Matrix<String>&,const Array<String>& );
+template Bool RFASelector::parseRange<Int>( Matrix<Int>&,const RecordInterface&,const String&);
+template Bool RFASelector::parseRange<Double>( Matrix<Double>&,const RecordInterface&,const String&);
+template Bool RFASelector::parseRange<String>( Matrix<String>&,const RecordInterface&,const String&);
 
 // -----------------------------------------------------------------------
 // parseTimes
@@ -139,9 +139,9 @@ template<class T> Bool RFASelector::find( uInt &index,const T &obj,const Vector<
     }
   return False;
 }
-template Bool RFASelector::find(uInt&,const uInt&,const Vector<uInt>&);
-template Bool RFASelector::find(uInt&,const Int&,const Vector<Int>&);
-template Bool RFASelector::find(uInt&,const String&,const Vector<String>&);
+template Bool RFASelector::find<uInt>(uInt&,const uInt&,const Vector<uInt>&);
+template Bool RFASelector::find<Int>(uInt&,const Int&,const Vector<Int>&);
+template Bool RFASelector::find<String>(uInt&,const String&,const Vector<String>&);
 
 
 // -----------------------------------------------------------------------
