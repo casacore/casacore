@@ -2433,3 +2433,4 @@
 09 385 sys rm libexec/dishavg_viewers.g
 09 386 src rm trial/scripts/unique.g
 09 386 src rm trial/scripts/unique.help
+09 386 sys rm libexec/unique.g
