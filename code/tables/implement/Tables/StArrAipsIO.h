@@ -1,5 +1,5 @@
 //# StArrAipsIO.h: AipsIO storage manager for direct table arrays
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_STARRAIPSIO_H)
 #define AIPS_STARRAIPSIO_H
-
-#if defined(_AIX)
-#pragma implementation ("StArrAipsIO.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

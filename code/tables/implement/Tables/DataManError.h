@@ -1,5 +1,5 @@
 //# DataManError.h: Data manager error classes
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined (AIPS_DATAMANERROR_H)
 #define AIPS_DATAMANERROR_H
-
-#if defined(_AIX)
-#pragma implementation ("DataManError.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

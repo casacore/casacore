@@ -1,5 +1,5 @@
 //# TVecTemp.h: Templated table vectors held in memory as a temporary
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TVECTEMP_H)
 #define AIPS_TVECTEMP_H
-
-#if defined(_AIX)
-#pragma implementation ("TVecTemp.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

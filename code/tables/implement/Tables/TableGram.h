@@ -1,5 +1,5 @@
 //# TableGram.h: Grammar for table command lines
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TABLEGRAM_H)
 #define AIPS_TABLEGRAM_H
-
-#if defined(_AIX)
-#pragma implementation ("TableGram.cc")
-#endif 
 
 //# Includes
 #include <aips/Utilities/String.h>

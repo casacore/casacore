@@ -1,5 +1,5 @@
 //# RawDataConversion.h: A class with virtual functions to copy without conversion
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,11 +27,6 @@
 
 #if !defined(AIPS_RAWDATACONVERSION_H)
 #define AIPS_RAWDATACONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("RawDataConversion.cc")
-#endif 
-
 
 //# Includes
 #include <aips/OS/DataConversion.h>

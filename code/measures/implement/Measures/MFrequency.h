@@ -29,10 +29,6 @@
 #if !defined(AIPS_MFREQUENCY_H)
 #define AIPS_MFREQUENCY_H
 
-#if defined(_AIX)
-#pragma implementation ("MFrequency.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

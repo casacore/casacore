@@ -29,10 +29,6 @@
 #if !defined(AIPS_MRADIALVELOCITY_H)
 #define AIPS_MRADIALVELOCITY_H
 
-#if defined(_AIX)
-#pragma implementation ("MRadialVelocity.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

@@ -29,10 +29,6 @@
 #if !defined(AIPS_MPOSITION_H)
 #define AIPS_MPOSITION_H
 
-#if defined(_AIX)
-#pragma implementation ("MPosition.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

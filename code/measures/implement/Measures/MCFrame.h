@@ -1,5 +1,5 @@
 //# MCFrame.h: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_MCFRAME_H)
 #define AIPS_MCFRAME_H
-
-#if defined(_AIX)
-#pragma implementation ("MCFrame.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

@@ -1,5 +1,5 @@
 //# TVecLogic.h: Internal functions for table vector logical operations
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TVECLOGIC_H)
 #define AIPS_TVECLOGIC_H
-
-#if defined(_AIX)
-#pragma implementation ("TVecLogic.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

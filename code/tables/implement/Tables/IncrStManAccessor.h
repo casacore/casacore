@@ -1,5 +1,5 @@
 //# IncrStManAccessor.h: Gives access to some IncrementalStMan functions
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_INCRSTMANACCESSOR_H)
 #define AIPS_INCRSTMANACCESSOR_H
-
-#if defined(_AIX)
-#pragma implementation ("IncrStManAccessor.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

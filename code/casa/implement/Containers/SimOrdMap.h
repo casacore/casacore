@@ -28,10 +28,6 @@
 #if !defined(AIPS_SIMORDMAP_H)
 #define AIPS_SIMORDMAP_H
 
-#if defined(_AIX)
-#pragma implementation ("SimOrdMap.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Containers/Block.h>

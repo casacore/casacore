@@ -1,5 +1,5 @@
 //# CountedPtr.h: Referenced counted pointer classes
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_COUNTEDPTR_H)
 #define AIPS_COUNTEDPTR_H
-
-#if defined(_AIX)
-#pragma implementation ("CountedPtr.cc")
-#endif
 
 #include <aips/aips.h>
 

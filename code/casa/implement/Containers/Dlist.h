@@ -1,5 +1,5 @@
 //# Dlist.h: Doubly linked list
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_DLIST_H)
 #define AIPS_DLIST_H
-
-#if defined(_AIX)
-#pragma implementation ("Dlist.cc")
-#endif
 
 #include <aips/Containers/List.h>
 #include <aips/Containers/Dlink.h>

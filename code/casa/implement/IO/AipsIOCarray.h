@@ -1,5 +1,5 @@
 //# AipsIOCarray.h: Templated functions to get/put a C-array from/into AipsIO.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined (AIPS_AIPSIOCARRAY_H)
 #define AIPS_AIPSIOCARRAY_H
-
-#if defined(_AIX)
-#pragma implementation ("AipsIOCarray.cc")
-#endif
 
 //# Includes
 #include <aips/IO/AipsIO.h>

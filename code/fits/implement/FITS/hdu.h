@@ -28,11 +28,6 @@
 # if !defined(AIPS_FITS_HDU_H)
 # define AIPS_FITS_HDU_H
 
-#if defined(_AIX)
-#pragma implementation ("hdu.cc")
-#pragma implementation ("hdu2.cc")
-#endif
-
 # include <aips/FITS/fits.h>
 # include <aips/aips.h>
 

@@ -1,5 +1,5 @@
 //# Conversion.h: A class with general conversion definitions
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_CONVERSION_H)
 #define AIPS_CONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("Conversion.cc")
-#endif 
 
 //# Includes
 #include <string.h>                       // needed for memcpy

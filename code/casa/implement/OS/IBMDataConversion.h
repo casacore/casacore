@@ -1,5 +1,5 @@
 //# IBMDataConversion.h: A class with virtual functions to convert IBM format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,11 +27,6 @@
 
 #if !defined(AIPS_IBMDATACONVERSION_H)
 #define AIPS_IBMDATACONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("IBMDataConversion.cc")
-#endif 
-
 
 //# Includes
 #include <aips/OS/DataConversion.h>

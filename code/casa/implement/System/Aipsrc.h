@@ -1,5 +1,5 @@
 //# Aipsrc.h: Class to read the aipsrc general resource files
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_AIPSRC_H)
 #define AIPS_AIPSRC_H
-
-#if defined(_AIX)
-#pragma implementation ("Aipsrc.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>

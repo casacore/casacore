@@ -29,10 +29,6 @@
 #if !defined(AIPS_MDOPPLER_H)
 #define AIPS_MDOPPLER_H
 
-#if defined(_AIX)
-#pragma implementation ("MDoppler.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

@@ -1,5 +1,5 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996
+\AIX//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TEST_TREGISTER_H)
 #define AIPS_TEST_TREGISTER_H
-
-#if defined(_AIX)
-#pragma implementation ("tRegister.cc")
-#endif
 
 class foo {};
 

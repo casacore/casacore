@@ -1,5 +1,5 @@
 //# BitVector.h: Bit vectors of any size
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_BITVECTOR_H)
 #define AIPS_BITVECTOR_H
-
-#if defined(_AIX)
-#pragma implementation ("BitVector.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

@@ -1,5 +1,5 @@
 //# ArraySampledFunctional:
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,6 @@
 
 #if !defined(AIPS_ARRAYSAMPLEDFUNCTIONAL_H)
 #define AIPS_ARRAYSAMPLEDFUNCTIONAL_H
-
-#if defined(_AIX)
-#pragma implementation ("ArraySampledFunctional.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Functionals/SampledFunctional.h>

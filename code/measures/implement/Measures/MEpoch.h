@@ -29,10 +29,6 @@
 #if !defined(AIPS_MEPOCH_H)
 #define AIPS_MEPOCH_H
 
-#if defined(_AIX)
-#pragma implementation ("MEpoch.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

@@ -1,5 +1,5 @@
 //# Dlink.h: Doubly linked list primitive
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_DLINK_H_)
 #define AIPS_DLINK_H_
-
-#if defined(_AIX)
-#pragma implementation ("Dlink.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Containers/Link.h>

@@ -1,5 +1,5 @@
 //# ListMapIO.h: ListMap IO functions
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_LISTMAPIO_H_)
 #define AIPS_LISTMAPIO_H_
-
-#if defined(_AIX)
-#pragma implementation ("ListMapIO.cc")
-#endif
 
 #include <aips/Containers/ListMap.h>
 #include <aips/Containers/MapIO.h>

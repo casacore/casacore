@@ -1,5 +1,5 @@
 //# TableCache.h: Cache of open tables
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TABLECACHE_H)
 #define AIPS_TABLECACHE_H
-
-#if defined(_AIX)
-#pragma implementation ("TableCache.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

@@ -1,5 +1,5 @@
 //# TSMFile.h: File object for Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TSMFILE_H)
 #define AIPS_TSMFILE_H
-
-#if defined(_AIX)
-#pragma implementation ("TSMFile.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

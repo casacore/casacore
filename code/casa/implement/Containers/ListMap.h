@@ -1,5 +1,5 @@
 //# ListMap.h: Map with list ordering/operations
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_LISTMAP_H_)
 #define AIPS_LISTMAP_H_
-
-#if defined(_AIX)
-#pragma implementation ("ListMap.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Containers/Map.h>

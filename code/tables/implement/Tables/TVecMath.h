@@ -1,5 +1,5 @@
 //# TVecMath.h: Global helper functions for table vector mathematics
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TVECMATH_H)
 #define AIPS_TVECMATH_H
-
-#if defined(_AIX)
-#pragma implementation ("TVecMath.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

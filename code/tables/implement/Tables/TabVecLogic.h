@@ -1,5 +1,5 @@
 //# TabVecLogic.h: Global functions for table vector logical operations
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TABVECLOGIC_H)
 #define AIPS_TABVECLOGIC_H
-
-#if defined(_AIX)
-#pragma implementation ("TabVecLogic.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

@@ -1,5 +1,5 @@
 //# VAXConversion.h: A class with static functions to convert VAX format
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_VAXCONVERSION_H)
 #define AIPS_VAXCONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("VAXConversion.cc")
-#endif 
 
 //# Includes
 #include <assert.h>

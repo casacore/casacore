@@ -29,10 +29,6 @@
 #if !defined(AIPS_MEARTHMAGNETIC_H)
 #define AIPS_MEARTHMAGNETIC_H
 
-#if defined(_AIX)
-#pragma implementation ("MEarthMagnetic.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>

@@ -1,5 +1,5 @@
 //# FFTServer.h: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_FFTSERVER_H)
 #define AIPS_FFTSERVER_H
-
-#if defined(_AIX)
-#pragma implementation ("FFTServer.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

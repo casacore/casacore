@@ -1,5 +1,5 @@
 //# PtrHolder.h: Hold and delete pointers not deleted by object destructors
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_PTRHOLDER_H)
 #define AIPS_PTRHOLDER_H
-
-#if defined(_AIX)
-#pragma implementation ("PtrHolder.cc")
-#endif 
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Excp.h>

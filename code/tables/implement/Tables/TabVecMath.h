@@ -1,5 +1,5 @@
 //# TabVecMath.h: Global functions for table vector mathematics
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TABVECMATH_H)
 #define AIPS_TABVECMATH_H
-
-#if defined(_AIX)
-#pragma implementation ("TabVecMath.cc")
-#endif
 
 //# Global functions similar to those defined in ArrayMath are defined for
 //# the table vectors. Furthermore vector functions like norm are defined.

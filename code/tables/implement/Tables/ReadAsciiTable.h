@@ -1,5 +1,5 @@
 //# AsciiFileIO.h: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #define AIPS_ASCIIFILEIO_H
 
 #include <aips/aips.h>
-
-#if defined(_AIX)
-#pragma implementation ("AsciiFileIO.cc")
-#endif
 
 // <summary>
 // Filling a table from an Ascii file.

@@ -1,5 +1,5 @@
 //# TiledDataStManAccessor.h: Gives access to some TiledDataStMan functions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TILEDDATASTMANACCESSOR_H)
 #define AIPS_TILEDDATASTMANACCESSOR_H
-
-#if defined(_AIX)
-#pragma implementation ("TiledDataStManAccessor.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

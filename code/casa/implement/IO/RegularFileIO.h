@@ -1,5 +1,5 @@
 //# RegularFileIO.h: Class for IO on a regular file
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_REGULARFILEIO_H)
 #define AIPS_REGULARFILEIO_H
-
-#if defined (_AIX)
-#pragma implementation ("RegularFileIO.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

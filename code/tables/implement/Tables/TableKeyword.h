@@ -1,5 +1,5 @@
 //# TableKeyword.h: A keyword value representing a table
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_TABLEKEYWORD_H)
 #define AIPS_TABLEKEYWORD_H
-
-#if defined(_AIX)
-#pragma implementation ("TableKeyword.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

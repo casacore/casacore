@@ -28,10 +28,6 @@
 #if !defined(AIPS_TABLESYNCDATA_H)
 #define AIPS_TABLESYNCDATA_H
 
-#if defined (_AIX)
-#pragma implementation ("TableSyncData.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>

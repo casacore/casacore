@@ -1,5 +1,5 @@
 //# BucketFile.h: File object for Tiled hypercube Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_BUCKETFILE_H)
 #define AIPS_BUCKETFILE_H
-
-#if defined(_AIX)
-#pragma implementation ("BucketFile.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

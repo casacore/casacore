@@ -1,5 +1,5 @@
 //# RetypedArrayEngine.h: Virtual column engine to retype and reshape arrays
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,11 +27,6 @@
 
 #if !defined(AIPS_RETYPEDARRAYENGINE_H)
 #define AIPS_RETYPEDARRAYENGINE_H
-
-#if defined(_AIX)
-#pragma implementation ("RetypedArrayEngine.cc")
-#endif
-
 
 //# Includes
 #include <aips/Tables/BaseMappedArrayEngine.h>

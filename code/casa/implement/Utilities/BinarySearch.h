@@ -1,5 +1,5 @@
 //# BinarySearch.h: Binary search through linear, sorted, data structures
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 
 #if !defined(AIPS_BINARY_SEARCH_H)
 #define AIPS_BINARY_SEARCH_H
-
-#if defined(_AIX)
-#pragma implementation ("BinarySearch.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

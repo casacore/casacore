@@ -1,5 +1,5 @@
 //# LittleEndianConversion.h: A class with static functions to convert littleEndian format
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_LITTLEENDIANCONVERSION_H)
 #define AIPS_LITTLEENDIANCONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("LittleEndianConversion.cc")
-#endif 
 
 //# Includes
 #include <aips/OS/CanonicalConversion.h>

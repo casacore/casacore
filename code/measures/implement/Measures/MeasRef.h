@@ -1,5 +1,5 @@
 //# MeasRef.h: Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,6 @@
 
 #if !defined(AIPS_MEASREF_H)
 #define AIPS_MEASREF_H
-
-#if defined(_AIX)
-#pragma implementation ("MeasRef.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

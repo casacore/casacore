@@ -1,5 +1,5 @@
 //# MathFunc.h: Templated letter/envelope classes for single dependent variable functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined (AIPS_MATHFUNC_H)
 #define AIPS_MATHFUNC_H 
-
-#if defined(_AIX)
-#pragma implementation ("MathFunc.cc")
-#endif
 
 //# MathFunc: A templated letter/envelope set of classes for packaging
 //# of specific single dependent variable functions.

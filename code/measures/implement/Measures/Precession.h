@@ -1,5 +1,5 @@
 //# Precession.h: Precession class
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,6 @@
 
 #if !defined(AIPS_PRECESSION_H)
 #define AIPS_PRECESSION_H
-
-#if defined(_AIX)
-#pragma implementation ("Precession.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

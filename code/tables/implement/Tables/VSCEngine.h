@@ -1,5 +1,5 @@
 //# VSCEngine.h: Base virtual column for a scalar column with any type
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_VSCENGINE_H)
 #define AIPS_VSCENGINE_H
-
-#if defined(_AIX)
-#pragma implementation ("VSCEngine.cc")
-#endif
 
 //# Includes
 #include <aips/Tables/VirtColEng.h>

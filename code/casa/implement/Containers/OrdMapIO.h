@@ -28,10 +28,6 @@
 #if !defined(AIPS_ORDMAPIO_H)
 #define AIPS_ORDMAPIO_H
 
-#if defined(_AIX)
-#pragma implementation ("OrdMapIO.cc")
-#endif
-
 #include <aips/Containers/MapIO.h>
 #include <aips/Containers/OrderedMap.h>
 

@@ -1,6 +1,6 @@
 /*
     cregex.h: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995,1997
+    Copyright (C) 1993,1994,1995,1997,1999
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it

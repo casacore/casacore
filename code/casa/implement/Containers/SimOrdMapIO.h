@@ -1,5 +1,5 @@
 //# SimOrdMapIO.h: SimOrdMap IO operations
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_SIMORDMAPIO_H)
 #define AIPS_SIMORDMAPIO_H
-
-#if defined(_AIX)
-#pragma implementation ("SimOrdMapIO.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Containers/SimOrdMap.h>

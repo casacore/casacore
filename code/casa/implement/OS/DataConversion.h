@@ -1,5 +1,5 @@
 //# DataConversion.h: Abstract base class with functions to convert any format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_DATACONVERSION_H)
 #define AIPS_DATACONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("DataConversion.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

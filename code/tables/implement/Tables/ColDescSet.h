@@ -1,5 +1,5 @@
 //# ColDescSet.h: This class defines a set of column descriptions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_COLDESCSET_H)
 #define AIPS_COLDESCSET_H
-
-#if defined(_AIX)
-#pragma implementation ("ColDescSet.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

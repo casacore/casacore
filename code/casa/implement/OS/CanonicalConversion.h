@@ -1,5 +1,5 @@
 //# CanonicalConversion.h: A class with static functions to convert canonical format
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_CANONICALCONVERSION_H)
 #define AIPS_CANONICALCONVERSION_H
-
-#if defined(_AIX)
-#pragma implementation ("CanonicalConversion.cc")
-#endif 
 
 //# Includes
 #include <aips/OS/Conversion.h>

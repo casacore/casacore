@@ -1,5 +1,5 @@
 //# DFTServer.h: This class contains methods for doing n-D slow Fourier transforms
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #if !defined(AIPS_DFTSERVER_H)
 #define AIPS_DFTSERVER_H
-
-#if defined(_AIX)
-#pragma implementation ("DFTServer.cc")
-#endif
 
 #include <iostream.h>
 #include <aips/aips_exit.h>
