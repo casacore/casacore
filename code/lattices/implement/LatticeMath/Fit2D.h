@@ -141,7 +141,8 @@ public:
     // Add a model to the list to be simultaneously fit and 
     // return its index.  Specify the initial guesses for
     // the model and a mask indicating whether the parameter
-    // is fixed (False) during the fit or not.
+    // is fixed (False) during the fit or not.  Returns the
+    // the model number added (0, 1, 2 etc)
     //<group>
     uInt addModel (Fit2D::Types type,
                    const Vector<Double>& parameters,
