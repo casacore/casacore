@@ -151,6 +151,8 @@ public:
   // supplied string. It returns True if the conversion succeeded.
   Bool fromGlishRecord(String & error, const GlishValue & inValue);
 
+  // Specify the identification of the record (e.g. 'meas', 'quant').
+  virtual const String &ident();
 };
 
 #endif

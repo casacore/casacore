@@ -33,8 +33,14 @@ RecordTransformable::~RecordTransformable() {
 }
 
 Bool RecordTransformable::fromString(String & error, const String & inString) {
+  if (False) inString.empty();	// stop warning
   error += "Cannot initialise this object from a string\n";
   return False;
+}
+
+const String &RecordTransformable::ident() {
+  static String myid = String();
+  return myid;
 }
 
 // Local Variables: 
