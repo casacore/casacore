@@ -229,23 +229,30 @@ Int String::gsub(const Char *pat, const Char *repl) {
 void String::reverse() {
   std::reverse(begin(), end());
 }
+#if defined(AIPS_SUN_NATIVE)
+Int ToUpper(Int a){return toupper(a);}
+Int ToLower(Int a){return tolower(a);}
+#else
+#define ToUpper toupper
+#define ToLower tolower
+#endif
 
 void String::upcase() {
-  std::transform(begin(), end(), begin(), toupper);
+  std::transform(begin(), end(), begin(), ToUpper);
 }
 
 void String::downcase() {
-  std::transform(begin(), end(), begin(), tolower);
+  std::transform(begin(), end(), begin(), ToLower);
 }
 
 void String::capitalize() {
   for (iterator p=begin(); p < end(); p++) {
     Bool at_word;
-    if ((at_word = islower(*p))) *p = toupper(*p);
+    if ((at_word = islower(*p))) *p = ToUpper(*p);
     else at_word = isupper(*p) || isdigit(*p);
     if (at_word) {
       while (++p < end()) {
-        if (isupper(*p)) *p = tolower(*p);
+        if (isupper(*p)) *p = ToLower(*p);
         else if (!islower(*p) && !isdigit(*p)) break;
       };
     };
@@ -352,12 +359,12 @@ String reverse(string str) {
 }
 
 String upcase(string str) {
-  std::transform(str.begin(), str.end(), str.begin(), toupper);
+  std::transform(str.begin(), str.end(), str.begin(), ToUpper);
   return str;
 }
 
 String downcase(string str) {
-  std::transform(str.begin(), str.end(), str.begin(), tolower);
+  std::transform(str.begin(), str.end(), str.begin(), ToLower);
   return str;
 }
 
@@ -487,5 +494,12 @@ SubString &SubString::operator=(const Char c) {
 #if defined(__GNUG__)
 template void __reverse(Char *, Char *, random_access_iterator_tag);
 #endif
+
+#if defined(AIPS_SUN_NATIVE)
+ template void std::__reverse(char *, char *, std::random_access_iterator_tag);
+ template std::istream& __rwstd::rw_extract_string ( std::istream&, std::string&, std::char_traits<char>);
+#endif
+
+
 template Char *std::transform(Char *, Char *, Char *, Int (*)(Int));
 
