@@ -1137,7 +1137,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 //
 // Iterate through the lattice and generate the accumulation lattice
 {
-cout << "Hello: generating storage lattice" << endl;
+
 // Delete old storage lattice
 
    if (pStoreLattice_p != 0) delete pStoreLattice_p;
@@ -1676,19 +1676,16 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
    if (doMean) {
       minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS));
-cout << "Mean: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nL++;
    }
    if (doFlux) {
       minMax(none, yLMin, yLMax, stats.column(FLUX), stats.column(NPTS));
-cout << "Flux: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nL++;
    }
    if (doSum) {
       minMax(none, yMin, yMax, stats.column(SUM), stats.column(NPTS));
-cout << "Sum: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1701,7 +1698,6 @@ cout << "Sum: yMin, yMax = " << yMin << ",  " << yMax << endl;
    }
    if (doSumSq) {
       minMax(none, yMin, yMax, stats.column(SUMSQ), stats.column(NPTS));
-cout << "SumSq: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1714,7 +1710,6 @@ cout << "SumSq: yMin, yMax = " << yMin << ",  " << yMax << endl;
    }
    if (doMin) {
       minMax(none, yMin, yMax, stats.column(MIN), stats.column(NPTS));
-cout << "Min: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1727,7 +1722,6 @@ cout << "Min: yMin, yMax = " << yMin << ",  " << yMax << endl;
    }
    if (doMax) {
       minMax(none, yMin, yMax, stats.column(MAX), stats.column(NPTS));
-cout << "Max: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1740,7 +1734,6 @@ cout << "Max: yMin, yMax = " << yMin << ",  " << yMax << endl;
    }
    if (doNPts) {
       minMax(none, yMin, yMax, stats.column(NPTS), stats.column(NPTS));
-cout << "Npts: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1758,13 +1751,11 @@ cout << "Npts: yMin, yMax = " << yMin << ",  " << yMax << endl;
    first = True;
    if (doSigma) {
       minMax(none, yRMin, yRMax, stats.column(SIGMA), stats.column(NPTS));
-cout << "Sigma: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nR++;
    }
    if (doVar) {
       minMax(none, yMin, yMax, stats.column(VARIANCE), stats.column(NPTS));
-cout << "Var: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
@@ -1777,7 +1768,6 @@ cout << "Var: yMin, yMax = " << yMin << ",  " << yMax << endl;
    }
    if (doRms) {
       minMax(none, yMin, yMax, stats.column(RMS), stats.column(NPTS));
-cout << "rms: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
