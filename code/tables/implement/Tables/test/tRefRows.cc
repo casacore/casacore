@@ -26,6 +26,9 @@
 //# $Id$
 
 #include <aips/Tables/RefRows.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/OS/Timer.h>
+#include <aips/Utilities/Assert.h>
 
 // <summary>
 // Test program for class RefRows.
@@ -34,7 +37,7 @@
 
 void doIt()
 {
-    Vector<uInt> vec(10);
+    Vector<uInt> vec(18);
     vec(0) = 1;
     vec(1) = 1;
     vec(2) = 2;
@@ -44,21 +47,59 @@ void doIt()
     vec(6) = 7;
     vec(7) = 9;
     vec(8) = 11;
-    vec(9) = 4;
-
-    RefRows ref(vec);
-    RefRowsSliceIter iter1(ref);
-    while (!iter1.pastEnd()) {
-	cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
-	     << ' ' << iter1.sliceIncr() << endl;
-	iter1++;
+    vec(9) = 5;
+    vec(10)= 10;
+    vec(11)= 15;
+    vec(12)= 20;
+    vec(13)= 25;
+    vec(14)= 30;
+    vec(15)= 35;
+    vec(16)= 40;
+    vec(17)= 4;
+    {
+	RefRows ref(vec);
+	AlwaysAssertExit (ref.nrows() == 18);
+	AlwaysAssertExit (!ref.isSliced());
+	RefRowsSliceIter iter1(ref);
+	while (!iter1.pastEnd()) {
+	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
+		 << ' ' << iter1.sliceIncr() << endl;
+	    iter1++;
+	}
     }
-    RefRowsRowIter iter2(ref);
-    while (!iter2.pastEnd()) {
-	cout << iter2.row() << ' ';
-	iter2++;
+    {
+	RefRows ref(vec, True);
+	AlwaysAssertExit (ref.nrows() == 7);
+	AlwaysAssertExit (ref.isSliced());
+	RefRowsSliceIter iter1(ref);
+	while (!iter1.pastEnd()) {
+	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
+		 << ' ' << iter1.sliceIncr() << endl;
+	    iter1++;
+	}
     }
-    cout << endl;
+    {
+	RefRows ref(vec, False, True);
+	AlwaysAssertExit (ref.nrows() == 18);
+	AlwaysAssertExit (ref.isSliced());
+	RefRowsSliceIter iter1(ref);
+	while (!iter1.pastEnd()) {
+	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
+		 << ' ' << iter1.sliceIncr() << endl;
+	    iter1++;
+	}
+    }
+    {
+	RefRows ref(3,9,2);
+	AlwaysAssertExit (ref.nrows() == 4);
+	AlwaysAssertExit (ref.isSliced());
+	RefRowsSliceIter iter1(ref);
+	while (!iter1.pastEnd()) {
+	    cout << iter1.sliceStart() << ' ' << iter1.sliceEnd()
+		 << ' ' << iter1.sliceIncr() << endl;
+	    iter1++;
+	}
+    }
 }
 
 main() {
