@@ -2234,3 +2234,9 @@
 09 127 src rm atnf/implement/pks/test/tMeanDevFitPoly.cc
 09 127 src rm atnf/implement/pks/test/tMedianDevFitPoly.cc
 09 127 src rm atnf/implement/pks/test/tRobustLineFit.cc
+09 143 src rm nfra/implement/wsrt/WSRTDataSourceBand0.h
+09 143 src rm nfra/implement/wsrt/WSRTDataSourceBand0.cc
+09 143 src rm nfra/implement/wsrt/WSRTDataSourceShort.h
+09 143 src rm nfra/implement/wsrt/WSRTDataSourceShort.cc
+09 143 src rm nfra/implement/wsrt/WSRTInput.h
+09 143 src rm nfra/implement/wsrt/WSRTInput.cc
