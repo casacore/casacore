@@ -207,6 +207,10 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
+    // Overwrite the world axis units with no compatibility
+    // checks or adjustment.
+    Bool overwriteWorldAxisUnits(const Vector<String> &units);
+
     // Set the world min and max ranges, for use in function <src>toMix</src>,
     // for  a lattice of the given shape (for this coordinate).
     // The implementation here gives world coordinates dangling 25% off the
