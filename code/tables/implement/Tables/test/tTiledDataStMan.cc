@@ -70,7 +70,7 @@ main()
 
 void init (Matrix<float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
 {
-    indgen (array);
+    indgen (array.ac());
     uInt i=0;
     for (uInt k=0; k<20; k++) {
 	for (uInt j=0; j<12; j++) {
