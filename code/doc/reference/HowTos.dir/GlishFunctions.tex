@@ -1,0 +1,131 @@
+\chapter{Writing Glish Functions\label{Useful.GlishFunctions}}
+
+\textit{Users should consult \textbf{\htmladdnormallink{The Glish User's Manual}
+{http://www.cv.nrao.edu/aips++/glish/manual/}}
+for general glish programming.}
+
+Writing glish functions is very useful for assembling \aipspp
+tools.  Utilities checked into the system should follow a set 
+guidelines.  
+
+\section{Guidelines}
+
+As a glish tool writer it helps to distinguish between private member functions
+and global functions (This will help avoid name-space confilicts
+with other scripts that might be included).
+Write private functions as a record  i.e.  app.function := function
+At the end of the script declare the record const to make sure a user
+doesn't accidently overwrites it.
+
+Glish functions intended for user interaction need both
+programmer and user documentation.  Functions not visible to users
+need programmer documentation similar to the C++/C function format.
+
+Glish functions that users interact with are documented using "Help Atoms"
+(See Paul Shannon's
+note 187 for More details).  Essentially you specify a series of attributes
+that describe the function.
+All global functions in the system library must have the help atoms defined!
+Please follow the glish script template.
+Until we implement code copping on \aipspp scripts we need to exercise
+self-discipline.
+
+Include glish code only once.  How do you do this?  Put the glish code 
+inside an "include" guard.  An example follows:
+\begin{verbatim}
+if(!is_defined("myGlishScript_included")){
+   myGlishScript_include := 'yes';
+   ....
+}
+\end{verbatim}
+
+Now how do we prevent the clients starting 
+before we really need them?  Write a function similar to the
+start\_myClient example shown below.
+
+\begin{verbatim}
+const start_myClient := function()
+{
+   if(!is_defined("myClient_started")){
+      myClient_started := 'yes'
+      global myClient := client("my");
+   }
+}
+\end{verbatim}
+You call start\_myClient in your glish script.  It will only execute if the
+variable myClient\_started has not been defined.
+
+
+\section{Conventions}
+
+Functions are define as lowercase with underscores between words.
+
+Variables are mixed upper and lowercase with the first letter always lower
+case.
+Use descriptive variable names.  It will help others understand your code.
+
+Use comments when needed and lots of whitespace to make things readable!
+
+\section{Pitfalls and Troubles}
+
+\begin{itemize}
+\item Avoid terminating glish clients.
+\end{itemize}
+
+\section{Glish Template}
+Please use the following template to write your glish scrips.  It's available
+from code/install/codedevel/template-glish (or will be shortly).
+\begin{verbatim}
+
+Text enclosed in <> needs to be changed to the appropriate function name.
+
+------------cut here--------------------------
+
+# <GlishFunction.g>: short description ...
+# Copyright (C) 1996
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This library is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Library General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+# License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this library; if not, write to the Free Software Foundation,
+# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+
+# Create an include guard
+
+if(! is_defined("<GlishFunction_g_included>")) {
+  <GlishFunction_g_included> := 'yes'
+
+#
+#
+# include "other.g" files as needed
+#
+
+#
+#Define glish functions (Remove const while debugging otherwise...)
+#
+
+const <GlishFunction> := GlishFunction(arg...) {  
+   .... }
+
+
+} # Terminates the include guard
+
+
+\end{verbatim}

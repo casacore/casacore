@@ -1,0 +1,487 @@
+\chapter{Installation}
+\label{Installation}
+\index{installation}
+
+This chapter \footnote{Last change:
+$ $Id$ $}
+describes how to install \aipspp.
+
+The installation of end-user (production-line) and \aipspp\ consortium
+(code-development) systems are sufficiently different that separate
+instructions are provided for each.
+
+% ----------------------------------------------------------------------------
+
+\section{End-user AIPS++ installations}
+\label{End-user installation}
+\index{installation -- end-user}
+\index{installation -- production-line}
+
+The first step in installing \aipspp\ is to fetch the compressed \unixexe{tar}
+files containing the \aipspp\ sources.  Make sure you're logged in to the
+account which will own the \aipspp\ source code.  The home directory of this
+account is referred to as \file{/aips++} below although you can put the
+\aipspp\ root directory wherever you like.  However, you {\em must} fetch the
+distribution files into a subdirectory called \file{code}.
+
+After creating \file{/aips++} you should give the directory suitable user and
+group ownership.  These can be anything, but you might wish to set up a
+special \aipspp\ manager account and group, the standard name for each of
+which is \acct{aips2mgr} (see \sref{Accounts and groups}).
+
+The complete \unixexe{ftp} sequence should look something like
+
+\begin{verbatim}
+   yourhost% cd /aips++
+   yourhost% chgrp aips2mgr .
+   yourhost% chmod ug=rwx,o=rx,g+s .
+   yourhost% mkdir code
+   yourhost% cd code
+   yourhost% ftp aips2.nrao.edu
+   Connected to tarzan.aoc.nrao.edu.
+   220 tarzan FTP server (Version wu-2.4(5) Fri Jul 14 14:30:10 MDT 1995) ready.
+   Name (aips2.nrao.edu:you): ftp
+   331 Guest login ok, send your complete e-mail address as password.
+   Password:you@yourhost.there
+        :
+     ftp welcome messages
+        :
+   230 Guest login ok, access restrictions apply.
+   ftp> cd /pub/code
+   250 CWD command successful.
+   ftp> binary
+   200 Type set to I.
+   ftp> prompt
+   Interactive mode off.
+   ftp> hash
+   Hash mark printing on (8192 bytes/hash mark).
+   ftp> mget *
+        :
+     lots of messages describing what ftp is fetching
+        :
+   ftp> quit
+   221 Goodbye.
+   yourhost%
+\end{verbatim}
+
+\noindent
+If you only want a subset of the \aipspp\ sources then you need only fetch the
+\file{README}, \file{VERSION}, and \file{configure} files, and the
+\file{install} and \file{aips} distribution \unixexe{tar} files, plus whatever
+else you want.  Don't forget to use the \code{binary} option to \unixexe{ftp}.
+The \code{hash} option is not required but may make you feel better about the
+fetch operation.
+
+The distribution contains two special files, \file{VERSION} and
+\file{configure}.  \file{VERSION} records the version number and date of the
+distribution.  The \exeref{configure} utility attempts to extract and install
+\aipspp\ in a semi-automatic way.  After fetching the distribution as
+described above, you should run \exeref{configure}
+
+\begin{verbatim}
+   yourhost% chmod 544 configure
+   yourhost% ./configure
+\end{verbatim}
+
+\noindent
+The first thing \aipsexe{configure} will do is attempt to extract the
+compressed \unixexe{tar} files.  It then asks a series of questions aimed at
+constructing the \aipspp\ \filref{aipshosts} file.  The procedure should be
+self-explanatory, and most of the questions have sensible defaults.
+
+You will then be asked to edit your site-specific \filref{aipsrc} and
+\filref{makedefs} files.  Template versions of these files are supplied by
+\exeref{configure} and you should read the instructions carefully.  After
+making your site-specific definitions \exeref{configure} will run some tests
+to check whether your \file{makedefs} definitions look sensible.  It will then
+invoke \exeref{gmake} to build the \aipspp\ system for you.  If you made any
+mistakes in \file{makedefs} or \file{aipsrc} which were not caught by the
+diagnostics tests these may become apparent at this stage.  After fixing them
+you can restart the build by
+
+\begin{verbatim}
+   yourhost% gmake -C /aips++/code allsys
+\end{verbatim}
+
+% ----------------------------------------------------------------------------
+
+\section{Consortium AIPS++ installations}
+\label{Consortium installation}
+\index{installation -- consortium}
+\index{installation -- code-development}
+\index{code management -- configuration}
+\index{checkin -- configuration}
+\index{checkout -- configuration}
+
+Consortium installations differ from end-user installations in having a local
+slave copy of the master \rcs\ source code repositories (see
+\sref{RCS directories}).  The slave is updated regularly by the \aipspp\ code
+distribution system via a procedure called \exeref{inhale}.  Consortium
+installations also have a mechanism for checking sources out of, and in to,
+the master \rcs\ repositories.
+
+\subsection*{Step 1. Create AIPS++ accounts}
+
+Before starting a consortium installation the following accounts must be
+created by the unix system administrator with the specified user and group ids
+in \file{/etc/passwd} (see \sref{Accounts and groups}):
+
+\begin{verbatim}
+   aips2mgr   uid=31415   gid=31415
+   aips2prg   uid=31416   gid=31416
+   aips2usr   uid=31417   gid=31417
+\end{verbatim}
+
+\noindent
+The user and group ids correspond with those of the master sources and
+although different ids may be used it is {\em highly desirable} that they
+match.  The home directory for the accounts should be set to the root
+directory of the \aipspp\ tree.  This can be anything but \file{/aips++} is
+preferred and is assumed in the following examples.
+
+The following groups must be created with the matching group id and membership
+(in \file{/etc/group}):
+
+\begin{verbatim}
+   aips2mgr   gid=31415
+   aips2prg   gid=31416   aips2mgr
+   aips2usr   gid=31417   aips2mgr aips2prg
+\end{verbatim}
+
+\noindent
+You should also add your account name and the names of any other local
+\aipspp\ managers to the \acct{aips2mgr} group membership list.  Do not add
+everyone to the \acct{aips2mgr} group, it grants permission to directly
+manipulate the \rcs\ sources.  You should also add the names of all local
+\aipspp\ programmers to the \acct{aips2prg} group.  This will allow them to
+check out and modify the \aipspp\ sources.  The \acct{aips2mgr} account and the
+\acct{aips2mgr} and \acct{aips2prg} groups will be used during the installation.
+
+Now create the \aipspp\ root directory:
+
+\begin{verbatim}
+   yourhost% mkdir /aips++
+   yourhost% chown aips2mgr /aips++
+   yourhost% chgrp aips2prg /aips++
+   yourhost% chmod ug=rwx,o=rx,g+s /aips++
+\end{verbatim}
+
+\noindent
+In practice \file{/aips++} will often be a self-contained filesystem, usually
+on a separate disk.  Allow 1\,Gbyte of disk space for the \aipspp\ system; any
+short-term surplus may be used for programmer workspaces.
+
+This is as much as needs doing by the system administrator at this stage.  The
+remainder of the initial part of the installation can be done by
+\acct{aips2mgr}.
+
+\subsection*{Step 2. Fetch the \file{install} scripts}
+
+First create the \file{code} subdirectory:
+
+\begin{verbatim}
+   yourhost% cd /aips++
+   yourhost% mkdir code
+   yourhost% chmod ug=rwx,o=rx,g+s code
+   yourhost% cd code
+\end{verbatim}
+
+\noindent
+Now you're ready to fetch the sources.  However, instead of fetching
+everything you will only need the \file{install} package plus a few other
+files (the rest will be fetched automatically by \exeref{inhale}):
+
+\begin{verbatim}
+   yourhost% ftp aips2.nrao.edu
+   Connected to tarzan.aoc.nrao.edu.
+   220 tarzan FTP server (Version wu-2.4(5) Fri Jul 14 14:30:10 MDT 1995) ready.
+   Name (aips2.nrao.edu:you): ftp
+   331 Guest login ok, send your complete e-mail address as password.
+   Password:you@yourhost.there
+        :
+     ftp welcome messages
+        :
+   230 Guest login ok, access restrictions apply.
+   ftp> cd /pub/code
+   250 CWD command successful.
+   ftp> binary
+   200 Type set to I.
+   ftp> prompt
+   Interactive mode off.
+   ftp> hash
+   Hash mark printing on (8192 bytes/hash mark).
+   ftp> mget README VERSION configure install-*
+        :
+     lots of messages describing what ftp is fetching
+        :
+   ftp> quit
+   221 Goodbye.
+   yourhost%
+\end{verbatim}
+
+\noindent
+(The \file{README} file contains a plain-text copy of these instructions.)
+Then invoke \exeref{configure}:
+
+\begin{verbatim}
+   yourhost% chmod 544 configure
+   yourhost% ./configure
+\end{verbatim}
+
+\noindent
+You will be asked a series of questions, most of which have sensible defaults,
+aimed at constructing the \aipspp\ \filref{aipshosts} file.  You then have to
+edit your site-specific \filref{aipsrc} and \filref{makedefs} files.  Template
+versions of these files are supplied by \exeref{configure} and you should read
+the instructions carefully.  After making your site-specific definitions
+\aipsexe{configure} will run some tests to check whether your \file{makedefs}
+definitions look sensible.  Your \file{install} directory will then be made.
+This consists of a few \textsc{c} compilations and installation of some shell
+scripts, the most important of which is \exeref{inhale} itself.  Ignore any
+error message from \exeref{gmake} concerning the non-existence of various
+subdirectories of \file{/aips++/code}.
+
+
+\subsection*{Step 3. Run \aipsexe{inhale}}
+
+At this point your \aipspp\ installation has been bootstrapped to a state
+where \exeref{inhale} can be run.  However, before invoking it you must ensure
+that \rcs\ is installed.  If it isn't, you can get the sources via anonymous
+\unixexe{ftp} from any \gnu\ archive site or from \host{aips2.nrao.edu} in
+\file{/pub/import}.  Note that the \rcs\ installation goes through a prolonged
+period of apparent inactivity, be patient!
+
+You should also have a \cplusplus\ compiler, and a \TeX\ installation which
+includes \LaTeX, \unixexe{dvips}, \textsc{MetaFont} and \textsc{latex2html}.
+If you don't have a \cplusplus\ compiler you can still run \exeref{inhale} but
+should pass it the \exe{-n} option so that it doesn't try to recompile the
+sources.  Likewise, unset the \code{DOCSYS} variable in \file{makedefs} if you
+don't have \TeX, it will prevent compilation of the \aipspp\ documentation.
+
+Users of SysV based systems such as Solaris should be warned that
+\exeref{inhale} requires the BSD version of \unixexe{sum} for computing
+checksums.  You must ensure that the BSD version will be found ahead of the
+SysV version in \acct{aips2mgr}'s \code{PATH}.  The \gnu\ version of
+\unixexe{sum} (in the \gnu\ ``fileutils'' kit) provides both algorithms and
+uses BSD by default.  Less salubrious possibilities are to put \file{/usr/ucb}
+(Solaris) or \file{/usr/bsd} (IRIX) ahead of \file{/usr/bin} in
+\acct{aips2mgr}'s \code{PATH}, or to create a symlink to the BSD version of
+\unixexe{sum} in the \aipspp\ \file{bin} area.  
+
+First invoke \exeref{aipsinit} to add the \aipspp\ \file{bin} directory to
+your \code{PATH}.  If your interactive shell is a C-like shell (\unixexe{csh},
+\unixexe{tcsh}) you would use
+
+\begin{verbatim}
+   yourhost% source /aips++/aipsinit.csh
+\end{verbatim}
+
+\noindent
+whereas for Bourne-like shells (sh, bash, ksh) you would use
+
+\begin{verbatim}
+   yourhost% . /aips++/aipsinit.sh
+\end{verbatim}
+
+\noindent
+If you use some other shell you'll have to revert to one of the above for the
+remainder of the installation.  Now invoke \exeref{inhale}
+
+\begin{verbatim}
+   yourhost% inhale
+\end{verbatim}
+
+\noindent
+or if you don't want to rebuild
+
+\begin{verbatim}
+   yourhost% inhale -n
+\end{verbatim}
+
+\noindent
+This will fetch all required sources from the master via \unixexe{ftp} and
+install them.  If you are installing \aipspp\ from scratch \aipsexe{inhale}
+will first fetch and install the ``base'' release.  This is the frozen version
+of the source code distributed to end-users.  It will then fetch and install
+the latest version of the sources which are under active development.  If you
+made any mistakes in your \file{aipsrc} or \file{makedefs} definitions some of
+these may become apparent during the installations.  After fixing them you can
+recover via
+
+\begin{verbatim}
+   yourhost% gmake -C /aips++/code allsys
+\end{verbatim}
+
+\noindent
+The \code{allsys} target will compile all \aipspp\ sources, including
+documentation (assuming of course that you have the compilers).  If you just
+wanted to compile the documentation alone you could use
+
+\begin{verbatim}
+   yourhost% gmake -C /aips++/code docsys
+\end{verbatim}
+
+If everything has gone properly you should now have an up-to-date \aipspp\ 
+installation.  However, in order to keep it up-to-date you must define a
+\unixexe{cron} job to run \exeref{inhale} on a regular basis.  The normal
+procedure is to do a cumulative update every Saturday evening.  However, you
+may wish to maintain a (possibly separate) system which is updated on a daily
+basis.  Half-daily updates are also possible, but note that 12 hours may not
+be sufficient time to rebuild the system.
+
+The exact timing depends on your timezone with respect to the master.  New
+updates are produced by 0700 and 1900 Socorro time (MST or MDT) but you should
+allow at least an hour's grace before collecting them.  An example
+\file{crontab} file might resemble the following:
+
+\begin{verbatim}
+   # Cumulative update of the AIPS++ slave directories each Saturday evening.
+   00 22 * * 6   (. $HOME/.profile ; inhale -c) 2>&1 | \
+      mail aips2mgr aips2-inhale@nrao.edu
+\end{verbatim}
+
+\noindent
+(Note that all \unixexe{cron} entries must be one-liners but they are broken
+here for clarity.)  You may need to add the \exe{-n} option to \exeref{inhale}
+accordingly.  Note that, as in the above example, the log produced by
+\aipsexe{inhale} is generally forwarded to \acct{aips2-inhale@nrao.edu}.
+These logs are archived for about 10 days and are accessible via the \aipspp\ 
+home page \url{http://aips2.nrao.edu/aips++/docs/html/aips++.html}.  This is
+particularly useful for verifying code portability, especially on platforms
+that a programmer doesn't have ready access to.  You should also add the email
+address of a local person who will monitor the \aipsexe{inhale} logs
+(\acct{aips2mgr} in the above example).
+
+\subsection*{Step 4. Create the NFS automount}
+
+You should now have a living breathing \aipspp\ installation, but as yet won't
+be able to check code in to, or out of, the master source code repositories
+from your local machine.  Note, however, that a perfectly acceptable although
+somewhat tedious alternative if you have an account on a machine in Socorro is
+to log in remotely using either \unixexe{rlogin} or \unixexe{telnet} and check
+the files in and out of the master directly.  There are also a set of
+utilities which automate this mechanism somewhat (see \sref{rai}).
+
+The usual mechanism for local checkin and checkout of \aipspp\ source files
+from the master \rcs\ repository is that of an \textsc{nfs} mount on the local
+\aipspp\ machine of the master directories from \host{aips2.nrao.edu}, the
+host on which the master resides.
+
+Note that the only traffic flowing via the \textsc{nfs} mount is that
+associated with sources being checked in and out and is quite modest.  Source
+code updates fetched by \exeref{inhale} do not travel by this mount but rather
+via \unixexe{ftp} as compressed tar files.
+
+At \aipspp\ sites other than Socorro itself the \textsc{nfs} mount runs
+across the internet.  This is not particularly difficult to configure.
+However, the \textsc{nfs} mount must be set up on every machine on which checkins
+and checkouts are to be enabled, and \acct{root} privilege is required to do
+this.  Therefore, your system administrator's assistance will again be
+required.
+
+The preferred way of implementing the \textsc{nfs} mount involves using the
+\unixexe{automount} mechanism.  Permanent \textsc{nfs} mounts (implemented as
+entries in \file{/etc/fstab} or \file{/etc/vfstab}) are not recommended since
+they may hang if the server doesn't respond, whereas automounts timeout within
+a reasonable period.
+
+Permission to mount the \aipspp\ master \rcs\ repositories can be obtained by
+sending a request via email to \acct{aips2adm@nrao.edu}.  You should specify
+the full internet address, both symbolic and numerical, of the machines which
+are to have access.  For example,
+
+\begin{verbatim}
+   grus.atnf.csiro.au     130.155.194.37
+   bootes.atnf.csiro.au   130.155.194.40
+\end{verbatim}
+
+\noindent
+These should be strictly limited to machines assigned for \aipspp\ programmer
+use.
+
+There are several ways in which the automount may be implemented.  The
+recommended method is a ``direct'' automount local to the \aipspp\ programmer
+machines; that is, one that is not distributed via the \textsc{nis}
+\file{auto.master} and \file{auto.direct} maps.
+
+In Solaris 2.x, the automounter is multi-threaded and no special precautions
+need be taken.  Simply add the following line to \file{/etc/auto\_direct}:
+
+\begin{verbatim}
+   /aips++_master -rw,grpid,hard,intr aips2.nrao.edu:/export/aips++/master
+\end{verbatim}
+
+On the other hand, the automounter supplied with SunOS 4.x is single-threaded.
+Since the \aipspp\ master may sometimes be inaccessible due to internet
+connectivity problems, the best strategy is to invoke a separate instance of
+the \unixexe{automount} daemon which deals exclusively with it.
+
+Do the following for each of your \aipspp\ programmer machines (the directory
+and file names are provided for illustration only; for example, you may prefer
+to put the files in \file{/etc} instead of \file{/usr/local/etc}).  Create a
+file \file{/usr/local/etc/auto.master\_aips++} containing the following single
+entry:
+
+\begin{verbatim}
+   /-  /usr/local/etc/auto.direct_aips++  -rw,grpid,hard,intr
+\end{verbatim}
+
+\noindent
+Now create \file{/usr/local/etc/auto.direct\_aips++} containing:
+
+\begin{verbatim}
+   /aips++_master  aips2.nrao.edu:/export/aips++/master
+\end{verbatim}
+
+\noindent
+and create an additional invokation of the \unixexe{automount} daemon by
+adding the following command to \file{/etc/rc.local} at the appropriate point
+(near the end):
+
+\begin{verbatim}
+   automount -m -f /usr/local/etc/auto.master_aips++
+\end{verbatim}
+
+You should be able to adapt these strategies to other operating systems and
+automounters without too much trouble.
+
+\noindent
+If you are not running the domain nameserver you will need to add an entry to
+your \textsc{nis} \file{hosts} map for \host{aips2.nrao.edu} (or to
+\file{/etc/hosts} if you're not running \textsc{nis}):
+
+\begin{verbatim}
+   146.88.10.7   aips2.nrao.edu
+\end{verbatim}
+
+\noindent
+Note that this internet address may change in future.  Start the
+\unixexe{automount} daemon by issuing the \unixexe{automount} command above as
+\acct{root}, or alternatively reboot the machine.
+
+Finally, as \acct{aips2mgr}, create a symbolic link to the master repositories
+
+\begin{verbatim}
+   yourhost% ln -s /aips++_master /aips++/master
+\end{verbatim}
+
+\noindent
+To test whether the mount is working try doing
+
+\begin{verbatim}
+   yourhost% ls /aips++/master
+\end{verbatim}
+
+\noindent
+After a little while you should get a listing of the master directory.  You
+should also be able to run \exeref{ao} and \exeref{ai}, the \aipspp\ checkout
+and checkin utilities.
+
+If once you have the mount set up you encounter problems relating to
+\textsc{nfs} operations timing out, for example as indicated by messages such
+as "\code{NFS getattr failed for server aips2.nrao.edu: RPC: Timed out}", then
+you may need to increment the \textsc{nfs} retransmission and timeout
+parameters via the \code{retrans} and \code{timeo} mount options in the
+automounter map.
+
+Check the man page for \unixexe{mount} for further information.

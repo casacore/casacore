@@ -1,0 +1,733 @@
+%\input /suru/efomalon/tex/texinit.all
+\font\kxbgbf=cmb10     scaled \magstep4
+%\font\kxbgbx=cmbx10    scaled \magstep4
+%\font\kxbgbi=cmbxti10  scaled \magstep4
+%\font\kxbgmi=cmmi10    scaled \magstep4
+\font\kxbgrm=cmr10     scaled \magstep4
+%\font\kxbgsl=cmsl10    scaled \magstep4
+%\font\kxbgss=cmss10    scaled \magstep4
+%\font\kxbgsb=cmssbx10  scaled \magstep4
+%\font\kxbgsi=cmssi10   scaled \magstep4
+\font\kxbgsy=cmsy10    scaled \magstep4
+\font\kxbgit=cmti10    scaled \magstep4
+\font\kxbgtt=cmtt10    scaled \magstep4
+\font\kwbgbf=cmb10     scaled \magstep3
+%\font\kwbgbx=cmbx10    scaled \magstep3
+%\font\kwbgbi=cmbxti10  scaled \magstep3
+%\font\kwbgmi=cmmi10    scaled \magstep3
+\font\kwbgrm=cmr10     scaled \magstep3
+%\font\kwbgsl=cmsl10    scaled \magstep3
+\font\kwbgss=cmss10    scaled \magstep3
+%\font\kwbgsb=cmssbx10  scaled \magstep3
+%\font\kwbgsi=cmssi10   scaled \magstep3
+%\font\kwbgsy=cmsy10    scaled \magstep3
+\font\kwbgit=cmti10    scaled \magstep3
+\font\kwbgtt=cmtt10    scaled \magstep3
+\font\kvbgbf=cmb10     scaled \magstep2
+%\font\kvbgbx=cmbx10    scaled \magstep2
+%\font\kvbgbi=cmbxti10  scaled \magstep2
+%\font\kvbgmi=cmmi10    scaled \magstep2
+\font\kvbgrm=cmr10     scaled \magstep2
+%\font\kvbgsl=cmsl10    scaled \magstep2
+\font\kvbgss=cmss10    scaled \magstep2
+%\font\kvbgsb=cmssbx10  scaled \magstep2
+%\font\kvbgsi=cmssi10   scaled \magstep2
+%\font\kvbgsy=cmsy10    scaled \magstep2
+\font\kvbgit=cmti10    scaled \magstep2
+\font\kvbgtt=cmtt10    scaled \magstep2
+\font\kbigbf=cmb10     scaled \magstep1
+%\font\kbigbx=cmbx10    scaled \magstep1
+%\font\kbigbi=cmbxti10  scaled \magstep1
+\font\kbigmi=cmmi10    scaled \magstep1
+\font\kbigrm=cmr10     scaled \magstep1
+\font\kbigsl=cmsl10    scaled \magstep1
+%\font\kbigss=cmss10    scaled \magstep1
+%\font\kbigsb=cmssbx10  scaled \magstep1
+%\font\kbigsi=cmssi10   scaled \magstep1
+\font\kbigsy=cmsy10    scaled \magstep1
+\font\kbigit=cmti10    scaled \magstep1
+\font\kbigtt=cmtt10    scaled \magstep1
+\font\ksmbf=cmb10      scaled \magstephalf
+\font\ksmbx=cmbx10     scaled \magstephalf
+%\font\ksmbi=cmbxti10   scaled \magstephalf
+\font\ksmmi=cmmi10     scaled \magstephalf
+\font\ksmrm=cmr10      scaled \magstephalf
+\font\ksmsl=cmsl10     scaled \magstephalf
+\font\ksmss=cmss10     scaled \magstephalf
+\font\ksmsb=cmssbx10   scaled \magstephalf
+\font\ksmsi=cmssi10    scaled \magstephalf
+\font\ksmsy=cmsy10     scaled \magstephalf
+\font\ksmit=cmti10     scaled \magstephalf
+\font\ksmtt=cmtt10     scaled \magstephalf
+%%% \font\csc=cmcsc10    %%% for AJ
+%%% \font\eightrm=cmr8   %%% for AJ
+%%% \font\eightit=cmti8  %%% for AJ
+% 
+%%% Default definitions from KPNO.TEX form (default font, lines):
+\def\kxztf{\ksmrm}    %%% \def\kxztf{\kbigtt}    
+\def\kxzu{\hskip-0.45em{\leaders\hbox{\underbar{\hskip0.5em}}\hfill}\ \par}
+\def\kvrule{\vrule width 0.6pt}
+\def\khrule{\hrule height 0.6pt}
+%
+%START of [windhorst.papers]texinit.latex   %%% Use the rest for LATeX only
+%%% Abbreviated skipping and indenting definitions:
+\def\i {\indent}  %%%redefines \i = chardef\i"10  %%% CANNOT USE IN LATeX
+\def\n {\noindent}
+\def\no{\noindent}
+\def\b {\bigskip} %%%redefines \b = \def\b{\???see p 356} % CANNOT USE IN LATeX
+\def\m {\medskip}
+\def\s {\smallskip} %%%note that \S = \def\S{\mathhexbox278} % Paragraph sign 
+\def\bi{\bigskip\indent}     
+\def\mi{\medskip\indent}
+\def\si{\smallskip\indent}   
+\def\bn{\bigskip\noindent}     
+\def\mn{\medskip\noindent}
+\def\sn{\smallskip\noindent}
+\def\cl{\centerline} 
+\def\ve{\vfill\eject}
+\def\nref{\parskip0pt\par\noindent\hangindent\parindent\hangafter1}
+%
+%%% \input [windhorst.papers]texastsymb   %%% Defines astronomical symbols.
+%%% First hh, mm, ss, deg, arcmin, arcsec:
+\def\hh       {{$^{h}$}}
+\def\mm       {{$^{m}$}}
+\def\ss       {{$^{s}$}}                  %%% Overwrites TeX \ss (German sz)
+\def\deg      {{\ifmmode^\circ\else$^\circ$\fi} } %%% Overwrites TeX \deg
+\def\degree   {{\ifmmode^\circ\else$^\circ$\fi} } %%% Degree 
+\def\arcm     {{\ifmmode {'  }\else$'     $\fi} } %%% Arc minutes
+\def\arcmin   {{\ifmmode {'  }\else$'     $\fi} } %%% Arc minutes
+\def\arcs     {{\ifmmode {'' }\else$''    $\fi} } %%% Arc seconds
+\def\arcsec   {{\ifmmode {'' }\else$''    $\fi} } %%% Arc seconds
+\def\secs     {{$^{\prime\prime}$}}               %%% Use \arcs or \arcsec
+%%% Now ss, deg, arcmin, arcsec used over decimal point: 
+\def\sspt     {{$\buildrel{s}           \over .$}}
+\def\degpt    {{$\buildrel{\circ}       \over .$}}
+\def\adegpt   {{$\buildrel{\circ}       \over .$}}
+\def\arcmpt   {{$\buildrel{\prime}      \over .$}}
+\def\arcspt   {{$\buildrel{\prime\prime}\over .$}}
+\def\adeg     {{\hskip .10em {}^{\circ}\hskip -.40em . \hskip.25em} }
+\def\amin     {{\hskip .10em {}'       \hskip -.30em . \hskip.20em} }
+\def\asec     {{\hskip .10em {}''      \hskip -.49em . \hskip.29em} }
+%%% Other definitions of Astronomical Symbols:  
+\def\A        {{$\rm\AA$} }
+\def\ABnu     {{AB$_{\nu}$} }
+\def\aLyr     {{$\alpha$\ Lyr} }
+\def\amed     {{$\alpha_{med}$} }
+\def\aox      {{$\alpha_{ox}$} }
+\def\aro      {{$\alpha_{ro}$} }
+\def\alphaft  {{$\alpha_{1.4}^{0.6}$} }
+\def\Aomega   {{$A_{\omega}$} }
+\def\bII      {{$b^{II}$} }
+\def\Bj       {{$B_{J}$} }
+\def\Bk       {{$B_{k}$} }
+\def\chisq    {{$\chi^{2}$} }
+\def\cge      {{$_ >\atop{^\sim}$}}
+\def\cle      {{$_ <\atop{^\sim}$}}
+\def\degsq    {{$deg^{2}$} }
+\def\sqdeg    {{$deg^{-2}$} }
+\def\Dmod     {{$D_{mod}$} }
+\def\eg       {{\it e.g.},}
+\def\emin     {{$e^{-}$} }
+\def\EBminV   {{$E_{(B-V)}$} }
+\def\ergcms   {{$ergs\ cm^{-2}\ s^{-1}$} }
+\def\ergcmsA  {{$ergs\ cm^{-2}\ s^{-1}\ \AA^{-1}$} }
+\def\ergcmsHz {{$ergs\ cm^{-2}\ s^{-1}\  Hz^{-1}$} }
+\def\ergs     {{$ergs\ s^{-1}$} }
+\def\ergsA    {{$ergs\ s^{-1}\ \AA^{-1}$} }
+\def\ergsHz   {{$ergs\ s^{-1}\  Hz^{-1}$} }
+\def\et       {{et\thinspace al.} }	%%% et al.
+\def\etal     {{et\thinspace al.} }	%%% et al.
+\def\fsteep   {{$f(\alpha>1.0)$} }
+\def\fflat    {{$f(\alpha<0.5)$} }
+\def\Fl       {{$F_{\lambda}$} }
+\def\Fn       {{$F_{\nu}$} }
+\def\Fnu      {{$F_{\nu}$} }
+\def\gmed     {{$g_{med}$} }
+\def\Ho       {{$H_{0}$} }
+\def\kms      {{$km\ s^{-1}$} }
+\def\kmsMpc   {{$km\ s^{-1}\ Mpc^{-1}$} }
+\def\lII      {{$l^{II}$} }
+\def\Ha       {{H$\alpha$} }
+\def\Hb       {{H$\beta$} }
+\def\Hc       {{H$\gamma$} }
+\def\Hd       {{H$\delta$} }
+\def\hmin     {{$h^{-1}$} }
+\def\ie       {{\it i.e.},}
+\def\Jp       {{$J^{+}$} }
+\def\KK       {{$K_{K}$} }
+\def\KV       {{$K_{V}$} }
+\def\Lya      {{Ly$\alpha$} }
+\def\Lrad     {{$L_{rad}$} }
+\def\LIR      {{$L_{IR}$} }
+\def\Lopt     {{$L_{opt}$} }
+\def\LUV      {{$L_{UV}$} }
+\def\LX       {{$L_{X}$} }
+\def\Lstar    {{$L^{*}$} }
+\def\Lsun     {{$L_{\odot}$} }
+\def\magarc   {{$mag\ arcsec^{-2}$} }
+\def\Mgal     {{$M_{gal}$} }
+\def\Mg2      {{$Mg_{2}$} }
+\def\ml       {{$m_{\lambda}$} }
+\def\Mo       {{$M_{\odot}$} }
+\def\Moyr     {{$M_{\odot}\ yr^{-1}$} }
+\def\Msun     {{$M_{\odot}$} }
+\def\Msol     {{\ifmmode_{\mathord\odot}\else$_{\mathord\odot}$\fi} }
+\def\Mstar    {{$M^{*}$} }
+\def\Mpms     {{$M_{pms}$} }
+\def\Mto      {{$M_{to}$} }
+\def\Mtot     {{$M_{tot}$} }
+\def\MU       {{$M_{U}$} }
+\def\MB       {{$M_{B}$} }
+\def\MV       {{$M_{V}$} }
+\def\MR       {{$M_{R}$} }
+\def\MI       {{$M_{I}$} }
+\def\MJ       {{$M_{J}$} }
+\def\MF       {{$M_{F}$} }
+\def\MN       {{$M_{N}$} }
+\def\MH       {{$M_{H}$} }
+\def\MK       {{$M_{K}$} }
+\def\Mg       {{$M_{g}$} }
+\def\Mr       {{$M_{r}$} }
+\def\Mi       {{$M_{i}$} }
+\def\Mz       {{$M_{z}$} }
+\def\muK      {{$\mu$K} }
+\def\muJy     {{$\mu$Jy} }
+\def\mjj      {{$(\mu$Jy)$^{2}$} }
+\def\Nbin     {{$N_{bin}$} }
+\def\Ngal     {{$N_{gal}$} }
+\def\NH       {{$N_{H}$} }
+%\def\nref    {{\parskip0pt\par\noindent\hangindent\parindent\hangafter1} }
+\def\nref   {\noindent\parshape 2 0.0 truein 06.5 truein 0.4 truein 06.1 truein}
+\def\persec   {{sec$^{-1}$} }
+\def\perster  {{sr$^{-1}$} }
+\def\Pc       {{$P^{c}$} }
+\def\PsiEQ    {{$\Psi_{EQ}$} }
+\def\Psicrit  {{$\Psi_{crit}$} }
+\def\Psimed   {{$\Psi_{med}$} }
+\def\Pstar    {{$P^{*}$} }
+\def\Pivstar  {{$P_{1.4}^{*}$} }
+\def\Pot      {{$P_{0.3}$} }
+\def\Pov      {{$P_{0.4}$} }
+\def\Pos      {{$P_{0.6}$} }
+\def\Piv      {{$P_{1.4}$} }
+\def\Pvo      {{$P_{5.0}$} }
+\def\Pev      {{$P_{8.4}$} }
+\def\pp     {\noindent\parshape 2 0.0 truein 06.5 truein 0.4 truein 06.1 truein}
+%%% \def\pp {\noindent\parshape 2 0.0 truecm 16.5 truecm 1.0 truecm 15.5 truecm}
+\def\qo       {{$q_{0}$} }
+\def\sigv     {{$\sigma_{v}$} }
+\def\Sot      {{$S_{0.3}$} }
+\def\Sov      {{$S_{0.4}$} }
+\def\Sos      {{$S_{0.6}$} }
+\def\Siv      {{$S_{1.4}$} }
+\def\Svo      {{$S_{5.0}$} }
+\def\Sev      {{$S_{8.4}$} }
+\def\Snu      {{$S_{\nu}$} }
+\def\Sp       {{$S_{p}$} }
+\def\Spmap    {{$S_{p}^{map}$} }
+\def\Spsky    {{$S_{p}^{sky}$} }
+\def\Stot     {{$S_{tot}$} }
+\def\Stotmap  {{$S_{tot}^{map}$} }
+\def\Stotsky  {{$S_{tot}^{sky}$} }
+\def\SX       {{$S_{X}$} }
+\def\Teff     {{$T_{eff}$} }
+\def\Thmed    {{$\Theta_{med}$} }
+\def\Up       {{$U^{+}$} }
+\def\Vmax     {{$V_{max}$} }
+\def\Wm       {{$W\ m^{-2}$} }
+\def\WA       {{$W\ \AA^{-1}$} }
+\def\WHz      {{$W\  Hz^{-1}$} }
+\def\WmA      {{$W\ m^{-2}\ \AA^{-1}$} }
+\def\WmHz     {{$W\ m^{-2}\  Hz^{-1}$} }
+\def\WAm      {{$W\ \AA^{-1}\ m^{-2}$} }
+\def\WHzm     {{$W\  Hz^{-1}\ m^{-2}$} }
+\def\Wl       {{$W_{\lambda}$} }
+\def\EW       {{$W_{\lambda}$} }
+\def\wth      {{$w(\theta$)} }
+\def\wtheta   {{$w(\theta$)} }
+\def\wthns    {{$w(\theta$)}}
+\def\zobs     {{$z_{obs}$} }
+\def\zmed     {{$z_{med}$} }
+\def\zmax     {{$z_{max}$} }
+\def\zmin     {{$z_{min}$} }
+\def\zf       {{$z_{f}$} }
+\def\zform    {{$z_{form}$} }
+%
+%%% \input [windhorst.papers]texrefapj    %%% Initialize references as for ApJ. 
+%%% Macro's for Astrophysical Journal (Main Journal+Letters+Suppl) (DEFAULT):
+%%% Modified 900830: include Style Changes to uniformize styles across journals
+%%% See Abt, H. A., 1990 ApJ, 357, 1
+%%% Astronomy Journals:
+%%% 
+\def\AAP     {A\&A, }
+\def\AAL     {A\&AL, }
+\def\AAS     {A\&AS, }
+\def\ACTAA   {Acta~A, }
+\def\AJ      {AJ, }
+\def\AN      {AN, }
+\def\APLET   {Ap. Let., }
+\def\APJ     {ApJ, }
+\def\APJL    {ApJL, } %%% In AJ: referred to as ApJL, L...
+\def\APL     {ApJ, }  %%% In ApJ: referred to as ApJ, L...
+%%% \def\APL {ApJL, }
+\def\APJS    {ApJS, }
+\def\APS     {ApJS, }
+\def\APSS    {Ap\&SS, }
+\def\ARAA    {ARA\&A, }
+\def\AUSJP   {Australian J. Phys., }
+\def\AZH     {AZh, }
+\def\BAAS    {BAAS, }
+\def\FCP     {Fund. Cosmic Phys., }
+\def\HOA     {Highlights Astr., }
+\def\IAU     {IAU Symp., }
+\def\ITR     {Internal Technical Report of the Netherlands Foundation for
+              Research in Astronomy, No.} 
+\def\JOSAMA  {J. Opt. Soc. Am. A, }
+\def\JRASC   {JRASC, }
+\def\MEMRAS  {MmRAS, }
+\def\MNRAS   {MNRAS, }
+\def\NAT     {Nature, }
+\def\NPS     {Nat. Phys. Sc., }
+\def\OE      {Opt. Engineering, }
+\def\PASJ    {PASJ, }
+\def\PASP    {PASP, }
+\def\PHD     {Ph.D. thesis, }
+\def\PHYSCR  {Physica Scripta, }
+\def\QJRAS   {QJRAS, }
+\def\REP     {Reports on Astronomy, IAU Transactions, }
+\def\REPPPHY {Rep. Prog. Phys., }
+\def\REVMP   {Rev. Mod. Phys., }
+\def\SCAM    {Sc. Am., }
+\def\SCI     {Science, }
+\def\SOVAST  {Sov. Astr., }
+\def\SPIE    {SPIE, }
+\def\ST      {S\&T, }
+\def\VIS     {Vistas in Astronomy, }
+\def\VLA     {VLA Test Memorandum, No.}
+%%% 
+%%% IAU Symposia (Reidel, Kluwer):
+%%% 
+\def\IAUOOD  {in IAU Symposium 4, 
+             Radio Astronomy, 
+             ed. H. C. van der Hulst (Cambridge University Press), } 
+\def\IAUOFC  {in IAU Symposium 63, 
+             Confrontation of Cosmological Theories with Observational Data,
+             ed. M. S. Longair (Dordrecht: Reidel), } 
+\def\IAUOGD  {in IAU Symposium 74, 
+             Radio Astronomy and Cosmology,
+             ed. D. L. Jauncey (Dordrecht: Reidel), } 
+\def\IAUOGI  {in IAU Symposium 79, 
+             The Large Scale Structure of the Universe, 
+             ed. M. S. Longair, \& J. Einasto (Dordrecht: Reidel), }
+\def\IAUOIB  {in IAU Symposium 92, 
+             Objects of High Redshift, 
+             ed. G. O. Abell, \& P. J. E. Peebles (Dordrecht: Reidel), }
+\def\IAUOIG  {in IAU Symposium 97, 
+             Extragalactic Radio Sources, 
+             ed. D. S. Heeschen, \& C. M. Wade (Dordrecht: Reidel), }
+\def\IAUAOD  {in IAU Symposium 104, 
+             Early Evolution of the Universe and its Present Structure, 
+             ed. G. O. Abell, \& G. Chincarini (Dordrecht: Reidel), } 
+\def\IAUAAO  {in IAU Symposium 110, 
+             VLBI and Compact Radio Sources, 
+             ed. R. Fanti, K. Kellermann, \& G. Setti (Dordrecht: Reidel), } 
+\def\IAUAAI  {in IAU Symposium 119, 
+             Quasars, 
+             ed. G. Swarup, \& V. K. Kapahi (Dordrecht: Reidel), } 
+\def\IAUABA  {in IAU Symposium 121, 
+             Observational Evidence of Activity in Galaxies, 
+             ed. E. Ye. Khachikian, K. J. Fricke, \& J. Melnick (Dordrecht: 
+             Reidel), } 
+\def\IAUABD  {in IAU Symposium 124, 
+             Observational Cosmology, 
+             ed. A. Hewitt, G. Burbidge, \& L. Z. Fang (Dordrecht: Reidel), } 
+\def\IAUACO  {in IAU Symposium 130, 
+             Large Scale Structures of the Universe, 
+             ed. J. Audouze, M.-C Pelletan, \& A. Szalay (Dordrecht: Kluwer), }
+\def\IAUACD  {in IAU Symposium 134, Active Galactic Nuclei, 
+             ed. D. E. Osterbrock, \& J. S. Miller (Dordrecht: Kluwer), } 
+
+\def\REPXIX  {in Reports on Astronomy, IAU Transactions, Vol. XIX-A, 
+             ed. R. M. West (Dordrecht: Reidel), } 
+\def\HOAVII  {in Highlights Astr., Vol. 7, 
+             ed. J.-P. Swings (Dordrecht: Reidel), }
+%%% 
+%%% Astronomical Society of the Pacific Conference Series: 
+%%% 
+\def\ASPOOB  {in ASP Conf. Ser., Vol.  2,
+             Proceedings of a Workshop on Optical Surveys for Quasars, 
+             ed. P. S. Osmer, A. C. Porter, R. F. Green, \& C. B. Foltz 
+             (Provo, UT: Brigham Young University Print Services), } 
+\def\ASPOOE  {in ASP Conf. Ser., Vol.  5,
+             The Minnesota Lectures on Clusters of Galaxies and Large-Scale 
+             Structure,
+             ed. J. M. Dickey 
+             (Provo, UT: Brigham Young University Print Services), } 
+\def\ASPOOF  {in ASP Conf. Ser., Vol.  6,
+             Synthesis Imaging in Radio Astronomy, 
+             ed. R. A. Perley, F. R. Schwab, \& A. H. Bridle 
+             (Provo, UT: Brigham Young University Print Services), } 
+\def\ASPOOH  {in ASP Conf. Ser., Vol.  8,
+             CCD's in Astronomy, 
+             ed. G. H. Jacoby 
+             (Provo, UT: BookCrafters, Inc.), } 
+\def\ASPOAO  {in ASP Conf. Ser., Vol. 10,
+             Evolution of the Universe of Galaxies (Edwin Hubble Centennial 
+             Symposium), 
+             ed. R. G. Kron 
+             (Provo, UT: BookCrafters, Inc.), } 
+%%% 
+%%% Astrophysics and Space Science Library: 
+%%% 
+\def\ASSLODC {in Astrophysics and Space Science Library, Vol. 43,
+             X-ray Astronomy, 
+             ed. R. Giacconi, \& H. Gursky (Dordrecht: Reidel), } 
+\def\ASSLOHG {in Astrophysics and Space Science Library, Vol. 87,
+             X-ray Astronomy with th Einstein Satellite, 
+             ed. R. Giacconi (Dordrecht: Reidel), } 
+\def\ASSLABB {in Astrophysics and Space Science Library, Vol. 122,
+             Spectral Evolution of Galaxies, 
+             ed. C. Chiosi, \& A. Renzini (Dordrecht: Reidel), } 
+\def\ASSLADA {in Astrophysics and Space Science Library, Vol. 141,
+             Towards Understanding Galaxies at Large Redshift, 
+             ed. R. G. Kron, \& A. Renzini (Dordrecht: Kluwer), }
+%%% 
+%%% NATO Advanced Science Institute Series: 
+%%% 
+\def\NATOOFO {in NATO Advanced Study Institute Series, Vol. C060, 
+             X-ray Astronomy, 
+             ed. R. Giacconi, \& G. Setti (Dordrecht: Reidel), } 
+\def\NATOOIG {in NATO Advanced Study Institute Series, Vol. C097, 
+             The Origin and Evolution of Galaxies, 
+             ed. B. J. T. Jones, \& J. E. Jones (Dordrecht: Reidel), } 
+\def\NATOAHO {in NATO Advanced Science Institutes Series, Vol. C180, 
+             Galaxy Distances and Deviations from Universal Expansion, 
+             ed. B. F. Madore, \& R. B. Tully (Dordrecht: Reidel), }
+\def\NATOBFD {in NATO Advanced Science Institutes Series, Vol. C264, 
+             The Epoch of Galaxy Formation, 
+             ed. C. S. Frenk, R. S. Ellis, T. Shanks, A. F. Heavens, 
+             \& J. A. Peacock (Dordrecht: Kluwer), }
+%%% 
+%%% Pontificiae Academiae Scientiarum Scripta Varia: 
+%%% 
+\def\PONTODH {in Pontificiae Academiae Scientiarum Scripta Varia, Vol. 48,
+             Astrophysical Cosmology, 
+             Proceedings of the Study Week on Cosmology and Fundamental 
+             Physics, ed. H. A. Br\"uck, G. V. Coyne, \& M. S. Longair 
+             (Vaticano: Pontificia Academia Scientiarum), }
+%%% 
+%%% Proceedings of SPIE conferences: 
+%%% 
+\def\SPIEBFD {in Proceedings of the SPIE Conference, Vol. 264, 
+             Applications of Digital Image Processing to Astronomy,
+             ed. D. A. Elliott (Bellingham WA: SPIE), } 
+%%% 
+%%% Various conference proceedings: 
+%%% 
+\def\APAGQSO {in The Seventh Santa Cruz Summer Workshop in Astronomy and 
+             Astrophysics, 
+             Astrophysics of Active Galaxies and Quasi-Stellar Objects,
+             ed. J. S. Miller (Mill Valley CA: University Science Books), }
+\def\GALEGRA {in Astronomy and Astrophysics Library, 
+             Galactic and Extragalactic Radio Astronomy, 
+             ed. G. L. Verschuur, \& K. I. Kellermann 
+             (New York: Springer Verlag), }
+\def\IAPC    {in The third IAP Workshop, 
+             High Redshift and Primeval Galaxies, 
+             ed. J. Bergeron, D. Kunth, B. Rocca-Volmerange, \& 
+             J. Tran Thanh Van (Gif sur Yvette France: Editions Frontieres), }
+\def\NNGXYS  {in The Eighth Santa Cruz Summer Workshop in Astronomy and 
+             Astrophysics, 
+             Nearly Normal Galaxies from the Planck Time to the Present, 
+             ed. S. M. Faber (New York: Springer-Verlag), }
+\def\NASACOBE{in After the First Three Minutes, AIP Conf. Proc. Vol. 222, 
+             ed. S. S. Holt, C. L. Bennett, \& V. Trimble 
+             (New York: American Institute of Physics), }
+\def\OBSCOS  {in Eight Advanced Course of the Swiss Society of Astronomy and 
+             Astrophysics, 
+             Observational Cosmology,
+             ed. A. Maeder, L. Martinet, \& G. Tammann (Geneva Observatory), }
+\def\PHYCOS  {in Les Houches Session XXXII, 
+             Physical Cosmology, 
+             ed. R. Balian, J. Audouze, D. N. Schramm (Amsterdam:
+             North-Holland Publ. Co.), }
+\def\QUAGRL  {in 24$^{th}$ Liege International Astrophysical Colloquium, 
+             Quasars and Gravitational Lenses, 
+             ed. J.-P. Swings (Liege University Press), }
+\def\SSSIX   {in Stars and Stellar Systems, Vol. IX,
+             Galaxies and the Universe,
+             ed. A. Sandage, M. Sandage, \& J. Kristian 
+             (University of Chicago Press), }
+%%% 
+%%% (One-Author) astronomy books:
+%%% 
+\def\APFORM  {in Astrophysical Formulae, Second Edition, 
+             (New York: Springer Verlag), } %%% ed. K. R. Lang 
+\def\APGNAGN {in Astrophysics of Gaseous Nebulae and Active Galactic Nuclei,
+             (Mill Valley CA: University Science Books), }%ed. D. E. Osterbrock
+\def\QSRAST  {in Quasar Astronomy, 
+             (New York: Cambridge University Press), } %%% ed. D. W. Weedman 
+%%%
+%%% \input [windhorst.letters]asuheading  %%% Provides ASU letter head on top.
+%
+%%% \nopagenumbers %%% \headline={\hfil\ksmtt Windhorst}
+%%% \pageno=1\headline={\ifnum\pageno=1 \hfil\else\hss\ksmrm- \folio\ -\hss\fi} 
+%%% \footline={\hfil\ksmtt 11/91 } %%% May need wider page definition for letterhead:
+%%% \hoffset=-0.2in\voffset=-0.4in\hsize=6.9in\vsize=9.8in\settabs 6\columns\ksmrm
+%%% \hoffset=-0.1in\voffset=-0.2in\hsize=6.5in\vsize=8.5in\settabs 6\columns\ksmrm
+    \hoffset=-0.1in\voffset=-0.2in\hsize=6.5in\vsize=9.0in\settabs 6\columns\ksmrm
+\baselineskip=12pt %%% baselineskip=12pt for single spacing, =24pt for double
+%
+
+
+\magnification=\magstephalf
+\cl {\bf{The YEG Object}}
+\b
+\cl {Ed Fomalont}
+\s
+\cl {April 6, 1992}
+\bn
+{\bf Introduction}
+\s
+The YEG is the `(u-v) data' object.  It contains the observed (uncalibrated)
+data and it is linked to the Telescope Model Object which contains the
+description of the telescope.  By mysterious means (at this point) the
+description of the telescope model can be improved so that the YEG
+data object can ultimately transform the observed data into
+calibrated data.  This memo is a first pass attempt to define the
+fundamental organization and contents of the YEG.
+\bn
+{\bf 1. The Fundamental Coordinate of the YEG: t}
+\m
+The independent coordinate for each YEG is $t$, time.  Each YEG
+is associated with one and only one time and a YEG includes all of the
+data at that time.  How this time is labelled is unimportant as long
+as there is an association between the label and the true value of
+this fundamental coordinate.  It need not be regularly spaced.  For
+example, the time coordinate could be $(1,2,\ldots,T)$ with a table
+relating the indices to a time.
+
+Since data are usually averaged over an interval of time, we shall
+define $t$ as the average value of the sampled data over a generally
+small interval of time, and $\Delta t$, is the duration over which the
+data was actually collected.  Furthermore, not all quantities are
+sampled and averaged in time in the same manner.  However, we shall
+assume that either; 1) all data in the YEG and in the Telescope Model
+are critically sampled and can be interpolated to any desired time; or
+2) the data can be given an undefined valued and dealt with
+intelligently.
+\bn
+{\bf 2. The Fundamental Data Organization of a YEG:}
+\m
+For arrays, the fundamental data is a complex number, the visibility
+function.  It is associated with two antennas, labelled by $i$ and
+$j$; we should not rule out $i=j$.  There should also be a real number
+associated with each visibility function which gives some indication
+of its relative merit (weight), and there should be a duration,
+$\Delta t$, over which the data were integrated.  Perhaps, the weight
+and duration are redundant in many cases.
+
+The visibility function, weight and duration are each a
+multi-dimensional set of numbers spanning over frequency,
+polarization, delay, and sky offset.  We shall denote this collection
+of uncalibrated visibilities at time $t$ for antenna pairs $(i,j)$ as 
+          $$V_u(t: i,j; l,m,n,o) $$
+\sn where
+\settabs 2 \columns
+\+\indent  $l=1,2,\ldots,L$\hfill&
+     The label associated with the frequency $\nu$\hfill&\cr
+\+\indent  $m=1, 2, 3, 4$\hfill&
+     The label associated with the polarization $p$\hfill&\cr
+\+\indent  $n=1,2,\ldots,N$\hfill&
+     The label associated with the delay $\tau$\hfill&\cr
+\+\indent  $o=1,2,\ldots,O$\hfill&
+     The label associated with the sky location $s$\hfill&\cr
+\cleartabs
+\mn
+The `:' and `;' separation in the argument of the visibility function
+indicates the difference between the time and the antenna pair and the
+other four quantities.  Time is the independent variable, the antenna
+pair are not true dimensions because they are coupled; the remaining
+four quantities are orthogonal dimensions in the data.  The weights and
+durations have the same structure as the visibility data.
+\b
+These labels must be associated with values in some manner, perhaps
+as tables in the Telescope Model Class:
+\s
+1.  A table of antenna names corresponding to the antenna index.  This
+is not a true dimension of the visibility data as those which follow.
+The array, by its nature, couples the response between antennas in
+complicated ways.  The antennas could be in different instruments;
+egs, subarrays at the VLA, and share in the Telescope Model.  In this
+case a visibility function between two antennas not in the same array
+is undefined.  This scheme could be useful if one subarray calibrates
+some needed parameters in the other subarray.
+\s
+2.  A table of the average observing frequency corresponding to the
+frequency index, $l$.  In principle each antenna could have a
+different observing frequency.  There is no assumed regularity in
+the frequency coordinate.  It could be a combination of several bands,
+each with an number of closely spaced frequencies.
+\s
+3.  A table of polarization parameters, corresponding to the index
+$p$, which describe the general ellipticity of the radiation accepted
+by the antenna.  It is often the case that the two antennas have
+different polarization parameters.  This index is generally limited to
+no more than four entries.
+\s
+4.  A table of delays corresponding to the delay index, $n$.  This is
+the additional time lag introduced in each antenna before correlation.
+It is generally used in VLBI observations.  It turns out that if there
+are some time inconsistencies among elements in the YEG, this
+coordinate may `fix' things up.
+\s
+5.  A table of sky offsets coresponding to the offset index, $o$.
+These could be associated with multi-beam arrays, mozaicing, or with
+VLBI observations in which more than one field is correlated.
+\m
+This fundamental organization of the YEG should be questioned.  Is
+this suggested organization of the visibility data (deeply time
+oriented, antenna-pair connected, with four independent dimensions of
+frequency, polarization, delay and sky position) sufficiently general
+to cover all anticipated array observations and reductions?  Is it
+organized in a convenient form for calibration, imaging,
+self-calbration, mozaicing, and isoplanicity problems?.  How flexible
+should the underlying software be.  Could more dimensions be added?
+Should we be able to transpose some of the coordinates; ie. could
+frequency be the fundamental coordinate, with time one of the four
+dimensions?  Is the extension to non-array, or mixed single dish-array
+data sets possible?  If not, why not?
+\bn
+{\bf 3. Yeg Interaction with the Telescope Model}
+\m
+At the highest level the YEG interaction with the Telescope Model is
+simple and direct.  The YEG sends seven numbers (pointers)
+$(t,i,j,l,m,n,o)$ to the Telescope Model which returns a complex
+gain $G(t:i,j;l,m,n,o)$.  The calibrated visibility data
+$V_c(t:i,j;l,m,n,o)$ is simply the complex product of the gain with
+the uncalibrated visibility function.
+
+$$  V_c(t:i,j;l,m,n,o) = G(t:i,j;l,m,n,o) \times V_u(t:i,j;l,m,n,o) $$
+\mn
+Whether this product is implicitly or explictly made is not important.
+How the Telescope Model copes with the seven pointers in order to
+determine the complex gain, is of no concern to the YEG.
+
+The preceding paragraph is an oversimplification which we will get to
+in a moment.  The most important point is that the calibration of
+visibility data at any time depends only the on the YEG elements at
+that time and the complex gain function of the Telescope Model at that
+time.  If the calibration of data at time $t$ required knowledge of
+the data at time $t'$ or the state of the telescope model at $t'$,
+then the present formulation of the YEG would not be satisfactory.
+
+On the other hand, the determination of the Telescope Model and all of
+the details of the gain depends on the proper analysis of a
+large collection of data made over long periods of time.  This is of
+no concern to the YEG.  Somehow, there is a mysterious SOLVE which
+knows what to do with lots of YEG and can determine the Telescope
+Model.
+
+The above expression also assumes that the calibration of the
+visibility function in any state (particular value of $i,j,l,m,n,o$)
+depends only on that state.  This is not strictly true and it is the
+reason why polarization correction is a nuisance.  Although the
+details of this belong in the relevant place of the Telescope Model,
+the polarization correction combines, in general, the different values
+of the polarization index $m$ for any baseline and time.  Any other
+cross talk amongst the baselines, or frequencies, etc, requires a more
+general form of the gain correction
+
+$$  V_c(t:i,j;l,m,n,o) = \sum_{all '} G(t:i,i',j,j';k,k',l,l',m,m',o,o')
+     \times V_u(t:i',j';l',m',n',o') $$
+\mn
+where the Gain term now includes all possible cross talk.  Even more
+generally, the gain term is an arbitrary gain function.  It can be
+more than a complex multiplier.  For example, there are some additive
+corrections to visibility data; egs. correlator offset signals and
+some kinds of closure errors.  Some amplitude corrections are
+non-linear when the source noise rivals the system noise. However,
+these complications are rarely met and they are handled by the
+time-oriented form of the YEG.
+
+It will turn out that much of the calibration terms are separable into
+individual antennas, frequencies, polarization, delay and sky offset
+functions.  That is
+
+$$ G(t:i,j;l,m,n,o) =   G_\nu(t:i;l)\times G_\nu^*(t:j;l)~\times~
+                        G_p(t:i,m)\times G_p^*(t:j,m) $$
+$$              ~\times~G_d(t:i;m)\times G_d^*(t:j;m)
+                ~\times~G_s(t:i;o)\times G_s^*(t:j;o)  $$
+\sn
+where $^*$ indicates the complex conjugate.  It seems likely that the
+Telescope Model will assume the above simple form and add complexities
+as needed.  However, the ability to do the arbitrary gain function
+correction should not be excluded.
+
+The flagging or editting of the data can be handled in several ways.
+The weights associated with the visibility data in the YEG can be
+modified as an indication of the new quality of the data.
+Alternatively, the Telescope Model can contain a Flag function (or
+table) $F(t:i,j;l,m,n,o)$ with any degree of complication.  It may be
+a binary-valued function (0 or 1) or it may contain quality
+assessments in some way.
+\bn
+{\bf 4. YEG interaction with the Inverter}
+\m 
+There is little to discuss here.  The calibrated data must be passed
+to the Inverter in order to create an image.  Additional parameters,
+such as the spatial frequencies $(u,v,w)$, will probably reside in the
+Telescope Model.  At this point calibrated visibility data over a long
+period of time, at several pointing, or from several telescopes is
+collected and can be subsequently modified (gridding, tapering the
+data) for use in the Inverter algorithm.  YEG simply transfers the
+calibrated data under some controller outside of the scope of the YEG
+object.
+\bn
+{\bf 5.  YEG interaction with Self-calibration}
+\m
+The time-oriented YEG Class is compatible with the self-calibration
+technique.  Although there are variations among the self-calibration
+tecnhiques, the following steps generally occur:
+\sn
+1). Use a model image which is an approximation of the image
+associated with the visibility data.  The origin and form of the image
+is immaterial.  For normal calibration, it is a point source at the
+phase center.
+\sn
+2). Given the state $(i,j:l,m,n,o)$ of the YEG at any time, $t$, the
+Predictor Object(?) calculates the visibility data for the model
+image.  Access to the telescope model will be needed by Predictor in
+order to compute the visibility data; however, the pointer
+$(i,j:l,m,n,o)$ at any time should be sufficient to find the
+appropriate data.
+\sn
+3). The complex ratio (calibrated YEG / predicted YEG) is formed.
+Wide ranges in the signal to noise, because the non-linearity of the
+division, can occur and must be dealt with properly.  If the data were
+perfectly calibrated, the complex ratio would be equal to unity.
+Alternatively, the complex ratio (uncalibrated YEG / predicted YEG)
+can be formed and compared with the gain function used to calibrate
+the data.  Both procedures are almost identical.
+\sn
+3). Data averaging over time, frequency, polarization, etc. is
+important because self-calibration only works if the sky signals are
+larger than the noise signals.  Averaging of the YEG in this way
+produces a related YEG with less frequently sample visibility data
+and, perhaps, fewer dimensions.
+\sn
+4). A intelligent piece of code interprets the departure from unity of
+the calibrated / predicted visibility function in terms of
+modification of the gain function.  The decision of which terms in the
+gain function can and should be modified is extremely complicated.
+\bn
+{\bf Conclusion}
+\m
+This memo has discussed the form of a possible YEG object used for
+synthesis reductions.  This YEG comprises all of the visibility data
+at one time and is generally a small part of the entire data base.  It
+is suggested that all interactions with the Telescope Model can be
+made on a time by time basis and interactions with imaging and
+self-calibration processes can also be handled with this basic YEG.
+\end
+

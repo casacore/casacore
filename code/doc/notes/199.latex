@@ -1,0 +1,21 @@
+%% TaQL
+%%----------------------------------------------------------------------------
+\documentclass[11pt]{article}
+\usepackage{html}
+%%-----------------------------------------------------------------------------
+%% See 'A Guide to Latex', Kopka & Daly, Addison-Wesley, section 3.2.4
+%% for these and other variables which override style settings.
+
+\begin{document}
+
+\title{NOTE 199 --
+Table Query Language}
+\author {Ger van Diepen, NFRA Dwingeloo}
+\date {1997 February 9}
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (110kB).}{../199.ps}
+\end{htmlonly}
+\input{taql}
+\end{document}

@@ -1,0 +1,436 @@
+\parindent=0pt\parskip=\baselineskip
+\def\blist {\begingroup\obeylines\parskip=0pt}\def\elist {\endgroup}
+\def\A {{\bf A }} \def\B {{\bf B}} \def\CL {{\bf CL }}
+\def\section #1! {\bigskip\leftline{{\bf #1}}\medskip}
+\def\equad {\quad = \quad}
+\leftline{\bf Command Language Syntax and Functionality}
+\bigskip
+This is an informal description of the syntax and semantics that the
+aips++ Command Language (CL) will follow.  The philosophy is a hybrid
+of {\bf AIPS, IRAF, APL/IDL} and {\bf C/C++}.
+\medskip
+\leftline {W.Jaffe,\hfil 28--August--1992}
+\section Some Syntax!
+A session consists of a series of commands, terminated by the
+command {\bf exit}
+
+A command is a string of symbols terminated by a semicolon {\bf ;} or
+a newline ({\bf nl}).  If the newline is preceeded by a backslash
+($\backslash$) 
+(and optional whitespace) it is ignored.  This allow continuation of
+multiline statements.
+In general all commands on a line (i.e. up to a newline) are read in one
+gulp, then parsed and executed one by one.  An exception is compound
+(multiple) statements which are read and parsed one by one, but only executed
+when the compound statement is completed.  On encountering a syntax error
+in a single statement the parser prints a message and aborts.  In the
+middle of a compound statement only the current statement is aborted the
+user can complete the compound statement.  Special keystrokes (e.g. 
+control sequences) will exist to retrieve and edit earlier lines, as
+well as operations like aborting an entire compound statement.
+
+A single statement consists of a string of control symbols and expressions.
+Expressions consist of operators, operands and
+separators.  All such symbols must be known (i.e. predefined or defined
+earlier in the session) except possibly the leftmost symbol if this
+is immediately followed by the = operator.  In this case, an operand with
+this name will be created dynamically, and is thereafter known to the system.
+until it is destroyed, explicitly or otherwise.  
+If a previously known operand is placed
+before an = operator, it is destroyed and a new one is created.
+
+Most symbols, including all user--defined symbols, must start with
+an alphabetic character, and consist of (case sensitive) alphabetic
+characters, digits, and the underscore character.
+
+\section Control symbols!
+Normally statements are executed syncronously in the order encountered,
+but certain control symbols alter this flow:
+\blist
+{\bf 
+COMPOUND:
+\hskip 1.0cm $\{$statement; statement; statement;$\}$
+\hskip 1cm {\rm is considered to be one statement}
+IF: 
+\hskip 1cm  if (expression) then statement
+\hskip 1cm  if (expression) then statement else statement
+
+FOR:
+ \hskip 1cm for (initial-statement; test-expression; increment-statement) statement
+
+WHILE:
+\hskip 1cm while (expression) do statement
+DO: 
+\hskip 1cm do variable = initial:final:increment statement
+BACKGROUND:
+ \hskip 1cm statement \&
+}
+\elist
+In the last case the statement is executed asyncronously in the background.
+Certain special conditions then apply on the statement to assure
+the integrity of the environment (i.e. all currently known symbols).
+More on this below.
+
+\section Operators!
+All operators are either predefined, or defined in the session itself.
+They may take none or more operands, and the number of operands can
+be variable, but the application programmer or user who creates an
+operator must specify which operands are optional.  Maximally one
+operand can be prefixed (occur before the operand); the rest must
+be postfixed. The most common use of prefixed operands are
+things like {\bf +,*,-...}  where {\bf A + B} produces the result of
+the binary operator {\bf +} operating on the operands \A and \B. 
+Postfix operands can be surrounded by parenthesis, but this is
+unnecessary if the syntax is unambiguous.  
+
+Operands should be separated from operators by white space, and
+from each other by white space or commas.  Optional ommited non--final
+operands must be indicated by a pair of commas; optional ommited final
+operands need not be indicated unless they could be confused with
+a prefixed operand of a following operator.  Then parentheses
+should be used to close the operand list.
+
+All operators return a result operand which may, however, be {\bf void}.
+A hanging operand left over when a statement is completely executed
+is discarded.  Thus the statement {\bf sin(x)} will calculate the
+sine of x, and then discard it.  Output to the screen is arranged
+by defining stream variables.
+
+Probably all arguments to operators should be passed by
+value, not by reference.  This means that input parameters cannot be
+directly altered by the operators; they operators only alter the
+output result.  Input parameters can cause indirect changes however:
+{\it e.g.} a file name in an input parameter list might indicate they
+name of a file to be created by a function.  This is similar to the
+action of a {\it pointer} in {\bf C}.  We do not include explicit pointers
+in the \CL because we think they are too confusing for general users.
+
+A very special operator is the assignment operator {\bf =} which has
+one prefix and one postfix operand.  
+The prefix operand, an {\it lside}
+has some specialized behaviour.  If it is specified as a single symbol, then
+it is created dynamically, with type given by what is on the right side
+of the $=$ sign, and filled in upon evaluation of the expression.  Any
+previous definition of the symbol is deleted.  If given
+with  subset syntax e.g.: $$
+{\bf A[1:20, 2:5] = SIN(B)}$$ it will be assumed (and checked) that \A
+already exists, that the subset syntax makes sense on \A, and that
+the output of the right-hand-side can be converted to the type of \A.
+In this case the subset syntax might include the whole of \A.
+e.g. {\bf A[*]}.  The specified elements of \A will
+be updated.
+
+\section Special Symbols!
+We name here a number of symbols with special meaning:
+\blist
+{\bf \&} indicates asyncronous processing.
+{\bf \$} is the first character is a number of special system operands or operators.
+{\bf ()} specify subscripts of arrays, precedence when not default, and optionall eenclose groups of operands.
+The period {\bf .} separates elements of a structure.
+{\bf [\ ]} enclose subscripts of an array.
+The vertical bar $|$ is for temporary, {\bf IRAF}--like substitution
+of parameters in task calls.
+\elist
+\section Arrays, Structures etc.!
+Operands can be single cases of various {\it atomic} things like
+(int, float, double, complex, double-complex, char, etc.) or more
+complicated composites called Structures.  
+The form of a Structure is defined with the Structdef
+operator: $$ B\equad Structdef(Q)$$ where B, the result, is of
+type Structdef, and Q is a string with things like $$Q\equad
+``sizes\ int[5],temp\ float,position\ double[2],name\ char[20]"$$
+and such. Don't take this suggested syntax too seriously, but typically
+at least a name, type, and size will be specified for each sub-element.
+Possibly other attributes can be specified such as 
+``Readonly" or ``Interactive". 
+The elements in a Structure may be atomic elements, or 
+previously defined Structures, so that if the above statement has already
+been executed, the statement $$C\equad Structdef(``type\ int,instances\ B[3]")$$
+defines a new type of structure, containing one integer and an array
+of three substructures of type $B$.  
+In the predefined symbols {\bf int, float} etc.
+are in fact Operands of type Structdef.
+An empty structure is created with:
+$$ C\equad Makestruct(B)$$ This creates an empty operand, $C$ with
+form defined by $B$.  The definition of an existing
+structure can be obtained with the $Getstruct$ operator:
+$$ D \equad Getstruct(C)$$ will create a Structdef operand $D$
+identical with $B$.
+
+Generally Structure operands can only be used by operators expecting
+exactly that type of structure as input, but there are some exceptions:
+for instance the = operator creates an identical copy of any structure.
+
+Arrays are collections of identical elements or structures.  They can
+be created and manipulated with some special operators.  For instance
+$$B \equad Array(Size, Def)$$ where $Size$ is a number like 27 and
+$Def$ is a Strucdef, creates an operand called $B$ consisting of 27
+empty elements of type Def.  Size may also be an array such as
+[4 2 5], in which case a multidimensional array is created.  As indicated
+above the values {\bf int} or {\bf double} may be used as Definitions.
+
+The square brackets [ ] can create a one--dimensional array on the \CL line.
+Thus $A\equad [2\ 3.1\ 0.]$ creates a 3 element float array.  Symbols
+as well as numbers may be included, but they must all be of the same type.
+
+The {\bf Concat} operator abutts two arrays together in their last
+dimension.  The must have the same number of dimensions, and all dimensions
+but the last must be equal.
+
+The {\bf Reform} operator reshapes an existing array to other specifications.
+$C\equad Reform(B, [3\ 3\ 3])$, where $B$ is defined as a
+27 element vectors, converts $B$ to a $3\times 3\times 3$ 3-dimensional matrix.
+
+The {\bf Dimension} operator returns an integer vector with the dimensions
+of its arguements.
+
+The {\bf Indarray} operator generates a series of integers starting from
+0.  $A \equad Indarray(6)$ creates the 6 element array [0 1 2 3 4 5].
+
+The common built--in Unary operators like {\bf sin, cos, -, ...} can
+be applied to an array (of numbers of course) and they produce a
+similarly dimensioned output array.
+
+The same is true of built--in binary operators ({\bf +,*,**,...}) with
+the proviso that both operands have the same dimensions, or that all the
+non-equal dimensions be trailing dimensions equal to 1.  This last
+exception allow combinations between scalars and vectors etc. by replication
+of the trailing dimensions.  Thus an array of size  [6] can be added to
+an array of size [1] (or a scalar); the scalar is replicated 6 times.
+An array of size [2\ 3\ 5\ 4] can be multiplied by an array of size [2\ 3];
+twenty copies of the second array are made before multipling.  The output
+array is of the larger dimensions.  
+User supplied operators that are for general use should follow this convention.
+\section Substructures!
+The period {\bf .} is used to specify substructure elements by name.
+In the above definition of $Q$, $Q.sizes(2)$ selects the third (indices are
+zero based) element of the 5 element integer array specified above.
+
+Subarrays are specified with parenthesis.  Thus as just used, $sizes(2)$
+specifies a single element in an array.  Vector subscripts may also
+be used so that $sizes([2\ 0\ 2\ 1\ 3\ 4])$ specifies a 6 element integer
+array consisting of the 3rd, 1st, 3rd, 1nd, 4th and 5th elements of $sizes$.
+Multiple dimensions are separated by commas.  If 
+$Matrix\equad Array([4\ 3], float)$ creates a $4\times 3$ array,
+$Matrix([0\ 3],[0\ 2])$ creates a $2\times 2$ subarray.  The asterisk {\bf *}
+represents all elements in a specific dimension, and the colon syntax
+represents ranges of elements, i.e. [3:6] is equal to [3 4 5 6] and
+[3:22:3] is equal to [3 6 9 12 15 18 21].  Elements and ranges
+may be combined within the [ ] notation.
+\section Tasking!
+Tasks should appear as similar as possible to functions, either system
+functions or user defined procedures.  The essential difference in tasks
+is that they have some complicated characteristics defined by their
+designer (summarized by {\bf HELP, DEFAULT, RANGE} structures), they
+are compiled externally to the \CL, and 
+they should be able to operate asynchonously.  This last means that
+their access to shell objects must be tightly controlled.
+
+Input arguements to complicated operators, be they
+functions or tasks,  are typically complicated structures.
+For example the {\bf AIPS} {\it task} {\bf MX} would in the new \CL
+be an operator with a syntax like:
+$$ {\bf A\equad MX(B)\quad\quad {\rm or \quad }A\equad MX\ B }$$ where 
+\A is a \CL variable of type
+{\it MXOUTPUT} and {\bf B} is of type {\it MXINPUT}.  This last is a
+large structure with elements such as ${\rm String \ MXINPUT.INNAME}$
+or ${\rm float[2] \ MXINPUT.CELLSIZE}$.  The output \A would probably
+not contain the output image; this would clutter up the \CL with
+very large objects.  It probably contains at most an output identifier
+(e.g. file name), some general information (e.g. number of iterations
+actually used in clean, rms residual at end of clean) and {\bf status} and
+{\bf done} members. (see below about Asynchronous operations)
+
+There is a system operator {\bf EPARAM} such that $C\equad EPARAM ('MX', B)$
+invokes a full screen editor that reads the {\it MXINPUT} structure
+$B$; allows you to alter it contents, and writes the updated version
+into the {\it MXINPUT} structure  $C$.  Of course $B\equad EPARAM ('MX', B)$
+causes an in place update. Also $Outstream\equad B$ 
+causes formatted output of the contents of $B$, similar
+to the current use of {\bf INPUTS} in {\bf AIPS}.  At any time you may
+have any number of input structures to MX.  You can also have an
+array $$ MANYMXRUNS\equad Array(MXINPUT, 20) $$ This essentially replaces
+the {\bf TPUT} and {\bf TGET} functions in {\bf AIPS} and allows the
+user to maintain his/her own ``database" of parameters.  The same is
+true of output parameters.
+
+We suggest additional {\bf IRAF}--like 
+syntax constructions to make small changes in input structures simple.  
+For example
+$$ A \equad MX(B | IMSIZE = [128\ 256])$$ means use the current value
+of $B$ as input to MX, except change the value of the {\bf IMSIZE}
+vector to 128, 256 temporarily (i.e. do not change $B$).  
+Perhaps $MX(B || IMSIZE=[128\ 256)]$ causes a permanent change to $B$
+i.e. is the equivalent of $$ B.IMSIZE\equad [128\ 256];\  MX(B)$$  We also
+suggest that for major  {\it tasks} there be a current default
+${\bf \$ MX}$ and a system default ${\bf \$ 0MX}$.  If {\bf MX} is called
+without inputs ${\bf A=MX}$ or ${\bf A=MX()}$, then ${\bf \$ MX}$ is used
+as input.  ${\bf \$ MX}$ can be changed by the user, as can any input structure,
+but it cannot be destroyed or its structure redefined.  ${\bf \$ 0MX}$, the
+system default, cannot be altered.  Thus ${\bf \$ MX=\$ 0MX}$ resets the
+current defaults to the system defaults.  Although it can be confusing,
+a task may have multiple arguements: {\bf CLEAN(A, B)} whose
+defaults are ${\bf \$ CLEAN1}$ and ${\bf \$ CLEAN2}$ and whose
+system defaults are ${\bf \$ 0CLEAN1}$ etc.
+
+Since {\it Tasks} are defined and compiled externally to the \CL it is necessary
+to inform the \CL that they exist.  Otherwise if you type {\bf A = BLABLA(C)}
+and BLABLA is not in the current symbol table, the \CL can't determine whether
+{\bf BLABLA} is a typographical error or a Task.  To resolve this it would
+have to search all possible Task libraries.  This ambiguity is (one)
+justification for the {\bf GO} construct in {\bf AIPS}.  We propose to
+remove this ambiguity with an {\bf INCLUDETASK (Taskname, LibraryPath)}
+command.  This has the effect of:
+
+\blist
+Including Taskname in the \CL symbol table
+Including structure definitions for TaskINPUT and TaskOUTPUT (predefined
+  by the Task Designer and available in LibraryPath) in the \CL
+Creating Links to HELP, RANGE, and DEFAULT equipment created by the designer
+\elist
+\section Aspects of Asynchronous (background) operations!
+Some special conditions are necessary for putting commands, especially
+functions returning values, into the background.  
+These are necessary to avoid unpredictable
+behavior if the user alters input shell variables while the command
+is executing or if the command alters shell variables itself.
+
+The special conditions are essentially: all shell variables (objects) used
+in the command are passed to it by value and cannot be modified by it in 
+the parent shell.  The output of the command goes into a structure
+that is {\it locked} i.e. cannot be modified or deleted
+ until the command returns.
+Hopefully,given the possibility of using structures as inputs,
+it is never necessary to access {\it global} variables from within
+a function or procedure.  
+
+
+The output {\bf lside} has in fact two implicit members, {\bf lside.done}
+and {\bf lside.status}.  {\bf lside.done} can be accessed at any time,
+and is {\it true} when the background operation is complete.  The
+system function {\bf wait(lside)} waits until {\bf lside.done} is {\it true}.
+{\bf lside.status} returns the status of the operation.
+
+\section Metavariables!
+
+In some case the values filled in task structures are not actual
+values but special system operators.  These would be indicated with
+a special sytax, for instance the \% sign.
+
+For example,
+to combine the advantages of global and local variables for complicated
+task calls, we suggest the concept of deferred evaluation.  That is;
+it is acceptable to specify a value in an input structure as a
+\CL expression that is only evaluated at execution time.  For example,
+supposing that we use  signs to indicate deferred execution, we
+could write ${\bf MX.INNAME=\% PROJECT\%}$ and ${\bf UVSRT.INNAME=\% PROJECT\%}$
+With this syntax, the values of {\bf MX.INNAME} and {\bf UVSRT.INNAME} are
+not the current value of {\bf PROJECT}, but its value when they are executed.
+Thus if the user changes {\bf PROJECT} from "3C129" to "VirgoA", this
+change will apply to both {\bf UVSRT} and {\bf MX}.  On the other hand,
+this coupling can be removed at any time simply by reassigning {\bf MX.INNAME}
+to a non--deferred variable.  Expressions as well as objects can be
+deferred.  In essence, we are allowing the user to write a ``mini--procedure"
+as an arguement to a function, without invoking a cumbersome procedure
+writing step.
+
+Other metavariables are also useful.  We can define
+the symbols ${\bf \% IP}$ and ${\bf \% DP}$ to mean {\bf Immediate
+Prompt} and {\bf Deferred Prompt}.  Using these symbols as inputs
+to a task would force the task input processing facility to prompt
+the user for input at execution time (form ${\bf \% IP}$) or when the parameter
+is requested by the task (form  ${\bf \% DP}$ ).  For this last feature
+to be useful there must be some kind of agreement (perhaps using an
+"interactive" attribute) as to which parameters can be so deferred.
+Normally all task parameters are read in at one time at task startup.
+In batch modes these prompts would revert back to the task defaults.
+
+{\bf Graphics} objects can be defined and used as the right
+hand side of assignments (and possibly as left hand sides, resulting
+in leaving markers on a graphics display). Assigning a task input
+element to one of these objects causes a cursor appear together with
+a request for input to the task. The graphics object must be predefined
+by the task writer, or by the \CL system writer, or possibly in a procedure
+by the user from elementary objects, so that it produces an output
+of type that matches that expected by the task input structure.
+
+Other Metavariables include File Managers or Catalogues.  When the
+\CL detects these symbols it actives a new window containing the
+Manager or Catalogue, allows the user to click on the requested item,
+and this is entered as the value of the requested variable.
+\section Input/Output!
+These are handled by creating variables of type {\bf Stream}.  Some
+of these are built--in variables and refer to stdin, stout, and stderr,
+but others can be created and destroyed with {\bf open} and {\bf close}
+operators which connect them with devices (files, terminals...)
+A {\bf Tee} operator can connect two output streams together to form
+a new one.  Streams should probably be opened as either {\bf ASCII} or
+binary.  Assigning a value to an ASCII stream results in a default
+formatting of the value (which may be an array or structure) into
+the stream.  Various output formatting operations should exist, 
+similar to those in C.  Simple input formatting could follow
+the C model, or also the {\bf Mongo} model, where a stream could
+be defined to be a single column in an {\bf ASCII} table.
+\section Packages!
+The {\bf Package(Packagename, Symbol)} operator can be used to group
+symbols, either operands or operators, into packages which can
+be manipulated as groups in certain operations such as {\bf Save}
+or {\bf Default}.  The Symbols added to a package are {\it frozen}, that
+is they cannot be redefined or deleted, unless the package is deleted first.
+\section Some Fancy Extensions!
+Possibly, although this complicates the syntax, a general {\it reduction}
+operator can be defined.  This could have the syntax 
+${\bf A = REDUCE(bop, B)}$, where {\bf bop} is any binary
+operator defined for \A and {\bf B}.
+This is the equivalent of ${\bf A=B[1] bop B[2] bop B[3]...}$
+Thus the dot product of two vectors is simply ${\bf A=REDUCE(+,B*C)}$.
+The notation in {\bf APL} is actually simpler: ${\bf A=+/B*C}$.  The
+sum of the elements in \A is ${\bf +/A}$.  If \A is the
+index vector {\bf [1 2 3...]} then ${\bf */A}$ is {\bf A!}.
+\section External Classes!
+We would like some of the objects and methods developed by system and
+application programmers to be available directly to users.  This cannot
+be done at arbitrary times, since the classes are defined in {\bf C++} and
+only available after compiling and linking to the \CL.  We suggest
+that the \CL be generated, at least in part from a {\it meta}{\bf CL} definition.
+This, an analog to the old {\bf POPSDEF}, is a list of classes to
+be included, which objects and methods should be available to the \CL user,
+and the aliases (or possibly more complicated syntax description) of how
+\CL symbol sytnax maps into the {\bf C++} calling sequence of the methods.
+The \CL is compiled by reading this {\it meta}{\bf CL} file, which informs
+the \CL parser that the necessary object types are defined, and tells
+it which methods to call when the appropriate commands are typed in.
+
+While all this is probably fairly simple to implement, it can easily get
+out of hand and generate an unmanageable shell.  In principle the
+kernel {\bf AIPS++} group would distribute a vanilla version of the
+{\it meta}{\bf CL} definition, that would generate a small and simple
+system.  Local site managers could then follow a recipie for adding
+new classes to the kernel.
+
+\section Some More System Functions !
+{\bf SAVE (Workspace, Variable)} saves the current value of {\bf Variable}
+in the named {\bf Workspace}.  Any existing variable in the same workspace
+with the same name is destroyed.  {\bf RESTORE (Workspace, Variable)} restores
+it, overwriting any current variable with the same name.  {\bf SAVEALL(Workspace)}and {\bf RESTOREALL(Workspace)} save and restore the entire working environment.
+{\bf RESTORE0} restores the default environment.  On {\bf EXIT, STOREALL}
+is executed to a specific workspace that is RESTORED as next login.
+
+{\bf DELETE(Variable)} destroys reference to that variable and releases 
+dynamic storage assigned to it.
+
+{\bf D=DESCRIBE(Structure)} generates an ASCII description of the structure
+of that object.  {\bf D} can then be used (edited??) as the input
+to a new {\bf Structdef} command.
+{\bf A = B}, if \A and {\bf B} are structures, copies
+{\bf B} into \A.  {\bf A = NEW(B)} creates a new object with the same
+structure as {\bf B}, but empty.
+
+{\bf DRYRUN (Task, Taskinput)} verifies whether Taskinput is acceptable
+to Task, and prints various diagnostics.
+
+{\bf RESET (Packagename)} resets the current default input structures
+for all tasks in a package to the system defaults.
+
+{\bf WAIT(TaskOutputStucture)} waits for completion of that task.
+\end

@@ -1,0 +1,12 @@
+\documentclass[11pt]{article}
+\usepackage{html}
+
+\begin{document}
+\label{Top}
+\title{AIPS++ Notes Series}
+\author{}
+\maketitle
+
+\input{index}
+
+\end{document}

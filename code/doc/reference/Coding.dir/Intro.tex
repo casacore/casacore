@@ -1,0 +1,91 @@
+\chapter{Introduction}\label{Programming:Intro}
+
+This document is intended for use by people who are either implementing
+code for {\tt aips++} or who are using {\tt aips++} libraries for their
+own work but are not actively extending the system.  
+
+\label{Intro:Rumbaugh Methodology}
+\label{Intro:OMT --- Object Modeling Technique}
+
+While this document is meant for people who are actively writing code,
+it must be emphasized that work in the {\tt aips++} system should be
+proceeded by analysis and design phases unless the functionality is very
+straightforward. The methodology that the {\tt aips++} project has chosen
+is the {\em Object Modeling Technique} (OMT) \footnote{Object-Oriented
+Modeling and Design; Rumbaugh, Blaha, Premerlani, Eddy, and Lorensen
+(Prentice-Hall:1991).} or {\em Rumbaugh} methodology.
+
+\label{Intro:aips2documentation}
+The Programmers Reference Manual is part of the {\tt aips++} {\em Documentation System} ---
+other titles which may be of interested include:
+
+\begin{itemize}
+\item \htmladdnormallink{System}{../System/System.html}
+System \index{System} installation and management.
+\item \htmladdnormallink{Getting Started in AIPS++}{../../user/gettingstarted/gettingstarted.html}
+A User's guide to getting started in AIPS++.
+\item \htmladdnormallink{AIPS++ How to .*}{../HowTos/HowTos.html}
+Useful tidbits from the AIPS++ group.
+\end{itemize}
+
+This manual assumes that you are reasonably fluent in C++. If that is
+not the case, we suggest that the following would make a good bookshelf
+of C++ books:
+
+\label{Intro:C++ book reccomendations}\index{C++ programming books}
+\begin {itemize}
+\item
+{\em The C++ Programming Language (Second Edition)}; Stroustrup (Addison
+Wesley:1991). This is a good introductory book (the first edition,
+however, was terrible).
+\item
+{\em The C++ Primer???? (Second Edition)}; Lippman (Addison
+Wesley?:1991??). This is another good introductory book.
+\item
+{\em The Annotated C++ Reference Manual}; Ellis and Stroustrup
+(Addison Wesley:1990). This is the book the (unfinished) C++
+standardization effort is based on. Until the language is standardized
+this is the "bible."
+\item
+{\em Advanced C++: Programming Styles and Idioms}; Coplien (Addison
+Wesley: 1992). A book that shows you how to do things when the more
+elementary techniques fail.
+\item
+{\em Effective C++}; Meyer (Addison Wesley:1992). A very useful
+compendium of things
+to know about programming in C++. You should probably be able to
+understand everything in this book before writing any {\tt aips++}
+classes.
+\item
+{\em C++ Programming Guidelines}; Plum and Saks (Plum Hall:1991). This
+book is dull reading by it has a lot of useful information.
+\end{itemize}
+
+Please let us (Brian Glendenning, bglenden@nrao.edu, or Wes Young,
+wyoung@nrao.edu) know of any enhancements or
+changes that you feel should be made to this document.
+If you are an aips2-worker you can
+of course make any additions or changes yourself (please, however, check
+with us first).
+
+A word about {\em Standards} and {\em guidelines}. There are two
+competing views about these:
+
+\begin {enumerate}
+\item
+That they are invaluable. A consistent "look and feel" allows you to much
+more quickly understand what the code is trying to do. Moreover, some
+standards will outlaw questionable practices and squash bugs before they
+can be written.
+\item
+They are not very important. The semantics of the code take all the time
+it takes to understand it. We're professional enough to understand what
+we're doing and rigid rules won't always work. Besides, I just gotta be
+me.
+\end{enumerate}
+
+In {\tt aips++} we adopt the first view-point. It might only alleviate
+only the most superficial problems, but better something than nothing.
+The current list is not that large or onerous in any event. (In fact,
+for standards and guidelines to be followed, there must be few enough of
+them that it is reasonable to expect people to know them).

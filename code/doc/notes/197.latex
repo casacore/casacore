@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage{heqn,html,makeidx,epsf}
+\pagestyle{headings}
+
+\textheight  8.5truein
+\textwidth   6truein
+\topmargin   0.25truein
+\oddsidemargin 0.25truein
+\evensidemargin 0.25truein
+
+%
+% define hyperlink URLs:
+%
+
+\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/notes/197/197.html}
+\newcommand{\gsURL}{../gettingstarted/gettingstarted.html}
+\newcommand{\glossaryURL}{../../docs/glossary/glossary.html}
+\newcommand{\userrefmanualURL}{../../docs/user/Refman/Refman.html}
+\newcommand{\GlishmanualURL}{../../docs/reference/Glish/Glish.html}
+\newcommand{\GlishtutorialURL}{../../notes/195/195.html}
+%
+% URLS to Help system
+%
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+%
+% Add home page navigation button -- edit the URL!
+%
+
+\htmladdtonavigation{\htmladdnormallink
+  {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
+\newcommand{\ltoh}{LaTeX2HTML}
+
+\makeindex
+
+\begin{document}
+
+%
+%  Page formatting for Postscript output
+%
+
+\title{
+{\bf How to Write an AIPS++ Application}
+}
+
+\author
+{
+B.E. Glendenning, T.J. Cornwell\\
+National Radio Astronomy Observatory\\
+P.O. Box O, Socorro, NM, 87801, USA
+}
+
+\date
+{
+{Text last updated: 1996 December 10}\\
+{HTML version available at:}\\
+\texttt{{\thisdocURL}} 
+}
+
+\begin{latexonly}
+\markright{How to Write an AIPS++ Application}
+\maketitle
+\end{latexonly}
+
+%
+% Page formatting for HTML output
+%
+
+
+\begin{rawhtml}
+<TABLE BORDER=0 CELLPADDING=2 WIDTH="100%"> 
+<TR VALIGN=TOP> 
+<TD><FONT COLOR="maroon"><H1>How to Write an AIPS++ Application</H1></FONT><BR></TD>
+<TD>Brian Glendenning, Tim Cornwell and Wes Young<BR> 
+NRAO, Socorro<BR> 
+New Mexico, U.S.A.<BR>
+</TD>
+</TR> 
+<TD>whole document as <A HREF="../197.ps">Postscript</A><BR></TD> 
+<TD>HTML updated: 1996 December 10</TD> 
+</TR> 
+</TABLE>
+<HR> 
+<P><FONT COLOR="red">N.B. This document uses HTML 3 Tables, and
+in-line images to display mathematical expressions.<BR>Turn <EM>Image
+Loading</EM> <STRONG>ON</STRONG>, and set your font size in the range
+12 to 14pt for optimal browsing.</FONT></P>
+\end{rawhtml}
+
+\tableofcontents
+
+\pagebreak
+
+%
+% optional post-title formatting for PostScript
+%
+\parindent0pt
+\parskip2.5ex plus 0.5ex minus 0.5ex
+\input{body197}
+\end{document}

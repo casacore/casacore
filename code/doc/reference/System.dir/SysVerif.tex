@@ -1,0 +1,230 @@
+\chapter{System verification}
+\label{System verification}
+\index{system verification}
+
+Utilities for verifying the integrity of \aipspp\ \footnote{Last change:
+$ $Id$ $}.
+
+% ----------------------------------------------------------------------------
+
+\section{\exe{assay}}
+\label{assay}
+\index{installation}
+\index{system generation -- verification}
+\index{assay}
+ 
+\aipspp\ test program initiator.
+
+\newpage
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{\file{Diagnostic makefile rules}}
+\label{Diagnostic makefile rules}
+\index{compilation}
+\index{diagnostics - makefile rules}
+\index{makefile rules - diagnostics}
+\index{rules, makefile - diagnostics}
+\index{system verification - makefiles}
+\index{makefiles}
+\index{makefile - application}
+\index{makefile - applications}
+\index{makefile - checkout}
+\index{makefile - class implemention}
+\index{makefile - documentation}
+\index{makefile - fortran directory}
+\index{makefile - install directory}
+\index{makefile - package}
+\index{makefile - scripts directory}
+\index{makefile - test directory}
+\index{makefile - top-level}
+\index{targets}
+\index{makefile.app}
+\index{makefile.aps}
+\index{makefile.chk}
+\index{makefile.doc}
+\index{makefile.ftn}
+\index{makefile.imp}
+\index{makefile.pkg}
+\index{makefile.scr}
+\index{makefile.tst}
+
+\textsc{gnu} makefiles used to rebuild \aipspp\ 
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \file{makefile}\\
+   \file{makefile.\{app,aps,chk,doc,ftn,imp,pkg,scr,tst\}}
+\end{synopsis}
+
+\subsection*{Description}
+
+
+\subsection*{Diagnostic targets}
+
+The \aipspp\ makefile targets are listed below by category.  These lists
+are not exhaustive, but do aim to cover everything of practical use.  In
+particular, they omit targets which are intended for the internal use of the
+makefiles.
+
+A target is labelled as ``recursive'' if it causes \exeref{gmake} to be
+invoked in all subdirectories.  It is ``general'' if it applies to all
+makefiles; such targets are defined in \file{makedefs}.  A target is
+``specific'' if defined in a specific makefile.
+
+Some targets such as \file{help} have a general meaning, the specific
+behaviour of which differs for specific makefiles.  These are referred to as
+``general/specific'' and where appropriate the details of a target's behaviour
+are described for each of the generic makefiles, for the top-level makefile
+(\file{top}), and the installation makefile (\file{ins}).
+
+\textbf{Diagnostics targets:}
+
+The diagnostics targets are used to report makefile variable definitions, to
+list targets and dependencies deduced by the makefiles, to print help
+information, and especially for debugging the makefiles.
+
+\begin{itemize}
+\item
+   \code{command} : (general)
+   \\ Invoke a command or sequence of commands specified by the \code{COMMAND}
+   variable defined on the \aipsexe{gmake} command line.  This makes most
+   sense if the command sequence involves the usage of \file{makedefs}
+   variables.
+
+\item
+   \code{printenv} : (general)
+   \\ Print out the environment as seen by the commands within makefile rules.
+   This is especially useful for diagnosing problems related to makefile
+   variables not being exported, unresolved recursively defined variables, and
+   variables which cannot be exported to the environment because they contain
+   non-alphanumeric characters.
+
+\item
+   \code{eval\_vars} : (general)
+   \\ Print variables specified by \code{VARS} on the \aipsexe{gmake} command
+   line in a form suitable for \unixexe{eval}'ing into the environment in
+   Bourne shell.  This is used in particular by \exereff{ax\_master}{ax},
+   \exeref{depend} and \exeref{updatelib} for getting \filref{makedefs}
+   variable definitions when invoked in stand-alone mode (when invoked via a
+   makefile rule the required variables are explicitly \code{export}ed to
+   them).  An example of its use would be
+
+\begin{verbatim}
+   eval `gmake -f $AIPSARCH/makedefs VARS="AR ARFLAGS" eval_vars`
+\end{verbatim}
+
+   \noindent
+   This would create environment variables \code{AR} and \code{ARFLAGS} and
+   give them the values of the \file{makedefs} variables of the same name.
+
+\item
+   \code{diagnostics} : (general)
+   \\ This target simply invokes the \code{versions} and \code{show\_global}
+   targets.  It is used by the code distribution system on cumulative updates
+   to produce a status report for consortium installations (see
+   \exeref{sneeze}).
+
+\item
+   \code{versions} : (general)
+   \\ Print the installed version of certain utilities required by \aipspp,
+   the main one being \aipsexe{gmake} itself.
+
+\item
+   \code{show\_vars} : (general)
+   \\ Report the value of the makedefs variables specified by \code{VARS} on
+   the \aipsexe{gmake} command line.
+
+\item
+   \code{show\_prg} : (general)
+   \\ Report the value of all variables defined in \file{makedefs} which are of
+   immediate interest to \aipspp\ programmers.  This is particularly useful
+   for reporting the compiler options set by the site-specific \file{makedefs}
+   in response to use of the \code{OPT} variable or alternate programmer
+   compilation flags.
+
+\item
+   \code{show\_all} : (general)
+   \\ This target simply invokes the \code{show\_global} and \code{show\_local}
+   targets.
+
+\item
+   \code{show\_global}  : (general)
+   \\ This target simply invokes the \code{show\_sys}, \code{show\_prg} and
+   \code{show\_aux} targets.
+
+\item
+   \code{show\_sys}  : (general)
+   \\ Report the value of all system variables defined in \file{makedefs}.
+
+\item
+   \code{show\_prg}  : (general)
+   \\ Report the value of all programmer variables defined in \file{makedefs}.
+
+\item
+   \code{show\_aux}  : (general)
+   \\ Report the value of all auxilliary variables defined in \file{makedefs}.
+   (Certain of these may have been redefined in the specific makefiles.)
+
+\item
+   \code{show\_local} : (specific)
+   \\ Report the value of all variables defined within the specific makefile.
+
+\item
+   \code{help} : (general/specific)
+   \\ Print an itemized summary of all general and specific targets categorized
+   as ``programmer'', ``system'', or ``diagnostic''.  The general targets are
+   reported by \file{makedefs}, and the specific targets are appended by the
+   specific makefile.
+\end{itemize}
+
+\subsection*{Notes}
+
+\begin{itemize}
+\item
+   The implement makefile includes the system dependency lists and so may
+   start slowly as it checks to see whether the list is up-to-date (regardless
+   of whether the particular target uses it or not).  Inclusion of the
+   dependency list can be circumvented by setting the \code{NODEP} variable
+   (to anything).  This causes the makefile to start considerably faster.
+
+   \code{NODEP} is set automatically if \aipsexe{gmake} is invoked from a
+   directory which does not reside under \file{\$AIPSROOT}, that is, a
+   programmer invokation.  However, system-oriented targets may also be
+   invoked from a programmer directory, and this would cause the dependency
+   analysis to be circumvented, and the dependency list to be ignored.  This
+   may be legitimate if the target invoked does not actually use the
+   dependency list, for example \code{chkout}, \code{cleancode} or
+   \code{cleansys}.  In fact, the code distribution system sets \code{NODEP}
+   explicitly when it invokes the top-level makefile for these recursive
+   targets for the system (see \exeref{inhale}).  However, \code{NODEP} must
+   not be set for an invokation of the implement makefile for a target which
+   does use the dependency list.  A proper resolution of this problem would
+   require the facility for a makefile to examine its target list, but this is
+   not currently possible.
+\end{itemize}
+
+\subsection*{Examples}
+
+
+\subsection*{See also}
+
+The \textsc{gnu} \code{Make} manual.\\
+The \textsc{gnu} manual page for \unixexe{gmake}.\\
+\aipspp\ variable names (\sref{variables}).
+\exeref{gmake}, \textsc{gnu} make.\\
+\filref{makedefs}, \aipspp\ makefile definitions.\\
+
+% ----------------------------------------------------------------------------
+ 
+\newpage
+\section{\file{testdefs}}
+\label{testdefs}
+\index{testdefs -- makefile verification}
+\index{makedefs -- verification}
+\index{system generation -- testdefs}
+\index{makefile -- verification}
+ 
+Validate installation-specific definitions used by the \aipspp\ makefiles.

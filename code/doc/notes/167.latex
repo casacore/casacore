@@ -1,0 +1,28 @@
+%% coding-standards.latex
+%% $Id$
+%%----------------------------------------------------------------------------
+\documentstyle{article}
+%%-----------------------------------------------------------------------------
+%% See 'A Guide to Latex', Kopka & Daly, Addison-Wesley, section 3.2.4
+%% for these and other variables which override style settings.
+
+\setlength{\textwidth}{15cm}
+\setlength{\textheight}{20.5cm}
+\setlength{\evensidemargin}{0.0cm}
+\setlength{\oddsidemargin}{0.0cm}
+\setlength{\topmargin}{0.0cm}
+\setlength{\topskip}{0.0cm}
+\setlength{\parindent}{0.0cm}
+\setlength{\parskip}{0.1cm}
+%%-----------------------------------------------------------------------------
+\begin{document}
+
+\title{NOTE 167\\
+       AIPS++ Programming:\\
+       STANDARDS AND GUIDELINES}
+\author {Paul Shannon, NRAO}
+\date {February 27, 1995}
+\maketitle
+%%---------------------------------------------------------------------------
+\input{body167}
+\end{document}

@@ -1,0 +1,573 @@
+
+\section{Introduction}
+The Table Query Language (TaQL, rhymes with bagel) makes
+it possible to select
+rows from an arbitrary table based on the contents of its
+columns and keywords. It allows arbitrary complex
+expressions including regular expressions and many functions.
+TaQL also makes sorting and column selection possible.
+
+\section{Syntax}
+TaQL is based on SQL. The full command looks like:
+\begin{verbatim}
+SELECT [column_list] FROM table_list [WHERE expression]
+  [ORDERBY sort_list] [GIVING table]
+\end{verbatim}
+The square brackets shown are not part of the syntax, but indicate
+that the clauses enclosed in them are optional. The command is case
+insensitive, but of course case is important in string values and
+in names of columns and keywords. Whitespace (blanks and tabs) can
+be used at will.
+The various clauses have the following meaning:
+\begin{description}
+  \item[ SELECT ]
+       indicates the beginning of the command and is a mandatory verb.
+  \item[ column\_list]
+       is a comma-separated list of column names which have to be selected
+       from the primary table in the table\_list (see below).
+       If no column\_list is given, all columns will be selected.
+       \\ In the future it may be possible to use expressions to create
+       a new column based on the contents of other columns.
+  \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
+       is a comma-separated list and indicates which tables are used in
+       the SELECT command. The first table in the list is the primary
+       table and is used for all columns in the other clauses.
+       Usually only one table is used, so the list consists of only one
+       table name. E.g.
+       \begin{verbatim}
+       SELECT col1,col2 FROM mytable
+           WHERE col1>col2
+           ORDERBY col1
+       \end{verbatim}
+       In this example columns \texttt{col1} and \texttt{col2}
+       are taken from \texttt{mytable}.
+       \\However, it is possible to specify more tables in the table\_list.
+       In the WHERE clause these secondary tables can be used to take
+       keywords from. E.g.
+       \begin{verbatim}
+       SELECT FROM mytable,othertable
+           WHERE col1>othertable.key
+       \end{verbatim}
+       The full table\_list syntax is:
+       \\
+       \texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
+       \\The shorthand defaults to the table\_name.
+       As shown in the example above a shorthand can be used in the WHERE
+       clause to qualify from which table a field has to be taken.
+       When no qualifying name is given, the keyword (or column) is taken
+       from the primary table (i.e. the first table in the table\_list).
+       This means that qualifying names are only needed in special cases.
+       The qualifying name can not contain special characters like a slash.
+       Therefore a table\_name needs an explicit shorthand when it contains
+       special characters. E.g.
+       \begin{verbatim}
+       SELECT FROM mytable,~user/othertable other
+           WHERE col1>other.key
+       \end{verbatim}
+  \item[WHERE expression]
+       defines the selection expression which must have a boolean
+       result. A row in the primary table
+       is selected when the expression is true using the values in that row.
+       The syntax of the expression is explained
+       \htmlref{below}{TAQL:EXPRESSIONS}.
+  \item[ORDERBY sort\_list]
+       defines the order in which the result of the WHERE clause
+       has to be sorted. The sort\_list is a comma separated list of
+       expressions, where each expression is
+       optionally followed by \texttt{ASC} or \texttt{DESC}
+       (indicating ascending or descending). Default for each expression is
+       ascending.
+       \\An expression can be simply a scalar column or a pixel from
+       an array column. In these cases some optimization is performed
+       by accessing the entire column directly.
+       \\It can also be an arbitrary complex expression
+       with exactly the same syntax rules as the expressions in the
+       \htmlref{WHERE}{TAQL:EXPRESSIONS} clause.
+       The resulting data type of the expression must
+       be a standard one, thus it cannot be a regex or datetime.
+       E.g.
+       \begin{verbatim}
+       ORDERBY col1, col2, col3
+       ORDERBY uvw[1] DESC
+       ORDERBY square(uvw[1]) + square(uvw[2])
+       ORDERBY datetime(col)             incorrect data type
+       ORDERBY mjd(datetime(col))        is correct
+       \end{verbatim}
+  \item[GIVING table]
+       indicates that the ultimate result of the SELECT command has to be
+       written to a table (with the given name). This table is a
+       so-called reference table.
+       It does not contain data of its own, but only references the
+       proper rows in the original table. It can be used
+       as any other table, thus also be used as an input table in
+       another SELECT command.
+\end{description}
+Although the clauses column\_list, WHERE, and ORDERBY are optional,
+at least one them has to be used. Otherwise no operation is performed on the
+primary table (which makes no sense).
+
+
+\label{TAQL:EXPRESSIONS}
+\section{Expressions}
+An arbitrary expression can be used in the WHERE clause or as a sort
+key in the ORDERBY clause. Note that the expression result must be
+boolean when used in the WHERE clause. When used as a sort key the
+result can be boolean, numeric or string.
+\\The expression in the clause can be as complex as one likes
+using the standard
+\htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}.
+Parentheses can be used to group subexpressions.
+\\The operands in an expression can be
+\htmlref{table columns}{TAQL:COLUMNS} (scalars and arrays),
+\htmlref{table keywords}{TAQL:KEYWORDS},
+\htmlref{constants}{TAQL:CONSTANTS}, and
+\htmlref{functions}{TAQL:FUNCTIONS}.
+E.g.
+\begin{verbatim}
+  column1 > 10
+  column1 + column2 >= min (column2, column3)
+\end{verbatim}
+
+TaQL knows the following data types:
+\begin{description}
+  \item[Bool]
+  \item[ Double] which includes integers and times/positions
+  \item[ DComplex ] which includes single precision complex
+  \item[ String ] Operator + can be used (concatenation).
+  \item[ Regex ] which is formed by functions regex and pattern (see below).
+  \item[ DateTime ] which represents a date/time. There are several functions
+       acting on a date/time. Also operator + or - can be used.
+\end{description}
+TaQL can do the following conversions:
+\\- from Double to DComplex
+\\- from String to DateTime
+\\when an operand or function argument with a non-matching data type
+is used.
+
+\label{TAQL:CONSTANTS}
+\subsection{Constants}
+Constants of the various data types can be formed as follows
+(which is very similar to glish):
+\begin{itemize}
+  \item A Bool constant is not needed and therefore does not exist.
+  \item A Double constant can be any integer or floating number.
+       \\Another way to define a Double constant is by means of
+       a Time or Position. Such a constant is always converted to radians.
+       It can be given in several ways:
+       \begin{itemize}
+         \item An integer or floating number immediately followed by a unit
+              (thus without whitespace). E.g. \texttt{12deg}
+              \\Some valid units are deg, arcmin, arcsec (or as), rad.
+              The units can be scaled by preceeding them with a letter
+              (e.g. mrad is millirad).
+         \item A time/position in HMS format.
+              E.g. \texttt{12h34m34.5}
+         \item A position in DMS format.
+              E.g. \texttt{12d34m34.5}
+         \item A dot-separated position.
+              E.g. \texttt{12.34.34.5}
+       \end{itemize}
+  \item The imaginary part of a DComplex constant is formed by a Double
+       constant immediately followed by a lowercase \textbf{i}. A full DComplex
+       constant is formed by adding another Double constant. E.g.
+       \begin{verbatim}
+       1.5 + 2i
+       2i+1.5            is identical
+       \end{verbatim}
+       Note that (unlike glish) a full complex constant has to be enclosed
+       in parentheses when, say, a multiplication is performed on it. E.g.
+       \begin{verbatim}
+       2 * (1.5+2i)
+       \end{verbatim}
+  \item A String constant has to be enclosed in " or ' and can be
+       concatenated (as in C++). E.g.
+       \begin{verbatim}
+         "this is a string constant"
+         'this is a string constant containing a "'
+         "ab'cd"'ef"gh'
+                      results in constant  ab'cdef"gh
+       \end{verbatim}
+  \item A Regex constant as such does not exist. A Regex is formed from a string
+       by function \texttt{regex} or \texttt{pattern} (see below).
+       In this way one can form a Regex constant. E.g.
+       \begin{verbatim}
+         regex ("[a-zA-Z][a-zA-Z0-9]*")
+       \end{verbatim}
+  \item A DateTime constant can be formed in 2 ways:
+       \begin{enumerate}
+         \item From a String constant using the \texttt{datetime} function.
+              In this way all possible formats as explained in class
+              \texttt{MVTime} are supported. E.g.
+              \begin{verbatim}
+              datetime ("11-Dec-1972")
+              \end{verbatim}
+         \item A more convenient way is to specify it directly. Since this
+              amkes use of the delimiters - or /, it conflicts with the
+              expression grammar as such. However, such conflicts can be
+              solved by using whitespace in a expression and it is believed
+              that in practice the convenience surpasses the possible
+              conflicts.
+              \\ This way supports a large subset of the MVTime formats.
+              A datetime has to be specified as \texttt{date/time}
+              or \texttt{date-time}, where the time part (including
+              the / or - delimiter) is optional.
+              The possible date formats are:
+              \\- YYYY/MM/DD or DD-MM-YYYY
+              \\- DD-MMMMMMMM-YY where the - is optional and MMMMMMM is the
+              case-insensitive name of the month (at least 3 letters).
+              \\- YYYY//DDD or DDD--YYYY where DDD is the day number in
+              the year.
+              \\in the DMY format, 2000 is added when year$<$50 and
+              1900 is added when 50$<=$year$<$100.
+              \\When MM$>$12, YYYY will be incremented accordingly.
+              \\The general time format in datetime is:
+              \\- hh:mm:ss.s
+              \\where the delimiter \textbf{h} or \textbf{H} can be used
+              for the first colon and \textbf{m} or \textbf{M} for the second.
+              Trailing parts can be omitted. E.g.
+              \begin{verbatim}
+              10-2-97
+              10-02-1997
+              10-February-97
+              10feb97
+              1997/2/10          are all identical
+
+              1May96/3:          : (or h) is mandatory
+              1May96/3:0
+              1May96/3:0:0
+              1May96/3h          h (or :) is mandatory
+              1May96/3H0
+              1May96/3h0M
+              1May96/3hm0.0
+              \end{verbatim}
+              A datetime constant with the current date/time can be made
+              by using function \texttt{datetime} without arguments.
+       \end{enumerate}
+\end{itemize}
+
+\label{TAQL:OPERATORS}
+\subsection{Operators}
+The following operators can be used (with their normal meaning and precedence):
+\begin{description}
+  \item[ Unary + and -]
+       Can only be used with double and complex operands.
+       They have a higher precedence than the binary operators.
+       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+  \item[ Unary ! ]
+       Logical NOT operator.
+       Can only be used with bool operands.
+%  \item[ Binary \verb+^+, *, /, \%, +, and -] 
+  \item[ Binary $\wedge$, *, /, \%, +, and -] 
+      \% is the modulo operator.
+       E.g. \texttt{3\%1.4} results in \texttt{0.2} and
+       \texttt{-10\%3} results in \texttt{-1}.
+       \\\\\verb+^+ is the power operator.
+       Note that because of the precedence rules
+       \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+       \\All operators are left-associative, except \verb+^+ which is
+       right-associative; thus \texttt{2}\verb+^+\texttt{1}\verb+^+\texttt{2} results in \texttt{2}.
+       \\Operator \% can only be used for double operands, while the others
+       can be used for double and complex operands.
+       Operator + can also be used for:
+       \\- Addition (i.e. concatenation) of 2 strings.
+       \\- Addition of a double (unit days) and a datetime
+       (resulting in a datetime).
+       \\Operator - can also be used for:
+       \\- Subtraction of a double (unit days) from a datetime
+       (resulting in a datetime).
+       \\- Subtraction of 2 datetimes (resulting in a double with unit days).
+  \item[ ==, $!=$, $>$, $>=$, $<$, and $<=$. ]
+       Can be used with any operand as long as their data types conform.
+       Operator $>$, $>=$, $<$, and $<=$ cannot be used for regex.
+       They use the norm for complex values.
+  \item[ \&\& and $\mid\mid$.]
+       Logical AND and OR operator.
+       Can only be used with bool operands.
+\end{description}
+\begin{description}
+  \item[The precedence order is:]
+       unary \texttt{+, -, !}
+       \\\verb+^+
+       \\\texttt{*, /, \%}
+       \\\texttt{+, -}
+       \\\texttt{$==, !=, >, >=, <, <=$}
+       \\\texttt{\&\&}
+       \\\texttt{$\mid\mid$}
+\end{description}
+
+\label{TAQL:FUNCTIONS}
+\subsection{Functions}
+Some functions have 2 names. One name is the AIPS++/glish name, while the
+other is the name as used in SQL.
+In the following tables the function names are shown in uppercase,
+while the result and argument types are shown in lowercase.
+Note, however, that function names are case-insensitive.
+\subsubsection{String functions}
+\begin{description}
+  \item[ \texttt{double STRLENGTH(string),  double LEN(string)}]
+       Returns the number of characters in a string
+       (trailing whitespace is significant).
+  \item[ \texttt{string UPCASE(string), string UPPER(string) }]
+        Convert to uppercase.
+  \item[ \texttt{string DOWNCASE(string),  string LOWER(string)}]
+        Convert to lowercase.
+  \item[ \texttt{string TRIM(string)}]
+       Removes trailing whitespace.
+\end{description}
+
+\subsubsection{Regex functions}
+The syntax for forming a regex and pattern are explained in class
+\htmladdnormallink{Regex}{../../aips/implement/Utilities/Regex.html}.
+\begin{description}
+  \item[ \texttt{regex REGEX(string)}]
+      Handle the given string as a regular expression.
+  \item[ \texttt{regex PATTERN(string)}]
+       Handle the given string string as a filename-like pattern and
+       convert it to a regular expression.
+\end{description}
+A regex can only be used in a comparison == or !=. E.g.
+\\\texttt{upcase(object) == pattern('3C*')}
+\\to find all 3C objects in a catalogue.
+
+\subsubsection{Date/time functions}
+\begin{description}
+  \item[ \texttt{datetime DATETIME(string),  datetime CTOD(string)} ]
+       Parse the string and convert it to a date/time. The syntax of
+       date/time is explained in class
+       \htmladdnormallink{MVTime}{/../../aips/implement/Measures/MVTime.html}.
+  \item[ \texttt{datetime MJDTODATE(double)} ]
+       The double value, which has to be a MJD (ModifiedJulianDate), is
+       converted to a datetime.
+  \item[ \texttt{datetime DATE(datetime)}]
+        Get the date (i.e. remove the time part). This function is needed in
+       \\\texttt{date(column) == 12Feb1997}
+       \\when the column contains date/times with times$>$0.
+  \item[ \texttt{double MJD(datetime)}]
+        Get the datetime as a MJD (ModifiedJulianDate).
+  \item[ \texttt{double YEAR(datetime)}]
+        Get the year (which includes the century).
+  \item[ \texttt{double MONTH(datetime)}]
+        Get the month number (1-12).
+  \item[ \texttt{double DAY(datetime)}]
+        Get the day number (1-31).
+  \item[ \texttt{double WEEKDAY(datetime),  double DOW(datetime)}]
+        Get the weekday number (0=Sunday, ..., 6=Saturday).
+  \item[ \texttt{string CMONTH(datetime)}]
+        Get the name of the month (Jan ... Dec).
+  \item[ \texttt{string CWEEKDAY(datetime),  string CDOW(datetime)}]
+        Get the name of the weekday (Sun .. Sat).
+  \item[ \texttt{double WEEK(datetime)}]
+        Get the week number in the year (0 ... 52).
+  \item[ \texttt{double TIME(datetime)}]
+       Get the time part of the day. It is converted to radians to
+       be compatible with the internal representation of times/positions.
+       In that way the function can easily be used as in:
+       \\\texttt{TIME(date) $>$ 12h}
+\end{description}
+All functions can be used without an argument. In that case the current
+date/time is used. E.g. \texttt{DATE()} results in the current date.
+\\It is possible to give a string argument instead of a date. In that
+case the string is parsed and converted to a date (i.e. in fact the
+function DATETIME is used implicitly).
+  
+\subsubsection{Mathematical functions}
+Several functions can operate on double or complex arguments.
+The data types of such functions is given as 'numeric'.
+\begin{description}
+  \item[ \texttt{double PI()}] Returns the value of \textbf{pi}.
+  \item[ \texttt{double E()}] Returns the value of \textbf{e} (is equal to \texttt{EXP(1)}).
+  \item[ \texttt{numeric SIN(numeric)}]
+  \item[ \texttt{numeric SINH(numeric)}]
+  \item[ \texttt{double ASIN(double)}]
+  \item[ \texttt{numeric COS(numeric)}]
+  \item[ \texttt{numeric COSH(numeric)}]
+  \item[ \texttt{double ACOS(double)}]
+  \item[ \texttt{double TAN(double)}]
+  \item[ \texttt{double TANH(double)}]
+  \item[ \texttt{double ATAN(double)}]
+  \item[ \texttt{double ATAN2(double y, double x)}]
+       Returns \texttt{ATAN(y/x)} in correct quadrant.
+  \item[ \texttt{numeric EXP(numeric)}]
+  \item[ \texttt{numeric LOG(numeric)}] Natural logarithm.
+  \item[ \texttt{numeric LOG10(numeric)}]
+  \item[ \texttt{numeric POW(numeric, numeric)}] The same as operator \verb+^+.
+  \item[ \texttt{numeric SQUARE(numeric)}] The same as \verb+^+2, but much faster.
+  \item[ \texttt{numeric SQRT(numeric)}]
+  \item[ \texttt{complex COMPLEX(double, double)}]
+  \item[ \texttt{numeric CONJ(numeric)}]
+  \item[ \texttt{double REAL(numeric)}] Real part of a complex number.
+  \item[ \texttt{double IMAG(numeric)}] Imaginary part of a complex number.
+  \item[ \texttt{double NORM(numeric)}]
+  \item[ \texttt{double ABS(numeric),  double AMPLITUDE(numeric)}]
+  \item[ \texttt{double ARG(numeric),  double PHASE(numeric)}]
+  \item[ \texttt{numeric MIN(numeric, numeric)}]
+  \item[ \texttt{numeric MAX(numeric, numeric)}]
+  \item[ \texttt{double SIGN(double)}]
+       Returns -1 for a negative value, 0 for zero, 1 for a positive value.
+  \item[ \texttt{double ROUND(double)}]
+       Rounds the absolute value of the number.
+       E.g. \texttt{ROUND(-1.6) = -2}.
+  \item[ \texttt{double FLOOR(double)}]
+       Works towards negative infinity.
+       E.g. \texttt{FLOOR(-1.2) = -2}
+  \item[ \texttt{double CEIL(double)}] Works towards positive infinity.
+  \item[ \texttt{double FMOD(double, double)}] The same as operator \%.
+\end{description}
+Note that the trigonometric functions need their arguments in radians.
+
+\subsubsection{Miscellaneous functions}
+\begin{description}
+  \item[ \texttt{double ROWNUMBER()}]
+       Return the row number being tested (first row is row number 1).
+       \\This can, for instance, be used to select the first N rows
+       of a sorted table to get the rows with the highest values).
+  \item[ \texttt{double RAND()}]
+       Return (per table row) a uniformly distributed random number
+       between 0 and 1 using a Multiplicative Linear Congruential Generator.
+       The seeds for the generator are deduced from the current date and
+       time, so the results are different from run to run.
+       \\The function can, for instance, be used to select a random
+       subset from a table.
+\end{description}
+
+\label{TAQL:COLUMNS}
+\subsection{Table Columns}
+Only columns in the primary table can be handled.
+Two types of columns are possible:
+\begin{description}
+  \item[ Scalar column] Its values are used in the normal way.
+  \item[ Array column]
+       It has to be specified which element has to be used from
+       the arrays in each row. This can be done using the index operator
+       \texttt{[index1,index2,...]}. E.g.
+       \begin{verbatim}
+       arraycolumn[1]
+       arraycolumn[1, some_expression]
+       \end{verbatim}
+       The examples show that an index can be a simple constant (as it will
+       usually be), but it can also be an expression which can be as complex
+       as one likes. That expression has to result in a double value.
+       \textbf{Note} that as in glish array indices start at 1.
+       \\For fixed shaped arrays it is checked at parse time whether
+       the array bounds are not exceeded. For variable shaped arrays
+       it can only be done per row. When array bounds are exceeded,
+       an exception is thrown. In the future a special null value
+       is assigned when bounds of variable shaped arrays are exceeded
+       to avoid that the selection process stops because of that exception.
+\end{description}
+An expression has to contain at least one column, since columns
+are the only variable part in it. I.e. a row can only be selected
+or sorted by means of the column values in each row.
+
+The name of a column can contain alphanumeric characters and underscores.
+It should start with an alphabetic character or underscore.
+A column name is case sensitive.
+\\It is possible to use special characters in the name by
+escaping them with a backslash. E.g. \texttt{DATE\_OBS}.
+\\
+Because several words are used in the language, they cannot directly
+be used as column names. Those reserved words are:
+\\\texttt{ASC DESC FROM GIVING IN ORDERBY SELECT WHERE}.
+They can, however, be used as a column name by escaping
+them with a backslash. E.g. \verb+\+\texttt{IN}.
+
+
+\label{TAQL:KEYWORDS}
+\subsection{Table Keywords}
+Currently only a table keyword can be used (thus no column keywords).
+When a keyword is used in an expression, it is read and used as
+a constant.
+\\
+As explained \htmlref{above}{TAQL:TABLE_LIST}
+keywords from the primary and secondary tables can be used. When used
+from a secondary table, it has to be qualified with the (shorthand) name
+of the table. E.g.
+\\\texttt{sh.key}
+\\takes keyword \texttt{key} from the table with the shorthand name
+\texttt{sh}.
+
+The rules for a keyword name are the same as those for a column name.
+
+\subsection{Time/position considerations}
+Time/position constants (e.g. \texttt{3h4m}) are converted to
+radians. This has the advantage that functions like \texttt{SIN}
+can immediately be applied to them. It has the disadvantage that
+a user usually expects seconds as the units for a time. To accomodate
+for that, the \texttt{TIME} function returns the time in radians,
+so one can do something like \texttt{TIME(datecolumn) $>$ 3h}.
+\\In the future this may change when units are handled in their full glory.
+
+\subsection{Optimization}
+A lot of effort can be spent on query optimization, but that is hardly
+done (yet). The only optimization is the precalculation of constant
+subexpressions.
+\\
+However, the user can optimize a query by specifying the expression
+carefully. Especially when using operator $\mid\mid$ or \&\&, attention could be
+paid to the contents of the left and right branch of it. Both operators
+evaluate the right branch only when needed, so the left branch
+should be the shortest one, i.e. the fastest to evaluate.
+\\In the future the selection process may do automatic optimization
+by swapping the branches. This means that one should not count on
+the order of evaluation (as you can do in the C(++) language).
+
+Also the user should use functions and operators in a careful way.
+E.g.
+\\\texttt{SQUARE(COL)} is (much) faster than \texttt{COL}\verb+^+\texttt{2}
+or \texttt{POW(COL,2)}, because SQUARE is faster.
+It is also faster than \texttt{COL*COL}, because it accesses column
+\texttt{COL} only once.
+\\
+\texttt{SQUARE(U) + SQUARE(V) $<$ 1000}\verb+^+\texttt{2} is considerably faster
+than
+\\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
+\texttt{SQRT} function.
+
+
+\section{Examples}
+\begin{description}
+  \item[\texttt{SELECT FROM mytable WHERE column1 $>$ 0 }]
+       selects the rows in which the value of column1 $>$ 0
+  \item[\texttt{ SELECT column0,column1 FROM mytable } ]
+       selects 2 columns from the table.
+  \item[\texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 } ]
+       is a combination of the previous selections.
+  \item[\texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable
+       \\SELECT FROM outtable WHERE rownumber()$<=$10 } ]
+       selects the 10 highest values of \texttt{column0}
+  \item[\texttt{ SELECT FROM mytable WHERE cos(0d1m) $<$
+       sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) * cos(3h30m - RA) } ]
+       selects observations with an equatorial position (in say J2000)
+       inside a circle with a radius of 1 arcmin around (3h30m, 52deg).
+       To find them the condition DISTANCE$<=$RADIUS must be fulfilled,
+       which is equivalent to COS(RADIUS)$<=$COS(DISTANCE).
+       \\Note that in the future this useful astronomical test could
+       be implemented as a function of its own (with better optimization
+       possibilities).
+  \item[\texttt{ SELECT FROM mytable WHERE object == pattern("3C*")  \&\&  \\cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) * cos(3h30m - RA) } ]
+       finds all 3C objects inside that circle.
+\end{description}
+
+\section{Future developments}
+In the near or far future TaQL will be enhanced by adding new
+features and by doing optimizations.
+\begin{itemize}
+  \item Interpret column units defined in a column keyword UNIT.
+  \item Handle invalid values as null values (e.g. exceeding array bounds)
+       and adding a function ISNULL.
+  \item Add a function (say POSITIONINCIRCLE or PINC) to search in a circle
+       around a position.
+  \item Maybe functions to convert positions from one equinox or system
+       to another.
+  \item Use of column keywords and fields in records by means of the
+       scope operators . and ::.
+  \item Use a temporary table as the input of a selection.
+  \item Value sets using the IN operator and the [] construct (as in SQL).
+  \item Subqueries (also using the [] construct) resulting in a value set.
+  \item Functions on value sets (e.g. MAX, COUNT, ABS, NORM, MEDIAN).
+  \item The ability to operate on full arrays or array slices.
+  \item Optimize using a B+ tree index.
+  \item Expressions in the selected column-list to calculate new columns. E.g.
+       \\\texttt{SELECT SQUARE(UVW[1])+SQUARE(UVW[2]) UVWNORM FROM }
+       \\\texttt{UVWNORM} is the name for that new column.
+\end{itemize}

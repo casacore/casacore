@@ -1,0 +1,113 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{RBP{\etalchar{+}}91}
+
+\bibitem[{AIP}90]{aips:glossary}
+{AIPS project}.
+\newblock {\em AIPS Cookbook}, chapter Glossary.
+\newblock NRAO, 1990.
+
+\bibitem[BG94]{bg:AIPS}
+Alan~H. Bridle and Eric~W. Greisen.
+\newblock The {NRAO AIPS} project --- a summary.
+\newblock AIPS Memo~87, NRAO, 1994.
+
+\bibitem[BH92]{bh:exotic}
+S.~Bhatnagar and M.A. Holdaway.
+\newblock Exotic imaging methods: A guide for masochistic aips++ designers.
+\newblock AIPS++ Implementation Note 132, TIFR and NRAO, 1992.
+
+\bibitem[BN94]{bn:scientific}
+John~J. Barton and Lee~R. Nackman.
+\newblock {\em Scientific and Engineering C++}.
+\newblock Addison Wesley, 1994.
+
+\bibitem[Boo91]{booch:oo}
+Grady Booch.
+\newblock {\em Object Oriented Design With Applications}.
+\newblock Benjamin Cummings, 1991.
+
+\bibitem[Cor92a]{cornwell:imaging}
+T.J. Cornwell.
+\newblock Recommendations for the aips++ imaging model.
+\newblock AIPS++ Implementation Note 147, NRAO, 1992.
+
+\bibitem[Cor92b]{cornwell:telescope}
+T.J. Cornwell.
+\newblock Recommendations for the aips++ telescope model.
+\newblock AIPS++ Implementation Note 148, NRAO, 1992.
+
+\bibitem[Cro93]{croes:aips}
+G.A. Croes.
+\newblock On aips++, a new astronomical information proscessing system.
+\newblock In R.J. Hanisch, R.J.V. Brissenden, and Jeanette Barnes, editors,
+  {\em Astronomical Data Analysys Software and Systems II}, volume~52 of {\em
+  Astronomical Society of the Pacific Conference Series}, pages 156--166, 1993.
+
+\bibitem[Fla92]{flatters:rational}
+C.~Flatters.
+\newblock A rational plan for aips++.
+\newblock AIPS++ Implementation Note 114, NRAO, 1992.
+
+\bibitem[Gar94]{garwood:sdci}
+R.W. Garwood.
+\newblock Single dish calibration and imaging (sdci).
+\newblock Technical report, NRAO, 1994.
+
+\bibitem[GC94]{gc:fits}
+Eric~W. Greisen and Mark Calabretta.
+\newblock {\em Representations of Celestial Coordinates in FITS}, 1994.
+
+\bibitem[HG92]{hg:design}
+R.M. Hjellming and B.E. Glendenning.
+\newblock An overview of aips++ design.
+\newblock Implementation Memo 109, AIPS++ Project, 1992.
+
+\bibitem[Hol94]{holdaway:glossary}
+M.A. Holdaway.
+\newblock {AIPS++ Glosarry}, 1994.
+
+\bibitem[Hun93]{hunt:mission}
+G.C. Hunt.
+\newblock Aips++ mission statement.
+\newblock Implementation Memo 110, AIPS++ Project, 1993.
+
+\bibitem[Mey88]{meyer:oo}
+Bertrand Meyer.
+\newblock {\em Object-Oriented Software Construction}.
+\newblock International Series In Computer Science. Prentice Hall, 1988.
+
+\bibitem[Noo94]{noordam:uvci}
+J.E. Noordam.
+\newblock {\em Development Plan for the Interferometry (UV-plane) Calibration
+  and Imaging (UVCI) Application Development Stream of AIPS++}, 1994.
+
+\bibitem[RBP{\etalchar{+}}91]{rumbaugh:oo}
+James Rumbaugh, Michael Blaha, William Premerlani, Frederick Eddy, and William
+  Lorensen.
+\newblock {\em Object-Oriented Modeling and Design}.
+\newblock Prentice Hall, 1991.
+
+\bibitem[RJ94]{sn:strategic}
+{R. Simon, AIPS++ Project Manager} and {J.E. Noordam, Chairman AIPS++ Steering
+  Committee}.
+\newblock {\em Strategic Plan for AIPS++ (Part 1 of the AIPS++ Project Plan)},
+  1994.
+
+\bibitem[Se92]{shone:gb}
+D.L. Shone and T.J.~Cornwell (eds).
+\newblock Calibration, imaging, and datasystems for aips++ --- report of the
+  meeting in green bank, west virginia, 3rd--14th february, 1992.
+\newblock Implementation Memo 103, AIPS++ Project, 1992.
+
+\bibitem[Str91]{stroustrup:c}
+Bjarne Stroustrup.
+\newblock {\em The C++ Programming Language (Second Edition)}.
+\newblock Addison Wesley, 1991.
+
+\bibitem[STWss]{stw:miriad}
+R.J. Sault, P.J. Teuben, and M.C.H. Wright.
+\newblock A retrospective view of miriad.
+\newblock In {\em Astronomical Data Analysys Software and Systems IV},
+  Astronomical Society of the Pacific Conference Series, 1995 (in press).
+
+\end{thebibliography}
