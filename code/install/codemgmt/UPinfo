@@ -59,7 +59,7 @@ else if ("$script" == "UPlist") then
 else if ("$script" == "UPlock") then
     set upsw = "$upsw"
 else if ("$script" == "UPmove") then
-    set upsw = "it$upsw"
+    set upsw = "t$upsw"
 else if ("$script" == "UPreident") then
     set upsw = "atz$upsw"
 else if ("$script" == "UPtmpl") then
@@ -71,7 +71,7 @@ endif
 #
 # Set all the switches to initial state
 #
-foreach i (a c d h n r f g i l s t u z)
+foreach i (a c d h n r f g l s t u z)
     set upsw$i = 0
 end
 set upswP = 0
@@ -111,9 +111,9 @@ while ($# > 0)
 	shift x
 	while ($#x > 0)
 	    if ("$upsw" =~ *"$x[1]"* && $#x > 1 && \
-		("$x[2]" == "0" || "$x[2]" == "1") then
+		("$x[2]" == "0" || "$x[2]" == "1")) then
 		set upsw$x[1] = $x[2]
-		shift
+		shift x
 	    else
 	        echo "Illegal or unknown +switch '$x[1]' given: discarded"
 	    endif
@@ -172,7 +172,7 @@ The following UP scripts are available:
     UPlist    [-l]           [-c] [-r] [-u] [-d] [-n] <typ>	    
     UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
-    UPmove    [-i] [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPmove    [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
@@ -249,7 +249,7 @@ set tpb = `echo $tp | sed -e 's;_[A-Z][A-Z]*$;;' `
 touch $ldir/.UpTyPe.xx
 rm -f $ldir/.UpTyPe.*
 if (! -e $ldir/.UpTyPe.$cdat) then
-    echo "set tp = $tp" >! $ldir/.UpTyPe.$cdat
+    echo "set tp = $tpb" >! $ldir/.UpTyPe.$cdat
 endif
 #
 # Get info

@@ -31,14 +31,13 @@
 # UPmove script (must have x allowed)
 #
 set script = "UPmove"
-set usage = 'UPmove [-i] [-t] [-c] [-r] [-u] [-d] [-n] <typ>'
+set usage = 'UPmove [-t] [-c] [-r] [-u] [-d] [-n] <typ>'
 set htxt  = ("Move files, and change references to them in all aips++" \
 	     "code files. The script uses the UPfind and UPchange " \
 	     "scripts (see there for details)." \
 	     "<typ>.done and <typ>.error will contain the files successfully" \
 	     "done or not.")
-set hsw   = ("-t will run a test mode" \
-	     "-i will calculate all information, but no execution")
+set hsw   = ("-t will run a test mode")
 set huse  = ("<typ>.def, <typ>.sel <typ>.cfnm, <typ>.todo" \
 	     "<typ>_MVF.found, <typ>_MVF.spat, <typ>_MVF.rmpat" \
 	     "<typ>_MV.sed, <typ>_MV.rcs, <typ>_MV.found")
