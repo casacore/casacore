@@ -623,8 +623,10 @@ void MSRange::minMax(Matrix<Float>& minmax,
     if (start==0) {
       minmax.row(0)=minf; minmax.row(1)=maxf;
     } else {
-      minmax.row(0)=::min(minmax.row(0),minf);
-      minmax.row(1)=::max(minmax.row(1),maxf);
+      minmax.row(0)=::min(static_cast<Array<Float> >(minmax.row(0)),
+			  static_cast<Array<Float> >(minf));
+      minmax.row(1)=::max(static_cast<Array<Float> >(minmax.row(1))
+			  ,static_cast<Array<Float> >(maxf));
     }
   }
 }
