@@ -84,6 +84,7 @@ template <class M, class F, class MC> class MeasConvert;
 //  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates
 //  <li>MDirection::ITRF -- coordinates wrt ITRF Earth frame
+//  <li>MDirection::APP ---- apparent topocentric position
 //  <li>MDirection::MERCURY -- the planet: has no data attached
 //  <li>MDirection::VENUS
 //  <li>MDirection::MARS
@@ -115,7 +116,7 @@ template <class M, class F, class MC> class MeasConvert;
 // planetary ephemeris (J system; for B sytem older expansions) for the
 // <linkto class=Aberration>aberration</linkto> and the 
 // <linkto class=SolarPos>solar position</linkto>.<br>
-// The <em>APP</em> position has corrections for polar motion and the
+// The <em>HADEC</em> position has corrections for polar motion and the
 // equation of equinoxes; the <em>AZEL</em> will include Earth tides and
 // refraction at a later stage.<br>
 // Note that conversion between B1950 and J2000 can only be approximate, and is
@@ -186,6 +187,7 @@ public:
       TECLIPTIC,
       SUPERGAL,
       ITRF,
+      TOPO,
       N_Types,
       // Planets. First one should be Mercury
       MERCURY = 32,
