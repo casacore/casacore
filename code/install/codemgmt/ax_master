@@ -2651,3 +2651,4 @@
 10 010 src mv aips/implement/Measures/RotMatrix.cc aips/implement/Quanta/RotMatrix.cc
 10 010 src mv aips/implement/Measures/RotMatrix.h aips/implement/Quanta/RotMatrix.h
 10 010 src mv aips/implement/Measures/test/dMUString.cc aips/implement/Quanta/test/dMUString.cc
+10 010 src mv aips/implement/Measures/test/tQuantum.cc aips/implement/Quanta/test/tQuantum.cc
