@@ -4472,3 +4472,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSAntenna.cc aips/implement/MeasurementSets/MSAntenna.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSAntenna.h aips/implement/MeasurementSets/MSAntenna.h
 14 296 src mv aips/implement/MeasurementSets/NewMSAntennaColumns.cc aips/implement/MeasurementSets/MSAntennaColumns.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSAntennaColumns.h aips/implement/MeasurementSets/MSAntennaColumns.h
