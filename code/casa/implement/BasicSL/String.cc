@@ -205,13 +205,14 @@ Int String::gsub(const string &pat, const string &repl) {
   if (length() == 0 || pat.length() == 0 ||
       length() < pat.length()) return nmatches;
   size_type si(0);
+  Int rl(repl.length());
   while (length()-si >= pat.length()) {
     size_type pos = find(pat, si);
     if (pos == npos) break;
     else {
       nmatches++;
       replace(pos, pat.length(), repl);
-      si = pos + repl.length();
+      si = pos + rl;
     };
   };
   return nmatches;
@@ -322,13 +323,14 @@ Int String::gsub(const Regex &pat, const string &repl) {
   if (length() == 0) return nmatches;
   Int pl;
   size_type si(0);
+  Int rl(repl.length());
   while (length() > si) {
     size_type pos = pat.search(c_str(), length(), pl, si);
-    if (pos == npos || pl <=0) break;
+    if (pos == npos || pl <= 0) break;
     else {
       nmatches++;
       replace(pos, pl, repl);
-      si = pos + pl;
+      si = pos + rl;
     };
   };
   return nmatches;
