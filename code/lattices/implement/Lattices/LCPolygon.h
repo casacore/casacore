@@ -32,6 +32,9 @@
 #include <trial/Lattices/LCRegionFixed.h>
 #include <aips/Arrays/Vector.h>
 
+//# Forward Declarations
+template<class T> class Matrix;
+
 
 // <summary>
 // Define a 2-dimensional region by a polygon.
@@ -151,6 +154,9 @@ private:
 
     // Define the mask to indicate which elements are inside the polygon.
     void defineMask();
+
+    // Fill a line in the mask between y1 and y2.
+    void fillLine (Matrix<Bool>& mask, Int x, Int y1, Int y2);
 
     
     Vector<Float> itsX;
