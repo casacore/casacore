@@ -1,5 +1,5 @@
 //# ExprFuncNode.h: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,6 +52,10 @@ class TableExprNodeSet;
 // This class represents a function in a table select tree.
 // The <src>rownumber</src> function is represented by class
 // <linkto class=TableExprNodeRownr>TableExprNodeRownr</linkto>.
+// The <src>rowid</src> function is represented by class
+// <linkto class=TableExprNodeRowid>TableExprNodeRowid</linkto>.
+// The <src>rand</src> function is represented by class
+// <linkto class=TableExprNodeRandom>TableExprNodeRandom</linkto>.
 // <p>
 // When one wants to add a function to the table selection grammar,
 // the following has to be done:
@@ -160,6 +164,8 @@ public:
 	randFUNC,
             // special function to select on row number
 	rownrFUNC,
+            // special function to return row id (meant for GIVING)
+	rowidFUNC,
 	NRFUNC      //# should be last
 	};
 

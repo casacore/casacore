@@ -1,5 +1,5 @@
 //# ExprFuncNode.cc: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -858,6 +858,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     switch (fType) {
     case randFUNC:
     case rownrFUNC:
+    case rowidFUNC:
     case piFUNC:
     case eFUNC:
 	checkNumOfArg (0, 0, nodes);
