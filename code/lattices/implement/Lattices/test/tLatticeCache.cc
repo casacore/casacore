@@ -1,5 +1,5 @@
 //# tLattice.cc:  test the Lattice class
-//# Copyright (C) 1994,1995,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Polynomial.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Lattices/PagedArray.h>
