@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -991,6 +991,8 @@
 // For example, if a column uses the tiled storage manager,
 // it is not possible to delete rows from the table, because that storage
 // manager will not support deletion of rows.
+// However, it is always possible to delete all columns of a data
+// manager in one single call.
 // </note>
 
 // <A NAME="Tables:TiledStMan">
@@ -1029,7 +1031,7 @@
 //             and has coordinate columns "Time", "Baseline", "Frequency",
 //             and "Polarization".
 //        <dt> Id columns
-//        <dd> are needed when the data columns use more than one hypercube.
+//        <dd> are needed when TiledDataStMan is used.
 //             Different rows in the data columns can be stored in different
 //             hypercube. The values in the id column(s) uniquely identify
 //             the hypercube a row is stored in.
@@ -1054,9 +1056,6 @@
 //  <li> Each hypercube can be tiled in its own way. It is not required
 //       that an integer number of tiles fits in the hypercube. The last
 //       tiles will be padded as needed.
-//  <li> When a hypercolumn consists of multiple hypercubes, one or more id
-//       columns have to be defined to be able to differentiate between them.
-//       All rows in the same hypercube have to have the same id values.
 //  <li> The last axis of a hypercube can be extensible. This means that
 //       the size of that axis does not need to be defined when the
 //       hypercube is defined in the storage manager. Instead, the hypercube
