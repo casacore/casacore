@@ -92,34 +92,34 @@ int main()
 // Test constructors
 
     {
-       Table table = makeScrTable(String("temp_tPagedImage.img1"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img1"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
     }
     {
        PagedImage<Float> pIm(tiledShape, cSys, 
-                             String("temp_tPagedImage.img2"));
+                             String("tPagedImage_tmp.img2"));
     }
-    Table::deleteTable(String("temp_tPagedImage.img2"));
+    Table::deleteTable(String("tPagedImage_tmp.img2"));
     {
        PagedImage<Float> pIm(tiledShape, cSys, 
-                             String("temp_tPagedImage.img3"),
+                             String("tPagedImage_tmp.img3"),
                              TableLock(TableLock::AutoLocking));
     }
-    Table::deleteTable(String("temp_tPagedImage.img3"));
+    Table::deleteTable(String("tPagedImage_tmp.img3"));
     {
-       Table table = makeScrTable(String("temp_tPagedImage.img4"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img4"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
        PagedImage<Float> pIm2(table);
     }
     {
-       Table table = makeNewTable(String("temp_tPagedImage.img5"));
+       Table table = makeNewTable(String("tPagedImage_tmp.img5"));
        PagedImage<Float> pIm(tiledShape, cSys, table);
     }
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
     }
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"),
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"),
                              TableLock(TableLock::AutoLocking));
     }
 //
@@ -127,8 +127,9 @@ int main()
 // this is so
 //
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
        PagedImage<Float> pIm2(pIm);
+       pIm.tempClose();
        pIm.putAt(Float(1.0), IPosition(2,0,0));
        AlwaysAssert( (pIm(IPosition(2,0,0))==Float(1.0)), AipsError);
        pIm2.putAt(Float(10.0), IPosition(2,0,0));
@@ -143,7 +144,7 @@ int main()
 // this is so
 //
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
        PagedImage<Float> pIm2(pIm);
        pIm2 = pIm;
        pIm.putAt(Float(1.0), IPosition(2,0,0));
@@ -161,7 +162,7 @@ int main()
 // They are by reference too.
 //
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
        pIm.putAt(Float(1.0), IPosition(2,0,0));
        AlwaysAssert( (pIm(IPosition(2,0,0))==Float(1.0)), AipsError);
 //
@@ -174,7 +175,7 @@ int main()
        delete lat;
     }
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
        pIm.putAt(Float(1.0), IPosition(2,0,0));
        AlwaysAssert( (pIm.getAt(IPosition(2,0,0))==Float(1.0)), AipsError);
 //
@@ -191,22 +192,22 @@ int main()
 // Test some miscellaneous little things
 //
     {
-       PagedImage<Float> pIm(String("temp_tPagedImage.img5"));
+       PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
 //
-       AlwaysAssert(imagePixelType(String("temp_tPagedImage.img5"))==TpFloat,   // Global function
+       AlwaysAssert(imagePixelType(String("tPagedImage_tmp.img5"))==TpFloat,   // Global function
                     AipsError);
-       AlwaysAssert(pIm.name(True)==String("temp_tPagedImage.img5"),
+       AlwaysAssert(pIm.name(True)==String("tPagedImage_tmp.img5"),
                     AipsError);
        cout << "Absolute name = " << pIm.name(False) << endl;
        AlwaysAssert(pIm.isPaged(), AipsError);
        AlwaysAssert(pIm.isWritable(), AipsError);
        AlwaysAssert(pIm.ok(), AipsError);
 //
-       pIm.rename(String("temp_tPagedImage.img6"));
-       AlwaysAssert(pIm.name(True)==String("temp_tPagedImage.img6"),
+       pIm.rename(String("tPagedImage_tmp.img6"));
+       AlwaysAssert(pIm.name(True)==String("tPagedImage_tmp.img6"),
                     AipsError);
-       pIm.rename(String("temp_tPagedImage.img5"));
-       AlwaysAssert(pIm.name(True)==String("temp_tPagedImage.img5"),
+       pIm.rename(String("tPagedImage_tmp.img5"));
+       AlwaysAssert(pIm.name(True)==String("tPagedImage_tmp.img5"),
                     AipsError);
 //
        AlwaysAssert(pIm.rowNumber()==0, AipsError);
@@ -232,6 +233,7 @@ int main()
           throw(AipsError("Resize did not fail. This was unexpected"));
        }
 //
+       pIm.tempClose();
        Unit units("Jy");
        pIm.setUnits(units);
        AlwaysAssert(pIm.units().getName()=="Jy", AipsError);
@@ -239,7 +241,9 @@ int main()
        TableRecord rec;
        rec.define("x", Double(1.0));
        rec.define("y", Double(2.0));
+       pIm.tempClose();
        pIm.setMiscInfo(rec);
+       pIm.tempClose();
        TableRecord rec2 = pIm.miscInfo();
        AlwaysAssert(rec2.nfields()==2, AipsError);
        AlwaysAssert(rec2.isDefined("x"), AipsError);
@@ -280,12 +284,12 @@ int main()
        AlwaysAssert(info.restoringBeam()(1)==a2, AipsError);
        AlwaysAssert(info.restoringBeam()(2)==a3, AipsError);
      }
-     Table::deleteTable(String("temp_tPagedImage.img5"));
+     Table::deleteTable(String("tPagedImage_tmp.img5"));
 //
 // do{Put,Get}Slice tests
 //
     {
-       Table table = makeScrTable(String("temp_tPagedImage.img7"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img7"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -346,7 +350,7 @@ int main()
 // Silly Lattice addition operator
 //
     {
-       Table table = makeScrTable(String("temp_tPagedImage.img8"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img8"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -379,7 +383,7 @@ int main()
 // apply functions
 //
    {
-       Table table = makeScrTable(String("temp_tPagedImage.img9"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img9"));
        IPosition shape2(2,5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -415,7 +419,7 @@ int main()
 // test table function.  I don't really know what else to do with it.
 //
    {
-       Table table = makeScrTable(String("temp_tPagedImage.img11"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img11"));
        IPosition shape2(2, 5, 10);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
@@ -423,7 +427,7 @@ int main()
        pIm.set(1.0);
 //
        Table t = pIm.table();
-       AlwaysAssert(t.tableName() == String("temp_tPagedImage.img11"),
+       AlwaysAssert(t.tableName() == String("tPagedImage_tmp.img11"),
                     AipsError);
 
    }
@@ -431,7 +435,7 @@ int main()
 // Do some iterating to test the makeIter function (indirectly)
 //
    {
-       Table table = makeScrTable(String("temp_tPagedImage.img10"));
+       Table table = makeScrTable(String("tPagedImage_tmp.img10"));
        IPosition shape2(2, 128, 256);
        TiledShape tiledShape2(shape2);
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
