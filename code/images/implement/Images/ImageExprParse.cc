@@ -241,6 +241,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return min(arg1);
     } else if (itsSval == "max") {
 	return max(arg1);
+    } else if (itsSval == "median") {
+	return median(arg1);
     } else if (itsSval == "mean") {
 	return mean(arg1);
     } else if (itsSval == "variance") {
