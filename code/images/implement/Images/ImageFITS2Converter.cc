@@ -368,19 +368,14 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		break;
 	    case TpString:
 		if (miscname.contains("date") && miscname != "date") {
-		    // Try to canonicalize dates
-		    MVTime time;
-		    MEpoch::Types sys;
+		    // Try to canonicalize dates (i.e. solve Y2K)
+		    String outdate;
 		    // We only need to convert the date, the timesys we'll just
 		    // copy through
-		    if (FITSDateUtil::fromFITS(time, sys, 
-					       image.miscInfo().asString(i),
-					       "")) {
-			
-			String date, timesys;
-			FITSDateUtil::toFITS(date, timesys, time);
+		    if (FITSDateUtil::convertDateString(outdate, 
+					image.miscInfo().asString(i))) {
 			// Conversion worked - change the header
-			header.define(miscname, date);
+			header.define(miscname, outdate);
 		    } else {
 			// conversion failed - just copy the existing date
 			header.define(miscname, image.miscInfo().asString(i));
@@ -450,6 +445,29 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	return False;
     }
 
+    // HISTORY
+    if (image.logSink().localSink().isTableLogSink()) {
+	const TableLogSink &logTable = 
+	    image.logSink().localSink().castToTableLogSink();
+	Vector<String> historyChunk;
+	uInt nstrings;
+	Bool aipsppFormat;
+	uInt firstLine = 0;
+	while (1) {
+	    firstLine = FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat, 
+						   nstrings, firstLine,
+						   logTable);
+	    if (nstrings == 0) {
+		break;
+	    }
+	    String groupType;
+	    if (aipsppFormat) {
+		groupType = "LOGTABLE";
+	    }
+	    FITSHistoryUtil::addHistoryGroup(kw, historyChunk, nstrings,
+					     groupType);
+	}
+    }    
     // END
     kw.end();
 

@@ -165,6 +165,25 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 
     newImage->setMiscInfo(header);
 
+    // Restore the logtable from HISTORY (this could be moved to non-templated
+    // code.
+    if (newImage->logSink().localSink().isTableLogSink()) {
+	TableLogSink &logTable = 
+	    newImage->logSink().localSink().castToTableLogSink();
+	Vector<String> lines;
+	String groupType;
+	ConstFitsKeywordList kw = fitsImage.kwlist();
+	kw.first();
+	uInt n;
+	while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=
+	       0) {
+	    if (groupType == "LOGTABLE") {
+		FITSHistoryUtil::fromHISTORY(logTable, lines, n, True);
+	    } else if (groupType == "") {
+		FITSHistoryUtil::fromHISTORY(logTable, lines, n, False);
+	    }
+	}
+    }
 
     // Cool, now we just need to write it.
     IPosition cursorShape(ndim), cursorOrder(ndim);
