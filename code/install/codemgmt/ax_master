@@ -5878,3 +5878,4 @@
 16 273 sys rm libexec/dishplot_zoom.g
 16 273 sys rm libexec/sdimager.g
 16 273 sys rm libexec/sdimager_meta.g
+16 273 sys rm libexec/dish_ranges.g
