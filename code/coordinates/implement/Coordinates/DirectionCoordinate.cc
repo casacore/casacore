@@ -1352,6 +1352,7 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
     mix_vstep = 1.0;
     mix_viter = 2;
+    prjprm_p->flag = -1;
     int iret = wcsmix(c_ctype_p, wcs_p, mixpix, mixcel, mix_vspan, 
                       mix_vstep, mix_viter, 
                       mix_world, c_crval_p, celprm_p, &mix_phi, &mix_theta, 
@@ -1669,3 +1670,46 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 }
 
 
+Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
+                                        Vector<Double>& worldMax,
+                                        const IPosition& shape) const
+{
+   const uInt n = shape.nelements();
+   if (n!=nPixelAxes()) {
+      set_error("Shape has must be of length nPixelAxes");
+      return False;
+   }
+//
+   worldMin.resize(2);
+   worldMax.resize(2);
+   Vector<Double> cdelt = increment();
+
+// Find centre of image
+
+   Vector<Double> pixel(2);
+   Vector<Double> world(2);
+   pixel(0) = shape(0) / 2.0;
+   pixel(1) = shape(1) / 2.0;
+   if (!toWorld(world, pixel)) {
+      worldMin(0) = -180.0/to_degrees_p[0];     //long
+      worldMin(1) =  -90.0/to_degrees_p[1];     //lat
+      worldMax(0) =  180.0/to_degrees_p[0];     //long
+      worldMax(1) =   90.0/to_degrees_p[1];     //lat
+      return False;
+   }
+//
+   Int nLon = shape(0) + Int(0.5*shape(0));
+   Double cosdec = cos(world(1) * to_radians_p[1]);
+   worldMin(0) = world(0) - abs(cdelt(0))*nLon/2/cosdec;    // long
+   worldMin(0) = max(worldMin(0), -180.0/to_degrees_p[0]);
+   worldMax(0) = world(0) + abs(cdelt(0))*nLon/2/cosdec;    
+   worldMax(0) = min(worldMax(0),  180.0/to_degrees_p[0]);
+//
+   Int nLat = shape(1) + Int(0.5*shape(1));
+   worldMin(1) = world(1) - abs(cdelt(1))*nLat/2;           // lat
+   worldMin(1) = max(worldMin(1), -90.0/to_degrees_p[1]);
+   worldMax(1) = world(1) + abs(cdelt(1))*nLat/2;
+   worldMax(1) = min(worldMax(1),  90.0/to_degrees_p[1]);
+//
+   return True;
+}

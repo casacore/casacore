@@ -1090,13 +1090,13 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
             pixel_tmps_p[i]->operator()(j) = 
                pixel_replacement_values_p[i]->operator()(j);
 // 
-// Here I assume nPixelAxes=nWorldAxes and the order
-// is the same. This is the truth as far as I know it.
+// Here I assume nPixelAxes=nWorldAxes for the specific coordinate 
+// and the order is the same. This is the truth as far as I know it.
 //
                pixelAxes_tmps_p[i]->operator()(j) = !worldAxes_tmps_p[i]->operator()(j);    
          }
       }
-
+//
       if (!coordinates_p[i]->toMix(*(worldOut_tmps_p[i]), *(pixelOut_tmps_p[i]),
 		       *(world_tmps_p[i]), *(pixel_tmps_p[i]),
                        *(worldAxes_tmps_p[i]), *(pixelAxes_tmps_p[i]), 
@@ -4026,3 +4026,49 @@ StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, In
 //  
    return StokesCoordinate(newStokes);
 }
+
+
+Bool CoordinateSystem::setMixRanges (Vector<Double>& worldMin,
+                                     Vector<Double>& worldMax,
+                                     const IPosition& shape) const
+{
+   const uInt nWorld = nWorldAxes();
+
+// Only for DirectionCoordinate are the ranges ever used
+
+   worldMin.resize(nWorld);
+   worldMax.resize(nWorld);
+//
+   const uInt nCoord = nCoordinates();
+   for (uInt i=0; i<nCoord; i++) {
+
+// Set shape for this coordinate
+
+      Vector<Int> pA = pixelAxes(i);
+      const Coordinate& coord = coordinate(i);
+      IPosition shape2(coord.nPixelAxes());
+      for (uInt j=0; j<shape2.nelements(); j++) shape2(j) = shape(pA(j));
+
+// Find range for this coordinate
+
+      Vector<Double> wMin, wMax;
+      if (!coord.setMixRanges (wMin, wMax, shape2)) {
+         set_error(coord.errorMessage());
+         worldMin.resize(0);
+         worldMax.resize(0);
+         return False;
+      }
+
+// Copy to output
+
+      Vector<Int> wA = worldAxes(i);
+      for (uInt j=0; j<wA.nelements(); j++) {
+         if (wA(j) != -1) {
+            worldMin(wA(j)) = wMin(j);
+            worldMax(wA(j)) = wMax(j);
+         }
+      }
+   }
+   return True;
+}
+

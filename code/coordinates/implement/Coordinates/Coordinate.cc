@@ -691,5 +691,20 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
    world += referenceValue();
 }
 
-
+Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
+                               Vector<Double>& worldMax,
+                               const IPosition& shape) const
+{
+   const uInt n = shape.nelements();
+   if (n!=nPixelAxes()) {
+      set_error("Shape has must be of length nPixelAxes");
+      return False;
+   }
+//
+   worldMin.resize(n);
+   worldMax.resize(n);
+   worldMin = -1.0e99;
+   worldMax =  1.0e99;
+   return True;
+}
 

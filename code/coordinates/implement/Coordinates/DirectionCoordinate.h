@@ -41,6 +41,7 @@ class celprm;
 class prjprm;
 class MVDirection;
 class MVAngle;
+class LogIO;
 template<class T> class Quantum;
 
 
@@ -348,6 +349,14 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
+    // Set the world min and max ranges, for use in toMix, for 
+    // a lattice of the given shape (for this coordinate).
+    // The output vectors are resized.
+    //  Returns False if fails with a reason in <src>errorMessage()</src>
+    virtual Bool setMixRanges (Vector<Double>& worldMin,
+                               Vector<Double>& worldMax,
+                               const IPosition& shape) const;
+
     // A convenient way to turn the world vector into an MDirection or MVDirection 
     // for further processing in the Measures system.  
     //
@@ -569,4 +578,3 @@ private:
 };
 
 #endif
-

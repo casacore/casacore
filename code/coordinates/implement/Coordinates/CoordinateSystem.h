@@ -421,6 +421,20 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
+    // Set the world min and max ranges, for use in toMix, for
+    // a lattice of the given shape for this coordinate. The output
+    // vectors are resized.    Returns False if fails with a reason
+    // in <src>errorMessage()</src>.  The idea is that for a given
+    // image, you can set the range so that the mixed conversions
+    // will be faster (they are done iteratively) and less likely
+    // to suffer from ambiguity from degenerate solutions.  The
+    // range is set so that you shouold be able to do a mixed
+    // conversion with any world or pixel coordinate contained
+    // within the image.
+    virtual Bool setMixRanges (Vector<Double>& worldMin,
+                               Vector<Double>& worldMax,
+                               const IPosition& shape) const;
+
     // Make absolute coordinates relative and vice-versa    
     //<group>
     virtual void makePixelRelative (Vector<Double>& pixel) const;
