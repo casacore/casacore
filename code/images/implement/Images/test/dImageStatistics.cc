@@ -1,5 +1,5 @@
 //# dImageStatistics.cc: image statistics program
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -252,8 +252,7 @@ try {
 // Do the work
 
    DataType imageType = imagePixelType(in);
-
-
+//
    if (imageType==TpFloat) {
       
 // Construct image
@@ -405,6 +404,77 @@ try {
      stats.setNewImage(inImage);
      if (!stats.display()) {
         os << stats.errorMessage() << LogIO::POST;
+     }
+   } else if (imageType==TpComplex) {
+
+// COnstruct image
+   
+      PagedImage<Complex> inImage(in, True);
+      SubImage<Complex>* pSubImage2 = 0;
+
+      if (validInputs(REGION)) {
+         LCBox::verify(blc, trc, inc, inImage.shape());
+         cout << "Selected region : " << blc+1<< " to "
+              << trc+1 << endl;
+         const LCSlicer region(blc, trc);
+//
+         SubImage<Complex>* pSubImage = 0;
+         if (inImage.isMasked()) {
+            ImageRegion mask = 
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);            
+            pSubImage = new SubImage<Complex>(inImage, mask);
+         } else {
+            pSubImage = new SubImage<Complex>(inImage);
+         }
+         pSubImage2 = new SubImage<Complex>(*pSubImage, ImageRegion(region));
+         delete pSubImage;
+      } else {
+         if (inImage.isMasked()) {
+            ImageRegion mask = 
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);            
+            pSubImage2 = new SubImage<Complex>(inImage, mask);
+         } else {
+            pSubImage2 = new SubImage<Complex>(inImage);
+         }
+      }
+
+// Construct statistics object
+   
+      ImageStatistics<Complex> stats(*pSubImage2, os, True, forceDisk);
+
+  
+// Clean up SUbImage pointers
+
+      Int nDim = pSubImage2->ndim();
+      if (pSubImage2!=0) delete pSubImage2;
+
+
+// Set state
+      if (validInputs(AXES)) {
+         if (!stats.setAxes(cursorAxes)) {
+            os << stats.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
+      if (!stats.setList(doList)) {
+         os << stats.errorMessage() << LogIO::POST;
+         exit(1);
+      }
+      if (validInputs(PLOTTING)) {
+         PGPlotter plotter(device);
+         if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
+            os << stats.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
+
+// Display statistics
+
+     if (!stats.display()) {
+        os << stats.errorMessage() << LogIO::POST;
+        exit(1);
      }
    } else {
       os << LogIO::NORMAL << "images of type " << Int(imageType)
