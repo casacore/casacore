@@ -51,7 +51,7 @@ template <class T> class Vector;
 //
 // <synopsis>
 // A <src>Function</src> is used for classes which map an n-dimensional a
-// scalar or n-dimensional Vector of type <src>T</src> into a <src>T>/src>.
+// scalar or n-dimensional Vector of type <src>T</src> into a <src>T</src>.
 // The object also has zero or more parameters which can be masked
 // if necessary, and be used in the <src>Fitting</src> module, and, implicitly,
 // in the <linkto class=AutoDiff>AutoDiff</linkto> differentiation module.
@@ -69,10 +69,96 @@ template <class T> class Vector;
 // These calls are (in debug mode) tested for correct number of arguments,
 // after which they call a <src>T eval(FunctionArg x) const = 0</src> to
 // be implemented in derived classes. The derived class should also implement 
-// an <src>uInt ndim() const</src>.
+// an <src>uInt ndim() const = 0</src>. The derived class can access the
+// nth parameter with <src>parameter(n)</src>, or, probably, <src>[n]</src>.
+// The variables are referenced with <src>x[i]</src>.
 //
 // </synopsis>
+
+// <example>
+// A complete implementation of say an <src>A.sin(2pi.f.x)</src> with
+// parameters amplitude(<em>A</em>) and frequency(<em>f</em>) and variable
+// time(<em>x</em>) could be:
+// <srcblock>
+//   //# Sinusoid.h
+//   #include <aips/aips.h>
+//   #include <trial/Functionals/Function.h>
+//   #include <aips/Mathematics/Constants.h>
+//   #include <aips/Mathematics/Math.h>
+//   // The sinusoid class
+//   template<class T> class Sinusoid : public Function<T> {
+//    public:
+//     // For easy reference the parameters
+//     enum { AMPL=0, FREQ };
+//     // Constructors. Defaults are A=1, f=1
+//     Sinusoid() : Function<T>(2) {
+//         parameter(AMPL) = T(1.0); parameter(FREQ) = T(1.0); }
+//     explicit Sinusoid(const T &ampl) : Function<T>(2) {
+//         parameter(AMPL) = ampl; parameter(FREQ) = T(1.0); }
+//     Sinusoid(const T &ampl, const T &freq) : Function<T>(2) {
+//         parameter(AMPL) = ampl; parameter(FREQ) = freq; }
+//     Sinusoid(const Sinusoid &other) : Function<T>(2) {
+//         parameter(AMPL) = other.parameter(AMPL);
+//         parameter(FREQ) = other.parameter(FREQ); }
+//     Sinusoid<T> &operator=(const Sinusoid<T> &other) {
+//         if (this != &other) FunctionParam<T>::operator=(*this);
+//         return *this; }
+//     virtual ~Sinusoid() {};
+//     // Dimensionality
+//     virtual uInt ndim() const { return 2; };
+//     // Evaluate
+//     virtual T eval(Function<T>::FunctionArg x) const {
+//	  return parameter(AMPL)*sin(T(C::_2pi)*parameter(FREQ)*x[0]); };
+//     // Copy it
+//     virtual Function<T> *clone() const { return new Sinusoid<T>(*this); };
+//   };
+// </srcblock>
+// The following will calculate the value and the derivative for 
+// <src>A=2; f=3; x=0.1;</src>
+// <srcblock>
+//     // The function objects for value, and for value + derivative
+//     Sinusoid<Double> soid1(2.0, 3.0);
+//     typedef AutoDiff<Double> Adif;
+//     Sinusoid<Adif> soid2(Adif(2,2,0), Adif(3,2,1));
+//     cout << "Value: " << soid1(0.1) << endl;
+//     cout << "(val, deriv): " << soid2(Adif(0.1)) << endl;
+// </srcblock>
 //
+// A shorter version, where all parameter handling is done at user level
+// could be:
+// <srcblock>
+//   //# Sinusoid.h
+//   #include <aips/aips.h>
+//   #include <trial/Functionals/Function.h>
+//   #include <aips/Mathematics/Constants.h>
+//   #include <aips/Mathematics/Math.h>
+//   template<class T> class Sinusoid : public Function<T> {
+//    public:
+//     enum { AMPL=0, FREQ };
+//     Sinusoid() : Function<T>(2){parameter(AMPL) T(1);parameter(FREQ)=T(1);}
+//     virtual ~Sinusoid() {};
+//     virtual uInt ndim() const { return 2; };
+//     virtual T eval(Function<T>::FunctionArg x) const {
+//	  return parameter(AMPL)*sin(T(C::_2pi)*parameter(FREQ)*x[0]); };
+//     virtual Function<T> *clone() const { return new Sinusoid<T>(*this); };
+//   };
+// </srcblock>
+// The following will calculate the value and the derivative for 
+// <src>A=2; f=3; x=0.1;</src>
+// <srcblock>
+//     // The function objects for value, and for value + derivative
+//     typedef AutoDiff<Double> Adif;
+//     typedef Function<Double> FD;
+//     typedef Function<AutoDiff<Double> > FAdif
+//     Sinusoid<Double> soid1;
+//     soid1.parameter(FD::AMPL) = 2; soid1.parameter(FD::FREQ) = 3;
+//     soid2.parameter(FAdif::AMPL) = Adif(2,2,0);
+//     soid2.parameter(FAdif::FREQ) = Adif(3,2,1);
+//     cout << "Value: " << soid1(0.1) << endl;
+//     cout << "(val, deriv): " << soid2(Adif(0.1)) << endl;
+// </srcblock>
+// </example>
+
 // <motivation>
 // A function of more than one variable was required for a function which
 // represents the sky brightness. Adjustable parameters were required for
