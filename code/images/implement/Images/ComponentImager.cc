@@ -1,5 +1,5 @@
 //# ComponentImager.cc:  this defines ComponentImager which modifies images by ComponentLists
-//# Copyright (C) 1999,2000,2001
+//# Copyright (C) 1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,6 +62,7 @@
 #include <trial/Images/ImageInfo.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <aips/iostream.h>
 
 void ComponentImager::project(ImageInterface<Float>& image, const ComponentList& list) 
 {
