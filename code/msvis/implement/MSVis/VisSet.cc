@@ -295,39 +295,48 @@ void VisSet::addColumns(Table& tab)
     // get the hypercube ids, sort them, remove the duplicate values
     ScalarColumn<Int> hypercubeId(tab,dataHypercubeId);
     Vector<Int> ids=hypercubeId.getColumn();
+    Vector<Int> hId=hypercubeId.getColumn();
     Int nId=genSort(ids,Sort::QuickSort+Sort::NoDuplicates);
     ids.resize(nId,True); // resize and copy values
     Vector<Bool> cubeAdded(nId,False);
-    Record values1; values1.define("MODEL_HYPERCUBE_ID",hypercubeId(0));
-    Record values2; values2.define("CORRECTED_HYPERCUBE_ID",hypercubeId(0));
-    Record values3; values3.define("IMAGING_WT_HYPERCUBE_ID",hypercubeId(0));
+    Record values1,values2,values3;
     Int cube;
-    for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(0)) break;
     Int nRow=tab.nrow();
+    Int count=0; // track how many rows with the same id value we've seen
     for (Int i=0; i<nRow; i++) {
-      // add new hypercube
-      if (i>0 && hypercubeId(i)!=hypercubeId(i-1)) {
-	values1.define("MODEL_HYPERCUBE_ID",hypercubeId(i));
-	values2.define("CORRECTED_HYPERCUBE_ID",hypercubeId(i));
-	values3.define("IMAGING_WT_HYPERCUBE_ID",hypercubeId(i));
-	for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(i)) break;
+      Bool last = (i==(nRow-1));
+      // switch hypercubes (or define initial one)
+      if (i==0 || hId(i)!=hId(i-1) || last) {
+	if (last && hId(i)==hId(i-1)) count++;
+	if (count>0) {
+	  modelDataAccessor.extendHypercube(count,values1);
+	  corrDataAccessor.extendHypercube(count,values2);
+	  imWtAccessor.extendHypercube(count,values3);
+	  count=0;
+	}
+	values1.define("MODEL_HYPERCUBE_ID",hId(i));
+	values2.define("CORRECTED_HYPERCUBE_ID",hId(i));
+	values3.define("IMAGING_WT_HYPERCUBE_ID",hId(i));
+	for (cube=0; cube<nId; cube++) if (ids(cube)==hId(i)) break;
+
+	// add new hypercube
+	if (!cubeAdded(cube)) {
+	  // if the last row is in separate cube, create row now
+	  Int initialSize = (last ? 1 : 0); 
+	  cubeAdded(cube)=True;
+	  Int numCorr=od->shape(i)(0);
+	  Int numChan=od->shape(i)(1);
+	  Int tileSize=numChan/10+1;
+	  IPosition cubeShape(3,numCorr,numChan,initialSize);
+	  IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
+	  IPosition cubeShapeWt(2,numChan,initialSize);
+	  IPosition tileShapeWt(2,tileSize,16384/tileSize);
+	  modelDataAccessor.addHypercube(cubeShape,tileShape,values1);
+	  corrDataAccessor.addHypercube(cubeShape,tileShape,values2);
+	  imWtAccessor.addHypercube(cubeShapeWt,tileShapeWt,values3);
+	}
       }
-      if (!cubeAdded(cube)) {
-	cubeAdded(cube)=True;
-	Int numCorr=od->shape(i)(0);
-	Int numChan=od->shape(i)(1);
-	Int tileSize=numChan/10+1;
-	IPosition cubeShape(3,numCorr,numChan,0);
-	IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
-	IPosition cubeShapeWt(2,numChan,0);
-	IPosition tileShapeWt(2,tileSize,16384/tileSize);
-	modelDataAccessor.addHypercube(cubeShape,tileShape,values1);
-	corrDataAccessor.addHypercube(cubeShape,tileShape,values2);
-	imWtAccessor.addHypercube(cubeShapeWt,tileShapeWt,values3);
-      }
-      modelDataAccessor.extendHypercube(1,values1);
-      corrDataAccessor.extendHypercube(1,values2);
-      imWtAccessor.extendHypercube(1,values3);
+      count++;
     }
     delete od;
   } else {
