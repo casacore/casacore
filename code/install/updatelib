@@ -334,19 +334,26 @@
            $AR x ../$PCKGLIBR
            rm -f __.SYMDEF
 
+	   SHRFAILD=""
            $LD -o $PCKGSHAR $LDSOPTS *
+
            if [ "$?" != 0 ]
            then
-              echo "updatelib: Sharable object rebuild failed, abort!" 1>&2
+              echo "updatelib: Sharable object rebuild failed!" 1>&2
+	      echo "updatelib: Only updating static libraries." 1>&2
               cd ..
               rm -rf BLDSHR.*
-              exit 2
+	      SHRFAILD=true
+#               exit 2
            fi
 
-           chmod 775 $PCKGSHAR
-           mv $PCKGSHAR ..
-           cd ..
-           rm -rf BLDSHR.*
+	   if [ "$SHRFAILD" = "" ]
+	   then
+	      chmod 775 $PCKGSHAR
+	      mv $PCKGSHAR ..
+	      cd ..
+	      rm -rf BLDSHR.*
+	   fi
            ;;
         *)
 #          Sharable libraries not implemented for other architectures.
@@ -407,9 +414,13 @@
 
 # Install the updated libraries.
   [ -f dbg/$PCKGLIBR ] && mv -f dbg/$PCKGLIBR $AIPSARCH/libdbg
-  [ -f dbg/$PCKGSHAR ] && mv -f dbg/$PCKGSHAR $AIPSARCH/libdbg
   [ -f opt/$PCKGLIBR ] && mv -f opt/$PCKGLIBR $AIPSARCH/lib
-  [ -f opt/$PCKGSHAR ] && mv -f opt/$PCKGSHAR $AIPSARCH/lib
+
+  if [ "$SHRFAILD" = "" ]
+  then
+     [ -f dbg/$PCKGSHAR ] && mv -f dbg/$PCKGSHAR $AIPSARCH/libdbg
+     [ -f opt/$PCKGSHAR ] && mv -f opt/$PCKGSHAR $AIPSARCH/lib
+  fi
 
 # Delete object libraries which are not being maintained.
   case $LANGUAGE in
