@@ -28,6 +28,7 @@
 #include <trial/ComponentModels/Flux.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
@@ -247,7 +248,7 @@ convertPol(ComponentType::Polarisation pol) {
     default:
       throw(AipsError("FluxRep<T>::convertPol(...) - bad polarisation type"));
     };
-    if (!allNearAbs(itsErrors, NumericTraits<T>::ConjugateType(0,0), 
+    if (!allNearAbs(itsErr, NumericTraits<T>::ConjugateType(0,0), 
 		    C::dbl_epsilon)) {
       LogIO logErr(LogOrigin("FluxRep", "convertPol()"));
       logErr << LogIO::WARN 
