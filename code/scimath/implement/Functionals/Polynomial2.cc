@@ -52,9 +52,7 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
   // derivatives
   T dev(1);
   for (uInt i=0; i<nparameters(); ++i) {
-    for (uInt j=0; j<param_p[i].nDerivatives(); j++) {
-      tmp.deriv(j) += dev*param_p[i].deriv(j);
-    };
+    if (param_p.mask(i)) tmp.deriv(i) = dev;
     dev *= x[0];
   };
   return tmp;

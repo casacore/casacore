@@ -45,21 +45,15 @@ eval(Function<AutoDiff<T> >::FunctionArg x) const {
   // function value
   tmp.value() = param_p[HEIGHT].value() * exponential;
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
-  // masked parameters should have zero number of derivatives.
   // derivative wrt height
   T dev = exponential;
-  for (uInt j=0; j<param_p[HEIGHT].nDerivatives(); j++) {
-    tmp.deriv(j) += dev*param_p[HEIGHT].deriv(j);
-  };
+  if (param_p.mask(HEIGHT)) tmp.deriv(HEIGHT) = dev;
   // derivative wrt center
-  dev = tmp.value()*x_norm*T(2.0)/param_p[WIDTH].value()/fwhm2int.value();
-  for (uInt j=0; j<param_p[CENTER].nDerivatives(); j++) {
-    tmp.deriv(j) += dev*param_p[CENTER].deriv(j);
-  };
+  dev *= param_p[HEIGHT].value()*x_norm*T(2.0)/param_p[WIDTH].value()/
+    fwhm2int.value();
+  if (param_p.mask(CENTER)) tmp.deriv(CENTER) = dev;
   // derivative wrt width
-  dev = x_norm*dev*fwhm2int.value();
-  for (uInt j=0; j<param_p[WIDTH].nDerivatives(); j++) {
-    tmp.deriv(j) += dev*param_p[WIDTH].deriv(j);
-  };
+  if (param_p.mask(WIDTH)) tmp.deriv(WIDTH) = dev*
+			     x_norm*fwhm2int.value();
   return tmp;
 }

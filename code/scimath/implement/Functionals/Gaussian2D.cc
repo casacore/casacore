@@ -36,13 +36,16 @@ template<class T>
 T NQGaussian2D<T>::eval(Function<T>::FunctionArg x) const {
   T xnorm = x[0] - param_p[XCENTER];
   T ynorm = x[1] - param_p[YCENTER];
-  if (theCpa != T(1.0)) {
-    const T temp = xnorm;
-    xnorm =   theCpa*temp  + theSpa*ynorm;
-    ynorm = - theSpa*temp  + theCpa*ynorm;
+  if (param_p[PANGLE] != thePA) {
+    thePA = param_p[PANGLE];
+    theCpa = cos(thePA);
+    theSpa = sin(thePA);
   };
-  xnorm = xnorm/theXwidth/fwhm2int;
-  ynorm = ynorm/param_p[YWIDTH]/fwhm2int;
+  const T temp(xnorm);
+  xnorm =   theCpa*temp  + theSpa*ynorm;
+  ynorm = - theSpa*temp  + theCpa*ynorm;
+  xnorm /= param_p[YWIDTH]*param_p[RATIO]*fwhm2int;
+  ynorm /= param_p[YWIDTH]*fwhm2int;
   return param_p[HEIGHT]*exp(-(xnorm*xnorm + ynorm*ynorm));
 }
 
