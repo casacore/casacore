@@ -5610,3 +5610,4 @@
 15 240 src mv app_image trial/apps/app_image
 15 249 src rm nrao/apps/vlatoms
 15 249 sys rm bin/vlatoms
+15 249 src rm doc/notes/237.dir
