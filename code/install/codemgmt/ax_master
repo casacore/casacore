@@ -6522,3 +6522,4 @@
 18 590 src mv trial/implement/MeasurementComponents/GJonesTable.cc trial/implement/CalTables/GJonesTable.cc
 18 590 src mv trial/implement/MeasurementComponents/TJonesTable.h trial/implement/CalTables/TJonesTable.h
 18 590 src mv trial/implement/MeasurementComponents/TJonesTable.cc trial/implement/CalTables/TJonesTable.cc
+18 590 src mv trial/implement/MeasurementComponents/BJonesTable.h trial/implement/CalTables/BJonesTable.h
