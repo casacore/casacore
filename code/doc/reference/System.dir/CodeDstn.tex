@@ -275,7 +275,7 @@ Retrieve \aipspp\ source code updates.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{inhale} [\exe{-c}] [\exe{-D}] [\exe{-d}] [\exe{-l}] [\exe{-n}]
+   \code{\exe{inhale} [\exe{-c|-h}] [\exe{-D}] [\exe{-d}] [\exe{-l}] [\exe{-n}]
       [\exe{-r}\#] [\exe{-w}\#]}
 \end{synopsis}
 
@@ -354,6 +354,12 @@ the last slave and code updates (see \exeref{avers}).
    Force a cumulative update.  This should be done regularly (usually once a
    week) to guarantee that the slave copy does not deviate from the master.
 
+\item[\exe{-h}]
+   Perform a hybrid update: retrieve the incremental update files, then
+   invoke \exeref{sneeze} in cumulative mode.  This is useful for
+   minimizing file transfer times when performing cumulative style
+   updates over slow network links.
+
 \item[\exe{-D}]
    Fetch the latest update which has passed the \exeref{testsuite}.
 
@@ -426,6 +432,12 @@ The following resources used by \exe{inhale} should be defined in
    "\code{\_}" to signal the host's default architecture.  The \exe{inhale}
    host's name will be ignored if included in the list (unless an extension is
    specified).
+
+\item
+   \code{inhale.sneeze.\$HOST.rcmd}: The command \exe{inhale} should use
+   to invoke \exeref{sneeze} on remote systems.  Defaults to
+   \unixexe{rsh}.  \unixexe{ssh}, the ``secure shell,'' is one possible
+   alternative.
 \end{itemize}
 
 \subsection*{Notes}
@@ -499,6 +511,7 @@ alternative method is to forward all of \acct{aips2mgr}'s mail via the
 
 The unix manual page for \unixexe{tar}(1).\\
 The unix manual page for \unixexe{cron}(1).\\
+The unix manual page for \unixexe{rsh}(1).\\
 \aipspp\ variable names (\sref{variables}).\\
 Section \sref{Accounts and groups}, \aipspp\ accounts and groups.\\
 \exeref{affirm}, get the Boolean value of a set of arguments.\\
