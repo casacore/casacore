@@ -1,5 +1,5 @@
 //# MCRadialVelocity.cc: MRadialVelocity conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,11 @@ uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
   {MRadialVelocity::LSRD,	MRadialVelocity::GALACTO,	0},
   {MRadialVelocity::GALACTO,	MRadialVelocity::LSRD,		0},
   {MRadialVelocity::LSRK,	MRadialVelocity::BARY,		0},
-  {MRadialVelocity::BARY,	MRadialVelocity::LSRK,		0} };
+  {MRadialVelocity::BARY,	MRadialVelocity::LSRK,		0},
+  {MRadialVelocity::BARY,	MRadialVelocity::LGROUP,	0},
+  {MRadialVelocity::LGROUP,	MRadialVelocity::BARY,	 	0},
+  {MRadialVelocity::BARY,	MRadialVelocity::CMB,		0},
+  {MRadialVelocity::CMB,	MRadialVelocity::BARY,		0} };
 uInt MCRadialVelocity::
 FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
 
@@ -123,6 +127,10 @@ void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
   case GALACTO_LSRD:
   case LSRK_BARY:
   case BARY_LSRK:
+  case LGROUP_BARY:
+  case BARY_LGROUP:
+  case CMB_BARY:
+  case BARY_CMB:
     mc.addFrameType(MeasFrame::DIRECTION);
     break;
 
@@ -292,6 +300,46 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case BARY_LSRK:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
+      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue()/C::c;
+      in = (g2 + g1)/(1 + g2 * g1) * C::c;
+      break;
+
+    case LGROUP_BARY:
+      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue()/C::c;
+      in = (g2 - g1)/(1 - g2 * g1) * C::c;
+      break;
+
+    case BARY_LGROUP:
+      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue()/C::c;
+      in = (g2 + g1)/(1 + g2 * g1) * C::c;
+      break;
+
+    case CMB_BARY:
+      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
+      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue()/C::c;
+      in = (g2 - g1)/(1 - g2 * g1) * C::c;
+      break;
+
+    case BARY_CMB:
+      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);

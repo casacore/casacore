@@ -1,5 +1,5 @@
 //# MCFrequency.h: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ class String;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/10/10">
+// <todo asof="2003/03/03">
 // </todo>
 
 class MCFrequency : public MCBase {
@@ -123,6 +123,10 @@ private:
     GALACTO_LSRD,
     LSRK_BARY,
     BARY_LSRK,
+    BARY_LGROUP,
+    LGROUP_BARY,
+    BARY_CMB,
+    CMB_BARY,
     REST_LSRK,
     LSRK_REST,
     N_Routes };

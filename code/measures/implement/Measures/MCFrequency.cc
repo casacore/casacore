@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,8 +47,12 @@ uInt MCFrequency::ToRef_p[N_Routes][3] = {
   {MFrequency::GALACTO,	MFrequency::LSRD,	0},
   {MFrequency::LSRK,	MFrequency::BARY,	0},
   {MFrequency::BARY,	MFrequency::LSRK,	0},
-  {MFrequency::REST,	MFrequency::LSRK,	2},
-  {MFrequency::LSRK,	MFrequency::REST,	2} };
+  {MFrequency::BARY,	MFrequency::LGROUP,	0},
+  {MFrequency::LGROUP,	MFrequency::BARY,	0},
+  {MFrequency::BARY,	MFrequency::CMB,	0},
+  {MFrequency::CMB,	MFrequency::BARY,	0},
+  {MFrequency::REST,	MFrequency::LSRK,	3},
+  {MFrequency::LSRK,	MFrequency::REST,	3} };
 uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 
 
@@ -124,6 +128,10 @@ void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
   case GALACTO_LSRD:
   case LSRK_BARY:
   case BARY_LSRK:
+  case LGROUP_BARY:
+  case BARY_LGROUP:
+  case CMB_BARY:
+  case BARY_CMB:
     mc.addFrameType(MeasFrame::DIRECTION);
     break;
 
@@ -298,6 +306,46 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case BARY_LSRK:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
+      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue();
+      in = g2*sqrt((1-g1)/(1+g1));
+      break;
+
+    case LGROUP_BARY:
+      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue();
+      in = g2*sqrt((1+g1)/(1-g1));
+      break;
+
+    case BARY_LGROUP:
+      *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
+      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue();
+      in = g2*sqrt((1-g1)/(1+g1));
+      break;
+
+    case CMB_BARY:
+      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
+      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
+		   getMCFramePoint()))->
+	getJ2000(*MVDIR1);
+      g1 = (*MVPOS1 * *MVDIR1) / C::c;
+      g2 = in.getValue();
+      in = g2*sqrt((1+g1)/(1-g1));
+      break;
+
+    case BARY_CMB:
+      *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
 	getJ2000(*MVDIR1);
