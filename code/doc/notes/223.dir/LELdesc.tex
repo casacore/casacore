@@ -872,13 +872,13 @@ LEL only via the Glish interface.
 
 The LEL interface in Glish is provided by the
 \htmlref{Image}{images:image} tool (loaded with the script
-\texttt{image.g}) \htmlref{calc}{images:image.constructor.calc} and
+\texttt{image.g}) \htmlref{imagecalc}{images:image.constructor.imagecalc} and
 \htmlref{expr}{images:image.constructor.expr} constructors, and through
 the \htmlref{calc}{images:image.function.calc} tool function. 
 These constrcutors and functions can be used
 to compose and/or execute a LEL expression.
 
-\medskip\noindent The \texttt{calc} constructor will evaluate the expression and store
+\medskip\noindent The \texttt{imagecalc} constructor will evaluate the expression and store
 the result and mask in an image with the given name.
 
 \medskip\noindent The \texttt{expr} constructor will only form the expression.  It never
@@ -887,7 +887,7 @@ Otherwise it behaves like a normal image.  It is evaluated when actions
 (like \htmlref{statistics}{images:image.statistics}) are done on it. 
 
 \begin{verbatim}
-  im := calc(outfile='outimage',expr='inimage1+inimage2');
+  im := imagecalc(outfile='outimage',expr='inimage1+inimage2');
   im.statistics();
 \end{verbatim}
 
@@ -897,7 +897,7 @@ statistics on that new image.
 
 \medskip\noindent Writing it as
 \begin{verbatim}
-    im := calc(expr='inimage1+inimage2');
+    im := imagecalc(expr='inimage1+inimage2');
     im.statistics();
 \end{verbatim}
 would do the same with the exception of creating the output image.
@@ -1048,7 +1048,7 @@ capabilities and how Glish variables can be used in LEL.
 \begin{verbatim}
 duw01> glish -l image.g
 - a := array(1:50,5,10)              # make some data
-- global im1 := arraytoimage('im1', a);   # fill an image with it
+- global im1 := imagefromarray('im1', a);   # fill an image with it
 - im1.shape()
 [5 10]
 - local pixels, mask
@@ -1057,7 +1057,7 @@ duw01> glish -l image.g
 - mask[3,4] := F
 - im1.putregion(mask=mask);          # put new mask back
 - global reg:=drm.box([1,1],[4,4]);  # a box region
-- im2 := calc(expr='$im1[$reg]')     # read-only image applying region
+- im2 := imagecalc(expr='$im1[$reg]')     # read-only image applying region
 - local pixels2, mask2
 - im2.getregion(pixels2, mask2);     # get the pixels and mask
 - print pixels2
