@@ -1187,8 +1187,8 @@ void MomentCalcBase<T>::setPosLabel (String& title,
 {  
    ostringstream oss;
 
-   oss << "Position = " << pos+1 << ends;
-   String temp(oss.str());
+   oss << "Position = " << pos+1;
+   String temp(oss);
    title = temp;
 }
 
