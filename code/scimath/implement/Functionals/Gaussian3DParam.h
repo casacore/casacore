@@ -29,6 +29,8 @@
 #if !defined(AIPS_GAUSSIAN3DPARAM_H)
 #define AIPS_GAUSSIAN3DPARAM_H
 
+template<class Type> class Vector;
+
 #include <aips/aips.h>
 #include <aips/Functionals/Function.h>
 #include <aips/Mathematics/AutoDiff.h>
@@ -189,7 +191,6 @@
 
 
 
-template<class Type> class Vector;
 template<class Type> class Gaussian3DParam : public Function<Type>
 {
   // Parameter handling for the functional for 3D Gaussian Class.
