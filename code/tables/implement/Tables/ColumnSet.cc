@@ -598,7 +598,7 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 {
     if (lockPtr_p->option() != TableLock::AutoLocking) {
 	throw (TableError ("ColumnSet::checkLock: table should be locked "
-			   "when using PermenentLocking or UserLocking"));
+			   "when using PermanentLocking or UserLocking"));
     }
     uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);
     plainTablePtr_p->lock (type, nattempts);
