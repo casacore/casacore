@@ -1379,7 +1379,7 @@ template<class T> T median(const Array<T> &a, Bool sorted,
 {
     uInt nelem = a.nelements();
     if (nelem < 1) {
-	throw(ArrayError("::median(const Array<T> &) - Need at least 1 "
+	throw(ArrayError("::median(const Array<T>&) - Need at least 1 "
 			 "elements"));
     }
     //# Mean does not have to be taken for odd number of elements.
@@ -1433,9 +1433,12 @@ template<class T> T median(const Array<T> &a, Bool sorted,
 template<class T> T fractile(const Array<T> &a, Float fraction, Bool sorted,
 			     Bool inPlace)
 {
+    if (fraction < 0  ||  fraction > 1) {
+        throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
+    }    
     uInt nelem = a.nelements();
     if (nelem < 1) {
-	throw(ArrayError("::fractile(const Array<T> &) - Need at least 1 "
+	throw(ArrayError("::fractile(const Array<T>&) - Need at least 1 "
 			 "elements"));
     }
     T fracval = T();
