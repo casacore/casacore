@@ -324,7 +324,7 @@ protected:
   Int curChanGroup_p, curNumChanGroup_p, channelGroupSize_p, 
       curNumRow_p, curTableNumRow_p, curStartRow_p, curEndRow_p,
       nChan_p, nPol_p;
-  Bool more_p, newChanGroup_p, initialized_p;
+  Bool more_p, newChanGroup_p, initialized_p, msIterAtOrigin_p;
 
   // channel selection
   Block<Int> numChanGroup_p, chanStart_p, chanWidth_p, chanInc_p,
