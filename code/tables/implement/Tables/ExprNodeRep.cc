@@ -592,35 +592,47 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
     if (leftDtype == NTString  &&  rightDtype == NTString) {
 	return NTString;
     }
+    // Double matches Double.
+    if (leftDtype == NTDouble  &&  rightDtype == NTDouble) {
+	return NTDouble;
+    }
+    // Complex matches Double and Complex.
+    if ((leftDtype == NTComplex  &&  rightDtype == NTDouble)
+    ||  (leftDtype == NTDouble   &&  rightDtype == NTComplex)
+    ||  (leftDtype == NTComplex  &&  rightDtype == NTComplex)) {
+	return NTComplex;
+    }
     // String and Regex will get Regex
     if ((leftDtype == NTString  &&  rightDtype == NTRegex)
     ||  (leftDtype == NTRegex  &&  rightDtype == NTString)) {
 	return NTRegex;
+    }
+    // A String will be promoted to Date when used with a Date.
+    if (leftDtype == NTDate  &&  rightDtype == NTString) {
+	rightDtype = NTDate;
+    }
+    if (leftDtype == NTString  &&  rightDtype == NTDate) {
+	leftDtype = NTDate;
     }
     // Date - Date will get Double
     if (leftDtype == NTDate  &&  rightDtype == NTDate  &&  opt == OtMinus) {
 	return NTDouble;
     }
     // Date matches Date; Date+Date is not allowed
-    if ((leftDtype == NTDate  && rightDtype == NTDate  &&  opt != OtPlus)) {
+    if (leftDtype == NTDate  &&  rightDtype == NTDate  &&  opt != OtPlus) {
 	return NTDate;
     }
-    if ((leftDtype == NTDate  &&  rightDtype == NTDouble)
-    ||  (leftDtype == NTDouble  &&  rightDtype == NTDate  &&  opt != OtMinus)) {
-	// Double - Date not allowed
-	return NTDate;
+    // Date+Double and Date-Double is allowed
+    if (opt == OtPlus  ||  opt == OtMinus) {
+	if (leftDtype == NTDate  &&  rightDtype == NTDouble) {
+	    return NTDate;
+	}
     }
-    if ((leftDtype == NTDate  &&  rightDtype == NTString)
-    ||  (leftDtype == NTString  &&  rightDtype == NTDate)) {
-	return NTDate;
-    }
-    if (leftDtype == NTDouble  &&  rightDtype == NTDouble) {
-	return NTDouble;
-    }
-    if ((leftDtype == NTComplex  &&  rightDtype == NTDouble)
-    ||  (leftDtype == NTDouble   &&  rightDtype == NTComplex)
-    ||  (leftDtype == NTComplex  &&  rightDtype == NTComplex)) {
-	return NTComplex;
+    // Double+Date is allowed
+    if (opt == OtPlus) {
+	if (leftDtype == NTDouble  &&  rightDtype == NTDate) {
+	    return NTDate;
+	}
     }
     TableExprNode::throwInvDT();
     return NTComplex;                  // compiler satisfaction
@@ -745,17 +757,23 @@ void TableExprNodeBinary::convertConstChild()
     // from Double to DComplex if:
     //   - there are 2 nodes
     //   - data types are not equal
-    //   - data of constant is Double
+    //   - data of constant is Double and other is Complex
     if (rnode_p == 0  ||  lnode_p->dataType() == rnode_p->dataType()) {
 	return;
     }
     // Determine if and which node is a constant.
     TableExprNodeRep** constNode = &lnode_p;
+    TableExprNodeRep** otherNode = &rnode_p;
     if (! lnode_p->isConstant()) {
 	if (! rnode_p->isConstant()) {
 	    return;
 	}
 	constNode = &rnode_p;
+	otherNode = &lnode_p;
+    }
+    // Determine if the other is Complex.
+    if ((**otherNode).dataType() != NTComplex) {
+	return;
     }
     // Only scalars and arrays can be converted.
     ValueType vtype = (**constNode).valueType();
@@ -771,7 +789,7 @@ void TableExprNodeBinary::convertConstChild()
     cout << "constant converted from Double to DComplex" << endl;
 #endif
     TableExprNodeRep* newNode;
-    if (valueType() == VTArray) {
+    if (valueType() == VTScalar) {
 	newNode = new TableExprNodeConstDComplex ((**constNode).getDouble(0));
     }else{
 	newNode = new TableExprNodeArrayConstDComplex
