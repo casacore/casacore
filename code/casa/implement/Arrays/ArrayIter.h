@@ -76,7 +76,7 @@ public:
     // Step through "arr" with a cursor of dimensionality 1.
     ArrayIterator(Array<T> &arr);
 
-    ~ArrayIterator();
+    virtual ~ArrayIterator();
 
     // Move the cursor to the next position.
     void next();
