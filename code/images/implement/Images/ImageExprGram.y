@@ -48,7 +48,6 @@ ImageExprParse* val;
 %type <node> andexpr
 %type <node> relexpr
 %type <node> arithexpr
-%type <node> unaryexpr
 %type <node> simexpr
 
 
@@ -57,8 +56,9 @@ ImageExprParse* val;
 %nonassoc EQ GT GE LT LE NE
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
+%nonassoc UNARY
+%nonassoc NOT
 %right POWER
-%right NOT
 
 %{
 int ImageExprGramlex (YYSTYPE*);
@@ -114,7 +114,7 @@ relexpr:   arithexpr
 	   }
          ;
 
-arithexpr: unaryexpr
+arithexpr: simexpr
                { $$ = $1; }
          | arithexpr PLUS  arithexpr {
 	       $$ = new LatticeExprNode (*$1 + *$3);
@@ -136,22 +136,18 @@ arithexpr: unaryexpr
 	       $$ = new LatticeExprNode (fmod (*$1, *$3));
 	       ImageExprParse::addNode ($$);
 	   }
-         | arithexpr POWER  arithexpr {
-	       $$ = new LatticeExprNode (pow (*$1, *$3));
-	       ImageExprParse::addNode ($$);
-	   }
-         ;
-
-unaryexpr: simexpr
-               { $$ = $1; }
-         | MINUS unaryexpr {
+         | MINUS arithexpr %prec UNARY {
 	       $$ = new LatticeExprNode (-*$2);
 	       ImageExprParse::addNode ($$);
 	   }
-         | PLUS  unaryexpr
+         | PLUS  arithexpr %prec UNARY
                { $$ = $2; }
-         | NOT   unaryexpr {
+         | NOT   arithexpr {
 	       $$ = new LatticeExprNode (!*$2);
+	       ImageExprParse::addNode ($$);
+	   }
+         | arithexpr POWER arithexpr {
+	       $$ = new LatticeExprNode (pow (*$1, *$3));
 	       ImageExprParse::addNode ($$);
 	   }
          ;
