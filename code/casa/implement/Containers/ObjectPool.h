@@ -100,7 +100,7 @@ template <class T, class Key> class ObjectPool {
 
   // Release an object obtained from the pool through <src>get</src> for
   // re-use.
-  void release(T *obj, const Key key=Key()) const;
+  void release(T *obj, const Key key=Key());
 
   // Decimate the stacks
   // <group>

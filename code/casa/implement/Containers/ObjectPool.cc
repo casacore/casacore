@@ -56,26 +56,9 @@ T *const ObjectPool<T, Key>::get(const Key key) {
   if (v->empty()) pushStack(v, NDEF, key);
   return v->popVal();
 }
-/*
+
 template <class T, class Key>
-const T *const ObjectPool<T, Key>::get(const Key key) const {
-  PoolStack<T> *v;
-  if (key == defKey_p) v = defStack_p;
-  else if (key == cacheKey_p && cacheStack_p) v = cacheStack_p;
-  else {
-    PoolStack<T> *const *v0;
-    if (!(v0 = map_p.isDefined(key))) {
-      v = map_p.define(key, new PoolStack<T>);
-    } else v = *v0;
-    cacheKey_p = key;
-    cacheStack_p = v;
-  };
-  if (v->empty()) pushStack(v, NDEF, key);
-  return v->popVal();
-}
-*///
-template <class T, class Key>
-void ObjectPool<T, Key>::release(T *obj, const Key key) const {
+void ObjectPool<T, Key>::release(T *obj, const Key key) {
   PoolStack<T> *v;
   if (key == defKey_p) v = defStack_p;
   else if (key == cacheKey_p && cacheStack_p) v = cacheStack_p;

@@ -46,7 +46,7 @@ T *const PoolStack<T>::popVal() {
 
 template <class T>
 void PoolStack<T>::push(const T *obj) {
-  stack_p[top_p++] = obj;
+  stack_p[top_p++] = const_cast<T *>(obj);
 }
 
 template <class T>
