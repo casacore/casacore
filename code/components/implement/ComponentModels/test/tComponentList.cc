@@ -368,8 +368,17 @@ int main() {
 			   expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
       cout << "Passed the copy and assignment tests" << endl;
-      //      original.rename("junk.model", Table::Scratch);
-      //      modified.rename("more_junk.model", Table::Scratch);
+    }
+
+// Clean up
+
+    {
+       String n("tComponentList_tmp_copied.model");
+       Table t(n, Table::Delete);
+    }
+    {
+       String n("tComponentList_tmp_renamed.model");
+       Table t(n, Table::Delete);
     }
   } 
   catch (AipsError x) {
