@@ -33,24 +33,25 @@
 #include <iostream.h>
 
 #include <trial/MeasurementSets/MSFieldBuffer.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Arrays/ArrayLogical.h>
-//#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MEpoch.h>
 
 int main() {
   try {
     // Check the default constructor
     MSFieldBuffer newBuffer;
+    // test the ok function.
     AlwaysAssert(newBuffer.ok(), AipsError);
+    // test the addRow & nrow functions.
     AlwaysAssert(newBuffer.nrow() == 0, AipsError);
-    newBuffer.addRow(2);
+    newBuffer.addRow(20);
     AlwaysAssert(newBuffer.ok(), AipsError);
-    AlwaysAssert(newBuffer.nrow() == 2, AipsError);
+    AlwaysAssert(newBuffer.nrow() == 20, AipsError);
     {
       MSFieldBuffer fieldBuffer(1);
       { // test the addRow & nrow functions.
