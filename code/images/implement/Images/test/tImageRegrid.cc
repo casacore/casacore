@@ -34,9 +34,13 @@ main (int argc, char **argv)
    inputs.create("in", "", "Input image name");
    inputs.create("core", "True", "Image in core");
    inputs.create("axes", "-10", "axes");
+   inputs.create("method", "linear", "Method");
+   inputs.create("save", "False", "Save output ?");
    inputs.readArguments(argc, argv);
    const String in = inputs.getString("in");
    const Bool core = inputs.getBool("core");
+   const Bool save = inputs.getBool("save");
+   const String method = inputs.getString("method");
    const Block<Int> axesU(inputs.getIntArray("axes"));
 //
    Int lim = 0;
@@ -59,40 +63,30 @@ main (int argc, char **argv)
       pIm = new PagedImage<Float>(in);
    }
 //
-/*
-   cerr << "input name = " << pIm->name() << endl;
-   cerr << "input.isPersistent=" << pIm->isPersistent() << endl;
-   cerr << "Shape=" << pIm->shape() << endl;
-   cerr << "nCoords = " << pIm->coordinates().nCoordinates() << endl;
-*/
-
-/*
-   PagedImage<Float> out(pIm->shape(), pIm->coordinates(), String("outFile"));
-   String maskName = out.makeUniqueRegionName(String("mask"), 0);    
-   LCPagedMask mask(RegionHandler::makeMask(out, maskName));
-   out.defineRegion (maskName, ImageRegion(mask), RegionHandler::Masks);
-   out.setDefaultMask(maskName);
-*/
-
-   TiledShape shapeOut(pIm->shape());
-   TempImage<Float> out(shapeOut, pIm->coordinates(), lim);
-   TempLattice<Bool> outMask(shapeOut, lim);
-   outMask.set(True);
-   out.attachMask(outMask);
+   ImageInterface<Float>* pImOut = 0;
+   if (save) {
+      pImOut = new PagedImage<Float>(pIm->shape(), pIm->coordinates(), String("outFile"));
+   } else {
+      TiledShape shapeOut(pIm->shape());
+      pImOut = new TempImage<Float>(shapeOut, pIm->coordinates(), lim);
+   }
+   String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+   pImOut->makeMask(maskName, True, True, True, True);
 //
-   Interpolate2D::Method method = Interpolate2D::LINEAR;
+   Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    IPosition axes(3, 0, 1, 2);
    if (axesU.nelements()>0) {
       if (axesU.nelements()==1 && axesU[0]==-10) {
       } else {
          axes.resize(axesU.nelements());
-         for (uInt i=0; i<axes.nelements(); i++) axes = axesU[i];
+         for (uInt i=0; i<axes.nelements(); i++) axes(i) = axesU[i];
       }
    }
 //
    ImageRegrid<Float> regridder;
-   regridder.regrid(out, method, axes, *pIm);
+   regridder.regrid(*pImOut, emethod, axes, *pIm);
    delete pIm;
+   delete pImOut;
 }
 
 
