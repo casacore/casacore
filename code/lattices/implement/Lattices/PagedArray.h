@@ -643,7 +643,7 @@ private:
 
   Table  itsTable;
   String itsColumnName;
-  Int    itsRowNumber;
+  uInt   itsRowNumber;
   ArrayColumn<T>       itsRWArray;
   ROArrayColumn<T>     itsROArray;
   ROTiledStManAccessor itsAccessor;
