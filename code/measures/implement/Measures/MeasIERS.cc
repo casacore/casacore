@@ -71,10 +71,10 @@ Bool MeasIERS::get(Double &returnValue,
 	LogIO os(LogOrigin("MeasIERS",
 			   String("fillMeas(MeasIERS::Files, Double)"),
 			   WHERE));
-	os << LogIO::SEVERE <<
-	  String("A request has been ") +
-	  "made for time outside IERS tables" +
-	  "\nCalculations will proceed with less precision" << 
+	os << LogIO::WARN <<
+	  String("A request has been "
+		 "made for a time outside IERS tables"
+		 "\nCalculations will proceed with less precision") << 
 	  LogIO::POST;
       };
       return False;
@@ -118,7 +118,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
       LogIO os(LogOrigin("MeasIERS",
 			 String("initMeas(MeasIERS::Files)"),
 			 WHERE));
-      os << LogIO::SEVERE <<
+      os << LogIO::WARN <<
 	String("Cannot read IERS table ") + tp[which] +
 	  "\nCalculations will proceed with lower precision" << 
 	LogIO::POST;
@@ -202,13 +202,14 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   };
   if (!ok) {
     LogIO os(LogOrigin("MeasIERS",
-		       String("getTable(Table &, TableRecord &, ") +
-		       "ROTableRow &, RORecordFieldPtr<Double> *, " +
-		       "String &vs, Double &dt, " +
-		       "Int N, const String *, const String &, " +
-		       "const String &, const String &)",
+		       String("getTable(Table &, TableRecord &, "
+			      "ROTableRow &, RORecordFieldPtr<Double> *, "
+			      "String &vs, Double &dt, "
+			      "Int N, const String *, const String &, "
+			      "const String &, const String &)"),
 		       WHERE));
-    os << String("A ") + name + " table has been read that seems corrupted" +
+    os << String("A ") + name + 
+      " table has been read that seems corrupted"
       "\nNotify the AIPS++ system manager about it" << LogIO::EXCEPTION;
     return False;
   };
