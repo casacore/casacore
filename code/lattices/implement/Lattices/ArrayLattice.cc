@@ -138,8 +138,21 @@ getSlice(Array<T> & buffer, const Slicer & section,
 template<class T> void ArrayLattice<T>::
 putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
 	 const IPosition & stride) {
-  theData(where, where + (sourceBuffer.shape()-1)*stride, stride) = 
-    sourceBuffer;
+  const uInt sdim = sourceBuffer.ndim();
+  const uInt ldim = ndim();
+  DebugAssert(ldim == where.nelements(), AipsError);
+  DebugAssert(ldim == stride.nelements(), AipsError);
+
+  if (sdim == ldim)
+    theData(where, 
+	    where + (sourceBuffer.shape()-1)*stride, 
+	    stride) = sourceBuffer;
+  else {
+    Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
+    theData(where, 
+	    where + (allAxes.shape()-1)*stride, 
+	    stride) = allAxes;
+  }
 };
 
 template<class T> void ArrayLattice<T>::
