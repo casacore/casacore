@@ -84,3 +84,23 @@ couple of files:
 	- toolmanagersupport: functional interface used by GUIs and CLIs
 
 Tim
+
+change id: 0041
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   stdtoolguiserver
+ type:     Code
+ category: Change
+ summary:  Cleanup of stdtoolguiserver
+
+I've split out the various parts of the GUI into separate files:
+
+	- toolguibasefunction.g: base function used in most toolmanager
+guis. Contains autogui, etc.
+	- toolguiserver.g: sets up top level guis for tools, functions, etc.
+	- toolmanagerguiserver: sets up top level gui for the manager
+
+Tim
