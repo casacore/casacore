@@ -1,5 +1,5 @@
 //# UnitMap.h: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <aips/stdmap.h>
 #include <aips/Utilities/String.h>
 #include <aips/Quanta/UnitDim.h>
 #include <aips/Quanta/UnitVal.h>
@@ -288,12 +288,12 @@ public:
 
   // Return the different maps
   // <group>
-  static const SimpleOrderedMap<String, UnitName> &givePref();
-  static const SimpleOrderedMap<String, UnitName> &giveDef();
-  static const SimpleOrderedMap<String, UnitName> &giveSI();
-  static const SimpleOrderedMap<String, UnitName> &giveCust();
-  static const SimpleOrderedMap<String, UnitName> &giveUser();
-  static const SimpleOrderedMap<String, UnitVal> &giveCache();
+  static const map<String, UnitName> &givePref();
+  static const map<String, UnitName> &giveDef();
+  static const map<String, UnitName> &giveSI();
+  static const map<String, UnitName> &giveCust();
+  static const map<String, UnitName> &giveUser();
+  static const map<String, UnitVal>  &giveCache();
   // </group>
 
  private:
@@ -308,23 +308,22 @@ public:
   //# Data members
   
   // Decimal prefix list
-  static SimpleOrderedMap<String, UnitName> *mapPref;
+  static map<String, UnitName> *mapPref;
   
   // Defining SI unit list
-  static SimpleOrderedMap<String, UnitName> *mapDef;
+  static map<String, UnitName> *mapDef;
   
   // SI unit list
-  static SimpleOrderedMap<String, UnitName> *mapSI;
+  static map<String, UnitName> *mapSI;
   
   // Customary list
-  static SimpleOrderedMap<String, UnitName> *mapCust;
+  static map<String, UnitName> *mapCust;
   
   // User defined unit list
-  static SimpleOrderedMap<String, UnitName> *mapUser;
+  static map<String, UnitName> *mapUser;
   
   // Cached list
-  static SimpleOrderedMap<String, UnitVal> *mapCache;
-  
+  static map<String, UnitVal> *mapCache;  
   // FITS unit list inclusion
   static Bool doneFITS;
   
