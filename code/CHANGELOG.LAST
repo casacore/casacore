@@ -1,0 +1,22 @@
+
+change id: 0111
+ author:   Neil Killeen
+ date:     2002/01/08
+ avers:    1.7
+ area:     Tool
+ package:  trial
+ module:   imagefitter
+ type:     Code
+ category: New
+ summary:  imagefitter GUI interface has been improved
+The  main gui interface has been enhanced
+
+1) YOu no longer have to push 'REJECT' to reject fits.
+   That button has been removed.  Unless a fit is accepted
+   it is automatically rejected
+
+2) The listbox holding the fit parameters has been improved.
+   Now you may select previous fits and display their parameters.
+   In addition, you may show/hide a graphical display of the
+   fit on the image display.  You may also delete fits from
+   the list.
