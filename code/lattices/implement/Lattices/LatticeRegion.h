@@ -78,7 +78,7 @@ public:
 
     // Create from the given region.
     // The pointer to the parent can be 0.
-    LatticeRegion (const LCRegion& region, const LatticeRegion* parent = 0);
+    LatticeRegion (const LCRegion& region);
 
     // Create from the given region and take over the pointer.
     // This means the user should not delete the region object pointed to,
@@ -90,10 +90,6 @@ public:
     // the lattice shape of the lattice where the region is taken from.
     LatticeRegion (const Slicer& slicer, const IPosition& latticeShape);
 
-    // Construct from the given slicer. The pointer to the parent
-    // should not be 0.
-    LatticeRegion (const Slicer& slicer, const LatticeRegion* parent);
-
     // Copy constructor (reference semantics).
     LatticeRegion (const LatticeRegion& other);
 
@@ -102,16 +98,13 @@ public:
     // Assignment (reference semantics).
     LatticeRegion& operator= (const LatticeRegion& other);
 
-    // Set the region and/or pointer to the parent.
-    void setParent (const LatticeRegion* parent);
-
     // Make a copy of the object (reference semantics).
     virtual Lattice<Bool>* clone() const;
 
     // Is the LatticeRegion writable?
     virtual Bool isWritable() const;
 
-    // Has the object really a mask?
+    // Has the region a mask?
     Bool hasMask() const;
 
     // Get the LCRegion object describing the region.
@@ -179,19 +172,13 @@ public:
 private:
     LCRegion*  itsRegion;
     Slicer     itsSlicer;
-    const LatticeRegion* itsParent;
     Bool       itsHasRegionMask;
-    Bool       itsHasParentMask;
 };
 
 
-inline void LatticeRegion::setParent (const LatticeRegion* parent)
-{
-    itsParent = parent;
-}
 inline Bool LatticeRegion::hasMask() const
 {
-    return ToBool (itsHasParentMask || itsHasRegionMask);
+    return itsHasRegionMask;
 }
 inline const LCRegion& LatticeRegion::region() const
 {
