@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Images/ImageExpr.h>
-#include <trial/Images/ImageCoord.h>
+#include <trial/Images/LELImageCoord.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeIterInterface.h>
@@ -54,18 +54,16 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
   if (! name.empty()) {
     name_p = "Expression: " + name;
   }
-   const LatticeCoordinates latticeCoordinate = latticeExpr_p.coordinates();
-   const LattCoord* pLattCoord = &(latticeCoordinate.coordinates());
-   if (!pLattCoord->hasCoordinates() || pLattCoord->classname()!="ImageCoord") {
+   const LELCoordinates lelCoordinate = latticeExpr_p.lelCoordinates();
+   const LELLattCoord* pLattCoord = &(lelCoordinate.coordinates());
+   if (! pLattCoord->hasCoordinates()
+   ||  pLattCoord->classname() != "LELImageCoord") {
       throw (AipsError ("ImageExpr::constructor - the "
                         "LatticeExpr does not have coordinates"));
    }
-
-// Cast to get at ImageCoord
-
-   const ImageCoord* pImCoord = (ImageCoord*)pLattCoord;
+// Cast to get at LELImageCoord
+   const LELImageCoord* pImCoord = (LELImageCoord*)pLattCoord;
    coords_p = pImCoord->coordinates();
-
 }
 
 template <class T>
@@ -172,9 +170,9 @@ Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem&)
 
 
 template <class T>
-LatticeCoordinates ImageExpr<T>::latticeCoordinates() const
+LELCoordinates ImageExpr<T>::lelCoordinates() const
 {
-   return latticeExpr_p.coordinates();
+   return latticeExpr_p.lelCoordinates();
 }
 
 template<class T> 
