@@ -31,17 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/CountedPtr.h>
 #include <trial/Lattices/Lattice.h>
-
-//# Forward Declarations
-template <class T> class Array;
-template <class Domain, class Range> class Functional;
-template <class T> class LatticeIterInterface;
-class IPosition;
-class Slicer;
-class LatticeNavigator;
+#include <trial/Lattices/TiledShape.h>
+#include <aips/Utilities/CountedPtr.h>
 
 
 // <summary>
@@ -114,7 +106,7 @@ class LatticeNavigator;
 //# </todo>
 
 
-template <class T> class TempLattice : public Lattice<T>
+template<class T> class TempLattice : public Lattice<T>
 {
 public:
   // The default constructor creates a TempLattice containing a
@@ -124,9 +116,9 @@ public:
   // Create a TempLattice of the specified Shape. You can specify how much
   // memory the Lattice can consume before it becomes disk based by giving a
   // positive value to the maxMemoryinMB argument. Otherwise it will assume
-  // it can use up to 25% of the memory on your machine (this algorithm may
-  // change).
-  TempLattice (const IPosition& shape, Int maxMemoryInMB=-1);
+  // it can use up to 25% of the memory on your machine as defined in aipsrc
+  // (this algorithm may change).
+  TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
   
   // The copy constructor uses reference semantics. ie modifying data in the
   // coipied TempLattice also modifies the data in the original TempLattice.
@@ -205,7 +197,6 @@ public:
   virtual LatticeIterInterface<T>*
                       makeIter (const LatticeNavigator& navigator) const;
 
-protected:
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
