@@ -1,5 +1,5 @@
 //# nISMBucket.cc :Simulation program for bucket behaviour of IncrementalStman
-//# Copyright (C) 1996,1999,2001,2002
+//# Copyright (C) 1996,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 
 // <summary>
@@ -59,13 +59,13 @@ int main (int argc, char** argv)
     }
     uInt i, bucketSize, nrow, nrent, n, totNrcol;
     Block<uInt> nrcol, leng, same;
-    istrstream istr1(argv[1]);
+    istringstream istr1(argv[1]);
     istr1 >> bucketSize;
     if (argc < 3) {
 	cerr << "#rows: ";
 	cin >> nrow;
     }else{
-	istrstream istr2(argv[2]);
+	istringstream istr2(argv[2]);
 	istr1 >> nrow;
     }
     nrent = 0;

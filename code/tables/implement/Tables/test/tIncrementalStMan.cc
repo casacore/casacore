@@ -1,5 +1,5 @@
 //# tIncrementalStMan.cc: Test program for the IncrementalStMan storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // <summary>
 // Test program for the IncrementalStMan storage manager
@@ -65,7 +65,7 @@ void f();
 main (int argc, char** argv) {
     uInt nr = 1000;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> nr;
     }
     try {

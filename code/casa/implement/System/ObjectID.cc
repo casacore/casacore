@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/RecordInterface.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 #include <aips/stdio.h>                  // needed for sprintf
 
@@ -108,7 +108,7 @@ void ObjectID::toString(String &out) const
 	return;
     }
 
-    ostrstream os;
+    ostringstream os;
     os << "sequence=" << sequence() << " host=" << hostName() <<
 	" pid=" << pid() << " time=" << creationTime();
     out = os;

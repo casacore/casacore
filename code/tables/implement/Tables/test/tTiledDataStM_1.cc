@@ -1,5 +1,5 @@
 //# tTiledDataStM_1.cc: Test program for performance of TiledDataStMan class
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 // <summary>
@@ -87,11 +87,11 @@ void a (char** argum)
 {
     // Convert the command line arguments to shapes.
     uInt i, nrdim, maxCacheSize;
-    istrstream istr0(argum[1]);
+    istringstream istr0(argum[1]);
     istr0 >> nrdim;
     Vector<String> cubeV (stringToVector (argum[2]));
     Vector<String> tileV (stringToVector (argum[3]));
-    istrstream istr1(argum[4]);
+    istringstream istr1(argum[4]);
     istr1 >> maxCacheSize;
     if (cubeV.nelements() != tileV.nelements()) {
 	cout << "Cube and tile must have same dimensionality" << endl;
@@ -105,7 +105,7 @@ void a (char** argum)
     IPosition cubeShape (cubeV.nelements());
     IPosition tileShape (tileV.nelements());
     for (i=0; i<cubeV.nelements(); i++) {
-	istrstream istr(cubeV(i).chars());
+	istringstream istr(cubeV(i).chars());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
 	    cout << "Cubeshape " << cubeShape(i) << " must be > 0" << endl;
@@ -113,7 +113,7 @@ void a (char** argum)
 	}
     }
     for (i=0; i<tileV.nelements(); i++) {
-	istrstream istr(tileV(i).chars());
+	istringstream istr(tileV(i).chars());
 	istr >> tileShape(i);
 	if (tileShape(i) <= 0) {
 	    cout << "Tileshape " << tileShape(i) << " must be > 0" << endl;

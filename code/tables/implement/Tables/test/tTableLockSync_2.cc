@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Test program for concurrent access to tables
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@
 #include <aips/OS/Time.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <unistd.h>
 
 // <summary>
@@ -321,7 +321,7 @@ main (int argc, char** argv)
 	
     uInt var[5];
     for (uInt i=0; i<5; i++) {
-	istrstream str(argv[i+1]);
+	istringstream str(argv[i+1]);
 	str >> var[i];
     }
     

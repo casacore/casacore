@@ -1,5 +1,5 @@
 //# AipsrcVString.cc: Specialisation for AipsrcVector<String>
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 //# Data
 AipsrcVector<String> AipsrcVector<String>::myp_p;
@@ -91,7 +91,7 @@ void AipsrcVector<String>::set(uInt keyword,
 
 void AipsrcVector<String>::save(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  ostrstream oss;
+  ostringstream oss;
   Int n = ((myp_p.tlst)[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));

@@ -1,5 +1,5 @@
 //# AipsrcValue.cc: Class to read values from the Aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,1999,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 //# Data
 template <class T>
@@ -50,7 +50,7 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
-    istrstream instr(res.chars());
+    istringstream instr(res);
     instr >> value;
   };
   return x;
@@ -70,7 +70,7 @@ Bool AipsrcValue<T>::find(T &value,
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     Quantum<Double> qres;
-    istrstream instr(res.chars());
+    istringstream instr(res);
     instr >> qres;
     if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
     value = (T) qres.getValue(resun);
@@ -120,7 +120,7 @@ void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
 template <class T>
 void AipsrcValue<T>::save(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  ostrstream oss;
+  ostringstream oss;
   oss << (myp_p.tlst)[keyword-1];
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }

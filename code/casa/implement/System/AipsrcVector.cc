@@ -1,5 +1,5 @@
 //# AipsrcVector.cc: Read multiple values from the  Aipsrc resource files
-//# Copyright (C) 1995,1996,1997,1998,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 //# Data
 template <class T>
@@ -60,7 +60,7 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
     for (Int i=0; i<m; i++) {
-      istrstream instr((nres[i]).chars());
+      istringstream instr(nres[i]);
       instr >> value(i);
     };
     delete [] nres;
@@ -89,7 +89,7 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
     value = Vector<T>(m);
     Quantum<Double> qres;
     for (Int i=0; i<m; i++) {
-      istrstream instr((nres[i]).chars());
+      istringstream instr(nres[i]);
       instr >> qres;
       if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
       value(i) = (T) qres.getValue(resun);
@@ -141,7 +141,7 @@ void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
 template <class T>
 void AipsrcVector<T>::save(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  ostrstream oss;
+  ostringstream oss;
   Int n = ((myp_p.tlst)[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));

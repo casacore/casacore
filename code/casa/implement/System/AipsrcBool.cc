@@ -1,5 +1,5 @@
 //# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 //# Data
 AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
@@ -75,7 +75,7 @@ void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
 
 void AipsrcValue<Bool>::save(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  ostrstream oss;
+  ostringstream oss;
   if ((myp_p.tlst)[keyword-1]) {
     oss << "true";
   } else {

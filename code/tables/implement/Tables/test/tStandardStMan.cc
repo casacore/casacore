@@ -1,5 +1,5 @@
 //# tStandardStMan.cc: Test program for the StandardStMan storage manager
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // <summary>
 // Test program for the StandardStMan storage manager
@@ -94,7 +94,7 @@ void putColumnTest();
 main (int argc, char** argv) {
     uInt aNr = 250;
     if (argc > 1) {
-	istrstream anIstr(argv[1]);
+	istringstream anIstr(argv[1]);
 	anIstr >> aNr;
     }
     try {

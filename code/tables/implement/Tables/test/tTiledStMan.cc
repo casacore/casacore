@@ -1,5 +1,5 @@
 //# tTiledStMan.cc: Test program of TiledStMan class
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 // <summary>
@@ -57,7 +57,7 @@ main (int argc, char** argv)
     }
     try {
 	uInt tileSize;
-	istrstream istr1(argv[1]);
+	istringstream istr1(argv[1]);
 	istr1 >> tileSize;
 	doIt (tileSize);
     } catch (AipsError x) {
@@ -97,7 +97,7 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	    Bool error = False;
 	    IPosition pos(vec.nelements());
 	    for (uInt i=0; i<vec.nelements(); i++) {
-		istrstream istr(vec(i).chars());
+		istringstream istr(vec(i).chars());
 		istr >> pos(i);
 		if (pos(i) < 0) {
 		    cout << "Value " << pos(i) << " must be >= 0" << endl;

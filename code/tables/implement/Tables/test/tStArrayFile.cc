@@ -1,5 +1,5 @@
 //# tStArrayFile.cc: Test program for the StManArrayFile class
-//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/stdio.h>                           // for sprintf
 
 // <summary> Test program for the StManArrayFile class </summary>
@@ -49,11 +49,11 @@ int main (int argc, char** argv)
     uInt stVersion = 0;
     uInt endVersion = 1;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> stVersion;
 	endVersion = stVersion;
 	if (argc > 2) {
-	    istrstream istr(argv[2]);
+	    istringstream istr(argv[2]);
 	    istr >> endVersion;
 	}
     }

@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.

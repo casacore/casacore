@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/OS/EnvVar.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 #ifdef PABLO_IO
 #include "IOTrace.h"
@@ -128,7 +128,7 @@ void openPablo (char** argv)
   // to get them all Second PABLOSTATSDIR is the directory where the
   // stats files should go the default is /var/tmp be careful...
   //
-  ostrstream oss;
+  ostringstream oss;
   Path myname(argv[0]);
   int tracenode(0);
   if (EnvironmentVariable::isDefined("PABLOSTATS")) {
@@ -165,13 +165,13 @@ void makeCube (char** argv)
     uInt i, maxCacheSize;
     Vector<String> cubeV (stringToVector (argv[1]));
     Vector<String> tileV (stringToVector (argv[2]));
-    istrstream istr1(argv[3]);
+    istringstream istr1(argv[3]);
     istr1 >> maxCacheSize;
     uInt nrdim = cubeV.nelements();
     IPosition cubeShape (nrdim);
     IPosition tileShape (nrdim);
     for (i=0; i<nrdim; i++) {
-	istrstream istr(cubeV(i).chars());
+	istringstream istr(cubeV(i).chars());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
 	    cout << "Arrayshape " << cubeShape(i) << " must be > 0" << endl;
@@ -186,7 +186,7 @@ void makeCube (char** argv)
 	tileShape = TiledStMan::makeTileShape (cubeShape);
     }else{
 	for (i=0; i<nrdim; i++) {
-	    istrstream istr(tileV(i).chars());
+	    istringstream istr(tileV(i).chars());
 	    istr >> tileShape(i);
 	    if (tileShape(i) <= 0) {
 		cout << "Tileshape " << tileShape(i) << " must be > 0" << endl;
@@ -358,7 +358,7 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	    Bool error = False;
 	    IPosition pos(vec.nelements());
 	    for (uInt i=0; i<vec.nelements(); i++) {
-		istrstream istr(vec(i).chars());
+		istringstream istr(vec(i).chars());
 		istr >> pos(i);
 		if (pos(i) < 0) {
 		    cout << "Value " << pos(i) << " must be >= 0" << endl;

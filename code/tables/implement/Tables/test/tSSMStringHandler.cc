@@ -1,6 +1,6 @@
 //# tSSMStringHandler.cc: Test program for the StringHandler part of the
 //#                       StandardStMan storage manager
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 // <summary>
@@ -86,7 +86,7 @@ void info(const Table aTable);
 main (int argc, char** argv) {
     uInt aNr = 500;
     if (argc > 1) {
-	istrstream anIstr(argv[1]);
+	istringstream anIstr(argv[1]);
 	anIstr >> aNr;
     }
     try {

@@ -1,5 +1,5 @@
 //# tTiledShapeStM_1.cc: Test program for performance of the TiledShapeStMan classes
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -331,59 +331,59 @@ int main (int argc, char* argv[])
     }
     uInt mode, nrow, nx, ny;
     {
-      istrstream istr(argv[1]);
+      istringstream istr(argv[1]);
       istr >> mode;
     }
     {
-      istrstream istr(argv[2]);
+      istringstream istr(argv[2]);
       istr >> nrow;
     }
     {
-      istrstream istr(argv[3]);
+      istringstream istr(argv[3]);
       istr >> nx;
     }
     {
-      istrstream istr(argv[4]);
+      istringstream istr(argv[4]);
       istr >> ny;
     }
     uInt tx = nx;
     if (argc >= 6) {
-      istrstream istr(argv[5]);
+      istringstream istr(argv[5]);
       istr >> tx;
     }
     uInt ty = ny;
     if (argc >= 7) {
-      istrstream istr(argv[6]);
+      istringstream istr(argv[6]);
       istr >> ty;
     }
     uInt sx = 0;
     if (argc >= 8) {
-      istrstream istr(argv[7]);
+      istringstream istr(argv[7]);
       istr >> sx;
     }
     uInt sy = 0;
     if (argc >= 9) {
-      istrstream istr(argv[8]);
+      istringstream istr(argv[8]);
       istr >> sy;
     }
     uInt ex = nx-1;
     if (argc >= 10) {
-      istrstream istr(argv[9]);
+      istringstream istr(argv[9]);
       istr >> ex;
     }
     uInt ey = ny-1;
     if (argc >= 11) {
-      istrstream istr(argv[10]);
+      istringstream istr(argv[10]);
       istr >> ey;
     }
     uInt ix = 1;
     if (argc >= 12) {
-      istrstream istr(argv[11]);
+      istringstream istr(argv[11]);
       istr >> ix;
     }
     uInt iy = 1;
     if (argc >= 13) {
-      istrstream istr(argv[12]);
+      istringstream istr(argv[12]);
       istr >> iy;
     }
     IPosition shape(2,nx,ny);

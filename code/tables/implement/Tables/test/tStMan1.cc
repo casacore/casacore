@@ -1,5 +1,5 @@
 //# tStMan1.cc: Test program for performance of the various storage managers
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // <summary>
 // Test program for performance of the various storage managers.
@@ -149,15 +149,15 @@ main (int argc, const char* argv[])
   uInt bucketSize = 32768;
   uInt flushnr = 1000;
   if (argc > 1) {
-    istrstream istr(argv[1]);
+    istringstream istr(argv[1]);
     istr >> nrrow;
   }
   if (argc > 2) {
-    istrstream istr(argv[2]);
+    istringstream istr(argv[2]);
     istr >> bucketSize;
   }
   if (argc > 3) {
-    istrstream istr(argv[3]);
+    istringstream istr(argv[3]);
     istr >> flushnr;
   }
 
