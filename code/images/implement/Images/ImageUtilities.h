@@ -126,17 +126,17 @@ public:
 // "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.  Unknown strings
 // are returned as given.
    static String shortAxisName (const String& axisName);
-//
-// This function takes a vector of doubles holding SkyComponent values
-// (the output from SkyComponent::toPixel) and converts them to a 
-// SkyComponent.   The coordinate values are in the 'x' and 'y' frames (
-// It is possible that the x and y axes of the pixel array are
-// lat/long (xIsLong=False)  rather than  long/lat.  facToJy gives you
-// a factor to convert the brightness units from whatevers per whatever
+
+// These functions convert between a vector of doubles holding SkyComponent values
+// (the output from SkyComponent::toPixel) and a SkyComponent.   The coordinate 
+// values are in the 'x' and 'y' frames.  It is possible that the x and y axes of 
+// the pixel array are lat/long (xIsLong=False)  rather than  long/lat.  
+// facToJy converts the brightness units from whatevers per whatever
 // to Jy per whatever (e.g. mJy/beam to Jy/beam).  It is unity if it
-// can't be done and you get a warning.
+// can't be done and you get a warning.  In the SkyComponent the flux
+// is integral.  In the parameters vector it is peak.
 //
-//   pars(0) = FLux     image units
+//   pars(0) = FLux     image units (e.g. Jy/beam).
 //   pars(1) = x cen    abs pix
 //   pars(2) = y cen    abs pix
 //   pars(3) = major    pix
@@ -145,6 +145,7 @@ public:
 //
 //  5 values for ComponentType::Gaussian, CT::Disk.  3 values for CT::Point.
 //
+// <group>
    static SkyComponent encodeSkyComponent(LogIO& os, Double& facToJy,
                                           const ImageInfo& ii,
                                           const CoordinateSystem& cSys,
@@ -153,6 +154,14 @@ public:
                                           const Vector<Double>& parameters,
                                           Stokes::StokesTypes stokes,
                                           Bool xIsLong);
+
+   static Vector<Double> decodeSkyComponent (const SkyComponent& sky,
+                                             const ImageInfo& ii,
+                                             const CoordinateSystem& cSys,
+                                             const Unit& brightnessUnit,
+                                             Stokes::StokesTypes stokes,
+                                             Bool xIsLong);
+// </group>
 //
 // Convert 2d shape from world (world parameters=x, y, major axis, 
 // minor axis, position angle) to pixel (major, minor, pa).  
