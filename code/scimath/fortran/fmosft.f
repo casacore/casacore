@@ -61,6 +61,10 @@ C
 
       complex shiftx(-support:support), shifty(-support:support)
       complex sconv(-support:support, -support:support)
+      real sconv2(-support:support, -support:support)
+      real sumsconv
+      real sumsconv2
+      real ratioofbeam
 
       real norm
       real wt
@@ -77,6 +81,9 @@ C
       
       irow=rownum
 
+      sumsconv=0
+      sumsconv2=0
+      ratioofbeam=1.0
       do ix=-support,support
          shiftx(ix)=1.0
          shifty(ix)=1.0
@@ -86,6 +93,8 @@ C
          do ix=-support,support
             iloc(1)=ix+convsize/2+1
             sconv(ix,iy)=conjg(convfunc(iloc(1), iloc(2)))
+            sconv2(ix,iy)=abs(sconv(ix,iy))
+            sumsconv2=sumsconv2+sconv2(ix,iy)
          end do
       end do
       doshift=.FALSE.
@@ -107,18 +116,22 @@ C
             doshift=.TRUE.
             phase=-2.0D0*pi*xypos(1,irow)/nx
             crot=cmplx(cos(phase), sin(phase))
+C            shiftx(0)=cmplx(1.0, 0.0)*phase/sin(phase)
             shiftx(0)=cmplx(1.0, 0.0)
             do ix=1,support
                shiftx(ix)=shiftx(ix-1)*crot
                shiftx(-ix)=conjg(shiftx(ix))
+               
             end do
             phase=-2.0D0*pi*xypos(2,irow)/ny
             crot=cmplx(cos(phase), sin(phase))
+C            shifty(0)=cmplx(1.0, 0.0)*phase/sin(phase)
             shifty(0)=cmplx(1.0, 0.0)
             do iy=1,support
                shifty(iy)=shifty(iy-1)*crot
                shifty(-iy)=conjg(shifty(iy))
             end do
+            sumsconv=0.0
             if(sampling.eq.1) then
                do iy=-support,support
                   iloc(2)=iy+convsize/2+1
@@ -127,13 +140,20 @@ C
                      if(doshift) then
                         sconv(ix,iy)=conjg(convfunc(iloc(1),
      $                       iloc(2)))*shiftx(ix)*shifty(iy)
+                        sumsconv=sumsconv+real(sconv(ix,iy))
                      else
                         sconv(ix,iy)=conjg(convfunc(iloc(1),
      $                       iloc(2)))
+                        sumsconv=sumsconv+real(sconv(ix,iy))
                      end if
                   end do
                end do
             end if
+         end if
+         if((sumsconv .lt. 0.0) .or. (sumsconv .gt. 0.0)) then
+            ratioofbeam=sumsconv2/sumsconv
+         else
+            ratioofbeam=1.0
          end if
          if(rflag(irow).eq.0) then 
             do ichan=1, nvischan
@@ -167,7 +187,7 @@ C     the final image by this term.
      $                                   grid(loc(1)+ix,
      $                                   loc(2)+iy,apol,achan)+
      $                                   nvalue*sconv(ix,iy)
-                                    norm=norm+real(sconv(ix,iy))
+                                    norm=norm+sconv2(ix,iy)
                                  end do
                               end do
                            else 
@@ -177,9 +197,11 @@ C     the final image by this term.
                                  if(doshift) then
                                     cwt=conjg(convfunc(iloc(1),
      $                                   iloc(2)))*shiftx(ix)*shifty(iy)
+                                    sumsconv=sumsconv+real(cwt)
                                  else
                                     cwt=conjg(convfunc(iloc(1),
      $                                   iloc(2)))
+                                    sumsconv=sumsconv+real(cwt)
                                  end if
                                  grid(loc(1)+ix,
      $                                loc(2)+iy,apol,achan)=
@@ -189,8 +211,10 @@ C     the final image by this term.
                                  norm=norm+real(cwt)
                               end do
                            end if
+C                           sumwt(apol,achan)=sumwt(apol,achan)+
+C     $                          weight(ichan,irow)*norm*ratioofbeam
                            sumwt(apol,achan)=sumwt(apol,achan)+
-     $                          weight(ichan,irow)*norm
+     $                          weight(ichan,irow)*norm  
                         end if
                      end do
                   end if
@@ -222,7 +246,7 @@ C
       integer rflag(nrow)
       integer rownum
       integer support
-      integer chanmap(*), polmap(*)
+      integer chanmap(nchan), polmap(npol)
 
       complex nvalue
 
