@@ -31,9 +31,10 @@
 #include <casa/Utilities/Assert.h>
 #include <scimath/Functionals/Sinusoid1D.h>
 #include <scimath/Functionals/Polynomial.h>
-
+#include <casa/iomanip.h>
 
 #include <casa/namespace.h>
+
 int main()
 {
   Vector<Float> x,y;
@@ -94,6 +95,7 @@ int main()
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
     }
   }
+  cout << setprecision(3);
   {
     PixelCurve1D pcurve2a(fn, 0., 2.);
     AlwaysAssertExit (pcurve2a.npoints() == 9);
@@ -122,6 +124,7 @@ int main()
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
     }
   }
+  cout << setprecision(6);
 
   // Copy constructor and self assignment.
   PixelCurve1D pcurve3(pcurve);
