@@ -30,7 +30,6 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
-#include <aips/Tables/TableCopy.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Slice.h>
@@ -451,24 +450,9 @@ void RefTable::setNrrow (uInt nrrow)
 Bool RefTable::isWritable() const
     { return baseTabPtr_p->isWritable(); }
 
-void RefTable::deepCopy (const String& newName, int tableOption) const
+void RefTable::deepCopy (const String& newName, int tableOption, Bool) const
 {
-    // Throw exception is new name is same as old one.
-    if (newName == name_p) {
-        throw TableError
-	       ("RefTable::deepCopy: new name equal to old name " + name_p);
-    }
-    //# Flush the data (cast is necesaary to bypass non-constness).
-    RefTable* ncThis = const_cast<RefTable*>(this);
-    ncThis->flush (True);
-    //# Prepare the copy (do some extra checks).
-    prepareCopyRename (newName, tableOption);
-    // Create the new table and copy everything.
-    Table oldtab(ncThis);
-    Table newtab = TableCopy::makeEmptyTable (newName, oldtab, Table::New);
-    TableCopy::copyRows (newtab, oldtab);
-    TableCopy::copyInfo (newtab, oldtab);
-    TableCopy::copySubTables (newtab, oldtab);
+    trueDeepCopy (newName, tableOption);
 }
 
 TableDesc RefTable::actualTableDesc() const
@@ -478,7 +462,7 @@ TableDesc RefTable::actualTableDesc() const
     // Get actual table desc of parent.
     // Create new tabledesc and copy keywords from parent.
     TableDesc rootDesc = baseTabPtr_p->actualTableDesc();
-    TableDesc actualDesc(rootDesc, "", "", TableDesc::Scratch, False);;
+    TableDesc actualDesc(rootDesc, "", "", TableDesc::Scratch, False);
     // Copy the relevant columns and rename (because reftable
     // can have renamed columns).
     for (uInt i=0; i<refDesc.ncolumn(); i++) {
@@ -488,6 +472,13 @@ TableDesc RefTable::actualTableDesc() const
 	cdesc.setName (newName);
 	actualDesc.addColumn (cdesc);
     }
+    // Invert the map to get map of old to new name
+    // and use it to adjust the possible hypercolumn definitions.
+    SimpleOrderedMap<String,String> map("", nameMap_p.ndefined());
+    for (uInt i=0; i<nameMap_p.ndefined(); i++) {
+        map.define (nameMap_p.getVal(i), nameMap_p.getKey(i));
+    }
+    actualDesc.adjustHypercolumns (map);
     return actualDesc;
 }
 

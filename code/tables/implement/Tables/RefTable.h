@@ -198,7 +198,7 @@ public:
 
     // Copy the table and all its subtables.
     // It copies the contents of each row to get a real copy.
-    virtual void deepCopy (const String& newName, int tableOption) const;
+    virtual void deepCopy (const String& newName, int tableOption, Bool) const;
 
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const;
