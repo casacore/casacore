@@ -51,7 +51,7 @@ AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
 PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
 
-PERL5EXE := checkin checkout
+PERL5EXE := checkin checkout binrel
 
 SUIDEXES := $(filter $(SUIDWRAP),$(PGMREXES))
 WRAPPED  := $(SUIDWRAP:%=%.sh)
