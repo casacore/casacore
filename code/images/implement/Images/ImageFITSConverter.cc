@@ -138,6 +138,24 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	       << LogIO::POST;
 	}
     }
+
+    // BITPIX
+    Int bitpix;
+    header.get("bitpix", bitpix);
+
+    // BLANK Find out if we are blanked.
+    Bool isBlanked = fitsImage.isablank();
+    Int blankVal = fitsImage.blank();
+    if (bitpix < 0 && isBlanked) {
+	isBlanked = False; // For FP we just pass NaN's through.
+	if (blankVal != -1) {
+	    // Warn that we only deal with NaN blanked FP image HDU's.
+	    os << LogIO::WARN << WHERE <<
+		"For floating point images, BLANK may only be set to -1<n" <<
+		blankVal << " is invalid. Ignoring (but will pass through "
+		"NaN's."  << LogIO::POST;
+	}
+    }
     
     ignore.resize(21); // resize as necessary
     ignore(0) = "^datamax$";  // Image pixels might change
@@ -201,8 +219,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 
     Int nIter = max(1,newImage->shape().product()/cursorShape.product());
     Int iUpdate = max(1,nIter/20);
-    ProgressMeter meter(0.0, Double(newImage->shape().product()), "FITS to Image",
-                        "Pixels copied", "", "",  True, iUpdate);
+    ProgressMeter meter(0.0, Double(newImage->shape().product()),
+			"FITS to Image", "Pixels copied", "", "",  True, 
+			iUpdate);
     Double nPixPerIter = cursorShape.product();
     Double meterValue;
 
