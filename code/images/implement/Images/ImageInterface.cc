@@ -60,9 +60,6 @@ template <class T> const Unit &ImageInterface<T>::units() const
 template <class T> 
 Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 {
-    logSink() << LogOrigin ("ImageInterface<T>", "setCoordinateInfo(const "
-			    "CoordinateSystem &coords)",  WHERE);
-
     Bool ok = ToBool(coords.nPixelAxes() == shape().nelements());
     if (ok) {
 	coords_p = coords;
@@ -119,8 +116,7 @@ template <class T> Bool ImageInterface<T>::writeThroughMask() const
 template <class T> 
 ImageInterface<T>::ImageInterface(): throughmask_p(True)
 {
-    LogIO os; // Cannot call abstract methods from ctor
-    os << LogIO::DEBUGGING << 
+  logSink() << LogIO::DEBUGGING << 
 	LogOrigin("ImageInterface<T>", "ImageInterface()", WHERE) <<
 	"Creating ImageInterface with null coordinates and will write"
 	" through any mask";
@@ -129,12 +125,13 @@ ImageInterface<T>::ImageInterface(): throughmask_p(True)
 
 template <class T> 
 ImageInterface<T>::ImageInterface(const CoordinateSystem &coords, Bool masking)
-: coords_p(coords), throughmask_p(masking)
+: throughmask_p(masking)
 {
-    LogIO os; // Cannot call abstract methods from ctor
-    os << LogOrigin("ImageInterface<T>",
+  logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface(const CoordinateSystem &coords, Bool masking)",
-		    WHERE) << LogIO::DEBUGGING;
-    os << "Creating ImageInterface with supplied coordinates and masking="
-	 << masking;
+			 WHERE) << LogIO::DEBUGGING <<
+    "Creating ImageInterface with supplied coordinates and masking="
+	    << masking << LogIO::POST;
+  AlwaysAssert(ImageInterface<T>::setCoordinateInfo(coords), 
+	       AipsError);
 }
