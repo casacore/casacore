@@ -1,5 +1,5 @@
 //# LogSinkInterface.h: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996,2000
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOG_SINK_INTERFACE_H)
-#define AIPS_LOG_SINK_INTERFACE_H
+#if !defined(AIPS_LOGSINKINTERFACE_H)
+#define AIPS_LOGSINKINTERFACE_H
 
 //# Includes
 #include <aips/aips.h>
@@ -98,54 +98,73 @@ class TableLogSink;
 class LogSinkInterface
 {
 public:
-    // Create with a <src>NORMAL</src> filter.
-    LogSinkInterface();
-    // Create with the supplied <src>filter</src>.
-    LogSinkInterface(const LogFilter &filter);
+  // Create with a <src>NORMAL</src> filter.
+  LogSinkInterface();
+  // Create with the supplied <src>filter</src>.
+  LogSinkInterface(const LogFilter &filter);
 
-    // Copy semantics - copy the filter from <src>other</src> to <src>this</src>
-    // <group>
-    LogSinkInterface(const LogSinkInterface &other);
-    LogSinkInterface &operator=(const LogSinkInterface &);
-    // </group>
+  // Copy semantics - copy the filter from <src>other</src> to <src>this</src>
+  // <group>
+  LogSinkInterface(const LogSinkInterface &other);
+  LogSinkInterface &operator=(const LogSinkInterface &);
+  // </group>
 
-    virtual ~LogSinkInterface();
+  virtual ~LogSinkInterface();
 
-    // Get/set the filter.
-    // <group>
-    virtual const LogFilter &filter() const;
-    virtual LogSinkInterface &filter(const LogFilter &filter);
-    // </group>
+  // Get/set the filter.
+  // <group>
+  virtual const LogFilter &filter() const;
+  virtual LogSinkInterface &filter(const LogFilter &filter);
+  // </group>
 
-    // This function must be over-ridden in derived classes. If the filter
-    // passes the message, do what is necessary with the message and return
-    // <src>True</src>.
-    virtual Bool postLocally(const LogMessage &message)= 0;
+  // Get number of messages in sink.
+  virtual uInt nelements() const;
 
-    // Write any pending output.
-    virtual void flush();
+  // Get given part of the i-th message from the sink.
+  // <group>
+  virtual Double getTime (uInt i) const;
+  virtual String getPriority (uInt i) const;
+  virtual String getMessage (uInt i) const;
+  virtual String getLocation (uInt i) const;
+  virtual String getObjectID (uInt i) const;
+  // </group>
 
-    // Returns false for every derived class except TableLogSink. This is
-    // useful so you can safely cast a LogSinkInterface to a Table if you
-    // need to, e.g., merge log tables.
-    virtual Bool isTableLogSink() const;
+  // This function must be over-ridden in derived classes. If the filter
+  // passes the message, do what is necessary with the message and return
+  // <src>True</src>.
+  virtual Bool postLocally(const LogMessage &message)= 0;
 
-    // It is only valid to call these functions if isTableLogSink() is True.
-    TableLogSink &castToTableLogSink();
-    const TableLogSink &castToTableLogSink() const;
+  // Write any pending output.
+  virtual void flush();
+
+  // Returns false for every derived class except TableLogSink. This is
+  // useful so you can safely cast a LogSinkInterface to a Table if you
+  // need to, e.g., merge log tables.
+  virtual Bool isTableLogSink() const;
+
+  // It is only valid to call these functions if isTableLogSink() is True.
+  TableLogSink &castToTableLogSink();
+  const TableLogSink &castToTableLogSink() const;
+
+  // Write a message (usually from another logsink) into the local one.
+  // The default implementation does nothing.
+  virtual void writeLocally (Double time, const String& message,
+			     const String& priority, const String& location,
+			     const String& objectID);
 
 private:
-    LogFilter filter_p;
+  LogFilter filter_p;
 };
 
 inline TableLogSink &LogSinkInterface::castToTableLogSink()
 {
-    return (TableLogSink &)(*this);
+  return (TableLogSink&)(*this);
 }
 
 inline const TableLogSink &LogSinkInterface::castToTableLogSink() const
 {
-    return (const TableLogSink &)(*this);
+  return (const TableLogSink&)(*this);
 }
+
 
 #endif

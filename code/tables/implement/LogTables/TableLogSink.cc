@@ -1,5 +1,5 @@
 //# TableLogSink.h: save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,25 +27,29 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Logging/TableLogSink.h>
-
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ScaColDesc.h>
-
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
-TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName,
-			   Bool useSSM)
-  : LogSinkInterface(filter)
-{
-    LogMessage logMessage(
-	      LogOrigin("TableLogSink", "TableLogSink", WHERE));
 
-    if (Table::isWritable(fileName)) {
+TableLogSink::TableLogSink (const LogFilter& filter, const String& fileName,
+			    Bool useSSM)
+: LogSinkInterface(filter)
+{
+    LogMessage logMessage(LogOrigin("TableLogSink", "TableLogSink", WHERE));
+    if (fileName.empty()) {
+        // Create temporary table
+        logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).
+                            message("Creating temporary log table");
+	LogSink::postGlobally(logMessage);
+        SetupNewTable setup (fileName, logTableDescription(), Table::Scratch);
+	makeTable (setup, useSSM);
+    } else if (Table::isWritable(fileName)) {
 	log_table_p = Table(fileName, Table::Update);
 	logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).message(
 	  String("Opening existing file ") + fileName);
@@ -57,35 +61,24 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName,
 	LogSink::postGloballyThenThrow(logMessage);
     } else {
         // Table does not exist - create
-	logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).message(
-	  String("Creating ") + fileName);
+        logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).
+                            message("Creating " + fileName);
 	LogSink::postGlobally(logMessage);
-        SetupNewTable setup(fileName, logTableDescription(), Table::New);
-// 	// Bind all to the SSM or ISM.
-	if (useSSM) {
-	  StandardStMan stman("SSM", 32768);
-	  setup.bindAll(stman);
-	} else {
-	  StManAipsIO stman;
-	  setup.bindAll(stman);
-	}
-	log_table_p = Table(setup);
-	log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
-	log_table_p.tableInfo().
-	  readmeAddLine("Repository for software-generated logging messages");
+        SetupNewTable setup (fileName, logTableDescription(), Table::New);
+        makeTable (setup, useSSM);
     }
 
     // Attach the columns
-    time_p.attach(log_table_p, columnName(TIME));
-    priority_p.attach(log_table_p, columnName(PRIORITY));
-    message_p.attach(log_table_p, columnName(MESSAGE));
-    location_p.attach(log_table_p, columnName(LOCATION));
-    id_p.attach(log_table_p, columnName(OBJECT_ID));
-    roTime_p.attach(log_table_p, columnName(TIME));
-    roPriority_p.attach(log_table_p, columnName(PRIORITY));
-    roMessage_p.attach(log_table_p, columnName(MESSAGE));
-    roLocation_p.attach(log_table_p, columnName(LOCATION));
-    roId_p.attach(log_table_p, columnName(OBJECT_ID));
+    time_p.attach     (log_table_p, columnName(TIME));
+    priority_p.attach (log_table_p, columnName(PRIORITY));
+    message_p.attach  (log_table_p, columnName(MESSAGE));
+    location_p.attach (log_table_p, columnName(LOCATION));
+    id_p.attach       (log_table_p, columnName(OBJECT_ID));
+    roTime_p.attach     (log_table_p, columnName(TIME));
+    roPriority_p.attach (log_table_p, columnName(PRIORITY));
+    roMessage_p.attach  (log_table_p, columnName(MESSAGE));
+    roLocation_p.attach (log_table_p, columnName(LOCATION));
+    roId_p.attach       (log_table_p, columnName(OBJECT_ID));
 
     // Define the time keywords when not defined yet.
     // In this way the table browser can interpret the times.
@@ -99,13 +92,11 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName,
     }
 }
 
-TableLogSink::TableLogSink(const String &fileName)
-  : LogSinkInterface(LogFilter())
+TableLogSink::TableLogSink (const String& fileName)
+: LogSinkInterface(LogFilter())
 {
-    LogMessage logMessage(
-	      LogOrigin("TableLogSink", "TableLogSink", WHERE));
-
-    if (! Table::isReadable(fileName)) {
+    LogMessage logMessage(LogOrigin("TableLogSink", "TableLogSink", WHERE));
+    if (! Table::isReadable (fileName)) {
         // Table does not exist.
         logMessage.priority(LogMessage::SEVERE).line(__LINE__).message(
 	   fileName + " does not exist or is not readable");
@@ -118,19 +109,19 @@ TableLogSink::TableLogSink(const String &fileName)
     }
 
     // Attach the columns
-    roTime_p.attach(log_table_p, columnName(TIME));
-    roPriority_p.attach(log_table_p, columnName(PRIORITY));
-    roMessage_p.attach(log_table_p, columnName(MESSAGE));
-    roLocation_p.attach(log_table_p, columnName(LOCATION));
-    roId_p.attach(log_table_p, columnName(OBJECT_ID));
+    roTime_p.attach     (log_table_p, columnName(TIME));
+    roPriority_p.attach (log_table_p, columnName(PRIORITY));
+    roMessage_p.attach  (log_table_p, columnName(MESSAGE));
+    roLocation_p.attach (log_table_p, columnName(LOCATION));
+    roId_p.attach       (log_table_p, columnName(OBJECT_ID));
 }
 
-TableLogSink::TableLogSink(const TableLogSink &other)
+TableLogSink::TableLogSink (const TableLogSink& other)
 {
-    copy_other(other);
+    copy_other (other);
 }
 
-TableLogSink &TableLogSink::operator=(const TableLogSink &other)
+TableLogSink& TableLogSink::operator= (const TableLogSink& other)
 {
     if (this != &other) {
         copy_other(other);
@@ -138,24 +129,41 @@ TableLogSink &TableLogSink::operator=(const TableLogSink &other)
     return *this;
 }
 
-void TableLogSink::copy_other(const TableLogSink &other)
+void TableLogSink::copy_other (const TableLogSink& other)
 {
+    LogSinkInterface::operator= (other);
     log_table_p = other.log_table_p;
-    time_p.reference(other.time_p);
-    priority_p.reference(other.priority_p);
-    message_p.reference(other.message_p);
-    location_p.reference(other.location_p);
-    id_p.reference(other.id_p);
-    roTime_p.reference(other.roTime_p);
-    roPriority_p.reference(other.roPriority_p);
-    roMessage_p.reference(other.roMessage_p);
-    roLocation_p.reference(other.roLocation_p);
-    roId_p.reference(other.roId_p);
+    time_p.reference     (other.time_p);
+    priority_p.reference (other.priority_p);
+    message_p.reference  (other.message_p);
+    location_p.reference (other.location_p);
+    id_p.reference       (other.id_p);
+    roTime_p.reference     (other.roTime_p);
+    roPriority_p.reference (other.roPriority_p);
+    roMessage_p.reference  (other.roMessage_p);
+    roLocation_p.reference (other.roLocation_p);
+    roId_p.reference       (other.roId_p);
 }
 
 TableLogSink::~TableLogSink()
 {
     flush();
+}
+
+void TableLogSink::makeTable (SetupNewTable& setup, Bool useSSM)
+{
+    // Bind all to the SSM or ISM.
+    if (useSSM) {
+        StandardStMan stman("SSM", 32768);
+	setup.bindAll(stman);
+    } else {
+        StManAipsIO stman;
+	setup.bindAll(stman);
+    }
+    log_table_p = Table(setup);
+    log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
+    log_table_p.tableInfo().
+	  readmeAddLine("Repository for software-generated logging messages");
 }
 
 void TableLogSink::reopenRW (const LogFilter& aFilter)
@@ -164,7 +172,7 @@ void TableLogSink::reopenRW (const LogFilter& aFilter)
     filter (aFilter);
 }
 
-Bool TableLogSink::postLocally(const LogMessage &message)
+Bool TableLogSink::postLocally (const LogMessage& message)
 {
     Bool posted = False;
     if (filter().pass(message)) {
@@ -183,57 +191,93 @@ Bool TableLogSink::postLocally(const LogMessage &message)
     return posted;
 }
 
-String TableLogSink::columnName(TableLogSink::Columns which)
+uInt TableLogSink::nelements() const
 {
-    switch(which) {
-    case TIME: {return "TIME";}
-    case PRIORITY: {return "PRIORITY";}
-    case MESSAGE: {return "MESSAGE";}
-    case LOCATION: {return "LOCATION";}
-    case OBJECT_ID: {return "OBJECT_ID";}
-    default:
-        AlwaysAssert(! "REACHED", AipsError);
-    }
-    return "TableLogSink::columnName - error: not reached";
+  return table().nrow();
+}
+
+Double TableLogSink::getTime (uInt i) const
+{
+  AlwaysAssert (i < table().nrow(), AipsError);
+  return roTime()(i);
+}
+String TableLogSink::getPriority (uInt i) const
+{
+  AlwaysAssert (i < table().nrow(), AipsError);
+  return roPriority()(i);
+}
+String TableLogSink::getMessage (uInt i) const
+{
+  AlwaysAssert (i < table().nrow(), AipsError);
+  return roMessage()(i);
+}
+String TableLogSink::getLocation (uInt i) const
+{
+  AlwaysAssert (i < table().nrow(), AipsError);
+  return roLocation()(i);
+}
+String TableLogSink::getObjectID (uInt i) const
+{
+  AlwaysAssert (i < table().nrow(), AipsError);
+  return roObjectID()(i);
+}
+
+String TableLogSink::columnName (TableLogSink::Columns which)
+{
+  switch (which) {
+  case TIME:
+    return "TIME";
+  case PRIORITY:
+    return "PRIORITY";
+  case MESSAGE:
+    return "MESSAGE";
+  case LOCATION:
+    return "LOCATION";
+  case OBJECT_ID:
+    return "OBJECT_ID";
+  default:
+    AlwaysAssert(! "REACHED", AipsError);
+  }
+  return "";
 }
 
 TableDesc TableLogSink::logTableDescription()
 {
-    TableDesc desc;
-    desc.comment() = "Log message table";
+  TableDesc desc;
+  desc.comment() = "Log message table";
 
-    desc.addColumn(ScalarColumnDesc<Double>(columnName(TIME),
-					    "MJD in seconds"));
-    ScalarColumnDesc<String> pdesc (columnName(PRIORITY));
-    pdesc.setMaxLength (9);   // Longest is DEBUGGING
-    desc.addColumn(pdesc);
-    desc.addColumn(ScalarColumnDesc<String>(columnName(MESSAGE)));
-    desc.addColumn(ScalarColumnDesc<String>(columnName(LOCATION)));
-    desc.addColumn(ScalarColumnDesc<String>(columnName(OBJECT_ID)));
-    return desc;
+  desc.addColumn (ScalarColumnDesc<Double>(columnName(TIME),
+					   "MJD in seconds"));
+  ScalarColumnDesc<String> pdesc (columnName(PRIORITY));
+  pdesc.setMaxLength (9);   // Longest is DEBUGGING
+  desc.addColumn (pdesc);
+  desc.addColumn (ScalarColumnDesc<String>(columnName(MESSAGE)));
+  desc.addColumn (ScalarColumnDesc<String>(columnName(LOCATION)));
+  desc.addColumn (ScalarColumnDesc<String>(columnName(OBJECT_ID)));
+  return desc;
 }
 
 void TableLogSink::flush()
 {
-    log_table_p.flush();
+  log_table_p.flush();
 }
 
 Bool TableLogSink::isTableLogSink() const
 {
-    return True;
+  return True;
 }
 
-void TableLogSink::concatenate(const TableLogSink &other)
+void TableLogSink::writeLocally (Double mtime,
+				 const String& mmessage,
+				 const String& mpriority,
+				 const String& mlocation,
+				 const String& mobjectID)
 {
-    const uInt offset = table().nrow();
-    const uInt n = other.table().nrow();
-    table().addRow(n);
-
-    for (uInt i=0; i<n; i++) {
-	time().put(offset+i, other.roTime()(i));
-	priority().put(offset+i, other.roPriority()(i));
-	message().put(offset+i, other.roMessage()(i));
-	location().put(offset+i, other.roLocation()(i));
-	objectID().put(offset+i, other.roObjectID()(i));
-    }
+  const uInt offset = table().nrow();
+  table().addRow(1);
+  time().put     (offset, mtime);
+  message().put  (offset, mmessage);
+  priority().put (offset, mpriority);
+  location().put (offset, mlocation);
+  objectID().put (offset, mobjectID);
 }

@@ -1,5 +1,5 @@
 //# TableLogSink.h: Save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_TABLE_LOG_SINK_H)
-#define AIPS_TABLE_LOG_SINK_H
+#if !defined(AIPS_TABLELOGSINK_H)
+#define AIPS_TABLELOGSINK_H
 
 //# Includes
 #include <aips/aips.h>
@@ -40,6 +40,7 @@
 
 //# Forward Declarations
 class TableDesc;
+class SetupNewTable;
 
 // <summary>
 // Save log messages in an AIPS++ Table
@@ -79,8 +80,7 @@ class TableDesc;
 // "Persistent" log messages must be stored in a Table.
 // </motivation>
 //
-// <todo asof="1997/10/09">
-//   <li> Change from ISM to standard SM when available.
+// <todo asof="2001/06/12">
 //   <li> Allow a subset of the columns to be written? e.g., only time, 
 //        message, and priority.
 //   <li> Allow time sorting in concatenate?
@@ -89,143 +89,161 @@ class TableDesc;
 class TableLogSink : public LogSinkInterface
 {
 public:
-    // If <src>fileName</src> exists, attach and append to it, otherwise create
-    // a table with that name. If the table exists, it must have all the
-    // required columns defined by <src>logTableDescription()</src>.
-    // <p>
-    // The <src>useSSM</src> is a temmporary fix to make it possible
-    // to use the old StManAipsIO storage manager for a log table.
-    // It is used by PagedImage to make it possible to access release 1.4
-    // images with release 1.3 software.
-    TableLogSink(const LogFilter &filter, const String &fileName,
-		 Bool useSSM=True);
+  // If <src>fileName</src> exists, attach and append to it, otherwise create
+  // a table with that name. If the table exists, it must have all the
+  // required columns defined by <src>logTableDescription()</src>.
+  // <p>
+  // The <src>useSSM</src> is a temmporary fix to make it possible
+  // to use the old StManAipsIO storage manager for a log table.
+  // It is used by PagedImage to make it possible to access release 1.4
+  // images with release 1.3 software.
+  TableLogSink (const LogFilter& filter, const String& fileName,
+		Bool useSSM=True);
 
-    // Open the log table for readonly.
-    // If needed, reopenRW can be used later to define a filter and
-    // to open the logtable for writing.
-    TableLogSink(const String &fileName);
+  // Open the log table for readonly.
+  // If needed, reopenRW can be used later to define a filter and
+  // to open the logtable for writing.
+  TableLogSink (const String& fileName);
 
-    // After copying, both sinks will write to the same <src>Table</src>.
-    // <group>
-    TableLogSink(const TableLogSink &other);
-    TableLogSink& operator=(const TableLogSink &other);
-    // </group>
+  // After copying, both sinks will write to the same <src>Table</src>.
+  // <group>
+  TableLogSink (const TableLogSink& other);
+  TableLogSink& operator= (const TableLogSink& other);
+  // </group>
 
-    ~TableLogSink();
+  ~TableLogSink();
 
-    // Reopen the logtable for read/write (if needed).
-    // When it actually reopens, the given filter will be used.
-    void reopenRW (const LogFilter &filter);
+  // Reopen the logtable for read/write (if needed).
+  // When it actually reopens, the given filter will be used.
+  void reopenRW (const LogFilter& filter);
 
-    // If the message passes the filter, write it to the log table.
-    virtual Bool postLocally(const LogMessage &message);
+  // If the message passes the filter, write it to the log table.
+  virtual Bool postLocally (const LogMessage& message);
 
-    // Access to the actual log table and its columns.
-    // <note role=caution>
-    // Functions <src>time, priority, message, location, objectID</src>
-    // return a null <src>ScalarColumn</src> object when the logtable is
-    // not writable. Using it may result in using a null pointer
-    // causing a core dump. In debug mode it is checked if the object
-    // is not null.
-    // </note>
-    // <group>
-    const Table &table() const;
-    Table &table();
-    const ROScalarColumn<Double> &roTime() const;
-    ScalarColumn<Double> &time();
-    const ROScalarColumn<String> &roPriority() const;
-    ScalarColumn<String> &priority();
-    const ROScalarColumn<String> &roMessage() const;
-    ScalarColumn<String> &message();
-    const ROScalarColumn<String> &roLocation() const;
-    ScalarColumn<String> &location();
-    const ROScalarColumn<String> &roObjectID() const;
-    ScalarColumn<String> &objectID();
-    // </group>
+  // Get number of messages in sink.
+  virtual uInt nelements() const;
+
+  // Get given part of the i-th message from the sink.
+  // <group>
+  virtual Double getTime (uInt i) const;
+  virtual String getPriority (uInt i) const;
+  virtual String getMessage (uInt i) const;
+  virtual String getLocation (uInt i) const;
+  virtual String getObjectID (uInt i) const;
+  // </group>
+
+  // Access to the actual log table and its columns.
+  // <note role=caution>
+  // Functions <src>time, priority, message, location, objectID</src>
+  // return a null <src>ScalarColumn</src> object when the logtable is
+  // not writable. Using it may result in using a null pointer
+  // causing a core dump. In debug mode it is checked if the object
+  // is not null.
+  // </note>
+  // <group>
+  const Table& table() const;
+  Table& table();
+  const ROScalarColumn<Double>& roTime() const;
+  ScalarColumn<Double>& time();
+  const ROScalarColumn<String>& roPriority() const;
+  ScalarColumn<String>& priority();
+  const ROScalarColumn<String>& roMessage() const;
+  ScalarColumn<String>& message();
+  const ROScalarColumn<String>& roLocation() const;
+  ScalarColumn<String>& location();
+  const ROScalarColumn<String>& roObjectID() const;
+  ScalarColumn<String>& objectID();
+  // </group>
   
-    // Defines the minimal set of columns in the table (more may exist, but
-    // are ignored.
-    enum Columns { 
-      // MJD in seconds, UT. (Double.)
-      TIME, 
-      // Message importance. (String).
-      PRIORITY,
-      // Informational message. (String).
-      MESSAGE, 
-      // Source code origin of the log message. Usually a combination of
-      // class name, method name, file name and line number, but any String
-      // is legal.
-      LOCATION, 
-      // ObjectID of distributed object that created the message (String).
-      // If empty, no OBJECT_ID was set.
-      OBJECT_ID };
+  // Defines the minimal set of columns in the table (more may exist, but
+  // are ignored.
+  enum Columns { 
+    // MJD in seconds, UT. (Double.)
+    TIME, 
+    // Message importance. (String).
+    PRIORITY,
+    // Informational message. (String).
+    MESSAGE, 
+    // Source code origin of the log message. Usually a combination of
+    // class name, method name, file name and line number, but any String
+    // is legal.
+    LOCATION, 
+    // ObjectID of distributed object that created the message (String).
+    // If empty, no OBJECT_ID was set.
+    OBJECT_ID
+  };
 
-    // Turn the <src>Columns</src> enum into a String which is the actual
-    // column name in the <src>Table</src>.
-    static String columnName(Columns which);
+  // Turn the <src>Columns</src> enum into a String which is the actual
+  // column name in the <src>Table</src>.
+  static String columnName(Columns which);
 
-    // Description of the log table. You can use this if, e.g., you do not
-    // want to use the storage managers that this class creates by default
-    // (currently Miriad).
-    static TableDesc logTableDescription();
+  // Description of the log table. You can use this if, e.g., you do not
+  // want to use the storage managers that this class creates by default
+  // (currently Miriad).
+  static TableDesc logTableDescription();
 
-    // Write out any pending output to the table.
-    virtual void flush();
+  // Write out any pending output to the table.
+  virtual void flush();
 
-    // Returns True for this class (only). Note that you can call
-    // the inherited functions castToTableLogSink() when this is True.
-    virtual Bool isTableLogSink() const;
+  // Returns True for this class (only). Note that you can call
+  // the inherited functions castToTableLogSink() when this is True.
+  virtual Bool isTableLogSink() const;
     
-    // Concatenate the log table in "other" onto the end of our log table.
-    void concatenate(const TableLogSink &other);
+  // Write a message (usually from another logsink) into the local one.
+  virtual void writeLocally (Double time, const String& message,
+			     const String& priority, const String& location,
+			     const String& objectID);
 
 private:
-    // Undefined and inaccessible
-    TableLogSink();
-    // Avoid duplicating code in copy ctor and assignment operator
-    void copy_other(const TableLogSink &other);
+  // Undefined and inaccessible
+  TableLogSink();
+  // Avoid duplicating code in copy ctor and assignment operator
+  void copy_other(const TableLogSink& other);
+  // Make a new log table.
+  void makeTable (SetupNewTable&, Bool useSSM);
 
-    Table log_table_p;
-    // Message
-    ROScalarColumn<Double>  roTime_p;
-    ROScalarColumn<String>  roPriority_p;
-    ROScalarColumn<String>  roMessage_p;
-    // Origin
-    ROScalarColumn<String>  roLocation_p;
-    // ObjectID
-    ROScalarColumn<String>  roId_p;
-    ScalarColumn<Double>  time_p;
-    ScalarColumn<String>  priority_p;
-    ScalarColumn<String>  message_p;
-    // Origin
-    ScalarColumn<String>  location_p;
-    // ObjectID
-    ScalarColumn<String>  id_p;
+  Table log_table_p;
+  // Message
+  ROScalarColumn<Double>  roTime_p;
+  ROScalarColumn<String>  roPriority_p;
+  ROScalarColumn<String>  roMessage_p;
+  // Origin
+  ROScalarColumn<String>  roLocation_p;
+  // ObjectID
+  ROScalarColumn<String>  roId_p;
+  ScalarColumn<Double>  time_p;
+  ScalarColumn<String>  priority_p;
+  ScalarColumn<String>  message_p;
+  // Origin
+  ScalarColumn<String>  location_p;
+  // ObjectID
+  ScalarColumn<String>  id_p;
 };
 
 //# Inlines
-inline const Table &TableLogSink::table() const {return log_table_p;}
-inline Table &TableLogSink::table() {return log_table_p;}
+inline const Table& TableLogSink::table() const {return log_table_p;}
+inline Table& TableLogSink::table() {return log_table_p;}
 
-inline const ROScalarColumn<Double> &TableLogSink::roTime() const
-   {return roTime_p;}
-inline ScalarColumn<Double> &TableLogSink::time()
+inline const ROScalarColumn<Double>& TableLogSink::roTime() const
+  {return roTime_p;}
+inline ScalarColumn<Double>& TableLogSink::time()
   {DebugAssert(!time_p.isNull(),AipsError); return time_p;}
-inline const ROScalarColumn<String> &TableLogSink::roPriority() const 
+inline const ROScalarColumn<String>& TableLogSink::roPriority() const 
    {return roPriority_p;}
-inline ScalarColumn<String> &TableLogSink::priority()
+inline ScalarColumn<String>& TableLogSink::priority()
   {DebugAssert(!priority_p.isNull(),AipsError); return priority_p;}
-inline const ROScalarColumn<String> &TableLogSink::roLocation() const 
+inline const ROScalarColumn<String>& TableLogSink::roLocation() const 
   {return roLocation_p;}
-inline ScalarColumn<String> &TableLogSink::location()
+inline ScalarColumn<String>& TableLogSink::location()
   {DebugAssert(!location_p.isNull(),AipsError); return location_p;}
-inline const ROScalarColumn<String> &TableLogSink::roObjectID() const 
+inline const ROScalarColumn<String>& TableLogSink::roObjectID() const 
   {return roId_p;}
-inline ScalarColumn<String> &TableLogSink::objectID()
+inline ScalarColumn<String>& TableLogSink::objectID()
   {DebugAssert(!id_p.isNull(),AipsError); return id_p;}
-inline const ROScalarColumn<String> &TableLogSink::roMessage() const
+inline const ROScalarColumn<String>& TableLogSink::roMessage() const
   {return roMessage_p;}
-inline ScalarColumn<String> &TableLogSink::message()
+inline ScalarColumn<String>& TableLogSink::message()
   {DebugAssert(!message_p.isNull(),AipsError); return message_p;}
+
 
 #endif

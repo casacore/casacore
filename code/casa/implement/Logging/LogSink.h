@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOG_SINK_H)
-#define AIPS_LOG_SINK_H
+#if !defined(AIPS_LOGSINK_H)
+#define AIPS_LOGSINK_H
 
 #include <aips/aips.h>
 #include <aips/Logging/LogSinkInterface.h>
@@ -64,7 +64,8 @@
 //      destination will typically be a GUI window or standard output.
 // <li> A <i>local</i> destination which is intended to log changes to
 //      particular dataset(s). The local destination will typically be an
-//      AIPS++ <linkto class="Table">Table</linkto>.
+//      AIPS++ <linkto class="Table">Table</linkto>, but there is also
+//      a local sink for temporary storage in memory.
 // </ol>
 // Normally the <src>post()</src> member function will be called which
 // sends the message to both the global and local destinations, however one or
@@ -134,87 +135,107 @@
 class LogSink : public LogSinkInterface
 {
 public:
-    //#If you add more sink types, modify the <ol> in the synopsis as well.
-    // Create a null local sink that throws all messages away. If a filter
-    // isn't defined, default to <src>NORMAL</src>.
-    // <group>
-    LogSink();
-    LogSink(const LogFilter &filter);
-    // </group>
-    // Log to an ostream. It is the responsiblity of the caller to ensure that
-    // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
-    // Normally you would use <src>&cerr</src> as the argument.
-    LogSink(const LogFilter &filter, ostream *os);
-    // Log to an AIPS++ <linkto class=Table>Table</linkto>. If fileName does
-    // not exist it will be created, if it does exist it will be appended to.
-    // The description of the table and some useful utility functions
-    // (for manipulating log table descriptions) for log tables are
-    // available in <linkto class=TableLogSink>TableLogSink</linkto>.
-    LogSink(const LogFilter &filter, const String &fileName);
+  //#If you add more sink types, modify the <ol> in the synopsis as well.
+  // Create a null local sink that throws all messages away or create
+  // a memory local sink that holds the messages in memory.
+  // If a filter isn't defined, default to <src>NORMAL</src>.
+  // <group>
+  LogSink ();
+  LogSink (const LogFilter &filter, Bool nullSink = True);
+  // </group>
 
-    // Make a referencing copy of <src>other</src>. That is, if you post a
-    // message to the new object, it behaves as if you had posted it to the
-    // old one (so long as their filters are the same).
-    // <group>
-    LogSink(const LogSink &other);
-    LogSink &operator=(const LogSink &other);
-    // </group>
+  // Log to an ostream. It is the responsiblity of the caller to ensure that
+  // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
+  // Normally you would use <src>&cerr</src> as the argument.
+  LogSink (const LogFilter &filter, ostream *os);
 
-    ~LogSink();
+  // Log to an AIPS++ <linkto class=Table>Table</linkto>. If fileName does
+  // not exist it will be created, if it does exist it will be appended to.
+  // The description of the table and some useful utility functions
+  // (for manipulating log table descriptions) for log tables are
+  // available in <linkto class=TableLogSink>TableLogSink</linkto>.
+  // <group>
+  LogSink (const LogFilter &filter, const String &fileName);
+  LogSink (const LogFilter &filter, const Char* fileName);
+  // </group>
 
-    // Send <src>message</src> to both the local and global sink. Return
-    // <src>True</src> if it passes either of them.
-    Bool post(const LogMessage &message);
+  // Make a referencing copy of <src>other</src>. That is, if you post a
+  // message to the new object, it behaves as if you had posted it to the
+  // old one (so long as their filters are the same).
+  // <group>
+  LogSink (const LogSink &other);
+  LogSink &operator= (const LogSink &other);
+  // </group>
 
-    // Send <src>message</src> to the global sink only. Returns <src>True</src>
-    // if it passes the filter.
-    static Bool postGlobally(const LogMessage &message);
-    // Send <src>message</src> to the local sink only. Returns <src>True</src>
-    // if it passes the filter.
-    virtual Bool postLocally(const LogMessage &message);
+  ~LogSink();
 
-    // Post <src>message</src> and then throw an <src>AipsError</src> exception
-    // containing <src>message.toString()</src>. It is always posted as a 
-    // <src>SEVERE</src> priority message, no matter what 
-    // <src>message.priority()</src> says.
-    // <group>
-    void postThenThrow(const LogMessage &message);
-    static void postGloballyThenThrow(const LogMessage &message);
-    // </group>
+  // Send <src>message</src> to both the local and global sink. Return
+  // <src>True</src> if it passes either of them.
+  Bool post (const LogMessage &message);
 
-    //# Bring out of LogSinkInterface only for documentation purposes
-    // Get or set the filter of this particular <src>LogSink</src>.
-    // <group>
-    virtual const LogFilter &filter() const;
-    virtual LogSinkInterface &filter(const LogFilter &filter);
-    // </group>
+  // Send <src>message</src> to the global sink only. Returns <src>True</src>
+  // if it passes the filter.
+  static Bool postGlobally (const LogMessage &message);
+  // Send <src>message</src> to the local sink only. Returns <src>True</src>
+  // if it passes the filter.
+  virtual Bool postLocally (const LogMessage &message);
 
-    // Change the sink that this <src>LogSink</src> actually uses.
-    // <group>
-    const LogSinkInterface &localSink() const;
-    LogSinkInterface &localSink();
-    LogSink &localSink(LogSinkInterface *&fromNew);
-    // </group>
+  // Post <src>message</src> and then throw an <src>AipsError</src> exception
+  // containing <src>message.toString()</src>. It is always posted as a 
+  // <src>SEVERE</src> priority message, no matter what 
+  // <src>message.priority()</src> says.
+  // <group>
+  void postThenThrow (const LogMessage &message);
+  static void postGloballyThenThrow (const LogMessage &message);
+  // </group>
 
-    // Get/set the global sink. The global sink defaults to using
-    // <src>cerr</src>. Generally applications code shouldn't change the global
-    // sink.
-    // <group>
-    static LogSinkInterface &globalSink();
-    static void globalSink(LogSinkInterface *&fromNew);
-    // </group>
+  // Get number of messages in local sink.
+  virtual uInt nelements() const;
 
-    // Write any pending output.
-    virtual void flush();
+  // Get given part of the i-th message from the local sink.
+  // <group>
+  virtual Double getTime (uInt i) const;
+  virtual String getPriority (uInt i) const;
+  virtual String getMessage (uInt i) const;
+  virtual String getLocation (uInt i) const;
+  virtual String getObjectID (uInt i) const;
+  // </group>
+
+  //# Bring out of LogSinkInterface only for documentation purposes
+  // Get or set the filter of this particular <src>LogSink</src>.
+  // <group>
+  virtual const LogFilter &filter() const;
+  virtual LogSinkInterface &filter (const LogFilter &filter);
+  // </group>
+
+  // Change the sink that this <src>LogSink</src> actually uses.
+  // <group>
+  const LogSinkInterface &localSink() const;
+  LogSinkInterface &localSink();
+  LogSink &localSink (LogSinkInterface *&fromNew);
+  // </group>
+
+  // Get/set the global sink. The global sink defaults to using
+  // <src>cerr</src>. Generally applications code shouldn't change the global
+  // sink.
+  // <group>
+  static LogSinkInterface &globalSink();
+  static void globalSink (LogSinkInterface *&fromNew);
+  // </group>
+
+  // Write any pending output.
+  virtual void flush();
+
 private:
-    CountedPtr<LogSinkInterface> local_sink_p;
-    static CountedPtr<LogSinkInterface> global_sink_p;
+  CountedPtr<LogSinkInterface> local_sink_p;
+  static CountedPtr<LogSinkInterface> global_sink_p;
 
-    // The following is a reference to the global sink. It is created to
-    // ensure that the global sink is not destroyed before the last local
-    // reference to it is destroyed. This can happen if you have a static
-    // LogSink (or LogIO).
-    CountedPtr<LogSinkInterface> local_ref_to_global_p;
+  // The following is a reference to the global sink. It is created to
+  // ensure that the global sink is not destroyed before the last local
+  // reference to it is destroyed. This can happen if you have a static
+  // LogSink (or LogIO).
+  CountedPtr<LogSinkInterface> local_ref_to_global_p;
 };
+
 
 #endif
