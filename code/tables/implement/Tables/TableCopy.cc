@@ -43,23 +43,73 @@ Table TableCopy::makeEmptyTable (const String& newName, const Table& tab,
 				 Table::TableOption option, Bool replaceTSM,
 				 Bool noRows)
 {
-  SetupNewTable newtab (newName, tab.actualTableDesc(), Table::New);
-  // Get the data manager info.
-  // If needed, replace all TiledDataStMan by TiledShapeStMan.
+  TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo = tab.dataManagerInfo();
   if (replaceTSM) {
-    for (uInt i=0; i<dminfo.nfields(); i++) {
-      Record& rec = dminfo.rwSubRecord(i);
-      if (rec.asString("TYPE") == "TiledDataStMan") {
-	rec.define("TYPE", "TiledShapeStMan");
-      }
-    }
+    adjustTSM (tabDesc, dminfo);
   }
+  SetupNewTable newtab (newName, tabDesc, Table::New);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()));
 }
 
-   
+void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)
+{
+  Vector<String> dataNames, coordNames, idNames;
+  // Keep track of hypercolumns to be changed.
+  Vector<String> hcChange;
+  uInt nrhc = 0;
+  // Loop through all hypercolumn descriptions.
+  Vector<String> hcNames = tabDesc.hypercolumnNames();
+  for (uInt i=0; i<hcNames.nelements(); i++) {
+    // Find the hypercolumn in the dminfo.
+    // If found, adjust if needed.
+    for (uInt j=0; j<dminfo.nfields(); j++) {
+      const Record& rec = dminfo.subRecord(j);
+      if (rec.asString("NAME") == hcNames(i)) {
+	if (rec.asString("TYPE") == "TiledDataStMan") {
+	  // Replace TiledDataStMan by TiledShapeStMan.
+	  Record& rwrec = dminfo.rwSubRecord(j);
+	  rwrec.define("TYPE", "TiledShapeStMan");
+	  // Get hypercolumn description.
+	  tabDesc.hypercolumnDesc (hcNames(i), dataNames,
+				   coordNames, idNames);
+	  uInt nrid = idNames.nelements();
+	  if (nrid > 0) {
+	    // The hypercolumn definition contains ID columns, so it
+	    // has to be changed later in the TableDesc.
+	    hcChange.resize (nrhc+1, True);
+	    hcChange(nrhc++) = hcNames(i);
+	    // Keep the dminfo columns which are not an ID column.
+	    Vector<String> colNames = rec.asArrayString("COLUMNS");
+	    Vector<String> colsout(colNames.nelements());
+	    uInt nrout = 0;
+	    for (uInt k=0; k<colNames.nelements(); k++) {
+	      Bool found = False;
+	      for (uInt k1=0; k1<idNames.nelements(); k1++) {
+		if (colNames(k) == idNames(k1)) {
+		  found = True;
+		  break;
+		}
+	      }
+	      if (!found) {
+		colsout(nrout++) = colNames(k);
+	      }
+	    }
+	    colsout.resize (nrout, True);
+	    rwrec.define ("COLUMNS", colsout);
+	  }
+	}	  
+	break;
+      }
+    }
+  }
+  if (nrhc > 0) {
+    tabDesc.removeIDhypercolumns (hcChange);
+  }
+}
+
+
 void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
 			  uInt startin, uInt nrrow)
 {

@@ -106,9 +106,14 @@ public:
 
   // Copy the subtables in the given keywordset to the output keywordset
   // in the table with the given name.
-  static void TableCopy::copySubTables (TableRecord& outKeys,
-					const TableRecord& inKeys,
-					const String& outName);
+  static void copySubTables (TableRecord& outKeys,
+			     const TableRecord& inKeys,
+			     const String& outName);
+
+  // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
+  // Since TiledShapeStMan does not support ID columns, they are
+  // adjusted as well in tabDesc and dminfo.
+  static void adjustTSM (TableDesc& tabDesc, Record& dminfo);
 };
 
 
