@@ -1,5 +1,5 @@
 //# tDiskShape.cc: Test programs for the DiskShape class
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,29 +68,30 @@ int main() {
 	MVDirection sampleDirVal(Quantity(0,"deg"), 
 				 Quantity(90, "deg") - Quantity(.5001, "'"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(defDisk.sample(sampleDir, pixelSize), 0.0), 
+ 	AlwaysAssert(near(defDisk.sample(sampleDir, pixelSize,pixelSize), 0.0),
  		     AipsError);
       }
       {
 	MVDirection sampleDirVal(Quantity(0,"deg"), 
 				 Quantity(90, "deg") - Quantity(.4999, "'"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(defDisk.sample(sampleDir, pixelSize), peak), 
+ 	AlwaysAssert(near(defDisk.sample(sampleDir,pixelSize,pixelSize), peak),
  		     AipsError);
       }
       {
 	MVDirection sampleDirVal(Quantity(90,"deg"), 
 				 Quantity(90, "deg") - Quantity(.5001, "'"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(defDisk.sample(sampleDir, pixelSize), 0.0), 
+ 	AlwaysAssert(near(defDisk.sample(sampleDir,pixelSize,pixelSize), 0.0), 
  		     AipsError);
       }
       {
+	const MVAngle halfPix = pixelSize.radian()/2.0;
 	MVDirection sampleDirVal(Quantity(90,"deg"), 
 				 Quantity(90, "deg") - Quantity(.4999, "'"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(defDisk.sample(sampleDir, pixelSize), peak), 
- 		     AipsError);
+ 	AlwaysAssert(near(defDisk.sample(sampleDir,halfPix,pixelSize),
+			  peak/2.0), AipsError);
       }
       cout << "Passed the default disk shape test" << endl;
     }
@@ -116,7 +117,7 @@ int main() {
       dirs(7) = MVDirection(Quantity(0.999,"deg"), Quantity(0.0, "deg"));
       Vector<Double> results(8, -1.0);
       ds.sample(results, dirs, MeasRef<MDirection>(MDirection::J2000),
-		pixelSize);
+		pixelSize, pixelSize);
       AlwaysAssert(nearAbs(results(0), 0.0), AipsError);
       AlwaysAssert(near(results(1), peak), AipsError);
       AlwaysAssert(nearAbs(results(2), 0.0), AipsError);
@@ -131,14 +132,14 @@ int main() {
 	MVDirection sampleDirVal(Quantity(0.003, "deg"), 
 				 Quantity(1.999, "deg"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(ds.sample(sampleDir, pixelSize), peak), 
+ 	AlwaysAssert(near(ds.sample(sampleDir, pixelSize, pixelSize), peak), 
  		     AipsError);
       }
       {
 	MVDirection sampleDirVal(Quantity(-0.003, "deg"),
 				 Quantity(1.999, "deg"));
 	MDirection sampleDir(sampleDirVal, MDirection::J2000);
- 	AlwaysAssert(near(ds.sample(sampleDir, pixelSize), 0.0), 
+ 	AlwaysAssert(near(ds.sample(sampleDir, pixelSize, pixelSize), 0.0), 
  		     AipsError);
       }
       cout << "Passed the arbitrary disk shape test" << endl;
