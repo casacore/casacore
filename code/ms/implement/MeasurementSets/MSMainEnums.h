@@ -270,8 +270,6 @@ public:
     POLARIZATION,
     // Back-end processor information subtable. Description of correlator etc.
     PROCESSOR,
-    // Source subtable. Positions etc. for each source.
-    SOURCE,
     // Spectral window subtable. Frequencies, bandwidths, polarizations.
     SPECTRAL_WINDOW,
     // State subtable. Observing modes and states (cal, ref etc.)
@@ -295,6 +293,8 @@ public:
     // Sorted reference tables of the main table. First one is main table.<BR>
     // Table(NUM_SORTED_TABLES)
     SORTED_TABLES,
+    // Source subtable. Positions etc. for each source.
+    SOURCE,
     // SysCal subtable. System calibration data (Tsys etc.)
     SYSCAL,
     // Weather subtable. Weather info for each antenna.
