@@ -103,8 +103,8 @@ Bool NewFile::valueOK(const String &value, String &error) const
 			  Table table(value, Table::Update);
 			  if (table.isMultiUsed()) {
 			    removed = False;
-                                extra_error = "The table is in use by another "
-                                              "process. It must be closed first.";
+			    extra_error = "The table is in use by another "
+			      "process. It must be closed first.";
 			  } else {
 			    table.markForDelete();
 			    removed = True;
