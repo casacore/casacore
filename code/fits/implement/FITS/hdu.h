@@ -800,7 +800,6 @@ typedef FitsField<DComplex> DComplexFitsField;
 typedef FitsField<FitsVADesc> VADescFitsField;
 
 //<summary> FITS array of given type </summary>
-
 template <class TYPE>
 class FitsArray : public FitsField<TYPE> {
     public:
@@ -819,7 +818,8 @@ class FitsArray : public FitsField<TYPE> {
 	int *factor;
 };
 
-//<summmary> FITS array of FitsBit type </summmary>
+//<summary> FITS array of FitsBit type </summary>
+
 //<templating>
 //#until cxx2html can handle this, duplicate:
 //<srcblock>
