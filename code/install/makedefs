@@ -153,6 +153,13 @@ PGPLOTINCD  = $(PGPLOTROOT)/include
 PGPLOTLIBD  = $(PGPLOTROOT)/lib
 PGPLOTLIB  := -lcpgplot -lpgplot
 
+# The preprocessor variable NEED_FORTRAN_UNDERSCORES is used by
+# aipsview to link against PGPLOT.
+# Define it as 1 if the Fortran function names in the PGPLOT library
+# end with an underscore. Otherwise define it as 0.
+# Default is 0 for __hpux__, otherwise 1.
+# CPPSTD   += -DNEED_FORTRAN_UNDERSCORES=1
+
 # PGPLOT/Motif library (libXmPgplot.a); includes standard PGPLOT.
 XmPGPLOTROOT  = $(PGPLOTROOT)
 XmPGPLOTDEFS :=
@@ -871,6 +878,14 @@ else
    SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
 endif
 
+ifeq "$(MAKEMODE)" "programmer"
+   # Programmer directories which have not been checked in.
+   PGMRDIR  := $(patsubst %/,%,$(PGMRCODE)/$(CODESUBD))
+   PGMRSUBS := $(filter-out $(SUBDIRS), \
+                  $(notdir  $(patsubst %/makefile,%, \
+                     $(wildcard  $(PGMRDIR)/*/makefile))))
+endif
+
 CODESUBS := $(addprefix $(CODEDIR)/,$(SUBDIRS))
 
 # All sources in this directory.
@@ -896,6 +911,7 @@ endif
 # Subdirectories (used within rule command sequences).
 export SUBDIRS
 export CODESUBS
+export PGMRSUBS
 
 # These are for 'depend'.
 export CPP      := $(CPP)
@@ -1090,6 +1106,13 @@ ifdef SUBDIRS
 	-@ $(MAKE) -C $@
 endif
 
+ifdef PGMRSUBS
+   $(PGMRSUBS) : FORCE
+	-@ echo ""
+	-@ echo gmake[$(MAKELEVEL)]: $(MAKE) -C $@
+	-@ $(MAKE) -C $@
+endif
+
 
 # Rules for creating system directories.
 #---------------------------------------
@@ -1167,7 +1190,7 @@ dependsys :
 # Rule to invoke a non-recursive rule recursively.
 #-------------------------------------------------
 recurse : $(TARGET)
-	@ for i in $$SUBDIRS ; do \
+	@ for i in $$SUBDIRS $$PGMRSUBS; do \
 	     if [ "$(MAKELEVEL)" = 0 ] ; then \
 	        echo "" ; \
 	        echo gmake[$(MAKELEVEL)]: $(MAKE) -C $$i TARGET=$(TARGET) $@ ; \
