@@ -81,6 +81,7 @@ void doit3 (CoordinateSystem& cSys);
 void doit4 ();
 void doit5 ();
 void doit6 ();
+void doit7 ();
 
 
 
@@ -1569,7 +1570,7 @@ LinearCoordinate makeLinearCoordinate (uInt nAxes)
       crval(i) = crpix(i) * 3.13;
    }
    xform = 0.0; xform.diagonal() = 1.0;
-   units = "m";
+   units.set(String("s"));
    if (nAxes>1) units(1) = "rad";
    if (nAxes>2) units(2) = "kg";
 //
@@ -1640,22 +1641,114 @@ CoordinateSystem makeCoordinateSystem(uInt& nCoords,
 void doit6 ()
 {
    CoordinateSystem cSys;
-   DirectionCoordinate dC = makeDirectionCoordinate();
+   SpectralCoordinate spC = makeSpectralCoordinate();     // 0
+   cSys.addCoordinate(spC);
+   DirectionCoordinate dC = makeDirectionCoordinate();    // 1 & 2
    cSys.addCoordinate(dC);
-//
-   Vector<Bool> axes(cSys.nWorldAxes(), True);
-   Vector<Int> shape(cSys.nPixelAxes(), 10);
-   Bool failed = False;
    Coordinate* pC = 0;
-   try {
-      pC = cSys.makeFourierCoordinate (axes, shape);
-   } catch (AipsError x) {
-     failed = True;
-   } end_try;
-   if (!failed) {
-      throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
-   }
-   delete pC;
-}   
-  
+//
+   Vector<Bool> axes(cSys.nPixelAxes(), False);
+   Vector<Int> shape(cSys.nPixelAxes(), 0);
+   shape(0) = 64;
+   shape(1) = 128;
+   shape(2) = 256;
 
+// Induced failures
+
+   {
+
+// No axes
+
+      Bool failed = False;
+      try {
+         pC = cSys.makeFourierCoordinate (axes, shape);
+      } catch (AipsError x) {
+        failed = True;
+      } end_try;
+      if (!failed) {
+         throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+      }
+      delete pC;
+   }
+
+   {
+
+// Illegal axes
+
+      Bool failed = False;
+      Vector<Bool> axes2(20, True);
+      try {
+         pC = cSys.makeFourierCoordinate (axes2, shape);
+      } catch (AipsError x) {
+        failed = True;
+      } end_try;
+      if (!failed) {
+         throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+      }
+      delete pC;
+   }
+
+   {
+
+// Illegal shape
+
+      Bool failed = False;
+      Vector<Int> shape2(20, 100);
+      try {
+         pC = cSys.makeFourierCoordinate (axes, shape2);
+      } catch (AipsError x) {
+        failed = True;
+      } end_try;
+      if (!failed) {
+         throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+      }
+      delete pC;
+   }
+
+// These should work.   All the underlying coordinates have been 
+// tested, so just make sure the right coordinate has been replaced
+
+   {
+      axes.set(False);
+      axes(0) = True;
+      pC = cSys.makeFourierCoordinate (axes, shape);
+//
+      Vector<String> units2 = pC->worldAxisUnits();
+      Vector<String> names2 = pC->worldAxisNames();
+      for (uInt i=0; i<cSys.nPixelAxes(); i++) {
+        if (i==0) {
+           if (units2(i)!=String("s")) {
+              throw(AipsError("makeFourierCoordinate (1) failed units test"));
+           }
+           if (names2(i)!=String("Time")) {
+              throw(AipsError("makeFourierCoordinate (1) failed names test"));
+           }
+        } else {
+            if (units2(i)!=cSys.worldAxisUnits()(i)) {
+               throw(AipsError("makeFourierCoordinate (1) failed units test"));
+            }
+            if (names2(i)!=cSys.worldAxisNames()(i)) {
+               throw(AipsError("makeFourierCoordinate (1) failed names test"));
+            }
+        }
+      }
+      delete pC;
+   }
+
+   {
+      axes.set(True);
+      pC = cSys.makeFourierCoordinate (axes, shape);
+//
+      Vector<String> units2 = pC->worldAxisUnits();
+      Vector<String> names2 = pC->worldAxisNames();
+      if (units2(0)!=String("s") || units2(1)!=String("lambda") ||
+          units2(2)!=String("lambda")) {
+         throw(AipsError("makeFourierCoordinate (2) failed units test"));
+      }
+      if (names2(0)!=String("Time") || names2(1)!=String("UU") ||
+          names2(2)!=String("VV")) {
+         throw(AipsError("makeFourierCoordinate (2) failed names test"));
+      }
+      delete pC;
+   }
+}
