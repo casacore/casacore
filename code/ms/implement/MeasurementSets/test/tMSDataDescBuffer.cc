@@ -30,15 +30,21 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/MeasurementSets/NewMSDataDescription.h>
+#include <aips/Tables/SetupNewTab.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
 int main() {
-  const String filename = "tMSDataDescBuffer_tmp.table";
+  const String filename1 = "tMSDataDescBuffer1_tmp.table";
+  const String filename2= "tMSDataDescBuffer2_tmp.table";
   try {
-    // Check the default constructor
-    MSDataDescBuffer newBuffer;
+    // Check the constructor
+    SetupNewTable setup1(filename1, NewMSDataDescription::requiredTableDesc(), 
+			Table::Scratch);
+    MSDataDescBuffer newBuffer(setup1);
     // test the ok function.
     AlwaysAssert(newBuffer.ok(), AipsError);
     // test the addRow & nrow functions.
@@ -47,7 +53,10 @@ int main() {
     AlwaysAssert(newBuffer.ok(), AipsError);
     AlwaysAssert(newBuffer.nrow() == 20, AipsError);
     {
-      MSDataDescBuffer buffer;
+      SetupNewTable setup2(filename2, 
+			  NewMSDataDescription::requiredTableDesc(),
+			  Table::New);
+      MSDataDescBuffer buffer(setup2);
       { // test the addRow & nrow functions.
   	AlwaysAssert(buffer.nrow() == 0, AipsError);
   	buffer.addRow(5);
@@ -81,8 +90,6 @@ int main() {
 	buffer.spectralWindowId().put(1, 100);
 	buffer.polarizationId().put(1, 101);
 	buffer.flagRow().put(1, True);
-	// Save the buffer to disk
-	buffer.save(filename, True);
       }
     }
     { // check the data has not been lost.
@@ -113,8 +120,8 @@ int main() {
     return 1;
   }
   try {
-    // Check that the Table ended up on disk (after the save function).
-    NewMSDataDescription ms(filename);
+    // Check that the Table ended up on disk
+    NewMSDataDescription ms(filename2);
     ms.markForDelete();
   }
   catch (AipsError x) {
