@@ -904,7 +904,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // Loop over number of coordinates
 
    ostrstream oss;
-   for (Int i=0; i<nCoordinates(); i++) {
+   for (Int i=0; i<Int(nCoordinates()); i++) {
 
 // Although the coordinates are checked for their types in
 // the coordinate comparison routines, we can save ourselves
@@ -951,7 +951,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // we don't check it
 
       Bool allGone = True;
-      for (Int j=0; j<worldAxes(i).nelements(); j++) {
+      for (Int j=0; j<Int(worldAxes(i).nelements()); j++) {
          if (worldAxes(i)(j) >= 0) {
             allGone = False;
             break;
@@ -971,7 +971,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 
          Int coord, axisInCoord;
          Int k = 0;
-         for (j=0; j<excludePixelAxes.nelements(); j++) {
+         for (j=0; j<Int(excludePixelAxes.nelements()); j++) {
 
 // Any invalid excludePixelAxes are dealt with here.  If they are
 // rubbish, we just don't find them ! 
@@ -983,8 +983,8 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // We may have to resize if the stupid user has given us duplicates
 // in the list of exclusion axes
 
-               if (k == excludeAxes.nelements()) {
-                  Int n = excludeAxes.nelements() + excSize;
+               if (k == Int(excludeAxes.nelements())) {
+                  Int n = Int(excludeAxes.nelements()) + excSize;
                   excludeAxes.resize(n,True);
                }
                excludeAxes(k++) = axisInCoord;
@@ -998,7 +998,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // and compare the two 
 
          Int coord1, coord2, axisInCoord1, axisInCoord2;
-         for (j=0; j<worldAxes(i).nelements(); j++) {
+         for (j=0; j<Int(worldAxes(i).nelements()); j++) {
             if (worldAxes(i)(j) >= 0) {
 
 // Not removed (can't find it if it's been removed !)
@@ -1204,7 +1204,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Int tabCoord = -1;
     while ((tabCoord = findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
 	if (tabularCoordinate(tabCoord).pixelValues().nelements() > 0) {
-	    os << LogIO::SEVERE <<
+	    os << LogIO::WARN <<
 		"Note: Your coordinate system has one or more TABULAR axes.\n"
 		"The lookup table will be lost in the conversion to FITS, and\n"
 		"will be replaced by averaged (i.e. linearized) axes." <<
@@ -1330,7 +1330,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 			name = name + "-NCP";
 		    } else {
 			// Doesn't appear to be NCP
-			os << LogIO::SEVERE << "SIN projection with non-zero"
+			os << LogIO::WARN << "SIN projection with non-zero"
 			    " projp does not appear to be NCP." << endl <<
 			    "However, assuming NCP anyway." << LogIO::POST;
 			name = name + "-NCP";
@@ -1341,7 +1341,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	    default:
 		if (i == longAxis) {
 		    // Only print the message once for long/lat
-		    os << LogIO::SEVERE << dc.projection().name() << 
+		    os << LogIO::WARN << dc.projection().name() << 
 			" is not known to standard FITS (it is known to WCS)."
 		       << LogIO::POST;
 		}
@@ -1390,7 +1390,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
 	crota(latAxis) = (rholong + rholat)/2.0;
 	if (!::near(rholong, rholat)) {
-	    os << LogIO::SEVERE << sprefix + "rota is not very accurate."
+	    os << LogIO::WARN << sprefix + "rota is not very accurate."
 		" PC matrix"
 		" is not a pure rotation.";
 	    if (! writeWCS) {
@@ -1612,7 +1612,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	}
 	
     } catch (AipsError x) {
-	os << LogIO::SEVERE << "Error retrieving *rval, *rpix, *delt, *type "
+	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
 	    "from header";
 	return False;
     } end_try;
@@ -1676,7 +1676,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 			(i == latAxis  && j == longAxis)) {
 			continue;
 		    } else {
-			os << LogIO::SEVERE << sprefix + "rota may only" <<
+			os << LogIO::WARN << sprefix + "rota may only" <<
 			    " be set for longitude/latitude axes" << 
 			    LogIO::POST;
 		    }
@@ -1736,7 +1736,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	try {
 	    projn = Projection(ptype, projp);
 	} catch (AipsError x) {
-	    os << LogIO::SEVERE << "Error forming projection, maybe the "
+	    os << LogIO::WARN << "Error forming projection, maybe the "
 		"wrong number of parameters\n(" << x.getMesg() << ")" << 
 		LogIO::POST;
 	    return False;
@@ -1855,7 +1855,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 					 os)) {
 	    coordsys.addCoordinate(tmp);
 	} else {
-	    os << LogIO::SEVERE << "Cannot convert apparent spectral axis " <<
+	    os << LogIO::WARN << "Cannot convert apparent spectral axis " <<
 		ctype(specAxis) << " into a true spectral coordinate (error="
 	       << error << "). Turning it into a linear axis." << LogIO::POST;
 	    specAxis = -1;
