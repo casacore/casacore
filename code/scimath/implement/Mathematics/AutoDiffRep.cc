@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/AutoDiffRep.h>
+#include <aips/Mathematics/AutoDiffRep.h>
 
 //# Constructors
 template <class T>

@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/AutoDiff.h>
-#include <trial/Mathematics/AutoDiffA.h>
-#include <trial/Mathematics/AutoDiffMath.h>
-#include <trial/Mathematics/AutoDiffIO.h>
+#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffA.h>
+#include <aips/Mathematics/AutoDiffMath.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 
 #include <aips/iostream.h>
 

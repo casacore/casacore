@@ -33,7 +33,7 @@
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiff.h>
 
 // <summary>
 // Implements all mathematical operators and functions for AutoDiff.

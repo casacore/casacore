@@ -44,7 +44,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MVAngle.h>
-#include <trial/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiff.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>

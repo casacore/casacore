@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiff.h>
 
 //# Forward declarations
 template <class T> class Vector;

@@ -28,9 +28,9 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/AutoDiff.h>
-#include <trial/Mathematics/AutoDiffMath.h>
-#include <trial/Mathematics/AutoDiffIO.h>
+#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffMath.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Functionals/Gaussian1D.h>

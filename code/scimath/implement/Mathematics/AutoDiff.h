@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/AutoDiffRep.h>
+#include <aips/Mathematics/AutoDiffRep.h>
 #include <aips/Containers/ObjectPool.h>
 
 //# Forward declarations

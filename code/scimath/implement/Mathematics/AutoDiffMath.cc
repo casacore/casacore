@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/AutoDiffMath.h>
+#include <aips/Mathematics/AutoDiffMath.h>
 #include <aips/Arrays/ArrayMath.h>
 
 // Unary arithmetic operators.

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiff.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>

@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/AutoDiffIO.h>
-#include <trial/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffIO.h>
+#include <aips/Mathematics/AutoDiff.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/iostream.h>
