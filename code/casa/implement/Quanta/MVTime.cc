@@ -332,14 +332,15 @@ void MVTime::print(ostream &oss,
     uInt i1 = intyp & ~MVTime::MOD_MASK;
     // Next is to try to solve the problem with the Intel's indecision
     // arithmetic
-    Int locday = ifloor(val);
+    Double loctmp(val);
+    if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
+      loctmp += MVTime::timeZone();
+    };
+    Int locday = ifloor(loctmp);
     MVTime loc = Double(locday);
-    Double loctmp((val - loc.val)*C::circle);
+    loctmp = (loctmp - loc.val)*C::circle;
     MVAngle atmp(loctmp);
     atmp(0.0);
-    if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
-      loc = MVTime(val + MVTime::timeZone());
-    };
 
     if ((intyp & MVTime::DAY) == MVTime::DAY) {
       oss << loc.dayName();
