@@ -1,5 +1,5 @@
 //# extern_fft.h: C++ wrapper functions for FORTRAN FFT code
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,10 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 
-class doubleG_COMPLEX;
-typedef doubleG_COMPLEX DComplex;
-class floatG_COMPLEX;
-typedef floatG_COMPLEX Complex;
+
 // <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>
 // <synopsis>
 // These are C++ wrapper functions for the transform routines in the SGI/Cray 
