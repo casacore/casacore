@@ -711,13 +711,13 @@ Bool ImageStatistics<T>::getStats(Vector<T>& stats,
 
    NumericTraits<T>::PrecisionType tmp;
    stats(MEAN) = stats(SUM) / n;
-   stats(SIGMA) = T(0.0);
+   stats(SIGMA) = convertF(0.0);
    if (n > 1) {
       tmp = (stats(SUMSQ) - (stats(SUM)*stats(SUM)/n)) / (n-1);
       stats(VARIANCE) = tmp;
       if (tmp > 0.0) stats(SIGMA) = sqrt(tmp);
    }
-   stats(RMS) = T(0.0);
+   stats(RMS) = convertF(0.0);
    if (n > 0) stats(RMS) = sqrt(stats(SUMSQ)/n);
 
    return True;
@@ -1508,23 +1508,23 @@ void ImageStatistics<T>::multiPlot (PGPlotter& plotter,
 
 // Loop over segments and plot them
 
-   Vector<Float> xtmp, ytmp;
+   Vector<Float> xF, yF;
    for (uInt i=0; i<nSeg; i++) {
       const uInt ip = start(i);
       if (nPts(i) == 1) {
-	  xtmp.resize(1); 
-          ytmp.resize(1); 
-          xtmp(0) = real(x(ip));
-          ytmp(0) = real(y(ip));
-	  plotter.pt (xtmp, ytmp, 1);
+	  xF.resize(1); 
+          yF.resize(1); 
+          xF(0) = convertT(x(ip));
+          yF(0) = convertT(y(ip));
+	  plotter.pt (xF, yF, 1);
       } else {
-	  xtmp.resize(nPts(i)); 
-          ytmp.resize(nPts(i));
+	  xF.resize(nPts(i)); 
+          yF.resize(nPts(i));
           for (uInt j=0; j<nPts(i); j++) {
-             xtmp(j) = real(x(start(i)+j));
-             ytmp(j) = real(y(start(i)+j));
+             xF(j) = convertT(x(start(i)+j));
+             yF(j) = convertT(y(start(i)+j));
           }
-	  plotter.line (xtmp, ytmp);
+	  plotter.line (xF, yF);
       }
    }
 }
@@ -1618,7 +1618,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
    const Int n1 = stats.shape()(0);
    Vector<T> abc(n1);
-   for (Int j=0; j<n1; j++) abc(j) = T(j+1);
+   for (Int j=0; j<n1; j++) abc(j) = convertF(Float(j+1));
 
 
 // Find extrema.  Return if there were no valid points to plot
@@ -2601,17 +2601,17 @@ void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
     for (i=0; i<n3_p; i++) {
        resptr = resptr_root + (Int(ImageStatsBase::NPTS) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = T(*nPtsPtr++);
+          *resptr++ = *nPtsPtr++;
        }
 
        resptr = resptr_root + (Int(ImageStatsBase::SUM) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = T(*sumPtr++);
+          *resptr++ = *sumPtr++;
        }
 
        resptr = resptr_root + (Int(ImageStatsBase::SUMSQ) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = T(*sumSqPtr++);
+          *resptr++ = *sumSqPtr++;
        }
 
        resptr = resptr_root + (Int(ImageStatsBase::MIN) * n1_p);
