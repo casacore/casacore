@@ -191,8 +191,7 @@ template<class T> class Array : public Cleanup
 {
 public:
 
-    // Result has dimensionality of one, but nelements is zero. Perhaps
-    // instead it should be a dimension zero, length zero array.
+    // Result has dimensionality of zero, and  nelements is zero.
     Array();
 
     // Create an array of the given shape, i.e. after construction
