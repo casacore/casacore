@@ -213,7 +213,7 @@ ostream &operator<<(ostream &os, const ObjectID &id)
 {
     String tmp;
     id.toString(tmp);
-    cout << "[" << tmp << "]";
+    os << "[" << tmp << "]";
     return os;
 }
 
