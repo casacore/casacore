@@ -1,5 +1,5 @@
 //# IncrStManAccessor.h: Gives access to some IncrementalStMan functions
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,12 +37,7 @@ class ISMBase;
 class DataManager;
 class Table;
 class String;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-
+#include <aips/iosfwd.h>
 
 // <summary>
 // Give access to some IncrementalStMan functions

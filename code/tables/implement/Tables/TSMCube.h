@@ -44,7 +44,6 @@ class BucketCache;
 template<class T> class Block;
 #include <aips/iosfwd.h>
 
-
 // <summary>
 // Tiled hypercube in a table
 // </summary>

@@ -41,11 +41,7 @@ class TableExprNode;
 class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 
 // <summary>

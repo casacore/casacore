@@ -35,12 +35,7 @@
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-
+#include <aips/iosfwd.h>
 
 // <summary>
 // Set of table column descriptions

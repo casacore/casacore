@@ -41,12 +41,7 @@ class ISMBucket;
 class ISMIndex;
 class ISMColumn;
 class StManArrayFile;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-
+#include <aips/iosfwd.h>
 
 // <summary>
 // Base class of the Incremental Storage Manager

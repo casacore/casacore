@@ -39,12 +39,7 @@ class TableRecord;
 class TableAttr;
 class TabPath;
 template<class T> class Vector;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-
+#include <aips/iosfwd.h>
 
 // <summary>
 // Define the structure of an AIPS++ table

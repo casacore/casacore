@@ -42,11 +42,7 @@ class RefColumn;
 class TableRecord;
 class TableAttr;
 class AipsIO;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 
 // <summary>

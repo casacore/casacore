@@ -46,11 +46,7 @@ class RefTable;
 class RefColumn;
 class TableDesc;
 class ColumnSet;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 
 // <summary>
