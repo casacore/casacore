@@ -1963,3 +1963,5 @@
 08 068 src rm nrao/gbt/analysis/sp/spsdd.cc
 08 068 src rm nrao/gbt/analysis/sp/spsdd.h
 08 068 src rm nrao/gbt/analysis/sp/makefile
+08 068 src rm nrao/gbt/analysis/sp
+08 068 src rm nrao/gbt/analysis/makefile
