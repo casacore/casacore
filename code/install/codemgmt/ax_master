@@ -5894,3 +5894,4 @@
 16 304 src mv ./trial/implement/Functionals/Function.h ./aips/implement/Functionals/Function.h
 16 304 src mv ./trial/implement/Functionals/FunctionParam.cc ./aips/implement/Functionals/FunctionParam.cc
 16 304 src mv ./trial/implement/Functionals/FunctionParam.h ./aips/implement/Functionals/FunctionParam.h
+16 304 src mv ./trial/implement/Functionals/G1D.cc ./aips/implement/Functionals/G1D.cc
