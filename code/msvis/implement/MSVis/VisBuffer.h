@@ -89,40 +89,62 @@ public:
   //
   Int& nChannel() { return nChannelOK_p ? nChannel_p : fillnChannel();}
   Int nChannel() const { return This->nChannel();}
+
   Vector<Int>& channel() { return channelOK_p ? channel_p : fillChannel();}
   const Vector<Int>& channel() const { return This->channel();}
+
   Int& nRow() { return nRowOK_p ? nRow_p : fillnRow();}
   Int nRow() const { return This->nRow();}
+
   Vector<Int>& antenna1() {return ant1OK_p ? antenna1_p : fillAnt1();}
   const Vector<Int>& antenna1() const {return This->antenna1();}
+
   Vector<Int>& antenna2() {return ant2OK_p ? antenna2_p : fillAnt2();}
   const Vector<Int>& antenna2() const {return This->antenna2();}
+
   Vector<SquareMatrix<Complex,2> >& CJones() 
   { return cjonesOK_p ? cjones_p : fillCjones();}
   const Vector<SquareMatrix<Complex,2> >& CJones() const 
   {return This->CJones();} 
+
   // Note that feed_pa is a function instead of a cached value
   const Vector<Float>& feed_pa(Double time) const; 
+
   Int fieldId() const {return fieldIdOK_p ? fieldId_p : This->fillFieldId();}
+
   Matrix<Bool>& flag() { return flagOK_p ? flag_p : fillFlag();}
   const Matrix<Bool>& flag() const { return This->flag();}
+
   Cube<Bool>& flagCube() { return flagCubeOK_p ? flagCube_p : fillFlagCube();}
   const Cube<Bool>& flagCube() const { return This->flagCube();}
+
   Vector<Bool>& flagRow() {return flagRowOK_p ? flagRow_p : fillFlagRow();}
   const Vector<Bool>& flagRow() const { return This->flagRow();}
+
   Vector<Double>& frequency() {return freqOK_p ? frequency_p : fillFreq();}
   const Vector<Double>& frequency() const {return This->frequency();}
+
+  Vector<Double>& lsrFrequency() 
+  {return lsrFreqOK_p ? lsrFrequency_p : fillLSRFreq();}
+  const Vector<Double>& lsrFrequency() const {return This->lsrFrequency();}
+
   MDirection& phaseCenter() 
   { return phaseCenterOK_p ? phaseCenter_p : fillPhaseCenter();}
   const MDirection& phaseCenter() const {return This->phaseCenter_p;}
+
   Int polFrame() const {return polFrameOK_p ? polFrame_p : This->fillPolFrame();}
+
   Vector<Int>& corrType() { return corrTypeOK_p ? corrType_p : fillCorrType();}
   const Vector<Int>& corrType() const { return This->corrType();}
+
   Vector<Float>& sigma() {return sigmaOK_p ? sigma_p : fillSigma();}
   const Vector<Float>& sigma() const {return This->sigma();}
+
   Int spectralWindow() const {return spwOK_p ? spectralWindow_p : This->fillSpW();}
+
   Vector<Double>& time() {return timeOK_p ? time_p : fillTime();}
   const Vector<Double>& time() const {return This->time();}
+
   Vector<RigidVector<Double,3> >& uvw() {return uvwOK_p ? uvw_p : filluvw();}
   const Vector<RigidVector<Double,3> >& uvw() const {return This->uvw();}
 
@@ -191,6 +213,7 @@ private:
   Cube<Bool>& fillFlagCube();
   Vector<Bool> & fillFlagRow();
   Vector<Double>& fillFreq();
+  Vector<Double>& fillLSRFreq();
   MDirection& fillPhaseCenter();
   Int& fillPolFrame();
   Vector<Int>& fillCorrType();
@@ -209,7 +232,8 @@ private:
   VisBuffer* This;
   // variables to track validity of cache
   Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
-    fieldIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, phaseCenterOK_p, polFrameOK_p,
+    fieldIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, lsrFreqOK_p,
+    phaseCenterOK_p, polFrameOK_p,
     sigmaOK_p, spwOK_p, timeOK_p, uvwOK_p, visOK_p, weightOK_p;
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
@@ -221,7 +245,7 @@ private:
   Int fieldId_p;
   Matrix<Bool> flag_p;
   Vector<Bool> flagRow_p;
-  Vector<Double> frequency_p;
+  Vector<Double> frequency_p, lsrFrequency_p;
   MDirection phaseCenter_p;
   Int polFrame_p;
   Vector<Int> corrType_p;
