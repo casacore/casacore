@@ -1,5 +1,5 @@
 //# Map.cc: Associative array classes (non-templated)
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <aips/Containers/Map.h>
-
 
 void throw_mapiter_init_error(){
   throw(AipsError("Map Initialization Error"));
