@@ -1,5 +1,5 @@
 //# IPosition.h: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -318,6 +318,12 @@ IPosition operator + (Int val, const IPosition& right);
 IPosition operator - (Int val, const IPosition& right);
 IPosition operator * (Int val, const IPosition& right);
 IPosition operator / (Int val, const IPosition& right);
+// </group>
+
+// Returns the element by element minimum or maximum.
+// <group>
+IPosition max (const IPosition& left, const IPosition& right);
+IPosition min (const IPosition& left, const IPosition& right);
 // </group>
 // </group>
 
