@@ -37,6 +37,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/OS/Time.h>
+#include <values.h>                     // for MAXDOUBLE
 
 
 // Implement the arithmetic operators for each data type.
