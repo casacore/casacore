@@ -2786,11 +2786,17 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     Bool hasCD = False;
     Int n = 0;
     try {
+        if (header.isDefined("naxis")) {
+           Vector<Int> naxis;
+           header.get("naxis", naxis);
+           n = naxis.nelements();
+        }
+//
 	header.get(sprefix + "rval", crval);
 	header.get(sprefix + "rpix", crpix);
 	crpix -= offset;
 	header.get(sprefix + "type", ctype);
-        n = ctype.nelements();
+        if (n==0) n = ctype.nelements();
 
 	// Units are optional
 	if (header.isDefined(sprefix + "unit")) {
@@ -2818,37 +2824,62 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
        }  
     } catch (AipsError x) {
 	os << LogIO::WARN << "Failed to retrieve *rval, *rpix, *delt, *type "
-	    "from header";
+	    "from header with error : " << x.getMesg() << endl;
 	return False;
     } 
 
  
-// Make some consistency checks.  We don't rely on naxis, rather we 
-// look at the length of the descriptor vectors.  If some missing 
-// values, give guesses
+// Make some consistency checks.  If naxis is in the header,
+// it is used preferentially.  Pad or discard.
 
+    if (Int(ctype.nelements()) != n) {
+       Int n2 = ctype.nelements();
+       ctype.resize(n,True);
+       if (n > n2) {
+         for (Int i=n2; i<n; i++) {
+            ostrstream oss;
+            oss << i << endl;
+            ctype(i) = String("dummy") + String(oss);
+         }
+         os << LogIO::WARN << "Padding missing ctype values with 'dummy'" << LogIO::POST;
+       } else {
+         os << LogIO::WARN << "Discarding excess ctype values" << LogIO::POST;
+       }
+    }
     if (Int(crval.nelements()) != n) {
        Int n2 = crval.nelements();
        crval.resize(n,True);
-       for (Int i=n2; i<n; i++) crval(i) = 0.0;
-       os << LogIO::WARN << "Padding missing crval values with 0.0" << LogIO::POST;
+       if (n > n2) {
+         for (Int i=n2; i<n; i++) crval(i) = 0.0;
+         os << LogIO::WARN << "Padding missing crval values with 0.0" << LogIO::POST;
+       } else {
+         os << LogIO::WARN << "Discarding excess crval values" << LogIO::POST;
+       }
     }
     if (!hasCD && Int(cdelt.nelements()) != n) {
        Int n2 = cdelt.nelements();
        cdelt.resize(n,True);
-       for (Int i=n2; i<n; i++) cdelt(i) = 1.0;       // Degrees
-       os << LogIO::WARN << "Padding missing cdelt values with 1.0deg" << LogIO::POST;
+       if (n > n2) {
+         for (Int i=n2; i<n; i++) cdelt(i) = 1.0;       // Degrees
+         os << LogIO::WARN << "Padding missing cdelt values with 1.0deg" << LogIO::POST;
+       } else {
+         os << LogIO::WARN << "Discarding excess cdelt values" << LogIO::POST;
+       }
     }
     if (Int(crpix.nelements()) != n) {
        Int n2 = crpix.nelements();
        crpix.resize(n,True);
-       for (Int i=n2; i<n; i++) crpix(i) = 1.0;
-       os << LogIO::WARN << "Padding missing crpix values with 1.0" << LogIO::POST;
+       if (n > n2) {
+         for (Int i=n2; i<n; i++) crpix(i) = 1.0;
+         os << LogIO::WARN << "Padding missing crpix values with 1.0" << LogIO::POST;
+       } else {
+         os << LogIO::WARN << "Discarding excess crpix values" << LogIO::POST;
+       }
     }
 //
     if (Int(pc.nrow()) != n ||  Int(pc.ncolumn()) != n ||
 	(cunit.nelements() > 0 && Int(cunit.nelements()) != n)) {
-	os << LogIO::SEVERE << "Inconsistent number of axes in header";
+	os << LogIO::SEVERE << "Inconsistent number of axes in header" << LogIO::POST;
 	return False;
     }
 
@@ -3007,7 +3038,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	try {
 	    projn = Projection(ptype, projp);
 	} catch (AipsError x) {
-	    os << LogIO::WARN << "Error forming projection, maybe the "
+	    os << LogIO::SEVERE << "Error forming projection, maybe the "
 		"wrong number of parameters\n(" << x.getMesg() << ")" << 
 		LogIO::POST;
 	    return False;
@@ -3248,8 +3279,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    StokesCoordinate sc(stokes);
 	    coordsys.addCoordinate(sc);
 	} catch (AipsError x) {
-	    os << "Error forming stokes axis : " << x.getMesg() <<
-		LogIO::SEVERE << LogIO::POST;
+	    os << LogIO::SEVERE << "Error forming stokes axis : " << x.getMesg() << LogIO::POST;
 	    return False;
 	} 
     }
