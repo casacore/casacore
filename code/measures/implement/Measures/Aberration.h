@@ -36,7 +36,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MVPosition.h>
-#include <aips/Measures/MeasDetail.h>
 
 
 // <summary>
@@ -81,13 +80,13 @@
 // MVPosition.<br>
 // The derivative (d<sup>-1</sup>) can be obtained as well by
 // derivative(epoch).<br>
-// The following details can be set in the 
-// <linkto class=MeasDetail>MeasDetail</linkto> container:
+// The following details can be set with the 
+// <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> Aberration::D_Interval: approximation interval in Double(days)
+//  <li> measures.aberration.d_interval: approximation interval as time 
+//	(fraction of days is default unit) over which linear approximation
+//	is used
 // </ul>
-// In the current setup the MeasDetail container is checked each time, for
-// possible changes. For speed information could be obtained only once.
 // </synopsis>
 //
 // <example>
@@ -116,9 +115,6 @@ public:
 //# Enumerations
 // Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
     enum AberrationTypes {STANDARD,NONE,B1950};
-// Known MeasDetails
-    enum {BASE = MeasDetail::ABER_BASE,
-	  D_Interval = BASE + MeasDetail::BASE_D};
 
 //# Constructors
 // Default constructor, generates default J2000 Aberration identification
@@ -166,6 +162,8 @@ private:
     Int lres;
 // Last calculation
     MVPosition result[4];
+// Interpolation interval
+    static uInt interval_reg;
 
 //# Member functions
 // Copy

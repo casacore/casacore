@@ -36,7 +36,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MVPosition.h>
-#include <aips/Measures/MeasDetail.h>
 
 
 // <summary> Solar position class and calculations </summary>
@@ -81,20 +80,20 @@
 // derivative(epoch), baryEarthDerivative() and barySunDerivative().<br>
 // The Earth's and solar barycentric position can be obtained by the
 // members <src>baryEarth</src> and <src>barySun</src>.
-// The following details can be set in the 
-// <linkto class=MeasDetail>MeasDetail</linkto> container:
+// The following details can be set with the 
+// <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> SolarPos::D_Interval: approximation interval in Double(days)
+//  <li> measures.solarpos.d_interval: approximation interval as time 
+//	(fraction of days is default unit) over which linear approximation
+//	is used
 // </ul>
-// In the current setup the MeasDetail container is checked each time, for
-// possible changes. For speed information could be obtained only once. 
 // </synopsis>
 //
 // <example>
 // </example>
 //
 // <motivation>
-// To calculate the solar/Earth positions for gravitational defelction.
+// To calculate the solar/Earth positions for gravitational deflection.
 // An alternate route could have been
 // a global function, but having a simple container allows
 // caching of some calculations for speed.<br>
@@ -116,9 +115,6 @@ public:
 //# Enumerations
 // Types of known SolarPos calculations (at 1995/09/04 STANDARD == IAU1980)
     enum SolarPosTypes {STANDARD,NONE};
-// Known MeasDetails
-    enum {BASE = MeasDetail::SOLARPOS_BASE,
-	  D_Interval = BASE + MeasDetail::BASE_D};
 
 //# Constructors
 // Default constructor, generates default J2000 SolarPos identification
@@ -179,6 +175,8 @@ private:
     Int lres;
 // Last calculation
     MVPosition result[6];
+// Interpolation interval
+    static uInt interval_reg;
 
 //# Member functions
 // Copy

@@ -37,9 +37,14 @@ typedef Quantum<Double> gpp_nutation_bug1;
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MeasIERS.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 //# Constants
 const Double Nutation::INTV = 0.04;
+
+//# Static data
+uInt Nutation::interval_reg = 0;
+uInt Nutation::useiers_reg = 0;
 
 //# Constructors
 Nutation::Nutation() :
@@ -118,10 +123,17 @@ void Nutation::fill() {
     for (Int i=0; i<4; i++) {
 	result[i].set(1,3,1);
     };
-    if (!registered) {
-      registered = True;
-      MeasDetail::registerRC("measures.nutation.b_useiers",
-			   Nutation::B_UseIERS);
+    // Get interval and other switches
+    if (!Nutation::interval_reg) {
+      interval_reg = 
+	AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
+					Unit("d"), Unit("d"),
+					Nutation::INTV);
+    };
+    if (!Nutation::useiers_reg) {
+      useiers_reg =
+	AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
+				      False);
     };
 }
 
@@ -149,9 +161,8 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
 
 void Nutation::calcNut(Double t) {
   Double intv;
-  if (!nearAbs(t,checkEpoch,
-	       (MeasDetail::get(Nutation::D_Interval,intv) ? 
-		intv : Nutation::INTV))) {
+  if (!nearAbs(t, checkEpoch,
+	       AipsrcValue<Double>::get(Nutation::interval_reg))) {
     checkEpoch = t;
     Double dEps = 0;
     Double dPsi = 0;
@@ -160,7 +171,7 @@ void Nutation::calcNut(Double t) {
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
       break;
     default:
-      if (MeasDetail::get(Nutation::B_UseIERS)) {
+      if (AipsrcValue<Bool>::get(Nutation::useiers_reg)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       };
@@ -229,4 +240,3 @@ void Nutation::calcNut(Double t) {
   }
 }
 
-Bool Nutation::registered = False;

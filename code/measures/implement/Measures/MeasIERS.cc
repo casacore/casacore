@@ -37,9 +37,15 @@ typedef Quantum<Double> gpp_measiers_bug1;
 #include <aips/OS/Time.h>
 #include <aips/Logging.h>
 #include <aips/Tasking/Aipsrc.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 //# Constants
 const Double MeasIERS::INTV = 5;
+
+//# Static data
+uInt MeasIERS::predicttime_reg = 0;
+uInt MeasIERS::notable_reg = 0;
+uInt MeasIERS::forcepredict_reg = 0;
 
 //# Member functions
 Bool MeasIERS::get(Double &returnValue,
@@ -47,13 +53,26 @@ Bool MeasIERS::get(Double &returnValue,
 		   MeasIERS::Types type, 
 		   Double date) {
   returnValue = 0.0;
-  if (MeasDetail::get(B_NoTable)) return True;
+  if (!MeasIERS::predicttime_reg) {
+    predicttime_reg = 
+      AipsrcValue<Double>::registerRC(String("measures.measiers.d_predicttime"),
+				      Unit("d"), Unit("d"),
+				      MeasIERS::INTV);
+    notable_reg = 
+      AipsrcValue<Bool>::registerRC(String("measures.measiers.b_notable"),
+				    False);
+    forcepredict_reg = 
+      AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
+				    False);
+  };
+  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) return True;
   Bool res = True;
   Double f;
   if (!dateNow) dateNow = Time().modifiedJulianDay();
-  if (file == PREDICTED || MeasDetail::get(B_ForcePredict) ||
-      (dateNow - date) <= (MeasDetail::get(MeasIERS::D_PredictTime, f) ? 
-		 f : MeasIERS::INTV)) {
+  if (file == PREDICTED ||
+      AipsrcValue<Bool>::get(MeasIERS::forcepredict_reg) ||
+      (dateNow - date) <= 
+      AipsrcValue<Double>::get(MeasIERS::predicttime_reg)) {
     res = False;			// do predict
   };
   MeasIERS::Files which = MeasIERS::MEASURED;

@@ -36,7 +36,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/Quantum.h>
-#include <aips/Measures/MeasDetail.h>
 #include <aips/Measures/Euler.h>
 
 //# Forward Declarations
@@ -88,17 +87,15 @@
 // using the derivative if within about 2 hours (error less than about
 // 10<sup>-5</sup> mas). A call to refresh() will re-initiate calculations
 // from scratch.<br>
-// The following details can be set in the 
-// <linkto class=MeasDetail>MeasDetail</linkto> container:
+// The following details can be set with the 
+// <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> Nutation::D_Interval: approximation interval in Double(days)
-//  <li> Nutation::B_UseIERS: use the IERS Database nutation corrections
-//		if using IAU1980. <br>
-//		This one can be used in aipsrc as 
-//		<src> measures.nutation.useiers</src>
+//  <li> measures.nutation.d_interval: approximation interval as time 
+//	(fraction of days is default unit) over which linear approximation
+//	is used
+//  <li> measures.nutation.b_useiers: use the IERS Database nutation corrections
+//		if using IAU1980 on top of it.
 // </ul>
-// In the current setup the MeasDetail container is checked each time, for
-// possible changes. For speed information could be obtained only once.
 // </synopsis>
 //
 // <example>
@@ -132,10 +129,6 @@ public:
 //# Enumerations
 // Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1976)
     enum NutationTypes {STANDARD,NONE,IAU1980,B1950};
-// Known MeasDetails
-    enum {BASE = MeasDetail::NUTAT_BASE,
-	  B_UseIERS = BASE + MeasDetail::BASE_B,
-	  D_Interval = BASE + MeasDetail::BASE_D};
 
 //# Constructors
 // Default constructor, generates default J2000 Nutation identification
@@ -197,8 +190,10 @@ private:
     Int lres;
 // Last calculation
     Euler result[4];
-// Registration for aipsrc
-  static Bool registered;
+// Interpolation interval
+    static uInt interval_reg;
+// IERS use
+    static uInt useiers_reg;
 
 //# Member functions
 // Make a copy

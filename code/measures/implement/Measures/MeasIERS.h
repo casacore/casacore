@@ -34,7 +34,6 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/MeasDetail.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Tables/TableRecord.h>
@@ -51,7 +50,6 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=MeasDetail>MeasDetail</linkto>
 //   <li> <linkto class=MeasTable>MeasTable</linkto>
 // </prerequisite>
 //
@@ -77,16 +75,17 @@ class String;
 // not (yet) available in measured the predicted values are used. A warning
 // message is (once) issued if values are not available at all.
 // 
-// MeasIERS looks at some <linkto class=MeasDetail>MeasDetail</linkto>
+// MeasIERS looks at some <linkto class=Aipsrc>Aipsrc</linkto>
 // values to determine actions:
 // <ul>
-//  <li> MeasIERS::B_NoTable : Do not use IERS tables to convert measures
-//  <li> MeasIERS::B_ForcePredict : Use values from prediction tables
+//  <li> measures.measiers.b_notable : Do not use IERS tables to convert measures
+//  <li> measures.measiers.b_forcepredict : Use values from prediction tables
 //	even if Measured table asked by program.
-//  <li> MeasIERS::D_PredictTime : Use values from prediction tables if
+//  <li> measures.measiers.d_predicttime : Use values from prediction tables if
 //	(now - time) less than value given (default 5) (days)
 // </ul>
-// These values can be set in aipsrc as well as in the MeasDetail class.<br>
+// These values can be set in aipsrc as well as using 
+// <linkto class=AipsrcValue>AipsrcValue</linkto> set() methods.<br>
 // <logged>
 // 	<li> A message is Logged (once) if an IERS table cannot be found
 //	<li> A message is logged (once) if a date outside the range in
@@ -149,16 +148,6 @@ public:
     DdEps,
     // Number of types
     N_Types};
-  // Known MeasDetails
-  enum {
-    BASE = MeasDetail::IERS_BASE,
-    // Use Predict always
-    B_ForcePredict 	= BASE + MeasDetail::BASE_B,
-    // Use no table
-    B_NoTable,
-    // Expected time after which measured available
-    D_PredictTime   	= BASE + MeasDetail::BASE_D
-  };
   
   // Types of files
   enum Files {
@@ -214,7 +203,7 @@ private:
   static Bool initMeas(MeasIERS::Files which);
   // Fill Table lines
   static Bool fillMeas(MeasIERS::Files which, Double utf);
-  
+
   //# Data members
   // Measured data readable
   static Bool measFlag[N_Files];
@@ -238,6 +227,12 @@ private:
   static Bool msgDone;
   // File names
   static const String tp[N_Files];
+  // Check prediction interval
+  static uInt predicttime_reg;
+  // Use no table
+  static uInt notable_reg;
+  // Force prediction
+  static uInt forcepredict_reg;
 
 };
 

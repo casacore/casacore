@@ -33,9 +33,13 @@ typedef Quantum<Double> gpp_mvdoppler_bug1;
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 //# Constants
 const Double Precession::INTV = 0.1;
+
+//# Static data
+uInt Precession::interval_reg = 0;
 
 //# Constructors
 Precession::Precession() :
@@ -115,6 +119,14 @@ void Precession::copy(const Precession &other) {
 }
 
 void Precession::fillEpoch() {
+  // Get the interpolation interval
+  if (!Precession::interval_reg) {
+    interval_reg = 
+      AipsrcValue<Double>::registerRC(String("measures.precession.d_interval"),
+				      Unit("d"), Unit("d"),
+				      Precession::INTV);
+  };
+				      
     checkEpoch = 1e30;
     switch (method) {
 	case B1950: 
@@ -160,9 +172,8 @@ void Precession::refresh() {
 
 void Precession::calcPrec(Double t) {
     Double intv;
-    if (!nearAbs(t,checkEpoch,
-		 (MeasDetail::get(Precession::D_Interval,intv) ? 
-		 intv : Precession::INTV))) {
+    if (!nearAbs(t, checkEpoch,
+		 AipsrcValue<Double>::get(Precession::interval_reg))) {
 	checkEpoch = t;
 	switch (method) {
 	    case B1950:

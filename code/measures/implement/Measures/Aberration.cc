@@ -35,9 +35,13 @@ typedef Quantum<Double> gpp_aberration_bug1;
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Measures/MeasTable.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 //# Constants
 const Double Aberration::INTV = 0.04;
+
+//# Static data
+uInt Aberration::interval_reg = 0;
 
 //# Constructors
 Aberration::Aberration() : method(Aberration::STANDARD), lres(0) {
@@ -110,7 +114,14 @@ const MVPosition &Aberration::derivative(Double epoch) {
 }
 
 void Aberration::fill() {
-    checkEpoch = 1e30;
+  // Get the interpolation interval
+  if (!Aberration::interval_reg) {
+    interval_reg = 
+      AipsrcValue<Double>::registerRC(String("measures.aberration.d_interval"),
+				      Unit("d"), Unit("d"),
+				      Aberration::INTV);
+  };
+  checkEpoch = 1e30;
 }
 
 void Aberration::refresh() {
@@ -119,9 +130,8 @@ void Aberration::refresh() {
 
 void Aberration::calcAber(Double t) {
     Double intv;
-    if (!nearAbs(t,checkEpoch,
-		 (MeasDetail::get(Aberration::D_Interval,intv) ? 
-		  intv : Aberration::INTV))) {
+    if (!nearAbs(t, checkEpoch,
+		 AipsrcValue<Double>::get(Aberration::interval_reg))) {
 	checkEpoch = t;
 	switch (method) {
 	    case B1950:

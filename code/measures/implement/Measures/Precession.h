@@ -36,7 +36,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/Euler.h>
-#include <aips/Measures/MeasDetail.h>
 #include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
@@ -89,13 +88,13 @@
 // using the derivative if within about 2 hours (error less than about
 // 10<sup>-5</sup> mas). A call to refresh() will re-initiate calculations
 // from scratch.<br>
-// The following details can be set in the 
-// <linkto class=MeasDetail>MeasDetail</linkto> container:
+// The following details can be set with the 
+// <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
-//  <li> Precession::D_Interval: approximation interval in Double(days)
+//  <li> measures.precession.d_interval: approximation interval as time 
+//	(fraction of days is default unit) over which linear approximation
+//	is used
 // </ul>
-// In the current setup the MeasDetail container is checked each time, for
-// possible changes. For speed information could be obtained only once. 
 // </synopsis>
 //
 // <example>
@@ -106,9 +105,8 @@
 //	Precession mine(Precession::IAU1976);	// define precession type
 //	RotMatrix rotat(mine(45837.0));		// rotation matrix for 84/05/17
 //	MVDirection new = rotat*pos;		// apply precession
-//	MeasDetail::set(Precession::D_Interval, Double(10)); // overwrite default
-//						// approximate interval
 //	rotat = RotMatrix(mine(45839.0));       // interpolate new precession
+//						// assuming d_interval set large
 //  </srcblock>
 // </example>
 //
@@ -132,9 +130,6 @@ public:
 //# Enumerations
 // Types of known precession calculations (at 1995/09/04 STANDARD == IAU1976)
     enum PrecessionTypes {STANDARD,NONE,IAU1976,B1950};
-// Known MeasDetails
-    enum {BASE = MeasDetail::PRECES_BASE,
-	  D_Interval = BASE + MeasDetail::BASE_D};
 
 //# Constructors
 // Default constructor, generates default J2000 precession identification
@@ -190,6 +185,8 @@ private:
     Int lres;
 // Last calculation
     Euler result[4];
+// Interpolation interval
+    static uInt interval_reg;
 
 //# Member functions
 // Make a copy
