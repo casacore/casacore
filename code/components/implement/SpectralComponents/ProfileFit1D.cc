@@ -373,7 +373,7 @@ Vector<T> ProfileFit1D<T>::getFit (Int which) const
 }
 
 template <class T> 
-Vector<T> ProfileFit1D<T>::getResidual (Int which)  const
+Vector<T> ProfileFit1D<T>::getResidual (Int which, Bool fit)  const
 {
    Vector<T> tmp;
    if (itsX.nelements()==0) {
@@ -381,17 +381,22 @@ Vector<T> ProfileFit1D<T>::getResidual (Int which)  const
       return tmp;
    }
 //
-   const SpectralList& fitList = itsFitter.list();
-   if (fitList.nelements()==0) {
-      throw (AipsError("You must call function fit first"));
+   SpectralList list;
+   if (fit) {
+      list = itsFitter.list();
+      if (list.nelements()==0) {
+         throw (AipsError("You must call function fit first"));
+      }
+   } else {
+      list = itsList;
    }
 //
    tmp = itsY;
    if (which<0) {
-      fitList.residual(tmp, itsX);
-   } else {
-      SpectralList list = getSubsetList (fitList, which);
       list.residual(tmp, itsX);
+   } else {
+      SpectralList subList = getSubsetList (list, which);
+      subList.residual(tmp, itsX);
    }
 //
    return tmp;

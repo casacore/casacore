@@ -192,7 +192,7 @@ public:
     //<group>
     Vector<T> getEstimate (Int which=-1) const;
     Vector<T> getFit (Int which=-1) const;
-    Vector<T> getResidual (Int which=-1)  const;
+    Vector<T> getResidual (Int which=-1, Bool fit=True)  const;
     //</group>
 
     // Recover the error message
