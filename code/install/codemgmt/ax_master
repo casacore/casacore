@@ -4028,3 +4028,4 @@
 14 065 src mv trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.h trialdisplay/implement/DisplayCanvas/DefaultWCCoordinateHandler.h
 14 065 src mv trial/implement/DisplayCanvas/DefaultWCSizeControlHandler.h trialdisplay/implement/DisplayCanvas/DefaultWCSizeControlHandler.h
 14 065 src mv trial/implement/DisplayCanvas/WCAxisLabeller.h trialdisplay/implement/DisplayCanvas/WCAxisLabeller.h
+14 065 src mv trial/implement/DisplayCanvas/WCBilinearResampleHandler.h trialdisplay/implement/DisplayCanvas/WCBilinearResampleHandler.h
