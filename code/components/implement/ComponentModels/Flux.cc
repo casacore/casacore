@@ -142,8 +142,7 @@ convertUnit(const Unit & unit) {
   if (unit.getName() != itsUnit.getName()) {
     T factor = unit.getValue().getFac()/itsUnit.getValue().getFac();
     for (uInt i = 0; i < 4; i++) {
-      itsFlux(i).re *= factor;
-      itsFlux(i).im *= factor;
+      itsFlux(i) *= factor;
     }
     itsUnit = unit;
   }
@@ -263,6 +262,14 @@ setValue(const Quantum<Vector<T> > & value) {
   }
   itsUnit = value.getFullUnit();
   itsPol = ComponentType::STOKES;
+  DebugAssert(ok(), AipsError);
+}
+
+template<class T> void FluxRep<T>::
+scaleValue(const T & factor) {
+  for (uInt i = 0; i < 4; i++) {
+    itsFlux(i) *= factor;
+  }
   DebugAssert(ok(), AipsError);
 }
 
@@ -442,6 +449,12 @@ template<class T> void Flux<T>::
 setValue(const Quantum<Vector<T> > & value) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value);
+}
+
+template<class T> void Flux<T>::
+scaleValue(const T & factor) {
+  DebugAssert(ok(), AipsError);
+  itsFluxPtr->scaleValue(factor);
 }
 
 template<class T> Bool Flux<T>::
