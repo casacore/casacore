@@ -6288,3 +6288,5 @@
 17 304 src mv trial/implement/IO/LECanonicalIO.h aips/implement/IO/LECanonicalIO.h
 17 304 src mv trial/implement/IO/LECanonicalIO.cc aips/implement/IO/LECanonicalIO.cc
 17 304 src mv trial/implement/OS/test/tLECanonicalConversion.cc aips/implement/OS/test/tLECanonicalConversion.cc
+17 326 src rm nrao/apps/e2echromepipe/aips_mysockd.list
+17 326 src rm nrao/apps/e2echromepipe/aips_mysockd.time
