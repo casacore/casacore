@@ -1,5 +1,5 @@
 //# tComplex.cc: This program tests the Complex class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 
 #include <assert.h>
 #include <aips/stdio.h>
+#include <aips/iostream.h>
 #include <aips/fstream.h>
 #include <unistd.h>
 

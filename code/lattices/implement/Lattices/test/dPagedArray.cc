@@ -1,5 +1,5 @@
 //# dPagedArray.cc:  this contains the examples from the PagedArray.h file
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/String.h>
 #include <aips/Inputs/Input.h>
+#include <aips/iostream.h>
 
 
 int main(int argc, char* argv[])

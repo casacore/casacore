@@ -1,5 +1,5 @@
 //# tMSColumns.cc : this program tests the MSColumns classes
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

@@ -1,5 +1,5 @@
 //# tInput.cc: this tests the simple argc, argv command line user interface.
-//# Copyright (C) 1994,1995,1999,2000
+//# Copyright (C) 1994,1995,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,8 +32,9 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   try {
     // The default constructor enables the creation of parameters. 

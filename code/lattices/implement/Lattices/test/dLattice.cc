@@ -1,5 +1,5 @@
 //# dLattice.cc:  illustrates the functions discused in the docs of Lattice.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@
 #include <aips/Lattices/Lattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <aips/iostream.h>
 
 Complex latMean(const Lattice<Complex> & lat) {
   Complex currentSum = 0.0f;
@@ -80,11 +81,9 @@ void FFT2DReal2Complex(Lattice<Complex> & result,
   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
   
   IPosition start(4,0);
-  Bool isARef;
   for (uInt c = 0; c < nchan; c++){
     for (uInt p = 0; p < npol; p++){
-      isARef = input.getSlice(inputArrPtr,
-                              Slicer(start,inputSliceShape), True);
+      input.getSlice(inputArrPtr, Slicer(start,inputSliceShape), True);
       FFT2D.fft(resultArray, *inputArrPtr);
       result.putSlice(resultArray, start);
       start(2) += 1;

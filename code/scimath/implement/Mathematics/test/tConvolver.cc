@@ -1,5 +1,5 @@
 //# tConvolver.cc:  this tests the Convolver class
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Convolver.h>
+#include <aips/iostream.h>
 
 int main() {
   Bool anyFailures = False;

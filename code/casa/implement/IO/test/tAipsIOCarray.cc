@@ -1,5 +1,5 @@
 //# tAipsIOCarray.cc: This program tests the AipsIOCarray functions
-//# Copyright (C) 1993,1994,1995,1996,1998,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/IO/AipsIOCarray.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 
 // This test program tests the AipsIOCarray functions.
@@ -41,7 +42,7 @@
 void doit (Bool doExcp);
 
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doit ( (argc<2));

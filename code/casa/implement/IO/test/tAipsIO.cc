@@ -1,5 +1,5 @@
 //# tAipsIO.cc: This program tests the AipsIO class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 
 // This test program tests the AipsIO class.
@@ -52,7 +53,7 @@ void doit (Bool doExcp);
 void doIO (Bool doExcp, Bool out, AipsIO&);
 void doTry (AipsIO&);
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doit (argc<2);
@@ -344,7 +345,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     len = 0;
     io.getnew (len, cptr);
     cout << len << endl;
-    for (i=0; i<len; i++) {
+    for (i=0; i<int(len); i++) {
 	cout << cap[i+1] << " " << sap[i+1] << " " << sptr[i]
 	     << " " << cptr[i] << endl;
     }
