@@ -642,7 +642,12 @@ Bool SubMS::fillMainTable(const String& whichCol){
 Bool SubMS::copyAntenna(){
 
   Table oldAnt(mssel_p.antennaTableName(), Table::Old);
-  Table newAnt(msOut_p.antennaTableName(), Table::New);
+  Table::TableOption option;
+  if(Table::isReadable(msOut_p.antennaTableName()))
+    option=Table::Update;
+  else
+    option=Table::New;
+  Table newAnt(msOut_p.antennaTableName(), option);
   TableCopy::copyRows(newAnt, oldAnt);
 
 
@@ -653,7 +658,14 @@ Bool SubMS::copyAntenna(){
 Bool SubMS::copyFeed(){
 
   Table oldFeed(mssel_p.feedTableName(), Table::Old);
-  Table newFeed(msOut_p.feedTableName(), Table::New);
+
+  Table::TableOption option;
+  if(Table::isReadable(msOut_p.feedTableName()))
+    option=Table::Update;
+  else
+    option=Table::New;
+
+  Table newFeed(msOut_p.feedTableName(), option);
   TableCopy::copyRows(newFeed, oldFeed);
 
 
@@ -664,7 +676,12 @@ Bool SubMS::copyFeed(){
 Bool SubMS::copyObservation(){
 
   Table oldObs(mssel_p.observationTableName(), Table::Old);
-  Table newObs(msOut_p.observationTableName(), Table::New);
+  Table::TableOption option;
+  if(Table::isReadable(msOut_p.observationTableName()))
+    option=Table::Update;
+  else
+    option=Table::New;
+  Table newObs(msOut_p.observationTableName(), option);
   TableCopy::copyRows(newObs, oldObs);
 
 
