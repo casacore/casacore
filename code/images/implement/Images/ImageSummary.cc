@@ -303,12 +303,13 @@ void ImageSummary<T>::list (LogIO& os,
 
    CoordinateSystem cSys = pImage_p->coordinates();
 
-// Maximum width of names fields
+// Maximum width of names fields 
 
    widthName_p = 0;
    for (uInt i=0; i<cSys.worldAxisNames().nelements(); i++) {
      widthName_p = max(widthName_p,cSys.worldAxisNames()(i).length());
    }
+
 
 // Set up headers
 
@@ -317,6 +318,7 @@ void ImageSummary<T>::list (LogIO& os,
 
    os.output().width(widthName_p);
    os << "Type";
+   widthName_p = max(String("Type").length(), widthName_p);
 
    os.output().setf(ios::right, ios::adjustfield);
    widthProj_p = 5;
@@ -332,7 +334,6 @@ void ImageSummary<T>::list (LogIO& os,
    os << "Tile";
 
    widthRefValue_p = 14;
-//   precRefValue_p.resize(2);
    precRefValueSci_p = 6;
    precRefValueFixed_p = 3;
    os.output().width(widthRefValue_p);
