@@ -702,16 +702,16 @@ and classes form the programmer interface.
   The name can be made unique by using the function name as a suffix.
 
   In glish applying a region to an image can also be done using the
-  \htmlref{\texttt{subim}}{images:image.subim} function in the image module.
+  \htmlref{\texttt{subim}}{images:image.subimage} function in the image module.
   It forms an image from the given region in the input image.
   The constructed subimage can be used as a normal image in a LEL expression.
   E.g.
   \begin{verbatim}
     img := image('inimage');
-    subimg := img.subim(someregion, 'outname');
+    subimg := img.subimage(someregion, 'outname');
     return expr('min($subimg, $clipvalue)');
   \end{verbatim}
-  has the same result. The only difference is that \texttt{subim}
+  has the same result. The only difference is that \texttt{subimage}
   creates another image on disk, which may not be desirable.
 
 \item
