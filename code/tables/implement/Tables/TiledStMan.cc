@@ -1,5 +1,5 @@
 //# TiledStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -302,6 +302,16 @@ Bool TiledStMan::canChangeShape() const
 Bool TiledStMan::canAddRow() const
 {
     return True;
+}
+
+
+TSMCube* TiledStMan::getTSMCube (uInt hypercube)
+{
+    if (hypercube >= nhypercubes()  ||  cubeSet_p[hypercube] == 0) {
+      throw (AipsError ("TiledStMan::getTSMCube - hypercube nr "
+			+ String::toString(hypercube) + " does not exist"));
+    }
+    return cubeSet_p[hypercube];
 }
 
 

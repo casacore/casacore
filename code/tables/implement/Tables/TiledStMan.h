@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -253,6 +253,12 @@ public:
     // If not, throw an exception. Otherwise return the hypercube.
     TSMCube* singleHypercube();
 
+    // Get the given hypercube.
+    // <group>
+    const TSMCube* getTSMCube (uInt hypercube) const;
+    TSMCube* getTSMCube (uInt hypercube);
+    // </group>
+    
     // Get the hypercube in which the given row is stored.
     // <group>
     const TSMCube* getHypercube (uInt rownr) const;
@@ -480,8 +486,11 @@ inline Bool TiledStMan::asCanonical() const
 inline void TiledStMan::setDataChanged()
     { dataChanged_p = True; }
 
+inline const TSMCube* TiledStMan::getTSMCube (uInt hypercube) const
+    { return const_cast<TiledStMan*>(this)->getTSMCube (hypercube); }
+
 inline const TSMCube* TiledStMan::getHypercube (uInt rownr) const
-    { return ((TiledStMan*)this)->getHypercube (rownr); }
+    { return const_cast<TiledStMan*>(this)->getHypercube (rownr); }
 
 
 
