@@ -69,6 +69,7 @@ TEXTDOCS := $(filter %.text,$(AIPSSRCS))
 TXTDOCS  := $(filter %.txt,$(AIPSSRCS))
 HTMLDOCS := $(filter %.html,$(AIPSSRCS))
 HTMDOCS  := $(filter %.htm,$(AIPSSRCS))
+CSSDOCS  := $(filter %.css,$(AIPSSRCS))
 GIFDOCS  := $(filter %.gif,$(AIPSSRCS))
 BGIFDOCS  := $(filter %.GIF,$(AIPSSRCS))
 JPGDOCS  := $(filter %.jpg,$(AIPSSRCS))
@@ -182,6 +183,12 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.ps.gz
 	 @ chmod 664 $@
 
 $(DOCSAREA)/%.text : $(CODEDIR)/%.text
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
+$(DOCSAREA)/%.css : $(CODEDIR)/%.css
 	-@ echo ""
 	 @ $(RM) $@
 	 cp $< $@
@@ -338,6 +345,7 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(TXTDOCS)) \
     $(addprefix $(DOCSAREA)/,$(HTMLDOCS)) \
     $(addprefix $(DOCSAREA)/,$(HTMDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(CSSDOCS)) \
     $(addprefix $(DOCSAREA)/,$(GIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(BGIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(PNGDOCS)) \
@@ -364,7 +372,7 @@ ifeq "$(MAKEMODE)" "programmer"
    all : doc
 
    .clean ::
-	-$(RM) *.aux *.bbl *.blg *.cp *.cps *.dvi *.fi *.fis *.fn *.fns \
+	-$(RM) *.aux *.bbl *.blg *.cp *.cps *.css *.dvi *.fi *.fis *.fn *.fns \
 	       *.idx *.ilg *.ind *.ky  *.kys *.lof *.log *.pg *.pgs *.toc \
 	       *.tp *.tps *.vr *.vrs *.info *.info-*
 
