@@ -342,7 +342,7 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
                             Double tol) const
 {
    if (pOther->type() != this->type()) {
-      set_error("Comparison is not with another LinearSystem");
+      set_error("Comparison is not with another LinearCoordinate");
       return False;
    }
 
