@@ -1751,3 +1751,11 @@
 11 085 src rm doc/html/navpages/programmer/programmer.html
 11 085 src rm doc/html/navpages/firstpage.html
 11 085 src rm nrao/apps/otfgridder/GLSProjector.h
+11 085 src rm nrao/apps/otfgridder/OTFInputs.cc
+11 085 src rm nrao/apps/otfgridder/OTFInputs.h
+11 085 src rm nrao/apps/otfgridder/PosSwitchedColumns.cc
+11 085 src rm nrao/apps/otfgridder/PosSwitchedColumns.h
+11 085 src rm nrao/apps/otfgridder/PosSwitchedCorrector.h
+11 085 src rm nrao/apps/otfgridder/PosSwitchedCorrector.cc
+11 085 src rm nrao/apps/otfgridder/otfgridder.cc
+11 085 src rm nrao/apps/otfgridder/templates
