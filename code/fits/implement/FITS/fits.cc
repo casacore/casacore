@@ -1218,10 +1218,6 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
 	    }
 	    p = s; // save start of fraction part
 	    for (; isa_digit(*s) && (n < len); ++s, ++n, ++sigfrac) ;
-	    --sigfrac;
-	    while (p[sigfrac] == '0' && sigfrac >= 0) // eliminate trailing 0s
-		--sigfrac;
-	    ++sigfrac;
 	    // adjust sigfrac to only process the maximum number of sig digits
 	    if (sigint >= maxsigdigits)
 		sigfrac = 0;
