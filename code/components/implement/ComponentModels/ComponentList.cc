@@ -38,14 +38,12 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/Quantum.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/File.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
@@ -59,125 +57,102 @@ typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_complist_bug1;
 ComponentList::ComponentList()
   :theList(),
    theNelements(0),
-   theFileName("defaultComponentList")
+   theTable(),
+   theROFlag(False)
 {
 }
 
-ComponentList::ComponentList(const File & fileName, const Bool readOnly)
+ComponentList::ComponentList(const String & fileName, const Bool readOnly)
   :theList(),
    theNelements(0),
-   theFileName("defaultComponentList") 
+   theTable(),
+   theROFlag(False)
 {
   {
-    // The table is always opened readonly
-    const Table table(fileName.path().expandedName(), Table::Old);
-    const ROScalarColumn<String> typeCol(table, "Type");
-    const ROArrayColumn<Double> fluxCol(table, "Flux");
-    const ROArrayColumn<Double> dirCol(table, "Direction");
-    const TableRecord dirKeywords(dirCol.keywordSet());
-    const ROArrayColumn<Double> parmCol(table, "Parameters");
-    MDirection compDir;
-    {
-      MDirection::Ref refType;
-      String frame;
-      dirKeywords.get("Frame", frame);
-      AlwaysAssert(compDir.giveMe(frame, refType), AipsError);
-      compDir.set(refType);
+    if (readOnly) {
+      AlwaysAssert(Table::isReadable(fileName), AipsError);
+      theTable = Table(fileName, Table::Old);
     }
-    Vector<Double> dir(2);
-    Quantum<Vector<Double> > qdir(dir);
-    {
-      String angleUnit;
-      dirKeywords.get("Unit", angleUnit);
-      qdir.setUnit(angleUnit);
-    }
-    const uInt nComp = typeCol.nrow();
-    Vector<Double> flux, parameters;
-    String componentName;
-    SkyComponent currentComp;
-    for (uInt i = 0; i < nComp; i++) {
-      typeCol.get(i, componentName);
-      currentComp = SkyComponent(ComponentType::type(componentName));
-      fluxCol.get(i, flux); currentComp.setFlux(flux);
-      dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
-      currentComp.setPosition(compDir);
-      parmCol.get(i, parameters); currentComp.setParameters(parameters);
-      add(currentComp);
+    else {
+      AlwaysAssert(Table::isWritable(fileName), AipsError);
+      theTable = Table(fileName, Table::Update);
     }
   }
-  if (!readOnly)
-    setName(fileName);
+  const ROScalarColumn<String> typeCol(theTable, "Type");
+  const ROArrayColumn<Double> fluxCol(theTable, "Flux");
+  const ROArrayColumn<Double> dirCol(theTable, "Direction");
+  const TableRecord dirKeywords(dirCol.keywordSet());
+  const ROArrayColumn<Double> parmCol(theTable, "Parameters");
+  MDirection compDir;
+  {
+    MDirection::Ref refType;
+    String frame;
+    dirKeywords.get("Frame", frame);
+    AlwaysAssert(compDir.giveMe(frame, refType), AipsError);
+    compDir.set(refType);
+  }
+  Vector<Double> dir(2);
+  Quantum<Vector<Double> > qdir(dir);
+  {
+    String angleUnit;
+    dirKeywords.get("Unit", angleUnit);
+    qdir.setUnit(angleUnit);
+  }
+  const uInt nComp = typeCol.nrow();
+  Vector<Double> flux, parameters;
+  String componentName;
+  SkyComponent currentComp;
+  for (uInt i = 0; i < nComp; i++) {
+    typeCol.get(i, componentName);
+    currentComp = SkyComponent(ComponentType::type(componentName));
+    fluxCol.get(i, flux); currentComp.setFlux(flux);
+    dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
+    currentComp.setPosition(compDir);
+    parameters.resize(0);
+    parmCol.get(i, parameters); currentComp.setParameters(parameters);
+    add(currentComp);
+  }
+  theROFlag = readOnly;
 }
 
 ComponentList::~ComponentList() {
-  if (theFileName.path().expandedName() != "defaultComponentList"){
-    // The setName function must have been called. 
-    // Assume the file can be created.
-    // These two constants define the units and frame of the output list
-    const String angleUnits("deg");
-    const String refFrame("J2000");
-    // Build the table description
-    TableDesc td("ComponentListDescription", "1", TableDesc::Scratch);  
-    {
-      td.comment() = "A description of a component list ";
-      ScalarColumnDesc<String> typeCol("Type" ,"Type of the Component");
-      td.addColumn (typeCol);
-
-      ArrayColumnDesc<Float> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
- 				     IPosition(1,4),  ColumnDesc::Direct);
-      fluxCol.rwKeywordSet().define ("Unit", "Jy");
-      td.addColumn(fluxCol);
-
-      ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
- 				     + angleUnits + " ("+refFrame+")",
- 				     IPosition(1,2),  ColumnDesc::Direct);
-      dirCol.rwKeywordSet().define ("Unit", angleUnits);
-      dirCol.rwKeywordSet().define ("Frame", refFrame);
-      td.addColumn(dirCol);
-      
-      ArrayColumnDesc<Double> 
- 	parmCol("Parameters", "Parameters specific to this component type", 1);
-      td.addColumn(parmCol);
-    }
-    Table::TableOption tableStatus;
-    if (theFileName.exists()) {
-      AlwaysAssert(theFileName.isWritable(), AipsError);
-      tableStatus = Table::Update;
-    }
-    else {
-      Directory dirName(theFileName);
-      AlwaysAssert(dirName.isWritable(), AipsError);
-      tableStatus = Table::New;
-    }
-    SetupNewTable newTable(theFileName.path().expandedName(), td, tableStatus);
-    Table table(newTable, nelements(), True);
-    ScalarColumn<String> typeCol(table, "Type");
-    ArrayColumn<Double> fluxCol(table, "Flux");
-    ArrayColumn<Double> dirCol(table, "Direction");
-    ArrayColumn<Double> parmCol(table, "Parameters");
-
+  if ((theROFlag == False) && (theTable.isNull() == False)) {
+    ScalarColumn<String> typeCol(theTable, "Type");
+    ArrayColumn<Double> fluxCol(theTable, "Flux");
+    ArrayColumn<Double> dirCol(theTable, "Direction");
+    TableRecord dirKeywords(dirCol.keywordSet());
+    ArrayColumn<Double> parmCol(theTable, "Parameters");
+    AlwaysAssert(theTable.isWritable(), AipsError);
+    
     MDirection compDir;
-    Vector<Double> dirn;
     uInt refNum;
     {
       MDirection::Ref refType;
+      String refFrame;
+      dirKeywords.get("Frame", refFrame);
       AlwaysAssert(compDir.giveMe(refFrame, refType), AipsError);
       refNum = refType.getType();
     }
+    String angleUnits;
+    dirKeywords.get("Unit", angleUnits);
+    Vector<Double> dirn;
     Vector<Double> compFlux(4), compParms;
     for (uInt i = 0; i < nelements(); i++) {
-      typeCol.put(i, component(i).type());
+      typeCol.put(i, ComponentType::name(component(i).type()));
       component(i).flux(compFlux);
       fluxCol.put(i, compFlux);
       component(i).position(compDir);
       if (compDir.getRef().getType() != refNum)
- 	compDir = MDirection::Convert(compDir, refNum)();
+	compDir = MDirection::Convert(compDir, refNum)();
       dirn = compDir.getAngle().getValue(angleUnits);
       dirCol.put(i, dirn);
       compParms.resize(component(i).nParameters());
       component(i).parameters(compParms);
       parmCol.put(i, compParms);
     }
+    if (theTable.nrow() > nelements())
+      for (uInt r = theTable.nrow()-1; r >= nelements(); r--)
+	theTable.removeRow(r);
   }
 }
 
@@ -196,6 +171,7 @@ void ComponentList::project(ImageInterface<Float> & plane) const {
 }
 
 void ComponentList::add(SkyComponent & component) {
+  AlwaysAssert(theROFlag == False, AipsError);
   uInt blockSize = theList.nelements();
   if (theNelements == blockSize) {
     uInt newSize = (blockSize < 50) ? 2 * blockSize + 1 : blockSize + 100;
@@ -206,6 +182,7 @@ void ComponentList::add(SkyComponent & component) {
 }
 
 void ComponentList::remove(uInt index) {
+  AlwaysAssert(theROFlag == False, AipsError);
   theList.remove(index, False);
   theNelements--;
 }
@@ -215,6 +192,7 @@ uInt ComponentList::nelements() const {
 }
 
 SkyComponent & ComponentList::component(uInt index) {
+  AlwaysAssert(theROFlag == False, AipsError);
   return theList[index];
 }
 
@@ -222,8 +200,50 @@ const SkyComponent & ComponentList::component(uInt index) const {
   return theList[index];
 }
 
-void ComponentList::setName(const File & fileName) {
-  theFileName = fileName;
+void ComponentList::rename(const String & fileName, const Table::TableOption
+			   option) {
+  AlwaysAssert(option != Table::Old, AipsError);
+  if (!theTable.isNull()) {
+    if (theROFlag == False) {
+      theTable.rename(fileName, option);
+    }
+    else {
+      theTable.copy(fileName, option);
+      //      theTable = Table();
+      theTable = Table(fileName, option);
+    }
+  }
+  else {
+    // These two constants define the units and frame of the output list
+    const String angleUnits("deg");
+    const String refFrame("J2000");
+    // Build a default table description
+    TableDesc td("ComponentListDescription", "1", TableDesc::Scratch);  
+    {
+      td.comment() = "A description of a component list ";
+      ScalarColumnDesc<String> typeCol("Type" ,"Type of the Component");
+      td.addColumn (typeCol);
+      
+      ArrayColumnDesc<Double> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
+				     IPosition(1,4),  ColumnDesc::Direct);
+      fluxCol.rwKeywordSet().define ("Unit", "Jy");
+      td.addColumn(fluxCol);
+      
+      ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
+				     + angleUnits + " ("+refFrame+")",
+				     IPosition(1,2),  ColumnDesc::Direct);
+      dirCol.rwKeywordSet().define ("Unit", angleUnits);
+      dirCol.rwKeywordSet().define ("Frame", refFrame);
+      td.addColumn(dirCol);
+      
+      ArrayColumnDesc<Double> 
+	parmCol("Parameters", "Parameters specific to this component type", 1);
+      td.addColumn(parmCol);
+    }
+    SetupNewTable newTable(fileName, td, option);
+    theTable = Table(newTable, nelements(), True);
+  }
+  theROFlag = False;
 }
 
 // Local Variables: 

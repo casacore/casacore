@@ -36,8 +36,9 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Containers/Block.h>
-#include <aips/OS/File.h>
+#include <aips/Tables/Table.h>
 
+class String;
 class MDirection;
 template <class T> class Vector;
 template <class T> class ImageInterface;
@@ -107,12 +108,18 @@ public:
 
   // Read a componentList from an existing table. By default the Table is
   // opened read-only.
-  ComponentList(const File & fileName, const Bool readOnly=True);
+  ComponentList(const String & fileName, const Bool readOnly=True);
+
+  // The Copy constructor uses reference semantics
+  ComponentList(const ComponentList & other);
 
   // The destructor saves the list to disk if it has a name (assigned using the
   // setName member function)
   ~ComponentList();
   
+  // The assignment operator uses reference semantics
+  ComponentList & operator=(const ComponentList & other);
+
   // Sample all the members of the componentList at the specified
   // direction. The returned Vector containes all the polarisarions. 
   void sample(Vector<Double> & result, const MDirection & samplePos) const;
@@ -139,11 +146,15 @@ public:
   // </group>
 
   // make the ComponentList persistant by supplying a filename.
-  void setName(const File & fileName);
+//   void void rename(const String & newName, 
+// 		   const Table::TableOption option=Table::New);
+  void rename(const String & newName, 
+	      const Table::TableOption option);
 
 private:
   Block<SkyComponent> theList;
   uInt theNelements;
-  File theFileName;
+  Table theTable;
+  Bool theROFlag;
 };
 #endif
