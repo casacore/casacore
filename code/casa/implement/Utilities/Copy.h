@@ -1,5 +1,5 @@
 //# Copy.h: Copy objects from one C-style array to another.
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -226,9 +226,9 @@ inline void objcopy (const char** to, const char*const *from, uInt n)
     { memcpy (to, from, n*sizeof(char*)); }
 
 //# To support a container of void*.
-inline void objcopy (void** to, void*const *from, uInt n)
-    { memcpy (to, from, n*sizeof(void*)); }
-// g++ is unhapy with this specialization (only!) for some reason
+// g++ is unhappy with these specializations (only!) for some reason
+// inline void objcopy (void** to, void*const *from, uInt n)
+//     { memcpy (to, from, n*sizeof(void*)); }
 // inline void objcopy (char** to, char*const *from, uInt n)
 //     { memcpy (to, from, n*sizeof(char*)); }
 
