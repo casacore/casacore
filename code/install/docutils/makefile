@@ -2,7 +2,7 @@
 # AIPS++ documentation utilities makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1996
+#   Copyright (C) 1994-1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-SCRIPTS  := dox
+SCRIPTS  := dox redoicons.sh
 PERL4EXE := extract.pl
 PERL5EXE := class html cxx2html fix_deprecated_tags help2tex
 PERL5REQ := Class.pm Html.pm ScanCxx.pm Path.pm
