@@ -73,15 +73,28 @@ public:
   static void fft(Lattice<Complex> & cLattice,
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
-  // N-D real->complex FFT. Only one half of the Hermition result is
-  // returned. Transforms are only done on selected dimensions.
-//   static void fft(Lattice<Complex> & out, const Lattice<Float> & in, 
-//  		  const Vector<Bool> & whichAxes);
+  // N-D in-place complex->complex FFT. Transform over all axes.
+  static void fft(Lattice<Complex> & cLattice, const Bool toFrequency=True);
 
-  // FFT a complex Lattice that is assumed to be Hermition (so that only half
-  // of the data is represented) to produce a Real one. Transforms are only
-  // done on selected dimensions.
+  // N-D real->complex FFT. Only one half of the Hermition result is
+  // returned. Transforms are only done on selected dimensions. The origin of
+  // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
+  // doShift is True. Otherwise it is the first element ie., [0,0,...]
+  static void fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+  		  const Vector<Bool> & whichAxes, const Bool doShift=True);
+
+  // N-D real->complex FFT. Only one half of the Hermition result is
+  // returned. Transform over all dimensions. The origin of
+  // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
+  // doShift is True. Otherwise it is the first element ie., [0,0,...]
+  static void fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+  		  const Bool doShift=True);
+
+  // N-D complex->real FFT. Only one half of the Hermition input is
+  // required. Transforms are only done on selected dimensions. The origin of
+  // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
+  // doShift is True. Otherwise it is the first element ie., [0,0,...]
 //   static void fft(Lattice<Float> & out, const Lattice<Complex> & in, 
-//  		  const Vector<Bool> & whichAxes);
+//  		  const Vector<Bool> & whichAxes, const Bool doShift=True);
 };
 #endif
