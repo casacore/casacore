@@ -1,5 +1,5 @@
 //# LELAttribute.cc: Ancillary information for the LEL letter classes
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,17 +33,20 @@
 
 
 LELAttribute::LELAttribute()
-: isScalar_p (True),
-  isRegion_p (False),
-  isMasked_p (False),
-  coords_p   (new LELLattCoord())
+: isScalar_p  (True),
+  isReduced_p (True),
+  isRegion_p  (False),
+  isMasked_p  (False),
+  coords_p    (new LELLattCoord())
 {}
 
 LELAttribute::LELAttribute (Bool isMasked,
 			    const IPosition& shape,
 			    const IPosition& tileShape,
-			    const LELCoordinates& coordinates)
+			    const LELCoordinates& coordinates,
+			    Bool isReduced)
 : isScalar_p  (False),
+  isReduced_p (isReduced),
   isRegion_p  (False),
   isMasked_p  (isMasked),
   shape_p     (shape),
@@ -57,6 +60,7 @@ LELAttribute::LELAttribute (Bool isMasked,
 
 LELAttribute::LELAttribute (uInt regionNdim)
 : isScalar_p  (False),
+  isReduced_p (False),
   isRegion_p  (True),
   isMasked_p  (False),
   shape_p     (IPosition(regionNdim, 0)),
@@ -65,6 +69,7 @@ LELAttribute::LELAttribute (uInt regionNdim)
 
 LELAttribute::LELAttribute (const LELAttribute& other)
 : isScalar_p  (other.isScalar_p),
+  isReduced_p (other.isReduced_p),
   isRegion_p  (other.isRegion_p),
   isMasked_p  (other.isMasked_p),
   shape_p     (other.shape_p),
@@ -78,27 +83,42 @@ LELAttribute::LELAttribute (const LELAttribute& leftAttr,
 {
   isScalar_p = False;
   isRegion_p = False;
-  isMasked_p =  (leftAttr.isMasked() || rightAttr.isMasked());
+  isMasked_p = (leftAttr.isMasked() || rightAttr.isMasked());
   if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
     throw (AipsError ("LELAttribute: regions cannot be combined here"));
   }
   if (leftAttr.isScalar()) {
     if (rightAttr.isScalar()) {
-      isScalar_p = True;
-      isMasked_p = False;
+      isScalar_p  = True;
+      isReduced_p = True;
+      isMasked_p  = False;
     } else {
+      isReduced_p = rightAttr.isReduced();
       shape_p     = rightAttr.shape();
       tileShape_p = rightAttr.tileShape();
       coords_p    = rightAttr.coordinates();
     }
   } else {
+    isReduced_p = leftAttr.isReduced();
     shape_p     = leftAttr.shape();
     tileShape_p = leftAttr.tileShape();
     coords_p    = leftAttr.coordinates();
     if (!rightAttr.isScalar()) {
+      // Two arrays are combined.
+      // The result is reduced if one of them is reduced.
+      if (rightAttr.isReduced()) {
+	isReduced_p = True;
+      }
+      // Check shapes if both are defined.
       const IPosition& rShape = rightAttr.shape();
       Bool ok = False;
-      if (matchAxes) {
+      if (shape_p.nelements() == 0) {
+	shape_p = rShape;
+	ok = True;
+      } else if (rShape.nelements() == 0) {
+	ok = True;
+      }       
+      if (!ok  &&  matchAxes) {
 	ok = shape_p.isEqual (rShape);
       } else if (shape_p.nelements() > rShape.nelements()) {
 	ok = shape_p.isSubSet (rShape);
@@ -147,6 +167,7 @@ LELAttribute& LELAttribute::operator= (const LELAttribute& other)
 {
   if (this != &other) {
     isScalar_p  = other.isScalar_p;
+    isReduced_p = other.isReduced_p;
     isRegion_p  = other.isRegion_p;
     isMasked_p  = other.isMasked_p;
     shape_p.resize (other.shape_p.nelements());
