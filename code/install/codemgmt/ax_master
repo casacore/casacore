@@ -3748,3 +3748,4 @@
 13 384 src rm doc/html/tour/img045.gif
 14 003 src mv trial/implement/Functionals/Applicator.cc trial/implement/Parallel/Applicator.cc
 14 003 src mv trial/implement/Functionals/Applicator.h trial/implement/Parallel/Applicator.h
+14 003 src mv trial/implement/Functionals/test/tApplicator.cc trial/implement/Parallel/test/tApplicator.cc
