@@ -140,7 +140,7 @@ public:
     return uvwQuant_p;}
   const ROScalarMeasColumn<Muvw>& uvwMeas() const {
     return uvwMeas_p;}
-  const ROSArrayColumn<Float>& weight() const {return weight_p;}
+  const ROArrayColumn<Float>& weight() const {return weight_p;}
   // </group>
 
   // Access to optional columns
@@ -349,7 +349,7 @@ public:
     return uvwQuant_p;}
   ScalarMeasColumn<Muvw>& uvwMeas() {
     return uvwMeas_p;}
-  ScalarArray<Float>& weight() {return weight_p;}
+  ArrayColumn<Float>& weight() {return weight_p;}
   // </group>
 
   // Read-write access to optional columns
@@ -437,7 +437,7 @@ public:
     return RONewMSMainColumns::uvwQuant();}
   const ROScalarMeasColumn<Muvw>& uvwMeas() const {
     return RONewMSMainColumns::uvwMeas();}
-  const ROSArrayColumn<Float>& weight() const {
+  const ROArrayColumn<Float>& weight() const {
     return RONewMSMainColumns::weight();}
   // </group>
 
@@ -526,7 +526,7 @@ private:
   ScalarColumn<Double> time_p;
   ScalarColumn<Double> timeCentroid_p;
   ArrayColumn<Double> uvw_p;
-  ScalarArray<Float> weight_p;
+  ArrayColumn<Float> weight_p;
   //# optional columns
   ScalarColumn<Int> antenna3_p;
   ScalarColumn<Bool> baselineRef_p;
