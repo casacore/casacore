@@ -589,8 +589,10 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
 {
     TableExprNodeRep::ValueType vtRight = right->valueType();
     if (vtRight != TableExprNodeRep::VTArray
-    &&  vtRight != TableExprNodeRep::VTSet) {
-	throw (TableInvExpr ("Right operand of IN has to be an array or set"));
+    &&  vtRight != TableExprNodeRep::VTSet
+    &&  vtRight != TableExprNodeRep::VTScalar) {
+	throw (TableInvExpr
+                  ("Right operand of IN has to be a scalar, array or set"));
     }
     if (node_p->dataType() != right->dataType()) {
 	throwInvDT ("operands for IN-operator");
@@ -953,12 +955,16 @@ TableExprNode TableExprNode::newFunctionNode
     for (uInt i=0; i<npar; i++) {
 	par[i] = const_cast<TableExprNodeRep*>(set[i].start());
     }
-    // rownrFUNC and randomFUNC are special, because they need their
-    // own objects and the table.
+    // rownrFUNC, rowidFUNC and randomFUNC are special, because they
+    // need their own objects and the table.
     if (ftype == TableExprFuncNode::rownrFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
 	return table.nodeRownr (1);           // first rownr is 1 in TaQL
     }                                         // (in C++ first rownr is 0)
+    if (ftype == TableExprFuncNode::rowidFUNC) {
+	TableExprNodeMulti::checkNumOfArg (0, 0, par);
+	return newRowidNode (table.baseTabPtr_p);
+    }
     if (ftype == TableExprFuncNode::randFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
 	return table.nodeRandom();
@@ -1000,6 +1006,12 @@ TableExprNode TableExprNode::newRownrNode (const BaseTable* tabptr,
 					   uInt origin)
 {
     TableExprNodeRep* tsnptr = new TableExprNodeRownr (tabptr, origin);
+    return tsnptr;
+}
+
+TableExprNode TableExprNode::newRowidNode (const BaseTable* tabptr)
+{
+    TableExprNodeRep* tsnptr = new TableExprNodeRowid (tabptr);
     return tsnptr;
 }
 
