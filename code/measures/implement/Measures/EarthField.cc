@@ -164,13 +164,15 @@ void EarthField::calcField(const MVPosition &pos) {
     posv = pos.get();
     switch (method_p) {
     default: {
-      Double slat, clat, x, y, z, ratio, rr, one, two, three;
+      Double slat, clat, slong, clong, x, y, z, ratio, rr, one, two, three;
       Int l, m, n, fn, fm, j, i;
       for (Int lp=0; lp<4; lp++) {
 	slat = cos(C::pi_2 - posv(2));
 	clat = sin(C::pi_2 - posv(2));
-	cl_p(0) = cos(posv(1));
-	sl_p(0) = sin(posv(1));
+	slong = sin(posv(1));
+	clong = cos(posv(1));
+	cl_p(0) = clong;
+	sl_p(0) = slong;
 	x = 0.0;
 	y = 0.0;
 	z = 0.0;
@@ -242,14 +244,18 @@ void EarthField::calcField(const MVPosition &pos) {
 	  };
 	  m++;
 	}; // calculation loop
+	// Rotate from local vertical/meridian to ITRF one
 	if (lp == 0) {
-	  pval[0] = x;
-	  pval[1] = y;
-	  pval[2] = z;
+	  pval[0] = -x*slat*clong + z*clat*clong - y*slong;
+	  pval[1] =  x*slat*slong - z*clat*slong - y*clong;
+	  pval[2] =  x*clat + z*slat;
 	} else {
-	  dval[lp-1][0] = (x-pval[0])/DER_INTV;
-	  dval[lp-1][1] = (y-pval[1])/DER_INTV;
-	  dval[lp-1][2] = (z-pval[2])/DER_INTV;
+	  dval[lp-1][0] = (-x*slat*clong + z*clat*clong - y*slong -
+			    pval[0])/DER_INTV;
+	  dval[lp-1][1] = ( x*slat*slong - z*clat*slong - y*clong -
+			   pval[1])/DER_INTV;
+	  dval[lp-1][2] = ( x*clat + z*slat -
+			    pval[2])/DER_INTV;
 	};
 	if (lp < 3) {
 	  if (lp != 0) posmv(lp-1) -= DER_INTV;

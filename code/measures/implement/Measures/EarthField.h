@@ -79,8 +79,7 @@ const Double DER_INTV = 10000;
 // <ul>
 //   <li> MVPosition: a position on Earth (ITRF)
 // </ul>
-// The returned value is an
-// <linkto class=MVEarthMagnetic>MVEarthMagnetic</linkto> in IGRF coordinates.
+// The returned value is a 3D vector of the field in ITRF coordinates.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
 // derivative(MVPosition). <br>
 // An EarthField can be re-initialed with a different method and/or other
