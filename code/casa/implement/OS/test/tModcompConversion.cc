@@ -27,7 +27,6 @@
 
 #include <trial/OS/ModcompConversion.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>

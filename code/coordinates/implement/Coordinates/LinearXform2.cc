@@ -32,7 +32,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/String.h>
 
 LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 

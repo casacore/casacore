@@ -1,5 +1,5 @@
 //# TapeIO.cc: Class for IO on a tape device
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <unistd.h>               // needed for ::close
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno

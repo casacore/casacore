@@ -1,6 +1,5 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
