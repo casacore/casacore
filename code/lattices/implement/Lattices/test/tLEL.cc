@@ -2624,7 +2624,7 @@ Bool checkAttribute (const LELAttribute& attr,
       cout << "   tileShape function failed" << endl;
       ok = False;
    }    
-   if (!attr.coordinates().conform(lattCoord)) {
+   if (attr.coordinates().compare(lattCoord) != 0) {
       cout << "   coordinates function failed" << endl;
       ok = False;
    }
