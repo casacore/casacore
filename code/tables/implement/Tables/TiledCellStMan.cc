@@ -122,6 +122,10 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 			     " definition when used in TiledCellStMan"));
 	}
     }
+    // There shouldn't be ID columns.
+    if (idColSet_p.nelements() > 0) {
+        throw TSMError("ID columns cannot be used with TiledCellStMan");
+    }
 }
 
 
