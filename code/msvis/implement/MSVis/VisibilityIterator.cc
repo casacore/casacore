@@ -1059,6 +1059,11 @@ void VisibilityIterator::setFlag(const Cube<Bool>& flags)
   else RWcolFlag.putColumn(flags);
 }
 
+void VisibilityIterator::setFlagRow(const Vector<Bool>& rowflags)
+{
+  RWcolFlagRow.putColumn(rowflags);
+};
+
 void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis,
 				DataColumn whichOne)
 {
