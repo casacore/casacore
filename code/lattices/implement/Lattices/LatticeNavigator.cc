@@ -28,6 +28,7 @@
 #include <trial/Lattices/LatticeNavigator.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
 
 LatticeNavigator::~LatticeNavigator() {
     // Nothing
@@ -51,6 +52,26 @@ IPosition LatticeNavigator::relativeEndPosition() const {
 
 IPosition LatticeNavigator::subLatticeShape() const {
   return latticeShape();
+};
+
+IPosition LatticeNavigator::hangOverBlc() const {
+  IPosition blc(relativePosition());
+  const uInt ndim = blc.nelements();
+  for (uInt n = 0; n < ndim; n++)
+    if (blc(n) < 0)
+      blc(n) = 0;
+  return blc;
+};
+
+IPosition LatticeNavigator::hangOverTrc() const {
+  IPosition trc(relativeEndPosition());
+  const IPosition latticeShape(subLatticeShape());
+  const uInt ndim = trc.nelements();
+  DebugAssert(latticeShape.nelements() == ndim, AipsError);
+  for (uInt n = 0; n < ndim; n++)
+    if (trc(n) >= latticeShape(n))
+      trc(n) = latticeShape(n) - 1;
+  return trc;
 };
 
 void LatticeNavigator::subSection(const IPosition & blc,
@@ -96,3 +117,7 @@ TiledStepper * LatticeNavigator::castToTiler() {
 const TiledStepper * LatticeNavigator::castToConstTiler() const {
     return 0;
 };
+
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 LatticeNavigator"
+// End: 

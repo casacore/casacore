@@ -268,6 +268,17 @@ public:
   // Lattice boundaries.
   virtual Bool hangOver() const = 0;
 
+  // Functions which return the "bottom left corner" and the "top right corner"
+  // of the cursor that does not hangover. Use these functions to extract the
+  // valid part of the cursor when the hangover member function is true. If
+  // there is no hangover then hangOverBLC returns an IPosition of zero and
+  // hangOverTRC() returns the cursorShape - 1;
+  // <group>
+  virtual IPosition hangOverBlc() const;
+  virtual IPosition hangOverTrc() const;
+  // </group>
+
+
   // Function to specify a "section" of the Lattice to Navigate over. A
   // section is defined in terms of the Bottom Left Corner (blc), Top Right
   // Corner (trc), and step size (inc), on ALL of its axes, including
