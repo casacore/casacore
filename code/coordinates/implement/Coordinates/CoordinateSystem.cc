@@ -3742,16 +3742,22 @@ void CoordinateSystem::list (LogIO& os,
    os.output() << setfill(' ');
 
 
-// Loop over the number of pixel axes in the coordinate system (same
-// as number of axes in image) 
+// Loop over the number of world axes in the coordinate system.
+// Now these may not list in pixel axis order, which is
+// what the user really wants to see.   However, I do want to
+// loop over world axes, not pixel axes, to handle any removed
+// pixel axes.   The only solution is to make a map from world
+// to pixel axis and sort them.  One day...
 
-   uInt pixelAxis;
+   Int pixelAxis;
+   uInt worldAxis;
    Int axisInCoordinate, coordinate;
-   for (pixelAxis=0; pixelAxis<nPixelAxes(); pixelAxis++) {
+   for (worldAxis=0; worldAxis<nWorldAxes(); worldAxis++) {
 
 // Find coordinate number for this pixel axis
  
-      findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+      pixelAxis = worldAxisToPixelAxis(worldAxis);
 
 // List it
 
@@ -3779,38 +3785,6 @@ void CoordinateSystem::list (LogIO& os,
       delete pc;
    }
    os << endl;
-
-
-// Now find those pixel axes that have been removed and list their
-// associated coordinate information.
-
-   uInt worldAxis;
-   for (worldAxis=0; worldAxis<nWorldAxes(); worldAxis++) {
-
-
-// Find coordinate number for this pixel axis
- 
-      findWorldAxis(coordinate, axisInCoordinate, worldAxis);
-
-
-// See if this world axis has an associated removed pixel axis
-      
-      Vector<Int> pixelAxes = CoordinateSystem::pixelAxes(coordinate);
-      if (pixelAxes(axisInCoordinate) == -1) {
-
-// List it
-
-        Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
-        listHeader(os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, 
-                   widthTile, widthRefValue, widthRefPixel, 
-                   widthInc, widthUnits, False, axisInCoordinate, 
-                   -1, precRefValSci, precRefValFloat, 
-                   precRefValRADEC, precRefPixFloat, precIncSci, 
-                   latticeShape, tileShape);
-        delete pc;
-     }
-   }
-
 
 // Post it
 
@@ -3864,15 +3838,17 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCo
    widthName = widthProj = widthShape = widthTile = widthRefValue = 0;
    widthRefPixel = widthInc = widthUnits = widthCoord = widthAxis = 0;
 
-// Loop over number of pixel axes
+// Loop over number of world axes
 
-   uInt pixelAxis;
+   Int pixelAxis;
+   uInt worldAxis;
    Int coordinate, axisInCoordinate;
-   for (pixelAxis=0; pixelAxis<nPixelAxes(); pixelAxis++) {
+   for (worldAxis=0; worldAxis<nWorldAxes(); worldAxis++) {
 
 // Find coordinate number for this pixel axis
  
-      findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+      pixelAxis = worldAxisToPixelAxis(worldAxis);
 
 // Update widths of fields
 
@@ -3939,7 +3915,11 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 // Axis number
 
    ostrstream oss;
-   oss << pixelAxis + 1;
+   if (pixelAxis != -1) {
+      oss << pixelAxis + 1;
+   } else {
+      oss << "..";
+   }
    String string(oss);
    if (findWidths) {
       widthAxis = max(widthAxis, string.length());
