@@ -30,7 +30,7 @@
 #ifndef USE_OLD_STRING		/* The new String class */
 #include <aips/Utilities/Regex.h>
 #include <algorithm>
-#include <cstring>
+#include <aips/string.h>
 #include <strstream>
 
 // Special constructors
