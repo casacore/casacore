@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/PlainColumn.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/PlainTable.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
@@ -594,4 +595,23 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 void ColumnSet::setTableChanged()
 {
     plainTablePtr_p->setTableChanged();
+}
+
+void ColumnSet::syncColumns (const ColumnSet& other)
+{
+    uInt ncol = colMap_p.ndefined();
+    if (other.colMap_p.ndefined() != ncol) {
+	throw (TableError ("ColumnSet::syncColumns; another process "
+			   "changed the number of columns"));
+    }
+    for (uInt i=0; i<ncol; i++) {
+	PlainColumn* thiscol = getColumn(i);
+	PlainColumn* othercol = other.getColumn(i);
+	if (thiscol->columnDesc() != othercol->columnDesc()) {
+	    throw (TableError ("ColumnSet::syncColumns; another process "
+			       "changed the description of column " +
+		               thiscol->columnDesc().name()));
+	}
+	thiscol->keywordSet() = othercol->keywordSet();
+    }
 }
