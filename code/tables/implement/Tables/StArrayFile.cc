@@ -288,7 +288,12 @@ void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 	setpos (leng_p);                            // position at end of file
 	for (i=0; i<n; i++) {
 	    buf[i] = leng_p;
-	    leng_p += put (data->length());         // write string length
+                //
+                // Converted the string->lenght into an uInt so
+                // the SGI compiler could find the right overloaded function
+                // some problem with string::size_t conversion
+                //
+	    leng_p += put (uInt(data->length()));         // write string length
 	    leng_p += iofil_p->write (data->length(), data->chars());
 	    data++;
 	}
