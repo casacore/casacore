@@ -38,6 +38,8 @@
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/ObsInfo.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -950,3 +952,121 @@ Bool ImageFITSConverter::removeFile (String& error, const File& outFile,
 }
 
 
+
+CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& header,
+                                                          LogIO& os,
+                                                          IPosition& shape)
+{
+    CoordinateSystem cSys;
+    if (!CoordinateSystem::fromFITSHeader(cSys, header, shape, True)) {
+        os << LogIO::WARN <<
+          "Cannot create the coordinate system from FITS keywords.\n"
+          "I will use a dummy linear coordinate along each axis instead.\n"
+          "If you your FITS file actually does contain a coordinate system\n"
+          "please submit a bug report."  << LogIO::POST;
+//
+        CoordinateSystem cSys2;
+        Vector<String> names(shape.nelements());
+        for (uInt i=0; i<names.nelements(); i++) {
+           ostrstream oss;
+           oss << i;
+           names(i) = String("linear") + String(oss);
+        }   
+        CoordinateUtil::addLinearAxes(cSys2, names, shape);
+        cSys = cSys2;
+    }
+//
+// Check shape and CS consistency.  Add dummy axis to shape if possible
+
+    if (shape.nelements() != cSys.nPixelAxes()) {
+       IPosition shape2;
+       if (cSys.nPixelAxes() > shape.nelements()) {
+          Int nDeg = cSys.nPixelAxes() - shape.nelements();
+          shape2.resize(cSys.nPixelAxes());
+          shape2 = 1;
+          for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);
+          shape.resize(0);
+          shape = shape2;
+//
+          os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
+          os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
+       } else {
+          os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
+       }
+    }
+
+// Remove keywords
+
+    Vector<String> ignore(15); 
+    ignore(0) = "^date-map$";
+    ignore(1) = "^simple$";   
+    ignore(2) = "^naxis";
+    ignore(3) = "^projp$";
+    ignore(4) = "^pc$";
+    ignore(5) = "^equinox$";
+    ignore(6) = "^epoch$";
+    ignore(7) = "^.type";
+    ignore(8) = "^.unit";
+    ignore(9) = "^.rpix";
+    ignore(10) = "^.rval";
+    ignore(11) = "^.rota";
+    ignore(12) = "^.delt"; 
+    ignore(13) = "bscale";
+    ignore(14) = "bzero";
+    FITSKeywordUtil::removeKeywords(header, ignore);
+
+// Remove any ObsInfo keywords
+    
+    FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
+//
+    Int after = -1;
+    if (cSys.findCoordinate(Coordinate::SPECTRAL, after) >= 0) {
+       header.removeField("restfreq");
+    }
+//
+    return cSys;
+}
+
+ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
+{
+   ImageInfo ii;
+   if (header.isDefined("bmaj") && header.isDefined("bmin") &&
+       header.isDefined("bpa")) {
+      Double bmaj = header.asDouble("bmaj");
+      Double bmin = header.asDouble("bmin");
+      Double bpa = header.asDouble("bpa");
+//
+      ImageInfo imageInfo;
+      Quantum<Double> bmajq(max(bmaj,bmin), "deg");
+      Quantum<Double> bminq(min(bmaj,bmin), "deg");
+      bmajq.convert(Unit("arcsec"));
+      bminq.convert(Unit("arcsec"));
+      ii.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
+//
+      FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
+   }
+   return ii;
+}
+
+
+Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
+{
+   Unit u;
+   if (header.isDefined("bunit") && header.dataType("bunit") == TpString) {
+      String unitString;
+      header.get("bunit", unitString);
+      header.removeField("bunit");
+      UnitMap::addFITS();
+      if (UnitVal::check(unitString)) {
+            
+// Translate units from FITS units to true aips++ units
+// There is no scale factor in this translation.
+                
+          u = UnitMap::fromFITS(Unit(unitString));
+      } else {
+          os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
+             << LogIO::POST;
+      }
+   }
+   return u;
+}
