@@ -31,42 +31,26 @@
 
 int main(){
   String aipsrcKeyword("printer.ps1.paper");
-  String aipsrcValue, aipsrcFile, aipsrcLine;
+  String aipsrcValue;
 
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << aipsrcKeyword << " " << aipsrcValue << endl
-       << aipsrcFile << endl << aipsrcLine << endl << endl;
+  Aipsrc::find(aipsrcValue, aipsrcKeyword);
+  cout << aipsrcKeyword << " " << aipsrcValue << endl;
 
   Aipsrc::reRead();
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
   cout << aipsrcKeyword << " " << aipsrcValue << endl;
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << aipsrcKeyword << " " << aipsrcValue << endl
-       << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   aipsrcKeyword = String("bogus.wes.key");
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
   cout << aipsrcKeyword << " " << aipsrcValue << endl;
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << aipsrcKeyword << " " << aipsrcValue << endl
-       << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   aipsrcKeyword = String("printer.ps.paper");
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << aipsrcKeyword << " " << aipsrcValue << endl
-       << aipsrcFile << endl << aipsrcLine << endl << endl;
-
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << aipsrcKeyword << " " << aipsrcValue << endl
-       << aipsrcFile << endl << aipsrcLine << endl << endl;
-
-  aipsrcKeyword = String("printer.psnet.paper");
+  Aipsrc::find(aipsrcValue, aipsrcKeyword);
+  cout << aipsrcKeyword << " " << aipsrcValue << endl;
 
   aipsrcKeyword = String("dummy.abc");
-  Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cout << "*" << aipsrcKeyword << "*" << aipsrcValue << "*" << endl
-       << "*" << aipsrcFile << "*" << endl 
-       << "*" << aipsrcLine << "*" << endl;
+  Aipsrc::find(aipsrcValue, aipsrcKeyword);
+  cout << "*" << aipsrcKeyword << "*" << aipsrcValue << "*" << endl;
 
   cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
   cout << "AIPSARCH: " << Aipsrc::aipsArch() << endl;
@@ -84,6 +68,18 @@ int main(){
     AlwaysAssertExit(Aipsrc::findNoHome(result, "foobar", "default") == False &&
 		 result == "default");
     
+  }
+
+  // test the register
+  {
+    uInt n = Aipsrc::registerRC("foobar", "invalid");
+    uInt n1= Aipsrc::registerRC("printer.ps1.paper", "B4");
+    cout << "Registrations: " << n << ", " << n1 << endl;
+    cout << "Values: " << Aipsrc::get(n) << ", " << Aipsrc::get(n1) << endl;
+    n = Aipsrc::registerRC("foobar", "invalid");
+    Aipsrc::set(n1, "C4");
+    cout << "Registrations: " << n << ", " << n1 << endl;
+    cout << "Values: " << Aipsrc::get(n) << ", " << Aipsrc::get(n1) << endl;
   }
 
   return 0; 
