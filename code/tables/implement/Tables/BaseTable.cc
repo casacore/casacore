@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,6 @@
 #include <aips/OS/Directory.h>
 
 
-// Construct with delete_p set to True.
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
 BaseTable::BaseTable (const String& name, int option, uInt nrrow)
@@ -70,7 +69,7 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
     // Mark initially a new table for delete.
     // When the construction ends successfully, it can be unmarked.
     if (option_p == Table::New  ||  option_p == Table::NewNoReplace) {
-	markForDelete();
+	markForDelete (False, "");
 	madeDir_p = False;
     }
 }
@@ -84,6 +83,8 @@ BaseTable::~BaseTable()
 	if (madeDir_p) {
 	    Directory directory(name_p);
 	    directory.removeRecursive();
+	    //# Do callback indicating that table has been deleted.
+	    scratchCallback (False, name_p);
 	}
     }
 }
@@ -104,11 +105,31 @@ void BaseTable::unlink (BaseTable* btp)
 }
 
 
-void BaseTable::makeTableDir()
+void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
+{
+    if (Table::scratchCallback_p != 0) {
+	if (isScratch) {
+	    if (oldName == name_p) {
+		Table::scratchCallback_p (name_p, isScratch, "");
+	    }else{
+		Table::scratchCallback_p (name_p, isScratch, oldName);
+	    }
+	}else{
+	    if (oldName.empty()) {
+		Table::scratchCallback_p (name_p, isScratch, "");
+	    }else{
+		Table::scratchCallback_p (oldName, isScratch, "");
+	    }
+	}
+    }
+}
+
+
+Bool BaseTable::makeTableDir()
 {
     //# Exit if the table directory has already been created.
     if (madeDir_p) {
-	return;
+	return False;
     }
     //# Check option.
     if (!openedForWrite()) {
@@ -138,12 +159,17 @@ void BaseTable::makeTableDir()
 	Directory dir(name_p);
 	dir.removeRecursive();
     }
-    //# Create the table directory and create table.dat in it
+    //# Create the table directory and create table.dat in it.
+    //# First do a scratch callback that a table is getting created.
+    //# If the directory creation fails, the user sees it as a scratch
+    //# table, so it can be deleted.
+    scratchCallback (True, "");
     Directory dir(name_p);
     dir.create();
     RegularFile dfile (Table::fileName(name_p));
     dfile.create();
     madeDir_p = True;
+    return True;
 }
 
 Bool BaseTable::openedForWrite() const
@@ -163,8 +189,11 @@ void BaseTable::getTableInfo()
 void BaseTable::flushTableInfo()
 {
     // Create table directory if needed.
-    makeTableDir();
+    Bool made = makeTableDir();
     info_p.flush (name_p + "/table.info");
+    if (made && !isMarkedForDelete()) {
+	scratchCallback (False, name_p);
+    }
 }
 
 
@@ -176,7 +205,7 @@ void BaseTable::writeStart (AipsIO& ios)
 			    "must be Table::New, NewNoReplace or Update"));
     }
     //# Create table directory when needed.
-    makeTableDir();
+    Bool made = makeTableDir();
     //# Create the file.
     ios.open (Table::fileName(name_p), ByteIO::New);
     //# Start the object as Table, so class Table can read it back.
@@ -184,12 +213,40 @@ void BaseTable::writeStart (AipsIO& ios)
     ios.putstart ("Table", 2);
     ios << nrrow_p;
     ios << uInt(0);              // format = canonical
+    if (made && !isMarkedForDelete()) {
+	scratchCallback (False, name_p);
+    }
 }
 
 //# End writing a table file.
 void BaseTable::writeEnd (AipsIO& ios)
 {
     ios.putend ();
+}
+
+
+
+void BaseTable::markForDelete (Bool callback, const String& oldName)
+{
+    Bool prev = delete_p;
+    delete_p = True;
+    //# Do callback if changed from non-scratch to scratch or if name changed.
+    if (callback) {
+	if (!prev) {
+	    scratchCallback (True, "");
+	} else if (!oldName.empty()  &&  oldName != name_p) {
+	    scratchCallback (True, oldName);
+	}
+    }
+}
+void BaseTable::unmarkForDelete (Bool callback, const String& oldName)
+{
+    Bool prev = delete_p;
+    delete_p = False;
+    //# Do callback if changed from scratch to non-scratch.
+    if (callback && prev) {
+	scratchCallback (False, oldName);
+    }
 }
 
 
@@ -241,27 +298,29 @@ void BaseTable::rename (const String& newName, int tableOption)
 				 " is readonly and cannot be renamed"));
 	}
     }
+    String oldName = name_p;
     // Do not rename physically when the new name is the same as the old name.
-    if (newName != name_p) {
+    if (newName != oldName) {
 	prepareCopyRename (newName, tableOption);
 	//# Do the actual renaming when the table exists.
-	//# The files may not exist yet if rename is used very early.
+	//# It is possible that the files do not exist yet if rename
+	//# is used very early.
 	if (madeDir_p) {
-	    Directory fileOld(name_p);
+	    Directory fileOld(oldName);
 	    fileOld.move (newName);
 	}
 	//# Rename the names of the subtables in the keywords.
-	renameSubTables (newName, name_p);
+	renameSubTables (newName, oldName);
 	//# Okay, the table file has been renamed.
 	//# Now rename in the cache (if there) and internally.
-	PlainTable::tableCache.rename (newName, name_p);
+	PlainTable::tableCache.rename (newName, oldName);
 	name_p = newName;
     }
     //# (Un)mark for delete when necessary.
     if (tableOption == Table::Scratch) {
-	markForDelete();
+	markForDelete (True, oldName);
     }else{
-	unmarkForDelete();
+	unmarkForDelete (True, oldName);
     }
 }
 
