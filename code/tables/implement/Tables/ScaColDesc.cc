@@ -1,5 +1,5 @@
 //# ScaColDesc.cc: Templated class for description of table scalar columns
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,9 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
 		  opt, 0, IPosition(), True, False, False)
-    { ValType::getUndef (&defaultVal_p); }
+{
+    defaultVal_p = T();
+}
 
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
@@ -50,7 +52,9 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
 		  opt, 0, IPosition(), True, False, False)
-    { ValType::getUndef (&defaultVal_p); }
+{
+    defaultVal_p = T();
+}
 
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
@@ -62,7 +66,9 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
 		  opt, 0, IPosition(), True, False, False)
-    { ValType::getUndef (&defaultVal_p); }
+{
+    defaultVal_p = T();
+}
   
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
