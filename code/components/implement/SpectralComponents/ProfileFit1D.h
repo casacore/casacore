@@ -25,8 +25,8 @@
 //#
 //#   $Id$
 
-#if !defined(AIPS_PROFILEFIT1D_H)
-#define AIPS_PROFILEFIT1D_H
+#if !defined(TRIAL_PROFILEFIT1D_H)
+#define TRIAL_PROFILEFIT1D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -60,6 +60,10 @@ class SpectralElement;
 // a parameter should be held fixed or solved for.   After the 
 // fitting is done, a new SpectralList holding SpectralElements with 
 // the fitted parameters is created.  
+//
+// For all the functions that return a status Bool, True is good. If
+// False is returned, an error message can be recovered with function
+// <src>errorMessage</src>,  You should not proceed if False is returned.
 // </synopsis> 
 
 // <example>
@@ -71,9 +75,9 @@ class SpectralElement;
 // // Code to fill data vectors x,y,m
 //
 // ProfileFit1D<Float> fitter; 
-// fitter.setData (x, y, m);
-// fitter.setElements (2);              
-// Bool converged = fitter.fit();       
+// Bool ok = fitter.setData (x, y, m);
+// ok = fitter.setGaussianElements (2);              
+// ok = fitter.fit();       
 // const SpectralList& fitList = fitter.getList(True);
 // </srcblock>
 // </example>
@@ -101,11 +105,12 @@ public:
     // data are good. If you don't specify the weights vector, all weights 
     // are assumed to be unity.  If you don't specify a mask it will be
     // created as all good.
+    // Status is returned, if False, error message can be recovered with <src>errorMessage</src>
     // <group>
-    void setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask,
+    Bool setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask,
                   const Vector<T>& weight);
-    void setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask);
-    void setData (const Vector<T>& x, const Vector<T>& y);
+    Bool setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask);
+    Bool setData (const Vector<T>& x, const Vector<T>& y);
     // </group>
 
     // Set a SpectralList of SpectralElements to fit for.  
@@ -120,7 +125,8 @@ public:
     // The initial estimates for the Gaussians will be automatically determined.
     // All of the parameters created by this function will be solved for
     // by default. You can recover the list of elements with function getList.
-    void setGaussianElements (uInt nGauss);
+    // Status is returned, if False, error message can be recovered with <src>errorMessage</src>
+    Bool setGaussianElements (uInt nGauss);
 
     // Add new SpectralElement(s) to the SpectralList (can be empty)
     // of SpectralElements to be fit for.  
@@ -142,11 +148,12 @@ public:
     // True (good) outside of those ranges. When the data are fit, a total
     // mask is formed combining (via a logical AND) the 
     // data mask (setData) and this range mask.
+    // Status is returned, if False, error message can be recovered with <src>errorMessage</src>
     // <group>
-    void setRangeMask (const Vector<uInt>& startIndex, 
+    Bool setRangeMask (const Vector<uInt>& startIndex, 
                        const Vector<uInt>& endIndex,
                        Bool insideIsGood=True);
-    void setRangeMask (const Vector<T>& startIndex, 
+    Bool setRangeMask (const Vector<T>& startIndex, 
                        const Vector<T>& endIndex,
                        Bool insideIsGood=True);
     // </group>
@@ -160,11 +167,16 @@ public:
     Vector<Bool> getTotalMask() const {return makeTotalMask();};
     // </group>
 
-    // Do the fit and return converged status
+    // Do the fit and return status.  If False, an error message
+    // can be recovered with function <src>errorMessage</src>.
+    // Not converging is considered an error condition
     Bool fit ();
 
     // Get Chi Squared of fit
     Double getChiSquared () const {return itsFitter.chiSq();}
+
+    // Get number of iterations for last fit
+    Double getNumberIterations () const {return itsFitter.nIterations();}
 
     // Recover the list of elements.  You can get the elements
     // as initially estimated (fit=False), or after fitting 
@@ -174,11 +186,17 @@ public:
 
     // Recover vectors for the estimate, fit and residual.
     // If you don't specify which element, all elements are included
+    // If the Vectors are returned with zero length, it means an error
+    // condition exists (e.g. asking for fit before you do one). In this
+    // case an error message can be recovered with function <src>errorMessage</src>.
     //<group>
     Vector<T> getEstimate (Int which=-1) const;
     Vector<T> getFit (Int which=-1) const;
     Vector<T> getResidual (Int which=-1)  const;
     //</group>
+
+    // Recover the error message
+    String errorMessage () const {return itsError;};
 
 private:
    Vector<T> itsX;                         // Abcissa (really should not be type T)
@@ -190,6 +208,7 @@ private:
    SpectralList itsList;                   // List of elements to fit for
 //
    SpectralFit itsFitter;                  // Fitter
+   mutable String itsError;                // Error message
 
 // Functions
    Vector<Bool> makeTotalMask() const;
@@ -197,3 +216,4 @@ private:
 };
 
 #endif
+

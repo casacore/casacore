@@ -66,6 +66,8 @@ ProfileFit1D<T>& ProfileFit1D<T>::operator=(const ProfileFit1D& other)
      itsList = other.itsList;
 //
      itsFitter = other.itsFitter;
+//
+     itsError = other.itsError;
   }
   return *this;
 }
@@ -75,24 +77,28 @@ ProfileFit1D<T>::~ProfileFit1D()
 {;}
 
 template <class T> 
-void ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
                                const Vector<Bool>& mask, const Vector<T>& weight)
 {
    if (x.nelements()==0) {
-      throw (AipsError("The X vector must have some elements"));
+      itsError = "The X vector must have some elements";
+      return False;
    }
    const uInt n = x.nelements();
 //
    if (y.nelements() != n) {
-      throw (AipsError("The Y vector must have the same number of elements as the X vector"));
+      itsError = "The Y vector must have the same number of elements as the X vector";
+      return False;
    }
 //
    if (weight.nelements() != n && weight.nelements()!=0) {
-      throw (AipsError("The weights vector must have the same number of elements as the X vector"));
+      itsError = "The weights vector must have the same number of elements as the X vector";
+      return False;
    }
 //
    if (mask.nelements() != n && mask.nelements() != 0) {
-      throw (AipsError("The mask vector must have the same number of elements (or zero) as the data"));
+      itsError = "The mask vector must have the same number of elements (or zero) as the data";
+      return False;
    }
 //
    itsX.resize(n);
@@ -114,22 +120,23 @@ void ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y,
    } else {
       itsDataMask = mask;
    }
+   return True;
 }
 
 
 template <class T> 
-void ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
                                const Vector<Bool>& mask)
 {
    Vector<T> weight;
-   setData (x, y, mask, weight);
+   return setData (x, y, mask, weight);
 }
 
 template <class T> 
-void ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y)
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y)
 {
    Vector<Bool> mask(x.nelements(), True);
-   setData (x, y, mask);
+   return setData (x, y, mask);
 }
 
 
@@ -140,14 +147,16 @@ void ProfileFit1D<T>::setElements (const SpectralList& list)
 }
 
 template <class T> 
-void ProfileFit1D<T>::setGaussianElements (uInt nGauss)
+Bool ProfileFit1D<T>::setGaussianElements (uInt nGauss)
 {
    if (nGauss==0) {
-      throw(AipsError("You must specify some Gaussian components"));
+      itsError = "You must specify some Gaussian components";
+      return False;
    }
 //
    if (itsY.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return False;
    }
 
 // Clear list
@@ -159,6 +168,7 @@ void ProfileFit1D<T>::setGaussianElements (uInt nGauss)
    SpectralEstimate estimator (nGauss);
    SpectralList listGauss = estimator.estimate (itsX, itsY);    // Ignores masked data
    itsList.add (listGauss);
+   return True;
 }
 
 template <class T> 
@@ -182,13 +192,14 @@ void ProfileFit1D<T>::clearList ()
 
 
 template <class T> 
-void ProfileFit1D<T>::setRangeMask (const Vector<uInt>& start,
+Bool ProfileFit1D<T>::setRangeMask (const Vector<uInt>& start,
                                     const Vector<uInt>& end,
                                     Bool insideIsGood)
 {
    AlwaysAssert(start.nelements()==end.nelements(), AipsError);
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return False;
    }
 //
    const uInt n = itsX.nelements();
@@ -198,31 +209,39 @@ void ProfileFit1D<T>::setRangeMask (const Vector<uInt>& start,
 //
    for (uInt i=0; i<start.nelements(); i++) {
       if (start[i] > end[i]) {
-         throw (AipsError("The start index must be < the end index"));
+         itsError = "The start index must be < the end index";
+         return False;
       }
       if (start[i]<0 || start[i]>=n) {
-         throw (AipsError("The start index must be in the range 0->nElements-1"));
+         itsError = "The start index must be in the range 0->nElements-1";
+         return False;
       }
       if (end[i]<0 || end[i]>=n) {
-         throw (AipsError("The end index must be in the range 0->nElements-1"));
+         itsError = "The end index must be in the range 0->nElements-1";
+         return False;
       }
 //
       for (uInt j=start[i]; j<end[i]+1; j++) {
          itsRangeMask[j] = !value;
       }
    }
+   return True;
 }
 
 
 
 template <class T> 
-void ProfileFit1D<T>::setRangeMask (const Vector<T>& start,
+Bool ProfileFit1D<T>::setRangeMask (const Vector<T>& start,
                                     const Vector<T>& end,
                                     Bool insideIsGood)
 {
-   AlwaysAssert(start.nelements()==end.nelements(), AipsError);
+   if (start.nelements()!=end.nelements()) {
+      itsError = "Start and end vectors must be the same length";
+      return False;
+   }
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return False;
    }
 //
    const uInt n = itsX.nelements();
@@ -235,13 +254,16 @@ void ProfileFit1D<T>::setRangeMask (const Vector<T>& start,
    
    for (uInt i=0; i<start.nelements(); i++) {
       if (start[i] > end[i]) {
-         throw (AipsError("The start range must be < the end range"));
+         itsError = "The start range must be < the end range";
+         return False;
       }
       if (start[i]<itsX[0] || start[i]>itsX[n-1]) {
-         throw (AipsError("The start range must be in the X-range of the data"));
+         itsError = "The start range must be in the X-range of the data";
+         return False;
       }
       if (end[i]<itsX[0] || end[i]>itsX[n-1]) {
-         throw (AipsError("The end range must be in the X-range of the data"));
+         itsError = "The end range must be in the X-range of the data";
+         return False;
       }
 
 // Find the indices for this range
@@ -261,7 +283,7 @@ void ProfileFit1D<T>::setRangeMask (const Vector<T>& start,
       }
    }
 //
-   setRangeMask (startIndex, endIndex);
+   return setRangeMask (startIndex, endIndex);
 }
 
 
@@ -271,10 +293,12 @@ template <class T>
 Bool ProfileFit1D<T>::fit ()
 {
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return False;
    }
    if (itsList.nelements()==0) {
-      throw (AipsError("You must call function setElements to set some fit components first"));
+      itsError = "You must call function setElements to set some fit components first";
+      return False;
    }
 
 // Set list in fitter
@@ -284,11 +308,18 @@ Bool ProfileFit1D<T>::fit ()
 
 // Do the fit with the total mask
 
+   Bool converged(False);
    if (itsWeight.nelements()==0) {
-      return itsFitter.fit (itsY, itsX, makeTotalMask());
+      converged = itsFitter.fit (itsY, itsX, makeTotalMask());
    } else {
-      return itsFitter.fit (itsWeight, itsY, itsX, makeTotalMask());
+      converged = itsFitter.fit (itsWeight, itsY, itsX, makeTotalMask());
    }
+   if (!converged) {
+      itsError = "Fit did not converge";
+      return False;
+   }
+//
+   return True;
 }
 
 template <class T> 
@@ -305,11 +336,12 @@ const SpectralList& ProfileFit1D<T>::getList (Bool fit) const
 template <class T>   
 Vector<T> ProfileFit1D<T>::getEstimate (Int which) const
 {
+   Vector<T> tmp;
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return tmp;
    }
 //
-   Vector<T> tmp;
    if (which<0) {
       itsList.evaluate(tmp, itsX);
    } else {
@@ -323,16 +355,19 @@ Vector<T> ProfileFit1D<T>::getEstimate (Int which) const
 template <class T> 
 Vector<T> ProfileFit1D<T>::getFit (Int which) const
 {
+   Vector<T> tmp;
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return tmp;
    }
 //
    const SpectralList& fitList = itsFitter.list();
    if (fitList.nelements()==0) {
-      throw (AipsError("You must call function fit first"));
+      itsError = "You must call function fit first";
+      return tmp;
    }
 //
-   Vector<T> tmp;
+
    if (which<0) {
       fitList.evaluate(tmp, itsX);
    } else {
@@ -346,8 +381,10 @@ Vector<T> ProfileFit1D<T>::getFit (Int which) const
 template <class T> 
 Vector<T> ProfileFit1D<T>::getResidual (Int which)  const
 {
+   Vector<T> tmp;
    if (itsX.nelements()==0) {
-      throw (AipsError("You must call function setData to set some data first"));
+      itsError = "You must call function setData to set some data first";
+      return tmp;
    }
 //
    const SpectralList& fitList = itsFitter.list();
@@ -355,7 +392,7 @@ Vector<T> ProfileFit1D<T>::getResidual (Int which)  const
       throw (AipsError("You must call function fit first"));
    }
 //
-   Vector<T> tmp(itsY.copy());
+   tmp = itsY;
    if (which<0) {
       fitList.residual(tmp, itsX);
    } else {
