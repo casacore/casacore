@@ -58,7 +58,6 @@
 #include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/SubImage.h>
-#include <trial/Images/MaskedImage.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
