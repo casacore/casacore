@@ -6168,3 +6168,5 @@
 17 179 src rm trial/implement/Functionals/FunctionWrapper.h
 17 179 src rm trial/implement/Functionals/FunctionWrapper.cc
 17 179 src rm trial/implement/Functionals/test/tLinearComb.cc
+17 179 src rm trial/implement/Functionals/LinearComb.h
+17 179 src rm trial/implement/Functionals/LinearComb.cc
