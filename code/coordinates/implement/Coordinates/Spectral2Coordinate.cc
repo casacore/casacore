@@ -1,5 +1,5 @@
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
+  velType_p(MDoppler::RADIO),
   unit_p("Hz")
 {
    restfreqs_p.resize(1);
@@ -239,7 +239,7 @@ void SpectralCoordinate::makeVelocityMachine (const String& velUnit,
 
 
 void SpectralCoordinate::updateVelocityMachine (const String& velUnit, 
-                                                MDoppler::Types velType)
+                                               MDoppler::Types velType)
 {
    if (pVelocityMachine_p->getDopplerUnits().getName() != velUnit) {
       pVelocityMachine_p->set(Unit(velUnit));
@@ -247,17 +247,6 @@ void SpectralCoordinate::updateVelocityMachine (const String& velUnit,
    if (MDoppler::castType(pVelocityMachine_p->getDopplerReference().getType()) != velType) {
       pVelocityMachine_p->set(MDoppler::Ref(velType));
    }
-}
-
-void SpectralCoordinate::reinitializeVelocityMachine ()
-{
-   Unit fU(worldAxisUnits()(0));
-   Quantum<Double> rF(restfreqs_p(restfreqIdx_p), fU);
-//
-   deleteVelocityMachine();
-   pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(type_p), fU,
-                                            MVFrequency(rF), MDoppler::Ref(MDoppler::RADIO), 
-                                            Unit(String("km/s")));
 }
 
 
