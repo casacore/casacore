@@ -38,16 +38,23 @@
 int main(int argc, char **argv)
 {
   try {
-    const String msName = "5921.ms";
+    if(argc<3) {
+      cout << " please input ms file and selection string on command line " << endl;
+      exit(0);
+    }
+    const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msSpwGramParseCommand(&ms, "0:10-16")==0) {
+    if(msSpwGramParseCommand(&ms, argv[2])==0) {
       const TableExprNode *node = msSpwGramParseNode();
+      if(node->isNull()) {
+	cout << "NULL node " << endl;
+	exit(0);
+      }
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
-      cout << "After mssel constructor called " << endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) {
