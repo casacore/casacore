@@ -1,5 +1,5 @@
-//# FITSImage.cc: defines the FITSImage class giving direct access to FITS images
-//# Copyright (C) 1998,1999,2000,2001
+//# FITSImage.cc: Class providing native access to FITS images
+//# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,29 +27,29 @@
 
 #include <trial/Images/FITSImage.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Containers/Record.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageFITSConverter.h>
+#include <trial/Images/MaskSpecifier.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/FITSMask.h>
+#include <trial/Tables/TiledFileAccess.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/File.h>
 #include <aips/Quanta/Unit.h>
-#include <trial/Tables/TiledFileAccess.h>
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/DataType.h>
+#include <aips/Utilities/ValType.h>
 #include <aips/Utilities/String.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 #include <iostream.h>
 
@@ -57,15 +57,324 @@
 
 FITSImage::FITSImage (const String& name)
 : ImageInterface<Float>(),
-  name_p(name),
+  name_p      (name),
   pTiledFile_p(0),
   pPixelMask_p(0),
-  scale_p(1.0),
-  offset_p(0.0),
-  magic_p(0),
-  hasBlanks_p(False)
+  shape_p     (IPosition()),
+  scale_p     (1.0),
+  offset_p    (0.0),
+  magic_p     (0),
+  hasBlanks_p (False),
+  dataType_p  (TpOther),
+  fileOffset_p(0),
+  isClosed_p  (True)
 {
-   if (name_p.empty()) throw(AipsError("Given file name is empty"));
+   setup();
+}
+
+FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec)
+: ImageInterface<Float>(),
+  name_p      (name),
+  maskSpec_p  (maskSpec),
+  pTiledFile_p(0),
+  pPixelMask_p(0),
+  shape_p     (IPosition()),
+  scale_p     (1.0),
+  offset_p    (0.0),
+  magic_p     (0),
+  hasBlanks_p (False),
+  dataType_p  (TpOther),
+  fileOffset_p(0),
+  isClosed_p  (True)
+{
+   setup();
+}
+
+FITSImage::FITSImage (const FITSImage& other)
+: ImageInterface<Float>(other),
+  name_p      (other.name_p),
+  maskSpec_p  (other.maskSpec_p),
+  unit_p      (other.unit_p),
+  rec_p       (other.rec_p),
+  pTiledFile_p(other.pTiledFile_p),
+  pPixelMask_p(0),
+  shape_p     (other.shape_p),
+  scale_p     (other.scale_p),
+  offset_p    (other.offset_p),
+  magic_p     (other.magic_p),
+  hasBlanks_p (other.hasBlanks_p),
+  dataType_p  (other.dataType_p),
+  fileOffset_p(other.fileOffset_p),
+  isClosed_p  (other.isClosed_p)
+{
+   if (other.pPixelMask_p != 0) {
+      pPixelMask_p = other.pPixelMask_p->clone();
+   }
+}
+ 
+FITSImage& FITSImage::operator=(const FITSImage& other)
+// 
+// Assignment. Uses reference semantics
+//
+{
+   if (this != &other) {
+      ImageInterface<Float>::operator= (other);
+//
+      pTiledFile_p = other.pTiledFile_p;             // Counted pointer
+//
+      delete pPixelMask_p;
+      pPixelMask_p = 0;
+      if (other.pPixelMask_p != 0) {
+	 pPixelMask_p = other.pPixelMask_p->clone();
+      }
+//
+      shape_p     = other.shape_p;
+      name_p      = other.name_p;
+      maskSpec_p  = other.maskSpec_p;
+      unit_p      = other.unit_p;
+      rec_p       = other.rec_p;
+      scale_p     = other.scale_p;
+      offset_p    = other.offset_p;
+      magic_p     = other.magic_p;
+      hasBlanks_p = other.hasBlanks_p;
+      dataType_p  = other.dataType_p;
+      fileOffset_p= other.fileOffset_p;
+      isClosed_p  = other.isClosed_p;
+   }
+   return *this;
+} 
+ 
+FITSImage::~FITSImage()
+{
+   delete pPixelMask_p;
+}
+
+
+ImageInterface<Float>* FITSImage::cloneII() const
+{
+   return new FITSImage (*this);
+}
+
+
+String FITSImage::imageType() const
+{
+   return "FITSImage";
+}
+
+Bool FITSImage::isMasked() const
+{
+   return (hasBlanks_p);
+}
+
+const LatticeRegion* FITSImage::getRegionPtr() const
+{
+   return 0;
+}
+
+IPosition FITSImage::shape() const  
+{
+   return shape_p.shape();
+}
+
+uInt FITSImage::advisedMaxPixels() const
+{
+   return shape_p.tileShape().product();
+}
+
+IPosition FITSImage::doNiceCursorShape (uInt) const  
+{
+   return shape_p.tileShape();
+}
+
+void FITSImage::resize(const TiledShape&)
+{
+   throw (AipsError ("FITSImage::resize - a FITSImage is not writable"));
+}
+
+Bool FITSImage::doGetSlice(Array<Float>& buffer,
+                           const Slicer& section)
+{
+   reopenIfNeeded();
+   if (pTiledFile_p->dataType() == TpFloat) {
+      pTiledFile_p->get (buffer, section);
+   } else {
+      pTiledFile_p->get (buffer, section, scale_p, offset_p,
+			 magic_p, hasBlanks_p);
+   }
+   return False;                            // Not a reference
+} 
+   
+
+void FITSImage::doPutSlice (const Array<Float>&, const IPosition&,
+                            const IPosition&)
+{
+   throw (AipsError ("FITSImage::putSlice - "
+		     "is not possible as FITSImage is not writable"));
+}
+
+Bool FITSImage::setUnits (const Unit& unit)
+{  
+   unit_p = unit;
+   return True;
+}
+   
+Unit FITSImage::units() const
+{  
+   return unit_p;
+}
+
+
+String FITSImage::name (Bool stripPath) const
+{
+   Path path(name_p);
+   if (stripPath) {
+      return path.baseName();
+   } else {
+      return path.absoluteName();
+   }
+}
+
+
+const RecordInterface& FITSImage::miscInfo() const
+{
+   return rec_p;
+}
+ 
+
+Bool FITSImage::setMiscInfo(const RecordInterface& rec)
+{ 
+   rec_p = rec;
+   return True;
+}
+ 
+Bool FITSImage::isPersistent() const
+{
+  return True;
+}
+
+Bool FITSImage::isPaged() const
+{
+  return True;
+}
+
+Bool FITSImage::isWritable() const
+{  
+// Its too hard to implement putMaskSlice becuase
+// magic blanking is used. It measn we lose
+// the data values if the mask is put somewhere
+
+   return False;
+}
+
+
+Bool FITSImage::ok() const
+{
+   return True;
+}  
+
+Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+{
+   if (! hasBlanks_p) {
+      buffer.resize (section.length());
+      buffer = True;
+      return False;
+   }
+   reopenIfNeeded();
+   return pPixelMask_p->getSlice (buffer, section);
+}
+
+
+Bool FITSImage::hasPixelMask() const
+{
+   return (hasBlanks_p);
+}  
+
+const Lattice<Bool>& FITSImage::pixelMask() const
+{
+   if (! hasBlanks_p) {
+      throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
+   }
+   return *pPixelMask_p;
+}
+
+Lattice<Bool>& FITSImage::pixelMask()
+{
+   if (! hasBlanks_p) {
+      throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
+   }
+   return *pPixelMask_p;
+}
+
+void FITSImage::tempClose()
+{
+   if (! isClosed_p) {
+      delete pPixelMask_p;
+      pTiledFile_p = 0;
+      isClosed_p = True;
+   }
+}
+
+void FITSImage::reopen()
+{
+   if (isClosed_p) {
+      open();
+   }
+}
+
+uInt FITSImage::maximumCacheSize() const
+{
+   reopenIfNeeded();
+   return pTiledFile_p->maximumCacheSize() / ValType::getTypeSize(dataType_p);
+}
+
+void FITSImage::setMaximumCacheSize (uInt howManyPixels)
+{
+   reopenIfNeeded();
+   const uInt sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
+   pTiledFile_p->setMaximumCacheSize (sizeInBytes);
+}
+
+void FITSImage::setCacheSizeFromPath (const IPosition& sliceShape, 
+				      const IPosition& windowStart,
+				      const IPosition& windowLength,
+				      const IPosition& axisPath)
+{
+   reopenIfNeeded();
+   pTiledFile_p->setCacheSize (sliceShape, windowStart,
+			       windowLength, axisPath);
+}
+
+void FITSImage::setCacheSizeInTiles (uInt howManyTiles)  
+{  
+   reopenIfNeeded();
+   pTiledFile_p->setCacheSize (howManyTiles);
+}
+
+
+void FITSImage::clearCache()
+{
+   if (! isClosed_p) {
+      pTiledFile_p->clearCache();
+   }
+}
+
+void FITSImage::showCacheStatistics (ostream& os) const
+{
+   reopenIfNeeded();
+   os << "FITSImage statistics : ";
+   pTiledFile_p->showCacheStatistics (os);
+}
+
+
+
+void FITSImage::setup()
+{
+   if (name_p.empty()) {
+      throw AipsError("FITSImage: given file name is empty");
+   }
+   if (! maskSpec_p.name().empty()) {
+      throw AipsError("FITSImage " + name_p + " has no named masks");
+   }
    Path path(name_p);
    String fullName = path.absoluteName();
 
@@ -98,184 +407,48 @@ FITSImage::FITSImage (const String& name)
 // data should begin in the NEXT record. BobG surmises
 // the FITS classes read ahead...
 
-   Int64 fileOffset = 0;
-   fileOffset = (recno -1 ) * recsize;
+   fileOffset_p = (recno - 1) * recsize;
 //
+   dataType_p = TpFloat;
+   if (dataType == FITS::SHORT) {
+      dataType_p = TpShort;
+   }
+
+// See if there is a mask.
+   if (! maskSpec_p.useDefault()) {
+      hasBlanks_p = False;
+   }
+
+// Form the tile shape.
+   shape_p = TiledShape (shape, TiledFileAccess::makeTileShape(shape));
+
+// Open the image.
+   open();
+}
+
+
+void FITSImage::open()
+{
    uInt maxCacheSize = 0;
    Bool writable = False;
    Bool canonical = True;    
 
 // The tile shape must not be a subchunk in all dimensions
 
-   DataType type = TpFloat;
-   if (dataType==FITS::SHORT) type = TpShort;
-   tileShape_p = TiledFileAccess::makeTileShape(shape);
-   pTiledFile_p = new TiledFileAccess(fullName, fileOffset, shape, tileShape_p,
-                                      type, maxCacheSize, writable, canonical);
+   pTiledFile_p = new TiledFileAccess(name_p, fileOffset_p,
+				      shape_p.shape(), shape_p.tileShape(),
+                                      dataType_p, maxCacheSize,
+				      writable, canonical);
 
 // Shares the pTiledFile_p pointer. Scale factors for 16bit integers
-
-   pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
-                               magic_p, hasBlanks_p);
-}
-
-FITSImage::FITSImage (const FITSImage& other)
-: ImageInterface<Float>(other),
-  name_p(other.name_p),
-  unit_p(other.unit_p),
-  rec_p(other.rec_p),
-  tileShape_p(other.tileShape_p),
-  pTiledFile_p(other.pTiledFile_p),
-  pPixelMask_p(other.pPixelMask_p->clone()),
-  scale_p(other.scale_p),
-  offset_p(other.offset_p),
-  magic_p(other.magic_p)
-{}
- 
-FITSImage& FITSImage::operator=(const FITSImage& other)
-// 
-// Assignment. Uses reference semantics
-//
-{
-   if (this != &other) {
-      ImageInterface<Float>::operator= (other);
-//
-      pTiledFile_p = other.pTiledFile_p;             // Counted pointer
-//
-      delete pPixelMask_p;
-      pPixelMask_p = other.pPixelMask_p->clone();    // Raw pointer
-//
-      name_p = other.name_p;
-      unit_p = other.unit_p;
-      rec_p = other.rec_p;
-      tileShape_p.resize(0);
-      tileShape_p = other.tileShape_p;
-//
-      scale_p = other.scale_p;
-      offset_p = other.offset_p;
-      magic_p = other.magic_p;
+   if (hasBlanks_p) {
+      pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+				  magic_p, hasBlanks_p);
    }
-   return *this;
-} 
- 
-FITSImage::~FITSImage()
-{
-   delete pPixelMask_p;
+
+// Okay, it is open now.
+   isClosed_p = False;
 }
-
-
-ImageInterface<Float>* FITSImage::cloneII() const
-{
-   return new FITSImage (*this);
-}
-
-
-String FITSImage::imageType() const
-{
-  return "FITSImage";
-}
-
-Bool FITSImage::isMasked() const
-{
-
-// There is never a region pointer but always a pixel
-// mask so the FITSImage is alwasy masked.
-
-   return True;
-}
-
-const LatticeRegion* FITSImage::getRegionPtr() const
-{
-   return 0;
-}
-
-IPosition FITSImage::shape() const  
-{ 
-   return pTiledFile_p->shape();
-}
-
-void FITSImage::resize(const TiledShape&)
-{
-   throw (AipsError ("FITSImage::resize - a FITSImage is not writable"));
-}
-
-Bool FITSImage::doGetSlice(Array<Float>& buffer,
-                           const Slicer& section)
-{
-   if (pTiledFile_p->dataType()==TpFloat) {
-      pTiledFile_p->get(buffer, section);
-   } else {
-      pTiledFile_p->get(buffer, section, scale_p, offset_p, magic_p, hasBlanks_p);
-   }
-   return False;                            // Not a reference
-} 
-   
-
-void FITSImage::doPutSlice (const Array<Float>&, const IPosition&,
-                            const IPosition&)
-{
-   throw (AipsError ("FITSImage::putSlice - "
-		     "is not possible as FITSImage is not writable"));
-}
-
-Bool FITSImage::setUnits(const Unit& unit)
-{  
-   unit_p = unit;
-   return True;
-}
-   
- Unit FITSImage::units() const
-{  
-  return unit_p;
-}
-
-
-String FITSImage::name (Bool strippath) const
-{
-   Path path(name_p);
-   if (strippath) {
-      return path.baseName();
-   } else {
-      return path.absoluteName();
-   }
-}
-
-
-const RecordInterface& FITSImage::miscInfo() const
-{
-  return rec_p;
-}
- 
-
-Bool FITSImage::setMiscInfo(const RecordInterface& rec)
-{ 
-   rec_p = rec;
-   return True;
-}
- 
-Bool FITSImage::isWritable() const
-{  
-// Its too hard to implement putMaskSLice becuase
-// magic blanking is used. It measn we lose
-// the data values if the mask is put somewhere
-
-   return False;
-}
-
-
-
-Bool FITSImage::ok() const
-{
-   return True;
-}  
-
-Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
-{
-   return pPixelMask_p->getSlice(buffer, section);
-}
-
-
-
 
 
 void FITSImage::getImageAttributes (CoordinateSystem& cSys,
@@ -296,7 +469,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 //
     FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
     if (infile.err()) {
-        throw (AipsError("Cannot open file (or other I/O error)"));
+        throw (AipsError("Cannot open file " + name +
+			 " (or other I/O error)"));
     }
     recordsize = infile.fitsrecsize();
 
@@ -304,7 +478,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
     dataType = infile.datatype();
     if (dataType != FITS::FLOAT && dataType != FITS::SHORT) {
-       throw (AipsError("ONly floating point and short integer FITS files are supported"));
+       throw AipsError("FITS file " + name +
+		       " should contain floating point or short integer data");
     }
 
 //
@@ -314,7 +489,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     for (uInt i=0; i<whichHDU; i++) {
         infile.skip_hdu();
         if (infile.err()) {
-            throw(AipsError("Error advancing to image in file"));
+            throw(AipsError("Error advancing to image in file " + name));
         }
     }
 // 
@@ -323,13 +498,14 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     if (infile.rectype() != FITS::HDURecord ||
         (infile.hdutype() != FITS::PrimaryArrayHDU &&
          infile.hdutype() != FITS::ImageExtensionHDU)) {
-        throw (AipsError("No image at specified location in file"));
+        throw (AipsError("No image at specified location in file " + name));
     }
 
 // Only handle PrimaryArray
 
     if (infile.hdutype()!= FITS::PrimaryArrayHDU) { 
-       throw (AipsError("The image must be stored in the PrimaryArray"));
+       throw (AipsError("The image must be stored in the PrimaryArray of"
+			"FITS file " + name));
     }
 //
     if (dataType==FITS::FLOAT) {
@@ -342,26 +518,6 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // Get recordnumber 
    
     recordnumber = infile.recno();
-}
-
-
-
-Bool FITSImage::hasPixelMask() const
-{
-
-// FITSImage always has a pixel mask
-
-   return True;
-}  
-
-const Lattice<Bool>& FITSImage::pixelMask() const
-{
-  return *pPixelMask_p;
-}
-
-Lattice<Bool>& FITSImage::pixelMask()
-{
-  return *pPixelMask_p;
 }
 
 
