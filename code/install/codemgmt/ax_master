@@ -5756,3 +5756,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSObsLogEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSObservation.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSObservation.h
+16 134 src rm aips/implement/MeasurementSets/OldMSSource.cc
