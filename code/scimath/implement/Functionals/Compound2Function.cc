@@ -86,11 +86,11 @@ void CompoundFunction<AutoDiff<T> >::fromParam_p() const {
 
 template <class T>
 void CompoundFunction<AutoDiff<T> >::toParam_p() {
-  // Set derivatives
-  if (nparameters() != param_p[i].nDerivatives()) {
-    param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
-  };
   for (uInt i=0; i<nparameters(); ++i) {
+  // Set derivatives
+    if (nparameters() != param_p[i].nDerivatives()) {
+      param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
+    };
     uInt k = functionPtr_p[funpar_p[i]]->nparameters();
     uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
     // Set correct number of derivatives in sub-functions
