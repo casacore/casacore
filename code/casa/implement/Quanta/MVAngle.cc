@@ -101,6 +101,11 @@ const MVAngle &MVAngle::operator()(const MVAngle &norm) {
 }
 
 // Member functions
+MVAngle MVAngle::coAngle() const {
+  MVAngle t = C::pi_2 - val;
+  return (t());
+}
+
 Double MVAngle::radian() const {
     return val;
 }
