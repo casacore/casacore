@@ -6157,3 +6157,4 @@
 17 177 src rm trial/implement/Fitting/LinearFitSVD.h
 17 177 src rm trial/implement/Fitting/LinearFitSVD.cc
 17 178 src mv nrao/apps/goclient nrao/apps/gbtgoclient
+17 178 sys rm bin/goclient
