@@ -110,6 +110,11 @@ const Double & SpectralIndex::index() const {
   return itsIndex;
 }
 
+void SpectralIndex::index(Double & index) const {
+  DebugAssert(ok(), AipsError);
+  index = itsIndex;
+}
+
 void SpectralIndex::setIndex(const Double & newIndex) {
   itsIndex = newIndex;
   DebugAssert(ok(), AipsError);
