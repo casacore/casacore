@@ -1,5 +1,5 @@
 //# dImageStatistics.cc: image statistics program
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,7 +109,7 @@
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/LCSlicer.h>
 #include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
@@ -211,7 +211,8 @@ try {
 // Convert inclusion and exclusion ranges to vectors.
 
    Vector<Float> include(includeB.nelements());
-   for (uInt i=0;i<include.nelements(); i++) {
+   uInt i;
+   for (i=0;i<include.nelements(); i++) {
      include(i) = includeB[i];
    }
    if (include.nelements() == 1 && include(0)==0) {
@@ -257,7 +258,7 @@ try {
          ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
          cout << "Selected region : " << blc+1<< " to "
               << trc+1 << endl;
-         const LCBox region(blc, trc, inImage.shape());
+         const LCSlicer region(blc, trc);
     
          pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
       } else {

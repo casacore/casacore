@@ -176,8 +176,7 @@
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCEllipsoid.h>
+#include <trial/Lattices/LCSlicer.h>
 
 #include <iostream.h>
 
@@ -256,7 +255,8 @@ try {
 // interface the first allowed moment is 0.
 
    Vector<Int> moments(momentsB);
-   for (uInt i=0; i<moments.nelements(); i++) moments(i)++;
+   uInt i;
+   for (i=0; i<moments.nelements(); i++) moments(i)++;
    validInputs(MOMENTS) = True;
 
    
@@ -398,9 +398,9 @@ try {
          }
 
      
-//         LCEllipsoid region(cen, rad, inImage.shape());
+//         WCEllipsoid region(cen, rad, inImage.shape());
 
-         const LCBox region(blc, trc, inImage.shape());
+         const LCSlicer region(blc, trc);
 
          pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
 //         cout << "sub image shape = " << pSubImage->shape() << endl;
