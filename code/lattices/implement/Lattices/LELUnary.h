@@ -1,5 +1,5 @@
 //# LELUnary.h:  LELUnary.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 //# Includes
 #include <trial/Lattices/LELInterface.h>
+#include <trial/Lattices/LELScalar.h>
 #include <trial/Lattices/LELUnaryEnums.h>
 
 //# Forward Declarations
@@ -92,7 +93,9 @@
 template <class T> class LELUnaryConst : public LELInterface<T>
 {
 public: 
-   
+// Default constructor creates a scalar with a false mask.
+   LELUnaryConst();
+
 // Constructor takes a scalar.  
    LELUnaryConst(const T val);
 
@@ -101,20 +104,20 @@ public:
 
 // Evaluate the expression.
 // This throws an exception, since only a scalar can be returned.
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Evaluate the scalar expression (get the constant)
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
 private:
-   T val_p;
+   LELScalar<T> val_p;
 };
 
 
@@ -186,14 +189,14 @@ public:
   ~LELUnary();
 
 // Recursively evaluate the expression.
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
@@ -273,14 +276,14 @@ public:
   ~LELUnaryBool();
 
 // Recursively evaluate the expression.
-   virtual void eval (Array<Bool>& result,
+   virtual void eval (LELArray<Bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
-   virtual Bool getScalar() const;
+   virtual LELScalar<Bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    

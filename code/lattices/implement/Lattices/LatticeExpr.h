@@ -1,5 +1,5 @@
 //# LatticeExpr.h:  LatticeExpr.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,11 @@
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeRegion.h>
+#include <aips/Lattices/Slicer.h>
 
 //# Forward Declarations
 template <class T> class Array;
+template <class T> class LELArray;
 
 
 // <summary> Class to allow C++ expressions involving lattices </summary>
@@ -206,6 +208,8 @@ private:
 // It is untemplated and does not inherit.
    LatticeExprNode expr_p;
    LatticeRegion   region_p;       // always an empty region
+   LELArray<T>*    lastChunkPtr_p;
+   Slicer          lastSlicer_p;
 };
 
 

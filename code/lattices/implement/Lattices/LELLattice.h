@@ -1,5 +1,5 @@
 //# LELLattice.h:  LELLattice
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,14 +103,14 @@ public:
   ~LELLattice();
 
 // Evaluate the expression; this means get the chunk of the lattice
-   virtual void eval(Array<T>& result,
+   virtual void eval(LELArray<T>& result,
                      const Slicer& section) const;
 
 // Getting a scalar value is not possible (throws exception).
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
