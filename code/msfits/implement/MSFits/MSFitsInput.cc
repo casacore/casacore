@@ -82,7 +82,7 @@
 #include <trial/FITS/BinTable.h>
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
-
+#include <trial/MeasurementSets/MSTileLayout.h>
 
 // Returns the 0-based position of the key string in the map,
 // which is a list of strings.  Looks for the "Which" occurrance
@@ -219,7 +219,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile)
   }
 }
 
-void MSFitsInput::readFitsFile()
+void MSFitsInput::readFitsFile(Int obsType)
 {
   itsLog << LogOrigin("MSFitsInput", "readFitsFile");
   Int nField=0, nSpW=0;
@@ -228,7 +228,7 @@ void MSFitsInput::readFitsFile()
 
   Bool useTSM=True;
 
-  setupMeasurementSet(msFile_p, useTSM);
+  setupMeasurementSet(msFile_p, useTSM, obsType);
           
   // fill the OBSERVATION table
   fillObsTables();
@@ -467,7 +467,8 @@ void MSFitsInput::getPrimaryGroupAxisInfo()
   }
 }
 
-void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
+void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
+				      Int obsType) {
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
   Int nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
   nIF_p = getIndex(coordType_p,"IF");
@@ -516,26 +517,20 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
 
   if (useTSM) {
-    Int tileSize=nChan/10+1;
-    // make the tile about 128k big
-    TiledShapeStMan tiledStMan1("TiledData",
- 				IPosition(3,nCorr,tileSize,
- 					  16384/nCorr/tileSize));
-    TiledShapeStMan tiledStMan1f("TiledFlag",
- 				 IPosition(3,nCorr,tileSize,
- 					   16384/nCorr/tileSize));
+    // Choose an appropriate tileshape
+    IPosition dataShape(2,nCorr,nChan);
+    IPosition tileShape = MSTileLayout::tileShape(dataShape,obsType,array_p);
+    TiledShapeStMan tiledStMan1("TiledData",tileShape);
+    TiledShapeStMan tiledStMan1f("TiledFlag",tileShape);
     TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
-				  IPosition(4,nCorr,tileSize,1,
- 					   16384/nCorr/tileSize));
-    TiledShapeStMan tiledStMan2("TiledWgtSpectrum",
- 				IPosition(3,nCorr, tileSize,
- 					  16384/nCorr/tileSize));
-    TiledColumnStMan tiledStMan3("TiledUVW",
- 				 IPosition(2,3,1024));
+				  IPosition(4,tileShape(0),tileShape(1),1,
+ 					   tileShape(2)));
+    TiledShapeStMan tiledStMan2("TiledWgtSpectrum",tileShape);
+    TiledColumnStMan tiledStMan3("TiledUVW",IPosition(2,3,1024));
     TiledShapeStMan tiledStMan4("TiledWgt", 
-				IPosition(2,nCorr,16384/nCorr/tileSize));
+				IPosition(2,tileShape(0),tileShape(2)));
     TiledShapeStMan tiledStMan5("TiledSigma", 
-				IPosition(2,nCorr,16384/nCorr/tileSize));
+				IPosition(2,tileShape(0),tileShape(2)));
 
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
     newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan1);
