@@ -1,5 +1,5 @@
 //# tLSQFit.cc -- test LSQFit
-//# Copyright (C) 1999,2000,2001,2002,2004
+//# Copyright (C) 1999,2000,2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -275,6 +275,33 @@ int main() {
       for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
       lsq5.makeNorm(val1f, 1.0f, val12f[511]);
       cout << "Invert = " << lsq5.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      };
+    }
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "Real -- 6 unknowns --- float --- merge ---" << endl;
+    {
+      LSQFit lsq5(6);
+      LSQFit lsq5a(6);
+      for (Int j0=0; j0<511; j0++) {
+	val1f[0] = 1;
+	for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*j0;
+	if (j0<300) lsq5.makeNorm(val1f, 1.0f, val12f[j0]);
+	else lsq5a.makeNorm(val1f, 1.0f, val12f[j0]);
+      };
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      cout << "Merge = " << lsq5.merge(lsq5a);
+      cout << ", Invert = " << lsq5.invert(nr1);
       cout << ", rank=" << nr1 << endl;
       lsq5.solve(sol1);
       sd1 = lsq5.getSD();
