@@ -29,15 +29,22 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Measures.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/MeasData.h>
 #include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MCEpoch.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MCFrequency.h>
+#include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
@@ -122,7 +129,22 @@ main()
 	cout << "--------------------------------------" << endl;
 
 	cout << endl << "MDirection state transition matrix:\n" << endl;
-	cout << MCDirection::showState() << endl;///
+	cout << MCDirection::showState() << endl;
+
+	cout << endl << "MPosition state transition matrix:\n" << endl;
+	cout << MCPosition::showState() << endl;
+
+	cout << endl << "MEpoch state transition matrix:\n" << endl;
+	cout << MCEpoch::showState() << endl;
+
+	cout << endl << "MFrequency state transition matrix:\n" << endl;
+	cout << MCFrequency::showState() << endl;
+
+	cout << endl << "MRadialVelocity state transition matrix:\n" << endl;
+	cout << MCRadialVelocity::showState() << endl;
+
+	cout << endl << "MDoppler state transition matrix:\n" << endl;
+	cout << MCDoppler::showState() << endl;
 
 	MEpoch tbm(Quantity(MeasData::MJDB1950,"d"),MEpoch::Ref());
 	cout << "Epoch B1950: " << tbm << endl;
@@ -519,31 +541,247 @@ main()
 							endl;
     };
     {
-	MEpoch app(Quantity(47165.8,"d"));
-	MeasFrame appframe(app);
-	MDirection::Ref appref(MDirection::APP, appframe);
-	MDirection::Ref b1950ref(MDirection::B1950);
-	MDirection bappc(Quantity(85.4267,"deg"),
-			 Quantity(49.8502,"deg"), appref);
-	MDirection::Convert appb1950(bappc, b1950ref);
-	MDirection b1950(appb1950());
-	MDirection::Convert b1950app(b1950, appref);
-	MVDirection mvpole;
-	MDirection bappc1(Quantity(85.4267,"deg"),
-			 Quantity(50.8502,"deg"), appref);
-	
-	cout << "Converted to B1950 coordinates " << bappc.getAngle("deg") <<
-	    " to: " << appb1950().getAngle("deg") << endl;
-	cout << "and back to: " <<
-	    b1950app().getAngle("deg") << endl;
-	MDirection apole(b1950app(mvpole));
-	cout << "Rotation angle: " << 
-	    bappc.getValue().positionAngle(apole.getValue(), "deg") << endl;
-    };
-	
+      MEpoch app(Quantity(47165.8,"d"));
+      MeasFrame appframe(app);
+      MDirection::Ref appref(MDirection::APP, appframe);
+      MDirection::Ref b1950ref(MDirection::B1950);
+      MDirection bappc(Quantity(85.4267,"deg"),
+		       Quantity(49.8502,"deg"), appref);
+      MDirection::Convert appb1950(bappc, b1950ref);
+      MDirection b1950(appb1950());
+      MDirection::Convert b1950app(b1950, appref);
+      MVDirection mvpole;
+      MDirection bappc1(Quantity(85.4267,"deg"),
+			Quantity(50.8502,"deg"), appref);
+      
+      cout << "Converted to B1950 coordinates " << bappc.getAngle("deg") <<
+	" to: " << appb1950().getAngle("deg") << endl;
+      cout << "and back to: " <<
+	b1950app().getAngle("deg") << endl;
+      MDirection apole(b1950app(mvpole));
+      cout << "Rotation angle: " << 
+	bappc.getValue().positionAngle(apole.getValue(), "deg") << endl;
+    }
+
+    MEpoch tbm(Quantity(50927.92931, "d"));
+    MPosition pos(MVPosition(-4750915.84032, 2792906.17778, 
+			     -3200483.75028), 
+		  MPosition::ITRF);
+    MDirection fmb0(MVDirection(0.5, 0.5, 0.5), MDirection::J2000);
+    MRadialVelocity fmfrq0(MVRadialVelocity(100.), MRadialVelocity::LSR);
+    MeasFrame mf(tbm, pos, fmb0);
+    mf.set(fmfrq0);
+    Vector<Double> tvec(3);
+    tvec = 0.0;
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MDirection conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVDirection mvd0(0.5, 0.5, 0.5);
+      Double tp;
+      for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
+	for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
+	  if (i == MDirection::B1950 || i == MDirection::BMEAN ||
+	      i == MDirection::BTRUE ||
+	      j == MDirection::B1950 || j == MDirection::BMEAN ||
+	      j == MDirection::BTRUE) tp = 1.7e-8;
+	  else tp = 1e-9;
+	  MDirection::Ref rin(i, mf);
+	  MDirection::Ref rout(j, mf);
+	  MDirection mb0(mvd0, rin);
+	  MDirection::Convert forw(rin, rout);
+	  MDirection::Convert backw(rout, rin);
+	  if (!allNearAbs(mb0.getValue().getValue().ac() -
+			  backw(forw(mb0)).getValue().getValue().ac(), 
+			  tvec.ac(), tp)) {
+	    cout << MDirection::showType(i) << " to " <<
+	      MDirection::showType(j) << ": " <<
+	      mb0.getValue().getValue().ac() -
+	      backw(forw(mb0)).getValue().getValue().ac() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward Direction conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward Direction conversions wrong" << endl;
+      };
+    }
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MPosition conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVPosition mvd0(-100, 100, -100);
+      Double tp;
+      for (uInt i=0; i<MPosition::N_Types; i++) {
+	if (i == MPosition::WGS84) mvd0 = MVPosition(-100, 100, -100);
+	else mvd0 = MVPosition(-3.68663e+06, 3.68663e+06, -3.66196e+06);
+	for (uInt j=0; j<MPosition::N_Types; j++) {
+	  tp = 5e-8;
+	  MPosition::Ref rin(i, mf);
+	  MPosition::Ref rout(j, mf);
+	  MPosition mb0(mvd0, rin);
+	  MPosition::Convert forw(rin, rout);
+	  MPosition::Convert backw(rout, rin);
+	  if (!allNearAbs(mb0.getValue().getValue().ac() -
+			  backw(forw(mb0)).getValue().getValue().ac(), 
+			  tvec.ac(), tp)) {
+	    cout << MPosition::showType(i) << " to " <<
+	      MPosition::showType(j) << ": " <<
+	      mb0.getValue().getValue().ac() -
+	      backw(forw(mb0)).getValue().getValue().ac() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward Position conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward Position conversions wrong" << endl;
+      };
+    }
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MEpoch conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVEpoch mvd0(50930);
+      Double tp;
+      for (uInt i=0; i<MEpoch::N_Types; i++) {
+	for (uInt j=0; j<MEpoch::N_Types; j++) {
+	  tp = 1e-9;
+	  MEpoch::Ref rin(i, mf);
+	  MEpoch::Ref rout(j, mf);
+	  MEpoch mb0(mvd0, rin);
+	  MEpoch::Convert forw(rin, rout);
+	  MEpoch::Convert backw(rout, rin);
+	  if (!nearAbs(mb0.getValue().get() -
+		       backw(forw(mb0)).getValue().get(), 
+		       tvec(0), tp)) {
+	    cout << MEpoch::showType(i) << " to " <<
+	      MEpoch::showType(j) << ": " <<
+	      mb0.getValue().get() -
+	      backw(forw(mb0)).getValue().get() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward Epoch conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward Epoch conversions wrong" << endl;
+      };
+    }
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MFrequency conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVFrequency mvd0(1e9);
+      Double tp;
+      for (uInt i=0; i<MFrequency::N_Types; i++) {
+	for (uInt j=0; j<MFrequency::N_Types; j++) {
+	  tp = 1e-6;
+	  MFrequency::Ref rin(i, mf);
+	  MFrequency::Ref rout(j, mf);
+	  MFrequency mb0(mvd0, rin);
+	  MFrequency::Convert forw(rin, rout);
+	  MFrequency::Convert backw(rout, rin);
+	  if (!near(mb0.getValue().getValue(),
+		       backw(forw(mb0)).getValue().getValue(), 
+		       tp)) {
+	    cout << MFrequency::showType(i) << " to " <<
+	      MFrequency::showType(j) << ": " <<
+	      mb0.getValue().getValue() -
+	      backw(forw(mb0)).getValue().getValue() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward Frequency conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward Frequency conversions wrong" << endl;
+      };
+    }
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MDoppler conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVDoppler mvd0(0.01);
+      Double tp;
+      for (uInt i=0; i<MDoppler::N_Types; i++) {
+	if (i == MDoppler::GAMMA) mvd0 = MVDoppler(2);
+	else mvd0 = MVDoppler(0.01);
+	for (uInt j=0; j<MDoppler::N_Types; j++) {
+	  tp = 1e-9;
+	  MDoppler::Ref rin(i, mf);
+	  MDoppler::Ref rout(j, mf);
+	  MDoppler mb0(mvd0, rin);
+	  MDoppler::Convert forw(rin, rout);
+	  MDoppler::Convert backw(rout, rin);
+	  if (!nearAbs(mb0.getValue().getValue() -
+		       backw(forw(mb0)).getValue().getValue(), 
+		       tvec(0), tp)) {
+	    cout << MDoppler::showType(i) << " to " <<
+	      MDoppler::showType(j) << ": " <<
+	      mb0.getValue().getValue() -
+	      backw(forw(mb0)).getValue().getValue() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward Doppler conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward Doppler conversions wrong" << endl;
+      };
+    }
+    
+    {
+      cout << "------------------------------------" << endl;
+      cout << "Testing all MRadialVelocity conversions forward/backward" << endl;
+      Bool isok = True;
+
+      MVRadialVelocity mvd0(100);
+      Double tp;
+      for (uInt i=0; i<MRadialVelocity::N_Types; i++) {
+	for (uInt j=0; j<MRadialVelocity::N_Types; j++) {
+	  tp = 1e-9;
+	  MRadialVelocity::Ref rin(i, mf);
+	  MRadialVelocity::Ref rout(j, mf);
+	  MRadialVelocity mb0(mvd0, rin);
+	  MRadialVelocity::Convert forw(rin, rout);
+	  MRadialVelocity::Convert backw(rout, rin);
+	  if (!nearAbs(mb0.getValue().getValue() -
+		       backw(forw(mb0)).getValue().getValue(), 
+		       tvec(0), tp)) {
+	    cout << MRadialVelocity::showType(i) << " to " <<
+	      MRadialVelocity::showType(j) << ": " <<
+	      mb0.getValue().getValue() -
+	      backw(forw(mb0)).getValue().getValue() << endl;
+	    isok = False;
+	  };
+	};
+      };
+      if (isok) {
+	cout << "All forward/backward RadialVelocity conversions: ok" << endl;
+      } else {
+	cout << "Some forward/backward RadialVelocity conversions wrong" << endl;
+      };
+    }
 
     } catch (AipsError x) {
-	cout << x.getMesg() << endl;
+      cout << x.getMesg() << endl;
     } end_try;
 
     exit(0);

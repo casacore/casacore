@@ -87,6 +87,100 @@ MDirection state transition matrix:
  17| 37 37 37 37 37 37 37 37 36 36 36 37 37 37 37 37 36 --
    |  3  3  3  3  3  3  3  3  8  8  8  3  3  3  3  3  8   
 
+
+MPosition state transition matrix:
+
+   |  0  1
+----------
+  0| --  0
+   |     1
+  1|  1 --
+   |  0   
+
+
+MEpoch state transition matrix:
+
+   |  0  1  2  3  4  5  6  7  8  9 10 11
+----------------------------------------
+  0| --  0  0  0  0  0  0  0  0  0  0  0
+   |     3  3  3  3  3  3  3  3  3  3  3
+  1|  2 --  2  2  2  2  2  2  2  2  2  2
+   |  2     2  2  2  2  2  2  2  2  2  2
+  2|  4  3 --  4  4  4  4  4  4  4  4  4
+   |  4  1     4  4  4  4  4  4  4  4  4
+  3|  1  6  6 --  6  6  6  6  6  6  6  6
+   |  0  4  4     4  4  4  4  4  4  4  4
+  4|  7  5  5  7 -- 10  8  8  8  8  8  8
+   |  3  2  2  3     5  6  6  6  6  6  6
+  5| 11 11 11 11 11 -- 11 11 11 11 11 11
+   |  4  4  4  4  4     4  4  4  4  4  4
+  6|  9  9  9  9  9  9 -- 12 12 12 12 12
+   |  4  4  4  4  4  4     7  7  7  7  7
+  7| 13 13 13 13 13 13 13 -- 14 14 14 14
+   |  6  6  6  6  6  6  6     8  8  8  8
+  8| 15 15 15 15 15 15 15 15 -- 18 16 16
+   |  7  7  7  7  7  7  7  7     9 10 10
+  9| 19 19 19 19 19 19 19 19 19 -- 19 19
+   |  8  8  8  8  8  8  8  8  8     8  8
+ 10| 17 17 17 17 17 17 17 17 17 17 -- 20
+   |  8  8  8  8  8  8  8  8  8  8    11
+ 11| 21 21 21 21 21 21 21 21 21 21 21 --
+   | 10 10 10 10 10 10 10 10 10 10 10   
+
+
+MFrequency state transition matrix:
+
+   |  0  1  2  3  4  5  6
+-------------------------
+  0| -- 10 10 10 10 10 10
+   |     1  1  1  1  1  1
+  1| 11 --  0  0  0  0  6
+   |  0     3  3  3  3  6
+  2|  8  8 --  8  8  8  8
+   |  3  3     3  3  3  3
+  3|  1  1  9 --  2  2  1
+   |  1  1  2     4  4  1
+  4|  4  4  4  4 --  3  4
+   |  3  3  3  3     5  3
+  5|  5  5  5  5  5 --  5
+   |  4  4  4  4  4     4
+  6|  7  7  7  7  7  7 --
+   |  1  1  1  1  1  1   
+
+
+MRadialVelocity state transition matrix:
+
+   |  0  1  2  3  4  5
+----------------------
+  0| --  0  0  0  0  6
+   |     2  2  2  2  5
+  1|  8 --  8  8  8  8
+   |  2     2  2  2  2
+  2|  1  9 --  2  2  1
+   |  0  1     3  3  0
+  3|  4  4  4 --  3  4
+   |  2  2  2     4  2
+  4|  5  5  5  5 --  5
+   |  3  3  3  3     3
+  5|  7  7  7  7  7 --
+   |  0  0  0  0  0   
+
+
+MDoppler state transition matrix:
+
+   |  0  1  2  3  4
+-------------------
+  0| --  0  0  0  0
+   |     2  2  2  2
+  1|  1 --  1  1  1
+   |  2     2  2  2
+  2|  4  5 --  6  7
+   |  0  1     3  4
+  3|  2  2  2 --  2
+   |  2  2  2     2
+  4|  3  3  3  3 --
+   |  2  2  2  2   
+
 Epoch B1950: Epoch: 33281::22:09:46.8619
 Epoch 2000: Epoch: 51544::12:00:00.0000
 Epoch reference: Reference for an Epoch with Type: TAI
@@ -126,7 +220,7 @@ LSR (B1950): [0.00724658, -0.865985, 0.500018]
 LSR (J2000): [0.0145021, -0.865863, 0.500071]
 Radial velocity (BARY): Radialvelocity: 1e+06
                  (GEO): 1.02688e+06
-and back: 999999
+and back: 1e+06
 and 0 (GEO) to TOPO: 1.35506e-11
 and back: 0
 and 0 (BARY) to LSR: 3347.86
@@ -200,3 +294,21 @@ Back:   [-114.275, -60.8138] deg
 Converted to B1950 coordinates [85.4267, 49.8502] deg to: [84.6813, 49.8286] deg
 and back to: [85.4267, 49.8502] deg
 Rotation angle: 0.335234 deg
+------------------------------------
+Testing all MDirection conversions forward/backward
+All forward/backward Direction conversions: ok
+------------------------------------
+Testing all MPosition conversions forward/backward
+All forward/backward Position conversions: ok
+------------------------------------
+Testing all MEpoch conversions forward/backward
+All forward/backward Epoch conversions: ok
+------------------------------------
+Testing all MFrequency conversions forward/backward
+All forward/backward Frequency conversions: ok
+------------------------------------
+Testing all MDoppler conversions forward/backward
+All forward/backward Doppler conversions: ok
+------------------------------------
+Testing all MRadialVelocity conversions forward/backward
+All forward/backward RadialVelocity conversions: ok
