@@ -34,6 +34,12 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Logging/LogIO.h>
 
+#include <aips/Quanta/Quantum.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MRadialVelocity.h>
+
+class VisSet;
 class RFABase;
 class PGPlotter;
 class PGPlotterInterface;
@@ -89,6 +95,7 @@ class PGPlotterInterface;
 //   <li> start discussion of this possible extension
 // </todo>
 
+
 class RedFlagger : public FlaggerEnums
 {
 protected:
@@ -109,7 +116,20 @@ protected:
  
   MeasurementSet   ms;
   Block<RFABase*> acc;
-  
+  //new added
+  MeasurementSet *mssel_p;
+  VisSet *vs_p;
+  String msname_p;
+  Bool nullSelect_p;
+  String dataMode_p;  
+  Vector<Int> dataNchan_p;
+  Vector<Int> dataStart_p, dataStep_p;
+  Vector<Int> dataspectralwindowids_p;
+  Vector<Int> datafieldids_p;
+  Vector<Int> datadescids_p;
+  MRadialVelocity mDataStart_p;
+  MRadialVelocity mDataStep_p;
+  //
   uInt nant,nifr,ntime;
   Vector<Int> ifr2ant1,ifr2ant2;
   Vector<String> antnames;
@@ -131,8 +151,18 @@ public:
   
 // Change or set the MS this RedFlagger refers to.
   void attach( const MeasurementSet &ms, Bool setupAgentDefaults=True );
+
+  // Set the data selection parameters
+  Bool setdata(const String& mode, const Vector<Int>& nchan, 
+	       const Vector<Int>& start,
+	       const Vector<Int>& step, 
+	       const MRadialVelocity& mStart,
+	       const MRadialVelocity& mStep,	      
+	       const Vector<Int>& spectralwindowids,
+	       const Vector<Int>& fieldid,
+	       const String& msSelect="");
   
-// Detaches from the MS  
+  // Detaches from the MS  
   void detach();
   
 // Runs the flagger. agent is a record of agents (name+options). opt is a
@@ -178,11 +208,20 @@ public:
 // Uses SUBP to divide the flag report PGPlotter into subpanes.
 // Keeps track of the current setting, so no extra pagebreaks are produced
   void setReportPanels ( Int nx,Int ny );
+// Utility function to do channel selection
+  Bool selectDataChannel(VisSet& vs, Vector<Int>& spectralwindowids, 
+			 String& dataMode, 
+			 Vector<Int>& dataNchan, 
+			 Vector<Int>& dataStart, Vector<Int>& dataStep,
+			 MRadialVelocity& mDataStart, 
+			 MRadialVelocity& mDataStep);
   
 private:
     
   RedFlagger( const RedFlagger & )          {};
+
   RedFlagger& operator=(const RedFlagger &)  { return *this; };
+
   void printAgentRecord(String &, uInt, const RecordInterface &);
 };
 
