@@ -58,7 +58,7 @@
 void writeFixed();
 void readTable();
 
-main () {
+int main () {
     try {
 	writeFixed();
 	readTable();
@@ -89,7 +89,7 @@ void writeFixed()
     // Now create a new table from the description.
     SetupNewTable newtab("tTiledColumnStMan_tmp.data", td, Table::New);
     // Create a storage manager for it.
-    TiledColumnStMan sm1 ("TSMExample", IPosition(2,5,6));
+    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
     newtab.setShapeColumn ("Freq", IPosition(1,20));
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindAll (sm1);
