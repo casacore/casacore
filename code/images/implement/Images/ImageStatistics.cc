@@ -28,7 +28,9 @@
 #include <trial/Images/ImageStatistics.h>
 
 #include <aips/Arrays/Matrix.h>
-#include <trial/Coordinates.h>  
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>  
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Images/ImageUtilities.h>
@@ -348,43 +350,6 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 }
 
 
-template <class T> 
-String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
-{
-   const CoordinateSystem& cS = pInImage_p->coordinates();
-   CoordinateSystem cSys(cS);                 // Non-const
-   Vector<Double> world;
-   Vector<Double> pixel(cSys.nPixelAxes());
-   for (uInt i=0; i<pixel.nelements(); i++) pixel(i) = pos(i);
-//
-   if (!cSys.toWorld(world, pixel)) {
-      String err = String("Error converting coordinate position because ") + cSys.errorMessage();
-      throw(AipsError(err));
-   }
-//
-   String s2;
-   for (uInt i=0; i<world.nelements(); i++) {
-      String s, u;
-      String tmp = cSys.format(u, Coordinate::DEFAULT, world(i), i, 
-                               True, True, -1);
-//
-      if (u.empty()) {
-        s = tmp;
-      } else {
-        s = tmp + u;
-      }
-//
-      if (i==0) {
-         s2 += s;
-      } else {
-         s2 += String(", ") + s;
-      }
-   }
-//
-   return s2;
-}
-
-
 template <class T>
 void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const
 //
@@ -432,8 +397,9 @@ void ImageStatistics<T>::listMinMax(ostrstream& osMin,
 // Find world coordinates of min and max. We list pixel coordinates
 // of min/max relative to the start of the parent lattice
 
-      String minPosString = formatCoordinate (minPos_p);
-      String maxPosString = formatCoordinate (maxPos_p);
+      CoordinateSystem cSys(pInImage_p->coordinates());
+      String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys);
+      String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys);
 //
       os_p << "Minimum value "; 
       os_p.output() << setw(oWidth) << String(osMin);
