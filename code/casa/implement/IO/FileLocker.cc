@@ -38,6 +38,7 @@ FileLocker::FileLocker()
   itsError       (0),
   itsStart       (0),
   itsLength      (0),
+  itsMsgShown    (False),
   itsReadLocked  (False),
   itsWriteLocked (False)
 {}
@@ -47,6 +48,7 @@ FileLocker::FileLocker (int fd, uInt start, uInt length)
   itsError       (0),
   itsStart       (start),
   itsLength      (length),
+  itsMsgShown    (False),
   itsReadLocked  (False),
   itsWriteLocked (False)
 {}
@@ -101,6 +103,27 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
 	    return True;
 	}
+	// on SUSE 6.1 systems statd might not be installed.
+	// Hence locks on NFS files result in ENOLCK. Treat it as success.
+	// Issue a message if hit for the first time.
+#if defined(AIPS_LINUX)
+	if (errno == ENOLCK) {
+	    itsError = 0;
+	    itsReadLocked = True;
+	    if (type == Write) {
+		itsWriteLocked = True;
+	    }
+	    if (!itsMsgShown) {
+	      itsMsgShown = True;
+	      cout << "*** It looks as if the statd deamon is not running on your Linux system" << endl;
+	      cout << "*** which means that no locks can be used on NFS files" << endl;
+	      cout << "*** so a lock is always granted and NFS files are not properly shared." << endl;
+	      cout << "*** SUSE 6.1 systems might come without the stad package." << endl;
+	      cout << "*** You can get it from /pub/linux/devel/gcc/knfsd-1.4.1.tar.gz" << endl;
+	    }
+	    return True;
+	}
+#endif
 	itsError = errno;
 	if (errno != EAGAIN  &&  errno != EACCES) {
 	    i = nattempts;                             // exit the loop
@@ -147,6 +170,11 @@ Bool FileLocker::release()
     if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 	return True;
     }
+#if defined(AIPS_LINUX)
+    if (errno == ENOLCK) {
+      return True;
+    }
+#endif
     itsError = errno;
     return False;
 }
