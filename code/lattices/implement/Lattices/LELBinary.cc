@@ -35,18 +35,18 @@
 #include <aips/Exceptions/Error.h> 
 
 
-typedef LELArray<Bool> gppbug1_lelbinary;
-typedef LELScalar<Bool> gppbug2_lelbinary;
-
-
 template <class T>
 LELBinary<T>::LELBinary(const LELBinaryEnums::Operation op,
 			const CountedPtr<LELInterface<T> >& pLeftExpr,
 			const CountedPtr<LELInterface<T> >& pRightExpr)
-: op_p(op),  pLeftExpr_p(pLeftExpr),  pRightExpr_p(pRightExpr)
+: op_p(op)
 {
-   setAttr (LELAttribute(pLeftExpr_p->getAttribute(),
-			 pRightExpr_p->getAttribute()));
+   setAttr (LELAttribute(pLeftExpr->getAttribute(),
+			 pRightExpr->getAttribute()));
+   // Fill these variables here, so an exception in setAttr does
+   // not leave them undestructed.
+   pLeftExpr_p  = pLeftExpr;
+   pRightExpr_p = pRightExpr;
 
 #if defined(AIPS_TRACE)
    cout << "LELBinary: constructor" << endl;
@@ -231,10 +231,14 @@ template <class T>
 LELBinaryCmp<T>::LELBinaryCmp(const LELBinaryEnums::Operation op,
 			      const CountedPtr<LELInterface<T> >& pLeftExpr,
 			      const CountedPtr<LELInterface<T> >& pRightExpr)
-: op_p(op), pLeftExpr_p(pLeftExpr), pRightExpr_p(pRightExpr)
+: op_p(op)
 {
-   setAttr (LELAttribute(pLeftExpr_p->getAttribute(),
-			 pRightExpr_p->getAttribute()));
+   setAttr (LELAttribute(pLeftExpr->getAttribute(),
+			 pRightExpr->getAttribute()));
+   // Fill these variables here, so an exception in setAttr does
+   // not leave them undestructed.
+   pLeftExpr_p  = pLeftExpr;
+   pRightExpr_p = pRightExpr;
 
 #if defined(AIPS_TRACE)
    cout << "LELBinaryCmp: constructor" << endl;

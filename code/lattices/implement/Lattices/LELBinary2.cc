@@ -34,25 +34,24 @@
 #include <aips/Exceptions/Error.h> 
 
 
-typedef LELScalar<Bool> gppbug_lelbinary2;
-
-
 LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
 			     const CountedPtr<LELInterface<Bool> >& pLeftExpr,
 			     const CountedPtr<LELInterface<Bool> >& pRightExpr)
-: op_p(op), pLeftExpr_p(pLeftExpr), pRightExpr_p(pRightExpr)
+: op_p(op)
 {
-   setAttr (LELAttribute(pLeftExpr_p->getAttribute(),
-			 pRightExpr_p->getAttribute()));
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {
-       if (pLeftExpr_p->isScalar() != pRightExpr_p->isScalar()) {
-	   throw (AipsError ("LELBinaryBool::constructor - comparison between Bool scalar and "
-			     " array not possible; use function ANY or ALL"));
+       if (pLeftExpr->isScalar() != pRightExpr->isScalar()) {
+	   throw (AipsError ("LELBinaryBool::constructor - "
+			     "comparison between Bool scalar and "
+			     "array not possible; use function ANY or ALL"));
        }
    }
-   setAttr (LELAttribute(pLeftExpr_p->getAttribute(),
-			 pRightExpr_p->getAttribute()));
-
+   setAttr (LELAttribute(pLeftExpr->getAttribute(),
+			 pRightExpr->getAttribute()));
+   // Fill these variables here, so an exception in setAttr does
+   // not leave them undestructed.
+   pLeftExpr_p  = pLeftExpr;
+   pRightExpr_p = pRightExpr;
 #if defined(AIPS_TRACE)
    cout << "LELBinaryBool: constructor" << endl;
    cout << "LELBinaryBool: left.name = " << pLeftExpr->className() << endl;

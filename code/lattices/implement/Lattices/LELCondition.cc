@@ -33,14 +33,10 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Exceptions/Error.h>
 
-typedef CountedPtr<LELInterface<Bool> > lelcondition_gppbug1;
-
 
 template <class T>
 LELCondition<T>::LELCondition (const CountedPtr<LELInterface<T> >& expr,
 	                       const CountedPtr<LELInterface<Bool> >& cond)
-: pExpr_p (expr),
-  pCond_p (cond)
 {
 #if defined(AIPS_TRACE)
    cout << "LELCondition:: constructor" << endl;
@@ -55,6 +51,10 @@ LELCondition<T>::LELCondition (const CountedPtr<LELInterface<T> >& expr,
    // The result is always masked, since the condition forms a mask.
    setAttr (LELAttribute (True, attr.shape(), attr.tileShape(),
 	    attr.coordinates()));
+   // Fill these variables here, so an exception in setAttr does
+   // not leave them undestructed.
+   pExpr_p = expr;
+   pCond_p = cond;
 }
 
 template <class T>

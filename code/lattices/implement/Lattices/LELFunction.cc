@@ -45,7 +45,7 @@
 template <class T>
 LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
 				const CountedPtr<LELInterface<T> >& expr)
-: function_p(function), pExpr_p(expr)
+: function_p(function)
 {
    switch (function_p) {
    case LELFunctionEnums::MIN1D :
@@ -69,7 +69,9 @@ LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
    default:
       setAttr(expr->getAttribute());
    }
-
+   // Fill this variable here, so an exception in setAttr does
+   // not leave it undestructed.
+   pExpr_p = expr;
 #if defined(AIPS_TRACE)
    cout << "LELFunction1D: constructor" << endl;
 #endif
@@ -422,7 +424,7 @@ template <class T>
 LELFunctionReal1D<T>::LELFunctionReal1D
                                (const LELFunctionEnums::Function function,
 				const CountedPtr<LELInterface<T> >& exp)
-: function_p(function), pExpr_p(exp)
+: function_p(function)
 {
    switch (function_p) {
    case LELFunctionEnums::MEDIAN1D :
@@ -431,7 +433,9 @@ LELFunctionReal1D<T>::LELFunctionReal1D
    default:
       setAttr(exp->getAttribute());
    }
-
+   // Fill this variable here, so an exception in setAttr does
+   // not leave it undestructed.
+   pExpr_p = expr;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionReal1D: constructor" << endl;
 #endif
@@ -987,12 +991,12 @@ LELScalar<T> LELFunctionReal1D<T>::smallMaskedMedian
 template <class T>
 LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
 				const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
    switch (function_p) {
    case LELFunctionEnums::IIF :
    {
-      if (arg_p.nelements() != 3) {
+      if (exp.nelements() != 3) {
          throw (AipsError ("LELFunctionND - "
 			   "function IIF should have 3 arguments"));
       }
@@ -1003,19 +1007,19 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       argType[0] = TpBool;
       argType[1] = whatType(static_cast<T*>(0));
       argType[2] = whatType(static_cast<T*>(0));
-      setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+      setAttr (LatticeExprNode::checkArg (exp, argType, False));
       break;
    }
    case LELFunctionEnums::REPLACE :
    {
-      if (arg_p.nelements() != 2) {
+      if (exp.nelements() != 2) {
          throw (AipsError ("LELFunctionND - "
 			   "function REPLACE should have 2 arguments"));
       }
 //# The 1st and 2nd argument must be T.
 //# The first arguments has to be a lattice.
 
-      if (arg_p[0].isScalar()) {
+      if (exp[0].isScalar()) {
 	 throw (AipsError ("LELFunctionND - "
 			   "first argument of function REPLACE cannot be "
 			   " a scalar"));
@@ -1023,14 +1027,16 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       Block<Int> argType(2);
       argType[0] = whatType(static_cast<T*>(0));
       argType[1] = whatType(static_cast<T*>(0));
-      LatticeExprNode::checkArg (arg_p, argType, False);
-      setAttr (arg_p[0].getAttribute());
+      LatticeExprNode::checkArg (exp, argType, False);
+      setAttr (exp[0].getAttribute());
       break;
    }
    default:
       throw (AipsError ("LELFunctionND::constructor - unknown function"));
    }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionND: constructor" << endl;
 #endif

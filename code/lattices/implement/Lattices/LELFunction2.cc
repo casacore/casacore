@@ -42,7 +42,7 @@
 // LELFunctionFloat
 LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 				   const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
     switch (function_p) {
     case LELFunctionEnums::ABS :
@@ -51,27 +51,28 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
     case LELFunctionEnums::IMAG :
     case LELFunctionEnums::NDIM :
     {
-       if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionFloat::constructor - function can only"
-                            "have one argument"));
+       if (exp.nelements() != 1) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+			    "function can only have one argument"));
        }
        if (function_p == LELFunctionEnums::NDIM) {
-	   setAttr (LELAttribute());                         // result is scalar
+	   setAttr (LELAttribute());                     // result is scalar
        } else {
-	   setAttr(arg_p[0].getAttribute());
+	   setAttr(exp[0].getAttribute());
        }
        break;
     }
     case LELFunctionEnums::LENGTH :
     {
-       if (arg_p.nelements() != 2) {
-          throw (AipsError ("LELFunctionFloat::constructor - length function"
-			    " should have 2 arguments"));
+       if (exp.nelements() != 2) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+			    "length function should have 2 arguments"));
        }
-       if (! (arg_p[1].isScalar()  &&
-            (arg_p[1].dataType()==TpFloat || arg_p[1].dataType()==TpDouble))) {
-          throw (AipsError ("LELFunctionFloat::constructor - 2nd argument of "
-			    " length function should be a real scalar"));
+       if (! (exp[1].isScalar()  &&
+            (exp[1].dataType()==TpFloat || exp[1].dataType()==TpDouble))) {
+          throw (AipsError ("LELFunctionFloat::constructor - "
+			    "2nd argument of length function "
+			    "should be a real scalar"));
        }
        setAttr (LELAttribute());                         // result is scalar
        break;
@@ -82,7 +83,7 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 
 	Block<Int> argType(1);
 	argType[0] = TpFloat;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     case LELFunctionEnums::ATAN2 :
@@ -96,13 +97,16 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 	Block<Int> argType(2);
 	argType[0] = TpFloat;
 	argType[1] = TpFloat;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     default:
-	throw (AipsError ("LELFunctionFloat::constructor - unknown Float function"));
+	throw (AipsError ("LELFunctionFloat::constructor - "
+			  "unknown Float function"));
     }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionFloat: constructor" << endl;
 #endif
@@ -184,7 +188,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
          break;
       }
       default:
-         throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+         throw (AipsError ("LELFunctionFloat::eval - "
+			   "unknown Float function"));
       }
    } else {   
       if (arg_p[0].isScalar()) {
@@ -223,7 +228,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
    	    max (result.value(), result.value(), scalarTemp);
    	    break;
          default:
-            throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+            throw (AipsError ("LELFunctionFloat::eval - "
+			      "unknown Float function"));
          }
 
       } else if (arg_p[1].isScalar()) {
@@ -264,7 +270,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
 	    max (result.value(), result.value(), scalarTemp);
 	    break;
          default:
-	    throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+	    throw (AipsError ("LELFunctionFloat::eval - "
+			      "unknown Float function"));
          }
 
       } else {
@@ -298,7 +305,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
 	    max(result.value(), result.value(), tempr.value());
 	    break;
          default:
-	    throw(AipsError("LELFunctionFloat::eval - unknown function"));
+	    throw(AipsError("LELFunctionFloat::eval - "
+			    "unknown function"));
          }
       }
    }
@@ -446,7 +454,7 @@ void LELFunctionFloat::resync()
 // LELFunctionDouble
 LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
   				     const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
     switch (function_p) {
     case LELFunctionEnums::ABS :  
@@ -458,14 +466,14 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 // Returns a real number
 
     {
-       if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionDouble::constructor - function can only"
-                            "have one argument"));
+       if (exp.nelements() != 1) {
+          throw (AipsError ("LELFunctionDouble::constructor - "
+			    "function can only have one argument"));
        }
        if (function_p == LELFunctionEnums::NELEM) {
-	   setAttr (LELAttribute());                         // result is scalar
+	   setAttr (LELAttribute());                    // result is scalar
        } else {
-	   setAttr(arg_p[0].getAttribute());
+	   setAttr(exp[0].getAttribute());
        }
        break;
     }
@@ -474,8 +482,8 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
     {
 	Block<Int> argType(1);
 	argType[0] = TpBool;
-	LatticeExprNode::checkArg (arg_p, argType, True); // expect 1 Bool array
-	setAttr (LELAttribute());                         // result is scalar
+	LatticeExprNode::checkArg (exp, argType, True); // expect 1 Bool array
+	setAttr (LELAttribute());                       // result is scalar
 	break;
     }
     case LELFunctionEnums::ATAN2 :
@@ -488,13 +496,16 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 	Block<Int> argType(2);
 	argType[0] = TpDouble;
 	argType[1] = TpDouble;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     default:
-	throw (AipsError ("LELFunctionDouble::constructor - unknown Double function"));
+	throw (AipsError ("LELFunctionDouble::constructor - "
+			  "unknown Double function"));
     }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionDouble: constructor" << endl;
 #endif
@@ -560,7 +571,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
          break;
       }
       default:
-         throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+         throw (AipsError ("LELFunctionDouble::eval - "
+			   "unknown Double function"));
       }
    } else {
       if (arg_p[0].isScalar()) {
@@ -599,7 +611,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
 	    max (result.value(), result.value(), scalarTemp);
 	    break;
          default:
-	    throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+	    throw (AipsError ("LELFunctionDouble::eval - "
+			      "unknown Double function"));
          }
 
       } else if (arg_p[1].isScalar()) {
@@ -640,7 +653,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
 	    max (result.value(), result.value(), scalarTemp);
 	    break;
          default:
-            throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+            throw (AipsError ("LELFunctionDouble::eval - "
+			      "unknown Double function"));
          }
 
       } else {
@@ -674,7 +688,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
 	    max(result.value(), result.value(), tempr.value());
 	    break;
          default:
-            throw(AipsError("LELFunctionDouble::eval - unknown function"));
+            throw(AipsError("LELFunctionDouble::eval - "
+			    "unknown function"));
          }
       }
    }
@@ -881,7 +896,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
       break;
    }
    default:
-      throw (AipsError ("LELFunction2::nMaskedElements, unknown data type"));
+      throw (AipsError ("LELFunction2::nMaskedElements - unknown data type"));
    }
    return nelem;
 }
@@ -963,18 +978,18 @@ void LELFunctionDouble::resync()
 LELFunctionComplex::LELFunctionComplex
                                   (const LELFunctionEnums::Function function,
 				   const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
     switch (function_p) {
     case LELFunctionEnums::CONJ :
     {
 // Expect 1 Complex argument
 
-       if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionComplex::constructor - functions can only"
-                            "have one argument"));
+       if (exp.nelements() != 1) {
+          throw (AipsError ("LELFunctionComplex::constructor - "
+			    "function can only have one argument"));
        }
-       setAttr(arg_p[0].getAttribute());
+       setAttr(exp[0].getAttribute());
        break;
     }
     case LELFunctionEnums::COMPLEX :
@@ -984,7 +999,7 @@ LELFunctionComplex::LELFunctionComplex
 	Block<Int> argType(2);
 	argType[0] = TpFloat;
 	argType[1] = TpFloat;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     case LELFunctionEnums::POW :
@@ -994,13 +1009,16 @@ LELFunctionComplex::LELFunctionComplex
 	Block<Int> argType(2);
 	argType[0] = TpComplex;
 	argType[1] = TpComplex;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     default:
-	throw (AipsError ("LELFunctionComplex::constructor - unknown Complex function"));
+	throw (AipsError ("LELFunctionComplex::constructor - "
+			  "unknown Complex function"));
     }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionComplex: constructor" << endl;
 #endif
@@ -1031,7 +1049,8 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
          break;
       }
       default:
-         throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+         throw (AipsError ("LELFunctionComplex::eval - "
+			   "unknown Complex function"));
       }
  
    } else {
@@ -1067,7 +1086,8 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    break;
          }
          default:
-            throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+            throw (AipsError ("LELFunctionComplex::eval - "
+			      "unknown Complex function"));
          }
 
       } else if (arg_p[1].isScalar()) {
@@ -1112,7 +1132,8 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    break;
          }
          default:
-            throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+            throw (AipsError ("LELFunctionComplex::eval - "
+			      "unknown Complex function"));
          }
 
       } else {
@@ -1148,7 +1169,8 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
             break;
          }
          default:
-            throw(AipsError("LELFunctionComplex::eval - unknown function"));
+            throw(AipsError("LELFunctionComplex::eval - "
+			    "unknown function"));
          }
       }
    }
@@ -1230,18 +1252,18 @@ void LELFunctionComplex::resync()
 LELFunctionDComplex::LELFunctionDComplex
                                   (const LELFunctionEnums::Function function,
 				   const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
     switch (function_p) {
     case LELFunctionEnums::CONJ :
     {
 // Expect 1 Complex argument
 
-       if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionDComplex::constructor - functions can only"
-                            "have one argument"));
+       if (exp.nelements() != 1) {
+          throw (AipsError ("LELFunctionDComplex::constructor - "
+			    "functions can only have one argument"));
        }
-       setAttr(arg_p[0].getAttribute());
+       setAttr(exp[0].getAttribute());
        break;
     }
     case LELFunctionEnums::COMPLEX :
@@ -1251,7 +1273,7 @@ LELFunctionDComplex::LELFunctionDComplex
 	Block<Int> argType(2);
 	argType[0] = TpDouble;
 	argType[1] = TpDouble;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     case LELFunctionEnums::POW :
@@ -1260,13 +1282,16 @@ LELFunctionDComplex::LELFunctionDComplex
 	Block<Int> argType(2);
 	argType[0] = TpDComplex;
 	argType[1] = TpDComplex;
-	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	setAttr (LatticeExprNode::checkArg (exp, argType, False));
 	break;
     }
     default:
-	throw (AipsError ("LELFunctionDComplex::constructor - unknown DComplex function"));
+	throw (AipsError ("LELFunctionDComplex::constructor - "
+			  "unknown DComplex function"));
     }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionDComplex: constructor" << endl;
 #endif
@@ -1297,7 +1322,8 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
          break;
       }
       default:
-         throw (AipsError ("LELFunctionDComplex::eval - unknown Complex function"));
+         throw (AipsError ("LELFunctionDComplex::eval - "
+			   "unknown Complex function"));
       }
  
    } else { 
@@ -1333,7 +1359,8 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	    break;
          }
          default:
-            throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
+            throw (AipsError ("LELFunctionDComplex::eval - "
+			      "unknown DComplex function"));
          }
 
       } else if (arg_p[1].isScalar()) {
@@ -1378,7 +1405,8 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	    break;
          }
          default:
-            throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
+            throw (AipsError ("LELFunctionDComplex::eval -"
+			      "unknown DComplex function"));
          }
 
       } else {
@@ -1414,7 +1442,8 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
             break;
          }
          default:
-            throw(AipsError("LELFunctionDComplex::eval - unknown function"));
+            throw(AipsError("LELFunctionDComplex::eval - "
+			    "unknown function"));
          }
       }
    }
@@ -1495,7 +1524,7 @@ void LELFunctionDComplex::resync()
 // LELFunctionBool
 LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 				 const Block<LatticeExprNode>& exp)
-: function_p(function), arg_p(exp)
+: function_p(function)
 {
     switch (function_p) {
     case LELFunctionEnums::ALL :
@@ -1503,19 +1532,19 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
     {
 	Block<Int> argType(1);
 	argType[0] = TpBool;
-	LatticeExprNode::checkArg (arg_p, argType, True); // expect 1 Bool array
-	setAttr (LELAttribute());                         // result is scalar
+	LatticeExprNode::checkArg (exp, argType, True); // expect 1 Bool array
+	setAttr (LELAttribute());                       // result is scalar
 	break;
     }
     case LELFunctionEnums::MASK :
     case LELFunctionEnums::VALUE :
     {
-       if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionBool::constructor - function can only"
-                            "have one argument"));
+       if (exp.nelements() != 1) {
+          throw (AipsError ("LELFunctionBool::constructor - "
+			    "function can only have one argument"));
        }
        // The value or mask itself is unmasked.
-       const LELAttribute& argAttr = arg_p[0].getAttribute();
+       const LELAttribute& argAttr = exp[0].getAttribute();
        if (argAttr.isScalar()) {
 	  setAttr (LELAttribute());
        } else {
@@ -1525,9 +1554,12 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
        break;
     }
     default:
-	throw (AipsError ("LELFunctionBool::constructor - unknown Bool function"));
+	throw (AipsError ("LELFunctionBool::constructor - "
+			  "unknown Bool function"));
     }
-
+   // Fill the node block here, so an exception does
+   // not leave the nodes undestructed.
+   arg_p = exp;
 #if defined(AIPS_TRACE)
    cout << "LELFunctionBool: constructor" << endl;
 #endif
@@ -1592,7 +1624,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
 	    break;
 	 }
 	 default:
-	    throw (AipsError ("LELFunction2::eval, unknown data type"));
+	    throw (AipsError ("LELFunction2::eval - unknown data type"));
 	 }
       }
       break;
