@@ -39,7 +39,7 @@
     
 RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) : 
     RFAFlagCubeBase(ch,parm),
-    RFDataMapper(parm.asString(RF_COLUMN),parm.asArrayString(RF_EXPR)),
+    RFDataMapper(parm.asArrayString(RF_EXPR),parm.asString(RF_COLUMN)),
     threshold( parm.asDouble(RF_THR) )
 //    rowclipper(chunk,flag,threshold,halfwin)
 {

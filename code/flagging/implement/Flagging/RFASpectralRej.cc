@@ -115,7 +115,7 @@ void RFASpectralRej::parseRegion ( const RecordInterface &parm )
     
 RFASpectralRej::RFASpectralRej  ( RFChunkStats &ch,const RecordInterface &parm ) : 
     RFAFlagCubeBase(ch,parm),
-    RFDataMapper(parm.asString(RF_COLUMN),parm.asArrayString(RF_EXPR)),
+    RFDataMapper(parm.asArrayString(RF_EXPR),parm.asString(RF_COLUMN)),
     ndeg( parm.asInt(RF_NDEG) ),
     halfwin( parm.asInt(RF_ROW_HW) ),
     threshold( parm.asDouble(RF_ROW_THR) ),
