@@ -5747,3 +5747,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSFieldEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSMainEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSObsColumns.cc
+16 134 src rm aips/implement/MeasurementSets/OldMSObsColumns.h
