@@ -1,5 +1,5 @@
 //# AipsIO.h: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,11 +110,10 @@ class RegularFileIO;
 //      friend AipsIO& operator>> (AipsIO&, YourClass&);
 // </srcblock>
 // since they cannot be stored in the class itself.
-// The type of an object can be passed using the runtime typing system
-// <linkto group=Typeinfo.h#typeinfo>Typeinfo</linkto>, e.g.,
+// The type of an object is usually passed as the class name.
 // <srcblock>
 //      AipsIO& operator<< (AipsIO& ios, const YourClass& object) {
-//          ios.putstart (rtti_decode(object.id()), version);
+//          ios.putstart ("YourClass", version);
 //          ios << ....;
 //          ios.putend ();
 //      }
