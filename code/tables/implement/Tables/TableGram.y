@@ -52,6 +52,7 @@ TableParseSelect* select;
 %token <val> FLDNAME        /* name of field or shorthand for table */
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
+%token <val> STRINGLITERAL
 %token INTOKEN
 %token LPAREN
 %token RPAREN
@@ -179,13 +180,15 @@ tfname:    TABNAME
                { $$ = $1; }
          | FLDNAME
                { $$ = $1; }
+         | STRINGLITERAL
+               { $$ = $1; }
          ;
 
 tabname:   NAME
                { $$ = $1; }
          | tfname
                { $$ = $1; }
-         ;
+         ;   
 
 whexpr:
 	       { $$ = 0; }                      /* no selection */
@@ -322,6 +325,11 @@ simexpr:   LPAREN orexpr RPAREN
 	       delete $1;
 	   }
          | LITERAL {
+	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleLiteral ($1));
+	       delete $1;
+	   }
+         | STRINGLITERAL {
 	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
                                                  handleLiteral ($1));
 	       delete $1;
