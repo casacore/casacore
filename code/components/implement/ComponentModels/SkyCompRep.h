@@ -248,28 +248,43 @@ public:
 			RecordInterface& record) const;
   // </group>
 
-  // Inter convert the SkyComponent and a vector of Doubles in pixel coordinates
-  // for the specified Stokes type.
-  // The elements are: flux for given Stokes (Jy), x location (absolute pixels),
-  // y location (absolute pixels), major axis (absolute pixels)
-  // minor axis (absolute pixels), position angle (radians).
-  // For Point shapes, just the first three elements are given/returned.
-  // The restoring beam can be obtained from the ImageInfo class.  It
-  // should be of length 3 or 0.  The Bool xIsLong says whether the
-  // x axis is longitude or latitude.  A constant spectrum is used.
-  // <group>
-  Vector<Double> toPixel (const Unit& brightnessUnitIn,
+  // Convert the SkyComponent to a vector of Doubles 
+  // for the specified Stokes type (others are lost).
+  // The first three elements of the returned vector are : flux for given 
+  // Stokes (in the units you specify), longitude location (absolute pixels), and
+  // latitude location (absolute pixels).  For DISK and GAUSSIAN shapes,
+  // the next three elements are major axis (absolute pixels)
+  // minor axis (absolute pixels), and position angle (N->E; radians).
+  // You must specify the brightness units to which the integral flux stored
+  // in the SkyComponent should be converted.  So as to be able to handle
+  // /beam units, the restoring beam must also be suppluied.  It can be obtained 
+  // from the ImageInfo class.  It should be of length 3 or 0 (no beam).  
+  //  A constant spectrum is used so any spectral index information in
+  // the component is lost.
+  Vector<Double> toPixel (const Unit& brightnessUnitOut,
                           const Vector<Quantum<Double> >& restoringBeam,
                           const CoordinateSystem& cSys,
-                          Stokes::StokesTypes stokes,
-                          Bool xIsLong) const;
+                          Stokes::StokesTypes stokes);
+
+  // Take a vector Doubles and fill the SkyComponent from the values.
+  // The first three elements of the given vector are : flux for given 
+  // Stokes (in the units you specify), longitude location (absolute pixels), and
+  // latitude location (absolute pixels).  For DISK and GAUSSIAN shapes,
+  // the next three elements are major axis (absolute pixels)
+  // minor axis (absolute pixels), and position angle (N->E; radians).
+  // You must specify the brightness units in which the flux is stored
+  // in the vector.  It will be converted to an integral reprentation
+  // internally for the SkyComponent.  So as to be able to handle
+  // /beam units, the restoring beam must also be supplied.  It can be obtained 
+  // from the ImageInfo class.  It should be of length 3 or 0 (no beam).  
+  // You must specify the type of shape to convert to.
+  // The SkyComponent is given a  constant spectrum.
   void fromPixel (const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
                   const Vector<Quantum<Double> >& restoringBeam,
                   const CoordinateSystem& cSys,
                   ComponentType::Shape componentShape,
-                  Stokes::StokesTypes stokes,
-                  Bool xIsLong);
+                  Stokes::StokesTypes stokes);
   // </group>
 
   // See the corresponding function in the
