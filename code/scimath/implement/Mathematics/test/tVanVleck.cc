@@ -492,6 +492,26 @@ int main() {
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
       cout << "vv.r(zerolag) : " << vv.r(thresh) << endl;
+
+      // test of dcoff
+      Double zerolag = 0.4925;
+      Double bias = 6.7e-4;
+      cout << "vv.dcoff for n==3 and zerolag==" << zerolag
+	   << " and bias == " << bias << endl;
+      Double dcoffset, threshold;
+      cout << "return value : " <<
+	  vv.dcoff(dcoffset, threshold, 3, zerolag, bias) << endl;
+      cout << "dcoffset : " << dcoffset << endl;
+      cout << "threshold: " << threshold << endl;
+      
+      // verify that for n==9 case, thresh == thresh(9,zerolag)
+      // and dcoffset == 0.0
+      cout << "Test that n==9 returns default value" <<endl;
+      cout << "return value : " <<
+	  vv.dcoff(dcoffset, threshold, 9, zerolag, bias) << endl;
+      cout << "dcoffset : " << dcoffset << endl;
+      cout << "threshold: " << threshold << endl;
+      cout << "thresh(9,zerolag) : " << vv.thresh(9,zerolag) << endl;
     }
     
   } catch (AipsError x) {
