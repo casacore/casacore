@@ -103,7 +103,7 @@ class StokesVector;
 class CStokesVector:public RigidVector<Complex,4> {
 public:
   static String dataTypeId() {return "CStokesVector";};
-  CStokesVector(Int n):RigidVector<Complex,4>(n) {} 
+  //  CStokesVector(Int n):RigidVector<Complex,4>(n) {} 
   // The Complex data members are automatically initialized to 0.
   CStokesVector():RigidVector<Complex,4>() {} 
   // Construct from scalar, setting all values to a constant.
@@ -229,7 +229,7 @@ class StokesVector:public RigidVector<Float,4> {
   
 public:
   static String dataTypeId() {return "StokesVector";};
-  StokesVector(Int n):RigidVector<Float,4>(n) {} 
+  //  StokesVector(Int n):RigidVector<Float,4>(n) {} 
   // Default constructor zeroes vector.
   StokesVector():RigidVector<Float,4>() {}
   // Construct from scalar, setting all values to a constant.
@@ -377,7 +377,7 @@ inline StokesVector& applySlinInv(StokesVector& result, const CStokesVector& v) 
 // Apply conversion matrix from linear to Stokes.
 inline StokesVector applySlinInv(const CStokesVector& v) {
   StokesVector result;
-  return result;
+  return applySlinInv(result,v);
 }
 
 // Apply conversion matrix from circular to Stokes.
@@ -397,8 +397,8 @@ inline StokesVector applyScircInv(const CStokesVector& v) {
 
 // The following are needed until Image no longer has
 // sigma images
-StokesVector& sqrt(const StokesVector& v);
+//StokesVector& sqrt(const StokesVector& v);
 
-CStokesVector& sqrt(const CStokesVector& v);
+//CStokesVector& sqrt(const CStokesVector& v);
 
 #endif

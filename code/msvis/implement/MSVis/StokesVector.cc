@@ -35,13 +35,13 @@
 
 // The following sqrt functions are required for Image to
 // work. Ug-ly.
-CStokesVector& sqrt(const CStokesVector& v) {
-  return sqrt(v);
-}
+//CStokesVector& sqrt(const CStokesVector& v) {
+//  return sqrt(v);
+//}
 
-StokesVector& sqrt(const StokesVector& v) {
-  return sqrt(v);
-}
+//StokesVector& sqrt(const StokesVector& v) {
+//  return sqrt(v);
+//}
 
 // StokesVector CStokesVector::real() {
 //     return StokesVector(v_p[0].real(),v_p[1].real(),v_p[2].real(),
