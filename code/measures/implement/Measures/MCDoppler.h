@@ -95,7 +95,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MDoppler::Convert;
+  friend MDoppler::Convert;
   
   //# Constructors
   // Default constructor

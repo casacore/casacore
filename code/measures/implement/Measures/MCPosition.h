@@ -82,7 +82,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MPosition::Convert;
+  friend MPosition::Convert;
   
   //# Constructors
   // Default constructor

@@ -90,7 +90,7 @@ class MCEpoch : public MCBase {
 public:
 
   //# Friends
-  friend class MEpoch::Convert;
+  friend MEpoch::Convert;
   
   //# Constructors
   // Default constructor

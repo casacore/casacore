@@ -92,7 +92,7 @@ class MCFrequency : public MCBase {
 public:
   //# Friends
   // Conversion of data
-  friend class MFrequency::Convert;
+  friend MFrequency::Convert;
   
   //# Constructors
   // Default constructor

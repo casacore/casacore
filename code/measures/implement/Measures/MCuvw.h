@@ -88,7 +88,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class Muvw::Convert;
+  friend Muvw::Convert;
   
   //# Constructors
   // Default constructor

@@ -89,7 +89,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MEarthMagnetic::Convert;
+  friend MEarthMagnetic::Convert;
   
   //# Constructors
   // Default constructor

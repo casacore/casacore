@@ -86,7 +86,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MDirection::Convert;
+  friend MDirection::Convert;
   
   //# Constructors
   // Default constructor

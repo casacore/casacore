@@ -92,7 +92,7 @@ class MCRadialVelocity : public MCBase {
 public:
   //# Friends
   // Conversion of data
-  friend class MRadialVelocity::Convert;
+  friend MRadialVelocity::Convert;
   
   //# Constructors
   // Default constructor
