@@ -539,7 +539,8 @@ TableExprNodeSet::TableExprNodeSet()
   itsDiscrete      (True),
   itsBounded       (True),
   itsCheckTypes    (True),
-  itsSorted        (False)
+  itsAllIntervals  (False),
+  itsFindFunc      (0)
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
@@ -548,7 +549,8 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
   itsDiscrete      (True),
   itsBounded       (True),
   itsCheckTypes    (False),
-  itsSorted        (False)
+  itsAllIntervals  (False),
+  itsFindFunc      (0)
 {
     uInt n = indices.nelements();
     itsElems.resize (n);
@@ -563,7 +565,8 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
   itsDiscrete      (True),
   itsBounded       (True),
   itsCheckTypes    (False),
-  itsSorted        (False)
+  itsAllIntervals  (False),
+  itsFindFunc      (0)
 {
     TableExprNode start;
     TableExprNode end;
@@ -593,7 +596,8 @@ TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
   itsDiscrete      (elem.isDiscrete()),
   itsBounded       (True),
   itsCheckTypes    (False),
-  itsSorted        (False)
+  itsAllIntervals  (False),
+  itsFindFunc      (0)
 {
     // Set is not bounded if the element is not discrete and if end is defined.
     if (!(itsSingle  ||  (itsDiscrete && elem.end() != 0))) {
@@ -619,7 +623,10 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
   itsDiscrete      (that.itsDiscrete),
   itsBounded       (that.itsBounded),
   itsCheckTypes    (that.itsCheckTypes),
-  itsSorted        (that.itsSorted)
+  itsAllIntervals  (that.itsAllIntervals),
+  itsStart         (that.itsStart),
+  itsEnd           (that.itsEnd),
+  itsFindFunc      (that.itsFindFunc)
 {
     uInt n = that.itsElems.nelements();
     itsElems.resize (n);
@@ -717,14 +724,31 @@ void TableExprNodeSet::combineDoubleIntervals()
 					      endval,
 					      elem.isRightClosed());
     elems.resize (nelem, True, True);
+    // Store the values in a start and an end array.
+    itsStart.resize (nelem);
+    itsEnd.resize (nelem);
+    for (uInt i=0; i<nelem; i++) {
+      itsStart[i] = elems[i]->start()->getDouble(id);
+      itsEnd[i]   = elems[i]->end()->getDouble(id);
+    }
+    if (elem.isLeftClosed()) {
+      if (elem.isRightClosed()) {
+	itsFindFunc = &TableExprNodeSet::findClosedClosed;
+      } else {
+	itsFindFunc = &TableExprNodeSet::findClosedOpen;
+      }
+    } else {
+      if (elem.isRightClosed()) {
+	itsFindFunc = &TableExprNodeSet::findOpenClosed;
+      } else {
+	itsFindFunc = &TableExprNodeSet::findOpenOpen;
+      }
+    }
+    itsAllIntervals = True;
   }
   // Delete all existing intervals and replace by new ones.
   deleteElems();
   itsElems = elems;
-  itsSorted = True;
-#ifdef AIPS_DEBUG
-  cerr << "combined to " << itsElems.nelements() << " double intervals\n";
-#endif
 }
 
 void TableExprNodeSet::combineDateIntervals()
@@ -808,14 +832,18 @@ void TableExprNodeSet::combineDateIntervals()
 					new TableExprNodeConstDate(endval),
 					elem.isRightClosed());
     elems.resize (nelem, True, True);
+    // Store the values in a start and an end array.
+    itsStart.resize (nelem);
+    itsEnd.resize (nelem);
+    for (uInt i=0; i<nelem; i++) {
+      itsStart[i] = elems[i]->start()->getDate(id);
+      itsEnd[i]   = elems[i]->end()->getDate(id);
+    }
+    itsAllIntervals = True;
   }
   // Delete all existing intervals and replace by new ones.
   deleteElems();
   itsElems = elems;
-  itsSorted = True;
-#ifdef AIPS_DEBUG
-  cerr << "combined to " << itsElems.nelements() << " date intervals\n";
-#endif
 }
 
 void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
@@ -1030,6 +1058,71 @@ Array<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
     return toArrayDate (id);
 }
 
+Bool TableExprNodeSet::findOpenOpen (Double value)
+{
+    uInt n = itsElems.nelements();
+    if (value >= itsEnd[n-1]) {
+        return False;
+    }
+    for (uInt i=0; i<n; i++) {
+        if (value <= itsStart[i]) {
+	    return False;
+	}
+	if (value < itsEnd[i]) {
+	    return True;
+	}
+    }
+    return False;
+}
+Bool TableExprNodeSet::findOpenClosed (Double value)
+{
+    uInt n = itsElems.nelements();
+    if (value > itsEnd[n-1]) {
+        return False;
+    }
+    for (uInt i=0; i<n; i++) {
+        if (value <= itsStart[i]) {
+	    return False;
+	}
+	if (value <= itsEnd[i]) {
+	    return True;
+	}
+    }
+    return False;
+}
+Bool TableExprNodeSet::findClosedOpen (Double value)
+{
+    uInt n = itsElems.nelements();
+    if (value >= itsEnd[n-1]) {
+        return False;
+    }
+    for (uInt i=0; i<n; i++) {
+        if (value < itsStart[i]) {
+	    return False;
+	}
+	if (value < itsEnd[i]) {
+	    return True;
+	}
+    }
+    return False;
+}
+Bool TableExprNodeSet::findClosedClosed (Double value)
+{
+    uInt n = itsElems.nelements();
+    if (value > itsEnd[n-1]) {
+        return False;
+    }
+    for (uInt i=0; i<n; i++) {
+        if (value < itsStart[i]) {
+	    return False;
+	}
+	if (value <= itsEnd[i]) {
+	    return True;
+	}
+    }
+    return False;
+}
+
 Bool TableExprNodeSet::hasBool (const TableExprId& id, Bool value)
 {
     Bool result = False;
@@ -1041,10 +1134,13 @@ Bool TableExprNodeSet::hasBool (const TableExprId& id, Bool value)
 }
 Bool TableExprNodeSet::hasDouble (const TableExprId& id, Double value)
 {
+    if (itsAllIntervals) {
+        return (this->*itsFindFunc) (value);
+    }
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDouble (&result, &value, 1, id);
+        itsElems[i]->matchDouble (&result, &value, 1, id);
     }
     return result;
 }
@@ -1069,6 +1165,9 @@ Bool TableExprNodeSet::hasString (const TableExprId& id, const String& value)
 }
 Bool TableExprNodeSet::hasDate (const TableExprId& id, const MVTime& value)
 {
+    if (itsAllIntervals) {
+        return (this->*itsFindFunc) (value);
+    }
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
