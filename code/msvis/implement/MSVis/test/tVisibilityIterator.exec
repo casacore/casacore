@@ -1,12 +1,12 @@
 #!/bin/sh
 
-  DATADIR=`echo $AIPSPATH | awk '{print $1}'`/code/trial/data/3C273XC1
-  INIT="uvfitsfiller fits=$DATADIR/3C273XC1.FITS MS=tVisibilityIterator.MS"
-  if eval $INIT > $INIT_tmp.out
-  then
+  DATADIR=`echo $AIPSPATH | awk '{print $1}'`/data/demo/
+  rm -rf tVisibilityIterator.MS
+  cp -r $DATADIR/autoflag/WSRT-test.MS2 tVisibilityIterator.MS 
     PROGRAM="tVisibilityIterator"
+    PROGRAMout="tVisibilityIterator_tmp.out"
     ARGS="tVisibilityIterator.MS"
-    if eval $PROGRAM $ARGS > $PROGRAM_tmp.out
+    if eval $PROGRAM $ARGS > $PROGRAMout
     then
       if [ -f $PROGRAM.out ]
       then
@@ -26,12 +26,6 @@
       STATUS=1
       exit
     fi
-  else
-     echo "FAIL (execution failure): $PROGRAM"
-     rm -r tVisibilityIterator.MS
-     STATUS=1
-     exit
-  fi
   rm -r tVisibilityIterator.MS
  
 # Strip out demarked text.

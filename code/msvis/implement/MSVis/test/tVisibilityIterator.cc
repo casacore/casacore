@@ -26,18 +26,20 @@
 //# $Id$
 
 #include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
 #include <tables/Tables.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
 #include <casa/BasicSL/Constants.h>
 
 #include <tables/Tables/ForwardCol.h>
 
 #include <casa/namespace.h>
-Int main(int argc, char **argv)
+main(int argc, char **argv)
 {
 // register forward col engine
   ForwardColumnEngine::registerClass();
@@ -58,60 +60,61 @@ Int main(int argc, char **argv)
     cout << "Constructing Iterator"<<endl;
     Block<Int> bi(0); // create empty block with sortColumns
     VisibilityIterator syniter(synms,bi);
+    VisBuffer vb(syniter);
     // set iterator to start of data
     syniter.origin();
 
     cout << "Now testing data access functions"<<endl;
     cout << "Showing first 10 iterations:"<<endl;
-    Double time0=syniter.time();
+    Double time0=vb.time()[0];
     for (Int i=0; i<10; i++) {
 	cout << "Iteration "<<i<<" contains:"<<endl;
-	cout << "Antenna1="<<syniter.antenna1()
-	    <<", Antenna2="<<syniter.antenna2()
+	cout << "Antenna1="<<vb.antenna1()[0]
+	    <<", Antenna2="<<vb.antenna2()[0]
 		<< setprecision(9)
-		    <<", freq="<<syniter.frequency()
+		    <<", freq="<<vb.frequency()[0]
 			<< setprecision(9)
-			    <<", time="<<syniter.time()-time0
-				<<", uvw="<<syniter.uvw()
-				    <<", vis="<<syniter.visibility()
-					<<", sigma="<<syniter.sigma()
-					    <<", flag="<<syniter.flag()<<endl;
+			    <<", time="<<vb.time()-time0
+	  //				<<", uvw="<<vb.uvw()
+				    <<", vis="<<vb.visCube()
+					<<", sigma="<<vb.sigma()
+					    <<", flag="<<vb.flag()<<endl;
 	syniter++;
     }
 
-    Double time=syniter.time();
-    while( time == syniter.time()) syniter++;
+Double time=vb.time()[0];
+    while( time == vb.time()[0]) syniter++;
     cout << "Next timeslot contains:"<<endl;
-    cout << "Antenna1="<<syniter.antenna1()
-      <<",Antenna2="<<syniter.antenna2()
-      << setprecision(9)
-       <<", freq="<<syniter.frequency()
-        << setprecision(9)
-	<<", time="<<syniter.time()
-	 <<", uvw="<<syniter.uvw()
-	  <<", vis="<<syniter.visibility()
-	      <<", sigma="<<syniter.sigma()
-	       <<", flag="<<syniter.flag()
-		      <<", feed_pa="<<syniter.feed_pa()<<endl;
+    cout << "Antenna1="<<vb.antenna1()[0]
+	 <<",Antenna2="<<vb.antenna2()[0]
+	 << setprecision(9)
+	 <<", freq="<< vb.frequency()[0]
+	 << setprecision(9)
+	 <<", time="<< vb.time()[0]
+      //	 <<", uvw="<<vb.uvw()
+	 <<", vis="<< vb.visCube()
+	 <<", sigma="<<vb.sigma()
+	 <<", flag="<<vb.flag()
+	 <<", feed_pa="<< vb.feed_pa(vb.time()[0])<<endl;
 
     cout << " Reading through visibility data till end of file "<< endl;
-    CStokesVector sum;
+    Complex tot=0;
     for (; syniter.more(); syniter++) {
-	cout <<"."; sum+=syniter.visibility(); syniter.uvw();
+      cout <<"."; tot+=sum(vb.visCube()); vb.uvw();
     }
-    cout << " done : sum="<<sum<<endl;
+    cout << " done : sum="<<tot<<endl;
 
     cout << " Now try to iterate in time-intervals of 10s"<<endl;
     VisibilityIterator syniter2(synms,bi,10.);
-    
+    VisBuffer vb2(syniter2);
     for (syniter2.originChunks();syniter2.moreChunks(); syniter2.nextChunk()) {
 	syniter2.origin();
-	cout <<" Interval start: "<< setprecision(10)<< syniter2.time();
+	cout <<" Interval start: "<< setprecision(10)<< vb2.time();
 	Int n=0;
 	Double time;
 	for (;syniter2.more(); syniter2++) {
 	    n++;
-	    time=syniter2.time();
+	    time=vb2.time()[0];
 	}
 	cout << ". end: "<< setprecision(10)<< time;
 	cout << ", # visibilities in interval: "<<n<<endl;
@@ -119,16 +122,16 @@ Int main(int argc, char **argv)
     cout << " Try iterator with 1000s interval."<<endl;
     VisibilityIterator syniter3; syniter3=syniter2;
     syniter3.setInterval(1000.);
-
+    VisBuffer vb3(syniter3);
     for (syniter3.originChunks();syniter3.moreChunks(); syniter3.nextChunk()) {
 	syniter3.origin();
-	cout <<" Interval start: "<< setprecision(10)<< syniter3.time();
+	cout <<" Interval start: "<< setprecision(10)<< vb3.time()[0];
 	Int n=0;
-	syniter.feed_pa();
+	//	vb.feed_pa(vb.time()[0]);
 	for (;syniter3.more(); syniter3++) {
 	    n++;
 	}
-	cout << ", end: "<< setprecision(10)<< syniter3.time();
+	cout << ", end: "<< setprecision(10)<< vb3.time();
 	cout << ", # visibilities in interval: "<<n<<endl;
     }
 
@@ -137,29 +140,29 @@ Int main(int argc, char **argv)
 	 syniter2.moreChunks() || syniter3.moreChunks(); 
 	 syniter2.nextChunk(), syniter3.nextChunk()) {
 	syniter2.origin();
-	cout <<" Interval 1 start: "<< setprecision(10)<< syniter2.time();
+	cout <<" Interval 1 start: "<< setprecision(10)<< vb2.time()[0];
 	Int n=0;
 	for (;syniter2.more(); syniter2++) {
 	    n++;
 	}
-	cout << ", end: "<< setprecision(10)<< syniter2.time();
+	cout << ", end: "<< setprecision(10)<< vb2.time()[0];
 	cout << ", # visibilities in interval: "<<n<<endl;
 	syniter3.origin();
-	cout <<" Interval 2 start: "<< setprecision(10)<< syniter3.time();
+	cout <<" Interval 2 start: "<< setprecision(10)<< vb3.time()[0];
 	n=0;
 	for (;syniter3.more(); syniter3++) {
 	    n++;
 	}
-	cout << ", end: "<< setprecision(10)<< syniter3.time();
+	cout << ", end: "<< setprecision(10)<< vb3.time()[0];
 	cout << ", # visibilities in interval: "<<n<<endl;
     }
         
     // try the polarization stuff
-    syniter.originChunks(); syniter.origin();
-    cout << " Polarization frame "<< syniter.polFrame()<<endl;
-    cout << " Circular="<< ROVisibilityIterator::Circular<<
-	", Linear="<< ROVisibilityIterator::Linear<<endl;
-    cout << " CJones(antenna==0)="<< syniter.CJones(0).matrix()<<endl;
+    // syniter.originChunks(); syniter.origin();
+    //cout << " Polarization frame "<< syniter.polFrame()<<endl;
+    //cout << " Circular="<< ROVisibilityIterator::Circular<<
+    //	", Linear="<< ROVisibilityIterator::Linear<<endl;
+    //cout << " CJones(antenna==0)="<< syniter.CJones(0).matrix()<<endl;
 
     // try assigment
     VisibilityIterator myiter;
