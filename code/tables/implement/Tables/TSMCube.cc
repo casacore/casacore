@@ -108,6 +108,7 @@ void TSMCube::emptyCache()
         cache_p->resize (0);
     }
     userSetCache_p = False;
+    lastColAccess_p = NoAccess;
 }
 
 void TSMCube::showCacheStatistics (ostream& os) const
