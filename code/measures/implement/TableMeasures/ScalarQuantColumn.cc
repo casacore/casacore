@@ -25,19 +25,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <trial/TableMeasures/ScalarQuantColumn.h>
 #include <trial/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
 
 template<class Qtype>
 ROScalarQuantColumn<Qtype>::ROScalarQuantColumn()
@@ -146,7 +141,7 @@ template<class Qtype>
 void ROScalarQuantColumn<Qtype>::get(Quantum<Qtype>& q, uInt rownr) const
 {
     // Quantums are created from Qtypes stored in itsDataCol and Units
-    // in itsUnitsCol, if units are variable, or itsUnit if static.
+    // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
         
     q.setValue((*itsDataCol)(rownr));
     if (itsUnitsCol != 0) {
@@ -228,15 +223,14 @@ ScalarQuantColumn<Qtype>::~ScalarQuantColumn()
 {}
 
 template<class Qtype>
-void ScalarQuantColumn<Qtype>::reference(
-    const ScalarQuantColumn<Qtype>& that)
+void ScalarQuantColumn<Qtype>::reference(const ScalarQuantColumn<Qtype>& that)
 {
     ROScalarQuantColumn<Qtype>::reference(that);
 }
 
 template<class Qtype>
 void ScalarQuantColumn<Qtype>::attach(const Table& tab, 
-	    	    	    	      const String& columnName)
+				      const String& columnName)
 {
     reference(ScalarQuantColumn<Qtype>(tab, columnName)); 
 }
@@ -252,11 +246,10 @@ void ScalarQuantColumn<Qtype>::attach(const Table& tab,
 template<class Qtype>
 void ScalarQuantColumn<Qtype>::put(uInt rownr, const Quantum<Qtype>& q)
 {
-    // Quantums are separated out into Qtypes and Units which are stored
-    // in their respective columns except where Units are non-variable.
-    // In this case the value of the quantum is simply stored as is, i.e.,
-    // no attempt is made to check if its unit complies with the column's
-    // unit.
+    // The value component of the quantum is stored in itsDataCol and the
+    // unit component in itsUnitsCol unless Units are non-variable in
+    // which case the Unit component is ignored (i.e., the Quantum's unit
+    // is not checked against the Column's unit).
     
     if (itsUnitsCol != 0) {
 	itsUnitsCol->put(rownr, q.getFullUnit().getName());

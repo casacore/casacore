@@ -28,8 +28,6 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions.h>
-#include <aips/Mathematics/Complex.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <trial/TableMeasures/ArrayQuantColumn.h>
@@ -40,7 +38,6 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 template<class Qtype>
@@ -165,8 +162,8 @@ void ROArrayQuantColumn<Qtype>::attach(const Table& tab,
  
 template<class Qtype>
 void ROArrayQuantColumn<Qtype>::get(Array<Quantum<Qtype> >& q, 
-	    	    	    	 uInt rownr,
-	    	    	    	 Bool resize) const
+				    uInt rownr,
+				    Bool resize) const
 { 
     // Quantums are created and put into q by taking Qtype data from 
     // itsDataCol and Quantum units from one of itsArrUnitsCol (if units
@@ -355,7 +352,6 @@ void ArrayQuantColumn<Qtype>::put(uInt rownr, const Array<Quantum<Qtype> >& q)
     // by row (i.e., the units column is a Scalar Column where each row 
     // contains a single unit entry).  When variable by row, the unit of the
     // first quantum in q is used.
-    
     Bool deleteUnits;
     String* u_p;
     Array<String> unitsArr;
@@ -371,7 +367,9 @@ void ArrayQuantColumn<Qtype>::put(uInt rownr, const Array<Quantum<Qtype> >& q)
     } else {
 	localUnit = itsUnit;
     }
-        
+
+    // copy the value component of quantum into the local data array.
+    // If using an array to store units copy quantum unit to local unit array
     for (uInt i=0; i<n; i++) {
 	if (itsArrUnitsCol != 0) {
 	    *(u_p+i) = (q_p+i)->getFullUnit().getName();
@@ -380,7 +378,9 @@ void ArrayQuantColumn<Qtype>::put(uInt rownr, const Array<Quantum<Qtype> >& q)
 	    // ensure quantum's value is consistent with column's units
 	    // before storing.
 	    itsQuantum = *(q_p+i);
-	    itsQuantum.convert(localUnit);
+	    // the following is commented out.  At the moment no conversion
+	    // is done if q's unit doesn't conform but this is possible
+//	    itsQuantum.convert(localUnit);
 	    *(d_p+i) = itsQuantum.getValue();
 	}
     }

@@ -54,6 +54,7 @@ TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column,
 : itsColName(column),
   itsUnitsColName(unitsCol)
 {
+    checkColumn(td);
     checkUnitsColumn(td);
 }
 
@@ -62,6 +63,7 @@ TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column,
 : itsColName(column),
   itsUnitsColName(unitsCol)
 {
+    checkColumn(td);
     checkUnitsColumn(td);
 }
 
