@@ -37,6 +37,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Unit.h>
 #include <aips/Measures/Quantum.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvposition_bug2;
+#endif
 #include <aips/Measures/MeasValue.h>
 
 //# Forward Declarations
@@ -47,7 +50,7 @@ imported class ostream;
 
 // <summary> A 3D vector in space </summary>
 
-// <use visibility=local>
+// <use visibility=export>
 
 // <reviewed reviewer="tcornwel" date="1996/02/22" tests="tMeasMath" demos="">
 // </reviewed>
@@ -108,135 +111,144 @@ imported class ostream;
 // </motivation>
 //
 // <todo asof="1996/02/04">
+//	<li> See if not better to have a direction + length
 // </todo>
 
 class MVPosition : public MeasValue {	
-    public:
 
-//# Friends
+public:
 
-//# Constructors
-// Default constructor generates a (0,0,0) position
-    MVPosition();
-// Copy constructor
-    MVPosition(const MVPosition &other);
-// Creates a specified vector
-    MVPosition(Double in0, Double in1, Double in2);
-// Creates a vector with specified length towards pole
-// <group>
-    MVPosition(Double in0);
-    MVPosition(const Quantity &l);
-// </group>
-// Creates the position from specified (azimuth,elevation) angles and length
-    MVPosition(const Quantity &l, Double angle0, Double angle1);
-// Creates the position from specified angles and length. or positions
-// <thrown>
-//    <li> AipsError if quantities not in angle format
-// </thrown>
-// <group>
-    MVPosition(const Quantity &l, const Quantity &angle0, 
-	      const Quantity &angle1);
-// If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-    MVPosition(const Quantum<Vector<Double> > &angle);
-    MVPosition(const Quantity &l, const Quantum<Vector<Double> > &angle);
-// </group>
-// Create from specified length and/or angles and/or position
-// <group>
-    MVPosition(const Vector<Double> &other);
-    MVPosition(const Vector<Quantity> &other);
-// </group>
-// Copy assignment
-    MVPosition &operator=(const MVPosition &other);
-
-// Destructor
-    ~MVPosition();
-
-//# Operators
-// Multiplication defined as in-product
-// <group>
-    Double operator*(const MVPosition &other) const;
-// </group>
-
-// Equality comparisons
-// <group>
-    Bool operator== (const MVPosition &other) const;
-    Bool operator!= (const MVPosition &other) const;
-    Bool near(const MVPosition &other, Double tol=1e-13) const;
-    Bool near(const MVPosition &other, Quantity tol) const;
-    Bool nearAbs(const MVPosition &other, Double tol=1e-13) const;
-// </group>
-
-// Addition and subtraction
-// <group>
-    MVPosition operator-() const;
-    MVPosition &operator+=(const MVPosition &right);
-    MVPosition operator+(const MVPosition &right) const;
-    MVPosition &operator-=(const MVPosition &right);
-    MVPosition operator-(const MVPosition &right) const;
-// </group>
-
-// Multiplication with rotation matrix (see also global functions)
-// <group>
-MVPosition &operator*=(const RotMatrix &right);
-// </group>
-
-// Multiplication with constant
-// <group>
-MVPosition &operator*=(Double right);
-// </group>
-
-// Obtain an element
-// <group>
-    Double &operator()(uInt which);
-    const Double &operator()(uInt which) const;
-// </group>
-
-//# General Member Functions
-// Normalise direction aspects by adjusting the length to 1
-// <group>
-    virtual void adjust();
-    virtual void adjust(Double &res);
-    virtual void readjust(Double res);
-// </group>
-// Get radius of position
-    virtual Double radius();
-// Generate a 3-vector of coordinates (length(m), angles(rad))
-    Vector<Double> get() const;
-// Generate a 3-vector of x,y,z in m
-    const Vector<Double> &getValue() const;
-// Generate angle 2-vector (in rad)
-    Quantum<Vector<Double> > getAngle() const;
-// and with specified units
-    Quantum<Vector<Double> > getAngle(const Unit &unit) const;
-// Generate the length
-    Quantity getLength() const;
-// and generate it with the specified units
-    Quantity getLength(const Unit &unit) const;
-// Get the position angle between the directions. I.e. the angle between
-// the direction from one to the pole, and from one to the other.
-// <group>
-    Double positionAngle(const MVPosition &other) const;
-    Quantity positionAngle(const MVPosition &other, 
-				   const Unit &unit) const;
-// </group>
-// Get the angular separation between two directions.
-// <group>
-    Double separation(const MVPosition &other) const;
-    Quantity separation(const MVPosition &other, 
-				   const Unit &unit) const;
-// </group>
-// Produce the cross product
+  //# Friends
+  
+  //# Constructors
+  // Default constructor generates a (0,0,0) position
+  MVPosition();
+  // Copy constructor
+  MVPosition(const MVPosition &other);
+  // Creates a specified vector
+  MVPosition(Double in0, Double in1, Double in2);
+  // Creates a vector with specified length towards pole
+  // <group>
+  MVPosition(Double in0);
+  MVPosition(const Quantity &l);
+  // </group>
+  // Creates the position from specified (azimuth,elevation) angles and length
+  MVPosition(const Quantity &l, Double angle0, Double angle1);
+  // Creates the position from specified angles and length. or positions
+  // <thrown>
+  //    <li> AipsError if quantities not in angle format
+  // </thrown>
+  // <group>
+  MVPosition(const Quantity &l, const Quantity &angle0, 
+	     const Quantity &angle1);
+  // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
+  MVPosition(const Quantum<Vector<Double> > &angle);
+  MVPosition(const Quantity &l, const Quantum<Vector<Double> > &angle);
+  // </group>
+  // Create from specified length and/or angles and/or position
+  // <group>
+  MVPosition(const Vector<Double> &other);
+  MVPosition(const Vector<Quantity> &other);
+  // </group>
+  // Copy assignment
+  MVPosition &operator=(const MVPosition &other);
+  
+  // Destructor
+  ~MVPosition();
+  
+  //# Operators
+  // Multiplication defined as in-product
+  // <group>
+  Double operator*(const MVPosition &other) const;
+  // </group>
+  
+  // Equality comparisons
+  // <group>
+  Bool operator== (const MVPosition &other) const;
+  Bool operator!= (const MVPosition &other) const;
+  Bool near(const MVPosition &other, Double tol=1e-13) const;
+  Bool near(const MVPosition &other, Quantity tol) const;
+  Bool nearAbs(const MVPosition &other, Double tol=1e-13) const;
+  // </group>
+  
+  // Addition and subtraction
+  // <group>
+  MVPosition operator-() const;
+  MVPosition &operator+=(const MVPosition &right);
+  MVPosition operator+(const MVPosition &right) const;
+  MVPosition &operator-=(const MVPosition &right);
+  MVPosition operator-(const MVPosition &right) const;
+  // </group>
+  
+  // Multiplication with rotation matrix (see also global functions)
+  // <group>
+  MVPosition &operator*=(const RotMatrix &right);
+  // </group>
+  
+  // Multiplication with constant
+  // <group>
+  MVPosition &operator*=(Double right);
+  // </group>
+  
+  // Obtain an element
+  // <group>
+  Double &operator()(uInt which);
+  const Double &operator()(uInt which) const;
+  // </group>
+  
+  //# General Member Functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Normalise direction aspects by adjusting the length to 1
+  // <group>
+  virtual void adjust();
+  virtual void adjust(Double &res);
+  virtual void readjust(Double res);
+  // </group>
+  // Get radius of position
+  virtual Double radius();
+  // Generate a 3-vector of coordinates (length(m), angles(rad))
+  Vector<Double> get() const;
+  // Generate a 3-vector of x,y,z in m
+  const Vector<Double> &getValue() const;
+  // Generate angle 2-vector (in rad)
+  Quantum<Vector<Double> > getAngle() const;
+  // and with specified units
+  Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  // Generate the length
+  Quantity getLength() const;
+  // and generate it with the specified units
+  Quantity getLength(const Unit &unit) const;
+  // Get the position angle between the directions. I.e. the angle between
+  // the direction from one to the pole, and from one to the other.
+  // <group>
+  Double positionAngle(const MVPosition &other) const;
+  Quantity positionAngle(const MVPosition &other, 
+			 const Unit &unit) const;
+  // </group>
+  // Get the angular separation between two directions.
+  // <group>
+  Double separation(const MVPosition &other) const;
+  Quantity separation(const MVPosition &other, 
+		      const Unit &unit) const;
+  // </group>
+  // Produce the cross product
   MVPosition crossProduct(const MVPosition &other) const;
-
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-
-    protected:
-//# Data
-// Position vector (in m)
-    Vector<Double> xyz;
+  
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  
+protected:
+  //# Data
+  // Position vector (in m)
+  Vector<Double> xyz;
 };
 
 //# Global functions

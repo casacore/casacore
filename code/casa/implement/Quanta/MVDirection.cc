@@ -33,6 +33,8 @@ typedef Quantum<Double> gpp_mvdirection_bug1;
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/RotMatrix.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/UnitVal.h>
 #include <aips/Measures/QMath.h>
@@ -44,156 +46,167 @@ typedef Quantum<Double> gpp_mvdirection_bug1;
 
 //# Constructors
 MVDirection::MVDirection() :
-MVPosition() {
+  MVPosition() {
     xyz(2) = Double(1.0);
 }
 
 MVDirection::MVDirection(const MVPosition &other) : 
-MVPosition(other) {}
+  MVPosition(other) {}
 
 MVDirection &MVDirection::operator=(const MVDirection &other) {
-    if (this != &other) {
-	xyz = other.xyz;
-    }
-    return *this;
+  if (this != &other) {
+    xyz = other.xyz;
+  }
+  return *this;
 }
 
 MVDirection::MVDirection(Double in0, Double in1, Double in2) : 
-MVPosition(in0,in1,in2) {
+  MVPosition(in0,in1,in2) {
     adjust();
-}
+  }
 
 MVDirection::MVDirection(Double in0) :
-MVPosition() {
+  MVPosition() {
     xyz(0) = cos(in0);
     xyz(1) = sin(in0);
-}
+  }
 
 MVDirection::MVDirection(Double angle0, Double angle1) : 
-MVPosition() {
+  MVPosition() {
     Double loc = cos(angle1);
     xyz(0) = cos(angle0)*loc;
     xyz(1) = sin(angle0)*loc;
     xyz(2) = sin(angle1);
-}
+  }
 
 MVDirection::MVDirection(const Quantity &angle0) :
-MVPosition() {
+  MVPosition() {
     xyz(0) = ((cos(angle0)).getValue());
     xyz(1) = ((sin(angle0)).getValue());
     xyz(2) = 0;
-}
+  }
 
 MVDirection::MVDirection(const Quantity &angle0, const Quantity &angle1) : 
-MVPosition() {
+  MVPosition() {
     Double loc = (cos(angle1)).getValue();
     xyz(0) = ((cos(angle0)).getValue()) * loc;
     xyz(1) = ((sin(angle0)).getValue()) * loc;
     xyz(2) = (sin(angle1)).getValue();
-}
+  }
 
 MVDirection::MVDirection(const Quantum<Vector<Double> > &angle) :
-MVPosition(angle) {
+  MVPosition(angle) {
     adjust();
-}
+  }
 
 MVDirection::MVDirection(const Vector<Double> &angle) :
-MVPosition(angle) {
+  MVPosition(angle) {
     adjust();
-}
+  }
 
 MVDirection::MVDirection(const Vector<Quantity> &angle) :
-MVPosition() {
+  MVPosition() {
     uInt i; i = angle.nelements();
     if (i > 3 ) {
-	throw (AipsError("Illegal vector length in MVDirection constructor"));
+      throw (AipsError("Illegal vector length in MVDirection constructor"));
     } else if (i == 3) {
-	angle(0).assert(UnitVal::NODIM);
-	angle(1).assert(UnitVal::NODIM);
-	angle(2).assert(UnitVal::NODIM);
-	Int j;
-	for (j = 0; j<i; j++) {
-	    xyz(j) = angle(j).getValue();
-	};
-	adjust();
+      angle(0).assert(UnitVal::NODIM);
+      angle(1).assert(UnitVal::NODIM);
+      angle(2).assert(UnitVal::NODIM);
+      Int j;
+      for (j = 0; j<i; j++) {
+	xyz(j) = angle(j).getValue();
+      };
+      adjust();
     } else {
-	Vector<Double> tsin(i), tcos(i);
-	Int j;
-	for (j=0; j < i; j++) {
-	    tsin(j) = (sin(angle(j))).getValue(); 
-	    tcos(j) = (cos(angle(j))).getValue(); 
-	};
-	xyz = Double(0.0);
-	if (i > 1) {
-	    xyz(0) = tcos(0) * tcos(1);
-	    xyz(1) = tsin(0) * tcos(1);
-	    xyz(2) = tsin(1);
-	} else if (i > 0) {
-	    xyz(0) = tcos(0);
-	    xyz(1) = tsin(0);
-	} else {
-	    xyz(2)=1.0;
-	}
+      Vector<Double> tsin(i), tcos(i);
+      Int j;
+      for (j=0; j < i; j++) {
+	tsin(j) = (sin(angle(j))).getValue(); 
+	tcos(j) = (cos(angle(j))).getValue(); 
+      };
+      xyz = Double(0.0);
+      if (i > 1) {
+	xyz(0) = tcos(0) * tcos(1);
+	xyz(1) = tsin(0) * tcos(1);
+	xyz(2) = tsin(1);
+      } else if (i > 0) {
+	xyz(0) = tcos(0);
+	xyz(1) = tsin(0);
+      } else {
+	xyz(2)=1.0;
+      }
     }
-}
+  }
 
 //# Destructor
 MVDirection::~MVDirection() {}
 
 //# Operators
 MVDirection &MVDirection::operator+=(const MVDirection &right) {
-    xyz.ac() += right.xyz.ac();
-    adjust();
-    return *this;
+  xyz.ac() += right.xyz.ac();
+  adjust();
+  return *this;
 }
 
 MVDirection MVDirection::operator+(const MVDirection &right) const{
-    MVDirection tmp = *this;
-    tmp += right;
-    return tmp;
+  MVDirection tmp = *this;
+  tmp += right;
+  return tmp;
 }
 
 MVDirection &MVDirection::operator-=(const MVDirection &right) {
-    xyz.ac() -= right.xyz.ac();
-    adjust();
-    return *this;
+  xyz.ac() -= right.xyz.ac();
+  adjust();
+  return *this;
 }
 
 MVDirection MVDirection::operator-(const MVDirection &right) const{
-    MVDirection tmp = *this;
-    tmp -= right;
-    return tmp;
+  MVDirection tmp = *this;
+  tmp -= right;
+  return tmp;
 }
 
 //# Member functions
+
+uInt MVDirection::type() const {
+  return Register((MVDirection *)0);
+}
+
+void MVDirection::assert(const MeasValue &in) {
+  if (in.type() != Register((MVDirection *)0)) {
+    throw(AipsError("Illegal MeasValue type argument: MVDirection"));
+  };
+}
+
 void MVDirection::adjust() {
-    Double length = sqrt(operator*(*this));
-    if (length == 0) {
-	xyz(2) = 1.0;
-    } else if (length != 1.0) {
-	xyz.ac() /= length;
-    }
+  Double length = sqrt(operator*(*this));
+  if (length == 0) {
+    xyz(2) = 1.0;
+  } else if (length != 1.0) {
+    xyz.ac() /= length;
+  }
 }
 
 void MVDirection::adjust(Double &res) {
-    res = sqrt(operator*(*this));
-    if (res == 0) {
-	xyz(2) = 1.0;
-    } else if (res != 1.0) {
-	xyz.ac() /= res;
-    }
+  res = sqrt(operator*(*this));
+  if (res == 0) {
+    xyz(2) = 1.0;
+  } else if (res != 1.0) {
+    xyz.ac() /= res;
+  }
 }
 
 Vector<Double> MVDirection::get() const {
-    Vector<Double> tmp(2);
-    Double loc = xyz(0);
-    if (loc == 0) {
-	tmp(0) = asin(xyz(1));
-    } else {
-	tmp(0) = atan2(xyz(1),xyz(0));
-    }
-    tmp(1) = asin(xyz(2));
-    return tmp;
+  Vector<Double> tmp(2);
+  Double loc = xyz(0);
+  if (loc == 0) {
+    tmp(0) = asin(xyz(1));
+  } else {
+    tmp(0) = atan2(xyz(1),xyz(0));
+  }
+  tmp(1) = asin(xyz(2));
+  return tmp;
 }    
 
 MVDirection MVDirection::crossProduct(const MVDirection &other) const {
@@ -205,23 +218,23 @@ MVDirection MVDirection::crossProduct(const MVDirection &other) const {
 }
 
 MeasValue *MVDirection::clone() const {
-    return (new MVDirection(*this));
+  return (new MVDirection(*this));
 }
 
 
 MVDirection operator*(const RotMatrix &left, const MVDirection &right) {
-    MVDirection result;
-    for (Int i=0; i<3; i++) {
-	result(i) = 0;
-	for (Int j=0; j<3; j++) {
-	    result(i) += left(i,j) * right(j);
-	}
+  MVDirection result;
+  for (Int i=0; i<3; i++) {
+    result(i) = 0;
+    for (Int j=0; j<3; j++) {
+      result(i) += left(i,j) * right(j);
     }
-    return result;
+  }
+  return result;
 }
 
 MVDirection operator*(const MVDirection &left, const RotMatrix &right) {
-    MVDirection result(left);
-    result *= right;
-    return result;
+  MVDirection result(left);
+  result *= right;
+  return result;
 }

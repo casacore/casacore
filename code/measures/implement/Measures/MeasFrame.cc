@@ -28,18 +28,16 @@
 //# Includes
 #ifdef __GNUG__
 #include <aips/Measures/Quantum.h>
-typedef Quantum<Double> gpp_measframe_bug1;
+typedef Quantum<Double> gpp_MeasFrame_bug1;
 #endif
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/RTTI/Register.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasConvert.h>
 
 // Representation class
 class FrameRep {
@@ -47,13 +45,12 @@ public:
   // Constructor
   FrameRep() :
     epval(0), posval(0), dirval(0), radval(0),
-    epConvTDB(0), epTDBp(0), 
-    epConvLAST(0), epLASTp(0), 
-    posConvLong(0), posLongp(0),
-    dirConvJ2000(0), dirJ2000p(0),
-    dirConvB1950(0), dirB1950p(0),
-    dirConvApp(0), dirAppp(0),
-    radConvLSR(0), radLSRp(0),
+    epset(False), epreset(False),
+    posset(False), posreset(False),
+    dirset(False), dirreset(False),
+    radset(False), radreset(False),
+    mymcf(0), delmcf(0),
+    getdbl(0), getmvdir(0),
     cnt(1) {;};
   // Destructor
   ~FrameRep() {
@@ -61,611 +58,507 @@ public:
     delete posval;
     delete dirval;
     delete radval;
-    delete (MEpoch::Convert *) epConvTDB;
-    delete epTDBp;
-    delete (MEpoch::Convert *) epConvLAST;
-    delete epLASTp;
-    delete (MPosition::Convert *) posConvLong;
-    delete posLongp;
-    delete (MDirection::Convert *) dirConvJ2000;
-    delete dirJ2000p;
-    delete (MDirection::Convert *) dirConvB1950;
-    delete dirB1950p;
-    delete (MDirection::Convert *) dirConvApp;
-    delete dirAppp;
-    delete (MRadialVelocity::Convert *) radConvLSR;
-    delete radLSRp;
+    if (mymcf) delmcf(mymcf);		// delete conversion frame data
   }
-
+  
   // The actual measures
   // <group>
   // Epoch in time
-  MEpoch *epval;
+  Measure *epval;
+  Bool epset;
+  Bool epreset;
   // Position
-  MPosition *posval;
+  Measure *posval;
+  Bool posset;
+  Bool posreset;
   // Direction
-  MDirection *dirval;
+  Measure *dirval;
+  Bool dirset;
+  Bool dirreset;
   // Radial velocity
-  MRadialVelocity *radval;
-  // Conversion to TDB time (due to some (for me) unsolvable dependency errors
-  // not the proper MeasConvert* here)
-  void *epConvTDB;
-  // TDB time
-  Double *epTDBp;
-  // Conversion to LAST time
-  void *epConvLAST;
-  // LAST time
-  Double *epLASTp;
-  // Conversion to astronomical longitude/latitude
-  void *posConvLong;
-  // Longitude
-  Vector<Double> *posLongp;
-  // Conversion to J2000
-  void *dirConvJ2000;
-  // J2000 coordinates
-  MVDirection *dirJ2000p;
-  // Conversion to B1950
-  void *dirConvB1950;
-  // B1950 coordinates
-  MVDirection *dirB1950p;
-  // Conversion to apparent coordinates
-  void *dirConvApp;
-  // Apparent coordinates
-  MVDirection *dirAppp;
-  // Conversion to LSR radial velocity
-  void *radConvLSR;
-  // Radial velocity
-  Double *radLSRp;
-  // </group>
+  Measure *radval;
+  Bool radset;
+  Bool radreset;
+  // Pointer to belonging conversion frame
+  void *mymcf;
+  // Pointer to conversion frame deletion
+  void (*delmcf)(void*);
+  // Pointer to get a double
+  Bool (*getdbl)(void*, uInt, Double &);
+  // Pointer to get an MVDirection
+  Bool (*getmvdir)(void*, uInt, MVDirection &);
   // Usage count
   Int cnt;
 };
 
 // MeasFrame class
- 
+
 //# Constructors
 MeasFrame::MeasFrame() :
-rep(0) {
+  rep(0) {
     create();
-}
+  }
 
 MeasFrame::MeasFrame(const Measure &meas1) :
-rep(0) {
+  rep(0) {
     create();
     fill(&meas1);
-}
+  }
 
 MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) :
-rep(0) {
+  rep(0) {
     create();
     fill(&meas1);
     fill(&meas2);
-}
+  }
 
 MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
 		     const Measure &meas3) :
-rep(0) {
+  rep(0) {
     create();
     fill(&meas1);
     fill(&meas2);
     fill(&meas3);
-}
+  }
 
 MeasFrame::MeasFrame(const MeasFrame &other) {
-    rep = other.rep;
-    if (rep) rep->cnt++;
+  rep = other.rep;
+  if (rep) rep->cnt++;
 }
 
 // Destructor
 MeasFrame::~MeasFrame() {
-    if (rep && --rep->cnt == 0) {
-	delete rep;
-    };
+  if (rep && --rep->cnt == 0) {
+    delete rep;
+  };
 }
 
 // Operators
 MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
-    if (this != &other) {
-	if (other.rep) other.rep->cnt++;
-	if (rep && --rep->cnt == 0) {
-	    delete rep;
-	}
-	rep = other.rep;
+  if (this != &other) {
+    if (other.rep) other.rep->cnt++;
+    if (rep && --rep->cnt == 0) {
+      delete rep;
     }
-    return *this;
+    rep = other.rep;
+  }
+  return *this;
 }
 
 Bool MeasFrame::operator==(const MeasFrame &other) const{
-    return ToBool(rep == other.rep);
+  return ToBool(rep == other.rep);
 }
 
 Bool MeasFrame::operator!=(const MeasFrame &other) const{
-    return ToBool(rep != other.rep);
+  return ToBool(rep != other.rep);
 }
 
 // General member functions
 Bool MeasFrame::empty() const{
-    return ToBool( !(rep && (rep->epval || rep->posval || 
-			     rep->dirval || rep->radval)) );
+  return ToBool( !(rep && (rep->epval || rep->posval || 
+			   rep->dirval || rep->radval)) );
 }
 
 void MeasFrame::set(const Measure &meas1) {
-    fill(&meas1);
+  fill(&meas1);
 }
 
 void MeasFrame::set(const Measure &meas1, const Measure &meas2) {
-    fill(&meas1);
-    fill(&meas2);
+  fill(&meas1);
+  fill(&meas2);
 }
 
 void MeasFrame::set(const Measure &meas1, const Measure &meas2,
 		    const Measure &meas3) {
-    fill(&meas1);
-    fill(&meas2);
-    fill(&meas3);
+  fill(&meas1);
+  fill(&meas2);
+  fill(&meas3);
 }
 
 void MeasFrame::resetEpoch(Double val) {
-    resetEpoch(MVEpoch(val));
+  resetEpoch(MVEpoch(val));
 }
 
 void MeasFrame::resetEpoch(const Vector<Double> &val) {
-    resetEpoch(MVEpoch(val));
+  resetEpoch(MVEpoch(val));
 }
 
 void MeasFrame::resetEpoch(const Quantum<Double> &val) {
-    resetEpoch(MVEpoch(val));
+  resetEpoch(MVEpoch(val));
 }
 
 void MeasFrame::resetEpoch(const Quantum<Vector<Double> > &val) {
-    resetEpoch(MVEpoch(val));
+  resetEpoch(MVEpoch(val));
 }
 
 void MeasFrame::resetEpoch(const MVEpoch  &val) {
-    if (rep && rep->epval) {
-	rep->epval->set(val);
-	if (rep->epTDBp) {
-	    delete rep->epTDBp; rep->epTDBp = 0;
-	};
-	if (rep->epLASTp) {
-	    delete rep->epLASTp; rep->epLASTp = 0;
-	};
-	if (rep->dirAppp) {
-	    delete rep->dirAppp; rep->dirAppp = 0;
-	};
-	if (rep->radLSRp) {
-	    delete rep->radLSRp; rep->radLSRp = 0;
-	};
-    } else {
-	errorReset(MEpoch::showMe());
-    };
+  if (rep && rep->epval) {
+    rep->epval->set(val);
+    rep->epreset = True;
+  } else {
+    errorReset(String("Epoch"));
+  };
 }
 
-void MeasFrame::resetEpoch(const MEpoch &val) {
-    if (rep && rep->epval) {
-	delete rep->epval;
-	rep->epval = (MEpoch *) val.clone();
-	makeEpoch();
-    } else {
-	errorReset(MEpoch::showMe());
-    };
+void MeasFrame::resetEpoch(const Measure &val) {
+  if (rep && rep->epval) {
+    delete rep->epval;
+    rep->epval = val.clone();
+    makeEpoch();
+  } else {
+    errorReset(String("Epoch"));
+  };
 }
 
 void MeasFrame::resetPosition(const Vector<Double> &val) {
-    resetPosition(MVPosition(val));
+  resetPosition(MVPosition(val));
 }
 
 void MeasFrame::resetPosition(const Quantum<Vector<Double> > &val) {
-    resetPosition(MVPosition(val));
+  resetPosition(MVPosition(val));
 }
 
 void MeasFrame::resetPosition(const MVPosition  &val) {
-    if (rep && rep->posval) {
-	rep->posval->set(val);
-	if (rep->posLongp) {
-	    delete rep->posLongp; rep->posLongp = 0;
-	};
-	if (rep->epLASTp) {
-	    delete rep->epLASTp; rep->epLASTp = 0;
-	};
-    } else {
-	errorReset(MPosition::showMe());
-    };
+  if (rep && rep->posval) {
+    rep->posval->set(val);
+    rep->posreset = True;
+  } else {
+    errorReset(String("Position"));
+  };
 }
 
-void MeasFrame::resetPosition(const MPosition &val) {
-    if (rep && rep->posval) {
-	delete rep->posval;
-	rep->posval = (MPosition *) val.clone();
-	makePosition();
-    } else {
-	errorReset(MPosition::showMe());
-    };
+void MeasFrame::resetPosition(const Measure &val) {
+  if (rep && rep->posval) {
+    delete rep->posval;
+    rep->posval = val.clone();
+    makePosition();
+  } else {
+    errorReset(String("Position"));
+  };
 }
 
 void MeasFrame::resetDirection(const Vector<Double> &val) {
-    resetDirection(MVDirection(val));
+  resetDirection(MVDirection(val));
 }
 
 void MeasFrame::resetDirection(const Quantum<Vector<Double> > &val) {
-    resetDirection(MVDirection(val));
+  resetDirection(MVDirection(val));
 }
 
 void MeasFrame::resetDirection(const MVDirection  &val) {
-    if (rep && rep->dirval) {
-	rep->dirval->set(val);
-	if (rep->dirJ2000p) {
-	    delete rep->dirJ2000p; rep->dirJ2000p = 0;
-	};
-	if (rep->dirB1950p) {
-	    delete rep->dirB1950p; rep->dirB1950p = 0;
-	};
-	if (rep->dirAppp) {
-	    delete rep->dirAppp; rep->dirAppp = 0;
-	};
-	if (rep->radLSRp) {
-	    delete rep->radLSRp; rep->radLSRp = 0;
-	};
-    } else {
-	errorReset(MDirection::showMe());
-    };
+  if (rep && rep->dirval) {
+    rep->dirval->set(val);
+    rep->dirreset = True;
+  } else {
+    errorReset(String("Direction"));
+  };
 }
 
-void MeasFrame::resetDirection(const MDirection &val) {
-    if (rep && rep->dirval) {
-	delete rep->dirval;
-	rep->dirval = (MDirection *) val.clone();
-	makeDirection();
-    } else {
-	errorReset(MDirection::showMe());
-    };
+void MeasFrame::resetDirection(const Measure &val) {
+  if (rep && rep->dirval) {
+    delete rep->dirval;
+    rep->dirval = val.clone();
+    makeDirection();
+  } else {
+    errorReset(String("Direction"));
+  };
 }
 
 void MeasFrame::resetRadialVelocity(const Vector<Double> &val) {
-    resetRadialVelocity(MVRadialVelocity(val));
+  resetRadialVelocity(MVRadialVelocity(val));
 }
 
 void MeasFrame::resetRadialVelocity(const Quantum<Vector<Double> > &val) {
-    resetRadialVelocity(MVRadialVelocity(val));
+  resetRadialVelocity(MVRadialVelocity(val));
 }
 
 void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
-    if (rep && rep->radval) {
-	rep->radval->set(val);
-	if (rep->radLSRp) {
-	    delete rep->radLSRp; rep->radLSRp = 0;
-	};
-    } else {
-	errorReset(MRadialVelocity::showMe());
-    };
+  if (rep && rep->radval) {
+    rep->radval->set(val);
+    rep->radreset = True;
+  } else {
+    errorReset(String("RadialVelocity"));
+  };
 }
 
-void MeasFrame::resetRadialVelocity(const MRadialVelocity &val) {
-    if (rep && rep->radval) {
-	delete rep->radval;
-	rep->radval = (MRadialVelocity *) val.clone();
-	makeRadialVelocity();
-    } else {
-	errorReset(MRadialVelocity::showMe());
-    };
+void MeasFrame::resetRadialVelocity(const Measure &val) {
+  if (rep && rep->radval) {
+    delete rep->radval;
+    rep->radval = val.clone();
+    makeRadialVelocity();
+  } else {
+    errorReset(String("RadialVelocity"));
+  };
 }
 
-Bool MeasFrame::getTDB(Double &tdb) const {
-    if (rep && rep->epval) {
-	if (!rep->epTDBp) {
-	    rep->epTDBp = new Double;
-	    *(rep->epTDBp) = (*(MEpoch::Convert *)
-			      (rep->epConvTDB))().getValue().get();
-	};
-	tdb = *(rep->epTDBp);
-	return True;
-    };
-    tdb = 0;
-    return False;
+const Measure *const MeasFrame::epoch() const{
+  if (rep) return rep->epval;
+  return 0;
 }
 
-Bool MeasFrame::getLong(Double &tdb) const {
-    if (rep && rep->posval) {
-	if (!rep->posLongp) {
-	    rep->posLongp = new Vector<Double>(3);
-	    *(rep->posLongp) = (*(MPosition::Convert *)
-				(rep->posConvLong))().getValue().get();
-	};
-	tdb = MVAngle(rep->posLongp->operator()(1))(-0.5);
-	return True;
-    };
-    tdb = 0;
-    return False;
+const Measure *const MeasFrame::position() const{
+  if (rep) return rep->posval;
+  return 0;
 }
 
-Bool MeasFrame::getLat(Double &tdb) const {
-    if (rep && rep->posval) {
-	if (!rep->posLongp) {
-	    rep->posLongp = new Vector<Double>(3);
-	    *(rep->posLongp) = (*(MPosition::Convert *)
-				(rep->posConvLong))().getValue().get();
-	};
-	tdb = rep->posLongp->operator()(2);
-	return True;
-    };
-    tdb = 0;
-    return False;
+const Measure *const MeasFrame::direction() const{
+  if (rep) return rep->dirval;
+  return 0;
 }
 
-Bool MeasFrame::getRadius(Double &tdb) const {
-    if (rep && rep->posval) {
-	if (!rep->posLongp) {
-	    rep->posLongp = new Vector<Double>(3);
-	    *(rep->posLongp) = (*(MPosition::Convert *)
-				(rep->posConvLong))().getValue().get();
-	};
-	tdb = rep->posLongp->operator()(0);
-	return True;
-    };
-    tdb = 0;
-    return False;
+const Measure *const MeasFrame::radialVelocity() const{
+  if (rep) return rep->radval;
+  return 0;
 }
 
-Bool MeasFrame::getLAST(Double &tdb) const {
-    if (rep && rep->epval) {
-	if (!rep->epLASTp) {
-	    rep->epLASTp = new Double;
-	    *(rep->epLASTp) = (*(MEpoch::Convert *)
-			      (rep->epConvLAST))().getValue().get();
-	};
-	tdb = fmod(*(rep->epLASTp),1.0);
-	return True;
-    };
-    tdb = 0;
-    return False;
+Bool MeasFrame::getEpset() const {
+  if (rep) return rep->epset;
+  return False;
 }
 
-Bool MeasFrame::getLASTr(Double &tdb) const {
-    Bool tmp = MeasFrame::getLAST(tdb);
-    tdb *= C::circle;
-    return tmp;
+Bool MeasFrame::getPosset() const {
+  if (rep) return rep->posset;
+  return False;
 }
 
-Bool MeasFrame::getJ2000(MVDirection &tdb) const {
-    if (rep && rep->dirval) {
-	if (!rep->dirJ2000p) {
-	    rep->dirJ2000p = new MVDirection;
-	    *(rep->dirJ2000p) = (*(MDirection::Convert *)
-				(rep->dirConvJ2000))().getValue();
-	};
-	tdb = *(rep->dirJ2000p);
-	return True;
-    };
-    tdb = (Double) 0.0;
-    return False;
+Bool MeasFrame::getDirset() const {
+  if (rep) return rep->dirset;
+  return False;
 }
 
-Bool MeasFrame::getB1950(MVDirection &tdb) const {
-    if (rep && rep->dirval) {
-	if (!rep->dirB1950p) {
-	    rep->dirB1950p = new MVDirection;
-	    *(rep->dirB1950p) = (*(MDirection::Convert *)
-				(rep->dirConvB1950))().getValue();
-	};
-	tdb = *(rep->dirB1950p);
-	return True;
-    };
-    tdb = (Double) 0.0;
-    return False;
+Bool MeasFrame::getRadset() const {
+  if (rep) return rep->radset;
+  return False;
 }
 
-Bool MeasFrame::getApp(MVDirection &tdb) const {
-    if (rep && rep->dirval) {
-	if (!rep->dirAppp) {
-	    rep->dirAppp = new MVDirection;
-	    *(rep->dirAppp) = (*(MDirection::Convert *)
-				(rep->dirConvApp))().getValue();
-	};
-	tdb = *(rep->dirAppp);
-	return True;
-    };
-    tdb = (Double) 0.0;
-    return False;
+Bool MeasFrame::getEpreset() const {
+  if (rep) return rep->epreset;
+  return False;
 }
 
-Bool MeasFrame::getLSR(Double &tdb) const {
-    if (rep && rep->radval) {
-	if (!rep->radLSRp) {
-	    rep->radLSRp = new Double;
-	    *(rep->radLSRp) = (*(MRadialVelocity::Convert *)
-				(rep->radConvLSR))().getValue();
-	};
-	tdb = *(rep->radLSRp);
-	return True;
-    };
-    tdb = (Double) 0.0;
-    return False;
+Bool MeasFrame::getPosreset() const {
+  if (rep) return rep->posreset;
+  return False;
 }
 
-const MEpoch *const MeasFrame::epoch() const{
-    if (rep) return rep->epval;
-    return 0;
+Bool MeasFrame::getDirreset() const {
+  if (rep) return rep->dirreset;
+  return False;
 }
 
-const MPosition *const MeasFrame::position() const{
-    if (rep) return rep->posval;
-    return 0;
+Bool MeasFrame::getRadreset() const {
+  if (rep) return rep->radreset;
+  return False;
 }
 
-const MDirection *const MeasFrame::direction() const{
-    if (rep) return rep->dirval;
-    return 0;
+void MeasFrame::setEpset(Bool in) {
+  if (rep) rep->epset = in;
 }
 
-const MRadialVelocity *const MeasFrame::radialVelocity() const{
-    if (rep) return rep->radval;
-    return 0;
+void MeasFrame::setPosset(Bool in) {
+  if (rep) rep->posset = in;
+}
+
+void MeasFrame::setDirset(Bool in) {
+  if (rep) rep->dirset = in;
+}
+
+void MeasFrame::setRadset(Bool in) {
+  if (rep) rep->radset = in;
+}
+
+void MeasFrame::setEpreset(Bool in) {
+  if (rep) rep->epreset = in;
+}
+
+void MeasFrame::setPosreset(Bool in) {
+  if (rep) rep->posreset = in;
+}
+
+void MeasFrame::setDirreset(Bool in) {
+  if (rep) rep->dirreset = in;
+}
+
+void MeasFrame::setRadreset(Bool in) {
+  if (rep) rep->radreset = in;
+}
+
+void MeasFrame::setMCFramePoint(void *in) {
+  if (rep) rep->mymcf = in;
+}
+
+void MeasFrame::setMCFrameDelete(void (*in)(void*)) {
+  if (rep) rep->delmcf = in;
+}
+
+void MeasFrame::setMCFrameGetdbl(Bool (*in)(void *, uInt, Double &)) {
+  if (rep) rep->getdbl = in;
+}
+
+void MeasFrame::setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &)) {
+  if (rep) rep->getmvdir = in;
+}
+
+void *MeasFrame::getMCFramePoint() const {
+  if (rep) return rep->mymcf;
+  return 0;
+}
+
+void MeasFrame::lock() {
+  if (rep) rep->cnt++;
+}
+
+void MeasFrame::unlock() {
+  if (rep) rep->cnt--;
+}
+
+Bool MeasFrame::getTDB(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetTDB, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getLong(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLong, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getLat(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLat, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getRadius(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetRadius, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getLAST(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLAST, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getLASTr(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLASTr, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getJ2000(MVDirection &tdb) {
+  if (rep && rep->mymcf) return rep->getmvdir(rep->mymcf, GetJ2000, tdb);
+  tdb = Double(0.0);
+  return False; 
+}
+
+Bool MeasFrame::getB1950(MVDirection &tdb) {
+  if (rep && rep->mymcf) return rep->getmvdir(rep->mymcf, GetB1950, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getApp(MVDirection &tdb) {
+  if (rep && rep->mymcf) return rep->getmvdir(rep->mymcf, GetApp, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getLSR(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLSR, tdb);
+  tdb = 0;
+  return False; 
 }
 
 void MeasFrame::create() {
-    if (!rep) rep = new FrameRep();
+  if (!rep) rep = new FrameRep();
 }
 
 void MeasFrame::fill(const Measure *in) {
-    if (in) {
-	if (in->areYou("EPOCH")) {
-	    delete rep->epval;
-	    rep->epval = (MEpoch *) in->clone();
-	    makeEpoch();
-	} else if (in->areYou("Position")) {
-	    delete rep->posval;
-	    rep->posval = (MPosition *) in->clone();
-	    makePosition();
-	} else if (in->areYou("Direction")) {
-	    delete rep->dirval;
-	    rep->dirval = (MDirection *) in->clone();
-	    makeDirection();
-	} else if (in->areYou("Radialvelocity")) {
-	    delete rep->radval;
-	    rep->radval = (MRadialVelocity *) in->clone();
-	    makeRadialVelocity();
-	} else {
-	    throw(AipsError("Unknown MeasFrame Measure type " +
-			    in->tellMe()));
-	};
+  if (in) {
+    if (in->type() == Register((MEpoch *)0)) {
+      delete rep->epval;
+      rep->epval = in->clone();
+      makeEpoch();
+    } else if (in->type() == Register((MPosition *)0)) {
+      delete rep->posval;
+      rep->posval = in->clone();
+      makePosition();
+    } else if (in->type() == Register((MDirection *)0)) {
+      delete rep->dirval;
+      rep->dirval = in->clone();
+      makeDirection();
+    } else if (in->type() == Register((MRadialVelocity *)0)) {
+      delete rep->radval;
+      rep->radval = in->clone();
+      makeRadialVelocity();
+    } else {
+      throw(AipsError("Unknown MeasFrame Measure type " +
+		      in->tellMe()));
     };
+  };
 }
 
 void MeasFrame::makeEpoch() {
-    static const MEpoch::Ref REFTDB 
-	= MEpoch::Ref(MEpoch::TDB);
-    delete (MEpoch::Convert *) rep->epConvTDB;
-    rep->epConvTDB = new MEpoch::Convert(*(rep->epval),
-					 REFTDB);
-    if (rep->epTDBp) {
-	delete rep->epTDBp; rep->epTDBp = 0;
-    };
-    if (rep->epConvLAST) {
-      rep->cnt++;
-      delete (MEpoch::Convert *) rep->epConvLAST;
-      rep->epConvLAST = 0;
-    };
-    rep->epConvLAST = new MEpoch::Convert(*(rep->epval),
-					 MEpoch::Ref(MEpoch::LAST, *this));
-    if (rep->epConvLAST) {
-      --rep->cnt;
-    };
-    if (rep->epLASTp) {
-	delete rep->epLASTp; rep->epLASTp = 0;
-    };
-    if (rep->dirAppp) {
-	delete rep->dirAppp; rep->dirAppp = 0;
-    };
-    if (rep->radLSRp) {
-      delete rep->radLSRp; rep->radLSRp = 0;
-    };
+  rep->epset = True;
 }
 
 void MeasFrame::makePosition() {
-    static const MPosition::Ref REFLONG 
-	= MPosition::Ref(MPosition::ITRF);
-    delete (MPosition::Convert *) rep->posConvLong;
-    rep->posConvLong = new MPosition::Convert(*(rep->posval),
-					      REFLONG);
-    if (rep->posLongp) {
-	delete rep->posLongp; rep->posLongp = 0;
-    };
-    if (rep->epLASTp) {
-	delete rep->epLASTp; rep->epLASTp = 0;
-    };
-    if (rep->radLSRp) {
-      delete rep->radLSRp; rep->radLSRp = 0;
-    };
+  rep->posset = True;
 }
 
 void MeasFrame::makeDirection() {
-    static const MDirection::Ref REFJ2000 
-	= MDirection::Ref(MDirection::J2000);
-    delete (MDirection::Convert *) rep->dirConvJ2000;
-    rep->dirConvJ2000 = new MDirection::Convert(*(rep->dirval),
-					      REFJ2000);
-    static const MDirection::Ref REFB1950 
-	= MDirection::Ref(MDirection::B1950);
-    delete (MDirection::Convert *) rep->dirConvB1950;
-    rep->dirConvB1950 = new MDirection::Convert(*(rep->dirval),
-					      REFB1950);
-    if (rep->dirConvApp) {
-      rep->cnt++;
-      delete (MDirection::Convert *) rep->dirConvApp;
-      rep->dirConvApp = 0;
-    };
-    rep->dirConvApp = new MDirection::Convert(*(rep->dirval),
-					      MDirection::Ref(MDirection::APP,
-							      *this));
-    if (rep->dirConvApp) {
-      --rep->cnt;
-    };
-    if (rep->dirJ2000p) {
-	delete rep->dirJ2000p; rep->dirJ2000p = 0;
-    };
-    if (rep->dirB1950p) {
-	delete rep->dirB1950p; rep->dirB1950p = 0;
-    };
-    if (rep->dirAppp) {
-	delete rep->dirAppp; rep->dirAppp = 0;
-    };
-    if (rep->radLSRp) {
-      delete rep->radLSRp; rep->radLSRp = 0;
-    };
+  rep->dirset = True;
 }
 
 void MeasFrame::makeRadialVelocity() {
-    static const MRadialVelocity::Ref REFLSR 
-	= MRadialVelocity::Ref(MRadialVelocity::LSR);
-    delete (MRadialVelocity::Convert *) rep->radConvLSR;
-    rep->radConvLSR = new MRadialVelocity::Convert(*(rep->radval),
-					      REFLSR);
-    if (rep->radLSRp) {
-	delete rep->radLSRp; rep->radLSRp = 0;
-    };
+  rep->radset = True;
 }
 
 void MeasFrame::errorReset(const String &txt) {
-    throw(AipsError("Attempt to reset non-existent frame member "+txt));
+  throw(AipsError("Attempt to reset non-existent frame member "+txt));
 }
 
-ostream &operator<<(ostream &os, const MeasFrame &mf) {
-    os << "Frame: ";
-    Double tmp;
-    if (mf.rep && mf.rep->epval) {
-	mf.getTDB(tmp);
-	os << (MEpoch) *(mf.rep->epval);
-	os << " (TDB = " << tmp << ")";
+ostream &operator<<(ostream &os, MeasFrame &mf) {
+  os << "Frame: ";
+  Double tmp;
+  if (mf.rep && mf.rep->epval) {
+    os << *(mf.rep->epval);
+    if (mf.getTDB(tmp)) 
+      os << " (TDB = " << tmp << ")";
+  };
+  if (mf.rep && mf.rep->posval) {
+    if (mf.rep && mf.rep->epval) os << endl << "       ";
+    os << *(mf.rep->posval);
+    if (mf.getLong(tmp)) {
+      os << endl << "        (Longitude = " << tmp;
+      mf.getLat(tmp);
+      os << " Latitude = " << tmp << ")";
     };
-    if (mf.rep && mf.rep->posval) {
-	if (mf.rep && mf.rep->epval) {
-	    os << endl << "       ";
-	};
-	os << (MPosition) *(mf.rep->posval);
-	mf.getLong(tmp);
-	os << endl << "        (Longitude = " << tmp;
-	mf.getLat(tmp);
-	os << " Latitude = " << tmp << ")";
+  };
+  if (mf.rep && mf.rep->dirval) {
+    if (mf.rep && (mf.rep->epval || mf.rep->posval)) 
+      os << endl << "       ";
+    os << *(mf.rep->dirval);
+    MVDirection tmp;    
+    if (mf.getJ2000(tmp)) {
+      os << endl << "        (J2000 = " << 
+	tmp.getAngle("deg") << ")";
     };
-    if (mf.rep && mf.rep->dirval) {
-	if (mf.rep && (mf.rep->epval || mf.rep->posval)) {
-	    os << endl << "       ";
-	};
-	os << (MDirection) *(mf.rep->dirval);
-	MVDirection tmp;    
-	mf.getJ2000(tmp);
-	os << endl << "        (J2000 = " << 
-	    tmp.getAngle("deg") << ")";
+  };
+  if (mf.rep && mf.rep->radval) {
+    if (mf.rep && (mf.rep->epval || mf.rep->posval ||
+		   mf.rep->dirval)) {
+      os << endl << "       ";
     };
-    if (mf.rep && mf.rep->radval) {
-	if (mf.rep && (mf.rep->epval || mf.rep->posval ||
-		       mf.rep->dirval)) {
-	    os << endl << "       ";
-	};
-	os << (MRadialVelocity) *(mf.rep->radval);
-	mf.getLSR(tmp); tmp /= 1000.;
-	os << endl << "        (LSR velocity = " << 
-	    Quantity(tmp,"km/s") << ")";
+    os << *(mf.rep->radval);
+    if (mf.getLSR(tmp)) {
+      tmp /= 1000.;
+      os << endl << "        (LSR velocity = " << 
+	Quantity(tmp,"km/s") << ")";
     };
-    return os;
+  };
+  return os;
 }

@@ -38,18 +38,14 @@
 #include <aips/Measures/Measure.h>
 
 //# Forward Declarations
-class MEpoch;
-class MPosition;
-class MDirection;
-class MRadialVelocity;
 class MVEpoch;
 class MVPosition;
 class MVDirection;
 class MVRadialVelocity;
 class FrameRep;
+template <class T> class Vector;
+template <class Qtype> class Quantum;
 imported class ostream;
-
-//# Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary> Container for Measure frame </summary>
 
@@ -68,27 +64,57 @@ imported class ostream;
 // </etymology>
 //
 // <synopsis>
-// Measurements are made in a reference frame (epoch, position, with later
-// maybe velocity, acceleration, dipole angle,...).<br>
+// Measurements are made in a reference frame (epoch, position, direction,
+// direction, ...).<br>
 // The class is a container for the reference frame Measures (MEpoch etc).
 // Since a frame will possibly be used by many different Measures, it behaves
 // as a smart pointer, with reference rather than copy characteristics.
-// The actual data are stored in the class.<br>
+// Since it caches all its operations, it is advisable to have a 'global'
+// MeasFrame across an execution, resetting (or setting) its values
+// when appropiate.
+//
 // A MeasFrame is constructed by setting the appropiate Measures, either in
 // a constructor, or with a set(). The input to the constructors and set are
 // Measures.<br>
+//
 // Inside the frames automatic conversion to the most appropiate usage of
 // its values is done (e.g. time to TBD time, position to astronomical
-// longitude). Furthermore, a frame will in general be regularly updated
-// (e.g. coordinate
+// longitude). These conversions are done only if an explicit
+// Measure::Convert was used that needed information, e.g. the following
+// code:
+// <srcblock>
+//	MeasFrame frame(obser);   // obser is an MPosition
+//	MEpoch::Convert conv(MEpoch(12345), MEpoch::Ref(MEpoch::LAST,obser));
+//	MEpoch last = conv();
+// </srcblock>
+// will set-up a state machine to convert UTC(default) to LAST in conv; the
+// next call will do the actual conversion. During this conversion, the
+// astronomical longitude (among others) will be needed to convert to
+// local sidereal time. conv will ask (getLong()) this from the frame, which
+// will calculate it (including possible other conversions) from the
+// observatory's position specified in a frame. Any calculation done will be
+// cached (e.g. a Nutation calculation in this case for dpsi), and used in
+// subsequent conversions using the same frame.<br>
+// Furthermore, a frame will often be regularly updated (e.g. coordinate
 // conversion for a series of times). To make use of cached information, and
 // to speed up as much as possible, <src>reset...()</src> functions are 
 // available. These reset functions accept the same range of input parameter
 // types as the <linkto class=MeasConvert>MeasConvert</linkto> () operator,
-// and will only change the used derivatives of the frame.<br>
-// get...() functions return frame measures set.<br>
-// <linkto class=MeasDetail>Meaure details</linkto> can be set for the
-// internal conversion.
+// and will keep any determined conversion machines and related information
+// intact, only recalculating whatever is necessary.<br>
+// The actual frame calculations and interrogations are done in a separate
+// <linkto class=MCFrame>MCFrame</linkto> hidden class, which attaches itself
+// to MeasFrame when and if necessary (see there if you are really curious).<br>.
+// get...() functions can return frame measures. Only when the frame has been
+// attached to a calculating machine *MCFrame) are these values available.
+// This attachment is done if the frame has been actively used by a
+// Measure::Convert engine, or if explicitly done by the
+// <src>MCFrame::make(MeasFrame &)</src> static method.
+// <note role=caution> An explicit (or implicit) call to MCFrame::make will
+// load the whole conversion machinery (including Tables) into your
+// linked module).</note><br>
+// <linkto class=MeasDetail>Meaure details</linkto> can be set for additional
+// (highly specialised) additional internal conversion parameters.
 // </synopsis>
 //
 // <example>
@@ -102,141 +128,213 @@ imported class ostream;
 // To separate the frame definition from the measure type
 // </motivation>
 //
-// <todo asof="1996/02/22">
+// <todo asof="1997/04/16">
 // </todo>
 
 class MeasFrame {
 
     public:
-//# Friends
-// Output a frame
-    friend ostream &operator<<(ostream &os, const MeasFrame &mf);
+  
+  //# Friends
+  // Output a frame
+  friend ostream &operator<<(ostream &os, MeasFrame &mf);
+  // Machinery
+  // <group>
+  friend class MCFrame;
+  friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
+  friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
+  // </group>
 
-    
-//# Constructors
-// Default constructor
-    MeasFrame();
-// Construct frame with specified measures
-// <thrown>
-//   <li> AipsError if a non-frame Measure
-// </thrown>
-// <grp>
-    MeasFrame(const Measure &meas1);
-    MeasFrame(const Measure &meas1, const Measure &meas2);
-    MeasFrame(const Measure &meas1, const Measure &meas2,
-	      const Measure &meas3);
-// </grp>
-// Copy constructor (reference semantics)
-    MeasFrame(const MeasFrame &other);
-// Copy assignment (reference semantics)
-    MeasFrame &operator=(const MeasFrame &other);
-// Destructor
-    ~MeasFrame();
+  //# Constructors
+  // Default constructor
+  MeasFrame();
+  // Construct frame with specified measures
+  // <thrown>
+  //   <li> AipsError if a non-frame Measure
+  // </thrown>
+  // <grp>
+  MeasFrame(const Measure &meas1);
+  MeasFrame(const Measure &meas1, const Measure &meas2);
+  MeasFrame(const Measure &meas1, const Measure &meas2,
+	    const Measure &meas3);
+  // </grp>
+  // Copy constructor (reference semantics)
+  MeasFrame(const MeasFrame &other);
+  // Copy assignment (reference semantics)
+  MeasFrame &operator=(const MeasFrame &other);
+  // Destructor
+  ~MeasFrame();
+  
+  //# Operators
+  // Comparisons
+  // <group>
+  Bool operator==(const MeasFrame &other) const;
+  Bool operator!=(const MeasFrame &other) const;
+  // </group>
+  
+  //# General member functions
+  // Test if empty (i.e. no measure filled in)
+  Bool empty() const;
+  
+  // Set frame elements
+  // <thrown>
+  //   <li> AipsError if a non-frame Measure
+  // </thrown>
+  // <group>
+  void set(const Measure &meas1);
+  void set(const Measure &meas1, const Measure &meas2);
+  void set(const Measure &meas1, const Measure &meas2,
+	   const Measure &meas3);
+  // </group>
+  // Reset a frame element and its cached derived values.
+  // <thrown>
+  //   <li> AipsError if the specific Measure not yet present in frame
+  // </thrown>
+  // <group>
+  void resetEpoch(Double val);
+  void resetEpoch(const Vector<Double> &val);
+  void resetEpoch(const Quantum<Double> &val);
+  void resetEpoch(const Quantum<Vector<Double> > &val);
+  void resetEpoch(const MVEpoch &val);
+  void resetEpoch(const Measure &val);
+  void resetPosition(const Vector<Double> &val);
+  void resetPosition(const Quantum<Vector<Double> > &val);
+  void resetPosition(const MVPosition &val);
+  void resetPosition(const Measure &val);
+  void resetDirection(const Vector<Double> &val);
+  void resetDirection(const Quantum<Vector<Double> > &val);
+  void resetDirection(const MVDirection &val);
+  void resetDirection(const Measure &val);
+  void resetRadialVelocity(const Vector<Double> &val);
+  void resetRadialVelocity(const Quantum<Vector<Double> > &val);
+  void resetRadialVelocity(const MVRadialVelocity &val);
+  void resetRadialVelocity(const Measure &val);
+  // </group>
+  
+  // Get the epoch pointer (0 if not present)
+  const Measure *const epoch() const;
+  // Get the position pointer (0 if not present)
+  const Measure *const position() const;
+  // Get the direction pointer (0 if not present)
+  const Measure *const direction() const;
+  // Get the radial velocity pointer (0 if not present)
+  const Measure *const radialVelocity() const;
+  // Get data from frame. Only available if appropiate measures are set,
+  // and the frame is in a calculating state.
+  // <group>
+  // Get TDB in days
+  Bool getTDB(Double &tdb);
+  // Get the longitude (in rad)
+  Bool getLong(Double &tdb);
+  // Get the latitude (in rad)
+  Bool getLat(Double &tdb);
+  // Get the gecentric position (in m)
+  Bool getRadius(Double &tdb);
+  // Get the LAST (in days)
+  Bool getLAST(Double &tdb);
+  // Get the LAST (in rad)
+  Bool getLASTr(Double &tdb);
+  // Get J2000 coordinates (direction cosines)
+  Bool getJ2000(MVDirection &tdb);
+  // Get B1950 coordinates (direction cosines)
+  Bool getB1950(MVDirection &tdb);
+  // Get apparent coordinates (direction cosines)
+  Bool getApp(MVDirection &tdb);
+  // Get LSR radial velocity (m/s)
+  Bool getLSR(Double &tdb);
+  // </group>
 
-//# Operators
-// Comparisons
-// <group>
-    Bool operator==(const MeasFrame &other) const;
-    Bool operator!=(const MeasFrame &other) const;
-// </group>
-
-//# General member functions
-// Test if empty
-    Bool empty() const;
-
-// Set frame elements
-// <thrown>
-//   <li> AipsError if a non-frame Measure
-// </thrown>
-// <group>
-    void set(const Measure &meas1);
-    void set(const Measure &meas1, const Measure &meas2);
-    void set(const Measure &meas1, const Measure &meas2,
-	     const Measure &meas3);
-// </group>
-// Reset a frame element and its cached derivatives.
-// <thrown>
-//   <li> AipsError if the specific Measure not yet present in frame
-// </thrown>
-// <group>
-    void resetEpoch(Double val);
-    void resetEpoch(const Vector<Double> &val);
-    void resetEpoch(const Quantum<Double> &val);
-    void resetEpoch(const Quantum<Vector<Double> > &val);
-    void resetEpoch(const MVEpoch &val);
-    void resetEpoch(const MEpoch &val);
-    void resetPosition(const Vector<Double> &val);
-    void resetPosition(const Quantum<Vector<Double> > &val);
-    void resetPosition(const MVPosition &val);
-    void resetPosition(const MPosition &val);
-    void resetDirection(const Vector<Double> &val);
-    void resetDirection(const Quantum<Vector<Double> > &val);
-    void resetDirection(const MVDirection &val);
-    void resetDirection(const MDirection &val);
-    void resetRadialVelocity(const Vector<Double> &val);
-    void resetRadialVelocity(const Quantum<Vector<Double> > &val);
-    void resetRadialVelocity(const MVRadialVelocity &val);
-    void resetRadialVelocity(const MRadialVelocity &val);
-// </group>
-
-// Get the epoch pointer (0 if not present)
-    const MEpoch *const epoch() const;
-// Get the position pointer (0 if not present)
-    const MPosition *const position() const;
-// Get the direction pointer (0 if not present)
-    const MDirection *const direction() const;
-// Get the radial velocity pointer (0 if not present)
-    const MRadialVelocity *const radialVelocity() const;
-// Get TDB in days
-    Bool getTDB(Double &tdb) const;
-// Get the longitude (in rad)
-    Bool getLong(Double &tdb) const;
-// Get the latitude (in rad)
-    Bool getLat(Double &tdb) const;
-// Get the gecentric position (in m)
-    Bool getRadius(Double &tdb) const;
-// Get the LAST (in days)
-    Bool getLAST(Double &tdb) const;
-// Get the LAST (in rad)
-    Bool getLASTr(Double &tdb) const;
-// Get J2000 coordinates (direction cosines)
-    Bool getJ2000(MVDirection &tdb) const;
-// Get B1950 coordinates (direction cosines)
-    Bool getB1950(MVDirection &tdb) const;
-// Get apparent coordinates (direction cosines)
-    Bool getApp(MVDirection &tdb) const;
-// Get LSR radial velocity (m/s)
-    Bool getLSR(Double &tdb) const;
-// Clear the frame
-    void clear();
-
-    private:
-//# Data
-// Representation of MeasFrame
-    FrameRep *rep;
-
-//# Member functions
-// Create an instance of the MeasFrame class
-    void create();
-// Fill a MeasFrame element
-    void fill(const Measure *in);
-// Make full Epoch
-    void makeEpoch();
-// Make full Position
-    void makePosition();
-// Make full Direction
-    void makeDirection();
-// Make full RadialVelocity
-    void makeRadialVelocity();
-// Throw reset error
-    void errorReset(const String &txt);
+  // Get the frame conversion data pointer (0 if none)
+  void *getMCFramePoint() const;
+  
+private:
+  
+  //# Enumerations
+  // Types of known get data routines. The actual work is in MCFrame,
+  // using pointers to functions
+  enum GetTypes {
+    // Get TDB in days
+    GetTDB,
+    // Get the longitude (in rad)
+    GetLong,
+    // Get the latitude (in rad)
+    GetLat,
+    // Get the gecentric position (in m)
+    GetRadius,
+    // Get the LAST (in days)
+    GetLAST,
+    // Get the LAST (in rad)
+    GetLASTr,
+    // Get J2000 coordinates (direction cosines)
+    GetJ2000,
+    // Get B1950 coordinates (direction cosines)
+    GetB1950,
+    // Get apparent coordinates (direction cosines)
+    GetApp,
+    // Get LSR radial velocity (m/s)
+    GetLSR,
+  };
+  
+  //# Data
+  // Representation of MeasFrame
+  FrameRep *rep;
+  
+  //# Member functions
+  // Create an instance of the MeasFrame class
+  void create();
+  // Fill a MeasFrame element
+  void fill(const Measure *in);
+  // Make full Epoch
+  void makeEpoch();
+  // Make full Position
+  void makePosition();
+  // Make full Direction
+  void makeDirection();
+  // Make full RadialVelocity
+  void makeRadialVelocity();
+  // Throw reset error
+  void errorReset(const String &txt);
+  // Get the different set and reset indicators (for use in MCFrame)
+  // <group>
+  Bool getEpset() const;
+  Bool getDirset() const;
+  Bool getPosset() const;
+  Bool getRadset() const;
+  Bool getEpreset() const;
+  Bool getDirreset() const;
+  Bool getPosreset() const;
+  Bool getRadreset() const;
+  // </group>
+  // Set the different set/reset switches
+  // <group>
+  void setEpset(Bool in);
+  void setPosset(Bool in);
+  void setDirset(Bool in);
+  void setRadset(Bool in);
+  void setEpreset(Bool in);
+  void setPosreset(Bool in);
+  void setDirreset(Bool in);
+  void setRadreset(Bool in);
+  // </group>
+  // Set the frame conversion data pointer (by MCFrame)
+  void setMCFramePoint(void *in);
+  // Set the frame conversion deletor
+  void setMCFrameDelete(void (*in)(void*));
+  // Set the get double routine
+  void setMCFrameGetdbl(Bool (*in)(void *, uInt, Double &));
+  // Set the get MVDirection routine
+  void setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &));
+  // Lock the frame to make sure deletion occurs when needed
+  void lock();
+  // Unlock the frame
+  void unlock();
 };
 
 //# Global functions
 // <summary> Global functions </summary>
 // <group name=Output>
 // Output a frame
-    ostream &operator<<(ostream &os, const MeasFrame &mf);
+ostream &operator<<(ostream &os, MeasFrame &mf);
 // </group>
 
 #endif

@@ -37,11 +37,12 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvfreq_bug2;
+#endif
 
 //# Forward Declarations
 imported class ostream;
-
-//# Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary> Internal value for MFrequency </summary>
 
@@ -97,73 +98,80 @@ imported class ostream;
 
 class MVFrequency : public MeasValue {
 
-    public:
+public:
     
-//# Constructors
-// Default constructor: generate a zero value
-    MVFrequency();
-// Copy constructor
-    MVFrequency(const MVFrequency &other);
-// Copy assignment
-    MVFrequency &operator=(const MVFrequency &other);
-// Constructor from Double
-    explicit MVFrequency(Double d);
-// Constructor from Quantum : value taken will be the canonical value
-// <group>
-    MVFrequency(const Quantity &other);
-    MVFrequency(const Quantum<Vector<Double> > &other);
-// </group>
-// Constructor from Vector. A zero value will be taken for an empty vector,
-// the canonical value for a quantum vector.
-// <thrown>
-//  <li> AipsError if vector length > 1
-// </thrown>
-// <group>
-    MVFrequency(const Vector<Double> &other);
-    MVFrequency(const Vector<Quantity> &other);
-// </group>
-
-// Destructor
-    ~MVFrequency();
-
-//# Operators
-// Conversion operator
-    operator Double() const;
-
-// Addition
-// <group>
-    MVFrequency &operator+=(const MVFrequency &other);
-    MVFrequency &operator-=(const MVFrequency &other);
-// </group>
-// Comparisons
-// <group>
-    Bool operator==(const MVFrequency &other) const;
-    Bool operator!=(const MVFrequency &other) const;
-    Bool near(const MVFrequency &other, Double tol = 1e-13) const;
-    Bool nearAbs(const MVFrequency &other, Double tol = 1e-13) const;
-// </group>
-
-//# General member functions
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-// Adjust value: taken from base class, a NOP.
-// Get value in Hz
-    Double getValue() const;
-// Get quantity in Hz
-    Quantity get() const;
-// Get the wave characteristics in (recognised) specified units
-    Quantity get(const Unit &unit) const;
-
-    private:
-//# Data
-// Value
-    Double val;
-
-//# Member functions
-// Get correct data type conversion factor from input Quantum
-    Double makeF(Double v, const Unit &dt) const;
+  //# Constructors
+  // Default constructor: generate a zero value
+  MVFrequency();
+  // Copy constructor
+  MVFrequency(const MVFrequency &other);
+  // Copy assignment
+  MVFrequency &operator=(const MVFrequency &other);
+  // Constructor from Double
+  explicit MVFrequency(Double d);
+  // Constructor from Quantum : value taken will be the canonical value
+  // <group>
+  MVFrequency(const Quantity &other);
+  MVFrequency(const Quantum<Vector<Double> > &other);
+  // </group>
+  // Constructor from Vector. A zero value will be taken for an empty vector,
+  // the canonical value for a quantum vector.
+  // <thrown>
+  //  <li> AipsError if vector length > 1
+  // </thrown>
+  // <group>
+  MVFrequency(const Vector<Double> &other);
+  MVFrequency(const Vector<Quantity> &other);
+  // </group>
+  
+  // Destructor
+  ~MVFrequency();
+  
+  //# Operators
+  // Conversion operator
+  operator Double() const;
+  
+  // Addition
+  // <group>
+  MVFrequency &operator+=(const MVFrequency &other);
+  MVFrequency &operator-=(const MVFrequency &other);
+  // </group>
+  // Comparisons
+  // <group>
+  Bool operator==(const MVFrequency &other) const;
+  Bool operator!=(const MVFrequency &other) const;
+  Bool near(const MVFrequency &other, Double tol = 1e-13) const;
+  Bool nearAbs(const MVFrequency &other, Double tol = 1e-13) const;
+  // </group>
+  
+  //# General member functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  // Adjust value: taken from base class, a NOP.
+  // Get value in Hz
+  Double getValue() const;
+  // Get quantity in Hz
+  Quantity get() const;
+  // Get the wave characteristics in (recognised) specified units
+  Quantity get(const Unit &unit) const;
+  
+private:
+  //# Data
+  // Value
+  Double val;
+  
+  //# Member functions
+  // Get correct data type conversion factor from input Quantum
+  Double makeF(Double v, const Unit &dt) const;
 };
 
 #endif

@@ -1,5 +1,5 @@
 //# MPosition.h: A Measure: position on Earth
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,14 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MVPosition.h>
 
 //# Forward Declarations
 class MPosition;
+class MCPosition;
+template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
@@ -76,15 +76,16 @@ class MPosition;
 //	<li>
 // </todo>
 
-class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > 
-{
+class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
+
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MPosition,MVPosition>;
+    friend class MeasConvert<MPosition, MVPosition, MCPosition>;
+
 //# Enumerations
 // Types of known MPositions
-// <note> The order defines the order in the translation matrix FromTo
+// <note role=warning> The order defines the order in the translation matrix FromTo
 // in the getConvert routine. Do not change the order without
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
@@ -93,25 +94,15 @@ public:
 		WGS84,
 		N_Types,
 		DEFAULT=ITRF};
-// The list of actual routines provided.
-// <note> For each <src>AA_BB</src> in the list a routine
-// <src>static void AAtoBB(MVPosition &)</src> should be provided. The routines
-// should be listed in the FromToRout array in the getConvert routine, in the
-// order specified. In addition the type to which converted should be in the
-// ToRef array, again in the proper order. </note>
-    enum Routes {
-	ITRF_WGS84,
-	WGS84_ITRF,
-	N_Routes };
 
 //# Typedefs
 // Measure reference
-    typedef MeasRef<MPosition> Ref;
+    typedef class MeasRef<MPosition> Ref;
 // MeasConvert use
-    typedef MeasConvert<MPosition,MVPosition> Convert;
+    typedef class MeasConvert<MPosition,MVPosition,MCPosition> Convert;
 
 //# Constructors
-// <note> In the following constructors and other functions, all 
+// <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
 // where no offsets or frames are needed in the reference. For reasons
 // of compiler limitations the formal arguments had to be specified as
@@ -134,6 +125,8 @@ public:
 	      const MPosition::Ref &rf);
     MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt, 
 	      uInt rf);
+    MPosition(const Measure *dt);
+    MPosition(const MeasValue *dt);
 // </group>
 
 //# Destructor
@@ -146,6 +139,8 @@ public:
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
+    virtual uInt type() const;
+    static void assert(const Measure &in);
 // </group>
 // Translate reference code
     static const String &showType(uInt tp);
@@ -160,37 +155,16 @@ public:
 // </group>
 
 // Make copy
-  virtual void *clone() const;
+// <group>
+    virtual Measure *clone() const;
+// </group>
 
 private:
 //# Enumerations
-// Usage of the MeasConvert structure cache. Additions should fit into the
-// space provided in MeasConvert (see <src>MC_N_Struct</src> constant),
-// and should be coded in the <src>clearConvert()</src> method.
-  enum StructUse {
-    DVEC1,
-    N_StructUse };
 
 //# Data
 
 //# Member functions
-
-// Create conversion function pointer
-  static void getConvert(MPosition::Convert &mc, 
-			 const MPosition::Ref &inref, 
-			 const MPosition::Ref &outref);
-
-// Create help structures for Measure conversion routines
-  static void initConvert(uInt which, MPosition::Convert &mc);
-
-// Delete the pointers used in the MeasConvert help structure cache
-     static void clearConvert(MPosition::Convert &mc);
-
-// Routine to do actual conversion
-  static void doConvert(MVPosition &in, 
-			const MPosition::Ref &inref,
-			const MPosition::Ref &outref,
-			const MPosition::Convert &mc);
 
 };
 

@@ -1,5 +1,5 @@
 //# SolarPos.cc: Solar position class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_solarpos_bug1;
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/Polynomial.h>
-#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasTable.h>
 
 //# Constants
 const Double SolarPos::INTV = 0.04;
@@ -175,42 +175,42 @@ void SolarPos::calcEarth(Double t) {
 	switch (method) {
 	    default:
 	    for (i=0; i<12; i++) {
-		fa(i) = MeasData::posArg(i)(t);
-		dfa(i) = (MeasData::posArg(i).derivative())(t);
+		fa(i) = MeasTable::posArg(i)(t);
+		dfa(i) = (MeasTable::posArg(i).derivative())(t);
 	    }
 	    for (i=0; i<189; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<12; j++) {
-		    dtmp += MeasData::mulPosEarthXYArg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulPosEarthXYArg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulPosEarthXYArg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulPosEarthXYArg(i)(j) * dfa(j);
 		}
-		eval[0] += MeasData::mulPosEarthXY(i,t)(1) * 
-		    sin(dtmp + MeasData::mulPosEarthXY(i,t)(0));
-		eval[1] += MeasData::mulPosEarthXY(i,t)(3) * 
-		    sin(dtmp + MeasData::mulPosEarthXY(i,t)(2));
-		deval[0] += MeasData::mulPosEarthXY(i,t)(5) * 
-		    sin(dtmp + MeasData::mulPosEarthXY(i,t)(0)) +
-			MeasData::mulPosEarthXY(i,t)(1) *
-			    cos(dtmp + MeasData::mulPosEarthXY(i,t)(0)) *
+		eval[0] += MeasTable::mulPosEarthXY(i,t)(1) * 
+		    sin(dtmp + MeasTable::mulPosEarthXY(i,t)(0));
+		eval[1] += MeasTable::mulPosEarthXY(i,t)(3) * 
+		    sin(dtmp + MeasTable::mulPosEarthXY(i,t)(2));
+		deval[0] += MeasTable::mulPosEarthXY(i,t)(5) * 
+		    sin(dtmp + MeasTable::mulPosEarthXY(i,t)(0)) +
+			MeasTable::mulPosEarthXY(i,t)(1) *
+			    cos(dtmp + MeasTable::mulPosEarthXY(i,t)(0)) *
 				ddtmp;
-		deval[1] += MeasData::mulPosEarthXY(i,t)(7) * 
-		    sin(dtmp + MeasData::mulPosEarthXY(i,t)(2)) +
-			MeasData::mulPosEarthXY(i,t)(3) *
-			    cos(dtmp + MeasData::mulPosEarthXY(i,t)(2)) *
+		deval[1] += MeasTable::mulPosEarthXY(i,t)(7) * 
+		    sin(dtmp + MeasTable::mulPosEarthXY(i,t)(2)) +
+			MeasTable::mulPosEarthXY(i,t)(3) *
+			    cos(dtmp + MeasTable::mulPosEarthXY(i,t)(2)) *
 				(ddtmp);
 	    }
 	    for (i=0; i<32; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<12; j++) {
-		    dtmp += MeasData::mulPosEarthZArg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulPosEarthZArg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulPosEarthZArg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulPosEarthZArg(i)(j) * dfa(j);
 		}
-		eval[2] += MeasData::mulPosEarthZ(i,t)(1) * 
-		    sin(dtmp + MeasData::mulPosEarthZ(i,t)(0));
-		deval[2] += MeasData::mulPosEarthZ(i,t)(3) * 
-		    sin(dtmp + MeasData::mulPosEarthZ(i,t)(0)) +
-			MeasData::mulPosEarthZ(i,t)(1) * 
-			    cos(dtmp + MeasData::mulPosEarthZ(i,t)(0)) *
+		eval[2] += MeasTable::mulPosEarthZ(i,t)(1) * 
+		    sin(dtmp + MeasTable::mulPosEarthZ(i,t)(0));
+		deval[2] += MeasTable::mulPosEarthZ(i,t)(3) * 
+		    sin(dtmp + MeasTable::mulPosEarthZ(i,t)(0)) +
+			MeasTable::mulPosEarthZ(i,t)(1) * 
+			    cos(dtmp + MeasTable::mulPosEarthZ(i,t)(0)) *
 				(ddtmp);
 	    }
 	    break;
@@ -241,42 +241,42 @@ void SolarPos::calcSun(Double t) {
 	switch (method) {
 	    default:
 	    for (i=0; i<12; i++) {
-		fa(i) = MeasData::posArg(i)(t);
-		dfa(i) = (MeasData::posArg(i).derivative())(t);
+		fa(i) = MeasTable::posArg(i)(t);
+		dfa(i) = (MeasTable::posArg(i).derivative())(t);
 	    }
 	    for (i=0; i<98; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<12; j++) {
-		    dtmp += MeasData::mulPosSunXYArg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulPosSunXYArg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulPosSunXYArg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulPosSunXYArg(i)(j) * dfa(j);
 		}
-		sval[0]+= MeasData::mulPosSunXY(i,t)(1) * 
-		    sin(dtmp + MeasData::mulPosSunXY(i,t)(0));
-		sval[1] += MeasData::mulPosSunXY(i,t)(3) * 
-		    sin(dtmp + MeasData::mulPosSunXY(i,t)(2));
-		dsval[0]+= MeasData::mulPosSunXY(i,t)(5) * 
-		    sin(dtmp + MeasData::mulPosSunXY(i,t)(0)) +
-			MeasData::mulPosSunXY(i,t)(1) * 
-			    cos(dtmp + MeasData::mulPosSunXY(i,t)(0)) *
+		sval[0]+= MeasTable::mulPosSunXY(i,t)(1) * 
+		    sin(dtmp + MeasTable::mulPosSunXY(i,t)(0));
+		sval[1] += MeasTable::mulPosSunXY(i,t)(3) * 
+		    sin(dtmp + MeasTable::mulPosSunXY(i,t)(2));
+		dsval[0]+= MeasTable::mulPosSunXY(i,t)(5) * 
+		    sin(dtmp + MeasTable::mulPosSunXY(i,t)(0)) +
+			MeasTable::mulPosSunXY(i,t)(1) * 
+			    cos(dtmp + MeasTable::mulPosSunXY(i,t)(0)) *
 				(ddtmp);
-		dsval[1]+= MeasData::mulPosSunXY(i,t)(7) * 
-		    sin(dtmp + MeasData::mulPosSunXY(i,t)(2)) +
-			MeasData::mulPosSunXY(i,t)(3) * 
-			    cos(dtmp + MeasData::mulPosSunXY(i,t)(2)) *
+		dsval[1]+= MeasTable::mulPosSunXY(i,t)(7) * 
+		    sin(dtmp + MeasTable::mulPosSunXY(i,t)(2)) +
+			MeasTable::mulPosSunXY(i,t)(3) * 
+			    cos(dtmp + MeasTable::mulPosSunXY(i,t)(2)) *
 				(ddtmp);
 	    };
 	    for (i=0; i<29; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<12; j++) {
-		    dtmp += MeasData::mulPosSunZArg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulPosSunZArg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulPosSunZArg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulPosSunZArg(i)(j) * dfa(j);
 		}
-		sval[2] += MeasData::mulPosSunZ(i,t)(1) * 
-		    sin(dtmp + MeasData::mulPosSunZ(i,t)(0));
-		dsval[2] += MeasData::mulPosSunZ(i,t)(3) * 
-		    sin(dtmp + MeasData::mulPosSunZ(i,t)(0)) +
-			MeasData::mulPosSunZ(i,t)(1) * 
-			    cos(dtmp + MeasData::mulPosSunZ(i,t)(0)) *
+		sval[2] += MeasTable::mulPosSunZ(i,t)(1) * 
+		    sin(dtmp + MeasTable::mulPosSunZ(i,t)(0));
+		dsval[2] += MeasTable::mulPosSunZ(i,t)(3) * 
+		    sin(dtmp + MeasTable::mulPosSunZ(i,t)(0)) +
+			MeasTable::mulPosSunZ(i,t)(1) * 
+			    cos(dtmp + MeasTable::mulPosSunZ(i,t)(0)) *
 			    (ddtmp);
 	    };
 	    break;

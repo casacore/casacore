@@ -1,5 +1,5 @@
 //# Measure.cc: Physical quantities within reference frame
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,6 @@ uInt Measure::giveMe(const String &in, Int N_name,
 
 //# Global functions
 ostream &operator<<(ostream &os, const Measure &meas) {
-    meas.print(os);
-    return os;
+  meas.print(os);
+  return os;
 }

@@ -1,5 +1,5 @@
 //# Aberration.cc:  Aberration class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@ typedef Quantum<Double> gpp_aberration_bug1;
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/Polynomial.h>
-#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasTable.h>
 
 //# Constants
 const Double Aberration::INTV = 0.04;
@@ -140,97 +140,97 @@ void Aberration::calcAber(Double t) {
 	switch (method) {
 	    case B1950:
 	    for (i=0; i<12; i++) {
-		fa(i) = MeasData::aber1950Arg(i)(t);
-		dfa(i) = (MeasData::aber1950Arg(i).derivative())(t);
+		fa(i) = MeasTable::aber1950Arg(i)(t);
+		dfa(i) = (MeasTable::aber1950Arg(i).derivative())(t);
 	    };
 	    for (i=0; i<132; i++) {
 		dtmp = ddtmp = 0; 
 		for (j=0; j<12; j++) {
-		    dtmp += MeasData::mulAber1950Arg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulAber1950Arg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulAber1950Arg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulAber1950Arg(i)(j) * dfa(j);
 		};
-		aval[0] += MeasData::mulAber1950(i,t)(0) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(1) * cos(dtmp);
-		aval[1] += MeasData::mulAber1950(i,t)(2) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(3) * cos(dtmp);
-		aval[2] += MeasData::mulAber1950(i,t)(4) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(5) * cos(dtmp);
-		dval[0] += MeasData::mulAber1950(i,t)(6) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(7) * cos(dtmp) +
-			MeasData::mulAber1950(i,t)(0) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber1950(i,t)(1) * sin(dtmp) * ddtmp;
-		dval[1] += MeasData::mulAber1950(i,t)(8) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(9) * cos(dtmp) +
-			MeasData::mulAber1950(i,t)(2) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber1950(i,t)(3) * sin(dtmp) * ddtmp;
-		dval[2] += MeasData::mulAber1950(i,t)(10) * sin(dtmp) +
-		    MeasData::mulAber1950(i,t)(11) * cos(dtmp) +
-			MeasData::mulAber1950(i,t)(4) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber1950(i,t)(5) * sin(dtmp) * ddtmp;
+		aval[0] += MeasTable::mulAber1950(i,t)(0) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(1) * cos(dtmp);
+		aval[1] += MeasTable::mulAber1950(i,t)(2) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(3) * cos(dtmp);
+		aval[2] += MeasTable::mulAber1950(i,t)(4) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(5) * cos(dtmp);
+		dval[0] += MeasTable::mulAber1950(i,t)(6) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(7) * cos(dtmp) +
+			MeasTable::mulAber1950(i,t)(0) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber1950(i,t)(1) * sin(dtmp) * ddtmp;
+		dval[1] += MeasTable::mulAber1950(i,t)(8) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(9) * cos(dtmp) +
+			MeasTable::mulAber1950(i,t)(2) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber1950(i,t)(3) * sin(dtmp) * ddtmp;
+		dval[2] += MeasTable::mulAber1950(i,t)(10) * sin(dtmp) +
+		    MeasTable::mulAber1950(i,t)(11) * cos(dtmp) +
+			MeasTable::mulAber1950(i,t)(4) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber1950(i,t)(5) * sin(dtmp) * ddtmp;
 	    };
 	    break;
 
 	    default:
 	    for (i=0; i<13; i++) {
-		fa(i) = MeasData::aberArg(i)(t);
-		dfa(i) = (MeasData::aberArg(i).derivative())(t);
+		fa(i) = MeasTable::aberArg(i)(t);
+		dfa(i) = (MeasTable::aberArg(i).derivative())(t);
 	    };
 	    for (i=0; i<80; i++) {
 		dtmp = ddtmp = 0; 
 		for (j=0; j<6; j++) {
-		    dtmp += MeasData::mulAberArg(i)(j) * fa(j);
-		    ddtmp += MeasData::mulAberArg(i)(j) * dfa(j);
+		    dtmp += MeasTable::mulAberArg(i)(j) * fa(j);
+		    ddtmp += MeasTable::mulAberArg(i)(j) * dfa(j);
 		};
-		aval[0] += MeasData::mulAber(i,t)(0) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(1) * cos(dtmp);
-		aval[1] += MeasData::mulAber(i,t)(2) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(3) * cos(dtmp);
-		aval[2] += MeasData::mulAber(i,t)(4) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(5) * cos(dtmp);
-		dval[0] += MeasData::mulAber(i,t)(6) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(7) * cos(dtmp) +
-			MeasData::mulAber(i,t)(0) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber(i,t)(1) * sin(dtmp) * ddtmp;
-		dval[1] += MeasData::mulAber(i,t)(8) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(9) * cos(dtmp) +
-			MeasData::mulAber(i,t)(2) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber(i,t)(3) * sin(dtmp) * ddtmp;
-		dval[2] += MeasData::mulAber(i,t)(10) * sin(dtmp) +
-		    MeasData::mulAber(i,t)(11) * cos(dtmp) +
-			MeasData::mulAber(i,t)(4) * cos(dtmp) * ddtmp -
-			    MeasData::mulAber(i,t)(5) * sin(dtmp) * ddtmp;
+		aval[0] += MeasTable::mulAber(i,t)(0) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(1) * cos(dtmp);
+		aval[1] += MeasTable::mulAber(i,t)(2) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(3) * cos(dtmp);
+		aval[2] += MeasTable::mulAber(i,t)(4) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(5) * cos(dtmp);
+		dval[0] += MeasTable::mulAber(i,t)(6) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(7) * cos(dtmp) +
+			MeasTable::mulAber(i,t)(0) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber(i,t)(1) * sin(dtmp) * ddtmp;
+		dval[1] += MeasTable::mulAber(i,t)(8) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(9) * cos(dtmp) +
+			MeasTable::mulAber(i,t)(2) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber(i,t)(3) * sin(dtmp) * ddtmp;
+		dval[2] += MeasTable::mulAber(i,t)(10) * sin(dtmp) +
+		    MeasTable::mulAber(i,t)(11) * cos(dtmp) +
+			MeasTable::mulAber(i,t)(4) * cos(dtmp) * ddtmp -
+			    MeasTable::mulAber(i,t)(5) * sin(dtmp) * ddtmp;
 	    };
 	    for (i=0; i<17; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<7; j++) {
-		    dtmp += MeasData::mulAberSunArg(i)(j) * fa(j+1);
-		    ddtmp += MeasData::mulAberSunArg(i)(j) * dfa(j+1);
+		    dtmp += MeasTable::mulAberSunArg(i)(j) * fa(j+1);
+		    ddtmp += MeasTable::mulAberSunArg(i)(j) * dfa(j+1);
 		};
-		aval[0] += MeasData::mulSunAber(i)(0) * sin(dtmp) +
-		    MeasData::mulSunAber(i)(1) * cos(dtmp);
-		aval[1] += MeasData::mulSunAber(i)(2) * sin(dtmp) +
-		    MeasData::mulSunAber(i)(3) * cos(dtmp);
-		aval[2] += MeasData::mulSunAber(i)(4) * sin(dtmp) +
-		    MeasData::mulSunAber(i)(5) * cos(dtmp);
-		dval[0] += MeasData::mulSunAber(i)(0) * cos(dtmp) * ddtmp -
-		    MeasData::mulSunAber(i)(1) * sin(dtmp) * ddtmp;
-		dval[1] += MeasData::mulSunAber(i)(2) * cos(dtmp) * ddtmp -
-		    MeasData::mulSunAber(i)(3) * sin(dtmp) * ddtmp;
-		dval[2] += MeasData::mulSunAber(i)(4) * cos(dtmp) * ddtmp -
-		    MeasData::mulSunAber(i)(5) * sin(dtmp) * ddtmp;
+		aval[0] += MeasTable::mulSunAber(i)(0) * sin(dtmp) +
+		    MeasTable::mulSunAber(i)(1) * cos(dtmp);
+		aval[1] += MeasTable::mulSunAber(i)(2) * sin(dtmp) +
+		    MeasTable::mulSunAber(i)(3) * cos(dtmp);
+		aval[2] += MeasTable::mulSunAber(i)(4) * sin(dtmp) +
+		    MeasTable::mulSunAber(i)(5) * cos(dtmp);
+		dval[0] += MeasTable::mulSunAber(i)(0) * cos(dtmp) * ddtmp -
+		    MeasTable::mulSunAber(i)(1) * sin(dtmp) * ddtmp;
+		dval[1] += MeasTable::mulSunAber(i)(2) * cos(dtmp) * ddtmp -
+		    MeasTable::mulSunAber(i)(3) * sin(dtmp) * ddtmp;
+		dval[2] += MeasTable::mulSunAber(i)(4) * cos(dtmp) * ddtmp -
+		    MeasTable::mulSunAber(i)(5) * sin(dtmp) * ddtmp;
 	    };
 	    for (i=0; i<17; i++) {
 		dtmp = ddtmp = 0;
 		for (j=0; j<5; j++) {
-		    dtmp += MeasData::mulAberEarthArg(i)(j) * fa(j+8);
-		    ddtmp += MeasData::mulAberEarthArg(i)(j) * dfa(j+8);
+		    dtmp += MeasTable::mulAberEarthArg(i)(j) * fa(j+8);
+		    ddtmp += MeasTable::mulAberEarthArg(i)(j) * dfa(j+8);
 		};
-		aval[0] += MeasData::mulEarthAber(i)(0) * sin(dtmp);
-		aval[1] += MeasData::mulEarthAber(i)(1) * cos(dtmp);
-		aval[2] += MeasData::mulEarthAber(i)(2) * cos(dtmp);
-		dval[0] += MeasData::mulEarthAber(i)(0) * cos(dtmp) * ddtmp;
-		dval[1] += -MeasData::mulEarthAber(i)(1) * sin(dtmp) * ddtmp;
-		dval[2] += -MeasData::mulEarthAber(i)(2) * sin(dtmp) * ddtmp;
+		aval[0] += MeasTable::mulEarthAber(i)(0) * sin(dtmp);
+		aval[1] += MeasTable::mulEarthAber(i)(1) * cos(dtmp);
+		aval[2] += MeasTable::mulEarthAber(i)(2) * cos(dtmp);
+		dval[0] += MeasTable::mulEarthAber(i)(0) * cos(dtmp) * ddtmp;
+		dval[1] += -MeasTable::mulEarthAber(i)(1) * sin(dtmp) * ddtmp;
+		dval[2] += -MeasTable::mulEarthAber(i)(2) * sin(dtmp) * ddtmp;
 	    };
 	    break;
 	};

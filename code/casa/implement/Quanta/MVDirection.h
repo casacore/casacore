@@ -38,11 +38,9 @@
 
 //# Forward Declarations
 
-//# Constants (SUN compiler does not accept non-simple default arguments)
-
 // <summary> Vector of three direction cosines </summary>
 
-// <use visibility=local>
+// <use visibility=export>
 
 // <reviewed reviewer="tcornwel" date="1996/02/22" tests="tMeasMath" demos="">
 // </reviewed>
@@ -104,76 +102,84 @@
 
 class MVDirection : public MVPosition {
 
-    public:
-//# Friends
+public:
 
-//# Constructors
-// Default constructor generates a direction to the pole (i.e. (0,0,1))
-    MVDirection();
-// Copy constructor
-    MVDirection(const MVPosition &other);
-// Constructs with elevation = 0.
-// <group>
-    MVDirection(Double in0);
-    MVDirection(const Quantity &angle0);
-// </group>
-// Creates a specified vector
-    MVDirection(Double in0, Double in1, Double in2);
-// Creates the direction cosines from specified angles along equator (azimuth)
-// and towards pole (,elevation).
-    MVDirection(Double angle0, Double angle1);
-// Creates the direction cosines from specified angles
-// <thrown>
-//    <li> AipsError if quantities not in angle format
-// </thrown>
-// <group>
-    MVDirection(const Quantity &angle0, const Quantity &angle1);
-// If not enough angles: pole (=(0,0,1)) assumed (if none), or elevation =0 (if 1);
-// direction cosines assumed (if 3).
-// <thrown>
-//  <li> AipsError if more than 3 values or incorrect units
-// </thrown>
-    MVDirection(const Quantum<Vector<Double> > &angle);
-// </group>
-// Create from Vector. Assumes angles if less than or equal than 2 elements.
-// Assumes direction cosines if 3 elements.
-// <thrown>
-//  <li> AipsError if more than 3 elements
-// </thrown>
-// <group>
-    MVDirection(const Vector<Double> &other);
-    MVDirection(const Vector<Quantity> &other);
-// </group>
-// Copy assignment
-    MVDirection &operator=(const MVDirection &other);
-
-// Destructor
-    ~MVDirection();
-//# Operators
-// Addition and subtraction
-// <group>
-    MVDirection &operator+=(const MVDirection &right);
-    MVDirection operator+(const MVDirection &right) const;
-    MVDirection &operator-=(const MVDirection &right);
-    MVDirection operator-(const MVDirection &right) const;
-// </group>
-
-//# General Member Functions
-// Adjust the direction cosines to a length of 1
-    virtual void adjust();
-// Adjust the direction cosines to a length of 1 and return the length value
-    virtual void adjust(Double &res);
-// Re-adjust : taken from MVPosition.
-//
-// Clone data
-    virtual MeasValue *clone() const;
-// Generate a 2-vector of angles (in rad)
-    Vector<Double> get() const;
-// Produce the cross product
+  //# Friends
+  
+  //# Constructors
+  // Default constructor generates a direction to the pole (i.e. (0,0,1))
+  MVDirection();
+  // Copy constructor
+  MVDirection(const MVPosition &other);
+  // Constructs with elevation = 0.
+  // <group>
+  MVDirection(Double in0);
+  MVDirection(const Quantity &angle0);
+  // </group>
+  // Creates a specified vector
+  MVDirection(Double in0, Double in1, Double in2);
+  // Creates the direction cosines from specified angles along equator (azimuth)
+  // and towards pole (,elevation).
+  MVDirection(Double angle0, Double angle1);
+  // Creates the direction cosines from specified angles
+  // <thrown>
+  //    <li> AipsError if quantities not in angle format
+  // </thrown>
+  // <group>
+  MVDirection(const Quantity &angle0, const Quantity &angle1);
+  // If not enough angles: pole (=(0,0,1)) assumed (if none), or elevation =0 (if 1);
+  // direction cosines assumed (if 3).
+  // <thrown>
+  //  <li> AipsError if more than 3 values or incorrect units
+  // </thrown>
+  MVDirection(const Quantum<Vector<Double> > &angle);
+  // </group>
+  // Create from Vector. Assumes angles if less than or equal than 2 elements.
+  // Assumes direction cosines if 3 elements.
+  // <thrown>
+  //  <li> AipsError if more than 3 elements
+  // </thrown>
+  // <group>
+  MVDirection(const Vector<Double> &other);
+  MVDirection(const Vector<Quantity> &other);
+  // </group>
+  // Copy assignment
+  MVDirection &operator=(const MVDirection &other);
+  
+  // Destructor
+  ~MVDirection();
+  //# Operators
+  // Addition and subtraction
+  // <group>
+  MVDirection &operator+=(const MVDirection &right);
+  MVDirection operator+(const MVDirection &right) const;
+  MVDirection &operator-=(const MVDirection &right);
+  MVDirection operator-(const MVDirection &right) const;
+  // </group>
+  
+  //# General Member Functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Adjust the direction cosines to a length of 1
+  virtual void adjust();
+  // Adjust the direction cosines to a length of 1 and return the length value
+  virtual void adjust(Double &res);
+  // Re-adjust : taken from MVPosition.
+  //
+  // Clone data
+  virtual MeasValue *clone() const;
+  // Generate a 2-vector of angles (in rad)
+  Vector<Double> get() const;
+  // Produce the cross product
   MVDirection crossProduct(const MVDirection &other) const;
-
-    protected:
-//# Data
+  
+protected:
+  //# Data
 };
 
 //# Global functions

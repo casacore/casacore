@@ -30,6 +30,10 @@
 #include <aips/Measures/Quantum.h>
 typedef Quantum<Double> gpp_mvfrequency_bug1;
 #endif
+#include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
 #include <aips/Measures/MVFrequency.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
@@ -39,58 +43,58 @@ typedef Quantum<Double> gpp_mvfrequency_bug1;
 
 //# Constructors
 MVFrequency::MVFrequency() : 
-val(0.0){}
+  val(0.0){}
 
 MVFrequency::MVFrequency(Double d) : 
-val(d){}
+  val(d){}
 
 MVFrequency::MVFrequency(const MVFrequency &other) :
-val(other.val) {}
+  val(other.val) {}
 
 MVFrequency::MVFrequency(const Quantity &other) {
-    val = makeF(other.getValue(), other.getFullUnit());
+  val = makeF(other.getValue(), other.getFullUnit());
 }
 
 MVFrequency::MVFrequency(const Quantum<Vector<Double> > &other) {
-    Vector<Double> tmp;
-    tmp = other.getValue();
-    uInt i = tmp.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = makeF(tmp(0), other.getFullUnit());
-    } else {
-	throw (AipsError("Illegal vector length in MVFrequency constructor"));
-    };
+  Vector<Double> tmp;
+  tmp = other.getValue();
+  uInt i = tmp.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = makeF(tmp(0), other.getFullUnit());
+  } else {
+    throw (AipsError("Illegal vector length in MVFrequency constructor"));
+  };
 }
 
 MVFrequency::MVFrequency(const Vector<Double> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = other(0);
-    } else {
-	throw (AipsError("Illegal vector length in MVFrequency constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = other(0);
+  } else {
+    throw (AipsError("Illegal vector length in MVFrequency constructor"));
+  };
 }
 
 MVFrequency::MVFrequency(const Vector<Quantity> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = makeF( other(0).getValue(), other(0).getFullUnit());
-    } else {
-	throw (AipsError("Illegal vector length in MVFrequency constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = makeF( other(0).getValue(), other(0).getFullUnit());
+  } else {
+    throw (AipsError("Illegal vector length in MVFrequency constructor"));
+  };
 }
 
 MVFrequency &MVFrequency::operator=(const MVFrequency &other) {
-    if (this != &other) {
-	val = other.val;
-    }
-    return *this;
+  if (this != &other) {
+    val = other.val;
+  }
+  return *this;
 }
 
 // Destructor
@@ -98,90 +102,101 @@ MVFrequency::~MVFrequency() {}
 
 // Operators
 MVFrequency::operator Double() const {
-    return val;
+  return val;
 }
 
 MVFrequency &MVFrequency::operator+=(const MVFrequency &other) {
-    val += other.val;
-    return *this;
+  val += other.val;
+  return *this;
 }
 
 MVFrequency &MVFrequency::operator-=(const MVFrequency &other) {
-    val -= other.val;
-    return *this;
+  val -= other.val;
+  return *this;
 }
 
 Bool MVFrequency::operator==(const MVFrequency &other) const {
-    return ToBool(val == other.val);
+  return ToBool(val == other.val);
 }
 
 Bool MVFrequency::operator!=(const MVFrequency &other) const {
-    return ToBool(val != other.val);
+  return ToBool(val != other.val);
 }
 
 Bool MVFrequency::near(const MVFrequency &other, Double tol) const {
-    return ::near(val, other.val, tol);
+  return ::near(val, other.val, tol);
 }
 
 Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
-    return ::nearAbs(val, other.val, tol);
+  return ::nearAbs(val, other.val, tol);
 }
 
 // Member functions
+
+uInt MVFrequency::type() const {
+  return Register((MVFrequency *)0);
+}
+
+void MVFrequency::assert(const MeasValue &in) {
+  if (in.type() != Register((MVFrequency *)0)) {
+    throw(AipsError("Illegal MeasValue type argument: MVFrequency"));
+  };
+}
+
 void MVFrequency::print(ostream &os) const {
-    os << val;
+  os << val;
 }
 
 MeasValue *MVFrequency::clone() const {
-    return (new MVFrequency(*this));
+  return (new MVFrequency(*this));
 }
 
 Double MVFrequency::getValue() const {
-    return val;
+  return val;
 }
 
 Quantity MVFrequency::get() const {
-    return Quantity(val,"Hz");
+  return Quantity(val,"Hz");
 }
 
 Quantity MVFrequency::get(const Unit &unit) const {
-    return Quantity(1.0/makeF(1.0/val, unit), unit);
+  return Quantity(1.0/makeF(1.0/val, unit), unit);
 }
 
 Double MVFrequency::makeF(Double v, const Unit &dt) const{
-    static Bool needInit = True;
-    static UnitVal InvTime;
-    static UnitVal AngleTime;
-    static UnitVal InvLength;
-    static UnitVal Energy;
-    static UnitVal Impuls;
-    static Double LVel;
-    static Double Planck;
-    if (needInit) {
-	needInit = False;
-	InvTime = UnitVal::NODIM/UnitVal::TIME;
-	AngleTime = UnitVal::ANGLE/UnitVal::TIME;
-	InvLength = UnitVal::NODIM/UnitVal::LENGTH;
-	Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
-	    UnitVal::TIME/UnitVal::TIME;
-	Impuls = UnitVal::MASS*UnitVal::LENGTH;
-	LVel = (QC::c).getBaseValue();
-	Planck = (QC::h).getBaseValue();
-    };
-    if (dt.getValue() == UnitVal::TIME) {
-	return (1.0/dt.getValue().getFac()/v);
-    } else if (dt.getValue() == InvTime) {
-	return (dt.getValue().getFac()*v);
-    } else if (dt.getValue() == AngleTime) {
-	return (dt.getValue().getFac()/C::pi/2.0*v);
-    } else if (dt.getValue() == UnitVal::LENGTH) {
-	return (LVel/dt.getValue().getFac()/v);
-    } else if (dt.getValue() == InvLength) {
-	return (LVel*dt.getValue().getFac()/C::pi/2.0*v);
-    } else if (dt.getValue() == Energy) {
-	return (dt.getValue().getFac()/Planck*v);
-    } else {
-	Quantity(1.0,dt).assert(Impuls);
-	return (dt.getValue().getFac()*LVel/Planck*v);
-    }
+  static Bool needInit = True;
+  static UnitVal InvTime;
+  static UnitVal AngleTime;
+  static UnitVal InvLength;
+  static UnitVal Energy;
+  static UnitVal Impuls;
+  static Double LVel;
+  static Double Planck;
+  if (needInit) {
+    needInit = False;
+    InvTime = UnitVal::NODIM/UnitVal::TIME;
+    AngleTime = UnitVal::ANGLE/UnitVal::TIME;
+    InvLength = UnitVal::NODIM/UnitVal::LENGTH;
+    Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
+      UnitVal::TIME/UnitVal::TIME;
+    Impuls = UnitVal::MASS*UnitVal::LENGTH;
+    LVel = (QC::c).getBaseValue();
+    Planck = (QC::h).getBaseValue();
+  };
+  if (dt.getValue() == UnitVal::TIME) {
+    return (1.0/dt.getValue().getFac()/v);
+  } else if (dt.getValue() == InvTime) {
+    return (dt.getValue().getFac()*v);
+  } else if (dt.getValue() == AngleTime) {
+    return (dt.getValue().getFac()/C::pi/2.0*v);
+  } else if (dt.getValue() == UnitVal::LENGTH) {
+    return (LVel/dt.getValue().getFac()/v);
+  } else if (dt.getValue() == InvLength) {
+    return (LVel*dt.getValue().getFac()/C::pi/2.0*v);
+  } else if (dt.getValue() == Energy) {
+    return (dt.getValue().getFac()/Planck*v);
+  } else {
+    Quantity(1.0,dt).assert(Impuls);
+    return (dt.getValue().getFac()*LVel/Planck*v);
+  }
 }

@@ -38,6 +38,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvepoch_bug2;
+#endif
 
 //# Forward Declarations
 class Unit;
@@ -91,106 +94,110 @@ class Unit;
 class MVEpoch : public MeasValue {
 
 public:
-
-//# Friends
-
-//# Constructors
-// Default constructor, generates default 0 epoch
-    MVEpoch();
-// Copy constructor
-    MVEpoch(const MVEpoch &other);
-// Constructor with time in days
-// <group>
-    MVEpoch(Double inday, Double infrac=0);
-    MVEpoch(const Vector<Double> &inday);
-// </group>
-// Constructor with Quantities
-// <group>
-    MVEpoch(const Quantity &in);
-    MVEpoch(const Quantity &in1, const Quantity &in2);
-    MVEpoch(const Quantum<Vector<Double> > &in);
-    MVEpoch(const Vector<Quantity> &in);
-// </group>
-
-//# Destructor
-    ~MVEpoch();
-
-//# Operators
-// Copy assignment
-    MVEpoch &operator=(const MVEpoch &other);
-
-// Add times
-// <group>
-    MVEpoch &operator+=(const MVEpoch &other);
-    MVEpoch operator+(const MVEpoch &other) const;
-// </group>
-
-// Difference times
-// <group>
-    MVEpoch &operator-=(const MVEpoch &other);
-    MVEpoch operator-(const MVEpoch &other) const;
-// </group>
-
-// Comparisons
-// <group>
-    Bool operator==(const MVEpoch &other) const;
-    Bool operator!=(const MVEpoch &other) const;
-    Bool near(const MVEpoch &other, Double tol = 1e-13) const;
-    Bool nearAbs(const MVEpoch &other, Double tol = 1e-13) const;
-// </group>
-
-//# General Member Functions
-// Constants
-    static const Double secInDay;
-
-// Adjust the time to its constituent parts. The returned result is always 1.0
-// <group>
-    virtual void adjust();
-    virtual void adjust(Double &res);
-// </group>
-
-// Get value in days
-    Double get() const;
-
-// Get value with units
-// <group>
-    Quantity getTime() const;
-    Quantity getTime(const Unit &unit) const;
-// </group>
-
-// Get value of integer days
-    Double getDay() const;
-
-// Get value of seconds
-    Double getSecond() const;
-
-// Get value of fractional seconds
-    Double getFraction() const;
-
-// Print a value
-    virtual void print(ostream &os) const;
-
-// Clone a value
-    virtual MeasValue *clone() const;
-
+  
+  //# Friends
+  
+  //# Constructors
+  // Default constructor, generates default 0 epoch
+  MVEpoch();
+  // Copy constructor
+  MVEpoch(const MVEpoch &other);
+  // Constructor with time in days
+  // <group>
+  MVEpoch(Double inday, Double infrac=0);
+  MVEpoch(const Vector<Double> &inday);
+  // </group>
+  // Constructor with Quantities
+  // <group>
+  MVEpoch(const Quantity &in);
+  MVEpoch(const Quantity &in1, const Quantity &in2);
+  MVEpoch(const Quantum<Vector<Double> > &in);
+  MVEpoch(const Vector<Quantity> &in);
+  // </group>
+  
+  //# Destructor
+  ~MVEpoch();
+  
+  //# Operators
+  // Copy assignment
+  MVEpoch &operator=(const MVEpoch &other);
+  
+  // Add times
+  // <group>
+  MVEpoch &operator+=(const MVEpoch &other);
+  MVEpoch operator+(const MVEpoch &other) const;
+  // </group>
+  
+  // Difference times
+  // <group>
+  MVEpoch &operator-=(const MVEpoch &other);
+  MVEpoch operator-(const MVEpoch &other) const;
+  // </group>
+  
+  // Comparisons
+  // <group>
+  Bool operator==(const MVEpoch &other) const;
+  Bool operator!=(const MVEpoch &other) const;
+  Bool near(const MVEpoch &other, Double tol = 1e-13) const;
+  Bool nearAbs(const MVEpoch &other, Double tol = 1e-13) const;
+  // </group>
+  
+  //# General Member Functions
+  // Constants
+  static const Double secInDay;
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Adjust the time to its constituent parts. The returned result is always 1.0
+  // <group>
+  virtual void adjust();
+  virtual void adjust(Double &res);
+  // </group>
+  
+  // Get value in days
+  Double get() const;
+  
+  // Get value with units
+  // <group>
+  Quantity getTime() const;
+  Quantity getTime(const Unit &unit) const;
+  // </group>
+  
+  // Get value of integer days
+  Double getDay() const;
+  
+  // Get value of seconds
+  Double getSecond() const;
+  
+  // Get value of fractional seconds
+  Double getFraction() const;
+  
+  // Print a value
+  virtual void print(ostream &os) const;
+  
+  // Clone a value
+  virtual MeasValue *clone() const;
+  
 private:
-//# Data menbers
-// Fraction of seconds
-    Double secFract;
-// Seconds
-    Long sec;
-// 10000 days
-    Long kDday;
-
-//# Member functions
-// Make days from quantity
-    Double makeDay(const Quantity &in) const;
-// Add time from days
-    void addTime(Double in);
+  //# Data members
+  // Fraction of seconds
+  Double secFract;
+  // Seconds
+  Long sec;
+  // 10000 days
+  Long kDday;
+  
+  //# Member functions
+  // Make days from quantity
+  Double makeDay(const Quantity &in) const;
+  // Add time from days
+  void addTime(Double in);
 };
 
 //# Global functions
 
 #endif
-
-

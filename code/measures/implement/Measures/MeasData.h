@@ -1,5 +1,5 @@
 //# MeasData.h: MeasData provides Measure computing data
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,11 +35,9 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
 class RotMatrix;
-class Euler;
 
 // <summary>
 // MeasData provides Measure computing data
@@ -59,14 +57,22 @@ class Euler;
 // </etymology>
 //
 // <synopsis>
-// MeasData contains the data and the database interface for all
-// data necessary for precession, nutation and other 
+// MeasData contains the constant data 
+// necessary for precession, nutation and other 
 // <linkto class=Measure>Measure</linkto> related calculations.<br>
-// Some of the constants will be part of the program; some of the constants
-// will be obtained from a database.<br>
-// All data are obtained by calls to a method. E.g.
-// <src> fundArg(1) </src> will provide the first fundamental argument for
-// nutation calculations, i.e. 'l'. <br>
+// Database (Table) related data, or data that can be changed by the user,
+// is available in the <linkto class=MeasTable>MeasTable</linkto> class. <br>
+// All data. apart from a set of simple constants:
+// <srcblock>
+// 	MeasData::MJD2000
+// 	MeasData::MJDB1950 
+// 	MeasData::MJDB1900 
+// 	MeasData::MJDB1850 
+// 	MeasData::TROPCEN 
+// 	MeasData::JDCEN 
+// 	MeasData::SECinDAY 
+// </srcblock>
+// are obtained by calls to a method.
 // This class contains no constructors or destructors, only static
 // methods and (static) constants.
 // <br> References:<br> Explanatory supplements to the Astronomical Almanac
@@ -87,241 +93,68 @@ class Euler;
 // re-arrangement could produce faster and more compact code.
 // </motivation>
 //
-// <todo asof="1996/04/02">
-//   <li> all database interfaces
+// <todo asof="1997/04/17">
 //   <li> more precise data for VLBI and pulsar
 // </todo>
 
-class MeasData
-{
+class MeasData {
+
 public:
+  
+  //# 	Constants
+  // General constants
+  // <group>
+  // MJD of J2000.0
+  static const Double MJD2000;
+  // MJD of B1950.0
+  static const Double MJDB1950;
+  // MJD of B1900.0
+  static const Double MJDB1900;
+  // MJD of B1850.0
+  static const Double MJDB1850;
+  // Length Tropical century
+  static const Double TROPCEN;
+  // Length Julian century
+  static const Double JDCEN;
+  // Length of day in sec
+  static const Double SECinDAY;
+  // </group>
+  
+  //# General Member Functions
 
-//# 	Constants
-// General constants
-// <group>
-// MJD of J2000.0
-    static const Double MJD2000;
-// MJD of B1950.0
-    static const Double MJDB1950;
-// MJD of B1900.0
-    static const Double MJDB1900;
-// MJD of B1850.0
-    static const Double MJDB1850;
-// Length Tropical century
-    static const Double TROPCEN;
-// Length Julian century
-    static const Double JDCEN;
-// Length of day in sec
-    static const Double SECinDAY;
-// </group>
+  // Get the rotation matrices for galactic coordinates
+  // <group>
+  static const RotMatrix &GALtoB1950();
+  static const RotMatrix &GALtoJ2000();
+  static const RotMatrix &J2000toGAL();
+  static const RotMatrix &B1950toGAL();
+  // </group>
 
-//# General Member Functions
-// Precession related data
-// <group>
-// Generate the precession calculation polynomials for a fixed Epoch T
-// in the result area specified. T is given in Julian centuries since J2000.0.
-static void
-precessionCoef(Double T,
-	    Polynomial<Double> result[3]);
+  // Get one of the 4 3x3 sub rotation matrices for B1950-J2000 conversions
+  // <group>
+  static const RotMatrix &MToB1950(uInt which);
+  static const RotMatrix &MToJ2000(uInt which);
+  // </group>
 
-// Generate the precession polynomials for 1950 system for a fixed Epoch T
-// in the area specified. T is given in Tropical centuries since B1850.0
-static void
-precessionCoef1950(Double T,
-	    Polynomial<Double> result[3]);
-// </group>
-
-// Nutation related data
-// <group>
-// Generate the polynomial for the fundamental arguments (eps, l, l',
-// F, D, omega) as a function of Julian centuries
-// <group>
-static const Polynomial<Double> &fundArg(uInt which);
-static const Polynomial<Double> &fundArg1950(uInt which);
-// </group>
-
-// Generate the which' vector of the nutation series arguments
-// <group>
-static const Vector<Char> &mulArg(uInt which);
-static const Vector<Char> &mulArg1950(uInt which);
-// </group>
-
-// Generate the which' vector of the nutation series multipliers
-// at T, measured in Julian centuries since J2000.0, respectively B1900.0
-// <group>
-static const Vector<Double> &mulSC(uInt which, Double T);
-static const Vector<Double> &mulSC1950(uInt which, Double T);
-// </group>
-// </group>
-
-// Aberration related data
-// <group>
-// Generate the polynomial for the fundamental arguments (l1-l8, w, D, l,
-// l', F) for the Ron/Vondrak aberration calculations as a function of 
-// Julian centuries(J2000), or the comparable ones for the Gubanov expansion
-// (B1950). 
-// <group>
-static const Polynomial<Double> &aberArg(uInt which);
-static const Polynomial<Double> &aber1950Arg(uInt which);
-// </group>
-
-// Generate the which' vector of the aberration series arguments
-// <group>
-static const Vector<Char> &mulAberArg(uInt which);
-static const Vector<Char> &mulAber1950Arg(uInt which);
-static const Vector<Char> &mulAberSunArg(uInt which);
-static const Vector<Char> &mulAberEarthArg(uInt which);
-// </group>
-
-// Generate the which' vector of the aberration series multipliers
-// at T, measured in Julian centuries since J2000.0 (or comparable for
-// B1950).
-// <group>
-static const Vector<Double> &mulAber(uInt which, Double T);
-static const Vector<Double> &mulAber1950(uInt which, Double T);
-static const Vector<Double> &mulSunAber(uInt which);
-static const Vector<Double> &mulEarthAber(uInt which);
-// </group>
-
-// Get the E-terms of Aberration correction (0 for position, 1 for velocity)
-// <group>
-static const Vector<Double> &AberETerm(uInt which);
-// </group>
-
-// </group>
-
-// Diurnal aberration factor
-static Double diurnalAber(Double radius, Double T);
-
-// LSR (kinematical) velocity conversion: 0 gives J2000; 1 gives B1950.
-// In both cases a velocity
-// of 19.5 km/s assumed, and a B1900 RA/Dec direction of (270,30) degrees
-static const Vector<Double> &velocityLSRK(uInt which);
-// LSR (dynamical, IAU definition). Velocity (9,12,7) km/s in galactic
-// coordinates. Or 16.552945 towards l,b = 53.13, +25.02 deg.
-// 0 gives J2000, 1 gives B1950 velocities.
-static const Vector<Double> &velocityLSR(uInt which);
-// Velocity of LSR with respect to galactic centre. 220 km/s in direction
-// l,b = 270, +0 deg. 0 returns J2000, 1 B1950
-static const Vector<Double> &velocityLSRGal(uInt which);
-
-// Earth and Sun position related data
-// <group>
-// Fundamental arguments for Soma et al. methods
-// <group>
-static const Polynomial<Double> &posArg(uInt which);
-// </group>
-// Generate the which' vector of the position series arguments
-// <group>
-static const Vector<Char> &mulPosEarthXYArg(uInt which);
-static const Vector<Char> &mulPosEarthZArg(uInt which);
-static const Vector<Char> &mulPosSunXYArg(uInt which);
-static const Vector<Char> &mulPosSunZArg(uInt which);
-// </group>
-
-// Generate the which' vector of the position series multipliers
-// at T, measured in Julian centuries since J2000.0
-// <group>
-static const Vector<Double> &mulPosEarthXY(uInt which, Double T);
-static const Vector<Double> &mulPosEarthZ(uInt which, Double T);
-static const Vector<Double> &mulPosSunXY(uInt which, Double T);
-static const Vector<Double> &mulPosSunZ(uInt which, Double T);
-// </group>
-// Get the rotation matrix to change position from ecliptic to rectangular
-static const RotMatrix &posToRect();
-// </group>
-
-
-
-// Get the rotation matrices for galactic coordinates
-// <group>
-static const RotMatrix &GALtoB1950();
-static const RotMatrix &GALtoJ2000();
-static const RotMatrix &J2000toGAL();
-static const RotMatrix &B1950toGAL();
-// </group>
-
-// Get one of the 4 3x3 sub rotation matrices for B1950-J2000 conversions
-// <group>
-static const RotMatrix &MToB1950(uInt which);
-static const RotMatrix &MToJ2000(uInt which);
-// </group>
-
-// Get the solar semi diameter at 1 AU in rad
-static Double SunSemiDiameter();
-
-// Position related routines
-// <group>
-// Equatorial radius (0) and flattening(1) of geodetic reference spheroids
-static Double WGS84(uInt which);
-// </group>
-
-// Polar motion related routines
-// <group>
-// Get the polar motion (-x,-y,0)(2,1,3) angles
-static const Euler &polarMotion(Double ut);
-// </group>
-
-// Time related routines
-// Note:  Data should be taken from database, and made sure for MJD in other time
-// 	frames and if exactly true, and extrapolation, and cleaned.<br>
-//	Not all routines implemented fully; not all precise enough for
-//	VLBI and pulsar.
-// <logged>
-//   <li> HIGH, WARNING given if correction not obtainable
-// </logged>
-// <group>
-// Give TAI-UTC (in s) for MJD utc UTC
-static Double dUTC(Double utc);
-// UT1-UTC (in s) for MJD tai TAI
-static Double dUT1(Double utc);
-// TDT-TAI (in s) for MJD tai TAI
-static Double dTAI(Double tai);
-// TDB-TDT (in s) for MJD ut1 UT1
-static Double dTDT(Double ut1);
-// TCB-TDB (in s) for MJD tai TAI
-static Double dTDB(Double tai);
-// TCG-TT (in s) for MJD tai TAI
-static Double dTCG(Double tai);
-// GMST1 at MJD ut1 UT1
-static Double GMST0(Double ut1);
-// UT1 at GMSD gmst1 GMST1
-static Double GMUT0(Double gmst1);
-// Ratio UT1/MST at MJD ut1 UT1
-static Double UTtoST(Double ut1);
-// </group>
-
+  // Get the solar semi diameter at 1 AU in rad
+  static Double SunSemiDiameter();
+  
 private:
-
-//# Constructors
-// Default constructor, NOT defined
-    MeasData();
-
-// Copy assign, NOT defined
-    MeasData &operator=(const MeasData &other);
-
-//# Destructor
-//  Destructor, NOT defined (GNU does not like it)
+  
+  //# Constructors
+  // Default constructor, NOT defined
+  MeasData();
+  
+  // Copy assign, NOT defined
+  MeasData &operator=(const MeasData &other);
+  
+  //# Destructor
+  //  Destructor, NOT defined (GNU does not like it)
 #ifdef __GNUG__
 #else
-    ~MeasData();
+  ~MeasData();
 #endif
-//# General member functions
-// Calculate precessionCoef
-    static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
-			       const Double coeff[3][6]); 
-// Calculate fundArg
-    static void calcFundArg(Bool &need, Polynomial<Double> result[3],
-			    const Double coeff[6][4]); 
-// Calculate mulArg
-    static void calcMulArg(Bool &need, Vector<Char> result[],
-			    const Char coeff[][5], Int row); 
-// Calculate mulSC
-    static void calcMulSC(Bool &need, Double &check, Double T,
-			  Vector<Double> result[], Int resrow,
-			  Polynomial<Double> poly[],
-			  const Long coeffTD[][5], Int TDrow,
-			  const Short coeffSC[][2]);
+  //# General member functions
 };
 
 #endif

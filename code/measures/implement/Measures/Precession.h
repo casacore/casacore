@@ -1,5 +1,5 @@
 //# Precession.h: Precession class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/MeasData.h>
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/MeasDetail.h>
 #include <aips/Functionals/Polynomial.h>
@@ -53,6 +52,7 @@
 //   <li> <linkto class=Measure>Measure</linkto> class for use
 //   <li> <linkto class=Euler>Euler</linkto> class for format
 //   <li> <linkto class=MeasData>MeasData</linkto> class for constants
+//   <li> <linkto class=MeasTable>MeasTable</linkto> class for other data
 // </prerequisite>
 //
 // <etymology>

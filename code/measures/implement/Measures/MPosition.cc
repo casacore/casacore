@@ -1,5 +1,5 @@
 //# MPosition.cc:  A Measure: position on Earth
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,8 @@ typedef Quantum<Double> gpp_mposition_bug1;
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
 #include <aips/Measures/MPosition.h>
-#include <aips/Measures/MeasData.h>
 
 //# Constructors
 MPosition::MPosition() :
@@ -75,6 +74,13 @@ MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt,
 		     uInt rf) : 
   MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt0,dt),rf) {}
 
+MPosition::MPosition(const Measure *dt) :
+  MeasBase<MVPosition,MPosition::Ref>(dt) {}
+
+MPosition::MPosition(const MeasValue *dt) :
+  MeasBase<MVPosition,MPosition::Ref>(*(MVPosition*)dt,
+				MPosition::DEFAULT) {}
+
 //# Destructor
 MPosition::~MPosition() {}
 
@@ -89,6 +95,17 @@ const String &MPosition::tellMe() const {
 const String &MPosition::showMe() {
     static const String name("Position");
     return name;
+}
+
+uInt MPosition::type() const {
+  return Register((MPosition *)0);
+}
+
+void MPosition::assert(const Measure &in) {
+  if (in.type() != Register((MPosition *)0)) {
+    throw(AipsError("Illegal Measure type argument: " +
+		    MPosition::showMe()));
+  };
 }
 
 const String &MPosition::showType(uInt tp) {
@@ -132,120 +149,6 @@ Quantum<Vector<Double> > MPosition::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 
-void *MPosition::clone() const {
-    return ((void *) new MPosition(*this));
-}
-
-void MPosition::getConvert(MPosition::Convert &mc,
-			   const MPosition::Ref &inref,
-			   const MPosition::Ref &outref) {
-// Array of conversion routines to call
-    static const MPosition::Routes 
-	FromTo[MPosition::N_Types][MPosition::N_Types] = {
-    { MPosition::N_Routes,    MPosition::ITRF_WGS84},
-    { MPosition::WGS84_ITRF,  MPosition::N_Routes}
-    };
-
-// List of codes converted to
-    static const MPosition::Types ToRef[MPosition::N_Routes] = {
-	MPosition::WGS84, MPosition::ITRF
-	};
-
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    };
-}
-
-void MPosition::clearConvert(MPosition::Convert &mc) {
-  delete (Vector<Double> *) mc.getStruct(MPosition::DVEC1);
-}
-
-//# Conversion routines
-void MPosition::initConvert(uInt which, MPosition::Convert &mc) {
-    if (!(mc.getStruct(MPosition::DVEC1))) {
-	mc.addStruct(MPosition::DVEC1,
-		     (void *) new Vector<Double>(3));
-    };
-
-    switch (which) {
-
-	case ITRF_WGS84:
-	break;
-
-	case WGS84_ITRF:
-	break;
-
-	default:
-	break;
-	
-    }
-}
-
-void MPosition::doConvert(MVPosition &in, 
-			  const MPosition::Ref &outref,
-			  const MPosition::Ref &inref,
- 			  const MPosition::Convert &mc) {
-    
-    Double g1, g2, g3;
-    Vector<Double> *angsol;
-
-    for (Int i=0; i<mc.nMethod(); i++) {
-
-      switch (mc.getMethod(i)) {
-	
-      case ITRF_WGS84: {
-	Double d1, d2;
-// Get angles
-	angsol = (Vector<Double> *) mc.getStruct(MPosition::DVEC1);
-	*angsol = in.get();
-// Get flattening
-	g1 = MeasData::WGS84(1); g1 = 1.0/g1;
-	g1 = 2*g1 - g1*g1;
-// Iterate
-	d2 = (*angsol)(0) * cos((*angsol)(2));
-	do {
-	  g2 = (*angsol)(2);
-	  d1 = sin(g2);
-	  g3 = 1.0/sqrt(1 - g1 * d1 * d1);
-	  (*angsol)(2) = atan((in(2) + 
-			       MeasData::WGS84(0) * g3 * g1 * d1)/d2);
-	}
-	while ( !nearAbs((*angsol)(2), g2, 1e-10));
-	(*angsol)(0) = d2/cos((*angsol)(2)) - MeasData::WGS84(0) * g3;
-	in = MVPosition(Quantity((*angsol)(0),"m"),
-			(*angsol)(1), (*angsol)(2));
-      };
-      break;
-
-      case WGS84_ITRF: {
-// Equatorial radius
-	g1 = MeasData::WGS84(0);
-// Flattening
-	g2 = MeasData::WGS84(1);
-	g2 = 1.0 - 1.0/g2; g2 *= g2;
-// C
-	g3 = in(0) * in(0) +
-	  in(1) * in(1) +
-	  g2 * in(2) * in(2);
-	g3 = g1 * sqrt(1.0/g3);
-// S
-	g2 *= g3;
-// Apply
-	in(0) *= (1.0 + g3);
-	in(1) *= (1.0 + g3);
-	in(2) *= (1.0 + g2);
-      }	
-      break;
-
-      default:
-	break;
-	
-      }
-    }
+Measure *MPosition::clone() const {
+    return (new MPosition(*this));
 }

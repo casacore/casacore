@@ -1,5 +1,5 @@
 //# Precession.cc:  Precession class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Measures/Quantum.h>
 typedef Quantum<Double> gpp_mvdoppler_bug1;
 #endif
+#include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Mathematics/Math.h>
 
@@ -141,11 +142,11 @@ void Precession::fillEpoch() {
     T = (fixedEpoch - refEpoch)/cent;
     switch (method) {
 	case B1950:
-	MeasData::precessionCoef1950(T, zeta);
+	MeasTable::precessionCoef1950(T, zeta);
 	case NONE:
 	break;
 	default:
-	MeasData::precessionCoef(T, zeta);
+	MeasTable::precessionCoef(T, zeta);
 	break;
     }
     for (Int j=0; j<4; j++) {

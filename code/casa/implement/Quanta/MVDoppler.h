@@ -37,11 +37,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#include <aips/Measures/Quantum.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvdoppler_bug2;
+#endif
 
 //# Forward Declarations
 imported class ostream;
-
-//# Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary> Internal value for MDoppler </summary>
 
@@ -91,74 +93,81 @@ imported class ostream;
 // </todo>
 
 class MVDoppler : public MeasValue {
-
-    public:
-    
-//# Constructors
-// Default constructor: generate a zero value
-    MVDoppler();
-// Copy constructor
-    MVDoppler(const MVDoppler &other);
-// Copy assignment
-    MVDoppler &operator=(const MVDoppler &other);
-// Constructor from Double
-    explicit MVDoppler(Double d);
-// Constructor from Quantum : value taken will be the canonical value
-// <group>
-    MVDoppler(const Quantity &other);
-    MVDoppler(const Quantum<Vector<Double> > &other);
-// </group>
-// Constructor from Vector. A zero value will be taken for an empty vector,
-// the canonical value for a quantum vector.
-// <thrown>
-//  <li> AipsError if vector length > 1
-// </thrown>
-// <group>
-    MVDoppler(const Vector<Double> &other);
-    MVDoppler(const Vector<Quantity> &other);
-// </group>
-
-// Destructor
-    ~MVDoppler();
-
-//# Operators
-// Conversion operator
-    operator Double() const;
-
-// Addition
-// <group>
-    MVDoppler &operator+=(const MVDoppler &other);
-    MVDoppler &operator-=(const MVDoppler &other);
-// </group>
-// Comparisons
-// <group>
-    Bool operator==(const MVDoppler &other) const;
-    Bool operator!=(const MVDoppler &other) const;
-    Bool near(const MVDoppler &other, Double tol = 1e-13) const;
-    Bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
-// </group>
-
-//# General member functions
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-// Adjust value: taken from base class, a NOP.
-// Get value as ratio
-    Double getValue() const;
-// Get quantity in m/s
-    Quantity get() const;
-// Get the Doppler value in (recognised) specified units
-    Quantity get(const Unit &unit) const;
-
-    private:
-//# Data
-// Value
-    Double val;
-
-//# Member functions
-// Get correct data type conversion factor from input Quantum
-    Double makeD(Double v, const Unit &dt) const;
+  
+public:
+  
+  //# Constructors
+  // Default constructor: generate a zero value
+  MVDoppler();
+  // Copy constructor
+  MVDoppler(const MVDoppler &other);
+  // Copy assignment
+  MVDoppler &operator=(const MVDoppler &other);
+  // Constructor from Double
+  explicit MVDoppler(Double d);
+  // Constructor from Quantum : value taken will be the canonical value
+  // <group>
+  MVDoppler(const Quantity &other);
+  MVDoppler(const Quantum<Vector<Double> > &other);
+  // </group>
+  // Constructor from Vector. A zero value will be taken for an empty vector,
+  // the canonical value for a quantum vector.
+  // <thrown>
+  //  <li> AipsError if vector length > 1
+  // </thrown>
+  // <group>
+  MVDoppler(const Vector<Double> &other);
+  MVDoppler(const Vector<Quantity> &other);
+  // </group>
+  
+  // Destructor
+  ~MVDoppler();
+  
+  //# Operators
+  // Conversion operator
+  operator Double() const;
+  
+  // Addition
+  // <group>
+  MVDoppler &operator+=(const MVDoppler &other);
+  MVDoppler &operator-=(const MVDoppler &other);
+  // </group>
+  // Comparisons
+  // <group>
+  Bool operator==(const MVDoppler &other) const;
+  Bool operator!=(const MVDoppler &other) const;
+  Bool near(const MVDoppler &other, Double tol = 1e-13) const;
+  Bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
+  // </group>
+  
+  //# General member functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  // Adjust value: taken from base class, a NOP.
+  // Get value as ratio
+  Double getValue() const;
+  // Get quantity in m/s
+  Quantity get() const;
+  // Get the Doppler value in (recognised) specified units
+  Quantity get(const Unit &unit) const;
+  
+private:
+  //# Data
+  // Value
+  Double val;
+  
+  //# Member functions
+  // Get correct data type conversion factor from input Quantum
+  Double makeD(Double v, const Unit &dt) const;
 };
 
 #endif

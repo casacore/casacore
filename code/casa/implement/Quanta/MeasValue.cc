@@ -1,5 +1,5 @@
 //# MeasValue.cc: Base class for values in a Measure
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,15 +41,15 @@ MeasValue::~MeasValue() {}
 void MeasValue::adjust() {}
 
 void MeasValue::adjust(Double &val) {
-    val = 1.0;
+  val = 1.0;
 }
 
 void MeasValue::readjust(Double val) {
-    val = 1.0; // Only to suppress warning message
+  val = 1.0; // Only to suppress warning message
 }
 
 //# Global functions
 ostream &operator<<(ostream &os, const MeasValue &meas) {
-    meas.print(os);
-    return os;
+  meas.print(os);
+  return os;
 }

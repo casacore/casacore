@@ -1,5 +1,5 @@
 //# MeasRef.cc:  Reference frame for physical measures
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,208 +37,215 @@ typedef Quantum<Double> gpp_measref_bug1;
 
 //# Constructors
 template<class Ms> MeasRef<Ms>::MeasRef() :
-rep(0) {}
+  rep(0) {}
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(const MeasRef<Ms> &other) {
-    rep = other.rep;
-    if (rep) rep->cnt++;
+  rep = other.rep;
+  if (rep) rep->cnt++;
 }
 
 template<class Ms>
 MeasRef<Ms> &MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
-    if (this != &other) {
-	if (other.rep) other.rep->cnt++;
-	if (rep && --rep->cnt == 0) {
-	    delete rep;
-	}
-	rep = other.rep;
+  if (this != &other) {
+    if (other.rep) other.rep->cnt++;
+    if (rep && --rep->cnt == 0) {
+      delete rep;
     }
-    return *this;
+    rep = other.rep;
+  }
+  return *this;
 }
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp) :
-rep(0) {
+  rep(0) {
     create();
     rep->type = tp;
-}
+  }
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const Ms &ep) :
-rep(0) {
+  rep(0) {
     create();
     rep->type = tp;
     rep->offmp = new Ms(ep);
-}
+  }
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf) :
-rep(0) {
+  rep(0) {
     create();
     rep->type = tp;
     rep->frame = mf;
-}
+  }
 
 template<class Ms>
 MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep) :
-rep(0) {
+  rep(0) {
     create();
     rep->type = tp;
     rep->offmp = new Ms(ep);
     rep->frame = mf;
-}
+  }
 
 template<class Ms>
 void MeasRef<Ms>::create() {
-    if (!rep) rep = new RefRep();
+  if (!rep) rep = new RefRep();
 }
 
 //# Destructor
 template<class Ms>
 MeasRef<Ms>::~MeasRef() {
-    if (rep && --rep->cnt <= 0) {
-	delete rep;
-    };
+  if (rep && --rep->cnt <= 0) {
+    delete rep;
+  };
 }
 
 //# Operators
 template<class Ms>
 Bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
-    return ToBool(rep == other.rep);
+  return ToBool(rep == other.rep);
 }
 
 template<class Ms>
 Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
-    return ToBool(rep != other.rep);
+  return ToBool(rep != other.rep);
 }
 
 //# Member functions
 template<class Ms>
 Bool MeasRef<Ms>::empty() const {
-    return ToBool(!rep);
+  return ToBool(!rep);
 }
 
 template<class Ms>
 const String &MeasRef<Ms>::showMe() {
-    return Ms::showMe();
+  return Ms::showMe();
 }
 
 template<class Ms>
 uInt MeasRef<Ms>::getType() const{
-    return (rep ? rep->type : 0);
+  return (rep ? rep->type : 0);
 }
 
 template<class Ms>
-const MeasFrame &MeasRef<Ms>::getFrame() {
-    create();
-    return (rep->frame);
+MeasFrame &MeasRef<Ms>::getFrame() {
+  create();
+  return (rep->frame);
 }
 
 template<class Ms>
-const MeasFrame &MeasRef<Ms>::framePosition(const MeasRef<Ms> &ref1,
-					    const MeasRef<Ms> &ref2) {
-    if (ref1.rep && ref1.rep->frame.position()) {
-	return ref1.rep->frame;
-    } else if (ref2.rep && ref2.rep->frame.position()) {
-	return ref2.rep->frame;
-    } else {
-	throw(AipsError("No MeasFrame specified for conversion of " + 
-			Ms::showMe()));
-    };
+const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1,
+					    MRBase &ref2) {
+  if (!ref1.empty() && ref1.getFrame().position()) {
+    return ref1.getFrame();
+  } else if (!ref2.empty() && ref2.getFrame().position()) {
+    return ref2.getFrame();
+  } else {
+    throw(AipsError("No MeasFrame specified for conversion of " + 
+		    Ms::showMe()));
+  };
 }
 
 template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameEpoch(const MeasRef<Ms> &ref1,
-					 const MeasRef<Ms> &ref2) {
-    if (ref1.rep && ref1.rep->frame.epoch()) {
-	return ref1.rep->frame;
-    } else if (ref2.rep && ref2.rep->frame.epoch()) {
-	return ref2.rep->frame;
-    } else {
-	throw(AipsError("No MeasFrame specified for conversion of " + 
-			Ms::showMe()));
-    };
+const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1,
+					 MRBase &ref2) {
+  if (!ref1.empty() && ref1.getFrame().epoch()) {
+    return ref1.getFrame();
+  } else if (!ref2.empty() && ref2.getFrame().epoch()) {
+    return ref2.getFrame();
+  } else {
+    throw(AipsError("No MeasFrame specified for conversion of " + 
+		    Ms::showMe()));
+  };
 }
 
 template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameDirection(const MeasRef<Ms> &ref1,
-					     const MeasRef<Ms> &ref2) {
-    if (ref1.rep && ref1.rep->frame.direction()) {
-	return ref1.rep->frame;
-    } else if (ref2.rep && ref2.rep->frame.direction()) {
-	return ref2.rep->frame;
-    } else {
-	throw(AipsError("No MeasFrame specified for conversion of " + 
-			Ms::showMe()));
-    };
+const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1,
+					     MRBase &ref2) {
+  if (!ref1.empty() && ref1.getFrame().direction()) {
+    return ref1.getFrame();
+  } else if (!ref2.empty() && ref2.getFrame().direction()) {
+    return ref2.getFrame();
+  } else {
+    throw(AipsError("No MeasFrame specified for conversion of " + 
+		    Ms::showMe()));
+  };
 }
 
 template<class Ms>
-const MeasFrame &MeasRef<Ms>::frameRadialVelocity(const MeasRef<Ms> &ref1,
-					     const MeasRef<Ms> &ref2) {
-    if (ref1.rep && ref1.rep->frame.radialVelocity()) {
-	return ref1.rep->frame;
-    } else if (ref2.rep && ref2.rep->frame.radialVelocity()) {
-	return ref2.rep->frame;
-    } else {
-	throw(AipsError("No MeasFrame specified for conversion of " + 
-			Ms::showMe()));
-    };
+const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1,
+						  MRBase &ref2) {
+  if (!ref1.empty() && ref1.getFrame().radialVelocity()) {
+    return ref1.getFrame();
+  } else if (!ref2.empty() && ref2.getFrame().radialVelocity()) {
+    return ref2.getFrame();
+  } else {
+    throw(AipsError("No MeasFrame specified for conversion of " + 
+		    Ms::showMe()));
+  };
 }
 
 template<class Ms>
-const Ms *const MeasRef<Ms>::offset() {
-    return ( rep ? rep->offmp : 0);
+const Measure *const MeasRef<Ms>::offset() const {
+  return ( rep ? rep->offmp : 0);
 }
 
 template<class Ms>
 void MeasRef<Ms>::setType(uInt tp) {
-    set(tp);
+  set(tp);
 }
 
 template<class Ms>
 void MeasRef<Ms>::set(uInt tp) {
-    create();
-    rep->type = tp;
+  create();
+  rep->type = tp;
 }
 
 template<class Ms>
 void MeasRef<Ms>::set(const Ms &ep) {
-    create();
-    if (rep->offmp) {
-	delete rep->offmp; rep->offmp = 0;
-    };
-    rep->offmp = new Ms(ep);
+  create();
+  if (rep->offmp) {
+    delete rep->offmp; rep->offmp = 0;
+  };
+  rep->offmp = new Ms(ep);
+}
+
+template<class Ms>
+void MeasRef<Ms>::set(const Measure &ep) {
+  create();
+  if (rep->offmp) {
+    delete rep->offmp; rep->offmp = 0;
+  };
+  rep->offmp = ep.clone();
 }
 
 template<class Ms>
 void MeasRef<Ms>::set(const MeasFrame &mf) {
-    create();
-    rep->frame = mf;
+  create();
+  rep->frame = mf;
 }
 
 template<class Ms>
 MeasRef<Ms> MeasRef<Ms>::copy() {
-    MeasRef<Ms> tmp;
-    tmp.create();
-    tmp.rep->type = rep->type;
-    if (rep->offmp) tmp.rep->offmp = new Ms(*(rep->offmp));
-    tmp.rep->frame = rep->frame;
-    return tmp;
+  MeasRef<Ms> tmp;
+  tmp.create();
+  tmp.rep->type = rep->type;
+  if (rep->offmp) tmp.rep->offmp = rep->offmp->clone();
+  tmp.rep->frame = rep->frame;
+  return tmp;
 }
 
-
-//# Global functions
 template<class Ms>
-ostream &operator<<(ostream &os, const MeasRef<Ms> &mr) {
-    os << "Reference for an " << mr.showMe(); 
-    os << " with Type: " << Ms::showType(mr.getType());
-    if (mr.rep && mr.rep->offmp) {
-	os << ", Offset: " << *(mr.rep->offmp);
-    };
-    if (mr.rep && !mr.rep->frame.empty()) {
-	os << "," << endl << (mr.rep->frame);
-    };
-    return os;
+void MeasRef<Ms>::print(ostream &os) const {
+  os << "Reference for an " << showMe(); 
+  os << " with Type: " << Ms::showType(getType());
+  if (offset()) {
+    os << ", Offset: " << *(offset());
+  };
+  // Get rid of const
+  if (!((MeasRef<Ms> *)(this))->getFrame().empty()) {
+    os << "," << endl << ((MeasRef<Ms> *)(this))->getFrame();
+  };
 }

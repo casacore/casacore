@@ -1,5 +1,5 @@
 //# MeasRef.h: Reference frame for physical measures
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Measures/MRBase.h>
 #include <aips/Measures/MeasFrame.h>
 
 //# Forward Declarations
@@ -50,6 +51,7 @@ imported class ostream;
 // </reviewed>
 
 // <prerequisite>
+//   <li> <linkto class=MRBase>MRBase</linkto>: the MeasRef base class
 //   <li> <linkto class=Quantum>Quantum</linkto> class 
 //   <li> <linkto class=Measure>Measure</linkto> class 
 // </prerequisite>
@@ -61,26 +63,11 @@ imported class ostream;
 // <synopsis>
 // MeasRef specifies the reference frame for a physical quantity
 // specified by one of the derived <linkto class=Measure>Measure</linkto>
-// classes (e.g. <linkto class=MEpoch>MEpoch</linkto>)
+// classes (e.g. <linkto class=MEpoch>MEpoch</linkto>). It is derived from
+// <linkto class=MRBase>MRBase</linkto>, which describes the class.
 //
-// A MeasRef consists of one or more <em>type</em> indicators,
-// an optional offset (e.g. beginning of year), and sometimes
-// one or more Measures specifying the reference frame (e.g. an
-// <linkto class=MPosition>MPosition</linkto> for LST). A time
-// (<linkto class=MEpoch>MEpoch</linkto>) could e.g. have a type
-// <src>MEpoch::TAI</src>, and an MEpoch as offset, 
-// <src>MEpoch(Quantity(40745,"d"),MeasRef &myref)</src>.<br>
-// It is obvious that a circular reference between Measure and MeasRef
-// is possible. Therefore, each Measure has a <em>default</em> reference
-// (necessary anyway to be able to start a Measure chain). For MEpoch
-// the default is an MJD in UT; and the default Measure for an MEpoch reference
-// is 0.<br>
-// Some <src>MeasRef</src> could need additional conversion information
-// ( example: type of Nutation calculations). They are provided by
-// the <linkto class=MeasDetail>MeasDetail</linkto> class, used by the
-// <linkto class=MeasConvert>MeasConvert</linkto> class.<br>
-// All constructors are related to a specific Measure, to be able to check
-// relations at compile time.
+// MeasRef containres are created using the <src>Measure::Ref</src> class
+// (e.g. <src>MDirection::Ref</src>).
 // </synopsis>
 //
 // <example>
@@ -91,133 +78,132 @@ imported class ostream;
 // To gather all reference frame information in the one class.
 // </motivation>
 //
-// <todo asof="1996/02/21">
+// <todo asof="1997/04/15">
 // </todo>
 
-template<class Ms> class MeasRef {
-
+template<class Ms> class MeasRef : public MRBase {
+  
 public:
-//# Friends
-// Output
-    friend ostream &operator<<( ostream &os, const MeasRef<Ms> &mr);
-
-//# Constructors
-// Construct an empty MeasRef. I.e. it will have a standard,
-// <em>default</em>, type; no offsets and Frame.
-    MeasRef();
-// Copy constructor
-    MeasRef(const MeasRef<Ms> &other);
-// Copy assignment
-    MeasRef &operator=(const MeasRef<Ms> &other);
-// Construct a reference with specified type, offset and Frame
-// <group>
-// Note: the following should really be (and should still be called as), but
-// compiler does not accept it:
-//   <src> MeasRef(Ms::Types tp); </src>
-// Furthermore, default arguments are not supported with templated classes:
-    MeasRef(uInt tp);
-    MeasRef(uInt tp, const Ms &ep);
-    MeasRef(uInt tp, const MeasFrame &mf);
-    MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep);
-// </group>
-
-//# Destructor
-    ~MeasRef();
-
-//# Operators
-// Check if same MeasRef
-    Bool operator==(const MeasRef<Ms> &other) const;
-// Check if unequal MeasRef
-    Bool operator!=(const MeasRef<Ms> &other) const;
-
-//# General Member Functions
-// Check if empty reference
-    Bool empty() const;
-// Check the type of Measure the reference can be used for
-// <group>
-    static const String &showMe();
-// </group>
-// Return the type of the reference
-// Note: the following should really be (and should be interpreted as), but
-// compiler does not accept it:
-//   <src> Ms::Types getType();</src>
-    uInt getType() const;
-// Return the frame of reference
-    const MeasFrame &getFrame();
-// Return the first frame which has specified information. Checking is done in 
-// argument order.
-// <thrown>
-//   <li> AipsError if neither reference has a frame or the proper type
-// </thrown>
-// <group>
-static const MeasFrame &framePosition(const MeasRef<Ms> &ref1,
-				      const MeasRef<Ms> &ref2);
-static const MeasFrame &frameEpoch(const MeasRef<Ms> &ref1,
-				   const MeasRef<Ms> &ref2);
-static const MeasFrame &frameDirection(const MeasRef<Ms> &ref1,
-				       const MeasRef<Ms> &ref2);
-static const MeasFrame &frameRadialVelocity(const MeasRef<Ms> &ref1,
-					    const MeasRef<Ms> &ref2);
-// </group>
-// Return the offset (or 0)
-    const Ms *const offset();
-// Set the type
-// <thrown>
-//   <li> AipsError if wrong Measure
-// </thrown>
-// Note: the following should really be (and should be called as), but
-// compiler does not accept it:
-// <group>
-//   <src> void set(Ms::Types tp);</src>
-    void setType(uInt tp);
-    void set(uInt tp);
-// </group>
-// Set a new offset
-    void set(const Ms &ep);
-// Set a new frame
-    void set(const MeasFrame &mf);
-    
+  
+  //# Friends
+  
+  //# Constructors
+  // Construct an empty MeasRef. I.e. it will have a standard,
+  // <em>default</em>, type; no offsets and Frame.
+  MeasRef();
+  // Copy constructor
+  MeasRef(const MeasRef<Ms> &other);
+  // Copy assignment
+  MeasRef &operator=(const MeasRef<Ms> &other);
+  // Construct a reference with specified type, offset and Frame
+  // <group>
+  // <note role=caution> The following should really be (and should 
+  // still be called as), but
+  // compiler does not accept it: </note>
+  //   <src> MeasRef(Ms::Types tp); </src>
+  // Furthermore, default arguments are not supported with templated classes:
+  MeasRef(uInt tp);
+  MeasRef(uInt tp, const Ms &ep);
+  MeasRef(uInt tp, const MeasFrame &mf);
+  MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep);
+  // </group>
+  
+  //# Destructor
+  ~MeasRef();
+  
+  //# Operators
+  // Check if same MeasRef
+  Bool operator==(const MeasRef<Ms> &other) const;
+  // Check if unequal MeasRef
+  Bool operator!=(const MeasRef<Ms> &other) const;
+  
+  //# General Member Functions
+  // Check if empty reference
+  virtual Bool empty() const;
+  // Check the type of Measure the reference can be used for
+  // <group>
+  static const String &showMe();
+  // </group>
+  // Return the type of the reference
+  // <note role=caution> the following should really be 
+  // (and should be interpreted as), but
+  // compiler does not accept it:</note>
+  //   <src> Ms::Types getType();</src>
+  virtual uInt getType() const;
+  // Return the frame of reference
+  virtual MeasFrame &getFrame();
+  // Return the first frame which has specified information. Checking is done in 
+  // argument order.
+  // <thrown>
+  //   <li> AipsError if neither reference has a frame or the proper type
+  // </thrown>
+  // <group>
+  static const MeasFrame &framePosition(MRBase &ref1,
+					MRBase &ref2);
+  static const MeasFrame &frameEpoch(MRBase &ref1,
+				     MRBase &ref2);
+  static const MeasFrame &frameDirection(MRBase &ref1,
+					 MRBase &ref2);
+  static const MeasFrame &frameRadialVelocity(MRBase &ref1,
+					      MRBase &ref2);
+  // </group>
+  // Return the offset (or 0)
+  virtual const Measure *const offset() const;
+  // Set the type
+  // <thrown>
+  //   <li> AipsError if wrong Measure
+  // </thrown>
+  // <note role=caution> the following should really be 
+  // (and should be called as), but
+  // compiler does not accept it:</note>
+  //   <src> void set(Ms::Types tp);</src>
+  // <group>
+  virtual void setType(uInt tp);
+  virtual void set(uInt tp);
+  // </group>
+  // Set a new offset
+  void set(const Ms &ep);
+  // Set a new offset (for internal use only)
+  void set(const Measure &ep);
+  // Set a new frame
+  virtual void set(const MeasFrame &mf);
+  
+  // Print a Measure
+  virtual void print(ostream &os) const;
+  
 private:
-
-// Representation class
-class RefRep {
-    public:
-// Constructor
-// <note> Next one must be in-line for (some?) compilers </note>
+  
+  // Representation class
+  class RefRep {
+  public:
+    // Constructor
+    // <note role=warning> Next one must be in-line for (some?) compilers </note>
     RefRep() : type(0), offmp(0), frame(), cnt(1) {};
-// Destructor
-// <note> Next one must be in-line for (some?) compilers </note>
+    // Destructor
+    // <note role=warning> Next one must be in-line for (some?) compilers </note>
     ~RefRep() {delete offmp;}; 
-// The actual data
-// <group>
-// Type of reference
+    // The actual data
+    // <group>
+    // Type of reference
     uInt type;
-// Pointer to main Measure, defining an offset
-    Ms *offmp;
-// Reference frame
+    // Pointer to main Measure, defining an offset
+    Measure *offmp;
+    // Reference frame
     MeasFrame frame;
-// </group>
-// Usage count
+    // </group>
+    // Usage count
     Int cnt;
+  };
+  
+  //# Data
+  RefRep *rep;
+  
+  //# Member functions
+  // Create an instance of MeasRef
+  void create();
+  
+  // Copy an instance
+  MeasRef copy();
 };
-
-//# Data
-    RefRep *rep;
-
-//# Member functions
-// Create an instance of MeasRef
-    void create();
-
-// Copy an instance
-    MeasRef copy();
-};
-
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output a reference
-template <class Ms>
- ostream &operator<<( ostream &os, const MeasRef<Ms> &mr);
-// </group>
 
 #endif

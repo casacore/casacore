@@ -1,5 +1,5 @@
 //# Nutation.cc:  Nutation class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@ typedef Quantum<Double> gpp_nutation_bug1;
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/Polynomial.h>
-#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MeasIERS.h>
 
 //# Constants
@@ -183,45 +183,45 @@ void Nutation::calcNut(Double t) {
     dval[2] = Double(0);
     switch (method) {
     case B1950:
-      nval[0] = MeasData::fundArg1950(0)(t); 	//eps0
-      dval[0] = (MeasData::fundArg1950(0).derivative())(t);
+      nval[0] = MeasTable::fundArg1950(0)(t); 	//eps0
+      dval[0] = (MeasTable::fundArg1950(0).derivative())(t);
       for (i=0; i<5; i++) {
-	fa(i) = MeasData::fundArg1950(i+1)(t);
-	dfa(i) = (MeasData::fundArg1950(i+1).derivative())(t);
+	fa(i) = MeasTable::fundArg1950(i+1)(t);
+	dfa(i) = (MeasTable::fundArg1950(i+1).derivative())(t);
       }
       for (i=0; i<69; i++) {
 	dtmp = ddtmp = 0;
 	for (j=0; j<5; j++) {
-	  dtmp += MeasData::mulArg1950(i)(j) * fa(j);
-	  ddtmp += MeasData::mulArg1950(i)(j) * dfa(j);
+	  dtmp += MeasTable::mulArg1950(i)(j) * fa(j);
+	  ddtmp += MeasTable::mulArg1950(i)(j) * dfa(j);
 	}
-	nval[1] += MeasData::mulSC1950(i,t)(0) * sin(dtmp);
-	nval[2] += MeasData::mulSC1950(i,t)(1) * cos(dtmp);
-	dval[1] += MeasData::mulSC1950(i,t)(2) * sin(dtmp) +
-	  MeasData::mulSC1950(i,t)(0) * cos(dtmp) * ddtmp;
-	dval[2] += MeasData::mulSC1950(i,t)(3) * cos(dtmp) -
-	  MeasData::mulSC1950(i,t)(1) * sin(dtmp) * ddtmp;
+	nval[1] += MeasTable::mulSC1950(i,t)(0) * sin(dtmp);
+	nval[2] += MeasTable::mulSC1950(i,t)(1) * cos(dtmp);
+	dval[1] += MeasTable::mulSC1950(i,t)(2) * sin(dtmp) +
+	  MeasTable::mulSC1950(i,t)(0) * cos(dtmp) * ddtmp;
+	dval[2] += MeasTable::mulSC1950(i,t)(3) * cos(dtmp) -
+	  MeasTable::mulSC1950(i,t)(1) * sin(dtmp) * ddtmp;
       }
       break;
     default:
-      nval[0] = MeasData::fundArg(0)(t); 	//eps0
-      dval[0] = (MeasData::fundArg(0).derivative())(t)/MeasData::JDCEN;
+      nval[0] = MeasTable::fundArg(0)(t); 	//eps0
+      dval[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
       for (i=0; i<5; i++) {
-	fa(i) = MeasData::fundArg(i+1)(t);
-	dfa(i) = (MeasData::fundArg(i+1).derivative())(t);
+	fa(i) = MeasTable::fundArg(i+1)(t);
+	dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
       }
       for (i=0; i<106; i++) {
 	dtmp = ddtmp = 0;
 	for (j=0; j<5; j++) {
-	  dtmp += MeasData::mulArg(i)(j) * fa(j);
-	  ddtmp += MeasData::mulArg(i)(j) * dfa(j);
+	  dtmp += MeasTable::mulArg(i)(j) * fa(j);
+	  ddtmp += MeasTable::mulArg(i)(j) * dfa(j);
 	}
-	nval[1] += MeasData::mulSC(i,t)(0) * sin(dtmp);
-	nval[2] += MeasData::mulSC(i,t)(1) * cos(dtmp);
-	dval[1] += MeasData::mulSC(i,t)(2) * sin(dtmp) +
-	  MeasData::mulSC(i,t)(0) * cos(dtmp) * ddtmp;
-	dval[2] += MeasData::mulSC(i,t)(3) * cos(dtmp) -
-	  MeasData::mulSC(i,t)(1) * sin(dtmp) * ddtmp;
+	nval[1] += MeasTable::mulSC(i,t)(0) * sin(dtmp);
+	nval[2] += MeasTable::mulSC(i,t)(1) * cos(dtmp);
+	dval[1] += MeasTable::mulSC(i,t)(2) * sin(dtmp) +
+	  MeasTable::mulSC(i,t)(0) * cos(dtmp) * ddtmp;
+	dval[2] += MeasTable::mulSC(i,t)(3) * cos(dtmp) -
+	  MeasTable::mulSC(i,t)(1) * sin(dtmp) * ddtmp;
       }
       nval[2] += dEps;
       nval[1] += dPsi;

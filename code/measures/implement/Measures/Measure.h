@@ -38,6 +38,9 @@
 
 //# Forward Declarations
 class String;
+class Unit;
+class MeasValue;
+class MRBase;
 imported class ostream;
 
 // <summary>
@@ -59,6 +62,11 @@ imported class ostream;
 //		of a measure from one reference frame to another
 //   <li> Some classes if you really want to understand details:
 //	<ul>
+//	  <li> <linkto class=MeasBase>MeasBase</linkto> class, the immediate
+//		parent of all specific Measures
+//	  <li> <linkto class=MCBase>MCBase</linkto> class, the base class
+//		for all specific conversion routines (like
+//		<linkto class=MCEpoch>MCEpoch).
 //   	  <li> <linkto class=MeasData>MeasData</linkto> class, containing a set
 //		of generally usable constants, and all data necessary for
 //		conversions (like precession tables).
@@ -76,6 +84,11 @@ imported class ostream;
 // <ul>
 //   <li> <linkto class=MEpoch>MEpoch</linkto>: a moment in time
 //   <li> <linkto class=MDirection>MDirection</linkto>: a direction in space
+//   <li> <linkto class=MPosition>MPosition</linkto>: a position on Earth
+//   <li> <linkto class=MFrequency>MFrequency</linkto>: wave characteristics
+//   <li> <linkto class=MRadialvelocity>MRadialVelocity</linkto>: a space
+//				radial velocity
+//   <li> <linkto class=MDoppler>MDoppler</linkto>: a Doppler velocity
 // </ul>
 // Measure is the generic name for the more specific instances like, e.g.,
 // MEpoch, an instant in time.<br>
@@ -92,19 +105,21 @@ imported class ostream;
 // <linkto class=MPosition>MPosition</linkto> on Earth for LAST), using a
 // reference frame specifier (see
 // <linkto class=MeasFrame>MeasFrame</linkto> class).<br>
-// The <src>MeasRef</src> class is templated, but typedefs exist to
+// The <src>MeasRef</src> class is templated, but typedefs exist
+// (and should be used) to
 // easily specify the correct one, e.g. <src>MEpoch::Ref</src>.<br>
 // A Measure can be converted from one reference frame to another (e.g.
 // an MDirection can be converted from J2000 to apparent coordinates) by
 // setting up a measure specific conversion engine (see 
-// <linkto class=MeasConvert>MeasConvert</linkto> class). From an input
+// <linkto class=MeasConvert>MeasConvert</linkto> class and below).
+// From an input
 // <src>MeasRef</src> frame and an output <src>MeasRef</src> frame it
 // constructs a conversion <em>functional</em>, that can be fed values (with
 // the <src>() operator</src>).<br>
 // Some conversions can, in addition to the main type (like TAI), specify
 // details to completely describe any conversion process (e.g. the type
-// of nutation calculation) by specifying an object of the
-// <linkto class=MeasDetail>MeasDetail</linkto> class to the conversion
+// of nutation calculation) by specifying 
+// <linkto class=MeasDetail>MeasDetail</linkto> parameters to the conversion
 // process.<br>
 // <p>
 // Measures can in general be constructed from a <src>MeasRef</src> and a
@@ -117,7 +132,7 @@ imported class ostream;
 // <srcblock>
 //	Measure(MVmeasure, Measure::Ref)
 // </srcblock>
-// where the reference can be omitted (
+// where the reference can be omitted,
 // defaulting to <src>Measure::DEFAULT</src>), or in simple cases (not needing
 // additional frame information) be specified directly as a code (e.g.
 // <src>MEpoch::IAT</src>).<br> 
@@ -135,21 +150,23 @@ imported class ostream;
 // Conversion (within a Measure type) from one reference frame to another
 // is done by the <linkto class=MeasConvert>MeasConvert</linkto> class. The
 // class is templated, but has typedefs <src>Measure::Convert</src> (e.g.
-// MEpoch::Convert) for easy reference.<br>
+// MEpoch::Convert) for easy, and recommended,  reference.<br>
 // The basic constructors for a
 // <src>Measure::Convert</src> are:
 // <srcblock>
-// 	Measure::Convert(Measure val, Measure::Ref ref); // Include mesure value
-//	Mesaure::Convert( Measure::Ref inref, Measure::Ref ref);
+// // With a default Measure included
+// 	Measure::Convert(Measure val, Measure::Ref outref);
+// // With only input and output reference frames given 
+//	Mesaure::Convert( Measure::Ref inref, Measure::Ref outref);
 // </srcblock>
 // The <src>val</src>
 // is used as a <em>model</em> for subsequent input values into this
-// <em>conversion engine</em>, including possible units; the <src>ref</src>
+// <em>conversion engine</em>, including possible units; the <src>outref</src>
 // specifies the output reference frame wanted. The constructor analyses the
 // conversion wanted, and sets up a vector of routine calls to be called
 // in sequence for the conversion. The actual conversion is done
-// by the () operator.<p>
-// <note> In the member description a number of <em>dummy</em> routines are
+// by the <src>() operator</src>.<p>
+// <note role=tip> In the member description a number of <em>dummy</em> routines are
 // present. They are the only way I have found to get <em>cxx2html</em> to
 // get the belonging text properly present.
 // </note>
@@ -181,10 +198,20 @@ imported class ostream;
 // // And convert a value (in this case the value in val20_50, the model)
 // // from TAI(relative to B1950.0) to 'absolute' UTC
 //	MEpoch result = tai_to_utc();
+// //   Show result
+//      cout << "Result 1: " << result << endl;
 // // To convert 10 years since B1950.0
 //	result = tai_to_utc(Quantity(10.,"a"));
-// // To convert any value in days(the units of the model) since B1950.0
-//	result = tai_to_utc(any);
+//      cout << "Result 2: " << result << endl;
+// // To convert any value in years(the last used units of the model) since B1950.0
+//	result = tai_to_utc(12.3);
+//      cout << "Result 3: " << result << endl;
+// </srcblock>
+// Which generates the output:
+// <srcblock>
+//	Result 1: Epoch: 51544::11:59:25.2154
+//	Result 2: Epoch: 36934::10:09:42.1283
+//	Result 3: Epoch: 37774::11:57:41.1085
 // </srcblock>
 // </example>
 //
@@ -196,224 +223,191 @@ imported class ostream;
 // compile time.
 // </motivation>
 //
-// <todo asof="1996/05/10">
-//	<li> more Measures, e.g. MRadialVelocity, MCatalog
+// <todo asof='1997/04/15'>
+//	<li> more Measures, e.g. MPlanet
 //	<li> operators on Measures (e.g. MEpoch - MEpoch == MDuration)
 // </todo>
 
 class Measure {
 
 public:
-//# Enumerations
-// Each derived class should have a <src>Types</src> enumeration, specifying
-// the recognised frame types. It is formatted as:
-// <srcblock>
-//	enum Types {
-//	CODE1,
-//	CODE2,
-//	...,
-//	N_Types,		// Number of types
-//	SPEC1 = n,		// Possible special manipulator code
-//	.....,
-//	SYNONYM1 = CODEn,	// Probable synonyms
-//	....,
-//	DEFAULT = CODEm};
-// </srcblock>
-    enum Types {N_Types, DEFAULT = 0};
-// Each derived type should have a <src>Routes</src> enum, specifying the
-// available conversion routes:
-// <srcblock>
-//	enum Routes {
-//	CODE2_CODE1,
-//	....,
-//	N_Routes,		// Number of routes available
-//	SPECIAL1,		// Possible special manipulator routines
-//	....};
-// </srcblock>
-    enum Routes {N_Routes };
-
-//# Typedefs
-// Each Measure should have typedefs of the form:
-// <srcblock>
-// typedef MeasConvert<class a_Measure, class a_MeasValue> Convert;
-// typedef MeasRef<class a_Measure> Ref;
-// </srcblock>
-    typedef void* Convert;
-//# Friends
-// Output a Measure
-    friend ostream &operator<<(ostream &os, const Measure &meas);
-// Each derived class should have:
-// <srcblock>
-// 	friend class MeasConvert<a_Measure, its_MV>;
-// </srcblock>
-// <group>
-    void dummy_friend() const {;};
-// </group>
-
-//# Constructors
-
-//# Destructor
-// Destructor
-    virtual ~Measure();
-
-//# Operators
-
-//# General Member Functions
-// Each Measure should have the following set functions (with appropiate
-// MVs and Ref):
-// <srcblock>
-//	void set(const MVmeasure &dt);
-//	void set(const Measure::Ref &rf);
-//	void set(const MVmeasure &dt, const Measure::Ref &rf);
-// </srcblock>
-// <group>
-    void dummy_set() const {;};
-// </group>
-//
-// Check the type of derived Measure entity (e.g. "Epoch")
-    virtual Bool areYou(const String &tp) const = 0;
-// Assert that we are the correct Measure type
-// <thrown>
-//   <li> AipsError if wrong Measure type
-// </thrown>
-    virtual void assert(const String &tp) const = 0;
-// Tell me your Measure type
-    virtual const String &tellMe() const = 0;
-
-// Each Measure should have the following static methods to give its
-// name (e.g. Epoch) or reference type:<br>
-// <note> The second one should have has argument a_measure::Types, but
-// qualified enums do not work with templated class names. However, the
-// enum types should be used in calling the methods.</note>
-// <srcblock>
-// // Show the Measure type (e.g. "Direction")
-//    static const String &showMe();
-// // Show the reference type (e.g. MEpoch::showType(MEpoch::IAT) == "TAI")
-//    static const String &showType(uInt tp);
-// </srcblock>
-// <group>
-    void dummy_show() const {;};
-// </group>
-//
-// Each derived class should have a string-to-code translation routine
-// for the reference type. The routine returns False if unknown String (and
-// a default mr), else an appropiate mr reference.
-// <srcblock>
-//	Bool giveMe(const String &in, Measure::Ref &mr) {
-// </srcblock>
-// <group>
-    void dummy_giveMe() const {;};
-// </group>
-//
-// The general string checking routine to be used in derived measures.
-// Its arguments are the string to be converted (in), an array of
-// strings to check against (tname), and its length (N_name). The check
-// is case insensitive and mini-max. A return value less than N_name indicates
-// success.
-static uInt giveMe(const String &in, Int N_name, 
-		   const String tname[]);
-// Each class should have a function to return its reference:
-// <srcblock>
-//  	Measure::Ref getRef() const;
-// </srcblock>
-// <group>
-    void dummy_getRef() const {;};
-// </group>
-//
-// Each derived class should be able to get its internal value and have:
-// <srcblock>
-// 	const MVmeasure &getValue() const;
-// </srcblock>
-// To get dimensioned data, each derived class should contain the 
-// appropiate one of:
-// <srcblock>
-//    Quantity get(const Unit &unit) const;
-//    Quantum<Vector<Double> > get(const Unit &unit) const;
-// </srcblock>
-// <group>
-    void dummy_getValue() const {;};
-// </group>
-//
-// Print a Measure
-    virtual void print(ostream &os) const = 0;
-// Create a copy
-    virtual void *clone() const = 0;
-
+  //# Enumerations
+  // Each derived class should have a <src>Types</src> enumeration, specifying
+  // the recognised frame types. It is formatted as:
+  // <srcblock>
+  //	enum Types {
+  //	CODE1,
+  //	CODE2,
+  //	...,
+  //	N_Types,		// Number of types
+  //	SPEC1 = n,		// Possible special manipulator code
+  //	.....,
+  //	SYNONYM1 = CODEn,	// Probable synonyms
+  //	....,
+  //	DEFAULT = CODEm};
+  // </srcblock>
+  // Dummy for cxx2html
+  enum Types {N_Types, DEFAULT = 0};
+  
+  //# Typedefs
+  // Each Measure should have typedefs of the form:
+  // <srcblock>
+  // typedef MeasConvert<class a_Measure, class its_MV, its_MC> Convert;
+  // typedef MeasRef<class a_Measure> Ref;
+  // </srcblock>
+  // Dummy for cxx2html
+  typedef void* Convert;
+  //# Friends
+  // Each derived class should have:
+  // <srcblock>
+  // 	friend class MeasConvert<a_Measure, its_MV, its_MC>;
+  // </srcblock>
+  // Output a Measure
+  friend ostream &operator<<(ostream &os, const Measure &meas);
+  
+  //# Constructors
+  
+  //# Destructor
+  // Destructor
+  virtual ~Measure();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Each Measure should have the following set functions (with appropiate
+  // MVs and Ref):
+  // <srcblock>
+  //	void set(const MVmeasure &dt);
+  //	void set(const Measure::Ref &rf);
+  //	void set(const MVmeasure &dt, const Measure::Ref &rf);
+  // </srcblock>
+  // <group>
+  virtual void set(const MeasValue &dt) = 0;
+  // </group>
+  //
+  // Check the type of derived Measure entity (e.g. "Epoch")
+  virtual Bool areYou(const String &tp) const = 0;
+  // Get the type (== Register(M*)) of derived Measure (faster than Strings)
+  virtual uInt type() const = 0;
+  // Assert that we are the correct Measure type
+  // <thrown>
+  //   <li> AipsError if wrong Measure type
+  // </thrown>
+  // Each Measure should have:
+  // <src> static void assert(const Measure &in); </src>
+  // <group>
+  virtual void assert(const String &tp) const = 0;
+  // </group>
+  // Tell me your Measure type (e.g. "Epoch")
+  virtual const String &tellMe() const = 0;
+  
+  // Each Measure should have the following static methods to give its
+  // name (e.g. Epoch) or reference type (e.g. UTC):<br>
+  // <note role=caution> The second one should have has argument
+  // a_measure::Types, but
+  // qualified enums do not work with templated class names. However, the
+  // enum types should be used in calling the methods.</note>
+  // <srcblock>
+  // // Show the Measure type (e.g. "Direction")
+  //    static const String &showMe();
+  // // Show the reference type (e.g. MEpoch::showType(MEpoch::IAT) == "TAI")
+  //    static const String &showType(uInt tp);
+  // </srcblock>
+  // <group>
+  // Dummy for cxx2html
+  void dummy_show() const {;};
+  // </group>
+  //
+  // Each derived class should have a string-to-code translation routine
+  // for the reference type. The routine returns False if unknown String (and
+  // a default mr), else an appropiate mr reference.
+  // <srcblock>
+  //	Bool giveMe(const String &in, Measure::Ref &mr) {
+  // </srcblock>
+  // <group>
+  // Dummy for cxx2html
+  void dummy_giveMe() const {;};
+  // </group>
+  //
+  // A general string checking routine to be used in derived measures.
+  // Its arguments are the string to be converted (in), an array of
+  // strings to check against (tname), and its length (N_name). The check
+  // is case insensitive and mini-max. A return value less than N_name indicates
+  // success.
+  static uInt giveMe(const String &in, Int N_name, 
+		     const String tname[]);
+  // Each class should have a function to return its reference:
+  // <srcblock>
+  //  	Measure::Ref getRef() const;
+  // </srcblock>
+  // <group>
+  // Dummy for cxx2html
+  void dummy_getRef() const {;};
+  // </group>
+  //
+  // Each derived class should be able to get its internal value and have:
+  // <srcblock>
+  // 	const MVmeasure &getValue() const;
+  // </srcblock>
+  // To get dimensioned data, each derived class should contain the 
+  // appropiate one of:
+  // <srcblock>
+  //    Quantity get(const Unit &unit) const;
+  //    Quantum<Vector<Double> > get(const Unit &unit) const;
+  // </srcblock>
+  // <group>
+  // Dummy for cxx2html
+  void dummy_getValue() const {;};
+  // </group>
+  //
+  //
+  // Get unit (only available if Measure generated from a Quantum, else "")
+  virtual const Unit &getUnit() const = 0;
+  
+  // Get data pointer (used by MeasConvert)
+  virtual const MeasValue *const getData() const = 0;
+  
+  // Get general reference pointer
+  virtual MRBase *getRefPtr() const = 0;
+  
+  // Print a Measure
+  virtual void print(ostream &os) const = 0;
+  // Create a copy
+  // <group>
+  virtual Measure *clone() const = 0;
+  // </group>
 protected:
-
-// Get data pointer (used by MeasConvert)
-    virtual const void *const getData() const = 0;
-
+  
 private:
-//# Enumerations
-// Each class could have enumerations to describe the use of the
-// MeasConvert structure cache. It should look like:
-// <srcblock>
-//	enum StructUse {
-//		NAME, NAME2,
-//		N_StructUse };
-// </srcblock>
-    enum StructUse {N_StructUse };
-//# Data
-// Each class will have the following information:
-// Actual data
-// <srcblock>
-//	MVmeasure data;
-// </srcblock>
-// Reference frame data
-// <srcblock>
-//	MeasRef<Measure> ref;
-// </srcblock>
-// Possible input units
-// <srcblock>
-//	Unit unit;
-// </srcblock>
-// And maybe later (or somewhere else)
-// <srcblock>
-//	MeasErr error;
-// </srcblock>
-// <group>
-    void dummy_data() const {;};
-// </group>
-//
-//# Member functions
-// Clear the measure
-    virtual void clear() = 0;
-
-// Each class should have the following conversion engine creation routine.
-// It creates an array of routine enumerators. (See e.g. 
-// <linkto class=MEpoch>MEpoch</linkto> for this and other conversion routines)
-// <srcblock>
-//	static void getConvert( Measure::Convert &mc,
-//			        const Measure::Ref &inref,
-//				const Measure::Ref &outref,
-//				const MeasDetail &det);
-// </srcblock>
-    void dummy_getConvert() const {;};
-// Each class should have the following conversion initiation routine. It
-// can be used to set up e.g. memory to be used in the execution of
-// the <em>which</em> route.
-// <srcblock>
-//	static void initConvert( uInt which, Measure::Convert &mc,
-//				 const MeasDetail &det);
-// </srcblock>
-    void dummy_initConvert() const {;};
-// Each class should have the following routine to clear any data in
-// the conversion chain structure cache.
-// <srcblock>
-//	static void clearConvert( Measure::Convert &mc);
-// </srcblock>
-       void dummy_clearConvert() const {;};
-// Each class should have the following conversion execution routine, which
-// will execute the <em>tp</em> route by converting the <em>in</em> value.
-// <srcblock>
-//	static void doConvert( MVMeasure &in,
-//			       const Measure::Ref &inref,
-//			       const Measure::Ref &outref,
-//			       const Measure::Convert &mc);
-// </srcblock>
-    void dummy_doConvert() const {;};
-//
+  //# Enumerations
+  
+  //# Data
+  // Each class will have the following information:
+  // Actual data
+  // <srcblock>
+  //	MVmeasure data;
+  // </srcblock>
+  // Reference frame data
+  // <srcblock>
+  //	MeasRef<Measure> ref;
+  // </srcblock>
+  // Possible input units
+  // <srcblock>
+  //	Unit unit;
+  // </srcblock>
+  // And maybe later (or somewhere else)
+  // <srcblock>
+  //	MeasErr error;
+  // </srcblock>
+  // <group>
+  // Dummy for cxx2html
+  void dummy_data() const {;};
+  // </group>
+  //
+  //# Member functions
+  // Clear the measure
+  virtual void clear() = 0;
+  
 };
 
 //# Global functions

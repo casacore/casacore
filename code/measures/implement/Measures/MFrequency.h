@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,15 +35,16 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MVFrequency.h>
 
 //# Forward Declarations
 class MFrequency;
+class MCFrequency;
 class MDoppler;
+class MVDoppler;
+template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
@@ -142,16 +143,16 @@ class MDoppler;
 // <todo asof="1996/10/10">
 // </todo>
 
-class MFrequency : public MeasBase<MVFrequency,MeasRef<MFrequency> >
-{
+class MFrequency : public MeasBase<MVFrequency,MeasRef<MFrequency> > {
+
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MFrequency,MVFrequency>;
+    friend class MeasConvert<MFrequency,MVFrequency,MCFrequency>;
 
 //# Enumerations
 // Types of known MFrequencies
-// <note> The order defines the order in the translation matrix FromTo
+// <note role=warning> The order defines the order in the translation matrix FromTo
 // in the getConvert routine. Do not change the order without
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
@@ -166,35 +167,15 @@ public:
 		N_Types,
 		DEFAULT=LSR};
 
-// The list of actual routines provided.
-// <note> For each <src>AA_BB</src> in the list a routine
-// <src>static void AAtoBB(MVFrequency &)</src> should be provided. The routines
-// should be listed in the FromToRout array in the getConvert routine, in the
-// order specified. In addition the type to which converted should be in the
-// ToRef array, again in the proper order. </note>
-    enum Routes {
-      LSR_BARY,
-      BARY_LSR,
-      BARY_GEO,
-      GEO_TOPO,
-      GEO_BARY,
-      TOPO_GEO,
-      LSR_GALACTO,
-      GALACTO_LSR,
-      LSRK_BARY,
-      BARY_LSRK,
-      REST_LSR,
-      LSR_REST,
-      N_Routes };
 
 //# Typedefs
 // Measure reference
-    typedef MeasRef<MFrequency> Ref;
+    typedef class MeasRef<MFrequency> Ref;
 // Measure conversion use
-    typedef MeasConvert<MFrequency,MVFrequency> Convert;
+    typedef class MeasConvert<MFrequency,MVFrequency,MCFrequency> Convert;
 
 //# Constructors
-// <note> In the following constructors and other functions, all 
+// <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
 // where no offsets or frames are needed in the reference. For reasons
 // of compiler limitations the formal arguments had to be specified as
@@ -210,6 +191,8 @@ public:
     MFrequency(const Quantity &dt);
     MFrequency(const Quantity &dt, const MFrequency::Ref &rf);
     MFrequency(const Quantity &dt, uInt rf);
+    MFrequency(const Measure *dt);
+    MFrequency(const MeasValue *dt);
 // </group>
 
 //# Destructor
@@ -222,6 +205,8 @@ public:
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
+    virtual uInt type() const;
+    static void assert(const Measure &in);
 // </group>
 // Translate reference code
     static const String &showType(uInt tp);
@@ -232,7 +217,8 @@ public:
 
 // Make a Doppler velocity from the frequency and the specified rest frequency
     MDoppler toDoppler(const MVFrequency &rest);
-
+  // Local use only
+    static MDoppler toDoppler(const Measure &in, const MVFrequency &rest);
 // Make a frequency from the Doppler velocity and the specified rest frequency
 // (default reference type LSR)
 // <group>
@@ -241,43 +227,28 @@ public:
     static MFrequency fromDoppler(const MDoppler &dop,
 				  const MVFrequency &rest,
 				  MFrequency::Types type);
+// For internal use only
+    static MFrequency fromDoppler(const Measure &dop,
+				  const MVFrequency &rest,
+				  MFrequency::Types type);
 // </group>
 
 // Make a rest frequency using a Doppler velocity
     MFrequency toRest(const MDoppler &dop);
+// For local use only
+  static MFrequency toRest(const Measure &in, const Measure &dop);
 
 // Make a copy
-    virtual void *clone() const;
+// <group>
+    virtual Measure *clone() const;
+// </group>
 
 private:
 //# Enumerations
-// Usage of the MeasConvert structure cache. Additions should fit into the
-// space provided in MeasConvert (see <src>MC_N_Struct</src> constant),
-// and should be coded in the <src>clearConvert()</src> method.
-    enum StructUse {
-      MVPOS1, MVDIR1,
-      ABERFROM, ABERTO,
-      N_StructUse };
 
 //# Data
 
 //# Member functions
-// Create conversion function pointer
-    static void getConvert(MFrequency::Convert &mc,
-			   const MFrequency::Ref &inref, 
-			   const MFrequency::Ref &outref);
-
-// Create help structures for Measure conversion routines
-    static void initConvert(uInt which, MFrequency::Convert &mc);
-
-// Delete the pointers used in the MeasConvert help structure cache
-     static void clearConvert(MFrequency::Convert &mc);
-
-// Routine to convert frequency from one reference frame to another
-    static void doConvert(MVFrequency &in,
-			  const MFrequency::Ref &inref,
-			  const MFrequency::Ref &outref,
-			  const MFrequency::Convert &mc);
 
 };
 

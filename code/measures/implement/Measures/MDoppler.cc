@@ -31,10 +31,8 @@
 typedef Quantum<Double> gpp_mdoppler_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/RTTI/Register.h>
 #include <aips/Measures/MDoppler.h>
-#include <aips/Measures/QC.h>
-#include <aips/Measures/QMath.h>
 
 //# Constructors
 MDoppler::MDoppler() :
@@ -58,6 +56,13 @@ MDoppler::MDoppler(const Quantity &dt, const MDoppler::Ref &rf) :
 MDoppler::MDoppler(const Quantity &dt, uInt rf) : 
   MeasBase<MVDoppler,MDoppler::Ref>(dt,rf) {}
 
+MDoppler::MDoppler(const Measure *dt) :
+  MeasBase<MVDoppler,MDoppler::Ref>(dt) {}
+
+MDoppler::MDoppler(const MeasValue *dt) :
+  MeasBase<MVDoppler,MDoppler::Ref>(*(MVDoppler*)dt,
+				MDoppler::DEFAULT) {}
+
 //# Destructor
 MDoppler::~MDoppler() {}
 
@@ -71,6 +76,17 @@ const String &MDoppler::tellMe() const {
 const String &MDoppler::showMe() {
     static const String name("Doppler");
     return name;
+}
+
+uInt MDoppler::type() const {
+  return Register((MDoppler *)0);
+}
+
+void MDoppler::assert(const Measure &in) {
+  if (in.type() != Register((MDoppler *)0)) {
+    throw(AipsError("Illegal Measure type argument: " +
+		    MDoppler::showMe()));
+  };
 }
 
 const String &MDoppler::showType(uInt tp) {
@@ -120,147 +136,6 @@ Quantity MDoppler::get(const Unit &un) const {
     return data.get(un);
 }
     
-void *MDoppler::clone() const {
-    return ((void *) new MDoppler(*this));
-}
-
-void MDoppler::getConvert(MDoppler::Convert &mc,
-			    const MDoppler::Ref &inref, 
-			    const MDoppler::Ref &outref) {
-
-// Array of conversion routines to call
-    static const MDoppler::Routes 
-	FromTo[MDoppler::N_Types][MDoppler::N_Types] = {
-	{ MDoppler::N_Routes,
-	  MDoppler::RADIO_RATIO,
-	  MDoppler::RADIO_RATIO,
-	  MDoppler::RADIO_RATIO,
-	  MDoppler::RADIO_RATIO},
-        { MDoppler::Z_RATIO,
-	  MDoppler::N_Routes,
-	  MDoppler::Z_RATIO,
-	  MDoppler::Z_RATIO,
-	  MDoppler::Z_RATIO},
-        { MDoppler::RATIO_RADIO,
-	  MDoppler::RATIO_Z,
-	  MDoppler::N_Routes,
-	  MDoppler::RATIO_BETA,
-	  MDoppler::RATIO_GAMMA},
-        { MDoppler::BETA_RATIO,
-	  MDoppler::BETA_RATIO,
-	  MDoppler::BETA_RATIO,
-	  MDoppler::N_Routes,
-	  MDoppler::BETA_RATIO},
-        { MDoppler::GAMMA_RATIO,
-	  MDoppler::GAMMA_RATIO,
-	  MDoppler::GAMMA_RATIO,
-	  MDoppler::GAMMA_RATIO,
-	  MDoppler::N_Routes}
-	};
-
-// List of codes converted to
-    static const MDoppler::Types ToRef[MDoppler::N_Routes] = {
-        MDoppler::RATIO,
-        MDoppler::RATIO,
-        MDoppler::RATIO,
-        MDoppler::RATIO,
-        MDoppler::RADIO,
-        MDoppler::Z,
-        MDoppler::BETA,
-        MDoppler::GAMMA
-	};
-
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    }
-}
-
-void MDoppler::clearConvert(MDoppler::Convert &mc) {
-}
-
-//# Conversion routines
-void MDoppler::initConvert(uInt which, MDoppler::Convert &mc) {
-    mc.addStruct(0,0);		// To stop warnings
-    switch (which) {
-
-	case RADIO_RATIO:
-	break;
-
-	case Z_RATIO:
-	break;
-
-	case BETA_RATIO:
-	break;
-
-	case GAMMA_RATIO:
-	break;
-
-	case RATIO_RADIO: 
-	break;
-
-	case RATIO_Z:
-	break;
-
-	case RATIO_BETA:
-	break;
-
-	case RATIO_GAMMA:
-	break;
-
-	default:
-	break;
-    }
-}
-
-void MDoppler::doConvert(MVDoppler &in,
-			 const MDoppler::Ref &inref,
-			 const MDoppler::Ref &outref,
-			 const MDoppler::Convert &mc) {
-    Double t = (Double) in;
-    for (Int i=0; i<mc.nMethod(); i++) {
-      switch (mc.getMethod(i)) {
-	
-      case RADIO_RATIO:
-	t = 1- t;
-	break;
-
-      case Z_RATIO:
-	t = 1.0/(t+1.0);
-	break;
-
-      case BETA_RATIO:
-	t = sqrt((1.0-t)/(1.0+t));
-	break;
-
-      case GAMMA_RATIO:
-	t = t*(1.0-sqrt(1.0-1.0/t/t));
-	break;
-
-      case RATIO_RADIO:
-	t = 1.0- t;
-	break;
-
-      case RATIO_Z:
-	t = 1.0/t -1.0;
-	break;
-
-      case RATIO_BETA:
-	t = (1.0-t*t)/(1.0+t*t);
-	break;
-
-      case RATIO_GAMMA:
-	t = (1.0+t*t)/2.0/t;
-	break;
-
-      default:
-	break;
-      }
-      in = t;
-    }
+Measure *MDoppler::clone() const {
+  return (new MDoppler(*this));
 }

@@ -65,103 +65,106 @@
 // </example>
 //
 // <motivation>
+// To have most work in single routine
 // </motivation>
 //
-// <todo asof="1996/02/21">
+// <todo asof="1997/04/15">
 //	<li>
 // </todo>
 
-template<class Mv, class Mr> class MeasBase : public virtual Measure
-{
+template<class Mv, class Mr> class MeasBase : public virtual Measure {
+
 public:
-//# Friends
+  //# Friends
 
-//# Enumerations
+  //# Enumerations
 
-//# Typedefs
+  //# Typedefs
 
-//# Constructors
-// <note> In the following constructors and other functions, all 
-// <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
-// Default constructor
-    MeasBase();
-// Copy constructor
-    MeasBase(const MeasBase<Mv,Mr> &other);
-// Copy assignment
-    MeasBase<Mv,Mr> &operator=(const MeasBase<Mv,Mr> &other);
-// Create from data and reference
-// <group>
-    MeasBase(const Mv &dt, const Mr &rf);
-    MeasBase(const Mv &dt, uInt rf);
-    MeasBase(const Quantity &dt, const Mr &rf);
-    MeasBase(const Quantity &dt, uInt rf);
-// </group>
-
-//# Destructor
-    virtual ~MeasBase();
-
-//# Operators
-
-//# General Member Functions
-// Check the type of derived entity
+  //# Constructors
+  // <note role=tip> In the following constructors and other functions, all 
+  // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
+  // where no offsets or frames are needed in the reference. For reasons
+  // of compiler limitations the formal arguments had to be specified as
+  // <em>uInt</em> rather than the Measure enums that should be used as actual 
+  // arguments.</note>
+  // Default constructor
+  MeasBase();
+  // Copy constructor
+  MeasBase(const MeasBase<Mv,Mr> &other);
+  // Copy assignment
+  MeasBase<Mv,Mr> &operator=(const MeasBase<Mv,Mr> &other);
+  // Create from data and reference
+  // <group>
+  MeasBase(const Mv &dt, const Mr &rf);
+  MeasBase(const Mv &dt, uInt rf);
+  MeasBase(const Quantity &dt, const Mr &rf);
+  MeasBase(const Quantity &dt, uInt rf);
+  MeasBase(const Measure *dt);
+  // </group>
+  
+  //# Destructor
+  virtual ~MeasBase();
+  
+  //# Operators
+  
+  //# General Member Functions
+  // Check the type of derived entity
   virtual Bool areYou(const String &tp) const;
-// Assert that we are the correct type
-// <thrown>
-//   <li> AipsError if wrong Measure
-// </thrown>
+  // Assert that we are the correct type
+  // <thrown>
+  //   <li> AipsError if wrong Measure
+  // </thrown>
   virtual void assert(const String &tp) const;
-// Tell me your type
-// <group>
-// Refill the specified entities
-// <group>
-void set(const Mv &dt);
-void set(const Mr &rf);
-void set(const Mv &dt, const Mr &rf);
-void set(const Unit &inunit);
-// </group>
-
-// Get reference
-    Mr getRef() const;
-
-// Get Measure data
-// <group>
-    const Mv &getValue() const;
-// </group>
-
-// Print a Measure
-    virtual void print(ostream &os) const;
-
+  
+  // Refill the specified entities
+  // <group>
+  void set(const Mv &dt);
+  void set(const Mr &rf);
+  void set(const Mv &dt, const Mr &rf);
+  void set(const Unit &inunit);
+  virtual void set(const MeasValue &dt);
+  // </group>
+  
+  // Get reference
+  Mr getRef() const;
+  
+  // Get Measure data
+  // <group>
+  const Mv &getValue() const;
+  // </group>
+  
+  // Get Unit
+  const Unit &getUnit() const;
+  
+  // Get reference pointer
+  virtual MRBase *getRefPtr() const;
+  
+  // Get pointer to data
+  virtual const MeasValue * const getData() const;
+  
+  // Print a Measure
+  virtual void print(ostream &os) const;
+  
 protected:
-//# Enumerations
-
-//# Data
-// The instance in time
-    Mv data;
-// Pointer to reference frame data
-    Mr ref;
-// Possible input units
-    Unit unit;
-// Error information
-// MeasErr error;
-
-// Get pointer to data
-    virtual const void *const getData() const;
-
-
+  //# Enumerations
+  
+  //# Data
+  // The measure value (e.g. instant in time)
+  Mv data;
+  // Reference frame data
+  Mr ref;
+  // Possible input units
+  Unit unit;
+  // Error information
+  // MeasErr error;
+  
+  
 private:
-//# Member functions
-// Clear the measure
-    void clear();
-
-// Create conversion function pointer
-
-// Create help structures for Measure conversion routines
-
-// Routine to convert time from one reference frame to another
+  //# Member functions
+  // Clear the measure
+  void clear();
+  
 };
 
 #endif

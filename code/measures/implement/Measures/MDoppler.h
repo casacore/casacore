@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,14 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MVDoppler.h>
 
 //# Forward Declarations
 class MDoppler;
+class MCDoppler;
+template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
@@ -126,16 +126,16 @@ class MDoppler;
 // <todo asof="1996/05/04">
 // </todo>
 
-class MDoppler : public MeasBase<MVDoppler,MeasRef<MDoppler> >
-{
+class MDoppler : public MeasBase<MVDoppler,MeasRef<MDoppler> > {
+
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MDoppler,MVDoppler>;
+    friend class MeasConvert<MDoppler,MVDoppler,MCDoppler>;
 
 //# Enumerations
 // Types of known MDopplers
-// <note> The order defines the order in the translation matrix FromTo
+// <note role=warning> The order defines the order in the translation matrix FromTo
 // in the getConvert routine. Do not change the order without
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
@@ -151,31 +151,15 @@ public:
 	RELATIVISTIC=BETA,
 	DEFAULT=RADIO };
 
-// The list of actual routines provided.
-// <note> For each <src>AA_BB</src> in the list a routine
-// <src>static void AAtoBB(MVDoppler &)</src> should be provided. The routines
-// should be listed in the FromToRout array in the getConvert routine, in the
-// order specified. In addition the type to which converted should be in the
-// ToRef array, again in the proper order. </note>
-    enum Routes {
-	RADIO_RATIO, 
-	Z_RATIO,
-	BETA_RATIO,
-	GAMMA_RATIO,
-	RATIO_RADIO, 
-	RATIO_Z,
-	RATIO_BETA,
-	RATIO_GAMMA,
-	N_Routes };
 
 //# Typedefs
 // Measure reference
     typedef MeasRef<MDoppler> Ref;
 // Measure conversion use
-    typedef MeasConvert<MDoppler,MVDoppler> Convert;
+    typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> Convert;
 
 //# Constructors
-// <note> In the following constructors and other functions, all 
+// <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
 // where no offsets or frames are needed in the reference. For reasons
 // of compiler limitations the formal arguments had to be specified as
@@ -191,6 +175,8 @@ public:
     MDoppler(const Quantity &dt);
     MDoppler(const Quantity &dt, const MDoppler::Ref &rf);
     MDoppler(const Quantity &dt, uInt rf);
+    MDoppler(const Measure *dt);
+    MDoppler(const MeasValue *dt);
 // </group>
 
 //# Destructor
@@ -203,6 +189,8 @@ public:
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
+    virtual uInt type() const;
+    static void assert(const Measure &in);
 // </group>
 // Translate reference code
     static const String &showType(uInt tp);
@@ -212,36 +200,17 @@ public:
     Quantity get(const Unit &un) const;
 
 // Make a copy
-    virtual void *clone() const;
+// <group>
+    virtual Measure *clone() const;
+// </group>
 
 private:
 //# Enumerations
-// Usage of the MeasConvert structure cache. Additions should fit into the
-// space provided in MeasConvert (see <src>MC_N_Struct</src> constant),
-// and should be coded in the <src>clearConvert()</src> method.
-    enum StructUse {
-	N_StructUse };
 
 //# Data
 
 //# Member functions
 
-// Create conversion function pointer
-    static void getConvert(MDoppler::Convert &mc,
-			   const MDoppler::Ref &inref, 
-			   const MDoppler::Ref &outref);
-
-// Create help structures for Measure conversion routines
-    static void initConvert(uInt which, MDoppler::Convert &mc);
-
-// Delete the pointers used in the MeasConvert help structure cache
-     static void clearConvert(MDoppler::Convert &mc);
-
-// Routine to convert Doppler from one reference frame to another
-    static void doConvert(MVDoppler &in,
-			  const MDoppler::Ref &inref,
-			  const MDoppler::Ref &outref,
-			  const MDoppler::Convert &mc);
 
 };
 

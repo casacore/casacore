@@ -1,5 +1,5 @@
-//# MVRadialVelocity.h: Internal value for MFrequency
-//# Copyright (C) 1996
+//# MVRadialVelocity.h: Internal value for MRadialvelocity
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,11 +37,12 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvrad_bug2;
+#endif
 
 //# Forward Declarations
 imported class ostream;
-
-//# Constants (SUN compiler does not accept non-simple default arguments)
 
 // <summary> Internal value for MRadialVelocity </summary>
 
@@ -91,74 +92,81 @@ imported class ostream;
 // </todo>
 
 class MVRadialVelocity : public MeasValue {
-
-    public:
-    
-//# Constructors
-// Default constructor: generate a zero value
-    MVRadialVelocity();
-// Copy constructor
-    MVRadialVelocity(const MVRadialVelocity &other);
-// Copy assignment
-    MVRadialVelocity &operator=(const MVRadialVelocity &other);
-// Constructor from Double (assume m/s)
-    explicit MVRadialVelocity(Double d);
-// Constructor from Quantum
-// <group>
-    MVRadialVelocity(const Quantity &other);
-    MVRadialVelocity(const Quantum<Vector<Double> > &other);
-// </group>
-// Constructor from Vector. A zero value will be taken for an empty vector,
-// the first element for a quantum vector.
-// <thrown>
-//  <li> AipsError if vector length > 1
-// </thrown>
-// <group>
-    MVRadialVelocity(const Vector<Double> &other);
-    MVRadialVelocity(const Vector<Quantity> &other);
-// </group>
-
-// Destructor
-    ~MVRadialVelocity();
-
-//# Operators
-// Conversion operator
-    operator Double() const;
-
-// Addition
-// <group>
-    MVRadialVelocity &operator+=(const MVRadialVelocity &other);
-    MVRadialVelocity &operator-=(const MVRadialVelocity &other);
-// </group>
-// Comparisons
-// <group>
-    Bool operator==(const MVRadialVelocity &other) const;
-    Bool operator!=(const MVRadialVelocity &other) const;
-    Bool near(const MVRadialVelocity &other, Double tol = 1e-13) const;
-    Bool nearAbs(const MVRadialVelocity &other, Double tol = 1e-13) const;
-// </group>
-
-//# General member functions
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-// Adjust value: taken from base class, a NOP.
-// Get value in m/s
-    Double getValue() const;
-// Get quantity in m/s
-    Quantity get() const;
-// Get the wave characteristics in (recognised) specified units
-    Quantity get(const Unit &unit) const;
-
-    private:
-//# Data
-// Value
-    Double val;
-
-//# Member functions
-// Get correct data type conversion factor from input Quantum
-    Double makeF(const Unit &dt) const;
+  
+public:
+  
+  //# Constructors
+  // Default constructor: generate a zero value
+  MVRadialVelocity();
+  // Copy constructor
+  MVRadialVelocity(const MVRadialVelocity &other);
+  // Copy assignment
+  MVRadialVelocity &operator=(const MVRadialVelocity &other);
+  // Constructor from Double (assume m/s)
+  explicit MVRadialVelocity(Double d);
+  // Constructor from Quantum
+  // <group>
+  MVRadialVelocity(const Quantity &other);
+  MVRadialVelocity(const Quantum<Vector<Double> > &other);
+  // </group>
+  // Constructor from Vector. A zero value will be taken for an empty vector,
+  // the first element for a quantum vector.
+  // <thrown>
+  //  <li> AipsError if vector length > 1
+  // </thrown>
+  // <group>
+  MVRadialVelocity(const Vector<Double> &other);
+  MVRadialVelocity(const Vector<Quantity> &other);
+  // </group>
+  
+  // Destructor
+  ~MVRadialVelocity();
+  
+  //# Operators
+  // Conversion operator
+  operator Double() const;
+  
+  // Addition
+  // <group>
+  MVRadialVelocity &operator+=(const MVRadialVelocity &other);
+  MVRadialVelocity &operator-=(const MVRadialVelocity &other);
+  // </group>
+  // Comparisons
+  // <group>
+  Bool operator==(const MVRadialVelocity &other) const;
+  Bool operator!=(const MVRadialVelocity &other) const;
+  Bool near(const MVRadialVelocity &other, Double tol = 1e-13) const;
+  Bool nearAbs(const MVRadialVelocity &other, Double tol = 1e-13) const;
+  // </group>
+  
+  //# General member functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  // Adjust value: taken from base class, a NOP.
+  // Get value in m/s
+  Double getValue() const;
+  // Get quantity in m/s
+  Quantity get() const;
+  // Get the wave characteristics in (recognised) specified units
+  Quantity get(const Unit &unit) const;
+  
+private:
+  //# Data
+  // Value
+  Double val;
+  
+  //# Member functions
+  // Get correct data type conversion factor from input Quantum
+  Double makeF(const Unit &dt) const;
 };
 
 #endif

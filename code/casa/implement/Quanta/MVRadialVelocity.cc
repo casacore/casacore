@@ -1,5 +1,5 @@
-//# MVRadialVelocity.cc: Internal value for MFrequency
-//# Copyright (C) 1996
+//# MVRadialVelocity.cc: Internal value for MRadialvelocity
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,10 @@
 #include <aips/Measures/Quantum.h>
 typedef Quantum<Double> gpp_MVRadialVelocity_bug1;
 #endif
-#include <aips/Measures/MVRadialVelocity.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
+#include <aips/Measures/MVRadialVelocity.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/QC.h>
 
@@ -39,58 +41,58 @@ typedef Quantum<Double> gpp_MVRadialVelocity_bug1;
 
 //# Constructors
 MVRadialVelocity::MVRadialVelocity() : 
-val(0.0){}
+  val(0.0){}
 
 MVRadialVelocity::MVRadialVelocity(Double d) : 
-val(d){}
+  val(d){}
 
 MVRadialVelocity::MVRadialVelocity(const MVRadialVelocity &other) :
-val(other.val) {}
+  val(other.val) {}
 
 MVRadialVelocity::MVRadialVelocity(const Quantity &other) {
-    val = other.getValue() * makeF(other.getFullUnit());
+  val = other.getValue() * makeF(other.getFullUnit());
 }
 
 MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
-    Vector<Double> tmp;
-    tmp = other.getValue();
-    uInt i = tmp.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = tmp(0) * makeF(other.getFullUnit());
-    } else {
-	throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
-    };
+  Vector<Double> tmp;
+  tmp = other.getValue();
+  uInt i = tmp.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = tmp(0) * makeF(other.getFullUnit());
+  } else {
+    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+  };
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = other(0);
-    } else {
-	throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = other(0);
+  } else {
+    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+  };
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Quantity> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = other(0).getValue() * makeF(other(0).getFullUnit());
-    } else {
-	throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = other(0).getValue() * makeF(other(0).getFullUnit());
+  } else {
+    throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
+  };
 }
 
 MVRadialVelocity &MVRadialVelocity::operator=(const MVRadialVelocity &other) {
-    if (this != &other) {
-	val = other.val;
-    }
-    return *this;
+  if (this != &other) {
+    val = other.val;
+  }
+  return *this;
 }
 
 // Destructor
@@ -98,63 +100,74 @@ MVRadialVelocity::~MVRadialVelocity() {}
 
 // Operators
 MVRadialVelocity::operator Double() const {
-    return val;
+  return val;
 }
 
 MVRadialVelocity &MVRadialVelocity::operator+=(const MVRadialVelocity &other) {
-    val += other.val;
-    return *this;
+  val += other.val;
+  return *this;
 }
 
 MVRadialVelocity &MVRadialVelocity::operator-=(const MVRadialVelocity &other) {
-    val -= other.val;
-    return *this;
+  val -= other.val;
+  return *this;
 }
 
 Bool MVRadialVelocity::operator==(const MVRadialVelocity &other) const {
-    return ToBool(val == other.val);
+  return ToBool(val == other.val);
 }
 
 Bool MVRadialVelocity::operator!=(const MVRadialVelocity &other) const {
-    return ToBool(val != other.val);
+  return ToBool(val != other.val);
 }
 
 Bool MVRadialVelocity::near(const MVRadialVelocity &other, Double tol) const {
-    return ::near(val, other.val, tol);
+  return ::near(val, other.val, tol);
 }
 
 Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const {
-    return ::nearAbs(val, other.val, tol);
+  return ::nearAbs(val, other.val, tol);
 }
 
 // Member functions
+
+uInt MVRadialVelocity::type() const {
+  return Register((MVRadialVelocity *)0);
+}
+
+void MVRadialVelocity::assert(const MeasValue &in) {
+  if (in.type() != Register((MVRadialVelocity *)0)) {
+    throw(AipsError("Illegal MeasValue type argument: MVRadialVelocity"));
+  };
+}
+
 void MVRadialVelocity::print(ostream &os) const {
-    os << val;
+  os << val;
 }
 
 MeasValue *MVRadialVelocity::clone() const {
-    return (new MVRadialVelocity(*this));
+  return (new MVRadialVelocity(*this));
 }
 
 Double MVRadialVelocity::getValue() const {
-    return val;
+  return val;
 }
 
 Quantity MVRadialVelocity::get() const {
-    return Quantity(val,"m/s");
+  return Quantity(val,"m/s");
 }
 
 Quantity MVRadialVelocity::get(const Unit &unit) const {
-    return Quantity(val/makeF(unit), unit);
+  return Quantity(val/makeF(unit), unit);
 }
 
 Double MVRadialVelocity::makeF(const Unit &dt) const{
-    static Bool needInit = True;
-    static UnitVal Velocity;
-    if (needInit) {
-	needInit = False;
-	Velocity = UnitVal::LENGTH/UnitVal::TIME;
-    };
-    Quantity(1.0,dt).assert(Velocity);
-    return (dt.getValue().getFac());
+  static Bool needInit = True;
+  static UnitVal Velocity;
+  if (needInit) {
+    needInit = False;
+    Velocity = UnitVal::LENGTH/UnitVal::TIME;
+  };
+  Quantity(1.0,dt).assert(Velocity);
+  return (dt.getValue().getFac());
 }

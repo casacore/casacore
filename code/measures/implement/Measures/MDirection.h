@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,13 +35,14 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MVDirection.h>
 
 //# Forward Declarations
 class MDirection;
+class MCDirection;
+template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
@@ -128,11 +129,11 @@ class MDirection : public MeasBase<MVDirection,MeasRef<MDirection> >
 public:
 //# Friends
 // Conversion of data
+    friend class MeasConvert<MDirection,MVDirection,MCDirection>;
 
-    friend class MeasConvert<MDirection,MVDirection>;
 //# Enumerations
 // Types of known MDirections
-// <note> The order defines the order in the translation matrix FromTo
+// <note role=warning> The order defines the order in the translation matrix FromTo
 // in the getConvert routine. Do not change the order without
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
@@ -149,45 +150,15 @@ public:
 		AZEL,
 		N_Types,
 		DEFAULT=J2000};
-// The list of actual routines provided.
-// <note> For each <src>AA_BB</src> in the list a routine
-// <src>static void AAtoBB(MVDirection &)</src> should be provided. The routines
-// should be listed in the FromToRout array in the getConvert routine, in the
-// order specified. In addition the type to which converted should be in the
-// ToRef array, again in the proper order. </note>
-    enum Routes {
-	GAL_J2000,
-	GAL_B1950,
-	J2000_GAL,
-	B1950_GAL,
-	J2000_B1950,
-	B1950_J2000,
-	J2000_JMEAN,
-	B1950_BMEAN,
-	JMEAN_J2000,
-	JMEAN_JTRUE,
-	BMEAN_B1950,
-	BMEAN_BTRUE,
-	JTRUE_JMEAN,
-	BTRUE_BMEAN,
-	J2000_APP,
-	APP_J2000,
-	B1950_APP,
-	APP_B1950,
-	APP_HADEC,
-	HADEC_AZEL,
-	AZEL_HADEC,
-	HADEC_APP,
-	N_Routes };
 
 //# Typedefs
 // MeasRef use
-    typedef MeasRef<MDirection> Ref;
+    typedef class MeasRef<MDirection> Ref;
 // MeasConvert use
-    typedef MeasConvert<MDirection,MVDirection> Convert;
+    typedef class MeasConvert<MDirection,MVDirection,MCDirection> Convert;
 
 //# Constructors
-// <note> In the following constructors and other functions, all 
+// <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
 // where no offsets or frames are needed in the reference. For reasons
 // of compiler limitations the formal arguments had to be specified as
@@ -210,6 +181,8 @@ public:
 	       const MDirection::Ref &rf);
     MDirection(const Quantum<Vector<Double> > &dt, 
 	       uInt rf);
+    MDirection(const Measure *dt);
+    MDirection(const MeasValue *dt);
 // </group>
 
 //# Destructor
@@ -222,6 +195,8 @@ public:
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
+    virtual uInt type() const;
+    static void assert(const Measure &in);
 // </group>
 // Translate reference code
     static const String &showType(uInt tp);
@@ -235,43 +210,15 @@ public:
 // </group>
 
 // Make a copy
-    virtual void *clone() const;
+// <group>
+    virtual Measure *clone() const;
+// </group>
 
 private:
-//# Enumerations
-// Usage of the MeasConvert structure cache. Additions should fit into the
-// space provided in MeasConvert (see <src>MC_N_Struct</src> constant),
-// and should be coded in the <src>clearConvert()</src> method.
-    enum StructUse {
-	ROTMAT1,
-	EULER1,
-	MVPOS1, MVPOS2, MVPOS3,
-	SOLPOSFROM, SOLPOSTO,
-	ABERFROM, ABERTO,
-	NUTATFROM, NUTATTO,
-	PRECESFROM, PRECESTO,
-	N_StructUse };
 
 //# Data
 
 //# Member functions
-
-// Create conversion function pointer
-    static void getConvert(MDirection::Convert &mc,
-			   const MDirection::Ref &inref, 
-			   const MDirection::Ref &outref);
-
-// Create help structures for Measure conversion routines
-    static void initConvert(uInt which, MDirection::Convert &mc);
-
-// Delete the pointers used in the MeasConvert help structure cache
-     static void clearConvert(MDirection::Convert &mc);
-
-// Routines to convert directions from one reference frame to another
-     static void doConvert(MVDirection &in,
-			   const MDirection::Ref &inref,
-			   const MDirection::Ref &outref,
-			   const MDirection::Convert &mc);
 
 };
 
