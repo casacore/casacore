@@ -483,6 +483,20 @@ void BaseColumn::getScalar (uInt rownr, String& value) const
     }
 }
 
+void BaseColumn::getScalar (uInt rownr, TableRecord& value) const
+{
+    if (!colDescPtr_p->isScalar()) {
+	throw (TableInvOper ("getScalar only possible for scalars"));
+    }
+    switch (colDescPtr_p->dataType()) {
+    case TpRecord:
+	get (rownr, &value);
+	return;
+    default:
+	throw (TableInvDT ("invalid type promotion in getScalar(TableRecord)"));
+    }
+}
+
 void BaseColumn::getScalar (uInt rownr, void* value,
 			    const String& dataTypeId) const
 {
@@ -792,5 +806,19 @@ void BaseColumn::putScalar (uInt rownr, const String& value)
 	return;
     default:
 	throw (TableInvDT ("invalid type promotion in putScalar(String)"));
+    }
+}
+
+void BaseColumn::putScalar (uInt rownr, const TableRecord& value)
+{
+    if (!colDescPtr_p->isScalar()) {
+	throw (TableInvOper ("putScalar only possible for scalars"));
+    }
+    switch (colDescPtr_p->dataType()) {
+    case TpRecord:
+	put (rownr, &value);
+	return;
+    default:
+	throw (TableInvDT ("invalid type promotion in putScalar(TableRecord)"));
     }
 }
