@@ -1,5 +1,5 @@
 //# dRemoveAxes.cc: demonstrate use of CoordinateUtil::removeAxes function
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,7 +52,7 @@ try {
    {
      cout << "remove world axes = [0, 1] and associated pixel axes from [ra, dec, freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-     Vector<uInt> list(1);
+     Vector<Int> list(1);
      list(0) = 2;
      Bool remove = False;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
@@ -67,7 +67,7 @@ try {
      cout << "remove world axes = [2] and associated pixel axes from [ra, dec, freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-     Vector<uInt> list(1);
+     Vector<Int> list(1);
      list(0) = 2;
      Bool remove = True;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
@@ -82,7 +82,7 @@ try {
      cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 0;
      list(1) = 2;
      Bool remove = True;
@@ -99,7 +99,7 @@ try {
      cout << "and then world axes = [0, 1] and associated pixel axes " << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-     Vector<uInt> list(1);
+     Vector<Int> list(1);
      list(0) = 0;
      Bool remove = True;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
@@ -122,7 +122,7 @@ try {
    {
      cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 0;
      list(1) = 2;
      Bool remove = True;
@@ -148,7 +148,7 @@ try {
      cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 0;
      list(1) = 2;
      Bool remove = True;
@@ -167,7 +167,7 @@ try {
      pixelReplacement(0) = -20.0;
      cout << "specified pixel replacement values = " << pixelReplacement << endl;
 
-     Vector<uInt> list(1);
+     Vector<Int> list(1);
      list(0) = 0;
      Bool remove = True;
      if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
@@ -184,7 +184,7 @@ try {
      pixelReplacement.resize(1);
      pixelReplacement(0) = +20.0;
      cout << "specified pixel replacement values = " << pixelReplacement << endl;
-     Vector<uInt> list(1);
+     Vector<Int> list(1);
      list(0) = 1;
      Bool remove = True;
      if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
@@ -202,7 +202,7 @@ try {
      pixelReplacement(0) = -20.0;
      pixelReplacement(1) = +20.0;
      cout << "specified pixel replacement values = " << pixelReplacement << endl;
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 0;
      list(1) = 1;
      Bool remove = True;
@@ -221,7 +221,7 @@ try {
      pixelReplacement(0) = -20.0;
      pixelReplacement(1) = +20.0;
      cout << "specified pixel replacement values = " << pixelReplacement << endl;
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 0;
      list(1) = 2;
      Bool remove = True;
@@ -240,7 +240,7 @@ try {
      pixelReplacement(0) = -20.0;
      pixelReplacement(1) = +20.0;
      cout << "specified pixel replacement values = " << pixelReplacement << endl;
-     Vector<uInt> list(2);
+     Vector<Int> list(2);
      list(0) = 1;
      list(1) = 2;
      Bool remove = True;
