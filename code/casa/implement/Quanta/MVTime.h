@@ -144,7 +144,7 @@ class Time;
 //	(i.e. <src>(A|B, prec)</src>), or an explicit cast:
 //	<src>((MVTime::formatTypes)(A|B))</src>, or make use of
 //	the provided <src>TIME[_CLEAN][_NO_H[M]]</src> and
-//	<src>ANGLE[_CLEAN][_NO_D[M]].</note>
+//	<src>ANGLE[_CLEAN][_NO_D[M]]</src>.</note>
 //	The modifiers can be:
 //	<ul>
 //	 <li> <src>MVTime::CLEAN</src> to suppress leading or trailing
