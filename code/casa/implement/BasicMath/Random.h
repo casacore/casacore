@@ -1,5 +1,5 @@
 //# Random.h: Random number classes
-//# Copyright (C) 1992,1993,1994,1995,1999
+//# Copyright (C) 1992,1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,328 +28,367 @@
 #if !defined(AIPS_RANDOM_H)
 #define AIPS_RANDOM_H
 
-//# This is essentially just a concatenation of:
-//# ACG.h           Geom.h          NegExp.h        Random.h 
-//# Binomial.h      HypGeom.h       Normal.h        RndInt.h
-//# DiscUnif.h      LogNorm.h       Poisson.h       Uniform.h
-//# Erlang.h        MLCG.h          RNG.h           Weibull.h
-//#
-//# from libg++-2.2. Random number classes.
-//#     written by Dirk Grunwald (grunwald@cs.uiuc.edu)
-//# Modifications for AIPS++ Brian Glendenning, 10/5/92.
-//# Changed to use exceptions instead of assert 12/1/92.
-
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
 
-//# on the alpha long is 64 bits, we redefine it here to make 
-//# this nasty piece of code work
-#if defined(__alpha__) || defined(SGI64)
-#define long int
-#endif
-
-// used to access floats as unsigneds
-union PrivateRNGSingleType {
-    float s;
-    unsigned long u;
-};
-
-// used to access doubles as unsigneds
-union PrivateRNGDoubleType {
-    double d;
-    unsigned long u[2];
-};
-
-
-// <summary> Base class for Random Number Generators </summary>
-
+// <summary>Base class for random number generators</summary>
+//
+// <use visibility=export>
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> A knowledge of C++, in particular inheritance
+//   <li> College level mathematics
+// </prerequisite>
+//
+// <etymology>
+// RNG stands for "Random Number Generator"
+// </etymology>
+//
 // <synopsis>
-// Base class for Random Number Generators.
-// See <linkto class=ACG>ACG</linkto> and <linkto class=MLCG>MLCG</linkto>
-// for instances.
-// </synopsis>
+// <h4>General Structure of the Classes</h4>
+// 
 
-// <h3> Random Number Generators and related classes </h3>
-// 
-// The two classes <linkto class=RNG><src>RNG</src></linkto> and
-// <src>Random</src> are used together to
-// generate a variety of random number distributions.  A distinction must be
-// made between <em>random number generators</em>, implemented by class
-// <src>RNG</src>, and <em>random number distributions</em>.
-// A random number generator produces a
-// series of randomly ordered bits.  These bits can be used directly, or
-// cast to other representations, such as a floating point value.  A
-// random number generator should produce a <em>uniform</em> distribution.  A
-// random number distribution, on the other hand, uses the randomly
-// generated bits of a generator to produce numbers from a distribution
-// with specific properties.  Each instance of <src>Random</src> uses an instance
-// of class <src>RNG</src> to provide the raw, uniform distribution used to
-// produce the specific distribution.  Several instances of <src>Random</src>
-// classes can share the same instance of <src>RNG</src>, or each instance can
-// use its own copy.
+// The two base classes <linkto class=RNG>RNG</linkto> and 
+// <linkto class=Random>Random</linkto> are used together to generate a variety
+// of random number distributions.  A distinction must be made between
+// <em>random number generators</em>, implemented by class derived from
+// <src>RNG</src>, and <em>random number distributions</em>.  A random number
+// generator produces a series of randomly ordered bits.  These bits can be
+// used directly, or cast to another representation, such as a floating point
+// value.  A random number generator should produce a <em>uniform</em>
+// distribution.  A random number distribution, on the other hand, uses the
+// randomly generated bits of a generator to produce numbers from a
+// distribution with specific properties.  Each instance of <src>Random</src>
+// uses an instance of class <src>RNG</src> to provide the raw, uniform
+// distribution used to produce the specific distribution.  Several instances
+// of <src>Random</src> classes can share the same instance of <src>RNG</src>,
+// or each instance can use its own copy.
 
-// <h3> RNG </h3>
+// <h4> RNG </h4>
 // 
-// Random distributions are constructed from members of class <src>RNG</src>,
-// the actual random number generators.  The <src>RNG</src> class contains no
-// data; it only serves to define the interface to random number
-// generators.  The <src>RNG::asLong</src> member returns an unsigned long
-// (typically 32 bits) of random bits.  Applications that require a number
-// of random bits can use this directly.  More often, these random bits
-// are transformed to a uniform random number:
-// 
-// <srcblock>
-//
-//          //
-//          // Return random bits converted to either a float or a double
-//          //
-//          float asFloat();
-//          double asDouble();
-//      };
-//
-// </srcblock>
-// 
-// using either <src>asFloat</src> or <src>asDouble</src>.  It is intended
-// that <src>asFloat</src>
-// and <src>asDouble</src> return differing precisions; typically,
-// <src>asDouble</src> will
-// draw two random longwords and transform them into a legal <src>double</src>,
-// while <src>asFloat</src> will draw a single longword and transform it into a
-// legal <src>float</src>.  These members are used by subclasses of the
-// <src>Random</src> class to implement a variety of random number distributions.
+
+// Random distributions are constructed from classes derived from
+// <src>RNG</src>, the actual random number generators.  The <src>RNG</src>
+// class contains no data; it only serves to define the interface to random
+// number generators.  The <src>RNG::asuInt</src> member returns a 32-bit
+// unsigned integer of random bits.  Applications that require a number of
+// random bits can use this directly.  More often, these random bits are
+// transformed to a uniformly distributed floating point number using either
+// <src>asFloat</src> or <src>asDouble</src>.  These functions return differing
+// precisions and the <src>asDouble</src> function will use two different
+// random 32-bit integers to get a legal <src>double</src>, while
+// <src>asFloat</src> will use a single integer.  These members are used by
+// classes derived fro the <src>Random</src> base class to implement a variety
+// of random number distributions.
 //
 // Currently, the following subclasses are provided:
-//
 // <ul>
-//    <li> <linkto class=ACG>ACG</linkto>: Additive Number Generator
-//    <li> <linkto class=MLCG>MLCG</linkto>:
-//         Multiplicative Linear Congruential Generator
+// <li> <linkto class=MLCG>MLCG</linkto>: 
+//      Multiplicative Linear Congruential Generator.
+//      A reasonable generator for most purposes.
+// <li> <linkto class=ACG>ACG</linkto>: Additive Number Generator. 
+//      A high quality generator that uses more memory and computation time.
 // </ul>
 // 
-// Note that on the DecAlpha we use Int instead of long to implement these
-// classes. The function signatures below can thus be misleading.
+// <note role=warning> This class assumes that IEEE floating point
+// representation is used for the floating point numbers and that the integer
+// and unsigned integer type is exactly 32 bits long.
+// </note>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// Random numbers are used everywhere, particularly in simulations.
+// </motivation>
+//
+// <thrown>
+// <li> AipsError: If a programming error or unexpected numeric size is
+// detected. Should not occur in normal usage.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class RNG {
-    static PrivateRNGSingleType singleMantissa;	// mantissa bit vector
-    static PrivateRNGDoubleType doubleMantissa;	// mantissa bit vector
 public:
-    RNG();
-    //
-    // Return a long-words word of random bits
-    //
-    virtual unsigned long asLong() = 0;
-    virtual void reset() = 0;
-    //
-    // Return random bits converted to either a float or a double
-    //
-    float asFloat();
-    double asDouble();
+  // A virtual destructor is needed to ensure that the destructor of derived
+  // classes gets used.
+  virtual ~RNG();
+
+  // Resets the random number generator. After calling this function the random
+  // numbers generated will be the same as if the object had just been
+  // constructed.
+  virtual void reset() = 0;
+
+  // Return the 32-random bits as an unsigned integer
+  virtual uInt asuInt() = 0;
+
+  // Return random bits converted to either a Float or a Double. The returned
+  // value x is in the range 1.0 > x >= 0.0 
+  // <group>
+  Float asFloat();
+  Double asDouble();
+  // </group>
 };
 
-
-// <summary> Additive number generator </summary>
-
+// <summary>Additive number generator</summary>
+//
+// <use visibility=export>
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> A knowledge of C++, in particular inheritance
+//   <li> College level mathematics
+// </prerequisite>
+//
+// <etymology>
+// ACG stands for "Additive Congruential Generator"
+// </etymology>
+//
 // <synopsis>
-//	Additive number generator. This method is presented in Volume II
-//	of The Art of Computer Programming by Knuth. I have coded the algorithm
-//	and have added the extensions by Andres Nowatzyk of CMU to randomize
-//	the result of algorithm M a bit	by using an LCG & a spatial
-//	permutation table.
+// This class implements the additive number generator as presented in Volume
+// II of The Art of Computer Programming by Knuth. I have coded the algorithm
+// and have added the extensions by Andres Nowatzyk of CMU to randomize the
+// result of algorithm M a bit by using an LCG & a spatial permutation table.
 //
-//	The version presented uses the same constants for the LCG that Andres
-//	uses (chosen by trial & error). The spatial permutation table is
-//	the same size (it is based on word size). This is for 32-bit words.
+// The version presented uses the same constants for the LCG that Andres uses
+// (chosen by trial & error). The spatial permutation table is the same size
+// (it is based on word size). This is for 32-bit words.
 //
-//	The <src>auxillary table</src> used by the LCG table varies in size, and
-//	is chosen to be the the smallest power of two which is larger than
-//	twice the size of the state table.
-// </synopsis>
-
-// <h3> ACG </h3>
-// 
+// The <src>auxillary table</src> used by the LCG table varies in size, and is
+// chosen to be the the smallest power of two which is larger than twice the
+// size of the state table.
+//
 // Class <src>ACG</src> is a variant of a Linear Congruential Generator
-// (Algorithm M) described in Knuth, *Art of Computer Programming, Vol
-// III*.  This result is permuted with a Fibonacci Additive Congruential
-// Generator to get good independence between samples.  This is a very
-// high quality random number generator, although it requires a fair
-// amount of memory for each instance of the generator.
+// (Algorithm M) described in Knuth, "Art of Computer Programming, Vol III".
+// This result is permuted with a Fibonacci Additive Congruential Generator to
+// get good independence between samples.  This is a very high quality random
+// number generator, although it requires a fair amount of memory for each
+// instance of the generator.
 // 
-// The <src>ACG::ACG</src> constructor takes two parameters: the seed and the
-// size.  The seed is any number to be used as an initial seed. The
-// performance of the generator depends on having a distribution of bits
-// through the seed.  If you choose a number in the range of 0 to 31, a
-// seed with more bits is chosen. Other values are deterministically
-// modified to give a better distribution of bits.  This provides a good
-// random number generator while still allowing a sequence to be repeated
-// given the same initial seed.
+// The constructor takes two parameters: the seed and the size.  The seed can
+// be any number. The performance of the generator depends on having a
+// distribution of bits through the seed.  If you choose a number in the range
+// of 0 to 31, a seed with more bits is chosen. Other values are
+// deterministically modified to give a better distribution of bits.  This
+// provides a good random number generator while still allowing a sequence to
+// be repeated given the same initial seed.
 // 
 // The <src>size</src> parameter determines the size of two tables used in the
 // generator. The first table is used in the Additive Generator; see the
-// algorithm in Knuth for more information. In general, this table is
-// <src>size</src> longwords long. The default value, used in the algorithm in
-// Knuth, gives a table of 220 bytes. The table size affects the period of
-// the generators; smaller values give shorter periods and larger tables
-// give longer periods. The smallest table size is 7 longwords, and the
-// longest is 98 longwords. The <src>size</src> parameter also determines the
-// size of the table used for the Linear Congruential Generator. This value is
-// chosen implicitly based on the size of the Additive Congruential
-// Generator table. It is two powers of two larger than the power of two
-// that is larger than <src>size</src>.  For example, if <src>size</src> is 7,
-// the ACG table is 7 longwords and the LCG table is 128 longwords. Thus, the
-// default size (55) requires 55 + 256 longwords, or 1244 bytes. The
-// largest table requires 2440 bytes and the smallest table requires 100
-// bytes.  Applications that require a large number of generators or
-// applications that are not so fussy about the quality of the generator
-// may elect to use the <src>MLCG</src> generator.
+// algorithm in Knuth for more information. In general, this table contains
+// <src>size</src> integers. The default value, used in the algorithm in Knuth,
+// gives a table of 55 integers (220 bytes). The table size affects the period
+// of the generators; smaller values give shorter periods and larger tables
+// give longer periods. The smallest table size is 7 integers, and the longest
+// is 98. The <src>size</src> parameter also determines the size of the table
+// used for the Linear Congruential Generator. This value is chosen implicitly
+// based on the size of the Additive Congruential Generator table. It is two
+// powers of two larger than the power of two that is larger than
+// <src>size</src>.  For example, if <src>size</src> is 7, the ACG table
+// contains 7 integers and the LCG table contains 128 integers. Thus, the
+// default size (55) requires 55 + 256 integers, or 1244 bytes. The largest
+// table requires 2440 bytes and the smallest table requires 100 bytes.
+// Applications that require a large number of generators or applications that
+// are not so fussy about the quality of the generator may elect to use the
+// <src>MLCG</src> generator.
+//
+// <note role=warning> This class assumes that the integer and unsigned integer
+// type is exactly 32 bits long.
+// </note> 
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: If a programming error or unexpected numeric size is
+// detected. Should not occur in normal usage.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class ACG : public RNG {
 
-    unsigned long initialSeed;	// used to reset generator
-    int initialTableEntry;
-
-    unsigned long *state;
-    unsigned long *auxState;
-    short stateSize;
-    short auxSize;
-    unsigned long lcgRecurr;
-    short j;
-    short k;
-
-protected:
-
 public:
-    ACG(unsigned long seed = 0, int size = 55);
-    virtual ~ACG();
-    //
-    // Return a long-words word of random bits
-    //
-    virtual unsigned long asLong();
-    virtual void reset();
-};
+  // The constructor allows you to specify seeds. The seed should be a big
+  // random number and size must be between 7 and 98. See the synopsis for more
+  // details.
+  explicit ACG(uInt seed = 0, Int size = 55);
 
+  // The destructor cleans up memory allocated by this class
+  virtual ~ACG();
+
+  // Resets the random number generator. After calling this function the random
+  // numbers generated will be the same as if the object had just been
+  // constructed.
+  virtual void reset();
+
+  // Return the 32-random bits as an unsigned integer
+  virtual uInt asuInt();
+
+private:
+  uInt itsInitSeed;     //# used to reset the generator
+  Int itsInitTblEntry;
+  
+  uInt* itsStatePtr;
+  uInt* itsAuxStatePtr;
+  Short itsStateSize;
+  Short itsAuxSize;
+  uInt lcgRecurr;
+  Short itsJ;
+  Short itsK;
+};
 
 // <summary> Multiplicative linear congruential generator </summary>
 
-// <synopsis>
-//	Multiplicative Linear Congruential Generator.
-// </synopsis>
+// <use visibility=export>
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> A knowledge of C++, in particular inheritance
+//   <li> College level mathematics
+// </prerequisite>
+//
+// <etymology>
+// MLCG stands for "Multiplicative Linear Congruential Generator"
+// </etymology>
+//
 
-// <h3> MLCG </h3>
-// 
-// The <src>MLCG</src> class implements a <em>Multiplicative Linear Congruential
-// Generator</em>. In particular, it is an implementation of the double MLCG
-// described in <em>Efficient and Portable Combined Random Number
+// <synopsis>
+// The <src>MLCG</src> class implements a <em>Multiplicative Linear
+// Congruential Generator</em>. In particular, it is an implementation of the
+// double MLCG described in <em>Efficient and Portable Combined Random Number
 // Generators</em> by Pierre L'Ecuyer, appearing in <em>Communications of the
 // ACM, Vol. 31. No. 6</em>. This generator has a fairly long period, and has
 // been statistically analyzed to show that it gives good inter-sample
 // independence.
 // 
-// The <src>MLCG::MLCG</src> constructor has two parameters, both of which are
-// seeds for the generator. As in the <src>MLCG</src> generator, both seeds are
-// modified to give a "better" distribution of seed digits. Thus, you can
-// safely use values such as <src>0</src> or <src>1</src> for the seeds.
-// The <src>MLCG</src>
+
+// The constructor has two parameters, both of which are seeds for the
+// generator. As in the <src>ACG</src> generator, both seeds are modified to
+// give a "better" distribution of seed digits. Thus, you can safely use values
+// such as <src>0</src> or <src>1</src> for the seeds.  The <src>MLCG</src>
 // generator used much less state than the <src>ACG</src> generator; only two
-// longwords (8 bytes) are needed for each generator.
+// integers (8 bytes) are needed for each generator.
 
-class MLCG : public RNG {
-    long initialSeedOne;
-    long initialSeedTwo;
-    long seedOne;
-    long seedTwo;
-
-protected:
-
-public:
-    MLCG(long seed1 = 0, long seed2 = 1);
-
-    // Return a long-words word of random bits
-    virtual unsigned long asLong();
-
-    virtual void reset();
-    long seed1();
-    void seed1(long);
-    long seed2();
-    void seed2(long);
-    void reseed(long, long);
-};
-
-inline long
-MLCG::seed1()
-{
-    return(seedOne);
-}
-
-inline void
-MLCG::seed1(long s)
-{
-    initialSeedOne = s;
-    reset();
-}
-
-inline long
-MLCG::seed2()
-{
-    return(seedTwo);
-}
-
-inline void
-MLCG::seed2(long s)
-{
-    initialSeedTwo = s;
-    reset();
-}
-
-inline void
-MLCG::reseed(long s1, long s2)
-{
-    initialSeedOne = s1;
-    initialSeedTwo = s2;
-    reset();
-}
-
-
-// <summary> Base class for random number distributions </summary>
-
-// <synopsis>
-// Base class for random number distributions.
+// <note role=warning> This class assumes that the integer and unsigned integer
+// type is exactly 32 bits long.
+// </note> 
 // </synopsis>
 
-// <h3> Random Number Generators and related classes </h3>
-// 
-// The two classes <linkto class=RNG><src>RNG</src></linkto> and
-// <linkto class=Random><src>Random</src></linkto> are used together to
-// generate a variety of random number distributions.  A distinction must be
-// made between <em>random number generators</em>, implemented by class
-// <src>RNG</src>, and <em>random number distributions</em>.
-// A random number generator produces a
-// series of randomly ordered bits.  These bits can be used directly, or
-// cast to other representations, such as a floating point value.  A
-// random number generator should produce a <em>uniform</em> distribution.  A
-// random number distribution, on the other hand, uses the randomly
-// generated bits of a generator to produce numbers from a distribution
-// with specific properties.  Each instance of <src>Random</src> uses an instance
-// of class <src>RNG</src> to provide the raw, uniform distribution used to
-// produce the specific distribution.  Several instances of <src>Random</src>
-// classes can share the same instance of <src>RNG</src>, or each instance can
-// use its own copy.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: If a programming error or unexpected numeric size is
+// detected. Should not occur in normal usage.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
-// <h3> Random </h3>
-// 
-// A random number generator may be declared by first declaring a
-// <src>RNG</src> and then a <src>Random</src>. For example,
-// <src>ACG gen(10, 20); NegativeExpntl rnd (1.0, &gen);</src>
-// declares an additive congruential
-// generator with seed 10 and table size 20, that is used to generate
-// exponentially distributed values with mean of 1.0.
+class MLCG : public RNG {
+public:
+  // The constructor allows you to specify seeds.
+  explicit MLCG(Int seed1 = 0, Int seed2 = 1);
+  
+  // The destructor is trivial 
+  virtual ~MLCG();
+
+  // Return the 32-random bits as an unsigned integer
+  virtual uInt asuInt();
+  
+  // Resets the random number generator. After calling this function the random
+  // numbers generated will be the same as if the object had just been
+  // constructed.
+  virtual void reset();
+
+  // Functions that allow the user to retrieve or change the seed integers. The
+  // seeds returned are not the user supplied values but the values obtained
+  // after some deterministic modification to produce a more uniform bit
+  // distribution.
+  // <group>
+  Int seed1() const;
+  void seed1(Int s);
+  Int seed2() const;
+  void seed2(Int s);
+  void reseed(Int s1, Int s2);
+  // </group>
+  
+private:
+  Int itsInitSeedOne;
+  Int itsInitSeedTwo;
+  Int itsSeedOne;
+  Int itsSeedTwo;
+};
+
+inline Int MLCG::seed1() const
+{
+  return itsSeedOne;
+}
+
+inline void MLCG::seed1(Int s)
+{
+  itsInitSeedOne = s;
+  reset();
+}
+
+inline Int MLCG::seed2() const
+{
+  return itsSeedTwo;
+}
+
+inline void MLCG::seed2(Int s)
+{
+  itsInitSeedTwo = s;
+  reset();
+}
+
+inline void MLCG::reseed(Int s1, Int s2)
+{
+  itsInitSeedOne = s1;
+  itsInitSeedTwo = s2;
+  reset();
+}
+
+// <summary>Base class for random number distributions</summary>
+
+// <use visibility=export>
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> A knowledge of C++, in particular inheritance
+//   <li> College level mathematics
+// </prerequisite>
+//
+// <synopsis>
+// A random number generator may be declared by first constructing a
+// <src>RNG</src> object and then a <src>Random</src>. For example,
+// <srcblock>
+//   ACG gen(10, 20); 
+//   NegativeExpntl rnd (1.0, &gen);
+// </src>
+// declares an additive congruential generator with seed 10 and table size 20,
+// that is used to generate exponentially distributed values with mean of 1.0.
 // 
 // The virtual member <src>Random::operator()</src> is the common way of
-// extracting a random number from a particular distribution.  The base
-// class, <src>Random</src> does not implement <src>operator()</src>.
-// This is performed by
-// each of the subclasses. Thus, given the above declaration of <src>rnd</src>,
-// new random values may be obtained via, for example,
-// <src>double next_exp_rand = rnd();</src>
+// extracting a random number from a particular distribution.  The base class,
+// <src>Random</src> does not implement <src>operator()</src>.  This is
+// performed by each of the derived classes. Thus, given the above declaration
+// of <src>rnd</src>, new random values may be obtained via, for example,
+// <src>Double nextExpRand = rnd();</src>
 //
 // Currently, the following subclasses are provided:
 //
@@ -366,770 +405,830 @@ MLCG::reseed(long s1, long s2)
 //    <li> <linkto class=Uniform>Uniform</linkto>
 //    <li> <linkto class=Weibull>Weibull</linkto>
 // </ul>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <thrown>
+// No exceptions are thrown directly from this class.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Random {
-protected:
-    RNG *pGenerator;
 public:
-    Random(RNG *generator);
-    virtual double operator()() = 0;
+  // A virtual destructor is needed to ensure that the destructor of derived
+  // classes gets used. Not that this destructor does NOT delete the pointer to
+  // the RNG object
+  virtual ~Random();
 
-    RNG *generator();
-    void generator(RNG *p);
+  // This function returns a random number from the appropriate distribution.
+  virtual Double operator()() = 0;
+  
+  // Functions that allow you to access and change the class that generates the
+  // random bits.
+  // <group>
+  RNG* generator();
+  void generator(RNG* p);
+  // </group>
+
+protected:
+  //# This class contains pure virtual functions hence the constructor can only
+  //# sensibly be used by derived classes.
+  Random(RNG* generator);
+
+  //# The RNG class provides the random bits.
+  RNG* itsRNG;
 };
 
-
-inline Random::Random(RNG *gen)
+inline Random::Random(RNG* gen)
 {
-    pGenerator = gen;
+  itsRNG = gen;
 }
 
-inline RNG *Random::generator()
+inline RNG* Random::generator()
 {
-    return(pGenerator);
+  return itsRNG;
 }
 
-inline void Random::generator(RNG *p)
+inline void Random::generator(RNG* p)
 {
-    pGenerator = p;
+  itsRNG = p;
 }
 
 
 // <summary> Binomial distribution </summary>
 
 // <synopsis>
-// Binomial distribution
+// The binomial distribution models successfully drawing items from a pool.
+// <src>n</src> is the number of items in the pool, and <src>p</src>, is the
+// probability of each item being successfully drawn.  The
+// <src>operator()</src> functions returns an integral value indicating the
+// number of items actually drawn from the pool. It is possible to get this
+// same value as an integer using the asInt function.
+
+// It is assumed that <src>n > 0</src> and <src>0 <= p <= 1</src> and this is
+// checked when compiled in debug mode.  The remaining members allow you to
+// read and set the parameters.
 // </synopsis>
 
-//# // <h3> Binomial </h3>
-//# // 
-// The binomial distribution models successfully drawing items from a
-// pool.  The first parameter to the constructor, <src>n</src>, is the number of
-// items in the pool, and the second parameter, <src>u</src>, is the probability
-// of each item being successfully drawn.  The member <src>asDouble</src> returns
-// the number of samples drawn from the pool.  Although it is not
-// checked, it is assumed that <src>n>0</src> and <src>0 <= u <= 1</src>.
-// The remaining members allow you to read and set the parameters.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Binomial: public Random {
-protected:
-    int pN;
-    double pU;
 public:
-    Binomial(int n, double u, RNG *gen);
+  // Construct a random number generator for a binomial distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The second
+  // and third arguments are the parameters are the Binomial distribution as
+  // described in the synopsis.
+  Binomial(RNG* gen, uInt n=1, Double p=0.5);
 
-    int n();
-    int n(int xn);
+  // The destructor is trivial
+  virtual ~Binomial();
 
-    double u();
-    double u(int xu);
-
-    virtual double operator()();
-
+  // Returns a value from the Binomial distribution. The returned value is a
+  // non-negative integer and using the asInt function bypasses the conversion
+  // to a floating point number.  
+  // <group>
+  virtual Double operator()();
+  uInt asInt();
+  // </group>
+  
+  // Functions that allow you to query and change the parameters of the
+  // binomial distribution.
+  // <group>
+  uInt n() const;
+  void n(uInt n);
+  Double p() const;
+  void p(Double p);
+  // </group>
+  
+private:
+  uInt itsN;
+  Double itsP;
 };
 
-
-inline Binomial::Binomial(int n, double u, RNG *gen)
-: Random(gen){
-  pN = n; pU = u;
+Double Binomial::operator()()
+{
+  return static_cast<Double>(asInt());
 }
 
-inline int Binomial::n() { return pN; }
-inline int Binomial::n(int xn) { int tmp = pN; pN = xn; return tmp; }
+inline uInt Binomial::n() const {
+  return itsN;
+}
 
-inline double Binomial::u() { return pU; }
-inline double Binomial::u(int xu) { double tmp = pU; pU = xu; return tmp; }
+inline void Binomial::n(uInt n) {
+  itsN = n;
+}
 
+inline Double Binomial::p() const {
+  return itsP;
+}
 
-// <summary> Discrete uniform distribution </summary>
+inline void Binomial::p(Double p) {
+  itsP = p;
+}
+
+// <summary>Discrete uniform distribution</summary>
 
 // <synopsis>
-// Discrete uniform distribution.
+
+// The <src>DiscreteUniform</src> class implements a quantized uniform random
+// variable over the closed interval ranging from <src>[low..high]</src>.  The
+// <src>low</src> parameter is the lowest possible return value and the
+// <src>high</src> parameter is the highest.  The <src>operator()</src>
+// functions returns a value from this distribution. It is possible to get this
+// same value as an integer using the asInt function.
+
+// It is assumed that low limit is less than the high limit and this is checked
+// when compiled in debug mode.  The remaining members allow you to read and
+// set the parameters.
+
 // </synopsis>
 
-//# // <h3> DiscreteUniform </h3>
-//# // 
-// The <src>DiscreteUniform</src> class implements a uniform random variable
-// over the closed interval ranging from <src>[low..high]</src>.  The first
-// parameter to the constructor is <src>low</src>, and the second is
-// <src>high</src>,
-// although the order of these may be reversed.  The remaining members
-// allow you to inspect and change <src>low</src> and <src>high</src>.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class DiscreteUniform: public Random {
-    long pLow;
-    long pHigh;
-    double delta;
 public:
-    DiscreteUniform(long low, long high, RNG *gen);
+  // Construct a random number generator for a discrete uniform
+  // distribution. The first argument is a class that produces random
+  // bits. This pointer is NOT taken over by this class and the user is
+  // responsible for deleting it. The second and third arguments define the
+  // range of possible return values for this distribution as described in the
+  // synopsis.
+  DiscreteUniform(RNG* gen, Int low=-1, Int high=1);
+  
+  // The destructor is trivial
+  virtual ~DiscreteUniform();
 
-    long low();
-    long low(long x);
-    long high();
-    long high(long x);
-
-    virtual double operator()();
+  // Returns a value from the discrete uniform distribution.  The returned
+  // value is a integer and using the asInt function bypasses the conversion to
+  // a floating point number.  
+  // <group>
+  virtual Double operator()();
+  Int asInt();
+  // </group>
+  
+  // Functions that allow you to query and change the parameters of the
+  // discrete uniform distribution.  
+  // <group>
+  Int low() const;
+  void low(Int x);
+  Int high() const;
+  void high(Int x);
+  void range(Int low, Int high);
+  // </group>
+  
+private:
+  static Double calcDelta(Int low, Int high);
+  Int itsLow;
+  Int itsHigh;
+  Double itsDelta;
 };
 
-
-inline DiscreteUniform::DiscreteUniform(long low, long high, RNG *gen)
-: Random(gen)
-{
-    pLow = (low < high) ? low : high;
-    pHigh = (low < high) ? high : low;
-    delta = (pHigh - pLow) + 1;
+inline Int DiscreteUniform::low() const {
+  return itsLow; 
 }
 
-inline long DiscreteUniform::low() { return pLow; }
-
-inline long DiscreteUniform::low(long x) {
-  long tmp = pLow;
-  pLow = x;
-  delta = (pHigh - pLow) + 1;
-  return tmp;
+inline Int DiscreteUniform::high() const {
+  return itsHigh;
 }
 
-inline long DiscreteUniform::high() { return pHigh; }
-
-inline long DiscreteUniform::high(long x) {
-  long tmp = pHigh;
-  pHigh = x;
-  delta = (pHigh - pLow) + 1;
-  return tmp;
-}
-
-
-// <summary> Erlang distribution </summary>
+// <summary>Erlang distribution</summary>
 
 // <synopsis>
-// Erlang distribution
-// </synopsis>
-
-//# // <h3> Erlang </h3>
-//# // 
 // The <src>Erlang</src> class implements an Erlang distribution with mean
 // <src>mean</src> and variance <src>variance</src>.
 
+// It is assumed that the mean is non-zero and the variance is not 0.5 and this
+// is checked when compiled in debug mode.  The remaining members allow you to
+// read and set the parameters.
+// </synopsis>
+
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
+
 class Erlang: public Random {
-protected:
-    double pMean;
-    double pVariance;
-    int k;
-    double a;
-    void setState();
 public:
-    Erlang(double mean, double variance, RNG *gen);
+  // Construct a random number generator for an Erlang distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The second
+  // and third arguments define the parameters for this distribution as
+  // described in the synopsis.
+  Erlang(RNG* gen, Double mean=1.0, Double variance=1.0);
+  
+  // The destructor is trivial
+  virtual ~Erlang();
 
-    double mean();
-    double mean(double x);
-    double variance();
-    double variance(double x);
+  // Returns a value from the Erlang distribution.
+  virtual Double operator()();
+  
+  // Functions that allow you to query and change the parameters of the
+  // discrete uniform distribution.
+  // <group>
+  Double mean() const;
+  void mean(Double x);
+  Double variance() const;
+  void variance(Double x);
+  // </group>
 
-    virtual double operator()();
-
+private:
+  void setState();
+  Double itsMean;
+  Double itsVariance;
+  Int itsK;
+  Double itsA;
 };
 
-
-inline void Erlang::setState() {
-  k = int( (pMean * pMean ) / pVariance + 0.5 );
-  k = (k > 0) ? k : 1;
-  a = k / pMean;
-}
-
-inline Erlang::Erlang(double mean, double variance, RNG *gen) : Random(gen)
+inline Erlang::Erlang(RNG* gen, Double mean, Double variance) 
+  :Random(gen),
+   itsMean(mean),
+   itsVariance(variance)
 {
-  pMean = mean; pVariance = variance;
   setState();
 }
 
-inline double Erlang::mean() { return pMean; }
-inline double Erlang::mean(double x) {
-  double tmp = pMean; pMean = x; setState(); return tmp;
-};
-
-inline double Erlang::variance() { return pVariance; }
-inline double Erlang::variance(double x) {
-  double tmp = pVariance; pVariance = x; setState(); return tmp;
+inline Double Erlang::mean() const {
+  return itsMean;
 }
 
+inline void Erlang::mean(Double x) {
+  itsMean = x;
+  setState(); 
+}
+
+inline Double Erlang::variance() const {
+  return itsVariance;
+}
+
+inline void Erlang::variance(Double x) {
+  itsVariance = x;
+  setState();
+}
 
 // <summary> Discrete geometric distribution </summary>
 
 // <synopsis>
-// Discrete geometric distribution
+
+// The <src>Geometric</src> class implements a discrete geometric distribution.
+// The <src>mean</src> parameter, is the mean of the distribution.  
+// The <src>operator()</src> functions returns an non-negative integral value
+// indicating the number of uniform random samples actually drawn before one is
+// obtained that is larger than the mean. To get this same value as an integer
+// using the asInt function.
+
+// It is assumed that the supplied mean is between zero and one 
+// <src>(0 <= mean < 1)</src> and this is checked when compiled in debug mode.
+// The remaining members allow you to read and set the parameters.
 // </synopsis>
 
-//# // <h3> Geometric </h3>
-//# // 
-// The <src>Geometric</src> class implements a discrete geometric distribution.
-// The first parameter to the constructor, <src>mean</src>, is the mean of the
-// distribution.  Although it is not checked, it is assumed that
-// <src>0 <= mean <= 1</src>.
-// <src>Geometric()</src> returns the number of uniform random samples
-// that were drawn before the sample was larger than <src>mean</src>.  This
-// quantity is always greater than zero.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Geometric: public Random {
-protected:
-    double pMean;
 public:
-    Geometric(double mean, RNG *gen);
+  // Construct a random number generator for a geometric uniform
+  // distribution. The first argument is a class that produces random
+  // bits. This pointer is NOT taken over by this class and the user is
+  // responsible for deleting it. The second argument defines the range of
+  // possible return values for this distribution as described in the synopsis.
+  Geometric(RNG* gen, Double mean=0.5);
+  
+  // The destructor is trivial
+  virtual ~Geometric();
 
-    double mean();
-    double mean(double x);
-
-    virtual double operator()();
-
+  // Returns a value from the geometric uniform distribution.  The returned
+  // value is a non-negative integer and using the asInt function bypasses the
+  // conversion to a floating point number.  
+  // <group>
+  virtual Double operator()();
+  uInt asInt();
+  // </group>
+  
+  // Functions that allow you to query and change the parameters of the
+  // geometric uniform distribution.  
+  // <group>
+  Double mean() const;
+  void mean(Double x);
+  // </group>
+  
+private:
+  Double itsMean;
 };
 
-
-inline Geometric::Geometric(double mean, RNG *gen) : Random(gen)
-{
-  pMean = mean;
+inline Double Geometric::mean() const {
+  return itsMean;
 }
-
-
-inline double Geometric::mean() { return pMean; }
-inline double Geometric::mean(double x) {
-  double tmp = pMean; pMean = x; return tmp;
-}
-
 
 // <summary> Hypergeometric distribution </summary>
 
 // <synopsis>
-// Hypergeometric distribution
+// The <src>HyperGeometric</src> class implements the hypergeometric
+// distribution.  The <src>mean</src> and <src>variance</src> are the
+// parameters of the distribution.  The <src>operator()</src> functions returns
+// a value from this distribution
+
+// It is assumed that the supplied mean is not zero and the variance is
+// positive and this is checked when compiled in debug mode.  The remaining
+// members allow you to read and set the parameters.
 // </synopsis>
 
-//# // <h3> HyperGeometric </h3>
-//# // 
-// The <src>HyperGeometric</src> class implements the hypergeometric
-// distribution.  The first parameter to the constructor, <src>mean</src>, is the
-// mean and the second, <src>variance</src>, is the variance.  The remaining
-// members allow you to inspect and change the mean and variance.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class HyperGeometric: public Random {
-protected:
-    double pMean;
-    double pVariance;
-    double pP;
-    void setState();
-
 public:
-    HyperGeometric(double mean, double variance, RNG *gen);
+  // Construct a random number generator for an hypergeometric
+  // distribution. The first argument is a class that produces random
+  // bits. This pointer is NOT taken over by this class and the user is
+  // responsible for deleting it. The second and third arguments define the
+  // parameters for this distribution as described in the synopsis.
+  HyperGeometric(RNG* gen, Double mean=1.0, Double variance=1.0);
+  
+  // The destructor is trivial
+  virtual ~HyperGeometric();
 
-    double mean();
-    double mean(double x);
-    double variance();
-    double variance(double x);
-
-    virtual double operator()();
+  // Returns a value from the hypergeometric distribution.
+  virtual Double operator()();
+  
+  // Functions that allow you to query and change the parameters of the
+  // hypergeometric distribution.
+  // <group>
+  Double mean() const;
+  void mean(Double x);
+  Double variance() const;
+  void variance(Double x);
+  // </group>
+  
+private:
+  void setState();
+  Double itsMean;
+  Double itsVariance;
+  Double itsP;
 };
 
 
-inline void HyperGeometric::setState() {
-  double z = pVariance / (pMean * pMean);
-  pP = 0.5 * (1.0 - sqrt((z - 1.0) / ( z + 1.0 )));
-}
-
-inline HyperGeometric::HyperGeometric(double mean, double variance, RNG *gen)
-: Random(gen) {
-  pMean = mean; pVariance = variance;
+inline HyperGeometric::HyperGeometric(RNG* gen, Double mean, Double variance)
+  :Random(gen),
+   itsMean(mean),
+   itsVariance(variance)
+{
   setState();
 }
 
-inline double HyperGeometric::mean() { return pMean; };
-
-inline double HyperGeometric::mean(double x) {
-  double t = pMean; pMean = x;
-  setState(); return t;
+inline Double HyperGeometric::mean() const {
+  return itsMean; 
 }
 
-inline double HyperGeometric::variance() { return pVariance; }
-
-inline double HyperGeometric::variance(double x) {
-  double t = pVariance; pVariance = x;
-  setState(); return t;
+inline void HyperGeometric::mean(Double x) {
+  itsMean = x;
+  setState();
 }
 
+inline Double HyperGeometric::variance() const {
+  return itsVariance; 
+}
 
-// <summary> Normal distribution </summary>
+inline void HyperGeometric::variance(Double x) {
+  itsVariance = x;
+  setState(); 
+}
+
+// <summary>Normal or Gaussian distribution </summary>
 
 // <synopsis>
-// Normal distribution.
+// The <src>Normal</src> class implements the normal or Gaussian distribution.
+// The <src>mean</src> and <src>variance</src> are the parameters of the
+// distribution.  The <src>operator()</src> functions returns a value from this
+// distribution
+
+// It is assumed that the supplied variance is positive and this is checked
+// when compiled in debug mode.  The remaining members allow you to read and
+// set the parameters. The <src>LogNormal</src> class is derived from this one.
+
 // </synopsis>
 
-//# // <h3> Normal </h3>
-//# // 
-// The <src>Normal</src>class implements the normal distribution.  The first
-// parameter to the constructor, <src>mean</src>, is the mean and the second,
-// <src>variance</src>, is the variance.  The remaining members allow you to
-// inspect and change the mean and variance.  The <src>LogNormal</src> class is a
-// subclass of <src>Normal</src>.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Normal: public Random {
-    char haveCachedNormal;
-    double cachedNormal;
-
-protected:
-    double pMean;
-    double pVariance;
-    double pStdDev;
-    
 public:
-    Normal(double xmean, double xvariance, RNG *gen);
-    double mean();
-    double mean(double x);
-    double variance();
-    double variance(double x);
-    virtual double operator()();
+  // Construct a random number generator for a normal distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The second
+  // and third arguments define the parameters for this distribution as
+  // described in the synopsis.
+  Normal(RNG* gen, Double mean=0.0, Double variance=1.0);
+
+  // The destructor is trivial
+  virtual ~Normal();
+
+  // Returns a value from the normal distribution.
+  virtual Double operator()();
+  
+  // Functions that allow you to query and change the parameters of the
+  // normal distribution.
+  // <group>
+  virtual Double mean() const;
+  virtual void mean(Double x);
+  virtual Double variance() const;
+  virtual void variance(Double x);
+  // </group>
+  
+private:
+  Double itsMean;
+  Double itsVariance;
+  Double itsStdDev;
+  Bool itsCached;
+  Double itsCachedValue;
 };
-
-
-inline Normal::Normal(double xmean, double xvariance, RNG *gen)
-: Random(gen) {
-  pMean = xmean;
-  pVariance = xvariance;
-  pStdDev = sqrt(pVariance);
-  haveCachedNormal = 0;
-}
-
-inline double Normal::mean() { return pMean; };
-inline double Normal::mean(double x) {
-  double t=pMean; pMean = x;
-  return t;
-}
-
-inline double Normal::variance() { return pVariance; }
-inline double Normal::variance(double x) {
-  double t=pVariance; pVariance = x;
-  pStdDev = sqrt(pVariance);
-  return t;
-};
-
 
 // <summary> Logarithmic normal distribution </summary>
 
 // <synopsis>
-// Logarithmic normal distribution.
+// The <src>LogNormal</src> class implements the logaraithmic normal
+// distribution.  The <src>mean</src> and <src>variance</src> are the
+// parameters of the distribution. The <src>operator()</src> functions returns
+// a value from this distribution
+
+// It is assumed that the supplied variance is positive and this is checked
+// when compiled in debug mode.  The remaining members allow you to read and
+// set the parameters.
+
 // </synopsis>
 
-//# // <h3> LogNormal </h3>
-//# // 
-// The <src>LogNormal</src>class implements the logarithmic normal
-// distribution.  The first parameter to the constructor, <src>mean</src>, is the
-// mean and the second, <src>variance</src>, is the variance.  The remaining
-// members allow you to inspect and change the mean and variance.  The
-// <src>LogNormal</src> class is a subclass of <src>Normal</src>.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class LogNormal: public Normal {
-protected:
-    double logMean;
-    double logVariance;
-    void setState();
 public:
-    LogNormal(double mean, double variance, RNG *gen);
-    double mean();
-    double mean(double x);
-    double variance();
-    double variance(double x);
-    virtual double operator()();
+  // Construct a random number generator for a log-normal distribution. The
+  // first argument is a class that produces random bits. This pointer is NOT
+  // taken over by this class and the user is responsible for deleting it. The
+  // second and third arguments define the parameters for this distribution as
+  // described in the synopsis.
+  LogNormal(RNG* gen, Double mean=0.0, Double variance=1.0);
+
+  // The destructor is trivial
+  virtual ~LogNormal();
+
+  // Returns a value from the log-normal distribution.
+  virtual Double operator()();
+
+  // Functions that allow you to query and change the parameters of the
+  // log-normal distribution.
+  // <group>
+  virtual Double mean() const;
+  virtual void mean(Double x);
+  virtual Double variance() const;
+  virtual void variance(Double x);
+  // </group>
+
+private:
+  void setState();
+  Double itsLogMean;
+  Double itsLogVar;
 };
 
-
-inline void LogNormal::setState()
-{
-    double m2 = logMean * logMean;
-    pMean = log(m2 / sqrt(logVariance + m2) );
-//# from ch@heike.informatik.uni-dortmund.de:
-//# (was   pVariance = log((sqrt(logVariance + m2)/m2 )); )
-    pStdDev = sqrt(log((logVariance + m2)/m2 )); 
-}
-
-inline LogNormal::LogNormal(double mean, double variance, RNG *gen)
-    : Normal(mean, variance, gen)
-{
-    logMean = mean;
-    logVariance = variance;
-    setState();
-}
-
-inline double LogNormal::mean() {
-    return logMean;
-}
-
-inline double LogNormal::mean(double x)
-{
-    double t=logMean; logMean = x; setState();
-    return t;
-}
-
-inline double LogNormal::variance() {
-    return logVariance;
-}
-
-inline double LogNormal::variance(double x)
-{
-    double t=logVariance; logVariance = x; setState();
-    return t;
-}
-
-
-// <summary> Negative exponential distribution </summary>
+// <summary>Negative exponential distribution</summary>
 
 // <synopsis>
-// Negative exponential distribution.
+// The <src>NegativeExpntl</src> class implements a negative exponential
+// distribution.  The <src>mean</src> parameter, is the only parameter of this
+// distribution.  The <src>operator()</src> functions returns a value from this
+// distribution. The remaining members allow you to inspect and change the
+// mean.
 // </synopsis>
 
-//# // <h3> NegativeExpntl </h3>
-//# // 
-// The <src>NegativeExpntl</src> class implements the negative exponential
-// distribution.  The first parameter to the constructor is the mean. 
-// The remaining members allow you to inspect and change the mean.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> No exceptions are thrown by this class.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class NegativeExpntl: public Random {
-protected:
-    double pMean;
 public:
-    NegativeExpntl(double xmean, RNG *gen);
-    double mean();
-    double mean(double x);
+  // Construct a random number generator for a negative exponential
+  // distribution. The first argument is a class that produces random
+  // bits. This pointer is NOT taken over by this class and the user is
+  // responsible for deleting it. The second argument defines the parameters
+  // for this distribution as described in the synopsis.
+  NegativeExpntl(RNG* gen, Double mean=1.0);
 
-    virtual double operator()();
+  // The destructor is trivial
+  virtual ~NegativeExpntl();
+
+  // Returns a value from the negative exponential distribution.
+  virtual Double operator()();
+
+  // Functions that allow you to query and change the parameters of the
+  // negative exponential distribution.
+  // <group>
+  Double mean() const;
+  void mean(Double x);
+  // </group>
+  
+protected:
+  Double itsMean;
 };
 
-
-inline NegativeExpntl::NegativeExpntl(double xmean, RNG *gen)
-: Random(gen) {
-  pMean = xmean;
+inline NegativeExpntl::NegativeExpntl(RNG* gen, Double mean)
+  :Random(gen)
+{
+  itsMean = mean;
 }
 
-inline double NegativeExpntl::mean() { return pMean; }
-inline double NegativeExpntl::mean(double x) {
-  double t = pMean; pMean = x;
-  return t;
+inline Double NegativeExpntl::mean() const {
+  return itsMean; 
 }
 
+inline void NegativeExpntl::mean(Double x) {
+  itsMean = x;
+}
 
 // <summary> Poisson distribution </summary>
-
 // <synopsis>
-// Poisson distribution.
+// The <src>Poisson</src> class implements a Poisson distribution.  The
+// <src>mean</src> parameter, is the only parameter of this distribution.  The
+// <src>operator()</src> functions returns a value from this distribution. The
+// remaining members allow you to inspect and change the mean.
 // </synopsis>
 
-//# // <h3> Poisson </h3>
-//# // 
-// The <src>Poisson</src> class implements the poisson distribution.  The first
-// parameter to the constructor is the mean.  The remaining members allow
-// you to inspect and change the mean.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> No exceptions are thrown by this class.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Poisson: public Random {
-protected:
-    double pMean;
 public:
-    Poisson(double mean, RNG *gen);
-
-    double mean();
-    double mean(double x);
-
-    virtual double operator()();
-};
-
-
-inline Poisson::Poisson(double mean, RNG *gen)
-: Random(gen) {
-  pMean = mean;
-}
-
-inline double Poisson::mean() { return pMean; }
-inline double Poisson::mean(double x) {
-  double t = pMean;
-  pMean = x;
-  return t;
-}
-
-
-// <summary> Uniform integer distribution </summary>
-
-// <synopsis>
-// RandomInteger uses a random number generator to generate an integer
-// in a specified range.  By default the range is 0..1.  Since in my
-// experience random numbers are often needed for a wide variety of
-// ranges in the same program, this generator accepts a new low or high value
-// as an argument to the asLong and operator() methods to temporarily 
-// override stored values
-// </synopsis>
-
-//# // <h3> RandomInteger </h3>
-//# // 
-// The <src>RandomInteger</src> class is *not* a subclass of Random, but a
-// stand-alone integer-oriented class that is dependent on the RNG
-// classes. RandomInteger returns random integers uniformly from the
-// closed interval <src>[low..high]</src>.
-// The first parameter to the constructor is <src>low</src>, and the second
-// is <src>high</src>, although both are optional.  The
-// last argument is always a generator.  Additional members allow you to
-// inspect and change <src>low</src> and <src>high</src>.
-// Random integers are generated
-// using <src>asInt()</src> or <src>asLong()</src>.
-// Operator syntax (<src>()</src>) is also
-// available as a shorthand for <src>asLong()</src>.
-// Because <src>RandomInteger</src> is
-// often used in simulations for which uniform random integers are
-// desired over a variety of ranges,
-// <src>asLong()</src> and <src>asInt</src> have <src>high</src>
-// as an optional argument.  Using this optional argument produces a
-// single value from the new range, but does not change the default range.
-
-class RandomInteger 
-{
- protected:
-  RNG *pGenerator;
-  long pLow;
-  long pHigh;
-
-  long _asLong(long, long);
-
- public:
-
-       RandomInteger(long low, long high, RNG *gen);
-       RandomInteger(long high, RNG *gen);
-       RandomInteger(RNG *gen);
-
-// read params
-
-  long low() const;
-  long high() const;
-  RNG* generator() const;
-
-// change params
-
-  long low(long x);
-  long high(long x);
-  RNG* generator(RNG *gen);
-
-// get a random number
-
-  long asLong();
-  long operator()(); // synonym for asLong
-  int  asInt();      // (possibly) truncate as int
-
-// override params for one shot
-
-  long asLong(long high);
-  long asLong(long low, long high);
-
-  long operator () (long high);  // synonyms
-  long operator () (long low, long high);
-
-};
-
-
-inline RandomInteger::RandomInteger(long low, long high, RNG *gen) 
-  :        pGenerator(gen), 
-	   pLow((low < high) ? low : high),
-	   pHigh((low < high) ? high : low)
-{}
-
-inline RandomInteger::RandomInteger(long high, RNG *gen) 
-  :        pGenerator(gen),
-	   pLow((0 < high) ? 0 : high),
-	   pHigh((0 < high) ? high : 0)
-{}
+  // Construct a random number generator for a Poisson distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The second
+  // argument defines the parameters for this distribution as described in the
+  // synopsis.
+  Poisson(RNG* gen, Double mean);
   
+  // The destructor is trivial
+  virtual ~Poisson();
 
-inline RandomInteger::RandomInteger(RNG *gen) 
-  :        pGenerator(gen),
-	   pLow(0),
-	   pHigh(1)
-{}
+  // Returns a value from the Poisson distribution. The returned value is a
+  // non-negative integer and using the asInt function bypasses the conversion
+  // to a floating point number.
+  // <group>
+  virtual Double operator()();
+  uInt asInt();
+  // </group>
+  
+  // Functions that allow you to query and change the parameters of the
+  // Poisson distribution.
+  // <group>
+  Double mean() const;
+  void mean(Double x);
+  // </group>
+  
+private:
+  Double itsMean;
+};
 
-inline RNG* RandomInteger::generator() const { return pGenerator;}
-inline long RandomInteger::low() const       { return pLow; }
-inline long RandomInteger::high() const      { return pHigh; }
-
-inline RNG* RandomInteger::generator(RNG *gen) 
+inline Poisson::Poisson(RNG* gen, Double mean)
+  :Random(gen) 
 {
-  RNG *tmp = pGenerator; pGenerator = gen;  return tmp;
+  itsMean = mean;
 }
 
-inline long RandomInteger::low(long x)  
-{
-  long tmp = pLow;  pLow = x;  return tmp;
+inline Double Poisson::mean() const { 
+  return itsMean;
 }
 
-inline long RandomInteger:: high(long x) 
-{
-  long tmp = pHigh; pHigh = x; return tmp;
+inline void Poisson::mean(Double x) {
+  itsMean = x;
 }
 
-inline long RandomInteger:: _asLong(long low, long high)
-{	
-  return (pGenerator->asLong() % (high-low+1)) + low;
-}
-
-
-inline long RandomInteger:: asLong() 
-{
-  return _asLong(pLow, pHigh);
-}
-
-inline long RandomInteger:: asLong(long high)
-{
-  return _asLong(pLow, high);
-}
-
-inline long RandomInteger:: asLong(long low, long high)
-{
-  return _asLong(low, high);
-}
-
-inline long RandomInteger:: operator () () 
-{
-  return _asLong(pLow, pHigh);
-}
-
-inline long RandomInteger:: operator () (long high)
-{
-  return _asLong(pLow, high);
-}
-
-inline long RandomInteger:: operator () (long low, long high)
-{
-  return _asLong(low, high);
-}
-
-
-
-
-inline int RandomInteger:: asInt() 
-{
-  return int(asLong());
-}
-
-
-// <summary> Uniform distribution </summary>
+// <summary>Uniform distribution</summary>
 
 // <synopsis>
-// Uniform distribution
+// The <src>Uniform</src> class implements a uniform random variable over the
+// copen interval ranging from <src>[low..high)</src>.  The <src>low</src>
+// parameter is the lowest possible return value and the <src>high</src>
+// parameter can never be returned.  The <src>operator()</src> functions
+// returns a value from this distribution.
+
+// It is assumed that low limit is less than the high limit and this is checked
+// when compiled in debug mode.  The remaining members allow you to read and
+// set the parameters.
+
 // </synopsis>
 
-//# // <h3> Uniform </h3>
-//# // 
-// The <src>Uniform</src> class implements a uniform random variable over the
-// open interval ranging from <src>[low..high)</src>.  The first parameter to the
-// constructor is <src>low</src>, and the second is <src>high</src>, although
-// the order of
-// these may be reversed.  The remaining members allow you to inspect and
-// change <src>low</src> and <src>high</src>.
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Uniform: public Random {
-    double pLow;
-    double pHigh;
-    double delta;
 public:
-    Uniform(double low, double high, RNG *gen);
+  // Construct a random number generator for a uniform distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The
+  // remaining arguments define the parameters for this distribution as
+  // described in the synopsis.
+  Uniform(RNG* gen, Double low=-1.0, Double high=1.0);
 
-    double low();
-    double low(double x);
-    double high();
-    double high(double x);
+  // The destructor is trivial
+  virtual ~Uniform();
 
-    virtual double operator()();
+  // Returns a value from the uniform distribution. 
+  virtual Double operator()();
+  
+  // Functions that allow you to query and change the parameters of the
+  // uniform distribution.  
+  // <group>
+  Double low() const;
+  void low(Double x);
+  Double high() const;
+  void high(Double x);
+  // </group>
+
+private:
+  static Double calcDelta(Double low, Double high);
+  Double itsLow;
+  Double itsHigh;
+  Double itsDelta;
 };
 
-
-inline Uniform::Uniform(double low, double high, RNG *gen) : Random(gen)
-{
-    pLow = (low < high) ? low : high;
-    pHigh = (low < high) ? high : low;
-    delta = pHigh - pLow;
+inline Double Uniform::low() const {
+  return itsLow;
 }
 
-inline double Uniform::low() { return pLow; }
-
-inline double Uniform::low(double x) {
-  double tmp = pLow;
-  pLow = x;
-  delta = pHigh - pLow;
-  return tmp;
+inline Double Uniform::high() const {
+  return itsHigh;
 }
 
-inline double Uniform::high() { return pHigh; }
+// <summary>Weibull distribution</summary>
 
-inline double Uniform::high(double x) {
-  double tmp = pHigh;
-  pHigh = x;
-  delta = pHigh - pLow;
-  return tmp;
-}
+// <synopsis> 
 
-
-// <summary> Weibull distribution </summary>
-
-// <synopsis>
-// Weibull distribution.
-// </synopsis>
-
-//# // <h3> Weibull </h3>
-//# // 
 // The <src>Weibull</src> class implements a weibull distribution with
 // parameters <src>alpha</src> and <src>beta</src>.  The first parameter to the
 // class constructor is <src>alpha</src>, and the second parameter is
-// <src>beta</src>.  The remaining members allow you to inspect and change
-// <src>alpha</src> and <src>beta</src>.
+// <src>beta</src>.  It is assumed that the alpha parameter is not zero and
+// this is checked when compiled in debug mode.  The remaining members allow
+// you to read and set the parameters.
+
+// </synopsis>
+
+// <example>
+// </example>
+//
+// <thrown>
+// <li> AipsError: if bad values for the arguments are given, as specified
+//      above.
+// </thrown>
+//
+// <todo asof="2000/05/09">
+//   <li> Nothing I hope!
+// </todo>
 
 class Weibull: public Random {
-protected:
-    double pAlpha;
-    double pInvAlpha;
-    double pBeta;
-
-    void setState();
-    
 public:
-    Weibull(double alpha, double beta, RNG *gen);
+  // Construct a random number generator for a uniform distribution. The first
+  // argument is a class that produces random bits. This pointer is NOT taken
+  // over by this class and the user is responsible for deleting it. The
+  // remaining arguments define the parameters for this distribution as
+  // described in the synopsis.
+  Weibull(RNG* gen, Double alpha, Double beta);
+  
+  // The destructor is trivial
+  virtual ~Weibull();
 
-    double alpha();
-    double alpha(double x);
+  // Returns a value from the Weiball distribution. 
+  virtual Double operator()();
+  
+  // Functions that allow you to query and change the parameters of the
+  // Weiball distribution.  
+  // <group>
+  Double alpha() const;
+  void alpha(Double x);
+  Double beta() const;
+  void beta(Double x);
+  // </group>
 
-    double beta();
-    double beta(double x);
-
-    virtual double operator()();
+private:
+  void setState();
+  Double itsAlpha;
+  Double itsBeta;
+  Double itsInvAlpha;
 };
 
-
-inline void Weibull::setState() {
-  pInvAlpha = 1.0 / pAlpha;
-}
-    
-inline Weibull::Weibull(double alpha, double beta,  RNG *gen) : Random(gen)
+inline Weibull::Weibull(RNG* gen, Double alpha, Double beta)
+  :Random(gen),
+   itsAlpha(alpha),
+   itsBeta(beta),
+   itsInvAlpha()
 {
-  pAlpha = alpha;
-  pBeta = beta;
   setState();
 }
 
-inline double Weibull::alpha() { return pAlpha; }
-
-inline double Weibull::alpha(double x) {
-  double tmp = pAlpha;
-  pAlpha = x;
-  setState();
-  return tmp;
+inline Double Weibull::alpha() const {
+  return itsAlpha;
 }
 
-inline double Weibull::beta() { return pBeta; };
-inline double Weibull::beta(double x) {
-  double tmp = pBeta;
-  pBeta = x;
-  return tmp;
-};
+inline void Weibull::alpha(Double x) {
+  itsAlpha = x;
+  setState();
+}
 
-#if defined(__alpha__) || defined(SGI64)
-#undef long
+inline Double Weibull::beta() const {
+  return itsBeta; 
+}
+
+inline void Weibull::beta(Double x) {
+  itsBeta = x;
+}
+
 #endif
-
-#endif
-
