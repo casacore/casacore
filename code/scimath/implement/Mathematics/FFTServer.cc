@@ -210,14 +210,14 @@ fft(Array<T> & rResult, const Array<S> & cData) {
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cValues, const Bool toFrequency=True) {
+fft(Array<S> & cValues, const Bool toFrequency) {
   flip(cValues, True, False);
   fft0(cValues, toFrequency);
   flip(cValues, False, False);
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
+fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
   if (cResult.nelements() != 0) {
     AlwaysAssert(cResult.conform(cData), AipsError);
   }
@@ -503,7 +503,7 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
+fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
   if (cResult.nelements() != 0) {
     AlwaysAssert(cResult.conform(cData), AipsError);
   }
