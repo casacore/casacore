@@ -228,7 +228,7 @@
   done
 
   DOINCLUDES="no"
-  if [ "$LIMB" == . ]
+  if [ "$LIMB" = . ]
   then
      if [ ! -d ./include ]
      then
@@ -243,13 +243,13 @@
      DOINCLUDES="yes"
      INCDIRS=`(cd $ROOTSTEM ; ls -d */implement)`
   fi
-  if [ "$LIMB" == "include" ]
+  if [ "$LIMB" = "include" ]
   then
      DOINCLUDES="yes"
      INCDIRS=`(cd $ROOTSTEM/.. ; ls -d */implement)`
   fi
 #    Create the code/include symlinks.
-  if [ "$DOINCLUDES" == "yes" ]
+  if [ "$DOINCLUDES" = "yes" ]
   then
      for INCDIR in $INCDIRS
      do
