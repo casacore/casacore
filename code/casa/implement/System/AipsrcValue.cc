@@ -71,7 +71,6 @@ Bool AipsrcValue<T>::find(T &value,
     instr >> qres;
     if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
     value = (T) qres.getValue(resun);
-    cerr << "a: " << value << endl; ///
   };
   return x;
 }
