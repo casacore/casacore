@@ -1,0 +1,236 @@
+//# tMathNaN.cc: Test program for NaN
+//# Copyright (C) 1999
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/aips.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Inputs/Input.h>
+#include <aips/OS/Timer.h> 
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+#include <ieeefp.h>
+#endif
+#include <iostream.h>
+#include <iomanip.h>
+
+
+#define	isnanfmacro(x)	(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
+			    ((*(Int *)&(x) & 0x007fffff) != 0x00000000))
+
+inline Bool isNaN_isnan(Float val) {
+  return ToBool(isnan(Double(val)));
+}
+
+inline Bool isNaN_isnanf(Float val) {
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+  return ToBool(isnanf(val));
+#else
+  return ToBool(isnanfmacro(val));
+#endif
+}
+
+inline Bool isNaN_ref(const Float &x)
+{
+  return ToBool(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
+		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
+}
+
+inline Bool isNaN_val(Float x)
+{
+  return ToBool(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
+		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
+}
+
+
+Bool doIt (Int n, Float x, Bool nan)
+{
+   Bool ok = True;
+   const Int narr = 100000;
+   // Determine the expected nr of NaN's.
+   uInt nrnan = 0;
+   if (nan) {
+     nrnan = n*narr;
+   }
+   // Initialize the array.
+   Float arr[narr];
+   for (Int i=0; i<narr; i++) {
+     arr[i] = x;
+   }
+//
+   Timer t; 
+   uInt nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (ToBool(arr[j] != arr[j])) {
+	 nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "       != ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isNaN_isnan(arr[j])) {
+        nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "    isnan ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isNaN_isnanf(arr[j])) {
+	 nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "   isnanf ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isNaN_ref(arr[j])) {
+	 nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "   by ref ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isNaN_val(arr[j])) {
+	 nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "   by val ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isNaN(arr[j])) {
+	 nf++;
+       }
+     }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "    isNaN ";
+   t.show();
+//
+   nf = 0;
+   t.mark();
+   for (Int i=0; i<n; i++) {
+     for (Int j=0; j<narr; j++) {
+       if (isnanfmacro(arr[j])) {
+	 nf++;
+       }
+      }
+   }
+   if (nf != nrnan) {
+     cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
+     ok = False;
+   }
+   cout << "nf=" << nf << "    macro ";
+   t.show();
+
+   cout << endl;
+   return ok;
+}
+ 
+
+ 
+
+main (int argc, char **argv)
+{
+   Input inputs(1);
+   inputs.Version ("$Revision$");
+   inputs.Create("n", "100", "Number of tries");
+ 
+   inputs.ReadArguments(argc, argv);
+   const Int n = inputs.GetInt("n");
+   cout << "n = " << n << endl;
+//
+   Bool ok = True;
+   Float x = 0;
+   if (! doIt (n, x, False)) {
+     ok = False;
+   }
+   setNaN (x);
+   if (! doIt (n, x, True)) {
+     ok = False;
+   }
+   // Let the machine generate a NaN.
+   // I don't know if this is really portable.
+   x = sqrt(double(-1));
+   if (! doIt (n, x, True)) {
+     ok = False;
+   }
+
+   if (ok) {
+     cout << "OK" << endl;
+     return 0;
+   }
+   cout << "errors found" << endl;
+   return 1;
+}
