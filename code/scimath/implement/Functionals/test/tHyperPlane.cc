@@ -1,5 +1,5 @@
 //# tHyperPlane.cc: Test the HyperPlane class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 int main() {
 
   try {
-    // Construct an m dimensional hyper plane which has m+1 coefficients.  By 
+    // Construct an m dimensional hyper plane which has m coefficients.  By 
     // default, the coefficients are initialized to zero.
     //HyperPlane(uInt m);
     HyperPlane<Double> hyper(3);
@@ -57,16 +57,15 @@ int main() {
     comb2 = hyper;
     
     // Return the total number of coefficients, which is the dimension of the
-    // hyper plane plus one.
-    AlwaysAssertExit(hyper.nparameters() == 4 && 
+    // hyper plane.
+    AlwaysAssertExit(hyper.nparameters() == 3 && 
       hyper.nparameters() == comb2.nparameters());
-    
-    Vector<Double> v(4);
+    Vector<Double> v(3);
     
     // Set the value of a coefficient. 
     // Get the value of a coefficient.  
-    // f(x,y,z) = 10x + 11y + 12*z + 13
-    for (uInt i=0; i<4; i++) {
+    // f(x,y,z) = 10x + 11y + 12*z
+    for (uInt i=0; i<3; i++) {
       hyper[i] = i+10;
       AlwaysAssertExit(hyper[i] == Double(i+10));
       v(i) = i+10;
@@ -78,12 +77,11 @@ int main() {
     AlwaysAssertExit(allEQ(hyper.parameters().getParameters(), v));
     
     // Evaluate the function at <src>v</src>. 
-    // f(x,y,z) = 10x + 11y + 12*z + 13
-    AlwaysAssertExit((hyper(v) - Double(378)) < 1.e-6);
-    
+    // f(x,y,z) = 10x + 11y + 12*z
+    AlwaysAssertExit((hyper(v) - Double(365)) < 1.e-6);
     // Returns the dimension of functions in the linear hyper
-    // uInt order() const;
-    AlwaysAssertExit(hyper.order() == 3);
+    // uInt ndim() const;
+    AlwaysAssertExit(hyper.ndim() == 3);
     
     // Set coefficients
     for (uInt i=0; i<hyper.nparameters()-2; i++) { 
@@ -95,15 +93,15 @@ int main() {
     
     for (uInt i=0; i<hyper.parameters().nMaskedParameters(); i++) { 
       AlwaysAssertExit(hyper.parameters().getMaskedParameters()[i] ==
-		       Double(12+i));
+		       Double(11+i));
     };
   
     // test specialized AutoDiff 
     // f(x,y,z) = 10x + 11y + 12*z + 13
-    Vector<AutoDiffA<Double> > v6(4);
+    Vector<AutoDiffA<Double> > v6(3);
     HyperPlane<AutoDiff<Double> > s5(3);
-    for (uInt i=0; i<4; i++) {
-      s5[i] = AutoDiff<Double>(i+10,4,i);
+    for (uInt i=0; i<3; i++) {
+      s5[i] = AutoDiff<Double>(i+10,3,i);
       AlwaysAssertExit(s5[i] == Double(i+10));
       v[i] = i+10;
       v6(i) = i+10;
@@ -115,8 +113,8 @@ int main() {
     
     // Generic AutoDiff
     HyperPlane<AutoDiffA<Double> > s6(3);
-    for (uInt i=0; i<4; i++) {
-      s6[i] = AutoDiffA<Double>(i+10,4,i);
+    for (uInt i=0; i<3; i++) {
+      s6[i] = AutoDiffA<Double>(i+10,3,i);
       AlwaysAssertExit(s6[i].value() == Double(i+10));
       v6(i) = i+10;
     };
@@ -127,9 +125,7 @@ int main() {
     AlwaysAssertExit(near(y60, y50) &&
 		     near(y61(0), y51[0]) &&
 		     near(y61(1), y51[1]) &&
-		     near(y61(2), y51[2]) &&
-		     near(y61(3), y51[3]));
-    
+		     near(y61(2), y51[2]));
   } catch (AipsError x) {
     cout << "Exception : " << x.getMesg() << endl;
   } 
