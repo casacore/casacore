@@ -234,7 +234,7 @@ GSDLIBROOT := $(AIPSROOT)/code/hia/gsdlib
 GSDLIBDEFS :=
 GSDLIBINCD  = $(AIPSROOT)/code/hia
 GSDLIBLIBD  = $(AIPSARCH)/lib
-GSDLIBLIB  := -lmir
+GSDLIBLIB  := -lgsd
 
 # Hierarchical Data System - a Starlink data format (required by NPOI).
 HDSROOT  := /usr/local
