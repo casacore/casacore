@@ -470,15 +470,18 @@ public ArrayBaseAccessor<T> {
   Bool operator!=(const T *other) const { return ptr_p != other; }
   // </group>
   
- private: 
+ private:
+  // Get proper offset
+  Int initOff(Int x, uInt ax) {
+    uInt st = arrayPtr_p->steps()[ax];
+    return ((st) ? (ax == Axis<U>::N ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
-  void initStep() { step_p = arrayPtr_p->steps()[Axis<U>::N];
-  uInt at = arrayPtr_p->shape()[Axis<U>::N]*step_p;
-  begin_p = end_p = arrayPtr_p->data() +
-    (at ? ((ptr_p-arrayPtr_p->data())/at)*at : 0);
-  end_p += at;
-  ptr_p = const_cast<T *>(begin_p) + ((ptr_p-begin_p)/step_p)*step_p; }
-
+  void initStep() {
+    step_p = arrayPtr_p->steps()[Axis<U>::N];
+    begin_p = end_p = ptr_p - initOff(ptr_p-arrayPtr_p->data(),
+				      arrayPtr_p->ndim()-1)*step_p;
+    end_p += arrayPtr_p->shape()[Axis<U>::N]*step_p; }
+  
 };
 
 #define ArrayAccessor_RT ArrayAccessor
@@ -588,13 +591,16 @@ public ArrayBaseAccessor<T> {
   // </group>
 
  private: 
+  // Get proper offset
+  Int initOff(Int x, uInt ax) {
+    uInt st = arrayPtr_p->steps()[ax];
+    return ((st) ? (ax == axis_p ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
-  void initStep() { step_p = arrayPtr_p->steps()[axis_p];
-  uInt at = arrayPtr_p->shape()[axis_p]*step_p;
-  begin_p = end_p = arrayPtr_p->data() +
-    (at ? ((ptr_p-arrayPtr_p->data())/at)*at : 0);
-  end_p += at;
-  ptr_p = const_cast<T*>(begin_p)+((ptr_p-begin_p)/step_p)*step_p; }
+  void initStep() {
+    step_p = arrayPtr_p->steps()[axis_p];
+    begin_p = end_p = ptr_p - initOff(ptr_p-arrayPtr_p->data(),
+				      arrayPtr_p->ndim()-1)*step_p;
+    end_p += arrayPtr_p->shape()[axis_p]*step_p; }
   
 };
 
