@@ -402,7 +402,7 @@ endif
 
 # Static and static pattern rules.
 #---------------------------------
-.PRECIOUS : $(DBGLIBS) $(OPTLIBS)
+.PRECIOUS : $(DBGLIBS) $(OPTLIBS) $(LIBDBGD)/version.o $(LIBOPTD)/version.o
 
 .PHONY : bin bindbg exorcise instsys
 
