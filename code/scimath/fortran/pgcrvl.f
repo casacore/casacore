@@ -1,9 +1,14 @@
 *=======================================================================
+*                              PGSBOX 3.2
+*-----------------------------------------------------------------------
 *
 *   ATTENTION!
 *   ----------
 *
 *   PGCRVL is defunct.
+*
+*   Do not use this routine - use PGSBOX instead.
+*   ---------------------------------------------
 *
 *   What remains here is a driver for the more general PGSBOX routine
 *   which is not based on pixel coordinates.

@@ -1,12 +1,12 @@
 *=======================================================================
 *
-*   PGSBOX - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2001, Mark Calabretta
+*   PGSBOX 3.2 - a non-linear coordinate axis plotter for PGPLOT.
+*   Copyright (C) 1997-2003, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or
-*   modify it under the terms of the GNU Library General Public
-*   License as published by the Free Software Foundation; either
-*   version 2 of the License, or (at your option) any later version.
+*   This library is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU Library General Public License as
+*   published by the Free Software Foundation; either version 2 of the
+*   License, or (at your option) any later version.
 *
 *   This library is distributed in the hope that it will be useful,
 *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,10 +19,10 @@
 *
 *   Correspondence concerning PGSBOX may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
 *
 *=======================================================================
@@ -30,6 +30,17 @@
 *   PGSBOX draws and labels a curvilinear coordinate grid.  The caller
 *   must provide a separate external function, NLFUNC, to define the
 *   non-linear coordinate transformation.
+*
+*   PGLBOX, a simplified ENTRY point to PGSBOX, has been provided for
+*   drawing simple linear axes without the need to specify NLFUNC.
+*   PGLBOX allows simplified access to formatting control for labelling
+*   world coordinate axes which is not provided by the standard PGPLOT
+*   routines, PGBOX or PGTBOX.  PGLBOX uses the world coordinate range
+*   set by a prior call to PGSWIN and omits the following arguments:
+*
+*      BLC, TRC, NLFUNC, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM
+*
+*   The remaining arguments are specified in the same order as PGSBOX.
 *
 *   Given:
 *      BLC      R(2)     Cartesian coordinates of the bottom left-hand
@@ -73,6 +84,9 @@
 *                           'I': as 'G' but unnormalized.
 *                           'L': logarithmic (see note 2)
 *                           'T': time in hours expressed as HH:MM:SS.S
+*                           'Y': Modified Julian Date to be expressed as
+*                                a Gregorian calendar date, YYYY/MM/DD.
+*                                (MJD = JD - 2400000.5.)
 *
 *                        For the angular types, NLFUNC is assumed to
 *                        return the angle in degrees whereupon it will
@@ -212,7 +226,7 @@
 *
 *      NLDPRM   D(NLD)   Double precision coefficients for NLFUNC.
 *
-*      NC       I        Upper array index for CACHE.
+*      NC       I        Upper array index for CACHE (see note 3).
 *
 *      IC       I        Current number of entries in the CACHE table.
 *                        Should be set to -1 on the first call to
@@ -231,13 +245,20 @@
 *                           4: Value.
 *
 *                        CACHE(,0) is used to cache the extrema of the
-*                        coordinate values between calls.
+*                        coordinate values between calls.  CACHE(1,NC-1)
+*                        is also used to store related information.
+*
+*                        CACHE(,NC) will contain the margin widths in
+*                        Cartesian coordinates when the labels are
+*                        produced (i.e. the same Cartesian system used
+*                        for BLC and TRC).
 *
 *   Returned:
 *      IERR     I        Error status
 *                           0: Success
 *                           1: Initialization error
 *                           2: Invalid coordinate system
+*                           3: Cache overflow (see note 3).
 *
 *   Notes on PGSBOX
 *   ---------------
@@ -305,7 +326,8 @@
 *    3) PGSBOX maintains a table of axis crossings, CACHE, in which it
 *       stores information used for axis labelling.  The caller need not
 *       normally be concerned about the use of this table other than to
-*       provide sufficient space.
+*       provide sufficient space.  Typically, NC = 256 should be enough;
+*       if not, IERR = 3 will be returned.
 *
 *       However, a coordinate grid may be produced via multiple calls to
 *       PGSBOX with deferment of axis labelling.  This might be done to
@@ -426,25 +448,28 @@
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
 *=======================================================================
-      SUBROUTINE PGSBOX (BLC, TRC, IDENTS, OPT, LABCTL, LABDEN, CI,
+      SUBROUTINE PGSBOX (BLC_, TRC_, IDENTS, OPT, LABCTL, LABDEN, CI,
      :   GCODE, TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI,
      :   NLD, NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
 *-----------------------------------------------------------------------
       INTEGER   BUFSIZ
       PARAMETER (BUFSIZ = 2048)
 
-      LOGICAL   DOEQ, GETEND, INSIDE, ISANGL(2), MAJOR, PRVIN
+      LOGICAL   DOEDGE, DOEQ, DOLBOX, FULLSM, GETEND, INSIDE, ISANGL(2),
+     :          MAJOR, OVERFL, PREVIN
       INTEGER   CI(7), CI0, CJ(7), CONTRL, DENS(2), FSEG, GCODE(2), IC,
-     :          IERR, ISTEP, IW0, IWJ, IWK, IX, J, JX, K, L, LABCTL,
-     :          LABDEN, LDIV(2), LTABL(6,2:6), NC, NG(2), NG1, NG2, NLC,
-     :          NLD, NLI, NLIPRM(NLI), NP, NW(2), NX, NY, TCODE(2,4)
-      REAL      BLC(2), S, TRC(2), WXY(4), X1, X2, XPOINT, XR(BUFSIZ),
-     :          XSCL, XVP1, XVP2, Y1, Y2, YR(BUFSIZ), YSCL, YVP1, YVP2
+     :          ID, IERR, IM, ISTEP, IW0, IWJ, IWK, IX, IY, J, K, KX, L,
+     :          LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), NC, NG(2), NG1,
+     :          NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NWJ, NX, NY,
+     :          TCODE(2,4)
+      REAL      BLC(2), BLC_(2), S, TRC(2), TRC_(2), WXY(4), X1, X2,
+     :          XMIN, XPOINT, XR(BUFSIZ), XSCL, XSPAN, XVP1, XVP2, Y1,
+     :          Y2, YMIN, YR(BUFSIZ), YSCL, YSPAN, YVP1, YVP2
       DOUBLE PRECISION CONTXT(20), CACHE(4,0:NC), DW(2), DX, DY, FACT,
      :          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
      :          NLDPRM(NLD), STEP, TIKLEN, TMP, VMAX(2,2), VMIN(2,2),
      :          WMAX(2), WMIN(2), WORLD(2), XY(2)
-      CHARACTER IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*), TYPE(2)
+      CHARACTER FTYPE(2), IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*)
 
       EXTERNAL NLFUNC
 
@@ -468,6 +493,8 @@
      :            2,  3,  4,  5,  7, 10/
 *-----------------------------------------------------------------------
 *  Initialize.
+      DOLBOX = .FALSE.
+
       CALL NLFUNC (0, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM, WORLD,
      :   XY, CONTRL, CONTXT, IERR)
 *     Quick return for now.
@@ -476,11 +503,48 @@
          RETURN
       END IF
 
+      BLC(1) = BLC_(1)
+      BLC(2) = BLC_(2)
+      TRC(1) = TRC_(1)
+      TRC(2) = TRC_(2)
+      
+      DOEDGE = GCODE(1).NE.2 .AND. GCODE(2).NE.2
+
+*-----------------------------------------------------------------------
+      GO TO 10
+
+      ENTRY PGLBOX (IDENTS, OPT, LABCTL, LABDEN, CI, GCODE, TIKLEN, NG1,
+     :   GRID1, NG2, GRID2, DOEQ, NC, IC, CACHE, IERR)
+
+      DOLBOX = .TRUE.
+
+      BLC(1) = 0.0
+      BLC(2) = 0.0
+      TRC(1) = 1.0
+      TRC(2) = 1.0
+
+      CALL PGQWIN (XMIN, XSPAN, YMIN, YSPAN)
+      XSPAN = XSPAN - XMIN
+      YSPAN = YSPAN - YMIN
+      
+      DOEDGE = .TRUE.
+
+      CONTRL = 0
+      IERR = 0
+
+ 10   CONTINUE
+
+*-----------------------------------------------------------------------
+      IF (NC.LT.1) THEN
+         IERR = 3
+         RETURN
+      END IF
+
       NG(1) = NG1
       NG(2) = NG2
 
-      TYPE(1) = OPT(1)(1:1)
-      TYPE(2) = OPT(2)(1:1)
+      FTYPE(1) = OPT(1)(1:1)
+      FTYPE(2) = OPT(2)(1:1)
 
 *     Extend the PGPLOT window and rescale it.
       CALL PGQVP (0, XVP1, XVP2, YVP1, YVP2)
@@ -492,26 +556,30 @@
      :             BLC(2)-YSCL*YVP1, TRC(2)+YSCL*(1.0-YVP2))
 
 *     Labels only?
-      IF (LABCTL.GE.10000) GO TO 120
+      IF (LABCTL.GE.10000) GO TO 130
 
 
 *  Find world coordinate ranges.
-      IF (IC.GE.0) THEN
-*        Extrema cached from a previous call.
+      FULLSM = .FALSE.
+      IF (IC.GE.0 .AND. IC.LT.NC-1) FULLSM = CACHE(1,NC-1).EQ.1D0
+
+      IF (IC.GE.0 .AND. (FULLSM .OR. DOEDGE)) THEN
+*        Use extrema cached from a previous call.
          WMIN(1) = CACHE(1,0)
          WMAX(1) = CACHE(2,0)
          WMIN(2) = CACHE(3,0)
          WMAX(2) = CACHE(4,0)
+
       ELSE
-*        Coarse search to find approximate ranges.
+*        Do a coarse search to find approximate ranges.
          WMIN(1) =  1D99
          WMAX(1) = -1D99
          WMIN(2) =  1D99
          WMAX(2) = -1D99
 
 *        Need to consider cycles in angle through 360 degrees.
-         ISANGL(1) = INDEX('ABCDEFGHI',TYPE(1)).NE.0
-         ISANGL(2) = INDEX('ABCDEFGHI',TYPE(2)).NE.0
+         ISANGL(1) = INDEX('ABCDEFGHI',FTYPE(1)).NE.0
+         ISANGL(2) = INDEX('ABCDEFGHI',FTYPE(2)).NE.0
          VMIN(1,1) =  1D99
          VMIN(1,2) =  1D99
          VMAX(1,1) = -1D99
@@ -528,13 +596,25 @@
          DY = DBLE(TRC(2)-BLC(2))/NY
 
          K = 0
-         XY(1) = BLC(1)
-         DO 20 IX = 0, NX
+         DO 30 IY = 0, NY
+            XY(2) = BLC(2) + IY*DY
 
-            XY(2) = BLC(2)
-            DO 10 JX = 0, NY
-               CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     :            WORLD, XY, CONTRL, CONTXT, IERR)
+*           Sample the edges only?
+            KX = 1
+            IF (DOEDGE) THEN
+               IF (IY.NE.0 .AND. IY.NE.NY) KX = NX
+            END IF
+
+            DO 20 IX = 0, NX, KX
+               XY(1) = BLC(1) + IX*DX
+
+               IF (DOLBOX) THEN
+                  WORLD(1) = XMIN + XY(1)*XSPAN
+                  WORLD(2) = YMIN + XY(2)*YSPAN
+               ELSE
+                  CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM,
+     :               NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
+               END IF
 
                IF (IERR.EQ.0) THEN
                   K = K + 1
@@ -569,12 +649,8 @@
                      IF (WORLD(2).GT.VMAX(2,2)) VMAX(2,2) = WORLD(2)
                   END IF
                END IF
-
-               XY(2) = XY(2) + DY
- 10         CONTINUE
-
-            XY(1) = XY(1) + DX
- 20      CONTINUE
+ 20         CONTINUE
+ 30      CONTINUE
 
          IF (K.EQ.0) THEN
 *           No valid coordinates found within the frame.
@@ -583,7 +659,7 @@
          END IF
 
 *        Check for cycles in angle.
-         DO 30 J = 1, 2
+         DO 40 J = 1, 2
             IF (ISANGL(J)) THEN
                IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
      :             WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
@@ -619,13 +695,20 @@
                   END IF
                END IF
             END IF
- 30      CONTINUE
+ 40      CONTINUE
 
 *        Cache extrema for subsequent calls.
          CACHE(1,0) = WMIN(1)
          CACHE(2,0) = WMAX(1)
          CACHE(3,0) = WMIN(2)
          CACHE(4,0) = WMAX(2)
+
+*        Was full sampling done?
+         IF (DOEDGE) THEN
+            CACHE(1,NC-1) = 0D0
+         ELSE
+            CACHE(1,NC-1) = 1D0
+         END IF
 
          IC = 0
       END IF
@@ -645,7 +728,7 @@
 
       G0(1) = GRID1(0)
       G0(2) = GRID2(0)
-      DO 40 J = 1, 2
+      DO 50 J = 1, 2
          IF (J.EQ.1) THEN
             K = 2
          ELSE
@@ -659,7 +742,22 @@
          ELSE
             DW(J) = WMAX(J) - WMIN(J)
             STEP = DW(J)/DENS(J)
-            IF (INDEX('ABCDEF',TYPE(J)).NE.0 .AND. STEP.GE.1D0) THEN
+
+            FACT = 1D0
+            IF (INDEX('GHI',FTYPE(J)).NE.0) THEN
+*              Rescale degrees to hours.
+               FACT = 1D0/15D0
+               STEP = STEP*FACT
+            ELSE IF (FTYPE(J).EQ.'Y' .AND. STEP.LT.0.5D0) THEN
+*              Calendar increment of less than 12h; use time format.
+               FTYPE(J) = 'y'
+
+*              Rescale days to hours.
+               FACT = 24D0
+               STEP = STEP*FACT
+            END IF
+
+            IF (INDEX('ABCDEF',FTYPE(J)).NE.0 .AND. STEP.GE.1D0) THEN
 *              Angle with multi-degree increment.
                IF (STEP.LT.1.5D0) THEN
                   STEP = 1D0
@@ -685,17 +783,9 @@
                   STEP = 360D0*INT(STEP/360D0 + 0.5)
                END IF
 
-            ELSE IF (INDEX('GHI',TYPE(J)).NE.0 .AND. STEP.GE.15D0 .OR.
-     :         TYPE(J).EQ.'T' .AND. STEP.GE.1D0) THEN
+            ELSE IF (INDEX('GHITy',FTYPE(J)).NE.0 .AND.
+     :         STEP.GE.1D0) THEN
 *              Angle or time in hms format with multi-hour increment.
-
-               FACT = 1D0
-               IF (INDEX('GHI',TYPE(J)).NE.0) THEN
-*                 Rescale degrees to hours.
-                  FACT = FACT/15D0
-                  STEP = STEP/15D0
-               END IF
-
                IF (STEP.LT.1.5D0) THEN
                   STEP = 1D0
                ELSE IF (STEP.LT.2.5D0) THEN
@@ -720,18 +810,10 @@
 
                STEP = STEP/FACT
 
-            ELSE IF (INDEX('GHI',TYPE(J)).NE.0 .AND. STEP.LT.15D0 .OR.
-     :               INDEX('DEFT',TYPE(J)).NE.0 .AND. STEP.LT.1D0) THEN
+            ELSE IF (INDEX('DEFGHITy',FTYPE(J)).NE.0 .AND.
+     :         STEP.LT.1D0) THEN
 *              Angle or time in sexagesimal format with sub-degree/hour
 *              increment.
-
-               FACT = 1D0
-               IF (INDEX('GHI',TYPE(J)).NE.0) THEN
-*                 Rescale degrees to hours.
-                  FACT = FACT/15D0
-                  STEP = STEP/15D0
-               END IF
-
                FACT = FACT*60D0
                STEP = STEP*60D0
                IF (STEP.LT.1D0) THEN
@@ -787,6 +869,66 @@
 
                STEP = STEP/FACT
 
+            ELSE IF (FTYPE(J).EQ.'Y') THEN
+*              Calendar axis: use coded steps.
+               IF (STEP.LT.15D0) THEN
+*                 Timespan of a few months; use multi-day increments.
+                  STEP = ANINT(STEP)
+                  IF (STEP.LT.1D0) THEN
+                     STEP = 1D0
+                  ELSE IF (STEP.GT.9D0) THEN
+*                    Fortnightly.
+                     STEP = 14D0
+                  ELSE IF (STEP.GT.4D0) THEN
+*                    Weekly.
+                     STEP = 7D0
+                  END IF
+
+               ELSE IF (STEP.LT.270D0) THEN
+*                 Timespan of a few years; use multi-month increments.
+                  STEP = ANINT(STEP/30.44D0)
+                  IF (STEP.LT.1.5D0) THEN
+                     STEP = 1D0
+                  ELSE IF (STEP.LT.2.5D0) THEN
+                     STEP = 2D0
+                  ELSE IF (STEP.LT.3.5D0) THEN
+                     STEP = 3D0
+                  ELSE IF (STEP.LT.4.5D0) THEN
+                     STEP = 4D0
+                  ELSE
+                     STEP = 6D0
+                  END IF
+
+*                 Coding for multi-month increments.
+                  STEP = 100D0*STEP
+
+               ELSE
+*                 Multi-year increments.
+                  STEP = ANINT(DW(J)/DENS(J)/365.25D0)
+                  IF (STEP.LT.1D0) THEN
+                     STEP = 1D0
+                  ELSE
+                     TMP = 10D0**INT(LOG10(STEP))
+
+                     IF (1.5D0*TMP.GE.STEP) THEN
+                        STEP = TMP
+                     ELSE
+                        IF (3D0*TMP.GE.STEP) THEN
+                           STEP = 2D0*TMP
+                        ELSE
+                           IF (7D0*TMP.GE.STEP) THEN
+                              STEP = 5D0*TMP
+                           ELSE
+                              STEP = 10D0*TMP
+                           END IF
+                        END IF
+                     END IF
+                  END IF
+
+*                 Coding for multi-year increments.
+                  STEP = 10000D0*STEP
+               END IF
+
             ELSE
 *              Just numbers.
                TMP = 10D0**INT(LOG10(STEP))
@@ -807,7 +949,7 @@
                END IF
 
 *              Adjust the step size for logarithmic values.
-               IF (TYPE(J).EQ.'L') THEN
+               IF (FTYPE(J).EQ.'L') THEN
                   IF (STEP.GT.0.7D0) THEN
                      LDIV(J) = 1
                      STEP = NINT(STEP)
@@ -833,7 +975,7 @@
 
             GSTEP(J) = STEP
          END IF
- 40   CONTINUE
+ 50   CONTINUE
 
 *     Equal grid spacing?
       IF (DOEQ .AND. NG(1).EQ.0 .AND. NG(2).EQ.0) THEN
@@ -848,10 +990,31 @@
       END IF
 
 *     Fine tune the end points.
-      DO 50 J = 1, 2
-         IF (TYPE(J).EQ.'L') THEN
+      DO 60 J = 1, 2
+         IF (FTYPE(J).EQ.'L') THEN
             WMIN(J) = AINT(WMIN(J)-1D0)
             WMAX(J) = AINT(WMAX(J)+1D0)
+         ELSE IF (FTYPE(J).EQ.'Y') THEN
+*           Calendar axis.
+            IF (GSTEP(J).LT.100D0) THEN
+*              Daily increments.
+               WMIN(J) = AINT(WMIN(J))
+               WMAX(J) = AINT(WMAX(J)+1D0)
+            ELSE
+*              Start on Jan/01.
+               CALL PGMJD (0, WMIN(J), IY, IM, ID)
+               CALL PGMJD (1, WMIN(J), IY, 1, 1)
+
+               CALL PGMJD (0, WMAX(J), IY, IM, ID)
+               IF (GSTEP(J).LT.10000D0) THEN
+*                 Monthly increments.
+                  CALL PGMJD (1, WMAX(J), IY, 12, 1)
+               ELSE
+*                 Yearly increments.
+                  CALL PGMJD (1, WMAX(J), IY+1, 1, 1)
+               END IF
+            END IF
+
          ELSE
             TMP = AINT(WMIN(J)/GSTEP(J))*GSTEP(J)
             IF (TMP.GE.WMIN(J)) TMP = TMP - GSTEP(J)
@@ -861,7 +1024,7 @@
             WMAX(J) = TMP
          END IF
          DW(J) = WMAX(J) - WMIN(J)
- 50   CONTINUE
+ 60   CONTINUE
 
 
 *  Draw the grid.
@@ -871,7 +1034,7 @@
       YSCL = (Y2-Y1)/(TRC(2)-BLC(2))
 
 *     Decode tick mark control.
-      DO 60 J = 1, 2
+      DO 70 J = 1, 2
          IF (GCODE(J).EQ.2) THEN
             TCODE(J,1) = -1
             TCODE(J,2) = -1
@@ -894,21 +1057,22 @@
             TCODE(J,3) = 0
             TCODE(J,4) = 0
          END IF
- 60   CONTINUE
+ 70   CONTINUE
 
 *     Determine initial colour.
       CALL PGQCI (CI0)
-      DO 70 J = 1, 7
+      DO 80 J = 1, 7
          IF (CI(J).GE.0) THEN
             CJ(J) = CI(J)
          ELSE
             CJ(J) = CI0
          END IF
- 70   CONTINUE
+ 80   CONTINUE
 
 *     Draw each set of grid lines.
-      DO 110 J = 1, 2
-         IF (GCODE(J).EQ.0) GO TO 110
+      OVERFL = .FALSE.
+      DO 120 J = 1, 2
+         IF (GCODE(J).EQ.0) GO TO 120
 
          IF (J.EQ.1) THEN
             CALL PGSCI (CJ(1))
@@ -919,56 +1083,89 @@
          END IF
 
          IF (NG(J).GT.0) THEN
-            NW(J) = NG(J)
+            NWJ = NG(J)
+
+         ELSE IF (FTYPE(J).EQ.'Y' .AND. GSTEP(J).GE.100D0) THEN
+*           Calendar axis.
+            CALL PGMJD (0, WMAX(J), IY, IM, ID)
+            IF (GSTEP(J).LT.10000D0) THEN
+               NWJ = 12*IY + IM
+               CALL PGMJD (0, WMIN(J), IY, IM, ID)
+               NWJ = (NWJ - (12*IY + IM))/INT(GSTEP(J)/100D0)
+            ELSE
+               NWJ = IY
+               CALL PGMJD (0, WMIN(J), IY, IM, ID)
+               NWJ = (NWJ - IY)/INT(GSTEP(J)/10000D0)
+            END IF
+
          ELSE
-            NW(J) = NINT(DW(J)/GSTEP(J))
+            NWJ = NINT(DW(J)/GSTEP(J))
             IW0 = NINT(WMIN(J)/GSTEP(J))
          END IF
 
-         DO 100 IWJ = 0, NW(J)
+         DO 110 IWJ = 0, NWJ
             MAJOR = .FALSE.
 
 *           Determine the world coordinate of the grid line.
             IF (NG(J).GT.0) THEN
 *              User-specified.
-               IF (IWJ.EQ.0) GO TO 100
+               IF (IWJ.EQ.0) GO TO 110
                WORLD(1) = GRID1(IWJ)
                WORLD(2) = GRID2(IWJ)
             ELSE
 *              Internally computed.
-               WORLD(J) = (IW0 + IWJ)*GSTEP(J)
-
-*              Logarithmic?
-               IF (TYPE(J).EQ.'L') THEN
-                  TMP = MOD(WORLD(J),1D0)
-                  IF (TMP.LT.0D0) TMP = TMP + 1D0
-                  L = NINT(TMP*LDIV(J))
-
-                  IF (L.EQ.0) THEN
-*                    Major tick mark.
-                     MAJOR = .TRUE.
+               IF (FTYPE(J).EQ.'Y' .AND. GSTEP(J).GE.100D0) THEN
+*                 Calendar axis.
+                  CALL PGMJD (0, WMIN(J), IY, IM, ID)
+                  IF (GSTEP(J).LT.10000D0) THEN
+                     IM = IM + IWJ*INT(GSTEP(J)/100D0)
+                     CALL PGMJD (1, WORLD(J), IY, IM, ID)
                   ELSE
-*                    Adjust logarithmic scales.
-                     IF (LDIV(J).LE.6) THEN
-                        L = LTABL(L,LDIV(J))
-                     ELSE
-                        L = L + 1
-                     END IF
+                     IY = IY + IWJ*INT(GSTEP(J)/10000D0)
+                     CALL PGMJD (1, WORLD(J), IY, IM, ID)
+                  END IF
 
-                     WORLD(J) = WORLD(J) - TMP + LOG10(DBLE(L))
+               ELSE
+                  WORLD(J) = (IW0 + IWJ)*GSTEP(J)
+
+*                 Logarithmic?
+                  IF (FTYPE(J).EQ.'L') THEN
+                     TMP = MOD(WORLD(J),1D0)
+                     IF (TMP.LT.0D0) TMP = TMP + 1D0
+                     L = NINT(TMP*LDIV(J))
+
+                     IF (L.EQ.0) THEN
+*                       Major tick mark.
+                        MAJOR = .TRUE.
+                     ELSE
+*                       Adjust logarithmic scales.
+                        IF (LDIV(J).LE.6) THEN
+                           L = LTABL(L,LDIV(J))
+                        ELSE
+                           L = L + 1
+                        END IF
+
+                        WORLD(J) = WORLD(J) - TMP + LOG10(DBLE(L))
+                     END IF
                   END IF
                END IF
             END IF
 
             NP = 0
             GETEND = .TRUE.
-            DO 90 IWK = 0, NSTEP
+            DO 100 IWK = 0, NSTEP
                WORLD(K) = WMIN(K) + IWK*(DW(K)/NSTEP)
 
                IF (GETEND) THEN
 *                 Get end-point context.
-                  CALL NLFUNC (1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     :               WORLD, XY, CONTRL, CONTXT, IERR)
+                  IF (DOLBOX) THEN
+                     XY(1) = (WORLD(1) - XMIN)/XSPAN
+                     XY(2) = (WORLD(2) - YMIN)/YSPAN
+                  ELSE
+                     CALL NLFUNC (1, NLC, NLI, NLD, NLCPRM, NLIPRM,
+     :                  NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
+                  END IF
+
                   IF (IERR.EQ.0) THEN
                      X1 = REAL(XY(1))
                      Y1 = REAL(XY(2))
@@ -979,19 +1176,25 @@
                      XR(1) = X1
                      YR(1) = Y1
 
-                     PRVIN  = INSIDE
+                     PREVIN = INSIDE
                      GETEND = .FALSE.
                   END IF
-                  GO TO 90
+                  GO TO 100
                END IF
 
-               DO 80 ISTEP = 1, 1000
-                  CALL NLFUNC (2, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     :               WORLD, XY, CONTRL, CONTXT, IERR)
+               DO 90 ISTEP = 1, 1000
+                  IF (DOLBOX) THEN
+                     XY(1) = (WORLD(1) - XMIN)/XSPAN
+                     XY(2) = (WORLD(2) - YMIN)/YSPAN
+                  ELSE
+                     CALL NLFUNC (2, NLC, NLI, NLD, NLCPRM, NLIPRM,
+     :                  NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
+                  END IF
+
                   IF (IERR.NE.0) THEN
 *                    Flush buffer.
                      IF (NP.GT.0) CALL PGLINE(NP, XR, YR)
-                     GO TO 100
+                     GO TO 110
                   END IF
 
                   IF (NP.EQ.BUFSIZ) THEN
@@ -1004,8 +1207,8 @@
 
                   X2 = REAL(XY(1))
                   Y2 = REAL(XY(2))
-                  INSIDE = X2.GT.BLC(1) .AND. X2.LT.TRC(1) .AND.
-     :                     Y2.GT.BLC(2) .AND. Y2.LT.TRC(2)
+                  INSIDE = X2.GE.BLC(1) .AND. X2.LE.TRC(1) .AND.
+     :                     Y2.GE.BLC(2) .AND. Y2.LE.TRC(2)
 
                   IF (NP.EQ.0) THEN
                      NP = 1
@@ -1014,7 +1217,7 @@
                   ELSE
                      IF (INSIDE) THEN
 *                       This point is inside the frame...
-                        IF (.NOT.PRVIN) THEN
+                        IF (.NOT.PREVIN) THEN
 *                          ...but the previous one was outside.
                            X1 = XR(NP)
                            Y1 = YR(NP)
@@ -1051,25 +1254,28 @@
 
 *                          Record this crossing point.
                            IF (TCODE(J,FSEG).NE.0) THEN
-                              IF (IC.LT.NC) THEN
+                              IF (IC.LT.NC-1) THEN
                                  IC = IC + 1
                                  CACHE(1,IC) = FSEG
                                  CACHE(2,IC) = XPOINT
                                  CACHE(3,IC) = J
                                  CACHE(4,IC) = WORLD(J)
+                              ELSE
+*                                Cache overflow.
+                                 OVERFL = .TRUE.
                               END IF
                            END IF
 
                            IF (TCODE(J,FSEG).GT.0) THEN
 *                             Just want tick marks.
-                              X1 = XR(NP)
-                              Y1 = YR(NP)
+*                              X1 = XR(NP)
+*                              Y1 = YR(NP)
                               S = SQRT((XSCL*(X2-X1))**2 +
      :                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
                               IF (MAJOR) S = S/1.5
                               NP = NP + 1
-                              XR(NP) = X1 + (X2-X1)*TIKLEN/S
-                              YR(NP) = Y1 + (Y2-Y1)*TIKLEN/S
+                              XR(NP) = XR(NP-1) + (X2-X1)*TIKLEN/S
+                              YR(NP) = YR(NP-1) + (Y2-Y1)*TIKLEN/S
 
                               CALL PGLINE(NP, XR, YR)
                               NP = 1
@@ -1084,7 +1290,7 @@
                         YR(NP) = Y2
                      ELSE
 *                       This point is outside the frame...
-                        IF (PRVIN) THEN
+                        IF (PREVIN) THEN
 *                          ...but the previous one was inside.
                            X1 = XR(NP)
                            Y1 = YR(NP)
@@ -1124,12 +1330,15 @@
 
 *                          Record this crossing point.
                            IF (TCODE(J,FSEG).NE.0) THEN
-                              IF (IC.LT.NC) THEN
+                              IF (IC.LT.NC-1) THEN
                                  IC = IC + 1
                                  CACHE(1,IC) = FSEG
                                  CACHE(2,IC) = XPOINT
                                  CACHE(3,IC) = J
                                  CACHE(4,IC) = WORLD(J)
+                              ELSE
+*                                Cache overflow.
+                                 OVERFL = .TRUE.
                               END IF
                            END IF
 
@@ -1159,29 +1368,31 @@
                      END IF
                   END IF
 
-                  PRVIN = INSIDE
+                  PREVIN = INSIDE
 
                   IF (CONTRL.EQ.0) THEN
-                     GO TO 90
+                     GO TO 100
                   ELSE IF (CONTRL.EQ.1) THEN
 *                    Flush buffer.
                      IF (NP.GT.1) CALL PGLINE(NP, XR, YR)
                      NP = 0
                   END IF
- 80            CONTINUE
- 90         CONTINUE
+ 90            CONTINUE
+ 100        CONTINUE
 
             IF (NP.GT.1) CALL PGLINE(NP, XR, YR)
- 100     CONTINUE
- 110  CONTINUE
+ 110     CONTINUE
+ 120  CONTINUE
 
 
 *  Produce axis labels.
- 120  IF (LABCTL.NE.-1) CALL PGCRLB (BLC, TRC, IDENTS, TYPE, LABCTL, CJ,
-     :   NC, IC, CACHE)
+ 130  IF (LABCTL.NE.-1) CALL PGCRLB (BLC, TRC, IDENTS, FTYPE, LABCTL,
+     :   CJ, NC, IC, CACHE)
 
 
 *  Clean up.
+      IF (OVERFL) IERR = 3
+
 *     Restore the original viewport, window and pen colour.
  999  CALL PGSVP (XVP1, XVP2, YVP1, YVP2)
       CALL PGSWIN (WXY(1), WXY(2), WXY(3), WXY(4))
@@ -1204,9 +1415,9 @@
 *      TRC      R(2)     Cartesian coordinates of the top right-hand
 *                        corner.
 *
-*      IDENTS   C(3)**   Identification strings (see PGSBOX).
+*      IDENTS   C(3)*(*) Identification strings (see PGSBOX).
 *
-*      TYPE     C(2)*1   Axis types, used for axis labelling (see
+*      FTYPE    C(2)*1   Axis types, used for axis labelling (see
 *                        PGSBOX).
 *
 *      LABCTL   I        Decimal encoded grid labelling control (see
@@ -1225,37 +1436,34 @@
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *=======================================================================
-      SUBROUTINE PGCRLB (BLC, TRC, IDENTS, TYPE, LABCTL, CI, NC, IC,
+      SUBROUTINE PGCRLB (BLC, TRC, IDENTS, FTYPE, LABCTL, CI, NC, IC,
      :                   CACHE)
 *-----------------------------------------------------------------------
-      LOGICAL   ANGLE, DODEG, DOMIN, LFORCE, SEXA(2), TICKIT
-      INTEGER   CI(7), EDGE, IC, IMAG(2), ITER, IWRLD, J, JC, K, K1, K2,
-     :          L, LABCTL, LD, LM, LMAG(2), LS, LV, M, M1, M2, MM, NC,
-     :          NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVM(2), PRVEDG,
+      LOGICAL   ANGLE, DODEG, DOMIN, DOYEAR, LFORCE, SEXA(2), TICKIT
+      INTEGER   CI(7), EDGE, IC, ID, ID2, IM, IM2, IMAG(2), ITER, IWRLD,
+     :          IY, IY2, J, JC, K, K1, K2, KWRLD, L, LABCTL, LD, LM,
+     :          LMAG(2), LS, LV, M, M1, M2, MM, NC, NCH, NI(2,0:4),
+     :          NSWAP, PP, PRVDEG(2), PRVMIN(2), PRVEDG, PRVYR(2),
      :          SEXSUP(2), SKIP(4), SKOP(4)
       REAL      ANGL, BLC(2), FJUST, BNDRY(4), OMAG(2), SI(2), TRC(2),
      :          X, XBOX(4), XCH, XL, XW1, XW2, Y, YCH, YBOX(4), YL, YW1,
      :          YW2, Z
-      DOUBLE PRECISION CACHE(4,0:NC), TMP, VS
+      DOUBLE PRECISION CACHE(4,0:NC), MJD1(2), MJD2(2), TMP, VS
       CHARACTER ESCAPE*1, EXPONT*20, FMT*8, IDENTS(3)*(*), TEXT*80,
-     :          TYPE(2)*1, TXT(2)*80
+     :          FTYPE(2)*1, TXT(2)*80
 
       DATA ESCAPE /'\\'/
 *-----------------------------------------------------------------------
 *  Normalize angular table entries.
-      IF (INDEX('ABDEGH',TYPE(1)).NE.0 .OR.
-     :    INDEX('ABDEGH',TYPE(2)).NE.0) THEN
+      IF (INDEX('ABDEGH',FTYPE(1)).NE.0 .OR.
+     :    INDEX('ABDEGH',FTYPE(2)).NE.0) THEN
          DO 10 J = 1, IC
-            IF (CACHE(3,J).EQ.1D0) THEN
-               IWRLD = 1
-            ELSE
-               IWRLD = 2
-            END IF
+            IWRLD = NINT(CACHE(3,J))
 
-            IF (INDEX('ADG', TYPE(IWRLD)).NE.0) THEN
+            IF (INDEX('ADG', FTYPE(IWRLD)).NE.0) THEN
                CACHE(4,J) = MOD(CACHE(4,J), 360D0)
                IF (CACHE(4,J).LT.0D0) CACHE(4,J) = CACHE(4,J) + 360D0
-            ELSE IF (INDEX('BEH', TYPE(IWRLD)).NE.0) THEN
+            ELSE IF (INDEX('BEH', FTYPE(IWRLD)).NE.0) THEN
                CACHE(4,J) = MOD(CACHE(4,J), 360D0)
                IF (CACHE(4,J).LE.-180D0) THEN
                   CACHE(4,J) = CACHE(4,J) + 360D0
@@ -1264,7 +1472,7 @@
                END IF
             END IF
 
-            IF (INDEX('GHI', TYPE(IWRLD)).NE.0) THEN
+            IF (INDEX('GHI', FTYPE(IWRLD)).NE.0) THEN
 *              Angle expressed as time.
                CACHE(4,J) = CACHE(4,J)/15D0
             END IF
@@ -1325,13 +1533,8 @@
       NI(2,3) = 0
       NI(2,4) = 0
       DO 110 J = 1, IC
-         IF (CACHE(3,J).EQ.1D0) THEN
-            IWRLD = 1
-         ELSE
-            IWRLD = 2
-         END IF
-
-         EDGE = NINT(CACHE(1,J))
+         IWRLD = NINT(CACHE(3,J))
+         EDGE  = NINT(CACHE(1,J))
 
          NI(IWRLD,0) = NI(IWRLD,0) + 1
          NI(IWRLD,EDGE) = NI(IWRLD,EDGE) + 1
@@ -1511,17 +1714,12 @@
       IMAG(1) = 0
       IMAG(2) = 0
 
-      IF (TYPE(1).EQ.' ' .OR. TYPE(2).EQ.' ') THEN
+      IF (FTYPE(1).EQ.' ' .OR. FTYPE(2).EQ.' ') THEN
          OMAG(1) = 0.0
          OMAG(2) = 0.0
          DO 120 J = 1, IC
-            IF (CACHE(3,J).EQ.1D0) THEN
-               IWRLD = 1
-            ELSE
-               IWRLD = 2
-            END IF
-
-            IF (TYPE(IWRLD).EQ.' ') THEN
+            IWRLD = NINT(CACHE(3,J))
+            IF (FTYPE(IWRLD).EQ.' ') THEN
 *              Plain numeric.
                IF (CACHE(4,J).EQ.0D0) GO TO 120
                OMAG(IWRLD) = OMAG(IWRLD) + LOG10(ABS(CACHE(4,J)))
@@ -1538,37 +1736,32 @@
 *        Renormalize grid values.
          IF (IMAG(1).NE.0 .OR. IMAG(2).NE.0) THEN
             DO 130 J = 1, IC
-               IF (CACHE(3,J).EQ.1D0) THEN
-                  IWRLD = 1
-               ELSE
-                  IWRLD = 2
-               END IF
-
+               IWRLD = NINT(CACHE(3,J))
                CACHE(4,J) = CACHE(4,J)/10D0**IMAG(IWRLD)
  130        CONTINUE
          END IF
       END IF
 
 *     Sexagesimal labelling.
-      SEXA(1) = INDEX('DEFGHIT', TYPE(1)).NE.0
-      SEXA(2) = INDEX('DEFGHIT', TYPE(2)).NE.0
+      SEXA(1) = INDEX('DEFGHITy', FTYPE(1)).NE.0
+      SEXA(2) = INDEX('DEFGHITy', FTYPE(2)).NE.0
 
       IF (SEXA(1) .OR. SEXA(2)) THEN
          LMAG(1) = -2
          LMAG(2) = -2
 
          DO 150 J = 1, IC
-            IF (CACHE(3,J).EQ.1D0) THEN
-               IWRLD = 1
-            ELSE
-               IWRLD = 2
-            END IF
-
 *           Skip non-sexagesimal coordinates.
+            IWRLD = NINT(CACHE(3,J))
             IF (.NOT.SEXA(IWRLD)) GO TO 150
 
 *           Defeat rounding errors.
-            TMP = ABS(CACHE(4,J)*3600D0) + 5D-7
+            IF (FTYPE(IWRLD).EQ.'y') THEN
+               TMP = ABS(MOD(CACHE(4,J),1D0)*86400D0) + 5D-7
+            ELSE
+               TMP = ABS(CACHE(4,J)*3600D0) + 5D-7
+            END IF
+
             LS = INT(TMP)
             LV = INT(MOD(TMP, 1D0)*1D6)
             IF (LV.NE.0) THEN
@@ -1610,20 +1803,21 @@
       SKOP(3) = 0
       SKOP(4) = 0
 
+*     Calendar date range.
+      MJD1(1) =  1D99
+      MJD1(2) =  1D99
+      MJD2(1) = -1D99
+      MJD2(2) = -1D99
+
 *     Character height.
       CALL PGQCS (4, XCH, YCH)
       PRVEDG = 0
 
 *     Loop through the axis crossing table.
-      DO 200 J = 1, IC
+      DO 230 J = 1, IC
 *        Determine the position.
-         IF (CACHE(3,J).EQ.1D0) THEN
-            IWRLD = 1
-            CALL PGSCI (CI(3))
-         ELSE
-            CALL PGSCI (CI(4))
-            IWRLD = 2
-         END IF
+         IWRLD = NINT(CACHE(3,J))
+         CALL PGSCI (CI(IWRLD+2))
 
          EDGE = NINT(CACHE(1,J))
          IF (EDGE.NE.PRVEDG) THEN
@@ -1631,38 +1825,49 @@
 
             IF (SEXA(1) .OR. SEXA(2)) THEN
 *              Sexagesimal field suppression policy.
-               PRVD(1) = -1
-               PRVM(1) = -1
-               PRVD(2) = -1
-               PRVM(2) = -1
+               PRVDEG(1) = -1
+               PRVMIN(1) = -1
+               PRVDEG(2) = -1
+               PRVMIN(2) = -1
 
                SEXSUP(1) = 0
                SEXSUP(2) = 0
 
 *              Vertical sides.
-               IF (MOD(CACHE(1,J),2D0).EQ.0) THEN
+               IF (MOD(NINT(CACHE(1,J)),2).EQ.0) THEN
                   DO 160 K = J, IC
                      IF (NINT(CACHE(1,K)).NE.EDGE) GO TO 170
-                     IF (SEXSUP(NINT(CACHE(3,K))).EQ.1) GO TO 160
 
-                     LV = INT(ABS(CACHE(4,K))*3600D0 + 5D-7)
+                     KWRLD = NINT(CACHE(3,K))
+                     IF (SEXSUP(KWRLD).EQ.1) GO TO 160
+
+                     IF (FTYPE(KWRLD).EQ.'y') THEN
+                        TMP = ABS(MOD(CACHE(4,K),1D0)*24D0) 
+                     ELSE
+                        TMP = ABS(CACHE(4,K)) 
+                     END IF
+
+                     LV = INT(TMP*3600D0 + 5D-7)
                      LD =  LV/3600
                      LM = (LV - LD*3600)/60
                      LS =  LV - LD*3600 - LM*60
-                     TMP = ABS(CACHE(4,K)) - LD
+                     TMP = TMP - LD
 
                      IF (TMP.LT.5D-7) THEN
 *                       Write deg/hr field only when min/sec are zero.
-                        SEXSUP(NINT(CACHE(3,K))) = 1
+                        SEXSUP(KWRLD) = 1
                      ELSE IF (TMP*60-LM.LT.3D-5) THEN
 *                       Write min field only when sec is zero; only
 *                       write the deg/hr field when min is written.
-                        SEXSUP(NINT(CACHE(3,K))) = 2
+                        SEXSUP(KWRLD) = 2
                      END IF
  160              CONTINUE
                END IF
             END IF
  170        CONTINUE
+
+            PRVYR(1) = -1
+            PRVYR(2) = -1
 
             XL = -999.0
             YL = -999.0
@@ -1673,9 +1878,9 @@
          IF (EDGE.EQ.1) THEN
 *           Bottom.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(1),2).NE.1) GO TO 200
+               IF (MOD(SKIP(1),2).NE.1) GO TO 230
             ELSE
-               IF (MOD(SKIP(1)/2,2).NE.1) GO TO 200
+               IF (MOD(SKIP(1)/2,2).NE.1) GO TO 230
             END IF
 
             FJUST = 0.5
@@ -1684,9 +1889,9 @@
          ELSE IF (EDGE.EQ.2) THEN
 *           Left.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(2),2).NE.1) GO TO 200
+               IF (MOD(SKIP(2),2).NE.1) GO TO 230
             ELSE
-               IF (MOD(SKIP(2)/2,2).NE.1) GO TO 200
+               IF (MOD(SKIP(2)/2,2).NE.1) GO TO 230
             END IF
 
             FJUST = 1.0
@@ -1695,9 +1900,9 @@
          ELSE IF (EDGE.EQ.3) THEN
 *           Top.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(3),2).NE.1) GO TO 200
+               IF (MOD(SKIP(3),2).NE.1) GO TO 230
             ELSE
-               IF (MOD(SKIP(3)/2,2).NE.1) GO TO 200
+               IF (MOD(SKIP(3)/2,2).NE.1) GO TO 230
             END IF
 
             FJUST = 0.5
@@ -1706,9 +1911,9 @@
          ELSE IF (EDGE.EQ.4) THEN
 *           Right.
             IF (IWRLD.EQ.1) THEN
-               IF (MOD(SKIP(4),2).NE.1) GO TO 200
+               IF (MOD(SKIP(4),2).NE.1) GO TO 230
             ELSE
-               IF (MOD(SKIP(4)/2,2).NE.1) GO TO 200
+               IF (MOD(SKIP(4)/2,2).NE.1) GO TO 230
             END IF
 
             FJUST = 0.0
@@ -1717,7 +1922,7 @@
          END IF
 
 *        Format the numeric label.
-         IF (INDEX('ABC', TYPE(IWRLD)).NE.0) THEN
+         IF (INDEX('ABC', FTYPE(IWRLD)).NE.0) THEN
 *           Decimal angle; allow up to 6 decimal digits.
             TMP = ABS(CACHE(4,J)) + 5D-7
             LD  = INT(TMP)
@@ -1740,11 +1945,20 @@
 
          ELSE IF (SEXA(IWRLD)) THEN
 *           Sexagesimal format; angle or time?
-            ANGLE = INDEX('DEF', TYPE(IWRLD)).NE.0
+            ANGLE = INDEX('DEF', FTYPE(IWRLD)).NE.0
             L = LMAG(IWRLD)
 
 *           Use integer arithmetic to avoid rounding problems.
-            VS = ABS(CACHE(4,J))*3600D0 + 5D-7
+            IF (FTYPE(IWRLD).EQ.'y') THEN
+               TMP = ABS(MOD(CACHE(4,J),1D0)*24D0) 
+
+*              Determine date range.
+               IF (CACHE(4,J).LT.MJD1(IWRLD)) MJD1(IWRLD) = CACHE(4,J)
+               IF (CACHE(4,J).GT.MJD2(IWRLD)) MJD2(IWRLD) = CACHE(4,J)
+            ELSE
+               TMP = ABS(CACHE(4,J)) 
+            END IF
+            VS = TMP*3600D0 + 5D-7
             LV = INT(VS)
 
 *           Sexagesimal fields.
@@ -1754,21 +1968,21 @@
 
 *           Field suppression policy.
             IF (SEXSUP(IWRLD).GT.0) THEN
-               TMP = ABS(CACHE(4,J)) - LD
+               TMP = TMP - LD
 
                IF (TMP.LT.5D-7) THEN
                  DODEG = .TRUE.
                  DOMIN = .TRUE.
                ELSE IF (SEXSUP(IWRLD).EQ.2) THEN
                  DOMIN = TMP*60-LM.LT.3D-5
-                 DODEG = DOMIN .AND. LD.NE.PRVD(IWRLD)
+                 DODEG = DOMIN .AND. LD.NE.PRVDEG(IWRLD)
                ELSE
                  DODEG = .FALSE.
                  DOMIN = .FALSE.
                END IF
             ELSE
-               DODEG = LD.NE.PRVD(IWRLD)
-               DOMIN = LM.NE.PRVM(IWRLD)
+               DODEG = LD.NE.PRVDEG(IWRLD)
+               DOMIN = LM.NE.PRVMIN(IWRLD)
             END IF
 
             K = 1
@@ -1790,7 +2004,7 @@
                   K = K + 5
                ELSE
 *                 Time.
-                  IF (LD.LE.9 .AND. TYPE(IWRLD).NE.'T') THEN
+                  IF (LD.LE.9 .AND. INDEX('Ty',FTYPE(IWRLD)).EQ.0) THEN
 *                    Write leading zeroes in the hour field.
                      WRITE (TEXT(K:), '(I2.2)') LD
                      K = K + 2
@@ -1838,7 +2052,7 @@
                END IF
             END IF
 
-         ELSE IF (TYPE(IWRLD).EQ.'L') THEN
+         ELSE IF (FTYPE(IWRLD).EQ.'L') THEN
 *           Logarithmic.
             TMP = MOD(CACHE(4,J),1D0)
             IF (TMP.LT.0D0) TMP = TMP + 1D0
@@ -1861,6 +2075,25 @@
  190           TEXT = '10' // ESCAPE // 'u' // TEXT(K:8)
 
                LFORCE = .TRUE.
+            END IF
+
+         ELSE IF (FTYPE(IWRLD).EQ.'Y') THEN
+*           Convert MJD to Gregorian calendar date, YYYY/MM/DD.
+            CALL PGMJD(0, CACHE(4,J), IY, IM, ID)
+            DOYEAR = IY.NE.PRVYR(IWRLD)
+
+            IF (DOYEAR) THEN
+               WRITE (TEXT, 200) IY, IM, ID
+ 200           FORMAT (I12,'/',I2.2,'/',I2.2)
+
+               DO 210 K = 1, 12
+                  IF (TEXT(K:K).NE.' ') GO TO 220
+ 210           CONTINUE
+ 220           TEXT = TEXT(K:18)
+
+            ELSE
+               WRITE (TEXT, 225) IM, ID
+ 225           FORMAT (I2.2,'/',I2.2)
             END IF
 
          ELSE
@@ -1891,8 +2124,13 @@
 
 *           Sexagesimal formatting.
             IF (SEXA(IWRLD)) THEN
-               IF (DODEG) PRVD(IWRLD) = LD
-               IF (DOMIN) PRVM(IWRLD) = LM
+               IF (DODEG) PRVDEG(IWRLD) = LD
+               IF (DOMIN) PRVMIN(IWRLD) = LM
+            END IF
+
+*           Calendar formatting.
+            IF (FTYPE(IWRLD).EQ.'Y') THEN
+               IF (DOYEAR) PRVYR(IWRLD) = IY
             END IF
 
 *           Record the fact.
@@ -1903,15 +2141,10 @@
             END IF
 
 *           Boundary within which the numeric labels lie.
-            IF (EDGE.EQ.1) THEN
-               IF (YBOX(1).LT.BNDRY(1)) BNDRY(1) = YBOX(1)
-            ELSE IF (EDGE.EQ.2) THEN
-               IF (XBOX(1).LT.BNDRY(2)) BNDRY(2) = XBOX(1)
-            ELSE IF (EDGE.EQ.3) THEN
-               IF (YBOX(2).GT.BNDRY(3)) BNDRY(3) = YBOX(2)
-            ELSE IF (EDGE.EQ.4) THEN
-               IF (XBOX(4).GT.BNDRY(4)) BNDRY(4) = XBOX(4)
-            END IF
+            IF (YBOX(1).LT.BNDRY(1)) BNDRY(1) = YBOX(1)
+            IF (XBOX(1).LT.BNDRY(2)) BNDRY(2) = XBOX(1)
+            IF (YBOX(3).GT.BNDRY(3)) BNDRY(3) = YBOX(3)
+            IF (XBOX(3).GT.BNDRY(4)) BNDRY(4) = XBOX(3)
 
 *           Check the distance to the previous grid line.
             IF (J.GT.1) THEN
@@ -1954,38 +2187,73 @@
                END IF
             END IF
          END IF
- 200  CONTINUE
+ 230  CONTINUE
 
 
 *  Write the identification strings.
 *     World coordinates.
-      DO 280 EDGE = 1, 4
+      DO 360 EDGE = 1, 4
          TEXT = ' '
 
-         DO 250 IWRLD = 1, 2
+         DO 330 IWRLD = 1, 2
             TXT(IWRLD) = ' '
 
-            IF (MOD(SKOP(EDGE)/IWRLD,2).EQ.0) GO TO 250
+            IF (MOD(SKOP(EDGE)/IWRLD,2).EQ.0) GO TO 330
 
+*           Strip off leading blanks.
             L = LEN(IDENTS(IWRLD))
-            DO 210 K = 1, L
+            DO 240 K = 1, L
                IF (IDENTS(IWRLD)(K:K).NE.' ') THEN
                   TXT(IWRLD) = IDENTS(IWRLD)(K:L)
-                  GO TO 220
+                  GO TO 250
                END IF
- 210        CONTINUE
+ 240        CONTINUE
 
- 220        IF (IMAG(IWRLD).NE.0) THEN
-               DO 230 K = 40, 1, -1
-                  IF (TXT(IWRLD)(K:K).NE.' ') GO TO 240
- 230           CONTINUE
+ 250        IF (IMAG(IWRLD).NE.0 .OR. FTYPE(IWRLD).EQ.'y') THEN
+*              Find the last non-blank.
+               DO 260 K = 40, 1, -1
+                  IF (TXT(IWRLD)(K:K).NE.' ') GO TO 270
+ 260           CONTINUE
+ 270           K = K + 1
 
-*              Add scaling information.
- 240           CALL PGNUMB (IMAG(IWRLD), 0, 1, EXPONT, NCH)
-               TXT(IWRLD)(K+1:) = '  x10' // ESCAPE // 'u' // EXPONT
+               IF (IMAG(IWRLD).NE.0) THEN
+*                 Add scaling information.
+                  CALL PGNUMB (IMAG(IWRLD), 0, 1, EXPONT, NCH)
+                  TXT(IWRLD)(K:) = '  x10' // ESCAPE // 'u' // EXPONT
+               ELSE
+*                 Add calendar date range.
+                  CALL PGMJD(0, MJD1(IWRLD), IY, IM, ID)
+
+                  WRITE (TEXT, 280) IY, IM, ID
+ 280              FORMAT (I12,'/',I2.2,'/',I2.2)
+                  DO 290 L = 1, 12
+                     IF (TEXT(L:L).NE.' ') GO TO 300
+ 290              CONTINUE
+ 300              TXT(IWRLD)(K:) = ' (' // TEXT(L:18)
+                  K = K + 21 - L
+
+                  CALL PGMJD(0, MJD2(IWRLD), IY2, IM2, ID2)
+                  WRITE (TEXT, 280) IY2, IM2, ID2
+                  IF (IY2.EQ.IY) THEN
+                     IF (IM2.EQ.IM) THEN
+                        IF (ID2.EQ.ID) THEN
+                           TXT(IWRLD)(K:) = ')'
+                        ELSE
+                           TXT(IWRLD)(K:) = ' - ' // TEXT(17:18) // ')'
+                        END IF
+                     ELSE
+                        TXT(IWRLD)(K:) = ' - ' // TEXT(14:18) // ')'
+                     END IF
+                  ELSE
+                     DO 310 L = 1, 12
+                        IF (TEXT(L:L).NE.' ') GO TO 320
+ 310                 CONTINUE
+ 320                 TXT(IWRLD)(K:) = ' - ' // TEXT(L:18) // ')'
+                  END IF
+               END IF
             END IF
 
- 250     CONTINUE
+ 330     CONTINUE
 
          K = 0
          IF (TXT(1).NE.' ') THEN
@@ -1995,11 +2263,11 @@
 
             IF (TXT(2).NE.' ') THEN
 *              ...and also second world coordinate.
-               DO 260 K = 40, 1, -1
-                  IF (TEXT(K:K).NE.' ') GO TO 270
- 260           CONTINUE
+               DO 340 K = 40, 1, -1
+                  IF (TEXT(K:K).NE.' ') GO TO 350
+ 340           CONTINUE
+ 350           K = K + 1
 
- 270           K = K + 1
                TEXT(K:) = ',  ' // TXT(2)
             END IF
          ELSE IF (TXT(2).NE.' ') THEN
@@ -2008,7 +2276,7 @@
             CALL PGSCI (CI(6))
          ELSE
 *           No text to write.
-            GO TO 280
+            GO TO 360
          END IF
 
          IF (EDGE.EQ.1) THEN
@@ -2030,7 +2298,6 @@
             X = (XW1 + XW2)/2.0
             Y = BNDRY(3) + 0.5*YCH
             ANGL = 0.0
-            BNDRY(3) = BNDRY(3) + 1.5*YCH
          ELSE IF (EDGE.EQ.4) THEN
             IF (TEXT(2:).EQ.' ') THEN
 *              One character, write upright.
@@ -2044,26 +2311,157 @@
             END IF
          END IF
 
+         CALL PGQTXT (X, Y, ANGL, 0.5, TEXT, XBOX, YBOX)
          IF (K.EQ.0) THEN
             CALL PGPTXT (X, Y, ANGL, 0.5, TEXT)
          ELSE
 *           Two-colour annotation.
-            CALL PGQTXT (X, Y, ANGL, 0.5, TEXT, XBOX, YBOX)
             CALL PGPTXT (XBOX(1), YBOX(1), ANGL, 0.0, TEXT(:K))
             CALL PGSCI (CI(6))
             CALL PGPTXT (XBOX(4), YBOX(4), ANGL, 1.0, TEXT(K+1:))
          END IF
 
- 280  CONTINUE
+*        Update the boundary.
+         IF (YBOX(1).LT.BNDRY(1)) BNDRY(1) = YBOX(1)
+         IF (YBOX(3).LT.BNDRY(1)) BNDRY(1) = YBOX(3)
+         IF (XBOX(1).LT.BNDRY(2)) BNDRY(2) = XBOX(1)
+         IF (XBOX(3).LT.BNDRY(2)) BNDRY(2) = XBOX(3)
+         IF (YBOX(1).GT.BNDRY(3)) BNDRY(3) = YBOX(1)
+         IF (YBOX(3).GT.BNDRY(3)) BNDRY(3) = YBOX(3)
+         IF (XBOX(1).GT.BNDRY(4)) BNDRY(4) = XBOX(1)
+         IF (XBOX(3).GT.BNDRY(4)) BNDRY(4) = XBOX(3)
+ 360  CONTINUE
 
 *     Title.
       IF (IDENTS(3).NE.' ') THEN
          CALL PGSCI (CI(7))
          X = (XW1 + XW2)/2.0
          Y = BNDRY(3) + 0.5*YCH
+         CALL PGQTXT (X, Y, 0.0, 0.5, IDENTS(3), XBOX, YBOX)
          CALL PGPTXT (X, Y, 0.0, 0.5, IDENTS(3))
+
+*        Update the boundary.
+         IF (XBOX(1).LT.BNDRY(2)) BNDRY(2) = XBOX(1)
+         IF (YBOX(3).GT.BNDRY(3)) BNDRY(3) = YBOX(3)
+         IF (XBOX(3).GT.BNDRY(4)) BNDRY(4) = XBOX(3)
       END IF
 
+*     Return margin widths in Cartesian coordinates.
+      CACHE(1,NC) = YW1 - BNDRY(1)
+      CACHE(2,NC) = XW1 - BNDRY(2)
+      CACHE(3,NC) = BNDRY(3) - YW2
+      CACHE(4,NC) = BNDRY(4) - XW2
+
+
+      RETURN
+      END
+
+
+*=======================================================================
+*   MJD to/from Gregorian calendar date.
+*
+*   Given:
+*      CODE     I        If 1, compute MJD from IY,IM,ID, else vice
+*                        versa.
+*
+*   Given and/or returned:
+*      MJD      D        Modified Julian date, (MJD = JD - 2400000.5).
+*      IY       I        Year.
+*      IM       I        Month (for CODE.EQ.1 may exceed 12, or be zero,
+*                        or negative).
+*      ID       I        Day of month (for CODE.EQ.1, may exceed the
+*                        legitimate number of days in the month, or be
+*                        zero, or negative).
+*
+*   Notes:
+*    1) These algorithms are from D.A. Hatcher, QJRAS 25, 53-55, as
+*       modified by P.T. Wallace for use in SLALIB (subroutines CLDJ
+*       and DJCL).
+*
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*-----------------------------------------------------------------------
+      SUBROUTINE PGMJD (CODE, MJD, IY, IM, ID)
+*-----------------------------------------------------------------------
+      INTEGER   CODE, DD, ID, IM, IY, JD, JM, JY, N4
+      DOUBLE PRECISION MJD
+*-----------------------------------------------------------------------
+      IF (CODE.EQ.1) THEN
+*        Calendar date to MJD.
+         IF (IM.LT.1) THEN
+            JY = IY - 1 + IM/12
+            JM = 12 + MOD(IM,12)
+         ELSE
+            JY = IY + (IM-1)/12
+            JM = MOD(IM-1,12) + 1
+         END IF
+
+         MJD =DBLE((1461*(JY - (12-JM)/10 + 4712))/4
+     :            +(306*MOD(JM+9, 12) + 5)/10
+     :            -(3*((JY - (12-JM)/10 + 4900)/100))/4
+     :            + ID - 2399904)
+
+      ELSE
+*        MJD to calendar date.
+         JD = 2400001 + INT(MJD)
+
+         N4 =  4*(JD + ((2*((4*JD - 17918)/146097)*3)/4 + 1)/2 - 37)
+         DD = 10*(MOD(N4-237, 1461)/4) + 5
+
+         IY = N4/1461 - 4712
+         IM = MOD(2 + DD/306, 12) + 1
+         ID = MOD(DD, 306)/10 + 1
+      END IF
+
+      RETURN
+      END
+
+
+
+*=======================================================================
+*   This FORTRAN wrapper on PGSBOX exists solely to define fixed-length
+*   CHARACTER arguments for cpgsbox().
+*
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*-----------------------------------------------------------------------
+      SUBROUTINE PGSBOK (BLC, TRC, IDENTS, OPT, LABCTL, LABDEN, CI,
+     :   GCODE, TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI,
+     :   NLD, NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
+*-----------------------------------------------------------------------
+      LOGICAL   DOEQ
+      INTEGER   CI(7), GCODE(2), IC, IERR, LABCTL, LABDEN, NC, NG1, NG2,
+     :          NLC, NLD, NLI, NLIPRM(NLI)
+      REAL      BLC(2), TRC(2)
+      DOUBLE PRECISION CACHE(4,0:NC), GRID1(0:NG1), GRID2(0:NG2),
+     :          NLDPRM(NLD), TIKLEN
+      CHARACTER IDENTS(3)*80, NLCPRM(NLC)*1, OPT(2)*1
+
+      EXTERNAL NLFUNC
+*-----------------------------------------------------------------------
+      CALL PGSBOX (BLC, TRC, IDENTS, OPT, LABCTL, LABDEN, CI, GCODE,
+     :   TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI, NLD,
+     :   NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
+
+      RETURN
+      END
+
+
+
+*=======================================================================
+*   This FORTRAN wrapper on PGLBOX exists solely to define fixed-length
+*   CHARACTER arguments for cpglbox().
+*
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*-----------------------------------------------------------------------
+      SUBROUTINE PGLBOK (IDENTS, OPT, LABCTL, LABDEN, CI, GCODE, TIKLEN,
+     :   NG1, GRID1, NG2, GRID2, DOEQ, NC, IC, CACHE, IERR)
+*-----------------------------------------------------------------------
+      LOGICAL   DOEQ
+      INTEGER   CI(7), GCODE(2), IC, IERR, LABCTL, LABDEN, NC, NG1, NG2
+      DOUBLE PRECISION CACHE(4,0:NC), GRID1(0:NG1), GRID2(0:NG2), TIKLEN
+      CHARACTER IDENTS(3)*80, OPT(2)*1
+*-----------------------------------------------------------------------
+      CALL PGLBOX (IDENTS, OPT, LABCTL, LABDEN, CI, GCODE, TIKLEN, NG1,
+     :   GRID1, NG2, GRID2, DOEQ, NC, IC, CACHE, IERR)
 
       RETURN
       END
