@@ -5978,3 +5978,4 @@
 16 381 src rm doc/html/tour
 17 000 src mv trial/implement/Functionals/NQChebyshev.h aips/implement/Functionals/NQChebyshev.h
 17 000 src mv trial/implement/Functionals/NQChebyshev.cc aips/implement/Functionals/NQChebyshev.cc
+17 000 src mv trial/implement/Functionals/NQChebyshevParam.cc aips/implement/Functionals/NQChebyshevParam.cc
