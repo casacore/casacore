@@ -4743,3 +4743,4 @@
 14 306 sys rm libexec/newsdaverager.g
 14 306 sys rm libexec/sditerator2.g
 14 306 sys rm libexec/newsdfits2ms.g
+14 306 src rm trial/apps/newsditerator
