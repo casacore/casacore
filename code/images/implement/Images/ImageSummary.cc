@@ -378,7 +378,7 @@ void ImageSummary<T>::list (LogIO& os,
 // List according to coordinate type
 
       if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
-        const DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
+        DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
         listDirection (os, dCoord, axisInCoordinate, pixelAxis, 
                        nativeFormat);
       } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
@@ -417,7 +417,7 @@ void ImageSummary<T>::list (LogIO& os,
 // List according to coordinate type
 
         if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
-          const DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
+          DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
           listDirection (os, dCoord, axisInCoordinate, -1, nativeFormat);
         } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
           const SpectralCoordinate sCoord = cSys.spectralCoordinate(coordinate);
