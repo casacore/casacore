@@ -2554,3 +2554,4 @@
 09 456 src rm trial/implement/Guiutils
 09 456 src mv trial/implement/guiutils/ trial/implement/Guiutils
 09 457 src rm trial/implement/Utilities/test/templates
+09 461 src mv trial/apps/measures/measures.g trial/implement/Measures/measures.g
