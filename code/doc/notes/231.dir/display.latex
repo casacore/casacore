@@ -34,13 +34,85 @@ implemented in very high-level classes, maximising code re-use and
 minimising the burden of in-depth knowledge on the part of the
 application programmer, and}
 \item{visualisation applications could be built up in a modular fashion, 
-consistent with the \aipspp\ way.}
+consistent with the \aipspp\ paradigm.}
 \end{itemize}
 
+In 1998, the Display Library design was extended to enable the
+construction of visualisation tools from \glish.  Instead of using the
+\aipspp\ Distributed Object (DO) system, the extension made use of the
+\glish\ proxy system, and the dynamic loading capabilities of the one
+existing \glish\ proxy -- {\tt glishtk}.  The first \glish\
+application created using this system -- the {\tt viewer} -- is,
+nevertheless, a true \aipspp\ tool which can be managed by the
+\aipspp\ Tool Manager.
 
 \section{Display Library Components}
 
+The Display Library is written in {\sf C++}, and makes extensive use
+of the basic object-oriented design concepts of encapsulation,
+inheritance and polymorphism.  The Library is built upon the existing
+\aipspp\ classes, and a sound knowledge of the {\em
+Array, Lattice} and {\em Mathematics} classes in particular is
+recommended before approaching the following sections.
+
 \subsection{PixelCanvasColorTables and Colormaps}
+
+Since color plays an important role in visualisation of scientific
+data, it is important to provide flexible ways to allocate and use
+colors within the Display Library.  To this end, a layered approach to
+colors has been adopted, wherein one class -- the {\em
+PixelCanvasColorTable} (hereafter the {\em ColorTable}) -- is
+primarily concerned with acquiring and managing blocks of color cells
+from the underlying hardware, and a second class -- the {\em Colormap}
+-- is mostly concerned with generating sets of colors to be installed
+in the color cells managed by one or more ColorTable objects.  The key
+to understanding color in the Display Library is to understand the
+interaction between these two classes, and to more or less ignore the
+hardware-dependent aspects of the ColorTable class.
+
+The PixelCanvasColorTable class provides dynamic color cell allocation
+functionality, using primitive routines appropriate to the device in
+use.  For each display device provided by the Display Library, there
+must be an implementation of the PixelCanvasColorTable class.  Upon
+construction a ColorTable determines the color-specific capabilities
+of the display device, and where appropriate, acquires control of some
+number of the device's color cells.\footnote{For some devices, the
+concept of color cells is invalid, and the ColorTable simply makes
+things ``look like'' some number of cells has been allocated.
+Differences like these -- between devices -- are encapsulated by the
+PixelCanvasColorTable class.}  The number of color cells controlled by
+the ColorTable should be dynamic (where possible), and under the
+control of the programmer and thereby the user.  
+
+In use, the role of the ColorTable is to dynamically allocate space
+out of its own set of color cells to one or more registered Colormaps.
+A Colormap provides a series of colors, on demand, which can be used
+to fill a series of vacant color cells provided by a ColorTable.
+Typically, such a set of colors would be used to represent a range of
+data values, where the minimum data value is mapped to the first color
+cell, the maximum value to the final color cell, and all other values
+to cells within the available range.
+
+The interaction between, and division of responsibilities between,
+ColorTables and Colormaps is important.  One or more ColorTables can
+be constructed for a given display device.  For example, a screen
+display device may provide up to 256 colors, and two ColorTables, each
+initially acquiring 80 colors, could be created for that screen.  The
+dynamic nature of the ColorTables means that once they have been made,
+they can be expanded or shrunk, provided enough colors are available.
+For example, the first ColorTable in this example might then be shrunk
+to 40 colors, and the second expanded to 120 colors.
+
+In a similar way, one or more Colormaps can be registered with a
+ColorTable.  That is, it is possible to register a greyscale Colormap
+and a rainbow Colormap on the first of our ColorTables above.
+Initially, they would each soak up 40 colors (since the ColorTable
+provides 80 colors), but after the shrink operation described above,
+they would soak up only 20 colors each.  So that any images using
+these Colormaps are still drawn correctly on the screen, a series of
+callback functions are initiated when ColorTables and Colormaps are
+resized.
+
 
 \subsection{The PixelCanvas}
 
