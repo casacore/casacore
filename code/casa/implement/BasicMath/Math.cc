@@ -1,5 +1,5 @@
-//# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996,1997
+ //# Math.cc: Implementation of miscellaneous functions in Math.h
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,98 +31,130 @@
 
 
 Bool near(uInt val1, uInt val2, Double tol) {
-  if (tol <= 0) 
+  if (tol <= 0) {
     return ToBool(val1 == val2);
-  if (val1 == val2) return True;
-  return ToBool(abs((Int) (val1-val2)) <= tol*max(val1,val2));
+  }
+  if (val1 == val2) {
+    return True;
+  } else if (val1 > val2) {
+    return ToBool(Double(val1-val2) <= tol*max(val1,val2));
+  } else {
+    return ToBool(Double(val2-val1) <= tol*max(val1,val2));
+  }
 }
 
 Bool near(Int val1, Int val2, Double tol) {
-  if (tol <=0) 
+  if (tol <=0) {
     return ToBool(val1 == val2);
-  if (val1 == val2) return True;
-  if ((0<val1) != (0<val2)) return False;
-  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+  }
+  if (val1 == val2) {
+    return True;
+  }
+  if ((0<val1) != (0<val2)) {
+    return False;
+  }
+  const Int aval1 = abs(val1);
+  const Int aval2 = abs(val2);
+  return ToBool(Double(aval1-aval2) <= tol*Double(max(aval1,aval2)));
 }
 
 Bool near(Float val1, Float val2, Double tol) {
-  if (tol <=0)
+  if (tol <=0) {
     return ToBool(val1 == val2);
-  if (val1 == val2) return True;
-  if (val1 == 0)
-    return ToBool(abs(val2) <= (1+tol)*FLT_MIN);
-  else if (val2 == 0)
-    return ToBool(abs(val1) <= (1+tol)*FLT_MIN);
-  if ((0<val1) != (0<val2)) return False;
+  }
+  if (val1 == val2) {
+    return True;
+  }
+  if (val1 == 0) {
+    return ToBool(abs(val2) <= (1+tol)*C::flt_min);
+  }
+  else if (val2 == 0) {
+    return ToBool(abs(val1) <= (1+tol)*C::flt_min);
+  }
+  if ((0<val1) != (0<val2)) {
+    return False;
+  }
   return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
 Bool near(Double val1, Double val2, Double tol) {
-  if (tol <=0)
+  if (tol <=0) {
     return ToBool(val1 == val2);
-  if (val1 == val2) return True;
-  if (val1 == 0)
-    return ToBool(abs(val2) <= (1+tol)*DBL_MIN);
-  else if (val2 == 0)
-    return ToBool(abs(val1) <= (1+tol)*DBL_MIN);
-  if ((0<val1) != (0<val2)) return False;
+  }
+  if (val1 == val2) {
+    return True;
+  }
+  if (val1 == 0) {
+    return ToBool(abs(val2) <= (1+tol)*C::dbl_min);
+  }
+  else if (val2 == 0) {
+    return ToBool(abs(val1) <= (1+tol)*C::dbl_min);
+  }
+  if ((0<val1) != (0<val2)) {
+    return False;
+  }
   return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool nearAbs(uInt val1, uInt val2, uInt tol) {
-  return ToBool(tol > abs((Int) (val2 - val1)));
+Bool nearAbs(uInt val1, uInt val2, Double tol) {
+  if (val1 == val2) {
+    return True;
+  } else if (val1 > val2) {
+    return ToBool(tol > Double(val1 - val2));
+  } else {
+    return ToBool(tol > Double(val2 - val1));
+  }
 }
 
-Bool nearAbs(Int val1, Int val2, Int tol) {
-  return ToBool(tol > abs(val2 - val1));
+Bool nearAbs(Int val1, Int val2, Double tol) {
+  return ToBool(tol > Double(abs(val2 - val1)));
 }
 
 Bool nearAbs(Float val1, Float val2, Double tol) {
-  return ToBool(tol > fabs(val2 - val1));
+  return ToBool(tol > Double(abs(val2 - val1)));
 }
 
 Bool nearAbs(Double val1, Double val2, Double tol) {
-  return ToBool(tol > fabs(val2 - val1));
+  return ToBool(tol > abs(val2 - val1));
 }
 
-Bool isNaN(const float &val)
-{
-    return ToBool(isnan(double(val)));
+Bool isNaN(const Float &val) {
+  return ToBool(isnan(Double(val)));
 }
 
-Bool isNaN(const double &val)
-{
-    return ToBool(isnan(val));
+Bool isNaN(const Double &val) {
+  return ToBool(isnan(val));
 }
 
-void setNaN(float &val)
-{
-    static float nanval;
-    static Bool init = False;
-    if (!init) {
-        init = True;
-	// All bits on is a NaN
-	uChar *uptr = (uChar *)&nanval;
-	for (Int i=0; i<sizeof(nanval); i++) {
-	    uptr[i] = 255;
-	}
-	AlwaysAssert(isNaN(nanval), AipsError);
+void setNaN(Float &val) {
+  static Float nanval;
+  static Bool init = False;
+  if (!init) {
+    init = True;
+    // All bits on is a NaN
+    uChar *uptr = (uChar *)&nanval;
+    for (uInt i=0; i<sizeof(nanval); i++) {
+      uptr[i] = 255;
     }
-    val = nanval;
+    AlwaysAssert(isNaN(nanval), AipsError);
+  }
+  val = nanval;
 }
 
-void setNaN(double &val)
-{
-    static double nanval;
-    static Bool init = False;
-    if (!init) {
-        init = True;
-	// All bits on is a NaN
-	uChar *uptr = (uChar *)&nanval;
-	for (Int i=0; i<sizeof(nanval); i++) {
-	    uptr[i] = 255;
-	}
-	AlwaysAssert(isNaN(nanval), AipsError);
+void setNaN(Double &val) {
+  static Double nanval;
+  static Bool init = False;
+  if (!init) {
+    init = True;
+    // All bits on is a NaN
+    uChar *uptr = (uChar *)&nanval;
+    for (uInt i=0; i<sizeof(nanval); i++) {
+      uptr[i] = 255;
     }
-    val = nanval;
+    AlwaysAssert(isNaN(nanval), AipsError);
+  }
+  val = nanval;
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 Math"
+// End: 
