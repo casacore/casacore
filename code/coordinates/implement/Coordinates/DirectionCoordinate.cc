@@ -746,8 +746,8 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	    names(1) = "Declination";
 	    break;
 	case MDirection::GALACTIC:
-	    names(0) = "Galactic Longitude";
-	    names(1) = "Galactic Latitude";
+	    names(0) = "Longitude";
+	    names(1) = "Latitude";
 	    break;
 	case MDirection::HADEC:
 	    names(0) = "Hour Angle";
