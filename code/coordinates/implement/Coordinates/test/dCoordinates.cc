@@ -35,6 +35,8 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Exceptions/Error.h>
+
 
 #include <iostream.h>
 
