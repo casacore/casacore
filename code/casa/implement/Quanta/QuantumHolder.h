@@ -169,10 +169,10 @@ public:
   const Quantum<Complex> &asQuantumComplex() ;
   const Quantum<DComplex> &asQuantumDComplex() ;
   const Quantum<Vector<Double> > &asQuantumVectorDouble() ;
-  ///  const Quantum<Vector<Float> > &asQuantumVectorFloat() ;
-  ///  const Quantum<Vector<Int> > &asQuantumVectorInt() ;
-  ///  const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
-  ///  const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
+  const Quantum<Vector<Float> > &asQuantumVectorFloat() ;
+  const Quantum<Vector<Int> > &asQuantumVectorInt() ;
+  const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
+  const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
   // </group>
 
   // Create a Quantum from a record
@@ -204,7 +204,11 @@ private:
 
 //# General member functions
   // Convert to a different real scalar quantum
-  void toReal(const Int &tp);
+  void toReal(const uInt &tp);
+  // Convert to a different complex scalar quantum
+  void toComplex(const uInt &tp);
+  // Convert scalar to Array
+  void toVector();
 };
 
 #endif
