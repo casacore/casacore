@@ -1,5 +1,5 @@
 //# Block.h: Simple templated array classes
-//# Copyright (C) 1993,1994,1995,1996,1997,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ public:
     Block() : npts(0), array(0), destroyPointer(True) {}
     // Create a Block with the given number of points. The values in Block
     // are uninitialized. Note that indices range between 0 and n-1.
-    Block(uInt n) : npts(n), array(n>0 ? new T[n] : 0), destroyPointer(True)
+    explicit Block(uInt n) : npts(n), array(n>0 ? new T[n] : 0), destroyPointer(True)
       {	ThrowBlockError::raise(n>0 && !array, ThrowBlockError::alloc1, n);  }
     // Create a Block of the given length, and initialize (via operator= for 
     // objects of type T) with the provided value.
