@@ -280,7 +280,8 @@ void DiskShape::sample(Flux<Double> & flux, const MDirection & direction,
   if ((x <= majRad) && 
       (y <= minRad) && 
       (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
-    flux.scaleValue(itsHeight*square(pixelSize.radian()));
+    Double scale = itsHeight*square(pixelSize.radian());
+    flux.scaleValue(scale, scale, scale, scale);
   } else {
     flux.setValue(0.0);
   }
@@ -295,7 +296,7 @@ void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   // Assume the disk is symmetric for now.
   const Double r = hypot(uvw(0) * wavenumber, uvw(1) * wavenumber);
   const Double scale = j0(itsMajValue*C::pi*r)*itsMajValue/(2*r);
-  flux.scaleValue(scale);
+  flux.scaleValue(scale, scale, scale, scale);
 }
 
 ComponentShape * DiskShape::clone() const {
