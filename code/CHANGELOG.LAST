@@ -1,0 +1,18 @@
+
+change id: 0065
+ author:   Ger van Diepen
+ date:     2001/01/09
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: Change
+ summary:  Large files are supported
+The support for large files (files >= 2 Gb) has been added.
+All file offsets are now 64 bits, although they are written as 32
+bits if they are small enough. In that way older software can
+still access newer tables.
+The compile flag -DLARGEFILE has to be added to the site makedefs to effectively use large files.
+Note that on Linux systems large files are usually not supported,
+although all 64 bit functions seem to be present in the libc library.
