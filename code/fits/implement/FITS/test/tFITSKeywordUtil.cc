@@ -80,6 +80,12 @@ int main()
 	// scalar fields can have comments
 	myKeywords.setComment("hello", "A comment for HELLO");
 	myKeywords.setComment("alongname", "This is truncated from ALONGNAME");
+
+	// the CD-matrix keywords are special
+	myKeywords.define("cd1_1", 1.0);
+	myKeywords.define("cd1_2", 0.0);
+	myKeywords.define("cd2_1", 0.0);
+	myKeywords.define("cd2_2", 1.0);
 	
 	// Add a couple of comments. Note that addComment appends numbers to each 
 	// comment to keep them unique
@@ -111,7 +117,6 @@ int main()
 	ConstFitsKeywordList nativeListRO(nativeList);
 	AlwaysAssertExit(FITSKeywordUtil::getKeywords(myNewKeywords, nativeListRO, 
 						      ignore));
-	
 	// compare contents of myNewKeywords with myKeywords
 	// Every field in myKeywords should be in myNewKeywords EXCEPT
 	//   world, because we ignored it
@@ -305,7 +310,7 @@ int main()
 	AlwaysAssertExit(myNewKeywords.nfields()==0);
 
     } catch (AipsError x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
+	cerr << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     }
     return 0;
