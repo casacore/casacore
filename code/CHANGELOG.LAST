@@ -1,0 +1,17 @@
+
+change id: 0110
+ author:   Tim Cornwell
+ date:     2001/11/29
+ avers:    1.7
+ area:     Tool
+ package:  trial
+ module:   imager
+ type:     Code Documentation
+ category: New
+ summary:  Support for near field imaging
+
+imager now supports near field imaging. imager.setimage takes a distance to the object which is used for refocusing the array to that distance using the appropriate delay correction. The distance is attached to the image as miscInfo. The deconvolution methods and makeimage should all work correctly with this capability. While I have tested the algorithm with simulated data, I have not yet been able to find a good real world test case. Hence the sign of the phase correction may be inverted. If you try this out on real data, try both positive and negative distances.
+
+The default is that no refocus is applied (of course).
+
+Equivalent changes to simulator will be checked in shortly.
