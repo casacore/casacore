@@ -32,7 +32,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
 
-Int main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   try {
     Quantity longitude; Quantity::read(longitude,"149.33.00.5");
