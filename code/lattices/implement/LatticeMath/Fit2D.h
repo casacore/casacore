@@ -76,7 +76,11 @@ template<class T> class MaskedLattice;
 // 
 // For Gaussians, the parameter Vector consists, in order, of
 // the peak, x location, y location, major axis, minor axis,
-// and position angle of the major axis.
+// and position angle of the major axis (in radians,
+// positive counter clockwise from the y axis in the range
+// -2pi to 2pi).  When the solution is recovered, the
+// position angle will be in the range 0 to pi (this is consistent
+// behaviour with the Gaussian2D functional).
 //
 // </synopsis> 
 // <example>
@@ -89,6 +93,7 @@ template<class T> class MaskedLattice;
 //  <li> template it 
 //  <li> Speed up some Array calculations indexed with IPositions
 //  <li> Don't handle Lattices simply by getting pixels into Arrays
+//  <li> make an addModel interface taking functionals
 // </todo>
 
 class Fit2D 
