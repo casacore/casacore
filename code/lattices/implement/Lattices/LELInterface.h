@@ -120,11 +120,14 @@ class PixelRegion;
 //
 //  The classes evaluate the expression for each specified Lattice
 //  chunk (usually tile by tile).    The <src>region</src> argument 
-//  in the <src>eval</src> function specifies the shape of the 
-//  Lattice being evaluated (not the shape of the current chunk being 
-//  iterated through and evaluated).  The absence of the <src>region</src> 
+//  in the <src>eval</src> function specifies the section of the 
+//  Lattice being evaluated.   The absence of the <src>region</src> 
 //  argument in the <src>getScalar</src> function emphasises the 
-//  scalar nature; a scalar expression does not have a shape.
+//  scalar nature; a scalar expression does not have a shape. For most
+//  of the letter classes, the <src>region</src> argument is irrelevant;
+//  the only one it really matters for is LELLattice which fetches the
+//  pixels from the Lattice.  The rest only care about the shape of the
+//  buffer in the <src>eval</src> call.
 //
 // </synopsis> 
 //
