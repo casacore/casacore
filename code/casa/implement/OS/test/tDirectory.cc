@@ -65,6 +65,96 @@ void doIt (Bool doExcp)
 		                                "tDirectory_tmp/linkDir");
 
     {
+        // Directory::shellExpand
+        Vector<String> list(1);
+        list(0) = "tDirectory_tmp/*";
+        Vector<String> list2 = Directory::shellExpand(list, False);
+        Vector<String> list3 = Directory::shellExpand(list, True);
+//
+        AlwaysAssertExit(list2.nelements()==6);
+        {
+           Path path("./tDirectory_tmp/linkDir");
+           AlwaysAssertExit(list2(0)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/test1");
+           AlwaysAssertExit(list2(1)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/test2");
+           AlwaysAssertExit(list2(2)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/test5");
+           AlwaysAssertExit(list2(3)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/testFile");
+           AlwaysAssertExit(list2(4)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/testLink");
+           AlwaysAssertExit(list2(5)==path.absoluteName());
+        }
+//
+        AlwaysAssertExit(list3.nelements()==6);
+        AlwaysAssertExit(list3(0)==String("linkDir"));
+        AlwaysAssertExit(list3(1)==String("test1"));
+        AlwaysAssertExit(list3(2)==String("test2"));
+        AlwaysAssertExit(list3(3)==String("test5"));
+        AlwaysAssertExit(list3(4)==String("testFile"));
+        AlwaysAssertExit(list3(5)==String("testLink"));
+//
+        list2.resize(0); list3.resize(0);
+        list(0) = "tDirectory_tmp/te*";
+        list2 = Directory::shellExpand(list, False);
+        list3 = Directory::shellExpand(list, True);
+//
+        AlwaysAssertExit(list2.nelements()==5);
+        {
+           Path path("./tDirectory_tmp/test1");
+           AlwaysAssertExit(list2(0)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/test2");
+           AlwaysAssertExit(list2(1)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/test5");
+           AlwaysAssertExit(list2(2)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/testFile");
+           AlwaysAssertExit(list2(3)==path.absoluteName());
+        }
+        {
+           Path path("./tDirectory_tmp/testLink");
+           AlwaysAssertExit(list2(4)==path.absoluteName());
+        }
+//
+        AlwaysAssertExit(list3.nelements()==5);
+        AlwaysAssertExit(list3(0)==String("test1"));
+        AlwaysAssertExit(list3(1)==String("test2"));
+        AlwaysAssertExit(list3(2)==String("test5"));
+        AlwaysAssertExit(list3(3)==String("testFile"));
+        AlwaysAssertExit(list3(4)==String("testLink"));
+//
+        list2.resize(0); list3.resize(0);
+        list(0) = "tDirectory_tmp/?ink*";
+        list2 = Directory::shellExpand(list, False);
+        list3 = Directory::shellExpand(list, True);
+//
+        AlwaysAssertExit(list2.nelements()==1);
+        {
+           Path path("./tDirectory_tmp/linkDir");
+           AlwaysAssertExit(list2(0)==path.absoluteName());
+        }
+//
+        AlwaysAssertExit(list3.nelements()==1);
+        AlwaysAssertExit(list3(0)==String("linkDir"));
+    }
+
+    {
         // Directory::find
         Vector<String> found = tmp.find (Regex::fromString("test1"));
 	genSort (found);
