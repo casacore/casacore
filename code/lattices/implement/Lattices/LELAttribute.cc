@@ -1,5 +1,5 @@
-//# LELAttribute.cc:  this defines LELAttribute.cc
-//# Copyright (C) 1997,1998
+//# LELAttribute.cc: Ancillary information for the LEL letter classes
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+
 #include <trial/Lattices/LELAttribute.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
@@ -32,6 +33,7 @@
 
 LELAttribute::LELAttribute()
 : isScalar_p (True),
+  isRegion_p (False),
   isMasked_p (False)
 
 {}
@@ -39,16 +41,25 @@ LELAttribute::LELAttribute()
 LELAttribute::LELAttribute(Bool isMasked,
 			   const IPosition& shape,
 			   const IPosition& tileShape,
-			   const LatticeCoordinates& coordinates)
+			   const LELCoordinates& coordinates)
 : isScalar_p  (False),
+  isRegion_p  (False),
   isMasked_p  (isMasked),
   shape_p     (shape),
   tileShape_p (tileShape),
   coords_p    (coordinates)
 {}
 
+LELAttribute::LELAttribute(uInt regionNdim)
+: isScalar_p  (False),
+  isRegion_p  (True),
+  isMasked_p  (False),
+  shape_p     (IPosition(regionNdim, 0))
+{}
+
 LELAttribute::LELAttribute(const LELAttribute& other)
 : isScalar_p  (other.isScalar_p),
+  isRegion_p  (other.isRegion_p),
   isMasked_p  (other.isMasked_p),
   shape_p     (other.shape_p),
   tileShape_p (other.tileShape_p),
@@ -59,7 +70,11 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr,
 			   const LELAttribute& rightAttr)
 {
    isScalar_p = False;
+   isRegion_p = False;
    isMasked_p = ToBool (leftAttr.isMasked() || rightAttr.isMasked());
+   if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
+      throw (AipsError ("LELAttribute: regions cannot be combined here"));
+   }
    if (leftAttr.isScalar()) {
       if (rightAttr.isScalar()) {
          isScalar_p = True;
@@ -86,7 +101,7 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr,
       }
    }
 }
-                    
+                
 LELAttribute::~LELAttribute()
 {}
 
@@ -95,6 +110,7 @@ LELAttribute& LELAttribute::operator= (const LELAttribute& other)
 {
     if (this != &other) {
        isScalar_p  = other.isScalar_p;
+       isRegion_p  = other.isRegion_p;
        isMasked_p  = other.isMasked_p;
        shape_p.resize (other.shape_p.nelements());
        tileShape_p.resize (other.tileShape_p.nelements());
