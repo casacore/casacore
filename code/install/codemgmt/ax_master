@@ -4884,3 +4884,4 @@
 14 316 sys rm libexec/dishselectgui.g
 14 316 src rm trial/apps/newdish/dishselect.g
 14 316 sys rm libexec/dishselect.g
+14 316 src rm trial/apps/newdish/dishsmooth.g
