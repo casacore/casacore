@@ -467,7 +467,7 @@ SubString &SubString::operator=(const Char *s) {
 }
 
 SubString &SubString::operator=(const Char c) {
-  const_cast<string &>(ref_p).replace(pos_p, len_p, c);
+  const_cast<string &>(ref_p).replace(pos_p, len_p, 1, c);
   return *this;
 }
 
