@@ -9,6 +9,8 @@ The following should report that the column is not array for TabelMeasValueDesc.
 TableMeasValueDesc::checkColumn; MeasValue column must be an array: Time4StrRef
 The following should report that the column's type should be double for the TableMeasValueDesc.
 TableMeasValueDesc::checkColumn; Column's type must be Double: Time2ArrRef
+Attempt to reference undefined Measure offset  exception on the TableMeasOffsetDesc object.
+TableMeasOffsetDesc::getOffset() attempt to reference undefined measure offset.
 PASS - TMRefDesc doesn't have an offset yet
 PASS - Reference has column offset.
 Create MEpochScaCol from column TimeOffset...
@@ -129,6 +131,7 @@ in:  Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoc
 out: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: UTC, Offset: Epoch: 0::04:00:00.0000
 in:  Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
 out: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 0::06:36:00.0000
+Reference for ArrayMeasCol is variable
 Reference for the ArrayMeasCol is: Reference for an Epoch with Type: LAST
 The following line should be a null column exception.
 Invalid Table operation: Measure table column is null
