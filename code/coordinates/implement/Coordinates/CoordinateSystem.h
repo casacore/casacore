@@ -197,7 +197,7 @@ public:
     CoordinateSystem &operator=(const CoordinateSystem &other);
 
     // Destructor
-    ~CoordinateSystem();
+    virtual ~CoordinateSystem();
 
     // Add another coordinate to this coordinate system. This addition is done
     // by copying, so that if coord changes the change is NOT
