@@ -198,7 +198,7 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 }
 
 Bool ImageFITSConverter::ImageToFITS(String &error,
-				     const PagedImage<Float> &image,
+				     const ImageInterface<Float> &image,
 				     const String &fitsName, 
 				     uInt memoryInMB,
 				     Bool preferVelocity,

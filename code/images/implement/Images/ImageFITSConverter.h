@@ -33,6 +33,7 @@
 #include <aips/aips.h>
 
 template<class T> class PagedImage;
+template<class T> class ImageInterface;
 class IPosition;
 class String;
 
@@ -167,7 +168,7 @@ public:
     //        overwritten if it already exists.
     //   </ul>
     static Bool ImageToFITS(String &error,
-			    const PagedImage<Float> &image,
+			    const ImageInterface<Float> &image,
 			    const String &fitsName, 
 			    uInt memoryInMB = 64,
 			    Bool preferVelocity = True,
