@@ -203,6 +203,9 @@ public:
 // length (of an axis)
    LENGTH,
 
+// is the value a NaN?
+   ISNAN,
+
 // number of functions
    NFUNCTIONS
 
