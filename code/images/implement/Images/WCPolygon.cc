@@ -288,13 +288,14 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 // axes before reconstituting the WCPolygon
 //
 {
-   CoordinateSystem* pCSys =  
-      CoordinateSystem::restore(rec,"coordinates");
+   CoordinateSystem* pCSys =  CoordinateSystem::restore(rec,"coordinates");
    if (rec.isDefined("worldAxes")) {
-      return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
-                           Vector<Double>(rec.asArrayDouble ("y")),
-                           Vector<Int>(rec.asArrayInt ("worldAxes")),
-                           *pCSys, rec.asBool("isOffset"));
+      WCPolygon* pPoly = new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                                       Vector<Double>(rec.asArrayDouble ("y")),
+                                       Vector<Int>(rec.asArrayInt ("worldAxes")),
+                                       *pCSys, rec.asBool("isOffset"));
+      delete pCSys;
+      return pPoly;
    } else if (rec.isDefined("pixelAxes")) {
 //
 // Convert pixel axes to world axes
@@ -311,14 +312,15 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 //
 // Return the WCPolygon
 // 
-         return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
-                              Vector<Double>(rec.asArrayDouble ("y")),
-                              worldAxes, *pCSys, rec.asBool("isOffset"));
+         WCPolygon* pPoly = new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                                          Vector<Double>(rec.asArrayDouble ("y")),
+                                           worldAxes, *pCSys, rec.asBool("isOffset"));
+         delete pCSys;
+         return pPoly;
       }
    } else {
       throw (AipsError ("WCPolygon::fromRecord - record has neither worldAxes nor pixelAxes fields defined"));
    }
-   delete pCSys;
    return 0;
 }
 
