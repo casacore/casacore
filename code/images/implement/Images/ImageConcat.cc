@@ -31,6 +31,7 @@
 
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
@@ -40,6 +41,7 @@
 
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/TabularCoordinate.h>
+#include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Images/ImageSummary.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
@@ -164,6 +166,22 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
          os << "Images have inconsistent numbers of coordinates" 
             << LogIO::EXCEPTION;
       }
+//
+      Int coord1, axisInCoordinate1;
+      Int coord2, axisInCoordinate2;
+      coords_p.findPixelAxis(coord1, axisInCoordinate1, latticeConcat_p.axis());
+      cSys.findPixelAxis(coord2, axisInCoordinate2, latticeConcat_p.axis());
+      if (coord1<0 || coord2<0) {
+         os << "Pixel axis has been removed for concatenation axis" << LogIO::EXCEPTION;
+      }
+      if (cSys.pixelAxisToWorldAxis(latticeConcat_p.axis())<0 ||
+          coords_p.pixelAxisToWorldAxis(latticeConcat_p.axis())<0) {
+         os << "World axis has been removed for concatenation axis" << LogIO::EXCEPTION;
+      }
+      if (cSys.type(coord1)!=coords_p.type(coord2)) {
+         os << "Coordinate types for concatenation axis are inconsistent" << LogIO::EXCEPTION;
+      }
+//
       if (!allEQ(cSys.worldAxisNames(), coords_p.worldAxisNames())) {
          if (relax) {
             if (warnAxisNames_p) {
@@ -175,6 +193,7 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
            os <<  "Image axis names differ" << LogIO::EXCEPTION;
          }  
       }
+//
       if (!allEQ(cSys.worldAxisUnits(),coords_p.worldAxisUnits())) {
          if (relax) {
             if (warnAxisUnits_p) {
@@ -186,6 +205,7 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
             os <<  "Image axis units differ" << LogIO::EXCEPTION;
          }  
       }
+//
       if (image.units() != unit_p && warnImageUnits_p) {
          os << LogIO::WARN
             << "Image units differ" << LogIO::POST;
@@ -383,25 +403,57 @@ void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IP
 // of the last pixel from the previous image and compare.
 //
 {
-   Int worldAxis;
-   Double axisVal1 = coordConvert(worldAxis, os, cSys1, axis, Double(shape1(axis)-1));
-   Double axisVal2 = coordConvert(worldAxis, os, cSys2, axis, Double(-1.0));
+
+// For Stokes axis we must do something different, because you can't
+// convert pixel -1 to Stokes.  Bloody Stokes.  coord already checked
+// to be consistent
+
+   Int coord, axisInCoordinate;
+   cSys2.findPixelAxis(coord, axisInCoordinate, axis);
+   if (cSys2.type(coord)==Coordinate::STOKES) {
+
+// See if we can make a Stokes coordinate from all the previous
+// Stokes and the new Stokes.  If we can, its ok
+
+      Vector<Int> stokes = makeNewStokes(coords_p.stokesCoordinate(coord).stokes(),
+                                         cSys2.stokesCoordinate(coord).stokes());
 //
-   Double inc = cSys1.increment()(worldAxis);
-   if (abs(axisVal2-axisVal1) > 0.01*abs(inc)) {
-      if (relax) {
-         if (warnContig) {
-            os << LogIO::WARN
-               << "Images are not contiguous along the concatenation axis" << endl;
-            os << "For this axis, a non-regular TabularCoordinate will be made"
-               << LogIO::POST;
-            warnContig = False;
-        }
-      } else {
-        os << "Images are not contiguous along the concatenation axis" 
-           << LogIO::EXCEPTION;
+      if (stokes.nelements()==0) {
+         if (relax) {
+            if (warnContig) {
+               os << LogIO::WARN
+                  << "Images are not contiguous along the concatenation axis" << endl;
+               os << "For this axis, a non-regular TabularCoordinate will be made"
+                  << LogIO::POST;
+               warnContig = False;
+            }
+         } else {
+           os << "Images are not contiguous along the concatenation axis" 
+              << LogIO::EXCEPTION;
+         }
+         isContig = False;
       }
-      isContig = False;
+   } else {
+      Int worldAxis;
+      Double axisVal1 = coordConvert(worldAxis, os, cSys1, axis, Double(shape1(axis)-1));
+      Double axisVal2 = coordConvert(worldAxis, os, cSys2, axis, Double(-1.0));
+//
+      Double inc = cSys1.increment()(worldAxis);
+      if (abs(axisVal2-axisVal1) > 0.01*abs(inc)) {
+         if (relax) {
+            if (warnContig) {
+               os << LogIO::WARN
+                  << "Images are not contiguous along the concatenation axis" << endl;
+               os << "For this axis, a non-regular TabularCoordinate will be made"
+                  << LogIO::POST;
+               warnContig = False;
+            }
+         } else {
+           os << "Images are not contiguous along the concatenation axis" 
+              << LogIO::EXCEPTION;
+         }
+         isContig = False;
+      }
    }
 }
 
@@ -417,7 +469,7 @@ Double ImageConcat<T>::coordConvert(Int& worldAxis, LogIO& os,
    pixel = cSys.referencePixel();
    pixel(axis) = pixelCoord;
    if (!cSys.toWorld(world, pixel)) {
-      os << "Coordinate conversion failed" << LogIO::EXCEPTION;
+      os << "Coordinate conversion failed because " << cSys.errorMessage() << LogIO::EXCEPTION;
    }
    worldAxis = cSys.pixelAxisToWorldAxis(axis);
    if (worldAxis==-1) {
@@ -500,19 +552,53 @@ template<class T>
 void ImageConcat<T>::setCoordinates()
 {
 
+    LogIO os(LogOrigin("ImageConcat", "setCoordinates(...)", WHERE));
+
 // If the images are not contiguous along the concatenation axis,
-// make an irregular TabularCoordinate
+// make an irregular TabularCoordinate.  As usual Stokes demands
+// different handling
 
    CoordinateSystem cSys = coords_p;
    const uInt axis = latticeConcat_p.axis();
    Int coord, axisInCoord;
    cSys.findPixelAxis(coord, axisInCoord,  axis);
-   if (coord<0) {
-      throw(AipsError("The coordinate for the concatenation axis has been removed"));        
-   } 
+   const uInt nIm = latticeConcat_p.nlattices();
+   Vector<Int> stokes;
 //
-   if (!isContig_p) {
-      const uInt nIm = latticeConcat_p.nlattices();
+   if (isContig_p) {
+      if (cSys.type(coord)==Coordinate::STOKES) {
+         if (isImage_p(nIm-1)) {
+            ImageInterface<T>* pIm = (ImageInterface<T>*)(latticeConcat_p.lattice(nIm-1));
+            stokes = makeNewStokes(coords_p.stokesCoordinate(coord).stokes(),
+                                   pIm->coordinates().stokesCoordinate(coord).stokes());
+         } else {
+
+// This is unlikely to work.  We make a Stokes axis starting from the
+// last Stokes already in coords_p + 1.  WIll only work
+// if results in a useable Stokes axis
+                    
+            Vector<Int> stokes1 = coords_p.stokesCoordinate(coord).stokes();
+            Int last = stokes1(stokes1.nelements()-1);
+            const uInt shape = latticeConcat_p.lattice(nIm-1)->shape()(axis);
+            Vector<Int> stokes2 (shape,0);
+            indgen(stokes2, last+1, 1);
+            stokes = makeNewStokes(stokes1, stokes2);
+         }
+
+// If Stokes ok, make new StokesCoordinate, replace it and set it
+
+         if (stokes.nelements()==0) {
+            os << "Cannot concatenate this Lattice with previous images as concatenation" << endl;
+            os << "axis is Stokes and result would be illegal" << LogIO::EXCEPTION;
+         } else {
+            StokesCoordinate tmp(stokes);
+            cSys.replaceCoordinate(tmp, uInt(coord));
+            if (!ImageInterface<T>::setCoordinateInfo(cSys)) {
+               os << "Failed to save new CoordinateSystem with StokesCoordinate" << LogIO::EXCEPTION;
+            }
+         } 
+      }
+   } else {
       Vector<Double> pixelValues;
       Vector<Double> worldValues;
       uInt off = 0;
@@ -591,9 +677,30 @@ void ImageConcat<T>::setCoordinates()
          msg = x.getMesg();
       }
       if (!ok) {
-         LogIO os(LogOrigin("ImageConcat", "setCoordinates(...)", WHERE));
          os << LogIO::WARN << "Could not create TabularCoordinate because " << msg << LogIO::POST;
          os << LogIO::WARN << "CoordinateSystem set to that of first image set instead" << LogIO::POST;
       }
    }
 } 
+
+
+template <class T>
+Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1,
+                                          const Vector<Int>& stokes2)
+{
+   Vector<Int> stokes = concatenateArray(stokes1, stokes2);
+   Bool ok = True;
+   try {
+      StokesCoordinate tmp(stokes);
+   } catch (AipsError x) {
+      ok = False;
+   } end_try;
+//
+   if (ok) {
+      return stokes;
+   } else {
+      Vector<Int> tmp;
+      return tmp;
+   }
+}
+
