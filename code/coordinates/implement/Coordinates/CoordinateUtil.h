@@ -481,6 +481,9 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
   // CS made from an imported image like FITS
   static Bool cylindricalFix (CoordinateSystem& cSys, String& errorMessage, const IPosition& shape);
 
+  // Apply the binning factors to the CS and create a new one reflecting the binning
+  static CoordinateSystem makeBinnedCoordinateSystem (const IPosition& factors,
+                                                      const CoordinateSystem& cSysIn);
 };
 
 #endif

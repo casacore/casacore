@@ -43,7 +43,6 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MeasTable.h>
-//#include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVDirection.h>
@@ -1601,3 +1600,38 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
 //
    return dropped;
 }
+
+
+
+CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem (const IPosition& factors,
+                                                             const CoordinateSystem& cSysIn)
+{
+   const uInt nDim = factors.nelements();
+   AlwaysAssert(cSysIn.nPixelAxes()==nDim,AipsError);
+   
+// Set output values
+
+   Vector<Double> incrIn(cSysIn.increment().copy());
+   Vector<Double> incrOut(incrIn.copy());
+   Vector<Double> refPixIn(cSysIn.referencePixel().copy());
+   Vector<Double> refPixOut(refPixIn.copy());
+
+// Loop over pixel axes
+
+   for (uInt pA=0; pA<nDim; pA++) {
+     refPixOut(pA) = (refPixIn(pA) + 0.5) / factors[pA] - 0.5;
+//
+     Int wA = cSysIn.pixelAxisToWorldAxis(pA);
+     if (wA>=0) {
+        incrOut(wA) *= Double(factors[pA]);
+     }
+   }
+//  
+    CoordinateSystem cSysOut(cSysIn);
+    cSysOut.setReferencePixel(refPixOut);
+    cSysOut.setIncrement(incrOut);
+//
+    return cSysOut;
+}
+ 
+
