@@ -1,5 +1,5 @@
 //# Regex.cc: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,12 +133,13 @@ String::size_type Regex::match(const Char *s,
 			       String::size_type len,
 			       String::size_type pos) const {
   Int res;
-  if (pos < 0) {
-    pos += len;
-    if (pos > len) return String::npos;
-    res = a2_re_match_2(buf, 0, 0, (Char*)s, pos, 0, reg, pos);
-  } else if (pos > len) return String::npos;
-  else res = a2_re_match_2(buf, 0, 0, (Char*)s, len, pos, reg, len);
+  Int ps = static_cast<Int>(pos);
+  if (ps < 0) {
+    ps += len;
+    if (ps > static_cast<Int>(len)) return String::npos;
+    res = a2_re_match_2(buf, 0, 0, (Char*)s, ps, 0, reg, ps);
+  } else if (ps > static_cast<Int>(len)) return String::npos;
+  else res = a2_re_match_2(buf, 0, 0, (Char*)s, len, ps, reg, len);
   if (res < 0) return String::npos;
   return static_cast<String::size_type>(res);
 }
