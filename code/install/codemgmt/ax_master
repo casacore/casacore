@@ -2190,3 +2190,4 @@
 09 047 src rm trial/implement/Display/AttributeValuePoi.h
 09 052 src rm trial/apps/measures/aipsrc.help
 09 063 src rm aips/implement/Tasking/ObjectID2.cc
+09 096 src mv trial/implement/Lattices/LinearSearch.h aips/implement/Utilities/LinearSearch.h
