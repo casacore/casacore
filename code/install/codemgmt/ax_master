@@ -5612,3 +5612,4 @@
 15 249 sys rm bin/vlatoms
 15 249 src rm doc/notes/237.dir
 15 249 src rm doc/notes/241.dir
+15 251 src rm bima/apps/bimatester/bimatester_data.cc
