@@ -105,6 +105,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
     ODDPOLYNOMIAL,
     SINUSOID1D,
     CHEBYSHEV,
+    BUTTERWORTH,
     COMBINE,
     COMPOUND,
     COMPILED,

@@ -42,6 +42,7 @@
 #include <aips/Functionals/HyperPlane.h>
 #include <aips/Functionals/Sinusoid1D.h>
 #include <aips/Functionals/Chebyshev.h>
+#include <aips/Functionals/SimButterworthBandpass.h>
 #include <aips/Functionals/CombiFunction.h>
 #include <aips/Functionals/CompoundFunction.h>
 #include <trial/Functionals/CompiledFunction.h>
@@ -159,6 +160,8 @@ void FunctionHolder<T>::init() const {
 		    { String("sinusoid1d"), SINUSOID1D,
 			False},
 		      { String("chebyshev"), CHEBYSHEV,
+			  True},
+		      { String("butterworth"), BUTTERWORTH,
 			  True},
 			{ String("combine"), COMBINE,
 			    False},
@@ -358,6 +361,8 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
   } else if (dynamic_cast<const Chebyshev<T> *>(hold_p.ptr())) {
     nf_p = CHEBYSHEV;
     order_p = hold_p.ptr()->nparameters()-1;
+  } else if (dynamic_cast<const SimButterworthBandpass<T> *>(hold_p.ptr())) {
+    nf_p = BUTTERWORTH;
   } else if (dynamic_cast<const CombiFunction<T> *>(hold_p.ptr())) {
     nf_p = COMBINE;
   } else if (dynamic_cast<const CompoundFunction<T> *>(hold_p.ptr())) {
@@ -467,6 +472,13 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
       fn = (new Chebyshev<U>(order_p, *(mode_p.ptr()) ));
     else 
       fn = (new Chebyshev<U>(order_p));
+    break;
+    
+  case BUTTERWORTH:
+    if (mode_p.ptr()) 
+      fn = (new SimButterworthBandpass<U>(*(mode_p.ptr()) ));
+    else 
+      fn = (new SimButterworthBandpass<U>(0, 0));
     break;
     
   case COMBINE:
