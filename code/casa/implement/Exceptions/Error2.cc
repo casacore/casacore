@@ -28,93 +28,42 @@
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
-AipsError::AipsError(const Char *str) : message(str)
-{
-    // Nothing
-}
 
-AipsError::AipsError(const String &str) : message(str)
-{
-    // Nothing
-}
+AipsError::AipsError(const Char *str)
+: message(str)
+{}
 
-AipsError::AipsError(ExcpError *excp) : ExcpError(excp)
-{
-    AipsError *tmp;
-    PCAST(tmp,AipsError,excp);
-    if (tmp) {
-        _equal = True;
-        message = tmp->message;
-    } else {
-        _equal = False;
-    }
-}
+AipsError::AipsError(const String &str)
+: message(str)
+{}
 
 AipsError::~AipsError()
-    {}
+{}
 
-
-//# Much the same as the class above. This class adds no other exception
-//# fragile member variables.
-AllocError::AllocError(ExcpError *excp) : AipsError(excp)
-{
-    AllocError *tmp;
-    PCAST(tmp,AllocError,excp);
-    if (tmp) {
-        Size = (*tmp).Size;
-        _equal = True;
-    } else {
-        _equal = False;
-        Size = 0;
-    }
-}
 
 AllocError::~AllocError()
-    {}
+{}
 
-
-//#  This is a relatively uninteresting class, except for the fact that
-//#  it serves as the parent of all IndexErrors.
-IndexError::IndexError(ExcpError *excp) : AipsError(excp)
-{
-    IndexError *tmp;
-    PCAST(tmp,IndexError,excp);
-    if (tmp)
-        _equal = True;
-    else
-        _equal = False;
-}
 
 IndexError::~IndexError()
-    {}
+{}
 
-
-
-//#  This is a relatively uninteresting class, except for the fact that
-//#  it serves as the parent of all DuplError.
-DuplError::DuplError(ExcpError *excp) : AipsError(excp)
-{
-    DuplError *tmp;
-    PCAST(tmp,DuplError,excp);
-    if (tmp)
-        _equal = True;
-    else
-        _equal = False;
-}
 
 DuplError::~DuplError()
-    {}
+{}
 
 
 // Exception which causes an abort instead of continuing
-AbortError::AbortError(const Char *str) : AipsError(str)
+AbortError::AbortError(const Char *str)
+: AipsError(str)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;
     exit(1);
 }
 
-AbortError::AbortError(const String &str) : AipsError(str)
+AbortError::AbortError(const String &str)
+: AipsError(str)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;
@@ -122,4 +71,4 @@ AbortError::AbortError(const String &str) : AipsError(str)
 }
 
 AbortError::~AbortError()
-    {}
+{}

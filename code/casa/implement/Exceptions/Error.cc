@@ -29,60 +29,36 @@
 #include <iostream.h>
 
 
-//#  This template is for index errors  where the Index can be any type. It
-//#  is derived from the class IndexError. This derivation allows the user
-//#  to catch all index errors with one catch statement. The remainder of
-//#  of the class is very similar to the AipsError class.
 template<class t>
-indexError<t>::indexError(t oI, const Char *str) : IndexError(str), oIndex(oI)
-{}
-template<class t>
-indexError<t>::indexError(t oI, const String &str) : IndexError(str), oIndex(oI)
+indexError<t>::indexError(t oI, const Char *str)
+: IndexError(str),
+  oIndex    (oI)
 {}
 
 template<class t>
-indexError<t>::indexError(ExcpError *excp) : IndexError(excp)
-{
-    indexError<t> *tmp;
-    PCAST(tmp,indexError<t>,excp);
-    if (tmp) {
-        oIndex = (*tmp).oIndex;
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
+indexError<t>::indexError(t oI, const String &str)
+: IndexError(str),
+  oIndex    (oI)
+{}
 
 template<class t>
 indexError<t>::~indexError()
-    {}
+{}
 
-//#  This template is for duplicate key errors  where the Key can be any type. It
-//#  is derived from the class DuplError. This derivation allows the user
-//#  to catch all index errors with one catch statement. The remainder of
-//#  of the class is very similar to the AipsError class.
+
 template<class t>
-duplError<t>::duplError(ExcpError *excp) : DuplError(excp)
-{
-    duplError<t> *tmp;
-    PCAST(tmp,duplError<t>,excp);
-    if (tmp) {
-        oKey = (*tmp).oKey;
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
+duplError<t>::duplError(t oI, const Char *str)
+: DuplError(str),
+  oKey     (oI)
+{}
+
+template<class t>
+duplError<t>::duplError(t oI, const String &str)
+: DuplError(str),
+  oKey     (oI)
+{}
 
 template<class t>
 duplError<t>::~duplError()
-    {}
-
-
-template<class t>
-duplError<t>::duplError(t oI, const Char *str) : DuplError(str), oKey(oI)
-{}
-template<class t>
-duplError<t>::duplError(t oI, const String &str) : DuplError(str), oKey(oI)
 {}
 
