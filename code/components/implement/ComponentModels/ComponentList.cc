@@ -29,15 +29,22 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/TableMeasures/ScalarMeasColumn.h>
+#include <trial/TableMeasures/TableMeasDesc.h>
+#include <trial/TableMeasures/TableMeasRefDesc.h>
+#include <trial/TableMeasures/TableMeasValueDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MVFrequency.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MeasConvert.h>
@@ -82,61 +89,7 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
    itsSelectedFlags(),
    itsOrder()
 {
-  {
-    if (readOnly) {
-      AlwaysAssert(Table::isReadable(fileName), AipsError);
-//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Old);
-      itsTable = Table(fileName, Table::Old);
-    }
-    else {
-      AlwaysAssert(Table::isWritable(fileName), AipsError);
-//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Update);
-      itsTable = Table(fileName, Table::Old);
-    }
-  }
-  const ROScalarColumn<String> typeCol(itsTable, "Type");
-  const ROArrayColumn<Double> fluxCol(itsTable, "Flux");
-  const TableRecord fluxKeywords(fluxCol.keywordSet());
-  const ROArrayColumn<Double> dirCol(itsTable, "Direction");
-  const TableRecord dirKeywords(dirCol.keywordSet());
-  const ROArrayColumn<Double> parmCol(itsTable, "Parameters");
-  const ROScalarColumn<String> labelCol(itsTable, "Label");
-  MDirection compDir;
-  {
-    MDirection::Ref refType;
-    String frame;
-    dirKeywords.get("Frame", frame);
-    AlwaysAssert(compDir.giveMe(frame, refType), AipsError);
-    compDir.set(refType);
-  }
-  Quantum<Vector<Double> > qdir;
-  {
-    String angleUnit;
-    dirKeywords.get("Unit", angleUnit);
-    qdir.setUnit(angleUnit);
-  }
-  SkyComponent currentComp;
-  {
-    String fluxString;
-    fluxKeywords.get("Unit", fluxString);
-    currentComp.flux().setUnit(Unit(fluxString));
-  }
-  const uInt nComp = typeCol.nrow();
-  Vector<Double> flux(4), dir(2), parameters;
-  String componentName, compLabel;
-  for (uInt i = 0; i < nComp; i++) {
-    typeCol.get(i, componentName);
-    currentComp = SkyComponent(ComponentType::shape(componentName));
-    fluxCol.get(i, flux); currentComp.flux().setValue(flux);
-    dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
-    currentComp.setDirection(compDir);
-    labelCol.get(i, compLabel);
-    currentComp.setLabel(compLabel);
-    parameters.resize(0);
-    parmCol.get(i, parameters); currentComp.setParameters(parameters);
-    add(currentComp);
-  }
-  itsROFlag = readOnly;
+  readTable(fileName, readOnly);
   AlwaysAssert(ok(), AipsError);
 }
 
@@ -293,46 +246,13 @@ void ComponentList::rename(const String & fileName,
     return;
   }
   // See if this list is associated with a Table. 
-  if (!itsTable.isNull()) {
-    if (itsTable.isWritable() == False)
-      itsTable.reopenRW();
+  if (itsTable.isNull()) {
+    createTable(fileName, option);
+  } else {
+    if (!itsTable.isWritable()) itsTable.reopenRW();
     itsTable.rename(fileName, option);
   }
-  // Otherwise construct a Table to hold the list
-  else {
-    // These two constants define the units and frame of the output list
-    const String angleUnits("deg");
-    const String refFrame("J2000");
-    // Build a default table description
-    TableDesc td("ComponentListDescription", "1", TableDesc::Scratch);  
-    {
-      td.comment() = "A description of a component list ";
-      ScalarColumnDesc<String> typeCol("Type" ,"Type of the Component");
-      td.addColumn (typeCol);
-      
-      ArrayColumnDesc<Double> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
-				     IPosition(1,4),  ColumnDesc::Direct);
-      fluxCol.rwKeywordSet().define ("Unit", "Jy");
-      td.addColumn(fluxCol);
-      
-      ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
-				     + angleUnits + " ("+refFrame+")",
-				     IPosition(1,2),  ColumnDesc::Direct);
-      dirCol.rwKeywordSet().define ("Unit", angleUnits);
-      dirCol.rwKeywordSet().define ("Frame", refFrame);
-      td.addColumn(dirCol);
-      
-      ScalarColumnDesc<String> labelCol("Label" ,
-					"An arbitrary label for the user");
-      td.addColumn (labelCol);
 
-      ArrayColumnDesc<Double> 
-	parmCol("Parameters", "Parameters specific to this component type", 1);
-      td.addColumn(parmCol);
-    }
-    SetupNewTable newTable(fileName, td, option);
-    itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), True);
-  }
   // Ensure that the Table::isReadable(fileName) returns True, otherwise the
   // ok() function will fail.
   itsTable.flush();
@@ -471,6 +391,69 @@ Bool ComponentList::ok() const {
   return True;
 }
 
+void ComponentList::createTable(const String & fileName,
+				const Table::TableOption option) {
+  // Build a default table description
+  TableDesc td("ComponentListDescription", "2", TableDesc::Scratch);  
+  td.comment() = "A description of a component list";
+  {
+    {
+      ArrayColumnDesc<DComplex> fluxValCol("Flux", "Flux values");
+      td.addColumn(fluxValCol);
+      ScalarColumnDesc<String> fluxUnitCol("Flux Unit", "Flux units");
+      td.addColumn(fluxUnitCol);
+      ScalarColumnDesc<String> fluxPolCol("Flux Polarisation" ,
+					  "Flux polarisation representation");
+      td.addColumn(fluxPolCol);
+    }
+    {
+      ScalarColumnDesc<String> shapeCol("Shape" ,"Shape of the Component");
+      td.addColumn (shapeCol);
+      ArrayColumnDesc<Double> dirValCol("Reference Direction" , 
+					"Reference direction values");
+      td.addColumn(dirValCol);
+      ScalarColumnDesc<Int> dirRefCol("Direction Frame",
+				      "The reference direction frame");
+      td.addColumn(dirRefCol);
+      TableMeasRefDesc dirRefTMCol("Direction Frame");
+      TableMeasValueDesc dirValTMCol(td, "Reference Direction");
+      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
+      dirTMCol.write(td);
+      ArrayColumnDesc<Double> 
+	shapeParmCol("Shape Parameters", 
+		     "Parameters specific to the component shape", 1);
+      td.addColumn(shapeParmCol);
+    }
+    {
+      ScalarColumnDesc<String> freqShapeCol("Spectrum Shape",
+					    "Shape of the spectrum");
+      td.addColumn (freqShapeCol);
+
+      ArrayColumnDesc<Double> freqValCol("Reference Frequency" , 
+					 "The reference frequency values");
+      td.addColumn(freqValCol);
+      ScalarColumnDesc<Int> freqRefCol("Frequency Frame",
+				       "The reference frequency frame");
+      td.addColumn(freqRefCol);
+      TableMeasRefDesc freqRefTMCol("Frequency Frame");
+      TableMeasValueDesc freqValTMCol(td, "Reference Frequency");
+      TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
+      freqTMCol.write(td);
+      ArrayColumnDesc<Double> 
+	specParmCol("Spectral Shape Parameters", 
+		     "Parameters specific to the components spectrum", 1);
+      td.addColumn(specParmCol);
+    }
+    {
+      ScalarColumnDesc<String> labelCol("Label" ,
+					"An arbitrary label for the user");
+      td.addColumn (labelCol);
+    }
+  }
+  SetupNewTable newTable(fileName, td, option);
+  itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), True);
+}
+
 void ComponentList::writeTable() {
   if (itsTable.isWritable() == False)
     itsTable.reopenRW();
@@ -484,48 +467,119 @@ void ComponentList::writeTable() {
       for (uInt r = nRows-1; r >= nelements(); r--)
 	itsTable.removeRow(r);
   }
-  ScalarColumn<String> typeCol(itsTable, "Type");
-  ArrayColumn<Double> fluxCol(itsTable, "Flux");
-  TableRecord fluxKeywords(fluxCol.keywordSet());
-  ArrayColumn<Double> dirCol(itsTable, "Direction");
-  TableRecord dirKeywords(dirCol.keywordSet());
+  ArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
+  ScalarColumn<String> fluxUnitCol(itsTable, "Flux Unit");
+  ScalarColumn<String> fluxPolCol(itsTable, "Flux Polarisation");
+  ScalarColumn<String> shapeCol(itsTable, "Shape");
+  ScalarMeasColumn<MDirection,MVDirection> dirCol(itsTable,
+						  "Reference Direction");
+  ArrayColumn<Double> shapeParmCol(itsTable, "Shape Parameters");
+  ScalarColumn<String> specShapeCol(itsTable, "Spectrum Shape");
+  ScalarMeasColumn<MFrequency,MVFrequency> freqCol(itsTable,
+						  "Reference Frequency");
+  ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral Shape Parameters");
   ScalarColumn<String> labelCol(itsTable, "Label");
-  ArrayColumn<Double> parmCol(itsTable, "Parameters");
   
   MDirection compDir;
-  uInt refNum;
-  {
-    MDirection::Ref refType;
-    String refFrame;
-    dirKeywords.get("Frame", refFrame);
-    AlwaysAssert(compDir.giveMe(refFrame, refType), AipsError);
-    refNum = refType.getType();
-  }
-  String fluxUnits;
-  fluxKeywords.get("Unit", fluxUnits);
-  Vector<Double>  fluxVal(4,0.0);
-  String angleUnits;
-  dirKeywords.get("Unit", angleUnits);
-  Vector<Double> dirn;
-  Vector<Double> compParms;
+  Vector<Double> shapeParms, spectralParms;
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
-    typeCol.put(i, ComponentType::name(component(i).shape()));
-    component(i).flux().convertUnit(fluxUnits);
-    component(i).flux().convertPol(ComponentType::STOKES);
-    component(i).flux().value(fluxVal);
-    fluxCol.put(i, fluxVal);
-    component(i).direction(compDir);
-    if (compDir.getRef().getType() != refNum)
-      compDir = MDirection::Convert(compDir, refNum)();
-    dirn = compDir.getAngle().getValue(angleUnits);
-    dirCol.put(i, dirn);
-    component(i).label(compLabel);
-    labelCol.put(i, compLabel);
-    compParms.resize(component(i).nParameters());
-    component(i).parameters(compParms);
-    parmCol.put(i, compParms);
+    {
+      fluxValCol.put(i, component(i).flux().value());
+      fluxUnitCol.put(i, component(i).flux().unit().getName());
+      fluxPolCol.put(i, ComponentType::name(component(i).flux().pol()));
+    }
+    {
+      shapeCol.put(i, ComponentType::name(component(i).shape()));
+      component(i).direction(compDir);
+      dirCol.put(i, compDir);
+      shapeParms.resize(component(i).nParameters());
+      component(i).parameters(shapeParms);
+      shapeParmCol.put(i, shapeParms);
+    }
+    {
+      specShapeCol.put(i, ComponentType::name(component(i).spectralShape()));
+      freqCol.put(i, component(i).refFrequency());
+      spectralParms.resize(component(i).nSpectralParameters());
+      component(i).spectralParameters(spectralParms);
+      specShapeParmCol.put(i, spectralParms);
+    }
+    {
+      component(i).label(compLabel);
+      labelCol.put(i, compLabel);
+    }
   }
+}
+
+void ComponentList::readTable(const String & fileName, const Bool readOnly) {
+  {
+    if (readOnly) {
+      AlwaysAssert(Table::isReadable(fileName), AipsError);
+//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Old);
+      //      itsTable = Table(fileName, Table::Old);
+      itsTable = Table(fileName, Table::Update);
+    }
+    else {
+      AlwaysAssert(Table::isWritable(fileName), AipsError);
+//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Update);
+      //      itsTable = Table(fileName, Table::Old);
+      itsTable = Table(fileName, Table::Update);
+    }
+  }
+  const ROArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
+  const ROScalarColumn<String> fluxUnitCol(itsTable, "Flux Unit");
+  const ROScalarColumn<String> fluxPolCol(itsTable, "Flux Polarisation");
+  const ROScalarColumn<String> shapeCol(itsTable, "Shape");
+  const ROScalarMeasColumn<MDirection,MVDirection> 
+    dirCol(itsTable, "Reference Direction");
+  const ROArrayColumn<Double> shapeParmCol(itsTable, "Shape Parameters");
+  const ROScalarColumn<String> specShapeCol(itsTable, "Spectrum Shape");
+  const ROScalarMeasColumn<MFrequency,MVFrequency> 
+    freqCol(itsTable, "Reference Frequency");
+  const ROArrayColumn<Double> 
+    specShapeParmCol(itsTable, "Spectral Shape Parameters");
+  const ROScalarColumn<String> labelCol(itsTable, "Label");
+  SkyComponent currentComp;
+  const uInt nComp = fluxValCol.nrow();
+  Vector<DComplex> compFlux(4);
+  Vector<Double> shapeParms, spectralParms;
+  String compName, compLabel, compFluxPol, compFluxUnit, compSpectrum;
+  MDirection compDir;
+  MFrequency compFreq;
+  for (uInt i = 0; i < nComp; i++) {
+    shapeCol.get(i, compName);
+    specShapeCol.get(i, compSpectrum);
+    currentComp = SkyComponent(ComponentType::shape(compName),
+			       ComponentType::spectralShape(compSpectrum));
+    {
+      fluxValCol.get(i, compFlux);
+      currentComp.flux().setValue(compFlux);
+      fluxUnitCol.get(i, compFluxUnit); 
+      currentComp.flux().setUnit(compFluxUnit);
+      fluxPolCol.get(i, compFluxPol); 
+      currentComp.flux().setPol(ComponentType::polarisation(compFluxPol));
+    }
+    {
+      dirCol.get(i, compDir);
+      currentComp.setDirection(compDir);
+      shapeParms.resize(0);
+      shapeParmCol.get(i, shapeParms);
+      currentComp.setParameters(shapeParms);
+    }
+    {
+      freqCol.get(i, compFreq);
+      currentComp.setRefFrequency(compFreq);
+      spectralParms.resize(0);
+      specShapeParmCol.get(i, spectralParms);
+      currentComp.setSpectralParameters(spectralParms);
+    }
+    {
+      labelCol.get(i, compLabel);
+      currentComp.setLabel(compLabel);
+    }
+    add(currentComp);
+  }
+  itsROFlag = readOnly;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentList"
