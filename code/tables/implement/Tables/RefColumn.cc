@@ -28,6 +28,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/RefColumn.h>
 #include <aips/Tables/RefTable.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Lattices/IPosition.h>
 
 
@@ -139,21 +140,24 @@ void RefColumn::getColumnSlice (const Slicer& ns,
 {
     colPtr_p->getColumnSliceCells (refTabPtr_p->rowNumbers(), ns, dataPtr); 
 }
-void RefColumn::getScalarColumnCells (const Vector<uInt>& rownrs,
+void RefColumn::getScalarColumnCells (const RefRows& rownrs,
 				      void* dataPtr) const
 {
-    colPtr_p->getScalarColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+    colPtr_p->getScalarColumnCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				    dataPtr);
 }
-void RefColumn::getArrayColumnCells (const Vector<uInt>& rownrs,
+void RefColumn::getArrayColumnCells (const RefRows& rownrs,
 				     void* dataPtr) const
 {
-    colPtr_p->getArrayColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+    colPtr_p->getArrayColumnCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				   dataPtr);
 }
-void RefColumn::getColumnSliceCells (const Vector<uInt>& rownrs,
+void RefColumn::getColumnSliceCells (const RefRows& rownrs,
 				     const Slicer& ns,
 				     void* dataPtr) const
 {
-    colPtr_p->getColumnSliceCells (refTabPtr_p->rootRownr(rownrs), ns, dataPtr);
+    colPtr_p->getColumnSliceCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				   ns, dataPtr);
 }
 void RefColumn::putScalarColumn (const void* dataPtr)
 {
@@ -168,21 +172,24 @@ void RefColumn::putColumnSlice (const Slicer& ns,
 {
     colPtr_p->putColumnSliceCells (refTabPtr_p->rowNumbers(), ns, dataPtr); 
 }
-void RefColumn::putScalarColumnCells (const Vector<uInt>& rownrs,
-				const void* dataPtr)
+void RefColumn::putScalarColumnCells (const RefRows& rownrs,
+				      const void* dataPtr)
 {
-    colPtr_p->putScalarColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+    colPtr_p->putScalarColumnCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				    dataPtr);
 }
-void RefColumn::putArrayColumnCells (const Vector<uInt>& rownrs,
-				const void* dataPtr)
+void RefColumn::putArrayColumnCells (const RefRows& rownrs,
+				     const void* dataPtr)
 {
-    colPtr_p->putArrayColumnCells (refTabPtr_p->rootRownr(rownrs), dataPtr);
+    colPtr_p->putArrayColumnCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				   dataPtr);
 }
-void RefColumn::putColumnSliceCells (const Vector<uInt>& rownrs,
+void RefColumn::putColumnSliceCells (const RefRows& rownrs,
 				     const Slicer& ns,
 				     const void* dataPtr)
 {
-    colPtr_p->putColumnSliceCells (refTabPtr_p->rootRownr(rownrs), ns, dataPtr);
+    colPtr_p->putColumnSliceCells (rownrs.convert(refTabPtr_p->rowNumbers()),
+				   ns, dataPtr);
 }
 
 

@@ -190,27 +190,27 @@ public:
     // (which is guaranteed by the ScalarColumn getColumnCells function).
     // The default implementation loops through all rows.
     // <group>
-    virtual void getScalarColumnCellsBoolV     (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsBoolV     (const RefRows& rownrs,
 						Vector<Bool>* dataPtr);
-    virtual void getScalarColumnCellsuCharV    (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsuCharV    (const RefRows& rownrs,
 						Vector<uChar>* dataPtr);
-    virtual void getScalarColumnCellsShortV    (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsShortV    (const RefRows& rownrs,
 						Vector<Short>* dataPtr);
-    virtual void getScalarColumnCellsuShortV   (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsuShortV   (const RefRows& rownrs,
 						Vector<uShort>* dataPtr);
-    virtual void getScalarColumnCellsIntV      (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsIntV      (const RefRows& rownrs,
 						Vector<Int>* dataPtr);
-    virtual void getScalarColumnCellsuIntV     (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
 						Vector<uInt>* dataPtr);
-    virtual void getScalarColumnCellsfloatV    (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
 						Vector<float>* dataPtr);
-    virtual void getScalarColumnCellsdoubleV   (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
 						Vector<double>* dataPtr);
-    virtual void getScalarColumnCellsComplexV  (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsComplexV  (const RefRows& rownrs,
 						Vector<Complex>* dataPtr);
-    virtual void getScalarColumnCellsDComplexV (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsDComplexV (const RefRows& rownrs,
 						Vector<DComplex>* dataPtr);
-    virtual void getScalarColumnCellsStringV   (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsStringV   (const RefRows& rownrs,
 						Vector<String>* dataPtr);
     // </group>
 

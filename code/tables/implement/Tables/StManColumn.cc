@@ -1,4 +1,4 @@
-//# StManColumn.h: Base storage manager column class
+//# StManColumn.cc: Base storage manager column class
 //# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,6 +28,7 @@
 
 //# Includes
 #include <aips/Tables/StManColumn.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIter.h>
@@ -184,7 +185,7 @@ void StManColumn::putScalarColumnV (const void* dataPtr)
 }
 
 //# Call the correct getScalarColumnCellsX function depending on the data type.
-void StManColumn::getScalarColumnCellsV (const Vector<uInt>& rownrs,
+void StManColumn::getScalarColumnCellsV (const RefRows& rownrs,
 					 void* dataPtr)
 {
     switch (dtype_p) {
@@ -227,7 +228,7 @@ void StManColumn::getScalarColumnCellsV (const Vector<uInt>& rownrs,
 }
 
 //# Call the correct putScalarColumnCellsX function depending on the data type.
-void StManColumn::putScalarColumnCellsV (const Vector<uInt>& rownrs,
+void StManColumn::putScalarColumnCellsV (const RefRows& rownrs,
 					 const void* dataPtr)
 {
     switch (dtype_p) {
@@ -597,7 +598,7 @@ void StManColumn::putArrayColumnV (const void* dataPtr)
 }
 
 //# Call the correct getArrayColumnCellsX function depending on the data type.
-void StManColumn::getArrayColumnCellsV (const Vector<uInt>& rownrs,
+void StManColumn::getArrayColumnCellsV (const RefRows& rownrs,
 					void* dataPtr)
 {
     switch (dtype_p) {
@@ -640,7 +641,7 @@ void StManColumn::getArrayColumnCellsV (const Vector<uInt>& rownrs,
 }
 
 //# Call the correct putArrayColumnCellsX function depending on the data type.
-void StManColumn::putArrayColumnCellsV (const Vector<uInt>& rownrs,
+void StManColumn::putArrayColumnCellsV (const RefRows& rownrs,
 					const void* dataPtr)
 {
     switch (dtype_p) {
@@ -767,7 +768,7 @@ void StManColumn::putColumnSliceV (const Slicer& ns, const void* dataPtr)
 }
 
 //# Call the correct getColumnSliceCellsX function depending on the data type.
-void StManColumn::getColumnSliceCellsV (const Vector<uInt>& rownrs,
+void StManColumn::getColumnSliceCellsV (const RefRows& rownrs,
 					const Slicer& ns, void* dataPtr)
 {
     switch (dtype_p) {
@@ -810,7 +811,7 @@ void StManColumn::getColumnSliceCellsV (const Vector<uInt>& rownrs,
 }
 
 //# Call the correct putColumnSliceCellsX function depending on the data type.
-void StManColumn::putColumnSliceCellsV (const Vector<uInt>& rownrs,
+void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
 					const Slicer& ns, const void* dataPtr)
 {
     switch (dtype_p) {
@@ -921,93 +922,154 @@ void StManColumn::aips_name2(getColumnSlice,NM) (const Slicer&, Array<T>*) \
 void StManColumn::aips_name2(putColumnSlice,NM) (const Slicer&, const Array<T>*) \
     { throwPutArray(); } \
 void StManColumn::aips_name2(getScalarColumnCells,NM) \
-                                             (const Vector<uInt>& rownrs, \
+                                             (const RefRows& rownrs, \
 					      Vector<T>* values) \
 { \
-    Bool delV, delR; \
+    Bool delV; \
     T* value = values->getStorage (delV); \
-    const uInt* rows = rownrs.getStorage (delR); \
+    T* valptr = value; \
     const ColumnCache& cache = columnCache(); \
-    uInt nr = rownrs.nelements(); \
-    if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-        aips_name2(get,NM) (0, &(value[0])); \
-    } \
-    const T* cacheValue = (T*)(cache.dataPtr()); \
-    uInt strow = cache.start(); \
-    uInt endrow = cache.end(); \
-    AlwaysAssert (cache.incr() == 0, AipsError); \
-    for (uInt i=0; i<nr; i++) { \
-	uInt rownr = rows[i]; \
-        if (rownr >= strow  &&  rownr <= endrow) { \
-	    value[i] = *cacheValue; \
-	} else { \
-	    aips_name2(get,NM) (rownr, &(value[i])); \
-            cacheValue = (T*)(cache.dataPtr()); \
-            strow = cache.start(); \
-            endrow = cache.end(); \
+    if (rownrs.isSliced()) { \
+        RefRowsSliceIter iter(rownrs); \
+        while (! iter.pastEnd()) { \
+            uInt rownr = iter.sliceStart(); \
+            uInt end = iter.sliceEnd(); \
+            uInt incr = iter.sliceIncr(); \
+            while (rownr <= end) { \
+                if (rownr < cache.start()  ||  rownr > cache.end()) { \
+                    aips_name2(get,NM) (rownr, valptr); \
+                    DebugAssert (cache.incr() == 0, AipsError); \
+                } \
+                const T* cacheValue = (const T*)(cache.dataPtr()); \
+                uInt endrow = min (end, cache.end()); \
+                while (rownr <= endrow) { \
+	            *valptr++ = *cacheValue; \
+                    rownr += incr; \
+	        } \
+     	    } \
+	    iter++; \
+        } \
+    } else { \
+        const Vector<uInt>& rowvec = rownrs.rowVector(); \
+        Bool delR; \
+        const uInt* rows = rowvec.getStorage (delR); \
+        uInt nr = rowvec.nelements(); \
+        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+            aips_name2(get,NM) (0, &(value[0])); \
+        } \
+        const T* cacheValue = (const T*)(cache.dataPtr()); \
+        uInt strow = cache.start(); \
+        uInt endrow = cache.end(); \
+        AlwaysAssert (cache.incr() == 0, AipsError); \
+        for (uInt i=0; i<nr; i++) { \
+	    uInt rownr = rows[i]; \
+            if (rownr >= strow  &&  rownr <= endrow) { \
+	        value[i] = *cacheValue; \
+	    } else { \
+	        aips_name2(get,NM) (rownr, &(value[i])); \
+                cacheValue = (const T*)(cache.dataPtr()); \
+                strow = cache.start(); \
+                endrow = cache.end(); \
+	    } \
 	} \
+        rowvec.freeStorage (rows, delR); \
     } \
     values->putStorage (value, delV); \
-    rownrs.freeStorage (rows, delR); \
 } \
 void StManColumn::aips_name2(putScalarColumnCells,NM) \
-                                             (const Vector<uInt>& rownrs, \
+                                             (const RefRows& rownrs, \
 					      const Vector<T>* values) \
 { \
     const Vector<T>& value = *values; \
-    uInt nr = rownrs.nelements(); \
-    for (uInt i=0; i<nr; i++) { \
-	aips_name2(put,NM) (rownrs(i), &(value(i))); \
+    uInt i=0; \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+	    aips_name2(put,NM) (rownr, &(value(i++))); \
+            rownr += incr; \
+        } \
+	rowiter++; \
     } \
 } \
 void StManColumn::aips_name2(getArrayColumnCells,NM) \
-                                            (const Vector<uInt>& rownrs, \
+                                            (const RefRows& rownrs, \
 					     Array<T>* values) \
 { \
     Array<T>& value = *values; \
     ArrayIterator<T> iter(value, value.ndim()-1); \
-    uInt nr = rownrs.nelements(); \
-    for (uInt i=0; i<nr; i++) { \
-	aips_name2(getArray,NM) (rownrs(i), &(iter.array())); \
-	iter.next(); \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+  	    aips_name2(getArray,NM) (rownr, &(iter.array())); \
+            rownr += incr; \
+	    iter.next(); \
+	} \
+        rowiter++; \
     } \
 } \
 void StManColumn::aips_name2(putArrayColumnCells,NM) \
-                                            (const Vector<uInt>& rownrs, \
+                                            (const RefRows& rownrs, \
 					     const Array<T>* values) \
 { \
     const Array<T>& value = *values; \
     ReadOnlyArrayIterator<T> iter(value, value.ndim()-1); \
-    uInt nr = rownrs.nelements(); \
-    for (uInt i=0; i<nr; i++) { \
-	aips_name2(putArray,NM) (rownrs(i), &(iter.array())); \
-	iter.next(); \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+  	    aips_name2(putArray,NM) (rownr, &(iter.array())); \
+            rownr += incr; \
+	    iter.next(); \
+	} \
+        rowiter++; \
     } \
 } \
 void StManColumn::aips_name2(getColumnSliceCells,NM) \
-                                            (const Vector<uInt>& rownrs, \
+                                            (const RefRows& rownrs, \
 					     const Slicer& ns, \
 					     Array<T>* values) \
 { \
     Array<T>& value = *values; \
     ArrayIterator<T> iter(value, value.ndim()-1); \
-    uInt nr = rownrs.nelements(); \
-    for (uInt i=0; i<nr; i++) { \
-	aips_name2(getSlice,NM) (rownrs(i), ns, &(iter.array())); \
-	iter.next(); \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+	    aips_name2(getSlice,NM) (rownr, ns, &(iter.array())); \
+            rownr += incr; \
+	    iter.next(); \
+	} \
+        rowiter++; \
     } \
 } \
 void StManColumn::aips_name2(putColumnSliceCells,NM) \
-                                            (const Vector<uInt>& rownrs, \
+                                            (const RefRows& rownrs, \
 					     const Slicer& ns, \
 					     const Array<T>* values) \
 { \
     const Array<T>& value = *values; \
     ReadOnlyArrayIterator<T> iter(value, value.ndim()-1); \
-    uInt nr = rownrs.nelements(); \
-    for (uInt i=0; i<nr; i++) { \
-	aips_name2(putSlice,NM) (rownrs(i), ns, &(iter.array())); \
-	iter.next(); \
+    RefRowsSliceIter rowiter(rownrs); \
+    while (! rowiter.pastEnd()) { \
+        uInt rownr = rowiter.sliceStart(); \
+        uInt end = rowiter.sliceEnd(); \
+        uInt incr = rowiter.sliceIncr(); \
+        while (rownr <= end) { \
+	    aips_name2(putSlice,NM) (rownr, ns, &(iter.array())); \
+            rownr += incr; \
+	    iter.next(); \
+	} \
+        rowiter++; \
     } \
 }
 

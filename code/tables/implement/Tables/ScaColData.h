@@ -129,7 +129,7 @@ public:
     // Get the array of some values in the column (on behalf of RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void getScalarColumnCells (const Vector<uInt>& rownrs, void* dataPtr) const;
+    void getScalarColumnCells (const RefRows& rownrs, void* dataPtr) const;
 
     // Put the value in a particular cell.
     // The length of the buffer pointed to by dataPtr must match
@@ -144,7 +144,7 @@ public:
     // Put the array of some values in the column (on behalf on RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void putScalarColumnCells (const Vector<uInt>& rownrs, const void* dataPtr);
+    void putScalarColumnCells (const RefRows& rownrs, const void* dataPtr);
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved

@@ -186,19 +186,19 @@ public:
     virtual void getColumnSlice (const Slicer&, void* dataPtr) const;
 
     // Get the vector of some scalar values in a column.
-    virtual void getScalarColumnCells (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCells (const RefRows& rownrs,
 				       void* dataPtr) const;
 
     // Get the array of some array values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    virtual void getArrayColumnCells (const Vector<uInt>& rownrs,
+    virtual void getArrayColumnCells (const RefRows& rownrs,
 				      void* dataPtr) const;
 
     // Get subsections from some arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    virtual void getColumnSliceCells (const Vector<uInt>& rownrs,
+    virtual void getColumnSliceCells (const RefRows& rownrs,
 				      const Slicer&, void* dataPtr) const;
 
     // Put the value in a particular cell.
@@ -222,19 +222,19 @@ public:
     virtual void putColumnSlice (const Slicer&, const void* dataPtr);
 
     // Get the vector of some scalar values in a column.
-    virtual void putScalarColumnCells (const Vector<uInt>& rownrs,
+    virtual void putScalarColumnCells (const RefRows& rownrs,
 				       const void* dataPtr);
 
     // Get the array of some array values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    virtual void putArrayColumnCells (const Vector<uInt>& rownrs,
+    virtual void putArrayColumnCells (const RefRows& rownrs,
 				      const void* dataPtr);
 
     // Put subsections of some arrays in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    virtual void putColumnSliceCells (const Vector<uInt>& rownrs,
+    virtual void putColumnSliceCells (const RefRows& rownrs,
 				      const Slicer&, const void* dataPtr);
 
     // Get the underlying column cache.

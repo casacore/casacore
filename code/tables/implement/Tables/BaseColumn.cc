@@ -120,13 +120,13 @@ void BaseColumn::getScalarColumn (void*) const
 void BaseColumn::getArrayColumn (void*) const
     { throw (TableInvOper ("getArrayColumn() not implemented")); }
 
-void BaseColumn::getScalarColumnCells (const Vector<uInt>&, void*) const
+void BaseColumn::getScalarColumnCells (const RefRows&, void*) const
     { throw (TableInvOper ("getScalarColumnCells() not implemented")); }
 
-void BaseColumn::getArrayColumnCells (const Vector<uInt>&, void*) const
+void BaseColumn::getArrayColumnCells (const RefRows&, void*) const
     { throw (TableInvOper ("getArrayColumnCells() not implemented")); }
 
-void BaseColumn::getColumnSliceCells (const Vector<uInt>&,
+void BaseColumn::getColumnSliceCells (const RefRows&,
 				      const Slicer&, void*) const
     { throw (TableInvOper ("getColumnCells(Slicer&) only valid for an array")); }
 
@@ -142,16 +142,16 @@ void BaseColumn::putScalarColumn (const void*)
 void BaseColumn::putArrayColumn (const void*)
     { throw (TableInvOper ("putArrayColumn() not implemented")); }
 
-void BaseColumn::putScalarColumnCells (const Vector<uInt>&, const void*)
+void BaseColumn::putScalarColumnCells (const RefRows&, const void*)
     { throw (TableInvOper ("putScalarColumnCells() not implemented")); }
 
-void BaseColumn::putArrayColumnCells (const Vector<uInt>&, const void*)
+void BaseColumn::putArrayColumnCells (const RefRows&, const void*)
     { throw (TableInvOper ("putArrayColumnCells() not implemented")); }
 
 void BaseColumn::putColumnSlice (const Slicer&, const void*)
     { throw (TableInvOper ("putColumn(Slicer&) only valid for an array")); }
 
-void BaseColumn::putColumnSliceCells (const Vector<uInt>&,
+void BaseColumn::putColumnSliceCells (const RefRows&,
 				      const Slicer&, const void*)
     { throw (TableInvOper ("putColumnCells(Slicer&) only valid for an array")); }
 

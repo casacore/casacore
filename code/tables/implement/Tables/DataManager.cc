@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -356,9 +356,9 @@ void DataManagerColumn::getScalarColumnV (void*)
   { throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed")); }
 void DataManagerColumn::putScalarColumnV (const void*)
   { throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed")); }
-void DataManagerColumn::getScalarColumnCellsV (const Vector<uInt>&, void*)
+void DataManagerColumn::getScalarColumnCellsV (const RefRows&, void*)
   { throw (DataManInvOper("DataManagerColumn::getScalarColumnCells not allowed")); }
-void DataManagerColumn::putScalarColumnCellsV (const Vector<uInt>&, const void*)
+void DataManagerColumn::putScalarColumnCellsV (const RefRows&, const void*)
   { throw (DataManInvOper("DataManagerColumn::putScalarColumnCells not allowed")); }
 uInt DataManagerColumn::getBlockV (uInt, uInt, void*)
 {
@@ -375,9 +375,9 @@ void DataManagerColumn::getArrayColumnV (void*)
   { throw (DataManInvOper("DataManagerColumn::getArrayColumn not allowed")); }
 void DataManagerColumn::putArrayColumnV (const void*)
   { throw (DataManInvOper("DataManagerColumn::putArrayColumn not allowed")); }
-void DataManagerColumn::getArrayColumnCellsV (const Vector<uInt>&, void*)
+void DataManagerColumn::getArrayColumnCellsV (const RefRows&, void*)
   { throw (DataManInvOper("DataManagerColumn::getArrayColumnCells not allowed")); }
-void DataManagerColumn::putArrayColumnCellsV (const Vector<uInt>&, const void*)
+void DataManagerColumn::putArrayColumnCellsV (const RefRows&, const void*)
   { throw (DataManInvOper("DataManagerColumn::putArrayColumnCells not allowed")); }
 void DataManagerColumn::getSliceV (uInt, const Slicer&, void*)
   { throw (DataManInvOper("DataManagerColumn::getSlice not allowed")); }
@@ -387,10 +387,10 @@ void DataManagerColumn::getColumnSliceV (const Slicer&, void*)
   { throw (DataManInvOper("DataManagerColumn::getColumnSlice not allowed")); }
 void DataManagerColumn::putColumnSliceV (const Slicer&, const void*)
   { throw (DataManInvOper("DataManagerColumn::putColumnSlice not allowed")); }
-void DataManagerColumn::getColumnSliceCellsV (const Vector<uInt>&,
+void DataManagerColumn::getColumnSliceCellsV (const RefRows&,
 					      const Slicer&, void*)
   { throw (DataManInvOper("DataManagerColumn::getColumnSliceCells not allowed")); }
-void DataManagerColumn::putColumnSliceCellsV (const Vector<uInt>&,
+void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 					      const Slicer&, const void*)
   { throw (DataManInvOper("DataManagerColumn::putColumnSliceCells not allowed")); }
 

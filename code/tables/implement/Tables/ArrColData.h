@@ -185,7 +185,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void getArrayColumnCells (const Vector<uInt>& rownrs, void* arrayPtr) const;
+    void getArrayColumnCells (const RefRows& rownrs, void* arrayPtr) const;
 
     // Get subsections from all arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
@@ -199,7 +199,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void getColumnSliceCells (const Vector<uInt>& rownrs, const Slicer&,
+    void getColumnSliceCells (const RefRows& rownrs, const Slicer&,
 			      void* arrayPtr) const;
 
     // Put the value in a particular cell.
@@ -224,7 +224,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void putArrayColumnCells (const Vector<uInt>& rownrs, const void* arrayPtr);
+    void putArrayColumnCells (const RefRows& rownrs, const void* arrayPtr);
 
     // Put into subsections of all table arrays in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
@@ -238,7 +238,7 @@ public:
     // The arrays in the column have to have the same shape in all cells.
     // The length of the buffer pointed to by arrayPtr must match
     // the actual length. This is checked by ArrayColumn.
-    void putColumnSliceCells (const Vector<uInt>& rownrs, const Slicer&,
+    void putColumnSliceCells (const RefRows& rownrs, const Slicer&,
 			      const void* arrayPtr);
 
     // Create a data manager column object for this column.

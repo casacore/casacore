@@ -28,6 +28,7 @@
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/StArrAipsIO.h>
 #include <aips/Tables/StIndArrAIO.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>
@@ -180,33 +181,59 @@ void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T
     stmanPtr_p->setHasPut(); \
 } \
 void StManColumnAipsIO::aips_name2(getScalarColumnCells,NM) \
-                                             (const Vector<uInt>& rownrs, \
+                                             (const RefRows& rownrs, \
 					      Vector<T>* values) \
 { \
-    Bool delV, delR; \
+    Bool delV; \
     T* value = values->getStorage (delV); \
-    const uInt* rows = rownrs.getStorage (delR); \
+    T* valptr = value; \
     const ColumnCache& cache = columnCache(); \
-    uInt nr = rownrs.nelements(); \
-    if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
-        findExt(rows[0]); \
-    } \
-    const T* cacheValue = (T*)(cache.dataPtr()); \
-    uInt strow = cache.start(); \
-    uInt endrow = cache.end(); \
-    for (uInt i=0; i<nr; i++) { \
-	uInt rownr = rows[i]; \
-        if (rownr >= strow  &&  rownr <= endrow) { \
-	    value[i] = cacheValue[rownr-strow]; \
-	} else { \
-	    aips_name2(get,NM) (rownr, &(value[i])); \
-            cacheValue = (T*)(cache.dataPtr()); \
-            strow = cache.start(); \
-            endrow = cache.end(); \
+    if (rownrs.isSliced()) { \
+        RefRowsSliceIter iter(rownrs); \
+        while (! iter.pastEnd()) { \
+            uInt rownr = iter.sliceStart(); \
+            uInt end = iter.sliceEnd(); \
+            uInt incr = iter.sliceIncr(); \
+            while (rownr <= end) { \
+                if (rownr < cache.start()  ||  rownr > cache.end()) { \
+                    aips_name2(get,NM) (rownr, valptr); \
+                } \
+	        uInt inx = rownr - cache.start(); \
+                const T* cacheValue = (const T*)(cache.dataPtr()) + inx; \
+                uInt endrow = min (end, cache.end()); \
+                while (rownr <= endrow) { \
+	            *valptr++ = *cacheValue; \
+                    rownr += incr; \
+		    cacheValue += incr; \
+	        } \
+     	    } \
+	    iter++; \
+        } \
+    } else { \
+        const Vector<uInt>& rowvec = rownrs.rowVector(); \
+        Bool delR; \
+        const uInt* rows = rowvec.getStorage (delR); \
+        uInt nr = rowvec.nelements(); \
+        if (rows[0] < cache.start()  ||  rows[0] > cache.end()) { \
+            findExt(rows[0]); \
+        } \
+        const T* cacheValue = (const T*)(cache.dataPtr()); \
+        uInt strow = cache.start(); \
+        uInt endrow = cache.end(); \
+        for (uInt i=0; i<nr; i++) { \
+	    uInt rownr = rows[i]; \
+            if (rownr >= strow  &&  rownr <= endrow) { \
+	        value[i] = cacheValue[rownr-strow]; \
+	    } else { \
+	        aips_name2(get,NM) (rownr, &(value[i])); \
+                cacheValue = (const T*)(cache.dataPtr()); \
+                strow = cache.start(); \
+                endrow = cache.end(); \
+	    } \
 	} \
+        rowvec.freeStorage (rows, delR); \
     } \
     values->putStorage (value, delV); \
-    rownrs.freeStorage (rows, delR); \
 }
 
 STMANCOLUMNAIPSIO_GETPUT(Bool,BoolV)

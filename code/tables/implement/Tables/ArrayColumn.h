@@ -1,5 +1,5 @@
 //# ArrayColumn.h: access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 
 //# Forward Declarations
 class BaseColumn;
+class RefRows;
 template<class T> class Array;
 class IPosition;
 class Slicer;
@@ -224,9 +225,12 @@ public:
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
     // <group>
-    void getColumnRange (const Slicer& rowRange, Array<T>& vec,
+    void getColumnRange (const Slicer& rowRange, Array<T>& arr,
 			 Bool resize = False) const;
     Array<T> getColumnRange (const Slicer& rowRange) const;
+    void getColumnCells (const RefRows& rownrs, Array<T>& arr,
+			 Bool resize = False) const;
+    Array<T> getColumnCells (const RefRows& rownrs) const;
     // </group>
 
     // Get slices from some arrays in a column.
@@ -243,9 +247,14 @@ public:
     // resized if not conforming.
     // <group>
     void getColumnRange (const Slicer& rowRange,
-			 const Slicer& arraySection, Array<T>& vec,
+			 const Slicer& arraySection, Array<T>& arr,
 			 Bool resize = False) const;
     Array<T> getColumnRange (const Slicer& rowRange,
+			     const Slicer& arraySection) const;
+    void getColumnCells (const RefRows& rownrs,
+			 const Slicer& arraySection, Array<T>& arr,
+			 Bool resize = False) const;
+    Array<T> getColumnCells (const RefRows& rownrs,
 			     const Slicer& arraySection) const;
     // </group>
 
@@ -460,7 +469,10 @@ public:
     // and stride of the rows to put.
     // If the column contains n-dim arrays, the source array must be (n+1)-dim
     // with the last dimension representing the number of rows in the slicer.
-    void putColumnRange (const Slicer& rowRange, const Array<T>& vec);
+    // <group>
+    void putColumnRange (const Slicer& rowRange, const Array<T>& arr);
+    void putColumnCells (const RefRows& rownrs, const Array<T>& arr);
+    // </group>
 
     // Put into subsection of the table arrays in some rows of the column.
     // The first Slicer object can be used to specify start, end (or length),
@@ -468,8 +480,12 @@ public:
     // used to specify the slice to take from each array.
     // If the column contains n-dim arrays, the source array must be (n+1)-dim
     // with the last dimension representing the number of rows in the slicer.
+    // <group>
     void putColumnRange (const Slicer& rowRange,
-			 const Slicer& arraySection, const Array<T>& vec);
+			 const Slicer& arraySection, const Array<T>& arr);
+    void putColumnCells (const RefRows& rownrs,
+			 const Slicer& arraySection, const Array<T>& arr);
+    // </group>
 
     // Put the same value in all cells of the column.
     void fillColumn (const Array<T>& value);

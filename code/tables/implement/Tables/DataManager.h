@@ -44,8 +44,8 @@ class SetupNewTable;
 class Table;
 class IPosition;
 class Slicer;
+class RefRows;
 template<class T> class Array;
-template<class T> class Vector;
 class AipsIO;
 
 
@@ -731,7 +731,7 @@ public:
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void getScalarColumnCellsV (const Vector<uInt>& rownrs,
+    virtual void getScalarColumnCellsV (const RefRows& rownrs,
 					void* dataPtr);
 
     // Put some scalar values in the column.
@@ -740,7 +740,7 @@ public:
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void putScalarColumnCellsV (const Vector<uInt>& rownrs,
+    virtual void putScalarColumnCellsV (const RefRows& rownrs,
 					const void* dataPtr);
 
     // Get scalars from the given row on with a maximum of nrmax values.
@@ -799,7 +799,7 @@ public:
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void getArrayColumnCellsV (const Vector<uInt>& rownrs,
+    virtual void getArrayColumnCellsV (const RefRows& rownrs,
 				       void* dataPtr);
 
     // Put some array values in the column.
@@ -808,7 +808,7 @@ public:
     // The vector pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void putArrayColumnCellsV (const Vector<uInt>& rownrs,
+    virtual void putArrayColumnCellsV (const RefRows& rownrs,
 				       const void* dataPtr);
 
     // Get a section of the array in the given row.
@@ -850,7 +850,7 @@ public:
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void getColumnSliceCellsV (const Vector<uInt>& rownrs,
+    virtual void getColumnSliceCellsV (const RefRows& rownrs,
 				       const Slicer& slicer, void* dataPtr);
 
     // Put into a section of some arrays in the column.
@@ -859,7 +859,7 @@ public:
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void putColumnSliceCellsV (const Vector<uInt>& rownrs,
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
 				       const Slicer& slicer,
 				       const void* dataPtr);
 

@@ -236,11 +236,9 @@ void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
     autoReleaseLock();
 }
 
-// Needed for g++
-typedef Vector<uInt> gppbug_arrcoldata;
 
 template<class T>
-void ArrayColumnData<T>::getArrayColumnCells (const Vector<uInt>& rownrs,
+void ArrayColumnData<T>::getArrayColumnCells (const RefRows& rownrs,
 					      void *arrayPtr) const
 {
     checkLock (False, True);
@@ -258,7 +256,7 @@ void ArrayColumnData<T>::getColumnSlice (const Slicer& ns,
 }
 
 template<class T>
-void ArrayColumnData<T>::getColumnSliceCells (const Vector<uInt>& rownrs,
+void ArrayColumnData<T>::getColumnSliceCells (const RefRows& rownrs,
 					      const Slicer& ns,
 					      void* arrayPtr) const
 {
@@ -277,7 +275,7 @@ void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
 }
 
 template<class T>
-void ArrayColumnData<T>::putArrayColumnCells (const Vector<uInt>& rownrs,
+void ArrayColumnData<T>::putArrayColumnCells (const RefRows& rownrs,
 					      const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
@@ -297,7 +295,7 @@ void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
 }
 
 template<class T>
-void ArrayColumnData<T>::putColumnSliceCells (const Vector<uInt>& rownrs,
+void ArrayColumnData<T>::putColumnSliceCells (const RefRows& rownrs,
 					      const Slicer& ns,
 					      const void* arrayPtr)
 {

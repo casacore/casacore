@@ -1,5 +1,5 @@
 //# SclarColumn.h: access to a scalar table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_SCALARCOLUMN_H)
 #define AIPS_SCALARCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("ScalarColumn.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -39,6 +36,7 @@
 
 //# Forward Declarations
 class BaseColumn;
+class RefRows;
 template<class T> class Vector;
 class String;
 
@@ -176,6 +174,18 @@ public:
     // The Slicer object can be used to specify start, end (or length),
     // and stride of the rows to get..
     Vector<T> getColumnRange (const Slicer& rowRange) const;
+
+    // Get the vector of some values in the column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to get.
+    // According to the assignment rules of class Array, the destination
+    // vector must be empty or its length must be the number of cells
+    // in the column (i.e. the number of rows in the RefRows object).
+    void getColumnCells (const RefRows& rownrs, Vector<T>& vec,
+			 Bool resize = False) const;
+
+    // Get the vector of some values in the column.
+    Vector<T> getColumnCells (const RefRows& rownrs) const;
 
 private:
     // Assignment makes no sense for a readonly class.
@@ -328,6 +338,11 @@ public:
     // and stride of the rows to put.
     // The length of the vector must be the number of cells in the slice.
     void putColumnRange (const Slicer& rowRange, const Vector<T>& vec);
+
+    // Put the vector of some values in the column.
+    // The length of the vector must be the number of cells in the RefRows
+    // object.
+    void putColumnCells (const RefRows& rownrs, const Vector<T>& vec);
 
     // Put the same value in all cells of the column.
     void fillColumn (const T& value);

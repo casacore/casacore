@@ -29,6 +29,7 @@
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ColumnSet.h>
 #include <aips/Tables/ColumnDesc.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Utilities/ValType.h>
@@ -124,11 +125,11 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
 typedef Vector<uInt> forgnugpp_scacoldata;
 
 template<class T>
-void ScalarColumnData<T>::getScalarColumnCells (const Vector<uInt>& rownrs,
+void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
 						void* val) const
 {
     Vector<T>& vec = *(Vector<T>*)val;
-    uInt nr = rownrs.nelements();
+    uInt nr = rownrs.nrow();
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError("ScalarColumnData::getColumnCells"));
     }
@@ -161,11 +162,11 @@ void ScalarColumnData<T>::putScalarColumn (const void* val)
 }
 
 template<class T>
-void ScalarColumnData<T>::putScalarColumnCells (const Vector<uInt>& rownrs,
+void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 						const void* val)
 {
     const Vector<T>& vec = *(const Vector<T>*)val;
-    if (vec.nelements() != rownrs.nelements()) {
+    if (vec.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (&vec);
@@ -216,7 +217,7 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
     //#// the consecutive data. Often this may succeed.
     //# Get the data as a column.
     dataSave = 0;
-    uInt nrrow = rownrs.nelements();;
+    uInt nrrow = rownrs.nelements();
     Vector<T>* vecPtr = new Vector<T>(nrrow);
     if (vecPtr == 0) {
 	throw (AllocError ("ScalarColumnData::makeRefSortKey", 1));

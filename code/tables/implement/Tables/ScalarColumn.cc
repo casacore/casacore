@@ -1,5 +1,5 @@
 //# ScalarColumn.cc: Access to a scalar table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/BaseColumn.h>
+#include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/ValTypeId.h>
@@ -162,26 +163,35 @@ void ROScalarColumn<T>::getColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == Int(nrrow)) {
+    if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	getColumn (vec, resize);
-	return;
+    } else {
+	getColumnCells (RefRows(blc(0), trc(0), inc(0)), vec, resize);
     }
+}
+
+template<class T>
+Vector<T> ROScalarColumn<T>::getColumnCells (const RefRows& rownrs) const
+{
+    Vector<T> vec;
+    getColumnCells (rownrs, vec);
+    return vec;
+}
+
+template<class T>
+void ROScalarColumn<T>::getColumnCells (const RefRows& rownrs,
+					Vector<T>& vec, Bool resize) const
+{
     //# Resize the vector if needed; otherwise check its length.
-    nrrow = shp(0);
+    uInt nrrow = rownrs.nrow();
     if (vec.nelements() != nrrow) {
 	if (resize  ||  vec.nelements() == 0) {
 	    vec.resize (nrrow);
 	}else{
-	    throw (TableConformanceError("ScalarColumn::getColumnRange"));
+	    throw (TableConformanceError("ScalarColumn::getColumnCells"));
 	}
     }
-    //# Fill the entire vector by looping through all cells.
-    uInt rownr = blc(0);
-    uInt incr = inc(0);
-    for (uInt i=0; i<nrrow; i++) {
-	baseColPtr_p->get (rownr, &(vec(i)));
-	rownr += incr;
-    }
+    baseColPtr_p->getScalarColumnCells (rownrs, &vec);
 }
 
 
@@ -276,27 +286,28 @@ void ScalarColumn<T>::putColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (shp(0) == Int(nrrow)) {
+    if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	putColumn (vec);
-	return;
+    } else {
+	putColumnCells (RefRows(blc(0), trc(0), inc(0)), vec);
     }
+}
+
+template<class T>
+void ScalarColumn<T>::putColumnCells (const RefRows& rownrs,
+				      const Vector<T>& vec)
+{
     //# Check the vector length.
-    nrrow = shp(0);
+    uInt nrrow = rownrs.nrow();
     if (vec.nelements() != nrrow) {
-	throw (TableConformanceError("ScalarColumn::putColumnRange"));
+	throw (TableConformanceError("ScalarColumn::putColumnCells"));
     }
-    //# Put the entire vector by looping through all cells.
-    uInt rownr = blc(0);
-    uInt incr = inc(0);
-    for (uInt i=0; i<nrrow; i++) {
-	baseColPtr_p->put (rownr, &(vec(i)));
-	rownr += incr;
-    }
+    baseColPtr_p->putScalarColumnCells (rownrs, &vec);
 }
 
 
 //#// This is a very simple implementation.
-//#// Ultimately this must be done more direct via the data manager.
+//#// Ultimately this must be done more directly via the data manager.
 template<class T>
 void ScalarColumn<T>::fillColumn (const T& value)
 {
