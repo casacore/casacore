@@ -125,11 +125,9 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
 			" (cannot happen!)"));
       }
       // Don't comment keywords without a value (e.g. END).
-      //	if (noValue) {
-      //	    noValue = False;
-      //	} else {
-      //	    keywords.comment(name) = key->comm();
-      //	}
+      if (!noValue) {
+	keywords.setComment(name, key->comm());
+      }
       key = hdu.nextkw();
     }
     return keywords;
@@ -676,8 +674,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Bool value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpUChar:
@@ -685,8 +681,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    uChar value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpShort:
@@ -694,8 +688,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Short value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpInt:
@@ -703,8 +695,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Int value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpUInt:
@@ -712,8 +702,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    uInt value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpFloat:
@@ -721,8 +709,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Float value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpDouble:
@@ -730,8 +716,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Double value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpComplex:
@@ -739,8 +723,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    Complex value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpDComplex:
@@ -748,8 +730,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    DComplex value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    case TpString:
@@ -757,8 +737,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		    String value;
 		    keywords_p.get(keyNames(i), value);
 		    row_p.define(keyNames(i), value);
-		    row_p.setComment(keyNames(i), 
-					    keywords_p.comment(keyNames(i)));
 		}
 		break;
 	    default:
@@ -767,6 +745,8 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 		throw(AipsError("FITSTable::virtualColumns() invalid type in FITS keyword"));
 		break;
 	    }
+	    row_p.setComment(keyNames(i), 
+			     keywords_p.comment(keyNames(i)));
 	    // it should now be safe to delete this keyword
 	    keywords_p.removeField(keyNames(i));
 	} else {

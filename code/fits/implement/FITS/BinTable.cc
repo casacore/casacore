@@ -118,6 +118,8 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 	       cerr << "That should not have happened" << endl;
 	       continue;
 	   }		// end of switch on kw->type()
+	   // add any comment in
+	   kwSet.setComment(kwname, kw->comm());
        }	  	// end of if(!kw->isreserved())
    }			// end of loop over kw list
 
@@ -283,34 +285,34 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
        for (field=0;field<kwSet.nfields();field++) {	   
 	   switch (kwSet.type(field)) {
 	   case TpBool:
-	       td.addColumn(ScalarColumnDesc<Bool>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Bool>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpUChar:
-	       td.addColumn(ScalarColumnDesc<uChar>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<uChar>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpShort:
-	       td.addColumn(ScalarColumnDesc<Short>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Short>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpInt:
-	       td.addColumn(ScalarColumnDesc<Int>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Int>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpUInt:
-	       td.addColumn(ScalarColumnDesc<uInt>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<uInt>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpFloat:
-	       td.addColumn(ScalarColumnDesc<Float>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Float>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpDouble:
-	       td.addColumn(ScalarColumnDesc<Double>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Double>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpComplex:
-	       td.addColumn(ScalarColumnDesc<Complex>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Complex>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpDComplex:
-	       td.addColumn(ScalarColumnDesc<Complex>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<Complex>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpString:
-	       td.addColumn(ScalarColumnDesc<String>(kwSet.name(field),""));
+	       td.addColumn(ScalarColumnDesc<String>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   default:
 	       throw(AipsError("Impossible virtual column type"));
