@@ -33,7 +33,6 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/MUString.h>
-#include <aips/Tasking/Aipsrc.h>
 #include <aips/Tasking/AppInfo.h>
 
 // MVAngle class
