@@ -144,7 +144,7 @@ public NQPolynomialParam<AutoDiff<T> > {
   // </group>
 
   // Copy constructor (deep copy)
-  NQPolynomial_PS(const NQPolynomial_PS &other) :
+  NQPolynomial_PS(const NQPolynomial_PS<AutoDiff<T> > &other) :
     NQPolynomialParam<AutoDiff<T> >(other) {};
 
   // Copy assignment (deep copy)
