@@ -17,17 +17,32 @@ Object says it is null...attach a column
 No longer null...good
 Column's quantum units are: deg
 Quantum 0: 0 deg
-Quantum 1: 3.12 deg
-Quantum 2: 6.24 deg
-Quantum 3: 9.36 deg
-Quantum 4: 12.48 deg
-Quantum 0: 0 m/s.m-1.s.rad
-Quantum 1: 0.0544543 m/s.m-1.s.rad
-Quantum 2: 0.108909 m/s.m-1.s.rad
-Quantum 3: 0.163363 m/s.m-1.s.rad
-Quantum 4: 0.217817 m/s.m-1.s.rad
+Quantum 1: 178.763 deg
+Quantum 2: 357.526 deg
+Quantum 3: 536.288 deg
+Quantum 4: 715.051 deg
+Quantum arcmin 0: 0 arcmin
+Quantum arcmin 1: 10725.8 arcmin
+Quantum arcmin 2: 21451.5 arcmin
+Quantum arcmin 3: 32177.3 arcmin
+Quantum arcmin 4: 42903.1 arcmin
+Quantum arcsec 0: 0 arcsec
+Quantum arcsec 1: 643546 arcsec
+Quantum arcsec 2: 1.28709e+06 arcsec
+Quantum arcsec 3: 1.93064e+06 arcsec
+Quantum arcsec 4: 2.57418e+06 arcsec
+Quantum arcmin 0: 0 arcmin
+Quantum arcmin 1: 10725.8 arcmin
+Quantum arcmin 2: 21451.5 arcmin
+Quantum arcmin 3: 32177.3 arcmin
+Quantum arcmin 4: 42903.1 arcmin
 The units for ScaQuantComplex are variable.
-getUnits() should produced an empty string: 
+getUnits() should produce an empty string: 
+(0.0698132, 0.00366519) m/s.m-1.s.rad
+(960, 50.4) m/s.m-1.s2
+(960, 50.4) m/s.m-1.s2
+(960, 50.4) m/s.m-1.s2
+(960, 50.4) m/s.m-1.s2
 Complex quantum (var unit) 0: (4, 0.21) deg
 Complex quantum (var unit) 1: (960000, 50400) ms
 Complex quantum (var unit) 2: (960000, 50400) g.kg-1.s
@@ -38,8 +53,6 @@ Complex quantum (var unit) 1: (960, 50.4) m/s.m-1.s2
 Complex quantum (var unit) 2: (960, 50.4) m/s.m-1.s2
 Complex quantum (var unit) 3: (960, 50.4) m/s.m-1.s2
 Complex quantum (var unit) 4: (960, 50.4) m/s.m-1.s2
-Quantum<Double> (units (m/s)) 3.12 m/s
-Quantum<Double> (units (GHz)) 6.24e-09 GHz.m
 
 Finished test of Quantum scalar column...........
 
@@ -53,39 +66,66 @@ Array quantum column: units are variable.
 The following line should be a Table array conformance error exception.
 ArrayQuantColumn::get: Table array conformance error
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[1.41212 GHz, 1.4003 Jy
- 1.4921 deg, 1.22 GHz
- 1.4111 ms-1, 1.09091 g]
+[1.41212 GHz, 1.4003 Hz
+ 1.4921 MHz, 1.22 GHz
+ 1.4111 kHz, 1.09091 Hz]
 
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[1.41212e+09 m/s.m-1, 1.4003e-26 m/s.m-1.kg.s-1
- 0.0260421 m/s.m-1.s.rad, 1.22e+09 m/s.m-1
- 1411.1 m/s.m-1, 0.00109091 m/s.m-1.kg.s]
+[1.41212 GHz, 1.4003 Hz
+ 1.4921 MHz, 1.22 GHz
+ 1.4111 kHz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 0.0014003 kHz
+ 1492.1 kHz, 1.22e+06 kHz
+ 1.4111 kHz, 0.00109091 kHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
 
 Array quantum column: units are variable.
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[1.41212 GHz, 1.4003 GHz
- 1.4921 GHz, 1.22 GHz
- 1.4111 GHz, 1.09091 GHz]
+[1.41212 GHz, 1.4003e-09 GHz
+ 0.0014921 GHz, 1.22 GHz
+ 1.4111e-06 GHz, 1.09091e-09 GHz]
 
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[1.41212 m/s.m-1.s, 1.4003 m/s.m-1.s
- 1.4921 m/s.m-1.s, 1.22 m/s.m-1.s
- 1.4111 m/s.m-1.s, 1.09091 m/s.m-1.s]
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
 
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[80.9085 deg.rad-1, 80.2313 deg.rad-1
- 85.491 deg.rad-1, 69.9009 deg.rad-1
- 80.8501 deg.rad-1, 62.5045 deg.rad-1]
-Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[1.41212 m/s, 1.4003 m/s
- 1.4921 m/s, 1.22 m/s
- 1.4111 m/s, 1.09091 m/s]
+[1.41212 kHz, 0.0014003 kHz
+ 1492.1 kHz, 1.22e+06 kHz
+ 1.4111 kHz, 0.00109091 kHz]
 
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
-[80.9085 deg.m.s-1.rad-1, 80.2313 deg.m.s-1.rad-1
- 85.491 deg.m.s-1.rad-1, 69.9009 deg.m.s-1.rad-1
- 80.8501 deg.m.s-1.rad-1, 62.5045 deg.m.s-1.rad-1]
+[1412.12 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
 
-deg
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+MHz
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[0.00141212 MHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1220 MHz
+ 0.0014111 MHz, 1.09091e-06 MHz]
+
+Column's quantum units are: deg
+Quantum 0: 0 deg
+Quantum 1: 178.763 deg
+Quantum 2: 357.526 deg
+Quantum 3: 536.288 deg
+Quantum 4: 715.051 deg
+
 Execution of tTableQuantum.cc ended normally.
