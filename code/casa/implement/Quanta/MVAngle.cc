@@ -380,8 +380,8 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       } else if (tp == 1 && r1 == 0 && !in.testCharNC('.') &&
 		 !in.testCharNC('/')) {
 	r += r1/60.0;
-      } else if (tp == 3 && r1 != 0 && !in.testCharNC('.') &&
-		 !in.testCharNC('/')) {
+      } else if (tp == 3 && !in.testCharNC('.') &&
+		 !in.testCharNC('/') && !in.testAlpha()) {
 	r += r1/60.0;
       } else {
 	tp = 0;
