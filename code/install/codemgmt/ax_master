@@ -4910,3 +4910,4 @@
 14 316 src rm trial/apps/newdish/newdishpg.g
 14 316 sys rm libexec/newdishpg.g
 14 316 src rm trial/apps/newdish/newdishplot.g
+14 316 sys rm libexec/newdishplot.g
