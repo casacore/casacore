@@ -29,7 +29,7 @@
 #define AIPS_LELIMAGECOORD_H
 
 //# Includes
-#include <aips/Lattices/LELLattCoordBase.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Utilities/CountedPtr.h>
 
@@ -48,7 +48,7 @@ class LattRegionHolder;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LELLattCoordBase>LELLattCoordBase</linkto>
+//   <li> <linkto class=LELLattCoord>LELLattCoord</linkto>
 // </prerequisite>
 
 // <synopsis>
@@ -68,7 +68,7 @@ class LattRegionHolder;
 //# </todo>
 
 
-class LELImageCoord : public LELLattCoordBase
+class LELImageCoord : public LELLattCoord
 {
 public:
     LELImageCoord();
