@@ -200,7 +200,7 @@ public:
 
     // This is provided as a convenience since it is a very commonly desired
     // operation through CoordinateSystem.
-    Bool toworld(Vector<Double> &world, const IPosition &pixel) const;
+    Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
 
     // Report the value of the requested attributed.
     // <group>
