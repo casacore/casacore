@@ -1,5 +1,5 @@
 //# tStokesCoordinate.cc: Test program for StokesCoordinate
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

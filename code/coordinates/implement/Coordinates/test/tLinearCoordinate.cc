@@ -1,5 +1,5 @@
 //# tLinearCoordinate.cc: Test program for LinearCoordinate
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -203,20 +203,19 @@ int main()
          }
 
 //
-         Coordinate* pC = &lc;
          String unit;
          Double val = 20.12345;
          Quantum<Double> valq(val, Unit(units(1)));
          String str = lc.format(unit, Coordinate::FIXED, val, 1,
                    True, 4);
-         String str2 = pC->format(unit, Coordinate::FIXED, valq, 1,
+         String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1,
                    True, 4);
          if (str != "20.1234" || str2 != "20.1234") {
             throw(AipsError("Failed format test 1"));
          }
          str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1,
                    True, 4);
-         str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, 1,
+         str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1,
                    True, 4);
          if (str != "2.0123e+01" || str2 != "2.0123e+01") {
             throw(AipsError("Failed format test 2"));

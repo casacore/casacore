@@ -1,5 +1,5 @@
 //# tTabularCoordinate.cc: Test program for TabularCoordinate
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -228,7 +228,6 @@ void doit (TabularCoordinate& lc,
       throw(AipsError("Failed world axis units set/recovery test"));
    }
 //
-   Coordinate* pC = &lc;
    Int prec;
    Coordinate::formatType fType = Coordinate::SCIENTIFIC;
    lc.getPrecision(prec, fType, True, 6, 4, 2);
@@ -245,16 +244,16 @@ void doit (TabularCoordinate& lc,
    Double val = 20.12345;
    Quantum<Double> valq(val, Unit(units(0)));
    String str = lc.format(unit, Coordinate::FIXED, val, 0,
-             True, 4);
-   String str2 = pC->format(unit, Coordinate::FIXED, valq, 0,
-             True, 4);
+                          True, 4, True);
+   String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0,
+                                   True, 4, True);
    if (str != "20.1234" || str2 != "20.1234") {
       throw(AipsError("Failed format test 1"));
    }
    str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
-             True, 4);
-   str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, 0,
-             True, 4);
+                   True, 4, True);
+   str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
+                            True, 4, True);
    if (str != "2.0123e+01" || str2 != "2.0123e+01") {
       throw(AipsError("Failed format test 2"));
    }
