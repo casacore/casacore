@@ -169,6 +169,12 @@ public:
     const StokesCoordinate &stokesCoordinate(uInt which) const;
     // </group>
 
+    // Replace one coordinate with another. The mapping of the coordinate axes
+    // to the coordinate system axes is unchanged, therefore the number of world
+    // and pixel axes must not be changed. You can change the type of the coordinate
+    // however. For example, replace a SpectralCoordinate with a 1-D Linearcoordinate.
+    void replaceCoordinate(const Coordinate &newCoordinate, uInt whichCoordinate);
+
     // Find the coordinate number that corresponds to the given type.
     // Since there might be more than one coordinate of a given type you
     // can call this multiple times setting <src>afterCoord</src> to

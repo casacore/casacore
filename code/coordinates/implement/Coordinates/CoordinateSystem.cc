@@ -378,6 +378,19 @@ const StokesCoordinate &CoordinateSystem::stokesCoordinate(uInt which) const
     return (const StokesCoordinate &)(*(coordinates_p[which]));
 }
 
+void CoordinateSystem::replaceCoordinate(
+			 const Coordinate &newCoordinate, uInt which)
+{
+    AlwaysAssert(which < nCoordinates() &&
+		 newCoordinate.nPixelAxes() == coordinates_p[which]->nPixelAxes() &&
+		 newCoordinate.nWorldAxes() == coordinates_p[which]->nWorldAxes(),
+		 AipsError);
+    delete coordinates_p[which];
+    coordinates_p[which] = newCoordinate.clone();
+    AlwaysAssert(coordinates_p[which], AipsError);
+}
+
+
 Int CoordinateSystem::findCoordinate(Coordinate::Type type, Int afterCoord) const
 {
     if (afterCoord < -1) {
