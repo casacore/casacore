@@ -197,7 +197,10 @@ void TableParseSelect::addTable (const TableParseVal* name,
 	    throw (TableInvExpr ("Invalid temporary table number given"));
 	}
 	table = *((*theTempTables)[tabnr]);
-    }else{
+    }else if (name->type == 't') {
+        //# The table is a temporary table (from a select clause).
+        table = name->tab;
+    } else {
 	//# The table name is a string.
 	//# When the name contains ::, it is a keyword in a table at an outer
 	//# SELECT statement.
@@ -206,7 +209,23 @@ void TableParseSelect::addTable (const TableParseVal* name,
 	if (splitName (shand, columnName, fieldNames, name->str)) { 
 	    table = tableKey (shand, columnName, fieldNames);
 	}else{
-	    table = Table(name->str);
+	    // If no or equal shorthand is given, try to see if the
+	    // given name is already used as a shorthand.
+	    // If so, take the table of that shorthand.
+	    Bool foundSH = False;
+	    if (shorthand.empty()  ||  name->str == shorthand) {
+	        for (Int i=currentSelect_p - 1; i>=0; i--) {
+		    Table tab = blockSelect_p[i]->findTable (name->str);
+		    if (! tab.isNull()) {
+		        table = tab;
+			foundSH = True;
+			break;
+		    }
+		}
+	    }
+	    if (!foundSH) {
+	        table = Table(name->str);
+	    }
 	}
     }
     parseIter_p->toEnd();
@@ -299,12 +318,11 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	    throw (TableInvExpr ("No keyword given in name " + name));
 	}
 	fldNam = stringToVector (restName, '.');
-	// Before the :: can be empty, an optional shorthand, and an
-	// optional column name (separated by a dot).
-	// separated by a dot
+	// The part before the :: can be empty, an optional shorthand,
+	// and an optional column name (separated by a dot).
 	columnName = "";
 	if (j > 0) {
-	    Vector<String> scNames = stringToVector (columnName.before(j), '.');
+	    Vector<String> scNames = stringToVector(columnName.before(j), '.');
 	    switch (scNames.nelements()) {
 	    case 2:
 		shorthand = scNames(0);
@@ -314,8 +332,8 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 		columnName = scNames(0);
 		break;
 	    default:
-		throw (TableInvExpr ("Name " + name + " is invalid: "
-				     "More than 2 name parts given before ::"));
+		throw TableInvExpr ("Name " + name + " is invalid: "
+				    "More than 2 name parts given before ::");
 	    }
 	}
     } else {
@@ -689,14 +707,31 @@ void TableParseSelect::handleSelectColumn (const String& name)
     }
 }
 
-//# Eexecute a subquery and create the correct node object for it.
+//# Execute a query in the FROM clause and return the resulting table.
+TableParseVal* TableParseSelect::doFromQuery()
+{
+#if defined(AIPS_TRACE)
+    Timer timer;
+#endif
+    // Execute the nested command.
+    execute (False);
+#if defined(AIPS_TRACE)
+    timer.show ("Fromquery");
+#endif
+    TableParseVal* val = TableParseVal::makeValue();
+    val->tab = table_p;
+    val->type = 't';
+    return val;
+}
+
+//# Execute a subquery and create the correct node object for it.
 TableExprNode TableParseSelect::doSubQuery()
 {
 #if defined(AIPS_TRACE)
     Timer timer;
 #endif
     // Execute the nested command.
-    execute();
+    execute (True);
 #if defined(AIPS_TRACE)
     timer.show ("Subquery");
 #endif
@@ -981,12 +1016,17 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 
 
 //# Execute all parts of the SELECT command.
-void TableParseSelect::execute()
+void TableParseSelect::execute (Bool setInGiving)
 {
     //# Give an error if no command part has been given.
     if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0) {
 	throw (TableError
 	    ("TableParse error: no projection, selection or sorting given"));
+    }
+    // Test if a "giving set" is possible.
+    if (resultSet_p != 0  &&  !setInGiving) {
+	throw TableInvExpr ("A query in a FROM can only have "
+			    "'GIVING tablename'");
     }
     //# The first table in the list is the source table.
     parseIter_p->toStart();
@@ -1097,7 +1137,7 @@ Table tableCommand (const String& str,
     timer.mark();
 #endif
     try {
-	p->execute();
+	p->execute (False);
     }catch (AipsError x) {
 	message = x.getMesg();
 	error = True;
