@@ -320,12 +320,14 @@ Table TableRecord::asTable (const RecordFieldId& id,
 			    const TableLock& lockOptions) const
 {
     Int whichField = idToNumber (id);
-    String name = ((const TableKeyword*)get_pointer (whichField, TpTable))->
-                    table().tableName();
+    const Table& tab =
+      ((const TableKeyword*)get_pointer (whichField, TpTable))->table();
+    String name = tab.tableName();
+    int option = tab.tableOption();
     // Close the table in the record, otherwise the new lock options
     // may have no effect.
     closeTable (id);
-    return Table (name, lockOptions);
+    return Table (name, lockOptions, Table::TableOption(option));
 }
 
 const TableAttr& TableRecord::tableAttributes (const RecordFieldId& id) const
