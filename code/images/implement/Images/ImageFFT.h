@@ -1,5 +1,5 @@
 //# ImageFFT.h: FFT an image
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 
 #include <aips/aips.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Coordinates/Coordinate.h>
 
 class CoordinateSystem;
 class IPosition;
@@ -178,7 +177,6 @@ private:
    ImageInterface<Float>* itsInImagePtrFloat;
    ImageInterface<Complex>* itsInImagePtrComplex;
    Bool itsDone;
-   Coordinate* itsCoordPtr;
 
 // Check axes for multi-dim FFT
    void checkAxes(const CoordinateSystem& cSys, uInt ndim, 

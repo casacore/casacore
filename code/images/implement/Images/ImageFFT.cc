@@ -1,5 +1,5 @@
 //# ImageFFT.cc: FFT an image
-//# Copyright (C) 1995,1997,1998,1999
+//# Copyright (C) 1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,8 +56,7 @@ ImageFFT::ImageFFT()
 : itsTempImagePtr(0),
   itsInImagePtrFloat(0),
   itsInImagePtrComplex(0),
-  itsDone(False),
-  itsCoordPtr(0)
+  itsDone(False)
 {
 }
 
@@ -72,22 +71,14 @@ ImageFFT::~ImageFFT()
 //
    delete itsInImagePtrComplex;
    itsInImagePtrComplex = 0;
-//
-   delete itsCoordPtr;
-   itsCoordPtr = 0;
 }
 
 ImageFFT::ImageFFT(const ImageFFT& other)
 : itsTempImagePtr(0),
   itsInImagePtrFloat(0),
   itsInImagePtrComplex(0),
-  itsDone(False),
-  itsCoordPtr(0)
+  itsDone(False)
 {
-
-// We don't need to do anything with itsCoordPtr
-// as its just used as a temporary
-
   if (this != &other) {
      if (other.itsTempImagePtr!=0) {
         itsTempImagePtr = other.itsTempImagePtr->cloneII();
@@ -125,11 +116,6 @@ ImageFFT& ImageFFT::operator=(const ImageFFT& other)
      if (other.itsInImagePtrComplex!=0) {
         itsInImagePtrComplex = other.itsInImagePtrComplex->cloneII();
      }
-
-// We don't need to do anything with itsCoordPtr
-// as its just used as a temporary
-
-     delete itsCoordPtr;
 //
      itsDone = other.itsDone;
    }
