@@ -2634,3 +2634,4 @@
 11 397 src mv trial/scripts/stopwatch.g trial/implement/Utilities/stopwatch.g
 11 397 src mv trial/scripts/stopwatch.help trial/implement/Utilities/stopwatch.help
 11 397 src mv trial/scripts/substitute.g trial/implement/Utilities/substitute.g
+11 397 src mv trial/scripts/substitute.help trial/implement/Utilities/substitute.help
