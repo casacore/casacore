@@ -4015,9 +4015,9 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 
 // Reference value
 
+   String refValListUnits;
    {
       Coordinate::formatType form;
-      String listUnits;
       Int prec;
 //
       if (pc->type() == Coordinate::STOKES) {
@@ -4034,7 +4034,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                Bool ok = pc->toWorld(world, pixel);
                String temp;
                if (ok) {
-                  temp = pc->format(listUnits, form, world(0), 
+                  temp = pc->format(refValListUnits, form, world(0), 
                                     axisInCoordinate, True, True, -1);
                } else {
                   temp = "?";
@@ -4045,7 +4045,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
             pixel(0) =pc->referencePixel()(axisInCoordinate);
             Bool ok = pc->toWorld(world, pixel);
             if (ok) {
-               sName = pc->format(listUnits, form, world(0), 
+               sName = pc->format(refValListUnits, form, world(0), 
                                   axisInCoordinate, True, True, -1);
             } else {
                sName = "?";
@@ -4056,7 +4056,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
          form = Coordinate::DEFAULT;
          pc->getPrecision(prec, form, True, precRefValSci, 
                           precRefValFloat, precRefValRADEC);
-         string = pc->format(listUnits, form, 
+         string = pc->format(refValListUnits, form, 
                             pc->referenceValue()(axisInCoordinate),
                             axisInCoordinate, True, True, prec);
       }
@@ -4114,13 +4114,13 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
    }
 
 
-// Increment units
+// Units
 
    if (pc->type()!= Coordinate::STOKES) {
       if (pixelAxis != -1) {
          string = " " + incUnits;
       } else {
-         string = " ";
+         string = " " + refValListUnits;
       }
       if (findWidths) {
          widthUnits = max(widthUnits,string.length());
