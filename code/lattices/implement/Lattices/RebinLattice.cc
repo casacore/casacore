@@ -207,6 +207,7 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 
    if (section==itsSlicer && itsData.nelements()>0) {
 //      buffer.reference(itsData);
+      buffer.resize(itsData.shape());
       buffer = itsData;
       return False;
    }
@@ -266,6 +267,7 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 
    if (section==itsSlicer && itsMask.nelements()>0) {
 //      buffer.reference(itsMask);
+      buffer.resize(itsMask.shape());
       buffer = itsMask;
       return False;
    }
