@@ -2,7 +2,16 @@
 \usepackage{html, longtable, epsfig}
 %%---------------------------------------------------------------------------
  
-\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+
+\externallabels{../../user/Utility}{../../user/Utility/labels.pl}
+\externallabels{../../user/General}{../../user/General/labels.pl}
+\externallabels{../../user/Display}{../../user/Display/labels.pl}
+\externallabels{../../user/Dish}{../../user/Dish/labels.pl}
+\externallabels{../../user/SynthesisRef}{../../user/SynthesisRef/labels.pl}
+
+\externallabels{../../user/ATNF}{../../user/ATNF/labels.pl}
+\externallabels{../../user/NFRA}{../../user/NFRA/labels.pl}
+\externallabels{../../user/NRAO}{../../user/NRAO/labels.pl}
 \externallabels{../../reference/System}{../../reference/System/labels.pl}
 \externallabels{../197}{../197/labels.pl}
 \begin{document}
