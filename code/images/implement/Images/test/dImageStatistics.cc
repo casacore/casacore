@@ -111,6 +111,7 @@
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
+#include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Tasking/PGPlotter.h>
 
@@ -240,7 +241,7 @@ try {
 // Plotting things
 
    Regex re("[ \n\t\r\v\f,]+", 1);
-   Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot, re);
+   Vector<Int> statisticTypes = LatticeStatsBase::toStatisticTypes(statsToPlot, re);
    Vector<Int> nxy(nxyB);
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" && 
