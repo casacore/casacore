@@ -4114,3 +4114,4 @@
 14 065 src mv trial/implement/DisplayDatas/WorldAxesDM.cc trialdisplay/implement/DisplayDatas/WorldAxesDM.cc
 14 065 src mv trial/implement/DisplayDatas/makefile trialdisplay/implement/DisplayDatas/makefile
 14 065 src mv trial/implement/DisplayDatas/test/dLatticeAsRaster.cc trialdisplay/implement/DisplayDatas/test/dLatticeAsRaster.cc
+14 065 src mv trial/implement/DisplayDatas/test/tArrayAndDrawing.cc trialdisplay/implement/DisplayDatas/test/tArrayAndDrawing.cc
