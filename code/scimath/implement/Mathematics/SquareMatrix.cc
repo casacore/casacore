@@ -32,8 +32,10 @@
 
 inline Float real(Float r) { return r;}
 inline Float conj(Float r) { return r;}
+#ifdef AIPS_USE_NEW_SGI
 inline Complex real(Complex c) { return std::real(c);}
 inline Complex conj(Complex c) { return std::conj(c);}
+#endif
 
 template <class T, Int n> 
 SquareMatrix<T,n>& 
