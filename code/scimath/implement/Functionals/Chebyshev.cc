@@ -32,7 +32,7 @@
 
 //# Operators
 template <class T>
-T NQChebyshev<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
+T NQChebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
   T xp = x[0];
   // handle out-of-interval values
   if (xp < minx_p || xp > maxx_p) {

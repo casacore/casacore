@@ -77,7 +77,7 @@ operator=(const NQSimButterworthBandpass<T> &other) {
 
 template <class T>
 T NQSimButterworthBandpass<T>::
-eval(typename NQFunction1D<T>::FunctionArg x) const {
+eval(const typename  FunctionTraits<T>::ArgType *x) const {
   // this does not reflect the true responses of Butterworth filters
   // calculate the low-pass portion
   T hp = 1;

@@ -162,7 +162,7 @@ public:
 
   //# Operators    
   // Evaluate the bandpass at "x".
-  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(const typename FunctionTraits<T>::ArgType *x) const;
 
   //# Member functions
   // set the center of the bandpass.  This is the x-ordinate value that 

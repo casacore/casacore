@@ -269,7 +269,7 @@ class NQChebyshev : public NQChebyshevParam<T> {
   
   //# Operators    
   // Evaluate the Chebyshev at <src>x</src>.
-  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(const typename FunctionTraits<T>::ArgType *x) const;
   
   //# Member functions
   // Return the Chebyshev polynomial which is the derivative of this one
