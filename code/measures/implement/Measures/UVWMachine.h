@@ -65,9 +65,10 @@ template <class T> class Vector;
 // <linkto class=MDirection>MDirection</linkto>  to specify the input UVW
 // coordinates reference direction and coordinate system.
 // An EW flag can be specified to indicate the different type of UVW 
-// coordinates (not implemented yet).
+// coordinates. I.e. projection along polar axis rather than towards
+// observing direction (not implemented yet).
 // A project flag, if set, will re-project the resulting UV plane onto the
-// in direction reference plane.
+// in-direction reference plane.
 //
 // The constructors also need an output coordinate system
 // (<linkto class=MeasRef>MDirection::Ref</linkto>) or an output
@@ -87,13 +88,18 @@ template <class T> class Vector;
 // If the frame is changed by the user of the conversion machine, the
 // machine has to be reinitialised before using it for output by using
 // <em>reCalculate()</em>.
+//
+// Projection entails a rotation. For changes to a fixed frame (i.e. not
+// changing with e.g. time), the rotation matrix is calculated only once. In
+// other cases it has to be calculated per series of uvw conversions. The
+// latter case can hence be time consuming.
 // </note>
 // <note role=tip>
 // If either the input or output direction/reference specifies a planet, action
 // is special. Planets are assumed to be in J2000 positions, since that is
 // the only way to carry them from conversion to conversion (and also have a
-// variable phase-centre; which can, btw, always be obtained by the
-// phaseCentre() member).<br>
+// variable phase-center; which can, btw, always be obtained by the
+// phaseCenter() member).<br>
 // Note that a reCalc() is necessary between calls of the engine, since the
 // planetary position will change from time to time (i.e. with the Frame).
 //
@@ -116,7 +122,7 @@ template <class T> class Vector;
 //
 // <example>
 // <srcblock>
-//	// Given a current phase stopping Centre
+//	// Given a current phase stopping Center
 //	MDirection indir(Quantity(3.25745692, "rad"),
 //		   	 Quantity(0.040643336,"rad"),
 //		   	 MDirection::Ref(MDirection::B1950));
@@ -125,7 +131,7 @@ template <class T> class Vector;
 //	// The rotation matrix to go to new UVW is obtained by:
 //	RotMatrix rm(uvm.rotationUVM());
 //	// If an UVW specified:
-//	MVPosition uvw((-739.048461, -1939.10604, 1168.62562);
+//	MVPosition uvw(-739.048461, -1939.10604, 1168.62562);
 //	// This can be converted by e.g.:
 //	uvw *= rm;
 //	// Or, alternatively, by e.g.:
@@ -149,7 +155,7 @@ class UVWMachine {
 public:
 //# Constructors
   // Constructors have an EW flag, which will give a projection parallel to
-  // the polar axis rather than in the direction of the fieldcentre, and a
+  // the polar axis rather than in the direction of the fieldcenter, and a
   // project flag. The last will correct the UV coordinates to re-project
   // them onto the plane specified by the in direction
   // <group>
@@ -188,7 +194,7 @@ public:
   // </group>
 
   //# Member functions
-  // Return the new phase centre coordinates
+  // Return the new phase center coordinates
   const MDirection &phaseCenter() const;
   // Return a rotation matrix that can be used to convert UVW coordinates:
   // UVW(new) = UVW(old) * rotationUVW()
@@ -230,13 +236,13 @@ private:
   Bool proj_p;
   // Zero phase flag (for speed)
   Bool zp_p;
-  // Old phase centre
+  // Old phase center
   MDirection in_p;
   // New coordinate reference
   MDirection::Ref outref_p;
-  // Old phase centre in new coordinates
+  // Old phase center in new coordinates
   MDirection outin_p;
-  // New phase centre
+  // New phase center
   MDirection out_p;
   // Rotation Matrix to go from input UVW to coordinate system
   RotMatrix rot1_p;

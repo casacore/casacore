@@ -76,7 +76,7 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
     init();
   }
 
-UVWMachine::  UVWMachine(const UVWMachine &other) {
+UVWMachine::UVWMachine(const UVWMachine &other) {
   copy(other);
   init();
 }
@@ -219,17 +219,34 @@ Vector<Double> UVWMachine::getPhase(Vector<MVPosition > &uv) const {
 
 //# Private member functions
 void UVWMachine::init() {
+  // Initialise the rotation matrices for uvw and phase conversion
+  // Define axes
   const MVDirection mVz(0.,0.,1.);
   const MVDirection mVy(0.,1.,0.);
   const MVDirection mVx(1.,0.,0.);
+  // Define rotation to a coordinate system with pole towards in-direction
+  // and X-axis W; by rotating around z-axis over -(90-long); and around
+  // x-axis (lat-90).
   rot1_p = RotMatrix(Euler(-(C::pi_2 - in_p.getValue().get()(0)), 3,
 			   in_p.getValue().get()(1) - C::pi_2, 1));
+  // Convert the input axes directions to the output reference frame, and
+  // deduce a rotation matrix from these
   rot2_p.set(conv_p(mVx).getValue().getValue(),
 	     conv_p(mVy).getValue().getValue(),
 	     conv_p(mVz).getValue().getValue());
   rot2_p.transpose();
+  // The rotation matrix from a system that has a pole towards output
+  // direction, into the standard system.
   rot3_p = RotMatrix(Euler(C::pi_2 - out_p.getValue().get()(1), 1,
 			   -(out_p.getValue().get()(0) - C::pi_2), 3));
+  // Get the rotation matrix which re-projects an uv-plane onto another
+  // reference direction:
+  // <ul>
+  //   <li> around x-axis (out-lat - 90)
+  //   <li> around z-axis (out-long - in-long)
+  //   <li> around x-axis (90 - in-lat)
+  // </ul>
+  // and normalise
   rot4_p = RotMatrix();
   if (proj_p) {
     RotMatrix x(Euler(-(C::pi_2 - out_p.getValue().get()(1)), 1,
@@ -241,9 +258,12 @@ void UVWMachine::init() {
     rot4_p(0,1) = x(1,0)/x(2,2);
     rot4_p(1,0) = x(0,1)/x(2,2);
   };
+  // Complete rotation matrix for uvw change
   uvrot_p = rot3_p * rot2_p * rot1_p;
   uvrot_p.transpose();
+  // Complete rotation matrix for uvw change including a re-projection
   uvproj_p = uvrot_p * rot4_p;
+  // Phase change vector from input to output coordinates. 
   phrot_p = rot3_p * (MVPosition(out_p.getValue())
   		      - MVPosition(outin_p.getValue()));
 }
