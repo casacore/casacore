@@ -1,0 +1,751 @@
+%% VLBI++103
+%%----------------------------------------------------------------------------
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{AIPS++ DEVELOPMENT PLAN: Release 1.4}
+  
+
+\author{Athol Kemball and Tim Cornwell (eds.)\\
+   NRAO}
+
+\date{15 May, 2000}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../xxx.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\newcommand{\remark}[1]{{\small\begin{itemize}\em \item #1\end{itemize}}}
+%\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/project/releasenotes/releasenotes.html}
+\newcommand{\thisdocURL}{http://www.nrao.edu/~tcornwel/synplan/synplan.html}
+\newcommand{\searchURL}{../../html/aips2search.html}
+\newcommand{\aipsviewURL}{../../user/aipsview/aipsview.html}
+\newcommand{\GlishmanualURL}{../../reference/Glish/Glish.html}
+\newcommand{\GlishtutorialURL}{../../notes/195/195.html}
+\newcommand{\synthesisURL}{../../user/synthesis/synthesis.html}
+\newcommand{\gsURL}{../../user/gettingstarted/gettingstarted.html}
+\newcommand{\userrefmanualURL}{../../user/Refman/Refman.html}
+
+\newcommand{\specsURL}{../../specs/specs.html}
+\newcommand{\betaURL}{../beta/beta.html}
+\newcommand{\consortiumURL}{../consortium.html}
+%
+% URL to Help system
+%
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+
+% Add home page navigation button
+%
+
+\htmladdtonavigation{\htmladdnormallink
+  {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
+
+\section{\underbar{Purpose}}
+
+The purpose of this document is to define the development plan for
+AIPS++ release v 1.4, currently scheduled for October 31, 2000. 
+
+\section{\underbar{Release priorities}}
+
+The highest priority for the project at this time is scientific
+completeness, and planning for release v1.4 has been undertaken in
+keeping with this objective. Maintaining a sound infrastructure in the
+project is important however, and infrastructure work has been
+scheduled for this cycle carefully; primarily in areas which are vital
+for the long-term vitality of the project, or which are in the
+critical path for application development.
+
+\section{\underbar{Introduction}}
+
+Development priorities and targets are listed separately for each
+major development area in AIPS++. These targets cover only the
+development cycle through October 2000, and do not include longer-term
+items, which are tracked separately for consideration in subsequent
+development cycles. There are 20 weeks before the expected
+code-freeze, but deductions for defect correction (20\%), user support
+(up to 20\%), and where applicable, science time (25\%), have been
+made. The exact numbers vary by developer and institution, and the
+best estimate has been made in each case. Variability in these
+estimates is accommodated by the inclusion of medium prioirty targets,
+which may need to be carried over into the next cycle. Each target is
+assigned a priority as high ({\bf H}), which implies that the target
+is expected to be completed this cycle, and medium ({\bf M}), which is
+work to be done on an as-available basis. Note also, that not all
+developers are available to the project on a full-time basis, and have
+reduced commitments as a result.
+
+\vskip 1cm
+
+\begin{tabular}{|l|l|l|}\hline
+{\bf Abbr.}&{\bf Developer}&{\bf Affiliation}\\ \hline\hline
+AK & Athol Kemball & NRAO\\
+BG & Bob Garwood & NRAO\\
+BM & Barry Maguire & NRAL\\
+DB & David Barnes & Swinburne/ATNF \\
+DK & David King & NRAO\\
+DM & Dave Mehringer & NCSA\\
+DS & Darrell Schiebel & NRAO\\
+GvD & Ger van Diepen & NFRA\\
+GM & George Moellenbrock & NRAO\\
+HR & Harold Ravlin & NCSA\\
+JB & Jim Braatz & NRAO\\
+JM & Joe McMullin & NRAO\\
+JN & Jan Noordam & NFRA \\
+KG & Kumar Golap & NRAO\\
+MH & Mark Holdaway & NRAO\\
+NK & Neil Killeen & ATNF\\
+PT & Peter Teuben & BIMA \\
+RM & Ralph Marson & NRAO\\
+RP & Ray Plante & NCSA\\
+OS & Oleg Smirnov & NFRA\\
+TC & Tim Cornwell & NRAO\\
+TM & Toney Minter & NRAO\\
+TO & Tom Oosterloo & NFRA\\
+WB & Wim Brouw & NRAO\\
+WY & Wes Young & NRAO\\
+\hline
+\end{tabular}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Single-dish}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[CLI improvement] Improving the CLI and scripting capabilities
+is of direct and immediate benefit to end-users.
+
+\item[Calibration and imaging capabilities] The provision of
+calibration and imaging capabilities which are integrated with
+the synthesis infrastructure is a high priority.
+
+\item[Support GBT commissioning] The continued development of tools
+required for GBT commissioning remains a priority during this
+development cycle.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Complete dish as a tool] Complete the decomposition of dish as a
+standard AIPS++ tool. ({\bf JM, H, 0.5 wk}).
+
+\item[Bulk processing in Glish] Support bulk processing of data in
+Glish using the current dish reduction functions. ({\bf JM, H, 0.5
+wk}).
+
+\item[Consistent use of flags, weights in averager] ({\bf JM, H, 1 wk}).
+
+\item[SD imaging using imager] Extend and test the current SD imaging
+capabilities in imager. ({\bf JM, H, 4 wk}).
+
+\item[MS v2 filler conversion] Convert sdfits2ms, ms2sdfits,
+gbtmsfiller and SDIter to MS v2. Includes feedback from GBT observers
+interface to gbtmsfiller. ({\bf BG, H, 6 wk}).
+
+\item[Spectrometer backend support] ({\bf BG, H, 1.5 wk}).
+
+\item[IF backend support] ({\bf BG, H, 1.5 wk}).
+
+\item[Initial SD calibration using calibrater] Initial calibration
+examples using a common infrastructure with synthesis. ({\bf BG, H, 3
+wk}).
+
+\item[GBT commissioning assistance] Continued part-time assistance of
+GBT commissioning; total time listed here. Includes work on tipper
+scripts. ({\bf JB, H, 4 wk}).
+
+\item[Improve velocity/frequency conversions] Unify velocity and
+frequency conversions in the plotter and in dish. ({\bf JB, H, 2
+wk}).
+
+\item[Consistent use of flags, weights in dish] ({\bf JB, H, 2 wk}).
+
+\item[Replace sdimager] ({\bf JM, M, 1 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Synthesis}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[Scientific completeness] Significant synthesis capabilities
+exist within the package at present, but they need to be more widely
+used in the scientific community. This problem can be addressed
+through improved vertical integration of synthesis applications, and
+in the addition of scientific completeness beyond the current
+thin-path capabilities. In this area, the full completion of
+connected-element capabilities takes priority over VLBI.
+
+\item[Time-critical local priorities] It is important that the project
+meet time-critical targets required for successful AIPS++ use at
+consortia sites, particularly where the use of AIPS++ is closely
+integrated into the critical path required for instrument use or
+operation.
+
+\item[Basic automated imaging] The synthesis infrastructure is
+sufficiently developed to allow the implementation of basic automated
+imaging capabilities, applicable to both off-line and real-time
+imaging. It is appropriate during this development cycle to continue
+initial work in this area in the main package, and to coordinate
+similar developments at other consortium sites to maximize component
+re-use in pipeline development.
+
+\item[Automated testing] Expanding the automated testing of synthesis
+capabilities using simulated data is a priority during this cycle,
+both at the C++ and Glish level. This has benefits in speeding up
+release testing, and in daily and weekly checks of system integrity
+for end-users.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[MS v2 filler migration] Migrate all existing fillers to MS
+v2. These include: i) VLA filler ({\bf RM, H, 2 wk}); ii) BIMA filler
+({\bf PT, H, 4 wk}); iii) WSRT filler ({\bf WSRT staff}); iv) ms2scn,
+ms2iwos ({\bf GvD, H, 1 wk}).
+
+\item[MS v2 FITS definition] Complete definition of MS v2 as an
+external FITS binary table format. ({\bf AK, M, 2 wk}).
+
+\item[MERLIN filler] Implement initial MERLIN filler using existing
+filler infrastructure in AIPS++. Includes familiarization with the
+AIPS++ library. ({\bf BM, H, 4 wk}).
+
+\item[Additional VLA filler features] Add: (i) shadowing; (ii) Tsys
+and weighting; (iii) complete output filtering; (iv) new weights
+scheme currently adopted by FILLM. ({\bf RM, H, 4 wk}).
+
+\item[MS concatenation] Complete existing work on MS
+concatenation and averaging. ({\bf RM, H, 4 wk}).
+
+\item[MS data volume control] Implement initial solution to the MS data volume
+problem caused by the MODEL\_DATA, CORRECTED\_DATA and IMAGING\_WEIGHT
+scratch columns. ({\bf AK, H, 1 wk}).
+
+\item[MS access classes] Refine MS access classes for new filler and
+calibration developments. ({\bf AK, H, 1 wk}).
+
+\item[Automated editing] Complete initial automated editing
+algorithms, including spectral rejection. ({\bf DK, H, 3 wk}).
+
+\item[New fitting classes in calibration solvers] Replace existing
+Newton solvers in calibrater with the new fitting classes now
+available in the system. ({\bf AK, H, 1 wk, WB, H, 0.5 wk}).
+
+\item[Investigate coupled solver for ATCA] Investigate a coupled
+solver for ATCA data. Includes a comparison with MIRIAD. ({\bf WB, H, 2 wk}).
+
+\item[Calibration table smoothing and re-gridding] Implement an
+initial calibration table smoothing and re-gridding tool. ({\bf HR, H,
+4 wk, DM, H, 1wk}).
+
+\item[Ephemeris-based planet flux density calibration] Enable flux
+density calibration based on planet observations, as currently done in
+Miriad. ({\bf RP, M, 4wk}).
+
+\item[Holography support in imager] Complete general holography support
+in imager, excluding near-field corrections. ({\bf JB, H, 4 wk}).
+
+\item[Imager testing with MS v2] Test all imager capabilities with MS
+v2 and implement any necessary changes. ({\bf AK, H, 3 wk}).
+
+\item[Optimal-sized FFT's for mosaicing] Complete the implementation
+of optimal-sized FFT's for mosaiced imaging. ({\bf MH, H, 2 wk}).
+
+\item[Simulator error models] Expand the analytic error models in the
+simulator for use in correctness testing. Also, complete initial
+support of pointing errors({\bf MH, H, 3 wk}).
+
+\item[Coarse component search] Perform a coarse search for component
+positions in an image. ({\bf WB, H, 2 wk}).
+
+\item[uv-component fitter] Initial component fitter in the
+uv-plane. ({\bf WB, H, 2 wk}).
+
+\item[Automated imaging prototype] Complete the vertical integration of
+synthesis capabilities in map.g, and provide an initial automated
+imaging utility, automap.g. ({\bf AK, H, 2 wk}).
+
+\item[Pipeline scientific requirements] Complete the scientific
+requirements document for common pipeline architectures. ({\bf AK, H, 1 wk}).
+
+\item[New Getting Results chapters] Add new Getting Results chapters
+for synthesis reduction for specific instruments, including VLA, WSRT,
+BIMA and ATNF. ({\bf AK, H, 1 wk, TO, H, 1 wk, MW/FB, H, 1 wk}).
+
+\item[Synthesis tests] Complete initial test scripts for all
+consortium connected-element instruments (WSRT, BIMA, VLA, ATNF).
+({\bf TO/JN, H, 2 wk, DM, H, 2 wk, AK, H, 2 wk, FB/MW, H, 2 wk}).
+
+\item[Errors in componentlist tables] Add support for simple errors
+(one per existing parameter) in componentlist tables. ({\bf RM, H, 1
+wk}).
+
+\item[Ionosphere support in calibrater] Complete FJones support in
+calibrater, including: i) PIM/GPS/ionosphere note; ii) GPS sub-table
+access classes; iii) finalize Ionosphere and FVisJones classes; iv)
+Test PIM-based corrections with WSRT data; v) explore secondary PIM
+corrections. ({\bf OS, H, 12 wk}).
+
+\item[imager tests against simulated data] Add imager tests against
+simulated data for all imaging modes to imagertest, and assay. ({\bf
+MH, H, 3 wk}).
+
+\item[Unify ImageSkyModel (algorithm/context)] Unify deconvolution and
+imaging context in ImageSkyModel classes. ({\bf MH, H, 4 wk}).
+
+\item[MSLister integration] Complete MSLister integration; includes
+familiarization with related AIPS++ classes. ({\bf GM, H, 4 wk}).
+
+\item[Calibrater infrastructure development] Continue enhancement of
+calibrater infrastructure in the areas of interpolation and
+parameterization. ({\bf GM, H, 4 wk}).
+
+\item[VLBI FITS-IDI filler] Complete initial FITS IDI filler using
+existing filler classes. ({\bf BM, H, 8 wk}).
+
+\item[Improve mosaicing interface and functionality] Initial work on a
+high-level mosaicing interface, and related utilities. ({\bf MH, M, 2
+wk}).
+
+\item[Initial fringe-fitter] Complete initial single-band, coherent
+fringe fitter. ({\bf AK, M, 4 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Applications integration}}
+
+This includes development aimed at improving the overall integration
+of applications in AIPS++ in a common framework, using common
+interfaces and services.
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Use guientry.g in regionmanager.g] Modify the regionmanager
+custom GUI to use the services provided by guientry.g. ({\bf NK, H, 1
+wk}).
+
+\item[Add WSRT Glish components] Add profiler, tracelogger, inspect
+and glishhelp Glish components to the main package. Adjust to conform
+with integration guidelines. ({\bf JN, H, 3wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Build and code distribution system}}
+
+This covers all system work, excluding maintenance and support of the
+basic library.
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[Stability] A fundamental requirement in this cycle is the
+continued provision of a stable build to maximize application
+development and testing efficiency. The project is now operational and
+build failures have a significant impact on applications development
+efficiency and the ease of user support.
+
+\item[End-user release support] With the project in an operational
+phase, the provision of end-user installation and release update
+support is a high priority. This includes a mechanism for assembling
+release patches automatically.
+
+\item[Initial developer support] An initial group of external
+developers is starting to use the system for exploratory
+development. This group can be supported in the most cost-effective
+manner by starting to provide formal support for external development
+on very restricted platforms in advance of the full developer's
+release, which is planned for 2001.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Finish changelog implementation] Complete the implementation of
+the current changelog system. ({\bf GvD, H, 1 wk}).
+
+\item[Prepare initial developer's release] Document the makedefs, and
+provide an installation FAQ for an initial developer's release,
+targeted at RedHat and SuSe Linux systems of restricted version
+numbers. Test the resulting CDs. ({\bf GvD, H, 2 wk}).
+
+\item[Automated patch generation] Complete a utility to automate patch
+generation by tracking library dependencies. ({\bf DS, H, 2 wk}).
+
+\item[Implement global data proposal] Implement the existing global
+data proposal using CVSup. ({\bf DS, H, 2 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Glish}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description} 
+
+\item[Consolidation] The work on Glish is in a stage of
+consolidation. In general, Glish's capabilities are sufficient both
+for developers to implement higher-level applications and for users to
+explore their data. The language is also at about the right level; it
+is capable enough for complex scripts, while still being approachable
+by general users. The focus for this cycle will be correcting
+long-standing defects, particularly in the area of memory leaks and
+Glish/Tk performance, and in modest new development in Glish.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Resolve reference cycle problems] This target involves
+understanding the specifics of how reference count cycles are
+introduced in Glish, and in devising a general solution to this
+question which avoids the memory and performance penalties of garbage
+collection. Reference count cycles are believed to be responsible for
+many memory leaks currently found in Glish scripts. ({\bf DS, H, 4 wk})
+
+\item[Bind first Tix mega-widgets] This target involves the manual
+binding of the tab and combo-box Tix mega-widgets to Glish/Tk. These
+are immediately useful in the end-user interface. A longer-term
+solution will require an automated method of making mega-widgets
+available via Glish/Tk, but this work is not included in this
+target. ({\bf DS, H, 2 wk}).
+
+\item[Understand speed of TCL/Tk and Glish/Tk] There is currently a
+perceived performance problem in Glish/Tk, which is especially
+pronounced when drawing large GUIs. The specific origin is
+unknown. This target involves determining the specific cause by direct
+comparison with TCL/Tk, including investigating what fraction of the
+speed differential is caused by byte-compiling. If simple remedies are
+apparent short of multi-threading, this target includes their
+implementation. ({\bf DS, H, 2 wk})
+
+\item[Defect backlog] A variety of Glish defects remain which are
+typically long-standing problems which have been neglected due to the
+work involved in fixing them. They need attention during this
+development cycle. Included in this list is an investigation of the
+memory leaks which affect the GBT weather GUI. ({\bf DS, H, 4 wk}).
+
+\item[Local eval()] The current eval() function in Glish operates only
+in {\it global} scope. This target covers the implementation of a
+version operating in {\it local} scope. ({\bf DS, M, 2 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{User interface and tasking}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[Consolidation and evaluation] Views on user interfaces are
+inherently subjective; a wider pool of scientific users needs to use
+and comment on the current automated GUI system, as implemented in
+toolmanager, before undertaking a second revision of the user
+interface. This feedback needs to be actively sought, and reviewed
+during this cycle. This factor, combined with the limited available
+resources for toolmanager development, argues for consolidation only
+during this development cycle.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Enhancement of group meta-information] Allow function membership
+in multiple groups; list functions in toolmanager alphabetically
+within each group; list reserved standard function names in a
+pre-defined initial group. ({\bf TC, H, 0.5 wk}).
+
+\item[Tool listing by type] Allow selection by type in the listing of
+current tools in toolmanager. ({\bf TC, H, 0.5 wk}).
+
+\item[Constructor in guientry wrench menu] Add a standard constructor
+option in the guientry wrench menu. ({\bf TC, H, 1 wk}).
+
+\item[Single tool per module shortcut] Automatically select a tool in
+the toolmanager initial interface if it is the only tool in the
+module, and has no global functions. ({\bf TC, H, 0.5 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Basic library}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[Consolidation] The basic library, which covers all fundamental
+infrastructure, is mostly complete. Development in this cycle has been
+scheduled in the area of library maintenance, and in the provision of
+limited new capabilities required for application development.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Complete new standard storage manager] Complete the new
+StandardStMan, which will be the default storage manager. ({\bf GvD -
+H, 1 wk}).
+
+\item[Increase robustness of Tables] This target involves continued
+work in assessing the robustness of the Table system as currently
+deployed by the TMS on the WSRT telescope, in tracking down any
+problems, and in fixing them. ({\bf GvD, H, 3 wk}).
+
+\item[Deep copy and actualDesc()] Provide additional information on
+the storage manager in use and the actual table description; allow
+deep copy of tables. ({\bf GvD, H, 1 wk}).
+
+\item[Remove end\_try and Exception.h] Final clean-up of exception
+handling to meet current standard of using native exceptions
+everywhere. {\bf GvD, H, 1 wk}).
+
+\item[Time comparison function in TaQL] Add a time comparison function
+to TaQL, to specifications provided by synthesis. {\bf GvD, H, 1 wk}).
+
+\item[Code-copping and test functions for Fitting] Complete
+code-copping of the Fitting classes, and add all examples to
+tests. {\bf WB, H, 2 wk, NK, H, 0.5 wk}).
+
+\item[Fitting interface constraint setting] Allow interface constraint
+setting (manually) to AIPS++ classes. ({\bf WB, H, 0.5 wk}).
+
+\item[Finalize Measures algorithm split-off] To ensure accuracy of
+inverse non-linear coordinate conversions. ({\bf WB, H, 1 wk}).
+
+\item[Measures C++ programming guide] Compile a short AIPS++ note on
+use of Measures by C++ programmers. ({\bf WB, M, 1 wk}).
+
+\item[Measures chapter for Getting Results] Chapter in Getting Results
+describing end-user Glish use of Measures. ({\bf RP, M, 2 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Images}}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Coordsys editor] Add a GUI capability to make and edit a
+coordinate system. ({\bf NK, H, 3 wk}).
+
+\item[Improve Lattice mask handling] Current interface is
+confusing and error-prone. ({\bf NK, H, 2 wk, GvD, H, 1 wk}).
+
+\item[OTF LEL mask] Allow a LEL expression to be applied on-the-fly as
+a mask. ({\bf NK, H, 0.5 wk, GvD, H, 0.5 wk}).
+
+\item[Improved image convolution] Add non-separable convolution in
+(x,y)(z) by a Gaussian function. ({\bf NK, H, 1 wk}).
+
+\item[Improved component convolution and deconvolution] Handle
+convolution and deconvolution by the primary beam; better integration
+on this point with fitsky. ({\bf NK, H, 0.5 wk, RM, H, 0.5 wk}).
+
+\item[Clean-up of fitsky] Clean-up the fitsky code; includes
+preliminary determination of steps to add 3-D fitting
+capability. ({\bf NK, H, 1 wk}).
+
+\item[Prepare LatticeStatistics and LatticeHistogram for review]
+Prepare these classes for code review. ({\bf NK, M, 1 wk}).
+
+\item[Vector DisplayData] Implement an initial display data class for
+plotting vectors. ({\bf NK, M, 2 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\section{\underbar{Visualization}}
+
+This includes work in the Display Library (DL), and in applications
+using this library.
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[DL development transition] David Barnes will be leaving AIPS++
+during this development cycle, and securing a smooth transition in
+development in this area is a high priority. This includes training
+other developers in the DL, and in distributing design knowledge of
+the library more broadly.
+
+\item[Provision of uv-visualization services] The DL has provided
+excellent support of image visualization, and continuation of the
+effort to expand this capability to uv-data visualization is a high
+priority.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Initial DL programmer documentation] Provision of an AIPS++ note
+describing the high-level collaboration of the DL classes, the
+expected and supported services, and the implementation of the
+DL/GlishTk binding. ({\bf DB, H, 1 wk}).
+
+\item[Multiple GlishTk use] Use multiple GlishTk servers to enhance
+speed. ({\bf DB, H, 1 wk}).
+
+\item[Multi-WCH support] Add support for multi-WCH to allow
+multi-panel displays. ({\bf DB, H, 2 wk}).
+
+\item[Add coordinate system to WC] Add coordinate system support to
+the world canvas. ({\bf DB, H, 1 wk.}).
+
+\item[Support DL programmer training] Provide assistance for new DL
+programmers; visits, e-mail and teleconferences. ({\bf DB, H, 2 wk}).
+
+\item[Improvements in animation and blinking] Support multi-WCH and
+coordinate systems on the WC in animation and blinking. ({\bf DB, M,
+2 wk}).
+
+\item[Review current uv-visualization requirements] Review and revise
+the current uv-visualization requirements document. ({\bf TM, H, 1
+wk}).
+
+\item[Complete uv-data TB raster display data] Complete
+familiarization with the DL; implement first uv-data time-baseline
+raster display data. ({\bf TM, H, 8 wk}).
+
+\item[Initial interactive editor using TB display data] Complete the
+first TVFLG-like interactive editor using the TB display data. ({\bf
+TM, H, 3 wk}).
+
+\item[DL infrastructure familiarization] Become familiar with the DL
+infrastructure. ({\bf DK, H, 8 wk.}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+
+\section{\underbar{Parallelization and high-performance computing}}
+
+\subsection{\underbar{Priorities}}
+
+\begin{description}
+
+\item[Scientific application] The parallelization effort needs
+to demonstrate a scientifically useful capability to address the most
+challenging problems in radio astronomy where supercomputer resources
+are required. These include wide-field imaging problems at low
+observing frequencies, mosaicing and the largest VLBI observations,
+amongst others. In addition, this also includes new algorithms which
+have not been widely used to date due to limited computing resources.
+
+\item[Parallelization infrastructure] A central goal of the
+parallelization effort is to ensure that infrastructure is developed
+within the AIPS++ system as a whole to support parallel and
+distributed computing without expensive ad hoc modifications. This
+requires that the parallelization infrastructure be compatible with
+the overall project design, and also that the mainstream project
+development consider parallelization when implementing algorithms. It
+is also imperative that the parallelization capabilities be presented
+using the same user interface as the conventional package.
+
+\item[High-performance computing in AIPS++] The parallelization
+effort has a strong vested interest in the serial performance of
+AIPS++ for problems of the largest size, which are defined to be those
+with exceptional I/O, memory or CPU requirements. It is considered the
+responsibility of this group to profile the serial performance in
+these specialized cases, make any changes required to support these
+large problem sizes, and optimize overall serial performance in these
+cases.
+
+\end{description}
+
+\subsection{\underbar{Targets}}
+
+\begin{description}
+
+\item[Cluster Linux and IRIX build maintenance] Maintenance of the
+existing NCSA/NRAO builds under IRIX and on the AHPCC Linux
+cluster. ({\bf WY, H, 3 wk, DM, H, 3 wk}).
+
+\item[Key project processing] Processing of five key projects
+(including at least one each of mosaiced, wide-field or large spectral
+line). Candidates include the existing M33 dataset (Westpfahl), TXCam
+(Kemball), and a selection of low-frequency VLA projects in
+A-configuration. Generation of user liaison documentation and user
+support at NCSA. ({\bf RP, H, 4 wk, DM, M, 2 wk, AK, H, 2 wk}).
+
+\item[Complete multi-field parallelization] Complete implementation of
+a prototype parallelization for mosaiced or wide-field
+imaging. Candidates include field- or facet-based gridding, model
+prediction or residual image computation. ({\bf KG, H, 4 wk}).
+
+\item[dragon revisions for automated wide-field imaging] Refine dragon
+for full wide-field or deep field reduction. ({\bf KG, H, 4 wk}).
+
+\item[Parallelization of other deconvolution methods] Extend the Clark
+CLEAN parallelization to other deconvolution algorithms. ({\bf KG, H,
+2 wk}).
+
+\item[Initial parallel I/O implementation] Implementation of
+multi-process I/O on the same file, multi-iterator access in a single
+process, and ROMIO asynchronous I/O using MPI-2. Evaluation of
+performance in these cases. ({\bf WY, H, 5 wk}).
+
+\item[Complete NT port of libaips and libtrial] Continue and complete
+the NT port as described; run a parallel application on the NCSA NT
+supercluster. ({\bf WY, H, 5 wk}).
+
+\item[Modify test suite for large problem size] Modify the current
+bigimagertest to use simulated data. ({\bf DM, H, 1 wk}).
+
+\item[Serial profiling] Continue to document serial profiling of
+mosaicing, wide-field and spectral line performance for large problem
+sizes. Identify and eliminate gross serial optimizations.  ({\bf WY,
+H, 2 wk}).
+
+\end{description}
+
+%%----------------------------------------------------------------------
+
+\end{document}
