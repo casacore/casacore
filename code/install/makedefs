@@ -2,7 +2,7 @@
 # makedefs: Default values of variables required by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2000,2001,2002,2003
+#   Copyright (C) 1992-2004
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -783,8 +783,12 @@ ifeq "$(MAKEMODE)" "programmer"
 endif
 
 
-# Note that XTRNDEFS is defined in terms of XLIBSEL.
-CPPSTD += $(XTRNDEFS) $(CPPMODU)
+# Note that XTRNDEFS is defined in terms of XLIBSEL and that we require that
+# it be recursively expanded so that XLIBLIST can be defined after makedefs.
+CPPDBGS := $(CPPDBG)
+CPPOPTS := $(CPPOPT)
+CPPDBG   = $(CPPDBGS) $(XTRNDEFS) $(CPPMODU)
+CPPOPT   = $(CPPOPTS) $(XTRNDEFS) $(CPPMODU)
 
 # Add support for Rational tools.
 ifdef PURE
@@ -916,9 +920,9 @@ export CODESUBS
 export PGMRSUBS
 
 # These are for 'depend'.
-export CPP      := $(CPP)
-export CPPOPT   := $(CPPOPT)
-export AIPSINCL := $(AIPSINCL)
+export CPP       := $(CPP)
+export CPPOPTx   := $(CPPOPT)
+export AIPSINCLx := $(AIPSINCL)
 
 # These are for 'updatelib'.
 export AR       := $(AR)
