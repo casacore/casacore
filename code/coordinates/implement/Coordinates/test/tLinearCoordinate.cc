@@ -78,6 +78,42 @@ int main()
          }
      } 
 
+// Test Quantum constructor interface
+  
+     {
+        Matrix<Double> xform(2,2);
+        xform = 0.0;
+        xform.diagonal() = 1.0;
+//       
+        Vector<Double> crval(2);
+        Vector<Double> crpix(2);
+        Vector<Double> cdelt(2);
+        Vector<String> names(2);
+        Vector<String> units(2);
+//
+        crval(0) = 0.1; crval(1) = 0.5;
+        crpix(0) = 100.0; crpix(1) = 120.0;
+        cdelt(0) = 100.0; cdelt(1) = 1.0;
+        units(0) = "m";
+        units(1) = "m";
+//
+        LinearCoordinate lc1(names, units, crval, cdelt, xform, crpix);
+//
+        Vector<Quantum<Double> > crval2(2);
+        Vector<Quantum<Double> > cdelt2(2);
+        crval2(0) = Quantum<Double>(crval(0), units(0));
+        crval2(1) = Quantum<Double>(crval(1), units(1));
+        cdelt2(0) = Quantum<Double>(100*cdelt(0), "cm");
+        cdelt2(1) = Quantum<Double>(100*cdelt(1), "cm");
+//
+        LinearCoordinate lc2(names, crval2, cdelt2, xform, crpix);
+//
+        if (!lc1.near(&lc2)) {
+           throw(AipsError(String("Quantum interface constructor failed consistency test")));
+        }
+      }
+
+
 // Test copy constructor
 
      {
