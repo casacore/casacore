@@ -1,0 +1,42 @@
+>>>
+/home/rzmws0/gvd/aips++/sun4sol_gnu/bin/tLELMedian: Version  
+<<<
+127
+127
+127
+127
+127
+130
+12799
+12799
+12799
+12799
+12799
+12802
+131071
+131071
+131071
+131074
+>>>
+Last value = 25099.6
+12599.6
+normal median        0.3 real        0.24 user        0.06 system
+12599.6
+ArrayLattice        1.03 real        1.02 user           0 system
+12599.6
+ArrayLat 1280       1.05 real        1.03 user        0.01 system
+12601.6
+MaskedLattice       2.73 real        2.14 user        0.55 system
+12599.6
+PagedArray          1.04 real        1.02 user        0.01 system
+12599.6
+PagedArr 4          1.29 real        1.29 user           0 system
+12599.6
+PagedArr 1280       1.03 real        1.03 user           0 system
+tileshape = [200, 160]
+Fill PagedArr      41.01 real         6.4 user        7.56 system
+159.981
+BigPagedArray       80.6 real       19.94 user        7.58 system
+159.981
+PagedArr 1280     155.36 real       26.27 user       21.22 system
+<<<
