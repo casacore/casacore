@@ -1,5 +1,5 @@
 //# NQWrapperParam.h: Parameter handling for wrapped function objects 
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@
 //
 // <synopsis>
 // This class is provided to enable easy specialization for the actual
-// <src>FunctionWrapper</src> class.
+// <src>NQFunctionWrapper</src> class.
 // </synopsis>
 
 // <example>
