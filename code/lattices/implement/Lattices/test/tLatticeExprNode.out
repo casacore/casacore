@@ -207,17 +207,36 @@ max
   Complex Scalar
   Float Array
   Complex Array
+sign
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+round
+  Float Scalar
+  Float Array
 mean
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
+variance
+  Float Array
+stddev
+  Float Array
+avdev
+  Float Array
 sum
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
 nelements
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
+ndim
   Float Scalar
   Complex Scalar
   Float Array
@@ -534,17 +553,36 @@ max
   Complex Scalar
   Float Array
   Complex Array
+sign
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+round
+  Float Scalar
+  Float Array
 mean
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
+variance
+  Float Array
+stddev
+  Float Array
+avdev
+  Float Array
 sum
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
 nelements
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
+ndim
   Float Scalar
   Complex Scalar
   Float Array
@@ -861,17 +899,36 @@ max
   Complex Scalar
   Float Array
   Complex Array
+sign
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+round
+  Float Scalar
+  Float Array
 mean
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
+variance
+  Float Array
+stddev
+  Float Array
+avdev
+  Float Array
 sum
   Float Scalar
   Complex Scalar
   Float Array
   Complex Array
 nelements
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
+ndim
   Float Scalar
   Complex Scalar
   Float Array
