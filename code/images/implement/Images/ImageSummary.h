@@ -32,6 +32,7 @@
 #endif
 
 #include <aips/aips.h>
+
 template <class T> class ImageInterface;
 template <class T> class Vector;
 class IPosition;
@@ -116,10 +117,14 @@ public:
 // Retrieve reference pixels
    Vector<Double> referencePixels () const;
 
-// Retrieve reference values
+// Retrieve reference values.  These are returned without
+// conversion to some other units.  E.g., angles are returned
+// in radians.
    Vector<Double> referenceValues() const;
 
-// Retrieve axis increments
+// Retrieve axis increments. These are returned without
+// conversion to some other units.  E.g., angles are returned
+// in radians.
    Vector<Double> axisIncrements () const;
 
 // Retrieve axis units
@@ -134,8 +139,13 @@ public:
 // Retrieve whether image has mask or not
    Bool hasAMask () const;
 
-// List all header information.
-   void list (LogIO& os) const;
+// List all header information.  By default, the reference
+// values and pixel increments are converted to a "nice"
+// unit before formatting (e.g. RA is shown as HH:MM:SS.S).
+// If <src>nativeFormat</src> is <src>True</src> then
+// the values are formatted in their native format (e.g.
+// RA would be listed in exponential format in radians).
+   void list (LogIO& os, Bool nativeFormat=False);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
@@ -144,55 +154,48 @@ public:
 private:
    const ImageInterface<T>* pImage;
 
+// These are format controllers used by the list() function.
+// I should probably write these as a little format class
+// but I can't be bothered !
+
+   uInt widthName_p;
+   uInt widthProj_p;
+   uInt widthNPix_p;
+   uInt widthTile_p;
+   uInt widthRefValue_p;
+   uInt widthAxUnits_p;
+   Int precRefValueSci_p;
+   Int precRefValueFixed_p;
+   uInt widthRefPixel_p;
+   Int precRefPixel_p;
+   uInt widthInc_p;
+   Int precInc_p;
+
 // List DirectionCoordinate axis descriptors
    void listDirection (LogIO& os, 
                        const DirectionCoordinate& coord,
-                       const uInt& widthName,
-                       const uInt& widthProj,
-                       const uInt& widthNPix,
-                       const uInt& widthTile,
-                       const uInt& widthRefValue,
-                       const uInt& widthRefPixel,
-                       const uInt& widthInc,
                        const uInt& worldAxis, 
-                       const Int& axisInCoordinate) const;
+                       const Int& axisInCoordinate,
+                       const Bool& nativeFormat) const;
 
 // List SpectralCoordinate axis descriptors
    void listSpectral  (LogIO& os, 
                        const SpectralCoordinate& coord,
-                       const uInt& widthName,
-                       const uInt& widthProj,
-                       const uInt& widthNPix,
-                       const uInt& widthTile,
-                       const uInt& widthRefValue,
-                       const uInt& widthRefPixel,
-                       const uInt& widthInc,
                        const uInt& worldAxis, 
                        const Int& axisInCoordinate) const;
 
 // List LinearCoordinate axis descriptors
    void listLinear    (LogIO& os, 
                        const LinearCoordinate& coord,
-                       const uInt& widthName,
-                       const uInt& widthProj,
-                       const uInt& widthNPix,
-                       const uInt& widthTile,
-                       const uInt& widthRefValue,
-                       const uInt& widthRefPixel,
-                       const uInt& widthInc,
                        const uInt& worldAxis, 
                        const Int& axisInCoordinate) const;
 
 // List StokesCoordinate axis descriptors
    void listStokes    (LogIO& os, 
                        const StokesCoordinate& coord,
-                       const uInt& widthName,
-                       const uInt& widthProj,
-                       const uInt& widthNPix,
-                       const uInt& widthTile,
-                       const uInt& widthRefValue,
                        const uInt& worldAxis, 
-                       const Int& axisInCoordinate) const;
+                       const Int& axisInCoordinate,
+                       const Bool& nativeFormat) const;
 
 // Clear formatting flags
    void clearFlags (LogIO& os) const;
