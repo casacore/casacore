@@ -309,7 +309,8 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set the value of the requested attribute.
+    // Set the value of the requested attribute.  Note that these just
+    // change the internal values, they do not cause any recomputation.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
     virtual Bool setReferencePixel(const Vector<Double> &refPix);
