@@ -170,12 +170,6 @@ public:
   // Get value of integer days
   Double getDay() const;
   
-  // Get value of whole seconds in day
-  Double getSecond() const;
-  
-  // Get value of fractional seconds
-  Double getFraction() const;
-  
   // Get fraction of days
   Double getDayFraction() const;
 
@@ -187,12 +181,12 @@ public:
   
 private:
   //# Data members
-  // Fraction of seconds
-  Double secFract;
-  // Seconds
-  Long sec;
-  // 10000 days
-  Long kDday;
+  // Whole days
+  // Note that if higher precision is needed, the splitting could be in
+  // 0.001 days and fractions thereof
+  Double wday;
+  // Fraction of days
+  Double frday;
   
   //# Member functions
   // Make days from quantity

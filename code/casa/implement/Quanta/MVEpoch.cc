@@ -44,37 +44,36 @@ typedef Quantum<Double> gpp_mvepoch_bug1;
 const Double MVEpoch::secInDay(3600*24);
 
 //# Constructors
-MVEpoch::MVEpoch() : 
-  secFract(0), sec(0), kDday(0) {}
+MVEpoch::MVEpoch() :
+  wday(0), frday(0) {}
 
 MVEpoch::MVEpoch(const MVEpoch &other) {
-  secFract = other.secFract;
-  sec = other.sec;
-  kDday = other.kDday;
+  wday = other.wday;
+  frday = other.frday;
   adjust();
 }
 
 MVEpoch::MVEpoch(Double inday, Double infrac) :
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     addTime(inday);
     addTime(infrac);
     adjust();
   }
 
 MVEpoch::MVEpoch(const Quantity &in) : 
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     addTime(makeDay(in));
   }
 
 MVEpoch::MVEpoch(const Quantity &in1, const Quantity &in2) : 
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     addTime(makeDay(in1));
     addTime(makeDay(in2));
     adjust();
   }
 
 MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) : 
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     for (Int i=0; i<in.getValue().nelements(); i++) {
       addTime(makeDay(Quantity((in.getValue())(i),in.getUnit())));
     }
@@ -82,7 +81,7 @@ MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) :
   }
 
 MVEpoch::MVEpoch(const Vector<Double> &inday) :
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     for (Int i=0; i<inday.nelements(); i++) {
       addTime(inday(i));
     }
@@ -90,7 +89,7 @@ MVEpoch::MVEpoch(const Vector<Double> &inday) :
   }
 
 MVEpoch::MVEpoch(const Vector<Quantity> &in) :
-  secFract(0), sec(0), kDday(0) {
+  wday(0), frday(0) {
     for (Int i=0; i<in.nelements(); i++) {
       addTime(makeDay(in(i)));
     }
@@ -103,17 +102,15 @@ MVEpoch::~MVEpoch() {}
 //# Operators
 MVEpoch &MVEpoch::operator=(const MVEpoch &other) {
   if (this != &other) {
-    secFract = other.secFract;
-    sec = other.sec;
-    kDday = other.kDday;
+    wday = other.wday;
+    frday = other.frday;
   }
   return *this;
 }
 
 MVEpoch &MVEpoch::operator+=(const MVEpoch &other) {
-  secFract += other.secFract;
-  sec += other.sec;
-  kDday += other.kDday;
+  frday += other.frday;
+  wday += other.wday;
   adjust();
   return *this;
 }
@@ -125,9 +122,8 @@ MVEpoch MVEpoch::operator+(const MVEpoch &other) const {
 }
 
 MVEpoch &MVEpoch::operator-=(const MVEpoch &other) {
-  secFract -= other.secFract;
-  sec -= other.sec;
-  kDday -= other.kDday;
+  frday -= other.frday;
+  wday -= other.wday;
   adjust();
   return *this;
 }
@@ -139,9 +135,8 @@ MVEpoch MVEpoch::operator-(const MVEpoch &other) const {
 }
 
 Bool MVEpoch::operator==(const MVEpoch &other) const {
-  return ToBool(kDday == other.kDday &&
-		sec == other.sec &&
-		secFract == other.secFract);
+  return ToBool(wday == other.wday &&
+		frday == other.frday);
 }
 
 Bool MVEpoch::operator!=(const MVEpoch &other) const {
@@ -169,19 +164,11 @@ void MVEpoch::assert(const MeasValue &in) {
 }
 
 void MVEpoch::adjust() {
-  while (secFract < 0) {
-    secFract += 1; sec -= 1;
+  while (frday < 0) {
+    frday += 1; wday -= 1;
   }
-  while (secFract >= 1) {
-    secFract -= 1; sec += 1;
-  }
-  while (sec < 0) {
-    sec += Long(MVEpoch::secInDay * 10000); 
-    kDday -= 1;
-  }
-  while (sec >= MVEpoch::secInDay * 10000) {
-    sec -= Long(MVEpoch::secInDay * 10000); 
-    kDday += 1;
+  while (frday >= 1) {
+    frday -= 1; wday += 1;
   }
 }
 
@@ -191,7 +178,7 @@ void MVEpoch::adjust(Double &res) {
 }
 
 Double MVEpoch::get() const {
-  return ((secFract + sec)/MVEpoch::secInDay + kDday * 10000);
+  return (wday + frday);
 }
 
 Quantity MVEpoch::getTime() const {
@@ -203,25 +190,17 @@ Quantity MVEpoch::getTime(const Unit &unit) const {
 }
 
 Double MVEpoch::getDay() const {
-  return (kDday * 10000 + ifloor(sec/MVEpoch::secInDay));
-}
-
-Double MVEpoch::getSecond() const {
-  return (fmod(Double(sec),MVEpoch::secInDay));
-}
-
-Double MVEpoch::getFraction() const {
-  return (secFract);
+  return wday;
 }
 
 Double MVEpoch::getDayFraction() const {
-  return (getSecond() + getFraction())/MVEpoch::secInDay;
+  return frday;
 }
 
 void MVEpoch::print(ostream &os) const {
-  Int h = ifloor(getSecond()/3600.);
-  Int m = ifloor(getSecond()/60. - h*60.);
-  Double s = getSecond() - m*60. - h*3600.;
+  Int h = ifloor(24.*frday);
+  Int m = ifloor(60.*(24.*frday - h));
+  Double s = MVEpoch::secInDay*frday - m*60. - h*3600.;
   Int prec = os.precision();
   Char fill = os.fill();
   os << getDay() << "::";
@@ -229,7 +208,7 @@ void MVEpoch::print(ostream &os) const {
     setw(2) << m << ':' << 
     setprecision(max(prec-2,2));
   Long oldb = os.setf(ios::fixed,ios::floatfield);
-  os << setw(os.precision()+3) << s+getFraction() <<
+  os << setw(os.precision()+3) << s <<
     setprecision(prec);
   os.setf(oldb,ios::floatfield);
 }
@@ -244,10 +223,7 @@ Double MVEpoch::makeDay(const Quantity &in) const {
 }
 
 void MVEpoch::addTime(Double in) {
-  Long inday = ifloor(in/10000.);
-  Double s = (in - inday*10000.) * MVEpoch::secInDay;
-  Long insec = ifloor(s);
-  kDday += inday;
-  sec += insec;
-  secFract += (s - insec);
+  Double t = floor(in);
+  wday += t;
+  frday += (in-t);
 }
