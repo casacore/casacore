@@ -101,7 +101,6 @@ public:
   // The values must come from the FITS header ('bscale', 'bzero', 'blank')
   FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
             Short magic, Bool hasBlanks);
-  // </group>
   
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
   // is just copied.
