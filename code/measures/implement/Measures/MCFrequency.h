@@ -1,5 +1,5 @@
 //# MCFrequency.h: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCFREQUENCY_H)
 #define AIPS_MCFREQUENCY_H
 
-#if defined(_AIX)
-#pragma implementation ("MCFrequency.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -50,9 +46,7 @@ class Aberration;
 
 //# Typedefs
 
-// <summary>
-// MFrequency conversion routines
-// </summary>
+// <summary> MFrequency conversion routines </summary>
 
 // <use visibility=local>
 
@@ -141,6 +135,14 @@ private:
   MVDirection *MVDIR1;
   Aberration *ABERFROM;
   Aberration *ABERTO;
+
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
   
   //# Constructors
   // Copy constructor (not implemented)

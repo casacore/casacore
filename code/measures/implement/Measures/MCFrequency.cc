@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_mepoch_bug1;
-#endif
+///#ifdef __GNUG__
+///#include <aips/Quanta/Quantum.h>
+///typedef Quantum<Double> gpp_mFrequency_bug1;
+///#endif
 #include <aips/Mathematics/Constants.h>
-#include <aips/Quanta/QMath.h>
+///#include <aips/Quanta/QMath.h>
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/MVPosition.h>
@@ -39,9 +39,33 @@ typedef Quantum<Double> gpp_mepoch_bug1;
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCFrequency::stateMade_p = False;
+uInt MCFrequency::ToRef_p[N_Routes][3] = {
+  {MFrequency::LSR,	MFrequency::BARY,	0},
+  {MFrequency::BARY,	MFrequency::LSR,	0},
+  {MFrequency::BARY,	MFrequency::GEO,	0},
+  {MFrequency::GEO,	MFrequency::TOPO,	0},
+  {MFrequency::GEO,	MFrequency::BARY,	0},
+  {MFrequency::TOPO,	MFrequency::GEO,	0},
+  {MFrequency::LSR,	MFrequency::GALACTO,	0},
+  {MFrequency::GALACTO,	MFrequency::LSR,	0},
+  {MFrequency::LSRK,	MFrequency::BARY,	0},
+  {MFrequency::BARY,	MFrequency::LSRK,	0},
+  {MFrequency::REST,	MFrequency::LSR,	2},
+  {MFrequency::LSR,	MFrequency::REST,	2} };
+uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
+
+
 //# Constructors
 MCFrequency::MCFrequency() :
-  MVPOS1(0), MVDIR1(0), ABERTO(0), ABERFROM(0) {}
+  MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
+		      MFrequency::N_Types, MCFrequency::N_Routes,
+		      MCFrequency::ToRef_p);
+  };
+}
 
 //# Destructor
 MCFrequency::~MCFrequency() {
@@ -55,85 +79,16 @@ MCFrequency::~MCFrequency() {
 void MCFrequency::getConvert(MConvertBase &mc,
 			     const MRBase &inref, 
 			     const MRBase &outref) {
-// Array of conversion routines to call
-  static const MCFrequency::Routes 
-    FromTo[MFrequency::N_Types][MFrequency::N_Types] = {
-      { MCFrequency::N_Routes,
-	MCFrequency::REST_LSR,
-	MCFrequency::REST_LSR,
-	MCFrequency::REST_LSR,
-	MCFrequency::REST_LSR,
-	MCFrequency::REST_LSR,
-	MCFrequency::REST_LSR},
-      { MCFrequency::LSR_REST,
-	MCFrequency::N_Routes,
-	MCFrequency::LSR_BARY,
-	MCFrequency::LSR_BARY,
-	MCFrequency::LSR_BARY,
-	MCFrequency::LSR_BARY,
-	MCFrequency::LSR_GALACTO},
-      { MCFrequency::LSRK_BARY,
-	MCFrequency::LSRK_BARY,
-	MCFrequency::N_Routes,
-	MCFrequency::LSRK_BARY,
-	MCFrequency::LSRK_BARY,
-	MCFrequency::LSRK_BARY,
-	MCFrequency::LSRK_BARY},
-      { MCFrequency::BARY_LSR,
-	MCFrequency::BARY_LSR,
-	MCFrequency::BARY_LSRK,
-	MCFrequency::N_Routes,
-	MCFrequency::BARY_GEO,
-	MCFrequency::BARY_GEO,
-	MCFrequency::BARY_LSR},
-      { MCFrequency::GEO_BARY,
-	MCFrequency::GEO_BARY,
-	MCFrequency::GEO_BARY,
-	MCFrequency::GEO_BARY,
-	MCFrequency::N_Routes,
-	MCFrequency::GEO_TOPO,
-	MCFrequency::GEO_BARY},
-      { MCFrequency::TOPO_GEO,
-	MCFrequency::TOPO_GEO,
-	MCFrequency::TOPO_GEO,
-	MCFrequency::TOPO_GEO,
-	MCFrequency::TOPO_GEO,
-	MCFrequency::N_Routes,
-	MCFrequency::TOPO_GEO},
-      { MCFrequency::GALACTO_LSR,
-	MCFrequency::GALACTO_LSR,
-	MCFrequency::GALACTO_LSR,
-	MCFrequency::GALACTO_LSR,
-	MCFrequency::GALACTO_LSR,
-	MCFrequency::GALACTO_LSR,
-	MCFrequency::N_Routes}
-    };
 
-// List of codes converted to
-    static const MFrequency::Types ToRef[MCFrequency::N_Routes] = {
-      MFrequency::BARY,
-      MFrequency::LSR,
-      MFrequency::GEO,
-      MFrequency::TOPO,
-      MFrequency::BARY,
-      MFrequency::GEO,
-      MFrequency::GALACTO,
-      MFrequency::LSR,
-      MFrequency::BARY,
-      MFrequency::LSRK,
-      MFrequency::LSR,
-      MFrequency::REST
-    };
-
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    }
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  Int tmp;
+  while (iin != iout) {
+    tmp = FromTo_p[iin][iout];
+    iin = ToRef_p[tmp][1];
+    mc.addMethod(tmp);
+    initConvert(tmp, mc);
+  };
 }
 
 void MCFrequency::clearConvert() {
@@ -145,53 +100,22 @@ void MCFrequency::clearConvert() {
 
 //# Conversion routines
 void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
-  if (!MVPOS1) {
-    MVPOS1 = new MVPosition();
-  };
-  if (!MVDIR1) {
-    MVDIR1 = new MVDirection();
-  };
+
+  if (False) initConvert(which, mc);	// Stop warning
+
+  if (!MVPOS1) MVPOS1 = new MVPosition();
+  if (!MVDIR1) MVDIR1 = new MVDirection();
 
   switch (which) {
-      
-  case LSR_BARY:
-    break;
-      
-  case BARY_LSR:
-    break;
       
   case BARY_GEO:
     if (ABERFROM) delete ABERFROM;
     ABERFROM = new Aberration(Aberration::STANDARD);
     break;
       
-  case GEO_TOPO:
-    break;
-      
   case GEO_BARY:
     if (ABERTO) delete ABERTO;
     ABERTO = new Aberration(Aberration::STANDARD);
-    break;
-      
-  case TOPO_GEO:
-    break;
-      
-  case LSR_GALACTO:
-    break;
-      
-  case GALACTO_LSR:
-    break;
-      
-  case LSRK_BARY:
-    break;
-      
-  case BARY_LSRK:
-    break;
-      
-  case REST_LSR:
-    break;
-      
-  case LSR_REST:
     break;
       
   default:
@@ -398,6 +322,6 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     default:
       break;
-    }
-  }
+    }; // switch
+  }; //for
 }
