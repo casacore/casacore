@@ -2,7 +2,8 @@
 #include <aips/Exceptions/Error.h>
 #include <stdlib.h>    
     
-MedianSlider::MedianSlider () : buf(0),index(0),valid(0)
+MedianSlider::MedianSlider () 
+  : buf(0),index(0),valid(0)
 {
 }
 
@@ -22,11 +23,39 @@ MedianSlider::MedianSlider ( int hw )
   ibuf=nind=0;
 }
 
-MedianSlider::~MedianSlider ()
+MedianSlider::MedianSlider( const MedianSlider &other ) 
+  : buf(0),index(0),valid(0)
+{
+  *this = other;
+}
+
+MedianSlider & MedianSlider::operator = ( const MedianSlider &other )
+{
+  cleanup();
+  halfwin = other.halfwin;
+  fullwin = other.fullwin;
+  index = new uInt[fullwin];
+  buf   = new Float[fullwin];
+  valid = new Bool[fullwin];
+  memcpy(index,other.index,fullwin*sizeof(uInt));
+  memcpy(buf,other.buf,fullwin*sizeof(Float));
+  memcpy(valid,other.valid,fullwin*sizeof(Bool));
+  ibuf=other.ibuf;
+  nind=other.nind;
+  return *this;
+}
+
+void MedianSlider::cleanup ()
 {
   if( buf ) delete [] buf;
   if( index ) delete [] index;
   if( valid ) delete [] valid;
+  buf=0; index=0; valid=0;
+}
+
+MedianSlider::~MedianSlider ()
+{
+  cleanup();
 }
 
 Float MedianSlider::prevVal( uInt n,Bool &flag )

@@ -63,8 +63,11 @@ public:
     
   MedianSlider  ();
   MedianSlider  ( int halfwin );
-
+  MedianSlider  ( const MedianSlider &other );
   ~MedianSlider ();
+  MedianSlider & operator = ( const MedianSlider &other );
+  
+  void cleanup ();
 
 // Adds a datum to the slider. Once the window is full, newer values will 
 // push out older values. Returns the new median value.
