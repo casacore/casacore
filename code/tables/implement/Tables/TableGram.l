@@ -108,6 +108,9 @@ ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
 LIMIT     [Ll][Ii][Mm][Ii][Tt]
 OFFSET    [Oo][Ff][Ff][Ss][Ee][Tt]
+BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
+EXISTS    [Ee][Xx][Ii][Ss][Tt][Ss]
+LIKE      [Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
 AS        [Aa][Ss]
 AND       [Aa][Nn][Dd]
@@ -271,6 +274,8 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 ">"       { tableGramPosition() += yyleng; return GT; }
 "<="      { tableGramPosition() += yyleng; return LE; }
 "<"       { tableGramPosition() += yyleng; return LT; }
+{BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
+{LIKE}    { tableGramPosition() += yyleng; return LIKE; }
 "&&"      { tableGramPosition() += yyleng; return AND; }
 {AND}     { tableGramPosition() += yyleng; return AND; }
 "||"      { tableGramPosition() += yyleng; return OR; }
