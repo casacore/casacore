@@ -369,6 +369,10 @@
   fi
 
 # Source possible local AIPS++ initialization files.
+  if [ -r $a_root/.aipsinit.sh ]
+  then
+     . $a_root/.aipsinit.sh
+  fi
   if [ -r $a_root/aips++local.sh ]
   then
      . $a_root/aips++local.sh
