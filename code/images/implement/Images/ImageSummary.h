@@ -35,6 +35,7 @@
 
 #include <aips/aips.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDoppler.h>
 
 template <class T> class ImageInterface;
 template <class T> class Vector;
@@ -42,8 +43,6 @@ class IPosition;
 class Unit;
 class LogIO;
 class Coordinate;
-
-class MRadialVelocity;
 
 
 // <summary> Provides and lists information about the header of an image </summary>
@@ -172,7 +171,11 @@ public:
 // values and pixel increments are converted to a "nice" unit before 
 // formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
 // is <src>True</src> then the values are formatted in their native format.
-   void list(LogIO& os, Bool nativeFormat=False);
+// For spectral axes, both frequency and velocity information is listed. You
+// can specify what velocity definition you want with <src>velocityType</src>
+   void list(LogIO& os, 
+             const MDoppler::Types velocityType=MDoppler::RADIO,
+             const Bool nativeFormat=False);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
@@ -203,7 +206,8 @@ private:
                         String& nameInc,
                         String& nameUnits,
                         const Bool& nativeFormat,
-                        const CoordinateSystem& cSys) const;
+                        const CoordinateSystem& cSys,
+                        const MDoppler::Types velocityType) const;
 
 
 // List axis descriptors
@@ -241,20 +245,23 @@ private:
                     const Bool findWidths,
                     const Int axisInCoordinate,
                     const Int pixelAxis,
+                    const MDoppler::Types velocityType,
                     const Int precRefValSci,
                     const Int precRefValFloat,
                     const Int precRefValRADEC,
                     const Int precRefPixFloat,
                     const Int precIncSci) const;
 
-Bool frequencyToVelocity(MRadialVelocity& velocity,
-                         MFrequency& frequency,
-                         const Double restFrequency,
-                         const MFrequency::Types frequencySystem) const;
+Bool pixelToVelocity(Double& velocity,
+                     const Double pixel,
+                     const SpectralCoordinate* sc,
+                     const MDoppler::Types velocityType,
+                     const String& velUnits) const;
 
 Bool velocityIncrement(Double& velocityInc,
-                       const Int axisInCoordinate,
-                       const SpectralCoordinate* sc) const;
+                       const SpectralCoordinate* sc,
+                       const MDoppler::Types velocityType,
+                       const String& velUnits) const;
 
 // Clear formatting flags
    void clearFlags (LogIO& os) const;
