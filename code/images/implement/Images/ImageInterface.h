@@ -114,10 +114,8 @@ class Unit;
 //   // the shape function is forced upon us by the Lattice base class
 //   IPosition shape() const;
 //   
-//   // getSlice is another function required of all Lattice objects.
-//   Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
-//		   const IPosition &shape, const IPosition &stride, 
-//		   Bool removeDegenerateAxes=False) const;
+//   // doGetSlice is another function required of all Lattice objects.
+//   Bool doGetSlice(<Array<T> &buffer, const Slicer &section);
 //
 //  // etc...
 // private:
@@ -138,10 +136,10 @@ class Unit;
 // </todo>
 
 
-template <class T> class ImageInterface: public Lattice<T>
+template <class T> class ImageInterface: virtual public Lattice<T>
 {
 public: 
-  ImageInterface (Bool masking=True);
+  ImageInterface();
 
   // Copy constructor (copy semantics).
   ImageInterface (const ImageInterface& other);
@@ -149,91 +147,14 @@ public:
   ~ImageInterface();
 
   // Make a copy of the derived object (reference semantics).
+  // <group>
   virtual Lattice<T>* clone() const = 0;
-
-  // function which returns the shape of the Image.
-  virtual IPosition shape() const = 0;
+  virtual ImageInterface<T>* cloneII() const = 0;
+  // </group>
 
   // Function which changes the shape of the image (N.B. the data is thrown 
   // away - the Image will be filled with nonsense afterwards)
   virtual void resize(const TiledShape &newShape) = 0;
-    
-  // Function which extracts an Array of values from a Image - a read-only 
-  // operation. 
-  // getSlice parameters:
-  // <ul>
-  // <li> buffer: a COWPtr<Array<T> > or an Array<T>. 
-  // <li> start: an IPosition which must have the same number of axes
-  //      as the underlying Image, otherwise, throw an exception.
-  // <li> shape: an IPosition which must have equal or fewer axes than the 
-  //      true shape od the Image, otherwise, throw an exception
-  // <li> stride: an IPosition which must have the same number of axes
-  //      as the underlying Image, otherwise, throw an exception.
-  // <li> removeDegenerateAxes: a Bool which dictates whether to remove 
-  //      "empty" axis created in buffer. (e.g. extracting an n-dimensional 
-  //      from an (n+1)-dimensional will fill 'buffer' with an array that 
-  //      has a degenerate axis (i.e. one axis will have a length = 1.))
-  // </ul>
-  // 
-  // The sub-class implementation of these functions return
-  // 'True' if the buffer points to a reference
-  // and 'False' if it points to a copy.
-  // <note role=tip> 
-  // In most cases, it will be more efficient in execution, if you
-  // use a LatticeIterator class to move through the Image. 
-  // LatticeIterators are optimized for that purpose.  If you are doing 
-  // unsystematic traversal, or random gets and puts, then getSlice and 
-  // putSlice or operator() may be the right tools to use.
-  // </note>
-  // <group>   
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
-			const IPosition &shape, const IPosition &stride, 
-			Bool removeDegenerateAxes=False) const = 0;
-  
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const Slicer &theSlice, 
-			Bool removeDegenerateAxes=False) const = 0;
-  
-  virtual Bool getSlice(Array<T> &buffer, const IPosition &start, 
-			const IPosition &shape, const IPosition &stride,
-			Bool removeDegenerateAxes=False) = 0;
-  
-  virtual Bool getSlice(Array<T> &buffer, const Slicer &theSlice, 
-			Bool removeDegenerateAxes=False) = 0;
-  // </group>
-
-  // A function which places an Array of values within this instance of the
-  // Lattice at the location specified by the IPosition "where", incrementing
-  // by "stride". All of the IPosition arguments must be of the same
-  // dimensionality as the Lattice. The sourceBuffer array may (and probably
-  // will) have less axes than the Lattice. The stride defaults to one if not
-  // specified.
-  // <group>
-  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where);
-  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
-			const IPosition & stride) = 0;
-  // </group>
-
-  // Function which returns the whole mask Lattice to allow iteration or 
-  // Lattice functions.
-  // <note> The mask object will be deleted upon destruction of this instance
-  // of Image.  Survival past the lifetime of the parent Image isn't 
-  // guaranteed. </note>
-  // <group>    
-  virtual const Lattice<Bool> &mask() const = 0;
-  virtual Lattice<Bool> &mask() = 0;
-  // </group>
-  
-  // Function to toggle the ability to write through the image mask.
-  // newValue = True implies writes to Image will alter the map.  newValue = 
-  // False implies writes to Image will fail.
-  void writeThroughMask(Bool newValue);
-
-  // function which returns True if the image has a mask, returns False 
-  // otherwise. 
-  virtual Bool isMasked() const = 0;
-  
-  // Function to return the value of the mask toggle
-  Bool writeThroughMask() const;
   
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
@@ -265,13 +186,6 @@ public:
   const LogIO &logSink() const {return log_p;}
   // </group>
   
-  // These are the true implementations of the paren operator.
-  // <note> Not for public use </note>
-  // <group>
-  virtual T getAt(const IPosition &where) const = 0;
-  virtual void putAt(const T &value, const IPosition &where) = 0;
-  // </group>
-
   // Often we have miscellaneous information we want to attach to an image.
   // This is how it is done. Eventually we will want to register that some
   // of the information is to be destroyed if the image changes so that, e.g.
@@ -287,11 +201,6 @@ public:
   // Check class invariants. 
   virtual Bool ok() const = 0;
   
-  // These are the implementations of the LatticeIterator letters.
-  // <note> not for public use </note>
-  virtual LatticeIterInterface<T> *makeIter(
-				 const LatticeNavigator &navigator) const = 0;
-
   //<group>
   // Function to work around the g++ upcast bug
   ImageInterface<T>& ic() {return *this;}
@@ -303,7 +212,6 @@ protected:
   // Assignment (copy semantics) is only useful for derived classes.
   ImageInterface& operator= (const ImageInterface& other);
 
-  Bool throughmask_p;
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
   LogIO log_p;
