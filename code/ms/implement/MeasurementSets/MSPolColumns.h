@@ -93,11 +93,15 @@ protected:
   void attach(const NewMSPolarization& msPolarization);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSPolarizationColumns(const RONewMSPolarizationColumns&);
+  RONewMSPolarizationColumns& operator=(const RONewMSPolarizationColumns&);
+
   ROArrayColumn<Int> corrProduct_p;
   ROArrayColumn<Int> corrType_p;
   ROScalarColumn<Bool> flagRow_p;
   ROScalarColumn<Int> numCorr_p;
-
 };
 
 // <summary>
@@ -171,10 +175,14 @@ protected:
   void attach(NewMSPolarization& msPolarization);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSPolarizationColumns(const NewMSPolarizationColumns&);
+  NewMSPolarizationColumns& operator=(const NewMSPolarizationColumns&);
+
   ArrayColumn<Int> corrProduct_p;
   ArrayColumn<Int> corrType_p;
   ScalarColumn<Bool> flagRow_p;
   ScalarColumn<Int> numCorr_p;
 };
-
 #endif
