@@ -508,7 +508,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 		     totalFlux, totalFluxScale,
 		     itsJustStarting );
       itsJustStarting = False;
-    } else if ((itsIteration % (itsMaxNiter/10)) == 0) {
+    } else if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
       if (itsIteration == 0) {
 	os << "ItsIteration    Resid   CleanedFlux" << LogIO::POST;
       }
