@@ -682,7 +682,8 @@ void ColumnsIndex::fillRowNumbers (Vector<uInt>& rows,
   Bool deleteIt;
   uInt* rowStorage = rows.getStorage (deleteIt);
   objcopy (rowStorage, itsDataInx+start, nr);
-  rows.freeStorage (rowStorage, deleteIt);
+  const uInt *dummyRowStorage = rowStorage;
+  rows.freeStorage (dummyRowStorage, deleteIt);
 }
 
 void ColumnsIndex::setChanged()
