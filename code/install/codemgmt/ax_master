@@ -4440,3 +4440,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSSource.cc aips/implement/MeasurementSets/OldMSSource.cc
 14 296 src mv aips/implement/MeasurementSets/MSSource.h aips/implement/MeasurementSets/OldMSSource.h
 14 296 src mv aips/implement/MeasurementSets/MSSourceColumns.cc aips/implement/MeasurementSets/OldMSSourceColumns.cc
+14 296 src mv aips/implement/MeasurementSets/MSSourceColumns.h aips/implement/MeasurementSets/OldMSSourceColumns.h
