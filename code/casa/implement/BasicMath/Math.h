@@ -100,7 +100,7 @@
 // Double fabs(Double x)      Absolute value of x
 // Double remainder(Double x, Double y) the remainder. x - y*Int(x/y)
 // Double fmod(Double x, Double y) As above. May differ by +/- y
-// Int isnan(Double x) Returns 1 if x is a NaN, zero otherwise
+// Int isNaN(Double x) Returns 1 if x is a NaN, zero otherwise
 // Int ilogb(Double x) Unbiased exponent of x
 // Double logb(Double x)      As above but returns floating point result
 // Double scalbn(Double x, Int n) x*2**n. Uses exponent manipulation.
@@ -239,12 +239,15 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
 // Macro examining the bit pattern (for portability and efficiency). The
 // Double version invokes the IEEE function isnan found in ieeefp.h or math.h
 // <group>
-inline Bool isNaN (Float val)
+inline Bool isNaN (const Float& val)
 {
-  return ToBool(((*(long *)&(val) & 0x7f800000L) == 0x7f800000L) && \
-			    ((*(long *)&(val) & 0x007fffffL) != 0x00000000L));
+  return ToBool(((*(Int *)&(val) & 0x7f800000) == 0x7f800000) &&
+		((*(Int *)&(val) & 0x007fffff) != 0x00000000));
 }
-Bool isNaN(Double val);
+inline Bool isNaN(Double val)
+{
+  return ToBool(isnan(val));
+}
 // </group>
 
 // Functions that return IEEE NaN's. The specific NaN returned has all bits
