@@ -116,6 +116,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 template <class T>
 ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other) 
                       : os_p(other.os_p), 
+                        pInImage_p(other.pInImage_p),
                         cursorAxes_p(other.cursorAxes_p),
                         displayAxes_p(other.displayAxes_p), 
                         nxy_p(other.nxy_p),
@@ -123,12 +124,12 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         range_p(other.range_p),
                         device_p(other.device_p), 
                         doList_p(other.doList_p),
+                        noInclude_p(other.noInclude_p), 
+                        noExclude_p(other.noExclude_p),
                         goodParameterStatus_p(other.goodParameterStatus_p),
                         needStorageImage_p(other.needStorageImage_p),
                         doneSomeGoodPoints_p(other.doneSomeGoodPoints_p),
                         someGoodPointsValue_p(other.someGoodPointsValue_p),
-                        noInclude_p(other.noInclude_p), 
-                        noExclude_p(other.noExclude_p),
                         minPos_p(other.minPos_p), 
                         maxPos_p(other.maxPos_p),
                         blc_p(other.blc_p),
@@ -138,11 +139,6 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
 // Copy constructor.  Storage image is copied.
 //
 {
-
-// Assign to image pointer
-
-   pInImage_p = other.pInImage_p;
-
 // Copy storage image and assigg storage image pointer
 
    copyStorageImage (other);
