@@ -55,9 +55,9 @@ class VisBuffer;
 // </reviewed>
 
 // <prerequisite>
-//   <li> MeasurementSet
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> <linkto class="MSIter">MSIter</linkto>
+//   <li> <linkto class="MeasurementSet">MeasurementSet</linkto>
+//   <li> <linkto class="VisSet">VisSet</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -67,7 +67,10 @@ class VisBuffer;
 // <synopsis>
 // ROVisibilityIterator provides iteration with various sort orders
 // for one or more MSs. It has member functions to retrieve the fields
-// commonly needed in sythesis calibration and imaging.
+// commonly needed in synthesis calibration and imaging.
+//
+// One should use <linkto class="VisBuffer">VisBuffer</linkto>
+// to access chunks of data.
 // </synopsis>
 //
 // <example>

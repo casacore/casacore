@@ -39,8 +39,27 @@
 
 //#forward
 
+//<summary>
+// VisBuffers encapulsate one chunk of visibility data for processing.
+//</summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="" tests="" demos="">
+
+// <prerequisite>
+//   <li> <linkto class="VisSet">VisSet</linkto>
+//   <li> <linkto class="VisibilityIterator">VisibilityIterator</linkto>
+// </prerequisite>
+//
+// <etymology>
+// VisBuffer is a buffer for visibility data
+// </etymology>
+//
 //<synopsis>
-// This class contains 'one iteration' of the VisIter. It is a modifiable
+// This class contains 'one iteration' of the 
+// <linkto class="VisibilityIterator">VisibilityIterator</linkto>
+// It is a modifiable
 // buffer of values to which calibration and averaging can be applied.
 // This allows processing of the data in larger blocks, avoiding some
 // overheads for processing per visibility point or spectrum.

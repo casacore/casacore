@@ -41,8 +41,7 @@
 // <reviewed reviewer="" date="" tests="t" demos="">
 
 // <prerequisite>
-//   <li> Arrays module
-//   <li> MeasurementSet
+//   <li> <linkto module="MeasurementSet">MeasurementSet</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -55,7 +54,8 @@
 // MeasurementSet with observed data and creates two extra data
 // columns for the storage of model visibilities and
 // corrected visibilities. All access to the MeasurementSet is done via
-// the VisibilityIterator.
+// the <linkto class="VisibilityIterator">VisibilityIterator</linkto>
+// and the <linkto class="VisBuffer">VisBuffer</linkto>
 //
 // The VisSet allows selection and sorting of the MeasurementSet to be applied.
 // A number of columns can be specified to define the iteration order, a
