@@ -29,8 +29,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIter.h>
-#include <aips/strstream.h>
-
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){
