@@ -31,14 +31,16 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Quanta/MVFrequency.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableRecord.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QC.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 
 #include <iostream.h>
@@ -53,6 +55,7 @@ SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
                                             Vector<Double>& freqs,
                                             Double& restFreq);
 
+Double velInc (Double dF, Double f0, MDoppler::Types velType);
 
 int main()
 {
@@ -393,7 +396,6 @@ int main()
          }
       }
      
-
 // Test conversion
 
      {
@@ -524,6 +526,103 @@ int main()
          }
       }
 //
+// Test velocity conversion; only RADIO velocities tested
+//
+     {
+         String velUnit("km/s");
+         MDoppler::Types velType = MDoppler::RADIO;
+//
+         refchan = 0.0;
+         finc = 4e6;
+         restFreq = 1.420405752E9;
+         f0 = restFreq;
+         SpectralCoordinate lc(MFrequency::TOPO, f0, finc, refchan, restFreq);
+         Double dVel = velInc(finc, f0, velType);
+//
+         Quantum<Double> vel;
+         Double pix = 0.0;
+         if (!lc.pixelToVelocity(vel, pix, velUnit, velType)) {
+            throw(AipsError(String("pixelToVelocity 1 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(vel.getValue(), 0.0)) {
+            throw(AipsError(String("pixelToVelocity 1 gave wrong answer")));
+         }
+//
+         pix = 1.0;
+         if (!lc.pixelToVelocity(vel, pix, velUnit, velType)) {
+            throw(AipsError(String("pixelToVelocity 2 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(vel.getValue(), dVel)) {
+            throw(AipsError(String("pixelToVelocity 2 gave wrong answer")));
+         }
+//
+         Vector<Double>pixels(2);
+         Vector<Double> velocities;
+         pixels(0) = 0.0; pixels(1) = 1.0;
+         if (!lc.pixelToVelocity(velocities, pixels, velUnit, velType)) {
+            throw(AipsError(String("pixelToVelocity 3 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velocities(0), 0.0) || !near(velocities(1), dVel)) {
+            throw(AipsError(String("pixelToVelocity 3 gave wrong answer")));
+         }
+//
+         Quantum<Double> velQ;
+         if (!lc.frequencyToVelocity(velQ, f0, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 4 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), 0.0)) {
+            throw(AipsError(String("frequencyToVelocity 4 gave wrong answer")));
+         }
+         if (!lc.frequencyToVelocity(velQ, f0+finc, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 5 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 5 gave wrong answer")));
+         }
+//       
+         Vector<Double> frequencies(2);
+         frequencies(0) = f0;
+         frequencies(1) = f0 + finc;
+         if (!lc.frequencyToVelocity(velocities, frequencies, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 6 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velocities(0), 0.0) || !near(velocities(1), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 6 gave wrong answer")));
+         }
+//
+         MVFrequency mvf(f0);
+         MFrequency mf(mvf);
+         if (!lc.frequencyToVelocity(velQ, mf, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 7 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), 0.0)) {
+            throw(AipsError(String("frequencyToVelocity 7 gave wrong answer")));
+         }
+         mvf = MVFrequency(f0+finc);
+         mf = MFrequency(mvf);
+         if (!lc.frequencyToVelocity(velQ, mf, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 8 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 8 gave wrong answer")));
+         }
+//
+         mvf = MVFrequency(f0);
+         if (!lc.frequencyToVelocity(velQ, mvf, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 9 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), 0.0)) {
+            throw(AipsError(String("frequencyToVelocity 9 gave wrong answer")));
+         }
+         mvf = MVFrequency(f0+finc);
+         if (!lc.frequencyToVelocity(velQ, mvf, velUnit, velType)) {
+            throw(AipsError(String("frequencyToVelocity 9 conversion failed because ") + lc.errorMessage()));
+         }
+         if (!near(velQ.getValue(), dVel)) {
+            throw(AipsError(String("frequencyToVelocity 9 gave wrong answer")));
+         }
+     }
+//
 // Test record saving
 //
       {
@@ -612,4 +711,12 @@ SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
    return SpectralCoordinate(type, freqs, restFreq);
 }
 
+Double velInc (Double dF, Double f0, MDoppler::Types velType)
+{
+   Double c = QC::c.getValue(Unit("km/s"));
+   if (velType==MDoppler::RADIO) {
+      return -c * dF / f0;
+   }
+   throw(AipsError("very cheap software"));
+}
 
