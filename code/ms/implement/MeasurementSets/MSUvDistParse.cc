@@ -49,14 +49,14 @@ TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
                                             const Double& endUV)
 {
     // Column accessors
-    ROMSMainColumns msMainCol(ms());
-    ROMSSpWindowColumns msSpwCol(ms().spectralWindow());
-    ROMSDataDescColumns msDataDescCol(ms().dataDescription());
+    ROMSMainColumns msMainCol(*ms());
+    ROMSSpWindowColumns msSpwCol(ms()->spectralWindow());
+    ROMSDataDescColumns msDataDescCol(ms()->dataDescription());
 
     // Loop over all rows in the MS
     Vector<Int> rowsel;
     Int nRowSel = 0;
-    for (uInt row=0; row<ms().nrow(); row++) {
+    for (uInt row=0; row<ms()->nrow(); row++) {
         Int ddid = msMainCol.dataDescId()(row);
         Int spwid = msDataDescCol.spectralWindowId()(ddid);
         Double refFreq = msSpwCol.refFrequency()(spwid);
@@ -71,7 +71,7 @@ TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     if(nRowSel == 0)
         rowsel.resize(nRowSel, True);
 
-    TableExprNode condition = (ms().nodeRownr().in(rowsel));
+    TableExprNode condition = (ms()->nodeRownr().in(rowsel));
 
     if(node().isNull())
         node() = condition;

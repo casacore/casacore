@@ -47,7 +47,7 @@ MSFieldParse::MSFieldParse (const MeasurementSet& ms)
 
 TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 {
-    TableExprNode condition = (ms().col(colName).in(fieldIds));
+    TableExprNode condition = (ms()->col(colName).in(fieldIds));
 
     if(node().isNull())
         node() = condition;
@@ -59,10 +59,10 @@ TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 
 TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
 {
-    MSFieldIndex msFI(ms().field());
+    MSFieldIndex msFI(ms()->field());
 
     TableExprNode condition =
-        (ms().col(colName).in(msFI.matchFieldName(fieldNames)));
+        (ms()->col(colName).in(msFI.matchFieldName(fieldNames)));
 
     if(node().isNull())
         node() = condition;

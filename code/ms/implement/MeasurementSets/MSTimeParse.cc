@@ -50,7 +50,7 @@ TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
 {
     MVTime mvStart(startTime.getValue());
 
-    TableExprNode condition = (ms().col(colName) >= mvStart);
+    TableExprNode condition = (ms()->col(colName) >= mvStart);
 
     if(node().isNull())
         node() = condition;
@@ -64,7 +64,7 @@ TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
 {
     MVTime mvEnd(endTime.getValue());
  
-    TableExprNode condition = (ms().col(colName) <= mvEnd);
+    TableExprNode condition = (ms()->col(colName) <= mvEnd);
 
     if(node().isNull())
         node() = condition;
@@ -80,8 +80,8 @@ TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
     MVTime mvStart(startTime.getValue());
     MVTime mvEnd(endTime.getValue());
 
-    TableExprNode condition = (ms().col(colName) >= mvStart) &&
-                              (ms().col(colName) <= mvEnd);
+    TableExprNode condition = (ms()->col(colName) >= mvStart) &&
+                              (ms()->col(colName) <= mvEnd);
 
     if(node().isNull())
         node() = condition;

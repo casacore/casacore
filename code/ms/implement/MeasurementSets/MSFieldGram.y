@@ -115,7 +115,7 @@ indexrangeexpr : INDEX DASH INDEX {
 
 lowindexboundexpr : GT INDEX {
                    cout << "> index " << $2 << endl;
-		   ROMSFieldColumns msFieldCols_p(MSFieldParse::ms().field());
+		   ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
 		   Int startID = $2;
 		   Int len = msFieldCols_p.nrow();
 		   Vector<Int> fieldids(len- startID -1);
