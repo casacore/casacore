@@ -91,9 +91,9 @@ uInt baselineFit(Lattice<Float> &outImage,
 	    solution(ii) = (*fitter.fittedFunction())(xall(ii));
 	}
 	if (returnResiduals) {
-	    outIter.vectorCursor() = yall.ac() - solution.ac();
+	    outIter.writeArray (yall.ac() - solution.ac());
 	} else {
-	    outIter.vectorCursor() = solution;
+	    outIter.writeArray (solution);
 	}
 	if (eventStream && eventStream->connected()) {
 	    eventStream->postEvent("progress",
