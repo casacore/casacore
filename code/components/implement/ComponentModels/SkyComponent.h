@@ -44,6 +44,7 @@ class MVAngle;
 class SkyCompRep;
 class String;
 template<class T> class Vector;
+template<class Qtype> class Quantum;
 
 // <summary>A component of a model of the sky </summary>
 
@@ -134,17 +135,23 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the integrated flux (in Jy) of the component. The Vector specifies
+  // set/get the integrated flux of the component. The Vector specifies
   // all the polarizations of the radiation.
   // <group>
-  virtual void setFlux(const Vector<Double> & newFlux);
-  virtual void flux(Vector<Double> & compflux) const;
+  virtual void setFlux(const Quantum<Vector<Double> > & newFlux);
+  virtual void flux(Quantum<Vector<Double> > & compflux) const;
   // </group>
 
   // set/get the direction of (usually the centre) of the component.
   // <group>
   virtual void setDirection(const MDirection & newPos);
   virtual void direction(MDirection & compDir) const;
+  // </group>
+
+  // set/get the label associated with this component.
+  // <group>
+  virtual void setLabel(const String & newLabel);
+  virtual void label(String & compLabel) const;
   // </group>
 
   // return the number of parameters in the component and set/get them.

@@ -55,6 +55,7 @@ SkyComponent::SkyComponent(ComponentType::Type type) {
   case ComponentType::GAUSSIAN:
     theCompPtr = new GaussianCompRep; break;
   case ComponentType::UNKNOWN:
+  case ComponentType::NUMBER_TYPES:
     throw(AipsError("SkyComponent::Unable to construct a component of "
 		    "UNKNOWN type"));
   };    
@@ -93,12 +94,12 @@ void SkyComponent::project(ImageInterface<Float> & plane) const {
   DebugAssert(ok(), AipsError);
 }
 
-void SkyComponent::setFlux(const Vector<Double> & newFlux) {
+void SkyComponent::setFlux(const Quantum<Vector<Double> > & newFlux) {
   theCompPtr->setFlux(newFlux);
   DebugAssert(ok(), AipsError);
 }
 
-void SkyComponent::flux(Vector<Double> & compFlux) const {
+void SkyComponent::flux(Quantum<Vector<Double> > & compFlux) const {
   theCompPtr->flux(compFlux);
   DebugAssert(ok(), AipsError);
 }
@@ -110,6 +111,16 @@ void SkyComponent::setDirection(const MDirection & newDir) {
 
 void SkyComponent::direction(MDirection & compDir) const {
   theCompPtr->direction(compDir);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::setLabel(const String & newLabel) {
+  theCompPtr->setLabel(newLabel);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::label(String & compLabel) const {
+  theCompPtr->label(compLabel);
   DebugAssert(ok(), AipsError);
 }
 
@@ -187,7 +198,7 @@ SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(type());
   {
-    Vector<Double> thisFlux(4);
+    Quantum<Vector<Double> > thisFlux;
     flux(thisFlux);
     newComp.setFlux(thisFlux);
   }
@@ -195,6 +206,11 @@ SkyComponent SkyComponent::copy() const {
     MDirection thisDirection;
     direction(thisDirection);
     newComp.setDirection(thisDirection);
+  }
+  {
+    String thisLabel("");
+    label(thisLabel);
+    newComp.setLabel(thisLabel);
   }
   {
     Vector<Double> thisParameters(nParameters());
