@@ -277,8 +277,8 @@ NewMSSysCalColumns::NewMSSysCalColumns(NewMSSysCal& msSysCal):
 
 NewMSSysCalColumns::~NewMSSysCalColumns() {}
 
-void NewMSSysCalColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSSysCalColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 NewMSSysCalColumns::NewMSSysCalColumns():

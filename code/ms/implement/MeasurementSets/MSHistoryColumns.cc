@@ -100,8 +100,8 @@ NewMSHistoryColumns::NewMSHistoryColumns(NewMSHistory& msHistory):
 
 NewMSHistoryColumns::~NewMSHistoryColumns() {}
 
-void NewMSHistoryColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 NewMSHistoryColumns::NewMSHistoryColumns():

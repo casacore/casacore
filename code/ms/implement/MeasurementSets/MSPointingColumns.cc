@@ -360,9 +360,10 @@ void NewMSPointingColumns::attachOptionalCols(NewMSPointing& msPointing)
   if (cds.isDefined(overTheTop)) overTheTop_p.attach(msPointing, overTheTop);
 }
 
-void NewMSPointingColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
-  timeOriginMeas_p.setDescRefCode(ref);
+void NewMSPointingColumns::
+setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
+  timeOriginMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 void NewMSPointingColumns::setDirectionRef(MDirection::Types ref) {

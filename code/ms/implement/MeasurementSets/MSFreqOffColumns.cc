@@ -113,8 +113,9 @@ NewMSFreqOffsetColumns::NewMSFreqOffsetColumns(NewMSFreqOffset& msFreqOffset):
 NewMSFreqOffsetColumns::~NewMSFreqOffsetColumns() {}
 
 
-void NewMSFreqOffsetColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSFreqOffsetColumns::
+setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 NewMSFreqOffsetColumns::NewMSFreqOffsetColumns():

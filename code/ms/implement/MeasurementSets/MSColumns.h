@@ -273,8 +273,16 @@ public:
   // </group>
 
   // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
-  // only a single EPOCH reference is allowed in the NewMS.
-  void setEpochRef(MEpoch::Types ref);
+  // only a single EPOCH reference is allowed in the NewMS. This 
+  // <note role=tip>
+  // In principle this function can only be used if the table is empty,
+  // otherwise already written values may thereafter have an incorrect
+  // reference, offset, or unit.  However, it is possible that part of the
+  // table gets written before these values are known.  In that case the
+  // reference, offset, or units can be set by using a False
+  // <src>tableMustBeEmpty</src> argument.
+  // </note>
+  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
 
   // set the DIRECTION reference type for FIELD, POINTING and SOURCE tables
   // (except for antenna frame directions). 

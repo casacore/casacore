@@ -138,9 +138,10 @@ NewMSObservationColumns(NewMSObservation& msObservation):
 NewMSObservationColumns::~NewMSObservationColumns() {}
 
 
-void NewMSObservationColumns::setEpochRef(MEpoch::Types ref) {
-  timeRangeMeas_p.setDescRefCode(ref);
-  releaseDateMeas_p.setDescRefCode(ref);
+void NewMSObservationColumns::
+setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeRangeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
+  releaseDateMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 NewMSObservationColumns::NewMSObservationColumns():

@@ -324,8 +324,8 @@ interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly,
   }
 }
 
-void NewMSFieldColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSFieldColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 void NewMSFieldColumns::setDirectionRef(MDirection::Types ref) {

@@ -497,10 +497,16 @@ public:
     return RONewMSMainColumns::weightSpectrum();}
   // </group>
 
-  // set the epoch type for the TIME and TIME_CENTROID columns. This can only
-  // be done when the table has no rows. Trying to do so at other times will
-  // throw an exception.
-  void setEpochRef(MEpoch::Types ref);
+  // set the epoch type for the TIME and TIME_CENTROID columns. 
+  // <note role=tip>
+  // In principle this function can only be used if the table is empty,
+  // otherwise already written values may thereafter have an incorrect
+  // reference, offset, or unit.  However, it is possible that part of the
+  // table gets written before these values are known.  In that case the
+  // reference, offset, or units can be set by using a False
+  // <src>tableMustBeEmpty</src> argument.
+  // </note>
+  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
 
   // set the UVW reference type for the UVW and UVW2 (if defined) columns. This
   // can only be done when the table has no rows. Trying to do so at other

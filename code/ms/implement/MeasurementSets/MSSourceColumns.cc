@@ -301,8 +301,8 @@ void NewMSSourceColumns::attachOptionalCols(NewMSSource& msSource)
   if (cds.isDefined(transition)) transition_p.attach(msSource, transition);
 }
 
-void NewMSSourceColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSSourceColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 void NewMSSourceColumns::setDirectionRef(MDirection::Types ref) {

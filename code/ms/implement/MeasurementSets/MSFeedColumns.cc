@@ -169,8 +169,8 @@ NewMSFeedColumns::NewMSFeedColumns(NewMSFeed& msFeed):
 
 NewMSFeedColumns::~NewMSFeedColumns() {}
 
-void NewMSFeedColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSFeedColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 void NewMSFeedColumns::setDirectionRef(MDirection::Types ref) 

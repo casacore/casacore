@@ -76,28 +76,28 @@ NewMSColumns::NewMSColumns(NewMeasurementSet& ms):
 
 NewMSColumns::~NewMSColumns() {}
 
-void NewMSColumns::setEpochRef(MEpoch::Types ref)
+void NewMSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
 {
   // Adjust the relevant columns in the main table
-  NewMSMainColumns::setEpochRef(ref);
+  NewMSMainColumns::setEpochRef(ref, tableMustBeEmpty);
   // Now the same for the subtables.
-  feed().setEpochRef(ref);
-  field().setEpochRef(ref);
-  flagCmd().setEpochRef(ref);
-  history().setEpochRef(ref);
-  observation().setEpochRef(ref);
-  pointing().setEpochRef(ref);
+  feed().setEpochRef(ref, tableMustBeEmpty);
+  field().setEpochRef(ref, tableMustBeEmpty);
+  flagCmd().setEpochRef(ref, tableMustBeEmpty);
+  history().setEpochRef(ref, tableMustBeEmpty);
+  observation().setEpochRef(ref, tableMustBeEmpty);
+  pointing().setEpochRef(ref, tableMustBeEmpty);
   if (!freqOffset_p.isNull()) {
-    freqOffset_p.setEpochRef(ref);
+    freqOffset_p.setEpochRef(ref, tableMustBeEmpty);
   }
   if (!source_p.isNull()) {
-    source().setEpochRef(ref);
+    source().setEpochRef(ref, tableMustBeEmpty);
   }
   if (!sysCal_p.isNull()) {
-    sysCal_p.setEpochRef(ref);
+    sysCal_p.setEpochRef(ref, tableMustBeEmpty);
   }
   if (!weather_p.isNull()) {
-    weather_p.setEpochRef(ref);
+    weather_p.setEpochRef(ref, tableMustBeEmpty);
   }
 }
 

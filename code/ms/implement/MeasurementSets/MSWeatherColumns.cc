@@ -240,8 +240,9 @@ NewMSWeatherColumns::NewMSWeatherColumns(NewMSWeather& msWeather):
 NewMSWeatherColumns::~NewMSWeatherColumns() {}
 
 
-void NewMSWeatherColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
+void NewMSWeatherColumns::
+setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 NewMSWeatherColumns::NewMSWeatherColumns():

@@ -309,9 +309,9 @@ void NewMSMainColumns::setFlagCategories(const Vector<String>& categories) {
   keywords.define(key, categories);
 }
 
-void NewMSMainColumns::setEpochRef(MEpoch::Types ref) {
-  timeMeas_p.setDescRefCode(ref);
-  timeCentroidMeas_p.setDescRefCode(ref);
+void NewMSMainColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+  timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
+  timeCentroidMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
 void NewMSMainColumns::setUVWRef(Muvw::Types ref)

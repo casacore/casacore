@@ -336,10 +336,16 @@ public:
     return RONewMSPointingColumns::overTheTop();}
   // </group>
   
-  // set the epoch reference type for the TIME & TIME_ORIGIN column. This can
-  // only be done when the table has no rows. Trying to do so at other times
-  // will throw an exception.
-  void setEpochRef(MEpoch::Types ref);
+  // set the epoch reference type for the TIME & TIME_ORIGIN column.
+  // <note role=tip>
+  // In principle this function can only be used if the table is empty,
+  // otherwise already written values may thereafter have an incorrect
+  // reference, offset, or unit.  However, it is possible that part of the
+  // table gets written before these values are known.  In that case the
+  // reference, offset, or units can be set by using a False
+  // <src>tableMustBeEmpty</src> argument.
+  // </note>
+  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
 
   // set the direction reference type for the DIRECTION, TARGET & and, if
   // defined, the SOURCE_OFFSET & POINTING_OFFSET columns. This can only be
