@@ -310,7 +310,7 @@ public:
 // </group>   
 
 // This function gets a vector containing all the statistics
-// for a given location.  If <src>posInLattice=True<src> then
+// for a given location.  If <src>posInLattice=True</src> then
 // the location is a location in the input lattice.  Any
 // positions on the display axes are ignored.  Otherwise, you
 // should just give locations for the display axes only.
