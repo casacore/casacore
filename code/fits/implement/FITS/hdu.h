@@ -1,5 +1,5 @@
 //# hdu.h:
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -650,11 +650,11 @@ class FitsBase {
 	friend class BinaryTableExtension;
 	friend class AsciiTableExtension;
     public:
-	FitsBase(const FITS::ValueType &t, int n) : data_type(t), 
-		no_elements(n) { }
+	FitsBase(const FITS::ValueType &t, int n) : no_elements(n), 
+		data_type(t) { }
 	virtual ~FitsBase();
 
-	int nelements() const 		{ return no_elements; }
+	unsigned int nelements() const 	  { return (unsigned int)no_elements; }
 	virtual int fitsfieldsize() const = 0;
 	virtual int localfieldsize() const = 0;
 	virtual void *data() = 0;

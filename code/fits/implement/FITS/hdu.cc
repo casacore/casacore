@@ -349,8 +349,8 @@ int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
 
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, FITS::FitsArrayOption opt) {
-	Int count, offset, i, *sub;
-
+        uInt count;
+	Int offset, i, *sub;
 	if (set_next(nelements()) == -1) { // allocate nelements array elements
 	    return -1;
 	}
@@ -398,7 +398,8 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-	Int count, offset, i, j, *sub, *C_factor;
+	uInt count, n;
+	Int offset, i, j, *sub, *C_factor;
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
@@ -448,7 +449,8 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
-	Int count, offset, i, j, *sub, *C_factor;
+        uInt count, n;
+	Int offset, i, j, *sub, *C_factor;
 	float fscale = (float)bscale();
 	float fzero = (float)bzero();
 	if (opt == FITS::FtoC) {
@@ -478,8 +480,8 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 		}
 	    }
 	} else {
-	    for (i = 0; i < nelements(); ++i)
-		target[i] = (float)(fscale * array[i] + fzero);
+	    for (n = 0; n < nelements(); ++n)
+		target[n] = (float)(fscale * array[n] + fzero);
 	}
 }
 

@@ -30,6 +30,7 @@
 # include <aips/FITS/fitsio.h>
 # include <string.h>
 # include <stdio.h>
+# include <assert.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
@@ -466,11 +467,11 @@ HeaderDataUnit::~HeaderDataUnit() {
 
 
 HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, ostream &e ) : 
-	kwlist_(*(new FitsKeywordList)), fin(&f), errs(e), err_status(OK), 
-	no_dims(0), dimn(0), fits_data_size(0), data_type(FITS::NOVALUE), 
-	fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
-	pad_char('\0'), double_null(FITS::mindouble), char_null('\0'), 
-	Int_null(FITS::minInt), constkwlist_(kwlist_) {
+	kwlist_(*(new FitsKeywordList)), constkwlist_(kwlist_), fin(&f),
+	errs(e), err_status(OK), no_dims(0), dimn(0), fits_data_size(0),
+	data_type(FITS::NOVALUE), fits_item_size(0), local_item_size(0),
+	hdu_type(FITS::NotAHDU), pad_char('\0'), double_null(FITS::mindouble),
+	char_null('\0'), Int_null(FITS::minInt) {
 	if (fin->hdutype() != t) {
 	    errmsg(BADTYPE,"Input does not contain an HDU of this type.");
 	    return;
@@ -501,11 +502,12 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, ostream &e ) :
 
 
 HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, ostream &e,
-	FitsInput *f ) : kwlist_(*(new FitsKeywordList)), fin(f), errs(e),
-	err_status(OK), no_dims(0), dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
-	fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
-	pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
-	Int_null(FITS::minInt), constkwlist_(kwlist_) {
+	  FitsInput *f ) : kwlist_(*(new FitsKeywordList)),
+	  constkwlist_(kwlist_), fin(f), errs(e), err_status(OK), no_dims(0),
+	  dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
+	  fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
+	  pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
+	  Int_null(FITS::minInt) {
 	kwlist_ = k;
 
 	if ((!kwlist_.basic_rules()) || (kwlist_.rules(errs) != 0)) {
@@ -689,6 +691,13 @@ FitsBase * FitsBase::make(const FITS::ValueType &type,int n) {
 	    case FITS::ICOMPLEX: return (new FitsField<IComplex> (n));
 	    case FITS::DCOMPLEX: return (new FitsField<DComplex> (n));
 	    case FITS::VADESC: return (new FitsField<FitsVADesc> (n));
+	    // The following "default" has been added to prevent compilers
+	    // such as GNU g++ from complaining about the rest of FITS
+	    // enumerations not being handled in the switch statement.
+	    //           -OO
+	    default:
+	        assert(0);
+	        break;
 	}
 	return 0;
 }
@@ -707,6 +716,13 @@ FitsBase * FitsBase::make(const FITS::ValueType &type,int n, int *d) {
 	    case FITS::ICOMPLEX: return (new FitsArray<IComplex> (n,d));
 	    case FITS::DCOMPLEX: return (new FitsArray<DComplex> (n,d));
 	    case FITS::VADESC: return (new FitsArray<FitsVADesc> (n,d));
+	    // The following "default" has been added to prevent compilers
+	    // such as GNU g++ from complaining about the rest of FITS
+	    // enumerations not being handled in the switch statement.
+	    //           -OO
+	    default:
+	        assert(0);
+	        break;
 	}
 	return 0;
 }
@@ -747,7 +763,8 @@ AsciiTableExtension::~AsciiTableExtension() {
 }
 
 void AsciiTableExtension::at_assign() {
-	int i, n, ne, row_align;
+	int i, n, ne;
+	size_t row_align;
 	char *s, typecode;
 
         tfields_x = 0;		// first initialize everything
@@ -920,7 +937,7 @@ void AsciiTableExtension::at_assign() {
 
 	// Determine field offsets for FITS and table rows
 	for (i = 0; i < tfields(); ++i) {
-	    if ( tbcol(i) < 1 || tbcol(i) > fitsrowsize) {
+	    if ( tbcol(i) < 1 || tbcol(i) > (int)fitsrowsize) {
 		errmsg(BADRULES,"Invalid value for TBCOL keyword");
 		return;
 	    }
@@ -984,7 +1001,7 @@ void AsciiTableExtension::at_assign() {
 
 int AsciiTableExtension::readrow() {
 	FitsValueResult res;
-	if (read_data((char *)fitsrow,fitsrowsize) !=  fitsrowsize)
+	if (read_data((char *)fitsrow,fitsrowsize) !=  (int)fitsrowsize)
 	    return -1;
 
 	// must convert ASCII data to binary
@@ -1026,7 +1043,8 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 	// must convert binary data row to ASCII
 	char tmp[32];
 	char *s, *t;
-	int i, n;
+	int i;
+	unsigned int n;
 	for (i = 0; i < tfields(); ++i) {
 	    if (fld[i]->fieldtype() == FITS::CHAR) {
 		t = (char *)&fitsrow[fits_offset[i]];
@@ -1059,6 +1077,13 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 			*t = 'D'; // Change the 'E' to a 'D' in the format
                         memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
 			break;
+	    // The following "default" has been added to prevent compilers
+	    // such as GNU g++ from complaining about the rest of FITS
+	    // enumerations not being handled in the switch statement.
+	    //           -OO
+		    default:
+		        assert(0);
+		        break;
 	        }
 	    }
 	}
@@ -1126,7 +1151,8 @@ BinaryTableExtension::~BinaryTableExtension() {
 }
 
 void BinaryTableExtension::bt_assign() {
-	int i, j, n, row_align;
+	int i, j, n;
+	size_t row_align;
 	uInt ne;
 	char *s;
 	char *p;
@@ -1337,7 +1363,7 @@ void BinaryTableExtension::bt_assign() {
 	}
 	
 	// check for consistency
-	if (fitsrowsize != dim(0)) {
+	if ((int)fitsrowsize != dim(0)) {
 	    errmsg(BADRULES,"Size of FITS row does not match NAXIS1");
 	    return;
 	}
@@ -1349,8 +1375,8 @@ void BinaryTableExtension::bt_assign() {
 	for (i = 1; i < tfields(); ++i) {
 	    fits_offset[i] = fits_offset[i - 1] + fld[i - 1]->fitsfieldsize();
 	    n = FITS::fitssize(fld[i]->fieldtype());
-	    if (n > sizeof(double)) // since DComplex is implemented in terms
-		n = sizeof(double); // of doubles, this is sufficient
+	    if (n > (int)sizeof(double))// since DComplex is implemented in 
+		n = sizeof(double);     // terms of doubles, this is sufficient
 	    if ((fits_offset[i] % n) != 0)
 		isoptimum = False;
 	}
@@ -1491,7 +1517,7 @@ void BinaryTableExtension::bt_assign() {
 
 int BinaryTableExtension::readrow() {
 	int i;
-	if (read_data((char *)fitsrow,fitsrowsize) != fitsrowsize)
+	if (read_data((char *)fitsrow,fitsrowsize) != (int)fitsrowsize)
 	    return -1;
 	if (!isoptimum) {
 	    for (i = 0; i < tfields(); ++i) {
@@ -1520,6 +1546,13 @@ int BinaryTableExtension::readrow() {
 		  FITS::f2l((DComplex *)(fld[i]->data()),src,ne); break;
 		case FITS::VADESC:
 		  FITS::f2l((FitsVADesc *)(fld[i]->data()),src,ne); break;
+	    // The following "default" has been added to prevent compilers
+	    // such as GNU g++ from complaining about the rest of FITS
+	    // enumerations not being handled in the switch statement.
+	    //           -OO
+	        default:
+		  assert(0);
+		  break;
 	      }
             }
 	}
@@ -1555,6 +1588,13 @@ int BinaryTableExtension::writerow(FitsOutput &fout) {
 		  FITS::l2f(tg,(DComplex *)(fld[i]->data()),ne); break;
 		case FITS::VADESC:
 		  FITS::l2f(tg,(FitsVADesc *)(fld[i]->data()),ne); break;
+	    // The following "default" has been added to prevent compilers
+	    // such as GNU g++ from complaining about the rest of FITS
+	    // enumerations not being handled in the switch statement.
+	    //           -OO
+	        default:
+		  assert(0);
+		  break;
 	      }
             }
 	}
@@ -1563,7 +1603,7 @@ int BinaryTableExtension::writerow(FitsOutput &fout) {
 
 int BinaryTableExtension::set_next(int n) {
 	// check if n rows have been allocated
-	if (n > alloc_row) {
+	if (n > (int)alloc_row) {
 	    delete [] table; // must allocate more rows
 	    table = new unsigned char [n * tablerowsize];
 	    if (table == 0) {

@@ -34,6 +34,7 @@
 # include <aips/Mathematics/Constants.h>
 
 # include <stdio.h>
+#include <assert.h>
 
 //	Discussion of Reserved FitsKeyword Table
 //
@@ -681,6 +682,14 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		    return 1;
 		}
 		break;
+	    // The following "default" was added to prevent compilers
+	    // such as GNU g++ from giving warnings about enumeration
+	    // values not being handled.  This should be cleaned up
+	    // some point.
+	    //              -OO
+	    default:
+	        assert(0);
+	        break;
 	}
 	// For reserved keywords, if the data type is STRING,
 	// the length of the string must be at least 8 bytes.
@@ -1758,6 +1767,14 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 		    val = new DComplex; memchk(val);
 		    *((DComplex *)val) = *((DComplex *)v);
                     break;
+	    // The following "default" was added to prevent compilers
+	    // such as GNU g++ from giving warnings about enumeration
+	    // values not being handled.  This should be cleaned up
+	    // some point.
+	    //              -OO
+	        default:
+		    assert(0);
+		    break;
 	    }
 	}
 }
@@ -2168,6 +2185,14 @@ int FitsKeywordList::rules(FitsKeyword &x, ostream &o) {
 		    }
 		}
 		break;
+	    // The following "default" was added to prevent compilers
+	    // such as GNU g++ from giving warnings about enumeration
+	    // values not being handled.  This should be cleaned up
+	    // some point.
+	    //              -OO
+	    default:
+	        assert(0);
+	        break;
 	}
 	return 0;
 }
@@ -2285,7 +2310,7 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 		card[n] = c[i];
 	}
 	if (k.type() == FITS::NOVALUE) {
-	    if (n = (k.commlen() <= 72 ? k.commlen() : 72))
+	    if ((n = (k.commlen() <= 72 ? k.commlen() : 72)))
 		memcpy(&card[8],k.comm(),n);
 	} else if (k.type() == FITS::STRING) {
 	    card[8] = '=';
@@ -2296,13 +2321,13 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 	    	i = 14 + n;
 	    	if (i <= 30) {
 		    card[31] = '/';
-		    if (n = (k.commlen() <= 48 ? k.commlen() : 48))
+		    if ((n = (k.commlen() <= 48 ? k.commlen() : 48)))
 			memcpy(&card[32],k.comm(),n);
 	        } else {
 		    if (i < 80) {
 			card[i - 1] = '/';
-			if (n = (k.commlen() <= (80 - i) ?
-				k.commlen() : (80 - i)))
+			if ((n = (k.commlen() <= (80 - i) ?
+				k.commlen() : (80 - i))))
 			    memcpy(&card[i],k.comm(),n);
 		    }
 	        }
@@ -2347,16 +2372,24 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 		        if (card[i] == 'E') { card[i] = 'D'; break; }
 		    card[50] = ' ';
 		    break;
+		// The following "default" was added to prevent compilers
+		// such as GNU g++ from giving warnings about enumeration
+		// values not being handled.  This should be cleaned up
+		// some point.
+		//              -OO
+	        default:
+		    assert(0);
+	            break;
 	    }
 	    if (k.commlen()) {
 		if (!(k.type() == FITS::ICOMPLEX || 
 		      k.type() == FITS::DCOMPLEX)) {
 		    card[31] = '/';
-		    if (n = (k.commlen() <= 48 ? k.commlen() : 48))
+		    if ((n = (k.commlen() <= 48 ? k.commlen() : 48)))
 			memcpy(&card[32],k.comm(),n);
 		} else {
 		    card[51] = '/';
-		    if (n = (k.commlen() <= 28 ? k.commlen() : 28))
+		    if ((n = (k.commlen() <= 28 ? k.commlen() : 28)))
 			memcpy(&card[52],k.comm(),n);
 		}
 	    }

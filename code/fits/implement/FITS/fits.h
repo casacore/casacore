@@ -626,7 +626,7 @@ class FitsKeyword {
 ostream & operator << (ostream &, const FitsKeyword &);
 
 inline FitsKeyword::FitsKeyword(const FitsKeyword &k) : next_(0), prev_(0),
-	name_(0), comm_(0), val(0), kw_(0) { init(k); }
+	name_(0), kw_(0), comm_(0), val(0)  { init(k); }
 inline FitsKeyword & FitsKeyword::operator = (const FitsKeyword &k) { 
     	delete [] name_; delete [] comm_; del_val(); init(k); return *this; }
 inline FitsKeyword::~FitsKeyword() { 
