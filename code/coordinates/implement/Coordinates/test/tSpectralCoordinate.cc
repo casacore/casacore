@@ -38,6 +38,7 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 
 #include <iostream.h>
@@ -228,6 +229,7 @@ int main()
             throw(AipsError("Failed frequency system set/recovery test"));
          }
 //
+         Coordinate* pC = &lc;
          Int prec;
          Coordinate::formatType fType = Coordinate::SCIENTIFIC;
          lc.getPrecision(prec, fType, True, 6, 4, 2);
@@ -242,14 +244,19 @@ int main()
 //
          String unit;
          Double val = 20.12345;
+         Quantum<Double> valq(20.12345, String(units(0)));
          String str = lc.format(unit, Coordinate::FIXED, val, 0,
                    True, 4);
-         if (str != "20.1234") {
+         String str2 = pC->format(unit, Coordinate::FIXED, valq, 0,
+                   True, 4);
+         if (str != "20.1234" || str2 != "20.1234") {
             throw(AipsError("Failed format test 1"));
          }
          str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
                    True, 4);
-         if (str != "2.0123e+01") {
+         str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, 0,
+                   True, 4);
+         if (str != "2.0123e+01" || str2 != "2.0123e+01") {
             throw(AipsError("Failed format test 2"));
          }
 //

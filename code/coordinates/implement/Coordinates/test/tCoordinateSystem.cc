@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/Unit.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
@@ -753,6 +754,7 @@ void doit2 (CoordinateSystem& cSys)
 //
 // Formatting
 //
+    Coordinate* pC = &cSys;
    {
       Int iDC = cSys.findCoordinate(Coordinate::DIRECTION);
       Vector<Int> worldAxes = cSys.worldAxes(iDC);
@@ -763,25 +765,35 @@ void doit2 (CoordinateSystem& cSys)
 //
       String unit;
       Double val = 0.12343;
+      Quantum<Double> valq(0.12343, Unit("rad"));
+      valq.convert(Unit("deg"));
       String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0),
                                True, 4);
-      if (str != "0.1234") {
+      String str2 = pC->format(unit, Coordinate::FIXED, valq, worldAxes(0),
+                               True, 4);
+      if (str != "0.1234" || str2 != "0.1234") {
          throw(AipsError("Failed format test 1"));
       }
       str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(1),
                                True, 4);
-      if (str != "0.1234") {
+      str2 = pC->format(unit, Coordinate::FIXED, valq, worldAxes(1),
+                               True, 4);
+      if (str != "0.1234" || str2!="0.1234") {
          throw(AipsError("Failed format test 2"));
       }
 //
       str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(0),
                       True, 4);
-      if (str != "1.2343e-01") {
+      str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, worldAxes(0),
+                      True, 4);
+      if (str != "1.2343e-01" || str2 != "1.2343e-01") {
          throw(AipsError("Failed format test 3"));
       }
       str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(1),
                       True, 4);
-      if (str != "1.2343e-01") {
+      str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, worldAxes(1),
+                      True, 4);
+      if (str != "1.2343e-01" || str2 != "1.2343e-01") {
          throw(AipsError("Failed format test 4"));
       }
    }
@@ -791,9 +803,13 @@ void doit2 (CoordinateSystem& cSys)
 //
       String unit;
       Double val = 0.12343;
+      Quantum<Double> valq(0.12343, Unit("rad"));
+      valq.convert(Unit("deg"));
       String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0),
                                True, 4);
-      if (str != "0.1234") {
+      String str2 = pC->format(unit, Coordinate::FIXED, valq, worldAxes(0),
+                               True, 4);
+      if (str != "0.1234" || str2 != "0.1234") {
          throw(AipsError("Failed format test 5"));
       }
    }

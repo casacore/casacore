@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/Quantum.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/Projection.h>
 #include <aips/Exceptions/Error.h>
@@ -369,8 +370,10 @@ void doit3 (DirectionCoordinate& lc)
          throw(AipsError("Coordinate conversion reflection 2 failed"));
    }
 //
-// Formatting
+// Formatting.  Some functions are virtual and inherited, so we need
+// a pointer
 //
+   Coordinate* lcp = &lc;
    Int prec;
    Coordinate::formatType fType = Coordinate::SCIENTIFIC;
    lc.getPrecision(prec, fType, True, 6, 4, 2);
@@ -385,15 +388,31 @@ void doit3 (DirectionCoordinate& lc)
 //
    String unit;
    Double val = 0.12343;
+   Quantum<Double> valq(0.12343, "rad");
+   valq.convert(Unit("deg"));
+//
    String str = lc.format(unit, Coordinate::FIXED, val, 0,
-             True, 4);
+                          True, 4);
    if (unit=="rad") {
       if (str != "0.1234") {
-         throw(AipsError("Failed format test 1"));
+         throw(AipsError("Failed format test 1a"));
       }
    } else if (unit=="deg") {
       if (str != "7.0720") {
-         throw(AipsError("Failed format test 1"));
+         throw(AipsError("Failed format test 1a"));
+      }
+   } else {
+      throw(AipsError("Internal error"));
+   }
+   str = lcp->format(unit, Coordinate::FIXED, valq, 0,
+                   True, 4);
+   if (unit=="rad") {
+      if (str != "0.1234") {
+         throw(AipsError("Failed format test 1b"));
+      }
+   } else if (unit=="deg") {
+      if (str != "7.0720") {
+         throw(AipsError("Failed format test 1b"));
       }
    } else {
       throw(AipsError("Internal error"));
@@ -403,11 +422,24 @@ void doit3 (DirectionCoordinate& lc)
              True, 4);
    if (unit=="rad") {
       if (str != "1.2343e-01") {
-         throw(AipsError("Failed format test 2"));
+         throw(AipsError("Failed format test 2a"));
       }
    } else if (unit=="deg") {
       if (str != "7.0720e+00") {
-         throw(AipsError("Failed format test 2"));
+         throw(AipsError("Failed format test 2a"));
+      }
+   } else {
+      throw(AipsError("Internal error"));
+   }
+   str = lcp->format(unit, Coordinate::SCIENTIFIC, valq, 0,
+             True, 4);
+   if (unit=="rad") {
+      if (str != "1.2343e-01") {
+         throw(AipsError("Failed format test 2b"));
+      }
+   } else if (unit=="deg") {
+      if (str != "7.0720e+00") {
+         throw(AipsError("Failed format test 2b"));
       }
    } else {
       throw(AipsError("Internal error"));
@@ -417,11 +449,24 @@ void doit3 (DirectionCoordinate& lc)
              True, 4);
    if (unit=="rad") {
       if (str != "0.1234") {
-         throw(AipsError("Failed format test 3"));
+         throw(AipsError("Failed format test 3a"));
       }
    } else if (unit=="deg") {
       if (str != "7.0720") {
-         throw(AipsError("Failed format test 3"));
+         throw(AipsError("Failed format test 3a"));
+      }
+   } else {
+      throw(AipsError("Internal error"));
+   }
+   str = lcp->format(unit, Coordinate::FIXED, valq, 1,
+                     True, 4);
+   if (unit=="rad") {
+      if (str != "0.1234") {
+         throw(AipsError("Failed format test 3b"));
+      }
+   } else if (unit=="deg") {
+      if (str != "7.0720") {
+         throw(AipsError("Failed format test 3b"));
       }
    } else {
       throw(AipsError("Internal error"));
@@ -431,11 +476,24 @@ void doit3 (DirectionCoordinate& lc)
              True, 4);
    if (unit=="rad") {
       if (str != "1.2343e-01") {
-         throw(AipsError("Failed format test 4"));
+         throw(AipsError("Failed format test 4a"));
       }
    } else if (unit=="deg") {
       if (str != "7.0720e+00") {
-         throw(AipsError("Failed format test 4"));
+         throw(AipsError("Failed format test 4a"));
+      }
+   } else {
+      throw(AipsError("Internal error"));
+   }
+   str = lcp->format(unit, Coordinate::SCIENTIFIC, valq, 1,
+                     True, 4);
+   if (unit=="rad") {
+      if (str != "1.2343e-01") {
+         throw(AipsError("Failed format test 4b"));
+      }
+   } else if (unit=="deg") {
+      if (str != "7.0720e+00") {
+         throw(AipsError("Failed format test 4b"));
       }
    } else {
       throw(AipsError("Internal error"));
@@ -446,14 +504,16 @@ void doit3 (DirectionCoordinate& lc)
 // the formatting is going to do !
 //
    str = lc.format(unit, Coordinate::TIME, val, 0,
-             True, 4);
+                   True, 4);
+   String str2 = lcp->format(unit, Coordinate::TIME, valq, 0,
+                             True, 4);
    MDirection::GlobalTypes globalType = dir.globalType(lc.directionType());
    if (globalType==MDirection::GRADEC) {
-      if (str != "00:28:17.2843") {
+      if (str != "00:28:17.2843" || str2 != "00:28:17.2843") {
          throw(AipsError("Failed format test 5"));
       }
    } else if (globalType==MDirection::GLONGLAT) {
-      if (str != "+007.04.19.2650") {
+      if (str != "+007.04.19.2650" || str2 != "+007.04.19.2650") {
          throw(AipsError("Failed format test 5"));
       }
    } else {
@@ -462,12 +522,14 @@ void doit3 (DirectionCoordinate& lc)
 //
    str = lc.format(unit, Coordinate::TIME, val, 1,
              True, 4);
+   str2 = lcp->format(unit, Coordinate::TIME, valq, 1,
+                      True, 4);
    if (globalType==MDirection::GRADEC) {
-      if (str != "+07.04.19.2650") {
+      if (str != "+07.04.19.2650" || str2 != "+07.04.19.2650") {
          throw(AipsError("Failed format test 6"));
       }
    } else if (globalType==MDirection::GLONGLAT) {
-      if (str != "+007.04.19.2650") {
+      if (str != "+007.04.19.2650" || str2 != "+007.04.19.2650") {
          throw(AipsError("Failed format test 6"));
       }
    } else {

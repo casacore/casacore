@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/Quantum.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
@@ -202,16 +203,22 @@ int main()
          }
 
 //
+         Coordinate* pC = &lc;
          String unit;
          Double val = 20.12345;
+         Quantum<Double> valq(val, Unit(units(1)));
          String str = lc.format(unit, Coordinate::FIXED, val, 1,
                    True, 4);
-         if (str != "20.1234") {
+         String str2 = pC->format(unit, Coordinate::FIXED, valq, 1,
+                   True, 4);
+         if (str != "20.1234" || str2 != "20.1234") {
             throw(AipsError("Failed format test 1"));
          }
          str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1,
                    True, 4);
-         if (str != "2.0123e+01") {
+         str2 = pC->format(unit, Coordinate::SCIENTIFIC, valq, 1,
+                   True, 4);
+         if (str != "2.0123e+01" || str2 != "2.0123e+01") {
             throw(AipsError("Failed format test 2"));
          }
       }
