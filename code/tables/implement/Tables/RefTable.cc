@@ -70,10 +70,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
 {
     rows_p = getStorage (rowStorage_p);
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("RefTable::RefTable", 1));
-    }
+    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp);
     //# Get root table (will be parent if btp is an reference table).
     //# Link to root table (ie. increase its reference count).
@@ -90,10 +87,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("RefTable::RefTable", 1));
-    }
+    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp);
     rowStorage_p = rownrs;
     rows_p = getStorage (rowStorage_p);
@@ -120,10 +114,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), "", "", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("RefTable::RefTable", 1));
-    }
+    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
     setup (btp);
     //# Store the rownr if the mask is set.
     uInt nr = min (mask.nelements(), btp->nrow());
@@ -150,10 +141,8 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     //# Create table description by copying the selected columns.
     //# Create the columns.
     const TableDesc& td = btp->tableDesc();
-    tdescPtr_p = new TableDesc ("", "", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("RefTable::RefTable columnNames", 1));
-    }
+    //# Copy the keywords from the root tabledesc.
+    tdescPtr_p = new TableDesc (td, "", "", TableDesc::Scratch, False);
     for (uInt i=0; i<columnNames.nelements(); i++) {
 	tdescPtr_p->addColumn (td.columnDesc (columnNames(i)));
     }
@@ -335,15 +324,15 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
 	           ("RefTable::getRef, #rows in referenced table decreased"));
     }
     //# Build up the table description from the name map and the
-    // description of the root table.
+    //# description of the root table.
     const TableDesc& rootDesc = baseTabPtr_p->tableDesc();
-    tdescPtr_p = new TableDesc ("", "", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("RefTable::getRef", 1));
-    }
+    //# Copy the keywords from the root tabledesc.
+    tdescPtr_p = new TableDesc (rootDesc, "", "", TableDesc::Scratch, False);
     makeDesc (*tdescPtr_p, rootDesc, nameMap_p, names);
     //# Create the refColumns.
     makeRefCol();
+    //# Read the TableInfo object.
+    getTableInfo();
     //# Great, everything is done.
     //# Now link to the root table.
     baseTabPtr_p->link();
@@ -486,16 +475,12 @@ TableDesc RefTable::actualTableDesc() const
 {
     // Get the table description of reftable.
     const TableDesc& refDesc = tableDesc();
-    // Copy to another description and remove all columns.
-    // In that way we keep all keywords and private kwywords.
-    TableDesc actualDesc = refDesc;
-    for (uInt i=0; i<refDesc.ncolumn(); i++) {
-        actualDesc.removeColumn (refDesc[i].name());
-    }
     // Get actual table desc of parent.
+    // Create new tabledesc and copy keywords from parent.
+    TableDesc rootDesc = baseTabPtr_p->actualTableDesc();
+    TableDesc actualDesc(rootDesc, "", "", TableDesc::Scratch, False);;
     // Copy the relevant columns and rename (because reftable
     // can have renamed columns).
-    TableDesc rootDesc = baseTabPtr_p->actualTableDesc();
     for (uInt i=0; i<refDesc.ncolumn(); i++) {
 	const String& newName = refDesc.columnDesc(i).name();
 	const String& oldName = nameMap_p(newName);
