@@ -296,6 +296,7 @@ $(TMPPCKGD)/%.ycc : ;
 ifneq "$(findstring $(THISAPP),$(MEGASERVE))" ""
    # No need to compile, just link to the megaserver.
    $(BINDBGD)/% : FORCE
+	-@ echo ""
 	-@ echo "$* (dbg) symlinked to the megaserver."
 	 @ cd $(BINDBGD) && \
 	   if [ ! -h $@ ] ; then \
@@ -304,6 +305,7 @@ ifneq "$(findstring $(THISAPP),$(MEGASERVE))" ""
 	   fi
 
    $(BINOPTD)/% : FORCE
+	-@ echo ""
 	-@ echo "$* (opt) symlinked to the megaserver."
 	 @ cd $(BINOPTD) && \
 	   if [ ! -h $@ ] ; then \
@@ -317,7 +319,7 @@ else
       $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking $@ (dbg) because of $(?F)"
+	-@ echo "Remaking $* (dbg) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
 	   $(C++) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) \
@@ -335,7 +337,7 @@ else
       $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking $@ (opt) because of $(?F)"
+	-@ echo "Remaking $* (opt) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
 	   $(C++) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) \
