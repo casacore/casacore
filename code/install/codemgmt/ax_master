@@ -2372,12 +2372,9 @@
 09 329 src rm trial/implement/Tasking/Marshall2.cc
 09 329 src rm trial/implement/Tasking/ParamAccBaseHash.cc
 09 329 src rm trial/implement/Tasking/ParamAccBaseHash.h
-09 329 src rm trial/implement/Tasking/Parameter.cc
-09 329 src rm trial/implement/Tasking/Parameter.h
 09 329 src rm trial/implement/Tasking/Process2Controller.cc
 09 329 src rm trial/implement/Tasking/ProcessController.cc
 09 329 src rm trial/implement/Tasking/ProcessController.h
-09 329 src rm trial/implement/Tasking/structures.h
 09 337 src rm trial/implement/MeasurementComponents/RadialWTCoh.h
 09 337 src rm trial/implement/MeasurementComponents/RadialWTCoh.cc
 09 337 src rm trial/implement/MeasurementComponents/NaturalWTCoh.h
