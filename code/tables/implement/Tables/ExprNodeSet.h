@@ -1,5 +1,5 @@
 //# ExprNodeSet.h: Classes to hold multiple table expression nodes
-//# Copyright (C) 1997,2000,2001
+//# Copyright (C) 1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,8 +168,7 @@ public:
     // Evaluate the element for the given row and construct a new
     // (constant) element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    TableExprNodeSetElem* TableExprNodeSetElem::evaluate
-                                            (const TableExprId& id) const;
+    TableExprNodeSetElem* evaluate (const TableExprId& id) const;
 
     // Get the table of a node and check if the children use the same table.
     void checkTable();
