@@ -35,7 +35,6 @@
 
 # include <aips/FITS/fits.h>
 # include <aips/aips.h>
-# include <stdarg.h>
 
 class FitsInput;
 class FitsOutput;
@@ -370,7 +369,9 @@ class PrimaryArray : public HeaderDataUnit {
 	// 	physical_data[i] = bscale() * raw_data[i] + bzero().
 	//</srcblock>
 	//<group>
-	double operator () (int, int, int ...) const; 
+	double operator () (int, int, int, int, int) const; 
+	double operator () (int, int, int, int) const; 
+	double operator () (int, int, int) const; 
 	double operator () (int, int) const;
 	double operator () (int) const;
 	//</group>
@@ -378,7 +379,9 @@ class PrimaryArray : public HeaderDataUnit {
 	// The various `data()' functions allow one to access and set the raw data 
 	// itself.  
 	//<group>
-	TYPE & data(int, int, int ...); 
+	TYPE & data(int, int, int, int, int); 
+	TYPE & data(int, int, int, int); 
+	TYPE & data(int, int, int); 
 	TYPE & data(int, int);
 	TYPE & data(int);
 	//</group>
@@ -463,7 +466,9 @@ class PrimaryArray : public HeaderDataUnit {
 	// compute a linear offset from array indicies
 	//<group>
 	int offset(int, int) const; 
-	int offset(int, int, int, va_list) const; 
+	int offset(int, int, int) const; 
+	int offset(int, int, int, int) const; 
+	int offset(int, int, int, int, int) const; 
 	//</group>
 	int alloc_elems; // current number of allocated elements
 	int beg_elem; // offset of first element in the buffer
@@ -786,7 +791,9 @@ class FitsArray : public FitsField<TYPE> {
 	FitsArray(int, const int *);
     	~FitsArray();
     	TYPE & operator () (int d0, int d1);
-    	TYPE & operator () (int, int, int, ...);
+    	TYPE & operator () (int, int, int);
+    	TYPE & operator () (int, int, int, int);
+    	TYPE & operator () (int, int, int, int, int);
 	int dims() const;
 	int dim(int n) const;
 	int *vdim();
@@ -823,7 +830,9 @@ class FitsArray<FitsBit> : public FitsField<FitsBit> {
 	FitsArray(int, const int *);
     	~FitsArray();
     	FitsField<FitsBit> & operator () (int d0, int d1);
-    	FitsField<FitsBit> & operator () (int, int, int, ...);
+    	FitsField<FitsBit> & operator () (int, int, int);
+    	FitsField<FitsBit> & operator () (int, int, int, int);
+    	FitsField<FitsBit> & operator () (int, int, int, int, int);
 	int dims() const;
 	int dim(int n) const;
 	int *vdim();

@@ -70,23 +70,23 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1) {
 	return (*tmp)(d0 + d1 * factor[1]);
 }
 
-#ifndef AIPS_OSF
-FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, 
-								int d2 ...) {
-	int offset;
+FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2) {
 	FitsField<FitsBit> *tmp = this;
-	if (dims() > 3) {
-	    va_list ap;
-	    offset = d0 + d1 * factor[1] + d2 * factor[2];
-	    va_start(ap,d2);
-	    for (int i = 3; i < dims(); ++i)
-		offset += va_arg(ap,int) * factor[i];
-	    va_end(ap);
-	    return (*tmp)(offset);
-	} else
-	    return (*tmp)(d0 + d1 * factor[1] + d2 * factor[2]);
+	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2]);
 }
-#endif
+
+FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
+						      int d3) {
+	FitsField<FitsBit> *tmp = this;
+	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2] + d3*factor[3]);
+}
+
+FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
+						      int d3, int d4) {
+	FitsField<FitsBit> *tmp = this;
+	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2] + d3*factor[3] +
+		      d4*factor[4]);
+}
 
 //== HeaderDataUnit ===========================================================
 

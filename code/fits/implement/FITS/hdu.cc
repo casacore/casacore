@@ -167,38 +167,39 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	end_elem = -1;
 }
 
-#ifndef AIPS_OSF
-template <class TYPE>
-int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, va_list ap) const {
-	int offset;
-	int i;
-	offset = d0 + d1 * factor[1] + d2 * factor[2];
-	if (dims() > 3) {
-		for (i = 3; i < dims(); ++i)
-			offset += va_arg(ap,int) * factor[i];
-		offset += va_arg(ap,int);
-	}
-	return offset;
-}
-#endif
-
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1) const {
 		return d0 + factor[1] * d1;
 }
 
-#ifndef AIPS_OSF
 template <class TYPE>
-double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, ...) const {
-	va_list ap;
-	va_start(ap,d2);
-	int n = offset(d0,d1,d2,ap);
-	va_end(ap);
-	//if (n < beg_elem || n > end_elem) { // out of bounds
-	//}
-	return bscale() * array[n - beg_elem] + bzero();
+int PrimaryArray<TYPE>::offset(int d0, int d1, int d2) const {
+	int offset;
+	offset = d0 + d1 * factor[1] + d2 * factor[2];
+	return offset;
 }
-#endif
+
+template <class TYPE>
+int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, int d3) const {
+	int offset;
+	offset = d0 + d1 * factor[1] + d2 * factor[2] + d3*factor[3];
+	return offset;
+}
+
+template <class TYPE>
+int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, int d3, int d4) const {
+	int offset;
+	offset = d0 + d1 * factor[1] + d2 * factor[2] + d3*factor[3] + 
+	  d4*factor[4];
+	return offset;
+}
+
+template <class TYPE>
+double PrimaryArray<TYPE>::operator () (int d0) const {
+	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
+	//}
+	return bscale() * array[d0 - beg_elem] + bzero();
+}
 
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1) const {
@@ -209,24 +210,37 @@ double PrimaryArray<TYPE>::operator () (int d0, int d1) const {
 }
 
 template <class TYPE>
-double PrimaryArray<TYPE>::operator () (int d0) const {
-	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
-	//}
-	return bscale() * array[d0 - beg_elem] + bzero();
-}
-
-#ifndef AIPS_OSF
-template <class TYPE>
-TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, ...) {
-	va_list ap;
-	va_start(ap,d2);
-	int n = offset(d0,d1,d2,ap);
-	va_end(ap);
+double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2) const {
+	int n = offset(d0,d1,d2);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
-	return array[n - beg_elem];
+	return bscale() * array[n - beg_elem] + bzero();
 }
-#endif
+
+template <class TYPE>
+double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, int d3) const {
+	int n = offset(d0,d1,d2,d3);
+	//if (n < beg_elem || n > end_elem) { // out of bounds
+	//}
+	return bscale() * array[n - beg_elem] + bzero();
+}
+
+template <class TYPE>
+double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, 
+					int d3, int d4) const
+{
+	int n = offset(d0,d1,d2,d3,d4);
+	//if (n < beg_elem || n > end_elem) { // out of bounds
+	//}
+	return bscale() * array[n - beg_elem] + bzero();
+}
+
+template <class TYPE>
+TYPE & PrimaryArray<TYPE>::data(int d0) {
+	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
+	//}
+	return array[d0 - beg_elem];
+}
 
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1) {
@@ -237,10 +251,27 @@ TYPE & PrimaryArray<TYPE>::data(int d0, int d1) {
 }
 
 template <class TYPE>
-TYPE & PrimaryArray<TYPE>::data(int d0) {
-	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
+TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2) {
+	int n = offset(d0,d1,d2);
+	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
-	return array[d0 - beg_elem];
+	return array[n - beg_elem];
+}
+
+template <class TYPE>
+TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, int d3) {
+	int n = offset(d0,d1,d2,d3);
+	//if (n < beg_elem || n > end_elem) { // out of bounds
+	//}
+	return array[n - beg_elem];
+}
+
+template <class TYPE>
+TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, int d3, int d4) {
+	int n = offset(d0,d1,d2,d3,d4);
+	//if (n < beg_elem || n > end_elem) { // out of bounds
+	//}
+	return array[n - beg_elem];
 }
 
 template <class TYPE>
@@ -398,7 +429,7 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-	uInt count, n;
+	uInt count;
 	Int offset, i, j, *sub, *C_factor;
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
@@ -824,19 +855,25 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1)
 {
         return (*field)[d0 + (factor[1] * d1)]; 
 }
-#ifndef AIPS_OSF
+
 template <class TYPE>
-TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2 ...) {
-	long offset;
-	if (dims() > 3) {
-	    va_list ap;
-	    offset = d0 + d1 * factor[1] + d2 * factor[2];
-	    va_start(ap,d2);
-	    for (int i = 3; i < dims(); ++i)
-		offset += va_arg(ap,int) * factor[i];
-	    va_end(ap);
-	    return (*field)[offset];
-	} else
-	    return (*field)[d0 + d1 * factor[1] + d2 * factor[2]];
+inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2) 
+{
+        return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2)]; 
 }
-#endif
+
+template <class TYPE>
+inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3) 
+{
+        return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2) +
+		       (factor[3]*d3)]; 
+}
+
+template <class TYPE>
+inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
+					    int d4) 
+{
+        return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2) + 
+		       (factor[3]*d3) + (factor[4]*d4)]; 
+}
+
