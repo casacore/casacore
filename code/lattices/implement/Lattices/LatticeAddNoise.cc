@@ -172,6 +172,8 @@ void LatticeAddNoise::makeDistribution ()
    itsNoise = Random::construct(itsType, &itsGen);
    if (itsNoise) {
       if (!itsNoise->checkParameters(itsParameters)) {
+         delete itsNoise;
+         itsNoise = 0;
          LogIO os(LogOrigin("LatticeAddNoise", "makeDistribution", WHERE));
          os << "The distribution parameters are illegal" << LogIO::EXCEPTION;
       } else {
