@@ -88,6 +88,26 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 		      d4*factor[4]);
 }
 
+#if 0
+FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
+						      int d3, int d4, int d5 ...) {
+	FitsField<FitsBit> *tmp = this;
+	if (dims() > 6) {
+		int offset, i;
+		va_list ap;
+		offset = d0 + d1*factor[1] + d2*factor[2] + d3*factor[3] +
+              d4*factor[4] + d5*factor[5];
+		va_start(ap,d5);
+		for (i = 6; i < dims(); ++i)
+			offset += va_arg(ap,int) * factor[i];
+		va_end(ap);
+		return (*tmp)(offset);
+	} else
+		return (*tmp)(d0 + d1*factor[1] + d2*factor[2] + d3*factor[3] +
+              d4*factor[4] + d5*factor[5]);
+}
+#endif
+
 //== HeaderDataUnit ===========================================================
 
 void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
@@ -502,13 +522,12 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, ostream &e ) :
 
 
 HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, ostream &e,
-	  FitsInput *f ) : kwlist_(*(new FitsKeywordList)),
+	  FitsInput *f ) : kwlist_(*new FitsKeywordList(k)),
 	  constkwlist_(kwlist_), fin(f), errs(e), err_status(OK), no_dims(0),
 	  dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
 	  fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
 	  pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
 	  Int_null(FITS::minInt) {
-	kwlist_ = k;
 
 	if ((!kwlist_.basic_rules()) || (kwlist_.rules(errs) != 0)) {
 	    errmsg(BADRULES,"Errors in keyword list");

@@ -36,6 +36,9 @@
 # include <aips/FITS/fits.h>
 # include <aips/aips.h>
 
+//# # include <stdarg.h> // If we ever wan to put varargs support back
+
+
 class FitsInput;
 class FitsOutput;
 
@@ -52,13 +55,13 @@ class FitsOutput;
 //<srcblock>
 //
 //				HeaderDataUnit
-//				/          \ 
-//			       /            \ 
+//				/          \
+//			       /            \
 //		     PrimaryArray	ExtensionHeaderDataUnit
-//		      /    \			          \ 
-//		     /      \                              \ 
-//	  PrimaryGroup	ImageExtension	                    \ 
-//					                     \ 
+//		      /    \			          \
+//		     /      \                              \
+//	  PrimaryGroup	ImageExtension	                    \
+//					                     \
 //							BinaryTableExtension
 //							   /
 //							  /
@@ -126,7 +129,8 @@ class HeaderDataUnit {
 	const FitsKeyword *prevkw() { return kwlist_.prev(); }
 	const FitsKeyword *currkw() { return kwlist_.curr(); }	
 	const FitsKeyword *kw(int n) { return kwlist_(n); }
-	const FitsKeyword *kw(FITS::ReservedName &n) { 
+	//# 07/21/98 AKH Added const to quite Apogee warnings:
+	const FitsKeyword *kw(const FITS::ReservedName &n) { 
 		return kwlist_(n); }
 	const FitsKeyword *nextkw(FITS::ReservedName &n) { 
 		return kwlist_.next(n); }
@@ -165,6 +169,9 @@ class HeaderDataUnit {
 	//	For input -- ~ should delete the keyword list: kwflag = 1
 	HeaderDataUnit(FitsInput &, FITS::HDUType, ostream & = cout);
 	//	For output -- ~ should not delete keyword list: kwflag = 0
+    // 07/21/98 AKH Clarification: HeaderDataUnit has a copy of the
+    //              FitsKeywordList, and should delete it.  The kwflag
+    //              comments above are not important now.
 	HeaderDataUnit(FitsKeywordList &, FITS::HDUType, ostream & = cout,
 		FitsInput * = 0);
 
@@ -592,8 +599,8 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
 	// disable these functions, since they
 	// are inherited from PrimaryArray
 	//<group>
-	int set_next(int n) { n = 0; return 0; }
-	int read(int n) { n = 0; return -1; }
+	int set_next(int) { return 0; }
+	int read(int) { return -1; }
 	//</group>
 
     protected:
@@ -834,6 +841,9 @@ class FitsArray<FitsBit> : public FitsField<FitsBit> {
     	FitsField<FitsBit> & operator () (int, int, int);
     	FitsField<FitsBit> & operator () (int, int, int, int);
     	FitsField<FitsBit> & operator () (int, int, int, int, int);
+//# Disabled for now - we might eventually want to put varargs support back
+//#    	FitsField<FitsBit> & operator () (int, int, int, int, int, int ...);
+
 	int dims() const;
 	int dim(int n) const;
 	int *vdim();
@@ -862,7 +872,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
     public:
 	BinaryTableExtension(FitsInput &, ostream & = cout);
 	BinaryTableExtension(FitsKeywordList &, ostream & = cout);
-	~BinaryTableExtension();
+	virtual ~BinaryTableExtension();
 
 	// return basic elements of a table
 	//<group>
