@@ -110,4 +110,12 @@
 #define AIPS_KAI
 #endif
 
+#if defined(AIPS_INTELCC)
+#undef AIPS_INTELCC
+#endif
+#if defined(__INTEL_COMPILER)
+#define AIPS_INTELCC
+#endif
+
+
 #endif
