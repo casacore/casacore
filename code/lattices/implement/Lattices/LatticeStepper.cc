@@ -307,20 +307,7 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
 		      " contain all axes"));
   }
   uInt i;
-  // Check the cursor shape.
-  // Count the cursor shape axes with length > 1.
-  uInt count = 0;
-  for (i=0; i<ndimCS; i++) {
-    if (cursorShape(i) <= 0  ||  cursorShape(i) > latticeShape(i)) {
-      throw (AipsError ("LatticeStepper::setCursorShape: "
-			"cursorShape <=0 or > latticeShape"));
-    }
-    if (cursorShape(i) > 1) {
-      count++;
-    }
-  }
   // Check if the cursor axes are given correctly and in ascending order.
-  // Check if the cursor shape for non-given axes is 1.
   for (i=0; i<ndimCA; i++) {
     if (cursorAxes(i) < 0   ||  cursorAxes(i) >= Int(latticeDim)) {
       throw (AipsError ("LatticeStepper::setCursorShape: "
@@ -331,6 +318,13 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
 	throw (AipsError ("LatticeStepper::setCursorShape: "
 			  "cursorAxes values not in ascending order"));
       }
+    }
+  }
+  // Count the cursor shape axes with length > 1.
+  uInt count = 0;
+  for (i=0; i<ndimCS; i++) {
+    if (cursorShape(i) > 1) {
+      count++;
     }
   }
   // If cursorAxes is given and cursorShape is given for all axes,
@@ -352,14 +346,19 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
       }
     }
   }
+  // Check the cursor shape.
   // Pad the cursor shape with 1's if not given completely.
   // When ndimCA==ndimCS, cursorAxes gives the axes of the cursor shape.
   itsCursorShape = 1;
   for (i=0; i<ndimCS; i++) {
     if (ndimCA == ndimCS) {
-      itsCursorShape(cursorAxes(i)) = cursorShape(cursorAxes(i));
+      itsCursorShape(cursorAxes(i)) = cursorShape(i);
     } else {
       itsCursorShape(i) = cursorShape(i);
+    }
+    if (itsCursorShape(i) <= 0  ||  itsCursorShape(i) > latticeShape(i)) {
+      throw (AipsError ("LatticeStepper::setCursorShape: "
+			"cursorShape <=0 or > latticeShape"));
     }
   }
   // When cursorAxes is not given, the axes with length>1 form the cursorAxes.
