@@ -110,7 +110,6 @@ try {
    LogIO os(or);
    Vector<Int> types = VectorKernel::toKernelTypes(kernelType);
    VectorKernel::KernelTypes type = VectorKernel::KernelTypes(types(0));
-cout << "type=" << type << endl;
 
 
 // Give kernel with vectors directly
