@@ -1,6 +1,6 @@
 /*
     ImageExprGram.l: Lexical analyzer for image expressions
-    Copyright (C) 1998
+    Copyright (C) 1998,1999
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -175,6 +175,8 @@ ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 "-"       { imageExprGramPosition() += yyleng; return MINUS; }
 "("       { imageExprGramPosition() += yyleng; return LPAREN; }
 ")"       { imageExprGramPosition() += yyleng; return RPAREN; }
+"["       { imageExprGramPosition() += yyleng; return LBRACKET; }
+"]"       { imageExprGramPosition() += yyleng; return RBRACKET; }
 ","       { imageExprGramPosition() += yyleng; return COMMA; }
 
  /* Whitespace is skipped */
