@@ -1,5 +1,5 @@
 //# tSimButterworthBandpass: test the SimButterworthBandpass class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Containers/Record.h>
 
 int main() {
     SimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);
@@ -73,6 +74,29 @@ int main() {
 	             butt(butt.getMaxCutoff()) - irt2*pk < DBL_EPSILON);
     AlwaysAssertExit(butt(6*butt.getMinCutoff()-5*cen) < 1e-2*pk);
     AlwaysAssertExit(butt(6*butt.getMaxCutoff()+5*cen) < 1e-2*pk);
+
+    // test get/setMode()
+    AlwaysAssertExit(butt.hasMode());
+    Record rec;
+    rec.define(RecordFieldId("minOrder"), 2);
+    rec.define(RecordFieldId("maxOrder"), 3);
+
+    butt.setMode(rec);
+    AlwaysAssertExit(butt.getMinOrder() == 2 &&
+		     butt.getMaxOrder() == 3);
+
+    Record rec2;
+    butt.getMode(rec2);
+    try {
+	uInt mino, maxo;
+	rec2.get(RecordFieldId("minOrder"), mino);
+	rec2.get(RecordFieldId("maxOrder"), maxo);
+	AlwaysAssertExit(mino == 2 && maxo ==3);
+    }
+    catch (AipsError ex) {
+	cerr << "Exception: " << ex.getMesg() << endl;
+	exit(1);
+    }
 
     cout << "OK" << endl;
     return 0;
