@@ -304,7 +304,7 @@ void MVAngle::print(ostream &oss,
     };
     if (inprec > 6) {
       ///     t -= 59.9*t1;
-      t = fmod(t, 1.0) *60.;
+      t = abs(fmod(t, 1.0) *60.);
       Int oprec = oss.precision();
       Long oldb = oss.setf(ios::fixed,ios::floatfield);
       oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
