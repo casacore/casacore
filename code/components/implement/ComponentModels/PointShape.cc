@@ -88,28 +88,26 @@ Double PointShape::sample(const MDirection& direction,
       (MDirection::Convert(compDir, direction.getRef())().getValue());
     deleteValue = True;
   }
+//
+  const Double latSize = abs(pixelLatSize.radian());
+  const Double longSize = abs(pixelLongSize.radian());
+  const Double nearSize = max(latSize, longSize);
+//
   const MDirection::MVType& dirValue = direction.getValue();
-  const Double separation = compDirValue->separation(dirValue);
-  const Double latSize = pixelLatSize.radian();
-  const Double longSize = pixelLongSize.radian();
-  Double retVal = 0.0;
-  if (separation < max(latSize, longSize)) {
-    // Calculate the pa.
-    const Double pa = compDirValue->positionAngle(dirValue);
-    if (separation*cos(pa) < longSize/2.0 &&
-	separation*sin(pa) < latSize/2.0) {
-      retVal = 1.0;
-    }
-  }
+//
+  Double retVal = dirIsInPixel (longSize, latSize, nearSize, dirValue, compDirValue);
+//
   if (deleteValue) delete compDirValue;
   return retVal;
 }
+
 
 void PointShape::sample(Vector<Double>& scale, 
 			const Vector<MDirection::MVType>& directions, 
 			const MDirection::Ref& refFrame, 
 			const MVAngle& pixelLatSize,
-			const MVAngle& pixelLongSize) const {
+			const MVAngle& pixelLongSize) const 
+{
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
@@ -124,22 +122,15 @@ void PointShape::sample(Vector<Double>& scale,
       (MDirection::Convert(compDir, refFrame)().getValue());
     deleteValue = True;
   }
-  const Double latSize = pixelLatSize.radian();
-  const Double longSize = pixelLongSize.radian();
+//
+  const Double longSize = abs(pixelLongSize.radian());
+  const Double latSize = abs(pixelLatSize.radian());
   const Double nearSize = max(latSize, longSize);
-  Double separation;
   scale = 0.0;
+//
   for (uInt i = 0; i < nSamples; i++) {
-    const MDirection::MVType& dirVal = directions(i);
-    separation = compDirValue->separation(dirVal);
-    if (separation < nearSize) {
-    // Calculate the pa.
-      const Double pa = compDirValue->positionAngle(dirVal);
-      if (separation*cos(pa) < longSize/2.0 &&
-	  separation*sin(pa) < latSize/2.0) {
-	scale(i) = 1.0;
-      }
-    }
+    const MDirection::MVType& dirValue = directions(i);
+    scale(i) = dirIsInPixel (longSize, latSize, nearSize, dirValue, compDirValue);
   }
   if (deleteValue) delete compDirValue;
 }
@@ -223,6 +214,32 @@ Bool PointShape::convertUnit(String&, const RecordInterface&) {
 Bool PointShape::ok() const {
   return ComponentShape::ok();
 }
+
+
+
+Double PointShape::dirIsInPixel (Double longSize, Double latSize, Double nearSize,
+                                 const MDirection::MVType& dirValue,
+                                 const MDirection::MVType* compDirValue) const
+{                                 
+  Double retVal = 0.0;
+//
+  const Double separation = abs(compDirValue->separation(dirValue));
+  if (separation <= nearSize) {
+     const Double pa = compDirValue->positionAngle(dirValue);
+//
+     if (abs(separation*sin(pa)) <= longSize/2.0 &&
+         abs(separation*cos(pa)) <= latSize/2.0) {
+       retVal = 1.0;
+     }
+  }
+  return retVal;
+}
+
+
+
 // Local Variables: 
 // compile-command: "gmake PointShape"
 // End: 
+
+
+
