@@ -1,5 +1,5 @@
 //# TVecLogic.cc: Global functions for table vector logical operations
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Tables/TVec.h>
 #include <aips/Tables/TableError.h>
 
-#define TABVECOPER(NAME,OP) \
+#define TVECLOGICOPER(NAME,OP) \
 template<class T> \
 Bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r) \
 { \
@@ -71,9 +71,9 @@ Bool aips_name2(tabVecRepvall,NAME) (const T& val, const TabVecRep<T>& tv) \
     return retval; \
 } \
 
-TABVECOPER(LE,<=)
-TABVECOPER(LT,<)
-TABVECOPER(GE,>=)
-TABVECOPER(GT,>)
-TABVECOPER(EQ,==)
-TABVECOPER(NE,!=)
+TVECLOGICOPER(LE,<=)
+TVECLOGICOPER(LT,<)
+TVECLOGICOPER(GE,>=)
+TVECLOGICOPER(GT,>)
+TVECLOGICOPER(EQ,==)
+TVECLOGICOPER(NE,!=)

@@ -1,5 +1,5 @@
 //# TVecMath.cc: Global helper functions for table vector mathematics
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 
 //# Add, subtract, multiply, divide table vector.
 //# Define it for a vector and scalar, 2 vectors, 2 vectors with assign.
-#define TABVECOPER(NAME,OP,OPA) \
+#define TVECMATHOPER(NAME,OP,OPA) \
 template<class T> \
 TabVecRep<T>& aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, \
                                               const T& val) \
@@ -98,10 +98,10 @@ void aips_name2(tabVecReptvass,NAME) (TabVecRep<T>& tvl, \
     } \
 }
 
-TABVECOPER(add,+,+=)
-TABVECOPER(sub,-,-=)
-TABVECOPER(tim,*,*=)
-TABVECOPER(div,/,/=)
+TVECMATHOPER(add,+,+=)
+TVECMATHOPER(sub,-,-=)
+TVECMATHOPER(tim,*,*=)
+TVECMATHOPER(div,/,/=)
 
 
 
