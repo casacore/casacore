@@ -92,6 +92,22 @@ public:
     // Convert a pixel position to a worl position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
     // <src>errorMessage()</src> contains an error message.
+    //
+    // The calculation that takes place in going from pixel to world is the
+    // following.
+    // <srcblock>
+    // index = (pixel - crpix)*cdelt*linear + crval
+    // </srcblock>
+    // Where <src>pixel</src> is the pixel position, <src>crpix</src> is the
+    // reference pixel, <src>cdelt</src> is the increment, <src>linear</src> is
+    // the (1-pixel!) linear transformation matrix, and <src>crval</src> is the
+    // reference value. Usually crpix and crval are 0.0, and cdelt and linear
+    // are 1.0. Once the index is calculated, it is used to look up the world
+    // (stokes) value from the internal list of stokes values (which is the
+    // same as the vector which was given at construction time). The nearest
+    // integer is taken, and values less than zero or beyond the end of the
+    // vector result in an error. For world to pixel the reverse operation
+    // happens.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;

@@ -33,6 +33,9 @@
 #include <aips/Containers/Record.h>
 #include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Mathematics/Math.h>
+
+#include <strstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
     : values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
@@ -97,57 +100,85 @@ uInt StokesCoordinate::nWorldAxes() const
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-    Bool ok = False;
-    if (pixel >=0 && pixel<values_p.nelements()) {
-	ok = True;
+    // Avoid going to the Vector version for eficciency reasons.
+    Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + crval_p + 0.5);
+    if (index >= 0 && index < values_p.nelements()) {
 	stokes = Stokes::type(values_p[pixel]);
+	return True;
     } else {
-	ok = False;
-	set_error("Stokes has not been defined for this pixel");
+	ostrstream os;
+	os << "Index value of " << index << " is out of range [0.." <<
+	    values_p.nelements()-1 << "]";
+	set_error(os);
+	return False;
     }
-    return ok;
 }
 
 Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
 {
     Bool found = False;
-    uInt n = values_p.nelements();
-    for (uInt i=0; i<n; i++) {
-	if (stokes == values_p[i]) {
+    uInt index;
+    for (index=0; index<values_p.nelements(); index++) {
+	if (values_p[index] == Int(stokes)) {
 	    found = True;
 	    break;
 	}
     }
-
-    if (found) {
-	pixel = i;
-    } else {
-	set_error("Stokes type does not occur on axis");
-	pixel = -99999;
+    if (!found) {
+	ostrstream os;
+	os << "Stokes value " << stokes << 
+	    " is not found on any axis position";
+	set_error(os);
+	return False;
     }
-
-    return found;
+    
+    pixel = Int(floor((Double(index) - crval_p)/cdelt_p/matrix_p + 
+		      crpix_p + 0.5));
+    return True;
 }
 
 Bool StokesCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
     AlwaysAssert(pixel.nelements()==1 && world.nelements()==1, AipsError);
-    Stokes::StokesTypes result;
-    Bool ok = toWorld(result, Int(pixel(0)));
-    world(0) = Double(result);
-    return ok;
+    Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + crval_p + 0.5);
+    if (index < 0 || index > values_p.nelements()-1) {
+	ostrstream os;
+	os << "Index value of " << index << " is out of range [0.." <<
+	    values_p.nelements()-1 << "]";
+	set_error(os);
+	return False;
+    }
+    world(0) = values_p[Int(index)];
+
+    return True;
 }
 
 Bool StokesCoordinate::toPixel(Vector<Double> &pixel, 
 		     const Vector<Double> &world) const
 {
     AlwaysAssert(pixel.nelements()==1 && world.nelements()==1, AipsError);
-    Int result;
-    Stokes::StokesTypes stokes = Stokes::type(Int(world(0)));
-    Bool ok = toPixel(result, stokes);
-    pixel(0) = Double(result);
-    return ok;
+    // First find the index;
+    Bool found = False;
+    uInt index;
+    for (index=0; index<values_p.nelements(); index++) {
+	found = ::near(world(0), Double(values_p[index]));
+	if (found) {
+	    break;
+	}
+    }
+    if (!found) {
+	ostrstream os;
+	os << "Stokes value " << world(0) << 
+	    " is not found on any axis position";
+	set_error(os);
+	return False;
+    }
+
+    // OK, we found it, compute pixel position
+    pixel(0) = (Double(index) - crval_p)/cdelt_p/matrix_p + crpix_p;
+    
+    return True;
 }
 
 Vector<Int> StokesCoordinate::stokes() const
@@ -292,7 +323,7 @@ Bool StokesCoordinate::near(const Coordinate* pOther,
 // is the values along the axis.    Nothing else (e.g. crval_p etc)
 // is ever actually used.
 
-   for (Int i=0; i<values_p.nelements(); i++) {
+   for (Int i=0; i<Int(values_p.nelements()); i++) {
       if (!::near(values_p[i],sCoord->values_p[i],tol)) {
          set_error("The StokesCoordinates have different Stokes values on the axis");
          return False;
@@ -406,11 +437,11 @@ Coordinate *StokesCoordinate::clone() const
 }
 
 String StokesCoordinate::format(String& units,
-                                const Coordinate::formatType format,
+                                const Coordinate::formatType,
                                 const Double worldValue,
                                 const uInt worldAxis,
-                                const Bool absolute,
-                                const Int precision) const
+                                const Bool,
+                                const Int) const
 {
    units = worldAxisUnits()(worldAxis);
    const Stokes::StokesTypes sType = Stokes::type(Int(worldValue+0.5));
