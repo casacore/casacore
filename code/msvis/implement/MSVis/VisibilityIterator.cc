@@ -47,10 +47,9 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   const Block<Int>& sortColumns,
 					   Double timeInterval)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),velSelection_p(False),msIterAtOrigin_p(False)
+initialized_p(False),msIter_p(ms,sortColumns,timeInterval),
+velSelection_p(False),msIterAtOrigin_p(False)
 {
-  Block<MeasurementSet> mss(1); mss[0]=ms;
-  msIter_p=MSIter(mss,sortColumns,timeInterval);
   This = (ROVisibilityIterator*)this; 
 }
 
