@@ -1257,25 +1257,25 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Float Scalar" << endl;
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
-      LatticeExprNode expr3 = complex(expr1,expr2);
+      LatticeExprNode expr3 = formComplex(expr1,expr2);
       if (!checkComplex(expr3, Complex(bFVal,cFVal), shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bC);
-      LatticeExprNode expr3 = complex(real(expr1),imag(expr1));
+      LatticeExprNode expr3 = formComplex(real(expr1),imag(expr1));
       if (!checkComplex(expr3, bCVal, shape, False, False)) ok = False;
    }
    {
       cout << "  Float Array,Scalar" << endl;
       LatticeExprNode expr1(bC);
-      LatticeExprNode expr3 = complex(real(expr1),min(imag(expr1)));
+      LatticeExprNode expr3 = formComplex(real(expr1),min(imag(expr1)));
       if (!checkComplex(expr3, bCVal, shape, False, False)) ok = False;
    }
    {
       cout << "  Float Scalar,Array" << endl;
       LatticeExprNode expr1(bC);
-      LatticeExprNode expr3 = complex(min(real(expr1)),imag(expr1));
+      LatticeExprNode expr3 = formComplex(min(real(expr1)),imag(expr1));
       if (!checkComplex(expr3, bCVal, shape, False, False)) ok = False;
    }
     cout << "abs" << endl;

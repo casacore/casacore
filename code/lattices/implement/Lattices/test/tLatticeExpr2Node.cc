@@ -379,20 +379,20 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     for (uInt i=0; i<nr; i++) {
        cptr[i] = Complex(aptr[i], bptr[i]);
     }
-    if (!checkComplex(complex(aF,bF), arrc,
+    if (!checkComplex(formComplex(aF,bF), arrc,
 		      0, False, mask)) ok = False;
     for (uInt i=0; i<nr; i++) {
        cptr[i] = Complex(aptr[i], min(arrb));
     }
-    if (!checkComplex(complex(aF,min(bF)), arrc,
+    if (!checkComplex(formComplex(aF,min(bF)), arrc,
 		      0, False, asMask)) ok = False;
     for (uInt i=0; i<nr; i++) {
        cptr[i] = Complex(max(arra), bptr[i]);
     }
-    if (!checkComplex(complex(max(aF),bF), arrc,
+    if (!checkComplex(formComplex(max(aF),bF), arrc,
 		      0, False, bsMask)) ok = False;
     Array<Complex> arrc2;
-    if (!checkComplex(complex(min(aF),max(bF)), arrc2,
+    if (!checkComplex(formComplex(min(aF),max(bF)), arrc2,
 		      Complex(min(arra),max(arrb)),
 		      invalid, emptyMask)) ok = False;
 
