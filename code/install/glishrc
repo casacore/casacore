@@ -1,0 +1,10 @@
+
+if ( ! any(argv == '-plain') ) {
+    local apath := split(shell("echo $AIPSPATH"))
+    if ( len(apath) == 4 ) {
+	if (include spaste(apath[1],'/',apath[2],'/libexec/aips++init.g'))
+	    if (include spaste(apath[1],'/',apath[2],'/libexec/aips++.g'))
+		if ( len(stat(spaste(apath[1],'/.glishrc_local'))) > 0 )
+		    include spaste(apath[1],'/.glishrc_local')
+    }
+}
