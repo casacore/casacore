@@ -158,7 +158,6 @@ public:
   // Generate the precession polynomials for IAU2000 system.
   static void
   precessionCoef2000(Polynomial<Double> result[3]);
-  // </group>
   
   // Generate the precession polynomials for 1950 system for a fixed Epoch T
   // in the area specified. T is given in Tropical centuries since B1850.0
