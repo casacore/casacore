@@ -129,6 +129,13 @@ public:
     // release it when another process needs the lock.
     void autoReleaseLock();
 
+    // If needed, get a temporary user lock.
+    // It returns False if the lock was already there.
+    Bool userLock (FileLocker::LockType, Bool wait);
+
+    // Release a temporary user lock if the given release flag is True.
+    void userUnlock (Bool releaseFlag);
+
     // Do all data managers and engines allow to add rows?
     Bool canAddRow() const;
 
@@ -259,6 +266,12 @@ inline void ColumnSet::checkLock (FileLocker::LockType type, Bool wait)
 {
     if (! lockPtr_p->hasLock (type)) {
 	doLock (type, wait);
+    }
+}
+inline void ColumnSet::userUnlock (Bool releaseFlag)
+{
+    if (releaseFlag) {
+	lockPtr_p->release();
     }
 }
 inline void ColumnSet::autoReleaseLock()
