@@ -6571,3 +6571,4 @@
 18 755 src rm aips/implement/Functionals/FunctionOrder2.cc
 18 755 src rm aips/implement/Quanta/QuantumHolder2.cc
 18 755 src rm aips/implement/Utilities/Record2Transformable.cc
+18 755 src rm trial/implement/Functionals/Function2Holder.cc
