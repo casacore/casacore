@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000,2001,2002
+#   Copyright (C) 1992-1997,1999,2000,2001,2002,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -1144,9 +1144,9 @@
 #
 # OK here is where we put the binary extraction possibly gunzip/tar xf -
 #
-#    Determine what command to use for remote sneeze.  Default is rsh.
+#    Determine what command to use for remote sneeze.  Default is ssh.
      RCMD=`getrc -i inhale.sneeze.$INHOST.rcmd 2> /dev/null`
-     [ "$RCMD" = "" ] && RCMD=rsh
+     [ "$RCMD" = "" ] && RCMD=ssh
 
      echo ""
      TMP="$INHOST"
@@ -1160,6 +1160,7 @@
         AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
      fi
      SNEEZE="sneeze $EXTLIST -l -m $MODE -s $SLEEPINV $TARGETS"
+     echo $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\'
      $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
      SLEEPINV=`expr $SLEEPINV + $DELTASLEEP`
   done
