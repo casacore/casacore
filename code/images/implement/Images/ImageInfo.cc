@@ -105,7 +105,7 @@ ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
 //
    Double majord = major.getValue(arcsec);
    Double minord = minor.getValue(arcsec);
-   if (majord<=minord) {
+   if (majord < minord) {
       throw (AipsError (String("ImageInfo::setRestoringBeam - the major ") +
              String("axis must be greater than the minor axis")));
    }
@@ -119,13 +119,13 @@ ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
 //
    itsRestoringBeam(2) = pa;
 //
-    return *this;
+   return *this;
 }
 
 ImageInfo& ImageInfo::removeRestoringBeam()
 {
    itsRestoringBeam.resize(0);
-    return *this;
+   return *this;
 }
 
 Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
@@ -159,13 +159,11 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
 //
 {
     error = "";
-    ImageInfo tmp;
-    (*this) = tmp; // Make sure we are "empty" first;
-//
     QuantumHolder qh;
-    Bool ok;
+    Bool ok = False;
+//
     if (inRecord.isDefined("restoringbeam")) {
-       itsRestoringBeam.resize(3);
+       Vector<Quantum<Double> > restoringBeam(3);
        const RecordInterface& subRec = inRecord.asRecord("restoringbeam");
        if (subRec.nfields()!=3) {
           error = "Restoring beam record does not contain 3 fields";
@@ -175,42 +173,33 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
        if (subRec.isDefined("major")) {
           const RecordInterface& subRec0 = subRec.asRecord("major");
           ok = qh.fromRecord(error, subRec0);
-          if (ok) itsRestoringBeam(0) = qh.asQuantumDouble();
+          if (ok) restoringBeam(0) = qh.asQuantumDouble();
        } else {
           error = "Field major missing from restoring beam record";
-          ok = False;
-       }
-       if (!ok) {
-          (*this) = tmp;
           return False;
        }
 //
        if (subRec.isDefined("minor")) {
           const RecordInterface& subRec1 = subRec.asRecord("minor");
           ok = qh.fromRecord(error, subRec1);
-          if (ok) itsRestoringBeam(1) = qh.asQuantumDouble();
+          if (ok) restoringBeam(1) = qh.asQuantumDouble();
        } else {
           error = "Field minor missing from restoring beam record";
-          ok = False;
-       }
-       if (!ok) {
-          (*this) = tmp;
           return False;
        }
 //
        if (subRec.isDefined("positionangle")) {
           const RecordInterface& subRec2 = subRec.asRecord("positionangle");
           ok = qh.fromRecord(error, subRec2);
-          if (ok) itsRestoringBeam(2) = qh.asQuantumDouble();
+          if (ok) restoringBeam(2) = qh.asQuantumDouble();
        } else {
           error = "Field positionangle missing from restoring beam record";
-       }
-       if (!ok) {
-          (*this) = tmp;
           return False;
        }
+//
+       setRestoringBeam(restoringBeam);
    }
-   return True;
+   return ok;
 }
 
 ostream &operator<<(ostream &os, const ImageInfo &info)
