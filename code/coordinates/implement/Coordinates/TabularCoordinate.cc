@@ -278,18 +278,26 @@ Matrix<Double> TabularCoordinate::linearTransform() const
 
 Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    AlwaysAssert(names.nelements() == 1, AipsError);
-    name_p = names(0);
-    return True;
+    Bool ok = ToBool(names.nelements()==1);
+    if (!ok) {
+       set_error ("names vector must be of length 1");
+    } else {
+       name_p = names(0);
+    }
+    return ok;
 }
 
 Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units,
 					   Bool adjust)
 {
-    AlwaysAssert(units.nelements() == 1, AipsError);
-    Bool ok = Coordinate::setWorldAxisUnits(units, adjust);
-    if (ok) {
-	unit_p = units(0);
+    Bool ok = ToBool(units.nelements()==1);
+    if (!ok) {
+       set_error ("units vector must be of length 1");
+    } else {
+       ok = Coordinate::setWorldAxisUnits(units, adjust);
+       if (ok) {
+          unit_p = units(0);
+       }
     }
     return ok;
 }
@@ -297,30 +305,46 @@ Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units,
 
 Bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    AlwaysAssert(refPix.nelements() == 1, AipsError);
-    crpix_p = refPix(0);
-    return True;
+    Bool ok = ToBool(refPix.nelements()==1);
+    if (!ok) {
+       set_error ("reference pixel vector must be of length 1");
+    } else {
+       crpix_p = refPix(0);
+    }
+    return ok;
 }
 
 Bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    AlwaysAssert(xform.nelements() == 1, AipsError);
-    matrix_p = xform(0,0);
-    return True;
+    Bool ok = ToBool(xform.nelements()==1);
+    if (!ok) {
+       set_error ("linear transform matrix must be of length 1");
+    } else {
+       matrix_p = xform(0,0);
+    }
+    return ok;
 }
 
 Bool TabularCoordinate::setIncrement(const Vector<Double> &inc) 
 {
-    AlwaysAssert(inc.nelements() == 1, AipsError);
-    cdelt_p = inc(0);
-    return True;
+    Bool ok = ToBool(inc.nelements()==1);
+    if (!ok) {
+       set_error ("increment vector must be of length 1");
+    } else {
+       cdelt_p = inc(0);
+    }
+    return ok;
 }
 
 Bool TabularCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    AlwaysAssert(refval.nelements() == 1, AipsError);
-    crval_p = refval(0);
-    return True;
+    Bool ok = ToBool(refval.nelements()==1);
+    if (!ok) {
+       set_error ("reference values vector must be of lenth 1");
+    } else {
+       crval_p = refval(0);
+    }
+    return ok;
 }
 
 Vector<Double> TabularCoordinate::pixelValues() const
