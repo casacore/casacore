@@ -47,6 +47,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 : BaseTable      (newtab.name(), newtab.option(), 0),
   colSetPtr_p    (0),
   tableChanged_p (True),
+  unlockChanged_p(True),
   addToCache_p   (True),
   lockPtr_p      (0)
 {
@@ -125,6 +126,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
 : BaseTable      (tabname, opt, nrrow),
   colSetPtr_p    (0),
   tableChanged_p (False),
+  unlockChanged_p(False),
   addToCache_p   (addToCache),
   lockPtr_p      (0)
 {
@@ -374,6 +376,9 @@ Bool PlainTable::putFile (Bool always)
 	//# Write the TableInfo.
 	flushTableInfo();
 	tableChanged_p = False;
+	//# putFile might be called by flush, so keep track for unlock
+	//# if main table has changed.
+	unlockChanged_p = True;
 	return True;
     }
     //# Only tell the data managers to write their data.
@@ -394,9 +399,10 @@ MemoryIO* PlainTable::doReleaseCallBack (Bool always)
     if (!openedForWrite()) {
 	return 0;
     }
-    Bool tableWritten = putFile (always);
-    lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), tableWritten,
+    putFile (always);
+    lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), unlockChanged_p,
 		      colSetPtr_p->dataManChanged());
+    unlockChanged_p = False;
     return &(lockSync_p.memoryIO());
 }
 
