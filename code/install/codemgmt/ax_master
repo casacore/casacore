@@ -4790,3 +4790,4 @@
 14 316 sys rm libexec/dish_gaussapp.g
 14 316 src rm trial/apps/dish/dish_granges.g
 14 316 sys rm libexec/dish_granges.g
+14 316 src rm trial/apps/dish/dish_gridapp.g
