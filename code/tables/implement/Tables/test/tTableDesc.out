@@ -1,3 +1,5 @@
+TableDesc::renameColumn - new name colint2 already exists
+TableDesc::renameColumn - old name colintxxx does not exist
 colint comment addition
 colint2 comment2
 colint3 comment
