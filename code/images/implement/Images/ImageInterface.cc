@@ -27,10 +27,10 @@
 
 #include <aips/aips.h>
 
-#include <trial/Coordinates/StokesCoordinate.h>
-
 #include <aips/Arrays/Vector.h> // Put these early to work around g++ bug
 #include <aips/Arrays/Matrix.h>
+
+#include <trial/Coordinates/StokesCoordinate.h>
 
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeIterator.h>
@@ -42,6 +42,45 @@
 #include <aips/Logging/LogIO.h>
 
 #include <strstream.h>
+
+
+template <class T> 
+ImageInterface<T>::ImageInterface (Bool masking)
+: throughmask_p(masking)
+{
+  logSink() << LogOrigin("ImageInterface<T>",
+	    "ImageInterface(Bool masking)",
+			 WHERE) << LogIO::DEBUGGING <<
+    "Creating ImageInterfac with masking="
+	    << masking << LogIO::POST;
+}
+
+template <class T> 
+ImageInterface<T>::ImageInterface (const ImageInterface& other)
+: throughmask_p(other.throughmask_p),
+  coords_p     (other.coords_p),
+  log_p        (other.log_p)
+{
+  logSink() << LogOrigin("ImageInterface<T>",
+	    "ImageInterface(const ImageInterface&)",
+			 WHERE) << LogIO::DEBUGGING << LogIO::POST;
+}
+
+template <class T> 
+ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
+{
+  if (this != &other) {
+    throughmask_p = other.throughmask_p;
+    coords_p      = other.coords_p;
+    log_p         = other.log_p;
+  }
+  return *this;
+}
+
+template <class T> 
+ImageInterface<T>::~ImageInterface()
+{
+}
 
 // reset coords
 template <class T> 
@@ -124,19 +163,7 @@ template <class T> Bool ImageInterface<T>::writeThroughMask() const
   return throughmask_p;
 }
 
-template <class T> 
-ImageInterface<T>::ImageInterface(Bool masking)
-: throughmask_p(masking)
-{
-  logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface(Bool masking)",
-			 WHERE) << LogIO::DEBUGGING <<
-    "Creating ImageInterfac with masking="
-	    << masking << LogIO::POST;
-}
-
 template<class T> void ImageInterface<T>::
 putSlice(const Array <T> & sourceBuffer, const IPosition & where){
   Lattice<T>::putSlice(sourceBuffer, where);
 };
-

@@ -59,7 +59,7 @@
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MomentCalculator.h>
 #include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/TiledStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
                
 #include <strstream.h>
 #include <iomanip.h>
@@ -1698,16 +1698,16 @@ void ImageMoments<T>::smoothRow (Lattice<T>* pIn,
                                  const Vector<T>& psf)
 {
 
-  TiledStepper navIn(pIn->shape(),
-                     pIn->niceCursorShape(pIn->maxPixels()),
-                     row);
+  TiledLineStepper navIn(pIn->shape(),
+			 pIn->niceCursorShape(pIn->maxPixels()),
+			 row);
   LatticeIterator<T> inIt(*pIn, navIn);
   Convolver<T> conv(psf, pIn->shape()(row));
   Vector<T> result(pIn->shape()(row));
 
   while (!inIt.atEnd()) {
     conv.linearConv(result, inIt.vectorCursor());
-    inIt.vectorCursor() = result;
+    inIt.writeArray (result);
     inIt++;
   }
 }
@@ -1762,12 +1762,11 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    iterator.reset();
    while (!iterator.atEnd()) {
       const T* pt = iterator.cursor().getStorage(deleteIt);
-
-      for (i=0; i<Int(iterator.cursor().nelements()); i++) {
+      Int n = iterator.cursor().nelements();
+      for (i=0; i<n; i++) {
          iBin = min(nBins-1, Int((pt[i]-dMin)/binWidth));
          y(iBin) += 1.0;
       }
-
       iterator.cursor().freeStorage(pt, deleteIt);
       iterator++;
    }  

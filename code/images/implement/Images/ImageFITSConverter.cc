@@ -35,7 +35,6 @@
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/FITS/FITSUtil.h>
 
-#include <aips/Utilities/Regex.h>
 #include <aips/Measures/UnitMap.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
@@ -226,7 +225,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     Double meterValue;
 
     try {
-	Int bufferSize = cursorShape.product();
+	Array<Float> cursor(cursorShape);
+	Int bufferSize = cursor.nelements();
 	for (imiter.reset(),meterValue=0.0; !imiter.atEnd(); imiter++) {
 	    fitsImage.read(bufferSize);                  // Read from FITS
             meterValue += nPixPerIter*1.0/2.0;
@@ -237,12 +237,11 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 		newImage = 0;
 		return;
 	    }
-	    Array<Float> &cursor = imiter.cursor();
 	    Bool deletePtr;
 	    Float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
 	    fitsImage.copy(ptr, bufferSize);             // Copy
 	    cursor.putStorage(ptr, deletePtr);
-
+	    imiter.writeArray (cursor);
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
 	}

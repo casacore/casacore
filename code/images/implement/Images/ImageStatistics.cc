@@ -48,7 +48,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/TiledStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
 
 
@@ -1088,7 +1088,8 @@ void ImageStatistics<T>::copyStorageImage(const ImageStatistics<T> &other)
       IPosition tileShape = other.pStoreImage_p->tileShape();
       Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
                             String("ImageStatistics_Sums_"));
-      pStoreImage_p = new PagedArray<Double>(shape, myTable, tileShape);
+      pStoreImage_p = new PagedArray<Double>(TiledShape(shape, tileShape),
+					     myTable);
       CopyLattice(pStoreImage_p->lc(), other.pStoreImage_p->lc());
    } else {
       pStoreImage_p = 0;
@@ -1196,11 +1197,12 @@ Bool ImageStatistics<T>::generateStorageImage()
 
    if (cursorAxes_p.nelements() == 1) {
 
-// Set TiledStepper for profiles.  There is no hangover possible with this navigator
+// Set TiledLineStepper for profiles.
+// There is no hangover possible with this navigator
 
-      TiledStepper imageNavigator (pInImage_p->shape(), 
-                                   pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-                                   cursorAxes_p(0));
+      TiledLineStepper imageNavigator (pInImage_p->shape(), 
+                           pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+			   cursorAxes_p(0));
 
 // Apply region and get shape of Lattice that we are iterating through
 
@@ -1274,7 +1276,9 @@ Bool ImageStatistics<T>::generateStorageImage()
   
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
                                                 String("ImageStatistics_Sums_"));
-      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
+      pStoreImage_p = new PagedArray<Double>(TiledShape(storeImageShape,
+							tileShape),
+					     myTable);
       pStoreImage_p->set(Double(0.0));
 
    }

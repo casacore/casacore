@@ -45,7 +45,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/TiledStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
 
 #include <iomanip.h>
@@ -660,7 +660,7 @@ void ImageHistograms<T>::copyStorageImages(const ImageHistograms<T>& other)
       IPosition tileShape = other.pHistImage_p->tileShape();
       Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
                             String("ImageHistograms_Hist_"));
-      pHistImage_p = new PagedArray<Int>(shape, myTable, tileShape);
+      pHistImage_p = new PagedArray<Int>(TiledShape(shape, tileShape), myTable);
       CopyLattice(pHistImage_p->lc(), other.pHistImage_p->lc());
    } else {
       pHistImage_p = 0;
@@ -674,7 +674,7 @@ void ImageHistograms<T>::copyStorageImages(const ImageHistograms<T>& other)
       IPosition tileShape = other.pMinMaxImage_p->tileShape();
       Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
                             String("ImageHistograms_MinMax_"));
-      pMinMaxImage_p = new PagedArray<T>(shape, myTable, tileShape);
+      pMinMaxImage_p = new PagedArray<T>(TiledShape(shape, tileShape), myTable);
       CopyLattice(pMinMaxImage_p->lc(), other.pMinMaxImage_p->lc());
    } else {
       pMinMaxImage_p = 0;
@@ -688,7 +688,8 @@ void ImageHistograms<T>::copyStorageImages(const ImageHistograms<T>& other)
       IPosition tileShape = other.pStatsImage_p->tileShape();
       Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
                             String("ImageHistograms_Sums_"));
-      pStatsImage_p = new PagedArray<Double>(shape, myTable, tileShape);
+      pStatsImage_p = new PagedArray<Double>(TiledShape(shape, tileShape),
+					     myTable);
       CopyLattice(pStatsImage_p->lc(), other.pStatsImage_p->lc());
    } else {
       pStatsImage_p = 0;
@@ -714,9 +715,9 @@ Bool ImageHistograms<T>::displayHistograms ()
       
       
 // Set up iterator to work through histogram storage image line by line.
-// We don't use the TiledStepper because we already set the tile shape sensibly, 
-// and this will guarentee the access pattern is row based rather than tile based
-// There will be no overhang
+// We don't use the TiledLineStepper because we already set the tile shape
+// sensibly, and this will guarentee the access pattern is row based rather
+// than tile based. There will be no overhang
  
    IPosition cursorShape(1,pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
@@ -1055,7 +1056,7 @@ void ImageHistograms<T>::fillMinMax (RO_LatticeIterator<T>* imageIterator,
       LatticeIterator<T> minMaxIterator(*pMinMaxImage_p, sliceShape);
 
       for (minMaxIterator.reset(); !minMaxIterator.atEnd(); minMaxIterator++) {
-         minMaxIterator.cursor() = slice;
+         minMaxIterator.writeArray (slice);
       }
    } else {
       os_p << LogIO::NORMAL << "Finding min/max for each histogram data chunk" << LogIO::POST;
@@ -1141,9 +1142,9 @@ Bool ImageHistograms<T>::generateStorageImage()
 
 // Make profile Navigator.  There will be no overhang.
 
-      TiledStepper imageNavigator (pInImage_p->shape(),
-                                   pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-                                   cursorAxes_p(0));
+      TiledLineStepper imageNavigator (pInImage_p->shape(),
+                         pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+			 cursorAxes_p(0));
       
 // Apply region and get shape of Lattice that we are iterating through
        
@@ -1226,7 +1227,8 @@ Bool ImageHistograms<T>::generateStorageImage()
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
                                String("ImageHistograms_Hist_"));
-      pHistImage_p = new PagedArray<Int>(storeImageShape, myTable, tileShape);
+      pHistImage_p = new PagedArray<Int>(TiledShape(storeImageShape, tileShape),
+					 myTable);
       pHistImage_p->set(0);
    }
 
@@ -1259,7 +1261,8 @@ Bool ImageHistograms<T>::generateStorageImage()
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
                                 String("ImageHistograms_MinMax_"));
-      pMinMaxImage_p = new PagedArray<T>(storeImageShape, myTable, tileShape);
+      pMinMaxImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
+					 myTable);
       pMinMaxImage_p->set(T(0.0)); 
    }
 
@@ -1288,7 +1291,9 @@ Bool ImageHistograms<T>::generateStorageImage()
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
                                 String("ImageHistograms_Sums_"));
-      pStatsImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
+      pStatsImage_p = new PagedArray<Double>(TiledShape(storeImageShape,
+							tileShape),
+					     myTable);
       pStatsImage_p->set(Double(0.0));
    }
 
