@@ -30,6 +30,8 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/SumFunction.h>
@@ -37,7 +39,6 @@
 #include <trial/Images/ImageMoments.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Quanta/QMath.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -91,10 +92,10 @@ uInt MomentCalcBase<T>::allNoise (T& dMean,
    }
 }
 
-typedef Vector<Int> gpp_VectorInt;
 template <class T>
 void MomentCalcBase<T>::constructorCheck(Vector<T>& calcMoments, 
-                                         const gpp_VectorInt& selectMoments,
+                                         Vector<Bool>& calcMomentsMask,
+                                         const Vector<Int>& selectMoments,
                                          const uInt nLatticeOut) const
  {
 // Number of output lattices must equal the number of moments
@@ -110,6 +111,7 @@ void MomentCalcBase<T>::constructorCheck(Vector<T>& calcMoments,
 // Resize the vector that will hold ALL possible moments
    
    calcMoments.resize(nMaxMoments());
+   calcMomentsMask.resize(nMaxMoments());
 }
 
 
@@ -135,7 +137,7 @@ void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
 }
 
 template <class T>
-Bool& MomentCalcBase<T>::doAuto(ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::doAuto(const ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -144,7 +146,7 @@ Bool& MomentCalcBase<T>::doAuto(ImageMoments<T>& iMom) const
 
 
 template <class T>
-Bool& MomentCalcBase<T>::doFit(ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::doFit(const ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -163,7 +165,7 @@ PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom) const
 template <class T>
 void MomentCalcBase<T>::doCoordCalc(Bool& doCoordProfile,
                                     Bool& doCoordRandom,
-                                    ImageMoments<T>& iMom) const
+                                    const ImageMoments<T>& iMom) const
 //
 // doCoordProfile - we need the coordinate for each pixel of the profile
 // doCoordRandom  - we need the coordinate for occaisional use
@@ -245,7 +247,6 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
 //
 {
 // Find number of segments in this vector. Bug out if none.
-
 
    Vector<uInt> start;
    Vector<uInt> nPtsPerSeg;
@@ -502,7 +503,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
 
 
 template <class T>
-Bool& MomentCalcBase<T>::fixedYLimits(ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::fixedYLimits(const ImageMoments<T>& iMom) const
 {
    return iMom.fixedYLimits_p;
 }
@@ -1096,19 +1097,17 @@ template <class T>
 Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom) const
 {
 // Get it from ImageMoments private data
-
    return iMom.momentAxis_p;
 }
 
 template <class T>
-String MomentCalcBase<T>::momentAxisName(ImageMoments<T>& iMom) const 
+String MomentCalcBase<T>::momentAxisName(const CoordinateSystem& cSys,
+                                         const ImageMoments<T>& iMom) const 
 {
 // Return the name of the moment/profile axis
 
-   Int worldMomentAxis = 
-      iMom.pInImage_p->coordinates().pixelAxisToWorldAxis(iMom.momentAxis_p);
-
-   return iMom.pInImage_p->coordinates().worldAxisNames()(worldMomentAxis);
+   Int worldMomentAxis = cSys.pixelAxisToWorldAxis(iMom.momentAxis_p);
+   return cSys.worldAxisNames()(worldMomentAxis);
 }
 
 
@@ -1190,9 +1189,6 @@ Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom) const
 }
 
 
-
-
-
 template <class T> 
 void MomentCalcBase<T>::setPosLabel (String& title,
                                      const IPosition& pos) const
@@ -1205,59 +1201,137 @@ void MomentCalcBase<T>::setPosLabel (String& title,
 }
 
 
+template <class T>
+void MomentCalcBase<T>::setCoordinateSystem (CoordinateSystem& cSys, 
+                                             const ImageMoments<T>& iMom) 
+{
+   cSys = iMom.pInImage_p->coordinates();
+}
 
 template <class T>
 void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
                                      Vector<Double>& pixelIn,
                                      Vector<Double>& worldOut,
                                      Vector<Double>& sepWorldCoord,
-                                     LogIO& os, Bool doCoordProfile, 
+                                     LogIO& os, 
+                                     Double& integratedScaleFactor,
+                                     const CoordinateSystem& cSys,
+                                     Bool doCoordProfile, 
                                      Bool doCoordRandom) const
 // 
+// Input:
+// doCoordProfile - we need the coordinate for each pixel of the profile
+//                  and we precompute it if we can
+// doCoordRandom  - we need the coordinate for occaisional use
+//
 // This function does two things.  It sets up the pixelIn
 // and worldOut vectors needed by getMomentCoord. It also
 // precomputes the vector of coordinates for the moment axis
 // profile if it is separable
 //
 {
+
+// Do we need the scale factor for the integrated moment
+
+   Bool doIntScaleFactor = False;
+   integratedScaleFactor = 1.0;
+   for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
+      if (iMom.moments_p(i) == ImageMoments<Float>::INTEGRATED) {
+         doIntScaleFactor = True;
+         break;
+      }
+   }
+//
    sepWorldCoord.resize(0);
-   if (!doCoordProfile && !doCoordRandom) return;
+   if (!doCoordProfile && !doCoordRandom && !doIntScaleFactor) return;
 
-// Resize these vectors used for coordinate transformations
+// Resize these vectors used for occaisional coordinate transformations
 
-   pixelIn.resize(iMom.pInImage_p->coordinates().nPixelAxes());
-   worldOut.resize(iMom.pInImage_p->coordinates().nWorldAxes());
-   if (!doCoordProfile) return;
+   pixelIn.resize(cSys.nPixelAxes());
+   worldOut.resize(cSys.nWorldAxes());
+   if (!doCoordProfile && !doIntScaleFactor) return;
 
 // Find the coordinate for the moment axis
    
    Int coordinate, axisInCoordinate;
-   iMom.pInImage_p->coordinates().findPixelAxis(coordinate, 
-           axisInCoordinate,  iMom.momentAxis_p);  
+   cSys.findPixelAxis(coordinate, axisInCoordinate,  iMom.momentAxis_p);  
   
 // Find out whether this coordinate is separable or not
   
-   Int nPixelAxes = iMom.pInImage_p->coordinates().coordinate(coordinate).nPixelAxes();
-   Int nWorldAxes = iMom.pInImage_p->coordinates().coordinate(coordinate).nWorldAxes();
+   Int nPixelAxes = cSys.coordinate(coordinate).nPixelAxes();
+   Int nWorldAxes = cSys.coordinate(coordinate).nWorldAxes();
 
-      
-// Precompute the profile coordinates if it is separable
-      
+// Precompute the profile coordinates if it is separable and needed
+// The Integrated moment scale factor is worked out here as well so the 
+// logic is a bit contorted
+
+   Bool doneIntScale = False;      
    if (nPixelAxes == 1 && nWorldAxes == 1) {
-      pixelIn = iMom.pInImage_p->coordinates().referencePixel();
-      sepWorldCoord.resize(iMom.pInImage_p->shape()(iMom.momentAxis_p));
-      for (uInt i=0; i<sepWorldCoord.nelements(); i++) {
-         sepWorldCoord(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
+      pixelIn = cSys_p.referencePixel();
+//
+      Vector<Double> frequency(iMom.pInImage_p->shape()(iMom.momentAxis_p));
+      if (doCoordProfile) {
+         for (uInt i=0; i<sepWorldCoord.nelements(); i++) {
+            frequency(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
+         }
       }
+
+// If the coordinate of the moment axis is Spectral convert to km/s
+// Although I could work this out here, it would be decoupled from
+// ImageMoments which works the same thing out and sets the units.
+// So to ensure coupling, i pass in this switch via the IM object
+
+      if (iMom.convertToVelocity_p) {
+         AlwaysAssert(cSys.type(coordinate)==Coordinate::SPECTRAL, AipsError);  // Should never fail !
+//
+         const SpectralCoordinate& sc = cSys.spectralCoordinate(coordinate);
+         SpectralCoordinate sc0(sc);
+
+// Convert
+
+         if (doCoordProfile) {
+            sc0.frequencyToVelocity (sepWorldCoord, frequency, String("km/s"), iMom.velocityType_p);
+         }
+
+// Find increment in world units at reference pixel if needed
+
+         if (doIntScaleFactor) {
+            Quantum<Double> vel0, vel1;
+            Double pix0 = sc0.referencePixel()(0) - 0.5;
+            Double pix1 = sc0.referencePixel()(0) + 0.5;
+            sc0.pixelToVelocity (vel0, pix0, String("km/s"), iMom.velocityType_p);
+            sc0.pixelToVelocity (vel1, pix1, String("km/s"), iMom.velocityType_p);
+            integratedScaleFactor = abs(vel1.getValue() - vel0.getValue());
+            doneIntScale = True;
+         }
+     } 
    } else {
       os << LogIO::NORMAL
            << "You have asked for a coordinate moment from a non-separable " << endl;
       os << "axis.  This means a coordinate must be computed for each pixel " << endl;
       os << "of each profile which will cause performance degradation" << LogIO::POST;
    }
+//
+   if (doIntScaleFactor && !doneIntScale) {
+
+// We need the Integrated moment scale factor but the moment
+// axis is non-separable
+
+      const Coordinate& c = cSys.coordinate(coordinate);
+      Vector<Double> pixel(nPixelAxes);
+      Vector<Double> world0(nWorldAxes), world1(nWorldAxes);
+      pixel(axisInCoordinate) = c.referencePixel()(axisInCoordinate) - 0.5;
+      if (!c.toWorld(world0, pixel)) {
+         os << c.errorMessage() << LogIO::EXCEPTION;
+      }
+      pixel(axisInCoordinate) = c.referencePixel()(axisInCoordinate) + 0.5;
+      if (!c.toWorld(world1, pixel)) {
+         os << c.errorMessage() << LogIO::EXCEPTION;
+      }
+      integratedScaleFactor = abs(world1(axisInCoordinate) - world0(axisInCoordinate));
+      doneIntScale = True;
+   }
 }
-
-
 
 template <class T>
 void MomentCalcBase<T>::showGaussFit(const T peak,
@@ -1413,7 +1487,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
 // Set/check some dimensionality
 
-   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
+   constructorCheck(calcMoments_p, calcMomentsMask_p, selectMoments_p, nLatticeOut);
 
 // Fish out moment axis
 
@@ -1444,16 +1518,19 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
    plotter_p = device(iMom_p);
 
-// What is the axis type of the moment axis
-
-   momAxisType_p = momentAxisName(iMom_p);
-
 // Are we computing coordinate-dependent moments.  If so
 // precompute coordinate vector if moment axis separable
 
+   setCoordinateSystem (cSys_p, iMom_p);
    doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
    setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
-               doCoordProfile_p, doCoordRandom_p);
+               integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
+               doCoordRandom_p);
+
+// What is the axis type of the moment axis
+
+   momAxisType_p = momentAxisName(cSys_p, iMom_p);
+
 
 // Number of failed Gaussian fits 
    nFailed_p = 0;
@@ -1815,8 +1892,8 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
  
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, 
-                  doCoordRandom_p,
+   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, worldOut_p, 
+                  doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
@@ -1825,7 +1902,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
    for (i=0; i<Int(selectMoments_p.nelements()); i++) {
       moments(i) = calcMoments_p(selectMoments_p(i));
-      momentsMask(i) = True;
+      momentsMask(i) = calcMomentsMask_p(selectMoments_p(i));
    }
 }
 
@@ -1850,7 +1927,7 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 
 // Set/check some dimensionality
 
-   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
+   constructorCheck(calcMoments_p, calcMomentsMask_p, selectMoments_p, nLatticeOut);
 
 // Fish out moment axis
 
@@ -1877,16 +1954,18 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 
    plotter_p = device(iMom_p);
 
-// What is the axis type of the moment axis
-   
-   momAxisType_p = momentAxisName(iMom_p);
-
 // Are we computing coordinate-dependent moments.  If
 // so precompute coordinate vector is momebt axis separable
 
+   setCoordinateSystem (cSys_p, iMom_p);
    doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
    setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
-               doCoordProfile_p, doCoordRandom_p);
+               integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
+               doCoordRandom_p);
+
+// What is the axis type of the moment axis
+   
+   momAxisType_p = momentAxisName(cSys_p, iMom_p);
 
 // Are we fitting, automatically or interactively ?
 
@@ -2129,7 +2208,8 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
 // Fill all moments array
    
    T vMedian = 0;   
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordRandom_p,
+   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
+                  worldOut_p, doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
@@ -2139,6 +2219,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
    for (i=0; i<Int(selectMoments_p.nelements()); i++) {
       moments(i) = calcMoments_p(selectMoments_p(i));
       momentsMask(i) = True;
+      momentsMask(i) = calcMomentsMask_p(selectMoments_p(i));
    }
 }
 
@@ -2584,7 +2665,7 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 
 // Set/check some dimensionality
 
-   constructorCheck(calcMoments_p, selectMoments_p, nLatticeOut);
+   constructorCheck(calcMoments_p, calcMomentsMask_p, selectMoments_p, nLatticeOut);
 
 // Make all plots with same y range ?
 
@@ -2598,16 +2679,18 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 // Are we plotting ?
    plotter_p = device(iMom_p);
 
-// What is the axis type of the moment axis
-
-   momAxisType_p = momentAxisName(iMom_p);
-
 // Are we computing coordinate-dependent moments.  If so
 // precompute coordinate vector if moment axis is separable
- 
+
+   setCoordinateSystem (cSys_p, iMom_p);
    doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
    setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
-               doCoordProfile_p, doCoordRandom_p);
+               integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
+               doCoordRandom_p);
+
+// What is the axis type of the moment axis
+
+   momAxisType_p = momentAxisName(cSys_p, iMom_p);
 
 // Are we fitting, automatically or interactively ?
    
@@ -2783,7 +2866,8 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
        
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, pixelIn_p, worldOut_p, doCoordRandom_p,
+   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
+                  worldOut_p, doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq,
                   sumAbsDev, dMin, dMax, iMin, iMax);
 
@@ -2793,6 +2877,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
    for (i=0; i<Int(selectMoments_p.nelements()); i++) {
       moments(i) = calcMoments_p(selectMoments_p(i));
       momentsMask(i) = True;
+      momentsMask(i) = calcMomentsMask_p(selectMoments_p(i));
    }
 }
 
