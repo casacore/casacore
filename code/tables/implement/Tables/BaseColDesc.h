@@ -199,8 +199,11 @@ public:
 	{ return shape_p; }
 
     // Set the number of dimensions.
-    // This is only allowed for arrays, for which the dimensionality
-    // has not been defined yet.
+    // This is only allowed for arrays.
+    // <src>ndim</src> can be zero to clear the number of dimensions
+    // and the shape.
+    // Otherwise it can only be used if the dimensionality has not been
+    // defined yet.
     void setNdim (uInt ndim);
 
     // Set the predefined shape.
@@ -208,7 +211,18 @@ public:
     // has not been defined yet.
     // If the dimensionality has already been defined, it must match.
     // It will set the option FixedShape if not set yet.
+    // <br> The first version leaves the <src>Direct</src> option as is.
+    // The second version sets the <src>Direct</src> option as given.
+    // <group>
     void setShape (const IPosition& shape);
+    void setShape (const IPosition& shape, Bool directOption);
+    // </group>
+
+    // Set the options to the given value.
+    // Option <src>ColumnDesc::Direct</src> forces <src>FixedShape</src>.
+    // If <src>FixedShape</src> is not given (implicitly or explicitly),
+    // the column can have no shape, so its shape is cleared.
+    void setOptions (int options);
 
     // Get the maximum value length.
     uInt maxLength() const

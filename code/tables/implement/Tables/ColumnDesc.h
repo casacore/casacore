@@ -273,8 +273,11 @@ public:
 	{ return colPtr_p->shape(); }
 
     // Set the number of dimensions.
-    // This is only allowed for arrays, for which the dimensionality
-    // has not been defined yet.
+    // This is only allowed for arrays.
+    // <src>ndim</src> can be zero to clear the number of dimensions
+    // and the shape.
+    // Otherwise it can only be used if the dimensionality has not been
+    // defined yet.
     void setNdim (uInt ndim)
 	{ colPtr_p->setNdim (ndim); }
 
@@ -282,9 +285,22 @@ public:
     // This is only allowed for arrays, for which the shape
     // has not been defined yet.
     // If the dimensionality has already been defined, it must match.
-    // It will set the option FixedShape if not set yet.
+    // It will set the option <src>FixedShape</src> if not set yet.
+    // <br> The first version leaves the <src>Direct</src> option as is.
+    // The second version sets the <src>Direct</src> option as given.
+    // <group>
     void setShape (const IPosition& shape)
 	{ colPtr_p->setShape (shape); }
+    void setShape (const IPosition& shape, Bool directOption)
+	{ colPtr_p->setShape (shape, directOption); }
+    // </group>
+
+    // Set the options to the given value.
+    // Option <src>ColumnDesc::Direct</src> forces <src>FixedShape</src>.
+    // If <src>FixedShape</src> is not given (implicitly or explicitly),
+    // the column can have no shape, so its shape is cleared.
+    void setOptions (int options)
+	{ colPtr_p->setOptions (options); }
 
     // Get the maximum value length.
     uInt maxLength() const
