@@ -3,18 +3,16 @@
 \section{Introduction}
 
 The main intent of this paper is to provide a user level introduction to
-the {\tt aips++} exception mechanism with a basic introduction to the
-implementation. This should allow developers to use the mechanism.
+the {\tt C++} exception mechanism with a basic introduction to the
+way it is used in {\tt aips++}. This should allow developers to use the mechanism.
 
-This package provides a method to handle exceptional conditions. When
+{\tt C++} provides a standard method to handle exceptional conditions. When
 such conditions arise, control is transferred to a code block which
 can handle the exception, if one exists. If no handler exists which is capable
 of handling the exception, the program is aborted. This package handles 
 cleaning up the call stack which may have been created between when the handler
 was {\em installed} and when the exception was thrown. In addition, any
-objects\footnote{The objects must be derived from the {\tt Cleanup} object
-somewhere in it inheritance hierarchy to be automatically deleted} which were
-created during this period will be deleted.
+objects which were created on the stack during this period will be deleted.
 
 This provides a mechanism for transferring control from the point where an
 exceptional condition occurs to the code to handle the exception without
@@ -45,19 +43,19 @@ use of exceptions is cleaner.
 
 \section{Interface}
 
-This section describes the {\tt aips++} exception mechanism from the 
-perspective of a ``user'' of the system. It discusses the ARM interface, the
+This section describes the exception mechanism from the 
+perspective of a ``user'' of the system. It discusses the {\tt C++}
+interface, the
 mechanisms for automatic deletion of dynamically created objects, and the
 steps necessary to create new exception types whose objects can be 
 {\em thrown}.
 
-\subsection{ARM Interface}\index{exceptions - ARM interface}
+\subsection{C++ Interface}\index{exceptions - C++ interface}
 
-The {\tt aips++} exception interface conforms to the standards outlined in 
-the ARM. The ARM exceptions are based on the idea of {\tt try} and 
+The {\tt C++} exceptions are based on the idea of {\tt try} and 
 {\tt catch} blocks. The {\tt try} block contains the code
-which may throw an exception, and the {\tt catch} block, which for the
-{\tt aips++} mechanism must follow immediately after the {\tt try} block,
+which may throw an exception, and the {\tt catch} block, which
+must follow immediately after the {\tt try} block,
 contains the handlers for the various exceptions which may be thrown in the
 {\tt try} block. So in the simple case, one might have:
 \begin{verbatim}
@@ -71,13 +69,10 @@ try {
   cout << "Caught MinorError" << endl;
 } catch (MajorError xx) {
   cout << "Caught MajorError" << endl;
-} end_try;
+}
 \end{verbatim}
 \noindent
-The {\tt end\_try} is not part of the ARM standard, but it is required for the
-{\tt aips++} mechanism. Also, on some platforms catching a {\em reference} 
-instead of a {\em pointer} or an {\em object} can cause errors as a result
-of the exceptions implementation. In this example, depending on the variable 
+In this example, depending on the variable 
 {\tt how\_many} a different exception will be thrown, via {\tt throw()}.
 The exception will then be caught by the first {\tt catch} block that
 matches the exception. Thus, if {\tt MinorError} was derived from 
@@ -85,7 +80,7 @@ matches the exception. Thus, if {\tt MinorError} was derived from
 the {\tt MinorError} block for a thrown {\tt MinorError}. 
 
 It is also possible to have incremental recovery. A {\em caught} exception
-can be {\em rethrown} with {\tt rethrow()}. The following example 
+can be {\em rethrown} with {\tt throw}. The following example 
 illustrates this usage:
 \begin{verbatim}
 try {
@@ -96,10 +91,10 @@ try {
   cout << "Caught MinorError" << endl;
 } catch (MajorError xx) {
   cout << "Caught MajorError" << endl;
-  rethrow;
+  throw;
 } catch (TypedError xx) {
   cout << "Caught TypedError" << endl;
-} end_try;
+}
 \end{verbatim}
 \noindent
 In this example, the {\tt MajorError} catch block handles a {\tt MajorError}
@@ -110,7 +105,7 @@ opportunity to handle its portion of the error after the {\tt MajorError}
 catch block was finished. 
 
 These {\tt try}/{\tt catch} blocks can be nested to the level necessary as
-long as the introductory {\tt try} is balanced with a closing {\tt end\_try}.
+long as the introductory {\tt try} is balanced with a closing brace.
 The following example contains a nested try block:
 \begin{verbatim}
 try {
@@ -121,275 +116,65 @@ try {
     if (how_many == 3) throw(ExcpError(3));
   } catch (ExcpError xx) {
     throw(ExcpError(9));
-  } end_try;
+  }
 } catch (ExcpError xx) {
   cout << "Caught ExcpError" << endl;    
-} end_try;
+}
 \end{verbatim}
 
 
-\subsection{Cleanup Objects}
+\subsection{Deleting Objects}
 
-Another important portion of the exception handling mechanism is the section
-which manages the objects created between the point where the
+Another important portion of the exception handling mechanism is that
+it deletes the objects created between the point where the
 {\tt try}/{\tt catch} blocks are entered and the point where the exception
 is thrown. These object are automatically cleaned up when an exception
-occurs. The destructors are called for dynamically created objects, 
-automatically created objects and objects which are {\em physically} members
-of another object. Also, the storage space for dynamically created objects is 
-freed. 
+occurs. The destructors are called for automatically created objects, 
+but not for dynamically created objects which are not deleted by
+other objects.
 
-However, the user must do a few things to allow this to happen. The
-objects which are to be cleaned up in the event of an exception must be
-derived from the {\tt Cleanup} class. Any objects belonging to a 
-class derived from {\tt Cleanup} which were created between the point 
-where the {\tt catch} block that handles the exception is entered and the
-point where the exception was {\em thrown} will be automatically deleted.
-
-The class designer must also supply a {\tt cleanup()} function for each
-of the classes to be cleaned up in the event of an exception. This function
-should call the class' destructor:
+The programmer should use the templated {\tt PtrHolder} class to hold
+pointers to dynamically created objects. Because the PrtHolder object
+is automatically created, its destructor is called in case of an
+exception. That destructor deletes the pointer it holds, thus deletes
+the dynamically created object.
 \begin{verbatim}
-class foo: public Cleanup {
-  public:
-    ~foo() {}
-    void cleanup() {this->foo::~foo();}
-};
+try {
+  // True below means it's an array, False (the default) would mean
+  // a singleton object.
+  PtrHolder<Int> iholder(new Int[10000], True);
+  some_function_that_throws_exception();   // pointer is deleted
+} catch (...) {
+  cout << "Int array is nicely deleted" << endl;
+}
 \end{verbatim}
-\noindent
-{\tt this->foo::~foo()} is the best way for a member function to call its
-class' destructor. Other methods may fail on some platforms. In addition,
-one should not rely on {\tt cleanup()} being called; the destruction code
-should reside in the destructor. If a class which is derived from 
-{\tt Cleanup} fails to provide a {\tt cleanup()} member, then the destructor
-for that class may not be called.
-
-One important member function which one inherits from {\tt Cleanup} is
-{\tt makePermanent()}. This function removes the object from the control
-of the {\em cleanup} mechanism, thus the object can {\em survive} future
-exceptions. 
+Note that {\tt ...} is standard {\tt C++} syntax and means any exception.
 
 \subsection{Creating Exception Types}
 
-One of the advantages of the {\tt aips++} exception mechanism is that one can
+One of the advantages of the {\tt C++} exception mechanism is that one can
 design a class hierarchy of exceptions. This results in an a great amount 
 of flexibility. The reason for this is that one can {\em catch} whole groups 
 of exceptions with one catch block, and then handle them as appropriate. One 
 can also catch an exception with a specific handler, and the {\em rethrow} 
 the exception so that it can be caught with a more general handler.
 
-The root of the exception hierarchy is the class {\tt ExcpError}. This class
+The root of the exception hierarchy is the class {\tt AipsError}. This class
 must be the base class for all new exception hierarchies. All of the exceptions
 which are part of the {\tt aips++} kernel, {\tt IndexError}, {\tt AllocError},
 etc., are derived from the {\tt AipsError}. Thus, if one wished, all 
 exceptions resulting from the {\tt aips++} kernel could be caught by one catch
-block which catches {\tt AipsError}s, or all exceptions generated could be 
-caught by a catch block which catches {\tt ExcpError}s. Generally, it is a
+block which catches {\tt AipsError}s. Generally, it is a
 good practice to derive all exceptions for a given library from a library
-specific exception class, e.g. {\tt AipsError}, which is in turn derived 
-from {\tt ExcpError}.
+specific exception class, e.g. {\tt TableError}, which is in turn derived 
+from {\tt AipsError}.
 
-To add an exception class, a particular constructor must be supplied, a
-constructor which takes an {\tt ExcpError} pointer as a parameter. For 
-example, the following is the definition of the {\tt AipsError} class:
+{\tt AipsError} offers the const member function {\tt getMesg()}
+which returns the message stored with the exception. It can be used as:
 \begin{verbatim}
-class AipsError : public ExcpError {
-  protected:
-    String message;
-  public:
-    const String &getMesg() const {return(message);}
-    AipsError(const Char *str=0) : message(str) {message.makePermanent();}
-    AipsError(const String &str) : message(str) {message.makePermanent();}
-    AipsError(ExcpError *excp) : ExcpError(excp){
-      AipsError *tmp;
-      PCAST(tmp,AipsError,excp);
-      if (tmp) {
-        _equal = True;
-        message = tmp->message;
-        message.makePermanent();
-      } else {
-        _equal = False;
-      }
-    }
-    ~AipsError(){}
-};
-\end{verbatim}
-\noindent
-The reason why the constructor which takes an {\tt ExcpError} pointer is
-a bit opaque is because this constructor is the only hook which is available
-to the exception handling mechanism to perform a {\em type comparison} to 
-determine if the exception being caught matches the type of the thrown
-exception. This comparison is taking place on the line where the 
-{\em checked} cast is applied \footnote{See {\tt aips++} note 150 for more 
-information about the run time type system.}. If the cast is successful, 
-then the {\tt \_equal} boolean member variable is set to {\tt True}, 
-otherwise it is set to {\tt False}. This flag indicates if the catch 
-clause to which this object belongs should be executed.
-
-One of the {\bf most} important things to note about this example it that 
-it contains a {\tt String} member variable. {\tt String} is derived from the 
-{\tt Cleanup} class, so ordinarily the {\tt message} member variable
-would be destructed whenever an exception occurred. However, in this case 
-that would be disastrous because the whole point is for the {\tt String} 
-to persist from the point where the exception is thrown to the point where 
-it is caught. The {\tt makePermanent()} function calls removes the management
-of {\tt message} from the control of the exception mechanism. If this
-call were taken out, the {\tt message} would be created as part of the
-{\tt throw()}, but the {\tt message}'s destructor would later be called as 
-part of the exception process, destroying the message before the {\tt catch}.
-
-There are two cases where one must worry about unintended destruction as the
-result of an exception:
-\begin{enumerate}
-\item
-objects stored in an error class, e.g. {\tt AipsError} above
-\item
-object pointers stored by another object, where either object is derived
-from {\tt Cleanup}
-\end{enumerate}
-\noindent
-In the the first case, the stored object is deleted as a result of the
-exception process when it {\em must} survive to be returned for a catch
-block as discussed above. In the second case, a pointer to an object is saved 
-and if not made permanent the stored object is open to unintentional 
-deletion. For example,
-\begin{verbatim}
-Slist<String*> list;
 try {
-  list.addRight(new String("hello"));
-  throw(ExcpError());
-} catch (ExcpError x) {
-} end_try;
+  ...
+} catch (AipsError& x) {
+  cerr << "Unexpected exception: " << x.getMesg() << endl;
+}
 \end{verbatim}
-\noindent
-In this case, {\tt list} is allocated outside of the {\tt try} block so
-it will survive any exceptions thrown within the try block. However, the
-{\tt String} object which is created and stored inside of list in the
-{\tt try} block will not survive the thrown {\tt ExcpError}; it will be
-deleted unless steps are taken to prevent its deletion. Unfortunately, after 
-the {\tt try} block {\tt list} still retains a pointer to the now deleted 
-{\tt String} object. The {\tt String} object needs to be made permanent 
-to prevent this from happening.
-
-The {\tt makePermanent} member function is not always sufficient. Take the
-{\tt IndexError} class as an example,
-\begin{verbatim}
-template<class t> class IndexError<t> : public IndexError {
-  protected:
-    FreezeCleanup f;
-    t oIndex;                 // Offending Index
-    UnfreezeCleanup u;
-  public:
-    IndexError<t>(t oI, const Char *str=0) : oIndex(oI), IndexError(str) {}
-    IndexError<t>(t oI, const String &str) : oIndex(oI), IndexError(str) {}
-    IndexError<t>(ExcpError *excp) : IndexError(excp) {
-      IndexError<t> *tmp;
-      PCAST(tmp,IndexError,excp);
-      if (tmp) {
-        oIndex = (*tmp).oIndex;
-        _equal = True;
-      } else {
-        _equal = False;}}
-};
-\end{verbatim}
-\noindent
-
-There the offending index, {\tt oIndex}, is stored as a value. There are
-no problems if the type of {\tt oIndex} happens to be {\tt Int}, but if 
-its type is {\tt String} we have problems once again. In this case, 
-{\tt makePermanent} cannot be called because the type, {\tt t}, is 
-not known, and thus it may or may not have a {\tt makePermanent} member 
-function. The {\tt FreezeCleanup} and {\tt UnfreezeCleanup} classes solve 
-the problem in this case. The {\tt FreezeCleanup} object suspends 
-{\tt Cleanup} management until either the {\tt FreezeCleanup} object, 
-here {\tt f}, is deleted or an {\tt UnfreezeCleanup} object is created. In 
-the above example, {\tt f} is initialized suspending {\tt Cleanup} 
-management in the process, {\tt oIndex} is initialized unmanaged by 
-{\tt Cleanup}, and finally {\tt u} is initialized re-enabling {\tt Cleanup}
-management. Extreme care, must be taken to avoid suspending Cleanup management
-for the rest of the program. Either a {\tt UnfreezeCleanup} object must be 
-created or the {\tt Cleanup::enable()} function must be called when 
-{\tt Cleanup} management is to be resumed.
-
-If the methods outlined above are not followed when applicable, insidious
-bugs can result. A common symptom of these bugs is multiple deletion of
-objects, i.e. once by {\tt Cleanup} and again by the the destructor of
-a class which survived the exception. 
-
-\section{Implementation}\index{exceptions - aips++ implementation}
-
-This section briefly discuses the implementation of the {\tt aips++} exception
-handling system. The basic underlying system is based on the design discussed
-in a paper by William Miller from the 1988 Usenix Conference 
-\footnote{W. Miller, "Exception Handling Without Language Extensions", 1988 
-Usenix C++ Conference Proceedings}. In addition, an interface is built on top
-of this exception handling mechanism which is compliant with ARM style 
-exception handling mechanism described in the previous section. 
-
-\subsection{Supporting System}
-
-William Miller's  original system supported both resumptive 
-\footnote{Here {\em resumptive} implies the ability to continue from 
-the point where the exception was thrown, rather than continuing from 
-the point where the exception was caught.}, and non-resumptive exceptions. 
-Our underlying system is completely non-resumptive as this is in line
-with ARM style exception requirements.
-
-All of the context switches which take place are performed using {\em setjmp}
-and {\tt longjmp}. These standard C functions allow for saving and restoring
-the call stack and registers \footnote{Floating point registers are not
-typically saved.}. 
-
-The object deletions are managed by maintaining two stacks. The first stack
-contains all of the installed exception handlers; pushed on as they were 
-created. The second stack contains all of the {\tt Cleanup} objects which 
-are created, including the exception handlers. Each exception handler is 
-given the chance to handle the exception, until a handler chooses to 
-{\em abort} or {\em retry}. If a handler chooses to abort, objects are
-popped from the stack of {\tt Cleanup} objects and the objects deleted 
-until the handler which threw the exception is encountered. At this point, 
-{\tt longjmp()} returns control to the point where the handler was 
-installed. This is the process which takes place to service ARM style 
-exceptions.
-
-\subsection{ARM Interface}
-
-The ARM interface is a thin layer atop the exceptions described previously.
-Much use is made of the standard {\em cpp} {\tt \#define}, to implement
-the {\tt catch} and {\tt try} blocks. Beyond this, it is mainly bookkeeping.
-The important pieces of information which are maintained are:
-\begin{itemize}
-\item
-The {\em thrown} exception.
-\item
-Which {\tt catch} blocks have been executed. This is important for a
-{\tt rethrow()}. The {\em cpp} standard macros {\tt \_\_FILE\_\_} and
-{\tt \_\_LINE\_\_} are useful here.
-\item
-The exception which was last thrown, again for {\tt rethrow()}.
-\item
-An indicator to signal if an exception is {\em uncaught} to allow exit.
-\item
-The file and line where the exception was thrown for a descriptive error
-message when an exception goes {\em uncaught}.
-\item
-The {\em true} type of the uncaught exception, obtained via RTTI
-\item
-An indicator to signal if an exception has been rethrown to allow special
-processing in the exception handler.
-\end{itemize}
-\noindent
-This is most of the information which is maintained to provide an
-ARM compatible exception interface with descriptive error messages when
-an exception goes unhandled. The following is a typical error message:
-\begin{verbatim}
-Uncaught Exception(aips_MinorError_):
-    File           - test.C
-    Line           - 44
-    Throwing Class - trying
-\end{verbatim}
-\noindent
-All of this information is collected ``automatically'' through the use
-of preprocessor macros. The {\em Throwing Class} information is collected
-via an extra RTTI member function, {\tt aips\_typeName\_\_()}, which was
-added by the RTTI expander for use by the exception mechanism.
