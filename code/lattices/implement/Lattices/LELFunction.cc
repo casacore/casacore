@@ -261,7 +261,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       NumericTraits<T>::PrecisionType sumVal = 0;
-      uInt nrVal = 0;
+      Int nrVal = 0;
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       Bool delData, delMask;
@@ -303,7 +303,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       if (nrVal == 0) {
 	  return LELScalar<T>();           // no element found
       }
-      return T(sumVal / Int(nrVal));
+      return T(sumVal / nrVal);
    }
    case LELFunctionEnums::SUM :
    {
@@ -579,16 +579,14 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	       arg_p[1].eval (tmp);
 	       result.value() = tmp;
 	    } else {
-               LELArray<T>& resultRef(result);
-	       arg_p[1].eval(resultRef, section);
+	       arg_p[1].eval (result, section);
 	    }
 	 } else {
 	    if (arg_p[2].isScalar()) {
 	       arg_p[2].eval (tmp);
 	       result.value() = tmp;
 	    } else {
-               LELArray<T>& resultRef(result);
-	       arg_p[2].eval(resultRef, section);
+	       arg_p[2].eval (result, section);
 	    }
 	 }
       } else {
@@ -650,8 +648,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	       }
 	    } else {
 		// Handle scalar,array case.
-               LELArray<T>& resultRef(result);
-	       arg_p[2].eval(resultRef, section);
+	       arg_p[2].eval (result, section);
 	       resData = result.value().getStorage (deleteRes);
 	       if (makeMask) {
 		  if (result.isMasked()) {
@@ -679,8 +676,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 // The first operand is an array.
 
 	 } else {
-	    LELArray<T>& resultRef(result);
-	    arg_p[1].eval(resultRef, section);
+	    arg_p[1].eval (result, section);
 	    resData = result.value().getStorage (deleteRes);
 	    if (makeMask) {
 	       if (result.isMasked()) {
