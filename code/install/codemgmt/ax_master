@@ -5811,3 +5811,4 @@
 16 134 src rm trial/implement/MeasurementSets/OldMSSimulator.h
 16 134 src rm trial/implement/MeasurementSets/OldMSSummary.cc
 16 134 src rm trial/implement/MeasurementSets/OldMSSummary.h
+16 134 src rm trial/apps/oldms
