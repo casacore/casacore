@@ -1,6 +1,3 @@
-
-
-
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
 //# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
@@ -139,12 +136,16 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
 {
    velocity.resize(pixel.nelements());
    makeVelocityMachine(velUnit, velType);
-//
+
+// Perhaps its faster to make a vector of world and do them 
+// all in one go in the machine ?  Haven't tested it.
+
    static Double world;
    for (uInt i=0; i<pixel.nelements(); i++) {
       if (!toWorld(world, pixel(i))) return False;
       velocity(i) = pVelocityMachine_p->makeVelocity(world).getValue();
    }
+//
    return True;
 }
 
@@ -179,6 +180,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Ve
    for (uInt i=0; i<frequency.nelements(); i++) {
       velocity(i) = pVelocityMachine_p->makeVelocity(frequency(i)).getValue();
    }
+//
    return True;
 }
 
@@ -193,6 +195,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const M
 {
    makeVelocityMachine(velUnit, velType);
    velocity = pVelocityMachine_p->operator()(frequency);
+//
    return True;
 }
 
@@ -218,6 +221,7 @@ Bool SpectralCoordinate::velocityToPixel (Vector<Double>& pixel, const Vector<Do
       if (!toPixel(pix, frequency)) return False;
       pixel(i) = pix;
    }
+//
    return True;
 }
 
@@ -225,8 +229,8 @@ Bool SpectralCoordinate::velocityToFrequency (Double& frequency, Double velocity
                                               const String& velUnit, MDoppler::Types velType)
 {
    makeVelocityMachine(velUnit, velType);
-//
    frequency = pVelocityMachine_p->makeFrequency (velocity).getValue();
+//
    return True;
 }
 
@@ -239,11 +243,15 @@ Bool SpectralCoordinate::velocityToFrequency (Vector<Double>& frequency, const V
    for (uInt i=0; i<velocity.nelements(); i++) {
       frequency(i) = pVelocityMachine_p->makeFrequency (velocity(i)).getValue();
    }
+//
    return True;
 }
 
 void SpectralCoordinate::makeVelocityMachine (const String& velUnit, MDoppler::Types velType)
 {
+   static String vU;
+   static MDoppler::Types vT;
+//
    if (pVelocityMachine_p==0) {
       Unit freqUnit(worldAxisUnits()(0));
       Double rF0 = restFrequency();
@@ -252,8 +260,20 @@ void SpectralCoordinate::makeVelocityMachine (const String& velUnit, MDoppler::T
       pVelocityMachine_p = 
          new VelocityMachine(MFrequency::Ref(frequencySystem()), freqUnit,
                              MVFrequency(rF1), MDoppler::Ref(velType), Unit(velUnit));
+//
+      vU = velUnit;
+      vT = velType;
    } else {
-      pVelocityMachine_p->set(Unit(velUnit));
-      pVelocityMachine_p->set(MDoppler::Ref(velType));
+
+// Don't reset unless we have to as it's expensive
+
+      if (vU!=velUnit) {
+         pVelocityMachine_p->set(Unit(velUnit));
+         vU = velUnit;
+      }
+      if (vT!=velType) {
+         pVelocityMachine_p->set(MDoppler::Ref(velType));
+         vT = velType;
+      }
    }
 }
