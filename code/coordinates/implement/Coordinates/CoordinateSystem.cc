@@ -2486,6 +2486,41 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
               }
               break;
              }
+            case 5:
+
+// Percentage linear polarization not supported
+
+              {
+                 os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial percentage polarization value." << endl;
+                 os << "This is not supported.  Will use fractional polarization instead " << endl;
+                 os << "You must scale the image by 0.01" << LogIO::POST;
+                 stokes(k) = Stokes::PFlinear;
+                 break;
+              }
+            case 6:
+              stokes(k) = Stokes::PFlinear;
+              break;
+            case 7:
+              stokes(k) = Stokes::Pangle;
+              break;
+            case 8:
+
+// Spectral index not supported
+
+              {
+                 os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectal index value." << endl;
+                 os << "This is not supported, cannot continue building the StokesCoordinate" << LogIO::POST;
+                 return False;
+              }
+            case 9:
+
+// Optical depth not supported
+
+              {
+                 os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
+                 os << "value.  This is not supported, cannot continue building the StokesCoordinate" << LogIO::POST;
+                 return False;
+              }
 	    default:
               os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
                  << " was detected; this is not valid." << endl;
