@@ -635,8 +635,9 @@ void SSMBase::removeRow (uInt aRowNr)
       CanonicalConversion::toLocal (aBucket, aBucketPtr+aCLength/2);
       itsCache->removeBucket();
     }
-    itsFirstIdxBucket=-1;
-    itsNrIdxBuckets=0;
+    itsFirstIdxBucket  = -1;
+    itsIdxBucketOffset = 0;
+    itsNrIdxBuckets    = 0;
     create(itsNrRows);
     //    recreate();
   }
