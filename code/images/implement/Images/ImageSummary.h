@@ -183,6 +183,9 @@ public:
 // Retrieve mask names
    Vector<String> maskNames() const;
 
+// Retrieve region names
+   Vector<String> regionNames() const;
+
 // Retrieve default mask name.  Empty if none
    String defaultMaskName() const;
 
@@ -213,6 +216,7 @@ private:
    const ImageInterface<T>* pImage_p;
 //
     String makeMasksString() const;
+    String makeRegionsString() const;
 };
 
 #endif
