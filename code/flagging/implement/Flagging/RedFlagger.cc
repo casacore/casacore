@@ -238,7 +238,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 {
  
   setdata_p = True;
-  LogIO os(LogOrigin("autuflag", "setdata()", WHERE));
+  LogIO os(LogOrigin("autoflag", "setdata()", WHERE));
   if (ms.isNull()) {
     os << LogIO::SEVERE << "NO MeasurementSet attached"
        << LogIO::POST;
@@ -443,7 +443,7 @@ Bool RedFlagger::selectDataChannel(VisSet& vs, Vector<Int>& spectralwindowids,
 			       MRadialVelocity& mDataStart, 
 			       MRadialVelocity& mDataStep){
 
-  LogIO os(LogOrigin("Imager", "selectDataChannel()", WHERE));
+  LogIO os(LogOrigin("RedFlagger", "selectDataChannel()", WHERE));
   
   if(dataMode=="channel") {
       if (dataNchan.nelements() != spectralwindowids.nelements()){
@@ -1087,7 +1087,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       {
       os << "Writing the following to MS HISTORY Table:" << LogIO::POST;
       logSink_p.clearLocally();
-      LogIO oss(LogOrigin("RedFlagger", "run()"), logSink_p);
+      LogIO oss(LogOrigin("autoflag", "run()"), logSink_p);
       os=oss;
       this->summary(agents, opt, ind_base);
       printSummaryReport(chunk,opt);
