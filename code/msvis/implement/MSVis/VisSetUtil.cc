@@ -43,10 +43,10 @@
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <trial/MeasurementEquations/VisSetUtil.h>
 
-#include <aips/Measures/UnitMap.h>
-#include <aips/Measures/UnitVal.h>
+#include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 
 #include <aips/Logging.h>
 #include <aips/Logging/LogIO.h>

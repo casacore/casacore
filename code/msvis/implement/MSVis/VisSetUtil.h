@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementEquations/VisSet.h>
 
