@@ -42,8 +42,6 @@ template <class T> class MomentCalcBase;
 template <class T> class SubImage;
 template <class T> class MaskedImage;
 template <class T> class Lattice;
-template <class T> class PagedImage;
-template <class T> class ImageInterface;
 class CoordinateSystem;
 class IPosition;
 class LogIO;
@@ -59,8 +57,8 @@ class Unit;
 // </reviewed>
 // 
 // <prerequisite>
+//   <li> <linkto class="MaskedImage">ImageInterface</linkto>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
-//   <li> <linkto class="SubImage">SubImage</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
 //   <li> <linkto class="MomentCalculator">MomentCalculator</linkto>
 // </prerequisite>
@@ -177,7 +175,7 @@ class Unit;
 //
 //      LogOrigin or("myClass", "myFunction(...)", WHERE);
 //      LogIO os(or);
-//      ImageMoments<Float> moment(inName, os);
+//      ImageMoments<Float> moment(SubImage<Float>(inName), os);
 //
 //// Specify state via control functions
 //
@@ -216,7 +214,7 @@ class Unit;
 // </note>
 //
 // <note role=caution>
-// Note that if the <src>ImageInterface</src> object goes out of scope, this
+// Note that if the <src>MaskedImage</src> object goes out of scope, this
 // class will retrieve and generate rubbish as it just maintains a pointer
 // to the image.
 // </note>
