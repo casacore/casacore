@@ -948,7 +948,7 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
          oss << mVA2.string(MVAngle::ANGLE,prec);
       }
 //
-      oss << ends;
+      // oss << ends;
       return String(oss);
    }
 
@@ -1019,7 +1019,7 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
       oss << value;
    }
 //
-   oss << ends;
+   // oss << ends;
    return String(oss);
 }
 
@@ -1066,7 +1066,7 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
       oss.precision(prec);
       oss << value;
    }
-   oss << ends;
+   // oss << ends;
    return String(oss);
 }
 
@@ -1153,7 +1153,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
       if (!exclude(i)) {
          if (names_p(i) != dCoord.names_p(i)) {
             oss << "The DirectionCoordinates have differing axis names for axis "
-                << i << ends;
+                << i;
             set_error(String(oss));
             return False;      
          }
@@ -1163,7 +1163,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
       if (!exclude(i)) {
          if (units_p(i) != dCoord.units_p(i)) {
             oss << "The DirectionCoordinates have differing axis units for axis "
-                << i << ends;
+                << i;
             set_error(String(oss));
             return False;      
          }
