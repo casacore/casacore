@@ -205,11 +205,11 @@ Bool doIt (Int n, Float x, Bool nan)
 main (int argc, char **argv)
 {
    Input inputs(1);
-   inputs.Version ("$Revision$");
-   inputs.Create("n", "100", "Number of tries");
+   inputs.version ("$Revision$");
+   inputs.create("n", "100", "Number of tries");
  
-   inputs.ReadArguments(argc, argv);
-   const Int n = inputs.GetInt("n");
+   inputs.readArguments(argc, argv);
+   const Int n = inputs.getInt("n");
    cout << "n = " << n << endl;
 //
    Bool ok = True;
