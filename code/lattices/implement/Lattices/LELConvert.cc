@@ -27,6 +27,7 @@
 
 
 #include <trial/Lattices/LELConvert.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 
@@ -58,14 +59,14 @@ LELConvert<T,F>::~LELConvert()
 
 template <class T, class F>
 void LELConvert<T,F>::eval (Array<T>& result,
-                      const PixelRegion& region) const
+                      const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELConvert::eval" << endl;
 #endif
 
    Array<F> temp(result.shape());
-   pExpr_p->eval (temp, region);
+   pExpr_p->eval (temp, section);
    convertArray (result, temp);
 }
 

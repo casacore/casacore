@@ -27,7 +27,7 @@
 
 #include <trial/Lattices/LELFunction.h>
 #include <trial/Lattices/LELFunctionEnums.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <aips/Lattices/IPosition.h>
@@ -102,7 +102,7 @@ LELFunctionFloat::~LELFunctionFloat()
 
 
 void LELFunctionFloat::eval(Array<Float>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionFloat:: eval" << endl;
@@ -113,12 +113,12 @@ void LELFunctionFloat::eval(Array<Float>& result,
       case LELFunctionEnums::ABS :
       {
          if (arg_p[0].dataType() == TpFloat) {
-            arg_p[0].eval(result, region);
+            arg_p[0].eval(result, section);
             Array<Float> tmp(abs(result));
             result.reference(tmp);
          } else {
             Array<Complex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, region);
+            arg_p[0].eval(tmpC, section);
    	    amplitude(result, tmpC);
          }
          break;
@@ -126,17 +126,17 @@ void LELFunctionFloat::eval(Array<Float>& result,
       case LELFunctionEnums::ARG :
       {
          Array<Complex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, region);
+         arg_p[0].eval(tmpC, section);
          phase(result, tmpC);
          break;
       }
       case LELFunctionEnums::REAL :
       {
          if (arg_p[0].dataType() == TpFloat) {
-            arg_p[0].eval(result, region);      // The real part of a real is the real !
+            arg_p[0].eval(result, section);      // The real part of a real is the real !
          } else {
             Array<Complex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, region);
+            arg_p[0].eval(tmpC, section);
    	    real(result, tmpC);
          }
          break;
@@ -144,7 +144,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
       case LELFunctionEnums::IMAG :
       {
          Array<Complex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, region);
+         arg_p[0].eval(tmpC, section);
          imag(result, tmpC);
          break;
       }
@@ -156,7 +156,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
          Float scalarTemp;
          arg_p[0].eval(scalarTemp);
          Array<Float> arrayTemp(result.shape());
-         arg_p[1].eval(arrayTemp, region);
+         arg_p[1].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::MIN :
    	    min (result, arrayTemp, scalarTemp);
@@ -172,7 +172,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
          Float scalarTemp;
          arg_p[1].eval(scalarTemp);
          Array<Float> arrayTemp(result.shape());
-         arg_p[0].eval(arrayTemp, region);
+         arg_p[0].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::MIN :
 	    min (result, arrayTemp, scalarTemp);
@@ -193,8 +193,8 @@ void LELFunctionFloat::eval(Array<Float>& result,
       } else {
          Array<Float> tempLeft(result.shape());
          Array<Float> tempRight(result.shape());
-         arg_p[0].eval(tempLeft, region);
-         arg_p[1].eval(tempRight, region);
+         arg_p[0].eval(tempLeft, section);
+         arg_p[1].eval(tempRight, section);
          switch(function_p) {
          case LELFunctionEnums::ATAN2 :
          {
@@ -364,7 +364,7 @@ LELFunctionDouble::~LELFunctionDouble()
 
 
 void LELFunctionDouble::eval(Array<Double>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionDouble:: eval" << endl;
@@ -375,12 +375,12 @@ void LELFunctionDouble::eval(Array<Double>& result,
       case LELFunctionEnums::ABS :
       {
          if (arg_p[0].dataType() == TpDouble) {
-            arg_p[0].eval(result, region);
+            arg_p[0].eval(result, section);
             Array<Double> tmp(abs(result));
             result.reference(tmp);
          } else {
             Array<DComplex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, region);
+            arg_p[0].eval(tmpC, section);
             amplitude(result, tmpC);
          }
          break;
@@ -388,17 +388,17 @@ void LELFunctionDouble::eval(Array<Double>& result,
       case LELFunctionEnums::ARG :
       {
          Array<DComplex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, region);
+         arg_p[0].eval(tmpC, section);
          phase(result, tmpC);
          break;
       }
       case LELFunctionEnums::REAL :
       {
          if (arg_p[0].dataType() == TpDouble) {
-            arg_p[0].eval(result, region);      // The real part of a real is the real !
+            arg_p[0].eval(result, section);      // The real part of a real is the real !
          } else {
             Array<DComplex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, region);
+            arg_p[0].eval(tmpC, section);
    	    real(result, tmpC);
          }
          break;
@@ -406,7 +406,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
       case LELFunctionEnums::IMAG :
       {
          Array<DComplex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, region);
+         arg_p[0].eval(tmpC, section);
          imag(result, tmpC);
          break;
       }
@@ -418,7 +418,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
          Double scalarTemp;
          arg_p[0].eval(scalarTemp);
          Array<Double> arrayTemp(result.shape());
-         arg_p[1].eval(arrayTemp, region);
+         arg_p[1].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::MIN :
    	    min (result, arrayTemp, scalarTemp);
@@ -434,7 +434,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
          Double scalarTemp;
          arg_p[1].eval(scalarTemp);
          Array<Double> arrayTemp(result.shape());
-         arg_p[0].eval(arrayTemp, region);
+         arg_p[0].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::MIN :
             min (result, arrayTemp, scalarTemp);
@@ -455,8 +455,8 @@ void LELFunctionDouble::eval(Array<Double>& result,
       } else {
          Array<Double> tempLeft(result.shape());
          Array<Double> tempRight(result.shape());
-         arg_p[0].eval(tempLeft, region);
-         arg_p[1].eval(tempRight, region);
+         arg_p[0].eval(tempLeft, section);
+         arg_p[1].eval(tempRight, section);
          switch(function_p) {
          case LELFunctionEnums::ATAN2 :
          {
@@ -643,7 +643,7 @@ LELFunctionComplex::~LELFunctionComplex()
 
 
 void LELFunctionComplex::eval(Array<Complex>& result,
-			      const PixelRegion& region) const
+			      const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionComplex:: eval" << endl;
@@ -653,7 +653,7 @@ void LELFunctionComplex::eval(Array<Complex>& result,
       switch (function_p) {
       case LELFunctionEnums::CONJ :
       {   
-         arg_p[0].eval(result, region);
+         arg_p[0].eval(result, section);
          Array<Complex> tmpC(conj(result));
          result.reference(tmpC);
          break;
@@ -675,7 +675,7 @@ void LELFunctionComplex::eval(Array<Complex>& result,
          }
          Double exponent = scalarTemp.real();
          Array<Complex> arrayTemp(result.shape());
-         arg_p[0].eval(arrayTemp, region);
+         arg_p[0].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::POW :
          {
@@ -690,8 +690,8 @@ void LELFunctionComplex::eval(Array<Complex>& result,
       } else {
          Array<Complex> tempLeft(result.shape());
          Array<Complex> tempRight(result.shape());
-         arg_p[0].eval(tempLeft, region);
-         arg_p[1].eval(tempRight, region);
+         arg_p[0].eval(tempLeft, section);
+         arg_p[1].eval(tempRight, section);
          switch(function_p) {
          case LELFunctionEnums::POW :
          {
@@ -790,7 +790,7 @@ LELFunctionDComplex::~LELFunctionDComplex()
 
 
 void LELFunctionDComplex::eval(Array<DComplex>& result,
-			      const PixelRegion& region) const
+			      const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionDComplex:: eval" << endl;
@@ -800,7 +800,7 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
       switch (function_p) {
       case LELFunctionEnums::CONJ :
       {   
-         arg_p[0].eval(result, region);
+         arg_p[0].eval(result, section);
          Array<DComplex> tmpC(conj(result));
          result.reference(tmpC);
          break;
@@ -822,7 +822,7 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
          }
          Double exponent = scalarTemp.real();
          Array<DComplex> arrayTemp(result.shape());
-         arg_p[0].eval(arrayTemp, region);
+         arg_p[0].eval(arrayTemp, section);
          switch (function_p) {
          case LELFunctionEnums::POW :
          {
@@ -837,8 +837,8 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
       } else {
          Array<DComplex> tempLeft(result.shape());
          Array<DComplex> tempRight(result.shape());
-         arg_p[0].eval(tempLeft, region);
-         arg_p[1].eval(tempRight, region);
+         arg_p[0].eval(tempLeft, section);
+         arg_p[1].eval(tempRight, section);
          switch(function_p) {
          case LELFunctionEnums::POW :
          {
@@ -921,7 +921,7 @@ LELFunctionBool::~LELFunctionBool()
 
 
 void LELFunctionBool::eval(Array<Bool>&,
-			   const PixelRegion&) const
+			   const Slicer&) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionBool:: eval" << endl;

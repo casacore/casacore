@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LELBinary.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h> 
@@ -66,7 +66,7 @@ LELBinaryBool::~LELBinaryBool()
 
 
 void LELBinaryBool::eval(Array<Bool>& result,
-			 const PixelRegion& region) const
+			 const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinaryBool: eval " << endl;
@@ -77,8 +77,8 @@ void LELBinaryBool::eval(Array<Bool>& result,
        {
           Array<Bool> templ(result.shape());
 	  Array<Bool> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, region);
-	  pRightExpr_p->eval(tempr, region);
+	  pLeftExpr_p->eval (templ, section);
+	  pRightExpr_p->eval(tempr, section);
 	  Array<Bool> res(templ == tempr);
 	  result.reference (res);
        }
@@ -87,8 +87,8 @@ void LELBinaryBool::eval(Array<Bool>& result,
        {
           Array<Bool> templ(result.shape());
 	  Array<Bool> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, region);
-	  pRightExpr_p->eval(tempr, region);
+	  pLeftExpr_p->eval (templ, section);
+	  pRightExpr_p->eval(tempr, section);
 	  Array<Bool> res(templ != tempr);
 	  result.reference (res);
        }
@@ -98,18 +98,18 @@ void LELBinaryBool::eval(Array<Bool>& result,
 	  if (pLeftExpr_p->getScalar()) {
 	     result = True;
           } else {
-	     pRightExpr_p->eval(result, region);
+	     pRightExpr_p->eval(result, section);
 	  }
        } else if (pRightExpr_p->isScalar()) {
 	  if (pRightExpr_p->getScalar()) {
 	     result = True;
           } else {
-	     pLeftExpr_p->eval(result, region);
+	     pLeftExpr_p->eval(result, section);
 	  }
        } else {
           Array<Bool> temp(result.shape());
-	  pLeftExpr_p->eval(result, region);
-	  pRightExpr_p->eval(temp, region);
+	  pLeftExpr_p->eval(result, section);
+	  pRightExpr_p->eval(temp, section);
 	  result = result || temp;
        }
        break;
@@ -118,18 +118,18 @@ void LELBinaryBool::eval(Array<Bool>& result,
 	  if (! pLeftExpr_p->getScalar()) {
 	     result = False;
           } else {
-	     pRightExpr_p->eval(result, region);
+	     pRightExpr_p->eval(result, section);
 	  }
        } else if (pRightExpr_p->isScalar()) {
 	  if (! pRightExpr_p->getScalar()) {
 	     result = False;
           } else {
-	     pLeftExpr_p->eval(result, region);
+	     pLeftExpr_p->eval(result, section);
 	  }
        } else {
           Array<Bool> temp(result.shape());
-	  pLeftExpr_p->eval(result, region);
-	  pRightExpr_p->eval(temp, region);
+	  pLeftExpr_p->eval(result, section);
+	  pRightExpr_p->eval(temp, section);
 	  result = result && temp;
        }
        break;

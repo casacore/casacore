@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h> 
@@ -52,14 +52,14 @@ LELUnaryBool::~LELUnaryBool()
 
 
 void LELUnaryBool::eval(Array<Bool>& result,
-			const PixelRegion& region) const
+			const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnaryBool:: eval " << endl;
 #endif
 
 // Get the value and apply the unary operation
-   pExpr_p->eval(result, region);
+   pExpr_p->eval(result, section);
    switch(op_p) {
    case LELUnaryEnums::NOT :
    {

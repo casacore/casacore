@@ -27,7 +27,7 @@
 
 #include <trial/Lattices/LELFunction.h>
 #include <trial/Lattices/LELFunctionEnums.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <aips/Lattices/IPosition.h>
@@ -70,14 +70,14 @@ LELFunction1D<T>::~LELFunction1D()
 
 template <class T>
 void LELFunction1D<T>::eval(Array<T>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunction1D:: eval" << endl;
 #endif
 
 // Evaluate the expression
-   pExpr_p->eval(result, region);
+   pExpr_p->eval(result, section);
 
 // Apply the 1D function
    switch(function_p) {
@@ -306,14 +306,14 @@ LELFunctionReal1D<T>::~LELFunctionReal1D()
 
 template <class T>
 void LELFunctionReal1D<T>::eval(Array<T>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionReal1D:: eval" << endl;
 #endif
 
 // Evaluate the expression
-   pExpr_p->eval(result, region);
+   pExpr_p->eval(result, section);
 
 // Apply the Real1D function
    switch(function_p) {
@@ -459,7 +459,7 @@ LELFunctionND<T>::~LELFunctionND()
 
 template <class T>
 void LELFunctionND<T>::eval(Array<T>& result,
-			    const PixelRegion& region) const
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionND:: eval" << endl;
@@ -480,19 +480,19 @@ void LELFunctionND<T>::eval(Array<T>& result,
 	       arg_p[1].eval (tmp);
 	       result = tmp;
 	    } else {
-	       arg_p[1].eval (result, region);
+	       arg_p[1].eval (result, section);
 	    }
 	 } else {
 	    if (arg_p[2].isScalar()) {
 	       arg_p[2].eval (tmp);
 	       result = tmp;
 	    } else {
-	       arg_p[2].eval (result, region);
+	       arg_p[2].eval (result, section);
 	    }
 	 }
       } else {
 	 Array<Bool> tmpb(result.shape());
-	 arg_p[0].eval (tmpb, region);
+	 arg_p[0].eval (tmpb, section);
 	 Bool deleteTmpb;
 	 const Bool* tmpbData = tmpb.getStorage (deleteTmpb);
 	 const Bool* tmpbPtr = tmpbData;
@@ -514,7 +514,7 @@ void LELFunctionND<T>::eval(Array<T>& result,
 		  resPtr++;
 	       }
 	    } else {
-	       arg_p[2].eval (result, region);
+	       arg_p[2].eval (result, section);
 	       while (tmpbPtr < tmpbEnd) {
 		  if (*tmpbPtr++) {
 		     *resPtr = tmp1;
@@ -523,7 +523,7 @@ void LELFunctionND<T>::eval(Array<T>& result,
 	       }
 	    }
 	 } else {
-	    arg_p[1].eval (result, region);
+	    arg_p[1].eval (result, section);
 	    if (arg_p[2].isScalar()) {
 	       arg_p[2].eval (tmp2);
 	       while (tmpbPtr < tmpbEnd) {
@@ -534,7 +534,7 @@ void LELFunctionND<T>::eval(Array<T>& result,
 	       }
 	    } else {
 	       Array<T> tmp(result.shape());
-	       arg_p[2].eval (tmp, region);
+	       arg_p[2].eval (tmp, section);
 	       Bool deleteTmp;
 	       const T* tmpData = tmp.getStorage (deleteTmp);
 	       const T* tmpPtr = tmpData;

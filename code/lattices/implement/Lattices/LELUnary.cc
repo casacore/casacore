@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h> 
@@ -54,7 +54,7 @@ LELUnaryConst<T>::~LELUnaryConst()
 
 template <class T>
 void LELUnaryConst<T>::eval(Array<T>&,
-			    const PixelRegion&) const
+			    const Slicer&) const
 {
    throw (AipsError ("LELUnaryConst::eval - cannot be used"));
 }
@@ -100,14 +100,14 @@ LELUnary<T>::~LELUnary()
 
 template <class T>
 void LELUnary<T>::eval(Array<T>& result,
-		       const PixelRegion& region) const
+		       const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnary:: eval " << endl;
 #endif
 
 // Get the value and apply the unary operation
-   pExpr_p->eval(result, region);
+   pExpr_p->eval(result, section);
    switch(op_p) {
    case LELUnaryEnums::MINUS :
    {
