@@ -29,7 +29,6 @@
 #include <aips/MeasurementSets/NewMeasurementSet.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/String.h>
 
 RONewMSMainColumns::RONewMSMainColumns(const NewMeasurementSet& ms):
@@ -283,24 +282,17 @@ NewMSMainColumns::NewMSMainColumns(NewMeasurementSet& ms):
 
 NewMSMainColumns::~NewMSMainColumns() {}
 
-void NewMSMainColumns::setEpochRef(MEpoch::Types ref)
-{
-  const String timsys(MEpoch::showType(ref));
-  const String k1("MEASINFO");
-  const String k2("Type");
-  const String fld("refer");
-  time_p.rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).define(fld, timsys);
-  timeCentroid_p.rwKeywordSet().rwSubRecord(k1).
-    rwSubRecord(k2).define(fld,timsys);
+
+void NewMSMainColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+  timeCentroidMeas_p.setDescRefCode(ref);
 }
 
 void NewMSMainColumns::setUVWRef(Muvw::Types ref)
 {
-  uvw_p.rwKeywordSet().rwSubRecord("MEASINFO").rwSubRecord("Type").
-    define("refer", Muvw::showType(ref));
+  uvwMeas_p.setDescRefCode(ref);
   if (!uvw2_p.isNull()) {
-    uvw2_p.rwKeywordSet().rwSubRecord("MEASINFO").
-      rwSubRecord("Type").define("refer", Muvw::showType(ref));
+    uvw2Meas_p.setDescRefCode(ref);
   }
 }
 

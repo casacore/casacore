@@ -492,10 +492,14 @@ public:
     return RONewMSMainColumns::weightSpectrum();}
   // </group>
 
-  // set the EPOCH reference type for the TIME and TIME_CENTROID columns.
+  // set the epoch type for the TIME and TIME_CENTROID columns. This can only
+  // be done when the table has no rows. Trying to do so at other times will
+  // throw an exception.
   void setEpochRef(MEpoch::Types ref);
 
-  // set the UVW reference type for the UVW and UVW2 (if defined) columns.
+  // set the UVW reference type for the UVW and UVW2 (if defined) columns. This
+  // can only be done when the table has no rows. Trying to do so at other
+  // times will throw an exception.
   void setUVWRef(Muvw::Types ref);
 
 protected:
