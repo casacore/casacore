@@ -910,6 +910,53 @@ Bool CoordinateUtil::holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cS
 }
 
 
+void CoordinateUtil::setNicePreferredAxisLabelUnits(CoordinateSystem& cSys)
+{  
+   cSys.setPreferredWorldAxisUnits(cSys.worldAxisUnits());
+//
+   for (uInt i = 0; i < cSys.nCoordinates(); i++) {
+     Coordinate::Type type = cSys.type(i);
+     if (type==Coordinate::DIRECTION) {
+        DirectionCoordinate coord(cSys.directionCoordinate(i));
+        Vector<String> str(coord.nWorldAxes());
+        for (uInt j = 0; j < str.nelements(); j++) str(j) = "deg";
+        coord.setPreferredWorldAxisUnits(str);
+        cSys.replaceCoordinate(coord, i);
+     } else if (type==Coordinate::SPECTRAL) {
+        SpectralCoordinate coord(cSys.spectralCoordinate(i));
+        Vector<String> str(coord.nWorldAxes());
+        for (uInt j = 0; j < str.nelements(); j++) str(j) = "km/s";
+        coord.setPreferredWorldAxisUnits(str);
+        cSys.replaceCoordinate(coord, i);
+     }
+   }
+}
+
+
+Bool CoordinateUtil::findSky(String&errorMessage, Int& dC, Vector<Int>& pixelAxes,
+                             Vector<Int>& worldAxes, const CoordinateSystem& cSys)
+//    
+// Assumes only one DirectionCoordinate .   {pixel,world}Axes says where
+// in the CS the DirectionCoordinate axes are
+//
+{
+   CoordinateUtil::findDirectionAxes (pixelAxes, worldAxes, dC, cSys);
+   if (dC<0 || pixelAxes.nelements()!=2 || worldAxes.nelements()!=2) {
+      errorMessage = "Image does not have 2 sky coordinate axes";
+      return False;
+   }
+// 
+   for (uInt i=0; i<2; i++) {
+      if (pixelAxes(i)==-1 || worldAxes(i)==-1) {
+         errorMessage = "Image does not have 2 sky coordinate axes";
+         return False;
+      }
+   }
+//
+   return True;
+}
+
+
 Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
                                                       uInt pixel)
 {  
@@ -931,27 +978,4 @@ Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const Coordinat
       }
    }
    return stokes;
-}
-
-
-void CoordinateUtil::setNicePreferredAxisLabelUnits(CoordinateSystem& cSys)
-{  
-   cSys.setPreferredWorldAxisUnits(cSys.worldAxisUnits());
-//
-   for (uInt i = 0; i < cSys.nCoordinates(); i++) {
-     Coordinate::Type type = cSys.type(i);
-     if (type==Coordinate::DIRECTION) {
-        DirectionCoordinate coord(cSys.directionCoordinate(i));
-        Vector<String> str(coord.nWorldAxes());
-        for (uInt j = 0; j < str.nelements(); j++) str(j) = "deg";
-        coord.setPreferredWorldAxisUnits(str);
-        cSys.replaceCoordinate(coord, i);
-     } else if (type==Coordinate::SPECTRAL) {
-        SpectralCoordinate coord(cSys.spectralCoordinate(i));
-        Vector<String> str(coord.nWorldAxes());
-        for (uInt j = 0; j < str.nelements(); j++) str(j) = "km/s";
-        coord.setPreferredWorldAxisUnits(str);
-        cSys.replaceCoordinate(coord, i);
-     }
-   }
 }
