@@ -125,7 +125,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
     if (!flagRow()(tr) &&
 	matchNumChan(tr, nChan) &&
 	matchIfConvChain(tr, ifChain) &&
-	matchTotalBandwidth(tr, bandwidthInHz, tolInHz) &&
+	matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz) &&
  	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
       return tr;
     }
@@ -136,7 +136,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
     if (!flagRow()(r) &&
 	matchNumChan(r, nChan) &&
 	matchIfConvChain(r, ifChain) &&
-	matchTotalBandwidth(r, bandwidthInHz, tolInHz) &&
+	matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz) &&
  	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
       return r;
     }
