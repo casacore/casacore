@@ -93,7 +93,7 @@ const RecordInterface & RedFlagger::defaultOptions ()
     rec.setComment(RF_PLOTSCR,"Format of screen plots: [NX,NY] or False to disable");
     rec.setComment(RF_PLOTDEV,"Format of hardcopy plots: [NX,NY], or False to disable");
     rec.setComment(RF_DEVFILE,"Filename for hardcopy (a PGPlot 'filename/device')");
-    rec.setComment(RF_GLOBAL,"Record of global parameters applied to all agents");
+    rec.setComment(RF_GLOBAL,"Record of global parameters applied to all methods");
     rec.setComment(RF_TRIAL,"T for trial run (no flags written out)");
     rec.setComment(RF_RESET,"T to reset existing flags before running");
   }
@@ -273,7 +273,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       agent_id = agents.asRecord(i).asString("id");
     // check that this is agent really exists
     if( !agent_defaults.isDefined(agent_id) )
-      os<<"Unknown flagging agent '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
+      os<<"Unknown flagging method '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
     // create parameter record by taking agent defaults, and merging in global
     // and specified options
     const RecordInterface & defparms(agent_defaults.asRecord(agent_id));
@@ -298,7 +298,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     // create agent based on name
     RFABase *agent = createAgent(agent_id,chunk,parms);
     if( !agent )
-      os<<"Unrecognized agent name '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
+      os<<"Unrecognized method name '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
     agent->init();
     String inp,st;
 //    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
@@ -360,7 +360,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     }
     if( !sum(active) )
     {
-      os<<LogIO::WARN<<"Unable to process this chunk with any agent.\n"<<LogIO::POST;
+      os<<LogIO::WARN<<"Unable to process this chunk with any active method.\n"<<LogIO::POST;
       continue;
     }
 // initially active agents
