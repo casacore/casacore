@@ -132,7 +132,7 @@ SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(type());
   {
-    Vector<Double> thisFlux;
+    Vector<Double> thisFlux(4);
     flux(thisFlux);
     newComp.setFlux(thisFlux);
   }
@@ -142,7 +142,7 @@ SkyComponent SkyComponent::copy() const {
     newComp.setPosition(thisPosition);
   }
   {
-    Vector<Double> thisParameters;
+    Vector<Double> thisParameters(nParameters());
     parameters(thisParameters);
     newComp.setParameters(thisParameters);
   }
