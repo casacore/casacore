@@ -2571,3 +2571,4 @@
 09 462 src mv trial/implement/Utilities/Record2Transformable.cc aips/implement/Utilities/Record2Transformable.cc
 09 462 src mv trial/implement/Measures/MeasureHolder.h aips/implement/Measures/MeasureHolder.h
 09 462 src mv trial/implement/Measures/MeasureHolder.cc aips/implement/Measures/MeasureHolder.cc
+09 462 src mv trial/implement/Measures/MeasureHolder2.cc aips/implement/Measures/MeasureHolder2.cc
