@@ -26,18 +26,15 @@
 //# $Id$
 
 #include <trial/ComponentModels/ComponentShape.h>
+#include <trial/Measures/MeasureHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-#include <trial/Measures/DOmeasures.h>
-#include <trial/Tasking/MeasureParameterAccessor.h>
-#include <trial/Tasking/ParameterSet.h>
+#include <aips/Utilities/DataType.h>
 
 ComponentShape::~ComponentShape() {
 }
@@ -49,21 +46,38 @@ void ComponentShape::refDirection(MDirection & refDir) const {
 
 Bool ComponentShape::readDir(String & errorMessage,
 			     const RecordInterface & record) {
-  GlishRecord gRecord;
-  gRecord.fromRecord(record);
-  MeasureParameterAccessor<MDirection> mpa(String("direction"),
-					   ParameterSet::In, &gRecord);
-  if (!mpa.copyIn(errorMessage)) return False;
-  setRefDirection(mpa());
+  const String dirString("direction");
+  if (!record.isDefined(dirString)) {
+    errorMessage += "The 'direction' field does not exist\n";
+    return False;
+  }
+  const RecordFieldId direction(dirString);
+  if (record.dataType(direction) != TpRecord) {
+    errorMessage += "The 'direction' field must be a record\n";
+    return False;
+  }
+  const Record & dirRecord = record.asRecord(direction);
+  MeasureHolder mh;
+  if (!mh.fromRecord(errorMessage, dirRecord)) {
+    errorMessage += "Could not parse the reference direction\n";
+    return False;
+  }
+  if (!mh.isMDirection()) {
+    errorMessage += "The reference direction is not a direction measure\n";
+    return False;
+  }
+  setRefDirection(mh.asMDirection());
   return True;
 }
 
 Bool ComponentShape::addDir(String & errorMessage, 
 			    RecordInterface & record) const {
-  if (errorMessage == ""); // Suppress compiler warning about unused variable
-  GlishRecord gDirRecord = measures::toRecord(refDirection());
   Record dirRecord;
-  gDirRecord.toRecord(dirRecord);
+  const MeasureHolder mh(refDirection());
+  if (!mh.toRecord(errorMessage, dirRecord)) {
+    errorMessage += "Could not convert the reference direction to a record\n";
+    return False;
+  }
   record.defineRecord(RecordFieldId("direction"), dirRecord);
   return True;
 }
@@ -73,27 +87,23 @@ ComponentType::Shape ComponentShape::getType(String & errorMessage,
   const String typeString("type");
   if (!record.isDefined(typeString)) {
     errorMessage += 
-      String("\nThe 'shape' record does not have a 'type' field.");
+      String("The 'shape' record does not have a 'type' field.\n");
     return ComponentType::UNKNOWN_SHAPE;
   }
   const RecordFieldId type(typeString);
-  if (record.shape(type) != IPosition(1,1)) {
-    errorMessage += String("\nThe 'type' field, in the shape record,") + 
-      String(" must have only 1 element");
+  if (record.dataType(type) != TpString) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must be a String\n");
     return ComponentType::UNKNOWN_SHAPE;
   }      
-  String typeVal;
-  try {
-    typeVal = record.asString(type);
-  }
-  catch (AipsError x) {
-    errorMessage += String("\nThe 'type' field, in the shape record,") + 
-      String(" must be a String");
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must have only 1 element\n");
     return ComponentType::UNKNOWN_SHAPE;
-  } end_try;
+  }      
+  const String & typeVal = record.asString(type);
   return ComponentType::shape(typeVal);
 }
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentShape"
 // End: 
