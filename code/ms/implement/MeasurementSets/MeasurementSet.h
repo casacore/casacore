@@ -313,7 +313,8 @@ public:
   // Initialize the references to the subtables. You need to call
   // this only if you assign new subtables to the table keywords.
   // This also checks for validity of the table and its subtables.
-  void initRefs();
+  // Set clear to True to clear the subtable references (used in assignment)
+  void initRefs(Bool clear=False);
 
   // Create default subtables: fills the required subtable keywords with
   // tables of the correct type, mainly for testing and as an example of
