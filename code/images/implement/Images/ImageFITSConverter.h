@@ -1,5 +1,5 @@
 //# ImageFITSConverter.h: Interconvert between AIPS++ Images and FITS files
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,8 +208,8 @@ public:
 
 // Recover CoordinateSystem from header.  Used keywords are removed from header
 // Degenerate axes may be added to shape if needed
-    static CoordinateSystem getCoordinateSystem (RecordInterface& header,
-                                                 LogIO& os, IPosition& shape);
+    static CoordinateSystem getCoordinateSystem (Int& imageType, RecordInterface& header,
+                                                 LogIO& os, IPosition& shape, Bool dropStokes);
 
 // Recover ImageInfo from header. Used keywords are removed from header
     static ImageInfo getImageInfo (RecordInterface& header);
