@@ -70,7 +70,8 @@ int main()
 
 void init (Matrix<Float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
 {
-    indgen (array);
+       // The SGI compiler bug is the cause of this static_cast workaround.
+    indgen (static_cast< Matrix<Float> &>(array));
     uInt i=0;
     for (uInt k=0; k<20; k++) {
 	for (uInt j=0; j<12; j++) {
