@@ -253,30 +253,49 @@ try {
       
 // Construct image
    
-      PagedImage<Float> inImage(in);
-      SubImage<Float>* pSubImage = 0;
-
+      PagedImage<Float> inImage(in, True);
+      SubImage<Float>* pSubImage2 = 0;
 
       if (validInputs(REGION)) {
          ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
          cout << "Selected region : " << blc+1<< " to "
               << trc+1 << endl;
          const LCSlicer region(blc, trc);
-    
-         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
+//
+         SubImage<Float>* pSubImage = 0;
+         if (inImage.isMasked()) {
+            ImageRegion mask = 
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);            
+            pSubImage = new SubImage<Float>(inImage, mask);
+         } else {
+            pSubImage = new SubImage<Float>(inImage);
+         }
+         pSubImage2 = new SubImage<Float>(*pSubImage, ImageRegion(region));
+         delete pSubImage;
       } else {
-         pSubImage = new SubImage<Float>(inImage);
+         if (inImage.isMasked()) {
+            ImageRegion mask = 
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);            
+            pSubImage2 = new SubImage<Float>(inImage, mask);
+         } else {
+            pSubImage2 = new SubImage<Float>(inImage);
+         }
       }
-
-
 
 // Construct statistics object
    
-      ImageStatistics<Float> stats(*pSubImage, os);
+      ImageStatistics<Float> stats(*pSubImage2, os);
+
+  
+// Clean up SUbImage pointers
+
+      Int nDim = pSubImage2->ndim();
+      if (pSubImage2!=0) delete pSubImage2;
 
 
 // Set state
-
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) return 1;
       }
@@ -336,7 +355,7 @@ try {
 
      os << "Recovering statistics slice from origin" << endl;
      IPosition pos(stats.displayAxes().nelements(),0);
-     IPosition pos2(pSubImage->ndim(),0);
+     IPosition pos2(nDim,0);
      Vector<Float> dataV;
      ok = stats.getStats(dataV, pos, False);
      if (!ok) os << "Error recovering statistics slice " << endl;
@@ -359,12 +378,16 @@ try {
      os << "Applying assignment" << LogIO::POST;
      stats = stats2;
 
+// Test setNewImage
+
+     os << "Test setNewImage" << LogIO::POST; 
+     stats.setNewImage(inImage);
+     if (!stats.display()) return 1;
 
    } else {
       os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
       return 1;
    }
-
 }
 
   catch (AipsError x) {
