@@ -1,5 +1,5 @@
 //# Sort.cc: Sort on one or more keys, ascending and/or descending
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -324,9 +324,10 @@ uInt Sort::insSortNoDup (uInt nrrec, uInt* inx) const
     for (uInt i=1; i<nrrec; i++) {
 	j   = nr;
 	cur = inx[i];
+	// Continue as long as key is out of order.
 	while (--j>=0  &&  (cmp = compare (inx[j], cur)) == 0) {
 	}
-	if (cmp == 2) {                         // no equal key
+	if (j<0 || cmp==2) {                    // no equal key
 	    for (k=nr-1; k>j; k--) {
 		inx[k+1] = inx[k];              // now shift to right
 	    }
