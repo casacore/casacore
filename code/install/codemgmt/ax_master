@@ -1382,3 +1382,4 @@
 11 051 src rm aips/implement/Arrays/test/tArrayIO2.out_vec
 11 051 src mv aips/implement/Exceptions/test/tException.exec aips/implement/Exceptions/test/tException.run
 11 051 src mv aips/implement/Exceptions/test/tExcpA.exec aips/implement/Exceptions/test/tExcpA.run
+11 051 src mv aips/implement/Exceptions/test/tExcpB.exec aips/implement/Exceptions/test/tExcpB.run
