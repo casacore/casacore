@@ -150,3 +150,9 @@ ImageInterface<T>::ImageInterface(Bool masking)
     "Creating ImageInterfac with masking="
 	    << masking << LogIO::POST;
 }
+
+template<class T> void ImageInterface<T>::
+putSlice(const Array <T> & sourceBuffer, const IPosition & where){
+  Lattice<T>::putSlice(sourceBuffer, where);
+};
+

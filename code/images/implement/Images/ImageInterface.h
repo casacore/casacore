@@ -191,11 +191,19 @@ public:
   virtual Bool getSlice(Array<T> &buffer, const Slicer &theSlice, 
 			Bool removeDegenerateAxes=False) = 0;
   // </group>
-  
-  // Function which places an Array of values within the Image
-  virtual void putSlice(const Array<T> &sourceBuffer, const IPosition &where, 
-			const IPosition &stride) = 0;
-  
+
+  // A function which places an Array of values within this instance of the
+  // Lattice at the location specified by the IPosition "where", incrementing
+  // by "stride". All of the IPosition arguments must be of the same
+  // dimensionality as the Lattice. The sourceBuffer array may (and probably
+  // will) have less axes than the Lattice. The stride defaults to one if not
+  // specified.
+  // <group>
+  virtual void putSlice(const Array <T> & sourceBuffer, const IPosition & where);
+  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
+			const IPosition & stride) = 0;
+  // </group>
+
   // Function which returns the whole mask Lattice to allow iteration or 
   // Lattice functions.
   // <note> The mask object will be deleted upon destruction of this instance
