@@ -1,5 +1,5 @@
 //# LatticeExpr.cc:  this defines LatticeExpr.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,6 +122,18 @@ template <class T>
 IPosition LatticeExpr<T>::shape() const
 {
    return expr_p.shape();
+}
+  
+template <class T>
+IPosition LatticeExpr<T>::niceCursorShape (uInt) const
+{
+   return expr_p.getAttribute().tileShape();
+}
+  
+template <class T>
+LatticeCoordinates LatticeExpr<T>::coordinates() const
+{
+   return expr_p.getAttribute().coordinates();
 }
   
 template <class T>
