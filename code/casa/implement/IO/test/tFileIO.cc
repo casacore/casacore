@@ -1,5 +1,5 @@
 //# tFileIO.cc: Test program for performance of file IO
-//# Copyright (C) 1997,2000,2001
+//# Copyright (C) 1997,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
 #include <aips/strstream.h>
-
-
-//OPT=1 EXTRA_CPPFLAGS='-DAIPS_LARGEFILE -D_LARGEFILE64_SOURCE -D_XOPEN_SOURCE=500'
 
 
 int main (int argc, char** argv)
@@ -79,7 +76,8 @@ int main (int argc, char** argv)
 	    file1.write (leng, buf);
 	}
 	timer.show ("RegularFileIO write");
-	FiledesIO file2 (FiledesIO::create ("tFileIO_tmp.dat1"));
+	int fd = FiledesIO::create ("tFileIO_tmp.dat1");
+	FiledesIO file2 (fd);
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -88,6 +86,8 @@ int main (int argc, char** argv)
 	    file2.write (leng, buf);
 	}
 	timer.show ("FiledesIO     write");
+	fsync(fd);
+	timer.show ("FiledesIO     +sync");
     }
     {
 	RegularFileIO file1(RegularFile("tFileIO_tmp.dat1"),
@@ -98,6 +98,7 @@ int main (int argc, char** argv)
 		file1.seek (i*leng, ByteIO::Begin);
 	    }
 	    file1.read (leng, buf);
+	    if (buf[0] != 0) cout << "mismatch" << endl;
 	}
 	timer.show ("RegularFileIO read ");
 	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.dat1"));
@@ -107,6 +108,7 @@ int main (int argc, char** argv)
 		file2.seek (i*leng, ByteIO::Begin);
 	    }
 	    file2.read (leng, buf);
+	    if (buf[0] != 0) cout << "mismatch" << endl;
 	}
 	timer.show ("FiledesIO     read ");
     }
@@ -121,7 +123,8 @@ int main (int argc, char** argv)
 	    file1.write (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO write");
-	LargeFiledesIO file2 (LargeFiledesIO::create ("tFileIO_tmp.dat2"));
+	int fd = LargeFiledesIO::create ("tFileIO_tmp.dat2");
+	LargeFiledesIO file2 (fd);
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -130,6 +133,8 @@ int main (int argc, char** argv)
 	    file2.write (leng, buf);
 	}
 	timer.show ("LargeFiledesIO     write");
+	fsync(fd);
+	timer.show ("LargeFiledesIO     +sync");
     }
     {
 	LargeRegularFileIO file1(RegularFile("tFileIO_tmp.dat2"),
