@@ -5699,3 +5699,4 @@
 16 032 src mv trial/implement/Lattices/test/tLELSpectralIndex.cc trial/implement/Images/test/tLELSpectralIndex.cc
 16 035 src mv trial/implement/Arrays/Record2Interface.cc aips/implement/Containers/Record2Interface.cc
 16 059 src rm trial/implement/MeasurementSets/test/tOldMSRange.cc
+16 059 src rm trial/implement/MeasurementSets/test/tOldMSSelector.cc
