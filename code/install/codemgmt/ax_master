@@ -4483,3 +4483,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSDataDescription.h aips/implement/MeasurementSets/MSDataDescription.h
 14 296 src mv aips/implement/MeasurementSets/NewMSDoppler.cc aips/implement/MeasurementSets/MSDoppler.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSDoppler.h aips/implement/MeasurementSets/MSDoppler.h
+14 296 src mv aips/implement/MeasurementSets/NewMSDopplerColumns.cc aips/implement/MeasurementSets/MSDopplerColumns.cc
