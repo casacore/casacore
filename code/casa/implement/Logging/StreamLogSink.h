@@ -1,5 +1,5 @@
 //# StreamLogSink.h: Send log messages to an ostream.
-//# Copyright (C) 1996,2000,2001
+//# Copyright (C) 1996,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,8 +82,11 @@ public:
     // lives at least as long as this sink. If not filter is supplied,
     // <src>NORMAL</src> is used.
     // <group>
-    StreamLogSink(ostream *theStream = 0);
-    StreamLogSink(const LogFilter &filter, ostream *theStream=0);
+    explicit StreamLogSink(ostream *theStream = 0);
+    explicit StreamLogSink(LogMessage::Priority filter,
+			   ostream *theStream = 0);
+    explicit StreamLogSink(const LogFilterInterface &filter,
+			   ostream *theStream = 0);
     // </group>
 
     // Make a copy of <src>other</src>. After copying, both objects will post
@@ -100,7 +103,7 @@ public:
     virtual Bool postLocally(const LogMessage &message);
 
     // write any pending output.
-    virtual void flush();
+    virtual void flush (Bool global=True);
 private:
     ostream *stream_p;
 };

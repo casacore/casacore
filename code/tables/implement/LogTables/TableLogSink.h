@@ -1,5 +1,5 @@
 //# TableLogSink.h: Save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Logging/LogSink.h>
+#include <aips/Logging/LogFilter.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -97,13 +98,17 @@ public:
   // to use the old StManAipsIO storage manager for a log table.
   // It is used by PagedImage to make it possible to access release 1.4
   // images with release 1.3 software.
-  TableLogSink (const LogFilter& filter, const String& fileName,
+  // <group>
+  TableLogSink (LogMessage::Priority filter, const String& fileName,
 		Bool useSSM=True);
+  TableLogSink (const LogFilterInterface& filter, const String& fileName,
+		Bool useSSM=True);
+  // </group>
 
   // Open the log table for readonly.
   // If needed, reopenRW can be used later to define a filter and
   // to open the logtable for writing.
-  TableLogSink (const String& fileName);
+  explicit TableLogSink (const String& fileName);
 
   // After copying, both sinks will write to the same <src>Table</src>.
   // <group>
@@ -115,7 +120,7 @@ public:
 
   // Reopen the logtable for read/write (if needed).
   // When it actually reopens, the given filter will be used.
-  void reopenRW (const LogFilter& filter);
+  void reopenRW (const LogFilterInterface& filter);
 
   // If the message passes the filter, write it to the log table.
   virtual Bool postLocally (const LogMessage& message);
@@ -183,12 +188,8 @@ public:
   static TableDesc logTableDescription();
 
   // Write out any pending output to the table.
-  virtual void flush();
+  virtual void flush (Bool global=True);
 
-  // Returns True for this class (only). Note that you can call
-  // the inherited functions castToTableLogSink() when this is True.
-  virtual Bool isTableLogSink() const;
-    
   // Write a message (usually from another logsink) into the local one.
   virtual void writeLocally (Double time, const String& message,
 			     const String& priority, const String& location,
@@ -196,6 +197,16 @@ public:
 
   // Clear the local sink (i.e. remove all messages from it).
   virtual void clearLocally();
+
+  // Make a LogSink for a TableLogSink with a new table.
+  // Default filter is <src>NORMAL</src>.
+  // <group>
+  static LogSink makeSink (const String& fileName);
+  static LogSink makeSink (LogMessage::Priority filter,
+			   const String& fileName);
+  static LogSink makeSink (const LogFilterInterface& filter,
+			   const String& fileName);
+  // </group>
 
 private:
   // Undefined and inaccessible
@@ -206,6 +217,9 @@ private:
   void makeTable (SetupNewTable&, Bool useSSM);
   // Attach the column objects and create unit keywor if needed.
   void attachCols();
+  // Initialize the object.
+  void init (const String& fileName, Bool useSSM);
+
 
   Table log_table_p;
   // Message
@@ -249,6 +263,12 @@ inline const ROScalarColumn<String>& TableLogSink::roMessage() const
   {return roMessage_p;}
 inline ScalarColumn<String>& TableLogSink::message()
   {DebugAssert(!message_p.isNull(),AipsError); return message_p;}
+
+inline LogSink TableLogSink::makeSink (const String& fileName)
+  { return makeSink (LogFilter(), fileName); }
+inline LogSink TableLogSink::makeSink (LogMessage::Priority filter,
+				       const String& fileName)
+  { return makeSink (LogFilter(filter), fileName); }
 
 
 #endif

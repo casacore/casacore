@@ -1,5 +1,5 @@
 //# NullLogSink.h: Throw away all messages.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,7 +72,8 @@
 class NullLogSink : public LogSinkInterface {
 public:
     NullLogSink();
-    NullLogSink(const LogFilter &filter);
+    explicit NullLogSink(LogMessage::Priority filter);
+    explicit NullLogSink(const LogFilterInterface &filter);
 
     NullLogSink(const NullLogSink &other);
     NullLogSink &operator=(const NullLogSink &other);
