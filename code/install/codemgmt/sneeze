@@ -376,9 +376,10 @@
 
      cd $AIPSROOT
 
-     [ -d "$AIPSROOT/base-$NEWMAJOR" ] || mkdir $AIPSROOT/base-$NEWMAJOR
-     chgrp $PRGGROUP $AIPSROOT/base-$NEWMAJOR
-     chmod ug=rwx,g+s,o=rx $AIPSROOT/base-$NEWMAJOR
+     BASEROOT="$AIPSROOT/base-$NEWMAJOR"
+     [ -d "$BASEROOT" ] || mkdir $BASEROOT
+     chgrp $PRGGROUP $BASEROOT
+     chmod ug=rwx,g+s,o=rx $BASEROOT
 
      BASESYS=`getrc -i sneeze.base.$ARCH.preserve 2> /dev/null`
      BASESYS=`affirm -a $BASESYS`
@@ -389,30 +390,54 @@
         echo "---------------------------------"
 
         echo ""
-        echo "sneeze: Copying $AIPSARCH to $AIPSROOT/base-$NEWMAJOR/$ARCH..."
-        tar cf - $ARCH | (cd $AIPSROOT/base-$NEWMAJOR && tar pvxf -)
+        echo "sneeze: Copying $AIPSARCH to $BASEROOT/$ARCH..."
+
+#       Use the "h" option to force tar to follow symlinks.
+        tar chf - $ARCH | (cd $BASEROOT && tar pvxf -)
      else
         echo "sneeze: Preserve the critical parts of the base system."
         echo "-------------------------------------------------------"
 
-        mkdir $AIPSROOT/base-$NEWMAJOR/$ARCH
-        chgrp $PRGGROUP $AIPSROOT/base-$NEWMAJOR/$ARCH
-        chmod ug=rwx,g+s,o=rx $AIPSROOT/base-$NEWMAJOR/$ARCH
+        mkdir $BASEROOT/$ARCH
+        chgrp $PRGGROUP $BASEROOT/$ARCH
+        chmod ug=rwx,g+s,o=rx $BASEROOT/$ARCH
 
         echo ""
-        echo "sneeze: Copying $AIPSARCH/$SITE to" \
-             "$AIPSROOT/base-$NEWMAJOR/$ARCH/$SITE..."
-        tar cf - $ARCH/aipsrc $ARCH/makedefs $ARCH/$SITE | \
-           (cd $AIPSROOT/base-$NEWMAJOR && tar pvxf -)
+        echo "sneeze: Copying $AIPSARCH/$SITE to $BASEROOT/$ARCH/$SITE..."
+
+#       Use the "h" option to force tar to follow symlinks.
+        tar chf - $ARCH/aipsrc $ARCH/makedefs $ARCH/$SITE | \
+           (cd $BASEROOT && tar pvxf -)
      fi
 
 #    Remake the root directory.
      echo ""
-     echo "sneeze: Remaking files in $AIPSROOT/base-$NEWMAJOR..."
-     cp $AIPSROOT/aipshosts $AIPSROOT/base-$NEWMAJOR
-     ( AIPSPATH="$AIPSROOT/base-$NEWMAJOR $ARCH $SITE $HOST" ; \
+     echo "sneeze: Remaking files in $BASEROOT..."
+     cp $AIPSROOT/aipshosts $BASEROOT
+     ( AIPSPATH="$BASEROOT $ARCH $SITE $HOST" ; \
        export AIPSPATH ; \
-       gmake -C $AIPSROOT/base-$NEWMAJOR/code/install aipsroot )
+       gmake -C $BASEROOT/code/install aipsroot )
+
+#    Preserve the base documentation but only if we build it. 
+     BASEDOCS=`getrc -i sneeze.base.docs.preserve 2> /dev/null`
+     BASEDOCS=`affirm -a $BASEDOCS`
+     if [ "$BASEDOCS" != false ]
+     then
+#       Check that we build the documentation.
+        eval `gmake VARS=DOCSYS eval_vars`
+
+        if [ "$DOCSYS" = doc ]
+        then
+           echo "sneeze: Preserve the base documentation."
+           echo "----------------------------------------"
+ 
+           echo ""
+           echo "sneeze: Copying $AIPSROOT/docs to $BASEROOT/docs..."
+
+#          Use the "h" option to force tar to follow symlinks.
+           tar chf - docs | (cd $BASEROOT && tar pvxf -)
+        fi
+     fi
   fi
 
 
