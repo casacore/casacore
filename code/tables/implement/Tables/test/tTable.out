@@ -1,4 +1,6 @@
 Invalid Table operation: SetupNewTable::setShapeColumn, column arr2 is not fixed shape
+ScratchCallBack:  name=tTable_tmp.data  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data  isScratch=0  oldName=
 stored columns: 111111
 
 TableDesc    version 1   (Directory **SCRATCH**)
@@ -198,6 +200,13 @@ TableDesc    version    (Directory **SCRATCH**)
 #columns in or2tab: 3
 [9, 8, 7, 6, 5]
 [3, 5, 6, 7]
+ScratchCallBack:  name=tTable_tmp.data1  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data1  isScratch=0  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data2a  isScratch=1  oldName=tTable_tmp.data2
+ScratchCallBack:  name=tTable_tmp.data2a  isScratch=0  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=0  oldName=
 Table tTable_tmp.file already exists (and is not a true table directory)
 Table tTable_tmp.data already exists
 Table tTable.datx does not exist
@@ -218,3 +227,5 @@ Axis Lengths: [2, 7]  (NB: Matrix in Row/Column order)
 [0, 23, 5, 9, 1, 6, 8
  1, 4, 6, 100, 2, 7, 9]
 
+ScratchCallBack:  name=tTable_tmp.data3  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data3  isScratch=0  oldName=
