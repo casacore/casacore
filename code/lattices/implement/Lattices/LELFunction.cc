@@ -179,7 +179,7 @@ T LELFunction1D<T>::getScalar() const
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       while (! iter.atEnd()) {
 	 T minv = min(iter.cursor());
-	 if (firstTime  ||  minv > minVal) {
+	 if (firstTime  ||  minv < minVal) {
 	    firstTime = False;
 	    minVal = minv;
 	 }
