@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 # include <aips/FITS/fitsio.h>
 # include <aips/Utilities/String.h>
 # include <aips/Containers/Block.h>
-# include <string.h>
-# include <strstream.h>
+# include <aips/string.h>
+# include <aips/strstream.h>
 
 FitsIO::~FitsIO() {
 }

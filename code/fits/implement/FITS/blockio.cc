@@ -1,5 +1,5 @@
 //# blockio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-# include <strstream.h>
+# include <aips/strstream.h>
 # include <aips/FITS/blockio.h>
-# include <string.h>
+# include <aips/string.h>
 
 void BlockIO::errmsg(IOErrs e, char *s) { 
     ostrstream msgline;
