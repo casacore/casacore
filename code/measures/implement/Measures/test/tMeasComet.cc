@@ -79,7 +79,8 @@ main() {
 	  comet.getDisk(y, x) << ": " << y << endl;
       };
     }
-    
+
+    MeasComet *cl;
     {
       cout << "--------------------------------------" << endl;
       MeasComet comet("VTOP");
@@ -102,8 +103,45 @@ main() {
 	  comet.getRadVel(y, x) << ": " << y << endl;
       };
       cout << "--------------------------------------" << endl;
+      cl = comet.clone();
     }
 
+    {
+      cout << "--------------------------------------" << endl;
+      cout << "Cloned VTOP" << endl;
+      cout << "--------------------------------------" << endl;
+      cout << "OK:             " << cl->ok() << endl;
+      cout << "Name:           " << cl->getName() << endl;
+      cout << "Type:           " << 
+	MDirection::showType(cl->getType()) << endl;
+      cout << "Topography:     " << cl->getTopo() << endl;
+      cout << "Start:          " <<
+	MVTime(cl->getStart()).string(MVTime::YMD) << endl;
+      cout << "End:            " <<
+	MVTime(cl->getEnd()).string(MVTime::YMD) << endl;
+      cout << "Entries:        " << cl->nelements() << endl;
+      cout << "--------------------------------------" << endl;
+      cout << "Radial velocity:" << endl;
+      for (Double x=50802.75; x<50802.8; x += 10.0/60./24.) {
+	MVRadialVelocity y;
+	cout << MVTime(x).string(MVTime::YMD) << " " <<
+	  cl->getRadVel(y, x) << ": " << y << endl;
+      };
+      cout << "--------------------------------------" << endl;
+      delete cl;
+    }
+
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  } end_try;
+
+  try {
+    cout << "--------------------------------------" << endl;
+    cout << "Default VTOP" << endl;
+    cout << "--------------------------------------" << endl;
+    MeasComet comet;
+    cout << "OK:             " << comet.ok() << endl;
+    cout << "Name:           " << comet.getName() << endl;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } end_try;
