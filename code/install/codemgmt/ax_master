@@ -4158,3 +4158,4 @@
 14 065 src mv trial/apps/gDisplay/gDisplay.h trialdisplay/apps/gDisplay/gDisplay.h
 14 065 src mv trial/apps/gDisplay/gdisplay.g trialdisplay/apps/gDisplay/gdisplay.g
 14 065 src mv trial/apps/gDisplay/makefile trialdisplay/apps/gDisplay/makefile
+14 065 src mv trial/apps/viewer/arrowcrossb0.xbm trialdisplay/apps/viewer/arrowcrossb0.xbm
