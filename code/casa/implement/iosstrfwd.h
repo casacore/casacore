@@ -36,10 +36,7 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 #include <aips/iosfwd.h>
-#include <strstream>
 
-using std::istrstream;
-using std::ostrstream;
 using std::istringstream;
 using std::ostringstream;
 

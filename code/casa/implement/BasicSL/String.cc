@@ -30,15 +30,9 @@
 #include <aips/Utilities/RegexBase.h>
 #include <algorithm>
 #include <aips/string.h>
-#include <aips/strstream.h>
 #include <aips/sstream.h>
 
 // Special constructors
-String::String(ostrstream &os) {
-  os << ends;
-  *this = os.str();
-}
-
 String::String(ostringstream &os) {
   *this = os.str();
 }
@@ -457,13 +451,13 @@ String join(string src[], Int n, const string& sep) {
 }
 
 String String::toString(Int value) {
-  ostrstream s;
+  ostringstream s;
   s << value;
   return s;
 }
 
 String String::toString(uInt value) {
-  ostrstream s;
+  ostringstream s;
   s << value;
   return s;
 }

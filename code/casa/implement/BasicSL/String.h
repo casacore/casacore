@@ -273,13 +273,6 @@ class String : public string {
   // Construct from a SubString
   String(const SubString &str) : string(str.ref_p, str.pos_p, str.len_p) {}
   // Construct from a stream.
-  // <note role=tip> The ostrstream must be
-  // dynamic, that is, created with its default constructor. After this call
-  // <src>os</src> should not be used any more as its internal buffer has been
-  // deleted. </note>
-  // <note role=warning> This implementation will be superseded once the
-  // stringstream (sstream include) is part of the standard system. </note>
-  String(ostrstream &os);
   String(ostringstream &os);
 
   //# Destructor
@@ -809,8 +802,8 @@ class String : public string {
   //</group>
 
   // Convert a integer to a String. This is a convenience function. Use the
-  // ostrstream class (or in the future the ostringstream class) for conversion
-  // of floating point data types or more sophisticated formatting options.
+  // ostringstream class for conversion of floating point data types
+  // or more sophisticated formatting options.
   // <group>
   static String toString(Int value);
   static String toString(uInt value);
