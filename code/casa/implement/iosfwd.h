@@ -48,10 +48,10 @@
 class ostream;
 class istream;
 class iostream;
+#endif
 class fstream;
 class ifstream;
 class ofstream;
-#endif
 #endif
 
 #endif
