@@ -3512,3 +3512,4 @@
 13 288 src mv trial/implement/Lattices/LELCoordinates.h aips/implement/Lattices/LELCoordinates.h
 13 288 src mv trial/implement/Lattices/LELCoordinates.cc aips/implement/Lattices/LELCoordinates.cc
 13 288 src mv trial/implement/Lattices/LELLattCoordBase.cc aips/implement/Lattices/LELLattCoordBase.cc
+13 288 src mv trial/implement/Lattices/LELLattCoordBase.h aips/implement/Lattices/LELLattCoordBase.h
