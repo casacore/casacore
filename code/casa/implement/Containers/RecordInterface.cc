@@ -478,7 +478,7 @@ uInt RecordInterface::asuInt (const RecordFieldId& id) const
     }
     return *(const uInt*)get_pointer (whichField, TpUInt);
 }
-float RecordInterface::asfloat (const RecordFieldId& id) const
+float RecordInterface::asFloat (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     DataType dataType = type (whichField);
@@ -500,7 +500,7 @@ float RecordInterface::asfloat (const RecordFieldId& id) const
     }
     return *(const float*)get_pointer (whichField, TpFloat);
 }
-double RecordInterface::asdouble (const RecordFieldId& id) const
+double RecordInterface::asDouble (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     DataType dataType = type (whichField);
@@ -611,12 +611,12 @@ const Array<uInt>& RecordInterface::asArrayuInt (const RecordFieldId& id) const
     Int whichField = idToNumber (id);
     return *(const Array<uInt>*)get_pointer (whichField, TpArrayUInt);
 }
-const Array<float>& RecordInterface::asArrayfloat (const RecordFieldId& id) const
+const Array<float>& RecordInterface::asArrayFloat (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     return *(const Array<float>*)get_pointer (whichField, TpArrayFloat);
 }
-const Array<double>& RecordInterface::asArraydouble (const RecordFieldId& id) const
+const Array<double>& RecordInterface::asArrayDouble (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     return *(const Array<double>*)get_pointer (whichField, TpArrayDouble);
