@@ -73,7 +73,7 @@
 // Note that, in fact, fixed length string means maximum length strings.
 // It can be set using the <src>setMaxLength</src> function in
 // class <linkto class=ColumnDesc>ColumnDesc</linkto> or
-// class <linkto class=BaseCoumnlDesc>BaseColumnDesc</linkto>.
+// class <linkto class=BaseColumnDesc>BaseColumnDesc</linkto>.
 // <p>
 // The file size is at least the size of a bucket, even if only the table
 // contains only a few rows, thus uses only a fraction of a bucket.
