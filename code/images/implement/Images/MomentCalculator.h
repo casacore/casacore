@@ -39,7 +39,6 @@
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class ImageMoments;
-class CoordinateSystem;
 
 // <summary>
 // Abstract base class for moment calculator classes
@@ -574,12 +573,6 @@ protected:
                      LogIO& os,
                      Bool doCoordProfile, Bool doCoordRandom) const;
 
-// Get hold of the CoordinateSystem from the image in the ImageMoments object
-   const CoordinateSystem& imageCoordinates(ImageMoments<T>& iMom) const 
-   {
-      return iMom.pInImage_p->coordinates();
-   }
- 
 // Plot the Gaussian fit
    void showGaussFit(const T peak,
                      const T pos,    
