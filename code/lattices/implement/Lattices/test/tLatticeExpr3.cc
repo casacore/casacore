@@ -73,7 +73,7 @@ main(int argc, char *argv[])
     cout << "  Tile shape:" << tileShape << endl;
 
     {
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> lat(TiledShape(latticeShape, tileShape), paTable);
       Array<Complex> arr(tileShape);
@@ -87,9 +87,9 @@ main(int argc, char *argv[])
       timer.show ("filling         ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -98,9 +98,9 @@ main(int argc, char *argv[])
       timer.show ("2*lat           ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -109,9 +109,9 @@ main(int argc, char *argv[])
       timer.show ("mean(lat)*lat   ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -120,9 +120,9 @@ main(int argc, char *argv[])
       timer.show ("amp(lat,lat)    ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -131,9 +131,9 @@ main(int argc, char *argv[])
       timer.show ("lat+lat         ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -142,9 +142,9 @@ main(int argc, char *argv[])
       timer.show ("2*min(lat)*2*lat");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -153,11 +153,11 @@ main(int argc, char *argv[])
       timer.show ("lat*2*min(lat)*2");
     }
     {
-      Table t1("tLatticeExpr2_tmp.tab");
+      Table t1("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat1(t1);
-      Table t2("tLatticeExpr2_tmp.tab2");
+      Table t2("tLatticeExpr3_tmp.tab2");
       PagedArray<Complex> lat2(t2);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -166,11 +166,11 @@ main(int argc, char *argv[])
       timer.show ("lat1 * lat2     ");
     }
     {
-      Table t1("tLatticeExpr2_tmp.tab");
+      Table t1("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat1(t1);
-      Table t2("tLatticeExpr2_tmp.tab2");
+      Table t2("tLatticeExpr3_tmp.tab2");
       PagedArray<Complex> lat2(t2);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
@@ -179,7 +179,7 @@ main(int argc, char *argv[])
       timer.show ("2*lat1 + 3*lat2 ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab3");
+      Table t("tLatticeExpr3_tmp.tab3");
       PagedArray<Complex> lat(t);
       Array<Complex> arr(tileShape);
       indgen(arr, Complex(0,0), Complex(1,1));
@@ -195,9 +195,9 @@ main(int argc, char *argv[])
       timer.show ("checking        ");
     }
     {
-      Table t("tLatticeExpr2_tmp.tab");
+      Table t("tLatticeExpr3_tmp.tab");
       PagedArray<Complex> lat(t);
-      SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
+      SetupNewTable paSetup("tLatticeExpr3_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
