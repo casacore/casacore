@@ -48,9 +48,10 @@ int main() {
       //     at the optimal values of +/- ~0.612003 sigma.)
 
       Matrix<Double> qx, qy;
-      qx = qfn(3,0.61200318096,0.0);
-      qy = qx;
-      vv.setQuantization(qx,qy);
+      //      qx = qfn(3,0.61200318096,0.0);
+      //      qy = qx;
+      //      vv.setQuantization(qx,qy);
+      vv.setEquiSpaced(0.61200318096, 0.61200318096, 0.0, 0.0, 3);
       Vector<Double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
@@ -67,9 +68,10 @@ int main() {
       //     offset of -.02 sigma in the y-inputs
 
       Matrix<Double> qx, qy;
-      qx = qfn(3,.6,.01);
-      qy = qfn(3,.7,-.02);
-      vv.setQuantization(qx,qy);
+      //qx = qfn(3,.6,.01);
+      //qy = qfn(3,.7,-.02);
+      //vv.setQuantization(qx,qy);
+      vv.setEquiSpaced(.6, .7, .01, -.02, 3);
       Vector<Double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
@@ -85,10 +87,10 @@ int main() {
       Matrix<Double> qx, qy;
       qx = qfn(3,0.61200318096,0.0);
       qy = qfn(9,0.26691110435,0.0);
-      vv.setQuantization(qx,qy);
-      Vector<Double> rs, rhos;
-      vv.getTable(rs,rhos);
-      showTable(rs,rhos,vv);
+      //vv.setQuantization(qx,qy);
+      //Vector<Double> rs, rhos;
+      //vv.getTable(rs,rhos);
+      //showTable(rs,rhos,vv);
     }
 
     {
@@ -99,9 +101,10 @@ int main() {
       //     at the optimal values of +/- (2k-1)*0.266911 sigma, k=1,2,3,4.)
 
       Matrix<Double> qx, qy;
-      qx = qfn(9,0.26691110435,0.);
-      qy = qx;
-      vv.setQuantization(qx,qy);
+      //qx = qfn(9,0.26691110435,0.);
+      //qy = qx;
+      //vv.setQuantization(qx,qy);
+      vv.setEquiSpaced(0.26691110435, 0.26691110435, 0.0, 0.0, 9);
       Vector<Double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
@@ -114,10 +117,11 @@ int main() {
       // do it 100 times for the 9x9 optimized case
       Timer timer;
       Matrix<Double> qx, qy;
-      qx = qfn(9,0.26691110435,0.);
-      qy = qx;
+      // qx = qfn(9,0.26691110435,0.);
+      // qy = qx;
       for (uInt i=0;i<100;i++) {
-	vv.setQuantization(qx,qy);
+	  // vv.setQuantization(qx,qy);
+	  vv.setEquiSpaced(0.26691110435, 0.26691110435, 0.0, 0.0, 9);
       }
       timer.show("Set up 9x9 100 times");
       timer.mark();
@@ -146,10 +150,11 @@ int main() {
       // do it 100 times for the 3x3 optimized case
       Timer timer;
       Matrix<Double> qx, qy;
-      qx = qfn(3,0.61200318096,0.0);
-      qy = qx;
+      // qx = qfn(3,0.61200318096,0.0);
+      // qy = qx;
       for (uInt i=0;i<100;i++) {
-	vv.setQuantization(qx,qy);
+	  // vv.setQuantization(qx,qy);
+	  vv.setEquiSpaced(0.61200318096, 0.61200318096, 0.0, 0.0, 3);
       }
       timer.show("Set up 3x3 100 times");
       timer.mark();
@@ -479,9 +484,10 @@ int main() {
 	   << result << " -> "
 	   << vv.predict(9,result) << endl;
       Matrix<Double> qx, qy;
-      qx = qfn(9,result,0.);
-      qy = qx;
-      vv.setQuantization(qx,qy);
+      // qx = qfn(9,result,0.);
+      // qy = qx;
+      // vv.setQuantization(qx,qy);
+      vv.setEquiSpaced(result, result, 0.0, 0.0, 9);
       Vector<Double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
