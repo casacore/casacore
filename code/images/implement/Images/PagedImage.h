@@ -139,8 +139,9 @@ public:
   // that name here.
   void rename(const String &newName);
 
-  // returns the current Table name
-  virtual String name() const;
+  // Returns the current Table name. By default this includes the full path. 
+  // the path preceding the file name can be stripped off on request.
+  virtual String name(const Bool stripPath=False) const;
 
   // function to change the row number where the PagedImage is stored
   // PagedImage is given a TableColumn row number at construction time.  
