@@ -31,9 +31,13 @@
 
 #include <aips/aips.h>
 #include <aips/MeasurementSets/NewMSColumns.h>
+#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/Arrays/IPosition.h>
 
-class NewMeasurementSet;
 class TableDesc;
+class RONewMSAntennaColumns;
+class NewMSAntenna;
+template <class T> class Block;
 
 // <summary>A class with functions for concatenating MeasurementSets</summary>
 
@@ -80,12 +84,17 @@ class MSConcat: public NewMSColumns
 {
 public:
   MSConcat(NewMeasurementSet& ms);
-  void concatenate(const NewMeasurementSet& ms);
+  void concatenate(const NewMeasurementSet& otherMS);
 private:
   MSConcat();
-  static Bool isFixedShape(const TableDesc& td);
-  void checkShapes(const NewMeasurementSet& ms) const;
-  Bool itsFixedShape;
+  static IPosition isFixedShape(const TableDesc& td);
+  static IPosition getShape(const RONewMSColumns& msCols, uInt whichShape);
+  void checkShape(const IPosition& otherShape) const;
+  void checkCategories(const RONewMSColumns& otherCols) const;
+  Block<uInt> copyAntenna(const RONewMSAntennaColumns& otherCol, const NewMSAntenna& otherTable);
+
+  NewMeasurementSet itsMS;
+  IPosition itsFixedShape;
 };
 #endif
 
