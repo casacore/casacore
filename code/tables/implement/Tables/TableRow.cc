@@ -1,5 +1,5 @@
 //# TableRow.cc: Access to a table row
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,6 +201,10 @@ void ROTableRow::deleteObjects()
 	case TpArrayString:
 	    delete (ROArrayColumn<String>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<String> >*)(itsFields[i]);
+	    break;
+	case TpRecord:
+	    delete (ROScalarColumn<TableRecord>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<TableRecord>*)(itsFields[i]);
 	    break;
 	default:
 	    throw (TableError ("TableRow: unknown data type"));
@@ -404,6 +408,14 @@ void ROTableRow::makeObjects (const RecordDesc& description,
 		itsColumns[i] = new ROScalarColumn<String> (itsTable, name);
 	    }
 	    itsFields[i] = new RecordFieldPtr<String>(*itsRecord, i);
+	    break;
+	case TpRecord:
+	    if (writable) {
+		itsColumns[i] = new ScalarColumn<TableRecord> (itsTable, name);
+	    }else{
+		itsColumns[i] = new ROScalarColumn<TableRecord>(itsTable, name);
+	    }
+	    itsFields[i] = new RecordFieldPtr<TableRecord>(*itsRecord, i);
 	    break;
 	case TpArrayBool:
 	    if (writable) {
@@ -665,6 +677,10 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		                         Array<String> (IPosition(ndim, 0)));
 	    }
 	    break;
+	case TpRecord:
+	    (*(const ROScalarColumn<TableRecord>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<TableRecord>*) itsFields[i]));
+	    break;
 	default:
 	    throw (TableError ("TableRow: unknown data type"));
 	}
@@ -767,6 +783,10 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	(*(ArrayColumn<String>*)(itsColumns[whichColumn])).put
 	                        (rownr, record.asArrayString (whichField));
 	break;
+    case TpRecord:
+	(*(ScalarColumn<TableRecord>*)(itsColumns[whichColumn])).put
+	                        (rownr, record.subRecord (whichField));
+	break;
     default:
 	throw (TableError ("TableRow: unknown data type"));
     }
@@ -857,6 +877,10 @@ void ROTableRow::putRecord (uInt rownr)
 	case TpArrayString:
 	    (*(ArrayColumn<String>*)(itsColumns[i])).put (rownr,
 	         (*(RecordFieldPtr<Array<String> >*) itsFields[i]).get());
+	    break;
+	case TpRecord:
+	    (*(ScalarColumn<TableRecord>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<TableRecord>*) itsFields[i]).get());
 	    break;
 	default:
 	    throw (TableError ("TableRow: unknown data type"));
