@@ -187,7 +187,7 @@
      COMMAND="$COMMAND && $SAVE_RESULTS $FILES"
   fi
   COMMAND="$COMMAND && rm -f $FILES"
-  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' && [ -r "$FILES" ] && $OPER $FILES
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' && [ "X$FILES" != "X" ] && $OPER $FILES
 
 # Retrieve results if they were saved
   if [ "$SAVE_RESULTS" ]
