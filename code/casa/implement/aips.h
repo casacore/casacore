@@ -35,17 +35,6 @@
 //# For size_t
 #include <stdlib.h>
 
-#if defined(_AIX)
-#pragma implementation ("aips.cc")
-#endif
-
-// At least the centerline compiler doesn't know what to do with volatile.
-// This may be more generally true.
-
-#if defined(OBJECTCENTER)
-#define volatile
-                    // nothing
-#endif
 
 // Including aips.h should guarantee that AIPS++ namespace management is
 // switched on - it may have been explicitly switched off beforehand by
@@ -63,13 +52,9 @@
 #endif
 
 // This section contains the various standard types used by AIPS++.
-#if defined(AIPS_STDLIB)
 typedef bool Bool;
 const Bool True = true;
 const Bool False = false;
-#else
-enum Bool { False = 0, True = 1 };
-#endif
 
 typedef char Char;
 typedef unsigned char uChar;
@@ -153,16 +138,5 @@ extern Bool aips_debug_on;
 // classes, e.g. from InterViews.
 #define imported /* Nothing */
 
-#if !defined(AIPS_STDLIB)
-// These are new keywords in the upcoming C++ standard.
-// They are defined to an empty string, so they can be used until
-// all compilers interpret them.
-// Especially the keyword explicit may give useful information.
-// It can be given at a one-argument constructor telling the compiler
-// that it should not be used for automatic conversions.
-// E.g.    explicit IPosition (uInt);
-#define explicit /* Nothing */
-#define typename /* Nothing */
-#endif
 
 #endif
