@@ -30,7 +30,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/MatrixMathLA.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/iostream.h>
 

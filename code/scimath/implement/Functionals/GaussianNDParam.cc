@@ -27,7 +27,7 @@
 
 #include <aips/Functionals/GaussianNDParam.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/MatrixMathLA.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
