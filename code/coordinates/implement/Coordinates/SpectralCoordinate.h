@@ -294,6 +294,7 @@ public:
 
 
     // Set the state that is used for conversions from pixel and frequency to velocity.
+    // If the unit String is empty, then no change to the velocity unit is made.
     // The SpectralCoordinate is constructed  with 
     // <src>MDoppler::RADIO</src> and <src>km/s</src> as the velocity conversion state.
     // The functions in this class which use this state are those that convert
