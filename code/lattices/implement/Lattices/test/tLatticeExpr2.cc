@@ -131,6 +131,28 @@ main(int argc, char *argv[])
       timer.show ("lat+lat         ");
     }
     {
+      Table t("tLatticeExpr2_tmp.tab");
+      PagedArray<Float> lat(t);
+      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      Table paTable(paSetup);
+      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      Timer timer;
+      LatticeExpr<Float> expr(2*min(lat)*2*lat);
+      latout.copyData (expr);
+      timer.show ("2*min(lat)*2*lat");
+    }
+    {
+      Table t("tLatticeExpr2_tmp.tab");
+      PagedArray<Float> lat(t);
+      SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
+      Table paTable(paSetup);
+      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      Timer timer;
+      LatticeExpr<Float> expr(lat*2*min(lat)*2);
+      latout.copyData (expr);
+      timer.show ("lat*2*min(lat)*2");
+    }
+    {
       Table t1("tLatticeExpr2_tmp.tab");
       PagedArray<Float> lat1(t1);
       Table t2("tLatticeExpr2_tmp.tab2");
