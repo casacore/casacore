@@ -429,8 +429,9 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
          throw (AipsError ("LELFunctionFloat::constructor - "
 			   "function IIF should have 3 arguments"));
       }
-      //# The 1st argument must be Bool, the 2nd and 3rd must be T.
-      //# The arguments do not need to be lattices.
+//# The 1st argument must be Bool, the 2nd and 3rd must be T.
+//# The arguments do not need to be lattices.
+
       Block<Int> argType(3);
       argType[0] = TpBool;
       argType[1] = whatType((T*)0);
@@ -467,8 +468,9 @@ void LELFunctionND<T>::eval(Array<T>& result,
    switch (function_p) {
    case LELFunctionEnums::IIF :
    {
-      //# Evaluation is not difficult, but there are many scalar/lattice
-      //# combinations.
+//# Evaluation is not difficult, but there are many scalar/lattice
+//# combinations.
+
       if (arg_p[0].isScalar()) {
 	 T tmp;
 	 Bool tmpb;
