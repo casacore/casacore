@@ -210,7 +210,7 @@ public:
                              Bool outIsMasked, Bool showProgress,
                              typename Interpolate2D::Method method);
 
-  // Regrid 2 coupled axes
+  // Regrid, via coordinates, 2 coupled axes
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
                  const DirectionCoordinate& inCoord,
@@ -222,14 +222,14 @@ public:
                  MDirection::Convert& machine,
                  Bool useMachine, Bool showProgress, Double scale);
 
-  // Resample 2 axes
-  void ImageRegrid<T>::resample2D (MaskedLattice<T>& outLattice,
-                                   const MaskedLattice<T>& inLattice,
-                                   const Vector<Int> inPixelAxes,
-                                   const Vector<Int> outPixelAxes,
-                                   const Vector<Int> pixelAxisMap,
-                                   typename Interpolate2D::Method method,
-                                   Bool showProgress, Double scale);
+  // Resample by a factor, 2 axes
+  void resample2D (MaskedLattice<T>& outLattice,
+                   const MaskedLattice<T>& inLattice,
+                   const Vector<Int> inPixelAxes,
+                   const Vector<Int> outPixelAxes,
+                   const Vector<Int> pixelAxisMap,
+                   typename Interpolate2D::Method method,
+                   Bool showProgress, Double scale);
 
   // Make coordinate grid for this cursor.
   void make2DWorldCoordinateGrid (Bool& allFail, Bool&missedIt,
