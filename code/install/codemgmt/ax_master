@@ -2041,3 +2041,4 @@
 08 220 src rm doc/user/Refman.dir/image.htex
 08 220 src rm doc/user/Refman.dir/inputs.htex
 08 220 src rm doc/user/Refman.dir/nrao.htex
+08 220 src rm doc/user/Refman.dir/statistics.htex
