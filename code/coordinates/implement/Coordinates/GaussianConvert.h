@@ -1,5 +1,5 @@
 //# GaussianConvert.h: Class to convert units of Gaussians from pixel to world 
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,19 +57,22 @@ template<class T> class Quantum;
 // </example>
 
 // <todo asof="1998/12/11">
-// <li> There is some trouble with my mathematics when
-//      the increments are unequal.  Get this right !
 // </todo>
 
 class GaussianConvert
 {
 public:
 
+    // Default constructor
     GaussianConvert ();
 
+    // Constructor.  You specify which world axes (must be length 2)
+    // of the coordinate system are the relevant ones for
+    // your gaussian (x then y)
     GaussianConvert (const CoordinateSystem& cSys, 
                      const Vector<uInt>& worldAxes);
 
+    // Destructor
    ~GaussianConvert ();
 
     // Copy constructor.  Uses copy semantics.
@@ -78,19 +81,40 @@ public:
     // Assignment operator. Uses copy semantics.
     GaussianConvert& operator=(const GaussianConvert& other);
 
+    // (Re)set the coordinate system 
     void setCoordinateSystem (const CoordinateSystem& cSys);
- 
+
+    // Re(set) the world axes 
     void setWorldAxes (const Vector<uInt>& worldAxes);
 
+    // Convert Gaussian parameters from pixels to world.  Returns
+    // False if it fails with an error message recoverable with
+    // function errorMessage.  If you set the units of the output
+    // axis quanta they will be honoured, otherwise they will come out
+    // in the axis units of the coordinate system.  For the output position angle,
+    // if the output units are not set, the units of the input position angle
+    // will be used.
     Bool toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
                  Quantum<Double>& positionAngleOut, Double majorAxisIn,
                  Double minorAxisIn, const Quantum<Double>& positionAngleIn);
 
+    // Convert Gaussian parameters from world to pixel.  Returns
+    // False if it fails with an error message recoverable with
+    // function errorMessage. For the output position angle,
+    // if the output units are not set, the units of the input position angle
+    // will be used.
     Bool toPixel(Double& majorAxisOut, Double& minorAxisOut,
                  Quantum<Double>& positionAngleOut, const Quantum<Double>& majorAxisIn,
                  const Quantum<Double>& minorAxisIn, const Quantum<Double>& positionAngleIn);
     
+    // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
+
+    // Put a position angle into the range 0 -> pi   (units honoured)
+    static Quantum<Double> positionAngleRange(const Quantum<Double>& pa);
+
+    // Put a position angle into the range 0 -> pi assuming units of radians
+    static Double positionAngleRange(Double pa);
 
 private:
 
@@ -99,9 +123,17 @@ private:
    String itsErrorMessage;
    Bool itsValid;
 
-   void convertPositionAngle(Quantum<Double>& paOut,
-                             const Quantum<Double>& paIn,
-                             const Vector<Double>& deltas);
+   void convertAxes (Double& minorAxisOut, Double& majorAxisOut,
+                     Quantum<Double>& positionAngleOut,
+                     Double minorAxisIn, Double majorAxisIn,
+                     const Quantum<Double>& positionAngleIn,
+                     const CoordinateSystem& cSys,
+                     String dir);
+
+   void checkCoordinateSystem();
+
+   void checkWorldAxes();
+
 };
 
 #endif
