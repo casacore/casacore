@@ -2616,3 +2616,4 @@
 10 010 src mv trial/implement/Lattices/Lattice2Convolver.h trial/implement/Lattices/LatticeConvolver.h
 10 010 src mv aips/implement/Quantum aips/implement/Quanta
 10 010 src mv aips/implement/Measures/QBase.h aips/implement/Quanta/QBase.h
+10 010 src mv aips/implement/Measures/QC.cc aips/implement/Quanta/QC.cc
