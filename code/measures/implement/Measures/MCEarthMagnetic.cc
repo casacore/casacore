@@ -144,58 +144,91 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
 
   case J2000_JMEAN:
     measMath.createPrecession();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case B1950_BMEAN:
     measMath.createPrecessionB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JMEAN_J2000:
     measMath.createPrecession();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JMEAN_JTRUE:
     measMath.createNutation();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case BMEAN_B1950:
     measMath.createPrecessionB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case BMEAN_BTRUE:
     measMath.createNutationB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JTRUE_JMEAN:
     measMath.createNutation();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case BTRUE_BMEAN:
     measMath.createNutationB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case J2000_JNAT:
     measMath.createSolarPos();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JNAT_APP:
     measMath.createPrecNutat();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JNAT_J2000:
     measMath.createSolarPos();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case APP_JNAT:
     measMath.createPrecNutat();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case B1950_APP:
     measMath.createPrecNutatB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case APP_B1950:
     measMath.createPrecNutatB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
+    break;
+    
+  case HADEC_ITRF:
+  case ITRF_HADEC: 
+  case HADEC_AZEL:
+  case AZEL_HADEC:
+  case MECLIP_JMEAN:
+  case JMEAN_MECLIP:
+  case TECLIP_JTRUE:
+  case JTRUE_TECLIP:
+    mc.addFrameType(MeasFrame::POSITION);
+    break;
+
+  case TOPO_HADEC: 
+  case HADEC_TOPO: 
+  case APP_TOPO: 
+  case TOPO_APP: 
+    mc.addFrameType(MeasFrame::EPOCH);
+    mc.addFrameType(MeasFrame::POSITION);
     break;
     
   default:
