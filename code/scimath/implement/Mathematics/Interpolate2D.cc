@@ -58,7 +58,7 @@ Interpolate2D::Interpolate2D(Interpolate2D::Method method)
   }   
 }
 
-Interpolate2D::Interpolate2D(const Interpolate2D& other)
+Interpolate2D::Interpolate2D(const Interpolate2D &other)
 : itsFuncPtrFloat(0),
   itsFuncPtrDouble(0),
   itsFuncPtrBool(0)
@@ -67,7 +67,7 @@ Interpolate2D::Interpolate2D(const Interpolate2D& other)
 Interpolate2D::~Interpolate2D()
 {}
 
-Interpolate2D& Interpolate2D::operator=(const Interpolate2D& other)
+Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other)
 {
    itsFuncPtrFloat = other.itsFuncPtrFloat;
    itsFuncPtrDouble = other.itsFuncPtrDouble;
@@ -79,17 +79,17 @@ Interpolate2D& Interpolate2D::operator=(const Interpolate2D& other)
 
 // Float Versions
 
-Bool Interpolate2D::interp(Float& result, 
-                           const Vector<Double>& where, 
-                           const Array<Float>& data) const
+Bool Interpolate2D::interp(Float &result, 
+                           const Vector<Double> &where, 
+                           const Array<Float> &data) const
 {
-  const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
+  const Matrix<Float> &data2 = dynamic_cast<const Matrix<Float>&>(data);
   return interp(result, where, data2);
 }
 
-Bool Interpolate2D::interp(Float& result, 
-                           const Vector<Double>& where, 
-                           const Matrix<Float>& data) const
+Bool Interpolate2D::interp(Float &result, 
+                           const Vector<Double> &where, 
+                           const Matrix<Float> &data) const
 {
   const Matrix<Bool>* maskPtr(0);
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
@@ -97,21 +97,21 @@ Bool Interpolate2D::interp(Float& result,
 
 
 
-Bool Interpolate2D::interp(Float& result, 
-                           const Vector<Double>& where, 
-                           const Array<Float>& data,
-                           const Array<Bool>& mask) const
+Bool Interpolate2D::interp(Float &result, 
+                           const Vector<Double> &where, 
+                           const Array<Float> &data,
+                           const Array<Bool> &mask) const
 {
-  const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
-  const Matrix<Bool>& mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
+  const Matrix<Float> &data2 = dynamic_cast<const Matrix<Float>&>(data);
+  const Matrix<Bool> &mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
   return interp(result, where, data2, mask2);
 }
 
 
-Bool Interpolate2D::interp(Float& result, 
-                           const Vector<Double>& where, 
-                           const Matrix<Float>& data,
-                           const Matrix<Bool>& mask) const
+Bool Interpolate2D::interp(Float &result, 
+                           const Vector<Double> &where, 
+                           const Matrix<Float> &data,
+                           const Matrix<Bool> &mask) const
 {
   const Matrix<Bool>* maskPtr = &mask;
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
@@ -120,58 +120,64 @@ Bool Interpolate2D::interp(Float& result,
 
 // Double versions
 
-Bool Interpolate2D::interp(Double& result, 
-                           const Vector<Double>& where, 
-                           const Array<Double>& data) const
-{
-  const Matrix<Double>& data2 = dynamic_cast<const Matrix<Double>&>(data);
+Bool Interpolate2D::interp(Double &result, 
+                           const Vector<Double> &where, 
+                           const Array<Double> &data) const {
+  const Matrix<Double> &data2 = dynamic_cast<const Matrix<Double>&>(data);
   return interp(result, where, data2);
 }
 
-Bool Interpolate2D::interp(Double& result, 
-                           const Vector<Double>& where, 
-                           const Matrix<Double>& data) const
-{
+Bool Interpolate2D::interp(Double &result, 
+                           const Vector<Double> &where, 
+                           const Matrix<Double> &data) const {
   const Matrix<Bool>* maskPtr(0);
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
 
 
-Bool Interpolate2D::interp(Double& result, 
-                           const Vector<Double>& where, 
-                           const Array<Double>& data,
-                           const Array<Bool>& mask) const
-{
-  const Matrix<Double>& data2 = dynamic_cast<const Matrix<Double>&>(data);
-  const Matrix<Bool>& mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
+Bool Interpolate2D::interp(Double &result, 
+                           const Vector<Double> &where, 
+                           const Array<Double> &data,
+                           const Array<Bool> &mask) const {
+  const Matrix<Double> &data2 = dynamic_cast<const Matrix<Double>&>(data);
+  const Matrix<Bool> &mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
   return interp(result, where, data2, mask2);
 }
 
-
-Bool Interpolate2D::interp(Double& result, 
-                           const Vector<Double>& where, 
-                           const Matrix<Double>& data,
-                           const Matrix<Bool>& mask) const
-{
+Bool Interpolate2D::interp(Double &result, 
+                           const Vector<Double> &where, 
+                           const Matrix<Double> &data,
+                           const Matrix<Bool> &mask) const {
   const Matrix<Bool>* maskPtr = &mask;
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
+// Double version with two identicals and mask
+
+Bool Interpolate2D::interp(Double &resultI, Double &resultJ, 
+                           const Vector<Double> &where, 
+                           const Matrix<Double> &dataI,
+                           const Matrix<Double> &dataJ,
+                           const Matrix<Bool> &mask) const {
+  return interpLinearDouble2(resultI, resultJ, where, dataI, dataJ, mask);
+}
+
+
 
 // Bool versions
 
-Bool Interpolate2D::interp(Bool& result, 
-                           const Vector<Double>& where, 
-                           const Array<Bool>& data) const
+Bool Interpolate2D::interp(Bool &result, 
+                           const Vector<Double> &where, 
+                           const Array<Bool> &data) const
 {
-  const Matrix<Bool>& data2 = dynamic_cast<const Matrix<Bool>&>(data);
+  const Matrix<Bool> &data2 = dynamic_cast<const Matrix<Bool>&>(data);
   return interp(result, where, data2);
 }
 
-Bool Interpolate2D::interp(Bool& result, 
-                           const Vector<Double>& where, 
-                           const Matrix<Bool>& data) const
+Bool Interpolate2D::interp(Bool &result, 
+                           const Vector<Double> &where, 
+                           const Matrix<Bool> &data) const
 {
   return ((*this).*itsFuncPtrBool)(result, where, data);
 }
@@ -181,15 +187,15 @@ Bool Interpolate2D::interp(Bool& result,
 // Private functions
 
 
-Bool Interpolate2D::interpNearestFloat (Float& result, 
-                                        const Vector<Double>& where,
-                                        const Matrix<Float>& data,
-                                        const Matrix<Bool>*& maskPtr) const
+Bool Interpolate2D::interpNearestFloat (Float &result, 
+                                        const Vector<Double> &where,
+                                        const Matrix<Float> &data,
+                                        const Matrix<Bool>* &maskPtr) const
 {
   // definition of the 'neighborhood' of outer edge data elements.
   static const Double half= .5001;
 
-  const IPosition& shape = data.shape();
+  const IPosition &shape = data.shape();
 
   Double imax = shape(0) - 1.;
   Double wi = where[0];
@@ -212,15 +218,15 @@ Bool Interpolate2D::interpNearestFloat (Float& result,
   return dataValid;
 }
 
-Bool Interpolate2D::interpNearestDouble (Double& result, 
-                                         const Vector<Double>& where,
-                                         const Matrix<Double>& data,
-                                         const Matrix<Bool>*& maskPtr) const
+Bool Interpolate2D::interpNearestDouble (Double &result, 
+                                         const Vector<Double> &where,
+                                         const Matrix<Double> &data,
+                                         const Matrix<Bool>* &maskPtr) const
 {
   // definition of the 'neighborhood' of outer edge data elements.
   static const Double half= .5001;
 
-  const IPosition& shape = data.shape();
+  const IPosition &shape = data.shape();
 
   Double imax = shape(0) - 1.;
   Double wi = where[0];
@@ -244,12 +250,49 @@ Bool Interpolate2D::interpNearestDouble (Double& result,
 }
 
 
-Bool Interpolate2D::interpLinearFloat (Float& result, 
-                                       const Vector<Double>& where, 
-                                       const Matrix<Float>& data,
-                                       const Matrix<Bool>*& maskPtr) const
-{
-   const IPosition& shape = data.shape();
+Bool Interpolate2D::interpLinearFloat(Float &result, 
+				      const Vector<Double> &where, 
+				      const Matrix<Float> &data,
+				      const Matrix<Bool>* &maskPtr) const {
+  const IPosition &shape = data.shape();
+
+  // We find 4 points surrounding the one of interest.
+  // Negatives will give big positive value for the uInt 
+  // and these will fail the  shape test below.
+  // Make sure we don't access i+1 or j+1 because the 
+  // big positive plus 1 may become 0 and then we will spuriously
+  // pass the shape test
+  uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
+  uInt j = Int(where[1]);
+  uInt si = uInt(shape(0)-1);
+  uInt sj = uInt(shape(1)-1);
+
+  // Handle edge. Just move start left/down by one,
+  if (i==si) --i;
+  if (j==sj) --j;
+
+  // 2x2 starting from [i,j]
+  // mask==True is a good pixel
+  if (i < si && j < sj) {                   
+    if (maskPtr) {
+      if (!(*maskPtr)(i,j) || !(*maskPtr)(i+1,j) ||
+	  !(*maskPtr)(i,j+1) || !(*maskPtr)(i+1,j+1)) return False;
+    };
+    Double TT = where[0] - i;
+    Double UU = where[1] - j;
+    result = (1.0-TT)*(1.0-UU)*data(i,j) +
+      TT*(1.0-UU)*data(i+1,j) +
+      TT*UU*data(i+1,j+1) +
+      (1.0-TT)*UU*data(i,j+1);
+    return True;
+  } else return False;
+}
+
+Bool Interpolate2D::interpLinearDouble(Double &result, 
+				       const Vector<Double> &where, 
+				       const Matrix<Double> &data,
+				       const Matrix<Bool>* &maskPtr) const {
+  const IPosition &shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
 // Negatives will give big positive value for the uInt 
@@ -258,101 +301,91 @@ Bool Interpolate2D::interpLinearFloat (Float& result,
 // big positive plus 1 may become 0 and then we will spuriously
 // pass the shape test
 
-   uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
-   uInt j = Int(where[1]);
-   uInt si = uInt(shape(0)-1);
-   uInt sj = uInt(shape(1)-1);
+  uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
+  uInt j = Int(where[1]);
+  uInt si = uInt(shape(0)-1);
+  uInt sj = uInt(shape(1)-1);
 
-// Handle edge. Just move start left/down by one,
+  // Handle edge. Just move start left/down by one,
+  if (i==si) --i;
+  if (j==sj) --j;
 
-   if (i==si) --i;
-   if (j==sj) --j;
-
-// 2x2 starting from [i,j]
-// mask==True is a good pixel
-
-   if (i < si &&  j < sj) {                   
-      if (maskPtr) {
-         if ( !(*maskPtr)(i,j) ||
-              !(*maskPtr)(i+1,j) ||
-              !(*maskPtr)(i,j+1) ||
-              !(*maskPtr)(i+1,j+1) ) return False;
-      }
-//
-      Double TT = where[0] - i;
-      Double UU = where[1] - j;
-      result = (1.0-TT)*(1.0-UU)*data(i,j) +
-               TT*(1.0-UU)*data(i+1,j) +
-               TT*UU*data(i+1,j+1) +
-               (1.0-TT)*UU*data(i,j+1);
-//
-      return True;
-   } else {
-      return False;
-   }
+  // 2x2 starting from [i,j]
+  // mask==True is a good pixel
+  if (i < si && j < sj) {                   
+    if (maskPtr) {
+      if (!(*maskPtr)(i,j) || !(*maskPtr)(i+1,j) ||
+	  !(*maskPtr)(i,j+1) || !(*maskPtr)(i+1,j+1)) return False;
+    };
+    Double TT = where[0] - i;
+    Double UU = where[1] - j;
+    result = (1.0-TT)*(1.0-UU)*data(i,j) +
+      TT*(1.0-UU)*data(i+1,j) +
+      TT*UU*data(i+1,j+1) +
+      (1.0-TT)*UU*data(i,j+1);
+    return True;
+  } else return False;
 }
 
+Bool Interpolate2D::interpLinearDouble2(Double &resultI, Double &resultJ, 
+                                        const Vector<Double> &where, 
+                                        const Matrix<Double> &dataI,
+                                        const Matrix<Double> &dataJ,
+                                        const Matrix<Bool> &mask) const {
+  const IPosition &shape = mask.shape();
 
-Bool Interpolate2D::interpLinearDouble (Double& result, 
-                                        const Vector<Double>& where, 
-                                        const Matrix<Double>& data,
-                                        const Matrix<Bool>*& maskPtr) const
-{
-   const IPosition& shape = data.shape();
+  // We find 4 points surrounding the one of interest.
+  // Negatives will give big positive value for the uInt 
+  // and these will fail the  shape test below.
+  // Make sure we don't access i+1 or j+1 because the 
+  // big positive plus 1 may become 0 and then we will spuriously
+  // pass the shape test
 
-// We find 4 points surrounding the one of interest.
-// Negatives will give big positive value for the uInt 
-// and these will fail the  shape test below.
-// Make sure we don't access i+1 or j+1 because the 
-// big positive plus 1 may become 0 and then we will spuriously
-// pass the shape test
-
-   uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
-   uInt j = Int(where[1]);
-   uInt si = uInt(shape(0)-1);
-   uInt sj = uInt(shape(1)-1);
-
-// Handle edge. Just move start left/down by one,
-
-   if (i==si) --i;
-   if (j==sj) --j;
-
-// 2x2 starting from [i,j]
-// mask==True is a good pixel
-
-   if (i < si &&  j < sj) {                   
-      if (maskPtr) {
-         if ( !(*maskPtr)(i,j) ||
-              !(*maskPtr)(i+1,j) ||
-              !(*maskPtr)(i,j+1) ||
-              !(*maskPtr)(i+1,j+1) ) return False;
-      }
-//
-      Double TT = where[0] - i;
-      Double UU = where[1] - j;
-      result = (1.0-TT)*(1.0-UU)*data(i,j) +
-               TT*(1.0-UU)*data(i+1,j) +
-               TT*UU*data(i+1,j+1) +
-               (1.0-TT)*UU*data(i,j+1);
-//
-      return True;
-   } else {
-      return False;
-   }
+  uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
+  uInt j = Int(where[1]);
+  uInt si = uInt(shape[0]-1);
+  uInt sj = uInt(shape[1]-1);
+  // Handle edge. Just move start left/down by one,
+  if (i==si) --i;
+  if (j==sj) --j;
+  // 2x2 starting from [i,j]
+  // mask==True is a good pixel
+  if (i < si && j < sj) {
+    uInt k0 = dataI.steps()[0];
+    uInt k1 = dataI.steps()[1];
+    const Bool *m = &mask(i,j);
+    if ( !*m || !*(m+k0) || !*(m+k1) || !*(m+k0+k1)) return False;
+    Double TT = where[0] - i;
+    Double UU = where[1] - j;
+    Double x1 = (1.0-TT);
+    Double y1 = (1.0-UU);
+    Double x = x1*y1;
+    const Double *dI = &dataI(i,j);
+    const Double *dJ = &dataJ(i,j);
+    resultI = x * *dI;
+    resultJ = x * *dJ;
+    x = TT*y1;
+    resultI += x * *(dI+k0);
+    resultJ += x * *(dJ+k0);
+    x = TT*UU;;;
+    resultI += x * *(dI+k0+k1);
+    resultJ += x * *(dJ+k0+k1);
+    x = x1*UU;;;
+    resultI += x * *(dI+k1);
+    resultJ += x * *(dJ+k1);
+    return True;
+  } else return False;
 }
 
-
-
-
-Bool Interpolate2D::interpCubicFloat (Float& result, 
-                                      const Vector<Double>& where, 
-                                      const Matrix<Float>& data,
-                                      const Matrix<Bool>*& maskPtr) const
+Bool Interpolate2D::interpCubicFloat (Float &result, 
+                                      const Vector<Double> &where, 
+                                      const Matrix<Float> &data,
+                                      const Matrix<Bool>* &maskPtr) const
 //
 // bi-cubic interpolation
 //
 {
-   const IPosition& shape = data.shape();
+   const IPosition &shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
 // Points are labelled:
@@ -432,15 +465,15 @@ Bool Interpolate2D::interpCubicFloat (Float& result,
 }
 
 
-Bool Interpolate2D::interpCubicDouble (Double& result, 
-                                       const Vector<Double>& where, 
-                                       const Matrix<Double>& data,
-                                       const Matrix<Bool>*& maskPtr) const
+Bool Interpolate2D::interpCubicDouble (Double &result, 
+                                       const Vector<Double> &where, 
+                                       const Matrix<Double> &data,
+                                       const Matrix<Bool>* &maskPtr) const
 //
 // bi-cubic interpolation
 //
 {
-   const IPosition& shape = data.shape();
+   const IPosition &shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
 // Points are labelled:
@@ -521,12 +554,12 @@ Bool Interpolate2D::interpCubicDouble (Double& result,
 
 
 
-Bool Interpolate2D::interpNearestBool (Bool& result, 
-                                       const Vector<Double>& where, 
-                                       const Matrix<Bool>& data) const
+Bool Interpolate2D::interpNearestBool (Bool &result, 
+                                       const Vector<Double> &where, 
+                                       const Matrix<Bool> &data) const
 {
   AlwaysAssert(where.nelements()==2, AipsError);
-  const IPosition& shape = data.shape();
+  const IPosition &shape = data.shape();
 
 // Find nearest pixel; (i,j) = centre
 
@@ -542,12 +575,12 @@ Bool Interpolate2D::interpNearestBool (Bool& result,
 }
 
 
-Bool Interpolate2D::interpLinearBool (Bool& result, 
-                                      const Vector<Double>& where, 
-                                      const Matrix<Bool>& data) const
+Bool Interpolate2D::interpLinearBool (Bool &result, 
+                                      const Vector<Double> &where, 
+                                      const Matrix<Bool> &data) const
 {
    AlwaysAssert(where.nelements()==2, AipsError);
-   const IPosition& shape = data.shape();
+   const IPosition &shape = data.shape();
 
 // Find nearest pixel; (i,j) = centre
 
@@ -562,7 +595,7 @@ Bool Interpolate2D::interpLinearBool (Bool& result,
 // 2x2 starting from [i,j]
 
    Bool ok = False;
-   if (i >= 0 && i+1 <= shape(0)-1 &&  j >= 0 && j+1 <= shape(1)-1) {
+   if (i >= 0 && i+1 <= shape(0)-1 && j >= 0 && j+1 <= shape(1)-1) {
       result = !(!data(i,j) || !data(i+1,j) || !data(i,j+1) || !data(i+1,j+1));
       ok = True;
   }
@@ -571,15 +604,15 @@ Bool Interpolate2D::interpLinearBool (Bool& result,
 }
 
 
-Bool Interpolate2D::interpCubicBool (Bool& result, 
-                                     const Vector<Double>& where, 
-                                     const Matrix<Bool>& data) const
+Bool Interpolate2D::interpCubicBool (Bool &result, 
+                                     const Vector<Double> &where, 
+                                     const Matrix<Bool> &data) const
 //
 // bi-cubic interpolation
 //
 {
    AlwaysAssert(where.nelements()==2, AipsError);
-   const IPosition& shape = data.shape();
+   const IPosition &shape = data.shape();
 
 // Find nearest pixel; (i,j) = centre
 
@@ -603,8 +636,8 @@ Bool Interpolate2D::interpCubicBool (Bool& result,
 
 
 
-void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Vector<Double>& y1, 
-                            const Vector<Double>& y2, const Vector<Double>& y12,
+void Interpolate2D::bcucof (Matrix<Double> &c, const Vector<Double> &y, const Vector<Double> &y1, 
+                            const Vector<Double> &y2, const Vector<Double> &y12,
                             Double d1, Double d2) const
 //
 // Numerical recipes 3.6 (p99)
@@ -665,7 +698,7 @@ void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Ve
 
 
 
-Interpolate2D::Method Interpolate2D::stringToMethod (const String& method)
+Interpolate2D::Method Interpolate2D::stringToMethod (const String &method)
 {
    String typeU = method;
    typeU.upcase();
@@ -684,7 +717,7 @@ Interpolate2D::Method Interpolate2D::stringToMethod (const String& method)
 }
 
 
-Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>*& maskPtr,
+Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>* &maskPtr,
                                       Int i1, Int i2, Int j1, Int j2) const
 {
    if (maskPtr==0) return False;

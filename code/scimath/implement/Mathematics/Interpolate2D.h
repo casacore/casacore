@@ -113,118 +113,146 @@ class Interpolate2D
   Interpolate2D(Interpolate2D::Method method=Interpolate2D::LINEAR);
 
   // Copy constructor (copy semantics)
-  Interpolate2D(const Interpolate2D& other);
+  Interpolate2D(const Interpolate2D &other);
  
   // destructor
   ~Interpolate2D();
 
   // Assignment operator (copy semantics)
-  Interpolate2D& operator=(const Interpolate2D& other);
+  Interpolate2D &operator=(const Interpolate2D &other);
 
   // Do one Float interpolation, supply Matrix/Array and mask (True is good),
   // and pixel coordinate.  Returns False if coordinate out of range or data 
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  Bool interp (Float& result, 
-               const Vector<Double>& where,
-               const Matrix<Float>& data) const;
-  Bool interp (Float& result, 
-               const Vector<Double>& where, 
-               const Array<Float>& data) const;
-  Bool interp (Float& result, 
-               const Vector<Double>& where,
-               const Matrix<Float>& data, 
-               const Matrix<Bool>& mask) const;
-  Bool interp (Float& result, 
-               const Vector<Double>& where, 
-               const Array<Float>& data, 
-               const Array<Bool>& mask) const;
-  //</group>
+  Bool interp (Float &result, 
+               const Vector<Double> &where,
+               const Matrix<Float> &data) const;
+  Bool interp (Float &result, 
+               const Vector<Double> &where, 
+               const Array<Float> &data) const;
+  Bool interp (Float &result, 
+               const Vector<Double> &where,
+               const Matrix<Float> &data, 
+               const Matrix<Bool> &mask) const;
+  Bool interp (Float &result, 
+               const Vector<Double> &where, 
+               const Array<Float> &data, 
+               const Array<Bool> &mask) const;
+  // </group>
 
   // Do one Double interpolation, supply Matrix/Array and mask (True is good),
   // and pixel coordinate.  Returns False if coordinate out of range or data 
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  Bool interp (Double& result, 
-               const Vector<Double>& where,
-               const Matrix<Double>& data) const;
-  Bool interp (Double& result, 
-               const Vector<Double>& where, 
-               const Array<Double>& data) const;
-  Bool interp (Double& result, 
-               const Vector<Double>& where,
-               const Matrix<Double>& data, 
-               const Matrix<Bool>& mask) const;
-  Bool interp (Double& result, 
-               const Vector<Double>& where, 
-               const Array<Double>& data, 
-               const Array<Bool>& mask) const;
-  //</group>
+  Bool interp (Double &result, 
+               const Vector<Double> &where,
+               const Matrix<Double> &data) const;
+  Bool interp (Double &result, 
+               const Vector<Double> &where, 
+               const Array<Double> &data) const;
+  Bool interp (Double &result, 
+               const Vector<Double> &where,
+               const Matrix<Double> &data, 
+               const Matrix<Bool> &mask) const;
+  Bool interp (Double &result, 
+               const Vector<Double> &where, 
+               const Array<Double> &data, 
+               const Array<Bool> &mask) const;
+  // </group>
+  // Do two lineair interpolation simultaneous. The second call is direct.
+  // The first call transfer to the second call. It is assumed that the
+  // structure (shape, steps) of the mask and data files are the same.
+  // <group>
+  Bool interp(Double &resultI, Double &resultJ, 
+	      const Vector<Double> &where, 
+	      const Matrix<Double> &dataI,
+	      const Matrix<Double> &dataJ,
+	      const Matrix<Bool> &mask) const;
+  Bool interpLinearDouble2(Double &resultI, Double &resultJ, 
+			   const Vector<Double> &where, 
+			   const Matrix<Double> &dataI,
+			   const Matrix<Double> &dataJ,
+			   const Matrix<Bool> &mask) const;
+  // </group>
 
   // Do one interpolation, supply boolean Matrix (True is good),
   // and pixel coordinate.  Returns False if coordinate
   // out of range. The result is False if any data value in the interpolation
   // grid are False (bad), else True.  No shape integrity checking is done.
   // <group>
-  Bool  interp (Bool& result, 
-                const Vector<Double>& where,
-                const Matrix<Bool>& data) const;
-  Bool interp (Bool& result, 
-               const Vector<Double>& where, 
-               const Array<Bool>& data) const;
+  Bool  interp (Bool &result, 
+                const Vector<Double> &where,
+                const Matrix<Bool> &data) const;
+  Bool interp (Bool &result, 
+               const Vector<Double> &where, 
+               const Array<Bool> &data) const;
   // </group>
 
 // Convert string ("nearest", "linear", "cubic") to Method
 // Minimum match will do.
-  static Interpolate2D::Method stringToMethod(const String& method);
+  static Interpolate2D::Method stringToMethod(const String &method);
 
 private:
 
   // Are any of the mask pixels bad ? Returns False if no mask.
-  Bool anyBadMaskPixels (const Matrix<Bool>*& mask, Int i1, Int i2, Int j1, Int j2) const;
+  Bool anyBadMaskPixels (const Matrix<Bool>* &mask, Int i1, Int i2,
+			 Int j1, Int j2) const;
 
   // nearest neighbour interpolation
-  Bool interpNearestFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
-                          const Matrix<Bool>*& maskPtr) const;
-  Bool interpNearestDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
-                     const Matrix<Bool>*& maskPtr) const;
-  Bool interpNearestBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
+  Bool interpNearestFloat(Float &result, const Vector<Double> &where,
+			  const Matrix<Float> &data,
+                          const Matrix<Bool>* &maskPtr) const;
+  Bool interpNearestDouble(Double &result, const Vector<Double> &where,
+			   const Matrix<Double> &data,
+			   const Matrix<Bool>* &maskPtr) const;
+  Bool interpNearestBool (Bool &result, const Vector<Double> &where,
+			  const Matrix<Bool> &data) const;
 
   // bi-linear interpolation 
-  Bool interpLinearFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
-                         const Matrix<Bool>*& maskPtr) const;
-  Bool interpLinearDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
-                          const Matrix<Bool>*& maskPtr) const;
-  Bool interpLinearBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
+  Bool interpLinearFloat(Float &result, const Vector<Double> &where,
+			 const Matrix<Float> &data,
+                         const Matrix<Bool>* &maskPtr) const;
+  Bool interpLinearDouble(Double &result, const Vector<Double> &where,
+			  const Matrix<Double> &data,
+                          const Matrix<Bool>* &maskPtr) const;
+  Bool interpLinearBool (Bool &result, const Vector<Double> &where,
+			 const Matrix<Bool> &data) const;
 
   // bi-cubic interpolation
-  Bool interpCubicFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
-                        const Matrix<Bool>*& maskPtr) const;
-  Bool interpCubicDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
-                         const Matrix<Bool>*& maskPtr) const;
-  Bool interpCubicBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
+  Bool interpCubicFloat(Float &result, const Vector<Double> &where,
+			const Matrix<Float> &data,
+                        const Matrix<Bool>* &maskPtr) const;
+  Bool interpCubicDouble(Double &result, const Vector<Double> &where,
+			 const Matrix<Double> &data,
+                         const Matrix<Bool>* &maskPtr) const;
+  Bool interpCubicBool (Bool &result, const Vector<Double> &where,
+			const Matrix<Bool> &data) const;
 
   // helping routine from numerical recipes
-  void bcucof (Matrix<Double>& c, const Vector<Double>& y, const Vector<Double>& y1, 
-               const Vector<Double>& y2, const Vector<Double>& y12,
+  void bcucof (Matrix<Double> &c, const Vector<Double> &y,
+	       const Vector<Double> &y1, 
+               const Vector<Double> &y2, const Vector<Double> &y12,
 	       Double d1, Double d2) const;
-//
+  //
   Interpolate2D::Method itsMethod;
 
-// Typedefs for function pointers
-
-  typedef Bool(Interpolate2D::*FuncPtrFloat)(Float& result, 
-                                             const Vector<Double>& where, 
-                                             const Matrix<Float>& data,
-                                             const Matrix<Bool>*& maskPtr) const;
-  typedef Bool(Interpolate2D::*FuncPtrDouble)(Double& result, 
-                                             const Vector<Double>& where, 
-                                             const Matrix<Double>& data,
-                                             const Matrix<Bool>*& maskPtr) const;
-  typedef Bool(Interpolate2D::*FuncPtrBool)(Bool& result, 
-                                            const Vector<Double>& where, 
-                                            const Matrix<Bool>& data) const;
-//
+  // Typedefs for function pointers
+  typedef Bool(Interpolate2D::*FuncPtrFloat)
+    (Float &result, 
+     const Vector<Double> &where, 
+     const Matrix<Float> &data,
+     const Matrix<Bool>* &maskPtr) const;
+  typedef Bool(Interpolate2D::*FuncPtrDouble)
+    (Double &result, 
+     const Vector<Double> &where, 
+     const Matrix<Double> &data,
+     const Matrix<Bool>* &maskPtr) const;
+  typedef Bool(Interpolate2D::*FuncPtrBool)
+    (Bool &result, 
+     const Vector<Double> &where, 
+     const Matrix<Bool> &data) const;
+  //
   FuncPtrFloat itsFuncPtrFloat;
   FuncPtrDouble itsFuncPtrDouble;
   FuncPtrBool itsFuncPtrBool;
