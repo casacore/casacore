@@ -359,7 +359,7 @@ Bool FuncExpression::exec(Double &res) const {
 
     case FuncExprData::BIN1:
     case FuncExprData::BIN2: {
-      Double t;
+      Double t(0);
       if (pos->narg == 2) {
 	t = exec_p.back();
 	exec_p.pop_back();
