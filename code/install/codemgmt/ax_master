@@ -2022,3 +2022,4 @@
 08 202 src rm trial/implement/Functionals/Lorentzian1D.cc
 08 206 src rm aips/implement/Functionals/BinaryArithEnums.h
 08 206 src rm aips/implement/Functionals/test/tBinaryOperation.cc
+08 208 src mv trial/implement/Arrays/MaskArrMath2.cc aips/implement/Arrays/MaskArrMath2.cc
