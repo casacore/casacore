@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/MeasurementEquations/StokesVector.h>
+#include <aips/Measures/MCDirection.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
