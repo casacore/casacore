@@ -1,5 +1,5 @@
 //# StIndArray.h: Read/write indirect arrays
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -163,7 +163,10 @@ public:
 
     // Set the shape and allocate the array in the file.
     // This will define the array and fill in the file offset.
-    void setShape (StManArrayFile&, int dataType, const IPosition& shape);
+    // If the shape is already defined and does not change,
+    // nothing is done and a False value is returned.
+    // When the shape changes, the old file space is lost.
+    Bool setShape (StManArrayFile&, int dataType, const IPosition& shape);
 
     // Read the shape if not read yet.
     void getShape (StManArrayFile& ios);
