@@ -1,5 +1,5 @@
 //# tArrayIO3.cc: This program tests the ArrayIO istream extract  functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Utilities/String.h>
 #include <aips/Measures.h>
-#include <aips/iostream.h>
+#include <aips/sstream.h>
 
 
 // This test program tests the ArrayIO istream extract functions.
@@ -76,7 +76,7 @@ int main (int argc)
 	cout << "--------------------------------------" << endl;
 	cin >> as;
 	cout << as << endl;
-	istrstream ins("[x, y]");
+	istringstream ins("[x, y]");
 	cout << "Input Array [x, y] " << endl;
 	cout << "--------------------------------------" << endl;
 	ins >> as;

@@ -1,5 +1,5 @@
 //# tIPosition.cc: This program tests the IPosition class
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 
 #include <assert.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Arrays/Vector.h>
@@ -308,16 +308,14 @@ int main()
     io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
 
-    // Use an ostrstream to convert to ASCII and reading it back.
-    // Note that function str "freezes" the buffer in ostrstream,
+    // Use an ostringstream to convert to ASCII and reading it back.
+    // Note that function str "freezes" the buffer in ostringstream,
     // which means we have to delete it ourselves.
     // Also note that no terminating 0 is stored by operator<<.
-    ostrstream os;                            // ostream &operator<<
+    ostringstream os;                            // ostream &operator<<
     os << ip1;
-    char* osbuf = os.str();
-    String string (osbuf, os.pcount());
+    String string (os.str());
     assert(string == "[5, 5, 5, 5, 5, 5, 5, 5, 5, 5]");
-    delete [] osbuf;
 
 {
                                                // Check out exceptions
