@@ -689,6 +689,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    uInt j, k;
 //
    maxPaErr *= C::pi / 180.0;
+   maxPaErr = abs(maxPaErr);
    Bool doRM = whereRM.nelements() > 0;
    Bool doPA = wherePA.nelements() > 0;
 //
@@ -1307,7 +1308,6 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
    pa.resize(n);
    wsq.resize(n);
 //
-   maxPaErr = abs(maxPaErr);
    uInt j = 0;
    for (uInt i=0; i<n; i++) {
       if (abs(paerr1(sortidx(i)))<maxPaErr && paMask1(sortidx(i))) {
@@ -1585,12 +1585,12 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
 // For supplementary points find lowest residual RM
 
    const uInt nstore = 5;
-   Vector<Float> storeAbsRm(nstore);
-   Vector<Float> storeRm(nstore);
-   Vector<Float> storeRmErr(nstore);
-   Vector<Float> storePa0(nstore);
-   Vector<Float> storePa0Err(nstore);
-   Vector<Float> storeRChiSq(nstore);
+   static Vector<Float> storeAbsRm(nstore);
+   static Vector<Float> storeRm(nstore);
+   static Vector<Float> storeRmErr(nstore);
+   static Vector<Float> storePa0(nstore);
+   static Vector<Float> storePa0Err(nstore);
+   static Vector<Float> storeRChiSq(nstore);
    const uInt n = wsq.nelements();
 //
    Vector<Float> fitpa(pa.copy());
@@ -1604,7 +1604,7 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
 
 // Store fit for this guess at the NPI ambiguity
 
-     storeAbsRm(i+2) = abs(pars(0));      // Fitted RM
+     storeAbsRm(i+2) = abs(pars(0));      // Abs Fitted RM
      storeRm(i+2) = pars(0);              // Fitted RM
      storeRmErr(i+2) = pars(1);           // Error in RM
      storePa0(i+2) = pars(2);             // Fitted intrinsic angle
