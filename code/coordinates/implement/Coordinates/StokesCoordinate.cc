@@ -139,7 +139,7 @@ Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
     }
     if (!found) {
 	ostrstream os;
-	os << "Stokes value " << stokes << 
+        os << "Stokes value " << Stokes::name(stokes) <<
 	    " is not found on any axis position";
 	set_error(os);
 	return False;
