@@ -35,6 +35,7 @@ typedef Quantum<Double> gpp_mposition_bug1;
 #include <aips/Mathematics/Math.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Utilities/Assert.h>
 
 //# Constructors
 MPosition::MPosition() :
