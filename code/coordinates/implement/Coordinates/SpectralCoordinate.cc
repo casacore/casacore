@@ -98,7 +98,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Vector<Double> &freqs,
                                        Double restFrequency)
 : Coordinate(),
-  type_p(type), restfreq_p(restFrequency),
+  type_p(type), 
+  restfreq_p(restFrequency),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
   prefSpecUnit_p("")
