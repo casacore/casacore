@@ -182,6 +182,7 @@ private:
 
    Bool itsWarnAxisNames, itsWarnAxisUnits, itsWarnImageUnits;
    Bool itsWarnContig, itsWarnRefPix, itsWarnRefVal, itsWarnInc;
+   Bool itsIsContig;
 //
    Double coordConvert(Int& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
