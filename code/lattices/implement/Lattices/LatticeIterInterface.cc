@@ -44,7 +44,7 @@ template <class T>
 LatticeIterInterface<T>::~LatticeIterInterface()
 {
   delete itsNavPtr;
-};
+}
 
 template <class T>
 LatticeIterInterface<T>& LatticeIterInterface<T>::operator=
@@ -59,14 +59,14 @@ LatticeIterInterface<T>& LatticeIterInterface<T>::operator=
 template <class T>
 Bool LatticeIterInterface<T>::operator++(Int) {
   return operator++();
-};
+}
 
 template <class T>
 Bool LatticeIterInterface<T>::operator--(Int) {
   return operator++();
-};
+}
 
 template <class T>
 Bool LatticeIterInterface<T>::ok() const {
   return True;
-};
+}
