@@ -59,7 +59,11 @@ FITSImage::FITSImage (const String& name)
 : ImageInterface<Float>(),
   name_p(name),
   pTiledFile_p(0),
-  pPixelMask_p(0)
+  pPixelMask_p(0),
+  scale_p(1.0),
+  offset_p(0.0),
+  magic_p(0),
+  hasBlanks_p(False)
 {
    if (name_p.empty()) throw(AipsError("Given file name is empty"));
    Path path(name_p);
@@ -73,8 +77,10 @@ FITSImage::FITSImage (const String& name)
    Unit brightnessUnit;
    Int recno;
    Int recsize;          // Should be 2880 bytes (unless blocking used)
+   FITS::ValueType dataType;
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, rec_p, 
-                      recsize, recno, fullName);
+                      recsize, recno, dataType, scale_p, offset_p, magic_p,
+                      hasBlanks_p, fullName);
 
 // set ImageInterface data
 
@@ -106,13 +112,15 @@ FITSImage::FITSImage (const String& name)
    tileShape_p = 1;
    if (shape.nelements()>0) tileShape_p(0) = shape(0);
    if (shape.nelements()>1) tileShape_p(1) = shape(1);
-   pTiledFile_p = 
-      new TiledFileAccess(fullName, fileOffset, shape, tileShape_p,
-                          TpFloat, maxCacheSize, writable, canonical);
+   DataType type = TpFloat;
+   if (dataType==FITS::SHORT) type = TpShort;
+   pTiledFile_p = new TiledFileAccess(fullName, fileOffset, shape, tileShape_p,
+                                      type, maxCacheSize, writable, canonical);
 
-// Shares the pTiledFile_p pointer
+// Shares the pTiledFile_p pointer. Scale factors for 16bit integers
 
-   pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+   pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+                               magic_p, hasBlanks_p);
 }
 
 FITSImage::FITSImage (const FITSImage& other)
@@ -122,7 +130,10 @@ FITSImage::FITSImage (const FITSImage& other)
   rec_p(other.rec_p),
   tileShape_p(other.tileShape_p),
   pTiledFile_p(other.pTiledFile_p),
-  pPixelMask_p(other.pPixelMask_p->clone())
+  pPixelMask_p(other.pPixelMask_p->clone()),
+  scale_p(other.scale_p),
+  offset_p(other.offset_p),
+  magic_p(other.magic_p)
 {}
  
 FITSImage& FITSImage::operator=(const FITSImage& other)
@@ -143,6 +154,10 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       rec_p = other.rec_p;
       tileShape_p.resize(0);
       tileShape_p = other.tileShape_p;
+//
+      scale_p = other.scale_p;
+      offset_p = other.offset_p;
+      magic_p = other.magic_p;
    }
    return *this;
 } 
@@ -191,7 +206,11 @@ void FITSImage::resize(const TiledShape&)
 Bool FITSImage::doGetSlice(Array<Float>& buffer,
                            const Slicer& section)
 {
-   pTiledFile_p->get(buffer, section);
+   if (pTiledFile_p->dataType()==TpFloat) {
+      pTiledFile_p->get(buffer, section);
+   } else {
+      pTiledFile_p->get(buffer, section, scale_p, offset_p, magic_p, hasBlanks_p);
+   }
    return False;                            // Not a reference
 } 
    
@@ -261,11 +280,15 @@ Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 
 
 
+
+
 void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     IPosition& shape, ImageInfo& imageInfo,
                                     Unit& brightnessUnit, Record& miscInfo, 
                                     Int& recordsize, Int& recordnumber, 
-                                    const String& name)
+                                    FITS::ValueType& dataType, 
+                                    Double& scale, Double& offset, Short& magic,
+                                    Bool& hasBlanks, const String& name)
 {
 // Open sesame
 
@@ -281,10 +304,11 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     }
     recordsize = infile.fitsrecsize();
 
-// We only handle FLOAT
+// We only handle FLOAT or SHORT
 
-    if (infile.datatype() != FITS::FLOAT) {
-       throw (AipsError("File is not 32bit Floating point"));
+    dataType = infile.datatype();
+    if (dataType != FITS::FLOAT && dataType != FITS::SHORT) {
+       throw (AipsError("ONly floating point and short integer FITS files are supported"));
     }
 
 //
@@ -309,13 +333,51 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // Only handle PrimaryArray
 
     if (infile.hdutype()!= FITS::PrimaryArrayHDU) { 
-       throw (AipsError("The image must be stired in the PrimaryArray"));
+       throw (AipsError("The image must be stored in the PrimaryArray"));
     }
-    PrimaryArray<Float> fitsImage(infile);
+//
+    if (dataType==FITS::FLOAT) {
+       crackHeaderFloat (cSys, shape, imageInfo, brightnessUnit, miscInfo, os, infile);
+    } else {
+       crackHeaderShort (cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+                         scale, offset, magic, hasBlanks, os, infile);
+    }
+
+// Get recordnumber 
+   
+    recordnumber = infile.recno();
+}
 
 
+
+Bool FITSImage::hasPixelMask() const
+{
+
+// FITSImage always has a pixel mask
+
+   return True;
+}  
+
+const Lattice<Bool>& FITSImage::pixelMask() const
+{
+  return *pPixelMask_p;
+}
+
+Lattice<Bool>& FITSImage::pixelMask()
+{
+  return *pPixelMask_p;
+}
+
+
+void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
+                                  IPosition& shape, ImageInfo& imageInfo,
+                                  Unit& brightnessUnit, Record& miscInfo,
+                                  LogIO& os, FitsInput& infile)
+{
+   
 // Shape
 
+    PrimaryArray<Float> fitsImage(infile);
     uInt ndim = fitsImage.dims();
     shape.resize(ndim);
     for (uInt i=0; i<ndim; i++) {
@@ -329,6 +391,15 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     if (!FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore)) {
        throw (AipsError("Error retrieving keywords from fits header"));
     }
+
+// BITPIX
+
+    Int bitpix;   
+    header.get("bitpix", bitpix);
+    header.removeField("bitpix");   
+    if (bitpix != -32) {
+       throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -32"));
+    }  
 
 // CoordinateSystem
 
@@ -356,6 +427,101 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     ignore(5) = "^blank$";
     FITSKeywordUtil::removeKeywords(header, ignore);
 
+// MiscInfo is whats left
+
+   miscInfo = header;
+
+// Read history so as to make sure we have read all
+// of the pre-data records.  Eventually I may even store it
+// somewhere.
+
+    Vector<String> lines;
+    String groupType;
+    ConstFitsKeywordList kw = fitsImage.kwlist();
+    kw.first();
+//
+    uInt n;
+    while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
+/*
+       if (groupType == "LOGTABLE") {
+          FITSHistoryUtil::fromHISTORY(logTable, lines, n, True);
+       } else if (groupType == "") { 
+          FITSHistoryUtil::fromHISTORY(logTable, lines, n, False);
+       }
+*/
+    }
+}
+
+void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
+                                  IPosition& shape, ImageInfo& imageInfo,
+                                  Unit& brightnessUnit, Record& miscInfo,
+                                  Double& scale, Double& offset, Short& magic,
+                                  Bool& hasBlanks, LogIO& os, FitsInput& infile)
+{
+// Shape
+
+    PrimaryArray<Short> fitsImage(infile);
+    uInt ndim = fitsImage.dims();
+    shape.resize(ndim);
+    for (uInt i=0; i<ndim; i++) {
+       shape(i) = fitsImage.dim(i);
+    }
+
+// Get header
+
+    Vector<String> ignore(0); 
+    Record header;
+    if (!FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore)) {
+       throw (AipsError("Error retrieving keywords from fits header"));
+    }
+
+// BITPIX
+
+    Int bitpix;   
+    header.get("bitpix", bitpix);
+    header.removeField("bitpix");   
+    if (bitpix != 16) {
+       throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
+    }  
+
+// Scale and blank
+
+    header.get("bscale", scale);
+    header.get("bzero", offset);
+    header.removeField("bscale");
+    header.removeField("bzero");
+    hasBlanks = False;
+    if (header.isDefined("blank")) {
+       Int m;
+       header.get("blank", m);
+       header.removeField("blank");
+       magic = m;
+       hasBlanks = True;
+    }
+
+// CoordinateSystem
+
+    cSys = ImageFITSConverter::getCoordinateSystem(header, os, shape);
+    ndim = shape.nelements();
+
+// Brightness Unit
+
+    brightnessUnit = ImageFITSConverter::getBrightnessUnit(header, os);
+
+// ImageInfo
+
+    imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// Get rid of anything else
+        
+    ignore.resize(6);
+    ignore(0) = "^datamax$";
+    ignore(1) = "^datamin$";
+    ignore(2) = "^origin$";
+    ignore(3) = "^extend$";
+    ignore(4) = "^blocked$";
+    ignore(5) = "^blank$";
+    FITSKeywordUtil::removeKeywords(header, ignore);
 
 // MiscInfo is whats left
 
@@ -380,28 +546,4 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
        }
 */
     }
-
-// Get recordnumber 
-   
-   recordnumber = infile.recno();
 }
-
-
-Bool FITSImage::hasPixelMask() const
-{
-
-// FITSImage always has a pixel mask
-
-   return True;
-}  
-
-const Lattice<Bool>& FITSImage::pixelMask() const
-{
-  return *pPixelMask_p;
-}
-
-Lattice<Bool>& FITSImage::pixelMask()
-{
-  return *pPixelMask_p;
-}
-
