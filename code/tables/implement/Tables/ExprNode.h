@@ -365,6 +365,12 @@ public:
     // In case of a single pixel the result is a scalar node.
     // Otherwise the result is an array node with the same dimensionality
     // as the source.
+    // <br>Note that there exist TableExprNodeSet constructors to
+    // convert an <src>IPosition</src> or <src>Slicer</src> object
+    // automatically to a <src/TableExprNodeSet</src>.
+    // An <src>IPosition<src> addresses a single element and results in
+    // a scalar node, while a <src>Slicer</src> can address multiple
+    // elements and always results in an array node.
     TableExprNode operator() (const TableExprNodeSet& indices);
 
     // The IN operator to test if a value is contained in an array or set.
@@ -531,8 +537,10 @@ public:
     static TableExprNode newRandomNode (const BaseTable* tabptr);
 
     // Create ArrayElement node for the given array with the given index.
+    // The origin is 0 for C++ and 1 for TaQL.
     static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
-					   const TableExprNodeSet& indices);
+					   const TableExprNodeSet& indices,
+					   uInt origin);
  
 
 private:
@@ -682,7 +690,8 @@ inline TableExprNode operator|| (const TableExprNode& left,
 }
 inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
 {
-    return newArrayPartNode (*this, indices);
+    // C++ indexing is 0-based.
+    return newArrayPartNode (*this, indices, 0);
 }
 
 inline TableExprNode near (const TableExprNode& left,
