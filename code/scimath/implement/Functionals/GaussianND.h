@@ -1,5 +1,5 @@
 //# GaussianND.h: A multidimensional Gaussian class
-//# Copyright (C) 1995,1996,1998,1999,2001,2002
+//# Copyright (C) 1995,1996,1998,1999,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,10 +63,10 @@
 // using a covariance matrix.  This is defined as (for a 4 dimensional
 // Gaussian):
 // <srcblock>
-//  V = /     s1*s1 r12*s1*s2 r13*s1*s3 r14*s1*s4 \ 
+//  V = |     s1*s1 r12*s1*s2 r13*s1*s3 r14*s1*s4 | 
 //      | r12*s1*s2     s2*s2 r23*s2*s3 r24*s2*s4 |
 //      | r13*s1*s3 r23*s2*s3     s3*s3 r34*s3*s4 |
-//      \ r14*s1*s4 r24*s2*s4 r34*s3*s4     s4*s4 /
+//      | r14*s1*s4 r24*s2*s4 r34*s3*s4     s4*s4 |
 // </srcblock>
 // where s1 (<src>sigma1</src>) is the standard deviation of the Gaussian with
 // respect to the first axis, and r12 (<src>rho12</src>) is the correlation
