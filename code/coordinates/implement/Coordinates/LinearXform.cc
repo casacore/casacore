@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -190,7 +190,8 @@ Bool LinearXform::forward(const Vector<Double> &world,
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
     double tmpWorld[max_size], tmpPixel[max_size];
-    for (uInt i=0; i<naxis; i++) {
+    uInt i;
+    for (i=0; i<naxis; i++) {
         tmpWorld[i] = world(i);
     }
     int errnum = linfwd(tmpWorld, linprm_p, tmpPixel);
@@ -217,7 +218,8 @@ Bool LinearXform::reverse(Vector<Double> &world,
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
     double tmpWorld[max_size], tmpPixel[max_size];
-    for (uInt i=0; i<naxis; i++) {
+    uInt i;
+    for (i=0; i<naxis; i++) {
 	tmpPixel[i] = pixel(i);
     }
     int errnum = linrev(tmpPixel, linprm_p, tmpWorld);
@@ -303,7 +305,8 @@ Bool LinearXform::near(const LinearXform& other,
    exclude = False;
    Bool found;
    uInt j = 0;
-   for (uInt i=0; i<nWorldAxes(); i++) {
+   uInt i;
+   for (i=0; i<nWorldAxes(); i++) {
       if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0)
         exclude(j++) = True;
    }

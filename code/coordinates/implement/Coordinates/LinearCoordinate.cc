@@ -1,5 +1,5 @@
 //# <LinearCoordinate.h>: this defines LinearCoordinate
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -381,7 +381,8 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    exclude = False;
    Bool found;
    uInt j = 0;
-   for (uInt i=0; i<nPixelAxes(); i++) {
+   uInt i;
+   for (i=0; i<nPixelAxes(); i++) {
       if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0)
         exclude(j++) = True;
     }

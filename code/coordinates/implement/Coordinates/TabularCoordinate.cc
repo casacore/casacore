@@ -1,5 +1,5 @@
 //# TabularCoordinate.cc: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -419,7 +419,8 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
       set_error("The TabularCoordinates have differing numbers of entries in the pixel value table");
       return False;
    }
-   for (uInt i=0; i<data1.nelements(); i++) {
+   uInt i;
+   for (i=0; i<data1.nelements(); i++) {
       if (!::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing pixel value tables");
          return False;

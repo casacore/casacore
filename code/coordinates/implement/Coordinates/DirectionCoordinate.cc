@@ -740,7 +740,8 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    exclude = False;
    Int j = 0;
    Bool found;
-   for (uInt i=0; i<nPixelAxes(); i++) {
+   uInt i;
+   for (i=0; i<nPixelAxes(); i++) {
       if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0) 
         exclude(j++) = True;
    }
