@@ -30,6 +30,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/TempImage.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageInfo.h>
@@ -55,7 +56,7 @@
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
 template<class HDUType>
-void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
+void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newImage,
 						  String &error,
 						  const String &imageName,
 						  HDUType &fitsImage,
@@ -110,7 +111,14 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
     }
 
     try {
-	newImage = new PagedImage<Float>(shape, coords, imageName);
+       if (imageName.empty()) {
+          newImage = new TempImage<Float>(shape, coords);
+          os << LogIO::WARN << "The output will be stored in a transient TempImage.  However," << endl;
+          os << "we cannot yet attach a mask to a TempImage, so any blanked" << endl;
+          os << "pixels in the FITS file will not be masked in the output" << LogIO::POST;
+       } else {
+          newImage = new PagedImage<Float>(shape, coords, imageName);
+       }
     } catch (AipsError x) {
 	if (newImage) {
 	    delete newImage;
@@ -220,8 +228,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 
     newImage->setMiscInfo(header);
 
-// Restore the logtable from HISTORY (this could be moved to non-templated
-// code.
+// Restore the logtable from HISTORY (this could be moved to non-templated code)
 
     if (newImage->logSink().localSink().isTableLogSink()) {
 	TableLogSink &logTable = 
@@ -272,7 +279,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
     LatticeIterator<Bool>* pMaskIter = 0;
 
     Bool madeMask = False;
-    if (bitpix<0 || isBlanked) {
+    if (!imageName.empty() && (bitpix<0 || isBlanked)) {
        pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
        pMaskStepper = new LatticeStepper(shape, cursorShape, 
                                          IPosition::makeAxisPath(ndim));
@@ -331,8 +338,16 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
                }
                maskCursor.putStorage(mPtr, deleteMaskPtr);
                pMaskIter->operator++();
+            } else {
+               if (zeroBlanks) {
+                  for (uInt i=0; i<cursor.nelements(); i++) {
+                     if (isNaN(ptr[i])) {
+                        hasBlanks = True;
+                        ptr[i] = 0.0;
+                     }
+                  }
+               }
             }
-//
 	    cursor.putStorage(ptr, deletePtr);
 //
             meterValue += nPixPerIter*1.0/2.0;
