@@ -649,6 +649,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 // probabilistic approach from Miriad imfit.for   Only works
 // for single models.  Honours and inclusion/exclusion pixel range
 //
+// PA sign convention in pixel coordinate is +y -> +x is positive
+//
 {
    Vector<Double> parameters;
    IPosition shape = data.shape();
@@ -734,7 +736,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                         sqrt( square(XXP-YYP) + 4*square(XYP) )));
       parameters(4) = sqrt(fac*(XXP + YYP -
                        sqrt( square(XXP-YYP) + 4*square(XYP) )));
-      parameters(5) = 0.5*atan2(2*XYP,YYP-XXP);
+      parameters(5) = -0.5*atan2(2*XYP,YYP-XXP);
 //
       Float sn = 1.0;
       if (SP<0) sn = -1.0;
