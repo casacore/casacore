@@ -56,6 +56,8 @@ $INFO = 0;              # 0 = do not make a "About this document..." section
 # Reuse images generated during previous runs
 $REUSE = 2;
 
+$WHITE_BACKGROUND = 1;  #Try for a white backgroup by default
+
 $SHOW_SECTION_NUMBERS = 0;
 
 ### Other global variables ###############################################
