@@ -1,5 +1,5 @@
 //# MaskedArray.h: A templated N-D masked array class with zero origin.
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -332,7 +332,7 @@ template<class T> class MaskedArray : public Cleanup
 public:
   // Default constructor for a MaskedArray does not allocate any memory
   // for the Data array or Mask. Hence the masked array 
-  // should not be used until some data is allocated to the object using one
+  // should not be used until some data is allocated to the tool using one
   // of the set functions.
   MaskedArray();
   // Reset the data and mask of the the MaskedArray. There should perhaps be
