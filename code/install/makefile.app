@@ -143,7 +143,9 @@ OPTLIBS  := $(strip \
 ifeq "$(MAKEMODE)" "programmer"
    # Programmer libraries.
    #----------------------
-   OPTLIB := $(OPT)
+   ifndef OPTLIB
+      OPTLIB := $(OPT)
+   endif
 
    ifdef PGMRLIBD
       ifndef OPTLIB
