@@ -61,7 +61,7 @@ TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
         defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
     }
 }
 

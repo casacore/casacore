@@ -57,7 +57,7 @@ TiledDataStMan::TiledDataStMan (const String& hypercolumnName,
   nrrowLast_p    (0)
 {
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
     }
 }
 

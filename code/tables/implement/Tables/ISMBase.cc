@@ -108,13 +108,13 @@ ISMBase::ISMBase (const String& dataManagerName, const Record& spec)
   tempBuffer_p      (0)
 {
     if (spec.isDefined ("BUCKETSIZE")) {
-        bucketSize_p = spec.asuInt ("BUCKETSIZE");
+        bucketSize_p = spec.asInt ("BUCKETSIZE");
     }
     if (spec.isDefined ("CHECKBUCKETSIZE")) {
         checkBucketSize_p = spec.asBool ("CHECKBUCKETSIZE");
     }
     if (spec.isDefined ("CACHESIZE")) {
-        persCacheSize_p = spec.asuInt ("CACHESIZE");
+        persCacheSize_p = spec.asInt ("CACHESIZE");
     }
 }
 
@@ -166,9 +166,11 @@ String ISMBase::dataManagerName() const
 
 Record ISMBase::dataManagerSpec() const
 {
+  // Make sure the cache is initialized, so the header is certainly read.
+  const_cast<ISMBase*>(this)->getCache();
   Record rec;
-  rec.define ("BUCKETSIZE", bucketSize_p);
-  rec.define ("CACHESIZE", persCacheSize_p);
+  rec.define ("BUCKETSIZE", Int(bucketSize_p));
+  rec.define ("CACHESIZE", Int(persCacheSize_p));
   return rec;
 }
 

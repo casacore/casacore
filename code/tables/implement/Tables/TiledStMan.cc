@@ -281,7 +281,7 @@ Record TiledStMan::dataManagerSpec() const
 {
   Record rec;
   rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
-  rec.define ("MAXIMUMCACHESIZE", persMaxCacheSize_p);
+  rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
   return rec;
 }
 

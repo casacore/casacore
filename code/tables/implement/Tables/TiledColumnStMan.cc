@@ -66,7 +66,7 @@ TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
         tileShape_p = IPosition (spec.asArrayInt ("TILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
     }
 }
 
@@ -94,8 +94,8 @@ String TiledColumnStMan::dataManagerType() const
 Record TiledColumnStMan::dataManagerSpec() const
 {
   Record rec;
-  rec.define ("TILESHAPE", defaultTileShape().asVector());
-  rec.define ("MAXIMUMCACHESIZE", persMaxCacheSize_p);
+  rec.define ("TILESHAPE", tileShape_p.asVector());
+  rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
   return rec;
 }
 
