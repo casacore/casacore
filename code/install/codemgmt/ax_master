@@ -1367,3 +1367,4 @@
 11 039 src mv trial/apps/ms/UVFitsFiller.h trial/implement/MeasurementSet/MSFitsInput.h
 11 039 src mv trial/apps/ms/UVFitsWriter.h trial/implement/MeasurementSet/MSFitsOutput.h
 11 039 src mv trial/apps/ms/UVFitsWriter.cc trial/implement/MeasurementSet/MSFitsOutput.cc
+11 039 src mv trial/apps/ms/msImpl.cc trial/implement/MeasurementSet/DOms.cc
