@@ -1,5 +1,5 @@
 //# NullTable.h: Class indicating a null Table object
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,7 +87,9 @@ public:
   virtual void resync();
   virtual uInt getModifyCounter() const;
   virtual Bool isWritable() const;
-  virtual void deepCopy (const String& newName, int tableOption,
+  virtual void deepCopy (const String& newName,
+			 const Record& dataManagerInfo,
+			 int tableOption,
 			 Bool valueCopy) const;
   virtual TableDesc actualTableDesc() const;
   virtual Record dataManagerInfo() const;
