@@ -595,16 +595,16 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
 
-// Set the contents of the ImageInterface logger object (its accessed by reference)
+// Set the contents of the ImageInterface logger object (history)
 
     LoggerHolder& log = logger();
-    uInt n;
-    while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-       if (groupType == "LOGTABLE") {
-          FITSHistoryUtil::fromHISTORY(log, lines, n, True);
-        } else if (groupType == "") {
-          FITSHistoryUtil::fromHISTORY(log, lines, n, False);
-        }
+    ImageFITSConverter::restoreHistory(log, kw);
+
+// Try and find the restoring beam in the history cards if
+// its not in the header
+
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(log);
     }
 }
 
@@ -716,15 +716,15 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
 
-// Set the contents of the ImageInterface logger object (its accessed by reference)
+// Set the contents of the ImageInterface logger object (history)
 
     LoggerHolder& log = logger();
-    uInt n;
-    while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-       if (groupType == "LOGTABLE") {
-         FITSHistoryUtil::fromHISTORY(log, lines, n, True);
-       } else if (groupType == "") {
-         FITSHistoryUtil::fromHISTORY(log, lines, n, False);
-       }
+    ImageFITSConverter::restoreHistory(log, kw);
+
+// Try and find the restoring beam in the history cards if
+// its not in the header
+
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(log);
     }
 }
