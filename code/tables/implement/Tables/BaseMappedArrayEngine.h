@@ -1,4 +1,4 @@
-//# BaseMappedArrayEngine.h: Abstract virtual column engine for source->target mapping
+//# BaseMappedArrayEngine.h: Abstract virtual column engine for virtual->stored mapping
 //# Copyright (C) 1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -42,7 +42,7 @@ class TableColumn;
 
 
 // <summary>
-// Templated virtual column engine for an table array of any type.
+// Templated virtual column engine for a table array of any type.
 // </summary>
 
 // <use visibility=export>
@@ -57,46 +57,48 @@ class TableColumn;
 // </prerequisite>
 
 // <etymology>
-// BaseMappedArrayEngine contains for the 1-1 mapping of a source
-// column to a target column (both containing arrays). 
+// BaseMappedArrayEngine contains for the 1-1 mapping of a virtual
+// column to a stored column (both containing arrays). 
 // </etymology>
 
 // <synopsis> 
 // BaseMappedArrayEngine is an abstract base class for virtual column engines
-// which map data from the arrays in the source column to
-// the arrays in the target column.
+// which map data from the arrays in the virtual column to
+// the arrays in the stored column. Note the the stored column does not need
+// to be stored; it can be another virtual column, but usually it will be a
+// stored column.
 // Examples of classes using this base class are
 // <linkto class=ScaledArrayEngine>ScaledArrayEngine</linkto> and
 // <linkto class=RetypedArrayEngine>RetypedArrayEngine</linkto>.
 //
-// The source column has to be bound to the virtual column engine used
-// for it. The target column will usually be bound to a storage manager,
+// The virtual column has to be bound to the virtual column engine used
+// for it. The stored column will usually be bound to a storage manager,
 // but any other suitable data manager is possible. E.g. it is
 // possible to use <src>MappedArrayEngine<StokesVector,float></src>
 // to map a StokesVector to a float column, which in its turn uses
 // <src>ScaledArrayEngine<float,Int></src> to store it as integers.
-// Note that the names of the source and target column have to be different,
+// Note that the names of the virtual and stored column have to be different,
 // otherwise the table system cannot distinguish them.
 //
 // This base class does several tasks for the derived classes.
-// The main one is to keep and handle the information about the source
-// and target column. The name of the target column is written as a keyword
-// in the source column. In this way the target column is known when
+// The main one is to keep and handle the information about the virtual
+// and stored column. The name of the stored column is written as a keyword
+// in the virtual column. In this way the stored column is known when
 // a table is read back. It also creates <src>(RO)ArrayColumn<T></src>
-// objects to access the target column. The function roColumn gives
+// objects to access the stored column. The function roColumn gives
 // read access, while rwColumn gives write access.
 //
-// An engine object should be used for one column only, because the target
+// An engine object should be used for one column only, because the stored
 // column name is part of the engine. If it would be used for more than
-// one column, they would all share the same target column.
+// one column, they would all share the same stored column.
 // When the engine is bound to a column, it is checked if the name
-// of that column matches the given source column name.
+// of that column matches the given virtual column name.
 //
 // The engine can be used for a column containing any kind of array
 // (thus direct or indirect, fixed or variable shaped)) as long as the
-// source array can be stored in the target array. Thus a fixed shaped
-// source can use a variable shaped target, but not vice versa.
-// A fixed shape indirect source can use a target with direct arrays.
+// virtual array can be stored in the stored array. Thus a fixed shaped
+// virtual can use a variable shaped stored, but not vice versa.
+// A fixed shape indirect virtual can use a stored with direct arrays.
 //
 // The DataManager framework contains various virtual functions.
 // This class implements several, but not all of them. Furthermore
@@ -129,6 +131,7 @@ class TableColumn;
 // <dt><src>
 //        void putArray (uInt rownr, const Array<T>& data);
 // </src>
+// (only if the virtual column is writable).
 // </dl>
 // <li>
 // For efficiency reasons it could be better to implement the following
@@ -156,7 +159,7 @@ class TableColumn;
 // </dl>
 // <li>
 // The following functions have to be implemented when the shapes
-// of the source and target arrays are not the same.
+// of the virtual and stored arrays are not the same.
 // <dl>
 // <dt><src>
 //    void setShapeColumn (const IPosition& shape);
@@ -246,20 +249,20 @@ class TableColumn;
 // in a derived class.
 // </motivation>
 
-// <templating arg=SourceType>
+// <templating arg=VirtualType>
 //  <li> default constructor
 //  <li> copy constructor
 //  <li> assignment operator
 //  <li> <src>static String dataTypeId();   // unique name of the class</src>
 // </templating>
-// <templating arg=TargetType>
+// <templating arg=StoredType>
 //  <li> Default constructor
 //  <li> Copy constructor
 //  <li> Assignment operator
 // </templating>
 
 
-template<class SourceType, class TargetType> class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayColumn<SourceType>
+template<class VirtualType, class StoredType> class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayColumn<VirtualType>
 {
 public:
     // Adding rows is possible for this engine.
@@ -268,17 +271,19 @@ public:
     // Deleting rows is possible for this engine.
     virtual Bool canRemoveRow() const;
 
-    // Give the source name.
-    const String& sourceName() const;
+    // Give the virtual name.
+    const String& virtualName() const;
 
 protected:
 
-    // Construct an engine to convert the source column to the target column.
-    // TargetColumnName is the name of the column where the converted
-    // data will be put and must have data type TargetType.
-    // The source column using this engine must have data type SourceType.
-    BaseMappedArrayEngine (const String& sourceColumnName,
-			   const String& targetColumnName);
+    // Construct an engine to convert the virtual column to the stored column.
+    // StoredColumnName is the name of the column where the converted
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type VirtualType.
+    // By default the virtual column is assumed to be writable.
+    // Use setWritable to unset it.
+    BaseMappedArrayEngine (const String& virtualColumnName,
+			   const String& storedColumnName);
 
     // Destructor is mandatory.
     ~BaseMappedArrayEngine();
@@ -290,27 +295,30 @@ protected:
     // Copy constructor is only used by copy constructor of derived classes.
     // (so it is made protected).
     BaseMappedArrayEngine
-	              (const BaseMappedArrayEngine<SourceType, TargetType>&);
+	              (const BaseMappedArrayEngine<VirtualType, StoredType>&);
 
-    // Set the source and target column name.
-    void setNames (const String& sourceName, const String& targetName);
+    // Set if the column is writable or not.
+    void setWritable (Bool isWritable);
 
-    // Get the target name.
-    const String& targetName() const;
+    // Set the virtual and stored column name.
+    void setNames (const String& virtualName, const String& storedName);
 
-    // Give readonly access to the target column.
+    // Get the stored name.
+    const String& storedName() const;
+
+    // Give readonly access to the stored column.
     // This can be used by the derived classes to get data.
-    inline ROArrayColumn<TargetType>& roColumn();
+    inline ROArrayColumn<StoredType>& roColumn();
 
-    // Give read/write access to the target column.
+    // Give read/write access to the stored column.
     // This can be used by the derived classes to put data.
-    inline ArrayColumn<TargetType>& rwColumn();
+    inline ArrayColumn<StoredType>& rwColumn();
 
-    // The column is writable if the underlying target column is writable.
+    // The column is writable if the underlying stored column is writable.
     virtual Bool isWritable() const;
 
     // Create the column object for the array column in this engine.
-    // It will check if the given column name matches the source
+    // It will check if the given column name matches the virtual
     // column name. This assures that the engine is bound to the
     // correct column.
     virtual DataManagerColumn* makeIndArrColumn (const String& columnName,
@@ -318,7 +326,7 @@ protected:
 						 const String& dataTypeId);
 
     // Initialize the object for a new table.
-    // It defines a source column keyword telling the target column name.
+    // It defines a virtual column keyword telling the stored column name.
     // Initially the table has the given number of rows.
     // A derived class can have its own create function, but that should
     // always call this create function.
@@ -326,7 +334,7 @@ protected:
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
-    // It reads the target column name from the source column keywords.
+    // It reads the stored column name from the virtual column keywords.
     // A derived class can have its own prepare function, but that should
     // always call this prepare function.
     virtual void prepare();
@@ -342,8 +350,8 @@ protected:
     virtual void reopenRW();
 
     // Rows are added to the end of the table.
-    // If the source column has FixedShape arrays and the target not,
-    // the shape in each target row will be set.
+    // If the virtual column has FixedShape arrays and the stored not,
+    // the shape in each stored row will be set.
     // This assures that the arrays are properly defined in each row,
     // so putSlice can be used without problems.
     // <br>The second version is used by prepare2, because in case a column is
@@ -360,14 +368,14 @@ protected:
     // Set the shape of the FixedShape arrays in the column.
     // This function only gets called if the column has FixedShape arrays.
     // The shape gets saved and used to set the shape of the arrays
-    // in the target in case the target has non-FixedShape arrays.
-    // This implementation assumes the shape of source and target arrays
+    // in the stored in case the stored has non-FixedShape arrays.
+    // This implementation assumes the shape of virtual and stored arrays
     // are the same. If not, it has to be overidden in a derived class.
     virtual void setShapeColumn (const IPosition& shape);
 
     // Define the shape of the array in the given row.
     // It will define the shape of the (underlying) array.
-    // This implementation assumes the shape of source and target arrays
+    // This implementation assumes the shape of virtual and stored arrays
     // are the same. If not, it has to be overidden in a derived class.
     virtual void setShape (uInt rownr, const IPosition& shape);
 
@@ -375,18 +383,18 @@ protected:
     virtual Bool isShapeDefined (uInt rownr);
 
     // Get the dimensionality of the (underlying) array in the given row.
-    // This implementation assumes the dimensionality of source and
-    // target arrays are the same. If not, it has to be overidden in a
+    // This implementation assumes the dimensionality of virtual and
+    // stored arrays are the same. If not, it has to be overidden in a
     // derived class.
     virtual uInt ndim (uInt rownr);
 
     // Get the shape of the (underlying) array in the given row.
-    // This implementation assumes the shape of source and target arrays
+    // This implementation assumes the shape of virtual and stored arrays
     // are the same. If not, it has to be overidden in a derived class.
     virtual IPosition shape (uInt rownr);
 
     // The data manager can handle changing the shape of an existing array
-    // when the underlying target column can do it.
+    // when the underlying stored column can do it.
     virtual Bool canChangeShape() const;
 
     // Make a table column object for the given column.
@@ -398,52 +406,58 @@ protected:
 private:
     // Assignment is not needed and therefore forbidden
     // (so it is made private and not implemented).
-    BaseMappedArrayEngine<SourceType, TargetType>& operator=
-	                (const BaseMappedArrayEngine<SourceType, TargetType>&);
+    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
+	             (const BaseMappedArrayEngine<VirtualType, StoredType>&);
 
 
     //# Now define the data members.
-    String         sourceName_p;         //# source column name
-    String         targetName_p;         //# target column name
+    String         virtualName_p;        //# virtual column name
+    String         storedName_p;         //# stored column name
+    Bool           isWritable_p;         //# is virtual column writable?
     Bool           tempWritable_p;       //# True =  create phase, so column
     //#                                              is temporarily writable
-    //#                                      False = asks target column
+    //#                                      False = asks stored column
     uInt           initialNrrow_p;       //# initial #rows in case of create
-    Bool           arrayIsFixed_p;       //# True = source is FixedShape array
+    Bool           arrayIsFixed_p;       //# True = virtual is FixedShape array
     IPosition      shapeFixed_p;         //# shape in case FixedShape array
-    ROArrayColumn<TargetType>*  roColumn_p;    //# the target column (for get)
-    ArrayColumn<TargetType>*    column_p;      //# the target column (for put)
+    ROArrayColumn<StoredType>*  roColumn_p;    //# the stored column (for get)
+    ArrayColumn<StoredType>*    column_p;      //# the stored column (for put)
 };
 
 
 
-template<class SourceType, class TargetType>
+template<class VirtualType, class StoredType>
 inline const String&
-BaseMappedArrayEngine<SourceType, TargetType>::sourceName() const
-    { return sourceName_p; }
+BaseMappedArrayEngine<VirtualType, StoredType>::virtualName() const
+    { return virtualName_p; }
 
-template<class SourceType, class TargetType>
+template<class VirtualType, class StoredType>
 inline const String&
-BaseMappedArrayEngine<SourceType, TargetType>::targetName() const
-    { return targetName_p; }
+BaseMappedArrayEngine<VirtualType, StoredType>::storedName() const
+    { return storedName_p; }
 
-template<class SourceType, class TargetType>
+template<class VirtualType, class StoredType>
 inline void
-BaseMappedArrayEngine<SourceType, TargetType>::setNames
-                    (const String& sourceName, const String& targetName)
+BaseMappedArrayEngine<VirtualType, StoredType>::setNames
+                    (const String& virtualName, const String& storedName)
 {
-    sourceName_p = sourceName;
-    targetName_p = targetName;
+    virtualName_p = virtualName;
+    storedName_p  = storedName;
 }
 
-template<class SourceType, class TargetType>
-inline ROArrayColumn<TargetType>&
-BaseMappedArrayEngine<SourceType, TargetType>::roColumn()
+template<class VirtualType, class StoredType>
+inline void
+BaseMappedArrayEngine<VirtualType, StoredType>::setWritable (Bool isWritable)
+    { isWritable_p = isWritable; }
+
+template<class VirtualType, class StoredType>
+inline ROArrayColumn<StoredType>&
+BaseMappedArrayEngine<VirtualType, StoredType>::roColumn()
     { return *roColumn_p; }
 
-template<class SourceType, class TargetType>
-inline ArrayColumn<TargetType>&
-BaseMappedArrayEngine<SourceType, TargetType>::rwColumn()
+template<class VirtualType, class StoredType>
+inline ArrayColumn<StoredType>&
+BaseMappedArrayEngine<VirtualType, StoredType>::rwColumn()
     { return *column_p; }
 
 

@@ -43,10 +43,10 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class S, class T>
-ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
-					   const String& targetColumnName,
+ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& virtualColumnName,
+					   const String& storedColumnName,
 					   S scale, S offset)
-: BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   scale_p       (scale),
   offset_p      (offset),
   fixedScale_p  (True),
@@ -56,11 +56,11 @@ ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
 {}
 
 template<class S, class T>
-ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
-					   const String& targetColumnName,
+ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& virtualColumnName,
+					   const String& storedColumnName,
 					   const String& scaleColumnName,
 					   S offset)
-: BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   scaleName_p   (scaleColumnName),
   scale_p       (0.0),
   offset_p      (offset),
@@ -71,11 +71,11 @@ ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
 {}
 
 template<class S, class T>
-ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
-					   const String& targetColumnName,
+ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& virtualColumnName,
+					   const String& storedColumnName,
 					   const String& scaleColumnName,
 					   const String& offsetColumnName)
-: BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   scaleName_p   (scaleColumnName),
   offsetName_p  (offsetColumnName),
   scale_p       (0.0),
@@ -160,15 +160,15 @@ String ScaledArrayEngine<S,T>::className()
 template<class S, class T>
 String ScaledArrayEngine<S,T>::dataManagerName() const
 {
-    return sourceName();
+    return virtualName();
 }
 
 template<class S, class T>
 Record ScaledArrayEngine<S,T>::dataManagerSpec() const
 {
     Record spec;
-    spec.define ("SOURCENAME", sourceName());
-    spec.define ("TARGETNAME", targetName());
+    spec.define ("SOURCENAME", virtualName());
+    spec.define ("TARGETNAME", storedName());
     if (fixedScale_p) {
         spec.define ("SCALE", scale_p);
     } else {
@@ -201,7 +201,7 @@ void ScaledArrayEngine<S,T>::create (uInt initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
-    TableColumn thisCol (table(), sourceName());
+    TableColumn thisCol (table(), virtualName());
     thisCol.rwKeywordSet().define ("_ScaledArrayEngine_Scale",
 				   scale_p);
     thisCol.rwKeywordSet().define ("_ScaledArrayEngine_Offset",
@@ -220,7 +220,7 @@ template<class S, class T>
 void ScaledArrayEngine<S,T>::prepare()
 {
     BaseMappedArrayEngine<S,T>::prepare();
-    ROTableColumn thisCol (table(), sourceName());
+    ROTableColumn thisCol (table(), virtualName());
     thisCol.keywordSet().get ("_ScaledArrayEngine_Scale",       scale_p);
     thisCol.keywordSet().get ("_ScaledArrayEngine_Offset",      offset_p);
     thisCol.keywordSet().get ("_ScaledArrayEngine_ScaleName",   scaleName_p);

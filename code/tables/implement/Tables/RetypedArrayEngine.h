@@ -52,8 +52,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <synopsis> 
-// RetypedArrayEngine maps a source column containing arrays of objects
-// to a target column containing arrays of data of another type. Usually
+// RetypedArrayEngine maps a virtual column containing arrays of objects
+// to a stored column containing arrays of data of another type. Usually
 // the dimensionality of the arrays get smaller during this mapping process.
 // The engine makes it possible to store an array of any type in a table.
 // <br>
@@ -63,7 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // to a 4D array of floats.
 // <p>
 // The mapping process has to be done by a (static) set and get
-// function in the SourceType class. When a RetypedArrayEngine object is
+// function in the VirtualType class. When a RetypedArrayEngine object is
 // constructed, it is possible to pass information in a TableRecord. This
 // TableRecord is indirectly passed to the set/get functions. This is done by
 // means of the function newCopyInfo, which can preprocess the information
@@ -76,112 +76,112 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // passed as void* and need to be casted in the set/get functions.
 // </note>
 //
-// The source column data type class has to contain several functions.
+// The virtual column data type class has to contain several functions.
 // The example shows how they can be implemented.
 // <dl>
 //  <dt> <src>static String dataTypeId();</src>
 //  <dd> has to give the (unique) name of the class.
 //  <dt> <src>static IPosition shape();</src>
-//  <dd> This has to return the full shape of the elements in the source.
+//  <dd> This has to return the full shape of the elements in the virtual.
 //       E.g. StokesVector will return [4]. StokesMatrix will return [4,4].
 //  <dt> <src>static void* newCopyInfo (const TableRecord& record,
-//                                  const IPosition& sourceElementShape);</src>
+//                                  const IPosition& virtualElementShape);</src>
 //  <dd> This function has to setup the set/get functions by preprocessing the
 //       information contained in the TableRecord and storing it in a so-called
 //       "copyInfo" object. A pointer to that object has to be returned, which
 //       is kept by the engine and passed to the set/get functions.
-//       The "copyInfo" class can be a nested class in the SourceType
+//       The "copyInfo" class can be a nested class in the VirtualType
 //       (as shown in the StokesVector example), but it can also
 //       be an independent class.
 //       <br>
 //       The supplied TableRecord is the TableRecord given when
 //       constructing the engine.
 //       When no TableRecord was given, it will be empty.
-//       The supplied shape is the shape of a source element as given to
+//       The supplied shape is the shape of a virtual element as given to
 //       the constructor of the engine. This can be a full or partial shape.
 //       E.g. for a StokesVector it will usually be [4], but it can also,
 //       say, [1] if only U is used.
 //       The function could check if the information in the TableRecord
 //       and the shape match.
 //       <br>
-//       Of course, a SourceType may not need any extra information.
+//       Of course, a VirtualType may not need any extra information.
 //       Therefore it is possible to return a null "copyInfo" pointer.
 //  <dt> <src>static void deleteCopyInfo (void* copyInfo);</src>
 //  <dd> This function has to delete the "copyInfo" object allocated
 //       by newCopyInfo. To do so, it needs to cast the pointer to the
 //       correct type.
 //  <dt> <src>static void set (void* copyInfo, void* out,
-//                             const Array<TargetType>& in,
-//                             const IPosition& sourceElementShape);</src>
-//  <dd> This function is called when an <src>Array<SourceType></src> is read.
-//       It has to convert the TargetType array to the SourceType array.
+//                             const Array<StoredType>& in,
+//                             const IPosition& virtualElementShape);</src>
+//  <dd> This function is called when an <src>Array<VirtualType></src> is read.
+//       It has to convert the StoredType array to the VirtualType array.
 //       In principle, there are two different cases (which can be deduced
 //       from the given shape):
 //       <ol>
-//       <li> The target information is complete. For example: suppose the
-//            SourceType is a StokesVector object (containing I, Q, U and V),
-//            When the target array contains 4 values per StokesVector,
+//       <li> The stored information is complete. For example: suppose the
+//            VirtualType is a StokesVector object (containing I, Q, U and V),
+//            When the stored array contains 4 values per StokesVector,
 //            it is complete.
 //            <br>
-//            In this case the entire source array can be directly copied from
-//            the target array when the SourceType object contains no
+//            In this case the entire virtual array can be directly copied from
+//            the stored array when the VirtualType object contains no
 //            virtual functions and the data are directly contained in it.
 //            The function
 //            <br>
 //            <linkto group=RetypedArraySetGet.h#RetypedArrayEngineSetGet>
 //            <src>
-//            retypedArrayEngineSet (Array<SourceType>& out,
-//                                   const Array<TargetType>& in);
+//            retypedArrayEngineSet (Array<VirtualType>& out,
+//                                   const Array<StoredType>& in);
 //            </src></linkto><br>
 //            can be used for this purpose.
-//       <li> When in the example above the target array contains less
-//            than 4 values per StokesVector, the target information
+//       <li> When in the example above the stored array contains less
+//            than 4 values per StokesVector, the stored information
 //            is incomplete. In this case the set function has to
 //            fill the data in one way or another. The information
 //            in the "copyInfo" object can assist in it.
 //            <br>
-//            Each SourceType element has to be set individually, so
+//            Each VirtualType element has to be set individually, so
 //            a loop through the array is required. To assist in this,
 //            the loop has been implemented in the function
 //            <br>
 //            <linkto group=RetypedArraySetGet.h#RetypedArrayEngineSetGet>
 //            <src>
-//            retypedArrayEngineSet (Array<SourceType>& out,
-//                                   const Array<TargetType>& in,
+//            retypedArrayEngineSet (Array<VirtualType>& out,
+//                                   const Array<StoredType>& in,
 //                                   const void* extraArgument);
 //            </src></linkto>
-//            <br> It calls the SourceType function
+//            <br> It calls the VirtualType function
 //            <srcblock>
-//             void setElem (const TargetType* data, const IPosition& shape,
+//             void setElem (const StoredType* data, const IPosition& shape,
 //                           const void* extraArgument);
 //            </srcblock>
-//            for each SourceType element. This set function has to
-//            fill the SourceType object from the data. It can use the
+//            for each VirtualType element. This set function has to
+//            fill the VirtualType object from the data. It can use the
 //            shape and the extraArgument to know how it should do it.
 //            <br>
 //            Note that the 3-argument function retypedArrayEngineSet is
 //            only a convenience function. For optimal performance it may
 //            be needed to handcode the loop instead of using this function.
 //       </ol>
-//       <note role=warning> Note that the given source element shape does
+//       <note role=warning> Note that the given virtual element shape does
 //       not need to match the shape given to the constructor of the engine.
-//       It is possible that the user sets the shape of the target array
-//       before putting the source array. In that case the system uses the
-//       relevant part of the target array shape as the source element shape.
+//       It is possible that the user sets the shape of the stored array
+//       before putting the virtual array. In that case the system uses the
+//       relevant part of the stored array shape as the virtual element shape.
 //       </note>
 //       <note role=tip> When the out argument is declared (as it should be) as
-//       <src>Array<SourceType>& out</src>,
+//       <src>Array<VirtualType>& out</src>,
 //       the CFront compiler complains about unknown size of
-//       SourceType when instantiating Array<SourceType>.
+//       VirtualType when instantiating Array<VirtualType>.
 //       Therefore it has to be declared as void* and the set function
-//       needs to cast it to <src>Array<SourceType>*</src>.
+//       needs to cast it to <src>Array<VirtualType>*</src>.
 //       </note>
 //  <dt> <src>static void get (void* copyInfo, Array<float>& out,
 //                             const void* in,
-//                             const IPosition& sourceElementShape);</src>
+//                             const IPosition& virtualElementShape);</src>
 //  <dd> This function is similar to the set function described above, but
-//       is called when an <src>Array<SourceType></src> is written.
-//       It has to convert the SourceType array to the TargetType array.
+//       is called when an <src>Array<VirtualType></src> is written.
+//       It has to convert the VirtualType array to the StoredType array.
 // </dl>
 //
 // <br>E.g.: A StokesVector has 4 float elements.
@@ -229,7 +229,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </ol>
 // <p>
 // Originally it was the idea to have a mandatory nested CopyInfo class in the
-// SourceType class and use syntax like SourceType::CopyInfo to access
+// VirtualType class and use syntax like VirtualType::CopyInfo to access
 // functions in it and to keep a pointer to such an object. Alas, the
 // CFront compiler could not handle this.
 // <p>
@@ -282,13 +282,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     static void* deleteSetDet (void* copyInfo)
 //         { delete (CopyInfo*)copyInfo; }
 //
-//     // Convert a TargetType array to a SourceType array.
+//     // Convert a StoredType array to a VirtualType array.
 //     // Do this in a CopyInfo function to use its preprocessed information.
 //     static void set (void* copyInfo, void* out,
 //                      const Array<double>& in, const IPosition& shape)
 //         { ((CopyInfo*)copyInfo)->set (out, in, shape); }
 //
-//     // Convert a SourceType array to a TargetType array.
+//     // Convert a VirtualType array to a StoredType array.
 //     // Do this in a CopyInfo function to use its preprocessed information.
 //     static void get (void* copyInfo, Array<double>& out,
 //                      const void* in, const IPosition& shape)
@@ -297,7 +297,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     // This nested class is used to hold preprocessed information. It
 //     // holds a mask extracted from the TableRecord supplied to the engine.
 //     // One can imagine that it could also extract a flag telling
-//     // whether the target data is stored as I,Q,U,V or as XX,YY,XY,YX
+//     // whether the stored data is stored as I,Q,U,V or as XX,YY,XY,YX
 //     // (although such a conversion would probably be better handled
 //     // by a separate virtual column engine).
 //     class CopyInfo {
@@ -381,7 +381,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 //    // Now create a new table from the description.
 //    SetupNewTable newtab("tRetypedArrayEngine_tmp.data", td, Table::New);
-//    // Create the virtual column engine with the target columns Data.
+//    // Create the virtual column engine with the stored columns Data.
 //    RetypedArrayEngine<StokesVector,double> engine ("Stokes", "Data");
 //    newtab.bindColumn ("Stokes", engine);
 //    Table tab(newtab, 50);
@@ -407,27 +407,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // automatically converted to a void*, so an explicit cast has to be done.
 // </example>
 
-// <templating arg=SourceType>
+// <templating arg=VirtualType>
 //  <li> default constructor
 //  <li> copy constructor
 //  <li> assignment operator
 //  <li> <src>static String dataTypeId();</src>
 //  <li> <src>static IPosition shape();</src>
-//  <li> <src>static void* newCopyInfo (const TableRecord& record, const IPosition& sourceElementShape);</src>
+//  <li> <src>static void* newCopyInfo (const TableRecord& record, const IPosition& virtualElementShape);</src>
 //  <li> <src>static void deleteCopyInfo (void* copyInfo);</src>
 //  <li> <src>static void set (void* copyInfo, void* out,
-//                             const Array<TargetType>& in,
+//                             const Array<StoredType>& in,
 //                             const IPosition& shape);</src>
 //  <li> <src>static void get (void* copyInfo, Array<float>& out,
 //                             const void* in, const IPosition& shape);</src>
-//  <li> <src>void setElem (const TargetType* data, const IPosition& shape,
+//  <li> <src>void setElem (const StoredType* data, const IPosition& shape,
 //                          const void* extraArgument);</src>
 //       <br>when global function retypedArrayEngineSet is used.
-//  <li> <src>void getElem (TargetType* data, const IPosition& shape,
+//  <li> <src>void getElem (StoredType* data, const IPosition& shape,
 //                          const void* extraArgument) const;</src>
 //       <br>when global function retypedArrayEngineGet is used.
 // </templating>
-// <templating arg=TargetType>
+// <templating arg=StoredType>
 //  <li> Default constructor
 //  <li> Copy constructor
 //  <li> Assignment operator
@@ -437,38 +437,38 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# </todo>
 
 
-template<class SourceType, class TargetType> class RetypedArrayEngine : public BaseMappedArrayEngine<SourceType,TargetType>
+template<class VirtualType, class StoredType> class RetypedArrayEngine : public BaseMappedArrayEngine<VirtualType,StoredType>
 {
   //# Make members of parent class known.
 public:
-  using BaseMappedArrayEngine<SourceType,TargetType>::sourceName;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::virtualName;
 protected:
-  using BaseMappedArrayEngine<SourceType,TargetType>::targetName;
-  using BaseMappedArrayEngine<SourceType,TargetType>::table;
-  using BaseMappedArrayEngine<SourceType,TargetType>::roColumn;
-  using BaseMappedArrayEngine<SourceType,TargetType>::rwColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::table;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::roColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::rwColumn;
 
 public:
 
-    // Construct an engine to map a source column containing arrays with
-    // an arbitrary data type to arrays in a target column.
-    // TargetColumnName is the name of the column where the converted
-    // data will be put and must have data type TargetType.
-    // The source column using this engine must have data type SourceType.
-    RetypedArrayEngine (const String& sourceColumnName,
-			const String& targetColumnName);
+    // Construct an engine to map a virtual column containing arrays with
+    // an arbitrary data type to arrays in a stored column.
+    // StoredColumnName is the name of the column where the converted
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type VirtualType.
+    RetypedArrayEngine (const String& virtualColumnName,
+			const String& storedColumnName);
 
-    // Construct an engine to map a source column containing arrays with
-    // an arbitrary data type to arrays in a target column.
-    // TargetColumnName is the name of the column where the converted
-    // data will be put and must have data type TargetType.
-    // The source column using this engine must have data type SourceType.
+    // Construct an engine to map a virtual column containing arrays with
+    // an arbitrary data type to arrays in a stored column.
+    // StoredColumnName is the name of the column where the converted
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type VirtualType.
     // The shape and record provided is handed to the newCopyInfo function
-    // in the SourceType class. It can be used to determine how an element
-    // has to be handled when the target data is incomplete.
-    RetypedArrayEngine (const String& sourceColumnName,
-			const String& targetColumnName,
-			const IPosition& sourceElementShape,
+    // in the VirtualType class. It can be used to determine how an element
+    // has to be handled when the stored data is incomplete.
+    RetypedArrayEngine (const String& virtualColumnName,
+			const String& storedColumnName,
+			const IPosition& virtualElementShape,
 			const TableRecord& extraInformation);
 
     // Construct from a record specification as created by getmanagerSpec().
@@ -480,7 +480,7 @@ public:
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
-    // Get the name given to the engine (is the source column name).
+    // Get the name given to the engine (is the virtual column name).
     virtual String dataManagerName() const;
   
     // Record a record containing data manager specifications.
@@ -501,12 +501,12 @@ public:
 private:
     // Copy constructor is only used by clone().
     // (so it is made private).
-    RetypedArrayEngine (const RetypedArrayEngine<SourceType,TargetType>&);
+    RetypedArrayEngine (const RetypedArrayEngine<VirtualType,StoredType>&);
 
     // Assignment is not needed and therefore forbidden
     // (so it is made private and not implemented).
-    RetypedArrayEngine<SourceType,TargetType>& operator=
-                        (const RetypedArrayEngine<SourceType,TargetType>&);
+    RetypedArrayEngine<VirtualType,StoredType>& operator=
+                        (const RetypedArrayEngine<VirtualType,StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;
@@ -518,24 +518,24 @@ private:
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
     // Furthermore it reads the keywords containing the engine parameters
-    // and allocates a CopyInfo object for the SourceType.
+    // and allocates a CopyInfo object for the VirtualType.
     void prepare();
 
     // Set the shape of the FixedShape arrays in the column.
     // This function only gets called if the column has FixedShape arrays.
     // The shape gets saved and used to set the shape of the arrays
-    // in the target in case the target has non-FixedShape arrays.
+    // in the stored in case the stored has non-FixedShape arrays.
     void setShapeColumn (const IPosition& shape);
 
     // Define the shape of the array in the given row.
-    // When the shape of the (underlying) target array has already been
+    // When the shape of the (underlying) stored array has already been
     // defined, it checks whether its latter dimensions match the given
-    // source shape. When matching, nothing will be done.
-    // When mismatching or when the target shape has not been defined
-    // yet, the target shape will be defined from the source shape and
-    // the source element shape.
-    // E.g. in case of a StokesVector a source shape of (512,512)
-    // results in a target shape of (4,512,512).
+    // virtual shape. When matching, nothing will be done.
+    // When mismatching or when the stored shape has not been defined
+    // yet, the stored shape will be defined from the virtual shape and
+    // the virtual element shape.
+    // E.g. in case of a StokesVector a virtual shape of (512,512)
+    // results in a stored shape of (4,512,512).
     void setShape (uInt rownr, const IPosition& shape);
 
     // Get the dimensionality of the array in the given row.
@@ -543,62 +543,62 @@ private:
 
     // Get the shape of the array in the given row.
     // This is done by stripping the first dimension(s) from the shape
-    // of the underlying target array.
+    // of the underlying stored array.
     IPosition shape (uInt rownr);
 
     // Get an array in the given row.
-    void getArray (uInt rownr, Array<SourceType>& array);
+    void getArray (uInt rownr, Array<VirtualType>& array);
 
     // Put an array in the given row.
-    void putArray (uInt rownr, const Array<SourceType>& array);
+    void putArray (uInt rownr, const Array<VirtualType>& array);
 
     // Get a section of the array in the given row.
-    void getSlice (uInt rownr, const Slicer& slicer, Array<SourceType>& array);
+    void getSlice (uInt rownr, const Slicer& slicer, Array<VirtualType>& array);
 
     // Put into a section of the array in the given row.
     void putSlice (uInt rownr, const Slicer& slicer,
-		   const Array<SourceType>& array);
+		   const Array<VirtualType>& array);
 
     // Get an entire column.
-    void getArrayColumn (Array<SourceType>& array);
+    void getArrayColumn (Array<VirtualType>& array);
 
     // Put an entire column.
-    void putArrayColumn (const Array<SourceType>& array);
+    void putArrayColumn (const Array<VirtualType>& array);
 
     // Get a section of all arrays in the column.
-    void getColumnSlice (const Slicer& slicer, Array<SourceType>& array);
+    void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
 
     // Put a section of all arrays in the column.
-    void putColumnSlice (const Slicer& slicer, const Array<SourceType>& array);
+    void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
 
-    // Check if the shapes of source and target match.
-    // Determine the shape of the source elements in the target.
-    IPosition checkShape (const Array<SourceType>& source,
-			  const Array<TargetType>& target);
+    // Check if the shapes of virtual and stored match.
+    // Determine the shape of the virtual elements in the stored.
+    IPosition checkShape (const Array<VirtualType>& source,
+			  const Array<StoredType>& target);
 
-    // Copy the target array to the source array.
+    // Copy the stored array to the virtual array.
     // It tries to optimize as much as possible.
-    void copyOnGet (Array<SourceType>& array,
-		    const Array<TargetType>& target);
+    void copyOnGet (Array<VirtualType>& array,
+		    const Array<StoredType>& stored);
 
-    // Copy the source array to the target array.
+    // Copy the virtual array to the stored array.
     // It tries to optimize as much as possible.
-    void copyOnPut (const Array<SourceType>& array,
-		    Array<TargetType>& target);
+    void copyOnPut (const Array<VirtualType>& array,
+		    Array<StoredType>& stored);
 
-    // Determine the shape of a cell in the target column from the
-    // shape of the cell in the source column.
-    IPosition targetShape (uInt rownr, const IPosition& sourceShape);
+    // Determine the shape of a cell in the stored column from the
+    // shape of the cell in the virtual column.
+    IPosition storedShape (uInt rownr, const IPosition& virtualShape);
 
-    // Convert the Slicer for a source to a Slicer for the target.
-    Slicer targetSlicer (const Slicer& sourceSlicer) const;
+    // Convert the Slicer for a virtual to a Slicer for the stored.
+    Slicer storedSlicer (const Slicer& virtualSlicer) const;
 
     //# Now define the data members.
-    IPosition shape_p;            //# shape of a source element in the target
-    IPosition sourceFixedShape_p; //# The shape in case source has FixedShape
-    Bool      isSourceFixedShape_p;
+    IPosition shape_p;             //# shape of a virtual element in the stored
+    IPosition virtualFixedShape_p; //# The shape in case virtual has FixedShape
+    Bool      isVirtualFixedShape_p;
     TableRecord  record_p;
-//#    SourceType::CopyInfo* copyInfo_p; //# object used to set/get arrays
+//#    VirtualType::CopyInfo* copyInfo_p; //# object used to set/get arrays
     void* copyInfo_p;             //# CFront compiler does not accept above
 
 

@@ -44,22 +44,22 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class S, class T>
-RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
-					     const String& targetColumnName)
-: BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
+RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
+					     const String& storedColumnName)
+: BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   shape_p    (S::shape()),
-  isSourceFixedShape_p (False),
+  isVirtualFixedShape_p (False),
   copyInfo_p (0)
 {}
 
 template<class S, class T>
-RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
-					   const String& targetColumnName,
-					   const IPosition& sourceShape,
+RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
+					   const String& storedColumnName,
+					   const IPosition& virtualShape,
 					   const TableRecord& extraInformation)
-: BaseMappedArrayEngine<S,T> (sourceColumnName, targetColumnName),
-  shape_p    (sourceShape),
-  isSourceFixedShape_p (False),
+: BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
+  shape_p    (virtualShape),
+  isVirtualFixedShape_p (False),
   record_p   (extraInformation),
   copyInfo_p (0)
 {}
@@ -67,7 +67,7 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const Record& spec)
 : BaseMappedArrayEngine<S,T> (),
-  isSourceFixedShape_p (False),
+  isVirtualFixedShape_p (False),
   copyInfo_p (0)
 {
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
@@ -89,7 +89,7 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine
                                         (const RetypedArrayEngine<S,T>& that)
 : BaseMappedArrayEngine<S,T> (that),
   shape_p    (that.shape_p),
-  isSourceFixedShape_p (False),
+  isVirtualFixedShape_p (False),
   record_p   (that.record_p),
   copyInfo_p (0)
 {}
@@ -130,15 +130,15 @@ String RetypedArrayEngine<S,T>::className()
 template<class S, class T>
 String RetypedArrayEngine<S,T>::dataManagerName() const
 {
-    return sourceName();
+    return virtualName();
 }
 
 template<class S, class T>
 Record RetypedArrayEngine<S,T>::dataManagerSpec() const
 {
     Record spec;
-    spec.define ("SOURCENAME", sourceName());
-    spec.define ("TARGETNAME", targetName());
+    spec.define ("SOURCENAME", virtualName());
+    spec.define ("TARGETNAME", storedName());
     spec.define ("SHAPE", shape_p.asVector());
     if (record_p.nfields() > 0) {
         spec.defineRecord ("RECORD", record_p);
@@ -164,7 +164,7 @@ template<class S, class T>
 void RetypedArrayEngine<S,T>::prepare()
 {
     // Get the various parameters from keywords in this column.
-    ROTableColumn thisCol (table(), sourceName());
+    ROTableColumn thisCol (table(), virtualName());
     Vector<Int> vector;
     thisCol.keywordSet().get ("_RetypedArrayEngine_Shape", vector);
     shape_p.resize (vector.nelements());
@@ -172,12 +172,12 @@ void RetypedArrayEngine<S,T>::prepare()
     record_p = thisCol.keywordSet().subRecord ("_RetypedArrayEngine_Record");
     // Set the column shape in the base class (when needed).
     // This has to be dome before prepare in the base class is called.
-    if (isSourceFixedShape_p) {
+    if (isVirtualFixedShape_p) {
 	BaseMappedArrayEngine<S,T>::setShapeColumn
-                                (shape_p.concatenate (sourceFixedShape_p));
+                                (shape_p.concatenate (virtualFixedShape_p));
     }
     BaseMappedArrayEngine<S,T>::prepare();
-    // Allocate and initialize a CopyInfo object for the source.
+    // Allocate and initialize a CopyInfo object for the virtual.
     copyInfo_p = S::newCopyInfo (record_p, shape_p);
 }
 
@@ -186,7 +186,7 @@ void RetypedArrayEngine<S,T>::create (uInt initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
-    TableColumn thisCol (makeTableColumn (sourceName()));
+    TableColumn thisCol (makeTableColumn (virtualName()));
     thisCol.rwKeywordSet().define ("_RetypedArrayEngine_Shape",
 				   shape_p.asVector());
     thisCol.rwKeywordSet().defineRecord ("_RetypedArrayEngine_Record",
@@ -194,29 +194,29 @@ void RetypedArrayEngine<S,T>::create (uInt initialNrrow)
 }
 
 
-//# This function is called in case the source column has FixedShape arrays.
-//# Because the shape of the SourceType is not known yet (it is read
+//# This function is called in case the virtual column has FixedShape arrays.
+//# Because the shape of the VirtualType is not known yet (it is read
 //# in prepare), the base class setShapeColumn is done in prepare().
 template<class S, class T>
 void RetypedArrayEngine<S,T>::setShapeColumn (const IPosition& shape)
 {
-    sourceFixedShape_p = shape;
-    isSourceFixedShape_p = True;
+    virtualFixedShape_p = shape;
+    isVirtualFixedShape_p = True;
 }
 
 template<class S, class T>
 void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
 {
-    //# Do not define the shape in the target column when it has
-    //# already been defined and matches the source shape.
+    //# Do not define the shape in the stored column when it has
+    //# already been defined and matches the virtual shape.
     if (rwColumn().isDefined (rownr)) {
-	IPosition targetShape = rwColumn().shape (rownr);
-	IPosition sourceShape = targetShape.getLast (shape.nelements());
-	if (shape.isEqual (sourceShape)) {
+	IPosition storedShape = rwColumn().shape (rownr);
+	IPosition virtualShape = storedShape.getLast (shape.nelements());
+	if (shape.isEqual (virtualShape)) {
 	    return;
 	}
     }
-    //# Set the target shape to the default element shape plus source shape.
+    //# Set the stored shape to the default element shape plus virtual shape.
     rwColumn().setShape (rownr, shape_p.concatenate (shape));
 }
 
@@ -229,36 +229,36 @@ uInt RetypedArrayEngine<S,T>::ndim (uInt rownr)
 template<class S, class T>
 IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
 {
-    // The source shape is the target shape minus the first dimensions.
-    IPosition targetShape = roColumn().shape (rownr);
-    return targetShape.getLast (targetShape.nelements() - shape_p.nelements());
+    // The virtual shape is the stored shape minus the first dimensions.
+    IPosition storedShape = roColumn().shape (rownr);
+    return storedShape.getLast (storedShape.nelements() - shape_p.nelements());
 }
 
 
 template<class S, class T>
-IPosition RetypedArrayEngine<S,T>::targetShape (uInt rownr,
-						const IPosition& sourceShape)
+IPosition RetypedArrayEngine<S,T>::storedShape (uInt rownr,
+						const IPosition& virtualShape)
 {
     //# Determine the element shape.
-    //# If the target is defined, take it from there.
+    //# If the stored is defined, take it from there.
     IPosition elemShape(shape_p);
     if (rownr < table().nrow()  &&  roColumn().isDefined (rownr)) {
 	elemShape = (roColumn().shape(rownr)).getFirst (elemShape.nelements());
     }
-    //# The target shape is element shape plus source shape.
-    return elemShape.concatenate (sourceShape);
+    //# The stored shape is element shape plus virtual shape.
+    return elemShape.concatenate (virtualShape);
 }
 
 template<class S, class T>
-Slicer RetypedArrayEngine<S,T>::targetSlicer (const Slicer& sourceSlicer) const
+Slicer RetypedArrayEngine<S,T>::storedSlicer (const Slicer& virtualSlicer) const
 {
     //# Determine the element dimensionality.
     //# Make the Slicer such that all values of the element are used.
     uInt ndim = shape_p.nelements();
-    return Slicer (IPosition(ndim,0).concatenate (sourceSlicer.start()),
+    return Slicer (IPosition(ndim,0).concatenate (virtualSlicer.start()),
 		   IPosition(ndim,Slicer::MimicSource).
-                                     concatenate (sourceSlicer.end()),
-		   IPosition(ndim,1).concatenate (sourceSlicer.stride()),
+                                     concatenate (virtualSlicer.end()),
+		   IPosition(ndim,1).concatenate (virtualSlicer.stride()),
 		   Slicer::endIsLast);
 }
 
@@ -270,27 +270,27 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
     IPosition tShape = target.shape();
     IPosition sShape = source.shape();
     //# Check if the dimensionalities match.
-    //# Source + element shape must match target shape.
+    //# Source + element shape must match stored shape.
     if (tShape.nelements() != shape_p.nelements() + sShape.nelements()) {
-	throw (DataManInvOper ("RetypedArrayEngine: target/source"
+	throw (DataManInvOper ("RetypedArrayEngine: stored/virtual"
 			       " dimensionalities are not appropriate"));
     }
     uInt i;
-    //# Determine and check the shape of the source elements in the target
-    //# which are formed by the first axes in the target.
-    //# Their shape cannot be greater than the real source element shape.
+    //# Determine and check the shape of the virtual elements in the target
+    //# which are formed by the first axes in the stored.
+    //# Their shape cannot be greater than the real virtual element shape.
     IPosition elemShape (shape_p.nelements());
     for (i=0; i<shape_p.nelements(); i++) {
 	if (tShape(i) > shape_p(i)) {
 	    throw (DataManInvOper
-		               ("RetypedArrayEngine: target shape > source"));
+		               ("RetypedArrayEngine: stored shape > virtual"));
 	}
 	elemShape(i) = tShape(i);
     }
-    //# Check if remaining sizes in target shape match source shape.
+    //# Check if remaining sizes in stored shape match virtual shape.
     for (uInt j=0; j<sShape.nelements(); j++) {
 	if (sShape(j) != tShape(i++)) {
-	    throw (DataManInvOper ("RetypedArrayEngine: target/source shape"
+	    throw (DataManInvOper ("RetypedArrayEngine: stored/virtual shape"
 				   " mismatch"));
 	}
     }
@@ -327,7 +327,7 @@ void RetypedArrayEngine<S,T>::getArray (uInt rownr, Array<S>& array)
 template<class S, class T>
 void RetypedArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
 {
-    Array<T> target(targetShape (rownr, array.shape()));
+    Array<T> target(storedShape (rownr, array.shape()));
     copyOnPut (array, target);
     rwColumn().put (rownr, target);
 }
@@ -337,16 +337,16 @@ void RetypedArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
 					Array<S>& array)
 {
     Array<T> target;
-    roColumn().getSlice (rownr, targetSlicer(slicer), target);
+    roColumn().getSlice (rownr, storedSlicer(slicer), target);
     copyOnGet (array, target);
 }
 template<class S, class T>
 void RetypedArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
 					const Array<S>& array)
 {
-    Array<T> target(targetShape (rownr, array.shape()));
+    Array<T> target(storedShape (rownr, array.shape()));
     copyOnPut (array, target);
-    rwColumn().putSlice (rownr, targetSlicer(slicer), target);
+    rwColumn().putSlice (rownr, storedSlicer(slicer), target);
 }
 
 template<class S, class T>
@@ -359,7 +359,7 @@ void RetypedArrayEngine<S,T>::getArrayColumn (Array<S>& array)
 template<class S, class T>
 void RetypedArrayEngine<S,T>::putArrayColumn (const Array<S>& array)
 {
-    Array<T> target(targetShape (0, array.shape()));
+    Array<T> target(storedShape (0, array.shape()));
     copyOnPut (array, target);
     rwColumn().putColumn (target);
 }
@@ -369,16 +369,16 @@ void RetypedArrayEngine<S,T>::getColumnSlice (const Slicer& slicer,
 					      Array<S>& array)
 {
     Array<T> target;
-    roColumn().getColumn (targetSlicer(slicer), target);
+    roColumn().getColumn (storedSlicer(slicer), target);
     copyOnGet (array, target);
 }
 template<class S, class T>
 void RetypedArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
 					      const Array<S>& array)
 {
-    Array<T> target(targetShape (0, array.shape()));
+    Array<T> target(storedShape (0, array.shape()));
     copyOnPut (array, target);
-    rwColumn().putColumn (targetSlicer(slicer), target);
+    rwColumn().putColumn (storedSlicer(slicer), target);
 }
 
 } //# NAMESPACE CASA - END

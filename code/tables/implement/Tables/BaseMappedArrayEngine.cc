@@ -1,4 +1,4 @@
-//# BaseMappedArrayEngine.cc: Abstract virtual column engine for source->target mapping
+//# BaseMappedArrayEngine.cc: Abstract virtual column engine for virtual->stored mapping
 //# Copyright (C) 1995,1996,2001,2002
 //# Associated Universitie Inc. Washington DC, USA.
 //#
@@ -37,10 +37,11 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template<class SourceType, class TargetType>
-BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine ()
-: sourceName_p   (""),
-  targetName_p   (""),
+template<class VirtualType, class StoredType>
+BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine ()
+: virtualName_p  (""),
+  storedName_p   (""),
+  isWritable_p   (True),
   tempWritable_p (False),
   initialNrrow_p (0),
   arrayIsFixed_p (False),
@@ -48,12 +49,13 @@ BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine ()
   column_p       (0)
 {}
 
-template<class SourceType, class TargetType>
-BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine
-                                        (const String& sourceColumnName,
-					 const String& targetColumnName)
-: sourceName_p   (sourceColumnName),
-  targetName_p   (targetColumnName), 
+template<class VirtualType, class StoredType>
+BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
+                                        (const String& virtualColumnName,
+					 const String& storedColumnName)
+: virtualName_p  (virtualColumnName),
+  storedName_p   (storedColumnName), 
+  isWritable_p   (True),
   tempWritable_p (False),
   initialNrrow_p (0),
   arrayIsFixed_p (False),
@@ -61,11 +63,12 @@ BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine
   column_p       (0)
 {}
 
-template<class SourceType, class TargetType>
-BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine
-                   (const BaseMappedArrayEngine<SourceType, TargetType>& that)
-: sourceName_p   (that.sourceName_p),
-  targetName_p   (that.targetName_p),
+template<class VirtualType, class StoredType>
+BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
+                   (const BaseMappedArrayEngine<VirtualType, StoredType>& that)
+: virtualName_p  (that.virtualName_p),
+  storedName_p   (that.storedName_p),
+  isWritable_p   (that.isWritable_p),
   tempWritable_p (False),
   initialNrrow_p (0),
   arrayIsFixed_p (False),
@@ -73,8 +76,8 @@ BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine
   column_p       (0)
 {}
 
-template<class SourceType, class TargetType>
-BaseMappedArrayEngine<SourceType, TargetType>::~BaseMappedArrayEngine()
+template<class VirtualType, class StoredType>
+BaseMappedArrayEngine<VirtualType, StoredType>::~BaseMappedArrayEngine()
 {
     delete roColumn_p;
     delete column_p;
@@ -90,39 +93,39 @@ BaseMappedArrayEngine<SourceType, TargetType>::~BaseMappedArrayEngine()
 // initialized yet.
 // This all means that isWritable must take care of the case
 // where the writable_p flag is not set yet.
-template<class SourceType, class TargetType>
-Bool BaseMappedArrayEngine<SourceType, TargetType>::isWritable() const
+template<class VirtualType, class StoredType>
+Bool BaseMappedArrayEngine<VirtualType, StoredType>::isWritable() const
 {
     if (tempWritable_p) {
 	return True;
     }
-    return table().isColumnWritable (targetName_p);
+    return isWritable_p  &&  table().isColumnWritable (storedName_p);
 }
 
 
 // Create the column object for the array column in this engine.
-// This merely checks if the source column name matches.
-template<class SourceType, class TargetType>
+// This merely checks if the virtual column name matches.
+template<class VirtualType, class StoredType>
 DataManagerColumn*
-          BaseMappedArrayEngine<SourceType, TargetType>::makeIndArrColumn
+          BaseMappedArrayEngine<VirtualType, StoredType>::makeIndArrColumn
                             (const String& columnName, int, const String&)
 {
-    //# Check if the column name matches the source column name.
-    //# The source name is only filled in case of creating a new table.
+    //# Check if the column name matches the virtual column name.
+    //# The virtual name is only filled in case of creating a new table.
     //# In case the table is read back, makeIndArrColumn is called
-    //# before prepare, thus before the source name can be read back.
-    if (sourceName_p.empty()) {
-	sourceName_p = columnName;
-    } else if (columnName != sourceName_p) {
+    //# before prepare, thus before the virtual name can be read back.
+    if (virtualName_p.empty()) {
+	virtualName_p = columnName;
+    } else if (columnName != virtualName_p) {
 	throw (DataManInvOper
-	       ("BaseMappedArrayEngine with source column " + sourceName_p +
+	       ("BaseMappedArrayEngine with virtual column " + virtualName_p +
 		" bound to column " + columnName + "; should be the same"));
     }
     return this;
 }
  
-template<class SourceType, class TargetType>
-TableColumn BaseMappedArrayEngine<SourceType, TargetType>::makeTableColumn
+template<class VirtualType, class StoredType>
+TableColumn BaseMappedArrayEngine<VirtualType, StoredType>::makeTableColumn
                                                 (const String& columnName)
 {
     tempWritable_p = True;
@@ -132,67 +135,67 @@ TableColumn BaseMappedArrayEngine<SourceType, TargetType>::makeTableColumn
 }
 
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::create (uInt initialNrrow)
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::create (uInt initialNrrow)
 {
-    //# Define the target name as a column keyword in the source.
-    makeTableColumn (sourceName_p).rwKeywordSet().define
-	                       ("_BaseMappedArrayEngine_Name", targetName_p);
+    //# Define the stored name as a column keyword in the virtual.
+    makeTableColumn (virtualName_p).rwKeywordSet().define
+	                       ("_BaseMappedArrayEngine_Name", storedName_p);
     initialNrrow_p = initialNrrow;
 }
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::prepare()
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::prepare()
 {
     prepare1();
     prepare2();
 }
 
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::prepare1()
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::prepare1()
 {
-    //# Get the name of the target column from the keywords in the
-    //# source column.
-    ROTableColumn thisCol (table(), sourceName_p);
-    targetName_p = thisCol.keywordSet().asString
+    //# Get the name of the stored column from the keywords in the
+    //# virtual column.
+    ROTableColumn thisCol (table(), virtualName_p);
+    storedName_p = thisCol.keywordSet().asString
 	                                    ("_BaseMappedArrayEngine_Name");
-    //# Determine if the target column is writable.
-    //# Allocate an object to get from the target column.
+    //# Determine if the stored column is writable.
+    //# Allocate an object to get from the stored column.
     //# Allocate one to put if the column is writable.
-    roColumn_p = new ROArrayColumn<TargetType> (table(), targetName_p);
-    //# It is not permitted to have a FixedShape target and non-FixedShape
-    //# source column.
+    roColumn_p = new ROArrayColumn<StoredType> (table(), storedName_p);
+    //# It is not permitted to have a FixedShape stored and non-FixedShape
+    //# virtual column.
     if ((! arrayIsFixed_p)  &&
               ((roColumn_p->columnDesc().options() & ColumnDesc::FixedShape)
 	                                          == ColumnDesc::FixedShape)) {
-	throw (DataManInvOper ("BaseMappedArrayEngine: source column " +
-			       sourceName_p + " is FixedShape, but target " +
-			       targetName_p + " is not"));
+	throw (DataManInvOper ("BaseMappedArrayEngine: virtual column " +
+			       virtualName_p + " is FixedShape, but stored " +
+			       storedName_p + " is not"));
     }
     if (isWritable()) {
-	column_p = new ArrayColumn<TargetType> (table(), targetName_p);
+	column_p = new ArrayColumn<StoredType> (table(), storedName_p);
     }
 }
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::prepare2()
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::prepare2()
 {
     //# Add the initial number of rows (thus only done after create).
-    //# This will set the shape of the target arrays when needed.
+    //# This will set the shape of the stored arrays when needed.
     if (initialNrrow_p > 0) {
 	addRowInit (0, initialNrrow_p);
     }
 }
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::reopenRW()
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::reopenRW()
 {
     // Create the writable ArrayColumn object if it does not exist
     // yet and if the column is writable now.
     if (column_p == 0) {
 	if (isWritable()) {
-	    column_p = new ArrayColumn<TargetType> (table(), targetName_p);
+	    column_p = new ArrayColumn<StoredType> (table(), storedName_p);
 	}
     }
 }
@@ -200,26 +203,26 @@ void BaseMappedArrayEngine<SourceType, TargetType>::reopenRW()
 
 //# By default addition and removal of rows is allowed.
 //# Deletion is a no-op.
-template<class SourceType, class TargetType>
-Bool BaseMappedArrayEngine<SourceType, TargetType>::canAddRow() const
+template<class VirtualType, class StoredType>
+Bool BaseMappedArrayEngine<VirtualType, StoredType>::canAddRow() const
     { return True; }
-template<class SourceType, class TargetType>
-Bool BaseMappedArrayEngine<SourceType, TargetType>::canRemoveRow() const
+template<class VirtualType, class StoredType>
+Bool BaseMappedArrayEngine<VirtualType, StoredType>::canRemoveRow() const
     { return True; }
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::removeRow (uInt)
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::removeRow (uInt)
 {}
 
 //# Add nrrow rows to the end of the table.
-//# Set the shape if source is FixedShape and target is non-FixedShape.
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::addRow (uInt nrrow)
+//# Set the shape if virtual is FixedShape and stored is non-FixedShape.
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::addRow (uInt nrrow)
 {
   addRowInit (table().nrow(), nrrow);
 }
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::addRowInit (uInt startRow,
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::addRowInit (uInt startRow,
 								uInt nrrow)
 {
     if (arrayIsFixed_p  &&
@@ -231,44 +234,44 @@ void BaseMappedArrayEngine<SourceType, TargetType>::addRowInit (uInt startRow,
     }
 }
 
-//# This function is called in case the source column has FixedShape arrays.
-//# If the target has non-FixedShape arrays this shape will be set for the
-//# array in each row of the target (by function addRow).
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::setShapeColumn
+//# This function is called in case the virtual column has FixedShape arrays.
+//# If the stored has non-FixedShape arrays this shape will be set for the
+//# array in each row of the stored (by function addRow).
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::setShapeColumn
                                                    (const IPosition& shape)
 {
     shapeFixed_p   = shape;
     arrayIsFixed_p = True;
 }
 
-template<class SourceType, class TargetType>
-void BaseMappedArrayEngine<SourceType, TargetType>::setShape
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::setShape
                                        (uInt rownr, const IPosition& shape)
 {
     column_p->setShape (rownr, shape);
 }
 
-template<class SourceType, class TargetType>
-Bool BaseMappedArrayEngine<SourceType, TargetType>::isShapeDefined (uInt rownr)
+template<class VirtualType, class StoredType>
+Bool BaseMappedArrayEngine<VirtualType, StoredType>::isShapeDefined (uInt rownr)
 {
     return roColumn_p->isDefined (rownr);
 }
 
-template<class SourceType, class TargetType>
-uInt BaseMappedArrayEngine<SourceType, TargetType>::ndim (uInt rownr)
+template<class VirtualType, class StoredType>
+uInt BaseMappedArrayEngine<VirtualType, StoredType>::ndim (uInt rownr)
 {
     return roColumn_p->ndim (rownr);
 }
 
-template<class SourceType, class TargetType>
-IPosition BaseMappedArrayEngine<SourceType, TargetType>::shape (uInt rownr)
+template<class VirtualType, class StoredType>
+IPosition BaseMappedArrayEngine<VirtualType, StoredType>::shape (uInt rownr)
 {
     return roColumn_p->shape (rownr);
 }
 
-template<class SourceType, class TargetType>
-Bool BaseMappedArrayEngine<SourceType, TargetType>::canChangeShape() const
+template<class VirtualType, class StoredType>
+Bool BaseMappedArrayEngine<VirtualType, StoredType>::canChangeShape() const
 {
     return (roColumn_p == 0  ?  False : roColumn_p->canChangeShape());
 }

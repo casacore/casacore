@@ -56,7 +56,7 @@
 void a();
 void b();
 
-main () {
+int main () {
     try {
 	a();
 	b();
@@ -142,14 +142,19 @@ void a()
     }
 
     //# Do an erronous thing.
-    SetupNewTable newtab2("tScaledComplexData_tmp.dat2", td, Table::Scratch);
-    newtab2.bindColumn ("source2", engine1);
-    try {
-	Table tab2(newtab2, 10);                // bound to incorrect column
-    } catch (AipsError x) {
-	cout << x.getMesg() << endl;
-    } 
-}
+    //# 2005-02-15 GvD: this test does not work correctly, because the
+    //# exception calls the BaseTable dtor. In there the table directory
+    //# gets removed, but there is still an open file which NFS renames
+    //# to .nfs... So the remove throws an exception resulting in an abort.
+    //# So all open files should be closed first (in one way or another).
+    //    SetupNewTable newtab2("tScaledComplexData_tmp.dat2", td, Table::Scratch);
+    //    newtab2.bindColumn ("source2", engine1);
+    //    try {
+    //	Table tab2(newtab2, 10);                // bound to incorrect column
+    //    } catch (AipsError x) {
+    //	cout << x.getMesg() << endl;
+    //    } 
+    }
 
 void b()
 {

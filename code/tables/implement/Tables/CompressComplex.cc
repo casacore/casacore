@@ -42,10 +42,10 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-CompressComplex::CompressComplex (const String& sourceColumnName,
-				  const String& targetColumnName,
+CompressComplex::CompressComplex (const String& virtualColumnName,
+				  const String& storedColumnName,
 				  Float scale, Float offset)
-: BaseMappedArrayEngine<Complex,Int> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<Complex,Int> (virtualColumnName, storedColumnName),
   scale_p         (scale),
   offset_p        (offset),
   fixed_p         (True),
@@ -56,12 +56,12 @@ CompressComplex::CompressComplex (const String& sourceColumnName,
   rwOffsetColumn_p(0)
 {}
 
-CompressComplex::CompressComplex (const String& sourceColumnName,
-				  const String& targetColumnName,
+CompressComplex::CompressComplex (const String& virtualColumnName,
+				  const String& storedColumnName,
 				  const String& scaleColumnName,
 				  const String& offsetColumnName,
 				  Bool autoScale)
-: BaseMappedArrayEngine<Complex,Int> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<Complex,Int> (virtualColumnName, storedColumnName),
   scaleName_p     (scaleColumnName),
   offsetName_p    (offsetColumnName),
   scale_p         (0.0),
@@ -144,14 +144,14 @@ String CompressComplex::className()
 
 String CompressComplex::dataManagerName() const
 {
-  return sourceName();
+  return virtualName();
 }
 
 Record CompressComplex::dataManagerSpec() const
 {
   Record spec;
-  spec.define ("SOURCENAME", sourceName());
-  spec.define ("TARGETNAME", targetName());
+  spec.define ("SOURCENAME", virtualName());
+  spec.define ("TARGETNAME", storedName());
   if (fixed_p) {
     spec.define ("SCALE", scale_p);
     spec.define ("OFFSET", offset_p);
@@ -177,7 +177,7 @@ void CompressComplex::create (uInt initialNrrow)
 {
   BaseMappedArrayEngine<Complex,Int>::create (initialNrrow);
   // Store the various parameters as keywords in this column.
-  TableColumn thisCol (table(), sourceName());
+  TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressComplex_Scale",      scale_p);
   thisCol.rwKeywordSet().define ("_CompressComplex_Offset",     offset_p);
   thisCol.rwKeywordSet().define ("_CompressComplex_ScaleName",  scaleName_p);
@@ -190,7 +190,7 @@ void CompressComplex::create (uInt initialNrrow)
 void CompressComplex::prepare()
 {
   BaseMappedArrayEngine<Complex,Int>::prepare1();
-  ROTableColumn thisCol (table(), sourceName());
+  ROTableColumn thisCol (table(), virtualName());
   thisCol.keywordSet().get ("_CompressComplex_Scale",      scale_p);
   thisCol.keywordSet().get ("_CompressComplex_Offset",     offset_p);
   thisCol.keywordSet().get ("_CompressComplex_ScaleName",  scaleName_p);
@@ -574,18 +574,18 @@ void CompressComplex::putColumnSlice (const Slicer& slicer,
 
 
 
-CompressComplexSD::CompressComplexSD (const String& sourceColumnName,
-				      const String& targetColumnName,
+CompressComplexSD::CompressComplexSD (const String& virtualColumnName,
+				      const String& storedColumnName,
 				      Float scale, Float offset)
-: CompressComplex (sourceColumnName, targetColumnName, scale, offset)
+: CompressComplex (virtualColumnName, storedColumnName, scale, offset)
 {}
 
-CompressComplexSD::CompressComplexSD (const String& sourceColumnName,
-				      const String& targetColumnName,
+CompressComplexSD::CompressComplexSD (const String& virtualColumnName,
+				      const String& storedColumnName,
 				      const String& scaleColumnName,
 				      const String& offsetColumnName,
 				      Bool autoScale)
-: CompressComplex (sourceColumnName, targetColumnName,
+: CompressComplex (virtualColumnName, storedColumnName,
 		   scaleColumnName, offsetColumnName, autoScale)
 {}
 
@@ -646,7 +646,7 @@ void CompressComplexSD::create (uInt initialNrrow)
 {
   CompressComplex::create (initialNrrow);
   // Set the type.
-  TableColumn thisCol (table(), sourceName());
+  TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressComplex_Type", "CompressComplexSD");
 }
 

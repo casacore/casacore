@@ -77,17 +77,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // As in FITS the scale and offset values are used as:
 // <br><src> True_value = Stored_value * scale + offset; </src>
 //
-// An engine object should be used for one column only, because the target
+// An engine object should be used for one column only, because the stored
 // column name is part of the engine. If it would be used for more than
-// one column, they would all share the same target column.
+// one column, they would all share the same stored column.
 // When the engine is bound to a column, it is checked if the name
-// of that column matches the given source column name.
+// of that column matches the given virtual column name.
 //
 // The engine can be used for a column containing any kind of array
 // (thus direct or indirect, fixed or variable shaped)) as long as the
-// source array can be stored in the target array. Thus a fixed shaped
-// source can use a variable shaped target, but not vice versa.
-// A fixed shape indirect source can use a target with direct arrays.
+// virtual array can be stored in the stored array. Thus a fixed shaped
+// virtual can use a variable shaped stored, but not vice versa.
+// A fixed shape indirect virtual can use a stored with direct arrays.
 //
 // This class can also serve as an example of how to implement
 // a virtual column engine.
@@ -142,11 +142,11 @@ public:
 
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
-  // TargetColumnName is the name of the column where the scaled
+  // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
-  // The source column using this engine must have data type Complex.
-  CompressComplex (const String& sourceColumnName,
-		   const String& targetColumnName,
+  // The virtual column using this engine must have data type Complex.
+  CompressComplex (const String& virtualColumnName,
+		   const String& storedColumnName,
 		   Float scale,
 		   Float offset = 0);
 
@@ -155,13 +155,13 @@ public:
   // the given names. In that way each array has its own scale factor
   // and offset value.
   // An exception is thrown if these columns do not exist.
-  // SourceColumnName is the name of the source column and is used to
+  // VirtualColumnName is the name of the virtual column and is used to
   // check if the engine gets bound to the correct column.
-  // TargetColumnName is the name of the column where the scaled
+  // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
-  // The source column using this engine must have data type Complex.
-  CompressComplex (const String& sourceColumnName,
-		   const String& targetColumnName,
+  // The virtual column using this engine must have data type Complex.
+  CompressComplex (const String& virtualColumnName,
+		   const String& storedColumnName,
 		   const String& scaleColumnName,
 		   const String& offsetColumnName,
 		   Bool autoScale = True);
@@ -175,7 +175,7 @@ public:
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
-  // Get the name given to the engine (is the source column name).
+  // Get the name given to the engine (is the virtual column name).
   virtual String dataManagerName() const;
   
   // Record a record containing data manager specifications.
@@ -258,14 +258,14 @@ private:
 			       const Array<Complex>& array);
 
   // Scale and/or offset target to array.
-  // This is meant when reading an array from the target column.
+  // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
   virtual void scaleOnGet (Float scale, Float offset,
 			   Array<Complex>& array,
 			   const Array<Int>& target);
 
   // Scale and/or offset array to target.
-  // This is meant when writing an array into the target column.
+  // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
   virtual void scaleOnPut (Float scale, Float offset,
 			   const Array<Complex>& array,
@@ -416,11 +416,11 @@ public:
 
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
-  // TargetColumnName is the name of the column where the scaled
+  // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
-  // The source column using this engine must have data type Complex.
-  CompressComplexSD (const String& sourceColumnName,
-		     const String& targetColumnName,
+  // The virtual column using this engine must have data type Complex.
+  CompressComplexSD (const String& virtualColumnName,
+		     const String& storedColumnName,
 		     Float scale,
 		     Float offset = 0);
 
@@ -429,13 +429,13 @@ public:
   // the given names. In that way each array has its own scale factor
   // and offset value.
   // An exception is thrown if these columns do not exist.
-  // SourceColumnName is the name of the source column and is used to
+  // VirtualColumnName is the name of the virtual column and is used to
   // check if the engine gets bound to the correct column.
-  // TargetColumnName is the name of the column where the scaled
+  // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
-  // The source column using this engine must have data type Complex.
-  CompressComplexSD (const String& sourceColumnName,
-		     const String& targetColumnName,
+  // The virtual column using this engine must have data type Complex.
+  CompressComplexSD (const String& virtualColumnName,
+		     const String& storedColumnName,
 		     const String& scaleColumnName,
 		     const String& offsetColumnName,
 		     Bool autoScale = True);
@@ -474,14 +474,14 @@ private:
   virtual void create (uInt initialNrrow);
 
   // Scale and/or offset target to array.
-  // This is meant when reading an array from the target column.
+  // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
   virtual void scaleOnGet (Float scale, Float offset,
 			   Array<Complex>& array,
 			   const Array<Int>& target);
 
   // Scale and/or offset array to target.
-  // This is meant when writing an array into the target column.
+  // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
   virtual void scaleOnPut (Float scale, Float offset,
 			   const Array<Complex>& array,

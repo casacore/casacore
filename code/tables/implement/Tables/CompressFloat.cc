@@ -41,10 +41,10 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-CompressFloat::CompressFloat (const String& sourceColumnName,
-			      const String& targetColumnName,
+CompressFloat::CompressFloat (const String& virtualColumnName,
+			      const String& storedColumnName,
 			      Float scale, Float offset)
-: BaseMappedArrayEngine<Float,Short> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<Float,Short> (virtualColumnName, storedColumnName),
   scale_p         (scale),
   offset_p        (offset),
   fixed_p         (True),
@@ -55,12 +55,12 @@ CompressFloat::CompressFloat (const String& sourceColumnName,
   rwOffsetColumn_p(0)
 {}
 
-CompressFloat::CompressFloat (const String& sourceColumnName,
-			      const String& targetColumnName,
+CompressFloat::CompressFloat (const String& virtualColumnName,
+			      const String& storedColumnName,
 			      const String& scaleColumnName,
 			      const String& offsetColumnName,
 			      Bool autoScale)
-: BaseMappedArrayEngine<Float,Short> (sourceColumnName, targetColumnName),
+: BaseMappedArrayEngine<Float,Short> (virtualColumnName, storedColumnName),
   scaleName_p     (scaleColumnName),
   offsetName_p    (offsetColumnName),
   scale_p         (0.0),
@@ -143,14 +143,14 @@ String CompressFloat::className()
 
 String CompressFloat::dataManagerName() const
 {
-  return sourceName();
+  return virtualName();
 }
 
 Record CompressFloat::dataManagerSpec() const
 {
   Record spec;
-  spec.define ("SOURCENAME", sourceName());
-  spec.define ("TARGETNAME", targetName());
+  spec.define ("SOURCENAME", virtualName());
+  spec.define ("TARGETNAME", storedName());
   if (fixed_p) {
     spec.define ("SCALE", scale_p);
     spec.define ("OFFSET", offset_p);
@@ -176,7 +176,7 @@ void CompressFloat::create (uInt initialNrrow)
 {
   BaseMappedArrayEngine<Float,Short>::create (initialNrrow);
   // Store the various parameters as keywords in this column.
-  TableColumn thisCol (table(), sourceName());
+  TableColumn thisCol (table(), virtualName());
   thisCol.rwKeywordSet().define ("_CompressFloat_Scale",      scale_p);
   thisCol.rwKeywordSet().define ("_CompressFloat_Offset",     offset_p);
   thisCol.rwKeywordSet().define ("_CompressFloat_ScaleName",  scaleName_p);
@@ -188,7 +188,7 @@ void CompressFloat::create (uInt initialNrrow)
 void CompressFloat::prepare()
 {
   BaseMappedArrayEngine<Float,Short>::prepare1();
-  ROTableColumn thisCol (table(), sourceName());
+  ROTableColumn thisCol (table(), virtualName());
   thisCol.keywordSet().get ("_CompressFloat_Scale",      scale_p);
   thisCol.keywordSet().get ("_CompressFloat_Offset",     offset_p);
   thisCol.keywordSet().get ("_CompressFloat_ScaleName",  scaleName_p);

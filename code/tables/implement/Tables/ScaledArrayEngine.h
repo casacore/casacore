@@ -71,17 +71,17 @@ template<class T> class ROScalarColumn;
 // As in FITS the scale and offset values are used as:
 // <br><src> True_value = Stored_value * scale + offset; </src>
 //
-// An engine object should be used for one column only, because the target
+// An engine object should be used for one column only, because the stored
 // column name is part of the engine. If it would be used for more than
-// one column, they would all share the same target column.
+// one column, they would all share the same stored column.
 // When the engine is bound to a column, it is checked if the name
-// of that column matches the given source column name.
+// of that column matches the given virtual column name.
 //
 // The engine can be used for a column containing any kind of array
 // (thus direct or indirect, fixed or variable shaped)) as long as the
-// source array can be stored in the target array. Thus a fixed shaped
-// source can use a variable shaped target, but not vice versa.
-// A fixed shape indirect source can use a target with direct arrays.
+// virtual array can be stored in the stored array. Thus a fixed shaped
+// virtual can use a variable shaped stored, but not vice versa.
+// A fixed shape indirect virtual can use a stored with direct arrays.
 //
 // This class can also serve as an example of how to implement
 // a virtual column engine.
@@ -132,52 +132,52 @@ template<class T> class ROScalarColumn;
 // </srcblock>
 // </example>
 
-// <templating arg=SourceType>
+// <templating arg=VirtualType>
 //  only suited for built-in numerics data types
 // </templating>
-// <templating arg=TargetType>
+// <templating arg=StoredType>
 //  only suited for built-in numerics data types
 // </templating>
 
-template<class SourceType, class TargetType> class ScaledArrayEngine : public BaseMappedArrayEngine<SourceType, TargetType>
+template<class VirtualType, class StoredType> class ScaledArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>
 {
   //# Make members of parent class known.
 public:
-  using BaseMappedArrayEngine<SourceType,TargetType>::sourceName;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::virtualName;
 protected:
-  using BaseMappedArrayEngine<SourceType,TargetType>::targetName;
-  using BaseMappedArrayEngine<SourceType,TargetType>::table;
-  using BaseMappedArrayEngine<SourceType,TargetType>::roColumn;
-  using BaseMappedArrayEngine<SourceType,TargetType>::rwColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::table;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::roColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::rwColumn;
 
 public:
     // Construct an engine to scale all arrays in a column with
     // the given offset and scale factor.
-    // TargetColumnName is the name of the column where the scaled
-    // data will be put and must have data type TargetType.
-    // The source column using this engine must have data type SourceType.
-    ScaledArrayEngine (const String& sourceColumnName,
-		       const String& targetColumnName,
-		       SourceType scale,
-		       SourceType offset = 0);
+    // StoredColumnName is the name of the column where the scaled
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type VirtualType.
+    ScaledArrayEngine (const String& virtualColumnName,
+		       const String& storedColumnName,
+		       VirtualType scale,
+		       VirtualType offset = 0);
 
     // Construct an engine to scale the arrays in a column.
     // The scale and offset values are taken from a column with
     // the given names. In that way each array has its own scale factor
     // and offset value.
     // An exception is thrown if these columns do not exist.
-    // SourceColumnName is the name of the source column and is used to
+    // VirtualColumnName is the name of the virtual column and is used to
     // check if the engine gets bound to the correct column.
-    // TargetColumnName is the name of the column where the scaled
-    // data will be put and must have data type TargetType.
-    // The source column using this engine must have data type SourceType.
+    // StoredColumnName is the name of the column where the scaled
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type VirtualType.
     // <group>
-    ScaledArrayEngine (const String& sourceColumnName,
-		       const String& targetColumnName,
+    ScaledArrayEngine (const String& virtualColumnName,
+		       const String& storedColumnName,
 		       const String& scaleColumnName,
-		       SourceType offset = 0);
-    ScaledArrayEngine (const String& sourceColumnName,
-		       const String& targetColumnName,
+		       VirtualType offset = 0);
+    ScaledArrayEngine (const String& virtualColumnName,
+		       const String& storedColumnName,
 		       const String& scaleColumnName,
 		       const String& offsetColumnName);
     // </group>
@@ -191,7 +191,7 @@ public:
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
-    // Get the name given to the engine (is the source column name).
+    // Get the name given to the engine (is the virtual column name).
     virtual String dataManagerName() const;
   
     // Record a record containing data manager specifications.
@@ -212,12 +212,12 @@ public:
 private:
     // Copy constructor is only used by clone().
     // (so it is made private).
-    ScaledArrayEngine (const ScaledArrayEngine<SourceType,TargetType>&);
+    ScaledArrayEngine (const ScaledArrayEngine<VirtualType,StoredType>&);
 
     // Assignment is not needed and therefore forbidden
     // (so it is made private and not implemented).
-    ScaledArrayEngine<SourceType,TargetType>& operator=
-                           (const ScaledArrayEngine<SourceType,TargetType>&);
+    ScaledArrayEngine<VirtualType,StoredType>& operator=
+                           (const ScaledArrayEngine<VirtualType,StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;
@@ -233,81 +233,81 @@ private:
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    void getArray (uInt rownr, Array<SourceType>& array);
+    void getArray (uInt rownr, Array<VirtualType>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    void putArray (uInt rownr, const Array<SourceType>& array);
+    void putArray (uInt rownr, const Array<VirtualType>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    void getSlice (uInt rownr, const Slicer& slicer, Array<SourceType>& array);
+    void getSlice (uInt rownr, const Slicer& slicer, Array<VirtualType>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
     void putSlice (uInt rownr, const Slicer& slicer,
-		   const Array<SourceType>& array);
+		   const Array<VirtualType>& array);
 
     // Get an entire column.
     // This will scale and offset from the underlying array.
-    void getArrayColumn (Array<SourceType>& array);
+    void getArrayColumn (Array<VirtualType>& array);
 
     // Put an entire column.
     // This will scale and offset to the underlying array.
-    void putArrayColumn (const Array<SourceType>& array);
+    void putArrayColumn (const Array<VirtualType>& array);
 
     // Get a section of all arrays in the column.
     // This will scale and offset from the underlying array.
-    void getColumnSlice (const Slicer& slicer, Array<SourceType>& array);
+    void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
 
     // Put a section of all arrays in the column.
     // This will scale and offset to the underlying array.
-    void putColumnSlice (const Slicer& slicer, const Array<SourceType>& array);
+    void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
 
-    // Scale and/or offset target to array.
-    // This is meant when reading an array from the target column.
+    // Scale and/or offset stored to array.
+    // This is meant when reading an array from the stored column.
     // It optimizes for scale=1 and/or offset=0.
-    void scaleOnGet (SourceType scale, SourceType offset,
-		     Array<SourceType>& array,
-		     const Array<TargetType>& target);
+    void scaleOnGet (VirtualType scale, VirtualType offset,
+		     Array<VirtualType>& array,
+		     const Array<StoredType>& stored);
 
-    // Scale and/or offset array to target.
-    // This is meant when writing an array into the target column.
+    // Scale and/or offset array to stored.
+    // This is meant when writing an array into the stored column.
     // It optimizes for scale=1 and/or offset=0.
-    void scaleOnPut (SourceType scale, SourceType offset,
-		     const Array<SourceType>& array,
-		     Array<TargetType>& target);
+    void scaleOnPut (VirtualType scale, VirtualType offset,
+		     const Array<VirtualType>& array,
+		     Array<StoredType>& stored);
 
-    // Scale and/or offset target to array for the entire column.
+    // Scale and/or offset stored to array for the entire column.
     // When the scale and offset are fixed, it will do the entire array.
     // Otherwise it iterates through the array and applies the scale
     // and offset per row.
-    void scaleColumnOnGet (Array<SourceType>& array,
-			   const Array<TargetType>& target);
+    void scaleColumnOnGet (Array<VirtualType>& array,
+			   const Array<StoredType>& stored);
 
-    // Scale and/or offset array to target for the entire column.
+    // Scale and/or offset array to stored for the entire column.
     // When the scale and offset are fixed, it will do the entire array.
     // Otherwise it iterates through the array and applies the scale
     // and offset per row.
-    void scaleColumnOnPut (const Array<SourceType>& array,
-			   Array<TargetType>& target);
+    void scaleColumnOnPut (const Array<VirtualType>& array,
+			   Array<StoredType>& stored);
 
 
     //# Now define the data members.
     String         scaleName_p;          //# name of scale column
     String         offsetName_p;         //# name of offset column
-    SourceType     scale_p;              //# scale factor
-    SourceType     offset_p;             //# offset value
+    VirtualType    scale_p;              //# scale factor
+    VirtualType    offset_p;             //# offset value
     Bool           fixedScale_p;         //# scale is a fixed column
     Bool           fixedOffset_p;        //# scale is a fixed column
-    ROScalarColumn<SourceType>* scaleColumn_p;  //# column with scale value
-    ROScalarColumn<SourceType>* offsetColumn_p; //# column with offset value
+    ROScalarColumn<VirtualType>* scaleColumn_p;  //# column with scale value
+    ROScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 
     // Get the scale value for this row.
-    SourceType getScale (uInt rownr);
+    VirtualType getScale (uInt rownr);
 
     // Get the offset value for this row.
-    SourceType getOffset (uInt rownr);
+    VirtualType getOffset (uInt rownr);
 
 public:
     //*display 4
