@@ -1,5 +1,5 @@
 //# tLEL.cc:  Tests the LEL* classes directly
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <trial/Lattices/LELLattCoord.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
@@ -89,7 +89,8 @@ Bool checkBool (LELInterface<Bool>& expr,
                  const String& name,
                  const IPosition& shape,
                  const Bool shouldBeScalar,
-                 const Bool suppress);
+                 const Bool suppress,
+		 const Bool emptyShape=False);
 
 
 int main (int argc, char *argv[])
@@ -2226,6 +2227,37 @@ int main (int argc, char *argv[])
       if (!checkBool(expr, BResult, String("LELFunctionBool"), shape, False, suppress)) ok = False;
     }
     }
+
+    {
+    Block<LatticeExprNode> argb(2);
+    cout << "   Function indexin" << endl;     
+    {
+      Vector<Bool> flags(2,True);
+      argb[0] = LatticeExprNode(1);
+      argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
+      LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
+      BResult = True;
+      if (!checkBool (expr, BResult, "LELFunctionBool", IPosition(2,2,4), False, suppress, True)) ok = False;
+    }
+    {
+      Vector<Bool> flags(2,True);
+      argb[0] = LatticeExprNode(2);
+      argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
+      LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
+      BResult = True;
+      if (!checkBool (expr, BResult, "LELFunctionBool", IPosition(2,10,2), False, suppress, True)) ok = False;
+    }
+    {
+      Vector<Bool> flags(3,False);
+      argb[0] = LatticeExprNode(1);
+      argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
+      LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
+      BResult = False;
+      if (!checkBool (expr, BResult, "LELFunctionBool", IPosition(2,6,2), False, suppress, True)) ok = False;
+      if (!checkBool (expr, BResult, "LELFunctionBool", IPosition(2,2,6), False, suppress, True)) ok = False;
+    }
+    }
+
   }
 //
 //************************************************************************
@@ -2582,7 +2614,8 @@ Bool checkBool (LELInterface<Bool>& expr,
                  const String& name,
                  const IPosition& shape,
                  const Bool shouldBeScalar,
-                 const Bool suppress)
+                 const Bool suppress,
+		 const Bool emptyShape)
 {
     LELArray<Bool> Arr(shape);
     Bool ok = True;
@@ -2619,9 +2652,16 @@ Bool checkBool (LELInterface<Bool>& expr,
          cout << "   Expression is a scalar but shouldn't be" << endl;
          ok = False;
       }
-      if (expr.shape() != shape) {
-         cout << "   Expression has wrong shape" << endl;
-         ok = False;
+      if (emptyShape) {
+	if (expr.shape() != IPosition()) {
+	  cout << "   Expression has no empty shape" << endl;
+	  ok = False;
+	}
+      } else {
+	if (expr.shape() != shape) {
+	  cout << "   Expression has wrong shape" << endl;
+	  ok = False;
+	}
       }
       expr.eval(Arr, region);
       if (!allEQ (Arr.value(), Result)) {

@@ -1,5 +1,5 @@
 //# tLatticeExprNode.cc:  Basic test program for LEL classes
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,7 +58,8 @@ Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,
 		const Bool shouldBeScalar,
 		const Bool undefinedScalar,
-		const DataType dtype);
+		const DataType dtype,
+		const Bool emptyShape=False);
 Bool compareScalarFloat  (const LatticeExprNode expr,
                           const LatticeExprNode expr2,
                           const Float bFVal,
@@ -114,7 +115,8 @@ Bool checkBool (const LatticeExprNode& expr,
                 const Bool result,
                 const IPosition& shape,
                 const Bool shouldBeScalar,
-		const Bool undefinedScalar);
+		const Bool undefinedScalar,
+		const Bool emptyShape=False);
 Bool checkBoolRepl (const LatticeExprNode& expr,
 		    const Bool result,
 		    const IPosition& shape,
@@ -1795,6 +1797,29 @@ Bool doIt (const MaskedLattice<Float>& aF,
       if (!checkMask (expr2, bC.isMasked(),
 		      bC.getMask())) ok = False;
    }
+    cout << "indexin" << endl;     
+   {
+      Vector<Bool> flags(2,True);
+      LatticeExprNode expr1(1);
+      LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
+      LatticeExprNode expr = indexin(expr1,expr2);
+      if (!checkBool (expr, True, IPosition(2,2,4), False, False, True)) ok = False;
+   }
+   {
+      Vector<Bool> flags(2,True);
+      LatticeExprNode expr1(2);
+      LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
+      LatticeExprNode expr = indexin(expr1,expr2);
+      if (!checkBool (expr, True, IPosition(2,10,2), False, False, True)) ok = False;
+   }
+   {
+      Vector<Bool> flags(3,False);
+      LatticeExprNode expr1(1);
+      LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
+      LatticeExprNode expr = indexin(expr1,expr2);
+      if (!checkBool (expr, False, IPosition(2,6,2), False, False, True)) ok = False;
+      if (!checkBool (expr, False, IPosition(2,2,6), False, False, True)) ok = False;
+   }
 
 
 //
@@ -2802,7 +2827,8 @@ Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,
 		const Bool shouldBeScalar,
 		const Bool undefinedScalar,
-		const DataType dtype)
+		const DataType dtype,
+		const Bool emptyShape)
 {
     Bool ok = True;  
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2828,10 +2854,17 @@ Bool checkInfo (const LatticeExprNode& expr,
 	  cout << "   Incorrect (in)valid scalar result" << endl;
        }
     } else {
-       if (!expr.shape().isEqual(shape)) {
-          cout << "   Shape should be " << shape << endl;
-          cout << "   Shape is        " << expr.shape() << endl;
-          ok = False;
+       if (emptyShape) {
+	  if (!expr.shape().isEqual(IPosition())) {
+	     cout << "   Shape should be empty" << endl;
+	     cout << "   Shape is        " << expr.shape() << endl;
+	  }
+       } else {
+	  if (!expr.shape().isEqual(shape)) {
+	     cout << "   Shape should be " << shape << endl;
+	     cout << "   Shape is        " << expr.shape() << endl;
+	     ok = False;
+	  }
        }
     }
     return ok;
@@ -3122,10 +3155,11 @@ Bool checkBool (const LatticeExprNode& expr,
 		const Bool result,
 		const IPosition& shape,
 		const Bool shouldBeScalar,
-		const Bool undefinedScalar)
+		const Bool undefinedScalar,
+		const Bool emptyShape)
 {
     Bool ok = checkInfo (expr, shape, shouldBeScalar,
-			 undefinedScalar, TpBool);
+			 undefinedScalar, TpBool, emptyShape);
     Bool result2;
     LELArray<Bool> Arr(shape);
     IPosition origin(shape); origin = 0;
