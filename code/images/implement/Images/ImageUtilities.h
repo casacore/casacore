@@ -172,7 +172,7 @@ public:
 //
 // On input, pa is N->E (at ref pix) for celestial planes.
 // Otherwise pa is in pixel coordinate system +x -> +y
-// On output, pa is positive +x -> +y in pixel frame
+// On output, pa (radians) is positive +x -> +y in pixel frame
    static void worldWidthsToPixel (LogIO& os, Vector<Double>& dParameters,
                                    const Vector<Quantum<Double> >& parameters,
                                    const CoordinateSystem& cSys,
