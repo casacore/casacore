@@ -2344,3 +2344,5 @@
 09 329 src rm trial/apps/gcontour
 09 329 sys rm libexec/gcontour.g
 09 329 src rm trial/implement/distributed
+09 329 sys rm libexec/hub.g
+09 329 sys rm libexec/hubutil.g
