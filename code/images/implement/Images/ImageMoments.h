@@ -781,12 +781,15 @@ private:
 
 // Set the output image suffixes and fill the moment
 // selection array according to what the user requests
-   void selectMoment   (Bool& doMedianI,
-                        Bool& doMedianV,
-                        Bool& doAbsDev,
-                        String& suffix,
-                        Int& selMom,  
-                        const Int& momentIndex);
+   Bool selectMoment (Bool& doMedianI,
+                      Bool& doMedianV,
+                      Bool& doAbsDev,
+                      String& suffix,
+                      Int& selMom,
+                      Unit& momentUnits,
+                      const Unit& imageUnits,
+                      const String& momentAxisUnits,
+                      const Int& index);
 
 // Take the fitted Gaussian parameters and set an N-sigma window.  
 // If the window is too small return a Fail condition.
@@ -824,7 +827,10 @@ private:
                         const Vector<T>& y);
 
 // Smooth an image   
-   Bool smoothImage    (Lattice<T>* const smoothedImage);
+
+  Bool smoothImage (String& smoothName,
+                    PagedImage<T>*& pSmoothedImage,
+                    const IPosition& latticeShape);
 
 
 // Determine the noise by fitting a Gaussian to a histogram 
