@@ -36,8 +36,12 @@
 #include <aips/aips.h>
 
 // Forward declarations
-imported class ostream;
-imported class ostream_withassign;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+class ostream_withassign;
+#endif
 template<class T> class MaskedArray;
 template<class T> class MaskedArray;
 

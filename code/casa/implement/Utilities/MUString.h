@@ -38,7 +38,11 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 template <class T> class Vector; 
 
 // <summary>

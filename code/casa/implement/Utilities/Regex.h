@@ -45,7 +45,6 @@
 // Forward declarations.
 class  String;
 class  AipsIO;
-imported class ostream;
 struct re_pattern_buffer;       // defined elsewhere
 struct re_registers;
 

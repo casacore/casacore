@@ -31,7 +31,11 @@
 #include <aips/aips_exit.h>
 #include <sys/types.h>
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 #if defined(DOS) || defined(MSDOS)
 #include <sys/timeb.h>

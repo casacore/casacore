@@ -37,7 +37,11 @@
 
 // Class declarations.
 class AipsIO;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // This header file defines the AipsIO functions for template SimpleOrderedMap.
 // If these functions were defined in the SimpleOrderedMap class itself,

@@ -41,7 +41,11 @@ class String;
 class Unit;
 class MeasValue;
 class MRBase;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary>
 // Physical quantities within reference frame

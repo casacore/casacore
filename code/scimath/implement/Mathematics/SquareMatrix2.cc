@@ -120,4 +120,6 @@ directProduct(SquareMatrix<Complex,4>& result,
 	    }
 	}
     }
+    // NOTREACHED
+    return result;
 }

@@ -39,7 +39,11 @@
 
 //# Forward Declarations
 class UnitVal;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 //# Constants
 // <note role=warning>

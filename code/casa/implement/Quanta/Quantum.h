@@ -39,8 +39,13 @@
 
 //# Forward Declarations
 template <class T> class Quantum;
-imported class ostream;
-imported class ostrstream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#include <strstream.h>
+#else
+class ostream;
+class ostrstream;
+#endif
 
 //# Typedefs
 typedef Quantum<Double> Quantity;

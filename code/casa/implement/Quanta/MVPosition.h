@@ -44,7 +44,11 @@ typedef Quantum<Double> gpp_mvposition_bug2;
 
 //# Forward Declarations
 class RotMatrix;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 

@@ -149,11 +149,11 @@ String TableLogSink::columnName(TableLogSink::Columns which)
     default:
         AlwaysAssert(! "REACHED", AipsError);
     }
+    return "TableLogSink::columnName - error: not reached";
 }
 
 TableDesc TableLogSink::logTableDescription()
 {
-    static Bool init = False;
     TableDesc desc;
     desc.comment() = "Log message table";
 

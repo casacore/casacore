@@ -41,7 +41,11 @@ class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 //# Typedefs
 

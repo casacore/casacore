@@ -123,17 +123,6 @@ public:
     // The sort is done in place.
     static uInt sort (Block<T>&, uInt nr, Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
-
-//# The SGI compiler gives many warnings if there is not at least
-//# one public constructor.
-#if !defined(AIPS_IRIX)
-private:
-#endif
-    // This class is not meant to be constructed.
-    // Therefore the constructor is private and is not implemented
-    // in the .cc file.
-    GenSort();
-
 private:
     // Sort C-array using quicksort.
     static uInt quickSort (T*, uInt nr, Sort::Order, int options);
@@ -213,16 +202,6 @@ public:
     static uInt sort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
 		      Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
-
-//# The SGI compiler gives many warnings if there is not at least
-//# one public constructor.
-#if !defined(AIPS_IRIX)
-private:
-#endif
-    // This class is not meant to be constructed.
-    // Therefore the constructor is private and is not implemented
-    // in the .cc file.
-    GenIndirectSort();
 
 private:
     // Sort container using quicksort.

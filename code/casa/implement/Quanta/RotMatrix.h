@@ -39,7 +39,11 @@
 
 //# Forward Declarations
 class Euler;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 

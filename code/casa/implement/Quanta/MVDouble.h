@@ -42,7 +42,11 @@ typedef Quantum<Double> gpp_mvdouble_bug2;
 #endif
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 

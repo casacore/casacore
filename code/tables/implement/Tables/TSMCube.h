@@ -45,7 +45,11 @@ class TSMFile;
 class TSMColumn;
 class BucketCache;
 template<class T> class Block;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 
 // <summary>

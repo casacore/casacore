@@ -43,7 +43,11 @@ typedef Quantum<Double> gpp_mvdoppler_bug2;
 #endif
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary> Internal value for MDoppler </summary>
 

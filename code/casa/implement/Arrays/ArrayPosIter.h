@@ -91,7 +91,7 @@ public:
     uInt ndim() const;
     // What is the dimensionality of the "step" the cursor takes, i.e.
     // 0 for scalars, 1 for vector, ....
-    dimIter() const {return iterationDim;}
+    uInt dimIter() const {return iterationDim;}
     // How many steps have we taken from the beginning?
     uInt nSteps() const {return stepsFromBegin;}
 private:

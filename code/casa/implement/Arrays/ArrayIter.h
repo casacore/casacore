@@ -156,7 +156,7 @@ public:
     Bool pastEnd() const {return ai.pastEnd();}
     const IPosition &pos() const {return ai.pos();}
     uInt ndim() const {return ai.ndim();}
-    dimIter() const {return ai.dimIter();}
+    uInt dimIter() const {return ai.dimIter();}
     uInt nSteps() const {return ai.nSteps();}
     // </group>
 private:

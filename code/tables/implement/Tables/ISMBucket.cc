@@ -448,7 +448,7 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     // Also determine the index of the row to be added.
     Matrix<uInt> itemLeng(nrcol, nruniq);
     itemLeng = 0;
-    Block<uInt> cursor(nrcol, 0);
+    Block<uInt> cursor(nrcol, uInt(0));
     uInt index;
     for (j=0; j<nruniq; j++) {
 	for (i=0; i<nrcol; i++) {
@@ -474,8 +474,8 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     }
     // Now determine the length of all items in each row.
     // Determine the cumulative and total size.
-    Block<uInt> size(nrcol, 0);
-    Block<uInt> rowLeng(nruniq, 0);
+    Block<uInt> size(nrcol, uInt(0));
+    Block<uInt> rowLeng(nruniq, uInt(0));
     Block<uInt> cumLeng(nruniq);
     uInt totLeng = 0;
     for (j=0; j<nruniq; j++) {

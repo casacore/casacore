@@ -32,7 +32,11 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 class Table;
 template<class T> class Array;
 class String;

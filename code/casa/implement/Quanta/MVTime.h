@@ -37,7 +37,11 @@
 #include <aips/Measures/Quantum.h>
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 class String;
 class MVEpoch;
 class Time;

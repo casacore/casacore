@@ -41,7 +41,11 @@
 //# Forward Declarations
 class String;
 template <class Ms> class MeasRef;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary> Reference frame for physical measures </summary>
 

@@ -38,7 +38,11 @@
 
 //# Forward Declarations
 class AipsIO;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

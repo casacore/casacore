@@ -41,7 +41,11 @@
 class TableRecord;
 class TabPath;
 template<class T> class Vector;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

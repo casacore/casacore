@@ -32,7 +32,11 @@
 #include <aips/aips.h>
 #include <aips/Logging/LogSinkInterface.h>
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 // <summary>
 // Send log messages to an ostream.

@@ -35,11 +35,10 @@
 //# of line, etc.
 
 #include <aips/aips_exit.h>
-#include <stream.h>
+#include <iostream.h>
+#include <strstream.h>
 #include <aips/aips.h>
 #include <aips/Utilities/Regex.h>
-
-class ostrstream;
 
 extern void stringThrowError(const char *);
 

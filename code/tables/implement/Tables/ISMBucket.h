@@ -39,7 +39,11 @@
 
 //# Forward declarations
 class ISMBase;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary>
 // A bucket in the Incremental Storage Manager

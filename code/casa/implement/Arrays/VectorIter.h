@@ -111,7 +111,7 @@ public:
     Bool pastEnd() const {return vi.pastEnd();}
     const IPosition &pos() const {return vi.pos();}
     uInt ndim() const {return vi.ndim();}
-    dimIter() const {return vi.dimIter();}
+    uInt dimIter() const {return vi.dimIter();}
     uInt nSteps() const {return vi.nSteps();}
     // </group>
 private:

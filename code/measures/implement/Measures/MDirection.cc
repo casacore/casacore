@@ -125,7 +125,7 @@ const String &MDirection::showType(uInt tp) {
 }
 
 Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-    static const Int N_name = 10;
+    static const Int N_name = MDirection::N_Types;
     static const String tname[N_name] = {
 	"J2000",
 	"JMEAN",

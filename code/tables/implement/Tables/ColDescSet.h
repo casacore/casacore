@@ -39,7 +39,11 @@
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

@@ -45,7 +45,11 @@ class MVRadialVelocity;
 class FrameRep;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary> Container for Measure frame </summary>
 

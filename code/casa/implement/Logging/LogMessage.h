@@ -33,7 +33,11 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/OS/Time.h>
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 // <summary>
 // Informational log messages with with time, priority, and origin.

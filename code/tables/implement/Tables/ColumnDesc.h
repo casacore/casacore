@@ -44,7 +44,11 @@ class PlainColumn;
 class RefColumn;
 class TableRecord;
 class AipsIO;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

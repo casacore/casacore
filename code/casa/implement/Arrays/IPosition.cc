@@ -973,7 +973,6 @@ AipsIO &operator>>(AipsIO &aio, IPosition &ip)
 			"version on disk and in class do not match"));
     }
     uInt nel;
-    Int *values;
     aio >> nel;
     ip.resize (nel);
     aio.get (nel, ip.data);

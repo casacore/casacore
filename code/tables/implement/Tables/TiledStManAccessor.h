@@ -42,7 +42,11 @@ class DataManager;
 class Table;
 class IPosition;
 class String;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 
 // <summary>

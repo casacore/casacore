@@ -171,7 +171,7 @@ Bool LockFile::doRelease (const MemoryIO* info)
     if (info != 0) {
 	putInfo (*info);
     }
-    itsLocker.release();
+    return itsLocker.release();
 }
 
 Bool LockFile::inspect()

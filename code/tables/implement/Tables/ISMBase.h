@@ -43,7 +43,11 @@ class BucketFile;
 class ISMBucket;
 class ISMIndex;
 class ISMColumn;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

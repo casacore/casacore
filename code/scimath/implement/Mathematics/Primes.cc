@@ -100,7 +100,7 @@ uInt Primes::smallestPrimeFactor( uInt number )
     if ((number % 2) == 0) return 2;
     if ((number % 3) == 0) return 3;
 
-    for (uInt i=5,k=7,sq=(uInt)(sqrt(number)+1); i<sq; i=i+6,k=k+6) {
+    for (uInt i=5,k=7,sq=(uInt)(sqrt(Double(number))+1); i<sq; i=i+6,k=k+6) {
 	if ((number % i) == 0) return i;
 	if ((number % k) == 0) return k;
     }

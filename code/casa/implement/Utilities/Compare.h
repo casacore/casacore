@@ -81,17 +81,6 @@ public:
     // <linkto group="Compare.h#ObjCompareFunc">ObjCompareFunc</linkto> so
     // that it can be used in the <linkto class="Sort">Sort</linkto> class.
     static int compare (const void* obj1, const void* obj2);
-    
-//# The SGI compiler gives many warnings if there is not at least
-//# one public constructor.
-#if !defined(AIPS_IRIX)
-private:
-#endif
-
-    // This class is not meant to be constructed.
-    // Therefore the constructor is private and is not implemented
-    // in the .cc file.
-    ObjCompare();
 };
 
 #endif

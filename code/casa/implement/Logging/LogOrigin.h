@@ -33,7 +33,11 @@
 #include <aips/Utilities/String.h>
 #include <aips/Tasking/ObjectID.h>
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 class SourceLocation;
 
 // <summary> 

@@ -41,12 +41,6 @@
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
-const int BUFFERSIZE = 8192;  // Uses for copy() function
-                              // this size is for I/O efficiency
-                              // test of "Advanced Programming in the Unix
-                              // system", Richard Stevens, pag.57
-
-
 File::File () 
 {
     // Sets itsPath on the current working directory

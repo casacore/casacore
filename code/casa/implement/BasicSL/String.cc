@@ -1225,7 +1225,7 @@ String common_suffix(const String& x, const String& y, int startpos)
 
 istream& operator>>(istream& s, String& x)
 {
-#if defined(_OLD_STREAMS)
+#if defined(_OLD_STREAMS) || defined(__KCC)
   if (!s.good())
   {
     return s;
@@ -1263,7 +1263,7 @@ istream& operator>>(istream& s, String& x)
 
 int readline(istream& s, String& x, char terminator, int discard)
 {
-#if defined(_OLD_STREAMS)
+#if defined(_OLD_STREAMS) || defined(__KCC)
   if (!s.good())
 #else
   if (!s.ipfx(0))

@@ -110,7 +110,7 @@ public:
     Bool pastEnd() const {return mi.pastEnd();}
     const IPosition &pos() const {return mi.pos();}
     uInt ndim() const {return mi.ndim();}
-    dimIter() const {return mi.dimIter();}
+    uInt dimIter() const {return mi.dimIter();}
     uInt nSteps() const {return mi.nSteps();}
     // </group>
 private:

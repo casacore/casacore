@@ -123,7 +123,7 @@ Matrix<DComplex> adjoint (const Matrix<DComplex> &A)
 // Int Vector magnitude/norm
 Int norm (const Vector<Int> &A) 
 {
-  return Int(sqrt(innerProduct(A,A)));
+  return Int(sqrt(Double(innerProduct(A,A))));
 }
 
 // Float Vector magnitude/norm

@@ -39,7 +39,11 @@
 
 //# Forward Declarations
 class String;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary> Base for Reference frame for physical measures </summary>
 

@@ -34,7 +34,11 @@
 
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/PtrHolder.h>
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 // <summary>
 // Distribute LogMessages to their destination(s)

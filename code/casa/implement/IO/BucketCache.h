@@ -39,7 +39,11 @@
 
 //# Forward clarations
 class BucketFile;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 
 // <summary>

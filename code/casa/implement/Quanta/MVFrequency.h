@@ -42,7 +42,11 @@ typedef Quantum<Double> gpp_mvfreq_bug2;
 #endif
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary> Internal value for MFrequency </summary>
 

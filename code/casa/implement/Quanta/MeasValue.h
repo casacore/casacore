@@ -37,7 +37,11 @@
 #include <aips/aips.h>
 
 //# Forward Declarations
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary>
 // Base class for values in a Measure
