@@ -151,6 +151,9 @@ public:
   // object which takes care of mapping old to new axes order.
   AxesMapping apply (const IPosition& shape) const;
 
+  // Are we keeping all degenerate axes ?
+  Bool keep() const {return itsKeep;};
+
 private:
   IPosition itsAxes;
   IPosition itsPath;
