@@ -1,5 +1,5 @@
 //# MSSummary.h: Helper class for applications listing an image header
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,6 +133,7 @@ public:
    void listPolarization (LogIO& os, Bool verbose=False) const;
    void listSource (LogIO& os, Bool verbose=False) const;
    void listSpectralWindow (LogIO& os, Bool verbose=False) const;
+   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False) const;
    void listSysCal (LogIO& os, Bool verbose=False) const;
    void listWeather (LogIO& os, Bool verbose=False) const;
 // </group>
