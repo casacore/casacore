@@ -280,86 +280,42 @@ cursorUpdate() {
   if (theNavPtr->hangOver() == False)
     theData.getSlice(*theCurPtr, theNavPtr->position(),
 		     theNavPtr->cursorShape(), theNavPtr->increment(), True); 
-  else { // This code section BADLY needs redoing. It is inefficient and
-	 // perhaps contains bugs.
-    LogIO ROlogErr(LogOrigin("RO_PagedArrIter", "cursorUpdate()"));
-    ROlogErr << LogIO::SEVERE 
-	     << "Iterating with a non-congruent cursor is not "
-	     << "currently implemented" << endl
-	     << "The lattice shape is:" << theNavPtr->latticeShape() << endl
-	     << "The cursor shape is:" << theNavPtr->cursorShape() << endl
-	     << "Current cursor position is:" << theNavPtr->position() << endl
-	     << "If you need this capability please email rmarson@nrao.edu" 
-	     << LogIO::EXCEPTION;
+  else {
+    // Here I set the entire cursor to zero.
+    // (the alternative is to set the cursor to an undefined value 
+    //  using ValType.h))
+    T overHangVal;
+    defaultValue(overHangVal); 
+    *theCurPtr = overHangVal;
+    // and then fill in the appropriate region with the bit that does not
+    // overhang.
+    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
+    const IPosition fullShape(theNavPtr->cursorShape());
+    const uInt latDim = fullShape.nelements();
+    IPosition cursorBlc(latDim, 0);
+    IPosition cursorTrc(fullShape - 1);
+    IPosition blc(theNavPtr->position());
+    IPosition trc(theNavPtr->endPosition());
+    const IPosition inc(theNavPtr->increment());
+    IPosition extractShape(latDim,0);
 
-//     // I would replace this bit of code by something that works out which
-//     // bit of the Lattice to read from disk ie.
-//     // max(0, blc) -- min(trc, latticeshape-1)
-//     // and then uses a vectorIterator to copy that that bit (or the default
-//     // value) to theCurPtr. 
-//     IPosition latshape(theNavPtr->latticeShape());
-//     IPosition curshape(theNavPtr->cursorShape());
-//     IPosition start(theNavPtr->position());
-//     IPosition end(theNavPtr->endPosition());
-//     Int ndim = theData.ndim();
-//     Int length = curshape.product();
-//     // The curvolume and latvolume are vectors containing.
-//     // [1, X, X*Y, X*Y*Z, X*Y*Z*A,....] where X,y,Z,A are the lengths on the
-//     // x,y,z,a axis in the cursor and lattice.
-//     IPosition curvolume(ndim, curshape(0));
-//     curvolume(0) = 1;
-//     Vector<Int> latvolume(ndim);
-//     latvolume = latshape(0);
-//     latvolume(0) = 1;
-//     for (Int axis = 1; axis < ndim; axis++) 
-//       for (Int i=1+axis; i < ndim; i++) {
-// 	curvolume(i) *= curshape(axis);
-// 	latvolume(i) *= latshape(axis);
-//       }
-//     // The offset is really a Vector of IPositions containing the
-//     // coordinates of every pixel in the cursor refereneced to the lattice.
-//     Matrix<Int> offset(IPosition(2, length, ndim)); 
-//     for (axis=0; axis < ndim; axis++){
-//       Int ctr = 0;
-//       for (Int i=0; i < length/(curshape(axis)*curvolume(axis)); i++)
-// 	for (Int j=start(axis); j <= end(axis); j++)
-// 	  for (Int k=0; k < curvolume(axis); k++)
-// 	    offset(ctr++, axis) = j;
-//     }
-//     // YUCK. This bit of code reads the entire Lattice into memory rather
-//     // than working out which bit it needs.
-//     Array<T> datatmp, curtmp(theNavPtr->cursorShape().nonDegenerate());
-//     theData.getSlice(datatmp, IPosition(ndim,0), theData.shape(),
-// 		     IPosition(ndim,1));
-//     // This bit of code goes through the cursor pixel by pixel and works out
-//     // if the pixel is outside the edge. If it is it puts a default value
-//     // into that pixel otherwise it copies the appropriate pixel from the
-//     // Lattice. 
-//     Bool dataflag, cursorflag;
-//     T *data = datatmp.getStorage(dataflag);
-//     T *cursor = curtmp.getStorage(cursorflag);
-//     for (Int i=0; i< length; i++)
-//       if(anyGE(offset.row(i).ac(), latshape.asVector().ac()))
-// 	defaultValue(cursor[i]);
-//       else
-// 	cursor[i] = data[innerProduct(offset.row(i), latvolume)];
-//     curtmp.putStorage(cursor, cursorflag);
-//     datatmp.freeStorage(data, dataflag);
-//     // I hope to remove this next bit of code entirely at some stage. 
-//     switch(theNavPtr->cursorShape().nonDegenerate().nelements()){
-//     case 1:
-//       theCurPtr->reference((Vector<T> &)curtmp);
-//       break;
-//     case 2:
-//       theCurPtr->reference((Matrix<T> &)curtmp);
-//       break;
-//     case 3:
-//       theCurPtr->reference((Cube<T> &)curtmp);
-//       break;
-//     default:
-//       theCurPtr->reference(curtmp);
-//       break;
-//     };
+    Int trim;
+    for (uInt d = 0; d < latDim; d++) {
+      if (blc(d) < 0) {
+	trim = ((inc(d) - 1 - blc(d))/inc(d));
+	cursorBlc(d) = trim;
+	blc(d) += trim*inc(d);
+      }
+      if (trc(d) > latticeTrc(d)) {
+	trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
+	cursorTrc(d) -= trim;
+	trc(d) -= trim*inc(d);
+      }
+    }
+    extractShape = (trc - blc)/inc + 1;
+    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
+    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    theData.getSlice(subArr, blc, extractShape, inc, False); 
   }
 };
 
@@ -657,70 +613,32 @@ cursorWrite() {
 		       theNavPtr->position(), theNavPtr->increment());
     }
   }
-  else { // This code section BADLY needs redoing. It is inefficient and
-	 // perhaps contains bugs.
-    LogIO logErr(LogOrigin("PagedArrIter", "cursorWrite()"));
-    logErr << LogIO::SEVERE 
-	   << "Iterating with a non-congruent cursor is not "
-	   << "currently implemented" << endl
-	   << "The lattice shape is:" << theNavPtr->latticeShape() << endl
-	   << "The cursor shape is:" << theNavPtr->cursorShape() << endl
-	   << "Current cursor position is:" << theNavPtr->position() << endl
-	   << "If you need this capability please email rmarson@nrao.edu" 
-	   << LogIO::EXCEPTION;
-//     // I would replace this bit of code by something that works out which
-//     // bit of the cursor that needs to be put back into the Lattice, and
-//     // just puts that bit back in, without all the stuffing around that
-//     // occurs here. 
-//     IPosition latshape(theNavPtr->latticeShape());
-//     IPosition curshape(theNavPtr->cursorShape());
-//     IPosition start(theNavPtr->position());
-//     IPosition end(theNavPtr->endPosition());
-//     Int ndim = theData.ndim();
-//     Int length = curshape.product();
-//     // The curvolume and latvolume are vectors containing.
-//     // [1, X, X*Y, X*Y*Z, X*Y*Z*A,....] where X,y,Z,A are the lengths on the
-//     // x,y,z,a axis in the cursor and lattice.
-//     IPosition curvolume(ndim, curshape(0));
-//     curvolume(0) = 1;
-//     Vector<Int> latvolume(ndim);
-//     latvolume = latshape(0);
-//     latvolume(0) = 1;
-//     for (Int axis = 1; axis < ndim; axis++) 
-//       for (Int i=1+axis; i < ndim; i++) {
-// 	curvolume(i) *= curshape(axis);
-// 	latvolume(i) *= latshape(axis);
-//       }
-//     // The offset is really a Vector of IPositions containing the
-//     // coordinates of every pixel in the cursor refereneced to the lattice.
-//     Matrix<Int> offset(IPosition(2, length, ndim)); 
-//     for (axis=0; axis < ndim; axis++){
-//       Int ctr = 0;
-//       for (Int i=0; i < length/(curshape(axis)*curvolume(axis)); i++)
-// 	for (Int j=start(axis); j <= end(axis); j++)
-// 	  for (Int k=0; k < curvolume(axis); k++)
-// 	    offset(ctr++, axis) = j;
-//     }
-//     // YUCK. This bit of code reads the entire Lattice into memory rather
-//     // than working out which bit it needs.
-//     Array<T> tmp;
-//     theData.getSlice(tmp, IPosition(ndim,0), theData.shape(),
-// 		     IPosition(ndim,1));
-//     // This bit of code goes through the cursor pixel by pixel and works out
-//     // if the pixel is inside the edge. If it is it copies the appropriate
-//     // pixel from the cursor to the temporary Array
-//     Bool dataflag, cursorflag;
-//     T *data = tmp.getStorage(dataflag);
-//     T *cursor = theCurPtr->getStorage(cursorflag);
-    
-//     for (int i=0; i < length; i++)
-//       if (theNavPtr->hangOver())
-// 	if (offset.row(i) < theData.shape())
-// 	  data[innerProduct(offset.row(i), latvolume)] = cursor[i];
-//     tmp.putStorage(data, dataflag);
-//     theData.putSlice(tmp,IPosition(theData.ndim(),0),
-// 		     IPosition(theData.ndim(),1));
-//     theCurPtr->freeStorage(cursor, cursorflag);
+  else {
+    // Find the appropriate region and just put that bit into the Lattice
+    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
+    const IPosition fullShape(theNavPtr->cursorShape());
+    const uInt latDim = fullShape.nelements();
+    IPosition cursorBlc(latDim, 0);
+    IPosition cursorTrc(fullShape - 1);
+    IPosition blc(theNavPtr->position());
+    IPosition trc(theNavPtr->endPosition());
+    const IPosition inc(theNavPtr->increment());
+
+    Int trim;
+    for (uInt d = 0; d < latDim; d++) {
+      if (blc(d) < 0) {
+	trim = ((inc(d) - 1 - blc(d))/inc(d));
+	cursorBlc(d) = trim;
+	blc(d) += trim*inc(d);
+      }
+      if (trc(d) > latticeTrc(d)) {
+	trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
+	cursorTrc(d) -= trim;
+      }
+    }
+    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
+    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    theData.putSlice(subArr, blc, inc); 
   }
 };
 
@@ -768,86 +686,42 @@ cursorUpdate() {
   if (theNavPtr->hangOver() == False)
     theData.getSlice(*theCurPtr, theNavPtr->position(),
 		     theNavPtr->cursorShape(), theNavPtr->increment(), True); 
-  else { // This code section BADLY needs redoing. It is inefficient and
-	 // perhaps contains bugs.
-    LogIO logErr(LogOrigin("PagedArrIter", "cursorUpdate()"));
-    logErr << LogIO::SEVERE 
-	   << "Iterating with a non-congruent cursor is not "
-	   << "currently implemented" << endl
-	   << "The lattice shape is:" << theNavPtr->latticeShape() << endl
-	   << "The cursor shape is:" << theNavPtr->cursorShape() << endl
-	   << "Current cursor position is:" << theNavPtr->position() << endl
-	   << "If you need this capability please email rmarson@nrao.edu" 
-	   << LogIO::EXCEPTION;
+  else {
+    // Here I set the entire cursor to zero.
+    // (the alternative is to set the cursor to an undefined value 
+    //  using ValType.h))
+    T overHangVal;
+    defaultValue(overHangVal); 
+    *theCurPtr = overHangVal;
+    // and then fill in the appropriate region with the bit that does not
+    // overhang.
+    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
+    const IPosition fullShape(theNavPtr->cursorShape());
+    const uInt latDim = fullShape.nelements();
+    IPosition cursorBlc(latDim, 0);
+    IPosition cursorTrc(fullShape - 1);
+    IPosition blc(theNavPtr->position());
+    IPosition trc(theNavPtr->endPosition());
+    const IPosition inc(theNavPtr->increment());
+    IPosition extractShape(latDim,0);
 
-//     // I would replace this bit of code by something that works out which
-//     // bit of the Lattice to read from disk ie.
-//     // max(0, blc) -- min(trc, latticeshape-1)
-//     // and then uses a vectorIterator to copy that that bit (or the default
-//     // value) to theCurPtr. 
-//     IPosition latshape(theNavPtr->latticeShape());
-//     IPosition curshape(theNavPtr->cursorShape());
-//     IPosition start(theNavPtr->position());
-//     IPosition end(theNavPtr->endPosition());
-//     Int ndim = theData.ndim();
-//     Int length = curshape.product();
-//     // The curvolume and latvolume are vectors containing.
-//     // [1, X, X*Y, X*Y*Z, X*Y*Z*A,....] where X,y,Z,A are the lengths on the
-//     // x,y,z,a axis in the cursor and lattice.
-//     IPosition curvolume(ndim, curshape(0));  
-//     curvolume(0) = 1;
-//     Vector<Int> latvolume(ndim);
-//     latvolume = latshape(0);
-//     latvolume(0) = 1;
-//     for (Int axis = 1; axis < ndim; axis++) 
-//       for (Int i=1+axis; i < ndim; i++) {
-// 	curvolume(i) *= curshape(axis);
-// 	latvolume(i) *= latshape(axis);
-//       }
-//     // The offset is really a Vector of IPositions containing the
-//     // coordinates of every pixel in the cursor refereneced to the lattice.
-//     Matrix<Int> offset(IPosition(2, length, ndim)); 
-//     for (axis=0; axis < ndim; axis++){
-//       Int ctr = 0;
-//       for (Int i=0; i < length/(curshape(axis)*curvolume(axis)); i++)
-// 	for (Int j=start(axis); j <= end(axis); j++)
-// 	  for (Int k=0; k < curvolume(axis); k++)
-// 	    offset(ctr++, axis) = j;
-//     }
-//     // YUCK. This bit of code reads the entire Lattice into memory rather
-//     // than working out which bit it needs.
-//     Array<T> datatmp, curtmp(theNavPtr->cursorShape().nonDegenerate());
-//     theData.getSlice(datatmp, IPosition(ndim,0), theData.shape(), 
-// 		    IPosition(ndim,1));
-//     // This bit of code goes through the cursor pixel by pixel and works out
-//     // if the pixel is outside the edge. If it is it puts a default value
-//     // into that pixel otherwise it copies the appropriate pixel from the
-//     // Lattice. 
-//     Bool dataflag, cursorflag;
-//     T *data = datatmp.getStorage(dataflag);
-//     T *cursor = curtmp.getStorage(cursorflag);
-//     for(int i=0; i< length; i++)
-//       if(anyGE(offset.row(i).ac(), latshape.asVector().ac()))
-// 	defaultValue(cursor[i]);
-//       else
-// 	cursor[i] = data[innerProduct(offset.row(i), latvolume)];
-//     curtmp.putStorage(cursor, cursorflag);
-//     datatmp.freeStorage(data, dataflag);
-//     // I hope to remove this next bit of code entirely at some stage. 
-//     switch(theNavPtr->cursorShape().nonDegenerate().nelements()){
-//     case 1:
-//       theCurPtr->reference((Vector<T> &)curtmp);
-//       break;
-//     case 2:
-//       theCurPtr->reference((Matrix<T> &)curtmp);
-//       break;
-//     case 3:
-//       theCurPtr->reference((Cube<T> &)curtmp);
-//       break;
-//     default:
-//       theCurPtr->reference(curtmp);
-//       break;
-//     };
+    Int trim;
+    for (uInt d = 0; d < latDim; d++) {
+      if (blc(d) < 0) {
+	trim = ((inc(d) - 1 - blc(d))/inc(d));
+	cursorBlc(d) = trim;
+	blc(d) += trim*inc(d);
+      }
+      if (trc(d) > latticeTrc(d)) {
+	trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
+	cursorTrc(d) -= trim;
+	trc(d) -= trim*inc(d);
+      }
+    }
+    extractShape = (trc - blc)/inc + 1;
+    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
+    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    theData.getSlice(subArr, blc, extractShape, inc, False); 
   }
 };
 
