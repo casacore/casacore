@@ -1,5 +1,5 @@
 //# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,7 +132,7 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 void TiledCellStMan::create (uInt nrrow)
 {
     // Set up the various things.
-    setup();
+    setup(0);
     // Create the one and single TSMFile object.
     createFile (0);
     // Add the rows for the given number of rows.
@@ -170,7 +170,7 @@ void TiledCellStMan::readHeader (uInt tabNrrow, Bool firstTime)
     headerFile->getstart ("TiledCellStMan");
     *headerFile >> defaultTileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime);
+    headerFileGet (*headerFile, tabNrrow, firstTime, 0);
     headerFile->getend();
     headerFileClose (headerFile);
 }
