@@ -49,7 +49,7 @@ template <class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tLatticeIterator.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIterator.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -82,7 +82,7 @@ template <class T> class Vector;
 // A cursor (which is an <linkto class=Array>Array</linkto> object) is
 // used to return the data for each step in the iteration process.
 // Depending on the navigator used the cursor can have a different shape
-// shape for each step of the iteration. This is especially true when the
+// for each step of the iteration. This is especially true when the
 // end of an axis is reached for a non-integrally fitting cursor shape.
 // <br> The cursor() function returns an Array which has the same
 // dimensionality as the Lattice. It is, however, also possible to get
@@ -130,7 +130,7 @@ template <class T> class Vector;
 // cube's plane, and ignoring the darker regions of the cube.
 // <p>
 // The performance and memory usage of an iteration through a lattice
-// (in particular through a <linkto class=PagedArray>PagedArray</linkto>
+// (in particular through a <linkto class=PagedArray>PagedArray</linkto>)
 // depends very heavily on the navigator used. Currently there are three
 // navigators available:
 // <ol>
@@ -165,7 +165,7 @@ template <class T> class Vector;
 // When passed the name of a previously created PagedArray stored on disk,
 // this function will traverse the whole array, and report the average value
 // of all of the elements. Imagine that the filename contains a PagedArray
-// with dimension 64 x 64 x 8
+// with dimension 64 x 64 x 8.
 // <srcblock>
 // void demonstrateIterator (const String& filename)
 // {
@@ -195,7 +195,7 @@ template <class T> class Vector;
 // <motivation>
 // Iterator classes are a standard feature in C++ libraries -- they
 // provide convenience and allow the implementation of the "iteratee"
-// to be kept hidden
+// to be kept hidden.
 // </motivation>
 
 //# <todo asof="1995/09/12">
@@ -267,7 +267,7 @@ public:
   // beginning of the Lattice, otherwise, returns "False".
   Bool atStart() const;
 
-  // Function which returns a value of "True" if and attempt has been made
+  // Function which returns a value of "True" if an attempt has been made
   // to move the cursor beyond the end of the Lattice.
   Bool atEnd() const;
   
@@ -333,7 +333,7 @@ private:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tLatticeIterator.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIterator.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -403,7 +403,7 @@ private:
 // the test and using <src>rwCursor</src> only when data needs to be changed.
 // <br>Note that <src>rwCursor</src> does not read the data again. They are
 // still readily available.
-// <example>
+// </example>
 
 
 template <class T> class LatticeIterator : public RO_LatticeIterator<T>

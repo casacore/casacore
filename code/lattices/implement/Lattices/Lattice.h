@@ -34,11 +34,12 @@
 #include <aips/Lattices/Slicer.h>
 
 //# Forward Declarations
+class IPosition;
+class LatticeNavigator;
 template <class T> class Array;
 template <class T> class COWPtr;
 template <class Domain, class Range> class Functional;
 template <class T> class LatticeIterInterface;
-class LatticeNavigator;
 
 
 // <summary>
@@ -47,11 +48,13 @@ class LatticeNavigator;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="dLattice.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tArrayLattice.cc" demos="dLattice.cc">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="IPosition"> IPosition </linkto>
+//   <li> <linkto class="Array"> Array </linkto>
+//   <li> <linkto class="LatticeBase"> LatticeBase </linkto>
 //   <li> Abstract Base class Inheritance - try "Advanced C++" by James
 //        O. Coplien, Ch. 5.
 // </prerequisite>
@@ -78,7 +81,7 @@ class LatticeNavigator;
 //    <li> various shape related functions.
 // </ul>
 // The base class <linkto class=LatticeBase</linkto> contains
-// several function not dependent on the template parameter.
+// several functions not dependent on the template parameter.
 // <note role=tip> Lattices always have a zero origin. </note>
 // </synopsis> 
 
@@ -100,7 +103,7 @@ class LatticeNavigator;
 // large to fit into physical memory it is not good enough to simply use
 // <src>getSlice</src> to read all the elements into an Array. Instead the
 // Lattice is accessed in chunks which can fit into memory (the size is
-// determined by the <src>maxPixels</src> and <src>niceCursorShape</src>
+// determined by the <src>advisedMaxPixels</src> and <src>niceCursorShape</src>
 // functions). The <src>LatticeIterator::cursor()</src> function then returns
 // each of these chunks as an Array and the standard Array based functions are
 // used to calculate the mean on each of these chunks. Functions like this one
@@ -110,7 +113,7 @@ class LatticeNavigator;
 //
 // <srcblock>
 // Complex latMean(const Lattice<Complex>& lat) {
-//   const uInt cursorSize = lat.maxPixels();
+//   const uInt cursorSize = lat.advisedMaxPixels();
 //   const IPosition cursorShape = lat.niceCursorShape(cursorSize);
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;
@@ -254,7 +257,7 @@ public:
   // The parameters are:
   // <ul>
   // <li> buffer: a <src>COWPtr<Array<T>></src> or an
-  //      <src>Array<T></src>. See example two above for an examples.
+  //      <src>Array<T></src>. See example 2 above for an example.
   // <li> start: The starting position (or Bottom Left Corner), within 
   //      the Lattice, of the data to be extracted.
   // <li> shape: The shape of the data to be extracted.  This is not a
@@ -357,11 +360,11 @@ public:
   // The default implementation only copies data (thus no mask, etc.).
   virtual void copyDataTo (Lattice<T>& to) const;
 
-  // This function returns the recommended maximum number of pixels to
+  // This function returns the advised maximum number of pixels to
   // include in the cursor of an iterator. The default implementation
   // returns a number that is a power of two and includes enough pixels to
   // consume between 4 and 8 MBytes of memory.
-  virtual uInt maxPixels() const;
+  virtual uInt advisedMaxPixels() const;
 
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended

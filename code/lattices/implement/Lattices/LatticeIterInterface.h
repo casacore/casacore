@@ -1,5 +1,5 @@
 //# LatticeIterInterface.h: A base class for Lattice iterators
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,11 +31,11 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/LatticeNavigator.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 
 //# Forward Declarations
+class LatticeNavigator;
 template <class T> class Vector;
 template <class T> class Matrix;
 template <class T> class Cube;
@@ -50,7 +50,7 @@ template <class T> class RO_LatticeIterator;
 
 // <use visibility=local> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeIterator.cc" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIterator.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -76,7 +76,7 @@ template <class T> class RO_LatticeIterator;
 // <ul>
 // <li> The LatticeStepper class has strong effects on how the cursor is 
 // filled.  A non-integral shape of the cursor may allow a step of 
-// iteration to only be partially "touching" the Lattice.  We have dubbed
+// iteration to be only partially "touching" the Lattice.  We have dubbed
 // this "hangover."
 // <li> If the cursor has "hangover" it should be filled with a value that 
 // indicates the cursor is in undefined space.
@@ -100,7 +100,7 @@ template <class T> class RO_LatticeIterator;
 // </example>
 
 // <motivation>
-// The is class provides a tidy base for letter envelope techniques of 
+// The is class provides a tidy base for letter/envelope techniques of 
 // iteration. 
 // </motivation>
 
@@ -225,7 +225,7 @@ protected:
   // Update the cursor for the next chunk of data (resize if needed).
   virtual void cursorUpdate();
 
-  // Allocate the internal cursor to be a pointer to the correct type
+  // Allocate the internal cursor to be a pointer to the correct type.
   // Returns False if the memory could not be allocated.
   Bool allocateCursor();
 

@@ -1,5 +1,5 @@
 //# PagedArrIter.h: A concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,27 +29,17 @@
 #define AIPS_PAGEDARRITER_H
 
 //# Includes
-#include <aips/aips.h>
 #include <trial/Lattices/LatticeIterInterface.h>
 #include <trial/Lattices/PagedArray.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <trial/Lattices/LatticeNavigator.h>
-
-//# Forward Declarations
-class IPosition;
-template <class T> class Cube;
-template <class T> class Matrix;
-template <class T> class Vector;
 
 
 // <summary>
-// A read/write Lattice iterator for PagedArray's
+// A read/write Lattice iterator for PagedArrays.
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeIterator.cc" demos="dPagedArray.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIterator.cc" demos="dPagedArray.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -80,7 +70,8 @@ template <class T> class Vector;
 // </synopsis>
 
 // <motivation>
-// Make for each derivation of Lattice as efficient an iterator as possible.
+// For for each derivation of Lattice to make as efficient an iterator as
+// possible.
 // The letter/envelope scheme allowed us to hide the special bits in
 // classes like the one you see here.
 // </motivation>
@@ -114,7 +105,7 @@ protected:
   
   // The assignment operator uses reference sematics for the PagedArray and
   // copy semantics for the cursor and Navigator. This way the
-  // PagedArrIter's share the same data set but independently iterate
+  // PagedArrIter objects share the same data set but independently iterate
   // with cursors of the same size.
   PagedArrIter<T>& operator= (const PagedArrIter<T>& other);
 

@@ -1,5 +1,5 @@
 //# TileStepper.h:  Steps a cursor optimally through a tiled Lattice
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTileStepper.cc" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tTileStepper.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -55,9 +55,9 @@
 // <synopsis> 
 // When you wish to traverse a Lattice (say, a PagedArray or an Image) you
 // will usually create a LatticeIterator.  Once created, you may attach a
-// LatticeNavigator to the iterator. A TileStepper, is a concrete class
+// LatticeNavigator to the iterator. A TileStepper is a concrete class
 // derived from the abstract LatticeNavigator that allows you to step
-// through the Lattice in an way that will minimize the amount of cache
+// through the Lattice in a way that will minimize the amount of cache
 // memory consumed and maximize the speed.
 // <p>
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
@@ -88,17 +88,15 @@
 // traverse only a subsection of the lattice.
 // <p>
 // The cursor position can be incremented or decremented to retrieve the next
-// or previous Vector in the Lattice. The position of the next Vector in the
-// Lattice will depend on the tile shape, and is described above. Within a tile
-// the Vector cursor will move first through the x-axis and then the y-axis
-// (assuming we have a cursor oriented along the z-axis). In general the lower
-// dimensions will be exhausted (within a tile) before moving the cursor
-// through higher dimensions. This intra-tile behaviour for cursor movement
-// extends to the inter-tile movement of the cursor between tiles. 
+// or previous tile in the Lattice. The position of the next tile in the
+// Lattice will depend on the tile shape, and is described above. 
+// <br>Note that the cursor shape does not need to be constant when iterating
+// through the lattice. If the lattice shape is not an integer multiple of
+// the tile shape, the cursor will be smaller on the edges of the lattice.
 // </synopsis> 
 
 // <example>
-// This example initializes a lattice with the given value..
+// This example initializes a lattice with the given value.
 // <srcblock>
 // void init (Lattice<Complex>& cArray, Complex value)
 // {
@@ -183,26 +181,22 @@ public:
 
   // Function to return the number of steps (increments & decrements) taken
   // since construction (or since last reset).  This is a running count of
-  // all cursor movement (operator++ or operator--), even though a
-  // N-incremensts followed by N-decrements will always leave the cursor in
+  // all cursor movement (operator++ or operator--), even though
+  // N-increments followed by N-decrements will always leave the cursor in
   // the original position.
   virtual uInt nsteps() const;
 
   // Function which returns the current position of the beginning of the
-  // cursor. The <src>position</src> function is relative to the origins
+  // cursor. The <src>position</src> function is relative to the origin
   // in the main Lattice.
-  // <group>
   virtual IPosition position() const;
-  // </group>
 
-  // Functions which returns the current position of the end of the
-  // cursor. The <src>endPosition</src> function is relative the origins
+  // Function which returns the current position of the end of the
+  // cursor. The <src>endPosition</src> function is relative the origin
   // in the main Lattice.
-  // <group>
   virtual IPosition endPosition() const;
-  // </group>
 
-  // Functions which returns the shape of the Lattice being iterated
+  // Functions which return the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
   // sub-Lattice defined using the <src>subSection</src> function. 
@@ -249,7 +243,7 @@ public:
   // </group>
 
   // Return the axis path.
-  const IPosition& axisPath() const;
+  virtual const IPosition& axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
@@ -268,8 +262,9 @@ protected:
 			      uInt rowNumber) const;
 
 private:
-  // prevent the default constructor from being used externally
+  // Prevent the default constructor from being used.
   TileStepper();
+
 
   IPosition itsBlc;              //# Bottom Left Corner
   IPosition itsTrc;              //# Top Right Corner

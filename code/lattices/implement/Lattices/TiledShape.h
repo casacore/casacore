@@ -1,5 +1,5 @@
 //# TiledShape.h: Define the shape and tile shape
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ template<class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTiledShape.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tTiledShape.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -68,17 +68,17 @@ template<class T> class Vector;
 // are proportional to the sizes of the lattice axes. Per axis it is
 // tried as much as possible to fit an integral number of tiles
 // in the lattice.
-// <br>In this way getting the tile shape is completely transparant.
+// <br>In this way getting the tile shape is completely transparent.
 // </synopsis>
 
 // <example>
 // <srcblock>
-// Do not define a tile shape.
+// // Do not explicitly define a tile shape.
 // // This results in a default tile shape (of 32,32,32).
 // TiledShape shape(IPosition(3,128,128,128));
 // cout << shape.shape() << ' ' << shape.tileShape() << endl;
 //
-// Use with an explicitly given tile shape.
+// // Use with an explicitly given tile shape.
 // TiledShape shape(IPosition(3,128,128,128), IPosition(3,64,32,8));
 // cout << shape.shape() << ' ' << shape.tileShape() << endl;
 // </srcblock>
@@ -113,7 +113,7 @@ public:
     // Assignment (copy semantics).
     TiledShape& operator= (const TiledShape& that);
 
-    // Is the tile shape defined.
+    // Is the tile shape defined?
     Bool isTileShapeDefined() const;
 
     // Return the shape.

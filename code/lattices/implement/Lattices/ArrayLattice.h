@@ -29,16 +29,9 @@
 #if !defined(AIPS_ARRAYLATTICE_H)
 #define AIPS_ARRAYLATTICE_H
 
-#include <aips/aips.h>
+//# Includes
 #include <trial/Lattices/Lattice.h>
 #include <aips/Arrays/Array.h>
-
-class IPosition;
-class LatticeNavigator;
-class Slicer;
-template <class T> class COWPtr;
-template <class T> class RO_LatticeIterInterface;
-template <class T> class LatticeIterInterface;
 
 
 // <summary>
@@ -47,7 +40,7 @@ template <class T> class LatticeIterInterface;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tArrayLattice" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tArrayLattice" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -61,7 +54,7 @@ template <class T> class LatticeIterInterface;
 // </etymology>
 
 // <synopsis> 
-// An ArrayLattice is a concrete Lattice class were the data is stored in
+// An ArrayLattice is a concrete Lattice class where the data is stored in
 // memory as opposed to the <linkto class=PagedArray>PagedArray</linkto> class
 // where the data is stored on disk. As a result this class is much more
 // suitable to problems which require small Lattices that can fit into the
@@ -72,7 +65,7 @@ template <class T> class LatticeIterInterface;
 // manipulation. They are useful if you have an Array that needs to use
 // Lattice functions or needs to be used with PagedArrays or other Lattice
 // derivatives (like <linkto class=LatticeExpr>LatticeExpr</linkto> or
-// <linkto class=SubLattice>SubLattice</linkto>.
+// <linkto class=SubLattice>SubLattice</linkto>).
 // For example the LatticeIterator class can iterate through an Array in
 // more ways than any of the ArrayIterator classes can. The examples below
 // illustrate some uses for ArrayLattices. 
@@ -84,10 +77,8 @@ template <class T> class LatticeIterInterface;
 //
 // <h4>Example 1:</h4>
 // In this example an Array of data is converted into an ArrayLattice so that
-// the CopyLattice function can be used to write the data to a PagedArray which
-// will be stored on disk. This may be conceptually simpler than having to use
-// the putSlice member function in the PagedArray class and is only slightly
-// less efficient.
+// the copyData function can be used to write the data to a PagedArray which
+// will be stored on disk.
 // <srcblock>
 // // make an Array and fill it with data.
 // Array<Float> myArray(IPosition(3, 64, 64, 2));
@@ -98,6 +89,16 @@ template <class T> class LatticeIterInterface;
 // PagedArray<Float> myPagedArray(myLattice.shape(), "myTestData.array");
 // // now copy the data onto disk
 // myPagedArray.copyData (myLattice);
+// </srcblock>
+// Note that it could be done in a somewhat simpler way as:
+// <srcblock>
+// // make an Array and fill it with data.
+// Array<Float> myArray(IPosition(3, 64, 64, 2));
+// indgen(myArray); // fills the Array with 0,1,2,....,64*64*2-1
+// // make a PagedArray to store the data on disk
+// PagedArray<Float> myPagedArray(myLattice.shape(), "myTestData.array");
+// // now put the data onto disk
+// myPagedArray.put (myArray);
 // </srcblock>
 //
 // <h4>Example 2:</h4>
@@ -149,23 +150,23 @@ public:
 
   // Construct an ArrayLattice with the specified shape.
   // It results in a writable lattice.
-  ArrayLattice (const IPosition& shape);
+  explicit ArrayLattice (const IPosition& shape);
 
   // Construct an ArrayLattice that references the given Array.
-  // It results in a writable lattice.
-  ArrayLattice (Array<T>& array);
+  // By default it results in a writable lattice.
+  ArrayLattice (Array<T>& array, Bool isWritable = True);
 
   // Construct an ArrayLattice that references the given Array.
   // It results in a non-writable lattice.
   ArrayLattice (const Array<T>& array);
 
   // The copy constructor uses reference semantics.
-  ArrayLattice (const ArrayLattice& other);
+  ArrayLattice (const ArrayLattice<T>& other);
 
   ~ArrayLattice();
 
   // The assignment operator uses copy semantics.
-  ArrayLattice& operator= (const ArrayLattice& other);
+  ArrayLattice<T>& operator= (const ArrayLattice<T>& other);
 
   // Make a copy of the object (reference semantics).
   virtual Lattice<T>* clone() const;
@@ -198,8 +199,8 @@ public:
   virtual Bool ok() const;
   
   // Returns the maximum recommended number of pixels for a cursor.
-  // This is the number of pixels in the lattice.
-  virtual uInt maxPixels() const;
+  // For this class this is equal to the number of pixels in the lattice.
+  virtual uInt advisedMaxPixels() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
@@ -216,7 +217,7 @@ protected:
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
-  // Do the actual getting of an array of values.
+  // Do the actual putting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);

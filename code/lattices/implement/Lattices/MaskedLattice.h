@@ -103,7 +103,7 @@ class LatticeRegion;
 //
 // <srcblock>
 // Complex latMean(const Lattice<Complex>& lat) {
-//   const uInt cursorSize = lat.maxPixels();
+//   const uInt cursorSize = lat.advisedMaxPixels();
 //   const IPosition cursorShape = lat.niceCursorShape(cursorSize);
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;

@@ -41,7 +41,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tLatticeStepper.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeStepper.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -52,7 +52,7 @@
 // LatticeStepper is so-called because it performs the calculations
 // necessary to step through a Lattice.  The next position is always one
 // simple step forward from the current position.  The step-size is
-// calculated directly from the size of the LatticeIterator's cursor, or
+// calculated directly from the size of the LatticeIterator's cursor or
 // window.
 // </etymology>
 
@@ -91,7 +91,7 @@
 // specifying an axisPath during construction of the class. This is an
 // IPosition which has exactly as many elements as the Lattice
 // dimension. Each element must contain an integer between 
-// 0 -- Lattice_Dimension-1, and must be unique. eg.
+// 0 -- Lattice_Dimension-1, and must be unique. For example,
 // <srcblock>
 // axisPath = IPosition(4,0,1,2,3) or
 // axisPath = IPosition(4,3,1,2,0) 
@@ -101,7 +101,7 @@
 // axisPath = IPosition(4,1,2,3,4) or
 // axisPath = IPosition(4,0,1,1,3) 
 // </srcblock>
-// are not given the latticeShape specified above. An exception is thrown
+// are not, given the latticeShape specified above. An exception is thrown
 // if the AxisPath is bad. 
 // <br>
 // The "axis path" defines which axis will be iterated through fastest as
@@ -118,16 +118,16 @@
 // the first row.
 // <p>
 // The cursor never changes dimensionality as it traverses the Lattice.  But it
-// may change shape if the cursor shape is not congruent with the Lattice
-// shape. A cursor shape is not congruent with the Lattice shape if the cursor
-// shape is not a sub-multiple of the Lattice shape on all axes. For example
-// for a Lattice of shape [10,10,10] a cursor of shape [8,5,2] is not congruent
+// may change shape if the cursor shape is not a factor of the Lattice
+// shape. A cursor shape is not a factor of the Lattice shape if the Lattice
+// shape is not an integer multiple of the cursor shape on all axes. The integer// multiplier need not to be the same for each axes. For example, for
+// a Lattice of shape [10,10,10] a cursor of shape [8,5,2] is not a factor
 // but one with a shape of [10,5,1] is.
 // <br>
 // When the cursor is not congruent with the Lattice moving the cursor through
 // the Lattice will sometimes result in part of the cursor hanging over the
 // edge of the Lattice. When this occurs the hangOver member function will
-// return True. What to do in these situtation is specified by the
+// return True. What to do in these situtations is specified by the
 // hangOverPolicy enumerator.
 // <ol>
 // <li>
@@ -147,20 +147,21 @@
 // The portion of the Lattice that the cursor will traverse can be
 // restricted to a region defined by a top right corner, bottom left corner
 // and a step size. This is done using the <src>subSection</src> function,
-// which also resets the cursor position to the origin of the sub-Lattice
+// which also resets the cursor position to the origin of the sub-Lattice.
 // The cursor shape will remain unchanged. It is no error when the cursor
 // shape exceeds the sub-Lattice shape (instead it is a hangover state).
 // <br>
 // If a sub-Lattice is defined then cursor positions relative
 // to the sub-Lattice origins can be obtained using the
 // <src>relativePosition</src> function rather than the
-// <src>position</src> function which always returns positions relative to
+// <src>position</src> function, which always returns positions relative to
 // the origin of the main Lattice.
 // <br>
 // To change the size of the sub-Lattice simply call the
 // <src>subSection</src> function again with a different trc, blc &
-// inc. This first clears the old sub-Lattice, imposes the newly
-// specified one and moves the cursor to the origin of the new sub-Lattice.
+// inc. This first clears the old sub-Lattice, then imposes the newly
+// specified one, and finally moves the cursor to the origin of the
+// new sub-Lattice.
 // </synopsis> 
 
 // <example>
@@ -194,7 +195,7 @@
 //   // construct a stepper, which needs to know the shape of the lattice
 //   // and the shape of the iterator's cursor. By using cursorShape, which
 //   // is directly determined by the lattice's shape, we can be sure
-//   // that the cursor is congruent with the lattice, and thus that
+//   // that the cursor is a factor of the lattice, and thus that
 //   // all elements will be picked up efficiently during the traversal.
 //   // Because we will not be iterating through the stokes axis this axis
 //   // is made the slowest moving one. 
@@ -263,10 +264,10 @@ public:
   // initially along first axis, then the second and then the third
   // (ie. axisPath = IPosition(ndim,0,1,2,...))
   // The dimensionality of the cursorShape can be less than the
-  // dimensionality of the lattice. It will be padded with 1's.
+  // dimensionality of the lattice. It will be padded with 1s.
   // <br>The cursorShape axes with length > 1 are seen as the true cursor axes.
   // The other axes are degenerated and are removed by the functions
-  // <src>vectorCursor()</src>, etc. in class
+  // <src>vectorCursor()</src>, etc., in class
   // <linkto class=RO_LatticeIterator>(RO_)LatticeIterator</linkto>.
   LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
 		  const uInt hangOverPolicy=PAD);
@@ -319,15 +320,15 @@ public:
 
   // Function to return the number of steps (increments & decrements) taken
   // since construction (or since last reset).  This is a running count of
-  // all cursor movement (operator++ or operator--), even though a
-  // N-incremensts followed by N-decrements will ALWAYS leave the cursor in
+  // all cursor movement (operator++ or operator--), even though
+  // N-increments followed by N-decrements will ALWAYS leave the cursor in
   // the original position.
   virtual uInt nsteps() const;
 
   // Functions which return the current position of the beginning of the
-  // cursor. The <src>position</src> function is relative to the origins
+  // cursor. The <src>position</src> function is relative to the origin
   // in the main Lattice and the <src>relativePosition</src> function is
-  // relative to the origins and increments used in the sub-Lattice (defined
+  // relative to the origin and increment used in the sub-Lattice (defined
   // using the <src>subSection</src> function). If no sub-Lattice is defined
   // the two functions return identical positions.
   // <group>
@@ -336,9 +337,9 @@ public:
   // </group>
 
   // Functions which return the current position of the end of the
-  // cursor. The <src>endPosition</src> function is relative the origins
+  // cursor. The <src>endPosition</src> function is relative to the origin
   // in the main Lattice and the <src>relativeEndPosition</src> function
-  // is relative to the origins and increments used in the sub-Lattice
+  // is relative to the origin and increment used in the sub-Lattice
   // (defined using the <src>subSection</src> function). If no sub-Lattice
   // is defined the two functions return identical positions.
   // <note role=caution> It returns the end position in the lattice and
@@ -357,12 +358,14 @@ public:
   virtual IPosition subLatticeShape() const;
   // </group>
 
-  // Function to change the cursor shape to a new one. This always resets
-  // the cursor to the beginning of the Lattice (and resets the number of
-  // steps to zero)
+  // Functions to change the cursor shape to a new one. They always reset
+  // the cursor to the beginning of the Lattice (and reset the number of
+  // steps to zero).
+  // <group>
   void setCursorShape (const IPosition& cursorShape);
   void setCursorShape (const IPosition& cursorShape,
 		       const IPosition& cursorAxes);
+  // </group>
 
   // Function which returns the shape of the cursor. This always includes
   // all axes (ie. it includes degenerates axes)
@@ -398,7 +401,7 @@ public:
   // </group>
 
   // Return the axis path.
-  const IPosition& axisPath() const;
+  virtual const IPosition& axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
@@ -417,12 +420,13 @@ protected:
 			      uInt rowNumber) const;
 
 private:
-  // prevent the default constructor
+  // Prevent the default constructor from being used.
   LatticeStepper();
-  // pad the cursor to the right number of dimensions
+  // Pad the cursor to the right number of dimensions.
   void padCursor();
-  // check if the cursor shape is an sub-multiple of the Lattice shape
+  // Check if the cursor shape is a factor of the Lattice shape.
   Bool niceFit() const;
+
 
   LatticeIndexer itsIndexer;//# Knows about the (sub)-Lattice shape and how
                             //# to traverse it.

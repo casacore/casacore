@@ -33,7 +33,11 @@
 #include <trial/Lattices/LELCoordinates.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/IO/FileLocker.h>
+#include <aips/Utilities/String.h>
+
+//# Forward Declarations
 class LogIO;
+
 
 // <summary>
 // A non-templated, abstract base class for array-like objects.
@@ -41,22 +45,22 @@ class LogIO;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="dLattice.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tArrayLattice.cc" demos="dLattice.cc">
 // </reviewed>
 
 // <synopsis>
 // This pure abstract base class defines the operations which may be
-// performed on any lattice of any type.
+// performed on a lattice of any type.
 // <br>See class <linkto class=Lattice>Lattice</linkto> for a detailed
 // description of a lattice.
 // </synopsis> 
 
 // <motivation>
-// It is mostly useful to be able to keep a pointer to a
+// It is very useful to be able to keep a pointer to a
 // non-templated base class. Furthermore it gives the opportunity to
 // factor out some non-templated code.
 // </motivation>
-//
+
 // <note>
 // The cache functions (maximumCacheSize, setMaximumCacheSize,
 // setCacheSizeInTiles, setCacheSizeFromPath, clearCache, and
@@ -65,7 +69,7 @@ class LogIO;
 // </note>
 //
 // <todo asof="1999/02/04">
-//   <li> Rename cloneBase function to clone and use covaraint return type.
+//   <li> Rename cloneBase function to clone and use covariant return type.
 // </todo>
 
 
@@ -131,7 +135,11 @@ public:
   // include in the cursor of an iterator. The default implementation
   // returns a number that is a power of two and includes enough pixels to
   // consume between 4 and 8 MBytes of memory.
-  virtual uInt maxPixels() const = 0;
+  // <group>
+  virtual uInt advisedMaxPixels() const = 0;
+  uInt maxPixels() const
+    { return advisedMaxPixels(); }
+  // </group>
 
   // Returns a recommended cursor shape for iterating through all the pixels
   // in the Lattice. The default implementation sets up a shape that
@@ -143,12 +151,12 @@ public:
   //             300   --> niceCursorShape = [10,20,1] 
   //             10000 --> niceCursorShape = [10,20,30] 
   // </srcblock>
-  // The default argument is the result of <src>maxPixels()</src>.
+  // The default argument is the result of <src>advisedMaxPixels()</src>.
   // <group>
   IPosition niceCursorShape (uInt maxPixels) const
     { return doNiceCursorShape (maxPixels); }
   IPosition niceCursorShape() const
-    { return doNiceCursorShape (maxPixels()); }
+    { return doNiceCursorShape (advisedMaxPixels()); }
   // </group>
 
   // Check class internals - used for debugging. Should always return True
@@ -163,36 +171,36 @@ public:
 
   // Maximum cache size - not necessarily all used. In pixels.
   // Default returns 0, which means that there is no maximum.
-  virtual uInt maximumCacheSize() const {return 0;};
+  virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  // Default implementation does nothing
-  virtual void setMaximumCacheSize (uInt howManyPixels) {;};
+  // Default implementation does nothing.
+  virtual void setMaximumCacheSize (uInt howManyPixels);
 
   // Set the actual cache size for this Array to be be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  // Default implementation does nothing
-  virtual void setCacheSizeInTiles (uInt howManyTiles) {;};
+  // Default implementation does nothing.
+  virtual void setCacheSizeInTiles (uInt howManyTiles);
 
 
   // Set the cache size as to "fit" the indicated path.
-  // Default implementation does nothing
+  // Default implementation does nothing.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
-                             const IPosition& windowStart,
-                             const IPosition& windowLength,
-                             const IPosition& axisPath) {;};
+				     const IPosition& windowStart,
+				     const IPosition& windowLength,
+				     const IPosition& axisPath);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
-  // unchanged from when setCacheSize was called
-  // Default implementation does nothign
-  virtual void clearCache() {;};
+  // unchanged from when setCacheSize was called.
+  // Default implementation does nothing.
+  virtual void clearCache();
 
   // Report on cache success.
-  // Default implementation does nothing
-  virtual void showCacheStatistics (ostream& os) const {;};
+  // Default implementation does nothing.
+  virtual void showCacheStatistics (ostream& os) const;
 
 
 protected:

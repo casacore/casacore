@@ -29,7 +29,6 @@
 #define AIPS_PAGEDARRAY_H
 
 //# Includes
-#include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/TiledShape.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -39,14 +38,6 @@
 #include <aips/Logging/LogIO.h>
 
 //# Forward Declarations
-class LatticeNavigator;
-class IPosition;
-class Slicer;
-template <class T> class Array;
-template <class T> class RO_LatticeIterInterface;
-template <class T> class LatticeIterInterface;
-template <class T> class RO_PagedArrIter;
-template <class T> class PagedArrIter;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -60,7 +51,7 @@ class ostream;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tPagedArray.cc" demos="dPagedArray.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tPagedArray.cc" demos="dPagedArray.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -99,7 +90,7 @@ class ostream;
 // <p>
 // So there are two reasons for using a PagedArray:
 // <ol>
-// <li> To provide arrays that are too large for the computers memory.
+// <li> To provide for arrays that are too large for the computer's memory.
 // <li> To provide a way of saving arrays to disk for later access. 
 // </ol>
 //
@@ -114,7 +105,7 @@ class ostream;
 // <linkto class=Lattice>Lattice</linkto> class as well as below. 
 // <p>
 // In nearly all cases you access the PagedArray by reading a "slice" of the
-// PagedArray into an aips++ <linkto class=Array>Array</linkto>. Because the
+// PagedArray into an AIPS++ <linkto class=Array>Array</linkto>. Because the
 // slice is stored in memory it is important that the slice you read is not
 // too big compared to the physical memory on your computer. Otherwise your
 // computer will page excessively and performance will be poor.
@@ -137,7 +128,7 @@ class ostream;
 //
 // <A NAME="PagedArray:advanced"><h3>More Details</h3></A>
 // In order to utilise PagedArrays fully and understand many of the member
-// functions and data access methods in this class you need to be familiar
+// functions and data access methods in this class, you need to be familiar
 // with some of the concepts involved in the implementation of PagedArrays.
 // <p>
 // Each PagedArray is stored in one cell of a Table as an indirect Array
@@ -180,7 +171,7 @@ class ostream;
 // Each PagedArray is stored on disk using the tiled cell storage manager
 // (<linkto class=TiledCellStMan>TiledCellStMan</linkto>). This stores the
 // data in tiles which are regular subsections of the PagedArray. For
-// example a PagedArray of shape [512,512,4,32] may have a tile shape of
+// example a PagedArray of shape [1024,1024,4,128] may have a tile shape of
 // [32,16,4,16]. The data in each tile is stored as a unit on the disk. This
 // means that there is no preferred axis when accessing multi-dimensional
 // data.
@@ -206,7 +197,7 @@ class ostream;
 // consume. This can be changed using the setMaximumCacheSize member
 // function. The tiled storage manager always tries to cache enough tiles to
 // ensure that each tile is read from disk only once, so setting the maximum
-// cache size will trade off memory usage for disk I/O. Seeting the cache
+// cache size will trade off memory usage for disk I/O. Setting the cache
 // size is illustrated in example 5 below.
 // <br>
 // The showCacheStatistics member function is provided to allow you to
@@ -217,12 +208,12 @@ class ostream;
 // All the examples in this section are available in dPagedArray.cc
 //
 // <h4>Example 1:</h4>
-// Create a PagedArray of Floats of shape [512,512,4,32] in a file
+// Create a PagedArray of Floats of shape [1024,1024,4,256] in a file
 // called "myData_tmp.array" and initialize it to zero. This will create a
 // directory on disk called "myData_tmp.array" that contains files that
-// exceed 512*512*4*32*4 (=128MBytes) in size.
+// exceed 1024*1024*4*256*4 (= 4 GBytes) in size.
 // <srcblock>
-// const IPosition arrayShape(4,512,512,4,32);
+// const IPosition arrayShape(4,1024,1024,4,256);
 // const String filename("myData_tmp.array");
 // PagedArray<Float> diskArray(arrayShape, filename);
 // cout << "Created a PagedArray of shape " << diskArray.shape() 
@@ -259,7 +250,7 @@ class ostream;
 //
 // <h4>Example 3:</h4>
 // Now multiply the I-polarization data by 10.0 in this PagedArray. The
-// I-polarization data occupies 32MBytes of RAM which is too big to read
+// I-polarization data occupies 1 GByte of RAM which is too big to read
 // into the memory of most computers. So an iterator is used to get suitable
 // sized chunks.
 // <srcblock>
@@ -283,13 +274,13 @@ class ostream;
 // <h4>Example 4:</h4>
 // Use a direct call to getSlice to access a small central region of the
 // V-polarization in spectral channel 0 only. The region is small enough
-// to not warrent constructing iterators and setting up
+// to not warrant constructing iterators and setting up
 // LatticeNavigators. In this example the call to the getSlice function
 // is unnecessary but is done for illustration purposes anyway.
 // <srcblock>
 // SetupNewTable maskSetup("mask_tmp.array", TableDesc(), Table::New);
 // Table maskTable(maskSetup);
-// PagedArray<Bool> maskArray(IPosition(4, 512, 512, 4, 32), maskTable);
+// PagedArray<Bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
 // maskArray.set(False);
 // COWPtr<Array<Bool> > maskPtr;
 // maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
@@ -316,7 +307,7 @@ class ostream;
 // IPosition start(4, 0);
 //   
 // // Set the cache size to enough pixels for one tile only. This uses
-// // 128kBytes of cache memory and takes 125 secs
+// // 128kBytes of cache memory and takes 125 secs.
 // pa.setCacheSizeInTiles (1);
 // Timer clock;
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++) {
@@ -330,8 +321,8 @@ class ostream;
 // pa.showCacheStatistics(cout);
 // pa.clearCache();
 //   
-// // Set the cache size to enough pixels for one row of tiles (ie. 4)
-// // This uses 512 kBytes of cache memory and takes 10 secs
+// // Set the cache size to enough pixels for one row of tiles (ie. 4).
+// // This uses 512 kBytes of cache memory and takes 10 secs.
 // pa.setCacheSizeInTiles (4);
 // clock.mark();
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++) {
@@ -346,7 +337,7 @@ class ostream;
 // pa.clearCache();
 //   
 // // Set the cache size to enough pixels for one plane of tiles
-// // (ie. 4*8) This uses 4 MBytes of cache memory and takes 2 secs
+// // (ie. 4*8). This uses 4 MBytes of cache memory and takes 2 secs.
 // pa.setCacheSizeInTiles (4*8);
 // clock.mark();
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++) {
@@ -401,38 +392,38 @@ public:
   // created in the current working directory to hold the array. This Table
   // will be deleted automatically when the PagedArray goes out of scope or
   // is deleted.
-  PagedArray (const TiledShape& shape);
+  explicit PagedArray (const TiledShape& shape);
 
-  // construct a new PagedArray, with the specified shape, in the default
+  // Construct a new PagedArray, with the specified shape, in the default
   // row and column of the supplied Table.
   PagedArray (const TiledShape& shape, Table& file);
 
-  // construct a new PagedArray, with the specified shape, in the specified
-  // row and column of the supplied Table. Use the default tile shape.
+  // Construct a new PagedArray, with the specified shape, in the specified
+  // row and column of the supplied Table.
   PagedArray (const TiledShape& shape, Table& file,
 	      const String& columnName, uInt rowNum);
 
-  // reconstruct from a pre-existing PagedArray in the default row and
+  // Reconstruct from a pre-existing PagedArray in the default row and
   // column of the supplied Table with the supplied filename.
-  PagedArray (const String& filename);
+  explicit PagedArray (const String& filename);
 
-  // reconstruct from a pre-existing PagedArray in the default row and
+  // Reconstruct from a pre-existing PagedArray in the default row and
   // column of the supplied Table.
-  PagedArray (Table& file);
+  explicit PagedArray (Table& file);
 
-  // reconstruct from a pre-existing PagedArray in the specified row and
+  // Reconstruct from a pre-existing PagedArray in the specified row and
   // column of the supplied Table.
   PagedArray (Table& file, const String& columnName, uInt rowNum);
 
-  // the copy constructor which uses reference semantics. Passing by value
+  // The copy constructor which uses reference semantics. Copying by value
   // doesn't make sense, because it would require the creation of a
   // temporary (but possibly huge) file on disk.
   PagedArray (const PagedArray<T>& other);
   
-  // the destructor flushes the PagedArrays contents to disk. 
+  // The destructor flushes the PagedArrays contents to disk. 
   ~PagedArray();
   
-  // the assignment operator with reference semantics. As with the copy
+  // The assignment operator with reference semantics. As with the copy
   // constructor assigning by value does not make sense.
   PagedArray<T>& operator= (const PagedArray<T>& other);
   
@@ -445,38 +436,38 @@ public:
   // Is the PagedArray writable?
   virtual Bool isWritable() const;
 
-  // returns the shape of the PagedArray.
+  // Returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
-  // functions to resize the PagedArray. The old contents are lost. Usage of
+  // Functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
-  // class="PagedArray:Advanced">More Details</linkto> section above)
+  // class="PagedArray:Advanced">More Details</linkto> section above).
   void resize (const TiledShape& newShape);
 
-  // returns the current table name (ie. filename) of this PagedArray
+  // Returns the current table name (ie. filename) of this PagedArray.
   const String& tableName() const;
 
-  // returns the current Table column name of this PagedArray
+  // Returns the current Table column name of this PagedArray.
   const String& columnName() const;
 
-  // returns the default TableColumn name for PagedArray's
+  // Returns the default TableColumn name for a PagedArray.
   static String defaultColumn();
 
-  // returns an accessor to the tiled storage manager
+  // Returns an accessor to the tiled storage manager.
   const ROTiledStManAccessor& accessor() const;
 
-  // returns the current row number of this PagedArray.
+  // Returns the current row number of this PagedArray.
   uInt rowNumber() const;
 
-  // returns the default row number for PagedArray's
+  // Returns the default row number for a PagedArray.
   static uInt defaultRow();
 
-  // returns the current tile shape for this PagedArray.
+  // Returns the current tile shape for this PagedArray.
   IPosition tileShape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
-  // the number of pixels in a tile. 
-  virtual uInt maxPixels() const;
+  // the number of pixels in a tile.
+  virtual uInt advisedMaxPixels() const;
 
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
@@ -488,11 +479,11 @@ public:
   // value of zero means that no maximum is currently defined.
   virtual uInt maximumCacheSize() const;
 
-  // Set the actual cache size for this Array to be be big enough for the
+  // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm.
+  // Tiles are cached using a first in first out algorithm.
   virtual void setCacheSizeInTiles (uInt howManyTiles);
 
   // Set the actual cache size for this Array to "fit" the indicated
@@ -562,7 +553,7 @@ private:
   static String defaultComment();
   // Get the writable ArrayColumn object. It is created when needed.
   ArrayColumn<T>& getRWArray();
-  // Create the writable ArrayColumn object
+  // Create the writable ArrayColumn object.
   // It reopens the table for write when needed.
   void makeRWArray();
 

@@ -1,5 +1,5 @@
 //# LatticeIndexer.h: A helper class for stepping through Lattices
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tLatticeIndexer">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeIndexer">
 // </reviewed>
 
 // <prerequisite>
@@ -48,7 +48,7 @@
 // </prerequisite>
 
 // <etymology>
-// This class is does various calculations involved with indexing in
+// This class does various calculations involved with indexing in
 // Lattices. LatticeIndexer is not a good name, but it is
 // better than the previous name of LatticeLayout.
 // </etymology>
@@ -60,8 +60,8 @@
 // <p>
 // A sub-Lattice is a section of a Lattice defined by a bottom left corner
 // (blc), a top right corner (trc), and a step size or increment on each
-// axis. The blc and trc pixels will always included in the sub-Lattice
-// if the step increment one. If the step increment is greater than one
+// axis. The blc and trc pixels will always be included in the sub-Lattice
+// if the step increment is one. If the step increment is greater than one,
 // the pixel in top right corner may not be included in the sub-Lattice. 
 // <p>
 // This class knows the shape of the parent Lattice (including all
@@ -69,14 +69,14 @@
 // embedded in the parent Lattice. The default sub-Lattice, if none is
 // specified, is one identical in shape to the main Lattice. 
 // <p>
-// A sub-Lattice can be defined on the Lattice by specifying a a trc, blc,
+// A sub-Lattice can be defined on the Lattice by specifying a trc, blc,
 // and step increment using the <src>subSection</src> function, or the
 // appropriate constructor. A sub-Lattice must be smaller than (or the same
-// size) the Lattice that it is derived from. A sub-Lattice can be further
+// size as) the Lattice that it is derived from. A sub-Lattice can be further
 // created from an already existing sub-Lattice eg.
 // <br>
 // If we have a 128 by 128 Lattice, we can specify the centre quarter by
-// using blc=[32,32] and trc=[95,95]. By then specifying a sub-Lattice of
+// using blc=[32,32] and trc=[95,95]. Then specifying a sub-Lattice of
 // blc=[0,0] and trc = [31,31] results in a sub-Lattice that has a blc
 // of [32,32] and trc of [63,63] with respect to the parent Lattice.
 // <p>
@@ -106,11 +106,11 @@
 class LatticeIndexer
 {
 public:
-  // default constructor (one dimensional, unit-length instance)
+  // Default constructor (one dimensional, unit-length instance).
   LatticeIndexer();
 
   // Specify the size of the Lattice. Assume a full size sub-Lattice. 
-  LatticeIndexer (const IPosition& shape);
+  explicit LatticeIndexer (const IPosition& shape);
 
   // Specify a Lattice and define a sub-Lattice within it.
   LatticeIndexer (const IPosition& shape, const IPosition& blc,
@@ -129,13 +129,13 @@ public:
   void resize (const IPosition& newShape);
 
   // Returns the length of each axis (or the requested one) in the parent
-  // Lattice
+  // Lattice.
   // <group>
   const IPosition& fullShape() const;
   uInt fullShape (uInt axis) const;
   // </group>
 
-  // Returns the length of each axis (or the requested one) in the sub-Lattice
+  // Returns the length of each axis (or the requested one) in the sub-Lattice.
   // <group>
   const IPosition& shape() const;
   uInt shape (uInt axis) const;
@@ -148,7 +148,7 @@ public:
   uInt increment (uInt axis) const;
   // </group>
 
-  // Function to return the offset (on a specified axes) between the
+  // Function to return the offset (on a specified axis) between the
   // sub-Lattice and the parent one.
   // <group>
   const IPosition& offset() const;
@@ -156,7 +156,7 @@ public:
   // </group>
 
   // Function which returns the number of dimensions in the Lattice (or
-  // sub-Lattice)
+  // sub-Lattice).
   uInt ndim() const;
 
   // Revert from a sub-Lattice description back to the main Lattice. This is

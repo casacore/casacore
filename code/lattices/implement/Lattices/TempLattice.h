@@ -45,7 +45,7 @@ class Table;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTempLattice.cc" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tTempLattice.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -60,44 +60,53 @@ class Table;
 // </etymology>
 
 // <synopsis>
-// Lattice classes are designed to allow the memory efficient handling of large
+// Lattice classes are designed to allow the memory-efficient handling of large
 // amounts of data. But they can also used with much smaller arrays. With
 // large amounts of data the <linkto class="PagedArray">PagedArray</linkto>
-// class should be used as this will store the data on disk and efficiently
-// accesses specified portions of the data on request. With small amounts of
+// class should be used, as this will store the data on disk and efficiently
+// access specified portions of the data on request. With small amounts of
 // data the <linkto class="ArrayLattice">ArrayLattice</linkto> class should be
 // used as all the data is always in memory avoiding the I/O associated with
 // PagedArrays.
 // <p>
 // Applications often cannot predict until run time whether they will
-// be dealing with a large or small amount of data. So that the use of a
+// be dealing with a large or small amount of data. So the use of a
 // PagedArray or an ArrayLattice cannot be made until the size of the arrays
 // are known. TempLattice makes this decision given the size of the Array. To
 // help in making a good choice the TempLattice class also examines how much
 // memory the operating system has (using an aipsrc variable) and compares
 // it with the size of the requested Array.
 // <p>
-// The algorithm currently used is to create an ArrayLattice if the size of the
-// array is less than a quarter of the total system memory otherwise a
-// PagedArray is created. The PagedArray is currently stored in the current
+// The algorithm currently used is: create an ArrayLattice if the size of the
+// array is less than a quarter of the total system memory; otherwise a
+// PagedArray is created. The PagedArray is stored in the current
 // working directory and given a unique name that contains the string
 // "pagedArray". This pagedArray will be deleted once the TempLattice goes out
 // of scope. So unlike PagedArrays which can be made to exist longer than the
 // time they are used by a process, the PagedArrays created by the
 // TempLattice class are always scratch arrays.
 // <p>
-// It is possibly to temporarily close a TempLattice, which only takes effect
+// It is possible to temporarily close a TempLattice, which only takes effect
 // when it is created as a PagedArray. In this way it is possible to reduce
 // the number of open files in case a lot of TempLattice objects are used.
 // A temporarily closed TempLattice will be reopened automatically when needed.
 // It can also be reopened explicitly.
 // <p>
-// You can force the TempLattice to be disk based by setting the memory argument 
-// in the constructors to 0
+// You can force the TempLattice to be disk based by setting the memory
+// argument in the constructors to 0
 // </synopsis>
 
 // <example>
 // <srcblock>
+//  // Create a temporary lattice and initialize to 0.
+//  TempLattice<Float> myLat (IPosition(2,1024,1024));
+//  myLat.set (0.);
+//  // Temporarily close the lattice.
+//  myLat.tempClose();
+//  // Do an operation, which will automatically reopen the lattice.
+//  myLat.set (1.);
+//  // Note that the destructor deletes the table (if the TempLattice
+//  // was created on disk).
 // </srcblock>
 // </example>
 
@@ -125,13 +134,15 @@ public:
   // default ArrayLattice object.
   TempLattice();
 
-  // Create a TempLattice of the specified Shape. You can specify how much
+  // Create a TempLattice of the specified shape. You can specify how much
   // memory the Lattice can consume before it becomes disk based by giving a
-  // non-negative value to the maxMemoryinMB argument. Otherwise it will assume
+  // non-negative value to the maxMemoryInMB argument. Otherwise it will assume
   // it can use up to 25% of the memory on your machine as defined in aipsrc
   // (this algorithm may change).
-  TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
+  // <group>
+  explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
   TempLattice (const TiledShape& shape, Double maxMemoryInMB);
+  // </group>
   
   // The copy constructor uses reference semantics. ie modifying data in the
   // copied TempLattice also modifies the data in the original TempLattice.
@@ -197,7 +208,7 @@ public:
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt maxPixels() const;
+  virtual uInt advisedMaxPixels() const;
 
   // Get or put a single element in the lattice.
   // Note that Lattice::operator() can also be used to get a single element.

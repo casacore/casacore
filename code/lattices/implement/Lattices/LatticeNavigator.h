@@ -1,5 +1,5 @@
 //# LatticeNavigator.h: Abstract base class to steer lattice iterators
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ class ROTiledStManAccessor;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tLatticeStepper.cc">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tLatticeStepper.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -67,15 +67,15 @@ class ROTiledStManAccessor;
 // positions for LatticeIterators. This position is not just a single point
 // in the Lattice but a region or "cursor" that is moved through the
 // Lattice. The LatticeIterator classes actually retrieve the data in the
-// cursor from the Lattice. This classes (and those derived from it) are
-// responsible for moving the cursor to the next position and determining
+// cursor from the Lattice. The class decribed here (and those derived from it)
+// are responsible for moving the cursor to the next position and determining
 // its shape.
 //
 // There may eventually be a large collection of tools for traversing
-// Lattices.  At this writing (October 1997) there are three concrete
+// Lattices.  At this writing (December 1999) there are three concrete
 // classes derived from LatticeNavigator: 
-// <linkto class="LatticeStepper">LatticeStepper</linkto> and
-// <linkto class="TiledLineStepper">TiledLineStepper</linkto>. 
+// <linkto class="LatticeStepper">LatticeStepper</linkto>,
+// <linkto class="TiledLineStepper">TiledLineStepper</linkto>, and
 // <linkto class="TileStepper">TileStepper</linkto>. 
 //
 // The <src>LatticeStepper</src> class moves through a Lattice in fixed
@@ -87,8 +87,8 @@ class ROTiledStManAccessor;
 //
 // The <src>TiledLineStepper</src> class moves a Vector cursor through a
 // Lattice, until all the lines in the set of tiles along the specified
-// axis have been exhausted. It then moves to the next set of tiles. This a
-// a memory efficient way to move a Vector cursor through a Lattice.
+// axis have been exhausted. It then moves to the next set of tiles. This is
+// a memory-efficient way to move a Vector cursor through a Lattice.
 //
 // The most important member functions of this class are those which move
 // the cursor to the next position. These are the <src>operator++</src> and
@@ -96,8 +96,8 @@ class ROTiledStManAccessor;
 //
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
-// and TiledLineStepper classes the cursor shape is constant as it steps
-// through the Lattice.
+// and TiledLineStepper classes , however, the cursor shape is constant
+// as it steps through the Lattice.
 //
 // It is not possible to randomly move the cursor to an arbitrary place in
 // the Lattice, although the cursor can be moved to the starting position at
@@ -136,8 +136,9 @@ class ROTiledStManAccessor;
 // calling the subSection function as the cursor cannot be bigger than the
 // sub-Lattice on any axis.
 //
-// The arguments (trc, blc and inc) to the subSection function are always
-// relative to the main Lattice. This is also true of the <src>position<src>
+// The arguments (<src>trc</src>, <src>blc</src> and <src>inc</src>)
+// to the <src>subSection</src> function are always
+// relative to the main Lattice. This is also true of the <src>position</src>
 // and <src>endPosition</src> functions. To get the position of the cursor
 // relative to the currently defined sub-Lattice use the
 // <src>relativePosition</src> and <src>relativeEndPosition</src> member
@@ -149,11 +150,11 @@ class ROTiledStManAccessor;
 // LatticeIterInterface->operator++() which calls
 // LatticeNavigator->operator++() which might resolve to
 // LatticeStepper->operator++(). Other functions like this are documented in
-// the <linkto class="LatticeIterator">LatticeIterator</linkto> class
+// the <linkto class="LatticeIterator">LatticeIterator</linkto> class.
 // </synopsis> 
 
 // <example>
-// See the example in the 
+// See the examples in the 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> class, the 
 // <linkto class="TiledLineStepper">TiledLineStepper</linkto> class, and the
 // <linkto class="TileStepper">TileStepper</linkto> class.
@@ -178,6 +179,17 @@ class ROTiledStManAccessor;
 
 class LatticeNavigator {
 public:
+  // Default constructor.
+  LatticeNavigator()
+    {;}
+
+  // Copy constructor.
+  LatticeNavigator (const LatticeNavigator&)
+    {;}
+
+  // Assignment.
+  LatticeNavigator& operator= (const LatticeNavigator&)
+    { return *this; }
 
   // A virtual destructor.  A virtual is needed to ensure that derived
   // classes accessed through pointers to a LatticeNavigator will scope
@@ -216,10 +228,10 @@ public:
   // does not necessarily put the cursor back at the origin of the Lattice.
   virtual uInt nsteps() const = 0;
 
-  // Functions which returns the current position of the beginning of the
-  // cursor. The <src>position</src> function is relative to the origins in
+  // Functions which return the current position of the beginning of the
+  // cursor. The <src>position</src> function is relative to the origin in
   // the main Lattice and the <src>relativePosition</src> function is
-  // relative to the origins and increments used in the sub-Lattice (defined
+  // relative to the origin and increment used in the sub-Lattice (defined
   // using the <src>subSection</src> function).
   // The returned IPosition will have the same number of axes as
   // the underlying Lattice.
@@ -230,10 +242,10 @@ public:
   virtual IPosition relativePosition() const;
   // </group>
 
-  // Functions which returns the current position of the end of the
-  // cursor. The <src>endPosition</src> function is relative the origins in
+  // Functions which return the current position of the end of the
+  // cursor. The <src>endPosition</src> function is relative to the origin in
   // the main Lattice and the <src>relativeEndPosition</src> function is
-  // relative to the origins and increments used in the sub-Lattice (defined
+  // relative to the origin and increment used in the sub-Lattice (defined
   // using the <src>subSection</src> function).
   // The returned IPosition will have the same number of axes as
   // the underlying Lattice.
@@ -246,7 +258,7 @@ public:
   virtual IPosition relativeEndPosition() const;
   // </group>
   
-  // Functions which returns the shape of the Lattice being iterated
+  // Functions which return the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
   // sub-Lattice defined using the <src>subSection</src> function.  In the
@@ -262,7 +274,7 @@ public:
 
   // Function which returns the current shape of the cursor which is
   // iterating through the Lattice.  The returned IPosition will have the
-  // same number of axes as the underlying Lattice
+  // same number of axes as the underlying Lattice.
   virtual IPosition cursorShape() const = 0;  
 
   // Function which returns the axes of the cursor.
@@ -313,6 +325,8 @@ public:
   // </group>
 
   // Return the axis path.
+  // See <class linkto=LatticeStepper>LatticeStepper</linkto> for a
+  // description and examples.
   virtual const IPosition& axisPath() const = 0;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice

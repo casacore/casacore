@@ -1,5 +1,5 @@
 //# TiledLineStepper.h: Step a Vector cursor optimally through a tiled Lattice
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 // </summary>
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tTiledLineStepper.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -195,8 +195,8 @@ public:
   // a tile shape and the axis along which the Vector cursor will lie
   // (0 means the x-axis). Is is nearly always advisable to make the
   // tileShape identical to the Lattice tileShape. This can be obtained by
-  // <src>lat.niceCursorShape(lat.maxPixels())</src> where <src>lat</src> is
-  // a Lattice object.
+  // <src>lat.niceCursorShape(lat.advisedMaxPixels())</src>
+  // where <src>lat</src> is a Lattice object.
   TiledLineStepper (const IPosition& latticeShape, 
 		    const IPosition& tileShape, 
 		    const uInt axis);
@@ -231,19 +231,19 @@ public:
 
   // Function to return the number of steps (increments & decrements) taken
   // since construction (or since last reset).  This is a running count of
-  // all cursor movement (operator++ or operator--), even though a
-  // N-incremensts followed by N-decrements will always leave the cursor in
+  // all cursor movement (operator++ or operator--), even though
+  // N-increments followed by N-decrements will always leave the cursor in
   // the original position.
   virtual uInt nsteps() const;
 
   // Function which returns the current position of the beginning of the
-  // cursor. The <src>position</src> function is relative to the origins
+  // cursor. The <src>position</src> function is relative to the origin
   // in the main Lattice.
   // <group>
   virtual IPosition position() const;
   // </group>
 
-  // Functions which returns the current position of the end of the
+  // Function which returns the current position of the end of the
   // cursor. The <src>endPosition</src> function is relative to the origin
   // in the main Lattice.
   // <group>
@@ -303,7 +303,9 @@ public:
   // </group>
 
   // Return the axis path.
-  const IPosition& axisPath() const;
+  // See <class linkto=LatticeStepper>LatticeStepper</linkto> for a
+  // description and examples.
+  virtual const IPosition& axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
@@ -322,8 +324,9 @@ protected:
 			      uInt rowNumber) const;
 
 private:
-  // prevent the default constructor from being used externally.
+  // Prevent the default constructor from being used.
   TiledLineStepper();
+
 
   IPosition itsBlc;              //# Bottom Left Corner
   IPosition itsTrc;              //# Top Right Corner
