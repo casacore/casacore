@@ -1,5 +1,5 @@
 //# TableLogSink.h: save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,11 @@
 #include <aips/Logging/TableLogSink.h>
 
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
@@ -85,6 +85,17 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
     roMessage_p.attach(log_table_p, columnName(MESSAGE));
     roLocation_p.attach(log_table_p, columnName(LOCATION));
     roId_p.attach(log_table_p, columnName(OBJECT_ID));
+
+    // Define the time keywords when not defined yet.
+    // In this way the table browser can interpret the times.
+    if (log_table_p.isWritable()) {
+        TableRecord& keySet = time_p.rwKeywordSet();
+	if (! keySet.isDefined ("UNIT")) {
+	    keySet.define ("UNIT", "s");
+	    keySet.define ("MEASURE_TYPE", "EPOCH");
+	    keySet.define ("MEASURE_REFERENCE", "UTC");
+	}
+    }
 }
 
 TableLogSink::TableLogSink(const String &fileName)
