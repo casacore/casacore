@@ -125,18 +125,14 @@ public:
 // If the output image needs a mask and doesn't have one,
 // it will be given one if possible.  The miscInfo, imageInfo,
 // units and logger will be copied from the input to the output.
-// Only set askRemoveOut to True IF you are calling from the tasking
-// environment.  You will then get the choice GUI prompt to remove the
-// output file if it already exists.  The calling routine must
-// delete the returned pointer.
+// The output file will be overwritten if it pre-exists.
+// The calling routine must delete the returned pointer.
    ImageInterface<T>* convolve(LogIO& os, const String& outFile,
                                ImageInterface<T>& imageIn,
                                VectorKernel::KernelTypes kernelType,
                                const IPosition& pixelAxes,
                                const Vector<Quantum<Double> >& parameters,
-                               Bool autoScale, Double scale, 
-                               Bool askRemoveOut);
-
+                               Bool autoScale, Double scale);
 private:
 
 // Check kernel parameters
