@@ -32,10 +32,12 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -56,14 +58,14 @@
 int main() {
   try {
     {
-      // Create a Gaussian component at the default position
-      GaussianComponent defGaussian;
+      // Create a Gaussian component at the default direction
+      const GaussianComponent defGaussian;
       const MVAngle pixelSize(Quantity(1.0,"''"));
       // Sample the Gaussian at the Maximum and half an arc-min on either side.
       MVDirection sampleDirVal(Quantity(0,"deg"), 
 			       Quantity(90, "deg") - Quantity(.5, "'"));
       MDirection sampleDir(sampleDirVal, MDirection::J2000);
-      RotMatrix rotDec(Euler(Quantity(0.5, "'").get().getValue(), 2u));
+      const RotMatrix rotDec(Euler(Quantity(0.5, "'").getValue("rad"), 2u));
       
       // This is not exact. To be exact I should do a integration over the
       // pixel area. Instead I set the pixel size to be something small enough!
@@ -90,28 +92,30 @@ int main() {
       cout << "Passed the default Gaussian component test" << endl;
     }
     {
-      // Create a Gaussian component at a defined non-J2000 position
-      MVDirection dir1934(Quantity(293.5,"deg"), Quantity(-63.7, "deg"));
-      MDirection coord1934J2000(dir1934, MDirection::J2000);
+      // Create a Gaussian component at a defined non-J2000 direction
+      const MVDirection dir1934(Quantity(293.5,"deg"), Quantity(-63.7, "deg"));
+      const MDirection coord1934J2000(dir1934, MDirection::J2000);
       Vector<Double> flux1934(4);
       flux1934 = 0.0; flux1934(0) = 6.3;
-      MVAngle majorAxis(Quantity(2E-3, "''"));
-      MVAngle minorAxis(Quantity(2E-3, "''"));
-      GaussianComponent J1934(flux1934, coord1934J2000, majorAxis, minorAxis,
-			      MVAngle());
+      const MVAngle majorAxis(Quantity(2E-3, "''"));
+      const MVAngle minorAxis(Quantity(2E-3, "''"));
+      const GaussianComponent J1934(flux1934, coord1934J2000, 
+				    majorAxis, minorAxis, MVAngle());
       // Create a direction that is 1 mas away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
- 			    Quantity(90, "deg") - Quantity(1.E-3, "''"));
+ 			    Quantity(90, "deg") - Quantity(1, "mas"));
       // And now make another rotater that can rotate this point about the pole
       // in steps of say 40 degrees
-      RotMatrix rotater(Euler(Quantity(40, "deg").get().getValue(), uInt(3)));
-   
+      const RotMatrix rotater(Euler(Quantity(40, "deg").getValue("rad"), 3u));
+
       // Create a rotation matrix that can rotate the pole down to the
       // component. 
-      RotMatrix pole2src(Euler(Quantity(-153.7,"deg").get().getValue(), 2u,
- 			       Quantity(-293.5,"deg").get().getValue(), 3u));
-      MVDirection pole;
-      // Sample at a set of MDirections equidistant from the position of the
+      const RotMatrix pole2src(Euler(Quantity(-153.7,"deg").getValue("rad"), 
+				     2u, 
+				     Quantity(-293.5,"deg").getValue("rad"),
+				     3u));
+      const MVDirection pole;
+      // Sample at a set of MDirections equidistant from the direction of the
       // component. All these points should have the same flux (in Jy/pixel)
       // of half the maximum. 
       const MVAngle pixelSize(Quantity(1.0,"''"));
@@ -119,34 +123,35 @@ int main() {
       Vector<Double> sampledFlux(4);
       Vector<Double> peak(4);
       peak = flux1934.ac() * 4. * pow(180. *60. *60. *1000. /2. ,2.) 
-	                   * C::ln2 * pow(C::pi,-3.) 
-	                   * pixelSize.radian() * pixelSize.radian();
+	* C::ln2 * pow(C::pi,-3.) 
+	* pixelSize.radian() * pixelSize.radian();
       for (uInt i = 0; i < 6; i++){
  	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
 	J1934.sample(sampledFlux, sampledDirection, pixelSize);
 	// Precision is lost because of the subtraction done in the
 	// MVPosition::separation member function
- 	AlwaysAssert(allNear(sampledFlux.ac(), peak.ac()*0.5, 1E-6), AipsError);
+ 	AlwaysAssert(allNear(sampledFlux.ac(), peak.ac()*0.5, 1E-6), 
+		     AipsError);
  	sampleDir *= rotater;
       }
       cout << "Passed the arbitrary Gaussian component test" << endl;
     }
     {
-      // Create a Gaussian component at a defined non-J2000 position
+      // Create a Gaussian component at a defined non-J2000 direction
       Vector<Double> initialFlux(4);
       initialFlux = 2.0;
       const MDirection initialPosition(MVDirection(1.0), MDirection::B1950);
       const MVAngle initialMajorAxis(MVAngle(Quantity(13, "''")));
       const Double initialAxialRatio = 0.1;
       const MVAngle initialPA(MVAngle(Quantity(10, "deg")));
-   
+
       GaussianComponent B1934(initialFlux, initialPosition, initialMajorAxis,
-			    initialAxialRatio, initialPA);
+			      initialAxialRatio, initialPA);
       Vector<Double> componentFlux(4);
       B1934.flux(componentFlux);
       AlwaysAssert(allNear(initialFlux.ac(), componentFlux.ac(), 1E-10),
 		   AipsError);
-   
+
       // Set and verify  the flux of the Gaussian component.
       Vector<Double> flux1934(4);
       flux1934 = 0.0; flux1934(0) = 6.3;
@@ -154,25 +159,25 @@ int main() {
       B1934.flux(componentFlux);
       AlwaysAssert(allNear(flux1934.ac(), componentFlux.ac(), 1E-10),
 		   AipsError);
-   
-      // Set and verify the position of the Gaussian component. It is
+
+      // Set and verify the direction of the Gaussian component. It is
       // internally converted to a J2000 reference frame
-      MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
-      MDirection coord1934B1950(dir1934, MDirection::B1950);
+      const MVDirection dir1934(Quantity(293.5,"deg"),Quantity(-63.8,"deg"));
+      const MDirection coord1934B1950(dir1934, MDirection::B1950);
       MDirection coord1934J2000 = coord1934B1950;
-      B1934.position(coord1934J2000);
+      B1934.direction(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
  		   AipsError); 
-      AlwaysAssert(coord1934J2000.getValue().near(
-  	   MDirection::Convert(initialPosition,MDirection::J2000)().getValue()),
- 		   AipsError);
-      B1934.setPosition(coord1934B1950);
-      B1934.position(coord1934J2000);
+      AlwaysAssert(coord1934J2000.getValue()
+		   .near(MDirection::Convert(initialPosition,MDirection::J2000)
+			 ().getValue()), AipsError);
+      B1934.setDirection(coord1934B1950);
+      B1934.direction(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
  		   AipsError); 
-      AlwaysAssert(coord1934J2000.getValue().near( 
-  	   MDirection::Convert(coord1934B1950,MDirection::J2000)().getValue()),
-		   AipsError);
+      AlwaysAssert(coord1934J2000.getValue()
+		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
+			 ().getValue()), AipsError);
       // Set and verify the width of the Gaussian component. 
       MVAngle majorAxis;
       B1934.majorAxis(majorAxis);
@@ -189,9 +194,9 @@ int main() {
       MVAngle pa;
       B1934.positionAngle(pa);
       AlwaysAssert(near(pa.radian(), initialPA.radian(), 1E-10), AipsError);
-   
+
       MVAngle compMajorAxis(Quantity(4, "''" ));
-      MVAngle compMinorAxis(Quantity(2, "''" ));
+      const MVAngle compMinorAxis(Quantity(2, "''" ));
       MVAngle compPA(Quantity(45, "deg" ));
       B1934.setWidth(compMajorAxis, compMinorAxis, compPA);
       B1934.width(majorAxis, minorAxis, pa);
@@ -200,7 +205,7 @@ int main() {
       AlwaysAssert(near(minorAxis.radian(), compMinorAxis.radian(), 1E-10), 
 		   AipsError);
       AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
-   
+
       compMajorAxis = Quantity(8, "''");
       compPA = Quantity(30, "deg");
       Double compAxialRatio = .5;
@@ -210,7 +215,7 @@ int main() {
 		   AipsError);
       AlwaysAssert(near(axialRatio, compAxialRatio, 1E-10), AipsError);
       AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
-   
+
       // Check this is a Gaussian component
       AlwaysAssert(B1934.type() == ComponentType::GAUSSIAN, AipsError);
       AlwaysAssert(ComponentType::name(B1934.type()).matches("Gaussian") == 1, 
@@ -288,8 +293,7 @@ int main() {
       AlwaysAssert(B1934.ok(), AipsError);
       AlwaysAssert(compCopy.ok(), AipsError);
       AlwaysAssert(compRef.ok(), AipsError);
-      cout << "Passed the copy and assignment tests" 
-  	   << endl;
+      cout << "Passed the copy and assignment tests" << endl;
     }
     {
       const uInt imSize = 6;
@@ -323,7 +327,7 @@ int main() {
    
       MVDirection ra0dec0(Quantity(4, "'"), Quantity(1, "'"));
       MDirection coord00(ra0dec0, MDirection::J2000);
-      defComp.setPosition(coord00);
+      defComp.setDirection(coord00);
       defComp.project(image);
       Double pixelSize = Quantity(1.0, "'").getValue("rad");
       Float peak = 60.*60.* pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) 
@@ -356,8 +360,8 @@ int main() {
       AlwaysAssert(near(image(IPosition(4, 1, 5, 0, 2)), peak*0.1f),
  		   AipsError);
       AlwaysAssert(near(image(IPosition(4, 1, 5, 1, 2)), peak*0.1f),
- 		   AipsError);
-      image.table().rename("junk.image", Table::Scratch);
+		   AipsError);
+      image.table().markForDelete();
       cout << "Passed the projection to an image test" << endl;
     }
   }
