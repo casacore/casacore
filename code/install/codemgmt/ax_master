@@ -2305,3 +2305,6 @@
 09 275 src rm trial/implement/distributed/imagesolver.cc
 09 275 src rm trial/implement/distributed/imagesolverImpl.h
 09 275 src rm trial/implement/distributed/imagesolverImpl.cc
+09 275 src rm trial/implement/distributed/imagemaker.g
+09 275 src rm trial/implement/distributed/weighter.g
+09 275 src rm trial/implement/distributed/imagesolver.g
