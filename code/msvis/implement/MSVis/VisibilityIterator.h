@@ -439,9 +439,9 @@ protected:
   Vector<MDirection> azel_p;
   Bool floatDataFound_p;
 
-  // for PA calculations
+  // for PA/AZEL calculations
   MSDerivedValues msd_p;
-  Double lastUT_p;
+  Double lastfeedpaUT_p, lastazelUT_p;
   Int nAnt_p;
 
   // for velocity selection and conversion
