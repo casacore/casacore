@@ -287,8 +287,6 @@ Bool ProfileFit1D<T>::setRangeMask (const Vector<T>& start,
 }
 
 
-
-
 template <class T> 
 Bool ProfileFit1D<T>::fit ()
 {
@@ -314,12 +312,8 @@ Bool ProfileFit1D<T>::fit ()
    } else {
       converged = itsFitter.fit (itsWeight, itsY, itsX, makeTotalMask());
    }
-   if (!converged) {
-      itsError = "Fit did not converge";
-      return False;
-   }
 //
-   return True;
+   return converged;
 }
 
 template <class T> 

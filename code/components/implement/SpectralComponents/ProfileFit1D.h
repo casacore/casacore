@@ -167,9 +167,9 @@ public:
     Vector<Bool> getTotalMask() const {return makeTotalMask();};
     // </group>
 
-    // Do the fit and return status.  If False, an error message
-    // can be recovered with function <src>errorMessage</src>.
-    // Not converging is considered an error condition
+    // Do the fit and return status.  Returns convergence status.
+    // Error conditions in the solution process will generate
+    // an AipsError exception and you should catch these yourself.
     Bool fit ();
 
     // Get Chi Squared of fit
