@@ -364,10 +364,10 @@ public:
     out(3) = (rr - rl - lr + ll)/T(2);
   };
 
-private:
   // set the default units and convert the internal flux
   void convertUnit(const Unit & unit);
 
+private:
   // set the default polarisation representation and convert the internal flux
   void convertRep(const FluxEnums::PolType & rep);
 
