@@ -32,6 +32,7 @@
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/TabularCoordinate.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/RegionHandler.h>
@@ -94,7 +95,7 @@ void ImageUtilities::addDegenerateAxes (LogIO& os,
                                         ImageInterface<Float>& inImage,
                                         const String& outFile, Bool direction,
                                         Bool spectral, const String& stokes,
-                                        Bool linear, Bool overwrite)
+                                        Bool linear, Bool tabular, Bool overwrite)
 {
 // Verify output file
       
@@ -110,17 +111,16 @@ void ImageUtilities::addDegenerateAxes (LogIO& os,
    CoordinateSystem cSys = inImage.coordinates();
    IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
    Int afterCoord;
+   uInt nExtra = 1;
 //
    Bool didSomething = False;
    if (direction) {
       afterCoord = -1;
+
       Int iC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
       if (iC<0) {
          CoordinateUtil::addDirAxes(cSys);
-         uInt n = shape.nelements();
-         shape.resize(n+2,True); 
-         shape(n) = 1;
-         shape(n+1) = 1;
+         nExtra = 2;
          didSomething = True;
       } else {
          os << "Image already contains a DirectionCoordinate" << LogIO::EXCEPTION;
@@ -132,9 +132,6 @@ void ImageUtilities::addDegenerateAxes (LogIO& os,
       Int iC = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
       if (iC<0) {
          CoordinateUtil::addFreqAxis(cSys);
-         uInt n = shape.nelements();
-         shape.resize(n+1,True);
-         shape(n) = 1;
          didSomething = True;
       } else {
          os << "Image already contains a SpectralCoordinate" << LogIO::EXCEPTION;
@@ -151,9 +148,6 @@ void ImageUtilities::addDegenerateAxes (LogIO& os,
          StokesCoordinate sc(which);
          cSys.addCoordinate(sc);
 //
-         uInt n = shape.nelements();
-         shape.resize(n+1,True);
-         shape(n) = 1;
          didSomething = True;
       } else {
          os << "Image already contains a StokesCoordinate" << LogIO::EXCEPTION;
@@ -179,15 +173,32 @@ void ImageUtilities::addDegenerateAxes (LogIO& os,
          LinearCoordinate lc(names, units, refVal, incr, pc, refPix);
          cSys.addCoordinate(lc);
 //  
-         uInt n = shape.nelements();
-         shape.resize(n+1,True);
-         shape(n) = 1;
          didSomething = True;
       } else {
          os << "Image already contains a LinearCoordinate" << LogIO::EXCEPTION;
       }
    }
-   if (!didSomething) {
+//
+   if (tabular) {
+      afterCoord = -1;
+      Int iC = cSys.findCoordinate(Coordinate::TABULAR, afterCoord);
+      if (iC<0) {
+         TabularCoordinate tc;
+         cSys.addCoordinate(tc);
+//  
+         didSomething = True;
+      } else {
+         os << "Image already contains a TabularCoordinate" << LogIO::EXCEPTION;
+      }
+   }
+//
+   if (didSomething) {
+      uInt n = shape.nelements();
+      shape.resize(n+nExtra,True);
+      for (uInt i=0; i<nExtra; i++) {
+         shape(n+i) = 1;
+      }
+   } else {
       os << "No degenerate axes specified" << LogIO::EXCEPTION;
    }
 //       

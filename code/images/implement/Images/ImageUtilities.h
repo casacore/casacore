@@ -130,7 +130,7 @@ public:
                                   ImageInterface<Float>& inImage,
                                   const String& outFile, Bool direction, 
                                   Bool spectral, const String& stokes, 
-                                  Bool linear, Bool overwrite);
+                                  Bool linear, Bool tabular, Bool overwrite);
 
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
