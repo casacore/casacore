@@ -65,7 +65,10 @@ SkyComponent::~SkyComponent() {
 SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   if (this != &other)
     theCompPtr = other.theCompPtr;
-  DebugAssert(ok(), AipsError);
+  // This call to ok is restricted to the base class as the operator= function
+  // is called by derived classes before the derived object is fully
+  // constructed.
+  DebugAssert(SkyComponent::ok(), AipsError);
   return *this;
 };
 
@@ -116,7 +119,9 @@ void SkyComponent::parameters(Vector<Double> & compParms) const {
 };
 
 ComponentType::Type SkyComponent::type() const {
-  DebugAssert(ok(), AipsError);
+  // This call to ok is restricted to the base class as the type() function is
+  // called by derived classes before the derived object is fully constructed.
+  DebugAssert(SkyComponent::ok(), AipsError);
   return theCompPtr->type();
 };
 
