@@ -28,7 +28,8 @@
 #if !defined(AIPS_AIPS_COMPLEX_H)
 #define AIPS_AIPS_COMPLEX_H
 
-// Define the standard types used by aips++
+// Make sure any special macros are set
+#include <aips/aips.h>
 
 #if defined(AIPS_SGI)
 #include <complex.h>
