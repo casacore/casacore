@@ -39,7 +39,7 @@ Green Bank site.  Minor changes may be required when used at other sites.
 
 \begin{verbatim}
 % . /home/aips++/stable/aipsinit.sh
-% gbtmsfiller project=/home/gbtdata/pnt_lowgreg_25_DCR minscan=110 maxscan=120
+% gbtmsfiller project=/home/gbtdata/pnt_lowgreg_25 minscan=110 maxscan=120
  backend=DCR
 % aips++ -l dcr.g
 
