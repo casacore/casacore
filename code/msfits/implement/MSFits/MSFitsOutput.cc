@@ -974,6 +974,8 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
     ROScalarColumn<String> 
       inantname(antennaTable, MSAntenna::columnName(MSAntenna::STATION));
+    ROScalarColumn<String> 
+      antid(antennaTable, MSAntenna::columnName(MSAntenna::NAME));
     ROScalarColumn<String> inantmount(antennaTable,
 				      MSAntenna::columnName(MSAntenna::MOUNT));
     ROArrayColumn<Double> inantposition(antennaTable,
@@ -1017,10 +1019,26 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     *polab = 0.0;
     *polcalb = 0.0;
 
+    Block<Int> id(nant);
+    Bool useAntId = True;
+    for (uInt a = 0; a < nant; a++) {
+      const String& antName = antid(a) ;
+      if (antName.matches(RXint)) {
+	id[a] = String::toInt(antName);
+      } else {
+	useAntId = False;
+	break;
+      }
+    }
+    if (useAntId == False) {
+      for (uInt a = 0; a < nant; a++) {
+	id[a] = a + 1; // 1 relative antenna numbers in FITS
+      }
+    }
     for (uInt antnum=0; antnum<nant; antnum++) {
       *anname = inantname(antnum);
       *stabxyz = inantposition(antnum) - arraypos;
-      *nosta = antnum + 1; // 1 relative antenna numbers in FITS
+      *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
       if (mount.contains("ALT-AZ")) {
 	*mntsta = 0;
