@@ -266,13 +266,13 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 // Temporaries
 
     double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
-    String errorMsg;
 //
-    if (world.nelements()!=2) world.resize(2);
+    world.resize(2);
     AlwaysAssert(pixel.nelements() == 2, AipsError);
 
 // world contains linear xformed numbers
 
+    String errorMsg;
     Bool ok = linear_p.reverse(world, pixel, errorMsg);
     if (ok) {
 	d_x = world(0);
@@ -285,8 +285,7 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	int errnum = celrev(pcodes[projection_p.type()],
 			    d_x, d_y, prjprm_p, &d_phi, &d_theta,
 			    celprm_p, &d_lng, &d_lat);
-	ok = ((errnum == 0));
-	if (ok) {
+	if (errnum==0) {
 	    world(0) = d_lng;
 	    world(1) = d_lat;
 
@@ -297,14 +296,12 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 //          theta = d_theta / to_degrees_p[1];
            toOther(world);
 	} else {
-           errorMsg = "wcslib celrev error: ";
-           errorMsg += celrev_errmsg[errnum];
+           errorMsg = String("wcslib celrev error: ") + celrev_errmsg[errnum];
+           set_error(errorMsg);
+           return False;
 	}
     } 
-//
-    if (!ok) set_error(errorMsg);
-//
-    return ok;
+    return True;
 }
 
 
@@ -317,9 +314,9 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     double d_theta, d_phi, d_lng, d_lat, d_x, d_y;
     String errorMsg;
 //
-    if (pixel.nelements()!=2) pixel.resize(2);
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
-    if (world_tmp.nelements()!=nWorldAxes()) world_tmp.resize(nWorldAxes());
+    pixel.resize(2);
+    world_tmp.resize(nWorldAxes());
 //
     world_tmp(0) = world(0); 
     world_tmp(1) = world(1);
@@ -330,15 +327,18 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     int errnum = celfwd(pcodes[projection_p.type()], d_lng, d_lat,
 			celprm_p, &d_phi, &d_theta, prjprm_p, 
                         &d_x, &d_y);
-    Bool ok = (errnum == 0);
-    if (!ok) {
-       errorMsg = "wcslib celfwd error: ";
-       errorMsg += celfwd_errmsg[errnum];
+    if (errnum!=0) {
+       errorMsg = String("wcslib celfwd error: ") + celfwd_errmsg[errnum];
+       set_error(errorMsg);
+       return False;
     } else {
         world_tmp(0) = d_x; 
         world_tmp(1) = d_y;
 //
-	ok = linear_p.forward(pixel, world_tmp, errorMsg);
+	if (!linear_p.forward(pixel, world_tmp, errorMsg)) {
+           set_error(errorMsg);
+           return False;
+        }
 
 // phi and theta may be returned in a different interface somewhen
 
@@ -346,8 +346,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //        theta = d_theta;
     }
 //
-    if (!ok) set_error(errorMsg);
-    return ok;
+    return True;
 }
 
 Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
@@ -384,8 +383,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       }
    }
 //
-   if (worldOut.nelements()!=nWorldAxes()) worldOut.resize(nWorldAxes());
-   if (pixelOut.nelements()!=nPixelAxes()) pixelOut.resize(nPixelAxes());
+   worldOut.resize(nWorldAxes());
+   pixelOut.resize(nPixelAxes());
 //
    if (pixelAxes(0) && pixelAxes(1)) {
 //
@@ -411,8 +410,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
           return False;
       }
 //
-      if (in_tmp.nelements()!=2) in_tmp.resize(2);
-      if (out_tmp.nelements()!=2) out_tmp.resize(2);
+      in_tmp.resize(2);
+      out_tmp.resize(2);
 //
       in_tmp(0) = pixelIn(0);
       in_tmp(1) = worldIn(1);
@@ -435,8 +434,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
           return False;
       }
 //
-      if (in_tmp.nelements()!=2) in_tmp.resize(2);
-      if (out_tmp.nelements()!=2) out_tmp.resize(2);
+      in_tmp.resize(2);
+      out_tmp.resize(2);
 //
       in_tmp(0) = worldIn(0);
       in_tmp(1) = pixelIn(1);
@@ -762,7 +761,7 @@ String DirectionCoordinate::format(String& units,
 // Convert given world value to absolute or relative as needed
    
    static Vector<Double> world;
-   if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
+   world.resize(nWorldAxes());
 //
    if (showAsAbsolute) {
       if (!isAbsolute) {
