@@ -1,5 +1,5 @@
 //# ArraySampledFunctional.cc:  
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,65 +29,78 @@
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional()
-  :refData(),
-   slice(),
-   lastAxis(0),
-   nElements(0){
+  :theRefData(),
+   theEnd(),
+   theLastAxis(0),
+   theNelements(0){
 }
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(const T & data) 
-  :refData(data),
-   slice(data.end()),
-   lastAxis(0),
-   nElements(0)
+  :theRefData(data),
+   theEnd(data.end()),
+   theLastAxis(0),
+   theNelements(0)
 {
-  IPosition shape = data.shape();
-  for (uInt i = 0; i < data.ndim(); i++)
-    if (shape(i) > 1) lastAxis = i;
-  slice(lastAxis) = 0;
-  nElements = shape(lastAxis);
+  const uInt ndim = theEnd.nelements();
+  for (uInt i = 0; i < ndim; i++)
+    if (theEnd(i) > 0)
+      theLastAxis = i;
+  theNelements = theEnd(theLastAxis) + 1;
+  theEnd(theLastAxis) = 0;
 }
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(ArraySampledFunctional<T> & other)
-  :refData(other.refData),
-   slice(other.slice),
-   lastAxis(other.lastAxis),
-   nElements(other.nElements){
+  :theRefData(other.theRefData),
+   theEnd(other.theEnd),
+   theLastAxis(other.theLastAxis),
+   theNelements(other.theNelements)
+{
 }
 
 template<class T> ArraySampledFunctional<T> & ArraySampledFunctional<T>::
 operator=(ArraySampledFunctional<T> &other){
-  if (this != &other){
-    refData.reference(other.refData);
-    slice = other.slice;
-    lastAxis = other.lastAxis;
-    nElements = other.nElements; 
+  if (this != &other) {
+    theRefData.reference(other.theRefData);
+    theEnd = other.theEnd;
+    theLastAxis = other.theLastAxis;
+    theNelements = other.theNelements; 
   }
   return *this;
 }
 
 template<class T> T ArraySampledFunctional<T>::
-operator()(const uInt &index) const {
-  IPosition blc(slice.nelements(), 0);
-  blc(lastAxis) = index;
-  IPosition trc(slice);
-  trc(lastAxis) += index;
+operator()(const uInt & index) const {
+  IPosition blc(theEnd.nelements(), 0);
+  blc(theLastAxis) = index;
+  IPosition trc(theEnd);
+  trc(theLastAxis) = index;
   // Because refData is const I cannot use the operator() function as this
   // returns a reference. The way around this is to create a non const
   // pointer to the array, call the operator() function and then create a
   // copy (using the copy() function). 
-  T *non_const_ptr = (T *) &refData;
-  T subarray = non_const_ptr->operator()(blc, trc);
-  return subarray.nonDegenerate(lastAxis);
+  T *nonConstPtr = (T *) &theRefData;
+  T theSubArray = nonConstPtr->operator()(blc, trc);
+  return theSubArray.nonDegenerate(theLastAxis);
+}
+
+template<class T> const T ArraySampledFunctional<T>::
+operator()(const uInt & index) {
+  IPosition blc(theEnd.nelements(), 0);
+  blc(theLastAxis) = index;
+  theEnd(theLastAxis) = index;
+  return theRefData(blc, theEnd).nonDegenerate(theLastAxis);
 }
 
 template<class T> uInt ArraySampledFunctional<T>::
 nelements() const {
-  return nElements;
+  return theNelements;
 }
 
 template<class T> ArraySampledFunctional<T>::
-~ArraySampledFunctional(){
+~ArraySampledFunctional() {
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 ArraySampledFunctional"
+// End: 
