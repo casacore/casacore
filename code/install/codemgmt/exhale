@@ -40,7 +40,7 @@
 #   -e     Expire mode; outdate old RCS revisions.  Only useful when
 #          exhale is creating a new base release; ignored otherwise.
 #
-#   -l     Latchkey mode; the update produced will be invisible to 
+#   -l     Latchkey mode; the update produced will be invisible to
 #          'inhale' unless it is also invoked with the "-l" option.
 #
 #   -F     Force mode; turn off all sanity checks for things like
@@ -48,11 +48,11 @@
 #          DO NOT USE!  This option is only intended for use as a
 #          debugging tool to maintain exhale itself.  DOT NOT USE!
 #          Also suppresses all e-mail output.
-#          (This option is not listed in any usage instructions.) 
+#          (This option is not listed in any usage instructions.)
 #
 #   -G     GNU tar mode; use options compatible with GNU tar.
 #          Also only intended for use as a debugging tool.
-#          (This option is not listed in any usage instructions.) 
+#          (This option is not listed in any usage instructions.)
 #
 # The $MSTRFTPD/VERSION file is used as a timestamp file for the update.  It
 # also contains the major and minor version numbers of the most recent update.
@@ -100,6 +100,8 @@
 #
 #    4) Known bug: exhale will break if GNU tar (gtar) is the system's
 #       default tar.  Using the -G option to exhale will fix this.
+#
+#    5) Need to document "blessing" mode.
 #
 # Original: 1992/04/06 by Mark Calabretta, ATNF
 # $Id$
@@ -160,8 +162,8 @@
      case $1 in
      -e)
         EXPIREOUT=1
-	echo ""
-	echo "exhale: Expiring outdated RCS information."
+        echo ""
+        echo "exhale: Expiring outdated RCS information."
         ;;
      -l)
         LATCHKEY=1
@@ -325,7 +327,7 @@
   else
      cp $MSTRFTPD/VERSION $MSTRTMPD/OLDVERSN
      sed -n -e 1p $MSTRFTPD/VERSION | \
-         cat - $MSTRTMPD/NEWVERSN > $MSTRTMPD/FTPVERSN 
+         cat - $MSTRTMPD/NEWVERSN > $MSTRTMPD/FTPVERSN
   fi
   chmod 444 $MSTRTMPD/???VERSN
 
@@ -1003,9 +1005,37 @@
 
   if [ "$LATCHKEY" = "" ]
   then
-#    Delete incremental updates which are more than 10 days old.
+#    New prayer: forget about any previous blessings.
+     OLDBLESSED=`echo blessed-master-*.tar.gz`
+     echo "Removing old blessed versions:"
+
+     for OLDBLESSING in $OLDBLESSED
+     do
+        echo "   $OLDBLESSING"
+        rm -f $OLDBLESSING
+     done
+
+#    Count our blessings.
+     if [ -f "BLESSED" ]
+     then
+        BLESSED=`cat BLESSED | sed 's/#.*//'| cut -f1 -d:`
+
+        for BLESSING in $BLESSED
+        do
+           [ -f "master-$BLESSING.tar.gz" ] && \
+            echo "Blessing incremental $BLESSING" && \
+            ln "master-$BLESSING.tar.gz" "blessed-master-$BLESSING.tar.gz"
+           [ -f "master-$BLESSING.ALL.tar.gz" ] && \
+            echo "Blessing cumulative $BLESSING" && \
+            ln "master-$BLESSING.ALL.tar.gz" "blessed-master-$BLESSING.ALL.tar.gz"
+        done
+     fi
+
+#    Delete incremental updates which are more than 30 days old
+#    with only one link.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.tar.gz" \
-        ! -name master-$NEWMAJOR.000.tar.gz -mtime +30 -exec rm -f {} \;
+        ! -name master-$NEWMAJOR.000.tar.gz -mtime +30 -links 1 \
+        -exec rm -f {} \;
 
 #    Delete previous cumulative updates with only one link.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.ALL.tar.gz" \
@@ -1190,3 +1220,7 @@
   echo "exhale: Execution terminated at"
   echo "exhale: `adate`"
   echo "exhale: `adate -l`"
+
+# Local Variables:
+# indent-tabs-mode: nil
+# End:
