@@ -357,7 +357,7 @@ public:
 
 
     // Convert a pixel position to a world position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
+    // if the conversion succeeds, otherwise it returns <src>False</src> and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
     // <group>
@@ -399,7 +399,7 @@ public:
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
     // value).
-    // Returns True if the conversion succeeds, otherwise it returns False and
+    // Returns True if the conversion succeeds, otherwise it returns <src>False</src> and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
     virtual Bool toMix(Vector<Double>& worldOut,
@@ -441,7 +441,7 @@ public:
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // pixel axes in the CoordinateSystem.  If the comparison returns
-    // False, errorMessage() contains a message about why.
+    // <src>False</src>, errorMessage() contains a message about why.
     // <group>
     virtual Bool near(const Coordinate& other, Double tol=1e-6) const;
     virtual Bool near(const Coordinate& other, 
@@ -491,6 +491,8 @@ public:
 
     // Save the CoordinateSystem into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
+    // If the CoordinateSystem is empty  <src>False</src> is also returned.
+    // If <src>False</src> is returned, errorMessage() contains a message about why.   
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
