@@ -1148,18 +1148,11 @@ void ImageStatistics<T>::generateStorageImage()
       ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
                                         displayAxes_p, pInImage_p->shape());
 
-// Set tile shape.   Only first and last axes should have non unit tile shape
-// as the storage image is only ever accessed by vectors along these axes.  Since 
-// the last axis is not very long (NSTATS), we can set the tile shape of the first 
-// axis to be the full  length of that axis.  Thus tiles won't be excessively big.
+// The storage image is accessed by vectors along the last axis (when filling),
+// the first axis (when plotting and listing) and N-1D slices (when retrieving
+// statistics for the user) so use the default tile shape
 
-      IPosition tileShape(storeImageShape.nelements(),1);
-      tileShape(storeImageShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
-      if (displayAxes_p.nelements() > 0) tileShape(0) = storeImageShape(0);
-
-// Create it
-
-      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
+      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable);
       pStoreImage_p->set(Double(0.0));
 
       os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
