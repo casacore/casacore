@@ -1,5 +1,5 @@
 //# RFFlagCube.h: this defines RFFlagCube
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,7 +102,7 @@ public:
   void cleanup ();
 
 // returns summary of stats in text form
-  String RFFlagCube::getSummary ();
+  String getSummary ();
 // prints flagging stats to stderr
   void printStats ();
 // produces a plot of the flagging stats
