@@ -391,9 +391,9 @@ endif
 .PRECIOUS : %.lcc %.ycc $(LIBDBG) $(LIBOPT) \
     $(PCKGDBGD)/%.lcc $(PCKGDBGD)/%.ycc $(PCKGOPTD)/%.lcc $(PCKGOPTD)/%.ycc 
 
-.PHONY : build_lock exorcise lib instsys ranlib updatelib version mocs
+.PHONY : build_lock exorcise lib instsys ranlib updatelib version mocs bin
 
-allsys : $(CODESUBS) $(LIB) mocs
+allsys bin : $(CODESUBS) $(LIB) mocs
 
 ifneq "$(AIPSINST)" ""
    chkout : $(CODEDIR)/tmplinst
