@@ -625,7 +625,7 @@ Bool MeasurementSet::validateMeasureRefs()
 }
 
 void MeasurementSet::flush(Bool sync) {
-  flush(sync);
+  MSTable<MSMainEnums::PredefinedColumns, MSMainEnums::PredefinedKeywords>::flush(sync);
   antenna_p.flush(sync);
   dataDesc_p.flush(sync);
   if (!doppler_p.isNull()) doppler_p.flush(sync);
