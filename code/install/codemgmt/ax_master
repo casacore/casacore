@@ -2289,3 +2289,4 @@
 09 234 src rm aips/glish/sds
 09 237 src mv trial/implement/parallel trial/implement/Parallel
 09 243 src mv nfra/apps/ms2scn/mdl2csm.cc nfra/apps/mdl2csm/mdl2csm.cc
+09 267 src mv trial/implement/Lattices/VectorCollapser.h trial/implement/Lattices/LineCollapser.h
