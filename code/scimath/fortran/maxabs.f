@@ -2,7 +2,7 @@
 *     MAXABS: find the maximum absolute value in an array
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997
+*     Copyright (C) 1997,1998
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -235,8 +235,8 @@
       INTEGER N
       REAL I, V
 *-----------------------------------------------------------------------
-      I = ARR(N,1)
-      V = ARR(N,2)
+      I = ARR(1,1)
+      V = ARR(1,2)
       MAXVAL = MASK(1) * ABS(I + ABS(V))
       DO 10 N = 1, NPIX
          I = ARR(N,1)
