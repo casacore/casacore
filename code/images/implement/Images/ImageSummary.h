@@ -1,4 +1,4 @@
-//# ImageSummary.h: List information from an image header
+//# ImageSummary.h: List descriptive information from an image 
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -36,6 +36,8 @@
 #include <aips/aips.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/ObsInfo.h>
 
 template <class T> class ImageInterface;
 template <class T> class Vector;
@@ -57,17 +59,17 @@ class Coordinate;
 // </prerequisite>
 //
 // <etymology>
-// This class lists the ancilliary or header information from an image
+// This class lists the ancilliary descriptive information from an image
 // </etymology>
 //
 // <synopsis>
-// Images consist of pixels and descriptive information stored in what
-// is loosely termed the header. This is information describing the
-// coordinate system, the image units etc.  This class enables you to
-// retrieve the descriptive header information and/or list it.
+// Images consist of pixel values and descriptive information.
+// This information describes the coordinate system, the image 
+// units etc.  This class enables you to 
+// retrieve the descriptive information and/or list it.
 //
 // The functions that retrieve specific coordinate information in vectors 
-// (e.g. <src>referenceValues</src>) return it in the order of the axes of 
+// (e.g. <src>referenceValues</src>) return it in the order of the (pixel) axes of 
 // the image.  Note that this can be different from the order in which 
 // the <linkto class=CoordinateSystem>CoordinateSystem</linkto>
 // functions of similar name might return them.   This is because the
@@ -80,10 +82,10 @@ class Coordinate;
 // <example>
 // <srcBlock>
 //     PagedImage<Float> inImage(fileName);
-//     ImageSummary<Float> header(inImage);
+//     ImageSummary<Float> summary(inImage);
 //     LogOrigin or("myClass", "myFunction(...)", WHERE);
 //     LogIO os(or);
-//     header.list(os);
+//     summary.list(os);
 // </srcBlock>
 // A <src>PagedImage</src> object is constructed and then logged to the 
 // supplied <src>LogIO</src> object.
@@ -108,12 +110,11 @@ class Coordinate;
 // </note>
 //
 // <motivation>
-// The viewing of the image header is a basic capability that is
-// commonly required.
+// The viewing of the descriptive image information is a basic capability.
 // </motivation>
 //
-// <todo asof="1997/02/17">
-//  There will be more things to add as ImageInterface becomes richer
+// <todo asof="1998/08/31">
+//  None that I know of.
 // </todo>
  
 
@@ -141,21 +142,19 @@ public:
 // Retrieve tile shape with which image is stored on disk
    IPosition tileShape () const;
 
-// Retrieve axis names
+// Retrieve axis names in pixel axis order.
    Vector<String> axisNames () const;
 
 // Retrieve reference pixels
    Vector<Double> referencePixels () const;
 
-// Retrieve reference values.  These are returned without
-// conversion to some other units.  
-   Vector<Double> referenceValues() const;
+// Retrieve reference values in pixel axis order. 
+   Vector<Double> referenceValues () const;
 
-// Retrieve axis increments. These are returned without
-// conversion to some other units.  
+// Retrieve axis increments in pixel axis order.  
    Vector<Double> axisIncrements () const;
 
-// Retrieve axis units
+// Retrieve axis units in pixel axis order.
    Vector<String> axisUnits() const;
 
 // Retrieve image units
@@ -163,6 +162,15 @@ public:
  
 // Retrieve image name.  Any prepended path is stripped off.
    String name() const;
+
+// Retrieve observer name
+   String observer() const;
+
+// Return epoch of observation as MEpoch or formatted string
+   String obsDate(MEpoch& date) const;
+
+// Return telescope
+   String telescope() const;
 
 // Retrieve whether image has mask or not
    Bool hasAMask () const;
@@ -182,6 +190,9 @@ public:
 
 
 private:
+
+   CoordinateSystem cSys_p;
+   ObsInfo obsInfo_p;
    const ImageInterface<T>* pImage_p;
 
    void getFieldWidths (uInt& widthName, 
