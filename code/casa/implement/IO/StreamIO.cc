@@ -27,12 +27,14 @@
 
 #include <trial/IO/StreamIO.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Exceptions/Error.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>            // Definition of sockaddr_in
 #include <sys/socket.h>           // Definition of sockaddr & socket function
 #include <unistd.h>               // needed for ::close
+#include <netdb.h>
 
 StreamIO::StreamIO(const String& hostname, uShort portNumber) 
   :ByteIO(),
@@ -44,7 +46,15 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
   objset(reinterpret_cast<char*>(&serverInfo), static_cast<char>(0), 
 	 sizeof(serverInfo)); // Isn't C a wonderful language!
   serverInfo.sin_family = AF_INET;
-  serverInfo.sin_addr.s_addr = inet_addr(hostname.chars());;
+
+  Regex anyLetters("[A-Za-z]");
+  if(hostname.contains(anyLetters)){
+    struct hostent *hp = gethostbyname(hostname.chars());
+    memcpy ((char *) &serverInfo.sin_addr, (char *) hp->h_addr,  hp->h_length);
+    serverInfo.sin_family = hp->h_addrtype;
+  } else {
+     serverInfo.sin_addr.s_addr = inet_addr(hostname.chars());;
+  }
   serverInfo.sin_port = htons(portNumber);
   
   itsSockDesc = socket(AF_INET, SOCK_STREAM, 0);
