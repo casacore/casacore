@@ -2325,3 +2325,4 @@
 09 300 src mv trial/implement/Measures/DO_measures.cc trial/implement/Measures/DOmeasures.cc
 09 306 src mv trial/implement/Lattices/LatticeParse.h trial/implement/Images/ImageExprParse.h
 09 306 src mv trial/implement/Lattices/LatticeParse.cc trial/implement/Images/ImageExprParse.cc
+09 306 src mv trial/implement/Lattices/LatticeGram.cc trial/implement/Images/ImageExprGram.cc
