@@ -2095,3 +2095,4 @@
 08 298 src rm nrao/apps/gbt_utscr/gbt_if.g
 08 298 src rm nrao/apps/gbt_utscr/gbt_utscr.g
 08 306 src mv trial/implement/Lattices/FiledesIO.h aips/implement/IO/FiledesIO.h
+08 306 src mv trial/implement/Lattices/FiledesIO.cc aips/implement/IO/FiledesIO.cc
