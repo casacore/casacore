@@ -32,11 +32,13 @@
 #pragma implementation ("LatticeNavigator.cc")
 #endif 
 
+//# Includes
 #include <aips/aips.h>
 
-class LatticeStepper;
-class TiledStepper;
+//# Forward Declarations
 class IPosition;
+class ROTiledStManAccessor;
+
 
 // <summary> an abstract base class to steer lattice iterators </summary>
 //
@@ -72,10 +74,11 @@ class IPosition;
 // its shape.
 
 // There may eventually be a large collection of tools for traversing
-// Lattices.  At this writing (Marck 1997) there are two concrete
+// Lattices.  At this writing (October 1997) there are three concrete
 // classes derived from LatticeNavigator: 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> and
-// <linkto class="TiledStepper">TiledStepper</linkto>. 
+// <linkto class="TiledVectorStepper">TiledVectorStepper</linkto>. 
+// <linkto class="TileStepper">TileStepper</linkto>. 
 
 // The <src>LatticeStepper</src> class moves through a Lattice in fixed
 // steps defined by the user specified cursor, incrementing to the next
@@ -84,7 +87,7 @@ class IPosition;
 // traverse a number of predefined subregions, or change size automatically
 // when near the edges.
 
-// The <src>TiledStepper</src> class moves a Vector cursor through a
+// The <src>TiledVectorStepper</src> class moves a Vector cursor through a
 // Lattice, until all the Vectors in the set of tiles along the specified
 // axis have been exhausted. It then moves to the next set of tiles. This a
 // a memory effecient way to move a Vector cursor through a Lattice.
@@ -95,8 +98,8 @@ class IPosition;
 
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
-// and TiledStepper classes the cursor shape is constant as it steps through
-// the Lattice.
+// and TiledVectorStepper classes the cursor shape is constant as it steps
+// through the Lattice.
 
 // It is not possible to randomly move the cursor to an arbitrary place in
 // the Lattice, although the cursor can be moved to the starting position at
@@ -107,13 +110,14 @@ class IPosition;
 // bottom left hand corner of the cursor. The position of the top right hand
 // corner of the cursor is obtained using the <src>endPosition</src> member
 // function, and the current cursor shape is obtained using the
-// <src>cursorShape</src> member function. 
+// <src>cursorShape</src> member function. Note that the endPosition
+// does not take an overhang into account.
 
 // It is possible that for some positions of the cursor, part of it will
 // "hang over" the edge of the Lattice. When this occurs the
 // <src>hangOver</src> member function will return True. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
-// cursor shape. Hangover cannot occur with the TiledStepper as the length
+// cursor shape. Hangover cannot occur with the TiledVectorStepper as the length
 // of the Vector cursor is defined by the Lattice Shape.
 
 // It may be possible (depending on the concrete LatticeNavigator actually
@@ -153,7 +157,7 @@ class IPosition;
 // <example>
 // See the example in the 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> class and the 
-// <linkto class="TiledStepper">TiledStepper</linkto> class
+// <linkto class="TiledVectorStepper">TiledVectorStepper</linkto> class
 // </example>
 //
 // <motivation>
@@ -181,17 +185,17 @@ public:
   virtual ~LatticeNavigator();
 
   // Increment operator - increment the cursor to the next position. The
-  // default implementation of the prefix operator calls the postfix one.
+  // implementation of the prefix operator calls the postfix one.
   // <group>
   virtual Bool operator++(Int) = 0;
-  virtual Bool operator++();
+  Bool operator++();
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
-  // default implementation of the prefix operator calls the postfix one.
+  // implementation of the prefix operator calls the postfix one.
   // <group>
   virtual Bool operator--(Int) = 0;
-  virtual Bool operator--();
+  Bool operator--();
   // </group>
 
   // Function to reset the cursor to the beginning of the Lattice and
@@ -216,12 +220,11 @@ public:
   // cursor. The <src>position</src> function is relative to the origins in
   // the main Lattice and the <src>relativePosition</src> function is
   // relative to the origins and increments used in the sub-Lattice (defined
-  // using the <src>subSection</src> function).  In the default
-  // implementation of this class it is not possible to use the
-  // <src>subsection</src> function (it throws an exception) so the default
-  // implementation of the <src>relativePosition</src> function calls the
-  // <src>position</src> function. The returned IPosition will have the
-  // same number of axes as the underlying Lattice
+  // using the <src>subSection</src> function).
+  // The returned IPosition will have the same number of axes as
+  // the underlying Lattice.
+  // <br>The default implementation of the <src>relativePosition</src>
+  // function returns <src>(position() - blc()) / increment()</src>.
   // <group>
   virtual IPosition position() const = 0;
   virtual IPosition relativePosition() const;
@@ -231,12 +234,13 @@ public:
   // cursor. The <src>endPosition</src> function is relative the origins in
   // the main Lattice and the <src>relativeEndPosition</src> function is
   // relative to the origins and increments used in the sub-Lattice (defined
-  // using the <src>subSection</src> function).  In the default
-  // implementation of this class it is not possible to use the
-  // <src>subsection</src> function (it throws an exception) so the default
-  // implementation of the <src>relativeEndPosition</src> function calls the
-  // <src>endPosition</src> function. The returned IPosition will have the
-  // same number of axes as the underlying Lattice
+  // using the <src>subSection</src> function).
+  // The returned IPosition will have the same number of axes as
+  // the underlying Lattice.
+  // <note role=caution> It returns the end position in the lattice and
+  // does not take overhang into account. </note>
+  // <br>The default implementation of the <src>relativeEndPosition</src>
+  // function returns <src>(endPosition() - blc()) / increment()</src>.
   // <group>
   virtual IPosition endPosition() const = 0;
   virtual IPosition relativeEndPosition() const;
@@ -290,9 +294,9 @@ public:
   // supported and using the <src>subsection</src> function will throw an
   // exception (AipsError).
   // <group>
-  virtual void subSection(const IPosition & blc, const IPosition & trc);
-  virtual void subSection(const IPosition & blc, const IPosition & trc, 
-			  const IPosition & inc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc);
+  virtual void subSection(const IPosition& blc, const IPosition& trc, 
+			  const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -307,33 +311,40 @@ public:
   // </group>
 
   // Return the axis path.
-  virtual const IPosition & axisPath() const = 0;
+  virtual const IPosition& axisPath() const = 0;
+
+  // Calculate the cache size (in tiles) for this type of access to a lattice
+  // in the given row of the tiled hypercube.
+  // A zero pointer indicates there is no hypercube, but that the data
+  // is in memory instead. Then a cache size of 0 is returned.
+  uInt calcCacheSize (const ROTiledStManAccessor*, Int rowNumber) const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this LatticeNavigator. It is the responsibility of the caller to
   // release this memory. 
-  virtual LatticeNavigator * clone() const = 0;
+  virtual LatticeNavigator* clone() const = 0;
 
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False. The default
   // implementation always returns True.
   virtual Bool ok() const;
 
-  // Use until RTTI is available in g++. Returns 0 if the actual object is
-  // not a LatticeStepper. Does not make a copy, merely returns a cast
-  // pointer.  Only implementers need to worry about this function.
-  // <group>
-  virtual LatticeStepper * castToStepper();
-  virtual const LatticeStepper * castToConstStepper() const;
-  // </group>
-
-  // Use until RTTI is available in g++. Returns 0 if the actual object is
-  // not a LatticeTiler. Does not make a copy, merely returns a cast
-  // pointer.  Only implementers need to worry about this function.
-  // <group>
-  virtual TiledStepper * castToTiler();
-  virtual const TiledStepper * castToConstTiler() const;
-  // </group>
+protected:
+  // Calculate the cache size (in tiles) for this type of access to a lattice
+  // in the given row of the tiled hypercube.
+  virtual uInt calcCacheSize (const ROTiledStManAccessor&,
+			      uInt rowNumber) const = 0;
 };
+
+
+inline Bool LatticeNavigator::operator++()
+{
+  return operator++(0);
+}
+inline Bool LatticeNavigator::operator--()
+{
+  return operator--(0);
+}
+
 
 #endif

@@ -25,9 +25,10 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICE_STEPPER_H)
-#define AIPS_LATTICE_STEPPER_H
+#if !defined(AIPS_LATTICESTEPPER_H)
+#define AIPS_LATTICESTEPPER_H
 
+//# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeIndexer.h>
@@ -37,7 +38,10 @@
 #pragma implementation ("LatticeStepper.cc")
 #endif 
 
-// <summary> traverse a Lattice by cursor shape </summary>
+// <summary>
+// Traverse a Lattice by cursor shape
+// </summary>
+
 // <use visibility=export>
 
 // <reviewed reviewer="Neil Killeen" date="1997/??/??" tests="tLatticeStepper.cc">
@@ -102,7 +106,7 @@
 // </srcblock>
 // are not given the latticeShape specified above. An exception is thrown
 // if the AxisPath is bad. 
-
+//
 // The "axis path" defines which axis will be iterated through fastest as
 // the cursor moves through the Lattice. With the above mentioned
 // 4-dimensional Lattice and a single element cursor
@@ -115,28 +119,28 @@
 // <src>axisPath=IPosition(4,3,0,1,2)</src> then the cursor would iterate
 // through each spectral channel first, before moving onto the next column in
 // the first row.
-
+//
 // The cursor shape on all axes must be less than or equal to the Lattice
 // shape on that axis. Otherwise an exception will be thrown. 
-
+//
 // The cursor never changes dimensionality as it traverses the Lattice.  But it
 // may change shape if the cursor shape is not congruent with the Lattice
 // shape. A cursor shape is not congruent with the Lattice shape if the cursor
 // shape is not a sub-multiple of the Lattice shape on all axes. For example
 // for a Lattice of shape [10,10,10] a cursor of shape [8,5,2] is not congruent
 // but one with a shape of [10,5,1] is.
-
+//
 // When the cursor is not congruent with the Lattice moving the cursor through
 // the Lattice will sometimes result in part of the cursor hanging over the
 // edge of the Lattice. When this occurs the hangOver member function will
 // return True. What to do in these situtation is specified by the
 // hangOverPolicy enumerator.
-
+//
 // If the LatticeStepper::PAD option (the default) is used at construction time
 // the cursor shape does not change. The parts of the cursor that hang over the
 // edge of the Lattice are filled with a default value, usually zero, that is
 // defined by the particular LatticeIterator used.
-
+//
 // If the LatticeStepper::RESIZE option is used at construction time the cursor
 // shape does change to a smaller value when near the edge of the Lattice so
 // that it is just big enough. For example with a Lattice shape of 10x10 and a
@@ -144,25 +148,24 @@
 // the first step, then resize to 8x2 on the second step and finally resize to
 // 2x2. The hangover function will return True for the last three steps, even
 // though the cursor has resized.
-
+//
 // The portion of the Lattice that the cursor will traverse can be
 // restricted to a region defined by a top right corner, bottom left corner
 // and a step size. This is done using the <src>subSection</src> function,
 // which also resets the cursor position to the origin of the sub-Lattice
 // The cursor shape will remain unchanged. It is no error when the cursor
 // shape exceeds the sub-Lattice shape (instead it is a hangover state).
-
+//
 // If a sub-Lattice is defined then cursor positions relative
 // to the sub-Lattice origins can be obtained using the
 // <src>relativePosition</src> function rather than the
 // <src>position</src> function which always returns positions relative to
 // the origin of the main Lattice.
-
+//
 // To change the size of the sub-Lattice simply call the
 // <src>subSection</src> function again with a different trc, blc &
 // inc. This first clears the old sub-Lattice, imposes the newly
 // specified one and moves the cursor to the origin of the new sub-Lattice.
-
 // </synopsis> 
 
 // <example>
@@ -177,7 +180,7 @@
 // path as this is gives hints to data cache about which data to retrieve in
 // advance.
 // <srcblock>
-// void averageFluxByChannel(const Lattice<Float> & data)
+// void averageFluxByChannel(const Lattice<Float>& data)
 // {
 //   // for convenience, get the shape into a local variable
 //   IPosition latticeShape = data.shape();
@@ -234,9 +237,10 @@
 // Moving through a Lattice by equal sized chunks, and without regard
 // to the nature of the data, is a basic and common procedure.  
 // </motivation>
-//
+
 //# <todo asof="1995/08/28">
 //# </todo>
+
 
 class LatticeStepper: public LatticeNavigator
 {
@@ -245,7 +249,7 @@ public:
   // The hangOverPolicy enumerator is used in the constructors to indicate
   // what this class should do when the cursor shape hangs over the edge
   // of the Lattice. 
-enum hangOverPolicy {
+  enum hangOverPolicy {
   // PAD is the default and means that the cursor size supplied by the user is
   // kept fixed. But if the cursor overhangs the Lattice the part that
   // overhangs is filled with a default value that is specified by the
@@ -261,13 +265,13 @@ enum hangOverPolicy {
   // second argument is the shape of the cursor. The cursor will increment
   // initially along first axis, then the second and then the third
   // (ie. axisPath = IPosition(ndim,0,1,2,...))
-  LatticeStepper(const IPosition & latticeShape, const IPosition & cursorShape,
-		 const uInt hangOverPolicy=PAD);
+  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
+		  const uInt hangOverPolicy=PAD);
 
   // Same as the above constructor except that the axis path is explicitly
   // specified. The axis path is described in the synopsis above. 
-  LatticeStepper(const IPosition & latticeShape, const IPosition & cursorShape,
-		 const IPosition & axisPath, const uInt hangOverPolicy=PAD);
+  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
+		  const IPosition& axisPath, const uInt hangOverPolicy=PAD);
   
   // Same as the above constructor except that the cursor axes are
   // explicitly specified. This can be useful to avoid that cursor axes
@@ -278,34 +282,28 @@ enum hangOverPolicy {
   // <br>or <src>cursorShape.nelements() == cursorAxes.nelements()</src>
   // The latter means that the cursorShape contains the axes mentioned in
   // cursorAxes.
-  LatticeStepper(const IPosition & latticeShape, const IPosition & cursorShape,
-		 const IPosition & cursorAxes,
-		 const IPosition & axisPath, const uInt hangOverPolicy=PAD);
+  LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
+		  const IPosition& cursorAxes,
+		  const IPosition& axisPath, const uInt hangOverPolicy=PAD);
   
   // the copy constructor which uses copy semantics.
-  LatticeStepper(const LatticeStepper & other);
+  LatticeStepper (const LatticeStepper& other);
     
   // destructor (does nothing)
   ~LatticeStepper();
 
   // The assignment operator which uses copy semantics.
-  LatticeStepper & operator=(const LatticeStepper & other);
+  LatticeStepper& operator= (const LatticeStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.  Both functions
   // do the same thing.
-  // <group>
-  virtual Bool operator++(); 
   virtual Bool operator++(Int);
-  // </group>
 
   // Decrement operator (postfix or prefix version) - move the cursor
   // backwards one step. Returns True if the cursor was moved. Both
   // functions do the same thing.
-  // <group>
-  virtual Bool operator--();
   virtual Bool operator--(Int);
-  // </group>
 
   // Function to move the cursor to the beginning of the (sub)-Lattice. Also
   // resets the number of steps (<src>nsteps</src> function) to zero. 
@@ -343,6 +341,8 @@ enum hangOverPolicy {
   // is relative to the origins and increments used in the sub-Lattice
   // (defined using the <src>subSection</src> function). If no sub-Lattice
   // is defined the two functions return identical positions.
+  // <note role=caution> It returns the end position in the lattice and
+  // does not take overhang into account. </note>
   // <group>
   virtual IPosition endPosition() const;
   virtual IPosition relativeEndPosition() const;
@@ -360,9 +360,9 @@ enum hangOverPolicy {
   // Function to change the cursor shape to a new one. This always resets
   // the cursor to the beginning of the Lattice (and resets the number of
   // steps to zero)
-  void setCursorShape(const IPosition & cursorShape);
-  void setCursorShape(const IPosition & cursorShape,
-		      const IPosition & cursorAxes);
+  void setCursorShape (const IPosition& cursorShape);
+  void setCursorShape (const IPosition& cursorShape,
+		       const IPosition& cursorAxes);
 
   // Function which returns the shape of the cursor. This always includes
   // all axes (ie. it includes degenerates axes)
@@ -381,9 +381,9 @@ enum hangOverPolicy {
   // (trc), and step size (inc), on ALL of its axes, including degenerate
   // axes. The step size defaults to one if not specified.
   // <group>
-  virtual void subSection(const IPosition & blc, const IPosition & trc);
-  virtual void subSection(const IPosition & blc, const IPosition & trc, 
-			  const IPosition & inc);
+  virtual void subSection (const IPosition& blc, const IPosition& trc);
+  virtual void subSection (const IPosition& blc, const IPosition& trc, 
+			   const IPosition& inc);
   // </group>
 
   // Return the bottom left hand corner (blc), top right corner (trc) or
@@ -398,25 +398,23 @@ enum hangOverPolicy {
   // </group>
 
   // Return the axis path.
-  const IPosition & axisPath() const;
+  const IPosition& axisPath() const;
 
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this instance.  The pointer returned by this function must
   // be deleted externally.
-  LatticeNavigator * clone() const;
+  virtual LatticeNavigator* clone() const;
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. 
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
-  // Use until RTTI is available in g++. Does not make a copy, merely
-  // returns a cast pointer.  Only implementers need to worry about this
-  // function.
-  // <group>
-  virtual LatticeStepper * castToStepper();
-  virtual const LatticeStepper * castToConstStepper() const;
-  // </group>
+protected:
+  // Calculate the cache size (in tiles) for this type of access to a lattice
+  // in the given row of the tiled hypercube.
+  virtual uInt calcCacheSize (const ROTiledStManAccessor&,
+			      uInt rowNumber) const;
 
 private:
   // prevent the default constructor
