@@ -2,7 +2,7 @@
 # makedefs: Default values of variables required by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -131,12 +131,13 @@ GLISHINCD  = $(GLISHROOT)/include
 GLISHLIBD  = $(AIPSARCH)/lib
 GLISHLIB  := -lglish -ledit -lsos -lnpd
 
-# WCSLIB (supplied with AIPS++).
+# WCSLIB (supplied with AIPS++); clear WCSLIBTRIG to ignore wcstrig.c.
 WCSLIBROOT := $(AIPSROOT)/code/aips/wcslib
 WCSLIBDEFS := -DSIGNBIT
 WCSLIBINCD  = $(AIPSROOT)/code/aips
 WCSLIBLIBD  = $(AIPSARCH)/lib
 WCSLIBLIB  := -lwcs
+WCSLIBTRIG := 1
 
 # PGPLOT (FORTRAN plotting package).
 PGPLOTROOT := /usr/local
