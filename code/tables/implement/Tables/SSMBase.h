@@ -77,7 +77,7 @@ class SSMStringHandler;
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-//   <li> Removed AipsIO argument from open and close.
+//   <li> Remove AipsIO argument from open and close.
 //   <li> When only 1 bucket in use addcolumn can check if there's enough
 //        room to fit the new column (so rearange the bucket) in the free
 //        row space.
@@ -87,13 +87,14 @@ class SSMStringHandler;
 class SSMBase: public DataManager
 {
 public:
-  // Create an Standard storage manager without a name.
-  explicit SSMBase (uInt aBucketSize=131072,uInt aCacheSize=1);
+  // Create a Standard storage manager without default name SSM.
+  // The bucket size has to be given in bytes.
+  explicit SSMBase (uInt aBucketSize=32768, uInt aCacheSize=1);
   
-  // Create an Standard storage manager with the given name.
-  // The bucket size has to be given in bytes
+  // Create a Standard storage manager with the given name.
+  // The bucket size has to be given in bytes.
   explicit SSMBase (const String& aDataManName,
-		    uInt aBucketSize=131072,
+		    uInt aBucketSize=32768,
 		    uInt aCacheSize=1);
   
   ~SSMBase();
@@ -125,10 +126,10 @@ public:
   // Show the statistics of all caches used.
   void showCacheStatistics (ostream& anOs) const;
 
-  // Show Statistics of all indices used
+  // Show Statistics of all indices used.
   void showIndexStatistics (ostream & anOs) const;
 
-  // Show Statistics of the Base offsets/index etc
+  // Show Statistics of the Base offsets/index etc.
   void showBaseStatistics (ostream & anOs) const;
 
   // Get the bucket size (in bytes).
@@ -137,27 +138,19 @@ public:
   // Have the data to be stored in canonical format?
   Bool asCanonical() const;
   
-  // Get the size of an uInt in external format (can be canonical or local).
-  uInt getUIntSize() const;
-  
-  // Get a unique column number for the column
-  // (it is only unique for this storage manager).
-  // This is used by SSMColumnIndArr to create a unique file name.
-  uInt getUniqueNr();
-  
   // Get the number of rows in this storage manager.
   uInt getNRow() const;
   
-  // Can the storage manager add rows? (yes)
+  // The storage manager can add rows.
   virtual Bool canAddRow() const;
   
-  // Can the storage manager delete rows? (yes)
+  // The storage manager can delete rows.
   virtual Bool canRemoveRow() const;
   
-  // Can the storage manager add columns? (not yet)
+  // The storage manager can add columns.
   virtual Bool canAddColumn() const;
   
-  // Can the storage manager delete columns? (not yet)
+  // The storage manager can delete columns.
   virtual Bool canRemoveColumn() const;
   
   // Make the object from the type name string.
@@ -180,27 +173,29 @@ public:
   // Return a pointer to the object.
   StManArrayFile* openArrayFile (ByteIO::OpenOption anOpt);
 
-  // find the dataptr for a given row/column
-  char* find(uInt aRowNr,     uInt aColNr, 
-	     uInt& aStartRow, uInt& anEndRow);
+  // Find the bucket containing the column and row and return the pointer
+  // to the beginning of the column data in that bucket.
+  // It also fills in the start and end row for the column data.
+  char* find (uInt aRowNr,     uInt aColNr, 
+	      uInt& aStartRow, uInt& anEndRow);
 
-  // add a new bucket and get its bucketnumber
+  // Add a new bucket and get its bucket number.
   uInt getNewBucket();
 
-  // return a BucketNr
-  char*  getBucket(const uInt aBucketNr);
+  // Read the bucket (if needed) and return the pointer to it.
+  char* getBucket (uInt aBucketNr);
 
-  // remove a bucketnr
-  void removeBucket(const uInt aBucketNr);
+  // Remove a bucket from the bucket cache.
+  void removeBucket (uInt aBucketNr);
 
-  // get rows per bucket for a given column
-  uInt getRowsPerBucket(uInt aColumn) const;
+  // Get rows per bucket for the given column.
+  uInt getRowsPerBucket (uInt aColumn) const;
 
-  // return a pointer to the StringHandler
+  // Return a pointer to the (one and only) StringHandler object.
   SSMStringHandler* getStringHandler();
 
   // <group>
-  // callbacks for BucketCache
+  // Callbacks for BucketCache access.
   static char* readCallBack (void* anOwner, const char* aBucketStorage);
   static void writeCallBack (void* anOwner, char* aBucketStorage,
                              const char* aBucket);
@@ -216,6 +211,7 @@ private:
   SSMBase& operator= (const SSMBase& that);
   
   // (Re)create the index, file, and cache object.
+  // It is used when all rows are deleted from the table.
   void recreate();
   
   // Flush and optionally fsync the data.
@@ -239,13 +235,14 @@ private:
   
   // Let the storage manager initialize itself.
   // It is used by create and open.
-  void init(Bool doMakeIndex);
+  // Optionally it creates the index.
+  void init (Bool doMakeIndex);
   
-  // get the number of indices available
+  // Get the number of indices in use.
   uInt getNrIndices() const;
   
   // Add rows to the storage manager.
-  // Per column it extends number of rows
+  // Per column it extends number of rows.
   virtual void addRow (uInt aNrRows);
   
   // Delete a row from all columns.
@@ -254,7 +251,7 @@ private:
   // Do the final addition of a column.
   virtual void addColumn (DataManagerColumn*);
   
-  // Remove a column from the data file
+  // Remove a column from the data file.
   virtual void removeColumn (DataManagerColumn*);
   
   // Create a column in the storage manager on behalf of a table column.
@@ -282,15 +279,16 @@ private:
   // Construct the cache object (if not constructed yet).
   void makeCache();
   
-  // Read the index (at the end of the file).
-  void readIndex();
+  // Read the header..
+  void readHeader();
   
-  // fill the indexbuckets
-  void fillIndexBuckets();
+  // Read the index from its buckets.
+  void readIndexBuckets();
 
-  // Write the index (at the end of the file).
+  // Write the header and the indices.
   void writeIndex();
-  
+
+
   //# Declare member variables.
   // Name of data manager.
   String       itsDataManName;
@@ -357,9 +355,6 @@ private:
   // Has the data changed since the last flush?
   Bool isDataChanged;
   
-  // The size of a uInt in external format (local or canonical).
-  uInt itsUIntSize;
-  
   // Have the data to be stored in canonical or local format.
   Bool isCanonical;
   
@@ -389,11 +384,6 @@ inline uInt SSMBase::getNRow() const
 inline uInt SSMBase::getBucketSize() const
 {
   return itsBucketSize;
-}
-
-inline uInt SSMBase::getUIntSize() const
-{
-  return itsUIntSize;
 }
 
 inline Bool SSMBase::asCanonical() const
