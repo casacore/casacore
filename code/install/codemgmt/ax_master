@@ -2168,3 +2168,4 @@
 11 138 src rm doc/html/navpages/ref/reference.html
 11 138 src rm doc/html/navpages/ref/makefile
 11 138 src rm doc/html/aips.html
+11 138 src rm trial/implement/Fitting/test/dNonLinearFitLM.cc
