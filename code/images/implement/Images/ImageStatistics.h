@@ -32,14 +32,23 @@
 #endif
 
 #include <aips/aips.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Containers/Block.h>
+#include <aips/Arrays/Vector.h>
 #include <trial/Images/ImageStatsBase.h>
+#include <trial/Lattices/LatticeProgress.h>
+#include <trial/Lattices/TiledCollapser.h>
+#include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
-template <class T> class ImageInterface;
+#include <trial/Tasking/ProgressMeter.h>
+#include <aips/Utilities/String.h>
+template <class T> class MaskedImage;
 template <class T> class PagedArray;
-template <class T> class Vector;
+
 class IPosition;
 class LogIO;
 class CoordinateSystem;
+
 
 // <summary> Displays various statistics from an image</summary>
 // <use visibility=export>
@@ -49,6 +58,7 @@ class CoordinateSystem;
 // 
 // <prerequisite>
 //   <li> ImageStatsBase (base class)
+//   <li> MaskedImafe
 //   <li> ImageInterface
 // </prerequisite>
 //
@@ -100,7 +110,7 @@ class CoordinateSystem;
 //      
 //      LogOrigin or("myClass", "myFunction(...)", WHERE);
 //      LogIO os(or);
-//      ImageStatistics<Float> stats(inImage, os);
+//      ImageStatistics<Float> stats(SubImage<FLoat>(inImage), os);
 //      
 //// Set cursor axes to see statistics of yz planes (0 relative)
 //
@@ -139,7 +149,7 @@ class CoordinateSystem;
 // </example>
 //
 // <note role=caution>
-// Note that if the <src>ImageInterface</src> object goes out of scope, this
+// Note that if the <src>MaskedImage</src> object goes out of scope, this
 // class will retrieve and generate rubbish as it just maintains a pointer
 // to the image.
 // </note>
@@ -162,7 +172,6 @@ class CoordinateSystem;
 //   <li> Standard errors on statistical quantities
 //   <li> Median, other more exotic statistics.  Life made difficult by accumulation
 //        image approach
-//   <li> Memory model is poor
 // </todo>
 //
 
@@ -171,8 +180,16 @@ template <class T> class ImageStatistics : public ImageStatsBase
 public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
-   ImageStatistics (const ImageInterface<T>& image, 
-                    LogIO& os);
+// You can also specify whether you want to see progress meters or not.
+   ImageStatistics (const MaskedImage<T>& image, 
+                    LogIO& os,
+                    Bool showProgress=True);
+
+// Constructor takes the image only. In the absence of a logger you get no messages.
+// This includes error messages and potential listing of the statistics.
+// You can also specify whether you want to see progress meters or not.
+   ImageStatistics (const MaskedImage<T>& image,
+                    Bool showProgress=True);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage image 
 // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -191,16 +208,6 @@ public:
 // is to set the cursor axes to all axes in the image.
    Bool setAxes (const Vector<Int>& cursorAxes);
 
-// Set the region of interest of the image.    Currently, just a blc and trc 
-// are available (the increment is always set to unity at present).
-// Illegal or unspecified values are given 0 (blc) or the image shape (trc).
-// If <src>listRegion</src> is <src>True</src> then the selected region is listed
-// to the logger.  The default state of the class is to use the entire image.
-   Bool setRegion (const IPosition &blc, 
-                   const IPosition &trc,
-                   const IPosition &inc,
-                   const Bool& listRegion=True);
-
 // You may specify a pixel intensity range as either one for which 
 // all pixels in that range are included or one for which all pixels 
 // in that range are excluded.   One or the other of <src>include</src> 
@@ -213,13 +220,16 @@ public:
 // of <src>False</src> indicates that both an inclusion and exclusion 
 // range were given or that the internal state of the class is bad.   If you don't
 // call this function, the default state of the class  is to include all pixels.
-   Bool setInExCludeRange(const Vector<Double>& include,
-                          const Vector<Double>& exclude);
+   Bool setInExCludeRange(const Vector<T>& include,
+                          const Vector<T>& exclude);
 
 // This function allows you to control whether the statistics are written to
 // the output stream if you are also making a plot.  A return value of 
 // <src>False</src> indicates that the internal state of the class is bad.
-// The default state of the class is to not list the output when making a plot. 
+// If you have created the <src>ImageStatistics</src> object without
+// a <src>LogIO</src> object, you won't see any listings, but no error
+// conditions will be generated.  The default state of the class is to 
+// not list the output when making a plot. 
    Bool setList(const Bool& doList);
 
 // This functions enable you to specify which statistics you would like to
@@ -268,77 +278,43 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
-// Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
+// Set a new MaskedImage object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
-   Bool setNewImage (const ImageInterface<T>& image);
+   Bool setNewImage (const MaskedImage<T>& image);
 
 private:
 
 
 // Data
 
-   LogIO &os_p;
-   const ImageInterface<T>* pInImage_p;
+   LogIO os_p;
+
+   const MaskedImage<T>* pInImage_p;
+   PagedArray<T>* pStoreImage_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
    Vector<Int> nxy_p, statsToPlot_p;
-   Vector<Float> range_p;
+   Vector<T> range_p;
    PGPlotter plotter_p;
-   Bool doList_p;
-   Bool noInclude_p, noExclude_p;
-   Bool goodParameterStatus_p;
-   Bool needStorageImage_p;
-   Bool doneSomeGoodPoints_p, someGoodPointsValue_p;
-   IPosition minPos_p, maxPos_p, blc_p, trc_p, inc_p;
-   PagedArray<Double>* pStoreImage_p;
+   Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
+   Bool needStorageImage_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
+   Bool haveLogger_p, showProgress_p;
+   IPosition minPos_p, maxPos_p, blcParent_p;
+
 
 
 // Functions
 
-// Accumulate statistics from this cursor chunk
-   void accumulate       (Int& nIter,
-                          const Int& nVirCursorIter,
-                          const IPosition& cursorPos,
-                          const Array<T>& cursor);
-
-// Update accumulation sums from this datum
-   void accumulate2      (Double& sum,
-                          Double& sumsq,
-                          Double& sMin,
-                          Double& sMax,
-                          Int& nPts,
-                          IPosition& tMinPos,
-                          IPosition& tMaxPos,
-                          const Int& i,
-                          const IPosition& pos,
-                          const Double& datum);
-
 // Calculate statistic from accumulation image and return in an array
    Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
-
-// Copy the cursor into the output array
-   void copyArray        (Array<T>& slice, 
-                          const Array<Double>& cursor);
-
 
 // Copy storage image from other object to *this object
    void copyStorageImage(const ImageStatistics<T> &other);
 
-// Create a new storage image
-   Bool generateStorageImage ();
-
-// List the statistics
-   Bool listStats         (const IPosition& dPos, 
-                           const Matrix<Float>& ord);
-
-// Plot the statistics
-   Bool plotStats         (const IPosition& dPos,
-                           const Matrix<Float>& ord);
-
 // Find the next good or bad point in an array
-   Bool findNextDatum     (Int& iFound,
-                           const Int& n,
-                           const float* const pn,
-                           const Int& iStart,
+   Bool findNextDatum     (uInt& iFound,
+                           const uInt& n,
+                           const Vector<T>& mask,
+                           const uInt& iStart,
                            const Bool& findGood);
 
 // Find the next label in a list of comma delimitered labels
@@ -346,46 +322,48 @@ private:
                            Int& iLab,
                            String& label);
 
+// Create a new storage image
+   Bool generateStorageImage (); 
+
 // Examine an array and determine how many segments of good points it consists 
 // of.    A good point occurs if the array value is greater than zero.
-   void lineSegments      (Int& nSeg, 
-                           Vector<Int>& start,
-                           Vector<Int>& nPts,
-                           const float* const pn,
-                           const Int& n);
+   void lineSegments (uInt& nSeg,
+                      Vector<uInt>& start,
+                      Vector<uInt>& nPts,
+                      const Vector<T>& mask);
 
-// Find the location in the statistics storage image for the start of a
-// statistics slice at the given location in the input image.
-   IPosition locInStats   (const IPosition& imagePosition);
+// List the statistics
+   Bool listStats         (const IPosition& dPos,
+                           const Matrix<Float>& ord);
 
-// Given a location in the storage image, convert those locations on the
+// Given a location in the storage image, convert those locations on the   
 // non-statistics axis (the last one) to account for the lattice subsectioning
    IPosition locInImage (const IPosition& storagePosition);
-
-
+ 
 // Draw each Y-axis sublabel in a string with a different colour
-   void multiColourYLabel (const String& LRLoc,
-                           String& label,
+   void multiColourYLabel (String& label,
+                           PGPlotter& plotter,
+                           const String& LRLoc,
                            const Vector<Int>& colours,
                            const Int& nLabs);
 
+
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
-   void multiPlot        (const Int& n1,
-                          const Vector<Float>& x,
-                          const Vector<Float>& y,
-                          const Vector<Float>& n);
+   void multiPlot        (PGPlotter& plotter,
+                          const Vector<T>& x,
+                          const Vector<T>& y,
+                          const Vector<T>& n);
 
 // Find min and max of good data in arrays specified by pointers
-   void minMax            (Bool& none,
-                           Float& dMin,
-                           Float& dMax,
-                           const Vector<Float>& d,
-                           const Vector<Float>& n,
-                           const Int& n1);
+   void minMax            (Bool& none,   
+                           T& dMin,
+                           T& dMax,
+                           const Vector<T>& d,
+                           const Vector<T>& n);
 
 // Find the next nice PGPLOT colour index 
-   Int niceColour         (Bool& initColours);
+   Int niceColour         (Bool& initColours); 
 
 // Convert pixel coordinate to world coordinate string
    void pix2World         (Vector<String>& sWorld,
@@ -393,20 +371,221 @@ private:
                            const Vector<Double>& pixel,
                            const Int& prec);
 
+// Plot the statistics
+   Bool plotStats         (const IPosition& dPos, 
+                           const Matrix<T>& ord,
+                           PGPlotter& plotter);
+
 // Retrieve a statistic from the accumulation image and return in an array
    Bool retrieveStorageStatistic
-                          (Array<Double>& slice, const Int& ISTAT);
+                          (Array<T>& slice, const Int& ISTAT);
+
+// Check/set include and exclude pixel ranges
+   Bool setIncludeExclude (Vector<T>& range,
+                           Bool& noInclude,
+                           Bool& noExclude,
+                           const Vector<T>& include,
+                           const Vector<T>& exclude,
+                           ostream& os);
 
 // Find the shape of slice from the statistics image at one
 // spatial pixel
-   IPosition statsSliceShape ();
+   IPosition statsSliceShape (); 
 
 // See if there were some valid points found in the accumulation
-   Bool someGoodPoints ();
+   Bool someGoodPoints ();  
+
+// STretch min and max by 5%
+   void stretchMinMax (T& dMin, T& dMax);
+
 
 // Summarize the statistics found over the entire image
-   void summStats         ();
+   void summStats(); 
 
 };
 
+
+
+
+// <summary>
+// </summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> <linkto class=LatticeApply>LatticeApply</linkto>
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+// </motivation>
+//
+// <todo asof="1997/08/01">   
+//   <li> 
+// </todo>
+
+template <class T>
+class ImageStatsTiledCollapser : public TiledCollapser<T>, ImageStatsBase
+{
+
+public:
+// Constructor provides pixel selection range and whether that
+// range is an inclusion or exclusion range.  It also takes
+// the location of the start of the SubImage in the parent image
+    ImageStatsTiledCollapser(const Vector<T>& pixelRange, 
+                             Bool noInclude, 
+                             Bool noExclude,
+                             const IPosition& blcParent);
+
+// Initialize process, making some checks
+    virtual void init (uInt nOutPixelsPerCollapse);
+
+// Initialiaze the accumulator
+    virtual void initAccumulator (uInt n1, uInt n3);
+
+// Process the data in the current chunk. 
+    virtual void process (uInt accumIndex1, 
+                          uInt accumIndex3, 
+                          const T* inData, 
+                          const Bool* inMask,
+                          uInt inIncr, 
+                          uInt nrval,
+                          const IPosition& startPos, 
+                          const IPosition& shape);
+
+// End the accumulation process and return the result arrays
+    virtual void endAccumulator(Array<T>& result,
+                                Array<Bool>& resultMask,
+                                const IPosition& shape);
+
+// Can handle null mask
+   virtual Bool canHandleNullMask() const {return True;};
+
+// Find the location of the minimum and maximum data values
+// in the input image.
+    void minMaxPos(IPosition& minPos, IPosition& maxPos);
+
+
+private:
+    Vector<T> range_p;
+    Bool noInclude_p, noExclude_p;
+    IPosition minPos_p, maxPos_p, blcParent_p;
+
+    Block<NumericTraits<T>::PrecisionType>* pSum_p;
+    Block<NumericTraits<T>::PrecisionType>* pSumSq_p;
+    Block<uInt>* pNPts_p;
+    Block<T>* pMin_p;
+    Block<T>* pMax_p;
+    Block<Bool>* pInitMinMax_p;
+
+    uInt n1_p;
+    uInt n3_p;
+
+// Has to be implemented here because of g++ bug not allowing
+// the NumericTraits in the call sequence if in .cc
+    void accumulate(uInt& nPts,
+                    NumericTraits<T>::PrecisionType& sum,
+                    NumericTraits<T>::PrecisionType& sumSq,
+                    T& dataMin,
+                    T& dataMax,
+                    Int& minPos,
+                    Int& maxPos,
+                    Bool& minMaxInit,
+                    T datum,
+                    uInt& pos)
+{
+   nPts++;
+   sum += NumericTraits<T>::PrecisionType(datum);
+   sumSq += NumericTraits<T>::PrecisionType(datum*datum);
+   
+   if (minMaxInit) {
+      dataMin = datum;
+      dataMax = datum;
+      minPos = pos;
+      maxPos = pos;
+      minMaxInit = False;
+   } else {
+      if (datum < dataMin) {
+         dataMin = datum;
+         minPos = pos;
+      }
+      if (datum > dataMax) {
+         dataMax = datum;
+         maxPos = pos;
+      }
+   }
+}
+
+};
+
+
+
+// <summary> Provides a progress meter for the ImageStatistics class </summary>
+// <use visibility=export>
+// 
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+// 
+// <prerequisite>
+//   <li> <linkto module=Lattices>LatticeProgress</linkto> 
+// </prerequisite>
+//
+// <etymology>
+// Display a progress meter for the ImageStatistics class
+// </etymology>
+//
+// <synopsis>
+//   Progress meters can be displayed by the LatticeApply class 
+//   which is used by ImageStatistics in order to optimally iterate
+//   through the image.  To do this,  one must derive a 
+//   class from LatticeProgress. LatticeApply calls methods declared 
+//   in LatticeProgress and  implemented in the derived class.
+// </synopsis>
+//
+// <motivation>
+//  I like progress meters !
+// </motivation>
+//
+// <todo asof="1998/01/10">
+// </todo>
+ 
+
+class ImageStatisticsProgress : public LatticeProgress
+{
+public:
+
+// Constructor makes a null object
+    ImageStatisticsProgress() : itsMeter(0) {};
+
+// Destructor deletes the ProgressMeter pointer
+    virtual ~ImageStatisticsProgress();
+
+// Initialize this object.  Here we create the ProgressMeter
+// This function is called by the <src>init</src> in LatticeProgress
+    virtual void initDerived();
+
+// Tell the number of steps done so far.
+    virtual void nstepsDone (uInt nsteps);
+
+// The process has ended so clean things up.
+    virtual void done();
+
+private:
+    ProgressMeter* itsMeter;
+};
+
 #endif
+
