@@ -17,7 +17,7 @@ Back      uvw: [-51.3123, 86.4121, -0.00582302]
 Make uvw from Baseline
 Baseline: [100, 10, 1][5.71059, 0.570096] deg
 Direction:[0.612372, 0.353553, 0.707107][30, 45] deg
-uvw:      [41.3397, 64.0657, 65.4799][57.167, 40.6561] deg
+uvw:      [58.6603, -56.9946, 58.4088][-44.1749, 35.5322] deg
 --------------------------------------
 Testing all conversions forward/backward
 All forward/backward conversions: ok
@@ -38,7 +38,7 @@ radius:         39.8372
 getXRecordValue:[23 m, 23 m, 23 m]
 putVector:      [30, 40, 0], [30, 40, 0]
 VQ constructor: [23, 23, 23]
-Pos constructor:[-7.07107, 3.03085e-15, 49.4975]
+Pos constructor:[49.4975, 4.32978e-16, -7.07107]
 Q constructor:  [0, 0, 50]
 QV constructor: [0.57735, 0.57735, 0.57735]
 QV constructor: [19.6299, 19.6299, 19.6299]
