@@ -15,3 +15,16 @@ to handle relative coordinates (pixel or world)
 ALso flexibility for different world coordinate format
 types was imporved and offered wherever a world coordinate
 is used.
+
+change id: 0059
+ author:   Neil Killeen
+ date:     2000/12/04
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Coordinates
+ type:     Code Documentation Test
+ category: New
+ summary:  Support added for relative coordinates
+The coordinates classes have been imporved to offer
+support for relative coordinates (world or pixel)
