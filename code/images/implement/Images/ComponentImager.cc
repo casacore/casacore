@@ -141,52 +141,60 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
   // Setup an iterator to step through the image in chunks that can fit into
   // memory. Go to a bit of effort to make the chunck size as large as
   // possible but still minimize the number of tiles in the cache.
-  IPosition chunckShape = imageShape;
+  IPosition chunkShape = imageShape;
   {
     const IPosition tileShape = image.niceCursorShape();
-    chunckShape(latAxis) = tileShape(latAxis);
-    chunckShape(longAxis) = tileShape(longAxis);
+    chunkShape(latAxis) = tileShape(latAxis);
+    chunkShape(longAxis) = tileShape(longAxis);
   }
   IPosition pixelShape = imageShape;
   pixelShape(latAxis) = pixelShape(longAxis) = 1;
+  LatticeStepper pixelStepper(imageShape, pixelShape);
 
-  LatticeIterator<Float> chunkIter(image, chunckShape);
+  LatticeIterator<Float> chunkIter(image, chunkShape);
   const uInt nDirs = imageShape(latAxis) * imageShape(longAxis);
   Matrix<Flux<Double> > pixelVals(nDirs, nFreqs);
   Vector<MVDirection> dirVals(nDirs);
+  Vector<Bool> pixelFlag(nDirs);
   const uInt naxis = imageShape.nelements();
-  IPosition chunkOrigin(naxis), pixelPosition(naxis);
+  IPosition pixelPosition(naxis);
   Vector<Double> pixelDir(2);
   Vector<Double> worldDir(2);
+  uInt d;
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-    chunkOrigin = chunkIter.position();
-    LatticeStepper pixelStepper(chunckShape, pixelShape);
-    uInt d = 0;
-    for (pixelStepper.reset(); !pixelStepper.atEnd(); pixelStepper++) {
+    pixelStepper.subSection(chunkIter.position(),
+			    chunkIter.position() + chunkShape - 1);
+    for (pixelStepper.reset(), d = 0; 
+	 !pixelStepper.atEnd(); pixelStepper++, d++) {
       pixelPosition = pixelStepper.position();
-      pixelDir(0) = pixelPosition(latAxis) + chunkOrigin(latAxis);
-      pixelDir(1) = pixelPosition(longAxis) + chunkOrigin(longAxis);
+      //      cout <<  pixelPosition << endl;
+      pixelDir(0) = pixelPosition(latAxis);
+      pixelDir(1) = pixelPosition(longAxis);
       if (!dirCoord.toWorld(worldDir, pixelDir)) {
 // I am not sure what to do here, probably this message should be logged.
    	cerr << "ComponentImager::Pixel at " << pixelDir 
    	     << " cannot be projected" << endl;
+	pixelFlag(d) = True;
       } else {
 	dirVals(d) = MVDirection(worldDir(0), worldDir(1));
-	d++;
+	pixelFlag(d) = False;
       }
     }
     list.sample(pixelVals, dirVals, dirRef, pixelSize, freqValues, freqRef);
     Array<Float>& imageChunk = chunkIter.rwCursor();
     for (pixelStepper.reset(), d = 0; !pixelStepper.atEnd(); 
 	 pixelStepper++, d++) {
-      pixelPosition = pixelStepper.position();
-      for (uInt f = 0; f < nFreqs; f++) {
-	pixelPosition(freqAxis) = f;
-	const Flux<Double>& thisFlux = pixelVals(d, f);
-	for (uInt s = 0; s < nStokes; s++) {
-	  pixelPosition(polAxis) = s;
-	  imageChunk(pixelPosition) += 
-	    static_cast<Float>(thisFlux.value(s).real());
+      if (pixelFlag(d) == False) {
+	pixelPosition = pixelStepper.position();
+	//	cout <<  pixelPosition << endl;
+	for (uInt f = 0; f < nFreqs; f++) {
+	  if (freqAxis >= 0) pixelPosition(freqAxis) = f;
+	  const Flux<Double>& thisFlux = pixelVals(d, f);
+	  for (uInt s = 0; s < nStokes; s++) {
+	    if (polAxis >= 0) pixelPosition(polAxis) = s;
+	    imageChunk(pixelPosition) += 
+	      static_cast<Float>(thisFlux.value(s).real());
+	  }
 	}
       }
     }
