@@ -350,7 +350,9 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        }
 
 
-// Possibly make Direction reference conversion machine
+// Possibly make Direction reference conversion machine.  We could use the internal
+// machine layer inside the DirectionCoordinate, but making the machine explicitly
+// this way is more general because it allows the ObsInfo to be different.
 
        MDirection::Convert machine;
        Bool madeIt = False;
@@ -435,7 +437,10 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           }
        }
 
-// Possibly make Frequency reference conversion machine
+// Possibly make Frequency reference conversion machine.  We could use the internal
+// machine layer inside the SpectralCoordinate, but making the machine explicitly
+// this way is more general because it allows the ObsInfos and SpectralCoordinates
+// to be different.
 
        Bool madeIt = False;
        MFrequency::Convert machine;
