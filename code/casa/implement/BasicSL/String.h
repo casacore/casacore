@@ -1,5 +1,5 @@
 //# String.h: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -743,7 +743,7 @@ extern StrRep _nilStrRep;
 extern String _nilString;
 
 //<summary>
-// Global Functions which concatinate Strings with the +operator.
+// Global Functions which concatenate Strings with the +operator.
 //</summary>
 
 // The global "+" operator is a method of concatination
@@ -761,8 +761,7 @@ String operator+(const char *x, const SubString &y);
 // </group>
 
 //<summary>
-// Global Functions which compare Strings with the boolean math comparitor
-// operators.
+// Global Functions which compare Strings with comparison operators.
 //</summary>
 
 // The global "less than, greater than, equal to and not equal to" operators

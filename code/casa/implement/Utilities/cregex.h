@@ -183,6 +183,14 @@ extern int obscure_syntax;
 
 /* This data structure is used to represent a compiled pattern.  */
 
+// <summary>
+// This data structure is used to represent a compiled pattern.
+// </summary>
+// <synopsis>
+// This data structure is used to represent a compiled pattern.
+// It is used by the regular expression functions in cregex.cc.
+// </synopsis>
+
 struct re_pattern_buffer
   {
     char *buffer;	/* Space holding the compiled pattern commands.  */
@@ -222,6 +230,14 @@ struct re_pattern_buffer
    the string of where the ith subexpression matched, and end[i] records
    one after the ending index.  start[0] and end[0] are analogous, for
    the entire pattern.  */
+
+// <summary>
+// Data structure to store register contents data in.
+// </summary>
+// <synopsis>
+// This data structure is used to store register contents data in.
+// It is used by the regular expression functions in cregex.cc.
+// </synopsis>
 
 struct re_registers
   {
