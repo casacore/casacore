@@ -93,7 +93,10 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsMask(0),
   itsScaleSizes(0),
   itsChoose(True),
-  itsDoSpeedup(False)
+  itsDoSpeedup(False),
+  itsIgnoreCenterBox(False),
+  itsSmallScaleBias(0.6),
+  itsStopAtLargeScaleNegative(False)
 {
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
@@ -135,7 +138,10 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsPsfConvScales(other.itsPsfConvScales),
    itsDirtyConvScales(other.itsDirtyConvScales),
    itsScaleMasks(other.itsScaleMasks),
-   itsStartingIter(other.itsStartingIter)
+   itsStartingIter(other.itsStartingIter),
+   itsIgnoreCenterBox(other.itsIgnoreCenterBox),
+   itsSmallScaleBias(other.itsSmallScaleBias),
+   itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative)
 {
 }
 
@@ -151,6 +157,10 @@ operator=(const LatticeCleaner<T> & other) {
     itsDirtyConvScales = other.itsDirtyConvScales;
     itsScaleMasks = other.itsScaleMasks;
     itsStartingIter = other.itsStartingIter;
+    itsIgnoreCenterBox = other.itsIgnoreCenterBox;
+    itsSmallScaleBias = other.itsSmallScaleBias;
+    itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
+
   }
   return *this;
 }
@@ -234,11 +244,20 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     }
   }
 
+  Int scale;
+  Vector<T> scaleBias(nScalesToClean);
+  if (nScalesToClean > 1) {
+    for (scale=0;scale<nScalesToClean;scale++) {
+      scaleBias(scale) = 1 - itsSmallScaleBias *
+	itsScaleSizes(scale)/itsScaleSizes(nScalesToClean-1);
+    }
+  } else {
+    scaleBias(0) = 1.0;
+  }
   AlwaysAssert(itsScalesValid, AipsError);
 
   // Find the peaks of the convolved Psfs
   Vector<T> maxPsfConvScales(nScalesToClean);
-  Int scale;
   for (scale=0;scale<nScalesToClean;scale++) {
     IPosition positionPeakPsfConvScales(model.shape().nelements(), 0);
 
@@ -258,10 +277,16 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   // Define a subregion for the inner quarter
   IPosition blcDirty(model.shape().nelements(), 0);
   IPosition trcDirty(model.shape()-1);
-  for (Int i=0;i<Int(model.shape().nelements());i++) {
-    blcDirty(i)=model.shape()(i)/4;
-    trcDirty(i)=blcDirty(i)+model.shape()(i)/2-1;
-    if(trcDirty(i)<0) trcDirty(i)=1;
+
+  if (itsIgnoreCenterBox) {
+    os << "Cleaning entire image" << LogIO::POST;
+  } else {
+    os << "Cleaning inner quarter of image" << LogIO::POST;
+    for (Int i=0;i<Int(model.shape().nelements());i++) {
+      blcDirty(i)=model.shape()(i)/4;
+      trcDirty(i)=blcDirty(i)+model.shape()(i)/2-1;
+      if(trcDirty(i)<0) trcDirty(i)=1;
+    }
   }
   LCBox centerBox(blcDirty, trcDirty, model.shape());
 
@@ -287,7 +312,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   for (itsIteration=itsStartingIter; itsIteration < itsMaxNiter;
        itsIteration++) {
 
-
     // Find the peak residual
     strengthOptimum = 0.0;
     optimumScale = 0;
@@ -308,6 +332,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       // Remember to adjust the position for the window and for 
       // the flux scale
       maxima(scale)/=maxPsfConvScales(scale);
+      maxima(scale) *= scaleBias(scale);
       posMaximum[scale]+=blcDirty;
       if(abs(maxima(scale))>abs(strengthOptimum)) {
         optimumScale=scale;
@@ -330,7 +355,16 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       converged = True;
       break;
     }
-    //    2. call back: the return value tells us to stop
+    //    2. negatives on largest scale?
+    if (itsStopAtLargeScaleNegative && 
+	optimumScale == (nScalesToClean-1) && 
+	strengthOptimum < 0.0) {
+      os << "Reached negative on largest scale" << LogIO::POST;
+      converged = False;
+      break;
+    }
+
+
 
     if(progress) {
       progress->info(False, itsIteration, itsMaxNiter, model, maxima,
