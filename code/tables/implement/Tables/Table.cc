@@ -144,15 +144,6 @@ Table::~Table()
     }
 }
 
-//# Do not write in case of an exception.
-void Table::cleanup()
-{
-    if (baseTabPtr_p != 0) {
-	baseTabPtr_p->doNotWrite();
-    }
-    this->Table::~Table();
-}
-
 Table& Table::operator= (const Table& that)
 {
     if (isCounted_p  &&  baseTabPtr_p != 0) {

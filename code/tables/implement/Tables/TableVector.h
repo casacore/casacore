@@ -1,5 +1,5 @@
 //# TableVector.h: Templated readonly table column vectors
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,7 +113,7 @@ class String;
 
 
 template<class T>
-class ROTableVector : public Cleanup
+class ROTableVector
 {
 public:
     // The default constructor creates a null table vector.
@@ -146,10 +146,6 @@ public:
 
     // Destruct the object.
     ~ROTableVector();
-
-    //*display 8
-    // Cleanup in case of exceptions.
-    void cleanup();
 
     // Test if the table vector is null, i.e. has no actual vector.
     // This is the case if the default constructor has been used.
@@ -302,10 +298,6 @@ public:
 
     // Destruct the object.
     ~TableVector();
-
-    //*display 8
-    // Cleanup in case of exceptions.
-    void cleanup();
 
     // Make a reference to another TableVector.
     void reference (const TableVector<T>&);

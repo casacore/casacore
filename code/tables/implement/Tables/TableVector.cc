@@ -1,5 +1,5 @@
 //# TableVector.cc: Templated readonly table column vectors
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,10 +76,6 @@ ROTableVector<T>::ROTableVector (const ROTableColumn& column)
 template<class T>
 ROTableVector<T>::~ROTableVector()
     { destruct(); }
-
-template<class T>
-void ROTableVector<T>::cleanup ()
-    { this->ROTableVector<T>::~ROTableVector(); }
 
 template<class T>
 void ROTableVector<T>::checkLink ()
@@ -179,10 +175,6 @@ TableVector<T>::TableVector (const TableColumn& column)
 template<class T>
 TableVector<T>::~TableVector()
 {}
-
-template<class T>
-void TableVector<T>::cleanup ()
-    { this->TableVector<T>::~TableVector(); }
 
 
 //# Referencing another vector.

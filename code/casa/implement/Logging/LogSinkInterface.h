@@ -1,5 +1,5 @@
 //# LogSinkInterface.h: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,11 @@
 #if !defined(AIPS_LOG_SINK_INTERFACE_H)
 #define AIPS_LOG_SINK_INTERFACE_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Logging/LogFilter.h>
 
-#include <aips/Exceptions/Excp.h>
-
+//# Forward Declarations
 class TableLogSink;
 
 // <summary>
@@ -95,7 +95,8 @@ class TableLogSink;
 // </todo>
 
 
-class LogSinkInterface : public Cleanup {
+class LogSinkInterface
+{
 public:
     // Create with a <src>NORMAL</src> filter.
     LogSinkInterface();
@@ -133,9 +134,6 @@ public:
     TableLogSink &castToTableLogSink();
     const TableLogSink &castToTableLogSink() const;
 
-    // This will no longer be needed when "real" exceptions are available
-    // in all compilers.
-    virtual void cleanup();
 private:
     LogFilter filter_p;
 };

@@ -1,5 +1,5 @@
 //# PtrHolder.cc: Hold pointers to be deleted when exceptions are thrown
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,19 +28,18 @@
 
 #include <aips/Utilities/PtrHolder.h>
 
-template<class T> PtrHolder<T>::PtrHolder() : ptr_p(0), isCarray_p(False)
-{
-    // Nothing
-}
+template<class T> PtrHolder<T>::PtrHolder()
+: ptr_p     (0),
+  isCarray_p(False)
+{}
 
-template<class T> PtrHolder<T>::PtrHolder(T *pointer, Bool isCarray)
-: ptr_p(pointer), isCarray_p(isCarray)
-{
-    // Nothing
-}
+template<class T> PtrHolder<T>::PtrHolder (T *pointer, Bool isCarray)
+: ptr_p     (pointer),
+  isCarray_p(isCarray)
+{}
 
-template<class T> void PtrHolder<T>::set(T *pointer, Bool isCarray, 
-				    Bool deleteCurrentPtr)
+template<class T> void PtrHolder<T>::set (T *pointer, Bool isCarray, 
+					  Bool deleteCurrentPtr)
 {
     if (deleteCurrentPtr) {
 	delete_pointer_if_necessary();
@@ -49,7 +48,7 @@ template<class T> void PtrHolder<T>::set(T *pointer, Bool isCarray,
     isCarray_p = isCarray;
 }
 
-template<class T> void PtrHolder<T>::clear(Bool deleteCurrentPtr)
+template<class T> void PtrHolder<T>::clear (Bool deleteCurrentPtr)
 {
     if (deleteCurrentPtr) {
 	delete_pointer_if_necessary();
@@ -72,9 +71,4 @@ template<class T> void PtrHolder<T>::delete_pointer_if_necessary()
 template<class T> PtrHolder<T>::~PtrHolder()
 {
     delete_pointer_if_necessary();
-}
-
-template<class T> void PtrHolder<T>::cleanup()
-{
-    this->PtrHolder<T>::~PtrHolder();
 }

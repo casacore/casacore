@@ -63,23 +63,18 @@ TableParse::TableParse ()
 TableParse::TableParse (const Table& table, const String& shorthand)
 : shorthand_p (shorthand),
   table_p     (table)
-{
-    table_p.makePermanent();
-}
+{}
 
 TableParse::TableParse (const TableParse& that)
 : shorthand_p (that.shorthand_p),
   table_p     (that.table_p)
-{
-    table_p.makePermanent();
-}
+{}
 
 TableParse& TableParse::operator= (const TableParse& that)
 {
     if (this != &that) {
 	shorthand_p = that.shorthand_p;
 	table_p     = that.table_p;
-	table_p.makePermanent();
     }
     return *this;
 }
@@ -141,7 +136,6 @@ TableParseSelect::TableParseSelect()
 {
     parseList_p = new List<TableParse>;
     parseIter_p = new ListIter<TableParse> (parseList_p);
-    table_p.makePermanent();
 }
 
 TableParseSelect::~TableParseSelect()
@@ -1020,7 +1014,6 @@ void TableParseSelect::execute()
     }
     //# Keep the table for later.
     table_p = table;
-    table_p.makePermanent();
 }    
 
 void TableParseSelect::show (ostream& os) const

@@ -1,5 +1,5 @@
 //# TableIter.h: Iterate through a Table
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Compare.h>
-#include <aips/Exceptions/Excp.h>
 
 //# Forward Declarations
 class BaseTableIterator;
@@ -115,7 +114,7 @@ template<class T> class Block;
 // </todo>
 
 
-class TableIterator : public Cleanup
+class TableIterator
 {
 public:
 
@@ -170,10 +169,6 @@ public:
     TableIterator (const TableIterator&);
 
     ~TableIterator();
-
-    //*display 8
-    // Needed for Cleanup.
-    void cleanup();
 
     // Assignment (copy semantics).
     TableIterator& operator= (const TableIterator&);

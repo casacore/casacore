@@ -1,5 +1,5 @@
 //# TableLogSink.h: save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,9 +71,6 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	  readmeAddLine("Repository for software-generated logging messages");
     }
 
-    // Avoid double deletion by Cleanup.
-    log_table_p.makePermanent();
-
     // Attach the columns
     time_p.attach(log_table_p, columnName(TIME));
     priority_p.attach(log_table_p, columnName(PRIORITY));
@@ -116,9 +113,6 @@ TableLogSink::TableLogSink(const String &fileName)
 	LogSink::postGlobally(logMessage);
     }
 
-    // Avoid double deletion by Cleanup.
-    log_table_p.makePermanent();
-
     // Attach the columns
     roTime_p.attach(log_table_p, columnName(TIME));
     roPriority_p.attach(log_table_p, columnName(PRIORITY));
@@ -153,9 +147,6 @@ void TableLogSink::copy_other(const TableLogSink &other)
     roMessage_p.reference(other.roMessage_p);
     roLocation_p.reference(other.roLocation_p);
     roId_p.reference(other.roId_p);
-
-    // Avoid double deletion by Cleanup.
-    log_table_p.makePermanent();
 }
 
 TableLogSink::~TableLogSink()
@@ -239,9 +230,4 @@ void TableLogSink::concatenate(const TableLogSink &other)
 	location().put(offset+i, other.roLocation()(i));
 	objectID().put(offset+i, other.roObjectID()(i));
     }
-}
-
-void TableLogSink::cleanup()
-{
-    this->TableLogSink::~TableLogSink();
 }

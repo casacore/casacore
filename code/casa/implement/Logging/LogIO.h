@@ -29,12 +29,13 @@
 #if !defined(AIPS_LOGIO_H)
 #define AIPS_LOGIO_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Complex.h>
 
+//# Forward Declarations
 class LogSink;
 class LogOrigin;
 #if defined(AIPS_STDLIB)
@@ -156,7 +157,7 @@ class ostrstream;
 //        them?
 // </todo>
 
-class LogIO : public Cleanup
+class LogIO
 {
 public:
     // Special commands to the LogIO object
@@ -224,9 +225,6 @@ public:
     LogSinkInterface &localSink();
     const LogSinkInterface &localSink() const;
 
-    // Makes sure that the message is posted even if an exception is
-    // thrown.
-    virtual void cleanup();
 private:
     LogSink sink_p;
     LogMessage msg_p;

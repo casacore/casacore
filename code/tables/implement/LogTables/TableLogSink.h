@@ -1,5 +1,5 @@
 //# TableLogSink.h: Save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #if !defined(AIPS_TABLE_LOG_SINK_H)
 #define AIPS_TABLE_LOG_SINK_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Tables/Table.h>
@@ -37,6 +38,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
+//# Forward Declarations
 class TableDesc;
 
 // <summary>
@@ -171,9 +173,6 @@ public:
     // Concatenate the log table in "other" onto the end of our log table.
     void concatenate(const TableLogSink &other);
 
-    // This will non longer be needed when all compilers have "real"
-    // exceptions.
-    virtual void cleanup();
 private:
     // Undefined and inaccessible
     TableLogSink();

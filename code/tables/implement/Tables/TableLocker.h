@@ -1,5 +1,5 @@
 //# TableLocker.h: Class to hold a (user) lock on a table
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,7 +92,7 @@
 //# </todo>
 
 
-class TableLocker : public Cleanup
+class TableLocker
 {
 public:
     // The constructor acquires a read or write lock on a table.
@@ -111,10 +111,6 @@ public:
 
     // If locked, the destructor releases the lock and flushes the data.
     ~TableLocker();
-
-    // This function is used by the AIPS++ exception handling mechanism.
-    // It calls the destructor.
-    void cleanup();
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?

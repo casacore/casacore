@@ -1,5 +1,5 @@
 //# HashMap.h: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,13 +27,14 @@
 #if !defined(AIPS_HASHMAP_H_)
 #define AIPS_HASHMAP_H_
 
-
+//# Includes
 #include <aips/Containers/Block.h>
 #include <aips/Containers/List.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/RTTI/Typeinfo.h>
 
+//# Forward Declarations
 template<class key,class val> class ConstHashMapIter;
 extern void throw_invalid_hashmapiter_error();
 extern void throw_hashmapiter_init_error();
@@ -292,7 +293,7 @@ rtti_dcl_init_a2(HashMap);
 //   <li> fix this bug
 //   <li> start discussion of this possible extension
 // </todo>
-template<class key, class val> class HashMap : public Cleanup {
+template<class key, class val> class HashMap {
 friend class ConstHashMapIter<key,val>;
 private:
     enum HashMap_Constants { defaultSize_ = 131, defaultMaxLoad_ = 4 };
@@ -475,13 +476,8 @@ public:
     //
     virtual ~HashMap();
 
-    //
-    // Used to cleanup the class in the event of an exception.
-    //
-    void cleanup();
-
     // Macro to define the typeinfo member functions
-    rtti_dcl_mbrf_p1(TMPL_ARG2(HashMap,key,val), Cleanup);
+    rtti_dcl_mbrf(TMPL_ARG2(HashMap,key,val));
 
     enum {HashMapVersion = 1};
 

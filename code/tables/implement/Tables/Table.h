@@ -125,7 +125,7 @@ template<class T> class PtrBlock;
 // </todo>
 
 
-class Table : public Cleanup
+class Table
 {
 friend class ROTableColumn;
 friend class BaseTable;
@@ -236,11 +236,6 @@ public:
     // because the Table object may not be correct.
     // Of course, in that case the flush function could be called explicitly.
     ~Table();
-
-    // This function is used by the exception handling mechanism we have
-    // defined. It merely calls the destructor without flushing the data.
-    // When real exceptions are available it will be unnecessary.
-    void cleanup();
 
     // Assignment (reference semantics).
     Table& operator= (const Table&);

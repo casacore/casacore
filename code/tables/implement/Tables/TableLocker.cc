@@ -1,5 +1,5 @@
 //# TableLocker.cc: Class to hold a (user) lock on a table
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@ TableLocker::TableLocker (Table& table,
 			  uInt nattempts)
 : itsTable (table)
 {
-    itsTable.makePermanent();
     if (! itsTable.lock (type, nattempts)) {
 	String str = "write";
 	if (type == FileLocker::Read) {
@@ -49,9 +48,4 @@ TableLocker::TableLocker (Table& table,
 TableLocker::~TableLocker()
 {
     itsTable.unlock();
-}
-
-void TableLocker::cleanup()
-{
-    this->TableLocker::~TableLocker();
 }

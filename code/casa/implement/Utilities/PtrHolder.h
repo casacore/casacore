@@ -1,5 +1,5 @@
 //# PtrHolder.h: Hold and delete pointers not deleted by object destructors
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,17 +28,20 @@
 #if !defined(AIPS_PTRHOLDER_H)
 #define AIPS_PTRHOLDER_H
 
+//# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 
-// <summary> Hold and delete pointers not deleted by object destructors </summary>
+
+// <summary>
+// Hold and delete pointers not deleted by object destructors
+// </summary>
+
 // <use visibility=export>
 // <reviewed reviewer="troberts" date="1995/07/29" tests="tPtrHolder">
 // </reviewed>
 
 // <prerequisite>
 //   <li> module <linkto module=Exceptions>Exceptions</linkto>
-//   <li> class <linkto class=Cleanup>Cleanup</linkto>
 // </prerequisite>
 
 // <synopsis> 
@@ -65,26 +68,15 @@
 // </example>
 
 // <motivation>
-// Previously, our exception emulation not only called destructors of
-// objects, but it deleted all heap allocations. This caused some
-// problems with pointers being deleted twice, so we are changing it to
-// use the ARM mechanism, i.e. call the destructors of automatic
-// objects. However, this means that allocations in global functions, or
-// to temporary variables in member functions would not be cleaned up in
-// the face of exceptions. A small class to hold such pointers thus
-// seemed appropriate.
-//
-// This class will be useful for the same reasons when "real" exceptions are
-// available.
+// Avoid leaks when throwing/catching exceptions.
 // </motivation>
 
-// <todo asof="1994/07/19">
-//   <li> When real exceptions are available, <src>PtrHolder</src> 
-//        no longer needs to be derived from <src>Cleanup</src>.
+// <todo asof="2000/04/11">
+//   <li> Use the autoptr class from the Standard Library
 // </todo>
 
 
-template<class T> class PtrHolder : public Cleanup
+template<class T> class PtrHolder
 {
 public:
     // The default constructor uses a null pointer.
@@ -107,10 +99,6 @@ public:
     PtrHolder(T *pointer, Bool isCArray = False);
 
     ~PtrHolder();
-
-    // Used by the current exception emulation. Just calls the destructor.
-    // It will not be necessary when real exceptions are available.
-    void cleanup();
 
     // Set the pointer to a new value. If <src>deleteCurrentPtr </src>is
     // True (the default), then delete the existing pointer first. If

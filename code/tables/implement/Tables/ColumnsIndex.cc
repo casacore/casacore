@@ -1,5 +1,5 @@
 //# ColumnsIndex.cc: Index to a table
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,6 @@ ColumnsIndex::ColumnsIndex (const Table& table, const String& columnName,
 : itsLowerKeyPtr (0),
   itsUpperKeyPtr (0)
 {
-  itsTable.makePermanent();
   Vector<String> columnNames(1);
   columnNames(0) = columnName;
   create (table, columnNames, compareFunction, noSort);
@@ -53,7 +52,6 @@ ColumnsIndex::ColumnsIndex (const Table& table,
 			    const Vector<String>& columnNames,
 			    Compare* compareFunction, Bool noSort)
 {
-  itsTable.makePermanent();
   create (table, columnNames, compareFunction, noSort);
 }
 
@@ -61,7 +59,6 @@ ColumnsIndex::ColumnsIndex (const ColumnsIndex& that)
 : itsLowerKeyPtr (0),
   itsUpperKeyPtr (0)
 {
-  itsTable.makePermanent();
   copy (that);
 }
 
@@ -81,7 +78,6 @@ void ColumnsIndex::copy (const ColumnsIndex& that)
   if (this != &that) {
     deleteObjects();
     itsTable = that.itsTable;
-    itsTable.makePermanent();
     itsNrrow   = itsTable.nrow();
     itsNoSort  = that.itsNoSort;
     itsCompare = that.itsCompare;
@@ -187,7 +183,6 @@ void ColumnsIndex::create (const Table& table,
 			   Bool noSort)
 {
   itsTable = table;
-  itsTable.makePermanent();
   itsNrrow = itsTable.nrow();
   itsCompare = (compareFunction == 0  ?  compare : compareFunction);
   itsNoSort = noSort;

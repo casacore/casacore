@@ -1,5 +1,5 @@
 //# ForwardCol.cc: Virtual Column Engine forwarding to another column
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,25 +47,19 @@ ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable,
   refTable_p   (referencedTable),
   dataManName_p(dataManagerName),
   suffix_p     (suffix)
-{
-    refTable_p.makePermanent();
-}
+{}
 
 ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable,
 					  const String& dataManagerName)
 : refColumns_p (0),
   refTable_p   (referencedTable),
   dataManName_p(dataManagerName)
-{
-    refTable_p.makePermanent();
-}
+{}
 
 ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable)
 : refColumns_p (0),
   refTable_p   (referencedTable)
-{
-    refTable_p.makePermanent();
-}
+{}
 
 ForwardColumnEngine::~ForwardColumnEngine()
 {
@@ -101,7 +95,6 @@ void ForwardColumnEngine::setRefTable (const Table& refTable)
 {
     if (refTable_p.isNull()) {
 	refTable_p = refTable;
-	refTable_p.makePermanent();
     }
 }
 
@@ -324,7 +317,6 @@ void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
     }else{
 	origTable_p = Table (name);
     }
-    origTable_p.makePermanent();
     ROTableColumn origCol (origTable_p, colName_p);
     // Check if the column descriptions match.
     // If so, get the pointer to the original column.

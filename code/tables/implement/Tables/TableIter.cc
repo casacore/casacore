@@ -1,5 +1,5 @@
 //# TableIter.cc: Iterate through a Table
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,9 +34,7 @@
 
 TableIterator::TableIterator()
 : tabIterPtr_p (0)
-{
-    subTable_p.makePermanent();
-}
+{}
 
 TableIterator::TableIterator (const Table& tab,
 			      const String& key,
@@ -44,7 +42,6 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    subTable_p.makePermanent();
     Block<String> keys(1, key);
     Block<Int> ord(1, order);
     PtrBlock<ObjCompareFunc*> cmpFunc(1, static_cast<ObjCompareFunc*>(0));
@@ -59,7 +56,6 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    subTable_p.makePermanent();
     Block<Int> ord(keys.nelements(), order);
     PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
@@ -73,7 +69,6 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    subTable_p.makePermanent();
     PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
 						     orders, option);
@@ -87,7 +82,6 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    subTable_p.makePermanent();
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFuncs,
 						     orders, option);
     next();                            // get first subtable
@@ -96,7 +90,6 @@ TableIterator::TableIterator (const Table& tab,
 TableIterator::TableIterator (const TableIterator& iter)
 : tabIterPtr_p (0)
 {
-    subTable_p.makePermanent();
     operator= (iter);
 }
 
@@ -114,9 +107,6 @@ TableIterator& TableIterator::operator= (const TableIterator& iter)
 
 TableIterator::~TableIterator()
     { delete tabIterPtr_p; }
-
-void TableIterator::cleanup()
-    { this->TableIterator::~TableIterator(); }
 
 void TableIterator::reset()
 {
