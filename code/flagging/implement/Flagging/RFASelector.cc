@@ -36,15 +36,6 @@
 #include <trial/Flagging/RFASelector.h>
 #include <aips/stdio.h>
 
-Float map_U ( const RigidVector<Double,3> &uvw )
-{ return uvw(0); }
-Float map_V ( const RigidVector<Double,3> &uvw )
-{ return uvw(1); }
-Float map_W ( const RigidVector<Double,3> &uvw )
-{ return uvw(1); }
-Float map_UVD ( const RigidVector<Double,3> &uvw )
-{ return sqrt(uvw(0)*uvw(0)+uvw(1)*uvw(1)); }
-    
 // -----------------------------------------------------------------------
 // reformRange
 // Reforms an array of 2N elements into a [2,N] matrix
@@ -57,6 +48,15 @@ template<class T> Bool RFASelector::reformRange( Matrix<T> &rng,const Array<T> &
   return True;
 }
 
+template<class T> Array<T> fieldToArray( const RecordInterface &parm,const String &id );
+
+template<> Array<Int> fieldToArray<Int>( const RecordInterface &parm,const String &id )
+{ return parm.toArrayInt(id); }
+template<> Array<Double> fieldToArray<Double>( const RecordInterface &parm,const String &id )
+{ return parm.toArrayDouble(id); }
+template<> Array<String> fieldToArray<String>( const RecordInterface &parm,const String &id )
+{ return parm.toArrayString(id); }
+
 // -----------------------------------------------------------------------
 // RFASelector::parseRange
 // Returns a record field of 2N elements as a [2,N] matrix
@@ -65,13 +65,15 @@ template<class T> Bool RFASelector::parseRange( Matrix<T> &rng,const RecordInter
 {
   if( isFieldSet(parm,id) )
   {
-    try {
-      Array<T> arr;
-      parm.get(id,arr); // exception thrown here if types mismatch
+    try 
+    {
+      Array<T> arr( fieldToArray<T>(parm,id) );
       if( !reformRange(rng,arr) )
         throw( AipsError("") );
       return True;
-    } catch( AipsError x ) {
+    } 
+    catch( AipsError x ) 
+    {
       os<<"Illegal \""<<id<<"\" array\n"<<LogIO::EXCEPTION;
     }
   }
@@ -94,18 +96,7 @@ template Bool RFASelector::parseRange( Matrix<String>&,const RecordInterface&,co
 // -----------------------------------------------------------------------
 Bool RFASelector::parseTimes ( Array<Double> &times,const RecordInterface &parm,const String &id,Bool secs )
 {
-  if( fieldType(parm,id,TpDouble,TpArrayDouble) ) // double MJDs
-  {
-    parm.get(id,times);
-  }
-  else if( fieldType(parm,id,TpInt,TpArrayInt) )   // Int MJDs
-  {
-    Array<Int> tm;
-    parm.get(id,tm);
-    times.resize(tm.shape());
-    convertArray(times,tm);
-  }
-  else if( fieldType(parm,id,TpString,TpArrayString) ) // String date/times
+  if( fieldType(parm,id,TpString,TpArrayString) ) // String date/times
   {
     Array<String> tt( parm.asArrayString(id) );
     times.resize(tt.shape());
@@ -123,7 +114,11 @@ Bool RFASelector::parseTimes ( Array<Double> &times,const RecordInterface &parm,
     tt.freeStorage(ptt,deltt);
     times.putStorage(ptimes,deltimes);
   }
-  else
+  else if( isField(parm,id,isReal) ) // if not strings, try numeric MJDs
+  {
+    times = parm.toArrayDouble(id);
+  }
+  else                              // else can't parse
     return False;
   return True;
 }
@@ -177,7 +172,7 @@ Bool RFASelector::parseMinMax( Float &vmin,Float &vmax,const RecordInterface &sp
 // [min,max] has been specified
   if( spec.shape(f0).nelements()==1 && spec.shape(f0)(0) == 2 )
   {
-    Vector<Double> mm = spec.asArrayDouble(f0);
+    Vector<Double> mm = spec.toArrayDouble(f0);
     vmin=mm(0); vmax=mm(1);
     return True;
   }
@@ -197,7 +192,6 @@ Bool RFASelector::parseMinMax( Float &vmin,Float &vmax,const RecordInterface &sp
 // -----------------------------------------------------------------------
 void RFASelector::addClipInfo( const Vector<String> &expr,Float vmin,Float vmax,Bool clip )
 {
-  
   RFDataMapper *mapper = new RFDataMapper(expr);
   ClipInfo clipinfo = { mapper,vmin,vmax,clip };
   Block<ClipInfo> & block( mapper->type()==RFDataMapper::MAPROW ? sel_clip_row : sel_clip );
@@ -245,7 +239,7 @@ void RFASelector::parseClipField( const RecordInterface &spec,Bool clip )
         {
           if( isArray( spec.type(i) ) )
           {
-            Vector<Double> vec = spec.asArrayDouble(i);
+            Vector<Double> vec = spec.toArrayDouble(i);
             if( vec.nelements() == 1 )
               vmax=vec(0);
             else if( vec.nelements() == 2 )

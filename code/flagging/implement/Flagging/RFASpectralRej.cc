@@ -61,7 +61,7 @@ void RFASpectralRej::parseRegion ( const RecordInterface &parm )
   {
     Array<Double> freqarr;
     try {
-      freqarr = parm.asArrayDouble(RF_FREQS);
+      freqarr = parm.toArrayDouble(RF_FREQS);
       // make sure array is of the right shape (can be reformed into 2xN)
       if( freqarr.ndim()>2 || (freqarr.nelements()%2) !=0 )
         throw( AipsError("") );
@@ -87,7 +87,7 @@ void RFASpectralRej::parseRegion ( const RecordInterface &parm )
   {
     Array<Int> arr;
     try {
-      parm.get(RF_CHANS,arr);
+      arr = parm.toArrayInt(RF_CHANS);
       // make sure array is of the right shape (can be reformed into 2xN)
       if( arr.ndim()>2 || (arr.nelements()%2) !=0 )
         throw( AipsError("") );
