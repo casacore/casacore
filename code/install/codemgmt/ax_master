@@ -1977,3 +1977,4 @@
 08 080 src mv trial/scripts/results_manager.g trial/implement/guiutils/results_manager.g
 08 088 src mv trial/scripts/inputbox.g trial/implement/guiutils/inputbox.g
 08 088 src mv trial/scripts/displaylistbox.g trial/implement/guiutils/displaylistbox.g
+08 088 src mv trial/scripts/displaytext.g trial/implement/guiutils/displaytext.g
