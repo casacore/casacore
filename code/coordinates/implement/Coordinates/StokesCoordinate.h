@@ -83,6 +83,9 @@ public:
     // Always returns Coordinates::STOKES
     virtual Coordinate::Type type() const;
 
+    // Always returns "Stokes"
+    virtual String showType() const;
+
     // Always returns 1.
     // <group>
     virtual uInt nPixelAxes() const;

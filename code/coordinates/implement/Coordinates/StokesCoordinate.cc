@@ -88,6 +88,11 @@ Coordinate::Type StokesCoordinate::type() const
     return Coordinate::STOKES;
 }
 
+String StokesCoordinate::showType() const
+{
+    return String("Stokes");
+}
+
 uInt StokesCoordinate::nPixelAxes() const
 {
     return 1;

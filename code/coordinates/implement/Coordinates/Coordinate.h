@@ -130,6 +130,7 @@ public:
     // List the type of this Coordinate object. Generally you shouldn't have
     // to call this function, it is used mostly in the CoordinateSystem class.
     virtual Type type() const = 0;
+    virtual String showType() const = 0;
 
     // How many world/pixel axes are there in this coordinate? While the number
     // of world and pixel axes will generally be the same, it is not a 

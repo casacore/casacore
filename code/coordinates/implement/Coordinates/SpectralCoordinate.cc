@@ -100,6 +100,11 @@ Coordinate::Type SpectralCoordinate::type() const
     return Coordinate::SPECTRAL;
 }
 
+String SpectralCoordinate::showType() const
+{
+    return String("Spectral");
+}
+
 uInt SpectralCoordinate::nPixelAxes() const
 {
     return 1;

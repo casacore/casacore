@@ -179,6 +179,11 @@ Coordinate::Type TabularCoordinate::type() const
     return Coordinate::TABULAR;
 }
 
+String TabularCoordinate::showType() const
+{
+    return String("Tabular");
+}
+
 uInt TabularCoordinate::nPixelAxes() const
 {
     return 1;
@@ -411,7 +416,7 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
       set_error("The TabularCoordinates have differing numbers of entries in the pixel value table");
       return False;
    }
-   for (Int i=0; i<data1.nelements(); i++) {
+   for (uInt i=0; i<data1.nelements(); i++) {
       if (!::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing pixel value tables");
          return False;

@@ -119,6 +119,9 @@ public:
     // Return <src>Coordinate::DIRECTION</src>
     virtual Coordinate::Type type() const;
 
+    // Returns "Direction"
+    virtual String showType() const;
+
     // Always 2.
     // <group>
     virtual uInt nPixelAxes() const;

@@ -206,6 +206,18 @@ Coordinate::Type DirectionCoordinate::type() const
     return Coordinate::DIRECTION;
 }
 
+String DirectionCoordinate::showType() const
+{
+    return String("Direction");
+}
+
+
+
+    
+
+
+
+
 uInt DirectionCoordinate::nPixelAxes() const
 {
     return 2;

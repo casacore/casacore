@@ -35,7 +35,7 @@
 #include <strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
-  : transform_p(naxis), crval_p(naxis), names_p(naxis), units_p(naxis)
+  : transform_p(naxis), names_p(naxis), units_p(naxis), crval_p(naxis)
 {
     crval_p.set(0);
 }
@@ -93,6 +93,11 @@ LinearCoordinate::~LinearCoordinate()
 Coordinate::Type LinearCoordinate::type() const
 {
     return Coordinate::LINEAR;
+}
+
+String LinearCoordinate::showType() const
+{
+    return String("Linear");
 }
 
 uInt LinearCoordinate::nPixelAxes() const
@@ -198,7 +203,7 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units,
 }
 
 void LinearCoordinate::checkFormat(Coordinate::formatType& format,
-                                   const Bool absolute) const
+                                   const Bool ) const
 //
 //
 {
@@ -218,7 +223,7 @@ void LinearCoordinate::getPrecision(Int& precision,
                                     const Bool absolute,
                                     const Int defPrecScientific,
                                     const Int defPrecFixed,
-                                    const Int defPrecTime) const
+                                    const Int ) const
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
@@ -373,8 +378,8 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
    Vector<Bool> exclude(nPixelAxes());
    exclude = False;
-   Int j = 0;
-   for (Int i=0; i<nPixelAxes(); i++) {
+   uInt j = 0;
+   for (uInt i=0; i<nPixelAxes(); i++) {
       if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
    }
 

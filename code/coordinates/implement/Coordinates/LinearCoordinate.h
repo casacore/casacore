@@ -95,6 +95,9 @@ public:
     // Return Coordinate::LINEAR.
     virtual Coordinate::Type type() const;
 
+    //Returns "Linear"
+    virtual String showType() const;
+
     // Returns the number of pixel/world axes. The number of axes is arbitrary,
     // however the number or world and pixel axes must at present be the same.
     // <group>

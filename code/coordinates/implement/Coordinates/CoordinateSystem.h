@@ -231,6 +231,9 @@ public:
     // Return the type of the given coordinate.
     Coordinate::Type type(uInt whichCoordinate) const;
 
+    // Returns the type of the given coordinate
+    String showType(uInt whichCoordinate) const;
+
     // Return the given coordinate.
     const Coordinate &coordinate(uInt which) const;
 
@@ -276,6 +279,9 @@ public:
 
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
+
+    // Always returns "System"
+    virtual String showType() const;
 
     // Sums the number of axes in the coordinates that the coordinate system
     // contains, correcting for removed axes.

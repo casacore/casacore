@@ -99,6 +99,9 @@ public:
     // Always returns Coordinate::TABULAR
     virtual Coordinate::Type type() const;
 
+    // Always returns "Tabular"
+    virtual String showType() const;
+
     // Always returns 1.
     // <group>
     virtual uInt nPixelAxes() const;

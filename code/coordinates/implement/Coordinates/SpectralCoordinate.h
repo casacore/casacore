@@ -105,6 +105,9 @@ public:
     // Always returns Coordinate::SPECTRAL.
     virtual Coordinate::Type type() const;
 
+    // Always returns "Spectral"
+    virtual String showType() const;
+
     // Always returns 1.
     // <group>
     virtual uInt nPixelAxes() const;
