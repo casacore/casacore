@@ -39,16 +39,6 @@ set hsw   = ("-s show only the system template files that can cause" \
 set huse  =  "<typ>.def <typ>.pak"
 set hcrea =  "<typ>.dup <typ>.pak"
 #
-# Basic package names in order
-#
-set casapack = (casa scimath tables measures fits lattices coordinates \
-	components images ms msvis calibration ionosphere flagging \
-	dish simulators synthesis graphics tasking)
-#
-# Directories to skip
-#
-set skippack = (CVS admin aips doc include install test)
-#
 # Top packages to check
 #
 set checkpack = (display trialdisplay appsglish contrib)

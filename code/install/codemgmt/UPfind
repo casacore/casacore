@@ -73,27 +73,11 @@ if (! $ok) exit 1
 # Special patterns
 #
 if ($upswp01 || $upswp02) then
-    cat >! $ldir/${tp}.spat <<EOF
-/casa/implement/
-/scimath/implement/
-/tables/implement/
-/measures/implement/
-/fits/implement/
-/lattices/implement/
-/coordinates/implement/
-/components/implement/
-/images/implement/
-/ms/implement/
-/msvis/implement/
-/calibration/implement/
-/ionosphere/implement/
-/flagging/implement/
-/dish/implement/
-/simulators/implement/
-/synthesis/implement/
-/graphics/implement/
-/tasking/implement/
-EOF
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+    touch $ldir/${tp}.spat
+    foreach i ($casapack)
+      echo "/$i/implement/" >> $ldir/${tp}.spat 
+    end
     echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
 endif
 
