@@ -72,7 +72,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 						   const Block<Domain>& xin, 
 						   const Array<Range>& yin,
 						   const Array<Bool>& yinFlags,
-						   Int method)
+						   Int method,
+                                                   Bool goodIsTrue)
 {
   Int nxin=xin.nelements(), nxout=xout.nelements();
   IPosition yinShape=yin.shape();
@@ -106,7 +107,7 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
     youtFlagPtrs[i]=pyoutFlags+i*yStep;
   }
   interpolatePtr(youtPtrs, youtFlagPtrs, yStep, xout, xin, yinPtrs,
-		 yinFlagPtrs, method);
+		 yinFlagPtrs, method, goodIsTrue);
 
   yin.freeStorage(pyin,deleteYin);
   yinFlags.freeStorage(pyinFlags,deleteYinFlags);
@@ -116,11 +117,11 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
-					Int ny, 
-					const Block<Domain>& xout, 
-					const Block<Domain>& xin,
-					const PtrBlock<const Range*>& yin, 
-					Int method)
+                                                      Int ny, 
+  					              const Block<Domain>& xout, 
+						      const Block<Domain>& xin,
+						      const PtrBlock<const Range*>& yin, 
+                                                      Int method)
 {
   uInt nElements=xin.nelements();
   AlwaysAssert (nElements>0, AipsError);
@@ -266,15 +267,15 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 }  
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain,Range>::interpolatePtr
-(PtrBlock<Range*>& yout, 
- PtrBlock<Bool*>& youtFlags, 
- Int ny, 
- const Block<Domain>& xout, 
- const Block<Domain>& xin,
- const PtrBlock<const Range*>& yin, 
- const PtrBlock<const Bool*>& yinFlags, 
- Int method)
+void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout, 
+						      PtrBlock<Bool*>& youtFlags, 
+						      Int ny, 
+ 						      const Block<Domain>& xout, 
+						      const Block<Domain>& xin,
+						      const PtrBlock<const Range*>& yin, 
+						      const PtrBlock<const Bool*>& yinFlags, 
+						      Int method,
+						       Bool goodIsTrue)
 {
   uInt nElements=xin.nelements();
   Domain x_req;
@@ -332,11 +333,19 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
 	  throw(AipsError("Interpolate1D::operator()"
 			  " data has repeated x values"));
 	Domain frac=(x_req-x1)/(x2-x1);
-	for (Int j=0; j<ny; j++) {
-	  yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
-	  youtFlags[i][j] = ToBool(yinFlags[ind1][j] || yinFlags[ind2][j]);
-	// y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
-	}
+
+//    y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
+        if (goodIsTrue) {
+   	   for (Int j=0; j<ny; j++) {
+	     yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
+	     youtFlags[i][j] = yinFlags[ind1][j] && yinFlags[ind2][j];
+           }
+        } else {
+   	   for (Int j=0; j<ny; j++) {
+	     yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
+	     youtFlags[i][j] = yinFlags[ind1][j] || yinFlags[ind2][j];
+           }
+        }
       }
       return ;
     }
@@ -344,6 +353,11 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
     {
       // TODO: implement flags
       polynomialInterpolation(yout, ny, xout, xin, yin, 3);
+      for (uInt i=0; i<xout.nelements(); i++) {
+	  for (Int j=0; j<ny; j++) {
+             youtFlags[i][j] = yinFlags[i][j];
+          }
+      }
       return;
     }
   case spline: // natural cubic splines
@@ -401,6 +415,8 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr
 	}
 
 	for (i=0; i<Int(xout.nelements()); i++) {
+          youtFlags[i][j] = yinFlags[i][j];
+//
 	  x_req=xout[i];
 	  Bool found;
 	  uInt where = binarySearchBrackets(found, xin, x_req, nElements);
