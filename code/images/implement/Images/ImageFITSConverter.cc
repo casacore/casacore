@@ -70,9 +70,10 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 // to the enum HDUType in class FITS !
 
 // ndim
-    const uInt ndim = fitsImage.dims();
+    uInt ndim = fitsImage.dims();
 
 // shape
+
     IPosition shape(ndim);
     for (Int i=0; i<Int(ndim); i++) {
 	shape(i) = fitsImage.dim(i);
@@ -110,14 +111,34 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 	coords = empty;
     }
 
+// Check shape and CS consistency.  Add dummy axis to shape if possible
+ 
+    IPosition shape2;
+    if (shape.nelements()!=coords.nPixelAxes()) {
+       if (coords.nPixelAxes() > shape.nelements()) {
+          Int nDeg = coords.nPixelAxes() - shape.nelements();
+          shape2.resize(coords.nPixelAxes());
+          shape2 = 1;
+          for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);       
+          ndim += nDeg;
+//
+          os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
+          os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
+       } else {
+          os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
+       }
+    } else {
+       shape2 = shape;
+    }
+
     try {
        if (imageName.empty()) {
-          newImage = new TempImage<Float>(shape, coords);
+          newImage = new TempImage<Float>(shape2, coords);
           os << LogIO::WARN << "The output will be stored in a transient TempImage.  However," << endl;
           os << "we cannot yet attach a mask to a TempImage, so any blanked" << endl;
           os << "pixels in the FITS file will not be masked in the output" << LogIO::POST;
        } else {
-          newImage = new PagedImage<Float>(shape, coords, imageName);
+          newImage = new PagedImage<Float>(shape2, coords, imageName);
        }
     } catch (AipsError x) {
 	if (newImage) {
@@ -253,13 +274,13 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     IPosition cursorShape(ndim), cursorOrder(ndim);
     String report;
     cursorShape = 
-      ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
+      ImageFITSConverter::copyCursorShape(report, shape2, sizeof(Float),
                                           sizeof(HDUType::ElementType),
                                           memoryInMB);
 
     os << LogIO::NORMAL << "Copy FITS file to '" << newImage->name() << "' " <<
 	report << LogIO::POST;
-    LatticeStepper imStepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
+    LatticeStepper imStepper(shape2, cursorShape, IPosition::makeAxisPath(ndim));
     LatticeIterator<Float> imIter(*newImage, imStepper);
 
     Int nIter = max(1,newImage->shape().product()/cursorShape.product());
@@ -281,7 +302,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     Bool madeMask = False;
     if (!imageName.empty() && (bitpix<0 || isBlanked)) {
        pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
-       pMaskStepper = new LatticeStepper(shape, cursorShape, 
+       pMaskStepper = new LatticeStepper(shape2, cursorShape, 
                                          IPosition::makeAxisPath(ndim));
        pMaskIter = new LatticeIterator<Bool>(*pMask, *pMaskStepper);
        pMaskIter->reset();
