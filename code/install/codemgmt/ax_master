@@ -6222,3 +6222,4 @@
 17 191 src mv ./aips/implement/Functionals/NQPolynomial.cc ./aips/implement/Functionals/Polynomial.cc
 17 191 src mv ./aips/implement/Functionals/NQPolynomial.h ./aips/implement/Functionals/Polynomial.h
 17 191 src mv ./aips/implement/Functionals/NQPolynomial2.cc ./aips/implement/Functionals/Polynomial2.cc
+17 191 src mv ./aips/implement/Functionals/NQPolynomialParam.cc ./aips/implement/Functionals/PolynomialParam.cc
