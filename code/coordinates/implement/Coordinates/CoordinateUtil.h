@@ -1,4 +1,4 @@
-//# CoordUtils.h: global functions dealing with coordinates
+//# CoordinateUtils.h: global functions dealing with coordinates
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -37,7 +37,7 @@
 
 class CoordinateSystem;
 
-// <summary> Functions for creating default coordinate systems</summary>
+// <summary> Create default coordinate systems</summary>
 
 // <use visibility=export>
 
@@ -49,16 +49,16 @@ class CoordinateSystem;
 // </prerequisite>
 //
 // <etymology> 
-// CoordUtils follows the AIPS++ naming convention for global functions that
-// are associated with a class.
+// CoordinateUtils follows the AIPS++ naming convention for global functions
+// that are associated with a class.
 // </etymology>
 //
 // <synopsis>
 // This file contains declarations for global functions that manipulate
 // coordinate systems. It currently contains functions for:
 // <ul>
-// <li> Functions for creating a default CoordinateSystem
-// <li> Functions for adding default axes to a CoordinateSystem
+// <li> Creating a default CoordinateSystem
+// <li> Adding default axes to a CoordinateSystem
 // </ul>
 // 
 // The functions for adding default axes to a CoordinateSystem are can add
@@ -72,11 +72,11 @@ class CoordinateSystem;
 // <li> <src>addIQUVAxis</src> this adds a polarization axis with four
 // elements corresponding to the Stokes (I,Q,U,V) components.
 // <li> <src>addIAxis</src> this adds a polarization axis with one
-// element corresponding to the Stokes I components only
+// element corresponding to the Stokes I component only
 // <li> <src>addFreqAxis</src> this adds a spectral axis with a reference
 // frequency of 1.415GHz on channel 0. The channel bandwidth (pixel
 // increment) is 1kHz, and the reference frame is the Local Standard of
-// rest (MFrequency::LSR). 
+// rest (<linkto class="MFrequency">MFrequency</linkto>::LSR). 
 // </ul>
 //
 // The <src>defaultAxes</src> functions, create from scratch a
@@ -85,7 +85,7 @@ class CoordinateSystem;
 // CoordinateSystem. Only 2, 3 or 4 dimensional coordinate systems can be
 // constructed using these functions. The coordinate sytems always have
 // RA/Dec axes. Three dimensional Systems add a polarization axis with 4
-// components and four dimensional systems add a spectral axis. An Exception
+// polarisations and four-dimensional systems add a spectral axis. An Exception
 // (AipsError) is thrown if <src>defaultAxes(uInt)</src> is called with a
 // parameter that is not 2, 3, or 4. 
 //
@@ -94,9 +94,13 @@ class CoordinateSystem;
 // as effecient as the <src>addXXXAxis</src> functions.
 //
 // If the default axes provided by these functions are not quite what is
-// required it is possible to use member functions of the CoordinateSystem
-// and Coordinate classes to tweak the appropriate parameters of the
-// specified axis. 
+// required it is possible to use member functions of the 
+// <linkto class="CoordinateSystem">CoordinateSystem</linkto>
+// and <linkto class="Coordinate">Coordinate</linkto> classes 
+// (<linkto class="DirectionCoordinate">DirectionCoordinate</linkto>,
+// <linkto class="StokesCoordinate">StokesCoordinate</linkto>,
+// <linkto class="SpectralCoordinate">SpectralCoordinate</linkto> etc.)
+// to tweak the appropriate parameters of the specified axis.
 // </synopsis>
 //
 // <example>
@@ -122,7 +126,7 @@ class CoordinateSystem;
 
 //  <a name=defaultAxes>
 //  <linkfrom anchor=defaultAxes classes="CoordinateSystem">
-//      <here>Functions</here> for simply creating default coordinate systems
+//      Global functions for creating <here>default</here> coordinate systems
 //  </linkfrom>
 
 // <group name=defaultAxes>
@@ -137,7 +141,7 @@ void addIAxis(CoordinateSystem & coords);
 // Add a spectral axis to the user supplied CoordinateSystem. See the
 // synopsis above for the current default values.
 void addFreqAxis(CoordinateSystem & coords);
-// Return a 2 dimensional coordinate system with RA/DEC axes only. 
+// Return a 2-dimensional coordinate system with RA/DEC axes only. 
 CoordinateSystem defaultCoords2D();
 // Return a 3-dimensional coordinate system with RA/DEC axes and an IQUV
 // polarisation axis. 
@@ -145,7 +149,7 @@ CoordinateSystem defaultCoords3D();
 // Return a 4-dimensional coordinate system with RA/DEC axes, an IQUV
 // polarisation axis and a Spectral axis.
 CoordinateSystem defaultCoords4D();
-// Calls one of the above thrre functions depending of the arguement. An
+// Calls one of the above three functions depending of the arguement. An
 // AipsError is thrown if dims is not 2, 3, or 4.
 CoordinateSystem defaultCoords(uInt dims);
 //  </group>
