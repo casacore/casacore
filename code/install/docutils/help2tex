@@ -529,6 +529,8 @@ sub make_tex_file{
      \\begin{htmlonly}
      \\htmladdnormallink{Postscript file available}{$psfile}
      \\vspace{.10in}
+     \\htmladdnormallink{Changelog of current development cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_$iname.html}
+     \\vspace{.10in}
      \\end{htmlonly}
    $2\\\\
    /g;
@@ -557,8 +559,6 @@ sub make_tex_file{
    \\section{$1 - Module \\label{$iname}\\index{$1}}
      \\begin{htmlonly}
      \\htmladdnormallink{Postscript file available}{$psfile}
-     \\vspace{.10in}
-     \\htmladdnormallink{Changelog of current development cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_$name.html}
      \\vspace{.10in}
      \\end{htmlonly}
    $2\\\\/g;
