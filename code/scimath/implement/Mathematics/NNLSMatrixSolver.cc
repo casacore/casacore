@@ -33,9 +33,9 @@
 
 #include <strstream.h>
 
-#define NEED_UNDERSCORES
+#define NEED_FORTRAN_UNDERSCORES
 
-#if defined(NEED_UNDERSCORES)
+#if defined(NEED_FORTRAN_UNDERSCORES)
    #define nnls nnls_
 #endif
 
