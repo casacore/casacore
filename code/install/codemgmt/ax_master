@@ -2074,3 +2074,5 @@
 08 276 src rm trial/implement/MeasurementComponents/FTCoh.h
 08 276 src rm trial/implement/MeasurementComponents/DFTCoh.h
 08 276 src rm trial/implement/MeasurementComponents/DFTCoh.cc
+08 276 src rm trial/implement/MeasurementComponents/FFTCoh.h
+08 276 src rm trial/implement/MeasurementComponents/FFTCoh.cc
