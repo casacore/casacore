@@ -1,5 +1,5 @@
 //# tPath.cc: Test program for class Path
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,12 +27,12 @@
 
 
 #include <aips/OS/Path.h>
+#include <aips/OS/EnvVar.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions.h>
 #include <aips/iostream.h>
 #include <unistd.h>
-#include <aips/stdlib.h>
 
 
 // <summary>
@@ -48,7 +48,7 @@
 
 
 void check (const String& path, const String& expanded,
-	    const String& absolute, Bool success)
+	    const String& absolute, Bool& success)
 {
     cout << ">>> testing path = " << path << endl;
     cout << "<<<" << endl;
@@ -74,7 +74,7 @@ void check (const String& path, const String& expanded,
 }
 
 void checkDirBase (const String& path, const String& dir,
-		   const String& base, Bool success)
+		   const String& base, Bool& success)
 {
     cout << "testing dirbase path = " << path << endl;
     Path test (path);
@@ -95,17 +95,14 @@ void checkDirBase (const String& path, const String& dir,
 void doIt (Bool doExcp, Bool& success)
 {
     // Get the home directory.
-    char* homec = getenv ("HOME");
-    AlwaysAssertExit (homec);
-    String home(homec);
+    String home (EnvironmentVariable::get ("HOME"));
+    AlwaysAssertExit (! home.empty());
     // Get the current working directory (set in tPath.exec).
-    char* currc = getenv ("tPath_Env_Curr");
-    AlwaysAssertExit (currc);
-    String curr(currc);
+    String curr (EnvironmentVariable::get ("tPath_Env_Curr"));
+    AlwaysAssertExit (! curr.empty());
     // Get the user name.
-    char* userc = getenv ("tPath_Env_Username");
-    AlwaysAssertExit (userc);
-    String user(userc);
+    String user (EnvironmentVariable::get ("tPath_Env_Username"));
+    AlwaysAssertExit (! user.empty());
 
     // Define all kind of path names (relative, absolute, with and
     // without environment variables and tilde).
@@ -145,8 +142,8 @@ void doIt (Bool doExcp, Bool& success)
     AlwaysAssertExit (test3.absoluteName() == test2.absoluteName());
     
     // Testing exception because of recursive environment variables.
-    putenv ("TEST1=$TEST2");
-    putenv ("TEST2=$TEST1");
+    EnvironmentVariable::set ("TEST1", "$TEST2");
+    EnvironmentVariable::set ("TEST2", "$TEST1");
     test1 = Path ("$TEST1");
     if (doExcp) {
 	try {
