@@ -71,7 +71,7 @@ SDPolarizationHandler &SDPolarizationHandler::operator=(const SDPolarizationHand
 				    NewMSPolarization::columnName(NewMSPolarization::NUM_CORR));
 	msPol_p = new NewMSPolarization(*(other.msPol_p));
 	AlwaysAssert(msPol_p, AipsError);
-	msPolCols_p = new NewMSPolarizationColumns(*(other.msPolCols_p));
+	msPolCols_p = new NewMSPolarizationColumns(*msPol_p);
 	AlwaysAssert(msPolCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	numCorrField_p = other.numCorrField_p;
