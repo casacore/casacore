@@ -64,7 +64,8 @@ class ostream;
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are
 // present)
-// <src>MVFrequency(Double)</src>; and an <src>operator Double</src> takes
+// <src>MVFrequency(Double)</src> (with assumed Hz units);
+// and an <src>operator Double</src> takes
 // care of all other possibilities. Its external use is for
 //  <linkto class=MeasConvert>MeasConvert</linkto>, to distinguish between
 // input in internal Measure units, and values which have to have
@@ -106,7 +107,7 @@ public:
   MVFrequency(const MVFrequency &other);
   // Copy assignment
   MVFrequency &operator=(const MVFrequency &other);
-  // Constructor from Double
+  // Constructor from Double, assuming Hz
   MVFrequency(Double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
