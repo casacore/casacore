@@ -2574,3 +2574,4 @@
 09 462 src mv trial/implement/Measures/MeasureHolder2.cc aips/implement/Measures/MeasureHolder2.cc
 09 462 src mv trial/implement/Measures/QuantumHolder.cc aips/implement/Measures/QuantumHolder.cc
 09 462 src mv trial/implement/Measures/QuantumHolder2.cc aips/implement/Measures/QuantumHolder2.cc
+09 462 src mv trial/implement/Measures/QuantumHolder.h aips/implement/Measures/QuantumHolder.h
