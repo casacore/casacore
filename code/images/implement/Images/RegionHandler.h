@@ -144,7 +144,6 @@ public:
     static Int findRegionGroup (const Table& table, const String& regionName,
 				RegionHandler::GroupType = Any,
 				Bool throwIfUnknown = True);
-    // </group>
 
     // Make a mask for a stored lattice (e.g. a PagedImage).
     // It creates it as a subtable of the lattice with the same tile shape.
