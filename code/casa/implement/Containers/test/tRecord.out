@@ -1,0 +1,26 @@
+Record field  cannot be added: length<1
+Record field aB cannot be added: no uppercase
+Record field A cannot be added: extra==10
+>>> Instance-specific assertion error message:
+<<< End of assertion error message.
+RecordRep::createDataField: unknown data type
+Array<T>::validateConformance
+Array<T>::validateConformance
+Array<T>::validateConformance
+Array<T>::validateConformance
+Record::define; fixed array conformance error
+Record cannot be changed (fixed structure)
+>>> Instance-specific assertion error message:
+<<< End of assertion error message.
+RecordInterface: invalid data type
+Record cannot be changed (fixed structure)
+>>> Instance-specific assertion error message:
+<<< End of assertion error message.
+>>> Instance-specific assertion error message:
+<<< End of assertion error message.
+>>> Instance-specific assertion error message:
+<<< End of assertion error message.
+RecordDesc::mergeField - duplicate in other
+Record cannot be changed (fixed structure)
+Record cannot be changed (fixed structure)
+OK

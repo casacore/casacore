@@ -1,0 +1,179 @@
+//# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
+//# Copyright (C) 1995,1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/Tables/TiledColumnStMan.h>
+#include <aips/Tables/TSMColumn.h>
+#include <aips/Tables/TSMCube.h>
+#include <aips/Tables/TSMFile.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Utilities/DataType.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/BinarySearch.h>
+#include <aips/IO/AipsIO.h>
+#include <aips/Tables/DataManError.h>
+
+
+
+TiledColumnStMan::TiledColumnStMan ()
+: TiledStMan ()
+{}
+
+TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
+				    const IPosition& tileShape,
+				    uInt maximumCacheSize)
+: TiledStMan  (hypercolumnName, maximumCacheSize),
+  tileShape_p (tileShape)
+{}
+
+TiledColumnStMan::~TiledColumnStMan()
+{}
+
+DataManager* TiledColumnStMan::clone() const
+{
+    TiledColumnStMan* smp = new TiledColumnStMan (hypercolumnName_p,
+						  tileShape_p,
+						  maximumCacheSize());
+    if (smp == 0) {
+	throw (AllocError ("TiledColumnStMan::clone", 1));
+    }
+    return smp;
+}
+
+DataManager* TiledColumnStMan::makeObject (const String&)
+{
+    TiledColumnStMan* smp = new TiledColumnStMan();
+    if (smp == 0) {
+	throw (AllocError ("TiledColumnStMan::makeObject", 1));
+    }
+    return smp;
+}
+
+String TiledColumnStMan::dataManagerType() const
+    { return "TiledColumnStMan"; }
+
+
+void TiledColumnStMan::create (uInt nrrow)
+{
+    // Set up the various things.
+    setup();
+    // Create the one and single TSMFile object.
+    createFile (0);
+    // Create the hypercube object.
+    // Its shape is the cell shape plus an extensible last dimension.
+    IPosition cubeShape (fixedCellShape_p);
+    cubeShape.resize (nrdim_p);
+    cubeShape(nrdim_p - 1) = 0;
+    cubeSet_p.resize (1);
+    cubeSet_p[0] = new TSMCube (this, fileSet_p[0],
+				cubeShape, tileShape_p, Record());
+    if (cubeSet_p[0] == 0) {
+	throw (AllocError ("TiledColumnStMan::create", 1));
+    }
+    // Add the rows for the given number of rows.
+    addRow (nrrow);
+}
+	    
+
+void TiledColumnStMan::close (AipsIO&)
+{
+    // Create the header file and write data in it.
+    AipsIO* headerFile = headerFileCreate();
+    headerFile->putstart ("TiledColumnStMan", 1);
+    *headerFile << tileShape_p;
+    // Let the base class write its data; there is only one TSMCube to write.
+    headerFilePut (*headerFile, 1);
+    headerFile->putend();
+    headerFileClose (headerFile);
+}
+
+void TiledColumnStMan::open (uInt tabNrrow, AipsIO&)
+{
+    // Open the header file and read data from it.
+    AipsIO* headerFile = headerFileOpen();
+    headerFile->getstart ("TiledColumnStMan");
+    *headerFile >> tileShape_p;
+    // Let the base class read and initialize its data.
+    headerFileGet (*headerFile, tabNrrow);
+    headerFile->getend();
+    headerFileClose (headerFile);
+}
+
+
+void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
+				   const Vector<String>& dataNames) const
+{
+    // The data columns may only contain arrays with the correct
+    // dimensionality, which should be one less than the hypercube
+    // dimensionality.
+    uInt ndim = nrdim_p - 1;
+    for (uInt i=0; i<dataNames.nelements(); i++) {
+	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
+	if (! columnDesc.isArray()  ||  ndim != columnDesc.ndim()) {
+	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
+			     " is incorrect"));
+	}
+	// The data columns in a column hypercube must be fixed shape.
+	if ((columnDesc.options() & ColumnDesc::FixedShape)
+	                                        != ColumnDesc::FixedShape) {
+	    throw (TSMError ("Column " + dataNames(i) +
+			     " is no FixedShape array"));
+	}
+    }
+}
+
+
+void TiledColumnStMan::addRow (uInt nrow)
+{
+    cubeSet_p[0]->extend (nrow, Record(), coordColSet_p[nrdim_p - 1]);
+    nrrow_p += nrow;
+}
+
+
+TSMCube* TiledColumnStMan::getHypercube (uInt rownr)
+{
+    // Check if the row number is correct.
+    if (rownr >= nrrow_p) {
+	throw (TSMError ("getHypercube: rownr is too high"));
+    }
+    return cubeSet_p[0];
+}
+TSMCube* TiledColumnStMan::getHypercube (uInt rownr, IPosition& position)
+{
+    // Check if the row number is correct.
+    if (rownr >= nrrow_p) {
+	throw (TSMError ("getHypercube: rownr is too high"));
+    }
+    // The rownr is the position in the hypercube.
+    position.resize (0);
+    position = cubeSet_p[0]->cubeShape();
+    position(nrdim_p-1) = rownr;
+    return cubeSet_p[0];
+}

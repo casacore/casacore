@@ -1,0 +1,68 @@
+//# TSMIdColumn.cc: Tiled Hypercube Storage Manager for id columns
+//# Copyright (C) 1995,1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+//# Includes
+#include <aips/Tables/TSMIdColumn.h>
+#include <aips/Tables/TiledStMan.h>
+#include <aips/Tables/TSMCube.h>
+#include <aips/Containers/Record.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/String.h>
+
+
+TSMIdColumn::TSMIdColumn (const TSMColumn& column)
+: TSMColumn (column)
+{}
+
+TSMIdColumn::~TSMIdColumn()
+{}
+
+void TSMIdColumn::getfloatV (uInt rownr, float* dataPtr)
+{
+    // Get the hypercube the row is in.
+    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
+    hypercube->valueRecord().get (columnName(), *dataPtr);
+}
+
+
+
+#define TSMIDCOLUMN_GETPUT(T,NM) \
+void TSMIdColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+{ \
+    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr); \
+    hypercube->valueRecord().get (columnName(), *dataPtr); \
+}
+
+TSMIDCOLUMN_GETPUT(Bool,BoolV)
+TSMIDCOLUMN_GETPUT(Int,IntV)
+TSMIDCOLUMN_GETPUT(uInt,uIntV)
+//#TSMIDCOLUMN_GETPUT(float,floatV)
+TSMIDCOLUMN_GETPUT(double,doubleV)
+TSMIDCOLUMN_GETPUT(Complex,ComplexV)
+TSMIDCOLUMN_GETPUT(DComplex,DComplexV)
+TSMIDCOLUMN_GETPUT(String,StringV)

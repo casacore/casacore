@@ -1,0 +1,508 @@
+//# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
+//# Copyright (C) 1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This program is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU General Public License as published by the Free
+//# Software Foundation; either version 2 of the License, or (at your option)
+//# any later version.
+//#
+//# This program is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+//# more details.
+//#
+//# You should have received a copy of the GNU General Public License along
+//# with this program; if not, write to the Free Software Foundation, Inc.,
+//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/SetupNewTab.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/ArrColDesc.h>
+#include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/TiledCellStMan.h>
+#include <aips/Tables/TiledStManAccessor.h>
+#include <aips/Containers/Record.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayUtil.h>
+#include <aips/Lattices/Slicer.h>
+#include <aips/OS/Timer.h>
+#include <aips/Exceptions/Error.h>
+#include <iostream.h>
+#include <strstream.h>
+
+
+// <summary>
+// Test program for performance of TiledCellStMan class.
+// </summary>
+
+// This program tests the class TiledCellStMan and related classes.
+// The results are written to stdout. The script executing this program,
+// compares the results with the reference output file.
+
+void makeCube (char** argv);
+void getCube (Bool ask);
+void traverse (const IPosition& cubeShape, const IPosition& tileShape);
+IPosition getVec (uInt nrdim, const String& prompt);
+
+main (int argc, char** argv)
+{
+    // Get the command line arguments as cube shape, tile shape.
+    if (argc < 4) {
+	cout << ">>>" << endl;
+	cout << "tTiledCellStM_1 uses TiledCellStMan to store nD Complex "
+	        "arrays in one cell." << endl;
+	cout << "It writes the data, reads the cell back, and iterates "
+	        "along tiles." << endl;
+	cout << "For 3D arrays it also iterates along lines and planes."
+	     << endl;
+	cout << "It shows timing and cache statistics." << endl;
+	cout << "Invoke as tTiledCellStM_1 arrayShape tileShape MaxCacheSize"
+	     << endl;
+	cout << "  Eg. tTiledCellStM_1 256,256,100 20,20,20 0" << endl;
+	cout << "TiledStMan::makeTileShape is used when tileShape is given "
+	        "as 0" << endl;
+	cout << "If a 4th argument is given, the user will be asked for"
+	     << endl;
+	cout << "slice shapes, axis path, and window start and length "
+	        "until 'end' is given" << endl;
+	cout << "This tests the function setCacheSize" << endl;
+	cout << "<<<" << endl;
+	return 0;
+    }
+    try {
+	makeCube(argv);
+        getCube (ToBool(argc > 4));
+    } catch (AipsError x) {
+	cout << "Caught an exception: " << x.getMesg() << endl;
+	return 1;
+    } end_try;
+    return 0;                           // exit with success status
+}
+
+// First build a description.
+void makeCube (char** argv)
+{
+    // Convert the command line arguments to shapes.
+    uInt i, maxCacheSize;
+    Vector<String> cubeV (stringToVector (argv[1]));
+    Vector<String> tileV (stringToVector (argv[2]));
+    istrstream istr1(argv[3]);
+    istr1 >> maxCacheSize;
+    uInt nrdim = cubeV.nelements();
+    IPosition cubeShape (nrdim);
+    IPosition tileShape (nrdim);
+    for (i=0; i<nrdim; i++) {
+	istrstream istr(cubeV(i).chars());
+	istr >> cubeShape(i);
+	if (cubeShape(i) <= 0) {
+	    cout << "Arrayshape " << cubeShape(i) << " must be > 0" << endl;
+	    exit(1);
+	}
+    }
+    if (tileV.nelements() != nrdim) {
+	if (tileV.nelements() != 1  ||  tileV(0) != "0") {
+	    cout << "Array and tile must have same dimensionality" << endl;
+	    exit(1);
+	}
+	tileShape = TiledStMan::makeTileShape (cubeShape);
+    }else{
+	for (i=0; i<nrdim; i++) {
+	    istrstream istr(tileV(i).chars());
+	    istr >> tileShape(i);
+	    if (tileShape(i) <= 0) {
+		cout << "Tileshape " << tileShape(i) << " must be > 0" << endl;
+		exit(1);
+	    }
+	}
+    }
+    Vector<double> weight(nrdim);
+    for (i=0; i<nrdim; i++) {
+	weight(i) = i;
+    }
+    cout << TiledStMan::makeTileShape (cubeShape) << endl;
+    cout << TiledStMan::makeTileShape (cubeShape, weight) << endl;
+	
+    // Build the table description.
+    TableDesc td ("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<Complex> ("Data", cubeShape,
+					  ColumnDesc::FixedShape));
+    td.defineHypercolumn ("TSMExample",
+			  nrdim,
+			  stringToVector ("Data"));
+    
+    // Now create a new table from the description.
+    SetupNewTable newtab("tTiledCellStM_1_tmp.data", td, Table::New);
+    // Create a storage manager for it.
+    TiledCellStMan sm1 ("TSMExample", tileShape, maxCacheSize);
+    newtab.bindAll (sm1);
+    Table table(newtab, 1);
+    ArrayColumn<Complex> data (table, "Data");
+    Array<Complex> array(cubeShape);
+    Timer timer;
+    indgen (array);
+    timer.show ("indgen   ");
+    timer.mark();
+    data.put (0, array);
+    timer.show ("put      ");
+    table.flush();
+    timer.show ("put+flush");
+    timer.mark();
+    data.get (0, array);
+    timer.show ("get      ");
+    ROTiledStManAccessor accessor(table, "TSMExample");
+    accessor.showCacheStatistics (cout);
+}
+
+void getCube (Bool ask)
+{
+    IPosition cubeShape;
+    IPosition tileShape;
+    uInt i, nrdim;
+    Timer timer;
+    {
+	Table table("tTiledCellStM_1_tmp.data");
+	timer.show ("reopen   ");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	ROArrayColumn<Complex> data (table, "Data");
+	cubeShape = data.shape (0);
+	tileShape = accessor.tileShape (0);
+	nrdim = cubeShape.nelements();
+	Array<Complex> result;
+	timer.mark();
+	data.get (0, result);
+	timer.show ("get cell ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    {
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, tileShape, IPosition());
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	IPosition last(nrdim);
+	IPosition nrt(nrdim);
+	for (i=0; i<nrdim; i++) {
+	    last(i) = cubeShape(i) % tileShape(i);
+	    if (last(i) == 0) {
+		last(i) = tileShape(i);
+	    }
+	    nrt(i) = (cubeShape(i)-1) / tileShape(i);
+	}
+	IPosition start(nrdim);
+	start = 0;
+	IPosition nrsteps(start);
+        IPosition stepnr(start);
+	IPosition length(tileShape);
+	while (True) {
+	    Array<Complex> arr = data.getSlice (0, Slicer (start, length));
+	    nr++;
+	    for (i=0; i<nrdim; i++) {
+		start(i) += tileShape(i);
+		nrsteps(i) += 1;
+		stepnr(i) += 1;
+		if (stepnr(i) <= nrt(i)) {
+		    if (stepnr(i) == nrt(i)) {
+			length(i) = last(i);
+		    }
+		    break;
+		}
+		length(i) = tileShape(i);
+		start(i) = 0;
+		stepnr(i) = 0;
+	    }
+	    if (i == nrdim) {
+		break;
+	    }
+	}
+	cout << "array x,y,z along tiles" << " (" << nr << " passes  "
+	     << nrsteps << ")" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+
+    // Traverse through 3D cubes.
+    if (nrdim == 3) {
+	traverse (cubeShape, tileShape);
+    }
+
+    // Ask for iteration shapes when needed.
+    if (!ask) {
+	return;
+    }
+    cout << "Give slice shapes, etc.. End by giving end" << endl;
+    Table table("tTiledCellStM_1_tmp.data");
+    ROTiledStManAccessor accessor(table, "TSMExample");
+    while (True) {
+	IPosition slice = getVec (nrdim, "slice shape (end means stop):  ");
+	if (slice.nelements() == 0) {
+	    break;
+	}
+	accessor.setCacheSize (0, slice,
+			       getVec (nrdim, "window start: "),
+			       getVec (nrdim, "window shape: "),
+			       getVec (nrdim, "axis path:    "));
+	cout << "  result is:" << endl;
+	accessor.showCacheStatistics (cout);
+    }
+}
+
+IPosition getVec (uInt nrdim, const String& prompt)
+{
+    while (True) {
+	cout << prompt;
+	String str;
+	cin >> str;
+	if (str == "end") {
+	    return IPosition();
+	}
+	Vector<String> vec = stringToVector (str);
+	if (vec.nelements() > nrdim) {
+	    cout << "value can contain max. " << nrdim << " values" << endl;
+	}else{
+	    Bool error = False;
+	    IPosition pos(vec.nelements());
+	    for (uInt i=0; i<vec.nelements(); i++) {
+		istrstream istr(vec(i).chars());
+		istr >> pos(i);
+		if (pos(i) < 0) {
+		    cout << "Value " << pos(i) << " must be >= 0" << endl;
+		    error = True;
+		    break;
+		}
+	    }
+	    if (!error) {
+		return pos;
+	    }
+	}
+    }
+}
+
+
+void traverse (const IPosition& cubeShape, const IPosition& tileShape)
+{
+    Timer timer;
+    if (cubeShape(2) > 1) {
+	IPosition length (3, 1, 1, cubeShape(2));
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(2,2,1));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt i=0; i<cubeShape(0); i++) {
+	    for (uInt j=0; j<cubeShape(1); j++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,i,j,0), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice z along y,x" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(2) > 1) {
+	IPosition length (3, 1, 1, cubeShape(2));
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(1,2));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(1); j++) {
+	    for (uInt i=0; i<cubeShape(0); i++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,i,j,0), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice z along x,y" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(1) > 1) {
+	IPosition length (3, 1, cubeShape(1), 1);
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt i=0; i<cubeShape(0); i++) {
+	    for (uInt j=0; j<cubeShape(2); j++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,i,0,j), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice y along z,x" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(1) > 1) {
+	IPosition length (3, 1, cubeShape(1), 1);
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(1,1));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(2); j++) {
+	    for (uInt i=0; i<cubeShape(0); i++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,i,0,j), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice y along x,z" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(0) > 1) {
+	IPosition length (3, cubeShape(0), 1, 1);
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(2,0,2));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt i=0; i<cubeShape(1); i++) {
+	    for (uInt j=0; j<cubeShape(2); j++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,0,i,j), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice x along z,y" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(0) > 1) {
+	IPosition length (3, cubeShape(0), 1, 1);
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition());
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(2); j++) {
+	    for (uInt i=0; i<cubeShape(1); i++) {
+		Array<Complex> arr = data.getSlice
+		                (0, Slicer (IPosition(3,0,i,j), length));
+		nr++;
+	    }
+	}
+	cout << "arraySlice x along y,z" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(0) > 1  &&  cubeShape(1) > 1  &&  cubeShape(2) > 1) {
+	IPosition length (3, cubeShape(0), cubeShape(1), 1);
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition());
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(2); j++) {
+	    Array<Complex> arr = data.getSlice
+		                 (0, Slicer (IPosition(3,0,0,j), length));
+	    nr++;
+	}
+	cout << "arrayPlane x,y along z" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(0) > 1  &&  cubeShape(1) > 1  &&  cubeShape(2) > 1) {
+	IPosition length (3, cubeShape(0), 1, cubeShape(2));
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(3,0,2,1));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(1); j++) {
+	    Array<Complex> arr = data.getSlice
+		                 (0, Slicer (IPosition(3,0,j,0), length));
+	    nr++;
+	}
+	cout << "arrayPlane x,z along y" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(0) > 1  &&  cubeShape(1) > 1  &&  cubeShape(2) > 1) {
+	IPosition length (3, 1, cubeShape(1), cubeShape(2));
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	for (uInt j=0; j<cubeShape(0); j++) {
+	    Array<Complex> arr = data.getSlice
+		                 (0, Slicer (IPosition(3,j,0,0), length));
+	    nr++;
+	}
+	cout << "arrayPlane y,z along x" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+    if (cubeShape(2) > 1) {
+	Table table("tTiledCellStM_1_tmp.data");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	IPosition length (3, cubeShape(0), cubeShape(1), tileShape(2));
+	accessor.setCacheSize (0, length, IPosition());
+	ROArrayColumn<Complex> data (table, "Data");
+	Array<Complex> result;
+	uInt nr = 0;
+	timer.mark();
+	uInt last = cubeShape(2) % tileShape(2);
+	if (last == 0) last = tileShape(2);
+	uInt nrk = (cubeShape(2)-1)/tileShape(2);
+	for (uInt k=0; k<=nrk; k++) {
+	    if (k==nrk) {
+		length(2) = last;
+	    }
+	    Array<Complex> arr = data.getSlice
+		(0, Slicer (IPosition(3, 0, 0, k*tileShape(2)), length));
+	    nr++;
+	}
+	cout << "array x,y,z along z-tiles" << " (" << nr << " passes)" << endl;
+	timer.show ("get      ");
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
+}

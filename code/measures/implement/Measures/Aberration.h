@@ -1,0 +1,181 @@
+//# Aberration.h: Aberration class
+//# Copyright (C) 1995, 1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//#
+//# $Id$
+
+#if !defined(AIPS_ABERRATION_H)
+#define AIPS_ABERRATION_H
+
+#if defined(_AIX)
+#pragma implementation ("Aberration.cc")
+#endif
+
+//# Includes
+#include <aips/aips.h>
+#include <aips/Measures/MVPosition.h>
+#include <aips/Measures/MeasDetail.h>
+
+
+// <summary>
+// Aberration class and calculations
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=Measure>Measure</linkto> class, 
+//		especially <linkto class=MEpoch>MEpoch</linkto>
+//   <li> <linkto class=MeasData>MeasData</linkto> class for constants
+// </prerequisite>
+//
+// <etymology>
+// Aberration
+// </etymology>
+//
+// <synopsis>
+// Aberration forms the class for Aberration calculations. It is a simple
+// container with the selected method, and the mean epoch.<br>
+// The method is selected from one of the following:
+// <ul>
+//   <li> Aberration::STANDARD   (at 1995/09/04 the IAU1980 definition)
+//   <li> Aberration::NONE
+//   <li> Aberration::B1950
+// </ul>
+// Epochs can be specified as the MJD (with defined constants MeasData::MJD2000
+// and MeasData::MJDB1950 or the actual MJD),
+// leading to the following constructors:
+// <ul>
+//   <li> Aberration() default; assuming JD2000, IAU1980
+//   <li> Aberration(method) assuming the correct default epoch of
+//		JD2000 or B1950
+//   <li> Aberration(method,epoch) with epoch Double(MJD).
+// </ul>
+// Actual Aberration for a certain Epoch is calculated by the () operator
+// as Aberration(epoch), with epoch Double MJD, values returned as an
+// MVPosition.<br>
+// The derivative (d<sup>-1</sup>) can be obtained as well by
+// derivative(epoch).<br>
+// The following details can be set in the 
+// <linkto class=MeasDetail>MeasDetail</linkto> container:
+// <ul>
+//  <li> Aberration::D_Interval: approximation interval in Double(days)
+// </ul>
+// In the current setup the MeasDetail container is checked each time, for
+// possible changes. For speed information could be obtained only once.
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// To calculate the Aberration angles. An alternate route could have been
+// a global function, but having a simple container allows
+// caching of some calculations for speed.<br>
+// Using MJD (JD-2400000.5) rather than JD is for precision reasons.
+// </motivation>
+//
+// <todo asof="1996/02/12">
+//   <li> B1950
+//   <li> use DE200 tape
+//   <li> add database references for VLBI
+// </todo>
+
+class Aberration
+{
+public:
+//# Constants
+// Interval to be used for linear approximation (in days)
+    static const Double INTV;
+
+//# Enumerations
+// Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
+    enum AberrationTypes {STANDARD,NONE,B1950};
+// Known MeasDetails
+    enum {BASE = MeasDetail::ABER_BASE,
+	  D_Interval = BASE + MeasDetail::BASE_D};
+
+//# Constructors
+// Default constructor, generates default J2000 Aberration identification
+    Aberration();
+// Copy constructor
+    Aberration(const Aberration &other);
+// Constructor with type
+    Aberration(AberrationTypes type);
+// Copy assignment
+    Aberration &operator=(const Aberration &other);
+
+//# Destructor
+    ~Aberration();
+
+//# Operators
+// Operator () calculates the Aberration direction cosine vector
+    const MVPosition &operator()(Double epoch);
+
+//# General Member Functions
+// Return derivative of Aberration (d<sup>-1</sup>)
+    const MVPosition &derivative (Double epoch);
+
+// Re-initialise Aberration object
+// <group>
+    void init();
+    void init(AberrationTypes type);
+// </group>
+
+// Refresh calculations
+    void refresh();
+
+private:
+//# Data menbers
+// Method to be used
+    AberrationTypes method;
+// Check epoch for linear approximation
+    Double checkEpoch;
+// Cached calculated angles
+    Double aval[3];
+// Cached derivatives
+    Double dval[3];
+// To be able to use referenced results in simple calculations, a circular
+// result buffer is used.
+// Current buffer pointer.
+    Int lres;
+// Last calculation
+    MVPosition result[4];
+
+//# Member functions
+// Copy
+    void copy(const Aberration &other);
+// Fill an empty copy
+    void fill();
+// Calculate Aberration angles for time t
+    void calcAber(Double t);
+};
+
+#endif
+
+

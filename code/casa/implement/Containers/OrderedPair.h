@@ -1,0 +1,91 @@
+//# OrderedPair.h: Ordered pair class
+//# Copyright (C) 1993,1994,1995
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#if !defined(AIPS_ORDEREDPAIR_H_)
+#define AIPS_ORDEREDPAIR_H_
+
+#if defined(_AIX)
+#pragma implementation ("OrderedPair.cc")
+#endif
+
+#include <aips/aips.h>
+#include <aips/Exceptions/Excp.h>
+
+// <category lib=aips sect="Containers">
+// <summary>Ordered pair class</summary>
+//
+// This class is a simple class used in the Map<key,value> classes
+// to manage key/value pairs for maps.
+// The default constructor is needed for use in containers.
+// This implies that ALL classes ever used in OrderedPair should
+// have a default constructor!!!!
+//
+// <note> This should probably be cleaned up in the future and made into a 
+//        generally useful class.
+
+template<class K, class V> class OrderedPair
+{
+public:
+    //
+    // Needed for "operator>>(AipsIO &ios, Slist<elem> &list)"
+    //
+    OrderedPair();
+
+    //
+    // This is the "standard" constructor which takes a key and
+    // a value and constructs an ordered pair.
+    //
+    OrderedPair(const K &k, const V &v);
+
+    //
+    // Copy constructor (copy semantics).
+    //
+    OrderedPair(const OrderedPair<K,V>& that);
+
+    //
+    // Assignment (copy semantics).
+    //
+    OrderedPair<K,V>& operator= (const OrderedPair<K,V>& that);
+
+    K &x() {return Key;}
+    const K &x() const {return Key;}
+    V &y() {return Val;}
+    const V &y() const {return Val;}
+
+public:
+    //# Use Freeze and Unfreeze to prevent the objects Key and Val
+    //# from being deleted by Cleanup in case of exceptions.
+    //# They will always be deleted by Orderedpair.
+    FreezeCleanup beginFreeze;
+    K Key;
+    V Val;
+    UnfreezeCleanup endFreeze;
+
+    enum {OrderedPairVersion = 1};
+};
+
+#endif

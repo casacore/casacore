@@ -1,0 +1,9 @@
+wrote 115 buckets of 32768 bytes
+checked 115 buckets
+read 25x115 buckets with swap
+>>>       21.34 real       18.16 user        2.72 system
+<<<
+read 50x115 buckets without swap
+115
+>>>        11.1 real         5.8 user        5.12 system
+<<<

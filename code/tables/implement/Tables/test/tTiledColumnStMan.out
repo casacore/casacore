@@ -1,0 +1,28 @@
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:1048576
+cacheSize: 16 (*240)
+#accesses: 3264
+#reads:    816
+#inits:    816
+#writes:   816
+hit-rate:  50%
+<<<
+get's have been done
+getColumn has been done
+getColumnSlice's have been done
+strided getColumnSlice's have been done
+getSlice's have been done
+getSlice's with strides have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:1048576
+cacheSize: 816 (*240)
+#accesses: 43656
+#reads:    1616
+#inits:    0
+#writes:   0
+hit-rate:  96.2983%
+<<<

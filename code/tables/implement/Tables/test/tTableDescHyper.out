@@ -1,0 +1,26 @@
+011110
+[TSMExample1, TSMExample2, TSMExample3, TSMExample4]
+TSMExample1: ndim=4
+  Data=[Data, Weight]Coord=[Pol, Freq, Baseline, Time]Id=[Id]
+TSMExample2: ndim=4
+  Data=[Data]Coord=[]Id=[]
+TSMExample3: ndim=3
+  Data=[Data, Weight]Coord=[Pol, Freq, Time]Id=[]
+TSMExample4: ndim=2
+  Data=[DataScalar]Coord=[Baseline, Time]Id=[]
+Invalid description of hypercolumn TSMExample: dataColumnNames is empty
+Invalid description of hypercolumn TSMExample: ndim < 1
+Invalid description of hypercolumn TSMExample: #coordColumnNames mismatches ndim
+Invalid description of hypercolumn TSMExample: coordColumnName Timex does not exist
+Invalid description of hypercolumn TSMExample: dataColumnName Datax does not exist
+Invalid description of hypercolumn TSMExample: idColumnName Idx does not exist
+Invalid description of hypercolumn TSMExample: coordColumn TimeNotNum is not numeric
+Invalid description of hypercolumn TSMExample: coordColumn TimeShort: (u)Char and (u)Short not supported
+Invalid description of hypercolumn TSMExample: coordColumn Data is not a scalar or vector
+Invalid description of hypercolumn TSMExample: coordinate vectors have to describe the first axes
+Invalid description of hypercolumn TSMExample: the dimensionality of data column Data0 is undefined
+Invalid description of hypercolumn TSMExample: the dimensionality of data column Weight mismatches that of previous data columns
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
+Invalid description of hypercolumn TSMExample: idColumn TimeShort: (u)Char and (u)Short not supported
+Invalid description of hypercolumn TSMExample: idColumn Data is not a scalar
+Invalid description of hypercolumn TSMExample: column name Time is multiply used

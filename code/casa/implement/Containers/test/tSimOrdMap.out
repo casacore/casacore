@@ -1,0 +1,100 @@
+0end
+10end
+2 10
+-10 -2
+37 -32768
+100 108
+nrtot=16 nrelem=11 nrincr=16
+-10 -2
+2 10
+30 38
+31 39
+32 40
+33 41
+34 42
+35 43
+36 44
+37 -32768
+100 108
+33 41
+101 -32768
+-100 -32768
+20 -32768
+SimpleOrderedMap-rename
+nrtot=16 nrelem=13 nrincr=16
+-100 -2
+2 10
+20 -32768
+30 44
+31 39
+32 40
+33 41
+34 42
+35 43
+37 45
+38 38
+100 108
+101 -32768
+Probeer 10
+Ger 1 Darrell 3 Zomaar 32767 Brian 2
+nrtot=20 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=20 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=20 nrelem=5 nrincr=16
+Brian 2
+Darrell 3
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=20 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Nog eens 20
+Probeer 10
+Zomaar 32767
+ger 100
+nrtot=20 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=2 nrelem=2 nrincr=16
+A 1
+B 2
+nrtot=6 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=6 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767
+nrtot=6 nrelem=2 nrincr=16
+A 1
+B 2
+nrtot=6 nrelem=6 nrincr=16
+Brian 2
+Darrell 3
+Ger 1
+Nog eens 20
+Probeer 10
+Zomaar 32767

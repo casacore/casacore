@@ -1,0 +1,120 @@
+//# IO.h: Basic classes and global functions for IO and object persistency
+//# Copyright (C) 1995,1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+
+#if !defined (AIPS_IO_H)
+#define AIPS_IO_H
+
+//# Includes for object persistency.
+#include <aips/Containers/AipsIO.h>
+#include <aips/Containers/AipsIOCarray.h>
+#include <aips/Containers/AipsIOError.h>
+
+//# Includes for general IO.
+#include <aips/IO/ByteSinkSource.h>
+
+//# Includes for underlying IO classes.
+#include <aips/IO/CanonicalIO.h>
+#include <aips/IO/RawIO.h>
+#include <aips/IO/RegularFileIO.h>
+#include <aips/IO/FilebufIOIO.h>
+#include <aips/IO/MemoryIO.h>
+
+
+// <module>
+
+// <summary>
+// Basic classes and global functions for IO and object persistency
+// </summary>
+
+// <reviewed reviewer="" date="" demos="">
+// </reviewed>
+
+// <synopsis>
+// This module provides the basic IO functionality for the AIPS++ classes.
+// There are two IO mechanisms:
+// <ol>
+// <li> Class <linkto class=AipsIO:description>AipsIO</linkto>
+//      provides the object persistency mechanism.
+//      The templated global functions in
+//      <linkto file="AipsIOCarray.h#AipsIOCarray">AipsIOCarray.h</linkto>
+//      form a little layer upon AipsIO. They provide the means to put or
+//      get a C-style array of any type.
+// <li> Class <linkto class=ByteSinkSource:description>ByteSinkSource</linkto>
+//      and its ancestors provide a general IO mechanism.
+// </ol>
+//
+// Both use the underlying IO framework which define where and how
+// the data is written. The how-part is defined by classes derived from
+// <linkto class=TypeIO:description>TypeIO</linkto> as shown
+// in the <a href=IO/IO_1.html>OMT diagram</a>.
+// There are three such classes:
+// <ol>
+// <li> <linkto class=CanonicalIO:description>CanonicalIO</linkto> reads/writes
+//      data in canonical (machine-independent) format. This should be
+//      used when data are meant to be exportable.
+//      It uses the conversion functions in class
+//      <linkto class=CanonicalConversion:description>CanonicalConversion
+//      </linkto>.
+// <li> <linkto class=RawIO:description>RawIO</linkto> reads/writes
+//      data in native (machine-dependent) format. This can be used when
+//      data are not exported.
+// <li> <linkto class=ConversionIO:description>ConversionIO</linkto>
+//      reads/writes in an external format as defined at construction time.
+//      This can be used when the external format can be one of several
+//      (e.g. VAX or IBM for a WSRT archive tape). In this way the
+//      format has to be defined only once and thereafter is it handled
+//      correctly by the polymorphism mechanism.
+// </ol>
+// The where-part is defined by classes derived from
+// <linkto class=ByteIO:description>ByteIO</linkto> as shown
+// in the <a href=IO/IO_2.html>OMT diagram</a>.
+// There are three such classes:
+// <ol>
+// <li> <linkto class=RegularFileIO:description>RegularFileIO</linkto> uses a
+//      regular file to hold the data.
+// <li> <linkto class=FilebufIO:description>FilebufIO</linkto> uses a
+//      filebuf object (from the iostream package in the standard
+//      C++ library) to hold the data. This can be used to use
+//      an arbitrary IO stream (e.g. a socket or pipe using a
+//      normal file descriptor).
+// <li> <linkto class=MemoryIO:description>MemoryIO</linkto> uses a
+//      (possibly expandable) buffer in memory to hold the data.
+// </ol>
+//
+// The IO framework is easily expandable. Once can for instance think of a
+// class <src>AsciiIO</src> derived from <src>TypeIO</src>
+// to hold data in ASCII format.
+// <br> A class <src>TapeIO</src> could be derived from <src>ByteIO</src>
+// to access tape files. This class can also contain functions to skip to
+// a tape file, which the user can call directly.
+// Similarly a class <src>RemoteTapeIO</src> could be developed.
+// </synopsis>
+
+// </module>
+
+
+#endif
+

@@ -1,0 +1,106 @@
+>>> -------------------
+start reading Table tTable_2.data_v0
+<<<
+end reading Table
+ab
+ad
+ag
+arr1
+arr2
+arr3
+ac
+ae
+af
+get scalar row 0
+get array row 0
+get scalar row 1
+get array row 1
+get scalar row 2
+get array row 2
+get scalar row 3
+get array row 3
+get scalar row 4
+get array row 4
+get scalar row 5
+get array row 5
+get scalar row 6
+get array row 6
+get scalar row 7
+get array row 7
+get scalar row 8
+get array row 8
+get scalar row 9
+get array row 9
+10 10
+[12, 11, 10, 9, 8, 7, 6, 5, 4, 3]
+#columns in sortab: 9
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+#columns in sortab2: 9
+[6, 8, 0, 3]
+#columns in seltab1: 9
+[6, 8, 0, 3]
+#columns in seltab2: 3
+[8, 0]
+#columns in seltab3: 3
+[ae, ab, arr1]
+[1, 2, 4, 5, 7, 9]
+#columns in xortab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or1tab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or2tab: 3
+[9, 8, 7, 6, 5]
+[3, 5, 6, 7]
+>>> -------------------
+start reading Table tTable_2.data_v1
+<<<
+end reading Table
+ab
+ad
+ag
+arr1
+arr2
+arr3
+ac
+ae
+af
+get scalar row 0
+get array row 0
+get scalar row 1
+get array row 1
+get scalar row 2
+get array row 2
+get scalar row 3
+get array row 3
+get scalar row 4
+get array row 4
+get scalar row 5
+get array row 5
+get scalar row 6
+get array row 6
+get scalar row 7
+get array row 7
+get scalar row 8
+get array row 8
+get scalar row 9
+get array row 9
+10 10
+[12, 11, 10, 9, 8, 7, 6, 5, 4, 3]
+#columns in sortab: 9
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+#columns in sortab2: 9
+[6, 8, 0, 3]
+#columns in seltab1: 9
+[6, 8, 0, 3]
+#columns in seltab2: 3
+[8, 0]
+#columns in seltab3: 3
+[ae, ab, arr1]
+[1, 2, 4, 5, 7, 9]
+#columns in xortab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or1tab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or2tab: 3
+[9, 8, 7, 6, 5]
+[3, 5, 6, 7]

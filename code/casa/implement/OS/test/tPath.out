@@ -1,0 +1,44 @@
+>>> testing path = ~
+<<<
+>>> testing path = $HOME
+<<<
+>>> testing path = /$HOME/
+<<<
+>>> testing path = ~/testx
+<<<
+>>> testing path = $HOME/testx
+<<<
+>>> testing path = ~gvandiep
+<<<
+>>> testing path = ~gvandiep/test/test2
+<<<
+>>> testing path = $tPath_Env_User/test
+<<<
+>>> testing path = /testx
+<<<
+>>> testing path = testx
+<<<
+>>> testing path = gvandiep
+<<<
+>>> testing path = $tPath_Env_Test1/$HOME
+<<<
+Path::expandName: recursive environment variable
+10
+>>> 1024
+<<<
+testing dirbase path = .
+testing dirbase path = ..
+testing dirbase path = a
+testing dirbase path = a/
+testing dirbase path = /b
+testing dirbase path = /b/
+testing dirbase path = /
+testing dirbase path = a/b
+testing dirbase path = a/b/
+testing dirbase path = ~/test/test1
+testing dirbase path = /home/
+testing dirbase path = test/test1/..
+testing dirbase path = harry
+testing dirbase path = /home
+testing dirbase path = $HOME/test/ha./test
+OK

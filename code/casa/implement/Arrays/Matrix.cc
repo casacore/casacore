@@ -1,0 +1,432 @@
+//# Matrix.cc: A 2-D Specialization of the Array Class
+//# Copyright (C) 1993,1994,1995,1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayError.h>
+#include <aips/Utilities/Assert.h>
+#include <iostream.h>
+
+//# Implement rtti functions.
+rtti_imp_mbrf_a1(Matrix);
+
+template<class T> Matrix<T>::Matrix()
+: Array<T>(IPosition(2, 0, 0))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(const IPosition &len, const IPosition &or)
+  : Array<T>(len,or)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 2 && or.nelements() == 2, ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(const IPosition &len)
+  : Array<T>(len)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 2, ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(uInt l1, uInt l2, Int o1, Int o2)
+: Array<T>(IPosition(2, l1, l2), IPosition(2, o1, o2))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(uInt l1, uInt l2)
+: Array<T>(IPosition(2, l1, l2))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+
+template<class T> Matrix<T>::Matrix(const Matrix<T> &other)
+: Array<T>(other)
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+// <thrown>
+//    <item> ArrayNDimError
+// </thrown>
+template<class T> Matrix<T>::Matrix(const Array<T> &other)
+: Array<T>(other)
+{
+    if (ndim() > 2)
+	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::Matrix"
+			     "(const Array<T> &): ndim of other > 2"));
+    // We need to fiddle a bit if the ndim is == 1
+    if (ndim() == 1) {
+	ndimen = 2;
+	start.resize(2); 
+	length.resize(2); 
+	inc.resize(2);
+	originalLength.resize(2);
+	start[1] = 0; length[1] = 1; inc[1] = 1;
+	originalLength[1] = 1;
+    }
+    nels = ArrayVolume(ndimen, length.storage());
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::~Matrix()
+{}
+
+
+// <thrown>
+//   <item> ArrayConformanceError
+// </thrown>
+template<class T> void Matrix<T>::resize(const IPosition &l, const IPosition &o)
+{
+    DebugAssert(ok(), ArrayError);
+    if (l.nelements() != 2 || o.nelements() != 2)
+	throw(ArrayConformanceError("Matrix<T>::resize() - attempt to form "
+				    "non-Matrix"));
+    Array<T>::resize(l,o);
+    makeIndexingConstants();
+}
+
+template<class T> void Matrix<T>::resize(const IPosition &len)
+{
+    DebugAssert(ok(), ArrayError);
+    IPosition or(len.nelements());
+    or = 0;
+    resize(len,or);
+}
+
+template<class T> void Matrix<T>::resize(uInt nx, uInt ny, Int ox, Int oy)
+{
+    DebugAssert(ok(), ArrayError);
+    IPosition l(2), o(2);
+    l(0) = nx; l(1) = ny;
+    o(0) = ox; o(1) = oy;
+    Matrix<T>::resize(l,o);
+}
+
+// <thrown>
+//    <item> ArrayNDimError
+// </thrown>
+template<class T> void Matrix<T>::reference(Array<T> &other)
+{
+    DebugAssert(ok(), ArrayError);
+    if (other.ndim() == 2) {
+	Array<T>::reference(other);
+    } else if (other.ndim() == 1) {
+	start[0] = other.start[0]; start[1] = 0;
+	length[0] = other.length[0]; length[1] = 1;
+	nels = other.nels;
+	originalLength[0] = other.originalLength[0];
+	originalLength[1] = 1;
+	inc[0] = other.inc[0]; inc[1] = 1;
+	data = other.data;
+	begin = other.begin; 
+    } else {
+	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::reference()"
+			     " - attempt to reference non-Matrix"));
+    }
+    makeIndexingConstants();
+}
+
+template<class T> Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other)
+{
+    DebugAssert(ok(), ArrayError);
+    if (this == &other)
+        return *this;
+
+    Bool Conform = conform(other);
+    if (Conform == False && nelements() != 0)
+	validateConformance(other);  // We can't overwrite, so throw exception
+    Int i, j;
+    if (Conform == True) { // copy in place
+	Int ioff1 = other.start[0] - start[0];
+	Int ioff2 = other.start[1] - start[1];
+	for(j=start[1]; j < start[1] + length[1]; j++)
+	    for(i=start[0]; i < start[0] + length[0]; i++)
+		(*this)(i,j) = other(i+ioff1,j+ioff2);
+    } else {
+        data = new Block<T>(other.nelements());
+        begin = data->storage();
+        start=other.start;
+        length = other.length;
+	originalLength = length;
+        inc[0] = 1; inc[1] = 1; // flatten
+        nels = ArrayVolume(ndimen, length.storage());
+	makeIndexingConstants();
+	Int ioff1 = other.start[0] - start[0];
+	Int ioff2 = other.start[1] - start[1];
+	for(j=start[1]; j < start[1] + length[1]; j++)
+	    for(i=start[0]; i < start[0] + length[0]; i++)
+		(*this)(i,j) = other(i+ioff1,j+ioff2);
+    }
+    return *this;
+}
+
+template<class T> Array<T> &Matrix<T>::operator=(const Array<T> &a)
+{
+    DebugAssert(ok(), ArrayError);
+    Matrix<T> tmp(a);
+    (*this) = tmp;
+    return *this;
+}
+
+// <thrown>
+//    <item> ArrayError
+// </thrown>
+template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
+						  const Slice &sliceY)
+{
+    DebugAssert(ok(), ArrayError);
+    Int b1, l1, s1, b2, l2, s2;       // begin length step
+    if (sliceX.all()) {
+	b1 = start[0];
+	l1 = length[0];
+	s1 = 1;
+    } else {
+	b1 = sliceX.start();
+	l1 = sliceX.length();
+	s1 = sliceX.inc();
+    }
+    if (sliceY.all()) {
+	b2 = start[1];
+	l2 = length[1];
+	s2 = 1;
+    } else {
+	b2 = sliceY.start();
+	l2 = sliceY.length();
+	s2 = sliceY.inc();
+    }
+
+    // Check that the selected slice is valid
+    if (s1 < 1 || s2<1) {
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : step < 1"));
+    } else if (l1 < 0  || l2 < 0) {
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : length < 0"));
+    } else if ((b1+(l1-1)*s1 >start[0]+length[0] - 1) || 
+	       (b2+(l2-1)*s2 >start[1]+length[1] - 1)) {
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice): desired slice"
+			 " extends beyond the end of the array"));
+    } else if (b1 < start[0] || b2 < start[1]) {
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : start of slice "
+			 "before beginning of matrix"));
+    }
+
+    // For simplicity, just use the Array<T> slicing. If this is found to be
+    // a performance drag, we could special case this as we do for Vector.
+    IPosition blc(2,b1,b2);
+    IPosition trc(2,b1+(l1-1)*s1,b2+(l2-1)*s2);
+    IPosition incr(2,s1,s2);
+    return this->operator()(blc,trc,incr);
+}
+
+// <thrown>
+//   <item> ArrayConformanceError
+// </thrown>
+template<class T> Vector<T> Matrix<T>::row(Int n)
+{
+    DebugAssert(ok(), ArrayError);
+    if (n < start[0] || n > start[0] + length[0] - 1)
+	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
+
+    Matrix<T> tmp((*this)(n, Slice())); // A reference
+    tmp.ndimen = 1;
+    tmp.length[0] = tmp.length[1];
+    tmp.inc[0] = inc[1]*length[0]*inc[0];
+    // "Lie" about the original length so that ok() doesn't spuriously fail
+    // the test length[i] < originalLength (basically we've "swapped" axes).
+    tmp.originalLength[0] = tmp.length[0]*tmp.inc[0];
+    tmp.nels = tmp.length[0];
+    return tmp; // should match Vector<T>(const Array<T> &)
+}
+
+// <thrown>
+//   <item> ArrayConformanceError
+// </thrown>
+template<class T> Vector<T> Matrix<T>::column(Int n)
+{
+    DebugAssert(ok(), ArrayError);
+    if (n < start[1] || n > start[1] + length[1] - 1)
+	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
+
+    Matrix<T> tmp((*this)(Slice(), n)); // A reference
+    tmp.ndimen = 1;
+    tmp.nels = tmp.length[0];
+    return tmp; // should match Vector<T>(const Array<T> &)
+
+}
+
+// <thrown>
+//   <item> ArrayConformanceError
+// </thrown>
+template<class T> Vector<T> Matrix<T>::diagonal(Int n)
+{
+    DebugAssert(ok(), ArrayError);
+    Int absn;
+    if (n < 0) absn = -n; else absn = n;
+
+    if (length[0] != length[1])
+	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
+				    "non-square matrix"));
+
+    if (absn > length[0] - 1)
+	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
+				    "diagonal out of range"));
+
+    Int r, c;
+    if ( n < 0 ) {
+	r = start[0] + absn;
+	c = start[1];
+    } else {
+	r = start[0];
+	c = start[1] + absn;
+    }
+    Int len = length[0] - absn;
+    Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
+    tmp.ndimen = 1;
+    tmp.nels = tmp.length[0];
+    tmp.inc[0] += inc[0]*length[0];
+	
+    return tmp;  // should match Vector<T>(const Array<T> &)
+}
+
+#if defined (AIPS_IRIX)
+template<class T> Vector<T> Matrix<T>::row(Int n) const
+#else
+template<class T> const Vector<T> Matrix<T>::row(Int n) const
+#endif
+{
+    DebugAssert(ok(), ArrayError);
+    // Cast away constness of this so we do not have to duplicate code.
+    // Because the return type is const we are not actually violating
+    // constness.
+    Matrix<T> *This = (Matrix<T> *)this;
+    return This->row(n);
+}
+
+#if defined (AIPS_IRIX)
+template<class T> Vector<T> Matrix<T>::column(Int n) const
+#else
+template<class T> const Vector<T> Matrix<T>::column(Int n) const
+#endif
+{
+    DebugAssert(ok(), ArrayError);
+    // Cast away constness of this so we do not have to duplicate code.
+    // Because the return type is const we are not actually violating
+    // constness.
+    Matrix<T> *This = (Matrix<T> *)this;
+    return This->column(n);
+}
+
+// If the matrix isn't squre, this will throw an exception.
+#if defined (AIPS_IRIX)
+template<class T> Vector<T> Matrix<T>::diagonal(Int n) const
+#else
+template<class T> const Vector<T> Matrix<T>::diagonal(Int n) const
+#endif
+{
+    DebugAssert(ok(), ArrayError);
+    // Cast away constness of this so we do not have to duplicate code.
+    // Because the return type is const we are not actually violating
+    // constness.
+    Matrix<T> *This = (Matrix<T> *)this;
+    return This->diagonal(n);
+}
+
+// Set up constants for efficient indexing
+template<class T> void Matrix<T>::makeIndexingConstants()
+{
+    // No lAssert since the Cube often isn't constructed yet when
+    // calling this
+    xyoffset = -start[0]*inc[0] - start[1]*inc[1]*originalLength[0];
+    xinc = inc[0];
+    yinc = inc[1]*originalLength[0];
+}
+
+template<class T> IPosition Matrix<T>::origin() const
+{
+    DebugAssert(ok(), ArrayError);
+    return Array<T>::origin();
+}
+
+template<class T> IPosition Matrix<T>::shape() const
+{
+    DebugAssert(ok(), ArrayError);
+    return Array<T>::shape();
+}
+
+template<class T> IPosition Matrix<T>::end() const
+{
+    DebugAssert(ok(), ArrayError);
+    return Array<T>::end();
+}
+
+template<class T> Bool Matrix<T>::ok() const
+{
+    return ( (ndim() == 2) ? (Array<T>::ok()) : False );
+}
+
+
+template<class T>
+Matrix<T>::Matrix(const IPosition &shape, T *storage, 
+		  StorageInitPolicy policy)
+  : Array<T>(shape, storage, policy)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    makeIndexingConstants();
+}
+
+template<class T>
+Matrix<T>::Matrix(const IPosition &shape, const T *storage)
+  : Array<T>(shape, storage)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    makeIndexingConstants();
+}
+
+
+template<class T>
+void Matrix<T>::takeStorage(const IPosition &shape, T *storage,
+		     StorageInitPolicy policy)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    Array<T>::takeStorage(shape, storage, policy);
+    makeIndexingConstants();
+}
+
+template<class T>
+void Matrix<T>::takeStorage(const IPosition &shape, const T *storage)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    Array<T>::takeStorage(shape, storage);
+    makeIndexingConstants();
+}

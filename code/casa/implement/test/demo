@@ -1,0 +1,46 @@
+#! /bin/csh -f
+#
+if ($?DISPLAY == 0) then
+  echo DISPLAY env. var. is not set"
+  exit 0
+endif
+
+if ($?KHOROS_HOME == 0) then
+  foreach try (/aips2/khoros)
+    echo "Trying KHOROS_HOME as $try..."
+    if (-d $try) then
+      setenv KHOROS_HOME $try
+      break
+    endif
+  end
+  if ($?KHOROS_HOME == 0) then 
+    echo "Enter a directory for KHOROS_HOME."
+    set answer = $<
+    setenv KHOROS_HOME  $answer
+  endif
+  if ($?KHOROS_HOME == 0) then
+    echo "Cannot find suitable KHOROS_HOME, can't run the demo"
+    exit 1
+  endif
+endif
+ 
+setenv KHOROS_MAIL "$LOGNAME"
+setenv KHOROS_LOG "$HOME/khoros.cmdlog"
+setenv KHOROS_VERBOSE "no"
+setenv TMPDIR "/usr/tmp"
+setenv KHOROS_KEYWORDS "$KHOROS_HOME/repos/Keywords"
+setenv KHOROS_TOOLBOX "$KHOROS_HOME/repos/Toolboxes"
+
+echo "Loading KHOROS from $KHOROS_HOME..."
+set path=(. $KHOROS_HOME/bin $path)
+rehash
+xrdb -m $KHOROS_HOME/dotfiles/Xdefaults.snazzy
+
+echo "Running CANTATA..."
+cantata -restore demo.workspace.Z
+
+
+
+
+
+

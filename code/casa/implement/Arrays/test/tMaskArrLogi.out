@@ -1,0 +1,207 @@
+
+Testing MaskedArray logical operators.
+
+u= 
+[8, 9, 0, 1, 2, 3, 4, 5, 6, 7]
+
+v= 
+[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+w= 
+[11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
+
+x= 
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+y= 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+z= 
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+
+b= 
+[0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
+
+Test MaskedArray::MaskedArray (MaskedArray, LogicalArray)
+mma = 75;
+[1, 1, 1, 1, 1, 1, 75, 75, 1, 1]
+
+Test MaskedArray::operator () (LogicalArray)
+ma (y>5) = 75;
+[1, 1, 1, 1, 1, 1, 75, 75, 1, 1]
+
+Test MaskedArray::operator <= (MaskedArray, Array)
+(y(b) <= z).getArray()
+[0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+
+Test MaskedArray::operator <= (Array, MaskedArray)
+(y <= z(b)).getArray()
+[0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+
+Test MaskedArray::operator <= (MaskedArray, MaskedArray)
+(y(b) <= z(y>4)).getArray()
+[0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+
+Test MaskedArray::operator <= (MaskedArray, Scalar)
+(y(b) <= 5).getArray()
+[0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+
+Test MaskedArray::operator <= (Scalar, MaskedArray)
+(5 > y(b)).getArray()
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator && (MaskedArray, Scalar)
+((5 > y(b)) && True).getArray()
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator && (MaskedArray, Scalar)
+((5 > y(b)) && False).getArray()
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator || (MaskedArray, Scalar)
+((5 > y(b)) || True).getArray()
+[0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
+
+Test MaskedArray::operator || (MaskedArray, Scalar)
+((5 > y(b)) || False).getArray()
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator && (Scalar, MaskedArray)
+(True && (5 > y(b))).getArray()
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator && (Scalar, MaskedArray)
+(False && (5 > y(b))).getArray()
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator || (Scalar, MaskedArray)
+(True || (5 > y(b))).getArray()
+[0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
+
+Test MaskedArray::operator || (Scalar, MaskedArray)
+(False || (5 > y(b))).getArray()
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+
+Test MaskedArray::operator ! (MaskedArray)
+
+a_log= 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+b_log= 
+[0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
+mla_log= 
+Array: [0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+Mask:  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
+
+! mla_log = 
+Array: [0, 0, 1, 0, 0, 0, 1, 1, 1, 1]
+Mask:  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
+(a_log < 3)(b_log) = 
+Array: [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+Mask:  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
+allEQ (!mla_log, (a_log < 3)(b_log)) = 1
+
+Test MaskedArray::allLE (MaskedArray, Array)
+allLE (y(b), z)= 0
+allLE (y(b), w)= 1
+
+Test MaskedArray::allGT (Array, MaskedArray)
+allGT (z, y(b))= 0
+allGT (w, y(b))= 1
+
+Test MaskedArray::allLT (MaskedArray, MaskedArray)
+allLT (u(u<9), y(y<7))= 0
+allLT (u(u<8), y(y<7))= 1
+
+Test MaskedArray::anyLE (MaskedArray, Array)
+anyLE (y(b), z)= 1
+anyLE (y(b), v)= 0
+
+Test MaskedArray::anyGT (Array, MaskedArray)
+anyGT (z, y(b))= 1
+anyGT (v, y(b))= 0
+
+Test MaskedArray::anyLT (MaskedArray, MaskedArray)
+anyLT (u(u<9), y(y<7))= 1
+anyLT (u(u>8), y(y<7))= 0
+
+Test MaskedArray::anyAND (MaskedArray, Array)
+anyAND (b(y>5), y>4)= 1
+anyAND (b(y==4), y>4)= 0
+
+Test MaskedArray::anyAND (Array, MaskedArray)
+anyAND (y>4, b(y>5))= 1
+anyAND (y>4, b(y==4))= 0
+
+Test MaskedArray::anyAND (MaskedArray, MaskedArray)
+anyAND (b(y>4), b(y>5))= 1
+anyAND (b(y<3), b(y<=3))= 0
+
+Test MaskedArray::anyOR (MaskedArray, Array)
+anyOR (b(y>5), y>4)= 1
+anyOR (b(y==3), y>4)= 0
+
+Test MaskedArray::anyOR (Array, MaskedArray)
+anyOR (y>4, b(y>5))= 1
+anyOR (y>4, b(y==3))= 0
+
+Test MaskedArray::anyOR (MaskedArray, MaskedArray)
+anyOR (b(y>4), b(y>5))= 1
+anyOR (b(y<3), b(y<=3))= 0
+
+Test MaskedArray::allLT (MaskedArray, Scalar)
+allLT (y(y>5), 7)= 0
+allLT (y(y>5), 11)= 1
+
+Test MaskedArray::allGE (Scalar, MaskedArray)
+allGE (7, y(y>5))= 0
+allGE (11, y(y>5))= 1
+
+Test MaskedArray::anyLT (MaskedArray, Scalar)
+anyLT (y(y>5), 7)= 1
+anyLT (y(y>5), 5)= 0
+
+Test MaskedArray::anyGE (Scalar, MaskedArray)
+anyGE (7, y(y>5))= 1
+anyGE (5, y(y>5))= 0
+
+Test MaskedArray::allAND (MaskedArray, Bool)
+allAND (b(y>5), True)= 0
+allAND (b(b), True)= 1
+allAND (b(b), False)= 0
+
+Test MaskedArray::allAND (Bool, MaskedArray)
+allAND (True, b(y>5))= 0
+allAND (True, b(b))= 1
+allAND (False, b(b))= 0
+
+Test MaskedArray::allOR (MaskedArray, Bool)
+allOR (b(y>5), False)= 0
+allOR (b(b), False)= 1
+allOR (b(y>5), True)= 1
+
+Test MaskedArray::allOR (Bool, MaskedArray)
+allOR (False, b(y>5))= 0
+allOR (False, b(b))= 1
+allOR (True, b(y>5))= 1
+
+Test MaskedArray::anyAND (MaskedArray, Bool)
+anyAND (b(y>5), True)= 1
+anyAND (b(y<3), True)= 0
+anyAND (b(y>5), False)= 0
+
+Test MaskedArray::anyAND (Bool, MaskedArray)
+anyAND (True, b(y>5))= 1
+anyAND (True, b(y<3))= 0
+anyAND (False, b(y>5))= 0
+
+Test MaskedArray::anyOR (MaskedArray, Bool)
+anyOR (b(y>5), False)= 1
+anyOR (b(y<3), False)= 0
+anyOR (b(y<3), True)= 1
+
+Test MaskedArray::anyOR (Bool, MaskedArray)
+anyOR (False, b(y>5))= 1
+anyOR (False, b(y<3))= 0
+anyOR (True, b(y<3))= 1
+
+OK

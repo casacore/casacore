@@ -1,0 +1,261 @@
+//# ScalarColumn.cc: Access to a scalar table column with arbitrary data type
+//# Copyright (C) 1994,1995,1996
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/BaseColumn.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/ValTypeId.h>
+#include <aips/Utilities/String.h>
+#include <aips/Tables/TableError.h>
+
+
+template<class T>
+ROScalarColumn<T>::ROScalarColumn()
+: ROTableColumn(),
+  reaskAccessColumn_p (new Bool(True)),
+  canAccessColumn_p   (new Bool(False))
+{}
+
+template<class T>
+ROScalarColumn<T>::ROScalarColumn (const Table& tab,
+				   const String& columnName)
+: ROTableColumn (tab, columnName),
+  reaskAccessColumn_p (new Bool(True)),
+  canAccessColumn_p   (new Bool(False))
+{
+    checkDataType();
+}
+
+template<class T>
+ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
+: ROTableColumn (column),
+  reaskAccessColumn_p (new Bool(True)),
+  canAccessColumn_p   (new Bool(False))
+{
+    checkDataType();
+}
+
+template<class T>
+ROScalarColumn<T>::ROScalarColumn (const ROScalarColumn<T>& that)
+: ROTableColumn (that),
+  reaskAccessColumn_p (new Bool (*that.reaskAccessColumn_p)),
+  canAccessColumn_p   (new Bool (*that.canAccessColumn_p))
+{}
+
+template<class T>
+ROTableColumn* ROScalarColumn<T>::clone() const
+{
+    return new ROScalarColumn<T> (*this);
+}
+
+template<class T>
+void ROScalarColumn<T>::reference (const ROScalarColumn<T>& that)
+{
+    ROTableColumn::reference (that);
+    *reaskAccessColumn_p = *that.reaskAccessColumn_p;
+    *canAccessColumn_p   = *that.canAccessColumn_p;
+}
+
+template<class T>
+ROScalarColumn<T>::~ROScalarColumn()
+{
+    delete reaskAccessColumn_p;
+    delete canAccessColumn_p;
+}
+
+template<class T>
+void ROScalarColumn<T>::checkDataType() const
+{
+    //# Check if the data type matches.
+    const ColumnDesc& cd = baseColPtr_p->columnDesc();
+    DataType dtype = cd.dataType();
+    if (dtype != ValType::getType((T*)0)  ||  !cd.isScalar()) {
+	throw (TableInvDT (" in ROScalarColumn ctor for column " + cd.name()));
+    }
+    if (dtype == TpOther) {
+	if (cd.dataTypeId() != valDataTypeId((T*)0)) {
+	    throw (TableInvDT (" in ROScalarColumn ctor for column "
+			       + cd.name() + "; using data type id "
+			       + valDataTypeId((T*)0)
+			       + ", expected " + cd.dataTypeId()));
+	}
+    }
+}
+
+
+template<class T>
+T ROScalarColumn<T>::operator() (uInt rownr) const
+{
+    T val;
+    get (rownr, val);
+    return val;
+}
+
+template<class T>
+Vector<T> ROScalarColumn<T>::getColumn() const
+{
+    Vector<T> vec;
+    getColumn (vec);
+    return vec;
+}
+
+template<class T>
+void ROScalarColumn<T>::getColumn (Vector<T>& vec) const
+{
+    uInt nrrow = nrow();
+    //# Resize the vector if empty; otherwise check its length.
+    if (vec.nelements() == 0) {
+	vec.resize (nrrow);
+    }else{
+	if (vec.nelements() != nrrow) {
+	    throw (TableConformanceError("ScalarColumn::getColumn"));
+	}
+    }
+    //# Ask if we can access the column (if that is not known yet).
+    if (*reaskAccessColumn_p) {
+	*canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
+	                                             (*reaskAccessColumn_p);
+    }
+    //# Access the column if possible.
+    //# Otherwise fill the entire vector by looping through all cells.
+    if (*canAccessColumn_p) {
+	baseColPtr_p->getScalarColumn (&vec);
+    }else{
+	for (uInt rownr=0; rownr<nrrow; rownr++) {
+	    baseColPtr_p->get (rownr, &(vec(rownr)));
+	}
+    }
+}
+
+
+
+template<class T>
+ScalarColumn<T>::ScalarColumn()
+: ROTableColumn     (),
+  ROScalarColumn<T> (),
+  TableColumn       ()
+{}
+
+template<class T>
+ScalarColumn<T>::ScalarColumn (const Table& tab, const String& columnName)
+: ROTableColumn     (tab, columnName),
+  ROScalarColumn<T> (tab, columnName),
+  TableColumn       (tab, columnName)
+{}
+
+template<class T>
+ScalarColumn<T>::ScalarColumn (const TableColumn& column)
+: ROTableColumn     (column),
+  ROScalarColumn<T> (column),
+  TableColumn       (column)
+{}
+
+template<class T>
+ScalarColumn<T>::ScalarColumn (const ScalarColumn<T>& that)
+: ROTableColumn     (that),
+  ROScalarColumn<T> (that),
+  TableColumn       (that)
+{}
+
+template<class T>
+ROTableColumn* ScalarColumn<T>::clone() const
+{
+    return new ScalarColumn<T> (*this);
+}
+
+template<class T>
+void ScalarColumn<T>::reference (const ScalarColumn<T>& that)
+    { ROTableColumn::reference (that); }
+
+template<class T>
+ScalarColumn<T>::~ScalarColumn()
+{}
+
+template<class T>
+void ScalarColumn<T>::put (uInt thisRownr, const ROScalarColumn<T>& that,
+			   uInt thatRownr)
+{
+    put (thisRownr, that(thatRownr));
+}
+
+template<class T>
+void ScalarColumn<T>::put (uInt thisRownr, const ROTableColumn& that,
+			   uInt thatRownr)
+{
+    T value;
+    that.getScalarValue (thatRownr, &value, columnDesc().dataTypeId());
+    put (thisRownr, value);
+}
+
+template<class T>
+void ScalarColumn<T>::putColumn (const Vector<T>& vec)
+{
+    uInt nrrow = nrow();
+    //# Check the vector length.
+    if (vec.nelements() != nrrow) {
+	throw (TableConformanceError("ScalarColumn::putColumn(Vector&)"));
+    }
+    //# Ask if we can access the column (if that is not known yet).
+    if (*reaskAccessColumn_p) {
+	*canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
+	                                             (*reaskAccessColumn_p);
+    }
+    //# Access the column if possible.
+    //# Otherwise put the entire vector by looping through all cells.
+    if (*canAccessColumn_p) {
+	baseColPtr_p->putScalarColumn (&vec);
+    }else{
+	for (uInt rownr=0; rownr<nrrow; rownr++) {
+	    baseColPtr_p->put (rownr, &(vec(rownr)));
+	}
+    }
+}
+
+//#// This is a very simple implementation.
+//#// Ultimately this must be done more direct via the data manager.
+template<class T>
+void ScalarColumn<T>::fillColumn (const T& value)
+{
+    uInt nrrow = nrow();
+    for (uInt i=0; i<nrrow; i++) {
+	put (i, value);
+    }
+}
+
+template<class T>
+void ScalarColumn<T>::putColumn (const ROScalarColumn<T>& that)
+{
+    //# Check the column lengths.
+    uInt nrrow = nrow();
+    if (nrrow != that.nrow()) {
+	throw (TableConformanceError ("ScalarColumn<T>::putColumn"));
+    }
+    for (uInt i=0; i<nrrow; i++) {
+	put (i, that, i);
+    }
+}

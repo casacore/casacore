@@ -1,0 +1,23 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Usage: tTable_2.exec
+#-----------------------------------------------------------------------------
+# This scripts executes the program tTable_2 to test if new table
+# software can still read old tables.
+# The script supplies the names of all test tables found in the system.
+# It uses assay to test if the output matches the expected output.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "UNTESTED: tTable_2.exec (AIPSPATH not defined)"
+     exit 3
+  fi
+
+  AIPSCODE=`echo $AIPSPATH | awk '{printf("%s/code",$1)}'`
+  TABLES="$AIPSCODE/aips/implement/Tables/test/tTable_2.data_v*"
+
+  assay tTable_2 $TABLES

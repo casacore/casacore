@@ -1,0 +1,9 @@
+SymLink: tSymLink_tmp/isFile exists, but is no symbolic link
+SymLink: tSymLink_tmp/isDir exists, but is no symbolic link
+SymLink: tSymLink_tmp/isDir/newB does not exist and cannot be created
+SymLink::create error on a: Permission denied
+SymLink: resolving tSymLink_tmp/A results in an endless loop
+SymLink: resolving tSymLink_tmp/I results in an endless loop
+SymLink::create: tSymLink_tmp/isDir/II already exists
+SymLink::create: tSymLink_tmp/newLink2 already exists as a non-symlink
+OK
