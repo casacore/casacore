@@ -1,5 +1,5 @@
 //# LatticeFFT.cc: functions for doing FFT's on Lattices.
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/TiledLineStepper.h>
+#include <aips/Tasking/AppInfo.h>
 
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
@@ -49,8 +50,10 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   IPosition slabShape = cLattice.niceCursorShape(maxPixels);
   const uInt nx = slabShape(0) = latticeShape(0);
   const uInt ny = slabShape(1) = latticeShape(1);
+  Int cacheSize=AppInfo::availableMemoryInMB()*1024*1024/(8); 
+
   // For small transforms, we do everything in one plane
-  if ((uInt) slabShape.product() <= maxPixels) {
+  if ((Int) slabShape.product() <= cacheSize) {
     const IPosition cursorShape(2, nx, ny);
     LatticeStepper ls(latticeShape, cursorShape);
     LatticeIterator<Complex> li(cLattice, ls);
