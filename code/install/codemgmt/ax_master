@@ -2693,3 +2693,4 @@
 10 019 src mv trial/implement/Measures/test/tEarthField.cc aips/implement/Measures/test/tEarthField.cc
 10 019 src mv trial/implement/Measures/test/tEarthMagneticMachine.out aips/implement/Measures/test/tEarthMagneticMachine.out
 10 019 src mv trial/implement/Measures/test/tMEarthMagnetic.out aips/implement/Measures/test/tMEarthMagnetic.out
+10 019 src mv trial/implement/Measures/test/tEarthField.out aips/implement/Measures/test/tEarthField.out
