@@ -983,11 +983,7 @@ Bool ImageMoments<T>::createMoments()
 
 template <class T> 
 Bool ImageMoments<T>::checkMethod ()
-// 
-// Make sure we can do what the user wants
-//  
 {
-
 
 // Make a plotting check. They must give the plotting device for interactive methods.  
 // Plotting can be invoked passively for other methods.
@@ -1026,7 +1022,6 @@ Bool ImageMoments<T>::checkMethod ()
 // Now check all the silly methods
 
    const Bool doInter = (!doAuto_p);
-
    if (!( (!doSmooth_p && !doWindow_p && !doFit_p && ( noInclude_p &&  noExclude_p) && !doInter) ||
           ( doSmooth_p && !doWindow_p && !doFit_p && (!noInclude_p || !noExclude_p) && !doInter) ||
           (!doSmooth_p && !doWindow_p && !doFit_p && (!noInclude_p || !noExclude_p) && !doInter) ||
@@ -1099,7 +1094,7 @@ Bool ImageMoments<T>::checkMethod ()
       } else {
          os_p <<  "        Y";
       }
-      if (doAuto_p) {
+      if (doInter) {
          os_p <<  "            Y";
       } else {
          os_p <<  "            N";
