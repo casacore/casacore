@@ -1,6 +1,6 @@
 # $Id$
 
-XLIBLIST := LAPACK F77
+XLIBLIST := CFITSIO LAPACK F77
 
 # Use the generic AIPS++ test makefile.
 #--------------------------------------
