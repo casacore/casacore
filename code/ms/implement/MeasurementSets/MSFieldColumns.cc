@@ -130,37 +130,6 @@ Int RONewMSFieldColumns::matchDirection(const MDirection& referenceDirection,
 					const MDirection& phaseDirection,
 					const Quantum<Double>& maxSeparation,
 					Int tryRow) {
-//   uInt r = nrow();
-//   if (r == 0) return -1;
-//   // convert the supplied directions to the same reference frame as the ones in
-//   // the Table. It would be nice if this converter could be cached somewhere.
-//   MDirection::Convert c(referenceDirection, delayDirMeasCol().getMeasRef());
-//   const MVDirection refVal = c().getValue();
-//   // Create these here to avoid creating them lots of times as a temporaries
-//   const MVDirection delayVal = c(delayDirection).getValue();
-//   const MVDirection phaseVal = c(phaseDirection).getValue();
-//   const Double sepInRad = maxSeparation.radian();
-//   Matrix<Double> mdir(IPosition(2,1,2));
-//   Vector<Double> dir(mdir.nonDegenerate()); // A reference to the mdir matrix
-//   while (r > 0) {
-//     r--;
-//     if (flagRow()(r) == False && numPoly()(r) == 0) {
-//       delayDir().get(r, mdir);
-//       if (delayVal.separation(MVDirection(dir)) < sepInRad) {
-//  	phaseDir().get(r, mdir);
-//  	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
-//  	  referenceDir().get(r, mdir);
-//  	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
-//  	    DebugAssert(dir.nrefs() == 2, AipsError); 
-//  	    DebugAssert(mdir.nrefs() == 2, AipsError);
-//  	    return r;
-//  	  }
-//  	}
-//       }
-//     }
-//   }
-//   DebugAssert(dir.nrefs() == 2, AipsError);
-//   DebugAssert(mdir.nrefs() == 2, AipsError);
   uInt r = nrow();
   if (r == 0) return -1;
   // Get the reference frame and check it natches
@@ -353,6 +322,16 @@ interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly,
     }
     return MDirection(MVDirection(dir),vecDir(0).getRef());
   }
+}
+
+void NewMSFieldColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
+void NewMSFieldColumns::setDirectionRef(MDirection::Types ref) {
+  delayDirMeas_p.setDescRefCode(ref);
+  phaseDirMeas_p.setDescRefCode(ref); 
+  referenceDirMeas_p.setDescRefCode(ref);
 }
 // Local Variables: 
 // compile-command: "gmake NewMSFieldColumns"
