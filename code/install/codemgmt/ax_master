@@ -6310,3 +6310,4 @@
 17 396 src mv trial/implement/Functionals/FunctionOrder2.cc aips/implement/Functionals/FunctionOrder2.cc
 17 396 src mv trial/implement/Functionals/test/tFunctionOrder.cc aips/implement/Functionals/test/tFunctionOrder.cc
 17 396 src mv trial/implement/Functionals/test/tFunctionOrder.out aips/implement/Functionals/test/tFunctionOrder.out
+18 019 src mv trial/implement/Mathematics/AutoDiffX.h aips/implement/Mathematics/AutoDiffX.h
