@@ -22,7 +22,7 @@
    \tableofcontents
 \section{Introduction}
 
-The current mode of applying patches to AIPS++ is spotty at best for addressing user requests for defect
+The current mode of applying patches to AIPS++ is inadequate for addressing user requests for defect
 resolutions and enhancements.  More frequent patches would be helpful but they are difficult to apply
 and are often
 precluded by the project's desire to only apply bug fixes to release.  A possibly more useful model is 
@@ -30,10 +30,11 @@ to allow users access to the project's stable builds.
 
 \section{Non-consortium User Updates}
 
-In our current scheme, consortium sites and those sites that build from source have access to daily
-changes in the code tree.  Available to these sites, is a stable build mechanism inhale -b.  Users who
-install from CD don't readily have this option (although linux users can use the inhale binary option
-provided they make adjustments to their systems).
+In our current scheme, consortium sites and those sites that build from source have access to
+daily changes in the code tree.  Available to these sites, is a stable build mechanism
+inhale -b.  Users who install from CD don't readily have this option. Currently linux users
+can use the inhale binary option provided they make adjustments to their systems. The proposed
+scheme would simplify and widen the availabilty of binary updates.
 
 \subsection{A New Update Scheme}
 \begin{description}
@@ -77,8 +78,9 @@ Put stable bin files (base and updated), libexec files, and shared libraries und
 \item[silent (-q)] - Just do it don't ask for confirmation.
 \end{description}
 
-Aupdate would normally use cvsup to update various directory trees. The usefile option would allow 
-downloading a tar file and updating the system for those machines that don't support cvsup.
+Aupdate would normally use cvsup to update various directory trees. The usefile option allows 
+downloading a tar file and using the tar file to update the system for those machines that
+don't support cvsup.
 
 
 \subsection{What the user does}
