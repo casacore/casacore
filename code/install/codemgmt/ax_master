@@ -2353,3 +2353,10 @@
 11 201 sys rm libexec/mans_topold.g
 11 201 sys rm libexec/rbtest1.g
 11 205 src rm aips/glish/glish/Reporter.h
+11 206 src rm trial/implement/Widgets/scalarentry.g
+11 206 src rm trial/implement/Widgets/fileentry.g
+11 206 src rm trial/implement/Widgets/measureentry.g
+11 206 src rm trial/implement/Widgets/quantityentry.g
+11 206 src rm trial/implement/Widgets/vectorentry.g
+11 206 src rm trial/implement/Widgets/choiceentry.g
+11 206 src rm trial/implement/Widgets/checkentry.g
