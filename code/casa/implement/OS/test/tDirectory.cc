@@ -226,6 +226,13 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (test8.isEmpty());
     AlwaysAssertExit (test7.exists());
     AlwaysAssertExit (slink.exists());
+
+    // Test the freeSpace function.
+    cout << ">>>" << endl;
+    cout << "Free Space: " << test7.freeSpace() << ' '
+	 << test8.freeSpace() << endl;
+    cout << "<<<" << endl;
+
     test8.remove();
     AlwaysAssertExit (!test7.exists());
     AlwaysAssertExit (!slink.exists());
