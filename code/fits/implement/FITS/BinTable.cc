@@ -83,13 +83,14 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	AlwaysAssert(theheap_p, AipsError);
 	ExtensionHeaderDataUnit::read(theheap_p, pcount());
 	// and do some initial decoding of the VADesc related stuff
-	vatypes_p = new FITS::ValueType [ncols()];
+	uInt ncol = ncols();
+	vatypes_p = new FITS::ValueType [ncol];
 	AlwaysAssert(vatypes_p, AipsError);
-	vaptr_p = new void * [ncols()];
+	vaptr_p = new void * [ncol];
 	AlwaysAssert(vaptr_p, AipsError);
-	va_p = new VADescFitsField [ncols()];
+	va_p = new VADescFitsField [ncol];
 	AlwaysAssert(va_p, AipsError);
-	for (Int i=0;i<ncols();++i) {
+	for (uInt i=0;i<ncol;++i) {
 	    vaptr_p[i] = 0;
 	    if (field(i).fieldtype() == FITS::VADESC) {
 		int maxsize;
