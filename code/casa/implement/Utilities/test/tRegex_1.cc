@@ -1,5 +1,5 @@
 //# tRegex_1.cc: Regex test program
-//# Copyright (C) 1996,1998,2000
+//# Copyright (C) 1996,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,9 @@
 //# $Id$
 
 #include <aips/Utilities/String.h>
-#include <aips/IO/AipsIO.h>
+#include <aips/Utilities/Regex.h>
 
-int main (void)
-{
+int main () {
     const Int ntests = 28;
     String p[ntests];
     p[0]  = "^().+|$";
@@ -66,12 +65,12 @@ int main (void)
     int i;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromPattern(p[i]) << endl;
-    }
+    };
 
     cout << endl << "String --> Regular Expression" << endl;
     cout << "-----------------------------" << endl;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromString(p[i]) << endl;
-    }
+    };
     return 0;
 }
