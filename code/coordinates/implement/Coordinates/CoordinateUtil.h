@@ -1,5 +1,5 @@
 //# CoordinateUtils.h: static functions dealing with coordinates
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ class String;
 // <li> Finding specified axes in a CoordinateSystem
 // </ul>
 // 
-// The functions for adding default axes to a CoordinateSystem are can add
+// The functions for adding default axes to a CoordinateSystem can add
 // either a RA/DEC pair of axes, a Polarisation Axis, or a Spectral Axis to
 // a user supplied coordinate system. The default values for these functions
 // are:
@@ -80,17 +80,17 @@ class String;
 // rest (<linkto class="MFrequency">MFrequency</linkto>::LSR). 
 // </ul>
 //
-// The <src>defaultAxes</src> functions, create from scratch a
+// The <src>defaultCoords</src> functions, create from scratch a
 // CoordinateSystem using the above described <src>addXXXAxis</src>
 // functions to add the required number of dimensions to the
 // CoordinateSystem. Only 2, 3 or 4 dimensional coordinate systems can be
 // constructed using these functions. The coordinate systems always have
 // RA/Dec axes. Three dimensional Systems add a spectral axis and
 // four-dimensional systems add an IQUV  polarization axis. An exception
-// (AipsError) is thrown if <src>defaultAxes(uInt)</src> is called with a
+// (AipsError) is thrown if <src>defaultCoords(uInt)</src> is called with a
 // parameter that is not 2, 3, or 4. 
 //
-// The <src>defaultAxesXX</src> functions return the coordinate system by
+// The <src>defaultCoordsXX</src> functions return the coordinate system by
 // value (which involves a copy of the CoordinateSystem) and hence are not
 // as effcient as the <src>addXXXAxis</src> functions.
 //
@@ -108,8 +108,8 @@ class String;
 // axis in the the CoordinateSystem map to the first pixel axis in an
 // image. Hence it is necessary to determine which pixel axis corresponds to a
 // specified Coordinate and this can be done using these functions. Some
-// coordinate types, in particular DirectionCoordinate's, usually map to more
-// than one pixel axis as DirectionsCoordinates are inherently two-dimensional.
+// coordinate types, in particular DirectionCoordinate, usually map to more
+// than one pixel axis (DirectionsCoordinates are inherently two-dimensional).
 // 
 // This group contains declarations for static functions that search
 // CoordinateSystem's for a coordinate of the specified type. It returns the
@@ -287,10 +287,10 @@ static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
 
 // Remove a list of world axes and their associated
 // pixel axes from a <src>CoordinateSystem</src>. The list of world
-// axes to remove is derived from a list giving either axes to remove, 
+// axes to be removed is derived from a list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
 // is <src>True</src> or <src>False</src>.  The replacement values (see functions 
-// <src>CoordinateSYstem::removeWorldAxis</src>  for the world axes
+// <src>CoordinateSYstem::removeWorldAxis</src>) for the world axes
 // can be given.  For the associated pixel axes, the pixel replacement
 // coordinate is found by converting the world coordinate 
 // to a pixel coordinate. If the length of the replacement value 
