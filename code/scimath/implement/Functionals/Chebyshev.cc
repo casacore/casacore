@@ -1,5 +1,5 @@
-//# NQChebyshev.cc  a function class that defines a NQChebyshev polynomial
-//# Copyright (C) 2000,2001
+//# Chebyshev.cc  a function class that defines a Chebyshev polynomial
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,69 +26,71 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQChebyshev.h>
+#include <aips/Functionals/Chebyshev.h>
 
 //# Constructors
 
 //# Operators
 template <class T>
-T NQChebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
-  T xp = x[0];
-  // handle out-of-interval values
-  if (xp < minx_p || xp > maxx_p) {
-    switch (mode_p) {
+T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
+    T xp = x[0];
+    // handle out-of-interval values
+    if (xp < minx_p || xp > maxx_p) {
+	switch (mode_p) {
 
-    case CONSTANT:
-      return def_p;
+	case CONSTANT:
+	    return def_p;
 
-    case ZEROTH:
-      return param_p[0];
+	case ZEROTH:
+	    return param_p[0];
 
-    case CYCLIC: {
-      T period = (maxx_p-minx_p);
-      while (xp < minx_p) xp += period;
-      while (xp > maxx_p) xp -= period;
+	case CYCLIC: {
+	    T period = (maxx_p-minx_p);
+	    while (xp < minx_p) xp += period;
+	    while (xp > maxx_p) xp -= period;
+	}
+	break;
+
+	case EDGE: {
+	    T tmp(0);
+	    if (xp<minx_p) {
+		for (uInt i=0; i<nparameters(); i+=2) tmp += param_p[i];
+		for (uInt i=1; i<nparameters(); i+=2) tmp -= param_p[i];
+	    } else {
+		for (uInt i=0; i<nparameters(); ++i) tmp += param_p[i];
+	    };
+	    return tmp;
+	}
+	break;
+
+	default:
+	    break;
+	}
     }
-    break;
 
-    case EDGE: {
-      T tmp(0);
-      if (xp<minx_p) {
-	for (uInt i=0; i<nparameters(); i+=2) tmp += param_p[i];
-	for (uInt i=1; i<nparameters(); i+=2) tmp -= param_p[i];
-      } else {
-	for (uInt i=0; i<nparameters(); ++i) tmp += param_p[i];
-      };
-      return tmp;
-    }
-    break;
+    T yi1=T(0);
+    T yi2=T(0);
+    T tmp;
 
-    default:
-      break;
-    }
-  };
+    // map Chebeshev range [minx_p, maxx_p] into [-1, 1]
+    xp = (T(2)*xp-minx_p-maxx_p)/(maxx_p-minx_p);
 
-  T yi1=T(0);
-  T yi2=T(0);
-  T tmp;
+    // evaluate using Clenshaw recursion relation
+    for (Int i=nparameters()-1; i>0; i--) {
+	tmp = T(2)*xp*yi1 - yi2 + param_p[i];
+	yi2 = yi1;
+	yi1 = tmp;
+    };
 
-  // map Chebeshev range [minx_p, maxx_p] into [-1, 1]
-  xp = (T(2)*xp-minx_p-maxx_p)/(maxx_p-minx_p);
-  // evaluate using Clenshaw recursion relation
-  for (Int i=nparameters()-1; i>0; i--) {
-    tmp = T(2)*xp*yi1 - yi2 + param_p[i];
-    yi2 = yi1;
-    yi1 = tmp;
-  };
-  return xp*yi1 - yi2 + param_p[0];
+    return xp*yi1 - yi2 + param_p[0];
 }
 
 template <class T>
-NQChebyshev<T> NQChebyshev<T>::derivative() const {
+Chebyshev<T> Chebyshev<T>::derivative() const {
     Vector<T> ce(nparameters());
     ce = parameters().getParameters();
     derivativeCoeffs(ce, minx_p, maxx_p);
-    return NQChebyshev<T>(ce, minx_p, maxx_p, mode_p, T(0));
+    return Chebyshev<T>(ce, minx_p, maxx_p, mode_p, T(0));
 }
 
 //# Member functions
