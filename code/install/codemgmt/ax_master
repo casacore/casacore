@@ -2722,3 +2722,4 @@
 10 060 src mv aips/implement/Measures/MVDouble.cc aips/implement/Quanta/MVDouble.cc
 10 060 src mv aips/implement/Measures/MVDouble.h aips/implement/Quanta/MVDouble.h
 10 060 src mv aips/implement/Measures/MVEarthMagnetic.cc aips/implement/Quanta/MVEarthMagnetic.cc
+10 060 src mv aips/implement/Measures/MVEarthMagnetic.h aips/implement/Quanta/MVEarthMagnetic.h
