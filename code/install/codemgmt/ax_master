@@ -2428,3 +2428,4 @@
 09 368 src rm aips/fortran/PGWRAP.f
 09 374 src rm trial/apps/image/templates
 09 376 src mv install/codedevl/template-review install/codedevl/template-review-cc
+09 385 src mv nfra/apps/ms2fits trial/apps/ms2fits
