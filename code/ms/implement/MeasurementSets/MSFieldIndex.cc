@@ -1,5 +1,5 @@
 //# MSFieldIndex.cc: implementation of MSFieldIndex.h
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names)
 //
   Vector<Int> matchedFieldIds;
   // Match each field name individually
-  for (Int fld=0; fld<names.nelements(); fld++) {
+  for (uInt fld=0; fld<names.nelements(); fld++) {
     // Add to list of field id's
     Vector<Int> currentMatch = matchFieldName(names(fld));
     if (currentMatch.nelements() > 0) {
@@ -120,7 +120,7 @@ Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds)
 //
   Vector<Int> matchedFieldIds;
   // Match each field name individually
-  for (Int fld=0; fld<sourceIds.nelements(); fld++) {
+  for (uInt fld=0; fld<sourceIds.nelements(); fld++) {
     // Add to list of field id's
     Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
     if (currentMatch.nelements() > 0) {

@@ -1,5 +1,5 @@
 //# MSSourceIndex.cc:  this defined MSSourceIndex
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -104,7 +104,7 @@ Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
 //
   Vector<Int> matchedSourceIds;
   // Match each source name individually
-  for (Int fld=0; fld<names.nelements(); fld++) {
+  for (uInt fld=0; fld<names.nelements(); fld++) {
     // Add to list of source id's
     Vector<Int> currentMatch = matchSourceName(names(fld));
     if (currentMatch.nelements() > 0) {
