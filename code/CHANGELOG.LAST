@@ -1,0 +1,26 @@
+
+change id: 0112
+ author:   Ger van Diepen
+ date:     2002/01/08
+ avers:    1.7
+ area:     Tool
+ package:  trial
+ module:   table
+ type:     Code
+ category: New
+ summary:  Extended tablefromascii functionality
+tablefromascii has been improved considerably:
+
+1. It is possible to skip (comment) lines in the input file in two ways:
+   - by specifying the first and/or last line to read
+   - by specifying a regular expression matching the start of a line
+     (acting as a comment marker).
+
+2. It is possible to store data as arrays in a column:
+   - if autoheader=T a shape can be given telling if the data in each input
+     line has to be stored as scalars or as an array.
+   - if autoheader=F a shape can be given after the format of a column
+     (e.g. I2,5 for a 2-dim integer array with shape [2,5]).
+   In both cases it is possible to have variable length arrays.
+
+See table.help for more information.
