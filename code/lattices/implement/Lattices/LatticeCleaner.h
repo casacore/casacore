@@ -37,6 +37,7 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
+template <class T> class LatticeCleanerProgress;
 template <class T> class TempLattice;
 
 // <summary>Lists the different types of Convolutions that can be done</summary>
@@ -96,21 +97,8 @@ public:
 template<class T> class LatticeCleaner
 {
 public:
-  // Call back function
-  typedef Bool InfoCallback(const Bool lastcall,
-			    const Int iteration,
-			    const Int numberIterations,
-			    const Lattice<T>& model,
-			    const Vector<Float>& maxima,
-			    const Block<IPosition>& posMaximum,
-			    const Float strengthOptimum,
-			    const Int optimumScale,
-			    const IPosition& positionOptimum,
-			    const Block<TempLattice<T>* >& residuals);
-
   // Create a cleaner for a specific dirty image and PSF
-  LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty,
-		 InfoCallback* callback = 0);
+  LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty);
 
   // The copy constructor uses reference semantics
   LatticeCleaner(const LatticeCleaner<T> & other);
@@ -132,7 +120,7 @@ public:
 		  const Float gain, const Quantity& threshold);
 
   // Clean an image. 
-  Bool clean(Lattice<T> & model);
+  Bool clean(Lattice<T> & model, LatticeCleanerProgress<T>* progress=0);
 
 private:
   //# The following functions are used in various places in the code and are
@@ -169,20 +157,6 @@ private:
   // Let the user choose whether to stop
   Bool itsChoose;
 
-  // Callback function
-  LatticeCleaner::InfoCallback* itsCallback;
-
-  // Standard callback function
-  Bool standardCallback(const Bool lastcall,
-			const Int iteration,
-			const Int numberIterations,
-			const Lattice<Float>& model,
-			const Vector<Float>& maxima,
-			const Block<IPosition>& posMaximum,
-			const Float strengthOptimum,
-			const Int optimumScale,
-			const IPosition& positionOptimum,
-			const Block<TempLattice<Float>* >& residuals);
   // Stop now?
   Bool stopnow();
 
