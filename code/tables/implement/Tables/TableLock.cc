@@ -1,5 +1,5 @@
 //# TableLock.cc: Class to hold table lock options
-//# Copyright (C) 1997,2000,2001
+//# Copyright (C) 1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,10 +80,8 @@ void TableLock::init()
 {
   if (itsOption == DefaultLocking) {
     itsOption           = AutoLocking;
-    //// temporary commented out until all cases where a reopen with
-    //// default locking mode are handled properly.
-    //// For the time the old behaviour (default= always Auto) supported.
-    //////    itsIsDefaultLocking = True;
+    ////if defaultlocking does not work need to comment below
+    itsIsDefaultLocking = True;
   } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
