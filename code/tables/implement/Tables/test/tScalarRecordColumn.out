@@ -5,7 +5,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
   #Keywords = 0
   #Columns  = 2
    Name=ab1   DataType=Record
-   DataManager=StManAipsIO/StManAipsIO
+   DataManager=StandardStMan/StandardStMan
    Comment = 
    #keywords=0
 

@@ -23,52 +23,52 @@ TableDesc tReadAsciiTable_tmp   version    (Directory ./)
   #Keywords = 0
   #Columns  = 10
    Name=COLS   DataType=Short
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
    #keywords=0
 
    Name=COLI   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
    #keywords=0
 
    Name=COLF   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
    #keywords=0
 
    Name=COLD   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
    #keywords=0
 
    Name=COLX   DataType=Complex
-   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
    Comment = 
    #keywords=0
 
    Name=COLDX   DataType=DComplex
-   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
    Comment = 
    #keywords=0
 
    Name=COLZ   DataType=Complex
-   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
    Comment = 
    #keywords=0
 
    Name=COLDZ   DataType=DComplex
-   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
    Comment = 
    #keywords=0
 
    Name=COLA   DataType=String
-   DataManager=StManAipsIO/StManAipsIO   Default=
+   DataManager=StandardStMan/StandardStMan   Default=
    Comment = 
    #keywords=0
 
    Name=COLB   DataType=Bool
-   DataManager=StManAipsIO/StManAipsIO   Default=0
+   DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
    #keywords=0
 
