@@ -39,10 +39,12 @@ class AipsIO;
 class ostream;
 #endif
 
+// <summary> Global IO functions </summary>
 // This header file defines the AipsIO functions for template SimpleOrderedMap.
 // If these functions were defined in the SimpleOrderedMap class itself,
 // it would require that AipsIO was defined for the template arguments.
 // This would prevent using SimpleOrderedMap with imported classes.
+// <group name=inoutput>
 
 template<class K, class V>
 AipsIO& operator<<(AipsIO&, const SimpleOrderedMap<K,V>&);
@@ -52,5 +54,6 @@ AipsIO& operator>>(AipsIO&, SimpleOrderedMap<K,V>&);
 
 template<class K, class V>
 ostream& operator<<(ostream&, const SimpleOrderedMap<K,V>&);
+// </group>
 
 #endif

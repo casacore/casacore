@@ -1,5 +1,5 @@
 //# DlistIO.h: Doubly linked list IO
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,9 @@
 
 class AipsIO;
 
+// <summary> Global IO functions </summary>
+// Input/output
+// <group name=inoutput>
 template<class t> AipsIO &operator<<(AipsIO &, const Dlist<t> &);
 template<class t> AipsIO &operator>>(AipsIO &, Dlist<t> &);
 template<class t> AipsIO &operator<<(AipsIO &, const DlistIter<t> &);
@@ -40,5 +43,6 @@ template<class t> AipsIO &operator>>(AipsIO &, DlistIter<t> &);
 
 template<class t> ostream &operator<<(ostream &, const Dlist<t> &);
 template<class t> ostream &operator<<(ostream &, const DlistIter<t> &);
+// </group>
 
 #endif
