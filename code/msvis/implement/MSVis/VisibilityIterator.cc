@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ void ROVisibilityIterator::origin()
     setSelTable();
     getTopoFreqs();
     updateSlicer();
-    more_p=ToBool(curChanGroup_p<curNumChanGroup_p);
+    more_p=curChanGroup_p<curNumChanGroup_p;
     // invalidate any attached VisBuffer
     if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
   }
@@ -336,7 +336,7 @@ void ROVisibilityIterator::updateSlicer()
   slicer_p=Slicer(IPosition(2,0,start),
 		  IPosition(2,nPol_p,channelGroupSize_p));
   weightSlicer_p=Slicer(IPosition(1,start),IPosition(1,channelGroupSize_p));
-  useSlicer_p=ToBool(channelGroupSize_p<nChan_p);
+  useSlicer_p=channelGroupSize_p<nChan_p;
 }
 
 void ROVisibilityIterator::attachColumns()
