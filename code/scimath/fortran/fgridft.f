@@ -2,10 +2,9 @@ C
 C Grid a number of visibility records
 C
       subroutine ggridft (uvw, rotmat, values, nvispol, nvischan,
-     $   flag, weight, nrow, irow,
+     $   dopsf, flag, weight, nrow, irow,
      $   scale, offset, grid, nx, ny, npol, nchan, freq, c,
-     $   support, sampling, convFunc, chanmap, polmap, sumwt,
-     $   dopsf)
+     $   support, sampling, convFunc, chanmap, polmap, sumwt)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
@@ -58,7 +57,7 @@ C
 C If we are making a PSF then we don't want to phase
 C rotate but we do want to reproject uvw
                         if(dopsf) then
-                           nvalue=weight(ichan,irow)
+                           nvalue=cmplx(weight(ichan,irow))
                         else
                            nvalue=weight(ichan,irow)*
      $                        conjg(values(ipol,ichan,irow)*phasor)
