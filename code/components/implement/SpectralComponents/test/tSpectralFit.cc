@@ -27,15 +27,26 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Random.h>
 #include <trial/Wnbt/SpectralElement.h>
 #include <trial/Wnbt/SpectralEstimate.h>
 #include <trial/Wnbt/SpectralFit.h>
+#include <trial/Tasking/PGPlotter.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Random.h>
+#include <aips/Inputs/Input.h>
 #include <aips/iostream.h>
 
-int main() {
+int main(int argc, char **argv) {
+      
+  // Inputs
+  Input inputs(1);
+  inputs.version("$Id$");
+  inputs.create("plotter", "", "plotter"); 
+  inputs.readArguments(argc, argv);
+  const String device = inputs.getString("plotter"); 
+
+  PGPlotter plotter(device, 3, 3);
   // get estimates
   {
     cout << "Test SpectralEstimate" << endl;
@@ -43,26 +54,27 @@ int main() {
 
     const Int NPAR = 9;
     const Int NPTS = 100;
-    ///    Int q = 1;
+    uInt q = 2;
     Int r;
     Int n = NPTS;
     Int np = NPAR;
-    ///    Double rms = 0.5;
-    ///    Double cutoff= 1.0;
-    ///    Double minsig = 0.5;
+    Double rms = 0.5;
+    Double cutoff= 1.0;
+    Double minsig = 0.5;
     Double par[NPAR];
-    ///    Double w[NPTS];
     Vector<Float> y(NPTS);
+    Vector<Float> xy(NPTS);
 
     par[0] = 5.0; par[1] = 45.0; par[2] = 1.1;
     par[3] = 4.0; par[4] = 50.0; par[5] = 1.1;
     par[6] = 6.0; par[7] = 55.0; par[8] = 1.1;
-    for (Int i = 0; i < n; i++) {
+    for (Int i = 0; i<n; i++) {
       y(i) = 0.0;
+      xy(i) = i;
       for (Int j = 0; j < np; j += 3) {
 	if (par[j] != 0.0) {
 	  Double a = par[j];
-	  Double c = (par[j+1] - (Double) i);
+	  Double c = (par[j+1] - Double(i));
 	  Double s = par[j+2];
 	  y(i) += a * exp( -0.5 * c / s * c / s );
 	};
@@ -73,12 +85,106 @@ int main() {
       cout << SpectralElement(SpectralElement::GAUSSIAN,
 			      par[3*i+0], par[3*i+1], par[3*i+2]) << endl;
     };
-    SpectralEstimate est;
-    r = est.estimate(y);
-    cout << "Found: " << r << " estimates" << endl;
-    for (Int i=0; i<r; i++) {
-      cout << "Estimate " << i << ": " << est.element(i) << endl;
-    };
+    plotter.env(xy(0), xy(n-1), -1, 12, 0, 0);
+    plotter.lab("", "", "Noiseless data with 3 components and "
+		"estimate residuals");
+    plotter.line(xy, y);
+    {
+      SpectralEstimate est(rms, cutoff, minsig);
+      Vector<Float> deriv(n);
+      r = est.estimate(y, &deriv);
+      cout << "Found (using rms, cutoff, minsig, q): (" <<
+	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
+	r << " estimates" << endl;
+      for (Int i=0; i<r; i++) {
+	cout << "Estimate " << i << ": " << est.element(i) << endl;
+      };
+      Vector<Float> res(NPTS);
+      Float rmn = 1e6;
+      Float rmx = -1e6;
+      for (Int i=0; i<n; i++) {
+	res(i) = y(i);
+	for (Int j = 0; j < r; j++) {
+	  Double a = est.element(j).getAmpl();
+	  Double c = (est.element(j).getCenter() - Double(i));
+	  Double s = est.element(j).getSigma();
+	  res(i) -= a * exp( -log(16.0) * c / s * c / s );
+	  rmn = min(rmn, res(i));
+	  rmx = max(rmx, res(i));
+	};
+      };
+      plotter.sci(2);
+      plotter.line(xy, res);
+      plotter.env(xy(0), xy(n-1), rmn, rmx, 0, 0);
+      plotter.sci(1);
+      plotter.lab("", "", "Noiseless spectrum with 2nd derivative");
+      plotter.line(xy, y);
+      plotter.sci(2);
+      plotter.line(xy, deriv);
+      plotter.env(xy(0), xy(n-1), -1, 12, 0, 0);
+      plotter.sci(1);
+      plotter.lab("", "", "Noiseless spectrum with estimates");
+      plotter.line(xy, y);
+      plotter.sci(2);
+      for (Int j=0; j<r; j++) {
+	for (Int i = 0; i<n; i++) {
+	  Double a = est.element(j).getAmpl();
+	  Double c = (est.element(j).getCenter() - Double(i));
+	  Double s = est.element(j).getSigma();
+	  res(i) = a * exp( -log(16.0) * c / s * c / s );
+	};
+	plotter.line(xy, res);
+      };
+    }
+    {
+      SpectralEstimate est(rms, cutoff, minsig);
+      est.setWindowing(True);
+      r = est.estimate(y);
+      cout << "Window (using rms, cutoff, minsig, q): (" <<
+	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
+	r << " estimates" << endl;
+      for (Int i=0; i<r; i++) {
+	cout << "Estimate " << i << ": " << est.element(i) << endl;
+      };
+    }
+    {
+      q = 1;
+      SpectralEstimate est(rms, cutoff, minsig);
+      est.setQ(q);
+      r = est.estimate(y);
+      cout << "Found (using rms, cutoff, minsig, q): (" <<
+	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
+	r << " estimates" << endl;
+      for (Int i=0; i<r; i++) {
+	cout << "Estimate " << i << ": " << est.element(i) << endl;
+      };
+    }
+    {
+      q = 1;
+      rms = cutoff = minsig = 0.0;
+      SpectralEstimate est(rms, cutoff, minsig);
+      est.setQ(q);
+      r = est.estimate(y);
+      cout << "Found (using rms, cutoff, minsig, q): (" <<
+	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
+	r << " estimates" << endl;
+      for (Int i=0; i<r; i++) {
+	cout << "Estimate " << i << ": " << est.element(i) << endl;
+      };
+    }
+    {
+      q = 2;
+      rms = cutoff = minsig = 0.0;
+      SpectralEstimate est(rms, cutoff, minsig);
+      est.setQ(q);
+      r = est.estimate(y);
+      cout << "Found (using rms, cutoff, minsig, q): (" <<
+	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
+	r << " estimates" << endl;
+      for (Int i=0; i<r; i++) {
+	cout << "Estimate " << i << ": " << est.element(i) << endl;
+      };
+    }
   }
 
   // test fitter
@@ -90,10 +196,14 @@ int main() {
     Double center[ncomp] = { 0.25, 0.5, 0.75, 0.3 };
     Double sigma[ncomp] = { 2, 4, 8, 3 };
     MLCG genit;
-    Normal noise(&genit, 0.0, 0.25);
+    Normal noise(&genit, 0.0, 0.1);
     Vector<Double> freq(1024);
-    for (uInt i=0; i<1024; i++) freq(i) = 1400 + i*10.0/1024.0;
-    
+    Vector<Float> ffreq(1024);
+    for (uInt i=0; i<1024; i++) {
+      freq(i) = 1400 + i*10.0/1024.0;
+      ffreq(i) = freq(i);
+    };
+
     try {
       cout << "Test SpectralFit" << endl;
       cout << "---------------------------------------------------" << endl;
@@ -113,6 +223,7 @@ int main() {
       cout << "---------------------------------------------------" << endl;
       
       Vector<Double> dat(1024);
+      Vector<Float> fdat(1024);
       for (uInt i=0; i<1024; i++) {
 	dat(i) = 0;
 	for (uInt j=0; j<ncomp; j++) {
@@ -122,12 +233,18 @@ int main() {
 					el[j].getSigma());
 	};
 	dat(i) += noise();
+	fdat(i) = dat(i);
       };
       cout << "Data for frequencies " << freq(300) << " - " << freq(315) <<
 	endl;
       for (uInt i=300; i<316; i++) cout << freq(i) << ": " << dat(i) << endl;
       cout << "---------------------------------------------------" << endl;
       
+      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+      plotter.sci(1);
+      plotter.lab("", "", "Synthetic spectra and residual after fit");
+      plotter.line(ffreq, fdat);
+
       cout << "Specify fitter on the 4 gaussians:" << endl;
       SpectralFit fitter;
       for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
@@ -162,6 +279,7 @@ int main() {
       cout << "---------------------------------------------------" << endl;
       cout << "Differences: " << endl;
       Vector<Double> xdat(1024);
+      Vector<Float> fxdat(1024);
       Double mx(-1e6);
       Double mn(1e6);
       Double avg(0);
@@ -174,6 +292,7 @@ int main() {
 		(freq(i)-fitter.getElement(j).getCenter())*log(16.0)/
 		fitter.getElement(j).getSigma()/
 		fitter.getElement(j).getSigma());
+	  fxdat(i) = xdat(i);
 	};
 	mx = (xdat(i)>mx) ? xdat(i) : mx;
 	mn = (xdat(i)<mn) ? xdat(i) : mn;
@@ -185,6 +304,52 @@ int main() {
       cout << "Min difference: " << mn <<
 	", max: " << mx << ", average: " << avg <<
 	", sigma: " << sg << endl;
+      plotter.sci(2);
+      plotter.line(ffreq, fxdat);
+      cout << "---------------------------------------------------" << endl;
+      
+      cout << "---------------------------------------------------" << endl;
+      cout << "Estimates: " << endl;
+      SpectralEstimate mest(0.1, 0.5);
+      mest.setQ(5);
+      Int mr = mest.estimate(fdat);
+      cout << "Found " << mr << " estimates" << endl;
+      for (Int i=0; i<mr; i++) {
+	cout << "Estimate " << i << ": " << mest.element(i) << endl;
+      };
+      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+      plotter.sci(1);
+      plotter.lab("", "", "Synthetic spectra and residual after estimates");
+      plotter.line(ffreq, fdat);
+      for (uInt i=0; i<1024; i++) {
+	xdat(i) = 0;
+	for (Int j = 0; j < mr; j++) {
+	  Double a = mest.element(j).getAmpl();
+	  Double c = (mest.element(j).getCenter() - Double(i));
+	  Double s = mest.element(j).getSigma();
+	  xdat(i) += a * exp( -log(16.0) * c / s * c / s );
+	};
+	mx = (xdat(i)>mx) ? xdat(i) : mx;
+	mn = (xdat(i)<mn) ? xdat(i) : mn;
+      };
+      plotter.sci(2);
+      plotter.line(ffreq, fxdat);
+      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+      plotter.sci(1);
+      plotter.lab("", "", "Synthetic spectrum with estimates");
+      plotter.line(ffreq, fdat);
+      plotter.sci(2);
+      for (Int j=0; j<mr; j++) {
+	for (Int i = 0; i<1024; i++) {
+	  Double a = mest.element(j).getAmpl();
+	  Double c = (mest.element(j).getCenter() - Double(i));
+	  Double s = mest.element(j).getSigma();
+	  fxdat(i) = a * exp( -log(16.0) * c / s * c / s );
+	};
+	plotter.line(ffreq, fxdat);
+      };
+      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+      
       cout << "---------------------------------------------------" << endl;
       
     } catch (AipsError x) {
