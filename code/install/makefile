@@ -42,7 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-DOTFILES := cshrc exrc login profile prompt
+DOTFILES := cshrc exrc login profile prompt glishrc
 DOTEXECS := rshexec
 AIPSINIT := aipsinit.csh aipsinit.es aipsinit.rc aipsinit.sh
 ARCHSCRP := aipsrc makedefs
