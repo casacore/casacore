@@ -4943,3 +4943,4 @@
 14 360 src rm trial/scripts/gaintable.g
 14 360 src rm trial/scripts/sortandselect.g
 14 364 src rm trial/scripts/sortandselect.help
+14 364 src rm trial/scripts/gaintable.help
