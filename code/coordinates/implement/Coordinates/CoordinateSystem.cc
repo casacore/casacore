@@ -1965,7 +1965,6 @@ Bool CoordinateSystem::near(const Coordinate& other,
    }
 
    const CoordinateSystem& cSys = dynamic_cast<const CoordinateSystem&>(other);
-
    if (nCoordinates() != cSys.nCoordinates()) {
       set_error("The CoordinateSystems have different numbers of coordinates");
       return False;
@@ -2118,6 +2117,67 @@ Bool CoordinateSystem::near(const Coordinate& other,
          }
       }
    }
+   return True;
+}
+
+
+Bool CoordinateSystem::nearPixel  (const CoordinateSystem& other, 
+                                   Double tol) const
+{
+   if (this->type() != other.type()) {
+      set_error("Comparison is not with another CoordinateSystem");
+      return False;
+   }
+//
+   const CoordinateSystem& cSys1 = *this;
+   const CoordinateSystem& cSys2 = dynamic_cast<const CoordinateSystem&>(other);
+//
+   const uInt nPixelAxes1 = cSys1.nPixelAxes();
+   const uInt nPixelAxes2 = cSys2.nPixelAxes();
+//
+   if (nPixelAxes1 != nPixelAxes2) {
+      set_error("The CoordinateSystems have different numbers of pixel axes");
+      return False;
+   }
+//
+   const uInt nPixelAxes = nPixelAxes1;
+   Int coord1, axisInCoord1;
+   Int coord2, axisInCoord2;
+   for (uInt i=0; i<nPixelAxes; i++) {
+      cSys1.findPixelAxis (coord1, axisInCoord1, i);
+      cSys2.findPixelAxis (coord2, axisInCoord2, i);
+      AlwaysAssert(coord1>=0, AipsError);
+      AlwaysAssert(coord2>=0, AipsError);
+//      
+      const Coordinate& c1 = cSys1.coordinate(coord1);
+      const Coordinate& c2 = cSys2.coordinate(coord2);
+      if (c1.type() != c2.type()) {
+         ostrstream oss;
+         oss << "The coordinate types differ for pixel axis number " << i << ends;
+         set_error(String(oss));
+         return False;
+      }
+//
+      Vector<Int> pixelAxes1 = cSys1.pixelAxes(coord1);
+      Vector<Int> pixelAxes2 = cSys2.pixelAxes(coord2);
+//
+      Vector<Bool> whichAxes1(pixelAxes1.nelements(), True);
+      Vector<Bool> whichAxes2(pixelAxes2.nelements(), True);
+//     
+      for (uInt j=0; j<pixelAxes1.nelements(); j++) {
+         if (pixelAxes1(j)==-1) whichAxes1(j) = False;
+      }
+//
+      for (uInt j=0; j<pixelAxes2.nelements(); j++) {
+         if (pixelAxes2(j)==-1) whichAxes2(j) = False;
+      }
+//
+      if (!c1.near(c2, whichAxes1, whichAxes2, tol)) {
+        set_error(c1.errorMessage());
+        return False;
+      }
+   }
+//
    return True;
 }
 
@@ -4533,4 +4593,59 @@ void CoordinateSystem::cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
       }
    }
 }
+
+
+
+CoordinateSystem CoordinateSystem::stripRemovedAxes (const CoordinateSystem& cSys) const
+{
+    CoordinateSystem cSysOut;
+//
+    Bool noWorld, noPixel;
+
+// Loop over coordinates
+
+    uInt j = 0;
+    for (uInt i=0; i<cSys.nCoordinates(); i++) {
+       const Coordinate& coord = cSys.coordinate(i); 
+//
+       const Vector<Int>& worldAxes = cSys.worldAxes(i);
+       const Vector<Int>& pixelAxes = cSys.pixelAxes(i);
+       noWorld = allEQ(worldAxes, -1);
+       noPixel = allEQ(pixelAxes, -1);
+// 
+       if (!noWorld || !noPixel) {
+   
+// This coordinate has some pixel or world axes left, so hang onto it
+       
+          cSysOut.addCoordinate(coord);
+
+// We must remove, in the output CS, the same world/pixel
+// axes that have been removed in the input CS
+  
+          Vector<Double> refVal = coord.referenceValue();
+          Vector<Double> refPix = coord.referencePixel();
+          const Vector<Int>& worldAxesOut = cSysOut.worldAxes(j);
+          const Vector<Int>& pixelAxesOut = cSysOut.pixelAxes(j);
+          for (uInt k=worldAxes.nelements(); k>0;) {
+             k--;
+//
+             if (worldAxes(k) == -1) {
+                cSysOut.removeWorldAxis(worldAxesOut(k), refVal(k));    // Assumes worldAxes in ascending order
+             }
+          }
+          for (uInt k=worldAxes.nelements(); k>0;) {
+             k--;
+//
+             if (pixelAxes(k) == -1) {
+                cSysOut.removePixelAxis(pixelAxesOut(k), refPix(k));    // Assumes pixelAxes in ascending order
+             }
+          }
+//
+          j++;
+       }
+    }
+//
+   return cSysOut;
+}
+
 
