@@ -185,7 +185,7 @@
       fi
       NAMESPACEDONE=0
       NAMESPACE=`echo $* | sed -e 's/.*namespace//' -e 's/ //g'`
-      if [ "$NAMESPACE" == "" ]
+      if [ "$NAMESPACE" = "" ]
       then
         NAMESPACEDONE=1
       fi
