@@ -212,6 +212,7 @@ template<class T>
   MaskedArray<T> operator* (const Array<T> &left, const MaskedArray<T> &right);
 template<class T> 
   MaskedArray<T> operator/ (const Array<T> &left, const MaskedArray<T> &right);
+
 //
 template<class T> 
   MaskedArray<T> operator+ (const MaskedArray<T> &left,
@@ -239,6 +240,8 @@ template<class T>
     MaskedArray<T> operator* (const MaskedArray<T> &left, const T &right);
 template<class T> 
     MaskedArray<T> operator/ (const MaskedArray<T> &left, const T &right);
+template<class T, class S>
+    MaskedArray<S> operator* (const MaskedArray<S> &left, const T &right);
 // </group>
 
 // 
@@ -253,6 +256,9 @@ template<class T>
     MaskedArray<T> operator* (const T &left, const MaskedArray<T> &right);
 template<class T>  
     MaskedArray<T> operator/ (const T &left, const MaskedArray<T> &right);
+template<class T, class S>
+    MaskedArray<S> operator* (const T &left, const MaskedArray<S> &right);
+//
 // </group>
 
 // 
