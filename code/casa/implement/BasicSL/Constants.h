@@ -263,8 +263,8 @@
 // For derived quantities such as volume, velocity, force, and power, the
 // units are specified in terms of those of the fundamental quantities.
 
-struct C {
-
+class C {
+public:
 
    //#--------------------------------------------------------------------
    //  Mathematical constants
