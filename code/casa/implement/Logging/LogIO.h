@@ -271,6 +271,7 @@ LogIO &operator<<(LogIO &os, Complex item);
 LogIO &operator<<(LogIO &os, DComplex item);
 LogIO &operator<<(LogIO &os, Int item);
 LogIO &operator<<(LogIO &os, uInt item);
+LogIO &operator<<(LogIO &os, Bool item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>
 

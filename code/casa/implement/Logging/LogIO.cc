@@ -210,3 +210,9 @@ LogIO &operator<<(LogIO &os, uInt item)
     os.output() << item;
     return os;
 }
+
+LogIO &operator<<(LogIO &os, Bool item)
+{
+    os.output() << (item ? 1:0);
+    return os;
+}
