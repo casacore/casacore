@@ -86,7 +86,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
   haveLogger_p(True),
   showProgress_p(showProgress),
   fixedMinMax_p(False),
-  forceDisk_p(forceDisk)
+  forceDisk_p(forceDisk),
+  error_p("")
 {
 
    nxy_p.resize(0);
@@ -131,7 +132,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
   haveLogger_p(False),
   showProgress_p(showProgress),
   fixedMinMax_p(False),
-  forceDisk_p(forceDisk)
+  forceDisk_p(forceDisk),
+  error_p("")
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -209,6 +211,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       maxPos_p = other.maxPos_p;
       blcParent_p = other.blcParent_p;
       forceDisk_p = other.forceDisk_p;
+      error_p = other.error_p;
    }
    return *this;
 }
@@ -238,7 +241,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axes)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -260,7 +263,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axes)
    } else {
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
          if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInImage_p->ndim()-1)) {
-            if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
+            error_p = "Invalid cursor axes";
             return False;
          }
       }
@@ -296,7 +299,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -312,7 +315,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
    Bool saveNoExclude = noExclude_p;
    if (!setIncludeExclude(range_p, noInclude_p, noExclude_p,
                           include, exclude, os)) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel in/exclusion range" << LogIO::POST;
+      error_p = "Invalid pixel in/exclusion range";
       goodParameterStatus_p = False;
       return False;
    }
@@ -322,9 +325,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
    fixedMinMax_p = setMinMaxToInclude;
    if (!noExclude_p && fixedMinMax_p) {
       if (haveLogger_p) {
-         os_p << LogIO::SEVERE 
-              << "Can't have a fixed min and max with an exclusion range" 
-              << LogIO::POST;
+         error_p = "Can't have a fixed min and max with an exclusion range";
       }
       goodParameterStatus_p = False;
       return False;
@@ -356,7 +357,7 @@ Bool ImageStatistics<T>::setList (const Bool& doList)
 {
 
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
       
@@ -376,7 +377,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 //
 {     
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -384,7 +385,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
      
    if (!plotter.isAttached()) {
       if (haveLogger_p) {
-         os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST; 
+         error_p = "Input plotter is not attached";
       }
       goodParameterStatus_p = False;
       return False;
@@ -406,8 +407,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
    statsToPlot_p = statsToPlot;
    for (uInt i=0; i<statsToPlot_p.nelements(); i++) {
       if (statsToPlot_p(i) < 0 || statsToPlot_p(i) > NSTATS-1) {
-         if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid statistic requested for display" 
-              << endl << LogIO::POST;
+         error_p = "Invalid statistic requested for display";
          goodParameterStatus_p = False;
          return False;
       }
@@ -420,7 +420,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
    nxy_p = nxy;
    ostrstream os;
    if (!ImageUtilities::setNxy(nxy_p, os)) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
+      error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
       return False;
    }
@@ -429,9 +429,7 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 // Set mean and sigma if no statistics requested
 
    if (statsToPlot_p.nelements()==0) {
-      if (haveLogger_p) {
-         os_p << LogIO::NORMAL << "No plot statistics requested, setting mean and sigma" << LogIO::POST;
-      }
+      error_p = "No plot statistics requested, setting mean and sigma";
       statsToPlot_p.resize(2);
       statsToPlot_p(0) = MEAN;
       statsToPlot_p(1) = SIGMA;
@@ -446,15 +444,17 @@ template <class T>
 Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 { 
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 //
    T* dummy = 0;
    DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Statistics can only be evaluated from images of type : " 
-           << TpFloat << " and " << TpDouble << endl << LogIO::POST;
+      ostrstream oss;
+      oss << "Statistics can only be evaluated from images of type : " 
+           << TpFloat << " and " << TpDouble << endl;
+      error_p = String(oss);
       goodParameterStatus_p = False;
       return False;
    }
@@ -487,17 +487,14 @@ Bool ImageStatistics<T>::display()
 //
 {
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl 
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+      error_p = "The internal status of class is bad.  You have ignored errors";
      return False;
    }
 
 // Do we have anything to do
 
-   if (!doList_p && !plotter_p.isAttached()) {
-     if (haveLogger_p) os_p << LogIO::NORMAL
-          << "There is nothing to plot or list" << endl << LogIO::POST;
+   if (!doList_p && !plotter_p.isAttached() && haveLogger_p) {
+      os_p << LogIO::NORMAL << "There is nothing to plot or list" << LogIO::POST;
      return True;
    }
 
@@ -641,9 +638,7 @@ Bool ImageStatistics<T>::getNPts(Array<T>& stats)
 // Check class status
 
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl 
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False;
    }
 
@@ -663,9 +658,7 @@ Bool ImageStatistics<T>::getSum(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -694,11 +687,7 @@ Bool ImageStatistics<T>::getStats(Vector<T>& stats,
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) {
-        os_p << LogIO::SEVERE << endl
-             << "The internal status of class is bad.  You have ignored errors" << endl
-             << "in setting the arguments." << endl << endl << LogIO::POST;
-     }
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -742,11 +731,7 @@ Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) {
-        os_p << LogIO::SEVERE << endl
-             << "The internal status of class is bad.  You have ignored errors" << endl 
-             << "in setting the arguments." << endl << endl << LogIO::POST;
-     }
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -766,11 +751,7 @@ Bool ImageStatistics<T>::getMin(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) {
-        os_p << LogIO::SEVERE << endl
-             << "The internal status of class is bad.  You have ignored errors" << endl
-             << "in setting the arguments." << endl << endl << LogIO::POST;
-     }
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
     }
 
@@ -790,9 +771,7 @@ Bool ImageStatistics<T>::getMax(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -815,9 +794,7 @@ Bool ImageStatistics<T>::getMean(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -838,9 +815,7 @@ Bool ImageStatistics<T>::getSigma(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -860,9 +835,7 @@ Bool ImageStatistics<T>::getVariance(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -883,9 +856,7 @@ Bool ImageStatistics<T>::getRms(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     if (haveLogger_p) os_p << LogIO::SEVERE << endl
-          << "The internal status of class is bad.  You have ignored errors" << endl
-          << "in setting the arguments." << endl << endl << LogIO::POST;
+     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -2053,17 +2024,13 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Vector<T>& slice,
 
    if (posInImage) {
       if (pos.nelements() != pInImage_p->ndim()) {
-         if (haveLogger_p) {
-            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
-         }
+         error_p = "Incorrectly sized position given";
          slice.resize(0);
          return False;
       }
    } else {
       if (pos.nelements() != displayAxes_p.nelements()) {
-         if (haveLogger_p) {
-            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
-         }
+         error_p = "Incorrectly sized position given";
          slice.resize(0);
          return False;
       }
@@ -2381,8 +2348,6 @@ Bool ImageStatistics<T>::setIncludeExclude (Vector<T>& range,
    }
    return True;
 } 
- 
-
 
 
 

@@ -106,7 +106,8 @@ class CoordinateSystem;
 // If you ignore return error statuses from the functions that set the
 // state of the class, the internal status of the class is set to bad.
 // This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
+// explicitly recover the situation.  A message describing the last
+// error condition can be recovered with function errorMessage.
 // </note>
 // </synopsis>
 
@@ -308,6 +309,9 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
+// Recover last error message
+   String errorMessage() const {return error_p;};
+
 // Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
@@ -328,7 +332,7 @@ private:
    Bool needStorageImage_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
    Bool haveLogger_p, showProgress_p, fixedMinMax_p, forceDisk_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
-
+   String error_p;
 
 
 // Functions

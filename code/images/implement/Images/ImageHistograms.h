@@ -91,7 +91,9 @@ class PGPlotter;
 // If you ignore return error statuses from the functions that set the
 // state of the class, the internal status of the class is set to bad.
 // This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
+// explicitly recover the situation.   A message describing the last   
+// error condition can be recovered with function errorMessage.
+
 // </note>
 // </synopsis>
 
@@ -273,6 +275,9 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
+// Recover last error message
+   String errorMessage() const {return error_p;};
+
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal status of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
@@ -291,9 +296,7 @@ private:
    Vector<Int> cursorAxes_p, displayAxes_p, nxy_p;
    Vector<T> range_p;
    IPosition blcParent_p;
-
-
-
+   String error_p;
 
 // Convert a <T> to a <Float> for plotting
    static Float convertT (const T value) {return Float(real(value));};   

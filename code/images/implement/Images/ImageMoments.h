@@ -179,7 +179,8 @@ class ostream;
 // If you ignore return error statuses from the functions that set the
 // state of the class, the internal status of the class is set to bad.
 // This means it will just  keep on returning error conditions until you
-// explicitly recover the situation.
+// explicitly recover the situation.  A message describing the last
+// error condition can be recovered with function errorMessage.
 // </note>
 // </synopsis>
 
@@ -474,8 +475,10 @@ enum MethodTypes {
 // prevent the <src>createMoments</src> function from doing anything
 // (should you have chosen to igmore the Boolean return values of the functions).
 // This function allows you to reset that internal state to good.
-   void resetError () {goodParameterStatus_p = True;};
+   void resetError () {goodParameterStatus_p = True; error_p = "";};
 
+// Recover last error message
+   String errorMessage() const {return error_p;};
 
 // This is the function that does all the computational work.  It should be called
 // after the </src>set</src> functions.  A return value of  <src>False</src>
@@ -522,6 +525,7 @@ private:
    Vector<Int> smoothAxes_p;
    PGPlotter plotter_p;
    Bool overWriteOutput_p;
+   String error_p;
 
 
 // Check that the combination of methods that the user has requested is valid

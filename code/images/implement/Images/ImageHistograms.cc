@@ -81,7 +81,8 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image,
   haveLogger_p(True),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  nBins_p(25)
+  nBins_p(25),
+  error_p("")
 //
 // Constructor. 
 //
@@ -123,7 +124,8 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image,
   haveLogger_p(False),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  nBins_p(25)
+  nBins_p(25),
+  error_p("")
 //
 // Constructor. 
 //
@@ -204,6 +206,7 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       range_p = other.range_p;
       blcParent_p = other.blcParent_p;
       forceDisk_p = other.forceDisk_p;
+      error_p = other.error_p;
    }
    return *this;
 }
@@ -236,7 +239,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -259,7 +262,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
    } else {
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
          if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInImage_p->ndim()-1)) {
-            if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
+            error_p = "Invalid cursor axes";
             return False;
          }
       }
@@ -281,7 +284,7 @@ Bool ImageHistograms<T>::setNBins (const uInt& nBins)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -290,7 +293,7 @@ Bool ImageHistograms<T>::setNBins (const uInt& nBins)
    const uInt saveNBins = nBins_p;
 
    if (nBins < 1) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
+      error_p = "Invalid number of bins";
       goodParameterStatus_p = False;
       return False;
    } else {
@@ -312,7 +315,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& include)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -326,7 +329,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& include)
    Bool noInclude;
    ostrstream os;
    if (!setInclude(range_p, noInclude, include, os)) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel inclusion range" << LogIO::POST;
+      error_p = "Invalid pixel inclusion range";
       goodParameterStatus_p = False;
       return False;
    }
@@ -350,7 +353,7 @@ Bool ImageHistograms<T>::setGaussian (const Bool& doGauss)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -368,7 +371,7 @@ Bool ImageHistograms<T>::setForm (const Bool& doLog, const Bool& doCumu)
 // 
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
     }
 
@@ -386,7 +389,7 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doList)
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -405,7 +408,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
 //
 {     
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -413,9 +416,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
 // Is new plotter attached ?
  
    if (!plotter.isAttached()) {
-      if (haveLogger_p) {
-         os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST;
-      }
+      error_p = "Input plotter is not attached";
       goodParameterStatus_p = False;  
       return False;
    }
@@ -437,7 +438,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
    nxy_p = nxy;
    ostrstream os;
    if (!ImageUtilities::setNxy(nxy_p, os)) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
+      error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
       return False;
    }
@@ -453,20 +454,20 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
 //
 { 
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
    T *dummy = 0;
    DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
-       if (haveLogger_p) {
-          os_p << LogIO::SEVERE << "Histograms can only be evaluated from images of type : "
-               << TpFloat << " and " << TpDouble << LogIO::POST;
-       }
-       goodParameterStatus_p = False;
-       pInImage_p = 0;
-       return False;
+      ostrstream oss;
+      oss << "Histograms can only be evaluated from images of type : "
+          << TpFloat << " and " << TpDouble << endl;
+      error_p = String(oss);
+      goodParameterStatus_p = False;
+      pInImage_p = 0;
+      return False;
    }
 
 // Make a clone of the image
@@ -505,7 +506,7 @@ Bool ImageHistograms<T>::display()
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -535,7 +536,7 @@ Bool ImageHistograms<T>::getHistograms (Array<T>& values,
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -616,7 +617,7 @@ Bool ImageHistograms<T>::getHistogram (Vector<T>& values,
 //
 {
    if (!goodParameterStatus_p) {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+       error_p = "Internal class status is bad";
       return False;
    }
 
@@ -625,18 +626,14 @@ Bool ImageHistograms<T>::getHistogram (Vector<T>& values,
       
    if (posInImage) {
       if (pos.nelements() != pInImage_p->ndim()) {
-         if (haveLogger_p) {
-            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
-         }
+         error_p = "Incorrectly sized position given";
          values.resize(0);
          counts.resize(0);
          return False;
       }
    } else {
       if (pos.nelements() != displayAxes_p.nelements()) {
-         if (haveLogger_p) {
-            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
-         }
+         error_p = "Incorrectly sized position given";
          values.resize(0);
          counts.resize(0);
          return False;
@@ -728,7 +725,7 @@ Bool ImageHistograms<T>::displayHistograms ()
       plotter_p.sch(1.2);
       plotter_p.svp(0.1,0.9,0.1,0.9);
    } else {
-      if (haveLogger_p) os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST;
+      error_p = "Plotter is not attached";
       return False;
    }
       
@@ -919,7 +916,6 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
 
 // Plot
          
-
    plotter.page();
    plotter.swin(xMinF, xMaxF, 0.0, yMaxF);
    plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);

@@ -98,7 +98,8 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   noInclude_p(True),
   noExclude_p(True),
   fixedYLimits_p(False),
-  overWriteOutput_p(overWriteOutput)
+  overWriteOutput_p(overWriteOutput),
+  error_p("")
 {
 // Avoid double deletion by LogIO::cleanup
    os_p.makePermanent();
@@ -186,6 +187,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       noExclude_p = other.noExclude_p;
       fixedYLimits_p = other.fixedYLimits_p;
       overWriteOutput_p = other.overWriteOutput_p;
+      error_p = other.error_p;
    }
    return *this;
 }
@@ -229,7 +231,7 @@ Bool ImageMoments<T>::setMoments(const Vector<Int>& momentsU)
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -241,18 +243,18 @@ Bool ImageMoments<T>::setMoments(const Vector<Int>& momentsU)
 
    uInt nMom = moments_p.nelements();
    if (nMom == 0) {
-      os_p << LogIO::SEVERE << "No moments requested" << LogIO::POST;
+      error_p = "No moments requested";
       goodParameterStatus_p = False;
       return False;
    } else if (nMom > NMOMENTS) {
-      os_p << LogIO::SEVERE << "Too many moments specified" << LogIO::POST;
+      error_p = "Too many moments specified";
       goodParameterStatus_p = False;
       return False;
    }
 
    for (uInt i=0; i<nMom; i++) {
       if (moments_p(i) < 0 || moments_p(i) > NMOMENTS-1) {
-         os_p << LogIO::SEVERE << "Illegal moment requested" << LogIO::POST;
+         error_p = "Illegal moment requested";
          goodParameterStatus_p = False;
          return False;
       }
@@ -268,7 +270,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -276,18 +278,18 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
    if (momentAxis_p == momentAxisDefault_p) {
      momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
-       os_p << LogIO::SEVERE << "There is no spectral axis in this image -- specify the axis" << LogIO::POST;
+       error_p = "There is no spectral axis in this image -- specify the axis";
        goodParameterStatus_p = False;
        return False;
      }
    } else {
       if (momentAxis_p < 0 || momentAxis_p > Int(pInImage_p->ndim()-1)) {
-         os_p << LogIO::SEVERE << "Illegal moment axis; out of range" << LogIO::POST;
+         error_p = "Illegal moment axis; out of range";
          goodParameterStatus_p = False;
          return False;
       }
       if (pInImage_p->shape()(momentAxis_p) <= 1) {
-         os_p << LogIO::SEVERE << "Illegal moment axis; it has only 1 pixel" << LogIO::POST;
+         error_p = "Illegal moment axis; it has only 1 pixel";
          goodParameterStatus_p = False;
          return False;
       }
@@ -307,7 +309,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 {
 
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -320,7 +322,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 
    for (uInt i = 0; i<uInt(methodU.nelements()); i++) {
       if (methodU(i) < 0 || methodU(i) > NMETHODS-1) {
-         os_p << LogIO::SEVERE << "Illegal method given" << LogIO::POST;
+         error_p = "Illegal method given";
          goodParameterStatus_p = False;
          return False;
       }
@@ -347,7 +349,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
  
@@ -359,7 +361,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
       smoothAxes_p = smoothAxesU;
       for (i=0; i<Int(smoothAxes_p.nelements()); i++) {
          if (smoothAxes_p(i) < 0 || smoothAxes_p(i) > Int(pInImage_p->ndim()-1)) {
-            os_p << LogIO::SEVERE << "Illegal smoothing axis given" << LogIO::POST;
+            error_p = "Illegal smoothing axis given";
             goodParameterStatus_p = False;
             return False;
          }
@@ -377,13 +379,13 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
       kernelTypes_p = kernelTypesU;
       for (i=0; i<Int(kernelTypes_p.nelements()); i++) {
          if (kernelTypes_p(i) < 0 || kernelTypes_p(i) > VectorKernel::NKERNELS-1) {
-            os_p << LogIO::SEVERE << "Illegal smoothing kernel types given" << LogIO::POST;
+            error_p = "Illegal smoothing kernel types given";
             goodParameterStatus_p = False;
             return False;
          }
       }
    } else {
-      os_p << LogIO::SEVERE << "Smoothing kernel types were not given" << LogIO::POST;
+      error_p = "Smoothing kernel types were not given";
       goodParameterStatus_p = False;
       return False;
    }
@@ -392,7 +394,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 // Check user gave us enough smoothing types
  
    if (smoothAxesU.nelements() != kernelTypes_p.nelements()) {
-      os_p << LogIO::SEVERE << "Different number of smoothing axes to kernel types" << LogIO::POST;
+      error_p = "Different number of smoothing axes to kernel types";
       goodParameterStatus_p = False;
       return False;
    }
@@ -414,14 +416,16 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 // For box must be odd number greater than 1
 
          if (i > nK-1) {
-            os_p << LogIO::SEVERE << "Not enough smoothing widths given" << LogIO::POST;
+            error_p = "Not enough smoothing widths given";
             goodParameterStatus_p = False;
             return False;
          } else {
             Int intKernelWidth = Int(kernelWidthsU(i)+0.5);
             if (intKernelWidth < 2) {
-               os_p << LogIO::SEVERE << "Boxcar kernel width of " << intKernelWidth << 
-                       " is too small" << LogIO::POST;
+               ostrstream oss;
+               oss << "Boxcar kernel width of " << intKernelWidth << 
+                      " is too small" << endl;
+               error_p = String(oss); 
                goodParameterStatus_p = False;
                return False;
             }
@@ -429,13 +433,15 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
          }
       } else if (kernelTypes_p(i) == VectorKernel::GAUSSIAN) {
          if (i > nK-1) {
-            os_p << LogIO::SEVERE << "Not enough smoothing widths given" << LogIO::POST;
+            error_p = "Not enough smoothing widths given";
             goodParameterStatus_p = False;
             return False;
          } else {
             if (kernelWidthsU(i) < 1.5) {
-               os_p << LogIO::SEVERE << "Gaussian kernel width of " << kernelWidthsU(i) << 
-                       " is too small" << LogIO::POST;
+               ostrstream oss;
+               oss << "Gaussian kernel width of " << kernelWidthsU(i) << 
+                      " is too small" << endl;
+               error_p = String(oss);
                goodParameterStatus_p = False;
                return False;
             } else {
@@ -443,7 +449,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
             }
          }
       } else {
-         os_p << LogIO::SEVERE << "Internal logic error" << LogIO::POST;
+         error_p = "Internal logic error";
          goodParameterStatus_p = False;
          return False;
       }
@@ -461,7 +467,7 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<T>& includeU,
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -471,7 +477,7 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<T>& includeU,
    ostrstream os;
    if (!setIncludeExclude(selectRange_p, noInclude_p, noExclude_p,
                           include, exclude, os)) {
-      os_p << LogIO::SEVERE << "Invalid pixel inclusion/exclusion ranges" << LogIO::POST;
+      error_p = "Invalid pixel inclusion/exclusion ranges";
       goodParameterStatus_p = False;
       return False;
    }
@@ -488,7 +494,7 @@ Bool ImageMoments<T>::setSnr(const T& peakSNRU,
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -514,7 +520,7 @@ Bool ImageMoments<T>::setOutName(const String& outU)
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
    out_p = outU;
@@ -530,7 +536,7 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
 // 
 { 
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 //
@@ -557,14 +563,14 @@ Bool ImageMoments<T>::setPlotting(PGPlotter& plotterU,
 //
 { 
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      error_p = "Internal class status is bad";
       return False;
    }
 
 // Is new plotter attached ?
          
    if (!plotterU.isAttached()) {
-       os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST;
+       error_p = "Input plotter is not attached";
       goodParameterStatus_p = False;
       return False;
    }
@@ -645,9 +651,7 @@ Bool ImageMoments<T>::createMoments()
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << LogIO::POST 
-           << "Internal status of class is bad.  You have ignored errors" << endl;
-      os_p << "in setting the arguments." << LogIO::POST;
+      error_p = "Internal status of class is bad.  You have ignored errors";
       return False;
    }
    
@@ -657,12 +661,11 @@ Bool ImageMoments<T>::createMoments()
    if (momentAxis_p == momentAxisDefault_p) {
      momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
-       os_p << LogIO::SEVERE << endl << "There is no spectral axis in this image -- specify "
-	 "the axis" << LogIO::POST;
+       error_p = "There is no spectral axis in this image -- specify the axis";
        return False;
      }
      if (pInImage_p->shape()(momentAxis_p) <= 1) {
-        os_p << LogIO::SEVERE << "Illegal moment axis; it has only 1 pixel" << LogIO::POST;
+        error_p = "Illegal moment axis; it has only 1 pixel";
         goodParameterStatus_p = False;
         return False;
      }
@@ -684,7 +687,7 @@ Bool ImageMoments<T>::createMoments()
 
    if (moments_p.nelements() == 1) {
       if (!out_p.empty() && (out_p == pInImage_p->name())) {
-         os_p << LogIO::SEVERE << "Input image and output image have same name" << LogIO::POST;
+         error_p = "Input image and output image have same name";
          return False;
       }
    } 
@@ -732,7 +735,6 @@ Bool ImageMoments<T>::createMoments()
    if (doSmooth_p) {
       pSmoothedImage = smoothImage(smoothName);
       if (pSmoothedImage==0) {
-         os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
 
@@ -759,7 +761,7 @@ Bool ImageMoments<T>::createMoments()
 
          Array<T> data;
          if (!stats.getMin(data)) {
-            os_p << LogIO::SEVERE << "Error finding minimum of input image" << LogIO::POST;
+            error_p = "Error finding minimum of input image";
             return False;
          }
          yMin_p = data(IPosition(data.nelements(),0));
@@ -968,7 +970,7 @@ Bool ImageMoments<T>::checkMethod ()
 
    if ( ((doWindow_p && !doAuto_p) ||
          (!doWindow_p && doFit_p && !doAuto_p)) && !plotter_p.isAttached()) {
-      os_p << LogIO::SEVERE << "You have not given a plotting device" << LogIO::POST;
+      error_p = "You have not given a plotting device";
       return False;
    } 
 
@@ -1392,8 +1394,7 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 
    Int axMax = max(smoothAxes_p.ac()) + 1;
    if (axMax > Int(pInImage_p->ndim())) {
-      os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
-      os_p <<                  "than the number of axes in the image" << LogIO::POST;
+      error_p = "You have specified an illegal smoothing axis";
       return 0;
    }
       
@@ -1527,7 +1528,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
    Vector<T> values, counts;
    if (!histo.getHistograms(values, counts)) {
-      os_p << LogIO::SEVERE << "Unable to make histogram of image" << LogIO::POST;
+      error_p = "Unable to make histogram of image";
       return False;
    }
 
