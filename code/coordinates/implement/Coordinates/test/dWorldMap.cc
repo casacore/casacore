@@ -27,7 +27,6 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays.h>
-#include <aips/Inputs/Input.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Coordinates.h>
