@@ -25,60 +25,187 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSFieldColumns.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Measures/MDirection.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/MeasurementSets/NewMSField.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Tables/ColDescSet.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Utilities/String.h>
+
+RONewMSFieldColumns::RONewMSFieldColumns(const NewMSField& msField):
+  name_p(msField, NewMSField::columnName(NewMSField::NAME)),
+  code_p(msField, NewMSField::columnName(NewMSField::CODE)),
+  time_p(msField, NewMSField::columnName(NewMSField::TIME)),
+  numPoly_p(msField, NewMSField::columnName(NewMSField::NUM_POLY)),
+  delayDir_p(msField, NewMSField::columnName(NewMSField::DELAY_DIR)),
+  phaseDir_p(msField, NewMSField::columnName(NewMSField::PHASE_DIR)),
+  referenceDir_p(msField, NewMSField::columnName(NewMSField::REFERENCE_DIR)),
+  sourceId_p(msField, NewMSField::columnName(NewMSField::SOURCE_ID)),
+  flagRow_p(msField, NewMSField::columnName(NewMSField::FLAG_ROW)),
+  ephemerisId_p(),
+  timeMeas_p(msField, NewMSField::columnName(NewMSField::TIME)),
+  delayDirMeas_p(msField, NewMSField::columnName(NewMSField::DELAY_DIR)),
+  phaseDirMeas_p(msField, NewMSField::columnName(NewMSField::PHASE_DIR)),
+  referenceDirMeas_p(msField,
+		     NewMSField::columnName(NewMSField::REFERENCE_DIR)),
+  timeQuant_p(msField, NewMSField::columnName(NewMSField::TIME))
+{
+  attachOptionalCols(msField);
+}
+
+RONewMSFieldColumns::~RONewMSFieldColumns() {}
+
+MDirection RONewMSFieldColumns::delayDirMeas(Int row, Double interTime) const
+{
+  return NewMSFieldColumns::interpolateDirMeas(delayDirMeasCol()(row), 
+					       numPoly()(row),
+					       interTime, time()(row)); 
+}
+
+MDirection RONewMSFieldColumns::phaseDirMeas(Int row, Double interTime) const
+{
+  return NewMSFieldColumns::interpolateDirMeas(phaseDirMeasCol()(row),
+					       numPoly()(row),
+					       interTime, time()(row)); 
+}
+
+MDirection RONewMSFieldColumns::referenceDirMeas(Int row, 
+						 Double interTime) const
+{
+  return NewMSFieldColumns::interpolateDirMeas(referenceDirMeasCol()(row),
+					       numPoly()(row),
+					       interTime, time()(row)); 
+}
+
+RONewMSFieldColumns::RONewMSFieldColumns():
+  name_p(),
+  code_p(),
+  time_p(),
+  numPoly_p(),
+  delayDir_p(),
+  phaseDir_p(),
+  referenceDir_p(),
+  sourceId_p(),
+  flagRow_p(),
+  ephemerisId_p(),
+  timeMeas_p(),
+  delayDirMeas_p(),
+  phaseDirMeas_p(),
+  referenceDirMeas_p(),
+  timeQuant_p()
+{
+}
+
+void RONewMSFieldColumns::attach(const NewMSField& msField)
+{
+  name_p.attach(msField, NewMSField::columnName(NewMSField::NAME));
+  code_p.attach(msField, NewMSField::columnName(NewMSField::CODE));
+  time_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  numPoly_p.attach(msField, NewMSField::columnName(NewMSField::NUM_POLY));
+  delayDir_p.attach(msField, NewMSField::columnName(NewMSField::DELAY_DIR));
+  phaseDir_p.attach(msField, NewMSField::columnName(NewMSField::PHASE_DIR));
+  referenceDir_p.attach(msField,
+			NewMSField::columnName(NewMSField::REFERENCE_DIR));
+  sourceId_p.attach(msField, NewMSField::columnName(NewMSField::SOURCE_ID));
+  flagRow_p.attach(msField, NewMSField::columnName(NewMSField::FLAG_ROW));
+  timeMeas_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  delayDirMeas_p.attach(msField,NewMSField::columnName(NewMSField::DELAY_DIR));
+  phaseDirMeas_p.attach(msField,NewMSField::columnName(NewMSField::PHASE_DIR));
+  referenceDirMeas_p.attach(msField,
+			    NewMSField::columnName(NewMSField::REFERENCE_DIR));
+  timeQuant_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  attachOptionalCols(msField);
+}
+
+void RONewMSFieldColumns::attachOptionalCols(const NewMSField& msField)
+{
+  const ColumnDescSet& cds = msField.tableDesc().columnDescSet();
+  const String& ephemerisId = NewMSField::columnName(NewMSField::EPHEMERIS_ID);
+  if (cds.isDefined(ephemerisId)) ephemerisId_p.attach(msField, ephemerisId);
+}
 
 NewMSFieldColumns::NewMSFieldColumns(NewMSField& msField):
-code_p(msField,NewMSField::columnName(NewMSField::CODE)),
-delayDir_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-flagRow_p(msField,NewMSField::columnName(NewMSField::FLAG_ROW)),
-name_p(msField,NewMSField::columnName(NewMSField::NAME)),
-numPoly_p(msField,NewMSField::columnName(NewMSField::NUM_POLY)),
-phaseDir_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-referenceDir_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-sourceId_p(msField,NewMSField::columnName(NewMSField::SOURCE_ID)),
-time_p(msField,NewMSField::columnName(NewMSField::TIME)),
-delayDirMeas_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-phaseDirMeas_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-referenceDirMeas_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-timeMeas_p(msField,NewMSField::columnName(NewMSField::TIME)),
-//delayDirQuant_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-//phaseDirQuant_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-//referenceDirQuant_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-timeQuant_p(msField,NewMSField::columnName(NewMSField::TIME))
+  RONewMSFieldColumns(msField),
+  name_p(msField,NewMSField::columnName(NewMSField::NAME)),
+  code_p(msField,NewMSField::columnName(NewMSField::CODE)),
+  time_p(msField,NewMSField::columnName(NewMSField::TIME)),
+  numPoly_p(msField,NewMSField::columnName(NewMSField::NUM_POLY)),
+  delayDir_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
+  phaseDir_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
+  referenceDir_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
+  sourceId_p(msField,NewMSField::columnName(NewMSField::SOURCE_ID)),
+  flagRow_p(msField,NewMSField::columnName(NewMSField::FLAG_ROW)),
+  ephemerisId_p(),
+  timeMeas_p(msField,NewMSField::columnName(NewMSField::TIME)),
+  delayDirMeas_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
+  phaseDirMeas_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
+  referenceDirMeas_p(msField,
+		     NewMSField::columnName(NewMSField::REFERENCE_DIR)),
+  timeQuant_p(msField,NewMSField::columnName(NewMSField::TIME))
 {
-  const ColumnDescSet& cds=msField.tableDesc().columnDescSet();
-  const String& ephemerisId=NewMSField::columnName(NewMSField::EPHEMERIS_ID);
-  if (cds.isDefined(ephemerisId)) ephemerisId_p.attach(msField,ephemerisId);
+  attachOptionalCols(msField);
 }
 
 NewMSFieldColumns::~NewMSFieldColumns() {}
 
-MDirection NewMSFieldColumns::delayDirMeas(Int row, Double interTime)
+NewMSFieldColumns::NewMSFieldColumns():
+  RONewMSFieldColumns(),
+  name_p(),
+  code_p(),
+  time_p(),
+  numPoly_p(),
+  delayDir_p(),
+  phaseDir_p(),
+  referenceDir_p(),
+  sourceId_p(),
+  flagRow_p(),
+  ephemerisId_p(),
+  timeMeas_p(),
+  delayDirMeas_p(),
+  phaseDirMeas_p(),
+  referenceDirMeas_p(),
+  timeQuant_p()
 {
-  return interpolateDirMeas(delayDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
 }
 
-MDirection NewMSFieldColumns::phaseDirMeas(Int row, Double interTime)
+void NewMSFieldColumns::attach(NewMSField& msField)
 {
-  return interpolateDirMeas(phaseDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
+  RONewMSFieldColumns::attach(msField);
+  name_p.attach(msField, NewMSField::columnName(NewMSField::NAME));
+  code_p.attach(msField, NewMSField::columnName(NewMSField::CODE));
+  time_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  numPoly_p.attach(msField, NewMSField::columnName(NewMSField::NUM_POLY));
+  delayDir_p.attach(msField, NewMSField::columnName(NewMSField::DELAY_DIR));
+  phaseDir_p.attach(msField, NewMSField::columnName(NewMSField::PHASE_DIR));
+  referenceDir_p.attach(msField,
+			NewMSField::columnName(NewMSField::REFERENCE_DIR));
+  sourceId_p.attach(msField, NewMSField::columnName(NewMSField::SOURCE_ID));
+  flagRow_p.attach(msField, NewMSField::columnName(NewMSField::FLAG_ROW));
+  timeMeas_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  delayDirMeas_p.attach(msField,NewMSField::columnName(NewMSField::DELAY_DIR));
+  phaseDirMeas_p.attach(msField,NewMSField::columnName(NewMSField::PHASE_DIR));
+  referenceDirMeas_p.attach(msField,
+			    NewMSField::columnName(NewMSField::REFERENCE_DIR));
+  timeQuant_p.attach(msField, NewMSField::columnName(NewMSField::TIME));
+  attachOptionalCols(msField);
 }
 
-MDirection NewMSFieldColumns::referenceDirMeas(Int row, Double interTime)
+void NewMSFieldColumns::attachOptionalCols(NewMSField& msField)
 {
-  return interpolateDirMeas(referenceDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
+  const ColumnDescSet& cds = msField.tableDesc().columnDescSet();
+  const String& ephemerisId = NewMSField::columnName(NewMSField::EPHEMERIS_ID);
+  if (cds.isDefined(ephemerisId)) ephemerisId_p.attach(msField, ephemerisId);
 }
 
-MDirection NewMSFieldColumns::interpolateDirMeas
-(const Array<MDirection>& arrDir, Int numPoly, 
- Double interTime, Double timeOrigin)
+MDirection NewMSFieldColumns::
+interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly, 
+		   Double interTime, Double timeOrigin)
 {
   Vector<MDirection> vecDir(arrDir);
   if ((numPoly == 0) || interTime<1 || nearAbs(interTime, timeOrigin)) {
@@ -95,49 +222,5 @@ MDirection NewMSFieldColumns::interpolateDirMeas
     }
     return MDirection(MVDirection(dir),vecDir(0).getRef());
   }
-}
-
-RONewMSFieldColumns::RONewMSFieldColumns(const NewMSField& msField):
-code_p(msField,NewMSField::columnName(NewMSField::CODE)),
-delayDir_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-flagRow_p(msField,NewMSField::columnName(NewMSField::FLAG_ROW)),
-name_p(msField,NewMSField::columnName(NewMSField::NAME)),
-numPoly_p(msField,NewMSField::columnName(NewMSField::NUM_POLY)),
-phaseDir_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-referenceDir_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-sourceId_p(msField,NewMSField::columnName(NewMSField::SOURCE_ID)),
-time_p(msField,NewMSField::columnName(NewMSField::TIME)),
-delayDirMeas_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-phaseDirMeas_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-referenceDirMeas_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-timeMeas_p(msField,NewMSField::columnName(NewMSField::TIME)),
-//delayDirQuant_p(msField,NewMSField::columnName(NewMSField::DELAY_DIR)),
-//phaseDirQuant_p(msField,NewMSField::columnName(NewMSField::PHASE_DIR)),
-//referenceDirQuant_p(msField,NewMSField::columnName(NewMSField::REFERENCE_DIR)),
-timeQuant_p(msField,NewMSField::columnName(NewMSField::TIME))
-{
-  const ColumnDescSet& cds=msField.tableDesc().columnDescSet();
-  const String& ephemerisId=NewMSField::columnName(NewMSField::EPHEMERIS_ID);
-  if (cds.isDefined(ephemerisId)) ephemerisId_p.attach(msField,ephemerisId);
-}
-
-RONewMSFieldColumns::~RONewMSFieldColumns() {}
-
-MDirection RONewMSFieldColumns::delayDirMeas(Int row, Double interTime) const
-{
-  return NewMSFieldColumns::interpolateDirMeas(delayDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
-}
-
-MDirection RONewMSFieldColumns::phaseDirMeas(Int row, Double interTime) const
-{
-  return NewMSFieldColumns::interpolateDirMeas(phaseDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
-}
-
-MDirection RONewMSFieldColumns::referenceDirMeas(Int row, Double interTime) const
-{
-  return NewMSFieldColumns::interpolateDirMeas(referenceDirMeasCol()(row), numPoly()(row),
-			    interTime, time()(row)); 
 }
 
