@@ -311,7 +311,7 @@ SFXSHAR  := so
 #    shared:  The static and shared libraries are built and the shared library
 #             is the one linked to.
 #
-# Note that the AUXILIARY and CONSORTIUM variables must also be set to compile
+# Note that the AUXILIARY and CONSORTIA variables must also be set to compile
 # non-standard packages.
 # 
 #                    C++            C          FORTRAN
@@ -326,7 +326,7 @@ LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
 LIBcontrib    = defeat defeat defeat defeat defeat defeat
 LIBtrial      = defeat defeat defeat defeat defeat defeat
-#                                                          Consortium
+#                                                          Consortia
 LIBatnf       = defeat defeat defeat defeat defeat defeat
 LIBbima       = defeat defeat defeat defeat defeat defeat
 LIBhia        = defeat defeat defeat defeat defeat defeat
