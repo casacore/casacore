@@ -33,10 +33,17 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Stokes.h>
+//
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasConvert.h>
 
 class CoordinateSystem;
+class DirectionCoordinate;
+class ObsInfo;
 class String;
-//template<class T> class Vector;
+class LogIO;
+
 
 // <summary>Functions for creating default CoordinateSystems</summary>
 // <use visibility=export>
@@ -301,6 +308,23 @@ static Bool removeAxes(CoordinateSystem& cSys,
                        Vector<Double>& worldReplacement,
                        const Vector<uInt>& worldAxes,
                        const Bool remove);
+
+// Setup Measures conversion machines for Directions and Frequencies.
+// Returns True if the machine was needed and set.  Returns False
+// if the machine was not needed and not set.  There must be both a Direction 
+// and a Spectral Coordinate in the CoordinateSystem when making the
+// Frequency machine.
+// <group>
+  static Bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+                                   const DirectionCoordinate& dirCoordTo,
+                                   const DirectionCoordinate& dirCoordFrom,
+                                   const ObsInfo& obsTo,
+                                   const ObsInfo& obsFrom);
+  static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+                                   Int coordinateTo, Int coordinateFrom,
+                                   const CoordinateSystem& coordsTo,
+                                   const CoordinateSystem& coordsFrom);
+// </group>
 
 };
 
