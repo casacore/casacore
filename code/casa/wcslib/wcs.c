@@ -522,9 +522,8 @@ struct wcsprm *wcsdst;
 
    if (nsub == 0) {
       nsub = &dummy;
-   }
-
-   if (*nsub == 0) {
+      *nsub = naxis;
+   } else if (*nsub == 0) {
       *nsub = naxis;
    }
 
