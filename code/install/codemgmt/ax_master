@@ -2308,3 +2308,4 @@
 09 275 src rm trial/implement/distributed/imagemaker.g
 09 275 src rm trial/implement/distributed/weighter.g
 09 275 src rm trial/implement/distributed/imagesolver.g
+09 275 src rm trial/scripts/synthesisdos.g
