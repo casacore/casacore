@@ -87,8 +87,8 @@ void LELBinary<T>::eval(LELArray<T>& result,
 	  result.value() += pRightExpr_p->getScalar().value();
        } else {
 	  pLeftExpr_p->eval(result, section);
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval(temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef(temp, section);
 	  result.value() += temp.value();
 	  result.combineMask (temp);
        }
@@ -103,8 +103,8 @@ void LELBinary<T>::eval(LELArray<T>& result,
 	  result.value() -= pRightExpr_p->getScalar().value();
        } else {
 	  pLeftExpr_p->eval(result, section);
-          LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval(temp, section);
+          LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef(temp, section);
 	  result.value() -= temp.value();
 	  result.combineMask (temp);
        }
@@ -118,8 +118,8 @@ void LELBinary<T>::eval(LELArray<T>& result,
 	  result.value() *= pRightExpr_p->getScalar().value();
        } else {
 	  pLeftExpr_p->eval(result, section);
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval(temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef(temp, section);
 	  result.value() *= temp.value();
 	  result.combineMask (temp);
        }
@@ -133,8 +133,8 @@ void LELBinary<T>::eval(LELArray<T>& result,
 	  result.value() /= pRightExpr_p->getScalar().value();
        } else {
 	  pLeftExpr_p->eval(result, section);
-          LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval(temp, section);
+          LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef(temp, section);
 	  result.value() /= temp.value();
 	  result.combineMask (temp);
        }
@@ -238,22 +238,22 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result,
    switch(op_p) {
    case LELBinaryEnums::EQ :
        if (pLeftExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef (temp, section);
 	  Array<Bool> res(pLeftExpr_p->getScalar().value() == temp.value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pLeftExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pLeftExpr_p->evalRef (temp, section);
 	  Array<Bool> res(temp.value() == pRightExpr_p->getScalar().value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else {
-          LELArray<T> templ(result.shape());
-	  LELArray<T> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<T> templ(result.shape());
+	  LELArrayRef<T> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() == tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
@@ -261,22 +261,22 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result,
        break;
    case LELBinaryEnums::GT :
        if (pLeftExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef (temp, section);
 	  Array<Bool> res(pLeftExpr_p->getScalar().value() > temp.value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pLeftExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pLeftExpr_p->evalRef (temp, section);
 	  Array<Bool> res(temp.value() > pRightExpr_p->getScalar().value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else {
-          LELArray<T> templ(result.shape());
-	  LELArray<T> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<T> templ(result.shape());
+	  LELArrayRef<T> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() > tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
@@ -284,22 +284,22 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result,
        break;
    case LELBinaryEnums::GE :
        if (pLeftExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef (temp, section);
 	  Array<Bool> res(pLeftExpr_p->getScalar().value() >= temp.value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pLeftExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pLeftExpr_p->evalRef (temp, section);
 	  Array<Bool> res(temp.value() >= pRightExpr_p->getScalar().value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else {
-          LELArray<T> templ(result.shape());
-	  LELArray<T> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<T> templ(result.shape());
+	  LELArrayRef<T> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() >= tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
@@ -307,22 +307,22 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result,
        break;
    case LELBinaryEnums::NE :
        if (pLeftExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pRightExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pRightExpr_p->evalRef (temp, section);
 	  Array<Bool> res(pLeftExpr_p->getScalar().value() != temp.value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  LELArray<T> temp(result.shape());
-	  pLeftExpr_p->eval (temp, section);
+	  LELArrayRef<T> temp(result.shape());
+	  pLeftExpr_p->evalRef (temp, section);
 	  Array<Bool> res(temp.value() != pRightExpr_p->getScalar().value());
 	  result.value().reference (res);
 	  result.setMask (temp);
        } else {
-          LELArray<T> templ(result.shape());
-	  LELArray<T> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<T> templ(result.shape());
+	  LELArrayRef<T> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() != tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);

@@ -49,7 +49,7 @@
 // </synopsis>
 
 // <motivation>
-// It maskes it possible to handle an array with its mask as a single object.
+// It makes it possible to handle an array with its mask as a single object.
 // </motivation>
 
 // <todo asof="1998/01/20">
@@ -94,6 +94,58 @@ public:
 
 private:
    Array<T> itsValue;
+};
+
+
+
+
+// <summary>
+// This LEL class holds a possible referenced array with a mask.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <synopsis>
+// This LEL class is derived from LELArray.
+// Its purpose is to provide only const access to the array value, so
+// the array can be a reference to another array.
+// It is meant for optimization, so references can safely be used
+// when evaluating a subexpression.
+// </synopsis>
+
+// <motivation>
+// It makes it possible to use the function evalRef in a safe way.
+// It would be unsafe to use a LELArray object, because that
+// gives non-const access to the value.
+// </motivation>
+
+// <todo asof="1998/01/20">
+// </todo>
+ 
+
+template <class T> class LELArrayRef : public LELArray<T>
+{
+public: 
+// Constructor takes shape.
+// Its mask is set to all True.
+   LELArrayRef (const IPosition& shape)
+    : LELArray<T> (shape) {}
+
+   ~LELArrayRef()
+    {}
+
+// Get value.
+   const Array<T>& value() const
+      { return LELArray<T>::value(); }
+
+private:
+// Copy constructor is not needed.
+   LELArrayRef (const LELArrayRef<T>& other);
+// Assignment is not needed.
+   LELArrayRef<T>& operator= (const LELArrayRef<T>& other);
 };
 
 
