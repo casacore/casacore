@@ -32,7 +32,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/DComplex.h>
 #include <aips/Exceptions/Error.h>
 
 // <summary>
