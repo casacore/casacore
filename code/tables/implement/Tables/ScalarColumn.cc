@@ -222,7 +222,7 @@ ROTableColumn* ScalarColumn<T>::clone() const
 
 template<class T>
 void ScalarColumn<T>::reference (const ScalarColumn<T>& that)
-    { ROTableColumn::reference (that); }
+    { ROScalarColumn<T>::reference (that); }
 
 template<class T>
 ScalarColumn<T>::~ScalarColumn()
