@@ -1,5 +1,5 @@
 //# SpectralCoordinate.cc: this defines SpectralCoordinate
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,12 +51,16 @@
 SpectralCoordinate::SpectralCoordinate()
 : Coordinate(),
   type_p(MFrequency::TOPO), 
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
   worker_p(0.0,1.0,0.0,"Hz", "Frequency"),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefUnit_p("")
+  prefUnit_p(""),
+  unit_p("Hz")  
 {
    restfreqs_p.resize(1);
    restfreqs_p(0) = 0.0;
@@ -70,12 +74,16 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 				       Double restFrequency)
 : Coordinate(),
   type_p(type), 
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
   worker_p(f0, inc, refPix, "Hz", "Frequency"),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefUnit_p("")
+  prefUnit_p(""),
+  unit_p("Hz")  
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
@@ -94,11 +102,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
   type_p(type),
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefUnit_p("")
+  prefUnit_p(""),
+  unit_p("Hz")  
 {
    Unit hz("Hz");
    if (!f0.isConform(hz)) {
@@ -129,11 +141,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        Double restFrequency)
 : Coordinate(),
   type_p(type), 
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefUnit_p("")
+  prefUnit_p(""),
+  unit_p("Hz")  
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
@@ -154,11 +170,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
   type_p(type),
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefUnit_p("")
+  prefUnit_p(""),
+  unit_p("Hz")  
 {
    Unit hz("Hz");
    if (!freqs.isConform(hz)) {
@@ -186,15 +206,32 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
 : Coordinate(other),
   type_p(other.type_p),
+  conversionType_p(other.conversionType_p),
   restfreqs_p(other.restfreqs_p.copy()),
   restfreqIdx_p(other.restfreqIdx_p),
   worker_p(other.worker_p),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
   prefVelType_p(other.prefVelType_p),
-  prefUnit_p(other.prefUnit_p)
+  prefUnit_p(other.prefUnit_p),
+  unit_p(other.unit_p)  
 {
-   deleteVelocityMachine();
    pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
+//
+   if (type_p != conversionType_p) {
+
+// Are these shallow or deep copies ?  I'd rather use makeConversionMachines
+// but need those extra variables (position/epoch/direction) which I
+// am presently not storing privately.
+
+      if (other.pConversionMachineTo_p) {
+         pConversionMachineTo_p = new MFrequency::Convert(*(other.pConversionMachineTo_p));
+      }
+      if (other.pConversionMachineFrom_p) {
+         pConversionMachineFrom_p = new MFrequency::Convert(*(other.pConversionMachineFrom_p));
+      }
+   }
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -202,6 +239,7 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
     if (this != &other) {
         Coordinate::operator=(other);
 	type_p = other.type_p;
+	conversionType_p = other.conversionType_p;
 //
         restfreqs_p.resize(0);
         restfreqs_p = other.restfreqs_p;
@@ -209,17 +247,34 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
 	restfreqIdx_p = other.restfreqIdx_p;
 	worker_p = other.worker_p;
 //
+        deleteConversionMachines();
+        if (type_p != conversionType_p) {
+
+// Are these shallow or deep copies ?
+
+           if (other.pConversionMachineTo_p) {
+              pConversionMachineTo_p = new MFrequency::Convert(*(other.pConversionMachineTo_p));
+           }
+           if (other.pConversionMachineFrom_p) {
+              pConversionMachineFrom_p = new MFrequency::Convert(*(other.pConversionMachineFrom_p));
+           }
+        }
+//
         deleteVelocityMachine();
-        pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
+        if (other.pVelocityMachine_p) {
+           pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
+        }
 //
         prefVelType_p = other.prefVelType_p;
         prefUnit_p = other.prefUnit_p;
+        unit_p = other.unit_p;
     }
     return *this;
 }
 
 SpectralCoordinate::~SpectralCoordinate()
 {
+   deleteConversionMachines();
    deleteVelocityMachine();
 }  
 
@@ -247,13 +302,19 @@ uInt SpectralCoordinate::nWorldAxes() const
 Bool SpectralCoordinate::toWorld(Vector<Double> &world, 
 				 const Vector<Double> &pixel) const
 {
-    return worker_p.toWorld(world, pixel);
+    Bool ok = worker_p.toWorld(world, pixel);
+    if (ok) convertTo(world);    
+    return ok;
 }
 
 Bool SpectralCoordinate::toPixel(Vector<Double> &pixel, 
 				 const Vector<Double> &world) const
 {
-    return worker_p.toPixel(pixel, world);
+    static Vector<Double> world_tmp(1);
+//
+    world_tmp(0) = world(0);
+    convertFrom(world_tmp);    
+    return worker_p.toPixel(pixel, world_tmp);
 }
 
 
@@ -312,6 +373,11 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
         restfreqs_p *= after / before;
 //
         pVelocityMachine_p->set(Unit(units(0)));
+        if (pConversionMachineTo_p && pConversionMachineTo_p) {
+           pConversionMachineTo_p->set(Unit(units(0)));
+           pConversionMachineFrom_p->set(Unit(units(0)));
+        }
+        unit_p = Unit(String(units(0)));
     }
 //
     return ok;
@@ -349,6 +415,35 @@ Vector<String> SpectralCoordinate::preferredWorldAxisUnits () const
    t(0) = prefUnit_p;
    return t;
 }
+
+void SpectralCoordinate::setReferenceConversion (MFrequency::Types type,
+                                                 const MEpoch& epoch, const MPosition& position,
+                                                 const MDirection& direction)
+{
+// See if something to do
+
+   if (conversionType_p==type) return;
+
+// If the conversion type is the same as the native type, just 
+// remove the machines
+
+   conversionType_p = type;
+   deleteConversionMachines();
+   if (conversionType_p==type_p) {
+      return;
+   }
+
+// Now make new machines
+
+   makeConversionMachines(epoch, position, direction);
+
+// Set up units so we can just use doubles in conversions
+
+   String unit = worldAxisUnits()(0);
+   pConversionMachineTo_p->set(Unit(unit));
+   pConversionMachineFrom_p->set(Unit(unit));
+}
+
 
 Bool SpectralCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
@@ -551,7 +646,11 @@ Bool SpectralCoordinate::save(RecordInterface &container,
         subrec.define("prefVelType", Int(prefVelType_p));
         subrec.define("preferredunits", preferredWorldAxisUnits());
 	ok = (worker_p.save(subrec, "tabular"));
-//
+
+// We need to save a few things pertaining to the conversion
+// machine state.  What a pain this is.  Can I save a machine
+// to a record and recover it ???  Have to wait for Wim...
+
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
@@ -608,6 +707,13 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     retval->worker_p = *tabular;
     delete tabular;
     retval->type_p = sys;
+    retval->unit_p = Unit(retval->worldAxisUnits()(0));
+
+// Until such time that I save the state of the conversion layer
+// for now, have to ensure that the conversion is reinitialized
+// to not being on.
+
+   retval->conversionType_p = retval->type_p;
 //
     if (subrec.isDefined("prefVelType")) {                 // optional
        MDoppler::Types type = 
@@ -637,13 +743,13 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
        retval->setRestFrequency(restfreq, False);
     }
 
-// This is subtle.  The velocity machine is made empty because the default
+// The velocity machine is made empty because the default
 // constructor was used.  Therefore we must recreate it with the
 // correct internals
 
     retval->reinitializeVelocityMachine();
 //
-    return retval;
+   return retval;
 }
 
 Coordinate *SpectralCoordinate::clone() const
@@ -847,6 +953,19 @@ void SpectralCoordinate::deleteVelocityMachine ()
    pVelocityMachine_p = 0;
 }
 
+void SpectralCoordinate::deleteConversionMachines()
+{
+   if (pConversionMachineTo_p) {
+      delete pConversionMachineTo_p;
+      pConversionMachineTo_p = 0;
+   }
+//
+   if (pConversionMachineFrom_p) {
+      delete pConversionMachineFrom_p;
+      pConversionMachineFrom_p = 0;
+   }
+}
+
 
 String SpectralCoordinate::format(String& units,
                                   Coordinate::formatType format,
@@ -1012,3 +1131,4 @@ String SpectralCoordinate::formatRestFrequencies () const
 //
    return String(oss);
 }
+
