@@ -3779,3 +3779,4 @@
 14 043 src mv trial/implement/MeasurementSets/NewMSMainColumns.cc aips/implement/MeasurementSets/NewMSMainColumns.cc
 14 044 src mv atnf/apps/pksmbfits/MBFITS.h atnf/implement/pks/MBFITS.h
 14 047 src rm npoi/implement/Cuttlefish/TBD
+14 047 src mv npoi/implement/Cuttlefish/convert.g npoi/implement/GDC/convert.g
