@@ -42,78 +42,59 @@ class doubleG_COMPLEX;
 typedef doubleG_COMPLEX DComplex;
 template <class T> class Vector;
 
-// <summary>A point model for the spatial distribution of flux</summary>
+// <summary>A point model for the spatial distribution of emission</summary>
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tPointCompRep" demos="dPointCompRep">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SkyCompRep>SkyCompRep</linkto>
-//   <li> <linkto class=MDirection>MDirection</linkto>
-//   <li> <linkto class=Flux>Flux</linkto>
-//   <li> <linkto class=Vector>Vector</linkto>
+//   <li> <linkto class=ComponentShape>ComponentShape</linkto>
 // </prerequisite>
 
 // <synopsis> 
 
-// A PointCompRep models radiation from the sky as a point source with a user
-// specified direction and flux.
+// A PointShape object models the spatial distribution of radiation from the
+// sky as a point source.
 
-// The direction is defined in celestial co-ordinates, using a
-// <linkto class=MDirection>MDirection</linkto> object, and converted
-// internally to J2000 coordinates. The direction can be specified both in the
-// constructor or with the <src>setDirection</src> function. Similarly the flux
-// of the component can be specified with the <src>setFlux</src> function or
-// defined at construction time.
+// The reference direction is defined in celestial co-ordinates, using a
+// <linkto class=MDirection>MDirection</linkto> object. It indicates where the
+// point is on the sky. The direction can be specified both in the constructor
+// or with the <src>setRefDirection</src> function.
 
-// The height, which for a point source is the same as the flux, or integrated
-// intensity, is specified using a Flux object.
+// The flux, or integrated intensity, is always one. This class does not model
+// the actual flux or its variation with frequency. It solely models the way
+// the emission varies with position on the sky.
 
-// The <src>sample</src> member function is used to sample the component at any
-// point on the sky and the project function is used to project the component
-// onto a supplied Image (ie. anything derived from ImageInterface). Because
-// the class behaves as a true delta function it will only return a non-zero
-// value if the sample direction is co-incident, to within half a pixel with
-// the direction of the point source. The pixel size must be specified when
-// using the sample function. 
+// The <src>scale</src> member function is used to sample the component at any
+// point on the sky. The scale factor calculated by this function is the
+// proportion of the flux that is within a specified pixel size centered on the
+// specified direction. It will return a value of one if the sample direction
+// is co-incident, to within half a pixel with the direction of the point
+// source. Otherwise it will return zero.
 
-// When using the <src>project</src> function the entire flux of the point
-// component is projected onto the pixel nearest to its true direction. This
-// may shift the direction of the point component by up to half a pixel in both
-// direction axes.
+// This class contains functions that return the Fourier transform of the
+// component at a specified spatial frequency. There are described more fully
+// in the description of the <src>visibility</src> functions below.
 
 // This class also contains functions which perform the conversion between
-// glish records and PointCompRep objects. The format of the glish record that
-// is generated and accepted by these functions is:
+// Records and PointShape objects. This defines how a PointShape object is
+// represented in glish. The format of the record that is generated and
+// accepted by these functions is:
 // <srcblock>
 // c := [type = "point",
-//       flux = [value = [1,.5,.2,.1],
-//               unit = "Jy"]
-//       position = [type = "direction",
-//                   refer = "j2000",
-//                   m0 = [value = 0, unit = "deg"]
-//                   m1 = [value = 0, unit = "deg"]
-//                   ev0 = [value = 1, unit = ""]
-//                   ev1 = [value = 0, unit = ""]
-//                   ev2 = [value = 0, unit = ""]
-//                  ]
+//       direction = [type = "direction",
+//                    refer = "j2000",
+//                    m0 = [value = 0, unit = "deg"]
+//                    m1 = [value = 0, unit = "deg"]
+//                   ]
 //      ]
 // </srcblock>
-// The refer field defines the reference frame for the component and the m0 and
-// m1 fields define the latitude and longitutde in that frame. If the m0 or m1
-// fields and missing or malformed the ev0, ev1 and ev2 fields are parsed to
-// extract the direction. These contain the direction cosines.
-
-// This class differs from the
-// <linkto class=PointComponent>PointComponent</linkto> class in that it uses
-// copy semantics. This means that both the copy constructor and the assignment
-// operator make a physical copy of the component and that changing the
-// component DOES NOT change other copies of it. If instead you want reference
-// semantics you should use the PointComponent class.  This class
-// (PointCompRep) is the one that is used by the PointComponent class to do all
-// the work.
+// The direction field contains a record representation of a direction measure
+// and its format is defined in the Measures module. Its refer field defines
+// the reference frame for the direction and the m0 and m1 fields define the
+// latitude and longitude in that frame.
 
 // </synopsis>
 //
@@ -224,7 +205,7 @@ public:
   // </group>
 
   // always returns True as a Point source is symmetric.
-  virtual Bool isSymmetric();
+  virtual Bool isSymmetric() const;
 
   // return the number of parameters in this shape and set/get them.
   //
