@@ -30,14 +30,13 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Lattices/Lattice.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
 
 
 // <summary>
-// A two dimension interpolator for Lattices, Matrices, or Arrays
+// A two dimension interpolator for Matrices or Arrays
 // </summary>
 
 // <use visibility=export>
@@ -46,7 +45,7 @@
 // </reviewed>
 
 // <prerequisite> 
-// <li> Lattices
+// <li> <linkto class=Array>Arrays</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -54,8 +53,8 @@
 // </etymology>
 //
 // <synopsis>
-// Given a regular Array, Matrix, or Lattices and a vector of pixel
-// coordinates, interpolate the values of that array/matrix/lattice onto those
+// Given a regular Array or Matrix and a vector of pixel
+// coordinates, interpolate the values of that array/matrix onto those
 // pixel coordinates.
 //
 // Absolutely no checking of the consistency of the input data
