@@ -1,5 +1,5 @@
 //# tSampledFunctional.cc:
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/iostream.h>
 
 int main() {
   Bool anyFailures = False;
