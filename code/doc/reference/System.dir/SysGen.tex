@@ -11,9 +11,7 @@ $ $Id$ $}.
 
 \section{\exe{configure}}
 \label{configure}
-
 \index{configure@\exe{configure}}
-
 \index{code!distribution!installation|see{\exe{configure}}}
 \index{system!installation|see{\exe{configure}}}
 
@@ -114,9 +112,7 @@ Original: 1992/04/09 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{depend}}
 \label{depend}
-
 \index{depend@\exe{depend}}
-
 \index{dependency analysis!system|see{\exe{depend}}}
 \index{system!installation!dependency analysis|see{\exe{depend}}}
 \index{system!generation!dependency analysis|see{\exe{depend}}}
@@ -251,12 +247,10 @@ Original: 1993/01/25 by Mark Calabretta, ATNF
 \newpage
 \section{\exe{gmake}}
 \label{gmake}
-
 \index{gmake@\exe{gmake}}
 \index{code!distribution!gmake@\exe{gmake}}
 \index{system!installation!gmake@\exe{gmake}}
 \index{system!generation!gmake@\exe{gmake}}
-
 \index{make@\exe{make}|see{\exe{gmake}}}
 
 \gnu\ \exe{make} - a program for directing recompilation.
@@ -313,9 +307,7 @@ The \gnu\ manual page for \unixexe{make}.\\
 \newpage
 \section{\file{makedefs}}
 \label{makedefs}
-
 \index{makedefs@\file{makedefs}}
-
 \index{system!generation!makedefs@\file{makedefs}|see{\file{makedefs}}}
 \index{database!makefiles|see{\file{makedefs}}}
 
@@ -631,9 +623,7 @@ Original: 1992/05/01 by Mark Calabretta, ATNF
 \newpage
 \section{\file{makedefs} adjuncts}
 \label{makedefs adjuncts}
-
 \index{makedefs@\file{makedefs}!adjunct}
-
 \index{adjunct|see{\file{makedefs}, adjunct}}
  
 Per-sourcefile makedefs definitions.
@@ -668,9 +658,10 @@ file for a particular architecture then compilation of that particular
 application will be skipped during a recursive system build.
 
 The following adjunct \file{makedefs} decreases the optimization level for
-TSMCube.cc for the \gnu\ \cplusplus\ compiler running under \textsc{OSF/1}.
-The file, \file{\$(AIPSCODE)/install/alpha\_gnu/aips-Tables.defs}, is included
-by the implement makefile, and it illustrates the general scheme:
+\file{TSMCube.cc} for the \gnu\ \cplusplus\ compiler running under
+\textsc{OSF/1}.  The file,
+\file{\$(AIPSCODE)/install/alpha\_gnu/aips-Tables.defs}, is included by the
+implement makefile, and it illustrates the general scheme:
 
 \begin{verbatim}
    # Switch off optimization for TSMCube.
@@ -688,7 +679,7 @@ Although this is a non-trivial construct the general form should be easy to
 follow.  The operative part is the last line in which \code{C++OPTLVL}, a
 recursively expanded \file{makedefs} variable which determines the \cplusplus
 optimization level, is evaluated as a ``computed'' variable within the pattern
-rule which compiles TSMCube.o from TSMCube.cc:
+rule which compiles \file{TSMCube.o} from \file{TSMCube.cc}:
 
 \begin{enumerate}
    \item Within the pattern rule, \code{\$*} is an ``automatic'' variable
@@ -705,7 +696,7 @@ rule which compiles TSMCube.o from TSMCube.cc:
 
 \noindent
 For any other source file in the \file{\$(AIPSCODE)/aips/implement/Tables/}
-directory, say Table.cc, the sequence would be as follows:
+directory, say \file{Table.cc}, the sequence would be as follows:
  
 \begin{enumerate}
    \item After the first round of translation \code{C++OPTLVL} would be set to
@@ -771,7 +762,6 @@ The \gnu\ manual page for \unixexe{gmake}.\\
 \label{makefile.pkg}
 \label{makefile.scr}
 \label{makefile.tst}
-
 \index{makefile}
 \index{makefile!application}
 \index{makefile!applications}
@@ -784,7 +774,6 @@ The \gnu\ manual page for \unixexe{gmake}.\\
 \index{makefile!scripts}
 \index{makefile!test}
 \index{makefile!top-level}
-
 \index{makefile.app@\file{makefile.app}|see{makefile, application}}
 \index{makefile.aps@\file{makefile.aps}|see{makefile, applications}}
 \index{makefile.chk@\file{makefile.chk}|see{makefile, checkout}}
@@ -901,7 +890,6 @@ as {\em specific} makefiles, as opposed to the general makefile,
 \file{makedefs}.
 
 \subsection*{File suffixes recognized by the \file{makefiles}}
-
 \index{file!suffixes, recognized}
 \index{makefile!file suffixes recognized}
 
@@ -973,9 +961,7 @@ used to process these source files and the type of files produced.
 \newpage
 \section{Object libraries}
 \label{Object libraries}
-
 \index{library!object}
-
 \index{compilation!object library|see{library, object}}
 \index{object library|see{library, object}}
 \index{system!generation!object library|see{library, object}}
@@ -984,10 +970,8 @@ Generation of \aipspp\ object libraries and usage of external libraries in
 \aipspp.
 
 \subsection*{Library control variables}
-
 \index{library!control variables}
 \index{makedefs@\file{makedefs}!library control variables}
-
 \index{variables!library control|see{library, control variables}}
 
 An \aipspp\ installation may be configured to maintain a debug version of the
@@ -1027,9 +1011,7 @@ updating procedure, \exeref{updatelib}, also uses them to determine which
 sharable libraries to build.
 
 \subsection*{External libraries}
-
 \index{library!external}
-
 \index{XLIBLIST@\code{XLIBLIST}|see{library, external}}
 \index{CPPMODU@\code{CPPMODU}|see{library, external}}
 
@@ -1129,10 +1111,8 @@ should be made in \file{makedefs}.
 \newpage
 \section{Template instantiation}
 \label{Template instantiation}
-
 \index{templates}
 \index{templates!specialization}
-
 \index{system!generation!templates|see{templates}}
 \index{types, parameterized|see{templates}}
 \index{parameterized types|see{templates}}
@@ -1145,7 +1125,7 @@ should be made in \file{makedefs}.
 \aipspp\ makes heavy use of \cplusplus\ template classes, also referred to as
 ``parameterized types''.  These are typically used to implement ``container''
 classes, for example \code{Set}, \code{List}, and \code{Array} classes, which
-serve to aggregate objects of another type.  In \cplusplus\, \code{Set} would
+serve to aggregate objects of another type.  In \cplusplus, \code{Set} would
 be defined in ``template'' form as \code{Set<T>}, where the template type (or
 parameter), \code{T}, represents some as yet unspecified data type.  This
 saves having to code \code{Set} classes separately for \code{int},
@@ -1167,9 +1147,7 @@ template classes, but some compilers may require these to be registered in
 a particular way.
  
 \subsection*{Instantiation mechanisms}
-
 \index{templates!instantiation}
-
 \index{compilation!templates|see{templates, instantiation}}
 \index{instantiation|see{templates, instantiation}}
 
@@ -1204,9 +1182,7 @@ significant challenge for the \aipspp\ system, particularly in avoiding the
 introduction of compiler-specific procedures.
 
 \subsubsection*{Template repositories}
-
 \index{templates!repositories}
-
 \index{repository!template|see{templates, repositories}}
 
 Compilers which maintain template repositories have mostly been accomodated
@@ -1215,7 +1191,6 @@ and also in distinguishing between the archiver used for \cplusplus\ object
 libraries (\code{CXXAR}) and other libraries (\code{AR}).
 
 \subsubsection*{Template specialization and the Sun native compiler}
-
 \index{templates!specializations@\file{specializations} file}
 
 The Sun native compiler requires template specializations to be registered in
@@ -1231,9 +1206,7 @@ the compiler specific behaviour is isolated to the local makedefs file and a
 set of \file{specializations} files which are ignored by other compilers.
 
 \subsubsection*{Do-it-yourself (diy) templates}
-
 \index{templates!do-it-yourself}
-
 \index{diy|see{templates, do-it-yourself}}
 \index{templates!list|see{templates, do-it-yourself}}
 
@@ -1284,7 +1257,6 @@ system (see chapter~\ref{Code development} for programmer usage):
 \newpage
 \section{System generation makefile rules}
 \label{System generation makefile rules}
-
 \index{system!generation!makefile rules}
 \index{makefile!rules!system generation}
 \index{makefile!application}
@@ -1618,7 +1590,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
 
 \item
    \code{version} : (specific)
-   \\ Compile version.o.
+   \\ Compile \file{version.o}.
    \begin{itemize}
    \item
       \file{imp}: Generate \file{version.o} using \exeref{doover}, compile it
@@ -1975,9 +1947,7 @@ The unix manual page for \unixexe{ranlib}(1).\\
 \newpage
 \section{\exe{mkinst}}
 \label{mkinst}
-
 \index{mkinst@\exe{mkinst}}
-
 \index{library!templates|see{templates, instantiation}}
 \index{templates!instantiation files|see{\exe{mkinst}}}
 \index{templates!templates@\file{templates} file|see{\exe{mkinst}}}
@@ -2090,9 +2060,7 @@ Shelby Yang, NRAO.
 \newpage
 \section{\exe{updatelib}}
 \label{updatelib}
-
 \index{updatelib@\exe{updatelib}}
-
 \index{library!update|see{\exe{updatelib}}}
 \index{update!library|see{\exe{updatelib}}}
 
