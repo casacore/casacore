@@ -377,6 +377,19 @@ int main()
          if (!allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
+         Double pix, wrld;
+         pix = 12.2;
+         if (!lc.toWorld(wrld, pix)) {
+            throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+         }
+//
+         Double pix2;
+         if (!lc.toPixel(pix2, wrld)) {
+            throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+         }
+         if (!allNear(pix2, pix, 1e-6)) {
+               throw(AipsError("Coordinate conversion reflection failed"));
+         }
       }
       {
          SpectralCoordinate lc = 
@@ -393,6 +406,19 @@ int main()
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
          if (!allNear(pixel2, pixel, 1e-6)) {
+               throw(AipsError("Coordinate conversion reflection failed"));
+         }
+         Double pix, wrld;
+         pix = 12.2;
+         if (!lc.toWorld(wrld, pix)) {
+            throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+         }
+//
+         Double pix2;
+         if (!lc.toPixel(pix2, wrld)) {
+            throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+         }
+         if (!allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
