@@ -195,29 +195,7 @@ Bool MeasureHolder::fromRecord(String &error,
       in.isDefined(String("refer")) &&
       in.type(in.idToNumber(RecordFieldId("type"))) == TpString &&
       in.type(in.idToNumber(RecordFieldId("refer"))) == TpString) {
-    String tp;
-    in.get(RecordFieldId("type"), tp);
-    tp.downcase();
-    hold_p.clear();
-    if (tp == downcase(MDirection::showMe())) {
-      hold_p.set(new MDirection());
-    } else if (tp == downcase(MDoppler::showMe())) {
-      hold_p.set(new MDoppler());
-    } else if (tp == downcase(MEpoch::showMe())) {
-      hold_p.set(new MEpoch());
-    } else if (tp == downcase(MFrequency::showMe())) {
-      hold_p.set(new MFrequency());
-    } else if (tp == downcase(MPosition::showMe())) {
-      hold_p.set(new MPosition());
-    } else if (tp == downcase(MRadialVelocity::showMe())) {
-      hold_p.set(new MRadialVelocity());
-    } else if (tp == downcase(MBaseline::showMe())) {
-      hold_p.set(new MBaseline());
-    } else if (tp == downcase(Muvw::showMe())) {
-      hold_p.set(new Muvw());
-    } else if (tp == downcase(MEarthMagnetic::showMe())) {
-      hold_p.set(new MEarthMagnetic());
-    } else {
+    if (!getType(error, in)) {
       error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
       return False;
     };
@@ -230,7 +208,8 @@ Bool MeasureHolder::fromRecord(String &error,
 			   WHERE));
 	os << LogIO::WARN <<
 	  String("Illegal or unknown reference type '") +
-	  rf + "' for " + tp + " definition. DEFAULT (" + 
+	  rf + "' for " + downcase(String(hold_p.ptr()->tellMe())) +
+	  " definition. DEFAULT (" + 
 	  hold_p.ptr()->getDefaultType() + ") assumed." <<
 	  LogIO::POST;
       };
@@ -284,9 +263,7 @@ Bool MeasureHolder::fromRecord(String &error,
 }
 
 Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
-  if (hold_p.ptr()) {
-    out.define(RecordFieldId("type"),
-	       downcase(String(hold_p.ptr()->tellMe())));
+  if (hold_p.ptr() && putType(error, out)) {
     out.define(RecordFieldId("refer"), hold_p.ptr()->getRefString());
     const Measure *off = hold_p.ptr()->getRefPtr()->offset();
     if (off) {
@@ -316,11 +293,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
 }
 
 Bool MeasureHolder::toType(String &error, RecordInterface &out) const {
-  if (hold_p.ptr()) {
-    out.define(RecordFieldId("type"),
-	       downcase(String(hold_p.ptr()->tellMe())));
-    return True;
-  };
+  if (hold_p.ptr() && putType(error, out)) return True;
   error += String("No Measure specified in MeasureHolder::toType\n");
   return False;    
 }
@@ -328,30 +301,8 @@ Bool MeasureHolder::toType(String &error, RecordInterface &out) const {
 Bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
   if (in.isDefined(String("type")) &&
       in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
-    String tp;
-    in.get(RecordFieldId("type"), tp);
-    tp.downcase();
-    hold_p.clear();
-    if (tp == downcase(MDirection::showMe())) {
-      hold_p.set(new MDirection());
-    } else if (tp == downcase(MDoppler::showMe())) {
-      hold_p.set(new MDoppler());
-    } else if (tp == downcase(MEpoch::showMe())) {
-      hold_p.set(new MEpoch());
-    } else if (tp == downcase(MFrequency::showMe())) {
-      hold_p.set(new MFrequency());
-    } else if (tp == downcase(MPosition::showMe())) {
-      hold_p.set(new MPosition());
-    } else if (tp == downcase(MRadialVelocity::showMe())) {
-      hold_p.set(new MRadialVelocity());
-    } else if (tp == downcase(MBaseline::showMe())) {
-      hold_p.set(new MBaseline());
-    } else if (tp == downcase(Muvw::showMe())) {
-      hold_p.set(new Muvw());
-    } else if (tp == downcase(MEarthMagnetic::showMe())) {
-      hold_p.set(new MEarthMagnetic());
-    } else {
-      error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
+    if (!getType(error, in)) {
+      error += String("Unknown Measure record in MeasureHolder::fromType\n");
       return False;
     };
     return True;
@@ -363,4 +314,37 @@ Bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
 const String &MeasureHolder::ident() const {
   static String myid = "meas";
   return myid;
+}
+
+Bool MeasureHolder::putType(String &error, RecordInterface &out) const {
+  out.define(RecordFieldId("type"),
+	     downcase(String(hold_p.ptr()->tellMe())));
+  return True;
+}
+
+Bool MeasureHolder::getType(String &error, const RecordInterface &in) {
+  String tp;
+  in.get(RecordFieldId("type"), tp);
+  tp.downcase();
+  hold_p.clear();
+  if (tp == downcase(MDirection::showMe())) {
+    hold_p.set(new MDirection());
+  } else if (tp == downcase(MDoppler::showMe())) {
+    hold_p.set(new MDoppler());
+  } else if (tp == downcase(MEpoch::showMe())) {
+    hold_p.set(new MEpoch());
+  } else if (tp == downcase(MFrequency::showMe())) {
+    hold_p.set(new MFrequency());
+  } else if (tp == downcase(MPosition::showMe())) {
+    hold_p.set(new MPosition());
+  } else if (tp == downcase(MRadialVelocity::showMe())) {
+    hold_p.set(new MRadialVelocity());
+  } else if (tp == downcase(MBaseline::showMe())) {
+    hold_p.set(new MBaseline());
+  } else if (tp == downcase(Muvw::showMe())) {
+    hold_p.set(new Muvw());
+  } else if (tp == downcase(MEarthMagnetic::showMe())) {
+    hold_p.set(new MEarthMagnetic());
+  } else return False;
+  return True;
 }

@@ -191,7 +191,7 @@ public:
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
-  // Create a dummy Measure or a record with only a type from a Measure
+  // Create a default Measure or a record with only a type from a Measure
   // <group>
   Bool toType(String &error, RecordInterface &out) const;
   Bool fromType(String &error, const RecordInterface &in);
@@ -204,7 +204,12 @@ private:
   //# Data Members
   // Pointer to a Measure
   PtrHolder<Measure> hold_p;
-  
+  //# member functions
+  //Aid for to/from Record and Type
+  // <group>
+  Bool putType(String &error, RecordInterface &out) const;
+  Bool getType(String &error, const RecordInterface &in);  
+  // </group>
 };
 
 #endif
