@@ -139,6 +139,12 @@ int main()
       pIm.putMask (mask);
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
+// Rename that mask and make sure the default mask is renamed too.
+      pIm.renameRegion ("reg2n", "reg2");
+      AlwaysAssertExit (pIm.getDefaultMask() == "reg2n");
+      AlwaysAssertExit (pIm.isMasked());
+      AlwaysAssertExit (pIm.isMaskWritable());
+
 // Now get the mask as a region and check it is correct.
       {
 	ImageRegion reg1 (pIm.getRegion (pIm.getDefaultMask()));
@@ -153,7 +159,7 @@ int main()
       }
 
 // Remove the region, which should also remove the default mask.
-      pIm.removeRegion ("reg2");
+      pIm.removeRegion ("reg2n");
       AlwaysAssertExit (pIm.getDefaultMask() == "");
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (! pIm.isMaskWritable());
