@@ -235,6 +235,7 @@ try {
    inputs.Create("smout", "", "Output smoothed image name");
    inputs.Create("device", "none", "PGPLOT device");
    inputs.Create("nxy", "-1", "Number of subplots in x and y");
+   inputs.Create("yind","False","Y scale independent ?");
    inputs.ReadArguments(argc, argv);
 
    const String in = inputs.GetString("in");
@@ -255,7 +256,7 @@ try {
    const String smOut = inputs.GetString("smout");
    String device = inputs.GetString("device");
    const Block<Int> nxyB = inputs.GetIntArray("nxy");
-
+   const Bool yInd = inputs.GetBool("yind");
 
 // Create defaults array
 
@@ -421,7 +422,7 @@ try {
       if (validInputs(OUT)) moment.setOutName(out);
       if (validInputs(PSFOUT)) moment.setPsfOutName(psfOut);
       if (validInputs(SMOUT)) moment.setSmoothOutName(smOut);
-      if (validInputs(PLOTTING)) {if (!moment.setPlotting (device, nxy)) return 1;}
+      if (validInputs(PLOTTING)) {if (!moment.setPlotting (device, nxy, yInd)) return 1;}
 
 // Do work
 
