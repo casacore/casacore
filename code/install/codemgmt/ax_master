@@ -4950,3 +4950,4 @@
 15 006 top rm code/trialdisplay/implement/DisplayDatas/test/tTableAsRaster.cc
 15 008 src rm trialdisplay/implement/DisplayDatas/test/templates
 15 008 src rm trialdisplay/implement/DisplayDatas/test/tTableAsRaster.cc
+15 008 src rm trial/apps/measures/c001001.cat.gz
