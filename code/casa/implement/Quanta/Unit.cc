@@ -1,5 +1,5 @@
 //# Unit.cc: defines the Unit class
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,6 +107,7 @@ void Unit::check() {
     static Regex sp(" +"); static String ssp(".");
     static Regex pd("\\.+"); static String spd(".");
     static Regex bp("^\\.+"); static String sbp("");
+    static Regex ep("\\.+$"); static String ebp("");
     if (!UnitVal::check(uName, uVal)) {
 	throw (AipsError("Unit::check Illegal unit string '" +
 			 uName + "'"));
@@ -114,4 +115,5 @@ void Unit::check() {
     uName.gsub(sp, ssp);
     uName.gsub(pd, spd);
     uName.gsub(bp, sbp);
+    uName.gsub(ep, ebp);
 }
