@@ -121,11 +121,13 @@
 
 // <h4>Example 3:</h4>
 // Suppose you have a templated class that needs to use the <src>allNear</src>
-// functions from <linkto class="ArrayMath">ArrayMath</linkto> to determine if
-// a templated Array is near one. The tolerance argument to the allNear
-// function will depend on the template type and this is not known until the
-// template is instantiated. The epsilon trait can be used to supply this
-// value.
+// functions from
+// <linkto group="ArrayMath.h#Array mathematical operations">ArrayMath</linkto>
+// to determine if a templated Array is near
+// one. The tolerance argument to the allNear function will depend on the
+// template type and this is not known until the template is instantiated. The
+// epsilon trait can be used to supply this value.
+
 // <srcblock> 
 // template<class T> void myClass<T>::myFunction(Array<T> & aArray) {
 //   if (allNear(aArray, T(1), NumericTraits<T>::epsilon))
@@ -145,8 +147,8 @@
 // <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
 // DComplex data types.
 // </dl>
-// See the <linkto class="Constants">Constants</linkto> class for the values of
-// these variables.
+// See the <linkto class="struct C ">Constants</linkto> structure for the
+// values of these variables.
 // </example>
 //
 // <motivation>
