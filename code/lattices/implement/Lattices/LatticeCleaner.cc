@@ -794,6 +794,11 @@ template<class T>
 Bool LatticeCleaner<T>::stopnow() {
   if(itsChoose) {
     LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
+    Bool stop = ApplicationEnvironment::stop();
+    if(stop) {
+      os << "Lattice clean stopped at user request" << LogIO::POST;
+      return True;
+    }
     Vector<String> choices(2);
     choices(0)="Continue";
     choices(1)="Stop Now";
