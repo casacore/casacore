@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,28 +25,29 @@
 //# $Id$
 
 //# Includes
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MEarthMagnetic.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MeasValue.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MBaseline.h>
 #include <aips/Measures/Muvw.h>
-#include <aips/Measures/MEarthMagnetic.h>
+#include <aips/Quanta/MeasValue.h>
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
+#include <trial/TableMeasures/TableMeasOffsetDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Tables/ColumnDesc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
@@ -70,13 +71,9 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
 	TableMeasDescBase::reconstruct(tab, columnName);
 	
     AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
-        
-    if (tab.tableDesc().columnDesc(columnName).isArray()) {
-    	itsDataCol = new ROArrayColumn<Double>(tab, columnName);
-    } else {
-	throw(AipsError(String("The column " + columnName) 
-		+ " is not an ArrayColumn."));
-    }
+
+    // create the data column    
+    itsDataCol = new ROArrayColumn<Double>(tab, columnName);
     
     // Set up the reference code component of the MeasRef
     if (tmDesc->isRefCodeVariable()) {
@@ -86,17 +83,23 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
 	} else {
 	    itsRefIntCol = new ROScalarColumn<Int>(tab, refColName);
 	}
-	itsVarRefs = True;
+	itsVarRefFlag = True;
     } else {
 	itsMeasRef.set(tmDesc->getRefCode());
-	itsVarRefs = False;
+	itsVarRefFlag = False;
     }
     
     // Set up the offset component of the MeasRef
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
-	    itsOffsetCol = 
-		new ROScalarMeasColumn<M, MV>(tab,tmDesc->offsetColumnName());
+	    if (tmDesc->isOffsetArray()) {
+		throw(AipsError("ROScalarMeasColumn::ROScalarMeasColumn "
+				"Offset column must be a ScalarMeasColumn."));
+	    } else {
+		itsOffsetCol = 
+		    new ROScalarMeasColumn<M, MV>(tab,
+						  tmDesc->offsetColumnName());
+	    }
 	} else {
 	    itsMeasRef.set(tmDesc->getOffset());
 	}
@@ -107,7 +110,7 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
 template<class M, class MV>
 ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(
     const ROScalarMeasColumn<M, MV>& that)
-: itsVarRefs(that.itsVarRefs),
+: itsVarRefFlag(that.itsVarRefFlag),
   itsMeasRef(that.itsMeasRef),
   itsDataCol(that.itsDataCol),
   itsRefIntCol(that.itsRefIntCol),
@@ -149,7 +152,7 @@ void ROScalarMeasColumn<M, MV>::reference(
 {   
     cleanUp();
     itsDataCol = that.itsDataCol;
-    itsVarRefs = that.itsVarRefs;
+    itsVarRefFlag = that.itsVarRefFlag;
     itsRefIntCol = that.itsRefIntCol;
     itsRefStrCol = that.itsRefStrCol;
     itsOffsetCol = that.itsOffsetCol;
@@ -180,7 +183,7 @@ void ROScalarMeasColumn<M, MV>::get(uInt rownr, M& meas) const
 {
     MV measVal;
     measVal.putVector((*itsDataCol)(rownr));
-    if (itsVarRefs) {
+    if (itsVarRefFlag) {
 	setMeasRef(rownr);
     }
     meas.set(measVal, itsMeasRef);
@@ -195,6 +198,12 @@ M ROScalarMeasColumn<M, MV>::operator()(uInt rownr) const
 }
 
 template<class M, class MV>
+Bool ROScalarMeasColumn<M, MV>::isDefined(uInt rownr) const 
+{ 
+    return itsDataCol->isDefined(rownr); 
+}
+
+template<class M, class MV>
 const MeasRef<M>& ROScalarMeasColumn<M, MV>::getMeasRef() const
 {
     return itsMeasRef;
@@ -203,7 +212,7 @@ const MeasRef<M>& ROScalarMeasColumn<M, MV>::getMeasRef() const
 template<class M, class MV>
 void ROScalarMeasColumn<M, MV>::setMeasRef(uInt rownr) const
 {
-    if (itsVarRefs) {
+    if (itsVarRefFlag) {
 	if (itsRefStrCol != 0) {
 	    M meas;
 	    meas.giveMe(itsMeasRef, (*itsRefStrCol)(rownr));
@@ -247,12 +256,7 @@ ScalarMeasColumn<M, MV>::ScalarMeasColumn(const Table& tab,
 	
     AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
         
-    if (tab.tableDesc().columnDesc(columnName).isArray()) {
-    	itsDataCol = new ArrayColumn<Double>(tab, columnName);
-    } else {
-	throw(AipsError(String("The column " + columnName) 
-		+ " is not an ArrayColumn."));
-    }
+    itsDataCol = new ArrayColumn<Double>(tab, columnName);
     
     // Set up the reference code component of the MeasRef
     if (tmDesc->isRefCodeVariable()) {
@@ -267,8 +271,10 @@ ScalarMeasColumn<M, MV>::ScalarMeasColumn(const Table& tab,
     // Set up the offset component of the MeasRef
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
+	    // don't need to test whether the offsetColumn isArray() as this
+	    // this is done in the RO class.
 	    itsOffsetCol = 
-		new ScalarMeasColumn<M, MV>(tab,tmDesc->offsetColumnName());
+		new ScalarMeasColumn<M, MV>(tab, tmDesc->offsetColumnName());
 	}
     } 
     delete tmDesc;
@@ -316,6 +322,7 @@ void ScalarMeasColumn<M, MV>::reference(const ScalarMeasColumn<M, MV>& that)
 {
     ROScalarMeasColumn<M, MV>::reference(that);
     itsDataCol = that.itsDataCol;
+    itsRefIntCol = that.itsRefIntCol;
     itsRefStrCol = that.itsRefStrCol;
     itsOffsetCol = that.itsOffsetCol;
     if (itsDataCol != 0) {
@@ -336,7 +343,7 @@ template<class M, class MV>
 void ScalarMeasColumn<M, MV>::attach(const Table& tab, 
 				     const String& columnName)
 {
-    reference(ScalarMeasColumn<M, MV>(tab, columnName)); 
+    reference(ScalarMeasColumn<M, MV>(tab, columnName));
 }
  
 template<class M, class MV>
@@ -345,7 +352,7 @@ void ScalarMeasColumn<M, MV>::put(uInt rownr, const M& meas)
     // When the reference is variable measure's reference and offset
     // are saved as well as the measure's value.
         
-    if (itsVarRefs) {
+    if (itsVarRefFlag) {
 	if (itsRefStrCol != 0) {
 	    itsRefStrCol->put(rownr, M::showType(meas.getRef().getType()));
 	} else {
