@@ -1,3 +1,481 @@
+//# String.cc: String class
+//# Copyright (C) 2001
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#ifndef USE_OLD_STRING		/* The new String class */
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
+#include <algorithm>
+#include <cstring>
+#include <strstream>
+
+// Special constructors
+String::String(ostrstream &os) :
+  string((os << ends, os.str())) {
+  delete [] os.str();
+}
+
+// Count occurrences
+Int String::freq(Char c) const {
+  size_type p(0);
+  Int found(0);
+  while (p < length()) {
+    if ((p = find(c, p)) == npos) break;
+    found++;
+    p++;
+  };
+  return found;
+}
+
+Int String::freq(const string &str) const {
+  size_type p(0);
+  Int found(0);
+  while (p < length()) {
+    if ((p = find(str, p)) == npos) break;
+    found++;
+    p++;
+  };
+  return found;
+}
+
+Int String::freq(const Char *s) const {
+  size_type p(0);
+  Int found(0);
+  while (p < length()) {
+    if ((p = find(s, p)) == npos) break;
+    found++;
+    p++;
+  };
+  return found;
+}
+
+// Obtain a (separate) 'sub'-string
+SubString String::at(size_type pos, size_type len) {
+  return _substr(pos, len);
+}
+
+SubString String::at(const string &str, Int startpos) {
+  return _substr(index(str, startpos), str.length());
+}
+
+SubString String::at(const Char *s, Int startpos) {
+  return _substr(index(s, startpos), traits_type::length(s));
+}
+
+SubString String::at(Char c, Int startpos) {
+  return _substr(index(c, startpos), 1);
+}
+
+SubString String::before(size_type pos) {
+  return _substr(0, pos);
+}
+
+SubString String::before(const string &str, Int startpos) {
+  return _substr(0, index(str, startpos));
+}
+
+SubString String::before(const Char *s, Int startpos) {
+  return _substr(0, index(s, startpos));
+}
+
+SubString String::before(Char c, Int startpos) {
+  return _substr(0, index(c, startpos));
+}
+
+SubString String::through(size_type pos) {
+  return _substr(0, pos+1);
+}
+
+SubString String::through(const string &str, Int startpos) {
+  size_type last(index(str, startpos));
+  if (last != npos) last += str.length();
+  return _substr(0, last);
+}
+
+SubString String::through(const Char *s, Int startpos) {
+  size_type last(index(s, startpos));
+  if (last != npos) last +=  traits_type::length(s);
+  return _substr(0, last);
+}
+
+SubString String::through(Char c, Int startpos) {
+  size_type last(index(c, startpos));
+  if (last != npos) last += 1;
+  return _substr(0, last);
+}
+
+SubString String::from(size_type pos) {
+  return _substr(pos, length()-pos);
+}
+
+SubString String::from(const string &str, Int startpos) {
+  size_type first(index(str, startpos));
+  return _substr(first, length()-first);
+}
+
+SubString String::from(const Char *s, Int startpos) {
+  size_type first(index(s, startpos));
+  return _substr(first, length()-first);
+}
+
+SubString String::from(Char c, Int startpos) {
+  size_type first(index(c, startpos));
+  return _substr(first, length()-first);
+}
+
+SubString String::after(size_type pos) {
+  return _substr(pos+1, length()-(pos+1));
+}
+
+SubString String::after(const string &str, Int startpos) {
+  size_type first(index(str, startpos));
+  if (first != npos) first += str.length();
+  return _substr(first, length()-first);
+}
+
+SubString String::after(const Char *s, Int startpos) {
+  size_type first(index(s, startpos));
+  if (first != npos) first += traits_type::length(s);
+  return _substr(first, length()-first);
+}
+
+SubString String::after(Char c, Int startpos) {
+  size_type first(index(c, startpos));
+  if (first != npos) first += 1;
+  return _substr(first, length()-first);
+}
+
+// Prepend string
+void String::prepend(const string &str) {
+  insert(size_type(0), str);
+}
+
+void String::prepend(const Char *s) {
+  insert(size_type(0), s);
+}
+
+void String::prepend(Char c) {
+  insert(size_type(0), c);
+}
+
+// Delete
+void String::del(size_type pos, size_type len) {
+  erase(pos, len);
+}
+
+void String::del(const string &str, size_type startpos) {
+  erase(index(str, startpos), str.length());
+}
+
+void String::del(const Char *s, size_type startpos) {
+  erase(index(s, startpos), traits_type::length(s));
+}
+
+void String::del(Char c, size_type startpos) {
+  erase(index(c, startpos), 1);
+}
+
+// Global substitution
+Int String::gsub(const string &pat, const string &repl) {
+  Int nmatches(0);
+  if (length() == 0 || pat.length() == 0 ||
+      length() < pat.length()) return nmatches;
+  size_type si(0);
+  while (length()-si >= pat.length()) {
+    size_type pos = find(pat, si);
+    if (pos == npos) break;
+    else {
+      nmatches++;
+      replace(pos, pat.length(), repl);
+      si = pos + repl.length();
+    };
+  };
+  return nmatches;
+}
+
+Int String::gsub(const Char *pat, const string &repl) {
+  return gsub(String(pat), repl);
+}
+
+Int String::gsub(const Char *pat, const Char *repl) {
+  return gsub(String(pat), String(repl));
+}
+
+// Member utilities
+void String::reverse() {
+  ::reverse(begin(), end());
+}
+
+void String::upcase() {
+  transform(begin(), end(), begin(), toupper);
+}
+
+void String::downcase() {
+  transform(begin(), end(), begin(), tolower);
+}
+
+void String::capitalize() {
+  for (iterator p=begin(); p < end(); p++) {
+    Bool at_word;
+    if ((at_word = islower(*p))) *p = toupper(*p);
+    else at_word = isupper(*p) || isdigit(*p);
+    if (at_word) {
+      while (++p < end()) {
+        if (isupper(*p)) *p = tolower(*p);
+        else if (!islower(*p) && !isdigit(*p)) break;
+      };
+    };
+  };
+}
+
+// Regex related functions
+String::size_type String::find(const Regex &r, size_type pos) const {
+  Int unused;
+  return r.search(c_str(), length(), unused, pos);
+}
+
+String::size_type String::rfind(const Regex &r, size_type pos) const {
+  Int unused;
+  return r.search(c_str(), length(), unused, static_cast<Int>(pos)-length());
+}
+
+Bool String::contains(const Regex &r) const {
+  Int unused;
+  return (static_cast<size_type>(r.search(c_str(), length(), unused, 0)) !=
+	  npos);
+}
+
+Bool String::matches(const Regex &r, Int pos = 0) const {
+  Int l = (pos < 0) ? -pos : length() - pos;
+  return r.match(c_str(), length(), pos) == l;
+}
+
+String::size_type String::index(const Regex &r, Int startpos) const {
+  Int unused;
+  return r.search(c_str(), length(), unused, startpos);
+}
+
+SubString String::at(const Regex &r, Int startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  return _substr(first, mlen);
+}
+
+SubString String::before(const Regex &r, Int startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  return _substr(0, first);
+}
+
+SubString String::through(const Regex &r, Int startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  if (first != npos) first += mlen;
+  return _substr(first, length()-first);
+}
+
+SubString String::from(const Regex &r, Int startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  return _substr(first, length()-first);
+}
+
+SubString String::after(const Regex &r, Int startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  if (first != npos) first += mlen;
+  return _substr(first, length()-first);
+}
+
+void String::del(const Regex &r, size_type startpos) {
+  Int mlen;
+  size_type first = r.search(c_str(), length(), mlen, startpos);
+  erase(first, mlen);
+}
+
+Int String::gsub(const Regex &pat, const string &repl) {
+  Int nmatches(0);
+  if (length() == 0) return nmatches;
+  size_type si(0);
+  Int pl;
+  while (length()-si > 0) {
+    size_type pos = pat.search(c_str(), length(), pl, si);
+    if (pos == npos || pl <=0) break;
+    else {
+      nmatches++;
+      replace(pos, pl, repl);
+      si = pos + repl.length();
+    };
+  };
+  return nmatches;
+}
+
+// Global functions
+String reverse(string str) {
+  reverse(str.begin(), str.end());
+  return str;
+}
+
+String upcase(string str) {
+  transform(str.begin(), str.end(), str.begin(), toupper);
+  return str;
+}
+
+String downcase(string str) {
+  transform(str.begin(), str.end(), str.begin(), tolower);
+  return str;
+}
+
+String capitalize(string str) {
+  static_cast<String>(str).capitalize();
+  return str;
+}
+
+String replicate(Char c, String::size_type n) {
+  return String(n, c);
+}
+
+String replicate(const string &str, String::size_type n) {
+  String t;
+  t.resize(n*str.length());
+  while (n-- > 0) t += str;
+  return t;
+}
+
+Int split(const string &str, string res[], Int maxn,
+	  const string &sep) {
+  Int i(0);
+  String::size_type pos(0);
+  while (i < maxn && pos < str.length()) {
+    String::size_type p = str.find(sep, pos);
+    if (p == String::npos) p = str.length();
+    res[i] = String(str, pos, p-pos);
+    i++;
+    pos = p + sep.length();
+  };
+  return i;
+}
+
+Int split(const string &str, string res[], Int maxn,
+	  const Regex &sep) {
+  Int i(0);
+  String::size_type pos(0);
+  Int matchlen;
+  while (i < maxn && pos < str.length()) {
+    String::size_type p = sep.search(str.c_str(), str.length(), matchlen, pos);
+    if (p == String::npos) p = str.length();
+    res[i] = String(str, pos, p-pos);
+    i++;
+    pos = p + matchlen;
+  }
+  return i;
+}
+
+Int split(const string &str, string res[], Int maxn,
+	  const Char sep) {
+  return split(str, res, maxn, String(sep));
+}
+
+String common_prefix(const string &x, const string &y, 
+		     Int startpos) {
+  if (static_cast<String::size_type>(startpos) == String::npos ||
+      static_cast<String::size_type>(startpos) >= x.length() ||
+      static_cast<String::size_type>(startpos) >= y.length()) return String();
+  String::const_iterator xs(x.begin() + startpos);
+  String::const_iterator ys(y.begin() + startpos);
+  String::size_type l(0);
+  while (xs != x.end() && ys != y.end() && *xs++ == *ys++) l++;
+  return String(x, startpos, l);
+}
+
+String common_suffix(const string &x, const string &y, 
+		     Int startpos) {
+  if (startpos >= 0 ||
+      startpos+x.length() < 0 || startpos+y.length() < 0) return String();
+  String::const_iterator xs(x.end() + startpos+1);
+  String::const_iterator ys(y.end() + startpos+1);
+  String::size_type l(0);
+  while (xs != x.begin() && ys != y.begin() && *--xs == *--ys) l++;
+  return String(x, x.length()+startpos+1-l, l);
+}
+
+String join(string src[], Int n, const string& sep) {
+  String x;
+  for (Int i=0; i<n; i++) {
+    x += src[i];
+    if (i != n-1) x += sep;
+  };
+  return x;
+}
+
+String String::toString(Int value) {
+  ostrstream s;
+  s << value;
+  return s;
+}
+
+String String::toString(uInt value) {
+  ostrstream s;
+  s << value;
+  return s;
+}
+
+Int fcompare(String x, String y) {
+  x.downcase();
+  y.downcase();
+  return x.compare(y);
+}
+
+// SubString
+SubString &SubString::operator=(const SubString &str) {
+  if (this != &str) *this = String(str);
+  return *this;
+}
+
+SubString &SubString::operator=(const String &str) {
+  const_cast<string &>(ref_p).replace(pos_p, len_p, str);
+  return *this;
+}
+
+SubString &SubString::operator=(const Char *s) {
+  const_cast<string &>(ref_p).replace(pos_p, len_p, s);
+  return *this;
+}
+
+SubString &SubString::operator=(const Char c) {
+  const_cast<string &>(ref_p).replace(pos_p, len_p, c);
+  return *this;
+}
+
+// Create some needed templates
+template void __reverse<Char *>(Char *, Char *, random_access_iterator_tag);
+template Char *transform<Char *, Char *, Int (*)(Int)>(Char *, Char *, Char *,
+			      					Int (*)(Int));
+
+#else  /* Old String class */
 //# String.cc: String classes
 //# Copyright (C) 1992-1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
@@ -1505,3 +1983,5 @@ void String::capitalize()
 {
   rep = Scapitalize(rep, rep);
 }
+
+#endif	/* sgi */
