@@ -1,5 +1,5 @@
 //# PlainTable.h: Class defining a plain regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -160,7 +160,7 @@ public:
     virtual uInt getModifyCounter() const;
 
     // Set the table to being changed.
-    void setTableChanged();
+    virtual void setTableChanged();
 
     // Convert a Table option to an AipsIO file option.
     // This is used by storage managers.
@@ -280,14 +280,6 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
 };
-
-
-
-inline void PlainTable::setTableChanged()
-{
-    tableChanged_p = True;
-}
-
 
 
 #endif
