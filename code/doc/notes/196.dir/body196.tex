@@ -282,7 +282,7 @@ will do the following:
 \item Remove unnecessary white space.
 \item Warn if the const keywords are incorrectly positioned
 \item Warn if global functions do not have a return type
-\item Check that \verb{#ifdef} and \verb{#else} and \verb{#endif} are 
+\item Check that \verb!#ifdef! and \verb!#else! and \verb!#endif! are 
   properly sequenced.
 \item Comment out bad templates entries.
 \end{itemize}
@@ -302,19 +302,19 @@ reident templates templates.additions
 will merge both input files into the output file. 
 
 The shell comment character \texttt{\#} can be used to comment entries in
-your templates file and the preprocessor directives \verb{#if},
-\verb{#if defined(symbol)}, \verb{#if !defined(symbol)}, \verb{#ifdef},
-\verb{#ifndef}, \verb{#else}, \verb{#endif} can also be used. 
+your templates file and the preprocessor directives \verb!#if!,
+\verb!#if defined(symbol)!, \verb!#if !defined(symbol)!, \verb!#ifdef!,
+\verb!#ifndef!, \verb!#else!, \verb!#endif! can also be used. 
 
 Each entry in the templates file gets compiled into an object file
-called myClass_Ident.o where the myClass is the name of the first .cc
+called myClass\_Ident.o where the myClass is the name of the first .cc
 file in the template line and Ident is the indentification number.
 Normally this object file contains only one instantiation. But often
 templates instaitions are required in groups. For example to use a
-\verb{CountedPtr<SkyCompRep>} requires you instantiate four other
-classes, namely: \verb{CountedConstPtr<SkyCompRep>},
-\verb{PtrRep<SkyCompRep>}, \verb{SimpleCountedConstPtr<SkyCompRep>} \&
-\verb{SimpleCountedPtr<SkyCompRep>}. In this case it is better to
+\verb!CountedPtr<SkyCompRep>! requires you instantiate four other
+classes, namely: \verb!CountedConstPtr<SkyCompRep>!,
+\verb!PtrRep<SkyCompRep>!, \verb!SimpleCountedConstPtr<SkyCompRep>! \&
+\verb!SimpleCountedPtr<SkyCompRep>!. In this case it is better to
 group all five instantiations in one object file. This is done by
 adding multiple template lines as shown below. 
 \begin{verbatim}
