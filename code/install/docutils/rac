@@ -75,7 +75,7 @@ then
     # Start with checking out CHANGELOG.LASTID, because that file has
     # the highest chance of being locked.
     # Exit if checking out fails.
-    echo 'Checking out changelog and CHANGELOG.LASTID ...'
+    echo 'rac: Checking out changelog and CHANGELOG.LASTID ...'
     a_pwd=`pwd`
     cd $a_code
     rao -l CHANGELOG.LASTID
@@ -95,16 +95,18 @@ then
 
     # Let the user fill in a changelog form and append it to the changelog.
     # If no changes found, unlock the files.
-    echo 'Starting glish ...'
+    echo 'rac: Starting glish ...'
     cp changelog changelog.old
     glish addchange.g
     diff changelog changelog.old > /dev/null
     if [ "$?" = 0 ]
     then
-	echo "No entry added to changelog; files will be unlocked";
-	rao -u changelog;
+	echo "rac: No entry added to changelog; files will be unlocked";
+        chmod 444 changelog
+	rao -u changelog
 	\rm -f changelog changelog.old
 	cd $a_code
+	chmod 444 CHANGELOG.LASTID
 	rao -u CHANGELOG.LASTID
 	\rm -f CHANGELOG.LASTID
 	exit 4;
@@ -115,12 +117,13 @@ fi
 # Set mode correctly (needed in case of -i because the previous rai
 # might have set the mode to 444.
 \rm -f changelog.old
-echo 'Checking in new changelog and CHANGELOG.LASTID ...'
+echo 'rac: Checking in new changelog and CHANGELOG.LASTID ...'
+a_id=`cat $a_code/CHANGELOG.LASTID`
 chmod 644 changelog
-rai changelog
+echo "added change-id $a_id" | rai changelog
 cd $a_code
 chmod 644 CHANGELOG.LASTID
-rai CHANGELOG.LASTID
+echo "set to change-id $a_id" | rai CHANGELOG.LASTID
 
 
 exit 0
