@@ -1,5 +1,5 @@
 //# tTableQuantum.cc: test program for Quantum columns in TableMeasures module
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIter.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions.h>
 #include <iostream.h>
@@ -75,6 +75,8 @@ int main(int argc)
 	"A Quantum<double> array column");
     ArrayColumnDesc<Double> acdQD3("ArrQuantDoubleNonVar",
 	"A Quantum<double> array column");
+    ArrayColumnDesc<Double> acdQD4("ArrQuantDoubleNonVar2",
+	"A Quantum<double> array column with 2 units");
     ArrayColumnDesc<Double> acdQD2("ArrQuantScaUnits",
 	"A Quantum<double> array column");
     ArrayColumnDesc<String> acdStr("varArrUnitsColumn",
@@ -92,6 +94,7 @@ int main(int argc)
     td.addColumn(acdQD);
     td.addColumn(acdQD2);
     td.addColumn(acdQD3);
+    td.addColumn(acdQD4);
     td.addColumn(scdStr);
     td.addColumn(acdStr);
     td.addColumn(ascdStr);
@@ -108,10 +111,20 @@ int main(int argc)
     // test assignment
     tqdSQD = tqddummy2;
 
+    Vector<String> un1(2);
+    Vector<Unit> un2(2);
+    un1(0) = "MHz";
+    un1(1) = "GHz";
+    un2(0) = "kHz";
+    un2(1) = "MHz";
     TableQuantumDesc tqdSQC(td, "ScaQuantComplex", "varUnitsColumn");
     TableQuantumDesc tqdAQC(td, "ArrQuantDouble", "varArrUnitsColumn");
     TableQuantumDesc tqdAQC2(td, "ArrQuantScaUnits", "varArrScaUnitsColumn");
     TableQuantumDesc tqdAQC3(td, "ArrQuantDoubleNonVar", Unit("MHz"));
+    TableQuantumDesc tqdAQC4(td, "ArrQuantDoubleNonVar2", un1);
+    cout << tqdAQC4.getUnits() << endl;
+    TableQuantumDesc tqdAQC4a(td, "ArrQuantDoubleNonVar2", un2);
+    cout << tqdAQC4a.getUnits() << endl;
 
     // test the exceptions
     if (doExcep) {
@@ -149,6 +162,7 @@ int main(int argc)
     tqdAQC.write(td);
     tqdAQC2.write(td);
     tqdAQC3.write(td);
+    tqdAQC4.write(td);
 
     cout << "Column's name is: " + tqdSQD.columnName() << endl;
     if (tqdSQD.isUnitVariable()) {
@@ -344,11 +358,16 @@ int main(int argc)
 	cout << "Array quantum column units: " << aqCol.getUnits() << endl;
       }
 
+      // cover putting an empty array (which should be OK)
+      Array<Quantum<Double> > emptyArr;
+      aqCol.put(0, emptyArr);
+
       // put the quantum array in the column (having variable units).
       aqCol.put(0, quantArr);
     }
     {
-      ROArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantDouble");
+      ROArrayQuantColumn<Double> roaqColx(qtab, "ArrQuantDouble");
+      ROArrayQuantColumn<Double> roaqCol(roaqColx);
 
       // test array conformance error exception on get()
       if (doExcep) {
@@ -374,11 +393,17 @@ int main(int argc)
       ROArrayQuantColumn<Double> roaqCol1(qtab, "ArrQuantDouble", "kHz");
       cout << roaqCol1(0) << endl;
       cout << roaqCol1(0, "Hz") << endl;
+      cout << roaqCol1(0, un2) << endl;
 
       ROArrayQuantColumn<Double> roaqCol2;
       roaqCol2.attach (qtab, "ArrQuantDouble");
-      roaqCol2.attach (qtab, "ArrQuantDouble", "kHz");
+      roaqCol2.attach (qtab, "ArrQuantDouble", "MHz");
+      roaqCol2.attach (qtab, "ArrQuantDouble", un2);
       roaqCol2.reference (roaqCol1);
+
+      ROArrayQuantColumn<Double> roaqCol3(qtab, "ArrQuantDouble", un2);
+      cout << roaqCol3(0) << endl;
+      cout << roaqCol3(0, "Hz") << endl;
     }
     {
       // A second ArrayQuantColumn with variable units but in this case
@@ -426,13 +451,23 @@ int main(int argc)
       ArrayQuantColumn<Double> aqc2;
       aqc2.attach(qtab, "ArrQuantDouble");
 
+      // cover putting an empty array (which should be OK)
+      Array<Quantum<Double> > emptyArr;
+
       // non-variable units column
       ArrayQuantColumn<Double> aqc3(qtab, "ArrQuantDoubleNonVar");
+      aqc3.put(0, emptyArr);
       aqc3.put(0, quantArr);
+      ArrayQuantColumn<Double> aqc4(qtab, "ArrQuantDoubleNonVar2");
+      aqc4.put(0, emptyArr);
+      aqc4.put(0, quantArr);
 
-      ROArrayQuantColumn<Double> aqc4(qtab, "ArrQuantDoubleNonVar");
-      cout << aqc4.getUnits() << endl;
-      cout << aqc4(0) << endl;
+      ROArrayQuantColumn<Double> aqc3a(qtab, "ArrQuantDoubleNonVar");
+      cout << aqc3a.getUnits() << endl;
+      cout << aqc3a(0) << endl;
+      ROArrayQuantColumn<Double> aqc4a(qtab, "ArrQuantDoubleNonVar2");
+      cout << aqc4a.getUnits() << endl;
+      cout << aqc4a(0) << endl;
     }
 
   } catch (AipsError x) {
