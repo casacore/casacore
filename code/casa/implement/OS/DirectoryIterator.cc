@@ -35,42 +35,42 @@
 
 
 DirectoryIterator::DirectoryIterator()
-: itsDirectory           (),
-  itsExpression          (".*"),
+: itsDirectoryDescriptor (0),
   itsDirectoryEntry      (0),
-  itsDirectoryDescriptor (0),
-  itsEnd                 (False)
+  itsEnd                 (False),
+  itsDirectory           (),
+  itsExpression          (".*")
 {
     init();
 }
 
 DirectoryIterator::DirectoryIterator (const Directory& dir)
-: itsDirectory           (dir),
-  itsExpression          (".*"),
+: itsDirectoryDescriptor (0),
   itsDirectoryEntry      (0),
-  itsDirectoryDescriptor (0),
-  itsEnd                 (False)
+  itsEnd                 (False),
+  itsDirectory           (dir),
+  itsExpression          (".*")
 {
     init();
 }
 
 DirectoryIterator::DirectoryIterator (const Directory& dir,
 				      const Regex& regExpression)
-: itsDirectory           (dir),
-  itsExpression          (regExpression),
+: itsDirectoryDescriptor (0),
   itsDirectoryEntry      (0),
-  itsDirectoryDescriptor (0),
-  itsEnd                 (False)
+  itsEnd                 (False),
+  itsDirectory           (dir),
+  itsExpression          (regExpression)
 {
     init();
 }
 
 DirectoryIterator::DirectoryIterator (const DirectoryIterator& that)
-: itsDirectory           (that.itsDirectory),
-  itsExpression          (that.itsExpression),
+: itsDirectoryDescriptor (0),
   itsDirectoryEntry      (0),
-  itsDirectoryDescriptor (0),
-  itsEnd                 (False)
+  itsEnd                 (False),
+  itsDirectory           (that.itsDirectory),
+  itsExpression          (that.itsExpression)
 {
     init();
 }
@@ -85,11 +85,11 @@ DirectoryIterator& DirectoryIterator::operator= (const DirectoryIterator& that)
 {
     if (this != &that) {
 	closedir (itsDirectoryDescriptor);
-	itsDirectory           = that.itsDirectory;
-	itsExpression          = that.itsExpression;
 	itsDirectoryDescriptor = 0;
 	itsDirectoryEntry      = 0;
 	itsEnd                 = False;
+	itsDirectory           = that.itsDirectory;
+	itsExpression          = that.itsExpression;
 	init();
     }
     return *this;

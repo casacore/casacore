@@ -232,7 +232,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     //  creats an new unique name 
     char str[32];
     // fill str with the pid and the unique number
-    sprintf (str, "%i_%i", getpid(), uniqueSeqnr_p++);
+    sprintf (str, "%i_%i", Int(getpid()), uniqueSeqnr_p++);
     if (directory.empty()  ||  directory.lastchar() == '/') {
 	return Path (directory + prefix + str);
     }
