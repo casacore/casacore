@@ -1,5 +1,5 @@
 //# FluxStandard.cc: Implementation of FluxStandard.h
-//# Copyright (C) 1996,1997,1999,2001
+//# Copyright (C) 1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,12 +77,12 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
   // Perley_Taylor 1999.2 coefficients are for GHz
   Double dt3 = dt - 3.0;
 
-  // Select on source name
+  // Select on the source name
 
   // *** 3C286 ***
 
-  if (sourceName == "3C286" || sourceName == "1328+307" || 
-      sourceName == "1331+305") {
+  if (sourceName.contains("3C286") || sourceName.contains("1328+307") || 
+      sourceName.contains("1331+305")) {
 
     found = True;
     switch (itsFluxScale) {
@@ -107,8 +107,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
     // *** 3C48 ***
 
-  } else if (sourceName == "3C48" || sourceName == "0134+329" ||
-	     sourceName == "0137+331") {
+  } else if (sourceName.contains("3C48") || sourceName.contains("0134+329") 
+	     || sourceName.contains("0137+331")) {
 
     found = True;
     switch (itsFluxScale) {
@@ -133,8 +133,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
     // *** 3C147 ***
 
-  } else if (sourceName == "3C147" || sourceName == "0538+498" ||
-	     sourceName == "0542+498") {
+  } else if (sourceName.contains("3C147") || sourceName.contains("0538+498")
+	     || sourceName.contains("0542+498")) {
 
     found = True;
     switch (itsFluxScale) {
@@ -159,8 +159,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
     // *** 3C138 ***
 
-  } else if (sourceName == "3C138" || sourceName == "0518+165" ||
-	     sourceName == "0521+166") {
+  } else if (sourceName.contains("3C138") || sourceName.contains("0518+165") 
+	     || sourceName.contains("0521+166")) {
 
     found = True;
     switch (itsFluxScale) {
@@ -185,7 +185,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
     // *** 1934-638 ***
 
-  } else if (sourceName == "1934-638") {
+  } else if (sourceName.contains("1934-638")) {
 
     found = True;
     switch (itsFluxScale) {
@@ -210,8 +210,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
     // *** 3C295 ***
 
-  } else if (sourceName == "3C295" || sourceName == "1409+524" ||
-	     sourceName == "1411+522") {
+  } else if (sourceName.contains("3C295") || sourceName.contains("1409+524")
+	     || sourceName.contains("1411+522")) {
 
     found = True;
     switch (itsFluxScale) {
