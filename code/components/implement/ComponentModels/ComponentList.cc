@@ -32,10 +32,12 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Tables/ArrColDesc.h>
@@ -45,8 +47,11 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/GenSort.h>
+#include <aips/Utilities/Sort.h>
 #include <aips/Utilities/String.h>
 
 #ifdef __GNUG__
@@ -59,7 +64,9 @@ ComponentList::ComponentList()
    itsNelements(0),
    itsTable(),
    itsROFlag(False),
-   itsActiveFlags()
+   itsNactive(0),
+   itsActiveFlags(),
+   itsOrder()
 {
   AlwaysAssert(ok(), AipsError);
 }
@@ -69,16 +76,20 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
    itsNelements(0),
    itsTable(),
    itsROFlag(False),
-   itsActiveFlags()
+   itsNactive(0),
+   itsActiveFlags(),
+   itsOrder()
 {
   {
     if (readOnly) {
       AlwaysAssert(Table::isReadable(fileName), AipsError);
+//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Old);
       itsTable = Table(fileName, Table::Old);
     }
     else {
       AlwaysAssert(Table::isWritable(fileName), AipsError);
-      itsTable = Table(fileName, Table::Update);
+//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Update);
+      itsTable = Table(fileName, Table::Old);
     }
   }
   const ROScalarColumn<String> typeCol(itsTable, "Type");
@@ -123,7 +134,9 @@ ComponentList::ComponentList(const ComponentList & other)
    itsNelements(other.itsNelements),
    itsTable(other.itsTable),  
    itsROFlag(other.itsROFlag),
-   itsActiveFlags(other.itsActiveFlags)
+   itsNactive(other.itsNelements),
+   itsActiveFlags(other.itsActiveFlags),
+   itsOrder(other.itsOrder)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -142,7 +155,9 @@ ComponentList & ComponentList::operator=(const ComponentList & other){
     itsNelements = other.itsNelements;
     itsTable = other.itsTable;
     itsROFlag = other.itsROFlag;
+    itsNactive = other.itsNactive;
     itsActiveFlags = other.itsActiveFlags;
+    itsOrder = other.itsOrder;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -181,18 +196,29 @@ void ComponentList::add(SkyComponent component, const Bool & isActive) {
       = (blockSize < 50) ? 2 * blockSize + 1 : blockSize + 100;
     itsList.resize(newSize);
     itsActiveFlags.resize(newSize);
+    itsOrder.resize(newSize);
   }
   itsList[itsNelements] = component;
   itsActiveFlags[itsNelements] = isActive;
+  itsOrder[itsNelements] = itsNelements;
+  if (isActive) itsNactive++;
   itsNelements++;
 }
 
 void ComponentList::remove(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
-  itsList.remove(index, False);
-  itsActiveFlags.remove(index, False);
+  if (isActive(index)) itsNactive--;
+  uInt realIndex = itsOrder[index];
+  itsActiveFlags.remove(realIndex, False);
+  itsList.remove(realIndex, False);
+  itsOrder.remove(realIndex, False);
   itsNelements--;
+  for (uInt i = 0; i < nelements(); i++) {
+    if (itsOrder[i] > realIndex) {
+      itsOrder[i]--;
+    }
+  }
 }
 
 uInt ComponentList::nelements() const {
@@ -200,43 +226,41 @@ uInt ComponentList::nelements() const {
 }
 
 void ComponentList::deactivate(const uInt & index) {
-  AlwaysAssert(index <= nelements(), AipsError);
+  if (isActive(index)) {
+    itsNactive--;
+    itsActiveFlags[itsOrder[index]] = False;
+  }
   DebugAssert(ok(), AipsError);
-  itsActiveFlags[index] = False;
 }
 
 void ComponentList::activate(const uInt & index) {
-  AlwaysAssert(index <= nelements(), AipsError);
+  if (!isActive(index)) {
+    itsNactive++;
+    itsActiveFlags[itsOrder[index]] = True;
+  }
   DebugAssert(ok(), AipsError);
-  itsActiveFlags[index] = True;
 }
 
 uInt ComponentList::nactive() const {
   DebugAssert(ok(), AipsError);
-  uInt retVal = 0;
-  for (uInt i = 0; i < nelements(); i++) {
-    if (itsActiveFlags[i] == True) {
-      retVal++;
-    }
-  }
-  return retVal;
+  return itsNactive;
 }
 
 Bool ComponentList::isActive(const uInt & index) const {
   AlwaysAssert(index <= nelements(), AipsError);
   DebugAssert(ok(), AipsError);
-  return itsActiveFlags[index];
+  return itsActiveFlags[itsOrder[index]];
 }
 
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
-  return itsList[index];
+  return itsList[itsOrder[index]];
 }
 
 const SkyComponent & ComponentList::component(const uInt & index) const {
   DebugAssert(ok(), AipsError);
-  return itsList[index];
+  return itsList[itsOrder[index]];
 }
 
 void ComponentList::rename(const String & fileName, 
@@ -244,7 +268,7 @@ void ComponentList::rename(const String & fileName,
   AlwaysAssert(option != Table::Old, AipsError);
   AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
-  if (fileName  == "") {
+  if (fileName == "") {
     if (!itsTable.isNull()) {
       itsTable.markForDelete();
       itsTable = Table();
@@ -253,10 +277,13 @@ void ComponentList::rename(const String & fileName,
     return;
   }
   // See if this list is associated with a Table. 
-  if (!itsTable.isNull()) 
-      itsTable.rename(fileName, option);
+  if (!itsTable.isNull()) {
+    if (itsTable.isWritable() == False)
+      itsTable.reopenRW();
+    itsTable.rename(fileName, option);
+  }
   // Otherwise construct a Table to hold the list
-  else { 
+  else {
     // These two constants define the units and frame of the output list
     const String angleUnits("deg");
     const String refFrame("J2000");
@@ -284,8 +311,11 @@ void ComponentList::rename(const String & fileName,
       td.addColumn(parmCol);
     }
     SetupNewTable newTable(fileName, td, option);
-    itsTable = Table(newTable, nelements(), True);
+    itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), True);
   }
+  // Ensure that the Table::isReadable(fileName) returns True, otherwise the
+  // ok() function will fail.
+  itsTable.flush();
   DebugAssert(ok(), AipsError);
 }
 
@@ -300,12 +330,110 @@ ComponentList ComponentList::copy() const {
   return copiedList;
 }
 
+void ComponentList::sort(ComponentList::SortCriteria criteria) {
+  if (criteria == ComponentList::FLUX) {
+    Block<Double> absI(nelements());
+    Vector<Double> compFlux(4);
+    for (uInt i = 0; i < nelements(); i++) {
+      itsList[i].flux(compFlux);
+      absI[i] = abs(compFlux(0));
+    }
+    // The genSort function requires a Vector<uInt> and not a Block<uInt> so
+    // I'll create a temporary Vector here which references the data in the
+    // 'itsOrder' Block.
+    Vector<uInt> vecOrder(IPosition(1, nelements()), 
+			  itsOrder.storage(), SHARE);
+    AlwaysAssert(genSort(vecOrder, absI, Sort::Descending) == nactive(), 
+		 AipsError);
+  }
+}
+
+String ComponentList::name(ComponentList::SortCriteria enumerator){
+  switch (enumerator) {
+  case ComponentList::FLUX: return "Flux";
+  case ComponentList::POSITION: return "Position";
+  default: return "Unsorted";
+  };
+}
+
+ComponentList::SortCriteria ComponentList::type(const String & criteria) {
+  String canonicalCase(criteria);
+  canonicalCase.capitalize();
+  for (uInt i = 0; i < ComponentList::NUMBER_CRITERIA; i++) {
+    if (canonicalCase.
+	matches(ComponentList::name((ComponentList::SortCriteria) i))) {
+      return (ComponentList::SortCriteria) i;
+    }
+  }
+  return ComponentList::UNSORTED;
+}
+
 Bool ComponentList::ok() const {
+  // The LogIO class is only constructed if an Error is detected for
+  // performance reasons. Both function static and file static variables
+  // where considered and rejected for this purpose.
+  if (itsList.nelements() < itsNelements) {
+    LogIO logErr(LogOrigin("ComponentList", "ok()"));
+    logErr << LogIO::SEVERE 
+	   << "The list size is inconsistant with its cached size"
+           << LogIO::POST;
+     return False;
+  }
+  if (itsROFlag == True && itsTable.isNull() == True) {
+    LogIO logErr(LogOrigin("ComponentList", "ok()"));
+    logErr << LogIO::SEVERE 
+	   << "Only ComponentList's associated with a Table can be readonly"
+           << LogIO::POST;
+     return False;
+  }
+  if (itsTable.isNull() == False) {
+    String tablename = itsTable.tableName();
+    if (Table::isReadable(tablename) == False) {
+	LogIO logErr(LogOrigin("ComponentList", "ok()"));
+	logErr << LogIO::SEVERE 
+	       << "Table associated with ComponentList is not readable"
+	       << LogIO::POST;
+	return False;
+    }
+    if (itsROFlag == False && Table::isWritable(tablename) == False) {
+	LogIO logErr(LogOrigin("ComponentList", "ok()"));
+	logErr << LogIO::SEVERE 
+	       << "Table associated with ComponentList is not writeable"
+	       << LogIO::POST;
+	return False;
+    }
+  }
+  {
+    uInt nActiveFlags = 0;
+    for (uInt i = 0; i < itsNelements; i++) {
+      if (itsActiveFlags[i] == True) {
+	nActiveFlags++;
+      }
+    }
+    if (nActiveFlags != itsNactive) {
+      LogIO logErr(LogOrigin("ComponentList", "ok()"));
+      logErr << LogIO::SEVERE 
+	     << "Cached number of active components is wrong!"
+	     << LogIO::POST;
+      return False;
+    }
+  }
+  for (uInt i = 0; i < itsNactive; i++) {
+    if (itsOrder[i] >= itsNelements) {
+      LogIO logErr(LogOrigin("ComponentList", "ok()"));
+      logErr << LogIO::SEVERE 
+	     << "Cannot index to an element that is outside the list!"
+	     << LogIO::POST;
+      return False;
+    }
+  }
   return True;
 }
 
 void ComponentList::writeTable(const Bool & saveActiveOnly) {
-  AlwaysAssert(itsTable.isWritable(), AipsError);
+  if (itsTable.isWritable() == False)
+    itsTable.reopenRW();
+  DebugAssert(itsTable.isWritable(), AipsError);
   
   uInt nCompsToSave = 0;
   if (saveActiveOnly == True) {
@@ -314,7 +442,6 @@ void ComponentList::writeTable(const Bool & saveActiveOnly) {
   else {
     nCompsToSave = nelements();
   }
-
   {
     const uInt nRows = itsTable.nrow();
     if (nRows < nCompsToSave)
@@ -358,5 +485,5 @@ void ComponentList::writeTable(const Bool & saveActiveOnly) {
   }
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 ComponentList"
+// compile-command: "gmake OPTLIB=1 ComponentList; cd test; gmake OPTLIB=1 tComponentList"
 // End: 

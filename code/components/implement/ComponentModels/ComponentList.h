@@ -114,6 +114,17 @@ template <class T> class ImageInterface;
 
 class ComponentList {
 public:
+  // Sorting criteria for components
+  enum SortCriteria {
+    // Sort the components by ABS(I flux), largest first.
+    FLUX = 0,
+    // Sort the components by distance from the north pole, closest first.
+    POSITION,
+    // No sorting is necessary
+    UNSORTED,
+    // The number of criteria in this enumerator
+    NUMBER_CRITERIA
+  };
   // Construct a componentList with no members in the list
   ComponentList();
 
@@ -186,16 +197,28 @@ public:
   // distinct version of the componentList.
   ComponentList copy() const;
 
+  // Sort the active components in the list using the given criteria.
+  void sort(ComponentList::SortCriteria criteria); 
+
+  // Convert the SortCriteria enumerator to a string
+  static String name(ComponentList::SortCriteria enumerator);
+
+  // Convert a given String to a Type enumerator
+  static ComponentList::SortCriteria type(const String & criteria);
+
   // Function which checks the internal data of this class for consistant
   // values. Returns True if everything is fine otherwise returns False.
   Bool ok() const;
 
 private:
   void writeTable(const Bool & saveActiveOnly);
+  //  Int compareAbsI(const void * comp1Ptr, const void * comp2Ptr);
   Block<SkyComponent> itsList;
   uInt itsNelements;
   Table itsTable;
   Bool itsROFlag;
+  uInt itsNactive;
   Block<Bool> itsActiveFlags;
+  Block<uInt> itsOrder;
 };
 #endif
