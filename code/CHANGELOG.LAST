@@ -18,3 +18,19 @@ I also added:
 - UPload        to upload information from tested UP scripts (like maybe a
                 dry run on UPmove) to the master for faster (or only)
                 execution
+
+change id: 0090
+ author:   Wim Brouw
+ date:     2001/04/05
+ avers:    1.5
+ area:     System
+ package:  System
+ module:   UPlock
+ type:     Code Documentation
+ category: Change
+ summary:  Added locker info
+UPlock now shows the locker as well, and has some options.
+E.g.:
+UPlock -al x
+will now produce a list of all RCS locked files, the revision and the
+locker.
