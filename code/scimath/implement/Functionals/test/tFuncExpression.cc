@@ -47,7 +47,7 @@ int main() {
     cout << base << endl;
 
     cout << "--- Check expression syntax ----" << endl;
-    const uInt n=24;
+    const uInt n=27;
     String exprlist[n] = {
       String("+-(25*30+2)--(75+2)"),
       String("1+2-3"),
@@ -68,11 +68,14 @@ int main() {
       String("sin(sin(2))"),
       String("x==0"),
       String("(x==0)+1"),
+      String("(x==0)+1"),
       String("((x==0) * 1)+((x!=0) * sin(x+(x==0)*1)/(x+(x==0)*1))"),
       String("1+(1==2)?5:8+20"),
       String("1+(2==2)?5:(8+20)"),
       String("1+((1==2)?5:8)+20"),
       String("1+((2==2)?5:(8+20))"),
+      String("erf(1)"),
+      String("erfc(1)")
     };
     for (uInt i=0; i<n; ++i) {
       FuncExpression expr;
