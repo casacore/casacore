@@ -1,5 +1,5 @@
 //# Convolver.cc:  this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIter.h>
-
-#ifdef __GNUG__
-typedef Vector<Int> gnu_vector_int;
-#endif
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){
