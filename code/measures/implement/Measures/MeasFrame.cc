@@ -34,6 +34,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasComet.h>
 
 // Representation class
 class FrameRep {
@@ -44,6 +45,7 @@ public:
     posval(0), posset(False), posreset(False),
     dirval(0), dirset(False), dirreset(False),
     radval(0), radset(False), radreset(False),
+    comval(0), comset(False), comreset(False),
     mymcf(0), delmcf(0),
     getdbl(0), getmvdir(0), getmvpos(0),
     cnt(1) {;};
@@ -53,6 +55,7 @@ public:
     delete posval;
     delete dirval;
     delete radval;
+    delete comval;
     if (mymcf) delmcf(mymcf);		// delete conversion frame data
   }
   
@@ -74,6 +77,10 @@ public:
   Measure *radval;
   Bool radset;
   Bool radreset;
+  // Comet
+  MeasComet *comval;
+  Bool comset;
+  Bool comreset;
   // Pointer to belonging conversion frame
   void *mymcf;
   // Pointer to conversion frame deletion
@@ -170,6 +177,10 @@ void MeasFrame::set(const Measure &meas1, const Measure &meas2,
   fill(&meas1);
   fill(&meas2);
   fill(&meas3);
+}
+
+void MeasFrame::set(const MeasComet &meas) {
+  fill(&meas);
 }
 
 void MeasFrame::resetEpoch(Double val) {
@@ -288,6 +299,14 @@ void MeasFrame::resetRadialVelocity(const Measure &val) {
   };
 }
 
+void MeasFrame::resetComet(const MeasComet &val) {
+  if (rep && rep->comval) {
+    fill(&val);
+  } else {
+    errorReset(String("Comet"));
+  };
+}
+
 const Measure *const MeasFrame::epoch() const{
   if (rep) return rep->epval;
   return 0;
@@ -305,6 +324,11 @@ const Measure *const MeasFrame::direction() const{
 
 const Measure *const MeasFrame::radialVelocity() const{
   if (rep) return rep->radval;
+  return 0;
+}
+
+const MeasComet *const MeasFrame::comet() const{
+  if (rep) return rep->comval;
   return 0;
 }
 
@@ -328,6 +352,11 @@ Bool MeasFrame::getRadset() const {
   return False;
 }
 
+Bool MeasFrame::getComset() const {
+  if (rep) return rep->comset;
+  return False;
+}
+
 Bool MeasFrame::getEpreset() const {
   if (rep) return rep->epreset;
   return False;
@@ -348,6 +377,11 @@ Bool MeasFrame::getRadreset() const {
   return False;
 }
 
+Bool MeasFrame::getComreset() const {
+  if (rep) return rep->comreset;
+  return False;
+}
+
 void MeasFrame::setEpset(Bool in) {
   if (rep) rep->epset = in;
 }
@@ -364,6 +398,10 @@ void MeasFrame::setRadset(Bool in) {
   if (rep) rep->radset = in;
 }
 
+void MeasFrame::setComset(Bool in) {
+  if (rep) rep->comset = in;
+}
+
 void MeasFrame::setEpreset(Bool in) {
   if (rep) rep->epreset = in;
 }
@@ -378,6 +416,10 @@ void MeasFrame::setDirreset(Bool in) {
 
 void MeasFrame::setRadreset(Bool in) {
   if (rep) rep->radreset = in;
+}
+
+void MeasFrame::setComreset(Bool in) {
+  if (rep) rep->comreset = in;
 }
 
 void MeasFrame::setMCFramePoint(void *in) {
@@ -508,6 +550,23 @@ void MeasFrame::fill(const Measure *in) {
   };
 }
 
+void MeasFrame::fill(const MeasComet *in) {
+  if (in) {
+    delete rep->comval; rep->comval = 0;
+    if (in->ok()) {
+      rep->comval = in->clone();
+      if (!rep->comval->ok()) {
+	delete rep->comval; rep->comval = 0;
+      };
+    };
+    if (rep->comval) {
+      makeComet();
+    } else {
+      throw(AipsError("Unknown or illegal MeasComet given for MeasFrame"));
+    };
+  };
+}
+
 void MeasFrame::makeEpoch() {
   rep->epset = True;
 }
@@ -522,6 +581,10 @@ void MeasFrame::makeDirection() {
 
 void MeasFrame::makeRadialVelocity() {
   rep->radset = True;
+}
+
+void MeasFrame::makeComet() {
+  rep->comset = True;
 }
 
 void MeasFrame::errorReset(const String &txt) {

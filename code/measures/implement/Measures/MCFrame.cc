@@ -141,6 +141,9 @@ void MCFrame::resetRadialVelocity() {
   };
 }
 
+void MCFrame::resetComet() {
+}
+
 Bool MCFrame::getTDB(Double &tdb) {
   if (myf.epoch()) {
     if (!epTDBp) {
@@ -316,6 +319,11 @@ void MCFrame::create() {
     myf.setRadset(False);
     myf.setRadreset(False);
   };
+  if (myf.getComset()) {
+    makeComet();
+    myf.setComset(False);
+    myf.setComreset(False);
+  };
   if (myf.getEpreset()) {
     resetEpoch();
     myf.setEpreset(False);
@@ -331,6 +339,10 @@ void MCFrame::create() {
   if (myf.getRadreset()) {
     resetRadialVelocity();
     myf.setRadreset(False);
+  };
+  if (myf.getComreset()) {
+    resetComet();
+    myf.setComreset(False);
   };
 }
 
@@ -441,6 +453,9 @@ void MCFrame::makeRadialVelocity() {
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
   };
+}
+
+void MCFrame::makeComet() {
 }
 
 void MCFrameDelete(void *dmf) {

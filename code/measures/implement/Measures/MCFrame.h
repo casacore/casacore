@@ -189,6 +189,8 @@ private:
   void resetDirection();
   // Reset RadialVelocity value
   void resetRadialVelocity();
+  // Reset Comet
+  void resetComet();
   // Make full Epoch
   void makeEpoch();
   // Make full Position
@@ -197,6 +199,8 @@ private:
   void makeDirection();
   // Make full RadialVelocity
   void makeRadialVelocity();
+  // Make full Comet
+  void makeComet();
 };
 
 //# Global functions

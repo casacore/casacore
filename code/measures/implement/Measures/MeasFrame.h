@@ -38,6 +38,7 @@ class MVEpoch;
 class MVPosition;
 class MVDirection;
 class MVRadialVelocity;
+class MeasComet;
 class FrameRep;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
@@ -65,13 +66,16 @@ class ostream;
 //
 // <synopsis>
 // Measurements are made in a reference frame (epoch, position, direction,
-// direction, ...).<br>
+// ...).<br>
 // The class is a container for the reference frame Measures (MEpoch etc).
 // Since a frame will possibly be used by many different Measures, it behaves
 // as a smart pointer, with reference rather than copy characteristics.
 // Since it caches all its operations, it is advisable to have a 'global'
 // MeasFrame across an execution, resetting (or setting) its values
-// when appropiate.
+// when appropiate. The frame can also contain other related information. At
+// the moment the orbit of a solar system body (MeasComet) can be set.
+// In future the planetary ephemeris used (e.g. DE205) and environmental
+// information like refraction data will be added.
 //
 // A MeasFrame is constructed by setting the appropiate Measures, either in
 // a constructor, or with a set(). The input to the constructors and set are
@@ -180,12 +184,14 @@ class MeasFrame {
   // Set frame elements
   // <thrown>
   //   <li> AipsError if a non-frame Measure
+  //   <li> AipsError if illegal or non-existant MeasComet given
   // </thrown>
   // <group>
   void set(const Measure &meas1);
   void set(const Measure &meas1, const Measure &meas2);
   void set(const Measure &meas1, const Measure &meas2,
 	   const Measure &meas3);
+  void set(const MeasComet &meas);
   // </group>
   // Reset a frame element and its cached derived values.
   // <thrown>
@@ -210,6 +216,7 @@ class MeasFrame {
   void resetRadialVelocity(const Quantum<Vector<Double> > &val);
   void resetRadialVelocity(const MVRadialVelocity &val);
   void resetRadialVelocity(const Measure &val);
+  void resetComet(const MeasComet &val);
   // </group>
   
   // Get the epoch pointer (0 if not present)
@@ -220,6 +227,8 @@ class MeasFrame {
   const Measure *const direction() const;
   // Get the radial velocity pointer (0 if not present)
   const Measure *const radialVelocity() const;
+  // Get the comet pointer (0 if not present)
+  const MeasComet *const comet() const;
   // Get data from frame. Only available if appropiate measures are set,
   // and the frame is in a calculating state.
   // <group>
@@ -288,7 +297,10 @@ private:
   // Create an instance of the MeasFrame class
   void create();
   // Fill a MeasFrame element
+  // <group>
   void fill(const Measure *in);
+  void fill(const MeasComet *in);
+  // </group>
   // Make full Epoch
   void makeEpoch();
   // Make full Position
@@ -297,6 +309,8 @@ private:
   void makeDirection();
   // Make full RadialVelocity
   void makeRadialVelocity();
+  // Make full Comet
+  void makeComet();
   // Throw reset error
   void errorReset(const String &txt);
   // Get the different set and reset indicators (for use in MCFrame)
@@ -305,10 +319,12 @@ private:
   Bool getDirset() const;
   Bool getPosset() const;
   Bool getRadset() const;
+  Bool getComset() const;
   Bool getEpreset() const;
   Bool getDirreset() const;
   Bool getPosreset() const;
   Bool getRadreset() const;
+  Bool getComreset() const;
   // </group>
   // Set the different set/reset switches
   // <group>
@@ -316,10 +332,12 @@ private:
   void setPosset(Bool in);
   void setDirset(Bool in);
   void setRadset(Bool in);
+  void setComset(Bool in);
   void setEpreset(Bool in);
   void setPosreset(Bool in);
   void setDirreset(Bool in);
   void setRadreset(Bool in);
+  void setComreset(Bool in);
   // </group>
   // Set the frame conversion data pointer (by MCFrame)
   void setMCFramePoint(void *in);
