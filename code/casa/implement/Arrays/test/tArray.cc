@@ -153,7 +153,7 @@ void oldArrayTest()
     
     {
 	cout << "Testing Vectors......................";
-	Vector<Int> x(10);
+ 	Vector<Int> x(10);
 	x = 5;     
 	for (int i=0; i < 10; i++)
 	    AlwaysAssertExit(x(i) == 5);
@@ -288,7 +288,7 @@ void oldArrayTest()
 
 	cout << "OK\n";
     }
-    
+ 
     {
 	cout << "Testing Vector math and logicals.....";
 	Vector<Int> x(5), y(5);
@@ -407,7 +407,7 @@ void oldArrayTest()
 
 	cout << "OK\n";
     }
-    
+ 
     {
 	cout << "Simple matrix tests..................";
 	Matrix<Int> a(5,5), b;
@@ -444,7 +444,7 @@ void oldArrayTest()
 	
 	cout << "OK\n";
     }
-    
+ 
     {
 	cout << "Cube tests...........................";
 	Cube<Int> c(3,3,3,-1,-1,-1);
@@ -508,7 +508,7 @@ void oldArrayTest()
 	AlwaysAssertExit(m(0,2) == 0 && m(0,6) == 0 && m(3,2) == 0 && m(3,6) == 0);
 	cout << "OK\n";
     }
-    
+ 
 }
 
 void seeIfWeMakeMemoryLeak()
@@ -524,7 +524,7 @@ main()
 {
     try {
 	oldArrayTest();                          // Used to be ArrayTest.cc
-	{
+ 	{
 	    Int i;
 
 	    Array<Int> ai1;                      // Array<T>()
@@ -603,21 +603,33 @@ main()
 	  // Test the nonDegenerate() function
 	  Array<Int> a1(IPosition(5,1,2,1,3,1));
 	  indgen(a1);
-	  AlwaysAssertExit(a1.nonDegenerate().shape() == IPosition(2,2,3));
-	  AlwaysAssertExit(a1.nonDegenerate(1).shape() == IPosition(3,1,2,3));
-	  Cube<Int> c = a1.nonDegenerate(1);
-	  AlwaysAssertExit(c(0,1,2) == 5);
-	  c(0,1,2) = 99;
-	  AlwaysAssertExit(a1(IPosition(5, 0, 1, 0, 2, 0)) == 99);
-	  AlwaysAssertExit(a1.nonDegenerate(4).shape() == IPosition(4,1,2,1,3));
-	  Array<Int> a2(IPosition(3,1,1,1));
-	  AlwaysAssertExit(a2.nonDegenerate().shape() == IPosition(1,1));
+  	  AlwaysAssertExit(a1.nonDegenerate().shape() == IPosition(2,2,3));
+ 	  AlwaysAssertExit(a1.nonDegenerate(1).shape() == IPosition(3,1,2,3));
+ 	  Cube<Int> c = a1.nonDegenerate(1);
+ 	  AlwaysAssertExit(c(0,1,2) == 5);
+ 	  c(0,1,2) = 99;
+ 	  AlwaysAssertExit(a1(IPosition(5, 0, 1, 0, 2, 0)) == 99);
+ 	  AlwaysAssertExit(a1.nonDegenerate(4).shape() == IPosition(4,1,2,1,3));
+ 	  Array<Int> a2(IPosition(3,1,1,1));
+  	  AlwaysAssertExit(a2.nonDegenerate().shape() == IPosition(1,1));
 
 	  const Array<Int> a3(a1);
-	  AlwaysAssertExit(a1.nonDegenerate().shape() == IPosition(2,2,3));
-	  AlwaysAssertExit(a1.nonDegenerate(1).shape() == IPosition(3,1,2,3));
-	}
- 	{
+	  AlwaysAssertExit(a3.nonDegenerate().shape() == IPosition(2,2,3));
+	  AlwaysAssertExit(a3.nonDegenerate(1).shape() == IPosition(3,1,2,3));
+	  AlwaysAssertExit(a3.nonDegenerate()(IPosition(2,0,2)) == 4);
+	  AlwaysAssertExit(a3.nonDegenerate()(IPosition(2,1,2)) == 99);
+
+	  Array<Int> a4;
+	  a4.nonDegenerate(a1);
+	  AlwaysAssertExit(a4.shape() == IPosition(2,2,3));
+	  AlwaysAssertExit(a4(IPosition(2,0,2)) == 4);
+	  AlwaysAssertExit(a4(IPosition(2,1,2)) == 99);
+	  a4.nonDegenerate(a1, 1);
+	  AlwaysAssertExit(a4.shape() == IPosition(3,1,2,3));
+	  AlwaysAssertExit(a4(IPosition(3,0,0,0)) == 0);
+	  AlwaysAssertExit(a4(IPosition(3,0,1,2)) == 99);
+ 	}
+  	{
  	  // Test the addDegenerate() function
  	  Array<Int> a1(IPosition(2,10,10));
  	  indgen(a1);
