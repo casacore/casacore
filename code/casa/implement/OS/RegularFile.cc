@@ -1,5 +1,5 @@
 //# RegularFile.cc: Manipulate and get information about regular files
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <unistd.h>               // needed for unlink, etc.
 #include <errno.h>                // needed for errno
 #include <string.h>               // needed for strerror
+#include <stdlib.h>               // needed for system
 #if defined(__hpux__)
 #include <limits.h>               // needed for MAX__UINT
 #endif

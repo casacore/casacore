@@ -1,5 +1,5 @@
 //# SymLink.cc: Class to define a Symbolic Link
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,10 +30,10 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/Exceptions.h>
 
-#include <unistd.h>              // needed for unlink
-#include <errno.h>                  // needed for errno
-#include <string.h>                 // needed for strerror
-
+#include <unistd.h>               // needed for unlink
+#include <errno.h>                // needed for errno
+#include <string.h>               // needed for strerror
+#include <stdlib.h>               // needed for system
 
 SymLink::SymLink()
 : File()
