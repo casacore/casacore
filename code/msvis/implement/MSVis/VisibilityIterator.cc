@@ -768,8 +768,13 @@ Vector<Float>& ROVisibilityIterator::sigma(Vector<Float>& sig) const
 
 Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
 {
-  wt.resize(curNumRow_p);
-  colWeight.getColumn(wt);
+  // Take average of parallel hand polarizations for now.
+  // Later convert weight() to return full polarization dependence
+  Matrix<Float> polWeight=colWeight.getColumn();
+  wt.resize(polWeight.ncolumn());
+  wt=polWeight.row(0);
+  wt+=polWeight.row(nPol_p-1);
+  wt/=2.0f;
   return wt;
 }
 
@@ -1042,7 +1047,13 @@ void VisibilityIterator::setVis(const Cube<Complex>& vis, DataColumn whichOne)
 
 void VisibilityIterator::setWeight(const Vector<Float>& weight)
 {
-    RWcolWeight.putColumn(weight);
+  // No polarization dependence for now
+  Matrix<Float> polWeight=colWeight.getColumn();
+  for (Int i=0; i<nPol_p; i++) {
+    Vector<Float> r=polWeight.row(i);
+    r=weight;
+  };
+  RWcolWeight.putColumn(polWeight);
 }
 
 void VisibilityIterator::setSigma(const Vector<Float>& sigma)
