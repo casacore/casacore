@@ -2243,7 +2243,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
 //
     for (uInt i=0; i<nc; i++)
     {
-	// Write eaach string into a field it's type plus coordinate
+	// Write each string into a field it's type plus coordinate
 	// number, e.g. direction0
 	String basename = "unknown";
 	switch (coordinates_p[i]->type()) {
@@ -2913,14 +2913,14 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
 // DIRECTION
 
+    String proj1, proj2;
+    Bool isGalactic = False;
+    Bool failedDirection = False;
     if (longAxis >= 0) {
-        String proj1 = ctype(longAxis);
-	String proj2 = ctype(latAxis);
+        proj1 = ctype(longAxis);
+	proj2 = ctype(latAxis);
 //
-        Bool isGalactic = False;
-	if (proj1.contains("GLON")) {
-	    isGalactic = True;
-	}
+	if (proj1.contains("GLON")) isGalactic = True;
 
 // Get rid of the first 4 characters, e.g., RA--
 
@@ -2939,18 +2939,23 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
         proj1.gsub(Regex(" *"), String(""));   
 	proj2.gsub(String(" "), String(""));
 //
-	if (proj1 == "" && proj2 == "") {
+	if (proj1=="" && proj2=="") {
 
-// Default to cartesian if no projection is defined.
+// We must abandon making a celestial coordinate if there is no
+// projection.  Defaulting to cartesian is the wrong thing to do
+// We must make a Linear Coordinate from it.
 
-	    proj1 = Projection::name(Projection::CAR); 
-            proj2 = proj1;
 	    os << WHERE << LogIO::WARN << 
-	      "No projection has been defined (e.g., SIN), assuming\n"
-	      "cartesian (CAR). Some FITS readers will not recognize\n"
-	       "the CAR projection." << LogIO::POST;
-	}
-	if (proj1 != proj2) {
+	      "No projection has been defined so cannot make a Celestial Coordinate\n"
+	      "from this FITS header.  Will make a LinearCoordinate instead" << LogIO::POST;
+            longAxis = -1;
+            latAxis = -1;
+            failedDirection = True;
+        }
+     }
+//
+     if (longAxis > 0) {
+        if (proj1 != proj2) {
 
 // Maybe instead I should switch to CAR, or use the first?
 
@@ -3290,9 +3295,21 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		linctype(where_i) = ctype(i);
 		if (cunit.nelements() > 0) {
 		    lincunit(where_i) = cunit(i);
+                } else if (longAxis < 0 && 
+                           (ctype(i).contains("RA") ||
+                            ctype(i).contains("LON") ||
+                            ctype(i).contains("LL"))) {
+                   lincunit(where_i) = "deg";
+                } else if (latAxis < 0 && 
+                           (ctype(i).contains("DEC") ||
+                            ctype(i).contains("LAT") ||
+                            ctype(i).contains("MM"))) {
+                   lincunit(where_i) = "deg";
 		} else if (specAxis < 0 && (ctype(i).contains("FELO") ||
 					    ctype(i).contains("VELO"))) {
 		  lincunit(where_i) = "m/s";
+		} else if (specAxis < 0 && ctype(i).contains("FREQ")) {
+		  lincunit(where_i) = "Hz";
 		}
 		where_i++;
 	    }
