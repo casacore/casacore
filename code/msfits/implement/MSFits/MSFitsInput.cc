@@ -266,7 +266,8 @@ void MSFitsInput::readFitsFile(Int obsType)
 	itsLog << LogIO::NORMAL 
 	   << "Skipping table, duplicate or unrecognized type: "
 	   << type << LogIO::POST;
-	binTab.fullTable("", Table::Scratch); // infile.skip_hdu();
+	//	binTab.fullTable("", Table::Scratch); // infile.skip_hdu();
+	binTab.fullTable();
       }
     }
   }
@@ -1024,7 +1025,8 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    Float diameter=25;
    if (array_p=="ATCA") diameter=22;
   
-   Table anTab=bt.fullTable("",Table::Scratch);
+   //   Table anTab=bt.fullTable("",Table::Scratch);
+   Table anTab=bt.fullTable();
    MSAntennaColumns& ant(msc_p->antenna());
    ROScalarColumn<String> name(anTab,"ANNAME");
    ROScalarColumn<Int> id(anTab,"NOSTA");
@@ -1116,7 +1118,8 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
   msPol.corrProduct().put(0,corrProduct_p);
   msPol.flagRow().put(0,False);
 
-  Table fqTab=bt.fullTable("",Table::Scratch);
+  //  Table fqTab=bt.fullTable("",Table::Scratch);
+  Table fqTab=bt.fullTable();
   Int nRow=fqTab.nrow();
   ROScalarColumn<Int> colFrqSel(fqTab,"FRQSEL");
   Matrix<Double> ifFreq(nIF_p,nRow);
@@ -1245,7 +1248,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 {
   itsLog << LogOrigin("MSFitsInput()", "fillFieldTable");
   MSFieldColumns& msField(msc_p->field());
-  Table suTab=bt.fullTable("",Table::Scratch);
+  // Table suTab=bt.fullTable("",Table::Scratch);
+  Table suTab=bt.fullTable();
   ROScalarColumn<Int> id(suTab,"ID. NO.");
   ROScalarColumn<String> name(suTab,"SOURCE");
   ROScalarColumn<String> code(suTab,"CALCODE");
