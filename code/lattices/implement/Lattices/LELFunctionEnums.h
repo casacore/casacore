@@ -109,6 +109,12 @@ public:
 // sqrt
    SQRT,
 
+// round
+   ROUND,
+
+// sign (-1 if <0; 0 if 0; 1 if >0)
+   SIGN,
+
 // ceil; returns the least  integral  value  greater  than  or  equal  to  x. 
    CEIL,
 
@@ -172,6 +178,9 @@ public:
 
 // iif (similar to ?: in C++)
    IIF,
+
+// dimensionality
+   NDIM,
 
 // length (of an axis)
    LENGTH,
