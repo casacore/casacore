@@ -281,6 +281,7 @@ $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (dbg) because of $(?F)"
+	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
 	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
@@ -292,6 +293,7 @@ $(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ echo ""
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (opt) because of $(?F)"
+	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
 	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
@@ -627,3 +629,5 @@ help ::
 ifeq "$(MAKEMODE)" "programmer"
    -include $(PGMRLIST)
 endif
+
+
