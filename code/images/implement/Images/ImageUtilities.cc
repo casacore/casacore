@@ -223,11 +223,9 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    }
          
             
-// Find the world axis for this pixel axis and then find
-// the coordinate for this pixel axis
+// Find the world axis for this pixel axis 
             
    const Int worldAxis = cSys.pixelAxisToWorldAxis(pixelAxis);
-   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
           
 // Convert to world and format 
