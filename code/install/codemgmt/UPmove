@@ -70,7 +70,7 @@ if (! $ok) exit 1
 # Get specific data
 #
 if (! -r $ldir/${tp}.sel) then
-   $uppath/UPfind -f +u$upswu ${tp}_MVF
+   $uppath/UPfind -f +u$upswu +Q$upswQ -E ${tp}_MVF
    if (-e $ldir/${tp}_MVF.found) then
       cp -f $ldir/${tp}_MVF.found $ldir/${tp}.sel
    else
@@ -84,14 +84,18 @@ if (-z $ldir/${tp}.sel) then
    exit 1
 endif
 
-set a = ( `wc $ldir/${tp}.sel` )
-echo $a[1] files in ${tp}.sel to be moved
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.sel` )
+  echo $a[1] files in ${tp}.sel to be moved
+  unset a
+endif
 
 if (! -r $ldir/${tp}.cfnm) then
    touch $ldir/${tp}.cfnm
-   echo "Specify the sed patterns used to change the name of the moved files"
-   echo 'Example: s#trial/#aips/#'
+   if (! $upswQ) then
+     echo "Specify the sed patterns used to change the name of the moved files"
+     echo 'Example: s#trial/#aips/#'
+   endif
    while (1)
       echo -n 'Change pattern: '
       set x = "$<"
@@ -141,15 +145,24 @@ if (! -e $ldir/${tp}_MV.sed) then
 endif
 
 if (! -e $ldir/${tp}.todo) then
-   $uppath/UPfind +n$upswn ${tp}_MV
+   $uppath/UPfind +u$upswu +Q$upswQ -E ${tp}_MV
    touch $ldir/${tp}.todo
    if (-e $ldir/${tp}_MV.found) then
-	mv -f $ldir/${tp}_MV.found $ldir/${tp}.todo
+	cp -f $ldir/${tp}_MV.found $ldir/${tp}.todoq
    endif
+endif
+if (-e $ldir/${tp}.todo && -z $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+
+if (-e $ldir/${tp}.todo) then
+    if (! $upswQ) then
+      set a = ( `wc $ldir/${tp}.todo` )
+      echo $a[1] files in ${tp}.todo to be changed
+      unset a
+    endif
 endif
 
 if ($upswn) then
-    $uppath/UPchange -n ${tp}_MV
+    $uppath/UPchange -n +Q$upswQ -E ${tp}_MV
     exit 0
 endif
 #
@@ -186,12 +199,21 @@ endif
 if (-e $ldir/${tp}.diff) rm -f $ldir/${tp}.diff
 if (-e $ldir/${tp}.done) rm -f $ldir/${tp}.done
 if (-e $ldir/${tp}.error) rm -f $ldir/${tp}.error
-set larg = ""
-$uppath/UPchange +t$upswt ${tp}_MV
+$uppath/UPchange +t$upswt +Q$upswQ -E ${tp}_MV
 
 if (-e $ldir/${tp}_MV.diff) mv -f $ldir/${tp}_MV.diff $ldir/${tp}.diff
 if (-e $ldir/${tp}_MV.done) mv -f $ldir/${tp}_MV.done $ldir/${tp}.done
 if (-e $ldir/${tp}_MV.error) mv -f $ldir/${tp}_MV.error $ldir/${tp}.error
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.done` )
+  echo $a[1] files in ${tp}.done
+  unset a
+
+  set a = ( `wc $ldir/${tp}.error` )
+  echo $a[1] files in ${tp}.error
+  unset a
+endif
 
 exit 0
 #

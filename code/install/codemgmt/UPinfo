@@ -1,4 +1,4 @@
-#!/bin/echo Usage: source
+#!/bin/echo Usage:source
 #-----------------------------------------------------------------------------
 # UPinfo: help and general parameters for UP scripts
 #-----------------------------------------------------------------------------
@@ -239,6 +239,7 @@ if ($#arg < 1) then
 	    echo "No <typ> given for ${script}"
 	    exit 1
 	endif
+	unset x
      else
 	echo "Assuming <typ> as '$tp'."
      endif

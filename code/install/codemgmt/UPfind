@@ -38,7 +38,7 @@ set htxt  = ("Get all files that contain data according to an egrep rule." \
 	     "as a communication between the different UP scripts." \
 	     "All .cc, .h and templates files in the code tree are searched.")
 set hsw   = ("-g use all .g files rather than the C++ files" \
-	     "-f use a file pattern to search files, not their contents")
+	     "-f use a file pattern to search for files, not their contents")
 set huse  =  "<typ>.def, <typ>.spat, <typ>.rmpat"
 set hcrea =  "<typ>.raw, <typ>.found"
 #
@@ -142,7 +142,7 @@ if ($upswn) exit 0
 # Execute
 #
 cd $dir/code
-if (! $upswQ) echo "Starting find..."
+if (! $upswQE) echo "Starting find..."
 if ($upswp01) then
     find . -name 'templates' -print  >! $ldir/${tp}.raw
 else if ($upswp02) then
@@ -177,7 +177,7 @@ endif
 
 cd $ldir
 
-if (! $upswQ) then
+if (! $upswQE) then
   set a = ( `wc $ldir/${tp}.raw` )
   echo $a[1] files found in ${tp}.raw
   unset a
@@ -186,7 +186,7 @@ endif
 
 egrep -v -f $ldir/${tp}.rmpat $ldir/${tp}.raw >! $ldir/${tp}.found
 
-if (! $upswQ) then
+if (! $upswQE) then
   set a = ( `wc $ldir/${tp}.found` )
   echo $a[1] files left in ${tp}.found
   unset a
