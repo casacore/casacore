@@ -1,5 +1,6 @@
 \chapter{Overview}
 
+\section{Introduction}
 Greetings.  This is the \aipspp Systems Administrator's Guide.  It's a nuts and bolts guide to
 running the system.  There are lots of little niggly details that need to be accounted for by
 the \aipspp Systems Administrator.  Duties can be broken down into several categories
@@ -22,11 +23,22 @@ The \aipspp Systems Administrator needs a wide range of tools in his/her toolbox
 \item shell scripting
 \end{enumerate}
 
-Lay of the Land
+\section{Background}
 
-\aipspp manager account for day-to-day building of the system
-\aipspp admin account for managing the code repository
-tarzan main hosts for \aipspp
-cluster main linux box for build \aipspp
-argus main sgi box
+Accounts used by the \aipspp system administrator
+\begin{description}
+\item[aips2mgr] for day-to-day building of the system
+\item[aips2adm] for managing the code repository
+\item[aips2msg] for email to the various \aipspp system accounts
+\item[ddts] for managing ClearDDTs
+\end{description}
 
+Machines for building \aipspp
+\begin{description}
+\item[tarzan] - solaris builds, also home of all things \aipspp.
+\item[cluster] - linux builds
+\item[argus] - IRIX builds
+\end{description}
+
+In general cron jobs are run on tarzan, although there is a seperate build/code tree on argus for
+the SGI.
