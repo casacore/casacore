@@ -35,6 +35,7 @@
 
 //# Forward declarations
 class String;
+template<class T> class Vector;
 
 // <summary>
 // General information for applications.
@@ -93,49 +94,89 @@ class String;
 
 class AppInfo {
 public:
-  // How much memory is available for this process? Note that this number
-  // can be less than zero if the process has overdrawn its account. This
-  // function returns:
-  // <srcBlock>
-  // AppInfo::memoryInMB() - Memory::allocatedMemoryInBytes()/1024/1024;
-  // </srcBlock>
-  // You should use this value when making determinations about whether to put
-  // something in memory or do I/O instead.
-  static Int availableMemoryInMB();
+    // Return a list of directory names into which the user may write data. If
+    // <src>minimumFreeSpace</src> is set (>0) then only directories with at
+    // least that much free space (in megabytes) are returned. If the aipsrc
+    // variable <src>user.directories.work</src> is set, the candidate
+    // directories are taken from that variable, otherwise the current working
+    // directory (".")  is chosen if it exists and is writeable, otherwise /tmp
+    // is the candidate. Only one of "." and "/tmp" is chosen, not both.
+    //
+    // If no suitable directories are found (i.e., writable directories with
+    // enough free space), a zero-length vector is returned. A warning is
+    // issued to the logging system for directories which do not exist or are
+    // not writable.
+    static Vector<String> workDirectories(uInt minimumFreeSpaceInMB=0);
 
-  // Total memory in MB that the process may use.  Reports
-  // <src>system.resources.memory</src> if it is set, otherwise return 64
-  // (considered to be the base level for AIPS++).
-  static uInt memoryInMB();
+    // Choose a workDirectory with at least <src>minimumFreeSpace</src> MB of
+    // free space available. It uses <src>workDirectories</src>. If there is
+    // more than one valid directory it arranges to choose different
+    // directories in succession in an attempt to spread out the I/O. That is,
+    // on the first call it will return directory1, on the second it will
+    // return directory2, etc. in a cyclical fashion. One can imagine more
+    // elaborate algorithms than this, however this should suffice for some
+    // time, if not forever.
+    // <thrown>
+    //  <li> An <linkto class=AipsError>AipsError</linkto> is thrown if no
+    //       directory with enough free space is found.
+    // </thrown>
+    static String workDirectory(uInt minimumFreeSpaceInMB=0);
+
+    // This function returns a fully qualified filename for a non-existent file
+    // in a work directory with enough free space. That is, you can create a
+    // temporary file with the name returned from this function. Tthis function
+    // calls <src>workDirectory</src> and then appends a unique (files does not
+    // exist) filename. By default the prefix of temporary file name is
+    // <src>aipstmp_</src>, but you can override this if you choose.
+    // <thrown>
+    //  <li> An <linkto class=AipsError>AipsError</linkto> is thrown if no
+    //       directory with enough free space is found.
+    // </thrown>
+    static String workFileName(uInt minimumFreeSpaceInMB=0,
+			       const String &filenamePrefix="aipstmp_");
+    
+    // How much memory is available for this process? Note that this number
+    // can be less than zero if the process has overdrawn its account. This
+    // function returns:
+    // <srcBlock>
+    // AppInfo::memoryInMB() - Memory::allocatedMemoryInBytes()/1024/1024;
+    // </srcBlock>
+    // You should use this value when making determinations about whether to put
+    // something in memory or do I/O instead.
+    static Int availableMemoryInMB();
+
+    // Total memory in MB that the process may use.  Reports
+    // <src>system.resources.memory</src> if it is set, otherwise return 64
+    // (considered to be the base level for AIPS++).
+    static uInt memoryInMB();
   
-  // Number of processors on the local host. Returns 
-  // <src>system.resources.numcpu</src> if it is set, otherwise 1.
-  static uInt nProcessors();
+    // Number of processors on the local host. Returns 
+    // <src>system.resources.numcpu</src> if it is set, otherwise 1.
+    static uInt nProcessors();
   
-  // Return the local time zone offset in day fractions. This value has to be
-  // added to UTC to get local time. Generally the OS supplied value will be 
-  // used, however it can be overridden with
-  // <src>system.time.tzoffset</src> if necessary.
-  static Double timeZone();
-  
+    // Return the local time zone offset in day fractions. This value has to be
+    // added to UTC to get local time. Generally the OS supplied value will be 
+    // used, however it can be overridden with
+    // <src>system.time.tzoffset</src> if necessary.
+    static Double timeZone();
 private:
-  //# Data
-  static Bool need_init_p;
-  static uInt memory_r;
-  static uInt nproc_r;
-  static uInt tz_r;
-  //# Methods
-  // Force an initialization of the AppInfo values.
-  static void init();
+    //# Data
+    static Bool need_init_p;
+    static uInt memory_r;
+    static uInt nproc_r;
+    static uInt tz_r;
+    //# Methods
+    // Force an initialization of the AppInfo values.
+    static void init();
 };
 
 //# Inlines
 
 inline uInt AppInfo::memoryInMB() {if (need_init_p) init(); 
-	return (uInt) AipsrcValue<Int>::get(memory_r);};
+                          return (uInt) AipsrcValue<Int>::get(memory_r);};
 inline uInt AppInfo::nProcessors() {if (need_init_p) init();
-	 return (uInt) AipsrcValue<Int>::get(nproc_r);};
+                          return (uInt) AipsrcValue<Int>::get(nproc_r);};
 inline Double AppInfo::timeZone() {if (need_init_p) init();
-	 return AipsrcValue<Double>::get(tz_r);};
+	                  return AipsrcValue<Double>::get(tz_r);};
 
 #endif

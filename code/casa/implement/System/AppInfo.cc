@@ -27,17 +27,98 @@
 //# $Id$
 
 #include <aips/Tasking/AppInfo.h>
+
+#include <aips/Arrays/Vector.h>
 #include <aips/Tasking/Aipsrc.h>
+#include <aips/Tasking/AipsrcVector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Time.h>
 #include <aips/OS/Memory.h>
 #include <aips/Measures/Unit.h>
-
+#include <aips/Arrays/Vector.h>
+#include <aips/OS/Directory.h>
+#include <aips/Logging/LogIO.h>
 
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::memory_r = 0;
 uInt AppInfo::nproc_r = 0;
 uInt AppInfo::tz_r = 0;
+
+Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB)
+{
+    static Bool init = False;
+    static uInt workdir = 0;
+    if (!init) {
+	init = True;
+	// Default is an empty vector
+	Vector<String> empty;
+	workdir = AipsrcVector<String>::registerRC("user.directories.work", 
+						   empty);
+    }
+
+    Vector<String> workdirs(AipsrcVector<String>::get(workdir).copy());
+
+    if (workdirs.nelements() == 0) {
+	// We haven't been given a work directory list, so use a sensible
+	// default. If "." exists and is writable use it, otherwise use "/tmp".
+	Directory dir(".");
+	if (!dir.exists() || !dir.isWritable()) {
+	    dir = Directory("/tmp");
+	}
+	if (dir.exists() && dir.isWritable()) {
+	    workdirs.resize(1);
+	    workdirs(0) = dir.path().originalName();
+	}
+    }
+    // OK, elmiinate candidates (if any).
+    Vector<Bool> good(workdirs.nelements());
+    good = True;
+    for (uInt i=0; i<workdirs.nelements(); i++) {
+	File dir(workdirs(i));
+	if (!dir.exists() || !dir.isWritable() || !dir.isDirectory()) {
+	    // Whinge if it's for an odd reason
+	    LogIO os(LogOrigin("AppInfo", "workDirectories(uInt)", WHERE));
+	    os << LogIO::WARN << "Work directory candidate '" <<
+		dir.path().originalName() << "' does not exist or is not" <<
+		" writable.\n" <<
+		"Check aipsrc variable user.directories.work." << 
+		LogIO::POST;
+	    good(i) = False;
+	} else {
+	    Directory asdir = dir;
+	    if (asdir.freeSpace()/(1024*1024) < uLong(minimumFreeSpaceInMB)) {
+		good(i) = False;
+	    }
+	}
+    }
+    // Compress the array
+    MaskedArray<String> masked(workdirs, good);
+    workdirs.resize(0);
+    workdirs = masked.getCompressedArray();
+    return workdirs;
+}
+
+String AppInfo::workDirectory(uInt minimumFreeSpaceInMB)
+{
+    static uInt count = 0;
+    count++;
+    Vector<String> candidates = workDirectories(minimumFreeSpaceInMB);
+    if (candidates.nelements() == 0) {
+	LogIO os(LogOrigin("AppInfo", "workDirectory(uInt)", WHERE));
+	os << LogIO::SEVERE << "No work directory with at least " <<
+	    minimumFreeSpaceInMB << "MB free can be found." << endl <<
+	    "Check aipsrc variable user.directories.work." << 
+	    LogIO::EXCEPTION;
+    }
+    return candidates((count-1) % candidates.nelements());
+}
+
+String AppInfo::workFileName(uInt minimumFreeSpaceInMB,
+			     const String &filenamePrefix)
+{
+    String dir = workDirectory(minimumFreeSpaceInMB);
+    return File::newUniqueName(dir, filenamePrefix).originalName();
+}
 
 Int AppInfo::availableMemoryInMB()
 {
