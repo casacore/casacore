@@ -235,6 +235,11 @@ const M &MeasConvert<M>::operator()(const typename M::MVType &val) {
 }
 
 template<class M>
+const M &MeasConvert<M>::operator()(const MeasVal *val) {
+  return operator()(*(const typename M::MVType *)(val));
+}
+
+template<class M>
 const M &MeasConvert<M>::operator()(const M &val) {
   setModel(val);
   return operator()(*(typename M::MVType*)(model->getData()));

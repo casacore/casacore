@@ -39,6 +39,7 @@
 
 //# Forward Declarations
 class MCBase;
+class MeasVal;
 
 //# Typedefs
 
@@ -187,6 +188,7 @@ public:
   const M &operator()(const Quantum<Double> &val);
   const M &operator()(const Quantum<Vector<Double> > &val);
   const M &operator()(const typename M::MVType &val);
+  const M &operator()(const MeasVal *val);
   const M &operator()(const M &val);
   const M &operator()(const M &val, const typename M::Ref &mr);
   const M &operator()(const M &val, typename M::Types mr);
