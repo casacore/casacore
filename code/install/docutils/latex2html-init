@@ -36,7 +36,7 @@ if(!$DOCSCOLOR) {
 }
 
 
-$ADDRESS = "<I>Please send questions or comments about AIPS++ to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1995-1999 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
+$ADDRESS = "<I>Please send questions or comments about AIPS++ to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1995-2000 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
 Washington, D.C.</I><BR><B> Return to </B><A HREF=\"$DOCSROOT/aips++.html\">AIPS++ Home Page</A>\n<BR><STRONG>\n$address_data[1]</STRONG><BR>";
    
 
