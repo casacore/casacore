@@ -222,6 +222,47 @@ void testAxes()
     m = True;
     m(IPosition(3,0,0,0), IPosition(3,9,10,11), IPosition(3,2,1,1)) = False;
     mask.put (m);
+    {
+      // Create a sublattice with the mask and assign a pixelmask to it.
+      SubLattice<Int> ml(pa, mask);
+      Array<Bool> pm(pa.shape());
+      pm = True;
+      pm(IPosition(3,0,0,0), IPosition(3,9,10,11), IPosition(3,3,2,1)) = False;
+      ml.setPixelMask (ArrayLattice<Bool>(pm), False);
+      AlwaysAssertExit (ml.hasPixelMask());
+      // Test if the mask read is correct.
+      AlwaysAssertExit (allEQ (ml.getMask(), m&&pm));
+      AlwaysAssertExit (allEQ (ml.pixelMask().get(), pm));
+      // Copy constructor.
+      SubLattice<Int> ml2(ml);
+      AlwaysAssertExit (allEQ (ml2.pixelMask().get(), pm));
+      AlwaysAssertExit (allEQ (ml2.getMask(), m&&pm));
+      // Assign another pixelmask.
+      pm = True;
+      pm(IPosition(3,0,0,0), IPosition(3,9,10,11), IPosition(3,5,1,2)) = False;
+      ml2.setPixelMask (ArrayLattice<Bool>(pm), False);
+      AlwaysAssertExit (allEQ (ml2.getMask(), m&&pm));
+      AlwaysAssertExit (allEQ (ml2.pixelMask().get(), pm));
+      // Now make a sublattice from a MaskedLattice.
+      ml2 = SubLattice<Int> (ml2, AxesSpecifier());
+      AlwaysAssertExit (allEQ (ml2.getMask(), m&&pm));
+      AlwaysAssertExit (allEQ (ml2.pixelMask().get(), pm));
+      // Assign another pixelmask.
+      Array<Bool> pm2(pa.shape());
+      pm2 = False;
+      pm2(IPosition(3,0,0,0), IPosition(3,9,10,11), IPosition(3,7,1,1)) = True;
+      // The first one should fail.
+      Bool exc = False;
+      try {
+	ml2.setPixelMask (ArrayLattice<Bool>(pm2), False);
+      } catch (AipsError& x) {
+	exc = True;
+      }
+      AlwaysAssertExit (exc);
+      ml2.setPixelMask (ArrayLattice<Bool>(pm2), True);
+      AlwaysAssertExit (allEQ (ml2.pixelMask().get(), pm&&pm2));
+      AlwaysAssertExit (allEQ (ml2.getMask(), m&&pm&&pm2));
+    }
     Array<Int> arrs1 = arr(IPosition(3,3,1,2), IPosition(3,8,1,9));
     Array<Int> arrsub = arrs1.reform(IPosition(2,6,8));
     Array<Bool> ms1 = m(IPosition(3,3,1,2), IPosition(3,8,1,9));
@@ -278,6 +319,13 @@ void testAxes()
 						    IPosition(2,3,2),
 						    Slicer::endIsLast)),
 			     msubsub));
+    // Assign a pixelmask to this sublattice.
+    Array<Bool> slm = sl.getMask();
+    Array<Bool> pm(sl.shape());
+    pm = True;
+    pm(IPosition(2,0,0), IPosition(2,1,2), IPosition(2,2,4)) = False;
+    sl.setPixelMask (ArrayLattice<Bool>(pm), False);
+    AlwaysAssertExit (allEQ (sl.getMask(), slm&&pm));
 }
 
 
