@@ -1,5 +1,5 @@
 //# Fitting.h: Module for various forms of mathematical fitting
-//# Copyright (C) 1995,1999,2000,2001
+//# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 
 #include <aips/aips.h>
 #include <aips/Fitting/FitLSQ.h>
-#include <trial/Fitting/LinearFit.h>
-#include <trial/Fitting/LinearFitSVD.h>
+#include <trial/Fitting/LQLinearFit.h>
+#include <trial/Fitting/LQLinearFitSVD.h>
 #include <trial/Fitting/LQNonLinearFit.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/Fitting/LatticeFit.h>
@@ -169,10 +169,10 @@
 // <ul>
 // <li> <src>Fit2D</src>
 // <li> <src>LatticeFit</src>
-// <li> <src>LinearFit</src>
-// <li> <src>LinearFitSVD</src>
-// <li> <src>NonLinearFit</src>
-// <li> <src>NonLinearFitLM</src>
+// <li> <src>LQLinearFit</src>
+// <li> <src>LQLinearFitSVD</src>
+// <li> <src>LQNonLinearFit</src>
+// <li> <src>LQNonLinearFitLM</src>
 // <li> <src>LinearFitConstraint</src>
 // </ul>
 // Note that the basic functions have <em>LSQ</em> in their title; the
