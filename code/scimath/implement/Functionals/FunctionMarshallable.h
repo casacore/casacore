@@ -106,7 +106,7 @@ public:
     // <thrown>
     // InvalidGlishSerializationError  if an error during serialization
     // </thrown>
-    virtual void store(GlishRecord& gr) const;
+    virtual void store(GlishRecord& gr) const = 0;
 
     virtual FunctionMarshallable& 
          operator=(const FunctionMarshallable& other) 
