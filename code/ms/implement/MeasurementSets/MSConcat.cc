@@ -166,15 +166,18 @@ Block<uInt> MSConcat::copyAntenna(const RONewMSAntennaColumns& otherCol,
   const Quantum<Double> tol(1, "m");
   const ROTableRow otherRow(otherTable);
   TableRow antRow(itsMS.antenna());
+
   for (uInt a = 0; a < otherTable.nrow(); a++) {
     const Int newAnt = 
-      antCols.matchAntenna(otherCol.name()(a), otherCol.positionMeas()(a), tol);
+      antCols.matchAntenna(otherCol.positionMeas()(a), tol);
     if (newAnt < 0) {
       antMap[a] = itsMS.antenna().nrow();
       itsMS.antenna().addRow();
       antRow.putMatchingFields(antMap[a], otherRow.get(a));
+      //      cerr << "Antenna " << a << " is mapped to " << antMap[a] << endl;
     } else {
       antMap[a] = newAnt;
+      //      cerr << "Antenna " << a << " matches " << antMap[a] << endl;
     }
   }
   return antMap;
