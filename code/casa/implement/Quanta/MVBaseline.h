@@ -76,9 +76,9 @@
 //		or equal to two elements) or x,y,z (3 elements).
 //    <li> <src>MVBaseline(Vector<Quantity></src> creates from length+angles,
 //		angles, or x,y,z, depending on units.
-//    <li> <src>MVBaseline(MVPosition, MVPosition) creates a baseline
+//    <li> <src>MVBaseline(MVPosition, MVPosition)</src> creates a baseline
 //		pointing from second to first MVPosition
-//    <li> <src>MVBaseline(MVPosition) creates a baseline as defined by the
+//    <li> <src>MVBaseline(MVPosition)</src> creates a baseline as defined by the
 //		position given (e.g. as derived from an offset MPosition)
 // </ul>
 // A void adjust(Double) function normalises the vector to a length of 1;

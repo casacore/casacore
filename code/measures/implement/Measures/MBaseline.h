@@ -29,10 +29,6 @@
 #if !defined(AIPS_MBASELINE_H)
 #define AIPS_MBASELINE_H
 
-#if defined(_AIX)
-#pragma implementation ("MBaseline.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -46,9 +42,7 @@ template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
-// <summary>
-//  A Measure: Baseline on Earth
-// </summary>
+// <summary> A Measure: Baseline on Earth </summary>
 
 // <use visibility=export>
 
