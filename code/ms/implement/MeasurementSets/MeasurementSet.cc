@@ -171,11 +171,12 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
       PredefinedKeywords>(other), hasBeenDestroyed_p(False)
 {
     // verify that other is valid
-    if (&other != this) 
+    if (&other != this) {
         addCat(); 
 	if (! validate(this->tableDesc()))
 	    throw (AipsError("MS(const MeasurementSet &) - "
 			     "MeasurementSet is not a valid MS"));
+    }
     if (!isNull()) initRefs();
 }
 
@@ -199,9 +200,10 @@ MeasurementSet& MeasurementSet::operator=(const MeasurementSet &other)
     if (&other != this) {
 	MSTable<PredefinedColumns,PredefinedKeywords>::operator=(other);
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
-	if (!isNull()) {
-	  initRefs();
-	}
+	// initRefs needs to be called even if the MS is null to ensure that
+	// the subtable references, which may have contained non-null
+	// subtables, are replaced with references to null-subtables.
+	initRefs();
     }
     return *this;
 }
