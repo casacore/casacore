@@ -2362,3 +2362,5 @@
 09 329 src rm trial/implement/Tasking/control_hub.h
 09 329 src rm trial/implement/Tasking/Dispatcher.cc
 09 329 src rm trial/implement/Tasking/Dispatcher.h
+09 329 src rm trial/implement/Tasking/ExtraDataType.cc
+09 329 src rm trial/implement/Tasking/ExtraDataType.h
