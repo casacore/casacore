@@ -172,10 +172,6 @@ public:
   // Return the total number of elements in this Lattice.
   virtual uInt nelements() const;
   
-  // Return a value of "True" if this instance of Lattice and 'other' have 
-  // the same shape, otherwise returns a value of "False".
-  virtual Bool conform (const Lattice<T>& other) const;
-  
   // Set all of the elements in the Lattice to the given value.
   virtual void set (const T& value);
 

@@ -1,4 +1,4 @@
-//# TempLattice.cc:
+//# TempLattice.cc: A Lattice that can be used for temporary storage
 //# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -134,7 +134,7 @@ void TempLattice<T>::tempClose()
 template<class T>
 void TempLattice<T>::tempReopen() const
 {
-  if (itsIsClosed&&isPaged()) {
+  if (itsIsClosed && isPaged()) {
     itsTablePtr = new Table (itsTableName,
 			     TableLock(TableLock::PermanentLockingWait),
 			     Table::Update);
@@ -177,13 +177,6 @@ uInt TempLattice<T>::nelements() const
 {
   doReopen();
   return itsLatticePtr->nelements();
-}
-
-template<class T>
-Bool TempLattice<T>::conform(const Lattice<T>& other) const
-{
-  doReopen();
-  return itsLatticePtr->conform(other);
 }
 
 template<class T>
