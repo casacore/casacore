@@ -2580,3 +2580,4 @@
 09 464 src mv trial/implement/Measures/test/tQuantumHolder.out aips/implement/Measures/test/tQuantumHolder.out
 09 464 src mv trial/implement/Measures/test/tQuantumHolder.cc aips/implement/Measures/test/tQuantumHolder.cc
 09 464 src mv trial/implement/Measures/test/tMeasureHolder.cc aips/implement/Measures/test/tMeasureHolder.cc
+09 464 src mv trial/implement/Measures/test/tMeasureHolder.out aips/implement/Measures/test/tMeasureHolder.out
