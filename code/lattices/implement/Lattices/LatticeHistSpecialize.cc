@@ -1,5 +1,5 @@
 //# LatticeHistSpecialize.cc:  Defines non-templated classes for LatticeHistograms
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -307,6 +307,7 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
 
 //
    if (page) plotter.page();
+   plotter.bbuf();
    plotter.swin(xMin, xMax, 0.0, yMax2);
    plotter.sci(ci);
    if (label==0) {
@@ -338,6 +339,7 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
          plotter.lab("Pixel Value", "Counts", "");
       }
    }
+   plotter.ebuf();
 }
 
 
