@@ -121,9 +121,13 @@ public:
       AZELNE=AZEL};
 
 //# Typedefs
-// Measure reference
-    typedef class MeasRef<MBaseline> Ref;
-// MeasConvert use
+  // Measure value container for this class (i.e. MBaseline::MVType)
+  typedef class MVBaseline MVType;
+  // Measure conversion routines for this class (i.e. MBaseline::MCType)
+  typedef class MCBaseline MCType;
+  // Measure reference (i.e. MBaseline::Ref)
+  typedef class MeasRef<MBaseline> Ref;
+  // Measure Convert (i.e. MBaseline::Convert)
     typedef class MeasConvert<MBaseline,MVBaseline,MCBaseline> Convert;
 // Measure table Columns (e.g., MBaseline::ROScalarColumn)
     typedef class ROScalarMeasColumn<MBaseline, MVBaseline> ROScalarColumn;

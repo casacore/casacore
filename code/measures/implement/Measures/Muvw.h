@@ -155,9 +155,13 @@ public:
     AZELNE=AZEL};
   
   //# Typedefs
-  // Measure reference
+  // Measure value container for this class (i.e. Muvw::MVType)
+  typedef class MVuvw MVType;
+  // Measure conversion routines for this class (i.e. Muvw::MCType)
+  typedef class MCuvw MCType;
+  // Measure reference (i.e. Muvw::Ref)
   typedef class MeasRef<Muvw> Ref;
-  // MeasConvert use
+  // MeasConvert use (i.e. Muvw::Convert)
   typedef class MeasConvert<Muvw,MVuvw,MCuvw> Convert;
   // Measure table Columns (e.g., Muvw::ROScalarColumn)
   typedef class ROScalarMeasColumn<Muvw, MVuvw> ROScalarColumn;

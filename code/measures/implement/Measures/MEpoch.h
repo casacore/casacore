@@ -138,6 +138,10 @@ public:
   };
   
   //# Typedefs
+  // Measure value container for this class (i.e. MEpoch::MVType)
+  typedef class MVEpoch MVType;
+  // Measure conversion routines for this class (i.e. MEpoch::MCType)
+  typedef class MCEpoch MCType;
   // Measure reference (i.e. MEpoch::Ref)
   typedef class MeasRef<MEpoch> Ref;
   // Measure Convert (i.e. MEpoch::Convert)

@@ -153,9 +153,13 @@ public:
 
 
 //# Typedefs
-// Measure reference
-    typedef MeasRef<MDoppler> Ref;
-// Measure conversion use
+  // Measure value container for this class (i.e. MDoppler::MVType)
+  typedef class MVDoppler MVType;
+  // Measure conversion routines for this class (i.e. MDoppler::MCType)
+  typedef class MCDoppler MCType;
+  // Measure reference (i.e. MDoppler::Ref)
+  typedef class MeasRef<MDoppler> Ref;
+  // Measure Convert (i.e. MDoppler::Convert)
     typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> Convert;
 // Measure table Columns (e.g., MDoppler::ROScalarColumn)
     typedef class ROScalarMeasColumn<MDoppler, MVDoppler> ROScalarColumn;

@@ -170,9 +170,13 @@ public:
 
 
 //# Typedefs
-// Measure reference
+  // Measure value container for this class (i.e. MFrequency::MVType)
+  typedef class MVFrequency MVType;
+  // Measure conversion routines for this class (i.e. MFrequency::MCType)
+  typedef class MCFrequency MCType;
+  // Measure reference (i.e. MFrequency::Ref)
     typedef class MeasRef<MFrequency> Ref;
-// Measure conversion use
+// Measure conversion use (i.e. MFrequency::Convert)
     typedef class MeasConvert<MFrequency,MVFrequency,MCFrequency> Convert;
 // Measure table Columns (e.g., MFrequency::ROScalarColumn)
     typedef class ROScalarMeasColumn<MFrequency, MVFrequency> ROScalarColumn;

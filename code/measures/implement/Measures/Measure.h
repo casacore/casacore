@@ -167,7 +167,11 @@ class ostream;
 // specifies the output reference frame wanted. The constructor analyses the
 // conversion wanted, and sets up a vector of routine calls to be called
 // in sequence for the conversion. The actual conversion is done
-// by the <src>() operator</src>.<p>
+// by the <src>() operator</src>.<br>
+// To aid in using the raw measures, each class has also a Measure::MVType and
+// Measure::MCType defined. They denote respectively the Measure Value class
+// of the internal value, and the class with conversion routines.
+// <p>
 // <note role=tip> In the member description a number of <em>dummy</em> routines are
 // present. They are the only way I have found to get <em>cxx2html</em> to
 // get the belonging text properly present.

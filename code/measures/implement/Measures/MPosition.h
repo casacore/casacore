@@ -97,9 +97,13 @@ public:
 		DEFAULT=ITRF};
 
 //# Typedefs
-// Measure reference
-    typedef class MeasRef<MPosition> Ref;
-// MeasConvert use
+  // Measure value container for this class (i.e. MPosition::MVType)
+  typedef class MVPosition MVType;
+  // Measure conversion routines for this class (i.e. MPosition::MCType)
+  typedef class MCPosition MCType;
+  // Measure reference (i.e. MPosition::Ref)
+  typedef class MeasRef<MPosition> Ref;
+  // Measure Convert (i.e. MPosition::Convert)
     typedef class MeasConvert<MPosition,MVPosition,MCPosition> Convert;
 // Measure table Columns (e.g., MPosition::ROScalarColumn)
     typedef class ROScalarMeasColumn<MPosition, MVPosition> ROScalarColumn;

@@ -157,9 +157,13 @@ public:
 
 
 //# Typedefs
-// Measure reference
+  // Measure value container for this class (i.e. MRadialVelocity::MVType)
+  typedef class MVRadialVelocity MVType;
+  // Measure conversion routines for this class (i.e. MRadialVelocity::MCType)
+  typedef class MCRadialVelocity MCType;
+// Measure reference (i.e. MRadialVelocity::Ref)
     typedef MeasRef<MRadialVelocity> Ref;
-// Measure conversion use
+// Measure conversion use (i.e. MRadialVelocity::Convert)
     typedef MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity> Convert;
 // Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
     typedef class ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ROScalarColumn;

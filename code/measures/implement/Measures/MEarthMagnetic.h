@@ -159,9 +159,13 @@ public:
       AZELNE=AZEL 
     };
 //# Typedefs
-// Measure reference
-    typedef MeasRef<MEarthMagnetic> Ref;
-// MeasConvert use
+  // Measure value container for this class (i.e. MEarthMagnetic::MVType)
+  typedef class MVEarthMagnetic MVType;
+  // Measure conversion routines for this class (i.e. MEarthMagnetic::MCType)
+  typedef class MCEarthMagnetic MCType;
+  // Measure reference (i.e. MEarthMagnetic::Ref)
+  typedef class MeasRef<MEarthMagnetic> Ref;
+  // Measure Convert (i.e. MEarthMagnetic::Convert)
     typedef class MeasConvert<MEarthMagnetic,MVEarthMagnetic,MCEarthMagnetic> Convert;
 // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
     typedef class ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROScalarColumn;

@@ -221,9 +221,13 @@ public:
     N_GTypes};
 
 //# Typedefs
-// MeasRef use
-    typedef class MeasRef<MDirection> Ref;
-// MeasConvert use
+  // Measure value container for this class (i.e. MDirection::MVType)
+  typedef class MVDirection MVType;
+  // Measure conversion routines for this class (i.e. MDirection::MCType)
+  typedef class MCDirection MCType;
+  // Measure reference (i.e. MDirection::Ref)
+  typedef class MeasRef<MDirection> Ref;
+  // Measure Convert (i.e. MDirection::Convert)
     typedef class MeasConvert<MDirection,MVDirection,MCDirection> Convert;
 // Measure table Columns (e.g., MDirection::ROScalarColumn)
     typedef class ROScalarMeasColumn<MDirection, MVDirection> ROScalarColumn;
