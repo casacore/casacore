@@ -1,5 +1,5 @@
 //# tSpectralCoordinate.cc: Test program for SpectralCoordinate
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,11 +32,15 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/ObsInfo.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Logging/LogOrigin.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
@@ -56,13 +60,13 @@ SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
                                             Double& restFreq);
 
 Double velInc (Double dF, Double f0, MDoppler::Types velType);
+void refConv();
 
 int main()
 {
    try {
 
       Double f0, finc, refchan, restFreq;
-
       Vector<Double> freqs;
       Matrix<Double> xform(1,1); xform(0,0) = 1.0;
 //
@@ -820,6 +824,12 @@ int main()
             throw(AipsError(String("frequencyToVelocity 9 gave wrong answer")));
          }
      }
+
+// Test reference conversions
+     
+     {
+        refConv(); 
+     }
 //
 // Test record saving
 //
@@ -921,3 +931,44 @@ Double velInc (Double dF, Double f0, MDoppler::Types velType)
    throw(AipsError("very cheap software"));
 }
 
+
+void refConv ()
+//
+// Test conversion with reference change
+//
+{
+   Double f0, finc, refchan, restFreq;
+   SpectralCoordinate lc = makeLinearCoordinate(MFrequency::LSRK, f0, finc, refchan, restFreq);
+//
+   Vector<Double> pixel = lc.referencePixel().copy();
+   Vector<Double> world;
+//
+   if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
+   }
+//
+   Quantum<Double> t(50237.29, Unit(String("d")));
+   MVEpoch t2(t);
+   MEpoch epoch(t2);
+//
+   MPosition pos;
+   MeasTable::Observatory(pos, String("ATCA"));
+//
+   Quantum<Double> lon(0.0,Unit(String("rad")));
+   Quantum<Double> lat(-35.0,Unit(String("deg")));
+   MDirection dir(lon, lat, MDirection::J2000);
+   lc.setReferenceConversion(MFrequency::BARY, epoch, pos, dir);
+//
+   if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld + reference conversion (1) failed because ") + lc.errorMessage()));
+   }
+//
+   Vector<Double> pixel2;
+   if (!lc.toPixel(pixel2, world)) {
+      throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
+   }
+//
+   if (!allNear(pixel2, pixel, 1e-6)) {
+      throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
+   }                                       
+}
