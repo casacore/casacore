@@ -181,6 +181,10 @@ void VisSet::selectChannel(Int nGroup,Int start, Int width, Int increment,
 {
   iter_p->selectChannel(nGroup,start,width,increment,spectralWindow); 
   iter_p->origin();
+
+  selection_p(0,spectralWindow) = start;
+  selection_p(1,spectralWindow) = width;
+
 }
 Int VisSet::numberAnt() const 
 {
