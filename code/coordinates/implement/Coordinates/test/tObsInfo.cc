@@ -1,5 +1,5 @@
-//# ObsInfo.cc: Miscellaneous information related to an observation
-//# Copyright (C) 1998
+//# tObsInfo.cc: test program for class ObsInfo
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,13 @@
 
 #include <trial/Coordinates/ObsInfo.h>
 
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
+
+#include <strstream.h>
+
 
 int main()
 {
@@ -74,6 +78,14 @@ int main()
 		     oi.observer() == "observer2" &&
 		     near(oi.obsDate().get("d").getValue(), 55000.0));
 
+    // Test output.  
+    ostrstream oss;
+    oss << oi << endl;
+    String x(oss);
+    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::00:00:00.0000");
+    Int iL = x2.length();
+    String x3 = String(x.at(0,iL));
+    AlwaysAssertExit(x2==x3);
 
     // Bool toRecord(String & error, RecordInterface & outRecord) const;
     // Bool fromRecord(String & error, const RecordInterface & inRecord);
