@@ -1825,17 +1825,17 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
       Bool deleteIt;
       Bool* tmpp = tmp.getStorage (deleteIt);
       uInt inx = 0;
-      if (nr2 == 1) {
-	for (uInt i1=0; i1<nr1; i1++) {
+      if (nr1 == 1) {
+	for (uInt i1=0; i1<nr2; i1++) {
 	  for (uInt i2=stinx; i2<nrinx; i2++) {
 	    tmpp[inx++] = (i2<nrpix  ?  pixels[i2] : False);
 	  }
 	}
       } else {
-	for (uInt i1=0; i1<nr1; i1++) {
+	for (uInt i1=0; i1<nr2; i1++) {
 	  for (uInt i2=stinx; i2<nrinx; i2++) {
 	    Bool flag = (i2<nrpix  ?  pixels[i2] : False);
-	    for (uInt i3=0; i3<nr2; i3++) {
+	    for (uInt i3=0; i3<nr1; i3++) {
 	      tmpp[inx++] = flag;
 	    }
 	  }
