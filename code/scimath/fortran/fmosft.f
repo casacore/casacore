@@ -43,6 +43,7 @@ C
       double precision uvw(3, nrow), freq(nvischan), c, scale(3),
      $     offset(3)
       double precision dphase(nrow), uvdist, xypos(2,nrow)
+      double precision xlast, ylast
       complex phasor
       integer flag(nvispol, nvischan, nrow)
       integer rflag(nrow)
@@ -89,18 +90,22 @@ C
          rend=nrow
       end if
 
-      if((xypos(1,1).ne.0.0).and.(xypos(2,1).ne.0.0)) then
-         doshift=.TRUE.
-         do ix=-support,support
-            phase=-2.0D0*pi*xypos(1,1)*ix/nx
-            shiftx(ix)=cmplx(cos(phase), sin(phase))
-         end do
-         do iy=-support,support
-            phase=-2.0D0*pi*xypos(2,1)*iy/ny
-            shifty(iy)=cmplx(cos(phase), sin(phase))
-         end do
-      end if
+      xlast=0.0
+      ylast=0.0
       do irow=rbeg, rend
+         if((xypos(1,irow).ne.xlast).or.(xypos(2,irow).ne.ylast)) then
+            xlast=xypos(1,irow)
+            ylast=xypos(2,irow)
+            doshift=.TRUE.
+            do ix=-support,support
+               phase=-2.0D0*pi*xypos(1,irow)*ix/nx
+               shiftx(ix)=cmplx(cos(phase), sin(phase))
+            end do
+            do iy=-support,support
+               phase=-2.0D0*pi*xypos(2,irow)*iy/ny
+               shifty(iy)=cmplx(cos(phase), sin(phase))
+            end do
+         end if
          if(rflag(irow).eq.0) then 
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
@@ -174,6 +179,7 @@ C
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
       double precision dphase(nrow), uvdist, xypos(2,nrow)
+      double precision xlast, ylast
       complex phasor
       integer flag(nvispol, nvischan, nrow)
       integer rflag(nrow)
@@ -217,19 +223,22 @@ C
          rend=nrow
       end if
 C
-
-      if((xypos(1,1).ne.0.0).and.(xypos(2,1).ne.0.0)) then
-         doshift=.TRUE.
-         do ix=-support,support
-            phase=-2.0D0*pi*xypos(1,1)*ix/nx
-            shiftx(ix)=cmplx(cos(phase), sin(phase))
-         end do
-         do iy=-support,support
-            phase=-2.0D0*pi*xypos(2,1)*iy/ny
-            shifty(iy)=cmplx(cos(phase), sin(phase))
-         end do
-      end if
+      xlast=0.0
+      ylast=0.0
       do irow=rbeg, rend
+         if((xypos(1,irow).ne.xlast).or.(xypos(2,irow).ne.ylast)) then
+            xlast=xypos(1,irow)
+            ylast=xypos(2,irow)
+            doshift=.TRUE.
+            do ix=-support,support
+               phase=-2.0D0*pi*xypos(1,irow)*ix/nx
+               shiftx(ix)=cmplx(cos(phase), sin(phase))
+            end do
+            do iy=-support,support
+               phase=-2.0D0*pi*xypos(2,irow)*iy/ny
+               shifty(iy)=cmplx(cos(phase), sin(phase))
+            end do
+         end if
          if(rflag(irow).eq.0) then
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
