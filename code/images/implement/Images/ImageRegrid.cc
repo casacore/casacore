@@ -774,7 +774,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    Bool allFailedFull = False;
    Bool missedItFull = True;
    IPosition outPosFull(outLattice.ndim(),0);
-   Timer timer0;
+//   Timer timer0;
    if (resample) {
       make2DCoordinateGrid (pix2DPosFull, minInX, minInY, maxInX, maxInY,
                             pixelScale, xInAxis, yInAxis, xOutAxis, yOutAxis,
@@ -790,8 +790,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                             inPixelAxes, outPixelAxes, inShape, outPosFull, 
                             outShape, useMachine);
    }
-   cerr << "Full plane make2DCoordinateGrid took " << timer0.all() << endl;
-   timer0.show();
+//   cerr << "Full plane make2DCoordinateGrid took " << timer0.all() << endl;
+//   timer0.show();
 //
    if (missedItFull || allFailedFull) {
       outLattice.set(0.0);
