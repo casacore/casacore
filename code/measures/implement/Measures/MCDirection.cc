@@ -940,6 +940,9 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case MECLIP_JMEAN:
+      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 = 
 	RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime - 
 					       MeasData::MJD2000)/
@@ -948,6 +951,9 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case JMEAN_MECLIP:
+      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 =
         RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime -
                                                MeasData::MJD2000)/
@@ -956,12 +962,18 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case TECLIP_JTRUE:
+      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 = 
 	RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
       in = *ROTMAT1 * in;
       break;
 
     case JTRUE_TECLIP:
+      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+                   getMCFramePoint()))->
+        getTDB(tdbTime);
       *ROTMAT1 =
         RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
       in *= *ROTMAT1;
