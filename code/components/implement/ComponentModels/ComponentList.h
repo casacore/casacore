@@ -141,8 +141,8 @@ public:
 
   // Sample all the members of the componentList at the specified
   // direction. The returned Vector containes all the polarisarions. 
-  void sample(Vector<Double> & result, const MDirection & sampleDir, const
-	      MVAngle & pixelSize) const;
+  Flux<Double> sample(const MDirection & sampleDir, const
+		      MVAngle & pixelSize) const;
 
   // Project all the members of the componentList onto the image
   //  void project(ImageInterface<Float> & plane) const;
