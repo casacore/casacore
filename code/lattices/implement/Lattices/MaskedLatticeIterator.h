@@ -174,6 +174,7 @@ public:
   // It returns the same flag as
   // <linkto class=MaskedLattice>MaskedLattice::getMaskSlice</linkto>.
   // <group>
+  Bool getMask (COWPtr<Array<Bool> >&, Bool removeDegenerateAxes=False) const;
   Bool getMask (Array<Bool>&, Bool removeDegenerateAxes=False) const;
   Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
   // </group>

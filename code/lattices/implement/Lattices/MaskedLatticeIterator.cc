@@ -140,6 +140,14 @@ Array<Bool> RO_MaskedLatticeIterator<T>::getMask
 }
 
 template <class T>
+Bool RO_MaskedLatticeIterator<T>::getMask (COWPtr<Array<Bool> >& arr,
+					   Bool removeDegenerateAxes) const
+{
+  return itsMaskLattPtr->getMaskSlice (arr, position(), cursorShape(),
+				       removeDegenerateAxes);
+}
+
+template <class T>
 Bool RO_MaskedLatticeIterator<T>::getMask (Array<Bool>& arr,
 					   Bool removeDegenerateAxes) const
 {
