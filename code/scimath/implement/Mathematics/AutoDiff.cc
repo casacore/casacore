@@ -122,7 +122,7 @@ AutoDiff<T>& AutoDiff<T>::operator*=(const AutoDiff<T> &other) {
   };
   // Note that this makes sure it works for this == &other
   for (uInt i = 0 ; i < nderivs; i++) {
-    (*gradient_)(i) = other.value_*(*gradient_)(i) + 
+    (*gradient_)(i) = other.value_ * (*gradient_)(i) + 
       value_ * (*other.gradient_)(i);
   };
   nderivs = (nderivs > other.nderivs) ? nderivs : other.nderivs;
