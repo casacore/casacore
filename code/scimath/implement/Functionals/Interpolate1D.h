@@ -58,7 +58,7 @@ template<class Range> class SampledFunctional;
 // abscissa should have a unique value. 
 //
 // Interpolation can be done using the following methods:
-//   <li> Nearest Neighbour 
+//   <li> Nearest Neighbour  (default if there is one data point)
 //   <li> Linear (default unless there is only one data point)
 //   <li> Cubic Polynomial
 //   <li> Natural Cubic Spline
@@ -150,7 +150,7 @@ public:
   // function has been called.
   Interpolate1D();
 
-  // Construct an object with the specified data.
+  // Construct an object with the specified data
   Interpolate1D(const SampledFunctional<Domain> &x, 
 		const SampledFunctional<Range> &y, 
 		const Bool sorted=False, 
@@ -178,7 +178,7 @@ public:
     const;
 
   // inquire/set the current interpolation method. uInts are used as
-  // arguements instead of the Interpolate1D::Method enumerator due to
+  // arguments instead of the Interpolate1D::Method enumerator due to
   // compiler limitations. See the example above (or the demo code) for the
   // recommended way to call these functions.
   // <group>
