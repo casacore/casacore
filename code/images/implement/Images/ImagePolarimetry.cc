@@ -172,7 +172,7 @@ ImageExpr<Complex> ImagePolarimetry::complexFractionalLinearPolarization()
 //
    ie.setUnits(Unit(""));
    ImageInfo ii = itsInImagePtr->imageInfo();
-   ii.removeRestoringBeam();
+//   ii.removeRestoringBeam();
    ie.setImageInfo(ii);
 //
    return ie;
@@ -435,7 +435,7 @@ ImageExpr<Float> ImagePolarimetry::linPolInt(Bool debias, Float clip, Float sigm
 //
    ie.setUnits(itsInImagePtr->units());
    ImageInfo ii = itsInImagePtr->imageInfo();
-   ii.removeRestoringBeam();
+//   ii.removeRestoringBeam();
    ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
@@ -493,7 +493,6 @@ ImageExpr<Float> ImagePolarimetry::linPolPosAng(Bool radians) const
    ImageInfo ii = itsInImagePtr->imageInfo();
    ii.removeRestoringBeam();
    ie.setImageInfo(ii);
-
 
 // Fiddle Stokes coordinate
 
