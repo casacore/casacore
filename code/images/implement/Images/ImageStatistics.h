@@ -32,12 +32,14 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Lattices/LatticeStatistics.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
+class ostrstream;
 
 
 // <summary>
@@ -149,12 +151,14 @@ private:
 // Get beam volume if possible
    virtual Bool getBeamArea (Double& beamArea) const;
 
+// List min and max with world coordinates
+   virtual void listMinMax (ostrstream& osMin,
+                            ostrstream& osMax,
+                            Int oWidth, DataType type);
+
 // List the statistics
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<T>& ord);
-
-// Summarize the statistics found over the entire lattice
-   virtual void summStats();
 };
 
 
