@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,6 +47,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 : BaseTable      (newtab.name(), newtab.option(), 0),
   colSetPtr_p    (0),
   tableChanged_p (True),
+  addToCache_p   (True),
   lockPtr_p      (0)
 {
     // Set initially to no write in destructor.
@@ -119,10 +120,12 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 
 PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
 			const String& type, uInt nrrow, int opt,
-			const TableLock& lockOptions)
+			const TableLock& lockOptions,
+			Bool addToCache, uInt locknr)
 : BaseTable      (tabname, opt, nrrow),
   colSetPtr_p    (0),
   tableChanged_p (False),
+  addToCache_p   (addToCache),
   lockPtr_p      (0)
 {
     //# Set initially to no write in destructor.
@@ -134,7 +137,8 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
     //# Otherwise acquire a read lock to read in the table.
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
     lockPtr_p->makeLock (name_p, False,
-		   opt == Table::Old  ?  FileLocker::Read : FileLocker::Write);
+		   opt == Table::Old  ?  FileLocker::Read : FileLocker::Write,
+			 locknr);
     lockPtr_p->acquire (&(lockSync_p.memoryIO()), FileLocker::Read, 0);
     uInt ncolumn;
     Bool tableChanged;
@@ -153,10 +157,11 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
     // In the older Table files the keyword set was written separately
     // and was not part of the TableDesc.
     // So read it for those and merge it into the TableDesc keywords.
+    // Merging is done after attaching the lock to the ColumnSet,
+    // because function keywordSet() uses the lock.
+    TableRecord tmp;
     if (version == 1) {
-	TableRecord tmp;
 	tmp.getRecord (ios, isWritable(), tableName());
-	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
@@ -165,6 +170,9 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
 	throw (AllocError ("PlainTable(AipsIO&)", 1));
     }
     colSetPtr_p->linkToLockObject (this, lockPtr_p);
+    if (version == 1) {
+	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
+    }
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
     Table tab(this, False);
@@ -178,7 +186,9 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
     //# The destructor can (in principle) write.
     noWrite_p = False;
     //# Add it to the table cache.
-    tableCache.define (name_p, this);
+    if (addToCache) {
+	tableCache.define (name_p, this);
+    }
 }
 
 
@@ -198,8 +208,10 @@ PlainTable::~PlainTable()
 			       " it is still used in another process"));
 	}
     }
-    //# Remove it from the table cache.
-    tableCache.remove (name_p);
+    //# Remove it from the table cache (if added).
+    if (addToCache_p) {
+	tableCache.remove (name_p);
+    }
     //# Delete everything.
     delete colSetPtr_p;
     delete lockPtr_p;
@@ -259,18 +271,53 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
     //# When the table is already locked (read locked is sufficient),
     //# no synchronization is needed (other processes could not write).
     Bool noSync = hasLock (FileLocker::Read);
-    if (! lockPtr_p->acquire (&(lockSync_p.memoryIO()), type, nattempts)) {
-	return False;
-    }
-    if (!noSync) {
-	uInt ncolumn;
-	Bool tableChanged;
-	lockSync_p.read (nrrow_p, ncolumn, tableChanged,
-			 colSetPtr_p->dataManChanged());
-	colSetPtr_p->resync (nrrow_p);
+    //# Acquire the required lock.
+    //# Synchronize the table when it has changed.
+    //# When table data has changed, a temporary PlainTable object is created
+    //# to get the new keyword values, etc.. Deleting it causes all locks
+    //# held by this process on the table to be released. So reacquire
+    //# them when that happens.
+    Bool tableChanged = True;
+    while (tableChanged) {
+	tableChanged = False;
+	if (! lockPtr_p->acquire (&(lockSync_p.memoryIO()), type, nattempts)) {
+	    return False;
+	}
+	if (!noSync) {
+	    uInt ncolumn;
+	    lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+			     colSetPtr_p->dataManChanged());
+	    if (ncolumn != tableDesc().ncolumn()) {
+		throw (TableError ("Table::lock cannot sync; another process "
+				   "changed the number of columns"));
+	    }
+	    colSetPtr_p->resync (nrrow_p);
+	    if (tableChanged) {
+		syncTable();
+	    }
+	}
     }
     return True;
 }
+
+void PlainTable::syncTable()
+{
+    // Something changed in the table file itself.
+    // Reread it into a PlainTable object (don't add it to the cache).
+    // Use a different locknr for it to preserve possible existing locks.
+    BaseTable* btab = Table::makeBaseTable
+                         (tableName(), "", Table::Old,
+			  TableLock(TableLock::PermanentLockingWait),
+			  False, 1);
+    PlainTable* tab = (PlainTable*)btab;
+    // Now check if all columns are the same.
+    // Update the column keywords.
+    colSetPtr_p->syncColumns (*tab->colSetPtr_p);
+    // Update the table keywords.
+    keywordSet() = tab->keywordSet();
+    delete tab;
+}
+
 void PlainTable::unlock()
 {
     lockPtr_p->release();
@@ -347,8 +394,10 @@ Bool PlainTable::isWritable() const
 
 //# Get access to the keyword set.
 TableRecord& PlainTable::keywordSet()
-    { return tdescPtr_p->rwKeywordSet(); }
-
+{
+    colSetPtr_p->checkLock (FileLocker::Read, True);
+    return tdescPtr_p->rwKeywordSet();
+}
 TableRecord& PlainTable::rwKeywordSet()
 {
     colSetPtr_p->checkLock (FileLocker::Write, True);
