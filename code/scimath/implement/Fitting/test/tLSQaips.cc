@@ -29,10 +29,11 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Fitting/LSQFit.h>
+#include <aips/Fitting/LSQaips.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/OS/Timer.h>
@@ -55,7 +56,7 @@ Complex Y(const Complex x, const Double y=4e-15) {
   return Complex(Y(real(x), y), Y(imag(x), y));
 }
 
-void showdt(const LSQFit &lsq) {
+void showdt(const LSQaips &lsq) {
   uInt nun, np, ncon, ner, rank;
   Double *norm, *known, *constr, *err, *sEq, *sol;
   uInt *piv;
@@ -157,10 +158,8 @@ int main() {
   const uInt M=6;		// # knowns
   // Data to be used
   Vector<Complex> csol(2*N1);
-  VectorSTLIterator<Complex> csolit(csol);
   Double mu, me;
   Vector<Double> sol(4*N1);
-  VectorSTLIterator<Double> solit(sol);
   
   Complex vcce[M][N] = {
     {Complex(1,0),Complex(1,0),Complex(1,0)},
@@ -202,21 +201,17 @@ int main() {
   Float val12f[512];
   for (uInt j=0; j<512; j++) val12f[j] = val12[j] = 1+2*j;
   Vector<Double> sol1(6);
-  VectorSTLIterator<Double> sol1it(sol1);
   Double sd1, mu1;
   Vector<Double> err1(6);
-  VectorSTLIterator<Double> err1it(err1);
   Vector<Float> sol1f(6);
-  VectorSTLIterator<Float> sol1fit(sol1f);
   Float  sdf, muf;
   Vector<Float> err1f(6);
-  VectorSTLIterator<Float> err1fit(err1f);
   Vector<Double> val1(6);
   VectorSTLIterator<Double> valit(val1);
   Vector<Float>  val1f(6);
   VectorSTLIterator<Float> valfit(val1f);
-  Double cv1[6][6];
-  Float cv1f[6][6];
+  Matrix<Double> cv1(6,6);
+  Matrix<Float> cv1f(6,6);
   uInt nr1;
 
   try {
@@ -224,7 +219,7 @@ int main() {
     cout << "---------------------------------------------------" << endl;
 
     cout << "Real -- 6 unknowns --- ctor --------" << endl;
-    LSQFit lsq5(6);
+    LSQaips lsq5(6);
     for (Int j0=0; j0<511; j0++) {
       val1[0] = 1;
       for (uInt j1=1; j1<6; j1++) val1[j1] = val1[j1-1]*j0;
@@ -235,50 +230,50 @@ int main() {
     lsq5.makeNorm(valit, 1.0, val12[511]);
     cout << "Invert = " << lsq5.invert(nr1);
     cout << ", rank=" << nr1 << endl;
-    lsq5.solve(sol1it);
+    lsq5.solve(sol1);
     sd1 = lsq5.getSD();
     mu1 = lsq5.getWeightedSD();
     for (uInt i=0; i<6; i++) { 
       cout << "Sol" << i << ": " <<
-	Y(sol1it[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+	Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
     };
     cout << "Chi2: " << lsq5.getChi() << endl;
-    lsq5.getErrors(err1it);
+    lsq5.getErrors(err1);
     cout << "Errors: ";
     for (uInt i=0; i<6; i++) {
       if (i != 0) cout << ", ";
-      cout << err1it[i];
+      cout << err1[i];
     };
     cout << endl;
-    lsq5.getCovariance(&cv1[0][0]);
+    lsq5.getCovariance(cv1);
     for (uInt i5=0; i5<6; i5++) {
       cout << "Cov(" << i5 << ")";
       for (uInt i6=0; i6<6; i6++) {
-	cout << ": " << Y(cv1[i5][i6], 1e-12);
+	cout << ": " << Y(cv1(i5,i6), 1e-12);
       };
       cout << endl;
     };
     cout << "Float: " << endl;
-    lsq5.solve(sol1fit);
+    lsq5.solve(sol1f);
     sdf = lsq5.getSD();
     muf = lsq5.getWeightedSD();
     for (uInt i=0; i<6; i++) { 
       cout << "Sol" << i << ": " <<
-	Y(sol1fit[i], 1e-12) << ", " <<
+	Y(sol1f[i], 1e-12) << ", " <<
 	Y(sdf, 0.0006) << ", " << Y(muf, 0.0006) << endl;
     };
-    lsq5.getErrors(err1fit);
+    lsq5.getErrors(err1f);
     cout << "Errors: ";
     for (uInt i=0; i<6; i++) {
       if (i != 0) cout << ", ";
-      cout << Y(err1fit[i], 0.00015);
+      cout << Y(err1f[i], 0.00015);
     };
     cout << endl;
-    lsq5.getCovariance(&cv1f[0][0]);
+    lsq5.getCovariance(cv1f);
     for (uInt i5=0; i5<6; i5++) {
       cout << "Cov(" << i5 << ")";
       for (uInt i6=0; i6<6; i6++) {
-	cout << ": " << Y(cv1f[i5][i6], 1e-12);
+	cout << ": " << Y(cv1f(i5,i6), 1e-12);
       };
       cout << endl;
     };
@@ -286,7 +281,7 @@ int main() {
 
     cout << "Real -- 6 unknowns --- float -------" << endl;
     {
-      LSQFit lsq5(6);
+      LSQaips lsq5(6);
       for (Int j0=0; j0<511; j0++) {
 	val1f[0] = 1;
 	for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*j0;
@@ -297,12 +292,12 @@ int main() {
       lsq5.makeNorm(valfit, 1.0f, val12f[511]);
       cout << "Invert = " << lsq5.invert(nr1);
       cout << ", rank=" << nr1 << endl;
-      lsq5.solve(sol1it);
+      lsq5.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<6; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
 	  Y(mu1, 1e-5) << endl;
       };
     }
@@ -310,7 +305,7 @@ int main() {
     
     cout << "Real -- 6 unknowns --- float ------- indexed ---" << endl;
     {
-      LSQFit lsq5(6);
+      LSQaips lsq5(6);
       uInt cix[6]    = {0,4,3,2,5,1};
       uInt cixrev[6] = {0,5,3,2,1,4};
       Vector<uInt> ix(6);
@@ -330,12 +325,12 @@ int main() {
       lsq5.makeNorm(valfit, 1.0f, val12f[511]);
       cout << "Invert = " << lsq5.invert(nr1);
       cout << ", rank=" << nr1 << endl;
-      lsq5.solve(sol1it);
+      lsq5.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<6; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
 	  Y(mu1, 1e-5) << endl;
       };
     }
@@ -343,7 +338,7 @@ int main() {
 
     cout << "Real -- 6 unknowns --- set --------" << endl;
     {
-      LSQFit lsq5;
+      LSQaips lsq5;
       lsq5.set(6,LSQReal());
       lsq5.set(1e-8);
       for (Int j0=0; j0<512; j0++) {
@@ -353,39 +348,39 @@ int main() {
       };
       cout << "Invert = " << lsq5.invert(nr1);
       cout << ", rank=" << nr1 << endl;
-      lsq5.solve(sol1it);
+      lsq5.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<6; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+	  Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
       };
     }
     cout << "---------------------------------------------------" << endl;
 
     cout << "Real -- 6 unknowns ---  =  --------" << endl;
     {
-      LSQFit lsq6;
+      LSQaips lsq6;
       lsq6 = lsq5;
-      lsq6.solve(sol1it);
+      lsq6.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<6; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i], 1e-12) << ", " <<
+	  Y(sol1[i], 1e-12) << ", " <<
 	  Y(sd1, 0.0006) << ", " << Y(mu1, 0.0006) << endl;
       };
     }
     cout << "---------------------------------------------------" << endl;
     cout << "Real -- 6 unknowns --- copy -------" << endl;
     {
-      LSQFit lsq6(lsq5);
-      lsq6.solve(sol1it);
+      LSQaips lsq6(lsq5);
+      lsq6.solve(sol1);
       sd1 = lsq6.getSD();
       mu1 = lsq6.getWeightedSD();
       for (uInt i=0; i<6; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i], 1e-12) << ", " <<
+	  Y(sol1[i], 1e-12) << ", " <<
 	  Y(sd1, 0.0006) << ", " << Y(mu1, 0.0006) << endl;
       };
     }
@@ -393,7 +388,7 @@ int main() {
     cout << "---------------------------------------------------" << endl;
         cout << "Real -- 3 angles -------" << endl;
     {
-      LSQFit lsq5(3);
+      LSQaips lsq5(3);
       Vector<Float> val(3);
       VectorSTLIterator<Float> valot(val);
       val[0] = 1; val[1] = 0; val[2] = 0;
@@ -403,12 +398,12 @@ int main() {
       val[0] = 1; val[1] = 1; val[2] = 1;
       lsq5.makeNorm(valot, 1.0f, 1.0f);
       lsq5.invert(nr1);
-      lsq5.solve(sol1it);
+      lsq5.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<3; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i], 1e-12) << ", " <<
+	  Y(sol1[i], 1e-12) << ", " <<
 	  Y(sd1, 8e-7) << ", " << Y(mu1, 8e-7) << endl;
       };
     }
@@ -416,7 +411,7 @@ int main() {
     
     cout << "Real -- 3 angles - constraint 180" << endl;
     {
-        LSQFit lsq5(3, 1);
+        LSQaips lsq5(3, 1);
       Vector<Float> val(3);
       VectorSTLIterator<Float> valot(val);
       val[0] = 1; val[1] = 0; val[2] = 0;
@@ -428,18 +423,18 @@ int main() {
       val[0] = 1; val[1] = 1; val[2] = 1;
       lsq5.setConstraint(0, valot, 180.0f);
       lsq5.invert(nr1);
-      lsq5.solve(sol1it);
+      lsq5.solve(sol1);
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (uInt i=0; i<3; i++) { 
 	cout << "Sol" << i << ": " <<
-	  Y(sol1it[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+	  Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
       };
     }
     
     cout << "---------------------------------------------------" << endl;
     cout << "Complex-----------------------" << endl;
-    LSQFit lsqc1(N, LSQComplex());
+    LSQaips lsqc1(N, LSQComplex());
     for (uInt i=0; i<M; i++) {
       cout << "(" << i << "): " << 
 	", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -450,22 +445,22 @@ int main() {
     uInt nr;
     lsqc1.invert(nr);
     showdt(lsqc1);
-    lsqc1.solve(solit);
+    lsqc1.solve(sol);
     mu = lsq5.getSD();
     me = lsq5.getWeightedSD();
     cout << "Sol";
     for (uInt i4=0; i4<2*N; i4++) {
-      cout << ": " << solit[i4];
+      cout << ": " << sol[i4];
     };
 
     cout << endl << "mu: " << mu << ", me: " << me << endl;
     {
-      Double cv[2*N][2*N];
-      lsqc1.getCovariance(&cv[0][0]);
+      Matrix<Double> cv(2*N,2*N);
+      lsqc1.getCovariance(cv);
       for (uInt i5=0; i5<2*N; i5++) {
 	cout << "Cov(" << i5 << ")";
 	for (uInt i6=0; i6<2*N; i6++) {
-	  cout << ": " << Y(cv[i5][i6]);
+	  cout << ": " << Y(cv(i5,i6));
 	};
 	cout << endl;
       };
@@ -475,7 +470,7 @@ int main() {
     
     cout << "Complex------  other calls ----------" << endl;
     {
-      LSQFit lsqc1(N, LSQComplex());
+      LSQaips lsqc1(N, LSQComplex());
       for (uInt i=0; i<M; i++) {
 	for (uInt j=0; j<N; ++j) cce[j]  = vcce[i][j];
 	lsqc1.makeNorm(cceit, wt[i]/2, cob[i], LSQFit::COMPLEX);
@@ -484,60 +479,59 @@ int main() {
       };
       uInt nr;
       lsqc1.invert(nr);
-      lsqc1.solve(solit);
+      lsqc1.solve(sol);
       mu = lsq5.getSD();
       me = lsq5.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<2*N; i4++) {
-	cout << ": " << solit[i4];
+	cout << ": " << sol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
-      lsqc1.solve(csolit);
+      lsqc1.solve(csol);
       muf = lsqc1.getSD();
       sdf = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<N; i4++) {
-	cout << ": " << csolit[i4];
+	cout << ": " << csol[i4];
       };
       cout << endl << "mu: " << muf << ", me: " << sdf << endl;
       Vector<DComplex> dcsol(N1);
-      VectorSTLIterator<DComplex> dcsolit(dcsol);
-      lsqc1.solve(dcsolit);
+      lsqc1.solve(dcsol);
       mu = lsqc1.getSD();
       me = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<N; i4++) {
-	cout << ": " << dcsolit[i4];
+	cout << ": " << dcsol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
       {
-	Double cv[2*N][2*N];
-	Complex ccv[N][N];
-	DComplex dccv[N][N];
-	lsqc1.getCovariance(&cv[0][0]);
+	Matrix<Double> cv(2*N,2*N);
+	Matrix<Complex> ccv(N,N);
+	Matrix<DComplex> dccv(N,N);
+	lsqc1.getCovariance(cv);
 	for (uInt i5=0; i5<2*N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<2*N; i6++) {
-	    cout << ": " << Y(cv[i5][i6]);
+	    cout << ": " << Y(cv(i6,i5));
 	  };
 	  cout << endl;
 	};
-	lsqc1.getCovariance(&ccv[0][0]);
+	lsqc1.getCovariance(ccv);
 	for (uInt i5=0; i5<N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<N; i6++) {
-	    cout << ": " << Y(ccv[i5][i6]);
+	    cout << ": " << Y(ccv(i6,i5));
 	  };
 	  cout << endl;
 	};
-	lsqc1.getCovariance(&dccv[0][0]);
+	lsqc1.getCovariance(dccv);
 	for (uInt i5=0; i5<N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<N; i6++) {
-	    cout << ": " << Y(dccv[i5][i6]);
+	    cout << ": " << Y(dccv(i6,i5));
 	  };
 	  cout << endl;
-	  };
+	};
       }
     }
     cout << "---------------------------------------------------" << endl;
@@ -553,7 +547,7 @@ int main() {
     }
     uInt i2;
     {
-      LSQFit lsqc1(N, LSQComplex());
+      LSQaips lsqc1(N, LSQComplex());
       for (uInt i=0; i<M; i++) {
 	cout << "(" << i << "): " <<
 	  ", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -564,19 +558,19 @@ int main() {
       uInt nr;
       lsqc1.invert(nr, True);
       showdt(lsqc1);
-      lsqc1.solve(solit);
+      lsqc1.solve(sol);
       mu = lsqc1.getSD();
       me = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<2*N; i4++) {
-	cout << ": " << solit[i4];
+	cout << ": " << sol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
       {
 	for (uInt i=0; i<M; i++) {
 	  DComplex cd1(0,0);
 	  for (uInt i1=0; i1<N; i1++) {
-	    cd1 += DComplex(solit[2*i1], solit[2*i1+1])*DComplex(vcce[i][i1]);
+	    cd1 += DComplex(sol[2*i1], sol[2*i1+1])*DComplex(vcce[i][i1]);
 	  };
 	  cout << "LIN= " << cob[i] << "	LCHECK= " << cd1 << endl;
 	};
@@ -612,18 +606,18 @@ int main() {
 	DComplex cd1(0,0);
 	for (uInt i3=0; i3<i2; i3++) {
 	  for (uInt i=0; i<N; i++) {
-	    cd1 += solit[2*i]*vceq[i3][2*i] + solit[2*i+1]*vceq[i3][2*i+1];
+	    cd1 += sol[2*i]*vceq[i3][2*i] + sol[2*i+1]*vceq[i3][2*i+1];
 	  };
 	  cout << "Gives: " << Y(cd1) <<endl;
 	};
       }
       {
-	Double cv[2*N][2*N];
-	lsqc1.getCovariance(&cv[0][0]);
+	Matrix<Double> cv(2*N,2*N);
+	lsqc1.getCovariance(cv);
 	for (uInt i5=0; i5<2*N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<2*N; i6++) {
-	    cout << ": " << Y(cv[i5][i6]);
+	    cout << ": " << Y(cv(i5,i6));
 	  };
 	  cout << endl;
 	};
@@ -633,7 +627,7 @@ int main() {
     
     cout << "Complex+Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQComplex(), i2/2);
+      LSQaips lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	cout << "(" << i << "): " <<
 	  ", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -652,21 +646,21 @@ int main() {
       uInt nr;
       lsqc1.invert(nr, True);
       showdt(lsqc1);
-      lsqc1.solve(solit);
+      lsqc1.solve(sol);
       mu = lsqc1.getSD();
       me = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<2*N; i4++) {
-	cout << ": " << solit[i4];
+	cout << ": " << sol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
       {
-	Double cv[2*N][2*N];
-	lsqc1.getCovariance(&cv[0][0]);
+	Matrix<Double> cv(2*N,2*N);
+	lsqc1.getCovariance(cv);
 	for (uInt i5=0; i5<2*N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<2*N; i6++) {
-	    cout << ": " << Y(cv[i5][i6]);
+	    cout << ": " << Y(cv(i5,i6));
 	  };
 	  cout << endl;
 	};
@@ -676,7 +670,7 @@ int main() {
     
     cout << "Complex+Complex Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQComplex(), i2/2);
+      LSQaips lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	for (uInt j=0; j<N; ++j) cce[j]  = vcce[i][j];
 	lsqc1.makeNorm(cceit, wt[i], cob[i], LSQFit::COMPLEX);
@@ -689,21 +683,21 @@ int main() {
       uInt nr;
       lsqc1.invert(nr, True);
       showdt(lsqc1);
-      lsqc1.solve(solit);
+      lsqc1.solve(sol);
       mu = lsqc1.getSD();
       me = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<2*N; i4++) {
-	cout << ": " << solit[i4];
+	cout << ": " << sol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
       {
-	Double cv[2*N][2*N];
-	lsqc1.getCovariance(&cv[0][0]);
+	Matrix<Double> cv(2*N,2*N);
+	lsqc1.getCovariance(cv);
 	for (uInt i5=0; i5<2*N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<2*N; i6++) {
-	    cout << ": " << Y(cv[i5][i6]);
+	    cout << ": " << Y(cv(i5,i6));
 	  };
 	  cout << endl;
 	};
@@ -713,7 +707,7 @@ int main() {
 
     cout << "Complex+DComplex Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQComplex(), i2/2);
+      LSQaips lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	for (uInt j=0; j<N; ++j) cce[j]  = vcce[i][j];
 	lsqc1.makeNorm(cceit, wt[i], cob[i], LSQFit::COMPLEX);
@@ -726,21 +720,21 @@ int main() {
       uInt nr;
       lsqc1.invert(nr, True);
       showdt(lsqc1);
-      lsqc1.solve(solit);
+      lsqc1.solve(sol);
       mu = lsqc1.getSD();
       me = lsqc1.getWeightedSD();
       cout << "Sol";
       for (uInt i4=0; i4<2*N; i4++) {
-	cout << ": " << solit[i4];
+	cout << ": " << sol[i4];
       };
       cout << endl << "mu: " << mu << ", me: " << me << endl;
       {
-	Double cv[2*N][2*N];
-	lsqc1.getCovariance(&cv[0][0]);
+	Matrix<Double> cv(2*N,2*N);
+	lsqc1.getCovariance(cv);
 	for (uInt i5=0; i5<2*N; i5++) {
 	  cout << "Cov(" << i5 << ")";
 	  for (uInt i6=0; i6<2*N; i6++) {
-	    cout << ": " << Y(cv[i5][i6]);
+	    cout << ": " << Y(cv(i5,i6));
 	  };
 	  cout << endl;
 	};
@@ -750,7 +744,7 @@ int main() {
     
     cout << "DComplex Non-linear------------" << endl;
     {
-      LSQFit lnl(3, LSQComplex());
+      LSQaips lnl(3, LSQComplex());
       const uInt n=100;
       Double x[n];
       Double y[n];
@@ -762,8 +756,7 @@ int main() {
       Vector<DComplex> un(3);
       VectorSTLIterator<DComplex> unitit(un);
       Vector<DComplex> vsol(3);
-      VectorSTLIterator<DComplex> solit(vsol);
-      for (uInt i=0; i<3; ++i) solit[i] = sol[i];
+      for (uInt i=0; i<3; ++i) vsol[i] = sol[i];
       DComplex kn[1];
       const Int Niter = 30;
       Int iter=Niter;
@@ -773,16 +766,16 @@ int main() {
       tim1.mark();
       while (iter>0 && (fit>0 || fit < -0.001)) {
 	for (uInt i=0; i<n; i++) {
-	  DComplex A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				      ((x[i]-solit[1])/solit[2])));
-	  DComplex b = 2.0*(x[i]-solit[1])/solit[2];
-	  un[0] = A/solit[0];
-	  un[1] = b*A/solit[2];
-	  un[2] = b*b*A/2.0/solit[2];
+	  DComplex A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				      ((x[i]-vsol[1])/vsol[2])));
+	  DComplex b = 2.0*(x[i]-vsol[1])/vsol[2];
+	  un[0] = A/vsol[0];
+	  un[1] = b*A/vsol[2];
+	  un[2] = b*b*A/2.0/vsol[2];
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(unitit, 1.0, kn[0], LSQFit::COMPLEX);
 	};
-	if (!lnl.solveLoop(fit, nr, solit)) {
+	if (!lnl.solveLoop(fit, nr, vsol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
@@ -794,7 +787,7 @@ int main() {
 	cout << "Niter:     " << "24 or 25" << endl;
       } else cout << "Niter:     " << Niter-iter << endl;
       cout << "Fit:       " << fit << endl;
-      cout << "Sol:       " << solit[0] << ", " << solit[1] << ", " << solit[2] << 
+      cout << "Sol:       " << vsol[0] << ", " << vsol[1] << ", " << vsol[2] << 
 	endl;
       cout << "me:        " << mu << ", " << me << endl;
       cerr << "User time: " << tim1.user() << endl;
@@ -803,7 +796,7 @@ int main() {
 
     cout << "Complex Non-linear------------" << endl;
     {
-      LSQFit lnl(3, LSQComplex());
+      LSQaips lnl(3, LSQComplex());
       const uInt n=100;
       Float x[n];
       Float y[n];
@@ -827,16 +820,16 @@ int main() {
       tim1.mark();
       while (iter>0 && (fit>0 || fit < -0.001)) {
 	for (uInt i=0; i<n; i++) {
-	  Complex A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				  ((x[i]-solit[1])/solit[2])));
-	  Complex b = 2.0f*(x[i]-solit[1])/solit[2];
-	  un[0] = A/solit[0];
-	  un[1] = b*A/solit[2];
-	  un[2] = b*b*A/2.0f/solit[2];
+	  Complex A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				  ((x[i]-vsol[1])/vsol[2])));
+	  Complex b = 2.0f*(x[i]-vsol[1])/vsol[2];
+	  un[0] = A/vsol[0];
+	  un[1] = b*A/vsol[2];
+	  un[2] = b*b*A/2.0f/vsol[2];
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(unitit, 1.0f, kn[0], LSQFit::COMPLEX);
 	};
-	if (!lnl.solveLoop(fit, nr, solit)) {
+	if (!lnl.solveLoop(fit, nr, vsol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
@@ -852,7 +845,7 @@ int main() {
       } else {
 	cout << "Fit:       " << fit << endl;
       };
-      cout << "Sol:       " << solit[0] << ", " << solit[1] << ", " << solit[2] << 
+      cout << "Sol:       " << vsol[0] << ", " << vsol[1] << ", " << vsol[2] << 
 	endl;
       if (mu == me && mu < 1e-7) {
 	cout << "me:        " << 0.0 << ", " << 0.0 << endl;
@@ -882,12 +875,11 @@ int main() {
       DComplex m[2] = {DComplex(2,3), DComplex(4,1)};
       // Solution and error area
       Vector<DComplex> sol(3);
-      VectorSTLIterator<DComplex> solit(sol);
       Double sd, mu;
       uInt rank;
       Bool ok;
       // LSQFit area
-      LSQFit fit(2, LSQComplex());
+      LSQaips fit(2, LSQComplex());
       // Make normal equation
       for (uInt i=0; i<2; i++) {
 	for (uInt j=0; j<3; ++j) ce[j] =vce[i][j];
@@ -898,10 +890,10 @@ int main() {
       cout << "ok? " << ok << "; rank: " << rank << endl;
       // Solve and show
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl;
       };
       cout << "Complex -- COMPLEX ------------ indexed ---" << endl;
@@ -916,10 +908,10 @@ int main() {
       cout << "ok? " << ok << "; rank: " << rank << endl;
       // Solve and show
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl;
       };
       cout << "Complex -- ASREAL -------------" << endl;
@@ -932,10 +924,10 @@ int main() {
       ok = fit.invert(rank);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl; 
       };
       cout << "Complex -- ASREAL ------------- indexed ---" << endl;
@@ -947,10 +939,10 @@ int main() {
       ok = fit.invert(rank);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<2; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl; 
       };
       cout << "Complex -- SEPARABLE ----------" << endl;
@@ -964,10 +956,10 @@ int main() {
       ok = fit.invert(rank);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	if (sd == mu && mu < 1e-7) {
 	  cout << "sd: " << 0.0 << "; mu: " << 0.0 << endl;
 	} else {
@@ -984,10 +976,10 @@ int main() {
       ok = fit.invert(rank);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	if (sd == mu && mu < 1e-7) {
 	  cout << "sd: " << 0.0 << "; mu: " << 0.0 << endl;
 	} else {
@@ -1005,10 +997,10 @@ int main() {
       ok = fit.invert(rank, True);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl; 
       };
       cout << "Complex -- CONJUGATE ---------- indexed ---" << endl;
@@ -1022,10 +1014,10 @@ int main() {
       ok = fit.invert(rank, True);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
-	fit.solve(solit);
+	fit.solve(sol);
 	sd = fit.getSD();
 	mu = fit.getWeightedSD();
-	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << solit[i] << endl;
+	for (uInt i=0; i<1; i++) cout << "Sol" << i << ": " << sol[i] << endl;
 	cout << "sd: "<< sd << "; mu: " << mu << endl; 
       };
     }
@@ -1033,7 +1025,7 @@ int main() {
 
     cout << "Non-linear------------" << endl;
     {
-      LSQFit lnl(3);
+      LSQaips lnl(3);
       const uInt n=100;
       Double x[n];
       Double y[n];
@@ -1056,16 +1048,16 @@ int main() {
       tim1.mark();
       while (iter>0 && (fit>0 || fit < -0.001)) {
 	for (uInt i=0; i<n; i++) {
-	  Double A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				  ((x[i]-solit[1])/solit[2])));
-	  Double b = 2*(x[i]-solit[1])/solit[2];
-	  un[0] = A/solit[0];
-	  un[1] = b*A/solit[2];
-	  un[2] = b*b*A/2/solit[2];
+	  Double A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				  ((x[i]-vsol[1])/vsol[2])));
+	  Double b = 2*(x[i]-vsol[1])/vsol[2];
+	  un[0] = A/vsol[0];
+	  un[1] = b*A/vsol[2];
+	  un[2] = b*b*A/2/vsol[2];
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(unit, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, solit)) {
+	if (!lnl.solveLoop(fit, nr, vsol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
@@ -1081,7 +1073,7 @@ int main() {
       } else {
 	cout << "Fit:       " << fit << endl;
       };
-      cout << "Sol:       " << solit[0] << ", " << solit[1] << ", " << solit[2] << 
+      cout << "Sol:       " << vsol[0] << ", " << vsol[1] << ", " << vsol[2] << 
 	endl;
       if (mu == me && mu < 1e-15) {
 	mu = 0;
@@ -1098,23 +1090,23 @@ int main() {
       };
       iter = 2*Niter;
       lnl.reset();
-      solit[0] = 10;
-      solit[1] = 20;
-      solit[2] = 2;
+      vsol[0] = 10;
+      vsol[1] = 20;
+      vsol[2] = 2;
       fit = 1;
       tim1.mark();
       while (iter>0 && (fit>0 || fit < -0.001)) {
 	for (uInt i=0; i<n; i++) {
-	  Double A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				  ((x[i]-solit[1])/solit[2])));
-	  Double b = 2*(x[i]-solit[1])/solit[2];
-	  un[0] = A/solit[0];
-	  un[1] = b*A/solit[2];
-	  un[2] = b*b*A/2/solit[2];
+	  Double A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				  ((x[i]-vsol[1])/vsol[2])));
+	  Double b = 2*(x[i]-vsol[1])/vsol[2];
+	  un[0] = A/vsol[0];
+	  un[1] = b*A/vsol[2];
+	  un[2] = b*b*A/2/vsol[2];
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(unit, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, solit)) {
+	if (!lnl.solveLoop(fit, nr, vsol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
@@ -1124,18 +1116,18 @@ int main() {
       me = lnl.getWeightedSD();
       cout << "Niter:     " << 2*Niter-iter << endl;
       cout << "Fit:       " << fit << endl;
-      cout << "Sol:       " << solit[0] << ", " << solit[1] << ", " << solit[2] << 
+      cout << "Sol:       " << vsol[0] << ", " << vsol[1] << ", " << vsol[2] << 
 	endl;
       cout << "me:        " << mu << ", " << me << endl;
       cerr << "User time: " << tim1.user() << endl;
       lnl.reset();
       for (uInt i=0; i<n; i++) {
-	Double A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				  ((x[i]-solit[1])/solit[2])));
-	Double b = 2*(x[i]-solit[1])/solit[2];
-	un[0] = A/solit[0];
-	un[1] = b*A/solit[2];
-	un[2] = b*b*A/2/solit[2];
+	Double A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				  ((x[i]-vsol[1])/vsol[2])));
+	Double b = 2*(x[i]-vsol[1])/vsol[2];
+	un[0] = A/vsol[0];
+	un[1] = b*A/vsol[2];
+	un[2] = b*b*A/2/vsol[2];
 	kn[0] = y[i]-A;
 	lnl.makeNorm(unit, 1.0, kn[0]);
       };
@@ -1159,7 +1151,7 @@ int main() {
     
     cout << "Non-linear---- Float --------" << endl;
     {
-      LSQFit lnl(3);
+      LSQaips lnl(3);
       const uInt n=100;
       Double x[n];
       Double y[n];
@@ -1183,16 +1175,16 @@ int main() {
       tim1.mark();
       while (iter>0 && (fit>0 || fit < -0.001)) {
 	for (uInt i=0; i<n; i++) {
-	  Double A = solit[0]*exp(-(((x[i]-solit[1])/solit[2])*
-				    ((x[i]-solit[1])/solit[2])));
-	  Double b = 2*(x[i]-solit[1])/solit[2];
-	  un[0] = A/solit[0];
-	  un[1] = b*A/solit[2];
-	  un[2] = b*b*A/2/solit[2];
+	  Double A = vsol[0]*exp(-(((x[i]-vsol[1])/vsol[2])*
+				    ((x[i]-vsol[1])/vsol[2])));
+	  Double b = 2*(x[i]-vsol[1])/vsol[2];
+	  un[0] = A/vsol[0];
+	  un[1] = b*A/vsol[2];
+	  un[2] = b*b*A/2/vsol[2];
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(unit, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, solit)) {
+	if (!lnl.solveLoop(fit, nr, vsol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
@@ -1208,7 +1200,7 @@ int main() {
       } else {
 	cout << "Fit:       " << fit << endl;
       };
-      cout << "Sol:       " << solit[0] << ", " << solit[1] << ", " << solit[2] << 
+      cout << "Sol:       " << vsol[0] << ", " << vsol[1] << ", " << vsol[2] << 
 	endl;
       if (muf == mef && muf < 1e-15) {
 	muf = 0;
