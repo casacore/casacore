@@ -89,7 +89,7 @@ void FitsInput::errmsg(FitsErrs e, char *s) {
     // all FitsIO messages are SEVERE
     char * mptr = msgline.str();
     errfn(mptr, FITSError::SEVERE);
-    delete [] mptr;
+    // delete [] mptr;
 }
 
 char *FitsDiskInput::skip(int n) { // skip n logical records and read
@@ -153,7 +153,7 @@ void FitsOutput::errmsg(FitsErrs e, char *s) {
     // all FitsIO messages are SEVERE
     char * mptr = msgline.str();
     errfn(mptr, FITSError::SEVERE);
-    delete [] mptr;
+    // delete [] mptr;
 }
 
 BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d, 

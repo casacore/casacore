@@ -2285,7 +2285,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 					<< x.index() << ends;
 				char * mptr = msgline.str();
 				errhandler(mptr, FITSError::SEVERE);
-				delete [] mptr;
+				// delete [] mptr;
 				return -1;
 			    }
 			}
@@ -2313,7 +2313,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 				    << x.index() << ends;
 			    char * mptr = msgline.str();
 			    errhandler(mptr, FITSError::SEVERE);
-			    delete [] mptr;
+			    // delete [] mptr;
 			    return -1;
 			}
 		    }
@@ -2418,7 +2418,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		msgline << ends;
 		char * mptr = msgline.str();
 		errhandler(mptr, errlev);
-		delete [] mptr;
+		// delete [] mptr;
 		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
 		    errhandler(kwlist.parse_err(j), errlev);
 		}
@@ -2437,7 +2437,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 			msgline << ends;
 			char * mptr = msgline.str();
 			errhandler(mptr, FITSError::WARN);
-			delete [] mptr;
+			// delete [] mptr;
 		    	errhandler("Invalid card after END keyword.",
 				   FITSError::WARN);
 		    }

@@ -1,5 +1,5 @@
 //# blockio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ void BlockIO::errmsg(IOErrs e, char *s) {
     // all BlockIO messages are SEVERE
     char * mptr = msgline.str();
     errfn(mptr, FITSError::SEVERE);
-    delete [] mptr;
+    // delete [] mptr;
 }
 
 BlockIO::BlockIO(const char *f, int o, int r, int n, 

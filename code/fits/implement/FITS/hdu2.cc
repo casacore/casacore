@@ -1,5 +1,5 @@
 //# hdu2.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,7 +118,7 @@ void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
     // all of the errors which use this function are SEVERE
     char * mptr = msgline.str();
     errfn(mptr, FITSError::SEVERE);
-    delete [] mptr;
+    // delete [] mptr;
 }
 
 //== determine_type of HeaderDataUnit ========================================
