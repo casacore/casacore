@@ -6162,3 +6162,4 @@
 17 179 src rm trial/implement/Functionals/test/tLinearComb.cc
 17 179 src rm aips/implement/Functionals/Polynomial.h
 17 179 src rm aips/implement/Functionals/Polynomial.cc
+17 179 src rm aips/implement/Functionals/test/tPolynomial.cc
