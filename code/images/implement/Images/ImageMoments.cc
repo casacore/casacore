@@ -841,7 +841,7 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
          imgp->setImageInfo(pInImage_p->imageInfo());
-         imgp->mergeTableLogSink(*pInImage_p);
+         imgp->mergeTableLogSink(pInImage_p->logSink());
       } else {
          if (out_p.empty()) out_p = in;
          String name = out_p + suffix;
@@ -862,7 +862,7 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
          imgp->setImageInfo(pInImage_p->imageInfo());
-         imgp->mergeTableLogSink(*pInImage_p);
+         imgp->mergeTableLogSink(pInImage_p->logSink());
       }
 //
       LCPagedMask mask(RegionHandler::makeMask (*imgp, "mask0"));
