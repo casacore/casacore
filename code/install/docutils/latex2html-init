@@ -10,6 +10,8 @@ $NOLATEX = 0;           # 1 = do not pass unknown environments to Latex
 
 $EXTERNAL_IMAGES = 0;   # 1 = leave the images outside the document 
 
+$ACCENT_IMAGES = 'large' # Add large accents to images
+
 $ASCII_MODE = 0;        # 1 = do not use any icons or internal images
 
 # 1 =  use links to external postscript images rather than inlined GIF's.
