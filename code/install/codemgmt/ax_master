@@ -2418,3 +2418,4 @@
 11 219 src rm trial/implement/DisplayDatas/PADDPositionEvent.h
 11 220 src mv trial/apps/gDisplay/display.g trial/apps/gDisplay/gdisplay.g
 11 231 src mv trial/apps/dish/recordbrowser.g trial/apps/dish/dishRecBrowser.g
+11 235 src mv trial/implement/Lattices/LatticeCoordinates.h trial/implement/Lattices/LELCoordinates.h
