@@ -150,26 +150,36 @@ uInt Fit2D::addModel (Fit2D::Types type,
 //
 // Set parameters.  0 (flux), 1 (x), 2 (y), 3 (FWHM major), 4 (FWHM minor), 
 // 5 (pa - in radians).  Convert p.a. from positive +x -> +y
-// to +y -> -x for NQGaussian2D
+// to +y -> -x for NQGaussian2D.  Note that fixing the ratio is not
+// the same as fixing the minor axis, which is what the Fit2D interface
+// claims to do.  I don't know how to solve this presently.
 //
-      for (uInt i=0; i<gauss2d.nparameters(); i++) {
-         if (i==NQGaussian2D<AutoDiff<Double> >::RATIO) {
+      Int ii = NQGaussian2D<Float>::HEIGHT;
+      gauss2d[ii] = AutoDiff<Double>(parameters(0), gauss2d.nparameters(), ii);   // flux
+      gauss2d.mask(ii) = parameterMask(0);
 //
-// Convert minor axis specification to an axial ratio.
+      ii = NQGaussian2D<Float>::XCENTER;
+      gauss2d[ii] = AutoDiff<Double>(parameters(1), gauss2d.nparameters(), ii);   // x
+      gauss2d.mask(ii) = parameterMask(1);
 //
-            Double ratio =
-	      parameters(NQGaussian2D<AutoDiff<Double> >::RATIO) /
-	      parameters(NQGaussian2D<AutoDiff<Double> >::YWIDTH);
-            gauss2d[i] = AutoDiff<Double>(ratio, gauss2d.nparameters(), i);
-         } else if (i==NQGaussian2D<AutoDiff<Double> >::PANGLE) {
-	   // +y -> -x for NQGaussian2D
-	   Double pa = paToGauss2D(parameters(i));
-	   piRange(pa);
-	   gauss2d[i] = AutoDiff<Double>(pa, gauss2d.nparameters(), i);
-	 } else gauss2d[i] = AutoDiff<Double>(parameters(i),
-					      gauss2d.nparameters(), i);
-         gauss2d.mask(i) = parameterMask(i);
-      }
+      ii = NQGaussian2D<Float>::YCENTER;
+      gauss2d[ii] = AutoDiff<Double>(parameters(2), gauss2d.nparameters(), ii);   // y
+      gauss2d.mask(ii) = parameterMask(2);
+//
+      ii = NQGaussian2D<Float>::YWIDTH;
+      gauss2d[ii] = AutoDiff<Double>(parameters(3), gauss2d.nparameters(), ii);   // major
+      gauss2d.mask(ii) = parameterMask(3);
+//
+      ii = NQGaussian2D<Float>::RATIO;
+      Double ratio = parameters(4) / parameters(3);
+      gauss2d[ii] = AutoDiff<Double>(ratio, gauss2d.nparameters(), ii);           // ratio
+      gauss2d.mask(ii) = parameterMask(4);
+//
+      ii = NQGaussian2D<Float>::PANGLE;
+      Double pa = paToGauss2D(parameters(5));
+      piRange(pa);
+      gauss2d[ii] = AutoDiff<Double>(pa, gauss2d.nparameters(), ii);              // p.a.
+      gauss2d.mask(ii) = parameterMask(5);
 //
 // Add it to function we are going to fit
 //
@@ -395,11 +405,9 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
 // necessary because functional interface takes axial ratio)
 //
    Function<AutoDiff<Double> > *sumFunction(itsFunction.clone());
-   Vector<Double> sol = getAvailableSolution();
-   for (uInt i=0; i<sol.nelements(); i++) (*sumFunction)[i] = sol[i];
+   for (uInt i=0; i<itsSolution.nelements(); i++) (*sumFunction)[i] = itsSolution[i];
 //
    IPosition loc(2);
-//
    for (Int j=0; j<shape(1); j++) {
      loc(1) = j;
       for (Int i=0; i<shape(0); i++) {
@@ -487,7 +495,7 @@ Fit2D::Types Fit2D::type(uInt which)
  
 
 
-Vector<Double> Fit2D::availableSolution () 
+Vector<Double> Fit2D::availableSolution ()  const
 //
 // Conversion of Gaussian models from axial ratio
 // to minor axis is done
@@ -502,7 +510,7 @@ Vector<Double> Fit2D::availableSolution ()
    return sol;
 } 
    
-Vector<Double> Fit2D::availableSolution (uInt which) 
+Vector<Double> Fit2D::availableSolution (uInt which)  const
 // 
 //  For Gaussian models, convert axial ratio to minor axis
 //  and fiddle position angle to be that of the major axis,
@@ -515,46 +523,169 @@ Vector<Double> Fit2D::availableSolution (uInt which)
    }
 //
    if (which >= itsFunction.nFunctions()) {
-      itsLogger << "Fit2D::solution - illegal model index" <<
+      itsLogger << "Fit2D::availableSolution - illegal model index" <<
 	LogIO::EXCEPTION;
    }
 //
-// Find the mask and parameters for this model. Recover these when the 
-// mask is False (fixed) otherwise recover the solution
-//
    uInt iStart;
-   Vector<Double> sol = getSolution(iStart, which);
-   Vector<Double> sol2(sol.nelements());
-   for (uInt i=0; i<sol2.nelements(); i++) sol2(i) = sol(i);
+   Vector<Double> sol = availableSolution(iStart, which);
 //
 // Convert Gaussian solution axial ratio to major/minor axis.
 // sol2(3) may be the major or minor axis after fitting.
 // The solution may have a negative axial ratio
 //
    if (itsTypeList(which)==Fit2D::GAUSSIAN) {
-      Double major, minor, pa;
-      if (abs(sol2(3)) > abs(sol2(3)*sol2(4))) {
-         major = abs(sol2(3));
-         minor = abs(sol2(3)*sol2(4));
+      Int iY = NQGaussian2D<Float>::YWIDTH;
+      Int iR = NQGaussian2D<Float>::RATIO;
+      Int iPA = NQGaussian2D<Float>::PANGLE;
 //
-         pa = sol2(5);
+      Double other = abs(sol(iY) * sol(iR));
+      Double ywidth = abs(sol(iY));
+      Double major, minor, pa;
+      if (ywidth > other) {
+         major = ywidth;
+         minor = other;
+         pa = sol(iPA);
       } else {
-         major = abs(sol2(3)*sol2(4));
-         minor = abs(sol2(3));
-         pa = sol2(5) + C::pi_2;   // pa off by 90
+         major = other;
+         minor = ywidth;
+         pa = sol(iPA) + C::pi_2;   // pa off by 90
       }
 //
 // Convert the position angle from positive 
 // +y -> -x to   positive +x -> +y
 //
-      sol2(3) = major;
-      sol2(4) = minor;
-      sol2(5) = paFromGauss2D(pa);
-      piRange(sol2(5));
+      sol(3) = major;
+      sol(4) = minor;
+      sol(5) = paFromGauss2D(pa);
+      piRange(sol(5));
    }
 //
-   return sol2;
+   return sol;
 }
+
+Vector<Double> Fit2D::availableSolution(uInt& iStart, uInt which)  const
+{
+// 
+// Loop over models and figure out where the model of
+// interest starts in the solution vector. Returns
+// all (adjustable + fixed) parameters directly as solved
+// for; no axial or position angle conversion 
+//
+   iStart = itsFunction.parameterOffset(which);
+//
+// Find the number of available parameters for the model of interest
+//
+   uInt nP = itsFunction.function(which).nparameters();
+   if (itsSolution.nelements() < iStart+nP) {
+     itsLogger << LogIO::SEVERE 
+	       << "Fit2D::availableSolution - "
+       "solution vector is not long enough; did you call function fit ?"
+	       << LogIO::POST;
+   }
+//
+   Vector<Double> sol(nP);
+   for (uInt i=0; i<nP; i++) sol(i) = itsSolution(iStart+i);
+   return sol;
+}
+
+
+Vector<Double> Fit2D::availableErrors ()  const
+//
+// Conversion of Gaussian models from axial ratio
+// to minor axis is done
+//
+{
+   const uInt nF = itsFunction.nFunctions();
+   Vector<Double> errors(itsFunction.nparameters());
+   for (uInt i=0, l=0; i<nF; i++) {
+      Vector<Double> errors2 = availableErrors(i);
+      for (uInt j=0; j<errors2.nelements(); j++) errors(l++) = errors2(j);
+   }
+   return errors;
+} 
+   
+Vector<Double> Fit2D::availableErrors (uInt which)  const
+// 
+//  For Gaussian models, convert axial ratio to minor axis
+// 
+{
+   if (!itsValidSolution) {
+      Vector<Double> tmp;
+      return tmp;
+   }
+//
+   if (which >= itsFunction.nFunctions()) {
+      itsLogger << "Fit2D::availableErrors - illegal model index" <<
+	LogIO::EXCEPTION;
+   }
+//
+   uInt iStart;
+   Vector<Double> errors = availableErrors (iStart, which);
+   Vector<Double> sol = availableSolution (iStart, which);
+//
+// Convert Gaussian solution axial ratio to major/minor axis.
+// ratio  = other / YWIDTH
+// sol(4) = other / sol(3)
+// Use standard propagation of errors to get error in other
+//
+   if (itsTypeList(which)==Fit2D::GAUSSIAN) {
+      Int iY = NQGaussian2D<Float>::YWIDTH;
+      Int iR = NQGaussian2D<Float>::RATIO;
+//
+      Double other = abs(sol(iY) * sol(iR));
+      Double yWidth = abs(sol(iY));
+      Double ratio = abs(sol(iR));
+//
+      Double sigRatio = errors(iR);
+      Double sigYWidth = errors(iY);
+      Double f1 = sigRatio * sigRatio / ratio / ratio;
+      Double f2 = sigYWidth * sigYWidth / yWidth / yWidth;
+      Double sigOther = other * sqrt(f1 + f2);
+      if (yWidth > other) {
+
+// ywidth is major, other is minor
+
+         errors(4) = sigOther;          // minor
+         errors(3) = errors(3);         // major
+      } else {
+
+// ywidth is minor, other is major
+
+         errors(4) = errors(3);         // minor
+         errors(3) = sigOther;          // major
+      }
+   }   
+//
+   return errors;
+}
+
+Vector<Double> Fit2D::availableErrors (uInt& iStart, uInt which)  const
+{
+// 
+// Loop over models and figure out where the model of
+// interest starts in the solution vector. 
+//
+   iStart = itsFunction.parameterOffset(which);
+//
+// Find the number of available parameters for the model of interest
+//
+   uInt nP = itsFunction.function(which).nparameters();
+   if (itsSolution.nelements() < iStart+nP) {
+     itsLogger << LogIO::SEVERE 
+	       << "Fit2D::availableErrors - "
+       "solution vector is not long enough; did you call function fit ?"
+	       << LogIO::POST;
+   }
+//
+   Vector<Double> allErrors = itsFitter.errors();
+   Vector<Double> errors(nP,0.0);
+   for (uInt i=0; i<nP; i++) errors(i) = allErrors(iStart+i);
+   return errors;
+}
+
+
+
 
 String Fit2D::errorMessage () const
 {
@@ -573,16 +704,6 @@ Double Fit2D::chiSquared () const
       return -1.0;
    }
    return itsChiSquared;
-}
-
-
-Matrix<Double> Fit2D::covariance()
-{
-   if (!itsValidSolution) {
-      Matrix<Double> tmp;
-      return tmp;
-   }
-   return itsFitter.compuCovariance();
 }
 
 
@@ -980,6 +1101,9 @@ Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values,
    Fit2D::ErrorTypes status = Fit2D::OK;
    itsSolution.resize(0);
    try {
+
+// itsSolution holds values for adjustable and fixed parameters
+
       itsSolution = itsFitter.fit(pos, values, weights);
       if(!itsFitter.converged()) {
          itsErrorMessage = String("The fit did not converge");
@@ -1019,7 +1143,7 @@ void Fit2D::normalizeSolution()
    uInt iStart;
 //
    for (uInt i=0; i<nModels; i++) {
-      Vector<Double> sol = getSolution(iStart, i);
+      Vector<Double> sol = availableSolution(iStart, i);
 
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
@@ -1044,53 +1168,6 @@ void Fit2D::normalizeSolution()
    }
 }
 
-
-Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which) 
-{
-// 
-// Loop over models and figure out where the model of
-// interest starts in the solution vector. Returns
-// only adjustable parameters
-//
-   iStart = itsFunction.parameterOffset(which);
-//
-// Find the number of available parameters for the model of interest
-//
-   uInt nP = itsFunction.function(which).nparameters();
-   if (itsSolution.nelements() < iStart+nP) {
-     itsLogger << LogIO::SEVERE 
-	       << "Fit2D::getSolution - "
-       "solution vector is not long enough; did you call function fit ?"
-	       << LogIO::POST;
-   }
-//
-   Vector<Double> sol(nP);
-   for (uInt i=0; i<nP; i++) sol(i) = itsSolution(iStart+i);
-   return sol;
-}
-
-
-
-Vector<Double> Fit2D::getAvailableSolution()  const
-//
-// Returns available parameters (adjustable plus fixed)
-// Position angle left in internal convention (+y -> -x)
-//
-{
-   if (!itsValidSolution) {
-      Vector<Double> tmp;
-      return tmp;
-   }   
-//
-// Find the mask and parameters for the SumFunction.
-// Recover these when the mask is False (fixed)
-// otherwise recover the solution
-//
-   const uInt nParams = itsFunction.nparameters(); 
-   Vector<Double> sol2(nParams);
-   for (uInt i=0; i<nParams; i++) sol2(i) = itsSolution(i);
-   return sol2;
-} 
 
 void Fit2D::piRange (Double& pa) const
 //
