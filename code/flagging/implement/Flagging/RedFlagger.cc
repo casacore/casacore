@@ -236,24 +236,31 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
   Bool compress=False;
 
   dataMode_p=mode;
+
   if(dataMode_p.matches("none")) {
-    cout << "No data selection applied" << endl;
+    cout << "Whole data set has been selected or use mode argument to select specific subset " << endl;
 
     vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
     //    nullSelect_p=True;
     return True;
-  }
+  } else {
 
-  nullSelect_p=False;
-  dataNchan_p=nchan;
-  dataStart_p=start;
-  dataStep_p=step;
-  mDataStart_p=mStart;
-  mDataStep_p=mStep;
-  dataspectralwindowids_p.resize(spectralwindowids.nelements());
-  dataspectralwindowids_p=spectralwindowids;
-  datafieldids_p.resize(fieldids.nelements());
-  datafieldids_p=fieldids;
+    nullSelect_p=False;
+    /*
+    dataNchan_p.resize();
+    dataStart_p.resize();
+    dataStep_p.resize();
+    */
+    dataNchan_p=nchan;
+    dataStart_p=start;
+    dataStep_p=step;
+    
+    mDataStart_p=mStart;
+    mDataStep_p=mStep;
+    dataspectralwindowids_p.resize(spectralwindowids.nelements());
+    dataspectralwindowids_p=spectralwindowids;
+    datafieldids_p.resize(fieldids.nelements());
+    datafieldids_p=fieldids;
   
   //	if (fieldids.nelements() > 1) {
   //	multiFields_p = True;
@@ -300,10 +307,10 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     String colf=MS::columnName(MS::FIELD_ID);
     String cols=MS::columnName(MS::DATA_DESC_ID);
     
-    if(datafieldids_p.nelements()>0&&datadescids_p.nelements()>0){
+    if(datafieldids_p.nelements()>0 && datadescids_p.nelements()>0){
       condition=sorted.col(colf).in(datafieldids_p)&&
 	sorted.col(cols).in(datadescids_p);
-      os << "Selecting on field and spectral window ids" << LogIO::POST;
+      os << "Selecting on field ids and spectral window ids" << LogIO::POST;
     }
     else if(datadescids_p.nelements()>0) {
       condition=sorted.col(cols).in(datadescids_p);
@@ -313,13 +320,12 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
       condition=sorted.col(colf).in(datafieldids_p);
       os << "Selecting on field id" << LogIO::POST;
     }
-    
+
     // Remake the selected ms
     mssel_p = new MeasurementSet(sorted(condition));
     AlwaysAssert(mssel_p, AipsError);
     msname_p = ms.tableName();
     mssel_p->rename(msname_p+"/SELECTED_TABLE", Table::Scratch);
-  
     if(mssel_p->nrow()==0) {
       delete mssel_p; mssel_p=0;
       os << LogIO::WARN
@@ -342,12 +348,12 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
       }
     }
     */
-    
     Int len = msSelect.length();
     Int nspace = msSelect.freq (' ');
     Bool nullSelect=(msSelect.empty() || nspace==len);
     if (!nullSelect) {
       MeasurementSet* mssel_p2;
+
       // Apply the TAQL selection string, to remake the selected MS
       String parseString="select from $1 where " + msSelect;
       mssel_p2=new MeasurementSet(tableCommand(parseString,*mssel_p));
@@ -364,14 +370,12 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 	if (mssel_p) {
 	  delete mssel_p; 
 	  mssel_p=mssel_p2;
-	  delete mssel_p2;
 	  mssel_p->flush();
 	}
       }
     } else {
-      os << "No selection string given" << LogIO::POST;
+      os << "No msselect string given" << LogIO::POST;
     }
-    
     if(mssel_p->nrow()!=ms.nrow()) {
       os << "By selection " << ms.nrow() << " rows are reduced to "
 	 << mssel_p->nrow() << LogIO::POST;
@@ -390,15 +394,17 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
   }
   */
   // Channel selection
-  if(!vs_p)
+  if(!vs_p) {
+    //    delete vs_p;
     vs_p = new VisSet(*mssel_p,sort,noselection,timeInterval,compress);
+  }
   selectDataChannel(*vs_p, dataspectralwindowids_p, dataMode_p,
 		    dataNchan_p, dataStart_p, dataStep_p,
 		    mDataStart_p, mDataStep_p);
   
   ms = *mssel_p;
-  cout << " Current ms  "  << mssel_p->tableName() << endl;
-  
+  //  cout << " Current ms is "  << mssel_p->tableName() << endl;
+  }
   return True;
 }
 
@@ -753,7 +759,6 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   VisBuffer vb(vi);
   RFChunkStats chunk(vi,vb,*this,&pgp_screen,&pgp_report);
 
-
 // setup global options for flagging agents
   Record globopt(Record::Variable);
   if( opt.isDefined(RF_GLOBAL) )
@@ -817,6 +822,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     //    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
     acc[nacc++] = agent;
   }
+
   acc.resize(nacc, True);
   // begin iterating over chunks
   uInt nchunk=0;
