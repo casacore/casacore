@@ -297,8 +297,6 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units)
 
 void Coordinate::checkFormat(Coordinate::formatType& format, 
                              const Bool ) const
-//
-//
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
@@ -344,25 +342,71 @@ String Coordinate::format(String& units,
                           Coordinate::formatType format, 
                           Double worldValue, 
                           uInt worldAxis, 
-                          Bool absolute, 
-                          Int precision,
-                          Bool native) 
+                          Bool isAbsolute, 
+                          Bool showAsAbsolute,
+                          Int precision)
+//
+// isAbsolute
+//    T means the worldValue is given as absolute
+//    F means the worldValue is given as relative
+// 
+// showAsAbsolute
+//    T means the worldValue should be formatted as absolute
+//    F means the worldValue should be formatted as relative
+//
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
  
 // Check format
- 
+
    Coordinate::formatType form = format;
-   checkFormat (form, absolute);
+   checkFormat (form, showAsAbsolute);
    
 // Set default precision
  
    Int prec = precision;
-   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+   if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
+
+// Convert given world value to absolute or relative as needed
+
+   static Vector<Double> world;   
+   if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
+//
+   if (showAsAbsolute) {
+      if (!isAbsolute) {
+         world = 0.0;
+         world(worldAxis) = worldValue;
+         makeWorldAbsolute(world);
+         worldValue = world(worldAxis); 
+      }
+   } else {
+      if (isAbsolute) {
+         world = referenceValue();
+         world(worldAxis) = worldValue;
+         makeWorldRelative(world);
+         worldValue = world(worldAxis); 
+      }
+   } 
+
+// Convert to specified unit if possible
+
+   if (units.empty()) {
+      units = worldAxisUnits()(worldAxis);
+   } else {
+      Unit nativeUnit(worldAxisUnits()(worldAxis));
+      Unit currentUnit(units);
+//
+      if (currentUnit != nativeUnit) {
+         throw(AipsError("Requested units are invalid for this Coordinate"));
+      } else {
+         static Quantum<Double> q;
+         q.setValue(worldValue);
+         q.setUnit(nativeUnit);
+         worldValue = q.getValue(currentUnit);
+      }
+   }
        
-   
-// Format and get units.  Always format in native coordinate 
-// units here.  native is only active in derived classes
+// Format and get units.  
          
    ostrstream oss;
    if (form == Coordinate::SCIENTIFIC) {
@@ -375,9 +419,6 @@ String Coordinate::format(String& units,
       oss << worldValue;        
    }                            
 //
-   units = String("");
-   if (form!=Coordinate::TIME) units = worldAxisUnits()(worldAxis);
-//
    return String(oss);
 }
 
@@ -386,17 +427,17 @@ String Coordinate::formatQuantity (String& units,
                                    Coordinate::formatType format2, 
                                    const Quantum<Double>& worldValue, 
                                    uInt worldAxis, 
-                                   Bool absolute, 
-                                   Int precision,
-                                   Bool native) 
+                                   Bool isAbsolute,
+                                   Bool showAsAbsolute,
+                                   Int precision)
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 
 // Use derived class formatter
 
-   String unit = worldAxisUnits()(worldAxis);
-   return format(units, format2, worldValue.getValue(Unit(unit)),
-                 worldAxis, absolute, precision, native);
+   return format(units, format2, 
+                 worldValue.getValue(Unit(worldAxisUnits()(worldAxis))),
+                 worldAxis, isAbsolute, showAsAbsolute, precision);
 }
 
 
