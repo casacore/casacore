@@ -236,13 +236,13 @@ public:
     // CoordinateSystem, cSys.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that the axis could not be found in the other
-    // CoordinateSystem.  The vector <src>refCange</src> says
+    // CoordinateSystem.  The vector <src>refChange</src> says
     // if the types are the same, is there a reference type change
     // (e.g. TOPO versus LSR for the SpectralCoordinate, 
     // or J2000 versus GALACTIC for DirectionCoordinate). Thus
     // if refChange(i) is True, it means world axis i in the
     // current CoordinateSystem was matched, but has a different
-    // reference type
+    // reference type to that of the supplied CoordinateSystem.
     Bool worldMap (Vector<Int>& worldAxisMap,
 		   Vector<Int>& worldAxisTranspose,
 		   Vector<Bool>& refChange,
