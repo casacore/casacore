@@ -1,0 +1,22 @@
+
+change id: 0047
+ author:   Tim Cornwell
+ date:     2000/09/06
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   guientry
+ type:     Code
+ category: Change
+ summary:  New list widget to contain other widgets
+
+The new list widget can contain one or more elements where each
+element can have any number of guientry widgets. elements are added
+and deleted by the using via two buttons. Selection of the displayed
+element is controlled by a slider. The usual get and insert functions
+apply.
+
+This widget is specifically designed for hierarchical inputs like those
+used in map.g but will undoubtedly be useful elsewhere. 
+
+Tim
