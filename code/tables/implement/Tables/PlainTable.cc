@@ -221,7 +221,7 @@ void PlainTable::reopenRW()
 void PlainTable::renameSubTables (const String& newName,
 				  const String& oldName)
 {
-    keywordSet().renameTables (newName, oldName);
+    rwKeywordSet().renameTables (newName, oldName);
     colSetPtr_p->renameTables (newName, oldName);
 }
 

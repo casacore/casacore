@@ -443,7 +443,7 @@ void ColumnSet::reopenRW()
 void ColumnSet::renameTables (const String& newName, const String& oldName)
 {
     for (uInt i=0; i<colMap_p.ndefined(); i++) {
-	getColumn(i)->keywordSet().renameTables (newName, oldName);
+	getColumn(i)->rwKeywordSet().renameTables (newName, oldName);
     }
 }
 
