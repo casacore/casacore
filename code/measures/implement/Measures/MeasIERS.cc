@@ -244,7 +244,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 
 Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
   Int ut = ifloor(utf);
-  if (ut < mjd0[which] + 1 || ut > mjdl[which]) {
+  if (ut < mjd0[which] + 1 || ut >= mjdl[which]) {
     return False;
   };
   if (utf >= ldat[which][0] &&
