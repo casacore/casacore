@@ -106,6 +106,10 @@
   
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Images/ImageUtilities.h>
+#include <trial/Images/ImageRegion.h>
+#include <trial/Lattices/LCBox.h>
 #include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
@@ -171,7 +175,7 @@ try {
    if (cursorAxes.nelements() == 1 && cursorAxes(0) == -10) {
       cursorAxes.resize(0);
    } else {
-      for (Int i=0; i<cursorAxes.nelements(); i++) cursorAxes(i)--;
+      for (uInt i=0; i<cursorAxes.nelements(); i++) cursorAxes(i)--;
       validInputs(AXES) = True;
    }
    
@@ -185,34 +189,40 @@ try {
       blc.resize(0);
    } else {
       blc.resize(blcB.nelements());
-      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      for (uInt i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (trcB.nelements() == 1 && trcB[0] == -10) {
       trc.resize(0);
    } else {
       trc.resize(trcB.nelements());
-      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      for (uInt i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (incB.nelements() == 1 && incB[0] == -10) {
       inc.resize(0);
    } else {
       inc.resize(incB.nelements());
-      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      for (uInt i=0; i<incB.nelements(); i++) inc(i) = incB[i];
       validInputs(REGION) = True;
    }
 
 
 // Convert inclusion and exclusion ranges to vectors.
 
-   Vector<Double> include(includeB);
+   Vector<Float> include(includeB.nelements());
+   for (uInt i=0;i<include.nelements(); i++) {
+     include(i) = includeB[i];
+   }
    if (include.nelements() == 1 && include(0)==0) {
       include.resize(0);
    } else {
       validInputs(RANGE) = True;
    }
-   Vector<Double> exclude(excludeB);  
+   Vector<Float> exclude(excludeB.nelements());
+   for (i=0;i<exclude.nelements(); i++) {
+     exclude(i) = excludeB[i];
+   }
    if (exclude.nelements() == 1 && exclude(0)==0) {
       exclude.resize(0);
    } else {
@@ -224,34 +234,47 @@ try {
 
    Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot);
    Vector<Int> nxy(nxyB);
-   if (device == "none") device = "";
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
-   if (statisticTypes.nelements()!=0 || !device.empty() || 
-       nxy.nelements()!=0) validInputs(PLOTTING) = True;
-
+    if (device != "none" && 
+       (statisticTypes.nelements()!=0 || !device.empty() || 
+        nxy.nelements()!=0)) validInputs(PLOTTING) = True;
 
 
 // Do the work
 
    DataType imageType = imagePixelType(in);
+
+
    if (imageType==TpFloat) {
       
 // Construct image
    
       PagedImage<Float> inImage(in);
+      SubImage<Float>* pSubImage = 0;
+
+
+      if (validInputs(REGION)) {
+         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
+         cout << "Selected region : " << blc+1<< " to "
+              << trc+1 << endl;
+         const LCBox region(blc, trc, inImage.shape());
+    
+         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
+      } else {
+         pSubImage = new SubImage<Float>(inImage);
+      }
+
+
 
 // Construct statistics object
    
-      ImageStatistics<Float> stats(inImage, os);
+      ImageStatistics<Float> stats(*pSubImage, os);
 
 
 // Set state
 
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) return 1;
-      }
-      if (validInputs(REGION)) {
-         if (!stats.setRegion(blc, trc, inc)) return 1;
       }
       if (validInputs(RANGE)) {
          if (!stats.setInExCludeRange(include, exclude)) return 1;
