@@ -112,9 +112,10 @@ public:
     // Assignment operator. Uses copy semantics.
     ImageProfileFit& operator=(const ImageProfileFit& other);
 
-    // Set data. <src>profileAxis</src> specifies the profile pixel
-    // axis. The data in the region are averaged over all other axes.
-    // Exception if vectors not conformant.
+    // Set data via an image. <src>profileAxis</src> specifies the profile pixel
+    // axis. You can either average the data over all other axes in the
+    // image/region (<src>average=True</src>) or fit all profiles in the 
+    // image/region.
     //<group>
     void setData (const ImageInterface<Float>& image,
                   const ImageRegion& region,
@@ -123,71 +124,77 @@ public:
                   uInt profileAxis, Bool average=True);
     //</group>
 
-    // Set data directly. x-units can be 'pix'. if absolute
-    // they must be 0-rel
-    // Say whether positions are absolute or relative (to somewhere)
+    // Set the data directly, and provide a coordinate system 
+    // and specify the profile axis in the coordinate system.
+    // The x-units can be 'pix'. If absolute
+    // they must be 0-rel pixels. <src>isBas</src> specifies whether
+    // the coordinates are absolute or relative to the reference pixel.
     //<group>
-    void setData (const Quantum<Vector<Float> >& x, 
+    void setData (const CoordinateSystem& cSys,
+                  uInt ProfileAxis,
+                  const Quantum<Vector<Float> >& x, 
                   const Quantum<Vector<Float> >& y,
-                  Bool isAbs);
-    void setData (const Quantum<Vector<Float> >& x, 
+                  Bool isAbs, const String& doppler);
+
+    void setData (const CoordinateSystem& cSys,
+                  uInt ProfileAxis,
+                  const Quantum<Vector<Float> >& x, 
                   const Quantum<Vector<Float> >& y,
                   const Vector<Bool>& mask,
-                  Bool isAbs);
+                  Bool isAbs, const String& doppler);
     //</group>
 
-    // Makes an estimate.  This means it generates SpectralElements
+    // Makes an estimate from the set data. This means it generates SpectralElements
     // holding the estimate, and replaces all elements you might have
     // put in place with function <src>addElement</src>.   Returns
-    // False if can't find any elements.
+    // False if it can't find any elements.
     Bool estimate (uInt nMax = 0);
 
-    // Decode the Glish record holding SpectralElements and adds
-    // them to the fitter.   Absolute pixel coordinate units are 1-rel on input.
+    // Decode the Glish record holding SpectralElements and add
+    // them to the fitter.   Absolute pixel coordinate units are assumed to be
+    // 1-rel on input.
     uInt addElements (const RecordInterface& estimate);
 
-    // Gets SpectralElements into a record.  When the data source is an image:
-    // the xunits are selected (in order of preference) xunits specified in <src>addElements</src>,
-    // preferred profile axis units in the CoordinateSystem of the image, native units
-    // of the profile axis; xabs and doppler are those specified in <src>addElements</src>
-    // or True and 'radio' of its not called. If the data source is not an image,
-    // the xunits, yunits, xabs are those of the source vectors, the doppler is 'radio'
-    //
+    // Gets the internal SpectralElements (either estimate or fit
+    // depending on what function you called last) into a record.  
     // Only returns False if the field is already defined. Absolute pixel 
     // coordinate units  are 1-rel on output.
-    Bool getElements (RecordInterface& estimate,
-                      const String& xUnit);
+    Bool getElements (RecordInterface& rec,
+                      Bool xAbsOut,
+                      const String& xUnitOut,
+                      const String& dopplerOut);
 
     // List all elements to stream (in same units as getElement)
     void listElements (LogIO& os, const SpectralList& list) const;
 
-    // Reset to default state
+    // Reset the internal list of SpectralElements to null 
     void reset ();
 
     // Return number of SpectralElements set
     uInt nElements ();
 
-    // Do the fit of the averaged profile
+    // Do the fit of the averaged profile 
     //<group>
     Bool fit();
     //</group>
 
-
     // Fit all profiles in the region and write out images.
     //<group>
-    void fit (RecordInterface& rec, 
+    void fit (RecordInterface& rec,  
+              Bool xAbsRec,
+              const String& xUnitRec,
+              const String& dopplerRec,
               PtrHolder<ImageInterface<Float> >& fit,
-              PtrHolder<ImageInterface<Float> >& resid,
-              const String& xUnitRec);
+              PtrHolder<ImageInterface<Float> >& resid);
     //</group>
 
-    // Find the residuals 
+    // Find the residuals (fit or estimate) of the averaged profile
     //<group>
     void residual(Vector<Float>& resid, const Vector<Float>& x) const;
     void residual(Vector<Float>& resid) const;
     //</group>
 
-    // Find the model
+    // Find the model (fit or estimate) of the averaged profile
     //<group>
     void model (Vector<Float>& model, const Vector<Float>& x) const;
     void model (Vector<Float>& model) const;
@@ -223,29 +230,42 @@ private:
 // function addElements.  They are used in function getElements
 // so that the output record has the same units.
 
-   MDoppler::Types itsDopplerType;
-   Unit itsXUnit;
-   Bool itsXAbs;
+   String itsDoppler;                 // The doppler of the data source 
+   Bool itsXAbs;                      // Is the data source in absolute coordinates ?
    Bool itsFitRegion;                 // True to fit all profiles in region
 //
    void collapse (Vector<Float>& profile, Vector<Bool>& mask,
                   uInt profileAxis,  const MaskedLattice<Float>& lat) const;
 
-// Convert model to absolute pixels
-   void convertXEstimateToPixels (SpectralElement& el,
-                                  Bool xAbsIn,
-                                  const Unit& xUnitIn,
-                                  const String& dopplerIn);
 
-// Convert from asbolute pixels to model
-   void convertXEstimateFromPixels (SpectralElement& el,
-                                    Bool xAbsOut,
-                                    const Unit& xUnitOut,
-                                    const MDoppler::Types dopplerOut);
+// Convert SE
+   SpectralElement convertSpectralElement (const SpectralElement& elIn,
+                                           Bool xAbsIn, Bool xAbsOut,
+                                           Bool oneRelIn, Bool oneRelOut,
+                                           const String& xUnitIn,
+                                           const String& xUnitOut,
+                                           const String& dopplerIn,
+                                           const String& dopplerOut,
+                                           const String& yUnitIn,
+                                           const String& yUnitOut);
+
+// Convert Gaussian model x-units when data source is an image
+    void convertGaussianElementX (SpectralElement& el,
+                                  CoordinateSystem& cSys,
+                                  uInt profileAxis,
+                                  Bool absIn, Bool absOut,
+                                  const String& unitIn,
+                                  const String& unitOut,
+                                  const String& dopplerIn,
+                                  const String& dopplerOut,
+                                  Bool oneRelIn,
+                                  Bool oneRelOut);
 //
-   Bool getElements (RecordInterface& estimate,
-                     const String& xUnit, const SpectralList& list);
-
+   Bool getElements (RecordInterface& rec,
+                     Bool xAbsOut,
+                     const String& xUnitOut,
+                     const String& dopplerOut,
+                     const SpectralList& list);
 //
    void setData (const ImageInterface<Float>& image,
                  const Slicer& sl, Bool average);
