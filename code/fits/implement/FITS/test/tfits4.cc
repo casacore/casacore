@@ -1,5 +1,5 @@
 //# tfits4.cc: FITS test program to create a binary table
-//# Copyright (C) 1993,1994
+//# Copyright (C) 1993,1994,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -164,7 +164,8 @@ int main()
 	bt.bind(9,multiple);
 
         // write the first batch of rows one at a time
-	for (int i = 0; i < 25; ++i) {
+	int i;
+	for (i = 0; i < 25; ++i) {
 		bt.set_next(1);
 		id = i;
 		ra = 79.8185 + i;
