@@ -55,7 +55,8 @@ main()
 
     Cube<Int> a(3,3,3);
     MatrixIterator<Int> ai(a);
-    for (Int i = 0; i < 3; i++)
+    Int i;
+    for (i = 0; i < 3; i++)
 	a.xyPlane(i) = i;
     count = 0;
     while (!ai.pastEnd()) {
@@ -66,8 +67,8 @@ main()
     }
 
     ReadOnlyMatrixIterator<Int> roai(a);
-    for (Int j = 0; j < 3; j++)
-	a.xyPlane(j) = j;
+    for (i = 0; i < 3; i++)
+	a.xyPlane(i) = i;
     count = 0;
     while (!roai.pastEnd()) {
 	AlwaysAssertExit(allEQ (roai.array(), count));
