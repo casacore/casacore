@@ -3196,3 +3196,4 @@
 13 057 src mv trial/implement/Measures/MyDummy.h aips/implement/Measures/MyDummy.h
 13 057 src mv trial/implement/Measures/MyDummy.cc aips/implement/Measures/MyDummy.cc
 13 058 src mv doc/newsletters/sept99/aips_logo9_13.ps doc/newsletters/sep99/aips_logo9_13.ps
+13 058 src mv doc/newsletters/sept99/aips_logo9_13.gif doc/newsletters/sep99/aips_logo9_13.gif
