@@ -1,5 +1,5 @@
 //# LatticeStatsBase.h: base class for LatticeStatistics class
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,6 +102,9 @@ enum StatisticsTypes {
 
 // inter-quartile range
    QUARTILE, 
+
+// A LEL expression string given by the user
+   LEL,
 
 // The minimum
    MIN,
