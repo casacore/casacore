@@ -114,8 +114,8 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
 {
   LogIO log(LogOrigin("MSConcat", "concatenate"));
   if (otherMS.tableInfo().subType() != "UVFITS") {
-    itsLog << "Measurement set was not created from a UVFITS file."
-	   << LogIO::EXCEPTION;
+    log << "Measurement set was not created from a UVFITS file."
+	<< LogIO::EXCEPTION;
   }
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
