@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/PoolStack.h>
+#include <aips/Containers/PoolStack.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
