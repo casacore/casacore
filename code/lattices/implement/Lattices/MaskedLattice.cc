@@ -1,5 +1,5 @@
 //# MaskedLattice.cc: Abstract base class for array-like classes with masks
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,6 +58,9 @@ Bool MaskedLattice<T>::isMasked() const
 template<class T>
 Bool MaskedLattice<T>::isMaskWritable() const
 {
+  if (!isWritable()) {
+    return False;
+  }
   const LatticeRegion* ptr = getRegionPtr();
   if (ptr == 0) {
     return False;
