@@ -5708,3 +5708,5 @@
 16 064 src mv trial/implement/Tables/test/tCompressComplex.cc aips/implement/Tables/test/tCompressComplex.cc
 16 065 src rm trial/apps/synthesistester/imager_position_test.g
 16 073 src rm trial/apps/gainfitter/gainpolyfitter.cc
+16 086 src rm aips/implement/Utilities/RegexError.h
+16 086 src rm aips/implement/Utilities/RegexError.cc
