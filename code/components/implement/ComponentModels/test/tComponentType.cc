@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/SpectralModel.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

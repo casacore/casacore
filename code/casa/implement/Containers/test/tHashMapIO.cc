@@ -1,5 +1,5 @@
 //# tHashMapIO.cc: test of HashMap IO
-//# Copyright (C) 1996,1999,2000,2001
+//# Copyright (C) 1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <trial/Containers/HashMapIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/fstream.h>
+#include <aips/iostream.h>
 #include <aips/stdlib.h>
 
 #if defined(AIPS_STUPID_SUN)

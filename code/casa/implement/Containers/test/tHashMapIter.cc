@@ -1,5 +1,5 @@
 //# tHashMapIter.cc: test of HashMapIter functionality
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <trial/Containers/HashMapIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/fstream.h>
+#include <aips/iostream.h>
 #include <aips/stdlib.h>
 
 //# for GNU compile in trial:
@@ -97,7 +98,7 @@ main() {
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
     DUMP_CURRENT
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-    char *key = strdup(it1.getKey());
+    char *key = strdup(it1.getKey().chars());
     it1.remove(it1.getKey());
     DUMP_CURRENT
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;

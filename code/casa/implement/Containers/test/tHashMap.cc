@@ -1,5 +1,5 @@
 //# tHashMap.cc: general test of the HashMap class
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <trial/Containers/HashMapIter.h>
 #include <aips/Utilities/String.h>
 #include <aips/fstream.h>
+#include <aips/iostream.h>
 #include <aips/stdlib.h>
 
 #define DIAGNOSTICS 1
