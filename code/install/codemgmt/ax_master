@@ -2489,3 +2489,4 @@
 11 339 src rm aips/glish/rivet
 11 339 sys rm libexec/display_meta.g
 11 340 sys rm libexec/display.g
+11 340 src rm trial/apps/viewer/displays.help
