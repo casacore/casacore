@@ -88,6 +88,10 @@ class FuncExpression {
   FuncExpression();
   // Construct an executable expression from the given string
   explicit FuncExpression(const String &prog);
+  // Make this object a (deep) copy of other.
+  FuncExpression(const FuncExpression &other);
+  // Make this object a (deep) copy of other.
+  FuncExpression &operator=(const FuncExpression &other);
 
   // Destructor
   ~FuncExpression() {};
@@ -99,6 +103,14 @@ class FuncExpression {
   const String &errorMessage() { return error_p; };
   // Get the executable program
   const vector<FuncExprData::ExprOperator> &getCode() const;
+  // Get the number of parameters in executable program
+  uInt getNpar() const { return npar_p; };
+  // Get the number of dimensions of executable program
+  uInt getNdim() const {return ndim_p; };
+  // Get reference to the compiled program
+  const vector<FuncExprData::ExprOperator> &getCode() { return code_p; };
+  // Get reference to compiled constants
+  const vector<Double> &getConst() { return const_p; };
   // Execute the program
   Bool exec(Double &res) const;
   // Print the stack information (mainly for debugging)
@@ -118,6 +130,10 @@ class FuncExpression {
   FuncExprData::ExprCompState state_p;
   // The current constant stack
   vector<Double> const_p;
+  // The number of parameters in code
+  uInt npar_p;
+  // The number of dimensions of expression
+  uInt ndim_p;
   // Executing stack
   mutable vector<Double> exec_p;
 
