@@ -4138,3 +4138,4 @@
 14 065 src mv trial/apps/gDisplay/GTkPSPixelCanvas.cc trialdisplay/apps/gDisplay/GTkPSPixelCanvas.cc
 14 065 src mv trial/apps/gDisplay/GTkPSPixelCanvas.h trialdisplay/apps/gDisplay/GTkPSPixelCanvas.h
 14 065 src mv trial/apps/gDisplay/GTkPixelCanvas.cc trialdisplay/apps/gDisplay/GTkPixelCanvas.cc
+14 065 src mv trial/apps/gDisplay/GTkPixelCanvas.h trialdisplay/apps/gDisplay/GTkPixelCanvas.h
