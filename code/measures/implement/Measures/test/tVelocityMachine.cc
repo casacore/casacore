@@ -1,5 +1,5 @@
 //# tVelocityMachine.cc: This program tests the VelocityMachine class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 int main() {
 

@@ -1,5 +1,5 @@
 //# dMeasure.cc: This program demonstrates Measures to calculate filed rotation
-//# Copyright (C) 1995,1996,2000
+//# Copyright (C) 1995,1996,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,8 +31,9 @@
 #include <aips/Measures.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/iostream.h>
 
-main()
+int main()
 {
     try {
 	cout << "Demonstrate measure class to provide field rotations" << endl;

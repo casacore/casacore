@@ -1,5 +1,5 @@
 //# tMeasure.cc: This program test Measure functions
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -48,8 +48,9 @@
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
+#include <aips/iostream.h>
 
-main()
+int main()
 {
     try {
       	cout << "Test measure class MVAngle" << endl;

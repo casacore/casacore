@@ -1,5 +1,5 @@
 //# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,8 +38,10 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/iostream.h>
 
-main() {
+int main()
+{
   const MVEpoch dat = 51116;
   try {
     MVDirection mvd1;
