@@ -45,11 +45,13 @@ extern "C" {
 #define BYTEWIDTH 8
 
 
-/* Maximum number of duplicates an interval can allow.  */
+/* Maximum number of duplicates an interval can allow. */
+/* Has been changed to copy from the limits.h file
 #if defined(_AIX) || defined(__sgi)
 #   undef RE_DUP_MAX
 #endif
 #define RE_DUP_MAX  ((1 << 15) - 1) 
+*/
 
 /* This defines the various regexp syntaxes.
    It can be set using the function a2_re_set_syntax.  */

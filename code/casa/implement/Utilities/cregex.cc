@@ -1,6 +1,6 @@
 /*
     cregex.c: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995,1996,1997,1999
+    Copyright (C) 1993,1994,1995,1996,1997,1999,2001
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,8 @@
 /* isalpha(3) etc. are used for the character classes.  */
 #include <ctype.h>
 /* Sequents are missing isgraph.  */
+/* Get the RE_DUP_MAX value */
+#include <limits.h>
 
 // Hack to avoid requiring alloca. Define an instance of this at the beginning
 // of your function and call it alloca.
