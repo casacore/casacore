@@ -6007,3 +6007,8 @@
 17 068 src rm trial/implement/Functionals/HyperPlane.h
 17 068 src rm trial/implement/Functionals/HyperPlane.cc
 17 068 src rm trial/implement/Functionals/test/tHyperPlane.cc
+17 069 src rm trial/implement/Functionals/Sinusoid1D.cc
+17 069 src rm trial/implement/Functionals/Sinusoid1D.h
+17 069 src rm trial/implement/Functionals/Sinusoid1D2.cc
+17 069 src rm trial/implement/Functionals/Sinusoid1DParam.cc
+17 069 src rm trial/implement/Functionals/Sinusoid1DParam.h
