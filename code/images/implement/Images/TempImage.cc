@@ -54,7 +54,7 @@ TempImage<T>::TempImage (const TiledShape& mapShape,
   mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
   maskPtr_p         (0)
 {
-    setCoordinateInfo (coordinateInfo);
+    AlwaysAssert(setCoordinateInfo (coordinateInfo), AipsError);
 }
 
 template <class T>
@@ -65,7 +65,7 @@ TempImage<T>::TempImage (const TiledShape& mapShape,
   mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
   maskPtr_p         (0)
 {
-    setCoordinateInfo (coordinateInfo);
+    AlwaysAssert(setCoordinateInfo (coordinateInfo), AipsError);
 }
 
 template <class T>
