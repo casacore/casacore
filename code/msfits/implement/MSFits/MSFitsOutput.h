@@ -1,5 +1,5 @@
 //# MSFitsOutput.h:  Write a MeasurementSet to a random group uvfits file
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -67,6 +67,7 @@ private:
 			       const MeasurementSet& rawms,
 			       const String& column,
 			       const Block<Int>& spwidMap,
+			       Int nrspw,
 			       const Block<Int>& fieldidMap,
 			       Bool asMultiSource,
 			       Bool combineSpw);
@@ -84,7 +85,8 @@ private:
 
   // Write the SU table.
   static Bool writeSU(FitsOutput *output, const MeasurementSet& ms,
-		      const Block<Int>& fieldidMap, uInt nrfield);
+		      const Block<Int>& fieldidMap, Int nrfield,
+		      const Block<Int>& spwidMap, Int nrspw);
 
   // Write the TY table.
   static Bool writeTY(FitsOutput *output, const MeasurementSet& ms,
