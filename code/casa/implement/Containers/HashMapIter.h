@@ -47,7 +47,7 @@
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
 //    #include <aips/Utilities/String.h>
-// #include <iostream>
+//    #include <aips/iostream.h>
 //   
 //    main() {
 //      HashMap<String,Int> hash;
