@@ -817,9 +817,10 @@ Bool FITSTable::reopen(const String &fileName)
     // set up things necessary fo VADESC cols
     // this is only necessary if a heap exists
     if (theheap_p) {
+        Int ncols = raw_table_p->ncols();
 	vatypes_p.resize(raw_table_p->ncols());
 	vaptr_p.resize(raw_table_p->ncols());
-	va_p = new VADescFitsField [raw_table_p->ncols()];
+	va_p = new VADescFitsField [ncols];
 	AlwaysAssert(va_p, AipsError);
 	for (i=0;i<uInt(raw_table_p->ncols());i++) {
 	    vaptr_p[i] = 0;
