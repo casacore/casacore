@@ -65,8 +65,8 @@ extern Bool aips_debug_on;
 namespace std {};
 #endif
 
-// The restrict keyword is only supported by the KAI C++ compiler.
-#if !defined(AIPS_KCC)
+// The restrict keyword is supported by some compilers only.
+#if !defined(AIPS_KAICC) && !defined(AIPS_INTELCC)
 #if !defined(restrict)
 #define restrict
 #endif
@@ -76,9 +76,11 @@ namespace std {};
 #if defined(AIPS_SUN_NATIVE)
 #define WHATEVER_SUN_TYPEDEF(X) X::
 #define WHATEVER_TYPENAME
+#define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
 #else
 #define WHATEVER_SUN_TYPEDEF(X)
 #define WHATEVER_TYPENAME typename
+#define WHATEVER_SUN_EXCEPTSPEC(X)
 #endif
 
 
