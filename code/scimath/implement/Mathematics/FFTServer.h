@@ -32,15 +32,22 @@
 #pragma implementation ("FFTServer.cc")
 #endif
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Containers/Block.h>
 
+//# Forward Declarations
 template <class T> class Array;
 
 // <summary>A class with methods for Fast Fourier Transforms</summary>
 
+// <use visibility=export>
+
+// <reviewed reviewer="wbrouw" date="yyyy/mm/dd" tests="tFFTServer">
+
 // <prerequisite> 
+// <li> Basic concepts of Fast Fourier Transforms.
 // <li> <linkto module=Arrays>The Arrays module</linkto>
 // </prerequisite>
 
@@ -65,7 +72,7 @@ template <class T> class Array;
 
 // This class can be initialised with a shape that indicates the length of the
 // transforms that will be performed, and whether they are going to be
-// real<->complex transforms or complex<->complex ones. This initialization
+// real<->complex transforms or complex<->complex ones. This initialisation
 // sets up variety of internal buffers and computes factorizations and twiddle
 // factors used during the transform. The initialised transform shape is always
 // compared with the shape of the supplied arguments when a transform is done
@@ -127,12 +134,16 @@ template <class T> class Array;
 // transform time and can be avoided by using the <src>fft0</src> member
 // functions which do not flip the data.
 
-// Some of the member functions in this class scramble the input Array. This
-// can be avoided, at the expense of copying the input Array to temporary
-// storage, by either:
+// Some of the member functions in this class scramble the input Array,
+// possibly by flipping the quandrants of the data although this is not
+// guaranteed. Modifification of the input Array can be avoided, at the expense
+// of copying the data to temporary storage, by either:
 // <ul> <li> Ensuring the input Array is a const Array.
 //      <li> Setting the constInput Flag to True.
 // </ul>
+// The latter option is provided to avoid users having to cast non-const
+// Arrays to const ones in order to prevent there input Array from being
+// scrambled.
 
 // <note role=warning> This class assumes that a Complex array is stored as
 // pairs of floating point numbers, with no intervening gaps, and with the real
@@ -149,11 +160,14 @@ template <class T> class Array;
 
 // </synopsis>
 
-// <templating arg=T,S>
-// The T argument must be of type Float or Double. <br>
-// If T=Float then S must be Complex. <br>
-// If T=Double the S must be DComplex. <br>
-// These are the only possible instantions of this class.
+// <templating arg=T>
+// The T argument must be of type Float or Double. These are the only possible
+// instantiations of this class.
+// </templating>
+
+// <templating arg=S>
+// The S argument must be of type Complex, if T is Float, or DComplex, if T is
+// Double. These are the only possible instantiations of this class.
 // </templating>
 //
 // <example>
@@ -171,7 +185,9 @@ template <class T> class Array;
 // </example>
 //
 // <thrown>
-// <li> AipsError: if the input and output Array have bad or incompatible shapes.
+// <li> AipsError: If the input and output Array have bad or incompatible
+// shapes. See the individual function descriptions for what Array shapes are
+// required.
 // </thrown>
 //
 // <todo asof="1997/10/22">
@@ -182,16 +198,16 @@ template <class T> class Array;
 template<class T, class S> class FFTServer
 {
 public:
-  // The default constructor. Initializes the server to do transforms of length
+  // The default constructor. Initialises the server to do transforms of length
   // 1! 
   FFTServer();
 
-  // Initialize the Server to do transforms on Arrays of the specified
+  // Initialise the Server to do transforms on Arrays of the specified
   // shape. See the resize function for a description of the
   // complexTransforms flag.
   FFTServer(const IPosition & fftSize, const Bool complexTransforms=False);
   
-  // copy constructor. The copied server is initializes to do transforms of the
+  // copy constructor. The copied server is initialised to do transforms of the
   // same length as the other server. Uses copy (and not reference) semantics
   // so that changing the transform length of one server does not affect the
   // other server.
@@ -207,60 +223,34 @@ public:
   // Modify the FFTServer object to do transforms of the supplied shape. If
   // complexTransforms is True then it is assumed that complex to complex
   // transforms are going to be done. Otherwise it is assumed that Real to
-  // complex transforms (and vice-versa) will be done. The shape is the shape of
-  // the real array (or complex one if complex to complex transforms are being
-  // done). In general it is not necessary to use this function as all the fft
-  // & fft0 functions will automatically resize the server, if necessary, to
-  // match their input arguments
+  // complex transforms (and vice-versa) will be done. The shape is the shape
+  // of the real array (or complex one if complex to complex transforms are
+  // being done). In general it is not necessary to use this function as all
+  // the fft & fft0 functions will automatically resize the server, if
+  // necessary, to match their input arguments.
   void resize(const IPosition & fftSize,
 		 const Bool complexTransforms=False);
 
   // Real to complex fft. The origin of the transform is in the centre of the
   // Array. Because of the Hermitian property the output Array only contains
-  // half of the complex result. Its size must either be zero, ie. have no
-  // elements, or a size that is appropriate to the input Array size,
+  // half of the complex result. The output Array must either have no elements
+  // or be a size that is appropriate to the input Array size,
   // ie. <src>shape = [(nx+2)/2, ny, nz,...]</src>.  Otherwise an AipsError is
-  // thrown. 
-  // If constInput is False then the input Array may be scrambled after calling
-  // this function. Setting constInput to True will guarantee this does not
-  // happen by making an internal copy of the input Array. Alternatively you
-  // can use the version of this function that has a const input Array. This
-  // also makes an internal copy.
+  // thrown. See the synopsis for a description of the constInput flag.
   // <group>
   void fft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
   void fft(Array<S> & cResult, const Array<T> & rData);
   // </group>
 
   // Complex to real fft. The origin of the transform is in the centre of the
-  // Array. Because of the Hermitian property the input Array only contains half
-  // of the complex values. The output Array's size must either be zero, ie
-  // have no elements, or a size that is appropriate to the input Array size,
-  // ie. either <src>shape = [2*cx-2, cy, cz,...]</src> or 
-  // <src>shape = [2*cx-1, cy, cz,...]</src>.  Otherwise an AipsError is
-  // thrown.
-
-  // To decide on whether the first axis of the output array is odd or even the
-  // following algorithm is used.
-  // <ul>
-  // <li> If the size of the output Array is non-zero:<br>
-  //      Then its first dimension must be either either 2*cx-1 or 2*cx-2 (and
-  //      the other dimensions must be the same as the input array). Otherwise
-  //      an AipsError is thrown.
-  // <li> If the number of elements in the output Array is zero:<br>
-  //      Then scan the imaginary components of the last points on the first
-  //      axis of the input Array. If any are not zero then the first axis of
-  //      the output array is 2*cx-1. Otherwise look at the current size of the
-  //      FFTServer. If its first dimension is either 2*cx-1 or 2*cx-2 then use
-  //      that dimension. Otherwise assume the first dimension is 2*cx-2, ie
-  //      an even length.
-  // </ul>
-
-  // If constInput is False then the input Array may be scrambled after calling
-  // this function. Setting constInput to True will guarantee this does not
-  // happen by making an internal copy of the input Array. Alternatively you
-  // can use the version of this function that has a const input Array. This
-  // also makes an internal copy
-  // <group>
+  // Array. Because of the Hermitian property the input Array only contains
+  // half of the complex values. The output Array must either have no elements,
+  // or be a size that is appropriate to the input Array size ie.,<br>
+  // <src>shape = [2*cx-2, cy, cz,...]</src> or <br>
+  // <src>shape = [2*cx-1, cy, cz,...]</src>.  <br>
+  // Otherwise an AipsError is thrown. See the description in the synopsis for
+  // the algorithm used to choose between the two possible output shapes and a
+  // description of the constInput Flag.  <group>
   void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
   void fft(Array<T> & rResult, const Array<S> & cData);
   // </group>
@@ -269,29 +259,27 @@ public:
   // centre of the Array. The direction of the transform is controlled by the
   // toFrequency variable. If True then a forward, or time to frequency,
   // transform is performed. If False a backward or frequency to time transform
-  // is done. Scaling by 1/N, where N is the number of elements in the Array,
-  // is always done on the backward transform.
+  // is done. Scaling is always done on the backward transform.
   void fft(Array<S> & cValues, const Bool toFrequency=True);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
   // variable. If True then a forward, or time to frequency, transform is
   // performed. If False a backward or frequency to time transform is
-  // done. Scaling by 1/N, where N is the number of elements in the Array, is
-  // always done on the backward transform. The size of the output Array must
-  // either be zero , ie one dimensional but with no elements, or the same as
-  // the input Array, ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an
-  // AipsError is thrown.
+  // done. Scaling is always done on the backward transform. The output Array
+  // must either either contain no elements or be the same as the input Array,
+  // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
+  // thrown.
   void fft(Array<S> & cResult, const Array<S> & cData,
 	   const Bool toFrequency=True);
 
-  // The following functions are equivalent to the <src>fft</src> functions
-  // described above except that the origin of the transform is the first
-  // element of the Array, ie. [0,0,0...], rather than the centre element, ie
-  // [nx/2, ny/2, nz/2, ...]. As the underlying FORTRAN functions assume that
-  // the origin of the transform is the first element these routines are in
-  // general faster than the equivalent ones with the origin at the centre of
-  // the Array.
+  // The <src>fft0</src> functions are equivalent to the <src>fft</src>
+  // functions described above except that the origin of the transform is the
+  // first element of the Array, ie. [0,0,0...], rather than the centre
+  // element, ie [nx/2, ny/2, nz/2, ...]. As the underlying FORTRAN functions
+  // assume that the origin of the transform is the first element these
+  // routines are in general faster than the equivalent ones with the origin
+  // at the centre of the Array.
   // <group>
   void fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
   void fft0(Array<S> & cResult, const Array<T> & rData);
@@ -302,34 +290,34 @@ public:
 	    const Bool toFrequency=True);
   // </group>
 private:
-  // Flips the quadrants in a complex Array so that the point at
-  // cData.shape()/2 moves to the origin. This moves, for example, the point 
-  // at [8,3] to the origin ([0,0]) in an array of shape [16,7].
-  // With an Array with an odd length two flips do NOT restore the data to its
-  // original state. So the when toZero=False this routine does an unflip
-  // operation that does restore the data to its original state for odd length
-  // arrays.
-  // When passed a Hermitian Array where half the complex plane is implicit 
-  // (eg as produced by a real->complex Transform) it is not necessary to flip
-  // the first dimension of the Array. In this case the isHermition flag
-  // should be set to True. For complex<->complex transforms this should be
-  // False.
+  //# Flips the quadrants in a complex Array so that the point at
+  //# cData.shape()/2 moves to the origin. This moves, for example, the point
+  //# at [8,3] to the origin ([0,0]) in an array of shape [16,7]. Usually two
+  //# flips will restore an Array to its original state.  But for Array's
+  //# where one or more dimension is an odd length two flips do NOT restore
+  //# the data to its original state.  So the when toZero=False this routine
+  //# does an unflip operation (ie moves the data at [0,0] to the centre) and
+  //# restores the data to its original state for odd length arrays.  When
+  //# passed a Hermitian Array where half the complex plane is implicit (eg as
+  //# produced by a real->complex Transform) it is not necessary to flip the
+  //# first dimension of the Array. In this case the isHermitian flag should
+  //# be set to True.  For complex<->complex transforms this should be False.
   // <group>
-  void flip(Array<T> & rData, const Bool toZero, const Bool isHermition);
-  void flip(Array<S> & cData, const Bool toZero, const Bool isHermition);
+  void flip(Array<T> & rData, const Bool toZero, const Bool isHermitian);
+  void flip(Array<S> & cData, const Bool toZero, const Bool isHermitian);
   // </group>
-  // finds the shape of the output array when doing complex -> real transforms
+  //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
-  // The size of the last FFT done by this object
+  //# The size of the last FFT done by this object
   IPosition theSize;
-  // Whether the last FFT was complex <-> complex or not
+  //# Whether the last FFT was complex<->complex or not
   Bool theComplexFlag;
-  // twiddle factors and factorisations used by fftpack
+  //# twiddle factors and factorisations used by fftpack
   PtrBlock<Block<T> *> theWork;
-  // buffer for copying non-contigious arrays to contigious ones. This is done
-  // so that the FFT's have a better chance of fitting into cache and hence
-  // going faster. 
-  // This buffer is also used as temporary storage when flipping the data.
+  //# buffer for copying non-contigious arrays to contigious ones. This is done
+  //# so that the FFT's have a better chance of fitting into cache and hence
+  //# going faster. 
+  //# This buffer is also used as temporary storage when flipping the data.
   Block<S> theBuffer;
 };
 #endif

@@ -530,12 +530,10 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
 };
 
 template<class T, class S> void FFTServer<T,S>::
-flip(Array<S> & cData, const Bool toZero, const Bool isHermition) {
+flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
   const IPosition shape = cData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
-//   if (isHermition && ndim == 2)
-//     cout << "Before a Complex Flip: " << cData << endl;
   AlwaysAssert(nElements != 0, AipsError);
   {
     Int buffLen = theBuffer.nelements();
@@ -554,7 +552,7 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermition) {
   uInt stride = 1;
   uInt r;
   uInt n=0;
-  if (isHermition) {
+  if (isHermitian) {
     n = 1;
     stride = shape(0);
   }
@@ -566,13 +564,6 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermition) {
     rowPtr = dataPtr;
     r = 0;
     while (r < nFlips) {
-//       if (isHermition && ndim == 2) {
-// 	cout << r << "(" << nFlips << ")" 
-// 	     << " DataPtr: " << dataPtr 
-// 	     << " RowPtr: " << rowPtr
-// 	     << endl;
-	
-//       }
       rowPtr2 = rowPtr + stride * rowLen2;
       rowPtr2o = rowPtr + stride * rowLen2o;
       if (toZero) {
@@ -593,12 +584,10 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermition) {
     stride *= rowLen;
   }
   cData.putStorage(dataPtr, dataIsAcopy);
-//   if (isHermition && ndim == 2)
-//     cout << "After a Complex Flip: " << cData << endl;
 }
 
 template<class T, class S> void FFTServer<T,S>::
-flip(Array<T> & rData, const Bool toZero, const Bool isHermition) {
+flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
   const IPosition shape = rData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
@@ -620,7 +609,7 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermition) {
   uInt stride = 1;
   uInt r;
   uInt n=0;
-  if (isHermition) {
+  if (isHermitian) {
     n = 1;
     stride = shape(0);
   }
@@ -652,7 +641,6 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermition) {
     stride *= rowLen;
   }
   rData.putStorage(dataPtr, dataIsAcopy);
-  //  cout << "After a Real Flip: " << rData << endl;
 }
 // Local Variables: 
 // compile-command: "cd test; gmake OPTLIB=1 inst"
