@@ -1,5 +1,5 @@
 //# MVFrequency.cc: Internal value for MFrequency
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,7 +159,7 @@ Quantity MVFrequency::get() const {
 }
 
 Quantity MVFrequency::get(const Unit &unit) const {
-  return Quantity(1.0/makeF(1.0/val, unit), unit);
+  return Quantity(makeF(val, unit, True), unit);
 }
 
 Vector<Double> MVFrequency::getVector() const {
@@ -176,7 +176,7 @@ void MVFrequency::putVector(const Vector<Double> &in) {
   };
 }
 
-Double MVFrequency::makeF(Double v, const Unit &dt) const{
+Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   static Bool needInit = True;
   static UnitVal InvTime;
   static UnitVal AngleTime;
@@ -196,20 +196,23 @@ Double MVFrequency::makeF(Double v, const Unit &dt) const{
     LVel = (QC::c).getBaseValue();
     Planck = (QC::h).getBaseValue();
   };
+  Double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0/dt.getValue().getFac()/v);
   } else if (dt.getValue() == InvTime) {
-    return (dt.getValue().getFac()*v);
+    x = dt.getValue().getFac();
   } else if (dt.getValue() == AngleTime) {
-    return (dt.getValue().getFac()/C::pi/2.0*v);
+    x = dt.getValue().getFac()/C::pi/2.0;
   } else if (dt.getValue() == UnitVal::LENGTH) {
     return (LVel/dt.getValue().getFac()/v);
   } else if (dt.getValue() == InvLength) {
-    return (LVel*dt.getValue().getFac()/C::pi/2.0*v);
+    x = LVel*dt.getValue().getFac()/C::pi/2.0;
   } else if (dt.getValue() == Energy) {
-    return (dt.getValue().getFac()/Planck*v);
+    x = dt.getValue().getFac()/Planck;
   } else {
     Quantity(1.0,dt).assert(Impuls);
-    return (dt.getValue().getFac()*LVel/Planck*v);
+    x = dt.getValue().getFac()*LVel/Planck;
   }
+  if (rev) return (v/x);
+  return (v*x);
 }
