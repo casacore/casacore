@@ -101,6 +101,9 @@ X11ROOT := /usr/X11R6
 MotifROOT := $(X11ROOT)
 MotifLIB  += -lXpm
 
+# XPM (X Pixmap) library
+XPMROOT  := $(X11ROOT)
+
 # LAPACK (FORTRAN Linear Algebra Package).
 LAPACKROOT := /usr
 
