@@ -1,5 +1,5 @@
 //# tSort.cc: Test program for the Sort class
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 
 #include <aips/Utilities/Sort.h>
 #include <aips/Arrays/Vector.h>
+#include <stdlib.h>
 
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.
@@ -182,7 +183,7 @@ void sortall (int options, Sort::Order order)
 }
 
 
-main()
+int main()
 {
     sortit (Sort::InsSort);
     sortit (Sort::QuickSort);

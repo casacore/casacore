@@ -32,6 +32,7 @@
 #include <aips/Exceptions.h>
 #include <iostream.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 
 // <summary>
