@@ -1,0 +1,29 @@
+
+<change id=0002>
+ <author> Ger van Diepen </author>
+ <date> 2000/05/08 </date>
+ <avers> 1.4 </avers>
+ <area> System </area>
+ <package> System </package>
+ <module> changelog </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Introduction of the changelog facility
+ </summary>
+ <description>
+The changelog facility has been added to the system making it possible
+to attach a log of changes to a release of AIPS++.
+<br>It consists of the following parts:
+<ul>
+ <li> ac/rac which let the user add an entry to a changelog file
+      in the appropriate directory. ac uses ao/ai, while rac uses rao/rai
+      to check out/in the files.
+ <li> addchange.g is a glish script invoked by ac/rac. It lets the user
+      fill in a change form.
+ <li> buildchangelog which builds various html files orming the actual
+      changelog.
+</ul>
+ </description>
+</change>
