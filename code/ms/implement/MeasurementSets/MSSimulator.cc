@@ -1156,7 +1156,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
 	      for (Int m=0; m < nAnt_p ; m++){
-		pointingc.antennaId().put(pointrow, m);
+		pointingc.antennaId().put(pointrow, m+numOfAnt);
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);
