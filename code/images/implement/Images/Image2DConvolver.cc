@@ -84,8 +84,7 @@ ImageInterface<T>* Image2DConvolver<T>::convolve(LogIO& os,
                                                  VectorKernel::KernelTypes kernelType,
                                                  const IPosition& pixelAxes,
                                                  const Vector<Quantum<Double> >& parameters,   
-                                                 Bool autoScale, Double scale,
-                                                 Bool askRemoveOut)
+                                                 Bool autoScale, Double scale)
 {
 
 // Make output image.  TempImage or PagedImage
@@ -94,17 +93,6 @@ ImageInterface<T>* Image2DConvolver<T>::convolve(LogIO& os,
    if (outFile.empty()) {
       pImOut = new TempImage<Float>(imageIn.shape(), imageIn.coordinates());
    } else {
-
-// This should only be used in the Tasking environment
-
-       if (askRemoveOut) {
-          NewFile validfile;
-          String errmsg;
-          if (!validfile.valueOK(outFile, errmsg)) {
-              os << errmsg << LogIO::EXCEPTION;
-          }
-       }
-//
       pImOut = new PagedImage<Float>(imageIn.shape(), imageIn.coordinates(), outFile);
    }
 
