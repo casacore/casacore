@@ -2115,3 +2115,4 @@
 11 105 src rm trial/implement/DisplayDatas/LatticePADisplayData.cc
 11 105 src rm trial/implement/DisplayDatas/LatticePADisplayData.h
 11 105 src mv trial/implement/Lattices/ScaRecordColDesc.h aips/implement/Tables/ScaRecordColDesc.h
+11 105 src mv trial/implement/Lattices/ScaRecordColDesc.cc aips/implement/Tables/ScaRecordColDesc.cc
