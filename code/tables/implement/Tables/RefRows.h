@@ -41,34 +41,42 @@ class Slicer;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tRefRows.cc">
 // </reviewed>
 
-// <synopsis> 
-// RefRows is used to make a view on another table.
-// Usually it is a view on a subset of the table, either in vertical
-// or horizontal direction. Thus a subset of rows and/or columns.
-// It will be the result of a select, sort, project or iterate function.
-//
-// It acts to the user as a normal table. All gets and puts are
-// handled by RefColumn which directs them to the referenced column
-// while (if needed) converting the given row number to the row number
-// in the referenced table. For that purpose RefRows maintains a
-// Vector of the row numbers in the referenced table.
-//
-// The RefRows constructor acts in a way that it will always reference
-// the original table. This means that if a select is done on a RefRows,
-// the resulting RefRows will also reference the original PlainTable.
-// This is done to avoid long chains of RefRowss.
-// However, if ever some other kind of table views are introduced
-// (like a join or a concatenation of similar tables), this cannot be
-// used anymore. Most software already anticipates on that. The only
-// exception is the code anding, oring tables (refAnd, etc.).
-// </synopsis> 
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=Vector>Vector</linkto>
+// </prerequisite>
 
-// <todo asof="$DATE:$">
+// <synopsis> 
+// RefRows is used to hold the row numbers forming a view on another
+// table. It contains a vector which can hold the row numbers in 2 ways:
+// <ol>
+// <li> As a normal series of row numbers. This is used by e.g. class
+//  <linkto class=RefTable>RefTable</linkto> 
+// <li> As a series of Slices. In this case 3 subsequent entries
+//  in the vector are used to represent start, end, and increment.
+//  This is used by a function like <src>ScalarColumn::getColumnRange</src>.
+// </ol>
+// Class <linkto class=RefRowsSliceIter>RefRowsSliceIter</linkto> can be
+// used to iterate through a RefRows object. Each step in the iteration
+// goes to the next a slice. If the RefRows objct contains a simple series
+// of row numbers, each slice contains only one row number.
+// This can degrade performance, so it is possible to use shortcuts by
+// testing if the object contains slices (using <src>isSliced()</src>)
+// and getting the row number vector directly (using <src>rowVector()</src>).
+// </synopsis>
+
+// <motivation>
+// RefRows is meant to have one class representing the various ways
+// of picking row numbers. This simplifies the interface of the table
+// and data manager classes dealing with getting/putting the data.
+// </motivation>
+
+//# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-// </todo>
+//# </todo>
 
 
 class RefRows
@@ -80,7 +88,7 @@ public:
     // containing individual row numbers, otherwise as containing
     // slices in the form start,end,incr.
     // When <src>collapse==True</src>, it will try to collapse the
-    // individual row numbers to the slice form.
+    // individual row numbers to the slice form (to save memory).
     RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
 	     Bool collapse = False);
 
@@ -104,6 +112,8 @@ public:
     Vector<uInt> convert (const Vector<uInt>& rootRownrs) const;
 
     // Return the number of rows given by this object.
+    // If the object contains slices, it counts the number of rows
+    // represented by each slice.
     // <group>
     uInt nrows() const
         { return (itsNrows == 0  ?  fillNrows() : itsNrows); }
@@ -119,7 +129,9 @@ public:
     Bool isSliced() const
         { return itsSliced; }
 
-    // Get the true row vector.
+    // Get the row vector as is (thus sliced if the object contains slices).
+    // It is mainly useful to get all row numbers when the object does not
+    // contain slices.
     const Vector<uInt>& rowVector() const
         { return itsRows; }
 
@@ -134,12 +146,66 @@ private:
 
 
 
+// <summary>
+// Class to iterate through a RefRows object.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="tRefRows.cc">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=RefRows>RefRows</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// RefRowsSliceIter is useful to iterate through a
+// <linkto class=RefRows>RefRows</linkto> object,
+// especially if the RefRows object contains slices.
+// Each step in the iteration returns a Slice object containing
+// the next slice in the RefRows object.
+// <br>
+// It is used in Table and data manager classes (e.g. StManColumn).
+// </synopsis>
+
+// <example>
+// This example shows how to iterate through a RefRows object
+// (giving a slice) and through each of the slices.
+// <srcblock>
+// void somefunc (const RefRows& rownrs)
+//   // Iterate through all slices.
+//   RefRowsSliceIter rowiter(rownrs);
+//   while (! rowiter.pastEnd()) {
+//     // Get start, end, and increment for this slice.
+//     uInt rownr = rowiter.sliceStart();
+//     uInt end = rowiter.sliceEnd();
+//     uInt incr = rowiter.sliceIncr();
+//     // Iterate through the row numbers in the slice.
+//     while (rownr <= end) {
+//       rownr += incr; \
+//     }
+//     // Go to next slice.
+//     rowiter++;
+//   }
+// }
+// </srcblock>
+// </example>
+
+//# <todo asof="$DATE:$">
+//# A List of bugs, limitations, extensions or planned refinements.
+//# </todo>
+
+
 class RefRowsSliceIter
 {
 public:
+    // Construct the iterator on a RefRows object.
+    // It is set to the beginning.
     RefRowsSliceIter (const RefRows&);
 
-    // Reset the iterator.
+    // Reset the iterator to the beginning.
     void reset();
 
     // Is the iterator past the end?
@@ -155,7 +221,7 @@ public:
     void next();
     // </group>
 
-    // Get the current slice.
+    // Get the current slice start, end, or increment..
     // <group>
     uInt sliceStart() const
         { return itsStart; }
