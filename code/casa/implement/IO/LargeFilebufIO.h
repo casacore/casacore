@@ -175,7 +175,7 @@ protected:
 
     // Read a block from the stream at the current offset.
     // It is guaranteed that the block fits in a single buffer.
-    void readBlock (uInt size, char* buf, Bool throwException);
+    uInt readBlock (uInt size, char* buf, Bool throwException);
 
 private:
     Bool        itsSeekable;
