@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Measures.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/MEpoch.h>
@@ -197,7 +198,7 @@ main()
 	Vector<Double> vlsr1900(lsr1900.getValue().getValue());
 	if (nearAbs(vlsr1900(0), 0.0)) vlsr1900(0) = 0;
 	cout << "LSR (B1900): " << 
-	    vlsr1900 << endl;
+	    vlsr1900.ac() << endl;
 	cout << "LSR (B1950): " << 
 	    MDirection::Convert(lsr1900, MDirection::B1950)()
 		.getValue() << endl;
@@ -400,7 +401,7 @@ main()
 	};
 	cout << "Converted B1950 galactic pole " << gpole << endl << 
 	  " to " << galref << endl <<
-	  " as " << veqgal << endl;
+	  " as " << veqgal.ac() << endl;
 	cout << "Converted B1950 galactic pole " << eqpole << endl << 
 	    " to " << eqref << endl <<
 		" as " << galeq().getAngle("deg") << endl;
