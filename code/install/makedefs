@@ -761,6 +761,9 @@ ifdef PURE
 	- $(RM) -r $(PGMRARCH)/pure_cache
 endif
 
+cleanpure ::
+	-@ $(RM) -r $(PGMRARCH)/pure_cache
+
 
 # Add internally set options to MAKEFLAGS.
 MAKEFLAGS := $(INTRA_MAKEFLAGS) $(MAKEFLAGS)
@@ -1266,6 +1269,8 @@ help ::
 	-@ echo "      clean: delete intermediate files."
 	-@ echo "    cleaner: clean, and also delete source files checked out"
 	-@ echo "             without a lock (no write permission)."
+	-@ echo "   cleanest: cleaner, and also delete purify cache."
+	-@ echo "  cleanpure: delete purify cache only."
 	-@ echo ""
 	-@ echo "Diagnostics"
 	-@ echo "-----------"
