@@ -1,5 +1,5 @@
 //# IO.h: Basic classes and global functions for IO and object persistency
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,8 @@
 #define AIPS_IO_H
 
 //# Includes for object persistency.
-#include <aips/Containers/AipsIO.h>
-#include <aips/Containers/AipsIOCarray.h>
-#include <aips/Containers/AipsIOError.h>
+#include <aips/IO/AipsIO.h>
+#include <aips/IO/AipsIOCarray.h>
 
 //# Includes for general IO.
 #include <aips/IO/ByteSinkSource.h>
