@@ -2,7 +2,7 @@
 # AIPS++ top directory makefile.
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992,1993,1994,1995,1996
+#   Copyright (C) 1992-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -61,7 +61,7 @@ endif
 ALLSYSD  := install aips dish synthesis vlbi
 
 # Should only exist in consortium installations.
-ALLSYSD  += $(wildcard admin)
+ALLSYSD  += admin
 
 # Add auxiliary and consortium directories, if any.
 ALLSYSD  += $(AUXILIARY) $(CONSORTIA)
@@ -69,8 +69,8 @@ ALLSYSD  += $(AUXILIARY) $(CONSORTIA)
 # Compile documentation?
 ALLSYSD  += $(DOCSYS)
 
-# Convert to absolute pathnames.
-ALLSYSD  := $(addprefix $(CODEDIR)/,$(ALLSYSD))
+# Check for existence and convert to absolute pathnames.
+ALLSYSD  := $(addprefix $(CODEDIR)/,$(wildcard $(ALLSYSD)))
 
 
 # Reorder CODESUBS to match ALLSYSD as far as possible (mainly for "chkout").
