@@ -1,5 +1,5 @@
 //# LELFunctionEnums.h: Enums of function names
-//# Copyright (C) 1997,1998,1999,2001
+//# Copyright (C) 1997,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -205,6 +205,9 @@ public:
 
 // is the value a NaN?
    ISNAN,
+
+// a bool array telling which indices of an axis are to be used
+   INDEXIN,
 
 // number of functions
    NFUNCTIONS
