@@ -1,5 +1,5 @@
 //# ImageSummary.h: List descriptive information from an image 
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,6 +171,12 @@ public:
 
 // Return telescope
    String telescope() const;
+
+// Return rest frequency.  Returns False if none.
+   Bool restFrequency(String& restFreqString, Quantum<Double>& restFreq) const;
+
+// Return frequency system.  Returns False if none.
+   Bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;
 
 // Retrieve whether image has mask or not
    Bool hasAMask () const;
