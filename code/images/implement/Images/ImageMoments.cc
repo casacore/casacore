@@ -63,6 +63,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <trial/Tasking/NewFile.h>
 
 #include <strstream.h>
 #include <iomanip.h>
@@ -98,7 +99,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
 // Constructor. 
 //
 {
-
    momentAxis_p = momentAxisDefault_p;
    moments_p.resize(1);
    moments_p(0) = INTEGRATED;
@@ -573,7 +573,12 @@ Bool ImageMoments<T>::setOutName(const String& outU)
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-
+//   
+   NewFile x(False);
+   String error;
+   if (!x.valueOK(outU, error)) {
+      return False;
+   }
    out_p = outU;
    return True;
 }
@@ -589,7 +594,13 @@ Bool ImageMoments<T>::setPsfOutName(const String& psfOutU)
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-
+//
+   NewFile x(False);
+   String error;
+   if (!x.valueOK(psfOutU, error)) {
+      return False;
+   }
+//
    psfOut_p = psfOutU;
    return True;
 }
@@ -606,7 +617,13 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-
+//
+   NewFile x(False);
+   String error;
+   if (!x.valueOK(smoothOutU, error)) {
+      return False;
+   }
+//
    smoothOut_p = smoothOutU;  
    return True;
 }
@@ -918,13 +935,30 @@ Bool ImageMoments<T>::createMoments()
 
       PagedImage<T>* imgp;
       const String in = pInImage_p->name(False);   
+//
       if (moments_p.nelements() == 1) {
-         if (out_p.empty()) out_p = in+suffix;
+         if (out_p.empty()) {
+            out_p = in+suffix;
+            NewFile x(False);
+            String error;
+            if (!x.valueOK(out_p, error)) {
+               return False;
+            }
+         }
+//
          imgp = new PagedImage<T>(outImageShape, outImageCoord, out_p);
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       } else {
-         if (out_p.empty()) out_p = in;
+         if (out_p.empty()) {
+            out_p = in;
+            NewFile x(False);
+            String error;
+            if (!x.valueOK(out_p, error)) {
+               return False;
+            }
+          }
+//
          imgp = new PagedImage<T>(outImageShape, outImageCoord,
 				  out_p+suffix);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
@@ -1554,8 +1588,6 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       return 0;
    }
       
-
-
 // Generate convolving function
 
    Array<T> psf;
@@ -1606,14 +1638,20 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 // if the user doesn't want to save it
 
    if (smoothOut_p.empty()) {
+//
+// We overwrite this image if it exists.
+//
       File inputImageName(pInImage_p->name());
       const String path = inputImageName.path().dirName() + "/";
       Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
       smoothName = fileName.absoluteName();
    } else {
+//
+// This image has already been checked in setSmoothOutName
+// to not exist
+//
       smoothName = smoothOut_p;
    }
-
    PagedImage<T> smoothedImage(pInImage_p->shape(), 
                                pInImage_p->coordinates(), smoothName);
    smoothedImage.setMiscInfo(pInImage_p->miscInfo());
