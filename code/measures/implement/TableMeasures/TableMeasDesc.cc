@@ -79,7 +79,7 @@ const String& TableMeasDesc<M>::type() const
 template<class M>
 const uInt TableMeasDesc<M>::refCode(const String& refString) const 
 {
-    M::Ref refType;
+    MeasRef<M> refType;
     M measure;
     Bool succ = measure.giveMe(refString, refType);
     if (!succ) {
