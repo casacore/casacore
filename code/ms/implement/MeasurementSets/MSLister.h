@@ -144,10 +144,16 @@ public:
 
   // Page size for various formats, output devices (default for landscape
   // printing).
-  void setPage (const uInt width=120, const uInt height=60);
+  void setPage (const uInt width=120, const uInt height=20);
 
   // Format for output, ie data display precision.
   void setFormat (const uInt ndec=2);
+
+  // User choices for list precision (sensible defaults):
+  //   (time precision for user interface is fraction of sec)
+  void setPrecision ( const Int precTime=1, const Int precUVDist=0,
+		      const Int precAmpl=3, const int precPhase=1,
+		      const Int precWeight=0 );
 
   // Overall listing (3 versions). Do the actual work: list MS records to
   // the logger.  Also provided are versions of list() that accept time
@@ -198,12 +204,43 @@ private:
   // The NewMSSelector object used in list() etc.
   NewMSSelector mss_p;
 
-  // Various self-explanatory bookkeeping parameters
-  uInt nchan_p, npols_p, widthTime, widthBasel, widthAnt, widthID, widthVis;
-  Int pageWidth_p, pageHeight_p, nDecimal_p;
-  Vector <String> pols_p, items_p;
+  // Channel/Pol counters
+  uInt nchan_p, npols_p;
 
-  // The GlishRecord object containing the NewMSSelector ranges
+  // SpW/Pol info from subtables
+  Vector<String> pols_p;
+  Vector<Double> freqs_p;
+
+
+  // Field width variables
+  uInt wTime_p, wAnt_p, wIntrf_p, wUVDist_p;
+  uInt wFld_p, wSpW_p, wChn_p;
+  uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p;
+  uInt wTotal_p;
+
+  // Order of magnitude control (digits to left of decimal, including sign)
+  uInt oTime_p, oUVDist_p;
+  uInt oAmpl_p, oPhase_p;
+  uInt oWeight_p;
+
+  // Precision control (digits to right of decimal point)
+  //   (precTime_p includes hhmmss, so 7 yields hh:mm:ss.s)
+  Int precTime_p, precUVDist_p;
+  Int precAmpl_p, precPhase_p;
+  Int precWeight_p;
+  
+  // Page params
+  Int pageWidth_p, pageHeight_p, nDecimal_p;
+  String date_p, lastdate_p;
+
+  // for assigning desired columns from the ms
+  Vector <String> items_p;
+
+  // Bools for column showing
+  Bool doFld_p, doSpW_p, doChn_p;
+
+
+  // The GlishRecord object containing the MSSelector ranges
   GlishRecord ranges_p;
 
   // The conversion of the above to a regular Record object
@@ -211,7 +248,6 @@ private:
 
   // Clear the formatting flags
   void clearFlags();
-
 };
 
 #endif

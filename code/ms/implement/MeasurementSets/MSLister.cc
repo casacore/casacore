@@ -33,7 +33,10 @@
 #include <trial/MeasurementSets/NewMSLister.h>
 #include <trial/MeasurementSets/NewMSSummary.h>
 #include <trial/MeasurementSets/NewMSRange.h>
-
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/MaskArrMath.h>
 #include <iomanip.h>
 #include <iostream.h>
 
@@ -56,6 +59,17 @@ NewMSLister::NewMSLister (NewMeasurementSet& ms, LogIO& os)
     os_p(os),
     dashline_p(replicate("-",80))
 {
+  // Move these into initList()?
+  // default precision (in case setPrecision is not called)
+  precTime_p = 7;    // hh:mm:ss.s  (0.1 s)
+  precUVDist_p = 0;  // 1 wavelength
+  precAmpl_p = 3;    // mJy
+  precPhase_p = 1;   // 0.1 deg
+  precWeight_p = 0;  // unit weight
+  // initializations
+  wFld_p = wSpW_p = wChn_p = 0;
+
+  // initialize list params
   initList();
 }
 
@@ -117,10 +131,29 @@ void NewMSLister::initList()
   // Initialise the NewMSSelector object.  By default, initSelection() takes all
   // polarisations and the first spectral channel.
   mss_p.setMS(*pMS);
+
+  cout << endl;
+  cout << "Before mss_p.initSelection()" << endl;
   mss_p.initSelection();
 
-  // Get the ranges of all the usefully selectable attributes
+  cout << endl;
+  cout << "After mss_p.initSelection()" << endl;
+
+  // Get the ranges (into ranges_p) of the following usefully
+  // selectable attributes.  range_p can be changed later to
+  // refine selection.
+  // **SPW**
+  items_p.resize(6,False);
+  items_p(0)="time";			// the range of times
+  items_p(1)="antenna1";		// the list of antenna1 id values
+  items_p(2)="antenna2";		// the list of antenna2 id values
+  items_p(3)="uvdist";			// the range of the UV-distance (m)
+  //  items_p(4)="spectral_window_id";	// the list of spwin id values
+  items_p(4)="data_desc_id";	// the list of spwin id values
+  items_p(5)="field_id";		// the list of field id values
   getRanges();
+
+  cout << "After getRanges." << endl << endl;
 
   // Set up for selection on channel or polarisation
   RONewMSSpWindowColumns msSpWinC(pMS->spectralWindow());
@@ -132,6 +165,11 @@ void NewMSLister::initList()
     pols_p(i) = Stokes::name(Stokes::type
 			     (msPolC.corrType()(0)(IPosition(1,i))));
   }
+
+  // Store spwin ref freqs for later use:
+  //   (should get channel freqs for multi-channel MS's)
+  freqs_p.resize(4,False);
+  freqs_p=msSpWinC.refFrequency().getColumn();
 
   // Signal completion of initList
   os_p << "Lister initialised for this MS" << LogIO::POST;
@@ -153,6 +191,19 @@ void NewMSLister::setFormat (const uInt ndec)
   nDecimal_p = ndec;
 }
 
+void NewMSLister::setPrecision ( const Int precTime, const Int precUVDist,
+			      const Int precAmpl, const Int precPhase, 
+			      const Int precWeight )
+{
+  // Set private precision vars on basis of user input:
+  precTime_p   = precTime+6;  // internally, time precision includes hhmmss.
+  precUVDist_p = precUVDist;
+  precAmpl_p   = precAmpl;
+  precPhase_p  = precPhase;
+  precWeight_p = precWeight;
+}
+
+
 
 void NewMSLister::listHeader()
 {
@@ -173,20 +224,19 @@ void NewMSLister::listHeader()
 //
 void NewMSLister::getRanges()
 {
-  // NewMSSelector only allows selection on some of the MS key attributes
-  // (eg, **not** amplitude, despite what documentation says: that's
-  // clipping).  We fix those attributes here and get their ranges.
-  items_p.resize(6,False);
-  items_p(0)="time";			// the range of times
-  items_p(1)="antenna1";		// the list of antenna1 id values
-  items_p(2)="antenna2";		// the list of antenna2 id values
-  items_p(3)="uvdist";			// the range of the UV-distance (m)
-  items_p(4)="spectral_window_id";	// the list of spwin id values
-  items_p(5)="field_id";		// the list of field id values
+  // Get the range of values for the items specified in items_p, into
+  // a GlishRecord.
+  // Assumes items_p has already been set (should add check on this)
+  // **SPW**
+  
+  cout << endl << "mss_p.dataDescId() = " <<  mss_p.dataDescId() << endl;
 
-  // Get the range of values for the items specified into a GlishRecord.
   NewMSRange msr(mss_p.selectedTable(),mss_p.dataDescId());		
   ranges_p = msr.range(items_p);		
+
+  // Print out the retrieved ranges:
+  cout << "Printing out the GlishRecord ranges_p:" << endl;
+  cout << ranges_p << endl;
 }
 
 
@@ -211,8 +261,7 @@ void NewMSLister::list (const String stimeStart, const String stimeStop)
 // Version to list only data for times in given range
 void NewMSLister::list (Double& timeStart, Double& timeStop)
 {
-  // Restrict the time range, and actually do the selection
-  // (combined with a success check)
+  // Check on time selection:
   if (!selectTime (timeStart, timeStop)) return;
 
   // List the data
@@ -231,12 +280,27 @@ void NewMSLister::list()
   // Select on the ms with the new ranges
   // if (!mss_p.select(ranges_p)) return boo-boo1;
 
+
+  cout << endl << "Before applying selection." << endl;
+  // Actually apply the ranges_p selection:
+  mss_p.select(ranges_p);
+  cout << endl << "After applying selection." << endl;
+
+
   // Spectral and polarisation selection are handled separately from
   // the GlishRecord ranges_p
   // uInt startChan=0, widthChan=1, incrChan=1;
   // if (!mss_p.selectChannel(nchan_p,startChan,widthChan,incrChan) return bb2;
   // if (!mss_p.selectPolarization(pols_p)) return boo-boo3;
   
+  // Some pol selecting for testing output format:
+  //  pols_p.resize(2);
+  // pols_p(0)="RL";
+  //pols_p(1)="LR";
+  // npols_p=2;
+  //  mss_p.selectPolarization(pols_p);
+
+
   // Then make the listing
   listData();
 }
@@ -267,40 +331,54 @@ Bool NewMSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
   dataRecords_p.define("time", msTimeLimits);
   ranges_p.fromRecord(dataRecords_p);
 
-  // Select on these times (NewMSSelector treats all the other Sanity Clauses,
-  // we just check on their results here)
-  if (!mss_p.select(ranges_p)) return False;
-
   // Signal good time selection
   os_p  << "Timerange selection made:     "
 	<< MVTime(msTimeLimits(0)/86400).ymd() << "/"
 	<< MVTime(msTimeLimits(0)/86400).string() << "     to  "
 	<< MVTime(msTimeLimits(1)/86400).ymd() << "/"
 	<< MVTime(msTimeLimits(1)/86400).string() << endl << endl;
+  os_p.post();
+
   return ok;
 }
 
 
 void NewMSLister::listData()
 {
-  // Now get the data records.  Because of the way NewMSSelector works, we
-  // have to extract the data through a GlishRecord to a Record to Arrays,
-  // in order to conveniently print the contents.  First change the items
-  // extracted, especially "range" items to "list" items.
-  items_p.resize(9,True);
-  items_p(0)="time";	// the list of time values: ARGH!!! this is because
-			// the "time" enum in getData() acts as the "times"
-			// enum in select() or range()
-  items_p(3)="uvdist";	// the list of uv-distances: AGAIN!!! "uvdist" enum
-			// in getData() produces a list, but only a range
-			// in select() or range()
-  items_p(6)="amplitude";	// these only work in
-  items_p(7)="phase";		// getData(), not in
-  items_p(8)="weight";		// select() or range()
+  // Now get the data for the listing.  
+  // Currently we are extracting the data through a GlishRecord 
+  // to a Record to Arrays using MSSelector::getData, which requires
+  // a list of items, a reasonable default set of which is defined
+  // here as a Vector<String> passable to MSSelector::getData 
+  // (eventually, user will have some choice here, e.g., to get
+  // real/imag instead of amp/ph, etc.).
+  // Eventually, it would be easier if there were public RO access to the
+  // MSSelector::selms_p member...
+  // **SPW**
 
-  // Now do the conversion to a Record.  Note that mss_p.getData() is an
-  // implicit GlishRecord object
+  items_p.resize(8,True);
+  items_p(0)="time";
+  items_p(1)="antenna1";		
+  items_p(2)="antenna2";		
+  items_p(3)="uvdist";			
+  //  items_p(4)="spectral_window_id";	
+  items_p(4)="data_desc_id";	
+  items_p(5)="field_id";		
+  items_p(6)="amplitude";
+  items_p(7)="phase";		
+  //items_p(8)="weight";		
+
+  // Get ranges of selected data to ranges_p for use in field-width/precision setting
+  cout << endl << "Before getRanges" << endl;
+  getRanges();
+  cout << endl << "Before getData" << endl;
+
+
+  // Now extract the selected data Record.  Note that mss_p is the *selected*
+  // data, and mss_p.getData() is an implicit GlishRecord object
   mss_p.getData(items_p,False).toRecord(dataRecords_p);
+
+  cout << endl << "After getData" << endl;
 
   // Construct arrays for the Record items.  The V-float declaration
   // appears to be necessary (instead of V-double) despite the get()
@@ -308,81 +386,244 @@ void NewMSLister::listData()
   Vector <Double>	time,uvdist;
   Vector <Int>		ant1,ant2,spwinid,fieldid;
   Array <Float>		ampl,phase;
-  Vector <Float>	weight;
+  //  Vector <Float>	weight;
+
+  cout << endl << "After arrays instantiation" << endl;
 
   // Extract the values from the Record into the Arrays
-  dataRecords_p.get("time", time);
+  dataRecords_p.get("time", time);  // in sec
+  cout << "got Time" << endl;
   dataRecords_p.get("antenna1", ant1);
+  cout << "got Ant1" << endl;
   dataRecords_p.get("antenna2", ant2);
-  dataRecords_p.get("uvdist", uvdist);
-  dataRecords_p.get("spectral_window_id", spwinid);
+  cout << "got Ant2" << endl;
+  dataRecords_p.get("uvdist", uvdist);  // in meters
+  cout << "got UVD" << endl;
+  //  dataRecords_p.get("spectral_window_id", spwinid);
+  dataRecords_p.get("data_desc_id", spwinid);
+  cout << "got dataDesc" << endl;
   dataRecords_p.get("field_id", fieldid);
+  cout << "got fldid" << endl;
   dataRecords_p.get("amplitude", ampl);
-  dataRecords_p.get("phase", phase);
-  dataRecords_p.get("weight", weight);
+  cout << "got ampl" << endl;
+  dataRecords_p.get("phase", phase);  // in rad
+  cout << "got phase" << endl;
+  //  dataRecords_p.get("weight", weight);
+  //  cout << "got weight" << endl;
 
-  // Finally print the records out, one per line.  The line is:
-  // Field Time AntPair UVDist SpWin Chan# Polarisations Visibs[amp,pha,wt]
-  widthTime	= 12;
-  widthBasel	= 10;
-  widthAnt	=  2;
-  widthID	=  6;
-  widthVis	= 20;
+  // Number of rows that will be listed
+  Int nrows = time.nelements();
+  Vector <Float>	weight;
+  weight.resize(nrows,True);
+  
+  // Convert units of some params:
+  time = time/C::day;        // time now in days
+  phase = phase/C::degree;   // phase now in degrees
+  // Change uvdist to wavelengths as function of spwinid:
+  for (Int row=0;row<nrows;row++) {
+    uvdist(row) = uvdist(row)/(C::c/freqs_p(spwinid(row)));  // uvdist in wavelengths
+  }    
+
+
+  // Add or adjust ranges_p to non-zero absolutes for non-index and/or 
+  // converted values (so we can use ranges_p for field width and 
+  // precision setting):
+
+  //     TBD....
+
+
+  // Make flags for showing index columns.
+  doFld_p = (ranges_p.get("field_id").nelements() > 1);
+  doSpW_p = (ranges_p.get("spectral_window_id").nelements() > 1);
+  doChn_p = (nchan_p > 1);
+
+
+  cout << "Fld id : " << ranges_p.get("field_id") << endl;
+  cout << "SpW id : " << ranges_p.get("spectral_window_id") << endl << endl;
+
+
+  // From this point on, don't change scaling in list arrays, since the
+  // field sizes are determined directly from the data.
+
+  cout << "Minumum uvdist = " << min(uvdist) << endl;
+  cout << "Maximum uvdist = " << max(uvdist) << endl;
+  cout << "Minumum non-zero amp = " << min(ampl(ampl>0.0f)) << endl;
+  cout << "Maximum amp = " << max(ampl) << endl;
+  cout << "Minumum non-zero abs phase = " << min(abs(phase(phase!=0.0f))) << endl;
+  cout << "Maximum phase = " << max(abs(phase)) << endl;
+  //  cout << "Minumum weight = " << min(weight(weight>0.0f)) << endl;
+  // cout << "Maximum weight = " << max(weight) << endl;
+
+
+  // Set order of magnitude and precision (for field width setting):
+  // If prec*_p < 0, then enforce >=0 (detect minimum decimal places to show is NYI)
+  // If prec*_p > 0, then increment o*_p to provide space for decimal
+
+  oTime_p = 2; // this is space for 2 :'s in time  
+  if ( precTime_p < 0 ) precTime_p = 7; // hh:mm:ss.s
+  if ( precTime_p > 0 ) oTime_p++; // add space for decimal
+
+
+  oUVDist_p = (uInt)rint(log10(max(uvdist))+0.5); // order
+  if ( precUVDist_p < 0 ) precUVDist_p = 0;
+  if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
+
+  oAmpl_p = (uInt)rint(log10(max(ampl))+0.5); 
+  if ( precAmpl_p < 0 ) precAmpl_p = 3;  // mJy
+  if ( precAmpl_p > 0 ) oAmpl_p++;  // add space for decimal
+
+
+  oPhase_p = 3;  // 100s of degs 
+  if ( precPhase_p < 0 ) precPhase_p = 0; 
+  if ( precPhase_p > 0 ) oPhase_p++; // add space for decimal
+  oPhase_p++; // add space for sign
+
+  oWeight_p = (uInt)rint(log10(max(weight))+0.5);  // order
+  if ( precWeight_p < 0 ) precWeight_p = 0;
+  if ( precWeight_p > 0 ) oWeight_p++;  // add space for decimal
+
+  // Set field widths.
+  //   For index columns just use the size of the largest value:
+  wAnt_p    = (uInt)rint(log10((float)max(max(ant1),max(ant2)))+0.5);
+  if (doFld_p) wFld_p    = (uInt)rint(log10((float)max(fieldid))+0.5);
+  if (doSpW_p) wSpW_p    = (uInt)rint(log10((float)max(spwinid))+0.5);
+  if (doChn_p) wChn_p    = 3;
+
+  //   The field width for non-index columns is given by the  
+  //    sum of the order and precision:
+  wTime_p   = oTime_p + precTime_p;
+  wUVDist_p = oUVDist_p + precUVDist_p;  // left+dec+right
+  wAmpl_p   = oAmpl_p + precAmpl_p;  // left+dec+right
+  wPhase_p  = oPhase_p + precPhase_p;  // sign+left+dec+right
+  wWeight_p = oWeight_p + precWeight_p; // left+dec+right
+
+  // Enforce minimum field widths,
+  // add leading space so columns nicely separated,
+  // and accumulate wTotal_p:
+  wTotal_p = 0;  // initialize 
+  wAnt_p    = max(wAnt_p,   (uInt)2);
+  wIntrf_p  = 2*wAnt_p+1;                       wIntrf_p++;  wTotal_p+=wIntrf_p;
+  if (doFld_p) { wFld_p = max(wFld_p,(uInt)3);  wFld_p++;    wTotal_p+=wFld_p; }
+  if (doSpW_p) { wSpW_p = max(wSpW_p,(uInt)3);  wSpW_p++;    wTotal_p+=wSpW_p;}
+  if (doChn_p) { wChn_p = max(wChn_p,(uInt)3);  wChn_p++;    wTotal_p+=wChn_p;}
+
+  wTime_p   = max(wTime_p,  (uInt)12);
+  wUVDist_p = max(wUVDist_p,(uInt)6);           wUVDist_p++; wTotal_p+=wUVDist_p;
+  wAmpl_p   = max(wAmpl_p,  (uInt)4);           wAmpl_p++; 
+  wPhase_p  = max(wPhase_p, (uInt)4); 
+  wWeight_p = max(wWeight_p,(uInt)3);           wWeight_p++;
+
+  wVis_p = wAmpl_p+wPhase_p+wWeight_p;
+  wTotal_p+=wTime_p+npols_p*wVis_p+1;
+
+  // Make column-ated header rule according to total and field widths
+  String hSeparator(replicate("-",wTotal_p));
+  uInt colPos=0;
+  colPos+=wTime_p;   hSeparator[colPos]='|';
+  colPos+=wIntrf_p;  hSeparator[colPos]='|';
+  colPos+=wUVDist_p; hSeparator[colPos]='|';
+  if (doFld_p) {colPos+=wFld_p;hSeparator[colPos]='|';}
+  if (doSpW_p) {colPos+=wSpW_p;hSeparator[colPos]='|';}
+  if (doChn_p) {colPos+=wChn_p;hSeparator[colPos]='|';}
+  colPos++;
+  for (uInt ipol=0; ipol<npols_p-1; ipol++) {
+    colPos+=wVis_p;
+    hSeparator[colPos]='|';
+  }
+
+  // Finally print the records out, one per line.
+
   os_p << "Listing " << time.nelements()
        << " data records satisfying selection criteria, " << endl
        << "for each of " << npols_p << " polarisation(s) and " << nchan_p
        << " spectral channel(s)." << endl << endl << dashline_p << endl;
 
-  for (uInt ipol=0; ipol<npols_p; ipol++) {
+  //  nrows = 90;  // override to make short list for testing
+
+
+
+  for (Int row=0; row<nrows; row++) {
+    date_p = MVTime(time(row)).string(MVTime::YMD_ONLY);
+    // If page lenghth reached, or new day, then paginate
+    if ((row/pageHeight_p)*pageHeight_p == row ||
+        date_p != lastdate_p) {
+      if (row != 0) os_p << hSeparator << endl;
+      listColumnHeader();
+      os_p << hSeparator << endl;
+    }
+    lastdate_p = date_p;
+
     for (uInt ichan=0; ichan<nchan_p; ichan++) {
-      Int nrows = time.nelements();
-      for (Int row=0; row<nrows; row++) {
-	if ((row/pageHeight_p)*pageHeight_p == row) {
-	  // Paginate every pageHeight_p'th row
-	  listColumnHeader();
-	}
-	os_p.output().setf(ios::left, ios::adjustfield);
-	os_p.output().width(widthID);	os_p << fieldid(row);
-	os_p.output().width(widthTime);	os_p << MVTime(time(row)/86400).string();
-	os_p.output().width(widthAnt);	os_p << ant1(row);
-	os_p.output().width(widthAnt);	os_p << "- ";
-	os_p.output().width(widthID);	os_p << ant2(row);
-	os_p.output().width(widthBasel);os_p << uvdist(row);
-	os_p.output().width(widthID);	os_p << spwinid(row);
-	os_p.output().width(widthID);	os_p << ichan;
-	os_p.output().width(widthID);	os_p << pols_p(ipol);
-	os_p.output().width(widthID);	os_p << ampl(IPosition(3,ipol,ichan,row));
-	os_p.output().width(widthAnt);	os_p << ",";
-	os_p.output().width(widthID);	os_p << phase(IPosition(3,ipol,ichan,row));
-	os_p.output().width(widthAnt);	os_p << ",";
-	os_p.output().width(widthID);	os_p << weight(row);
-	os_p << endl;
+
+      os_p.output().setf(ios::fixed, ios::floatfield);
+      os_p.output().setf(ios::right, ios::adjustfield);
+      
+      os_p.output().width(wTime_p);	os_p << MVTime(time(row)).string(MVTime::TIME,precTime_p);
+      os_p.output().width(wAnt_p+1);	os_p << ant1(row)+1;
+      os_p.output().width(1);	        os_p << "-";
+      os_p.output().width(wAnt_p);	os_p << ant2(row)+1;
+      os_p.output().precision(precUVDist_p);
+      os_p.output().width(wUVDist_p);os_p << uvdist(row);
+      if (doFld_p) {os_p.output().width(wFld_p);	os_p << fieldid(row)+1;}
+      if (doSpW_p) {os_p.output().width(wSpW_p);	os_p << spwinid(row)+1;}
+      if (doChn_p) {os_p.output().width(wChn_p);	os_p << ichan+1;}
+      os_p << ":";
+      for (uInt ipol=0; ipol<npols_p; ipol++) {
+	os_p.output().precision(precAmpl_p);
+	os_p.output().width(wAmpl_p);	 os_p << ampl(IPosition(3,ipol,ichan,row));
+	os_p.output().precision(precPhase_p);
+	os_p.output().width(wPhase_p); os_p << phase(IPosition(3,ipol,ichan,row));
+	os_p.output().precision(precWeight_p);
+	os_p.output().width(wWeight_p); os_p << weight(row);
       }
+      os_p << endl;
     }
   }
-  os_p << dashline_p << endl;
+  //  os_p << dashline_p << endl;
+  os_p << hSeparator << endl;
 
   // Post it
   os_p.post();
 }
 
-
-void NewMSLister::listColumnHeader()
-{
+void NewMSLister::listColumnHeader() {
   // Write the column headers
-  os_p << endl << endl << endl;
-  os_p.output().setf(ios::left, ios::adjustfield);
-  os_p.output().width(widthID);		os_p << "Field";
-  os_p.output().width(widthTime);	os_p << "Time";
-  os_p.output().width(widthBasel);	os_p << "Ant.Pair";
-  os_p.output().width(widthBasel);	os_p << "UVDist";
-  os_p.output().width(widthID);		os_p << "SpWin";
-  os_p.output().width(widthID);		os_p << "Chan#";
-  os_p.output().width(widthID);		os_p << "Pol'n";
-  os_p.output().width(widthVis);	os_p << "Visibs[amp,pha,wt]";
-  os_p << endl << dashline_p << endl;
-}
+  os_p << endl << endl;
 
+  // First line of column header
+  os_p.output().setf(ios::left, ios::adjustfield);
+  os_p.output().width(wTime_p);             os_p << "-Date/Time-";
+  os_p.output().setf(ios::right, ios::adjustfield);
+  os_p.output().width(wIntrf_p);            os_p << " ";
+  os_p.output().width(wUVDist_p);           os_p << " ";
+  if (wFld_p) {os_p.output().width(wFld_p); os_p << " ";}
+  if (wSpW_p) {os_p.output().width(wSpW_p); os_p << " ";}
+  if (wChn_p) {os_p.output().width(wChn_p); os_p << " ";}
+  os_p << " ";
+  os_p.output().setf(ios::left, ios::adjustfield);
+  for (uInt ipol=0; ipol<npols_p; ipol++) {
+    os_p.output().width(wVis_p); os_p << " "+pols_p(ipol)+":";
+  }
+  os_p << endl;
+  
+  // Second line of column header
+  os_p.output().setf(ios::left, ios::adjustfield);
+  os_p.output().width(wTime_p);             os_p << date_p+"/";
+  os_p.output().setf(ios::right, ios::adjustfield);
+  os_p.output().width(wIntrf_p);            os_p << "Intrf";
+  os_p.output().width(wUVDist_p);           os_p << "UVDist";
+  if (wFld_p) {os_p.output().width(wFld_p); os_p << "Fld";}
+  if (wSpW_p) {os_p.output().width(wSpW_p); os_p << "SpW";}
+  if (wChn_p) {os_p.output().width(wChn_p); os_p << "Chn";}
+  os_p << " ";
+  for (uInt ipol=0; ipol<npols_p; ipol++) {
+    os_p.output().width(wAmpl_p);	os_p << "Amp";
+    os_p.output().width(wPhase_p);	os_p << "Phs";
+    os_p.output().width(wWeight_p);	os_p << "Wt";
+  }
+  os_p << endl;
+  // << dashline_p << endl;
+}
 
 //
 // Clear all the formatting flags
