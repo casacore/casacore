@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Logging/LogIO.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/ImageExprParse.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LattStatsSpecialize.h>
@@ -60,7 +61,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
-  pInImage_p(0)
+  pInImage_p(0),
+  lelExpr_p("")
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -76,7 +78,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
-  pInImage_p(0)
+  pInImage_p(0),
+  lelExpr_p("")
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -108,6 +111,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 //
       if (pInImage_p!=0) delete pInImage_p;
       pInImage_p = other.pInImage_p->cloneII();
+      lelExpr_p = other.lelExpr_p;
    }
    return *this;
 }
@@ -239,11 +243,12 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    IPosition blc(pInImage_p->ndim(),0);
    IPosition trc(pInImage_p->shape()-1);
 
-   ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   ImageUtilities::pixToWorld(sWorld, cSys,
                               displayAxes_p(0), cursorAxes_p, 
                               blc, trc, pixels, -1);
    String cName = 
-     ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
+     ImageUtilities::shortAxisName(cSys.worldAxisNames()(displayAxes_p(0)));
    Int oCWidth = max(cName.length(), sWorld(0).length()) + 1;
    
 // Write headers
@@ -276,6 +281,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Sigma";
+   if (doneLEL_p) os_p.output() << setw(oDWidth) << "LEL"; 
    os_p.output() << setw(oDWidth) << "Minimum";
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
 
@@ -287,7 +293,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    pixels.resize(n1);
 //
    for (uInt j=0; j<n1; j++) pixels(j) = Double(j);
-   if (!ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
+   if (!ImageUtilities::pixToWorld(sWorld, cSys,
                               displayAxes_p(0), cursorAxes_p, 
                               blc, trc, pixels, -1)) return False;
 
@@ -308,10 +314,11 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // I hate ostrstreams.  The bloody things are one shot.
    
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8;
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
          setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec);
+         setStream(os9, oPrec); 
 //
          os0 << stats.column(SUM)(j);
          if (hasBeam) os1 << stats.column(FLUX)(j);
@@ -321,11 +328,13 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
+         os9 << stats.column(LEL)(j);
 //
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
          os_p.output() << setw(oDWidth)   << String(os2);
          if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
+         if (doneLEL_p) os_p.output() << setw(oDWidth)   << String(os9);
          os_p.output() << setw(oDWidth)   << String(os3);
          os_p.output() << setw(oDWidth)   << String(os4);
          os_p.output() << setw(oDWidth)   << String(os5);
@@ -340,9 +349,10 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 
 template <class T> 
-String ImageStatistics<T>::formatCoordinate (const IPosition& pos) const
+String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
 {
-   const CoordinateSystem& cSys = pInImage_p->coordinates();
+   const CoordinateSystem& cS = pInImage_p->coordinates();
+   CoordinateSystem cSys(cS);                 // Non-const
    Vector<Double> pixel(cSys.nPixelAxes());
    Vector<Double> world(cSys.nWorldAxes());
    for (uInt i=0; i<pixel.nelements(); i++) pixel(i) = pos(i);
@@ -384,7 +394,8 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
 // and get the label for the X-axis when plotting
 //
 {
-   xLabel = pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)) + " (pixels)";
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   xLabel = cSys.worldAxisNames()(displayAxes_p(0)) + " (pixels)";
 //
    hLabel =String("");
    const uInt nDisplayAxes = displayAxes_p.nelements();
@@ -396,12 +407,11 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
       IPosition trc(pInImage_p->shape()-1);
 //
       for (uInt j=1; j<nDisplayAxes; j++) {
-         Int worldAxis = 
-            pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
-         String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+         Int worldAxis = cSys.pixelAxisToWorldAxis(displayAxes_p(j));
+         String name = cSys.worldAxisNames()(worldAxis);
          pixels(0) = Double(locInLattice(dPos,False)(j));
 //
-         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+         if (!ImageUtilities::pixToWorld (sWorld, cSys,
                                      displayAxes_p(j), cursorAxes_p,
                                      blc, trc, pixels, -1)) return;
 //
@@ -444,3 +454,19 @@ void ImageStatistics<T>::listMinMax(ostrstream& osMin,
       os_p.post();
    }
 }
+
+template <class T>
+Bool ImageStatistics<T>::getLEL (Array<T>& stats, const String& expr, Bool dropDeg)
+{
+   if (expr.empty()) {
+      os_p << LogIO::WARN << "The expression string is empty" << LogIO::POST;
+      stats.resize();
+      return True;
+   } 
+//
+   LatticeExprNode node = ImageExprParse::command (expr);
+   Bool newExpr = (expr!=lelExpr_p);
+   lelExpr_p = expr;
+   return getLELNode (stats, node, dropDeg, newExpr);
+}
+

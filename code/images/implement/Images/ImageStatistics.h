@@ -1,5 +1,5 @@
 //# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,7 +121,7 @@ public:
    ImageStatistics(const ImageStatistics<T> &other);
 
 // Destructor
-  virtual ~ImageStatistics ();
+   virtual ~ImageStatistics ();
 
 // Assignment operator.  Deletes any storage image associated with
 // the object being assigned to and copies any storage image that has
@@ -133,7 +133,10 @@ public:
    Bool setNewImage (const ImageInterface<T>& image);
 
 // Format a position in the lattice (zero relative)
-   String formatCoordinate (const IPosition& pos) const;
+   String formatCoordinate (const IPosition& pos);
+
+// Get LEL statistics
+   Bool getLEL (Array<T>& stats, const String& expr, Bool dropDeg=True);
 
 private:
 
@@ -141,6 +144,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
+   String lelExpr_p;
 
 // Virtual functions.  See LatticeStatistics for more information
 // about these, or see the implementation.
