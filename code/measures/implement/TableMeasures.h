@@ -1,5 +1,5 @@
 //# TableMeasures.h: Create Measure and Quantum columns Tables.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,7 +60,7 @@
 // Measures and Quantums directly in Table columns.  The following discussion
 // focuses primarily on Measure columns.  For the specific differences between 
 // Measure and Quantum columns one should refer to the descriptions in the
-// <linkto class="TableQuantDesc">TableQuantDesc</linkto>,
+// <linkto class="TableQuantumDesc">TableQuantumDesc</linkto>,
 // <linkto class="ScalarQuantColumn">ScalarQuantColumn</linkto> and 
 // <linkto class="ArrayQuantColumn">ArrayQuantColumn</linkto> classes.
 //
