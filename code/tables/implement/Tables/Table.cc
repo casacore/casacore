@@ -274,6 +274,13 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
 }
 
 
+inline void Table::deepCopy (const String& newName,
+			     TableOption option,
+			     Bool valueCopy) const
+{
+    baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy);
+}
+
 //# Open the table file and read it in if necessary.
 void Table::open (const String& name, const String& type, int tableOption,
 		  const TableLock& lockOptions)

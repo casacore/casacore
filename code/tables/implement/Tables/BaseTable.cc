@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/GenSort.h>
@@ -360,17 +361,21 @@ void BaseTable::rename (const String& newName, int tableOption)
 void BaseTable::renameSubTables (const String&, const String&)
 {}
 
-void BaseTable::deepCopy (const String& newName, int tableOption,
+void BaseTable::deepCopy (const String& newName,
+			  const Record& dataManagerInfo,
+			  int tableOption,
 			  Bool valueCopy) const
 {
-    if (valueCopy) {
-        trueDeepCopy (newName, tableOption);
+    if (valueCopy  ||  dataManagerInfo.nfields() > 0) {
+        trueDeepCopy (newName, dataManagerInfo, tableOption);
     } else {
         copy (newName, tableOption);
     }
 }
 
-void BaseTable::trueDeepCopy (const String& newName, int tableOption) const
+void BaseTable::trueDeepCopy (const String& newName,
+			      const Record& dataManagerInfo,
+			      int tableOption) const
 {
     // Throw exception is new name is same as old one.
     if (newName == name_p) {
@@ -384,7 +389,8 @@ void BaseTable::trueDeepCopy (const String& newName, int tableOption) const
     prepareCopyRename (newName, tableOption);
     // Create the new table and copy everything.
     Table oldtab(ncThis);
-    Table newtab = TableCopy::makeEmptyTable (newName, oldtab, Table::New);
+    Table newtab = TableCopy::makeEmptyTable (newName, dataManagerInfo,
+					      oldtab, Table::New);
     TableCopy::copyRows (newtab, oldtab);
     TableCopy::copyInfo (newtab, oldtab);
     TableCopy::copySubTables (newtab, oldtab);

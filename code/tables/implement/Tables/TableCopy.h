@@ -79,7 +79,9 @@ public:
   // By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
   // By default, the new table has the same nr of rows as the input table.
   // If <src>noRows=True</src> is given, it does not contain any row.
-  static Table makeEmptyTable (const String& newName, const Table& tab,
+  static Table makeEmptyTable (const String& newName,
+			       const Record& dataManagerInfo,
+			       const Table& tab,
 			       Table::TableOption option,
 			       Bool replaceTSM = True,
 			       Bool noRows = False);

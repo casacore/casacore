@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,7 +201,9 @@ public:
 
     // Copy the table and all its subtables.
     // It copies the contents of each row to get a real copy.
-    virtual void deepCopy (const String& newName, int tableOption, Bool) const;
+    virtual void deepCopy (const String& newName,
+			   const Record& dataManagerInfo,
+			   int tableOption, Bool) const;
 
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const;

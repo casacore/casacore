@@ -1,5 +1,5 @@
 //# BaseTable.h: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,7 +210,9 @@ public:
     // </dl>
     // <group>
     void copy (const String& newName, int tableOption) const;
-    virtual void deepCopy (const String& newName, int tableOption,
+    virtual void deepCopy (const String& newName,
+			   const Record& dataManagerInfo,
+			   int tableOption,
 			   Bool valueCopy) const;
     // </group>
 
@@ -447,7 +449,9 @@ protected:
     Bool makeTableDir();
 
     // Make a true deep copy of the table.
-    void trueDeepCopy (const String& newName, int tableOption) const;
+    void trueDeepCopy (const String& newName,
+		       const Record& dataManagerInfo,
+		       int tableOption) const;
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it

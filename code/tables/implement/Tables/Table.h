@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -212,7 +212,7 @@ public:
     // of 5 seconds. Otherwise DefaultLocking keeps the locking options
     // of the already open table.
     // <group>
-  explicit Table (const String& tableName, TableOption = Table::Old);
+    explicit Table (const String& tableName, TableOption = Table::Old);
     Table (const String& tableName, const TableLock& lockOptions,
 	   TableOption = Table::Old);
     Table (const String& tableName, const String& tableDescName,
@@ -520,9 +520,14 @@ public:
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
     // <group>
+    // When making a deep copy, it is possible to specify the data managers
+    // using the <src>dataManagerInfo</src> argument.
+    // See <src>getDataManagerInfo</src> for more info about that record.
     void copy (const String& newName, TableOption) const;
-    void deepCopy (const String& newName, TableOption,
-		   Bool valueCopy=False) const;
+    void deepCopy (const String& newName,
+		   TableOption, Bool valueCopy=False) const;
+    void deepCopy (const String& newName, const Record& dataManagerInfo,
+		   TableOption, Bool valueCopy=False) const;
     // </group>
 
     // Get the table option.
@@ -918,9 +923,11 @@ inline void Table::rename (const String& newName, TableOption option)
     { baseTabPtr_p->rename (newName, option); }
 inline void Table::copy (const String& newName, TableOption option) const
     { baseTabPtr_p->copy (newName, option); }
-inline void Table::deepCopy (const String& newName, TableOption option,
+inline void Table::deepCopy (const String& newName,
+			     const Record& dataManagerInfo,
+			     TableOption option,
 			     Bool valueCopy) const
-    { baseTabPtr_p->deepCopy (newName, option, valueCopy); }
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, option, valueCopy); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()

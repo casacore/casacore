@@ -1,5 +1,5 @@
 //# TableCopy.h: Class with static functions for copying a table
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,12 +39,17 @@
 #include <aips/Utilities/String.h>
 
 
-Table TableCopy::makeEmptyTable (const String& newName, const Table& tab,
+Table TableCopy::makeEmptyTable (const String& newName,
+				 const Record& dataManagerInfo,
+				 const Table& tab,
 				 Table::TableOption option, Bool replaceTSM,
 				 Bool noRows)
 {
   TableDesc tabDesc = tab.actualTableDesc();
-  Record dminfo = tab.dataManagerInfo();
+  Record dminfo (dataManagerInfo);
+  if (dminfo.nfields() == 0) {
+    dminfo = tab.dataManagerInfo();
+  }
   if (replaceTSM) {
     adjustTSM (tabDesc, dminfo);
   }

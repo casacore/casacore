@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -453,11 +453,15 @@ void RefTable::setNrrow (uInt nrrow)
 
 //# Test if the parent table is writable.
 Bool RefTable::isWritable() const
-    { return baseTabPtr_p->isWritable(); }
-
-void RefTable::deepCopy (const String& newName, int tableOption, Bool) const
 {
-    trueDeepCopy (newName, tableOption);
+    return baseTabPtr_p->isWritable();
+}
+
+void RefTable::deepCopy (const String& newName,
+			 const Record& dataManagerInfo,
+			 int tableOption, Bool) const
+{
+    trueDeepCopy (newName, dataManagerInfo, tableOption);
 }
 
 TableDesc RefTable::actualTableDesc() const
