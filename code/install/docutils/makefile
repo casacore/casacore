@@ -2,7 +2,7 @@
 # AIPS++ documentation utilities makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1996,1997
+#   Copyright (C) 1994-1996,1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify

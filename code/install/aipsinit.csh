@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
