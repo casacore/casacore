@@ -59,6 +59,7 @@ SpectralList::~SpectralList() {
 
 SpectralList &SpectralList::operator=(const SpectralList &other) {
   if (this != &other) {
+    clear();
     nmax_p = other.nmax_p;
     list_p.resize(other.list_p.nelements(), False);
     for (uInt i=0; i<list_p.nelements(); i++) {
