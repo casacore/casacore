@@ -5912,3 +5912,4 @@
 16 317 src mv trial/implement/Functionals/NQGaussian2D.cc aips/implement/Functionals/NQGaussian2D.cc
 16 317 src mv trial/implement/Functionals/NQGaussian2D.h aips/implement/Functionals/NQGaussian2D.h
 16 317 src mv trial/implement/Functionals/NQGaussian2D2.cc aips/implement/Functionals/NQGaussian2D2.cc
+16 317 src mv trial/implement/Functionals/NQGaussian2DParam.cc aips/implement/Functionals/NQGaussian2DParam.cc
