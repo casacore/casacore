@@ -68,9 +68,6 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
-#define at_c(X) X
-#define at_cc(X) X
-
 // This is an inline guaranteed-correct conversion function which converts
 // to Bool any type which has meaning in a C++ logical expression.
 // <group>
