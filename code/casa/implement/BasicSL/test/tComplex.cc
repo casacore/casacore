@@ -1,5 +1,5 @@
 //# tComplex.cc: This program tests the Complex class
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ main() {
 
   Complex f1(23.9,1.8),f2(9.2,8.2),f3(2.7,1.8),fo(237.561,0.9312),fi;
   IComplex i1(5,2),i2(33,6),i3(f1);
-  DComplex d1,d2(f1.real(), f1.imag()),d3(0.921,7.812);
+  DComplex d1,d2(f1.real(),f1.imag()),d3(0.921,7.812);
   char tmpname[L_tmpnam];
   fstream fio(tmpnam(tmpname),ios::out | ios::trunc);
 
@@ -56,8 +56,9 @@ main() {
   cout << "conj(" << d3 << ") == " << conj(d3) << endl;
   cout << "norm(" << d3 << ") == " << norm(d3) << endl;
   cout << "arg(" << d3 << ") == " << arg(d3) << endl;
-  d1.real() = 18.9;
-  d1.imag() = -2.31;
+  ///d1.real() = 18.9;
+  ///d1.imag() = -2.31;
+  d1 = DComplex(18.9, -2.31); ///
   cout << "fabs(" << d1 << ") == " << fabs(d1) << endl;
   fio << fo << endl;
   fio.close();
@@ -226,8 +227,9 @@ main() {
   cout << f1 << " < " << i1 << " -> " << (f1 < i1) << endl;
 
 
-  f1.real() = 33.0;
-  f1.imag() = 6.0;
+  ///f1.real() = 33.0;
+  ///f1.imag() = 6.0;
+  f1 = Complex(33.0, 6.0);
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
   cout << f1 << " == " << i2 << " -> " << (f1 == i2) << endl;
   cout << f1 << " != " << i2 << " -> " << (f1 != i2) << endl;
@@ -285,7 +287,8 @@ main() {
   Complex c1; DComplex c2;
   setNaN(c1); setNaN(c2);
   assert(isNaN(c1) && isNaN(c2));
-  c1.real() = 0.0; c2.imag() = 0.0;
+  ///c1.real() = 0.0; c2.imag() = 0.0;
+  c1 = Complex(0.0, c1.imag()); c2 = DComplex(c2.real(), 0.0);
   assert(isNaN(c1) && isNaN(c2));
   c1 = Complex(0.0); c2 = DComplex(0.0);
   assert((!isNaN(c1)) && (!isNaN(c2)));
