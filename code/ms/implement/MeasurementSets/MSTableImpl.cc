@@ -36,8 +36,11 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ForwardCol.h>
+#include <aips/Tables/CompressFloat.h>
+#include <aips/Tables/CompressComplex.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 
@@ -338,6 +341,67 @@ void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
       //	throw(AipsError ("MSTableImpl::addKeyToDesc(...) - "
       //			 "Data type not handled"));
     }  
+}
+
+void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
+					Bool autoScale)
+{
+  // Check if the column name exists in the description.
+  // Check it is a Float or Complex array.
+  AlwaysAssert (td.isColumn (colName), AipsError);
+  ColumnDesc& cdesc = td.rwColumnDesc(colName);
+  DataType dtype = cdesc.trueDataType();
+  AlwaysAssert (dtype == TpArrayFloat  ||  dtype == TpArrayComplex, AipsError);
+  if (dtype == TpArrayFloat) {
+    td.addColumn (ArrayColumnDesc<Short> (colName + "_COMPRESSED",
+					  "",
+					  cdesc.dataManagerType(),
+					  cdesc.dataManagerGroup(),
+					  cdesc.shape(),
+					  cdesc.options()));
+    cdesc.rwKeywordSet().define ("CompressFloat_AutoScale", autoScale);
+  } else {
+    td.addColumn (ArrayColumnDesc<Int> (colName + "_COMPRESSED",
+					"",
+					cdesc.dataManagerType(),
+					cdesc.dataManagerGroup(),
+					cdesc.shape(),
+					cdesc.options()));
+    cdesc.rwKeywordSet().define ("CompressComplex_AutoScale", autoScale);
+  }
+  td.addColumn (ScalarColumnDesc<Float> (colName + "_SCALE"));
+  td.addColumn (ScalarColumnDesc<Float> (colName + "_OFFSET"));
+}
+
+SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
+{
+  // Loop through all columns of the description.
+  // If compression is needed (defined by keyword CompressX_AutoScaling)
+  // create a compression engine, bind the compressed column to the
+  // data manager of the original column, and bind the column to the engine.
+  const TableDesc& td = newtab.tableDesc();
+  for (uInt i=0; i<td.ncolumn(); i++) {
+    const ColumnDesc& cdesc = td[i];
+    const TableRecord& keyset = cdesc.keywordSet();
+    if (keyset.isDefined ("CompressFloat_AutoScale")) {
+      CompressFloat engine (cdesc.name(),
+			    cdesc.name() + "_COMPRESSED",
+			    cdesc.name() + "_SCALE",
+			    cdesc.name() + "_OFFSET",
+			    keyset.asBool ("CompressFloat_AutoScale"));
+      newtab.bindColumn (cdesc.name() + "_COMPRESSED", cdesc.name());
+      newtab.bindColumn (cdesc.name(), engine);
+    } else if (keyset.isDefined ("CompressComplex_AutoScale")) {
+      CompressComplex engine (cdesc.name(),
+			      cdesc.name() + "_COMPRESSED",
+			      cdesc.name() + "_SCALE",
+			      cdesc.name() + "_OFFSET",
+			      keyset.asBool ("CompressComplex_AutoScale"));
+      newtab.bindColumn (cdesc.name() + "_COMPRESSED", cdesc.name());
+      newtab.bindColumn (cdesc.name(), engine);
+    }
+  }
+  return newtab;
 }
 
 void MSTableImpl::colMapDef(SimpleOrderedMap<Int,String>& columnMap,

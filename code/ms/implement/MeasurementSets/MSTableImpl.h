@@ -1,5 +1,5 @@
 //# MSTableImpl.h: Helper class to implement common functions for MS Tables
-//# Copyright (C) 1996,2000
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #if !defined(AIPS_MSTABLEIMPL_H)
 #define AIPS_MSTABLEIMPL_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/Table.h>
@@ -38,6 +39,8 @@
 #include <aips/Utilities/Fallible.h>
 #include <aips/Arrays/Vector.h>
 
+//# Forward declarations
+class SetupNewTable;
 
 // <summary> 
 // An implementation class for the MeasurementSet to share code.
@@ -114,6 +117,13 @@ public:
     // add a MeasureColumn for the specified Measure, with default reference
     static void addMeasColumn(TableDesc &td, const String& colName,
 			      const String& colMeasure, const String& refCol);
+
+    // Add the compress option for the given column to the TableDesc.
+    static void addColumnCompression (TableDesc&, const String& colName,
+				      Bool autoScale);
+
+    // Setup the compression data managers if needed.
+    static SetupNewTable& setupCompression (SetupNewTable&);
 
     // Define an entry in the column maps
     static void colMapDef(SimpleOrderedMap<Int,String>& colMap,
