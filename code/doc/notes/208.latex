@@ -28,6 +28,6 @@
 \newpage
 %\end{latexonly}
       
-\input{../notes/208.dir/talkslides.tex}
+\input{talkslides}
 
 \end{document}
