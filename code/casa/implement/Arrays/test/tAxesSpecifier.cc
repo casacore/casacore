@@ -1,5 +1,5 @@
 //# tAxesSpecifier.cc: Test program for class AxesSpecifier
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <trial/Arrays/AxesSpecifier.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 
 void doIt()
