@@ -71,15 +71,16 @@
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
 		    uInt seqnr, Bool permLocking)
-: itsFileIO    (0),
-  itsCanIO     (0),
-  itsWritable  (True),
-  itsAddToList (setRequestFlag),
-  itsInterval  (inspectInterval),
-  itsPid       (getpid()),
+: itsFileIO      (0),
+  itsCanIO       (0),
+  itsWritable    (True),
+  itsAddToList   (setRequestFlag),
+  itsInterval    (inspectInterval),
+  itsPid         (getpid()),
 ///  itsHostId    (gethostid()),     gethostid is not declared in unistd.h
-  itsHostId    (0),
-  itsReqId     (SIZEREQID/SIZEINT, (Int)0)
+  itsHostId      (0),
+  itsReqId       (SIZEREQID/SIZEINT, (Int)0),
+  itsInspectCount(0)
 {
     AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<Int*>(0)),
 		  AipsError);
@@ -190,6 +191,7 @@ Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
     }
     //# Reset the inspection time.
     itsLastTime.now();
+    itsInspectCount = 0;
     return succ;
 }
 
@@ -211,10 +213,19 @@ Bool LockFile::inspect()
     if (itsFileIO == 0) {
 	return False;
     }
+
+    //# Only check elapsed time every n-th request (where n=100 at present),
+    //# as the elapsed time calculation is computationally expensive
+    if (itsInspectCount++ < 100) {
+      return False;
+    }
+    itsInspectCount = 0;
+
     //# Only inspect if time interval has passed.
     if (itsInterval > 0  &&  itsLastTime.age() < itsInterval) {
-	return False;
-    }
+      return False;
+    };
+
     //# Get the number of request id's and reset the time.
     uInt nr = getNrReqId();
     itsLastTime.now();
