@@ -857,8 +857,8 @@ template<class T> void Array<T>::validateIndex(const IPosition &i) const
 			     " and array differ"));
     }
     for (uInt j=0; j < ndim(); j++) {
-	if (i(j) < 0 || i(j) > length_p(j)) {
-	   throw(ArrayIndexError(i, length_p));
+	if (i(j) < 0  ||  i(j) >= length_p(j)) {
+	    throw(ArrayIndexError(i, length_p));
 	}
     }
     // OK - normal return
