@@ -63,19 +63,23 @@ Coding
 
 *** Is use of Exceptions correct?
 
+*** Are constructors with one argument made explicit (or are the meant to be
+    used as automatic conversions)
+
 *** Compiler Warnings (using g++ and optionally any other compiler)
 
 *** private data members use either the '_p' or 'its' convention
 
-*** braces around multi-line if statements. eg.,
+*** braces around multi-line compound statements. eg.,
     if (condition) {
       statement1;
     } else {
       statement2;
     }
 
-(The following three items can be found using testcenter, either at the
-       author or the reviewers site)
+(The following three items can be found using purify and purecov, either at the
+     author's or the reviewer's site)
+
 *** Memory Access Errors
 
 *** Memory Leaks
