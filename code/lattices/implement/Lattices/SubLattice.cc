@@ -138,7 +138,7 @@ template<class T>
 SubLattice<T>::~SubLattice()
 {
   // Note that itsMaskLatPtr (if filled in) always points to the same
-  // object as itsLatticePtr.
+  // object as itsLatticePtr, so it does not need to be deleted.
   delete itsLatticePtr;
 }
 
@@ -153,7 +153,6 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
     if (itsMaskLatPtr != 0) {
       itsMaskLatPtr = itsMaskLatPtr->cloneML();
       itsLatticePtr = itsMaskLatPtr;
-      itsRegion.setParent (itsMaskLatPtr->getRegionPtr());
     } else if (itsLatticePtr != 0) {
       itsLatticePtr = itsLatticePtr->clone();
     }
@@ -178,7 +177,7 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
     itsMaskLatPtr = 0;
   } else {
     itsLatticePtr = maskLatPtr;
-    if (maskLatPtr->getRegionPtr() == 0) {
+    if (! maskLatPtr->isMasked()) {
       itsMaskLatPtr = 0;
     } else {
       itsMaskLatPtr = maskLatPtr;
@@ -198,9 +197,6 @@ void SubLattice<T>::setRegion (const LatticeRegion& region)
 		      "shape of lattice mismatches lattice shape in region"));
   }
   itsRegion = region;
-  if (itsMaskLatPtr != 0) {
-    itsRegion.setParent (itsMaskLatPtr->getRegionPtr());
-  }
 }
 template<class T>
 void SubLattice<T>::setRegion (const Slicer& slicer)
@@ -213,6 +209,12 @@ void SubLattice<T>::setRegion()
   IPosition shape = itsLatticePtr->shape();
   setRegion (LatticeRegion (Slicer(IPosition(shape.nelements(),0), shape),
 			    shape));
+}
+
+template<class T>
+Bool SubLattice<T>::isMasked() const
+{
+  return ToBool (itsMaskLatPtr != 0  ||  itsRegion.hasMask());
 }
 
 template<class T>
@@ -315,6 +317,48 @@ void SubLattice<T>::putAt (const T& value, const IPosition& where)
     itsLatticePtr->putAt (value, itsRegion.convert (where));
   }
 }
+
+template<class T>
+Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
+				    const Slicer& section)
+{
+  // When lattice has no mask, we can return the region's mask.
+  if (itsMaskLatPtr == 0) {
+    return itsRegion.getSlice (buffer, section);
+  }
+  // The lattice has a mask.
+  // If the region has no mask, we can return the lattice's mask.
+  if (! itsRegion.hasMask()) {
+    return itsMaskLatPtr->doGetMaskSlice (buffer, itsRegion.convert(section));
+  }
+  // They have both a mask, so they have to be ANDed.
+  // Get the lattice's mask.
+  // Make a copy if it references the original mask (because it'll change).
+  Bool ref = itsMaskLatPtr->doGetMaskSlice (buffer,
+					    itsRegion.convert(section));
+  if (ref) {
+    Array<Bool> mask;
+    mask = buffer;
+    buffer.reference (mask);
+  }
+  // Get the region's mask.
+  Array<Bool> tmpbuf;
+  itsRegion.getSlice (tmpbuf, section);
+  // And the masks.
+  Bool deleteBuf, deleteTmp;
+  const Bool* tmpptr = tmpbuf.getStorage (deleteTmp);
+  Bool* bufptr = buffer.getStorage (deleteBuf);
+  uInt n = buffer.nelements();
+  for (uInt i=0; i<n; i++) {
+    if (!tmpptr[i]) {
+      bufptr[i] = tmpptr[i];
+    }
+  }
+  tmpbuf.freeStorage (tmpptr, deleteTmp);
+  buffer.putStorage (bufptr, deleteBuf);
+  return False;
+}
+
 
 template <class T>
 Bool SubLattice<T>::ok() const
