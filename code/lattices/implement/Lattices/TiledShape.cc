@@ -108,7 +108,8 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     double nrLeft = nrPixelsPerTile;
     Vector<double> tmpShape(nrdim);
     IPosition tileShape(nrdim, 0);
-    uInt i, j;
+    uInt i;
+    Int j;
     // Iterate until the tile shape is set nicely.
     // This is needed to prevent tile shape dimensions from underflow
     // or overflow.

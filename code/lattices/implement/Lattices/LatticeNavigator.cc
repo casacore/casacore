@@ -72,15 +72,15 @@ IPosition LatticeNavigator::hangOverTrc() const
   return trc;
 }
 
-void LatticeNavigator::subSection(const IPosition & blc,
-				  const IPosition & trc)
+void LatticeNavigator::subSection(const IPosition& blc,
+				  const IPosition& trc)
 {
   subSection(blc, trc, IPosition(latticeShape().nelements(),1));
 }
 
-void LatticeNavigator::subSection(const IPosition & blc,
-				  const IPosition & trc, 
-				  const IPosition & inc)
+void LatticeNavigator::subSection(const IPosition&,
+				  const IPosition&, 
+				  const IPosition&)
 {
   throw(AipsError("LatticeNavigator::subSection(blc, trc, inc)"
 	" - sub-Lattice's are not supported"));

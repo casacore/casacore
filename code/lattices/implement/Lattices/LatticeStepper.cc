@@ -38,8 +38,8 @@ LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const uInt hangOverPolicy)
 : itsIndexer     (latticeShape),
   itsCursorShape (latticeShape.nelements()),
-  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements())),
   itsCursorPos   (latticeShape.nelements(),0),
+  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements())),
   itsNsteps      (0),
   itsEnd         (False),
   itsStart       (True),
@@ -57,8 +57,8 @@ LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const uInt hangOverPolicy)
 : itsIndexer     (latticeShape),
   itsCursorShape (latticeShape.nelements()),
-  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
   itsCursorPos   (latticeShape.nelements(), 0),
+  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
   itsNsteps      (0),
   itsEnd         (False),
   itsStart       (True),
@@ -77,8 +77,8 @@ LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const uInt hangOverPolicy)
 : itsIndexer     (latticeShape),
   itsCursorShape (latticeShape.nelements()),
-  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
   itsCursorPos   (latticeShape.nelements(), 0),
+  itsAxisPath    (IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
   itsNsteps      (0),
   itsEnd         (False),
   itsStart       (True),
@@ -94,8 +94,8 @@ LatticeStepper::LatticeStepper (const LatticeStepper& other)
 : itsIndexer     (other.itsIndexer),
   itsCursorAxes  (other.itsCursorAxes),
   itsCursorShape (other.itsCursorShape),
-  itsAxisPath    (other.itsAxisPath),
   itsCursorPos   (other.itsCursorPos),
+  itsAxisPath    (other.itsAxisPath),
   itsNsteps      (other.itsNsteps),
   itsEnd         (other.itsEnd),
   itsStart       (other.itsStart),
@@ -117,8 +117,8 @@ LatticeStepper& LatticeStepper::operator=(const LatticeStepper& other)
     itsIndexer     = other.itsIndexer;
     itsCursorAxes  = other.itsCursorAxes;
     itsCursorShape = other.itsCursorShape;
-    itsAxisPath    = other.itsAxisPath;
     itsCursorPos   = other.itsCursorPos;
+    itsAxisPath    = other.itsAxisPath;
     itsNsteps      = other.itsNsteps;
     itsEnd         = other.itsEnd;
     itsStart       = other.itsStart;
@@ -324,7 +324,7 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
   // Check if the cursor axes are given correctly and in ascending order.
   // Check if the cursor shape for non-given axes is 1.
   for (i=0; i<ndimCA; i++) {
-    if (cursorAxes(i) < 0   ||  cursorAxes(i) >= latticeDim) {
+    if (cursorAxes(i) < 0   ||  cursorAxes(i) >= Int(latticeDim)) {
       throw (AipsError ("LatticeStepper::setCursorShape: "
 			"cursorAxes value <0 or >latticeDim"));
     }
@@ -340,7 +340,7 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
   if (ndimCA > 0  &&  ndimCA != ndimCS) {
     for (i=0; i<ndimCS; i++) {
       for (uInt j=0; j<ndimCA; j++) {
-	if (i == cursorAxes(j)) {
+	if (Int(i) == cursorAxes(j)) {
 	  break;
 	}
       }
@@ -481,7 +481,8 @@ Bool LatticeStepper::ok() const
   for (uInt i=0; i < latticeDim; i++) {
     // the cursor shape must be <= the corresponding lattice axes AND
     // a cursor shape with an axis of length zero makes no sense
-    if (itsCursorShape(i) > itsIndexer.fullShape(i) || itsCursorShape(i) <= 0) {
+    if (itsCursorShape(i) > Int(itsIndexer.fullShape(i))
+    ||  itsCursorShape(i) <= 0) {
       LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
       logErr << LogIO::SEVERE << "cursor shape"
 	     << " (=" << itsCursorShape << ")"
@@ -524,7 +525,7 @@ Bool LatticeStepper::ok() const
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
   for (uInt n=0; n < latticeDim; n++) {
-    if (itsAxisPath(n) >= latticeDim){
+    if (itsAxisPath(n) >= Int(latticeDim)){
       LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
       logErr << LogIO::SEVERE << "axis path"
 	     << " (=" << itsAxisPath << ")"

@@ -35,19 +35,19 @@
 TiledLineStepper::TiledLineStepper (const IPosition& latticeShape, 
 				    const IPosition& tileShape,
 				    const uInt axis)
-: itsIndexer(latticeShape),
-  itsTiler(latticeShape),
-  itsSubSection(latticeShape),
-  itsBlc(latticeShape.nelements(), 0),
+: itsBlc(latticeShape.nelements(), 0),
   itsTrc(latticeShape - 1),
   itsInc(latticeShape.nelements(), 1),
-  itsTileShape(tileShape),
-  itsTilerCursorPos(latticeShape.nelements(), 0),
+  itsSubSection(latticeShape),
+  itsIndexer(latticeShape),
+  itsTiler(latticeShape),
   itsIndexerCursorPos(latticeShape.nelements(), 0),
+  itsTilerCursorPos(latticeShape.nelements(), 0),
   itsCursorShape(latticeShape.nelements(), 1),
+  itsTileShape(tileShape),
   itsAxisPath(latticeShape.nelements(), 0),
-  itsAxis(axis),
   itsNsteps(0),
+  itsAxis(axis),
   itsEnd(False),
   itsStart(True)
 {
@@ -69,19 +69,19 @@ TiledLineStepper::TiledLineStepper (const IPosition& latticeShape,
 
 // the copy constructor which uses copy semantics.
 TiledLineStepper::TiledLineStepper (const TiledLineStepper& other)
-: itsIndexer(other.itsIndexer),
-  itsTiler(other.itsTiler),
-  itsSubSection(other.itsSubSection),
-  itsBlc(other.itsBlc),
+: itsBlc(other.itsBlc),
   itsTrc(other.itsTrc),
   itsInc(other.itsInc),
-  itsTileShape(other.itsTileShape),
-  itsTilerCursorPos(other.itsTilerCursorPos),
+  itsSubSection(other.itsSubSection),
+  itsIndexer(other.itsIndexer),
+  itsTiler(other.itsTiler),
   itsIndexerCursorPos(other.itsIndexerCursorPos),
+  itsTilerCursorPos(other.itsTilerCursorPos),
   itsCursorShape(other.itsCursorShape),
+  itsTileShape(other.itsTileShape),
   itsAxisPath(other.itsAxisPath),
-  itsAxis(other.itsAxis),
   itsNsteps(other.itsNsteps),
+  itsAxis(other.itsAxis),
   itsEnd(other.itsEnd),
   itsStart(other.itsStart)
 {
@@ -96,19 +96,19 @@ TiledLineStepper::~TiledLineStepper()
 TiledLineStepper& TiledLineStepper::operator= (const TiledLineStepper& other)
 {
   if (this != &other) { 
-    itsIndexer = other.itsIndexer;
-    itsTiler = other.itsTiler;
-    itsSubSection = other.itsSubSection;
     itsBlc = other.itsBlc;
     itsTrc = other.itsTrc;
     itsInc = other.itsInc;
-    itsTileShape = other.itsTileShape;
-    itsTilerCursorPos = other.itsTilerCursorPos;
+    itsSubSection = other.itsSubSection;
+    itsIndexer = other.itsIndexer;
+    itsTiler = other.itsTiler;
     itsIndexerCursorPos = other.itsIndexerCursorPos;
+    itsTilerCursorPos = other.itsTilerCursorPos;
     itsCursorShape = other.itsCursorShape;
+    itsTileShape = other.itsTileShape;
     itsAxisPath = other.itsAxisPath;
-    itsAxis = other.itsAxis;
     itsNsteps = other.itsNsteps;
+    itsAxis = other.itsAxis;
     itsEnd = other.itsEnd;
     itsStart = other.itsStart;
   }
@@ -150,8 +150,8 @@ Bool TiledLineStepper::operator++ (Int)
     Bool empty = False;
     //# Calculate the first and last pixel in the tile taking the
     //# increment into account.
-    Int nrdim = tileblc.nelements();
-    for (int i=0; i<nrdim; i++) {
+    uInt nrdim = tileblc.nelements();
+    for (uInt i=0; i<nrdim; i++) {
       if (i != itsAxis) {
 	if (tiletrc(i) > itsTrc(i)) {
 	  tiletrc(i) = itsTrc(i);
@@ -218,8 +218,8 @@ Bool TiledLineStepper::operator--(Int)
     Bool empty = False;
     //# Calculate the first and last pixel in the tile taking the
     //# increment into account.
-    Int nrdim = tileblc.nelements();
-    for (int i=0; i<nrdim; i++) {
+    uInt nrdim = tileblc.nelements();
+    for (uInt i=0; i<nrdim; i++) {
       if (i != itsAxis) {
 	if (tiletrc(i) > itsTrc(i)) {
 	  tiletrc(i) = itsTrc(i);
@@ -272,11 +272,10 @@ void TiledLineStepper::reset()
   IPosition tiletrc = tileblc + itsTileShape - 1;
   tileblc(itsAxis) = itsBlc(itsAxis);
   tiletrc(itsAxis) = itsTrc(itsAxis);
-  Bool empty = False;
   //# Calculate the first and last pixel in the tile taking the
   //# increment into account.
-  Int nrdim = tileblc.nelements();
-  for (int i=0; i<nrdim; i++) {
+  uInt nrdim = tileblc.nelements();
+  for (uInt i=0; i<nrdim; i++) {
     if (i != itsAxis) {
       if (tiletrc(i) > itsTrc(i)) {
 	tiletrc(i) = itsTrc(i);
