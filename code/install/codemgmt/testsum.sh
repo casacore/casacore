@@ -50,9 +50,9 @@ if [ -x /usr/bin/nawk ] ; then
 fi
 PACK=$2
 VERSION=`avers | awk '{printf("%.6s",$1)}'`
-TPASS=`grep "^$2.*PASS" $1/bintest/runtests.report | wc -l`
-TUNTESTED=`grep "^$2.*UNTESTED" $1/bintest/runtests.report | wc -l`
-TFAIL=`grep "^$2.*FAIL" $1/bintest/runtests.report | wc -l`
+TPASS=`grep "^${2}-.*PASS" $1/bintest/runtests.report | wc -l`
+TUNTESTED=`grep "^${2}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
+TFAIL=`grep "^${2}-.*FAIL" $1/bintest/runtests.report | wc -l`
 echo 
 echo "Summary of $AIPSPATH runtests $VERSION"
 echo
@@ -64,20 +64,20 @@ echo "**************************************************************************
 echo 
 echo "Tests that failed to compile"
 echo 
-grep "^$2.*FAIL.*compile" $1/bintest/runtests.report
+grep "^${2}-.*FAIL.*compile" $1/bintest/runtests.report
 echo
 echo "Tests that failed to execute"
 echo 
-grep "^$2.*FAIL.*execute" $1/bintest/runtests.report
+grep "^${2}-.*FAIL.*execute" $1/bintest/runtests.report
 echo
 echo "Tests that failed to verify"
 echo 
-grep "^$2.*FAIL.*verify" $1/bintest/runtests.report
-grep "^$2.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
+grep "^${2}-.*FAIL.*verify" $1/bintest/runtests.report
+grep "^${2}-.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
 echo 
 echo "Tests that were skipped"
 echo 
-grep "^$2.*UNTESTED" $1/bintest/runtests.report
+grep "^${2}-.*UNTESTED" $1/bintest/runtests.report
 if [ -s /tmp/aips2tests.noexecute ]
 then
    echo 
@@ -99,7 +99,7 @@ then
 fi
 rm /tmp/aips2tests.noexecute
 echo 
-grep "^$2.*FAIL.*verify" $1/bintest/runtests.report > /tmp/aips2tests.noverify
+grep "^${2}-.*FAIL.*verify" $1/bintest/runtests.report > /tmp/aips2tests.noverify
 if [ -s /tmp/aips2tests.noverify ]
 then
    echo 
@@ -122,11 +122,11 @@ fi
 rm /tmp/aips2tests.noverify
 echo "Tests that had warnings"
 echo 
-grep "^$2.*WARN" $1/bintest/runtests.report
+grep "^${2}-.*WARN" $1/bintest/runtests.report
 echo
 echo "Tests that passed"
 echo
-grep "^$2.*PASS" $1/bintest/runtests.report
+grep "^${2}-.*PASS" $1/bintest/runtests.report
 echo
 echo "*****************************************************************"
 echo "End tests report for package $PACK"
