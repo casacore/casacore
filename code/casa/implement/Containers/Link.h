@@ -1,5 +1,5 @@
 //# Link.h: Doubly linked list primitive
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@
 // <example>
 //     This example makes <src>Link</src> behave like a stack:
 //     <srcblock>
-//     #include <iostream.h>
+// #include <iostream>
 //     #include <aips/Containers/Link.h>
 //
 //     main() {
@@ -86,7 +86,7 @@
 //     This next example demonstrates how a queue could be created
 //     instead of a stack:
 //     <srcblock>
-//     #include <iostream.h>
+// #include <iostream>
 //     #include <aips/Containers/Link.h>
 //
 //     main() {

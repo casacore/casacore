@@ -1,5 +1,5 @@
 //# Primes.h: This class provides some prime number operations using a cached table
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,7 +71,7 @@
 // <srcblock>
 // #include <aips/Mathematics/Primes.h>
 // #include <aips/Utilities/Assert.h>
-// #include <iostream.h>
+// #include <iostream>
 //
 // // Refer also to tPrimes.cc
 //

@@ -1,5 +1,5 @@
 //# HashMap.h: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -223,7 +223,7 @@ public:
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
 //    #include <aips/Utilities/String.h>
-//    #include <iostream.h>
+// #include <iostream>
 //   
 //    main() {
 //      HashMap<String,Int> hash;

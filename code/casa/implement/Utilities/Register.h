@@ -68,7 +68,7 @@
 //    implementation of a <em>virtual</em> member function. For example:
 //    <srcblock>
 //    #include <aips/Utilities/Register.h>
-//    #include <iostream.h>
+// #include <iostream>
 //    
 //    class foo { public: virtual uInt type() { return Register(this);}};
 //    class bar : public foo { public: uInt type() { return Register(this);}};
