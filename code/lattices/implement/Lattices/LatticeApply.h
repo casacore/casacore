@@ -79,7 +79,7 @@ class PixelRegion;
 // the calculation of the moment. The functions <src>lineApply</src>
 // and <src>lineMultiApply</src> can be used for that purpose.
 // Internally they use the
-// <linkto class=TiledLineStepper<TiledLineStepper</linkto>
+// <linkto class=TiledLineStepper>TiledLineStepper</linkto>
 // navigator, so only a few tiles are kept in the cache.
 // <br> One can also think of applications where an entire plane (or cube)
 // is needed. This is not supported, but can be implemented when needed.
