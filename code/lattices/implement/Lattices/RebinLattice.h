@@ -170,13 +170,17 @@ private:
   IPosition doShape(const IPosition& inShape) const;
 
   Slicer findOriginalSlicer (const Slicer& section) const;
-
+  void getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section);
   Bool bin(Array<T>& dataOut, Array<Bool>& maskOut,
            const Array<T>& dataIn, const Array<Bool>& maskIn) const;
 //
   MaskedLattice<T>* itsLatticePtr;
   IPosition itsBin;
   Bool itsAllUnity;
+//
+  Array<T>* itsDataPtr;
+  Array<Bool>* itsMaskPtr;
+  Slicer itsSlicer;
 };
 
 

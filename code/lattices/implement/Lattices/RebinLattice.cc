@@ -42,7 +42,9 @@
 
 template<class T>
 RebinLattice<T>::RebinLattice ()
- : itsLatticePtr(0)
+: itsLatticePtr(0),
+  itsDataPtr(0),
+  itsMaskPtr(0)
 {}
 
 
@@ -50,7 +52,9 @@ RebinLattice<T>::RebinLattice ()
 template<class T>
 RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
                                const Vector<uInt>& bin)
-: itsLatticePtr(lattice.cloneML())
+: itsLatticePtr(lattice.cloneML()),
+  itsDataPtr(0),
+  itsMaskPtr(0)
 {
    LogIO os(LogOrigin("RebinLattice", "RebinLattice(...)", WHERE));
    const uInt nDim = lattice.ndim();
@@ -78,14 +82,23 @@ RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
 template<class T>
 RebinLattice<T>::RebinLattice (const RebinLattice<T>& other)
 : itsLatticePtr(0),
-  itsBin(0)
+  itsDataPtr(0),
+  itsMaskPtr(0)
 {
   operator= (other);
 }
 
 template<class T>
 RebinLattice<T>::~RebinLattice()
-{}
+{
+   if (itsDataPtr) {
+      delete itsDataPtr; itsDataPtr = 0;
+   }
+   if (itsMaskPtr) {
+      delete itsMaskPtr; itsMaskPtr = 0;
+   }
+
+}
 
 template<class T>
 RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other)
@@ -93,6 +106,11 @@ RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other)
   if (this != &other) {
     delete itsLatticePtr;
     itsLatticePtr = other.itsLatticePtr->cloneML();
+//
+    delete itsDataPtr;
+    itsDataPtr = 0;
+    delete itsMaskPtr;
+    itsMaskPtr = 0;
 //
     itsBin.resize(0);
     itsBin = other.itsBin;
@@ -192,27 +210,46 @@ template<class T>
 Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
 
+// If we already have the result for this section don't get it again
+
+   if (section==itsSlicer && itsDataPtr) {
+      buffer.reference(*itsDataPtr);
+      return True;
+   }
+
 // Get input data
 
-   Slicer sectionIn = findOriginalSlicer (section);
    Array<T> dataIn;
-   itsLatticePtr->getSlice(dataIn, sectionIn);
    Array<Bool> maskIn;
-   itsLatticePtr->getMaskSlice(maskIn, sectionIn);
+   getDataAndMask (dataIn, maskIn, section);
 
-// Bin it up - short cut if all bins unity (useless but allowed)
+// Clean up cache pointers
 
-   buffer.resize(doShape(sectionIn.length()));
-   Array<Bool> maskOut;
-//
-   if (itsAllUnity) {
+   delete itsDataPtr; itsDataPtr = 0;
+   delete itsMaskPtr; itsMaskPtr = 0;
+
+// Bin it up
+
+   const IPosition& shapeOut = section.length();
+   Bool isRef;
+   if (itsAllUnity) {                        // Fairly useless but legal...
+      buffer.resize(dataIn.shape());
       buffer = dataIn.copy();
+      isRef = False;
    } else {
-      bin (buffer, maskOut, dataIn, maskIn);
+      itsDataPtr = new Array<T>(shapeOut);
+      itsMaskPtr = new Array<Bool>(shapeOut);
+//
+      bin (*itsDataPtr, *itsMaskPtr, dataIn, maskIn);
+      buffer.reference(*itsDataPtr);
+      isRef = True;
    }
 //
-   return False;
+   itsSlicer = section;
+   return isRef;
 }
+
+
 
 template<class T>
 void RebinLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
@@ -233,33 +270,48 @@ template<class T>
 Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
                                       const Slicer& section)
 {
-   Slicer sectionIn = findOriginalSlicer (section);
+// If we already have the result for this section don't get it again
+
+   if (section==itsSlicer && itsMaskPtr) {
+      buffer.reference(*itsMaskPtr);
+      return True;
+   }
+
+// Clean up cache pointers
+
+   delete itsDataPtr; itsDataPtr = 0;
+   delete itsMaskPtr; itsMaskPtr = 0;
+//
+   Bool isRef;
+   const IPosition& shapeOut = section.length();
    if (itsLatticePtr->isMasked()) {
 
 // Get input data
 
       Array<T> dataIn;
-      itsLatticePtr->getSlice(dataIn, sectionIn);
       Array<Bool> maskIn;
-      itsLatticePtr->getMaskSlice(maskIn, sectionIn);
+      getDataAndMask (dataIn, maskIn, section);
 
-// Bin it up. Take short cut if all bins unity (useless but allowed)
+// Bin it up
 
-      Array<T> dataOut(doShape(sectionIn.length()));
-      buffer.resize(doShape(sectionIn.length()));
-//
-       if (itsAllUnity) {
-          dataOut = dataIn.copy();
-          buffer = maskIn.copy();
-       } else {
-          bin (dataOut, buffer, dataIn, maskIn);
-       }
+      if (itsAllUnity) {                        // Fairly useless but legal...
+         buffer = maskIn.copy();
+         isRef = False;
+      } else {
+         itsDataPtr = new Array<T>(shapeOut);
+         itsMaskPtr = new Array<Bool>(shapeOut);
+         bin (*itsDataPtr, *itsMaskPtr, dataIn, maskIn);
+         buffer.reference(*itsMaskPtr);
+         isRef = True;
+      }
    } else {
-       buffer.resize(doShape(sectionIn.length()));
-       buffer = True;
+       itsMaskPtr = new Array<Bool>(shapeOut, True);
+       buffer.reference(*itsMaskPtr);
+       isRef = True;
    }
 //
-   return False;
+   itsSlicer = section;
+   return isRef;
 }
 
 
@@ -267,6 +319,23 @@ template <class T>
 Bool RebinLattice<T>::ok() const
 {
   return itsLatticePtr->ok();
+}
+
+
+
+template<class T>
+void RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section)
+{
+
+// Work out the slicer for the input Lattice given the slicer for
+// the binned Lattice
+
+   Slicer sectionIn = findOriginalSlicer (section);
+
+// Fetch
+
+   itsLatticePtr->getSlice(data, sectionIn);
+   itsLatticePtr->getMaskSlice(mask, sectionIn);
 }
 
 
