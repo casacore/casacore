@@ -57,8 +57,8 @@ class GlishRecord;
 // functions should be called <src>toRecord</src> and
 // <src>fromRecord</src>). Examples of records are: 
 // <ul> 
-// <li> <linkto class="GlishRecord">GlishRecord</linkto>)
-// <li> <linkto class="TableRecord">TableRecord</linkto>)
+// <li> <linkto class="GlishRecord">GlishRecord</linkto>
+// <li> <linkto class="TableRecord">TableRecord</linkto>
 // </ul> 
 //
 // This interface defines two functions that convert between a RecordInterface
@@ -73,10 +73,10 @@ class GlishRecord;
 // At the moment only Records & TableRecords are derived from
 // RecordInterface. In future all records (like GlishRecord) will be derived
 // from this one base. Till then separate to/fromRecord() methods should be
-// provided for the different record types. Implementation of these could
-// be in a separate file to make sure they are only included when
-// needed. Alternatively you could use the to/fromGlishRecord functions. As the
-// implementation of these functions is in a seperate file
+// provided for the different record types. Implementation of these could be in
+// a separate file to make sure they are only included when
+// needed. Alternatively you could use the supplied to/fromGlishRecord
+// functions. As the implementation of these functions is in a seperate file
 // (Record2Transformable.cc) they are only linked in when necessary.
 // </note>
 // </synopsis>
