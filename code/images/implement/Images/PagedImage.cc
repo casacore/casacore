@@ -230,8 +230,32 @@ rename(const String & newName) {
 }
 
 template <class T> String PagedImage<T>::
-name() const {
-  return table_p.tableName();
+name(const Bool stripPath) const {
+
+   if (!stripPath) {
+           
+// Full path included
+ 
+      return table_p.tableName();
+   } else {
+
+// Strip off path
+ 
+      String fullName = table_p.tableName();
+      Int iLen = fullName.length();
+    
+// Find last "/"
+     
+      for (Int i=iLen-1,iSlash=-1; i>=0; i--) {
+         String c(fullName.elem(i));
+         if (c == "/") {
+           iSlash = i;
+           break;
+         }   
+      }
+      Int n = iLen - ++iSlash;
+      return String(fullName(iSlash,n));
+   }
 }
 
 template <class T> uInt PagedImage<T>::
