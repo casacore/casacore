@@ -33,6 +33,7 @@
 
 class String;
 class RecordInterface;
+class GlishValue;
 class GlishRecord;
 
 // <summary>Interface class for converting to/from records</summary>
@@ -131,10 +132,25 @@ public:
   // and the function returns True. Otherwise the function returns False and
   // appends an error message to the supplied String giving the reason why the
   // conversion failed.
-  // <group>
-  virtual Bool fromRecord(String & error, const RecordInterface & inRecord) = 0;
-  Bool fromGlishRecord(String & error, const GlishRecord & inRecord);
-  // </group>
+  virtual Bool fromRecord(String & error, const RecordInterface & inRecord) =0;
+
+  // Initialise the class from a String representation. A string cannot
+  // contain enough information for many objects. Hence the default
+  // implementation of this class returns False, indicating that the class
+  // could not be initialised and an error message is appended to the supplied
+  // string. If the class can be initialised from a string then this function
+  // should be overridden.
+  virtual Bool fromString(String & error, const String & inString);
+
+  // Initialise the class from a Record or a String representation. The input
+  // GlishValue should either be a record or a string and this function will
+  // call the appropriate virtual function to do the conversion. This function
+  // returns False if the input GlishValue is not a record or a string. It also
+  // returns False if it could not initialise the object from the String or
+  // Record. Whenever it reurns False an error message is appended to the
+  // supplied string. It returns True if the conversion succeeded.
+  Bool fromGlishRecord(String & error, const GlishValue & inValue);
+
 };
 
 #endif

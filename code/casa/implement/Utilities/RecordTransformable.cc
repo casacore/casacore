@@ -26,9 +26,15 @@
 //# $Id$
 
 #include <aips/Utilities/RecordTransformable.h>
+#include <aips/Utilities/String.h>
 
 RecordTransformable::~RecordTransformable() {
   // Nothing
+}
+
+Bool RecordTransformable::fromString(String & error, const String & inString) {
+  error += "Cannot initialise this object from a string\n";
+  return False;
 }
 
 // Local Variables: 
