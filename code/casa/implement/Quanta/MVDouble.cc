@@ -145,3 +145,17 @@ void MVDouble::print(ostream &os) const {
 MeasValue *MVDouble::clone() const {
   return (new MVDouble(*this));
 }
+
+Vector<Double> MVDouble::getVector() const {
+  Vector<Double> x(1);
+  x(0) = val;
+  return x;
+}
+
+void MVDouble::putVector(const Vector<Double> &in) {
+  if (in.nelements() < 1) {
+    val = 0.0;
+  } else {
+    val = in(0);
+  };
+}
