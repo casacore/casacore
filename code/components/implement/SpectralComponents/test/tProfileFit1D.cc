@@ -1,5 +1,5 @@
 //# tProfileFit1D.cc: test the ProfileFit1D class
-//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,41 +26,42 @@
 //# $Id$
 
 #include <casa/aips.h>
-#include<components/SpectralComponents/ProfileFit1D.h>
+#include <components/SpectralComponents/ProfileFit1D.h>
 
-#include<casa/Arrays/Vector.h>
-#include<casa/Arrays/ArrayMath.h>
-#include<casa/Arrays/ArrayLogical.h>
-#include<casa/Arrays/IPosition.h>
-#include<components/SpectralComponents/SpectralElement.h>
-#include<casa/Utilities/Assert.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
 #include <casa/iostream.h>
 
-void makeData (Vector<Float>& x, Vector<Float>& y, Vector<Bool>& m, 
+void makeData (Vector<Double>& x, Vector<Double>& y, Vector<Bool>& m, 
                Double& amp, Double& cen, Double& sigma, 
                Double& p0, Double& p1);
 void check (Double amp, Double cen, Double sigma, Double p0, Double p1,
             const SpectralList& l);
-void checkMasks (uInt n, const ProfileFit1D<Float>& fitter, Int start, Int end);
+void checkMasks (uInt n, const ProfileFit1D<Double>& fitter, Int start,
+		 Int end);
 
 int main() {
 
 try {
 
-   {
+  {
 
 // Data
 
-      Vector<Float> x,y;
+      Vector<Double> x,y;
       Vector<Bool> m;
       Double amp, cen, sig, p0, p1;
       makeData(x, y, m, amp, cen, sig, p0, p1);
-      const Int n = x.nelements();
+      const uInt n = x.nelements();
  
 // Make fitter, set data and fit
 
-      ProfileFit1D<Float> fitter;
+      ProfileFit1D<Double> fitter;
       fitter.setData (x,y,m);
       fitter.setGaussianElements (1);
       SpectralElement p(1);
@@ -81,12 +82,12 @@ try {
       }
 //
       {
-         ProfileFit1D<Float> fitter2(fitter);
+         ProfileFit1D<Double> fitter2(fitter);
          const SpectralList& fitList = fitter2.getList(True);
          check (amp, cen, sig, p0, p1, fitList);
       }
       {
-         ProfileFit1D<Float> fitter2; 
+         ProfileFit1D<Double> fitter2; 
          fitter2 = fitter;
          const SpectralList& fitList = fitter2.getList(True);
          check (amp, cen, sig, p0, p1, fitList);
@@ -105,7 +106,7 @@ try {
 
 // Now set range mask via abcissa values
 
-         Vector<Float> startF(1), endF(1);
+         Vector<Double> startF(1), endF(1);
          startF(0) = x(start(0)); endF(0) = x(end(0));
          fitter.setRangeMask (startF, endF, True);
 
@@ -122,7 +123,7 @@ try {
  }
 }
 
-void makeData (Vector<Float>& x, Vector<Float>& y, Vector<Bool>& m,
+void makeData (Vector<Double>& x, Vector<Double>& y, Vector<Bool>& m,
                Double& amp, Double& cen, Double& sigma, 
                Double& p0, Double& p1)
 {
@@ -131,8 +132,8 @@ void makeData (Vector<Float>& x, Vector<Float>& y, Vector<Bool>& m,
    y.resize(n);
    m.resize(n);
    indgen(x);
-   x *= Float(2.3);
-   x += Float(1.0);
+   x *= (2.3);
+   x += (1.0);
    m = True;
 //
    amp = 10.0;
@@ -172,7 +173,8 @@ void check (Double amp, Double cen, Double sig, Double p0, Double p1,
 }
 
 
-void checkMasks (uInt n, const ProfileFit1D<Float>& fitter, Int start, Int end)
+void checkMasks (uInt n, const ProfileFit1D<Double>& fitter, Int start,
+		 Int end)
 {
    Vector<Bool> rangeMask = fitter.getRangeMask();
    Vector<Bool> totalMask = fitter.getTotalMask();
