@@ -2,7 +2,7 @@
 # AIPS++ top directory makefile.
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ endif
 
 # Subdirectories in which to invoke "allsys", in order.
 #------------------------------------------------------
-ALLSYSD  := install aips dish synthesis vlbi
+ALLSYSD  := install aips dish display synthesis vlbi
 
 # Should only exist in consortium installations.
 ALLSYSD  += admin
