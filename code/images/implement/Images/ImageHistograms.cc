@@ -39,6 +39,7 @@
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/SubLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -1241,7 +1242,7 @@ void ImageHistograms<T>::makeHistograms()
 // Create storage image
  
    pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
-                                      myTable);
+				     myTable);
 
 
 // Create collapser for LatticeApply
@@ -1256,8 +1257,10 @@ void ImageHistograms<T>::makeHistograms()
    Int newOutAxis = 0;
 
 // Iterate through image and create histograms
+// Output has to be a MaskedLattice, so make a writable SubLattice.
 
-   LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
+   SubLattice<T> outLatt (*pStoreImage_p, True);
+   LatticeApply<T>::tiledApply(outLatt, *pInImage_p, 
                                collapser, IPosition(cursorAxes_p),
                                newOutAxis, pProgressMeter);
    if (pProgressMeter != 0) {
