@@ -97,7 +97,9 @@ class SpectralElement : public RecordTransformable {
     N_Types
   };
 
-  //# Friends
+  //# Constants
+  // Sigma to FWHM conversion factor
+  static const Double SigmaToFWHM;
 
   //# Constructors
   // Default constructor creates a default Gaussian element with an amplitude
@@ -295,8 +297,6 @@ class SpectralElement : public RecordTransformable {
 
  private:
   //#Data
-  // Sigma to FWHM conversion factor
-  static const Double sigmaToFWHM_p;
   // type of element
   SpectralElement::Types tp_p;
   // A number (like polynomial degree or number of doublet lines)

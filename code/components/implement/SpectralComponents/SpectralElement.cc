@@ -37,7 +37,7 @@
 #include <aips/iostream.h>
 
 //# Constants
-const Double SpectralElement::sigmaToFWHM_p = sqrt(8.0*C::ln2);
+const Double SpectralElement::SigmaToFWHM = sqrt(8.0*C::ln2);
 
 //# Constructors
 SpectralElement::SpectralElement() :
@@ -439,10 +439,10 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 }
 
 Double SpectralElement::sigmaToFWHM (const Double sigma) {
-   return sigmaToFWHM_p * sigma;
+   return SigmaToFWHM * sigma;
 }
 
 Double SpectralElement::sigmaFromFWHM(const Double fwhm) {
-  return fwhm / sigmaToFWHM_p;
+  return fwhm / SigmaToFWHM;
 }
 
