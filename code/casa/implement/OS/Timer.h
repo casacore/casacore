@@ -1,5 +1,5 @@
 //# Timer.h:  measure the time it takes to execute parts of a program
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,8 +61,7 @@ extern "C" int ftime(struct timeb*);
 // Class declaration.
 class String;
 
-// <summary> measure the time it takes to execute parts of a program
-// </summary>
+// <summary> measure the time it takes to execute parts of a program</summary>
 
 // <use visibility=export>
 
@@ -184,19 +183,14 @@ public:
 private:
 #if defined(DOS) || defined(MSDOS)
     clock_t usage0;
-    timeb   real0;          // elapsed real time at last mark
+    timeb   real0;          //# elapsed real time at last mark
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
-    tms     usage0;        // tms structure at last mark
-    clock_t real0;          // elapsed real time at last mark
+    tms     usage0;         //# tms structure at last mark
+    clock_t real0;          //# elapsed real time at last mark
 #else
-    rusage  usage0;         // rusage structure at last mark
-    timeb   real0;          // elapsed real time at last mark
+    rusage  usage0;         //# rusage structure at last mark
+    timeb   real0;          //# elapsed real time at last mark
 #endif
 };
 
 #endif
-
-
-
-
-
