@@ -44,6 +44,7 @@
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <strstream.h>
+#include <stdio.h>
 
 // <summary>
 // Test program for the various storage managers.
