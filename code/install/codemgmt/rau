@@ -3,7 +3,7 @@
 # rau: Update AIPS++ sources from the master
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996
+#   Copyright (C) 1996,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 # Usage: rau <file or directory> ...
 #-----------------------------------------------------------------------------
 # rau updates the AIPS++ slave and code areas with the lastest version of a
-# file in $AIPSMSTR.  rau assumes that the user has rsh access to the AIPS++
+# file in $AIPSMSTR.  rau assumes that the user has ssh access to the AIPS++
 # master host, aips2.nrao.edu.
 #
 # rau copies RCS version files from the master to the slave RCS repository
@@ -116,7 +116,7 @@
   done
 
 # Find out which of these are files and which are directories.
-  ARSH=${ARSH-"rsh aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh aips2.nrao.edu"}
   COMMAND="cd $MSTRDIR && ls -d $TARGLIST 2>/dev/null"
   TARGLIST=`$ARSH -n /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'`
 

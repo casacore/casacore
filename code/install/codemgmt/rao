@@ -3,7 +3,7 @@
 # rao: Remotely check out AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-1997
+#   Copyright (C) 1996-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -30,13 +30,13 @@
 #-----------------------------------------------------------------------------
 # Usage: rao [ao options]
 #-----------------------------------------------------------------------------
-# rao is an rsh-based front-end to 'ao'.  It allows remote checkout of AIPS++
+# rao is an ssh-based front-end to 'ao'.  It allows remote checkout of AIPS++
 # sources by invoking 'ao' on the AIPS++ master machine.  This is provided as
 # an alternative to invoking 'ao' directly on a remote machine on which the
 # AIPS++ master directory is NFS mounted.
 #
 # In order to use rao an AIPS++ programmer must have an account on the AIPS++
-# master host (aips2.nrao.edu) and it must be set up for 'rsh' access from the
+# master host (aips2.nrao.edu) and it must be set up for 'ssh' access from the
 # host on which rao is run.  The programmer must also have an up-to-date
 # AIPS++ workspace on the master host rooted at $HOME/aips++.
 #
@@ -53,7 +53,7 @@
 #    1) Where the remote account name differs from the local account name an
 #       environment variable may be used to translate between them:
 #
-#          ARSH="rsh aips2.nrao.edu -l <remotename>"
+#          ARSH="ssh aips2.nrao.edu -l <remotename>"
 #
 #       The .rhosts file for the <remotename> account on aips2.nrao.edu should
 #       have an entry of the form
@@ -123,7 +123,7 @@
   done
 
 # The business end.
-  ARSH=${ARSH-"rsh aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh aips2.nrao.edu"}
   COMMAND="cd $PGMRDIR && ao -I $* && tar cf - $FILES | gzip -q ; rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' |
   gzip -d | tar pvxf - > /dev/null
