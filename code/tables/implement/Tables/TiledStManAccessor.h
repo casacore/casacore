@@ -187,13 +187,22 @@ public:
     // Get the maximum cache size (in bytes).
     uInt maximumCacheSize() const;
 
+    // Get the current cache size (in buckets) for the hypercube in
+    // the given row.
+    uInt cacheSize (uInt rownr) const;
+
     // Get the hypercube shape of the data in the given row.
     const IPosition& hypercubeShape (uInt rownr) const;
 
     // Get the tile shape of the data in the given row.
     const IPosition& tileShape (uInt rownr) const;
 
-    // Set the cache size for accessing the hypercube containing the given row.
+    // Get the bucket size (in bytes) of the hypercube in the given row.
+    uInt bucketSize (uInt rownr) const;
+
+    // Calculate the cache size (in buckets) for accessing the hypercube
+    // containing the given row. It takes the maximum cache size into
+    // account (allowing an overdraft of 10%).
     // It uses the given axisPath (i.e. traversal order) to determine
     // the optimum size. A window can be specified to indicate that only
     // the given subset of the hypercube will be accessed. The window
@@ -204,31 +213,42 @@ public:
     // The non-specified <src>windowStart</src> parts default to 0.
     // The non-specified <src>windowLength</src> parts default to
     // the hypercube shape.
-    // The non-specified <src>SliceShape</src> arguments default to 1.
+    // The non-specified <src>sliceShape</src> parts default to 1.
     // <br>
     // Axispath = [2,0,1] indicates that the z-axis changes most rapidly,
     // thereafter x and y. An axis can occur only once in the axisPath.
     // The non-specified <src>axisPath</src> parts get the natural order.
-    // E.g. in the previous example axisPath=[2] would have done.
+    // E.g. in the previous example axisPath=[2] defines the same path.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     // <group>
+    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+			const IPosition& axisPath) const;
+    uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
+			const IPosition& windowStart,
+			const IPosition& windowLength,
+			const IPosition& axisPath) const;
+    // </group>
+
+    // Set the cache size using the corresponding <src>calcCacheSize</src>
+    // function mentioned above.
+    // <group>
     void setCacheSize (uInt rownr, const IPosition& sliceShape,
-		       const IPosition& axisPath, Bool forceSmaller = True);
+		       const IPosition& axisPath,
+		       Bool forceSmaller = True);
     void setCacheSize (uInt rownr, const IPosition& sliceShape,
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
-		       const IPosition& axisPath, Bool forceSmaller = True);
+		       const IPosition& axisPath,
+		       Bool forceSmaller = True);
     // </group>
 
     // Set the cache size for accessing the hypercube containing the given row.
-    // The available number of slots will be the given cache size
-    // divided by the bucket size.
     // When the give cache size exceeds the maximum cache size with more
     // than 10%, the maximum cache size is used instead.
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
-    void setCacheSize (uInt rownr, uInt nbytes, Bool forceSmaller = True);
+    void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller = True);
 
     // Clear the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
