@@ -83,12 +83,11 @@ try {
    inputs.readArguments(argc, argv);
    const String plotter = inputs.getString("plotter");
    const Double rm = inputs.getDouble("rm");            // rad/m/m
-   const Double rmMax = inputs.getDouble("rmmax");            // rad/m/m
-   const Double rmFg = inputs.getDouble("rmfg");            // rad/m/m
-   const Double pa0 = inputs.getDouble("pa0");           // deg
-   const Double dF = inputs.getDouble("dF");           // Hz
+   const Double rmMax = inputs.getDouble("rmmax");      // rad/m/m
+   const Double rmFg = inputs.getDouble("rmfg");        // rad/m/m
+   const Double pa0 = inputs.getDouble("pa0");          // deg
+   const Double dF = inputs.getDouble("dF");            // Hz
    const Int nchan = inputs.getInt("nchan");     
-
 //
    LogOrigin or("tImagePolarimetry", "main()", WHERE);
    LogIO os(or);
@@ -99,6 +98,21 @@ try {
    Float uVal = -3.0;
    Float vVal = 0.1;
    Float iVal = sqrt(qVal*qVal + uVal*uVal + vVal*vVal);
+//
+   Float qVal2 = 1.5;
+   Float uVal2 = -2.0;
+   Float vVal2 = 0.2;
+   Float iVal2 = sqrt(qVal2*qVal2 + uVal2*uVal2 + vVal2*vVal2);
+   CoordinateSystem cSys2 = CoordinateUtil::defaultCoords4D();
+   Int afterCoord = -1;
+   Int idx = cSys2.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+   if (idx>=0) {
+      SpectralCoordinate sc(cSys2.spectralCoordinate(idx));
+      Vector<Double> rv(sc.referenceValue().copy());
+      rv(0) *= 2.0;
+      sc.setReferenceValue(rv);
+      cSys2.replaceCoordinate(sc, idx);       
+   }
 
 // First do what we can without noise
 
@@ -107,8 +121,12 @@ try {
      const uInt size = 10;
      IPosition shape(4,size,size,4,2);
      IPosition shape1(4,size,size,1,2);
+//
      ImageInterface<Float>* pIm = new TempImage<Float>(shape, CoordinateUtil::defaultCoords4D());
      setStokes(pIm, iVal, qVal, uVal, vVal, shape1);
+//
+     ImageInterface<Float>* pIm2 = new TempImage<Float>(shape, cSys2);
+     setStokes(pIm2, iVal2, qVal2, uVal2, vVal2, shape1);
 //
      ImagePolarimetry pol(*pIm);
      AlwaysAssert(pol.shape()==shape,AipsError);
@@ -179,7 +197,16 @@ try {
         Float val = sqrt(qVal*qVal + uVal*uVal +vVal*vVal) / iVal;
         AlwaysAssert(allNear(ie.get(), val, 1e-6), AipsError);
      }
+     {
+        ImageExpr<Float> ie = ImagePolarimetry::depolarizationRatio(*pIm, *pIm2, False, 0.0);
+        Float val1 = sqrt(qVal*qVal + uVal*uVal) / iVal;
+        Float val2 = sqrt(qVal2*qVal2 + uVal2*uVal2) / iVal2;
+        Float val = val1/val2;
+        AlwaysAssert(allNear(ie.get(), val, 1e-6), AipsError);
+     }
+//
      delete pIm; pIm = 0;
+     delete pIm2; pIm2 = 0;
    }
 
 
@@ -190,16 +217,28 @@ try {
      const uInt size = 256;
      IPosition shape(4,size,size,4,2);
      IPosition shape1(4,size,size,1,2);
+//
      ImageInterface<Float>* pIm = new TempImage<Float>(shape, CoordinateUtil::defaultCoords4D());
      setStokes(pIm, iVal, qVal, uVal, vVal, shape1);
+//
+     ImageInterface<Float>* pIm2 = new TempImage<Float>(shape, cSys2);
+     setStokes(pIm2, iVal2, qVal2, uVal2, vVal2, shape1);
 //
      MLCG generator;
      Double sigma = 0.01 * iVal;
      Normal noiseGen(&generator, 0.0, sigma*sigma);
 //
-     Array<Float> slice = pIm->get();
-     addNoise(slice, noiseGen);
-     pIm->put(slice);
+     {
+        Array<Float> slice = pIm->get();
+        addNoise(slice, noiseGen);
+        pIm->put(slice);
+     }
+//
+     {
+        Array<Float> slice = pIm2->get();
+        addNoise(slice, noiseGen);
+        pIm2->put(slice);
+     }
 //
      ImagePolarimetry pol(*pIm);
 //
@@ -271,7 +310,29 @@ try {
         mean2 = mean(err.get());
         AlwaysAssert(allNear(mean2, ee, 1e-2), AipsError);
      }
-     delete pIm;
+     {
+        ImageExpr<Float> ie = ImagePolarimetry::depolarizationRatio(*pIm, *pIm2, False, 10.0, -1.0);
+        Float p1 = sqrt(qVal*qVal + uVal*uVal);
+        Float p2 = sqrt(qVal2*qVal2 + uVal2*uVal2);
+        Float m1 = p1 / iVal;
+        Float m2 = p2 / iVal2;
+        Float d = m1/m2;
+        Float mean2 = mean(ie.get());
+        AlwaysAssert(near(mean2, d, 1e-2), AipsError);
+//
+        ImageExpr<Float> ee = ImagePolarimetry::sigmaDepolarizationRatio(*pIm, *pIm2, False, 10.0, -1.0);
+        Float sigp = sigma;
+        Float sigi = sigma;
+//
+        Float em1 = m1 * sqrt( (sigp*sigp/p1/p1) + (sigi*sigi/iVal/iVal));
+        Float em2 = m2 * sqrt( (sigp*sigp/p2/p2) + (sigi*sigi/iVal2/iVal2));
+        Float ed = d * sqrt( (em1*em1/m1/m1) + (em2*em2/m2/m2) );
+        mean2 = mean(ee.get());
+        AlwaysAssert(near(mean2, ed, 1e-2), AipsError);
+     }
+//
+     delete pIm; pIm = 0;
+     delete pIm2; pIm2 = 0;
    }
 
 // Fourier Rotation Measure 
