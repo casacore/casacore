@@ -216,7 +216,7 @@ const demoobject := function()
 
 # a function to delete internal data elements when the closure object
 # goes out of scope
-   const public.destruct := function() {
+   const public.done := function() {
       wider private, public
       private := F
       public := F
@@ -266,7 +266,7 @@ exampleout = [6 7 8 9 10 11 12 13 14 15]
 
 A detailed explanation of what's happening with the quasi-object ``a''
 follows. When ``a'' is created it contains the four functions insertdata,
-getdata, addtodata, and destruct. 
+getdata, addtodata, and done. 
 These functions themselves contain a reference, through
 use of the \glish\ keyword ``wider'' to the entire call frame (all the local
 variables) of ``demoobject'' By means of the ``wider'' keyword both 
@@ -281,12 +281,12 @@ variable at a wider scope (though not global) if it is modified, i.e. modify
 the wider scoped variable instead of making the variable local to the
 function (the \glish\ default).
 
-Also note the presence of the ``destruct'' function. Before the closure 
+Also note the presence of the ``done'' function. Before the closure 
 object, a,
 that has been created goes out of scope one should have a command
 
 \begin{verbatim}
-a.destruct()
+a.done()
 \end{verbatim}
 
 This requirement is due to a  bug in \glish\ which should hopefully be fixed by
@@ -496,7 +496,7 @@ const demoarray := function(m=32, n=32)
 
 # a function to delete internal data elements when the closure object
 # goes out of scope
-   const public.destruct := function() {
+   const public.done := function() {
       wider private, public
       private := F
       public := F
@@ -571,7 +571,7 @@ const demoarray := function(m=32, n=32)
 
 # a function to delete internal data elements when the closure object
 # goes out of scope
-   const public.destruct := function() {
+   const public.done := function() {
       wider private, public
       private := F
       public := F
