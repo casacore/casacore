@@ -2583,3 +2583,4 @@
 11 378 src mv trial/scripts/menubardemo.g trial/implement/Widgets/menubardemo.g
 11 378 src mv trial/scripts/textformatting.g trial/implement/Widgets/textformatting.g
 11 378 src mv trial/scripts/textwindow.g trial/implement/Widgets/textwindow.g
+11 378 src mv trial/scripts/tracelogger.g trial/implement/Widgets/tracelogger.g
