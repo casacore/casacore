@@ -90,6 +90,12 @@ public:
     // Does the region have a mask?
     virtual Bool hasMask() const;
 
+    // Get the mask (as an array).
+    const Array<Bool> maskArray() const;
+
+    // Is the mask of this region the same as the mask of the other
+    Bool masksEqual (const LCRegion& other) const;
+
     // The following "put" functions are described in detail in class
     // <linkto class=Lattice>Lattice</linkto>.
     // They'll throw an exception is no mask is available or if
