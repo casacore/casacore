@@ -66,12 +66,15 @@ try {
     equalBeams(mii.defaultRestoringBeam(), beam);
 //
     beam.resize(3);
-    beam(0) = Quantum<Double>(1.0, "deg");
+    beam(0) = Quantum<Double>(45.0, "arcsec");
     beam(1) = Quantum<Double>(45.0, "arcsec");
     beam(2) = Quantum<Double>(-45.0, "deg");
     mii.setRestoringBeam(beam);
     equalBeams(mii.restoringBeam(), beam);
     mii.setRestoringBeam(beam(0), beam(1), beam(2));
+    equalBeams(mii.restoringBeam(), beam);
+    beam(0) = Quantum<Double>(1.0, "deg");
+    mii.setRestoringBeam(beam);
     equalBeams(mii.restoringBeam(), beam);
 //
     mii.removeRestoringBeam();
