@@ -28,7 +28,7 @@
 #define AIPS_FITTING_H
 
 #include <aips/aips.h>
-#include <trial/Fitting/LSQBase.h>
+#include <trial/Fitting/FitLSQ.h>
 #include <trial/Fitting/LinearFit.h>
 #include <trial/Fitting/LinearFitSVD.h>
 #include <trial/Fitting/NonLinearFit.h>
@@ -131,15 +131,17 @@
 //
 // <H3>What Is Available?</H3>
 //
-// The basic classes are <linkto class=LSQ>LSQ</linkto>, 
-//  <linkto class=LSQBasic>LSQBasic</linkto>, and <linkto class=LSQBase>LSQBase</linkto>.
+// The basic classes are <linkto class=LSQBase>LSQBase</linkto>, 
+//  <linkto class=LSQ>LSQ</linkto>, and <linkto class=FitLSQ>FitLSQ</linkto>.
 // They provide the basic  framework for normal equations, solving and iterating.
-// The classes LSQ and LSQBasic use a native C++ interface.  They handle
-// real data (LSQ), and real and complex (LSQBasic).  There is an additional
-// class, LSQBase which offers the functionality of LSQBasic, but with
-// an additional aips++ Array interface.
+// The classes LSQBase and LSQ use a native C++ interface.  They handle
+// real data (LSQBase), and real and complex (LSQ).  There is an additional
+// class, FitLSQ which offers the functionality of LSQ, but with
+// an additional aips++ Array interface.<br>
+// Note that LSQBase and LSQ will be merged into a single class (LSQ) once
+// aips++ uses the standard library complex classes.
 //
-// The inheritance tree is LSQBase : LSQBasic : LSQ
+// The inheritance tree is FitLSQ : LSQ : LSQBase
 //
 // Functionality is
 // <ol>
