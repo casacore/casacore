@@ -27,10 +27,11 @@
 #if !defined(AIPS_REDFLAGGER_H)
 #define AIPS_REDFLAGGER_H
 
+#include <trial/Flagging/RFChunkStats.h>
+#include <trial/Tasking/PGPlotter.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/Flagging/RFChunkStats.h>
 #include <aips/Logging/LogIO.h>
 
 class RFABase;
@@ -96,7 +97,7 @@ protected:
 // sets up record of agents and default parameters
   const RecordInterface & setupAgentDefaults ();
 // sets up debug and report plotting objects
-  void setupPlotters     ( PGPlotter &pgp_screen,PGPlotter &pgp_report,const RecordInterface &opt );
+  void setupPlotters     ( const RecordInterface &opt );
 // plots flagging reports from individual agents
   void plotAgentReports  ( PGPlotterInterface &pgp);
 // plots a flagging summary
@@ -108,6 +109,9 @@ protected:
   uInt nant,nifr,ntime;
   Vector<uInt> ifr2ant1,ifr2ant2;
   Vector<String> antnames;
+  
+  PGPlotter pgp_report,pgp_screen;
+  Int pgprep_nx,pgprep_ny;
   
   Record agent_defaults;
 
@@ -159,6 +163,13 @@ public:
   static const RecordInterface & defaultOptions ();
 // returns the log sink 
   static LogIO & logSink ()       { return os; }
+// returns the flag report plotter
+  PGPlotterInterface & pgprep ()   { return pgp_report; }
+// returns the screen ("debug") plotter
+  PGPlotterInterface & pgpscr ()   { return pgp_screen; }
+// Uses SUBP to divide the flag report PGPlotter into subpanes.
+// Keeps track of the current setting, so no extra pagebreaks are produced
+  void setReportPanels ( Int nx,Int ny );
   
 private:
     

@@ -106,6 +106,8 @@ public:
   void printStats ();
 // produces a plot of the flagging stats
   void plotStats (PGPlotterInterface &pgp);
+// returns number of stat plots which will be done 
+  static Int numStatPlots (const RFChunkStats &chunk);
 
 // resets at start of pass
   FlagMatrix * reset ();

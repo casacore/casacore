@@ -41,9 +41,6 @@ const char
     RF_GLISHINDEX[] = "_glishindex", // this is set automatically to indicate 1-based indexing
     
     RF_NAME[]    = "name",
-    RF_POLICY[]  = "policy",
-    
-    RF_UNFLAG[]  = "unflag",
     
     RF_DEBUG[]   = "debug",
     RF_PLOT[]    = "plot",
@@ -51,7 +48,13 @@ const char
     RF_PLOTDEV[] = "plotdev",
     RF_DEVFILE[] = "devfile",
     RF_GLOBAL[]  = "global",
+    RF_TRIAL[]   = "trial",
+
     RF_PLOTCHAN[]= "plotchan",
+    RF_ECONOPLOT[]= "econoplot",
+
+    RF_POLICY[]  = "policy",
+    RF_UNFLAG[]  = "unflag",
     
     RF_THR[]     = "thr",
     RF_ROW_THR[] = "rowthr",
@@ -184,6 +187,14 @@ class PGPlotEnums {
       DARKGREY   = 14,
       LIGHTGREY  = 15
     } ColorEnums;
+    
+    typedef enum {
+      LINE_FULL    = 1,
+      LINE_DASH    = 2,
+      LINE_DOTDASH = 3,
+      LINE_DOT     = 4,
+      LINE_DASHDDD = 5
+    } LineStyleEnums;
 };
 
 // short inline function for checking the type of a record field

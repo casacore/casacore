@@ -86,7 +86,7 @@ class RFChunkStats : public FlaggerEnums
 protected:
   VisibilityIterator &visiter;
   VisBuffer          &visbuf;
-  const RedFlagger   &flagger;
+  RedFlagger         &flagger;
   
   IPosition visshape;  
   uInt counts[Num_StatEnums];
@@ -103,7 +103,7 @@ protected:
   
 public:
 // constructor
-  RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,const RedFlagger &rf,
+  RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,RedFlagger &rf,
          PGPlotterInterface *pgp_scr=NULL,PGPlotterInterface *pgp_rep=NULL );
 
 // accessors to VisIter
@@ -113,12 +113,16 @@ public:
   VisBuffer &visBuf () { return visbuf; }
 // accessor to MS
   const MeasurementSet & measSet () const;
+// accessor to MS
+  const String msName () const;
 // returns antenna names
   const Vector<String>  & antNames () const;
 
 // accessors to plotters
-  PGPlotterInterface & pgpscr() const  { return *pgp_screen; }
-  PGPlotterInterface & pgprep() const  { return *pgp_report; }
+  PGPlotterInterface & pgpscr() const;
+  PGPlotterInterface & pgprep() const;
+// divides the pgp_report view into subpanels
+  void setReportPanels (Int nx,Int ny) const;
   
 // loads data for new chunk, resets all flag stat counters
   void newChunk ();
