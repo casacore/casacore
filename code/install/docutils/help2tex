@@ -259,6 +259,7 @@ sub make_tex_file{
       $_ = $thing;
       if(/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/){
          $isObj = 0;
+         $aipsrc = 0;
          $terminateObject = 0;
          $mname = $1;
          $miname = $1;
@@ -277,6 +278,7 @@ sub make_tex_file{
             print "$pack.$miname.funs := [=];\n";
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
             print "$pack.$miname.d := '$dum';\n";}
           if($opt_outline == 1){
             print "\\>\\htmlref{$mname}{$mname}\\\\\n";
@@ -287,6 +289,12 @@ sub make_tex_file{
       }
       if(/\\end{ahrecord}/){
         $recname = '';
+      }
+      if(/\\end{ahaipsrc}/){
+         $aipsrc = 0;
+      }
+      if(/\\begin{ahaipsrc}/){
+         $aipsrc = 1;
       }
       if(/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
@@ -305,7 +313,11 @@ sub make_tex_file{
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
             $argroot ='';
+            $argroot = "$pack.$miname.objs.$oiname.c";
+            $argroot =~ s$/$_or_$g;
+            print "$argroot := [=];\n";
             $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
          #if($opt_outline == 1){
            #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
@@ -332,7 +344,11 @@ sub make_tex_file{
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
             $argroot ='';
+            $argroot = "$pack.$miname.objs.$oiname.c";
+            $argroot =~ s$/$_or_$g;
+            print "$argroot := [=];\n";
             $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
          #if($opt_outline == 1){
            #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
@@ -358,6 +374,7 @@ sub make_tex_file{
             $argroot = "$pack.$miname.objs.$oiname.c.$iname";
             print "$pack.$miname.objs.$oiname.c.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
             print "$pack.$miname.objs.$oiname.c.$iname.d := '$dum';\n";}
          #if($opt_outline == 1){
            #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.constructor}\\\\\n";
@@ -385,6 +402,7 @@ sub make_tex_file{
                $argroot = "$pack.$miname.objs.$oiname.m.$iname";
                print "$argroot := [=];\n";
                $dum =~ s/[\n\']/ /g;
+               $dum =~ s/\\aipspp/AIPS++/g;
                print "$argroot.d := '$dum';\n"; }
              #if($opt_outline == 1){
                 #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.function}\\\\\n";
@@ -399,6 +417,7 @@ sub make_tex_file{
                print "$argroot := [=];\n";
                print "$argroot.a := [=];\n";
                $dum =~ s/[\n\']/ /g;
+               $dum =~ s/\\aipspp/AIPS++/g;
                print "$argroot.d := '$dum';\n";}
              #if($opt_outline == 1){
                 #print "\\>\\>\\htmlref{$fname}{$mname:$fname.function}\\\\\n";
@@ -425,25 +444,35 @@ sub make_tex_file{
           $glish_arg =~ s/\\_/_/g;
           $glish_arg =~ s/\.\.\./dots/g;
           $glish_arg =~ s/\\ldots/dots/g;
+          $glish_arg =~ s/\./dot/g;
           $glish_arg =~ s/ /_/g;
+          $glish_arg =~ s/\$\<//g;
+          $glish_arg =~ s/\>\$//g;
+          $glish_arg =~ s/\\it//g;
+          $glish_arg =~ s/\\rm//g;
+          $glish_arg =~ s$/$$g;
           $desc =~ s/[\n]/ /g;
           $desc =~ s/[\']/\\\' /g;
+          $desc=~ s/\\aipspp/AIPS++/g;
           print "$argroot.a.$glish_arg := [=];\n";
           print "$argroot.a.$glish_arg.d := '$desc';\n";
           $def =~ s/[\n]/ /g;
           $def =~ s/[\']/\\\' /g;
+          $def =~ s/\\aipspp/AIPS++/g;
           print "$argroot.a.$glish_arg.def := '$def';\n";
           $dum =~ s/[\n]/ /g;
           $dum =~ s/[\']/\\\' /g;
+          $dum =~ s/\\aipspp/AIPS++/g;
           print "$argroot.a.$glish_arg.a := '$dum';\n";
        }
      }
      if($hasArgs == 1){
         $args =~ s/, $//g;
      }
-     if($opt_glish == 1 && length $argroot){
+     if($opt_glish == 1 && length $argroot && !$aipsrc){
         $glish_args = $args;
         $glish_args =~ s/\\_/_/g;
+        $glish_args =~ s/\\aipspp/AIPS++/g;
         print "$argroot.s := '$iname($glish_args)';\n";
      }
    
