@@ -331,8 +331,12 @@ Table TableRecord::asTable (const RecordFieldId& id,
     }
     // Close the table in the record, otherwise the new lock options
     // may have no effect.
-    closeTable (id);
-    return Table (name, lockOptions, Table::TableOption(option));
+    // Only do this for a plain table.
+    if (tab.tableType() == Table::Plain) {
+        closeTable (id);
+        return Table (name, lockOptions, Table::TableOption(option));
+    }
+    return tab;
 }
 
 const TableAttr& TableRecord::tableAttributes (const RecordFieldId& id) const
