@@ -1031,7 +1031,6 @@ Bool ImageMoments<T>::createMoments()
 // Array to hold moments
    
    Vector<T> calcMoments(NMOMENTS);   
-   calcMoments = 0.0;
    String momAxisType = pInImage_p->coordinates().worldAxisNames()(worldMomentAxis);
    
 
@@ -1578,11 +1577,15 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
          
     
 // If no points make moments zero. Blank at a later date.
-   
+// Since calcMoments is only accessed at filled in locations
+// there is no point in the extra overhead of zero filling it
+
+/*   
    if (nPts==0) {
       calcMoments = 0.0;
       return;
    }
+*/
 
  
 // Median of I
@@ -1725,7 +1728,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 // Automatic
 
       if (!getAutoGaussianFit (gaussPars, abcissa, data, doPlot, xLabel, yLabel, title)) {
-         calcMoments = 0;
+//         calcMoments = 0;
          return;
       }
    
@@ -1734,7 +1737,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 // Interactive
    
       if (!getInterGaussianFit (gaussPars, abcissa, data, xLabel, yLabel, title)) {
-         calcMoments = 0;
+//         calcMoments = 0;
          return;
       }
    }
@@ -1943,12 +1946,15 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 
 
 // If no points make moments zero. Blank at a later date.
+// Since calcMoments is only accessed at filled in locations
+// there is no point in the extra overhead of zero filling it
 
+/*
    if (nPts==0) {
       calcMoments = 0.0;
       return;
    }
-
+*/
 
 // Medians
 
@@ -2083,15 +2089,19 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
          drawWindow (window);
       }
    }
+   nPts = window(1) - window(0) + 1;
    
 
 // If no points make moments zero. Blank at a later date.
+// Since calcMoments is only accessed at filled in locations
+// there is no point in the extra overhead of zero filling it
 
-   nPts = window(1) - window(0) + 1;
+/*
    if (nPts==0) {
       calcMoments = 0.0;
       return;
    }
+*/
 
 
 // Assign array for median.  
