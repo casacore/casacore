@@ -86,21 +86,24 @@ Bool SDFITSTable::isSDFitsColumn(const String& name)
   // if name is not reserved, return True
   if (!FITS::ResWord.isreserved(name.chars(), name.length())) {
     result = True;
-  } else if (name == FITS::ResWord.aname(FITS::AUTHOR) || 
-	     name == FITS::ResWord.aname(FITS::CDELT) || 
-	     name == FITS::ResWord.aname(FITS::CROTA) ||
-	     name == FITS::ResWord.aname(FITS::CRPIX) || 
-	     name == FITS::ResWord.aname(FITS::CRVAL) || 
-	     name == FITS::ResWord.aname(FITS::CTYPE) ||
-	     name == FITS::ResWord.aname(FITS::DATE) || 
-	     name == FITS::ResWord.aname(FITS::DATE_OBS) || 
-	     name == FITS::ResWord.aname(FITS::EPOCH) ||
-	     name == FITS::ResWord.aname(FITS::EQUINOX) || 
-	     name == FITS::ResWord.aname(FITS::INSTRUME) ||
-	     name == FITS::ResWord.aname(FITS::OBJECT) || 
-	     name == FITS::ResWord.aname(FITS::OBSERVER) ||
-	     name == FITS::ResWord.aname(FITS::ORIGIN)|| 
-	     name == FITS::ResWord.aname(FITS::TELESCOP)) {
+  } else if (name != FITS::ResWord.aname(FITS::COMMENT) && 
+	     name != FITS::ResWord.aname(FITS::DATAMAX) && 
+	     name != FITS::ResWord.aname(FITS::DATAMIN) &&
+	     name != FITS::ResWord.aname(FITS::EXTLEVEL) && 
+	     name != FITS::ResWord.aname(FITS::EXTNAME) && 
+	     name != FITS::ResWord.aname(FITS::EXTVER) &&
+	     name != FITS::ResWord.aname(FITS::HISTORY) && 
+	     name != FITS::ResWord.aname(FITS::REFERENC)) {
+      // all of the above might reasonably be expected to be in
+      // a FITS table as keywords which should remain keywords
+      // Other (e.g. BITPIX, TFIELDS, etc) which describe the
+      // table, are removed by FITSTable.  Everything else
+      // is a keyword which should be treated as a virtual column.
+      // DATAMAX and DATAMIN above, when they appear as keywords
+      // in an sdfits table, refer to the entire table and hence
+      // should remain as keywords and not virtual columns.
+      // When they appear as true column, then they obviously
+      // should remain true columns.
     result = True;
   } else {
     result = False;
