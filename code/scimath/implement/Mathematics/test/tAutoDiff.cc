@@ -29,10 +29,12 @@
 #include <trial/Mathematics/AutoDiffMath.h>
 #include <trial/Mathematics/AutoDiffIO.h>
 
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Mathematics/Math.h>
 
 #include <iostream.h>
 
@@ -221,8 +223,8 @@ int main()
 	  }
 
 	  y = x / x;
-	  if (y.value() != 1 ||
-	      !allEQ(y.derivatives(), Float(0.0))) {
+	  if (!near(y.value(),Float(1)) ||
+	      !allNearAbs(y.derivatives(), Float(0.0),1.0e-5)) {
 	    cerr << "operator/(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
 	    nerr++;
 	  }
@@ -277,8 +279,8 @@ int main()
 	  }
 
 	  y = Float(2.0) / x;
-	  if (y.value() != (Float(2.0) / x.value()) ||
-	      !allEQ(y.derivatives(), -x.derivatives()*Float(2.0)/(x.value()*x.value()))) {
+	  if (!near(y.value(),Float(2.0) / x.value()) ||
+	      !allNear(y.derivatives(), -x.derivatives()*Float(2.0)/(x.value()*x.value()),1.0e-5)) {
 	    cerr << "operator/(const T&, const AutoDiff<T> &) failed" << endl;
 	    nerr++;
 	  }
