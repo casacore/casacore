@@ -10,6 +10,16 @@ The installation of end-user (production-line) and \aipspp\ consortium
 (code-development) systems are sufficiently different that separate
 instructions are provided for each.
 
+If you contemplate installing \aipspp\ for the Linux operating system using
+the \gnu\ ``binutils'' package (e.g. \exe{ar}, \exe{ld}), then you should be
+aware that there is a bug in handling large archive (\file{.a}) files in
+versions 2.7 and earlier.  You can find out what version of binutils you have
+by running \exe{ar -V}.  If it is the incorrect version, either upgrade to a
+later version if one has been released (it hasn't as of 1996/12/23) or contact
+\acct{aips2-request@nrao.edu} for a patch (all that is required is to change
+the \code{#if 1} that occurs at about line 823 of \file{bfd/archive.c} to
+\code{#if 0}).
+
 % ----------------------------------------------------------------------------
 
 \section{End-user AIPS++ installations}
@@ -277,7 +287,8 @@ your \code{PATH}.  If your interactive shell is a C-like shell (\unixexe{csh},
 \end{verbatim}
 
 \noindent
-whereas for Bourne-like shells (sh, bash, ksh) you would use
+whereas for Bourne-like shells (\unixexe{sh}, \unixexe{bash}, \unixexe{ksh})
+you would use
 
 \begin{verbatim}
    yourhost% . /aips++/aipsinit.sh
@@ -374,10 +385,10 @@ via \unixexe{ftp} as compressed tar files.
 
 At \aipspp\ sites other than Socorro itself the \textsc{nfs} mount runs
 across the internet.  This is not particularly difficult to configure.
-However, the \textsc{nfs} mount must be set up on every machine on which checkins
-and checkouts are to be enabled, and \acct{root} privilege is required to do
-this.  Therefore, your system administrator's assistance will again be
-required.
+However, the \textsc{nfs} mount must be set up on every machine on which
+checkins and checkouts are to be enabled, and \acct{root} privilege is
+required to do this.  Therefore, your system administrator's assistance will
+again be required.
 
 The preferred way of implementing the \textsc{nfs} mount involves using the
 \unixexe{automount} mechanism.  Permanent \textsc{nfs} mounts (implemented as
