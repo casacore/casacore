@@ -29,28 +29,35 @@
 #include <trial/Measures/ParAngleMachine.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Unit.h>
 
 //# Constructors
 ParAngleMachine::ParAngleMachine() :
   indir_p(0), convdir_p(0), frame_p(0),
-  zenith_p(), mvdir_p() {
+  zenith_p(), mvdir_p(),
+  lastep_p(-1.1e20), defintvl_p(0.04), intvl_p(0) {
   init();
 }
 
 ParAngleMachine::ParAngleMachine(const MDirection &in) :
   indir_p(new MDirection(in)), convdir_p(0), frame_p(0),
-  zenith_p(), mvdir_p() {
+  zenith_p(), mvdir_p(),                                                        
+  lastep_p(-1.1e20), defintvl_p(0.04), intvl_p(0) {
   init();
 }
 
 ParAngleMachine::ParAngleMachine(const ParAngleMachine &other) :
   indir_p(0), convdir_p(0), frame_p(0),
-  zenith_p(), mvdir_p() {
+  zenith_p(), mvdir_p(),                                                        
+  lastep_p(-1.1e20), defintvl_p(0.04), intvl_p(0) {
   if (other.indir_p) indir_p = new MDirection(*other.indir_p);
   if (other.frame_p) frame_p = new MeasFrame(*other.frame_p);
+  defintvl_p = other.defintvl_p;
   init();
 }
 
@@ -61,6 +68,7 @@ ParAngleMachine &ParAngleMachine::operator=(const ParAngleMachine &other) {
     delete frame_p; frame_p = 0;
     if (other.indir_p) indir_p = new MDirection(*other.indir_p);
     if (other.frame_p) frame_p = new MeasFrame(*other.frame_p);
+    defintvl_p = other.defintvl_p;
     init();
   };
   return *this;
@@ -76,8 +84,7 @@ ParAngleMachine::~ParAngleMachine() {
 Double ParAngleMachine::posAngle(const Quantum<Double> &ep) const {
   if (!convdir_p) initConv();
   frame_p->resetEpoch(ep);
-  mvdir_p = (*convdir_p)().getValue();
-  return -mvdir_p.positionAngle(zenith_p); 
+  return calcAngle(ep.getValue());
 }
 
 Vector<Double>
@@ -91,8 +98,7 @@ ParAngleMachine::posAngle(const Quantum<Vector<Double> > &ep) const {
 Double ParAngleMachine::posAngle(const Double &ep) const {
   if (!convdir_p) initConv();
   frame_p->resetEpoch(ep);
-  mvdir_p = (*convdir_p)().getValue();
-  return -mvdir_p.positionAngle(zenith_p); 
+  return calcAngle(ep);
 }
 
 Vector<Double>
@@ -173,20 +179,52 @@ void ParAngleMachine::set(const MeasFrame &frame) {
   init();
 }
 
+void ParAngleMachine::setInterval(const Double ttime) {
+  defintvl_p = fabs(ttime);
+  if (indir_p && indir_p->isModel()) defintvl_p = 0;
+  intvl_p = defintvl_p;
+}
+
 void ParAngleMachine::init() {
   if (indir_p) {
     if (!frame_p) set(indir_p->getRef().getFrame());
+    if (indir_p->isModel()) defintvl_p = 0;
   };
 }
 
 void ParAngleMachine::initConv() const {
+  if (!indir_p) throw(AipsError("A ParAngleMachine must have a Direction"));
   if (!frame_p->epoch() || !frame_p->position()) {
     throw(AipsError("A ParAngle Machine has no frame, or a frame without\n"
 		    "an Epoch(to get time type) or Position"));
   };
+  lastep_p = -1.1e20;
+  if (indir_p->isModel()) defintvl_p = 0;
+  intvl_p = defintvl_p;
   MVDirection zenith;
   MDirection dzen(zenith, MDirection::Ref(MDirection::AZEL, *frame_p));
   MDirection::Ref had(MDirection::HADEC, *frame_p);
   zenith_p = MDirection::Convert(dzen, had)().getValue();
   convdir_p = new MDirection::Convert(indir_p, had);
+  slat2_p = zenith_p.getValue()[2];
+  clat2_p = sqrt(fabs(1.0 - square(slat2_p)));
+}
+
+Double ParAngleMachine::calcAngle(const Double ep) const {
+  if (fabs(ep-lastep_p)<intvl_p) {
+    longdiff_p = longoff_p + UTfactor_p*(ep-lastep_p);
+    const Double s1(-clat2_p * sin(longdiff_p));
+    const Double c1(clat1_p*slat2_p - slat1_p*clat2_p*cos(longdiff_p));
+    return ((s1 != 0 || c1 != 0) ? -atan2(s1, c1): 0.0);
+  } else {
+    mvdir_p = (*convdir_p)().getValue();
+    if (intvl_p > 0) {
+      lastep_p = ep;
+      UTfactor_p = MeasTable::UTtoST(ep) * C::circle;
+      longoff_p = mvdir_p.getLong() - zenith_p.getLong();
+      slat1_p = mvdir_p.getValue()[2];
+      clat1_p = sqrt(fabs(1.0 - square(slat1_p)));
+    };
+    return -mvdir_p.positionAngle(zenith_p);
+  };
 }

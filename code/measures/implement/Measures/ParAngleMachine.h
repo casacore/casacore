@@ -65,27 +65,29 @@ class MeasFrame;
 // The machinery needs an input 
 // <linkto class=MDirection>MDirection</linkto>  to specify the input 
 // coordinates reference direction and coordinate system.
-// This input direction determines the coordinate system (moving directions
-// will be assumed to be J2000) for which the parallactic (<em>vertical</em>)
-// angle will be calculated. I.e. the angle between the vertical in the
+// The parallactic (<em>vertical</em>)
+// angle will be calculated as the angle between the vertical in the
 // local coordinate system (<em>Az, El</em>) through the given direction and
-// the pole of the input coordinate system.
+// the pole of the <em>J2000</em> coordinate system.
+// <note role=tip> To calculate the parallactic angle for another 
+// coordinate system pole, add the <src>positionAngle</src> between the
+// <em>J2000</em> system and the pole in the other coordinate system. </note>
 //
 // The machinery also needs a <linkto class=MeasFrame>MeasFrame</linkto>,
-// with a position on Earth (unless input system is <em>HA, Dec</em>), and,
-// in general, a reference time. If no reference time is given, the first
-// conversion time will be used.
+// with a position on Earth and
+// a reference epoch. The reference time is necessary to have an epoch type.
 //
 // The actual calculation of the parallactic angles is done by the
-// <src>operator()</src> accepting a time or a list of times.
+// <src>operator()</src> accepting a time or a list of times in various
+// formats.
 //
-// To make the process as fast as possible, the machinery will calculate the
-// direction in the coordinate system for the centre of the Earth. It will
-// be assumed that that direction is constant (except for planets) for
-// a period of about an hour (the actual period can be chosen). In most cases,
-// unless you have a grazing passing by the Sun, this will have ample
-// precision, and means that the minimum amount of direction conversion has
-// to be done.
+// The machine calculates the paralaactic angle for the first time given to
+// the machine. For subsequent times that are within a check interval,
+// the angle is calculated assuming that only the hour angle changes within
+// that interval. For moving objects the test interval is always forced
+// to zero. Tests show that the machine with a zero interval is about
+// 8 times faster than using brute force. Having an interval of an
+// hour improves that by another factor of 4.
 // <note role=tip> If the parallactic angles for a series of directions have
 // to be calculated, it is best to have separate machines for each such
 // <em>field</em>. </note>
@@ -145,6 +147,8 @@ class ParAngleMachine {
   void set(const MDirection &in);
   void set(const MeasFrame &frame);
   // </group>
+  // Set the test interval (in days) over which to use simple formula
+  void setInterval(const Double ttime);
 
 private:
 
@@ -159,6 +163,22 @@ private:
   mutable MVDirection zenith_p;
   // Intermediate conversion result
   mutable MVDirection mvdir_p;
+  // Time of last full solution (in days)
+  mutable Double lastep_p;
+  // Default time interval over which to do simple solution (days)
+  mutable Double defintvl_p;
+  // Time interval over which to do simple solution (days)
+  mutable Double intvl_p;
+  // Calculation cache
+  // <group>
+  mutable Double UTfactor_p;
+  mutable Double longoff_p;
+  mutable Double longdiff_p;
+  mutable Double slat1_p;
+  mutable Double clat1_p;
+  mutable Double slat2_p;
+  mutable Double clat2_p;
+  // </group>
 
   //# Constructors
 
@@ -178,10 +198,8 @@ private:
   void init();
   // Initialise conversion
   void initConv() const;
-  // Planet handling
-  void planetinit();
-  // Copy data members
-  void copy(const ParAngleMachine &other);
+  // Calculate position angle
+  Double calcAngle(const Double ep) const;
 };
 
 #endif
