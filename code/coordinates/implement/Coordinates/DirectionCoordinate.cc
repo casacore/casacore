@@ -344,7 +344,7 @@ Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
     Bool ok = ToBool(names.nelements()==nWorldAxes());
     if (!ok) {
-       set_error("Two names must be provided!");
+       set_error("names vector must be of length 2");
        return False;
     }
 //
@@ -358,7 +358,7 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 {
     Bool ok = ToBool(units.nelements()==nWorldAxes());
     if (!ok) {
-       set_error("Two units must be provided!");
+       set_error("units vector must be of length 2");
        return False;
     }
 //
@@ -383,7 +383,7 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
     Bool ok = ToBool(refPix.nelements()==nPixelAxes());
     if (!ok) {
-       set_error("Two ref. pixels must be provided!");
+       set_error("reference pixels vector must be of length 2");
        return False;
     }
 //
@@ -393,6 +393,13 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
 
 Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
+    Bool ok = ToBool(xform.nrow() == nWorldAxes() && 
+                     xform.ncolumn() == nWorldAxes());
+    if (!ok) {
+       set_error("linear transform matrix has wrong shape");
+       return False;
+    }
+//
     linear_p.pc(xform);
     return True;
 }
