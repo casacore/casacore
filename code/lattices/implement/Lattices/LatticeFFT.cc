@@ -40,7 +40,7 @@
 #include <trial/Lattices/TiledStepper.h>
 
 
-void LatticeFFT::fft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
+void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   AlwaysAssert(ndim > 1, AipsError);
   const IPosition latticeShape = cLattice.shape();
@@ -60,11 +60,11 @@ void LatticeFFT::fft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
   else {
     Vector<Bool> whichAxes(ndim, False);
     whichAxes(0) = whichAxes(1) = True;
-    LatticeFFT::fft(cLattice, whichAxes, toFrequency);
+    LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
   }
 }
 
-void LatticeFFT::fft(Lattice<Complex> & cLattice,
+void LatticeFFT::cfft(Lattice<Complex> & cLattice,
 		     const Vector<Bool> & whichAxes, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
@@ -86,12 +86,12 @@ void LatticeFFT::fft(Lattice<Complex> & cLattice,
   }
 }
 
-void LatticeFFT::fft(Lattice<Complex> & cLattice, const Bool toFrequency) {
+void LatticeFFT::cfft(Lattice<Complex> & cLattice, const Bool toFrequency) {
   const Vector<Bool> whichAxes(cLattice.ndim(), True);
-  LatticeFFT::fft(cLattice, whichAxes, toFrequency);
+  LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
 }
 
-void LatticeFFT::fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+void LatticeFFT::rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
 		     const Vector<Bool> & whichAxes, const Bool doShift){
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
@@ -146,12 +146,75 @@ void LatticeFFT::fft(Lattice<Complex> & out, const Lattice<Float> & in,
   }
 }
 
-void LatticeFFT::fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+void LatticeFFT::rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
 		     const Bool doShift){
   const Vector<Bool> whichAxes(in.ndim(), True);
-  LatticeFFT::fft(out, in, whichAxes, doShift);
+  LatticeFFT::rcfft(out, in, whichAxes, doShift);
 }
 
+void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in, 
+		     const Vector<Bool> & whichAxes, const Bool doShift){
+  const uInt ndim = in.ndim();
+  DebugAssert(ndim > 0, AipsError);
+  AlwaysAssert(ndim == whichAxes.nelements(), AipsError);
+
+  // find the required shape of the output Array
+  const IPosition inShape = in.shape();
+  IPosition outShape = in.shape();
+  uInt i = 0, firstAxis = ndim;
+  while (i < ndim && firstAxis == ndim) {
+    if (whichAxes(i) == True)
+      firstAxis = i;
+    i++;
+  }
+  AlwaysAssert(firstAxis < ndim, AipsError); // At least one axis must be given
+  outShape(firstAxis) = outShape(firstAxis)*2 - 2;
+  if (!outShape.isEqual(out.shape()))
+    outShape(firstAxis) += 1;
+  AlwaysAssert(outShape.isEqual(out.shape()), AipsError);
+
+  const IPosition tileShape = in.niceCursorShape(in.maxPixels());
+  FFTServer<Float,Complex> ffts;
+  const Complex cZero(0,0);
+
+  uInt dim = ndim;
+  Bool doneAnyAxis = False;
+  while (dim != 0) {
+    dim--;
+    if (whichAxes(dim) == True) {
+      if (dim != firstAxis) { // Do complex->complex Transforms
+ 	LatticeIterator<Complex> iter(in,
+				      TiledStepper(inShape,tileShape,dim));
+ 	for (iter.reset(); !iter.atEnd(); iter++) {
+	  if (doneAnyAxis || !allNear(iter.cursor(), cZero, 1E-6))
+	    if (doShift)
+	      ffts.fft(iter.vectorCursor(), False);
+	    else
+	      ffts.fft0(iter.vectorCursor(), False);
+ 	}
+	doneAnyAxis = True;
+      }
+      else { // Do complex->real transforms
+ 	RO_LatticeIterator<Complex> inIter(in, 
+					 TiledStepper(inShape, tileShape,dim));
+ 	LatticeIterator<Float> outIter(out, 
+				       TiledStepper(outShape,tileShape,dim));
+ 	for (inIter.reset(), outIter.reset(); 
+ 	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++)
+	  if (doShift)
+	    ffts.fft(outIter.vectorCursor(), inIter.vectorCursor());
+	  else
+	    ffts.fft0(outIter.vectorCursor(), inIter.vectorCursor());
+      }
+    }
+  }
+}
+
+void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in, 
+		     const Bool doShift){
+  const Vector<Bool> whichAxes(in.ndim(), True);
+  LatticeFFT::crfft(out, in, whichAxes, doShift);
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
 // End: 

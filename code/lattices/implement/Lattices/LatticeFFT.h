@@ -65,36 +65,44 @@ public:
   // 2-D in-place complex->complex FFT. Transforms over the first two
   // dimensions and iterates over all the others. The Lattice must have two or
   // more dimensions otherwise and AipsError is thrown.
-  static void fft2d(Lattice<Complex> & cLattice, const Bool toFrequency=True);
+  static void cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency=True);
   
   // N-D in-place complex->complex FFT. Only transform over selected
   // dimensions. Iterate over the others. whichAxes must be the same length as
   // the number of dimensions in the Lattice otherwise an AipsError is thrown.
-  static void fft(Lattice<Complex> & cLattice,
+  static void cfft(Lattice<Complex> & cLattice,
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
   // N-D in-place complex->complex FFT. Transform over all axes.
-  static void fft(Lattice<Complex> & cLattice, const Bool toFrequency=True);
+  static void cfft(Lattice<Complex> & cLattice, const Bool toFrequency=True);
 
   // N-D real->complex FFT. Only one half of the Hermition result is
   // returned. Transforms are only done on selected dimensions. The origin of
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
   // doShift is True. Otherwise it is the first element ie., [0,0,...]
-  static void fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+  static void rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
   		  const Vector<Bool> & whichAxes, const Bool doShift=True);
 
   // N-D real->complex FFT. Only one half of the Hermition result is
   // returned. Transform over all dimensions. The origin of
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
   // doShift is True. Otherwise it is the first element ie., [0,0,...]
-  static void fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+  static void rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
   		  const Bool doShift=True);
 
   // N-D complex->real FFT. Only one half of the Hermition input is
-  // required. Transforms are only done on selected dimensions. The origin of
-  // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
-  // doShift is True. Otherwise it is the first element ie., [0,0,...]
-//   static void fft(Lattice<Float> & out, const Lattice<Complex> & in, 
-//  		  const Vector<Bool> & whichAxes, const Bool doShift=True);
+  // required. If whichAxis is specified Transforms are only done on selected
+  // dimensions otherwise they are done on all axes. The origin of the
+  // transform is the center of the Lattice ie., [nx/2,ny/2,...] if doShift is
+  // True, otherwise it is the first element ie., [0,0,...]  THIS FUNCTION WILL
+  // SCRAMBLE THE INPUT LATTICE. If you want the input Lattice preserved you
+  // should copy the input data to a temporary Lattice (using the functions in
+  // the CopytLattice class) prior to calling this function. 
+  // <group>
+  static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
+		    const Vector<Bool> & whichAxes, const Bool doShift=True);
+  static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
+		    const Bool doShift=True);
+  // </group>
 };
 #endif
