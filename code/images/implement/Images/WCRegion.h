@@ -94,7 +94,7 @@ public:
     // Comparison
     // <group>
     virtual Bool operator==(const WCRegion& other) const = 0;
-    virtual Bool operator!=(const WCRegion& other) const = 0;
+    Bool operator!=(const WCRegion& other) const;
     // </group>
 
     // Return region type.  Just returns the class name of
@@ -127,6 +127,10 @@ protected:
     WCRegion& operator= (const WCRegion& other);
 };
 
+inline Bool WCRegion::operator!= (const WCRegion& other) const
+{
+   return ToBool(!operator==(other));
+}
 
 
 #endif

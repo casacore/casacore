@@ -217,10 +217,7 @@ public:
    WCPolygon& operator= (const WCPolygon& other);
 
    // Comparison
-   // <group> 
    virtual Bool operator==(const WCRegion& other) const;
-   virtual Bool operator!=(const WCRegion& other) const;
-   // </group>
 
    // Clone a WCPolygon object.
    virtual WCPolygon* cloneRegion() const;

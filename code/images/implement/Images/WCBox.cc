@@ -183,7 +183,6 @@ WCBox& WCBox::operator= (const WCBox& other)
 
 Bool WCBox::operator== (const WCRegion& other) const
 {
-
 // Type check
 
    if (type() != other.type()) return False;
@@ -203,12 +202,6 @@ Bool WCBox::operator== (const WCRegion& other) const
    }
    if (!itsCSys.near(&(that.itsCSys))) return False;
 
-   return True;
-}
-
-Bool WCBox::operator!= (const WCRegion& other)  const
-{
-   if (WCBox::operator==(other)) return False;
    return True;
 }
 

@@ -299,10 +299,7 @@ public:
    WCBox& operator= (const WCBox& other);
 
    // Comparison
-   // <group> 
    virtual Bool operator==(const WCRegion& other) const;
-   virtual Bool operator!=(const WCRegion& other) const;
-   // </group>
 
    // Clone a WCBox object.
    virtual WCBox* cloneRegion() const;

@@ -253,13 +253,6 @@ Bool WCPolygon::operator== (const WCRegion& other) const
    return True;
 }
  
-Bool WCPolygon::operator!= (const WCRegion& other) const
-{
-   if (WCPolygon::operator==(other)) return False;
-   return True;
-}
-
-
 
 WCPolygon* WCPolygon::cloneRegion() const
 {
