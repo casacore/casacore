@@ -4638,3 +4638,4 @@
 14 297 src mv trial/implement/MeasurementSets/DOnewms.cc trial/implement/MeasurementSets/DOms.cc
 14 297 src mv trial/implement/MeasurementSets/DOnewsdfits2ms.h trial/implement/MeasurementSets/DOsdfits2ms.h
 14 297 src mv trial/implement/MeasurementSets/DOnewsdfits2ms.cc trial/implement/MeasurementSets/DOsdfits2ms.cc
+14 298 src mv aips/implement/MeasurementSets/test/tMeasurementSet.cc aips/implement/MeasurementSets/test/tOldMeasurementSet.cc
