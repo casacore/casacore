@@ -344,14 +344,14 @@ dish, vlbi, doc}.
 
 \section{Quality Assurance}
 
-Traditionally quality assurance has been an invisible activity, either
+Traditionally quality assurance for software packages has been either
 diffused over an entire organization or, more commonly, done by the
-users. Given the distributed nature of AIPS++, we think it would be
-possible and very attractive to designate a Quality Assurance division
-that has special responsibility for ensuring the quality of official
-AIPS++ products. The principal task for such a division would be
-testing of AIPS++ products, including execution of software, reviewing
-code and documentation.
+users. In keeping with the large scope of the AIPS++ Project, we have
+decided to designate a Quality Assurance Group that has special
+responsibility for ensuring the quality of official AIPS++
+products. The main task for the QAG is assuring the high quality of
+AIPS++ products, principally via testing, including execution of
+software, reviewing code and documentation.
 
 \subsection{Testing}
 \begin{description}
@@ -386,39 +386,45 @@ with the following division of responsibility:
 \begin{description}
 \item[Code Cop]
 \begin{itemize}
-\item Ensuring that code is reviewed in a timely manner.
-\item Ensuring that module and code documentation is kept up to date (by prodding
-  the module bosses or the code authors).
-\item Ensuring that unit testing is performed.
+\item Ensuring that code is reviewed in a timely manner
+\item Ensuring that module and code documentation is kept up to date 
+\item Ensuring that unit testing is performed
+\item Updating external libraries when necessary
+\item Maintaining the RCS and Change log entries so that they are useful
+\item Maintaining the directory hierarchy
 \end{itemize}
 
 \item[Rules Boss]
 \begin{itemize}
-\item Establishing new coding standards and removing outdated ones.
-\item Maintaining templates used for aips++ development.
-\item Has control of the development of the AIPS++ directory hierarchy.
+\item Establishing new coding standards and removing outdated ones
+\item Maintaining templates used for aips++ development
+\item Controlling development of the AIPS++ directory hierarchy
+\item Maintaining and policing the file extensions used
+\item Controlling inclusion of external libraries
 \end{itemize}
 
 \item[Chief Tester]
 \begin{itemize}
-\item Responsible for user level documentation.
+\item Responsible for user level documentation
 \item Ensuring that that applications testing, both automated and
-  interactive, is performed. 
-\item Maintains benchmarks and performs new ones.
-\item Signs off on AIPS++ releases.
+  interactive, is performed
+\item Maintaining benchmarks and performing new ones
+\item Has final sign-off on AIPS++ releases
 \end{itemize}
 \end{description}
 
-The QAG will report directly to the Project Manager.
+The head of the QAG will report directly to the Project Manager.
 
 \subsection{Code Reviews}
 
 Our code review process has been in place for some time now and seems to work
 well for the current size of the Project. The process is documented in 
-\htmladdnormallink{Note 167}{http://aips2.nrao.edu/aips++/docs/notes/167/167.html}.
+\htmladdnormallink{Note 167}
+{http://aips2.nrao.edu/aips++/docs/notes/167/167.html}.
 A {\em code cop} is currently responsible for overseeing the code review
 process. As the Project grows, this role would probably better be served
-by a group of people, perhaps in the above-mentioned Quality Assurance division.
+by a group of people, perhaps in the above-mentioned Quality Assurance 
+Group.
 
 We need to augment the code review process with design reviews to catch
 problems early on in the design-implement-review-use cycle. We may also
