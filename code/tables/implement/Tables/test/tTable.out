@@ -9,7 +9,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
   #Keywords = 0
   #Columns  = 9
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
@@ -19,7 +19,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ag   DataType=DComplex
-   DataManager=StManAipsIO/StManAipsIO   Default=(-4.94066e-324, -4.94066e-324)
+   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
    Comment = 
    #keywords=0
 
@@ -39,12 +39,12 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=ae   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -63,7 +63,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
   #Keywords = 0
   #Columns  = 9
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 
@@ -73,7 +73,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ag   DataType=DComplex
-   DataManager=StManAipsIO/StManAipsIO   Default=(-4.94066e-324, -4.94066e-324)
+   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
    Comment = 
    #keywords=0
 
@@ -93,12 +93,12 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ac   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=ae   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
@@ -178,12 +178,12 @@ TableDesc    version    (Directory **SCRATCH**)
   #Keywords = 0
   #Columns  = 3
    Name=ae   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=ab   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Comment for column ab
    #keywords=0
 

@@ -10,27 +10,27 @@ TableDesc tAsciiFileIO_tmp   version    (Directory ./)
   #Keywords = 0
   #Columns  = 6
    Name=COLI   DataType=Int
-   DataManager=StManAipsIO/StManAipsIO   Default=-2147483648
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=COLF   DataType=float
-   DataManager=StManAipsIO/StManAipsIO   Default=-1.4013e-45
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=COLD   DataType=double
-   DataManager=StManAipsIO/StManAipsIO   Default=-4.94066e-324
+   DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = 
    #keywords=0
 
    Name=COLX   DataType=Complex
-   DataManager=StManAipsIO/StManAipsIO   Default=(-1.4013e-45, -1.4013e-45)
+   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
    Comment = 
    #keywords=0
 
    Name=COLZ   DataType=Complex
-   DataManager=StManAipsIO/StManAipsIO   Default=(-1.4013e-45, -1.4013e-45)
+   DataManager=StManAipsIO/StManAipsIO   Default=(0, 0)
    Comment = 
    #keywords=0
 
