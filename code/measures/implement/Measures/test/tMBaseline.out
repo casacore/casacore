@@ -13,4 +13,66 @@ Converted Baseline: [100, 10, 0]
  as Baseline: [60.9714, -79.8905, 0.0077784]
 Back      Baseline: [60.9714, -79.8905, 0.0077784]
  as Baseline: [100, 10, -1.62115e-16]
-========================================================
+--------------------------------------
+Testing all conversions forward/backward
+All forward/backward conversions: ok
+------------------------------------
+Testing all MDirection conversions forward/backward
+All forward/backward Direction conversions: ok
+----------------------------------------------
+Exercise all MVBaseline function
+putValue:       [23 m, 23 m, 23 m], [23, 23, 23]
+BaselineAngle:  -2.1853
+BaselineAngle:  -125.209 deg
+get:            [39.8372, 0.785398, 0.61548]
+getRecordValue: [0.785398 rad, 0.61548 rad, 39.8372 m]
+separation:     3.14159
+separation:     180 deg
+crossProduct:   [-230, 2300, -2070]
+getAngle:       [0.785398, 0.61548] rad
+getAngle:       [45, 35.2644] deg
+getlength:      3983.72 cm
+radius:         39.8372
+getXRecordValue:[23 m, 23 m, 23 m]
+putVector:      [30, 40, 0], [30, 40, 0]
+VQ constructor: [23, 23, 23]
+Pos constructor:[7, 17, -23]
+Q constructor:  [0, 0, 50]
+QV constructor: [0.57735, 0.57735, 0.57735]
+QV constructor: [19.6299, 19.6299, 19.6299]
+V constructor:  [30, 40, 0]
+D constructor:  [0, 0, 78]
+operator+:      [53, 63, 23]
+operator-:      [7, 17, -23]
+operator-pre-:  [-23, -23, -23]
+operator*:      [23, 19.7536, 25.8418]
+operator*:      [46, 46, 46]
+assert:         ok
+getLength:      50 m
+operator*:      2500
+operator*       1610
+operator*:      2500
+clone:          [30, 40, 0]
+getVector:      [30, 40, 0]
+near:           0
+near:           0
+nearAbs:        0
+!=:             1
+==:             0
+type:           3
+All MVBaseline functions: ok
+----------------------------
+Exercise all MBaseline function
+getType:        1, 10
+giveMe:         1, Reference for an Baseline with Type: AZEL
+setRefString:   1, Baseline: [100, 10, 0]
+assert:         ok
+clone:          Baseline: [100, 10, 0]
+get:            [10000, 1000, 0] cm
+getAngle:       [5.71059, 0] deg
+getDefaultType: ITRF
+getRefString:   HADEC
+myType:         4
+type:           4
+All MBaseline functions: ok
+---------------------------
