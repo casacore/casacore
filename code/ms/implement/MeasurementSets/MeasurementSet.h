@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
- #if !defined(AIPS_MEASUREMENTSET_H)
-#define AIPS_MEASUREMENTSET_H
+#if !defined(AIPS_NEWMEASUREMENTSET_H)
+#define AIPS_NEWMEASUREMENTSET_H
 
 #include <aips/aips.h>
 #include <aips/MeasurementSets/NewMSTable.h>
