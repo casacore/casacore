@@ -250,7 +250,10 @@ public:
    friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
-   ImageMoments (MaskedImage<T>& image, LogIO &os);
+// You may also determine whether a progress meter is displayed or not.
+   ImageMoments (MaskedImage<T>& image, 
+                 LogIO &os,
+                 Bool showProgress=True);
 
 // Copy constructor.  Uses copy semantics.
    ImageMoments(const ImageMoments<T> &other);
@@ -407,7 +410,6 @@ enum KernelTypes {
                         const Vector<Int>& kernelTypes,
                         const Vector<Double>& kernelWidths);
 
-
 // You may specify a pixel intensity range as either one for which
 // all pixels in that range are included in the moment calculation,
 // or one for which all pixels in that range are excluded from the moment
@@ -416,8 +418,8 @@ enum KernelTypes {
 // A return value of <src>False</src> indicates that you have given both
 // an <src>include</src> and an <src>exclude</src> range.  If you don't call
 // this function, the default state of the class is to include all pixels.
-   Bool setInExCludeRange(const Vector<Double>& include,
-                          const Vector<Double>& exclude);
+   Bool setInExCludeRange(const Vector<T>& include,
+                          const Vector<T>& exclude);
 
 // This function is used to help assess whether a spectrum along the moment 
 // axis is all noise or not.  If it is all noise, there is not a lot of point
@@ -439,8 +441,8 @@ enum KernelTypes {
 // plotting device (see <src>setPlotting</src>) then you get to interact with 
 // the fitting procedure if you want to.  A return value of <src>False</src> 
 // indicates you have set invalid values.  
-   Bool setSnr(const Double& peakSNR, 
-               const Double& stdDeviation);
+   Bool setSnr(const T& peakSNR, 
+               const T& stdDeviation);
 
 // Set the name of the output file.  If you create more than one moment, 
 // this string is the root name for the output files.  Suffixes will
@@ -520,33 +522,29 @@ enum KernelTypes {
 
 private:
 
-   LogIO& os_p;
-   MaskedImage<T>* pInImage_p;
-
-   Int momentAxis_p;
+   LogIO os_p;
+   Bool showProgress_p;
    Int momentAxisDefault_p;
-
-   Vector<Int> kernelTypes_p;
-   Vector<Double> kernelWidths_p;   
-   Vector<Int> nxy_p;
-   Vector<Int> moments_p;
-   Vector<Float> range_p;
-   Vector<Int> smoothAxes_p;
-
-   Double peakSNR_p;
-   Double stdDeviation_p;
-   Float yMin_p, yMax_p;
-
-   PGPlotter plotter_p;
-
+   T peakSNR_p;
+   T stdDeviation_p;
+   T yMin_p, yMax_p;
    String out_p;
    String psfOut_p;
    String smoothOut_p;
-
    Bool goodParameterStatus_p;
    Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
    Bool fixedYLimits_p;
 
+
+   Int momentAxis_p;
+   Vector<Int> kernelTypes_p;
+   Vector<Double> kernelWidths_p;   
+   Vector<Int> nxy_p;
+   Vector<Int> moments_p;
+   Vector<T> selectRange_p;
+   Vector<Int> smoothAxes_p;
+   MaskedImage<T>* pInImage_p;
+   PGPlotter plotter_p;
 
 
 
@@ -586,6 +584,15 @@ private:
    static Bool readCursor (PGPlotter& plotter, Float& x,
                            Float& y, String& ch);
 
+// Take the user's data inclusion and exclusion data ranges and
+// generate the range and Booleans to say what sort it is
+   Bool setIncludeExclude (Vector<T>& range,
+                           Bool& noInclude,
+                           Bool& noExclude,
+                           const Vector<T>& include,
+                           const Vector<T>& exclude,
+                           ostream& os);
+
 // Set the output image suffixes and units
    Bool setOutThings(String& suffix,
                      Unit& momentUnits,
@@ -604,7 +611,7 @@ private:
 // Determine the noise by fitting a Gaussian to a histogram 
 // of the entire image above the 25% levels.  If a plotting
 // device is set, the user can interact with this process.
-   Bool whatIsTheNoise (Double& noise,
+   Bool whatIsTheNoise (T& noise,
                         MaskedImage<T>& image);
 
 };

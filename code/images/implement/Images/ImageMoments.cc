@@ -73,36 +73,39 @@
 
 template <class T> 
 ImageMoments<T>::ImageMoments (MaskedImage<T>& image, 
-                               LogIO &os) : os_p(os)
+                               LogIO &os,
+                               Bool showProgressU)
+: os_p(os),
+  showProgress_p(showProgressU),
+  momentAxisDefault_p(-10),
+  peakSNR_p(T(3)),
+  stdDeviation_p(T(0.0)),
+  yMin_p(T(0.0)),
+  yMax_p(T(0.0)),
+  out_p(""),
+  psfOut_p(""),
+  smoothOut_p(""),
+  goodParameterStatus_p(True),
+  doWindow_p(False),
+  doFit_p(False),
+  doAuto_p(True),
+  doSmooth_p(False),
+  noInclude_p(True),
+  noExclude_p(True),
+  fixedYLimits_p(False)
 //
 // Constructor. 
 //
 {
-   goodParameterStatus_p = True;
 
-   momentAxisDefault_p = -10;
    momentAxis_p = momentAxisDefault_p;
    moments_p.resize(1);
    moments_p(0) = INTEGRATED;
    kernelTypes_p.resize(0);
    kernelWidths_p.resize(0);
    nxy_p.resize(0);
-   range_p.resize(0);
+   selectRange_p.resize(0);
    smoothAxes_p.resize(0);
-   peakSNR_p = 3;
-   stdDeviation_p = 0.0;
-   yMin_p = 0.0;
-   yMax_p = 0.0;
-   out_p = "";
-   psfOut_p = "";
-   smoothOut_p = "";
-   doWindow_p = False;
-   doFit_p = False;
-   doAuto_p = True;   
-   doSmooth_p = False;
-   noInclude_p = True;
-   noExclude_p = True;
-   fixedYLimits_p = False;
 
    if (setNewImage(image)) {
       goodParameterStatus_p = True;
@@ -113,66 +116,67 @@ ImageMoments<T>::ImageMoments (MaskedImage<T>& image,
 
 template <class T>
 ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
-                      : os_p(other.os_p),
-                        pInImage_p(other.pInImage_p),
-                        momentAxis_p(other.momentAxis_p),
-                        momentAxisDefault_p(other.momentAxisDefault_p),
-                        kernelTypes_p(other.kernelTypes_p),
-                        kernelWidths_p(other.kernelWidths_p),
-                        nxy_p(other.nxy_p),
-                        moments_p(other.moments_p),
-                        range_p(other.range_p),
-                        smoothAxes_p(other.smoothAxes_p),
-                        peakSNR_p(other.peakSNR_p),
-                        stdDeviation_p(other.stdDeviation_p),
-                        yMin_p(other.yMin_p),
-                        yMax_p(other.yMax_p),
-                        plotter_p(other.plotter_p),
-                        out_p(other.out_p),
-                        psfOut_p(other.psfOut_p),
-                        smoothOut_p(other.smoothOut_p),
-                        goodParameterStatus_p(other.goodParameterStatus_p),
-                        doWindow_p(other.doWindow_p),
-                        doFit_p(other.doFit_p),
-                        doAuto_p(other.doAuto_p),
-                        doSmooth_p(other.doSmooth_p),
-                        noInclude_p(other.noInclude_p),
-                        noExclude_p(other.noExclude_p),
-                        fixedYLimits_p(other.fixedYLimits_p)
+: os_p(other.os_p),
+  showProgress_p(other.showProgress_p),
+  momentAxisDefault_p(other.momentAxisDefault_p),
+  peakSNR_p(other.peakSNR_p),
+  stdDeviation_p(other.stdDeviation_p),
+  yMin_p(other.yMin_p),
+  yMax_p(other.yMax_p),
+  out_p(other.out_p),
+  psfOut_p(other.psfOut_p),
+  smoothOut_p(other.smoothOut_p),
+  goodParameterStatus_p(other.goodParameterStatus_p),
+  doWindow_p(other.doWindow_p),
+  doFit_p(other.doFit_p),
+  doAuto_p(other.doAuto_p),
+  doSmooth_p(other.doSmooth_p),
+  noInclude_p(other.noInclude_p),
+  noExclude_p(other.noExclude_p),
+  fixedYLimits_p(other.fixedYLimits_p),
+  momentAxis_p(other.momentAxis_p),
+  kernelTypes_p(other.kernelTypes_p),
+  kernelWidths_p(other.kernelWidths_p),
+  nxy_p(other.nxy_p),
+  moments_p(other.moments_p),
+  selectRange_p(other.selectRange_p),
+  smoothAxes_p(other.smoothAxes_p),
+  pInImage_p(other.pInImage_p),
+  plotter_p(other.plotter_p)
 //
 // Copy constructor
 //
 {}
 
-
 template <class T>
 ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
-                      : os_p(other.os_p),
-                        pInImage_p(other.pInImage_p),
-                        momentAxis_p(other.momentAxis_p),
-                        momentAxisDefault_p(other.momentAxisDefault_p),
-                        kernelTypes_p(other.kernelTypes_p),
-                        kernelWidths_p(other.kernelWidths_p),
-                        nxy_p(other.nxy_p),
-                        moments_p(other.moments_p),
-                        range_p(other.range_p),
-                        smoothAxes_p(other.smoothAxes_p),
-                        peakSNR_p(other.peakSNR_p),
-                        stdDeviation_p(other.stdDeviation_p),
-                        yMin_p(other.yMin_p),
-                        yMax_p(other.yMax_p),
-                        plotter_p(other.plotter_p),
-                        out_p(other.out_p),
-                        psfOut_p(other.psfOut_p),
-                        smoothOut_p(other.smoothOut_p),
-                        goodParameterStatus_p(other.goodParameterStatus_p),
-                        doWindow_p(other.doWindow_p),
-                        doFit_p(other.doFit_p),
-                        doAuto_p(other.doAuto_p),
-                        doSmooth_p(other.doSmooth_p),
-                        noInclude_p(other.noInclude_p),
-                        noExclude_p(other.noExclude_p),
-                        fixedYLimits_p(other.fixedYLimits_p)
+: os_p(other.os_p),
+  showProgress_p(other.showProgress_p),
+  momentAxisDefault_p(other.momentAxisDefault_p),
+  peakSNR_p(other.peakSNR_p),
+  stdDeviation_p(other.stdDeviation_p),
+  yMin_p(other.yMin_p),
+  yMax_p(other.yMax_p),
+  out_p(other.out_p),
+  psfOut_p(other.psfOut_p),
+  smoothOut_p(other.smoothOut_p),
+  goodParameterStatus_p(other.goodParameterStatus_p),
+  doWindow_p(other.doWindow_p),
+  doFit_p(other.doFit_p),
+  doAuto_p(other.doAuto_p),
+  doSmooth_p(other.doSmooth_p),
+  noInclude_p(other.noInclude_p),
+  noExclude_p(other.noExclude_p),
+  fixedYLimits_p(other.fixedYLimits_p),
+  momentAxis_p(other.momentAxis_p),
+  kernelTypes_p(other.kernelTypes_p),
+  kernelWidths_p(other.kernelWidths_p),
+  nxy_p(other.nxy_p),
+  moments_p(other.moments_p),
+  selectRange_p(other.selectRange_p),
+  smoothAxes_p(other.smoothAxes_p),
+  pInImage_p(other.pInImage_p),
+  plotter_p(other.plotter_p)
 //
 // Copy constructor
 //
@@ -204,13 +208,14 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 // Do the rest
       
       os_p = other.os_p;
+      showProgress_p = other.showProgress_p;
       momentAxis_p = other.momentAxis_p;
       momentAxisDefault_p = other.momentAxisDefault_p;
       kernelTypes_p = other.kernelTypes_p;
       kernelWidths_p = other.kernelWidths_p;
       nxy_p = other.nxy_p;
       moments_p = other.moments_p;
-      range_p = other.range_p;
+      selectRange_p = other.selectRange_p;
       smoothAxes_p = other.smoothAxes_p;
       peakSNR_p = other.peakSNR_p;
       stdDeviation_p = other.stdDeviation_p;
@@ -502,8 +507,8 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 
 
 template <class T>  
-Bool ImageMoments<T>::setInExCludeRange(const Vector<Double>& includeU,
-                                        const Vector<Double>& excludeU)
+Bool ImageMoments<T>::setInExCludeRange(const Vector<T>& includeU,
+                                        const Vector<T>& excludeU)
 //
 // Assign the desired exclude range           
 //
@@ -513,12 +518,12 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<Double>& includeU,
       return False;
    }
 
-   Vector<Double> include = includeU;
-   Vector<Double> exclude = excludeU;
+   Vector<T> include = includeU;
+   Vector<T> exclude = excludeU;
 
    ostrstream os;
-   if (!ImageUtilities::setIncludeExclude(range_p, noInclude_p, noExclude_p,
-                                          include, exclude, os)) {
+   if (!setIncludeExclude(selectRange_p, noInclude_p, noExclude_p,
+                          include, exclude, os)) {
       os_p << LogIO::SEVERE << "Invalid pixel inclusion/exclusion ranges" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -529,8 +534,8 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<Double>& includeU,
 
 
 template <class T> 
-Bool ImageMoments<T>::setSnr(const Double& peakSNRU,
-                             const Double& stdDeviationU)
+Bool ImageMoments<T>::setSnr(const T& peakSNRU,
+                             const T& stdDeviationU)
 //
 // Assign the desired snr.  The default assigned in
 // the constructor is 3,0
@@ -542,7 +547,7 @@ Bool ImageMoments<T>::setSnr(const Double& peakSNRU,
    }
 
    if (peakSNRU <= 0.0) {
-      peakSNR_p = 3.0;
+      peakSNR_p = T(3.0);
    } else {
       peakSNR_p = peakSNRU;
    }
@@ -780,12 +785,12 @@ Bool ImageMoments<T>::createMoments()
 // Create table to map input to output axes
 
          
-   Int i, j;
-   Int  inDim = pInImage_p->ndim();
-   Int outDim = pInImage_p->ndim() - 1;
+   uInt i, j;
+   uInt  inDim = pInImage_p->ndim();
+   uInt outDim = pInImage_p->ndim() - 1;
    IPosition ioMap(outDim);
    for (i=0,j=0; i<inDim; i++) {
-      if (i != momentAxis_p) {
+      if (Int(i) != momentAxis_p) {
          ioMap(j) = i;
          j++;
       }
@@ -810,15 +815,12 @@ Bool ImageMoments<T>::createMoments()
 // methods only plot the smoothed data.
 
       if (doPlot && fixedYLimits_p && (smoothClipMethod || windowMethod)) {
-         os_p.priority(LogMessage::SEVERE);
-         ImageStatistics<T> stats(*pSmoothedImage, os_p);
-
+         ImageStatistics<T> stats(*pSmoothedImage, False);
          Array<T> data;
          stats.getMin(data);
          yMin_p = data(IPosition(data.nelements(),0));
          stats.getMax(data);
          yMax_p = data(IPosition(data.nelements(),0));
-         os_p.priority(LogMessage::NORMAL);
       }
    }
 
@@ -828,8 +830,7 @@ Bool ImageMoments<T>::createMoments()
 
    if (fixedYLimits_p && doPlot) {
       if (!doSmooth_p && (clipMethod || windowMethod || fitMethod)) {
-         os_p.priority(LogMessage::SEVERE);
-         ImageStatistics<T> stats(*pInImage_p, os_p);
+         ImageStatistics<T> stats(*pInImage_p, False);
 
          Array<T> data;
          if (!stats.getMin(data)) {
@@ -839,9 +840,7 @@ Bool ImageMoments<T>::createMoments()
          yMin_p = data(IPosition(data.nelements(),0));
          stats.getMax(data);
          yMax_p = data(IPosition(data.nelements(),0));
-         os_p.priority(LogMessage::NORMAL);
       }
-      ImageUtilities::stretchMinMax(yMin_p, yMax_p);
    }
 
 
@@ -863,7 +862,7 @@ Bool ImageMoments<T>::createMoments()
 // Create a vector of pointers for output images 
 
    PtrBlock<Lattice<T> *> outPt(moments_p.nelements());
-   for (i=0; i<Int(outPt.nelements()); i++) outPt[i] = 0;
+   for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
 
 
 // Loop over desired output moments
@@ -873,7 +872,7 @@ Bool ImageMoments<T>::createMoments()
    Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
    
-   for (i=0; i<Int(moments_p.nelements()); i++) {
+   for (i=0; i<moments_p.nelements(); i++) {
 
 // Set moment image units and assign pointer to output moments array
 // Value of goodUnits is the same for each output moment image
@@ -919,11 +918,10 @@ Bool ImageMoments<T>::createMoments()
 // a good assement of the noise.  The user can input that value, but if
 // they don't, we work it out here.
 
-   Double noise;
-   if ( stdDeviation_p <=0 && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
+   T noise;
+   if ( stdDeviation_p <= T(0) && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
       if (pSmoothedImage) {
          os_p << LogIO::NORMAL << "Evaluating noise level from smoothed image" << LogIO::POST;
-//         SubImage<T> image(*pSmoothedImage);
          if (!whatIsTheNoise (noise, *pSmoothedImage)) return False;
       } else {
          os_p << LogIO::NORMAL << "Evaluating noise level from input image" << LogIO::POST;
@@ -958,7 +956,8 @@ Bool ImageMoments<T>::createMoments()
 
 // Iterate optimally through the image, compute the moments, fill the output lattices
 
-   ImageMomentsProgress* pProgressMeter = new ImageMomentsProgress();
+   ImageMomentsProgress* pProgressMeter = 0;
+   if (showProgress_p) pProgressMeter = new ImageMomentsProgress();
    LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator, 
                                    momentAxis_p, pProgressMeter);
 
@@ -970,8 +969,8 @@ Bool ImageMoments<T>::createMoments()
       }
    }
    delete pMomentCalculator;
-   delete pProgressMeter;
-   for (i=0; i<Int(moments_p.nelements()); i++) delete outPt[i];
+   if (pProgressMeter != 0) delete pProgressMeter;
+   for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
 
    if (pSmoothedImage) {
       delete pSmoothedImage;
@@ -1025,7 +1024,7 @@ Bool ImageMoments<T>::checkMethod ()
          if (noInclude_p && noExclude_p) {
             noGood = True;
          } else {
-           if (range_p(0)*range_p(1) < 0) noGood = True;
+           if (selectRange_p(0)*selectRange_p(1) < T(0)) noGood = True;
          }
       }
       if (noGood) {
@@ -1610,6 +1609,74 @@ MaskedImage<T>* ImageMoments<T>::smoothImage (String& smoothName)
 }
 
 
+template <class T>
+Bool ImageMoments<T>::setIncludeExclude (Vector<T>& range,
+                                         Bool& noInclude,
+                                         Bool& noExclude,
+                                         const Vector<T>& include,
+                                         const Vector<T>& exclude,
+                                         ostream& os)
+//
+// Take the user's data inclusion and exclusion data ranges and
+// generate the range and Booleans to say what sort it is
+//
+// Inputs: 
+//   include   Include range given by user. Zero length indicates
+//             no include range
+//   exclude   Exclude range given by user. As above.
+//   os        Output stream for reporting
+// Outputs:
+//   noInclude If True user did not give an include range
+//   noExclude If True user did not give an exclude range
+//   range     A pixel value selection range.  Will be resized to
+//             zero length if both noInclude and noExclude are True
+//   Bool      True if successfull, will fail if user tries to give too
+//             many values for includeB or excludeB, or tries to give
+//             values for both
+{  
+   noInclude = True;
+   range.resize(0);
+   if (include.nelements() == 0) {
+     ;   
+   } else if (include.nelements() == 1) {
+      range.resize(2);
+      range(0) = -abs(include(0));
+      range(1) =  abs(include(0));
+      noInclude = False;
+   } else if (include.nelements() == 2) {
+      range.resize(2);   
+      range(0) = min(include(0),include(1));
+      range(1) = max(include(0),include(1));
+      noInclude = False;
+   } else {
+      os << endl << "Too many elements for argument include" << endl;
+      return False;
+   }
+ 
+   noExclude = True;
+   if (exclude.nelements() == 0) {
+      ;
+   } else if (exclude.nelements() == 1) {
+      range.resize(2);                      
+      range(0) = -abs(exclude(0));
+      range(1) =  abs(exclude(0));
+      noExclude = False;
+   } else if (exclude.nelements() == 2) {
+      range.resize(2);
+      range(0) = min(exclude(0),exclude(1));
+      range(1) = max(exclude(0),exclude(1));
+      noExclude = False;
+   } else {
+      os << endl << "Too many elements for argument exclude" << endl;
+      return False;
+   }
+   if (!noInclude && !noExclude) {
+      os << "You can only give one of arguments include or exclude" << endl;
+      return False;
+   }
+   return True;   
+}
+
 
 template <class T> 
 void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
@@ -1641,7 +1708,7 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
 
 
 template <class T> 
-Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
+Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
                                       MaskedImage<T>& image)
 //
 // Determine the noise level in the image by first making a histogram of 
@@ -1825,7 +1892,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 // Return values of fit 
 
       if (!fail && fitter.converged()) {
-         sigma = abs(solution(2)) / sqrt(2.0);
+         sigma = T(abs(solution(2)) / sqrt(2.0));
          os_p << LogIO::NORMAL 
               << "*** The fitted standard deviation of the noise is " << sigma
               << endl << LogIO::POST;
