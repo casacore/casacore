@@ -308,9 +308,9 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
   blkst += sz;
   itsOffset += blkst;
   if (blkst < size) {
-    size -= blkst;
-    readBlock (size, bufc+blkst, throwException);
-    itsOffset += size;
+    sz = size - blkst;
+    readBlock (sz, bufc+blkst, throwException);
+    itsOffset += sz;
   }
   return size;
 }
