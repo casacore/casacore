@@ -445,6 +445,23 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(RPFITSLIBD) $(RPFITSLIB) ; $(CheckLibs)
     endif
+	-@ echo "MIRLIBROOT=$(MIRLIBROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(MIRLIBROOT) ; $(CheckDir)
+    endif
+	-@ echo "MIRLIBDEFS=$(MIRLIBDEFS)"
+	-@ echo "MIRLIBINCD=$(MIRLIBINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(MIRLIBINCD) ; $(CheckDir)
+    endif
+	-@ echo "MIRLIBLIBD=$(MIRLIBLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(MIRLIBLIBD) ; $(CheckDir)
+    endif
+	-@ echo "MIRLIBLIB =$(MIRLIBLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
+    endif
 	-@ echo ""
 	-@ echo "XLIBLIST=$(XLIBLIST)"
 	-@ echo "XLIBPATH=$(XLIBPATH)"
