@@ -103,10 +103,10 @@ public:
   // called in MeasBase: </note>
   //   <src> MeasRef(Ms::Types tp); </src>
   // Furthermore, default arguments are not supported with templated classes:
-  MeasRef(uInt tp);
-  MeasRef(uInt tp, const Ms &ep);
-  MeasRef(uInt tp, const MeasFrame &mf);
-  MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep);
+  explicit MeasRef(const uInt tp);
+  MeasRef(const uInt tp, const Ms &ep);
+  MeasRef(const uInt tp, const MeasFrame &mf);
+  MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep);
   // </group>
   
   //# Destructor

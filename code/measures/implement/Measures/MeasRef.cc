@@ -54,36 +54,36 @@ MeasRef<Ms> &MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
 }
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(uInt tp) :
+MeasRef<Ms>::MeasRef(const uInt tp) :
   rep(0) {
-    create();
-    rep->type = Ms::castType(tp);
-  }
+  create();
+  rep->type = Ms::castType(tp);
+}
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(uInt tp, const Ms &ep) :
+MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep) :
   rep(0) {
-    create();
-    rep->type = Ms::castType(tp);
-    rep->offmp = new Ms(ep);
-  }
+  create();
+  rep->type = Ms::castType(tp);
+  rep->offmp = new Ms(ep);
+}
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf) :
+MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf) :
   rep(0) {
-    create();
-    rep->type = Ms::castType(tp);
-    rep->frame = mf;
-  }
+  create();
+  rep->type = Ms::castType(tp);
+  rep->frame = mf;
+}
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(uInt tp, const MeasFrame &mf, const Ms &ep) :
+MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep) :
   rep(0) {
-    create();
-    rep->type = Ms::castType(tp);
-    rep->offmp = new Ms(ep);
-    rep->frame = mf;
-  }
+  create();
+  rep->type = Ms::castType(tp);
+  rep->offmp = new Ms(ep);
+  rep->frame = mf;
+}
 
 template<class Ms>
 void MeasRef<Ms>::create() {
