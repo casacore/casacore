@@ -25,90 +25,106 @@
 //#
 //# $Id$
 
+#include <trial/Images/ImageHistograms.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
+#include <trial/Coordinates.h>  
 #include <aips/Functionals/Gaussian1D.h>
+#include <trial/Images/MaskedImage.h>
+#include <trial/Images/ImageUtilities.h>
+#include <trial/Lattices/LatticeApply.h>
+#include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/LatticeRegion.h>
+#include <trial/Lattices/PagedArray.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/QMath.h>
 #include <aips/Tables/Table.h>
+#include <trial/Tasking/PGPlotter.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
-  
-#include <trial/Coordinates.h>  
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <trial/Images/ImageHistograms.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/CopyLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/TiledLineStepper.h>
-#include <trial/Tasking/ProgressMeter.h>
 
 #include <iomanip.h>
 #include <stdlib.h>
 #include <strstream.h>
 
 
-// C wrappers for PGPLOT
-
-extern "C" {
-#include <cpgplot.h>
-};
-
-// enums for min/max and statistics storage images
-// stats enum also used for location of items in vector 
-// returned by getStats
-
-enum minmax {MIN, MAX, NMINMAX};
-enum stats  {SUM, SUMSQ, NPTS, MEAN, SIGMA, VAR, RMS, NSTATS2, NSTATS=NPTS+1};
-
 
 // Public functions
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
-                                     LogIO &os) : os_p(os)
+ImageHistograms<T>::ImageHistograms (const MaskedImage<T>& imageU, 
+                                     LogIO &os,
+                                     Bool showProgressU)
+: os_p(os),
+  pStoreImage_p(0),
+  pStats_p(0),
+  binAll_p(True),
+  goodParameterStatus_p(True),
+  needStorageImage_p(True),
+  doCumu_p(False),
+  doGauss_p(False),
+  doList_p(False),
+  doLog_p(False),
+  haveLogger_p(True),
+  showProgress_p(showProgressU),
+  nBins_p(25)
 //
 // Constructor. 
 //
 {
-   pHistImage_p = 0;
-   pMinMaxImage_p = 0;
-   pStatsImage_p = 0;
-
-   binAll_p = True;
-   goodParameterStatus_p = True;
-   needStorageImage_p = True;
-   doCumu_p = False;
-   doGauss_p = False;
-   doList_p = False;
-   doLog_p = False;
-   nBins_p = 25;
-   blc_p.resize(0);
-   trc_p.resize(0);
-   inc_p.resize(0);
    nxy_p.resize(0); 
    range_p.resize(0);
+   blcParent_p.resize(0);
 
-  
    if (setNewImage(imageU)) {
 
 // Cursor axes defaults to all
    
       Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
-   
-// Region defaults to entire image
-   
-      IPosition blc, trc, inc;
-      goodParameterStatus_p = setRegion(blc, trc, inc, False);
+   } else {
+      goodParameterStatus_p = False;
+   }
+}
 
+
+template <class T>
+ImageHistograms<T>::ImageHistograms (const MaskedImage<T>& imageU, 
+                                     Bool showProgressU)
+: pStoreImage_p(0),
+  pStats_p(0),
+  binAll_p(True),
+  goodParameterStatus_p(True),
+  needStorageImage_p(True),
+  doCumu_p(False),
+  doGauss_p(False),
+  doList_p(False),
+  doLog_p(False),
+  haveLogger_p(False),
+  showProgress_p(showProgressU),
+  nBins_p(25)
+//
+// Constructor. 
+//
+{
+   nxy_p.resize(0); 
+   range_p.resize(0);
+   blcParent_p.resize(0);
+
+   if (setNewImage(imageU)) {
+
+// Cursor axes defaults to all
+   
+      Vector<Int> cursorAxes;
+      goodParameterStatus_p = setAxes(cursorAxes);
    } else {
       goodParameterStatus_p = False;
    }
@@ -118,7 +134,6 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
 template <class T>
 ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
                       : os_p(other.os_p),
-                        pInImage_p(other.pInImage_p),
                         binAll_p(other.binAll_p),
                         goodParameterStatus_p(other.goodParameterStatus_p),
                         needStorageImage_p(other.needStorageImage_p),
@@ -126,23 +141,31 @@ ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
                         doGauss_p(other.doGauss_p),
                         doList_p(other.doList_p),
                         doLog_p(other.doLog_p),
+                        haveLogger_p(other.haveLogger_p),
+                        showProgress_p(other.showProgress_p),
                         nBins_p(other.nBins_p),
-                        blc_p(other.blc_p),
-                        trc_p(other.trc_p),
-                        inc_p(other.inc_p),
+                        pInImage_p(other.pInImage_p),
                         plotter_p(other.plotter_p),
                         cursorAxes_p(other.cursorAxes_p),
                         displayAxes_p(other.displayAxes_p),
                         nxy_p(other.nxy_p),
-                        range_p(other.range_p)
+                        range_p(other.range_p),
+                        blcParent_p(other.blcParent_p)
 //
 // Copy constructor
 //
 { 
-  
-// Copy storage images and assign storage image pointers
 
-   copyStorageImages(other);
+// I used to copy the storage image and statistics object
+// but now I think it is cleaner to just make them as neeed.
+
+   pStoreImage_p = 0;
+   pStats_p = 0;
+
+
+// Need new storage image and statistics object
+
+   needStorageImage_p = True;
 }      
 
 
@@ -159,21 +182,28 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       
       pInImage_p = other.pInImage_p;
       
-// Copy storage images and assign storage image pointers
+// Delete storage image and signify we need a new one.
+// I used to copy the storage image, but now I think
+// this is cleaner.
 
-      if (pHistImage_p != 0) {
-         delete pHistImage_p;
-         pHistImage_p = 0;
+      if (pStoreImage_p != 0) {
+         delete pStoreImage_p;
+         pStoreImage_p = 0;
       }
-      if (pMinMaxImage_p != 0) {
-         delete pMinMaxImage_p;
-         pMinMaxImage_p = 0;
+
+// Delete ImageStatistics object. I used to copy it
+// but now I think this is cleaner
+
+      if (pStats_p != 0) {
+         delete pStats_p;
+         pStats_p = 0;
       }
-      if (pStatsImage_p != 0) {
-         delete pStatsImage_p;
-         pStatsImage_p = 0;
-      }
-      copyStorageImages(other);
+
+
+// Need new storage image and statistics object
+
+      needStorageImage_p = True;
+
 
 // Do the rest
   
@@ -185,15 +215,15 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       doGauss_p = other.doGauss_p;
       doList_p = other.doList_p;
       doLog_p = other.doLog_p;
+      haveLogger_p = other.haveLogger_p;
+      showProgress_p = other.showProgress_p;
       nBins_p = other.nBins_p;
-      blc_p = other.blc_p;
-      trc_p = other.trc_p;
-      inc_p = other.inc_p;
       cursorAxes_p = other.cursorAxes_p;
       displayAxes_p = other.displayAxes_p;
       plotter_p = other.plotter_p;
       nxy_p = other.nxy_p;
       range_p = other.range_p;
+      blcParent_p = other.blcParent_p;
    }
    return *this;
 }
@@ -206,10 +236,14 @@ ImageHistograms<T>::~ImageHistograms()
 // Destructor.  Delete storage images memory
 //
 {
-   if (pHistImage_p != 0) delete pHistImage_p;
-   if (pMinMaxImage_p != 0) delete pMinMaxImage_p;
-   if (pStatsImage_p != 0) delete pStatsImage_p;
-
+   if (pStoreImage_p != 0) {
+      delete pStoreImage_p;
+      pStoreImage_p = 0;
+   }
+   if (pStats_p != 0) {
+      delete pStats_p;
+      pStats_p = 0;
+   }
 }
 
 
@@ -220,7 +254,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -239,11 +273,11 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 // User didn't give any axes.  Set them to all.
  
       cursorAxes_p.resize(pInImage_p->ndim());
-      for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes_p(i) = i;
+      for (uInt i=0; i<pInImage_p->ndim(); i++) cursorAxes_p(i) = i;
    } else {
-      for (Int i=0; i<cursorAxes_p.nelements(); i++) {
-         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > pInImage_p->ndim()-1) {
-            os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
+      for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
+         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInImage_p->ndim()-1)) {
+            if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
             return False;
          }
       }
@@ -259,22 +293,22 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
+Bool ImageHistograms<T>::setNBins (const uInt& nBinsU)
 //
 // Set the number of bins
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
 // Save number of bins
 
-   const Int saveNBins = nBins_p;
+   const uInt saveNBins = nBins_p;
 
    if (nBinsU < 1) {
-      os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
    } else {
@@ -290,29 +324,27 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setIncludeRange(const Vector<Double>& includeU)
+Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& includeU)
 //
 // Assign the desired inclusion range
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
 // Save current ranges   
           
-   Vector<Float> saveRange(range_p.copy());
+   Vector<T> saveRange(range_p.copy());
    
 
 // CHeck    
 
-   Vector<Double> exclude;
-   Bool noInclude, noExclude;
+   Bool noInclude;
    ostrstream os;
-   if (!ImageUtilities::setIncludeExclude(range_p, noInclude, noExclude,
-                                          includeU, exclude, os)) {
-      os_p << LogIO::SEVERE << "Invalid pixel inclusion range" << LogIO::POST;
+   if (!setInclude(range_p, noInclude, includeU, os)) {
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel inclusion range" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
    }
@@ -336,7 +368,7 @@ Bool ImageHistograms<T>::setGaussian (const Bool& doGaussU)
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -354,7 +386,7 @@ Bool ImageHistograms<T>::setForm (const Bool& doLogU, const Bool& doCumuU)
 // 
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
     }
 
@@ -366,56 +398,13 @@ Bool ImageHistograms<T>::setForm (const Bool& doLogU, const Bool& doCumuU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setRegion(const IPosition& blcU,
-                                   const IPosition& trcU,
-                                   const IPosition& incU,
-                                   const Bool& listRegion)
-//
-// Select the region of interest
-//
-{
-   if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;   
-      return False;
-   }
-
-
-
-// Save current region
-      
-   IPosition saveBlc(blc_p);
-   IPosition saveTrc(trc_p);
-      
-
-// Check OK
-  
-   blc_p.resize(0);
-   blc_p = blcU;
-   trc_p.resize(0);
-   trc_p = trcU;
-   inc_p.resize(0);
-   inc_p = incU;
-   ImageUtilities::verifyRegion(blc_p, trc_p, inc_p, pInImage_p->shape());
-   if (listRegion) {
-      os_p << LogIO::NORMAL << "Selected region : " << blc_p+1 << " to " 
-        << trc_p+1 << LogIO::POST;
-   }
-
-// Signal we need new accumulation images
-
-   if (!saveBlc.isEqual(blc_p) || !saveTrc.isEqual(trc_p)) needStorageImage_p = True;
-
-   return True;
-}
-
-template <class T>
 Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
 //
 // See if user wants to list statistics as well 
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -434,7 +423,7 @@ Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
 //
 {     
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -446,7 +435,7 @@ Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
    nxy_p = nxyU;
    ostrstream os;
    if (!ImageUtilities::setNxy(nxy_p, os)) {
-      os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
    }
@@ -456,27 +445,34 @@ Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
 
 
 template <class T>
-Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
+Bool ImageHistograms<T>::setNewImage(const MaskedImage<T>& image)
 //    
 // Assign pointer to image
 //
 { 
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
-  
    pInImage_p = &image;
    T *dummy = 0;
    DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
-       os_p << LogIO::SEVERE << "Histograms can only be evaluated from images of type : " <<
-	   TpFloat << " and " << TpDouble << LogIO::POST;
+       if (haveLogger_p) {
+          os_p << LogIO::SEVERE << "Histograms can only be evaluated from images of type : "
+               << TpFloat << " and " << TpDouble << LogIO::POST;
+       }
        goodParameterStatus_p = False;
        pInImage_p = 0;
        return False;
    }
+
+// This is the location of the input SubImage in
+// the parent Image
+      
+   blcParent_p = pInImage_p->region().slicer().start();
+
 
 // Signal that we have changed the image and need a new accumulation
 // image
@@ -494,7 +490,7 @@ Bool ImageHistograms<T>::display()
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -517,14 +513,14 @@ Bool ImageHistograms<T>::display()
 
 
 template <class T>
-Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
-                                        Array<Float>& counts)
+Bool ImageHistograms<T>::getHistograms (Array<T>& values,
+                                        Array<T>& counts)
 //
 // Retrieve histograms values and counts into arrays
 //
 {
    if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
 
@@ -537,53 +533,164 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
 
 // Set up iterator to work through histogram storage image line by line
-// Since I already set the tile shape to be unity on all but the first 
-// axis where it is is the axis length, just use the LatticeStepper (default) 
-// navigator, which will also guarentee the access pattern.  There will
-// be no overhang.  
+// Use the LatticeStepper (default) which will guarentee the access pattern.  
+// There will be no overhang (as tile shape for first axis is length of axis)
   
-   IPosition cursorShape(1,pHistImage_p->ndim(),1);
-   cursorShape(0) = pHistImage_p->shape()(0);
+   IPosition cursorShape(1,pStoreImage_p->ndim(),1);
+   cursorShape(0) = pStoreImage_p->shape()(0);
 
-   IPosition vectorAxis(1); vectorAxis(0) = 0;
+   IPosition vectorAxis(1,0);
+   vectorAxis(0) = 0;
    
 // Make the stepper explicitly so we can specify the cursorAxes
 // and then vectorCursor will cope with an axis of length 1
 // (it is possible the user could ask for a histogram with one bin !)
 
-   LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
-                          vectorAxis, IPosition::makeAxisPath(pHistImage_p->ndim()));
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
+   LatticeStepper histStepper(pStoreImage_p->shape(), cursorShape,
+                          vectorAxis, IPosition::makeAxisPath(pStoreImage_p->ndim()));
+   RO_LatticeIterator<T> histIterator(*pStoreImage_p, histStepper);
 
 
 // Resize output arrays and setup vector iterators
 
-   counts.resize(pHistImage_p->shape());
-   values.resize(pHistImage_p->shape());
+   counts.resize(pStoreImage_p->shape());
+   values.resize(pStoreImage_p->shape());
 
-   VectorIterator<Float> valuesIterator(values);
-   VectorIterator<Float> countsIterator(counts);
+   VectorIterator<T> valuesIterator(values);
+   VectorIterator<T> countsIterator(counts);
 
-   Vector<T> range(2);
-   Float linearSum, linearYMax;
+   Vector<T> stats;
+   T linearSum, linearYMax;
 
 // Iterate through histogram storage image
    
    for (histIterator.reset(),valuesIterator.origin(),countsIterator.origin(); 
        !histIterator.atEnd(); histIterator++,valuesIterator.next(),countsIterator.next()) {
  
-// Work out the range for this histogram from the min/max storage image
+// Find statistics from the data that made this histogram 
 
-      getMinMax(range, histIterator.position(), False);
+      getStatistics (stats, histIterator.position());
+
 
 // Extract the histogram in the appropriate form
-
+ 
       extractOneHistogram (linearSum, linearYMax, valuesIterator.vector(), 
-                           countsIterator.vector(), range, 
+                           countsIterator.vector(), stats,
                            histIterator.vectorCursor());
    }
 
    return True;
+}
+
+
+
+template <class T>
+Bool ImageHistograms<T>::getHistogram (Vector<T>& values,
+                                       Vector<T>& counts,
+                                       const IPosition& pos,
+                                       const Bool posInImage=False)
+//
+// Retrieve histogram values and counts from specified
+// location into vectors
+//
+// Inputs:
+//   posInImage   If true the location is given as image coordinates
+//                The non-display axis values will be ignored.
+//                Otherwise the position should be for the
+//                display axes only.
+//
+{
+   if (!goodParameterStatus_p) {
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
+      return False;
+   }
+
+
+// Make sure we have a correctly size position
+      
+   if (posInImage) {
+      if (pos.nelements() != pInImage_p->ndim()) {
+         if (haveLogger_p) {
+            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
+         }
+         values.resize(0);
+         counts.resize(0);
+         return False;
+      }
+   } else {
+      if (pos.nelements() != displayAxes_p.nelements()) {
+         if (haveLogger_p) {
+            os_p << LogIO::SEVERE << "Incorrectly sized position given" << LogIO::POST;
+         }
+         values.resize(0);
+         counts.resize(0);
+         return False;
+      }
+   }
+
+  
+// Generate storage images if required
+   
+   if (needStorageImage_p) {
+      if (!generateStorageImage()) return False;      
+   }
+
+
+// Set position for getting slice from storage image
+         
+   const uInt nDim = displayAxes_p.nelements();
+   IPosition histPos(nDim+1,0);
+   if (posInImage) {
+         
+// Discard non display axes
+          
+      for (uInt i=0; i<nDim; i++) {
+         histPos(i+1) = pos(displayAxes_p(i));
+      }
+   } else {
+ 
+// Use position as is
+ 
+      for (uInt i=0; i<nDim; i++) {
+         histPos(i+1) = pos(i);
+      }
+   }
+ 
+            
+// Get histogram slice of integer counts (i.e. linear,
+// not cumulative or logarithmic etc)
+ 
+   IPosition sliceShape(nDim+1,1);
+   sliceShape(0) = nBins_p;
+   Array<T> intCounts;
+   pStoreImage_p->getSlice(intCounts, histPos, sliceShape,
+                           IPosition(nDim+1,1), False);
+
+// Copy integer counts to a Vector
+
+   Vector<T> intCountsV(nBins_p);
+   histPos = 0;
+   for (uInt i=0; i<nBins_p; i++) {
+      histPos(0) = i;
+      intCountsV(i) = intCounts(histPos);
+   }
+
+
+// Get statistics slice.  
+
+   Vector<T> stats;
+   pStats_p->getStats(stats, pos, posInImage);
+
+// Convert to desired form and make values vector too
+
+   counts.resize(nBins_p);
+   values.resize(nBins_p);
+   T linearSum, linearYMax;
+   extractOneHistogram (linearSum, linearYMax, values,
+                        counts, stats, intCountsV);
+
+   return True;
+
 }
 
 
@@ -591,149 +698,14 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
 // Private functions
 
-
-
-template <class T>
-void ImageHistograms<T>::accumulate (const IPosition& imagePosition,
-                                     const Array<T>& cursor)
-//
-// Accumulate the histograms and statistical sums into the
-// storage images for this chunk of the image
-// 
-// Inputs:
-//   imagePosition  This is the location in the input image for the
-//                  start of the current cursor chunk
-//   cursor         Cursor array containing data
-//
-{             
-
-// Fish out the min and max for this chunk of the data from the min max
-// storage image.  
-
-   Vector<T> clip(2);
-   getMinMax(clip, imagePosition, True);
-         
-
-// Set histogram bin width
-   
-   const Int nBins = nBins_p;
-   const T binWidth = setBinWidth(clip, nBins);
-
-          
-// Construct vector iterator to iterate through the cursor
-       
-   ReadOnlyVectorIterator<T> cursorIt(cursor);
-   const Int n1 = cursorIt.vector().nelements();
-
-
-// Statistics accumulation objects
-
-   Vector<Double> stats(NSTATS);
-   stats = 0.0;
-   T datum;
-
-// Histogram accumulation vector
-
-   Vector<Int> counts(nBins);
-   counts = 0;
-
-// Accumulate histogram and statistics sums.  If user didn't give
-// range take slightly faster route with no ifs.
-
-   if (!binAll_p) {
-      while (!cursorIt.pastEnd()) {
-         for (Int i=0; i<n1; i++) {
-            datum = cursorIt.vector()(i);
-            if (datum >= clip(0) && datum <= clip(1)) {
-               histAccum (counts, datum, clip(0), binWidth, nBins);
-               statsAccum (stats, datum);
-            }
-         }
-         cursorIt.next();
-      }
-   }
-   else {
-      while (!cursorIt.pastEnd()) {
-         for (Int i=0; i<n1; i++) {
-            datum = cursorIt.vector()(i);
-            histAccum (counts, datum, clip(0), binWidth, nBins);
-            statsAccum (stats, datum);
-         }
-         cursorIt.next();   
-      }
-   }
-   
-// Update histogram storage image
-
-   putInHist(imagePosition, counts);
-
-   
-// Update statistics accumulation image
-
-   putInStats(imagePosition, stats);
-
-}
-
-
-template <class T>
-void ImageHistograms<T>::copyStorageImages(const ImageHistograms<T>& other)
-//
-// Copy historgam strage images from other and assign new pointers for *this
-//
-{
-
-// Histogram storage image
-
-   if (other.pHistImage_p !=0) {   
-      IPosition shape =other.pHistImage_p->shape();
-      IPosition tileShape = other.pHistImage_p->tileShape();
-      Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
-                            String("ImageHistograms_Hist_"));
-      pHistImage_p = new PagedArray<Int>(TiledShape(shape, tileShape), myTable);
-      CopyLattice(pHistImage_p->lc(), other.pHistImage_p->lc());
-   } else {
-      pHistImage_p = 0;
-   }
-
-
-// Min/max storage image
-
-   if (other.pMinMaxImage_p !=0) {   
-      IPosition shape = other.pMinMaxImage_p->shape();
-      IPosition tileShape = other.pMinMaxImage_p->tileShape();
-      Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
-                            String("ImageHistograms_MinMax_"));
-      pMinMaxImage_p = new PagedArray<T>(TiledShape(shape, tileShape), myTable);
-      CopyLattice(pMinMaxImage_p->lc(), other.pMinMaxImage_p->lc());
-   } else {
-      pMinMaxImage_p = 0;
-   }
-
-
-// Statistics storage image
-
-   if (other.pStatsImage_p !=0) {   
-      IPosition shape =other.pStatsImage_p->shape();
-      IPosition tileShape = other.pStatsImage_p->tileShape();
-      Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
-                            String("ImageHistograms_Sums_"));
-      pStatsImage_p = new PagedArray<Double>(TiledShape(shape, tileShape),
-					     myTable);
-      CopyLattice(pStatsImage_p->lc(), other.pStatsImage_p->lc());
-   } else {
-      pStatsImage_p = 0;
-   }
-}
-
-
 template <class T>
 Bool ImageHistograms<T>::displayHistograms ()
 //
 // Display the histograms as a function of the display axes
 //
 {
-// Set up for plotting
 
+// Set up for plotting
 
    if (plotter_p.isAttached()) {
       plotter_p.subp(nxy_p(0), nxy_p(1));
@@ -741,80 +713,73 @@ Bool ImageHistograms<T>::displayHistograms ()
       plotter_p.sch(1.2);
       plotter_p.svp(0.1,0.9,0.1,0.9);
    } else {
-      os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST;
+      if (haveLogger_p) os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST;
       return False;
    }
-
       
       
 // Set up iterator to work through histogram storage image line by line.
-// We don't use the TiledLineStepper because we already set the tile shape
-// sensibly, and this will guarentee the access pattern is row based rather
-// than tile based. There will be no overhang
+// We don't use the TiledLineStepper to guarentee the access pattern is 
+// row based rather than tile based.  There will be no overhang because
+// the tile shape for the histogram axis is the size of the histogram
  
-   IPosition cursorShape(1,pHistImage_p->ndim(),1);
-   cursorShape(0) = pHistImage_p->shape()(0);
+   IPosition cursorShape(1,pStoreImage_p->ndim(),1);
+   cursorShape(0) = pStoreImage_p->shape()(0);
 
-   IPosition vectorAxis(1); vectorAxis(0) = 0;
+   IPosition vectorAxis(1); 
+   vectorAxis(0) = 0;
+
 
 // Make the stepper explicitly so we can specify the cursorAxes
 // and then vectorCursor will cope with an axis of length 1
 // (it is possible the user could ask for a histogram with one bin !)
 
-   LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
-                              vectorAxis, IPosition::makeAxisPath(pHistImage_p->ndim()));
-   RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
+   LatticeStepper histStepper(pStoreImage_p->shape(), cursorShape,
+                              vectorAxis, IPosition::makeAxisPath(pStoreImage_p->ndim()));
+   RO_LatticeIterator<T> histIterator(*pStoreImage_p, histStepper);
 
 
 // Histogram vectors and other bits and pieces
       
-   Vector<Float> counts(pHistImage_p->shape()(0));
-   Vector<Float> values(pHistImage_p->shape()(0));
-   Vector<T> range(2);
-   Vector<Double> stats(NSTATS2);
-   Float linearSum, linearYMax;
-   Int nPts;   
+   Vector<T> counts(pStoreImage_p->shape()(0));
+   Vector<T> values(pStoreImage_p->shape()(0));
+   Vector<T> stats;
+   T linearSum, linearYMax;
+   IPosition imagePos(pInImage_p->ndim(),0);
   
 
 // Iterate through histogram storage image
 
    for (histIterator.reset(); !histIterator.atEnd(); histIterator++) {
    
-// Work out the range for this histogram from the min/max storage image
+// Find statistics from the data that made this histogram 
 
-      getMinMax(range, histIterator.position(), False);
-
-// Work out the mean and sigma from the data that made this histogram
-// from the statistics storage image
-
-      getStats (stats, histIterator.position(), False);
+      getStatistics (stats, histIterator.position());
 
 // Extract histogram in the form requested for plotting
 
-      extractOneHistogram (linearSum, linearYMax, values, counts, range,
+      extractOneHistogram (linearSum, linearYMax, values, counts, stats,
                            histIterator.vectorCursor());
 
 // Display the histogram
 
       if (!displayOneHistogram (linearSum, linearYMax, 
                                 histIterator.position(), 
-                                range, stats, values, 
-                                counts, plotter_p)) return False;
-    
+                                stats, values, counts, 
+                                plotter_p)) return False;
    }
-      
+
    return True;
 }
  
  
 template <class T>
-Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
-                                              const Float &linearYMax,
+Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
+                                              const T& linearYMax,
                                               const IPosition& histPos,
-                                              const Vector<T>& range,
-                                              const Vector<Double> &stats,
-                                              const Vector<Float>& values,
-                                              const Vector<Float>& counts,
+                                              const Vector<T>& stats,
+                                              const Vector<T>& values,
+                                              const Vector<T>& counts,
                                               PGPlotter& plotter)
 
 //
@@ -826,48 +791,44 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
 //               of the storage image has the counts.
 //
 {
-    
+
 // Are we going to see the Gaussian ?
  
    Bool doGauss2 = False;
-   if (doGauss_p && stats(SIGMA)>0) doGauss2 = True;
+   if (doGauss_p && stats(ImageStatsBase::SIGMA)>0) doGauss2 = True;
  
+// Get extrema. 
+
+   Vector<T> range(2);
+   range(0) = stats(ImageStatsBase::MIN);
+   range(1) = stats(ImageStatsBase::MAX);
+   T xMin = range(0);
+   T xMax = range(1);
+   T yMin = T(0.0);
+   T yMax = linearYMax; 
 
 // Set bin width  
       
-   const Int nBins = nBins_p;
-   const Float binWidth = Float(setBinWidth(range, nBins));
+   const uInt nBins = nBins_p;
+   const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
       
     
-// Get extrema    
-      
-   Float xMin = Float(range(0));
-   Float xMax = Float(range(1));
-   Float yMin = 0.0;
-   Float yMax = linearYMax; 
    
-
 // Generate the equivalent Gaussian if desired
       
-   Vector<Float> gX, gY;
+   Vector<T> gX, gY;
    Int nGPts;
-   Float gMax;
+   T gMax;
    if (doGauss2) {
-      makeGauss (nGPts, gMax, gX, gY, stats(MEAN), stats(SIGMA), linearSum,
+      makeGauss (nGPts, gMax, gX, gY, stats(ImageStatsBase::MEAN), stats(ImageStatsBase::SIGMA), linearSum,
                  xMin, xMax, binWidth);   
       yMax = max(yMax, gMax);
    }
       
  
-// Stretch extrema by 5%
-         
-   ImageUtilities::stretchMinMax(xMin, xMax);
-   ImageUtilities::stretchMinMax(yMin, yMax);
-
-
 // Write statistics to a LogIO object
 
-   if (doList_p) {
+   if (haveLogger_p && doList_p) {
 
 // List coordinates of display axes for this histogram
 
@@ -876,6 +837,8 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
       if (nDisplayAxes > 0) {   
          Vector<String> sWorld(1);
          Vector<Double> pixels(1);
+         IPosition blc(pInImage_p->ndim(),0);
+         IPosition trc(pInImage_p->shape()-1);
 
          for (Int j=0; j<nDisplayAxes; j++) {
             const Int worldAxis = 
@@ -885,7 +848,7 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
 
             if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
                                         displayAxes_p(j), cursorAxes_p,
-                                        blc_p, trc_p, pixels, -1)) return False;
+                                        blc, trc, pixels, -1)) return False;
             os_p <<  ImageUtilities::shortAxisName(name)
                  << "=" << locHistInImage(histPos)(j+1)+1 << " (" << sWorld(0) << ")";
             if (j < nDisplayAxes-1) os_p << ", ";
@@ -903,42 +866,60 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
       os_p.output().setf(ios::left, ios::adjustfield);
    
       os_p << endl << "No. binned = ";
-      os_p.output() << setw(oWidth) << Int(stats(NPTS)+0.1) << endl;
+      os_p.output() << setw(oWidth) << Int(stats(ImageStatsBase::NPTS)+0.1) << endl;
 
       os_p << "Sum        = ";
-      os_p.output() << setw(oWidth) << stats(SUM) <<   "       Mean     = ";
-      os_p.output() << setw(oWidth) << stats(MEAN) << endl;
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::SUM) <<   "       Mean     = ";
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MEAN) << endl;
 
       os_p << "Variance   = ";
-      os_p.output() << setw(oWidth) << stats(VAR);
-      if (stats(VAR)> 0.0) {
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::VARIANCE);
+      if (stats(ImageStatsBase::VARIANCE)> 0.0) {
          os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << stats(SIGMA) << endl;
+         os_p.output() << setw(oWidth) << stats(ImageStatsBase::SIGMA) << endl;
       } else {
          os_p << endl;
       }
       os_p << "Rms        = ";
-      os_p.output() << setw(oWidth) << stats(RMS) << endl;
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::RMS) << endl;
  
       os_p << endl;  
       os_p << "Bin width  = ";
       os_p.output() << setw(oWidth) << binWidth << endl;
       os_p << "Min binned = ";
-      os_p.output() << setw(oWidth) << range(0) << "       Max binned = ";
-      os_p.output() << setw(oWidth) << range(1) << endl << endl << endl;
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MIN) << "       Max binned = ";
+      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MAX) << endl << endl << endl;
       os_p.post();
    }
       
-// Generate abcissa and ordinate arrays for plotting
-    
    
+// Now we convert our <T> to Float
+// Stretch extrema by 5%
+
+   Float xMinF = Float(real(xMin));
+   Float xMaxF = Float(real(xMax));
+   Float yMinF = Float(real(yMin));
+   Float yMaxF = Float(real(yMax));
+         
+   ImageUtilities::stretchMinMax(xMinF, xMaxF);
+   ImageUtilities::stretchMinMax(yMinF, yMaxF);
+
+
 // Plot
          
    plotter.page();
-   plotter.swin(xMin, xMax, 0.0, yMax);
+   plotter.swin(xMinF, xMaxF, 0.0, yMaxF);
    plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    plotHist (values, counts, plotter);
-   if (doGauss2) plotter.line (gX, gY);
+   if (doGauss2) {
+      Vector<Float> gXF(gX.nelements());
+      Vector<Float> gYF(gY.nelements());
+      for(uInt i=0; i<gXF.nelements(); i++) {
+         gXF(i) = Float(gX(i));
+         gYF(i) = Float(gY(i));
+      }
+      plotter.line (gXF, gYF);
+   }
  
 // Label
   
@@ -960,19 +941,19 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
       
 // Write values of the display axes on the plot
  
-   if (!writeDispAxesValues (histPos, xMin, yMax, plotter)) return False;
+   if (!writeDispAxesValues (histPos, xMinF, yMaxF, plotter)) return False;
 
    return True;
 }
  
 
 template <class T>
-void ImageHistograms<T>::extractOneHistogram (Float &linearSum,
-                                              Float &linearYMax,
-                                              Vector<Float>& values, 
-                                              Vector<Float>& counts,
-                                              const Vector<T>& range, 
-                                              const Vector<Int>& intCounts)
+void ImageHistograms<T>::extractOneHistogram (T& linearSum,
+                                              T& linearYMax,
+                                              Vector<T>& values, 
+                                              Vector<T>& counts,
+                                              const Vector<T>& stats, 
+                                              const Vector<T>& intCounts)
 
 //
 // Extract this histogram, convert to the appropriate form
@@ -980,19 +961,24 @@ void ImageHistograms<T>::extractOneHistogram (Float &linearSum,
 //
 {
 
+// FIsh out min and max
+
+   Vector<T> range(2);
+   range(0) = stats(ImageStatsBase::MIN);
+   range(1) = stats(ImageStatsBase::MAX);
+
 // Set bin width  
       
-   const Int nBins = nBins_p;
-   const Float binWidth = Float(setBinWidth(range, nBins));
+   const uInt nBins = nBins_p;
+   const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
 
-
-// Copy histogram counts into output Float array and generate
+// Copy histogram counts into output T array and generate
 // values (abcissa) array
  
-   Float xx = range(0) + binWidth/2.0;
+   T xx = range(0) + binWidth/2.0;
    linearYMax = -1.0;
    linearSum = 0.0;
-   for (Int i=0; i<intCounts.nelements(); i++) {
+   for (uInt i=0; i<intCounts.nelements(); i++) {
       values(i) = xx;
       counts(i) = intCounts(i);
       xx += binWidth;
@@ -1001,12 +987,12 @@ void ImageHistograms<T>::extractOneHistogram (Float &linearSum,
    }
    linearSum = linearSum*binWidth;
  
-   
+
 // Make histogram cumulative if desired
       
-   if (doCumu_p) makeCumulative (counts, linearYMax, nBins, 1.0);
-   
+   if (doCumu_p) makeCumulative (counts, linearYMax, nBins, T(1.0));
           
+
 // Make histogram logarithmic if desired
          
    if (doLog_p) makeLogarithmic (counts, linearYMax, nBins);
@@ -1015,539 +1001,110 @@ void ImageHistograms<T>::extractOneHistogram (Float &linearSum,
 
 
 
-template <class T>
-void ImageHistograms<T>::fillMinMax (RO_LatticeIterator<T>* imageIterator,
-                                     const Int& nVirCursorIter)
-               
-//    
-// In order to work out a histogram we need to know the min and max
-// of each data chunk to be histogrammed.  These are stored in an image.
-// If the user specifies the range fill the min max storage image with
-// those values, otherwise iterate through the data to work it out
-//
-// The min/max image is stored with the display axes first and the min and
-// max as the last axes.
-// 
-// 
-// Inputs:
-//   imageIterator  The iterator already setup to iterate
-//                  through image.
-//   nVirCursorIter  NUmber of iterations to get through the virtual cursor
-//
-{
-// Create indexing IPositions and fill in values of last axis
-         
-   IPosition minPos(pMinMaxImage_p->ndim(),0);
-   IPosition maxPos(pMinMaxImage_p->ndim(),0);
-   minPos(pMinMaxImage_p->ndim()-1) = MIN;
-   maxPos(pMinMaxImage_p->ndim()-1) = MAX;
-
-   
-// Now take quick route if user gave range else do it the hard way
-   
-   if (range_p.nelements() != 0) {
-      os_p << LogIO::NORMAL << "Fill min/max storage image" << LogIO::POST;
-
-
-// Set up the slice we will put in place.  Only the first and last axes of
-// the slice are of non-unit shape.  If its only 1D, the shape is just [NMINMAX]
-      
-      IPosition sliceShape = minMaxSliceShape();
-      sliceShape(0) = pMinMaxImage_p->shape()(0);
-      Array<T> slice(sliceShape);
-
-      if (pMinMaxImage_p->ndim() > 1) {
-         for (Int i=0; i<sliceShape(0); i++) {
-            minPos(0) = maxPos(0) = i;
-            slice(minPos) = range_p(0);
-            slice(maxPos) = range_p(1);
-         }
-      } else {
-         slice(minPos) = range_p(0);
-         slice(maxPos) = range_p(1);
-      }
-  
-// We iterate through by a shape of [n,1,1,....,2] and put the min/max slice
-         
-      LatticeIterator<T> minMaxIterator(*pMinMaxImage_p, sliceShape);
-
-      for (minMaxIterator.reset(); !minMaxIterator.atEnd(); minMaxIterator++) {
-         minMaxIterator.woCursor() = slice;
-      }
-   } else {
-      os_p << LogIO::NORMAL << "Finding min/max for each histogram data chunk" << LogIO::POST;
-
-// Damn, the user didn't tell us the range to bin.  Work through the
-// image and for each chunk we want to histogram, find the min and max
-
-
-      T dMin, dMax, tmp;
-      Bool init = True;
-      Int nIter = 0;
-
-      const IPosition sliceShape = minMaxSliceShape();
-      Array<T> slice(sliceShape);
-      const IPosition stride(pMinMaxImage_p->ndim(),1);
-      IPosition pos;
-
-      for (imageIterator->reset(); !imageIterator->atEnd(); (*imageIterator)++) {
-
-// Find min and max
-
-         minMax(dMin, dMax, imageIterator->cursor());
-
-// Find location in min/max image of this min/max slice
- 
-         pos = locInMinMax(imageIterator->position());
-
-// Fill slice 
-
-         if (init) {
-            slice(minPos) = dMin;
-            slice(maxPos) = dMax;
-         } else {
-            pMinMaxImage_p->getSlice(slice, pos, sliceShape, stride);
-            slice(minPos) = min(slice(minPos), dMin);
-            slice(maxPos) = max(slice(maxPos), dMax);
-         }
-
-// Put it in
-
-         pMinMaxImage_p->putSlice (slice, pos, stride);            
-
-
-// Do we need to initialize the min/max axes ?
-   
-         nIter++;
-         if (nIter == nVirCursorIter) {
-            init = True;  
-            nIter = 0;
-         } else {
-           init = False;
-         }
-      }
-   }
-}
-
-
-
-
 
 template <class T>
 Bool ImageHistograms<T>::generateStorageImage()
 //
-// Generate the histogram, min/max and statistics storage images.
-// Then iterate through the image and fill these storage images.
+// Generate the histogram, and statistics storage images.
 //
 {
-
-// Note to the unwary user 
-
-   os_p << LogIO::NORMAL << "Creating new storage images" << LogIO::POST;
-   needStorageImage_p = False;     
-      
-
-// Set up input image pixel iterator and navigator.  Do this first so we 
-// have the subLattice available to make the storage images
-
-   RO_LatticeIterator<T>* pPixelIterator;
-   IPosition latticeShape;
-   Int nVirCursorIter;
-
-   if (cursorAxes_p.nelements() == 1) {
-
-// Make profile Navigator.  There will be no overhang.
-
-      TiledLineStepper imageNavigator (pInImage_p->shape(),
-                         pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-			 cursorAxes_p(0));
-      
-// Apply region and get shape of Lattice that we are iterating through
-       
-      imageNavigator.subSection(blc_p, trc_p);
-      latticeShape = imageNavigator.subLatticeShape();
-               
-// Create the image iterator
- 
-      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
-      nVirCursorIter = 1;
-   } else {
- 
-// Make Navigator with dummy cursor shape.  Note we use the resize
-// cursor overhang policy
-      
-      LatticeStepper imageNavigator(pInImage_p->shape(),
-                                    IPosition(pInImage_p->ndim(),1),
-                                    LatticeStepper::RESIZE);
- 
-// Apply region and get shape of Lattice that we are iterating through
-// Increment ignored for now.
- 
-      imageNavigator.subSection(blc_p, trc_p);
-      latticeShape = imageNavigator.subLatticeShape();
-      
-// Now that we know the shape of the Lattice, figure out the cursor shape
-   
-      ostrstream os;
-      IPosition cursorShape;
-      if (!ImageUtilities::setCursor(nVirCursorIter, cursorShape,
-               cursorAxes_p, latticeShape,
-               pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-               True, 2, os)) {
-         os_p << LogIO::SEVERE << "Invalid cursor axes given" << LogIO::POST;
-         return False;
-      }
-                                           
-// Set the cursor shape in the Navigator
-      
-      imageNavigator.setCursorShape(cursorShape);
- 
-// Create the image iterator
- 
-      pPixelIterator = new RO_LatticeIterator<T>(*pInImage_p, imageNavigator);
-      
-   }
-      
- 
 // Set the display axes vector.
-      
+
    ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p,
-                                   latticeShape.nelements());
- 
+                                   pInImage_p->ndim());
 
-// Delete old histogram storage image
+// Make the statistics object 
 
-   if (pHistImage_p != 0) delete pHistImage_p;
-
-
-   {      
-
-// Set storage image shape.  The first axis is the histogram axis
-      
-      IPosition storeImageShape;  
-      ImageUtilities::setStorageImageShape(storeImageShape, False, nBins_p,
-                                           displayAxes_p, latticeShape);
-
-// Set tile shape.   The histogram storage image is only accessed by
-// vectors along the first axis.   Therefore set the tile shape to be unity
-// except for the first axis and equal to the length of the first axis   
-// (the number of bins) for the first axis.    There will be no overhang.
-
-      IPosition tileShape(storeImageShape.nelements(),1);
-      tileShape(0) = storeImageShape(0);
+   if (!makeStatistics()) return False;
 
 
-// Create new histogram storage image.    The first axis
-// is the histogram axis, the higher axes are the display axes
+// Fill the histogram storage image
 
+   makeHistograms();
 
-      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                               String("ImageHistograms_Hist_"));
-      pHistImage_p = new PagedArray<Int>(TiledShape(storeImageShape, tileShape),
-					 myTable);
-      pHistImage_p->set(0);
-   }
-
-
-
-// Delete old min/max storage image
-
-   if (pMinMaxImage_p != 0) delete pMinMaxImage_p;
-
-   {      
-
-// Set storage image shape.  The last axis is min and max.  The preceding
-// ones are the display axes
-      
-      IPosition storeImageShape;
-      ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NMINMAX),
-                                           displayAxes_p, latticeShape);
-
-// Set tile shape.   The min/max storage image is accessed by slices along the
-// first (length first display axis) and last (length NMINMAX) axes.  Therefore set 
-// the tile shape to be unity on all  the other axes.  For the first axis take
-// the length of the axis and for the last axis its just NMINMAX (which is just
-// 2 or so).  There will be no overhang.
-
-      IPosition tileShape(storeImageShape.nelements(),1);
-      tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
-      if (displayAxes_p.nelements() > 0) tileShape(0) = storeImageShape(0);
-      
-// Create new min/max storage image.   
-
-      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                                String("ImageHistograms_MinMax_"));
-      pMinMaxImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
-					 myTable);
-      pMinMaxImage_p->set(T(0.0)); 
-   }
-
-
-
-// Delete old statistics storage image
-
-   if (pStatsImage_p != 0) delete pStatsImage_p;
-
-   {
-
-// Set storage image shape.  The first axis is the statistics axis
-      
-      IPosition storeImageShape;
-      ImageUtilities::setStorageImageShape(storeImageShape, False, Int(NSTATS),
-                                           displayAxes_p, latticeShape);
-
-// Set tile shape.   The statistics storage image is accessed by slices along the
-// first axis (length NSTATS) only. So the tile shape is set to unity on all  
-// the other axes.  There will be no overhang.
-
-      IPosition tileShape(storeImageShape.nelements(),1);
-      tileShape(0) = storeImageShape(0);
-      
-// Create new statistics storage image.   
-
-      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                                String("ImageHistograms_Sums_"));
-      pStatsImage_p = new PagedArray<Double>(TiledShape(storeImageShape,
-							tileShape),
-					     myTable);
-      pStatsImage_p->set(Double(0.0));
-   }
-
-
-
-// Before we can proceed, we need to know the min and max of each chunk
-// of data that we will want to make a histogram for.  If the user does
-// not give us the range to histogram, we must work it out by making an
-// extra pass through the data.  
-
-   fillMinMax(pPixelIterator, nVirCursorIter);
-     
-
-// Iterate through image and accumulate histogram and statistics images
-     
-   Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
-   ProgressMeter clock(0.0, meterMax, "Generate Storage Image", "Accumulation iterations",
-                       "", "", True, max(1,Int(meterMax/20)));
-   Double meterValue = 0.0;
-
-   os_p << LogIO::NORMAL << "Begin accumulating histograms" << LogIO::POST;
-   for (pPixelIterator->reset(); !pPixelIterator->atEnd();(*pPixelIterator)++) {
-      accumulate (pPixelIterator->position(), pPixelIterator->cursor());
-
-      meterValue += 1.0; 
-      clock.update(meterValue); 
-   }
-
-   delete pPixelIterator;
-
+   needStorageImage_p = False;     
    return True;
 }
- 
-
-template <class T> 
-void ImageHistograms<T>::getMinMax (Vector<T> &range,
-                                    const IPosition &pos,
-                                    const Bool &posInImage)
-//
-// Extract the min/max slice from the given position in either the
-// the input image or the histogram storage image.  Tests show
-// that the creation of the temporaries in this function cause
-// no performance loss.  This function is called once per
-// cursor chunk when creating the histograms, and once per
-// histogram when reading them from the storage image.
-//
-// Inputs
-//  posInImage   If this is True, then the given position, "pos" is that
-//               in the input image.  If it is False, then it is a 
-//               position in the histogram image
-{
-// Set location in min/max image to extract slice
-
-   IPosition minMaxPos(pMinMaxImage_p->ndim());
-   Int lastMinMaxAxis = pMinMaxImage_p->ndim() - 1;
-   if (posInImage) {
-      minMaxPos = locInMinMax(pos);
-   } else {
-      minMaxPos(lastMinMaxAxis) = 0;
-      for (Int i=0; i<lastMinMaxAxis; i++) minMaxPos(i) = pos(i+1);
-   }
-
-// Get the slice
-
-   const IPosition minMaxShape = minMaxSliceShape();
-   Array<T> minMaxSlice(minMaxShape);   
-   pMinMaxImage_p->getSlice (minMaxSlice, minMaxPos, minMaxShape, 
-                             IPosition(pMinMaxImage_p->ndim(),1));
-
-// Fill return vector
-
-   minMaxPos = 0;
-   minMaxPos(lastMinMaxAxis) = MIN;
-   range(0) = minMaxSlice(minMaxPos);
-   minMaxPos(lastMinMaxAxis) = MAX;
-   range(1) = minMaxSlice(minMaxPos);
-}
-
 
 
 template <class T> 
-void ImageHistograms<T>::getStats (Vector<Double> &stats, 
-                                   const IPosition &pos,
-                                   const Bool &posInImage)
+void ImageHistograms<T>::getStatistics (Vector<T> &stats, 
+                                        const IPosition& histPos) const
 //
-// Extract statistical sums slice from the given position in either the
-// the input image or the histogram storage image.  Tests show that the
-// creation of the temporaries in this function cause no performance loss.  
-// This function is called once per cursor chunk when creating the histograms, 
-// and once per histogram when reading them from the storage image.
+// Extract statistics slice for the given position in the
+// histogram storage image.  
 //
-// Inputs
-//  posInImage   If this is True, then the given position, "pos" is that
-//               in the input image.  If it is False, then it is a 
-//               position in the histogram image
+// Input:
+//   histPos  The location in the histogram storage image
 // Outputs
-//  stats        Must already be correct shape on input
+//  stats     The statistics for this chunk.  
 {
-// Set position of start of slice
 
-   IPosition statsPos;
-   if (posInImage) {
-      statsPos = locInStats(pos);
-   } else {
-      statsPos = pos;
+// Discard the histogram axis location
+
+   uInt n = displayAxes_p.nelements();
+   IPosition pos;
+   if (n > 0) {
+      pos.resize(n);
+      for (uInt i=0; i<n; i++) {
+         pos(i) = histPos(i+1);
+      }
    }
 
-// Get slice
+// Get the statistics
 
-   const IPosition statsShape = statsSliceShape();
-   Array<Double> statsSlice(statsShape);
-   pStatsImage_p->getSlice (statsSlice, statsPos, statsShape, IPosition(pStatsImage_p->ndim(),1));
-
-// Return values
-
-   statsPos = 0;
-   statsPos(0) = SUM;
-   stats(SUM) = statsSlice(statsPos);
-   statsPos(0) = SUMSQ;
-   stats(SUMSQ) = statsSlice(statsPos);
-   statsPos(0) = NPTS;
-   stats(NPTS) = Int(statsSlice(statsPos) + 0.1);
-   
-   stats(MEAN) = stats(SUM) / stats(NPTS);
-   stats(VAR) = (stats(SUMSQ) - stats(SUM)*stats(SUM)/stats(NPTS))/(stats(NPTS)-1);
-   stats(SIGMA) = 0.0;
-   if (stats(VAR) > 0.0) stats(SIGMA) = sqrt(stats(VAR));
-   stats(RMS) = sqrt(stats(SUMSQ)/stats(NPTS));
+   pStats_p->getStats(stats, pos, False);
 }
 
 
 
 template <class T>
-void ImageHistograms<T>::histAccum (Vector<Int>& counts,
-                                    const T& datum,
-                                    const T& dMin,
-                                    const T& binWidth,
-                                    const Int& nBins)
-//
-// Determine the histogram bin that this datum falls
-// in and increment the histogram storage vector
-// 
-{
-   Int iBin = min(nBins-1, Int((datum-dMin)/binWidth));
-   counts(iBin)++;
-}
+IPosition ImageHistograms<T>::locHistInImage(const IPosition& storagePosition) const
 
-
-template <class T>
-IPosition ImageHistograms<T>::locInHist (const IPosition& imagePosition)
-//
-// Given a location in the input image, find the start location for a 
-// histogram slice in the histogram storage image at this location
-//
-{
-   IPosition pos(pHistImage_p->ndim(),0);
-   for (Int j=1; j<pHistImage_p->ndim(); j++) {
-      pos(j) = imagePosition(displayAxes_p(j-1)) - blc_p(displayAxes_p(j-1));
-   }
-   return pos;
-}
-
-
-template <class T>
-IPosition ImageHistograms<T>::locInMinMax (const IPosition& imagePosition)
-//
-// Given a location in the input image, find the start location for a 
-// min/max slice in the min/max storage image at this location
-//
-{
-   IPosition pos(pMinMaxImage_p->ndim(),0);
-   for (Int j=0; j<pMinMaxImage_p->ndim()-1; j++) {
-      pos(j) = imagePosition(displayAxes_p(j)) - blc_p(displayAxes_p(j));
-   }
-   return pos;
-}
-
-template <class T>
-IPosition ImageHistograms<T>::locInStats (const IPosition& imagePosition)
-//
-// Given a location in the input image, find the start location for a 
-// statistics slice in the statistics storage image.  The first axis
-// is the statistics axis
-//
-{
-   IPosition pos(pStatsImage_p->ndim(),0);
-   for (Int j=1; j<pStatsImage_p->ndim(); j++) {
-      pos(j) = imagePosition(displayAxes_p(j-1)) - blc_p(displayAxes_p(j-1));
-   }
-
-   return pos;
-}
-
-template <class T>
-IPosition ImageHistograms<T>::locHistInImage(const IPosition& histPos)
 //
 // Given a location in the histogram storage image, convert those locations on
-// the non-histogram axis (the first one) to account for the
-// lattice subsectioning
+// the non-histogram axis (the histogram axis is the first one) to locations
+// in the original parent image.  Optionally account for the location of the 
+// subImage in the parent image
 //
 {
-   IPosition pos(histPos);
-   for (Int j=1; j<pos.nelements(); j++)
-     pos(j) = histPos(j) + blc_p(displayAxes_p(j-1));
- 
+   IPosition pos(storagePosition);
+   for (uInt j=1; j<pos.nelements(); j++) {
+     pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j-1));
+   }
    return pos;  
 }
 
 
 
 template <class T>
-void ImageHistograms<T>::makeCumulative (Vector<Float>& counts,
-                                         Float& yMax,
-                                         const Int& nBins,
-                                         const Float& scale)
+void ImageHistograms<T>::makeCumulative (Vector<T>& counts,
+                                         T& yMax,
+                                         const uInt nBins,
+                                         const T scale) const
 {
    counts(0) = scale * counts(0);
-   for (Int i=1; i<nBins; i++) counts(i) = counts(i)*scale + counts(i-1);
-           
+   for (uInt i=1; i<nBins; i++) counts(i) = counts(i)*scale + counts(i-1);
    yMax = counts(nBins-1);
 }
                           
 
 template <class T>
 void ImageHistograms<T>::makeGauss (Int& nGPts,
-                                    Float& gMax,
-                                    Vector<Float>& gX,
-                                    Vector<Float>& gY,
-                                    const Double& dMean,
-                                    const Double& dSigma,
-                                    const Float& dSum,
-                                    const Float& xMin,
-                                    const Float& xMax,
-                                    const Float& binWidth)
+                                    T& gMax,
+                                    Vector<T>& gX,
+                                    Vector<T>& gY,
+                                    const T dMean,
+                                    const T dSigma,
+                                    const T dSum,
+                                    const T xMin,
+                                    const T xMax,
+                                    const T binWidth) const
 //
 // Make overlay Gaussian with the given parameters
+//
 {
-      
+
 // 100 points please
  
    nGPts = 100;
@@ -1562,14 +1119,16 @@ void ImageHistograms<T>::makeGauss (Int& nGPts,
    const Gaussian1D<Float> gauss(gaussAmp, Float(dMean), gWidth);
  
    
-// Generate Gaussian
+// Generate Gaussian.  
      
-   Float dgx = (xMax - xMin) / Float(nGPts);
-   Float xx, tmp;
+   T tmp;
+   T dgx = (xMax - xMin) / nGPts;
+   T xx;
    Int i;
    for (i=0,xx=xMin,gMax=0.0; i<nGPts; i++) {
       gX(i) = xx;
-      gY(i) = gauss(xx);
+      gY(i) = gauss(Float(xx));
+
       tmp = gY(i);
       gMax = max(gMax, tmp);
       xx += dgx;
@@ -1578,197 +1137,200 @@ void ImageHistograms<T>::makeGauss (Int& nGPts,
  
 // Make cumulative if desired
    
-   const Float scale = dgx / binWidth;
+   const T scale = dgx / binWidth;
    if (doCumu_p) makeCumulative (gY, gMax, nGPts, scale);
    
    
 // Take log if desired
    
    if (doLog_p) makeLogarithmic (gY, gMax, nGPts);
-         
+
 }
    
    
    
 template <class T>
-void ImageHistograms<T>::makeLogarithmic (Vector<Float>& counts,
-                                          Float& yMax,
-                                          const Int& nBins)
+void ImageHistograms<T>::makeLogarithmic (Vector<T>& counts,
+                                          T& yMax,
+                                          const uInt nBins) const
 {
    yMax = 0.0;
-   for (Int i=0; i<nBins; i++) {
+   for (uInt i=0; i<nBins; i++) {
      if (counts(i) > 0.0) counts(i) = log10(counts(i));
      yMax = max(yMax, counts(i)); 
    }
 }
+
+
+template <class T>
+Bool ImageHistograms<T>::makeStatistics()
+{
+
+// Create ImageStatistics object.  Show progress meter.
+
+   if (pStats_p != 0) delete pStats_p;
+   pStats_p = new ImageStatistics<T>(*pInImage_p, os_p, True);
+
+// Set state.  Make sure that the min/max is set to the
+// user's include range if there is one.  ImageHistograms
+// only allows an inclusion range, and range_p is already
+// filled with it.
+
+   Vector<T> exclude;
+   if (!pStats_p->setInExCludeRange(range_p, exclude, True)) return False;
+   if (!pStats_p->setAxes(cursorAxes_p)) return False;
+
+// We get an arbitary statistics slice here so as to
+// activate the statistics object and make it a bit
+// more obvious to the user the order in which things are done.
+
+   Vector<T> stats;
+   IPosition pos(displayAxes_p.nelements(),0);
+   if (!pStats_p->getStats(stats, pos, False)) return False;
+
+   return True;
+}
+
+
+
+template <class T>
+void ImageHistograms<T>::makeHistograms()
+{
+
+
+   if (haveLogger_p) {
+      os_p << LogIO::NORMAL << "Creating histogram storage image" << LogIO::POST;
+   }
+
+// Set storage image shape.  The first axis is the histogram axis 
+ 
+   IPosition storeImageShape;
+   ImageUtilities::setStorageImageShape(storeImageShape, False, Int(nBins_p),
+                                        displayAxes_p, pInImage_p->shape());
+
+// Set the storage image tile shape to the tile shape of the
+// axes of the parent image from which it is created.
+// For the histogram axis, set the tile shape to the number of bins
+// (which probably won't be too big, but could be !)
+
+    IPosition tileShape(storeImageShape.nelements(),1);
+    for (uInt i=1; i<tileShape.nelements(); i++) {
+       tileShape(i) = pInImage_p->niceCursorShape()(displayAxes_p(i-1));
+    }
+    tileShape(0) = storeImageShape(0);
+
+
+// Delete old histogram storage image
+ 
+   if (pStoreImage_p != 0) delete pStoreImage_p;
+
+
+// Create new histogram storage image.    The first axis
+// is the histogram axis, the higher axes are the display axes
+                             
+   Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
+                            String("ImageHistograms::"));
+   pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
+                                      myTable);
+
+
+// Create collapser for LatticeApply
+  
+   HistTiledCollapser<T> collapser(pStats_p, nBins_p);
+  
+   ImageHistProgress* pProgressMeter = 0;
+   if (showProgress_p) pProgressMeter = new ImageHistProgress();
+
+// This is the first output axis (there is only one in IH) getting
+// collapsed values
+ 
+   Int newOutAxis = 0;
+
+// Iterate through image and create histograms
+
+   LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
+                               collapser, IPosition(cursorAxes_p),
+                               newOutAxis, pProgressMeter);
+   if (pProgressMeter != 0) {
+      delete pProgressMeter;
+      pProgressMeter = 0;
+   }
+}
+
+
                 
 
 
 template <class T>
-void ImageHistograms<T>::plotHist (const Vector<Float>& x,
-                                   const Vector<Float>& y,
-                                   PGPlotter& plotter)
+void ImageHistograms<T>::plotHist (const Vector<T>& x,
+                                   const Vector<T>& y,
+                                   PGPlotter& plotter) const
 { 
-   const Float width = (x(1) - x(0)) / 2.0;
+   const Float width = (Float(x(1)) - Float(x(0))) / 2.0;
    Float xx;
-   for (Int i=0; i<x.nelements(); i++) {
-      xx = x(i) - width;
+   for (uInt i=0; i<x.nelements(); i++) {
+      xx = Float(x(i)) - width;
  
       plotter.move (xx, 0.0);
-      plotter.draw (xx, y(i));
+      plotter.draw (xx, Float(y(i)));
                           
-      plotter.move (xx, y(i));
-      xx = x(i) + width;
-      plotter.draw (xx, y(i));
+      plotter.move (xx, Float(y(i)));
+      xx = Float(x(i)) + width;
+      plotter.draw (xx, Float(y(i)));
    
-      plotter.move (xx, y(i));
+      plotter.move (xx, Float(y(i)));
       plotter.draw (xx, 0.0);
     }
 }
 
-
 template <class T>
-void ImageHistograms<T>::putInHist (const IPosition& imagePosition,
-                                    const Vector<Int>& newCounts)
+Bool ImageHistograms<T>::setInclude(Vector<T>& range,
+                                    Bool& noInclude,
+                                    const Vector<T>& include,
+                                    ostream& os)
 //
-// Update the histogram storage image with the histogram
-// accumulated from the current chunk of data
+// Take the user's data inclusion range
 //
-// Input
-//   imagePosition  This is the location in the input image for the
-//                  start of the current cursor chunk
-//   newCounts      The counts to add in
-{   
-
-// Location of current histogram in storage image
-
-   const IPosition pos = locInHist(imagePosition);
-
-// Get current histogram for this location
-   
-   const IPosition stride(pHistImage_p->ndim(),1);
-   IPosition shape(pHistImage_p->ndim(),1);
-   shape(0) = pHistImage_p->shape()(0);
-   Array<Int> slice(shape);   
-   pHistImage_p->getSlice (slice, pos, shape, stride);
-   
-
-// Update it.
-
-   VectorIterator<Int> it(slice);
-   while (!it.pastEnd()) {
-      it.vector().ac() += newCounts.ac();
-      it.next();
+// Inputs:
+//   include   Include range given by user. Zero length indicates
+//             no include range
+//   os        Output stream for reporting
+// Outputs:
+//   noInclude If True user did not give an include range
+//   range     A pixel value selection range.  Will be resized to
+//             zero length if both noInclude and noExclude are True
+//   Bool      True if successfull, will fail if user tries to give too
+//             many values for includeB or excludeB, or tries to give
+//             values for both
+{
+   noInclude = True;
+   range.resize(0);
+   if (include.nelements() == 0) {
+     ;
+   } else if (include.nelements() == 1) {
+      range.resize(2);
+      range(0) = -abs(include(0));
+      range(1) =  abs(include(0));
+      noInclude = False;
+   } else if (include.nelements() == 2) {
+      range.resize(2);
+      range(0) = min(include(0),include(1));
+      range(1) = max(include(0),include(1));
+      noInclude = False;
+   } else {
+      os << endl << "Too many elements for argument include" << endl;
+      return False;
    }
-  
-
-// Put it back
- 
-   pHistImage_p->putSlice (slice, pos, stride);
-}
-
-
-
-template <class T>
-void ImageHistograms<T>::putInStats (const IPosition& imagePosition,
-                                     const Vector<Double>& newStats)
-//
-// Increment the statistics storage image.   First axis is the
-// statistics axis
-//
-// Inputs
-//   imagePosition  This is the location in the input image for the
-//                   start of the current cursor chunk
-//   newStats        Statistical sums
-//
-{     
-
-// Get statistics 
-
-   Vector<Double> oldStats(NSTATS2);
-   getStats(oldStats, imagePosition, True);
-
-// Update
-
-   const IPosition shape = statsSliceShape();
-   Array<Double> slice(shape);   
-
-   IPosition pos(pStatsImage_p->ndim(),0);  
-   pos(0) = SUM;
-   slice(pos) = oldStats(SUM) + newStats(SUM);
-   pos(0) = SUMSQ;
-   slice(pos) = oldStats(SUMSQ) + newStats(SUMSQ);
-   pos(0) = NPTS;
-   slice(pos) = oldStats(NPTS) + newStats(NPTS);
-
-
-// Put it back
-
-   pStatsImage_p->putSlice (slice, locInStats(imagePosition), 
-                            IPosition(pStatsImage_p->ndim(),1));
-
-}
-
-
-
-template <class T>
-T ImageHistograms<T>::setBinWidth (const Vector<T>& clip,
-                                   const Int& nBins)
-//
-// Set the bin width for the current histogram
-//
-{ 
-return ((clip(1) - clip(0)) / nBins);
-}
-
-
-template <class T>
-IPosition ImageHistograms<T>::minMaxSliceShape ()
-//
-// Return the shape of a min/max storage image slice. 
-{
-//
-// min/max on last axis.  
-
-   const Int lastAxis =  pMinMaxImage_p->ndim() - 1;
-   IPosition shape(pMinMaxImage_p->ndim(),1);
-   shape(lastAxis) = pMinMaxImage_p->shape()(lastAxis);
-   return shape;
-}
-
-
-template <class T>
-IPosition ImageHistograms<T>::statsSliceShape ()
-//
-// Return the shape of a statistics storage image slice. 
-// The first axis is the statistics axis
-{
-   IPosition shape(pStatsImage_p->ndim(),1);
-   shape(0) = pStatsImage_p->shape()(0);
-   return shape;
-}
-
-
-template <class T>
-void ImageHistograms<T>::statsAccum (Vector<Double>& stats,
-                                     const T& datum)
-{
-   stats(SUM) += datum;
-   stats(SUMSQ) += datum*datum;
-
-// make sure roundoff doesn't accumulate
-
-   Int i = Int(stats(NPTS));
-   stats(NPTS) = i + 1;
+   return True;
 }
 
 
 
 template <class T>
 Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
-                                              const Float& xMin,
-                                              const Float& yMax,
-                                              PGPlotter& plotter)
+                                              const Float xMin,
+                                              const Float yMax,
+                                              PGPlotter& plotter) const
 {
    
 // Fill the string stream with the name and value of each display axis
@@ -1778,12 +1340,14 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
    if (nDisplayAxes > 0) {
       Vector<String> sWorld(1);
       Vector<Double> pixels(1);
+      IPosition blc(pInImage_p->ndim(),0);
+      IPosition trc(pInImage_p->shape()-1);
 
       for (Int j=0; j<nDisplayAxes; j++) {
          pixels(0) = Double(locHistInImage(histPos)(j+1));
          if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
                                      displayAxes_p(j), cursorAxes_p,
-                                     blc_p, trc_p, pixels, -1)) return False;
+                                     blc, trc, pixels, -1)) return False;
          Int worldAxis = 
            pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
@@ -1813,5 +1377,161 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
    }
 
    return True;
+}
+
+
+
+
+// HistTiledCollapser
+   
+ 
+template <class T>
+HistTiledCollapser<T>::HistTiledCollapser(ImageStatistics<T>* pStats,
+                                          const uInt nBins)
+: pStats_p(pStats),
+  nBins_p(nBins)
+{;}
+   
+   
+template <class T>
+void HistTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
+{
+    AlwaysAssert (nOutPixelsPerCollapse == nBins_p, AipsError);
+}   
+   
+template <class T>
+void HistTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
+{
+   pHist_p = new Block<uInt>(nBins_p*n1*n3);
+   pHist_p->set(0);
+          
+   n1_p = n1;
+   n3_p = n3;
+}
+
+
+template <class T>
+void HistTiledCollapser<T>::process (uInt index1,
+                                     uInt index3,
+                                     const T* pInData,
+                                     const Bool* pInMask,
+                                     uInt inIncr,
+                                     uInt nrval,
+                                     const IPosition& startPos,
+                                     const IPosition&)
+//
+// Process the data in the current chunk.   Everything in this
+// chunk belongs in one output location in the accumulation
+// images
+//
+{   
+
+// Fish out the min and max for this chunk of the data 
+// from the statistics object
+
+   Vector<T> stats;
+   pStats_p->getStats(stats, startPos, True);
+   Vector<T> clip(2);
+   clip(0) = stats(ImageStatsBase::MIN);
+   clip(1) = stats(ImageStatsBase::MAX);
+
+
+// Set histogram bin width
+   
+   const T binWidth = setBinWidth(clip, nBins_p);
+
+
+// Fill histograms
+
+   uInt index;    
+   uInt offset = (nBins_p*index1) + (nBins_p*n1_p*index3);
+
+
+   if (pInMask == 0) {
+
+// All pixels are good
+
+      T datum;
+      for (uInt i=0; i<nrval; i++) {
+         datum = *pInData;
+
+         if (datum >= clip(0) && datum <= clip(1)) {   
+            Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
+   
+            index = iBin + offset;
+            uInt& hist = (*pHist_p)[index];
+            hist++;
+         }
+         pInData += inIncr;
+      }
+   } else {
+
+// Some pixels might be bad
+
+      T datum;
+      Bool mask;
+      for (uInt i=0; i<nrval; i++) {
+         datum = *pInData;
+         mask = *pInMask;
+
+         if (mask && datum >= clip(0) && datum <= clip(1)) {   
+            Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
+   
+            index = iBin + offset;
+            uInt& hist = (*pHist_p)[index];
+            hist++;
+         }
+         pInData += inIncr;
+      }
+   }
+
+}
+
+
+
+template <class T>
+void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
+                                           Array<Bool>& resultMask,
+                                           const IPosition& shape)
+{
+
+
+// Reshape arrays.  The mask is always true.  Any locations
+// in the storage image for which there were no valid points
+// will have the NPTS field set to zero.  That is what
+// we use to effectively mask it.  
+          
+    resultMask.resize(shape);
+    resultMask.set(True);
+    result.resize(shape);
+       
+
+    Bool deleteRes;
+    T* res = result.getStorage (deleteRes);
+    T* resptr = res;
+    const uInt* histPtr = pHist_p->storage();
+
+// The histogram storage image has the logical shape
+// [nBins, n1, n3]
+
+    for (uInt k=0; k<nBins_p*n1_p*n3_p; k++) {
+       *resptr++ = T(*histPtr++);
+    }
+    
+    result.putStorage (res, deleteRes);
+    delete pHist_p;
+
+}      
+
+
+
+template <class T>
+T HistTiledCollapser<T>::setBinWidth (const Vector<T>& clip,
+                                      uInt nBins)
+//
+// Set the bin width for the current histogram
+//
+{ 
+return ((clip(1) - clip(0)) / nBins);
 }
 
