@@ -34,7 +34,7 @@
 
 //# Forward Declarations
 class IPosition;
-class ImageRegion;
+class LattRegionHolder;
 class Slicer;
 template <class T> class SubLattice;
 template <class T> class Array;
@@ -98,8 +98,8 @@ public:
   // <br>An exception is thrown if the image shape used in the region
   // differs from the shape of the image.
   // <group>
-  SubImage (const ImageInterface<T>& image, const ImageRegion& region);
-  SubImage (ImageInterface<T>& image, const ImageRegion& region,
+  SubImage (const ImageInterface<T>& image, const LattRegionHolder& region);
+  SubImage (ImageInterface<T>& image, const LattRegionHolder& region,
 	    Bool writableIfPossible);
   // </group>
   
@@ -124,6 +124,10 @@ public:
   // <group>
   virtual ImageInterface<T>* cloneII() const;
   // </group>
+
+  // Is the SubImage masked?
+  // It is if its parent image or its region is masked.
+  virtual Bool isMasked() const;
 
   // Is the SubImage paged to disk?
   virtual Bool isPaged() const;
@@ -202,6 +206,9 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
   
+  // Get a section of the mask.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 

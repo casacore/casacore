@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Images/SubImage.h>
-#include <trial/Images/ImageRegion.h>
+#include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <aips/Lattices/IPosition.h>
@@ -64,7 +64,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image,
-		       const ImageRegion& region)
+		       const LattRegionHolder& region)
 : itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
@@ -77,7 +77,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
-		       const ImageRegion& region,
+		       const LattRegionHolder& region,
 		       Bool writableIfPossible)
 : itsImagePtr (image.cloneII())
 {
@@ -152,6 +152,12 @@ template <class T>
 Bool SubImage<T>::ok() const
 {
   return itsSubLatPtr->ok();
+}
+
+template<class T>
+Bool SubImage<T>::isMasked() const
+{
+  return itsSubLatPtr->isMasked();
 }
 
 template<class T>
@@ -251,6 +257,13 @@ void SubImage<T>::doPutSlice (const Array<T>& sourceBuffer,
 			      const IPosition& stride)
 {
   itsSubLatPtr->doPutSlice (sourceBuffer, where, stride);
+}
+
+template<class T>
+Bool SubImage<T>::doGetMaskSlice (Array<Bool>& buffer,
+				  const Slicer& section)
+{
+  return itsSubLatPtr->doGetMaskSlice (buffer, section);
 }
 
 template<class T>
