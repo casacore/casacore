@@ -115,7 +115,7 @@ Bool RFADiffBase::newChunk (Int &maxmem)
   corrmask = newCorrMask();
   if( !corrmask )
   {
-    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::POST;
     return active=False;
   }
 // memory management. Estimate the max memory use for the diff 
