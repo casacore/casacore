@@ -137,8 +137,11 @@ public:
   // derived class will be used.
   virtual ~ComponentShape();
 
-  // return the actual component type.
+  // return the actual shape. The ident function returns it as a String.
+  // <group>
   virtual ComponentType::Shape type() const = 0;
+  virtual const String& ident() const;
+  // </group>
 
   // set/get the reference direction
   // <group>
