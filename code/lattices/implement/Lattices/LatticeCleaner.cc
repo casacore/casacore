@@ -417,7 +417,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     // PSF * PSF * scale
     LatticeExpr<Complex> ppsExpr(conj(*itsXfr)*(*itsXfr)*(*scaleXfr[scale]));
     cWork.copyData(ppsExpr);
-    LatticeFFT::cfft(cWork, True);
+    LatticeFFT::cfft(cWork, False);
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),  itsMemoryMB);
     LatticeExpr<Float> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
