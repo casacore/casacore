@@ -39,7 +39,7 @@
 #   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
 #
 # The system accepts any name consisting of lowercase letters also as 
-# include files.
+# include files (like the standard vector e.g.)
 #
 # The 
 #   <ident> <.cc file> <.h file> [<extra .h files>] 
@@ -47,12 +47,16 @@
 # can be on the same line. More declarations (on separate lines) are
 # possible.
 # Each declaration line can have either of 6 forms:
-#	= ....
-#	template .......
-#	template <> class ....		(template-less forward declaration)
-#	#if .....     (or #ifdef, #ifndef)
-#       #else
-#	#endif
+#	= ....                     (include file)
+#	template .......           (template class or function instantiation)
+#	template <> class ....	   (template-less forward declaration)
+#	#if .....                  (or #ifdef, #ifndef)
+#       #else                      (optional)
+#	#endif                     (required for any #if)
+#       AIPS_*_AUX_TEMPLATES(...)  (auxilliary definition of templates, e.g.
+#                                   for the system map)
+#       typedef ... ...            (to bypass problems with ',' in macro)
+#
 # An example of a definition could be (shown in format as output by reident):
 # 1020 aips/Arrays/Array.cc aips/Arrays/Vector.h trial/Arrays/SquareMatrix.h
 #      = trial/Arrays/SquareMatrix.h
@@ -71,7 +75,8 @@
 #
 #  1050 aips/Set/Set.cc template class Set<Int>
 #  1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
-#  1060 aips/Set/Set.cc template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
+#  1060 aips/Set/Set.cc 
+#       template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
 #
 # The ident contains a 4-digit number which is unique amongst all templates
 # based on a particular class implementation .cc or .h file.  The name of the
@@ -85,6 +90,9 @@
 # Any template instantiation .cc file in the current directory which does not
 # correspond to an entry in the templates file will be deleted.  These files
 # are recognized by having names of the form "*_[0-9][0-9][0-9][0-9].cc".
+#
+# In all cases it has been assumed that the format has been checked and
+# made canonical with the reident program.
 #
 # Options:
 #   -q     Run quietly.
@@ -184,7 +192,7 @@
       echo "$*" >> tmp1.$$
       continue
       ;;
-    AIPS_*)
+    AIPS_*_AUX_TEMPLATES*)
       if [ "$TFILE" = "" ]
       then
         echo "   Bad entry skipped:" 1>&2
