@@ -1676,7 +1676,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
    T dMax = -1.0e30;
    Double coord = 0.0;
    Int i, j;
-
+//
    if (profileInMask.nelements() == 0) {
 
 // No mask included.
@@ -1730,7 +1730,6 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             selectedDataIndex_p(i) = i;
          }
       }
-
    } else {
 
 // Set up a pointer for faster access to the profile mask
@@ -1792,9 +1791,9 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             }
          }
       }
-      nPts = j;
       profileInMask.freeStorage(pProfileInMask, deleteIt2);
    }
+   nPts = j;
 
 
 // Delete pointer memory
