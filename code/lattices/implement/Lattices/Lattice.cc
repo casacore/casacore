@@ -1,5 +1,5 @@
 //# Lattice.cc:  this defines Lattice.cc, a base for array-related classes
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,6 +77,13 @@ template <class T>
 Bool Lattice<T>::conform (const Lattice<T>& other) const
 {
   return shape().isEqual (other.shape());
+}
+
+// returns a LattCoord object.
+template <class T>
+LatticeCoordinates Lattice<T>::latticeCoordinates() const
+{
+  return LatticeCoordinates();
 }
 
 template <class T>

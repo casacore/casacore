@@ -1,5 +1,5 @@
 //# Lattice.h:  Lattice is an abstract base class for array-like classes
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,12 @@
 #if !defined(AIPS_LATTICE_H)
 #define AIPS_LATTICE_H
 
+
 //# Includes
 #include <aips/aips.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
+#include <trial/Lattices/LatticeCoordinates.h>
 
 //# Forward Declarations
 template <class T> class Array;
@@ -249,7 +251,11 @@ public:
   // returns a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
   virtual Bool conform(const Lattice <T>& other) const;
-  
+
+  // returns the coordinates of the lattice.
+  // The default implementation returns an 'empty' LattCoord object.
+  virtual LatticeCoordinates latticeCoordinates() const;
+
   // Functions which extract an Array of values from a Lattice. All the
   // IPosition arguments must have the same number of axes as the underlying
   // Lattice, otherwise, an exception is thrown. <br>
