@@ -717,6 +717,10 @@ The following resources used by \exe{sneeze} should be defined in
    by \exe{sneeze} is mailed.
 
 \item
+   \code{sneeze.\$HOST.\$AIPSEXT.mailer}: Mail delivery program to use
+for log mailings.  Defaults to \unixexe{mail}.
+
+\item
    \code{sneeze.base.\$ARCH.preserve}: If not false (see \sref{affirm}) then
    preserve the system for \file{\$AIPSARCH} in \file{\$AIPSROOT/base-MM/...}
    when a new base release is installed, where \file{MM} is the major version
@@ -765,6 +769,7 @@ the local host without the \exe{-l} option.
 
 \subsection*{See also}
 
+The unix manual page for \unixexe{mail}(1).\\
 \aipspp\ variable names (\sref{variables}).\\
 \exeref{affirm}, get the Boolean value of a set of arguments.\\
 \filref{aipshosts}, \aipspp\ hosts database.\\
