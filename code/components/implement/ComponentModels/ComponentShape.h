@@ -110,7 +110,7 @@ template <class T> class Flux;
 //   <li> Get the project function working again.
 // </todo>
 
-class ComponentShape: virtual public RecordTransformable
+class ComponentShape: public RecordTransformable
 {
 public:
   // a virtual destructor is needed so that the actual destructor in the
