@@ -1,4 +1,4 @@
-//# VelocityMachine.cc: Calculates between velocities and frequencies
+//# VelocityMachine.cc: Converts between velocities and frequencies
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,50 +35,50 @@
 
 //# Constructors
 
-VelocityMachine::VelocityMachine(const MFrequency::Ref &frqref, 
-				 const Unit &frqun,
-				 const MVFrequency &rest,
-				 const MDoppler::Ref &velref, 
-				 const Unit &velun) :
-  fref_p(frqref), fun_p(frqun), rest_p(rest),
-  vref_p(velref), vun_p(velun) {
+VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
+				 const Unit &freqUnits,
+				 const MVFrequency &restFreq,
+				 const MDoppler::Ref &velRef, 
+				 const Unit &velUnits) :
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq),
+  vref_p(velRef), vun_p(velUnits) {
     vfm_p = (MFrequency::Types) fref_p.getType();
     init();
 }
 
-VelocityMachine::VelocityMachine(const MFrequency::Ref &frqref, 
-				 const Unit &frqun,
-				 const MVFrequency &rest,
-				 const MDoppler::Ref &velref, 
-				 const Unit &velun,
+VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
+				 const Unit &freqUnits,
+				 const MVFrequency &restFreq,
+				 const MDoppler::Ref &velRef, 
+				 const Unit &velUnits,
 				 const MeasFrame &frame) :
-  fref_p(frqref), fun_p(frqun), rest_p(rest),
-  vref_p(velref), vun_p(velun) {
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq),
+  vref_p(velRef), vun_p(velUnits) {
     fref_p.set(frame);
     vfm_p = (MFrequency::Types) fref_p.getType();
     init();
 }
 
-VelocityMachine::VelocityMachine(const MFrequency::Ref &frqref, 
-				 const Unit &frqun,
-				 const MVFrequency &rest,
-				  const MFrequency::Types &velframe,
-				 const MDoppler::Ref &velref, 
-				 const Unit &velun) :
-  fref_p(frqref), fun_p(frqun), rest_p(rest), vfm_p(velframe),
-  vref_p(velref), vun_p(velun) {
+VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
+				 const Unit &freqUnits,
+				 const MVFrequency &restFreq,
+				 const MFrequency::Types &freqConvertType,
+				 const MDoppler::Ref &velRef, 
+				 const Unit &velUnits) :
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(freqConvertType),
+  vref_p(velRef), vun_p(velUnits) {
     init();
 }
 
-VelocityMachine::VelocityMachine(const MFrequency::Ref &frqref, 
-				 const Unit &frqun,
-				 const MVFrequency &rest,
-				 const MFrequency::Types &velframe,
-				 const MDoppler::Ref &velref, 
-				 const Unit &velun,
+VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
+				 const Unit &freqUnits,
+				 const MVFrequency &restFreq,
+				 const MFrequency::Types &freqConvertType,
+				 const MDoppler::Ref &velRef, 
+				 const Unit &velUnits,
 				 const MeasFrame &frame) :
-  fref_p(frqref), fun_p(frqun), rest_p(rest), vfm_p(velframe),
-  vref_p(velref), vun_p(velun) {
+  fref_p(freqRef), fun_p(freqUnits), rest_p(restFreq), vfm_p(freqConvertType),
+  vref_p(velRef), vun_p(velUnits) {
     fref_p.set(frame);
     init();
 }
@@ -209,15 +209,19 @@ void VelocityMachine::set(const MeasFrame &in) {
 
 //# Private member functions
 void VelocityMachine::init() {
+  // Get factor to convert user velocity units to base units
   vfac_p = MVDoppler(Quantity(1, vun_p)).get().getValue();
+  // Set the velocity and frequency units the user wants in the output
   resv_p.setUnit(vun_p);
   resf_p.setUnit(fun_p);
   vresv_p.setUnit(vun_p);
   vresf_p.setUnit(fun_p);
+  // Construct the forward and backward conversion engines
   cvfv_p = MFrequency::Convert(fref_p, vfm_p);
   cvvf_p = MFrequency::Convert(vfm_p, fref_p);
   cvvo_p = MDoppler::Convert(MDoppler::BETA, vref_p);
   cvov_p = MDoppler::Convert(vref_p, MDoppler::BETA);
+  // Set default units in conversion engines
   cvfv_p.set(fun_p);
   cvov_p.set(vun_p);
 }
