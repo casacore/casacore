@@ -305,10 +305,10 @@ inline RFlagWord RFFlagCube::getRowFlag ( uInt ifr,uInt itime )
 { return flagrow(ifr,itime); }
 // tells if a row is pre-flagged in the MS (or does not exist)
 inline Bool RFFlagCube::rowPreFlagged   ( uInt ifr,uInt itime )
-{ return getRowFlag(ifr,itime)&full_corrmask; }
+{ return getRowFlag(ifr,itime)&RowFlagged; }
 // tells if a row is flagged by any agent
 inline Bool RFFlagCube::rowAgentFlagged ( uInt ifr,uInt itime )
-{ return getRowFlag(ifr,itime)&~full_corrmask; }
+{ return getRowFlag(ifr,itime)&~(RowFlagged|RowAbsent); }
 // preFlagged OR agentFlagged  
 inline Bool RFFlagCube::rowFlagged      ( uInt ifr,uInt itime )
 { return getRowFlag(ifr,itime); }
