@@ -316,7 +316,6 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
 	throw (TableInternalError
 	       ("Table::open: unknown table kind " + tp));
     }
-    ios.getend();
     return baseTabPtr;
 }
 	
