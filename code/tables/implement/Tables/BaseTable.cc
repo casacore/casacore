@@ -413,10 +413,6 @@ Bool BaseTable::canAddRow() const
     { return False; }
 Bool BaseTable::canRemoveRow() const
     { return False; }
-Bool BaseTable::canRemoveColumn (const String&) const
-    { return False; }
-Bool BaseTable::canRenameColumn (const String&) const
-    { return False; }
 
 void BaseTable::addRow (uInt, Bool)
     { throw (TableInvOper ("Table: cannot add a row")); }
@@ -445,12 +441,6 @@ void BaseTable::addColumn (const ColumnDesc&, const DataManager&)
     { throw (TableInvOper ("Table: cannot add a column")); }
 void BaseTable::addColumn (const TableDesc&, const DataManager&)
     { throw (TableInvOper ("Table: cannot add a column")); }
-
-void BaseTable::removeColumn (const String&)
-    { throw (TableInvOper ("Table: cannot remove a column")); }
-
-void BaseTable::renameColumn (const String&, const String&)
-    { throw (TableInvOper ("Table: cannot rename a column")); }
 
 
 //# Get a vector of row numbers.
@@ -815,3 +805,40 @@ BaseTableIterator* BaseTable::makeIterator (const Block<String>& names,
     }
     return bti;
 }
+
+
+const TableDesc& BaseTable::makeTableDesc() const
+{
+    if (tdescPtr_p == 0) {
+        const_cast<BaseTable*>(this)->tdescPtr_p = new TableDesc();
+    }
+    return *tdescPtr_p;
+}
+
+
+Bool BaseTable::checkRemoveColumn (const Vector<String>& columnNames,
+				   Bool throwException) const
+{
+    for (uInt i=0; i<columnNames.nelements(); i++) {
+        // Check if the column exists.
+        if (! tdescPtr_p->isColumn (columnNames(i))) {
+	    if (throwException) {
+	        throw TableInvOper ("Table::removeColumn - column " +
+				    columnNames(i) + " does not exist");
+	    }
+	    return False;
+	}
+        // Check if the column is specified only once.
+	for (uInt j=i+1; j<columnNames.nelements(); j++) {
+	    if (columnNames(i) == columnNames(j)) {
+	        if (throwException) {
+		  throw TableInvOper ("Table::removeColumn - column " +
+				    columnNames(i) + " is multiply specified");
+		}
+	    return False;
+	    }
+	}
+    }
+    return True;
+}
+
