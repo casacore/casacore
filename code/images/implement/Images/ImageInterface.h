@@ -195,7 +195,7 @@ public:
   // Add the TableLogSink from other to this one.
   // The default implementation in this class does nothing.
   // The derived PagedImage class implements it.
-  virtual void mergeTableLogSink (const ImageInterface<T>& other);
+  virtual void mergeTableLogSink (const LogIO& sink);
 
   // Often we have miscellaneous information we want to attach to an image.
   // This is where it goes.  

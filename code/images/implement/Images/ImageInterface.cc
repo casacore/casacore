@@ -260,5 +260,5 @@ Bool ImageInterface<T>::restoreImageInfo(const RecordInterface& rec)
 
 
 template<class T>
-void ImageInterface<T>::mergeTableLogSink (const ImageInterface<T>&)
+void ImageInterface<T>::mergeTableLogSink (const LogIO&)
 {}

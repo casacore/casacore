@@ -211,7 +211,7 @@ public:
 
   // Add the TableLogSink from other to this one.
   // This is where the history is kept.
-  virtual void mergeTableLogSink (const ImageInterface<T>& other);
+  virtual void mergeTableLogSink (const LogIO& other);
 
   // A PagedImage is always paged to disk.
   virtual Bool isPaged() const;
