@@ -2564,3 +2564,5 @@
 09 461 src rm trial/data/IERSPredicted/
 09 462 src rm trial/implement/Lattices/LatticeUtil.h
 09 462 src rm trial/implement/Lattices/LatticeUtil.cc
+09 462 src rm trial/implement/Lattices/LatticeMath.h
+09 462 src rm trial/implement/Lattices/LatticeMath.cc
