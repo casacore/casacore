@@ -29,6 +29,7 @@
 #include <trial/SpectralComponents/SpectralFit.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/NQCompoundParam.h>
 #include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Functionals/NQPolynomial.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
@@ -46,40 +47,27 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   NQGaussian1D<AutoDiff<MT> > gauss;
   NQPolynomial<AutoDiff<MT> > poly;
   NQCompoundFunction<AutoDiff<MT> > func;
+  // Initial guess
   uInt npar(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
     if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+      gauss[0] = AutoDiff<MT>(slist_p[i].getAmpl(), gauss.nparameters(), 0);
+      gauss[1] = AutoDiff<MT>(slist_p[i].getCenter(), gauss.nparameters(), 1);
+      gauss[2] = AutoDiff<MT>(slist_p[i].getFWHM(), gauss.nparameters(), 2);
+      gauss.mask(0) = !slist_p[i].fixedAmpl();
+      gauss.mask(1) = !slist_p[i].fixedCenter();
+      gauss.mask(2) = !slist_p[i].fixedFWHM();
       func.addFunction(gauss);
-      npar += 3;
+      npar += gauss.nparameters();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       npar += slist_p[i].getDegree()+1;
-      const NQPolynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
+      NQPolynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
+      for (uInt j=0; j<poly.nparameters(); ++j) {
+	poly[j] = AutoDiff<MT>(0, poly.nparameters(), j);
+	poly.mask(j) = !slist_p[i].fixed()(j);
+      };
       func.addFunction(poly);
     };
-  };
-  // Initial guess
-  Vector<MT> v(npar);
-  Vector<Bool> vb(npar);
-  uInt j(0);
-  for (uInt i=0; i<slist_p.nelements(); i++) {
-    if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
-      vb(j)  = !slist_p[i].fixedAmpl();
-      v(j++) = slist_p[i].getAmpl();
-      vb(j)  = !slist_p[i].fixedCenter();
-      v(j++) = slist_p[i].getCenter();
-      vb(j)  = !slist_p[i].fixedFWHM();
-      v(j++) = slist_p[i].getFWHM();
-    } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
-      for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
-	vb(j)  = !slist_p[i].fixed()(k);
-	v(j++) = 0;
-      };
-    };
-  };
-  // Force (as interim solution) all values in solution
-  for (uInt i=0; i<npar; ++i) {
-    func[i] = AutoDiff<MT>(v[i], func.nparameters(), i);
-    func.mask(i) = vb[i];
   };
   fitter.setFunction(func);
   // Max. number of iterations
@@ -95,7 +83,7 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   err = fitter.errors();
   // Number of iterations
   iter_p = fitter.currentIteration();
-  j = 0;
+  uInt j = 0;
   Vector<Double> tmp, terr;
   for (uInt i=0; i<slist_p.nelements(); i++) {
     tmp.resize(slist_p[i].getOrder());
