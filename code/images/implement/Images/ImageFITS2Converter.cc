@@ -31,7 +31,7 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInfo.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
@@ -304,7 +304,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 	    IPosition cursorShape(image.niceCursorShape());
 	    IPosition shape = image.shape();
-	    RO_LatticeIterator<Float> iter(image, 
+	    RO_MaskedLatticeIterator<Float> iter(image, 
 		   LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
 	    ProgressMeter meter(0.0, 1.0*shape.product(),
 				"Searching pixels", "",
@@ -322,7 +322,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // 
                 if (applyMask) {
                    if (!pMask->shape().isEqual(cursor.shape())) pMask->resize(cursor.shape());
-                   (*pMask) = image.getMaskSlice(iter.position(), cursor.shape(), False);
+                   (*pMask) = iter.getMask(False);
                    const Bool* maskPtr = pMask->getStorage(deleteMaskPtr);
 //
 // If a pixel is a NaN or the mask is False, it goes out as a NaN
@@ -656,7 +656,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	Double curpixels = 1.0*cursorShape.product();
 //
 	LatticeStepper stepper(shape, cursorShape, cursorOrder);
-	RO_LatticeIterator<Float> iter(image, stepper);
+	RO_MaskedLatticeIterator<Float> iter(image, stepper);
 	const Int bufferSize = cursorShape.product();
 //
 	PrimaryArray<Float>* fits32 = 0;
@@ -706,7 +706,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
                if (!pMask->shape().isEqual(cursor.shape())) {
                   pMask->resize(cursor.shape());
                }
-               (*pMask) = image.getMaskSlice(iter.position(), cursor.shape(), False);
+               (*pMask) = iter.getMask(False);
                maskPtr = pMask->getStorage(deleteMaskPtr);
             }
 //
