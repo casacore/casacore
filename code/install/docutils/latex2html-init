@@ -110,7 +110,7 @@ sub aips2script {
 "img6on = new Image();\n".
 "img6on.src = \"$DOCSROOT/html/navpages/images/tophomeon.gif\";\n" .
 "img7on = new Image();\n" .
-"img7on.src = \"DOCSROOT/html/navpages/images/topglishon.gif\";\n" .
+"img7on.src = \"$DOCSROOT/html/navpages/images/topglishon.gif\";\n" .
 #"\n" .
 #"\n" .
 "img1off = new Image();                         // MouseOut Images\n" .
