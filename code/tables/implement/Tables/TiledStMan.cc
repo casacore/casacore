@@ -106,7 +106,6 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     Vector<double> tmpShape(nrdim);
     IPosition tileShape(nrdim, 0);
     uInt i;
-    Int j;
     // Iterate until the tile shape is set nicely.
     // This is needed to prevent tile shape dimensions from underflow
     // or overflow.
@@ -207,13 +206,13 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
     for (i=0; i<nrdim; i++) {
 	values[i] = new Block<Int> (maxShape(i) - minShape(i) + 1);
 	// First find exactly fitting shapes.
-	for (j=minShape(i); j<=maxShape(i); j++) {
+	for (Int j=minShape(i); j<=maxShape(i); j++) {
 	    if (hypercubeShape(i) % j == 0) {
 		(*values[i])[nval[i]] = j;
 		nval[i]++;
 	    }
 	}
-	// If none available, use all possible shapes within half the range..
+	// If none available, use all possible shapes within half the range.
 	if (nval[i] == 0) {
 	    for (Int j=(tileShape(i)+minShape(i))/2;
 		     j<=(tileShape(i)+maxShape(i))/2; j++) {
