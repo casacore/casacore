@@ -198,13 +198,17 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
   const Double* d_p = d_ptr;
 
   // Determine the dimensionality of the resulting Array<Measure>.
-  IPosition shp (tmpData.shape());
-  if (itsNvals > 1  &&  shp.nelements() > 0) {
-    if (shp.nelements() == 1) {
+  IPosition shpt (tmpData.shape());
+  IPosition shp;
+  if (itsNvals > 1  &&  shpt.nelements() > 0) {
+    if (shpt.nelements() == 1) {
+      shp = shpt;
       shp(0) = 1;
     } else {
-      shp.resize (shp.nelements() - 1);
+      shp = shpt.getLast (shpt.nelements() - 1);
     }
+  } else {
+    shp = shpt;
   }
   if (! shp.isEqual (meas.shape())) {
     if (resize  ||  meas.nelements() == 0) {
@@ -547,7 +551,7 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
   const uInt n = meas.nelements();
   IPosition shp(meas.shape());
   if (n > 0  &&  itsNvals > 1) {
-    shp.append (IPosition(1, itsNvals));
+    shp.prepend (IPosition(1, itsNvals));
   }
   Bool deleteData;
   Array<Double> dataArr(shp);
