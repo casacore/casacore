@@ -35,7 +35,7 @@
 template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
 class GlishRecord;
-
+class MSSelector;
 // <summary>
 // MSRange determines ranges of values in a MeasurementSet
 // </summary>
@@ -119,13 +119,18 @@ public:
   
   // construct from an MS. You can use the second argument to
   // signal to MSRange that the MS provided has already been pre-selected
-  // on SPECTRAL_WINDOW_ID, allowing it to skip the check on
-  // this. Set spectralWindowId to MSRange::ALL if the MS contains multiple
-  // spectral windows, all with the same data shape.
+  // on DATA_DESC_ID, allowing it to skip the check on
+  // this. Set dataDescId to MSRange::ALL if the MS contains multiple
+  // data descriptions, all with the same data shape.
   // The 2nd argument is mainly for internal use by the MS DO, 
   // providing incorrect values could cause runtime failures.
-  explicit MSRange(const MeasurementSet& ms, Int spectralWindowId=UNCHECKED);
+  explicit MSRange(const MeasurementSet& ms, Int dataDescId=UNCHECKED);
   
+  // construct from an MSSelector, if this constructor is used, the data
+  // will be channel selected and polarization converted as specified in
+  // the MSSelector object.
+  explicit MSRange(const MSSelector& msSel);
+
   // Copy constructor
   MSRange(const MSRange& other);
   
@@ -135,26 +140,32 @@ public:
   // Change or Set the MS this MSRange refers to.
   // You can use the second argument to
   // signal to MSRange that the MS provided has already been pre-selected
-  // on SPECTRAL_WINDOW_ID, allowing it to skip the check on
-  // this. Set spectralWindowId to MSRange::ALL if the MS contains multiple
-  // spectral windows, all with the same data shape.
+  // on DATA_DESC_ID, allowing it to skip the check on
+  // this. Set dataDescId to MSRange::ALL if the MS contains multiple
+  // data descriptions, all with the same data shape.
   // The 2nd argument is mainly for internal use by the MS DO, 
   // providing incorrect values could cause runtime failures.
-  void setMS(const MeasurementSet& ms, Int spectralWindowId=UNCHECKED);
+  void setMS(const MeasurementSet& ms, Int dataDescId=UNCHECKED);
   
   // Return the range of values for each of the items specified in 
   // the record. For index-like items a list of values is returned,
   // for non-index items the minimum and maximum are returned.
   // See the enum description in MSSelector for the list of supported items.
+  // Use the data flags if useFlags is True.
   // Correct for one-based indexing if oneBased is True.
-  GlishRecord range(const Vector<String>& items, Bool OneBased=False);
+  GlishRecord range(const Vector<String>& items, 
+		    Bool useFlags=True,
+		    Bool OneBased=False);
 
   // Same as previous function, with Vector of MSS::Field keys instead
   // of Strings
-  GlishRecord range(const Vector<Int>& items, Bool OneBased=False);
+  GlishRecord range(const Vector<Int>& items, 
+		    Bool useFlags=True,
+		    Bool OneBased=False);
 
   // Similar to above, with a single enum, for convenience
-  GlishRecord range(MSS::Field item);
+  GlishRecord range(MSS::Field item,
+		    Bool useFlags=True);
 
   // Set the block size (in Mbytes) to use when reading the data column.
   // The default is 10 MB. Actual memory used is higher due to 
@@ -181,13 +192,17 @@ protected:
   // size blockSize, as set by the setBlockSize function.
   void minMax(Float& mini, Float& maxi, 
 	      Array<Float> (*func)(const Array<Complex>&),
-	      const ROArrayColumn<Complex>& data);
+	      const ROArrayColumn<Complex>& data,
+	      const ROArrayColumn<Bool>& flag,
+	      Bool useFlags);
 
   // get the minimum and maximum of a Float data column
   // This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
   void minMax(Float& mini, Float& maxi, 
-	      const ROArrayColumn<Float>& data);
+	      const ROArrayColumn<Float>& data,
+	      const ROArrayColumn<Bool>& flag,
+	      Bool useFlags);
 
   // Get the range of interferometer numbers given the antenna1 and antenna2
   // columns.
@@ -200,6 +215,7 @@ private:
   Int blockSize_p;
   Int ddId_p;
   Bool checked_p;
+  const MSSelector* sel_p;
 };
 
 #endif
