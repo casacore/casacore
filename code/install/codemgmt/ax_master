@@ -4937,3 +4937,4 @@
 14 344 src rm trialdisplay/implement/DisplayDatas/TableAsRasterDDTemplates.cc
 14 344 src mv trial/apps/ms/ms_meta.g trial/implement/MeasurementSets/ms_meta.g
 14 344 src mv trial/apps/ms/ms.g trial/implement/MeasurementSets/ms.g
+14 344 src mv trial/apps/ms/ms.help trial/implement/MeasurementSets/ms.help
