@@ -39,35 +39,6 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 
   
-Int ImageUtilities::findSpectralAxis (const IPosition& shape,
-                                      const CoordinateSystem& coord)
-//
-// Return the index of the first axis in an image which is spectral
-//
-// Input:
-//   shape    Shape of image
-//   coord    Image coordinates
-// Output:
-//   the axis number by value.  -1 if there isn't one.
-//                        
-{
-
-  Int spectralCoord = coord.findCoordinate(CoordinateSystem::SPECTRAL);
-  if (spectralCoord < 0) {
-    return -1;
-  }
-  
-  // OK, we have one, find it!
-   for (Int i=0; i<shape.nelements(); i++) {
-     Int c, a;
-     coord.findWorldAxis(c, a, i);
-     if (c == spectralCoord) {
-       return i;
-     }
-   }
-   return -1;
-}
-
 
 Vector<String> ImageUtilities::getStrings (const String& stringIn)
 //
@@ -191,7 +162,7 @@ Int ImageUtilities::pixelAxisToWorldAxis(const CoordinateSystem& cSys,
 }
 
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
-                                 const CoordinateSystem& cSys,
+                                 const CoordinateSystem& cSysIn,
                                  const Int& pixelAxis,
                                  const Vector<Int>& cursorAxes,
                                  const IPosition& blc,
@@ -210,7 +181,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 // reason it can't make the conversion, a string is returned as "?"
 // 
 // Inputs
-//   cSys          The CoordinateSystem associated with the image
+//   cSysIn        The CoordinateSystem associated with the image
 //   pixelAxis     The pixel axis whose coordinates we are interested in.
 //   cursorAxes    If any of the pixel axes, i, in the image are found this
 //                 vector, assign their pixel coordinate to 
@@ -223,8 +194,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 //                 CoordinateSystem
 //   pixels        Vector of pixel coordinates (0 rel) to transform
 //                 for the pixel axis of interest. 
-//   prec          Precision to format output of scientific
-//                 formatted numbers (linear axes etc)
+//   prec          Precision to format scientific output
 // Outputs
 //   sWorld        Vector of formatted strings of world coordinates
 //                 for the pixel axis
@@ -233,34 +203,31 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 
 // CHeck blc,trc
 
-   if (blc.nelements()!=cSys.nPixelAxes() || trc.nelements()!=cSys.nPixelAxes()) return False;
+   if (blc.nelements()!=cSysIn.nPixelAxes() || trc.nelements()!=cSysIn.nPixelAxes()) return False;
+
 
 // Make a copy of the coordinates as we are going to muck about with it
+      
+   CoordinateSystem cSys(cSysIn);
 
-   CoordinateSystem cSys2(cSys);
-
-   const Int n1 = pixels.nelements();
-   sWorld.resize(n1);
-   
 // Set angular units in radians
 
-   Vector<String> oldUnits = cSys2.worldAxisUnits();
-   Vector<String> units = oldUnits;
+   Vector<String> units = cSys.worldAxisUnits();
    Int coordinate, axisInCoordinate;
-   for (Int j=0; j<cSys2.nWorldAxes(); j++) {
-      cSys2.findWorldAxis(coordinate, axisInCoordinate, j);
-      if (cSys2.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";
+   for (Int j=0; j<cSys.nWorldAxes(); j++) {
+      cSys.findWorldAxis(coordinate, axisInCoordinate, j);
+      if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";
    }
-   if (!cSys2.setWorldAxisUnits(units,True)) return False;
+   if (!cSys.setWorldAxisUnits(units,True)) return False;
 
 
 // Create pixel and world vectors for all pixel axes. Initialize pixel values
 // to reference pixel, but if an axis is a cursor axis (whose coordinate is
 // essentially being averaged) set the pixel to the mean pixel.
 
-   Vector<Double> pix(cSys2.nPixelAxes());
-   Vector<Double> world(cSys2.nPixelAxes());
-   pix = cSys2.referencePixel(); 
+   Vector<Double> pix(cSys.nPixelAxes());
+   Vector<Double> world(cSys.nPixelAxes());
+   pix = cSys.referencePixel(); 
    for (Int i=0; i<pix.nelements(); i++) {
      if (ImageUtilities::inVector(i, cursorAxes) != -1) {
         pix(i) = Double(blc(i) + trc(i)) / 2.0;
@@ -268,102 +235,34 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    }
          
             
-// Find the world axis for this pixel axis
+// Find the world axis for this pixel axis and then find
+// the coordinate for this pixel axis
             
-   const Int worldAxis = ImageUtilities::pixelAxisToWorldAxis (cSys2, pixelAxis);
-            
-            
-// Find coordinate for this pixel axis
-            
-   Int otherAxisInCoordinate;
-   cSys2.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+   const Int worldAxis = ImageUtilities::pixelAxisToWorldAxis(cSys, pixelAxis);
+   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
           
-// Convert to world and format depending upon coordinate type
+// Convert to world and format 
 
-   if (cSys2.type(coordinate) == Coordinate::DIRECTION) {
+   String formatUnits;
+   Bool absolute = True;
 
-         
-// Find name of pixel axis
+   const Int n1 = pixels.nelements();
+   sWorld.resize(n1);
 
-      String tString = cSys2.worldAxisNames()(worldAxis);
-      tString.upcase();
-         
-         
 // Loop over list of pixel coordinates and convert to world
          
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixels(i);
+   for (i=0; i<n1; i++) {
+      pix(pixelAxis) = pixels(i);
 
-         if (cSys2.toWorld(world,pix)) {
-            MVAngle mVA(world(pixelAxis));
-         
-            if (tString.contains("RIGHT ASCENSION")) {
-               sWorld(i) = mVA.string(MVAngle::TIME,8);
-            } else if (tString.contains("DECLINATION")) {
-               sWorld(i) = mVA.string(MVAngle::DIG2,8);
-            } else {
-               ostrstream oss;
-               oss.setf(ios::scientific, ios::floatfield);
-               oss.setf(ios::left);
-               oss.precision(prec);
-               oss << mVA.degree() << ends;
-               String temp(oss.str());
-               sWorld(i) = temp;   
-            }
-         } else {
-            sWorld(i) = "?";
-         }
-      }
-   } else if (cSys2.type(coordinate) == Coordinate::SPECTRAL) {
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixels(i);
-         if (cSys2.toWorld(world,pix)) {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.setf(ios::left);
-            oss.precision(prec);
-            oss << world(pixelAxis) << ends;
-            String temp(oss.str());
-            sWorld(i) = temp;
-         } else {
-            sWorld(i) = "?";
-         }
-      }
-   } else if (cSys2.type(coordinate) == Coordinate::LINEAR) {
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixels(i);
-         if (cSys2.toWorld(world,pix)) {
-            ostrstream oss;
-            oss.setf(ios::scientific, ios::floatfield);
-            oss.setf(ios::left);
-            oss.precision(prec);
-            oss << world(pixelAxis) << ends;
-            String temp(oss.str());
-            sWorld(i) = temp;
-         } else {
-            sWorld(i) = "?";
-         }
-      }
-   } else if (cSys2.type(coordinate) == Coordinate::STOKES) {
-      const StokesCoordinate coord = cSys2.stokesCoordinate(coordinate);
-      for (Int i=0; i<n1; i++) {
-         Stokes::StokesTypes iStokes;
-         Int pix = Int(pixels(i));
-         if (coord.toWorld(iStokes, pix)) {
-            sWorld(i) = Stokes::name(Stokes::type(iStokes));
-         } else {
-            sWorld(i) = "?";
-         }
+      if (cSys.toWorld(world,pix)) {
+         sWorld(i) = cSys.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), 
+                                 worldAxis, absolute, prec);
+      } else {
+         sWorld(i) = "?";
       }
    }
-
-// Put units back to what they were
-
-   return cSys2.setWorldAxisUnits(oldUnits,True);
-
 }
-
 
 
 Bool ImageUtilities::setCursor (Int& nVirCursorIter,
