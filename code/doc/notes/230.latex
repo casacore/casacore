@@ -180,17 +180,17 @@ script that closely resembles a c++ class
 # define a function called demoobject
 const demoobject := function()
 {
-# Here we will use a \glish\ record called 'private' to store private data items
-# and a \glish\ record called 'public' that will provide the publicly
+# Here we will use a glish record called 'private' to store private data items
+# and a glish record called 'public' that will provide the publicly
 # visible methods to access the private data items. Note that 'public' and
 # 'private' are not reserved works as they are in the object-oriented
-# language c++. Here they are used as normal \glish\ record names, but I have
+# language c++. Here they are used as normal glish record names, but I have
 # emulated the way private data and public access methods would be used
-# in c++. Here, we initialize the two \glish\ records
+# in c++. Here, we initialize the two glish records
    private :=[=]
    public := [=]
 
-# a function that will assign some data type to the 'private' \glish\ record
+# a function that will assign some data type to the 'private' glish record
    const public.insertdata := function(x) {
       wider private
       private.x := x
@@ -208,7 +208,7 @@ const demoobject := function()
       return T
    }
 
-# a function to extract the data contents of the 'private' \glish\ record
+# a function to extract the data contents of the 'private' glish record
    const public.getdata := function() {
       wider private
       return private.x;
@@ -224,7 +224,7 @@ const demoobject := function()
 
 
 # the record 'public' which just contains data access functions
-# is the item returned to the outside world when a \glish\ variable having
+# is the item returned to the outside world when a glish variable having
 # the 'demoobject' function as its value is created
    return public
 }
@@ -233,14 +233,14 @@ const demoobject := function()
 # example of its usage
 
 #run the demoobject 'function' and assign the returned publicly
-#visible access methods to a \glish\ variable a
+#visible access methods to a glish variable a
 a := demoobject()
 
-# create a simple \glish\ 1-d vector with 10 elements
+# create a simple glish 1-d vector with 10 elements
 examplein := [1:10]
 print "examplein = ",examplein
 
-# store, or hide, the 1-d vector, examplein, inside a. The \glish\ variable 'a'
+# store, or hide, the 1-d vector, examplein, inside a. The glish variable 'a'
 # uses the visible access function 'insertdata' to assign the contents
 # of examplein to the hidden record member private.x. 
 a.insertdata(examplein)
@@ -584,12 +584,12 @@ const demoarray := function(m=32, n=32)
 # create an instantiation
 a := demoarray(256,256)
 
-# find the maximum using the built-in \glish\ method
+# find the maximum using the built-in glish method
 
 fastmax := a.getmax()
 print "fast max = ",fastmax
 
-# find the maximum using the \glish\ client
+# find the maximum using the glish client
 slowmax := a.getslowmax()
 print "slow max = ",slowmax
 \end{verbatim}
@@ -644,7 +644,7 @@ code by an array class of your own choosing if you do not have the
 
 \heading{arraydemo.cc}
 \begin{verbatim}
-// code for arraydemo.cc using basic \glish\ calls
+// code for arraydemo.cc using basic glish calls
 #include <string.h>
 #include <Glish/Client.h>
 #include <aips/Arrays/Matrix.h>
@@ -663,7 +663,7 @@ Value createarray(GlishEvent *evt) {
    a.resize(m,n);
    for (Int i = 0; i<m; i++) {
       for (Int j = 0; j<n; j++) {
-// the following line converts things to equivalent \glish\ 1-based indexing
+// the following line converts things to equivalent glish 1-based indexing
          Int ii = i+1; Int jj = j+1;
          Float tmp = ii * ii + jj *jj;
          Float r = sqrt (tmp) ;
@@ -674,32 +674,32 @@ Value createarray(GlishEvent *evt) {
    }
 
 // Now put computed array into a form that can be sent back
-// to calling \glish\ script.
+// to calling glish script.
 // The code is gratefully adapted from the example in 
-// the \aipspp\ GlishValue class.
+// the aips++ GlishValue class.
 //
-// Using the \aipspp\ wrapper classes, all the code from here to the
+// Using the aips++ wrapper classes, all the code from here to the
 // end of the function can be replaced by one line of code.
 
-// Get a pointer to the values in the \aipspp\ array
+// Get a pointer to the values in the aips++ array
    Bool del;
    Float *aipsFloatPtr = a.getStorage(del);
     
 // Create a receptor array -  note that float != Float!!
    float *glishfloatPtr = new float[a.nelements()];
     
-// Copy the values from the \aipspp\ array into the \glish\ array
+// Copy the values from the aips++ array into the glish array
    for (uInt i=0; i < a.nelements(); i++)
       glishfloatPtr[i] = float(aipsFloatPtr[i]);
     
-// Delete \aipspp\ pointer, if necessary.
+// Delete aips++ pointer, if necessary.
    a.putStorage(aipsFloatPtr, del);
                                
-// OK; create the \glish\ Value, with variable name 'native'
+// OK; create the glish Value, with variable name 'native'
 // from the initialized storage
    Value native(glishfloatPtr, a.nelements());
     
-// Now we need to attach the shape to the \glish\ Value as an attribute
+// Now we need to attach the shape to the glish Value as an attribute
    IPosition aShape = a.shape();
    int shapeArray[a.ndim()];
    for (uInt i=0; i < a.ndim(); i++)
@@ -708,7 +708,7 @@ Value createarray(GlishEvent *evt) {
    Value *shapeValuePtr = new Value(shapeArray, a.ndim(), COPYARRAY);
    native.AssignAttribute("shape", shapeValuePtr);
    Unref(shapeValuePtr);
-// Done! the variable 'native' now contains a copy of \aipspp\ array a,
+// Done! the variable 'native' now contains a copy of aips++ array a,
 // with both data and attributes.
    return native;
 
@@ -718,7 +718,7 @@ Value createarray(GlishEvent *evt) {
 Value findarraymax(GlishEvent *evt) {
    Value* val = evt->value;
 
-// Using the \aipspp\ wrapper classes, all the code from here to the
+// Using the aips++ wrapper classes, all the code from here to the
 // 'find maximum' comment can be replaced by one line of code.
 
 // make sure the value's type is float
@@ -730,18 +730,18 @@ Value findarraymax(GlishEvent *evt) {
 // pointer to the low-level array
    float* glishfloatPtr = val->FloatPtr();
 
-// what is its shape? Get it from the attribute associated with a \glish\ array.
+// what is its shape? Get it from the attribute associated with a glish array.
    const Value *shapeValuePtr = val->HasAttribute("shape");
    int* shapeArr = shapeValuePtr->IntPtr();
 
 // create an internal array
    Matrix<Float> a(shapeArr[0],shapeArr[1]);
 
-// Get a pointer into \aipspp\ array
+// Get a pointer into aips++ array
    Bool del;
    Float *aipsFloatPtr = a.getStorage(del);
     
-// Copy the values from the \glish\ array into the \aipspp\ array
+// Copy the values from the glish array into the aips++ array
    for (int i=0; i < numarrayelem; i++)
          aipsFloatPtr[i] = Float(glishfloatPtr[i]);
     
@@ -797,7 +797,7 @@ environment:
 
 \heading{\aipspp\ wrapper.cc}
 \begin{verbatim}
-// code for arraydemo.cc using \aipspp\ wrapper classes
+// code for arraydemo.cc using aips++ wrapper classes
 #include <aips/Glish.h>
 #include <aips/Arrays/Matrix.h>
 
@@ -805,13 +805,13 @@ environment:
 Bool createarray(GlishSysEvent &event, void *) {
    GlishSysEventSource *glishBus = event.glishSource();
    GlishValue glishVal = event.val();
-// check that incoming argument is a \glish\ record
+// check that incoming argument is a glish record
    if (glishVal.type() != GlishValue::RECORD) {
       if (glishBus->replyPending())
          glishBus->reply(GlishArray(False));
          return True;
    }
-// OK - its a \glish\ record so get contents
+// OK - its a glish record so get contents
    GlishRecord glishRec = glishVal;
    Int xlen, ylen;
    if (glishRec.exists("xlength")) {
@@ -833,25 +833,25 @@ Bool createarray(GlishSysEvent &event, void *) {
    a.resize(xlen,ylen);
    for (Int i = 0; i<xlen; i++) {
       for (Int j = 0; j<ylen; j++) {
-// the following line converts things to equivalent \glish\ 1-based indexing
+// the following line converts things to equivalent glish 1-based indexing
          Int ii = i+1; Int jj = j+1;
          Float tmp = ii * ii + jj *jj;
          Float r = sqrt (tmp) ;
 // need to cast ii and jj to Float in the following line to emulate
-// \glish\ style of doing arithmetic
+// glish style of doing arithmetic
          a(i,j) = cos(0.6*sqrt(ii*80./m)-16.0*jj/(3.*n)) * 
             cos(16.0*ii/(3.*m)) +(Float(ii)/m-Float(jj)/n) + 
             0.05*sin(r) ;
       }
    }
 // The replyPending() method will return true for our example, because
-// the parent \glish\ script is waiting for a reply from the client. 
+// the parent glish script is waiting for a reply from the client. 
    if (glishBus->replyPending()) {
-// Convert from \aipspp\ array to a \glish\ array
-// conversion is much easier when one can use the \aipspp\ GlishArray class 
+// Convert from aips++ array to a glish array
+// conversion is much easier when one can use the aips++ GlishArray class 
       GlishArray demo = a;
 
-// Here the client posts an event which is send back to the calling \glish\ script
+// Here the client posts an event which is send back to the calling glish script
       glishBus->reply(demo);
    }
    return True;
@@ -862,7 +862,7 @@ Bool findarraymax(GlishSysEvent &event, void *) {
    GlishSysEventSource *glishBus = event.glishSource();
    GlishArray tmp = event.val();
 
-// convert from GlishArray to a \aipspp\ matrix
+// convert from GlishArray to a aips++ matrix
    Matrix<Float> localarray;
    tmp.get(localarray);
    IPosition arraydims = localarray.shape();
@@ -874,7 +874,7 @@ Bool findarraymax(GlishSysEvent &event, void *) {
    }
 
 // convert the interval data type into a GlishArray that can be
-// used by the external \glish\ script
+// used by the external glish script
    if (glishBus->replyPending()) {
       GlishArray returnedvalue = localmax;
       glishBus->reply(returnedvalue);
@@ -887,7 +887,7 @@ int main(int argc, char *argv[])
    GlishSysEventSource glishStream(argc, argv);
 
 //  Define callback event handlers.
-//  The addTarget method of the \aipspp\ GlishSysEventSource class 
+//  The addTarget method of the aips++ GlishSysEventSource class 
 //  defines the functions that will handle particular incoming events
 //  So, for example, when the client receives a 'findmax' event,
 //  control will be transferred to the findarraymax function.
@@ -1172,7 +1172,7 @@ program follows.
 
 \begin{verbatim}
 a:=client("./threads')
-\glish\ version 2.6. 
+glish version 2.6. 
 - simulated threads client started
 a->compute()
 - caught compute event 
@@ -1298,7 +1298,7 @@ Bool computeinterval(GlishSysEvent &event, void *) {
    }
    sum *= width;
 
-// post the result back to the controlling \glish\ script
+// post the result back to the controlling glish script
         GlishRecord record;
         record.add("pisum",sum);
         glishBus->postEvent("integration",record);
@@ -1416,7 +1416,7 @@ launching client on host  slave6
 waiting for daemon ...
 client starting
 parallel client started
-\glish\ version 2.6. 
+glish version 2.6. 
 - integration [pisum=0.561413]
 numdone pisum =  1 0.561413
 integration [pisum=0.553083]
@@ -1650,7 +1650,7 @@ you will get something like:
 
 \begin{verbatim}
 [*agent*=<agent>]
-\glish\ version 2.6. 
+glish version 2.6. 
 - received start
 please wait for system has been initialized message
 before sending compute event
@@ -1790,7 +1790,7 @@ Running this version of the script will give correct behaviour.
 ...
 system has been initialized - ready to compute
 [*agent*=<agent>]
-\glish\ version 2.6. 
+glish version 2.6. 
 - received compute command
 in computeparallel numintervals =  50
 integration [pisum=0.56699]
