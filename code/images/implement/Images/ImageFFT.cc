@@ -147,8 +147,8 @@ void ImageFFT::fftsky(const ImageInterface<Float>& in)
 
 // Set new coordinate system in TempImage
 
-   setCoordinates (os, *itsTempImagePtr, *itsInImagePtr,
-                   pixelAxes, worldAxes, dC);
+   uInt dC2 = dC;
+   setSkyCoordinates (os, *itsTempImagePtr, *itsInImagePtr, dC2);
 
 // Do complex FFT
   
@@ -182,7 +182,7 @@ void ImageFFT::fft(const ImageInterface<Float>& in,
 
 // Set new coordinate system in TempImage
 
-   setCoordinates2 (os, *itsTempImagePtr, *itsInImagePtr, axes);
+   setCoordinates (os, *itsTempImagePtr, *itsInImagePtr, axes);
 
 // Do complex FFT
   
@@ -457,60 +457,65 @@ void ImageFFT::fft2(ImageInterface<Complex>& out,
 }
 
 
-void ImageFFT::setCoordinates (LogIO& os,
-                               ImageInterface<Complex>& out,
-                               const ImageInterface<Float>& in,
-                               const Vector<Int>& pixelAxes,
-                               const Vector<Int>& worldAxes,
-                               const Int dC)
+void ImageFFT::setSkyCoordinates (LogIO& os,
+                                  ImageInterface<Complex>& out,
+                                  const ImageInterface<Float>& in,
+                                  uInt dC)
 //
-// dC, pixelAxes and worldAxes tell us where the sky is in the CS
+// dC is the DC coordinate number
 //
 {
-
 // Find the input CoordinateSystem
 
    CoordinateSystem cSys = in.coordinates();
-   uInt which(dC);
-   Vector<Bool> axes(in.ndim(), True);
-   setInverseCoordinate (cSys, which, in.shape(), axes);
+   Vector<Int> pixelAxes = cSys.pixelAxes(dC);
+   AlwaysAssert(pixelAxes.nelements()==2,AipsError);
 
-// Replace TempImage CS with the setd one
+// Set the DirectionCoordinate axes to True
 
-   if (!out.setCoordinateInfo(cSys)) {
+   Vector<Bool> axes(cSys.nPixelAxes(), False);
+   axes(pixelAxes(0)) = True;
+   axes(pixelAxes(1)) = True;
+
+// FT the CS
+
+   Coordinate* pC = cSys.makeFourierCoordinate(axes, in.shape().asVector());
+
+// Replace TempImage CS with the new one
+
+   CoordinateSystem* pC2 = (CoordinateSystem*)(pC);
+   if (!out.setCoordinateInfo(*pC2)) {
       os << "Could not replace Coordinate System in internal complex image" << LogIO::EXCEPTION;
    }
+//
+   delete pC; pC = 0;
+   pC2 = 0;
 }
 
-void ImageFFT::setCoordinates2 (LogIO& os,
-                                ImageInterface<Complex>& out,
-                                const ImageInterface<Float>& in,
-                                const Vector<Bool>& axes)
+void ImageFFT::setCoordinates (LogIO& os,
+                               ImageInterface<Complex>& out,
+                               const ImageInterface<Float>& in,
+                               const Vector<Bool>& axes)
 {
+// Get CS
+
    CoordinateSystem cSys = in.coordinates();
-   CoordinateSystem cSys2(cSys);
-//
-   Vector<Bool> doneCoord(cSys.nCoordinates(), False);
-   Int coord, axisInCoord;
-   for (uInt i=0; i<in.ndim(); i++) {
-      if (axes(i)) {
-         cSys.findPixelAxis(coord, axisInCoord, i);
-         if (coord >=0) {
-            if (!doneCoord(coord)) {
-               setInverseCoordinate (cSys2, coord, in.shape(), axes);
-               doneCoord(coord) = True;
-            }
-         } else {
-            os << "The specified axis has been removed" << LogIO::EXCEPTION;
-         }
-      }
-   }
+
+// FT it
+
+   Coordinate* pC = cSys.makeFourierCoordinate(axes, in.shape().asVector());
 
 // Replace TempImage CS with the fiddled one
 
-   if (!out.setCoordinateInfo(cSys2)) {
+   CoordinateSystem* pCS = (CoordinateSystem*)(pC);
+   if (!out.setCoordinateInfo(*pCS)) {
       os << "Could not replace Coordinate System in internal complex image" << LogIO::EXCEPTION;
    }
+
+//
+   delete pC;
+   pC = 0;
+   pCS = 0;
 }
 
 
@@ -542,33 +547,3 @@ Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes,
 }
 
 
-
-void ImageFFT::setInverseCoordinate (CoordinateSystem& cSys, uInt which, 
-                                     const IPosition& shape, 
-                                     const Vector<Bool>& axes)
-{
-   LogIO os(LogOrigin("ImageFFT", "setInverseCoordinate(,)", WHERE));
-//
-   delete itsCoordPtr;
-   itsCoordPtr = 0;
-
-// For this coordinate, find the axes and shape corresponding to the 
-// specified axes in the CoordinateSystem
-
-   const Coordinate& coord = cSys.coordinate(which);
-   Vector<Int> pixelAxes = cSys.pixelAxes(which);
-   Vector<Bool> coordAxes(coord.nPixelAxes(), False);
-   Vector<Int> coordShape(coordAxes.nelements());
-   for (uInt i=0; i<pixelAxes.nelements(); i++) {
-      if (axes(pixelAxes(i))) coordAxes(i) = True;
-      coordShape(i) = shape(pixelAxes(i));
-   }
-
-// Find the Fourier Coordinate
-
-   itsCoordPtr = coord.makeFourierCoordinate(coordAxes, coordShape);
-
-// Replace it in the CS
-
-   cSys.replaceCoordinate(*itsCoordPtr, which);
-}
