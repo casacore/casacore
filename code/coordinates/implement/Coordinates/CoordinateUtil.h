@@ -359,9 +359,9 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 
 // Do the specified axes hold the sky ?  Returns False if no DirectionCoordinate
 // or if only one axis of the DirectionCoordinate is held or the specified
-// axes don't pertain to the DirectionCoordinate.  
+// pixel axes don't pertain to the DirectionCoordinate.  
    static Bool holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, 
-                         Vector<Int> axes);
+                         Vector<Int> pixelAxes);
 
 
 // Find the Stokes for the specified pixel. If there is no Stokes in the
