@@ -1,5 +1,5 @@
 //# Measures.h:  a module for units, quantities and coordinates
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -641,7 +641,7 @@
 //				     MPosition::WGS84);
 // // The time I want to observe (note that it could be specified in many
 // // other ways)
-//	MEpoch obstime(MVTime(1996, 5, 17, (8+18./60.)/24.), 
+//	MEpoch obstime(MVEpoch(MVTime(1996, 5, 17, (8+18./60.)/24.)), 
 //	               MEpoch::UTC);
 // // The frame specification for when and where to observe
 //	MeasFrame frame(myobs, obstime);
