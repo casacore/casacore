@@ -3620,3 +3620,4 @@
 13 338 src mv trial/apps/table/taqlwidget.help trial/implement/Widgets/taqlwidget.help
 13 344 src mv trial/apps/gtablebrowser/tablebrowser.g trial/apps/table/tablebrowser.g
 13 344 src mv trial/apps/table/newtb.help trial/apps/table/tablebrowser.help
+13 345 src rm trial/apps/datalinetool/
