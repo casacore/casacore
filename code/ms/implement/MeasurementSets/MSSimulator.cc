@@ -1,5 +1,5 @@
 //# MSSimulator.cc:  this defines MSSimulator, which simulates a MeasurementSet
-//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <trial/MeasurementSets/MSTileLayout.h>
 
 
@@ -686,14 +686,13 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    fieldc.delayDirMeasCol().put(row,direction);
 	    fieldc.phaseDirMeasCol().put(row,direction);
 	    fieldc.referenceDirMeasCol().put(row,direction);
-	    ostrstream name;
+	    ostringstream name;
 	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
 	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
 	    } else {
 	      name << flush <<srcName_p(i) << ends;
 	    }
-	    char* pName=name.str();
-	    fieldc.name().put(row,String(pName));
+	    fieldc.name().put(row,String(name));
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	    if(pointrow < numpointrows){
 	      for (Int m=0; m < nAnt_p ; m++){	
@@ -701,7 +700,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		//pointing time is the mid-point of pointing
 		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m);
-		pointingc.name().put(pointrow, String(pName));
+		pointingc.name().put(pointrow, String(name));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);
 		pointrow++;
@@ -1171,21 +1170,20 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	    fieldc.delayDirMeasCol().put(row,direction);
 	    fieldc.phaseDirMeasCol().put(row,direction);
 	    fieldc.referenceDirMeasCol().put(row,direction);
-	    ostrstream name;
+	    ostringstream name;
 	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
 	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
 	    } else {
 	      name << flush <<srcName_p(i) << ends;
 	    }
-	    char* pName=name.str();
-	    fieldc.name().put(row,String(pName));
+	    fieldc.name().put(row,String(name));
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	    if(pointrow < numpointrows){
 	      for (Int m=0; m < nAnt_p ; m++){
 		pointingc.time().put(pointrow, (pointtime+  pinterval/2.0));
 		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m+numOfAnt);
-		pointingc.name().put(pointrow, String(pName));
+		pointingc.name().put(pointrow, String(name));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);             
 		pointrow++;
