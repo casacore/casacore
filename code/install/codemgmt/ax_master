@@ -2596,3 +2596,8 @@
 11 378 src rm nfra/apps/uvc
 11 378 src rm nfra/apps/uvf
 11 378 src rm nfra/scripts/TMS_GUI.g
+11 378 src rm aips/implement/Functionals/specializations
+11 378 src rm aips/implement/Tasking/specializations
+11 378 src rm aips/implement/FITS/specializations
+11 378 src rm aips/implement/Arrays/specializations
+11 378 src rm trial/implement/Functionals/specializations
