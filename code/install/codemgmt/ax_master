@@ -2677,3 +2677,4 @@
 10 014 src mv trial/implement/Measures/test/tMBaseline.cc aips/implement/Measures/test/tMBaseline.cc
 10 014 src mv trial/implement/Measures/test/tMBaseline.out aips/implement/Measures/test/tMBaseline.out
 10 014 src rm aips/implement/Measures/test/tMeasure.cc-old
+10 019 src mv trial/apps/datalinetool/datagroup.g trial/implement/Datalinetool/datagroup.g
