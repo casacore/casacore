@@ -59,6 +59,12 @@ Record::Record (RecordRep* parent, const RecordDesc& description)
   parent_p (parent)
 {}
 
+Record::Record (RecordRep* parent, RecordType type)
+: RecordInterface (type, 0, 0),
+  rep_p    (new RecordRep),
+  parent_p (parent)
+{}
+
 Record::Record (const Record& other)
 : RecordInterface (other),
   rep_p    (other.rep_p),
@@ -75,8 +81,10 @@ Record::Record (const RecordInterface& other)
     for (uInt i=0; i<n; i++) {
 	DataType dtype = desc.type(i);
 	if (dtype == TpRecord) {
-	    defineRecord (i, Record (*(RecordInterface*)
-                                           (other.get_pointer (i, dtype))));
+	    const RecordInterface& subrec = *((RecordInterface*)
+                                              (other.get_pointer (i, dtype)));
+	    defineRecord (i, Record (subrec),
+			  subrec.isFixed()  ?  Fixed : Variable);
 	}else{
 	    rep_p->copyDataField (dtype, i, other.get_pointer (i, dtype));
 	}
@@ -157,6 +165,24 @@ void Record::restructure (const RecordDesc& newDescription)
     rwRef().restructure (newDescription);
 }
 
+void Record::restructure (const RecordDesc& newDescription, RecordType type)
+{
+    restructure (newDescription);
+    setRecordType (type);
+}
+
+void Record::setRecordType (RecordType rtype)
+{
+    recordType() = rtype;
+    // Iterate through all fields to make the subrecords the required type.
+    uInt nf = nfields();
+    for (uInt i=0; i<nf; i++) {
+	if (type(i) == TpRecord) {
+	    rwSubRecord(i).setRecordType (rtype);
+	}
+    }
+}
+
 uInt Record::nfields() const
 {
     return description().nfields();
@@ -228,6 +254,8 @@ void Record::defineRecord (const RecordFieldId& id,
 	rwRef().addField (name, value, type);
     }else{
 	rwRef().defineDataField (whichField, TpRecord, &value);
+	Record& subrec = *(Record*)get_pointer (whichField, TpRecord);
+	subrec.recordType() = type;
     }
 }
 
@@ -235,6 +263,10 @@ void Record::defineRecord (const RecordFieldId& id,
 const RecordInterface& Record::asRecord (const RecordFieldId& id) const
 {
     return subRecord (id);
+}
+RecordInterface& Record::asrwRecord (const RecordFieldId& id)
+{
+    return rwSubRecord (id);
 }
 const Record& Record::subRecord (const RecordFieldId& id) const
 {
