@@ -71,7 +71,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
-				    region.toLCRegion (image.coordinates()));
+				    region.toLCRegion (image.coordinates(), image.shape()));
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
@@ -85,7 +85,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
-				    region.toLCRegion(image.coordinates()),
+				    region.toLCRegion(image.coordinates(), image.shape()),
 				    writableIfPossible);
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
@@ -99,7 +99,7 @@ SubImage<T>::SubImage (const MaskedImage<T>& image,
   itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
-				    region.toLCRegion(image.coordinates()));
+				    region.toLCRegion(image.coordinates(), image.shape()));
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
@@ -113,7 +113,7 @@ SubImage<T>::SubImage (MaskedImage<T>& image,
   itsImagePtr (image.cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (image,
-				    region.toLCRegion(image.coordinates()),
+				    region.toLCRegion(image.coordinates(), image.shape()),
 				    writableIfPossible);
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
