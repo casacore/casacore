@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/Array.h>
 
-// <summary>
+// <summary> Record field writer
 // </summary>
 
 // <use visibility=local>   or   <use visibility=export>
@@ -82,6 +82,9 @@ public:
     virtual void writeField() = 0;
 };
 
+// <summary> Record field copier
+// </summary>
+
 template<class outType, class inType> 
 class RecordFieldCopier : public RecordFieldWriter
 {
@@ -97,6 +100,9 @@ private:
     RORecordFieldPtr<inType> in_p;
 };
 
+// <summary> Unequal shape copier
+// </summary>
+
 template<class T> class UnequalShapeCopier : public RecordFieldWriter
 {
 public:
@@ -109,6 +115,9 @@ private:
     RecordFieldPtr<Array<T> >   out_p;
     RORecordFieldPtr<Array<T> > in_p;
 };
+
+// <summary> Multi field writer
+// </summary>
 
 class MultiRecordFieldWriter
 {
