@@ -46,7 +46,7 @@ void doIt (const IPosition& latticeShape,
 }
 
 
-main()
+int main()
 {
     try {
 	{
@@ -58,7 +58,7 @@ main()
 	    x(3)=3; y(3)=5;
 	    doIt (IPosition (2,11,20), x, y);
 	    // Make right side a bit different.
-	    x(2)=8;
+	    x(2)=7.9;
 	    doIt (IPosition (2,11,20), x, y);
 	}
 	{
@@ -66,7 +66,7 @@ main()
 	    Vector<Float> x(5), y(5);
 	    x(0)=3; y(0)=3;
 	    x(1)=5; y(1)=3;
-	    x(2)=6; y(2)=4;
+	    x(2)=6; y(2)=4.1;
 	    x(3)=6; y(3)=5;
 	    x(4)=3; y(4)=5;
 	    doIt (IPosition (2,11,20), x, y);
@@ -80,9 +80,9 @@ main()
 	    x(1)=5; y(1)=3;
 	    x(2)=5; y(2)=5;
 	    x(3)=2; y(3)=5;
-	    x(4)=3; y(4)=4;
+	    x(4)=3.6; y(4)=4;
 	    x(5)=2; y(5)=3;
-	    x(6)=2; y(6)=2;
+	    x(6)=2; y(6)=2.1;
 	    doIt (IPosition (2,11,20), x, y);
 	    x(3)=3;
 	    doIt (IPosition (2,11,20), x, y);
@@ -95,14 +95,14 @@ main()
 	    x(2)=9; y(2)=8;
 	    x(3)=3; y(3)=8;
 	    x(4)=3; y(4)=3;
-	    x(5)=5; y(5)=5;
+	    x(5)=5; y(5)=4.8;
 	    x(6)=7; y(6)=5;
 	    x(7)=7; y(7)=7;
 	    x(8)=5; y(8)=7;
 	    x(9)=5; y(9)=5;
 	    x(10)=3; y(10)=3;
 	    doIt (IPosition (2,11,20), x, y);
-	    x(6)=8; y(6)=4;
+	    x(6)=8.1; y(6)=4;
 	    doIt (IPosition (2,11,20), x, y);
 	}
 	{
@@ -117,11 +117,11 @@ main()
 	{
 	    // A pentagram (with the inner pentagon excluded)
 	    Vector<Float> x(5), y(5);
-	    x(0)=1; y(0)=0;
+	    x(0)=0.8; y(0)=0;
 	    x(1)=3; y(1)=4;
-	    x(2)=5; y(2)=0;
-	    x(3)=0; y(3)=3;
-	    x(4)=6; y(4)=3;
+	    x(2)=5.2; y(2)=0;
+	    x(3)=0; y(3)=2.8;
+	    x(4)=6; y(4)=2.8;
 	    doIt (IPosition (2,11,20), x, y);
 	}
 
@@ -141,7 +141,7 @@ main()
             p2 = p1;
             AlwaysAssertExit (p2 == p1);
 
-            y = 8;
+            y(3) = 8;
             LCPolygon p3(x, y, latticeShape);
             AlwaysAssertExit (p3 != p1);
 
