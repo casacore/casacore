@@ -1,5 +1,5 @@
 //# Interpolate1D.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,11 +102,12 @@ setData(const SampledFunctional<Domain> &x,
   // 3/ cubic interpolation cannot be used when when the specified x value is
   //    within two data points of a repeated x value.
   if (uniq == False) 
-    for (uInt i=0; i < nElements-1; i++){
-      if (nearAbs(xValues[i], xValues[i+1])) 
+    for (uInt i=0; i < nElements-1; i++) {
+      if (nearAbs(xValues[i], xValues[i+1])) {
 	throw(AipsError("Interpolate1D::setData"
 			" data has repeated x values"));
-    }
+      };
+    };
   //  I will not initialise the y2Values as they are not used unless the
   //  interpolation method is changed to spline. The y2Values are hence
   //  initialised by method.
@@ -138,9 +139,8 @@ template <class Domain, class Range> Interpolate1D<Domain, Range>::
 ~Interpolate1D(){}
 
 template <class Domain, class Range> 
-Function1D<Domain, Range>* Interpolate1D<Domain, Range>::
-cloneFunction1D() const {
-  return new Interpolate1D<Domain, Range>;
+Function<Domain, Range> *Interpolate1D<Domain, Range>::clone() const {
+  return new Interpolate1D<Domain, Range>(*this);
 }
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
@@ -257,9 +257,9 @@ getY() const {
 };
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
-operator()(const Domain &x_req) const {
+eval(typename NQFunction1D<Domain, Range>::FunctionArg x) const {
   Bool found;
-  uInt where = binarySearchBrackets(found, xValues, x_req, nElements);  
+  uInt where = binarySearchBrackets(found, xValues, x[0], nElements);  
   Domain x1,x2;
   Range y1,y2;
   switch (curMethod) {
@@ -268,7 +268,7 @@ operator()(const Domain &x_req) const {
       return yValues[nElements-1];
     else if (where == 0) 
       return yValues[0];
-    else if (xValues[where] - x_req < .5)
+    else if (xValues[where] - x[0] < .5)
       return yValues[where];
     else
       return yValues[where-1];
@@ -283,7 +283,7 @@ operator()(const Domain &x_req) const {
     if (nearAbs(x1, x2)) 
       throw(AipsError("Interpolate1D::operator()"
 		      " data has repeated x values"));
-    return y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
+    return y1 + ((x[0]-x1)/(x2-x1)) * (y2-y1);
   case cubic:// fit a cubic polynomial to the four nearest points
              // It is relatively simple to change this to any order polynomial
     if (where > 1 && where < nElements - 1)
@@ -292,7 +292,7 @@ operator()(const Domain &x_req) const {
       where = 0;
     else
       where = nElements - 4;
-    return polynomialInterpolation(x_req, (uInt) 4, where);
+    return polynomialInterpolation(x[0], (uInt) 4, where);
   case spline: // natural cubic splines
     {
       if (where == nElements)
@@ -309,9 +309,9 @@ operator()(const Domain &x_req) const {
 	throw(AipsError("Interpolate1D::operator()"
 			" data has repeated x values"));
       dx = x2-x1;
-      a = (x2-x_req)/dx; 
+      a = (x2-x[0])/dx; 
       b = 1-a;
-      h = dx*dx/6.;
+      h = static_cast<Domain>(dx*dx/6.);
       return a*y1 + b*y2 + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
     }
   default:

@@ -1,5 +1,5 @@
 //# Interpolate1D.h: Interpolate in one dimension
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #define AIPS_INTERPOLATE1D_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/Function1D.h>
+#include <aips/Functionals/NQFunction1D.h>
 #include <aips/Containers/Block.h>
 
 template<class Range> class SampledFunctional;
@@ -42,7 +42,7 @@ template<class Range> class SampledFunctional;
 
 // <prerequisite>
 //   <li> <linkto class=SampledFunctional>SampledFunctional</linkto> 
-//   <li> <linkto class=Function1D>Function1D</linkto> 
+//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto> 
 // </prerequisite>
 
 // <etymology>
@@ -131,8 +131,8 @@ template<class Range> class SampledFunctional;
 //        assignment operator after making the above change. 
 // </todo>
 
-template <class Domain, class Range> class Interpolate1D: public Function1D<Domain, Range>
-{
+template <class Domain, class Range> class Interpolate1D :
+public NQFunction1D<Domain, Range> {
 public:
   // The different interpolation methods are enumerated here
   enum Method {
@@ -168,12 +168,14 @@ public:
   // <group>
   Interpolate1D(const Interpolate1D<Domain, Range>& other);
   Interpolate1D<Domain, Range> & 
-                         operator=(const Interpolate1D<Domain, Range> & other);
+    operator=(const Interpolate1D<Domain, Range> & other);
   ~Interpolate1D();
   // </group>
 
-  // Interpolation is done using the () operator (see example above).
-  virtual Range operator()(const Domain &x) const;
+  // Interpolation is done using the () operator (see example above). Actual
+  // use is through the virtual <src>eval()</src> function.
+  virtual Range eval(typename NQFunction1D<Domain, Range>::FunctionArg x)
+    const;
 
   // inquire/set the current interpolation method. uInts are used as
   // arguements instead of the Interpolate1D::Method enumerator due to
@@ -192,7 +194,7 @@ public:
   // </group>
 
   // A function to copy the Interpolate1D object
-  Function1D<Domain, Range> *cloneFunction1D() const;
+  virtual Function<Domain, Range> *clone() const;
 
 private:
   // A private function for doing polynomial interpolation
