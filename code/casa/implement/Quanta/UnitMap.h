@@ -1,5 +1,5 @@
 //# UnitMap.h: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,13 +117,21 @@ const uInt N_FITS = 19;
 // </ul>
 //
 // Units can be defined in the user list by:
-// <note> The cache will be cleared if a user defined unit is overwritten,
+// <note role=tip> The cache will be cleared if a user defined unit is overwritten,
 // to make sure no old value will be used. </note>
 // <srcblock>
 // UnitMap::putUser("tag", UnitVal(factor,"unit"), "full name (optional)");
 //    or:
 // UnitMap::putUser(UnitName);
 // </srcblock>
+// <note role=caution>
+// If using an explicit Unit variable (e.g. <src>Unit a("5Bolton/beam")</src>),
+// the check on the legality of the given string, and the conversion to the 
+// cached canonical value in the variable 'a', is only done at creation time. This
+// means that if the user changes the value of a unit involved by the 
+// <linkto class=UnitMap>putUser()</linkto> method, the unit using it should be
+// re-created (<src> a = Unit("5Bolton/beam");</src>).
+// </note>
 // A special set of 'units' used in FITS datasets can be added by the command
 // <srcblock>
 //	UnitMap::addFITS();
@@ -186,28 +194,30 @@ public:
     ~UnitMap();
 
 //# General member functions
-// Check if a unit name is known, and return its value if True
-// <group name="find">
-// Get a prefix definition from key
+    // Check if a unit name is known, and return its value if True
+    // <group name="find">
+    // Get a prefix definition from key
     static Bool getPref(const String &s, UnitName &name);
-
-// Get a cached definition
+    
+    // Get a cached definition
     static Bool getCache(const String &s, UnitVal &val);
-
-// Get a standard unit definition (search order: User, Customary, SI)
+    
+    // Get a standard unit definition (search order: User, Customary, SI)
     static Bool getUnit(const String &s, UnitName &name);
-// </group>
-// Save a definition of a full unit name in the cache (the cache will be
-// cleared if getting too large (200 entries)
+    // </group>
+    // Save a definition of a full unit name in the cache (the cache will be
+    // cleared if getting too large (200 entries)
     static void putCache(const String &s, const UnitVal &val);
-
-// Define a user standard unit
-// <group name="define">
+    
+    // Define a user defined standard unit. If the unit is being redefined, and it
+    // has already been used in a user's <src>Unit</src> variable, the value
+    // cached in that variable will not change.
+    // <group name="define">
     static void putUser(const String &s, const UnitVal &val);
     static void putUser(const String &s, const UnitVal &val,
 			const String &name);
     static void putUser(const UnitName &name);
-// </group>
+    // </group>
 // Remove a user unit
 // <group>
     static void removeUser(const String &name);

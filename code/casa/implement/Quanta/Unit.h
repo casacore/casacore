@@ -1,5 +1,5 @@
 //# Unit.h: defines the Unit class
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,10 +65,17 @@
 // legal definition and its value will be stored. If defined as a String,
 // the checking and determination of the value will be done each time
 // the string is encountered when a Unit is expected.<br>
-// <note> The use of a separate Unit variable will give a tremendous
+// <note role=tip> The use of a separate Unit variable will give a tremendous
 // speed increase, if compared to using the String representation in
 // e.g. <linkto class=Quantum>Quantity(5,"deg")</linkto> </note>
-//
+// <note role=caution>
+// If using an explicit Unit variable (e.g. <src>Unit a("5Bolton/beam")</src>),
+// the check on the legality of the given string, and the conversion to the 
+// cached canonical value in the variable 'a', is only done at creation time. This
+// means that if the user changes the value of a unit involved by the 
+// <linkto class=UnitMap>putUser()</linkto> method, the unit using it should be
+// re-created (<src> a = Unit("5Bolton/beam");</src>).
+// </note>
 // A unit is a string of one or more fields separated 
 // by 'space' or '.' (to indicate multiply) or '/' (to indicate divide).
 // Multiple separators are acted upon (i.e. m//s == m.s).
