@@ -2636,3 +2636,4 @@
 11 397 src mv trial/scripts/substitute.g trial/implement/Utilities/substitute.g
 11 397 src mv trial/scripts/substitute.help trial/implement/Utilities/substitute.help
 11 397 src mv trial/apps/simpleimage/simpleimage.g trial/apps/imager/simpleimage.g
+11 397 src mv trial/apps/simpleimage/simpleimage.help trial/apps/imager/simpleimage.help
