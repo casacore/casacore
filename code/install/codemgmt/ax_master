@@ -5855,3 +5855,4 @@
 16 229 src mv ./trial/implement/Functionals/Gaussian1D2.cc ./aips/implement/Functionals/Gaussian1D2.cc
 16 229 src mv ./trial/implement/Functionals/Gaussian1D2.h ./aips/implement/Functionals/Gaussian1D2.h
 16 229 src mv ./trial/implement/Functionals/Gaussian2D2.cc ./aips/implement/Functionals/Gaussian2D2.cc
+16 229 src mv ./trial/implement/Functionals/Gaussian2D2.h ./aips/implement/Functionals/Gaussian2D2.h
