@@ -5417,3 +5417,4 @@
 15 204 src rm trial/implement/Lattices/CopyLattice.h
 15 204 src rm trial/implement/Lattices/CopyLattice.cc
 15 204 src rm trial/implement/Lattices/test/tCopyLattice.cc
+15 205 src rm trial/implement/MeasurementComponents/TimeAverager.h
