@@ -313,6 +313,7 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     newPixelMaps.set(static_cast<Block<Int> *>(0));
 
 // copy the maps (because the deleted axes will be staying put)
+
     for (i=0; i<nc; i++) {
 	newWorldMaps[i] = new Block<Int>(*world_maps_p[i]);
 	newPixelMaps[i] = new Block<Int>(*pixel_maps_p[i]);
@@ -333,8 +334,8 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 	newPixelMaps[coord]->operator[](axis) = i;
     }
 
-// OK, now overwrite the new locations (after deleting the old pointers to avoid
-// a leak
+// OK, now overwrite the new locations 
+
     for (i=0; i<nc; i++) {
 	delete world_maps_p[i];
 	world_maps_p[i] = newWorldMaps[i];
@@ -474,91 +475,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 }
 
 
-
-Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
-                              Vector<Int>& worldAxisTranspose,
-                              Vector<Bool>& refChange,
-                              const CoordinateSystem& cSys1,
-                              const CoordinateSystem& cSys2,
-                              const uInt coord1,
-                              const uInt coord2) const
-//
-// Update the world axis mappings from one coordinate system to another.  
-//
-{
-
-// Make tests on specific coordinate types here. We already
-// know that the two cSys are the same coordinate type 
-// (e.g. DIRECTION)
-
-   Bool refDiff = False;
-   if (cSys2.coordinate(coord2).type() == Coordinate::DIRECTION) {
-      if (cSys1.directionCoordinate(coord1).directionType() != 
-          cSys2.directionCoordinate(coord2).directionType()) {
-         refDiff = True;
-      }
-   } else if (cSys2.coordinate(coord2).type() == Coordinate::SPECTRAL) {
-      if (cSys1.spectralCoordinate(coord1).frequencySystem() != 
-         cSys2.spectralCoordinate(coord2).frequencySystem()) {
-         refDiff = True;
-      }
-   }
-
-// How many world and pixel axes for these coordinates
-
-   uInt nWorld1 = cSys1.worldAxes(coord1).nelements();
-   uInt nWorld2 = cSys2.worldAxes(coord2).nelements();
-   uInt nPixel1 = cSys1.pixelAxes(coord1).nelements();
-   uInt nPixel2 = cSys2.pixelAxes(coord2).nelements();
-
-// These tests should never fail
-
-   if (nWorld1 != nWorld2) return False;
-   if (nPixel1 != nPixel2) return False;
-
-// Find their world  and pixel axes
-
-   Vector<Int> world1 = cSys1.worldAxes(coord1);
-   Vector<Int> pixel1 = cSys1.pixelAxes(coord1);
-   Vector<Int> world2 = cSys2.worldAxes(coord2);
-   Vector<Int> pixel2 = cSys2.pixelAxes(coord2);
-   const Vector<String>& units1 = cSys1.coordinate(coord1).worldAxisUnits();
-   const Vector<String>& units2 = cSys2.coordinate(coord2).worldAxisUnits();
-
-// Compare quantities for the world axes.  
-
-   for (uInt j=0; j<nWorld2; j++) {
-      if (world2(j) != -1) {
-         if (world1(j) != -1) {
-
-// Compare intrinsic axis units.  Should never fail.
-
-            if (Unit(units1(j)) != Unit(units2(j))) return False;
-
-// Set the world axis maps
-
-            worldAxisMap(world2(j)) = world1(j);
-            worldAxisTranspose(world1(j)) = world2(j);
-            refChange(world1(j)) = refDiff;
-         } else {
-
-// The world axis is missing in cSys1 and present in cSys2.  
-
-           return False;
-         }
-
-// The world axis has been removed in cSys2 so we aren't interested in it
-     
-      }
-   }
-//
-   return True;
-}
-
-
-
-
-
 Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement) 
 {
     if (axis >= nWorldAxes()) {
@@ -589,8 +505,8 @@ Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
     Int coord, caxis;
     findWorldAxis(coord, caxis, axis);
     world_replacement_values_p[coord]->operator()(caxis) = replacement;
-    world_maps_p[coord]->operator[](caxis) = -1;
-
+    Int oldValue =  world_maps_p[coord]->operator[](caxis);
+    world_maps_p[coord]->operator[](caxis) = -1 * (oldValue+1);   // Makes the actual axis recoverable
     for (uInt i=0; i<nc; i++) {
 	for (uInt j=0; j<world_maps_p[i]->nelements(); j++) {
 	    if (world_maps_p[i]->operator[](j) > Int(axis)) {
@@ -598,8 +514,33 @@ Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
 	    }
 	}
     }
-   return True;
+    return True;
 }
+
+Bool CoordinateSystem::worldReplacementValue (Double& replacement, uInt axis) const
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      replacement = world_replacement_values_p[coordinate]->operator()(axisInCoordinate);
+      return True;
+   }
+//
+   return False;
+}
+
+Bool CoordinateSystem::setWorldReplacementValue (uInt axis, Double replacement) 
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkWorldReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      world_replacement_values_p[coordinate]->operator()(axisInCoordinate) = replacement;
+      return True;
+   }
+//
+   return False;
+}
+
 
 Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement) 
 {
@@ -615,8 +556,9 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
     Int coord, caxis;
     findPixelAxis(coord, caxis, axis);
     pixel_replacement_values_p[coord]->operator()(caxis) = replacement;
-    pixel_maps_p[coord]->operator[](caxis) = -1;
-
+    Int oldValue = pixel_maps_p[coord]->operator[](caxis);
+    pixel_maps_p[coord]->operator[](caxis) = -1 * (oldValue+1);     // Makes the actual axis recoverable
+//
     for (uInt i=0; i<nc; i++) {
 	for (uInt j=0; j<pixel_maps_p[i]->nelements(); j++) {
 	    if (pixel_maps_p[i]->operator[](j) > Int(axis)) {
@@ -625,6 +567,31 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 	}
     }
    return True;
+}
+
+
+Bool CoordinateSystem::pixelReplacementValue (Double& replacement, uInt axis) const
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkPixelReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      replacement = pixel_replacement_values_p[coordinate]->operator()(axisInCoordinate);
+      return True;
+   }
+//
+   return False;
+}
+
+Bool CoordinateSystem::setPixelReplacementValue (uInt axis, Double replacement) 
+{
+   Int coordinate = -1;
+   Int axisInCoordinate = -1;
+   if (checkPixelReplacementAxis(coordinate, axisInCoordinate, axis)) {
+      pixel_replacement_values_p[coordinate]->operator()(axisInCoordinate) = replacement;
+      return True;
+   }
+//
+   return False;
 }
 
 
@@ -688,12 +655,13 @@ void CoordinateSystem::restoreOriginal()
 {
     CoordinateSystem coord;
 
-    // Make a copy and then assign it back
+// Make a copy and then assign it back
+
     uInt n = coordinates_p.nelements();
     for (uInt i=0; i<n; i++) {
 	coord.addCoordinate(*(coordinates_p[i]));
     }
-    
+//    
     *this = coord;
 }
 
@@ -854,9 +822,10 @@ Int CoordinateSystem::worldAxisToPixelAxis(uInt worldAxis) const
 
 Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
 {
-    // Implemented in terms of the public member functions. It would be more
-    // efficient to use the private data, but would be harder to maintain.
-    // This isn't apt to be called often, so choose the easier course.
+// Implemented in terms of the public member functions. It would be more
+// efficient to use the private data, but would be harder to maintain.
+// This isn't apt to be called often, so choose the easier course.
+
     AlwaysAssert(whichCoord < nCoordinates(), AipsError);
     Vector<Int> retval(coordinate(whichCoord).nWorldAxes());
 
@@ -875,8 +844,8 @@ Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
 Vector<Int> CoordinateSystem::pixelAxes(uInt whichCoord) const
 {
     AlwaysAssert(whichCoord < nCoordinates(), AipsError);
-   Vector<Int> retval(coordinate(whichCoord).nPixelAxes());
-
+    Vector<Int> retval(coordinate(whichCoord).nPixelAxes());
+//
     retval = -1;  // Axes which aren't found must be removed!
     const uInt naxes = nPixelAxes();
     for (uInt i=0; i<naxes; i++) {
@@ -4888,3 +4857,200 @@ CoordinateSystem CoordinateSystem::stripRemovedAxes (const CoordinateSystem& cSy
 //
    return cSysOut;
 }
+
+
+Bool CoordinateSystem::checkWorldReplacementAxis(Int& coordinate,
+                                                 Int& axisInCoordinate,
+                                                 uInt axis) const
+{
+
+// Find number of (unremoved) world axes
+
+    const uInt nC = nCoordinates();
+    uInt nWorld = 0;
+    for (uInt i=0; i<nC; i++) {
+       nWorld += world_maps_p[i]->nelements();
+    }   
+
+// Check axis
+
+    if (axis >= nWorld) {
+       ostrstream oss;
+       oss << "Illegal removal world axis number (" << axis << "), max is ("
+           << nWorld << ")" << endl;
+       set_error (String(oss));
+       return False;
+    }
+
+// Find coordinate and axis in coordinate
+
+    coordinate = -1;
+    axisInCoordinate = -1;
+    Int value;
+    for (uInt i=0; i<nC; i++) {
+	const uInt na = world_maps_p[i]->nelements();
+	for (uInt j=0; j<na; j++) {
+           value = world_maps_p[i]->operator[](j);       // We stored -1 * (axis + 1) when we removed it
+           if (value < 0) {
+              value = -1 * (value + 1);            
+              if (value == Int(axis)) {
+		coordinate = i;
+		axisInCoordinate = j;
+                break;
+              }
+           }
+	}
+    }
+
+// Check
+
+    if (coordinate==-1 || axisInCoordinate==-1) {
+       ostrstream oss;
+       oss << "Cannot find world axis " << axis << endl;
+       set_error (String(oss));
+       return False;
+    }
+//
+    return True;
+}
+
+
+
+Bool CoordinateSystem::checkPixelReplacementAxis(Int& coordinate,
+                                                 Int& axisInCoordinate,
+                                                 uInt axis) const
+{
+
+// Find number of (unremoved) pixel axes
+
+    const uInt nC = nCoordinates();
+    uInt nPixel = 0;
+    for (uInt i=0; i<nC; i++) {
+       nPixel += pixel_maps_p[i]->nelements();
+    }   
+
+// Check axis
+
+    if (axis >= nPixel) {
+       ostrstream oss;
+       oss << "Illegal removal pixel axis number (" << axis << "), max is ("
+           << nPixel << ")" << endl;
+       set_error (String(oss));
+       return False;
+    }
+
+// Find coordinate and axis in coordinate for removed axis
+
+    coordinate = -1;
+    axisInCoordinate = -1;
+    Int value;
+    for (uInt i=0; i<nC; i++) {
+	const uInt na = pixel_maps_p[i]->nelements();
+	for (uInt j=0; j<na; j++) {
+           value = pixel_maps_p[i]->operator[](j);       // We stored -1 * (axis + 1) when we removed it
+           if (value < 0) {
+              value = -1 * (value + 1);            
+              if (value == Int(axis)) {
+                 coordinate = i;
+                 axisInCoordinate = j;
+                 break;
+              }
+           }
+	}
+    }
+
+// Check 
+
+    if (coordinate==-1 || axisInCoordinate==-1) {
+       ostrstream oss;
+       oss << "Cannot find removed pixel axis " << axis << endl;
+       set_error (String(oss));
+       return False;
+    }
+//
+    return True;
+}
+
+
+
+
+Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
+                              Vector<Int>& worldAxisTranspose,
+                              Vector<Bool>& refChange,
+                              const CoordinateSystem& cSys1,
+                              const CoordinateSystem& cSys2,
+                              const uInt coord1,
+                              const uInt coord2) const
+//
+// Update the world axis mappings from one coordinate system to another.  
+//
+{
+
+// Make tests on specific coordinate types here. We already
+// know that the two cSys are the same coordinate type 
+// (e.g. DIRECTION)
+
+   Bool refDiff = False;
+   if (cSys2.coordinate(coord2).type() == Coordinate::DIRECTION) {
+      if (cSys1.directionCoordinate(coord1).directionType() != 
+          cSys2.directionCoordinate(coord2).directionType()) {
+         refDiff = True;
+      }
+   } else if (cSys2.coordinate(coord2).type() == Coordinate::SPECTRAL) {
+      if (cSys1.spectralCoordinate(coord1).frequencySystem() != 
+         cSys2.spectralCoordinate(coord2).frequencySystem()) {
+         refDiff = True;
+      }
+   }
+
+// How many world and pixel axes for these coordinates
+
+   uInt nWorld1 = cSys1.worldAxes(coord1).nelements();
+   uInt nWorld2 = cSys2.worldAxes(coord2).nelements();
+   uInt nPixel1 = cSys1.pixelAxes(coord1).nelements();
+   uInt nPixel2 = cSys2.pixelAxes(coord2).nelements();
+
+// These tests should never fail
+
+   if (nWorld1 != nWorld2) return False;
+   if (nPixel1 != nPixel2) return False;
+
+// Find their world  and pixel axes
+
+   Vector<Int> world1 = cSys1.worldAxes(coord1);
+   Vector<Int> pixel1 = cSys1.pixelAxes(coord1);
+   Vector<Int> world2 = cSys2.worldAxes(coord2);
+   Vector<Int> pixel2 = cSys2.pixelAxes(coord2);
+   const Vector<String>& units1 = cSys1.coordinate(coord1).worldAxisUnits();
+   const Vector<String>& units2 = cSys2.coordinate(coord2).worldAxisUnits();
+
+// Compare quantities for the world axes.  
+
+   for (uInt j=0; j<nWorld2; j++) {
+      if (world2(j) != -1) {
+         if (world1(j) != -1) {
+
+// Compare intrinsic axis units.  Should never fail.
+
+            if (Unit(units1(j)) != Unit(units2(j))) return False;
+
+// Set the world axis maps
+
+            worldAxisMap(world2(j)) = world1(j);
+            worldAxisTranspose(world1(j)) = world2(j);
+            refChange(world1(j)) = refDiff;
+         } else {
+
+// The world axis is missing in cSys1 and present in cSys2.  
+
+           return False;
+         }
+
+// The world axis has been removed in cSys2 so we aren't interested in it
+     
+      }
+   }
+//
+   return True;
+}
+

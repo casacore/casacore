@@ -278,9 +278,35 @@ public:
     // the 3rd world axis can still describe the frequency coordinate.
     // See also the functions in  <linkto class=CoordinateUtil>CoordinateUtil</linkto>
     // for removing lists of pixel/world axes (tricky because they shift down)
+    //
+    // False is returned (an error in <src>errorMessage()</src> will be set)
+    // if the axis is illegal, else returns True.
     // <group>
     Bool removeWorldAxis(uInt axis, Double replacement);
     Bool removePixelAxis(uInt axis, Double replacement);
+
+    // You can recover the replacement values with these functions.
+    // Use the same axis number as in the <src>removePixelAxis</src> and 
+    // <src>removeWorldAxis</src> calls.
+    //
+    // False is returned (an error in <src>errorMessage()</src> will be set)
+    // if the axis is illegal, else returns True.
+    // <group>
+    Bool worldReplacementValue (Double& replacement, uInt axis) const;
+    Bool pixelReplacementValue (Double& replacement, uInt axis) const;
+    // </group>
+
+    // You can set the replacement values with these functions.  You 
+    // can only do this after you have removed an axis or False will
+    // be returned (and an error in <src>errorMessage()</src>) will be set.
+    // Use the same axis number as in the <src>removePixelAxis</src> and 
+    // <src>removeWorldAxis</src> calls.
+    //
+    // False is returned (an error in <src>errorMessage()</src> will be set)
+    // if the axis is illegal, else returns True.
+    // <group>
+    Bool setWorldReplacementValue (uInt axis, Double replacement);
+    Bool setPixelReplacementValue(uInt axis, Double replacement);
     // </group>
 
     // Return a CoordinateSystem appropriate for a shift of origin
@@ -703,7 +729,7 @@ private:
     // For coordinate[i] axis[j], 
     //    world_maps_p[i][j], if >=0 gives the location in the
     //                        input vector that maps to this coord/axis,
-    //                        <= means that the axis has been removed
+    //                        <0 means that the axis has been removed
     //    world_tmp_p[i] a temporary vector length coord[i]->nworldAxes()
     //    replacement_values_p[i][j] value to use for this axis if removed
     PtrBlock<Block<Int> *>     world_maps_p;
@@ -738,6 +764,16 @@ private:
     void copy(const CoordinateSystem &other);
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
+
+    // Check world replacement axis is legal and find it
+    Bool checkWorldReplacementAxis(Int& coordinate,
+                                   Int& axisInCoordinate,
+                                   uInt axis) const;
+
+    // Check pixel replacement axis is legal and find it
+    Bool checkPixelReplacementAxis(Int& coordinate,
+                                   Int& axisInCoordinate,
+                                   uInt axis) const;
 
    // Dlete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
