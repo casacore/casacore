@@ -3,7 +3,7 @@
 # adate: Report the date in AIPS++ standard format
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992,1993,1995,1996
+#   Copyright (C) 1992,1993,1995,1996,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -53,6 +53,9 @@
 # Original: 1992/06/03 by Mark Calabretta, ATNF
 # $Id$
 #=============================================================================
+# Set the correct locale.
+  LC_TIME=C
+  export LC_TIME
 
 # Parse command input.
   DOW=1
