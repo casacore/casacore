@@ -26,13 +26,43 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
+#include <aips/Lattices/IPosition.h>
+//#include <aips/Lattices/Slicer.h>
+#include <aips/Mathematics/NumericTraits.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Utilities/Assert.h>
+#include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeConvolver.h>
+#include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/TempLattice.h>
+#include <trial/Lattices/PagedArray.h>
+#include <iostream.h>
 
 int main() {
   try {
-    LatticeConvolver<Float> c;
+    LatticeConvolver<Float> d;
+
+    TempLattice<Float> psf(IPosition(3,160,160,160));
+    psf.set(0.0f);
+    psf.putAt(1.0f, psf.shape()/2);
+    LatticeConvolver<Float> c(psf);
+    TempLattice<Float> extractedPsf(psf.shape());
+    c.getPsf(extractedPsf);
+    AlwaysAssert(near(extractedPsf.getAt(psf.shape()/2), 1.0f, 
+		      NumericTraits<Float>::epsilon), AipsError);
+    extractedPsf.putAt(0.0f, psf.shape()/2);
+    RO_LatticeIterator<Float> iter(extractedPsf, 
+				   extractedPsf.niceCursorShape(extractedPsf.maxPixels()));
+    for (iter.reset(); !iter.atEnd(); iter++) {
+      AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 
+			      NumericTraits<Float>::epsilon), AipsError);
+    }
+    
+    
   } catch (AipsError x) {
     cout<< "FAIL"<< endl;
     cerr << x.getMesg() << endl;
