@@ -194,9 +194,9 @@ Bool SubMS::makeSelection(){
 
   MSSelection thisSelection;
   if(fieldid_p.nelements() > 0)
-    thisSelection.setFieldIds(fieldid_p);
+    thisSelection.setFieldExpr(MSSelection::indexExprStr(fieldid_p));
   if(spw_p.nelements() > 0)
-    thisSelection.setSpwIds(spw_p);
+    thisSelection.setSpwExpr(MSSelection::indexExprStr(spw_p));
 
   const TableExprNode exprNode=thisSelection.toTableExprNode(sorted);
 

@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msFieldGramParseCommand(ms, "field='<1'")) {
+    if(msFieldGramParseCommand(ms, "field='<1'")==0) {
       const TableExprNode *node = &msFieldGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);

@@ -24,29 +24,14 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-
 //# $Id$
 
-
-#if !defined MS_MSSELECTION_H
+#ifndef MS_MSSELECTION_H
 #define MS_MSSELECTION_H
-
-/*
-#include <aips/aips.h>
-#include <aips/Utilities/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Glish/GlishRecord.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-*/
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MRadialVelocity.h>
 #include <tables/Tables/ExprNode.h>
@@ -92,12 +77,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class MSSelection
 {
  public:
+   enum MSExprType {NO_EXPR = 0,
+                    ANTENNA_EXPR,
+                    CORR_EXPR,
+                    FIELD_EXPR,
+                    SPW_EXPR,
+                    TIME_EXPR,
+                    UVDIST_EXPR,
+                    MAX_EXPR = UVDIST_EXPR};
+
    // Default null constructor, and destructor
    MSSelection();
    virtual ~MSSelection();
 
-   // Construct from a Glish record representing a selection item
-   // at the Glish or user interface level.
+   // Construct from a record representing a selection item
+   // at the CLI or user interface level.
    MSSelection(const Record& selectionItem);
 
    // Copy constructor
@@ -106,46 +100,29 @@ class MSSelection
    // Assignment operator
    MSSelection& operator=(const MSSelection& other);
 
-   // Field accessors
-   void setStartTime(const MEpoch& startTime);
-   void setEndTime(const MEpoch& endTime);
-   void setFieldIds(const Vector<Int>& fieldIds);
-   void setFieldNames(const Vector<String>& fieldNames);
-   void setSourceNames(const Vector<String>& sourceNames);
-   void setScanNos(const Vector<Int>& scanNos);
-   void setSpwIds(const Vector<Int>& spwIds);
-   void setFreqGrps(const Vector<Int>& freqGrps);
-   void setChanSel(const Int& nchan, const Int& start, const Int& step);
-   void setVelocitySel(const Int& nchan, const MRadialVelocity& velocityStart,
-		       const MRadialVelocity& velocityStep);
-   void setAntennaIds(const Vector<Int>& antennaIds);
-   void setAntennaNames(const Vector<String>& antennaNames);
-   void setInterferometerIds(const Matrix<Int>& interferometerIds);
-   void setFeedIds(const Vector<Int>& feedIds);
-   void setCorrTypes(const Vector<String>& corrTypes);
-   void setArrayIds(const Vector<Int>& arrayIds);
-   void setUVRange(const Double& startUV, const Double& endUV);
-   void setMSSelect(const String& msSelect);
-   void setObsModes(const Vector<String>& obsModes);
-   void setCalGrps(const Vector<String>& calGrps);
-   
-   //Add for ms selection
-   //   void setSelectionMS(TableExprNode nd);
-   //   MeasurementSet& getSelectionMS();
+   // Helper method for converting index vectors to expression strings
+   static String indexExprStr(Vector<Int> index);
+
+   // Expression accessors
+   Bool setAntennaExpr(const String& antennaExpr);
+   Bool setCorrExpr(const String& corrExpr);
+   Bool setFieldExpr(const String& fieldExpr);
+   Bool setSpwExpr(const String& spwExpr);
+   Bool setTimeExpr(const String& timeExpr);
+   Bool setUvDistExpr(const String& uvDistExpr);
+
+   // Clear all subexpression and reset priority
+   void clear(void);
 
    // Convert to TableExprNode format (C++ interface to TaQL)
    TableExprNode toTableExprNode(const MeasurementSet& ms);
 
-   //TableExprNode msTableExprNode;
-   static TableExprNode *msTableExprNode;
-
-   // add for ms selection 
-   static TableExprNode *msFieldTableExprNode;
-   static TableExprNode *msSpwTableExprNode;
-
  private:
-   // Initialize from a GlishRecord representing a selection
-   // item from the user interface or Glish CLI
+   // Set into the order of the selection expression
+   Bool setOrder(MSSelection::MSExprType type);
+
+   // Initialize from a Record representing a selection
+   // item from the user interface or CLI
    void fromSelectionItem(const Record& selectionItem);
 
    // Check if record field exists and is not unset
@@ -154,30 +131,17 @@ class MSSelection
    // Convert an MS select string to TaQL
    //   const String msToTaQL(const String& msSelect) {};
 
-   // Selection sub-fields
-   MEpoch startTime_p, endTime_p;
-   MRadialVelocity velocityStart_p, velocityStep_p;
-   Double startUV_p, endUV_p;
-   Vector<String> fieldNames_p, sourceNames_p, antennaNames_p, corrTypes_p, 
-     obsModes_p, calGrps_p;
-   Matrix<Int> interferometerIds_p;
-   Vector<Int> fieldIds_p, scanNos_p, spwIds_p, freqGrps_p,
-     antennaIds_p, feedIds_p, arrayIds_p;
-   String msSelect_p;
-   Int nchan_p, start_p, step_p;
-   //Add for ms selection
-   //   static MeasurementSet mssel;
+   // Selection expressions
+   String antennaExpr_p;
+   String corrExpr_p;
+   String fieldExpr_p;
+   String spwExpr_p;
+   String timeExpr_p;
+   String uvDistExpr_p;
 
-   // Flags to indicate which selections are active
-   Bool selectStartTime_p, selectEndTime_p, selectFieldIds_p, 
-     selectFieldNames_p, selectSourceNames_p, selectScanNos_p, 
-     selectSpwIds_p, selectFreqGrps_p, selectChanSel_p, 
-     selectVelocitySel_p, selectAntennaIds_p, 
-     selectAntennaNames_p, selectInterferometerIds_p, selectFeedIds_p, 
-     selectCorrTypes_p, selectArrayIds_p, selectUVRange_p, 
-     selectMSSelect_p, selectObsModes_p, selectCalGrps_p;
+   // Priority
+   Vector<Int> exprOrder_p;
 };
-
 
 } //# NAMESPACE CASA - END
 
