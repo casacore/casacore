@@ -76,13 +76,11 @@ uInt TSMDataColumn::dataLength (uInt nrPixels) const
 
 Bool TSMDataColumn::canAccessScalarColumn (Bool& reask) const
 {
-    reask = True;
-    return (stmanPtr_p->nhypercubes() == 1);
+    return stmanPtr_p->canAccessColumn (reask);
 }
 Bool TSMDataColumn::canAccessArrayColumn (Bool& reask) const
 {
-    reask = True;
-    return (stmanPtr_p->nhypercubes() == 1);
+    return stmanPtr_p->canAccessColumn (reask);
 }
 Bool TSMDataColumn::canAccessSlice (Bool& reask) const
 {
@@ -91,8 +89,7 @@ Bool TSMDataColumn::canAccessSlice (Bool& reask) const
 }
 Bool TSMDataColumn::canAccessColumnSlice (Bool& reask) const
 {
-    reask = True;
-    return (stmanPtr_p->nhypercubes() == 1);
+    return stmanPtr_p->canAccessColumn (reask);
 }
 
 
