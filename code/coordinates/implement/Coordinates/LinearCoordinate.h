@@ -1,5 +1,5 @@
 //# LinearCoordinate.h: Assume a general linear relation between pixel and world axes.
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,8 +61,6 @@ template<class T> class Quantum;
 // Where PC is an NxN matrix; pixel, crval, crpix and world are length N 
 // vectors, and cdelt is an NxN diagonal matrix, represented as a length 
 // N vector.
-//
-// The actual computations are carried out with the WCS library.
 //
 // The LinearCoordinate can contain several uncoupled axes (similar to the way
 // in which the DirectionCoordinate contains two axes).
