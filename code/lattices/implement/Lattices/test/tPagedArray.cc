@@ -45,6 +45,45 @@
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
+
+void testTempClose()
+{
+  PagedArray<Int> scratch(IPosition(3,64,64,257), 1);
+  scratch.tempClose();
+  AlwaysAssertExit (scratch.ok());
+  IPosition shape(3,1);    
+  shape(2) = scratch.shape()(2);
+  AlwaysAssertExit (scratch.ok());
+  AlwaysAssertExit (scratch.isWritable());
+  scratch.tempClose();
+  LatticeIterator<Int> li(scratch, shape);
+  scratch.tempClose();
+  Int i = 0;
+  for (li.reset(); !li.atEnd(); li++, i++) {
+    li.woCursor() = i;
+  }
+  shape = scratch.shape();
+  shape(2) = 1;
+  COWPtr<Array<Int> > ptrM;
+  scratch.tempClose();
+  scratch.getSlice(ptrM, IPosition(3,0), shape, IPosition(3,1), False);
+  scratch.reopen();
+  AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
+  Array<Int> expectedResult(shape);
+  indgen(expectedResult);
+  AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
+  ptrM.rwRef() = 0;
+  AlwaysAssert(allEQ(*ptrM, 0), AipsError);
+  Slicer sl(IPosition(3,0,0,5), shape, IPosition(3,1));
+  scratch.getSlice(ptrM, sl, False);
+  AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
+  scratch.set(0);
+  scratch.putAt (7, IPosition(3,7));
+  AlwaysAssert(scratch.getAt(IPosition(3,0)) == 0, AipsError);
+  AlwaysAssert(scratch.getAt(IPosition(3,7)) == 7, AipsError);
+}
+
+
 int main() {
   try {
     {
@@ -201,9 +240,11 @@ int main() {
       AlwaysAssert(pa3.getAt(IPosition(2,0)) == 0, AipsError);
       AlwaysAssert(pa3.shape().isEqual(IPosition(2,8)), AipsError);
     }
-    cout<< "OK"<< endl;
-    return 0;
+    testTempClose();
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
+    return 1;
   } 
+  cout<< "OK"<< endl;
+  return 0;
 }
