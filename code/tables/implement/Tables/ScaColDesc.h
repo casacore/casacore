@@ -1,5 +1,5 @@
 //# ScaColDesc.h: Templated class for description of table scalar columns
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,7 +98,7 @@ class ColumnSet;
 //         Firstly it can be used in class SetupNewTable to bind a group
 //         of columns.
 //         Secondly, when the default data managers are used, it
-//         allows, for example, to have 2 AipsIO storage managers.
+//         allows, for example, to have 2 StandardStMan storage managers.
 //         One for one group of columns and one for another group of columns.
 //  <li> Options. These are defined in ColumnDesc.h and can be combined
 //         by or-ing them.
@@ -165,13 +165,13 @@ friend class ColumnDesc;
 
 public:
     // Construct the column with the given name.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStMan storage manager.
     // The data manager group defaults to the data manager type.
     // The possible options are defined in ColumnDesc.h.
     explicit ScalarColumnDesc (const String& name, int options = 0);
 
     // Construct the column with the given name and comment.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStMan storage manager.
     // The data manager group defaults to the data manager type.
     // The possible options are defined in ColumnDesc.h.
     ScalarColumnDesc (const String& name, const String& comment,

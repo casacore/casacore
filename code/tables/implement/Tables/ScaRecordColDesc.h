@@ -1,5 +1,5 @@
 //# ScaRecordColDesc.h: Class for description of table scalar record columns
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,12 +121,12 @@ friend class ColumnDesc;
 
 public:
     // Construct the column with the given name.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStMan storage manager.
     // The data manager group defaults to the data manager type.
     explicit ScalarRecordColumnDesc (const String& name);
 
     // Construct the column with the given name and comment.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStMan storage manager.
     // The data manager group defaults to the data manager type.
     ScalarRecordColumnDesc (const String& name, const String& comment);
 
