@@ -40,17 +40,39 @@ LatticeExpr<T>::LatticeExpr()
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr)
-: lastChunkPtr_p (0)
+: shape_p        (expr.shape()),
+  lastChunkPtr_p (0)
+{
+    // Check if an expression array has a shape.
+    if (!expr.isScalar()  &&  shape_p.nelements() == 0) {
+       throw AipsError ("LatticeExpr cannot be constructed from a lattice "
+			"expression with an undefined shape");
+    }
+    init (expr);
+}
+
+template <class T>
+LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr,
+			     const IPosition& latticeShape)
+: shape_p        (latticeShape),
+  lastChunkPtr_p (0)
 //
 // Construct from a LatticeExprNode object.  The LEN type is
 // converted to match the template type if possible
 //
 {
-    // Check if an expression array has a shape.
-    if (!expr.isScalar()  &&  expr.shape().nelements() == 0) {
-       throw AipsError ("LatticeExpr cannot be constructed from a lattice "
-			"expression with an undefined shape");
+    // Check if the expression has a shape.
+    if (!expr.isScalar()  &&  expr.shape().nelements() > 0
+    &&  !(shape_p.isEqual(expr.shape()))) {
+       throw AipsError ("LatticeExpr::constructor - "
+			"given shape mismatches expression's shape");
     }
+    init (expr);
+}
+
+template <class T>
+void LatticeExpr<T>::init (const LatticeExprNode& expr)
+{
     DataType thisDT = whatType (static_cast<T*>(0));
     if (expr.dataType() == thisDT) {
 	expr_p = expr;
@@ -88,7 +110,8 @@ LatticeExpr<T>::~LatticeExpr()
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExpr<T>& other)
-: expr_p (other.expr_p),
+: expr_p  (other.expr_p),
+  shape_p (other.shape_p),
   lastChunkPtr_p (0)
 {}
 
@@ -96,7 +119,8 @@ template <class T>
 LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
 {
    if (this != &other) {
-      expr_p = other.expr_p;
+      expr_p  = other.expr_p;
+      shape_p = other.shape_p;
       delete lastChunkPtr_p;
       lastChunkPtr_p = 0;
       lastSlicer_p = Slicer();
@@ -153,7 +177,7 @@ void LatticeExpr<T>::resync()
 template <class T>
 IPosition LatticeExpr<T>::shape() const
 {
-   return expr_p.shape();
+   return shape_p;
 }
   
 template <class T>

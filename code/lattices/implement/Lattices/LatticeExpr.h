@@ -1,5 +1,5 @@
 //# LatticeExpr.h:  LatticeExpr.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,17 +141,17 @@ public:
   // Default constructor
    LatticeExpr();
 
-  // Constructor from an arbitrary LatticeExprNode  expression object.
+  // Constructor from an arbitrary LatticeExprNode expression object.
   // An exception is thrown if the expression data type cannot be
-  // converted to the template data type.  Note that the 2nd argument 
-  // is included to be sure that the compiler does not take this constructor 
-  // into account for automatic conversions (since the keyword explicit is 
-  // not implemented by all compilers yet). The conversion operators 
-  // in class LatticeExprNode take care of automatic conversions.
+  // converted to the template data type.
+  // The shape argument is mandatory if the expression has no shape.
+  // If the expression has a shape and if shape is given, it is checked
+  // if they are equal.
    LatticeExpr (const LatticeExprNode& expr);
+   LatticeExpr (const LatticeExprNode& expr, const IPosition& latticeShape);
 
   // Copy constructor (reference semantics)
-   LatticeExpr(const LatticeExpr<T>& other);
+   LatticeExpr (const LatticeExpr<T>& other);
 
   // Destructor, does nothing
    virtual ~LatticeExpr();
@@ -221,9 +221,12 @@ public:
 
 
 private:
-  // This class just contains an object of class LatticeExprNode. 
-  // It is untemplated and does not inherit.
-   LatticeExprNode expr_p;
+   // Initialize the object from the expression.
+   void init (const LatticeExprNode& expr);
+
+
+   LatticeExprNode expr_p;     //# its shape can be undefined
+   IPosition       shape_p;    //# this shape is always defined
    LELArray<T>*    lastChunkPtr_p;
    Slicer          lastSlicer_p;
 };
