@@ -268,8 +268,8 @@ public:
   // <group>
   const RONewMSDopplerColumns& doppler() const {return doppler_p;}
   const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-  //#   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
-  //#   const RONewMSWeatherColumns& weather() const {return weather_p;}
+  const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
+  const RONewMSWeatherColumns& weather() const {return weather_p;}
   // </group>
 
   // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
