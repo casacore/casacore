@@ -33,9 +33,9 @@
 #include <trial/Lattices/LELInterface.h>
 
 //# Forward Declarations
-template <class T> class Array;
 template <class T> class Lattice;
-class PixelRegion;
+template <class T> class MaskedLattice;
+
 
 // <summary> This LEL class handles access to Lattices </summary>
 //
@@ -93,15 +93,18 @@ template <class T> class LELLattice : public LELInterface<T>
 {
 public: 
    
-// Constructor takes lattice and region to fetch from it
+// Constructor takes lattice to fetch from it
+// <group>
    LELLattice (const Lattice<T>& lattice);  
+   LELLattice (const MaskedLattice<T>& lattice);  
+// </group>
 
 // Destructor does nothing
   ~LELLattice();
 
 // Evaluate the expression; this means get the chunk of the lattice
    virtual void eval(Array<T>& result,
-                     const PixelRegion& region) const;
+                     const Slicer& section) const;
 
 // Getting a scalar value is not possible (throws exception).
    virtual T getScalar() const;
@@ -113,10 +116,8 @@ public:
    virtual String className() const;
 
 private:
-   Lattice<T>* pLattice_p;
+   MaskedLattice<T>* pLattice_p;
 };
 
 
 #endif
-
-
