@@ -38,12 +38,6 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Array.h>
 
-#include <aips/version.h>
-#include <aips/Logging.h>
-
-#include <strstream.h>
-#include <iomanip.h>
-
 // Cure some problems seen on dec alpha - something is defining macros
 // major and minor
 #if defined(major)
@@ -52,6 +46,12 @@
 #if defined(minor)
 #undef minor
 #endif
+#include <aips/version.h>
+#include <aips/Logging.h>
+
+#include <strstream.h>
+#include <iomanip.h>
+
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const RecordDesc &description,
