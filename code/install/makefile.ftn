@@ -2,7 +2,7 @@
 # makefile.ftn: Generic AIPS++ FORTRAN subroutine compilation makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996
+#   Copyright (C) 1992-1996,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -176,6 +176,11 @@ lib : build_lock $(foreach OBJ,$(AIPSFTNS:.f=.o), \
     $(addsuffix ($(OBJ)),$(AIPSLIBS))) updatelib
 	-@ $(RM) $(LOCKDBG)
 	-@ $(RM) $(LOCKOPT)
+
+lib :
+	@ for i in $$SUBDIRS ; do \
+	     $(MAKE) -C $$i $@ ; \
+	  done
 
 build_lock :
 	-@ echo ""
