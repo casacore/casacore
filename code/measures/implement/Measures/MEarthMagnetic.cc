@@ -244,6 +244,10 @@ uInt MEarthMagnetic::myType() {
   return Register((MEarthMagnetic *)0);
 }
 
+Bool MEarthMagnetic::isModel() const {
+  return ToBool((ref.getType() & MEarthMagnetic::EXTRA) != 0);
+}
+
 Quantum<Vector<Double> > MEarthMagnetic::get(const Unit &inunit) const {
     return Quantum<Vector<Double> >(data.getValue(),"T").get(inunit);
 }

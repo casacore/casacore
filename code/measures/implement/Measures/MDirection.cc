@@ -309,6 +309,10 @@ uInt MDirection::myType() {
   return Register((MDirection *)0);
 }
 
+Bool MDirection::isModel() const {
+  return ToBool((ref.getType() & MDirection::EXTRA) != 0);
+}
+
 Quantum<Vector<Double> > MDirection::getAngle() const {
     return (data.getAngle());
 }

@@ -327,6 +327,8 @@ public:
   // <group>
   virtual String getRefString() const = 0;
   // </group>
+  // Tell me if you are a pure model (e.g. a planet)
+  virtual Bool isModel() const;
   //
   // Each derived class should have a string-to-code translation routine
   // for the reference type. The routine returns False if unknown String (and

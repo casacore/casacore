@@ -237,6 +237,8 @@ public:
   virtual String getRefString() const;
   // Get my type (as Register)
   static uInt myType();
+  // Tell me if you are a pure model (e.g. a planet)
+  virtual Bool isModel() const;
 
 // Get Measure data
 // <group>
