@@ -184,7 +184,13 @@
            a_arch=hpux
            ;;
         Linux)
-           a_arch=linux
+	   a_arch=linux
+	   if [ -z "$aips_ext" -a -f /etc/redhat-release ]; then
+	      a_temp=`cat /etc/redhat-release | sed -e 's/.*release \([0-9][0-9.]*\).*/\1/' -e 's/\.//g'`
+	      if [ -d "${a_root}/${a_arch}_RH${a_temp}" -a -f "${a_root}/${a_arch}_RH${a_temp}/makedefs" ]; then
+	         aips_ext="RH${a_temp}"
+	      fi
+	   fi
            ;;
         IRIX*)
            a_arch=sgi

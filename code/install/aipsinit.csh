@@ -174,6 +174,16 @@
            breaksw
         case Linux:
            set a_arch = linux
+	   if (! $?aips_ext) then
+	      if (-f /etc/redhat-release) then
+	         set a_temp = `cat /etc/redhat-release | sed -e 's/.*release \([0-9][0-9.]*\).*/\1/' -e 's/\.//g'`
+	         if (-d "${a_root}/${a_arch}_RH${a_temp}") then
+		    if ( -f "${a_root}/${a_arch}_RH${a_temp}/makedefs") then
+		       set aips_ext = "RH${a_temp}"
+		    endif
+	         endif
+	      endif
+	   endif
            breaksw
         IRIX*:
            set a_arch = sgi
