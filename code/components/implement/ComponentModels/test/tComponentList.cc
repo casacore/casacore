@@ -320,40 +320,41 @@ int main() {
 // 		   AipsError);
 
        cout << "Passed the sampling & projection tests" << endl;
-       crux.rename(Path("tComponentList_tmp.model"), Table::New);
+       crux.rename(Path(String("tComponentList_tmp.model")), Table::New);
        //       image.table().markForDelete();
     }
      {
        // Create a model by reading the previous one from disk
-       ComponentList model(Path("tComponentList_tmp.model"));
-       AlwaysAssert(model.nelements() == 6, AipsError);
-       AlwaysAssert(model.component(2).shape().type() == 
-		    ComponentType::POINT, AipsError);
-       AlwaysAssert(model.component(3).shape().type() == 
-		    ComponentType::GAUSSIAN, AipsError);
-       model.rename(Path("tComponentList_tmp_renamed.model"));
-       model.component(1).flux().convertUnit("WU");
-       model.component(2).flux().convertUnit("WU");
-       model.component(3).flux().convertUnit("WU");
-       model.component(0).label() = "Component 1";
-       model.component(2).flux().convertPol(ComponentType::LINEAR);
-       model.component(3).flux().convertPol(ComponentType::CIRCULAR);
+       Path path0(String("tComponentList_tmp.model"));
+       ComponentList model0(path0);
+       AlwaysAssert(model0.nelements()==6, AipsError);
+//
+       AlwaysAssert(model0.component(2).shape().type()==ComponentType::POINT, AipsError);
+       AlwaysAssert(model0.component(3).shape().type()==ComponentType::GAUSSIAN, AipsError);
+       model0.rename(Path(String("tComponentList_tmp_renamed.model")));
+       model0.component(1).flux().convertUnit("WU");
+       model0.component(2).flux().convertUnit("WU");
+       model0.component(3).flux().convertUnit("WU");
+       model0.component(0).label() = "Component 1";
+       model0.component(2).flux().convertPol(ComponentType::LINEAR);
+       model0.component(3).flux().convertPol(ComponentType::CIRCULAR);
      }
     {
       // Check that the Table has been renamed and not copied
-      AlwaysAssert(Table::isWritable("tComponentList_tmp.model") == False,
+      AlwaysAssert(Table::isWritable(String("tComponentList_tmp.model")) == False,
   		   AipsError);
-      AlwaysAssert(Table::isReadable("tComponentList_tmp.model") == False,
+      AlwaysAssert(Table::isReadable(String("tComponentList_tmp.model")) == False,
   		   AipsError);
 
       // Open (readonly) the renamed model and copy it so we can mess with.
-      const ComponentList model(Path("tComponentList_tmp_renamed.model"),True);
-      AlwaysAssert(model.nelements() == 6, AipsError);
-      AlwaysAssert(model.component(2).shape().type() == ComponentType::POINT,
+      Path path0(String("tComponentList_tmp_renamed.model"));
+      const ComponentList model0(path0,True);
+      AlwaysAssert(model0.nelements() == 6, AipsError);
+      AlwaysAssert(model0.component(2).shape().type() == ComponentType::POINT,
   		   AipsError);
-      AlwaysAssert(model.component(3).shape().type() == 
+      AlwaysAssert(model0.component(3).shape().type() == 
 		   ComponentType::GAUSSIAN, AipsError);
-      ComponentList RO_Model(model);
+      ComponentList RO_Model(model0);
       try {
   	RO_Model.remove(0);
       } catch (AipsError x) {
@@ -362,7 +363,7 @@ int main() {
  	  return 1;
   	}
       }
-      ComponentList RW_Model(model.copy());
+      ComponentList RW_Model(model0.copy());
       Flux<Double> newFlux(1.0);
       RW_Model.component(1).flux() = newFlux;
       // I cannot use       
@@ -373,26 +374,30 @@ int main() {
       AlwaysAssert(allNear(RW_Model.component(1).flux().value(), 
 			   newFlux.value(), C::dbl_epsilon),
  		   AipsError);
-      AlwaysAssert(!allNear(model.component(1).flux().value(), 
+      AlwaysAssert(!allNear(model0.component(1).flux().value(), 
 			    newFlux.value(), C::dbl_epsilon),
  		   AipsError);
       RW_Model.remove(0);
-      AlwaysAssert(model.nelements() == 6, AipsError);
-      AlwaysAssert(model.component(2).shape().type() == ComponentType::POINT, 
+      AlwaysAssert(model0.nelements() == 6, AipsError);
+      AlwaysAssert(model0.component(2).shape().type() == ComponentType::POINT, 
   		   AipsError);
-      AlwaysAssert(model.component(3).shape().type() == 
+      AlwaysAssert(model0.component(3).shape().type() == 
 		   ComponentType::GAUSSIAN, AipsError);
       AlwaysAssert(RW_Model.nelements() == 5, AipsError);
       AlwaysAssert(RW_Model.component(1).shape().type() == 
 		   ComponentType::POINT, AipsError);
       AlwaysAssert(RW_Model.component(2).shape().type() == 
 		   ComponentType::GAUSSIAN, AipsError);
-      RW_Model.rename(Path("tComponentList_tmp_copied.model"));
+      RW_Model.rename(Path(String("tComponentList_tmp_copied.model")));
       cout << "Passed the Table reading/writing tests" << endl;
     }
     {
-      ComponentList original(Path("tComponentList_tmp_renamed.model"));
-      ComponentList modified(Path("tComponentList_tmp_copied.model"), False);
+      Path path0(String("tComponentList_tmp_renamed.model"));
+      ComponentList original(path0);
+//
+      Path path1(String("tComponentList_tmp_copied.model"));
+      ComponentList modified(path1, False);
+//
       AlwaysAssert(original.nelements() == 6, AipsError);
       AlwaysAssert(original.component(2).shape().type() == 
 		   ComponentType::POINT, AipsError);
