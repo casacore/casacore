@@ -1,5 +1,5 @@
 //# LatticeExpr.h:  LatticeExpr.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -148,7 +148,7 @@ public:
 // into account for automatic conversions (since the keyword explicit is 
 // not implemented by all compilers yet). The conversion operators 
 // in class LatticeExprNode take care of automatic conversions.
-   LatticeExpr (const LatticeExprNode& expr, uInt dummy);
+   LatticeExpr (const LatticeExprNode& expr, uInt dummy=0);
 
 // Copy constructor (reference semantics)
    LatticeExpr(const LatticeExpr<T>& other);

@@ -1,5 +1,5 @@
 //# LatticeExpr.cc:  this defines LatticeExpr.cc
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
