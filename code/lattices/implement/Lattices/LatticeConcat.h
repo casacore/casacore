@@ -122,8 +122,13 @@ template <class T> class LatticeConcat : public MaskedLattice<T>
 {
 public:
 
-// Constructor. Specify the concatenation axis (0 relative)
-// and whether you wish all internal lattice copies to be
+// Constructor. Argument <src>axis</src> specifies the concatenation 
+// axis (0 relative).  If this is one more than the number of axes
+// in the input lattices (set with function <src>setLattice</src>)
+// then the resultant concatenated lattice has dimension
+// one greater than that the input lattices.
+// Argument <src>tempClose</src> specifies whether you wish 
+// all internal lattice copies to be
 // opened/closed on demand, rather than just being left open.
 // This prevents open file limits being reached
    LatticeConcat (uInt axis, Bool tempClose=True);
