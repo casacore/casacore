@@ -57,10 +57,12 @@ class Time;
 // <prerequisite>
 //   <li> <linkto class=Quantum>Quantum</linkto>
 //   <li> <linkto class=MVAngle>MVAngle</linkto>
+//   <li> <a href="http://mcps.k12.md.us/departments/year2000/Technology/ISO_std.html">
+//		ISO8601 standard</a> on dates and time.
 // </prerequisite>
 //
 // <etymology>
-// From Measure, Value and Angle
+// From Measure, Value and Time
 // </etymology>
 //
 // <synopsis>
@@ -88,13 +90,15 @@ class Time;
 //   <li> <src>Quantity get()</src> will return days
 //   <li> <src>Quantity get(Unit)</src> will return in specified units 
 //		(angle(in which case it will be between -pi and +pi) or time)
-//   <li> <src>uInt weekday()</src> will return day of week (0=Sun)
+//   <li> <src>uInt weekday()</src> will return day of week (1=Mon, 7=Sun)
 //   <li> <src>uInt month()</src> will return month (1=Jan)
 //   <li> <src>Int year()</src> will return year
 //   <li> <src>uInt monthday()</src> will return day of the month
 //   <li> <src>uInt yearday()</src> will return day of year (Jan01 = 1)
 //   <li> <src>uInt yearweek()</src> will return week of year
-//		(week containing Jan01 = 1, week start on Sunday)
+//		(week containing Jan04 = 1, week start on Monday).
+//		The week before the first week will be called 0, contrary
+//		to standard practice (week 53/52 of previous year).
 //   <li> <src>Int ymd()</src> will return yyyymmdd as a single number
 //   <li> <src>const String &dayName()</src> will return name of day
 //		(Sun, Mon, Tue, Wed, Thu, Fri, Sat)
@@ -362,7 +366,7 @@ class MVTime {
   static const String &dayName(uInt which);
   const String &monthName() const;
   static const String &monthName(uInt which);
-  // Sun = 0
+  // Mon = 1; Sun = 7;
   uInt weekday() const;
   // Jan =1
   uInt month() const;
