@@ -1017,6 +1017,10 @@ auxiliary :
     ifdef DO_TEST
 	-@ set WARNING $(LIBEXECD) ; $(CheckDir)
     endif
+	-@ echo "LIBICOND=$(LIBICOND)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBICOND) ; $(CheckDir)
+    endif
 	-@ echo "BINDBGD =$(BINDBGD)"
     ifdef DO_TEST
 	-@ set WARNING $(BINDBGD) ; $(CheckDir)
