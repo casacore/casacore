@@ -122,10 +122,10 @@ int main(){
       Table t(filename, Table::Update);
       PagedArray<Float> da(t);
       const IPosition latticeShape = da.shape();
-      const nx = latticeShape(0);
-      const ny = latticeShape(1);
-///      const npol = latticeShape(2);
-      const nchan = latticeShape(3);
+      const Int nx = latticeShape(0);
+      const Int ny = latticeShape(1);
+///      const Int npol = latticeShape(2);
+      const Int nchan = latticeShape(3);
       IPosition cursorShape = da.niceCursorShape (da.maxPixels());
       cursorShape(2) = 1;
       LatticeStepper step(latticeShape, cursorShape);
