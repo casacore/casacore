@@ -134,7 +134,7 @@ template<class T> void Matrix<T>::assign (const Array<T>& other)
 // <thrown>
 //    <item> ArrayNDimError
 // </thrown>
-template<class T> void Matrix<T>::reference(Array<T> &other)
+template<class T> void Matrix<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
     Array<T>::reference(other);

@@ -88,8 +88,12 @@ public:
     { return ndimen_p; }
 
   // How many elements does this array have? Product of all axis lengths.
+  // <group>
   uInt nelements() const
     { return nels_p; }
+  uInt size() const
+    { return nels_p; }
+  // </group>
 
   // Are the array data contiguous?
   // If they are not contiguous, <src>getStorage</src> (see below)
@@ -130,6 +134,10 @@ protected:
 
   // Determine if the storage of a subset is contiguous.
   Bool isStorageContiguous() const;
+
+  // Check if the shape of a vector is correct. If possible, adjust if not.
+  // It is possible if at most one axis has length > 1.
+  void checkVectorShape();
 
   // Check if the shape of a matrix is correct. Adjust it if smaller.
   void checkMatrixShape();

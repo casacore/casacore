@@ -100,9 +100,6 @@ public:
     Cube(const IPosition &len, const T &initialValue);
 
     // The copy constructor uses reference semantics.
-    // <note role=warning> The copy constructor should normally be avoided. More
-    //         details are available under the documentation for Array.
-    //
     Cube(const Cube<T> &);
 
     // Construct a cube by reference from "other". "other must have
@@ -125,7 +122,7 @@ public:
 
     // Make this cube a reference to other. Other must be of dimensionality
     // 3 or less.
-    virtual void reference(Array<T> &other);
+    virtual void reference(const Array<T> &other);
 
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).

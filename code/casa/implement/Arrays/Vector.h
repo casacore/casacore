@@ -116,13 +116,12 @@ public:
     explicit Vector(const Block<T> &other);
 
     // Create a reference to other.
-    // <note role=warning> The copy constructor should normally be avoided.
-    // More details are available under the documentation for Array. </note>
-    //
     Vector(const Vector<T> &other);
     
-    // If "other" is of dimension one, create a reference to it.
-    // See the warning associated with the copy constructor.
+    // Create a reference to the other array.
+    // It is always possible if the array has zero or one axes.
+    // If it has > 1 axes, it is only possible if the array has at most
+    // one axis with length > 1. In that case the degenerated axes are removed.
     Vector(const Array<T> &other);
 
     // Create an Vector of a given shape from a pointer.
@@ -134,22 +133,23 @@ public:
     // Create a Vector from an STL vector (see <src>tovector()</src> in
     // <linkto class=Array>Array</linkto>  for the reverse operation).
     // <note role=tip> Both this constructor and the tovector() are
-    // defined in <src>Vector2.cc</src>. The appropriate templates are
-    // instantiated using the macro <src>AIPS_VECTOR2_AUX_TEMPLATES(X)</src>
+    // defined in <src>Vector2.cc</src>. In case of DIY template instantiation
+    // the appropriate templates are instantiated using the macro
+    // <src>AIPS_VECTOR2_AUX_TEMPLATES(X)</src>
     // defined in <src>Vector2.cc</src> (<src>X</src> is the template
     // argument needed). </note>
     template <class U>
     Vector(const vector<T, U> &other);
 
-    // Define a destructor, otherwise the (SUN) compiler makes a static one.
+    // Define a destructor, otherwise the compiler makes a static one.
     virtual ~Vector();
 
-    // Assign the other array (which must be dimension 1) to this vector.
+    // Assign the other array (which must be of dimension one) to this vector.
     // If the shapes mismatch, this array is resized.
     virtual void assign (const Array<T>& other);
 
     // Create a reference to "other", which must be of dimension one.
-    virtual void reference(Array<T> &other);
+    virtual void reference(const Array<T> &other);
 
     // Resize this Vector to the given length.
     // The default copyValues flag is False.
@@ -314,4 +314,5 @@ private:
 };
 
 } //#End namespace casa
+
 #endif

@@ -111,14 +111,10 @@ public:
     Matrix(const IPosition &len, const T &initialValue);
 
     // The copy constructor uses reference semantics.
-    // <note role=warning> The copy constructor should normally be avoided. More
-    //         details are available under the documentation for Array.
-    //
     Matrix(const Matrix<T> &other);
 
     // Construct a Matrix by reference from "other". "other must have
-    // ndim() of 2 or less. The warning which applies to the copy constructor
-    // is also valid here.
+    // ndim() of 2 or less.
     Matrix(const Array<T> &other);
 
     // Create an Matrix of a given shape from a pointer.
@@ -136,7 +132,7 @@ public:
 
     // Make this matrix a reference to other. Other must be of dimensionality
     // 2 or less.
-    virtual void reference(Array<T> &other);
+    virtual void reference(const Array<T> &other);
 
     // Resize to the given shape (must be 2-dimensional).
     // Resize without argument is equal to resize(0,0).

@@ -461,21 +461,62 @@ Bool ArrayBase::ok() const
 }
 
 
+void ArrayBase::checkVectorShape()
+{
+  if (ndim() != 1) {
+    // Check if all elements are 1 or nels_p. In this way we are sure that
+    // only one axis remains (i.e. at most one axis has length > 1).
+    // Keep original increment and length of the remaining axis.
+    Int inc   = 1;
+    Int orLen = 1;
+    Int skippedVolume = 1;
+    for (uInt i=0; i<ndim(); ++i) {
+      if (length_p[i] == 1) {
+	skippedVolume *= originalLength_p(i);
+      } else {
+	if (length_p[i] != Int(nels_p)) {
+	  throw(ArrayNDimError(1, ndim(),
+			       "Vector<T>: ndim of other array > 1"));
+	}
+	inc = inc_p(i) * skippedVolume;
+	orLen = originalLength_p(i) * skippedVolume;
+	break;
+      }
+    }
+    ndimen_p = 1;
+    length_p.resize(1); 
+    inc_p.resize(1);
+    originalLength_p.resize(1);
+    steps_p.resize(1);
+    length_p(0) = nels_p;
+    inc_p(0) = inc;
+    originalLength_p(0) = orLen;
+    steps_p(0) = inc;
+  }
+}
+
 void ArrayBase::checkMatrixShape()
 {
   if (ndim() > 2) {
     throw(ArrayNDimError(2, ndim(),
 			 "Matrix<T>: ndim of other array > 2"));
   }
-  // We need to fiddle a bit if the ndim is == 1.
-  if (ndim() == 1) {
-    ndimen_p = 2;
+  if (ndim() < 2) {
+    // We need to fiddle a bit if ndim < 2.
     length_p.resize(2); 
     inc_p.resize(2);
     originalLength_p.resize(2);
-    length_p(1) = 1;
+    int len = 1;
+    if (ndim() == 0) {
+      len = 0;
+      length_p(0) = 0;
+      inc_p(0) = 1;
+      originalLength_p(0) = 0;
+    }
+    length_p(1) = len;
     inc_p(1) = 1;
-    originalLength_p(1) = 1;
+    originalLength_p(1) = len;
+    ndimen_p = 2;
     baseMakeSteps();
   }
 }
@@ -486,20 +527,27 @@ void ArrayBase::checkCubeShape()
     throw(ArrayNDimError(3, ndim(),
 			 "Cube<T>: ndim of other array > 3"));
   }
-  // We need to fiddle a bit if the ndim is == 1 or 2.
+  // We need to fiddle a bit if ndim < 3.
   if (ndim() < 3) {
-    ndimen_p = 3;
     length_p.resize(3); 
     inc_p.resize(3);
     originalLength_p.resize(3);
-    if (ndim() == 1) {
-      length_p(1) = 1;
-      inc_p(1) = 1;
-      originalLength_p(1) = 1;
+    int len = 1;
+    if (ndim() == 0) {
+      len = 0;
+      length_p(0) = 0;
+      inc_p(0) = 1;
+      originalLength_p(0) = 0;
     }
-    length_p(2) = 1;
+    if (ndim() < 2) {
+      length_p(1) = len;
+      inc_p(1) = 1;
+      originalLength_p(1) = len;
+    }
+    length_p(2) = len;
     inc_p(2) = 1;
-    originalLength_p(2) = 1;
+    originalLength_p(2) = len;
+    ndimen_p = 3;
     baseMakeSteps();
   }
 }

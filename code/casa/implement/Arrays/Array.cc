@@ -118,7 +118,7 @@ template<class T> void Array<T>::assign (const Array<T>& other)
     operator= (other);
 }
 
-template<class T> void Array<T>::reference(Array<T> &other)
+template<class T> void Array<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
     baseCopy (other);

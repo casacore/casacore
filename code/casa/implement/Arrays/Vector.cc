@@ -116,9 +116,10 @@ template<class T> Vector<T>::Vector(const Vector<T> &other)
 template<class T> Vector<T>::Vector(const Array<T> &other)
 : Array<T>(other)
 {
-    if (this->ndim() != 1)
-	throw(ArrayNDimError(1, other.ndim(), "Vector<T>::Vector"
-			     " (const Array<T> &) : ndim != 1"));
+    // If not 1 dimension, adjust shape if possible.
+    if (this->ndim() != 1) {
+        checkVectorShape();
+    }
     DebugAssert(ok(), ArrayError);
 }
 
@@ -189,7 +190,7 @@ template<class T> void Vector<T>::assign (const Array<T>& other)
 // <thrown>
 //    <item> ArrayNDimError
 // </thrown>
-template<class T> void Vector<T>::reference(Array<T> &other)
+template<class T> void Vector<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
     if (other.ndim() != 1)

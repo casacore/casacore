@@ -131,7 +131,7 @@ template<class T> void Cube<T>::assign (const Array<T>& other)
 // <thrown>
 //   <item> ArrayNDimError
 // </thrown>
-template<class T> void Cube<T>::reference(Array<T> &other)
+template<class T> void Cube<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
     if (other.ndim() != 3)

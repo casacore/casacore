@@ -95,8 +95,7 @@ template<class Domain, class Range> class Functional;
 //        normally functions should not pass Arrays by value, rather they
 //        should pass a reference or a const reference. On the positive
 //        side, returning an array from a function is efficient since no
-//        copying need be done. Later releases of the array classes might
-//        have the copy constructor actually make a copy -- comments solicited.
+//        copying need be done.
 // </note>
 //
 // Aside from the explicit reference() member function, a user will
@@ -219,7 +218,14 @@ public:
     // After invocation, this array and other reference the same storage. That
     // is, modifying an element through one will show up in the other. The
     // arrays appear to be identical; they have the same shape.
-    virtual void reference(Array<T> &other);
+    // <br>Please note that this function makes it possible to reference a
+    // const Array, thus effectively it makes a const Array non-const.
+    // Although this may seem undesirable at first sight, it is necessary to
+    // be able to make references to temporary Array objects, in particular to 
+    // Array slices. Otherwise one first needs to use the copy constructor.
+    //# The const has been introduced on 2005-Mar-31 because of the hassle
+    //# involved in calling the copy ctor before reference.
+    virtual void reference(const Array<T> &other);
 
     // Copy the values in other to this. If the array on the left hand
     // side has no elements, then it is resized to be the same size as
