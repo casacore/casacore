@@ -2763,3 +2763,4 @@
 10 093 src mv trial/implement/Measures/test/tVelocityMachine.cc aips/implement/Measures/test/tVelocityMachine.cc
 10 093 src mv trial/implement/Measures/test/tVelocityMachine.out aips/implement/Measures/test/tVelocityMachine.out
 10 095 src rm trial/apps/sky
+10 095 src rm trial/apps/sky/makefile
