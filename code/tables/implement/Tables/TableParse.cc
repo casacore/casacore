@@ -45,6 +45,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Sort.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/AipsIO.h>
@@ -128,7 +129,8 @@ uInt TableParseSelect::currentSelect_p = 0;
 
 
 TableParseSelect::TableParseSelect()
-: resultSet_p (0),
+: distinct_p  (False),
+  resultSet_p (0),
   node_p      (0),
   sort_p      (0),
   noDupl_p    (False),
@@ -722,6 +724,18 @@ void TableParseSelect::handleSelectColumn (const String& name)
     }
 }
 
+void TableParseSelect::handleSelect (TableExprNode*& node,
+				     Bool distinct)
+{
+    distinct_p = distinct;
+    node_p     = node;
+    node       = 0;
+    if (distinct_p  &&  columnNames_p.nelements() == 0) {
+        throw TableInvExpr ("SELECT DISTINCT can only be given with at least "
+			    "one column name");
+    }
+}
+
 //# Execute a query in the FROM clause and return the resulting table.
 TableParseVal* TableParseSelect::doFromQuery()
 {
@@ -1018,6 +1032,27 @@ Table TableParseSelect::doSort (const Table& table)
 }
 
 
+Table TableParseSelect::doDistinct (const Table& table)
+{
+    Vector<uInt> rownrs;
+    {
+        // Sort the table uniquely on all columns.
+        // Exit immediately if already unique.
+	Table tabs = table.sort (columnNames_p, Sort::Ascending,
+				 Sort::QuickSort|Sort::NoDuplicates);
+	if (tabs.nrow() == table.nrow()) {
+	    return table;
+	}
+	// Get the rownumbers.
+	Vector<uInt> rows(tabs.rowNumbers(table));
+	rownrs.reference (rows);
+    }
+    // Put the rownumbers in the original order.
+    GenSort<uInt>::sort (rownrs);
+    return table(rownrs);
+}
+
+
 //# Keep the name of the resulting table.
 void TableParseSelect::handleGiving (const String& name)
 {
@@ -1037,7 +1072,7 @@ void TableParseSelect::execute (Bool setInGiving)
     if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0
     &&  resultSet_p == 0) {
 	throw (TableError
-	    ("TableParse error: no projection, selection, sorting. "
+	    ("TableParse error: no projection, selection, sorting, "
 	     "or giving-set given"));
     }
     // Test if a "giving set" is possible.
@@ -1075,6 +1110,9 @@ void TableParseSelect::execute (Bool setInGiving)
     //# Then do the projection.
     if (columnNames_p.nelements() > 0) {
 	table = table.project (columnNames_p);
+	if (distinct_p) {
+	    table = doDistinct (table);
+	}
     }
     //# Finally give it the given name (and flush it).
     if (! resultName_p.empty()) {

@@ -1,5 +1,5 @@
 //# TableParse.h: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -317,7 +317,7 @@ public:
 
     // Keep the selection expression.
     // It takes over the pointer (and clears the input pointer).
-    void handleSelect (TableExprNode*& node);
+    void handleSelect (TableExprNode*& node, Bool distinct);
 
     // Sort the resulting table.
     // It takes over the pointer (and clears the input pointer).
@@ -385,6 +385,9 @@ private:
     // Do the sort step.
     Table doSort (const Table& table);
 
+    // Do the 'select distinct' step.
+    Table doDistinct (const Table& table);
+
     // Get the order for this key. Use the default order_p if not
     // explicitly given with the key.
     Sort::Order getOrder (const TableParseSort& key) const;
@@ -436,6 +439,8 @@ private:
     ListIter<TableParse>* parseIter_p;
     //# Block of selected column names.
     Block<String> columnNames_p;
+    //# Distinct values in output?
+    Bool distinct_p;
     //# Name of the resulting table (from GIVING part).
     String resultName_p;
     //# Resulting set (from GIVING part).
@@ -479,12 +484,6 @@ inline const Block<String>& TableParseSelect::getColumnNames() const
 
 inline const Table& TableParseSelect::getTable() const
     { return table_p; }
-
-inline void TableParseSelect::handleSelect (TableExprNode*& node)
-{
-    node_p = node;
-    node = 0;
-}
 
 inline void TableParseSelect::handleSort (PtrBlock<TableParseSort*>*& sort,
 					  Bool noDuplicates,
