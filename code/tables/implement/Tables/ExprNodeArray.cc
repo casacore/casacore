@@ -1,5 +1,5 @@
 //# ExprNodeArray.cc: Classes representing an array in table select expression
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,111 @@ Array<DComplex> TableExprNodeArray::getArrayDComplex (const TableExprId& id)
     Array<Double> arr = getArrayDouble (id);
     Array<DComplex> result (arr.shape());
     convertArray (result, arr);
+    return result;
+}
+
+Bool TableExprNodeArray::hasBool     (const TableExprId& id, Bool value)
+{
+    return anyEQ (value, getArrayBool (id));
+}
+Bool TableExprNodeArray::hasDouble   (const TableExprId& id, Double value)
+{
+    return anyEQ (value, getArrayDouble (id));
+}
+Bool TableExprNodeArray::hasDComplex (const TableExprId& id,
+				      const DComplex& value)
+{
+    return anyEQ (value, getArrayDComplex (id));
+}
+Bool TableExprNodeArray::hasString   (const TableExprId& id,
+				      const String& value)
+{
+    return anyEQ (value, getArrayString (id));
+}
+Bool TableExprNodeArray::hasDate     (const TableExprId& id,
+				      const MVTime& value)
+{
+    return anyEQ (value, getArrayDate (id));
+}
+
+Array<Bool> TableExprNodeArray::hasArrayBool (const TableExprId& id,
+					      const Array<Bool>& value)
+{
+    Array<Bool> set = getArrayBool (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const Bool* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
+}
+Array<Bool> TableExprNodeArray::hasArrayDouble (const TableExprId& id,
+						const Array<Double>& value)
+{
+    Array<Double> set = getArrayDouble (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const Double* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
+}
+Array<Bool> TableExprNodeArray::hasArrayDComplex (const TableExprId& id,
+						  const Array<DComplex>& value)
+{
+    Array<DComplex> set = getArrayDComplex (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const DComplex* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
+}
+Array<Bool> TableExprNodeArray::hasArrayString (const TableExprId& id,
+						const Array<String>& value)
+{
+    Array<String> set = getArrayString (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const String* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
+}
+Array<Bool> TableExprNodeArray::hasArrayDate (const TableExprId& id,
+					      const Array<MVTime>& value)
+{
+    Array<MVTime> set = getArrayDate (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const MVTime* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
     return result;
 }
 

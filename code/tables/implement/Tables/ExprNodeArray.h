@@ -1,5 +1,5 @@
 //# ExprNodeArray.h: Classes representing an array in table select expression
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,6 +78,25 @@ public:
     // The default implementation of getArrayDComplex does
     // getArrayDouble and converts the result.
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+
+    // Does a value occur in the set?
+    // <group>
+    virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasDouble   (const TableExprId& id, Double value);
+    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
+    virtual Bool hasString   (const TableExprId& id, const String& value);
+    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
+    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
+					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
+					  const Array<Double>& value);
+    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
+					  const Array<DComplex>& value);
+    virtual Array<Bool> hasArrayString   (const TableExprId& id,
+					  const Array<String>& value);
+    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
+					  const Array<MVTime>& value);
+    // </group>
 
     // Get a single element from the array in the given row.
     // <group>
