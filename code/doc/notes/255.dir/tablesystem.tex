@@ -1,0 +1,179 @@
+\section{Introduction}
+The AIPS++ Table System is based on the table model outlined
+by Allen Farris in the beginning of 1992. At the start of the AIPS++
+project it was decided to develop the Table System as no other package
+seemed to support the flexibility wanted.
+
+See this \htmladdnormallink{document}{../../reference/Database.ps}
+for a description of the very first version of the Table System.
+Since then the system has been changed and enhanced considerably.
+The description of the
+\htmladdnormallink{Table}{../../aips/implement/Tables.html}
+module gives a good overview of the current capabilities.
+
+The Table System is used throughout the AIPS++ project to offer
+uniform access to all data. The table browser can be used to view
+all kind of tables.
+Particular examples of AIPS++ data stored
+as tables are the MeasurementSets and the Images.
+
+In the remainder of this document the most important properties of the
+Table System are given. Thereafter the strong and weak points are
+discussed. 
+
+\section{Global Properties}
+\begin{itemize}
+\item
+The Table System resembles a data base system. It consists of tables
+containing columns of data of various types. Moreover it supports
+keywords (a la FITS). Furthermore it supports arrays of all data
+types (thus not only as blobs). It makes it possible to get only a
+specific part of a single array or multiple arrays in a column.
+Arrays can be fixed or variable length.
+\item
+Unlike data base systems the Table System access is not based on keys.
+Instead the row number is used as an implicit key.
+\\Persistent indices on table data are not supported, but
+temporary memory based indices make it possible to quickly find
+the row numbers containing the required data.
+\item
+Multiple storage managers are supported, so each column
+can be stored in the way most suited for the data in that column.
+Furthermore the Table System supports so-called virtual columns. The
+data in those columns are not stored but derived on-the-fly from
+other data. This feature is mainly used in compressing columns
+containing complex data to short integers.
+\\The tiled storage manager (TSM) sets the table system apart.
+It makes it possible to store array data in a tiled way to achieve that
+access along all axes is about equally fast.
+\\The data are stored in a canonical format to make access from
+multiple platforms possible.
+\item
+Concurrent access is fully supported. However, only table locks are
+available, thus no fine-grained page or row locking is possible.
+See \htmladdnormallink{note 256}{../256/256.html} for more
+information about locking in the Table System.
+\item
+Access to the data is very flexible.
+Addition, change, retrieval, and removal of columns, rows, and
+keywords can be done at will. 
+\item
+A powerful query language (see note 199 on
+\htmladdnormallink{TaQL}{../199/199.html}) makes it possible to
+select arbitrary subsets of a table. TaQL resembles SQL, but lacks joins.
+However, it supports subqueries and moreover all its functions
+work on arrays as well.
+\\It is important to note that the result of a selection and sort is a table
+in itself referencing the original data. So changing the data in a
+selection changes the original data. This is regarded as very useful.
+There is a function available to turn a selection into a true copy.
+\item
+The \htmladdnormallink{TableMeasures}{../../aips/implement/TableMeasures.html}
+module makes it possible to store and retrieve
+Measures transparantly in and from a table.
+\end{itemize}
+
+
+\section{Possible Virtues}
+\subsection{Data types and arrays}
+All standard data types are supported (char, int float, string, etc.).
+Also single and double precision complex data types are supported.
+A big advantage of the table system is that it can handle scalars as well
+as arrays of all data types.
+
+\subsection{Storage Managers}
+The Table System has some specific data (storage) managers:
+\begin{itemize}
+\item
+ The Incremental Storage Manager can save quite some storage by only
+ writing data when they change. In the main table of the MeasurementSet
+ it is quite heavily used.
+\item
+ The Tiled Storage Manager is used to store images in a tiled way.
+ It makes it possible to access to image along all axes in an equally
+ fast way (depending on the tile shape). Comparison with a package
+ like Miriad showed that you pay a little penalty for access in the
+ X-direction, but it is much, much faster in the Z-direction.
+\item
+ The ComplexCompress data manager makes it possible to compress single
+ precision floating point data to short integers to save a factor 2
+ in storage. It is completely transparant to the application and user,
+ so one still sees the floating point data.
+\end{itemize}
+
+\subsection{TaQL}
+TaQL is a very versatile query language with full support of arrays.
+Users highly appreciate it because it offers easy selection of subsets
+of a table. Since these subsets are also tables (referencing the
+original data), one can easily change the data in a subset of a table.
+TaQL can also be used to sort a table or to sort it uniquely.
+\\Many users have written scripts to process the data in glish using 
+TaQL and the table access functions in glish. It proves to be a very
+powerful and flexible tool.
+
+
+\section{Possible Drawbacks}
+
+\subsection{Access times}
+Retrieving data from a table is slower than retrieving it from a flat
+file. It depends on the type and the shape of the data and on the
+storage manager used. Tests show that retrieving an array from a Table
+using a Tiled Storage Manager is about 50\% slower than reading it
+from a raw file when accessing the data sequentially.
+This degradation in performance has to be weighed to the properties
+supported by the Table System as described in the previous section.
+
+Note that measuring IO performance is not as easy as it looks because
+the UNIX file system keeps small files in memory (small can be as
+large as 100 Mbytes). One should always do an fsync to be sure the
+data are flushed to disk.
+
+The main problem seems to be accessing the data in the MeasurentSet
+in the calibrater or imager. Apart from the 50\% degradation discussed
+above, there can be important reasons for this. One is that the data
+is usually sorted in a different order than it was stored.
+Maybe this could be solved partially by storing the data per spectral
+window. Another thing that might be useful is to use another storage
+manager than the tiled one.
+
+It is important to note that the TMS system for Westerbork started
+with use of Sybase for its data bases. They decided, however, to
+switch to the AIPS++ Table System because it performed much better
+than Sybase.
+\\No comparisons have been made between the Table System and a
+data base system like MySQL or PostgreSQL.
+
+\subsection{Robustness}
+In occasional circumstances the data in a table can be corrupted.
+This could be the case when the system crashes while a critical data
+portion is written into the table. However, in practice it
+virtually ever happens because especially in the commonly used
+StandardStMan storage manager quite some attention has been paid to
+robustness.
+
+\subsection{Standards}
+The Table System is not a commonly used piece of software as, for
+example, MySQL is. It means that only a Glish binding is available.
+However, it would be not too much work to make, say, a Python binding.
+
+\subsection{Locking}
+Table locking can be problematic if not done properly.
+\\Locking can only be done on the entire table, so for full multi user
+access a lock should be held as short as possible. On the other hand
+releasing a lock means that the buffers needs to be flushed to disk,
+so the extra IO involved could mean that one wants to hold the lock
+as long as possible.
+\\The AutoLocking mode was invented to solve this problem. However,
+it has the drawback that it may take a few seconds before the system
+detects that the AutoLock should be released. This is especially the
+case in a glish client which might be idle for some time. It is
+possible now to define the AutoLock inspect time in aipsrc.
+
+\subsection{TaQL}
+Although TaQL supersedes SQL with its array capabilities, it lacks
+several nice SQL features. The most imporatant are:
+\begin{itemize}
+\item joins
+\item GROUP BY and HAVING
+\item calculated columns in SELECT
+\end{itemize}

@@ -1,0 +1,21 @@
+%% Table Locking
+%%----------------------------------------------------------------------------
+\documentclass[11pt]{article}
+\usepackage{html}
+%%-----------------------------------------------------------------------------
+%% See 'A Guide to Latex', Kopka & Daly, Addison-Wesley, section 3.2.4
+%% for these and other variables which override style settings.
+
+\begin{document}
+
+\title{NOTE 256 --
+AIPS++ Table Locking}
+\author {Ger van Diepen, ASTRON Dwingeloo}
+\date {2003 February 10}
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A (gzipped) postscript version of this note is available (40kB).}{../256.ps.gz}
+\end{htmlonly}
+\input{tablelock}
+\end{document}
