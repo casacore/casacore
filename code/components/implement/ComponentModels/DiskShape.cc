@@ -163,7 +163,8 @@ Double DiskShape::sample(const MDirection& direction,
     const Double minRad = itsMinValue/2.0; 
     if ((x <= majRad) && 
 	(y <= minRad) && 
-	(y <= minRad * sqrt(0.25 - square(x/majRad)))) {
+	(y <= minRad * sqrt(1 - square(x/majRad)))) {
+      
       retVal = itsHeight*square(pixelSize.radian());
     }
   }
@@ -189,7 +190,7 @@ void DiskShape::sample(Vector<Double>& scale,
       (MDirection::Convert(compDir, refFrame)().getValue());
     deleteValue = True;
   }
-  Double separation, pa;
+  Double separation, pa, x, y;
   const Double majRad = itsMajValue/2.0; 
   const Double minRad = itsMinValue/2.0; 
   const Double pixValue = square(pixelSize.radian()) * itsHeight;
@@ -199,11 +200,11 @@ void DiskShape::sample(Vector<Double>& scale,
     scale(i) = 0.0;
     if (separation <= majRad) {
       pa = compDirValue->positionAngle(dirVal);
-      const Double x = abs(separation*cos(pa));
-      const Double y = abs(separation*sin(pa));
+      x = abs(separation*cos(pa));
+      y = abs(separation*sin(pa));
       if ((x <= majRad) && 
        	  (y <= minRad) && 
-	  (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
+	  (y <= minRad * sqrt(1 - square(x/majRad)))) {
 	scale(i) = pixValue;
       }
     }
