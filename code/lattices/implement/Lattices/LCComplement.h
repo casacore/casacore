@@ -33,7 +33,7 @@
 
 
 // <summary>
-// Make the complement of 2 or more regions.
+// Make the complement of a region.
 // </summary>
 
 // <use visibility=export>
@@ -71,6 +71,11 @@ public:
     // Construct the complement of the given region.
     LCComplement (const LCRegion& region1);
 
+    // Construct from multiple regions given as a Block.
+    // When <src>takeOver</src> is True, the destructor will delete the
+    // given regions. Otherwise a copy of the regions is made.
+    LCComplement (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+
     // Copy constructor (copy semantics).
     LCComplement (const LCComplement& other);
 
@@ -84,12 +89,6 @@ public:
  
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
-
-    // Construct another LCRegion (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box and mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
 
     // Get the class name (to store in the record).
     static String className();
@@ -105,16 +104,17 @@ public:
 				     const String& tableName);
 
 protected:
+    // Construct another LCRegion (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box and mask.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
+
     // Do the actual getting of the mask.
     virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
 
 private:
-    // Construct from multiple regions given as a Block..
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
-    LCComplement (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
-
-    // Make the bounding box and determine the offsets..
+    // Make the bounding box and determine the offsets.
     void defineBox();
 };
 
