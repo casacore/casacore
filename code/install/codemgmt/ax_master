@@ -1815,3 +1815,4 @@
 07 581 src mv doc/notes/200.dir/vlbi++103.tex doc/notes/200.dir/vlbapp103.tex
 07 582 src mv doc/user/Aipsview.dir/avLogo.gif doc/gif/avLogo.gif
 07 584 src rm trial/apps/simulater
+08 003 sys rm bin/aipsview2
