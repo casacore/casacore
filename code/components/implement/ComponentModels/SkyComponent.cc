@@ -144,7 +144,7 @@ Flux<Double> SkyComponent::sample(const MDirection& direction,
 			    centerFrequency);
 }
 
-void SkyComponent::sample(Matrix<Flux<Double> >& samples,
+void SkyComponent::sample(Cube<Double>& samples, const Unit& reqUnit,
 			  const Vector<MVDirection>& directions, 
 			  const MeasRef<MDirection>& dirRef, 
 			  const MVAngle& pixelLatSize, 
@@ -152,7 +152,8 @@ void SkyComponent::sample(Matrix<Flux<Double> >& samples,
 			  const Vector<MVFrequency>& frequencies,
 			  const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
-  itsCompPtr->sample(samples, directions, dirRef, pixelLatSize, pixelLongSize,
+  itsCompPtr->sample(samples, reqUnit,
+		     directions, dirRef, pixelLatSize, pixelLongSize,
 		     frequencies, freqRef);
 }
 

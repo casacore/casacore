@@ -43,7 +43,6 @@ class MVFrequency;
 class MVAngle;
 class Unit;
 template <class T> class Vector;
-template <class T> class Matrix;
 template <class Ms> class MeasRef;
 
 // <summary> A class for manipulating groups of components </summary>
@@ -163,16 +162,20 @@ public:
   // The assignment operator uses reference semantics
   ComponentList& operator=(const ComponentList& other);
 
-  // Sample all the members of the componentList at the specified
-  // direction. 
+  // Calculate the integrated flux of all the members of the componentlist at
+  // the specified direction & frequency, in a pixel of specified size.
   Flux<Double> sample(const MDirection& sampleDir,
 		      const MVAngle& pixelLatSize,
 		      const MVAngle& pixelLongSize,
 		      const MFrequency& centerFreq) const;
 
   // Same as the previous function except that many directions & frequencies
-  // are done at once. 
-  void sample(Matrix<Flux<Double> >& samples,
+  // are done at once.  The Flux is added into the values supplied in the
+  // samples argument and this cube must have dimensions of:
+  // [4, nDirs, nFreqs]. The polarisation and units of the flux added are
+  // specified with the reqUnit and reqPol arguments.
+  void sample(Cube<Double>& samples,
+	      const Unit& reqUnit,
 	      const Vector<MVDirection>& directions, 
 	      const MeasRef<MDirection>& dirRef, 
 	      const MVAngle& pixelLatSize, 

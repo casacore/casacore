@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,5 +30,5 @@
 SkyCompBase::~SkyCompBase() {
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 SkyCompBase"
+// compile-command: "gmake SkyCompBase"
 // End: 

@@ -33,7 +33,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
@@ -172,7 +172,7 @@ Flux<Double> SkyCompRep::sample(const MDirection& direction,
   return flux;
 }
 
-void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
+void SkyCompRep::sample(Cube<Double>& samples, const Unit& reqUnit,
 			const Vector<MVDirection>& directions, 
 			const MeasRef<MDirection>& dirRef, 
 			const MVAngle& pixelLatSize, 
@@ -181,18 +181,25 @@ void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
 			const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
   const uInt nDirSamples = directions.nelements();
-  DebugAssert(samples.nrow() == nDirSamples, AipsError);
+  DebugAssert(samples.nrow() == 4, AipsError);
+  DebugAssert(samples.ncolumn() == nDirSamples, AipsError);
   const uInt nFreqSamples = frequencies.nelements();
-  DebugAssert(samples.ncolumn() == nFreqSamples, AipsError);
+  DebugAssert(samples.nplane() == nFreqSamples, AipsError);
   DebugAssert(pixelLatSize.radian() > 0.0, AipsError);
   DebugAssert(pixelLongSize.radian() > 0.0, AipsError);
   
-  const Vector<DComplex> fluxVal = itsFlux.value();
-  const Unit fluxUnit = itsFlux.unit();
-  const ComponentType::Polarisation fluxPol = itsFlux.pol();
+  Flux<Double> f = itsFlux.copy();
+  f.convertUnit(reqUnit);
+  Vector<Double> fluxVal(4);
+  f.value(fluxVal);
+  const Double i = fluxVal(0);
+  const Double q = fluxVal(1);
+  const Double u = fluxVal(2);
+  const Double v = fluxVal(3);
+  
   Vector<Double> dirScales(nDirSamples);
   itsShapePtr->sample(dirScales, directions, dirRef,
-		      pixelLatSize, pixelLongSize);
+ 		      pixelLatSize, pixelLongSize);
   Vector<Double> freqScales(nFreqSamples);
   itsSpectrumPtr->sample(freqScales, frequencies, freqRef);
 
@@ -200,15 +207,10 @@ void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
     const Double thisFreqScale = freqScales(f);
     for (uInt d = 0; d < nDirSamples; d++) {
       const Double thisScale = dirScales(d) * thisFreqScale;
-      Flux<Double>& thisFlux = samples(d, f);
-      if (near(thisScale, 0.0)) {
-	thisFlux.setValue(0.0);
-      } else {
-	thisFlux.setValue(fluxVal);
-	thisFlux.scaleValue(thisScale);
-      }
-      thisFlux.setUnit(fluxUnit);
-      thisFlux.setPol(fluxPol);
+      samples(0, d, f) += thisScale * i;
+      samples(1, d, f) += thisScale * q;
+      samples(2, d, f) += thisScale * u;
+      samples(3, d, f) += thisScale * v;
     }
   }
 }

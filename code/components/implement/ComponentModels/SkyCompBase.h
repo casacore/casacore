@@ -43,9 +43,10 @@ class String;
 class ComponentShape;
 class SpectralModel;
 class GlishRecord;
+class Unit;
 template <class T> class Flux;
 template <class T> class Vector;
-template <class T> class Matrix;
+template <class T> class Cube;
 template <class Ms> class MeasRef;
 
 // <summary>Base class for model components of the sky brightness</summary>
@@ -205,21 +206,25 @@ public:
   // </group>
 
   // Calculate the flux at the specified direction & frequency, in a pixel of
-  // specified size.
+  // specified x & y size.
   virtual Flux<Double> sample(const MDirection& direction, 
 			      const MVAngle& pixelLatSize, 
 			      const MVAngle& pixelLongSize, 
 			      const MFrequency& centerFrequency) const = 0;
 
   // Same as the previous function except that many directions & frequencies
-  // are done at once. 
-  virtual void sample(Matrix<Flux<Double> >& samples,
- 		      const Vector<MVDirection>& directions, 
- 		      const MeasRef<MDirection>& dirRef, 
- 		      const MVAngle& pixelLatSize, 
- 		      const MVAngle& pixelLongSize, 
+  // are done at once.  The flux is added into the values supplied in the
+  // samples argument and this cube must have dimensions of [4, nDirs,
+  // nFreqs]. The polarisations are always [I, Q, U, V] and units of the flux
+  // added are specified with the reqUnits arguments.
+  virtual void sample(Cube<Double>& samples,
+		      const Unit& reqUnit,
+		      const Vector<MVDirection>& directions, 
+		      const MeasRef<MDirection>& dirRef, 
+		      const MVAngle& pixelLatSize, 
+		      const MVAngle& pixelLongSize, 
 		      const Vector<MVFrequency>& frequencies,
- 		      const MeasRef<MFrequency>& freqRef) const = 0;
+		      const MeasRef<MFrequency>& freqRef) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector

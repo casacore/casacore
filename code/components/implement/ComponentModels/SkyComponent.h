@@ -44,9 +44,10 @@ class RecordInterface;
 class SkyCompRep;
 class SpectralModel;
 class String;
+class Unit;
 template<class Ms> class MeasRef;
 template<class T> class Flux;
-template<class T> class Matrix;
+template<class T> class Cube;
 template<class T> class Vector;
 
 // <summary>A component of a model of the sky </summary>
@@ -196,13 +197,14 @@ public:
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
-  virtual void sample(Matrix<Flux<Double> >& samples,
- 		      const Vector<MVDirection>& directions, 
- 		      const MeasRef<MDirection>& dirRef, 
- 		      const MVAngle& pixelLatSize, 
- 		      const MVAngle& pixelLongSize, 
+  virtual void sample(Cube<Double>& samples,
+		      const Unit& reqUnit,
+		      const Vector<MVDirection>& directions, 
+		      const MeasRef<MDirection>& dirRef, 
+		      const MVAngle& pixelLatSize, 
+		      const MVAngle& pixelLongSize, 
 		      const Vector<MVFrequency>& frequencies,
- 		      const MeasRef<MFrequency>& freqRef) const;
+		      const MeasRef<MFrequency>& freqRef) const;
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
