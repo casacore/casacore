@@ -227,9 +227,6 @@ public:
   // Flushes the new coordinate system to disk if the table is writable.
   virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
 
-  // Allow messages to be logged to this ImageInterface.
-  virtual LogIO & logSink();
-
   // check for symmetry in data members
   virtual Bool ok() const;
 
