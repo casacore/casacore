@@ -32,10 +32,16 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableRow.h>
+#include <aips/Containers/RecordField.h>
+#include <aips/Utilities/String.h>
+#include <aips/Quanta/MVPosition.h>
+#include <aips/Measures/MDirection.h>
 
 //# Forward Declarations
-class String;
-class MVEpoch;
+class MVRadialVelocity;
+class MVDirection;
+template <class T> class Vector;
 
 // <summary>Position for comets and other solar system bodies</summary>
 
@@ -116,12 +122,24 @@ class MeasComet {
   ~MeasComet();
 
   //# General Member Functions
-  // Get the values from a comet table, interpolated for date(in MJD(TDB)).
-  Bool get(Vector<Double> &returnValue,
-	   const MVEpoch &date);
-  // Get indicated special value interpolated for  date(in MJD(TDB)).
-  Bool get(Double &res, MeasComet::Types which,
-	   const MVEpoch &date);
+  // Get the name of the comet
+  const String &getName() const;
+  // Get the topo position
+  const MVPosition &getTopo() const;
+  // Get the direction type
+  MDirection::Types getType() const;
+  // Get the start of the table (in MJD)
+  Double getStart() const;
+  // Get the end of the table (in MJD)
+  Double getEnd() const;
+  // Get number of entries
+  Int nelements() const;
+  // Get a comet position
+  Bool get(MVPosition &returnValue, Double date);
+  // Get the local on-disk direction
+  Bool getDisk(MVDirection &returnValue, Double date);
+  // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
+  Bool getRadVel(MVRadialVelocity &returnValue, Double date);
 
  private:
   
@@ -134,10 +152,44 @@ class MeasComet {
   
   
   //# General member functions
+  // Initialise table from the name given
+  Bool initMeas(const String &which);
+  // Fill Table lines
+  Bool fillMeas(Double utf);
 
   //# Data members
   // Actual table
   Table tab_p;
+  // Measured data readable
+  Bool measFlag_p;
+  // Measured data present
+  Bool measured_p;
+  // Row descriptions
+  ROTableRow row_p;
+  // Field pointers
+  RORecordFieldPtr<Double> rfp_p[MeasComet::N_Columns];
+  // First (-1) MJD in list
+  Double mjd0_p;
+  // Last MJD in list
+  Double mjdl_p;
+  // Increment in rows
+  Double dmjd_p;
+  // Number of rows
+  Int nrow_p;
+  // Name of comet
+  String name_p;
+  // Position on Earth
+  MVPosition topo_p;
+  // Type of ccordinates
+  MDirection::Types mtype_p;
+  // Lines in memory
+  Int lnr_p[2];
+  // Last read data (measlow - meashigh)
+  Double ldat_p[2][N_Columns];
+  // Message given
+  Bool msgDone_p;
+  // File names
+  const String tp_p;
 };
 
 //# Inline Implementations
