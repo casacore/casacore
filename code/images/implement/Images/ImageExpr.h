@@ -176,8 +176,8 @@ public:
   // is not writable.  
   virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
   
-  // Function to get a LatticeCoordinate object containing the coordinates.
-  virtual LatticeCoordinates latticeCoordinates() const;
+  // Function to get a LELCoordinate object containing the coordinates.
+  virtual LELCoordinates lelCoordinates() const;
   
   // Often we have miscellaneous information we want to attach to an image.
   // <src>setMiscInfo</src> throws an exception as ImageExpr is not
