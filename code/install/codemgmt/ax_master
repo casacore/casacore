@@ -6328,3 +6328,4 @@
 18 124 src rm trial/implement/MeasurementComponents/GJonesSpline.cc
 18 129 src rm atnf/implement/pks/pksmb_support.cc_
 18 129 src rm atnf/implement/pks/pksmb_support.cc_
+18 130 src mv aips/implement/OS/HostInfo_hpux.h aips/implement/OS/HostInfoHpux.h
