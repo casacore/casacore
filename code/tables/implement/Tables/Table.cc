@@ -426,6 +426,15 @@ void Table::relinquishAutoLocks (Bool all)
 
 
 
+TableRecord& Table::rwKeywordSet()
+{
+    if (! isWritable()) {
+	throw (TableError ("Table::rwKeywordSet cannot be used: table "
+			   + tableName() + " is not writable"));
+    }
+    return baseTabPtr_p->rwKeywordSet();
+}
+
 Vector<uInt> Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
 
