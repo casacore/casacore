@@ -55,14 +55,14 @@ void SSMDirColumn::deleteRow(uInt aRowNr)
     
     if (dataType() == TpBool) {
 
-      Block<Bool> tmp((anERow-aSRow) * itsNrCopy);
-
-      uInt anOff    = aRowNr-aSRow;
-
-      Conversion::bitToBool(tmp.storage(),aValue+(anOff/8),
-			    anOff%8,itsNrCopy);
-      Conversion::boolToBit(aValue+(anOff/8),
-			    tmp.storage(),anOff%8,itsNrCopy);
+      uInt anOffr = (aRowNr-aSRow+1) * itsNrCopy;
+      uInt anOfto = (aRowNr-aSRow) * itsNrCopy;
+      uInt nr = (anERow-aRowNr) * itsNrCopy;
+      Block<Bool> tmp(nr);
+      Conversion::bitToBool (tmp.storage(), aValue + anOffr/8,
+			     anOffr%8, nr);
+      Conversion::boolToBit (aValue + anOfto/8, tmp.storage(),
+			     anOfto%8, nr);
     } else {
       // remove from bucket
       shiftRows(aValue,aRowNr,aSRow,anERow);
@@ -83,10 +83,9 @@ void SSMDirColumn::getArrayBoolV     (uInt aRowNr,
 
   aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
 
-  uInt anOff    = aRowNr-aStartRow;
+  uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
 
-  Conversion::bitToBool(data,aValue+(anOff/8),
-			anOff%8,itsNrCopy);
+  Conversion::bitToBool(data, aValue+ anOff/8, anOff%8, itsNrCopy);
 
   aDataPtr->putStorage (data, deleteIt);
 }
@@ -202,10 +201,9 @@ void SSMDirColumn::putArrayBoolV     (uInt aRowNr,
 
   aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
 
-  uInt anOff    = aRowNr-aStartRow;
+  uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
 
-  Conversion::boolToBit(aValue+(anOff/8),
-			data,anOff%8,itsNrCopy);
+  Conversion::boolToBit (aValue + anOff/8, data, anOff%8, itsNrCopy);
   itsSSMPtr->setBucketDirty();
   aDataPtr->freeStorage (data, deleteIt);
 }
