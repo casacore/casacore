@@ -103,6 +103,8 @@ RedFlagger::~RedFlagger ()
     ms.relinquishAutoLocks(True);
     ms.unlock();
   }
+  delete vs_p;
+  delete mssel_p;
 }
 
 // -----------------------------------------------------------------------
@@ -358,6 +360,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 	if (mssel_p) {
 	  delete mssel_p; 
 	  mssel_p=mssel_p2;
+	  delete mssel_p2;
 	  mssel_p->flush();
 	}
       }
