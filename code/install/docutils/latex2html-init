@@ -30,7 +30,7 @@ if(length $ENV{DOCSROOT} > 0){
    $DOCSROOT = '../..';
 }
 if(!$DOCSCOLOR) {
-   $DOCSCOLOR = 'OO66FF';
+   $DOCSCOLOR = '#OO66FF';
 }
 
 
@@ -131,8 +131,8 @@ sub aips2topbar {
 "<table border=0 width=600>\n" .
 "<tr><td><img src=\"$DOCSROOT/gif/aips2logo-sm.gif\">\n" .
 "</td><td valign=middle>\n" .
-"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>La\n" .
-"st News</a></font></b><P>\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Latest news </a>" .
+"</font></b><P>\n" .
 "<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
 "</b><P>\n" .
 "<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
