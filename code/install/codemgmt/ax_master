@@ -2097,3 +2097,4 @@
 08 306 src mv trial/implement/Lattices/FiledesIO.h aips/implement/IO/FiledesIO.h
 08 306 src mv trial/implement/Lattices/FiledesIO.cc aips/implement/IO/FiledesIO.cc
 08 322 src rm nrao/apps/sdcalc/avg_spc.ps
+08 322 src rm nrao/apps/sdcalc/sdcalc_tkpg.ps
