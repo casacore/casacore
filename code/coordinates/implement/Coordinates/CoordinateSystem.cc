@@ -3788,7 +3788,7 @@ void CoordinateSystem::listDirectionSystem(LogIO& os) const
    Int ic = findCoordinate(Coordinate::DIRECTION, afterCoord);
    if (ic >= 0) {
       MDirection::Types dirType = directionCoordinate(uInt(ic)).directionType();
-      os << "Direction system : " << MDirection::showType(dirType) << endl;
+      os << "Direction reference : " << MDirection::showType(dirType) << endl;
    }
 }
 
@@ -3802,8 +3802,8 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityTy
       const SpectralCoordinate& specCoord = spectralCoordinate(uInt(ic));
       MFrequency::Types freqType = specCoord.frequencySystem();
 //      
-      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
-      os << "Velocity  system : " << MDoppler::showType(velocityType) << endl;
+      os << "Spectral  reference : " << MFrequency::showType(freqType) << endl;
+      os << "Velocity  type      : " << MDoppler::showType(velocityType) << endl;
 //
       Double rf = specCoord.restFrequency();
       if (rf > 0.0) {
@@ -3813,7 +3813,7 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityTy
 //
          ostrstream oss;
          oss << restFreq << endl;
-         os << "Rest frequency   : " << String(oss) << endl;
+         os << "Rest frequency      : " << String(oss) << endl;
       }
    }
 }
