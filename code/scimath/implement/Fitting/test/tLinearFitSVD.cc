@@ -1,5 +1,5 @@
 //# tLinearFitSVD.cc: Test linear least squares classes
-//# Copyright (C) 1995,1996,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,16 +26,17 @@
 //# $Id$
 
 #include <trial/Fitting/LinearFitSVD.h>
-#include <aips/Mathematics/Primes.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Random.h>
-#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Functionals/FunctionWrapper.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Functionals/CombiFunction.h>
+#include <aips/Functionals/FunctionWrapper.h>
+#include <aips/Functionals/HyperPlane.h>
+#include <aips/Functionals/Polynomial.h>
+#include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Primes.h>
+#include <aips/Mathematics/Random.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>
@@ -114,8 +115,6 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       fitter.chiSquare() << endl;
     cout << "fromResidual ChiSquare: " << sum(yres) << endl;
     cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
-    
-    cout << endl;
     
     // Compare actualParameters with the solution vector 
     AlwaysAssertExit(allNear(actualParameters, 
@@ -201,7 +200,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       j++;
     };
   }
-//************ test three ****************
+  //************ test three ****************
 
   {
     // fitting a 2D polynomial to data points:
@@ -345,13 +344,178 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   };
   AlwaysAssertExit(2*fitter.fittedNumber()-fitter.getRank() == 0);
 }
-int main() {
+
+void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
+  //*********** Test constraint one *************
+  // fit data to measured angles
+  {
+    // Generate fake data (3 angles)
+    const uInt n = 100;
+    Matrix<Double> arg(3*n,3);
+    arg = 0.0;
+    Vector<Double> y(3*n);
+    Vector<Double> angle(3);
+    angle[0] = 50; angle[1] = 60; angle[2] = 70;
+    for (uInt i=0; i<3; ++i) {
+      for (uInt j=0; j<n; ++j) {
+	arg(n*i+j,i) = 1;
+	y[n*i+j] = angle[i];
+      };
+    };
+      
+    // Add noise
+    MLCG generator; 
+    Normal noise(&generator, 0.0, 10.0);   
+    for (uInt i=0; i<3*n; ++i) y[i] += noise();
+    
+    // Specify functional
+    HyperPlane<AutoDiff<Double> > combination(3);
+    fitter.setFunction(combination);
+    
+    cout << endl << "******** test constraint one *************" << endl;
+    // Perform fit
+    Vector<Double> solution = fitter.fit(arg, y);
+    Matrix<Double> covariance = fitter.compuCovariance();
+    Vector<Double> errors = fitter.errors();
+    // Get the residuals
+    Vector<Double> yres(3*n);
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.5));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 0.1));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    // Redo it to see if same
+
+    cout << endl << "******** test constraint repeat *************" << endl;
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.5));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 0.1));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    // Add constraint -------------------------
+
+    // Specify functional
+    HyperPlane<AutoDiff<Double> > combinationA(3);
+    fitter.setFunction(combinationA);
+    // Specify constraint
+    Vector<Double> constrArg(3, 1.0);
+    HyperPlane<AutoDiff<Double> > constrFun(3);
+    fitter.addConstraint(constrFun, constrArg, 180.0);
+        
+    cout << endl << "******** test constraint sum to 180 ********" << endl;
+    // Perform least-squares fit
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.6));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 1.0e-20));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    cout << endl << "******** test constraint to 180 (repeat)********" << endl;
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.6));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 1.0e-20));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+  }	
+  cout << endl;
+}
+
+  int main() {
   LinearFitSVD<Double> fitsvd;
   checkLinearFit(fitsvd);
 
   LinearFitSVD<Complex> fit_complex;
   checkComplexLinearFit(fit_complex);
   
+  LinearFitSVD<Double> fitcon;
+  checkConstraintLinearFit(fitcon);
+
   cout << "OK" << endl;
   return 0;
 }
