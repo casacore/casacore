@@ -456,7 +456,6 @@ void FITS::swap8(void *dest, void *src, int number) {
 
 void FITS::valstr(ostream &o, const ValueType &ty, const void *val) {
 	int n;
-	char *s; 
 	Complex x; 
 	DComplex y; 
 	IComplex z;
@@ -465,7 +464,7 @@ void FITS::valstr(ostream &o, const ValueType &ty, const void *val) {
 	switch (ty) {
 	    case FITS::NOVALUE: break;
 	    case FITS::LOGICAL: 
-		s = (*((Bool *)val) == True) ? "True" : "False"; o << s; break;
+		o << ((*((Bool *)val) == True) ? "True" : "False"); break;
 	    case FITS::BIT: o << "*****"; break;
 	    case FITS::CHAR: o << *((char *)val); break;
 	    case FITS::BYTE: n = *((uChar *)val); o << n; break;
