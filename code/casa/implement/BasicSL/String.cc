@@ -475,7 +475,7 @@ SubString &SubString::operator=(const Char c) {
 #if defined(__GNUG__)
 template void __reverse(Char *, Char *, random_access_iterator_tag);
 #endif
-template Char *transform(Char *, Char *, Char *, Int (*)(Int));
+template Char *std::transform(Char *, Char *, Char *, Int (*)(Int));
 
 #else  /* Old String class */
 //# String.cc: String classes
