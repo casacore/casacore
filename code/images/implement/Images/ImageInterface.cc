@@ -33,6 +33,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/ImageCoord.h>
 #include <trial/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/ArrayMath.h>
@@ -137,6 +138,12 @@ template <class T>
 const CoordinateSystem &ImageInterface<T>::coordinates() const 
 {
     return coords_p;
+}
+
+template <class T> 
+LatticeCoordinates ImageInterface<T>::latticeCoordinates() const
+{
+    return LatticeCoordinates (new ImageCoord (coords_p));
 }
 
 

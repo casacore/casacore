@@ -1,5 +1,5 @@
 //# ImageInterface.h: a base class for astronomical images
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
+#include <trial/Lattices/LatticeCoordinates.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
 
@@ -261,6 +262,9 @@ public:
   virtual Bool setCoordinateInfo(const CoordinateSystem &coords) = 0;
   const CoordinateSystem &coordinates() const;
   // </group>
+
+  // Function to get a LatticeCoordinate object containing the coordinates.
+  virtual LatticeCoordinates latticeCoordinates() const;
   
   // Allow messages to be logged to this ImageInterface.
   // <group>
@@ -311,5 +315,6 @@ protected:
   CoordinateSystem coords_p;
   LogIO log_p;
 };
+
 
 #endif
