@@ -608,7 +608,16 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
          done(iCoordFrom) = True;
       }
    }
-// 
+
+// Put the output coordinate system into the same transpose
+// order as the input coordinate system
+
+   Vector<Int> wMap, pMap, wTrans, pTrans;
+   Vector<Bool> refChange;
+   cSysOut.worldMap(wMap, wTrans, refChange, cSysFrom);
+   cSysOut.pixelMap(pMap, pTrans, cSysFrom);
+   cSysOut.transpose (wTrans, pTrans);
+//
    return cSysOut;
 }
 
