@@ -26,60 +26,54 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
+#include <trial/TableMeasures/TableMeasValueDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableRecord.h>
-#include <trial/TableMeasures/TableMeasValueDesc.h>
+#include <aips/Exceptions/Error.h>
+
 
 TableMeasValueDesc::TableMeasValueDesc()
 {}
 
-TableMeasValueDesc::TableMeasValueDesc(const TableDesc& td, 
-    	    	    	    	       const String& colName)
+TableMeasValueDesc::TableMeasValueDesc (const TableDesc& td, 
+					const String& colName)
 : itsColumn(colName)
 {
-    checkColumn(td);
+  checkColumn(td);
 }
 
-TableMeasValueDesc::TableMeasValueDesc(const TableMeasValueDesc& that)
+TableMeasValueDesc::TableMeasValueDesc (const TableMeasValueDesc& that)
 : itsColumn(that.itsColumn)
 {}
 
 TableMeasValueDesc::~TableMeasValueDesc()
 {}
 
-TableMeasValueDesc& TableMeasValueDesc::operator=(const TableMeasValueDesc& 
-    	    	    	    	    	    	  that)
+TableMeasValueDesc& TableMeasValueDesc::operator=
+                                            (const TableMeasValueDesc& that)
 {
-    if (this != &that) {
-	itsColumn = that.itsColumn;
-    }
-    return *this;
+  if (this != &that) {
+    itsColumn = that.itsColumn;
+  }
+  return *this;
 }
 
-    
-void TableMeasValueDesc::write(TableDesc& td, const TableRecord& measInfo)
+void TableMeasValueDesc::write (TableDesc& td, const TableRecord& measInfo)
 {
-    TableRecord& columnKeyset = td.rwColumnDesc(itsColumn).rwKeywordSet();
-
-    if (measInfo.nfields() > 0) {
-	columnKeyset.defineRecord("MEASINFO", measInfo);
-    }
+  TableRecord& columnKeyset = td.rwColumnDesc(itsColumn).rwKeywordSet();
+  if (measInfo.nfields() > 0) {
+    columnKeyset.defineRecord ("MEASINFO", measInfo);
+  }
 }
 
-void TableMeasValueDesc::checkColumn(const TableDesc& td) const
+void TableMeasValueDesc::checkColumn (const TableDesc& td) const
 {
-    if (td.isColumn(itsColumn) == False) {
-    	throw(AipsError("TableMeasValueDesc::checkColumn; No such column: "
-            	    	 + itsColumn));
-    } else if (!td.columnDesc(itsColumn).isArray()) {
-    	throw(AipsError("TableMeasValueDesc::checkColumn; MeasValue column "
-		    	"must be an array: " + itsColumn));
-    } else if (td.columnDesc(itsColumn).dataType() != TpDouble) {
-    	throw(AipsError("TableMeasValueDesc::checkColumn; Column's type "
-		    	"must be Double: " + itsColumn));
-    }
-
+  if (! td.isColumn(itsColumn)) {
+    throw (AipsError ("TableMeasValueDesc::checkColumn; No such column: "
+		      + itsColumn));
+  } else if (td.columnDesc(itsColumn).dataType() != TpDouble) {
+    throw (AipsError ("TableMeasValueDesc::checkColumn; Column's type "
+		      "must be Double: " + itsColumn));
+  }
 }
-

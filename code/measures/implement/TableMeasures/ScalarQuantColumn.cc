@@ -1,4 +1,5 @@
-//# Copyright (C) 1997,1998
+//# ScalarQuantColumn.cc: Access to a Scalar Quantum Column in a table.
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,235 +26,266 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
 #include <trial/TableMeasures/ScalarQuantColumn.h>
 #include <trial/TableMeasures/TableQuantumDesc.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/String.h>
 
-template<class Qtype>
-ROScalarQuantColumn<Qtype>::ROScalarQuantColumn()
-: itsDataCol(0),
+
+template<class T>
+ROScalarQuantColumn<T>::ROScalarQuantColumn()
+: itsDataCol (0),
+  itsUnitsCol(0),
+  itsConvOut (False)
+{}
+
+template<class T>
+ROScalarQuantColumn<T>::ROScalarQuantColumn (const Table& tab,
+					     const String& columnName)
+: itsDataCol (0),
+  itsUnitsCol(0),
+  itsConvOut (False)
+{
+  init (tab, columnName);
+  itsUnitOut = itsUnit;
+}
+
+template<class T>
+ROScalarQuantColumn<T>::ROScalarQuantColumn (const Table& tab,
+					     const String& columnName,
+					     const Unit& u)
+: itsDataCol (0),
+  itsUnitsCol(0)
+{
+  init (tab, columnName);
+  itsUnitOut = u;
+  itsConvOut = ToBool(! itsUnitOut.getName().empty());
+}
+
+template<class T>
+ROScalarQuantColumn<T>::~ROScalarQuantColumn()
+{
+  cleanUp();
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::cleanUp()
+{
+  delete itsDataCol;
+  itsDataCol = 0;
+  delete itsUnitsCol;
+  itsUnitsCol = 0;
+}
+
+template<class T>
+ROScalarQuantColumn<T>::ROScalarQuantColumn
+                                        (const ROScalarQuantColumn<T>& that)
+: itsDataCol (0),
+  itsUnitsCol(0)
+{
+  reference (that);
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::init (const Table& tab, const String& columnName)
+{
+  TableQuantumDesc* tqDesc = 
+                TableQuantumDesc::reconstruct (tab.tableDesc(), columnName);
+  if (tqDesc->isUnitVariable()) {
+    itsUnitsCol = new ROScalarColumn<String>(tab, tqDesc->unitColumnName());
+  } else {
+    itsUnit = tqDesc->getUnits();
+  }
+  itsDataCol = new ROScalarColumn<T>(tab, columnName);
+  delete tqDesc;
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::reference (const ROScalarQuantColumn<T>& that)
+{   
+  cleanUp();
+  itsUnit    = that.itsUnit;
+  itsUnitOut = that.itsUnitOut;
+  itsConvOut = that.itsConvOut;
+  if (that.itsDataCol != 0) {
+    itsDataCol = new ROScalarColumn<T>(*that.itsDataCol);
+  }
+  if (that.itsUnitsCol != 0) {
+    itsUnitsCol = new ROScalarColumn<String>(*that.itsUnitsCol);
+  }
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::attach (const Table& tab, 
+				     const String& columnName)
+{
+  reference (ROScalarQuantColumn<T>(tab, columnName)); 
+}
+ 
+template<class T>
+void ROScalarQuantColumn<T>::attach (const Table& tab, 
+				     const String& columnName,
+				     const Unit& u)
+{
+  reference (ROScalarQuantColumn<T>(tab, columnName, u)); 
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::throwIfNull() const
+{
+  if (isNull()) {
+    throw (TableInvOper("Quantum table column is null"));
+  }
+}
+ 
+template<class T>
+void ROScalarQuantColumn<T>::getData (Quantum<T>& q, uInt rownr) const
+{
+  // Quantums are created from Ts stored in itsDataCol and Units
+  // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
+  q.setValue ((*itsDataCol)(rownr));
+  if (itsUnitsCol != 0) {
+    q.setUnit ((*itsUnitsCol)(rownr));
+  } else {
+    q.setUnit (itsUnit);
+  }
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr) const
+{
+  getData (q, rownr);
+  if (itsConvOut) {
+    q.convert (itsUnitOut);
+  }
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr,
+				  const Unit& u) const
+{
+  getData (q, rownr);
+  q.convert (u);
+}
+
+template<class T>
+void ROScalarQuantColumn<T>::get (Quantum<T>& q, uInt rownr,
+				  const Quantum<T>& other) const
+{
+  getData (q, rownr);
+  q.convert (other);
+}
+
+template<class T> 
+Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr) const
+{
+  Quantum<T> q;
+  get (q, rownr);
+  return q;
+}
+
+template<class T> 
+Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr,
+					       const Unit& u) const
+{
+  Quantum<T> q;
+  get (q, rownr, u);
+  return q;
+}
+
+template<class T> 
+Quantum<T> ROScalarQuantColumn<T>::operator() (uInt rownr,
+					       const Quantum<T>& other) const
+{
+  Quantum<T> q;
+  get (q, rownr, other);
+  return q;
+}
+
+
+
+template<class T>
+ScalarQuantColumn<T>::ScalarQuantColumn()
+: ROScalarQuantColumn<T>(),
+  itsDataCol (0),
   itsUnitsCol(0)
 {}
 
-template<class Qtype>
-ROScalarQuantColumn<Qtype>::ROScalarQuantColumn(const Table& tab,
-				            	const String& columnName)
+template<class T>
+ScalarQuantColumn<T>::ScalarQuantColumn (const Table& tab,
+					 const String& columnName)
+: ROScalarQuantColumn<T>(tab, columnName),
+  itsDataCol (0),
+  itsUnitsCol(0)
 {
-    TableQuantumDesc* tqDesc = 
-    	TableQuantumDesc::reconstruct(tab.tableDesc(), columnName);
-    if (tqDesc->isUnitVariable()) {
-	itsUnitsCol = 
-	    new ScalarColumn<String>(tab, tqDesc->unitColumnName());
-    } else {
-    	itsUnit = tqDesc->getUnits();
-	itsUnitsCol = 0;
-    }
-    itsDataCol = new ScalarColumn<Qtype>(tab, columnName);
-    delete tqDesc;
+  itsDataCol = new ScalarColumn<T> (tab, columnName);
+  if (unitsCol() != 0) {
+    itsUnitsCol = new ScalarColumn<String> (tab,
+					    unitsCol()->columnDesc().name());
+  }
 }
 
-template<class Qtype>
-ROScalarQuantColumn<Qtype>::ROScalarQuantColumn(const Table& tab,
-				              	const String& columnName,
-				            	const Unit& u)
-: itsUnitsCol(0)
+template<class T>
+ScalarQuantColumn<T>::ScalarQuantColumn (const ScalarQuantColumn<T>& that)
+: ROScalarQuantColumn<T>(),
+  itsDataCol (0),
+  itsUnitsCol(0)
 {
-    TableQuantumDesc* tqDesc = 
-    	TableQuantumDesc::reconstruct(tab.tableDesc(), columnName);
-    itsUnit = u;
-    itsDataCol = new ScalarColumn<Qtype>(tab, columnName);
-    delete tqDesc;
+  reference (that);
 }
 
-template<class Qtype>
-ROScalarQuantColumn<Qtype>::~ROScalarQuantColumn()
+template<class T>
+ScalarQuantColumn<T>::~ScalarQuantColumn()
 {
-    cleanUp();
+  cleanUp();
 }
 
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::cleanUp()
+template<class T>
+void ScalarQuantColumn<T>::cleanUp()
 {
-    delete itsDataCol;
-    delete itsUnitsCol;
+  delete itsDataCol;
+  itsDataCol = 0;
+  delete itsUnitsCol;
+  itsUnitsCol = 0;
 }
 
-template<class Qtype>
-ROScalarQuantColumn<Qtype>::ROScalarQuantColumn(
-    const ROScalarQuantColumn<Qtype>& that)
-: itsDataCol(that.itsDataCol),
-  itsUnit(that.itsUnit),
-  itsUnitsCol(that.itsUnitsCol)
+template<class T>
+void ScalarQuantColumn<T>::reference (const ScalarQuantColumn<T>& that)
 {
-    if (itsDataCol != 0) {
-	itsDataCol = new ScalarColumn<Qtype>(*itsDataCol);
-    }
-    if (itsUnitsCol != 0) {
-	itsUnitsCol = new ScalarColumn<String>(*itsUnitsCol);
-    }
+  cleanUp();
+  ROScalarQuantColumn<T>::reference (that);
+  if (that.itsDataCol != 0) {
+    itsDataCol = new ScalarColumn<T>(*that.itsDataCol);
+  }
+  if (that.itsUnitsCol != 0) {
+    itsUnitsCol = new ScalarColumn<String>(*that.itsUnitsCol);
+  }
 }
 
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::reference(
-    const ROScalarQuantColumn<Qtype>& that)
-{   
-    cleanUp();
-    itsDataCol = that.itsDataCol;
-    itsUnit = that.itsUnit;
-    itsUnitsCol = that.itsUnitsCol;
-    if (itsDataCol != 0) {
-	itsDataCol = new ScalarColumn<Qtype>(*itsDataCol);
-    }
-    if (itsUnitsCol != 0) {
-	itsUnitsCol = new ScalarColumn<String>(*itsUnitsCol);
-    }
-}
-
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::attach(const Table& tab, 
-	    	    	    	    	const String& columnName)
+template<class T>
+void ScalarQuantColumn<T>::attach (const Table& tab, 
+				   const String& columnName)
 {
-    reference(ROScalarQuantColumn<Qtype>(tab, columnName)); 
+  reference (ScalarQuantColumn<T>(tab, columnName)); 
 }
  
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::attach(const Table& tab, 
-	    	    	    	    	const String& columnName,
-	    	    	    	    	const Unit& u)
+template<class T>
+void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
 {
-    reference(ROScalarQuantColumn<Qtype>(tab, columnName, u)); 
+  // The value component of the quantum is stored in itsDataCol and the
+  // unit component in itsUnitsCol unless Units are non-variable in
+  // which case the Unit component is ignored (i.e., the Quantum's unit
+  // is not checked against the Column's unit).
+  if (itsUnitsCol != 0) {
+    itsUnitsCol->put (rownr, q.getUnit());
+    itsDataCol->put (rownr, q.getValue());
+  } else {
+    itsDataCol->put (rownr, q.getValue(itsUnit));
+  }
 }
-
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::throwIfNull() const
-{
-    if (isNull()) {
-        throw (TableInvOper("Quantum table column is null"));
-    }
-}
- 
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::get(Quantum<Qtype>& q, uInt rownr) const
-{
-    // Quantums are created from Qtypes stored in itsDataCol and Units
-    // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
-        
-    q.setValue((*itsDataCol)(rownr));
-    if (itsUnitsCol != 0) {
-	q.setUnit((*itsUnitsCol)(rownr));
-    } else {
-	q.setUnit(itsUnit);
-    }
-}
-
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::get(Quantum<Qtype>& q, uInt rownr,
-	    	    	    	     const Unit& s) const
-{
-    get(q, rownr);
-    q.convert(s);
-}
-
-template<class Qtype>
-void ROScalarQuantColumn<Qtype>::get(Quantum<Qtype>& q, uInt rownr,
-				     const Quantum<Qtype>& other) const
-{
-    get(q, rownr);
-    q.convert(other);
-}
-
-template<class Qtype> 
-Quantum<Qtype> ROScalarQuantColumn<Qtype>::operator()(uInt rownr) const
-{
-    Quantum<Qtype> q;
-    get(q, rownr);
-    return q;
-}
-
-template<class Qtype> 
-Quantum<Qtype> ROScalarQuantColumn<Qtype>::operator()(uInt rownr,
-						      const Unit& s) const
-{
-    Quantum<Qtype> q;
-    get(q, rownr, s);
-    return q;
-}
-
-template<class Qtype> 
-Quantum<Qtype> ROScalarQuantColumn<Qtype>::operator()(uInt rownr,
-						  const Quantum<Qtype>& other)
-						  const
-{
-    Quantum<Qtype> q;
-    get(q, rownr, other);
-    return q;
-}
-
-template<class Qtype>
-ScalarQuantColumn<Qtype>::ScalarQuantColumn()
-: ROScalarQuantColumn<Qtype>()
-{}
-
-template<class Qtype>
-ScalarQuantColumn<Qtype>::ScalarQuantColumn(const Table& tab,
-				            const String& columnName)
-: ROScalarQuantColumn<Qtype>(tab, columnName)
-{}
-
-template<class Qtype>
-ScalarQuantColumn<Qtype>::ScalarQuantColumn(const Table& tab,
-				            const String& columnName,
-				            const Unit& u)
-: ROScalarQuantColumn<Qtype>(tab, columnName, u)
-{}
- 
-template<class Qtype>
-ScalarQuantColumn<Qtype>::ScalarQuantColumn(
-    const ScalarQuantColumn<Qtype>& that)
-: ROScalarQuantColumn<Qtype>(that)
-{}
-
-template<class Qtype>
-ScalarQuantColumn<Qtype>::~ScalarQuantColumn()
-{}
-
-template<class Qtype>
-void ScalarQuantColumn<Qtype>::reference(const ScalarQuantColumn<Qtype>& that)
-{
-    ROScalarQuantColumn<Qtype>::reference(that);
-}
-
-template<class Qtype>
-void ScalarQuantColumn<Qtype>::attach(const Table& tab, 
-				      const String& columnName)
-{
-    reference(ScalarQuantColumn<Qtype>(tab, columnName)); 
-}
- 
-template<class Qtype>
-void ScalarQuantColumn<Qtype>::attach(const Table& tab, 
-	    	    	    	      const String& columnName,
-	    	    	    	      const Unit& u)
-{
-    reference(ScalarQuantColumn<Qtype>(tab, columnName, u)); 
-}
-
-template<class Qtype>
-void ScalarQuantColumn<Qtype>::put(uInt rownr, const Quantum<Qtype>& q)
-{
-    // The value component of the quantum is stored in itsDataCol and the
-    // unit component in itsUnitsCol unless Units are non-variable in
-    // which case the Unit component is ignored (i.e., the Quantum's unit
-    // is not checked against the Column's unit).
-    
-    if (itsUnitsCol != 0) {
-	itsUnitsCol->put(rownr, q.getFullUnit().getName());
-    }
-    itsDataCol->put(rownr, q.getValue());
-}
-

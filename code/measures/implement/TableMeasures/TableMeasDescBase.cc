@@ -26,122 +26,172 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MBaseline.h>
-#include <aips/Measures/Muvw.h>
-#include <aips/Measures/MEarthMagnetic.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
 #include <trial/TableMeasures/TableMeasDescBase.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <aips/Tables/ColumnDesc.h>
+#include <trial/TableMeasures/TableMeasDesc.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Measures/Measure.h>
+#include <aips/Measures/MeasureHolder.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/String.h>
+#include <aips/Exceptions/Error.h>
+
 
 TableMeasDescBase::TableMeasDescBase()
-: itsRef(0)
 {}
 
-TableMeasDescBase::TableMeasDescBase(const TableMeasValueDesc& value)
+TableMeasDescBase::TableMeasDescBase (const TableMeasValueDesc& value,
+				      const TableMeasRefDesc& ref)
 : itsValue(value),
-  itsRef(0)
+  itsRef(ref)
 {}
 
-TableMeasDescBase::TableMeasDescBase(const TableMeasValueDesc& value,
-				     const TableMeasRefDesc& ref)
-: itsValue(value),
-  itsRef(new TableMeasRefDesc(ref))
-{}
-
-TableMeasDescBase::TableMeasDescBase(const TableMeasDescBase& that)
+TableMeasDescBase::TableMeasDescBase (const TableMeasDescBase& that)
 : itsValue(that.itsValue),
-  itsRef(that.itsRef)
-{
-    if (itsRef != 0) {
-    	itsRef = new TableMeasRefDesc(*itsRef);
-    }
-}
+  itsRef(that.itsRef),
+  itsMeasType(that.itsMeasType),
+  itsUnits(that.itsUnits)
+{}
 
 TableMeasDescBase::~TableMeasDescBase()
+{}
+
+TableMeasDescBase* TableMeasDescBase::clone() const
 {
-    delete itsRef;
+  return new TableMeasDescBase(*this);
 }
 
-TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab, 
-    	    	    	    	    	    	  const String& columnName)
+TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab, 
+						   const String& columnName)
 {
-    Int fnr;
-    String mtype;
-    TableMeasDescBase* P=0;
-    TableRecord measInfo;
-    const TableRecord& columnKeyset = tab.tableDesc()[columnName].keywordSet();
-    
-    fnr = columnKeyset.fieldNumber("MEASINFO");
+  Int fnr;
+  TableRecord mtype;
+  TableRecord measInfo;
+  const TableRecord& columnKeyset = tab.tableDesc()[columnName].keywordSet();
+  
+  // get the Measure type
+  fnr = columnKeyset.fieldNumber("MEASINFO");
+  if (fnr >= 0) {
+    measInfo = columnKeyset.asRecord(fnr);
+    mtype = measInfo.asRecord("Type");    	
+  } else {
+    throw(AipsError("TableMeasDescBase::reconstruct; MEASINFO record not "
+		    "found for column " + columnName));
+  }
+  
+  // get the units
+  fnr = measInfo.fieldNumber("NumUnits");
+  uInt numUnits;
+  if (fnr >= 0) {
+    numUnits = measInfo.asuInt(fnr);
+  } else {
+    throw(AipsError("TableMeasDescBase::reconstruct; No Units found"
+		    " for column: " + columnName));
+  }
+  
+  Vector<Unit> units(numUnits);
+  for (uInt i=0; i<numUnits; i++) {
+    String uname = "unit" + String::toString(i);
+    fnr = measInfo.fieldNumber(uname);
     if (fnr >= 0) {
-        measInfo = columnKeyset.asRecord(fnr);
-    	mtype = measInfo.asString("Type");    	
+      units(i) = measInfo.asString(fnr);
     } else {
-        throw(AipsError("TableMeasDescBase::reconstruct; MEASINFO record not "
-            	        "found for column " + columnName));
+      throw(AipsError("TableMeasDescBase::reconstruct; Unit not found"
+		      " for column: " + columnName));
     }
-    
-    if (mtype == "Epoch") {
-    	P = new TableMeasDesc<MEpoch>();
-    } else if (mtype == "Position") {
-    	P = new TableMeasDesc<MPosition>();
-    } else if (mtype == "Direction") {
-    	P = new TableMeasDesc<MDirection>();
-    } else if (mtype == "Radialvelocity") {
-    	P = new TableMeasDesc<MRadialVelocity>();
-    } else if (mtype == "Doppler") {
-    	P = new TableMeasDesc<MDoppler>();
-    } else if (mtype == "Frequency") {
-    	P = new TableMeasDesc<MFrequency>();
-    } else if (mtype == "Baseline") {
-    	P = new TableMeasDesc<MBaseline>();
-    } else if (mtype == "uvw") {
-    	P = new TableMeasDesc<Muvw>();
-    } else if (mtype == "EarthMagnetic") {
-    	P = new TableMeasDesc<MEarthMagnetic>();
-    } else {
-        throw(AipsError("TableMeasDescBase::reconstruct; unknown Measure type " 
-            	    	+ mtype));
-    }
+  }
+  
+  String error;
+  MeasureHolder measHolder;
+  measHolder.fromRecord (error, mtype);
+  
+  TableMeasDescBase* p = new TableMeasDescBase();
+  p->itsValue = TableMeasValueDesc (tab.tableDesc(), columnName);
+  p->itsMeasType = TableMeasType(measHolder.asMeasure());
+  p->itsUnits = units;
+  p->itsRef = TableMeasRefDesc (measInfo, tab, *p);
 
-    // create its TableMeasRefDesc if it exists 
-    P->itsRef = TableMeasRefDesc::reconstruct(measInfo, tab, *P);
-    
-    return(P);
+  return p;
 }
 
 TableMeasDescBase& TableMeasDescBase::operator= (const TableMeasDescBase& that)
 {
-    if (this != &that) {
-	itsValue = that.itsValue;
-	delete itsRef;
-	itsRef = that.itsRef;
-	if (itsRef != 0) {
-	    itsRef = new TableMeasRefDesc (*itsRef);
-	}
-    }
-    return *this;
+  if (this != &that) {
+    itsValue = that.itsValue;
+    itsRef = that.itsRef;
+    itsMeasType = that.itsMeasType;
+    itsUnits = that.itsUnits;
+  }
+  return *this;
 }
     
-void TableMeasDescBase::write(TableDesc& td)
+void TableMeasDescBase::write (TableDesc& td)
 {
-    TableRecord measInfo;
-    
-    measInfo.define("Type", type());
-    if (itsRef != 0) {
-	itsRef->write(td, measInfo, *this);
-    }
-    itsValue.write(td, measInfo);
+  TableRecord measInfo;
+  TableRecord measType;
+
+  // Create a record from the MeasType and add it to measInfo
+  itsMeasType.toRecord (measType);
+  measInfo.defineRecord ("Type", measType);
+  // Add the units
+  measInfo.define ("NumUnits", itsUnits.nelements());
+  for (uInt i=0; i<itsUnits.nelements(); i++) {
+    String uname = "unit" + String::toString(i);
+    measInfo.define (uname, itsUnits(i).getName());
+  }
+
+  // Write the reference.
+  itsRef.write (td, measInfo, *this);
+  // Write the MEASINFO record into the keywords of the value column.
+  itsValue.write (td, measInfo);
 }
 
+void TableMeasDescBase::setMeasUnits (const Measure& meas,
+				      const Vector<Quantum<Double> >& val,
+				      const Vector<Unit>& units) 
+{ 
+  itsMeasType = TableMeasType(meas);
+  // The input unit vector cannot be longer.
+  if (units.nelements() > val.nelements()) {
+    throw (AipsError ("TableMeasDescBase::setMeasUnits; Unit vector"
+		      " for column " + columnName() + " is too long"));
+  }
+  // An empty or non-given unit gets the default Quantum one.
+  itsUnits.resize (val.nelements());
+  for (uInt i=0; i<val.nelements(); i++) {
+    if (i >= units.nelements()  ||  units(i).empty()) {
+      itsUnits(i) = val(i).getUnit();
+    } else {
+      if (! (units(i) == val(i).getUnit())) {
+	throw (AipsError ("TableMeasDescBase::setMeasUnits; invalid unit "
+			  + units(i).getName() + " for column "
+			  + columnName()));
+      }
+      itsUnits(i) = units(i);
+    }
+  }
+}
+
+void TableMeasDescBase::resetUnits (const Vector<Unit>& units)
+{
+  if (units.nelements() > itsUnits.nelements()) {
+    throw (AipsError ("TableMeasDescBase::resetUnits: Unit vector"
+		      " for column " + columnName() + " is too long"));
+  }
+  // An empty or non-given unit does not change.
+  for (uInt i=0; i<units.nelements(); i++) {
+    if (! units(i).empty()) {
+      if (! (units(i) == itsUnits(i))) {
+	throw (AipsError ("TableMeasDescBase::resetUnits; invalid unit "
+			  + units(i).getName() + " for column "
+			  + columnName()));
+      }
+      itsUnits(i) = units(i);
+    }
+  }
+}

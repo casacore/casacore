@@ -1,4 +1,4 @@
-//# ArrayQuantColumn.h: Provide access to array quantum columns.
+//# ArrayQuantColumn.h: Access to an Array Quantum Column in a table.
 //# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,22 +25,26 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_ARRQUANTUMCOL_H)
-#define AIPS_ARRQUANTUMCOL_H
+#if !defined(AIPS_ARRAYQUANTCOLUMN_H)
+#define AIPS_ARRAYQUANTCOLUMN_H
 
 //# Includes
+#include <aips/Arrays/Array.h>
+#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
-class String;
 class Table;
-class TableQuantumDesc;
-class Unit;
+template <class T> class ROArrayColumn;
+template <class T> class ROScalarColumn;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
-template <class Qtype> class Quantum;
+template <class T> class Quantum;
+class Unit;
+class String;
+
 
 // <summary>
-// Provides read-only access retrieving array  Quantum columns in Tables.
+// Provides read-only access to Array Quantum columns in Tables.
 // </summary>
 
 // <use visibility=export>
@@ -50,25 +54,38 @@ template <class Qtype> class Quantum;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
+//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ROArrayColumn>ROArrayColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
 // </prerequisite>
 
 // <synopsis>
-// The ROArrayQuantColumn class provides read-only access to array Quantum
-// table columns.  The array Quantum column should 
-// exist in the table, having be defined in advance by use of a 
-// <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> object.  
+// The ROArrayQuantColumn class provides read-only access to quanta
+// stored in a array Quantum Table column.  The Quantum column should 
+// already exist in the table and would have been defined by means of a 
+// <linkto class=TableQuantumDesc>TableQuantumDesc object</linkto>.  
 // In addition,
 // for a ROArrayQuantColumn object to be useful the column should
-// contain Quanta.  Inserting Quanta into column requires the use of a
+// contain Quanta.  Inserting Quanta into a column requires the use of a
 // <linkto class=ArrayQuantColumn">ArrayQuantColumn</A> 
 // object.<br>
 //
 // The ROArrayQuantColumn class is the array version
 // of the <linkto class=ROScalarQuantColumn>ROScalarQuantColumn</linkto> 
 // class.
+//
+// <h3>Quantum Units</h3></A>
+// Quanta retrieved from the column will normally have the Unit that was
+// specified when the Quantum column was defined.
+// However, it is possible to override the default column Unit by
+// supplying a Unit in the ROArrayQuantColumn constructor.
+// When constructed in this fashion the retrieved Quanta will by
+// default be retrieved in this unit, i.e. they will by default be
+// converted to this unit.
+// <br>
+// By giving a unit (as a Unit or Quantum object) to a get function,
+// the data can be retrieved in another unit than the default.
 // </synopsis>
 
 // <example>
@@ -87,119 +104,148 @@ template <class Qtype> class Quantum;
 // <motivation>
 // Add support for Quanta in the Tables system.
 // </motivation>
-//
+
 // <thrown>
 //    <li>TableInvOper if the Table column is null.
 // </thrown>
-//
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
 
-template<class Qtype> class ROArrayQuantColumn
+// <todo asof="$DATE:$">
+//# A List of bugs, limitations, extensions or planned refinements.
+// <li> Support for fixed unit per array element (e.g. for positions)
+//      In that case #units should match first array dimension.
+// <li> Functions like getColumn, getSlice.
+// <li> get as <src>Quantum<Array<T>></src>.
+// <li> optimize when converting when units are the same for entire array.
+// </todo>
+
+
+template<class T> class ROArrayQuantColumn
 {
 public:
-    // The default constructor creates a null object which is useful if an
-    // array of ROArrayQuantColumn() objects is needed.  attach() should be
-    // used to attach a real column to the ROArraQuantColumn before any 
-    // attempt is made to read from the column which would result in a
-    // segmentation fault as no check is performed on the object before it
-    // is used.  The isNull() member can be used to test if the
-    // ROArrayQuantColumn is null.
-    ROArrayQuantColumn();
+  // The default constructor creates a null object. It is useful for creating
+  // arrays of ROArrayQuantColumn objects. Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the objects by using the attach() member before any attempt
+  // is made to use the object.  The isNull() member can be used to test
+  // if a ROArrayQuantColumn object is null.
+  ROArrayQuantColumn();
 
-    // Create the ROArrayQuantColumn from the supplied table and column name.
-    ROArrayQuantColumn(const Table& tab, const String& columnName);
+  // Create the ROArrayQuantColumn from the supplied table and column name.
+  // The default unit for data retrieved is the unit in which they were stored.
+  ROArrayQuantColumn (const Table& tab, const String& columnName);
 
-    // Create the ROArrayQuantColumn from the supplied table and column name.
-    // Units for the Quantum are specified in u. This over-rides the default
-    // Units for the column.  Retrieved quanta are not converted
-    // to 'u', they are simply returned with 'u' units as if that was how 
-    // they were stored. This could be useful if a Quantum column was 
-    // created with an inappropriate or undefined value for Units.
-    ROArrayQuantColumn(const Table& tab, const String& columnName, 
-	    	       const Unit& u);
+  // Create the ROArrayQuantColumn from the supplied table and column name.
+  // The default unit for data retrieved is the given unit (they data is
+  // converted as needed).
+  ROArrayQuantColumn (const Table& tab, const String& columnName, 
+		      const Unit&);
 
-    // Copy constructor (copy semantics).
-    ROArrayQuantColumn(const ROArrayQuantColumn& that);
+  // Copy constructor (copy semantics).
+  ROArrayQuantColumn (const ROArrayQuantColumn<T>& that);
 
-    ~ROArrayQuantColumn();
+  ~ROArrayQuantColumn();
 
-    // Make this object reference the column in "that".
-    void reference(const ROArrayQuantColumn<Qtype>& that);
+  // Make this object reference the column in "that".
+  void reference (const ROArrayQuantColumn<T>& that);
 
-    // Attach a column to the object. Optionally supply a default unit.
-    // <group name="attach">
-    void attach(const Table& tab, const String& columnName); 
-    void attach(const Table& tab, const String& columnName, const Unit& u);
-    // </group>
+  // Attach a column to the object. Optionally supply a default unit.
+  // which has the same meaning as the constructor unit argument.
+  // <group name="attach">
+  void attach (const Table& tab, const String& columnName); 
+  void attach (const Table& tab, const String& columnName, const Unit&);
+  // </group>
  
-    // Get the quantum array in the specified row.
-    // <group name="get">
-    void get(Array<Quantum<Qtype> >& q, uInt rownr, Bool resize = False) const;
-    // Get the quantum array in the specified row. Each quantum is
-    // converted to Units in s.
-    void get(Array<Quantum<Qtype> >& q,  uInt rownr, const Unit& s, 
-	     Bool resize = False) const;
-    // Get the quantum array in the specified row. Each quantum is
-    // converted to Units in other.
-    void get(Array<Quantum<Qtype> >& q, uInt rownr, 
-	     const Quantum<Qtype> &other, Bool resize = False) const;
-    // </group>
+  // Get the quantum array in the specified row.
+  // If resize is True the resulting array is resized if its shape
+  // is not correct. Otherwise a "conformance exception" is thrown
+  // if the array is not empty and its shape mismatches.
+  // <group name="get">
+  void get (Array<Quantum<T> >& q, uInt rownr, Bool resize = False) const;
+  // Get the quantum array in the specified row. Each quantum is
+  // converted to the given unit.
+  void get (Array<Quantum<T> >& q,  uInt rownr,
+	    const Unit&, Bool resize = False) const;
+  // Get the quantum array in the specified row. Each quantum is
+  // converted to the unit in other.
+  void get (Array<Quantum<T> >& q, uInt rownr, 
+	    const Quantum<T>& other, Bool resize = False) const;
+  // </group>
     
-    // Return the quantum array stored in the specified row.
-    // <group>
-    Array<Quantum<Qtype> > operator()(uInt rownr) const;
-    // Return the quantum array stored in the specified row. Each
-    // quantum is converted to Units in s.
-    Array<Quantum<Qtype> > operator()(uInt rownr, const Unit &s) const;
-    // Return the quantum array stored in the specified row. Each
-    // quantum is converted to Units in other.
-    Array<Quantum<Qtype> > operator()(uInt rownr, 
-	    			      const Quantum<Qtype> &other) const;
-    // </group>
+  // Return the quantum array stored in the specified row.
+  // <group>
+  Array<Quantum<T> > operator() (uInt rownr) const;
+  // Return the quantum array stored in the specified row, converted
+  // to the given unit.
+  Array<Quantum<T> > operator() (uInt rownr, const Unit&) const;
+  // Return the quantum array stored in the specified row, converted
+  // to the unit in other.
+  Array<Quantum<T> > operator() (uInt rownr, const Quantum<T>& other) const;
+  // </group>
       
-    // Test whether the Quantum column has variable units
-    Bool isUnitVariable() const { 
-	return ((itsArrUnitsCol || itsScaUnitsCol) ? True : False); }
+  // Test whether the Quantum column has variable units
+  Bool isUnitVariable() const
+    { return ToBool(itsArrUnitsCol || itsScaUnitsCol); }
     
-    // Returns the column's units as a string.
-    const String& getUnits() const { return itsUnit.getName(); }
+  // Returns the column's units as a string.
+  // An empty vector is returned if the column has no fixed units.
+  const String& getUnits() const
+    { return itsUnit.getName(); }
     
-    // Test if the object is null.
-    Bool isNull() const { return (itsDataCol == 0 ? True : False); }
+  // Test if the object is null.
+  Bool isNull() const
+    { return ToBool(itsDataCol == 0); }
     
-    // Throw an exception if the object is null.
-    void throwIfNull() const;
+  // Throw an exception if the object is null.
+  void throwIfNull() const;
     
 protected:
-    //# Quantum column's units (if units not variable)
-    Unit itsUnit;    	    	    	
-    //# The underlying data array column.
-    ArrayColumn<Qtype>* itsDataCol;    
-    
-    //# A template of the stored Quanta.  Useful when getting and putting
-    //# of quanta but perhaps unnecessary.
-    Quantum<Qtype> itsQuantum;
-        
-    //# Variable units array column if applicable.
-    ArrayColumn<String>* itsArrUnitsCol;
-    
-    //# Variable units scalar column if applicable.
-    ScalarColumn<String>* itsScaUnitsCol;
+  //# Quantum column's units (if units not variable)
+  Unit itsUnit;    	    	    	
+
+  // Get access to itsUnitsCol.
+  // <group>
+  const ROArrayColumn<String>* arrUnitsCol() const
+    { return itsArrUnitsCol; }
+  const ROScalarColumn<String>* scaUnitsCol() const
+    { return itsScaUnitsCol; }
+  // </group>
+
 
 private:
-    // Deletes allocated memory etc. Called by ~tor and any member which needs
-    // to reallocate data.
-    void cleanUp();
+  //# The underlying data column stores the quantum column's data.
+  ROArrayColumn<T>* itsDataCol;
+  //# Variable units array column if applicable.
+  ROArrayColumn<String>*  itsArrUnitsCol;
+  //# Variable units scalar column if applicable.
+  ROScalarColumn<String>* itsScaUnitsCol;
+  //# Unit to retrieve the data in.
+  Unit itsUnitOut;
+  //# Convert unit when getting data?
+  Bool itsConvOut;
 
-    // Assignment makes no sense in a read only class.
-    // Declaring this operator private makes it unusable.
-    ROArrayQuantColumn& operator= (const ROArrayQuantColumn<Qtype>& that);    
+
+  // Initialize the ROArrayQuantColumn from the specified table and column.
+  void init (const Table& tab, const String& columnName);
+
+  // Deletes allocated memory etc. Called by ~tor and any member which needs
+  // to reallocate data.
+  void cleanUp();
+
+  // Get the data without possible conversion.
+  void getData (Array<Quantum<T> >& q, uInt rownr, Bool resize) const;
+
+  // Assignment makes no sense in a read only class.
+  // Declaring this operator private makes it unusable.
+  ROArrayQuantColumn& operator= (const ROArrayQuantColumn<T>& that);    
+
+  // Comparison is not defined, since its semantics are unclear.
+  Bool operator== (const ROArrayQuantColumn<T>& that);
 };
 
+
+
 // <summary>
-// A class for reading and writing Quantum Array columns in Tables.
+// Provides read/write access to Array Quantum columns in Tables.
 // </summary>
 
 // <use visibility=export>
@@ -209,24 +255,33 @@ private:
 
 // <prerequisite>
 //# Classes you should understand before using this one.
+//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ArrayColumn>ArrayColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
 // </prerequisite>
 
 // <synopsis>
-// The ArrayQuantColumn class provides read/write access to array Quantum 
-// Table columns.  The column should exist in the table and would have
-// been defined as a Quantum column by means of a
+// The ArrayQuantColumn class provides read/write access to Quanta
+// stored in a Quantum Table column.  The column should previously have 
+// been defined as a Quantum column by means of the 
 // <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> object.
 // In addition to the operations provided by its read-only partner,
 // <linkto class=ROArrayQuantColumn>ROArrayQuantColumn</linkto>, use 
-// of a ArrayQuantColumn object allows the insertion of arrays of Quanta 
-// into a column.<br>
+// of a ArrayQuantColumn object allows the insertion of Quanta into a column.
+// <br>
 //
-// The treatment of Quanta Units in ArrayQuantColumns varies according
-// to how the ArrayQuantColumn was defined.  See 
-// <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> for the details.
+// <h3>Quantum Units</h3></A>
+// The underlying Quantum column will have been defined to have either
+// variable or fixed Units. A variable unit can be variable per row
+// (thus the same for an entire array in that row) or it can be variable
+// per array element.
+// If the Quantum column's Unit is fixed then writing quanta converts
+// the data to that unit. If the column's unit is variable, the data is
+// written unconverted and the unit is written into the unit column
+// defined in the TableQuantDesc object.
+// <br>See
+// <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> for more details.
 // </synopsis>
 
 // <example>
@@ -276,64 +331,71 @@ private:
 // <motivation>
 // Add support for Quanta in the Tables system.
 // </motivation>
-//
+
 // <thrown>
 //    <li>TableInvOper if the Table column is null.
 // </thrown>
-//
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-// Is there a better way of dealing with fixed unit columns?  When putting a
-// Quantum into a column should the unit be checked and converted or perhaps
-// it should be illegal to add quanta with incorrect units?
-//# </todo>
 
-template<class Qtype> class ArrayQuantColumn : public ROArrayQuantColumn<Qtype>
+// <todo asof="$DATE:$">
+//# A List of bugs, limitations, extensions or planned refinements.
+// <li> Functions like putColumn, putSlice
+// </todo>
+
+
+template<class T> class ArrayQuantColumn : public ROArrayQuantColumn<T>
 {
 public:
-    // The default constructor creates a null object only useful if an
-    // array of ArrayQuantColumn() object is needed.  attach() should be
-    // used to attach a real column to the ArrayQuantColumn before any 
-    // attempt is made to read from the column.  The isNull() member can 
-    // be used to test if the ArrayQuantColumn is null.
-    ArrayQuantColumn();
+  // The default constructor creates a null object.  Useful for creating
+  // arrays of ArrayQuantColumn objects.  Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the objects by using the attach() member before any attempt
+  // is made to use the object.  The isNull() member can be used to test
+  // if a ArrayQuantColumn object is null.
+  ArrayQuantColumn();
 
-    // Create the ArrayQuantColumn from the supplied table and column name.
-    ArrayQuantColumn(const Table& tab, const String& columnName);
+  // Create the ArrayQuantColumn from the supplied table and column name.
+  // The default unit for data retrieved is the unit in which they were stored.
+  ArrayQuantColumn (const Table& tab, const String& columnName);
 
-    // Create the ROArrayQuantColumn from the supplied table and column name.
-    // Units for the Quantum are specified in u and over-rides the default
-    // units for the column.  Retrieved Quanta are not converted
-    // to 'u', they are simply returned with 'u' units as if that was how 
-    // they were stored. This could be useful if a Quantum column was created 
-    // with an inappropriate or undefined value for units.
-    ArrayQuantColumn(const Table& tab, const String& columnName, 
-		     const Unit& u);
+  // Copy constructor (copy semantics).
+  ArrayQuantColumn (const ArrayQuantColumn<T>& that);
 
-    // Copy constructor (copy semantics).
-    ArrayQuantColumn(const ArrayQuantColumn& that);
+  ~ArrayQuantColumn();
 
-    ~ArrayQuantColumn();
+  // Make this object reference the column in "that".
+  void reference(const ArrayQuantColumn<T>& that);
 
-    // Make this object reference the column in "that".
-    void reference(const ArrayQuantColumn<Qtype>& that);
-
-    // Attach a column to the object. Optionally supply a default unit.
-    // <group name="attach">
-    void attach(const Table& tab, const String& columnName); 
-    void attach(const Table& tab, const String& columnName, const Unit& u);
-    // </group>
+  // Attach a column to the object.
+  // <group name="attach">
+  void attach (const Table& tab, const String& columnName); 
+  // </group>
  
-    // Add an array of quanta in q to the specified row to the table.
-    // If the column supports variable units units are stored as well as
-    // quanta value otherwise units are disregarded (i.e., they are 
-    // assumed to conform).
-    void put(uInt rownr, const Array<Quantum<Qtype> >& q);
+  // Put an array of quanta into the specified row of the table.
+  // If the column supports variable units, the units are stored as well.
+  // Otherwise the quanta are converted to the column's units.
+  void put (uInt rownr, const Array<Quantum<T> >& q);
     
 private:
-    // reference() can be used for assignment.
-    // Declaring this operator private makes it unusable.
-    ArrayQuantColumn& operator= (const ArrayQuantColumn<Qtype>& that);
+  // reference() can be used for assignment.
+  // Declaring this operator private makes it unusable.
+  ArrayQuantColumn& operator= (const ArrayQuantColumn<T>& that);
+
+  // Comparison is not defined, since its semantics are unclear.
+  Bool operator== (const ArrayQuantColumn<T>& that);
+    
+  // Deletes allocated memory etc. Called by destructor and any member 
+  // which needs to reallocate data.
+  void cleanUp();
+
+
+  //# The underlying data column stores the quantum column's data.
+  ArrayColumn<T>* itsDataCol;
+  //# Variable units array column if applicable.
+  ArrayColumn<String>*  itsArrUnitsCol;
+  //# Variable units scalar column if applicable.
+  ScalarColumn<String>* itsScaUnitsCol;
 };
+
+
 
 #endif

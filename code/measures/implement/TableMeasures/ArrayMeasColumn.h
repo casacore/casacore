@@ -29,39 +29,18 @@
 #define AIPS_ARRAYMEASCOLUMN_H
 
 //# Includes
+#include <trial/TableMeasures/TableMeasColumn.h>
 #include <aips/Measures/MeasRef.h>
-//#include <aips/Tables/ArrayColumn.h>
 
 //# Forward Declarations
-class MEpoch;
-class MVEpoch;
-class MPosition;
-class MVPosition;
-class MDirection;
-class MVDirection;
-class MRadialVelocity;
-class MVRadialVelocity;
-class MDoppler;
-class MVDoppler;
-class MFrequency;
-class MVFrequency;
-class MBaseline;
-class MVBaseline;
-class Muvw;
-class MVuvw;
-class MEarthMagnetic;
-class MVEarthMagnetic;
-class String;
-class Table;
-class TableMeasRefDesc;
-template <class T> class ArrayColumn;
 template <class T> class ROArrayColumn;
+template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
 template <class T> class ROScalarColumn;
-template <class M> class TableMeasDesc;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class T> class Array;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
+
 
 // <summary>
 // Read only access to table array Measure columns.
@@ -201,107 +180,71 @@ template <class M, class MV> class ROScalarMeasColumn;
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
 
-template<class M, class MV> class ROArrayMeasColumn
+template<class M> class ROArrayMeasColumn : public ROTableMeasColumn
 {
 public:
-    // The default constructor creates a null object.  Useful for creating
-    // arrays of ROArrayMeasColumn objects.  Attempting to use a null object
-    // will produce a segmentation fault so care needs to be taken to
-    // initialise the objects by using the attach() member before any attempt
-    // is made to use the object.  A ROArrayMeasColumn object can be tested
-    // if it is null by using the isNull() member.
-    ROArrayMeasColumn();
+  // The default constructor creates a null object.  Useful for creating
+  // arrays of ROArrayMeasColumn objects.  Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the objects by using the attach() member before any attempt
+  // is made to use the object.  A ROArrayMeasColumn object can be tested
+  // if it is null by using the isNull() member.
+  ROArrayMeasColumn();
 
-    // Create the ROArrayMeasColumn from the table and column Name.
-    ROArrayMeasColumn(const Table& tab, const String& columnName);
+  // Create the ROArrayMeasColumn from the table and column Name.
+  ROArrayMeasColumn (const Table& tab, const String& columnName);
 
-    // Copy constructor (copy semantics).
-    ROArrayMeasColumn(const ROArrayMeasColumn<M, MV>& that);
+  // Copy constructor (copy semantics).
+  ROArrayMeasColumn (const ROArrayMeasColumn<M>& that);
 
-    ~ROArrayMeasColumn();
+  virtual ~ROArrayMeasColumn();
 
-    // Change the reference to another column.
-    void reference(const ROArrayMeasColumn<M, MV>& that);
+  // Change the reference to another column.
+  void reference (const ROArrayMeasColumn<M>& that);
 
-    // Attach a column to the object. 
-    void attach(const Table& tab, const String& columnName); 
+  // Attach a column to the object. 
+  void attach (const Table& tab, const String& columnName); 
  
-    // Get the Measure array in the specified row.  For get() the supplied
-    // array's shape should match the shape in the row unless resize is True.
-    // <group name=get>
-    void get(uInt rownr, Array<M>& meas, Bool resize = False) const;
-    Array<M> operator()(uInt rownr) const;
-    // </group>
+  // Get the Measure array in the specified row.  For get() the supplied
+  // array's shape should match the shape in the row unless resize is True.
+  // <group name=get>
+  void get (uInt rownr, Array<M>& meas, Bool resize = False) const;
+  Array<M> operator() (uInt rownr) const;
+  // </group>
           
-    // Tests if a row contains a Measure array (i.e., if the row has a defined
-    // value).
-    Bool isDefined(uInt rownr) const;
-
-    // Is there per row storage of Measure references or is the Measure 
-    // reference fixed for the column?
-    // <group name=isRefVariable>
-    Bool isRefVariable() const { return itsVarRefFlag; }
-    // </group>
-    
-    // Get the column's reference.
-    // <group name=getMeasRef>
-    const MeasRef<M>& getMeasRef() const;
-    // </group>
-    
-    // Test if the object is null.
-    Bool isNull() const { return (itsDataCol == 0 ? True : False); }
-    
-    // Throw an exception if the object is null.
-    void throwIfNull() const;
+  // Get the column's reference.
+  // <group name=getMeasRef>
+  const MeasRef<M>& getMeasRef() const
+    { return itsMeasRef; }
+  // </group>
     
 protected:
-    //# Resets itsMeasRef. Useful when the MeasRef varies from row to row.
-    void setMeasRef(uInt rownr=0);
-
-    //# Measure reference could be constant or vary per row.
-    Bool itsVarRefFlag;
-    Bool itsVarOffsetFlag;
+  //# Its measure reference when the MeasRef is constant per row.
+  MeasRef<M> itsMeasRef;
     
 private:
-    // Assignment makes no sense in a read only class.
-    // Declaring this operator private makes it unusable.
-    ROArrayMeasColumn& operator= (const ROArrayMeasColumn& that); 
+  // Assignment makes no sense in a read only class.
+  // Declaring this operator private makes it unusable.
+  ROArrayMeasColumn& operator= (const ROArrayMeasColumn<M>& that); 
+    
+  //# Deletes allocated memory etc. Called by ~tor and any member which needs
+  //# to reallocate data.
+  void cleanUp();
 
-    //# Column which contains the Measure's actual data
-    ROArrayColumn<Double>* itsDataCol;
-    
-    //# Its MeasRef code column when references are variable.
-    ROScalarColumn<Int>* itsRefIntCol;
-    ROArrayColumn<Int>* itsArrRefIntCol;
-    
-    //# Its MeasRef column when references are variable and stored as Strings.
-    ROScalarColumn<String>* itsRefStrCol;
-    ROArrayColumn<String>* itsArrRefStrCol;
-    
-    //# Column containing its variable offsets.  Only applicable if the 
-    //# measure references have offsets and they are variable.
-    ROScalarMeasColumn<M, MV>* itsOffsetCol;
-    ROArrayMeasColumn<M, MV>* itsArrOffsetCol;
-        
-    //# Its measure reference when the MeasRef is constant per row.
-    MeasRef<M> itsMeasRef;
-    
-    //# Deletes allocated memory etc. Called by ~tor and any member which needs
-    //# to reallocate data.
-    void cleanUp();
+
+  //# Column which contains the Measure's actual data
+  ROArrayColumn<Double>* itsDataCol;
+  //# Its MeasRef code column when references are variable.
+  ROScalarColumn<Int>* itsRefIntCol;
+  ROArrayColumn<Int>* itsArrRefIntCol;
+  //# Its MeasRef column when references are variable and stored as Strings.
+  ROScalarColumn<String>* itsRefStrCol;
+  ROArrayColumn<String>* itsArrRefStrCol;
+  //# Column containing its variable offsets.  Only applicable if the 
+  //# measure references have offsets and they are variable.
+  ROScalarMeasColumn<M>* itsOffsetCol;
+  ROArrayMeasColumn<M>* itsArrOffsetCol;
 };
-
-typedef ROArrayMeasColumn<MEpoch, MVEpoch> ROMEpochArrCol;
-typedef ROArrayMeasColumn<MDirection, MVDirection> ROMDirectionArrCol;
-typedef ROArrayMeasColumn<MPosition, MVPosition> ROMPositionArrCol;
-typedef ROArrayMeasColumn<MRadialVelocity, MVRadialVelocity> 
-    ROMRadialVelocityArrCol;
-typedef ROArrayMeasColumn<MDoppler, MVDoppler> ROMDopplerArrCol;
-typedef ROArrayMeasColumn<MFrequency, MVFrequency> ROMFrequencyCol;
-typedef ROArrayMeasColumn<MBaseline, MVBaseline> ROMBaselineArrCol;
-typedef ROArrayMeasColumn<Muvw, MVuvw> ROMuvwArrCol;
-typedef ROArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> 
-    ROMEarthMagneticArrCol;
 
 
 // <summary>
@@ -313,77 +256,71 @@ typedef ROArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic>
 // <linkto class="ROArrayMeasColumn">ROArrayMeasColumn</linkto>.
 // </synopsis>
 
-template<class M, class MV> class ArrayMeasColumn 
-    : public ROArrayMeasColumn<M, MV>
+template<class M> class ArrayMeasColumn : public ROArrayMeasColumn<M>
 {
 public:
-    // The default constructor creates a null object.  Useful for creating
-    // arrays of ROArrayMeasColumn objects.  Attempting to use a null object
-    // will produce a segmentation fault so care needs to be taken to
-    // initialise the objects by using the attach() member before any attempt
-    // is made to use the object.  A ROArrayMeasColumn object can be tested
-    // if it is null by using the isNull() member.
-    ArrayMeasColumn();
+  // The default constructor creates a null object.  Useful for creating
+  // arrays of ROArrayMeasColumn objects.  Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the objects by using the attach() member before any attempt
+  // is made to use the object.  A ROArrayMeasColumn object can be tested
+  // if it is null by using the isNull() member.
+  ArrayMeasColumn();
 
-    // Create the ROArrayMeasColumn from the table and column Name.
-    ArrayMeasColumn(const Table& tab, const String& columnName);
+  // Create the ROArrayMeasColumn from the table and column Name.
+  ArrayMeasColumn (const Table& tab, const String& columnName);
 
-    // Copy constructor (copy semantics).
-    ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that);
+  // Copy constructor (copy semantics).
+  ArrayMeasColumn (const ArrayMeasColumn<M>& that);
 
-    ~ArrayMeasColumn();
+  virtual ~ArrayMeasColumn();
 
-    // Change the reference to another column.
-    void reference(const ArrayMeasColumn<M, MV>& that);
+  // Change the reference to another column.
+  void reference (const ArrayMeasColumn<M>& that);
 
-    // Attach a column to the object. 
-    void attach(const Table& tab, const String& columnName); 
+  // Attach a column to the object. 
+  void attach (const Table& tab, const String& columnName); 
  
-    // Add a Measure array to the specified row.
-    // <group name=put>
-    void put(uInt rownr, const Array<M>&);    
-    // </group>
+  // Reset the refCode, offset, or units.
+  // It overwrites the value used when defining the TableMeasDesc.
+  // It is only possible if it was defined as fixed for the entire column.
+  // <group>
+  void setDescRefCode (uInt refCode);
+  void setDescOffset (const Measure& offset);
+  void setDescUnits (const Vector<Unit>& units);
+  // </group>
+
+  // Add a Measure array to the specified row.
+  // <group name=put>
+  void put (uInt rownr, const Array<M>&);    
+  // </group>
 
 private:
-    // Declaring this operator private makes it unusable.
-    // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
-    // explanation as to why this operation is disallowed.  Use the reference
-    // function instead.
-    ArrayMeasColumn& operator= (const ArrayMeasColumn& that); 
-
-    //# Column which contains the Measure's actual data
-    ArrayColumn<Double>* itsDataCol;
-    
-    //# Its MeasRef column when references are variable and stored as RefCodes.
-    ScalarColumn<Int>* itsRefIntCol;
-    ArrayColumn<Int>* itsArrRefIntCol;
-    
-    //# Its MeasRef column when references are variable and stored as Strings.
-    ScalarColumn<String>* itsRefStrCol;
-    ArrayColumn<String>* itsArrRefStrCol;
-    
-    //# Column containing its variable offsets.  Only applicable if the 
-    //# measure references have offsets and they are variable.
-    ScalarMeasColumn<M, MV>* itsOffsetCol;
-    ArrayMeasColumn<M, MV>* itsArrOffsetCol;
-
-    //# Its measure reference when the MeasRef is constant per row.
-    MeasRef<M> itsMeasRef;
+  // Declaring this operator private makes it unusable.
+  // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
+  // explanation as to why this operation is disallowed.  Use the reference
+  // function instead.
+  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that); 
         
-    //# Deletes allocated memory etc. Called by ~tor and any member which needs
-    //# to reallocate data.
-    void cleanUp();
+  //# Deletes allocated memory etc. Called by ~tor and any member which needs
+  //# to reallocate data.
+  void cleanUp();
+
+
+  //# Column which contains the Measure's actual data
+  ArrayColumn<Double>* itsDataCol;
+  //# Its MeasRef column when references are variable and stored as RefCodes.
+  ScalarColumn<Int>* itsRefIntCol;
+  ArrayColumn<Int>* itsArrRefIntCol;
+  //# Its MeasRef column when references are variable and stored as Strings.
+  ScalarColumn<String>* itsRefStrCol;
+  ArrayColumn<String>* itsArrRefStrCol;
+  //# Column containing its variable offsets.  Only applicable if the 
+  //# measure references have offsets and they are variable.
+  ScalarMeasColumn<M>* itsOffsetCol;
+  ArrayMeasColumn<M>* itsArrOffsetCol;
 };
 
-typedef ArrayMeasColumn<MEpoch, MVEpoch> MEpochArrCol;
-typedef ArrayMeasColumn<MDirection, MVDirection> MDirectionArrCol;
-typedef ArrayMeasColumn<MPosition, MVPosition> MPositionArrCol;
-typedef ArrayMeasColumn<MRadialVelocity, MVRadialVelocity> 
-    MRadialVelocityArrCol;
-typedef ArrayMeasColumn<MDoppler, MVDoppler> MDopplerArrCol;
-typedef ArrayMeasColumn<MFrequency, MVFrequency> MFrequencyCol;
-typedef ArrayMeasColumn<MBaseline, MVBaseline> MBaselineArrCol;
-typedef ArrayMeasColumn<Muvw, MVuvw> MuvwArrCol;
-typedef ArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> MEarthMagneticArrCol;
+
 
 #endif

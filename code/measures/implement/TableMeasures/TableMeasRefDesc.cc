@@ -27,138 +27,128 @@
 
 
 //# Includes
-#include <aips/Measures/MRBase.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
-#include <trial/TableMeasures/TableMeasOffsetDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
+#include <trial/TableMeasures/TableMeasDescBase.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions/Error.h>
 
-TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode)
+
+TableMeasRefDesc::TableMeasRefDesc (uInt referenceCode)
 : itsRefCode(referenceCode),
-  itsOffset(0)
+  itsOffset (0)
 {}
 
-TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode, 
-	    	    	    	   const TableMeasOffsetDesc& offset)
+TableMeasRefDesc::TableMeasRefDesc (uInt referenceCode, 
+				    const TableMeasOffsetDesc& offset)
 : itsRefCode(referenceCode),
-  itsOffset(new TableMeasOffsetDesc(offset))
+  itsOffset (new TableMeasOffsetDesc(offset))
 {}
 
-TableMeasRefDesc::TableMeasRefDesc(const TableDesc &td, const String& column)
+TableMeasRefDesc::TableMeasRefDesc (const TableDesc &td, const String& column)
 : itsRefCode(0),
-  itsColumn(column),
-  itsOffset(0)
+  itsColumn (column),
+  itsOffset (0)
 {
-    checkColumn(td);
+  checkColumn (td);
 }
 
-TableMeasRefDesc::TableMeasRefDesc(const TableDesc &td, const String& column,
-	    	    	    	   const TableMeasOffsetDesc& offset)
+TableMeasRefDesc::TableMeasRefDesc (const TableDesc &td, const String& column,
+				    const TableMeasOffsetDesc& offset)
 : itsRefCode(0),
-  itsColumn(column),
-  itsOffset(new TableMeasOffsetDesc(offset))
+  itsColumn (column),
+  itsOffset (new TableMeasOffsetDesc(offset))
 {
-    checkColumn(td);
+  checkColumn (td);
 }
 
-TableMeasRefDesc::TableMeasRefDesc(const TableMeasRefDesc& that)
-: itsRefCode(that.itsRefCode),
-  itsColumn(that.itsColumn),
-  itsOffset(that.itsOffset)
+TableMeasRefDesc::TableMeasRefDesc (const TableMeasRefDesc& that)
+: itsOffset(0)
 {
-    if (itsOffset != 0) {
-	itsOffset = new TableMeasOffsetDesc(*itsOffset);
-    }
+  operator= (that);
 }
     
 TableMeasRefDesc& TableMeasRefDesc::operator= (const TableMeasRefDesc& that)
 {
-    if (this != &that) {
-	delete itsOffset;
-	itsRefCode = that.itsRefCode;
-	itsColumn = that.itsColumn;
-	itsOffset  = that.itsOffset;
-	if (itsOffset != 0) {
-	    itsOffset = new TableMeasOffsetDesc(*itsOffset);
-	}
+  if (this != &that) {
+    delete itsOffset;
+    itsRefCode = that.itsRefCode;
+    itsColumn  = that.itsColumn;
+    itsOffset  = that.itsOffset;
+    if (itsOffset != 0) {
+      itsOffset = new TableMeasOffsetDesc(*itsOffset);
     }
-    return *this;
+  }
+  return *this;
 }
 
 TableMeasRefDesc::~TableMeasRefDesc()
 {
-    delete itsOffset;
+  delete itsOffset;
 }
 
-TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo,
-    	    	    	    	   const Table& tab,
-				   const TableMeasDescBase& mDesc,
-    	    	    	    	   const String& refString)
-: itsOffset(0)
+TableMeasRefDesc::TableMeasRefDesc (const TableRecord& measInfo,
+				    const Table& tab,
+				    const TableMeasDescBase& mDesc)
+: itsRefCode(0),
+  itsOffset (0)
 {
-    itsOffset = TableMeasOffsetDesc::reconstruct(measInfo, "RefOff", tab);
-    if (refString == "variable") {
-    	Int fnr;
-	fnr = measInfo.fieldNumber("VarRefCol");
-	if (fnr >= 0) {
-	    itsColumn = measInfo.asString(fnr);
-	}
-    } else {
-	itsRefCode = mDesc.refCode(refString);
-    }
-
+  Int fnr;
+  fnr = measInfo.fieldNumber("Ref");
+  if (fnr >= 0) {
+    itsRefCode = mDesc.refCode (measInfo.asString(fnr));
+  }
+  fnr = measInfo.fieldNumber("VarRefCol");
+  if (fnr >= 0) {
+    itsColumn = measInfo.asString(fnr);
+  }
+  itsOffset = TableMeasOffsetDesc::reconstruct (measInfo, "RefOff", tab);
 }
 
-TableMeasRefDesc* TableMeasRefDesc::reconstruct(const TableRecord& measInfo,
-				    	        const Table& tab,
-				    	      	const TableMeasDescBase& mDesc)
+void TableMeasRefDesc::write (TableDesc& td, TableRecord& measInfo, 
+			      const TableMeasDescBase& measDesc)
 {
-    TableMeasRefDesc* P = 0;
-    String refString;    
-    Int fnr;
-    fnr = measInfo.fieldNumber("Ref");
-    if (fnr >= 0) {
-	refString = measInfo.asString(fnr);
-    	P = new TableMeasRefDesc(measInfo, tab, mDesc, refString);
-    } else {
-	// set up TableMeasRefDesc with a default non-variable reference
-	P = new TableMeasRefDesc(0);
-    }
-    
-    return P;
+  if (isRefCodeVariable()) {
+    measInfo.define ("VarRefCol", itsColumn);
+  } else {
+    measInfo.define ("Ref", measDesc.refType (itsRefCode));
+  } 
+  if (itsOffset != 0) {
+    itsOffset->write (td, measInfo, "RefOff");
+  }
 }
 
-void TableMeasRefDesc::write(TableDesc& td, TableRecord& measInfo, 
-			     const TableMeasDescBase& measDesc)
+void TableMeasRefDesc::checkColumn (const TableDesc& td) const
 {
-    String refString;
-    if (isVariable()) {
-    	refString = "variable";
-	measInfo.define("Ref", "variable");
-	measInfo.define("VarRefCol", itsColumn);
-    } else {
-    	refString = measDesc.refType(itsRefCode);
-    	measInfo.define("Ref", refString);
-    }
-      
-    if (itsOffset != 0) {
-	itsOffset->write(td, measInfo, "RefOff");
-    }
+  if (! td.isColumn(itsColumn)) {
+    throw (AipsError ("TableMeasRefDesc::checkColumn; No such column: "
+		      + itsColumn));
+  } else if ((td.columnDesc(itsColumn).dataType() != TpInt) &&
+	     (td.columnDesc(itsColumn).dataType() != TpString)) {
+    throw (AipsError ("TableMeasRefDesc::checkColumn; Reference column's "
+		      "type must be Int or String: " + itsColumn));
+  }
 }
 
-void TableMeasRefDesc::checkColumn(const TableDesc& td) const
+void TableMeasRefDesc::resetRefCode (uInt refCode)
 {
-    if (td.isColumn(itsColumn) == False) {
-    	throw(AipsError("TableMeasRefDesc::checkColumn; No such column: "
-            	    	 + itsColumn));
-    } else if ((td.columnDesc(itsColumn).dataType() != TpInt) &&
-	       (td.columnDesc(itsColumn).dataType() != TpString)) {
-    	throw(AipsError("TableMeasRefDesc::checkColumn; Reference column's "
-			"type must be Int or String: " + itsColumn));
-    }
-
+  if (isRefCodeVariable()) {
+    throw (AipsError ("tableMeasRefDesc::resetRefCode cannot be done;"
+		      "the refcode is not fixed for the entire column"));
+  }
+  itsRefCode = refCode;
 }
 
+void TableMeasRefDesc::resetOffset (const Measure& offset)
+{
+  if (itsOffset == 0) {
+    itsOffset = new TableMeasOffsetDesc (offset);
+  } else {
+    itsOffset->resetOffset (offset);
+  }
+    if (isOffsetVariable()) {
+      throw (AipsError ("tableMeasRefDesc::resetOffset cannot be done;"
+			"the offset is not fixed for the entire column"));
+    }
+}

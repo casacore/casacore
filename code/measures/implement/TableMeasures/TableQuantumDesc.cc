@@ -26,48 +26,48 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
 #include <trial/TableMeasures/TableQuantumDesc.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColumnDesc.h>
+#include <aips/Tables/TableRecord.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/Exceptions.h>
 
-TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column)
+
+TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column)
 : itsColName(column)
 {
-    checkColumn(td);
+  checkColumn(td);
 }
 
-TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column,
-	    	    	    	   const Unit& u)
+TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column,
+				    const Unit& u)
 : itsColName(column),
   itsUnitsName(u.getName())
 {
-    checkColumn(td);
+  checkColumn(td);
 }
 
-TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column, 
-	    	    	    	   const String& unitsCol)
+TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column, 
+				    const String& unitsCol)
 : itsColName(column),
   itsUnitsColName(unitsCol)
 {
-    checkColumn(td);
-    checkUnitsColumn(td);
+  checkColumn(td);
+  checkUnitsColumn(td);
 }
 
-TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column, 
-	    	    	    	   const Char* unitsCol)
+TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column, 
+				    const Char* unitsCol)
 : itsColName(column),
   itsUnitsColName(unitsCol)
 {
-    checkColumn(td);
-    checkUnitsColumn(td);
+  checkColumn(td);
+  checkUnitsColumn(td);
 }
 
-TableQuantumDesc::TableQuantumDesc(const TableQuantumDesc& that)
+TableQuantumDesc::TableQuantumDesc (const TableQuantumDesc& that)
 : itsColName(that.itsColName),
   itsUnitsName(that.itsUnitsName),
   itsUnitsColName(that.itsUnitsColName)
@@ -78,68 +78,63 @@ TableQuantumDesc::~TableQuantumDesc()
 
 TableQuantumDesc& TableQuantumDesc::operator= (const TableQuantumDesc& that)
 {
-    if (this != &that) {
-	itsColName = that.itsColName;
-	itsUnitsName = that.itsUnitsName;
-    	itsUnitsColName = that.itsUnitsColName;
-    }
-    return *this;
+  if (this != &that) {
+    itsColName = that.itsColName;
+    itsUnitsName = that.itsUnitsName;
+    itsUnitsColName = that.itsUnitsColName;
+  }
+  return *this;
 }
 
-TableQuantumDesc* TableQuantumDesc::reconstruct(const TableDesc& td,
-    	    	    	    	    	    	const String& columnName)
+TableQuantumDesc* TableQuantumDesc::reconstruct (const TableDesc& td,
+						 const String& columnName)
 {
-    TableQuantumDesc* P = 0;
-    const TableRecord& columnKeyset = td[columnName].keywordSet();
-    String refString;    
-    Int fnr;
+  TableQuantumDesc* p = 0;
+  const TableRecord& columnKeyset = td[columnName].keywordSet();
+  String refString;    
+  Int fnr = columnKeyset.fieldNumber("VariableUnits");
+  if (fnr >= 0) {
+    refString = columnKeyset.asString(fnr);
+    p = new TableQuantumDesc(td, columnName, refString);
+  } else {
+    fnr = columnKeyset.fieldNumber("QuantumUnit");
     
-    fnr = columnKeyset.fieldNumber("VariableUnits");
     if (fnr >= 0) {
-	refString = columnKeyset.asString(fnr);
-    	P = new TableQuantumDesc(td, columnName, refString);
+      refString = columnKeyset.asString(fnr);
+      p = new TableQuantumDesc(td, columnName, Unit(refString));
     } else {
-    	fnr = columnKeyset.fieldNumber("QuantumUnit");
-	
-	if (fnr >= 0) {
-	    refString = columnKeyset.asString(fnr);
-    	    P = new TableQuantumDesc(td, columnName, Unit(refString));
-	} else {
-            throw(AipsError("TableQuantum::reconstruct; Not a Quantum"
-            	            " column: " + columnName));
-    	}
+      throw(AipsError("TableQuantum::reconstruct; Not a Quantum"
+		      " column: " + columnName));
     }
-
-    return P;
+  }
+  return p;
 }
 
-void TableQuantumDesc::write(TableDesc& td)
+void TableQuantumDesc::write (TableDesc& td)
 {
-    TableRecord& columnKeyset = td.rwColumnDesc(itsColName).rwKeywordSet();
-    if (isUnitVariable()) {
-    	columnKeyset.define("VariableUnits", itsUnitsColName);
-    } else {
-	columnKeyset.define("QuantumUnit", itsUnitsName);
-    }
+  TableRecord& columnKeyset = td.rwColumnDesc(itsColName).rwKeywordSet();
+  if (isUnitVariable()) {
+    columnKeyset.define("VariableUnits", itsUnitsColName);
+  } else {
+    columnKeyset.define("QuantumUnit", itsUnitsName);
+  }
 }
 
-void TableQuantumDesc::checkColumn(const TableDesc& td) const
+void TableQuantumDesc::checkColumn (const TableDesc& td) const
 {
-    if (td.isColumn(itsColName) == False) {
-    	throw(AipsError("TableQuantum::checkColumn; No such column: "
-            	    	 + itsColName));
-    } 
+  if (! td.isColumn(itsColName)) {
+    throw (AipsError ("TableQuantum::checkColumn; No such column: "
+		      + itsColName));
+  } 
 }
 
-void TableQuantumDesc::checkUnitsColumn(const TableDesc& td) const
+void TableQuantumDesc::checkUnitsColumn (const TableDesc& td) const
 {
-    if (td.isColumn(itsUnitsColName) == False) {
-    	throw(AipsError("TableQuantum::checkUnitsColumn; No such column: "
-            	    	 + itsUnitsColName));
-    } else if (td.columnDesc(itsUnitsColName).dataType() != TpString) {
-    	throw(AipsError("TableQuantum::checkUnitsColumn; Type of column "
-		    	"should be String: " + itsUnitsColName));
-    }
+  if (! td.isColumn(itsUnitsColName)) {
+    throw (AipsError ("TableQuantum::checkUnitsColumn; No such column: "
+		      + itsUnitsColName));
+  } else if (td.columnDesc(itsUnitsColName).dataType() != TpString) {
+    throw (AipsError ("TableQuantum::checkUnitsColumn; Type of column "
+		      "should be String: " + itsUnitsColName));
+  }
 }
-
-

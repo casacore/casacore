@@ -29,12 +29,13 @@
 #define AIPS_TABLEMEASVALUEDESC_H
 
 //# Includes
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
 class ColumnDesc;
-class String;
 class TableDesc;
 class TableRecord;
+
 
 // <summary>
 // Definition of a Measure Value in a Table.
@@ -102,34 +103,37 @@ class TableRecord;
 class TableMeasValueDesc
 {
 public:
-    // Null constructor
-    TableMeasValueDesc();
+  // Null constructor
+  TableMeasValueDesc();
 
-    // Constructor the MeasValue column descriptor for the given column.
-    // The column must be an array column of type Double and should already
-    // exist in the TableDesc.
-    TableMeasValueDesc(const TableDesc&, const String& columnName);
+  // Constructor the MeasValue column descriptor for the given column.
+  // The column must be an array column of type Double and should already
+  // exist in the TableDesc.
+  TableMeasValueDesc (const TableDesc&, const String& columnName);
 
-    // Copy constructor.
-    TableMeasValueDesc(const TableMeasValueDesc& that);
+  // Copy constructor.
+  TableMeasValueDesc (const TableMeasValueDesc& that);
 
-    ~TableMeasValueDesc();
+  ~TableMeasValueDesc();
 
-    // Assignment operator.
-    TableMeasValueDesc& operator= (const TableMeasValueDesc& that);
+  // Assignment operator.
+  TableMeasValueDesc& operator= (const TableMeasValueDesc& that);
 
-    // Write the type, unit, and MEASINFO record into the column keywords.
-    void write(TableDesc& td, const TableRecord& measInfo);
+  // Write the type, unit, and MEASINFO record into the column keywords.
+  void write (TableDesc& td, const TableRecord& measInfo);
 
-    // Get the name of the underlying column.
-    const String& columnName() const { return itsColumn; }
+  // Get the name of the underlying column.
+  const String& columnName() const
+    { return itsColumn; }
 
 private:
-    // Throws an exception if the quantum column doesn't exist or is of the
-    // wrong type.
-    void checkColumn(const TableDesc& td) const;
+  // Throws an exception if the quantum column doesn't exist or is of the
+  // wrong type.
+  void checkColumn (const TableDesc& td) const;
 
-    String itsColumn;	    //# MeasValue column name.
+
+  String itsColumn;	    //# MeasValue column name.
 };
+
 
 #endif

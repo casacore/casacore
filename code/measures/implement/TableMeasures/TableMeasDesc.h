@@ -228,44 +228,36 @@ class TableMeasValueDesc;
 template<class M> class TableMeasDesc : public TableMeasDescBase
 {
 public:
-    // Constructor with measure value descriptor.  The Measure reference for
-    // the column will be the default reference code for M.
-    TableMeasDesc(const TableMeasValueDesc&);
+  // Constructor with measure value descriptor.  The Measure reference for
+  // the column will be the default reference code for M.  Units for the
+  // column will be the default for the Measure type.
+  TableMeasDesc (const TableMeasValueDesc&);
 
-    // Constructor with value and reference descriptors.
-    TableMeasDesc(const TableMeasValueDesc&, const TableMeasRefDesc&);
-    
-    // Clone the object.
-    virtual TableMeasDescBase* clone() const;
+  // Constructor with measure value descriptor and Vector of Units.  
+  // The Measure reference for the column will be the default reference 
+  // code for the Measure type.   Number of Units must be compatible 
+  // with the Measure.
+  TableMeasDesc (const TableMeasValueDesc&, const Vector<Unit>&);
 
-    // Copy constructor (copy semantics).
-    TableMeasDesc(const TableMeasDesc<M>& that);
+  // Constructor with value and reference descriptors. Units for the 
+  // column will be the default for Measure type.
+  TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&);
+    
+  // Constructor with value and reference descriptors and Vector of
+  // Units. Number of Units must be compatible with the Measure.
+  TableMeasDesc (const TableMeasValueDesc&, const TableMeasRefDesc&,
+		 const Vector<Unit>&);
+    
+  // Clone the object.
+  virtual TableMeasDescBase* clone() const;
 
-    ~TableMeasDesc();
-    
-    // Assignment operator (copy semantics)
-    TableMeasDesc<M>& operator=(const TableMeasDesc<M>& that);
-    
-    // Returns the descriptors measure type as a String.
-    virtual const String& type() const;
+  // Copy constructor (copy semantics).
+  TableMeasDesc (const TableMeasDesc<M>& that);
 
-    // Translates the refCode for the descriptors measure type.    
-    virtual const String& refType(const uInt refCode) const;
+  ~TableMeasDesc();
     
-    // Returns the reference code for this object given a string.  Throws
-    // an exception if the refString is invalid for this object.
-    virtual const uInt refCode(const String& refString) const;
-    
-private:
-    // TableMeasDescBase::reconstruct() needs to access to the null
-    // constructor but the null constructor for TableMeasDesc should not be
-    // callable anywhere else.  Making this member a friend is one solution
-    // to this.
-    friend TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab, 
-    	const String& columnName);
-
-    // Null object constructor. Only needed by TableMeasDescBase::reconstruct.
-    TableMeasDesc();
+  // Assignment operator (copy semantics)
+  TableMeasDesc<M>& operator= (const TableMeasDesc<M>& that);
 };
 
 

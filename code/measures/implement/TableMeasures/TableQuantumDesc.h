@@ -1,5 +1,5 @@
 //# TableQuantumDesc.h: Defines a Quantum column in a Table.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,12 @@
 #define AIPS_TABLEQUANTUMDESC_H
 
 //# Includes
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
-class String;
 class TableDesc;
 class Unit;
+
 
 // <summary>
 // A class for defining Quantum columns in Tables.
@@ -241,72 +242,75 @@ class Unit;
 class TableQuantumDesc
 {
 public:
-    // Constructs a Quantum column descriptor with null units (Unit == "").
-    // The column should have already been added to the TableDesc.  An 
-    // exception is thrown if the column doesn't exist.
-    TableQuantumDesc(const TableDesc& td, const String& column);
+  // Constructs a Quantum column descriptor with null units (Unit == "").
+  // The column should have already been added to the TableDesc.  An 
+  // exception is thrown if the column doesn't exist.
+  TableQuantumDesc (const TableDesc& td, const String& column);
 
-    // Constructs a Quantum column descriptor with the specified Quantum units.
-    // The column should have already been added to the TableDesc.  An 
-    // exception is thrown if the column doesn't exist.
-    TableQuantumDesc(const TableDesc& td, const String& column, const Unit& u);
+  // Constructs a Quantum column descriptor with the specified Quantum units.
+  // The column should have already been added to the TableDesc.  An 
+  // exception is thrown if the column doesn't exist.
+  TableQuantumDesc (const TableDesc& td, const String& column, const Unit&);
 
-    // Constructs a Quantum column descriptor with variable units stored in
-    // unitCol.  Both the quantum and unit column should exist in the 
-    // TableDesc.
-    //<group>
-    TableQuantumDesc(const TableDesc& td, const String& column, 
-	    	     const String& unitCol);
-    TableQuantumDesc(const TableDesc& td, const String& column, 
-	    	     const Char* unitCol);
-    //</group>
+  // Constructs a Quantum column descriptor with variable units stored in
+  // unitCol.  Both the quantum and unit column should exist in the 
+  // TableDesc.
+  //<group>
+  TableQuantumDesc (const TableDesc& td, const String& column, 
+		    const String& unitCol);
+  TableQuantumDesc (const TableDesc& td, const String& column, 
+		    const Char* unitCol);
+  //</group>
 
-    // Copy constructor (copy semantics).
-    TableQuantumDesc(const TableQuantumDesc& that);
+  // Copy constructor (copy semantics).
+  TableQuantumDesc (const TableQuantumDesc& that);
 
-    ~TableQuantumDesc();
+  ~TableQuantumDesc();
+
+  // Reconstructs a previously constructed TableQuantumDesc.
+  static TableQuantumDesc* reconstruct (const TableDesc& td, 
+					const String& column);
     
-    // Reconstructs a previously constructed TableQuantumDesc.
-    static TableQuantumDesc* reconstruct(const TableDesc& td, 
-	    	    	    	    	 const String& column);
+  // Assignment.
+  TableQuantumDesc& operator= (const TableQuantumDesc& that);
     
-    // Assignment.
-    TableQuantumDesc& operator= (const TableQuantumDesc& that);
+  // Returns the Quantum column descriptor's units.  "" is returned if
+  // units have not been specified.  This could be because the null
+  // unit constructor was used or because the units are variable.
+  const String& getUnits() const
+    { return itsUnitsName; } 
     
-    // Returns the Quantum column descriptor's units.  "" is returned if
-    // units have not been specified.  This could be because the null
-    // unit constructor was used or because the units are variable.
-    const String& getUnits() const { return itsUnitsName; } 
+  // Returns True if descriptor set for variable units (one per row)
+  Bool isUnitVariable() const 
+    { return (itsUnitsColName != ""); }
     
-    // Returns True if descriptor set for variable units (one per row)
-    Bool isUnitVariable() const 
-	{ return (itsUnitsColName != "") ? True : False; }
-    
-    // Returns the name of the quantum column. 
-    const String& columnName() const { return itsColName; }
+  // Returns the name of the quantum column. 
+  const String& columnName() const
+    { return itsColName; }
 
-    // Returns the name of the units column (an empty String is returned
-    // if the units are not variable).
-    const String& unitColumnName() const { return itsUnitsColName; }
+  // Returns the name of the units column (an empty String is returned
+  // if the units are not variable).
+  const String& unitColumnName() const
+    { return itsUnitsColName; }
 
-    // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
-    void write(TableDesc& td);
+  // Makes the TableQuantumDesc persistent (updates the Table Descriptor).
+  void write (TableDesc& td);
     
 private:
-    // Throws an exception if the quantum column doesn't exist.
-    void checkColumn(const TableDesc& td) const;
+  // Throws an exception if the quantum column doesn't exist.
+  void checkColumn (const TableDesc& td) const;
 
-    // Throws an exception if the variable units column isn't a string column.
-    void checkUnitsColumn(const TableDesc& td) const;
+  // Throws an exception if the variable units column isn't a string column.
+  void checkUnitsColumn (const TableDesc& td) const;
     
-    // Name of column which stores the Quantum's values.
-    String itsColName;
 
-    // The Quantum's unit as a string.
-    String itsUnitsName;
-
-    // Name of units column if units are variable.
-    String itsUnitsColName;
+  // Name of column which stores the Quantum's values.
+  String itsColName;
+  // The Quantum's unit as a string.
+  String itsUnitsName;
+  // Name of units column if units are variable.
+  String itsUnitsColName;
 };
+
 
 #endif

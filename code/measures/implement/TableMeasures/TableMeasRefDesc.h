@@ -30,15 +30,15 @@
 
 //# Includes
 #include <trial/TableMeasures/TableMeasOffsetDesc.h>
-//#include <aips/Utilities/String.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
-class Table;
-class TableRecord;
-class TableDesc;
 class TableMeasDescBase;
-class MRBase;
-class String;
+class Table;
+class TableDesc;
+class TableRecord;
+
 
 // <summary>
 // Definition of a Measure Reference in a Table.
@@ -152,96 +152,101 @@ class String;
 class TableMeasRefDesc
 {
 public:
-    // Define a fixed MeasRef by supplying its reference code.
-    // Optionally specify a Measure offset.
-    // <group>
-    TableMeasRefDesc(uInt referenceCode);
-    TableMeasRefDesc(uInt referenceCode, const TableMeasOffsetDesc&);
-    // </group>
+  // Define a fixed MeasRef by supplying its reference code
+  // Optionally a Measure offset can be specified.
+  // The reference code and offset should not need a reference frame.
+  // <group>
+  explicit TableMeasRefDesc (uInt refCode = 0);
+  TableMeasRefDesc (uInt refCode, const TableMeasOffsetDesc&);
+  // </group>
     
-    // Define a variable reference by supplying the name of the column 
-    // in which the reference is to be stored.  Either an <src>Int</src> or
-    // <src>String</src> column can be specified.  This determines how
-    // references are stored.  <src>Int</src> columns are likely to be
-    // faster but storing 
-    // references as <src>Strings</src> may be useful if there is a need to
-    // browse tables manually.  Optionally supply a Measure offset.
-    // <group>
-    TableMeasRefDesc(const TableDesc&, const String& column);
-    TableMeasRefDesc(const TableDesc&, const String& column, 
-		     const TableMeasOffsetDesc&);
-    // </group>
+  // Define a variable reference by supplying the name of the column 
+  // in which the reference is to be stored.  Either an <src>Int</src> or
+  // <src>String</src> column can be specified.  This determines how
+  // references are stored.  <src>Int</src> columns are likely to be
+  // faster but storing 
+  // references as <src>Strings</src> may be useful if there is a need to
+  // browse tables manually.  Optionally supply a Measure offset.
+  // The reference code and offset should not need a reference frame.
+  // <group>
+  TableMeasRefDesc (const TableDesc&, const String& column);
+  TableMeasRefDesc (const TableDesc&, const String& column, 
+		    const TableMeasOffsetDesc&);
+  // </group>
 
-    // Reconstruct the object from the MEASINFO record.
-    static TableMeasRefDesc* reconstruct(const TableRecord& measInfo,
-		    	    	         const Table& tableDesc,
-				         const TableMeasDescBase& measDesc);
-				       
-    // Copy constructor (copy semantics)
-    TableMeasRefDesc(const TableMeasRefDesc& that);
+  // Reconstruct the object from the MEASINFO record.
+  // Not useful for the public.
+  TableMeasRefDesc (const TableRecord& measInfo, 
+		    const Table&,
+		    const TableMeasDescBase&);
 
-    ~TableMeasRefDesc();
+  // Copy constructor (copy semantics)
+  TableMeasRefDesc (const TableMeasRefDesc& that);
 
-    // Assignment operator (copy semantics).
-    TableMeasRefDesc& operator= (const TableMeasRefDesc& that);
+  ~TableMeasRefDesc();
 
-    // Return the reference code.
-    uInt getRefCode() const { return itsRefCode; }
+  // Assignment operator (copy semantics).
+  TableMeasRefDesc& operator= (const TableMeasRefDesc& that);
 
-    // Is the reference variable?
-    Bool isVariable() const { return (itsColumn.empty()) ? False : True; }
+  // Return the reference code.
+  uInt getRefCode() const
+    { return itsRefCode; }
 
-    // Return the name of its variable reference code column.
-    const String& columnName() const { return itsColumn; }
+  // Is the reference variable?
+  Bool isRefCodeVariable() const
+    { return (! itsColumn.empty()); }
+
+  // Return the name of its variable reference code column.
+  const String& columnName() const
+    { return itsColumn; }
     
-    // Returns True if the reference has an offset.    
-    Bool hasOffset() const { return (itsOffset != 0  ? True : False); }
+  // Returns True if the reference has an offset.
+  Bool hasOffset() const
+    { return (itsOffset != 0); }
 
-    // Returns True if the offset is variable..    
-    Bool isOffsetVariable() const {
-	if (hasOffset()) {
-	    return itsOffset->isVariable();
-	} else {
-	    return False;
-	}
-    }
+  // Returns True if the offset is variable.
+  Bool isOffsetVariable() const
+    { return (itsOffset != 0  ?  itsOffset->isVariable() : False); }
 
-    // Returns True is the offset is variable and it is an ArrayMeasColumn.
-    Bool isOffsetArray() const {
-	if (hasOffset()) {
-	    return itsOffset->isArray();
-	} else {
-	    return False;
-	}
-    }
+  // Returns True is the offset is variable and it is an ArrayMeasColumn.
+  Bool isOffsetArray() const
+    { return (itsOffset != 0  ?  itsOffset->isArray() : False); }
     
-    // Return the fixed Measure offset if it exists.
-    const Measure& getOffset() const { return itsOffset->getOffset(); }
+  // Return the fixed Measure offset.
+  // It does not test if the offset is defined; hasOffset() should be used
+  // for that purpose.
+  const Measure& getOffset() const
+    { return itsOffset->getOffset(); }
+
+  // Return the name of the Measure offset column.
+  // An empty string is returned if no variable offset is used.
+  const String& offsetColumnName() const
+    { return itsOffset->columnName(); }
     
-    // Return the name of the Measure offset column.
-    const String& offsetColumnName() const { return itsOffset->columnName(); }
-    
-    // Make the Measure value descriptor persistent.  Normally would not be
-    // called by the user directly.
-    void write(TableDesc& td, TableRecord& measInfo, const TableMeasDescBase&);
+  // Reset the refCode or offset.
+  // It overwrites the value used when defining the TableMeasDesc.
+  // It is only possible if it was defined as fixed for the entire column.
+  // <group>
+  void resetRefCode (uInt refCode);
+  void resetOffset (const Measure& offset);
+  // </group>
+
+  // Make the Measure value descriptor persistent.  Normally would not be
+  // called by the user directly.
+  void write (TableDesc& td, TableRecord& measInfo,
+	      const TableMeasDescBase&);
     
 private:
-    //# Contractor which uses the MEASINFO record. Not useful for the public.
-    TableMeasRefDesc(const TableRecord& measInfo, 
-    	    	     const Table&,
-		     const TableMeasDescBase&,
-		     const String& refString);
+  //# Throws an exception if the column doesn't exist or is of the
+  //# wrong type.
+  void checkColumn (const TableDesc& td) const;
 
-    //# Throws an exception if the column doesn't exist or is of the
-    //# wrong type.
-    void checkColumn(const TableDesc& td) const;
 
-    //# MeasRef units when not variable.
-    uInt itsRefCode;    
-    // The name of column containing its variable references.
-    String itsColumn;
-    //# Its reference offset.
-    TableMeasOffsetDesc* itsOffset; 	
+  uInt itsRefCode;    
+  // The name of column containing its variable references.
+  String itsColumn;
+  //# Its reference offset.
+  TableMeasOffsetDesc* itsOffset; 	
 };
 
 

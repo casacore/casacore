@@ -29,35 +29,15 @@
 #define AIPS_SCALARMEASCOLUMN_H
 
 //# Includes
+#include <trial/TableMeasures/TableMeasColumn.h>
 #include <aips/Measures/MeasRef.h>
 
 //# Forward Declarations
-class MEpoch;
-class MVEpoch;
-class MPosition;
-class MVPosition;
-class MDirection;
-class MVDirection;
-class MRadialVelocity;
-class MVRadialVelocity;
-class MDoppler;
-class MVDoppler;
-class MFrequency;
-class MVFrequency;
-class MBaseline;
-class MVBaseline;
-class Muvw;
-class MVuvw;
-class MEarthMagnetic;
-class MVEarthMagnetic;
-class Table;
-class TableMeasRefDesc;
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
 template <class T> class ROScalarColumn;
-template <class M, class MV> class ROScalarMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
+
 
 // <summary>
 // Read only access to table scalar Measure columns.
@@ -85,27 +65,15 @@ template <class M, class MV> class ScalarMeasColumn;
 // a Measure column by use of the
 // <linkto class="TableMeasDesc">TableMeasDesc</linkto> object.
 //
-// The (RO)ScalarMeasColumn class is templated on Measure type and MeasValue
-// type but typedefs exist for making declaration less long winded. The
-// following typedefs can be used to assist in creating (RO)ScalarMeasColumn
-// objects:
-// <ul>
-//    <li>ROMEpochScaCol and MEpochScaCol
-//    <li>ROMPositionScaCol and MPositionScaCol
-//    <li>ROMDirectionScaCol and MDirectionScaCol
-//    <li>ROMRadialVelocityScaCol and MRadialVelocityScaCol
-//    <li>ROMDopplerScaCol and MDopplerScaCol
-//    <li>ROMFrequencyScaCol and MFrequencyScaCol
-//    <li>ROMBaselineScaCol and MBaselineScaCol
-//    <li>ROMuvwScaCol and MuvwScaCol
-//    <li>ROMEarthMagneticScaCol and MEarthMagneticScaCol
-// </ul>
- 
+// The (RO)ScalarMeasColumn class is templated on Measure type.
+// Typedefs exist in the various Measure classes 
+// (e.g. <linkto class=MEpoch>MEpoch</linkto>) to make declaration
+// less long winded.
 // Constructing scalar Measure column objects using these typedefs looks like 
 // this:
 // <srcblock>
-// MEpochScaCol ec(table, "ColumnName);      // MEpoch Scalar Column
-// ROMDopplerScaCol dc(table, "DopplerCol"); // Read only MDoppler column
+// MEpoch::ScalarMeasColumn ec(table, "ColumnName);
+// MDoppler::ROScalarMeasColumn dc(table, "DopplerCol");
 // </srcblock>
 //
 // <h3>Reading and writing Measures</h3>
@@ -119,21 +87,16 @@ template <class M, class MV> class ScalarMeasColumn;
 // Measures to a column.  (put() is obviously not defined for 
 // ROScalarMeasColumn objects.)  Each of these members accepts a row number
 // as an argument.
+// The get() function gets the measure with the reference and offset as
+// it is stored in the column. Furthermore the convert() function is
+// available to get the measure with the given reference, possible offset,
+// and possible frame 
 //
-// Care needs to be taken when adding Measures to a column.  The user needs
-// to be aware that Measures are not checked for consistency, with respect to
-// a Measure's reference, between the Measures being added to a column and
-// the column's predefined Measure reference.  This is only an issue if the
-// Measure column was defined to have a fixed reference. For such columns
-// the reference component of Measures added to a column is silently
-// ignored, that is, there is no warning nor is there any sort of conversion 
-// to the column's reference should the reference of the added Measure be
-// different to the column's reference.   The members 
-// <linkto class="ROScalarMeasColumn#isRefVariable">isRefVariable()</linkto> 
-// and
-// <linkto class="ROScalarMeasColumn#getMeasRef">getMeasRef()</linkto> can be 
-// used to discover a Measure column's Measure reference characteristics.
-//
+// When a Measure is put, the reference and possible offset are converted
+// if the measure column is defined with a fixed reference and/or offset.
+// If the column's reference and offset are variable, the reference and
+// offset of the measure as put are written into the appropriate
+// reference and offset columns.
 // </synopsis>
 
 // <example>
@@ -141,11 +104,11 @@ template <class M, class MV> class ScalarMeasColumn;
 //     // This creates a Scalar MEpoch column for read/write access.  Column
 //     // "Time1" must exist in Table "tab" and must have previously been
 //     // defined as a MEpoch column using a TableMeasDesc.
-//     MEpochScaCol timeCol(tab, "Time1");
+//     MEpoch::ScalarMeasColumn timeCol(tab, "Time1");
 // 	
 //     // print some details about the column
 //     if (timeCol.isRefVariable()) {
-//        cout << "The column has variable references.\n";
+//        cout << "The column has variable references." << endl;
 //     } else {
 //         cout << "The fixed MeasRef for the column is: " 
 //	        << timeCol.getMeasRef() << endl;
@@ -159,7 +122,7 @@ template <class M, class MV> class ScalarMeasColumn;
 //
 //     // We could read from the column using timeCol but instead a read 
 //     // only column object is created. 
-//     ROMEpochScaCol timeColRead(tab, "Time1");
+//     MEpoch::ROScalarMeasColumn timeColRead(tab, "Time1");
 //     for (i=0; i<tab.nrow(); i++) {
 //         cout << timeColRead(i) << endl;
 //     }
@@ -179,106 +142,86 @@ template <class M, class MV> class ScalarMeasColumn;
 //# <todo asof="$DATE:$">
 //# </todo>
 
-template <class M, class MV> class ROScalarMeasColumn
+template <class M> class ROScalarMeasColumn : public ROTableMeasColumn
 {
 public:
-    // The default constructor creates a null object.  Useful for creating
-    // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
-    // will produce a segmentation fault so care needs to be taken to
-    // initialise the objects first by using attach().  A 
-    // ROScalarMeasColumn object can be tested if it is null by using the 
-    // isNull() member.
-    ROScalarMeasColumn();
+  // The default constructor creates a null object.  Useful for creating
+  // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the objects first by using attach().  A 
+  // ROScalarMeasColumn object can be tested if it is null by using the 
+  // isNull() member.
+  ROScalarMeasColumn();
 
-    // Create the ScalarMeasColumn from the table and column Name.
-    ROScalarMeasColumn(const Table& tab, const String& columnName);
+  // Create the ScalarMeasColumn from the table and column Name.
+  ROScalarMeasColumn (const Table& tab, const String& columnName);
+
+  // Copy constructor (copy semantics).
+  ROScalarMeasColumn (const ROScalarMeasColumn<M>& that);
+
+  virtual ~ROScalarMeasColumn();
     
-    // Copy constructor (copy semantics).
-    ROScalarMeasColumn(const ROScalarMeasColumn<M, MV>& that);
+  // Change the reference to another column.
+  void reference (const ROScalarMeasColumn<M>& that);
 
-    ~ROScalarMeasColumn();
-    
-    // Change the reference to another column.
-    void reference(const ROScalarMeasColumn<M, MV>& that);
-
-    // Attach a column to the object.
-    void attach(const Table& tab, const String& columnName); 
+  // Attach a column to the object.
+  void attach (const Table& tab, const String& columnName); 
  
-    // Get the Measure contained in the specified row.
-    // <group name=get>
-    void get(uInt rownr, M& meas) const;
-    M operator()(uInt rownr) const;
-    // </group>
+  // Get the Measure contained in the specified row.
+  // It returns the Measure as found in the table.
+  // <group name=get>
+  void get (uInt rownr, M& meas) const;
+  M operator() (uInt rownr) const;
+  // </group>
     
-    // Tests if a row contains a Measure (i.e., if the row has a defined
-    // value).
-    Bool isDefined(uInt rownr) const;
-          
-    // Is there per row storage of Measure references or is the Measure 
-    // reference fixed for the column?
-    // <group name=isRefVariable>
-    Bool isRefVariable() const { return itsVarRefFlag; }
-    // </group>
+  // Get the Measure contained in the specified row and convert
+  // it to the reference and offset found in the measure.
+  void convert (uInt rownr, M& meas) const;
+
+  // Get the Measure contained in the specified row and convert
+  // it to the given reference.
+  // <group>
+  M convert (uInt rownr, const MeasRef<M>& meas) const;
+  M convert (uInt rownr, uInt refCode) const;
+  // </group>
     
-    // Returns the column's fixed reference or the reference of the last 
-    // read Measure if references are variable.
-    // <group name=getMeasRef>
-    const MeasRef<M>& getMeasRef() const;
-    // </group>
-    
-    // Test if the object is null.
-    Bool isNull() const { return (itsDataCol == 0 ? True : False); }
-    
-    // Throw an exception if the object is null.
-    void throwIfNull() const;
+  // Returns the column's fixed reference or the reference of the last 
+  // read Measure if references are variable.
+  const MeasRef<M>& getMeasRef() const
+    { return itsMeasRef; }
     
 protected:
-    //# Resets itsMeasRef. Needed when the MeasRef varies from row to row.
-    void setMeasRef(uInt rownr=0) const;
+  // Make a MeasRef for the given row.
+  MeasRef<M> makeMeasRef (uInt rownr) const;
 
-    //# Are references variable? (If variable they're in a column too.)
-    Bool itsVarRefFlag;
-    
-    //# This is either the column's fixed Measure reference or the reference
-    //# of the last Measure read.  Needs to to be mutable because this is
-    //# updated by the constant members get() and operator() if the Measure
-    //# reference is not fixed for the column.
-    mutable MeasRef<M> itsMeasRef;
+
+  //# This is either the column's fixed Measure reference or the reference
+  //# of the last Measure read.
+  MeasRef<M> itsMeasRef;
     
 private:
-    // Assignment makes no sense in a read only class.
-    // Declaring this operator private makes it unusable.
-    ROScalarMeasColumn& operator= (const ROScalarMeasColumn& that);  
+  // Assignment makes no sense in a readonly class.
+  // Declaring this operator private makes it unusable.
+  ROScalarMeasColumn& operator= (const ROScalarMeasColumn<M>& that);  
 
-    //# Column which contains the Measure's actual data
-    ROArrayColumn<Double>* itsDataCol;
-    
-    //# Its MeasRef code column when references are variable.
-    ROScalarColumn<Int>* itsRefIntCol;
-    ROScalarColumn<String>* itsRefStrCol;
-    
-    //# Column containing its variable offsets.  Only applicable if the 
-    //# measure references have offsets and they are variable.
-    ROScalarMeasColumn<M, MV>* itsOffsetCol;
-    
-    //# Deletes allocated memory etc. Called by ~tor and any member which needs
-    //# to reallocate data.
-    void cleanUp();
+  //# Deletes allocated memory etc. Called by ~tor and any member which
+  //# needs to reallocate data.
+  void cleanUp();
+
+  //# Column which contains the Measure's actual data. An array column
+  //# is needed if the data component of the underlying Measure is 
+  //# represented by more than 1 value
+  ROArrayColumn<Double>* itsArrDataCol;
+  ROScalarColumn<Double>* itsScaDataCol;
+  //# Its MeasRef code column when references are variable.
+  ROScalarColumn<Int>* itsRefIntCol;
+  ROScalarColumn<String>* itsRefStrCol;
+  //# Column containing its variable offsets. Only applicable if the 
+  //# measure references have offsets and they are variable.
+  ROScalarMeasColumn<M>* itsOffsetCol;
 };
 
-//# Typedefs to make declaring a ROScalarMeasColumn less long-winded
-typedef ROScalarMeasColumn<MEpoch, MVEpoch> ROMEpochScaCol;
-typedef ROScalarMeasColumn<MPosition, MVPosition> ROMPositionScaCol;
-typedef ROScalarMeasColumn<MDirection, MVDirection> ROMDirectionScaCol;
-typedef ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
-    ROMRadialVelocityScaCol;
-typedef ROScalarMeasColumn<MDoppler, MVDoppler> ROMDopplerScaCol;
-typedef ROScalarMeasColumn<MFrequency, MVFrequency> ROMFrequencyScaCol;
-typedef ROScalarMeasColumn<MBaseline, MVBaseline> ROMBaselineScaCol;
-typedef ROScalarMeasColumn<Muvw, MVuvw> ROMuvwScaCol;
-typedef ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> 
-    ROMEarthMagneticScaCol;
- 
+
 
 // <summary>
 // Read write access to table scalar Measure columns.
@@ -289,70 +232,80 @@ typedef ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic>
 // <linkto class="ROScalarMeasColumn">ROScalarMeasColumn</linkto>.
 // </synopsis>
 
-template <class M, class MV> class ScalarMeasColumn 
-    : public ROScalarMeasColumn<M, MV>
+template <class M> class ScalarMeasColumn : public ROScalarMeasColumn<M>
 {
 public:
-    // The default constructor creates a null object.  Useful for creating
-    // arrays of ScalarMeasColumn objects.  Attempting to use a null object
-    // will produce a segmentation fault so care needs to be taken to
-    // initialise the a null object by using the attach() member before any 
-    // attempt is made to use it.  A ScalarMeasColumn object can be 
-    // tested if it is null by using the isNull() member.
-    ScalarMeasColumn();
+  // The default constructor creates a null object.  Useful for creating
+  // arrays of ScalarMeasColumn objects.  Attempting to use a null object
+  // will produce a segmentation fault so care needs to be taken to
+  // initialise the a null object by using the attach() member before any 
+  // attempt is made to use it.  A ScalarMeasColumn object can be 
+  // tested if it is null by using the isNull() member.
+  ScalarMeasColumn();
 
-    // Create the ScalarMeasColumn from the table and column Name.
-    ScalarMeasColumn(const Table& tab, const String& columnName);
+  // Create the ScalarMeasColumn from the table and column Name.
+  ScalarMeasColumn (const Table& tab, const String& columnName);
 
-    // Copy constructor (copy semantics).
-    ScalarMeasColumn(const ScalarMeasColumn<M, MV>& that);
+  // Copy constructor (copy semantics).
+  ScalarMeasColumn (const ScalarMeasColumn<M>& that);
 
-    ~ScalarMeasColumn();
+  virtual ~ScalarMeasColumn();
     
-    // Change the column reference to another column.
-    void reference(const ScalarMeasColumn<M, MV>& that);
+  // Change the column reference to another column.
+  void reference (const ScalarMeasColumn<M>& that);
 
-    // Attach a column to the object.
-    void attach(const Table& tab, const String& columnName); 
+  // Attach a column to the object.
+  void attach (const Table& tab, const String& columnName); 
  
-    // Add a Measure to the column.
-    // <group name=put>
-    void put(uInt rownr, const M& meas);
-    // </group>
+  // Reset the refCode, offset, or units.
+  // It overwrites the value used when defining the TableMeasDesc.
+  // It is only possible if the table is still empty.
+  // Resetting the refCode and offset can only be done if they were
+  // defined as fixed in the description.
+  // <group>
+  void setDescRefCode (uInt refCode);
+  void setDescOffset (const Measure& offset);
+  void setDescUnits (const Vector<Unit>& units);
+  // </group>
+
+  // Put a Measure into the given row.
+  // <group name=put>
+  void put (uInt rownr, const M& meas);
+  // </group>
         
 private:
-    // Declaring this operator private makes it unusable.
-    // See class <linkto class="ScalarColumn">ScalarColumn</linkto> for an
-    // explanation as to why this operation is disallowed.  Use the reference
-    // function instead.
-    ScalarMeasColumn& operator= (const ScalarMeasColumn& that);  
+  // Declaring this operator private makes it unusable.
+  // See class <linkto class="ScalarColumn">ScalarColumn</linkto> for an
+  // explanation as to why this operation is disallowed.  Use the reference
+  // function instead.
+  ScalarMeasColumn& operator= (const ScalarMeasColumn<M>& that);
 
-    //# Column which contains the Measure's actual data
-    ArrayColumn<Double>* itsDataCol;
+  // Check if refs have the same value (as opposed to being the same object).
+  Bool equalRefs (const MRBase& r1, const MRBase& r2) const;
+
+  //# Whether conversion is needed during a put.  True if either
+  //# the reference code or offset is fixed for the column
+  Bool itsConvFlag;
+
+  //# Column which contains the Measure's actual data. An array column
+  //# is needed if the data component of the underlying Measure is 
+  //# represented by more than 1 value
+  ArrayColumn<Double>* itsArrDataCol;
+  ScalarColumn<Double>* itsScaDataCol;
     
-    //# Its MeasRef code column when references are variable.
-    ScalarColumn<Int>* itsRefIntCol;
-    ScalarColumn<String>* itsRefStrCol;
+  //# Its MeasRef code column when references are variable.
+  ScalarColumn<Int>* itsRefIntCol;
+  ScalarColumn<String>* itsRefStrCol;
     
-    //# Column containing its variable offsets.  Only applicable if the 
-    //# measure references have offsets and they are variable.
-    ScalarMeasColumn<M, MV>* itsOffsetCol; 
-   
-    //# Deletes allocated memory etc. Called by ~tor and any member which
-    //# needs to reallocate data.
-    void cleanUp();
+  //# Column containing its variable offsets.  Only applicable if the 
+  //# measure references have offsets and they are variable.
+  ScalarMeasColumn<M>* itsOffsetCol; 
+
+  //# Deletes allocated memory etc. Called by ~tor and any member which
+  //# needs to reallocate data.
+  void cleanUp();
 };
 
-//# Typedefs
-typedef ScalarMeasColumn<MEpoch, MVEpoch> MEpochScaCol;
-typedef ScalarMeasColumn<MPosition, MVPosition> MPositionScaCol;
-typedef ScalarMeasColumn<MDirection, MVDirection> MDirectionScaCol;
-typedef ScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
-    MRadialVelocityScaCol;
-typedef ScalarMeasColumn<MDoppler, MVDoppler> MDopplerScaCol;
-typedef ScalarMeasColumn<MFrequency, MVFrequency> MFrequencyScaCol;
-typedef ScalarMeasColumn<MBaseline, MVBaseline> MBaselineScaCol;
-typedef ScalarMeasColumn<Muvw, MVuvw> MuvwScaCol;
-typedef ScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> MEarthMagneticScaCol;
+
 
 #endif

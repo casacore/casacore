@@ -26,36 +26,68 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Tables/TableDesc.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc()
-: TableMeasDescBase()
-{}
+TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
+: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
+{
+  M meas;
+  Vector<Quantum<Double> > val;
+  val = meas.getValue().getRecordValue();
+  Vector<Unit> u;
+  setMeasUnits (meas, val, u);
+}
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc(const TableMeasValueDesc& value)
-: TableMeasDescBase(value)
-{}
+TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
+				 const Vector<Unit>& u)
+: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
+{ 
+  M meas;
+  Vector<Quantum<Double> > val;
+  val = meas.getValue().getRecordValue();
+  setMeasUnits (meas, val, u);
+}
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc(const TableMeasValueDesc& value,
-				const TableMeasRefDesc& ref)
+TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
+				 const TableMeasRefDesc& ref)
 : TableMeasDescBase(value, ref)
-{}
+{
+  M meas;
+  Vector<Quantum<Double> > val;
+  val = meas.getValue().getRecordValue();
+  Vector<Unit> u;
+  setMeasUnits (meas, val, u);
+}
+
+template<class M>
+TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
+				 const TableMeasRefDesc& ref,
+				 const Vector<Unit>& u)
+: TableMeasDescBase(value, ref)
+{
+  M meas;
+  Vector<Quantum<Double> > val;
+  val = meas.getValue().getRecordValue();
+  setMeasUnits (meas, val, u);
+}
 
 template<class M>
 TableMeasDescBase* TableMeasDesc<M>::clone() const
 {
-    return new TableMeasDesc<M>(*this);
+  return new TableMeasDesc<M>(*this);
 }
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc(const TableMeasDesc<M>& that)
+TableMeasDesc<M>::TableMeasDesc (const TableMeasDesc<M>& that)
 : TableMeasDescBase(that)
 {}
 
@@ -64,35 +96,8 @@ TableMeasDesc<M>::~TableMeasDesc()
 {}
 
 template<class M>
-TableMeasDesc<M>& TableMeasDesc<M>::operator=(const TableMeasDesc<M>& that)
+TableMeasDesc<M>& TableMeasDesc<M>::operator= (const TableMeasDesc<M>& that)
 {
-    TableMeasDescBase::operator=(that);
-    return *this;
-}
-
-template<class M>
-const String& TableMeasDesc<M>::type() const 
-{ 
-    return M::showMe();
-}
-
-template<class M>
-const uInt TableMeasDesc<M>::refCode(const String& refString) const 
-{
-    MeasRef<M> refType;
-    M measure;
-    Bool succ = measure.giveMe(refType, refString);
-    if (!succ) {
-	throw(AipsError("TableMeasDesc: refType " + refString +
-			" unknown for measType " + type()));
-    }
-    
-    return refType.getType();
-}
-
-
-template<class M>
-const String& TableMeasDesc<M>::refType(const uInt refCode) const 
-{ 
-    return M::showType(refCode);
+  TableMeasDescBase::operator= (that);
+  return *this;
 }

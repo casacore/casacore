@@ -31,11 +31,17 @@
 //# Includes
 #include <trial/TableMeasures/TableMeasValueDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
+#include <trial/TableMeasures/TableMeasType.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
 class String;
 class Table;
 class TableDesc;
+class Measure;
+template<class T> class Quantum;
+
 
 // <summary>
 // Definition of a Measure in a Table.
@@ -79,89 +85,119 @@ class TableDesc;
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
 
-
 class TableMeasDescBase
 {
 public:
-    // Null constructor.
-    TableMeasDescBase();
+  // Null constructor.
+  TableMeasDescBase();
 
-    // Constructor with measure value descriptor.
-    TableMeasDescBase(const TableMeasValueDesc&);
+  // Constructor with value and reference descriptors.
+  // Note that setMeasType is always called by the derived class.
+  TableMeasDescBase (const TableMeasValueDesc&, const TableMeasRefDesc&);
 
-    // Constructor with value and reference descriptors.
-    TableMeasDescBase(const TableMeasValueDesc&, const TableMeasRefDesc&);
+  // Copy constructor.
+  TableMeasDescBase (const TableMeasDescBase& that);
+    
+  virtual ~TableMeasDescBase();
 
-    // Copy constructor.
-    TableMeasDescBase(const TableMeasDescBase& that);
-    
-    virtual ~TableMeasDescBase();
+  // Clone the object.
+  virtual TableMeasDescBase* clone() const;
 
-    // Clone the object.
-    virtual TableMeasDescBase* clone() const = 0;
+  // Assignment operator.
+  TableMeasDescBase& operator= (const TableMeasDescBase& that);
+    
+  // Makes the descriptor persistent.
+  void write (TableDesc& td);
 
-    // Assignment operator.
-    TableMeasDescBase& operator= (const TableMeasDescBase& that);
+  // Get the name of the underlying column.
+  const String& columnName() const
+    { return itsValue.columnName(); }
     
-    // Reconstructs the object for the given table and column name.  This
-    // should be a private member as the user of this member are the
-    // Measure column object constructors, however, the Gnu compiler (2.7.2)
-    // won't parse templated friend definitions, i.e., attempting the
-    // make the ScalarMeasColumn class a friend (ok with egcs though).
-    static TableMeasDescBase* reconstruct(const Table& tab, 
-    	    	    	    	    	  const String& columnName);
+  // Return the reference code.
+  uInt getRefCode() const
+    { return itsRef.getRefCode(); }
+    
+  // Returns True if the reference varies per row.
+  Bool isRefCodeVariable() const
+    { return itsRef.isRefCodeVariable(); }
+    
+  // Returns the name of the ref code column when the ref code is variable.
+  // The null string is returned if the ref code is not variable.
+  const String& refColumnName() const
+    { return itsRef.columnName(); }
+    
+  // Returns a reference to its measure reference descriptor.
+  const TableMeasRefDesc& getRefDesc()
+    { return itsRef; }
+    
+  // Get the name of the offset column. Empty string is returned if no
+  // offset.
+  const String& offsetColumnName() const
+    { return itsRef.offsetColumnName(); }
+    
+  // Returns True if an offset has been defined.
+  Bool hasOffset() const
+    { return itsRef.hasOffset(); }
+    
+  // Returns True if the offset is variable.
+  Bool isOffsetVariable() const
+    { return itsRef.isOffsetVariable(); }
+    
+  // Returns True if the offset is variable and is stored in an
+  // ArrayMeasColumn, i.e., offsets are stored per element.
+  Bool isOffsetArray() const
+    { return itsRef.isOffsetArray(); }
+    
+  // Returns a reference to the offset.
+  const Measure& getOffset() const
+    { return itsRef.getOffset(); }
 
-    // Makes the descriptor persistent.
-    void write(TableDesc& td);
+  // Returns the descriptors measure type as a String.
+  const String& type() const
+    { return itsMeasType.type(); }
 
-    // Get the name of the underlying column.
-    const String& columnName() const { return itsValue.columnName(); }
-    
-    // Return the reference code.
-    uInt getRefCode() const { return itsRef->getRefCode(); }
-    
-    // Returns True if the reference varies per row.
-    Bool isRefCodeVariable() const { return itsRef->isVariable(); }
-    
-    // Returns the name of the ref code column when the ref code is variable.
-    // The null string is returned if the ref code is not variable.
-    const String& refColumnName() const { return itsRef->columnName(); }
-    
-    // Returns a reference to its measure reference descriptor.
-    const TableMeasRefDesc& getRefDesc() { return *itsRef; }
-    
-    // Get the name of the offset column. Empty string is returned if no
-    // offset.
-    const String& offsetColumnName() const { 
-	return itsRef->offsetColumnName();
-    }
-    
-    // Returns True is and offset has been defined.
-    Bool hasOffset() const { return itsRef->hasOffset(); }
-    
-    // Returns True is the offset is variable.
-    Bool isOffsetVariable() const { return itsRef->isOffsetVariable(); }
-    
-    // Returns True is the offset is variable and is stored as in an
-    // ArrayMeasColumn, i.e., offsets are stored per element.
-    Bool isOffsetArray() const { return itsRef->isOffsetArray(); }
-    
-    // Returns a reference to the offset.
-    const Measure& getOffset() const { return itsRef->getOffset(); }
+  // Returns the reference code for this object given a string.  Throws
+  // an exception if the refString is invalid for this object.
+  uInt refCode (const String& refString) const
+    { return itsMeasType.refCode(refString); }
 
-    // Returns the descriptors measure type as a String.
-    virtual const String& type() const = 0;
+  // Translates the refCode for the descriptors measure type.    
+  const String& refType (uInt refCode) const
+    { return itsMeasType.refType(refCode); }
 
-    // Returns the reference code for this object given a string.  Throws
-    // an exception if the refString is invalid for this object.
-    virtual const uInt refCode(const String& refString) const = 0;
+  // Return the Units of the Measure values
+  const Vector<Unit>& getUnits() const
+    { return itsUnits; }
 
-    // Translates the refCode for the descriptors measure type.    
-    virtual const String& refType(const uInt refCode) const = 0;
+  // Reset the refCode, offset, or units.
+  // It overwrites the value used when defining the TableMeasDesc.
+  // It is only possible if it was defined as fixed for the entire column.
+  // <group>
+  void resetRefCode (uInt refCode)
+    { itsRef.resetRefCode (refCode); }
+  void resetOffset (const Measure& offset)
+    { itsRef.resetOffset (offset); }
+  void resetUnits (const Vector<Unit>& units);
+  // </group>
+
+  // Reconstructs the object for the given table and column name.
+  static TableMeasDescBase* reconstruct (const Table& tab, 
+					 const String& columnName);
+
+protected:
+  // Set the measure and possible units.
+  void setMeasUnits (const Measure& meas,
+		     const Vector<Quantum<Double> >& val,
+		     const Vector<Unit>& units);
 
 private:
-    TableMeasValueDesc itsValue;    //# The measure value column.
-    TableMeasRefDesc* itsRef;	    //# The optional reference.
+  TableMeasValueDesc itsValue;    //# The measure value column.
+  TableMeasRefDesc   itsRef;	  //# The reference.
+
+  //# this gives access to the columns Measure type etc
+  TableMeasType itsMeasType;
+  Vector<Unit>  itsUnits;
 };
+
 
 #endif

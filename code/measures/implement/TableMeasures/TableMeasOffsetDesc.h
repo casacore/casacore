@@ -29,13 +29,17 @@
 #define AIPS_TABLEMEASOFFSETDESC_H
 
 //# Includes
+#include <aips/Utilities/String.h>
+#include <aips/Measures/MeasureHolder.h>
 
 //# Forward Declarations
-class Measure;
-class String;
-class Table;
 class TableMeasDescBase;
+class Measure;
+class Table;
+class TableDesc;
 class TableRecord;
+class String;
+
 
 // <summary>
 // Definition of a Measure Offset in a Table.
@@ -138,55 +142,65 @@ class TableRecord;
 class TableMeasOffsetDesc
 {
 public:
-    // Constructor which defines a constant (non-variable) offset.  All 
-    // measures in the columns will have the same offset
-    TableMeasOffsetDesc(const Measure& offset);
+  // Constructor which defines a constant (non-variable) offset.  All 
+  // measures in the columns will have the same offset.
+  TableMeasOffsetDesc (const Measure& offset);
 
-    // Constructor for defining a variable offset.  If asArray is True then
-    // the offset is stored per array element.  The default is for the 
-    // offset to be stored (and hence variable) per row.
-    TableMeasOffsetDesc(const TableMeasDescBase& offsetColumn, 
-			const Bool asArray=False);
+  // Constructor for defining a variable offset.  If asArray is True then
+  // the offset is stored per array element.  The default is for the 
+  // offset to be stored (and hence variable) per row.
+  TableMeasOffsetDesc (const TableMeasDescBase& offsetColumn, 
+		       Bool asArray=False);
 
-    // Copy constructor (copy semantics).
-    TableMeasOffsetDesc(const TableMeasOffsetDesc& that);
+  // Copy constructor (copy semantics).
+  TableMeasOffsetDesc (const TableMeasOffsetDesc& that);
 
-    ~TableMeasOffsetDesc();
+  ~TableMeasOffsetDesc();
 
-    // Assignment operator.
-    TableMeasOffsetDesc& operator=(const TableMeasOffsetDesc& that);
+  // Assignment operator (copy semantics).
+  TableMeasOffsetDesc& operator= (const TableMeasOffsetDesc& that);
     
-    // Reconstructs the TableMeasOffsetDesc from the measInfo TableRecord.
-    static TableMeasOffsetDesc* reconstruct(const TableRecord& measInfo,
-				    	    const String& prefix,
-		    	    	            const Table& tab);
+  // Reconstructs the TableMeasOffsetDesc from the measInfo TableRecord.
+  static TableMeasOffsetDesc* reconstruct (const TableRecord& measInfo,
+					   const String& prefix,
+					   const Table& tab);
     
-    // Get the (non-variable) measure offset for this column.  If it doesn't
-    // exist (the offset is variable) an exception is thrown.
-    const Measure& getOffset() const;
+  // Get the (non-variable) measure offset for this column.  If it doesn't
+  // exist (thus if the offset is variable), an exception is thrown.
+  const Measure& getOffset() const;
     
-    // Returns True if the offset varies per row.
-    Bool isVariable() const { return (itsTMDesc != 0); }
+  // Returns True if the offset varies per row.
+  Bool isVariable() const
+    { return (itsTMDesc != 0); }
 
-    // Returns True if the offset varies per array element.
-    Bool isArray() const { return (isVariable() && itsVarPerArr); }
+  // Returns True if the offset varies per array element.
+  Bool isArray() const
+    { return (isVariable() && itsVarPerArr); }
     
-    // Gets the name of the column which stores the variable offset. "" is
-    // returned if the offset is not variable.
-    const String& columnName() const;
+  // Gets the name of the column which stores the variable offset.
+  // "" is returned if the offset is not variable.
+  const String& columnName() const
+    { return itsVarColName; }
     
-    // Write the information into the record.
-    void write(TableDesc& td, TableRecord& measInfo, const String& prefix);
+  // Reset the offset.
+  // It overwrites the value used when defining the TableMeasDesc.
+  // It is only possible if it was defined as fixed for the entire column.
+  void resetOffset (const Measure& offset);
+
+  // Write the information into the record.
+  void write (TableDesc& td, TableRecord& measInfo, const String& prefix);
 
 private:
-    // Constructor which uses the measInfo TableRecord.
-    TableMeasOffsetDesc(const TableRecord& measInfo, const String& prefix,
-		      	const Table&);
+  // Constructor which uses the measInfo TableRecord.
+  TableMeasOffsetDesc (const TableRecord& measInfo, const String& prefix,
+		       const Table&);
 
-    TableMeasDescBase* itsTMDesc;   //# Stores variable offset if applicable
-    Measure* itsMeasure;    	    //# The offset if non-variable.
-    String itsVarColName;   	    //# "" if offset non-variable.
-    Bool itsVarPerArr;	      	    //# Is variable per array element.
+
+  TableMeasDescBase* itsTMDesc;      //# Stores variable offset if applicable
+  MeasureHolder      itsMeasure;     //# The offset if non-variable.
+  String             itsVarColName;  //# "" if offset non-variable.
+  Bool               itsVarPerArr;   //# Is variable per array element.
 };
+
 
 #endif
