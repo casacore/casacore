@@ -68,6 +68,7 @@ TXTDOCS  := $(filter %.txt,$(AIPSSRCS))
 HTMLDOCS := $(filter %.html,$(AIPSSRCS))
 HTMDOCS  := $(filter %.htm,$(AIPSSRCS))
 GIFDOCS  := $(filter %.gif,$(AIPSSRCS))
+BGIFDOCS  := $(filter %.GIF,$(AIPSSRCS))
 JPGDOCS  := $(filter %.jpg,$(AIPSSRCS))
 JSDOCS  := $(filter %.js,$(AIPSSRCS))
 
@@ -203,6 +204,12 @@ $(DOCSAREA)/%.gif : $(CODEDIR)/%.gif
 	 cp $< $@
 	 @ chmod 664 $@
 
+$(DOCSAREA)/%.GIF : $(CODEDIR)/%.GIF
+	-@ echo ""
+	 @ $(RM) $@
+	 cp $< $@
+	 @ chmod 664 $@
+
 $(DOCSAREA)/%.jpg : $(CODEDIR)/%.jpg
 	-@ echo ""
 	 @ $(RM) $@
@@ -307,6 +314,7 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(HTMLDOCS)) \
     $(addprefix $(DOCSAREA)/,$(HTMDOCS)) \
     $(addprefix $(DOCSAREA)/,$(GIFDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(BGIFDOCS)) \
     $(addprefix $(DOCSAREA)/,$(JSDOCS)) \
     $(addprefix $(DOCSAREA)/,$(JPGDOCS)) ;
 
@@ -370,6 +378,7 @@ show_local :
 	-@ echo "HTMLDOCS=$(HTMLDOCS)"
 	-@ echo "HTMDOCS =$(HTMDOCS)"
 	-@ echo "GIFDOCS =$(GIFDOCS)"
+	-@ echo "BGIFDOCS =$(GIFDOCS)"
 	-@ echo "JSDOCS =$(JSDOCS)"
 	-@ echo "JPGDOCS =$(JPGDOCS)"
 
