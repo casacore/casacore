@@ -220,7 +220,8 @@ public:
     // conversions occur.   Some conversions will fail.  These are the
     // ones that require extra frame information (radial velocity) such
     // as to REST. This will be added later.  In this case this function
-    // returns False, else it returns True.
+    // returns False (and the conversion parameters are all left as they were),
+   //  else it returns True.
     // <group>
     Bool setReferenceConversion (MFrequency::Types type,
                                  const MEpoch& epoch, const MPosition& position,
