@@ -5546,3 +5546,5 @@
 15 211 src rm nrao/apps/oldgbtmsfiller/oldgbtmsfiller.g
 15 211 src rm nrao/apps/oldgbtmsfiller/oldgbtmsfiller.cc
 15 211 src rm nrao/apps/oldgbtmsfiller/templates
+15 211 sys rm libexec/oldgbtmsfiller.g
+15 211 sys rm bin/oldgbtmsfiller
