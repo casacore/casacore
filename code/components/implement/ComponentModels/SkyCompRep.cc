@@ -34,7 +34,6 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/MeasurementComponents/StokesConverter.h>
 #include <trial/Tasking/MeasureParameterAccessor.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -54,14 +53,11 @@
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/Unit.h>
-#include <aips/Measures/UnitVal.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <strstream.h>
-//#include <iostream.h>
 
-SkyCompRep::~SkyCompRep()
-{
+SkyCompRep::~SkyCompRep() {
 }
 
 void SkyCompRep::project(ImageInterface<Float> & image) const {
@@ -91,7 +87,6 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
     Quantum<Double> inc1(abs(inc(1)), units(1));
     AlwaysAssert(near(inc0, inc1), AipsError);
     pixelSize = MVAngle(inc0);
-//     cout << "Pixel size: " << pixelSize.get("'") << endl;
   }
   
   // Setup an iterator to step through the image in chunks that can fit into
@@ -149,7 +144,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
       }
       if (!dirCoord.toWorld(worldCoord, pixelCoord)) {
-// I am not sure what to do here.
+// I am not sure what to do here, probably this message should be logged.
 //  	cerr << " SkyCompRep::Pixel at " << pixelCoord 
 //  	     << " cannot be projected" << endl;
       }
@@ -219,12 +214,15 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
+// Use a QuantumParameterAccessor for this function and complain to Wim about
+// this function not being available in the Measures module!
 void SkyCompRep::toRecord(GlishRecord & record, 
  			  const Quantum<Double> & quantity) {
   record.add("value", quantity.getValue());
   record.add("unit", quantity.getUnit());
 }
 
+// Use functions in the measures class for this.
 Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   // The GlishRecord parameter should really be const but the ParameterAccessor
   // needs a non-const one for an unknown reason
@@ -236,6 +234,8 @@ Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
+// Use functions in the measures class for this or at the bare minumum use a
+// MeasureParameterAccessor<MDirection> class.
 Bool SkyCompRep::addDir(String & errorMessage, GlishRecord & record) const {
   GlishRecord dirRec;
   dirRec.add("type", "direction");
@@ -262,6 +262,7 @@ Bool SkyCompRep::addDir(String & errorMessage, GlishRecord & record) const {
   return True;
 }
 
+// Move into the Flux<T> class.
 Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   if (!record.exists("flux")) {
     errorMessage += "\nThe component record does not have a 'flux' field";
@@ -271,7 +272,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
     errorMessage += "\nThe 'flux' field must be a record";
     return False;
   }
-  Flux<Double> thisFlux = flux();
+  Flux<Double> & thisFlux = flux();
   const GlishRecord fluxRec = record.get("flux");
   {
     if (!fluxRec.exists("value")) {
@@ -293,7 +294,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
 	String("must contain a vector with 4 elements");
       return False;
     }
-    Vector<Double> fluxVal(4);
+    Vector<DComplex> fluxVal(4);
     if (!valueField.get(fluxVal.ac())) {
       errorMessage += String("\nCould not read the 'value' field ") + 
 	String("in the flux record for an unknown reason");
@@ -325,19 +326,15 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
 	String("in the flux record for an unknown reason");
       return False;
     }
-    const Unit fluxUnits(unitVal);
-    const Unit jy("Jy");
-    if (fluxUnits != jy) {
-      errorMessage += String("\nThe flux units have the wrong dimensions. ") +
-	String("\nThey must be the same as the Jansky.");
-      return False;
-    }
-    thisFlux.setUnit(fluxUnits);
+    thisFlux.setUnit(Unit(unitVal));
   }
   {
     if (!fluxRec.exists("polarisation")) {
-      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
-      return False;
+      // FIX THIS UP LATER
+//      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
+//      return False;
+      thisFlux.setPol(ComponentType::STOKES);
+      return True;
     }
     if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
       errorMessage += "\nThe 'polarisation' field cannot be a record";
@@ -348,6 +345,8 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
       errorMessage += "\nThe 'polarisation' field must be a string";
       return False;
     }
+    // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
+    // is harder to parse but more flexible for the future.
     if (polField.shape().product() != 1) {
       errorMessage += String("\nThe 'polarisation' field cannot be an array ");
       return False;
@@ -369,6 +368,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
+// Move into the Flux<T> class.
 Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
   const Flux<Double> & thisFlux = flux();
   Vector<DComplex> fluxVal(4);
