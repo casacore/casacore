@@ -43,8 +43,8 @@ void d (uInt bufSize);
 main (int argc)
 {
     try {
-	a (ToBool (argc<2));
-	b (ToBool (argc<2));
+	a (argc<2);
+	b (argc<2);
 	c (0);
 //	c (1024);
 //	c (32768);
