@@ -105,26 +105,36 @@ Menubars should have the following characteristics:
                 a command-line interface (i.e. the GUI should
                 be restart-able from that object and that
                 object should be usable without the GUI).
+		The GUI should be easily re-created by the user 
+		with no loss of information in the GUI.
+		Often an unmap event will be all that is necessary
+		to implement the action behind this menu item.
             o Dismiss All Windows - this item should be used if
                 there are a number of related windows launched
                 from the same or closely related GUIs.  Again,
                 as in "Close Window" this does not disable any
                 underlying objects having viable command-line
                 interfaces.
+	    o Done - This destroys the GUI and any
+		underlying closures but does not exit glish.
             o Exit - this menu item is reserved only for GUIs which
-                are intended to run as stand along scripts where they
-                are the sole reason that glish session is running
+                are intended to run as stand alone scripts where they
+                are the sole reason that glish is running
                 (e.g. some background glish script with a controlling
                 GUI which has been started without direct access to the
                 underlying glish).  When invoked, the underlying glish
                 is exited.
         It is often wise for each of these menu items to lead to
-        an "Are you sure?" given the user the option to cancel
+        an "Are you sure?" dialog box giving the user the option to cancel
         that operation.  It is up to the programmer to decide when
-        such an action is appropriate although the more that is
-        potentially lost through that action, the more likely it
-        is that users will demand an "Are you sure?" buffer between
-        them and actual execution of the selected action.
+        such an action is appropriate although users are more likely
+	to demand an "Are you sure?" box when it is both easy
+	to accidentally select such an action and when choosing such
+	an action would cause substantial information and work to
+	be lost.  An Exit button will almost certainly lead to 
+	such a dialog box, a Done button will usually lead to 
+	such a dialog box and a Dismiss button will often not
+	require an "Are you sure" dialog box.
 
 Toolbar
    A toolbar containing simple buttons (usually as icons rather than
@@ -132,39 +142,46 @@ as text) may exist immediately below the menubar.  Toolbars have
 a raised relief.
 
 
-Dismissing the GUI
-    There must always be some graceful way of dismissing
+Closing the GUI
+    There must always be some graceful way of closing
 a GUI which might be used by itself without the user having
 to rely on the window manager.  If the GUI might also be used
-within a larger GUI where such a dismiss feature would
+within a larger GUI where independently closing the widget would
 be undesirable, they should provide a way of disabling this
 feature when the widget is created.  For very basic GUIs
 (e.g. combobox) this is not necessary.  There are three ways
-in which this dismissal could be done:
+in which an outer GUI frame might be closed:
+
     o From the File menu in cases where there is a menubar.
          See the comments under the menubar.
-    o From a Dismiss button.  The Dismiss button is the same
-        as the "Dismiss Window" action under the File menu.
-        A Dismiss button may simply dismiss one frame in a
-        larger GUI (this action is clearly possible if a
-        designer has provided a Dismiss button and a consumer
+
+    o From button analogs to the File menu cases.  These may
+	be desirable as short cuts.  The comments under File menu
+	case regarding an "Are you sure?" dialog box apply to
+	these buttons as well.  Possible buttons are "Dismiss",
+	which is equivalent to "Dismiss this Window" in the File
+	menu and "Done".
+	   These buttons may simply close one frame in a
+        larger GUI (this action is clearly possible if a, for example,
+        designer has provided a "Dismiss" button and a consumer
         has used that GUI within a larger frame and has opted
-        to have the dismiss button remain on this GUI).  When
-        a dismiss button dismisses one frame in a larger GUI, that
+        to have the "Dismiss" button remain on this GUI).  When
+        a button closes one frame in a larger GUI, that
         frame should use an appropriate border relief
         (ridge or groove) so that it is clear which frame is
-        controlled by the dismiss button.
-        A Dismiss button should appear as near to the lower
+        controlled by the button.
+            Such a button should appear as near to the lower
         right of the frame it is controlling as possible
         without this requirement leading to excessive wasted
         space in the frame.
+
     o From a required choice.  When a GUI exists only to demand
         some choice from the user (for example the
-        "Are you sure?" dialog suggested under the File menu
+        "Are you sure?" dialog box suggested under the File menu
         discussion) then the act of choosing will itself dismiss
         the GUI.  "Cancel" should be one possible option
         (unless the author can convince the reviewer that
-        there is no going back on the users part and hence
+        there is no going back on the user's part and hence
         canceling is simply not an option).  When present, the
         "Cancel" button should be the rightmost button in the list
         of possible actions.
@@ -259,9 +276,9 @@ Trap window manager kill events
     Watch for killed events from the outer frame and do
 something appropriate.  Also watch for frames which have
 a "killed" field as apparently sometimes these are set
-even when no killed events have been generated.
-
-
+even when no killed events have been generated.  Killed events
+should be treated as if the user had pressed a "Done"
+button or menu item.
 
 Underlying design issues:
    o When a GUI exists as an alternate interface to a glish
