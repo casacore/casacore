@@ -23,10 +23,14 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
+#include <trial/Mathematics/SCSL.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics.h>
-
-#if ! defined(AIPS_IRIX)
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
+#if ! defined(HAVE_SCSL)
 #define PN(a)
 #else
 #define PN(a) a
@@ -103,245 +107,270 @@ extern "C" {
 }
 #endif
 
-void ccfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
-	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  ccfft_((int*) &isign, (int*) &n, (float*) scale, (float*) x,
+void SCSL::ccfft(Int PN(isign), Int PN(n), Float PN(scale), Complex* PN(x),
+	   Complex* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  ccfft_((int*) &isign, (int*) &n, (float*) &scale, (float*) x,
 	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
 #endif
 }
 
-void ccfft(Int PN(isign), Int PN(n), Double* PN(scale), Double* PN(x),
+void SCSL::ccfft(Int PN(isign), Int PN(n), Double PN(scale), DComplex* PN(x),
+	   DComplex* PN(y), Double* PN(table), Double* PN(work),
+	   Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  zzfft_((int*) &isign, (int*) &n, (double*) &scale, (double*) x,
+	 (double*) y, (double*) table, (double*) work, (int*)
+	 &isys); 
+#endif
+}
+
+void SCSL::scfft(Int PN(isign), Int PN(n), Float PN(scale), Float* PN(x),
+           Complex* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  scfft_((int*) &isign, (int*) &n, (float*) &scale, (float*) x,
+	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
+#endif
+}
+
+void SCSL::scfft(Int PN(isign), Int PN(n), Double PN(scale), Double* PN(x),
+	   DComplex* PN(y), Double* PN(table), Double* PN(work),
+	   Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  dzfft_((int*) &isign, (int*) &n, (double*) &scale, (double*) x,
+	 (double*) y, (double*) table, (double*) work, (int*)
+	 &isys); 
+#endif
+}
+
+void SCSL::csfft(Int PN(isign), Int PN(n), Float PN(scale), Complex* PN(x),
+	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  csfft_((int*) &isign, (int*) &n, (float*) &scale, (float*) x,
+	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
+#endif
+}
+
+void SCSL::csfft(Int PN(isign), Int PN(n), Double PN(scale), DComplex* PN(x),
 	   Double* PN(y), Double* PN(table), Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  zzfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
-	 (double*) y, (double*) table, (double*) work, (int*)
-	 &isys); 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  zdfft_((int*) &isign, (int*) &n, (double*) &scale, (double*) x,
+	 (double*) y, (double*) table, (double*) work, (int*) &isys); 
 #endif
 }
 
-void scfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
-	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  scfft_((int*) &PN(isign), (int*) &n, (float*) scale, (float*) x,
-	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
-#endif
-}
-
-void scfft(Int PN(isign), Int PN(n), Double* PN(scale), Double* PN(x),
-	   Double* PN(y), Double* PN(table), Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  dzfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
-	 (double*) y, (double*) table, (double*) work, (int*)
-	 &isys); 
-#endif
-}
-
-void csfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
-	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  csfft_((int*) &isign, (int*) &n, (float*) scale, (float*) x,
-	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
-#endif
-}
-
-void zdfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
-	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  zdfft_((int*) &isign, (int*) &n, (double*) scale, (double*) x,
-	 (double*) y, (double*) table, (double*) work, (int*)
-	 &isys); 
-#endif
-}
-
-void ccfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
-	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+void SCSL::ccfftm(Int PN(isign), Int PN(n), Int PN(lot), Float PN(scale),
+	    Complex* PN(x), Int PN(ldx), Complex* PN(y), Int PN(ldy),
 	    Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  ccfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
-	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  ccfftm_((int*) &isign, (int*) &n, (int*) &lot, (float*) &scale,
+	  (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
 	  table, (float*) work, (int*) &isys); 
 #endif
 }
 
-void zzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
-	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+void SCSL::zzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double PN(scale),
+	    DComplex* PN(x), Int PN(ldx), DComplex* PN(y), Int PN(ldy),
 	    Double* PN(table), Double* PN(work), Int PN(isys)) {
-#if defined(AIPS_IRIX)
-  zzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
-	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  zzfftm_((int*) &isign, (int*) &n, (int*) &lot, (double*) &scale,
+	  (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
 	  table, (double*) work, (int*) &isys);
 #endif
 }
 
-void scfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
-	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+void SCSL::scfftm(Int PN(isign), Int PN(n), Int PN(lot), Float PN(scale),
+	    Float* PN(x), Int PN(ldx), Complex* PN(y), Int PN(ldy),
 	    Float* PN(table), Float* PN(work), Int PN(isys)) {
-#if defined(AIPS_IRIX)
-  scfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
-	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  scfftm_((int*) &isign, (int*) &n, (int*) &lot, (float*) &scale,
+	  (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
 	  table, (float*) work, (int*) &isys);
 #endif
 }
 
-void dzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
-	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+void SCSL::dzfftm(Int PN(isign), Int PN(n), Int PN(lot), Double PN(scale),
+	    Double* PN(x), Int PN(ldx), DComplex* PN(y), Int PN(ldy),
 	    Double* PN(table), Double* PN(work), Int PN(isys)) {
-#if defined(AIPS_IRIX)
-  dzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
-	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  dzfftm_((int*) &isign, (int*) &n, (int*) &lot, (double*) &scale,
+	  (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
 	  table, (double*) work, (int*) &isys); 
 #endif
 }
 
-void csfftm(Int PN(isign), Int PN(n), Int PN(lot), Float* PN(scale),
-	    Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+void SCSL::csfftm(Int PN(isign), Int PN(n), Int PN(lot), Float PN(scale),
+	    Complex* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
 	    Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  csfftm_((int*) &isign, (int*) &n, (int*) lot, (float*) scale,
-	  (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  csfftm_((int*) &isign, (int*) &n, (int*) &lot, (float*) &scale,
+	  (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
 	  table, (float*) work, (int*) &isys); 
 #endif
 }
 
-void zdfftm(Int PN(isign), Int PN(n), Int PN(lot), Double* PN(scale),
-	    Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+void SCSL::zdfftm(Int PN(isign), Int PN(n), Int PN(lot), Double PN(scale),
+	    DComplex* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
 	    Double* PN(table), Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  dzfftm_((int*) &isign, (int*) &n, (int*) lot, (double*) scale,
-	  (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  dzfftm_((int*) &isign, (int*) &n, (int*) &lot, (double*) &scale,
+	  (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
 	  table, (double*) work, (int*) &isys); 
 #endif
 }
 
-void ccfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
-	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+void SCSL::ccfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float PN(scale),
+	     Complex* PN(x), Int PN(ldx), Complex* PN(y), Int PN(ldy),
 	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  ccfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
-	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  ccfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) &scale,
+	   (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
 	   table, (float*) work, (int*) &isys); 
 #endif
 }
 
-void zzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
-	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
-	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  zzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
-	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
-	   table, (double*) work, (int*) &isys); 
-#endif
-}
-
-void scfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
-	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
-	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  scfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
-	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
-	   table, (float*) work, (int*) &isys); 
-#endif
-}
-
-void dzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double* PN(scale),
-	     Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+void SCSL::zzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double PN(scale),
+	     DComplex* PN(x), Int PN(ldx), DComplex* PN(y), Int PN(ldy),
 	     Double* PN(table), Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
-	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  zzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) &scale,
+	   (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
 	   table, (double*) work, (int*) &isys); 
 #endif
 }
 
-void csfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float* PN(scale),
-	     Float* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+void SCSL::scfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float PN(scale),
+	     Float* PN(x), Int PN(ldx), Complex* PN(y), Int PN(ldy),
 	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  csfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) scale,
-	   (float*) x, (int*) ldx, (float*) y, (int*) ldy, (float*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  scfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) &scale,
+	   (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
 	   table, (float*) work, (int*) &isys); 
 #endif
 }
 
-void zdfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double* PN(scale),
-	     Double* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+void SCSL::dzfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double PN(scale),
+	     Double* PN(x), Int PN(ldx), DComplex* PN(y), Int PN(ldy),
 	     Double* PN(table), Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
-  dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) scale,
-	   (double*) x, (int*) ldx, (double*) y, (int*) ldy, (double*)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) &scale,
+	   (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
 	   table, (double*) work, (int*) &isys); 
 #endif
 }
 
-void ccfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
-	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+void SCSL::csfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Float PN(scale),
+	     Complex* PN(x), Int PN(ldx), Float* PN(y), Int PN(ldy),
+	     Float* PN(table), Float* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
+  csfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (float*) &scale,
+	   (float*) x, (int*) &ldx, (float*) y, (int*) &ldy, (float*)
+	   table, (float*) work, (int*) &isys); 
+#endif
+}
+
+void SCSL::zdfft2d(Int PN(isign), Int PN(n1), Int PN(n2), Double PN(scale),
+	     DComplex* PN(x), Int PN(ldx), Double* PN(y), Int PN(ldy),
+	     Double* PN(table), Double* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
+  dzfft2d_((int*) &isign, (int*) &n1, (int*) &n2, (double*) &scale,
+	   (double*) x, (int*) &ldx, (double*) y, (int*) &ldy, (double*)
+	   table, (double*) work, (int*) &isys); 
+#endif
+}
+
+void SCSL::ccfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float PN(scale), Complex* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Complex* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
 	     Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
   ccfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
-	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
-	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
+	   &scale, (float*) x, (int*) &ldx, (int*) &ldx2, (float*) y,
+	   (int*) &ldy, (int*) &ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
 #endif
 }
 
-void zzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
-	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
-	     Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+void SCSL::zzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Double PN(scale), DComplex* PN(x), Int PN(ldx), Int PN(ldx2),
+	     DComplex* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
+	     Double* PN(work), Int PN(isys)) { 
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
   zzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
-	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
-	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
+	   (double*) &scale, (double*) x, (int*) &ldx, (int*) &ldx2,
+	   (double*) y, (int*) &ldy, (int*) &ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
 #endif
 }
 
-void scfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
-	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
+void SCSL::scfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+	     Complex* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
 	     Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
   scfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
-	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
-	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
+	   &scale, (float*) x, (int*) &ldx, (int*) &ldx2, (float*) y,
+	   (int*) &ldy, (int*) &ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
 #endif
 }
 
-void dzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Double* PN(scale), Double* PN(x), Int PN(ldx), Int PN(ldx2),
-	     Double* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
+void SCSL::dzfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Double PN(scale), Double* PN(x), Int PN(ldx), Int PN(ldx2),
+	     DComplex* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
 	     Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
   dzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
-	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
-	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
+	   (double*) &scale, (double*) x, (int*) &ldx, (int*) &ldx2,
+	   (double*) y, (int*) &ldy, (int*) &ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
 #endif
 }
 
-void csfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Float* PN(scale), Float* PN(x), Int PN(ldx), Int PN(ldx2),
+void SCSL::csfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Float PN(scale), Complex* PN(x), Int PN(ldx), Int PN(ldx2),
 	     Float* PN(y), Int PN(ldy), Int PN(ldy2), Float* PN(table),
 	     Float* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(Complex) == 2*sizeof(float), AipsError);
   csfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3, (float*)
-	   scale, (float*) x, (int*) ldx, (int*) ldx2, (float*) y,
-	   (int*) ldy, (int*) ldy2, (float*) table, (float*) work,
+	   &scale, (float*) x, (int*) &ldx, (int*) &ldx2, (float*) y,
+	   (int*) &ldy, (int*) &ldy2, (float*) table, (float*) work,
 	   (int*) &isys); 
 #endif
 }
 
-void zdfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
-	     Double* PN(scale), Double* PN(x), Int PN(ldx), Int PN(ldx2),
+void SCSL::zdfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
+	     Double PN(scale), DComplex* PN(x), Int PN(ldx), Int PN(ldx2),
 	     Double* PN(y), Int PN(ldy), Int PN(ldy2), Double* PN(table),
 	     Double* PN(work), Int PN(isys)) { 
-#if defined(AIPS_IRIX)
+#if defined(HAVE_SCSL)
+  DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
   dzfft3d_((int*) &isign, (int*) &n1, (int*) &n2, (int*) &n3,
-	   (double*) scale, (double*) x, (int*) ldx, (int*) ldx2,
-	   (double*) y, (int*) ldy, (int*) ldy2, (double*) table,
+	   (double*) &scale, (double*) x, (int*) &ldx, (int*) &ldx2,
+	   (double*) y, (int*) &ldy, (int*) &ldy2, (double*) table,
 	   (double*) work, (int*) &isys); 
 #endif
 }
