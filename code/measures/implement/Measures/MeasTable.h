@@ -89,17 +89,53 @@ class Euler;
 // re-arrangement could produce faster and more compact code.
 // </motivation>
 //
-// <todo asof="1997/04/17">
+// <todo asof="1997/09/02">
 //   <li> more database interfaces, rather than constants
-//   <li> more precise data for VLBI and pulsar
-//   <li> turn on logging again
 // </todo>
 
 class MeasTable {
 
 public:
   
-  //# 	Constants
+  //# Enumerations
+  // Types to be used in different calls
+  enum Types {
+    // Planetary information
+    MERCURY = 1,
+    VENUS = 2,
+    EARTH = 3,
+    MARS = 4,
+    JUPITER = 5,
+    SATURN = 6,
+    URANUS = 7,
+    NEPTUNE = 8,
+    PLUTO = 9,
+    MOON = 10,
+    SUN = 11,
+    // Solar system barycentre
+    BARYSOLAR = 12,
+    // Earth-Moon system barycentre
+    BARYEARTH = 13,
+    // Nutations
+    NUTATION = 14,
+    // Librations
+    LIBRATION = 15,
+    // Number of types
+    N_Types };
+
+  // Codes for JPL constants: order should be same as in MeasJPL, length less
+  // than or equal
+  enum JPLconst {
+    // Light velocity used in AU/d
+    CAU,
+    // Solar mass (GM0)/c<sup>2</sup> in AU
+    GMS,
+    // AU in km
+    AU,
+    // Solar radius in AU
+    RADS,
+    // # of codes
+    N_JPLconst };
 
   //# General Member Functions
   // Precession related data
@@ -142,7 +178,18 @@ public:
   // Get nutation angles corrections for UTC T in rad.
   // which = 0 : dPsi as given by IERS for IAU nutation theory;
   // = 1: dEps as same.
-  static const Double dPsiEps(uInt which, Double T);
+  static Double dPsiEps(uInt which, Double T);
+  // </group>
+
+  // Planetary (JPL DE) related data
+  // <group>
+  // Get the position (AU or rad) and velocity (AU/d or rad/d) for specified
+  // code at TDB T. The ephemeris to use (now DE200 or DE405) can be selected
+  // with the 'measures.jpl.ephemeris' aipsrc resource (default DE200).
+  static const Vector<Double> &Planetary(MeasTable::Types which, 
+					 Double T); 
+  // Get the JPL DE constant indicated
+  static const Double &Planetary(MeasTable::JPLconst what);
   // </group>
   
   // Aberration related data
@@ -235,10 +282,6 @@ public:
   // </group>
   
   // Time related routines
-  // Note:  Data should be taken from database, and made sure for MJD in other time
-  // 	frames and if exactly true, and extrapolation, and cleaned.<br>
-  //	Not all routines implemented fully; not all precise enough for
-  //	VLBI and pulsar.
   // <logged>
   //   <li> HIGH, WARNING given if correction not obtainable
   // </logged>

@@ -34,7 +34,9 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Measures/UnitVal.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>
+#include <aips/Measures/MVEpoch.h>
 #include <aips/Measures/MeasIERS.h>
+#include <aips/Measures/MeasJPL.h>
 #include <aips/OS/Time.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
@@ -43,6 +45,7 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableRow.h>
+#include <aips/Tasking/Aipsrc.h>
 #include <aips/Containers/RecordField.h>
 
 //# Constants
@@ -684,26 +687,95 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
     }
 }
 
-const Double MeasTable::dPsiEps(uInt which, Double T) {
+Double MeasTable::dPsiEps(uInt which, Double T) {
+  static Bool msgDone = False;
   DebugAssert(which < 2, AipsError);
   Double r = 0;
   switch (which) {
   case 1:
     if (!MeasIERS::get(r, MeasIERS::MEASURED, MeasIERS::dEps,
 		       T)) {
-      //  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-      // ///		       "No IERS nutation data available"));
+      if (!msgDone) {
+	msgDone = True;
+	LogIO os(LogOrigin("MeasTable",
+			   String("dPsiEps(uInt, Double)"),
+			   WHERE));
+	os << LogIO::WARN <<
+	  String("No requested nutation data available from IERS tables. "
+		 "\nProceeding with probably less precision.") <<
+	  LogIO::POST;
+      };
     };
     break;
   default:
     if (!MeasIERS::get(r, MeasIERS::MEASURED, MeasIERS::dPsi,
 		       T)) {
-      //  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-      // ///		       "No IERS nutation data available"));
+      if (!msgDone) {
+	msgDone = True;
+	LogIO os(LogOrigin("MeasTable",
+			   String("dPsiEps(uInt, Double)"),
+			   WHERE));
+	os << LogIO::WARN <<
+	  String("No requested nutation data available from IERS tables. "
+		 "\nProceeding with probably less precision.") <<
+	  LogIO::POST;
+      };
     };
     break;
   };
   return (r * C::arcsec);
+}
+
+// Planetary data
+const Vector<Double> &MeasTable::Planetary(MeasTable::Types which, 
+					   Double T) {
+  static Vector<Double> res(6);
+  static Bool needInit = True;
+  static MeasJPL::Files fil(MeasJPL::DE200);
+  static String tnam[2] = { "DE200", "DE405"};
+  if (needInit) {
+    needInit = False;
+    res.makePermanent();
+    uInt t;
+    Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
+		  String("DE200"));
+    fil = (MeasJPL::Files)t;
+  };
+  if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
+		    MVEpoch(T))) {
+    LogIO os(LogOrigin("MeasTable",
+		       String("Planetary(MeasTable::Types, Double)"),
+		       WHERE));
+    os << String("Cannot find the planetary data table ") +
+		 tnam[fil] << LogIO::EXCEPTION;
+  };
+  return res;
+}
+
+// Planetary constants
+const Double &MeasTable::Planetary(MeasTable::JPLconst what) {
+  static Bool needInit = True;
+  static Double cn[MeasTable::N_JPLconst];
+  static MeasJPL::Files fil(MeasJPL::DE200);
+  static String tnam[2] = { "DE200", "DE405"};
+  if (needInit) {
+    needInit = False;
+    uInt t;
+    Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
+		  String("DE200"));
+    fil = (MeasJPL::Files)t;
+    for (uInt i=0; i<MeasTable::N_JPLconst; i++) {
+      if (!MeasJPL::getConst(cn[i], fil, 
+			     (MeasJPL::Codes) i)) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("Planetary(MeasTable::JPLconst)"),
+			   WHERE));
+	os << String("Cannot find the planetary data table ") +
+		     tnam[fil] << LogIO::EXCEPTION;
+      };
+    };
+  };
+  return cn[what];
 }
 
 // Aberration function
@@ -2724,21 +2796,30 @@ Double MeasTable::WGS84(uInt which) {
 
 // Polar motion related routines
 const Euler &MeasTable::polarMotion(Double ut) {
-    static Euler res(0.0, 2, 0.0, 1, 0.0, 3);
-    static Double checkT = -1e6;
-    if ( !nearAbs(ut, checkT, 0.04)) {
-        checkT = ut;
-	if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X,
-			   ut) ||
-	    !MeasIERS::get(res(1), MeasIERS::MEASURED, MeasIERS::Y,
-			   ut)) {
-	  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-	  ///		       "No IERS polar motion data available"));
-	};
-	res(0) *= -C::arcsec;
-	res(1) *= -C::arcsec;
+  static Bool msgDone = False;
+  static Euler res(0.0, 2, 0.0, 1, 0.0, 3);
+  static Double checkT = -1e6;
+  if ( !nearAbs(ut, checkT, 0.04)) {
+    checkT = ut;
+    if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X,
+		       ut) ||
+	!MeasIERS::get(res(1), MeasIERS::MEASURED, MeasIERS::Y,
+		       ut)) {
+      if (!msgDone) {
+	msgDone = True;
+	LogIO os(LogOrigin("MeasTable",
+			   String("PolarMotion(Double)"),
+			   WHERE));
+	os << LogIO::WARN <<
+	  String("No requested polar motion data available from IERS tables. "
+		 "\nProceeding with probably less precision.") <<
+	  LogIO::POST;
+      };
     };
-    return res;
+    res(0) *= -C::arcsec;
+    res(1) *= -C::arcsec;
+  };
+  return res;
 }
 
 // Time functions
@@ -2859,15 +2940,24 @@ Double MeasTable::UTtoST(Double ut1) {
 }
 
 Double MeasTable::dUT1(Double utc) {
-    static Double res = 0;
-    static Double checkT = -1e6;
-    if ( !nearAbs(utc, checkT, 0.04)) {
-        checkT = utc;
-	if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1,
-			   utc)) {
-	  ///	Log(LogMessage(LogMessage::HIGH, LogMessage::WARNING,
-	  ///		       "No IERS dUT1 data available"));
-	};
+  static msgDone = False;
+  static Double res = 0;
+  static Double checkT = -1e6;
+  if ( !nearAbs(utc, checkT, 0.04)) {
+    checkT = utc;
+    if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1,
+		       utc)) {
+      if (!msgDone) {
+	msgDone = True;
+	LogIO os(LogOrigin("MeasTable",
+			   String("dUT1(Double)"),
+			   WHERE));
+	os << LogIO::WARN <<
+	  String("No requested dUT1 data available from IERS tables. "
+		 "\nProceeding with probably less precision.") <<
+	  LogIO::POST;
+      };
     };
-    return res;
+  };
+  return res;
 }
