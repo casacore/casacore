@@ -31,6 +31,8 @@
 
 #include <aips/aips.h>
 #include <aips/Containers/SimOrdMap.h>
+#include <aips/Containers/Block.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
 
@@ -242,6 +244,7 @@ class MSCalEnums
 
   // Access functions for column/keyword description data
   static String fieldName (Int enumField);
+  static Block<String> fieldNames (const Vector<Int>& enumFields);
   static DataType basicType (Int enumField);
  
  private:
