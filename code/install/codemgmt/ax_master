@@ -4726,3 +4726,4 @@
 14 306 src mv trial/apps/newsditerator/changelog trial/apps/sditerator/changelog
 14 306 src mv trial/apps/newsditerator/makefile trial/apps/sditerator/makefile
 14 306 src mv trial/apps/newsditerator/newsdaverager.g trial/apps/sditerator/sdaverager.g
+14 306 src mv trial/apps/newsditerator/newsdaverager.help trial/apps/sditerator/sdaverager.help
