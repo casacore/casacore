@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: avers [-b | -l | -r]
+# Usage: avers [-b | -l | -r | R]
 #-----------------------------------------------------------------------------
 # Report AIPS++ version information.
 #
@@ -43,6 +43,8 @@
 #             5) Version currently available in Socorro.
 #
 #   -r     Report the last version installed in release format (default).
+#
+#   -R     Report the last version installed in release format with date.
 #
 # Status return values:
 #    0:  success
@@ -72,8 +74,11 @@
         -r)
            MODE="release"
            ;;
+        -R)
+           MODE="release_date"
+           ;;
         *)
-           echo "Usage: avers [-b | -l | -r]"
+           echo "Usage: avers [-b | -l | -r | -R]"
            exit 1
            ;;
      esac
@@ -111,6 +116,11 @@
      elif [ "$MODE" = release ]
      then
         cat $AIPSLAVE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+     elif [ "$MODE" = release_date ]
+     then
+        rdate=`cat $AIPSLAVE/VERSION | awk '{print $3}'`
+        cat $AIPSLAVE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+        echo "Dated: $rdate"
      else
         echo "Master:" `cat $AIPSLAVE/VERSION`
      fi
@@ -122,6 +132,11 @@
      elif [ "$MODE" = release ]
      then
         cat $AIPSCODE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+     elif [ "$MODE" = release_date ]
+     then
+        rdate=`cat $AIPCODE/VERSION | awk '{print $3}'`
+        cat $AIPCODE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+        echo "Dated: $rdate"
      else
         echo "Master:" `cat $AIPSCODE/VERSION`
      fi
@@ -133,6 +148,11 @@
      elif [ "$MODE" = release ]
      then
         cat $AIPSARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+     elif [ "$MODE" = release_date ]
+     then
+        rdate=`cat $AIPARCH/VERSION | awk '{print $3}'`
+        cat $AIPARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+        echo "Dated: $rdate"
      else
         echo "Master:" `cat $AIPSARCH/VERSION`
      fi
@@ -143,6 +163,11 @@
      elif [ "$MODE" = release ]
      then
         cat $AIPSARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+     elif [ "$MODE" = release_date ]
+     then
+        rdate=`cat $AIPARCH/VERSION | awk '{print $3}'`
+        cat $AIPARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
+        echo "Dated: $rdate"
      else
         echo "Master: ($AIPSARCH/VERSION not found)"
      fi
@@ -151,6 +176,7 @@
 # Quit now in brief or release mode.
   [ "$MODE" = brief ] && exit 0
   [ "$MODE" = release ] && exit 0
+  [ "$MODE" = release_date ] && exit 0
 
   if [ -f "$AIPSLAVE/LOGFILE" ]
   then
