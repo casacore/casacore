@@ -302,8 +302,8 @@ void MCBaseline::doConvert(MVBaseline &in,
       break;
     
     case B1950_APP: 
-      measMath.applyPrecNutatB1950(in, False);
       in.adjust(g2);
+      measMath.applyPrecNutatB1950(in, False);
       measMath.applyAberrationB1950(in, False);
       in.readjust(g2);
       break;
@@ -311,8 +311,8 @@ void MCBaseline::doConvert(MVBaseline &in,
     case APP_B1950:
       in.adjust(g2);
       measMath.deapplyAberrationB1950(in, False);
-      in.readjust(g2);
       measMath.deapplyPrecNutatB1950(in, False);
+      in.readjust(g2);
       break;
     
     case TOPO_HADEC: 
