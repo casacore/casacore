@@ -1,0 +1,672 @@
+
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+
+\section{Introduction}
+The Lattice Expression Language (LEL) makes it possible to do
+arithmetic on lattices (in particular on images) in AIPS++.
+An expression can be seen as a lattice (or image) in itself. It
+can be used in any operation where a normal image is used.
+
+In short the following functionality is supported:
+\begin{itemize}
+\item The common mathematical, comparison, and relational
+      \htmlref{operators}{LEL:OPERATORS}.
+\item An extensive list of mathematical and logical
+      \htmlref{functions}{LEL:FUNCTIONS}.
+\item Mixed \htmlref{data type}{LEL:DATATYPES} arithmetic
+      and automatic data type promotion.
+\item \htmlref{Masking}{LEL:CONDITIONS} using boolean expressions.
+\item Propagation of \htmlref{masks}{LEL:MASKS} through an expression.
+\end{itemize}
+In the nearby future regions will be supported.
+
+The first section explains the syntax.
+The last sections show the interface to LEL using Glish or C++.
+The Glish interface makes it possible to embed Glish
+variables and expressions in a LEL command.
+
+LEL operates on lattices, which are a generalization of arrays.
+As said above a particular type of lattice is an image; they
+will be used most often.
+Because lattices can be very large, an expression is only evaluated
+when a chunk of its data is requested. This is similar to reading
+only the requested chunk of data from a disk file
+
+LEL is quite efficient and can therefore be used well in
+C++ and glish code. However, it can never be as efficient as
+carefully constructed C++ code. 
+
+\htmladdnormallink{Note 216}{../216/216.html} gives a detailed
+description how LEL is implemented using various C++ classes.
+
+
+\section{\label{LEL:EXPRESSIONS}Expressions}
+A LEL expression can be as simple or complex as one likes
+using the standard
+\htmlref{arithmetic, comparison, and logical operators}{LEL:OPERATORS}.
+Parentheses can be used to group subexpressions.
+\\The operands in an expression can be
+\htmlref{lattices}{LEL:LATTICES},
+\htmlref{constants}{LEL:CONSTANTS},
+\htmlref{functions}{LEL:FUNCTIONS}, and
+\htmlref{condition masks}{LEL:CONDITIONS}.
+E.g.
+\begin{verbatim}
+  lat1 + 10
+  lat1 + 2 * max(lat2,1)
+  amp(lat1, lat2)
+  lat1 + mean(lat2[lat2>5 && lat2<10])
+\end{verbatim}
+The last example shows how a boolean expression can be used to form
+a mask on a lattice. Only the pixels fulfilling the condition will be
+used when calculating the mean.
+
+In general the result of a LEL expression is an lattice, but it
+can be a scalar too. If a scalar, it will be handled correctly
+by C++ and glish functions using it as the source in, say, an
+assignment to another lattice.
+
+LEL fully supports masks. In almost all cases the mask of a
+subexpression is formed by and-ing the masks of its operands.
+It is fully explained in a \htmlref{later section}{LEL:MASKS}.
+
+
+\label{LEL:DATATYPES}
+LEL supports the following data types:
+\begin{description}
+  \item[ Bool]
+  \item[ Float] single precision real (which includes integers)
+  \item[ Double] double precision real
+  \item[ Complex ] single precision complex
+  \item[ DComplex ] double precision complex
+\end{description}
+All these data types can be used for scalars and lattices.
+\\LEL will do automatic data type promotion when needed. E.g. when
+a Double and a Complex are used in an operation, they will be promoted
+to DComplex. It is also possible to promote explicitly using the
+conversion functions (FLOAT, DOUBLE, COMPLEX and DCOMPLEX).
+These functions can also be used to demote a data type
+(e.g. convert from Double to Float), which can sometimes
+be useful for better performance.
+
+
+\subsection{\label{LEL:CONSTANTS}Constants}
+Scalar constants of the various data types can be formed as follows
+(which is similar to Glish):
+\begin{itemize}
+  \item A Bool constant can be given as T or F (meaning true resp. false).
+  \item A Float constant can be any integer or floating-point number. E.g.
+    \begin{verbatim}
+    3
+    3.14
+    3.14e-2
+    \end{verbatim}
+  \item A Double constant is a floating-point number using a D for the
+    exponent. One can also use the \texttt{DOUBLE} function. E.g.
+    \begin{verbatim}
+    1d2
+    3.14d-2
+    double(2)
+    \end{verbatim}
+  \item The imaginary part of a Complex or DComplex constant is formed
+    by a Float or Double constant immediately followed by a lowercase
+    \textbf{i}. A full complex
+    constant is formed by adding another constant as the
+    real part. E.g.
+    \begin{verbatim}
+    1.5 + 2i
+    2i+1.5            is identical
+    \end{verbatim}
+    Note that a full complex constant has to be enclosed
+    in parentheses when, say, a multiplication is performed on it. E.g.
+    \begin{verbatim}
+    2 * (1.5+2i)
+    \end{verbatim}
+\end{itemize}
+The functions \texttt{pi()} and \texttt{e()} should be
+used to specify the constants pi and e. They form a Double constant,
+so when using e.g. pi with a Float lattice, it could make a lot of sense
+to convert pi to a Float. Otherwise the lattice is converted to a
+Double, which is time-consuming. However, one may have very valid
+reasons to convert to Double, e.g. to ensure that the calculations are
+accurate enough.
+
+\subsection{\label{LEL:OPERATORS}Operators}
+The following operators can be used (with their normal meaning and
+precedence):
+\begin{description}
+  \item[] Unary \textbf{+} and \textbf{-}
+       \\Can not be used with Bool operands.
+       They have a higher precedence than the binary operators.
+       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+  \item[] Unary \textbf{!}
+       \\Logical NOT operator.
+       Can only be used with Bool operands.
+  \item[] Binary \textbf{$\wedge$, *, /, \%, +}, and \textbf{-}
+       \\\% is the modulo operator.
+       E.g. \texttt{3\%1.4} results in \texttt{0.2} and
+       \texttt{-10\%3} results in \texttt{-1}.
+       \\\verb+^+ is the power operator.
+       Note that because of the precedence rules
+       \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+       \\All operators are left-associative, except \verb+^+ which is
+       right-associative; thus
+       \texttt{2}\verb+^+\texttt{1}\verb+^+\texttt{2} results in \texttt{2}.
+       \\Operator \% can only be used for real operands, while the others
+       can be used for real and complex operands.
+  \item[] \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
+       \\For Bool operands only $==$ and $!=$ can be used.
+       \\A Bool operand cannot be used with a numeric operand.
+       \\The comparison operators use the norm for complex values.
+  \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
+       \\Logical AND and OR operator. 
+       \\These operators can only be used with Bool operands.
+\end{description}
+\begin{description}
+  \item The precedence order is:
+       \\unary \texttt{+, -, !}
+       \\\verb+^+
+       \\\texttt{*, /, \%}
+       \\\texttt{+, -}
+       \\\texttt{$==, !=, >, >=, <, <=$}
+       \\\texttt{\&\&}
+       \\\texttt{$\mid\mid$}
+\end{description}
+
+\subsection{\label{LEL:FUNCTIONS}Functions}
+In the following tables the function names are shown in uppercase,
+while the result and argument types are shown in lowercase.
+Note, however, that function names are case-insensitive.
+All functions can have scalar and/or lattice arguments.
+\\When a function can have multiple arguments (e.g. atan2), the
+operands are automatically promoted where needed.
+
+\subsubsection{Mathematical functions}
+Several functions can operate on real or complex arguments.
+The data types of such arguments are given as 'numeric'.
+\begin{description}
+  \item[ \texttt{Double PI()}] Returns the value of \textbf{pi}.
+  \item[ \texttt{Double E()}] Returns the value of \textbf{e}.
+  \item[ \texttt{numeric SIN(numeric)}]
+  \item[ \texttt{numeric SINH(numeric)}]
+  \item[ \texttt{real ASIN(real)}]
+  \item[ \texttt{numeric COS(numeric)}]
+  \item[ \texttt{numeric COSH(numeric)}]
+  \item[ \texttt{real ACOS(real)}]
+  \item[ \texttt{real TAN(real)}]
+  \item[ \texttt{real TANH(real)}]
+  \item[ \texttt{real ATAN(real)}]
+  \item[ \texttt{real ATAN2(real y, real x)}]
+       Returns \texttt{ATAN(y/x)} in correct quadrant.
+  \item[ \texttt{numeric EXP(numeric)}]
+  \item[ \texttt{numeric LOG(numeric)}] Natural logarithm.
+  \item[ \texttt{numeric LOG10(numeric)}]
+  \item[ \texttt{numeric POW(numeric, numeric)}] The same as operator \verb+^+.
+  \item[ \texttt{numeric SQRT(numeric)}]
+  \item[ \texttt{complex COMPLEX(real, real)}]
+       Create a complex number from two reals.
+  \item[ \texttt{complex CONJ(complex)}]
+  \item[ \texttt{real REAL(numeric)}] Real value itself or
+    real part of a complex number.
+  \item[ \texttt{real IMAG(complex)}] Imaginary part of a complex number.
+  \item[ \texttt{real NORM(numeric)}]
+  \item[ \texttt{real ABS(numeric),  real AMPLITUDE(numeric)}]
+  \item[ \texttt{real ARG(numeric),  real PHASE(numeric)}]
+  \item[ \texttt{numeric MIN(numeric, numeric)}]
+  \item[ \texttt{numeric MAX(numeric, numeric)}]
+  \item[ \texttt{Float SIGN(real)}]
+       Returns -1 for a negative value, 0 for zero, 1 for a positive value.
+  \item[ \texttt{real ROUND(real)}]
+       Rounds the absolute value of the number.
+       \\E.g. \texttt{ROUND(-1.6) = -2}.
+  \item[ \texttt{real FLOOR(real)}]
+       Works towards negative infinity.
+       \\E.g. \texttt{FLOOR(-1.2) = -2}
+  \item[ \texttt{real CEIL(real)}] Works towards positive infinity.
+  \item[ \texttt{real FMOD(real, real)}] The same as operator \%.
+\end{description}
+Note that the trigonometric functions need their arguments in radians.
+
+\subsubsection{Scalar result functions}
+The result of these functions is a scalar.
+\begin{description}
+  \item[ \texttt{double NELEMENTS(anytype)}]
+    Return number of elements in a lattice (1 for a scalar).
+  \item[ \texttt{double NDIM(anytype)}]
+    Return dimensionality of a lattice (0 for a scalar).
+  \item[ \texttt{double LENGTH(anytype, double axis)}]
+    Return length of a lattice axis (returns 1 for a scalar or if axis
+    exceeds number of axes). Axis number is 1-relative.
+  \item[ \texttt{Bool ANY(Bool)}] Is any element true?
+  \item[ \texttt{Bool ALL(Bool)}] Are all elements true?
+  \item[ \texttt{Double NTRUE(Bool)}] Number of true elements.
+  \item[ \texttt{Double NFALSE(Bool)}] Number of false elements.
+  \item[ \texttt{numeric SUM(numeric)}] Return sum of all elements.
+  \item[ \texttt{numeric MIN(numeric)}] Return minimum
+    of all elements.
+  \item[ \texttt{numeric MAX(numeric)}] Return maximum
+    of all elements.
+  \item[ \texttt{numeric MEAN(numeric)}]
+    Return mean of all elements.
+  \item[ \texttt{numeric VARIANCE(numeric)}]
+    Return variance
+    \\(\\texttt{sum((a(i) - mean(a))**2) / (nelements(a) - 1)}).
+    \\All calculations are done in double precision.
+  \item[ \texttt{numeric STDDEV(numeric)}]
+    Return standard deviation (the square root of the variance).
+  \item[ \texttt{real AVDEV(numeric)}]
+    Return average deviation.
+    \\(\texttt{sum(abs(a(i) - mean(a))) / nelements(a)}).
+    \\All calculations are done in double precision.
+\end{description}
+
+\subsubsection{Miscellaneous functions}
+\begin{description}
+  \item[ \texttt{anytype IIF(Bool, anytype, anytype)}]
+    The first argument is a boolean expression. If an element in
+    it is true, the corresponding element from the second argument is
+    taken, otherwise from the third argument. It is similar to the
+    ternary \texttt{?:} construct in C++. E.g.
+    \begin{verbatim}
+    iff (lat1>0, lat1, 0)      same as max(lat1,0)
+    iff (sum(lat1)>0, lat1, lat2)
+    \end{verbatim}
+    The examples shows that scalars and lattices can be freely mixed.
+    When all arguments are scalars, the result is a scalar. Otherwise
+    the result is a lattice.
+\end{description}
+
+\subsubsection{Conversion functions}
+\begin{description}
+  \item[ \texttt{Float FLOAT(real)}]
+    Convert to single precision.
+  \item[ \texttt{Double DOUBLE(real)}]
+    Convert to double precision.
+  \item[ \texttt{Complex COMPLEX(numeric)}]
+    Convert to single precision complex.
+    If the argument is real, the imaginary part is set to 0.
+  \item[ \texttt{DComplex DCOMPLEX(numeric)}]
+    Convert to double precision complex.
+    If the argument is real, the imaginary part is set to 0.
+\end{description}
+
+\subsection{\label{LEL:LATTICES}Lattice names}
+When a lattice (e.g. an image) is used in an expression, its name
+has to be given. If the name consists of alphanumeric characters only
+and starts with a letter, it can be given as such. An underscore is
+also treated as a letter.
+\\If the name contains other characters or if it is a reserved word
+(currently only T and F are reserved), it has to be escaped.
+Escaping can be done by preceeding the special characters with a
+backslash or by enclosing the string in single or double quotes.
+E.g.
+\begin{verbatim}
+  myimage  
+  myimage\.data
+  'myimage.data'
+\end{verbatim}
+Note that when LEL is used in glish, it is also possible to use
+a glish image variable as a lattice operand (e.g. \texttt{\$im}).
+This is explained in the section describing the
+\htmlref{glish binding}{LEL:GLISHC}.
+
+\subsection{\label{LEL:CONDITIONS}Lattice Condition Mask}
+Lattices can have a mask. Examples are a mask of good pixels in an
+image or the mask indicating the pixels in a region within a bounding box
+(e.g. for a circle).
+
+Apart from such input masks, it is also possible to create a mask
+using operator \texttt{[]} and a boolean expression. E.g.
+\begin{verbatim}
+  sum( lat1[lat1<5 && lat1>10] )
+\end{verbatim}
+creates a mask for lat1 indicating that only its elements fulfilling
+the condition should be taken into account in the \texttt{sum}
+function.
+\\Note that the mask is local to that part of the expression. So in
+\begin{verbatim}
+  sum( lat1[lat1<5 && lat1>10] ) + sum(lat1)
+\end{verbatim}
+the second \texttt{sum} function takes all elements into account.
+\\Masking can also be applied to expressions and it is recursive.
+\begin{verbatim}
+  (lat1+lat2)[lat3<lat4]
+  sum( lat1[lat1<5][lat1>10] )
+  (lat1 + lat2[lat3<lat4]) [lat1<5]
+\end{verbatim}
+The second example shows the recursion (which ands the masks).
+It is effectively a (slower) implementation of the
+first example in this section.
+
+When a lattice has a mask of itself, the mask formed by the condition
+is and-ed with the lattice mask. It is explained in more detail in the
+\htmlref{next section}{LEL:MASKS}.
+
+
+\section{\label{LEL:MASKS}Mask Propagation}
+Lattices can have a mask. Examples are a mask of good pixels in an
+image or the mask indicating the pixels in a region within a bounding box
+(e.g. for a circle).
+Furthermore a mask can be created using operator \texttt{[]}
+as explained in the \htmlref{previous section}{LEL:CONDITIONS}.
+
+Masks are combined and propagated throughout an expression.
+E.g. when two lattices are added, the mask of the result is formed
+by and-ing the masks of the two lattices.
+\\In general the mask of a subexpression is formed by and-ing
+the masks of the operands. This true for e.g. +, *, \texttt{atan2},
+etc..
+
+There are a few special cases:
+\begin{itemize}
+\item
+The mask created by operator[] is formed by and-ing the condition
+result, the mask of the result, and the mask of the subexpression
+where the condition is applied to. E.g. suppose \texttt{lat1} and
+\texttt{lat2} have a mask. Then in
+\begin{verbatim}
+  sum( lat1[lat2<5] )
+\end{verbatim}
+the \texttt{sum} function will only sum those elements for which
+the mask of \texttt{lat1} and \texttt{lat2} is valid and for which
+the condition is true.
+
+\item
+The logical AND operator forms the resulting mask by looking at
+the result and the masks of the operands. If an element in an
+operand is false and it has a valid mask, than the resulting
+element is also false with a valid mask. The value and the mask of
+that element in the other operand are not important anymore.
+It is, in fact, 3-valued logic with the values TRUE, FALSE, and UNDEFINED.
+
+\item
+The logical OR operator works the same as the AND operator, be it
+that if an operand has a true value the other operand can be ignored.
+
+\item
+The \texttt{iif} function has three operands. Depending on the
+condition, an element from the second or third operand has to be taken.
+The resulting mask is formed by the mask of the condition and-ed
+with the appropriate elements from the masks of the second and third operand.
+\end{itemize}
+
+It is possible that the entire mask of a subexpression is false.
+If e.g. the mean of such a subexpression is taken, the result
+is undefined. This is fully supported by LEL, because a scalar
+value also has a mask associated with it.
+One can see a masked-off scalar as a lattice with an all false mask.
+Hence an operation involving an undefined scalar results in an
+undefined scalar.
+The following functions act as described below on fully masked-off
+lattices:
+\begin{itemize}
+\item MEAN, VARIANCE, STDDEV, AVDEV, MIN, MAX
+\\result in an undefined scalar:
+\item NELEMENTS, NTRUE, NFALSE, SUM
+\\result in a scalar with value 0.
+\item ANY
+\\results in a scalar with value F.
+\item ALL
+\\results in a scalar with value T.
+\item LENGTH, NDIM
+\\ignore the mask because only the shape of the lattice matters.
+\end{itemize}
+
+
+\section{Some further remarks}
+\subsection{Optimization}
+When giving a LEL expression, it is important to keep an eye
+on performance issues.
+
+LEL itself will do some optimization:
+\begin{itemize}
+\item As said in the introduction a LEL expression is evaluated
+in chunks. However, a scalar subexpression is executed only once
+when getting the first chunk.
+E.g. in
+  \begin{verbatim}
+  lat1 + mean(lat2)
+  \end{verbatim}
+the subexpression \texttt{mean(lat2)} is executed only once
+and not over and over again when the user gets chunks.
+
+\item Often the exponent 2 is used in the \texttt{pow} function
+(or operator \verb+^+). This is optimized by using multiplication
+instead of using the system pow function/
+
+\item When LEL finds a \htmlref{masked-off scalar}{LEL:MASKS}
+in a subexpression, it does not evaluate the other operand.
+Instead it sets the result immediately to a masked-off scalar.
+Exceptions are the operators AND and OR and function \texttt{iif},
+because their masks depend on the operand values.
+\end{itemize}
+
+The user can optimize by specifying the expression carefully.
+\begin{itemize}
+\item
+It is strongly recommended to combine scalars into a subexpression to
+avoid unnecessary scalar-lattice operations. E.g.
+\begin{verbatim}
+  mean(lat1) * lat1 * pi()
+\end{verbatim}
+should be written as
+\begin{verbatim}
+  lat1 * (mean(lat1) * pi())
+\end{verbatim}
+because in the latter way the scalars form a scalar subexpression
+which is calculated only once. Note that the subexpression parentheses
+are strongly recommended. In general one cannot tell how the
+expression tree is built, thus if LEL recognizes scalar
+subexpressions. E.g. in
+\begin{verbatim}
+  mean(lat1) * pi() * lat1
+\end{verbatim}
+the tree may be such that the second multiplication is done before
+the first one.
+\\In the future LEL will be optimized to shuffle the operands where needed.
+\item
+It is important to be careful with the automatic data type promotion
+of single precision lattices. Several scalar functions (e.g. pi)
+produce a double precision value, so using \texttt{pi} with a
+single precision lattice causes the lattice to be promoted to double
+precision. If accuracy allows it, it is much better to convert
+\texttt{pi} to single precision.
+E.g. assume \texttt{lat1} and \texttt{lat2} are single precision lattices.
+\begin{verbatim}
+  atan2(lat1,lat2) + pi()/2
+\end{verbatim}
+The result of \texttt{atan2} is single precision, because both
+operands are single precision. However, \texttt{pi} is double
+precision, so the result of \texttt{atan2} is promoted to double
+precision to make the addition possible. Specifying the expression as:
+\begin{verbatim}
+  atan2(lat1,lat2) + float(pi())/2
+\end{verbatim}
+avoids that (expensive) data type promotion.
+
+\item
+\texttt{POW(LAT,2)} or \texttt{LAT}\verb+^+\texttt{0.5}
+is faster than \texttt{LAT*LAT}, because it accesses lattice
+\texttt{LAT} only once.
+
+\item
+\texttt{SQRT(LAT)} is faster than \texttt{LAT}\verb+^+\texttt{0.5}
+or \texttt{POW(LAT,0.5)}
+
+\item
+\texttt{POW(U,2) + POW(V,2) $<$ 1000}\verb+^+\texttt{2} is considerably faster
+than
+\\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
+\texttt{SQRT} function.
+
+\end{itemize}
+
+
+\section{Examples}
+\begin{description}
+  \item[] \texttt{lat1+lat2}
+    \\adds 2 lattices
+  \item[] \texttt{mean(lat1)}
+    \\results in a scalar value giving the mean of the lattice.
+    That value can be used as a lattice. E.g. it can be used as
+    the source in an assignment to set all elements of another
+    lattice to the mean.
+  \item[] \texttt{complex(lat1,lat2)}
+    \\results in a complex lattice formed by \texttt{lat1} as the
+    real part and \texttt{lat2} as the imaginary part.
+  \item[] \texttt{min(lat1, 2*mean(lat1))}
+    \\results in a lattice where \texttt{lat1} is clipped at twice
+    its mean value.
+  \item[] \texttt{lat1[lat1$>$2*min(lat1)]}
+    \\results in a lattice with a mask. Only the pixels
+    greater than twice the minimum are valid.
+  \item[] \texttt{iif(lat1$<$mean(lat1),lat1*2,lat1/2)}
+    \\results in a lattice where the elements less than the mean
+    are doubled and the elements greater or equal to the mean are
+    divided by 2.
+\end{description}
+
+\section{\label{LEL:GLISHC}Interface to LEL}
+There exists a user and a programmer interface to LEL.
+Glish functions form the user interface, while C++ functions
+and classes form the programmer interface.
+\begin{itemize}
+\item
+  The LEL interface in Glish is formed by the
+  \htmlref{\texttt{calc}}{image:calc} and
+  \htmlref{\texttt{expr}}{image:expr} functions in module
+  \htmlref{\texttt{image}}{image} (in script \texttt{image.g}).
+  The functions can be used
+  to compose and/or execute a LEL expression.
+  The \texttt{calc} constructor will evaluate the expression and store
+  the result in an image with the given name.
+  \\The \texttt{expr} constructor will only form the expression and
+  treat it as a normal image thereafter.
+  It is evaluated when actions are done on it.
+  \begin{verbatim}
+    im := calc('outimage','inimage1+inimage2')
+    im.statistics(...);
+  \end{verbatim}
+  The first command creates an image file \texttt{outimage} filling
+  it with the sum of the input images. The second command is
+  doing statistics on that new image.
+  \\Writing it as
+  \begin{verbatim}
+    im := expr('inimage1+inimage2')
+    im.statistics(...);
+  \end{verbatim}
+  would do the same with the exception of creating the output image.
+  Instead the created image is transient; it only lives as an
+  expression and each time it is used the expression is evaluated.
+
+  Images created/opened in glish can be used with their glish name
+  in a LEL expression.
+  It is also possible to embed other glish variables and expressions in a LEL
+  command using the syntax \texttt{\$variable} and
+  \texttt{\$(expression)}. A variable can be a standard numeric scalar.
+  An expression has to result in a numeric scalar.
+  E.g. one can make a glish function like
+  \begin{verbatim}
+    myclipfunc := function (image, clipvalue)
+    {
+      return expr('min($image, $clipvalue)');
+    }
+  \end{verbatim}
+  to return a transient image formed by the image clipped at the
+  given clipvalue.
+  \\The substitution mechanism is described in more detail in the
+  \htmlref{\texttt{substitute}}{utility:substitute}
+  functions of module
+  \htmlref{\texttt{utility}}{utility} of the
+  \htmladdnormallink{User Reference
+  Manual}{../../user/Refman/Refman.html}.
+  \\The substitution mechanism uses the eval function in glish.
+  As of 15-Jan-1999 eval only looks at global variables. This means
+  that in a function one needs to create a global variable (with
+  a unique name) if the variable is to be used in a LEL command.
+  The global variable should be deleted at the end of the function.
+  The name can be made unique by using the function name as a suffix.
+
+  LEL cannot deal directly with regions yet. However, it is possible
+  to use a region of an image in a LEL expression. It can be
+  done by using the 
+  \htmlref{\texttt{expr}}{image:subim} function in the image module.
+  It forms an image from the given region in the
+  input image. As above, the constructed subimage can be used as
+  a normal image in a LEL expression. E.g.
+  \begin{verbatim}
+    img := image('imimage');
+    subimg := img.subim(someregion, 'outname');
+    imgexpr := expr('$img + mean($subimg)');
+  \end{verbatim}
+  In the above example the mean of the subimage is added
+  to the full image.
+
+\item
+  The C++ interface consists of 2 parts.
+  \begin{enumerate}
+  \item
+    The function \texttt{command} in
+    \htmladdnormallink{Images/ImageExprParse.h}
+    {../../trial/implement/Images/ImageExprParse.html}
+    can be used to execute a LEL command. The result is a
+    \htmladdnormallink{LatticeExprNode}
+    {../../trial/implement/Lattices/LatticeExprNode.html}
+    object. E.g.
+\begin{verbatim}
+  LatticeExprNode seltab1 = ImageExprParse::command
+         ("imagein1 + imagein2");
+\end{verbatim}
+    This example does the same as the Glish one shown above.
+
+  \item
+    The other interface is a true C++ interface having the
+    advantage that C++ variables can be used. Class
+    \htmladdnormallink{LatticeExprNode}
+    {../../trial/implement/Lattices/LatticeExprNode.html}
+    contains functions to form an expression. The same operators
+    and functions as in the command interface are available.
+    E.g.
+\begin{verbatim}
+  Float clipValue = 10;
+  PagedImage<Float> image("imagein");
+  LatticeExpr<Float> expr(min(image,clipValue));
+\end{verbatim}
+    forms an expression to clip the image. Note that the expression is
+    written as a normal C++ expression. The overloaded operators and
+    functions in class 
+    \htmladdnormallink{LatticeExprNode}
+    {../../trial/implement/Lattices/LatticeExprNode.html}
+    take care that the expression is formed in the correct way.
+    \\Note that a \texttt{LatticeExprNode} object is usually
+    automatically converted to a templated \texttt{LatticeExpr} object,
+    which makes it possible to use it as a normal \texttt{Lattice}.
+
+  \end{enumerate}
+\end{itemize}
+
+\section{Future developments}
+In the near or far future LEL will be enhanced by adding new
+features and by doing optimizations.
+\begin{itemize}
+  \item Handle regions and slices. Possible examples are:
+    \begin{description}
+      \item[] \texttt{image[regionname]}
+        \\only use given region in image
+      \item[] \texttt{image[maskname]}
+        \\use given mask for image
+      \item[] \texttt{image[maskname][regionname]}
+        \\use given mask and region for image
+      \item[] \texttt{image[otherimage::maskname]}
+        \\use a mask from another image 
+      \item[] \texttt{image[1:10:2, 5:]}
+        \\define the section directly in pixel coordinates (with
+        stride 2 for the first axis).
+      \item[] \texttt{image[\$region]}
+        \\use the region defined as a glish variable.
+    \end{description}
+    Maybe it is possible to use operators like \texttt{\&} to
+    form region compounds like intersection.
+  \item Do optimization by reordering the expression.
+  \item Do optimization by recognizing common subexpressions.
+\end{itemize}
