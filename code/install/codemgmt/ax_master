@@ -6143,3 +6143,4 @@
 17 168 src rm hia/implement/GSDDataSource/gsd/gsd2_nativx.now
 17 168 src rm hia/implement/GSDDataSource/gsd/gsdClose.now
 17 168 src rm hia/implement/GSDDataSource/gsd/gsdFind.now
+17 168 src rm hia/implement/GSDDataSource/gsd/gsdGet0x.now
