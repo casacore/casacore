@@ -1,5 +1,5 @@
 //# tFITSDateUtil.cc: Test program for FITSDateUtil
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>
+
+#include <iostream.h>
 
 int main()
 {
