@@ -3137,3 +3137,4 @@
 13 012 src rm trial/implement/Guiutils/pgplotter_gplot1d_meta.g
 13 025 src rm trial/implement/Guiutils/aipsbrowser.g
 13 025 src rm doc/notes/208.dir/talkslides.latex
+13 029 src rm trial/apps/dish/dish_opMenu.g
