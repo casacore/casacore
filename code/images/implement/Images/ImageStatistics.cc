@@ -1204,10 +1204,11 @@ Bool ImageStatistics<T>::generateStorageImage()
       nVirCursorIter = 1;
    } else {
 
-// Make Navigator with dummy cursor shape
+// Make Navigator with dummy cursor shape.  Use resize hangover policy
 
       LatticeStepper imageNavigator(pInImage_p->shape(), 
-                                    IPosition(pInImage_p->ndim(),1));
+                                    IPosition(pInImage_p->ndim(),1),
+                                    LatticeStepper::RESIZE);
 
 // Apply region and get shape of Lattice that we are iterating through
 // Increment ignored for now.
@@ -1256,7 +1257,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 // dimensional slices (when retrieving statistics for the user).  However, the  
 // latter will be used less often than the rest so optimize the tile shape ignoring 
 // it. Since the tile size is small on the last axis, this won't impose much of a 
-// penalty when accessing by first axis slices
+// penalty when accessing by first axis slices.  There will be no hangover.
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);

@@ -505,8 +505,9 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
 // Set up iterator to work through histogram storage image line by line
 // Since I already set the tile shape to be unity on all but the first 
-// axis, just use the LatticeStepper (default) navigator, which will also 
-// guarentee the access pattern
+// axis where it is is the axis length, just use the LatticeStepper (default) 
+// navigator, which will also guarentee the access pattern.  There will
+// be no overhang
   
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
@@ -704,6 +705,7 @@ Bool ImageHistograms<T>::displayHistograms ()
 // Set up iterator to work through histogram storage image line by line.
 // We don't use the TiledStepper because we already set the tile shape sensibly, 
 // and this will guarentee the access pattern is row based rather than tile based
+// There will be no overhang
  
    IPosition cursorShape(pHistImage_p->ndim(),1);
    cursorShape(0) = pHistImage_p->shape()(0);
@@ -1135,10 +1137,12 @@ Bool ImageHistograms<T>::generateStorageImage()
       nVirCursorIter = 1;
    } else {
  
-// Make Navigator with dummy cursor shape
+// Make Navigator with dummy cursor shape.  Note we use the resize
+// cursor overhang policy
       
       LatticeStepper imageNavigator(pInImage_p->shape(),
-                                    IPosition(pInImage_p->ndim(),1));
+                                    IPosition(pInImage_p->ndim(),1),
+                                    LatticeStepper::RESIZE);
  
 // Apply region and get shape of Lattice that we are iterating through
 // Increment ignored for now.
@@ -1191,7 +1195,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 // Set tile shape.   The histogram storage image is only accessed by
 // vectors along the first axis.   Therefore set the tile shape to be unity
 // except for the first axis and equal to the length of the first axis   
-// (the number of bins) for the first axis.  
+// (the number of bins) for the first axis.    There will be no overhang.
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
@@ -1226,7 +1230,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 // first (length first display axis) and last (length NMINMAX) axes.  Therefore set 
 // the tile shape to be unity on all  the other axes.  For the first axis take
 // the length of the axis and for the last axis its just NMINMAX (which is just
-// 2 or so).
+// 2 or so).  There will be no overhang.
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
@@ -1256,7 +1260,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 
 // Set tile shape.   The statistics storage image is accessed by slices along the
 // first axis (length NSTATS) only. So the tile shape is set to unity on all  
-// the other axes.  
+// the other axes.  There will be no overhang.
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
