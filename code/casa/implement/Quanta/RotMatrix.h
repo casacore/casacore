@@ -1,5 +1,5 @@
 //# RotMatrix.h: a 3x3 rotation matrix
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
 class Euler;
@@ -119,6 +120,16 @@ class RotMatrix
   //# Methods
 // Get as Matrix
     Matrix<Double> get() const;
+
+// Transpose the rotation matrix
+     void transpose();
+
+// Fill Rotation matrix from Matrix
+     void set(const Matrix<Double> &in);
+
+// Fill Rotation matrix from 3 (row) vectors
+     void set(const Vector<Double> &in0, const Vector<Double> &in1,
+	      const Vector<Double> &in2);
 
     private:
 //# Data

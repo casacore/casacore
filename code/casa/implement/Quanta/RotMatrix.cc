@@ -1,5 +1,5 @@
 //# RotMatrix.cc: a 3x3 rotation matrix
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,31 @@ Matrix<Double> RotMatrix::get() const {
     for (Int col=0; col<3; col++)
       tmp(row, col) = rotat[row][col];
   return tmp;
+}
+
+void RotMatrix::transpose() {
+  Double tmp;
+  for (Int row=0; row<3; row++)
+    for (Int col=row+1; col<3; col++) {
+      tmp = rotat[row][col];
+      rotat[row][col] = rotat[col][row];
+      rotat[col][row] = tmp;
+    };
+}
+
+void RotMatrix::set(const Matrix<Double> &in) {
+  for (Int row=0; row<3; row++)
+    for (Int col=0; col<3; col++)
+      rotat[row][col] = in(row, col);
+}
+
+void RotMatrix::set(const Vector<Double> &in0, const Vector<Double> &in1,
+		    const Vector<Double> &in2) {
+  for (Int col=0; col<3; col++) {
+    rotat[0][col] = in0(col);
+    rotat[1][col] = in1(col);
+    rotat[2][col] = in2(col);
+  };
 }
 
 ostream &operator<< (ostream &os, const RotMatrix &rot) {
