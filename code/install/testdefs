@@ -182,11 +182,11 @@ define CheckLink
    shift ; \
    for PKG do \
       case $$PKG in \
-      aips | dish | trial | atnf | nrao) \
+      aips | dish | display | synthesis | vlbi) \
          ;; \
-      synthesis | vlbi | contrib | bima | hia | nfra | nral | tifr) \
-         echo "   ...$$LEVEL, $$PKG unimplemented" ; \
-         FAIL=1 ; \
+      contrib | trial | trialdisplay) \
+         ;; \
+      alma | atnf | bima | hia | jive | nfra | npoi | nral | nrao | tifr) \
          ;; \
       *) \
          echo "   ...$$LEVEL, $$PKG unrecognized" ; \
@@ -952,15 +952,12 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LATEX2HTMLBIN) ; $(CheckExe)
     endif
-	-@ echo "LATEX2HTMLBIN=$(LATEX2HTMLINIT)"
-    ifdef DO_TEST
-	-@ set WARNING $(LATEX2HTMLINIT ; $(CheckExe)
-    endif
+	-@ echo "LATEX2HTMLINIT=$(LATEX2HTMLINIT)"
 	-@ echo "LATEX2HTML=$(LATEX2HTML)"
 	-@ echo "ICONSERVER=$(ICONSERVER)"
 	-@ echo "ICONS2LOCAL=$(ICONS2LOCAL)"
     ifdef DO_TEST
-	-@ set WARNING $(ICONS2LOCAL ; $(CheckExe)
+	-@ set WARNING $(ICONS2LOCAL) ; $(CheckExe)
     endif
 	-@ echo ""
 	-@ echo "TEXROOT   =$(TEXROOT)"
@@ -1023,7 +1020,7 @@ system :
 	-@ echo "DOCSYS   =$(DOCSYS)"
     ifdef DO_TEST
 	-@ case "$(DOCSYS)" in \
-	   "" | doc) \
+	   "" | doc | resolvedocs) \
 	      echo "   ...syntax is correct" ; \
 	      ;; \
 	   *) \
@@ -1035,7 +1032,7 @@ system :
 	-@ echo "DOCEXTR  =$(DOCEXTR)"
     ifdef DO_TEST
 	-@ case "$(DOCEXTR)" in \
-	   "" | "docscan docextr") \
+	   "" | "docscan docextr" | "docscan docextr changelogs" ) \
 	      echo "   ...syntax is correct" ; \
 	      ;; \
 	   *) \
@@ -1047,9 +1044,9 @@ system :
 	-@ echo "AUXILIARY=$(AUXILIARY)"
     ifdef DO_TEST
 	-@ FAIL=0 ; \
-	   for i in "$(AUXILIARY)" ; do \
+	   for i in "" $(AUXILIARY) ; do \
 	      case $$i in \
-	      trial | contrib) \
+	      "" | contrib | trial | trialdisplay) \
 	         ;; \
 	      *) \
 	         echo "   ...WARNING, $$i is not an auxiliary package" ; \
@@ -1065,9 +1062,11 @@ system :
 	-@ echo "CONSORTIA=$(CONSORTIA)"
     ifdef DO_TEST
 	-@ FAIL=0 ; \
-	   for i in "$(CONSORTIA)" ; do \
+	   for i in "" $(CONSORTIA) ; do \
 	      case $$i in \
-	      atnf | bima | hia | nfra | nral | nrao | tifr) \
+	      "" | atnf | bima | hia | nfra | nral | nrao | tifr) \
+	         ;; \
+	      alma | jive | npoi) \
 	         ;; \
 	      *) \
 	         echo "   ...WARNING, $$i is not a consortium package" ; \
