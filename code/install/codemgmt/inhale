@@ -979,10 +979,14 @@
         continue
      fi
 
+#    Determine what command to use for remote sneeze.  Default is rsh.
+     RCMD=rsh
+     RCMD=`getrc -i sneeze.$INHOST.rcmd 2> /dev/null`
+
      echo ""
      TMP="$INHOST"
      [ "$EXTLIST" != "" ] && TMP="$TMP ($EXTLIST)"
-     echo "inhale: Initiating asynchronous rebuild on $TMP..."
+     echo "inhale: Initiating asynchronous rebuild on $TMP using $RCMD..."
 
 #    Initiate the rebuild.
      if [ "$EXTLIST" != "" ]
@@ -991,7 +995,7 @@
         AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
      fi
      SNEEZE="sneeze $EXTLIST -l -m $MODE $TARGETS"
-     rsh $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
+     $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
   done
 
 # Start the rebuild on this host.
