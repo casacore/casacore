@@ -1109,41 +1109,29 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Set input world/pixel arrays
 //
-    Unit degrees("deg");
     if (longIsWorld) {
        mixcel_p = 1;          // 1 or 2 (a code, not an index)
        mixpix_p = 1;          // index into pixcrd array
 //
-       mix_quant_tmp.setValue(in(0));
-       mix_quant_tmp.setUnit(Unit(units_p(0)));
-       mix_world_p[wcs_p->lng] = mix_quant_tmp.getValue(degrees);
+       mix_world_p[wcs_p->lng] = in(0) * to_degrees_p[0];
        mix_pixcrd_p[mixpix_p] = in(1);
 //
 // Latitude span
 //
-       mix_quant_tmp.setUnit(Unit(units_p(1)));
-       mix_quant_tmp.setValue(minWorld(1));
-       mix_vspan_p[0] = mix_quant_tmp.getValue(degrees);
+       mix_vspan_p[0] = minWorld(1) * to_degrees_p[1];
 //
-       mix_quant_tmp.setValue(maxWorld(1));
-       mix_vspan_p[1] = mix_quant_tmp.getValue(degrees);
+       mix_vspan_p[1] = maxWorld(1) * to_degrees_p[1];
     } else {
        mixcel_p = 2;          // 1 or 2 (a code, not an index)
        mixpix_p = 0;          // index into pixcrd array
 //
-       mix_quant_tmp.setValue(in(1));
-       mix_quant_tmp.setUnit(Unit(units_p(1)));
-       mix_world_p[wcs_p->lat] = mix_quant_tmp.getValue(degrees);
+       mix_world_p[wcs_p->lat] = in(1) * to_degrees_p[1];
        mix_pixcrd_p[mixpix_p] = in(0);
 //
 // Longitude span
 //
-       mix_quant_tmp.setUnit(Unit(units_p(0)));
-       mix_quant_tmp.setValue(minWorld(0));
-       mix_vspan_p[0] = mix_quant_tmp.getValue(degrees);
-//
-       mix_quant_tmp.setValue(maxWorld(0));
-       mix_vspan_p[1] = mix_quant_tmp.getValue(degrees);
+       mix_vspan_p[0] = minWorld(0) * to_degrees_p[0];
+       mix_vspan_p[1] = maxWorld(0) * to_degrees_p[0];
     }
 //
 // Do it
@@ -1176,13 +1164,9 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 
     if (longIsWorld) {
        out(0) = mix_pixcrd_p[0];
-       Double tmp1 = Double(mix_world_p[wcs_p->lat]);
-       Quantum<Double> tmp(tmp1, Unit("deg"));
-       out(1) = tmp.getValue(Unit(units_p(1)));
+       out(1) = mix_world_p[wcs_p->lat] / to_degrees_p[1];
     } else {
-       Double tmp1 = Double(mix_world_p[wcs_p->lng]);
-       Quantum<Double> tmp(tmp1, Unit("deg"));
-       out(0) = tmp.getValue(Unit(units_p(0)));
+       out(0) = mix_world_p[wcs_p->lng] / to_degrees_p[0];
        out(1) = mix_pixcrd_p[1];
     } 
 //
