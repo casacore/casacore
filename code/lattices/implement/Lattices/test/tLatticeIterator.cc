@@ -1,5 +1,5 @@
 //# tLatticeIterator.cc:  mechanical test of the LatticeIterator class
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
@@ -83,21 +84,23 @@ void testVectorROIter (const Lattice<Int>& lattice)
         expectedResult.ac() += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedResult.ac() -= cursorShape.product();
+    Int ns=0;
     for (; !iter.atStart(); iter--){
 	AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
 		     == True, AipsError);
 	expectedResult.ac() -= cursorShape.product();
+	ns++;
     }
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)-1),
+    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -143,7 +146,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
         expectedResult.ac() += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3) - 1,
+    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3),
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -158,7 +161,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
     }
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)-1),
+    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -208,7 +211,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
         expectedResult.ac() += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape(3) - 1, AipsError);
+    AlwaysAssert(nstep == latticeShape(3), AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -223,7 +226,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
     }
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2 * (latticeShape(3) - 1), AipsError);
+    AlwaysAssert(nstep == 2 * (latticeShape(3)), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = latticeShape(0) - 1;
@@ -276,7 +279,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
         expectedResult.ac() += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 0, AipsError);
+    AlwaysAssert(nstep == 1, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos = 0;
@@ -289,7 +292,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
     }
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 0, AipsError);
+    AlwaysAssert(nstep == 2, AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos = latticeShape - 1;
@@ -335,7 +338,7 @@ void test8ElemROIter (const Lattice<Int>& lattice)
         expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/8 - 1, AipsError);
+    AlwaysAssert(nstep == latticeShape.product()/8, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 8;
@@ -348,11 +351,71 @@ void test8ElemROIter (const Lattice<Int>& lattice)
     }
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape.product()/8 - 1), AipsError);
+    AlwaysAssert(nstep == 2*(latticeShape.product()/8), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = 8-1;
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
+}
+
+void testTileROIter (const Lattice<Int>& lattice)
+{
+    cout << "  Testing using a tile cursor" << endl;
+    Int nstep;
+    const IPosition latticeShape(lattice.shape());
+    const IPosition cursorShape(lattice.niceCursorShape());
+    RO_LatticeIterator<Int>  iter(lattice);
+    Array<Int> expectedResult(cursorShape);
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
+    Timer clock;
+    for (iter.reset(); !iter.atEnd(); ++iter){
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
+        expectedResult += cursorShape.product();
+    }
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape.product()/cursorShape.product(),
+		 AipsError);
+    for (; !iter.atStart(); --iter){
+        expectedResult -= cursorShape.product();
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
+    }
+    clock.show();
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*latticeShape.product()/cursorShape.product(),
+		 AipsError);
+}
+
+void testTiledLineROIter (const Lattice<Int>& lattice)
+{
+    cout << "  Testing using a tiled line cursor" << endl;
+    Int nstep;
+    const IPosition latticeShape(lattice.shape());
+    const IPosition cursorShape(lattice.niceCursorShape());
+    TiledLineStepper step(latticeShape, cursorShape, 0);
+    RO_LatticeIterator<Int>  iter(lattice, step);
+    Vector<Int> expectedResult(latticeShape(0));
+    indgen(expectedResult.ac());
+    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) == True,
+		 AipsError);
+    Timer clock;
+    for (iter.reset(); !iter.atEnd(); ++iter){
+        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+		     == True, AipsError);
+        expectedResult.ac() += latticeShape(0);
+    }
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
+		 AipsError);
+    for (; !iter.atStart(); --iter){
+        expectedResult.ac() -= latticeShape(0);
+        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+		     == True, AipsError);
+    }
+    clock.show();
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*latticeShape.product()/latticeShape(0),
+		 AipsError);
 }
 
 void testCopyAssignROIter (const Lattice<Int>& lattice)
@@ -555,7 +618,7 @@ void testVectorRWIter (Lattice<Int>& lattice)
         expectedResult.ac() += cursorShape.product();
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -570,12 +633,9 @@ void testVectorRWIter (Lattice<Int>& lattice)
         expectedResult.ac() -= cursorShape.product();
         expectedResult(0) = 0;
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
-		 == True, AipsError);
-    iter.woCursor() = 1;
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)-1),
+    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -621,7 +681,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
         iter.rwMatrixCursor()(0,0) = 2;
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3) - 1,
+    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3),
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -634,12 +694,9 @@ void testMatrixRWIter (Lattice<Int>& lattice)
                      == True, AipsError);
         iter.woCursor() = 3;
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
-		 == True, AipsError);
-    iter.woCursor() = 3;
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)-1),
+    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -689,7 +746,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
         iter.rwCubeCursor()(0,0,0) = 4;
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape(3) - 1, AipsError);
+    AlwaysAssert(nstep == latticeShape(3), AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -702,12 +759,9 @@ void testCubeRWIter (Lattice<Int>& lattice)
                      == True, AipsError);
         iter.woCursor() = 5;
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
-		 == True, AipsError);
-    iter.woCursor() = 5;
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 2*(latticeShape(3)-1), AipsError);
+    AlwaysAssert(nstep == 2*(latticeShape(3)), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = latticeShape(0) - 1;
@@ -760,7 +814,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
         iter.rwCursor()(IPosition(4,0)) = 6;
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 0, AipsError);
+    AlwaysAssert(nstep == 1, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos = 0;
@@ -771,12 +825,9 @@ void testArrayRWIter (Lattice<Int>& lattice)
                      AipsError);
         iter.woCursor() = 7;
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor()) == True,
-		 AipsError);
-    iter.woCursor() = 7;
     clock.show();
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == 0, AipsError);
+    AlwaysAssert(nstep == 2, AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos = latticeShape - 1;
@@ -1013,15 +1064,16 @@ main ()
   try {
     {
       cout << "Creating a PagedArray on disk" << endl;
-      const IPosition latticeShape(4, 16, 12, 4, 32);
+      const TiledShape latticeShape(IPosition(4, 16, 12, 4, 32),
+				    IPosition(4, 16, 12, 2,  1));
       PagedArray<Int> pagedArr(latticeShape, "tLatticeIterator_tmp.table");
-      Array<Int> arr(latticeShape);
+      Array<Int> arr(latticeShape.shape());
       indgen(arr);
-      pagedArr.putSlice(arr, IPosition(latticeShape.nelements(), 0));
+      pagedArr.putSlice(arr, IPosition(latticeShape.shape().nelements(), 0));
     }
     //++++++++++++++++++++ Test PagedArrIter ++++++++++++++++++++
-    // Check the Iterator with a Vector cursor. 
     cout << " Testing the RO iterator" << endl;
+    // Check the Iterator with a Vector cursor. 
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
       testVectorROIter (pagedArr);
@@ -1045,6 +1097,16 @@ main ()
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
       test8ElemROIter (pagedArr);
+    }
+    // Check the Iterator with a tile cursor.
+    {
+      const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
+      testTileROIter (pagedArr);
+    }
+    // Check the Iterator with a tiled line cursor.
+    {
+      const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
+      testTiledLineROIter (pagedArr);
     }
     // Check the copy constructor and assignment operator
     {
@@ -1096,7 +1158,7 @@ main ()
 
   try {
     cout << "Creating an ArrayLattice" << endl;
-    const IPosition latticeShape(4, 16, 12, 4, 32);
+    const IPosition latticeShape(4, 16, 12, 2, 32);
     ArrayLattice<Int> refLattice(latticeShape);
     {
       Array<Int> arr(latticeShape);
@@ -1129,6 +1191,16 @@ main ()
     {
       const ArrayLattice<Int> arrLattice(refLattice);
       test8ElemROIter (arrLattice);
+    }
+    // Check the Iterator with a tile cursor.
+    {
+      const ArrayLattice<Int> arrLattice(refLattice);
+      testTileROIter (arrLattice);
+    }
+    // Check the Iterator with a tiled line cursor.
+    {
+      const ArrayLattice<Int> arrLattice(refLattice);
+      testTiledLineROIter (arrLattice);
     }
     // Check the copy constructor and assignment operator
     {
