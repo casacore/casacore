@@ -5701,3 +5701,4 @@
 16 059 src rm trial/implement/MeasurementSets/test/tOldMSRange.cc
 16 059 src rm trial/implement/MeasurementSets/test/tOldMSSelector.cc
 16 064 src mv trial/implement/Tables/CompressFloat.h aips/implement/Tables/CompressFloat.h
+16 064 src mv trial/implement/Tables/CompressFloat.cc aips/implement/Tables/CompressFloat.cc
