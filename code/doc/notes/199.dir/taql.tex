@@ -8,6 +8,7 @@ rows from an arbitrary table based on the contents of its
 columns and keywords. It supports arbitrary complex
 expressions including regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
+Furthermore TaQL has a command to update the data in a subset of a table.
 \\
 The first sections explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
@@ -15,12 +16,39 @@ The Glish interface makes it possible to embed Glish
 variables and expressions in a TaQL command.
 
 \section{Syntax}
-The TaQL syntax is based on SQL. The full command looks like:
+The TaQL syntax is based on SQL. The full SELECT command looks like
 \begin{verbatim}
-SELECT [[DISTINCT] column_list] [INTO table]
-  FROM table_list [WHERE expression]
-  [ORDERBY [DISTINCT] sort_list] [GIVING table|set]
+  SELECT [[DISTINCT] column_list] [INTO table]
+    FROM table_list [WHERE expression]
+    [ORDERBY [DISTINCT] sort_list]
+    [LIMIT expression] [OFFSET expression] [GIVING table|set]
 \end{verbatim}
+It can be used to get an optionally sorted subset from a table.
+\\The full UPDATE command looks like
+\begin{verbatim}
+  UPDATE table_list SET update_list [FROM table_list]
+    [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]
+\end{verbatim}
+It can be used to update data in (a subset of) the first table in the
+table list. 
+\\The full INSERT command looks like
+\begin{verbatim}
+  INSERT INTO table_list [(column_list)] VALUES (expr_list)
+or
+  INSERT INTO table_list [(column_list)] SELECT_command
+\end{verbatim}
+It can be used to add and fill new rows in the first table in the
+table list.
+\\The full DELETE command looks like
+\begin{verbatim}
+  DELETE FROM table_list
+    [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]
+\end{verbatim}
+It can be used to delete some or all rows from the first table
+in the table list.
+\\\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
+UPDATE, INSERT, and DELETE command in more detail.
+
 The square brackets shown are not part of the syntax, but indicate
 that the clauses enclosed in them are optional. The command is
 case-insensitive, but of course case is important in string values and
@@ -143,7 +171,8 @@ The various clauses have the following meaning:
        Like in OQL it is possible to use a
        \htmlref{nested query}{TAQL:SUBQUERIES}
        command in the FROM clause. This is a normal query command
-       enclosed in square brackets. It results in a temporary table
+       enclosed in square brackets or parentheses.
+       It results in a temporary table
        which can thereafter be used as a table in the rest of the
        query command. A shorthand has to be defined for it in order
        to be able to refer to that table.
@@ -226,6 +255,16 @@ The various clauses have the following meaning:
        ORDERBY datetime(col)             incorrect data type
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
+  \item[ LIMIT expression]
+       indicates that up to N rows have to be selected, where N is
+       the result of the expression. 
+       \\\texttt{LIMIT} is applied after \texttt{ORDERBY}, so it is
+       particularly useful in combination with
+       \texttt{ORDERBY} to select, for example, the highest 10 values.
+  \item[ OFFSET expression]
+       indicates that the first N rows of the selection have to be 
+       skipped. As \texttt{LIMIT} it is particularly useful in
+       combination with \texttt{ORDERBY}.
   \item[ \label{TAQL:GIVING}GIVING table$|$set ]
        indicates that the ultimate result of the SELECT command should be
        written to a table (with the given name). This table is a
@@ -248,6 +287,7 @@ The various clauses have the following meaning:
        GIVING clause can only result in a table.
        \\To be compliant with SQL dialects, the word SAVETO can be
        used instead of GIVING. Whitespace can be given between SAVE and TO.
+ 
 \end{description}
 Although the clauses column\_list, WHERE, and ORDERBY are optional,
 at least one of them has to be used. Otherwise no operation is
@@ -768,9 +808,10 @@ character of the column name. E.g. \verb+\+\texttt{1stDay}.
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
-   ALL AND AS ASC DESC DISTINCT FROM GIVING
-   GROUPBY HAVING IN INTO NODUPLICATES NOT
-   OR ORDERBY SAVETO SELECT UNIQUE WHERE
+   ALL AND AS ASC DELETE DESC DISTINCT FROM GIVING
+   GROUPBY HAVING IN INSERT INTO LIMIT NODUPLICATES NOT
+   OFFSET OR ORDERBY SAVETO SELECT SET UNIQUE UPDATE
+   VALUES WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
@@ -887,7 +928,8 @@ consists of one or more values (which
 can be arbitrary expressions) separated by commas and enclosed in
 square brackets. The elements in a set have to be scalars and their
 data types have to be the same. The square brackets can be left out if
-the set consists of only one set element.
+the set consists of only one set element. For SQL compliance
+parentheses can be used instead of square brackets.
 \\An element in a set can, however, be more complicated and can
 define multiple values or an interval. The possible forms of
 a set element are:
@@ -951,7 +993,7 @@ Another form of constructing a set is using a
 \subsection{\label{TAQL:SUBQUERIES}Subqueries}
 As in SQL it is possible to create a set from a subquery. A
 subquery has the same syntax as a main query, but has to be
-enclosed in square brackets. Basically it looks like:
+enclosed in square brackets or parentheses. Basically it looks like:
 \begin{verbatim}
   SELECT FROM maintable WHERE time IN
       [SELECT time FROM othertable WHERE windspeed < 5]
@@ -1146,6 +1188,123 @@ that indexing arrays should be done with care.
 \end{itemize}
 
 
+\section{\label{TAQL:MODIFYING}Modifying a table}
+Usually TaQL will be used to get a subset from a table. However, as
+described in the first sections, it can also be used to change the
+contents of a table using the UPDATE, INSERT, or DELETE command.
+Note that a table has to be writable, otherwise those commands
+exit with an error message.
+
+\subsection{UPDATE}
+\begin{verbatim}
+  UPDATE table_list SET update_list [WHERE ...] [ORDERBY ...]
+                                    [LIMIT ...] [OFFSET ...]
+\end{verbatim}
+updates selected rows in a table.
+\\\texttt{update\_list}
+is a comma-separated list of \texttt{column=expression} parts.
+Each part tells to update the given column using the
+expression. Both scalar and array columns are supported.
+E.g.
+\begin{verbatim}
+  UPDATE vla.ms SET ANTENNA1=ANTENNA1-1, ANTENNA2=ANTENNA2-1
+\end{verbatim}
+to make the antenna numbers zero-based if accidently they were
+written one-based.
+\\If an array gets an array value, the shape of the array can be
+changed (provided it is allowed for that table column).
+Arrays can also be updated with a scalar value causing all elements
+in the array to be set to that scalar value.
+
+It is also possible to update part of an array using
+\htmlref{array indexing}{TAQL:INDEXING}. E.g.
+\begin{verbatim}
+  UPDATE vla.ms SET FLAG[1,1]=T
+  UPDATE vla.ms SET FLAG[1,]=T
+\end{verbatim}
+The first example sets the first element only, while the second
+one sets an entire row in the array. The second example also
+shows that it is possible to set an array to a scalar value.
+
+Type promotion and demotion will be done as much as possible.
+For example, an integer column can get the value of a double
+expression (which will be truncated).
+
+Note that if multiple \texttt{column=expression} parts are given,
+the columns are changed in the order as specified in the update-list.
+It means that if an updated column is used in an expression for
+a later column, the new value is used when evaluating the
+expression. E.g. in
+\begin{verbatim}
+  UPDATE vla.ms SET DATA=DATA+1, SUMD=sum(DATA)
+\end{verbatim}
+the \texttt{SUMD} update uses the new \texttt{DATA} values.
+    
+
+\subsection{INSERT}
+The \texttt{INSERT} command adds rows to the table. It can take two forms:
+\begin{verbatim}
+  INSERT INTO table_list [(column_list)] VALUES (expr_list)
+  INSERT INTO table_list [(column_list)] SELECT_command
+\end{verbatim}
+The first form adds one row to the table and puts the values given in
+the expression list into the columns given into the column list.
+If the column list is not given, it defaults to all stored columns in
+the table in the order as they appear in the table description.
+Each expression in the expression list can be as complex as needed;
+for example, a subquery can also be given. Note that a subquery is
+evaluated before the new row is added, so the new row is not taken
+into account if the subquery is done on the table being modified.
+\\It should be clear that the number of columns has to match the
+number of expressions.
+\\Note that columns in the row not mentioned in the column list,
+are not written, thus will contain rubbish.
+\\The data types of expressions and columns have to match in the same way
+as for the UPDATE command; values have to be promotable or demotable
+to the column data type.
+\\For example:
+\begin{verbatim}
+  INSERT INTO my.ms (ANTENNA1,ANTENNA2) VALUES (0,1)
+\end{verbatim}
+adds one row, puts 0 in ANTENNA1 and 1 in ANTENNA2.
+
+The second form evaluates the SELECT command and copies the rows
+found in the selection to the table being modified (which is given
+in the INTO part).
+The columns used in the modified table are defined in the column list.
+As above, they default to all stored columns. The columns used in the
+selection have to be defined in the SELECT part of the SELECT command.
+They also default to all stored columns.
+\\For example:
+\begin{verbatim}
+  INSERT INTO my.ms select FROM my.ms
+\end{verbatim}
+appends all rows and columns of \texttt{my.ms} to itself.
+Please note that only the original number of rows is copied.
+\begin{verbatim}
+  INSERT INTO my.ms (ANTENNA1,ANTENNA2) select ANTENNA2,ANTENNA1
+   FROM other.ms WHERE ANTENNA1>0
+\end{verbatim}
+copies rows from \texttt{other.ms} where ANTENNA1>0. It swaps the
+values of ANTENNA1 and ANTENNA2. All other columns are not written,
+thus may contain rubbish.
+
+\subsection{DELETE}
+\begin{verbatim}
+  DELETE FROM table_list
+    [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]
+\end{verbatim}
+deletes some or all rows from a table.
+\begin{verbatim}
+  DELETE FROM my.ms WHERE ANTENNA1>13 OR ANTENNA2>13
+\end{verbatim}
+deletes the rows matching the WHERE expression.
+\\If no selection is done, all rows will be deleted.
+\\It is possible to specify more than one table in the FROM clause to
+be able to use, for example, keywords from other tables.
+Rows will be deleted from the first table mentioned in the FROM part.
+
+
 \section{Examples}
 \begin{description}
   \item[] \texttt{ SELECT FROM mytable WHERE column1 $>$ 0 }
@@ -1160,6 +1319,9 @@ that indexing arrays should be done with care.
   \item[] \texttt{ SELECT FROM [SELECT FROM mytable ORDERBY column0 DESC] }
     \\\texttt{ WHERE rownumber()$<=$10 }
     \\selects the 10 highest values of \texttt{column0}.
+
+  \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC LIMIT 10 }
+    \\is a more elegant solution using the newer LIMIT clause.
 
   \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable }
     \\\texttt{ SELECT FROM outtable WHERE rownumber()$<=$10 }
@@ -1255,6 +1417,31 @@ that indexing arrays should be done with care.
       \\The MeasurementSet uses a table to map spectral-window-id to
       data-desc-id. Hence two nested subqueries are needed.
 \end{description}
+
+\subsection{Modification examples}
+\begin{description}
+  \item[] \texttt{ update MY.MS set VIDEO\_POINT=MEANS(DATA,2)
+                   where isdefined(DATA) }
+      \\sets the VIDEO\_POINT of each correlation to the mean of the
+      DATA for that correlation. Note that the 2 indicates averaging over
+      the second axis, thus the frequency axis.
+
+  \item[] \texttt{ update MY.MS set FLAG\_ROW=T where isdefined(FLAG) \&\& all(FLAG)}
+      \\sets FLAG\_ROW in the rows where the entire FLAG array is set.
+
+  \item[] \texttt{ delete from MY.MS where FLAG\_ROW}
+      \\deletes all flagged rows.
+
+  \item[] \texttt{ insert into MY.MS select from OTHER.MS where !FLAG\_ROW}
+      \\copies all unflagged rows from OTHER.MS to MY.MS.
+
+  \item[] \texttt{ insert into MY.MS/DATA\_DESCRIPTION}
+          \texttt{(SPECTRAL\_WINDOW\_ID,POLARIZATION\_ID,FLAG\_ROW)}
+          \texttt{values (1,0,F)}
+      \\adds a row to the DATA\_DESCRIPTION subtable and initializes it.
+                   
+\end{description}
+
 
 \section{\label{TAQL:GLISHC}Interface to TaQL}
 There exists a user and a programmer interface to TaQL.
