@@ -2673,3 +2673,4 @@
 10 014 src mv trial/implement/Measures/MVBaseline.h aips/implement/Measures/MVBaseline.h
 10 014 src mv trial/implement/Measures/MVBaseline.cc aips/implement/Measures/MVBaseline.cc
 10 014 src mv trial/implement/Measures/MCBaseline.cc aips/implement/Measures/MCBaseline.cc
+10 014 src mv trial/implement/Measures/MCBaseline.h aips/implement/Measures/MCBaseline.h
