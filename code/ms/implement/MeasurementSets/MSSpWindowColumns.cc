@@ -29,8 +29,6 @@
 #include <aips/MeasurementSets/NewMSSpectralWindow.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
 
 RONewMSSpWindowColumns::
 RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow):
@@ -359,4 +357,7 @@ attachOptionalCols(NewMSSpectralWindow& msSpWindow)
     NewMSSpectralWindow::columnName(NewMSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
+// Local Variables: 
+// compile-command: "gmake NewMSSpWindowColumns"
+// End: 
 
