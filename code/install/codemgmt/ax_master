@@ -2324,3 +2324,4 @@
 11 199 src mv trial/implement/Display/PCMotionEvent.cc trial/implement/DisplayEvents/PCMotionEvent.cc
 11 199 src mv trial/implement/Display/PCMotionEvent.h trial/implement/DisplayEvents/PCMotionEvent.h
 11 199 src mv trial/implement/Display/PCPositionEH.cc trial/implement/DisplayEvents/PCPositionEH.cc
+11 199 src mv trial/implement/Display/PCPositionEH.h trial/implement/DisplayEvents/PCPositionEH.h
