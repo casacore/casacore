@@ -1,5 +1,5 @@
 //# PagedImage.h: reading, storing and manipulating astronomical images
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,12 +170,6 @@ public:
   // Returns the current Table name. By default this includes the full path. 
   // the path preceding the file name can be stripped off on request.
   virtual String name(const Bool stripPath=False) const;
-
-  // function to change the row number where the PagedImage is stored
-  // PagedImage is given a TableColumn row number at construction time.  
-  // You may change the row number. <note>  This function is intended
-  // for ImageStack use only. </note>
-  void changeRowNumber(uInt rowNum);
 
   // returns the current TableColumn row number 
   uInt rowNumber() const;
