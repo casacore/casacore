@@ -1,0 +1,17 @@
+
+change id: 0025
+ author:   Neil Killeen
+ date:     2000/07/24
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   coordsys
+ type:     Code Documentation
+ category: New
+ summary:  A new tool called 'coordsys' has been added which allows manipulation of a coordinate system
+The coordsys tool can create coordinate systems in isolation.
+Such a tool can also be made by the image.coordsys
+tool function, and reset with image.setcoordsys
+
+the coordsys tool can then be used to manipulate most
+of the contents of the coordinate system
