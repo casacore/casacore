@@ -1,5 +1,5 @@
 //# imhead.cc: List image header
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 #include <trial/Images/ImageSummary.h>
+#include <trial/Images/SubImage.h>
 #include <trial/Images/PagedImage.h>
 #include <aips/Measures/MDoppler.h>
 
@@ -71,11 +72,13 @@ try {
 
    if (imageType==TpFloat) {    
       const PagedImage<Float> inImage(in);
-      ImageSummary<Float> header(inImage);
+      const SubImage<Float> subIm(inImage);
+      ImageSummary<Float> header(subIm);
       header.list(os, type, False);
    } else if (imageType==TpComplex) {    
       const PagedImage<Complex> inImage(in);
-      ImageSummary<Complex> header(inImage);
+      const SubImage<Complex> subIm(inImage);
+      ImageSummary<Complex> header(subIm);
       header.list(os, type, False);
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
