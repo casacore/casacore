@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -871,9 +871,10 @@ template<class T> Bool Array<T>::isStorageContiguous() const
 	return True;
     }
 
-    // If we have increments, we're definitely not contiguous
+    // If we have increments, we're definitely not contiguous (unless the axis
+    // length is one!)
     for (Int i=0; i < nd; i++) {
-	if (inc_p(i) != 1) {
+	if ((inc_p(i) != 1) && (length_p(i) != 1)) {
 	    return False;
 	}
     }
