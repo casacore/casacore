@@ -1,5 +1,5 @@
 //# MVDirection.h: Vector of three direction cosines
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -169,6 +169,8 @@ class MVDirection : public MVPosition {
     virtual MeasValue *clone() const;
 // Generate a 2-vector of angles (in rad)
     Vector<Double> get() const;
+// Produce the cross product
+  MVDirection crossProduct(const MVDirection &other) const;
 
     protected:
 //# Data

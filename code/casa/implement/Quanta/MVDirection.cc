@@ -1,5 +1,5 @@
 //# MVDirection.cc: Vector of three direction cosines
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,6 +195,14 @@ Vector<Double> MVDirection::get() const {
     tmp(1) = asin(xyz(2));
     return tmp;
 }    
+
+MVDirection MVDirection::crossProduct(const MVDirection &other) const {
+  MVDirection res;
+  res(0) = xyz(1)*other(2) - xyz(2)*other(1);
+  res(1) = xyz(2)*other(0) - xyz(0)*other(2);
+  res(2) = xyz(0)*other(1) - xyz(1)*other(0);
+  return res;
+}
 
 MeasValue *MVDirection::clone() const {
     return (new MVDirection(*this));
