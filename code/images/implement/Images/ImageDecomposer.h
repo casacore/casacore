@@ -177,8 +177,6 @@ public:
 
 //Retrieves the target image's value at the given location.
 // <group>
-  T getImageVal(Int x, Int y) const;
-  T getImageVal(Int x, Int y, Int z) const;
   T getImageVal(IPosition coord) const;
 // </group>
 //
@@ -207,6 +205,12 @@ private:
   void correctBlcTrc(IPosition& blc, IPosition& trc) const;
   Bool increment(IPosition& pos, const IPosition& shape) const;
   void decrement(IPosition& pos) const;
+
+//Retrieves the target image's value at the given location.
+// <group>
+  T getImageVal(Int x, Int y) const;
+  T getImageVal(Int x, Int y, Int z) const;
+// </group>
 
 // Returns the component to which the specified cell belongs
 // <group>
