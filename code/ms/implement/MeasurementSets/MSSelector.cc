@@ -1117,24 +1117,24 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   if (wantWeight || average) {
     Matrix<Float> wt(msc.weight().getColumn());  // Is 2D in MSv2
     Int nCorr=wt.shape()(0);
-    IPosition wtsidx(3,nIfr,nCorr,nTime);
+    IPosition wtsidx(3,nCorr,nIfr,nTime);
     if (doIfrAxis) {
       Cube<Float> wts(wtsidx); wts.set(0);
       for (Int i=0; i<nRow; i++) {
         for (Int j=0; j<nCorr; j++) {
-          wts(ifrSlot(i),j,timeSlot(i))=wt(j,i);
+          wts(j, ifrSlot(i),timeSlot(i))=wt(j,i);
         }
       }
       if (wantWeight) {
         if (average) {
           // averaging weights doesn't make sense,
           // return sum of weights instead
-          IPosition sumwtidx(2,nIfr,nCorr);
+          IPosition sumwtidx(2,nCorr,nIfr);
           Matrix<Float> sumwt(sumwtidx); sumwt=0;
           for (Int i=0; i<nIfr; i++) {
             for (int j=0; j<nCorr; j++) {
               for (Int k=0; k<nTime; k++) {
-                sumwt(i,j)+=wts(i,j,k);
+                sumwt(j,i)+=wts(j,i,k);
               }
             }
           }
@@ -1523,10 +1523,10 @@ Bool MSSelector::putData(const GlishRecord& items)
       {
 	Array<Float> weight;
 	if (GlishArray(items.get(i)).get(weight)) {
-	  if (weight.ndim()==2) {
+	  if (weight.ndim()==3) {
 	    reorderWeight(weight);
 	  }
-	  if (weight.ndim()==1) {
+	  if (weight.ndim()==2) {
 	    msc.weight().putColumn(weight);
 	  }
 	}
@@ -1791,26 +1791,32 @@ void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
   flagRow.reference(rowFlag);
 }
 
-// reorder from 2d to 1d (removing ifr axis)
+// reorder from 3d to 2d (removing ifr axis)
 void MSSelector::reorderWeight(Array<Float>& weight)
 {
-  Int nIfr=weight.shape()(0), nTime=weight.shape()(1);
+  Int nCorr=weight.shape()(0), nIfr=weight.shape()(1), nTime=weight.shape()(2);
   Int nRow=selms_p.nrow();
-  Bool deleteWeight, deleteRow;
+  Bool deleteWeight, deleteRow, deleteRowWeight;
   const Float* pWeight=weight.getStorage(deleteWeight);
   const Int* pRow=rowIndex_p.getStorage(deleteRow);
-  Vector<Float> rowWeight(nRow);
+  Matrix<Float> rowWeight(nCorr, nRow);
+  Float* pRowWeight=rowWeight.getStorage(deleteRowWeight);
   Int offset=0;
-  for (Int i=0; i<nTime; i++, offset+=nIfr) {
-    for (Int j=0; j<nIfr; j++) {
-      Int k=pRow[offset+j];
+  for (Int i=0; i<nTime; i++) {
+    for (Int j=0; j<nIfr; j++, offset++) {
+      Int k=pRow[offset];
       if (k>0) {
-	rowWeight(k)=pWeight[offset+j];
+	Int wOffset = nCorr*offset;
+	Int rwOffset = nCorr*k;
+	for (Int c=0; c<nCorr; c++) {
+	  pRowWeight[rwOffset++] = pWeight[wOffset++];
+	}
       }
     }
   }
   weight.freeStorage(pWeight,deleteWeight);
   rowIndex_p.freeStorage(pRow,deleteRow);
+  rowWeight.putStorage(pRowWeight,deleteRowWeight);
   weight.reference(rowWeight);
 }
 
