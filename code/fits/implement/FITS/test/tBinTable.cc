@@ -1,5 +1,5 @@
 //# tBinTable.cc - this program tests the BinTable class
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -89,7 +89,7 @@ main(int argc, char **argv)
 	// This allows for constructed names of the form baseName.table.xx
 	char *tabName = new char[baseName.length() + 10];
 	// construct the FITS input
-	FitsInput infits(inputFilename, FITS::Disk);
+	FitsInput infits(inputFilename.chars(), FITS::Disk);
 	if (infits.err() != FitsIO::OK) {
 	    cout << "Problem instantiating FITS input " << infits.err() << endl;
 	    return 1;
