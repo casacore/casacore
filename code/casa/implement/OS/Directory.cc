@@ -39,11 +39,9 @@
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
 #include <string.h>                 // needed for strerror
-#if defined(AIPS_SOLARIS)
+#if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  include <sys/statvfs.h>          // needed for statvfs
 #  define statfs statvfs
-#elif defined(AIPS_OSF)
-#  include <sys/mount.h>
 #else
 #  include <sys/vfs.h>
 #  if defined(AIPS_IRIX)
@@ -148,9 +146,7 @@ Bool Directory::isEmpty() const
 uLong Directory::freeSpace() const
 {
     struct statfs buf;
-#if defined(AIPS_OSF)
-    if (statfs (itsFile.path().expandedName(), &buf, sizeof(buf)) < 0) {
-#elif defined(AIPS_IRIX)
+#if defined(AIPS_IRIX)
     if (statfs (itsFile.path().expandedName(), &buf, sizeof(buf), 0) < 0) {
 #else
     if (statfs (itsFile.path().expandedName(), &buf) < 0) {
@@ -159,7 +155,7 @@ uLong Directory::freeSpace() const
 			  itsFile.path().expandedName() +
 			  ": " + strerror(errno)));
     }
-#if defined(AIPS_SOLARIS)
+#if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
     //# On Solaris the fragment size usually contains the true block size.
     if (buf.f_frsize > 0) {
 	return buf.f_frsize * buf.f_bavail;
