@@ -2126,3 +2126,4 @@
 08 374 sys rm bin/PWD
 08 374 sys rm bindbg/PWD
 08 393 src rm trial/implement/Display/ColorTables
+08 393 src rm trial/implement/Display/cubesTable.h
