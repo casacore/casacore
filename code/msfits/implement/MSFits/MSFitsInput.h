@@ -1,5 +1,5 @@
 //# MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -232,8 +232,8 @@ protected:
   void fillFeedTable();
 
   // fill the Pointing table (from Field table, all antennas are assumed
-  // to point in the field direction)
-  void fillPointingTable();
+  // to point in the field direction) and possibly the Source table.
+  void fillExtraTables();
 
   // fix up the EPOCH MEASURE_REFERENCE keywords using the value found
   // in the (last) AN table
@@ -265,6 +265,7 @@ private:
   Vector<Double> receptorAngle_p;
   MFrequency::Types freqsys_p;
   Double restfreq_p;
+  Bool addSourceTable_p;
   LogIO itsLog;
 };
 

@@ -1,5 +1,5 @@
 //# MSFitsInput:  uvfits (random group) to MeasurementSet filler
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -85,6 +85,7 @@
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <trial/MeasurementSets/MSTileLayout.h>
+#include <trial/MeasurementSets/MSSourceIndex.h>
 
 // Returns the 0-based position of the key string in the map,
 // which is a list of strings.  Looks for the "Which" occurrance
@@ -176,7 +177,7 @@ void MSPrimaryGroupHolder::detach()
 
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile)
   :infile_p(0),
-   msc_p(0),
+   msc_p(0),addSourceTable_p(False),
    itsLog(LogOrigin("MSFitsInput", "MSFitsInput"))
 {
   // First, lets verify that fitsfile exists and that it appears to be a
@@ -278,7 +279,7 @@ void MSFitsInput::readFitsFile(Int obsType)
     // single source case
     fillFieldTable(nField);
   }
-  fillPointingTable();
+  fillExtraTables();
   fixEpochReferences();
 
   if (!haveAn) {
@@ -560,12 +561,19 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   TableLock lock(TableLock::PermanentLocking);
   MeasurementSet ms(newtab,lock);
 
-  // create all subtables
+  // Set up the subtables for the UVFITS MS
   // we make new tables with 0 rows
   Table::TableOption option=Table::New;
-  // Set up the subtables for the UVFITS MS
-  ms.createDefaultSubtables(option);
- 
+  ms.createDefaultSubtables(option); 
+  // add the optional Source sub table to allow for 
+  // specification of the rest frequency
+  TableDesc sourceTD=MSSource::requiredTableDesc();
+  MSSource::addColumnToDesc(sourceTD, MSSource::REST_FREQUENCY);
+  MSSource::addColumnToDesc(sourceTD, MSSource::SYSVEL);
+  MSSource::addColumnToDesc(sourceTD, MSSource::TRANSITION);
+  SetupNewTable sourceSetup(ms.sourceTableName(),sourceTD,option);
+  ms.rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
+                                Table(sourceSetup,0));
   // update the references to the subtable keywords
   ms.initRefs();
  
@@ -1097,6 +1105,8 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
   Int iFreq = getIndex(coordType_p, "FREQ");
   Int nChan = nPixel_p(iFreq);
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
+  // assume spectral line, make source table to allow restfreq to be entered
+  if (nChan>33) addSourceTable_p=True; 
 
   // fill out the polarization info (only single entry allowed in fits input)
   ms_p.polarization().addRow();
@@ -1183,6 +1193,8 @@ void MSFitsInput::fillSpectralWindowTable()
   Int iFreq = getIndex(coordType_p, "FREQ");
   Int nChan = nPixel_p(iFreq);
   Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
+  // assume spectral line, make source table to allow restfreq to be entered
+  if (nChan>33) addSourceTable_p=True; 
 
   // fill out the polarization info (only single entry allowed in fits input)
   ms_p.polarization().addRow();
@@ -1278,7 +1290,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
       msField.referenceDirMeasCol().put(outRow,nullDir);
       msField.flagRow().put(outRow,True);
     }
-    msField.sourceId().put(fld,-1); // source table not yet filled in
+    msField.sourceId().put(fld,-1); // source table not filled in
     msField.code().put(fld,code(inRow));
     msField.name().put(fld,name(inRow));
     Int numPoly = 0;
@@ -1418,18 +1430,23 @@ void MSFitsInput::fillFeedTable() {
   }
 }
 
-void MSFitsInput::fillPointingTable()
+void MSFitsInput::fillExtraTables()
 {
-  // fill the pointing table
+  // fill the pointing table and possibly the source table
   // run though the main table, find field changes, and add pointing rows
   // as needed by looking up the field info in the field table
+  // If requested also look for new spectralwindows and add source
+  // table entries for each field/spw combination
   Int nrow=ms_p.nrow();
   Int nAnt=ms_p.antenna().nrow();
   Int lastFieldId=-1;
+  Int lastDDId=-1;
   Double lastTime=0;
   Vector<Int> fieldId=msc_p->fieldId().getColumn();
-  for (Int i=0; i<nrow; i++) {
-    if (fieldId(i)!=lastFieldId) {
+  Vector<Int> ddId;
+  if (addSourceTable_p) ddId=msc_p->dataDescId().getColumn();
+    for (Int i=0; i<nrow; i++) {
+    if (fieldId(i)!=lastFieldId || (addSourceTable_p && ddId(i)!=lastDDId)) {
       lastFieldId=fieldId(i);
       if (i>0) lastTime=msc_p->time()(i-1);
       Array<Double> pointingDir = 
@@ -1463,6 +1480,46 @@ void MSFitsInput::fillPointingTable()
 	  msc_p->pointing().target().put(np+j,pointingDir);
 	  msc_p->pointing().tracking().put(np+j,True);
 	}
+      }
+      if (addSourceTable_p) {
+        lastDDId = ddId(i);
+        Int spwId = msc_p->dataDescription().spectralWindowId()(lastDDId);
+        // now check if we've seen this field for this spectral window
+        // Use indexed access to the SOURCE sub-table
+        MSSourceIndex sourceIndex (ms_p.source());
+        sourceIndex.sourceId() = lastFieldId;
+        sourceIndex.spectralWindowId() = spwId;
+        Vector<uInt> rows = sourceIndex.getRowNumbers();
+        if (rows.nelements()==0){
+          ms_p.source().addRow();
+          Int j=ms_p.source().nrow()-1; 
+          MSSourceColumns & mss = msc_p->source();
+          mss.sourceId().put(j,lastFieldId);
+          msc_p->field().sourceId().put(lastFieldId,lastFieldId);
+          mss.name().put(j,name);
+          Matrix<Double> phaseDir = msc_p->field().phaseDir()(lastFieldId);
+          Vector<Double> srcDir=phaseDir.column(0),rate(2);
+          if (phaseDir.ncolumn()>1) rate = phaseDir.column(1);
+          else rate=0.0;
+          mss.direction().put(j,srcDir);
+          mss.properMotion().put(j,rate);
+          mss.time().put(j,time);
+          mss.interval().put(j,DBL_MAX);
+          mss.spectralWindowId().put(j,spwId);
+          Vector<Double> sysVel(1); sysVel(0)=0.;
+          mss.sysvel().put(j,sysVel);
+          mss.numLines().put(j,1);
+          Vector<String> transition(1); transition(0)="";
+          mss.transition().put(j,transition);
+          Vector<Double> restFreqs(1);
+          restFreqs(0)=restfreq_p; 
+          if (restFreqs(0)==0.0) {
+            // put in the reference freq as default for the rest frequency
+            restFreqs(0)=msc_p->spectralWindow().refFrequency()(spwId);
+          }
+          mss.restFrequency().put(j,restFreqs);
+          mss.calibrationGroup().put(j,-1);
+        }
       }
     }
   }
