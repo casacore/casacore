@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,6 @@
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/Slicer.h>
@@ -121,7 +120,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  convertLattice(*itsXfr,psf);
+  itsXfr->copyData(LatticeExpr<Complex>(toComplex(psf)));
   LatticeFFT::cfft2d(*itsXfr, True);
 
   itsScales.resize(0);
@@ -629,7 +628,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
-  convertLattice(dirtyFT, *itsDirty);
+  dirtyFT.copyData(LatticeExpr<Complex>(toComplex(*itsDirty)));
   LatticeFFT::cfft2d(dirtyFT, True);
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
@@ -644,9 +643,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     scaleXfr[scale] = new TempLattice<Complex> (itsScales[scale]->shape(),
 						itsMemoryMB);
     // Now store the XFR
-    // Following doesn't work under egcs
-    //    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
-    convertLattice(*scaleXfr[scale], *itsScales[scale]);
+    scaleXfr[scale]->copyData(LatticeExpr<Complex>(toComplex(*itsScales[scale])));
 
     // Now FFT
     LatticeFFT::cfft2d(*scaleXfr[scale], True);
