@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Images/ImageInterface.h>
@@ -36,18 +37,27 @@
 #include <trial/Lattices/ArrLatticeIter.h>
 
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/Stokes.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/Assert.h>
 
-SkyComponent::~SkyComponent() {}
+SkyComponent::
+~SkyComponent()
+{
+};
 
-void SkyComponent::operator()(ImageInterface<Float> & image) const {
+void SkyComponent::
+operator()(ImageInterface<Float> & image) const {
   const CoordinateSystem coords = image.coordinates();
   const IPosition imageShape = image.shape();
   const uInt naxis = imageShape.nelements();
@@ -78,9 +88,8 @@ void SkyComponent::operator()(ImageInterface<Float> & image) const {
     if (polAxis >= 0) {
       AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
     } 
-    else {
+    else
       AlwaysAssert(nStokes == 1, AipsError);
-    }
     for (uInt i = 0; i < nStokes; i++)
       AlwaysAssert(stokes(i) == Stokes::I || stokes(i) == Stokes::Q ||
 		   stokes(i) == Stokes::U || stokes(i) == Stokes::V, AipsError)
@@ -140,7 +149,7 @@ void SkyComponent::operator()(ImageInterface<Float> & image) const {
 	 if (axis >= 0)
 	   pixelCoord(k) = elementIter.position()(axis);
        }
-       AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True,AipsError);
+       AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True, AipsError);
        dirVal(0).setValue(worldCoord(0));
        dirVal(1).setValue(worldCoord(1));
        pixelDir.set(MVDirection(dirVal));
@@ -148,47 +157,48 @@ void SkyComponent::operator()(ImageInterface<Float> & image) const {
        if ((polAxis == -1) || (nStokes == 1)){
 	 switch (stokes(0)) {
 	 case Stokes::I:
-	   elementIter.cursor() = pixelVal(0); break;
+	   elementIter.cursor() += pixelVal(0); break;
 	 case Stokes::Q:
-	   elementIter.cursor() = pixelVal(1); break;
+	   elementIter.cursor() += pixelVal(1); break;
 	 case Stokes::U:
-	   elementIter.cursor() = pixelVal(2); break;
+	   elementIter.cursor() += pixelVal(2); break;
 	 case Stokes::V:
-	   elementIter.cursor() = pixelVal(3); break;
+	   elementIter.cursor() += pixelVal(3); break;
 	 }
        }
        else if (elementShape.nelements() == nStokes)
 	 for (uInt p = 0; p < nStokes; p++) {
 	   switch (stokes(p)) {
 	   case Stokes::I:
-	     elementIter.cursor()(blc[p]) = pixelVal(0); break;
+	     elementIter.cursor()(blc[p]) += pixelVal(0); break;
 	   case Stokes::Q:
-	     elementIter.cursor()(blc[p]) = pixelVal(1); break;
+	     elementIter.cursor()(blc[p]) += pixelVal(1); break;
 	   case Stokes::U:
-	     elementIter.cursor()(blc[p]) = pixelVal(2); break;
+	     elementIter.cursor()(blc[p]) += pixelVal(2); break;
 	   case Stokes::V:
-	     elementIter.cursor()(blc[p]) = pixelVal(3); break;
+	     elementIter.cursor()(blc[p]) += pixelVal(3); break;
 	   }
 	 }
        else
 	 for (uInt p = 0; p < nStokes; p++) {
 	   switch (stokes(p)) {
 	   case Stokes::I:
-	     elementIter.cursor()(blc[p], trc[p]) = pixelVal(0); break;
+	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(0); break;
 	   case Stokes::Q:
-	     elementIter.cursor()(blc[p], trc[p]) = pixelVal(1); break;
+	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(1); break;
 	   case Stokes::U:
-	     elementIter.cursor()(blc[p], trc[p]) = pixelVal(2); break;
+	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(2); break;
 	   case Stokes::V:
-	     elementIter.cursor()(blc[p], trc[p]) = pixelVal(3); break;
+	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(3); break;
 	   }
 	 }
      }
    }
-}
+};
 
-void SkyComponent::operator()(ImageInterface<Float>& image, 
-			      const ImageInterface<Float>& psf) const {
+void SkyComponent::
+operator()(ImageInterface<Float> & image, 
+	   const ImageInterface<Float> & psf) const {
   operator()(image);
   // Start up a convolver and convolve the image with the psf.  Currently
   // the image and the psf should have the same co-ordinate spacings (This
@@ -213,22 +223,20 @@ void SkyComponent::operator()(ImageInterface<Float>& image,
   // To avoid using too much memory I will not use the internal iterator
   // of the convolver class and will iterate through the image using a
   // latticeIterator
-//   LatticeIterator<Float> iter(image, convShape); 
-//   for (iter.reset(); !iter.atEnd(); iter++) {
-//     Array<Float> section(iter.cursor());
-//     convolver.linearConv(section, section);
-//   }
-}
+  LatticeIterator<Float> iter(image, convShape); 
+  for (iter.reset(); !iter.atEnd(); iter++) {
+     convolver.linearConv(iter.cursor(), iter.cursor());
+  }
+};
 
-Vector<StokesVector> SkyComponent::operator()(const Vector<MDirection> &
-					     samplePos) const
-{
+Vector<StokesVector> SkyComponent::
+operator()(const Vector<MDirection> & samplePos) const {
   uInt nsamples = samplePos.nelements();
   Vector<StokesVector> results(nsamples);
   for (uInt i = 0; i < nsamples; i++)
     results(i) = this->operator()(samplePos(i));
   return results;
-}
+};
 
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"
