@@ -3175,3 +3175,9 @@
 13 035 sys rm libexec/jen_include.g
 13 035 sys rm libexec/jen_util.g
 13 035 sys rm libexec/jen_math.g
+13 035 src rm nfra/apps/tms/dsbrowser.g
+13 035 src rm nfra/apps/tms/logbrowser.g
+13 035 src rm nfra/apps/tms/msbrowser.g
+13 035 src rm nfra/apps/tms/obsbrowser.g
+13 035 src rm nfra/apps/tms/resbrowser.g
+13 035 src rm nfra/apps/tms/tmstools.g
