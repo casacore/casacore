@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,6 +63,7 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 	      " - Negative shape"));
 	}
     }
+    makeIndexingConstants();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -87,6 +88,7 @@ template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
 	      " - Negative shape"));
 	}
     }
+    makeIndexingConstants();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -100,6 +102,7 @@ template<class T> Array<T>::Array(const Array<T> &other)
   length_p (other.length_p),
   inc_p    (other.inc_p),
   originalLength_p(other.originalLength_p),
+  steps_p  (other.steps_p),
   begin_p  (other.begin_p),
   contiguous_p (other.contiguous_p)
 {
@@ -152,10 +155,12 @@ template<class T> void Array<T>::reference(Array<T> &other)
     length_p.resize (ndimen_p);
     length_p = other.length_p;
     nels_p   = other.nels_p;
-    originalLength_p.resize (ndimen_p);
-    originalLength_p = other.originalLength_p;
     inc_p.resize (ndimen_p);
     inc_p    = other.inc_p;
+    originalLength_p.resize (ndimen_p);
+    originalLength_p = other.originalLength_p;
+    steps_p.resize (ndimen_p);
+    steps_p  = other.steps_p;
     data_p   = other.data_p;
     begin_p  = other.begin_p;
     contiguous_p = other.contiguous_p;
@@ -437,12 +442,12 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	throw(ArrayConformanceError("Array<T>::reform() - "
 				    "total elements differ"));
     }
-    // When the new shape equals the current one, simply return a copy.
+    // If the new shape equals the current one, simply return a copy.
     if (len.isEqual (length_p)) {
 	return *this;
     }
     uInt newNdim = len.nelements();
-    // When the data is contiguous, a reform can simply be done
+    // If the data is contiguous, a reform can simply be done
     // by making a copy of the array and inserting the new shape.
     if (contiguousStorage()) {
 	Array<T> tmp(*this);
@@ -453,6 +458,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	tmp.inc_p = 1;
 	tmp.originalLength_p.resize (newNdim);
 	tmp.originalLength_p = tmp.length_p;
+	tmp.makeIndexingConstants();
 	return tmp;
     }
     // A reform of a non-contiguous array has to be done.
@@ -511,6 +517,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	    startAxis = copyAxes(i) + 1;
 	}
     }
+    tmp.makeIndexingConstants();
     return tmp;
 }
 
@@ -601,35 +608,37 @@ void Array<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 	inc_p(0) = other.inc_p(0);
 	originalLength_p.resize(1, False);
 	originalLength_p(0) = other.originalLength_p(0);
-	return;        // early exit - special case
-    }
+    } else {
     
-    ndimen_p = count;
-    length_p.resize(count, False);
-    inc_p.resize(count, False);
-    originalLength_p.resize(count, False);
-    // Maybe we have no axes to remove
-    if (count == other.ndim()){
-	length_p = other.length_p;
-	originalLength_p = other.originalLength_p;
-	inc_p = other.inc_p;
-	return;
-    }
+        ndimen_p = count;
+	length_p.resize(count, False);
+	inc_p.resize(count, False);
+	originalLength_p.resize(count, False);
+	// Maybe we have no axes to remove
+	if (count == other.ndim()){
+	    length_p = other.length_p;
+	    originalLength_p = other.originalLength_p;
+	    inc_p = other.inc_p;
+	} else {
     
-    // OK, we have some axes to remove
-    uInt skippedVolume = 1;
-    count=0;
-    for (i=0; i<nd; i++) {
-	if (keepAxes(i) == 1) {
-	    length_p(count) = other.length_p(i);
-	    originalLength_p(count) = skippedVolume*other.originalLength_p(i);
-	    inc_p(count) = skippedVolume*other.inc_p(i);
-	    skippedVolume = 1;
-	    count++;
-	}else{
-	    skippedVolume *= other.originalLength_p(i);
+	    // OK, we have some axes to remove
+	    uInt skippedVolume = 1;
+	    count=0;
+	    for (i=0; i<nd; i++) {
+	      if (keepAxes(i) == 1) {
+		length_p(count) = other.length_p(i);
+		originalLength_p(count) = 
+		  skippedVolume*other.originalLength_p(i);
+		inc_p(count) = skippedVolume*other.inc_p(i);
+		skippedVolume = 1;
+		count++;
+	      }else{
+		skippedVolume *= other.originalLength_p(i);
+	      }
+	    }
 	}
     }
+    makeIndexingConstants();
 }
 
 template<class T>
@@ -669,6 +678,7 @@ Array<T> Array<T>::addDegenerate(uInt numAxes)
     tmp.inc_p = newInc;
     tmp.originalLength_p.resize (newDim);
     tmp.originalLength_p = newOriginal;
+    tmp.makeIndexingConstants();
     return tmp;
 }
 
@@ -729,19 +739,27 @@ template<class T> T &Array<T>::operator()(const IPosition &index)
     if (aips_debug) {
 	validateIndex(index);
     }
-    uInt i = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-			      inc_p.storage(), index);
-    return begin_p[i];
+    ///uInt offs = ArrayIndexOffset(ndim(), originalLength_p.storage(),
+    ///			 inc_p.storage(), index);
+    Int offs=0;
+    for (uInt i=0; i<ndimen_p; i++) {
+        offs += index(i) * steps_p(i);
+    }
+    return begin_p[offs];
 }
 
 template<class T> const T &Array<T>::operator()(const IPosition &index) const
 {
     DebugAssert(ok(), ArrayError);
 
-    uInt i = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-			      inc_p.storage(), index);
+    ///uInt i = ArrayIndexOffset(ndim(), originalLength_p.storage(),
+    ///		      inc_p.storage(), index);
+    Int offs=0;
+    for (uInt i=0; i<ndimen_p; i++) {
+        offs += index(i) * steps_p(i);
+    }
 
-    return begin_p[i];
+    return begin_p[offs];
 }
 
 // <thrown>
@@ -767,9 +785,13 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
 	}
     }
     Array<T> tmp(*this);
-    Int offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-				  inc_p.storage(), b);
-    tmp.begin_p += offset;
+    Int offs=0;
+    for (j=0; j<ndimen_p; j++) {
+        offs += b(j) * steps_p(j);
+    }
+    ///Int offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
+    ///				  inc_p.storage(), b);
+    tmp.begin_p += offs;
     for (j=0; j < ndim(); j++) {
 	tmp.inc_p(j) *= i(j);
 	tmp.length_p(j) = (e(j) - b(j) + i(j))/i(j);
@@ -904,6 +926,18 @@ template<class T> Bool Array<T>::isStorageContiguous() const
     }
     // If we've made it here, we are contiguous!
     return True;
+}
+
+template<class T> void Array<T>::makeIndexingConstants()
+{
+    // No Assert since the Array often isn't constructed yet when
+    // calling this
+    steps_p.resize (ndimen_p);
+    Int size = 1;
+    for (uInt i=0; i<inc_p.nelements(); i++) {
+        steps_p(i) = inc_p(i) * size;
+	size *= originalLength_p(i);
+    }
 }
 
 template<class T> uInt Array<T>::nrefs() const
@@ -1097,6 +1131,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
     begin_p  = data_p->storage();
     nels_p   = new_nels;
     ndimen_p = new_ndimen;
+    makeIndexingConstants();
     // Call OK at the end rather than the beginning since this might
     // be called from a constructor.
     DebugAssert(ok(), ArrayError);
