@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -287,7 +287,7 @@ void Aipsrc::save(const String keyword, const String val) {
   } else if (filo.exists()) {
     filo.remove();
   };
-  ofstream ostr(filn, ios::out);
+  ofstream ostr(filn.chars(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   ostr << keyword << ":	" << val << endl;
@@ -300,7 +300,7 @@ void Aipsrc::save(const String keyword, const String val) {
     String editBuf;		// edit line buffer
     Int editCnt = 0;		// count for edits
     String kwt = keyword + ":";  // keyword test
-    ifstream istr(filno, ios::in );
+    ifstream istr(filno.chars(), ios::in );
     while (istr.getline(buf, 8192)) {
       buffer = buf;
       if (editSeen) {
@@ -391,7 +391,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     //   Ok now if we have a filename let's see if we can open it
     File fil(keywordFile[nfile]);
     if (fil.exists()) {
-      ifstream fileAipsrc(keywordFile[nfile], ios::in);
+      ifstream fileAipsrc(keywordFile[nfile].chars(), ios::in);
       String buffer;
       String keyword;
       String value;
@@ -489,7 +489,7 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
   } else if (filo.exists()) {
     filo.remove();
   };
-  ofstream ostr(fnam, ios::out);
+  ofstream ostr(fnam.chars(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   for (Int i=namlst.nelements()-1; i>=0; i--) {
