@@ -1,5 +1,5 @@
 //# Quantum.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 #include <aips/Quanta/MUString.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :

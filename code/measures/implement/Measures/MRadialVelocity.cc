@@ -1,5 +1,5 @@
 //# MRadialVelocity.cc: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Measures/MRadialVelocity.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MeasConvert.h>

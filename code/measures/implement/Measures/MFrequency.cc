@@ -1,5 +1,5 @@
 //# MFrequency.cc: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MeasConvert.h>

@@ -29,7 +29,7 @@
 #include <aips/Exceptions.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Measures/MDirection.h>
 
 //# Constructors

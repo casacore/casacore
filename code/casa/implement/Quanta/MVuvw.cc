@@ -30,7 +30,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
 #include <aips/Quanta/UnitVal.h>

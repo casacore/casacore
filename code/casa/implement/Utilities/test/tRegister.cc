@@ -1,5 +1,5 @@
 //# tRegister.cc: This program tests the Register class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <iostream.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include "tRegister.h"
 
 main() {

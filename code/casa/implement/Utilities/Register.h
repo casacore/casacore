@@ -1,5 +1,5 @@
 //# Register.h: Templated function to provide simple type identification
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,22 +57,17 @@
 //          <em>multiple inheritance</em>, but <b>ONLY</b> for 
 //          <em>single inheritance</em>. In addition, the type <em>number</em>
 //          which is returned is <b>NOT</b> unique across program executions.
-//          If you require a type which is unique across multiple executions,
-//          there is also a 
-//          <linkto file=Typeinfo.h#typeinfo>more robust RTTI mechanism</linkto>
-//          available.
 //    </note>
 //
 //    This RTTI mechanism is simple, it does not require extra functions to be
 //    added to the classes which are to be <em>identified</em>, and it is 
 //    similar to the RTTI mechanism which will be a part of the C++ language
-//    in the future. For an implementation of RTTI which goes beyond the
-//    future C++ standard see <linkto file=Typeinfo.h#typeinfo>Typeinfo.h</linkto>.
+//    in the future.
 //
 //    To be useful, however, this mechanism must be used as part of the
 //    implementation of a <em>virtual</em> member function. For example:
 //    <srcblock>
-//    #include <aips/RTTI/Register.h>
+//    #include <aips/Utilities/Register.h>
 //    #include <iostream.h>
 //    
 //    class foo { public: virtual uInt type() { return Register(this);}};
@@ -97,8 +92,8 @@
 // <motivation>
 //      Needed a simple type identification mechanism for the
 //      <linkto class=Notice>Notice</linkto> class. This was necessary so that
-//      multiple notices could be distinguished, without the extra hassle of
-//      using a <linkto file=Typeinfo.h#typeinfo>more robust RTTI mechanism</linkto>.
+//      multiple notices could be distinguished.
+//      It can be replaced by the future standard RTTI.
 // </motivation>
 //
 // <templating arg=t>

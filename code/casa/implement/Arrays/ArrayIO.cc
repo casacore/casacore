@@ -36,7 +36,7 @@
 #include <aips/IO/AipsIOCarray.h>
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>           // needed for internal IO

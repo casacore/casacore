@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Quanta/MVDouble.h>
 #include <aips/Mathematics/Math.h>
 

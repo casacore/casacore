@@ -1,5 +1,5 @@
 //# Register.cc: Templated function to provide simple type identification
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 
 template<class t> uInt Register(const t *) {
   static uInt type = 0;

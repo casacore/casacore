@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Exceptions/Error.h>
-#include <aips/RTTI/Register.h>
+#include <aips/Utilities/Register.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
