@@ -1965,3 +1965,5 @@
 08 068 src rm nrao/gbt/analysis/sp/makefile
 08 068 src rm nrao/gbt/analysis/sp
 08 068 src rm nrao/gbt/analysis/makefile
+08 068 src rm nrao/gbt/analysis/makefile
+08 068 src rm nrao/gbt/analysis
