@@ -2213,3 +2213,4 @@
 09 124 src mv trial/implement/Tasking/AipsrcValue.cc aips/implement/Tasking/AipsrcValue.cc
 09 124 src mv trial/implement/Tasking/AipsrcVector.h aips/implement/Tasking/AipsrcVector.h
 09 124 src mv trial/implement/Tasking/test/tAipsrcValue.cc aips/implement/Tasking/test/tAipsrcValue.c
+09 124 src mv trial/implement/Tasking/test/templates aips/implement/Tasking/test/templates
