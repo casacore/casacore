@@ -32,8 +32,11 @@
 #include <aips/Logging.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageSummary.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/FITSImage.h>
+#include <trial/Images/MIRIADImage.h>
 #include <aips/Measures/MDoppler.h>
 
 
@@ -59,33 +62,43 @@ try {
       cout << "You must specify the image file name" << endl;
       return 1;
    }
-   DataType imageType = imagePixelType(in);
+
    LogOrigin or("imhead", "main()", WHERE);
    LogIO os(or);
 
 // Parse velocity type
 
-   MDoppler::Types type;
-   Bool ok = MDoppler::getType(type, velocityType);
+   MDoppler::Types doppler;
+   Bool ok = MDoppler::getType(doppler, velocityType);
    if (!ok) {
      os << "Invalid velocity type, using RADIO" << endl;
-      type = MDoppler::RADIO;
+     doppler = MDoppler::RADIO;
    }     
-
-   if (imageType==TpFloat) {    
-      const PagedImage<Float> inImage(in);
-      ImageSummary<Float> header(inImage);
-      header.list(os, type);
-//   } else if (imageType==TpComplex) {    
-//      const PagedImage<Complex> inImage(in);
-//      ImageSummary<Complex> header(inImage);
-//      header.list(os, type);
+//
+   ImageUtilities::ImageTypes imageType = ImageUtilities::imageType(in);
+   if (imageType==ImageUtilities::AIPSPP) {
+      DataType pixelType = imagePixelType(in);
+      if (pixelType==TpFloat) {    
+         PagedImage<Float> im(in);
+         ImageSummary<Float> header(im);
+         header.list(os, doppler);
+      } else {
+         os << "Float images only" << LogIO::EXCEPTION;
+      }
+   } else if (imageType==ImageUtilities::FITS) {
+      FITSImage im(in);
+      ImageSummary<Float> header(im);
+      header.list(os, doppler);
+   } else if (imageType==ImageUtilities::MIRIAD) {  
+      MIRIADImage im(in);
+      ImageSummary<Float> header(im);
+      header.list(os, doppler);
    } else {
-      cout << "images of type " << imageType << " not yet supported" << endl;
+     os << "Unrecognized image type" << LogIO::EXCEPTION;
    }
-}
 
-  catch (AipsError x) {
+
+  } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;
   } 
