@@ -74,7 +74,7 @@
      ;;
   *)
      cp $0 $0-
-     exec sh -x $0- $*
+     exec $0- $*
      ;;
   esac
 
