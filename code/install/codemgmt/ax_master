@@ -3193,3 +3193,4 @@
 13 054 sys rm libexec/dish_defaults.g
 13 056 src rm doc/newsletters/sept99/sept99news.ps
 13 056 src rm doc/newsletters/sept99/sept99news.ps
+13 057 src mv trial/implement/Measures/MyDummy.h aips/implement/Measures/MyDummy.h
