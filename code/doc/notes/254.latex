@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 254 -- Multi-IF, FEED, BANK Implementation for the GBT}
+
+\author{J. McMullin, R. Garwood, J. Braatz}
+
+\date{17 January 2003}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A (gzipped) postscript version of this note is available (21kB).}{../254.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{multix.latex}
+\end{document}
