@@ -353,6 +353,21 @@ void ComponentList::setSpectrum(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
+void ComponentList::setSpectrumParms(const Vector<Int> & which,
+				     const SpectralModel & newSpectrum) {
+  uInt c;
+  MFrequency oldFreq;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    SkyComponent & comp = component(c);
+    oldFreq = comp.spectrum().refFrequency();
+    component(c).setSpectrum(newSpectrum);
+    comp.spectrum().setRefFrequency(oldFreq);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
@@ -406,7 +421,7 @@ ComponentList ComponentList::copy() const {
 
 void ComponentList::sort(ComponentList::SortCriteria criteria) {
   Block<Double> val(nelements());
-  Sort::Order order;
+  Sort::Order order = Sort::Ascending;
   Bool doSort = True;
   switch (criteria) {
   case ComponentList::FLUX: {

@@ -301,6 +301,16 @@ public:
   void setSpectrum(const Vector<Int> & which,
 		   const SpectralModel & newSpectrum);
 
+  // set the spectrum on the specified components to the specified one. However
+  // this function unlike the previous one does not change the reference
+  // frequency to the one specified in the newSpectrum object.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setSpectrumParms(const Vector<Int> & which,
+			const SpectralModel & newSpectrum);
+
   // returns a reference to the specified element in the list.
   // <thrown>
   // <li> AipsError - If the list is associated with a table that was opened
