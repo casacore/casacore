@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Wnbt/SpectralElement.h>
+#include <trial/Wnbt/SpectralList.h>
 
 //# Forward Declarations
 template <class T> class Vector;
@@ -56,7 +57,9 @@ template <class T> class Vector;
 // <synopsis>
 // The SpectralEstimate class obtains an initial guess for spectral
 // components. The current implementation uses the entire 
-// profile as signal region.  The second derivative of
+// profile as signal region, or can set a window to be searched around
+// the highest peak automatically. A window can also be set manually.
+// The second derivative of
 // the profile in the signal region is calculated by fitting
 // a second degree polynomal. The smoothing parameter Q
 // determines the number of points used for this (=2*Q+1).
@@ -87,18 +90,26 @@ template <class T> class Vector;
 
 class SpectralEstimate {
  public:
-
+  //# Constants
+  // Default maximum number of components to be found
+  static const uInt MAXPAR = 200;
   //# Enumerations
   //# Friends
 
   //# Constructors
-  // Default constructor creates a default estimator
-  SpectralEstimate();
+  // Default constructor creates a default estimator (default max number
+  // of components to be found is 200) with the given maximum number
+  // of components that will be found. A value of zero will indicate
+  // an unlimited number.
+  explicit SpectralEstimate(const uInt maxpar=MAXPAR);
+  // Create an estimator with the given maximum number of possible
+  // elements. A value
   // Construct with a given rms in profiles, a cutoff for amplitudes
-  // found, and a minimum width. All default to 0.0.
+  // found, and a minimum width. Cutoff and minsigma default to 0.0, maximum
+  // size of list produced to 200.
   explicit SpectralEstimate(const Double rms,
-			    const Double cutoff=0.0,
-			    const Double minsigma=0.0);
+			    const Double cutoff=0.0, const Double minsigma=0.0,
+			    const uInt maxpar=MAXPAR);
   // Copy constructor (deep copy)
   SpectralEstimate(const SpectralEstimate &other);
 
@@ -108,24 +119,13 @@ class SpectralEstimate {
 
   //# Member functions
   // Generate the estimates for a profile and return the 
-  // number found.  The der pointer is
+  // list found.  The der pointer is
   // meant for debugging, and can return the derivative profile.
-  uInt estimate(const Vector<Float> &prof, Vector<Float> *der = 0);
+  const SpectralList &estimate(const Vector<Float> &prof,
+			       Vector<Float> *der = 0);
 
-  // Return the number of estimates found. 0 if <src>estimates</src>
-  // not yet called.
-  uInt getNElements() const {return npar_p;};
-
-  // Get the data for the n-th element
-  const SpectralElement element(uInt which) const;
-
-  // Get the estimated profile values for all estimates found. The evaluation
-  // is for the length of the given <src>prof</src>, assuming the same
-  // start value as the input profiles for the estimates
-  void evaluate(Vector<Float> &prof) const;
-  // Get the residual after subtracting of estimates found in <src>prof</src>
-  // <src>prof</src> is supposed to contain the original data
-  void residual(Vector<Float> &prof) const;
+  // Return the list found.
+  const SpectralList &list() const {return slist_p; };
 
   // Set estimation parameters
   // <group>
@@ -142,7 +142,7 @@ class SpectralEstimate {
   // Default is False, meaning the full profile.
   void setWindowing(const Bool win=False);
   // Set the maximum number of estimates to find (forced to >=1; 200 default)
-  void setMaxN(const uInt maxpar=200);
+  void setMaxN(const uInt maxpar=MAXPAR);
   // </group>
 
   //#Destructor
@@ -171,29 +171,20 @@ class SpectralEstimate {
   // </group>
   // The minimum gaussian width
   Double sigmin_p;
-  // Maximum number of parameters to find
-  Int maxpar_p;
   // The second derivatives
   Double *deriv_p;
   // The list of components
-  SpectralElement *pars_p;
-  // The number of components found
-  Int npar_p;
+  SpectralList slist_p;
   // The length of the current profile being estimated
   uInt lprof_p;
 
   //# Member functions
-  // Compare two elements
-  Int compar(const SpectralElement &p1,
-	     const SpectralElement &p2);
-  // Sort the element list
-  void sort();
   // Get the window or the total spectrum
   uInt window(const Vector<Float> &prof);
   // Get the second derivatives
   void findc2(const Vector<Float> &prof);
   // Find the Gaussians
-  Int findga(const Vector<Float> &prof);
+  void findga(const Vector<Float> &prof);
 };
 
 #endif
