@@ -598,7 +598,7 @@ ifeq "$(C++FLAGS)" "alt1"
    override CPPFLAGS = $(CPPOPT) $(EXTRA_CPPFLAGS)
    PGMRBIND := $(wildcard $(PGMRARCH)/bin)
    PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
-   override C++FLAGS = $(C++OPT)
+   override C++FLAGS = $(C++OPT) $(EXTRA_C++FLAGS)
 else
    ifdef OPT
       C++FLAGS = $(C++OPT) $(EXTRA_C++FLAGS)
@@ -606,9 +606,6 @@ else
       C++FLAGS = $(C++DBG) $(EXTRA_C++FLAGS)
    endif
 endif
-
-# Extra compiler flags.
-C++FLAGS += $(EXTRA_C++FLAGS)
 
 # FORTRAN compiler flags for programmer compilations.
 ifdef OPT
