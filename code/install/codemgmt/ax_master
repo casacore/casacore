@@ -4825,3 +4825,4 @@
 14 316 src rm trial/apps/dish/dishdemodata.g
 14 316 sys rm libexec/dishdemodata.g
 14 316 src rm trial/apps/dish/dishdemodata.help
+14 316 src rm trial/apps/dish/dishentries.g
