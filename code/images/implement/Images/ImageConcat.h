@@ -118,10 +118,8 @@ template <class T> class ImageSummary;
 // </motivation>
 
 // <todo asof="1999/09/23">
-//   <li> Allow concatenation of a MaskedLattice to an ImageInterface
 //   <li> Offer the ability to increase the dimensionality of
 //        the output image
-//   <li> Helper function dealing with input image file names.
 //   <li> This class is probably better to be derived from ImageInterface
 //        like the LEL classes.    Then it would contain a LatticeConcat
 //        object instead of deriving from it
