@@ -65,8 +65,8 @@ void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
 			       0.0, 0.0, // Ref is at RA = 0, Dec = 0
 			       1.0, 1.0, // The increment is overwritten below
 			       xform,    // Rotation matrix
-			       0.0, 0.0  // Ref pixel is 0,0
-			       );
+			       0.0, 0.0, // Ref pixel is 0,0
+			       999.0, 999.0);
   // reset the increment to 1 minute of arc on both axes
   Vector<String> units(2); units = String("'"); 
   Vector<Double> inc(2); inc(0) = -1.0; inc(1) = 1.0;
