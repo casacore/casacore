@@ -190,10 +190,11 @@ void VisBuffer::freqAverage()
   Matrix<Bool> newFlag(1,nRow()); newFlag=True;
   Double newFrequency; newFrequency=0;
   Int nfreq=0;
+  Int nChan=nChannel();
   for (Int row=0; row<nRow(); row++) {
     if (!flagRow()(row)) {
       Int n=0;
-      for (Int chn=0; chn<nChannel(); chn++) {
+      for (Int chn=0; chn<nChan; chn++) {
 	if (!flag()(chn,row)) {
 	  newVisibility(0,row)+=visibility()(chn,row);
 	  newFlag(0,row)=False;
