@@ -228,7 +228,7 @@ public:
   // </group>
 
 // Determine the median of the given lattice by making successive histograms.
-// When <src>smallsize<src> elements are left, an in-memory algorithm
+// When <src>smallsize</src> elements are left, an in-memory algorithm
 // will be used to finish.
 // The number of passes made over the data is undetermined, but
 // a typical number is 2 passes.
