@@ -32,11 +32,13 @@
 #pragma implementation ("LatticeIterator.cc")
 #endif 
 
+//# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeIterInterface.h>
 #include <aips/Utilities/CountedPtr.h>
 
+//# Forward Declarations
 class IPosition;
 class LatticeNavigator;
 template <class T> class Array;
@@ -44,25 +46,28 @@ template <class T> class Cube;
 template <class T> class Matrix;
 template <class T> class Vector;
 
-// <summary> a read-only iterator for Lattices </summary>
-//
+
+// <summary>
+// A read-only iterator for Lattices
+// </summary>
+
 // <use visibility=export>
-//
+
 // <reviewed reviewer="" date="" tests="tPagedArrIter.cc">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class="Lattice">Lattice</linkto>
 //   <li> <linkto class="LatticeNavigator">LatticeNavigator</linkto>
 //   <li> <linkto class="Array">Array</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // The leading "RO" is shorthand for "read-only", which indicates that 
 // RO_LatticeIterator's are used for traversing Lattices, examining and 
 // possibly extracting their contents, but not for modifying them. 
 // </etymology>
-//
+
 // <synopsis> 
 // This class provides a convenient way to traverse any class derived from
 // Lattice. You can iterate through the Lattice's data from "start" to "end"
@@ -118,7 +123,7 @@ template <class T> class Vector;
 // The <src>pagedArray</src> constructor argument names a PagedArray object,
 // which is what the iterator will traverse.  The <src>stepper</src>
 // argument is a LatticeStepper which defines the method of iteration.
-//
+
 // <example>
 // When passed the name of a previously-created PagedArray stored on disk,
 // this function will traverse the whole array, and report the average value
@@ -159,7 +164,7 @@ template <class T> class Vector;
 // }
 // </srcblock>
 // </example>
-//
+
 // <motivation>
 // Iterator classes are a standard feature in C++ libraries -- they
 // provide convenience and allow the implementation of the "iteratee"
@@ -170,32 +175,40 @@ template <class T> class Vector;
 //  <li> IPositions are returned by value.  This a reflection of the 
 //       LatticeIterInterface base class' inability to predict the
 //       availibility of data members for references.
-//  <li> a common base class to RO_LatticeIterator and LatticeIterator
-//       could reduce the implementation size.
 // </todo>
+
 
 template <class T> class RO_LatticeIterator
 {
 public:
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  RO_LatticeIterator(const Lattice<T> & data, const LatticeNavigator & method);
+  RO_LatticeIterator (const Lattice<T>& data, const LatticeNavigator& method);
 
   // Iterate through the data with a LatticeStepper that has uses the
   // supplied cursorShape.
-  RO_LatticeIterator(const Lattice<T> & data, const IPosition & cursorShape);  
+  RO_LatticeIterator (const Lattice<T>& data, const IPosition& cursorShape);  
 
-  // The copy constructor uses reference sematics (ie. a real copy is NOT
-  // made)
-  RO_LatticeIterator(const RO_LatticeIterator<T> & other);
+  // The copy constructor uses reference semantics (ie. NO real copy is made).
+  // The function <src>copy</src> can be used to make a true copy..
+  RO_LatticeIterator (const RO_LatticeIterator<T>& other);
  
   // destructor (cleans up dangling references and releases memory)
   ~RO_LatticeIterator();
 
-  // The assignment operator also uses reference semantics (ie. a real copy
-  // is NOT made)
-  RO_LatticeIterator<T> &operator=(const RO_LatticeIterator<T> & other);
+  // Assignment uses reference semantics (ie. NO real copy is made).
+  // The function <src>copy</src> can be used to make a true copy.
+  RO_LatticeIterator<T> &operator= (const RO_LatticeIterator<T>& other);
 
+  // Make a copy of the iterator object.
+  // This means that an independent navigator object is created to
+  // be able to iterate independently through the same Lattice.
+  // The position in the copied navigator is the same as the original.
+  // The reset function has to be used to start at the beginning.
+  // <br>Note that if the Lattice uses a cache (e.g. PagedArray), the
+  // cache is shared by the iterators.
+  RO_LatticeIterator copy() const;
+    
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
   // postfix and prefix versions will usually do the same thing.
@@ -264,38 +277,43 @@ public:
   // is inappropriate with respect to the current cursor dimension will
   // throw an exception (AipsError).
   // <group>
-  const Vector<T> & vectorCursor() const;
-  const Matrix<T> & matrixCursor() const; 
-  const Cube<T> & cubeCursor() const; 
-  const Array<T> & cursor() const; 
+  const Vector<T>& vectorCursor() const;
+  const Matrix<T>& matrixCursor() const; 
+  const Cube<T>& cubeCursor() const; 
+  const Array<T>& cursor() const; 
   // </group>
   
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False.
   Bool ok() const;
 
+protected:
+  // The pointer to the Iterator
+  CountedPtr<LatticeIterInterface<T> > itsIterPtr;
+
 private:
   // The default constructor is disallowed by making it private.
   RO_LatticeIterator();
-
-  // The pointer to the Iterator
-  CountedPtr<RO_LatticeIterInterface<T> > theIterPtr;
 };
 
-// <summary> read-write lattice iterator </summary>
-//
+
+
+// <summary>
+// A read-write lattice iterator
+// </summary>
+
 // <use visibility=export>
-//
+
 // <reviewed reviewer="" date="" tests="tPagedArrIter.cc">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class="RO_LatticeIterator">RO_LatticeIterator</linkto>
 //   <li> <linkto class="Lattice">Lattice</linkto>
 //   <li> <linkto class="LatticeNavigator">LatticeNavigator</linkto>
 //   <li> <linkto class="Array">Array</linkto>
 // </prerequisite>
-//
+
 // <synopsis>
 // LatticeIterator differs from the RO_LatticeIterator class in that 
 // the window into the Lattice data which moves with each iterative step may
@@ -303,7 +321,7 @@ private:
 // user the door to reach in and change the basic Lattice before moving to
 // another section of the Lattice.
 // </synopsis>
-//
+
 // <example>
 // Here's an iterator that runs through a cube, assigning every element
 // of each plane of the cube a value equal to the number of the plane.
@@ -315,92 +333,43 @@ private:
 //      Int planeNumber = 0;
 //      for (iterator.reset(); !iterator.atEnd(); iterator++) {
 //        iterator.cursor() = planeNumber;
+//        iterator.writeCursor();
 //      }
 // </srcblock>
 // <example>
 
-template <class T> class LatticeIterator
+template <class T>
+class LatticeIterator : public RO_LatticeIterator<T>
 {
 public:
   
   // Construct the Iterator with the supplied data, and iteration strategy
-  LatticeIterator(Lattice<T> & data, const LatticeNavigator & method);
+  LatticeIterator (Lattice<T>& data, const LatticeNavigator& method);
   
   // Iterate through the data with a LatticeStepper that has uses the
   // supplied cursorShape.
-  LatticeIterator(Lattice<T> & data, const IPosition & cursorShape);
+  LatticeIterator (Lattice<T>& data, const IPosition& cursorShape);
   
-  // The copy constructor uses reference sematics (ie. a real copy is NOT
-  // made)
-  LatticeIterator(const LatticeIterator<T> & other);
+  // The copy constructor uses reference semantics (ie. NO real copy is made).
+  // The function <src>copy</src> can be used to make a true copy..
+  LatticeIterator (const LatticeIterator<T>& other);
   
   // destructor (cleans up dangling references and releases memory)
   ~LatticeIterator();
   
-  // The assignment operator also uses reference semantics (ie. a real copy
-  // is NOT made)
-  LatticeIterator<T> &operator=(const LatticeIterator<T> & other);
+  // Assignment uses reference semantics (ie. NO real copy is made).
+  // The function <src>copy</src> can be used to make a true copy.
+  LatticeIterator<T>& operator= (const LatticeIterator<T>& other);  
   
-  // Increment operator - increment the cursor to the next position.  These
-  // functions are forwarded to the current LatticeNavigator and both
-  // postfix and prefix versions will usually do the same thing.
-   // <group>
-  Bool operator++();
-  Bool operator++(Int);
-  // </group>
-  
-  // Decrement operator - decrement the cursor to the previous
-  // position. These functions are forwarded to the current LatticeNavigator
-  // and both postfix and prefix versions will usually do the same thing.
-  // <group>
-  Bool operator--();
-  Bool operator--(Int);
-  // </group>
-  
-  // Function which resets the cursor to the beginning of the Lattice and
-  // resets the number of steps taken to zero. Forwarded to the current
-  // LatticeNavigator.
-  void reset();
-  
-  // Function which returns a value of "True" if the cursor is at the
-  // beginning of the Lattice, otherwise, returns "False". Forwarded to the
-  // current LatticeNavigator.
-  Bool atStart() const;
-  
-  // Function which returns a value of "True" if and attempt has been made
-  // to move the cursor beyond the end of the Lattice. Forwarded to the
-  // current LatticeNavigator.
-  Bool atEnd() const;
-  
-  // Function to return the number of steps (increments or decrements) taken
-  // since construction (or since last reset).  This is a running count of
-  // all cursor movement since doing N increments followed by N decrements
-  // does not necessarily put the cursor back at the origin of the Lattice.
-  // Forwarded to the current LatticeNavigator.
-  uInt nsteps() const;
-  
-  // Function which returns the current position of the beginning of the
-  // cursor within the Lattice. The returned IPosition will have the same
-  // number of axes as the underlying Lattice. Forwarded to the current
-  // LatticeNavigator.
-  IPosition position() const;
-  
-  // Function which returns the current position of the end of the cursor. 
-  // <note> The returned IPosition will have the same number of axes as 
-  // the underlying Lattice.
-  IPosition endPosition() const;
-  
-  // Function which returns the shape of the Lattice being iterated through.
-  // The returned IPosition will always have the same number of axes as the
-  // underlying Lattice. Forwarded to the current LatticeNavigator.
-  IPosition latticeShape() const;
-  
-  // Function which returns the shape of the cursor which is iterating
-  // through the Lattice.  The returned IPosition will have the same number
-  // of axes as the underlying Lattice. Forwarded to the current
-  // LatticeNavigator.
-  IPosition cursorShape() const;
-  
+  // Make a copy of the iterator object.
+  // This means that an independent navigator object is created to
+  // be able to iterate independently through the same Lattice.
+  // The position in the copied navigator is the same as the original.
+  // The reset function has to be used to start at the beginning.
+  // <br>Note that if the Lattice uses a cache (e.g. PagedArray), the
+  // cache is shared by the iterators.
+  LatticeIterator<T> copy() const;
+    
   // Functions which returns a window to the data in the Lattice. These are
   // used to read AND write the data within the Lattice.  Use the function
   // that is appropriate to the current cursor dimension, AFTER REMOVING
@@ -409,12 +378,19 @@ public:
   // return value is inappropriate with respect to the current cursor
   // dimension will throw an exception (AipsError).
   // <group>
-  Vector<T> & vectorCursor();
-  Matrix<T> & matrixCursor();
-  Cube<T> & cubeCursor();
-  Array<T> & cursor();
+  Vector<T>& vectorCursor();
+  Matrix<T>& matrixCursor();
+  Cube<T>& cubeCursor();
+  Array<T>& cursor();
   //</group>
   
+  // Write the data in the cursor.
+  void writeCursor();
+
+  // Write the given data array at the current cursor position.
+  // The array shape has to match the cursor shape (as given by cursorShape()).
+  void writeArray (const Array<T>& data);
+
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False.
   Bool ok() const;
@@ -423,15 +399,8 @@ private:
   // The default constructor is disallowed by making it private.
   LatticeIterator();
 
-  // the pointer to the letter
-  CountedPtr<LatticeIterInterface<T> > theIterPtr;
 };
 
+
+
 #endif
-
-
-
-
-
-
-
