@@ -41,6 +41,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Register.h>
+#include <aips/Utilities/Regex.h>
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
@@ -278,11 +279,13 @@ Bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
 
 template <class Qtype>
 Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
+  static Regex ex("^[-.+]*[[:digit:]]");
   MUString tmp(in);
   // The next construct is to cater for an unexplained error in
-  // the Linux egcs stream input library
-  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
-		      in[0] == 'Y')) {
+  // the Linux egcs stream input library; and an even more funny one in sgi
+  ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
+  ///		      in[0] == 'Y')) {
+  if (!in.empty() && !in.contains(ex)) {
     tmp = MUString(String('0') + in);		// Pointed non-const String
   };
   return Quantum<Qtype>::read(res, tmp);
