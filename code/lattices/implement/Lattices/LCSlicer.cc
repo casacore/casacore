@@ -1,5 +1,5 @@
 //# LCSlicer.cc: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -504,7 +504,7 @@ String LCSlicer::type() const
 TableRecord LCSlicer::toRecord (const String&) const
 {
     TableRecord rec;
-    rec.define ("isRegion", Int(RegionType::Slicer));
+    rec.define ("isRegion", Int(RegionType::ArrSlicer));
     rec.define ("name", className());
     rec.define ("comment", itsComment);
     // Write 1-relative.
@@ -537,7 +537,7 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
 {
     uInt i;
     if (!rec.isDefined("isRegion")
-    ||  rec.asInt("isRegion") != RegionType::Slicer) {
+    ||  rec.asInt("isRegion") != RegionType::ArrSlicer) {
 	throw (AipsError ("LCSlicer::fromRecord - "
 			  "record does not contain an LCSlicer"));
     }

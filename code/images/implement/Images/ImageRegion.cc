@@ -1,5 +1,5 @@
 //# ImageRegion.cc: Class to hold a region of interest in an image
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -200,7 +200,7 @@ ImageRegion* ImageRegion::fromRecord (const TableRecord& record,
     }
     if (regionType == RegionType::WC) {
 	return new ImageRegion (WCRegion::fromRecord (record, tableName));
-    } else if (regionType != RegionType::Slicer) {
+    } else if (regionType != RegionType::ArrSlicer) {
 	throw (AipsError ("ImageRegion::fromRecord - "
 			  "record has an unknown region type"));
     }
