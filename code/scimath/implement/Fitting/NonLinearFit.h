@@ -142,7 +142,7 @@
 // which has a behaviour completely identical to, apart from a
 // default collinearity check of 1e-8. 
 //
-// Other information (see a.o. <linkto class=FitLSQ>FitLSQ</linkto>) can
+// Other information (see a.o. <linkto class=LSQaips>LSQaips</linkto>) can
 // be set and obtained as well.
 // </synopsis>
 //
