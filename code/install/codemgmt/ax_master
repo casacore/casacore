@@ -2310,3 +2310,4 @@
 09 275 src rm trial/implement/distributed/imagesolver.g
 09 275 src rm trial/scripts/synthesisdos.g
 09 275 src mv nfra/apps/csm/csm_parmGUI.g nfra/apps/csm/componenteditor.g
+09 285 src rm aips/glish/glish/malloc.h
