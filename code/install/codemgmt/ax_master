@@ -2683,3 +2683,4 @@
 10 019 src mv trial/implement/Measures/MCEarthMagnetic.h aips/implement/Measures/MCEarthMagnetic.h
 10 019 src mv trial/implement/Measures/MCEarthMagnetic.cc aips/implement/Measures/MCEarthMagnetic.cc
 10 019 src mv trial/implement/Measures/MVEarthMagnetic.cc aips/implement/Measures/MVEarthMagnetic.cc
+10 019 src mv trial/implement/Measures/MVEarthMagnetic.h aips/implement/Measures/MVEarthMagnetic.h
