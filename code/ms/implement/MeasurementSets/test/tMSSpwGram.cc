@@ -39,12 +39,12 @@ int main(int argc, char **argv)
 {
   try {
     cout << "before ms constructor called " << endl;
-    const String msName = "3C273XC1.ms";
+    const String msName = "3C273XC1_tmp.ms";
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
     if(msSpwGramParseCommand(ms, "[0]")==0) {
-      const TableExprNode *node = &(msSpwGramParseNode());
+      const TableExprNode *node = &msSpwGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::New);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
