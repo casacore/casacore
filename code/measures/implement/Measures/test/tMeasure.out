@@ -78,11 +78,9 @@ Converted back Epoch: 56791::06:35:48.7519
 LSR (B1900): [-90, 30] deg
 LSR (B1950): [-89.5206, 30.0012] deg
 LSR (J2000): [-89.0405, 30.0047] deg
-LSR (B1900): [-1.59086e-16, -0.866025, 0.5]
+LSR (B1900): [0, -0.866025, 0.5] 
 LSR (B1950): [0.00724658, -0.865985, 0.500018]
 LSR (J2000): [0.0145021, -0.865863, 0.500071]
-LSR frame: Frame: Direction: [-1.59086e-16, -0.866025, 0.5]
-        (J2000 = [-89.0405, 30.0047] deg)
 Radial velocity (BARY): Radialvelocity: 1e+06
                  (GEO): 1.02688e+06
 and back: 999999
@@ -131,7 +129,7 @@ Test coordinate conversion ...
 --------------------------------------
 Converted B1950 galactic pole Direction: [-0.867601, -0.188375, 0.4602]
  to Reference for an Direction with Type: GALACTIC
- as [-58.3295, 90] deg
+ as [0, 0, 1] 
 Converted B1950 galactic pole Direction: [-0.867601, -0.188375, 0.4602]
  to Reference for an Direction with Type: B1950
  as [119.879, 29.4091] deg
