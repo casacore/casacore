@@ -562,6 +562,9 @@ void ISMBase::resync (uInt nrrow)
     for (uInt i=0; i<nrcol; i++) {
 	colSet_p[i]->resync (nrrow_p);
     }
+    if (iosfile_p != 0) {
+        iosfile_p->resync();
+    }
 }
 
 void ISMBase::create (uInt nrrow)

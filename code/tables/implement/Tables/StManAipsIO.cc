@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -833,6 +833,9 @@ void StManAipsIO::open (uInt tabNrrow, AipsIO&)
 }
 void StManAipsIO::resync (uInt nrrow)
 {
+    if (iosfile_p != 0) {
+        iosfile_p->resync();
+    }
     AipsIO ios(fileName());
     uInt version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.

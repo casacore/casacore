@@ -1,5 +1,5 @@
 //# StIndArrAIO.cc: Read/write a table column of arrays array using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,9 +85,13 @@ void StManColumnIndArrayAipsIO::openFile (ByteIO::OpenOption opt)
         iosfile_p = stmanPtr_p->openArrayFile (opt);
     } else {
         //# Open/create the file holding the arrays in the column.
-        char strc[8];
-	sprintf (strc, "i%i", seqnr_p);
-	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
+        if (iosfile_p == 0) {
+	  char strc[8];
+	  sprintf (strc, "i%i", seqnr_p);
+	  iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
+	} else {
+	  iosfile_p->resync();
+	}
     }
 }
 

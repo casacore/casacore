@@ -981,6 +981,9 @@ void SSMBase::resync (uInt aNrRows)
   }
 
   uInt aNrCol = ncolumn();
+  if (itsIosFile != 0) {
+    itsIosFile->resync();
+  }
   for (uInt i=0; i<aNrCol; i++) {
     itsPtrColumn[i]->resync (itsNrRows);
   }

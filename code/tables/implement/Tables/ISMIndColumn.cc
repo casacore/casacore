@@ -88,6 +88,13 @@ Bool ISMIndColumn::flush (uInt, Bool fsync)
 {
     return iosfile_p->flush (fsync);
 }
+void ISMIndColumn::resync (uInt nrrow)
+{
+    ISMColumn::resync (nrrow);
+    if (stmanPtr_p->version() < 3) {
+        iosfile_p->resync();
+    }
+}
 void ISMIndColumn::reopenRW()
 {
     iosfile_p->reopenRW();
