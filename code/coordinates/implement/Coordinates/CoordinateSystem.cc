@@ -584,31 +584,46 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 
 
 CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
-					    const Vector<Int> &pixincFac) const
+					    const Vector<Int> &pixincFac,
+                                            const Vector<Int>& newShape) const
 {
     AlwaysAssert(originShift.nelements() == nPixelAxes() &&
                  pixincFac.nelements() == nPixelAxes(), AipsError);
+    const uInt nShape = newShape.nelements();
+    AlwaysAssert(nShape==0 || nShape==nPixelAxes(), AipsError);
 
-    // We could get rid of this assumption by multiplying by accounting for the PC
-    // matrix as well as cdelt, or going through group-by-group, but it doesn't
-    // seem necessary now, or maybe ever.
+// We could get rid of this assumption by multiplying by accounting for the PC
+// matrix as well as cdelt, or going through group-by-group, but it doesn't
+// seem necessary now, or maybe ever.
+
     AlwaysAssert(originShift.nelements() == pixincFac.nelements(), AipsError);
-
     uInt n = nPixelAxes();
-
     CoordinateSystem coords = *this;
     Vector<Double> crpix = coords.referencePixel();
     Vector<Double> cdelt = coords.increment();
 
-    // Not efficient, but easy and this code shouldn't be called often
+// Not efficient, but easy and this code shouldn't be called often
+
+    Int coordinate, axisInCoordinate;
     for (uInt i=0; i<n; i++) {
-        AlwaysAssert(pixincFac(i) >= 1, AipsError);
-        crpix(i) -= originShift(i);
-        crpix(i) /= pixincFac(i);
-        cdelt(i) *= pixincFac(i);
+        findPixelAxis(coordinate, axisInCoordinate, i);
+        if (type(coordinate)==Coordinate::STOKES) {
+           Int s = -1;
+           if (nShape!=0) s = newShape(i);
+           StokesCoordinate sc = stokesSubImage(stokesCoordinate(coordinate), 
+                                                originShift(i), pixincFac(i), s);
+           coords.replaceCoordinate(sc, coordinate);
+        } else {
+           AlwaysAssert(pixincFac(i) >= 1, AipsError);
+           crpix(i) -= originShift(i);
+           crpix(i) /= pixincFac(i);
+           cdelt(i) *= pixincFac(i);
+        }
     }
+//
     coords.setReferencePixel(crpix);
     coords.setIncrement(cdelt);
+//
     return coords;
 }
 
@@ -940,15 +955,16 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 
     const uInt nc = coordinates_p.nelements();
     Bool ok = True;
+    Int where;
     for (uInt i=0; i<nc; i++) {
-	// For each coordinate, putt the appropriate world or replacement values
+	// For each coordinate, put the appropriate world or replacement values
 	// in the world temporary, call the coordinates own toPixel, and then
 	// copy the output values from the pixel temporary to the pixel
 	// coordinate
 	const uInt nwra = world_maps_p[i]->nelements();
 	uInt j;
 	for (j=0; j<nwra; j++) {
-	    Int where = world_maps_p[i]->operator[](j);
+	    where = world_maps_p[i]->operator[](j);
 	    if (where >= 0) {
 		world_tmps_p[i]->operator()(j) = world(where);
 	    } else {
@@ -968,7 +984,7 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 	ok = ToBool(ok && oldok);
 	const uInt npxa = pixel_maps_p[i]->nelements();
 	for (j=0; j<npxa; j++) {
-	    Int where = pixel_maps_p[i]->operator[](j);
+	    where = pixel_maps_p[i]->operator[](j);
 	    if (where >= 0) {
 		pixel(where) = pixel_tmps_p[i]->operator()(j);
 	    }
@@ -1080,13 +1096,6 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                pixelAxes_tmps_p[i]->operator()(j) = !worldAxes_tmps_p[i]->operator()(j);    
          }
       }
-//
-/*
-      Vector<Double> w = *(world_tmps_p[i]);
-      Vector<Double> p = *(pixel_tmps_p[i]);
-      cout << "worldIn, pixelIn = " << w << p << endl;
-      cout << "worldAxes2, pixelAxes2" << worldAxes2 << pixelAxes2 << endl;
-*/
 
       if (!coordinates_p[i]->toMix(*(worldOut_tmps_p[i]), *(pixelOut_tmps_p[i]),
 		       *(world_tmps_p[i]), *(pixel_tmps_p[i]),
@@ -1105,6 +1114,155 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
    }
    return True;
 }
+
+
+
+void CoordinateSystem::makeWorldRelative (Vector<Double>& world) const
+{
+    AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
+//
+    const uInt nc = coordinates_p.nelements();
+    Int where;
+    for (uInt i=0; i<nc; i++) {
+	const uInt nwa = world_maps_p[i]->nelements();
+
+// Copy elements for this coordinate and replace removed axis values
+
+	uInt j;
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) {
+		world_tmps_p[i]->operator()(j) = world(where);
+	    } else {
+		world_tmps_p[i]->operator()(j) = 
+		    world_replacement_values_p[i]->operator()(j);
+	    }
+	}
+
+// Convert for this coordinate.  
+
+        coordinates_p[i]->makeWorldRelative(*(world_tmps_p[i]));
+
+// Copy to output
+
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) world(where) = world_tmps_p[i]->operator()(j);
+	}
+    }
+}
+
+
+
+void CoordinateSystem::makeWorldAbsolute (Vector<Double>& world) const
+{
+    AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
+//
+    const uInt nc = coordinates_p.nelements();
+    Int where;
+    for (uInt i=0; i<nc; i++) {
+	const uInt nwa = world_maps_p[i]->nelements();
+
+// Copy elements for this coordinate and replace removed axis values
+
+	uInt j;
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) {
+		world_tmps_p[i]->operator()(j) = world(where);
+	    } else {
+		world_tmps_p[i]->operator()(j) = 
+		    world_replacement_values_p[i]->operator()(j);
+	    }
+	}
+
+// Convert for this coordinate.  Make private temporary to optimize further
+
+	coordinates_p[i]->makeWorldAbsolute(*(world_tmps_p[i]));
+
+// Copy to output
+
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) world(where) = world_tmps_p[i]->operator()(j);
+	}
+    }
+}
+
+
+
+void CoordinateSystem::makePixelRelative (Vector<Double>& pixel) const
+{
+    AlwaysAssert(pixel.nelements() == nPixelAxes(), AipsError);
+//
+    const uInt nc = coordinates_p.nelements();
+    Int where;
+    for (uInt i=0; i<nc; i++) {
+	const uInt npa = pixel_maps_p[i]->nelements();
+
+// Copy elements for this coordinate and replace removed axis values
+
+	uInt j;
+	for (j=0; j<npa; j++) {
+	    where = pixel_maps_p[i]->operator[](j);
+	    if (where >= 0) {
+		pixel_tmps_p[i]->operator()(j) = pixel(where);
+	    } else {
+		pixel_tmps_p[i]->operator()(j) = 
+		    pixel_replacement_values_p[i]->operator()(j);
+	    }
+	}
+
+// Convert for this coordinate.  
+
+        coordinates_p[i]->makePixelRelative(*(pixel_tmps_p[i]));
+
+// Copy to output
+
+	for (j=0; j<npa; j++) {
+	    where = pixel_maps_p[i]->operator[](j);
+	    if (where >= 0) pixel(where) = pixel_tmps_p[i]->operator()(j);
+	}
+    }
+}
+
+
+
+void CoordinateSystem::makePixelAbsolute (Vector<Double>& pixel) const
+{
+    AlwaysAssert(pixel.nelements() == nPixelAxes(), AipsError);
+//
+    const uInt nc = coordinates_p.nelements();
+    Int where;
+    for (uInt i=0; i<nc; i++) {
+	const uInt npa = pixel_maps_p[i]->nelements();
+
+// Copy elements for this coordinate and replace removed axis values
+
+	uInt j;
+	for (j=0; j<npa; j++) {
+	    where = pixel_maps_p[i]->operator[](j);
+	    if (where >= 0) {
+		pixel_tmps_p[i]->operator()(j) = pixel(where);
+	    } else {
+		pixel_tmps_p[i]->operator()(j) = 
+		    pixel_replacement_values_p[i]->operator()(j);
+	    }
+	}
+
+// Convert for this coordinate.  Make private temporary to optimize further
+
+	coordinates_p[i]->makePixelAbsolute(*(pixel_tmps_p[i]));
+
+// Copy to output
+
+	for (j=0; j<npa; j++) {
+	    where = pixel_maps_p[i]->operator[](j);
+	    if (where >= 0) pixel(where) = pixel_tmps_p[i]->operator()(j);
+	}
+    }
+}
+
 
 Vector<String> CoordinateSystem::worldAxisNames() const
 {
@@ -3826,3 +3984,42 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityTy
       }
    }
 }
+
+
+StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,
+                                                  Int newShape) const
+{
+   const Vector<Int>& values = sc.stokes();
+   const Int nValues = values.nelements();
+//
+   Int start = originShift;
+   if (start < 0 || start > nValues-1) {
+      throw(AipsError("Illegal origin shift"));
+   }
+//
+   Vector<Int> newStokes(nValues);   
+   Int j = start;
+   Int n = 0;
+   while (j <= nValues-1) {
+      newStokes(n) = values(j);
+      n++;
+      j += pixincFac;
+   }
+   
+// If shape given, use it
+   
+   if (newShape>0) {
+      if (newShape>n) {
+         throw(AipsError("New shape is invalid"));
+      }
+//
+      newStokes.resize(newShape, True);
+   } else {
+      newStokes.resize(n, True);
+   }
+//  
+   return StokesCoordinate(newStokes);
+}
+   
+
+
