@@ -1,4 +1,4 @@
-//# <HashMap.h>: this defines HashMap, which is a hashed associative array
+//# HashMap.h: this defines HashMap, which is a hashed associative array
 //# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -307,7 +307,6 @@ public:
     //
     HashMap(const HashMap &);
 
-#if ! defined(__GNUG__)
     //
     // Default constructor (and variation) which allows for
     // specifying:
@@ -329,7 +328,6 @@ public:
 		blk(size, (List<OrderedPair<key,val> >*)0), func(newfunc),
 		hashClass(0), dfltVal(dflt), used_(size), total_(size),
 		defs_(0), filled_(0), maxLoad_(maxlf) { }
-#endif
 
     HashMap(const val &dflt, uInt size, const HashClass<key> &newfunc,
 	    float maxlf = float(defaultMaxLoad_)) : 
@@ -475,30 +473,6 @@ public:
 
     enum {HashMapVersion = 1};
 
-#if defined(__GNUG__)
-    //*display 9
-    HashMap( )
-      : total_(uInt(defaultSize_)), used_(uInt(defaultSize_)), 
-	filled_(0),  defs_(0), 	 maxLoad_(float(defaultMaxLoad_)),
-	blk(uInt(defaultSize_), (List<OrderedPair<key,val> >*)0),
-	func(hashFunc),
-	hashClass(0), dfltVal(defaultHashValue((const val*)0))
-    { }
-    //*display 9
-    HashMap( const val &dflt, uInt size = uInt(defaultSize_) ) 
-      : total_(uInt(size)), used_(uInt(size)), filled_(0), defs_(0), 
-	maxLoad_(float(defaultMaxLoad_)) ,
-	blk(uInt(size), (List<OrderedPair<key,val> >*)0), 
-	func(hashFunc), hashClass(0), dfltVal(dflt)
-    { }
-    //*display 9
-    HashMap( const val &dflt, uInt size, Func newfunc, 
-	     float maxlf = float(defaultMaxLoad_)) 
-      : total_(size), used_(size), filled_(0), defs_(0),  maxLoad_(maxlf),
-	blk(size, (List<OrderedPair<key,val> >*)0), func(newfunc),
-	hashClass(0), dfltVal(dflt)
-    { }
-#endif
 protected:
     // Call the hash function.
     uInt hash(const key &k) const {

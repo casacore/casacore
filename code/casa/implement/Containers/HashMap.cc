@@ -1,5 +1,5 @@
 //# HashMap.cc: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -155,9 +155,6 @@ template<class key, class val> Bool HashMap<key,val>::isDefined (const key &ky) 
     return False;
 }
 
-#ifdef __GNUG__
-typedef Block<uInt> gnu_block_uint;
-#endif
 template<class key, class val> Block<uInt> HashMap<key,val>::distribution() const {
     Block<uInt> b( availableBuckets() );
 

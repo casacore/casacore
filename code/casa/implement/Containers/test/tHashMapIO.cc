@@ -1,5 +1,5 @@
 //# tHashMapIO.cc: test of HashMap IO
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -92,11 +92,7 @@ main() {
     ai >> hash2;
     hmos2 << hash2 << endl;;
 #if MAPIO_COMPATIBILITY
-#if defined(__GNUG__)
-      omo << *((Map<String,Int>*) &om);
-#else
-      omo << om;
-#endif
+    omo << om;
     omo.close();
     HashMap<String,Int> hash3(-1);
     AipsIO ai2("tHashMapIO_om.out", ByteIO::Old);
