@@ -27,6 +27,7 @@
 
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayError.h>
+#include <aips/Utilities/Copy.h>
 
 
 template<class T>
@@ -51,4 +52,69 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right)
     start(ndim-1) = leftShape(ndim-1);
     result (start, shape-1) = right;
     return result;
+}
+
+
+template<class T>
+Array<T> reorderArray (const Array<T>& array,
+		       const IPosition& newAxisOrder,
+		       Bool alwaysCopy = True)
+{
+  const IPosition& shape = array.shape();
+  IPosition newShape, incr;
+  uInt contAxes = reorderArrayHelper (newShape, incr,
+				      shape, newAxisOrder);
+  // If not reordered, we can simply return the array (or a copy if needed).
+  uInt ndim = shape.nelements();
+  if (contAxes == ndim) {
+    if (alwaysCopy) {
+      return array.copy();
+    }
+    return array;
+  }
+  Array<T> result(newShape);
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out the nr of contiguous elements.
+  uInt nrcont = 1;
+  if (contAxes == 0) {
+    contAxes = 1;
+  } else {
+    for (uInt i=0; i<contAxes; i++) {
+      nrcont *= shape(i);
+    }
+  }
+  uInt incr0 = incr(0);
+  uInt n0 = shape(0);
+  // Loop through all data and copy as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (nrcont > 1) {
+      objcopy (res, data, nrcont);
+      data += nrcont;
+      res += nrcont;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res = *data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=contAxes; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
 }

@@ -1,5 +1,5 @@
 //# ArrayUtil.h: Utility functions for arrays
-//# Copyright (C) 1995,1999,2000
+//# Copyright (C) 1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -166,6 +166,80 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 // <group name=concatenateArray>
 template<class T>
 Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
+// </group>
+
+
+
+// <summary>
+// Reorder the axes of an array.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="tArrayUtil2.cc">
+
+// <synopsis>
+// This function makes it possible to reorder the axes of an array.
+// The resulting array is a copy of the input array with its data
+// moved around according to the new array order.
+// If the order does not change, a copy is returned if the
+// <src>alwaysCopy</src> is true. Otherwise a reference of the
+// input array is returned.
+// <p>
+// The <src>newAxisOrder</src> defines the new axes order.
+// Its length can be less than the dimensionality of the input array.
+// It is appended with the non-specified axes in their natural order.
+// <src>newAxisOrder(i)</src> gives the axis in the original array
+// which will now get axis <src>i</src>.
+// </synopsis>
+
+// <example>
+// <srcblock>
+//   Array<Int> result = reorderArray (someArray, IPosition(2,1,3));
+// </srcblock>
+// Say that someArray is a 4D array with shape [3,4,5,6].
+// The non-specified axes get appended to the axis order
+// specification [1,3] resulting in [1,3,0,2].
+// <br> This means that axis 1 gets axis 0, axis 3 gets axis 1, axis 0 gets
+// axis 2, and axis 2 gets axis 3.
+// Thus the resulting shape is [4,6,3,5] and the data are moved accordingly.
+// </example>
+
+// <motivation>
+// This function was needed for an efficient implementation of the
+// functions partialMedians and partialFractiles.
+// </motivation>
+
+// <group name=reorderArray>
+template<class T>
+Array<T> reorderArray (const Array<T>& array,
+		       const IPosition& newAxisOrder,
+		       Bool alwaysCopy = True);
+// </group>
+
+
+// <summary>
+// Helper function for function reorderArray..
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="tArrayUtil2.cc">
+
+// <synopsis>
+// This is a specialized helper function for function reorderArray.
+// It determines the shape of the resulting array and calculates the
+// result increments when iterating linearly through the source array.
+// It returns the number of the first non-reordered axes.
+// </synopsis>
+
+// <motivation>
+// Split off common non-templated code.
+// </motivation>
+
+// <group name=reorderArrayHelper>
+uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
+			 const IPosition& shape, const IPosition& newAxisOrder);
 // </group>
 
 
