@@ -65,6 +65,15 @@ Coding
 
 *** Compiler Warnings (using g++ and optionally any other compiler)
 
+*** private data members use either the '_p' or 'its' convention
+
+*** braces around multi-line if statements. eg.,
+    if (condition) {
+      statement1;
+    } else {
+      statement2;
+    }
+
 (The following three items can be found using testcenter, either at the
        author or the reviewers site)
 *** Memory Access Errors
