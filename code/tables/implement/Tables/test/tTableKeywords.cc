@@ -60,14 +60,14 @@ void createTables()
     Table subtab3(newtab3, 3);
     // Store one subtable as a keyword in the main table, the
     // other as a column keyword.
-    tab.keywordSet().defineTable ("SubTab2", subtab2);
+    tab.rwKeywordSet().defineTable ("SubTab2", subtab2);
     ScalarColumn<Int> col(tab, "RowNr");
-    col.keywordSet().defineTable ("SubTab3", subtab3);
+    col.rwKeywordSet().defineTable ("SubTab3", subtab3);
     // Store another subtable as a keyword in SubTab3.
     SetupNewTable newtab4("tTableKeywords_tmp/maindata/subdata/sub4", std,
 			  Table::New);
     Table subtab4(newtab4, 4);
-    subtab3.keywordSet().defineTable ("SubTab4", subtab4);
+    subtab3.rwKeywordSet().defineTable ("SubTab4", subtab4);
 }
 
 void readTables (const String& name, Bool swap)
@@ -89,8 +89,8 @@ void readTables (const String& name, Bool swap)
 
     // Now swap the keyword sets.
     if (swap) {
-	tab.keywordSet().defineTable ("SubTab2", subtab3);
-	col.keywordSet().defineTable ("SubTab3", subtab2);
+	tab.rwKeywordSet().defineTable ("SubTab2", subtab3);
+	col.rwKeywordSet().defineTable ("SubTab3", subtab2);
     }
 }    
 

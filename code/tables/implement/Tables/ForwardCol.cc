@@ -103,18 +103,12 @@ DataManager* ForwardColumnEngine::clone() const
 // If there are no columns, there is nothing to sync.
 Bool ForwardColumnEngine::needToSync() const
 {
-    if (refTable_p.isNull()) {
-	return False;
-    }
-    return refTable_p.needToSync();
+    return False;
 }
 uInt ForwardColumnEngine::sync (Bool& moreToExpect)
 {
     moreToExpect = False;
-    if (refTable_p.isNull()) {
-	return 0;
-    }
-    return refTable_p.sync (moreToExpect);
+    return 0;
 }
 
 // Define the RefTable_p if not defined yet.
@@ -209,7 +203,7 @@ void ForwardColumnEngine::baseCreate()
 {
     // The table is new.
     // Define a keyword telling the data manager name.
-    table().keywordSet().define
+    table().rwKeywordSet().define
 	                 (keywordName ("_ForwardColumn_Name"), dataManName_p);
     // Define a keyword in all columns telling the original table.
     for (uInt i=0; i<refColumns_p.nelements(); i++) {
@@ -225,7 +219,7 @@ void ForwardColumnEngine::prepare()
 void ForwardColumnEngine::basePrepare()
 {
     // Get the data manager name (if defined).
-    TableRecord& keySet = table().keywordSet();
+    const TableRecord& keySet = table().keywordSet();
     String keyword = keywordName ("_ForwardColumn_Name");
     if (keySet.isDefined (keyword)) {
 	dataManName_p = keySet.asString (keyword);
@@ -317,8 +311,8 @@ void ForwardColumn::fillTableName (const Table& thisTable,
 	name = refTable.tableName();
     }
     // Define the keyword containing the original table name.
-    thisCol.keywordSet().define ("_ForwardColumn_TableName" +
-				 enginePtr_p->suffix(), name);
+    thisCol.rwKeywordSet().define ("_ForwardColumn_TableName" +
+				   enginePtr_p->suffix(), name);
 }
 
 void ForwardColumn::prepare (const Table& thisTable)

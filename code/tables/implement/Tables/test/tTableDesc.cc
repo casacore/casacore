@@ -1,5 +1,5 @@
 //# tTableDesc.cc: Test program for the TableDesc class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ void a (Bool doExcp)
     // Do it in separate scope to destruct it (thus to write it).
     {
 	TableDesc subtd("tTableDesc_tmp_sub", "1", TableDesc::New);
-	subtd.keywordSet().define ("subint", Int(10));
+	subtd.rwKeywordSet().define ("subint", Int(10));
 	subtd.addColumn (ScalarColumnDesc<double> ("ra"));
 	subtd.addColumn (ScalarColumnDesc<double> ("dec"));
     }
@@ -75,9 +75,9 @@ void a (Bool doExcp)
     }
     TableDesc td("tTableDesc_tmp", "1", TableDesc::New);
     td.comment() = "A test of class TableDesc";
-    td.keywordSet().define ("ra", float(3.14));
-    td.keywordSet().define ("equinox", double(1950));
-    td.keywordSet().define ("aa", Int(1));
+    td.rwKeywordSet().define ("ra", float(3.14));
+    td.rwKeywordSet().define ("equinox", double(1950));
+    td.rwKeywordSet().define ("aa", Int(1));
 
     td.addColumn (ScalarColumnDesc<Int> ("ab","Comment for column ab"));
     if (doExcp) {
@@ -88,10 +88,10 @@ void a (Bool doExcp)
 	} end_try;
     }
     td.addColumn (ScalarColumnDesc<Int> ("ac"));
-    td.rwColumnDesc("ac").keywordSet().define ("scale", Complex(0,0));
-    td.rwColumnDesc("ac").keywordSet().define ("unit", "");
+    td.rwColumnDesc("ac").rwKeywordSet().define ("scale", Complex(0,0));
+    td.rwColumnDesc("ac").rwKeywordSet().define ("unit", "");
     td.addColumn (ScalarColumnDesc<uInt> ("ad","comment for ad"));
-    td.rwColumnDesc("ac").keywordSet().define ("unit", "DEG");
+    td.rwColumnDesc("ac").rwKeywordSet().define ("unit", "DEG");
     td.addColumn (ScalarColumnDesc<ExampleDesc> ("ae"));
     td.addColumn (ArrayColumnDesc<ExampleDesc> ("arr0"));
     if (doExcp) {
@@ -167,7 +167,7 @@ void a (Bool doExcp)
     // if they get reflected in the subtable. They should for sub3,
     // but not in sub1 and sub2.
     subtd.addColumn (ScalarColumnDesc<float> ("Equinox"));
-    subtd.keywordSet().define ("CoordSys", "equatorial");
+    subtd.rwKeywordSet().define ("CoordSys", "equatorial");
     td["sub1"].tableDesc()->show();     // should have 2 columns
     td["sub3"].tableDesc()->show();     // should have 3 columns
     td["sub2"].tableDesc()->show();     // should have 2 columns
@@ -241,21 +241,21 @@ void b (Bool doExcp) {
 
     // Define another descr. and add it to the first descr.
     TableDesc tdscr("TabSub",TableDesc::Scratch);
-    tdscr.keywordSet().define ("key1", Int(0));
+    tdscr.rwKeywordSet().define ("key1", Int(0));
     ScalarColumnDesc<String> colaDesc ("cola");
     colaDesc.setMaxLength (32);
     tdscr.addColumn (colaDesc);
     td.addColumn (SubTableDesc("colsub","colsub comment",tdscr));
-    tdscr.keywordSet().define ("key2", Int(0));
+    tdscr.rwKeywordSet().define ("key2", Int(0));
     tdscr.show();
     cout<<endl;
     TableDesc tda(td,"OtherName","O2",TableDesc::Scratch);   // copy the descr.
     tda.show();
     tda.add (tdscr, False);
-    tda.keywordSet().removeField ("ra");
+    tda.rwKeywordSet().removeField ("ra");
     tda.removeColumn ("sub2");
     ColumnDesc& cd = tda.rwColumnDesc("ac");
-    cd.keywordSet().removeField ("scale");
+    cd.rwKeywordSet().removeField ("scale");
     td.show();
     tda.show();
 
@@ -321,11 +321,11 @@ void d (Bool)
     ColumnDesc c1 = td.addColumn(ScalarColumnDesc<Int>("colint","comment"));
 
     // Define a keyword colint_key1 (=10) for that column.
-    c1.keywordSet().define ("colint_key1", Int(10));
+    c1.rwKeywordSet().define ("colint_key1", Int(10));
 
     // It can also be done the other way around.
     ScalarColumnDesc<Int> colint("colint2","comment2");
-    colint.keywordSet().define ("colint_key1", Int(20));
+    colint.rwKeywordSet().define ("colint_key1", Int(20));
     td.addColumn(colint);
 
     // Add a third column.
@@ -335,7 +335,7 @@ void d (Bool)
     td.rwColumnDesc("colint").comment() += " addition";
 
     // Define a keyword for the table.
-    td.keywordSet().define ("tab_key1", "this is a string");
+    td.rwKeywordSet().define ("tab_key1", "this is a string");
 
     // Register engines.
     DataManager::registerCtor ("c1_engine",0);

@@ -116,8 +116,8 @@ void ForwardColumnIndexedRowEngine::create (uInt)
     baseCreate();
     // Define a keyword in the table telling the column containing the
     // row numbers in the original table.
-    table().keywordSet().define (keywordName ("_ForwardColumn_RowName"),
-				 rowColumnName_p);
+    table().rwKeywordSet().define (keywordName ("_ForwardColumn_RowName"),
+				   rowColumnName_p);
 }
 
 void ForwardColumnIndexedRowEngine::prepare()

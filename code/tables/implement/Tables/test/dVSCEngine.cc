@@ -1,5 +1,5 @@
 //# dVSCEngine.cc: Example virtual column engine to handle data type A
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,8 +75,8 @@ DataManager* VSCExampleVSCEngine::clone() const
 void VSCExampleVSCEngine::create (uInt)
 {
     TableColumn src (table(), sourceColumnName());
-    src.keywordSet().define ("_xTargetName", xTargetName_p);
-    src.keywordSet().define ("_yTargetName", yTargetName_p);
+    src.rwKeywordSet().define ("_xTargetName", xTargetName_p);
+    src.rwKeywordSet().define ("_yTargetName", yTargetName_p);
 }
 
 // Prepare the engine by allocating column objects

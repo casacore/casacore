@@ -1,5 +1,5 @@
 //# ScaledArrayEngine.cc: Templated virtual column engine to scale a table array
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,18 +164,18 @@ void ScaledArrayEngine<S,T>::create (uInt initialNrrow)
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
     TableColumn thisCol (table(), sourceName());
-    thisCol.keywordSet().define ("_ScaledArrayEngine_Scale",
-				 scale_p);
-    thisCol.keywordSet().define ("_ScaledArrayEngine_Offset",
-				 offset_p);
-    thisCol.keywordSet().define ("_ScaledArrayEngine_ScaleName",
-				 scaleName_p);
-    thisCol.keywordSet().define ("_ScaledArrayEngine_OffsetName",
-				 offsetName_p);
-    thisCol.keywordSet().define ("_ScaledArrayEngine_FixedScale",
-				 fixedScale_p);
-    thisCol.keywordSet().define ("_ScaledArrayEngine_FixedOffset",
-				 fixedOffset_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_Scale",
+				   scale_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_Offset",
+				   offset_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_ScaleName",
+				   scaleName_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_OffsetName",
+				   offsetName_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_FixedScale",
+				   fixedScale_p);
+    thisCol.rwKeywordSet().define ("_ScaledArrayEngine_FixedOffset",
+				   fixedOffset_p);
 }
 
 template<class S, class T>

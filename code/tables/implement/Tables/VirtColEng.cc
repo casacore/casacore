@@ -39,13 +39,15 @@ Bool VirtualColumnEngine::isStorageManager() const
 
 //# Create, open, prepare and close do nothing unless implemented in the
 // derived class.
+Bool VirtualColumnEngine::flush (AipsIO&, Bool)
+{ return False; }
 void VirtualColumnEngine::create (uInt)
 {}
 void VirtualColumnEngine::open (uInt, AipsIO&)
 {}
-void VirtualColumnEngine::prepare()
+void VirtualColumnEngine::resync (uInt)
 {}
-void VirtualColumnEngine::close (AipsIO&)
+void VirtualColumnEngine::prepare()
 {}
 
 

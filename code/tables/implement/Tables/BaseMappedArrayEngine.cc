@@ -134,7 +134,7 @@ template<class SourceType, class TargetType>
 void BaseMappedArrayEngine<SourceType, TargetType>::create (uInt initialNrrow)
 {
     //# Define the target name as a column keyword in the source.
-    makeTableColumn (sourceName_p).keywordSet().define
+    makeTableColumn (sourceName_p).rwKeywordSet().define
 	                       ("_BaseMappedArrayEngine_Name", targetName_p);
     initialNrrow_p = initialNrrow;
 }

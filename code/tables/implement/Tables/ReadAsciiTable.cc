@@ -243,7 +243,7 @@ try {
 
     if (haveKeys) {
 	nKeys = -1;
-	TableRecord& keyset = tab.keywordSet();
+	TableRecord& keyset = tab.rwKeywordSet();
 	ifstream kFile;
 	kFile.open(headerfile, ios::in);
 	if (! kFile) {

@@ -1,5 +1,5 @@
 //# ascii2Table.cc: This program loads an ASCII file into a table
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -116,7 +116,7 @@ void calc(Table& tab, const String& name)
     cout << "Median " << name << ":  " << vmed << endl;
 
     // Add keywords Mean, etc.
-    TableRecord& keys = tab.keywordSet();
+    TableRecord& keys = tab.rwKeywordSet();
     keys.define ("ColumnUsed", name);
     keys.define ("Min", vmin);
     keys.define ("Max", vmax);
