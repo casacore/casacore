@@ -1,5 +1,5 @@
 //# MCDoppler.h: MDoppler conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #if !defined(AIPS_MCDOPPLER_H)
 #define AIPS_MCDOPPLER_H
 
-#if defined(_AIX)
-#pragma implementation ("MCDoppler.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
@@ -46,9 +42,7 @@ class MCDoppler;
 
 //# Typedefs
 
-// <summary>
-// MDoppler conversion routines 
-// </summary>
+// <summary> MDoppler conversion routines  </summary>
 
 // <use visibility=local>
 
@@ -137,6 +131,14 @@ private:
   //# Enumerations
   
   //# Cached Data
+
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
   
   //# Member functions
   

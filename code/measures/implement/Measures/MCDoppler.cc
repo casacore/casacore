@@ -26,15 +26,34 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_MCDoppler_bug1;
-#endif
+///#ifdef __GNUG__
+///#include <aips/Quanta/Quantum.h>
+///typedef Quantum<Double> gpp_MCDoppler_bug1;
+///#endif
 #include <aips/Measures/MCDoppler.h>
-#include <aips/Quanta/QMath.h>
+///#include <aips/Quanta/QMath.h>
+
+//# Statics
+Bool MCDoppler::stateMade_p = False;
+uInt MCDoppler::ToRef_p[N_Routes][3] = {
+    {MDoppler::RADIO,	MDoppler::RATIO,	0}, 
+    {MDoppler::Z,	MDoppler::RATIO,	0},
+    {MDoppler::BETA,	MDoppler::RATIO,	0},
+    {MDoppler::GAMMA,	MDoppler::RATIO,	0},
+    {MDoppler::RATIO,	MDoppler::RADIO,	0}, 
+    {MDoppler::RATIO,	MDoppler::Z,		0},
+    {MDoppler::RATIO,	MDoppler::BETA,		0},
+    {MDoppler::RATIO,	MDoppler::GAMMA,	0} };
+uInt MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
 
 //# Constructors
-MCDoppler::MCDoppler() {}
+MCDoppler::MCDoppler() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
+		      MDoppler::N_Types, MCDoppler::N_Routes,
+		      MCDoppler::ToRef_p);
+  };
+}
 
 //# Destructor
 MCDoppler::~MCDoppler() {
@@ -49,57 +68,15 @@ void MCDoppler::getConvert(MConvertBase &mc,
 			   const MRBase &inref, 
 			   const MRBase &outref) {
 
-// Array of conversion routines to call
-  static const MCDoppler::Routes 
-    FromTo[MDoppler::N_Types][MDoppler::N_Types] = {
-      { MCDoppler::N_Routes,
-	MCDoppler::RADIO_RATIO,
-	MCDoppler::RADIO_RATIO,
-	MCDoppler::RADIO_RATIO,
-	MCDoppler::RADIO_RATIO},
-      { MCDoppler::Z_RATIO,
-	MCDoppler::N_Routes,
-	MCDoppler::Z_RATIO,
-	MCDoppler::Z_RATIO,
-	MCDoppler::Z_RATIO},
-      { MCDoppler::RATIO_RADIO,
-	MCDoppler::RATIO_Z,
-	MCDoppler::N_Routes,
-	MCDoppler::RATIO_BETA,
-	MCDoppler::RATIO_GAMMA},
-      { MCDoppler::BETA_RATIO,
-	MCDoppler::BETA_RATIO,
-	MCDoppler::BETA_RATIO,
-	MCDoppler::N_Routes,
-	MCDoppler::BETA_RATIO},
-      { MCDoppler::GAMMA_RATIO,
-	MCDoppler::GAMMA_RATIO,
-	MCDoppler::GAMMA_RATIO,
-	MCDoppler::GAMMA_RATIO,
-	MCDoppler::N_Routes}
-    };
-
-// List of codes converted to
-    static const MDoppler::Types ToRef[MCDoppler::N_Routes] = {
-      MDoppler::RATIO,
-      MDoppler::RATIO,
-      MDoppler::RATIO,
-      MDoppler::RATIO,
-      MDoppler::RADIO,
-      MDoppler::Z,
-      MDoppler::BETA,
-      MDoppler::GAMMA
-    };
-
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
-    Int tmp;
-    while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
-	mc.addMethod(tmp);
-	initConvert(tmp, mc);
-    }
+  Int iin  = inref.getType();
+  Int iout = outref.getType();
+  Int tmp;
+  while (iin != iout) {
+    tmp = FromTo_p[iin][iout];
+    iin = ToRef_p[tmp][1];
+    mc.addMethod(tmp);
+    initConvert(tmp, mc);
+  };
 }
 
 void MCDoppler::clearConvert() {
@@ -108,35 +85,13 @@ void MCDoppler::clearConvert() {
 //# Conversion routines
 void MCDoppler::initConvert(uInt which, MConvertBase &mc) {
 
+  if (False) initConvert(which, mc);	// Stop warning
+
   switch (which) {
-
-  case RADIO_RATIO:
-    break;
-
-  case Z_RATIO:
-    break;
-
-  case BETA_RATIO:
-    break;
-
-  case GAMMA_RATIO:
-    break;
-
-  case RATIO_RADIO: 
-    break;
-
-  case RATIO_Z:
-    break;
-
-  case RATIO_BETA:
-    break;
-
-  case RATIO_GAMMA:
-    break;
-
+    
   default:
     break;
-  }
+  };
 }
 
 void MCDoppler::doConvert(MeasValue &in,
@@ -151,6 +106,9 @@ void MCDoppler::doConvert(MVDoppler &in,
 			  MRBase &inref,
 			  MRBase &outref,
 			  const MConvertBase &mc) {
+
+  if (False) {inref.getType(); outref.getType(); }; // to stop warning
+    
   Double t = (Double) in;
 
   for (Int i=0; i<mc.nMethod(); i++) {
@@ -191,7 +149,7 @@ void MCDoppler::doConvert(MVDoppler &in,
 
     default:
       break;
-    }
+    }; // switch
     in = t;
-  }
+  }; // for
 }
