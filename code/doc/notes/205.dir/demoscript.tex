@@ -47,27 +47,48 @@ can see the same disks
 \item Show how help works
 \item Show {\em about AIPS++} window, talk about configuration of
 AIPS++ (aipsrc variables)
+\end{itemize}
 \item Show capabilities of Glish
 \begin{itemize}
-\item Simple vectors: {\tt a:=1:1000; b:=sin(pi*(a/360)^2); print a, b}
-\item Plotting: {\tt dp.plotxy(a, b, "squares"}
-\item Servers and FFTs: {\tt
-fft:=fftserver();c:=fft.realtocomplex(b);dp.clear();dp.plotxy(a,abs(c))}.
+\item Simple vectors: 
+\begin{verbatim}
+a:=1:1000
+b:=sin(pi*(a/360)^2)
+print a, b
+\end{verbatim}
+\item Plotting: 
+\begin{verbatim}
+dp.plotxy(a, b, "squares")
+\end{verbatim}
+\item Servers and FFTs:
+\begin{verbatim}
+fft:=fftserver()
+c:=fft.realtocomplex(b)
+dp.clear()
+dp.plotxy(a,abs(c))
+\end{verbatim}
 Zoom on plot to show detail.
 \item Aipsview. Make and display an array:
 \begin{verbatim}
 a:=array(1:1000, 100, 100)
 dd.array(a)
 \end{verbatim}
-
 \end{itemize}
 \end{itemize}
 
 \section{Synthesis}
 
 \begin{itemize}
-\item Set up a MeasurementSet: {\tt imagedemo(T);di.init_ms()}
-\item Browse the MS: {\tt t:=table('MS');t.browse();}
+\item Set up a MeasurementSet: 
+\begin{verbatim}
+imagedemo(T)
+di.init_ms()
+\end{verbatim}
+\item Browse the MS: 
+\begin{verbatim}
+t:=table('MS')
+t.browse()
+\end{verbatim}
 \item Change the uvw coordinates!:
 \begin{verbatim}
 t:=table('MS', read_only=F)
@@ -79,16 +100,36 @@ uvw*:=0.9;
 t.putcol('UVW', uvw);
 t.flush()
 \end{verbatim}
-\item Make an image: {\tt di.inputs();di.deconvolve();}
-\item Display it: {\tt di.display()}
+\item Make an image: 
+\begin{verbatim}
+di.inputs()
+di.deconvolve()
+\end{verbatim}
+\item Display it:
+\begin{verbatim}
+di.display()
+\end{verbatim}
 \item Set levels on aipsview (-0.03, 0.05 works). Go through all planes. Show the axes.
 \item Do a selfcal.
 \begin{itemize}
-\item Set a threshold: {\tt di.model.threshold:=0.030}
-\item Derive the model: {\tt di.derive_model();di.derive_ft()}
-\item Do the solution: {\tt di.solve_cal()}
+\item Set a threshold: 
+\begin{verbatim}
+di.model.threshold:=0.10
+\end{verbatim}
+\item Derive the model: 
+\begin{verbatim}
+di.derive_model()
+di.derive_ft()
+\end{verbatim}
+\item Do the solution: 
+\begin{verbatim}
+di.solve\_cal()
+\end{verbatim}
 \item Repeat the deconvolution after changing the name of the output
-image: {\tt di.images.restored:='restored.1'}
+image: 
+\begin{verbatim}
+di.images.restored:='restored.1'
+\end{verbatim}
 \item Display the image again.
 \end{itemize}
 \item Show a gaintable:
@@ -98,4 +139,29 @@ gt.plot()
 \end{verbatim}
 \end{itemize}
 
+\section{Measures GUI}
 
+\section{Utilities}
+
+\begin{itemize}
+\item Show system information:
+\begin{verbatim}
+sysinfo()
+sysinfo().numcpu()
+sysinfo().host()
+\end{verbatim}
+\item Show the catalog browser
+\begin{verbatim}
+dc.gui()
+\end{verbatim}
+\end{itemize}
+
+\section{Single Dish}
+
+\begin{itemize}
+\item Load sdddemo and create tables for reading
+\begin{verbatim}
+include 'sddemo.g'
+sddemo()
+\end{verbatim}
+\end{itemize}
