@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#if !defined AIPS_GENSORT_H
+#if !defined (AIPS_GENSORT_H)
 #define AIPS_GENSORT_H
 
 #include <aips/aips.h>
