@@ -177,9 +177,9 @@ const String& TableMeasOffsetDesc::columnName() const
     return itsVarColName;
 }
 
-void TableMeasOffsetDesc::write(TableRecord& measInfo, const String& prefix)
+void TableMeasOffsetDesc::write(TableDesc& td, TableRecord& measInfo, 
+	    	    	    	const String& prefix)
 {
-
     if (itsMeasure != 0) {
     	TableRecord measRec;
     	measRec.define("mType", itsMeasure->tellMe());
@@ -189,6 +189,6 @@ void TableMeasOffsetDesc::write(TableRecord& measInfo, const String& prefix)
     }
     if (itsTMDesc != 0) {
 	measInfo.define(prefix + "Col", itsTMDesc->columnName());
-	itsTMDesc->write();
+	itsTMDesc->write(td);
     }
 }
