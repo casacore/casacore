@@ -1,0 +1,14 @@
+
+change id: 0002
+ author:   Ralph Marson
+ date:     2001/03/13
+ avers:    1.5
+ area:     Tool
+ package:  nrao
+ module:   vlafiller
+ type:     Documentation
+ category: New
+ summary:  Added a section on scaling and weighting
+I have added a section to the vlafiller.help file describing how the
+vlafiller tool scales and weights the data. This makes explicit
+all the ad-hoc constants that are used.
