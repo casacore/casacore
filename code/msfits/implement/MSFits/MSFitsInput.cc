@@ -78,7 +78,9 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
   
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
+#include <trial/FITS/FITSSpectralUtil.h>
 #include <trial/FITS/BinTable.h>
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
