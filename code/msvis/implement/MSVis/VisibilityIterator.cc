@@ -307,8 +307,13 @@ void ROVisibilityIterator::setState()
   }
   if ( msIter_p.newSpectralWindow()) {
     Int spw=msIter_p.spectralWindowId();
-    nChan_p = colVis.shape(0)(1);
-    nPol_p = colVis.shape(0)(0);
+    if (floatDataFound_p) {
+      nChan_p = colFloatVis.shape(0)(1);
+      nPol_p = colFloatVis.shape(0)(0);
+    } else {
+      nChan_p = colVis.shape(0)(1);
+      nPol_p = colVis.shape(0)(0);
+    };
     if (Int(numChanGroup_p.nelements())<= spw || 
 	numChanGroup_p[spw] == 0) {
       // no selection set yet, set default = all
@@ -343,7 +348,9 @@ void ROVisibilityIterator::attachColumns()
   colAntenna1.attach(selTable_p,MS::columnName(MS::ANTENNA1));
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
-  colVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined(MS::columnName(MS::DATA))) {
+    colVis.attach(selTable_p,MS::columnName(MS::DATA));
+  };
   if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
     colFloatVis.attach(selTable_p,MS::columnName(MS::FLOAT_DATA));
     floatDataFound_p=True;
@@ -633,7 +640,8 @@ void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
     if (floatDataFound_p) {
       Cube<Float> dataFloat;
       colFloatVis.getColumn(slicer,dataFloat,True);
-      data=RealToComplex(dataFloat);
+      data.resize(dataFloat.shape());
+      convertArray(data,dataFloat);
     } else {
       colVis.getColumn(slicer,data,True);
     };
@@ -657,7 +665,8 @@ void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
     if (floatDataFound_p) {
       Cube<Float> dataFloat;
       colFloatVis.getColumn(dataFloat,True);
-      data=RealToComplex(dataFloat);
+      data.resize(dataFloat.shape());
+      convertArray(data,dataFloat);
     } else {
       colVis.getColumn(data,True);
     };
@@ -981,7 +990,9 @@ void VisibilityIterator::attachColumns()
   ROVisibilityIterator::attachColumns();
   //todo: should cache this (update once per ms)
   const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
-  RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined(MS::columnName(MS::DATA))) {
+    RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
+  };
   if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
     floatDataFound_p=True;
     RWcolFloatVis.attach(selTable_p,MS::columnName(MS::FLOAT_DATA));
@@ -1200,7 +1211,7 @@ void VisibilityIterator::putDataColumn(DataColumn whichOne,
   switch (whichOne) {
   case Observed:
     if (floatDataFound_p) {
-      Cube<Float> dataFloat=ComplexToReal(data);
+      Cube<Float> dataFloat=real(data);
       RWcolFloatVis.putColumn(slicer,dataFloat);
     } else {
       RWcolVis.putColumn(slicer,data);
@@ -1223,7 +1234,7 @@ void VisibilityIterator::putDataColumn(DataColumn whichOne,
   switch (whichOne) {
   case Observed:
     if (floatDataFound_p) {
-      Cube<Float> dataFloat=ComplexToReal(data);
+      Cube<Float> dataFloat=real(data);
       RWcolFloatVis.putColumn(dataFloat);
     } else {
       RWcolVis.putColumn(data);
