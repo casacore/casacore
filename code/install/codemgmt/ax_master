@@ -4051,3 +4051,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCPowerScaleHandler.cc trialdisplay/implement/DisplayCanvas/WCPowerScaleHandler.cc
 14 065 src mv trial/implement/DisplayCanvas/WCResampleHandler.cc trialdisplay/implement/DisplayCanvas/WCResampleHandler.cc
 14 065 src mv trial/implement/DisplayCanvas/WCSizeControlHandler.cc trialdisplay/implement/DisplayCanvas/WCSizeControlHandler.cc
+14 065 src mv trial/implement/DisplayCanvas/makefile trialdisplay/implement/DisplayCanvas/makefile
