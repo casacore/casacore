@@ -555,15 +555,20 @@ void doit4 (DirectionCoordinate& dC)
    Vector<Bool> pixelAxes(2), worldAxes(2);
    Vector<Double> minWorld(2), maxWorld(2);
    Vector<String> units = dC.worldAxisUnits();
+   Vector<Double> refVal = dC.referenceValue();
 //
-   Quantum<Double> tmp(-180.0, Unit("deg"));
-   minWorld(0) = tmp.getValue(Unit(units(0)));
-   tmp.setValue(180.0);
-   maxWorld(0) = tmp.getValue(Unit(units(0)));
-   tmp.setValue(-90.0);
-   minWorld(1) = tmp.getValue(Unit(units(1)));
-   tmp.setValue(90.0);
-   maxWorld(1) = tmp.getValue(Unit(units(1)));
+   Quantum<Double> off(10,Unit("deg"));
+   off.convert(Unit(units(0)));
+   Double tmp = refVal(0) - off.getValue();
+   minWorld(0) = tmp;
+   tmp = refVal(0) + off.getValue();
+   maxWorld(0) = tmp;
+//
+   off.convert(Unit(units(1)));
+   tmp = refVal(1) - off.getValue();
+   minWorld(1) = tmp;
+   tmp = refVal(1) + off.getValue();
+   maxWorld(1) = tmp;
 //
 // Forced errors
 //
@@ -617,14 +622,10 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False);
    worldAxes(0) = True;
    pixelAxes(1) = True;
-cerr << "worldIn, pixelIn=" << worldIn << pixelIn << endl;
-cerr << "worldAxes, pixelAxes = " << worldAxes << pixelAxes << endl;
    if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-cerr << "worldOut, pixelOut = " << worldOut << pixelOut << endl;
-
    if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
