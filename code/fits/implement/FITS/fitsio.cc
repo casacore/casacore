@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -818,10 +818,14 @@ int FitsOutput::write(FITS::HDUType t, char *addr, int bytes, char pad) {
 		curr_size += bytes;
 	    }
 	}
+	// Fill up and write the last record as long as the data doesn't
+	// evenly fill the last record.
 	if (curr_size == data_size) {
-	    while (bytepos < FitsRecSize)
-		curr[bytepos++] = pad;
-	    fout.write(curr);
+	    if (bytes) {
+		while (bytepos < FitsRecSize)
+		    curr[bytepos++] = pad;
+		fout.write(curr);
+	    }
 	    data_size = 0;
 	    curr_size = 0;
             header_done = False;
