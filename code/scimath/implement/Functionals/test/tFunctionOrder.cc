@@ -45,6 +45,7 @@ int main() {
     cout << "From: ";
     cout << z.fromRecord(errormsg, y) << ": " << z << endl;
     cout << "-----------------------------------------------------" << endl;
+    x.getInt(0) = 0;
     x.getInt(1) = 5;
     cout << "x: " << x << endl;
     cout << "To: " << x.toRecord(errormsg, y) << endl;
