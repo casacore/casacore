@@ -136,7 +136,7 @@ class IPosition;
 // Coordinate number was 0 (the DirectionCoordinate) and that the axis in
 // that coordinate was 0 (the first axis in a DirectionCoordinate
 // is always longitude, the second always latitude).  If we asked it to find
-// pxiel axis 1, it would tell us that the Coordinate number was 1
+// pixel axis 1, it would tell us that the Coordinate number was 1
 // (the SpectralCoordinate) and that the axis in that coordinate was 0
 // (there is only one axis in a SpectralCoordinate). If we asked for
 // pixelAxis 2 that would generate an error because our squashed image
@@ -358,6 +358,33 @@ public:
     // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
 
+    // Mixed pixel/world coordinate conversion.
+    // worldIn and worldAxes are of length nWorldAxes.
+    // pixelIn and pixelAxes are of length nPixelAxes.
+    // worldAxes(i) = True specifies you have given a world
+    // value in worldIn(i) to convert to pixel.
+    // pixelAxes(i)=True specifies you have given a pixel 
+    // value in pixelIn(i) to convert to world.
+    // You cannot specify the same axis via worldAxes
+    // and pixelAxes.
+    // Values in pixelIn are converted to world and
+    // put into worldOut in the appropriate worldAxis
+    // location.  Values in worldIn are copied to
+    // worldOut.   
+    // Values in worldIn are converted to pixel and
+    // put into pixelOut in the appropriate pixelAxis
+    // location.  Values in pixelIn are copied to
+    // pixelOut
+    // Returns True if the conversion succeeds, otherwise it returns False and
+    // <src>errorMessage()</src> contains an error message. The output vectors
+    // are resized.
+    Bool toMix(Vector<Double>& worldOut,
+               Vector<Double>& pixelOut,
+               const Vector<Double>& worldIn,
+               const Vector<Double>& pixelIn,
+               const Vector<Bool>& worldAxes,                
+               const Vector<Bool>& pixelAxes) const;
+
     // Return the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
@@ -501,6 +528,8 @@ private:
 
     void copy(const CoordinateSystem &other);
     void clear();
+//    Int inVector(Bool checkSame, uInt idx, uInt target, 
+//                 const Vector<uInt>& vector) const;
 };
 
 #endif

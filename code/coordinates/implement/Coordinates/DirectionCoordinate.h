@@ -144,6 +144,18 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
+    // Mixed pixel/world coordinate conversion.  Vector in must
+    // be length nWorldAxes (2).  Specify whether longitude
+    // (in(0)) or latitude (in(1)) is the world coordinate . It is
+    // assumed that the other value is the pixel coordinate.
+    // Returns True if the conversion succeeds, otherwise 
+    // it returns False and method
+    // errorMessage returns an error message.   The output 
+    // vectors are appropriately resized.
+    Bool toMix(Vector<Double>& out,
+               const Vector<Double>& in,
+               Bool longIsWorld) const;
+
     // A convenient way to turn the world vector into an MDirection for further
     // processing in the Measures system.
     // 

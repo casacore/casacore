@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+#include <wcslib/wcs.h>
 #include <wcslib/cel.h>
 #include <wcslib/proj.h>
 
@@ -34,8 +35,11 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
@@ -188,8 +192,8 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	copy_celprm_and_prjprm(celprm_p, prjprm_p,
 			       other.celprm_p, other.prjprm_p);
 	linear_p = other.linear_p;
-	names_p = other.names_p;
-	units_p = other.units_p;
+	names_p = other.names_p.copy();
+	units_p = other.units_p.copy();
 	to_degrees_p[0] = other.to_degrees_p[0];
 	to_degrees_p[1] = other.to_degrees_p[1];
     }
@@ -293,6 +297,188 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 
     return ok;
 }
+
+ 
+Bool DirectionCoordinate::toMix(Vector<Double>& out,
+                                const Vector<Double>& in,
+                                Bool longIsWorld) const
+{
+    AlwaysAssert(in.nelements() == 2, AipsError);
+    out.resize(2);
+//
+    LogIO os(LogOrigin("DirectionCoordinate", "toMix", WHERE));
+//
+    Vector<String> saveUnits = worldAxisUnits();
+    DirectionCoordinate dC(*this);
+    Vector<String> units(saveUnits.copy());
+    units(0) = "deg";
+    units(1) = "deg";
+    dC.setWorldAxisUnits(units);
+//
+    Vector<Double> crval = dC.referenceValue();
+    Vector<Double> crpix = dC.referencePixel().ac();
+    Projection proj = dC.projection();
+    Vector<Double> projp = proj.parameters();
+    Vector<String> names = DirectionCoordinate::axisNames(directionType(), True);
+//
+// Construct FITS ctype vector
+//
+    Vector<String> ctype(2);
+    Bool isNCP = False;
+    for (uInt i=0; i<2; i++) {
+       String name = names(i);
+       while (name.length() < 4) {
+           name += "-";
+       }
+       switch(proj.type()) {
+          case Projection::TAN:  // Fallthrough
+          case Projection::ARC:
+              name = name + "-" + proj.name();
+              break;
+          case Projection::SIN:
+
+// This is either "real" SIN or NCP
+
+              AlwaysAssert(projp.nelements() == 2, AipsError);
+              if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
+                  // True SIN
+                  name = name + "-" + proj.name();
+              } else {
+                  // NCP?
+                  // From Greisen and Calabretta
+                  if (::near(projp(0), 0.0) &&
+                      ::near(projp(1), 1.0/tan(crval(1)*C::pi/180.0))) {
+                      // Is NCP
+                      isNCP = True;
+                      name = name + "-NCP";
+                  } else {
+                      // Doesn't appear to be NCP
+                      // Only print this once
+                      if (!isNCP) {
+                          os << LogIO::WARN << "SIN projection with non-zero"
+                              " projp does not appear to be NCP." << endl <<
+                              "However, assuming NCP anyway." << LogIO::POST;
+                      }
+                      name = name + "-NCP";
+                      isNCP = True;
+                  }
+              }
+              break;
+          default:
+             if (i == 0) {
+
+// Only print the message once for long/lat
+
+                os << LogIO::WARN <<proj.name()
+                   << " is not known to standard FITS (it is known to WCS)."
+                   << LogIO::POST;
+             }
+             name = name + "-" + proj.name();
+             break;
+       }
+       ctype(i) = name;
+    }
+//
+// Initialize
+//
+    char c_ctype[2][9];
+    strncpy (c_ctype[0], ctype(0).chars(), 9);
+    strncpy (c_ctype[1], ctype(1).chars(), 9);
+    struct wcsprm wcs;
+    int iret = wcsset(2, c_ctype, &wcs);
+    if (iret!=0) {
+        String errmsg = "wcs wcsset_error: ";
+        errmsg += wcsset_errmsg[iret];
+        set_error(errmsg);
+        return False;
+    }
+//
+// Set input world/pixel arrays
+//
+    int mixpix, mixcel;
+    double vspan[2];
+    double world[2];
+    double pixcrd[2];
+    if (longIsWorld) {
+       mixcel = 1;          // 1 or 2 (a code, not an index)
+       mixpix = 1;          // index into pixcrd array
+//
+// Latitude span
+//
+       vspan[0] = -90.0;
+       vspan[1] =  90.0;
+//
+       Quantum<Double> tmp(in(0), Unit(saveUnits(0)));
+       Double tmp2 = tmp.getValue(Unit("deg"));
+       world[wcs.lng] = (double)tmp2;
+       pixcrd[mixpix] = in(1);
+    } else {
+       mixcel = 2;          // 1 or 2 (a code, not an index)
+       mixpix = 0;          // index into pixcrd array
+//
+// Longitude span
+//
+       vspan[0] = -180.0;
+       vspan[1] =  180.0;
+//
+       Quantum<Double> tmp(in(1), Unit(saveUnits(1)));
+       Double tmp2 = tmp.getValue(Unit("deg"));
+       world[wcs.lat] = (double)tmp2;
+       pixcrd[mixpix] = in(0);
+    }
+//
+    double vstep = 1.0;
+    int viter = 2;
+    double c_crval[2];
+    c_crval[0] = crval(0);
+    c_crval[1] = crval(1);
+    double phi, theta;
+    double imgcrd[2];
+/*
+cout << "mixpix, mixcel=" << mixpix << " " << mixcel << endl;
+cout << "vspan, vstep, viter=" << vspan[0] << " " << vspan[1] 
+                               << " " << vstep << " " << viter << endl;
+cout << "world in =" << world[0] << " " << world[1] << endl;
+cout << "pixcrd in =" << pixcrd[0] << " " << pixcrd[1] << endl;
+*/
+// 
+// Do it
+//
+    linprm lprm = linear_p.linprmWCS();
+    iret = wcsmix(c_ctype, &wcs, mixpix, mixcel, vspan, vstep, 
+                  viter, world, c_crval, celprm_p, &phi, &theta, 
+                  prjprm_p, imgcrd, &lprm, pixcrd);
+    if (iret!=0) {
+        String errmsg = "wcs wcsmix_error: ";
+        errmsg += wcsmix_errmsg[iret];
+        set_error(errmsg);
+        return False;
+    }
+/*
+    cout << "phi,theta out =" << phi << " " << theta << endl;
+    cout << "imgcrd out =" << imgcrd[0] << " " << imgcrd[1] << endl;       
+    cout << "world out =" << world[0] << " " << world[1] << endl;
+    cout << "pixcrd out =" << pixcrd[0] << " " << pixcrd[1] << endl;
+*/
+//
+// Fish out the results
+//
+    if (longIsWorld) {
+       out(0) = pixcrd[0];
+       Double tmp1 = Double(world[wcs.lat]);
+       Quantum<Double> tmp(tmp1, Unit(units(1)));
+       out(1) = tmp.getValue(Unit(saveUnits(1)));
+    } else {
+       Double tmp1 = Double(world[wcs.lng]);
+       Quantum<Double> tmp(tmp1, Unit(units(0)));
+       out(0) = tmp.getValue(Unit(saveUnits(0)));
+       out(1) = pixcrd[1];
+    } 
+//
+    return True;
+}
+
+
 
 MDirection::Types DirectionCoordinate::directionType() const
 {
