@@ -33,9 +33,8 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Tasking/MeasureParameterAccessor.h>
 #include <trial/MeasurementComponents/StokesConverter.h>
-
+#include <trial/Tasking/MeasureParameterAccessor.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
@@ -45,6 +44,7 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Glish/GlishValue.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
