@@ -33,7 +33,7 @@
 #include <aips/Mathematics/AutoDiffIO.h>
 
 #include <aips/Arrays/Vector.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/Timer.h>
@@ -153,12 +153,9 @@ int main(int argc, char **argv) {
   cout << "Manual (mv): " << mv(va, par, x);
   cout << " " << va << endl;
 
-  Gaussian1D<Double> g1d((Double(par(0))),
-			 (Double(par(1))),
-			 (Double(par(2))/(1.0/sqrt(log(16.0)))));
-  g1d.evaluate(v, va, x);
-  cout << "Gauss1D (ao): " << va <<
-    " " << v << endl;
+  NQGaussian1D<Double> g1d((Double(par(0))),
+			   (Double(par(1))),
+			   (Double(par(2))/(1.0/sqrt(log(16.0)))));
 
   // Autoderivatives
   cout << "AutoDiff (a0): " << a0(para, x) << endl;
@@ -248,7 +245,7 @@ int main(int argc, char **argv) {
 
   tim.mark();
   for (Int i=0; i<N; i++) {
-    g1d.evaluate(v, va, x);
+    g1d(x);
   };
   cout << "ao: ";
   tim.show();
