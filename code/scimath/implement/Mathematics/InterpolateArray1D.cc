@@ -1,5 +1,5 @@
 //# Interpolate1DArray.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -140,7 +140,8 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	else if (where == 0) {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[0][j];
 	}
-	else if (xin[where] - x_req < .5) {
+	else if (xin[where] - x_req < static_cast<Domain>(.5)) {
+            //static_cast required to get .5 coerced for SGI compiler
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[where][j];
 	}
 	else {
@@ -296,7 +297,8 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	    youtFlags[i][j]=yinFlags[0][j];
 	  }
 	}
-	else if (xin[where] - x_req < .5) {
+	else if (xin[where] - x_req < static_cast<Domain>(.5)) {
+            //static_cast required to get .5 coerced for SGI compiler
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[where][j];
 	    youtFlags[i][j]=yinFlags[where][j];
