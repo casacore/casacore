@@ -1,5 +1,5 @@
 //# ColumnDesc.h: an envelope class for column descriptions in tables
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -192,9 +192,8 @@ public:
     // </group>
 
     // Get the name of the column.
-    //# This should be inlined, but CFront turns it into a static.
+    //# Maybe it can be inlined.
     const String& name() const;
-//#	{ return colPtr_p->name(); }
 
     // Get the data type of the column.
     // This always returns the type of a scalar, even when the column
@@ -216,8 +215,18 @@ public:
     const String& dataManagerType() const
 	{ return colPtr_p->dataManagerType(); }
 
+    // Get the type name of the default data manager
+    // (allowing it to be changed).
+    String& dataManagerType()
+	{ return colPtr_p->dataManagerType(); }
+
     // Get the data manager group.
     const String& dataManagerGroup() const
+	{ return colPtr_p->dataManagerGroup(); }
+
+    // Get the data manager group.
+    // (allowing it to be changed).
+    String& dataManagerGroup()
 	{ return colPtr_p->dataManagerGroup(); }
 
     // Get comment string.

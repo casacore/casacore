@@ -1,5 +1,5 @@
 //# BaseColDesc.h: an abstract base class for column descriptions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_BASECOLDESC_H)
 #define AIPS_BASECOLDESC_H
 
-#if defined(_AIX)
-#pragma implementation ("BaseColDesc.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -156,16 +153,26 @@ public:
     const String& dataManagerType() const
 	{ return dataManType_p; }
 
+    // Get the type name of the default data manager.
+    // (allowing it to be changed)
+    String& dataManagerType()
+	{ return dataManType_p; }
+
     // Get the data manager group.
     const String& dataManagerGroup() const
 	{ return dataManGroup_p; }
 
-    // Get comment string (allowing it to be changed).
-    String& comment()
-	{ return comment_p; }
+    // Get the data manager group.
+    // (allowing it to be changed)
+    String& dataManagerGroup()
+	{ return dataManGroup_p; }
 
     // Get comment string.
     const String& comment() const
+	{ return comment_p; }
+
+    // Get comment string (allowing it to be changed).
+    String& comment()
 	{ return comment_p; }
 
     // Get the options.
