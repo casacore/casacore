@@ -262,7 +262,7 @@ int main(int argc, char **argv) {
       cout << "---------------------------------------------------" << endl;
       
       {
-	///el[3].fixAmpl();
+	el[3].fixAmpl();
 	SpectralFit fitter;
 	for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
 	for (uInt i=0; i<fitter.list().nelements(); i++) {
@@ -281,6 +281,7 @@ int main(int argc, char **argv) {
 	  fitter.list()[i].getError(tmp);
 	  cout << "Errors:     " << tmp << endl << endl;
 	};
+	el[3].fixAmpl(False);
       }
       cout << "---------------------------------------------------" << endl;
       

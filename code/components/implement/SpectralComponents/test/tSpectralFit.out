@@ -211,7 +211,7 @@ GAUSSIAN element:
   Sigma:     0.078125
 
 GAUSSIAN element: 
-  Amplitude: 5
+  Amplitude: 5 (fixed)
   Center:    1403
   Sigma:     0.0292969
 
@@ -223,28 +223,28 @@ GAUSSIAN element:
   Center:    1402.5
   Sigma:     0.0200996
 Parameters: [0.930178, 1402.5, 0.0200996]
-Errors:     [0.304406, 0.00365678, 0.00856158]
+Errors:     [0.304536, 0.00365834, 0.00856523]
 
 GAUSSIAN element: 
   Amplitude: 2.76114
   Center:    1405
   Sigma:     0.0357375
 Parameters: [2.76114, 1405, 0.0357375]
-Errors:     [0.238205, 0.00151138, 0.00355904]
+Errors:     [0.238306, 0.00151203, 0.00356056]
 
 GAUSSIAN element: 
   Amplitude: 0.570195
   Center:    1407.48
   Sigma:     0.0632673
 Parameters: [0.570195, 1407.48, 0.0632673]
-Errors:     [0.189678, 0.00897295, 0.0211297]
+Errors:     [0.189759, 0.00897677, 0.0211387]
 
 GAUSSIAN element: 
-  Amplitude: 5.24744
+  Amplitude: 5
   Center:    1403
-  Sigma:     0.0273588
-Parameters: [5.24744, 1403, 0.0273588]
-Errors:     [0.272246, 0.000695814, 0.00163844]
+  Sigma:     0.0281892
+Parameters: [5, 1403, 0.0281892]
+Errors:     [0, 0.00074169, 0.00142603]
 
 ---------------------------------------------------
 Different start values: 
