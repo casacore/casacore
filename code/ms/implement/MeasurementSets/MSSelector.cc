@@ -604,7 +604,7 @@ Bool MSSelector::select(const String& msSelect)
   Int nspace = msSelect.freq(' ');
   if (msSelect.empty() || nspace==len) return False;
   String parseString="select from $1 where " + msSelect;
-  selms_p=tableCommand(parseString,selms_p);
+  selms_p=tableCommand(parseString,selms_p).table();
   if (selms_p.nrow()==0) {
     os << LogIO::WARN << " Selected Table is now empty - use selectinit"
        << LogIO::POST;
