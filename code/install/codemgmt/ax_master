@@ -2641,3 +2641,4 @@
 10 010 src mv aips/implement/Measures/UnitVal.cc aips/implement/Quanta/UnitVal.cc
 10 010 src mv aips/implement/Measures/UnitVal.h aips/implement/Quanta/UnitVal.h
 10 010 src mv aips/implement/Measures/MUString.cc aips/implement/Quanta/MUString.cc
+10 010 src mv aips/implement/Measures/MUString.h aips/implement/Quanta/MUString.h
