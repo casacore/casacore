@@ -3251,3 +3251,4 @@
 13 158 src mv trial/implement/ComponentModels/test/dPointCompRep.cc trial/implement/ComponentModels/test/dPointShape.cc
 13 160 src rm trial/implement/ComponentModels/test/dPointCompRep.exec
 13 160 src mv trial/implement/ComponentModels/test/dGaussianCompRep.cc trial/implement/ComponentModels/test/dGaussianShape.cc
+13 160 src rm trial/implement/ComponentModels/test/dGaussianCompRep.exec
