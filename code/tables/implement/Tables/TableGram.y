@@ -69,6 +69,7 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token AS
 %token IN
 %token BETWEEN
+%token EXISTS
 %token LIKE
 %token EQREGEX
 %token NEREGEX
@@ -133,6 +134,10 @@ command:   selcomm
          | updcomm
          | inscomm
          | delcomm
+         ;
+
+subquery:  LPAREN selcomm RPAREN
+         | LBRACKET selcomm RBRACKET
          ;
 
 selcomm:   select selrow
@@ -402,13 +407,7 @@ tfname:    TABNAME
                { $$ = $1; }
          | STRINGLITERAL
                { $$ = $1; }
-         | LBRACKET selcomm RBRACKET {
-	       TableParseSelect* p = TableParseSelect::popSelect();
-	       $$ = p->doFromQuery();
-	       theFromQueryDone = True;
-	       delete p;
-           }
-         | LPAREN selcomm RPAREN {
+         | subquery {
 	       TableParseSelect* p = TableParseSelect::popSelect();
 	       $$ = p->doFromQuery();
 	       theFromQueryDone = True;
@@ -518,6 +517,16 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $4;
 	   }
+         | EXISTS subquery {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+	       $$ = new TableExprNode (p->doExists(False));
+	       delete p;
+           }
+         | NOT EXISTS subquery {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+	       $$ = new TableExprNode (p->doExists(True));
+	       delete p;
+           }
          | arithexpr IN arithexpr {
                $$ = new TableExprNode ($1->in (*$3));
                delete $1;
@@ -657,12 +666,7 @@ set:       LBRACKET elems RBRACKET {
                $$ = new TableExprNode ($2->setOrArray());
                delete $2;
            }
-         | LBRACKET selcomm RBRACKET {
-	       TableParseSelect* p = TableParseSelect::popSelect();
-               $$ = new TableExprNode (p->doSubQuery());
-	       delete p;
-           }
-         | LPAREN selcomm RPAREN {
+         | subquery {
 	       TableParseSelect* p = TableParseSelect::popSelect();
                $$ = new TableExprNode (p->doSubQuery());
 	       delete p;

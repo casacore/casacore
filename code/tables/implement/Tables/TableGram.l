@@ -283,6 +283,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 "<="      { tableGramPosition() += yyleng; return LE; }
 "<"       { tableGramPosition() += yyleng; return LT; }
 {BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
+{EXISTS}  { tableGramPosition() += yyleng; return EXISTS; }
 {LIKE}    { tableGramPosition() += yyleng; return LIKE; }
 "&&"      { tableGramPosition() += yyleng; return AND; }
 {AND}     { tableGramPosition() += yyleng; return AND; }
