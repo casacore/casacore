@@ -241,6 +241,9 @@ IAUR(pn00b)(const Double &epoch1, const Double &epoch2,
 	    Double *rb, Double *rp, Double *rbp,
 	    Double *rn, Double *rnpn);
 extern "C" void 
+IAUR(pr00)(const Double &ep01, const Double &ep02,
+	   Double &dpsipr, Double &depspr);
+extern "C" void 
 IAUR(nut00b)(const Double &epoch1, const Double &epoch2,
 	     Double &dpsi, Double &deps);
 extern "C" void 
