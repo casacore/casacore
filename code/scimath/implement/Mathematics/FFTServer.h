@@ -336,7 +336,7 @@ public:
   // </group>
 private:
   // function instead of flip for complex data only
-  Int phaseRotate(Matrix<S> & cData);
+  Int phaseRotate(Matrix<S> & cData, Bool toZero);
 
   //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
