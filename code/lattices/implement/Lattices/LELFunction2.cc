@@ -411,7 +411,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
          break;
       }
       default:
-         throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+         throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
       }
    } else {
       if (arg_p[0].isScalar()) {
