@@ -172,8 +172,10 @@ public:
 
   // Functions to set or replace the coordinate information in the Image
   // Returns False on failure, e.g. if the number of axes do not match.
+  //# NOTE. setCoordinateInfo should be pure virtual with a partial 
+  //# implementation however SGI ntv will not generate it with -no_prelink.
   // <group>
-  virtual Bool setCoordinateInfo(const CoordinateSystem &coords) = 0;
+  virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
   const CoordinateSystem &coordinates() const;
   // </group>
 
