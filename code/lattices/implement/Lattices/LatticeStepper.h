@@ -34,9 +34,6 @@
 #include <trial/Lattices/LatticeIndexer.h>
 #include <aips/Lattices/IPosition.h>
 
-#if defined(_AIX)
-#pragma implementation ("LatticeStepper.cc")
-#endif 
 
 // <summary>
 // Traverse a Lattice by cursor shape
@@ -45,11 +42,10 @@
 // <use visibility=export>
 
 // <reviewed reviewer="Neil Killeen" date="1997/??/??" tests="tLatticeStepper.cc">
+// </reviewed>
 
 // <prerequisite>
-// <list>
 //   <li> <linkto class=LatticeNavigator> LatticeNavigator </linkto>
-// </list>
 // </prerequisite>
 
 // <etymology>
@@ -221,10 +217,12 @@
 //   spectrum = 0.0;
 //   uInt channel = 0;
 //   for (iterator.reset(); !iterator.atEnd(); iterator++) {
-//     const Matrix<Float> cursor(iterator.matrixCursor());
-//     for (uInt col = 0; col < nCols; col++)
-//       for (uInt row = 0; row < nRows; row++)
+//     const Matrix<Float>& cursor = iterator.matrixCursor();
+//     for (uInt col = 0; col < nCols; col++) {
+//       for (uInt row = 0; row < nRows; row++) {
 //         spectrum(channel) += cursor(col, row);
+//       }
+//     }
 //     channel++;
 //   } // for iterator
 //   cout << "Average spectrum is: " 
@@ -296,13 +294,11 @@ public:
   LatticeStepper& operator= (const LatticeStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.  Both functions
-  // do the same thing.
+  // forward one step. Returns True if the cursor was moved.
   virtual Bool operator++(Int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved. Both
-  // functions do the same thing.
+  // backwards one step. Returns True if the cursor was moved.
   virtual Bool operator--(Int);
 
   // Function to move the cursor to the beginning of the (sub)-Lattice. Also
@@ -324,7 +320,7 @@ public:
   // the original position.
   virtual uInt nsteps() const;
 
-  // Functions which returns the current position of the beginning of the
+  // Functions which return the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origins
   // in the main Lattice and the <src>relativePosition</src> function is
   // relative to the origins and increments used in the sub-Lattice (defined
@@ -335,7 +331,7 @@ public:
   virtual IPosition relativePosition() const;
   // </group>
 
-  // Functions which returns the current position of the end of the
+  // Functions which return the current position of the end of the
   // cursor. The <src>endPosition</src> function is relative the origins
   // in the main Lattice and the <src>relativeEndPosition</src> function
   // is relative to the origins and increments used in the sub-Lattice
@@ -348,7 +344,7 @@ public:
   virtual IPosition relativeEndPosition() const;
   // </group>
 
-  // Functions which returns the shape of the Lattice being iterated
+  // Functions which return the shape of the Lattice being iterated
   // through. <src>latticeShape</src> always returns the shape of the main
   // Lattice while <src>subLatticeShape</src> returns the shape of any
   // sub-Lattice defined using the <src>subSection</src> function. 
@@ -424,25 +420,26 @@ private:
   // check if the cursor shape is an sub-multiple of the Lattice shape
   Bool niceFit() const;
 
-  LatticeIndexer theIndexer;//# Knows about the (sub)-Lattice shape and how
+  LatticeIndexer itsIndexer;//# Knows about the (sub)-Lattice shape and how
                             //# to traverse it.
-  IPosition theCursorAxes;  //# the cursor axes
-  IPosition theCursorShape; //# The shape of the cursor
-  IPosition theCursorPos;   //# The current position of the iterator.
-  IPosition theAxisPath;    //# the heading to follow for the cursor 
-  uInt theNsteps;           //# the number of iterator steps taken thus far; 
+  IPosition itsCursorAxes;  //# the cursor axes
+  IPosition itsCursorShape; //# The shape of the cursor
+  IPosition itsCursorPos;   //# The current position of the iterator.
+  IPosition itsAxisPath;    //# the heading to follow for the cursor 
+  uInt itsNsteps;           //# the number of iterator steps taken thus far; 
                             //# set to 0 on reset ()
-  Bool theEnd;              //# is the cursor beyond the end?
-  Bool theStart;            //# is the cursor at the beginning?
-  Bool theNiceFit;          //# if the cursor shape is a sub-multiple of the
+  Bool itsEnd;              //# is the cursor beyond the end?
+  Bool itsStart;            //# is the cursor at the beginning?
+  Bool itsNiceFit;          //# if the cursor shape is a sub-multiple of the
                             //# Lattice shape then set this to True. Used to
 			    //# avoid needing to test for a cursor hanging
 			    //# over the edge of the lattice.
-  Bool theHangover;         //# this data member is set by the increment and
-                            //# decrement operators if theNiceFit == False. It
+  Bool itsHangover;         //# this data member is set by the increment and
+                            //# decrement operators if itsNiceFit == False. It
                             //# is used to tell if the cursor "Hangs over"
                             //# the edge of the lattice shape.
-  uInt thePolicy;           //# what to do if the cursor does hang over
+  uInt itsPolicy;           //# what to do if the cursor does hang over
 };
+
 
 #endif
