@@ -6239,3 +6239,4 @@
 17 191 src mv ./aips/implement/Functionals/test/tNQChebyshev.cc ./aips/implement/Functionals/test/tChebyshev.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQCombiFunction.cc ./aips/implement/Functionals/test/tCombiFunction.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQCompoundFunction.cc ./aips/implement/Functionals/test/tCompoundFunction.cc
+17 191 src mv ./aips/implement/Functionals/test/tNQFunctionWrapper.cc ./aips/implement/Functionals/test/tFunctionWrapper.cc
