@@ -58,7 +58,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 		       Bool writableIfPossible)
 : itsImagePtr (image.cloneII())
 {
-  itsSubLatPtr = new SubLattice<T> (image, writableIfPossible);
+  itsSubLatPtr = new SubLattice<T> (image.latticeCast(), writableIfPossible);
   coords_p = image.coordinates();
 }
 
