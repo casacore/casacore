@@ -1,5 +1,5 @@
 //# UnitMap.h: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,11 +47,8 @@
 // <note role=warning>
 // SUN compiler does not accept non-simple default arguments
 // </note>
-static const String EmptyMapString="";
 // IAU definition of Gaussian grav. constant for calculating IAU units
-static const Double IAU_k=0.01720209895;
-// IAU definition of light time (s) unit distance to calculate IAU units
-static const Double IAU_tauA=499.0047837;	
+const Double IAU_k=0.01720209895;
 
 // <summary>
 // contains all simple known physical units
@@ -166,8 +163,6 @@ static const Double IAU_tauA=499.0047837;
 // </todo>
 
 class UnitMap {
-//# Friends
-    friend class UnitMap_init;
 public:
 
 //# Constructors
@@ -195,8 +190,9 @@ public:
 
 // Define a user standard unit
 // <group name="define">
+    static void putUser(const String &s, const UnitVal &val);
     static void putUser(const String &s, const UnitVal &val,
-			const String &name=EmptyMapString);
+			const String &name);
     static void putUser(const UnitName &name);
 // </group>
 // Remove a user unit
@@ -257,9 +253,6 @@ public:
     static void listUser(ostream &os);
     static void listUser();
   // </group>
-
-// For pretty layout lists
-    static String *FillString;
 // </group>
 
   // Return the different maps
@@ -306,59 +299,10 @@ private:
 //# Functions
 // Get the name of a FITS unit
     static Bool getNameFITS(UnitName *&name, uInt which);
+
+// Initialise the static map
+    static void initUM();
 };
-
-
-// <summary>
-// Class used to force construction of <linkto class=UnitMap>UnitMap</linkto>.
-// </summary>
-
-// <synopsis>
-// A static object of this class is used to make sure that
-// <linkto class=UnitMap>UnitMap</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="UnitMap_init" classes="UnitMap">
-//   <here>UnitMap_init</here> --
-// Class used to force construction of <linkto class=UnitMap>UnitMap</linkto>.
-// </linkfrom>
-
-class UnitMap_init {
-public:
-    UnitMap_init();
-    ~UnitMap_init();
-private:
-    static uShort count;
-};
-
-// <summary>
-// Object used to force construction of <linkto class=UnitMap>UnitMap</linkto>.
-// </summary>
-
-// <synopsis>
-// This static object of the <linkto class=UnitMap_init>UnitMap_init</linkto>
-// class is used to make sure that
-// <linkto class=UnitMap>UnitMap</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="UnitMap initialization object" classes="UnitMap UnitMap_init">
-//   <here>UnitMap initialization object</here> --
-// Object used to force construction of <linkto class=UnitMap>UnitMap</linkto>.
-// </linkfrom>
-
-// <group name="UnitMap initialization object">
-
-static UnitMap_init unitmap_init;
-
-// </group>
 
 //# Inline Implementations
 
