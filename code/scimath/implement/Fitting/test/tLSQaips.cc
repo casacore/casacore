@@ -70,11 +70,11 @@ void showdt(const LSQFit &lsq) {
   cout << "Norm";
   if (norm) {
     Int i00=0;
-    for (Int i=0; i<nun; ++i) {
+    for (uInt i=0; i<nun; ++i) {
       if (i==0) cout << "-";
       else cout << "    -";
       cout << i;
-      for (Int i0=i; i0<nun; ++i0) {
+      for (uInt i0=i; i0<nun; ++i0) {
 	cout << ": " << Y(norm[i00]);
 	++i00;
       };
@@ -85,7 +85,7 @@ void showdt(const LSQFit &lsq) {
 
   cout << "Known";
   if (known) {
-    for (Int i2=0; i2<np; i2++) {
+    for (uInt i2=0; i2<np; i2++) {
       cout << ": " << Y(known[i2]);
     };
   } else cout << ": --";
@@ -109,7 +109,7 @@ void showdt(const LSQFit &lsq) {
 
   cout << "Error";
   if (err) {
-    for (Int i1=0; i1<ner; ++i1) {
+    for (uInt i1=0; i1<ner; ++i1) {
       cout << ": " << Y(err[i1]);
     };
   } else cout << ": --";
@@ -117,7 +117,7 @@ void showdt(const LSQFit &lsq) {
 
   cout << "Pivot";
   if (piv) {
-    for (Int i3=0; i3<np; ++i3) {
+    for (uInt i3=0; i3<np; ++i3) {
       cout << ": " << piv[i3];
     };
   } else cout << ": --";
@@ -126,11 +126,11 @@ void showdt(const LSQFit &lsq) {
   cout << "Invert";
   if (sEq) {
     Int i00=0;
-    for (Int i=0; i<np; ++i) {
+    for (uInt i=0; i<np; ++i) {
       if (i==0) cout << "-";
       else cout << "      -";
       cout << i;
-      for (Int i0=i; i0<np; ++i0) {
+      for (uInt i0=i; i0<np; ++i0) {
 	cout << ": " << Y(sEq[i00]);
 	++i00;
       };
@@ -141,7 +141,7 @@ void showdt(const LSQFit &lsq) {
 
   cout << "Sol";
   if (sol) {
-    for (Int i2=0; i2<np; i2++) {
+    for (uInt i2=0; i2<np; i2++) {
       cout << ": " << Y(sol[i2]);
     };
   } else cout << ": --";
