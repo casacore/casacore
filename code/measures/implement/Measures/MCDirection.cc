@@ -523,8 +523,8 @@ void MCDirection::doConvert(MVDirection &in,
 	getTDB(tdbTime);
       *VEC62 = MeasTable::Planetary(MeasTable::EARTH, tdbTime); // Eb
       *VEC63 = MeasTable::Planetary(MeasTable::SUN, tdbTime);   // Sb
-      for (Int i=0; i<3; i++)
-	(*MVPOS3)(i) = (*VEC62)(i) - (*VEC63)(i);		// E
+      for (Int j=0; j<3; j++)
+	(*MVPOS3)(j) = (*VEC62)(j) - (*VEC63)(j);		// E
     }
     break;
     
@@ -536,9 +536,9 @@ void MCDirection::doConvert(MVDirection &in,
 	g3 = lengthE;
 	*VEC61 = MeasTable::Planetary(planID, tdbTime - g3);
 	*VEC63 = MeasTable::Planetary(MeasTable::SUN, tdbTime - g3); // Sb
-	for (Int i=0; i<3; i++) {
-	  (*MVPOS1)(i) = (*VEC61)(i) - (*VEC62)(i);		// P
-	  (*MVPOS2)(i) = (*VEC61)(i) - (*VEC63)(i);		// Q
+	for (Int j=0; j<3; j++) {
+	  (*MVPOS1)(j) = (*VEC61)(j) - (*VEC62)(j);		// P
+	  (*MVPOS2)(j) = (*VEC61)(j) - (*VEC63)(j);		// Q
 	};
 	MVPOS1->adjust(lengthE);
 	lengthP = Quantity(lengthE, "AU").getBaseValue();
