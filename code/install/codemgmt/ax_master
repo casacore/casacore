@@ -2238,3 +2238,4 @@
 11 173 src rm doc/user/gettingstarted.latex
 11 173 src mv doc/user/gettingstarted.dir/gsedition2.latex doc/user/gettingstarted.latex
 11 173 src mv nrao/implement/MeasurementSets/SDIterAxes.cc trial/implement/SDIterators/SDIterAxes.cc
+11 173 src mv nrao/implement/MeasurementSets/SDIterAxes.h trial/implement/SDIterators/SDIterAxes.h
