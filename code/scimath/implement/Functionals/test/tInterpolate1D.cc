@@ -1,5 +1,5 @@
 //# tInterpolate1D.cc: This program tests the Interpolate1D class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,25 +26,18 @@
 //# $Id$
 
 #include <casa/aips.h>
-#include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Complex.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ArrayColumn.h>
+#include <casa/Containers/Block.h>
+#include <scimath/Functionals/ArraySampledFunctional.h>
 #include <scimath/Functionals/Interpolate1D.h>
 #include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <scimath/Functionals/ArraySampledFunctional.h>
-#include <casa/iostream.h>
 
+#include <casa/iostream.h>
 
 // Main program to test the Interpolate1D class
 
@@ -236,93 +229,23 @@ int main()
 	 << "spline interpolation" << endl;
   }
 
-  // Test the Interpolate1D class with Float Vector / Complex Array and spline
-  // interpolation 
-  {
-    Bool failed = False;
-    Vector<Float> x(5); indgen(x); 
-    IPosition shape(2, 2, 5);
-    Array<Complex>  y(shape); 
-    IPosition xshape(2, 1, 5);
-    Array<Complex>  xa(xshape); indgen(xa);
-    const Complex j(0., 1.);
-    IPosition trc(2,0,4), blc(2,0,0), step(2,1,0);
-
-    y(blc,trc) =  xa + j*xa*xa*xa*xa ; trc += step; blc += step;
-    y(blc,trc) =  xa*xa + j*xa*xa*xa ; trc += step; blc += step;
-
-    ScalarSampledFunctional<Float> fx(x);
-    ArraySampledFunctional<Array<Complex> > fy(y);
-//     Interpolate1D<Float,Array<Complex> > value(fx,fy);
-//     value.setMethod(Interpolate1D<Float,Array<Complex> >::spline);
-//     blc(0) = 0; blc(1) = 0;
-//     trc(0) = 1; trc(1) = 0;
-//     step(0) = 0; step(1) = 1; 
-    
-//     Array<Complex> iv; 
-//     for (Float xs = 0; xs < 5; xs += 1){
-//       iv = value(xs);
-//       if ((near(iv(IPosition(1, 0)), 
-//  		y(IPosition(2, 0,(uInt) xs))) == False) || 
-//   	  (near(iv(IPosition(1, 1)), 
-//   		y(IPosition(2, 1, (uInt) xs))) == False)){
-// 	cout << "value(" << xs << ")" << endl << iv << endl
-// 	     << "is not near the expected value of " << endl
-// 	     << y(blc, trc) << endl;
-// 	failed = True;
-//       }
-//       trc += step; blc += step; 
-//     }
-//     iv = value((Float) 5);
-//     if ((near(iv(IPosition(1, 0)),  5+j*431) == False) ||
-// 	(near(iv(IPosition(1, 1)), 23+j*101) == False))
-//       failed = True;
-
-//     if (failed){
-//       cout << "Failed "; anyFailures = True;
-//     }
-//     else
-//       cout << "Passed ";
-//     cout << "the Interpolate1D<Float, Array<Complex> > test with "
-//  	 << "spline interpolation" << endl;
-  }
   // Now test the table system interface. 
-  // This requires the construction of a table!
+  // This requires the construction of a table (vrtually done)
   {
-    TableDesc td("A Test Table", "1", TableDesc::Scratch);
-    td.comment() = 
-      "Create a table to test the table interface of the interpolate1D class";
-    td.addColumn(ScalarColumnDesc<Float> ("Time"));
-    td.addColumn(ScalarColumnDesc<Double> ("Amplitude"));
-    td.addColumn(ArrayColumnDesc<Complex> ("Visibility"));
-    SetupNewTable newtab("newtab.data", td, Table::Scratch);
-    Table tab(newtab);
-
-    ScalarColumn<Float> time (tab, "Time");
-    ScalarColumn<Double> amp (tab, "Amplitude");
-    ArrayColumn<Complex> vis (tab, "Visibility");
-    IPosition shape(2,2,2);
-    Array<Complex> cph(shape);
-    const Complex j(0., 1.);
-    cph(IPosition(2,0,0)) = 0.1f + j * 0.2f;
-    cph(IPosition(2,1,0)) = 0.3f + j * 0.4f;
-    cph(IPosition(2,0,1)) = 0.5f + j * 0.6f;
-    cph(IPosition(2,1,1)) = 0.7f + j * 0.8f;
+    Vector<Float> time (6);
+    Vector<Double> amp (6);
 
     for (uInt i=0; i < 6; i++) {
-      tab.addRow();
-      time.put(i, i);
-      amp.put(i, i*i);
-      vis.put(i, cph);
-      cph = cph + (1.0f + j*2.0f);
+      time[i] = i;
+      amp[i]  = i*i;
     }
     // Now I have constructed a table with two scalar and one array column
     // Test the Interpolate1D class with the scalar columns
     {
       Bool failed = False;
 
-      Vector<Float> x(time.getColumn());
-      Vector<Double> y(amp.getColumn());
+      Vector<Float> x(time);
+      Vector<Double> y(amp);
       ScalarSampledFunctional<Float> fx(x);
       ScalarSampledFunctional<Double> fy(y);
       Interpolate1D<Float,Double> value(fx, fy);
@@ -343,55 +266,6 @@ int main()
 	   << endl << "       "
 	   << "                         using table scalar columns as inputs" 
 	   << endl;
-    }
-    // Test the Interpolate1D class with the array columns
-    { 
-      Bool failed = False;
-      Vector<Float> x(time.getColumn());
-      Array<Complex> y(vis.getColumn());
-      ScalarSampledFunctional<Float> fx(x);
-      ArraySampledFunctional<Array<Complex> > fy(y);
-//       Interpolate1D<Float,Array<Complex> > value(fx,fy);
-//       value.setMethod(Interpolate1D<Float,Array<Complex> >::linear);
-      
-//       Array<Complex> av; 
-//       Complex sv00, sv01, sv10, sv11;
-//       for (Float xs = -2.1; xs < 7; xs += .5){
-//  	av = value(xs);
-//   	sv00 = av(IPosition(2, 0, 0));
-//   	sv10 = av(IPosition(2, 1, 0));
-//   	sv01 = av(IPosition(2, 0, 1));
-//   	sv11 = av(IPosition(2, 1, 1));
-//  	if ((near(sv00.real(), xs+0.1f) == False) || 
-//  	    (near(sv00.imag(), 2*xs+0.2f) == False) ||
-//  	    (near(sv10.real(), xs+0.3f) == False) || 
-//  	    (near(sv10.imag(), 2*xs+0.4f) == False) ||
-//  	    (near(sv01.real(), xs+0.5f) == False) || 
-//  	    (near(sv01.imag(), 2*xs+0.6f) == False) ||
-//  	    (near(sv11.real(), xs+0.7f) == False) || 
-//  	    (near(sv11.imag(), 2*xs+0.8f) == False)){
-//  	  failed = True;
-//  	  cout << "value(" << xs << "): " << endl
-//  	       << av
-//  	       << "is not the same as expected value of" << endl;
-//  	  av(IPosition(2, 0, 0)) = Complex(xs+0.1, 2*xs+0.2);
-//  	  av(IPosition(2, 1, 0)) = Complex(xs+0.3, 2*xs+0.4);
-//  	  av(IPosition(2, 0, 1)) = Complex(xs+0.5, 2*xs+0.6);
-//  	  av(IPosition(2, 1, 1)) = Complex(xs+0.7, 2*xs+0.8);
-//  	  cout << av
-//  	       << endl;
-//  	}
-//        }
-//        if (failed){
-//  	cout << "Failed "; anyFailures = True;
-//        }
-//        else
-//  	cout << "Passed ";
-//        cout << "the Interpolate1D<Float, Array<Complex> >test with "
-//  	   << "linear interpolation" 
-//  	   << endl << "                 "
-//  	   << "                         using table array columns as inputs" 
-//  	   << endl;
     }
   }
   if (anyFailures) {
