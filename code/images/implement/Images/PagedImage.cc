@@ -688,7 +688,7 @@ void PagedImage<T>::attach_logtable()
 {
   // Open logtable as readonly if main table is not writable.
   if (table_p.isWritable()) {
-    logTablePtr_p = new TableLogSink(LogFilter(), name() + "/logtable");
+    logTablePtr_p = new TableLogSink(LogFilter(), name() + "/logtable", False);
   } else {
     logTablePtr_p = new TableLogSink(name() + "/logtable");
   }
