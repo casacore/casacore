@@ -30,6 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Utilities/PtrHolder.h>
 #include <trial/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
@@ -62,9 +63,11 @@ class GlishRecord;
 // </etymology>
 //
 // <synopsis>
-// This class has two functions, torecord() and fromrecord(). They can be used
+// This class can be used to handle heterogeneous collections of Measures, e.g.
+// as a <src>Vector<MeasureHolder></src>. With the aid of the
+// torecord() and fromrecord() functions it can be used
 // to convert a Measure object into or from a record.
-// A MeasureHolder is created from a Measure.
+// A MeasureHolder is created from a Measure, or can be empty.
 //
 // Checks on the contents can be made with with isMDirection() and other
 // functions. The contents can be obtained with operator() (no test on
@@ -119,6 +122,7 @@ public:
 //# Member Functions
   // Check if it holds a specific Measure
   // <group>
+  Bool isEmpty() const;
   Bool isMeasure() const;
   Bool isMDirection() const;
   Bool isMDoppler() const;
@@ -159,10 +163,8 @@ private:
 
 //# Data Members
   // Pointer to a Measure
-  Measure *hold;
+  PtrHolder<Measure> hold;
 
 };
 
 #endif
-
-
