@@ -335,6 +335,12 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
                             const Vector<Int>& pixelAxes,
                             const Bool remove);
 
+// Physically (nont just virtually) drop coordinates from the CoordinateSystem
+// if all axes are fully removed. For coordinates with axes partially removed
+// (world/pixel) preserve that removal state in the output CS.  No effort
+// is made to deal in any way with transposed systems.
+static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& cSysIn);
+
 // Setup Measures conversion machine for MDirections.
 // Returns True if the machine was needed and set.  Returns False
 // if the machine was not needed and not set.  
