@@ -2579,3 +2579,4 @@
 11 378 src mv trial/scripts/glishtutorial.g trial/implement/Widgets/glishtutorial.g
 11 378 src mv trial/scripts/inspect.g trial/implement/Widgets/inspect.g
 11 378 src mv trial/scripts/list.g trial/implement/Widgets/list.g
+11 378 src mv trial/scripts/menubar.g trial/implement/Widgets/menubar.g
