@@ -213,6 +213,15 @@ inline Bool fieldType ( const RecordInterface &parm,const String &id,DataType ty
   return t==type || t==type2;
 }
     
+// short inline function for checking a field's data type against some function
+inline Bool isField ( const RecordInterface &parm,const String &id,Bool (*func)(DataType) )
+{
+  if( !parm.isDefined(id) )
+    return False;
+  DataType type = parm.dataType(id);
+  return (*func)(type);
+}
+    
 // Short inline function for checking if a record field is "set",
 // i.e. exists, and is not boolean F.
 inline Bool isFieldSet ( const RecordInterface &parm,const String &id )
