@@ -270,12 +270,18 @@ public:
   // determine the velocity-frequency conversion.
   // By default calculations are done for a single velocity with offsets 
   // applied for the others (ok for non-rel velocities with RADIO defn), 
-  // set precise to True to do a full conversion for each output channel.
+  // set precise to True to do a full conversion for each output channel.(NYI)
   ROVisibilityIterator& 
   selectVelocity(Int nChan, 
 		 const MVRadialVelocity& vStart, const MVRadialVelocity& vInc,
 		 MRadialVelocity::Types rvType = MRadialVelocity::LSR,
 		 MDoppler::Types dType = MDoppler::RADIO, Bool precise=False);
+
+  // Select the velocity interpolation scheme.
+  // At present the choice is limited to : nearest and linear, linear
+  // is the default. 
+  // TODO: add cubic, spline and possibly FFT
+  ROVisibilityIterator& velInterpolation(const String& type);
 
   // Channel selection - only the selected channels will be returned by the
   // access functions. The default spectralWindow is the current one (or 0)
@@ -303,6 +309,8 @@ protected:
   void setSelTable();
   // set the iteration state
   void setState();
+  // get the TOPO frequencies from the selected velocities and the obs. vel.
+  void getTopoFreqs();
   // update the DATA slicer
   void updateSlicer();
   // attach the column objects to the currently selected table
@@ -351,6 +359,7 @@ protected:
   MDoppler::Convert cFromBETA_p;
   MDoppler::Types vDef_p;
   Vector<Double> selFreq_p;
+  String vInterpolation_p;
 
 
   // column access functions
@@ -376,7 +385,9 @@ inline Int ROVisibilityIterator::channelIndex() const
 { return chanInc_p[msIter_p.spectralWindowId()]*curChanGroup_p; }
 inline Int ROVisibilityIterator::nRow() const
 { return curNumRow_p;}
-
+inline ROVisibilityIterator& 
+ROVisibilityIterator::velInterpolation(const String& type)
+{ vInterpolation_p=type; return *this;}
 
 //# The read/write version of the VisibilityIterator
 class VisibilityIterator : public ROVisibilityIterator
@@ -425,7 +436,10 @@ public:
 
   // Set/modify the visibilities
   // This sets the data as found in the MS, Cube(npol,nchan,nrow).
-  void setVis(const Cube<Complex>& vis);
+  //  void setVis(const Cube<Complex>& vis);
+
+  // Set the visibility and flags, and interpolate from velocities if needed
+  void setVisAndFlag(const Cube<Complex>& vis, const Cube<Bool>& flag);
 
   // Set/modify the weights
   void setWeight(const Vector<Float>& wt);
@@ -435,6 +449,9 @@ public:
 
 protected:
   virtual void attachColumns();
+  void setInterpolatedVisFlag(const Cube<Complex>& vis, 
+			      const Cube<Bool>& flag);
+  void setInterpolatedWeight(const Matrix<Float>& wt); 
 
   // column access functions
   ArrayColumn<Complex> RWcolVis;

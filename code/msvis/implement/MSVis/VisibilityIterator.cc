@@ -121,12 +121,8 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   nVelChan_p=other.nVelChan_p;
   vStart_p=other.vStart_p;
   vInc_p=other.vInc_p;
-  // NOTE: following causes a seg violation
-  cFromBETA_p=other.cFromBETA_p;
   vDef_p=other.vDef_p;
-  // use this instead of assignment for the moment
-  //cFromBETA_p.set(MDoppler(MVDoppler(Quantity(0.,"m/s")),
-  //			   MDoppler::BETA),vDef_p);
+  cFromBETA_p=other.cFromBETA_p;
   selFreq_p.resize(other.selFreq_p.nelements()); selFreq_p=other.selFreq_p;
 
   // column access functions
@@ -155,6 +151,7 @@ void ROVisibilityIterator::origin()
     freqCacheOK_p=False;
     flagOK_p = visOK_p = weightSpOK_p = False;
     setSelTable();
+    getTopoFreqs();
     updateSlicer();
     more_p=ToBool(curChanGroup_p<curNumChanGroup_p);
     // invalidate any attached VisBuffer
@@ -188,6 +185,7 @@ void ROVisibilityIterator::advance()
   }
   if (more_p) {
     setSelTable();
+    getTopoFreqs();
     // invalidate any attached VisBuffer
     if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
   }
@@ -198,6 +196,7 @@ ROVisibilityIterator& ROVisibilityIterator::nextChunk()
   if (msIter_p.more()) msIter_p++;
   if (msIter_p.more()) {
     setState();
+    getTopoFreqs();
     if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
   }
   more_p=msIter_p.more();
@@ -221,6 +220,33 @@ void ROVisibilityIterator::setSelTable()
   this->attachColumns();
 }
 
+void ROVisibilityIterator::getTopoFreqs()
+{
+  if (velSelection_p) {
+    // convert selected velocities to TOPO frequencies
+    // first convert observatory vel to correct frame (for this time)
+    MEpoch epoch = MS::epochMeasure(colTime);
+    epoch.set(MVEpoch(Quantity(colTime(0),"s")));
+    msd_p.setEpoch(epoch);
+    if (msIter_p.newArray()) 
+      msd_p.setAntenna(-1); // set the observatory position
+    // get obs velocity in required frame
+    MRadialVelocity obsRV = msd_p.obsVel();
+    // convert to doppler in required definition and get out in m/s
+    Double obsVel=cFromBETA_p(obsRV.toDoppler()).getValue().get().getValue();
+    // Now compute corresponding TOPO freqs
+    selFreq_p.resize(nVelChan_p);
+    Double v0 = vStart_p.getValue(), dv=vInc_p.getValue();
+    cout << "obsVel="<<obsVel<<endl;
+    for (Int i=0; i<nVelChan_p; i++) {
+      Double vTopo = v0 + i*dv - obsVel;
+      MDoppler dTopo(Quantity(vTopo,"m/s"), vDef_p);
+      selFreq_p(i) = MFrequency::fromDoppler
+	(dTopo,msIter_p.restFrequency().getValue()).getValue().getValue();
+    }
+  }
+}
+
 void ROVisibilityIterator::setState()
 {
   curTableNumRow_p = msIter_p.table().nrow();
@@ -229,6 +255,15 @@ void ROVisibilityIterator::setState()
   time_p.resize(curTableNumRow_p); colTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
+  // If this is a new array then set up the antenna locations
+  if (msIter_p.newArray()) {
+    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
+				     msIter_p.arrayId());
+    This->pa_p.resize(nAnt_p);
+  }	
+  if (msIter_p.newField()) { 
+    msd_p.setFieldCenter(msIter_p.phaseCenter());
+  }
   if ( msIter_p.newSpectralWindow()) {
     Int spw=msIter_p.spectralWindowId();
     nChan_p = colVis.shape(0)(1);
@@ -242,37 +277,7 @@ void ROVisibilityIterator::setState()
     channelGroupSize_p=chanWidth_p[spw];
     curNumChanGroup_p=numChanGroup_p[spw];
     freqCacheOK_p=False;
-    if (velSelection_p) {
-      // convert selected velocities to TOPO frequencies
-      // first convert observatory vel to correct frame (for this time)
-      MEpoch epoch = MS::epochMeasure(colTime);
-      epoch.set(MVEpoch(Quantity(time_p(0),"s")));
-      msd_p.setEpoch(epoch);
-      msd_p.setAntenna(-1); // set the observatory position
-      // get obs velocity in required frame
-      MRadialVelocity obsRV = msd_p.obsVel();
-      // convert to doppler in required definition and get out in m/s
-      Double obsVel=cFromBETA_p(obsRV.toDoppler()).getValue().get().getValue();
-      // Now compute corresponding TOPO freqs
-      selFreq_p.resize(nVelChan_p);
-      Double v0 = vStart_p.getValue(), dv=vInc_p.getValue();
-      for (Int i=0; i<nVelChan_p; i++) {
-	Double vTopo = v0 + i*dv - obsVel;
-	MDoppler dTopo(Quantity(vTopo,"m/s"), vDef_p);
-	selFreq_p(i) = MFrequency::fromDoppler
-	  (dTopo,msIter_p.restFrequency().getValue()).getValue().getValue();
-      }
-    }
   }
-  if (msIter_p.newField()) { 
-    msd_p.setFieldCenter(msIter_p.phaseCenter());
-  }
-  // If this is a new array then set up the antenna locations
-  if (msIter_p.newArray()) {
-    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
-				     msIter_p.arrayId());
-    This->pa_p.resize(nAnt_p);
-  }	
 }
 
 void ROVisibilityIterator::updateSlicer()
@@ -408,18 +413,23 @@ Vector<Bool>& ROVisibilityIterator::flagRow(Vector<Bool>& rowflags) const
 
 Vector<Double>& ROVisibilityIterator::frequency(Vector<Double>& freq) const
 {
-  if (!freqCacheOK_p) {
-    This->freqCacheOK_p=True;
-    Int spw = msIter_p.spectralWindowId();
-    This->frequency_p.resize(channelGroupSize_p);
-    const Vector<Double>& chanFreq=msIter_p.frequency();
-    Int start=chanStart_p[spw]-msIter_p.startChan();
-    for (Int i=0; i<channelGroupSize_p; i++) {
-      This->frequency_p(i)=chanFreq(start+curChanGroup_p*chanInc_p[spw]+i);
+  if (velSelection_p) {
+    freq.resize(nVelChan_p);
+    freq=selFreq_p;
+  } else {
+    if (!freqCacheOK_p) {
+      This->freqCacheOK_p=True;
+      Int spw = msIter_p.spectralWindowId();
+      This->frequency_p.resize(channelGroupSize_p);
+      const Vector<Double>& chanFreq=msIter_p.frequency();
+      Int start=chanStart_p[spw]-msIter_p.startChan();
+      for (Int i=0; i<channelGroupSize_p; i++) {
+	This->frequency_p(i)=chanFreq(start+curChanGroup_p*chanInc_p[spw]+i);
+      }
     }
+    freq.resize(channelGroupSize_p);
+    freq=frequency_p;
   }
-  freq.resize(channelGroupSize_p);
-  freq=frequency_p;
   return freq;
 }
 
@@ -454,25 +464,25 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   visibility(This->visCube_p);
   flag(This->flagCube_p); 
   weightSpectrum(This->weightSpectrum_p);
+  Vector<Double> freq; frequency(freq);
   This->velSelection_p = True;
 
   // now interpolate visibilities, using selFreq as the sample points
   // we should have two options: flagging output points that have
   // any flagged inputs or interpolating across flagged data.
-  Vector<Double> freq; frequency(freq);
-  // convert frequencies to float (removing offset to keep accuracy) 
+  // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
-  Vector<Float> xfreq(nChan_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<nChan_p; i++) xfreq(i)=freq(i)-freq(0);
+  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
   for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
   // set up the Functionals for the interpolation
   ScalarSampledFunctional<Float> x(xfreq);
-  Vector<MaskedArray<Complex> > visPlanes(nChan_p);
+  Vector<MaskedArray<Complex> > visPlanes(channelGroupSize_p);
   // we should probably be using the flags for weight interpolation as well
   // but it's not clear how to combine the 4 pol flags into one.
-  // (AND the flags-> weight flagged if all flagged)
-  Vector<Array<Float> > wtVectors(nChan_p);
-  for (i=0; i<nChan_p; i++) {
+  // (AND the flags-> weight flagged if all flagged?)
+  Vector<Array<Float> > wtVectors(channelGroupSize_p);
+  for (i=0; i<channelGroupSize_p; i++) {
     visPlanes(i).
       setData(This->visCube_p(Slice(),Slice(i,1),Slice()),
 	      (This->flagCube_p(Slice(),Slice(i,1),Slice()).ac()==False));
@@ -483,8 +493,11 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
   Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
   Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
-  // set the interpolation method: nearest, linear, cubic, cubic spline
-
+  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  if (vInterpolation_p=="nearest") {
+    intVis.setMethod(Interpolate1D<Float,MaskedArray<Complex> >::nearestNeighbour);
+    intWt.setMethod(Interpolate1D<Float,Array<Float> >::nearestNeighbour);
+  } // anything else uses linear
   IPosition shape(3,nPol_p,nVelChan_p,curNumRow_p);
   This->visCube_p.resize(shape);
   This->flagCube_p.resize(shape);
@@ -656,6 +669,7 @@ ROVisibilityIterator&
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
 {
+  if (!initialized_p) origin();
   Int spw=spectralWindow;
   if (spw<0) spw = msIter_p.spectralWindowId();
   Int n = numChanGroup_p.nelements();
@@ -672,6 +686,8 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   chanWidth_p[spw] = width;
   chanInc_p[spw] = increment;
   numChanGroup_p[spw] = nGroup;
+  // have to reset the iterator so all caches get filled
+  originChunks();
   return *this;
 }
 
@@ -823,10 +839,21 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
   else RWcolVis.putColumn(visCube_p);
 }
 
-void VisibilityIterator::setVis(const Cube<Complex>& vis)
+void VisibilityIterator::setVisAndFlag(const Cube<Complex>& vis,
+				       const Cube<Bool>& flag)
 {
-  if (useSlicer_p) RWcolVis.putColumn(slicer_p,vis);
-  else RWcolVis.putColumn(vis);
+  if (velSelection_p) {
+    setInterpolatedVisFlag(vis,flag);
+    if (useSlicer_p) RWcolVis.putColumn(slicer_p,visCube_p);
+    else RWcolVis.putColumn(visCube_p);
+    if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
+    else RWcolFlag.putColumn(flagCube_p);
+  } else {
+    if (useSlicer_p) RWcolVis.putColumn(slicer_p,vis);
+    else RWcolVis.putColumn(vis);
+    if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flag);
+    else RWcolFlag.putColumn(flag);
+  }
 }
 
 void VisibilityIterator::setWeight(const Vector<Float>& weight)
@@ -836,11 +863,101 @@ void VisibilityIterator::setWeight(const Vector<Float>& weight)
 
 void VisibilityIterator::setWeightSpectrum(const Matrix<Float>& wt)
 {
-  if (useSlicer_p) RWcolWeightSpectrum.putColumn(slicer_p,wt);
-  else RWcolWeightSpectrum.putColumn(wt);
+  if (velSelection_p) {
+    setInterpolatedWeight(wt);
+    if (useSlicer_p) RWcolWeightSpectrum.putColumn(weightSlicer_p,weightSpectrum_p);
+    else RWcolWeightSpectrum.putColumn(weightSpectrum_p);
+  } else {
+    if (useSlicer_p) RWcolWeightSpectrum.putColumn(weightSlicer_p,wt);
+    else RWcolWeightSpectrum.putColumn(wt);
+  }
 }
 
 
+
+void VisibilityIterator::setInterpolatedVisFlag(const Cube<Complex>& vis, 
+						const Cube<Bool>& flag)
+{
+  // get the frequencies to interpolate to
+  velSelection_p = False; 
+  Vector<Double> freq; frequency(freq);
+  velSelection_p = True;
+
+  // now interpolate visibilities, using freq as the sample points
+  // we should have two options: flagging output points that have
+  // any flagged inputs or interpolating across flagged data.
+  // Convert frequencies to float (removing offset to keep accuracy) 
+  // so we can multiply them with Complex numbers to do the interpolation.
+  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
+  // set up the Functionals for the interpolation
+  ScalarSampledFunctional<Float> x(sfreq);
+  Vector<MaskedArray<Complex> > visPlanes(nVelChan_p);
+  for (i=0; i<nVelChan_p; i++) {
+    // we need to cast away the const of vis and flag to be able to use
+    // slice indexing, but we won't actually change them.
+    visPlanes(i).
+      setData(((Cube<Complex>&)vis)(Slice(),Slice(i,1),Slice()),
+	      (((Cube<Bool>&)flag)(Slice(),Slice(i,1),Slice()).ac()==False));
+  }
+  ScalarSampledFunctional<MaskedArray<Complex> > yVis(visPlanes);
+  Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
+  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  if (vInterpolation_p=="nearest") {
+    intVis.setMethod(Interpolate1D<Float,MaskedArray<Complex> >::nearestNeighbour);
+  } // anything else uses linear
+  IPosition shape(3,nPol_p,channelGroupSize_p,curNumRow_p);
+  visCube_p.resize(shape);
+  flagCube_p.resize(shape);
+  visCube_p=Complex(0.); // to make masked values come out as zero.
+  weightSpectrum_p.resize(nVelChan_p,curNumRow_p);
+  // now do the actual interpolation
+  for (i=0; i<channelGroupSize_p; i++) {
+    MaskedArray<Complex> maskedVis(intVis(xfreq(i)));
+    visCube_p(Slice(),Slice(i,1),Slice())=maskedVis;
+    Array<Bool> flags=(maskedVis.getMask()==False);
+    flagCube_p(Slice(),Slice(i,1),Slice())=flags;
+  }
+}
+
+
+
+void VisibilityIterator::setInterpolatedWeight(const Matrix<Float>& wt)
+{
+  // get the frequencies to interpolate to
+  velSelection_p = False; 
+  Vector<Double> freq; frequency(freq);
+  velSelection_p = True;
+
+  // now interpolate weights, using freq as the sample points
+  // we should have two options: flagging output points that have
+  // any flagged inputs or interpolating across flagged data.
+  // Convert frequencies to float (removing offset to keep accuracy) 
+  // so we can multiply them with Complex numbers to do the interpolation.
+  Vector<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<channelGroupSize_p; i++) xfreq(i)=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
+  // set up the Functionals for the interpolation
+  ScalarSampledFunctional<Float> x(sfreq);
+  Vector<Array<Float> > wtVectors(nVelChan_p);
+  for (i=0; i<nVelChan_p; i++) {
+    Array<Float> wtrow(wt.row(i));
+    wtVectors(i).reference(wtrow);
+  }
+  ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
+  Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
+  // set the interpolation method: nearest, linear, cubic, (cubic) spline
+  if (vInterpolation_p=="nearest") {
+    intWt.setMethod(Interpolate1D<Float,Array<Float> >::nearestNeighbour);
+  } // anything else uses linear
+  IPosition shape(2,channelGroupSize_p,curNumRow_p);
+  weightSpectrum_p.resize(shape);
+  // now do the actual interpolation
+  for (i=0; i<channelGroupSize_p; i++) {
+    weightSpectrum_p.row(i)=intWt(xfreq(i));
+  }
+}
 
 
 
