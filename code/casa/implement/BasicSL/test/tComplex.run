@@ -1,4 +1,4 @@
 #!/bin/sh
 
-# Change Infinity to Inf
-  tComplex | sed -e 's/Infinity/Inf/g'
+# Change Infinity, infinity or inf to Inf
+  tComplex | sed -e 's/nfinity/nf/g' | sed -e 's/inf/Inf/g'
