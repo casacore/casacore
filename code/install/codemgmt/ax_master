@@ -5662,3 +5662,4 @@
 15 304 src mv ./trial/implement/Wnbt/SpectralElement.h ./trial/implement/SpectralComponents/SpectralElement.h
 15 304 src mv ./trial/implement/Wnbt/SpectralEstimate.cc ./trial/implement/SpectralComponents/SpectralEstimate.cc
 15 304 src mv ./trial/implement/Wnbt/SpectralEstimate.h ./trial/implement/SpectralComponents/SpectralEstimate.h
+15 304 src mv ./trial/implement/Wnbt/SpectralFit.cc ./trial/implement/SpectralComponents/SpectralFit.cc
