@@ -623,12 +623,17 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
    if (!cSysTmp.setWorldAxisUnits(blcUnits, True)) {
       throw (AipsError ("WCBox:doToLCregion - blc units are inconsistent with CoordinateSystem"));
    }
-   cSysTmp.toPixel(pBlc, wBlc);
+   if (!cSysTmp.toPixel(pBlc, wBlc)) {
+      throw (AipsError ("WCBox:doToLCregion - conversion of blc to pixel coordinates failed"));
+   }
 //
    if (!cSysTmp.setWorldAxisUnits(trcUnits, True)) {
       throw (AipsError ("WCBox:doToLCregion - trc units are inconsistent with CoordinateSystem"));
    }
-   cSysTmp.toPixel(pTrc, wTrc);
+   if (!cSysTmp.toPixel(pTrc, wTrc)) {
+      throw (AipsError ("WCBox:doToLCregion - conversion of trc to pixel coordinates failed"));
+   }
+
 
 // Now recover only those values from pBlc that we
 // actually want
