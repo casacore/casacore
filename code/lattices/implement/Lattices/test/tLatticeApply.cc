@@ -309,7 +309,8 @@ void doIt (int argc, char *argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array1",
 			       TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> latout(TiledShape(l1Shape,t1Shape), paTable);
+	PagedArray<Int> arrout(TiledShape(l1Shape,t1Shape), paTable);
+	SubLattice<Int> latout(arrout, True);
 	MyLineCollapser collapser;
 	Timer tim;
 	LatticeApply<Int>::lineApply (latout, SubLattice<Int>(lat),
@@ -340,18 +341,19 @@ void doIt (int argc, char *argv[])
     IPosition t2Shape (tileShape);
     l2Shape(0) = 1;
     t2Shape(0) = 1;
-/*
     {
 	Table t("tLatticeApply_tmp.array");
 	PagedArray<Int> lat(t);
 	SetupNewTable paSetup0("tLatticeApply_tmp.array2a",
 			       TableDesc(), Table::New);
 	Table paTable0(paSetup0);
-	PagedArray<Int> latout0(TiledShape(l2Shape, t2Shape), paTable0);
+	PagedArray<Int> arrout0(TiledShape(l2Shape, t2Shape), paTable0);
+	SubLattice<Int> latout0(arrout0, True);
 	SetupNewTable paSetup1("tLatticeApply_tmp.array2b",
 			       TableDesc(), Table::New);
 	Table paTable1(paSetup1);
-	PagedArray<Int> latout1(TiledShape(l2Shape, t2Shape), paTable1);
+	PagedArray<Int> arrout1(TiledShape(l2Shape, t2Shape), paTable1);
+	SubLattice<Int> latout1(arrout1, True);
 	PtrBlock<MaskedLattice<Int>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
@@ -381,7 +383,6 @@ void doIt (int argc, char *argv[])
 	}
 	tim.show("check      ");
     }
-*/
     l2Shape(0) = 2;
     t2Shape(0) = 2;
     {
@@ -390,7 +391,8 @@ void doIt (int argc, char *argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array2t",
 			       TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> latout(TiledShape(l2Shape,t2Shape), paTable);
+	PagedArray<Int> arrout(TiledShape(l2Shape,t2Shape), paTable);
+	SubLattice<Int> latout(arrout, True);
 	MyTiledCollapser collapser;
 	Timer tim;
 	LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
@@ -437,7 +439,8 @@ void doIt (int argc, char *argv[])
 	    SetupNewTable paSetup("tLatticeApply_tmp.array2tb",
 				  TableDesc(), Table::New);
 	    Table paTable(paSetup);
-	    PagedArray<Int> latout(l2Shape, paTable);
+	    PagedArray<Int> arrout(l2Shape, paTable);
+	    SubLattice<Int> latout(arrout, True);
 	    MyTiledCollapser collapser;
 	    Timer tim;
 	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
@@ -474,7 +477,8 @@ void doIt (int argc, char *argv[])
 	    SetupNewTable paSetup("tLatticeApply_tmp.array2tc",
 				  TableDesc(), Table::New);
 	    Table paTable(paSetup);
-	    PagedArray<Int> latout(l2Shape, paTable);
+	    PagedArray<Int> arrout(l2Shape, paTable);
+	    SubLattice<Int> latout(arrout, True);
 	    MyTiledCollapser collapser;
 	    Timer tim;
 	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
@@ -514,7 +518,8 @@ void doIt (int argc, char *argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array3",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> latout(l3Shape, paTable);
+	PagedArray<Int> arrout(l3Shape, paTable);
+	SubLattice<Int> latout(arrout, True);
 	MyLineCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
@@ -522,18 +527,19 @@ void doIt (int argc, char *argv[])
 				      region, collapser, 1);
 	tim.show("lsliced 1  ");
     }
-/*
     {
 	Table t("tLatticeApply_tmp.array");
 	PagedArray<Int> lat(t);
 	SetupNewTable paSetup0("tLatticeApply_tmp.array4a",
 			       TableDesc(), Table::New);
 	Table paTable0(paSetup0);
-	PagedArray<Int> latout0(l3Shape, paTable0);
+	PagedArray<Int> arrout0(l3Shape, paTable0);
+	SubLattice<Int> latout0(arrout0, True);
 	SetupNewTable paSetup1("tLatticeApply_tmp.array4b",
 			       TableDesc(), Table::New);
 	Table paTable1(paSetup1);
-	PagedArray<Int> latout1(l3Shape, paTable1);
+	PagedArray<Int> arrout1(l3Shape, paTable1);
+	SubLattice<Int> latout1(arrout1, True);
 	PtrBlock<MaskedLattice<Int>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
@@ -544,7 +550,6 @@ void doIt (int argc, char *argv[])
 					   region, collapser, 1);
 	tim.show("msliced 1  ");
     }
-*/
     IPosition l5Shape(5,1);
     l5Shape(0) = slicer3.length()(0);
     l5Shape(2) = 2;
@@ -555,7 +560,8 @@ void doIt (int argc, char *argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array5t",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> latout(l5Shape, paTable);
+	PagedArray<Int> arrout(l5Shape, paTable);
+	SubLattice<Int> latout(arrout, True);
 	MyTiledCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
@@ -566,8 +572,8 @@ void doIt (int argc, char *argv[])
     {
 	Table t("tLatticeApply_tmp.array3");
 	PagedArray<Int> lat(t);
-//	Table t1("tLatticeApply_tmp.array4a");
-//	PagedArray<Int> lat1(t1);
+	Table t1("tLatticeApply_tmp.array4a");
+	PagedArray<Int> lat1(t1);
 	Table t2("tLatticeApply_tmp.array5t");
 	PagedArray<Int> lat2(t2);
 	Int sx = slicer3.start()(0);
@@ -591,16 +597,14 @@ void doIt (int argc, char *argv[])
 		pos(0) = j;
 		pos2(0) = j;
 		Int value = lat.getAt (pos);
-//		Int value1 = lat1.getAt (pos);
+		Int value1 = lat1.getAt (pos);
 		pos2(2) = 0;
 		Int value2p = lat2.getAt (pos2);
 		pos2(2) = 1;
 		Int value2m = lat2.getAt (pos2);
-//		if (value != sum  ||  value1 != sum  ||  value2p != sum
-		if (value != sum  ||  value2p != sum
+		if (value != sum  ||  value1 != sum  ||  value2p != sum
 		||  value2m != -sum) {
-//		    cout << "Value=" << value << ',' << value1
-		    cout << "Value=" << value << ',' 
+		    cout << "Value=" << value << ',' << value1
 			 << ',' << value2p << ',' << value2m
 			 << ", expected " << sum
 			 << "   at position " << pos << endl;
