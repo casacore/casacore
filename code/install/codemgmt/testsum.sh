@@ -3,7 +3,7 @@
 # testsum.sh: Formats the runtests.report file
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999
+#   Copyright (C) 1992-1997,1998,1999,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -120,6 +120,9 @@ then
    done
 fi
 rm /tmp/aips2tests.noverify
+echo "Tests that had warnings"
+echo 
+grep "^$2.*WARN" $1/bintest/runtests.report
 echo
 echo "Tests that passed"
 echo
