@@ -1,6 +1,6 @@
 //# LQLinearFit.h: Class for linear least-squares fit.
 //#
-//# Copyright (C) 1995,1999,2000,2001
+//# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -180,27 +180,10 @@
 //	sigma = 1.0;
 //	// The fitter
 //  	LQLinearFit<Double> fitter;
-//	// Linear combination of functions describing 1 + x + x*x
-//    	Polynomial<Double> constant(0); 
-//    	Polynomial<Double> linear(1); 
-//	Polynomial<Double> square(2);
-//    	constant.setCoefficient(0, 1.0);   // 1
-//    	linear.setCoefficient(1, 1.0);     // x
-//	square.setCoefficient(2, 1.0);     // x^2
-//    	LinearComb<Double,Double> combination;
-//    	combination.addFunction(constant);
-//    	combination.addFunction(linear);
-//    	combination.addFunction(square);
+//	NQPolynomial<AutoDiff<Double> > combination(2);
 //	// Get the solution
 //	fitter.setFunction(combination);
 //    	Vector<Double> solution = fitter.fit(x, primesTable, sigma);
-//	// Try with a function with derivatives (note that default 
-//	// polynomial has zero first guess)
-//    	Polynomial<AutoDiff<Double> > sqreAuto(2);
-//    	FuncWithAutoDerivs<Double,Double> 
-//      sqre = FuncWithAutoDerivs<Double,Double>(sqreAuto);
-//    	fitter.setFunction(sqre);
-//    	solution = fitter.fit(x, primesTable, sigma);
 //	// create a special function (should probably at beginning)
 //	static void myfnc(Vector<Double> &y, const Double x) {
 //  	y(0) = 1; for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
