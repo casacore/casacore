@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/opt/local/bin/perl
 #
 #   Copyright (C) 1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
@@ -231,11 +231,11 @@ sub make_tex_file{
          $iname =~ s/\\_/_/g;
          $oiname = $iname;
          if($opt_glish == 1){
-            print "$pack.$mname.objs.$oname := [=];\n";
-            print "$pack.$mname.objs.$oname.m := [=];\n";
+            print "$pack.$mname.objs.$oiname := [=];\n";
+            print "$pack.$mname.objs.$oiname.m := [=];\n";
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$mname.objs.$oname.d := '$dum';\n";}
+            print "$pack.$mname.objs.$oiname.d := '$dum';\n";}
          undef @methodsid{$oname};
       }
       if(/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/){
@@ -250,9 +250,9 @@ sub make_tex_file{
          $iname =~ s/\\_/_/g;
          $argroot ='';
          if($opt_glish == 1){
-            print "$pack.$mname.objs.$oname.m.$iname := [=];\n";
+            print "$pack.$mname.objs.$oiname.m.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$mname.objs.$oname.m.$iname.d := '$dum';\n";}
+            print "$pack.$mname.objs.$oiname.m.$iname.d := '$dum';\n";}
       }
       $recIndent = "";
       if(/\\begin{ahrecord}/){
@@ -273,6 +273,7 @@ sub make_tex_file{
             $wlabel = "\\paragraph";
             $argroot = "$pack.$mname.objs.$oname.m.$iname";
             if($opt_glish == 1){
+               $argroot = "$pack.$mname.objs.$oiname.m.$iname";
                print "$argroot := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n"; }
