@@ -43,7 +43,6 @@
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Utilities/RegSequence.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/RegexError.h>
 #include <aips/Utilities/Register.h>
 #include <aips/Utilities/Sequence.h>
 #include <aips/Utilities/Sort.h>
