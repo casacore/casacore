@@ -38,9 +38,10 @@ TiledFileHelper::TiledFileHelper (const String& fileName,
 				  DataType dtype,
 				  uInt maximumCacheSize,
 				  Bool writable,
-				  Bool canonical)
+				  Bool bigEndian)
 : TiledStMan ("TiledFileHelper", maximumCacheSize)
 {
+  setEndian (bigEndian);
   switch (dtype) {
   case TpBool:
     itsDesc.addColumn (ArrayColumnDesc<Bool> ("DATA", shape,
@@ -76,9 +77,6 @@ TiledFileHelper::TiledFileHelper (const String& fileName,
   itsDesc.defineHypercolumn ("TiledFileHelper", shape.nelements(),
 			     Vector<String>(1, "DATA"));
   createDirArrColumn ("DATA", dtype, "");
-  //
-  // Commented out by wky, since this setup signature no longer exists.
-  // TiledStMan::setup (canonical);
   TiledStMan::setup();
   fileSet_p[0] = new TSMFile (fileName, writable);
 }
