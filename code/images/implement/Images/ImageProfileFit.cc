@@ -893,6 +893,7 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
             pFitMaskIter->rwVectorCursor() = inMask;
          }
          if (pResid) {
+            pResidIter->rwVectorCursor() = inIter.vectorCursor();
             list.residual(pResidIter->rwVectorCursor());   
          }
          if (pResidMaskIter) {
