@@ -1,5 +1,5 @@
 //# SubImage.h: A (masked) subset of an ImageInterface object
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -204,8 +204,7 @@ public:
   virtual Unit units() const;
   // </group>
 
-  // Return the name of the current ImageInterface object. 
-  // Returns a blank string.
+  // Return the name of the parent ImageInterface object. 
   virtual String name (Bool stripPath=False) const;
   
   // Often we have miscellaneous information we want to attach to an image.
