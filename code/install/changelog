@@ -48,3 +48,22 @@ and clears it thereafter.
 <br>In this way users are informed about the most recent changes.
  </description>
 </change>
+
+<change id=0055>
+ <author> Wim Brouw </author>
+ <date> 2000/11/22 </date>
+ <avers> 1.5 </avers>
+ <area> System </area>
+ <package> System </package>
+ <module> mkinst </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Allow standard C++ include files
+ </summary>
+ <description>
+Allowed the template definition to have standard C++ include files (i.e. without a .h or .cc extension).
+The check is made for files ending in at least 3 lc char, or ending in 646.
+ </description>
+</change>
