@@ -35,7 +35,7 @@ AipsError::AipsError(const Char *str,Category c)
 {}
 
 AipsError::AipsError(const String &str,Category c)
-: message(str,c)
+  : message(str), category(c)
 {}
 
 AipsError::~AipsError() throw()
