@@ -1386,7 +1386,7 @@ template<class T> T mean(const MaskedArray<T> &left)
         throw (ArrayError("T ::mean(const MaskedArray<T> &left) - "
                           "MaskedArray must have at least 1 element"));
     }
-    return sum(left)/(1.0*left.nelementsValid());
+    return sum(left)/left.nelementsValid();
 }
 
 template<class T> T variance(const MaskedArray<T> &left, T mean)
@@ -1397,7 +1397,7 @@ template<class T> T variance(const MaskedArray<T> &left, T mean)
     }
     MaskedArray<T> deviations (left - mean);
     deviations *= deviations;
-    return sum(deviations)/((1.0*left.nelementsValid() - 1.0));
+    return sum(deviations)/(left.nelementsValid() - 1);
 }
 
 template<class T> T variance(const MaskedArray<T> &left)
@@ -1427,17 +1427,21 @@ template<class T> T avdev(const MaskedArray<T> &left, T mean)
                           "MaskedArray must have at least 1 element"));
     }
     MaskedArray<T> avdeviations (abs(left - mean));
-    return sum(avdeviations)/(1.0*left.nelementsValid());
+    return sum(avdeviations)/left.nelementsValid();
 }
 
-template<class T> T median(const MaskedArray<T> &left, Bool sorted)
+template<class T> T median(const MaskedArray<T> &left, Bool sorted,
+			   Bool takeEvenMean)
 {
-    uInt leftNelements = left.nelementsValid();
-    if (leftNelements < 1) {
-        throw (ArrayError("T ::median(const MaskedArray<T> &, Bool) - "
+    uInt nelem = left.nelementsValid();
+    if (nelem < 1) {
+        throw (ArrayError("T ::median(const MaskedArray<T> &) - "
                           "MaskedArray must have at least 1 element"));
     }
-    
+    //# Mean does not have to be taken for odd number of elements.
+    if (nelem%2 != 0) {
+	takeEvenMean = False;
+    }
     T medval;
 
     Bool leftarrDelete;
@@ -1449,21 +1453,21 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted)
         = left.getMaskStorage(leftmaskDelete);
     const LogicalArrayElem *leftmaskS = leftmaskStorage;
 
-    uInt n2 = (leftNelements - 1)/2;
+    uInt n2 = (nelem - 1)/2;
 
     if (! sorted) {
-	// Sort a copy.
+	// Make a copy of the masked elements.
 
-	T *copy = new T[leftNelements];
+	T *copy = new T[nelem];
 	if (copy == 0) {
             left.freeArrayStorage(leftarrStorage, leftarrDelete);
             left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
 	    throw (AllocError("T ::median(const Array<T> &) - sort buffer",
-			      leftNelements));
+			      nelem));
 	}
         T *copyS = copy;
 
-        uInt ntotal = leftNelements;
+        uInt ntotal = nelem;
         while (ntotal) {
             if (*leftmaskS) {
                 *copyS = *leftarrS;
@@ -1474,49 +1478,46 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted)
             leftmaskS++;
         }
 
-	genSort(copy, leftNelements);
-
-	if (leftNelements %2 == 1) {
-	    // odd
-            medval = copy[n2];
+	// Use a faster algorithm when the array is big enough.
+	// If needed take the mean for an even number of elements.
+	// Sort a small array in ascending order.
+	if (nelem > 50) {
+	    if (takeEvenMean) {
+		medval = T(0.5 * (GenSort<T>::kthLargest (copy, nelem, n2) +
+				  GenSort<T>::kthLargest (copy, nelem, n2+1)));
+	    } else {
+		medval = GenSort<T>::kthLargest (copy, nelem, n2);
+	    }
 	} else {
-	    // even
-	    medval = T(0.5)*(copy[n2] + copy[n2+1]);
+	    GenSort<T>::sort (copy, nelem);
+	    if (takeEvenMean) {
+		medval = T(0.5 * (copy[n2] + copy[n2+1]));
+	    } else {
+		medval = copy[n2];
+	    }
 	}
-
 	delete [] copy;
 
     } else {
         // Sorted.
-
-        if (leftNelements %2 == 1) {
-            // odd
-            uInt ntotal = leftNelements - n2;
-            while (ntotal) {
-                if (*leftmaskS) {
-                    ntotal--;
-                }
-                leftarrS++;
-                leftmaskS++;
-            }
-            medval = *(leftarrS - 1);
-        }
-
-        else {
-            // even
-
-            uInt ntotal = leftNelements - n2;
-            while (ntotal) {
-                if (*leftmaskS) {
-                    if (ntotal == 2) {
-                        medval = *leftarrS;
-                    }
-                    ntotal--;
-                }
-                leftarrS++;
-                leftmaskS++;
-            }
-            medval = T(0.5) * (medval + *(leftarrS - 1));
+	// When mean has to be taken, we need one more element.
+        if (takeEvenMean) {
+	    n2++;
+	}
+	const T* prev = 0;
+	for (;;) {
+	    if (*leftmaskS) {
+		if (n2 == 0) break;
+		prev = leftarrS;
+		n2--;
+	    }
+	    leftarrS++;
+	    leftmaskS++;
+	}
+        if (takeEvenMean) {
+            medval = T(0.5 * (*prev + *leftarrS));
+        } else {
+            medval = *leftarrS;
         }
     }
 
@@ -1524,11 +1525,6 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted)
     left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
 
     return medval;
-}
-
-template<class T> T median(const MaskedArray<T> &left)
-{
-    return median(left, False);
 }
 
 
