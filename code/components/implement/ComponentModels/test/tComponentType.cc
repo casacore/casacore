@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,12 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/ComponentModels/ComponentShape.h>
+#include <trial/ComponentModels/SpectralModel.h>
 
 int main() {
   try {
@@ -96,12 +100,55 @@ int main() {
       AlwaysAssert(ComponentType::spectralShape(s) ==
 		   ComponentType::UNKNOWN_SPECTRAL_SHAPE, AipsError);
     }
+    {
+      SkyCompRep cp(ComponentType::POINT, ComponentType::CONSTANT_SPECTRUM);
+      AlwaysAssert(cp.shape().type() == ComponentType::POINT, AipsError);
+      AlwaysAssert(cp.spectrum().type() == ComponentType::CONSTANT_SPECTRUM,
+		   AipsError);
+    }
+    {
+      SkyCompRep g(ComponentType::GAUSSIAN);
+      AlwaysAssert(g.shape().type() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(g.spectrum().type() == ComponentType::CONSTANT_SPECTRUM,
+		   AipsError);
+    }
+    {
+      SkyCompRep dsi(ComponentType::DISK, ComponentType::SPECTRAL_INDEX);
+      AlwaysAssert(dsi.shape().type() == ComponentType::DISK, AipsError);
+      AlwaysAssert(dsi.spectrum().type() == ComponentType::SPECTRAL_INDEX,
+		   AipsError);
+    }
+    try {
+      SkyCompRep u(ComponentType::UNKNOWN_SHAPE);
+      throw(AipsError("Should not be able to make an unknown shape"));
+    }
+    catch (AipsError x) {
+      AlwaysAssert(x.getMesg().contains
+		   ("(SkyCompRep.cc : 63) Failed AlwaysAssertExit ok()"),
+		   AipsError); 
+   }
+    try {
+      SkyCompRep u(ComponentType::POINT,
+		   ComponentType::UNKNOWN_SPECTRAL_SHAPE);
+      throw(AipsError("Should not be able to make an unknown spectrum"));
+    }
+    catch (AipsError x) {
+      AlwaysAssert(x.getMesg().contains
+		   ("(SkyCompRep.cc : 73) Failed AlwaysAssertExit ok()"), 
+ 		   AipsError);
+    }
+    cout << "Two SEVERE logger error messages are expected" << endl;
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  }
+  catch (...) {
+    cerr << "Exception not derived from AipsError" << endl;
+    cout << "FAIL" << endl;
+    return 2;
+  }
   cout << "OK" << endl;
   return 0;
 }
