@@ -984,6 +984,12 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
    if (!goodParameterStatus_p) {
      return False; 
    }
+
+// Generate storage lattice if required
+
+   if (needStorageLattice_p) {
+      if (!generateStorageLattice()) return False;
+   }
 //
    if (displayAxes_p.nelements() == 0) {
       minPos.resize(minPos_p.nelements());
