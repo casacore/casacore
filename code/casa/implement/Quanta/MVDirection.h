@@ -176,6 +176,10 @@ public:
   virtual MeasValue *clone() const;
   // Generate a 2-vector of angles (in rad)
   Vector<Double> get() const;
+  // Get the latitude angle (rad)
+  Double getLat() const;
+  // and with specified units
+  Quantity getLat(const Unit &unit) const;
   // Get the position angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>

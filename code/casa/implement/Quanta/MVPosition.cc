@@ -313,11 +313,9 @@ Double MVPosition::radius() {
 
 Vector<Double> MVPosition::get() const{
   Vector<Double> tmp(3);
-  tmp(0) = sqrt(operator*(*this));
-  Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
-  if (xyz(0) != 0 || xyz(1) != 0) tmp(1) = atan2(xyz(1),xyz(0));
-  else tmp(1) = 0.0;
-  tmp(2) = asin(xyz(2)/ln);
+  tmp(0) = norm(xyz);
+  tmp(1) = getLong();
+  tmp(2) = getLat(tmp(0));
   return tmp;
 }
 
@@ -337,9 +335,30 @@ Quantum<Vector<Double> > MVPosition::getAngle(const Unit &unit) const{
   return getAngle().get(unit);
 }
 
+Double MVPosition::getLong() const {
+  return ((xyz(0) != 0 || xyz(1) != 0) ?
+	  atan2(xyz(1),xyz(0)) : 0.0);
+}
+
+Quantity MVPosition::getLong(const Unit &unit) const {
+  return (Quantity(getLong(), "rad").get(unit));
+}
+
+Double MVPosition::getLat() const {
+  return getLat(norm(xyz));
+}
+
+Double MVPosition::getLat(Double ln) const {
+  return asin(xyz(2)/((ln == 0) ? 1.0 : ln));
+}
+
+Quantity MVPosition::getLat(const Unit &unit) const {
+  return (Quantity(getLat(), "rad").get(unit));
+}
+
 Quantity MVPosition::getLength() const{
   Double tmp = sqrt(operator*(*this));
-  return Quantity(tmp,"m");
+  return Quantity(tmp, "m");
 }
 
 Quantity MVPosition::getLength(const Unit &unit) const {
@@ -347,17 +366,15 @@ Quantity MVPosition::getLength(const Unit &unit) const {
 }
 
 Double MVPosition::positionAngle(const MVPosition &other) const {
-  Vector<Double> t1(3);
-  Vector<Double> t2(3);
-  t1 = get();
-  t2 = other.get();
-  Double s1, c1;
-  Double df(t1(1) - t2(1));
-  Double c2(cos(t2(2)));
-  c1 = cos(t1(2)) * sin(t2(2)) - sin(t1(2)) * c2 * cos(df);
-  s1 = -c2 * sin(df);
-  if (s1 != 0 || c1 != 0) return atan2(s1, c1);
-  else return Double(0.0);
+  Double longDiff(getLong() - other.getLong());
+  Double ln(norm(xyz)); 
+  Double slat1(xyz(2)/ln);
+  ln = norm(other.xyz);
+  Double slat2(other.xyz(2)/ln);
+  Double clat2(sqrt(fabs(1.0 - slat2*slat2)));
+  Double s1(-clat2 * sin(longDiff));
+  Double c1(sqrt(fabs(1.0 - slat1*slat1))*slat2 - slat1*clat2*cos(longDiff));
+  return ((s1 != 0 || c1 != 0) ? atan2(s1, c1): 0.0);
 }
 
 Quantity MVPosition::positionAngle(const MVPosition &other, 
@@ -366,17 +383,14 @@ Quantity MVPosition::positionAngle(const MVPosition &other,
 }
 
 Double MVPosition::separation(const MVPosition &other) const {
-  Vector<Double> t1(3);
-  t1 = this->getValue();
-  Double l1(norm(t1));
+  Double l1(norm(xyz));
   l1 = l1 > 0 ? l1 : 1.0; 
-  Double l2(norm(other.getValue()));
+  Double l2(norm(other.xyz));
   l2 = l2 > 0 ? l2 : 1.0;
-  t1 *= l2/l1;
-  t1 -= other.getValue();
-  Double d1 = norm(t1)/l2/2.0;
-  d1 = (d1 < 1.0 ? d1 : 1.0);
-  return (2*asin(d1));
+  Double d1 = sqrt(square(xyz(0)/l1 - other.xyz(0)/l2) + 
+		   square(xyz(1)/l1 - other.xyz(1)/l2) +
+		   square(xyz(2)/l1 - other.xyz(2)/l2))/2.0; 
+  return 2*asin(d1 < 1.0 ? d1 : 1.0);
 }
 
 Quantity MVPosition::separation(const MVPosition &other, 

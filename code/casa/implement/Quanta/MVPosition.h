@@ -204,8 +204,11 @@ public:
   
   // Normalise direction aspects by adjusting the length to 1
   // <group>
+  // For position no adjustment; for direction adjustment
   virtual void adjust();
+  // Adjustment with returned factor
   virtual void adjust(Double &res);
+  // Re-adjust using factor given
   virtual void readjust(Double res);
   // </group>
   // Get radius of position
@@ -218,6 +221,14 @@ public:
   Quantum<Vector<Double> > getAngle() const;
   // and with specified units
   Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  // Get the longitudinal angle (in radians)
+  Double getLong() const;
+  // and with specified units
+  Quantity getLong(const Unit &unit) const;
+  // Get the latitude angle (rad)
+  Double getLat() const;
+  // and with specified units
+  Quantity getLat(const Unit &unit) const;
   // Generate the length
   Quantity getLength() const;
   // and generate it with the specified units
@@ -258,6 +269,9 @@ public:
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
   
 protected:
+  //# Member functions
+  // Get the latitude assuming length is given
+  Double getLat(Double ln) const;
   //# Data
   // Position vector (in m)
   Vector<Double> xyz;
