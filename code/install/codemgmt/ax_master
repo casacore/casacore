@@ -3932,3 +3932,4 @@
 14 065 src mv trial/implement/Display/X11PCDLLoadIdentity.cc trialdisplay/implement/Display/X11PCDLLoadIdentity.cc
 14 065 src mv trial/implement/Display/X11PCDLMaskedImage.cc trialdisplay/implement/Display/X11PCDLMaskedImage.cc
 14 065 src mv trial/implement/Display/X11PCDLMaskedPixmap.cc trialdisplay/implement/Display/X11PCDLMaskedPixmap.cc
+14 065 src mv trial/implement/Display/X11PCDLPixmap.cc trialdisplay/implement/Display/X11PCDLPixmap.cc
