@@ -3,7 +3,7 @@
 # ax_master: Delete or rename AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1998,Wednes1998,1999,2000,2001,2002
+#   Copyright (C) 1992-1998,Wednes1998,1999,2000,2001,2002,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -6396,3 +6396,4 @@
 18 398 src rm trial/implement/MeasurementEquations/MFSkyEquation.h
 18 398 src rm trial/implement/MeasurementEquations/MFSkyEquation.cc
 18 410 src rm alma/apps/clic
+18 426 src rm vo/scripts/C1200M24.gif
