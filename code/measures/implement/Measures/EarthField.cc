@@ -1,5 +1,5 @@
 //# EarthField.cc:  EarthField class model calculations
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,20 +246,20 @@ void EarthField::calcField(const MVPosition &pos) {
 	}; // calculation loop
 	// Rotate from local vertical/meridian to ITRF one
 	if (lp == 0) {
-	  pval_p[0] = -x*slat*clong + z*clat*clong - y*slong;
-	  pval_p[1] = -x*slat*slong + z*clat*slong + y*clong;
-	  pval_p[2] =  x*clat + z*slat;
+	  pval_p[0] = +x*slat*clong + z*clat*clong + y*slong;
+	  pval_p[1] = -x*slat*slong + z*clat*slong - y*clong;
+	  pval_p[2] = -x*clat + z*slat;
 	} else {
-	  dval_p[lp-1][0] = (-x*slat*clong + z*clat*clong - y*slong -
-			    pval_p[0])/DER_INTV;
-	  dval_p[lp-1][1] = (-x*slat*slong + z*clat*slong + y*clong -
-			   pval_p[1])/DER_INTV;
-	  dval_p[lp-1][2] = ( x*clat + z*slat -
-			    pval_p[2])/DER_INTV;
+	  dval_p[lp-1][0] = (+x*slat*clong + z*clat*clong + y*slong -
+			     pval_p[0])/DER_INTV;
+	  dval_p[lp-1][1] = (-x*slat*slong + z*clat*slong - y*clong -
+			     pval_p[1])/DER_INTV;
+	  dval_p[lp-1][2] = (-x*clat + z*slat -
+			     pval_p[2])/DER_INTV;
 	};
 	if (lp < 3) {
 	  if (lp != 0) posmv(lp-1) -= DER_INTV;
-	  posmv(lp)   += DER_INTV;
+	  posmv(lp) += DER_INTV;
 	  posv = MVPosition(posmv).get();
 	};
       }; // derivative loop
