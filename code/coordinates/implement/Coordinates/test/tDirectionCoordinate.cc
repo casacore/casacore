@@ -62,6 +62,7 @@ void doit2 (DirectionCoordinate& lc,
 void doit3 (DirectionCoordinate& lc);
 void doit4 (DirectionCoordinate& lc);
 void doit5 (DirectionCoordinate& lc);
+void doit6();
 
 
 int main()
@@ -127,9 +128,11 @@ int main()
         Quantum<Double> lat(crval(1)*180.0/C::pi, "deg");
         Quantum<Double> dlon(cdelt(0)*180.0/C::pi, "deg");
         Quantum<Double> dlat(cdelt(1)*180.0/C::pi, "deg");
+        Quantum<Double> longPole(999.0, "deg");
+        Quantum<Double> latPole(999.0, "deg");
 //
         DirectionCoordinate dc2(type, proj, lon, lat, dlon, dlat,
-                                xform, crpix(0), crpix(1));
+                                xform, crpix(0), crpix(1), longPole, latPole);
 //
         if (!dc1.near(dc2)) {
            throw(AipsError(String("Quantum interface constructor failed consistency test")));
@@ -194,8 +197,9 @@ int main()
                                                  cdelt, xform);
          doit5(lc);
       }
-
-
+      {
+         doit6 ();
+      }
   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
@@ -225,7 +229,7 @@ DirectionCoordinate makeCoordinate(MDirection::Types type,
    proj = Projection::SIN;
    return DirectionCoordinate(type, proj, crval(0), crval(1),
                               cdelt(0), cdelt(1),
-                              xform, crpix(0), crpix(1));
+                              xform, crpix(0), crpix(1), 999.0, 999.0);
 }
  
 
@@ -307,10 +311,9 @@ void doit (DirectionCoordinate& lc,
    }  
    DirectionCoordinate* plc = DirectionCoordinate::restore(rec, "Direction");
    if (!plc->near(lc, 1e-6)) {
-      throw(AipsError("Coordinate reflection through record interface failed"));  
+      throw(AipsError(String("Restore failed with") + plc->errorMessage()));
    }
    delete plc;
-
 //
 // Test clone
 //
@@ -763,4 +766,68 @@ void doit5 (DirectionCoordinate& dC)
       }
       delete pC;
    }
+}
+
+void doit6 () 
+{
+   Vector<Double> crval(2);
+   Vector<Double> cdelt(2);
+   Vector<Double> crpix(2);
+   crval(0) = 10.0; 
+   crval(1) = -50.0;
+   crpix(0) = 100.0; 
+   crpix(1) = 120.0;
+   cdelt(0) = -10.0 / 3600.0; 
+   cdelt(1) = 20.0 / 3600;
+   Matrix<Double> xform(2,2);
+   xform = 0.0;
+   xform.diagonal() = 1.0;
+   Projection proj(Projection::CAR);
+   MDirection::Types type = MDirection::J2000;
+   Double longPole = 175;
+   Double latPole = -90;
+//
+   DirectionCoordinate dc(type, proj, 
+                          crval(0)*C::pi/180.0, 
+                          crval(1)*C::pi/180.0, 
+                          cdelt(0)*C::pi/180.0, 
+                          cdelt(1)*C::pi/180.0, 
+                          xform, crpix(0), crpix(1), 
+                          longPole*C::pi/180.0, 
+                          latPole*C::pi/180.0);
+//
+   Vector<Double> poles = dc.longLatPoles();
+   Bool ok = (near(poles(0), crval(0)) &&
+              near(poles(1), crval(1)) &&
+              near(poles(2), longPole));
+
+// The lat pole get recomputed so don't test it
+
+   if (!ok) {
+      throw(AipsError("Failed longLatPoles 1 extraction test"));  
+   }
+//
+   Quantum<Double> refLong(10.0, Unit("deg"));
+   Quantum<Double> refLat(-50.0, Unit("deg"));
+   Quantum<Double> incLong(-10.0, Unit("arcsec"));
+   Quantum<Double> incLat(20.0, Unit("arcsec"));
+   Quantum<Double> longPole2(175.0, Unit("deg"));
+   Quantum<Double> latPole2(-90.0, Unit("deg"));
+//
+   DirectionCoordinate dc2(type, proj, refLong, refLat,
+                           incLong, incLat,
+                           xform, crpix(0), crpix(1), 
+                           longPole2, latPole2);
+//
+   Vector<Double> poles2 = dc2.longLatPoles();
+   ok = (near(poles2(0), refLong.getValue(Unit("deg"))) &&
+         near(poles2(1), refLat.getValue(Unit("deg"))) &&
+         near(poles2(2), longPole2.getValue("deg")));
+
+// The lat pole get recomputed so don't test it
+
+   if (!ok) {
+      throw(AipsError("Failed longLatPoles 2 extraction test"));  
+   }
+
 }
