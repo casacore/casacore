@@ -1,5 +1,5 @@
 //# tfits1.cc: FITS test program to read and display values from a FITS file
-//# Copyright (C) 1993,1994,1996
+//# Copyright (C) 1993,1994,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -508,14 +508,14 @@ int main(int argc, char **argv) {
 
 #if defined(__GNUG__)
 // Manually instantiate the templates for g++ 2.7.x -fno-implicit-templates
-template do_primary_array(PrimaryArray<unsigned char> &x);
-template do_primary_array(PrimaryArray<short> &x);
-template do_primary_array(PrimaryArray<FitsLong> &x);
-template do_primary_array(PrimaryArray<float> &x);
-template do_primary_array(PrimaryArray<double> &x);
-template do_primary_group(PrimaryGroup<unsigned char> &x);
-template do_primary_group(PrimaryGroup<short> &x);
-template do_primary_group(PrimaryGroup<FitsLong> &x);
-template do_primary_group(PrimaryGroup<float> &x);
-template do_primary_group(PrimaryGroup<double> &x);
+template void do_primary_array(PrimaryArray<unsigned char> &x);
+template void do_primary_array(PrimaryArray<short> &x);
+template void do_primary_array(PrimaryArray<FitsLong> &x);
+template void do_primary_array(PrimaryArray<float> &x);
+template void do_primary_array(PrimaryArray<double> &x);
+template void do_primary_group(PrimaryGroup<unsigned char> &x);
+template void do_primary_group(PrimaryGroup<short> &x);
+template void do_primary_group(PrimaryGroup<FitsLong> &x);
+template void do_primary_group(PrimaryGroup<float> &x);
+template void do_primary_group(PrimaryGroup<double> &x);
 #endif
