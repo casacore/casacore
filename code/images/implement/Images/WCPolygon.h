@@ -182,13 +182,13 @@ class WCPolygon : public WCRegion
 public:
     WCPolygon();
 
-// Construct from two vectors of world coordinates (absolute
-// or offset) defining the polygon vertices.  The world coordinate
-// axes pertaining to the x and y vectors, respectively, are given
-// in the vector <src>worldAxes</src>.   If <src>isOffset</src> is 
-// True, then the world coordinates are offset relative to the 
-// reference pixel of the  supplied <src>CoordinateSystem</src>.
-// <group>
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the polygon vertices.  The world coordinate
+   // axes pertaining to the x and y vectors, respectively, are given
+   // in the vector <src>worldAxes</src>.   If <src>isOffset</src> is 
+   // True, then the world coordinates are offset relative to the 
+   // reference pixel of the  supplied <src>CoordinateSystem</src>.
+   // <group>
    WCPolygon(const Vector<Double>& x,
              const Vector<Double>& y,
              const Vector<uInt>& worldAxes,
@@ -199,36 +199,39 @@ public:
              const Vector<uInt>& worldAxes,
              const CoordinateSystem& cSys,
              const Bool isOffset=False);
-// </group>
+   // </group>
 
-// Construct from an <src>LCPolygon</src>. You specify which world axes
-// the polygon belongs to (x and then y)
+   // Construct from an <src>LCPolygon</src>. You specify which world axes
+   // the polygon belongs to (x and then y)
    WCPolygon(const LCPolygon& polygon,
              const Vector<uInt>& worldAxes,
              const CoordinateSystem& cSys);
 
-// Copy constructor (reference semantics).
+   // Copy constructor (reference semantics).
    WCPolygon (const WCPolygon& other);
 
-// Destructor
+   // Destructor
    virtual ~WCPolygon();
 
-// Assignment (copy semantics) 
+   // Assignment (copy semantics) 
    WCPolygon& operator= (const WCPolygon& other);
 
-// Clone a WCPolygon object.
+   // Clone a WCPolygon object.
    virtual WCPolygon* cloneRegion() const;
 
-// Convert to an LCRegion using the given coordinate system.
+   // Convert to an LCRegion using the given coordinate system.
    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
                                  const IPosition& latticeShape) const;
 
-// Convert the WCPolygon object to a record.
-// The record can be used to make the object persistent.
-   virtual TableRecord toRecord() const;
+   // Convert the WCPolygon object to a record.
+   // The record can be used to make the object persistent.
+   // The <src>tableName</src> argument can be used by derived
+   // classes (e.g. LCPagedMask) to put very large objects.
+   virtual TableRecord toRecord(const String& tableName) const;
 
 // Convert to a WCPolygon from a record.
-   static WCPolygon* fromRecord (const TableRecord&);
+   static WCPolygon* fromRecord (const TableRecord& rec,
+                                 const String& tableName);
 
 // Returns "WCPolygon"
    static String className();

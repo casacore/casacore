@@ -30,6 +30,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
 #include <trial/Lattices/LCBox.h>
@@ -37,6 +38,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/Unit.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 #include <iostream.h>
@@ -188,7 +190,7 @@ WCBox* WCBox::cloneRegion() const
 }
 
 
-TableRecord WCBox::toRecord() const
+TableRecord WCBox::toRecord(const String&) const
 {
    TableRecord rec;
    rec.define ("name", className());
@@ -203,7 +205,9 @@ TableRecord WCBox::toRecord() const
 }
 
 
-WCBox* WCBox::fromRecord (const TableRecord& rec)
+WCBox* WCBox::fromRecord (const TableRecord& rec,
+                          const String&)
+
 {
    return new WCBox(Vector<Double>(rec.asArrayDouble ("blc")),
                     Vector<Double>(rec.asArrayDouble ("trc")),

@@ -30,11 +30,13 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <trial/Lattices/LCPolygon.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/Unit.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 #include <iostream.h>
@@ -208,7 +210,7 @@ WCPolygon* WCPolygon::cloneRegion() const
 }
 
 
-TableRecord WCPolygon::toRecord() const
+TableRecord WCPolygon::toRecord(const String&) const
 {
    TableRecord rec;
    rec.define ("name", className());
@@ -224,7 +226,8 @@ TableRecord WCPolygon::toRecord() const
 }
 
 
-WCPolygon* WCPolygon::fromRecord (const TableRecord& rec)
+WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
+                                  const String&)
 {
    return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
                         Vector<Double>(rec.asArrayDouble ("y")),

@@ -269,12 +269,12 @@ class WCBox : public WCRegion
 public:
     WCBox();
 
-// Construct from two vectors of world coordinates (absolute
-// or offset) defining the box corners. 
-// If  <src>isOffset</src> is True, then the world coordinates
-// are offset relative to the reference pixel of the supplied 
-// <src>CoordinateSystem</src>
-// <group>
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the box corners. 
+   // If  <src>isOffset</src> is True, then the world coordinates
+   // are offset relative to the reference pixel of the supplied 
+   // <src>CoordinateSystem</src>
+   // <group>
    WCBox(const Vector<Double>& blcWC,
          const Vector<Double>& trcWC,
          const CoordinateSystem& cSys,
@@ -283,37 +283,40 @@ public:
          const Vector<Float>& trcWC,
          const CoordinateSystem& cSys,
          const Bool isOffset=False);
-// </group>
+   // </group>
 
-// Construct from the bounding box of an  <src>LCRegion</src>.  
+   // Construct from the bounding box of an  <src>LCRegion</src>.  
    WCBox(const LCRegion& region,
          const CoordinateSystem& cSys);
 
-// Copy constructor (reference semantics [except for <src>CoordinateSystem</src>])
+   // Copy constructor (reference semantics [except for <src>CoordinateSystem</src>])
    WCBox (const WCBox& other);
 
-// Destructor
+   // Destructor
    virtual ~WCBox();
 
-// Assignment (copy semantics) 
+   // Assignment (copy semantics) 
    WCBox& operator= (const WCBox& other);
 
-// Clone a WCBox object.
+   // Clone a WCBox object.
    virtual WCBox* cloneRegion() const;
 
-// Convert to an LCRegion using the supplied <src>CoordinateSystem</src> 
-// and shape.  
+   // Convert to an LCRegion using the supplied <src>CoordinateSystem</src> 
+   // and shape.  
    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
                                  const IPosition& latticeShape) const;
 
-// Convert the WCBox object to a record.
-// The record can be used to make the object persistent.
-   virtual TableRecord toRecord() const;
+   // Convert the WCBox object to a record.
+   // The record can be used to make the object persistent.
+   // The <src>tableName</src> argument can be used by derived
+   // classes (e.g. LCPagedMask) to put very large objects.
+   virtual TableRecord toRecord(const String& tableName) const;
 
-// Convert to a WCBox from a record.
-   static WCBox* fromRecord (const TableRecord&);
+   // Convert to a WCBox from a record.
+   static WCBox* fromRecord (const TableRecord& rec,
+                             const String& tableName);
 
-// Returns WCBox
+   // Returns WCBox
    static String className();
 
 
