@@ -88,7 +88,7 @@ SI unit table (50):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
     t         (tonne)                      1000 kg
-Customary unit table (71):
+Customary unit table (72):
     "         (arcsec)                     4.8481368111e-06 rad
     "_2       (square arcsec)              2.35044305391e-11 sr
     '         (arcmin)                     0.000290888208666 rad
@@ -160,6 +160,7 @@ Customary unit table (71):
     statV     (statvolt)                   299.792458 m2.kg.s-3.A-1
     u         (atomic mass unit)           1.661e-27 kg
     yd        (yard)                       0.9144 m
+    yr        (year)                       31557600 s
 User unit table (2):
     Jypb      (Jansky/beam)                1.35425483146e-15 kg.s-2.sr-1
     beam      (telescope beam)             7.38413463084e-12 sr

@@ -1,5 +1,5 @@
 //# UnitMap.cc: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -448,6 +448,9 @@ void UnitMap::initUM() {
   UnitMap::mapCust->define("yd",   	UnitName("yd",
 						 UnitVal(C::yard,"m"),
 						 "yard"));
+  UnitMap::mapCust->define("yr",   	UnitName("yr",
+						 UnitVal(24.*3600.*365.25,"s"),
+						 "year"));
 
   //# Start with clean cache
   UnitMap::mapCache->clear();
