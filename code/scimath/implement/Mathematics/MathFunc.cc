@@ -1,5 +1,5 @@
 //# MathFunc.cc: Templated letter/envelope classes for single dependent variable functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -404,8 +404,8 @@ MathFunc<T> * GaussianConv<T>::clone() const
 // default constructor
 //
 template<class T>
-KB_Conv<T>::KB_Conv(T cut, T wparm, T KBparm): MathFunc<T>(), sup_width(cut),
-fw(wparm), kbparm(KBparm)
+KB_Conv<T>::KB_Conv(T cut, T wparm, T KBparm): MathFunc<T>(),
+kbparm(KBparm), fw(wparm), sup_width(cut)
 {
   // nothing
 }
@@ -415,7 +415,7 @@ fw(wparm), kbparm(KBparm)
 //
 template<class T>
 KB_Conv<T>::KB_Conv(const KB_Conv<T>& other): MathFunc<T>(), 
-sup_width(other.sup_width), kbparm(other.kbparm), fw(other.fw)
+ kbparm(other.kbparm), fw(other.fw), sup_width(other.sup_width)
 {
   //nothing
 }
@@ -481,7 +481,7 @@ MathFunc<T> * KB_Conv<T>::clone() const
 //
 template<class T>
 Mod_KB_Conv<T>::Mod_KB_Conv(T cut, T wparm, T KBparm, T gwparm): MathFunc<T>(),
-sup_width(cut), widthparm(wparm), kbparm(KBparm), gw2(gwparm*gwparm), 
+kbparm(KBparm), gw2(gwparm*gwparm), sup_width(cut), widthparm(wparm), 
 ln16(4.0*C::ln2)
 {
   // nothing
@@ -492,8 +492,8 @@ ln16(4.0*C::ln2)
 //
 template<class T>
 Mod_KB_Conv<T>::Mod_KB_Conv(const Mod_KB_Conv<T>& other): MathFunc<T>(),
-sup_width(other.sup_width), widthparm(other.widthparm), kbparm(other.kbparm), 
-gw2(other.gw2), ln16(4.0*C::ln2)
+kbparm(other.kbparm), gw2(other.gw2), sup_width(other.sup_width),
+  widthparm(other.widthparm), ln16(4.0*C::ln2)
 {
   // nothing
 }
@@ -565,8 +565,8 @@ MathFunc<T> * Mod_KB_Conv<T>::clone() const
 // default constructor
 //
 template<class T>
-Sinc_Conv<T>::Sinc_Conv(T cut, T sincparm): MathFunc<T>(), sup_width(cut),
-Sinc_parm(sincparm)
+Sinc_Conv<T>::Sinc_Conv(T cut, T sincparm): MathFunc<T>(),
+Sinc_parm(sincparm), sup_width(cut)
 {
   // nothing
 }
@@ -576,7 +576,7 @@ Sinc_parm(sincparm)
 //
 template<class T>
 Sinc_Conv<T>::Sinc_Conv(const Sinc_Conv<T>& other): MathFunc<T>(), 
-sup_width(other.sup_width), Sinc_parm(other.Sinc_parm)
+Sinc_parm(other.Sinc_parm), sup_width(other.sup_width)
 {
   // nothing
 }
@@ -709,8 +709,8 @@ MathFunc<T> * Sph_Conv<T>::clone() const
 //
 template<class T>
 ExpSincConv<T>::ExpSincConv(T cut, T sincparm, T expscale, T exppower): 
-MathFunc<T>(), sup_width(cut), exponent(exppower), 
-scale(expscale), sincpByPi(sincparm/C::pi)
+MathFunc<T>(), sup_width(cut), scale(expscale), exponent(exppower), 
+sincpByPi(sincparm/C::pi)
 {
     // nothing
 }
