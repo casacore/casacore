@@ -26,7 +26,7 @@
 //# $Id$
 
 #if !defined(AIPS_INTERPOLATE2D_H)
-n#define AIPS_INTERPOLATE2D_H
+#define AIPS_INTERPOLATE2D_H
 
 //# Includes
 #include <aips/aips.h>
