@@ -32,6 +32,7 @@
 
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/Coordinate.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
@@ -649,18 +650,14 @@ String DirectionCoordinate::format(String& units,
                                    const uInt worldAxis,
                                    const Bool absolute,
                                    const Int precision) const
-//
-// Input
-//   worldValue   must be radians
-//
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+   AlwaysAssert(nWorldAxes()==2, AipsError);
 
 // Fill in DEFAULT format
 
    Coordinate::formatType form = format;
    checkFormat(form, absolute);
-
 
 // Set default precision if needed
 
@@ -671,12 +668,16 @@ String DirectionCoordinate::format(String& units,
 
    MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
 
+// Convert to radians first
+
+   Double worldValue2 = C::pi * worldValue * to_degrees_p[worldAxis] / 180.0;
+
 // Format according to required format type and absolute/offset
 // and type of DirectionCoordinate.  Endless bloody ifs. I don't
 // like case statements !
 
    ostrstream oss;         
-   MVAngle mVA(worldValue);
+   MVAngle mVA(worldValue2);
    units = " ";
 
    if (gtype == MDirection::GRADEC || gtype == MDirection::GHADEC) {
@@ -684,7 +685,7 @@ String DirectionCoordinate::format(String& units,
          oss.setf(ios::scientific, ios::floatfield);
          oss.precision(prec);
          if (absolute) {
-            oss << worldValue;
+            oss << worldValue2;
             units = "rad";
          } else {     
             oss << mVA.degree() * 3600;
@@ -694,7 +695,7 @@ String DirectionCoordinate::format(String& units,
          oss.setf(ios::fixed, ios::floatfield);
          oss.precision(prec);
          if (absolute) {
-            oss << worldValue;
+            oss << worldValue2;
             units = "rad";
          } else {     
             oss << mVA.degree() * 3600;
@@ -761,12 +762,12 @@ String DirectionCoordinate::format(String& units,
       if (form == Coordinate::SCIENTIFIC) {
          oss.setf(ios::scientific, ios::floatfield);
          oss.precision(prec);
-         oss << worldValue;
+         oss << worldValue2;
          units = "rad";
       } else if (form == Coordinate::FIXED) {
          oss.setf(ios::fixed, ios::floatfield);
          oss.precision(prec);
-         oss << worldValue;
+         oss << worldValue2;
          units = "rad";
       } else {
 
@@ -775,7 +776,7 @@ String DirectionCoordinate::format(String& units,
 
          oss.setf(ios::scientific, ios::floatfield);
          oss.precision(prec);
-         oss << worldValue;
+         oss << worldValue2;
          units = "rad";
       }
    }
@@ -1380,4 +1381,3 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
    return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
                                linear2.pc(), linear2.crpix());
 }
-
