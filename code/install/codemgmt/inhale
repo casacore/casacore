@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: inhale [-c|-h] [-D] [-d] [-l] [-n] [-r #] [-w #]
+# Usage: inhale [-c|-m] [-D] [-d] [-l] [-n] [-r #] [-w #]
 #-----------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
@@ -41,9 +41,9 @@
 #          documentation compilation is defeated via the DOCSYS variable in
 #          "makedefs" this option may still be useful in preventing "docsys"
 #          from being recorded in the LOGFILE entry for the rebuild.
-#   -h     Do a hybrid update: (mostly) incremental inhale, cumulative sneeze.
 #   -l     Latchkey mode; fetch latchkey updates (if any) together with any
 #          other updates intended for general distribution.
+#   -m     Do a "mixed" update: (mostly) incremental inhale, cumulative sneeze.
 #   -n     Don't remake the system (allsys).  The "install" and "docsys"
 #          targets will still be remade; see also the "-d" option.
 #   -r #   Maximum number of ftp attempts, default 12.
@@ -168,14 +168,14 @@
      -c)
         MODE=cumulative
         ;;
-     -h)
-        HYBRID=1
-        ;;
      -D)
         DINKUM=dinkum
         ;;
      -d)
         DOCSYS=""
+        ;;
+     -m)
+        HYBRID=1
         ;;
      -n)
         TARGETS=install
@@ -208,7 +208,7 @@
      *)
         exec 1>&2
         echo ""
-        echo "Usage: inhale [-c|-h] [-d] [-n] [-l] [-r #] [-w #]"
+        echo "Usage: inhale [-c|-m] [-d] [-n] [-l] [-r #] [-w #]"
         exit 1
         ;;
      esac
