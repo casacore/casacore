@@ -14,6 +14,7 @@
 #include <aips/Arrays/Matrix.h>
 
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 #define PI C::pi
 #define PI_2 C::pi_2
