@@ -421,7 +421,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     ROArrayColumn<Double> frequencies(spw,
 		    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
     Vector<Double> frequ=frequencies(0);
-    tolerance=max(frequ)/1.0e7;
+    tolerance=max(frequ)/1.0e6;
   }
   const Quantum<Double> freqTol(tolerance, "Hz");
 
