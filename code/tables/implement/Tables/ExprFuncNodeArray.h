@@ -85,6 +85,10 @@ public:
     virtual Array<MVTime> getArrayDate (const TableExprId& id);
     // </group>
 
+    // Get the function node.
+    const TableExprFuncNode* getChild() const
+      { return &node_p; }
+
     // Link the children to the node and convert the children
     // to constants if possible. Also convert the node to
     // constant if possible.
