@@ -4528,3 +4528,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSPolarization.h aips/implement/MeasurementSets/MSPolarization.h
 14 296 src mv aips/implement/MeasurementSets/NewMSPolColumns.cc aips/implement/MeasurementSets/MSPolColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSPolColumns.h aips/implement/MeasurementSets/MSPolColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSPolEnums.h aips/implement/MeasurementSets/MSPolEnums.h
