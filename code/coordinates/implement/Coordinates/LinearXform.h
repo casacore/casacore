@@ -67,7 +67,7 @@ struct linprm;
 // </synopsis>
 //
 // <example>
-// None yet.
+// See the test program tLinearXform.cc
 // </example>
 //
 // <motivation>
