@@ -155,6 +155,11 @@ typedef Quantum<Double> Quantity;
 //				to the units of the specified quant with the
 //				same conversion rules as the previous one
 // </ul>
+// <note role=tip> All converting type methods (i.e. convert(), get() and
+// getValue() with specified units), will automatically convert also from
+// time to angle units (or v.v) if necessary, as long as they are simple. I.e.
+// deg will be converted to h, but asking to convert m/s to m/deg will
+// produce the standard conversion to m/deg.rad/s. </note>
 //
 // Quanta can be checked for having the correct unit dimensions (e.g. before
 // addition or comparing) by the following two member functions, which will
@@ -192,6 +197,7 @@ typedef Quantum<Double> Quantity;
 //     <note role=tip> myval.get().getValue() will return the
 //			value of myval expressed in canonical units
 //     </note>
+//   <li> getValue(Unit unit)	return the value (as converted to unit)
 //   <li> getUnit()		return the units (as a String) of the quantum
 //   <li> setValue(Type val)	replace the value of the quantum with val,
 //				leaving the units the same

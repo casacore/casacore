@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -216,6 +217,13 @@ template <class Qtype>
 Qtype Quantum<Qtype>::getValue(const Unit &other) const {
     Double d1 = other.getValue().getFac() /
 	qUnit.getValue().getFac();	// SUN native overloading problems
+    if (qUnit.getValue() == UnitVal::ANGLE) {
+      if (other.getValue() == UnitVal::TIME)
+	d1 *= C::circle/C::day;
+    } else if (qUnit.getValue() == UnitVal::TIME) {
+      if (other.getValue() == UnitVal::ANGLE)
+	d1 *= C::day/C::circle;
+    };
     return (Qtype)(at_cc(qVal)/d1);
 }
 
@@ -300,16 +308,32 @@ void Quantum<Qtype>::convert(const Unit &s) {
 			    qUnit.getValue().getFac()/s.getValue().getFac());
       qUnit = s;
     } else {
-      qUnit.setValue(qUnit.getValue() / s.getValue());
-      ostrstream oss;
-      oss << qUnit.getValue().getDim();
-      // Suppress (gcc) warnings:
-      at_c(qVal) = (Qtype) (at_cc(qVal) * 
-			    qUnit.getValue().getFac());
-      if (s.empty()) {
-	qUnit = String(oss);
+      if (qUnit.getValue() == UnitVal::ANGLE) {
+	if (s.getValue() == UnitVal::TIME) {
+	  at_c(qVal) = (Qtype) (at_cc(qVal) *
+				qUnit.getValue().getFac()/
+				s.getValue().getFac() * C::day/C::circle);
+	  qUnit = s;
+	};
+      } else if (qUnit.getValue() == UnitVal::TIME) {
+	if (s.getValue() == UnitVal::ANGLE) {
+          at_c(qVal) = (Qtype) (at_cc(qVal) *
+                                qUnit.getValue().getFac()/
+				s.getValue().getFac() * C::circle/C::day);
+          qUnit = s;
+        };
       } else {
-	qUnit = Unit(s.getName() + '.' + String(oss).after(0));
+	qUnit.setValue(qUnit.getValue() / s.getValue());
+	ostrstream oss;
+	oss << qUnit.getValue().getDim();
+	// Suppress (gcc) warnings:
+	at_c(qVal) = (Qtype) (at_cc(qVal) * 
+			      qUnit.getValue().getFac());
+	if (s.empty()) {
+	  qUnit = String(oss);
+	} else {
+	  qUnit = Unit(s.getName() + '.' + String(oss).after(0));
+	};
       };
     };
 }
