@@ -131,9 +131,6 @@ public:
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
 
-// Format a position in the lattice (zero relative)
-   String formatCoordinate (const IPosition& pos);
-
 // Get LEL statistics
    Bool getLEL (Array<T>& stats, const String& expr, Bool dropDeg=True);
 
