@@ -1,5 +1,5 @@
 //# MatrixSolver.cc: Abstract base class for solvers of AX=B
-//# Copyright (C) 1994,1995,1999,2001
+//# Copyright (C) 1994,1995,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogMessage.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
    gain(1.0){}
@@ -125,7 +125,7 @@ Bool MatrixSolver::accurateSolution() {
   // Now determine if the residual vector norm is less than the
   // Solution tolerance times the original BVector norm.
   
-  ostrstream o;o<<"MatrixSolver: Norms of initial and residual vectors "<<
+  ostringstream o;o<<"MatrixSolver: Norms of initial and residual vectors "<<
 		 BNorm<<", "<<RNorm;
   message.message(o);
   logSink().post(message);

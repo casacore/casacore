@@ -1,5 +1,5 @@
 //# NNLSMatrixSolver.cc: concrete class for NNLS solvers of AX=B
-//# Copyright (C) 1994,1995,1999,2001,2002
+//# Copyright (C) 1994,1995,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogMessage.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
 #define NEED_FORTRAN_UNDERSCORES 1
@@ -87,14 +87,14 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
 
   RVector=BVector-product(AMatrix,XVector);	// Update residual vector
   if (mode==2) {
-    ostrstream o;o<<"dimensions set up incorrectly";
+    ostringstream o;o<<"dimensions set up incorrectly";
     message.priority(LogMessage::SEVERE);
     message.message(o);logSink().post(message);
     setSolved(False);
     return Solved();
   };
   if (mode==3) {
-    ostrstream o;o<<"Exceeded number of iterations";
+    ostringstream o;o<<"Exceeded number of iterations";
     message.priority(LogMessage::SEVERE);
     message.message(o);logSink().post(message);
     setSolved(False);
@@ -102,12 +102,12 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
   };
   
   if(accurateSolution()) {
-    ostrstream o;o<<"Solution acheived";
+    ostringstream o;o<<"Solution acheived";
     message.message(o);logSink().post(message);
     setSolved(True);
   }
   else {
-    ostrstream o;o<<"Solution not formally accurate enough";
+    ostringstream o;o<<"Solution not formally accurate enough";
     message.message(o);logSink().post(message);
     setSolved(False);
   }
