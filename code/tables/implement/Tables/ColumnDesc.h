@@ -182,8 +182,8 @@ public:
 
     // Get access to the set of keywords.
     // <group>
-    TableRecord& keywordSet()
-	{ return colPtr_p->keywordSet(); }
+    TableRecord& rwKeywordSet()
+	{ return colPtr_p->rwKeywordSet(); }
     const TableRecord& keywordSet() const
 	{ return colPtr_p->keywordSet(); }
     // </group>
