@@ -1,5 +1,5 @@
 //# LinearXform.h: Perform a linear transform between input and output vectors
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,7 +108,8 @@ public:
 
     // Convert world coordinates to pixel coordinates (forward), or pixel 
     // coordinates to world (reverse). If the conversion works True is returned,
-    // otherwise False is returned and errorMsg is set.
+    // otherwise False is returned and errorMsg is set.  The output vectors
+    // are resized appropriately.
     // <group>
     Bool forward(const Vector<Double> &world,
 			 Vector<Double> &pixel, String &errorMsg) const;
