@@ -29,6 +29,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MeasTable.h>
@@ -114,41 +115,42 @@ void MCPosition::doConvert(MVPosition &in,
     switch (mc.getMethod(i)) {
 	
     case ITRF_WGS84: {
-      if (in.radius() != 0.0) {
-	Double d1, d2;
-	// Get angles
-	*DVEC1 = in.get();
-	// Get flattening
-	g1 = MeasTable::WGS84(1); g1 = 1.0/g1;
-	g1 = 2*g1 - g1*g1;
-	// Iterate
-	d2 = (*DVEC1)(0) * cos((*DVEC1)(2));
-	do {
-	  g2 = (*DVEC1)(2);
-	  d1 = sin(g2);
-	  g3 = 1.0/sqrt(1 - g1 * d1 * d1);
-	  (*DVEC1)(2) = atan((in(2) + 
-			      MeasTable::WGS84(0) * g3 * g1 * d1)/d2);
-	}
-	while ( !nearAbs((*DVEC1)(2), g2, 1e-10));
-	(*DVEC1)(0) = d2/cos((*DVEC1)(2)) - MeasTable::WGS84(0) * g3;
-	in = MVPosition(Quantity((*DVEC1)(0),"m"),
-			(*DVEC1)(1), (*DVEC1)(2));
-      };
+      Double d1, d2;
+      // Get angles
+      *DVEC1 = in.get();
+      // Get flattening
+      g1 = MeasTable::WGS84(1); g1 = 1.0/g1;
+      g1 = 2*g1 - g1*g1;
+      // Iterate
+      d2 = (*DVEC1)(0) * cos((*DVEC1)(2));
+      do {
+	g2 = (*DVEC1)(2);
+	d1 = sin(g2);
+	g3 = 1.0/sqrt(1 - g1 * d1 * d1);
+	(*DVEC1)(2) = in(2) + MeasTable::WGS84(0) * g3 * g1 * d1;
+	if (d2 != 0.0) {
+	  (*DVEC1)(2) = atan(((*DVEC1)(2))/d2);
+	} else {
+	  (*DVEC1)(2) = ((*DVEC1)(2) >= 0) ? C::pi_2 : - C::pi_2;
+	};
+      }
+      while ( !nearAbs((*DVEC1)(2), g2, 1e-10));
+      (*DVEC1)(0) = d2/cos((*DVEC1)(2)) - MeasTable::WGS84(0) * g3;
+      in = MVPosition(Quantity((*DVEC1)(0),"m"),
+		      (*DVEC1)(1), (*DVEC1)(2));
     }
     break;
 
     case WGS84_ITRF: {
+      // Equatorial radius
+      g1 = MeasTable::WGS84(0);
+      // Flattening
+      g2 = MeasTable::WGS84(1);
+      g2 = 1.0 - 1.0/g2; g2 *= g2;
+      // h
       if (in.radius() != 0.0) {
-	// Equatorial radius
-	g1 = MeasTable::WGS84(0);
-	// Flattening
-	g2 = MeasTable::WGS84(1);
-	g2 = 1.0 - 1.0/g2; g2 *= g2;
 	// C
-	g3 = in(0) * in(0) +
-	  in(1) * in(1) +
-	  g2 * in(2) * in(2);
+	g3 = in(0)*in(0) + in(1)*in(1) + g2 * in(2)*in(2);
 	g3 = g1 * sqrt(1.0/g3);
 	// S
 	g2 *= g3;
@@ -156,6 +158,14 @@ void MCPosition::doConvert(MVPosition &in,
 	in(0) *= (1.0 + g3);
 	in(1) *= (1.0 + g3);
 	in(2) *= (1.0 + g2);
+      } else {
+	// C
+	g3 = g2;
+	g3 = g1 * sqrt(1.0/g3);
+	// S
+	g2 *= g3;
+	// Apply
+	in(2) = g2;
       };
     }	
     break;
