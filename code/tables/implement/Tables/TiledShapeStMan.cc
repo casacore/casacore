@@ -34,6 +34,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/BinarySearch.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Containers/BlockIO.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Tables/DataManError.h>
