@@ -141,7 +141,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       weight_p=other.weight_p;
     }
     if (weightMatOK_p) {
-      weightMat_p.resize(other.weightMat_p.nelements()); 
+      weightMat_p.resize(other.weightMat_p.shape()); 
       weightMat_p=other.weightMat_p;
     }
   }
