@@ -6188,3 +6188,4 @@
 17 191 src mv ./aips/implement/Functionals/NQChebyshevParam.cc ./aips/implement/Functionals/ChebyshevParam.cc
 17 191 src mv ./aips/implement/Functionals/NQChebyshevParam.h ./aips/implement/Functionals/ChebyshevParam.h
 17 191 src mv ./aips/implement/Functionals/NQCombi2Function.cc ./aips/implement/Functionals/Combi2Function.cc
+17 191 src mv ./aips/implement/Functionals/NQCombiFunction.cc ./aips/implement/Functionals/CombiFunction.cc
