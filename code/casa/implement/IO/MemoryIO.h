@@ -171,14 +171,6 @@ public:
     // or the buffer pointer is at an invalid position.
     virtual Int read (uInt size, void* buf, Bool throwException=True);    
 
-    // Reset the position pointer to the given value. It returns the
-    // new position.
-    // An exception is thrown when seeking before the start of the
-    // buffer or when seeking past the end of a readonly buffer.
-    // When seeking past the end of a writable buffer, the required
-    // amount of bytes is added and initialized to zero.
-    virtual Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-
     // Clear the buffer; i.e. set the data length and seek pointer to zero.
     void clear();
 
@@ -232,11 +224,20 @@ private:
     //# Assignment, should not be used.
     MemoryIO& operator= (const MemoryIO& that);
 
+    // Reset the position pointer to the given value. It returns the
+    // new position.
+    // An exception is thrown when seeking before the start of the
+    // buffer or when seeking past the end of a readonly buffer.
+    // When seeking past the end of a writable buffer, the required
+    // amount of bytes is added and initialized to zero.
+    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+
     //# Expand the buffer to at least the given size. The specified size
     //# will be used if it results in a larger buffer size. In this way the
     //# buffer does not get reallocated too often.  It returns a false status
     //# when the buffer cannot be expanded. 
     Bool expand (uInt64 minSize);
+
 
     uChar* itsBuffer;
     Int64  itsAlloc;

@@ -1,5 +1,5 @@
 //# ByteIO.cc: Abstract base class for IO on a byte stream
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

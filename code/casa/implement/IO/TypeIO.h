@@ -135,7 +135,10 @@ public:
     // This function sets the position on the given offset.
     // The seek option defines from which file position the seek is done.
     // -1 is returned if not seekable.
+    // <group>
     Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
+    Int64 seek (Int offset, ByteIO::SeekOption = ByteIO::Begin);
+    // </group>
     
     // Is the TypeIO stream readable?
     Bool isReadable() const;

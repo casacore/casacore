@@ -143,7 +143,7 @@ Int MemoryIO::read (uInt size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Int64 MemoryIO::seek (Int64 offset, ByteIO::SeekOption dir)
+Int64 MemoryIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 {
   // Determine the new position.
   // Exit with error status if negative.

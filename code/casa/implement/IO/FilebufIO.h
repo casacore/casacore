@@ -148,10 +148,6 @@ public:
     // the system call returns an undocumented value.
     virtual Int read (uInt size, void* buf, Bool throwException=True);    
 
-    // Reset the position pointer to the given value. It returns the
-    // new position.
-    virtual Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-
     // Get the length of the byte stream.
     virtual Int64 length();
        
@@ -181,6 +177,10 @@ protected:
 
     // Determine if the file is seekable.
     void fillSeekable();
+
+    // Reset the position pointer to the given value. It returns the
+    // new position.
+    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
 
     // Get the file for the derived class.
     FILE* getFilePtr();

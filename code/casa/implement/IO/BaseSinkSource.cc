@@ -67,6 +67,10 @@ Int64 BaseSinkSource::seek (Int64 offset, ByteIO::SeekOption option)
 {
     return itsTypeIO->seek (offset, option);
 }
+Int64 BaseSinkSource::seek (Int offset, ByteIO::SeekOption option)
+{
+    return itsTypeIO->seek (offset, option);
+}
 
 Bool BaseSinkSource::isReadable() const
 {

@@ -225,7 +225,7 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
     return bytesRead;
 }
 
-Int64 FilebufIO::seek (Int64 offset, ByteIO::SeekOption dir)
+Int64 FilebufIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 {
     // On the SUN a seek (even at the same place) slows down fread
     // tremendously. So lonly seek when needed.

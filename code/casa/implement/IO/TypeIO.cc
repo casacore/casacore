@@ -61,6 +61,10 @@ Int64 TypeIO::seek (Int64 offset, ByteIO::SeekOption option)
 {
     return itsByteIO->seek (offset, option);
 }
+Int64 TypeIO::seek (Int offset, ByteIO::SeekOption option)   
+{
+    return itsByteIO->seek (offset, option);
+}
 
 Bool TypeIO::isReadable() const
 {

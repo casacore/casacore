@@ -130,7 +130,7 @@ Int LargeFiledesIO::read (uInt size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Int64 LargeFiledesIO::seek (Int64 offset, ByteIO::SeekOption dir)
+Int64 LargeFiledesIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 {
     switch (dir) {
     case ByteIO::Begin:

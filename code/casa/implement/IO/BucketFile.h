@@ -130,7 +130,10 @@ public:
     uInt write (const void* buffer, uInt length);
 
     // Seek in the file.
+    // <group>
     void seek (Int64 offset) const;
+    void seek (Int offset) const;
+    // </group>
 
     // Get the (physical) size of the file.
     // This is doing a seek and sets the file pointer to end-of-file.
@@ -164,6 +167,9 @@ inline Bool BucketFile::isWritable() const
 
 inline int BucketFile::fd()
     { return fd_p; }
+
+inline void BucketFile::seek (Int offset) const
+    { seek (Int64(offset)); }
 
 
 #endif

@@ -142,7 +142,7 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Int64 FiledesIO::seek (Int64 offset, ByteIO::SeekOption dir)
+Int64 FiledesIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 {
     switch (dir) {
     case ByteIO::Begin:
