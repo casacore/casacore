@@ -55,10 +55,7 @@ SpectralList::SpectralList(const SpectralList &other) :
 }
 
 SpectralList::~SpectralList() {
-  for (uInt i=0; i<list_p.nelements(); i++) {
-    delete list_p[i]; list_p[i] = 0;
-  };
-  list_p.resize(0);
+  clear();
 };
 
 SpectralList &SpectralList::operator=(const SpectralList &other) {
@@ -208,6 +205,13 @@ Bool SpectralList::set(const SpectralElement &in, const uInt which) {
   delete list_p[which]; list_p[which] = 0;
   list_p[which] = new SpectralElement(in);
   return True;
+}
+
+void SpectralList::clear() {
+  for (uInt i=0; i<list_p.nelements(); i++) {
+    delete list_p[i]; list_p[i] = 0;
+  };
+  list_p.resize(0);
 }
 
 void SpectralList::set(const uInt nmax) {
