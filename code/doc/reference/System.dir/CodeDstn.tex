@@ -1,6 +1,6 @@
 \chapter{Code distribution}
 \label{Code distribution}
-\index{code distribution}
+\index{code!distribution}
 
 \aipspp\ source code distribution utilities \footnote{Last change:
 $ $Id$ $}.
@@ -9,10 +9,18 @@ $ $Id$ $}.
 
 \section{\exe{exhale}}
 \label{exhale}
-\index{distribution -- export}
-\index{code distribution -- export}
-\index{exhale}
-\index{ftp}
+
+\index{exhale@\exe{exhale}}
+
+\index{code!distribution!export|see{\exe{exhale}}}
+
+\index{base release|see{\exe{exhale}}}
+\index{cumulative update|see{\exe{exhale}}}
+\index{incremental update|see{\exe{exhale}}}
+
+\index{distribution|see{code, distribution}}
+\index{ftp@\unixexe{ftp}!distribution|see{code, distribution}}
+\index{update!source code!en masse|see{code, distribution}}
 
 Create \aipspp\ source code updates.
 
@@ -58,7 +66,7 @@ responsible for producing the following update files which is deposits in
    which has changed since the last base release.  This has a name of the form
    \file{master-\textit{mm}.\textit{nnn}.ALL.tar.gz}.  Two versions are kept,
    one corresponding to the latest version and one for the latest version
-   which passed the testsuite.
+   which passed the \exeref{testsuite}.
 
    The base release file for the current major version is used as the
    timestamp for cumulative updates.
@@ -200,15 +208,13 @@ when it is called upon to produce a new base release, \code{\textit{mm}.000}
 \subsection*{Diagnostics}
 
 Status return values correspond to the various phases of the operation
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: error preparing a new base release\\
-   3: error creating incremental or base update\\
-   4: error creating cumulative update\\
-   5: error creating public release\\
-   6: installation error
-\end{status}
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: error preparing a new base release
+\\ \verb+   3+: error creating incremental or base update
+\\ \verb+   4+: error creating cumulative update
+\\ \verb+   5+: error creating public release
+\\ \verb+   6+: installation error
 
 \subsection*{Examples}
 
@@ -245,6 +251,7 @@ The unix manual page for \unixexe{cron}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{tar}(1).\\
 The GNU manual page for \unixexe{gzip}(1).\\
+Section \sref{Accounts and groups}, \aipspp\ accounts and groups.\\
 \aipspp\ variable names (\sref{variables}).\\
 \exeref{avers}, \aipspp\ version report utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
@@ -252,6 +259,7 @@ The GNU manual page for \unixexe{gzip}(1).\\
 \exeref{inhale}, \aipspp\ code import utility.\\
 \exeref{av}, \aipspp\ filename validation utility.\\
 \exeref{rcscat}, concatenate two \rcs\ version files.\\
+\exeref{testsuite}, maintain the most recent good cumulative update.\\
 \exeref{xrcs}, verify the internal consistency of \rcs\ version files.
 
 \subsection*{Author}
@@ -263,10 +271,10 @@ Original: 1992/04/06 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{inhale}}
 \label{inhale}
-\index{distribution -- import}
-\index{code distribution -- import}
-\index{inhale}
-\index{ftp}
+
+\index{inhale@\exe{inhale}}
+
+\index{code!distribution!import|see{\exe{inhale}}}
 
 Retrieve \aipspp\ source code updates.
 
@@ -313,7 +321,6 @@ The update files are of three types (see \exeref{exhale}):
 \file{\$AIPSLAVE/VERSION} on the local machine to determine which files need
 to be fetched.
 
-\noindent
 If the \file{\$AIPSLAVE/VERSION} file does not exist, or if the major version
 number stored therein is less than that of \file{/pub/master/VERSION},
 \exe{inhale} fetches the latest base release.  If the \exe{-c} option was
@@ -354,7 +361,7 @@ the last slave and code updates (see \exeref{avers}).
    week) to guarantee that the slave copy does not deviate from the master.
 
 \item[\exe{-D}]
-   Fetch the latest update which has passed the test suite.
+   Fetch the latest update which has passed the \exeref{testsuite}.
 
 \item[\exe{-d}]
    This option is operative only if the \exe{-n} option is also specified, it
@@ -435,7 +442,7 @@ The following resources used by \exe{inhale} should be defined in
    integrity of the files it has received.  The checksums are computed with
    the BSD version of \unixexe{sum} which algorithm differs from that of SysV.
    \exe{inhale} may complain about ``files not received in good order'' if 
-   \acct{aips2mgr} uses the SysV version of \unixexe{sum}, leading repeated
+   \acct{aips2mgr} uses the SysV version of \unixexe{sum}, leading to repeated
    attempts to fetch the update files.  See \sref{Consortium installation}
    for advice on sidestepping this problem.
 
@@ -465,15 +472,13 @@ The following resources used by \exe{inhale} should be defined in
 \subsection*{Diagnostics}
 
 Status return values correspond to the various phases of the operation
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: initial ftp error\\
-   3: main ftp error\\
-   4: error extracting or installing the new \rcs\ files\\
-   5: error checking out the new code\\
-   6: error rebuilding the system
-\end{status}
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: initial ftp error
+\\ \verb+   3+: main ftp error
+\\ \verb+   4+: error extracting or installing the new \rcs\ files
+\\ \verb+   5+: error checking out the new code
+\\ \verb+   6+: error rebuilding the system
 
 \subsection*{Examples}
 
@@ -501,13 +506,15 @@ alternative method is to forward all of \acct{aips2mgr}'s mail via the
 The unix manual page for \unixexe{tar}(1).\\
 The unix manual page for \unixexe{cron}(1).\\
 \aipspp\ variable names (\sref{variables}).\\
+Section \sref{Accounts and groups}, \aipspp\ accounts and groups.\\
 \exeref{affirm}, get the Boolean value of a set of arguments.\\
 \exeref{avers}, \aipspp\ version report utility.\\
 \exeref{ax}, \aipspp\ code deletion utility.\\
 \exeref{exhale}, \aipspp\ code export utility.\\
 \exeref{getrc}, query \aipspp\ resource database.\\
 \filref{makefiles}, GNU makefiles used to rebuild \aipspp .\\
-\exeref{sneeze}, \aipspp\ system rebuild utility.
+\exeref{sneeze}, \aipspp\ system rebuild utility.\\
+\exeref{testsuite}, maintain the most recent good cumulative update.
 
 \subsection*{Author}
 
@@ -518,10 +525,13 @@ Original: 1992/04/08 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{inhold}}
 \label{inhold}
-\index{inhold}
-\index{code distribution -- synchronization}
-\index{inhale -- synchronization}
-\index{synchronization -- inhale}
+
+\index{inhold@\exe{inhold}}
+
+\index{code!development!synchronization|see{\exe{inhold}}}
+\index{code!distribution!synchronization|see{\exe{inhold}}}
+\index{inhale@\exe{inhale}!synchronization|see{\exe{inhold}}}
+\index{synchronization|see{code, distribution}}
  
 Wait for \exeref{inhale} to finish.
 
@@ -566,10 +576,8 @@ none
 \subsection*{Diagnostics}
  
 Status return values:
-\begin{status}
-   0: success\\
-   1: initialization error
-\end{status}
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
  
 \subsection*{Examples}
  
@@ -597,9 +605,11 @@ The unix manual page for \unixexe{cron}(1).\\
 \newpage
 \section{\exe{sneeze}}
 \label{sneeze}
-\index{distribution -- rebuild}
-\index{code distribution -- rebuild}
-\index{sneeze}
+
+\index{sneeze@\exe{sneeze}}
+
+\index{code!distribution!rebuild|see{\exe{sneeze}}}
+\index{system!generation!rebuild|see{\exe{sneeze}}}
 
 \aipspp\ system rebuild utility.
 
@@ -740,10 +750,8 @@ control how \exe{sneeze} is invoked.
 \subsection*{Diagnostics}
 
 Status return values
-\begin{status}
-   0:  success\\
-   1:  initialization error
-\end{status}
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
 
 \subsection*{Examples}
 

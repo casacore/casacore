@@ -1,5 +1,6 @@
 \chapter{Overview}
 \label{Overview}
+
 \index{overview}
 
 This chapter \footnote{Last change:
@@ -10,6 +11,8 @@ provides an overview of the \aipspp\ system.
 
 \section{The AIPS++ directory hierarchy}
 \label{Directories}
+
+\index{directory!hierarchy}
 
 In the following discussion of the \aipspp\ directory hierarchy we will
 assume that \aipspp\ has been installed in directory \file{/aips++}.  This
@@ -30,7 +33,8 @@ subdirectories are referred to collectively as \file{\$AIPSARCH}.
 
 \subsection{Code directories}
 \label{Code directories}
-\index{directories -- code}
+
+\index{directory!code}
 
 The directory hierarchy beneath \file{/aips++/code}, or \file{\$AIPSCODE},
 consists of a collection of ``packages'' which are contained in separate
@@ -159,7 +163,8 @@ The \file{/aips++/code} directory hierarchy appears as follows:
 
 \subsection{Documentation directories}
 \label{Documentation directories}
-\index{directories -- documentation}
+
+\index{directory!documentation}
 
 The \file{/aips++/docs} subdirectory, or \file{\$AIPSDOCS} (\sref{variables})
 contains \textsc{ascii}, \textsc{html} and \textsc{PostScript} documents
@@ -190,7 +195,8 @@ are deposited in the various package-specific subdirectories.
 
 \subsection{System directories}
 \label{System directories}
-\index{directories -- system}
+
+\index{directory!system}
 
 The \aipspp\ system directory hierarchy is created in the first instance when
 \aipspp\ is installed (see \sref{Installation}), and maintained thereafter by
@@ -288,7 +294,15 @@ reconfiguration required.
 
 \subsection{RCS directories}
 \label{RCS directories}
-\index{directories -- \rcs}
+
+\index{directory!rcs@\rcs}
+\index{nfs@\textsc{nfs}}
+
+\index{rcs@\rcs!directories|see{directory, \rcs}}
+\index{archive \rcs\ repository|see{directory, \rcs}}
+\index{master \rcs\ repository|see{directory, \rcs}}
+\index{slave \rcs\ repository|see{directory, \rcs}}
+\index{repository!rcs@\rcs|see{directory, \rcs}}
 
 The \aipspp\ \rcs\ directories are maintained only at \aipspp\ code
 development sites.  They are not provided with the end-user \aipspp\ 
@@ -381,7 +395,11 @@ directory for the duration of its operation.
 
 \subsection{\unixexe{ftp} directories}
 \label{ftp directories}
-\index{directories -- \unixexe{ftp}}
+
+\index{directory!ftp@\unixexe{ftp}}
+\index{master host}
+
+\index{ftp@\unixexe{ftp}!directory|see{directory, \unixexe{ftp}}}
 
 The \aipspp\ \unixexe{ftp} directories contain compressed \unixexe{tar} files
 for distribution of \aipspp\ sources.  These reside directly under the
@@ -426,31 +444,36 @@ distribution files will only be available from \host{aips2.nrao.edu}.
  
 \section{AIPS++ variable names}
 \label{variables}
-\index{environment -- variable names}
-\index{variables -- environment}
-\index{AIPSPATH}
-\index{AIPSROOT}
-\index{AIPSARCH}
-\index{AIPSSITE}
-\index{AIPSHOST}
-\index{AIPSMSTR}
-\index{AIPSLAVE}
-\index{AIPSRCS}
-\index{AIPSCODE}
-\index{AIPSDOCS}
-\index{MSTRETCD}
-\index{CODEINSD}
-\index{CODEINCD}
-\index{LIBDBGD}
-\index{LIBOPTD}
-\index{BINDBGD}
-\index{BINOPTD}
-\index{BINTESTD}
-\index{ARCHTMPD}
-\index{ARCHAUXD}
-\index{ARCHBIND}
-\index{ARCHDOCD}
-\index{ARCHMAN1}
+
+\index{variables}
+\index{variables!environment}
+\index{variables!makefile}
+\index{environment variables}
+\index{makefile!variables}
+
+\index{AIPSPATH@\code{AIPSPATH}|see{variables}}
+\index{AIPSROOT@\code{AIPSROOT}|see{variables}}
+\index{AIPSARCH@\code{AIPSARCH}|see{variables}}
+\index{AIPSSITE@\code{AIPSSITE}|see{variables}}
+\index{AIPSHOST@\code{AIPSHOST}|see{variables}}
+\index{AIPSMSTR@\code{AIPSMSTR}|see{variables}}
+\index{AIPSLAVE@\code{AIPSLAVE}|see{variables}}
+\index{AIPSRCS@\code{AIPSRCS}|see{variables}}
+\index{AIPSCODE@\code{AIPSCODE}|see{variables}}
+\index{AIPSDOCS@\code{AIPSDOCS}|see{variables}}
+\index{MSTRETCD@\code{MSTRETCD}|see{variables}}
+\index{CODEINSD@\code{CODEINSD}|see{variables}}
+\index{CODEINCD@\code{CODEINCD}|see{variables}}
+\index{LIBDBGD@\code{LIBDBGD}|see{variables}}
+\index{LIBOPTD@\code{LIBOPTD}|see{variables}}
+\index{BINDBGD@\code{BINDBGD}|see{variables}}
+\index{BINOPTD@\code{BINOPTD}|see{variables}}
+\index{BINTESTD@\code{BINTESTD}|see{variables}}
+\index{ARCHTMPD@\code{ARCHTMPD}|see{variables}}
+\index{ARCHAUXD@\code{ARCHAUXD}|see{variables}}
+\index{ARCHBIND@\code{ARCHBIND}|see{variables}}
+\index{ARCHDOCD@\code{ARCHDOCD}|see{variables}}
+\index{ARCHMAN1@\code{ARCHMAN1}|see{variables}}
  
 A standard set of variable names is used in \aipspp\ scripts, makefiles and
 elsewhere to refer to \aipspp\ directories (\sref{Directories}).  Except for
@@ -517,8 +540,10 @@ entries for \filref{makedefs} and \filref{makefiles}.
 
 \section{Configuration files}
 \label{Configuration files}
-\index{configuration -- system}
-\index{system -- configuration}
+
+\index{system!configuration}
+
+\index{configuration|see{system, configuration}}
 
 Two sets of configuration files are used in \aipspp, the \file{aipsrc} and
 \file{makedefs} files.
@@ -542,8 +567,21 @@ overridden.
 
 \section{AIPS++ accounts and groups}
 \label{Accounts and groups}
-\index{code management - accounts}
-\index{code management - groups}
+
+\index{aips2adm@\acct{aips2adm}}
+\index{aips2mgr@\acct{aips2mgr}}
+\index{aips2prg@\acct{aips2prg}}
+\index{aips2usr@\acct{aips2usr}}
+\index{code!management!accounts}
+\index{code!management!uid}
+\index{code!management!groups}
+\index{code!management!gid}
+\index{master host}
+
+\index{accounts|see{code, management}}
+\index{groups|see{code, management}}
+\index{uid|see{code, management}}
+\index{gid|see{code, management}}
 
 A set of \aipspp\ accounts and groups have been defined to perform particular
 functions.  The following descriptions include the standard names, user ids,

@@ -1,6 +1,22 @@
 \chapter{Code management}
 \label{Code management}
-\index{code management}
+
+\index{code!management}
+
+\index{age!source code|see{code, management}}
+\index{checkin|see{code, management}}
+\index{checkout|see{code, management}}
+\index{directory!management|see{code, management}}
+\index{file!management|see{code, management}}
+\index{major version number|see{code, management}}
+\index{minor version number|see{code, management}}
+\index{patch version number|see{code, management}}
+\index{rcs@\rcs!code management|see{code, management}}
+\index{rename|see{code, management}}
+\index{search!source code|see{code, management}}
+\index{update!source code!selectively|see{code, management}}
+\index{verification!source code|see{code, management}}
+\index{version|see{code, management}}
 
 \aipspp\ source code management utilities \footnote{Most recent change:
 $ $Id$ $}.
@@ -9,11 +25,14 @@ $ $Id$ $}.
 
 \section{\exe{ae}}
 \label{ae}
-\index{code management -- semaphore file deletion}
-\index{checkin -- semaphore file deletion}
-\index{checkout -- semaphore file deletion}
-\index{semaphore file -- deletion}
-\index{ae}
+
+\index{ae@\exe{ae}}
+\index{master host}
+
+\index{code!management!semaphore file deletion|see{\exe{ae}}}
+\index{file!semaphore|see{\exe{ae}}}
+\index{rcs@\rcs!semaphore file!deletion|see{\exe{ae}}}
+\index{semaphore file deletion|see{\exe{ae}}}
 
 Extricate an \aipspp\ source file from a half-completed checkin/out.
 
@@ -110,12 +129,14 @@ Original: 1995/02/23 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{ai}}
 \label{ai}
-\index{code management -- checkin}
-\index{checkin -- source code}
-\index{checkout -- source code}
-\index{directory -- creation}
-\index{ai}
-\index{ci}
+
+\index{ai@\exe{ai}}
+\index{master host}
+
+\index{ci@\exe{ci}|see{\exe{ai}}}
+\index{code!management!checkin|see{\exe{ai}}}
+\index{directory!checkin|see{\exe{ai}}}
+\index{file!checkin|see{\exe{ai}}}
 
 \aipspp\ source code checkin utility.
 
@@ -331,11 +352,13 @@ Original: 1992/04/28 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{ao}}
 \label{ao}
-\index{code management -- checkout}
-\index{checkin -- source code}
-\index{checkout -- source code}
-\index{ao}
-\index{co}
+
+\index{ao@\exe{ao}}
+\index{master host}
+
+\index{co@\exe{co}|see{\exe{ao}}}
+\index{code!management!checkout|see{\exe{ao}}}
+\index{file!checkout|see{\exe{ao}}}
 
 \aipspp\ source code checkout utility.
 
@@ -494,10 +517,12 @@ Original: 1992/04/28 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{alog}}
 \label{alog}
-\index{code management -- log}
-\index{checkout -- log}
-\index{alog}
-\index{rlog}
+
+\index{alog@\exe{alog}}
+\index{master host}
+
+\index{rlog@\exe{rlog}|see{\exe{alog}}}
+\index{code!management!change log|see{\exe{alog}}}
 
 \aipspp\ change log reporting utility.
 
@@ -632,9 +657,12 @@ Original: 1993/01/22 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{am}}
 \label{am}
-\index{code management -- descriptive text}
-\index{descriptive text -- change}
-\index{am}
+
+\index{am@\exe{am}}
+\index{master host}
+
+\index{code!management!file description|see{\exe{am}}}
+\index{file!change description|see{\exe{am}}}
 
 Utility to change the descriptive text in an \aipspp\ \rcs\ version
 file.
@@ -739,10 +767,12 @@ Original: 1995/03/17 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{amv}}
 \label{amv}
-\index{code management -- renaming}
-\index{rename -- source code}
-\index{amv}
-\index{mv}
+
+\index{amv@\exe{amv}}
+\index{master host}
+
+\index{mv@\exe{mv}|see{\exe{amv}}}
+\index{code!management!file renaming|see{\exe{amv}}}
 
 \aipspp\ file and directory renaming utility.
 
@@ -929,7 +959,10 @@ Original: 1993/07/23 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{asme}}
 \label{asme}
-\index{asme}
+
+\index{asme@\exe{asme}}
+
+\index{setuid|see{\exe{asme}}}
  
 Execute a command with the effective uid set to the real uid.
 
@@ -991,9 +1024,11 @@ Original: 1996/03/28 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{au}}
 \label{au}
-\index{code management -- update}
-\index{update -- source code}
-\index{au}
+
+\index{au@\exe{au}}
+\index{master host}
+
+\index{code!management!update|see{\exe{au}}}
 
 \aipspp\ source code update utility.
 
@@ -1090,10 +1125,14 @@ Original: 1992/04/30 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{av}}
 \label{av}
-\index{code management -- filename validation}
-\index{filename -- validation}
-\index{validation -- filename}
-\index{av}
+
+\index{av@\exe{av}}
+\index{master host}
+
+\index{code!management!filename validation|see{\exe{av}}}
+\index{file!name validation|see{\exe{av}}}
+\index{validation|see{verification}}
+\index{verification!filename|see{\exe{av}}}
 
 \aipspp\ filename validation utility.
 
@@ -1182,9 +1221,11 @@ Original: 1994/11/11 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{avers}}
 \label{avers}
-\index{code management -- version}
-\index{version}
-\index{avers}
+
+\index{avers@\exe{avers}}
+\index{master host}
+
+\index{code!management!version|see{\exe{avers}}}
 
 \aipspp\ version reporting utility.
 
@@ -1282,11 +1323,16 @@ Original: 1992/09/17 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{ax}}
 \label{ax}
-\index{code management -- deletion}
-\index{delete -- source code}
-\index{ax}
-\index{ax\_master}
-\index{rm}
+
+\index{ax@\exe{ax}}
+\index{master host}
+
+\index{ax\_master@\exe{ax\_master}|see{\exe{ax}}}
+\index{code!management!deletion|see{\exe{ax}}}
+\index{directory!delete|see{\exe{ax}}}
+\index{file!delete|see{\exe{ax}}}
+\index{rm@\exe{rm}|see{\exe{ax}}}
+\index{rmdir@\exe{rmdir}|see{\exe{ax}}}
 
 \aipspp\ deletion utility.
 
@@ -1577,9 +1623,11 @@ Original: 1992/05/14 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{doover}}
 \label{doover}
-\index{code management -- version}
-\index{version}
-\index{doover}
+
+\index{doover@\exe{doover}}
+
+\index{code!management!version.o@\file{version.o}|see{\exe{doover}}}
+\index{version.o@\file{version.o}|see{\exe{doover}}}
  
 Generate a function which returns \aipspp\ version information.
 
@@ -1680,9 +1728,11 @@ Original: 1996/02/29 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{mktree}}
 \label{mktree}
-\index{directory -- creation}
-\index{workspace -- creation}
-\index{mktree}
+
+\index{mktree@\exe{mktree}}
+
+\index{directory!workspace|see{\exe{mktree}}}
+\index{workspace!creation|see{\exe{mktree}}}
 
 Create an \aipspp\ directory hierarchy with \rcs\ symlinks.
 
@@ -1820,7 +1870,11 @@ Original: 1992/03/07 by Peter Teuben, BIMA.
 \newpage
 \section{\exe{rai}}
 \label{rai}
-\index{rai}
+
+\index{rai@\exe{rai}}
+\index{master host}
+
+\index{code!management!checkin|see{@\exe{rai}}}
  
 Check in \aipspp\ sources by invoking \exeref{ai} remotely via \unixexe{rsh}.
 
@@ -1999,7 +2053,11 @@ Original: 1996/08/06 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{rao}}
 \label{rao}
-\index{rao}
+
+\index{rao@\exe{rao}}
+\index{master host}
+
+\index{code!management!checkout|see{@\exe{rao}}}
  
 Check out \aipspp\ sources by invoking \exeref{ao} remotely via \unixexe{rsh}.
 
@@ -2139,7 +2197,11 @@ Original: 1996/08/06 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{rau}}
 \label{rau}
-\index{rau}
+
+\index{rau@\exe{rau}}
+\index{master host}
+
+\index{code!management!update|see{@\exe{rau}}}
  
 Update \aipspp\ sources from the master via \unixexe{rsh}.
 
@@ -2278,7 +2340,10 @@ Original: 1996/08/16 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{rcscat}}
 \label{rcscat}
-\index{rcscat}
+
+\index{rcscat@\exe{rcscat}}
+
+\index{rcs@\rcs!concatenate|see{\exe{rcscat}}}
  
 Concatenate two \rcs\ version files.
 
@@ -2355,10 +2420,10 @@ Original: 1995/07/20 by Mark Calabretta, ATNF
 \newpage
 \section{\exe{squiz}}
 \label{squiz}
-\index{sources - search}
-\index{search - sources}
-\index{code management - source search}
-\index{squiz}
+
+\index{squiz@\exe{squiz}}
+
+\index{code!management!source search|see{\exe{squiz}}}
 
 Search for and examine \aipspp\ sources.
 
@@ -2470,10 +2535,12 @@ Modified: 1997/05/30 by Pat Murphy, NRAO
 \newpage
 \section{\exe{tract}}
 \label{tract}
-\index{file - age}
-\index{directory - age}
-\index{code management - file age}
-\index{tract}
+
+\index{tract@\exe{tract}}
+
+\index{code!management!file age|see{\exe{tract}}}
+\index{file!age|see{\exe{tract}}}
+\index{directory!age|see{\exe{tract}}}
 
 Report the age of a file or directory.
 
@@ -2543,8 +2610,10 @@ Original: 1995/02/21 by Mark Calabretta, ATNF
 \newpage
 \section{\exe{xrcs}}
 \label{xrcs}
-\index{code management -- verification}
-\index{xrcs}
+
+\index{xrcs@\exe{xrcs}}
+
+\index{code!management!verification|see{\exe{xrcs}}}
 
 Verify the internal consistency of \rcs\ version files.
 

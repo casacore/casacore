@@ -1,6 +1,9 @@
 \chapter{Installation}
 \label{Installation}
-\index{installation}
+
+\index{system!installation}
+
+\index{installation|see{system, installation}}
 
 This chapter \footnote{Last change:
 $ $Id$ $}
@@ -24,8 +27,9 @@ the \code{\#if 1} that occurs at about line 823 of \file{bfd/archive.c} to
 
 \section{End-user AIPS++ installations}
 \label{End-user installation}
-\index{installation -- end-user}
-\index{installation -- production-line}
+
+\index{system!installation!end-user}
+\index{system!installation!production-line}
 
 The first step in installing \aipspp\ is to fetch the compressed \unixexe{tar}
 files containing the \aipspp\ sources.  Make sure you're logged in to the
@@ -117,11 +121,11 @@ you can restart the build by
 
 \section{Consortium AIPS++ installations}
 \label{Consortium installation}
-\index{installation -- consortium}
-\index{installation -- code-development}
-\index{code management -- configuration}
-\index{checkin -- configuration}
-\index{checkout -- configuration}
+
+\index{system!installation!consortium}
+\index{system!installation!code-development}
+\index{code!configuration}
+\index{code!management!configuration}
 
 Consortium installations differ from end-user installations in having a local
 slave copy of the master \rcs\ source code repositories (see
@@ -364,6 +368,9 @@ address of a local person who will monitor the \aipsexe{inhale} logs
 (\acct{aips2mgr} in the above example).
 
 \subsection*{Step 4. Create the NFS automount}
+
+\index{nfs@\textsc{nfs}}
+\index{automount, \textsc{nfs}}
 
 You should now have a living breathing \aipspp\ installation, but as yet won't
 be able to check code in to, or out of, the master source code repositories

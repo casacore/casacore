@@ -1,6 +1,7 @@
 \chapter{System generation}
 \label{System generation}
-\index{system generation}
+
+\index{system!generation}
 
 Utilities for installing \aipspp\ and compiling object libraries, executables,
 and documentation \footnote{Last change:
@@ -10,10 +11,11 @@ $ $Id$ $}.
 
 \section{\exe{configure}}
 \label{configure}
-\index{distribution -- installation}
-\index{installation}
-\index{system generation -- installation}
-\index{configure}
+
+\index{configure@\exe{configure}}
+
+\index{code!distribution!installation|see{\exe{configure}}}
+\index{system!installation|see{\exe{configure}}}
 
 \aipspp\ installation script.
 
@@ -112,10 +114,13 @@ Original: 1992/04/09 by Mark Calabretta, ATNF.
 \newpage
 \section{\exe{depend}}
 \label{depend}
-\index{dependency analysis}
-\index{installation -- dependency analysis}
-\index{system generation -- dependency analysis}
-\index{depend}
+
+\index{depend@\exe{depend}}
+
+\index{dependency analysis!system|see{\exe{depend}}}
+\index{system!installation!dependency analysis|see{\exe{depend}}}
+\index{system!generation!dependency analysis|see{\exe{depend}}}
+\index{c++@\cplusplus!dependency analysis|see{\exe{depend}}}
 
 Produce a dependency list for \aipspp\ class implementation files.
 
@@ -151,7 +156,7 @@ execution.
 Beware that invoking \exe{depend} manually with an incomplete list of files
 could invalidate the dependency analysis.
 
-The \code{C++} header and implementation files may be specified in full or
+The \cplusplus\ header and implementation files may be specified in full or
 in brief.  For example, in full:
 
 \begin{verbatim}
@@ -194,7 +199,7 @@ them.
 
 \begin{itemize}
 \item
-   The complete list of header and implemention files for a package given in
+   The complete list of header and implementation files for a package given in
    full form may blow the environment in some operating systems and the brief
    form should therefore be used.
 
@@ -246,11 +251,13 @@ Original: 1993/01/25 by Mark Calabretta, ATNF
 \newpage
 \section{\exe{gmake}}
 \label{gmake}
-\index{distribution -- gmake}
-\index{installation -- gmake}
-\index{system generation -- gmake}
-\index{gmake}
-\index{make}
+
+\index{gmake@\exe{gmake}}
+\index{code!distribution!gmake@\exe{gmake}}
+\index{system!installation!gmake@\exe{gmake}}
+\index{system!generation!gmake@\exe{gmake}}
+
+\index{make@\exe{make}|see{\exe{gmake}}}
 
 \gnu\ \exe{make} - a program for directing recompilation.
 
@@ -306,9 +313,11 @@ The \gnu\ manual page for \unixexe{make}.\\
 \newpage
 \section{\file{makedefs}}
 \label{makedefs}
-\index{makedefs -- makefile database}
-\index{system generation -- makedefs}
-\index{database -- makefiles}
+
+\index{makedefs@\file{makedefs}}
+
+\index{system!generation!makedefs@\file{makedefs}|see{\file{makedefs}}}
+\index{database!makefiles|see{\file{makedefs}}}
 
 Installation-specific definitions used by the \aipspp\ makefiles.
 
@@ -622,7 +631,10 @@ Original: 1992/05/01 by Mark Calabretta, ATNF
 \newpage
 \section{\file{makedefs} adjuncts}
 \label{makedefs adjuncts}
-\index{makedefs -- adjuncts}
+
+\index{makedefs@\file{makedefs}!adjunct}
+
+\index{adjunct|see{\file{makedefs}, adjunct}}
  
 Per-sourcefile makedefs definitions.
  
@@ -759,34 +771,36 @@ The \gnu\ manual page for \unixexe{gmake}.\\
 \label{makefile.pkg}
 \label{makefile.scr}
 \label{makefile.tst}
-\index{compilation}
-\index{system generation -- makefile rules}
-\index{makefile rules -- system generation}
-\index{rules, makefile -- system generation}
-\index{compilation}
-\index{makefiles}
-\index{makefile - application}
-\index{makefile - applications}
-\index{makefile - checkout}
-\index{makefile - class implemention}
-\index{makefile - documentation}
-\index{makefile - fortran directory}
-\index{makefile - install directory}
-\index{makefile - package}
-\index{makefile - scripts directory}
-\index{makefile - test directory}
-\index{makefile - top-level}
-\index{targets}
-\index{system generation -- makefiles}
-\index{makefile.app}
-\index{makefile.aps}
-\index{makefile.chk}
-\index{makefile.doc}
-\index{makefile.ftn}
-\index{makefile.imp}
-\index{makefile.pkg}
-\index{makefile.scr}
-\index{makefile.tst}
+
+\index{makefile}
+\index{makefile!application}
+\index{makefile!applications}
+\index{makefile!checkout}
+\index{makefile!class implementation}
+\index{makefile!documentation}
+\index{makefile!fortran@\textsc{fortran}}
+\index{makefile!install}
+\index{makefile!package}
+\index{makefile!scripts}
+\index{makefile!test}
+\index{makefile!top-level}
+
+\index{makefile.app@\file{makefile.app}|see{makefile, application}}
+\index{makefile.aps@\file{makefile.aps}|see{makefile, applications}}
+\index{makefile.chk@\file{makefile.chk}|see{makefile, checkout}}
+\index{makefile.doc@\file{makefile.doc}|see{makefile, documentation}}
+\index{makefile.ftn@\file{makefile.ftn}|see{makefile, \textsc{fortran}}}
+\index{makefile.imp@\file{makefile.imp}|see{makefile, class implementation}}
+\index{makefile.pkg@\file{makefile.pkg}|see{makefile, package}}
+\index{makefile.scr@\file{makefile.scr}|see{makefile, scripts}}
+\index{makefile.tst@\file{makefile.tst}|see{makefile, test}}
+\index{compilation!system|see{system, generation}}
+\index{documentation!makefile|see{makefile, documentation}}
+\index{c++@\cplusplus!compilation|see{makefile, class implementation}}
+\index{fortran@\textsc{fortran}!compilation|see{makefile, \textsc{fortran}}}
+\index{rules|see{makefile, rules}}
+\index{system!verification!test makefile|see{makefile, test}}
+\index{targets|see{makefile, rules}}
 
 \gnu\ makefiles used to rebuild \aipspp
 
@@ -888,6 +902,9 @@ as {\em specific} makefiles, as opposed to the general makefile,
 
 \subsection*{File suffixes recognized by the \file{makefiles}}
 
+\index{file!suffixes, recognized}
+\index{makefile!file suffixes recognized}
+
 The generic makefiles recognize the following source file types:
 
 \begin{tabbing}
@@ -956,22 +973,28 @@ used to process these source files and the type of files produced.
 \newpage
 \section{Object libraries}
 \label{Object libraries}
-\index{compilation -- object libraries}
-\index{libraries -- object}
-\index{library control variables}
-\index{object libraries}
-\index{variables -- library control}
+
+\index{library!object}
+
+\index{compilation!object library|see{library, object}}
+\index{object library|see{library, object}}
+\index{system!generation!object library|see{library, object}}
 
 Generation of \aipspp\ object libraries and usage of external libraries in
 \aipspp.
 
 \subsection*{Library control variables}
 
+\index{library!control variables}
+\index{makedefs@\file{makedefs}!library control variables}
+
+\index{variables!library control|see{library, control variables}}
+
 An \aipspp\ installation may be configured to maintain a debug version of the
 object libraries, an optimized version, or both as determined by the setting
 of these variables.  They have names of the form \code{LIB<\textit{package}>},
 for example \code{LIBaips}, and their values consist of six fields
-corresponding to the debug and optimized \code{C++}, \code{C}, and
+corresponding to the debug and optimized \cplusplus, \code{C}, and
 \textsc{fortran} libraries in that order,
 
 \begin{verbatim}
@@ -1004,8 +1027,11 @@ updating procedure, \exeref{updatelib}, also uses them to determine which
 sharable libraries to build.
 
 \subsection*{External libraries}
-\index{XLIBLIST}
-\index{CPPMODU}
+
+\index{library!external}
+
+\index{XLIBLIST@\code{XLIBLIST}|see{library, external}}
+\index{CPPMODU@\code{CPPMODU}|see{library, external}}
 
 \aipspp\ uses many external libraries such as \code{PGPLOT}, \code{LAPACK},
 and \code{X11}.  These are expected to be installed separately from \aipspp.
@@ -1103,14 +1129,14 @@ should be made in \file{makedefs}.
 \newpage
 \section{Template instantiation}
 \label{Template instantiation}
-\index{compilation -- templates}
-\index{instantiation -- templates}
-\index{specialization -- templates}
-\index{system generation -- templates}
-\index{templates -- instantiation}
-\index{templates -- specialization}
-\index{types -- parameterized}
-\index{parameterized types}
+
+\index{templates}
+\index{templates!specialization}
+
+\index{system!generation!templates|see{templates}}
+\index{types, parameterized|see{templates}}
+\index{parameterized types|see{templates}}
+\index{specialization!template|see{templates, specialization}}
 
 \cplusplus\ template instantiation in \aipspp
  
@@ -1141,6 +1167,11 @@ template classes, but some compilers may require these to be registered in
 a particular way.
  
 \subsection*{Instantiation mechanisms}
+
+\index{templates!instantiation}
+
+\index{compilation!templates|see{templates, instantiation}}
+\index{instantiation|see{templates, instantiation}}
 
 While no two \cplusplus\ compilers use exactly the same template instantiation
 mechanism there are two basic types:
@@ -1174,12 +1205,18 @@ introduction of compiler-specific procedures.
 
 \subsubsection*{Template repositories}
 
+\index{templates!repositories}
+
+\index{repository!template|see{templates, repositories}}
+
 Compilers which maintain template repositories have mostly been accomodated
 via the use of \code{PTRDBGD}, \code{PTROPTD} variables in \file{makedefs},
 and also in distinguishing between the archiver used for \cplusplus\ object
 libraries (\code{CXXAR}) and other libraries (\code{AR}).
 
 \subsubsection*{Template specialization and the Sun native compiler}
+
+\index{templates!specializations@\file{specializations} file}
 
 The Sun native compiler requires template specializations to be registered in
 the template instantiation options file, \file{Template.opt}, which resides in
@@ -1194,6 +1231,11 @@ the compiler specific behaviour is isolated to the local makedefs file and a
 set of \file{specializations} files which are ignored by other compilers.
 
 \subsubsection*{Do-it-yourself (diy) templates}
+
+\index{templates!do-it-yourself}
+
+\index{diy|see{templates, do-it-yourself}}
+\index{templates!list|see{templates, do-it-yourself}}
 
 The \gnu\ \cplusplus\ compiler, \unixexe{g++}, must have template
 instantiation files supplied to it.  This ``do-it-yourself'' mode is enabled
@@ -1242,35 +1284,21 @@ system (see chapter~\ref{Code development} for programmer usage):
 \newpage
 \section{System generation makefile rules}
 \label{System generation makefile rules}
-\index{compilation}
-\index{system generation -- makefile rules}
-\index{makefile rules -- system generation}
-\index{rules, makefile -- system generation}
-\index{compilation}
-\index{makefiles}
-\index{makefile - application}
-\index{makefile - applications}
-\index{makefile - checkout}
-\index{makefile - class implemention}
-\index{makefile - documentation}
-\index{makefile - fortran directory}
-\index{makefile - install directory}
-\index{makefile - package}
-\index{makefile - scripts directory}
-\index{makefile - test directory}
-\index{makefile - top-level}
-\index{targets}
-\index{system generation -- makefiles}
-\index{makefile.app}
-\index{makefile.aps}
-\index{makefile.chk}
-\index{makefile.doc}
-\index{makefile.ftn}
-\index{makefile.imp}
-\index{makefile.pkg}
-\index{makefile.scr}
-\index{makefile.tst}
-\index{perl scripts -- installation}
+
+\index{system!generation!makefile rules}
+\index{makefile!rules!system generation}
+\index{makefile!application}
+\index{makefile!applications}
+\index{makefile!checkout}
+\index{makefile!class implementation}
+\index{makefile!documentation}
+\index{makefile!fortran@\textsc{fortran}}
+\index{makefile!install}
+\index{makefile!package}
+\index{makefile!scripts}
+\index{makefile!test}
+\index{makefile!top-level}
+\index{perl@\unixexe{perl} scripts!installation}
  
 \gnu\ makefile rules used to rebuild \aipspp
  
@@ -1331,7 +1359,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    \item
       \file{ftn}: Rebuild a \textsc{fortran} library from its sources.
    \item
-      \file{imp}: Rebuild a \code{C++} library from its sources updating the
+      \file{imp}: Rebuild a \cplusplus\ library from its sources updating the
       system dependency list in the process (see \exeref{depend}).  Also
       install any Glish scripts in \code{\$(LIBEXECD)}.
    \item
@@ -1381,7 +1409,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       The \aipspp\ documentation is then compiled.  This can be defeated by
       unsetting the \code{DOCSYS} variable in \file{makedefs}.
 
-      Document extraction from \code{C++} sources is then performed under
+      Document extraction from \cplusplus\ sources is then performed under
       the control of the \code{DOCEXTR} variable in \file{makedefs}.
    \item
       \file{tst}: Create template instantiation files from a \file{templates}
@@ -1528,11 +1556,11 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       which are normally deleted after a library is built but may be left
       behind if the build is terminated with prejudice.
    \item
-      \file{imp}: The debug and optimized static \code{C++} object libraries
+      \file{imp}: The debug and optimized static \cplusplus\ object libraries
       for the package, dependency lists and the timestamp files maintained
       for the module by the dependency analysis (their deletion causes the
       dependency analysis to be done again from scratch), the \file{version.o}
-      object module, the debug and optimized \code{C++} template repositories
+      object module, the debug and optimized \cplusplus\ template repositories
       (if any, in their entirety).
    \item
       \file{ins}: (none)
@@ -1566,7 +1594,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    by \aipsexe{gmake}.
    \begin{itemize}
    \item
-      \file{imp}: Build the system dependency lists for the \code{C++}
+      \file{imp}: Build the system dependency lists for the \cplusplus\
       libraries.
    \end{itemize}
 
@@ -1619,8 +1647,8 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       \file{ftn}: Compile the \file{.f} file for a \textsc{fortran} subroutine
       and insert it into the \textsc{fortran} library.
    \item
-      \file{imp}: Compile the \file{.cc} file for a \code{C++} class
-      implementation and insert it into the \code{C++} library.
+      \file{imp}: Compile the \file{.cc} file for a \cplusplus\ class
+      implementation and insert it into the \cplusplus\ library.
    \end{itemize}
 
 \item
@@ -1632,7 +1660,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    \item
       \file{ftn}: Build the \textsc{fortran} library(s).
    \item
-      \file{imp}: Update the package library for all \code{C++} sources in
+      \file{imp}: Update the package library for all \cplusplus\ sources in
       this module.  Also, install any Glish scripts in \code{\$(LIBEXECD)}.
    \item
       \file{pkg}: Invoke \code{allsys} in the \file{implement} and
@@ -1650,7 +1678,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    \item
       \file{ftn}: Update the \textsc{fortran} libraries.
    \item
-      \file{imp}: Update the \code{C++} libraries.
+      \file{imp}: Update the \cplusplus\ libraries.
    \end{itemize}
 
 \item
@@ -1660,7 +1688,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    \item
       \file{ftn}: \unixexe{ranlib} the \textsc{fortran} libraries.
    \item
-      \file{imp}: \unixexe{ranlib} the \code{C++} libraries.
+      \file{imp}: \unixexe{ranlib} the \cplusplus\ libraries.
    \end{itemize}
 
 \item
@@ -1804,7 +1832,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
 
 \item
    \code{docscan} : (general/specific)
-   \\ Scan \code{C++} sources building the database used by the document
+   \\ Scan \cplusplus\ sources building the database used by the document
    extractor.  The general rule does nothing.  Specific makefiles behave as
    follows:
    \begin{itemize}
@@ -1835,7 +1863,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
 
 \item
    \code{docextr} : (general/specific)
-   \\ Extract documentation from \code{C++} sources.  The general rule does
+   \\ Extract documentation from \cplusplus\ sources.  The general rule does
    nothing.  Specific makefiles behave as follows:
    \begin{itemize}
    \item
@@ -1850,7 +1878,7 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       \file{ftn}: (none)
    \item
       \file{imp}: Run \exe{cxx2html} for each header file to extract
-      documentation from the \code{C++} sources and install it in the
+      documentation from the \cplusplus\ sources and install it in the
       corresponding subdirectory of \file{\$AIPSDOCS}.  Copy any \file{.gif}
       files to the same place.  Then recurse into all but \file{test}
       subdirectories.
@@ -1929,7 +1957,7 @@ This would recursively compile all \textsc{PostScript} documents from the
 \file{\$AIPSCODE/doc} directory tree and install them in the corresponding
 \file{\$AIPSDOCS} subdirectory.  \textsc{ascii}, \file{*.html}, \file{*.ps}
 etc.  documents will also be copied across.  The document extractor would then
-be invoked on the \code{C++} sources (if enabled).  Note, however, that no
+be invoked on the \cplusplus\ sources (if enabled).  Note, however, that no
 documents are printed via \code{docsys}.
 
 \subsection*{See also}
@@ -1947,10 +1975,13 @@ The unix manual page for \unixexe{ranlib}(1).\\
 \newpage
 \section{\exe{mkinst}}
 \label{mkinst}
-\index{instantiation -- templates}
-\index{library -- template instantiation}
-\index{templates -- instantiation}
-\index{mkinst}
+
+\index{mkinst@\exe{mkinst}}
+
+\index{library!templates|see{templates, instantiation}}
+\index{templates!instantiation files|see{\exe{mkinst}}}
+\index{templates!templates@\file{templates} file|see{\exe{mkinst}}}
+\index{tmplinst@\file{tmplinst}|see{\exe{mkinst}}}
 
 Generate template instantiation files from a list.
 
@@ -2059,9 +2090,11 @@ Shelby Yang, NRAO.
 \newpage
 \section{\exe{updatelib}}
 \label{updatelib}
-\index{library -- update}
-\index{update -- library}
-\index{updatelib}
+
+\index{updatelib@\exe{updatelib}}
+
+\index{library!update|see{\exe{updatelib}}}
+\index{update!library|see{\exe{updatelib}}}
 
 Update \aipspp\ object libraries.
 
@@ -2082,7 +2115,7 @@ invokation, possibly on another machine.
 An ``\code{\_f}'' or ``\code{\_c}'' appended to the package name, for example
 ``\code{aips\_f}'', indicates that the \textsc{fortran} or \code{C}
 libraries for the package are to be updated rather than the default
-\code{C++} libraries.  The libraries themselves have names of this form, for
+\cplusplus\ libraries.  The libraries themselves have names of this form, for
 example \file{\$LIBOPTD/libaips\_f.a}.
 
 The \code{lib} and \code{lib/\%} targets of the implement and fortran
