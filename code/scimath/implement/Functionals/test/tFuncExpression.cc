@@ -69,7 +69,7 @@ int main() {
       String("x==0"),
       String("(x==0)+1"),
       String("(x==0)+1"),
-      String("((x==0) * 1)+((x!=0) * sin(x+(x==0)*1)/(x+(x==0)*1))"),
+      String("((x==0) * 1)+((x!=0) * sin(x+(x==0)*1)/(x+(1)))"),
       String("1+(1==2)?5:8+20"),
       String("1+(2==2)?5:(8+20)"),
       String("1+((1==2)?5:8)+20"),
@@ -87,8 +87,9 @@ int main() {
       cout << expr;
       Double res;
       cout << "Value: ";
-      if (!expr.exec(res)) cout << expr.errorMessage() << endl;
-      else cout << res << endl;
+      if (!expr.exec(res)) {
+	cout << expr.errorMessage() << endl;
+      } else cout << res << endl;
       cout << "----------------------------------------------------" << endl;
     };
     for (uInt i=0; i<n; ++i) {
