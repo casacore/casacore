@@ -10,6 +10,7 @@ Size of buckets             : 250
 Total buckets               : 0
 Total Index buckets         : 0
 1st Index bucket            : -1
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 0
 1st free bucket             : -1
@@ -44,6 +45,7 @@ Size of buckets             : 250
 Total buckets               : 2
 Total Index buckets         : 1
 1st Index bucket            : 1
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 0
 1st free bucket             : -1
@@ -79,6 +81,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 3
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 1
@@ -114,6 +117,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 1
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 3
@@ -149,6 +153,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 3
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 1
@@ -184,6 +189,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 3
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 1
@@ -219,6 +225,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 3
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 1
@@ -254,6 +261,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 1
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 3
@@ -292,6 +300,7 @@ Size of buckets             : 250
 Total buckets               : 4
 Total Index buckets         : 1
 1st Index bucket            : 3
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 1
@@ -342,6 +351,7 @@ Size of buckets             : 250
 Total buckets               : 7
 Total Index buckets         : 2
 1st Index bucket            : 6
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 1
 1st free bucket             : 3
@@ -389,6 +399,7 @@ Size of buckets             : 250
 Total buckets               : 8
 Total Index buckets         : 2
 1st Index bucket            : 7
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 2
 1st free bucket             : 5
@@ -436,6 +447,7 @@ Size of buckets             : 250
 Total buckets               : 8
 Total Index buckets         : 2
 1st Index bucket            : 6
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 2
 1st free bucket             : 3
@@ -698,6 +710,7 @@ Size of buckets             : 250
 Total buckets               : 14
 Total Index buckets         : 3
 1st Index bucket            : 13
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 2
 1st free bucket             : 5
@@ -969,6 +982,7 @@ Size of buckets             : 250
 Total buckets               : 28
 Total Index buckets         : 3
 1st Index bucket            : 27
+Index bucket offset         : 0
 last String bucket used     : 24
 Total free buckets          : 3
 1st free bucket             : 11
@@ -1258,6 +1272,7 @@ Size of buckets             : 250
 Total buckets               : 29
 Total Index buckets         : 3
 1st Index bucket            : 28
+Index bucket offset         : 0
 last String bucket used     : 24
 Total free buckets          : 3
 1st free bucket             : 25
@@ -1517,6 +1532,7 @@ Size of buckets             : 250
 Total buckets               : 29
 Total Index buckets         : 3
 1st Index bucket            : 27
+Index bucket offset         : 0
 last String bucket used     : 24
 Total free buckets          : 3
 1st free bucket             : 12
@@ -1759,6 +1775,7 @@ Size of buckets             : 250
 Total buckets               : 29
 Total Index buckets         : 3
 1st Index bucket            : 8
+Index bucket offset         : 0
 last String bucket used     : 24
 Total free buckets          : 6
 1st free bucket             : 25
@@ -2013,6 +2030,7 @@ Size of buckets             : 250
 Total buckets               : 0
 Total Index buckets         : 0
 1st Index bucket            : -1
+Index bucket offset         : 0
 last String bucket used     : 26
 Total free buckets          : 0
 1st free bucket             : -1

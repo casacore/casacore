@@ -8,6 +8,7 @@ Size of buckets             : 500
 Total buckets               : 0
 Total Index buckets         : 0
 1st Index bucket            : -1
+Index bucket offset         : 0
 last String bucket used     : -1
 Total free buckets          : 0
 1st free bucket             : -1
@@ -36,6 +37,7 @@ Size of buckets             : 500
 Total buckets               : 3
 Total Index buckets         : 1
 1st Index bucket            : 2
+Index bucket offset         : 8
 last String bucket used     : 1
 Total free buckets          : 0
 1st free bucket             : -1
@@ -63,12 +65,13 @@ Nr of rows in the columns   : 50
  ColIndex[1]           : 1 ColOffset[1]          : 0
 CacheSize                   : 2
 Size of buckets             : 500
-Total buckets               : 11
+Total buckets               : 10
 Total Index buckets         : 1
-1st Index bucket            : 10
+1st Index bucket            : 2
+Index bucket offset         : 254
 last String bucket used     : 9
-Total free buckets          : 1
-1st free bucket             : 2
+Total free buckets          : 0
+1st free bucket             : -1
 
 StandardStMan index: 0 statistics:
 Index statistics: 
@@ -86,7 +89,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 40
+BucketNr[0]  : 10 - LastRow[0]   : 40
 BucketNr[1]  : 11 - LastRow[1]   : 49
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -116,9 +119,10 @@ Size of buckets             : 500
 Total buckets               : 52
 Total Index buckets         : 1
 1st Index bucket            : 51
+Index bucket offset         : 0
 last String bucket used     : 50
 Total free buckets          : 1
-1st free bucket             : 10
+1st free bucket             : 2
 
 StandardStMan index: 0 statistics:
 Index statistics: 
@@ -136,7 +140,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 40
+BucketNr[0]  : 10 - LastRow[0]   : 40
 BucketNr[1]  : 11 - LastRow[1]   : 49
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -147,7 +151,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 40
+BucketNr[0]  : 2 - LastRow[0]   : 40
 BucketNr[1]  : 52 - LastRow[1]   : 49
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -188,6 +192,7 @@ Size of buckets             : 500
 Total buckets               : 94
 Total Index buckets         : 1
 1st Index bucket            : 93
+Index bucket offset         : 0
 last String bucket used     : 92
 Total free buckets          : 1
 1st free bucket             : 51
@@ -208,7 +213,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 40
+BucketNr[0]  : 10 - LastRow[0]   : 40
 BucketNr[1]  : 11 - LastRow[1]   : 49
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -219,7 +224,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 40
+BucketNr[0]  : 2 - LastRow[0]   : 40
 BucketNr[1]  : 52 - LastRow[1]   : 49
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -257,6 +262,7 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 99
+Index bucket offset         : 0
 last String bucket used     : 98
 Total free buckets          : 1
 1st free bucket             : 93
@@ -277,7 +283,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 39
+BucketNr[0]  : 10 - LastRow[0]   : 39
 BucketNr[1]  : 11 - LastRow[1]   : 48
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -288,7 +294,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 39
+BucketNr[0]  : 2 - LastRow[0]   : 39
 BucketNr[1]  : 52 - LastRow[1]   : 48
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -326,6 +332,7 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 93
+Index bucket offset         : 0
 last String bucket used     : 98
 Total free buckets          : 1
 1st free bucket             : 99
@@ -346,7 +353,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 39
+BucketNr[0]  : 10 - LastRow[0]   : 39
 BucketNr[1]  : 11 - LastRow[1]   : 47
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -357,7 +364,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 39
+BucketNr[0]  : 2 - LastRow[0]   : 39
 BucketNr[1]  : 52 - LastRow[1]   : 47
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -396,6 +403,7 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 99
+Index bucket offset         : 0
 last String bucket used     : 98
 Total free buckets          : 1
 1st free bucket             : 93
@@ -416,7 +424,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 2 - LastRow[0]   : 4
+BucketNr[0]  : 10 - LastRow[0]   : 4
 BucketNr[1]  : 11 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -427,7 +435,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 4
+BucketNr[0]  : 2 - LastRow[0]   : 4
 BucketNr[1]  : 52 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -465,6 +473,7 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 51
+Index bucket offset         : 0
 last String bucket used     : 98
 Total free buckets          : 5
 1st free bucket             : 99
@@ -485,7 +494,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 4
+BucketNr[0]  : 2 - LastRow[0]   : 4
 BucketNr[1]  : 52 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -515,6 +524,7 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 11
+Index bucket offset         : 0
 last String bucket used     : 98
 Total free buckets          : 21
 1st free bucket             : 51
@@ -535,7 +545,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 4
+BucketNr[0]  : 2 - LastRow[0]   : 4
 BucketNr[1]  : 52 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -583,7 +593,8 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 50
-last String bucket used     : 2
+Index bucket offset         : 0
+last String bucket used     : 10
 Total free buckets          : 19
 1st free bucket             : 11
 
@@ -592,7 +603,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 4
+BucketNr[0]  : 2 - LastRow[0]   : 4
 BucketNr[1]  : 52 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
@@ -638,7 +649,8 @@ Size of buckets             : 500
 Total buckets               : 100
 Total Index buckets         : 1
 1st Index bucket            : 3
-last String bucket used     : 2
+Index bucket offset         : 0
+last String bucket used     : 10
 Total free buckets          : 24
 1st free bucket             : 50
 
@@ -647,7 +659,7 @@ Index statistics:
 Entries used       : 2
 Rows Per bucket    : 41
 Nr of Columns      : 1
-BucketNr[0]  : 10 - LastRow[0]   : 4
+BucketNr[0]  : 2 - LastRow[0]   : 4
 BucketNr[1]  : 52 - LastRow[1]   : 12
 Freespace entries: 1
 Offset[0]: 492  -  nrBytes[0]: 8
