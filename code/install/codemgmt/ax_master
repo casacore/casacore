@@ -2612,3 +2612,4 @@
 09 537 src mv aips/scripts/ttimer.g aips/implement/Utilities/test/ttimer.g
 10 005 src rm doc/html/navpages/learnmore/ahrecipe.tex
 10 008 src rm aips/implement/Measures/UnitExpress.h
+10 010 src mv trial/implement/Lattices/LatticeConvolver.h trial/implement/Lattices/Lattice2Convolver.h
