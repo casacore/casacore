@@ -35,13 +35,17 @@
 
 FileLocker::FileLocker()
 : itsFD          (-1),
+  itsStart       (0),
+  itsLength      (0),
   itsReadLocked  (False),
   itsWriteLocked (False),
   itsError       (0)
 {}
 
-FileLocker::FileLocker (int fd)
+FileLocker::FileLocker (int fd, uInt start, uInt length)
 : itsFD          (fd),
+  itsStart       (start),
+  itsLength      (length),
   itsReadLocked  (False),
   itsWriteLocked (False),
   itsError       (0)
@@ -62,8 +66,8 @@ Bool FileLocker::acquire (Bool write, uInt nattempts)
 	ls.l_type = F_RDLCK;
     }
     ls.l_whence = SEEK_SET;
-    ls.l_start  = 0;
-    ls.l_len    = 0;
+    ls.l_start  = itsStart;
+    ls.l_len    = itsLength;
     if (nattempts == 0) {
 	// Wait until lock succeeds.
 	if (fcntl (itsFD, F_SETLKW, &ls) == -1) {
@@ -105,8 +109,8 @@ Bool FileLocker::release()
     flock ls;
     ls.l_type   = F_UNLCK;
     ls.l_whence = SEEK_SET;
-    ls.l_start  = 0;
-    ls.l_len    = 0;
+    ls.l_start  = itsStart;
+    ls.l_len    = itsLength;
     if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 	return True;
     }
@@ -124,8 +128,8 @@ Bool FileLocker::canLock (Bool write)
 	ls.l_type = F_RDLCK;
     }
     ls.l_whence = SEEK_SET;
-    ls.l_start  = 0;
-    ls.l_len    = 4;
+    ls.l_start  = itsStart;
+    ls.l_len    = itsLength;
     if (fcntl (itsFD, F_GETLK, &ls) != -1) {
 	return ToBool (ls.l_type == F_UNLCK);
     }

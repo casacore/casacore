@@ -95,8 +95,10 @@ public:
     FileLocker();
 
     // Construct the FileLocker object for the given file descriptor.
-    // This can be used to lock the given file.
-    explicit FileLocker (int fd);
+    // This can be used to lock a segment of the given file.
+    // The segment is given by start and length. Length=0 means till the
+    // end of the file.
+    explicit FileLocker (int fd, uInt start=0, uInt length=0);
 
     ~FileLocker();
 
@@ -133,6 +135,8 @@ public:
 private:
     int    itsFD;
     int    itsError;
+    int    itsStart;
+    int    itsLength;
     Bool   itsReadLocked;
     Bool   itsWriteLocked;
 };
