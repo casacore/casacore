@@ -3833,3 +3833,4 @@
 14 065 src mv trial/implement/Display/PSPixelCanvasColorTable.h trialdisplay/implement/Display/PSPixelCanvasColorTable.h
 14 065 src mv trial/implement/Display/PSWorldCanvasApp.h trialdisplay/implement/Display/PSWorldCanvasApp.h
 14 065 src mv trial/implement/Display/PixelCanvas.h trialdisplay/implement/Display/PixelCanvas.h
+14 065 src mv trial/implement/Display/PixelCanvasColorTable.h trialdisplay/implement/Display/PixelCanvasColorTable.h
