@@ -148,7 +148,7 @@ class MeasFrame {
   friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
   friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
   friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
-  friend Bool MCFrameGetuint(void *dmf, uInt tp, uint &result);
+  friend Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
   // </group>
 
   //# Constructors
@@ -359,7 +359,7 @@ private:
   // Set the get MVPosition routine
   void setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &));
   // Set the get uint routine
-  void setMCFrameGetuint(Bool (*in)(void *, uInt, uint &));
+  void setMCFrameGetuint(Bool (*in)(void *, uInt, uInt &));
   // Lock the frame to make sure deletion occurs when needed
   void lock();
   // Unlock the frame
