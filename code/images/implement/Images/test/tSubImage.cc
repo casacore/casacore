@@ -1,5 +1,5 @@
 //# tSubImage.cc: Test program for class SubImage
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -304,7 +304,6 @@ int main ()
       Slicer slicer(IPosition(4,4,2,1,3), IPosition(4,14,10,3,23),
 		    IPosition(4,2,3,1,4), Slicer::endIsLast);
       SubImage<Float> subimg (lattice, slicer, True);
-      AlwaysAssertExit (! subimg.logSink().localSink().isTableLogSink());
       AlwaysAssertExit (subimg.isPaged());
       AlwaysAssertExit (!subimg.isPersistent());
       AlwaysAssertExit (!subimg.isMasked());

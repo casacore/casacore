@@ -1,5 +1,5 @@
 //# tExtendImage.cc: Test program for class ExtendImage
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -196,7 +196,6 @@ int main ()
       PagedImage<Float> lattice(latticeShape, cSys, "tExtendImage_tmp.pa");
       lattice.put (arr);
       ExtendImage<Float> extimg (lattice, newShape, cSys2);
-      AlwaysAssertExit (!extimg.logSink().localSink().isTableLogSink());
       AlwaysAssertExit (extimg.isPaged());
       AlwaysAssertExit (!extimg.isPersistent());
       AlwaysAssertExit (!extimg.isMasked());
