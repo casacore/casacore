@@ -882,7 +882,6 @@ void MCBaseline::doConvert(MVBaseline &in,
       EULER1->operator()(2) = g1;
       *ROTMAT1 = RotMatrix(*EULER1);
       in = *ROTMAT1 * in;
-      in -= *MVPOS3;
     }
     break;
     
