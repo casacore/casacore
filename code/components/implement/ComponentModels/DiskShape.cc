@@ -295,7 +295,7 @@ void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   const Double wavenumber = frequency/C::c;
   // Assume the disk is symmetric for now.
   const Double r = hypot(uvw(0) * wavenumber, uvw(1) * wavenumber);
-  const Double scale = j0(itsMajValue*C::pi*r)*itsMajValue/(2*r);
+  const Double scale = j1(itsMajValue*C::pi*r)*itsMajValue/(2*r);
   flux.scaleValue(scale, scale, scale, scale);
 }
 
