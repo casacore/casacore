@@ -3536,3 +3536,4 @@
 13 307 src mv trial/implement/Display/DefaultWCSizeControlHandler.h trial/implement/DisplayCanvas/DefaultWCSizeControlHandler.h
 13 307 src mv trial/implement/Display/WCCoordinateHandler.cc trial/implement/DisplayCanvas/WCCoordinateHandler.cc
 13 307 src mv trial/implement/Display/WCCoordinateHandler.h trial/implement/DisplayCanvas/WCCoordinateHandler.h
+13 307 src mv trial/implement/Display/WCSizeControlHandler.cc trial/implement/DisplayCanvas/WCSizeControlHandler.cc
