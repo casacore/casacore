@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl5
 #
-#   Copyright (C) 1996,1997,1998,1999
+#   Copyright (C) 1996,1997,1998,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify it
@@ -628,7 +628,14 @@ sub make_tex_file{
      s/\\ahkeyword{($mtext)}\s*{($mtext)}/\\index{$1}\\index{$mname.$1}/g;
      s/\\ahkeyword{($mtext)}\s*{}/\\index{$1}\\index{$mname:$1}/g;
      s/\\ahkeyword{($mtext)}/\\index{$1}\\index{$mname:$1}/g;
-     s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/g;
+     if(/\\ahlink{($mtext)}\s*{($mtext)}/){
+        $thelabel = $2;
+        if(($thelabel =~ m/function$/g) || ($thelabel =~ m/constructor$/g)){
+           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/g;
+        } else {
+           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.function}/g;
+        }
+     }
      s/\\end{ahcomments}//g;
      s/\\begin{ahcomments}//g;
 
