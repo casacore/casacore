@@ -168,16 +168,17 @@ void Nutation::calcNut(Double t) {
     case B1950:
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
       break;
-    case IAU1980:
+    default:
       if (AipsrcValue<Bool>::get(Nutation::useiers_reg)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       };
-    default:
+      // /// Still to make for IERS 2000 model
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     };
     Vector<Double> fa(5), dfa(5);
+    Vector<Double> pfa(14), pdfa(14);
     Double dtmp, ddtmp;
     nval_p[1] = Double(0);
     dval_p[1] = Double(0);
@@ -194,15 +195,15 @@ void Nutation::calcNut(Double t) {
       for (uInt i=0; i<69; i++) {
 	dtmp = ddtmp = 0;
 	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg1950(i)(j) * fa(j);
-	  ddtmp += MeasTable::mulArg1950(i)(j) * dfa(j);
+	  dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
+	  ddtmp += MeasTable::mulArg1950(i)[j] * dfa[j];
 	};
-	nval_p[1] += MeasTable::mulSC1950(i,t)(0) * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC1950(i,t)(1) * cos(dtmp);
-	dval_p[1] += MeasTable::mulSC1950(i,t)(2) * sin(dtmp) +
-	  MeasTable::mulSC1950(i,t)(0) * cos(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulSC1950(i,t)(3) * cos(dtmp) -
-	  MeasTable::mulSC1950(i,t)(1) * sin(dtmp) * ddtmp;
+	nval_p[1] += MeasTable::mulSC1950(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC1950(i,t)[1] * cos(dtmp);
+	dval_p[1] += MeasTable::mulSC1950(i,t)[2] * sin(dtmp) +
+	  MeasTable::mulSC1950(i,t)[0] * cos(dtmp) * ddtmp;
+	dval_p[2] += MeasTable::mulSC1950(i,t)[3] * cos(dtmp) -
+	  MeasTable::mulSC1950(i,t)[1] * sin(dtmp) * ddtmp;
       };
       break;
     case IAU2000B:
@@ -212,23 +213,70 @@ void Nutation::calcNut(Double t) {
 	fa(i) = MeasTable::fundArg2000(i+1)(t);
 	dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
       };
-      for (uInt i=0; i<77; i++) {
+      for (Int i=76; i>=0; --i) {
 	dtmp = ddtmp = 0;
 	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg2000B(i)(j) * fa(j);
-	  ddtmp += MeasTable::mulArg2000B(i)(j) * dfa(j);
+	  dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
+	  ddtmp += MeasTable::mulArg2000B(i)[j] * dfa[j];
 	};
-	nval_p[1] += MeasTable::mulSC2000B(i,t)(0) * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)(1) * cos(dtmp);
-	dval_p[1] += MeasTable::mulSC2000B(i,t)(2) * sin(dtmp) +
-	  MeasTable::mulSC2000B(i,t)(0) * cos(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulSC2000B(i,t)(3) * cos(dtmp) -
-	  MeasTable::mulSC2000B(i,t)(1) * sin(dtmp) * ddtmp;
-	nval_p[1] += MeasTable::mulSC2000B(i,t)(4) * cos(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)(5) * sin(dtmp);
+	nval_p[1] += MeasTable::mulSC2000B(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC2000B(i,t)[1] * cos(dtmp);
+	dval_p[1] += MeasTable::mulSC2000B(i,t)[2] * sin(dtmp) +
+	  MeasTable::mulSC2000B(i,t)[0] * cos(dtmp) * ddtmp;
+	dval_p[2] += MeasTable::mulSC2000B(i,t)[3] * cos(dtmp) -
+	  MeasTable::mulSC2000B(i,t)[1] * sin(dtmp) * ddtmp;
+	nval_p[1] += MeasTable::mulSC2000B(i,t)[4] * cos(dtmp);
+	nval_p[2] += MeasTable::mulSC2000B(i,t)[5] * sin(dtmp);
       };
-      nval_p[2] += dEps;
-      nval_p[1] += dPsi;
+      // Add an average for missing planetary precession terms
+      nval_p[2] += 0.388e0 * C::arcsec*1e-3;
+      nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
+	///      nval_p[2] += dEps;
+	///      nval_p[1] += dPsi;
+      break;
+    case IAU2000A:
+      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
+      dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
+      for (uInt i=0; i<5; i++) {
+	fa(i) = MeasTable::fundArg2000(i+1)(t);
+	dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
+      };
+      for (Int i=677; i>=0; --i) {
+	dtmp = ddtmp = 0;
+	for (uInt j=0; j<5; j++) {
+	  dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
+	  ddtmp += MeasTable::mulArg2000A(i)[j] * dfa[j];
+	};
+	nval_p[1] += MeasTable::mulSC2000A(i,t)[0] * sin(dtmp);
+	nval_p[2] += MeasTable::mulSC2000A(i,t)[1] * cos(dtmp);
+	dval_p[1] += MeasTable::mulSC2000A(i,t)[2] * sin(dtmp) +
+	  MeasTable::mulSC2000A(i,t)[0] * cos(dtmp) * ddtmp;
+	dval_p[2] += MeasTable::mulSC2000A(i,t)[3] * cos(dtmp) -
+	  MeasTable::mulSC2000A(i,t)[1] * sin(dtmp) * ddtmp;
+	nval_p[1] += MeasTable::mulSC2000A(i,t)[4] * cos(dtmp);
+	nval_p[2] += MeasTable::mulSC2000A(i,t)[5] * sin(dtmp);
+      };
+      for (uInt i=0; i<14; i++) {
+	pfa(i) = MeasTable::planetaryArg2000(i)(t);
+	pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
+      };
+      for (Int i=686; i>=0; --i) {
+	dtmp = ddtmp = 0;
+	for (uInt j=0; j<14; j++) {
+	  dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
+	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
+	};
+	nval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * sin(dtmp);
+	nval_p[1] += MeasTable::mulPlanSC2000A(i)[1] * cos(dtmp);
+	nval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * sin(dtmp);
+	nval_p[2] += MeasTable::mulPlanSC2000A(i)[3] * cos(dtmp);
+	dval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * cos(dtmp) -
+	  MeasTable::mulPlanSC2000A(i)[1] * sin(dtmp) * ddtmp;
+	dval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * cos(dtmp) -
+	  MeasTable::mulPlanSC2000A(i)[3] * sin(dtmp) * ddtmp;
+      };
+	///      nval_p[2] += dEps;
+	///      nval_p[1] += dPsi;
       break;
     default:
       nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
@@ -236,10 +284,10 @@ void Nutation::calcNut(Double t) {
       if (AipsrcValue<Bool>::get(Nutation::usejpl_reg)) {
 	const Vector<Double> &mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
-	nval_p[1] = mypl(0);
-	nval_p[2] = mypl(1);
-	dval_p[1] = mypl(2)*MeasData::JDCEN;
-	dval_p[2] = mypl(3)*MeasData::JDCEN;
+	nval_p[1] = mypl[0];
+	nval_p[2] = mypl[1];
+	dval_p[1] = mypl[2]*MeasData::JDCEN;
+	dval_p[2] = mypl[3]*MeasData::JDCEN;
       } else {
 	for (uInt i=0; i<5; i++) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
@@ -248,15 +296,15 @@ void Nutation::calcNut(Double t) {
 	for (uInt i=0; i<106; i++) {
 	  dtmp = ddtmp = 0;
 	  for (uInt j=0; j<5; j++) {
-	    dtmp += MeasTable::mulArg(i)(j) * fa(j);
-	    ddtmp += MeasTable::mulArg(i)(j) * dfa(j);
+	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
+	    ddtmp += MeasTable::mulArg(i)[j] * dfa[j];
 	  };
-	  nval_p[1] += MeasTable::mulSC(i,t)(0) * sin(dtmp);
-	  nval_p[2] += MeasTable::mulSC(i,t)(1) * cos(dtmp);
-	  dval_p[1] += MeasTable::mulSC(i,t)(2) * sin(dtmp) +
-	    MeasTable::mulSC(i,t)(0) * cos(dtmp) * ddtmp;
-	  dval_p[2] += MeasTable::mulSC(i,t)(3) * cos(dtmp) -
-	    MeasTable::mulSC(i,t)(1) * sin(dtmp) * ddtmp;
+	  nval_p[1] += MeasTable::mulSC(i,t)[0] * sin(dtmp);
+	  nval_p[2] += MeasTable::mulSC(i,t)[1] * cos(dtmp);
+	  dval_p[1] += MeasTable::mulSC(i,t)[2] * sin(dtmp) +
+	    MeasTable::mulSC(i,t)[0] * cos(dtmp) * ddtmp;
+	  dval_p[2] += MeasTable::mulSC(i,t)[3] * cos(dtmp) -
+	    MeasTable::mulSC(i,t)[1] * sin(dtmp) * ddtmp;
 	};
       };
       nval_p[2] += dEps;

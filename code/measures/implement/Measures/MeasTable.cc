@@ -2937,9 +2937,8 @@ const Vector<Double> &MeasTable::mulSC2000A(uInt which, Double T) {
   return argArray[which];
 }
 
-const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which, Double T) {
+const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which) {
   static Bool needInit = True;
-  static Double checkT = -1e30;
   static Vector<Double> argArray[687];
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
   static const Short MULSC[687][4] = {
@@ -3633,7 +3632,7 @@ const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which, Double T) {
      {     3,          0,          0,         -1},   //  686
      {     3,          0,          0,         -1}    //  687
   };
-  calcMulSCPlan(needInit, checkT, T, argArray, 687, &MULSC[0]);
+  calcMulSCPlan(needInit, argArray, 687, &MULSC[0]);
   DebugAssert(which < 687, AipsError);
   return argArray[which];
 }
@@ -3817,7 +3816,7 @@ void MeasTable::calcMulSC2000(Bool &need, Double &check, Double T,
   };
 }
 
-void MeasTable::calcMulSCPlan(Bool &need, Double &check, Double T,
+void MeasTable::calcMulSCPlan(Bool &need,
 			      Vector<Double> result[], uInt resrow,
 			      const Short coeffSC[][4]) {
   if (need) {
