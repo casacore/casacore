@@ -185,13 +185,12 @@ Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, const CoordinateSyst
 
 Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
                                 Vector<Double>& worldReplacement,
-                                Vector<Double>& pixelReplacement,
                                 const Vector<uInt>& worldAxes,
-                                const Bool removeThem,
-                                const Bool removePixelAxesToo)
+                                const Bool removeThem)
 //
-// Remove all the world axes and optionally associated pixel axes
-// derived from the given list (a list to keep or remove).
+// Remove all the world axes and associated pixel axes
+// derived from the given list (a list to keep or remove)
+// of world axes.
 // This is awkward because as soon as you remove an 
 // axis, they all shuffle down one !  The replacement values
 // are optional.  If these vectors are the wrong length,
@@ -209,8 +208,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
       if (worldAxes(i) >= cSys.nWorldAxes()) return False;         
    }
 
-
-// Make a list of the axes to remove ins ascending order
+// Make a list of the axes to remove in ascending order
 // with no duplicates
 
    Vector<uInt> remove(cSys.nWorldAxes());
@@ -224,66 +222,32 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
       }
       remove.resize(j,True);
    }
-//   cout << "remove = " << remove.ac() << endl;
+   const uInt nRemove = remove.nelements();
 
-// Set the replacement values
+// Set the replacement values for the removal world axes
+// if the user didn't give any or got it wrong
 
-   if (worldReplacement.nelements() != worldAxes.nelements()) {
-      worldReplacement.resize(worldAxes.nelements());
-      for (i=0; i<worldAxes.nelements(); i++) {
-         worldReplacement(i) = cSys.referenceValue()(worldAxes(i));
-      }
-   }
-
-// Pixel replacement is much more awkward. 
-
-   Int pixelAxis;
-   if (removePixelAxesToo) {
-      uInt nPixelAxes = 0;
-      for (i=0; i<worldAxes.nelements(); i++) {
-          pixelAxis = cSys.worldAxisToPixelAxis(i);
-          if (pixelAxis != -1) nPixelAxes++;
-      }
-
-      if (pixelReplacement.nelements() != nPixelAxes) {
-
-// Vector is wrong size, give them reference pixels
-
-         pixelReplacement.resize(nPixelAxes);
-         uInt j = 0;
-         for (i=0; i<worldAxes.nelements(); i++) {
-            pixelAxis = cSys.worldAxisToPixelAxis(i);
-            if (pixelAxis != -1) {
-               pixelReplacement(j++) = cSys.referencePixel()(pixelAxis);
-            }
-         }
+   if (worldReplacement.nelements() != nRemove) {
+      worldReplacement.resize(nRemove);
+      for (i=0; i<nRemove; i++) {
+         worldReplacement(i) = cSys.referenceValue()(remove(i));
       }
    }
 
 
-// Now for each world axis in the list, get rid of it
+// Now for each world axis in the list, get rid of the world and associated
+// pixel axis
  
    uInt worldAxis = remove(0);
-   uInt j = 0;
-   for (i=0; i<remove.nelements(); i++) {
+   for (i=0; i<nRemove; i++) {
 
-       if (removePixelAxesToo) { 
-
-// Find the corresponding pixel axis (first !)
-
-          pixelAxis = cSys.worldAxisToPixelAxis(worldAxis);
-       }
-
-// Remove the axes
+// Remove the axis
  
-        cSys.removeWorldAxis(worldAxis, worldReplacement(i));
-        if (removePixelAxesToo && pixelAxis != -1) {
-           cSys.removePixelAxis(uInt(pixelAxis), pixelReplacement(j++));
-        }
+      if (!cSys.removeWorldAxis(worldAxis, worldReplacement(i))) return False;
 
 // Find the next world axis to eradicate
 
-        if (i+1<remove.nelements()) worldAxis = remove(i+1) - 1;
+      if (i+1<remove.nelements()) worldAxis = remove(i+1) - 1;
    }
    return True;
 }      

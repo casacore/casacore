@@ -1,5 +1,5 @@
 //# CoordinateUtils.h: static functions dealing with coordinates
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -158,7 +158,7 @@ template<class T> class Vector;
 //   Vector<uInt> worldAxes(2);
 //   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
 //   Vector<Double> worldRep, pixelRep;
-//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, pixelRep, worldAxes, True, True);
+//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, pixelRep, worldAxes, True);
 //   cout << "For world axes used " << worldRep.ac() << " for replacement" << endl;
 //   cout << "For pixel axes used " << pixelRep.ac() << " for replacement" << endl;
 // </srcblock>
@@ -231,7 +231,7 @@ static Vector<uInt> findDirectionAxes(const CoordinateSystem & coords);
 // Stokes::I
 static Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords);
 
-// Remove a list of world axes, and optionally their associated
+// Remove a list of world axes and their associated
 // pixel axes from a <src>CoordinateSystem</src>. The list of world
 // axes to remove is derived from a list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
@@ -245,10 +245,8 @@ static Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coor
 // vectors).
 static Bool removeAxes(CoordinateSystem& cSys,
                        Vector<Double>& worldReplacement,
-                       Vector<Double>& pixelReplacement,
                        const Vector<uInt>& worldAxes,
-                       const Bool remove,
-                       const Bool removePixelAxesToo=True);
+                       const Bool remove);
 
 };
 
