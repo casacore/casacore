@@ -198,8 +198,8 @@ LAPACKLIB  := -llapack -lblas
 # FORTRAN compiler.
 F77ROOT  :=
 F77DEFS  :=
-F77INCD  :=
-F77LIBD   =
+F77INCD   =
+F77LIBD   = $(F77ROOT)/lib
 F77LIB   := -lF77
 
 # Platform-specific libraries - always added.
@@ -224,7 +224,7 @@ MIRLIBLIB  := -lmir
 
 
 #-----------------------------------------------------------------------------
-# Construct library lists and include paths; XLILIST contains a list of all
+# Construct library lists and include paths; XLIBLIST contains a list of all
 # required libraries.  It may be defined in the including makefile or on the
 # command line.  "Computed" variables are used to build the lists.
 #-----------------------------------------------------------------------------
@@ -294,34 +294,42 @@ COFLAGS  := -f
 # the use of module-, and application-directory makefiles only.  Do not
 # redefine it in the site makedefs.
 CPP       = $(C++) -E
-CPPDBG    = -D__cplusplus -DAIPS_DEBUG $(XTRNDEFS) $(CPPMODU)
-CPPOPT    = -D__cplusplus $(XTRNDEFS) $(CPPMODU)
+CPPSTD   := -D__cplusplus -DNATIVE_EXCP $(XTRNDEFS) $(CPPMODU)
+CPPDBG    = $(CPPSTD) -DAIPS_DEBUG -DAIPS_ARRAY_INDEX_CHECK
+CPPOPT    = $(CPPSTD)
 
 # C compiler flags for system debug/optimized compilations.
 CC       := cc
+CSTD    := -DAIPS_SVID3
 CDBGLVL  := -g
-CDBG      = $(CDBGLVL)
-COPTLVL  := -O
-COPT      = $(COPTLVL)
+CDBG      = $(CDBGLVL) $(CSTD)
+COPTLVL  := -O2
+COPT      = $(COPTLVL) -fPIC $(CSTD)
 
 # C++ compiler flags for system debug/optimized compilations.
 C++      := CC
 PTRDBGD  :=
 PTROPTD  :=
 C++DBGLVL := -g
-C++DBG     = $(C++DBGLVL)
-C++OPTLVL := -O
-C++OPT     = $(C++OPTLVL)
+C++STD    :=
+C++DBG     = $(C++DBGLVL) $(C++STD)
+C++OPTLVL := -O2
+C++OPT     = $(C++OPTLVL) -fPIC $(C++STD)
 
-# Set to "diy" to enable do-it-yourself template instantiation, e.g. for g++.
-TEMPLATES := compiler
+# Define glish compile flags.
+GLISH_CFLAGS := $(COPTLVL)
+GLISH_CXXFLAGS := $(C++OPTLVL)
+
+# Set to "compiler" to enable compiler-generated template instantiations.
+TEMPLATES := diy
 
 # FORTRAN compiler flags for system debug/optimized compilations.
-FC       := f77
+FC       := $(F77ROOT)/bin/f77
+FCSTD    :=
 FCDBGLVL := -g
-FCDBG     = $(FCDBGLVL)
+FCDBG     = $(FCDBGLVL) $(FCSTD)
 FCOPTLVL := -O
-FCOPT     = $(FCOPTLVL)
+FCOPT     = $(FCOPTLVL) $(FCSTD)
 
 # Link flags for system debug/optimized compilations; these are passed to
 # the C++ compiler. We want to strip executables for system compiles only,
@@ -338,9 +346,10 @@ BISON    := bison
 FLEX     := flex
 
 # Object library utilities.
+# By default RANLIB is defeated; set to ranlib if ar needs ranlib.
 AR       := ar
-ARFLAGS  := rv
-RANLIB   := ranlib
+ARFLAGS  := ruv
+RANLIB   := :
 
 # C++ template-instantiating class implementation archiver.
 CXXAR     = $(AR)
@@ -389,7 +398,7 @@ SFXSHAR  := so
 #                 dbg    opt    dbg    opt    dbg    opt
 #               ------------- ------------- -------------
 #                                                          Kernel
-LIBaips      := static static defeat defeat static static
+LIBaips      := defeat static defeat defeat defeat static
 #                                                          Standard
 LIBdish       = defeat static defeat defeat defeat defeat
 LIBdisplay    = defeat static defeat defeat defeat defeat
@@ -397,12 +406,14 @@ LIBsynthesis  = defeat defeat defeat defeat defeat defeat
 LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
 LIBcontrib    = defeat defeat defeat defeat defeat defeat
-LIBtrial      = static static defeat defeat static static
+LIBtrial      = defeat static defeat defeat defeat static
 #                                                          Consortia
 LIBatnf       = defeat defeat defeat defeat defeat defeat
 LIBbima       = defeat defeat defeat defeat defeat defeat
 LIBhia        = defeat defeat defeat defeat defeat defeat
+LIBjive       = defeat defeat defeat defeat defeat defeat
 LIBnfra       = defeat defeat defeat defeat defeat defeat
+LIBnpoi       = defeat defeat defeat defeat defeat defeat
 LIBnral       = defeat defeat defeat defeat defeat defeat
 LIBnrao       = defeat defeat defeat defeat defeat defeat
 LIBtifr       = defeat defeat defeat defeat defeat defeat
@@ -412,32 +423,24 @@ LIBtifr       = defeat defeat defeat defeat defeat defeat
 # "aips" last.  These variables describe dependencies between standard AIPS++
 # packages and should not need to be redefined in the site makedefs.
 LINKaips      := aips
-
+#
 LINKdish      := dish aips
+LINKdisplay   := display aips
 LINKsynthesis := synthesis aips
 LINKvlbi      := vlbi synthesis aips
-
+#
 LINKcontrib   := contrib vlbi synthesis dish aips
 LINKtrial     := trial aips
-
-LINKatnf      := atnf aips
-LINKbima      := bima aips
-LINKhia       := hia  aips
-LINKnfra      := nfra aips
-LINKnral      := nral aips
-LINKtifr      := tifr aips
-
-# nrao currently requires trial!
+#
+LINKatnf      := atnf trial aips
+LINKbima      := bima trial aips
+LINKhia       := hia  trial aips
+LINKjive      := jive trial aips
+LINKnfra      := nfra trial aips
+LINKnpoi      := npoi trial aips
+LINKnral      := nral trial aips
 LINKnrao      := nrao trial aips
-
-# Document compilers.
-TEX      := tex
-LATEX    := latex
-BIBTEX   := bibtex
-DVIPS    := dvips
-TEXINDEX := texindex
-LATEX2HTML := latex2html
-MAKEINDEX  := makeindex
+LINKtifr      := tifr trial aips
 
 # Absolute pathnames of perl-4 and perl-5 executables (if available).
 PERL4    :=
@@ -446,21 +449,33 @@ PERL5    :=
 # How to delete files.
 RM       := rm -f
 
+# Document compilers.
+TEXBINROOT := /usr/local/teTeX/bin
+TEX         = $(TEXBINROOT)/tex
+LATEX       = $(TEXBINROOT)/latex
+BIBTEX      = $(TEXBINROOT)/bibtex
+DVIPS       = $(TEXBINROOT)/dvips
+TEXINDEX    = $(TEXBINROOT)/texindex
+MAKEINDEX   = $(TEXBINROOT)/makeindex
+LATEX2HTMLBIN  := $(TEXBINROOT)/latex2html
+LATEX2HTMLINIT := -init_file $(AIPSROOT)/code/install/docutils/latex2html-init
+LATEX2HTML  = $(LATEX2HTMLBIN) $(LATEX2HTMLINIT)
+
 
 # TeX, dvips, and MetaFont paths.
 #--------------------------------
-TEXROOT   := /usr/local/lib
+TEXROOT   := /usr/local/teTeX/texmf
 
-TEXFONTS   = $(AIPSARCH)/tex/fonts/tfm:$(TEXROOT)/tex/fonts/tfm
-TEXFORMATS = $(AIPSARCH)/tex/formats:$(TEXROOT)/tex/formats
-TEXINPUTS  = $(AIPSARCH)/tex/inputs:$(TEXROOT)/tex/inputs
-TEXPOOL    = $(AIPSARCH)/tex:$(TEXROOT)/tex
+TEXFONTS   = $(TEXROOT)/fonts//
+TEXFORMATS = $(TEXROOT)/web2c
+TEXINPUTS  = $(TEXROOT)//
+TEXPOOL    = $(TEXROOT)/web2c
 
-TEXPKS     = $(AIPSARCH)/tex/fonts/pk:$(TEXROOT)/tex/fonts/pk
+TEXPKS     = $(TEXROOT)/fonts/pk//
 
-MFBASES    = $(AIPSARCH)/mf/bases:$(TEXROOT)/mf/bases
-MFINPUTS   = $(AIPSARCH)/mf/inputs:$(TEXROOT)/mf/inputs
-MFPOOL     = $(AIPSARCH)/mf:$(TEXROOT)/mf
+MFBASES    = $(TEXROOT)/web2c
+MFINPUTS   = $(TEXROOT)/metafont
+MFPOOL     = $(TEXROOT)/web2c
 
 
 # Variables which tell the makefiles what to do and how to do it
@@ -469,13 +484,20 @@ MFPOOL     = $(AIPSARCH)/mf:$(TEXROOT)/mf
 INTRA_MAKEFLAGS := --no-print-directory -i
 
 # Command for benchmarking the rebuild (usually 'adate -l').
-TIMER     :=
+# Unset this to defeat benchmarking.
+TIMER     := adate -l
 
 # Unset this to defeat document compilation.
 DOCSYS    := doc
 
 # Unset this to defeat document extraction from C++ sources.
-DOCEXTR   := docscan docextr
+DOCEXTR   := docscan docextr resolvedocs
+
+# Set these variables to get local icons in the html files generated by
+# latex2html, e.g.
+#  ICONSERVER := http://www.nrao.edu/icons/latex2html
+ICONSERVER :=
+ICONS2LOCAL := $(AIPSARCH)/bin/redoicons.sh
 
 # What auxiliary packages to build (contrib trial).
 AUXILIARY := trial
@@ -483,11 +505,8 @@ AUXILIARY := trial
 # What consortium packages to build (atnf bima hia nfra nral nrao tifr).
 CONSORTIA :=
 
-# If the debug "aips" library is being maintained then setting this will cause
-# the debug template repository to be filled via "allsys".
-DBGPTFIL  := 1
-
-# Set to "opt" to compile test programs optimized rather than debug.
+# Set to "opt" to compile/link test programs optimized rather than debug.
+# Note that compiling/linking debug does extra tests.
 TESTOPT   := dbg
 
 # Set to "bin" to force test programs to be compiled via "allsys".
@@ -609,12 +628,17 @@ endif
 # must not be set for compilers which do not support it.
 #
 # The site makedefs may wish to redefine these variables so that the binaries
-# are put in different places depending on the value of OPT.  The default is
-# to put debug and optimized binaries in the same place.
+# are put in the same place.  The default is to put debug and optimized
+# libraries and binaries in different places.
 PGMRINCD := $(wildcard $(PGMRARCH))
-PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
-PGMRBIND := $(wildcard $(PGMRARCH)/bin)
 PGMRAUXD := $(wildcard $(PGMRARCH)/aux)
+ifdef OPT
+   PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+   PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+else
+   PGMRLIBD := $(wildcard $(PGMRARCH)/libdbg)
+   PGMRBIND := $(wildcard $(PGMRARCH)/bindbg)
+endif
 
 # Programmer template repository.  Warning: this is recursively deleted by
 # the "cleanest" rule.
@@ -624,6 +648,7 @@ PGMRPTRD  = $(PGMRARCH)/ptrepository
 ifeq "$(MAKEMODE)" "programmer"
    INTRA_MAKEFLAGS := --no-print-directory
 endif
+
 
 #=============================================================================
 #                         END OF DEFAULT DEFINITIONS
@@ -645,6 +670,84 @@ endif
 # definition of SITEDEFS on the gmake command line.
 SITEDEFS := makedefs
 -include $(AIPSSITE)/$(SITEDEFS)
+
+
+#-----------------------------------------------------------------------------
+# Programmer variables for code development.
+#-----------------------------------------------------------------------------
+ifeq "$(MAKEMODE)" "programmer"
+
+   # Alternate definitions for CPPFLAGS.
+   ifeq "$(CPPFLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+   endif
+
+   # Alternate definitions for C++FLAGS.
+   ifeq "$(C++FLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+      override C++FLAGS := $(C++OPT)
+   endif
+
+   # Extra compiler flags.
+   C++FLAGS += $(EXTRA_C++FLAGS)
+
+
+   # ------------ COMPILING AIPS++ CODE USING THE RATIONAL TOOLS ------------
+   # There are two ways to compile aips++ code with the Rational code analysis 
+   # tools.  
+   # The first way has been used at Socorro for some time. You invoke purify as
+   #   gmake PURIFY=1 myApp
+   # similarly you invoke quantify and purecoverage with
+   #   gmake QUANTIFY=1 myApp
+   #   gmake PURECOV=1 myApp
+   # Compiling using any of the above examples invokes the relevant
+   # tool with the default set of arguments. 
+   # If you use additional command line arguments with any of the
+   # Rational tools you need to compile you code using
+   #   gmake PURE="command" myApp
+   # where command can be one of:
+   #   PURE="purify <purify args>"
+   #   PURE="purecov <purecov args>"
+   #   PURE="quantify <quantify args>"
+   #   PURE="purify  <purify args> purecov <purecov args>"
+   # Note that Purify and PureCoverage can be used together, Quantify
+   # can only be used by itself.
+   # In all cases the cache files are put in the programmers workspace
+   # and can be deleted using the 'cleanest' target in conjunction
+   # with one of the PURE, PURIFY, QUANTIFY or PURECOV variables. eg.,
+   #   gmake PURIFY=1 cleanest
+
+   PUREOPTIONS := -cache-dir=$(PGMRARCH)/pure_cache -always-use-cache-dir -chain-length=50
+   ifdef PURE
+      C++ := $(PURE) $(PUREOPTIONS) $(C++)
+      # Don't strip the symbols from the executable
+      LDOPT := $(LDDBG)
+      .cleanest ::
+	   - $(RM) -r $(PGMRARCH)/pure_cache
+   endif
+   ifdef PURIFY
+      C++ := purify -best-effort $(PUREOPTIONS) $(C++)
+      # Don't strip with purify
+      LDOPT := $(LDDBG)
+      .cleanest ::
+	   - $(RM) -r $(PGMRARCH)/pure_cache
+   endif
+   ifdef QUANTIFY
+      C++ := quantify -best-effort $(PUREOPTIONS) $(C++)
+      # Don't strip with quantify
+      LDOPT := $(LDDBG)
+      .cleanest ::
+	   - $(RM) -r $(PGMRARCH)/pure_cache
+   endif
+   ifdef PURECOV
+      C++ := purecov $(PUREOPTIONS) $(C++)
+      # Don't strip with purecov
+      LDOPT := $(LDDBG)
+      .cleanest ::
+	   - $(RM) -r $(PGMRARCH)/pure_cache
+   endif
+endif
+
 
 ###
 ### select the shared library list for applications select
@@ -805,7 +908,9 @@ export LIBtrial     := $(LIBtrial)
 export LIBatnf      := $(LIBatnf)
 export LIBbima      := $(LIBbima)
 export LIBhia       := $(LIBhia)
+export LIBjive      := $(LIBjive)
 export LIBnfra      := $(LIBnfra)
+export LIBnpoi      := $(LIBnpoi)
 export LIBnral      := $(LIBnral)
 export LIBnrao      := $(LIBnrao)
 export LIBtifr      := $(LIBtifr)
