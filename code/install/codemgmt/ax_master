@@ -2144,3 +2144,21 @@
 09 021 src mv trial/implement/Lattices/ExprNodeSet.cc aips/implement/Tables/ExprNodeSet.cc
 09 021 src mv trial/implement/Lattices/ExprDerNodeArray.cc aips/implement/Tables/ExprDerNodeArray.cc
 09 021 src mv trial/implement/Lattices/ExprDerNodeArray.h aips/implement/Tables/ExprDerNodeArray.h
+09 025 src rm install/codedevl/apply_module_move
+09 025 src rm install/codedevl/apply_module_move.sed1
+09 025 src rm install/codedevl/apply_module_move.sed2
+09 025 src rm install/codedevl/do_ar_cpadd
+09 025 src rm install/codedevl/do_instchk
+09 025 src rm install/codedevl/do_instclean
+09 025 src rm install/codedevl/do_libinstchk
+09 025 src rm install/codedevl/do_libinstclean
+09 025 src rm install/codedevl/instchk
+09 025 src rm install/codedevl/instclean
+09 025 src rm install/codedevl/instdepend
+09 025 src rm install/codedevl/libinstchk
+09 025 src rm install/codedevl/libinstclean
+09 025 src rm install/codedevl/libinstdepend
+09 025 src rm install/codedevl/ar_cpadd
+09 025 src rm install/codemgmt/copy_installation
+09 025 src rm install/codedevl/map
+09 025 src rm install/codedevl/mar
