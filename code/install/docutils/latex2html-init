@@ -27,6 +27,9 @@ $NO_SUBDIR = 0;
 if(!$DOCSROOT){
    $DOCSROOT = '../..';
 }
+if(!$DOCSCOLOR) {
+   $DOCSCOLOR = 'OO66FF';
+}
 
 
 $ADDRESS = "<I>Please send questions or comments about AIPS++ to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1998, 1999 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
@@ -77,175 +80,73 @@ $PAPERSIZE = "a5";
 $TITLES_LANGUAGE = "english";
 $NO_SIMPLE_MATH = 1;
 $HTML_VERSION = "3.2,math";
+$BODYTEXT =  "background=\"$DOCSROOT/gif/watermark.gif\" bgcolor=\"\#ffffff\" text=\"\#000000\" link=\"\#cc0f0f\" vlink=\"\#00009c\"";
 
 ### Navigation Panel ##########################################################
 
 sub aips2script {
-"<SCRIPT LANGUAGE = \"JavaScript\">\n" .
-#"\n" .
+"\n" .
+"<SCRIPT LANGUAGE = \"JavaScript1.2\" src=\"$DOCSROOT/javascripts/menu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript1.2\" src=\"$DOCSROOT/javascripts/aipsmenu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript1.2\">\n" .
 "<!--\n" .
-"if (document.images) {                     //if image object is available\n" .
-"img1on = new Image();                       // MouseOver Images\n" .
-"img1on.src = \"$DOCSROOT/html/navpages/images/topgson.gif\";\n" .
-"img2on = new Image();\n" .
-"img2on.src = \"$DOCSROOT/html/navpages/images/topdocon.gif\";\n" .
-"img3on = new Image();\n" .
-"img3on.src = \"$DOCSROOT/html/navpages/images/toplearnon.gif\";\n" .
-"img4on = new Image();\n" .
-"img4on.src = \"$DOCSROOT/html/navpages/images/topsearchon.gif\";\n" .
-"img5on = new Image();\n" .
-"img5on.src = \"$DOCSROOT/html/navpages/images/topcommon.gif\";\n" .
-"img6on = new Image();\n" .
-"img6on.src = \"$DOCSROOT/html/navpages/images/tophomeon.gif\";\n" .
-"img1on = new Image();                       // MouseOver Images\n" .
-"img1on.src = \"$DOCSROOT/html/navpages/images/topgson.gif\";\n" .
-"img2on = new Image();\n" .
-"img2on.src = \"$DOCSROOT/html/navpages/images/topdocon.gif\";\n" .
-"img3on = new Image();\n" .
-"img3on.src = \"$DOCSROOT/html/navpages/images/toplearnon.gif\";\n" .
-"img4on = new Image();\n" .
-"img4on.src = \"$DOCSROOT/html/navpages/images/topsearchon.gif\";\n" .
-"img5on = new Image();\n" .
-"img5on.src = \"$DOCSROOT/html/navpages/images/topcommon.gif\";\n" .
-"img6on = new Image();\n".
-"img6on.src = \"$DOCSROOT/html/navpages/images/tophomeon.gif\";\n" .
-"img7on = new Image();\n" .
-"img7on.src = \"$DOCSROOT/html/navpages/images/topglishon.gif\";\n" .
-#"\n" .
-#"\n" .
-"img1off = new Image();                         // MouseOut Images\n" .
-"img1off.src = \"$DOCSROOT/html/navpages/images/topgsoff.gif\";\n" .
-"img2off = new Image();          \n" .
-"img2off.src = \"$DOCSROOT/html/navpages/images/topdocoff.gif\";\n" .
-"img3off = new Image();\n" .
-"img3off.src = \"$DOCSROOT/html/navpages/images/toplearnoff.gif\";\n" .
-"img4off = new Image();\n" .
-"img4off.src = \"$DOCSROOT/html/navpages/images/topsearchoff.gif\";\n" .
-"img5off = new Image();\n" .
-"img5off.src = \"$DOCSROOT/html/navpages/images/topcommoff.gif\";\n" .
-"img6off = new Image();\n" .
-"img6off.src = \"$DOCSROOT/html/navpages/images/tophomeoff.gif\";\n" . 
-"img1off = new Image();                                  // MouseOut Images\n" .
-"img1off.src = \"$DOCSROOT/html/navpages/images/topgsoff.gif\"; \n" .
-"img2off = new Image();          \n" .
-"img2off.src = \"$DOCSROOT/html/navpages/images/topdocoff.gif\";\n" .
-"img3off = new Image();\n" .
-"img3off.src = \"$DOCSROOT/html/navpages/images/toplearnoff.gif\";\n" .
-"img4off = new Image();\n" .
-"img4off.src = \"$DOCSROOT/html/navpages/images/topsearchoff.gif\";\n" .
-"img5off = new Image();\n" .
-"img5off.src = \"$DOCSROOT/html/navpages/images/topcommoff.gif\";\n" .
-"img6off = new Image();\n" .
-"img6off.src = \"$DOCSROOT/html/navpages/images/tophomeoff.gif\";\n" .
-"img7off = new Image();\n" .
-"img7off.src = \"$DOCSROOT/html/navpages/images/topglishoff.gif\";\n" .
-#"\n" .
-#"\n" .
-"}\n" .
-#"\n" .
-"function imgOn(imgName) {\n" .
-"        if (document.images) {\n" .
-"            document[imgName].src = eval(imgName + \"on.src\");        }}\n" .
-#"                        \n" .
-"function imgOff(imgName) {\n" .
-"        if (document.images) {\n" .
-"            document[imgName].src = eval(imgName + \"off.src\");        }}\n" .
-#"\n" .
+" // Function need to place directory relative to docs tree.\n" .
+" aMenu = new aipsMenu(\"$DOCSROOT\", \"\#$DOCSCOLOR\");\n" .
+" function onLoad() {\n" .
+"    if (document.layers) {\n" .
+"        aMenu.loadMenus();\n" .
+"    }\n" .
+" }\n" .
 "//-->\n" .
-#"\n" .
 "</SCRIPT>\n" .
 "\n" 
 }
 sub aips2topbar {
-#"\n" .
-"<FONT FACE=\"Arial,Helvetica\">\n" .
-"<table cellpadding=0 cellspacing=0 border=0 align=right>\n" .
+"\n" .
+"<table bgcolor=\"\#0066ff\" cellpadding=4 cellspacing=0 border=0 width=600 height=25>\n" .
 "<tr><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/gettingstarted6.html\" \n" .
-"         onMouseOver=\"imgOn('img1')\" \n" .
-"         onMouseOut=\"imgOff('img1')\">\n" .
-"<IMG NAME=\"img1\" SRC=\"$DOCSROOT/html/navpages/images/topgsoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/documentation.html\" \n" .
-"         onMouseOver=\"imgOn('img2')\" \n" .
-"         onMouseOut=\"imgOff('img2')\">\n" .
-"<IMG NAME=\"img2\" SRC=\"$DOCSROOT/html/navpages/images/topdocoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/reference/Glish/Glish.html\" \n" .
-"          onMouseOver=\"imgOn('img7')\" \n" .
-"          onMouseOut=\"imgOff('img7')\">\n" .
-"<IMG NAME=\"img7\" SRC=\"$DOCSROOT/html/navpages/images/topglishoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/learnmore6.html\" \n" .
-"         onMouseOver=\"imgOn('img3')\" \n" .
-"         onMouseOut=\"imgOff('img3')\">\n" .
-"<IMG NAME=\"img3\" SRC=\"$DOCSROOT/html/navpages/images/toplearnoff.gif\" BORDER=0></A>\n" .
-"</td></tr><tr><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/search/search.html\"  \n" .
-"          onMouseOver=\"imgOn('img4')\" \n" .
-"          onMouseOut=\"imgOff('img4')\">\n" .
-"<IMG NAME=\"img4\" SRC=\"$DOCSROOT/html/navpages/images/topsearchoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/communicate6.html\" \n" .
-"          onMouseOver=\"imgOn('img5')\" \n" .
-"          onMouseOut=\"imgOff('img5')\">\n" .
-"<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
-"          onMouseOver=\"imgOn('img6')\" \n" .
-"          onMouseOut=\"imgOff('img6')\">\n" .
-"<IMG NAME=\"img6\" SRC=\"$DOCSROOT/html/navpages/images/tophomeoff.gif\" BORDER=0></A>\n" .
+"<a href=\"$DOCSROOT/gettingstarted.html\" onMouseOver=\"aMenu.showAipsMenu(\'gsMenu\')\">\n" .
+"<font size=2 face=helvetica  color=\"\#ffffff\">\n" .
+"<b>Getting Started</b></a></td>\n" .
+"<td>\n" .
+"<a href=\"$DOCSROOT/user/documentation.html\" onMouseOver=\"aMenu.showAipsMenu(\'userMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Documentation</b></a></td>\n" .
+"<td><a href=\"glish.html\" onMouseOver=\"aMenu.showAipsMenu(\'glishMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffdd00\">\n" .
+"<b>Glish</b></a></td>\n" .
+"<td><a href=\"$DOCSROOT/learnmore.html\" onMouseOver=\"aMenu.showAipsMenu(\'learnMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Learn More</b></a></td>\n" .
+"<td>\n" .
+"<a href=\"$DOCSROOT/programmer/programmer.html\" onMouseOver=\"aMenu.showAipsMenu(\'progMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Programming</b></a></td>\n" .
+"<td><a href=\"$DOCSROOT/contactus/contactus.html\" onMouseOver=\"aMenu.showAipsMenu(\'commMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Contact Us</b></a>\n" .
+"</td></tr></table>\n" .
+"<table border=0 width=600>\n" .
+"<tr><td><img src=\"$DOCSROOT/gif/aipslogo.gif\">\n" .
+"</td><td valign=middle>\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>La\n" .
+"st News</a></font></b><P>\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></fon\n" .
+"</b><P>\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
+"</a></font></b><P>\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></fon\n" .
+"</b><P>\n" .
 "\n" .
-"</td></tr>\n" .
-"</table>\n"
+"</td></tr></table><hr>\n" .
+"\n"
 }
-sub aips2botbar {
-"\n" .
-"<FONT FACE=\"Arial,Helvetica\">\n" .
-"<table cellpadding=0 cellspacing=0 border=0>\n" .
-"<tr><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/gettingstartedon6.html\" \n" .
-"         onMouseOver=\"imgOn('img1')\" \n" .
-"         onMouseOut=\"imgOff('img1')\">\n" .
-"<IMG NAME=\"img1\" SRC=\"$DOCSROOT/html/navpages/images/topgsoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/documentation.html\" \n" .
-"         onMouseOver=\"imgOn('img2')\" \n" .
-"         onMouseOut=\"imgOff('img2')\">\n" .
-"<IMG NAME=\"img2\" SRC=\"$DOCSROOT/html/navpages/images/topdocoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/reference/Glish/Glish.html\" \n" .
-"          onMouseOver=\"imgOn('img7')\" \n" .
-"          onMouseOut=\"imgOff('img7')\">\n" .
-"<IMG NAME=\"img7\" SRC=\"$DOCSROOT/html/navpages/images/topglishoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/learnmore6.html\" \n" .
-"         onMouseOver=\"imgOn('img3')\" \n" .
-"         onMouseOut=\"imgOff('img3')\">\n" .
-"<IMG NAME=\"img3\" SRC=\"$DOCSROOT/html/navpages/images/toplearnoff.gif\" BORDER=0></A>\n" .
-"</td></tr><tr><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/search/search.html\" \n" .
-"          onMouseOver=\"imgOn('img4')\" \n" .
-"          onMouseOut=\"imgOff('img4')\">\n" .
-"<IMG NAME=\"img4\" SRC=\"$DOCSROOT/html/navpages/images/topsearchoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/navpages/communicate6.html\" \n" .
-"          onMouseOver=\"imgOn('img5')\" \n" .
-"          onMouseOut=\"imgOff('img5')\">\n" .
-"<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
-"<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
-"          onMouseOver=\"imgOn('img6')\" \n" .
-"          onMouseOut=\"imgOff('img6')\">\n" .
-"<IMG NAME=\"img6\" SRC=\"$DOCSROOT/html/navpages/images/tophomeoff.gif\" BORDER=0></A>\n" .
-"\n" .
-"</td></tr>\n" .
-"</table>\n"
-}
+
 sub top_navigation_panel {
 # Put in a body statement (could also have text color here)
     &aips2script .
     &aips2topbar .
+    ($MAX_SPLIT_DEPTH > 1 ? 
 
     "<BR>\n" .		# Line break
 
@@ -266,6 +167,8 @@ sub top_navigation_panel {
 
     #  Line Break, horizontal rule (3-d dividing line) and new paragraph  
      "<br><p> \n"		
+    : "" ) .
+    "\n"
 }
 #sub bot_navigation_panel {
 #
