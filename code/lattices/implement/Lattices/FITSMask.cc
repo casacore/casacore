@@ -38,16 +38,26 @@
 
 
 
-FITSMask::FITSMask (TiledFileAccess* tiledFile)
-: itsTiledFilePtr(tiledFile)
+FITSMask::FITSMask (TiledFileAccess* tiledFile, Double scale, Double offset,
+                    Short magic, Bool hasBlanks)
+: itsTiledFilePtr(tiledFile),
+  itsScale(scale),
+  itsOffset(offset),
+  itsMagic(magic),
+  itsHasBlanks(hasBlanks)
 {
 // We could implement more cases in doGetSlice
 
-   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat, AipsError);
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat ||
+                itsTiledFilePtr->dataType()==TpShort, AipsError);
 }
 
 FITSMask::FITSMask (const FITSMask& other)
-: itsTiledFilePtr(other.itsTiledFilePtr)
+: itsTiledFilePtr(other.itsTiledFilePtr),
+  itsScale(other.itsScale),
+  itsOffset(other.itsOffset),
+  itsMagic(other.itsMagic),
+  itsHasBlanks(other.itsHasBlanks)
 {}
 
 FITSMask::~FITSMask()
@@ -59,6 +69,10 @@ FITSMask& FITSMask::operator= (const FITSMask& other)
     itsTiledFilePtr = other.itsTiledFilePtr;
     itsBuffer.resize();
     itsBuffer = other.itsBuffer.copy();
+    itsScale = other.itsScale;
+    itsOffset = other.itsOffset;
+    itsMagic = other.itsMagic;
+    itsHasBlanks = other.itsHasBlanks;
   }
   return *this;
 }
@@ -84,7 +98,12 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
    if (!mask.shape().isEqual(shp)) mask.resize(shp);
    if (!itsBuffer.shape().isEqual(shp)) itsBuffer.resize(shp);
 //
-   itsTiledFilePtr->get(itsBuffer, section);
+   if (itsTiledFilePtr->dataType()==TpFloat) {
+      itsTiledFilePtr->get(itsBuffer, section);
+   } else {
+      itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
+                           itsMagic, itsHasBlanks);
+   }
 //
    Bool deletePtrD;
    const Float* pData = itsBuffer.getStorage(deletePtrD);

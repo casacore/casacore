@@ -1,5 +1,5 @@
  //# FITSMask.h: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,8 @@ class FITSMask : public Lattice<Bool>
 public:
 
   // Constructor.    The pointer is not cloned, just copied
-  FITSMask (TiledFileAccess* tiledFileAccess);
+  FITSMask (TiledFileAccess* tiledFileAccess, Double scale, Double offset,
+            Short magic, Bool hasBlanks);
   // </group>
   
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
@@ -136,6 +137,9 @@ private:
 //
   TiledFileAccess* itsTiledFilePtr;
   Array<Float> itsBuffer;
+  Double itsScale, itsOffset;
+  Short itsMagic;
+  Bool itsHasBlanks;
 };
 
 
