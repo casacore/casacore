@@ -58,10 +58,6 @@ retrieve: Epoch: 51234::12:00:00.0000
 Creating an MEpoch Array Column
 Null MEpochArrCol successfully attached
 Adding a vector to the column at row 0.
-elements: 10
-ndim(): 1
-new ms shape: [10, 2]
-array.nelements(): 20
 ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
 ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
 ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
