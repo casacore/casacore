@@ -1,5 +1,5 @@
 //# tCanonicalConversion.h: Test program for class CanonicalConversion
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -320,7 +320,7 @@ void checkConversion (int& error)
 	val[5] = 2;
 	val[6] = 54;
 	val[7] = 78;
-	val[8] = 145;
+	val[8] = 145-256;
 	Int64 result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145
@@ -361,7 +361,7 @@ void checkConversion (int& error)
 	val[2] = 0;
 	val[3] = 0;
 	val[4] = 5;
-	val[5] = 128;
+	val[5] = 128-256;
 	val[6] = 54;
 	val[7] = 78;
 	val[8] = 100;
@@ -387,7 +387,7 @@ void checkConversion (int& error)
 	// The first bit of the fraction is hidden (is 1 and not stored).
 	// Exponent-126 is the true exponent (base 2).
 	val[1] = 63;
-	val[2] = 192;
+	val[2] = 192-256;
 	val[3] = 1;
 	val[4] = 7;
 	float result;

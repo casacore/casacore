@@ -1,5 +1,5 @@
 //# tVAXConversion.h: Test program for class VAXConversion
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,7 +159,7 @@ void checkConversion (int& error)
 	val[4] = 2;
 	val[3] = 54;
 	val[2] = 78;
-	val[1] = 145;
+	val[1] = 145-256;
 	Int64 result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
@@ -186,7 +186,7 @@ void checkConversion (int& error)
 	}
     }
     {
-	val[4] = 128;
+	val[4] = 128-256;
 	val[3] = 54;
 	val[2] = 78;
 	val[1] = 100;

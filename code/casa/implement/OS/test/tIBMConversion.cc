@@ -1,5 +1,5 @@
 //# tIBMConversion.h: Test program for class IBMConversion
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ void checkConversion (int& error)
 	val[1] = 2;
 	val[2] = 54;
 	val[3] = 78;
-	val[4] = 145;
+	val[4] = 145-256;
 	Int64 result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
@@ -199,7 +199,7 @@ void checkConversion (int& error)
 	}
     }
     {
-	val[1] = 128;
+	val[1] = 128-256;
 	val[2] = 54;
 	val[3] = 78;
 	val[4] = 100;
