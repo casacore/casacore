@@ -43,12 +43,13 @@
 #include <trial/Lattices/LCBox.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/QMath.h>
+#include <aips/Tasking/AppInfo.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/ValType.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
-
 
 
 #include <iostream.h>
@@ -1140,8 +1141,19 @@ Bool ImageStatistics<T>::generateStorageImage()
        tileShape(i) = pInImage_p->niceCursorShape()(displayAxes_p(i));
     }
     tileShape(tileShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
-    Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                        String("ImageStatistics::"));
+
+// Find size of scratch file in Mb
+
+    T tmp;
+    DataType dataType = whatType(&tmp);
+    Int size0 = storeImageShape.product() * ValType::getTypeSize(dataType);
+    size0 = max(0,size0/1000000);
+    uInt size = size0;
+
+// Create Table descriptor
+
+    Table myTable = ImageUtilities::setScratchTable(String("ImageStatistics::"), size);
+
 
 // Create storage image
 
