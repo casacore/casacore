@@ -121,6 +121,8 @@ class SpectralElement {
   //   <li> AipsError if sigma == 0.0
   // </thrown>
   SpectralElement &operator=(const SpectralElement &other);
+  // Evaluate the value of the element at x
+  Double operator()(const Double x) const;
 
   //# Member functions
   // Get all the types available as String and codes, and number available

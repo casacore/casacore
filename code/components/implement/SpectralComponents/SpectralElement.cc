@@ -75,6 +75,14 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
   return *this;
 }
 
+Double SpectralElement::operator()(const Double x) const {
+  if (tp_p == GAUSSIAN) {
+    return  ampl_p*exp(-(x-center_p)*(x-center_p)*log(16.0)/
+		       sigma_p/sigma_p);
+  };
+  return 0.0; /// add poly!
+}
+
 const String *const SpectralElement::allTypes(Int &nall,
 					      const SpectralElement::Types
 					      *&typ) {
@@ -215,7 +223,7 @@ Bool SpectralElement::toRecord (RecordInterface& rec, const String& name)
       p(0) = ampl_p;
       p(1) = center_p;
       p(2) = sigma_p;
-   } else if (tp_p = SpectralElement::POLYNOMIAL) {
+   } else if (tp_p == SpectralElement::POLYNOMIAL) {
       p.resize(1);
       Vector<Double> p(1);
       p(0) = Double(n_p);
