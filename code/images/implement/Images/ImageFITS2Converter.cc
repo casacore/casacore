@@ -302,7 +302,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // Set up iterator
 //
-	    IPosition cursorShape(image.niceCursorShape(image.maxPixels()));
+	    IPosition cursorShape(image.niceCursorShape());
 	    IPosition shape = image.shape();
 	    RO_LatticeIterator<Float> iter(image, 
 		   LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));

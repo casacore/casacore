@@ -114,7 +114,7 @@ IPosition ImageSummary<T>::tileShape () const
 // Get image tile shape
 //
 {
-   return pImage_p->niceCursorShape(pImage_p->maxPixels());
+   return pImage_p->niceCursorShape();
 }
 
 

@@ -228,7 +228,7 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 
 // Smooth in situ.  
       
-   IPosition niceShape = imageOut.niceCursorShape(imageOut.maxPixels());
+   IPosition niceShape = imageOut.niceCursorShape();
    uInt axis = 0;
    for (uInt i=0; i<nAxes; i++) {
       axis = itsAxes(i);
@@ -260,7 +260,7 @@ void SepImageConvolver<T>::convolve()
 
 // Smooth in situ.  
       
-   IPosition niceShape = itsImagePtr->niceCursorShape(itsImagePtr->maxPixels());
+   IPosition niceShape = itsImagePtr->niceCursorShape();
    uInt axis = 0;
    for (uInt i=0; i<nAxes; i++) {
       axis = itsAxes(i);
@@ -376,7 +376,7 @@ void SepImageConvolver<T>::smoothProfiles (ImageInterface<T>& in,
   }
 // 
   TiledLineStepper navIn(in.shape(),
-                         in.niceCursorShape(in.maxPixels()),
+                         in.niceCursorShape(),
                          axis);
   LatticeIterator<T> inIt(in, navIn);
   Vector<T> result(in.shape()(axis));

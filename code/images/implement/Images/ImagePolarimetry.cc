@@ -592,7 +592,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
 
 // Make iterator
 
-   const IPosition tileShape = pa.niceCursorShape(pa.maxPixels());
+   const IPosition tileShape = pa.niceCursorShape();
    TiledLineStepper ts(pa.shape(), tileShape, fAxis);
    RO_LatticeIterator<Float> it(pa, ts);
 
