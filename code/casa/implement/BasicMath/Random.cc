@@ -57,8 +57,8 @@ Double RNG::asDouble()
 
   PrivateRNGDoubleType result;
   result.dbl = 1.0;
-  uInt iLsb = asuInt();
   uInt iMsb = asuInt() & 0xfffff;
+  uInt iLsb = asuInt();
 #if defined(AIPS_LITTLE_ENDIAN)
   result.intgr[0] |= iLsb;
   result.intgr[1] |= iMsb;
