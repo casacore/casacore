@@ -1,5 +1,5 @@
 //# tDirectionCoordinate.cc: Test program for DirectionCoordinate
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -487,53 +487,53 @@ void doit3 (DirectionCoordinate& lc)
       throw(AipsError("Failed getPrecision test 2"));
    }
 //
-   String unit;
+   String unit("rad");
    Double val = 0.12343;
    Quantum<Double> valq(0.12343, "rad");
    valq.convert(Unit("deg"));
 //
    String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                          True, 4, True);
+                          True, True, 4);
    if (unit!="rad" || str != "0.1234") {
       throw(AipsError("Failed format test 1a"));
    }
    uInt axis = 0;
    Int prec2 = 4;
    str = lc.formatQuantity(unit, Coordinate::FIXED, valq, axis,
-                   True, prec2, True);
+                           True, True, prec2);
    if (unit!="rad" || str != "0.1234") {
       throw(AipsError("Failed format test 1b"));
    }
 //
    str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
-                   True, 4, True);
+                   True, True, 4);
    if (unit!="rad" || str != "1.2343e-01") {
       throw(AipsError("Failed format test 2a"));
    }
    str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
-                     True, 4, True);
+                           True, True, 4);
    if (unit!="rad" || str != "1.2343e-01") {
       throw(AipsError("Failed format test 2b"));
    }
 //
    str = lc.format(unit, Coordinate::FIXED, val, 1,
-                   True, 4, True);
+                   True, True, 4);
    if (unit!="rad" || str != "0.1234") {
       throw(AipsError("Failed format test 3a"));
    }
    str = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1,
-                     True, 4, True);
+                           True, True, 4);
    if (str != "0.1234") {
       throw(AipsError("Failed format test 3b"));
    }
 //
    str = lc.format(unit, Coordinate::SCIENTIFIC, val, 1,
-                   True, 4, True);
+                   True, True, 4);
    if (unit!="rad" || str != "1.2343e-01") {
       throw(AipsError("Failed format test 4a"));
    }
    str = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 1,
-                     True, 4, True);
+                           True, True, 4);
    if (unit!="rad" || str != "1.2343e-01") {
       throw(AipsError("Failed format test 4b"));
    }
@@ -542,10 +542,10 @@ void doit3 (DirectionCoordinate& lc)
 // we have in the DC.  Need to know this to figure out what
 // the formatting is going to do !
 //
-   str = lc.format(unit, Coordinate::TIME, val, 0,
+   str = lc.format(unit, Coordinate::TIME, val, 0, True,
                    True, 4);
    String str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 0,
-                             True, 4);
+                                   True, True, 4);
    MDirection::GlobalTypes globalType = dir.globalType(lc.directionType());
    if (globalType==MDirection::GRADEC) {
       if (str != "00:28:17.2843" || str2 != "00:28:17.2843") {
@@ -559,10 +559,9 @@ void doit3 (DirectionCoordinate& lc)
       throw(AipsError("Internal error"));
    }
 //
-   str = lc.format(unit, Coordinate::TIME, val, 1,
-                   True, 4);
-   str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 1,
-                      True, 4);
+   str = lc.format(unit, Coordinate::TIME, val, 1, True, True, 4);
+   str2 = lc.formatQuantity(unit, Coordinate::TIME, valq, 1, True,
+                            True, 4);
    if (globalType==MDirection::GRADEC) {
       if (str != "+07.04.19.2650" || str2 != "+07.04.19.2650") {
          throw(AipsError("Failed format test 6a"));
