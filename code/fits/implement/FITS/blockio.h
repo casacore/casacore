@@ -28,21 +28,8 @@
 # if !defined(AIPS_FITS_BLOCK_IO_H)
 # define AIPS_FITS_BLOCK_IO_H
 
-//# Temporary hack until OS dependent flags are developed
-//# for the compilation system.
-
-#if !defined(UNIX) && !defined(MSDOS)
-#define UNIX
-#endif
-
 # include <stdlib.h>
-# if defined(UNIX)
-#   include <unistd.h>
-# endif
-# if defined(MSDOS)
-
-#   include <io.h>
-# endif
+# include <unistd.h>
 # include <fcntl.h>
 #include <aips/aips.h>
 

@@ -65,9 +65,6 @@ BlockIO::BlockIO(const char *f, int o, int r, int n,
 		return;
 	}
 	strcpy(filename,f);
-# if defined(MSDOS)
-	options = options | O_BINARY;
-# endif
 	if (options & O_CREAT)
 		fd = open(filename,options,0644);
 	else

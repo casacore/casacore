@@ -28,13 +28,6 @@
 # if !defined(AIPS_FITS)
 # define AIPS_FITS
 
-//# Temporary hack until OS dependent flags are developed
-//# for the compilation system.
-
-# if !defined(UNIX) && !defined(MSDOS)
-# define UNIX
-# endif
-
 # include <ctype.h>
 # include <iostream.h>
 # include <aips/aips.h>
@@ -43,7 +36,7 @@
 
 //#  Automatically configure for known LITTLE ENDIAN systems
 #if !(defined(AIPS_LITTLE_ENDIAN))
-#  if (defined(__alpha) || defined(i386) || defined(MSDOS))
+#  if (defined(__alpha) || defined(i386))
 #    define AIPS_LITTLE_ENDIAN
 #  endif
 #endif

@@ -186,7 +186,6 @@ const int FITS::maxdigl = 9; // max digits in a long
 const int FITS::maxexpdig = 3; // max digits in an exponent
 const Int FITS::minInt = INT_MIN;
 const Int FITS::maxInt = INT_MAX;
-# if defined(UNIX)
 #   if defined(GNU)
 const float FITS::minfloat = C::minfloat;
 const float FITS::maxfloat = C::maxfloat;
@@ -198,13 +197,6 @@ const float FITS::maxfloat = C::flt_max;
 const double FITS::mindouble = C::dbl_min;
 const double FITS::maxdouble = C::dbl_max;
 #   endif
-# endif
-# if defined(MSDOS)
-const float FITS::minfloat = C::minfloat;
-const float FITS::maxfloat = C::maxfloat;
-const double FITS::mindouble = C::mindouble;
-const double FITS::maxdouble = C::maxdouble;
-# endif
 
 ostream & operator << (ostream &o, const FitsLogical &x) {
 	if (x.v == 'T') o << "True"; 
