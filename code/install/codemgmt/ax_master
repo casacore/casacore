@@ -2240,3 +2240,4 @@
 09 143 src rm nfra/implement/wsrt/WSRTDataSourceShort.cc
 09 143 src rm nfra/implement/wsrt/WSRTInput.h
 09 143 src rm nfra/implement/wsrt/WSRTInput.cc
+09 146 src mv trial/apps/measures/aipsrcdata.help trial/apps/misc/aipsrcdata.help
