@@ -54,14 +54,20 @@ uInt PlainColumn:: nrow() const
 
 TableRecord& PlainColumn::rwKeywordSet()
 {
+    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
     colSetPtr_p->checkLock (FileLocker::Write, True);
+    TableRecord& rec = colDesc_p.rwKeywordSet();
     colSetPtr_p->setTableChanged();
-    return colDesc_p.rwKeywordSet(); 
+    colSetPtr_p->userUnlock (hasLocked);
+    return rec;
 }
 TableRecord& PlainColumn::keywordSet()
 {
+    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
     colSetPtr_p->checkLock (FileLocker::Read, True);
-    return colDesc_p.rwKeywordSet();
+    TableRecord& rec = colDesc_p.rwKeywordSet();
+    colSetPtr_p->userUnlock (hasLocked);
+    return rec;
 }
 
 

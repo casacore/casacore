@@ -395,14 +395,20 @@ Bool PlainTable::isWritable() const
 //# Get access to the keyword set.
 TableRecord& PlainTable::keywordSet()
 {
+    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
     colSetPtr_p->checkLock (FileLocker::Read, True);
-    return tdescPtr_p->rwKeywordSet();
+    TableRecord& rec = tdescPtr_p->rwKeywordSet();
+    colSetPtr_p->userUnlock (hasLocked);
+    return rec;
 }
 TableRecord& PlainTable::rwKeywordSet()
 {
+    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
     colSetPtr_p->checkLock (FileLocker::Write, True);
+    TableRecord& rec = tdescPtr_p->rwKeywordSet();
     tableChanged_p = True;
-    return tdescPtr_p->rwKeywordSet();
+    colSetPtr_p->userUnlock (hasLocked);
+    return rec;
 }
     
     
