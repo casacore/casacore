@@ -1,5 +1,5 @@
 //# NQGaussianND.h: A multidimensional Gaussian class
-//# Copyright (C) 1995,1996,1998,1999,2001
+//# Copyright (C) 1995,1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,7 +110,7 @@
 // modified using the set/get functions.
 //
 // The parameter interface (see 
-// <linkto class="Parameterized"> Parameterized </linkto> class), 
+// <linkto class="FunctionParam">FunctionParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting"> Fitting </linkto> classes. 
 // There are always 4
