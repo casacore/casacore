@@ -28,6 +28,11 @@
 
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/OS/File.h>
+#include <aips/OS/Path.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/SetupNewTab.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 
@@ -788,6 +793,40 @@ void ImageUtilities::setDisplayAxes (Vector<Int>& displayAxes,
       }
       displayAxes.resize(j, True);
    }
+}
+
+
+Table ImageUtilities::setScratchTable (const String &inFileName, 
+                                       const String &name)
+//
+// Return a Scratch Table where the Table names was constructed from 
+// the directory of a given file,  a specified string and a unique 
+// number worked out by this function.
+//
+// Scratch Tables are deleted when destructed
+//
+// Inputs
+//   inFileName   The directory in which this file lives will be used
+//                for the directory of the output Table
+//   name         The name of the Table will be the directory/name_NNN
+//                where NNN is a unique number
+//
+// Example:
+//
+//   Table table = ImageUtilities::setScratchTable(inImage.name(),
+//                               String("Scratch_"));
+//   PagedArray<Float> scratch(inImage.shape(), table);
+//
+//   and if inImage.name() was say "mydata/ngc1234" then
+//   the table name would be "mydata/Scratch_NNN"
+//
+{
+   File inputImageName(inFileName);
+   const String path = inputImageName.path().dirName() + "/";
+      
+   Path fileName = File::newUniqueName(path, name);
+   SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
+   return Table(setup);
 }
 
 
