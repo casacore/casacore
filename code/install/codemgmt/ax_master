@@ -3642,3 +3642,4 @@
 13 348 src mv atnf/implement/pks/RobustLineFit.h atnf/apps/pksbandpass/RobustLineFit.h
 13 349 src mv atnf/implement/pks/mbfits.h atnf/apps/pksmbfits/MBFITS.h
 13 349 src mv atnf/implement/pks/mbfits_common.h atnf/apps/pksmbfits/mbfits_common.h
+13 349 src rm atnf/apps/pksmbfits/mbfits_common.h
