@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -315,39 +315,6 @@ Bool ImageUtilities::setNxy (Vector<Int>& nxy,
    }
    return True;
 }
-
-Table ImageUtilities::setScratchTable (const String &name,
-                                       const uInt size)
-//
-// Return a Scratch Table where the Table name is constructed from the concatenation
-// of three strings.  These are 1) the first path with the specified 
-// available space in Mb given by the entry user.directories.work in the user's 
-// .aipsrc resource file, 2) a specified string and 3) a unique number 
-// worked out by this function.  
-//
-// Scratch Tables are deleted when destructed
-//
-// Inputs
-//   name         The name of the Table will be the directory/name_NNN
-//                where NNN is a unique number
-//
-// Example:
-//
-//   Table table = ImageUtilities::setScratchTable(String("Scratch_"), 100);
-//   PagedArray<Float> scratch(inImage.shape(), table);
-//
-//   and if inImage.name() was say "mydata/ngc1234" then
-//   the table name would be "mydata/Scratch_NNN"
-//
-{
-   String where = AppInfo::workDirectory(size);
-   Path tmp(where);
-   where = tmp.expandedName();
-   Path fileName = File::newUniqueName(where, name);
-   SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-   return Table(setup);
-}
-
 
 void ImageUtilities::setStorageImageShape(IPosition& storeImageShape,
                                           const Bool& last,
