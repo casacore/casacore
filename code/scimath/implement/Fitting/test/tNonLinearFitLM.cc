@@ -1,5 +1,5 @@
 //# tNonLinearFitLM.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,21 +26,23 @@
 //# $Id$
 
 #include <trial/Fitting/NonLinearFitLM.h>
+#include <aips/Arrays/ArrayIO.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
+#include <trial/Functionals/CompiledFunction.h>
+#include <aips/Functionals/CompoundFunction.h>
+#include <aips/Functionals/Function.h>
+#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/HyperPlane.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Random.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 
 extern "C" float dtime(float *p);
@@ -67,8 +69,8 @@ int main() {
 
   // Set converge criteria.  Default is 0.001
   fitter.setCriteria(0.0001);
-
-  // ***** test one: fit 1D gaussian function to data ****** 
+  
+  // ***** test one: fit 1Gaussian function to data ****** 
 
   // Make some fake data sets
   //  20.0 * exp (-((x-25)/4)^2) 
@@ -109,10 +111,11 @@ int main() {
   newChiSquare = fitter.chiSquare();
 
   if (fitter.converged()) {
-    cout << "****** Test One: fit a 1D gaussian function ******" << endl;
+    cout << "****** Test One: fit a 1D Gaussian function ******" << endl;
     cout << "User time:   " << user_time << endl;
-    cout << "Converged after "<<fitter.currentIteration()<<" iterations"<<endl;
-    cout << "Initial guess for fitted parameters " << (Array<Double>)v <<endl;
+    cout << "Converged after "<< fitter.currentIteration() <<
+      " iterations" << endl;
+    cout << "Initial guess for fitted parameters " << v << endl;
     cout << "chi-square for initial guess " <<  oldChiSquare << endl;
     cout << "chi-square after convergence " <<  newChiSquare << endl;
     cout << "Converge criteria " << fitter.getCriteria() << endl;
@@ -142,7 +145,7 @@ int main() {
     return 1;
   };
 
-  // ***** test oneA: fit 1D gaussian function using non Autodiff param ****** 
+  // ***** test oneA: fit 1D Gaussian function using non Autodiff param ****** 
     
   // Construct a gaussian function for fitting
   // It has to be a Gaussian1D instantiated with an AutoDiff. 
@@ -161,7 +164,7 @@ int main() {
   newChiSquare = fitter.chiSquare();
 
   if (fitter.converged()) {
-    cout << "****** Test oneA: fit a 1D gaussian (non-auto param) ******" <<
+    cout << "****** Test oneA: fit a 1D Gaussian (non-auto param) ******" <<
       endl;
     cout << "User time:   " << user_time << endl;
     cout << "Converged after "<< fitter.currentIteration() <<
@@ -196,7 +199,7 @@ int main() {
   };
 
   
-  // ***** test oneB: fit 1D gaussian function using compound ****** 
+  // ***** test oneB: fit 1D Gaussian function using compound ****** 
     
   // Construct a gaussian function for fitting
   // It has to be a Gaussian1D instantiated with an AutoDiff. 
@@ -219,7 +222,7 @@ int main() {
   newChiSquare = fitter.chiSquare();
 
   if (fitter.converged()) {
-    cout << "****** Test oneB: fit a 1D gaussian (use compound)  ******" << 
+    cout << "****** Test oneB: fit a 1D Gaussian (use compound)  ******" << 
       endl;
     cout << "User time:   " << user_time << endl;
     cout << "Converged after "<< fitter.currentIteration() <<
@@ -253,7 +256,7 @@ int main() {
     return 1;
   };
   
-  // ***** test two: fit a 1D gaussian function to data but hold the center 
+  // ***** test two: fit a 1D Gaussian function to data but hold the center 
   // ***** of the gaussian fixed
   
   // Give the center a value since its value will be held fixed
@@ -269,8 +272,8 @@ int main() {
 
   // Must give an initial guess for the set of fitted parameters.  
   v.resize(2);
-  v(0) = 2;
-  v(1) = 10;
+  v[0] = 2;
+  v[1] = 10;
 
   // perform fit
   solution.resize(0);
@@ -284,10 +287,11 @@ int main() {
 
   if (fitter.converged()) {
     cout << endl;
-    cout << "****** Test Two: fit a 1D gaussian function with center fixed ";
+    cout << "****** Test Two: fit a 1D Gaussian function with center fixed ";
     cout << "******" << endl;
-    cout << "Converged after "<<fitter.currentIteration()<<" iterations"<<endl;
-    cout << "Initial guess for fitted parameters " << (Array<Double>&)v <<endl;
+    cout << "Converged after " << fitter.currentIteration() <<
+      " iterations" << endl;
+    cout << "Initial guess for fitted parameters " << v <<endl;
     cout << "chi-square for initial guess " <<  oldChiSquare << endl;
     cout << "chi-square after convergence " <<  newChiSquare << endl;
     cout << "Converge criteria " << fitter.getCriteria() << endl;
@@ -395,7 +399,8 @@ int main() {
     cout << endl;
     cout << "*** Test Three: fit a noncircular 2D gaussian function to noncircular data ***" << endl;
     cout << "User time:   " << user_time << endl; 
-    cout << "Converged after "<<fitter.currentIteration()<<" iterations"<<endl;
+    cout << "Converged after " << fitter.currentIteration() <<
+      " iterations" << endl;
     cout << "Expected values for fitted parameters " <<
       gauss2d1.parameters().getParameters() << endl;
     cout << "Initial guess for fitted parameters " << parameters << endl;
@@ -543,6 +548,388 @@ int main() {
     cout << "Test four failed" << endl;    
     return 1;
   };
+
+  // *********** Test constraint one *************
+  // fit data to measured angles
+  {
+    // The fitter
+    NonLinearFitLM<Double> fitter;
+    // Generate fake data (3 angles)
+    const uInt n = 100;
+    Matrix<Double> arg(3*n,3);
+    arg = 0.0;
+    Vector<Double> y(3*n);
+    Vector<Double> angle(3);
+    angle[0] = 50; angle[1] = 60; angle[2] = 70;
+    for (uInt i=0; i<3; ++i) {
+      for (uInt j=0; j<n; ++j) {
+	arg(n*i+j,i) = 1;
+	y[n*i+j] = angle[i];
+      };
+    };
+      
+    // Add noise
+    MLCG generator; 
+    Normal noise(&generator, 0.0, 10.0);   
+    for (uInt i=0; i<3*n; ++i) y[i] += noise();
+    
+    // Specify functional
+    HyperPlane<AutoDiff<Double> > combination(3);
+    fitter.setFunction(combination);
+    
+    cout << endl << "******** test constraint one *************" << endl;
+    // Perform fit
+    Vector<Double> solution = fitter.fit(arg, y);
+    Matrix<Double> covariance = fitter.compuCovariance();
+    Vector<Double> errors = fitter.errors();
+    // Get the residuals
+    Vector<Double> yres(3*n);
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.5));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 0.1));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    // Redo it to see if same
+
+    cout << endl << "******** test constraint repeat *************" << endl;
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.5));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 0.1));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    // Add constraint -------------------------
+
+    // Specify functional
+    HyperPlane<AutoDiff<Double> > combinationA(3);
+    fitter.setFunction(combinationA);
+    // Specify constraint
+    Vector<Double> constrArg(3, 1.0);
+    HyperPlane<AutoDiff<Double> > constrFun(3);
+    fitter.addConstraint(constrFun, constrArg, 180.0);
+        
+    cout << endl << "******** test constraint sum to 180 ********" << endl;
+    // Perform least-squares fit
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.6));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 1.0e-20));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+
+    cout << endl << "******** test constraint to 180 (repeat)********" << endl;
+    solution = fitter.fit(arg, y);
+    covariance = fitter.compuCovariance();
+    errors = fitter.errors();
+    // Get the residual
+    yres = y;
+    AlwaysAssertExit(fitter.residual(yres, arg));
+    yres = yres*yres;
+    
+    // Print actual parameters and computed parameters
+    for (uInt i = 0; i < combination.nparameters(); i++) {
+      cout << "Expected: " << angle[i] << 
+	" Computed: " << solution[i]  << 
+	" Std Dev: " << errors[i] << endl;
+    };
+    cout <<"Sum solution: " << sum(solution) << endl;
+    cout << "Expected ChiSquare: " << sum(yres) << 
+      " Computed ChiSquare: " << fitter.chiSquare() << endl;
+    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << 
+      ", fitted: " << fitter.fittedNumber() << ", rank: " <<
+      fitter.getRank() << endl;
+
+    // Compare actualParameters with the solution vector 
+    AlwaysAssertExit(allNearAbs(angle, solution, 0.6));
+    AlwaysAssertExit(nearAbs(sum(solution), 180.0, 1.0e-20));
+    // Compare ChiSquare
+    AlwaysAssertExit(nearAbs(sum(yres), fitter.chiSquare(), 1.0e-5));
+    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
+  }	
+  
+  {
+    // ***** test constraint: fit two 1D Gaussian functions to data ****** 
+    cout << endl << "****** Fit a double 1D Gaussian function *****" << endl;
+    // Make some fake data sets
+    //  20.0 * exp (-((x-25)/4)^2) 
+    //  10.0 * exp (-((x-23)/4)^2) 
+    // Noise generation
+    MLCG generator; 
+    Normal noise(&generator, 0.0, 0.3);   
+    // Must give an initial guess for the set of fitted parameters.
+    Double v[7]  = {20, 10, 4, 10, 33, 4, 10};
+    Double vi[7] = {22, 11, 5, 10, 30, 5, 9};
+    NonLinearFitLM<Double> fitter;
+    fitter.setMaxIter(100);
+    CompiledFunction<AutoDiff<Double> > gauss;
+    gauss.setFunction("p6+p0*exp(-((x-p1)/p2)^2) + p3*exp(-((x-p4)/p5)^2)");
+    for (uInt i=0; i<7; ++i) gauss[i] = v[i];
+    for (uInt i=0; i<n; ++i) {
+      x[i] = i*0.5;
+      y[i] = gauss(x[i]).value() + noise();
+      sigma[i] = 1.0;
+    }; 
+    // Set the function and initial guess
+    for (uInt i=0; i<7; ++i) gauss[i] = vi[i];
+    fitter.setFunction(gauss);
+    // Perform fit
+    Vector<Double> solution = fitter.fit(x, y, sigma);
+    // compute new chi-square for the solution
+    newChiSquare = fitter.chiSquare();
+
+    if (fitter.converged()) {
+      cout << "Converged after " << fitter.currentIteration()
+	   <<"  iterations" <<endl;
+      cout << "Initial guess for fitted parameters:" << endl << "[";
+      for (uInt i=0; i<gauss.nparameters()-1; ++i) cout << vi[i] << ", "; 
+      cout << vi[gauss.nparameters()-1] << "]" << endl;
+      cout << "Solution for fitted parameters:" << endl << solution <<endl;
+      cout << "chi-square after convergence " <<  newChiSquare << endl;
+      cout << "Converge criteria " << fitter.getCriteria() << endl;
+      Matrix<Double> covariance = fitter.compuCovariance();
+      Vector<Double> errors = fitter.errors();
+      // Compare solution with gauss1 parameters
+      for (uInt i=0; i<gauss.parameters().nMaskedParameters(); i++) {
+	cout << "Expected, Computed Parameter " << v[i];
+	cout << ", " << solution[i] << " Std Dev " <<
+	  errors[i] << endl;
+      };
+      
+      // See if they are within 3*sigma. 
+      for (uInt i=0; i<gauss.nparameters(); i++) {
+	AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
+				 3*errors[i]+1e-5));
+      };
+      cout << "Test one for 2 Gaussians succeeded" << endl;
+    } else {
+      cout << "Did not converge after " << fitter.currentIteration();
+      cout << " interations." << endl;
+      cout << "Test one for 2 Gaussians failed" << endl;
+      return 1;
+    };
+
+    // ***** test constraint: add constraint A0/A1=2 to Gaussians ****** 
+    cout << endl << "****** Constrain a double Gaussian's amplitudes *****" <<
+      endl;
+    // Set the function and initial guess
+    NonLinearFitLM<Double> fittera;
+    fittera.setMaxIter(100);
+    CompiledFunction<AutoDiff<Double> > gaussa;
+    gaussa.setFunction("p6+p0*exp(-((x-p1)/p2)^2) + p3*exp(-((x-p4)/p5)^2)");
+    for (uInt i=0; i<7; ++i) gaussa[i] = v[i];
+    for (uInt i=0; i<n; ++i) {
+      x[i] = i*0.5;
+      y[i] = gaussa(x[i]).value() + noise();
+      sigma[i] = 1.0;
+    }; 
+    // Set the function and initial guess
+    for (uInt i=0; i<7; ++i) gaussa[i] = AutoDiff<Double>(vi[i],7,i);
+    fittera.setFunction(gaussa);
+    // Add constraint
+    Vector<Double> constrArg(7, 0.0);
+    constrArg[0] = 1.0; constrArg[3] = -2.0;
+    fittera.addConstraint(constrArg);
+    // Perform fit
+    solution = fittera.fit(x, y, sigma);
+    // compute new chi-square for the solution
+    newChiSquare = fittera.chiSquare();
+    
+    if (fittera.converged()) {
+      cout << "Converged after " << fittera.currentIteration()
+	   <<"  iterations" <<endl;
+      cout << "Initial guess for fitted parameters:" << endl << "[";
+      for (uInt i=0; i<gaussa.nparameters()-1; ++i) cout << vi[i] << ", "; 
+      cout << vi[gaussa.nparameters()-1] << "]" << endl;
+      cout << "Solution for fitted parameters:" << endl << solution <<endl;
+      cout << "chi-square after convergence " <<  newChiSquare << endl;
+      cout << "Converge criteria " << fittera.getCriteria() << endl;
+      Matrix<Double> covariance = fittera.compuCovariance();
+      Vector<Double> errors = fittera.errors();
+      // Compare solution with gauss1 parameters
+      for (uInt i=0; i<gaussa.parameters().nMaskedParameters(); i++) {
+	cout << "Expected, Computed Parameter " << v[i];
+	cout << ", " << solution[i] << " Std Dev " <<
+	  errors[i] << endl;
+      };
+      
+      // See if they are within 3*sigma. 
+      for (uInt i=0; i<gaussa.nparameters(); i++) {
+	AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
+				 3*errors[i]+1e-5));
+      };
+      cout << "Test two for 2 Gaussians succeeded" << endl;
+    } else {
+      cout << "Did not converge after " << fittera.currentIteration();
+      cout << " interations." << endl;
+      cout << "Test two for 2 Gaussians failed" << endl;
+      return 1;
+    };
+    
+    // ***** test constraint: add constraint W1=W2 to Gaussians ****** 
+    
+    cout << endl << "****** Constrain a double 1D Gaussian's widths " <<
+	 endl;
+    {
+      NonLinearFitLM<Double> fittera;
+      fittera.setFunction(gaussa);
+      // Add constraint
+      constrArg = 0.0;
+      constrArg[2] = 1.0; constrArg[5] = -1.0;
+      fittera.addConstraint(constrArg);
+      
+      // Perform fit
+      solution = fittera.fit(x, y, sigma);
+      // compute new chi-square for the solution
+      newChiSquare = fittera.chiSquare();
+      
+      if (fittera.converged()) {
+	cout << "Converged after " << fittera.currentIteration()
+	     <<"  iterations" <<endl;
+	cout << "Initial guess for fitted parameters:" << endl << "[";
+	for (uInt i=0; i<gaussa.nparameters()-1; ++i) cout << vi[i] << ", "; 
+	cout << vi[gaussa.nparameters()-1] << "]" << endl;
+	cout << "Solution for fitted parameters:" << endl << solution <<endl;
+	cout << "chi-square after convergence " <<  newChiSquare << endl;
+	cout << "Converge criteria " << fittera.getCriteria() << endl;
+	Matrix<Double> covariance = fittera.compuCovariance();
+	Vector<Double> errors = fittera.errors();
+	// Compare solution with gauss1 parameters
+	for (uInt i=0; i<gaussa.parameters().nMaskedParameters(); i++) {
+	  cout << "Expected, Computed Parameter " << v[i];
+	  cout << ", " << solution[i] << " Std Dev " <<
+	    errors[i] << endl;
+	};
+	
+	// See if they are within 3*sigma. 
+	for (uInt i=0; i<gaussa.nparameters(); i++) {
+	  AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
+				   3*errors[i]+1e-5));
+	};
+	cout << "Test three for 2 Gaussians succeeded" << endl;
+      } else {
+	cout << "Did not converge after " << fittera.currentIteration();
+	cout << " interations." << endl;
+	cout << "Test thress for 2 Gaussians failed" << endl;
+	return 1;
+      };
+    }
+    // ***** test constraint: add also constraint w1=4.0 to Gaussians ****** 
+    
+    cout << endl << "****** Constrain a double 1D Gaussian's amplitudes, "
+	 << "widths  *****" << endl;
+    {
+      NonLinearFitLM<Double> fittera;
+      fittera.setFunction(gaussa);
+      // Add constraints
+      constrArg = 0.0;
+      constrArg[2] = 1.0; constrArg[5] = -1.0;
+      fittera.addConstraint(constrArg);
+      constrArg = 0.0;
+      constrArg[2] = 1.0;
+      fittera.addConstraint(constrArg, 4.0);
+      constrArg = 0.0;
+      constrArg[0] = 1.0; constrArg[3] = -2.0;
+      fittera.addConstraint(constrArg);
+      // Perform fit
+      solution = fittera.fit(x, y, sigma);
+      // compute new chi-square for the solution
+      newChiSquare = fittera.chiSquare();
+
+      if (fittera.converged()) {
+	cout << "Converged after " << fittera.currentIteration()
+	     <<"  iterations" <<endl;
+	cout << "Initial guess for fitted parameters:" << endl << "[";
+	for (uInt i=0; i<gaussa.nparameters()-1; ++i) cout << vi[i] << ", "; 
+	cout << vi[gaussa.nparameters()-1] << "]" << endl;
+	cout << "Solution for fitted parameters:" << endl << solution <<endl;
+	cout << "chi-square after convergence " <<  newChiSquare << endl;
+	cout << "Converge criteria " << fittera.getCriteria() << endl;
+	Matrix<Double> covariance = fittera.compuCovariance();
+	Vector<Double> errors = fittera.errors();
+	// Compare solution with gauss1 parameters
+	for (uInt i=0; i<gaussa.parameters().nMaskedParameters(); i++) {
+	  cout << "Expected, Computed Parameter " << v[i];
+	  cout << ", " << solution[i] << " Std Dev " <<
+	    errors[i] << endl;
+	};
+	
+	// See if they are within 3*sigma. 
+	for (uInt i=0; i<gaussa.nparameters(); i++) {
+	  AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
+				   3*errors[i]+1e-5));
+	};
+	cout << "Test four for 2 Gaussians succeeded" << endl;
+      } else {
+	cout << "Did not converge after " << fittera.currentIteration();
+	cout << " interations." << endl;
+	cout << "Test four for 2 Gaussians failed" << endl;
+	return 1;
+      };
+    }
+  }
+  cout << endl;
   
   cout << "OK" << endl;
   return 0;
