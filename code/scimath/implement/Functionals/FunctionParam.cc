@@ -1,0 +1,144 @@
+//# FunctionParam.cc: Container of function parameters with masking flags
+//# Copyright (C) 2001
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <trial/Functionals/FunctionParam.h>
+
+template<class T>
+FunctionParam<T>::FunctionParam()
+  : npar_p(0),
+    param_p(npar_p), mask_p(npar_p),
+    maskedPtr_p(0) {}
+
+template<class T>
+FunctionParam<T>::FunctionParam(const uInt n)
+  : npar_p(n),
+    param_p(npar_p, T(0)), mask_p(npar_p, True),
+    maskedPtr_p(0) {}
+
+template<class T>
+FunctionParam<T>::FunctionParam(const Vector<T> &in)
+  : npar_p(in.nelements()),
+    param_p(npar_p), mask_p(npar_p, True),
+    maskedPtr_p(0) {
+  param_p = in;
+}
+
+template<class T>
+FunctionParam<T>::FunctionParam(const FunctionParam<T> &other)
+  : npar_p(other.param_p.nelements()),
+    param_p(npar_p), mask_p(npar_p),
+    maskedPtr_p(0) {
+  param_p = other.param_p;
+  mask_p = other.mask_p;
+}
+
+template<class T>
+FunctionParam<T>::~FunctionParam() {
+  clearMaskedPtr();
+}
+
+//# Operators
+template<class T>
+FunctionParam<T> &FunctionParam<T>::operator=(const FunctionParam<T> &other) {
+  if (this != &other) {
+    npar_p = other.npar_p;
+    param_p.resize(npar_p);
+    param_p = other.param_p;
+    mask_p.resize(npar_p);
+    mask_p = other.mask_p;
+    clearMaskedPtr();
+  };
+  return *this;
+}
+
+//# Member functions
+template<class T>
+Bool &FunctionParam<T>::mask(const uInt n) {
+  clearMaskedPtr();
+  return mask_p[n];
+}
+
+template<class T>
+void FunctionParam<T>::setParameters(const Vector<T> &params) {
+  uInt n = ((params.nelements() < npar_p) ? params.nelements() : npar_p);
+  for (uInt i=0; i<n; ++i) param_p[i] = params[i];
+}
+
+template<class T>
+void FunctionParam<T>::setParamMasks(const Vector<Bool> &masks) {
+  uInt n = ((masks.nelements() < npar_p) ? masks.nelements() : npar_p);
+  for (uInt i=0; i<n; ++i) mask_p[i] = masks[i];
+  clearMaskedPtr();
+}
+
+template<class T>
+uInt FunctionParam<T>::nMaskedParameters() const {
+  if (!maskedPtr_p) createMaskedPtr();
+  return maskedPtr_p->nelements();
+}
+
+template<class T>
+Vector<T> &FunctionParam<T>::getMaskedParameters() const {
+  if (!maskedPtr_p) createMaskedPtr();
+  return *maskedPtr_p;
+}
+
+template<class T>
+void FunctionParam<T>::setMaskedParameters(Vector<T> &in) {
+  for (uInt i(0), n(0); i<npar_p && n<in.nelements(); ++i) {
+    if (mask_p[i]) param_p[i] = in[n++];
+  };
+  clearMaskedPtr();
+}
+
+template<class T>
+void FunctionParam<T>::createMaskedPtr() const {
+  clearMaskedPtr();
+  Vector<T> tmp(npar_p);
+  uInt n(0);
+  for (uInt i(0); i<npar_p; ++i) {
+    if (mask_p[i]) tmp[n++] = param_p[i];
+  };
+  tmp.resize(n, True);
+  maskedPtr_p = new Vector<T>(tmp);
+}
+
+template<class T>
+void FunctionParam<T>::clearMaskedPtr() const {
+  delete maskedPtr_p; maskedPtr_p = 0;
+}
+
+/// For test purposes only. Move to repositories
+template class FunctionParam<Double>;
+template class FunctionParam<Float>;
+#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffMath.h>
+template class FunctionParam<AutoDiff<Double> >;
+template class FunctionParam<AutoDiff<Float> >;
+///#include <aips/Mathematics/AutoDiffA.h>
+///template class FunctionParam<AutoDiffA<Double> >;
+///template class FunctionParam<AutoDiffA<Float> >;
