@@ -47,7 +47,7 @@
 
 
 template <class T>
-void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
+void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 				 const MaskedLattice<T>& latticeIn,
 				 const LatticeRegion& region,
 				 LineCollapser<T>& collapser,
@@ -71,7 +71,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 }
 
 template <class T>
-void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
+void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 				  const MaskedLattice<T>& latticeIn,
 				  const LatticeRegion& region,
 				  TiledCollapser<T>& collapser,
@@ -86,7 +86,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 
 
 template <class T>
-void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
+void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 				 const MaskedLattice<T>& latticeIn,
 				 LineCollapser<T>& collapser,
 				 uInt collapseAxis,
@@ -123,6 +123,17 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
     for (uInt i=0; i<outDim; i++) {
 	if (ioMap(i) >= 0) {
 	    outShape(i) = len(ioMap(i));
+	}
+    }
+
+// See if the output lattice has a writable pixelmask.
+// If so, it will later be used to write the resulting mask to.
+
+    Lattice<Bool>* maskOut = 0;
+    if (latticeOut.hasPixelMask()) {
+        maskOut = &(latticeOut.pixelMask());
+	if (! maskOut->isWritable()) {
+	    maskOut = 0;
 	}
     }
 
@@ -192,6 +203,9 @@ void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
 	array.putStorage (result, deleteIt);
 	arrayMask.putStorage (resultMask, deleteMask);
 	latticeOut.putSlice (array, outPos);
+	if (maskOut != 0) {
+	    maskOut->putSlice (arrayMask, outPos);
+	}
     }
     if (tellProgress != 0) tellProgress->done();
 }
@@ -207,14 +221,14 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 {
 // First verify that all the output lattices have the same shape and tile shape
 
+    uInt i;
     const uInt nOut = latticeOut.nelements();
     AlwaysAssert(nOut > 0, AipsError);
     const IPosition shape(latticeOut[0]->shape());
     const uInt outDim = shape.nelements();
-//
-    for (uInt i=1; i<nOut; i++) {
+    for (i=1; i<nOut; i++) {
 	AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
-    } 
+    }
 
 // Make veracity check on input and first output lattice
 // and work out map to translate input and output axes.
@@ -243,7 +257,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
     const IPosition len = inShape;
     IPosition outPos(outDim, 0);
     IPosition outShape(outDim, 1);
-    for (uInt i=0; i<outDim; i++) {
+    for (i=0; i<outDim; i++) {
 	if (ioMap(i) >= 0) {
 	    outShape(i) = len(ioMap(i));
 	}
@@ -273,7 +287,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 	IPosition pos = inIter.position();
 	for (uInt j=0; j<outDim; j++) {
 	    if (ioMap(j) >= 0) {
-		uInt i = ioMap(j);
+		i = ioMap(j);
 		uInt stPos = (pos(j) - blc(j)) % inc(j); 
 		if (stPos != 0) {
 		    stPos = inc(j) - stPos;
@@ -297,8 +311,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 	Bool* dataMask = blockMask.storage();
 	Vector<T> result(nOut);
 	Vector<Bool> resultMask(nOut);
-//
-	for (uInt i=0; i<n; i++) {
+	for (i=0; i<n; i++) {
 	    DebugAssert (! inIter.atEnd(), AipsError);
 	    const IPosition pos (inIter.position());
 	    Vector<Bool> mask;
@@ -329,12 +342,14 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 
 	for (uInt k=0; k<nOut; k++) {
 	    Array<T> tmp (outShape, data + k*n, SHARE);
-	    Array<Bool> tmpMask (outShape, dataMask + k*n, SHARE);
-//
 	    latticeOut[k]->putSlice (tmp, outPos);
-            if (latticeOut[k]->isMaskWritable()) {
-               latticeOut[k]->putMaskSlice (tmpMask, outPos);
-            }
+	    if (latticeOut[k]->hasPixelMask()) {
+	        Lattice<Bool>& maskOut = latticeOut[k]->pixelMask();
+		if (maskOut.isWritable()) {
+		    Array<Bool> tmpMask (outShape, dataMask + k*n, SHARE);
+		    maskOut.putSlice (tmpMask, outPos);
+		}
+	    }
 	}
     }
     if (tellProgress != 0) tellProgress->done();
@@ -342,7 +357,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 
 
 template <class T>
-void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
+void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 				  const MaskedLattice<T>& latticeIn,
 				  TiledCollapser<T>& collapser,
 				  const IPosition& collapseAxes,
@@ -352,6 +367,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 // Make veracity check on input and first output lattice
 // and work out map to translate input and output axes.
 
+    uInt i,j;
     IPosition ioMap = prepare (latticeIn.shape(), latticeOut.shape(),
 			       collapseAxes, newOutAxis);
 
@@ -381,8 +397,8 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     IPosition iterAxes(iterDim);
     IPosition outShape(latticeOut.shape());
     const uInt outDim = outShape.nelements();
-    uInt j = 0;
-    for (uInt i=0; i<outDim; i++) {
+    j = 0;
+    for (i=0; i<outDim; i++) {
 	if (ioMap(i) >= 0) {
 	    outShape(i) = 1;
 	    iterAxes(j++) = i;
@@ -390,7 +406,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     }
 
 // Find the first collapse axis which is not immediately after
-// the previous collpase axis.
+// the previous collapse axis.
     uInt collStart;
     for (collStart=1; collStart<collDim; collStart++) {
 	if (collapseAxes(collStart) != 1+collapseAxes(collStart-1)) {
@@ -402,6 +418,17 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 //    cout << "iterAxes   " << iterAxes << endl;
 //    cout << "outShape   " << outShape << endl;
 //    cout << "collStart  " << collStart << endl;
+
+// See if the output lattice has a writable pixelmask.
+// If so, it will later be used to write the resulting mask to.
+
+    Lattice<Bool>* maskOut = 0;
+    if (latticeOut.hasPixelMask()) {
+        maskOut = &(latticeOut.pixelMask());
+	if (! maskOut->isWritable()) {
+	    maskOut = 0;
+	}
+    }
 
 // Set the number of expected steps.
 // This is the number of tiles to process.
@@ -462,6 +489,9 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 		Array<Bool> resultMask;
 		collapser.endAccumulator (result, resultMask, outShape);
 		latticeOut.putSlice (result, outPos);
+		if (maskOut != 0) {
+		    maskOut->putSlice (resultMask, outPos);
+		}
 	    }
 	    firstTime = False;
 	    outPos = iterPos;
@@ -497,7 +527,7 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
 	uInt nval = chunkShape.product();
 	const uInt axis = collapseAxes(0);
 	uInt incr = 1;
-	for (uint i=0; i<axis; i++) {
+	for (i=0; i<axis; i++) {
 	    incr *= cursorShape(i);
 	}
 	
@@ -567,6 +597,9 @@ void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
     Array<Bool> resultMask;
     collapser.endAccumulator (result, resultMask, outShape);
     latticeOut.putSlice (result, outPos);
+    if (maskOut != 0) {
+        maskOut->putSlice (resultMask, outPos);
+    }
     if (tellProgress != 0) tellProgress->done();
 }
 
