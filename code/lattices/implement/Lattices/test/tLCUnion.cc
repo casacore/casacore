@@ -47,6 +47,7 @@ void doIt (const IPosition& latticeShape,
     LCBox box (start, end, latticeShape);
     LCEllipsoid cir (center, radius, latticeShape);
     LCUnion inters (box, cir);
+
     AlwaysAssertExit (inters.hasMask());
     AlwaysAssertExit (! inters.isWritable());
     cout << inters.hasMask() << ' ' << endl;
@@ -64,7 +65,7 @@ void doIt (const IPosition& latticeShape,
     inters1.getSlice (mask1, IPosition(ndim,0), inters1.box().length(),
 		     IPosition(ndim,1));
     AlwaysAssertExit (allEQ(mask1, True));
-   
+
     {
 	// Test cloning.
         LCRegion* interscop = inters.cloneRegion();
@@ -93,6 +94,18 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete interscop;
     }
+    {
+    // Test ordered equality. 
+       LCUnion union1(box, cir);
+       LCUnion union2(union1);
+       AlwaysAssertExit (union1 == union2);
+    }
+    {
+    // Test unordered equality. 
+       LCUnion union1(box, cir);
+       LCUnion union2(cir, box);
+       AlwaysAssertExit (union1 == union2);
+    }
 }
 
 
@@ -107,8 +120,8 @@ main()
 	      IPosition (2,4,16), 5.);
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
     cout << "OK" << endl;
-    return 0;
+    exit(0);
 }
