@@ -133,14 +133,21 @@ public:
   void setMS(MeasurementSet& ms);
   
   // initialize the selection by specifying, optionally, 
-  // the DATA_DESC_ID. If it is not
-  // specified but the data changes shape, the first spectral
-  // window encountered is selected (returns False in that case).
+  // the DATA_DESC_IDs. 
+  // If you don't specify the dataDescIds and the data shape is constant
+  // all data is selected, if the shape does change, only the first 
+  // dataDescId is selected. If you specify a number of dataDescIds
+  // and they all have the same shape, they are all selected, otherwise
+  // only the first is selected. The function returns false if
+  // the selection was limited due to changing data shape.
   // Use the reset argument to return to the completely unselected ms.
-  Bool initSelection(Int dataDescId=-1, Bool reset=False);
+  Bool initSelection(const Vector<Int>& dataDescIds, Bool reset=False);
 
-  // Return the data desc ID selected (-1 for multiple windows)
-  Int dataDescId() const;
+  // As above without the data desc id argument
+  Bool initSelection(Bool reset=False);
+
+  // Return the data desc IDs selected 
+  Vector<Int> dataDescId() const;
 
   // Set the mapping from input channels in the DATA column to
   // output channels. nChan is the number of output channels,
@@ -194,9 +201,11 @@ public:
 
   // Set up an iterator, iterating over the specified columns, with
   // optional time interval and maximum number of rows to return at once
-  // (the default of zero returns all rows).
+  // (the default of zero returns all rows). To keep MSIter from adding  
+  // the default sort columns, specify addDefaultSortColumns=False
   Bool iterInit(const Vector<String>& columns,
-		Double interval, Int maxRows=0);
+		Double interval, Int maxRows=0,
+		Bool addDefaultSortColumns=True);
   
   // Step the iterator, sets the selection to the current table iteration.
   // Returns false if there is no more data
@@ -253,7 +262,9 @@ protected:
   void putAveragedFlag(const Array<Bool>& avFlag,
 		       ArrayColumn<Bool>& col);
 
-  Array<Float> getWeight(const ROArrayColumn<Float>& wtCol) const;
+  // get the weight, set sigma=True when retrieving sigma's
+  Array<Float> getWeight(const ROArrayColumn<Float>& wtCol,
+			 Bool sigma=False) const;
 
   // make the data slicer, pass in the first and the number of correlations
   // to select
@@ -269,6 +280,10 @@ protected:
   void timeAverage(Array<Bool>& dataFlags, Array<Complex>& data,
 		   const Array<Bool>& flags, const Array<Float>& weights);
 
+  // check if the data description selection has been done & do default
+  // selection if not. Return False if the selection fails.
+  Bool checkSelection();
+
 private:
 
   MeasurementSet ms_p; // the original ms
@@ -276,7 +291,8 @@ private:
   MeasurementSet savems_p; // the saved preselection
   MSIter* msIter_p;
   Bool initSel_p;
-  Int dataDescId_p, lastDataDescId_p;
+  Vector<Int> dataDescId_p, lastDataDescId_p;
+  Vector<uInt> spwId_p, polId_p;
   Vector<Int> chanSel_p;
   Bool useSlicer_p;
   mutable Bool haveSlicer_p;
@@ -294,7 +310,7 @@ private:
 
 };
 inline Int MSSelector::nrow() const { return selms_p.nrow();}
-inline Int MSSelector::dataDescId() const { return dataDescId_p;}
+inline Vector<Int> MSSelector::dataDescId() const { return dataDescId_p;}
 inline Table MSSelector::selectedTable() const {return selms_p;}
 inline Bool MSSelector::selected() const {return initSel_p;}
 
