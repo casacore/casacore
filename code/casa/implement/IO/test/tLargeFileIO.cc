@@ -37,49 +37,71 @@
 int main (int argc, char** argv)
 {
   try {
-    int nr = 100;
+    int mode = 0;
     if (argc > 1) {
-	istringstream istr(argv[1]);
-	istr >> nr;
+      if (String(argv[1]) == String("w")) {
+	mode = 1;
+      } else if (String(argv[1]) == String("r")) {
+	mode = -1;
+      }
+    }
+    int nr = 100;
+    if (argc > 2) {
+      istringstream istr(argv[2]);
+      istr >> nr;
     }
     int leng = 1024;
-    if (argc > 2) {
-	istringstream istr(argv[2]);
-	istr >> leng;
+    if (argc > 3) {
+      istringstream istr(argv[3]);
+      istr >> leng;
+    }
+    int incr = 0;
+    Bool setpos = False;
+    if (argc > 4) {
+      istringstream istr(argv[4]);
+      istr >> incr;
+      setpos = True;
     }
     leng /= sizeof(int);
     int tleng = leng * sizeof(int);
-    cout << "tLargeFileIO  nrrec=" << nr << " reclength=" << tleng
-	 << endl;
+    cout << "tLargeFileIO  mode=" << mode << " nrrec=" << nr
+	 << " reclength=" << tleng << " incr=" << incr
+	 << " setpos=" << setpos << endl;
     int* buf = new int[leng];
     int i;
     for (i=0; i<leng; i++) {
-	buf[i] = 0;
+      buf[i] = 0;
     }
 
-    {
-	Timer timer;
-	int fd = LargeFiledesIO::create("tLargeFileIO_tmp.dat2");
-	LargeFiledesIO file2 (fd);
-	timer.mark();
-	for (i=0; i<nr; i++) {
-	    buf[0] = i;
-	    file2.write (tleng, buf);
+    if (mode >= 0) {
+      Timer timer;
+      int fd = LargeFiledesIO::create("tLargeFileIO_tmp.dat2");
+      LargeFiledesIO file2 (fd);
+      timer.mark();
+      for (i=0; i<nr; i++) {
+	buf[0] = i;
+	file2.write (tleng, buf);
+	if (setpos) {
+	  file2.seek (incr, ByteIO::Current);
 	}
-	::fsync(fd);
-	timer.show ("LargeFiledesIO     write");
+      }
+      ::fsync(fd);
+      timer.show ("LargeFiledesIO     write");
     }
-    {
-	Timer timer;
-	LargeFiledesIO file2 (LargeFiledesIO::open ("tLargeFileIO_tmp.dat2"));
-	timer.mark();
-	for (i=0; i<nr; i++) {
-	    file2.read (tleng, buf);
-	    if (buf[0] != i) {
-	        cout << "Mismatch for record nr " << i << endl;
-	    }
+    if (mode <= 0) {
+      Timer timer;
+      LargeFiledesIO file2 (LargeFiledesIO::open ("tLargeFileIO_tmp.dat2"));
+      timer.mark();
+      for (i=0; i<nr; i++) {
+	file2.read (tleng, buf);
+	if (buf[0] != i) {
+	  cout << "Mismatch for record nr " << i << endl;
 	}
-	timer.show ("LargeFiledesIO     read ");
+	if (setpos) {
+	  file2.seek (incr, ByteIO::Current);
+	}
+      }
+      timer.show ("LargeFiledesIO     read ");
     }
 
     delete [] buf;
