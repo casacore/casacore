@@ -510,6 +510,8 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i,
 	int v_len, const char *&msg) const {
 	if (t == FITS::FLOAT || t == FITS::DOUBLE)
 	    t = FITS::REAL;	// change t to REAL to match on types
+	if (t == FITS::FSTRING)
+	    t = FITS::STRING;   // change t to STRING to match on types
 	// match type and isindexed
 	if (resword[i].type() != t) {
 	    while (resword[i + 1].name() == resword[i].name()) {
@@ -807,6 +809,8 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::get_essential(int i,
 	// we have a match on name - match type and isindexed
 	if (t == FITS::FLOAT || t == FITS::DOUBLE)
 	    t = FITS::REAL;	// change t to REAL to match on types
+	if (t == FITS::FSTRING) 
+	    t = FITS::STRING;   // change to to STRING to match on types
 	if (resword[i].type() != t) {
 	    while ((resword[i + 1].name() == resword[i].name()) &&
 		   resword[i + 1].isessential()) {
