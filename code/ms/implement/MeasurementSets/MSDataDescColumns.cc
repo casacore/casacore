@@ -25,33 +25,83 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSDataDescColumns.h>
-#include <aips/Tables/TableDesc.h>
+#include <aips/MeasurementSets/NewMSDataDescription.h>
 #include <aips/Tables/ColDescSet.h>
+#include <aips/Tables/TableDesc.h>
 
-NewMSDataDescColumns::NewMSDataDescColumns()
+RONewMSDataDescColumns::RONewMSDataDescColumns()
   :flagRow_p(),
-   lagId_p(),
    polarizationId_p(),
-   spectralWindowId_p()
+   spectralWindowId_p(),
+   lagId_p()
 {
 }
 
-NewMSDataDescColumns::NewMSDataDescColumns(NewMSDataDescription& msDataDesc):
+RONewMSDataDescColumns::
+RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc):
   flagRow_p(msDataDesc, NewMSDataDescription::
 	    columnName(NewMSDataDescription::FLAG_ROW)),
-  lagId_p(),
   polarizationId_p(msDataDesc, NewMSDataDescription::
 		   columnName(NewMSDataDescription::POLARIZATION_ID)),
-  spectralWindowId_p(msDataDesc,NewMSDataDescription::
-		     columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID))
+  spectralWindowId_p(msDataDesc, NewMSDataDescription::
+		     columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID)),
+  lagId_p()
 {
   attachOptionalCols(msDataDesc);
 }
 
+RONewMSDataDescColumns::~RONewMSDataDescColumns() {}
+
+void RONewMSDataDescColumns::attach(const NewMSDataDescription& msDataDesc)
+{
+  flagRow_p.attach(msDataDesc, NewMSDataDescription::columnName
+		   (NewMSDataDescription::FLAG_ROW));
+  polarizationId_p.attach(msDataDesc, NewMSDataDescription::columnName
+			  (NewMSDataDescription::POLARIZATION_ID));
+  spectralWindowId_p.attach(msDataDesc, NewMSDataDescription::columnName
+			    (NewMSDataDescription::SPECTRAL_WINDOW_ID));
+  attachOptionalCols(msDataDesc);
+}
+
+void RONewMSDataDescColumns::
+attachOptionalCols(const NewMSDataDescription& msDataDesc)
+{
+  const ColumnDescSet& cds=msDataDesc.tableDesc().columnDescSet();
+  if (cds.isDefined(NewMSDataDescription::
+		    columnName(NewMSDataDescription::LAG_ID))) {
+    lagId_p.attach(msDataDesc,NewMSDataDescription::
+		   columnName(NewMSDataDescription::LAG_ID));
+  }
+}
+
+NewMSDataDescColumns::NewMSDataDescColumns():
+  RONewMSDataDescColumns(),
+  flagRow_p(),
+  polarizationId_p(),
+  spectralWindowId_p(),
+  lagId_p()
+{
+}
+
+NewMSDataDescColumns::NewMSDataDescColumns(NewMSDataDescription& msDataDesc):
+  RONewMSDataDescColumns(msDataDesc),
+  flagRow_p(msDataDesc, NewMSDataDescription::
+	    columnName(NewMSDataDescription::FLAG_ROW)),
+  polarizationId_p(msDataDesc, NewMSDataDescription::
+		   columnName(NewMSDataDescription::POLARIZATION_ID)),
+  spectralWindowId_p(msDataDesc,NewMSDataDescription::
+		     columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID)),
+  lagId_p()
+{
+  attachOptionalCols(msDataDesc);
+}
+
+NewMSDataDescColumns::~NewMSDataDescColumns() {}
+
 void NewMSDataDescColumns::attach(NewMSDataDescription& msDataDesc)
 {
+  RONewMSDataDescColumns::attach(msDataDesc);
   flagRow_p.attach(msDataDesc, NewMSDataDescription::columnName
 		   (NewMSDataDescription::FLAG_ROW));
   polarizationId_p.attach(msDataDesc, NewMSDataDescription::columnName
@@ -64,27 +114,12 @@ void NewMSDataDescColumns::attach(NewMSDataDescription& msDataDesc)
 void NewMSDataDescColumns::
 attachOptionalCols(NewMSDataDescription& msDataDesc)
 {
+  RONewMSDataDescColumns::attachOptionalCols(msDataDesc);
   const ColumnDescSet& cds = msDataDesc.tableDesc().columnDescSet();
-  if (cds.isDefined(NewMSDataDescription::columnName
-		    (NewMSDataDescription::LAG_ID))) {
-    lagId_p.attach(msDataDesc, NewMSDataDescription::columnName
-		   (NewMSDataDescription::LAG_ID));
+  if (cds.isDefined(NewMSDataDescription::
+		    columnName(NewMSDataDescription::LAG_ID))) {
+    lagId_p.attach(msDataDesc, NewMSDataDescription::
+		   columnName(NewMSDataDescription::LAG_ID));
   }
 }
-
-NewMSDataDescColumns::~NewMSDataDescColumns() {}
-
-RONewMSDataDescColumns::RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc):
-flagRow_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::FLAG_ROW)),
-polarizationId_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID)),
-spectralWindowId_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID))
-{
-  const ColumnDescSet& cds=msDataDesc.tableDesc().columnDescSet();
-  if (cds.isDefined(NewMSDataDescription::columnName(NewMSDataDescription::LAG_ID)))
-    lagId_p.attach(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::LAG_ID));
-}
-
-RONewMSDataDescColumns::~RONewMSDataDescColumns() {}
-
-
 
