@@ -82,7 +82,8 @@ public:
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
   // doShift is True. Otherwise it is the first element ie., [0,0,...]
   static void rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
-  		  const Vector<Bool> & whichAxes, const Bool doShift=True);
+		    const Vector<Bool> & whichAxes, const Bool doShift=True,
+		    Bool doFast=False);
 
   static void myrcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
   		  const Vector<Bool> & whichAxes, const Bool doShift=True);
@@ -92,7 +93,7 @@ public:
   // the transform is the center of the Lattice ie., [nx/2,ny/2,...] if
   // doShift is True. Otherwise it is the first element ie., [0,0,...]
   static void rcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
-  		  const Bool doShift=True);
+		    const Bool doShift=True, Bool doFast=False);
   static void myrcfft(Lattice<Complex> & out, const Lattice<Float> & in, 
   		  const Bool doShift=True);
 
@@ -107,11 +108,12 @@ public:
   // they create a temporary Lattice and copy the input data into it.
   // <group>
   static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
-		    const Vector<Bool> & whichAxes, const Bool doShift=True);
+		    const Vector<Bool> & whichAxes,
+		    const Bool doShift=True, Bool doFast=False);
   static void crfft(Lattice<Float> & out, Lattice<Complex> & in, 
-		    const Bool doShift=True);
+		    const Bool doShift=True, Bool doFast=False);
   static void crfft(Lattice<Float> & out, const Lattice<Complex> & in, 
-		    const Bool doShift=True);
+		    const Bool doShift=True, Bool doFast=False);
   // </group>
 };
 #endif
