@@ -45,7 +45,7 @@
 
 void a (const String& dir);
 void a1 (const String& dir);
-void b (const String& dir);
+void b (const String& dir, const String& postfix, Char separator);
 void b1 (const String& dir);
 void b2 (const String& dir);
 
@@ -57,7 +57,8 @@ int main (int argc, char** argv) {
 	}
 	a (dir);
 	a1 (dir);
-	b (dir);
+	b (dir, "", ' ');
+	b (dir, "c", ',');
 	b1 (dir);
 	b2 (dir);
     } catch (AipsError x) {
@@ -116,13 +117,14 @@ void a1 (const String& dir)
     }
 }
 
-void b (const String& dir)
+void b (const String& dir, const String& postfix, Char separator)
 {
     cout << ">>>" << endl;
-    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh",
-				     dir + "tReadAsciiTable.in_tkd",
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh" + postfix,
+				     dir + "tReadAsciiTable.in_tkd" + postfix,
 				     "tReadAsciiTable_tmp",
-				     "tReadAsciiTable_tmp.data_tk");
+				     "tReadAsciiTable_tmp.data_tk",
+				     separator);
     cout << "<<<" << endl;
     cout << "Input format: [" << formStr << ']' << endl;
     cout << endl;
@@ -180,8 +182,8 @@ void b (const String& dir)
     ROScalarColumn<Bool>     colb (tab,"COLB");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << cols(i) << " " << coli(i) << " " << colf(i) << " "
-	     << cold(i) << " " << colx(i) << " " << colz(i) << " "
-	     << coldx(i) << " " << coldz(i) << " " << cola(i) << " "
+	     << cold(i) << " " << colx(i) << " " << coldx(i) << " "
+	     << colz(i) << " " << coldz(i) << " " << cola(i) << " "
 	     << colb(i) << endl;
     }
 }

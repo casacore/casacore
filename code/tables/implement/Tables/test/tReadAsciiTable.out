@@ -121,9 +121,121 @@ IKEYS coli key
 IKEYS coldx ikey
 DKEYS coldx dkey
 3 rows, 10 columns
-0 1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) (2.12,2.13) (2.13849,0.0802838) Str1 1
--2 -1 -1.1 -1.11 (-1.2,-1.3) (-1.39952,0.0366477) (-2.2,-2.3) (-2.39772,0.104687) Str1 3 1
-123 10 11 12 (13,14) (14.4189,4.13456) (23,-24) (22.4699,-10.9593)  0
+0 1 1.1 1.11 (1.12,1.13) (2.12,2.13) (1.13977,0.0228797) (2.13849,0.0802838) Str1 1
+-2 -1 -1.1 -1.11 (-1.2,-1.3) (-2.2,-2.3) (-1.39952,0.0366477) (-2.39772,0.104687) Str1 3 1
+123 10 11 12 (13,14) (23,-24) (14.4189,4.13456) (22.4699,-10.9593)  0
+>>>
+<<<
+Input format: [COLS=S, COLI=I, COLF=R, COLD=D, COLX=X, COLDX=DX, COLZ=Z, COLDZ=DZ, COLA=A, COLB=B]
+
+
+TableDesc tReadAsciiTable_tmp   version    (Directory ./)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 10
+   Name=COLS   DataType=Short
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=COLI   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=COLF   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=COLD   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=COLX   DataType=Complex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=COLDX   DataType=DComplex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=COLZ   DataType=Complex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=COLDZ   DataType=DComplex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=COLA   DataType=String
+   DataManager=StandardStMan/StandardStMan   Default=
+   Comment = 
+   #keywords=0
+
+   Name=COLB   DataType=Bool
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+0  KEYS : Short
+1  KEYSV : Array<Short>[-1]
+2  KEYI : Int
+3  KEYIV : Array<Int>[-1]
+4  KEYF : float
+5  KEYFV : Array<float>[-1]
+6  KEYD : double
+7  KEYDV : Array<double>[-1]
+8  KEYX : Complex
+9  KEYXC : Array<Complex>[-1]
+10  KEYZ : Complex
+11  KEYZV : Array<Complex>[-1]
+12  KEYDX : DComplex
+13  KEYDXC : Array<DComplex>[-1]
+14  KEYDZ : DComplex
+15  KEYDZV : Array<DComplex>[-1]
+16  KEYA : String
+17  KEYAV : Array<String>[-1]
+18  KEYB : Bool
+19  KEYBV : Array<Bool>[-1]
+KEYS 20
+KEYI 10
+KEYF 1.2
+KEYD 1.23457
+KEYX (-1.5,-3)
+KEYZ (-2.99897,0.0785308)
+KEYDX (-2.5,-4)
+KEYDZ (-3.99619,0.174478)
+KEYA 1, 2, 3, 4, 5
+KEYB 1
+KEYSV [10, 0, 12]
+KEYIV [11, 12, 13, 14]
+KEYFV [-3.2, 0, 0, 5.6]
+KEYDV [1, 2, 3, 4, 5, 6, 7, 8, 0]
+KEYXC [(0,1), (2,3), (4,5), (6,7), (8,0)]
+KEYZV [(0,0), (0.199997,0.00104719), (0.399985,0.00349061)]
+KEYDXC [(1,2), (3,4), (5,6), (7,8), (9,10)]
+KEYDZV [(0.0999994,0.000349065), (0.299993,0.00209438), (0.499973,0.00523589)]
+KEYAV [ 1 2 , AAA, BBB, bbb, , , CCc, C, @#$%^&*()]
+KEYBV [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+
+0  IKEYS : String
+IKEYS coli key
+0  IKEYS : String
+1  DKEYS : String
+IKEYS coldx ikey
+DKEYS coldx dkey
+3 rows, 10 columns
+0 1 1.1 1.11 (1.12,1.13) (2.12,2.13) (1.13977,0.0228797) (2.13849,0.0802838) Str1 1
+-2 -1 0 -1.11 (0,0) (-2.3,0) (-1.39952,0.0366477) (-2.39772,0.104687) Str1 3 0
+123 0 0 0 (0,0) (0,0) (0,0) (0,0)  0
 >>>
 <<<
 Input format: [COLS=S, COLI=I, COLF=R, COLD=D, COLX=X, COLDX=DX, COLZ=Z, COLDZ=DZ, COLA=A, COLB=B]
