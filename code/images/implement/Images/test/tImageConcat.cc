@@ -23,7 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
+
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
@@ -38,19 +39,24 @@
 
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageConcat.h>
-#include <trial/Lattices/LCPagedMask.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageRegion.h>
+#include <trial/Lattices/LCPagedMask.h>
+#include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/SubLattice.h>
 #include <iostream.h>
 
 
-void check (uInt axis, ImageInterface<Float>& ml,
-            ImageInterface<Float>& ml1, ImageInterface<Float>& ml2);
-void check (uInt axis, ImageInterface<Float>& ml,
-            ImageInterface<Float>& ml1, ImageInterface<Float>& ml2,
-            ImageInterface<Float>& ml3);
+
+void check (uInt axis, MaskedLattice<Float>& ml,
+            MaskedLattice<Float>& ml1, 
+            MaskedLattice<Float>& ml2);
+void check (uInt axis, MaskedLattice<Float>& ml,
+            MaskedLattice<Float>& ml1, 
+            MaskedLattice<Float>& ml2,
+            MaskedLattice<Float>& ml3);
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set);
 
 int main() {
@@ -77,9 +83,15 @@ int main() {
                             "tImageConcat_tmp2.img");
       makeMask(im1, True, True); makeMask(im2, False, True);
       im1.put(a1); im2.put(a2);
+
+// Make a MaskedLattice as well
+
+    ArrayLattice<Float> al1(a1);
+    SubLattice<Float> ml1(al1);
+ 
 //
       {
-         cout << "Axis 0, PagedImages, masks" << endl;
+         cout << "Axis 0, PagedImages (masks)" << endl;
 
 // Concatenate along axis 0
 
@@ -110,10 +122,9 @@ int main() {
          check (0, ml3, im1, im2);
       }
 
-
 //
       {
-         cout << "Axis 1, PagedImages, masks" << endl;
+         cout << "Axis 1, PagedImages (masks)" << endl;
 
 // Concatenate along axis 1
 
@@ -143,6 +154,41 @@ int main() {
 
          check (1, ml3, im1, im2);
       }
+
+
+      {
+         cout << "Axis 0, PagedImages (masks) + MaskedLattice (no mask)" << endl;
+
+// Concatenate along axis 0
+
+         ImageConcat<Float> lc (0, False);
+         lc.setImage(im1, True);
+         lc.setImage(im2, True);
+         lc.setLattice(ml1);
+
+// Find output shape
+
+         IPosition outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==2, AipsError);
+         AlwaysAssert(outShape(0)==3*shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(lc.isMasked()==True, AipsError);
+
+// Make output
+
+         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
+                               "tImageConcat_tmp3.img");
+         makeMask(ml3, True, False);
+
+// Do it
+
+         lc.copyData(ml3);
+
+// Check values
+
+         check (0, ml3, im1, im2, ml1);
+      }
+
 
 
 // Contiguity test
@@ -378,8 +424,8 @@ int main() {
 };
 
 
-void check (uInt axis, ImageInterface<Float>& ml,
-            ImageInterface<Float>& ml1, ImageInterface<Float>& ml2)
+void check (uInt axis, MaskedLattice<Float>& ml,
+            MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2)
 {
    IPosition shape1 = ml1.shape();
    IPosition shape2 = ml2.shape();
@@ -403,10 +449,10 @@ void check (uInt axis, ImageInterface<Float>& ml,
 }
 
 
-void check (uInt axis, ImageInterface<Float>& ml,
-            ImageInterface<Float>& ml1, 
-            ImageInterface<Float>& ml2,
-            ImageInterface<Float>& ml3)
+void check (uInt axis, MaskedLattice<Float>& ml,
+            MaskedLattice<Float>& ml1, 
+            MaskedLattice<Float>& ml2,
+            MaskedLattice<Float>& ml3)
 {
    IPosition shape1 = ml1.shape();
    IPosition shape2 = ml2.shape();
