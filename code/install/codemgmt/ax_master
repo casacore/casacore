@@ -1927,3 +1927,4 @@
 08 030 src rm atnf/implement/ServerSocket.h
 08 030 src rm atnf/implement/Shifter.cc
 08 030 src rm atnf/implement/Shifter.h
+08 030 src rm atnf/implement/test/gPKSLoad.cc
