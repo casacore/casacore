@@ -1,5 +1,5 @@
 //# SDFITSHandler.cc: fills all otherwise unhandled columns for the SDFITS filler
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
