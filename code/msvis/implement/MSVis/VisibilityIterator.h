@@ -542,6 +542,9 @@ public:
   // nRow()).
   void setFlag(const Cube<Bool>& flag);
 
+  // Set/modify the flag row column; dimension Vector(nrow)
+  void setFlagRow(const Vector<Bool>& rowflags);
+
   // Set/modify the visibilities.
   // This is possibly only for a 'reference' MS which has a new DATA column.
   // The first axis of the matrix should equal the selected number of channels
@@ -587,6 +590,7 @@ protected:
   ArrayColumn<Float> RWcolSigma;
   ArrayColumn<Float> RWcolImagingWeight;
   ArrayColumn<Bool> RWcolFlag;
+  ArrayColumn<Bool> RWcolFlagRow;
 
 };
 
