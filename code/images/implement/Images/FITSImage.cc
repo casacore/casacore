@@ -1,5 +1,5 @@
 //# FITSImage.cc: Class providing native access to FITS images
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -455,7 +455,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
        throw (AipsError(name + " is not a FITS image"));
    }
 //
-    FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
+    FitsInput infile(fitsfile.path().expandedName().chars(), FITS::Disk);
     if (infile.err()) {
         throw (AipsError("Cannot open file " + name +
 			 " (or other I/O error)"));

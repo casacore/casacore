@@ -1,5 +1,5 @@
 //# ImageFITS2Converter.cc : non-templated FITS<->aips++ image conversion 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,7 +99,7 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
 //
 // OK, now see if we can attach the FITS reading classes
 //
-    FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
+    FitsInput infile(fitsfile.path().expandedName().chars(), FITS::Disk);
     if (infile.err()) {
         error = String("Cannot open file (or other I/O error): ") + fitsName;
 	return False;
@@ -235,7 +235,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //    
 // OK, it appears to be a writable etc. file, let's try opening it.
 //
-	outfile = new FitsOutput(fitsfile.path().expandedName(), FITS::Disk);
+	outfile = new FitsOutput(fitsfile.path().expandedName().chars(),
+				 FITS::Disk);
     }
 //
     if (outfile == 0 || outfile->err()) {
