@@ -28,16 +28,12 @@
 #if !defined(AIPS_FILEDESIO_H)
 #define AIPS_FILEDESIO_H
 
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
 
-
-// <summary> 
-// Class for IO on a file descriptor.
-// </summary>
+// <summary>Class for IO on a file descriptor.</summary>
 
 // <use visibility=export>
 
@@ -104,9 +100,13 @@ public:
     // Write the number of bytes.
     virtual void write (uInt size, const void* buf);
 
-    // Read the number of bytes.
-    // An exception is thrown if <src>size</src> bytes are not available.
-    virtual void read (uInt size, void* buf);    
+    // Read <src>size</src> bytes from the descriptor. Returns the number of
+    // bytes actually read or a negative number if an error occured. Will throw
+    // an Exception (AipsError) if the requested number of bytes could not be
+    // read, or an error occured, unless throwException is set to False. Will
+    // always throw an exception if the descriptor is not readable or the
+    // system call returned an undocumented value.
+    virtual Int read (uInt size, void* buf, Bool throwException=True);    
 
     // Reset the position pointer to the given value. It returns the
     // new position.

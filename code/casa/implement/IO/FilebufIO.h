@@ -1,5 +1,5 @@
 //# FilebufIO.h: Class for IO on a file using standard IO
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,7 @@
 #include <aips/Utilities/String.h>
 #include <stdio.h>
 
-
-// <summary> 
-// Class for IO on a file using standard IO.
-// </summary>
+// <summary> Class for IO on a file using standard IO.</summary>
 
 // <use visibility=export>
 
@@ -144,9 +141,12 @@ public:
     // Write the number of bytes.
     virtual void write (uInt size, const void* buf);
 
-    // Read the number of bytes.
-    // An exception is thrown if <src>size</src> bytes are not available.
-    virtual void read (uInt size, void* buf);    
+    // Read <src>size</src> bytes from the File. Returns the number of bytes
+    // actually read. Will throw an Exception (AipsError) if the requested
+    // number of bytes could not be read unless throwException is set to
+    // False. Will always throw an exception if the file is not readable or
+    // the system call returns an undocumented value.
+    virtual Int read (uInt size, void* buf, Bool throwException=True);    
 
     // Reset the position pointer to the given value. It returns the
     // new position.

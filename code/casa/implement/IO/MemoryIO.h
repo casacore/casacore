@@ -28,18 +28,11 @@
 #if !defined(AIPS_MEMORYIO_H)
 #define AIPS_MEMORYIO_H
 
-#if defined (_AIX)
-#pragma implementation ("MemoryIO.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 
-
-// <summary> 
-// Class for IO in memory.
-// </summary>
+// <summary>Class for IO to a memory buffer.</summary>
 
 // <use visibility=export>
 
@@ -171,9 +164,12 @@ public:
     // when buffer expansion fails or is not possible.
     virtual void write (uInt size, const void* buf);
 
-    // Read the number of bytes.
-    // An exception is thrown if <src>size</src> bytes are not available.
-    virtual void read (uInt size, void* buf);    
+    // Read <src>size</src> bytes from the memory buffer. Returns the number of
+    // bytes actually read. Will throw an Exception (AipsError) if the
+    // requested number of bytes could not be read unless throwException is set
+    // to False. Will always throw an exception if the buffer is not readable
+    // or the buffer pointer is at an invalid position.
+    virtual Int read (uInt size, void* buf, Bool throwException=True);    
 
     // Reset the position pointer to the given value. It returns the
     // new position.
