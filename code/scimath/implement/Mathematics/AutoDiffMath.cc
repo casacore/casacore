@@ -1,5 +1,5 @@
 //# AutoDiff.cc: an automatic differential class for  parameterized functions
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ template<class T> AutoDiff<T> operator-(const AutoDiff<T> &other)
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);
   tmp.value_ = -other.value_;
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = - (*other.gradient_)(i);
   }
   return tmp;
@@ -53,7 +53,7 @@ template<class T>
 AutoDiff<T> operator+(const AutoDiff<T> &left, const AutoDiff<T> &right)
 {
   AutoDiff<T> tmp;
-  Int i;
+  uInt i;
   tmp.nderivs = (left.nderivs > right.nderivs) ? left.nderivs : right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);
@@ -71,7 +71,7 @@ template<class T>
 AutoDiff<T> operator-(const AutoDiff<T> &left, const AutoDiff<T> &right)
 {
   AutoDiff<T> tmp;
-  Int i;
+  uInt i;
   tmp.nderivs = (left.nderivs > right.nderivs) ? left.nderivs : right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);
@@ -89,7 +89,7 @@ template<class T>
 AutoDiff<T> operator* (const AutoDiff<T> &left,const AutoDiff<T> &right)
 {
   AutoDiff<T> tmp;
-  Int i;
+  uInt i;
   tmp.nderivs = (left.nderivs > right.nderivs) ? left.nderivs : right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);
@@ -107,7 +107,7 @@ template<class T>
 AutoDiff<T> operator/(const AutoDiff<T> &left, const AutoDiff<T> &right)
 {
   AutoDiff<T> tmp;
-  Int i;
+  uInt i;
   T temp = right.value_*right.value_;
   tmp.nderivs = (left.nderivs > right.nderivs) ? left.nderivs : right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
@@ -129,7 +129,7 @@ AutoDiff<T> operator+(const AutoDiff<T> &left, const T &right)
   tmp.nderivs = left.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) =(*left.gradient_)(i);
   }
   tmp.value_ = left.value_ + right;
@@ -143,7 +143,7 @@ AutoDiff<T> operator-(const AutoDiff<T> &left, const T &right)
   tmp.nderivs = left.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) =(*left.gradient_)(i);
   }
   tmp.value_ = left.value_ - right;
@@ -157,7 +157,7 @@ AutoDiff<T> operator* (const AutoDiff<T> &left, const T &right)
   tmp.nderivs = left.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*left.gradient_)(i)*right;
   }
   tmp.value_ = left.value_*right;
@@ -171,7 +171,7 @@ AutoDiff<T> operator/(const AutoDiff<T> &left, const T &right)
   tmp.nderivs = left.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*left.gradient_)(i)/right;
   }
   tmp.value_ = left.value_/right;
@@ -185,7 +185,7 @@ AutoDiff<T> operator+(const T &left, const AutoDiff<T> &right)
   tmp.nderivs = right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*right.gradient_)(i);
   }
   tmp.value_ = left + right.value_;
@@ -199,7 +199,7 @@ AutoDiff<T> operator-(const T &left, const AutoDiff<T> &right)
   tmp.nderivs = right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = -(*right.gradient_)(i);
   }
   tmp.value_ = left - right.value_;
@@ -213,7 +213,7 @@ AutoDiff<T> operator*(const T &left, const AutoDiff<T> &right)
   tmp.nderivs = right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = left*(*right.gradient_)(i);
   }
   tmp.value_ = left*right.value_;
@@ -227,7 +227,7 @@ AutoDiff<T> operator/(const T &left, const AutoDiff<T> &right)
   tmp.nderivs = right.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = -left*(*right.gradient_)(i)/
       (right.value_*right.value_);
   }
@@ -243,7 +243,7 @@ template<class T> AutoDiff<T> acos(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = -(*ad.gradient_)(i)/temp;
   }
   tmp.value_ = acos(ad.value_);
@@ -258,7 +258,7 @@ template<class T> AutoDiff<T> asin(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/temp;
   }
   tmp.value_ = asin(ad.value_);
@@ -273,7 +273,7 @@ template<class T> AutoDiff<T> atan(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/temp;
   }
   tmp.value_ = atan(ad.value_);
@@ -297,7 +297,7 @@ template<class T> AutoDiff<T> cos(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = -(*ad.gradient_)(i)*sin(ad.value_);
   }
   tmp.value_ = cos(ad.value_);
@@ -310,7 +310,7 @@ template<class T> AutoDiff<T> cosh(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)*sinh(ad.value_);
   }
   tmp.value_ = cosh(ad.value_);
@@ -323,7 +323,7 @@ template<class T> AutoDiff<T> sin(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)*cos(ad.value_);
   }
   tmp.value_ = sin(ad.value_);
@@ -336,7 +336,7 @@ template<class T> AutoDiff<T> sinh(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)*cosh(ad.value_);
   }
   tmp.value_ = sinh(ad.value_);
@@ -349,7 +349,7 @@ template<class T> AutoDiff<T> exp(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)*exp(ad.value_);
   }
   tmp.value_ = exp(ad.value_);
@@ -362,7 +362,7 @@ template<class T> AutoDiff<T> log(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/ad.value_;
   }
   tmp.value_ = log(ad.value_);
@@ -375,7 +375,7 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/(ad.value_*T(log(10.0)));
   }
   tmp.value_ = log10(ad.value_);
@@ -393,7 +393,7 @@ template<class T> AutoDiff<T> pow(const AutoDiff<T>& a,
   tmp.nderivs = a.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*b.gradient_)(i)*temp1+(*a.gradient_)(i)*temp2;
   }
   tmp.value_ = value;
@@ -406,7 +406,7 @@ template<class T> AutoDiff<T> pow(const AutoDiff<T>& a, const T& b)
   tmp.nderivs = a.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = b*pow(a.value_,b-T(1))*(*a.gradient_)(i);
   }
   tmp.value_ = pow(a.value_,b);
@@ -420,7 +420,7 @@ template<class T> AutoDiff<T> sqrt(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/(T(2)*value);
   }
   tmp.value_ = value;
@@ -434,7 +434,7 @@ template<class T> AutoDiff<T> tan(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/(temp*temp);
   }
   tmp.value_ = tan(ad.value_);
@@ -448,7 +448,7 @@ template<class T> AutoDiff<T> tanh(const AutoDiff<T>& ad)
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
     tmp.gradient_->resize(tmp.nderivs);  
-  for(Int i = 0; i < tmp.nderivs; i++) {
+  for(uInt i = 0; i < tmp.nderivs; i++) {
     (*tmp.gradient_)(i) = (*ad.gradient_)(i)/(temp*temp);
   }
   tmp.value_ = tanh(ad.value_);
@@ -461,7 +461,7 @@ template<class T> AutoDiff<T> abs(const AutoDiff<T>& ad)
   // differentiable in a small enough neighborhood where F is 
   // evaluated. So if ad.value_ is positive, F is positive in the small
   // neighborhood.
-  Int i;
+  uInt i;
   AutoDiff<T> tmp;
   tmp.nderivs = ad.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
@@ -491,7 +491,7 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x,const T c)
   // we use the derivative at z = integer+epsilon as the derivative at
   // z = integer.
 
-  Int i;
+  uInt i;
   AutoDiff<T> tmp;
   tmp.nderivs = x.nderivs;
   if(tmp.nderivs > tmp.gradient_->nelements())
@@ -529,7 +529,7 @@ template<class T> Bool operator==(const AutoDiff<T>& right,const AutoDiff<T>& le
 {
   if(right.value_ != left.value_) return False;
   if(right.nderivs != left.nderivs) return False;
-  for(Int i = 0; i < right.nderivs; i++) 
+  for(uInt i = 0; i < right.nderivs; i++) 
     if((*right.gradient_)(i) != (*left.gradient_)(i)) return False;
   return True;
 }

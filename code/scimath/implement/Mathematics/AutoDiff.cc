@@ -1,5 +1,5 @@
 //# AutoDiff.cc: an automatic differential class for  parameterized functions
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,26 +35,26 @@ template<class T> Vector<T> AutoDiff<T>::null;
 #endif 
 
 template <class T>
-AutoDiff<T>::AutoDiff():value_(T(0.0)),nderivs(0),gradient_(pool.get())
+AutoDiff<T>::AutoDiff():value_(T(0.0)),gradient_(pool.get()),nderivs(0)
 {
   // nothing
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v):value_(v),nderivs(0),gradient_(pool.get())
+AutoDiff<T>::AutoDiff(const T &v):value_(v),gradient_(pool.get()),nderivs(0)
 {
   // nothing
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt i):value_(v),nderivs(ndiffs),gradient_(pool.get())
+AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt i):value_(v),gradient_(pool.get()),nderivs(ndiffs)
 {
   if(i >= ndiffs) {
     throw(AipsError("AutoDiff(const T& v, uInt ndiffs, uInt i): i >= ndiffs"));
   }
   if(ndiffs > gradient_->nelements())
     gradient_->resize(ndiffs);
-  for(Int j = 0; j < ndiffs; j++) {
+  for(uInt j = 0; j < ndiffs; j++) {
     (*gradient_)(j) = T(0.0);
   }
   (*gradient_)(i) = 1.0;
@@ -67,7 +67,7 @@ AutoDiff<T>::AutoDiff(const AutoDiff<T> &other):value_(other.value_),gradient_(p
   if(nderivs > 0) {
     if(nderivs > gradient_->nelements())
       gradient_->resize(nderivs);
-    for(Int i = 0; i < nderivs; i++)
+    for(uInt i = 0; i < nderivs; i++)
       (*gradient_)(i) = (*other.gradient_)(i);
   }
 }
@@ -78,7 +78,7 @@ AutoDiff<T>::AutoDiff(const T& v, const Vector<T>& derivs):value_(v),gradient_(p
   nderivs = derivs.nelements();
   if(nderivs > gradient_->nelements())
     gradient_->resize(nderivs);
-  for(Int i = 0; i < nderivs; i++) {
+  for(uInt i = 0; i < nderivs; i++) {
     (*gradient_)(i) = derivs(i);
   }
 }
@@ -108,7 +108,7 @@ AutoDiff<T>& AutoDiff<T>::operator=(const AutoDiff<T> &other)
   if(nderivs > gradient_->nelements()) {
     gradient_->resize(nderivs);
   }
-  for(Int i = 0; i < nderivs; i++) {
+  for(uInt i = 0; i < nderivs; i++) {
     (*gradient_)(i) = (*other.gradient_)(i);
   }
   return *this;
@@ -117,7 +117,7 @@ AutoDiff<T>& AutoDiff<T>::operator=(const AutoDiff<T> &other)
 template <class T>
 AutoDiff<T>& AutoDiff<T>::operator*=(const AutoDiff<T> &other)
 { 
-  Int i;
+  uInt i;
 
   if(nderivs == 0) {
     gradient_->resize(other.nderivs);
@@ -139,7 +139,7 @@ AutoDiff<T>& AutoDiff<T>::operator*=(const AutoDiff<T> &other)
 template <class T>
 AutoDiff<T>& AutoDiff<T>::operator/=(const AutoDiff<T> &other)
 { 
-  Int i;
+  uInt i;
   T temp = other.value_*other.value_;
 
   if(nderivs == 0) {
@@ -162,7 +162,7 @@ AutoDiff<T>& AutoDiff<T>::operator/=(const AutoDiff<T> &other)
 template <class T>
 AutoDiff<T>& AutoDiff<T>::operator+=(const AutoDiff<T> &other)
 {
-  Int i;
+  uInt i;
 
   if(nderivs == 0) {
     gradient_->resize(other.nderivs);
@@ -183,7 +183,7 @@ AutoDiff<T>& AutoDiff<T>::operator+=(const AutoDiff<T> &other)
 template <class T>
 AutoDiff<T>& AutoDiff<T>::operator-=(const AutoDiff<T> &other)
 {
-  Int i;
+  uInt i;
 
   if(nderivs == 0) {
     gradient_->resize(other.nderivs);
@@ -202,7 +202,7 @@ AutoDiff<T>& AutoDiff<T>::operator-=(const AutoDiff<T> &other)
 
 template <class T> Vector<T>& AutoDiff<T>::derivatives()
 { 
-  Int i;
+  uInt i;
   if(nderivs == 0) {
     return null; 
   } else {
@@ -220,7 +220,7 @@ template <class T> Vector<T>& AutoDiff<T>::derivatives()
 
 template <class T> const Vector<T>& AutoDiff<T>::derivatives() const
 { 
-  Int i;
+  uInt i;
   if(nderivs == 0) {
     return null; 
   } else {
@@ -240,9 +240,8 @@ template <class T> T& AutoDiff<T>::derivative(uInt which)
 { 
   if(which >= nderivs) {
     throw(AipsError("AutoDiff<T>::derivative(uInt which): derivative index out of bound"));
-  } else {
-    return (*gradient_)(which);
   }
+  return (*gradient_)(which);
 }
 
 template <class T> uInt AutoDiff<T>::nDerivatives() const
@@ -274,6 +273,6 @@ template <class T> void AutoDiff<T>::resize(uInt ndivs)
     gradient_->resize(ndivs); 
   }
   nderivs = ndivs;
-  for(Int i = 0; i < nderivs; i++) 
+  for(uInt i = 0; i < nderivs; i++) 
     (*gradient_)(i) = T(0.0);
 }
