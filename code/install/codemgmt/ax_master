@@ -2073,3 +2073,9 @@
 11 088 src rm doc/html/navpages/ref/packageaips/aips.html
 11 088 src rm doc/html/navpages/synthesis/background.html
 11 088 src rm doc/html/navpages/synthesis/overview.html
+11 089 src rm aips/implement/Tables/test/tTableGram.run
+11 089 src rm aips/implement/Mathematics/test/tComplex.run
+11 089 src rm aips/implement/Arrays/test/tArrayIO2.run
+11 089 src rm aips/implement/Exceptions/test/tException.run
+11 089 src rm aips/implement/Exceptions/test/tExcpA.run
+11 089 src rm aips/implement/Exceptions/test/tExcpB.run
