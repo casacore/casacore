@@ -28,16 +28,16 @@
 #include <trial/ComponentModels/PointShape.h>
 #include <trial/ComponentModels/Flux.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
-#include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/QMath.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
@@ -186,11 +186,21 @@ void PointShape::setParameters(const Vector<Double>& newParms) {
   if (&newParms == 0) {}; 
 }
 
-void PointShape::parameters(Vector<Double>& compParms) const {
+Vector<Double> PointShape::parameters() const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(compParms.nelements() == nParameters(), AipsError);
+  return Vector<Double>(0);
+}
+
+void PointShape::setErrors(const Vector<Double>& newErrors) {
+  DebugAssert(newErrors.nelements() == nParameters(), AipsError);
+  DebugAssert(ok(), AipsError);
   // Suppress compiler warning about unused variable
-  if (&compParms == 0) {}; 
+  if (&newErrors == 0) {}; 
+}
+
+Vector<Double> PointShape::errors() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(0);
 }
 
 Bool PointShape::fromRecord(String& errorMessage,
@@ -214,5 +224,5 @@ Bool PointShape::ok() const {
   return ComponentShape::ok();
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 PointShape"
+// compile-command: "gmake PointShape"
 // End: 

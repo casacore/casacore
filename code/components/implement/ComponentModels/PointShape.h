@@ -218,12 +218,16 @@ public:
 
   // return the number of parameters in this shape and set/get them.  As this
   // is a point shape there are none. So calling <src>setParameters</src> or
-  // <src>parameters</src> with anything other than a zero length Vector will
-  // throw an exception (when compiled in debug mode).
+  // <src>setErrors</src> with anything other than a zero length Vector will
+  // throw an exception (when compiled in debug mode). The
+  // <src>nParameters<src> will always return zero and the <src>parameters<src>
+  // and <src>errors<src> functions will always return zero length Vectors.
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newParms);
-  virtual void parameters(Vector<Double>& compParms) const;
+  virtual Vector<Double> parameters() const;
+  virtual void setErrors(const Vector<Double>& newParms);
+  virtual Vector<Double> errors() const;
   // </group>
 
   // This functions convert between a Record and a PointShape. These functions

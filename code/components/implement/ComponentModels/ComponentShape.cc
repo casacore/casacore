@@ -36,27 +36,36 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
 ComponentShape::ComponentShape() 
-  :itsDir()
+  :itsDir(),
+   itsDirErrLat(0, "rad"),
+   itsDirErrLong(0, "rad")
 {
   DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const MDirection& direction)
-  :itsDir(direction)
+  :itsDir(direction),
+   itsDirErrLat(0, "rad"),
+   itsDirErrLong(0, "rad")
 {
   DebugAssert(ComponentShape::ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const ComponentShape& other)
-  :itsDir(other.itsDir)
+  :itsDir(other.itsDir),
+   itsDirErrLat(other.itsDirErrLat),
+   itsDirErrLong(other.itsDirErrLong)
 {
   DebugAssert(ComponentShape::ok(), AipsError);
 }
@@ -73,7 +82,9 @@ const String& ComponentShape::ident() const {
 
 ComponentShape& ComponentShape::operator=(const ComponentShape& other) {
   if (this != &other) {
-    itsDir = other.itsDir;
+    itsDir = other.itsDir; 
+    itsDirErrLat = other.itsDirErrLat;
+    itsDirErrLong = other.itsDirErrLong;
   }
   DebugAssert(ComponentShape::ok(), AipsError);
   return *this;
@@ -89,11 +100,40 @@ const MDirection& ComponentShape::refDirection() const {
   return itsDir;
 }
 
-void  ComponentShape::sample(Vector<Double>& scale, 
-			     const Vector<MDirection::MVType>& directions, 
-			     const MDirection::Ref& refFrame,
-			     const MVAngle& pixelLatSize,
-			     const MVAngle& pixelLongSize) const {
+void 
+ComponentShape::setRefDirectionError(const Quantum<Double>& newRefDirErrLat, 
+				     const Quantum<Double>& newRefDirErrLong) {
+  if (newRefDirErrLat.check(UnitVal::ANGLE) == False || 
+      newRefDirErrLong.check(UnitVal::ANGLE) == False) {
+    LogIO logErr(LogOrigin("ComponentShape", "setRefDirectionError"));
+    logErr << "The errors must be angular quantities."
+	   << LogIO::EXCEPTION;
+  }
+  const Double newErrLat = newRefDirErrLat.getValue();
+  const Double newErrLong = newRefDirErrLong.getValue();
+  if (newErrLat < 0 || newErrLong < 0) {
+    LogIO logErr(LogOrigin("ComponentShape", "setRefDirectionError"));
+    logErr << "The errors cannot be negative."
+	   << LogIO::EXCEPTION;
+  }
+  itsDirErrLat = newRefDirErrLat;
+  itsDirErrLong = newRefDirErrLong;
+  DebugAssert(ComponentShape::ok(), AipsError);
+}
+
+const Quantum<Double>& ComponentShape::refDirectionErrorLat() const {
+  return itsDirErrLat;
+}
+
+const Quantum<Double>& ComponentShape::refDirectionErrorLong() const {
+  return itsDirErrLong;
+}
+
+void ComponentShape::sample(Vector<Double>& scale, 
+			    const Vector<MDirection::MVType>& directions, 
+			    const MDirection::Ref& refFrame,
+			    const MVAngle& pixelLatSize,
+			    const MVAngle& pixelLongSize) const {
   DebugAssert(ComponentShape::ok(), AipsError);
   const uInt nSamples = directions.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
@@ -172,6 +212,18 @@ Bool ComponentShape::toRecord(String& errorMessage,
 }
 
 Bool ComponentShape::ok() const {
+  if (itsDirErrLat.getValue() < 0) {
+    LogIO logErr(LogOrigin("ComponentShape", "ok()"));
+    logErr << LogIO::SEVERE << "The latitude error is negative."
+           << LogIO::POST;
+    return False;
+  }
+  if (itsDirErrLong.getValue() < 0) {
+    LogIO logErr(LogOrigin("ComponentShape", "ok()"));
+    logErr << LogIO::SEVERE << "The longitude error is negative."
+           << LogIO::POST;
+    return False;
+  }
   return True;
 }
 

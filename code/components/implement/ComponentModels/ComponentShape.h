@@ -29,17 +29,18 @@
 #define AIPS_COMPONENTSHAPE_H
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/Utilities/RecordTransformable.h>
+#include <aips/Mathematics/Complexfwd.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Utilities/RecordTransformable.h>
+#include <trial/ComponentModels/ComponentType.h>
 
 class DirectionCoordinate;
 class MVAngle;
 class RecordInterface;
 class String;
-template <class T> class MeasRef;
 template <class T> class Matrix;
+template <class T> class MeasRef;
 template <class T> class Vector;
 
 // <summary>Base class for component shapes</summary>
@@ -151,6 +152,17 @@ public:
   const MDirection& refDirection() const;
   // </group>
 
+  // set/get the error in the reference direction. Values must be positive
+  // angular quantities otherwise an AipsError exception is thrown. The errors
+  // are usually interpreted as the 1-sigma bounds in latitude/longitude and
+  // implicitly assume a Gaussian distribution.
+  // <group>
+  void setRefDirectionError(const Quantum<Double>& newRefDirErrLat, 
+			    const Quantum<Double>& newRefDirErrLong);
+  const Quantum<Double>& refDirectionErrorLat() const;
+  const Quantum<Double>& refDirectionErrorLong() const;
+  // </group>
+
   // Calculate the proportion of the flux that is in a pixel of specified size
   // centered in the specified direction. The returned value will always be
   // between zero and one (inclusive).
@@ -207,11 +219,14 @@ public:
   // constructor.
   virtual ComponentShape* clone() const = 0;
 
-  // return the number of parameters in this shape and set/get them.
-  // <group>
+  // return the number of parameters in this shape and set/get them. The error
+  // functions provide a way to set/get the error (nominally 1-sigma in an
+  // implicit Gaussian distribution) in the corresponding parameter.
   virtual uInt nParameters() const = 0;
   virtual void setParameters(const Vector<Double>& newParms) = 0;
-  virtual void parameters(Vector<Double>& compParms) const = 0;
+  virtual Vector<Double> parameters() const = 0;
+  virtual void setErrors(const Vector<Double>& newErrs) = 0;
+  virtual Vector<Double> errors() const = 0;
   // </group>
 
   // These functions convert between a record and a ComponentShape. This way
@@ -289,5 +304,8 @@ protected:
 private:
   //# The reference direction of the component
   MDirection itsDir;
+  //# The errors in the reference direction of the component in radians
+  Quantum<Double> itsDirErrLat;
+  Quantum<Double> itsDirErrLong;
 };
 #endif
