@@ -1,5 +1,5 @@
 //# LELFunctionEnums.h: Enums of function names
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,9 @@ public:
 // conj (ugate complex number)
    CONJ,
 
+// complex (form complex from 2 reals)
+   COMPLEX,
+
 // fmod; fmod(x,y) returns the remainder  of  x  with  respect  to  y;  that is, 
 // the result r is one of the numbers that differ from x by an integral multiple of y.  
    FMOD,
@@ -169,6 +172,9 @@ public:
 
 // iif (similar to ?: in C++)
    IIF,
+
+// length (of an axis)
+   LENGTH,
 
 // number of functions
    NFUNCTIONS
