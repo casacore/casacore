@@ -273,7 +273,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
       }
     }
   }
-  os << LogIO::NORMAL<< "Channel selection set to #chan="<<nChan<<
+  os << LogIO::NORMAL<< "Channel selection: #chan="<<nChan<<
     ", start="<<start+1<<", width="<<width<<", incr="<<incr<<LogIO::POST;
   return True;
 }
@@ -351,7 +351,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 	return False;
       }
     }
-    stokesConverter_p.setConversion(wanted,inputPol);
+    stokesConverter_p.setConversion(wanted,inputPol,True);
   }
   if (chanSel_p.nelements()==4) {
     Int end=chanSel_p(1)+(chanSel_p(0)-1)*chanSel_p(3)+chanSel_p(2)-1;
@@ -364,7 +364,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   }
   if (useSlicer_p) haveSlicer_p=False;
   polSelection_p.resize(wantedPol.nelements()); polSelection_p=wantedPol;
-  os << LogIO::NORMAL<< "selected polarizations: "<< wantedPol 
+  os << LogIO::NORMAL<< "Polarization selection: "<< wantedPol 
     << LogIO::POST;
   return True;
 }
@@ -1153,7 +1153,18 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Array<Bool> flags,dataflags;
   Array<Float> weights;
   if (wantWeight || average) {
-    Matrix<Float> wt(msc.weight().getColumn());  // Is 2D in MSv2
+    Matrix<Float> wt;
+    if (wantedOne_p>=0) { 
+      wt = msc.weight().getColumn(Slicer(Slice(wantedOne_p,1)));
+    } else {
+      wt = msc.weight().getColumn();
+    }
+    // apply the stokes conversion/selection to the weights
+    if (convert_p) {
+      Matrix<Float> outwt;
+      stokesConverter_p.convert(outwt,wt);
+      wt.reference(outwt);
+    }
     Int nCorr=wt.shape()(0);
     IPosition wtsidx(3,nCorr,nIfr,nTime);
     if (doIfrAxis) {
@@ -1724,9 +1735,16 @@ Bool MSSelector::iterEnd()
   selms_p=msIter_p->ms();
   return True;
 }
+void MSSelector::getAveragedData(Array<Complex>& avData, 
+				 const ROArrayColumn<Complex>& col) const
+{
+  getAveragedData(avData,col,Slicer(Slice()));
+}
+
 
 void MSSelector::getAveragedData(Array<Complex>& avData, 
-				 const ROArrayColumn<Complex>& col)
+				 const ROArrayColumn<Complex>& col,
+				 const Slicer & rowSlicer) const
 {
   Array<Complex> data;
   if (useSlicer_p) {
@@ -1734,9 +1752,9 @@ void MSSelector::getAveragedData(Array<Complex>& avData,
       if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
       else makeSlicer(0,col.shape(0)(0));
     }
-    data=col.getColumn(slicer_p);
+    data=col.getColumnRange(rowSlicer,slicer_p);
   } else {
-    data=col.getColumn();
+    data=col.getColumnRange(rowSlicer);
   }
   Int nPol=data.shape()(0);
   Int nChan=chanSel_p(0);
@@ -1770,7 +1788,14 @@ void MSSelector::getAveragedData(Array<Complex>& avData,
 }
 
 void MSSelector::getAveragedData(Array<Float>& avData, 
-				 const ROArrayColumn<Float>& col)
+				 const ROArrayColumn<Float>& col) const
+{
+  getAveragedData(avData,col,Slicer(Slice()));
+}
+
+void MSSelector::getAveragedData(Array<Float>& avData, 
+				 const ROArrayColumn<Float>& col,
+				 const Slicer& rowSlicer) const
 {
   Array<Float> data;
   if (useSlicer_p) {
@@ -1778,9 +1803,9 @@ void MSSelector::getAveragedData(Array<Float>& avData,
       if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
       else makeSlicer(0,col.shape(0)(0));
     }
-    data=col.getColumn(slicer_p);
+    data=col.getColumnRange(rowSlicer,slicer_p);
   } else {
-    data=col.getColumn();
+    data=col.getColumnRange(rowSlicer);
   }
   Int nPol=data.shape()(0);
   Int nChan=chanSel_p(0);
@@ -1819,7 +1844,14 @@ void MSSelector::getAveragedData(Array<Float>& avData,
 // thing when averaging the data
 
 void MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-				 const ROArrayColumn<Bool>& col)
+				 const ROArrayColumn<Bool>& col) const
+{
+  getAveragedFlag(avFlag,col,Slicer(Slice()));
+}
+
+void MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
+				 const ROArrayColumn<Bool>& col,
+				 const Slicer& rowSlicer) const
 {
   Array<Bool> flag;
   if (useSlicer_p) {
@@ -1827,9 +1859,9 @@ void MSSelector::getAveragedFlag(Array<Bool>& avFlag,
       if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
       else makeSlicer(0,col.shape(0)(0));
     }
-    flag=col.getColumn(slicer_p);
+    flag=col.getColumnRange(rowSlicer,slicer_p);
   } else {
-    flag=col.getColumn();
+    flag=col.getColumnRange(rowSlicer);
   }
   Int nPol=flag.shape()(0);
   Int nChan=chanSel_p(0);
@@ -1900,7 +1932,7 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
   else col.putColumn(flag);
 }
 
-void MSSelector::makeSlicer(Int start, Int nCorr)
+void MSSelector::makeSlicer(Int start, Int nCorr) const
 {
   if (chanSel_p(2)==1) {
     // width is one, we can use a stride

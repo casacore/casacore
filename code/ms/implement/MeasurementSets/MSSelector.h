@@ -111,6 +111,8 @@ class MSIter;
 
 class MSSelector
 {
+  friend class MSRange;
+
 public:
 
   MSSelector();
@@ -138,7 +140,7 @@ public:
   Bool initSelection(Int dataDescId=-1, Bool reset=False);
 
   // Return the data desc ID selected (-1 for multiple windows)
-  Int dataDescId();
+  Int dataDescId() const;
 
   // Set the mapping from input channels in the DATA column to
   // output channels. nChan is the number of output channels,
@@ -206,23 +208,39 @@ public:
   Bool iterEnd();
 
   // Number of rows in selected table
-  Int nrow();
+  Int nrow() const;
 
   // Return the selected table
-  Table selectedTable();
+  Table selectedTable() const;
 
 protected:
   // average and convert data
   void getAveragedData(Array<Complex>& avData, 
-		       const ROArrayColumn<Complex>& col);
+		       const ROArrayColumn<Complex>& col) const;
 
-  // average and convert data
+  // average and convert float data
   void getAveragedData(Array<Float>& avData, 
-		       const ROArrayColumn<Float>& col);
+		       const ROArrayColumn<Float>& col) const;
+
+  // average and convert data, with row Slicer
+  void getAveragedData(Array<Complex>& avData, 
+		       const ROArrayColumn<Complex>& col,
+		       const Slicer & rowSlicer) const;
+
+  // average and convert float data, with row Slicer
+  void getAveragedData(Array<Float>& avData, 
+		       const ROArrayColumn<Float>& col,
+		       const Slicer & rowSlicer) const;
 
   // "average" flag, at present all output which has a flagged input is flagged
   void getAveragedFlag(Array<Bool>& avFlag, 
-		       const ROArrayColumn<Bool>& col);
+		       const ROArrayColumn<Bool>& col) const;
+
+  // "average" flag, at present all output which has a flagged input is flagged,
+  // with row Slicer
+  void getAveragedFlag(Array<Bool>& avFlag, 
+		       const ROArrayColumn<Bool>& col,
+		       const Slicer& rowSlicer) const;
 
   // "unaverage" flag, distribute the flags back to the channels that went
   // into the average
@@ -231,7 +249,7 @@ protected:
 
   // make the data slicer, pass in the first and the number of correlations
   // to select
-  void makeSlicer(Int start, Int nCorr);
+  void makeSlicer(Int start, Int nCorr) const;
 
   // reorder from 2d to 1d (removing ifr axis)
   void reorderFlagRow(Array<Bool>& flagRow);
@@ -252,8 +270,9 @@ private:
   Bool initSel_p;
   Int dataDescId_p, lastDataDescId_p;
   Vector<Int> chanSel_p;
-  Bool useSlicer_p, haveSlicer_p;
-  Slicer slicer_p;
+  Bool useSlicer_p;
+  mutable Bool haveSlicer_p;
+  mutable Slicer slicer_p;
   Int wantedOne_p;
   Bool convert_p, subSet_p;
   StokesConverter stokesConverter_p;
@@ -266,9 +285,9 @@ private:
   Int startRow_p, maxRow_p; // start and length of range of rows
 
 };
-inline Int MSSelector::nrow() { return selms_p.nrow();}
-inline Int MSSelector::dataDescId() { return dataDescId_p;}
-inline Table MSSelector::selectedTable() {return selms_p;}
+inline Int MSSelector::nrow() const { return selms_p.nrow();}
+inline Int MSSelector::dataDescId() const { return dataDescId_p;}
+inline Table MSSelector::selectedTable() const {return selms_p;}
 
 #endif
 
