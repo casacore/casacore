@@ -1,5 +1,5 @@
 //# CompressComplex.h: Virtual column engine to scale a table Complex array
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -339,6 +339,20 @@ public:
 
 
 
+
+// <summary>
+// Virtual column engine to scale a table Complex array for Single Dish data
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="tCompressComplex.cc">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> CompressComplex
+// </prerequisite>
 
 // <synopsis> 
 // CompressComplexSD is similar to CompressComplex, but compresses
