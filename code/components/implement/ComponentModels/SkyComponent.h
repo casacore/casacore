@@ -36,6 +36,7 @@
 class GlishRecord;
 template<class T> class ImageInterface;
 class MDirection;
+class MFrequency;
 class MVAngle;
 class SkyCompRep;
 class String;
@@ -188,6 +189,28 @@ public:
 
   // get the spectral model for this component 
   virtual ComponentType::SpectralShape spectralShape() const;
+
+  // set/get the reference frequency.
+  // <group>
+  virtual void setRefFrequency(const MFrequency & newRefFreq);
+  virtual const MFrequency & refFrequency() const;
+  // </group>
+
+  // Return the scaling factor used to scale the flux of the component at the
+  // specified frequency. The scaling factor is always 1 at the reference
+  // frequency.
+  virtual Double scale(const MFrequency & sampleFreq) const;
+
+  // Return the flux (in dimensions of W/m^2/Hz) of the component at the
+  // specified frequency
+  virtual Flux<Double> sample(const MFrequency & sampleFreq) const;
+
+  // return the number of parameters in the spectral shape and set/get them.
+  // <group>
+  virtual uInt nSpectralParameters() const;
+  virtual void setSpectralParameters(const Vector<Double> & newParms);
+  virtual void spectralParameters(Vector<Double> & compParms) const;
+  // </group>
 
   // This functions convert between a glish record and a SkyComponent. This way
   // derived classes can interpret fields in the record in a class specific

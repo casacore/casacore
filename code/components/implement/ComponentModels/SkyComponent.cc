@@ -40,6 +40,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -123,7 +124,6 @@ SkyComponent::SkyComponent(ComponentType::Shape shape,
     break;
     };    
   }
-  
   AlwaysAssert(ok(), AipsError);
 }
 SkyComponent::SkyComponent(const SkyComponent & other) 
@@ -222,11 +222,47 @@ ComponentType::SpectralShape SkyComponent::spectralShape() const {
   return itsCompPtr->spectralShape();
 }
 
+void SkyComponent::setRefFrequency(const MFrequency & newRefFreq) {
+  itsCompPtr->setRefFrequency(newRefFreq);
+  DebugAssert(ok(), AipsError);
+}
+
+const MFrequency & SkyComponent::refFrequency() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->refFrequency();
+}
+
+Double SkyComponent::scale(const MFrequency & sampleFreq) const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->scale(sampleFreq);
+}
+
+Flux<Double> SkyComponent::sample(const MFrequency & sampleFreq) const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->sample(sampleFreq);
+}
+
+uInt SkyComponent::nSpectralParameters() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->nSpectralParameters();
+}
+
+void SkyComponent::setSpectralParameters(const Vector<Double> & newParms) {
+  itsCompPtr->setSpectralParameters(newParms);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::spectralParameters(Vector<Double> & compParms) const {
+  itsCompPtr->spectralParameters(compParms);
+  DebugAssert(ok(), AipsError);
+}
+
 Bool SkyComponent::fromRecord(String & errorMessage, 
 			      const GlishRecord & record) {
   DebugAssert(ok(), AipsError);
   // First check that the shapes match;
   if (!checkShape(errorMessage, record)) return False;
+  if (!checkSpectralShape(errorMessage, record)) return False;
   return itsCompPtr->fromRecord(errorMessage, record);
 }
 
@@ -311,7 +347,7 @@ getSpectralShape(String & errorMessage, const GlishRecord & record) {
 
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
-  SkyComponent newComp(shape());
+  SkyComponent newComp(shape(), spectralShape());
   {
     newComp.flux() = flux().copy();
   }
@@ -321,14 +357,22 @@ SkyComponent SkyComponent::copy() const {
     newComp.setDirection(thisDirection);
   }
   {
-    String thisLabel("");
-    label(thisLabel);
-    newComp.setLabel(thisLabel);
-  }
-  {
     Vector<Double> thisParameters(nParameters());
     parameters(thisParameters);
     newComp.setParameters(thisParameters);
+  }
+  {
+    newComp.setRefFrequency(refFrequency());
+  }
+  {
+    Vector<Double> thisParameters(nSpectralParameters());
+    spectralParameters(thisParameters);
+    newComp.setSpectralParameters(thisParameters);
+  }
+  {
+    String thisLabel("");
+    label(thisLabel);
+    newComp.setLabel(thisLabel);
   }
   return newComp;
 }
