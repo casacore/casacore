@@ -592,15 +592,17 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData, wantFlag,
     wantFlagSum, 
     wantRAmp, wantRPhase, wantRReal, wantRImag, wantRData,
+    wantRatAmp, wantRatPhase, wantRatReal, wantRatImag, wantRatData,
     wantORAmp, wantORPhase, wantORReal, wantORImag, wantORData,
-    wantCorrGain, wantObsCorrGain, wantWeight;
+    wantWeight;
   wantAmp=wantPhase=wantReal=wantImag=wantData=
     wantCAmp=wantCPhase=wantCReal=wantCImag=wantCData=
     wantMAmp=wantMPhase=wantMReal=wantMImag=wantMData=wantFlag=
     wantFlagSum=
     wantRAmp=wantRPhase=wantRReal=wantRImag=wantRData=
+    wantRatAmp=wantRatPhase=wantRatReal=wantRatImag=wantRatData=
     wantORAmp=wantORPhase=wantORReal=wantORImag=wantORData=
-    wantCorrGain=wantObsCorrGain=wantWeight=False;
+    wantWeight=False;
 
   Matrix<Double> uvw;
 
@@ -677,6 +679,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       break;
     case MSS::MODEL_AMPLITUDE:
       wantMAmp=True;
+      break;
+    case MSS::RATIO_AMPLITUDE:
+      wantRatAmp=True;
       break;
     case MSS::RESIDUAL_AMPLITUDE:
       wantRAmp=True;
@@ -826,10 +831,6 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	out.add("axis_info",axis_info);
       }
       break;
-    case MSS::CORRELATOR_GAIN:
-      wantCorrGain=True;
-    case MSS::OBS_CORRELATOR_GAIN:
-      wantObsCorrGain=True;
     case MSS::DATA:
       wantData=True;
       break;
@@ -838,6 +839,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       break;
     case MSS::MODEL_DATA:
       wantMData=True;
+      break;
+    case MSS::RATIO_DATA:
+      wantRatData=True;
       break;
     case MSS::RESIDUAL_DATA:
       wantRData=True;
@@ -938,6 +942,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     case MSS::MODEL_IMAGINARY:
       wantMImag=True;
       break;
+    case MSS::RATIO_IMAGINARY:
+      wantRatImag=True;
+      break;
     case MSS::RESIDUAL_IMAGINARY:
       wantRImag=True;
       break;
@@ -985,6 +992,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     case MSS::MODEL_PHASE:
       wantMPhase=True;
       break;
+    case MSS::RATIO_PHASE:
+      wantRatPhase=True;
+      break;
     case MSS::RESIDUAL_PHASE:
       wantRPhase=True;
       break;
@@ -999,6 +1009,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       break;
     case MSS::MODEL_REAL:
       wantMReal=True;
+      break;
+    case MSS::RATIO_REAL:
+      wantRatReal=True;
       break;
     case MSS::RESIDUAL_REAL:
       wantRReal=True;
@@ -1231,9 +1244,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		       wantORData);
   Bool wantR = ToBool(wantRAmp || wantRPhase || wantRReal || wantRImag ||
 		      wantRData );
+  Bool wantRat = ToBool(wantRatAmp || wantRatPhase || wantRatReal || 
+			wantRatImag || wantRatData );
   Array<Complex> observed_data;
   if (wantAmp || wantPhase || wantReal || wantImag || wantData
-      || wantOR || wantObsCorrGain) {
+      || wantOR ) {
     // get the data
     Array<Complex> data;
     if (convert_p && !subSet_p) {
@@ -1243,7 +1258,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     getAveragedData(data,msc.data());
     if (doIfrAxis) MSSelUtil2<Complex>::
       reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
-    if (wantOR || wantObsCorrGain) {
+    if (wantOR) {
       if (average) observed_data=data;
       else observed_data.reference(data);
     }
@@ -1256,14 +1271,14 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   }
   Array<Complex> corrected_data;
   if  (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData
-       || wantR || wantCorrGain) {
+       || wantR || wantRat) {
     if (!msc.correctedData().isNull()) {
       // get the data
       Array<Complex> data;
       getAveragedData(data,msc.correctedData());
       if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
-      if (wantR || wantCorrGain) {
+      if (wantR || wantRat) {
 	if (average) corrected_data=data;
 	else corrected_data.reference(data);
       }
@@ -1280,14 +1295,14 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   
   Array<Complex> model_data;
   if (wantMAmp || wantMPhase || wantMReal || wantMImag || wantMData ||
-      wantR || wantOR || wantCorrGain || wantObsCorrGain) {
+      wantR || wantOR || wantRat) {
     if (!msc.modelData().isNull()) {
       // get the data
       Array<Complex> data;
       getAveragedData(data,msc.modelData());
       if (doIfrAxis) MSSelUtil2<Complex>::
 	reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
-      if (wantR || wantOR || wantCorrGain || wantObsCorrGain) {
+      if (wantR || wantOR || wantRat) {
 	if (average) {
 	  model_data=data;
 	} else {
@@ -1321,22 +1336,19 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	if (wantORImag) out.add("obs_residual_imaginary",imag(res_data));
 	if (wantORData) out.add("obs_residual_data",res_data);
       }
-      if (wantCorrGain || wantObsCorrGain) {
-	Array<Complex> gain;
+      if (wantRat) {
+	Array<Complex> ratio;
 	LogicalArray mask(model_data!=Complex(0.));
-	if (wantCorrGain) {
-	  gain=corrected_data; 
-	  gain/=model_data(mask);
-	  gain(!mask)=1.0;
-	  if (average) timeAverage(dataflags,gain,flags,weights);
-	  out.add("correlator_gain",gain);
-	}
-	if (wantObsCorrGain) {
-	  gain=observed_data;
-	  gain/=model_data(mask);
-	  gain(!mask)=1.0;
-	  if (average) timeAverage(dataflags,gain,flags,weights);
-	  out.add("obs_correlator_gain",gain);
+	if (wantRat) {
+	  ratio=corrected_data; 
+	  ratio/=model_data(mask);
+	  ratio(!mask)=1.0;
+	  if (average) timeAverage(dataflags,ratio,flags,weights);
+	  if (wantRatAmp) out.add("ratio_amplitude",amplitude(ratio));
+	  if (wantRatPhase) out.add("ratio_phase",phase(ratio));
+	  if (wantRatReal) out.add("ratio_real",real(ratio));
+	  if (wantRatImag) out.add("ratio_imaginary",imag(ratio));
+	  if (wantRatData) out.add("ratio_data",ratio);
 	}
       }
     } else {
