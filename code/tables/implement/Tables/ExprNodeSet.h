@@ -1,5 +1,5 @@
 //# ExprNodeSet.h: Classes to hold multiple table expression nodes
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -300,6 +300,12 @@ public:
     // Show the node.
     void show (ostream& os, uInt indent) const;
 
+    // Check if the data type of the set elements are the same.
+    // If not, an exception is thrown.
+    //# Note that if itsCheckTypes is set, the data types are already
+    // known to be equal.
+    void checkEqualDataTypes() const;
+
     // Contains the set only single elements?
     // Single means that only single values are given (thus no end nor incr).
     Bool isSingle() const;
@@ -373,6 +379,7 @@ private:
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
+    Bool itsCheckTypes;    //# True = checking data types is not needed
 };
 
 
