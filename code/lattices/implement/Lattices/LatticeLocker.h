@@ -32,7 +32,6 @@
 //# Includes
 #include <aips/Lattices/LatticeBase.h>
 #include <aips/Tables/TableLock.h>
-#include <aips/Exceptions/Excp.h>
 
 
 // <summary>
@@ -107,7 +106,7 @@
 //# </todo>
 
 
-class LatticeLocker : public Cleanup
+class LatticeLocker
 {
 public:
     // The constructor acquires a read or write lock on a lattice.
@@ -127,10 +126,6 @@ public:
     // If the constructor acquired the lock, the destructor releases
     // the lock and flushes the data if changed.
     ~LatticeLocker();
-
-    // This function is used by the AIPS++ exception handling mechanism.
-    // It calls the destructor.
-    void cleanup();
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?

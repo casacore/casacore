@@ -1,5 +1,5 @@
 //# LatticeLocker.cc: Class to hold a (user) lock on a lattice
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,9 +61,4 @@ LatticeLocker::~LatticeLocker()
 	    itsLatticePtr->lock (FileLocker::Read, 1);
 	}
     }
-}
-
-void LatticeLocker::cleanup()
-{
-    this->LatticeLocker::~LatticeLocker();
 }
