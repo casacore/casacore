@@ -4273,3 +4273,4 @@
 14 127 src mv trial/implement/Fitting/test/tFitLSQ.cc aips/implement/Fitting/test/tFitLSQ.cc
 14 127 src mv trial/implement/Fitting/test/tFitLSQ.out aips/implement/Fitting/test/tFitLSQ.out
 14 127 src mv trial/implement/Fitting/test/tLSQ.cc aips/implement/Fitting/test/tLSQ.cc
+14 127 src mv trial/implement/Fitting/test/tLSQ.out aips/implement/Fitting/test/tLSQ.out
