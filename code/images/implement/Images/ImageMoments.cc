@@ -748,13 +748,8 @@ Bool ImageMoments<T>::createMoments()
    }
    
 
-// Make remaining consistency checks
+// Find spectral axis and its units
 
-   if (pInImage_p->name() == out_p && moments_p.nelements()==1) {
-      os_p << LogIO::SEVERE << endl << "Input and output names are the same !" << LogIO::POST;
-      return False;
-   }
- 
    if (momentAxis_p == momentAxisDefault_p) {
      momentAxis_p = findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
@@ -768,42 +763,12 @@ Bool ImageMoments<T>::createMoments()
         return False;
      }
    }
+   Int worldMomentAxis = ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), momentAxis_p);
+   String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis);
+   cout << "momentAxisUnits = " << momentAxisUnits << endl;
 
 
-// Only can have the median coordinate under certain conditions
-   
-   if (ImageUtilities::inVector(MEDIAN_COORDINATE, moments_p) != -1) {
-      Bool noGood = False;
-      if (doWindow_p || doFit_p || doSmooth_p) {
-         noGood = True;
-      } else {
-         if (noInclude_p && noExclude_p) {
-            noGood = True;
-         } else {
-           if (range_p(0)*range_p(1) < 0) noGood = True;
-         }
-      }
-      if (noGood) {
-         os_p << LogIO::SEVERE;
-         os_p << "You have asked for the median coordinate moment, but it is only" << endl;
-         os_p << "available with the basic (no smooth, no window, no fit) method " << endl;
-         os_p << "and a pixel range that is either all positive or all negative" << LogIO::POST;
-         return False;
-      }
-   }
-
-// Make sure we can do what user asks for.  They must give the plotting
-// device for interactive methods.  Plotting can be invoked passively
-// for other methods.
-
-   if ( ((doWindow_p && !doAuto_p) ||
-         (!doWindow_p && doFit_p && !doAuto_p)) && device_p.empty()) {
-      os_p << LogIO::SEVERE << "You have not given a plotting device" << LogIO::POST;
-      return False;
-   } 
-
-
-// The big check
+// Check the user's requests are allowed
 
    if (!checkMethod()) return False;
 
@@ -849,17 +814,14 @@ Bool ImageMoments<T>::createMoments()
    }            
 
 // Set up image iterator.  Use the TiledStepper navigator because it knows 
-// the shape of tiles and will return the profiles in the optimal order
-// We do this one first so we can do the lattice subsectioning and
-// recover the shape of the lattice which is required to create the output
-// images
+// the shape of tiles and will return the profiles in the optimal efficiency 
+// order. 
    
    TiledStepper navigator (pInImage_p->shape(), 
                            pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
                            momentAxis_p);
    navigator.subSection(blc_p, trc_p);
    IPosition latticeShape = navigator.subLatticeShape();
-
    RO_LatticeIterator<T> imageIterator(*pInImage_p, navigator);
 
 
@@ -870,45 +832,8 @@ Bool ImageMoments<T>::createMoments()
    
    PagedImage<T>* pSmoothedImage = 0;
    String smoothName;
-
    if (doSmooth_p) {
-      Int axMax = max(smoothAxes_p.ac()) + 1;
-      if (axMax > pInImage_p->ndim()) {
-         os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
-         os_p <<                  "than the number of axes in the image" << LogIO::POST;
-         return False;
-      }
-      
-
-// Create smoothed image as a PagedImage.  We delete it later
-// if the user doesn't want to save it
-
-      if (smoothOut_p.empty()) {
-         File inputImageName(pInImage_p->name());
-         const String path = inputImageName.path().dirName() + "/";
-         Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
-         smoothName = fileName.absoluteName();
-      } else {
-         smoothName = smoothOut_p;
-      }
-
-// Set coordinate system
-         
-      CoordinateSystem cSys = pInImage_p->coordinates();
-      cSys.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
-
-// Create image
-       
-      pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
-      pSmoothedImage->set(0.0);
-      if (!smoothOut_p.empty()) {
-         os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
-      }
-          
-
-// Smooth it
-
-      if (!smoothImage(pSmoothedImage)) {
+      if (!smoothImage(smoothName, pSmoothedImage, latticeShape)) {
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
@@ -981,11 +906,20 @@ Bool ImageMoments<T>::createMoments()
    Bool doMedianI = False;
    Bool doMedianV = False;
    Bool doAbsDev = False;
+   Bool goodUnits;
+   Unit imageUnits = pInImage_p->units();
+//   imageUnits.setName("Jy/BEAM");
 
 // Loop over desired output moments
 
    for (i=0; i<moments_p.nelements(); i++) {
-      selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), i);
+
+// Set moment image units and assign pointer to output moments array
+// Value of goodMoments is the same for each output moment image
+
+      Unit momentUnits;
+      goodUnits = selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), 
+                                momentUnits, imageUnits, momentAxisUnits, i);
    
 // Create output image(s)
 
@@ -1000,13 +934,19 @@ Bool ImageMoments<T>::createMoments()
                                       out_p+suffix);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
       }
+
+// Set output image units if possible
+
+     if (goodUnits) (outPt[i])->setUnits(momentUnits);
+   } 
+   if (!goodUnits) {
+      os_p << LogIO::NORMAL << "Could not determine the units of the moment image(s)" << endl;
+      os_p << "so the units will be the same as those of the input image" << LogIO::POST;
    }
-
-
             
-// If the user is using the automatic, non-fitting window method, it
-// it needs a good assement of the noise.  The user can input that value, but
-// if they don't, we work it out here.
+// If the user is using the automatic, non-fitting window method, they need
+// a good assement of the noise.  The user can input that value, but if
+// they don't, we work it out here.
 
    Double noise;
    if ( stdDeviation_p <=0 && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
@@ -1067,8 +1007,6 @@ Bool ImageMoments<T>::createMoments()
    IPosition outPos(outDim);
 
 // Iterate through image and do all the wonderful things with each profile
-
- 
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
@@ -1323,6 +1261,50 @@ Bool ImageMoments<T>::checkMethod ()
 // Make sure we can do what the user wants
 //  
 {
+
+// Check names
+
+   if (pInImage_p->name() == out_p && moments_p.nelements()==1) {
+      os_p << LogIO::SEVERE << endl << "Input and output names are the same !" << LogIO::POST;
+      return False;
+   }
+
+
+// Make a plotting check. They must give the plotting device for interactive methods.  
+// Plotting can be invoked passively for other methods.
+
+   if ( ((doWindow_p && !doAuto_p) ||
+         (!doWindow_p && doFit_p && !doAuto_p)) && device_p.empty()) {
+      os_p << LogIO::SEVERE << "You have not given a plotting device" << LogIO::POST;
+      return False;
+   } 
+
+
+// Only can have the median coordinate under certain conditions
+   
+   if (ImageUtilities::inVector(MEDIAN_COORDINATE, moments_p) != -1) {
+      Bool noGood = False;
+      if (doWindow_p || doFit_p || doSmooth_p) {
+         noGood = True;
+      } else {
+         if (noInclude_p && noExclude_p) {
+            noGood = True;
+         } else {
+           if (range_p(0)*range_p(1) < 0) noGood = True;
+         }
+      }
+      if (noGood) {
+         os_p << LogIO::SEVERE;
+         os_p << "You have asked for the median coordinate moment, but it is only" << endl;
+         os_p << "available with the basic (no smooth, no window, no fit) method " << endl;
+         os_p << "and a pixel range that is either all positive or all negative" << LogIO::POST;
+         return False;
+      }
+   }
+
+
+// Now check all the silly methods
+
    const Bool doInter = ToBool(!doAuto_p);
 
    if (!( (!doSmooth_p && !doWindow_p && !doFit_p && ( noInclude_p &&  noExclude_p) && !doInter) ||
@@ -3262,37 +3244,52 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf)
 
 
 template <class T> 
-void ImageMoments<T>::selectMoment (Bool& doMedianI, 
+Bool ImageMoments<T>::selectMoment (Bool& doMedianI, 
                                     Bool& doMedianV,
                                     Bool& doAbsDev, 
                                     String& suffix, 
                                     Int& selMom,
+                                    Unit& momentUnits,
+                                    const Unit& imageUnits,
+                                    const String& momentAxisUnits,
                                     const Int& index)
 //
 // Set the output image suffixes and fill the moment
 // selection array according to what the user requests
 //
 // Input:
+//   momentAxisUnits
+//                The units of the moment axis
 //   index        Array index of moments array for this moment
+//   imageUnits   The brightness units of the input image.
 // Outputs:
+//   momentUnits  The brightness units of the moment
+//                image. Depends upon moment type
 //   doMedianI,V  The user has asked for median (I or V) moments
 //   doAbsDev     The user has asked for the absolute deviation moment
 //   selMom       pointer into moments array computed by the
 //                doMom* functions for this moment
 //   suffix       suffix for output file name
+//   Bool         True if could set units for moment image, false otherwise
 {
+   String temp = imageUnits.getName();
+   Bool goodUnits = ToBool(!imageUnits.getName().empty() && !momentUnits.empty());
+
    if (moments_p(index) == AVERAGE) {
       suffix = "_MAverage";
       selMom = AVERAGE;
    } else if (moments_p(index) == INTEGRATED) {
       suffix = "_MIntegrated";
       selMom = INTEGRATED;
+      temp = imageUnits.getName() + "." + momentAxisUnits;
    } else if (moments_p(index) == WEIGHTED_MEAN_COORDINATE) {
       suffix = "_MWeighted_Mean_Coord";
       selMom = WEIGHTED_MEAN_COORDINATE;
+      temp = momentAxisUnits;
    } else if (moments_p(index) == WEIGHTED_DISPERSION_COORDINATE) {
       suffix = "_MWeighted_Dispersion_Coord";
       selMom = WEIGHTED_DISPERSION_COORDINATE;
+      temp = momentAxisUnits + "." + momentAxisUnits;
    } else if (moments_p(index) == MEDIAN) {
       suffix = "_MMedian";
       selMom = MEDIAN;
@@ -3313,17 +3310,22 @@ void ImageMoments<T>::selectMoment (Bool& doMedianI,
    } else if (moments_p(index) == MAXIMUM_COORDINATE) {
       suffix = "_MMaximum_Coord";
       selMom = MAXIMUM_COORDINATE;
+      temp = momentAxisUnits;
    } else if (moments_p(index) == MINIMUM) {
       suffix = "_MMinimum";
       selMom = MINIMUM;
    } else if (moments_p(index) == MINIMUM_COORDINATE) {
       suffix = "_MMinimum_Coord";
       selMom = MINIMUM_COORDINATE;
+      temp = momentAxisUnits;
    } else if (moments_p(index) == MEDIAN_COORDINATE) {
       suffix = "_MMedian_Coord";
       selMom = MEDIAN_COORDINATE;
       doMedianV = True;
+      temp = momentAxisUnits;
    }
+   if (goodUnits) momentUnits.setName(temp);
+   return goodUnits;
 }
 
 
@@ -3661,16 +3663,57 @@ void ImageMoments<T>::showGaussFit   (const T& peak,
 
 
 template <class T> 
-Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
+Bool ImageMoments<T>::smoothImage (String& smoothName, 
+                                   PagedImage<T>*& pSmoothedImage,
+                                   const IPosition& latticeShape)
 //
 // Smooth image.  We smooth only the sublattice that the user
 // has asked for.
 //
 // Input
-//   pSmoothedImage Pointer to smoothed Lattice
+//   latticeSHape   Shape of output smoothed lattice
 // Output
+//   pSmoothedImage Pointer to smoothed Lattice
+//   smoothName     Name of smoothed image file
 //   Bool           True for success
 {
+
+// Check axes
+
+   Int axMax = max(smoothAxes_p.ac()) + 1;
+   if (axMax > pInImage_p->ndim()) {
+      os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
+      os_p <<                  "than the number of axes in the image" << LogIO::POST;
+      return False;
+   }
+      
+
+// Create smoothed image as a PagedImage.  We delete it later
+// if the user doesn't want to save it
+
+   if (smoothOut_p.empty()) {
+      File inputImageName(pInImage_p->name());
+      const String path = inputImageName.path().dirName() + "/";
+      Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
+      smoothName = fileName.absoluteName();
+   } else {
+      smoothName = smoothOut_p;
+   }
+
+// Set coordinate system
+         
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   cSys.subImage(blc_p.asVector(), IPosition(pInImage_p->ndim(),1).asVector());
+
+
+// Create smoothed image
+       
+   pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
+   pSmoothedImage->set(0.0);
+   if (!smoothOut_p.empty()) {
+      os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
+   }
+
 
 // Generate convolving function
 
@@ -3688,31 +3731,32 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
 
 // Fiddle CoordinateSystem
  
-      CoordinateSystem cSys = pInImage_p->coordinates();
+      CoordinateSystem psfCSys = pInImage_p->coordinates();
       Int coordinate, axisInCoordinate, worldAxis, pixelAxis;
       Vector<Double> refPix(smoothAxes_p.nelements());
       Int i;
-      for (i=0,pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      for (i=0,pixelAxis=0; pixelAxis<psfCSys.nPixelAxes(); pixelAxis++) {
          if (ImageUtilities::inVector(pixelAxis, smoothAxes_p) == -1) {
-            cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-            worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
+            psfCSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+            worldAxis = psfCSys.worldAxes(coordinate)(axisInCoordinate);
 
-            cSys.removePixelAxis(pixelAxis, 0.0);
-            cSys.removeWorldAxis(worldAxis, 0.0);
+            psfCSys.removePixelAxis(pixelAxis, 0.0);
+            psfCSys.removeWorldAxis(worldAxis, 0.0);
          } else {
             refPix(i) = psf.shape()(i)/2.0;
             i++;
          }
       }
-      Vector<Double> refValue(cSys.nWorldAxes(),Double(0.0));
-      cSys.setReferenceValue(refValue);
+      Vector<Double> refValue(psfCSys.nWorldAxes());
+      refValue = 0.0;
+      psfCSys.setReferenceValue(refValue);
 
 // Save image to disk
     
       IPosition blc(IPosition(pPSF->ndim(),0));
       IPosition trc(pPSF->shape());
       trc = trc - 1;
-      saveLattice (pPSF, cSys, blc, trc, psfOut_p);
+      saveLattice (pPSF, psfCSys, blc, trc, psfOut_p);
       delete pPSF;
    }
 
@@ -3725,11 +3769,11 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
    LatticeStepper imageNavigator(pInImage_p->shape(),
                                  IPosition(pInImage_p->ndim(),1));   
    imageNavigator.subSection(blc_p, trc_p);
-   IPosition latticeShape = imageNavigator.subLatticeShape();
+   IPosition smLatticeShape = imageNavigator.subLatticeShape();
  
    IPosition cursorShape(pInImage_p->ndim(),1);
    for (Int i=0; i<min(pInImage_p->ndim(),psf.ndim()); i++) {
-      if (psf.shape()(i) > 1) cursorShape(i) = latticeShape(i);
+      if (psf.shape()(i) > 1) cursorShape(i) = smLatticeShape(i);
    }
    imageNavigator.setCursorShape(cursorShape);
    RO_LatticeIterator<T> imageIterator(*pInImage_p, imageNavigator);
@@ -3744,7 +3788,7 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
 
    os_p << LogIO::NORMAL << "Begin convolution" << LogIO::POST;
    Convolver<T> conv(psf, cursorShape);
-   Int nIter = latticeShape.product() / cursorShape.product();
+   Int nIter = smLatticeShape.product() / cursorShape.product();
    Int percentInc = 20;
    Int inc = max(1, Int(Float(percentInc)/100.0*nIter));
    Int iIter = 1;
@@ -3761,7 +3805,7 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
       smoothedImageIterator++;
       iIter++;
    }
-
+  
    return True;
 }
 
