@@ -41,6 +41,7 @@
 //# Forward Declarations
 class AipsIO;
 class Slice;
+class Slicer;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
 template<class Domain, class Range> class Functional;
@@ -396,16 +397,16 @@ public:
     const T &operator()(const IPosition &) const;
     // </group>
 
-    // Ret a reference to an array which extends from "start" to end."
-    //
+    // Get a reference to an array which extends from "start" to end."
     // <group>
-
     Array<T> operator()(const IPosition &start, const IPosition &end);
-
     // Along the ith axis, every inc[i]'th element is chosen.
     Array<T> operator()(const IPosition &start, const IPosition &end,
 			const IPosition &inc);
     // </group>
+
+    // Get a reference to an array using a Slicer.
+    Array<T> operator()(const Slicer&);
 
 
     // The array is masked by the input LogicalArray.

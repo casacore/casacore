@@ -201,6 +201,8 @@ public:
       { return Array<T>::operator()(blc,trc,incr); }
     Array<T> operator()(const IPosition &blc, const IPosition &trc)
       { return Array<T>::operator()(blc,trc); }
+    Array<T> operator()(const Slicer& slicer)
+      { return Array<T>::operator()(slicer); }
     // </group>
 
 

@@ -27,6 +27,7 @@
 
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/Assert.h>
@@ -865,6 +866,17 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
     i = 1;
     return (*this)(b,e,i);
 }
+
+template<class T> Array<T> Array<T>::operator()(const Slicer& slicer)
+{
+    if (slicer.isFixed()) {
+        return operator() (slicer.start(), slicer.end(), slicer.stride());
+    }
+    IPosition blc, trc, inc;
+    slicer.inferShapeFromSource (shape(), blc, trc, inc);
+    return operator() (blc, trc, inc);
+}
+
 
 template<class T>
 MaskedArray<T> Array<T>::operator() (const LogicalArray &mask) const
