@@ -374,7 +374,7 @@ MARRM_OP_SM ( *, *= )
 MARRM_OP_SM ( /, /= )
 
 
-template<class T> void indgen(const MaskedArray<T> &left,
+template<class T> void indgen(MaskedArray<T> &left,
                               const T start, const T inc)
 {
     Bool leftarrDelete;
@@ -401,12 +401,12 @@ template<class T> void indgen(const MaskedArray<T> &left,
     left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
 }
 
-template<class T> void indgen(const MaskedArray<T> &a)
+template<class T> void indgen(MaskedArray<T> &a)
 {
     indgen(a, T(0), T(1));
 }
 
-template<class T> void indgen(const MaskedArray<T> &a, const T start)
+template<class T> void indgen(MaskedArray<T> &a, const T start)
 {
     indgen(a, start, T(1));
 }
@@ -956,7 +956,7 @@ template<class T> T FUNC (const MaskedArray<T> &left) \
         = left.getMaskStorage(leftmaskDelete); \
     const LogicalArrayElem *leftmaskS = leftmaskStorage; \
 \
-    T result; \
+    T result = *leftarrS; \
     uInt ntotal = left.nelements(); \
     Bool foundOne = False; \
 \
