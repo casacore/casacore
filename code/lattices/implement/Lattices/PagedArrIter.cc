@@ -360,9 +360,9 @@ setup_tile_cache() {
     // So calculate the start and end tile for the window.
     IPosition tileShape = tilerPtr->tileShape();
     Int tilesz = tileShape(axis);
-    Int stTile = (theNavPtr->blc()(axis) + tilesz - 1) / tilesz;
-    Int endTile = (theNavPtr->trc()(axis) + tilesz) / tilesz;
-    theData.setCacheSize ((endTile - stTile) * tileShape.product());
+    Int stTile = theNavPtr->blc()(axis) / tilesz;
+    Int endTile = theNavPtr->trc()(axis) / tilesz;
+    theData.setCacheSize ((1 + endTile - stTile) * tileShape.product());
     return;
   }
   // Because the current stepper is not a LatticeStepper or TiledStepper
