@@ -45,7 +45,7 @@
 #include <iostream.h>
 
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
-              const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol);
+              const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);
 
 main (int argc, char **argv)
 {
@@ -111,13 +111,6 @@ try {
       cerr << "Data = " << fitsImage.getSlice(start, shape) << endl;
       cerr << "Mask = " << fitsImage.getMaskSlice(start, shape) << endl;
    }
-//
-   Float tol = 1.0e-5;
-   if (fitsImage.dataType()==TpFloat) {
-   } else if (fitsImage.dataType()==TpShort) {
-     tol = 1.0e-3;
-   }
-
 
 // Convert from FITS as a comparison
 
@@ -137,7 +130,7 @@ try {
    CoordinateSystem dataCS = pTempImage->coordinates();
    delete pTempImage;
 //
-   AlwaysAssert(allNear(dataArray, dataMask, fitsArray, fitsMask, tol), AipsError);
+   AlwaysAssert(allNear(dataArray, dataMask, fitsArray, fitsMask), AipsError);
    AlwaysAssert(fitsCS.near(dataCS), AipsError);
 
 // Test Clone
@@ -148,7 +141,7 @@ try {
    CoordinateSystem fitsCS2 = pFitsImage->coordinates();
    delete pFitsImage;
 //
-   AlwaysAssert(allNear(dataArray, dataMask, fitsArray2, fitsMask2, tol), AipsError);
+   AlwaysAssert(allNear(dataArray, dataMask, fitsArray2, fitsMask2), AipsError);
    AlwaysAssert(fitsCS2.near(dataCS), AipsError);
 //
    cerr << "ok " << endl;
