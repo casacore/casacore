@@ -114,7 +114,7 @@ sub aips2topbar {
 "<a href=\"$DOCSROOT/user/documentation.html\" onMouseOver=\"aMenu.showAipsMenu(\'userMenu\')\">\n" .
 "<font size=2 face=helvetica color=\"\#ffffff\">\n" .
 "<b>Documentation</b></a></td>\n" .
-"<td><a href=\"glish.html\" onMouseOver=\"aMenu.showAipsMenu(\'glishMenu\')\">\n" .
+"<td><a href=\"$DOCSROOT/glish/glish.html\" onMouseOver=\"aMenu.showAipsMenu(\'glishMenu\')\">\n" .
 "<font size=2 face=helvetica color=\"\#ffdd00\">\n" .
 "<b>Glish</b></a></td>\n" .
 "<td><a href=\"$DOCSROOT/learnmore.html\" onMouseOver=\"aMenu.showAipsMenu(\'learnMenu\')\">\n" .
