@@ -17,5 +17,5 @@
 
 \tableofcontents
       
-\input{opplan.latex}
+\input{opplan.tex}
 \end{document}
