@@ -44,6 +44,19 @@ uInt Measure::giveMe(const String &in, Int N_name,
   return MUString::minimaxNC(in, N_name, tname);
 }
 
+const String *const Measure::allTypes(Int &nall, Int &nextra,
+				      const uInt *&typ) const {
+  static const Int N_name  = 0;
+  static const Int N_extra = 0;
+  static const String tname[N_name] = {};
+  static const uInt oname[N_name] = {};
+
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
 //# Global functions
 ostream &operator<<(ostream &os, const Measure &meas) {
   meas.print(os);

@@ -151,8 +151,10 @@ const String &MDirection::showType(uInt tp) {
     return pname[tp & ~MDirection::EXTRA];
 }
 
-Bool MDirection::getType(MDirection::Types &tp, const String &in) {
-  static const Int N_name = 29;
+const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
+					   const uInt *&typ) {
+  static const Int N_name  = 29;
+  static const Int N_extra = 10;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -184,7 +186,7 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     "SUN",
     "MOON" };
   
-  static const MDirection::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MDirection::J2000,
     MDirection::JMEAN,
     MDirection::JTRUE,
@@ -214,13 +216,29 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     MDirection::PLUTO,
     MDirection::SUN,
     MDirection::MOON };
+
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MDirection::allTypes(Int &nall, Int &nextra,
+					 const uInt *&typ) const {
+  return MDirection::allMyTypes(nall, nextra, typ);
+}
+
+Bool MDirection::getType(MDirection::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MDirection::allMyTypes(nall, nex, oname);
   
-  uInt i = Measure::giveMe(in, N_name, tname);
+  Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=N_name) {
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MDirection::Types) oname[i];
   };
   return True;
 }

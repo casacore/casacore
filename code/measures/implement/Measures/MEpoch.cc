@@ -109,8 +109,10 @@ const String &MEpoch::showType(uInt tp) {
   return tname[tp & ~MEpoch::EXTRA];
 }
 
-Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
+const String *const MEpoch::allMyTypes(Int &nall, Int &nextra,
+					   const uInt *&typ) {
   static const Int N_name = 17;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "LAST",
     "LMST",
@@ -128,9 +130,9 @@ Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
     "GMST",
     "TT",
     "ET",
-    "UT"};
+    "UT" };
   
-  static const MEpoch::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MEpoch::LAST,
     MEpoch::LMST,
     MEpoch::GMST1,
@@ -147,14 +149,30 @@ Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
     MEpoch::GMST1,
     MEpoch::TDT,
     MEpoch::TDT,
-    MEpoch::UT1};
-  
-  uInt i = Measure::giveMe(in, N_name, tname);
+    MEpoch::UT1 };
 
-  if (i>=N_name) {
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MEpoch::allTypes(Int &nall, Int &nextra,
+					 const uInt *&typ) const {
+  return MEpoch::allMyTypes(nall, nextra, typ);
+}
+
+Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MEpoch::allMyTypes(nall, nex, oname);
+  
+  Int i = Measure::giveMe(in, nall, tname);
+
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MEpoch::Types) oname[i];
   };
   return True;
 }

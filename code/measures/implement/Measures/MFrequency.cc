@@ -109,8 +109,10 @@ const String &MFrequency::showType(uInt tp) {
     return tname[tp];
 }
 
-Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
-  static const Int N_name = 7;
+const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 7;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "REST",
     "LSR",
@@ -118,23 +120,39 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
     "BARY",
     "GEO",	    
     "TOPO",
-    "GALACTO"}; 
+    "GALACTO" }; 
   
-  static const MFrequency::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MFrequency::REST,
     MFrequency::LSR,
     MFrequency::LSRK,
     MFrequency::BARY,
     MFrequency::GEO,
     MFrequency::TOPO,
-    MFrequency::GALACTO};
-  
-  uInt i = Measure::giveMe(in, N_name, tname);
+    MFrequency::GALACTO };
 
-  if (i>=N_name) {
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MFrequency::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MFrequency::allMyTypes(nall, nextra, typ);
+}
+
+Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MFrequency::allMyTypes(nall, nex, oname);
+  
+  Int i = Measure::giveMe(in, nall, tname);
+  
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MFrequency::Types) oname[i];
   };
   return True;
 }

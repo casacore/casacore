@@ -125,6 +125,29 @@ void MPosition::assert(const Measure &in) {
   };
 }
 
+const String *const MPosition::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 2;
+  static const Int N_extra = 0;
+  static const String tname[N_name] = {
+    "ITRF",
+    "WGS84" };
+  
+  static const uInt oname[N_name] = {
+    MPosition::ITRF,
+    MPosition::WGS84 };
+
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MPosition::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MPosition::allMyTypes(nall, nextra, typ);
+}
+
 const String &MPosition::showType(uInt tp) {
     static const String tname[MPosition::N_Types] = {
 	"ITRF",
@@ -134,21 +157,16 @@ const String &MPosition::showType(uInt tp) {
 }
 
 Bool MPosition::getType(MPosition::Types &tp, const String &in) {
-  static const Int N_name = 2;
-  static const String tname[N_name] = {
-    "ITRF",
-    "WGS84"};
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MPosition::allMyTypes(nall, nex, oname);
   
-  static const MPosition::Types oname[N_name] = {
-    MPosition::ITRF,
-    MPosition::WGS84};
+  Int i = Measure::giveMe(in, nall, tname);
   
-  uInt i = Measure::giveMe(in, N_name, tname);
-  
-  if (i>=N_name) {
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MPosition::Types) oname[i];
   };
   return True;
 }

@@ -101,8 +101,10 @@ const String &MDoppler::showType(uInt tp) {
     return tname[tp];
 }
 
-Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
-  static const Int N_name = 8;
+const String *const MDoppler::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 8;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "RADIO", 
     "Z",
@@ -111,9 +113,9 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
     "GAMMA",
     "OPTICAL",
     "TRUE",
-    "RELATIVISTIC"};
+    "RELATIVISTIC" };
   
-  static const MDoppler::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MDoppler::RADIO, 
     MDoppler::Z,
     MDoppler::RATIO,
@@ -121,14 +123,30 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
     MDoppler::GAMMA,
     MDoppler::Z,
     MDoppler::BETA,
-    MDoppler::BETA};
+    MDoppler::BETA };
+
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MDoppler::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MDoppler::allMyTypes(nall, nextra, typ);
+}
+
+Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MDoppler::allMyTypes(nall, nex, oname);
   
-  uInt i = Measure::giveMe(in, N_name, tname);
+  Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=N_name) {
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MDoppler::Types) oname[i];
   };
   return True;
 }

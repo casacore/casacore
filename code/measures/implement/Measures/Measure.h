@@ -346,6 +346,18 @@ public:
   virtual Bool setRefString(const String &in) = 0;
   // Get the default reference type
   virtual const String &getDefaultType() const = 0;
+  // Get a list of all known reference codes. nall returns the number in list,
+  // nextra the number of specials (like planets) that should be at 
+  // end of list). typ returns the list of corresponding types.
+  // All should have
+  // <srcblock>
+  //  static const String *const allMyTypes(Int &nall, Int &nextra,
+  //					    const uInt *&typ);
+  // </srcblock>
+  // <group>
+  virtual const String *const allTypes(Int &nall, Int &nextra,
+				       const uInt *&typ) const;
+  // </group>
   //
   // A general string checking routine to be used in derived measures.
   // Its arguments are the string to be converted (in), an array of

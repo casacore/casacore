@@ -113,8 +113,10 @@ const String &MRadialVelocity::showType(uInt tp) {
     return tname[tp];
 }
 
-Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
-  static const Int N_name = 6;
+const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 6;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "LSR",
     "LSRK",
@@ -123,7 +125,7 @@ Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
     "TOPO",
     "GALACTO"}; 
 
-  static const MRadialVelocity::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MRadialVelocity::LSR,
     MRadialVelocity::LSRK,
     MRadialVelocity::BARY,
@@ -131,12 +133,28 @@ Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
     MRadialVelocity::TOPO,
     MRadialVelocity::GALACTO};
 
-  uInt i = Measure::giveMe(in, N_name, tname);
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MRadialVelocity::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MRadialVelocity::allMyTypes(nall, nextra, typ);
+}
+
+Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MRadialVelocity::allMyTypes(nall, nex, oname);
   
-  if (i>=N_name) {
+  Int i = Measure::giveMe(in, nall, tname);
+  
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MRadialVelocity::Types) oname[i];
   };
   return True;
 }

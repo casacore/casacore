@@ -120,8 +120,10 @@ const String &MBaseline::showType(uInt tp) {
   return tname[tp];
 }
 
-Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
-  static const Int N_name = 18;
+const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 18;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "ITRF",
     "J2000",
@@ -142,7 +144,7 @@ Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
     "TECLIPTIC",
     "SUPERGAL" };
   
-  static const MBaseline::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MBaseline::ITRF,
     MBaseline::J2000,
     MBaseline::JMEAN,
@@ -161,13 +163,29 @@ Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
     MBaseline::MECLIPTIC,
     MBaseline::TECLIPTIC,
     MBaseline::SUPERGAL };
+
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
+
+const String *const MBaseline::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MBaseline::allMyTypes(nall, nextra, typ);
+}
+
+Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MBaseline::allMyTypes(nall, nex, oname);
   
-  uInt i = Measure::giveMe(in, N_name, tname);
+  Int i = Measure::giveMe(in, nall, tname);
   
-  if (i>=N_name) {
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MBaseline::Types) oname[i];
   };
   return True;
 }

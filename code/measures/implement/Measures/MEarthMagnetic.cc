@@ -137,8 +137,10 @@ const String &MEarthMagnetic::showType(uInt tp) {
     return pname[tp & ~MEarthMagnetic::EXTRA];
 }
 
-Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
-  static const Int N_name = 19;
+const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
+					  const uInt *&typ) {
+  static const Int N_name  = 19;
+  static const Int N_extra = 0;
   static const String tname[N_name] = {
     "ITRF",
     "J2000",
@@ -160,7 +162,7 @@ Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
     "SUPERGAL",
     "IGRF" };
 
-  static const MEarthMagnetic::Types oname[N_name] = {
+  static const uInt oname[N_name] = {
     MEarthMagnetic::ITRF,
     MEarthMagnetic::J2000,
     MEarthMagnetic::JMEAN,
@@ -181,12 +183,28 @@ Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
     MEarthMagnetic::SUPERGAL,
     MEarthMagnetic::IGRF};
 
-    uInt i = Measure::giveMe(in, N_name, tname);
+  nall   = N_name;
+  nextra = N_extra;
+  typ    = oname;
+  return tname;
+}
 
-  if (i>=N_name) {
+const String *const MEarthMagnetic::allTypes(Int &nall, Int &nextra,
+					const uInt *&typ) const {
+  return MEarthMagnetic::allMyTypes(nall, nextra, typ);
+}
+
+Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
+  const uInt *oname;
+  Int nall, nex;
+  const String *tname = MEarthMagnetic::allMyTypes(nall, nex, oname);
+  
+  Int i = Measure::giveMe(in, nall, tname);
+  
+  if (i>=nall) {
     return False;
   } else {
-    tp = oname[i];
+    tp = (MEarthMagnetic::Types) oname[i];
   };
   return True;
 }
