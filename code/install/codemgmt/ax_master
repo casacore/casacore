@@ -2437,3 +2437,4 @@
 11 246 sys rm libexec/utility_meta.g
 11 246 sys rm libexec/tutility.g
 11 251 src rm atnf/apps/livedata/gridzilla.lastexit
+11 256 src mv nrao/apps/vlafiller/vlafiller.cc nrao/apps/vlafiller/vla2table.cc
