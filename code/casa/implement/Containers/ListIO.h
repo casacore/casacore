@@ -31,6 +31,26 @@
 #include <aips/Containers/List.h>
 
 
+// <summary>
+// Input/output operators for Lists.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=List>List</linkto>
+//   <li> ostream
+// </prerequisite>
+
+// <synopsis> 
+// These global functions provide easy input and output of List objects.
+// </synopsis>
+//
+// <group name="List IO">
+
 // These functions are used to write <src>List</src>s to an ostream.
 // <group>
 template<class t> ostream &operator<<(ostream &, const List<t> &);

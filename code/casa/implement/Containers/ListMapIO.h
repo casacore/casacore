@@ -28,6 +28,27 @@
 #if !defined(AIPS_LISTMAPIO_H_)
 #define AIPS_LISTMAPIO_H_
 
+// <summary>
+// Input/output operators for ListMaps.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=ListMap>ListMap</linkto>
+//   <li> ostream
+// </prerequisite>
+
+// <synopsis> 
+// The global functions in MapIO.h provide easy input and output of
+// ListMap objects.
+// </synopsis>
+//
+// <group name="ListMap IO">
+
 #include <aips/Containers/ListMap.h>
 #include <aips/Containers/MapIO.h>
 

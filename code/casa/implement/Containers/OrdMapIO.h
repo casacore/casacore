@@ -28,6 +28,27 @@
 #if !defined(AIPS_ORDMAPIO_H)
 #define AIPS_ORDMAPIO_H
 
+// <summary>
+// Input/output operators for OrderedMaps.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=OrderedMap>OrderedMap</linkto>
+//   <li> ostream
+// </prerequisite>
+
+// <synopsis> 
+// The global functions in MapIO.h provide easy input and output of
+// OrderedMap objects.
+// </synopsis>
+//
+// <group name="OrderedMap IO">
+
 #include <aips/Containers/MapIO.h>
 #include <aips/Containers/OrderedMap.h>
 
