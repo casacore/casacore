@@ -6235,3 +6235,4 @@
 17 191 src mv ./aips/implement/Functionals/NQWrapperData.h ./aips/implement/Functionals/WrapperData.h
 17 191 src mv ./aips/implement/Functionals/NQWrapperParam.cc ./aips/implement/Functionals/WrapperParam.cc
 17 191 src mv ./aips/implement/Functionals/NQWrapperParam.h ./aips/implement/Functionals/WrapperParam.h
+17 191 src mv ./aips/implement/Functionals/test/dNQGaussianND.cc ./aips/implement/Functionals/test/dGaussianND.cc
