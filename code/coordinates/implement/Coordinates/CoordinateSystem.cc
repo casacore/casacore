@@ -1,5 +1,5 @@
 //# CoordinateSystem.cc: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/MVTime.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
@@ -3197,20 +3198,24 @@ void CoordinateSystem::list (LogIO& os,
 
    listFrequencySystem(os, velocityType);
 
+// Pointing center
+ 
+   listPointingCenter(os);
+
 // List telescope, observer, date
 
-   os << "Telescope        : " << obsinfo_p.telescope() << endl;
-   os << "Observer         : " << obsinfo_p.observer() << endl;
+   os << "Telescope           : " << obsinfo_p.telescope() << endl;
+   os << "Observer            : " << obsinfo_p.observer() << endl;
 //
    MEpoch epoch = obsinfo_p.obsDate();
-   if (epoch.getValue().getDay() != Double(0.0)) { 
+   MEpoch defEpoch = ObsInfo::defaultObsDate();
+   if (epoch.getValue().getDay() != defEpoch.getValue().getDay()) { 
       MVTime time = MVTime(epoch.getValue());
-      os << "Date observation : " << time.string(MVTime::YMD) << endl;
+      os << "Date observation    : " << time.string(MVTime::YMD) << endl;
    } else {
-      os << "Date observation : " << "UNKNOWN" << endl;
+      os << "Date observation    : " << "UNKNOWN" << endl;
    }
    os << endl;
-
 
 // Determine the widths for all the fields that we want to list
 
@@ -3979,8 +3984,39 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types velocityTy
          restFreq.setUnit(specCoord.worldAxisUnits()(0));
 //
          ostrstream oss;
-         oss << restFreq << endl;
-         os << "Rest frequency      : " << String(oss) << endl;
+         oss << "Rest frequency      : " << restFreq << ends;
+         os << String(oss) << endl;
+      }
+   }
+}
+
+
+void CoordinateSystem::listPointingCenter (LogIO& os) const
+{
+   Int afterCoord = -1;
+   Int iC = findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (iC >= 0) {
+      MVDirection pc = obsinfo_p.pointingCenter();
+      if (!obsinfo_p.isPointingCenterInitial()) {
+         const DirectionCoordinate& dC = directionCoordinate(uInt(iC));
+         Vector<Double> pixel, world;
+         if (!dC.toPixel(pixel, pc)) {
+            os << dC.errorMessage() << LogIO::EXCEPTION;
+         }
+         if (!dC.toWorld(world, pixel)) {
+            os << dC.errorMessage() << LogIO::EXCEPTION;
+         }
+//
+         Int prec;
+         Coordinate::formatType form(Coordinate::DEFAULT);
+         dC.getPrecision(prec, form, True, 6, 6, 6);
+         String listUnits;
+         String lon = dC.format(listUnits, form, world(0), 0, True, prec);
+         String lat  = dC.format(listUnits, form, world(1), 1, True, prec);
+//
+         ostrstream oss;
+         oss << "Pointing center     :  " << lon << "  " << lat << ends;
+         os << String(oss) << endl;
       }
    }
 }
@@ -4020,6 +4056,3 @@ StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, In
 //  
    return StokesCoordinate(newStokes);
 }
-   
-
-
