@@ -309,7 +309,10 @@ uInt Table::nAutoLocks()
     for (uInt i=0; i<ntab; i++) {
 	const PlainTable& table = *(cache(i));
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
-	    n++;
+	    //# Having a read lock is enough.
+	    if (table.hasLock (False)) {
+		n++;
+	    }
 	}
     }
     return n;
