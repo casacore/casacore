@@ -1,5 +1,5 @@
 //# Slicer.h:  specify which elements to extract from an n-dimensional array
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -414,14 +414,14 @@ private:
     void fillSlice (const Slice&, Int& start, Int& length, Int& stride);
 
     // Fill the fixed flag.
-    void Slicer::fillFixed();
+    void fillFixed();
 };
 
 
 // <summary>IO functions for Slicer's</summary>
 // <group name="Slicer IO">
 // Print the contents of the specified Slicer to the specified stream.
-ostream  &operator << (ostream &stream, const Slicer &slicer);
+ostream& operator << (ostream& stream, const Slicer& slicer);
 // </group>
 
 
