@@ -60,6 +60,8 @@ TableParseSelect* select;
 %token COMMA
 %token LBRACKET
 %token RBRACKET
+%token LBRACE
+%token RBRACE
 %token COLON
 %token OPENOPEN
 %token OPENCLOSED
@@ -84,6 +86,7 @@ TableParseSelect* select;
 %type <settp> elemlist
 %type <settp> elems
 %type <elem> elem
+%type <elem> subsrange
 %type <elem> colonrange
 %type <sort>  sortexpr
 %type <sortb> sortlist
@@ -96,6 +99,7 @@ TableParseSelect* select;
 %left TIMES DIVIDE MODULO
 %right POWER
 %right NOT
+
 
 %{
 int TableGramlex (YYSTYPE*);
@@ -337,12 +341,12 @@ simexpr:   LPAREN orexpr RPAREN
 	   }
          | NAME {
 	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                 handleKeyCol($1->str));
+                                                 handleKeyCol ($1->str));
 	       delete $1;
 	   }
          | FLDNAME {
 	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                 handleKeyCol($1->str));
+                                                 handleKeyCol ($1->str));
 	       delete $1;
 	   }
          | LITERAL {
@@ -371,7 +375,7 @@ set:       LBRACKET elems RBRACKET {
            }
          ;
 
-elemlist: elems
+elemlist:  elems
                { $$ = $1; }
          |
                { $$ = new TableExprNodeSet; }       /* no elements */
@@ -389,48 +393,104 @@ elems:     elems COMMA elem {
 	   }
          ;
 
-elem:    colonrange {
+elem:      orexpr {
+               $$ = new TableExprNodeSetElem(*$1);
+	       delete $1;
+	   }
+         | colonrange {
                $$ = $1;
            }
-         | orexpr OPENOPEN orexpr {
+         | LT arithexpr COMMA arithexpr GT {
+               $$ = new TableExprNodeSetElem (False, *$2, *$4, False);
+	       delete $2;
+	       delete $4;
+           }
+         | LT arithexpr COMMA arithexpr RBRACE {
+               $$ = new TableExprNodeSetElem (False, *$2, *$4, True);
+	       delete $2;
+	       delete $4;
+           }
+         | LBRACE arithexpr COMMA arithexpr GT {
+               $$ = new TableExprNodeSetElem (True, *$2, *$4, False);
+	       delete $2;
+	       delete $4;
+           }
+         | LBRACE arithexpr COMMA arithexpr RBRACE {
+               $$ = new TableExprNodeSetElem (True, *$2, *$4, True);
+	       delete $2;
+	       delete $4;
+           }
+         | LBRACE COMMA arithexpr GT {
+                $$ = new TableExprNodeSetElem (*$3, False);
+	       delete $3;
+          }
+         | LT COMMA arithexpr GT {
+                $$ = new TableExprNodeSetElem (*$3, False);
+	       delete $3;
+          }
+         | LBRACE COMMA arithexpr RBRACE {
+                $$ = new TableExprNodeSetElem (*$3, True);
+	       delete $3;
+           }
+         | LT COMMA arithexpr RBRACE {
+                $$ = new TableExprNodeSetElem (*$3, True);
+	       delete $3;
+           }
+         | LT arithexpr COMMA RBRACE {
+               $$ = new TableExprNodeSetElem (False, *$2);
+	       delete $2;
+           }
+         | LT arithexpr COMMA GT {
+               $$ = new TableExprNodeSetElem (False, *$2);
+	       delete $2;
+           }
+         | LBRACE arithexpr COMMA RBRACE {
+               $$ = new TableExprNodeSetElem (True, *$2);
+	       delete $2;
+           }
+         | LBRACE arithexpr COMMA GT {
+               $$ = new TableExprNodeSetElem (True, *$2);
+	       delete $2;
+           }
+         | arithexpr OPENOPEN arithexpr {
                $$ = new TableExprNodeSetElem (False, *$1, *$3, False);
 	       delete $1;
 	       delete $3;
            }
-         | orexpr OPENCLOSED orexpr {
+         | arithexpr OPENCLOSED arithexpr {
                $$ = new TableExprNodeSetElem (False, *$1, *$3, True);
 	       delete $1;
 	       delete $3;
            }
-         | orexpr CLOSEDOPEN orexpr {
+         | arithexpr CLOSEDOPEN arithexpr {
                $$ = new TableExprNodeSetElem (True, *$1, *$3, False);
 	       delete $1;
 	       delete $3;
            }
-         | orexpr CLOSEDCLOSED orexpr {
+         | arithexpr CLOSEDCLOSED arithexpr {
                $$ = new TableExprNodeSetElem (True, *$1, *$3, True);
 	       delete $1;
 	       delete $3;
            }
-	 | EMPTYOPEN orexpr {
+	 | EMPTYOPEN arithexpr {
                $$ = new TableExprNodeSetElem (*$2, False);
 	       delete $2;
            }
-	 | EMPTYCLOSED orexpr {
+	 | EMPTYCLOSED arithexpr {
                $$ = new TableExprNodeSetElem (*$2, True);
 	       delete $2;
            }
-	 | orexpr OPENEMPTY {
+	 | arithexpr OPENEMPTY {
                $$ = new TableExprNodeSetElem (False, *$1);
 	       delete $1;
            }
-	 | orexpr CLOSEDEMPTY {
+	 | arithexpr CLOSEDEMPTY {
                $$ = new TableExprNodeSetElem (True, *$1);
 	       delete $1;
            }
          ;
 
-subscripts: subscripts COMMA colonrange {
+subscripts: subscripts COMMA subsrange {
                $$ = $1;
 	       $$->add (*$3);
 	       delete $3;
@@ -444,54 +504,58 @@ subscripts: subscripts COMMA colonrange {
 	       $$->add (TableExprNodeSetElem (0, 0, 0));
 	       $$->add (TableExprNodeSetElem (0, 0, 0));
 	   }
-         | COMMA colonrange {
+         | COMMA subsrange {
 	       $$ = new TableExprNodeSet;
 	       $$->add (TableExprNodeSetElem (0, 0, 0));
 	       $$->add (*$2);
 	       delete $2;
 	   }
-         | colonrange {
+         | subsrange {
 	       $$ = new TableExprNodeSet;
 	       $$->add (*$1);
 	       delete $1;
 	   }
          ;
 
-colonrange: orexpr {
+subsrange: arithexpr {
                $$ = new TableExprNodeSetElem (*$1);
 	       delete $1;
             }
-         |  orexpr COLON orexpr {
+         | colonrange {
+               $$ = $1;
+	 }
+
+colonrange: arithexpr COLON arithexpr {
                $$ = new TableExprNodeSetElem ($1, $3, 0);
 	       delete $1;
 	       delete $3;
             }
-         |  orexpr COLON orexpr COLON orexpr {
+         |  arithexpr COLON arithexpr COLON arithexpr {
                $$ = new TableExprNodeSetElem ($1, $3, $5);
 	       delete $1;
 	       delete $3;
 	       delete $5;
             }
-         |  orexpr COLON {
+         |  arithexpr COLON {
 	       TableExprNode incr(1);
                $$ = new TableExprNodeSetElem ($1, 0, &incr);
 	       delete $1;
             }
-         |  orexpr COLON COLON orexpr {
+         |  arithexpr COLON COLON arithexpr {
                $$ = new TableExprNodeSetElem ($1, 0, $4);
 	       delete $1;
 	       delete $4;
             }
-         |  COLON orexpr {
+         |  COLON arithexpr {
                $$ = new TableExprNodeSetElem (0, $2, 0);
 	       delete $2;
             }
-         |  COLON orexpr COLON orexpr {
+         |  COLON arithexpr COLON arithexpr {
                $$ = new TableExprNodeSetElem (0, $2, $4);
 	       delete $2;
 	       delete $4;
             }
-         |  COLON COLON orexpr {
+         |  COLON COLON arithexpr {
                $$ = new TableExprNodeSetElem (0, 0, $3);
 	       delete $3;
             }
