@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,7 +71,11 @@ template<class T> class Vector;
 // (as defined by <linkto file="TableDesc.h#defineHypercolumn">
 // TableDesc::defineHypercolumn</linkto>)
 // in one or more hypercubes.
-// The general concept of these storage managers is explained in the
+// <br>It is not necessary to define a hypercolumn. If not defined,
+// it is assumed that all columns bound to this storage manager are
+// data columns. At least one of the columns must have a fixed
+// dimensionality and is used to determine the hypercube dimnensionality.
+// <br>The general concept of these storage managers is explained in the
 // <linkto module="Tables:TiledStMan">Tables module description</linkto>.
 // <p>
 // TiledStMan contains all common functions for the different tiled
@@ -429,15 +433,20 @@ protected:
 
     // Read the data from the header file.
     // When done for the first time, setup() is called to initialize
-    // the various variables.
-    void headerFileGet (AipsIO& headerFile, uInt tabNrrow, Bool firstTime);
+    // the various variables (using the extraNdim variable).
+    void headerFileGet (AipsIO& headerFile, uInt tabNrrow, Bool firstTime,
+			Int extraNdim);
 
     // Close the header file.
     // It deletes the AipsIO object.
     void headerFileClose (AipsIO* headerFile);
 
     // Set up the TiledStMan variables from the table description.
-    void setup();
+    // The argument specifies the number of extra dimensions for the
+    // hypercube compared to the data array (usually 0 or 1).
+    // It is only used if no hypercolumn definition exists.
+    // -1 means that the hypercolumn definition has to be present.
+    void setup (Int extraNdim);
 
     // Create a TSMFile object and store its pointer at the given index
     // in the block.
