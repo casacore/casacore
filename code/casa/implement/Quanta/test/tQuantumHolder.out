@@ -39,3 +39,13 @@ Error expected:
 Input quantity:              12.5 km/s
 From error: Illegal Quantum record in QuantumHolder::fromRecord
 
+Input String:                12:30:00
+As quantity:                 187.5 deg
+Input String:                -97.8 Mpc/a
+As quantity:                 -97.8 Mpc/a
+Input String:                12.5JY
+Expected error for String 12.5JY (value still -97.8 Mpc/a)
+Error message now: Illegal Quantum record in QuantumHolder::fromRecord
+Illegal input units or format in QuantumHolder::fromString
+
+----------------------------------------------------
