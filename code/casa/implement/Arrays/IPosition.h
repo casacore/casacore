@@ -1,5 +1,5 @@
 //# IPosition.h: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,7 +130,8 @@ public:
     // Makes a copy (copy, NOT reference, semantics) of other.
     IPosition(const IPosition& other);
     
-    ~IPosition();
+    ~IPosition()
+        { if (data_p != &buffer_p[0]) delete [] data_p; }
 
     // Makes this a copy of other. "this" and "other" must either be conformant
     // (same size) or this must be 0-length, in which case it will

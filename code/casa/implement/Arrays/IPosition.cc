@@ -1,5 +1,5 @@
 //# IPosition.cc: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,13 +116,6 @@ IPosition::IPosition (const IPosition& other)
 	data_p[i] = other.data_p[i];
     }
     DebugAssert(ok(), AipsError);
-}
-
-IPosition::~IPosition()
-{
-    if (data_p != &buffer_p[0]) {
-	delete [] data_p;
-    }
 }
 
 IPosition IPosition::nonDegenerate (uInt startingAxis) const
