@@ -195,6 +195,7 @@ convertPol(const ComponentType::Polarisation & pol) {
     default:
       throw(AipsError("FluxRep<T>::convertPol(...) - bad polarisation type"));
     };    
+    itsPol = pol;
   }
   DebugAssert(ok(), AipsError);
 }
