@@ -1047,6 +1047,15 @@
      then
         echo ""
         echo "exhale: Installed the new master in $AIPSMSTR."
+
+        echo ""
+        echo "exhale: Updating the master source code management utilities..."
+        gmake -C $MSTRETCD allsys
+        PRGGROUP=aips2prg
+        chgrp $PRGGROUP $MSTRETCD
+        chmod ug=rwx,o=rx,g+s $MSTRETCD
+        chgrp $PRGGROUP $MSTRETCD/*_master
+        chmod u=rwx,go=rx,u+s $MSTRETCD/*_master
      else
         exec 1>&2
         echo ""
