@@ -1,5 +1,5 @@
 //# LatticeStatistics.cc: generate statistics from a MaskedLattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,7 +58,7 @@
 #include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/stdlib.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 #include <aips/OS/Timer.h>
 
@@ -316,7 +316,7 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
 
 // Check
       
-   ostrstream os;
+   ostringstream os;
    Bool saveNoInclude = noInclude_p;
    Bool saveNoExclude = noExclude_p;
    if (!LattStatsSpecialize::setIncludeExclude(error_p, range_p, noInclude_p, 
@@ -435,7 +435,7 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
  
    nxy_p.resize(0);
    nxy_p = nxy;
-   ostrstream os;
+   ostringstream os;
    if (!LatticeStatsBase::setNxy(nxy_p, os)) {
       error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
@@ -467,9 +467,9 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
    if (latticeType !=TpFloat && latticeType!=TpComplex) {
-      ostrstream oss;
+      ostringstream oss;
       oss << "Statistics cannot yet be evaluated from lattices of type : " << latticeType << endl;
-      error_p = String(oss);
+      error_p = oss.str();
       goodParameterStatus_p = False;
       return False;
    }
@@ -1527,8 +1527,8 @@ void LatticeStatistics<T>::lineSegments (uInt& nSeg,
 }
 
 template <class T>
-void LatticeStatistics<T>::listMinMax(ostrstream& osMin,
-                                      ostrstream& osMax,
+void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
+                                      ostringstream& osMax,
                                       Int oWidth, DataType type)
 //
 // Min/max locations only meaningful for Float images currently.
@@ -1663,16 +1663,16 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    const uInt n1 = stats.shape()(0);
    for (uInt j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
-      ostrstream os00; setStream(os00, oPrec); 
+      ostringstream os00; setStream(os00, oPrec); 
       os00 << stats.column(NPTS)(j);
-      os_p.output() << setw(oDWidth)   << String(os00);
+      os_p.output() << setw(oDWidth)   << os00.str();
 
 //
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
 // I hate ostrstreams.  The bloody things are one shot.
 
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
+         ostringstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
          setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
@@ -2466,14 +2466,14 @@ void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosi
 // and get the label for the X-axis when plotting
 //
 {
-   ostrstream oss0;
+   ostringstream oss0;
    oss0 << "Axis " << displayAxes_p(0)+1 << " (pixels)";
-   xLabel = String(oss0);
+   xLabel = oss0.str();
 //
    const uInt n = displayAxes_p.nelements();
    hLabel =String("");
    if (n > 1) {
-      ostrstream oss;
+      ostringstream oss;
       for (uInt j=1; j<n; j++) {
          oss <<  "Axis " << displayAxes_p(j)+1 << "=" 
              << locInLattice(dPos,True)(j)+1;
@@ -2766,8 +2766,8 @@ void LatticeStatistics<T>::summStats ()
       oWidth = 32;
    }
    setStream(os_p.output(), oPrec);
-   ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7, os8;
-   ostrstream os9, os10, os11;
+   ostringstream os00, os0, os1, os2, os3, os4, os5, os6, os7, os8;
+   ostringstream os9, os10, os11;
    setStream(os00, oPrec); 
    setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
    setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  

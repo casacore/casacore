@@ -61,7 +61,7 @@
 #include <aips/Quanta/UnitMap.h>
 
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 template <class T> 

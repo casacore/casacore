@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@
 #include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/stdlib.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 // Public functions
@@ -307,7 +307,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
       os_p.output() << setw(oCWidth)   << sWorld(j);
 //
-      ostrstream os00; setStream(os00, oPrec);
+      ostringstream os00; setStream(os00, oPrec);
       os00 << stats.column(NPTS)(j);   
 //
       os_p.output() << setw(oDWidth)   << String(os00);   
@@ -316,7 +316,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // I hate ostrstreams.  The bloody things are one shot.
    
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
+         ostringstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
          setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec);
@@ -362,7 +362,7 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
 //
    hLabel =String("");
    const uInt nDisplayAxes = displayAxes_p.nelements();
-   ostrstream oss;
+   ostringstream oss;
    if (nDisplayAxes > 1) {
       Vector<String> sWorld(1);
       Vector<Double> pixels(1);
@@ -386,10 +386,9 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
    }
 }
 
-
 template <class T>
-void ImageStatistics<T>::listMinMax(ostrstream& osMin,
-                                    ostrstream& osMax,
+void ImageStatistics<T>::listMinMax(ostringstream& osMin,
+                                    ostringstream& osMax,
                                     Int oWidth, DataType type)
 {
    if (!fixedMinMax_p) {
@@ -402,14 +401,14 @@ void ImageStatistics<T>::listMinMax(ostrstream& osMin,
       String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys);
 //
       os_p << "Minimum value "; 
-      os_p.output() << setw(oWidth) << String(osMin);
+      os_p.output() << setw(oWidth) << osMin.str();
       if (type==TpFloat) {
          os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
       }
       os_p.post();
 //
       os_p << "Maximum value ";
-      os_p.output() << setw(oWidth) << String(osMax);
+      os_p.output() << setw(oWidth) << osMax.str();
       if (type==TpFloat) {
          os_p <<  " at " << blcParent_p + maxPos_p+1 << " (" << maxPosString << ")" << endl;
       }
@@ -432,4 +431,5 @@ Bool ImageStatistics<T>::getLEL (Array<T>& stats, const String& expr, Bool dropD
    lelExpr_p = expr;
    return getLELNode (stats, node, dropDeg, newExpr);
 }
+
 

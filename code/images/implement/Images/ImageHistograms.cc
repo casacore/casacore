@@ -1,5 +1,5 @@
 //# ImageHistograms.cc: generate histograms from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // Public functions
 
@@ -119,7 +119,7 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
 template <class T>
 String ImageHistograms<T>::writeCoordinates(const IPosition& histPos) const
 {
-   ostrstream oss;
+   ostringstream oss;
    const Int nDisplayAxes = displayAxes_p.nelements();
    if (nDisplayAxes > 0) {
       Vector<String> sWorld(1);

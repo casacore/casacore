@@ -1,5 +1,5 @@
 //# ImageSummary.cc:  list an image header
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -261,7 +261,7 @@ Bool ImageSummary<T>::restFrequency(String& restFreqString,
       }
    }
    if (ok) {
-      ostrstream oss;
+      ostringstream oss;
 //      oss.output().setf(ios::scientific, ios::floatfield);
 //      oss.output().precision(8);
       oss << restFreq << endl;
@@ -448,7 +448,7 @@ String ImageSummary<T>::makeMasksString() const
       }
    }
 //
-   ostrstream oss;
+   ostringstream oss;
    if (!defaultMask.empty()) {
       oss << defaultMask;
       if (nMasks==1) {
@@ -479,7 +479,7 @@ String ImageSummary<T>::makeRegionsString() const
    const uInt nRegions = regions.nelements();
    if (nRegions==0) return String("None");
 //
-   ostrstream oss;
+   ostringstream oss;
    uInt j=0;
    for (uInt i=0; i<nRegions; i++) {
       if (j > 0) {

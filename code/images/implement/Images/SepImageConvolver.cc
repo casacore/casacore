@@ -1,5 +1,5 @@
 //# SepImageConvolver.cc:  separable convolution of an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@
 #include <trial/Mathematics/VectorKernel.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 
 
@@ -352,7 +352,7 @@ void SepImageConvolver<T>::smoothProfiles (ImageInterface<T>& in,
            nMax *= in.shape()(i);
         }
      }
-     ostrstream oss;
+     ostringstream oss;
      oss << "Convolve Image Axis " << axis+1 << ends;
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Spectrum Convolutions"),

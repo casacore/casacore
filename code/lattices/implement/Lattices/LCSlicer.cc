@@ -1,5 +1,5 @@
 //# LCSlicer.cc: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 LCSlicer::LCSlicer()
@@ -473,7 +473,7 @@ Slicer LCSlicer::toSlicer (const Vector<Float>& referencePixel,
 	    trc(i) = newLatticeShape(i) - 1;
 	}
 	if (blc(i) > trc(i)) {
-	    ostrstream bstr, tstr;
+	    ostringstream bstr, tstr;
 	    bstr << blc;
 	    tstr << trc;
 	    throw (AipsError ("LCSlicer::toSlicer - "

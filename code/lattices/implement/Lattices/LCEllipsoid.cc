@@ -1,5 +1,5 @@
 //# LCEllipsoid.cc: Define an N-dimensional ellipsoidal region of interest
-//# Copyright (C) 1997,1998,1999,2001
+//# Copyright (C) 1997,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LCEllipsoid::LCEllipsoid()
 {}
@@ -220,7 +220,7 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
     IPosition trc(nrdim);
     for (uInt i=0; i<nrdim; i++) {
 	if (center(i) > latticeShape(i)-1  ||  center(i) < 0) {
-	    ostrstream cstr, lstr;
+	    ostringstream cstr, lstr;
 	    cstr << center;
 	    lstr << latticeShape;
 	    throw (AipsError ("LCEllipsoid::LCEllipsoid - "
@@ -236,7 +236,7 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
 	    trc(i) = latticeShape(i) - 1;
 	}
 	if (blc(i) > trc(i)) {
-	    ostrstream rstr;
+	    ostringstream rstr;
 	    rstr << radii;
 	    throw (AipsError ("LCEllipsoid::LCEllipsoid - "
 			      "ellipsoid is empty (radii " + String(rstr) +

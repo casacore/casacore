@@ -1,5 +1,5 @@
 //# Bintable.cc:  this defines BinaryTable, which converts FITS binary tables to aips++ Tables
-//# Copyright (C) 1994-1999,2000,2001
+//# Copyright (C) 1994-1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/stdio.h>
 
 Bool isSDFitsColumn(FITS::ReservedName name) {
@@ -231,12 +231,10 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        colname  = colname.before(trailing);
        if (td.isColumn(colname)) {
 	   //		issue a warning, append column number to this name
-	   ostrstream newname;
+	   ostringstream newname;
 	   newname << colname << "." << i << ends;
 	   //		str gives the space to cptr, which must be deleted
-	   char * cptr = newname.str();
-	   colname = cptr;
-	   delete cptr;
+	   colname = newname.str();
 	   cout << "Duplicate column name : " << ttype(i)
 	       << " this occurance will be named " << colname << endl;
        } else if (td.keywordSet().isDefined(colname)) {

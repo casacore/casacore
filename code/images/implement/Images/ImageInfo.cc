@@ -1,5 +1,5 @@
 //# ImageInfo.cc: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999,2001,2002
+//# Copyright (C) 1998,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
 #include <trial/Logging/LoggerHolder.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 #include <aips/iostream.h>
@@ -158,17 +158,17 @@ Bool ImageInfo::getRestoringBeam (LoggerHolder& logger)
          int n = split(line, s, 20, RXwhite);
          for (Int i=0; i<n; i++) {
             if (s[i].contains("BMAJ")) {
-               istrstream oss(s[i+1].chars());
+               istringstream oss(s[i+1].chars());
                Double x;
                oss >> x;
                itsRestoringBeam(0) = Quantum<Double>(x, Unit(String("deg")));
             } else if (s[i].contains("BMIN")) {
-               istrstream oss(s[i+1].chars());
+               istringstream oss(s[i+1].chars());
                Double x;
                oss >> x;
                itsRestoringBeam(1) = Quantum<Double>(x, Unit(String("deg")));
             } else if (s[i].contains("BPA")) {
-               istrstream oss(s[i+1].chars());
+               istringstream oss(s[i+1].chars());
                Double x;
                oss >> x;
                itsRestoringBeam(2) = Quantum<Double>(x, Unit(String("deg")));

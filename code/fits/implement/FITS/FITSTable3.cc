@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/version.h>
 #include <aips/Logging.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 
 
@@ -130,7 +130,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     kw.spaces();
 
     // ORIGIN
-    ostrstream buffer;
+    ostringstream buffer;
     buffer << setfill('0') << "AIPS++ " << setw(2)
 	   << VersionInfo::majorVersion() << "." << setw(3)
 	   << VersionInfo::minorVersion() << "." << setw(2)
@@ -226,7 +226,7 @@ void FITSGroupWriter::check_error(const char *extra_info)
     if (group_p) {
 	HeaderDataUnit::HDUErrs err = HeaderDataUnit::HDUErrs(group_p->err());
 	if (err != HeaderDataUnit::OK) {
-	    ostrstream os;
+	    ostringstream os;
 	    os << "Random Groups error at row " << nrows_written_p << " ";
 	    switch (err) {
 	    case HeaderDataUnit::NOMEM: os << "(NOMEM)"; break;
@@ -260,7 +260,7 @@ void FITSGroupWriter::check_error(const char *extra_info)
     if (writer_p) {
 	FitsIO::FitsErrs err = (FitsIO::FitsErrs(writer_p->err()));
 	if (err != FitsIO::OK) {
-	    ostrstream os;
+	    ostringstream os;
 	    os << "I/O error at row " << nrows_written_p << " ";
 	    switch(err) {
 	    case FitsIO::IOERR: os << "(IOERR)"; break;

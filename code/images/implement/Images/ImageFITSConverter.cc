@@ -1,5 +1,5 @@
 //# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,7 +54,7 @@
 #include <aips/Containers/Record.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // At least the Coordinate and header related things could be factored out
 // into template independent code.

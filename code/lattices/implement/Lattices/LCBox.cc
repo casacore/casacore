@@ -1,5 +1,5 @@
 //# LCBox.cc: Class to define a rectangular box of interest
-//# Copyright (C) 1997,1998,1999,2001
+//# Copyright (C) 1997,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 LCBox::LCBox()
 {}
@@ -229,7 +229,7 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 	    tr(i) = shape(i) - 1;
 	}
 	if (bl(i) > tr(i)) {
-	    ostrstream bstr, tstr;
+	    ostringstream bstr, tstr;
 	    bstr << bl;
 	    tstr << tr;
 	    throw (AipsError ("LCBox::LCBox - "

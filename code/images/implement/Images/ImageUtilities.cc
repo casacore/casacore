@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -619,7 +619,7 @@ Double ImageUtilities::worldWidthToPixel (LogIO& os, Double positionAngle,
 // Check units are ok
 
    if (!length.check(unit.getValue())) {
-      ostrstream oss;
+      ostringstream oss;
       oss << "The units of the world length (" << length.getFullUnit().getName()
           << ") are not consistent with those of Coordinate System ("
           << unit.getName() << ")" << ends;

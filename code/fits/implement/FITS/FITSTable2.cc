@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 
 #include <aips/Arrays/Array.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 #include <aips/stdio.h>
 
@@ -93,7 +93,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -109,7 +109,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -125,7 +125,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -141,7 +141,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -157,7 +157,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -173,7 +173,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -189,7 +189,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -205,7 +205,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	      size = description.shape(i).product();
 	  }
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << size;
 	      repeat = String(buffer);
 	  }
@@ -218,7 +218,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  {
 	      uInt stringlen = sizeofStringField(description, maxLengths, i);
 	      sizeInBytes += stringlen;
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << stringlen;
 	      repeat = String(buffer);
 	      code = "A";
@@ -236,7 +236,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
       columns.mk(thisColumn, FITS::TFORM, (repeat + code).chars());
       IPosition shape = description.shape(i);
       if (shape.nelements() > 1 && !hasVariableShape) {
-	  ostrstream buffer;
+	  ostringstream buffer;
 	  buffer << "(";
 	  for (uInt j=0; j<shape.nelements(); j++) {
 	      buffer << shape(j);
@@ -259,7 +259,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  // add the TDIM column for the previous column
 	  String sampleTdim = variableShapes.asString(description.name(i));
 	  {
-	      ostrstream buffer;
+	      ostringstream buffer;
 	      buffer << sampleTdim.length();
 	      repeat = String(buffer);
 	      sizeInBytes += sampleTdim.length();

@@ -1,5 +1,5 @@
 //# LatticeStatistics.h: generate statistics from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -371,8 +371,8 @@ protected:
 // The implementation here returns False.
    virtual Bool getBeamArea (Double& beamArea) const;
 
-   virtual void listMinMax (ostrstream& osMin,
-                            ostrstream& osMax,
+   virtual void listMinMax (ostringstream& osMin,
+                            ostringstream& osMax,
                             Int oWidth, DataType type);
 
 // List the statistics to the logger.   The implementation here

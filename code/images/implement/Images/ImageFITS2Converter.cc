@@ -1,5 +1,5 @@
 //# ImageFITS2Converter.cc : non-templated FITS<->aips++ image conversion 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@
 #include <aips/Logging/LogIO.h>
 #include <trial/Tasking/ProgressMeter.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 
 
@@ -555,7 +555,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		break;
 	    default:
 		{
-		    ostrstream os;
+		    ostringstream os;
 		    os << misctype;
 		    log << LogIO::NORMAL << "Not writing miscInfo field '" <<
 			miscname << "' - cannot handle type " << String(os) <<
@@ -585,7 +585,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // ORIGIN
 //
-    ostrstream buffer;
+    ostringstream buffer;
     buffer << "AIPS++ version ";
     VersionInfo::report(buffer);
     header.define("ORIGIN", String(buffer));
@@ -893,7 +893,7 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
 	cursorShape(i) = shape(i);
     }
 
-    ostrstream buffer;
+    ostringstream buffer;
     if (axis == Int(ndim) - 1) {
 	buffer << "All pixels fit in memory";
     } else {
@@ -968,7 +968,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
         CoordinateSystem cSys2;
         Vector<String> names(shape.nelements());
         for (uInt i=0; i<names.nelements(); i++) {
-           ostrstream oss;
+           ostringstream oss;
            oss << i;
            names(i) = String("linear") + String(oss);
         }   

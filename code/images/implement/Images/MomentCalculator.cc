@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1185,7 +1185,7 @@ template <class T>
 void MomentCalcBase<T>::setPosLabel (String& title,
                                      const IPosition& pos) const
 {  
-   ostrstream oss;
+   ostringstream oss;
 
    oss << "Position = " << pos+1 << ends;
    String temp(oss.str());

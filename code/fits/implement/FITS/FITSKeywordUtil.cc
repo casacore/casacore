@@ -1,5 +1,5 @@
 //# FitsKeywordUtil: this defines FitsKeywordUtil
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 #include <ctype.h>
 #include <aips/stdlib.h>
@@ -308,12 +308,12 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 			Int nrow = in.shape(i)(0);
  			Int iii = k % nrow + 1;
  			Int jjj = k / nrow + 1;
- 			ostrstream ostr;
+ 			ostringstream ostr;
  			ostr << setfill('0') << setw(3) << iii << 
 			    setfill('0') << setw(3) << jjj;
  			name += String(ostr);
  		    } else {
-			ostrstream ostr;
+			ostringstream ostr;
 			ostr << k + 1;
 			num = String(ostr);
 		    }
@@ -994,7 +994,7 @@ Bool FITSKeywordUtil::toTDIM(String& tdim, const IPosition& shape)
 {
     Bool ok = True;
 
-    ostrstream ostr;
+    ostringstream ostr;
     ostr << "(";
     if (shape.nelements()>0) ostr << shape(0);
     for (uInt i=1;i<shape.nelements();i++) {
@@ -1026,7 +1026,7 @@ static void addText(RecordInterface &header, const String &comment,
     for (uInt i=0; i<lines.nelements(); i++) {
         Int offset = static_cast<Int>(random.asuInt());
 	do {
-	    ostrstream os;
+	    ostringstream os;
 	    os << offset;
 	    keyname = leader + String(os);
 	    offset++;

@@ -1,5 +1,5 @@
 //# ImagePolarimetry.cc: polarimetric analysis
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -69,7 +69,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // Public functions
 
@@ -853,7 +853,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 // Find rotation measure for this line
 
       if (plotter.isAttached()) {
-         ostrstream oss;
+         ostringstream oss;
          oss << it.position() + 1;
          posString = String(oss);
       }
@@ -1789,7 +1789,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      minMax(yMinVal, yMaxVal, plotPA);
      Float dy = 0.05 * (yMaxVal - yMinVal);
 //
-     ostrstream oss;
+     ostringstream oss;
      oss << "  nT = " << nTurns << ", ChiSq = " << rChiSqFitted << ends;
 //
      plotter.page();

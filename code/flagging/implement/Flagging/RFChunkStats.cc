@@ -1,5 +1,5 @@
 //# RFChunkStats.cc: this defines RFChunkStats
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <stdio.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <trial/Tasking/PGPlotter.h>
     
 // when no plotter is specified for screen/report,
@@ -155,9 +155,9 @@ template<class T> RFlagWord RFChunkStats::getCorrMask ( const Vector<T> &corrspe
     // convert element of polspec to Stokes type
     Stokes::StokesTypes type = Stokes::type( corrspec(i) );
     if( type == Stokes::Undefined ){
-      ostrstream oss;
+      ostringstream oss;
       oss << corrspec(i) << ends;
-      throw(AipsError( String("Unknown correlation type: ")+ oss.str()));
+      throw(AipsError( String("Unknown correlation type: ")+ String(oss)));
     }
     // find this type in current corrarizations
     Int icorr = findCorrType(type,corrtypes);

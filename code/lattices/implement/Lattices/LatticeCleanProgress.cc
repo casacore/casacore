@@ -1,5 +1,5 @@
 //# LatticeCleanProgress.cc: Abstract base class to monitor progress in lattice operations
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 
@@ -224,7 +224,7 @@ void  LatticeCleanProgress::basicSetUp(Bool doPlot)
 
   for (scale=0;scale<nScales;scale++) {
     itsPgplotter->sci(scale+2);
-    ostrstream oos;
+    ostringstream oos;
     oos << "Scale " << scale+1;
     itsPgplotter->text(0.85*xMax,
 		       (logMaxRes - 0.1*(1+scale)*deltaY),
@@ -261,7 +261,7 @@ void  LatticeCleanProgress::basicSetUp(Bool doPlot)
 
   {
     itsPgplotter->sci(1);
-    ostrstream oos;
+    ostringstream oos;
     oos << "Total Flux ";
     itsPgplotter->text(0.85*xMax, 
 		       (0.5*(currentFluxScale - currentMinFluxScale)), 

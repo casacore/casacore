@@ -1,5 +1,5 @@
 //# ImageMoments.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/NewFile.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 
 
@@ -218,7 +218,7 @@ Bool ImageMoments<T>::setNewImage(ImageInterface<T>& image)
    DataType imageType = whatType(dummy);
 
    if (imageType !=TpFloat && imageType != TpDouble) {
-      ostrstream oss;
+      ostringstream oss;
       oss << "Moments can only be evaluated from images of type : " <<
               TpFloat << " and " << TpDouble << endl;
       String tmp(oss); 
@@ -483,7 +483,7 @@ Bool ImageMoments<T>::setInExCludeRange(const Vector<T>& includeU,
    Vector<T> include = includeU;
    Vector<T> exclude = excludeU;
 
-   ostrstream os;
+   ostringstream os;
    if (!setIncludeExclude(selectRange_p, noInclude_p, noExclude_p,
                           include, exclude, os)) {
       error_p = "Invalid pixel inclusion/exclusion ranges";

@@ -65,7 +65,7 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/Assert.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/fstream.h>
 
 
@@ -274,8 +274,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
    Int inWorldAxis = inCoords.pixelAxisToWorldAxis(inPixelAxis);
    inCoords.findPixelAxis(inCoordinate, inAxisInCoordinate, inPixelAxis);
    if (inCoordinate==-1 || inAxisInCoordinate==-1) {
-      ostrstream oss1;
-      ostrstream oss2;
+      ostringstream oss1;
+      ostringstream oss2;
       oss1 << outCoords.showType(outCoordinate);
       oss2 << outPixelAxis+1;
       String msg = String("Output axis (") + String(oss2) + 
@@ -298,7 +298,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 // Now we need to break the polymorphic nature  of coordinates.  
 
     if (type==Coordinate::DIRECTION) {
-       ostrstream oss;
+       ostringstream oss;
        oss << "Regridding output axes " << outPixelAxes + 1 
            << " which are of Coordinate type " 
            << outCoords.showType(outCoordinate) << endl;
@@ -408,7 +408,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                  outPixelAxes, pixelAxisMap1, pixelAxisMap2, method,
                  machine, replicate, decimate, madeIt, showProgress, scale);
     } else {
-       ostrstream oss;
+       ostringstream oss;
        oss << "Regridding output axis " << outPixelAxis+1 
            << " which is of Coordinate type " 
            << outCoords.showType(outCoordinate) << endl;
@@ -553,7 +553,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    for (uInt i=0; i<nPixelAxes; i++) {
       outCoords.findPixelAxis(coordinate, axisInCoordinate, i);
       if (coordinate==-1 || axisInCoordinate==-1) {
-         ostrstream oss;
+         ostringstream oss;
          oss << "Pixel axis " << i <<
 	   " has been removed from the output CoordinateSystem" << endl;
          os << String(oss) << LogIO::EXCEPTION;
@@ -960,7 +960,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    if (showProgress) {
      Double nMin = 0.0;
      Double nMax = Double(outLattice.shape().product());
-     ostrstream oss;
+     ostringstream oss;
      oss << "Axes " << outPixelAxes + 1 << " : Pixels Regridded" << ends;
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Regridding"),
@@ -1757,7 +1757,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
      Double nMin = 0.0;
      Double nMax = Double(outLattice.shape().product()) /
        Double(outIter.cursorShape().product());
-     ostrstream oss;
+     ostringstream oss;
      oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded" << ends;
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Regridding"),
@@ -1997,7 +1997,7 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
       outCoords.findPixelAxis(outCoordinate, outAxisInCoordinate, 
                               outPixelAxes(i));
       if (outCoordinate==-1 || outAxisInCoordinate==-1) {
-         ostrstream oss;
+         ostringstream oss;
          oss << "Pixel axis " << outPixelAxes(i)+1 << 
                 " has been removed from the output CoordinateSystem" << endl;
          os << String(oss) << LogIO::EXCEPTION;         

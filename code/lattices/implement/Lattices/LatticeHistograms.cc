@@ -1,5 +1,5 @@
 //# LatticeHistograms.cc: generate histograms from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@
 
 #include <aips/iomanip.h>
 #include <aips/stdlib.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 
@@ -322,7 +322,7 @@ Bool LatticeHistograms<T>::setIncludeRange(const Vector<T>& include)
 // CHeck    
 
    Bool noInclude;
-   ostrstream os;
+   ostringstream os;
    if (!setInclude(range_p, noInclude, include, os)) {
       error_p = "Invalid pixel inclusion range";
       goodParameterStatus_p = False;
@@ -427,7 +427,7 @@ Bool LatticeHistograms<T>::setPlotting(PGPlotter& plotter,
  
    nxy_p.resize(0);
    nxy_p = nxy;
-   ostrstream os;
+   ostringstream os;
    if (!LatticeStatsBase::setNxy(nxy_p, os)) {
       error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
@@ -451,7 +451,7 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
    if (latticeType !=TpFloat && latticeType != TpComplex) {
-      ostrstream oss;
+      ostringstream oss;
       oss << "Lattices of type " << latticeType << " are not currently supported" << endl;
       error_p = String(oss);
       goodParameterStatus_p = False;
@@ -947,7 +947,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
 
       const Int oPrec = 6;
       setStream(os.output(), oPrec);
-      ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+      ostringstream os0, os1, os2, os3, os4, os5, os6, os7;
       setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
       setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
       setStream(os6, oPrec); setStream(os7, oPrec);
@@ -1164,7 +1164,7 @@ String LatticeHistograms<T>::writeCoordinates(const IPosition& histPos) const
 // Write pixel coordinates relative to parent lattice
 //
 {
-   ostrstream oss;
+   ostringstream oss;
    const Int nDisplayAxes = displayAxes_p.nelements();
    if (nDisplayAxes > 0) {   
       for (Int j=0; j<nDisplayAxes; j++) {

@@ -1,5 +1,5 @@
 //# FITSDateUtil.cc: this defines FITSDateUtil
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iomanip.h>
 #include <ctype.h>
 #include <aips/stdlib.h>
@@ -55,7 +55,7 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
 	    Int day = time.monthday();
 	    Int year = time.year() - 1900; 
 	    AlwaysAssert(year >= 0 && year<100, AipsError); // 20th century only
-	    ostrstream out;
+	    ostringstream out;
 	    out << setfill('0') << setw(2) << day << "/" << setw(2) << month <<
 		"/" << setw(2) << year;
 	    date = out;

@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@
 #include <aips/Arrays/Array.h>
 
 #include <aips/stdlib.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // Just returns the scalar type.
 static DataType fitsDataType(FITS::ValueType fitsType)
@@ -124,7 +124,7 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
 	continue;
       }
       if (key->isindexed()) {
-	ostrstream num;
+	ostringstream num;
 	num << key->index();
 	name += String(num);
       }

@@ -1,5 +1,5 @@
 //# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,8 +152,8 @@ private:
    virtual Bool getBeamArea (Double& beamArea) const;
 
 // List min and max with world coordinates
-   virtual void listMinMax (ostrstream& osMin,
-                            ostrstream& osMax,
+   virtual void listMinMax (ostringstream& osMin,
+                            ostringstream& osMax,
                             Int oWidth, DataType type);
 
 // List the statistics

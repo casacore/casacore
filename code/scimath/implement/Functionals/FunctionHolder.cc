@@ -1,5 +1,5 @@
 //# FunctionHolder.cc: A holder for Functions to enable record conversions
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@
 #include <aips/Quanta/MUString.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 //# Constructors
 template <class T>
@@ -289,7 +289,7 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 			    (hold_p.ptr())->function(i));
 	  if (!fn.toRecord(error, fnc)) return False;
 	};
-	ostrstream oss;
+	ostringstream oss;
 	oss << "__*" << i;
 	func.defineRecord(String(oss), fnc);
       };
