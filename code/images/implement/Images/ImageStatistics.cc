@@ -36,9 +36,11 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
-  
+
+#include <trial/Coordinates.h>  
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
@@ -413,11 +415,8 @@ Bool ImageStatistics<T>::display()
 
    Int n1 = pStoreImage_p->shape()(0);
 
+// Allocate ordinate arrays for plotting and listing
 
-// Allocate abcissa and oridnate arrays for plotting and listing
-
-   Vector<Float> abc(n1);
-   for (i=0; i<n1; i++) abc(i) = i + 1.0;
    Matrix<Float> ord(n1,NSTATS);
 
 
@@ -438,9 +437,9 @@ Bool ImageStatistics<T>::display()
    }
 
 
-// Iterate through storage image. The cursor may be of > 2 dimensions, but only the
-// first (first display axsi) and last (statistics) axes are of non-unit size, so it
-// is effectively a matrix.  Thus we can use the matrix cursor for fast indexing.
+// Iterate through storage image. The cursor may be of > 2 dimensions, but 
+// only the first (first display axsi) and last (statistics) axes are of 
+// non-unit size, so it  is effectively a matrix.  
 
    IPosition cursorShape(pStoreImage_p->ndim(),1);
    cursorShape(0) = pStoreImage_p->shape()(0);
@@ -449,8 +448,8 @@ Bool ImageStatistics<T>::display()
 
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
 
-// Convert accumulations to  mean, sigma, and rms. Make sure we do all calculations
-// with double precision values. 
+// Convert accumulations to  mean, sigma, and rms. Make sure we do all 
+// calculations with double precision values. 
  
       Matrix<Double> matrix(pixelIterator.matrixCursor());
       for (i=0; i<n1; i++) {
@@ -480,12 +479,14 @@ Bool ImageStatistics<T>::display()
 
 // Plot statistics
 
-      if (doPlot) plotStats (pixelIterator.position(), n1, abc, ord);
+      if (doPlot) plotStats (pixelIterator.position(), n1, ord);
 
 
 // List statistics
 
-      if (!doPlot || (doPlot && doList_p)) listStats (pixelIterator.position(), n1, abc, ord);
+      if (!doPlot || (doPlot && doList_p)) {
+        if (!listStats(pixelIterator.position(), n1, ord)) return False;
+      }
 
     }
 
@@ -1207,9 +1208,8 @@ void ImageStatistics<T>::lineSegments (Int& nSeg,
 
 typedef Matrix<Float> gpp_MatrixFloat;
 template <class T>
-void ImageStatistics<T>::listStats (const IPosition& dPos,
+Bool ImageStatistics<T>::listStats (const IPosition& dPos,
                                     const Int& n1,
-                                    const Vector<Float>& abc,
                                     const gpp_MatrixFloat& ord)
 //
 // List the statistics for this line to the standard output
@@ -1217,26 +1217,18 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 // Inputs:
 //   dPos    The location of the start of the cursor in the
 //           storage image for this line 
-//   n1      Number of points
-//   abc     Abcissa
-//   ord     Ordinate arrays
+//   n1      Number of points to list for each statistic
+//   ord     Ordinate matrix
+// Outputs:
+//   Bool    Indicates coordinate transformations failed
 //
 {
+   os_p << endl;
+
+// Get number of statistics and display axes
+
    Int nDisplayAxes = displayAxes_p.nelements();
    Int nStatsAxes = cursorAxes_p.nelements();
-   os_p << LogIO::NORMAL << endl;
-
-
-// Write the value of the higher order display axes
-
-   if (nDisplayAxes > 1) {
-      for (Int j=1; j<nDisplayAxes; j++) {
-//         os_p << pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j))
-      os_p <<  ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)))
-              << " = " << dPos(j)+1;
-         if (j < nDisplayAxes-1) os_p << ", ";
-      }
-   }
 
 // Set up the manipulators. We list the number of points as an integer so find
 // out how big the field width needs to be.  Min of 6 so label fits.
@@ -1244,18 +1236,35 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
    Int nMax = 0;
    for (Int j=0; j<n1; j++) nMax = max(nMax, Int(ord.column(NPTS)(j)+0.1));
    Int logNMax = Int(log10(nMax+1.5));
-
-// Have to convert LogIO object to ostream before can apply
-// the manipulators
-
    Int oIWidth = max(6, logNMax);
    Int oDWidth = 15;
    Int oPrec = 6;
+
+
+// Have to convert LogIO object to ostream before can apply
+// the manipulators
 
    os_p.output().fill(' '); 
    os_p.output().precision(oPrec);
    os_p.output().setf(ios::scientific, ios::floatfield);
    os_p.output().setf(ios::left, ios::adjustfield);
+
+
+// Write the value of the higher order display axes to the logger
+
+   if (nDisplayAxes > 1) {
+      Vector<String> sWorld(1);
+      Vector<Double> pixel(1);
+
+      for (Int j=1; j<nDisplayAxes; j++) {
+         pixel(0) = Double(dPos(j));
+         if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec, True)) return False;
+ 
+         os_p <<  ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j)))
+              << " = " << dPos(j)+1 << " (" << sWorld(0) << ")";
+         if (j < nDisplayAxes-1) os_p << ", ";
+      }
+   }
 
 
 // Write headers
@@ -1279,8 +1288,6 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
       len0 = 11;
    }
 
-
-
    os_p.output() << setw(oDWidth) << 
       ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
    os_p.output() << setw(oIWidth) << "Npts";
@@ -1292,11 +1299,19 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
 
 
-// Write statistics
+// Convert pixel coordinates Vector of the first display axis to world coordinates
+
+   Vector<String> sWorld(n1);
+   Vector<Double> pixel(n1);
+   for (Int i=0; i<n1; i++) pixel(i) = Double(i);
+   if (!pix2World(sWorld, displayAxes_p(0), pixel, oPrec, True)) return False;
+
+
+// Write statistics to logger
 
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+1;
-      os_p.output() << setw(oDWidth)   << abc(j);
+      os_p.output() << setw(oDWidth)   << sWorld(j);
       os_p.output() << setw(oIWidth)   << Int(ord.column(NPTS)(j)+0.1);
 
       if (Int(ord.column(NPTS)(j)+0.1) > 0) {
@@ -1313,12 +1328,9 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 }
 
 
-
-
 template <class T>
 void ImageStatistics<T>::plotStats (const IPosition& dPos,
                                     const Int& n1,
-                                    const Vector<Float>& abc,
                                     const Matrix<Float>& ord)
 //
 // Plot the desired statistics.  
@@ -1327,8 +1339,7 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos,
 //   dPos    The location of the start of the cursor in the 
 //           storage image for this line 
 //   n1      Number of points
-//   abc     Abcissa
-//   ord     Ordinate arrays
+//   ord     Ordinate matrix
 //
 {
 
@@ -1344,11 +1355,15 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos,
    Bool doMax   = Bool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
    Bool doNPts  = Bool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
 
-
    Bool none;
    Bool first = True;
    Int nL = 0;
    Int nR = 0;
+
+// Generate abcissa
+
+   Vector<Float> abc(n1);
+   for (Int j=0; j<n1; j++) abc(j) = j+1;
 
 
 // Find extrema.  Return if there were no valid points to plot
@@ -1622,15 +1637,18 @@ void ImageStatistics<T>::plotStats (const IPosition& dPos,
 
 // Write values of other display axes on plot
    
-   const int BUFL=64;
-   char buf[BUFL];
-   ostrstream oss(buf,BUFL,ios::out);
-
+   ostrstream oss;
    if (displayAxes_p.nelements() > 1) {
+      Vector<String> sWorld(1);
+      Vector<Double> pixel(1);
+
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
-         oss << "  " << pInImage_p->coordinates().
-	   worldAxisNames()(displayAxes_p(j))
-             << "=" << dPos(j)+1;
+         pixel(0) = Double(dPos(j));
+         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6, True)) return False;
+
+         oss << "  " 
+             << ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(j)))
+             << "=" << dPos(j)+1 << " (" << sWorld(0) << ")";
       }   
       oss << ends;
       char* tLabel = oss.str();
@@ -1836,6 +1854,154 @@ Int ImageStatistics<T>::niceColour (Bool& initColours)
 }
 
 
+
+
+
+template <class T>
+Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
+                                    const Int& worldAxis,
+                                    const Vector<Double>& pixel,
+                                    const Int& prec,
+                                    const Bool& meanOther)
+//
+// Convert the vector of pixel coordinates to a formatted Vector
+// of strings giving the world coordinate in the specified world axis.   
+//
+// Inputs
+//   worldAxis   The world axis we are interested in
+//   pixel       Vector of pixel coordinates to transform
+//   prec        Precision to format output of scientific 
+//               formatted numbers (linear axes etc)
+//   meanOther   If the world axis is part of a coupled coordinate 
+//               such as DirectionCoordinate, this tells whether 
+//               to set the pixel coordinate of the other coupled 
+//               axis to the mean pixel of that axis (True) or the
+//               reference pixel (Fals)
+// Outputs
+//   sWorld      Vector of formatted strings of world coordinate
+// 
+{
+   Int n1 = pixel.nelements();
+   sWorld.resize(n1);
+
+// Get coordinate system.
+
+   CoordinateSystem cSys = pInImage_p->coordinates();
+
+
+// Find coordinate axis for first display world axis
+
+   Int coordinate, axisInCoordinate, otherAxisInCoordinate;
+   cSys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+
+   if (cSys.type(coordinate) == Coordinate::DIRECTION) {
+
+
+// Now find the other world axis that is the rest of the direction coordinate
+
+      Bool bad = True;
+      for (uInt otherWorldAxis=0; otherWorldAxis<cSys.nWorldAxes(); otherWorldAxis++) {
+         if (otherWorldAxis != worldAxis) {
+            cSys.findWorldAxis(coordinate, otherAxisInCoordinate, otherWorldAxis);
+            if (cSys.type(coordinate) == Coordinate::DIRECTION) {
+               bad = False;
+               break;
+            }
+         }
+      }
+      if (bad) return False;
+
+
+// Construct the direction coordinate
+
+      const DirectionCoordinate coord = cSys.directionCoordinate(coordinate);
+
+
+// Find mean or reference pixel coordinate for the other direction 
+// coordinate world axis
+
+      Double otherPixel;
+      if (meanOther) {
+         otherPixel = Double(pInImage_p->shape()(otherWorldAxis)) / 2.0;
+      } else {
+         otherPixel = coord.referencePixel()(0);
+      }
+
+
+// Convert pixels to world
+
+      Vector<Double> pix(2);
+      Vector<Double> world(2);
+      String tString = coord.worldAxisNames()(axisInCoordinate);
+      tString.upcase();
+
+      for (Int i=0; i<n1; i++) {
+         pix(axisInCoordinate) = pixel(i);
+         pix(otherAxisInCoordinate) = otherPixel;
+
+         if (!coord.toWorld(world,pix)) return False;
+         MVAngle mVA(world(axisInCoordinate));
+
+         if (tString.contains("RIGHT ASCENSION")) {
+            sWorld(i) = mVA.string(MVAngle::TIME,8);
+         } else if (tString.contains("DECLINATION")) {
+            sWorld(i) = mVA.string(MVAngle::DIG2,8);
+         } else {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);            
+            oss.setf(ios::left);
+            oss.precision(prec);
+            oss << mVA.degree() << ends;
+            String temp(oss.str());
+            sWorld(i) = temp;
+         }
+      }
+   } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
+      const SpectralCoordinate coord = cSys.spectralCoordinate(coordinate);
+      Vector<Double> pix(1), world(1);
+
+      for (Int i=0; i<n1; i++) {
+         pix(0) = pixel(i);
+         if (!coord.toWorld(world,pix)) return False;
+
+         ostrstream oss;
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.setf(ios::left);
+         oss.precision(prec);
+         oss << world(0) << ends;
+         String temp(oss.str());
+         sWorld(i) = temp;
+      }
+   } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
+      const LinearCoordinate coord = cSys.linearCoordinate(coordinate);
+      Vector<Double> pix(1), world(1);
+
+      for (Int i=0; i<n1; i++) {
+         pix(0) = pixel(i);
+         if (!coord.toWorld(world,pix)) return False;
+
+         ostrstream oss;
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.setf(ios::left);
+         oss.precision(prec);
+	 oss << world(0) << ends;
+         String temp(oss.str());
+         sWorld(i) = temp;
+      }
+   } else if (cSys.type(coordinate) == Coordinate::STOKES) {
+      const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
+      for (Int i=0; i<n1; i++) {
+         Stokes::StokesTypes iStokes;
+         Int pix = Int(pixel(i));
+         if (!coord.toWorld(iStokes, pix)) return False;
+         sWorld(i) = Stokes::name(Stokes::type(iStokes));
+      }
+   }
+   return True;
+}
+
+
+
 template <class T>
 void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& ISTAT)
 //
@@ -1883,7 +2049,6 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 // Discard unwanted planes of accumulation image
 
          for (i=0,pixelIterator.reset(); i<ISTAT; i++,pixelIterator++) {;};
-
 
 // Now copy the next cursor chunk to the output
 
@@ -1943,7 +2108,7 @@ void ImageStatistics<T>::summStats ()
    os_p.output().setf(ios::scientific, ios::floatfield);
    os_p.output().setf(ios::left, ios::adjustfield);
 
-   os_p << LogIO::NORMAL << endl; 
+   os_p << endl; 
    if ( Int(nPts+0.1) > 0) {
       os_p << "No pts   = ";
       os_p.output() << setw(oWidth) << Int(nPts+0.1) << endl;
@@ -1971,7 +2136,3 @@ void ImageStatistics<T>::summStats ()
    os_p << endl << endl;
    os_p.post();
 }
-
-
-
-
