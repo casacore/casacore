@@ -345,3 +345,4 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     }
   }
 }
+
