@@ -417,7 +417,7 @@ try {
 
       LogOrigin or("imoment", "main()", WHERE);
       LogIO os(or);
-      ImageMoments<Float> moment(*pSubImage, os);
+      ImageMoments<Float> moment(*pSubImage, os, True, True);
 
 // Set inputs.  
 
