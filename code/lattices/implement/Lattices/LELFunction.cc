@@ -191,7 +191,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       }
       Bool firstTime = True;
       T minVal = T();
-      LatticeExpr<T> latExpr(pExpr_p, 0);
+      LatticeExpr<T> latExpr(pExpr_p);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       if (! latExpr.isMasked()) {
 	 while (! iter.atEnd()) {
@@ -237,7 +237,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       }
       Bool firstTime = True;
       T maxVal = T();
-      LatticeExpr<T> latExpr(pExpr_p, 0);
+      LatticeExpr<T> latExpr(pExpr_p);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       if (! latExpr.isMasked()) {
 	 while (! iter.atEnd()) {
@@ -283,7 +283,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       }
       NumericTraits<T>::PrecisionType sumVal = 0;
       Int nrVal = 0;
-      LatticeExpr<T> latExpr(pExpr_p, 0);
+      LatticeExpr<T> latExpr(pExpr_p);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       Bool delData, delMask;
 
@@ -332,7 +332,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       NumericTraits<T>::PrecisionType sumVal = 0;
-      LatticeExpr<T> latExpr(pExpr_p, 0);
+      LatticeExpr<T> latExpr(pExpr_p);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       Bool delData, delMask;
 
@@ -559,7 +559,7 @@ LELScalar<T> LELFunctionReal1D<T>::getScalar() const
       if (pExpr_p->isScalar()) {
          return pExpr_p->getScalar();
       }
-      return maskedMedian (LatticeExpr<T>(pExpr_p, 0));
+      return maskedMedian (LatticeExpr<T>(pExpr_p));
    }
    default:
       throw(AipsError("LELFunctionReal1D::getScalar - unknown function"));
