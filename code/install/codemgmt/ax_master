@@ -2459,3 +2459,4 @@
 11 308 src rm trial/implement/Widgets/regionentry.help
 11 308 src rm trial/implement/Widgets/scalarentry.help
 11 312 src mv trial/implement/HDS/hdsfile_meta.g npoi/implement/HDS/hdsfile_meta.g
+11 312 src mv trial/implement/HDS/hdsfile.g npoi/implement/HDS/hdsfile.g
