@@ -1,5 +1,5 @@
 //# ImageExprGram.cc: Grammar for image expressions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,18 +31,6 @@
 // parsing command lines operating on lattices.
 // This is a preliminary version; eventually it has to be incorporated
 // in the AIPS++ command language.
-
-
-#if defined (sparc)
-#if !defined(AIPS_SUN_NATIVE) && !defined(__GNUG__) && !defined(AIPS_STDLIB)
-extern "C" char *__builtin_alloca(int);
-#endif
-#include <alloca.h>
-#endif
-#if defined (_AIX)
-#pragma alloca
-#include <malloc.h>
-#endif
 
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Images/ImageExprGram.h>
