@@ -135,7 +135,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
 // Check user pixel axes specifications
 
-   checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap2, outCoords);
+   checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap1, outCoords);
    const uInt nOutPixelAxes = outPixelAxes.nelements();
    if (itsShowLevel>0) {
       cerr << "outPixelAxes = " << outPixelAxes << endl;
@@ -804,13 +804,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             ArrayLattice<Bool> outMaskCursor(outMaskIterPtr->rwCursor());
             outMaskCursorIterPtr = new LatticeIterator<Bool>(outMaskCursor, outCursorIterShape);
          }
-
-// Subtract offset now we know it from input pixel coordinate grid
-/*
-         in2DPos2(0) = in2DPos(i,j,0) - inChunkBlc(inPixelAxis0);
-         in2DPos2(1) = in2DPos(i,j,1) - inChunkBlc(inPixelAxis1);
-*/
-
+//
          for (outCursorIter.reset(); !outCursorIter.atEnd(); outCursorIter++) {
 
 // outPos2 in the location of the BLC of the current matrix within the current
@@ -831,7 +825,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                } 
             }
             if (itsShowLevel>0) {
-               cerr << "inChunkBlc2D, inChunTrc2D " << inChunkBlc2D << inChunkTrc2D << endl;
+               cerr << "inChunkBlc2D, inChunkTrc2D " << inChunkBlc2D << inChunkTrc2D << endl;
             }
             const Matrix<T>& inDataChunk2D =  
                inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunkShape2D);
@@ -865,7 +859,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                      in2DPos2(1) = in2DPos(i,j,1) - inChunkBlc(inPixelAxis1);
 //
                      if (itsShowLevel>1) {
-//                          cerr << "Interpolate array at " << in2DPos2 << endl;
+                        cerr << "Interpolate array at " << in2DPos2 << endl;
                      }
 //
                      if (inIsMasked) {                     
@@ -1616,7 +1610,7 @@ template<class T>
 void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
                                const IPosition& inShape,
                                const IPosition& outShape,
-                               const Vector<Int>& pixelAxisMap,
+                               const Vector<Int>& pixelAxisMap1,
                                const CoordinateSystem& outCoords)
 {
    LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
@@ -1669,26 +1663,37 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
    }
    outPixelAxes.resize(j,True);
 
-// CHeck for range
+// Check for range
 
+   Vector<Bool> found(nOut, False);
    for (Int i=0; i<n1; i++) {
       if (outPixelAxes(i)<0 || outPixelAxes(i)>=nOut) {
-         os << "Pixel axes are illegal" << LogIO::EXCEPTION;
+         os << "Pixel axes are out of range" << LogIO::EXCEPTION;
+      }
+//
+      if (found(outPixelAxes(i))) {
+         os << "Specified pixel axes " << outPixelAxes 
+            << " are not unique" << LogIO::EXCEPTION;
+      } else {
+         found(outPixelAxes(i)) = True;
       }
    }
 
 // CHeck non-regriddded axis shapes are ok
 
    for (Int i=0; i<nOut; i++) {
-      Bool found = False;
+      Bool foundIt = False;
       for (Int j=0;j<n1; j++) {
          if (outPixelAxes(j)==i) {
-            found = True;
+            foundIt = True;
             break;
          }
       }
-//
-      if (!found && inShape(i) != outShape(pixelAxisMap(i))) {
+
+// pixelAxisMap1(i) says where pixel axis i in the output image
+// is in the input image
+
+      if (!foundIt && outShape(i) != inShape(pixelAxisMap1(i))) {
            os << "Any axis not being regridded must have the same "
               << "input and output shapes" << LogIO::EXCEPTION;
       }  
