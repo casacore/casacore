@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# Projection.cc: this defines Projection which wraps up wcs projections
 //# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -92,7 +92,7 @@ String Projection::name(Projection::Type proj)
     case COO: return "COO";
     case BON: return "BON";
     case PCO: return "PCO";
-    case GLS: return "GLS";
+    case SFL: return "SFL";
     case PAR: return "PAR";
     case AIT: return "AIT";
     case MOL: return "MOL";
@@ -144,8 +144,14 @@ Projection::Type Projection::type(const String &name)
 	retval = BON;
     } else if (name == "PCO") {
 	retval = PCO;
-    } else if (name == "GLS") {
-	retval = GLS;
+    } else if (name == "GLS" || name == "SFL") {
+
+// The GLS projection has been renamed to SFL by Calabretta and Greisen
+// The original GLS projection in AIPS was wrong and so SFL was invented.
+// wcs routines replace GLS by SFL with no further checking, so we will
+// do the same here.
+
+	retval = SFL;
     } else if (name == "PAR") {
 	retval = PAR;
     } else if (name == "AIT") {
@@ -184,7 +190,7 @@ uInt Projection::nParameters(Projection::Type proj)
     case COO: return 2;
     case BON: return 1;
     case PCO: return 0;
-    case GLS: return 0;
+    case SFL: return 0;
     case PAR: return 0;
     case AIT: return 0;
     case MOL: return 0;
