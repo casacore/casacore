@@ -1,5 +1,5 @@
 //# LCRegion2.cc: Implementation of LCRegion::fromRecord
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@
 #include <trial/Lattices/LCComplement.h>
 #include <trial/Lattices/LCDifference.h>
 #include <trial/Lattices/LCExtension.h>
+#include <trial/Lattices/LCStretch.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions/Error.h>
 
@@ -74,6 +75,8 @@ LCRegion* LCRegion::fromRecord (const TableRecord& rec,
       	regPtr = LCDifference::fromRecord (rec, tableName);
     } else if (name == LCExtension::className()) {
         regPtr = LCExtension::fromRecord (rec, tableName);
+    } else if (name == LCStretch::className()) {
+        regPtr = LCStretch::fromRecord (rec, tableName);
     } else {
 	throw (AipsError ("LCRegion::fromRecord - " + name +
 			  " is unknown derived LCRegion class"));
