@@ -1,5 +1,5 @@
 //# CompiledFunction.cc:  Form a linear combination of Functions
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,23 +208,23 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
     case FuncExprData::ABS:
       exec_p.back() = abs(exec_p.back());
       break;
-      ///   case FuncExprData::FLOOR:
-      ///      exec_p.back() = floor(exec_p.back());
-      ///      break;
-      ///    case FuncExprData::CEIL:
-      ///      exec_p.back() = ceil(exec_p.back());
-      ///      break;
-      ///    case FuncExprData::ROUND:
-      ///      exec_p.back() = floor(exec_p.back()+T(0.5));
-      ///      break;
-      ///    case FuncExprData::INT:
-      ///      if (exec_p.back() < 0) exec_p.back() = floor(exec_p.back());
-      ///      else exec_p.back() = ceil(exec_p.back());
-      ///      break;
-      ///    case FuncExprData::FRACT:
-      ///      if (exec_p.back() < 0) exec_p.back() -= ceil(exec_p.back());
-      ///      else exec_p.back() -= floor(exec_p.back());
-      ///      break;
+    case FuncExprData::FLOOR:
+      exec_p.back() = floor(exec_p.back());
+      break;
+    case FuncExprData::CEIL:
+      exec_p.back() = ceil(exec_p.back());
+      break;
+    case FuncExprData::ROUND:
+      exec_p.back() = floor(exec_p.back()+T(0.5));
+      break;
+    case FuncExprData::INT:
+      if (exec_p.back() < T(0)) exec_p.back() = floor(exec_p.back());
+      else exec_p.back() = ceil(exec_p.back());
+      break;
+    case FuncExprData::FRACT:
+      if (exec_p.back() < T(0)) exec_p.back() -= ceil(exec_p.back());
+      else exec_p.back() -= floor(exec_p.back());
+      break;
     case FuncExprData::SQRT:
       exec_p.back() = sqrt(exec_p.back());
       break;

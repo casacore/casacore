@@ -33,6 +33,7 @@
 #include <aips/aips.h>
 #include <trial/Functionals/CompiledParam.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Math.h>
 
 //# Forward declarations
 
@@ -152,7 +153,7 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
   virtual Function<T> *clone() const {
     return new CompiledFunction<T>(*this); };
   // </group>
-
+  
 };
 
 #endif
