@@ -86,6 +86,20 @@ template <class T> class Vector;
 // machine has to be reinitialised before using it for output by using
 // <em>reCalculate()</em>.
 // </note>
+// <note role=tip>
+// If either the input or output direction/reference specifies a planet, action
+// is special. Planets are assumed to be in J2000 positions, since that is
+// the only way to carry them from conversion to conversion (and also have a
+// variable phase-centre; which can, btw, always be obtained by the
+// phaseCentre() member).<br>
+// Note that a reCalc() is necessary between calls of the engine, since the
+// planetary position will change from time to time (i.e. with the Frame).
+//
+ // If you want to convert to say an azimuth/elevation map of the Sun, this
+// can be done to have either two conversion engines (original to Sun, then
+// Sun to AzEl), or by conversion of the Sun to AzEl before entering the
+// engine.
+// </note>
 // The output of the machine is either a set of rotation matrices that can
 // be used to convert UVW coordinates (and, if necessary, phases); or the
 // UVW conversion and actual phase can be calculated from a given
@@ -234,6 +248,8 @@ private:
   //# Private Member Functions
   // Initialise machinery
   void init();
+  // Planet handling
+  void planetinit();
   // Copy data members
   void copy(const UVWMachine &other);
 };

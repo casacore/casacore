@@ -34,6 +34,8 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
 		       Bool EW) 
   : ew_p(EW), zp_p(True), in_p(in) {
     outref_p = out;
+    out_p = MDirection(outref_p);
+    planetinit();
     conv_p = MDirection::Convert(in, outref_p);
     outin_p = conv_p();
     out_p = outin_p;
@@ -44,6 +46,7 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
 	     Bool EW)
   : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
+    planetinit();
     conv_p = MDirection::Convert(in, outref_p);
     outin_p = conv_p();
     init();
@@ -53,7 +56,9 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
 		       const MeasFrame &frame, Bool EW)
   : ew_p(EW), zp_p(True), in_p(in) {
     outref_p = out;
+    out_p = MDirection(outref_p);
     outref_p.set(frame);
+    planetinit();
     conv_p = MDirection::Convert(in, outref_p);
     outin_p = conv_p();
     out_p = outin_p;
@@ -65,6 +70,7 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
   : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
     outref_p.set(frame);
+    planetinit();
     conv_p = MDirection::Convert(in, outref_p);
     outin_p = conv_p();
     init();
@@ -224,6 +230,18 @@ void UVWMachine::init() {
   uvrot_p.transpose();
   phrot_p = rot3_p * (MVPosition(out_p.getValue())
   		      - MVPosition(outin_p.getValue()));
+}
+
+void UVWMachine::planetinit() {
+  if (ToBool(outref_p.getType() & MDirection::EXTRA)) {  // out planet
+    out_p.set(outref_p);		// make sure frame set
+    MDirection::Ref ref(MDirection::J2000, in_p.getRef().getFrame());
+    out_p = MDirection::Convert(out_p, ref)();
+  };
+  if (!ToBool(in_p.getRef().getType() & MDirection::EXTRA)) {  // in planet
+    MDirection::Ref ref(MDirection::J2000, outref_p.getFrame());
+    in_p = MDirection::Convert(in_p, ref)();
+  };
 }
 
 void UVWMachine::copy(const UVWMachine &other) {
