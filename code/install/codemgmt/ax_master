@@ -4233,3 +4233,5 @@
 14 074 src rm atnf/implement/rpfits.h
 14 074 src rm atnf/implement/rpfits_common.h
 14 074 src rm atnf/fortran/DummyForATNFlib.f
+14 076 src rm trial/implement/MeasurementSets/MSArrayBuffer.h
+14 076 src rm trial/implement/MeasurementSets/MSArrayBuffer.cc
