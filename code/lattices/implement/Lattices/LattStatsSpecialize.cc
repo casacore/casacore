@@ -109,17 +109,11 @@ void LattStatsSpecialize::accumulate (DComplex& nPts, DComplex& sum,
      nPts += Complex(1.0, 0.0);
      sum += DComplex(rd, 0.0);
      sumSq += DComplex(rd*rd, 0.0);
-     ///      nPts.real() += 1;
-     ///      sum.real() += rd;
-     ///      sumSq.real() += rd*rd;
    }
    if (imag(useIt) > 0.5) {
      nPts += Complex(0.0, 1.0);
      sum += DComplex(0.0, id);
      sumSq += DComplex(0.0, id*id);
-     ///      nPts.imag() += 1;
-     ///      sum.imag() += id;
-     ///      sumSq.imag() += id*id;
    }
 
 //
@@ -161,21 +155,42 @@ void LattStatsSpecialize::accumulate (DComplex& nPts, DComplex& sum,
 }
 
 
-Float LattStatsSpecialize::getMean (Float sum, Float n)
+Double LattStatsSpecialize::getMean (Double sum, Double n)
 {
-   Float tmp = 0.0;
+   Double tmp = 0.0;
    if (n > 0.5) tmp = sum / n;
    return tmp;
 }
 
-Float LattStatsSpecialize::getVariance (Float sum, Float sumsq, Float n)
+DComplex LattStatsSpecialize::getMean (DComplex sum, DComplex n)
+{
+   Double vR = 0.0; 
+   Double vI = 0.0;
+//
+   if (real(n) > 0.5) vR = real(sum)/real(n);
+   if (imag(n) > 0.5) vI  = imag(sum)/imag(n);
+//
+   return DComplex(vR, vI);
+}
+
+
+Double LattStatsSpecialize::getVariance (Double sum, Double sumsq, Double n)
 {
    Double tmp = 0.0;
    if (n > 1.5) tmp = (sumsq - (sum*sum/n)) / (n-1);
    return tmp;
 }
 
-Float LattStatsSpecialize::getSigma (Float sum, Float sumsq, Float n)
+
+DComplex LattStatsSpecialize::getVariance (DComplex sum, DComplex sumsq, DComplex n)
+{
+   return DComplex(getVariance(real(sum), real(sumsq), real(n)),
+                   getVariance(imag(sum), imag(sumsq), imag(n)));
+}
+
+
+
+Double LattStatsSpecialize::getSigma (Double sum, Double sumsq, Double n)
 {
    Double var = getVariance (sum, sumsq, n);
    if (var>0) {
@@ -186,7 +201,7 @@ Float LattStatsSpecialize::getSigma (Float sum, Float sumsq, Float n)
    return 0.0;
 }
 
-Float LattStatsSpecialize::getSigma (Float var)
+Double LattStatsSpecialize::getSigma (Double var)
 {
    if (var>0) {
       return sqrt(var);
@@ -196,7 +211,7 @@ Float LattStatsSpecialize::getSigma (Float var)
    return 0.0;
 }
 
-Float LattStatsSpecialize::getRms (Float sumsq, Float n)
+Double LattStatsSpecialize::getRms (Double sumsq, Double n)
 {
    Float tmp = 0.0;
    if (n > 0.5) tmp = sqrt(sumsq/n);
@@ -204,36 +219,21 @@ Float LattStatsSpecialize::getRms (Float sumsq, Float n)
 }
  
 
-Complex LattStatsSpecialize::getMean (Complex sum, Complex n)
+
+DComplex LattStatsSpecialize::getSigma (DComplex sum, DComplex sumsq, DComplex n)
 {
-   Complex tmp(0.0,0.0);
-   ///   if (real(n) > 0.5) tmp.real() = real(sum)/real(n);
-   ///   if (imag(n) > 0.5) tmp.imag() = imag(sum)/imag(n);
-   if (real(n) > 0.5) tmp = Complex(real(sum)/real(n), tmp.imag());
-   if (imag(n) > 0.5) tmp = Complex(tmp.real(), imag(sum)/imag(n));
-   return tmp;
+   return DComplex(getVariance(real(sum), real(sumsq), real(n)),
+                   getVariance(imag(sum), imag(sumsq), imag(n)));
 }
 
-Complex LattStatsSpecialize::getVariance (Complex sum, Complex sumsq, Complex n)
+DComplex LattStatsSpecialize::getSigma (DComplex var)
 {
-   return Complex(getVariance(real(sum), real(sumsq), real(n)),
-                  getVariance(imag(sum), imag(sumsq), imag(n)));
+   return DComplex(getSigma(real(var)), getSigma(imag(var)));
 }
 
-Complex LattStatsSpecialize::getSigma (Complex sum, Complex sumsq, Complex n)
+DComplex LattStatsSpecialize::getRms (DComplex sumsq, DComplex n)
 {
-   return Complex(getVariance(real(sum), real(sumsq), real(n)),
-                  getVariance(imag(sum), imag(sumsq), imag(n)));
-}
-
-Complex LattStatsSpecialize::getSigma (Complex var)
-{
-   return Complex(getSigma(real(var)), getSigma(imag(var)));
-}
-
-Complex LattStatsSpecialize::getRms (Complex sumsq, Complex n)
-{
-   return Complex(getRms(real(sumsq),real(n)), getRms(imag(sumsq), imag(n)));
+   return DComplex(getRms(real(sumsq),real(n)), getRms(imag(sumsq), imag(n)));
 }
 
 Float LattStatsSpecialize::min(Float v1, Float v2)
@@ -303,36 +303,15 @@ void LattStatsSpecialize::setUseItTrue (Complex& useIt)
 }
 
 
-Bool LattStatsSpecialize::hasSomePoints (Float npts)
+Bool LattStatsSpecialize::hasSomePoints (Double npts)
 {
    return (npts > 0.5);
 }
 
-Bool LattStatsSpecialize::hasSomePoints (Complex npts)
+Bool LattStatsSpecialize::hasSomePoints (DComplex npts)
 {
    return (real(npts) > 0.5 || imag(npts)>0.5);
 }
-
-
-uInt LattStatsSpecialize::maxPts (const Vector<Float>& npts)
-{
-   uInt nMax = 0;
-   for (uInt j=0; j<npts.nelements(); j++) {
-      nMax = ::max(nMax, uInt(npts(j)+0.1));
-   }
-   return nMax;
-}
-
-uInt LattStatsSpecialize::maxPts (const Vector<Complex>& npts)
-{
-   uInt nMax = 0;
-   for (uInt j=0; j<npts.nelements(); j++) {
-      nMax = ::max(nMax, uInt(real(npts(j))+0.1));
-      nMax = ::max(nMax, uInt(imag(npts(j))+0.1));
-   }
-   return nMax;
-}
-
 
 Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage, 
                                              Vector<Float>& range,
@@ -427,8 +406,6 @@ Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage,
 // 
    range.resize(rangeReal.nelements());
    for (uInt i=0; i<range.nelements(); i++) {
-     ///      range(i).real() = rangeReal(i);
-     ///      range(i).imag() = rangeImag(i);
      range(i) = Complex(rangeReal(i), rangeImag(i));
    }
 //

@@ -81,11 +81,8 @@ public:
                            Bool fixedMinMax, Complex datum,
                            uInt& pos, Complex useIt);
 //
-   static Bool hasSomePoints (Float npts);
-   static Bool hasSomePoints (Complex npts);
-//
-   static uInt maxPts (const Vector<Float>& nPts);
-   static uInt maxPts (const Vector<Complex>& nPts);
+   static Bool hasSomePoints (Double npts);
+   static Bool hasSomePoints (DComplex npts);
 //
    static void setUseItTrue (Float& useIt);
    static void setUseItTrue (Complex& useIt);
@@ -96,20 +93,20 @@ public:
    static Float usePixelExc (Float dMin, Float dMax, Float datum);
    static Complex usePixelExc (Complex dMin, Complex dMax, Complex datum);
 //
-   static Float getMean (Float sum, Float n);
-   static Complex getMean (Complex sum, Complex n);
+   static Double getMean (Double sum, Double n);
+   static DComplex getMean (DComplex sum, DComplex n);
 //
-   static Float getVariance (Float sum, Float sumsq, Float n);
-   static Complex getVariance (Complex sum, Complex sumsq, Complex n);
+   static Double getVariance (Double sum, Double sumsq, Double n);
+   static DComplex getVariance (DComplex sum, DComplex sumsq, DComplex n);
 //
-   static Float getSigma (Float sum, Float sumsq, Float n);
-   static Complex getSigma (Complex sum, Complex sumsq, Complex n);
+   static Double getSigma (Double sum, Double sumsq, Double n);
+   static DComplex getSigma (DComplex sum, DComplex sumsq, DComplex n);
 //
-   static Float getSigma (Float var);
-   static Complex getSigma (Complex var);
+   static Double getSigma (Double var);
+   static DComplex getSigma (DComplex var);
 //
-   static Float getRms (Float sumsq, Float n);
-   static Complex getRms (Complex sumsq, Complex n);
+   static Double getRms (Double sumsq, Double n);
+   static DComplex getRms (DComplex sumsq, DComplex n);
 //
    static Float min(Float v1, Float v2);
    static Complex min(Complex v1, Complex v2);
