@@ -50,7 +50,7 @@ class TableDesc;
 //# Classes you should understand before using this one.
 //   <li> <linkto module=Measures>Measures</linkto>
 //   <li> <linkto module=Tables>Tables</linkto>
-//   <li> TableMeasDesc
+//   <li> <linkto class=TableMeasDesc>TableMeasDesc</linkto>
 // </prerequisite>
 
 // <synopsis>
