@@ -1,5 +1,5 @@
 //# ColumnSet.h: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,12 +145,18 @@ public:
     // Can a column be removed from the data manager?
     Bool canRemoveColumn (const String& columnName) const;
 
+    // Can a column be renamed in the data manager?
+    Bool canRenameColumn (const String& columnName) const;
+
     // Add rows to all data managers.
     void addRow (uInt nrrow);
 
     // Remove a row from all data managers.
     // It will throw an exception if not possible.
     void removeRow (uInt rownr);
+
+    // Rename the column in the map.
+    void renameColumn (const String& newName, const String& oldName);
 
     // Add a column to the table.
     // The default implementation throws an "invalid operation" exception.

@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -389,7 +389,7 @@ Bool BaseTable::canRemoveRow() const
     { return False; }
 Bool BaseTable::canRemoveColumn (const String&) const
     { return False; }
-Bool BaseTable::canRenameColumn() const
+Bool BaseTable::canRenameColumn (const String&) const
     { return False; }
 
 void BaseTable::addRow (uInt, Bool)

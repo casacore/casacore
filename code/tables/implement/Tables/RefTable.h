@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -218,8 +218,8 @@ public:
     // Remove a column.
     void removeColumn (const String& columnName);
 
-    // Test if a column can be renamed (yes).
-    Bool canRenameColumn() const;
+    // Test if a column can be renamed (yes if it exists).
+    Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
     void renameColumn (const String& newName, const String& oldName);

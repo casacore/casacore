@@ -1,5 +1,5 @@
 //# PlainTable.h: Class defining a plain regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -209,6 +209,12 @@ public:
 
     // Remove a column.
     void removeColumn (const String& columnName);
+
+    // Test if a column can be renamed (yes).
+    virtual Bool canRenameColumn (const String& columnName) const;
+
+    // Rename a column.
+    virtual void renameColumn (const String& newName, const String& oldName);
 
     // Find the data manager with the given name.
     DataManager* findDataManager (const String& dataManagerName) const;

@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -207,6 +207,15 @@ Bool ColumnSet::canRemoveColumn (const String& columnName) const
     }
     return getColumn(columnName)->dataManager()->canRemoveColumn();
 }
+Bool ColumnSet::canRenameColumn (const String& columnName) const
+{
+    // Cannot be renamed if column is unknown.
+    if (! tdescPtr_p->isColumn (columnName)) {
+	return False;
+    }
+    return True;
+    ////    return getColumn(columnName)->dataManager()->canRenameColumn();
+}
 
 
 //# Add rows to all data managers.
@@ -393,6 +402,13 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
     autoReleaseLock();
 }
 
+void ColumnSet::renameColumn (const String& newName, const String& oldName)
+{
+    checkLock (FileLocker::Write, True);
+    tdescPtr_p->renameColumn (newName, oldName);
+    colMap_p.rename (newName, oldName);
+    autoReleaseLock();
+}
 
 
 DataManager* ColumnSet::findDataManager (const String& dataManagerName) const

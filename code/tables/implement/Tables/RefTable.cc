@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -303,9 +303,6 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     if (version > 1) {
         ios >> names;
     }
-    // This must be Ger's debugging code: commentd out 99/12/31 TJC
-    //    else { cout << "no names vector" << endl;
-    //    }
     ios >> rootNrow;
     ios >> rowOrd_p;
     ios >> nrrow;
@@ -390,9 +387,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
 	if (rootDesc.isColumn (*mapValPtr)) {
 	    desc.addColumn (rootDesc.columnDesc (*mapValPtr));
 	    if (name != *mapValPtr) {
-		//# Renames are currently not supported anymore.
-		throw (TableInternalError ("renamed column in RefTable"));
-//#//		desc.renameColumn (nameMap.getKey(i), nameMap.getVal(i));
+		desc.renameColumn (nameMap.getKey(i), nameMap.getVal(i));
 	    }
 	}else{
 	    unknownCol.define (name, static_cast<void*>(0));
@@ -425,7 +420,7 @@ void RefTable::makeRefCol()
     for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
 	const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
 	colMap_p.define (cd.name(), cd.makeRefColumn
-			          (this, baseTabPtr_p->getColumn(cd.name())));
+	     (this, baseTabPtr_p->getColumn(nameMap_p(cd.name()))));
     }
 }
 
@@ -517,8 +512,9 @@ Bool RefTable::canRemoveRow() const
     { return True; }
 Bool RefTable::canRemoveColumn (const String&) const
     { return True; }
-Bool RefTable::canRenameColumn() const
-    { return True; }
+Bool RefTable::canRenameColumn (const String& columnName) const
+  ///    { return tdescPtr_p->isColumn (columnName); }
+    { return False; }
 
 void RefTable::removeRow (uInt rownr)
 {
@@ -536,8 +532,17 @@ void RefTable::removeRow (uInt rownr)
 void RefTable::removeColumn (const String&)
 { throw (TableInvOper ("RefTable::removeColumn not implemented yet")); }
  
-void RefTable::renameColumn (const String&, const String&)
-{ throw (TableInvOper ("RefTable::renameColumn not implemented yet")); }
+void RefTable::renameColumn (const String& newName, const String& oldName)
+{
+  // The BaseTablke::renameColumn throws an exception.
+  // renameColumn cannot be done until the problem is solved that
+  // nameMap_p is copied to a RefTable made from a RefTable.
+  // See the outcommented code in tTable for an example.
+    BaseTable::renameColumn (newName, oldName);
+    tdescPtr_p->renameColumn (newName, oldName);
+    colMap_p.rename (newName, oldName);
+    nameMap_p.rename (newName, oldName);
+}
 
 
 DataManager* RefTable::findDataManager (const String& dataManagerName) const

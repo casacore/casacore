@@ -1,5 +1,5 @@
 //# ColDescSet.cc: This class defines a set of column descriptions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,20 +142,28 @@ void ColumnDescSet::remove (const String& name)
 
 //# Rename a column in the set.
 //# Let all columns act upon the rename (in case they refer to the old name).
-//#//void ColumnDescSet::rename (const String& newname, const String& oldname)
-//#//{
-//#//    cols_p.getVal(oldname).checkRename (*this, newname);
-//#//    cols_p.rename (newname, oldname);
-//#//    ColumnDesc& cd = cols_p.getVal (newname);
-//#//    //# Actually rename in BaseColDesc object.
-//#//    cd.setName (newname);
-//#//    //# Handle rename for other things.
-//#//    cd.handleRename (*this, oldname);
-//#//    uInt nrcol = ncolumn();
-//#//    for (uInt i=0; i<nrcol; i++) {
-//#//	cols_p.getVal(i).renameAction (newname, oldname);
-//#//    }
-//#//}
+void ColumnDescSet::rename (const String& newname, const String& oldname)
+{
+    if (! isDefined(oldname)) {
+        throw (AipsError ("TableDesc::renameColumn - old name " + oldname +
+			  " does not exist"));
+    }
+    if (isDefined(newname)) {
+        throw (AipsError ("TableDesc::renameColumn - new name " + newname +
+			  " already exists"));
+    }
+    cols_p(oldname).checkRename (*this, newname);
+    cols_p.rename (newname, oldname);
+    ColumnDesc& cd = cols_p(newname);
+    //# Actually rename in BaseColDesc object.
+    cd.setName (newname);
+    //# Handle rename for other things.
+    cd.handleRename (*this, oldname);
+    uInt nrcol = ncolumn();
+    for (uInt i=0; i<nrcol; i++) {
+	cols_p.getVal(i).renameAction (newname, oldname);
+    }
+}
 
 
 //# Check recursevily if the descriptions of all subtables are known.

@@ -173,7 +173,7 @@ private:
     // Rename a column in the set.
     // An exception is thrown if the new name already exists or if
     // the old name does not exist.
-//#//    void rename (const String& newname, const String& oldname);
+    void rename (const String& newname, const String& oldname);
 
     // Test if all columns are part of the other set.
     // The flag equalDataTypes is set to True if the data types of the

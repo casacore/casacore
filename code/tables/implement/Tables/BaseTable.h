@@ -1,5 +1,5 @@
 //# BaseTable.h: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -343,7 +343,7 @@ public:
     virtual void removeColumn (const String& columnName);
 
     // Test if a column can be renamed.
-    virtual Bool canRenameColumn() const;
+    virtual Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
     virtual void renameColumn (const String& newName, const String& oldName);

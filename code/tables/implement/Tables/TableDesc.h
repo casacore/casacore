@@ -286,7 +286,7 @@ public:
     // </srcblock>
     ColumnDesc& addColumn (const ColumnDesc&);
 
-    // Add a column to the table description and rename it.
+    // Add a column to the table description and give it another name.
     // This may be useful to use a description of another column.
     ColumnDesc& addColumn (const ColumnDesc&, const String& newname);
 
@@ -294,10 +294,15 @@ public:
     // An exception is thrown if the column does not exist.
     void removeColumn (const String& name);
 
-//#//    // Rename a column.
-//#//    // An exception is thrown if the old name does not exist or
-//#//    // if the name already exists.
-//#//    void renameColumn (const String& newname, const String& oldname);
+    // Rename a column.
+    // An exception is thrown if the old name does not exist or
+    // if the name already exists.
+    // <note role=caution>
+    // Renaming a column should be done with care, because other
+    // columns may be referring this column. Also a hypercolumn definition
+    // might be using the old name.
+    // </note>
+    void renameColumn (const String& newname, const String& oldname);
 
     // Get number of columns.
     uInt ncolumn() const;
@@ -551,9 +556,9 @@ inline void TableDesc::removeColumn (const String& name)
     { col_p.remove (name); }
 
 //# Rename a column.
-//#//inline void TableDesc::renameColumn (const String& newname,
-//#//					    const String& oldname)
-//#//    { col_p.rename (newname, oldname); }
+inline void TableDesc::renameColumn (const String& newname,
+				     const String& oldname)
+    { col_p.rename (newname, oldname); }
 
 //# Access the comment.
 inline const String& TableDesc::comment () const

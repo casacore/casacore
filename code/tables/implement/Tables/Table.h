@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -163,7 +163,7 @@ public:
     typedef void ScratchCallback (const String& name, Bool isScratch,
 				  const String& oldName);
 
-    // Set the pointer to the StateCallback function.
+    // Set the pointer to the ScratchCallback function.
     // It returns the current value of the pointer.
     // This function is called when changing the state of a table
     // (i.e. create, close, rename, (un)markForDelete).
@@ -237,7 +237,6 @@ public:
     // Of course, in that case the flush function could be called explicitly.
     ~Table();
 
-    //*display 8
     // This function is used by the exception handling mechanism we have
     // defined. It merely calls the destructor without flushing the data.
     // When real exceptions are available it will be unnecessary.
@@ -704,23 +703,29 @@ public:
     void removeColumn (const String& columnName);
 
     // Test if a column can be renamed.
-    Bool canRenameColumn() const;
+    Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
+    // An exception is thrown if the old name does not exist or
+    // if the name already exists.
+    // <note role=caution>
+    // Renaming a column should be done with care, because other
+    // columns may be referring this column. Also a hypercolumn definition
+    // might be using the old name.
+    // Finally if may also invalidate persistent selections of a table,
+    // because the reference table cannot find the column anymore.
+    // </note>
     void renameColumn (const String& newName, const String& oldName);
 
-    //*display 4
     // Write a table to AipsIO (for TypedKeywords<Table>).
     // This will only write the table name.
     friend AipsIO& operator<< (AipsIO&, const Table&);
 
-    //*display 4
     // Read a table from AipsIO (for TypedKeywords<Table>).
     // This will read the table name and open the table as writable
     // if the table file is writable, otherwise as readonly.
     friend AipsIO& operator>> (AipsIO&, Table&);
 
-    //*display 4
     // Read a table from AipsIO (for TableKeywords).
     // This will read the table name and open the table as writable
     // if the switch is set and if the table file is writable.
@@ -861,8 +866,8 @@ inline Bool Table::canRemoveRow() const
     { return baseTabPtr_p->canRemoveRow(); }
 inline Bool Table::canRemoveColumn (const String& columnName) const
     { return baseTabPtr_p->canRemoveColumn (columnName); }
-inline Bool Table::canRenameColumn() const
-    { return baseTabPtr_p->canRenameColumn(); }
+inline Bool Table::canRenameColumn (const String& columnName) const
+    { return baseTabPtr_p->canRenameColumn (columnName); }
 
 inline void Table::addRow (uInt nrrow, Bool initialize)
     { baseTabPtr_p->addRow (nrrow, initialize); }

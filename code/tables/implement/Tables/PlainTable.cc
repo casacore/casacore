@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,8 +81,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     newtab.columnSetPtr()->checkDataManagerNames();
     //# Get the data from the SetupNewTable object.
     //# Set SetupNewTable object to in use.
-    tdescPtr_p   = newtab.tableDescPtr();
-    colSetPtr_p  = newtab.columnSetPtr();
+    tdescPtr_p  = newtab.tableDescPtr();
+    colSetPtr_p = newtab.columnSetPtr();
     newtab.setInUse();
     //# Create the table directory (and possibly delete existing files)
     //# as needed.
@@ -445,7 +445,7 @@ BaseColumn* PlainTable::getColumn (const String& columnName) const
     { return colSetPtr_p->getColumn (columnName); }
 
 
-//# The data managers have to be inspected to tell if adding, etc.
+//# The data managers have to be inspected to tell if adding and removing
 //# of rows and columns is possible.
 Bool PlainTable::canAddRow() const
     { return colSetPtr_p->canAddRow(); }
@@ -454,6 +454,9 @@ Bool PlainTable::canRemoveRow() const
 Bool PlainTable::canRemoveColumn (const String& columnName) const
     { return colSetPtr_p->canRemoveColumn (columnName); }
 
+//# Renaming a column is possible.
+Bool PlainTable::canRenameColumn (const String& columnName) const
+    { return colSetPtr_p->canRenameColumn (columnName); }
 
 //# Add rows.
 void PlainTable::addRow (uInt nrrw, Bool initialize)
@@ -533,6 +536,15 @@ void PlainTable::removeColumn (const String&)
 	throw (TableInvOper ("Table::removeColumn; table is not writable"));
     }
     throw (TableInvOper ("PlainTable::removeColumn not implemented yet"));
+}
+
+void PlainTable::renameColumn (const String& newName, const String& oldName)
+{
+    if (! isWritable()) {
+	throw (TableInvOper ("Table::renameColumn; table is not writable"));
+    }
+    colSetPtr_p->renameColumn (newName, oldName);
+    tableChanged_p = True;
 }
 
 
