@@ -30,6 +30,13 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MeasComet.h>
+#include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasTable.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MCDirection.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/String.h>
 #include <aips/Quanta/MVTime.h>
@@ -79,6 +86,27 @@ main() {
 	cout << MVTime(x).string(MVTime::YMD) << " " <<
 	  comet.getDisk(y, x) << ": " << y << endl;
       };
+      cout << "Frame and conversion:" << endl;
+      MeasFrame frame;
+      MEpoch epo(MVEpoch(50802.729167), MEpoch::ET);
+      frame.set(epo);
+      frame.set(comet);
+      MPosition pos;
+      MeasTable::Observatory(pos, "vla");
+      frame.set(pos);
+      cout << "Frame: " << frame << endl;
+      MDirection::Convert cvt(MDirection::Ref(MDirection::COMET, frame),
+			      MDirection::APP);
+      cout << "Apparent: ";
+      cout << cvt() << endl;
+      cvt = MDirection::Convert(MDirection::Ref(MDirection::COMET, frame),
+				MDirection::TOPO);
+      cout << "Topo: ";
+      cout << cvt() << endl;
+      cvt = MDirection::Convert(MDirection::Ref(MDirection::COMET, frame),
+				MDirection::HADEC);
+      cout << "HADEC: ";
+      cout << cvt() << endl;
     }
 
     MeasComet *cl;
@@ -105,6 +133,29 @@ main() {
       };
       cout << "--------------------------------------" << endl;
       cl = comet.clone();
+      cout << "--------------------------------------" << endl;
+      cout << "Frame and conversion:" << endl;
+      MeasFrame frame;
+      MEpoch epo(MVEpoch(50802.729167), MEpoch::ET);
+      frame.set(epo);
+      frame.set(comet);
+      MPosition pos;
+      MeasTable::Observatory(pos, "vla");
+      frame.set(pos);
+      cout << "Frame: " << frame << endl;
+      MDirection::Convert cvt(MDirection::Ref(MDirection::COMET, frame),
+			      MDirection::APP);
+      cout << "Apparent: ";
+      cout << cvt() << endl;
+      cvt = MDirection::Convert(MDirection::Ref(MDirection::COMET, frame),
+				MDirection::TOPO);
+      cout << "Topo: ";
+      cout << cvt() << endl;
+      cvt = MDirection::Convert(MDirection::Ref(MDirection::COMET, frame),
+				MDirection::HADEC);
+      cout << "HADEC: ";
+      cout << cvt() << endl;
+      cout << "--------------------------------------" << endl;
     }
 
     {
