@@ -2355,3 +2355,6 @@
 09 329 src rm trial/implement/Tasking/object_server.g
 09 329 src rm trial/implement/Tasking/object_server.h
 09 329 src rm trial/implement/Tasking/polymorphic.g
+09 329 sys rm libexec/polymorphic.g
+09 329 sys rm libexec/object_interface.g
+09 329 sys rm libexec/object_server.g
