@@ -549,6 +549,13 @@ public:
   virtual Bool hasLock (FileLocker::LockType) const;
   // </group>
 
+  // Resynchronize the PagedArray object with the lattice file.
+  // This function is only useful if no read-locking is used, ie.
+  // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+  // In that cases the table system does not acquire a read-lock, thus
+  // does not synchronize itself automatically.
+  virtual void resync();
+
 private:
   // Set the data in the TableInfo file
   void setTableType();

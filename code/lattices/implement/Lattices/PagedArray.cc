@@ -511,3 +511,8 @@ Bool PagedArray<T>::hasLock (FileLocker::LockType type) const
 {
   return itsTable.hasLock (type);
 }
+template<class T>
+void PagedArray<T>::resync()
+{
+  itsTable.resync();
+}

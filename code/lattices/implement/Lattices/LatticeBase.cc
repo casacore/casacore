@@ -58,6 +58,8 @@ Bool LatticeBase::hasLock (FileLocker::LockType) const
 {
     return True;
 }
+void LatticeBase::resync()
+{}
 
 String LatticeBase::name (Bool) const
 {
