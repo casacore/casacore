@@ -176,6 +176,10 @@ public:
     const TableAttr& tableAttributes() const
       { return attr_p; }
 
+    // Set the table attributes.
+    void setTableAttributes (const TableAttr& attr)
+      { attr_p = attr; }
+
     // Close the table.
     void close() const;
 
