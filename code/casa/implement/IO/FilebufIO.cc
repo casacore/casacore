@@ -195,15 +195,23 @@ Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
 {
     itsReadDone  = False;
     itsWriteDone = False;
+    // On the SUN a seek (even at the same place) slows down fread
+    // tremendously. So lonly seek when needed.
     switch (dir) {
     case ByteIO::Begin:
-	fseek (itsFile, offset, SEEK_SET);
+	// On the SUN a seek (even at the same place) slows down fread
+	// tremendously. So only seek when needed.
+	if (offset != ftell(itsFile)) {
+	    fseek (itsFile, offset, SEEK_SET);
+	}
 	break;
     case ByteIO::End:
 	fseek (itsFile, offset, SEEK_END);
 	break;
     default:
-	fseek (itsFile, offset, SEEK_CUR);
+	if (offset != 0) {
+	    fseek (itsFile, offset, SEEK_CUR);
+	}
 	break;
     }
     return ftell (itsFile);
