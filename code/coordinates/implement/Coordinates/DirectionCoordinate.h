@@ -360,11 +360,16 @@ public:
     // The <src>setDefaultWorldMixRanges</src> function
     // just gives you [-90->90], [-180,180] (in appropriate units) 
     // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);   
+    virtual Bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
     virtual Vector<Double> worldMixMin () const {return worldMin_p;};
     virtual Vector<Double> worldMixMax () const {return worldMax_p;};
     // </group>
+
+    // Non-virtual function.  When <src>which</src> is T, use the 
+    // world value as the center for the mix world range.
+    void setWorldMixRanges (const Vector<Bool>& which,
+                            const Vector<Double>& world);
 
     // A convenient way to turn the world vector into an MDirection or MVDirection 
     // for further processing in the Measures system.  
@@ -614,6 +619,7 @@ private:
     void listLin(linprm*) const;
     // </group>
 
+   Double putLongInPiRange (Double lon, const String& unit) const;
 
 };
 
