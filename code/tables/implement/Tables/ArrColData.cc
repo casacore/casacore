@@ -144,14 +144,18 @@ template<class T>
 void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp)
 {
     checkShape (shp);
+    checkLock (True, True);
     dataColPtr_p->setShape (rownr, shp);
+    autoReleaseLock();
 }
 template<class T>
 void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp,
 				   const IPosition& tileShp)
 {
     checkShape (shp);
+    checkLock (True, True);
     dataColPtr_p->setShapeTiled (rownr, shp, tileShp);
+    autoReleaseLock();
 }
 
 template<class T>
@@ -181,14 +185,18 @@ Bool ArrayColumnData<T>::canAccessColumnSlice (Bool& reask) const
 template<class T>
 void ArrayColumnData<T>::get (uInt rownr, void* arrayPtr) const
 {
+    checkLock (False, True);
     dataColPtr_p->getArrayV (rownr, (Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 template<class T>
 void ArrayColumnData<T>::getSlice (uInt rownr, const Slicer& ns,
 				   void* arrayPtr) const
 {
+    checkLock (False, True);
     dataColPtr_p->getSliceV (rownr, ns, (Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 
@@ -196,7 +204,9 @@ template<class T>
 void ArrayColumnData<T>::put (uInt rownr, const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
+    checkLock (True, True);
     dataColPtr_p->putArrayV (rownr, (const Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 template<class T>
@@ -204,7 +214,9 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 				   const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
+    checkLock (True, True);
     dataColPtr_p->putSliceV (rownr, ns, (const Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 
@@ -215,7 +227,9 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 template<class T>
 void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
 {
+    checkLock (False, True);
     dataColPtr_p->getArrayColumnV ((Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 // Needed for g++
@@ -228,10 +242,12 @@ void ArrayColumnData<T>::getColumn (const Vector<uInt>& rownrs,
     uInt nr = rownrs.nelements();
     Array<T>* arr = (Array<T>*)arrayPtr;
     ArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkLock (False, True);
     for (uInt i=0; i<nr; i++) {
 	dataColPtr_p->getArrayV (rownrs(i), &(iter.array()));
 	iter.next();
     }
+    autoReleaseLock();
 }
 
 template<class T>
@@ -249,17 +265,21 @@ void ArrayColumnData<T>::getSliceColumn (const Vector<uInt>& rownrs,
     uInt nr = rownrs.nelements();
     Array<T>* arr = (Array<T>*)arrayPtr;
     ArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkLock (False, True);
     for (uInt i=0; i<nr; i++) {
 	dataColPtr_p->getSliceV (rownrs(i), ns, &(iter.array()));
 	iter.next();
     }
+    autoReleaseLock();
 }
 
 template<class T>
 void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
+    checkLock (True, True);
     dataColPtr_p->putArrayColumnV ((const Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 template<class T>
@@ -270,10 +290,12 @@ void ArrayColumnData<T>::putColumn (const Vector<uInt>& rownrs,
     const Array<T>* arr = (const Array<T>*)arrayPtr;
     checkValueLength (arr);
     ReadOnlyArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkLock (True, True);
     for (uInt i=0; i<nr; i++) {
 	dataColPtr_p->putArrayV (rownrs(i), &(iter.array()));
 	iter.next();
     }
+    autoReleaseLock();
 }
 
 template<class T>
@@ -281,7 +303,9 @@ void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
 					 const void* arrayPtr)
 {
     checkValueLength ((const Array<T>*)arrayPtr);
+    checkLock (True, True);
     dataColPtr_p->putColumnSliceV (ns, (const Array<T>*)arrayPtr);
+    autoReleaseLock();
 }
 
 template<class T>
@@ -293,10 +317,12 @@ void ArrayColumnData<T>::putSliceColumn (const Vector<uInt>& rownrs,
     const Array<T>* arr = (const Array<T>*)arrayPtr;
     checkValueLength (arr);
     ReadOnlyArrayIterator<T> iter(*arr, arr->ndim()-1);
+    checkLock (True, True);
     for (uInt i=0; i<nr; i++) {
 	dataColPtr_p->putSliceV (rownrs(i), ns, &(iter.array()));
 	iter.next();
     }
+    autoReleaseLock();
 }
 
 
