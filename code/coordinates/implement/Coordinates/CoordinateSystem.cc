@@ -495,15 +495,15 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 
 
 CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
-					    const Vector<Int> &pixinc) const
+					    const Vector<Int> &pixincFac) const
 {
     AlwaysAssert(originShift.nelements() == nPixelAxes() &&
-                 pixinc.nelements() == nPixelAxes(), AipsError);
+                 pixincFac.nelements() == nPixelAxes(), AipsError);
 
     // We could get rid of this assumption by multiplying by accounting for the PC
     // matrix as well as cdelt, or going through group-by-group, but it doesn't
     // seem necessary now, or maybe ever.
-    AlwaysAssert(originShift.nelements() == pixinc.nelements(), AipsError);
+    AlwaysAssert(originShift.nelements() == pixincFac.nelements(), AipsError);
 
     uInt n = nPixelAxes();
 
@@ -513,10 +513,10 @@ CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
 
     // Not efficient, but easy and this code shouldn't be called often
     for (uInt i=0; i<n; i++) {
-        AlwaysAssert(pixinc(i) >= 1, AipsError);
+        AlwaysAssert(pixincFac(i) >= 1, AipsError);
         crpix(i) -= originShift(i);
-        crpix(i) /= pixinc(i);
-        cdelt(i) *= pixinc(i);
+        crpix(i) /= pixincFac(i);
+        cdelt(i) *= pixincFac(i);
     }
     coords.setReferencePixel(crpix);
     coords.setIncrement(cdelt);
@@ -773,8 +773,8 @@ uInt CoordinateSystem::nPixelAxes() const
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-    DebugAssert(world.nelements() == nWorldAxes() &&
-		pixel.nelements() == nPixelAxes(), AipsError);
+    world.resize(nWorldAxes());
+    DebugAssert(pixel.nelements() == nPixelAxes(), AipsError);
 
     // This is neede so we can write into some temporaries
     CoordinateSystem *This = (CoordinateSystem *)this;
@@ -845,8 +845,8 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 Bool CoordinateSystem::toPixel(Vector<Double> &pixel, 
 			       const Vector<Double> &world) const
 {
-    DebugAssert(world.nelements() == nWorldAxes() &&
-		pixel.nelements() == nPixelAxes(), AipsError);
+    pixel.resize(nPixelAxes());
+    DebugAssert(world.nelements() == nWorldAxes(), AipsError);
 
     // This is neede so we can write into some temporaries
     CoordinateSystem *This = (CoordinateSystem *)this;
@@ -1544,7 +1544,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
     const Int n = nWorldAxes();
 
-
     String sprefix = prefix;
     if (header.isDefined(sprefix + "rval") ||
 	header.isDefined(sprefix + "rpix") ||
@@ -1756,6 +1755,17 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	    crpix(stokesAxis) = 1;
 	    cdelt(stokesAxis) = inc;
 	} else {
+           os << LogIO::SEVERE 
+              <<  "The Stokes coordinate in this CoordinateSystem is too" << endl;
+           os << LogIO::SEVERE 
+              << "complex to convert to the FITS convention" << LogIO::POST;
+           return False;
+
+// The idea here is to write non-standard records, to indicate something
+// funny, and then write the rest of the Stokes axis as non-standard
+// keywords.  Since fromFITSHeader can't decode this anyway, for now
+// return False.
+
 	    // !inorder
 	    crval(stokesAxis) = 
 		Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
@@ -2167,6 +2177,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	// Must be stokes.nelements() since the default switch might resize
 	// the vector.
 	for (uInt k=0; k<stokes.nelements(); k++) {
+
 	    Double tmp = crval(stokesAxis) + 
 		(k - crpix(stokesAxis))*cdelt(stokesAxis);
 	    if (tmp >= 0) {
@@ -2175,18 +2186,30 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		stokes(k) = Int(floor(tmp - 0.01));
 	    }
 	    switch (stokes(k)) {
-	    case 1: stokes(k) = Stokes::I; break;
-	    case 2: stokes(k) = Stokes::Q; break;
-	    case 3: stokes(k) = Stokes::U; break;
-	    case 4: stokes(k) = Stokes::V; break;
-	    case -1: stokes(k) = Stokes::RR; break;
-	    case -2: stokes(k) = Stokes::LL; break;
-	    case -3: stokes(k) = Stokes::RL; break;
-	    case -4: stokes(k) = Stokes::LR; break;
-	    case -5: stokes(k) = Stokes::XX; break;
-	    case -6: stokes(k) = Stokes::YY; break;
-	    case -7: stokes(k) = Stokes::XY; break;
-	    case -8: stokes(k) = Stokes::YX; break;
+	    case 1: stokes(k) = Stokes::I; 
+                    break;
+	    case 2: stokes(k) = Stokes::Q; 
+                    break;
+	    case 3: stokes(k) = Stokes::U; 
+                    break;
+	    case 4: stokes(k) = Stokes::V; 
+                    break;
+	    case -1: stokes(k) = Stokes::RR; 
+                     break;
+	    case -2: stokes(k) = Stokes::LL; 
+                     break;
+	    case -3: stokes(k) = Stokes::RL; 
+                     break;
+	    case -4: stokes(k) = Stokes::LR; 
+                     break;
+	    case -5: stokes(k) = Stokes::XX; 
+                     break;
+	    case -6: stokes(k) = Stokes::YY; 
+                     break;
+	    case -7: stokes(k) = Stokes::XY; 
+                     break;
+	    case -8: stokes(k) = Stokes::YX; 
+                     break;
 	    default:
 		os << LogIO::NORMAL << "There are at most " << k << " known "
 		    "Stokes values on the Stokes axis" << LogIO::POST;
