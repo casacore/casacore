@@ -1,5 +1,5 @@
 //# Aipsrc.h: Class to read the aipsrc general resource files
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Containers/Block.h>
 
+
 //# Forward declarations
 template <class T> class Vector;
 template <class T> class AipsrcValue;
@@ -39,14 +40,15 @@ template <class T> class AipsrcVector;
 class Aipsrc;
 
 //# Typedefs
-typedef class AipsrcValue<Double> AipsrcDouble;
-typedef class AipsrcValue<Int> AipsrcInt;
-typedef class AipsrcValue<Bool> AipsrcBool;
-typedef class Aipsrc AipsrcString;
-typedef class AipsrcVector<Double> AipsrcVDouble;
-typedef class AipsrcVector<Int> AipsrcVInt;
-typedef class AipsrcVector<Bool> AipsrcVBool;
-typedef class AipsrcVector<String> AipsrcVString;
+typedef AipsrcValue<Double> AipsrcDouble;
+typedef AipsrcValue<Int> AipsrcInt;
+typedef AipsrcValue<Bool> AipsrcBool;
+typedef Aipsrc AipsrcString;
+typedef AipsrcVector<Double> AipsrcVDouble;
+typedef AipsrcVector<Int> AipsrcVInt;
+typedef AipsrcVector<Bool> AipsrcVBool;
+typedef AipsrcVector<String> AipsrcVString;
+
 
 // <summary> Class to read the aipsrc general resource files </summary>
 
