@@ -960,7 +960,8 @@ Bool ImageMoments<T>::createMoments()
    if (pSmoothedImage) {
        
 // Remove the smoothed image file if they don't want to save it
- 
+
+      pSmoothedImageHolder.clear(True); 
       if (smoothOut_p.empty()) {
          Directory dir(smoothName);
          dir.removeRecursive();
