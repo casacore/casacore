@@ -1353,3 +1353,4 @@
 11 022 src mv doc/xreference doc/reference
 11 026 sys rm libexec/numerics_meta.g
 11 027 src mv atnf/apps/pksbandpass/pksbandpass.g atnf/apps/livedata/pksbandpass.g
+11 027 src mv atnf/apps/pksmonitor/pksmonitor.g atnf/apps/livedata/pksmonitor.g
