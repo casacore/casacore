@@ -334,16 +334,17 @@ private:
 // </prerequisite>
 
 // <synopsis>
-// <src>PtrBlock<T*></src> has the same interface as <src>Block<T*></src>
-// and should be used in preference to the latter. Its main purpose is
-// to reduce the number of template instantiations.
-// <br>However, it adds 2 functions to make it possible to delete
-// the objects the pointers are pointing to.
+// <src>PtrBlock<T*></src> has exactly the same interface as <src>Block<T*></src>
+// and should be used in preference to the latter. It's purpose is solely to
+// reduce the number of template instantiations.
 // </synopsis>
 
-//# <todo asof="1996/05/01">
-//#   <li>
-//# </todo>
+// <todo asof="1996/05/01">
+//   <li> Partial template specialization is another implementation choice that 
+//        will be possible eventually.
+//   <li> It might be useful to have functions that know the templte parameter
+//        is a pointer, e.g. that delete all the non-null pointers.
+// </todo>
 
 template<class T> class PtrBlock {
 public:
@@ -356,26 +357,10 @@ public:
     PtrBlock<T> &operator=(const PtrBlock<T> &other)
       { block_p = other.block_p; return *this;}
    ~PtrBlock() {}
-    // Delete all objects the pointers are pointing to and set pinter to 0.
-    // <group>
-    void deleteAll() {deleteAll (nelements());}
-    void deleteAll(uInt n)
-      { if (n>nelements()) n=nelements();
-        for (uInt i=0; i<n; i++) {
-          delete (*this)[i];
-	  (*this)[i] = 0;
-	}
-      }
-    // </group>
     void resize(uInt n, Bool forceSmaller, Bool copyElements)
       { block_p.resize(n,forceSmaller, copyElements); }
     void resize(uInt n) {block_p.resize(n);}
     void resize(uInt n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
-    // Remove the entry after optionally first deleting the object
-    // it is pointing to.
-    void removeAndDelete(uInt whichOne, Bool forceSmaller)
-      { delete (*this)[whichOne];
-        block_p.remove(whichOne, forceSmaller);}
     void remove(uInt whichOne, Bool forceSmaller) {block_p.remove(whichOne, forceSmaller);}
     void remove(uInt whichOne) {block_p.remove(whichOne);}
     void replaceStorage(uInt n, T *&storagePointer, 
