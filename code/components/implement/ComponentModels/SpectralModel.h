@@ -59,7 +59,7 @@ template <class T> class Vector;
 // class=ComponentShape>ComponentShape</linkto> class are used to model the
 // spatial characteristics.
 
-// This class parameterizes spectral models with two quantities.
+// This class parameterises spectral models with two quantities.
 // <dl>
 // <dt><em> A reference frequency.</em>
 // <dd> This is specified using an <linkto class=MFrequency>MFrequency</linkto>
