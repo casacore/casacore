@@ -459,13 +459,14 @@ String Fit2D::type(Fit2D::Types type)
 
 Fit2D::Types Fit2D::type(const String& type)
 {
-   String tmp = upcase(type);
+   String t0 = type;
+   String tmp = upcase(t0.at(0,1));
    Fit2D::Types tmp2;
-   if (tmp.contains("LEV")) {
+   if (tmp==String("L")) {
       tmp2 = Fit2D::LEVEL;
-   } else if (tmp.contains("DIS")) {
+   } else if (tmp==String("D")) {
       tmp2 = Fit2D::DISK;
-   } else if (tmp.contains("GAU")) {
+   } else if (tmp==String("G")) {
       tmp2 = Fit2D::GAUSSIAN;
    } else {
       throw(AipsError("Fit2D::type - illegal model type"));

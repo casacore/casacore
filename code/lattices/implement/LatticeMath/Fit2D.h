@@ -245,7 +245,7 @@ public:
     // Return type as a string
     static String type(Fit2D::Types type);
 
-    // Return string type as enum
+    // Return string type as enum (min match)
     static Fit2D::Types type(const String& type);
 
     // Find type of specific model
