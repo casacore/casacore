@@ -173,6 +173,9 @@ RecordDesc FITSTabular::descriptionFromHDU(
     RecordDesc description;
     uInt ncol = hdu.ncols();
 
+    // this is needed here
+    Record subStringInfo = subStringShapeFromHDU(hdu);
+
     Regex trailing(" *$"); // trailing blanks
     IPosition shape;
     for (uInt i=0; i < ncol; i++) {
@@ -192,12 +195,31 @@ RecordDesc FITSTabular::descriptionFromHDU(
 	    type = fitsDataType(ftype);
 	    shape.resize(0);
 	}
-	// TpString is always a scalar column, it typically comes from
-	// an array of FITS::CHAR
-	if (type == TpString || 
-	    (shape.nelements() == 1 && shape.product() == 1)) {
-	    // Scalar
+	// obvious Scalar
+	if (shape.nelements() == 1 && shape.product() == 1) {
 	    description.addField(colname, type);
+	} else if (type == TpString) {
+	    // TpString is the only known special case
+	    // is this a substring convention
+	    if (subStringInfo.isDefined(colname)) {
+		cout << "Sub string convention on column : " << colname << endl;
+		const Record info(subStringInfo.asRecord(colname));
+		Int nelem = info.asInt("NELEM");
+		if (nelem > 0) {
+		    // fixed shape
+		    description.addField(colname, type, IPosition(1,nelem));
+		    cout << "   fixed shape : " << nelem << endl;
+		    cout << "   nchar = " << info.asInt("NCHAR") << endl;
+		} else {
+		    // variable shape
+		    description.addField(colname, asArray(type));
+		    cout << "   variable shape, max length = " << info.asInt("NCHAR") << endl;
+		    cout << "   delimiter = " << info.asString("DELIM") << endl;
+		}
+	    } else {
+		// Scalar
+		description.addField(colname, type);
+	    }
 	} else {
 	    // Array
 	    if (shape.nelements() == 0) {
@@ -209,9 +231,50 @@ RecordDesc FITSTabular::descriptionFromHDU(
 		description.addField(colname, type, shape);
 	    }
 	}
-	//	description.setComment(i, hdu.field(i).comment());
     }
     return description;
+}
+
+Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu)
+{
+    Record subStringShapes;
+    uInt ncol = hdu.ncols();
+
+    Regex trailing(" *$"); // trailing blanks
+    for (uInt i=0; i < ncol; i++) {
+	String colname(hdu.ttype(i));
+	colname = colname.before(trailing);
+	String tform(hdu.tform(i));
+	tform = tform.before(trailing);
+	// Look for the sub-string convention, described in appendix C of
+	// Cotton, Tody, and Pence.  Its in the TFIELD for this column.
+	// This probably could (should?) happen in FitsField<char>.
+	// But I understand this better so do it here.
+	if (tform.matches(Regex("^.*A:SSTR[0-9]+(/[0-9]+)?$"))) {
+	    Record info;
+	    String sstr = tform.after("SSTR");
+	    if (sstr.contains("/")) {
+		// two integers separate by a the backslash
+		Int maxChars = atol(sstr.before('/').chars());
+		Int delim = atol(sstr.after('/').chars());
+		info.define("NCHAR", maxChars);
+		info.define("NELEM", -1);
+		info.define("DELIM", String(Char(delim)));
+	    } else {
+		// it must be just an integer at this point
+		Int nchars = atol(sstr.chars());
+		// fixed shape String array
+		// determine the shape given nchars
+		Int nelem = hdu.field(i).nelements() / nchars;
+		if (nelem < 1) nelem = 1;
+		info.define("NCHAR", nchars);
+		info.define("NELEM", nelem);
+		info.define("DELIM", String(Char('\0')));
+	    }
+	    subStringShapes.defineRecord(colname, info);
+	}
+    }
+    return subStringShapes;
 }
 
 Record FITSTabular::unitsFromHDU(BinaryTableExtension &hdu)
@@ -418,12 +481,19 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular)
 		    td.addColumn(ArrayColumnDesc<DComplex>(desc.name(i), desc.comment(i),
 							   shape, options));
 		} else {
-		    td.addColumn(ArrayColumnDesc<DComplex>(desc.name(i), desc.comment(i),
-							   shape, options));
+		    td.addColumn(ArrayColumnDesc<DComplex>(desc.name(i), desc.comment(i)));
 			}
 		break;
+	    case TpString:
+	    case TpArrayString:
+		if (fixedShape) {
+		    td.addColumn(ArrayColumnDesc<String>(desc.name(i), desc.comment(i),
+							 shape, options));
+		} else {
+		    td.addColumn(ArrayColumnDesc<String>(desc.name(i), desc.comment(i)));
+		}
+		break;
 	    default:
-		// There are no Arrays of Strings recognized in FITSTable
 		cerr << "Unrecognized array column data type in column " <<
 		    desc.name(i) << " : " << desc.type(i) << endl;
 		break;
@@ -535,6 +605,7 @@ Bool FITSTable::reopen(const String &fileName)
     units_p = FITSTabular::unitsFromHDU(*raw_table_p);
     disps_p = FITSTabular::displayFormatsFromHDU(*raw_table_p);
     nulls_p = FITSTabular::nullsFromHDU(*raw_table_p);
+    subStrShapes_p = FITSTabular::subStringShapeFromHDU(*raw_table_p);
 
     // resize some things based on the number of fields in the description
     nfields_p = description_p.nfields();
@@ -673,6 +744,9 @@ Bool FITSTable::reopen(const String &fileName)
 	    break;
 	case TpString:
 	    row_fields_p[i] = new RecordFieldPtr<String>(row_p, i);
+	    break;
+	case TpArrayString:
+	    row_fields_p[i] = new RecordFieldPtr<Array<String> >(row_p, i);
 	    break;
 	default:
 	    throw(AipsError("FITSTable::reopen() - unknown field type"));
@@ -821,9 +895,12 @@ void FITSTable::fill_row()
 		shape(ncommas) = atol(tdim.chars());
 	    } else {
 		// this must be a VADesc, that's the only way this can ever happen
-		DebugAssert(raw_table_p->field(i).fieldtype() == FITS::VADESC, AipsError);
-		FitsVADesc thisva = va_p[i]();
-		shape = IPosition(1, thisva.num());
+		// unless, of course, its a CHAR array using the sub-string convention
+		if (raw_table_p->field(i).fieldtype() != FITS::CHAR) {
+		    DebugAssert(raw_table_p->field(i).fieldtype() == FITS::VADESC, AipsError);
+		    FitsVADesc thisva = va_p[i]();
+		    shape = IPosition(1, thisva.num());
+		}
 	    }
 	}
 	switch (raw_table_p->field(i).fieldtype()) {
@@ -883,17 +960,57 @@ void FITSTable::fill_row()
 	    }
 	}
 	break;
-	// FITS::CHAR are intepreted to be scalar String values
 	case FITS::CHAR:
 	{
-	    DebugAssert(field_types_p[i] == TpString, AipsError);
-	    FitsField<char> &fitsRef = 
-		(FitsField<char> &)(raw_table_p->field(i));
-	    RecordFieldPtr<String> &rowRef =
-		*((RecordFieldPtr<String> *)row_fields_p[i]);
-	    char * cptr = (char *)fitsRef.data();
-	    uInt length = charLength(cptr, fitsRef.nelements());
-	    (*rowRef) = String(cptr, length);
+	    String fieldName = description_p.name(i);
+	    if (!subStrShapes_p.isDefined(fieldName)) {
+		DebugAssert(field_types_p[i] == TpString, AipsError);
+		FitsField<char> &fitsRef = 
+		    (FitsField<char> &)(raw_table_p->field(i));
+		RecordFieldPtr<String> &rowRef =
+		    *((RecordFieldPtr<String> *)row_fields_p[i]);
+		char * cptr = (char *)fitsRef.data();
+		uInt length = charLength(cptr, fitsRef.nelements());
+		(*rowRef) = String(cptr, length);
+	    } else {
+		DebugAssert(field_types_p[i] == TpArrayString, AipsError);
+		FitsField<char> &fitsRef = 
+		    (FitsField<char> &)(raw_table_p->field(i));
+		RecordFieldPtr<Array<String> > &rowRef = 
+		    *((RecordFieldPtr<Array<String> > *)row_fields_p[i]);
+		char * cptr = (char *)fitsRef.data();
+		uInt length = charLength(cptr, fitsRef.nelements());
+		String rawValue(cptr, length);
+		// figure out a way to cache this to make it faster
+		Record info(subStrShapes_p.asRecord(fieldName));
+		Int nels = info.asInt("NELEM");
+		Int nchar = info.asInt("NCHAR");
+		Vector<String> result;
+		if (nels > 0) {
+		    // fixed shape
+		    result.resize(nels);
+		    // and just do them all
+		    Int curr = 0;
+		    for (Int z=0;z<nels;z++) {
+			result(z) = rawValue.at(curr, nchar);
+			curr += nchar;
+		    }
+		} else {
+		    // variable shape
+		    // count the number of delimiters and add 1
+		    String delim(info.asString("DELIM"));
+		    nels = rawValue.freq(delim) + 1;
+		    result.resize(nels);
+		    for (Int z=0;z<(nels-1);z++) {
+			result(z) = rawValue.before(delim);
+			rawValue = rawValue.after(delim);
+		    }
+		    // the last one remains
+		    result(nels-1) = rawValue;
+		}
+		// now put the result intot the output record field
+		(*rowRef) = result;
+	    }
 	}
 	break;
 	case FITS::BYTE:
@@ -1271,6 +1388,7 @@ void FITSTable::fill_row()
 		    break;
 		case FITS::CHAR:
 		    {
+			// the sub string convention can't be used here
 			Char *vptr = (Char *)(vaptr_p[i]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
@@ -1559,6 +1677,9 @@ void FITSTable::clear_self()
 	case TpString:
 	    delete (RecordFieldPtr<String> *)row_fields_p[i];
 	    break;
+	case TpArrayString:
+	    delete (RecordFieldPtr<Array<String> > *)row_fields_p[i];
+	    break;
 	default:
 	    throw(AipsError("FITSTable::clear_self() - unknown field type"));
 	}
@@ -1596,6 +1717,7 @@ void FITSTable::clear_self()
     units_p.restructure(tmp);
     disps_p.restructure(tmp);
     nulls_p.restructure(tmp);
+    subStrShapes_p.restructure(tmp);
     name_p = "";
     isValid_p = False;
 }

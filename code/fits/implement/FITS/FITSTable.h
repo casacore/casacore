@@ -143,6 +143,18 @@ public:
     // Helper function for retrieving a description from a native-FITS hdu.
     static RecordDesc descriptionFromHDU(BinaryTableExtension &hdu);
 
+    // Help function for retrieving any shape information from String columns
+    // using the SubString convention.
+    // Information is returned in a Record having named fields = all String
+    // columns following those convention. Each of these fields is, in turn,
+    // a sub-record having these three fields: NCHAR, NELEM, DELIM.  
+    // If NELEM == -1 then there must have been a DELIM specified and
+    // this field is a variable shaped string array where each element has
+    // at most NCHAR and they are separated by DELIM (which is a String field here).
+    // Otherwise, DELIM is not used and there are NCHAR per element for each
+    // of NELEM in each cell for this column.
+    static Record subStringShapeFromHDU(BinaryTableExtension &hdu);
+
     // Helper function for retrieving the TUNITnnn from a native-FITS hdu.
     static Record unitsFromHDU(BinaryTableExtension &hdu);
 
@@ -276,6 +288,7 @@ private:
     Record units_p;
     Record disps_p;
     Record nulls_p;
+    Record subStrShapes_p;
     Bool allKeys_p;
     // One per field in row_p, of the right type. i.e. casting required.
     uInt nfields_p;
