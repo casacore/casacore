@@ -1974,3 +1974,4 @@
 08 069 src mv trial/apps/bimafiller/makefile bima/apps/bimafiller/makefile
 08 069 src rm trial/apps/bimafiller
 08 080 src mv trial/scripts/combobox.g trial/implement/guiutils/combobox.g
+08 080 src mv trial/scripts/results_manager.g trial/implement/guiutils/results_manager.g
