@@ -4934,3 +4934,4 @@
 14 327 src mv trial/apps/fits2ms/fits2ms.cc trial/apps/fits2ms/archive2ms.cc
 14 327 src mv trial/apps/fits2ms trial/apps/archive2ms
 14 327 src mv trial/apps/ms2fits trial/apps/ms2archive
+14 344 src rm trialdisplay/implement/DisplayDatas/TableAsRasterDDTemplates.cc
