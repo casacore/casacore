@@ -80,7 +80,7 @@ main (int argc, char **argv)
    outMask.set(True);
    out.attachMask(outMask);
 //
-   Interpolate2D<Float>::Method method = Interpolate2D<Float>::LINEAR;
+   Interpolate2D::Method method = Interpolate2D::LINEAR;
    IPosition axes(3, 0, 1, 2);
    if (axesU.nelements()>0) {
       if (axesU.nelements()==1 && axesU[0]==-10) {
