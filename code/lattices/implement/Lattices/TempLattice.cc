@@ -36,151 +36,182 @@ template<class T> TempLattice<T>::
 TempLattice() 
 {
   // Initialises all private data using their default constructors
-  // In particular theLatticePtr is set to point to nothing.
+  // In particular itsLatticePtr is set to point to nothing.
 }
 
 template<class T> TempLattice<T>::
-TempLattice(const IPosition & shape, Int maxMemoryInMB) 
+TempLattice (const IPosition& shape, Int maxMemoryInMB) 
 {
   uInt memoryReq = shape.product()*sizeof(T);
   uInt memoryAvail;
-  if (maxMemoryInMB > 0)
+  if (maxMemoryInMB > 0) {
     memoryAvail = maxMemoryInMB;
-  else
-    memoryAvail = AppInfo::memoryInMB()/4;
+  } else {
+    memoryAvail = AppInfo::memoryInMB() / 4;
+  }
   memoryAvail *= 1024*1024;
 
-  if (memoryReq > memoryAvail)
-    theLatticePtr = new PagedArray<T>(TiledShape(shape));
-  else
-    theLatticePtr = new ArrayLattice<T>(shape);
+  if (memoryReq > memoryAvail) {
+    itsLatticePtr = new PagedArray<T>(TiledShape(shape));
+  } else {
+    itsLatticePtr = new ArrayLattice<T>(shape);
+  }
 }
 
 template<class T> TempLattice<T>::
-TempLattice(const TempLattice<T> & other)
-  :theLatticePtr(other.theLatticePtr)
+TempLattice (const TempLattice<T>& other)
+: itsLatticePtr (other.itsLatticePtr)
+{}
+
+template<class T> TempLattice<T>::
+~TempLattice()
+{}
+
+template<class T> TempLattice<T>& TempLattice<T>::
+operator= (const TempLattice<T>& other)
 {
-}
-
-template<class T> TempLattice<T>::
-~TempLattice() {
-}
-
-template<class T> TempLattice<T> & TempLattice<T>::
-operator=(const TempLattice<T> & other) {
   if (this != &other) {
-    theLatticePtr = other.theLatticePtr;
+    itsLatticePtr = other.itsLatticePtr;
   }
   return *this;
 }
 
-template<class T> IPosition TempLattice<T>::
-shape() const {
-  return theLatticePtr->shape();
-}
-
-template<class T> uInt TempLattice<T>::
-ndim() const {
-  return theLatticePtr->ndim();
-}
-
-template<class T> uInt TempLattice<T>::
-nelements() const {
-  return theLatticePtr->nelements();
+template<class T> Lattice<T>* TempLattice<T>::
+clone() const
+{
+  return new TempLattice<T> (*this);
 }
 
 template<class T> Bool TempLattice<T>::
-conform(const Lattice<T> & other) const {
-  return theLatticePtr->conform(other);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice(COWPtr<Array<T> > & buffer, const IPosition & start,
-	 const IPosition & shape, const IPosition & stride,
-	 Bool removeDegenerateAxes) const {
-  return theLatticePtr->getSlice(buffer, start, shape, stride, 
-				 removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice(COWPtr<Array<T> > & buffer, const Slicer & section,
-	 Bool removeDegenerateAxes) const {
-  return theLatticePtr->getSlice(buffer, section, removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice(Array<T> & buffer, const IPosition & start, 
-	 const IPosition & shape, const IPosition & stride, 
-	 Bool removeDegenerateAxes) {
-  return theLatticePtr->getSlice(buffer, start, shape, stride,
-				 removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice(Array<T> & buffer, const Slicer & section, Bool removeDegenerateAxes){
-  return theLatticePtr->getSlice(buffer, section, removeDegenerateAxes);
-}
-
-template<class T> void TempLattice<T>::
-putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
-	 const IPosition & stride) {
-  theLatticePtr->putSlice(sourceBuffer, where, stride);
-}
-
-template<class T> void TempLattice<T>::
-putSlice(const Array<T> & sourceBuffer, const IPosition & where) {
-  theLatticePtr->putSlice(sourceBuffer, where);
-}
-
-template<class T> void TempLattice<T>::
-set(const T & value) {
-  theLatticePtr->set(value);
-}
-
-template<class T> void TempLattice<T>::
-apply(T (*function)(T)) {
-  theLatticePtr->apply(function);
-}
-
-template<class T> void TempLattice<T>::
-apply(T (*function)(const T &)) {
-  theLatticePtr->apply(function);
-}
-
-template<class T> void TempLattice<T>::
-apply(const Functional<T,T> & function) {
-  theLatticePtr->apply(function);
-}
-
-template<class T> uInt TempLattice<T>::
-maxPixels() const {
-  return theLatticePtr->maxPixels();
+isWritable() const
+{
+  return itsLatticePtr->isWritable();
 }
 
 template<class T> IPosition TempLattice<T>::
-niceCursorShape(uInt maxPixels) const {
-  return theLatticePtr->niceCursorShape(maxPixels);
+shape() const
+{
+  return itsLatticePtr->shape();
+}
+
+template<class T> uInt TempLattice<T>::
+ndim() const
+{
+  return itsLatticePtr->ndim();
+}
+
+template<class T> uInt TempLattice<T>::
+nelements() const
+{
+  return itsLatticePtr->nelements();
+}
+
+template<class T> Bool TempLattice<T>::
+conform(const Lattice<T>& other) const
+{
+  return itsLatticePtr->conform(other);
+}
+
+template<class T> Bool TempLattice<T>::
+getSlice (COWPtr<Array<T> >& buffer, const IPosition& start,
+	  const IPosition& shape, const IPosition& stride,
+	  Bool removeDegenerateAxes) const
+{
+  return itsLatticePtr->getSlice (buffer, start, shape, stride, 
+				  removeDegenerateAxes);
+}
+
+template<class T> Bool TempLattice<T>::
+getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
+	  Bool removeDegenerateAxes) const
+{
+  return itsLatticePtr->getSlice (buffer, section, removeDegenerateAxes);
+}
+
+template<class T> Bool TempLattice<T>::
+getSlice (Array<T>& buffer, const IPosition& start, 
+	  const IPosition& shape, const IPosition& stride, 
+	  Bool removeDegenerateAxes)
+{
+  return itsLatticePtr->getSlice (buffer, start, shape, stride,
+				  removeDegenerateAxes);
+}
+
+template<class T> Bool TempLattice<T>::
+getSlice (Array<T>& buffer, const Slicer& section, Bool removeDegenerateAxes)
+{
+  return itsLatticePtr->getSlice (buffer, section, removeDegenerateAxes);
+}
+
+template<class T> void TempLattice<T>::
+putSlice (const Array<T>& sourceBuffer, const IPosition& where, 
+	  const IPosition& stride)
+{
+  itsLatticePtr->putSlice (sourceBuffer, where, stride);
+}
+
+template<class T> void TempLattice<T>::
+putSlice (const Array<T>& sourceBuffer, const IPosition& where)
+{
+  itsLatticePtr->putSlice (sourceBuffer, where);
+}
+
+template<class T> void TempLattice<T>::
+set (const T& value)
+{
+  itsLatticePtr->set (value);
+}
+
+template<class T> void TempLattice<T>::
+apply(T (*function)(T))
+{
+  itsLatticePtr->apply (function);
+}
+
+template<class T> void TempLattice<T>::
+apply (T (*function)(const T&))
+{
+  itsLatticePtr->apply (function);
+}
+
+template<class T> void TempLattice<T>::
+apply (const Functional<T,T>& function)
+{
+  itsLatticePtr->apply (function);
+}
+
+template<class T> uInt TempLattice<T>::
+maxPixels() const
+{
+  return itsLatticePtr->maxPixels();
+}
+
+template<class T> IPosition TempLattice<T>::
+niceCursorShape (uInt maxPixels) const
+{
+  return itsLatticePtr->niceCursorShape (maxPixels);
 }
 
 template<class T> T TempLattice<T>::
-getAt(const IPosition & where) const {
-  return theLatticePtr->getAt(where);
+getAt (const IPosition& where) const
+{
+  return itsLatticePtr->getAt (where);
 }
 
 template<class T> void TempLattice<T>::
-putAt(const T & value, const IPosition & where) {
-  theLatticePtr->putAt(value, where);
+putAt (const T& value, const IPosition& where)
+{
+  itsLatticePtr->putAt (value, where);
 }
 
 template <class T> Bool TempLattice<T>::
-ok() const {
-  return theLatticePtr->ok();
+ok() const
+{
+  return itsLatticePtr->ok();
 }
 
-template<class T> LatticeIterInterface<T> * TempLattice<T>::
-makeIter(const LatticeNavigator & navigator) const {
-  return theLatticePtr->makeIter(navigator);
+template<class T> LatticeIterInterface<T>* TempLattice<T>::
+makeIter (const LatticeNavigator& navigator) const
+{
+  return itsLatticePtr->makeIter (navigator);
 }
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 TempLattice"
-// End: 
