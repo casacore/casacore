@@ -45,3 +45,17 @@ No call to a AlmaTI2MS class method accounted for more
 than 1% of the CPU time; optimization by small tweaks
 to AlmaTI2MS.cc not possible.  The code appears to be
 IO- rather than CPU-bound.
+
+change id: 0150
+ author:   Raymond Rusk
+ date:     2003/04/14
+ avers:    1.8
+ area:     System
+ package:  trial
+ module:   benchmark.g
+ type:     Code
+ category: New
+ summary:  Add almati2ms to the AIPS++ benchmarks in benchmark.g
+Added public methods almafuvrd(), almatifuvrd() and private
+method loadalmauvfits() to benchmark.g.  Updated documentation
+in benchmark.help.
