@@ -1,5 +1,5 @@
 //# Convolver.h: this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -293,9 +293,9 @@ public:
 private:
   IPosition thePsfSize;
   IPosition theFFTSize;
-  Array<NumericTraits<FType>::ConjugateType> theXfr;
+  Array<typename NumericTraits<FType>::ConjugateType> theXfr;
   Array<FType> thePsf;
-  FFTServer<FType, NumericTraits<FType>::ConjugateType> theFFT;
+  FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theFFT;
 
   void makeXfr(const Array<FType>& psf, const IPosition& imageSize,
 	       Bool linear, Bool fullSize);
