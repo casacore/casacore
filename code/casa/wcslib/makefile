@@ -107,3 +107,5 @@ $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/proj.h
 $(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/lin.h
 
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
+
+$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/wcs.h
