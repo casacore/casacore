@@ -1115,37 +1115,52 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Array<Bool> flags,dataflags;
   Array<Float> weights;
   if (wantWeight || average) {
-    Vector<Float> wt(msc.weight().getColumn());
+    Matrix<Float> wt(msc.weight().getColumn());  // Is 2D in MSv2
+    Int nCorr=wt.shape()(0);
+    IPosition wtsidx(3,nIfr,nCorr,nTime);
     if (doIfrAxis) {
-      Matrix<Float> wts(nIfr,nTime); wts.set(0);
-      {for (Int i=0; i<nRow; i++) wts(ifrSlot(i),timeSlot(i))=wt(i); }
+      Cube<Float> wts(wtsidx); wts.set(0);
+      for (Int i=0; i<nRow; i++) {
+        for (Int j=0; j<nCorr; j++) {
+          wts(ifrSlot(i),j,timeSlot(i))=wt(j,i);
+        }
+      }
       if (wantWeight) {
-	if (average) {
-	  // averaging weights doesn't make sense, 
-	  // return sum of weights instead
-	  Vector<Float> sumwt(nIfr); sumwt=0;
-	  for (Int i=0; i<nIfr; i++) {
-	    for (Int j=0; j<nTime; j++) sumwt(i)+=wts(i,j);
-	  }
-	  out.add("weight",sumwt);
-	} else {
-	  out.add("weight",wts);
-	}
+        if (average) {
+          // averaging weights doesn't make sense,
+          // return sum of weights instead
+          IPosition sumwtidx(2,nIfr,nCorr);
+          Matrix<Float> sumwt(sumwtidx); sumwt=0;
+          for (Int i=0; i<nIfr; i++) {
+            for (int j=0; j<nCorr; j++) {
+              for (Int k=0; k<nTime; k++) {
+                sumwt(i,j)+=wts(i,j,k);
+              }
+            }
+          }
+          out.add("weight",sumwt);
+        } else {
+          out.add("weight",wts);
+        }
       }
       weights.reference(wts);
     } else {
       if (wantWeight) {
-	if (average) {
-	  // return sum of weights
-	  Float sumwt=0;
-	  for (Int i=0; i<nRow; i++) sumwt+=wt(i);
-	  out.add("weight",sumwt);
-	} else {
-	  out.add("weight",wt);
-	}
+        if (average) {
+          // return sum of weights
+          Vector<Float> sumwt(nCorr); sumwt=0.0;
+          for (Int i=0; i<nRow; i++) {
+            for (Int j=0; j<nCorr; j++) {
+              sumwt(j)+=wt(j,i);
+            }
+          }
+          out.add("weight",sumwt);
+        } else {
+          out.add("weight",wt);
+        }
       }
       weights.reference(wt);
-    }
+    }                                                  
   }
   if (wantFlag || wantFlagSum ||average) {
     Array<Bool> flag;
