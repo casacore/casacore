@@ -1078,6 +1078,14 @@ LatticeExprNode sum(const LatticeExprNode& expr)
    return LatticeExprNode::newNumFunc1D (LELFunctionEnums::SUM, expr);
 }
 
+LatticeExprNode median(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function median" << endl;
+#endif
+   return LatticeExprNode::newRealFunc1D (LELFunctionEnums::MEDIAN1D, expr);
+}
+
 LatticeExprNode mean(const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)

@@ -291,6 +291,7 @@ class LatticeExprNode
    friend LatticeExprNode min      (const LatticeExprNode& expr);
    friend LatticeExprNode max      (const LatticeExprNode& expr);
    friend LatticeExprNode sum      (const LatticeExprNode& expr);
+   friend LatticeExprNode median   (const LatticeExprNode& expr);
    friend LatticeExprNode mean     (const LatticeExprNode& expr);
    friend LatticeExprNode variance (const LatticeExprNode& expr);
    friend LatticeExprNode stddev   (const LatticeExprNode& expr);
