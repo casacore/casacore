@@ -2,6 +2,9 @@
 tImageExprGram: Version 1.0
 <<<
 
+ImageExprParse: 'xxx' is an unknown lattice or image or it is an unqualified region
+Scanned so far: xxx
+
 ImageExprParse: 'a1' is an unknown lattice, image, or region
 Scanned so far: b/a1
 
