@@ -1,5 +1,5 @@
 //# MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -226,6 +226,10 @@ protected:
 
   // fill the Feed table with minimal info needed for synthesis processing
   void fillFeedTable();
+
+  // fill the Pointing table (from Field table, all antennas are assumed
+  // to point in the field direction)
+  void fillPointingTable();
 
   // fix up the EPOCH MEASURE_REFERENCE keywords using the value found
   // in the (last) AN table
