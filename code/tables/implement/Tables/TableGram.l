@@ -88,7 +88,10 @@ STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
+INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
+DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
 SET       [Ss][Ee][Tt]
+VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
 ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]
@@ -149,6 +152,20 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return UPDSET;
+	  }
+{INSERT}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(FROMstate);
+	    return INSERT;
+	  }
+{VALUES}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return VALUES;
+          }
+{DELETE}  {
+            tableGramPosition() += yyleng;
+	    return DELETE;
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;

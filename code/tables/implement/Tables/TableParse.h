@@ -192,7 +192,7 @@ public:
     String   str;           //# string literal; table name; field name
     Int      ival;          //# integer literal
     Double   dval[2];       //# Double/DComplex literal
-    Table    tab;           //# Table (from query in FROM clause)
+    Table    tab;           //# Table (from query in e.g. FROM clause)
 
     // Make a new TableParseVal object (for the flex actions).
     static TableParseVal* makeValue();
@@ -289,6 +289,9 @@ public:
 
     ~TableParseUpdate();
 
+    // Set the column name.
+    void setColumnName (const String& name);
+
     // Get the column name.
     const String& columnName() const;
 
@@ -340,8 +343,8 @@ class TableParseSelect
 {
 public:
 
-    // Default constructor.
-    TableParseSelect();
+    // Construct for the given command type.
+    TableParseSelect (Int commandType);
 
     // Destructor.
     ~TableParseSelect();
@@ -371,6 +374,13 @@ public:
     // Keep the update expressions.
     // It takes over the pointer (and clears the input pointer).
     void handleUpdate (PtrBlock<TableParseUpdate*>*& upd);
+
+    // Keep the insert expressions or table selection.
+    // It takes over the pointer (and clears the input pointer).
+    // <group>
+    void handleInsert (PtrBlock<TableParseUpdate*>*& ins);
+    void handleInsert (TableParseSelect*& sel);
+    // </group>
 
     // Keep the sort expressions.
     // It takes over the pointer (and clears the input pointer).
@@ -424,8 +434,9 @@ public:
     // Get the resulting table.
     const Table& getTable() const;
 
-    // Create a new TableParseSelect-object and put it on the stack (block)
-    static void newSelect();
+    // Create a new TableParseSelect-object for the given command type
+    // and put it on the stack (block)
+    static void newSelect (Int commandType);
 
     // Get and remove the last element from the "select stack".
     // Note that this does not delete the object pointed to. It only
@@ -444,6 +455,12 @@ public:
 private:
     // Do the update step.
     void doUpdate (Table& table);
+
+    // Do the insert step and return a selection containing the new rows.
+    Table doInsert (Table& table);
+
+    // Do the delete step.
+    void doDelete (Table& table, const Table& sel);
 
     // Do the sort step.
     Table doSort (const Table& table);
@@ -476,6 +493,9 @@ private:
     // If not found, a null Table object is returned.
     Table findTable (const String& shorthand) const;
 
+    // Find the names of all stored columns in a table.
+    Block<String> getStoredColumns (const Table& tab) const;
+
     // Try to find the keyword representing a table in one of the tables
     // in any select block (from inner to outer).
     // If not found, an exception is thrown.
@@ -495,6 +515,8 @@ private:
     // (Acts like pointer to top of stack).
     static uInt currentSelect_p;
 
+    //# Command type (1=select, 2=update, 3=insert, 4=delete).
+    Int commandType_p;
     //# Pointer to a linked list of TableParse objects.
     //# This is needed for the functions above, otherwise they have no
     //# way to communicate.
@@ -510,8 +532,10 @@ private:
     TableExprNodeSet* resultSet_p;
     //# The WHERE expression tree.
     TableExprNode* node_p;
-    //# The update list.
+    //# The update or insert expression list.
     PtrBlock<TableParseUpdate*>* update_p;
+    //# The table selection to be inserted.
+    TableParseSelect* insSel_p;
     //# The sort list.
     PtrBlock<TableParseSort*>* sort_p;
     //# The noDuplicates sort switch.
@@ -535,6 +559,8 @@ inline const Table& TableParse::table() const
     { return table_p; }
 
 
+inline void TableParseUpdate::setColumnName (const String& name)
+    { columnName_p = name; }
 inline const String& TableParseUpdate::columnName() const
     { return columnName_p; }
 inline const TableExprNode& TableParseUpdate::node() const

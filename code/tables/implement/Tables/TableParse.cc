@@ -35,6 +35,7 @@
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/TableRow.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
@@ -140,14 +141,16 @@ PtrBlock<TableParseSelect*> TableParseSelect::blockSelect_p;
 uInt TableParseSelect::currentSelect_p = 0;
 
 
-TableParseSelect::TableParseSelect()
-: distinct_p  (False),
-  resultSet_p (0),
-  node_p      (0),
-  update_p    (0),
-  sort_p      (0),
-  noDupl_p    (False),
-  order_p     (Sort::Ascending)
+TableParseSelect::TableParseSelect (Int commandType)
+: commandType_p (commandType),
+  distinct_p    (False),
+  resultSet_p   (0),
+  node_p        (0),
+  update_p      (0),
+  insSel_p      (0),
+  sort_p        (0),
+  noDupl_p      (False),
+  order_p       (Sort::Ascending)
 {
     parseList_p = new List<TableParse>;
     parseIter_p = new ListIter<TableParse> (parseList_p);
@@ -165,6 +168,7 @@ TableParseSelect::~TableParseSelect()
 	}
 	delete update_p;
     }
+    delete insSel_p;
     if (sort_p != 0) {
 	uInt nrkey = sort_p->nelements();
 	for (uInt i=0; i<nrkey; i++) {
@@ -175,13 +179,13 @@ TableParseSelect::~TableParseSelect()
     delete resultSet_p;
 }
 
-void TableParseSelect::newSelect()
+void TableParseSelect::newSelect (Int commandType)
 {
     // Create a new one and push it on the "stack".
     uInt n = currentSelect_p;
     currentSelect_p++;
     blockSelect_p.resize (currentSelect_p);
-    blockSelect_p[n] = new TableParseSelect;
+    blockSelect_p[n] = new TableParseSelect (commandType);
 }
 
 TableParseSelect* TableParseSelect::popSelect()
@@ -847,6 +851,22 @@ void TableParseSelect::handleSelect (TableExprNode*& node)
     }
 }
 
+Block<String> TableParseSelect::getStoredColumns (const Table& tab) const
+{
+  Block<String> names;
+  const TableDesc& tdesc = tab.tableDesc();
+  for (uInt i=0; i<tdesc.ncolumn(); i++) {
+    const String& colnm = tdesc[i].name();
+    if (tab.isColumnStored(colnm)) {
+      uInt inx = names.nelements();
+      names.resize (inx + 1);
+      names[inx] = colnm;
+    }
+  }
+  return names;
+}
+
+
 //# Execute a query in the FROM clause and return the resulting table.
 TableParseVal* TableParseSelect::doFromQuery()
 {
@@ -962,6 +982,36 @@ void TableParseSelect::handleUpdate (PtrBlock<TableParseUpdate*>*& upd)
   for (uInt i=0; i<update_p->nelements(); i++) {
     columnNames_p[i] = (*update_p)[i]->columnName();
   }
+}
+
+void TableParseSelect::handleInsert (PtrBlock<TableParseUpdate*>*& ins)
+{
+  update_p = ins;
+  ins      = 0;
+  // If no columns were given, all stored columns in the first table
+  // are the target columns.
+  if (columnNames_p.nelements() == 0) {
+    parseIter_p->toStart();
+    columnNames_p = getStoredColumns (parseIter_p->getRight().table());
+  }
+  // Check if #columns and values match.
+  // Copy the names to the update objects.
+  if (update_p->nelements() != columnNames_p.nelements()) {
+    throw TableInvExpr ("Error in INSERT command; nr of columns (=" +
+			String::toString(columnNames_p.nelements()) +
+			") mismatches "
+			"number of VALUES expressions (=" +
+			String::toString(update_p->nelements()) + ")");
+  }
+  for (uInt i=0; i<update_p->nelements(); i++) {
+    (*update_p)[i]->setColumnName (columnNames_p[i]);
+  }
+}
+
+void TableParseSelect::handleInsert (TableParseSelect*& sel)
+{
+  insSel_p = sel;
+  sel = 0;
 }
 
 //# Execute the updates.
@@ -1238,6 +1288,96 @@ void TableParseSelect::doUpdate (Table& table)
 }
 
 
+
+//# Execute the inserts.
+Table TableParseSelect::doInsert (Table& table)
+{
+  // Reopen the table for write.
+  table.reopenRW();
+  if (! table.isWritable()) {
+    throw TableInvExpr ("Table " + table.tableName() + " is not writable");
+  }
+  // Add a single row if the inserts are given as expressions.
+  // Select the single row and use update to put the expressions into the row.
+  if (update_p != 0) {
+    Vector<uInt> rowvec(1);
+    rowvec(0) = table.nrow();
+    table.addRow();
+    Table sel = table(rowvec);
+    doUpdate (sel);
+    return sel;
+  }
+  // Handle the inserts from another selection.
+  // Do the selection.
+  String cmd;
+  insSel_p->execute (False, cmd);
+  Table sel = insSel_p->getTable();
+  if (sel.nrow() == 0) {
+    return Table();
+  }
+  // Get the target columns if not given.
+  if (columnNames_p.nelements() == 0) {
+    columnNames_p = getStoredColumns (table);
+  }
+  // Get the source columns.
+  Block<String> sourceNames;
+  sourceNames = insSel_p->getColumnNames();
+  if (sourceNames.nelements() == 0) {
+    sourceNames = getStoredColumns (sel);
+  }
+  // Check if the number of columns match.
+  if (sourceNames.nelements() != columnNames_p.nelements()) {
+    throw TableInvExpr ("Error in INSERT command; nr of columns (=" +
+			String::toString(columnNames_p.nelements()) +
+			") mismatches "
+			"number of columns in selection (=" +
+			String::toString(sourceNames.nelements()) + ")");
+  }
+  // Check if the data types match.
+  const TableDesc& tdesc1 = table.tableDesc();
+  const TableDesc& tdesc2 = sel.tableDesc();
+  for (uInt i=0; i<columnNames_p.nelements(); i++) {
+    if (tdesc1[columnNames_p[i]].trueDataType() !=
+	tdesc2[sourceNames[i]].trueDataType()) {
+      throw TableInvExpr ("Error in INSERT command; data type of columns " +
+			  columnNames_p[i] + " and " + sourceNames[i] +
+			  " mismatch");
+    }
+  }
+  // Add the required nr of rows to the table and make a selection of it.
+  uInt rownr = table.nrow();
+  table.addRow (sel.nrow());
+  Vector<uInt> rownrs(sel.nrow());
+  indgen (rownrs, rownr);     // fill with rownr, rownr+1, etc.
+  Table tab = table(rownrs);
+  TableRow rowto (tab, Vector<String>(columnNames_p));
+  ROTableRow rowfrom (sel, Vector<String>(sourceNames));
+  for (uInt i=0; i<sel.nrow(); i++) {
+    rowto.put (i, rowfrom.get(i), False);
+  }
+  return tab;
+}
+
+
+//# Execute the deletes.
+void TableParseSelect::doDelete (Table& table, const Table& sel)
+{
+  //# If the selection is empty, return immediately.
+  if (sel.nrow() == 0) {
+    return;
+  }
+  // Reopen the table for write.
+  table.reopenRW();
+  if (! table.isWritable()) {
+    throw TableInvExpr ("Table " + table.tableName() + " is not writable");
+  }
+  // Get the selection row numbers wrt. the to table.
+  // Delete all those rows.
+  Vector<uInt> rownrs = sel.rowNumbers (table);
+  table.removeRow (rownrs);
+}
+
+
 //# Execute the sort.
 Table TableParseSelect::doSort (const Table& table)
 {
@@ -1466,11 +1606,11 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 void TableParseSelect::execute (Bool setInGiving, String& commandType)
 {
     //# Give an error if no command part has been given.
-    if (node_p == 0  &&  update_p == 0  &&  sort_p == 0
+    if (commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
     &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0) {
 	throw (TableError
 	    ("TableParse error: no projection, selection, sorting, "
-	     "or giving-set given"));
+	     "or giving-set given in SELECT command"));
     }
     // Test if a "giving set" is possible.
     if (resultSet_p != 0  &&  !setInGiving) {
@@ -1501,10 +1641,21 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType)
 	table = table(*node_p);
     }
     //# Then do the update or sort and so.
-    if (update_p != 0) {
+    if (commandType_p == 2) {
         doUpdate (table);
 	table.flush();
 	commandType = "update";
+    } else if (commandType_p == 3) {
+        Table tabNewRows = doInsert (table);
+	table.flush();
+	table = tabNewRows;
+	commandType = "insert";
+    } else if (commandType_p == 4) {
+        parseIter_p->toStart();
+        Table origTab = parseIter_p->getRight().table();
+        doDelete (origTab, table);
+	origTab.flush();
+	commandType = "delete";
     } else {
         //# Then do the sort.
         if (sort_p != 0) {
