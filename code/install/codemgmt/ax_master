@@ -3488,3 +3488,4 @@
 13 285 src mv trial/implement/Lattices/TiledLineStepper.cc aips/implement/Lattices/TiledLineStepper.cc
 13 285 src mv trial/implement/Lattices/TiledShape.h aips/implement/Lattices/TiledShape.h
 13 285 src mv trial/implement/Lattices/TiledShape.cc aips/implement/Lattices/TiledShape.cc
+13 285 src mv trial/implement/Lattices/LatticeNavigator.h aips/implement/Lattices/LatticeNavigator.h
