@@ -66,19 +66,20 @@ may be delayed or deferred.</font></td></tr></table></td>
 
 <h2><font face=helvetica>Download:</font></h2>
 To download, point your browser to or ftp directly from
-<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/">
-<verbatim>ftp://ftp.cv.nrao.edu/aips++/end-user/application/</verbatim></a>.
+<a href="ftp://ftp.cv.nrao.edu/casa/end-user/application/">
+<verbatim>ftp://ftp.cv.nrao.edu/casa/end-user/application/</verbatim></a>.
 Here you will find directories containing RPM (RedHat Package Manager)
 files for each of the supported OSs --
-<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/rh7.2/">RedHat 7.2</a>,
+<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/fedora/">Fedora</a>,
 <a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/rh9/">RedHat 9</a>,
-<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/suse/">SuSE 8.2</a>, and
-<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/vine/">Vine 2.6r3</a>.
+<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/suse/">SuSE</a>.
+<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/mandrake/">Mandrake 10.0</a>, and
+<a href="ftp://ftp.cv.nrao.edu/aips++/end-user/application/rhe/">Red Hat Enterprise</a>.
 These directories include the minimal set of RPMs required to run AIPS++
 for each OS.
 <p>
-The full set of OS specific <a href="ftp://ftp.cv.nrao.edu/aips++/rpms/">application</a> and
-OS independent <a href="ftp://ftp.cv.nrao.edu/aips++/rpms/noarch/">data repository</a> RPMs
+The full set of OS specific <a href="ftp://ftp.cv.nrao.edu/casa/rpms/">application</a> and
+OS independent <a href="ftp://ftp.cv.nrao.edu/casa/rpms/noarch/">data repository</a> RPMs
 are also available via FTP.
 <p>
 Should you wish to update your installation, new RPMs will be built following
@@ -87,29 +88,59 @@ each stable release. They can be downloaded from the location listed above.
  For Solaris users, existing AIPS++ installations can be brought up to date using the 'aupdate' command.
 
 <h2><font face=helvetica>Install:</font></h2>
-Installation requires root privileges.
-To install the AIPS++ data reduction package, 
-login as root, change to the directory where you stored the downloaded RPM files, and
-execute the following commands from the UNIX command line:
+These rpms are re-locatable and do not require root permission to install.
+To install the AIPS++ data reduction package, execute the following commands from the 
+UNIX command line (Red Hat 9 example):
 
-<ol>
-<li> Install required PGPLOT libraries
-<p>
-rpm -ivh pgplot*
+<pre>
+#Move to directory; copy rpm database
+cd install_directory #replace install directory with full path name 
+set mypwd=`pwd`      #set variable to working directory to simplify later commands 
+(cd /var/lib; tar cf - rpm) | tar xf -
 
-<li> Install other needed utilities
-<p>
-rpm -ivh cfitsio* rpfits*
+#install support libraries
+rpm -iv --force --dbpath $mypwd/rpm \
+    --prefix $mypwd \
+    gccshare+3.3-11-4ds.i386.rpm \
+    gppshare+3.3-11-4ds.i386.rpm \
+    g77share+3.3-11-4ds.i386.rpm \
+    pgplot-5.2.2-4ds.i386.rpm \
+    pgplot-motif-5.2.2-4ds.i386.rpm \
+    rpfits-2.6-13ds.i386.rpm \
+    cfitsio-2.401-12ds.i386.rpm 
 
-<li> Install the Compiler Libraries (these install into /usr/gcc/)
-<p>
-rpm -ivh g77share* gccshare* gppshare*
+# 
+# install AIPS++ data repository
+echo "Required AIPS++ data (e.g., IERS data, source catalogs, observatory locations)..."
+rpm -iv --force --dbpath $mypwd/rpm \
+    --prefix $mypwd \
+    casa-data-20041013-1ds.noarch.rpm \
+    casa-data-base-20041013-1ds.noarch.rpm 
+#
+# install AIPS++ rpms
+echo "CASA (AIPS++) libraries..."
+rpm -iv --force --dbpath $mypwd/rpm \
+    --prefix $mypwd \
+    casa-19.819-7ds.i386.rpm \
+    casa-shared-19.819-7ds.i386.rpm \
+    glish-2.8.0-5ds.i386.rpm
+#
 
-<li> Install AIPS++
-<p>
-rpm -ivh aips++*
+ Note: you may get the error:
 
-</ol>
+error: db4 error(13) from db->close: Permission denied
+
+This is an artefact of the re-locatable rpm permissions and can be ignored. Once this successfully completes, then ensure that the aips++ binary has been added to your path and you will likely want to add the following lines to your .bashrc/(t)cshrc file:
+
+echo $PATH                    
+add to files: 
+  #.bashrc
+  set casapath=install_directory
+  export PATH=$casapath/bin:$PATH    
+  #.(t)cshrc
+  set casapath=install_directory
+  set path=($casapath/bin $path)    
+</pre>
 
 <table border="1" width="100%"><tr><td><font face=bold size="+1">Note:</font><font size="-1">
 If you have a prior installation of AIPS++, some RPMs may fail
@@ -126,8 +157,7 @@ To use AIPS++, your machine needs to have at least 512 MB of memory (RAM) with a
 1 GB of swap space, though more is better. The disk space required varies depending
 upon the dataset. Having 5 GB should be safe in all cases.
 <p>
-The above steps install the AIPS++ DRP into /usr/bin, /usr/lib, /usr/lib/aips++, and /usr/gcc. AIPS++
-can be started simply by typing "aips++" at the UNIX command prompt.
+AIPS++ can be started simply by typing "aips++" at the UNIX command prompt.
 
 <hr>
 
