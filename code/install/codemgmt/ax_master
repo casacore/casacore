@@ -4124,3 +4124,4 @@
 14 065 src mv trial/apps/gencolormaptable/gencolormaptable.cc trialdisplay/apps/gencolormaptable/gencolormaptable.cc
 14 065 src mv trial/apps/gencolormaptable/makefile trialdisplay/apps/gencolormaptable/makefile
 14 065 src mv trial/apps/gDisplay/GTkAnimator.cc trialdisplay/apps/gDisplay/GTkAnimator.cc
+14 065 src mv trial/apps/gDisplay/GTkAnimator.h trialdisplay/apps/gDisplay/GTkAnimator.h
