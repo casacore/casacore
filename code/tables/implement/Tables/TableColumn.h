@@ -1,5 +1,5 @@
 //# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,6 +171,9 @@ public:
     // Get const access to the column description.
     // ColumnDesc functions have to be used to get the data type, etc..
     const ColumnDesc& columnDesc() const;
+
+    // Get the Table object this column belongs to.
+    Table table() const;
 
     // Get the number of rows in the column.
     uInt nrow() const
