@@ -1,5 +1,5 @@
 //# QMath.h: Mathematical operations for the Quantum class.
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,7 @@ template <class T> class Array;
 //   <li> pow(Quantum<T>, Int);
 //   <li> sin, cos, tan(Quantum<T>) with proper unit handling
 //   <li> asin, acos, atan, atan2(Quantum<T>) with proper unit handling
+//   <li> log, log10, exp, root, sqrt with proper unit handling
 // </ul>
 // <note role=warning>
 // Some operators are implemented as member functions, and can be found in the
@@ -159,12 +160,18 @@ Quantum<Qtype> operator/(const Qtype &left, const Quantum<Qtype> &other);
 
 // Some useful arithmetic (linear) functions
 // <group name="arithmetic">
-// Return the Quantum raised to specified power
+// Return the Quantum raised to specified power; take the (integer) root;
+// and integerization
 // <thrown>
 //   <li> AipsError if power exponent too large (abs > 100)
+//   <li> AipsError if root exponent zero
 // </thrown>
 template <class Qtype>
 Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p);
+template <class Qtype>
+Quantum<Qtype> root(const Quantum<Qtype> &left, Int p);
+template <class Qtype>
+Quantum<Qtype> sqrt(const Quantum<Qtype> &left);
 template <class Qtype>
 Quantum<Qtype> abs(const Quantum<Qtype> &left);
 template <class Qtype>
@@ -174,12 +181,12 @@ Quantum<Qtype> floor(const Quantum<Qtype> &left);
 // </group>
 
 
-// Trigonometric functions
+// Trigonometric and exponential functions
 // For direct functions input should be in angles, output will be empty units.
 // For inverse functions input should be empty, output in radians
 // <thrown>
 //    <li> AipsError if incorrect units. I.e. non-angle for direct functions,
-//		non-empty for inverse functions
+//		non-empty for inverse functions; non-empty for exp and log
 // </thrown>
 // <group name="trigonometric">
 template <class Qtype>
@@ -200,6 +207,12 @@ template <class Qtype>
 Quantum<Qtype> atan2(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
 Quantum<Qtype> atan2(const Qtype &left, const Quantum<Qtype> &other);
+template <class Qtype>
+Quantum<Qtype> log(const Quantum<Qtype> &left);
+template <class Qtype>
+Quantum<Qtype> log10(const Quantum<Qtype> &left);
+template <class Qtype>
+Quantum<Qtype> exp(const Quantum<Qtype> &left);
 // </group>
 
 
