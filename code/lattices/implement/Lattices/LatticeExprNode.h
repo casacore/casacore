@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@
 #include <trial/Lattices/LELBinaryEnums.h>
 #include <trial/Lattices/LELUnaryEnums.h>
 #include <trial/Lattices/LELFunctionEnums.h>
-//#include <trial/Lattices/LatticeExpr.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/DataType.h>
 
@@ -394,6 +393,10 @@ public:
 // (ie. axes with a length of one)
    const IPosition& shape() const
       {return pAttr_p->shape();}
+
+// Get the attribute object of the expression.
+   const LELAttribute& getAttribute() const
+      {return *pAttr_p;}
 
 // Replace a scalar subexpression by its result.
    void replaceScalarExpr();

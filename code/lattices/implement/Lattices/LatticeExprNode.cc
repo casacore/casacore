@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1389,29 +1389,24 @@ LELAttribute LatticeExprNode::checkArg (const Block<LatticeExprNode>& arg,
 					Bool expectArray)
 {
     if (arg.nelements() != argType.nelements()) {
-	throw (AipsError ("LatticeExprNode::checkArg - invalid number of function arguments"));
+	throw (AipsError ("LatticeExprNode::checkArg - "
+			  "invalid number of function arguments"));
     }
-    Bool      isScalar = True;
-    IPosition shape;
+    // Compose the resulting LELAttribute from all arguments.
+    // Each time it is checked if shapes and coordinates conform.
+    LELAttribute attr;
     for (uInt i=0; i<arg.nelements(); i++) {
 	if (arg[i].dataType() != argType[i]) {
-	    throw (AipsError ("LatticeExprNode::checkArg - function argument has an "
-			      "invalid data type"));
+	    throw (AipsError ("LatticeExprNode::checkArg - "
+			      "a function argument has invalid data type"));
 	}
-	if (! arg[i].isScalar()) {
-	    if (isScalar) {
-		isScalar = False;
-		shape    = arg[i].shape();
-	    } else if (arg[i].shape() != shape) {
-		throw (AipsError ("LatticeExprNode::checkArg - shapes of function arguments "
-				  "mismatch"));
-	    }
-	}
+	attr = LELAttribute (attr, arg[i].getAttribute());
     }
-    if (expectArray  &&  shape.nelements() == 0) {
-	throw (AipsError ("LatticeExprNode::checkArg - expected a lattice function argument"));
+    if (expectArray  &&  attr.isScalar()){
+	throw (AipsError ("LatticeExprNode::checkArg - "
+			  "expected a lattice function argument"));
     }
-    return LELAttribute (isScalar, shape);
+    return attr;
 }
 
 
