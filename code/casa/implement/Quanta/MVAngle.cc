@@ -88,7 +88,10 @@ const MVAngle &MVAngle::operator()() {
 const MVAngle &MVAngle::operator()(Double norm) {
     Double t = val/C::_2pi - norm;
     if (t < 0 || t >=1) {
-	val -= floor(t)*C::_2pi;
+      /// Next statement necessary for Linux gnu; val -= expr; gives incorrect
+      /// result of order 2e-11
+      Double df = floor(t)*C::_2pi;
+      val -= df;  /// val - = floor(t)*C::_2pi;
     };
     return *this;
 }
