@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,6 +92,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
 				  const Lattice<T> &dirty):
   itsMask(0),
   itsScaleSizes(0),
+  itsMaximumResidual(0.0),
   itsChoose(True),
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
@@ -142,6 +143,7 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsDirtyConvScales(other.itsDirtyConvScales),
    itsScaleMasks(other.itsScaleMasks),
    itsStartingIter(other.itsStartingIter),
+   itsMaximumResidual(other.itsMaximumResidual),
    itsIgnoreCenterBox(other.itsIgnoreCenterBox),
    itsSmallScaleBias(other.itsSmallScaleBias),
    itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
@@ -163,6 +165,7 @@ operator=(const LatticeCleaner<T> & other) {
     itsDirtyConvScales = other.itsDirtyConvScales;
     itsScaleMasks = other.itsScaleMasks;
     itsStartingIter = other.itsStartingIter;
+    itsMaximumResidual = other.itsMaximumResidual;
     itsIgnoreCenterBox = other.itsIgnoreCenterBox;
     itsSmallScaleBias = other.itsSmallScaleBias;
     itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
@@ -409,6 +412,11 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     totalFlux += (strengthOptimum*itsGain);
     totalFluxScale(optimumScale) += (strengthOptimum*itsGain);
 
+    if(ii==itsStartingIter) {
+      itsMaximumResidual=abs(strengthOptimum);
+      os << "Initial maximum residual is " << itsMaximumResidual
+	 << LogIO::POST;
+    }
 
     // Various ways of stopping:
     //    1. stop if below threshold
@@ -1117,11 +1125,22 @@ Bool LatticeCleaner<T>::makeScaleMasks()
 template<class T> 
 Float LatticeCleaner<T>::threshold()
 {
-  if (! itsDoSpeedup) {
-    return (itsThreshold.get("Jy").getValue());
-  } else {
-    Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
-      / 2.7182818;
-    return (factor * itsThreshold.get("Jy").getValue());
+  if(itsThreshold.getUnit()=="%") {
+    if (! itsDoSpeedup) {
+      return itsThreshold.get("%").getValue()*itsMaximumResidual/100.0;
+    } else {
+      Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
+	/ 2.7182818;
+      return (factor * itsThreshold.get("%").getValue() * itsMaximumResidual /100.0);
+    }
+  }
+  else {
+    if (! itsDoSpeedup) {
+      return (itsThreshold.get("Jy").getValue());
+    } else {
+      Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
+	/ 2.7182818;
+      return (factor * itsThreshold.get("Jy").getValue());
+    }
   }
 };
