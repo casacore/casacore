@@ -346,7 +346,7 @@ String Coordinate::format(String& units,
                           uInt worldAxis, 
                           Bool absolute, 
                           Int precision,
-                          Bool native) const
+                          Bool native) 
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
  
@@ -361,8 +361,8 @@ String Coordinate::format(String& units,
    if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
        
    
-// Format and get units.  Always format in native coordinates
-// here.  native is only active in derived classes
+// Format and get units.  Always format in native coordinate 
+// units here.  native is only active in derived classes
          
    ostrstream oss;
    if (form == Coordinate::SCIENTIFIC) {
@@ -388,7 +388,7 @@ String Coordinate::formatQuantity (String& units,
                                    uInt worldAxis, 
                                    Bool absolute, 
                                    Int precision,
-                                   Bool native) const
+                                   Bool native) 
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 

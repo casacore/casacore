@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -372,14 +372,14 @@ public:
                           uInt worldAxis, 
                           Bool absolute,
  			  Int precision=-1,
-                          Bool native=False) const;
+                          Bool native=False);
     String formatQuantity(String& units,
                           Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 
                           uInt worldAxis, 
                           Bool absolute,
         		  Int precision=-1,
-                          Bool native=False) const;
+                          Bool native=False);
     //</group>
 
     // Used for persistence. Derived classes will have similar static

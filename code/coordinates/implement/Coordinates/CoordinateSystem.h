@@ -401,9 +401,9 @@ public:
     // <src>worldMin</src> and <src>worldMax</src> specify the range of the world
     // coordinate (in the world axis units of that world axis
     // in the coordinate system) being solved for in a mixed calculation 
-    // for each world axis. They are only actually needed for DirectionCoordinates
-    // and for all other coordinates the relevant elements
-    // can be undefined.   If you don't know, use -180 to 180
+    // for each world axis. They are only actually used for DirectionCoordinates
+    // and for all other coordinates the relevant elements are ignored.
+    // If you don't know, use -180 to 180
     // degrees for longitude, and -90 to 90 for latitude.    
     // Removed axes are handled (for example, a removed pixel
     // axis with remaining corresponding world axis will
@@ -489,7 +489,7 @@ public:
                           uInt worldAxis,
                           Bool absolute,
                           Int precision=-1,
-                          Bool native=False) const;
+                          Bool native=False);
 
     // Miscellaneous information related to an observation, for example the
     // observation date.
