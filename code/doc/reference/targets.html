@@ -1,7 +1,7 @@
 <html>
 <head>
 
-<title>AIPS++ Stable Snapshot Targets</title>
+<title>AIPS++ Updates</title>
 </head>
 
 
@@ -52,64 +52,216 @@ Search</a></font></b><P>
 src="../gif/tri2.gif" border=0>  <b>Home</a></font></b><P>
 
 </td></tr></table>
-<H1>AIPS++ Stable Snapshot Targets</H1>
+<H1>AIPS++ Stable Snapshots</H1>
 
-AIPS++ provides stable snapshots during the current development cycle.  The following table list
-the targets actively being addressed for the next Stable Snapshot.
+AIPS++ provides stable snapshots during the current development cycle.  You should consider
+the stable snapshots as "alpha" software and proceed with caution. The stable snapshots have
+passed certain minimum tests.  Some snapshots are tested more thoroughly than others.  The
+test levels are stable, beta, and release.
+<P>
+Prebuilt binaries for Solaris and Linux are available via
+the aupdate script. To determine your current version, type "avers" at a UNIX command prompt.
+To get the updated snapshot type "aupdate" at a UNIX command prompt.
+<P>
+For AIPS++ versions less than v1.8 Build 391 you will need to obtain aupdate via anonymous ftp.  For Linux users please get <a href="ftp://aips2.nrao.edu/pub/import/Linux/aupdate.tar.gz">ftp://aips2.nrao.edu/pub/import/Linux/aupdate.tar.gz</a>, for Solaris user get it from
+<a href="ftp://aips2.nrao.edu/pub/import/Solaris/aupdate.tar.gz">
+ftp://aips2.nrao.edu/pub/import/Solaris/aupdate.tar.gz</a>. Unpack the tar file in your $AIPSARCH directory
+(the same directory that contains your AIPS++ bin directory). 
+<P>
+<font face=helvetica>AIPS++</font> does not
+currently support any version of Windows or any Apple computers.</p>
+<H2> Updated Stable Snapshot  1.8 Build 391 2002/12/21 </H2>
 
-<H3>January 2003 Targets</H3>
+<H3>Augmented Functionality:</H3>
 
 <table>
 	<tr> <td>name</td><td>                 target</td>                <td>     deadline  </td><td>completed</td></tr>
 <tr><td></td></tr>
-
-<tr><td><b>Done</b></td></tr>
-<tr><td>joe       </td><td>sd benchmarks                             </td><td>15-dec-02</td><td> 29-dec-02</td></tr>
-<tr><td><b>Incomplete</b></td></tr>
-<tr><td>joe       </td><td>beam switched calib refinements           </td><td>30-jan-03</td></tr>
-<tr><td>joe       </td><td>beam-switched imaging                     </td><td>30-jan-03</td></tr>
-<tr><td>joe       </td><td>preparation for technical review          </td><td>30-jan-03</td></tr>
-<tr><td>tim       </td><td>joint sd/int calibration scaling          </td><td>30-jan-03</td></tr>
-<tr><td>tim       </td><td>full joint sd/int convolution             </td><td>30-jan-03</td></tr>
-<tr><td>sanjay    </td><td>multi-beam imaging                        </td><td>30-jan-03</td></tr>
-<tr><td>darrell   </td><td>system.resources.memory aipsrc change     </td><td>30-jan-03</td></tr>
-<tr><td>darrell   </td><td>technical evaluation for glish planning   </td><td>30-jan-03</td></tr>
-<tr><td>david     </td><td>interactive editing                       </td><td>30-jan-03</td></tr>
-<tr><td>darrell   </td><td>aips++ cache management utilities         </td><td>30-jan-03</td></tr>
-<tr><td>wes       </td><td>linux purifyplus evaluation               </td><td>30-jan-03</td></tr>
-<tr><td>wes       </td><td>system administrators guide               </td><td>30-jan-03</td></tr>
-<tr><td>kumar     </td><td>msconcat: works for all subtables         </td><td>30-jan-03</td></tr>
-<tr><td>kumar     </td><td>preparation for technical review          </td><td>30-jan-03</td></tr>
-<tr><td>bob       </td><td>gbtmsfiller: support bs data              </td><td>30-jan-03</td></tr>
-<tr><td>bob       </td><td>gbtmsfiller: support multi-beam data      </td><td>30-jan-03</td></tr>
-<tr><td>jim       </td><td>bs calibration refinements                </td><td>30-jan-03</td></tr>
-<tr><td>daniel    </td><td>msconcat:support variable/fixed tsm       </td><td>30-jan-03</td></tr>
-<tr><td>daniel    </td><td>msconcat:support variable shape sw        </td><td>30-jan-03 </td></tr>
-</td></tr>
-<tr><td><b>Added</b><tr></td>
-<tr><td>tim       </td><td>GILDAS CLIC GUI (ALMA Phase II - optional)</td><td>30-jan-03</td></tr>
-<tr><td>tim       </td><td>Custom Tool GUI generator                 </td><td>30-jan-02</td></tr>
-<tr><td>wes       </td><td>update system man. with compiler checklist</td><td>30-jan-03</td></tr>
-<tr><td>wes       </td><td>change proposal gcc 3.2                   </td><td>30-jan-03</td></tr>
-<tr><td>george    </td><td>alma: phase i/ii testing                  </td><td>30-jan-03</td></tr>
-<tr><td>raymond   </td><td>alma benchmarking                         </td><td>28-feb-03</td></tr>
+	<tr><td><b>Done</b></td></tr>
+<tr><td>sanjay</td>    <td>add equivalent aips scripts to benchmar</td>   <td>15-dec-02 </td><td>06-dec-02</td></tr>
+<tr><td>jim</td>       <td>ips: support abcissa ranges</td>                <td>15-dec-02 </td><td>14-dec-02</td></tr>
+<tr><td>bob</td>       <td>enhance aver task for improved weight</td>      <td>15-dec-02 </td><td>15-dec-02</td></tr>
+<tr><td>bob</td>       <td>dish assay functions</td>                       <td>15-dec-02 </td><td>15-dec-02</td></tr>
+<tr><td>joe</td>       <td>multi-if implementation design</td>             <td>15-dec-02 </td><td>14-dec-02</td></tr>
+<tr><td>joe</td>       <td>v2.0 newsletters              </td>             <td>15-dec-02 </td><td>14-dec-02</td></tr>
+<tr><td>joe</td>       <td>multi-beam implementation design</td>           <td>15-dec-02 </td><td>14-dec-02</td></tr>
+<tr><td>george</td>    <td>high freq cal i: pa             </td>           <td>15-dec-02 </td><td>14-dec-02</td></tr>
+<tr><td>raymond</td>   <td>performance profiling of alma-ti filler</td>    <td>15-dec-02 </td><td>22-nov-02</td></tr>
+<tr><td>wes       <td>aupdate distributions                </td>      <td>15-dec-02 </td><td>15-dec-02</td></tr>
 <tr><td></td></tr>
-<tr><td><b>Postponed</b></td></tr>
-<tr><td>george    </td><td>ms tool improvements design               </td><td>30-jan-03</td></tr>
-<tr><td>george    </td><td>high freq cal ii: opacity, gain, ant pos  </td><td>30-jan-03</td></tr>
-</td></tr>
+<tr><td><b>Incomplete</b></td></tr>
+<tr><td>sanjay    </td><td>implement adaptive memory use             </td><td>15-dec-02 </td></tr>
+<tr><td>david     </td><td>complete msasraster                       </td><td>15-dec-02 </td></tr>
+<tr><td>joe       </td><td>sd benchmarks                             </td><td>15-dec-02 </td><td>29-dec-02</td></tr>
+<tr><td>george    </td><td>package image-plane continuum sub         </td><td>15-dec-02 </td></tr>
+<tr><td>darrell   </td><td>glish ssh authentication                  </td><td>15-dec-02 </td></tr>
+<tr><td>darrell   </td><td>tab widget                                </td><td>15-dec-02 </td></tr>
+<tr><td>darrell   </td><td>uninitialized set to <fail>,cli flag      </td><td>15-dec-02 </td></tr>
+<tr><td>wes       </td><td>intel c++ compiler port                   </td><td>15-dec-02 </td></tr>
+<tr><td>wes       </td><td>complete gcc 3.* migration                </td><td>15-dec-02</td></tr>
+<tr><td>add</td></tr>
+<tr><td>bob       </td><td>gbtmsfiller: vanvleck handle dc bias      </td><td>15-dec-02 </td><td>15-dec-02</td></tr>
+<tr><td>wes       </td><td>installation status page                  </td><td>15-dec-02 </td><td>15-dec-02</td></tr>
+<tr><td></td></tr>
+<tr><td><b>Early</b></td></tr>
+<tr><td>wim       </td><td>image re-gridder optimization             </td><td>30-mar-03 </td><td>14-dec-02</td></tr>
+<tr><td>wim       </td><td>add uvw-machine to measures.g             </td><td>30-mar-03 </td><td>14-dec-02</td></tr>
+<tr><td>malte     </td><td>zoom out in world coordinates             </td><td>30-mar-03 </td><td>29-nov-02</td></tr>
+<tr><td>raymond   </td><td>add almati2ms to aips++ benchmarks        </td><td>30-mar-03 </td><td>22-dec-02</td></tr>
+<tr><td>raymond   </td><td>id and implement optimization of almati2ms</td><td>30-mar-03 </td><td>22-dec-02</td></tr>
+<tr><td></td></tr>
 <tr><td><b>Dropped</b></td></tr>
-<tr><td>tim       </td><td>ftmachine for mosaicing		   
-		</td></tr><tr><td></td><td>Reason:    Not high priority, principally clean-up. 
-</td></tr><tr><td></td><td>Advantage: Allocates more time for ALMA work.</td></tr>
- <tr><td>raymond   </td><td>invest. uvfits restriction on ms concat 
- </td></td></tr><tr><td></td><td>Reason:    Highter priority for Alma benchmarking</td></tr>
-
+<tr><td>tim       </td><td>ftmachine for mosaicing		   </td><td>15-jan-03 </td><td>---------
+	Not high priority, principally clean-up. Allocates more time
+for ALMA work.</td></tr>
 </table>
+
+<H3>Resolved Defects/Enhancements:</H3>
+
+
+<NOSCRIPT>
+<em>Please enable JavaScript or you will have limited functionality.</em>
+</NOSCRIPT>
+
+<TABLE BORDER=1>
+<TR><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Identifier</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Project</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>State</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Test program name</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Sev</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Headline</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Assigned engineer</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Headline</TH><TH BGCOLOR=#CCCCCC ALIGN=LEFT>Resolved_on</TH></TR>
+
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02390&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02390</a></TD><TD>problems</TD><TD>R</TD><TD>calibrater.solve</TD><TD>3</TD><TD>Solution row times in gain tbl are incorrect</TD><TD>akemball</TD><TD>Solution row times in gain tbl are incorrect</TD><TD>01 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04026&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04026</a></TD><TD>problems</TD><TD>R</TD><TD>dish.averager</TD><TD>2</TD><TD>averager gets confused by decimated MSs</TD><TD>bgarwood</TD><TD>averager gets confused by decimated MSs</TD><TD>16 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03833&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03833</a></TD><TD>enhancements</TD><TD>R</TD><TD>gbtmsfiller.</TD><TD>3</TD><TD>File size limit for MS data</TD><TD>bgarwood</TD><TD>File size limit for MS data</TD><TD>08 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04064&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04064</a></TD><TD>problems</TD><TD>R</TD><TD>dish.select</TD><TD>3</TD><TD>white space in source name causes problem</TD><TD>bgarwood</TD><TD>white space in source name causes problem</TD><TD>26 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03882&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03882</a></TD><TD>problems</TD><TD>R</TD><TD>dish.average</TD><TD>2</TD><TD>average of flagged data (any with nans) writes all nans</TD><TD>bgarwood</TD><TD>average of flagged data (any with nans) writes all nans</TD><TD>08 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03986&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03986</a></TD><TD>problems</TD><TD>R</TD><TD>gbtmsfiller.</TD><TD>2</TD><TD>Apostrophes in source names cause problems</TD><TD>bgarwood</TD><TD>Apostrophes in source names cause problems</TD><TD>01 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03927&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03927</a></TD><TD>problems</TD><TD>R</TD><TD>sdfits2ms.</TD><TD>2</TD><TD>Converting an sdfits file to an MS fails with an ``impossible error''</TD><TD>bgarwood</TD><TD>Converting an sdfits file to an MS fails with an ``impossible error''</TD><TD>05 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04156&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04156</a></TD><TD>problems</TD><TD>R</TD><TD>gbdish.d.import</TD><TD>2</TD><TD>Spectrometer multi-bank problem</TD><TD>bgarwood</TD><TD>Spectrometer multi-bank problem</TD><TD>03 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04113&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04113</a></TD><TD>problems</TD><TD>R</TD><TD>dish.import()</TD><TD>2</TD><TD>gbmsfiller failed on GBT data set.</TD><TD>bgarwood</TD><TD>gbmsfiller failed on GBT data set.</TD><TD>15 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04009&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04009</a></TD><TD>problems</TD><TD>R</TD><TD>gbtmsfiller.fillall</TD><TD>2</TD><TD>Use new sd compression storage managers</TD><TD>bgarwood</TD><TD>Use new sd compression storage managers</TD><TD>16 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04004&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04004</a></TD><TD>problems</TD><TD>R</TD><TD>gbtmsfiller.fillall</TD><TD>2</TD><TD>fails on example used in documentation</TD><TD>bgarwood</TD><TD>fails on example used in documentation</TD><TD>16 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04164&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04164</a></TD><TD>problems</TD><TD>V</TD><TD>&nbsp;</TD><TD>1</TD><TD>IERS data not loaded</TD><TD>drs</TD><TD>IERS data not loaded</TD><TD>04 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02505&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02505</a></TD><TD>problems</TD><TD>R</TD><TD>flagger.baseline selection</TD><TD>3</TD><TD>no way to select individual baselines</TD><TD>gmoellen</TD><TD>no way to select individual baselines</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03841&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03841</a></TD><TD>problems</TD><TD>R</TD><TD>calib.fluxscale</TD><TD>3</TD><TD>calib.fluxscale multiple transfer sources will not work</TD><TD>gmoellen</TD><TD>calib.fluxscale multiple transfer sources will not work</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02846&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02846</a></TD><TD>enhancements</TD><TD>R</TD><TD>msplot.</TD><TD>3</TD><TD>msplot cannot plot spectra</TD><TD>gmoellen</TD><TD>msplot cannot plot spectra</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03887&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03887</a></TD><TD>problems</TD><TD>R</TD><TD>calibrater.fluxscale()</TD><TD>3</TD><TD>fluxscale() not working in new stable version 081</TD><TD>gmoellen</TD><TD>fluxscale() not working in new stable version 081</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03901&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03901</a></TD><TD>problems</TD><TD>V</TD><TD>calibrater.fluxscale</TD><TD>3</TD><TD>fluxscale has an array indexing bug</TD><TD>gmoellen</TD><TD>fluxscale has an array indexing bug</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03065&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03065</a></TD><TD>problems</TD><TD>R</TD><TD>flagger.flagger.time, .timerange</TD><TD>4</TD><TD>Execution occurs when the time is specified?</TD><TD>gmoellen</TD><TD>Execution occurs when the time is specified?</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03937&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03937</a></TD><TD>problems</TD><TD>R</TD><TD>ms.fitstoms</TD><TD>3</TD><TD>fitstoms creates SEVERE error</TD><TD>gmoellen</TD><TD>fitstoms creates SEVERE error</TD><TD>25 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03958&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03958</a></TD><TD>problems</TD><TD>R</TD><TD>calibrater.flux scaling</TD><TD>1</TD><TD>Flux scale appears to be incorrect</TD><TD>gmoellen</TD><TD>Flux scale appears to be incorrect</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03050&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03050</a></TD><TD>problems</TD><TD>R</TD><TD>calibrater.solve</TD><TD>2</TD><TD>time slots are ignorant</TD><TD>gmoellen</TD><TD>time slots are ignorant</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04035&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04035</a></TD><TD>problems</TD><TD>R</TD><TD>flagger.quack</TD><TD>3</TD><TD>flagger.quack trial=true says data is flagged</TD><TD>gmoellen</TD><TD>flagger.quack trial=true says data is flagged</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03608&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03608</a></TD><TD>problems</TD><TD>R</TD><TD>flagger.timerange</TD><TD>4</TD><TD>Default for all times</TD><TD>gmoellen</TD><TD>Default for all times</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03828&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03828</a></TD><TD>problems</TD><TD>R</TD><TD>vlafiller.fill</TD><TD>2</TD><TD>does not distinguish different names for same direction</TD><TD>gmoellen</TD><TD>does not distinguish different names for same direction</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03990&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03990</a></TD><TD>problems</TD><TD>R</TD><TD>flagger.quack</TD><TD>3</TD><TD>can't trim trailing edge.</TD><TD>gmoellen</TD><TD>can't trim trailing edge.</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04020&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04020</a></TD><TD>problems</TD><TD>R</TD><TD>ms.fitstoms</TD><TD>1</TD><TD>cant read any of my fits data in</TD><TD>gmoellen</TD><TD>cant read any of my fits data in</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03616&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03616</a></TD><TD>problems</TD><TD>R</TD><TD>.</TD><TD>2</TD><TD>Crazy data loaded from archive tape</TD><TD>gmoellen</TD><TD>Crazy data loaded from archive tape</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04093&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04093</a></TD><TD>problems</TD><TD>R</TD><TD>table.locking?</TD><TD>2</TD><TD>A very infrequent but catastrophic error with tables</TD><TD>gvandiep</TD><TD>A very infrequent but catastrophic error with tables</TD><TD>06 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03930&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03930</a></TD><TD>problems</TD><TD>R</TD><TD>table.</TD><TD>2</TD><TD>compression has some problems</TD><TD>gvandiep</TD><TD>compression has some problems</TD><TD>08 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03566&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03566</a></TD><TD>problems</TD><TD>R</TD><TD>uni2.keep</TD><TD>2</TD><TD>the keep command seems disfunctional</TD><TD>jbraatz</TD><TD>the keep command seems disfunctional</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02828&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02828</a></TD><TD>problems</TD><TD>R</TD><TD>pgplottertest.test plot</TD><TD>4</TD><TD>pgplottertest bad default parameter value</TD><TD>jbraatz</TD><TD>pgplottertest bad default parameter value</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04061&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04061</a></TD><TD>problems</TD><TD>R</TD><TD>dish.scanscale2D</TD><TD>4</TD><TD>merge with scanscale?</TD><TD>jbraatz</TD><TD>merge with scanscale?</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04046&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04046</a></TD><TD>problems</TD><TD>R</TD><TD>dish.flag/calib</TD><TD>1</TD><TD>endless errors if you run calib on flagged data</TD><TD>jbraatz</TD><TD>endless errors if you run calib on flagged data</TD><TD>13 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02373&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02373</a></TD><TD>problems</TD><TD>R</TD><TD>pgplotter.svp, swin, box</TD><TD>4</TD><TD>Problems in using svp, swin, and box</TD><TD>jbraatz</TD><TD>Problems in using svp, swin, and box</TD><TD>08 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03448&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03448</a></TD><TD>problems</TD><TD>R</TD><TD>dish.show</TD><TD>5</TD><TD>Poor plotter default scaling when using show()</TD><TD>jbraatz</TD><TD>Poor plotter default scaling when using show()</TD><TD>07 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03704&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03704</a></TD><TD>problems</TD><TD>R</TD><TD>iards.</TD><TD>2</TD><TD>IARDS won't display frequency-switched data</TD><TD>jbraatz</TD><TD>IARDS won't display frequency-switched data</TD><TD>03 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03851&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03851</a></TD><TD>problems</TD><TD>R</TD><TD>uni2.help()</TD><TD>3</TD><TD>a brief help is desparetly needed.</TD><TD>jbraatz</TD><TD>a brief help is desparetly needed.</TD><TD>13 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03792&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03792</a></TD><TD>problems</TD><TD>R</TD><TD>dish.getfs</TD><TD>2</TD><TD>spectra are now inverted</TD><TD>jbraatz</TD><TD>spectra are now inverted</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03921&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03921</a></TD><TD>enhancements</TD><TD>R</TD><TD>dish.d.setregion</TD><TD>2</TD><TD>d.setregion() results printout should be cut/paste-able to d.nregion without editing</TD><TD>jbraatz</TD><TD>d.setregion() results printout should be cut/paste-able to d.nregion without editing</TD><TD>07 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03923&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03923</a></TD><TD>problems</TD><TD>R</TD><TD>dish.iards</TD><TD>2</TD><TD>Problems with plotter zoom/unzoom</TD><TD>jbraatz</TD><TD>Problems with plotter zoom/unzoom</TD><TD>03 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03961&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03961</a></TD><TD>problems</TD><TD>R</TD><TD>Web documentation.dish reference manual</TD><TD>4</TD><TD>mistake in nregion documentation</TD><TD>jbraatz</TD><TD>mistake in nregion documentation</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03714&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03714</a></TD><TD>problems</TD><TD>R</TD><TD>UniJr.signal, reference, etc.</TD><TD>2</TD><TD>Negative system temperatures</TD><TD>jbraatz</TD><TD>Negative system temperatures</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03753&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03753</a></TD><TD>problems</TD><TD>R</TD><TD>dish/uni2.temp()/show()</TD><TD>2</TD><TD>finding very large Source brightnessses</TD><TD>jbraatz</TD><TD>finding very large Source brightnessses</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03715&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03715</a></TD><TD>problems</TD><TD>R</TD><TD>UniJr.klscans, kget</TD><TD>2</TD><TD>Can't retrieve &quot;keep&quot; scans</TD><TD>jbraatz</TD><TD>Can't retrieve &quot;keep&quot; scans</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04010&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04010</a></TD><TD>problems</TD><TD>R</TD><TD>dish.header</TD><TD>2</TD><TD>header generates error when retrieved from a scan group</TD><TD>jbraatz</TD><TD>header generates error when retrieved from a scan group</TD><TD>22 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04007&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04007</a></TD><TD>problems</TD><TD>R</TD><TD>dish.doc</TD><TD>4</TD><TD>faq out of date</TD><TD>jbraatz</TD><TD>faq out of date</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04040&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04040</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.getr</TD><TD>2</TD><TD>need a decimation averager for raw data</TD><TD>jmcmulli</TD><TD>need a decimation averager for raw data</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04044&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04044</a></TD><TD>problems</TD><TD>R</TD><TD>dish.aver</TD><TD>1</TD><TD>crashes aips++</TD><TD>jmcmulli</TD><TD>crashes aips++</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04034&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04034</a></TD><TD>problems</TD><TD>R</TD><TD>dish.fileout</TD><TD>4</TD><TD>reports severe errors when it shouldn't</TD><TD>jmcmulli</TD><TD>reports severe errors when it shouldn't</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04067&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04067</a></TD><TD>problems</TD><TD>R</TD><TD>dish.saxis</TD><TD>4</TD><TD>header disappers</TD><TD>jmcmulli</TD><TD>header disappers</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04073&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04073</a></TD><TD>problems</TD><TD>R</TD><TD>dish.zline</TD><TD>3</TD><TD>not working?</TD><TD>jmcmulli</TD><TD>not working?</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03969&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03969</a></TD><TD>problems</TD><TD>R</TD><TD>dish.imager</TD><TD>2</TD><TD>imager failed and said to submit a bug</TD><TD>jmcmulli</TD><TD>imager failed and said to submit a bug</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04101&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04101</a></TD><TD>problems</TD><TD>R</TD><TD>dish.plotter</TD><TD>2</TD><TD>there needs to be a way to align spectra by pixel</TD><TD>jmcmulli</TD><TD>there needs to be a way to align spectra by pixel</TD><TD>12 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04000&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04000</a></TD><TD>problems</TD><TD>R</TD><TD>dish.calib</TD><TD>2</TD><TD>doesn't support single polarization data</TD><TD>jmcmulli</TD><TD>doesn't support single polarization data</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04075&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04075</a></TD><TD>problems</TD><TD>R</TD><TD>image.axis labeling</TD><TD>1</TD><TD>You can label axis with frequency in image tool - it is always converted to vel</TD><TD>jmcmulli</TD><TD>You can label axis with frequency in image tool - it is always converted to vel</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04081&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04081</a></TD><TD>problems</TD><TD>R</TD><TD>fftserver.realtocomplexfft</TD><TD>2</TD><TD>Can do larger than 256x256 transform??</TD><TD>jmcmulli</TD><TD>Can do larger than 256x256 transform??</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04111&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04111</a></TD><TD>problems</TD><TD>R</TD><TD>dish.hanning</TD><TD>1</TD><TD>smoothed data cannot be saved</TD><TD>jmcmulli</TD><TD>smoothed data cannot be saved</TD><TD>14 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03817&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03817</a></TD><TD>problems</TD><TD>R</TD><TD>dish.uni-jr</TD><TD>1</TD><TD>aips++ hangs up regularly while the gbt is operating</TD><TD>jmcmulli</TD><TD>aips++ hangs up regularly while the gbt is operating</TD><TD>03 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04082&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04082</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.flag</TD><TD>3</TD><TD>function hangs up with write-lock</TD><TD>jmcmulli</TD><TD>function hangs up with write-lock</TD><TD>01 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03976&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03976</a></TD><TD>problems</TD><TD>R</TD><TD>glish.include</TD><TD>1</TD><TD>you cannot re-include code (for testing) without crashing glish</TD><TD>jmcmulli</TD><TD>you cannot re-include code (for testing) without crashing glish</TD><TD>21 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03925&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03925</a></TD><TD>problems</TD><TD>R</TD><TD>aips++.aips++</TD><TD>2</TD><TD>starting aips++ should be simpler</TD><TD>jmcmulli</TD><TD>starting aips++ should be simpler</TD><TD>21 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03830&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03830</a></TD><TD>problems</TD><TD>R</TD><TD>.</TD><TD>2</TD><TD>typo</TD><TD>jmcmulli</TD><TD>typo</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03978&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03978</a></TD><TD>problems</TD><TD>R</TD><TD>dish.fileout</TD><TD>3</TD><TD>does not check for illegal values of filename</TD><TD>jmcmulli</TD><TD>does not check for illegal values of filename</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03465&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03465</a></TD><TD>problems</TD><TD>R</TD><TD>dish.plotter</TD><TD>3</TD><TD>Scaling the plotter in the y-axis</TD><TD>jmcmulli</TD><TD>Scaling the plotter in the y-axis</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03953&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03953</a></TD><TD>problems</TD><TD>R</TD><TD>dish.calib</TD><TD>2</TD><TD>problems with calibrating spectrometer data</TD><TD>jmcmulli</TD><TD>problems with calibrating spectrometer data</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03952&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03952</a></TD><TD>problems</TD><TD>R</TD><TD>dish.getc,getr</TD><TD>2</TD><TD>improve error trap on scan access</TD><TD>jmcmulli</TD><TD>improve error trap on scan access</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03944&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03944</a></TD><TD>problems</TD><TD>R</TD><TD>dish.gaussian fitter</TD><TD>2</TD><TD>gfit doesn't handle flags</TD><TD>jmcmulli</TD><TD>gfit doesn't handle flags</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03908&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03908</a></TD><TD>problems</TD><TD>R</TD><TD>dish.aver</TD><TD>2</TD><TD>flags not correctly used in average (for one pol)</TD><TD>jmcmulli</TD><TD>flags not correctly used in average (for one pol)</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03888&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03888</a></TD><TD>problems</TD><TD>R</TD><TD>dishdemodata.Test Dish Demo</TD><TD>3</TD><TD>You don't include the demo data with R1.7</TD><TD>jmcmulli</TD><TD>You don't include the demo data with R1.7</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04167&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04167</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.stat()</TD><TD>4</TD><TD>range values don't default to full range</TD><TD>jmcmulli</TD><TD>range values don't default to full range</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04116&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04116</a></TD><TD>problems</TD><TD>R</TD><TD>dish.plotr</TD><TD>2</TD><TD>indexing of integrations is incorrect</TD><TD>jmcmulli</TD><TD>indexing of integrations is incorrect</TD><TD>03 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04161&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04161</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.fileout()</TD><TD>3</TD><TD>d.fileout() reports a SEVERE error under normal conditions</TD><TD>jmcmulli</TD><TD>d.fileout() reports a SEVERE error under normal conditions</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04162&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04162</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.fileout()</TD><TD>3</TD><TD>d.fileout() reports a SEVERE error under normal conditions</TD><TD>jmcmulli</TD><TD>d.fileout() reports a SEVERE error under normal conditions</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04163&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04163</a></TD><TD>enhancements</TD><TD>R</TD><TD>dish.d.help()</TD><TD>3</TD><TD>d.help() should be more helpful.</TD><TD>jmcmulli</TD><TD>d.help() should be more helpful.</TD><TD>05 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03874&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03874</a></TD><TD>problems</TD><TD>R</TD><TD>dv.flagging / averaging</TD><TD>3</TD><TD>Not ossible to flag a channel for a short time interval.</TD><TD>jmcmulli</TD><TD>Not ossible to flag a channel for a short time interval.</TD><TD>04 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03854&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03854</a></TD><TD>problems</TD><TD>R</TD><TD>dish.d.SRcal</TD><TD>1</TD><TD>d.SRcal crashed aips++</TD><TD>jmcmulli</TD><TD>d.SRcal crashed aips++</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04023&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04023</a></TD><TD>problems</TD><TD>R</TD><TD>imager.clean</TD><TD>3</TD><TD>if interactive=T, imager does not continue after  &quot;Done with Masking&quot;</TD><TD>kgolap</TD><TD>if interactive=T, imager does not continue after  &quot;Done with Masking&quot;</TD><TD>18 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04042&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04042</a></TD><TD>problems</TD><TD>R</TD><TD>Question.Question</TD><TD>3</TD><TD>AlwaysAssertExit numXFR exception</TD><TD>kgolap</TD><TD>AlwaysAssertExit numXFR exception</TD><TD>04 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04027&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04027</a></TD><TD>problems</TD><TD>R</TD><TD>dragon.image</TD><TD>2</TD><TD>Selfcal stops because it cannot find Gphase table</TD><TD>kgolap</TD><TD>Selfcal stops because it cannot find Gphase table</TD><TD>19 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03938&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03938</a></TD><TD>problems</TD><TD>R</TD><TD>imager.clean</TD><TD>3</TD><TD>When ready, imager does not terminate and hangs all windows except glish</TD><TD>kgolap</TD><TD>When ready, imager does not terminate and hangs all windows except glish</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04017&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04017</a></TD><TD>problems</TD><TD>R</TD><TD>imager.setdata/setimage</TD><TD>2</TD><TD>&quot;no overlap in freq&quot; error</TD><TD>kgolap</TD><TD>&quot;no overlap in freq&quot; error</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04038&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04038</a></TD><TD>problems</TD><TD>R</TD><TD>clean.interactive mask</TD><TD>3</TD><TD>clean.mask: mask GUI comes up even after clean reached threshold</TD><TD>kgolap</TD><TD>clean.mask: mask GUI comes up even after clean reached threshold</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03849&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03849</a></TD><TD>problems</TD><TD>R</TD><TD>imager.weight</TD><TD>3</TD><TD>weight function does not work as shown in documentation</TD><TD>kgolap</TD><TD>weight function does not work as shown in documentation</TD><TD>25 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04074&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04074</a></TD><TD>problems</TD><TD>R</TD><TD>imager.mem</TD><TD>4</TD><TD>when use circular mask image, mem seemed to deconvolve over square region</TD><TD>kgolap</TD><TD>when use circular mask image, mem seemed to deconvolve over square region</TD><TD>28 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04025&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04025</a></TD><TD>problems</TD><TD>R</TD><TD>dragon.constructor</TD><TD>1</TD><TD>dragon constructor crashes: file &quot;visplot.g&quot; not found</TD><TD>kgolap</TD><TD>dragon constructor crashes: file &quot;visplot.g&quot; not found</TD><TD>19 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso00159&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso00159</a></TD><TD>problems</TD><TD>R</TD><TD>vpmanager.</TD><TD>4</TD><TD>Names should not have embedded underscores</TD><TD>kgolap</TD><TD>Names should not have embedded underscores</TD><TD>25 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso02950&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso02950</a></TD><TD>problems</TD><TD>R</TD><TD>imager.mem</TD><TD>2</TD><TD>image.mem gives NaNs in test suite</TD><TD>kgolap</TD><TD>image.mem gives NaNs in test suite</TD><TD>15 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03823&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03823</a></TD><TD>problems</TD><TD>R</TD><TD>imager.setjy</TD><TD>3</TD><TD>Locking error reported by imager.setjy()</TD><TD>kgolap</TD><TD>Locking error reported by imager.setjy()</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03820&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03820</a></TD><TD>problems</TD><TD>R</TD><TD>imager.interactive clean</TD><TD>3</TD><TD>running interactive clean with threshold produces strange behavior</TD><TD>kgolap</TD><TD>running interactive clean with threshold produces strange behavior</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03793&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03793</a></TD><TD>problems</TD><TD>R</TD><TD>web pages.ref man index</TD><TD>4</TD><TD>link to imager is wrong</TD><TD>kgolap</TD><TD>link to imager is wrong</TD><TD>25 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03809&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03809</a></TD><TD>problems</TD><TD>R</TD><TD>imager.pb</TD><TD>2</TD><TD>imager.pb - im.pbcor is identically zero</TD><TD>kgolap</TD><TD>imager.pb - im.pbcor is identically zero</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03808&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03808</a></TD><TD>problems</TD><TD>R</TD><TD>imager.pb</TD><TD>3</TD><TD>imager.pb - 2 BUGs &amp; 1 ENHANCEMENT REQUEST, all linked</TD><TD>kgolap</TD><TD>imager.pb - 2 BUGs &amp; 1 ENHANCEMENT REQUEST, all linked</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03760&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03760</a></TD><TD>problems</TD><TD>R</TD><TD>Imager.interactive cleaning </TD><TD>3</TD><TD>Please provide a 'continue cleaning' button on interactive mask</TD><TD>kgolap</TD><TD>Please provide a 'continue cleaning' button on interactive mask</TD><TD>18 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03169&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03169</a></TD><TD>problems</TD><TD>R</TD><TD>imager.setdata</TD><TD>1</TD><TD>msselect argument in setdata doesn't appear to work</TD><TD>kgolap</TD><TD>msselect argument in setdata doesn't appear to work</TD><TD>25 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03663&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03663</a></TD><TD>problems</TD><TD>R</TD><TD>imager.cleaning cubes</TD><TD>3</TD><TD>dies if no data in channel</TD><TD>kgolap</TD><TD>dies if no data in channel</TD><TD>23 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03803&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03803</a></TD><TD>problems</TD><TD>R</TD><TD>viewer.adjust restore</TD><TD>3</TD><TD>restore on image:zoom and all sky catalog values doesn't work</TD><TD>mmarquar</TD><TD>restore on image:zoom and all sky catalog values doesn't work</TD><TD>28 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04121&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04121</a></TD><TD>problems</TD><TD>R</TD><TD>viewer.loaddata</TD><TD>3</TD><TD>does not register even if autoregister=T</TD><TD>mmarquar</TD><TD>does not register even if autoregister=T</TD><TD>12 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03984&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03984</a></TD><TD>problems</TD><TD>R</TD><TD>glish or image or viewer.unknown</TD><TD>3</TD><TD>&quot;whenever&quot; works once, but not any more</TD><TD>mmarquar</TD><TD>&quot;whenever&quot; works once, but not any more</TD><TD>28 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04140&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04140</a></TD><TD>enhancements</TD><TD>R</TD><TD>viewer.transfer function</TD><TD>2</TD><TD>changing transfer function is very very slow</TD><TD>mmarquar</TD><TD>changing transfer function is very very slow</TD><TD>12 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04024&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04024</a></TD><TD>problems</TD><TD>R</TD><TD>viewer.createdata, loaddata</TD><TD>2</TD><TD>BMAJ=BMIN refused by image.view()</TD><TD>mmarquar</TD><TD>BMAJ=BMIN refused by image.view()</TD><TD>21 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04099&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04099</a></TD><TD>problems</TD><TD>R</TD><TD>&nbsp;</TD><TD>3</TD><TD>Problem with large MS in mstofits or fitstoms</TD><TD>mwiering</TD><TD>Problem with large MS in mstofits or fitstoms</TD><TD>18 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04021&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04021</a></TD><TD>problems</TD><TD>R</TD><TD>autoflag.run</TD><TD>2</TD><TD>crashes on Arecibo data</TD><TD>osmirnov</TD><TD>crashes on Arecibo data</TD><TD>13 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04091&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04091</a></TD><TD>problems</TD><TD>V</TD><TD>dish.tofits</TD><TD>2</TD><TD>tofits failed and asked that this bug be submitted</TD><TD>wbrouw</TD><TD>tofits failed and asked that this bug be submitted</TD><TD>05 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04092&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04092</a></TD><TD>problems</TD><TD>R</TD><TD>imageprofilefitter (support?).internals</TD><TD>3</TD><TD>est/fit params have insufficient measures frame info</TD><TD>wbrouw</TD><TD>est/fit params have insufficient measures frame info</TD><TD>01 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04012&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04012</a></TD><TD>enhancements</TD><TD>R</TD><TD>measures.uvw</TD><TD>4</TD><TD>Adde uvw calculations to glish</TD><TD>wbrouw</TD><TD>Adde uvw calculations to glish</TD><TD>12 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04102&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04102</a></TD><TD>enhancements</TD><TD>R</TD><TD>measures.</TD><TD>3</TD><TD>add ability to close MeasTables</TD><TD>wbrouw</TD><TD>add ability to close MeasTables</TD><TD>12 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03368&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03368</a></TD><TD>enhancements</TD><TD>R</TD><TD>NQGaussian2D.Fitting</TD><TD>3</TD><TD>NQGAussian2D-cannot fix minor axis when fitting</TD><TD>wbrouw</TD><TD>NQGAussian2D-cannot fix minor axis when fitting</TD><TD>12 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04003&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04003</a></TD><TD>enhancements</TD><TD>V</TD><TD>measures.needed functions</TD><TD>3</TD><TD>need analog of dm.dirshow for other measure types</TD><TD>wbrouw</TD><TD>need analog of dm.dirshow for other measure types</TD><TD>09 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04107&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04107</a></TD><TD>enhancements</TD><TD>V</TD><TD>image.stats</TD><TD>4</TD><TD>turn of all the logging messages</TD><TD>wbrouw</TD><TD>turn of all the logging messages</TD><TD>20 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03983&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03983</a></TD><TD>problems</TD><TD>V</TD><TD>measures.g.riseset</TD><TD>2</TD><TD>rise and set time given by dm.riseset() seems to be the time the source has last risen and set. </TD><TD>wbrouw</TD><TD>rise and set time given by dm.riseset() seems to be the time the source has last risen and set. </TD><TD>10 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso03968&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso03968</a></TD><TD>problems</TD><TD>V</TD><TD>image.getchunk</TD><TD>2</TD><TD>getchunk returns NANs for FITSImage</TD><TD>wbrouw</TD><TD>getchunk returns NANs for FITSImage</TD><TD>03 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04033&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04033</a></TD><TD>problems</TD><TD>V</TD><TD>Question.Question</TD><TD>3</TD><TD>tofits</TD><TD>wbrouw</TD><TD>tofits</TD><TD>30 October, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04126&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04126</a></TD><TD>problems</TD><TD>V</TD><TD>quanta.quantity</TD><TD>2</TD><TD>insufficient error checking</TD><TD>wbrouw</TD><TD>insufficient error checking</TD><TD>26 November, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04148&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04148</a></TD><TD>problems</TD><TD>V</TD><TD>viewer.image()</TD><TD>3</TD><TD>viewer failed to reconize corrodinates of DSSII (optical) image.</TD><TD>wbrouw</TD><TD>viewer failed to reconize corrodinates of DSSII (optical) image.</TD><TD>08 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04182&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04182</a></TD><TD>enhancements</TD><TD>V</TD><TD>quanta.</TD><TD>3</TD><TD>comparative operators</TD><TD>wbrouw</TD><TD>comparative operators</TD><TD>09 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04211&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04211</a></TD><TD>enhancements</TD><TD>R</TD><TD>functionals.compiled?</TD><TD>4</TD><TD>request error function (erf) provision</TD><TD>wbrouw</TD><TD>request error function (erf) provision</TD><TD>17 December, 2002</TD></TR>
+<TR><TD><a href="/ddts/ddts_main?bug_id=AOCso04122&REMOTE_USER=nobody&LastForm=DumpBug" TARGET="defectframe">AOCso04122</a></TD><TD>problems</TD><TD>R</TD><TD>all.</TD><TD>1</TD><TD>aips++ won't start</TD><TD>wyoung</TD><TD>aips++ won't start</TD><TD>20 November, 2002</TD></TR>
+<TR><TD COLSPAN=9><em>117 records found</em>
+</TABLE><p></center>
+</table><p><SCRIPT>
+function SetCookie(name, value)
+{
+   var nextyear = new Date();
+   var y = nextyear.getYear() + 1;
+   if (y < 1000) y+= 1900;
+   nextyear.setYear(y);
+   document.cookie= name + "=" + escape(value) + ";" + "expires=" + nextyear.toGMTString() + ";";
+}
+   document.onLoad= SetCookie ("WebTrackerHelp", "Viewing and modifying records");
+</SCRIPT>
+<p>
+<noscript><em>Please enable JavaScript or you will have limited functionality.</em></noscript>
 
 <HR>
 
-Copyright &#169; 1995-2003 Associated Universities Inc.,
+Copyright &#169; 1995-2001,2002,2003 Associated Universities Inc.,
 Washington, D.C.</i>
 
 </body>
