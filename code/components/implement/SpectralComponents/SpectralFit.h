@@ -1,5 +1,5 @@
 //# SpectralFit.h: Least Squares fitting of spectral elements to spectrum
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,15 +117,15 @@ class SpectralFit {
   template <class MT>
     Bool fit(const Vector<MT> &y,
 	     const Vector<MT> &x) {
-    return fit(y, x, static_cast<const Vector<Bool> *const>(0)); };
+    return this->fit(y, x, static_cast<const Vector<Bool> *const>(0)); }
   template <class MT> 
     Bool fit(const Vector<MT> &y,
 	     const Vector<MT> &x, const Vector<Bool> &mask) {
-    return fit(y, x, &mask); };
+    return this->fit(y, x, &mask); }
   // </group>
 
   // Get the number of iterations last fit
-  uInt nIterations() { return iter_p; };
+  uInt nIterations() { return iter_p; }
 
  private:
   //#Data
