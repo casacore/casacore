@@ -1470,10 +1470,4 @@ inline SubString String::_substr(unsigned int first, unsigned int l)
     return SubString(*this, first, l);
 }
 
-#if defined(__GNUG__)
-inline String &at_c(String &val) { return(val); };
-
-inline const String &at_cc(const String &val) { return(val); };
-#endif
-
 #endif  /* AIPS_STRING_H */

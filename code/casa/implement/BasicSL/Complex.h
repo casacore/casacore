@@ -973,14 +973,4 @@ void setNaN(DComplex &val);
 // </group>
 
 
-#if defined(__GNUG__)
-inline const Complex &at_cc(const Complex &val) { return(val); };
-inline const DComplex &at_cc(const DComplex &val) { return(val); };
-inline const IComplex &at_cc(const IComplex &val) { return(val); };
-
-inline Complex &at_c(Complex &val) { return(val); };
-inline DComplex &at_c(DComplex &val) { return(val); };
-inline IComplex &at_c(IComplex &val) { return(val); };
-#endif
-
 #endif
