@@ -241,7 +241,7 @@ inline Bool allNearAbs(const DComplex &val1, const DComplex &val2,
   { return nearAbs(val1, val2, tol); }
 // </group>
 
-// <summary> Max and min functions </summary>
+// <summary> Max and min, floor and ceil functions </summary>
 // <group name=maxmin>
 inline Complex max(const Complex &x, const Complex &y)
   { return x >= y ? x : y; }
@@ -252,6 +252,16 @@ inline Complex min(const Complex &x, const Complex &y)
   { return x <= y ? x : y; }
 inline DComplex min(const DComplex &x, const DComplex &y)
   { return x <= y ? x : y; }
+
+inline Complex floor(const Complex &x) {
+  return Complex(floor(x.real()), floor(x.imag())); }
+inline DComplex floor(const DComplex &x) {
+  return DComplex(floor(x.real()), floor(x.imag())); }
+
+inline Complex ceil(const Complex &x) {
+  return Complex(ceil(x.real()), ceil(x.imag())); }
+inline DComplex ceil(const DComplex &x) {
+  return DComplex(ceil(x.real()), ceil(x.imag())); }
 // </group>
 
 // <summary> fmod </summary>

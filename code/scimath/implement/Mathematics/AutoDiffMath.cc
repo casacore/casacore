@@ -1,5 +1,5 @@
 //# AutoDiffMath.cc: Implements all mathematical functions for AutoDiff.
-//# Copyright (C) 1995,1996,1999,2001,2002
+//# Copyright (C) 1995,1996,1999,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -331,6 +331,18 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x,
 				   const AutoDiff<T> &c) { 
   AutoDiff<T> tmp(x);
   tmp.theRep()->val_p = fmod(x.theRep()->val_p, c.theRep()->val_p);
+  return tmp.ref();
+}
+
+template<class T> AutoDiff<T> floor(const AutoDiff<T> &ad) { 
+  AutoDiff<T> tmp(ad);
+  tmp.theRep()->val_p = floor(ad.theRep()->val_p);
+  return tmp.ref();
+}
+
+template<class T> AutoDiff<T> ceil(const AutoDiff<T> &ad) { 
+  AutoDiff<T> tmp(ad);
+  tmp.theRep()->val_p = ceil(ad.theRep()->val_p);
   return tmp.ref();
 }
 

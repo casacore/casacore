@@ -1,5 +1,5 @@
 //# AutoDiffMath.h: Implements all mathematical functions for AutoDiff.
-//# Copyright (C) 1995,1999,2001,2002
+//# Copyright (C) 1995,1999,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,6 +132,11 @@ template<class T> AutoDiff<T> abs(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T &c);
 template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x,
 				   const AutoDiff<T> &c);
+// </group>
+// Floor and ceil of values
+// <group>
+template<class T> AutoDiff<T> floor(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> ceil(const AutoDiff<T> &ad);
 // </group>
  
 // Comparison operators.  Only the values are compared: in the actual
