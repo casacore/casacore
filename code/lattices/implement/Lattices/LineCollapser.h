@@ -1,4 +1,4 @@
-//# VectorCollapser.h: base class to collapse profiles
+//# LineCollapser.h: Abstract base class to collapse lines for LatticeApply
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -24,68 +24,82 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_VECTORCOLLAPSER_H)
-#define AIPS_VECTORCOLLAPSER_H
- 
-#if defined(_AIX)
-#pragma implementation ("VectorCollapser.h")
-#endif
 
+#if !defined(AIPS_LINECOLLAPSER_H)
+#define AIPS_LINECOLLAPSER_H
+ 
+
+//# Includes
 #include <aips/aips.h>
+
+//# Forward Declarations
 template <class T> class Vector;
 class IPosition;
 
-// <summary> Abstract base class for LatticeApply function signatures </summary>
+// <summary>
+// Abstract base class for LatticeApply function signatures
+// </summary>
+
 // <use visibility=export>
-//
+
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-//
+
 // <prerequisite>
-//   <li> LatticeApply
+//   <li> <linkto class=LatticeApply>LatticeApply</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // </etymology>
-//
+
 // <synopsis>
-// This is an abstract base class for the collapsing of profiles. The application
-// programmer implements a derived class and it is used by a LatticeApply function
+// This is an abstract base class for the collapsing of lines to
+// be used in function <src>lineApply</src> or <src>lineMultiApply</src>
+// in class <linkto class=LatticeApply>LatticeApply</linkto>.
+// It is meant for cases where the entire line is needed (e.g. moment
+// calculation). If that is not needed (e.g. to calculate maximum),
+// it is better to use function <src>LatticeApply::tiledApply</src>
+// with class <linkto class=TiledCollapser>TiledCollapser</linkto>.
+// <p>
+// The user has to derive a concrete class from this base class
+// and implement the (pure) virtual functions.
+// <br> The main function is <src>process</src>, which needs to do the
+// calculation.
+// <br> Other functions make it possible to perform an initial check.
 // </synopsis>
-//
+
 // <example>
-// <srcBlock>
-// </srcBlock>
+// <srcblock>
+// </srcblock>
 // </example>
-// 
-// <note role=caution>
-// </note>
-//      
-// <note role=tip>
-// </note>
-//      
-//      
+
 // <motivation>
 // </motivation>
-//      
+
 // <todo asof="1997/08/01">   
 //   <li> 
 // </todo>
-//
-template <class T> class VectorCollapser
+
+template <class T> class LineCollapser
 {
 public:
-// Collapse the given vector and return one value from that operation.
-// The position in the Lattice at the start of the vector is input
-// as well.
-  virtual T collapse(const Vector<T> &vector,
-                     const IPosition& pos) = 0;
+// The init function for a derived class.
+// It can be used to check if <src>nOutPixelsPerCollapse</src>
+// corresponds with the number of pixels produced per collapsed line.
+    virtual void init (uInt nOutPixelsPerCollapse) = 0;
 
-// Collapse the given vector and return a vector of values from that operation.
-// The position in the Lattice at the start of the vector is input
+// Collapse the given line and return one value from that operation.
+// The position in the Lattice at the start of the line is input
 // as well.
-  virtual Vector<T>& multiCollapse(const Vector<T> &vector,
-                                   const IPosition& pos) = 0;
+    virtual T process (const Vector<T>& line,
+		       const IPosition& pos) = 0;
+
+// Collapse the given line and return a line of values from that operation.
+// The position in the Lattice at the start of the line is input
+// as well.
+    virtual Vector<T>& multiProcess (const Vector<T>& line,
+				     const IPosition& pos) = 0;
 };
+
 
 #endif
