@@ -3,7 +3,7 @@
 # depstat: Count the number of header files used by class implemetation files
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994
+#   Copyright (C) 1994,1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -30,14 +30,15 @@
 #-----------------------------------------------------------------------------
 # Usage: depstat [<$AIPSAUXD/package.list>]
 #-----------------------------------------------------------------------------
-# sed/awk filter which counts the number of AIPS++ header files on which each
-# AIPS++ implementation file depends by scanning the dependency list.
+# depstat is a sed/awk filter which counts the number of AIPS++ header files
+# on which each AIPS++ implementation file depends by scanning the dependency
+# list.
 #
 # Example:
 #
 #    Typically the output may be sorted as follows:
 #
-#    dhr aips.list | sort +1 -n -r
+#    depstat aips.list | sort +1 -n -r
 #
 # Notes:
 #    1) If no dependency file is specified on the command line, input is taken
