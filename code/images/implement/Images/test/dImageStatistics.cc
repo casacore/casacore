@@ -282,7 +282,7 @@ try {
       if (!stats.setList(doList)) return 1;
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
-         if (!stats.setPlotting(statisticTypes, plotter, nxy)) return 1;
+         if (!stats.setPlotting(plotter, statisticTypes, nxy)) return 1;
       }
 
 // Recover things
