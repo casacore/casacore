@@ -58,6 +58,7 @@ void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml2,
             MaskedLattice<Float>& ml3);
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set);
+void testLogger();
 
 int main() {
   try {
@@ -358,6 +359,9 @@ int main() {
          }
       }
 
+      // Check if the LoggerHolder works fine for concatenated images.
+      testLogger();
+
   } catch(AipsError x) {
     cerr << x.getMesg() << endl;
     exit(1);
@@ -435,3 +439,46 @@ void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
 }
 
 
+void testLogger()
+{
+  // Make a concatenated image and make sure the image objects are gone.
+   ImageConcat<Float> lc (0, True);
+   {
+// Make some Arrays
+
+      IPosition shape(2,5,10);
+      Array<Float> a1(shape);
+      Array<Float> a2(shape);
+      Int i, j;
+      for (i=0; i<shape(0); i++) {
+	 for (j=0; j<shape(1); j++) {
+	    a1(IPosition(2,i,j)) = i + j;
+	    a2(IPosition(2,i,j)) = -i - j;
+	 }
+      }
+
+// Make some PagedImages and add messages to their logger.
+// Add the images to the Concat.
+
+      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
+                            "tImageConcat_tmp1.imga");
+      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
+                            "tImageConcat_tmp2.imga");
+      im1.put(a1); 
+      im2.put(a2);
+      im1.logger().logio() << "message1a" << LogIO::POST;
+      im1.logger().logio() << "message1b" << LogIO::POST;
+      im2.logger().logio() << "message2" << LogIO::POST;
+      lc.setImage(im1, True);
+      lc.setImage(im2, True);
+   }
+   // Add a message and check if the concatenation has 4 messages.
+   LoggerHolder& logger = lc.logger();
+   logger.logio() << "message_conc" << LogIO::POST;
+   uInt nmsg=0;
+   for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
+      cout << iter->message() << endl;
+      nmsg++;
+   }
+   AlwaysAssertExit (nmsg == 4);
+}
