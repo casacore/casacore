@@ -84,6 +84,8 @@ Lattice<Bool>* LCRegion::clone() const
 
 void LCRegion::handleDelete()
 {}
+void LCRegion::handleRename (const String&, Bool)
+{}
 
 LCRegion* LCRegion::translate (const IPosition& translateVector,
 			       const IPosition& newLatticeShape) const

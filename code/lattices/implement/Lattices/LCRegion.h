@@ -115,6 +115,10 @@ public:
     // The default implementation does nothing.
     virtual void handleDelete();
 
+    // Handle renaming the region by renaming possible tables.
+      // The default implementation does nothing.
+    virtual void handleRename (const String& newName, Bool overwrite);
+
     // Region type.  Returns className() of derived class.
     virtual String type() const = 0;
 
