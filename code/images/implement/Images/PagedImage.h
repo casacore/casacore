@@ -125,11 +125,25 @@ public:
 	     uInt rowNumber = 0);
   
   // construct a new Image from an IPosition and coordinate information. Table
+  // will be stored in the named file, masking is created if True. The tile
+  // shape may be specified
+  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+	     const String &nameOfNewFile, const IPosition& tileShape, Bool masking = False, 
+	     uInt rowNumber = 0);
+  
+  // construct a new Image from an IPosition and coordinate information. Table
   // will be stored in the named file, masking is created if True. The lock
-  // options may be specfied
+  // options may be specified
   PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
 	     const String &nameOfNewFile, const TableLock& lockOptions,
              Bool masking = False, uInt rowNumber = 0);
+  
+  // construct a new Image from an IPosition and coordinate information. Table
+  // will be stored in the named file, masking is created if True. The lock
+  // options and tile shape may be specified
+  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+	     const String &nameOfNewFile, const TableLock& lockOptions,
+             const IPosition& tileShape, Bool masking = False, uInt rowNumber = 0);
   
   // reconstruct an image from a pre-existing file
   PagedImage(Table &table, uInt rowNumber = 0);

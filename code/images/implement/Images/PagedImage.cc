@@ -124,6 +124,37 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 
 template <class T> PagedImage<T>::
 PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
+	   const String & filename, const TableLock& lockOptions, const IPosition& tileShape,
+	   Bool masking, uInt rowNumber)
+  :ImageInterface<T>(True),
+   mask_p((PagedArray<Bool> *) 0)
+{
+  logSink() << LogOrigin("PagedImage<T>", 
+			 "PagedImage(const IPosition & shape,  "
+			 "const CoordinateSystem & coordinateInfo, const String & filename, "
+			 "const TableLock& lockoptions, const IPosition& tileShape,  "
+			 "Bool masking, uInt rowNumber)", WHERE);
+  logSink() << LogIO::DEBUGGING
+	    << "Creating an image in row " << rowNumber 
+	    << " of a new table called"
+	    << " '" << filename << "'" << endl
+	    << "The image shape is " << shape << endl;
+  SetupNewTable newtab (filename, TableDesc(), Table::New);
+  table_p = Table(newtab, lockOptions);
+  map_p = PagedArray<T> (shape, table_p, "map", rowNumber, tileShape);
+  if (masking) {
+    mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber, tileShape);
+    logSink() << "A mask was created" << LogIO::POST;
+  }
+  else
+    logSink() << "No mask is was created" << LogIO::POST;
+  ::defaultValue(defaultvalue_p); 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
+  setTableType();
+};
+
+template <class T> PagedImage<T>::
+PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
 	   const String & filename, Bool masking, uInt rowNumber)
   :ImageInterface<T>(True),
    mask_p((PagedArray<Bool> *) 0)
@@ -142,6 +173,36 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber);
+    logSink() << "A mask was created" << LogIO::POST;
+  }
+  else
+    logSink() << "No mask is was created" << LogIO::POST;
+  ::defaultValue(defaultvalue_p); 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
+  setTableType();
+};
+
+template <class T> PagedImage<T>::
+PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
+	   const String & filename, const IPosition& tileShape, Bool masking, uInt rowNumber)
+  :ImageInterface<T>(True),
+   mask_p((PagedArray<Bool> *) 0)
+{
+  logSink() << LogOrigin("PagedImage<T>", 
+			 "PagedImage(const IPosition & shape,  "
+			 "const CoordinateSystem & coordinateInfo, "
+			 "const String & filename, const IPosition& tileShape,  "
+			 "Bool masking, uInt rowNumber)", WHERE);
+  logSink() << LogIO::DEBUGGING
+	    << "Creating an image in row " << rowNumber 
+	    << " of a new table called"
+	    << " '" << filename << "'" << endl
+	    << "The image shape is " << shape << endl;
+  SetupNewTable newtab (filename, TableDesc(), Table::New);
+  table_p = Table(newtab);
+  map_p = PagedArray<T> (shape, table_p, "map", rowNumber, tileShape);
+  if (masking) {
+    mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber, tileShape);
     logSink() << "A mask was created" << LogIO::POST;
   }
   else
