@@ -221,6 +221,16 @@ public:
 			char* section, uInt colnr,
 			uInt localPixelSize, Bool writeFlag);
 
+    // Get the current cache size (in buckets).
+    uInt cacheSize() const;
+
+    // Calculate the cache size (in buckets) for the given slice
+    // and access path.
+    uInt calcCacheSize (const IPosition& sliceShape,
+			const IPosition& windowStart,
+			const IPosition& windowLength,
+			const IPosition& axisPath) const;
+
     // Set the cache size for the given slice and access path.
     void setCacheSize (const IPosition& sliceShape,
 		       const IPosition& windowStart,
