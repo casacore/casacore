@@ -1,5 +1,5 @@
 //# ISMIndex.h: The Index of the Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
-#include <aips/Tables/BucketFile.h>
 
 //# Forward declarations
 class ISMBase;
@@ -85,26 +84,24 @@ public:
     // It keeps the pointer to its parent (but does not own it).
     explicit ISMIndex (ISMBase* parent);
 
-    // Create a ISMIndex object with the given parent for an existing table.
-    // The index will be read from the AipsIO object.
-    ISMIndex (ISMBase* parent, AipsIO& os);
-
     // The destructor closes the file (if opened).
     ~ISMIndex();
-
-    // Return the number of buckets in use.
-    uInt nbuckets() const;
 
     // Add a row.
     void addRow (uInt nrrow);
 
     // Remove a row from the index.
-    void removeRow (uInt rownr);
+    // If the result of this is that the entire bucket gets empty,
+    // that bucketnr is returned. Otherwise -1 is returned.
+    Int removeRow (uInt rownr);
 
     // Get the bucket number for the given row.
     // Also return the start row of the bucket and the number of rows in it.
     uInt getBucketNr (uInt rownr, uInt& bucketStartRow,
 		      uInt& bucketNrrow) const;
+
+    // Read the bucket index from the AipsIO object.
+    void get (AipsIO& os);
 
     // Write the bucket index into the AipsIO object.
     void put (AipsIO& os);
@@ -135,9 +132,6 @@ private:
     // Forbid assignment.
     ISMIndex& operator= (const ISMIndex&);
 
-    // Read the bucket index from the AipsIO object.
-    void get (AipsIO& os);
-
     // Get the index of the bucket containing the given row.
     uInt getIndex (uInt rownr) const;
 
@@ -154,10 +148,5 @@ private:
 };
 
 
-inline uInt ISMIndex::nbuckets() const
-{
-    return nused_p;
-}
-    
 
 #endif
