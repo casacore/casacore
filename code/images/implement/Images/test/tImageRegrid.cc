@@ -36,12 +36,16 @@ main (int argc, char **argv)
    inputs.create("axes", "-10", "axes");
    inputs.create("method", "linear", "Method");
    inputs.create("save", "False", "Save output ?");
+   inputs.create("shape", "-10", "Shape");
+   inputs.create("replicate", "False", "Replicate ?");
    inputs.readArguments(argc, argv);
    const String in = inputs.getString("in");
    const Bool core = inputs.getBool("core");
    const Bool save = inputs.getBool("save");
    const String method = inputs.getString("method");
    const Block<Int> axesU(inputs.getIntArray("axes"));
+   const Block<Int> shapeU(inputs.getIntArray("shape"));
+   const Bool replicate = inputs.getBool("replicate");
 //
    Int lim = 0;
    if (core) lim = 1000000;
@@ -63,17 +67,6 @@ main (int argc, char **argv)
       pIm = new PagedImage<Float>(in);
    }
 //
-   ImageInterface<Float>* pImOut = 0;
-   if (save) {
-      pImOut = new PagedImage<Float>(pIm->shape(), pIm->coordinates(), String("outFile"));
-   } else {
-      TiledShape shapeOut(pIm->shape());
-      pImOut = new TempImage<Float>(shapeOut, pIm->coordinates(), lim);
-   }
-   String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
-   pImOut->makeMask(maskName, True, True, True, True);
-//
-   Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    IPosition axes(3, 0, 1, 2);
    if (axesU.nelements()>0) {
       if (axesU.nelements()==1 && axesU[0]==-10) {
@@ -83,8 +76,43 @@ main (int argc, char **argv)
       }
    }
 //
+   IPosition shapeIn = pIm->shape();
+   IPosition shapeOut = shapeIn;
+   if (shapeU.nelements()>0) {
+      if (shapeU.nelements()==1 && shapeU[0]==-10) {
+      } else {
+         shapeOut.resize(shapeU.nelements());
+         for (uInt i=0; i<shapeOut.nelements(); i++) shapeOut(i) = shapeU[i];
+      }
+   }
+   cerr << "shape = " << shapeIn << shapeOut << endl;
+   cerr << "axes = " << axes << endl;
+//
+   uInt n = pIm->ndim();
+   CoordinateSystem cSysOut = pIm->coordinates();
+   Vector<Double> incr = cSysOut.increment().copy();
+   Vector<Double> refp  = cSysOut.referencePixel().copy();
+   Vector<Double> refv  = cSysOut.referenceValue().copy();
+   for (uInt i=0; i<n; i++) {
+      incr(i) = incr(i) * shapeIn(i) / shapeOut(i);
+      refp(i) = shapeOut(i) / 2.0;
+   }
+   cSysOut.setReferencePixel(refp);
+   cSysOut.setIncrement(incr);
+//
+
+   ImageInterface<Float>* pImOut = 0;
+   if (save) {
+      pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
+   } else {
+      pImOut = new TempImage<Float>(shapeOut, cSysOut, lim);
+   }
+   String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
+   pImOut->makeMask(maskName, True, True, True, True);
+//
+   Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    ImageRegrid<Float> regridder;
-   regridder.regrid(*pImOut, emethod, axes, *pIm);
+   regridder.regrid(*pImOut, emethod, axes, *pIm, replicate);
    delete pIm;
    delete pImOut;
 }
