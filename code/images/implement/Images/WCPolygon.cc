@@ -211,6 +211,54 @@ WCPolygon& WCPolygon::operator= (const WCPolygon& that)
     return *this;
 }
 
+Bool WCPolygon::operator== (const WCRegion& other) const
+{  
+// Type check
+
+   if (type() != other.type()) return False;
+
+// Caste
+
+   const WCPolygon& that = (const WCPolygon&)other;
+
+// Check private data
+
+   if (itsIsOffset != that.itsIsOffset) return False;
+
+   if (itsXWC.nelements() != that.itsXWC.nelements()) return False;
+   if (itsYWC.nelements() != that.itsYWC.nelements()) return False;
+
+   Bool deleteX1, deleteY1;
+   Bool deleteX2, deleteY2;
+   const Double* pX1 = itsXWC.getStorage(deleteX1);
+   const Double* pY1 = itsYWC.getStorage(deleteY1);
+   const Double* pX2 = that.itsXWC.getStorage(deleteX2);
+   const Double* pY2 = that.itsYWC.getStorage(deleteY2);
+   for (uInt i=0; i<itsXWC.nelements(); i++) {
+      if (!near(pX1[i], pX2[i])) return False;
+      if (!near(pY1[i], pY2[i])) return False;
+   }
+   itsXWC.freeStorage(pX1, deleteX1);
+   itsYWC.freeStorage(pY1, deleteY1);
+   that.itsXWC.freeStorage(pX2, deleteX2);
+   that.itsYWC.freeStorage(pY2, deleteY2);
+ 
+   if (itsWorldAxes.nelements() != that.itsWorldAxes.nelements()) return False;
+   for (i=0; i<itsWorldAxes.nelements(); i++) {
+      if (itsWorldAxes(i) != that.itsWorldAxes(i)) return False;
+   }
+
+   if (!itsCSys.near(&(that.itsCSys))) return False;
+
+   return True;
+}
+ 
+Bool WCPolygon::operator!= (const WCRegion& other) const
+{
+   if (WCPolygon::operator==(other)) return False;
+   return True;
+}
+
 
 
 WCPolygon* WCPolygon::cloneRegion() const
@@ -227,8 +275,8 @@ TableRecord WCPolygon::toRecord(const String&) const
    rec.define ("y", itsYWC);
    rec.define ("worldAxes", itsWorldAxes);
    rec.define ("offset", itsIsOffset);
-   if (!itsCSys.save(rec, "CoordinateSystem")) {
-      throw (AipsError ("WCPolygon::toRecord: could not save CoordinateSystem"));
+   if (!itsCSys.save(rec, "coordinates")) {
+      throw (AipsError ("WCPolygon::toRecord: could not save Coordinate System"));
    }
 
    return rec;
@@ -247,21 +295,21 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 // axes before reconstituting the WCPolygon
 //
 {
-   CoordinateSystem cSys =  *(CoordinateSystem::restore(rec,"CoordinateSystem"));
+   CoordinateSystem* pCSys =  
+      CoordinateSystem::restore(rec,"coordinates");
    if (rec.isDefined("worldAxes")) {
       return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
                            Vector<Double>(rec.asArrayDouble ("y")),
                            Vector<Int>(rec.asArrayInt ("worldAxes")),
-                           cSys,
-                           rec.asBool("offset"));
+                           *pCSys, rec.asBool("offset"));
    } else if (rec.isDefined("pixelAxes")) {
 //
 // Convert pixel axes to world axes
 //
-      Vector<Int> worldAxes(cSys.nWorldAxes());
+      Vector<Int> worldAxes(pCSys->nWorldAxes());
       Vector<Int> pixelAxes = Vector<Int>(rec.asArrayInt ("pixelAxes"));
       for (uInt i=0; i<pixelAxes.nelements(); i++) {
-         Int worldAxis = cSys.pixelAxisToWorldAxis(pixelAxes(i));
+         Int worldAxis = pCSys->pixelAxisToWorldAxis(pixelAxes(i));
          if (worldAxis == -1) {
             throw (AipsError ("WCPolygon::fromRecord - some of the pixel axes have no world axis"));
          } else {
@@ -272,11 +320,12 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 // 
          return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
                               Vector<Double>(rec.asArrayDouble ("y")),
-                              worldAxes, cSys, rec.asBool("offset"));
+                              worldAxes, *pCSys, rec.asBool("offset"));
       }
    } else {
       throw (AipsError ("WCPolygon::fromRecord - record has neither worldAxes nor pixelAxes fields defined"));
    }
+   delete pCSys;
    return 0;
 }
 
@@ -398,4 +447,10 @@ String WCPolygon::className()
 {
   return "WCPolygon";
 }
+
+String WCPolygon::type() const
+{
+  return className();
+}
+
 
