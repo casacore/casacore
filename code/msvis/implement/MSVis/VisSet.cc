@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -263,13 +263,10 @@ void VisSet::addColumns(Table& tab)
     TiledDataStManAccessor imWtAccessor(tab,"TiledImagingWeight");
     TableIterator obsIter(tab,dataTileId);
     for (;!obsIter.pastEnd(); obsIter.next()) {
-      ScalarColumn<Int> spwId(obsIter.table(),
-			      MS::columnName(MS::SPECTRAL_WINDOW_ID));
       ScalarColumn<Int> tileId(obsIter.table(),dataTileId);
       ArrayColumn<Complex> od(obsIter.table(),MS::columnName(MS::DATA));
-      Int spw=spwId(0);
       Int numCorr=od.shape(0)(0);
-      Int numChan=selection_p(1,spw);
+      Int numChan=od.shape(0)(1);
       // add new hyperCube
       Record values1; values1.define("MODEL_TILE_ID",tileId(0));
       Record values2; values2.define("CORRECTED_TILE_ID",tileId(0));
