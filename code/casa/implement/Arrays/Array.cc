@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/ArrayError.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Functionals/Functional.h>
 #include <aips/Utilities/Copy.h>
@@ -147,10 +148,6 @@ template<class T> Array<T>::~Array()
     // Nothing
 }
 
-template<class T> void Array<T>::cleanup()
-{
-    this->Array<T>::~Array();
-}
 
 template<class T> void Array<T>::reference(Array<T> &other)
 {

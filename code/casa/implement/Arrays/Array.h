@@ -28,13 +28,9 @@
 #if !defined(AIPS_ARRAY_H)
 #define AIPS_ARRAY_H
 
-#if defined(_AIX)
-#pragma implementation ("Array.cc")
-#pragma implementation ("Array2.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Arrays/ArrayRtti.h>
@@ -43,7 +39,7 @@
 #include <aips/Arrays/MaskLogiArrFwd.h>
 #include <aips/Lattices/IPosition.h>
 
-//# Forwards
+//# Forward Declarations
 class AipsIO;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
@@ -160,10 +156,6 @@ enum StorageInitPolicy {
 // a default constructor, assignment operator, and copy constructor. In
 // particular, Array<String> works.
 //
-// Array<T> is derived from Cleanup, so if an exception is thrown storage
-// from the array will be reclaimed. When "real" exceptions are available,
-// this will no longer be required.
-//
 // If compiled with the preprocessor symbol AIPS_DEBUG symbol, array
 // consistency ("invariants") will be checked in most member
 // functions, and indexing will be range-checked. This should not be
@@ -184,7 +176,7 @@ enum StorageInitPolicy {
 //        sufficiently robust.
 // </todo>
 
-template<class T> class Array : public Cleanup
+template<class T> class Array
 {
 public:
 
@@ -211,11 +203,6 @@ public:
 
     // Frees up storage only if this array was the last reference to it.
     virtual ~Array();
-
-    // This functions is used by the exception handling mechanism we have
-    // defined. It merely calls the destructor. When real exceptions are
-    // available it will be unnecessary.
-    void cleanup();
 
     // Set every element of the array to "value." Also could use the
     // assignment operator which assigns an array from a scalar.
@@ -497,7 +484,7 @@ public:
     static uInt arrayVersion() {return 3;}
 
     // Macro to define the typeinfo member functions.
-    rtti_dcl_mbrf_p1(Array<T>, Cleanup);
+    rtti_dcl_mbrf(Array<T>);
 
     // This function was put in for the Sun native compiler which presently
     // (1995/06/19) is unable to autaomatically cast a dereived class to a

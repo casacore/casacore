@@ -1,5 +1,5 @@
 //# Map.cc: Associative array classes (templated)
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,11 +92,6 @@ Map<key,value>::Map(const Map<key,value> *m) {
     Rep = m->Rep->Clone();
   else
     throw_map_init_error();
-}
-
-template<class key, class value>
-void Map<key,value>::cleanup() {
-  this->Map<key,value>::~Map();
 }
 
 template<class key, class value>
@@ -317,11 +312,6 @@ ConstMapIter<key,value>::~ConstMapIter() {
 }
 
 template<class key, class value>
-void ConstMapIter<key,value>::cleanup(){
-  this->ConstMapIter<key,value>::~ConstMapIter();
-}
-
-template<class key, class value>
 MapIter<key,value> &MapIter<key,value>::operator=(Map<key,value> &other) {
   SetRep(other.getRep());
   return *this;
@@ -351,11 +341,6 @@ MapIter<key,value> &MapIter<key,value>::operator=(const MapIter<key,value> *othe
   } else
     throw_mapiter_init_error();
   return *this;
-}
-
-template<class key, class value>
-void MapIter<key,value>::cleanup(){
-  this->MapIter<key,value>::~MapIter();
 }
 
 //#

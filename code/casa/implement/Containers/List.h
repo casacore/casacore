@@ -1,5 +1,5 @@
 //# List.h: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,8 @@
 #if !defined(AIPS_LIST_H)
 #define AIPS_LIST_H
 
-#if defined(_AIX)
-#pragma implementation ("List.cc")
-#endif
 
+//# Includes
 #include <aips/RTTI/Register.h>
 #include <aips/Utilities/Notice.h>
 #include <aips/Containers/Link.h>
@@ -47,6 +45,7 @@ void throw_list_init_error();
 void throw_list_start_error();
 void throw_list_swapright_same_error();
 
+//# Forward Declarations
 template<class t> class ListIter;
 template<class t> class ConstListIter;
 template<class t> class List;
@@ -184,7 +183,8 @@ rtti_dcl_init_a1(List);
 // </example>
 // </a>
 // 
-template<class t> class List : public NoticeSource, public Cleanup {
+template<class t> class List : public NoticeSource
+{
 friend class ConstListIter<t>;
 friend class ListIter<t>;
 public:
@@ -214,7 +214,7 @@ public:
 
     //*display 9
     //# Macro to define the typeinfo member functions
-    rtti_dcl_mbrf_p1(List<t> , Cleanup);
+    rtti_dcl_mbrf(List<t>);
 
     //
     // List version
@@ -309,7 +309,8 @@ rtti_dcl_init_a1(ConstListIter);
 //        multiple cursors are updated as elements are added and
 //        removed from the list.
 //    
-template<class t> class ConstListIter : public NoticeTarget, public Cleanup {
+template<class t> class ConstListIter : public NoticeTarget
+{
 public:
 
     //
@@ -514,7 +515,7 @@ public:
 
     //*display 9
     //# Macro to define the typeinfo member functions
-    rtti_dcl_mbrf_p1(ConstListIter<t> , Cleanup);
+    rtti_dcl_mbrf(ConstListIter<t>);
 
     // enum outside class because of compiler errors on HPUX
     //enum {ConstListIterVersion = 1};

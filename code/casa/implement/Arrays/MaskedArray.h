@@ -326,7 +326,7 @@ template <class T> class MaskedArray;
 // </todo>
 
 
-template<class T> class MaskedArray : public Cleanup
+template<class T> class MaskedArray
 {
 
 public:
@@ -473,12 +473,6 @@ public:
     // </group>
 
     ~MaskedArray();
-
-    // This functions is used by the exception handling mechanism we have
-    // defined. It merely calls the destructor. When real exceptions are
-    // available it will be unnecessary.
-    void cleanup();
-
 
     // Return a MaskedArray.  The new MaskedArray is masked by the input
     // LogicalArray "anded" with the mask of the original MaskedArray.

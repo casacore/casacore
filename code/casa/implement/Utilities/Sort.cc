@@ -1,5 +1,5 @@
 //# Sort.cc: Sort on one or more keys, ascending and/or descending
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,11 +131,6 @@ Sort::~Sort()
     for (uInt i=0; i<nrkey_p; i++) {
 	delete (SortKey*)(keys_p[i]);
     }
-}
-
-void Sort::cleanup()
-{
-    this->Sort::~Sort();
 }
 
 Sort& Sort::operator= (const Sort& that)

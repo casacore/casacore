@@ -1,5 +1,5 @@
 //# Map.h: Associative array classes
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,8 @@
 #if !defined(AIPS_MAP_H_)
 #define AIPS_MAP_H_
 
-#if defined(_AIX)
-#pragma implementation ("Map.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/RTTI/Typeinfo.h>
@@ -41,6 +39,7 @@
 //
 #define AIPS_STUPID_SUN 1
 
+//# Forward Declarations
 class AipsIO;
 
 extern void throw_mapiter_init_error();
@@ -130,12 +129,7 @@ protected:
 
   //  This is the default value which is return when no match is found.
   //  This prevents this class from being a PartialMap.
-  //# Use Freeze and Unfreeze to prevent the object DefaultVal
-  //# from being deleted by Cleanup in case of exceptions.
-  //# They will always be deleted by MapRep.
-  FreezeCleanup beginFreeze;
   value DefaultVal;
-  UnfreezeCleanup endFreeze;
 
 };
 
@@ -148,7 +142,8 @@ rtti_dcl_init_a2(Map);
 //  This is the abstract class for all "Map" classes which implement the
 //  equivalent of an associative array.
 //
-template<class key, class value> class Map : public Cleanup {
+template<class key, class value> class Map
+{
 public:
 
   //
@@ -229,13 +224,8 @@ public:
   //
   virtual ~Map();
 
-  //
-  // Used to cleanup the class in the event of an exception.
-  //
-  void cleanup();
-
   // Macro to define the typeinfo member functions
-  rtti_dcl_mbrf_p1(TMPL_ARG2(Map,key,value), Cleanup);
+  rtti_dcl_mbrf(TMPL_ARG2(Map,key,value));
 
   enum {MapVersion = 1};
 
@@ -437,7 +427,8 @@ rtti_dcl_init_a2(ConstMapIter);
 // Map as a parameter, and iterates through the map displaying the
 // key/value pairs at each positon.
 //
-template<class key, class value> class ConstMapIter : public Cleanup {
+template<class key, class value> class ConstMapIter
+{
 public:
 
   //
@@ -547,15 +538,10 @@ public:
   //
   const Map<key,value> &container() const;
 
-  //
-  // Required for cleanup after an exception
-  //
-  void cleanup();
-
   virtual ~ConstMapIter();
 
   // Macro to define the typeinfo member functions
-  rtti_dcl_mbrf_p1(TMPL_ARG2(ConstMapIter,key,value), Cleanup);
+  rtti_dcl_mbrf(TMPL_ARG2(ConstMapIter,key,value));
 
   enum {ConstMapIterVersion = 1};
 
@@ -752,11 +738,6 @@ public:
   const Map<key,value> &container() const {
     return(ConstMapIter<key,value>::container());}
   //-grp
-
-  //
-  //  Hook for Cleanup functionality
-  //
-  void cleanup();
 
   ~MapIter() {}
 

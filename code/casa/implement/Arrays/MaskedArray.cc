@@ -1,5 +1,5 @@
 //# MaskedArray.cc: A templated N-D masked array class with variable origin.
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -491,12 +491,6 @@ template<class T> MaskedArray<T>::~MaskedArray()
     if (pMask) {
         delete pMask;
     }
-}
-
-
-template<class T> void MaskedArray<T>::cleanup()
-{
-    this->MaskedArray<T>::~MaskedArray();
 }
 
 

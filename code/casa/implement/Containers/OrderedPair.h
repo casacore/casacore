@@ -1,5 +1,5 @@
 //# OrderedPair.h: Ordered pair class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,24 +28,27 @@
 #if !defined(AIPS_ORDEREDPAIR_H_)
 #define AIPS_ORDEREDPAIR_H_
 
-#if defined(_AIX)
-#pragma implementation ("OrderedPair.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 
-// <category lib=aips sect="Containers">
+
 // <summary>Ordered pair class</summary>
-//
+// <use visibility=local>
+
+// <synopsis>
 // This class is a simple class used in the Map<key,value> classes
 // to manage key/value pairs for maps.
 // The default constructor is needed for use in containers.
 // This implies that ALL classes ever used in OrderedPair should
 // have a default constructor!!!!
 //
-// <note> This should probably be cleaned up in the future and made into a 
-//        generally useful class.
+// <note>
+// This should probably be cleaned up in the future and made into a 
+// generally useful class.
+// </note>
+// </synopsis>
+
 
 template<class K, class V> class OrderedPair
 {
@@ -71,19 +74,17 @@ public:
     //
     OrderedPair<K,V>& operator= (const OrderedPair<K,V>& that);
 
+    // Get access to the key or value.
+    // <group>
     K &x() {return Key;}
     const K &x() const {return Key;}
     V &y() {return Val;}
     const V &y() const {return Val;}
+    // </group>
 
-public:
-    //# Use Freeze and Unfreeze to prevent the objects Key and Val
-    //# from being deleted by Cleanup in case of exceptions.
-    //# They will always be deleted by Orderedpair.
-    FreezeCleanup beginFreeze;
+private:
     K Key;
     V Val;
-    UnfreezeCleanup endFreeze;
 
     enum {OrderedPairVersion = 1};
 };

@@ -1,5 +1,5 @@
 //# SimOrdMap.h: Simple map with ordered keys
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,15 +201,10 @@ public:
 protected:
     // The blocks to hold the keys and values
     // and the total, used and increment size of these blocks.
-    //# Use Freeze and Unfreeze to prevent the object DefaultVal
-    //# from being deleted by Cleanup in case of exceptions.
-    //# They will always be deleted by MapRep.
-    FreezeCleanup beginFreeze;
     Block<void*> kvblk;
     uInt         nrused;
     uInt         nrincr;
     V            DefaultVal;
-    UnfreezeCleanup endFreeze;
 
     // Binary search for the key.
     uInt findKey (const K&, Bool&) const;
