@@ -1,5 +1,5 @@
 //# tInterpolate1D.cc: This program tests the Interpolate1D class
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Functionals/ArraySampledFunctional.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // Main program to test the Interpolate1D class
