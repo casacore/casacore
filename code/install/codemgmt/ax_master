@@ -4888,3 +4888,4 @@
 14 316 sys rm libexec/dishsmooth.g
 14 316 src rm trial/apps/newdish/dishsmoothgui.g
 14 316 sys rm libexec/dishsmoothgui.g
+14 316 src rm trial/apps/newdish/dishstatgui.g
