@@ -325,7 +325,7 @@ public:
    virtual Bool operator==(const WCRegion& other) const;
 
    // Clone a WCBox object.
-   virtual WCBox* cloneRegion() const;
+   virtual WCRegion* cloneRegion() const;
 
    // Convert to an LCRegion using the supplied <src>CoordinateSystem</src> 
    // and shape.  
