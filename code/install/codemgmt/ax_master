@@ -3614,3 +3614,4 @@
 13 331 src rm doc/user/gettingstarted.dir/f15-gaussplot.gif
 13 331 src rm doc/user/gettingstarted.dir/gsedition2.dir/
 13 333 src rm aips/implement/MeasurementSets/test/templates
+13 335 src mv trial/apps/dish/dishdemo.g trial/apps/dish/dishdemodata.g
