@@ -351,7 +351,10 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
                              Double tol) const
 
 {
-   if (pOther->type() != this->type()) return False;
+   if (pOther->type() != this->type()) {
+      set_error("Comparison is not with another TabularCoordinate");
+      return False;
+   }
 
 // The TabularCoordinate has only one axis (pixel and world).
 // Therefore, if excludeAxes contains "0", we are done.
@@ -363,8 +366,14 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
    
 // Check units and name
 
-   if (unit_p != pOther->worldAxisUnits()(0)) return False;
-   if (name_p != pOther->worldAxisNames()(0)) return False;
+   if (unit_p != pOther->worldAxisUnits()(0)) {
+      set_error("The TabularCoordinates have differing axis units");
+      return False;
+   }
+   if (name_p != pOther->worldAxisNames()(0)) {
+      set_error("The TabularCoordinates have differing world axis names");
+      return False;
+   }
 
 // Private data crval_p, cdelt_p, crpix_p, matrix_p are formed
 // from the Table values so in principle there is no need to
@@ -372,10 +381,25 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
 // than working through the table so check them anyway.
 
    TabularCoordinate* tCoord = (TabularCoordinate*)pOther;
-   if (!::near(crval_p,tCoord->crval_p,tol)) return False;
-   if (!::near(crpix_p,tCoord->crpix_p,tol)) return False;
-   if (!::near(cdelt_p,tCoord->cdelt_p,tol)) return False;
-   if (!::near(matrix_p,tCoord->matrix_p,tol)) return False;
+   if (!::near(crval_p,tCoord->crval_p,tol)) {
+      set_error("The TabularCoordinates have differing average reference values");
+      return False;
+   }
+   if (!::near(crpix_p,tCoord->crpix_p,tol)) {
+      set_error("The TabularCoordinates have differing average reference pixels");
+      return False;
+   }
+   if (!::near(cdelt_p,tCoord->cdelt_p,tol)) {
+      set_error("The TabularCoordinates have differing average increments");
+      return False;
+   }
+   if (!::near(matrix_p,tCoord->matrix_p,tol)) {
+
+// It's really just one component of the matrix
+
+      set_error("The TabularCoordinates have differing linear transformation matrices");
+      return False;
+   }
 
 
 
@@ -383,15 +407,28 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
 
    Vector<Double> data1 =   this->pixelValues();
    Vector<Double> data2 = tCoord->pixelValues();
-   if (data1.nelements() != data2.nelements()) return False;
-   for (Int i=0; i<data1.nelements(); i++) {
-      if (!::near(data1(i),data2(i),tol)) return False;
+   if (data1.nelements() != data2.nelements()) {
+      set_error("The TabularCoordinates have differing numbers of entries in the pixel value table");
+      return False;
    }
+   for (Int i=0; i<data1.nelements(); i++) {
+      if (!::near(data1(i),data2(i),tol)) {
+         set_error("The TabularCoordinates have differing pixel value tables");
+         return False;
+      }
+   }
+
    data1 =   this->worldValues();
    data2 = tCoord->worldValues();
-   if (data1.nelements() != data2.nelements()) return False;
+   if (data1.nelements() != data2.nelements()) {
+      set_error("The TabularCoordinates have differing numbers of entries in the world value table");
+      return False;
+   }
    for (i=0; i<data1.nelements(); i++) {
-      if (!::near(data1(i),data2(i),tol)) return False;
+      if (!::near(data1(i),data2(i),tol)) {
+         set_error("The TabularCoordinates have differing world value tables");
+         return False;
+      }
    }
 
    return True;
