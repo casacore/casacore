@@ -174,6 +174,7 @@ VisBuffer& VisBuffer::operator-=(const VisBuffer& vb)
       }
     }
   }
+  return *this;
 }
 
 void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
