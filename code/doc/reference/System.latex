@@ -70,9 +70,13 @@
 \makeindex
 
 \begin{document}
+
+\pagenumbering{roman}
+
 \title{\aipspp\ System Manual\\
        For users, programmers and administrators}
 \author{\LARGE{Mark Calabretta}}
+\date{1997/06/05}
 
 \maketitle
 
