@@ -4203,3 +4203,4 @@
 14 065 src mv trial/apps/viewer/viewercolormapmanager.help trialdisplay/apps/viewer/viewercolormapmanager.help
 14 065 src mv trial/apps/viewer/viewerdisplaydata.g trialdisplay/apps/viewer/viewerdisplaydata.g
 14 065 src mv trial/apps/viewer/viewerdisplaydata.help trialdisplay/apps/viewer/viewerdisplaydata.help
+14 065 src mv trial/apps/viewer/viewerdisplaypanel.g trialdisplay/apps/viewer/viewerdisplaypanel.g
