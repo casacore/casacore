@@ -539,7 +539,7 @@ Normal::Normal(RNG* gen, Double mean, Double variance)
    itsMean(mean),
    itsVariance(variance),
    itsCached(False),
-   itsCachedValue()
+   itsCachedValue(0)
 {
   DebugAssert(itsVariance >= 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
