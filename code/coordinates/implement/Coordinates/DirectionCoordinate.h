@@ -1,5 +1,5 @@
 //# DirectionCoordinate.h: Interconvert pixel positions and directions (e.g. RA/DEC)
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -310,7 +310,7 @@ public:
     // In the mixed pixel/world conversion routine <src>toMix</src>
     // the implementation is only partial.  See the comments for this
     // function below.
-    void setConversionDirectionType (MDirection::Types conversionDirectionType);
+    void setConversion (MDirection::Types conversionDirectionType);
 
     // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
