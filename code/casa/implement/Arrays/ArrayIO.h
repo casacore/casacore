@@ -182,11 +182,13 @@ template<class T> Bool readArrayBlock(istream &s, Bool &trans,
 
 // Read or write a binary representation of an Array to a file. Very
 // useful for saving arrays and restoring them later.
+// <br>The putArray function is put in for forwards compatibility
+// of images (so new images can be read with old release).
 //
 // <group>
 
 template<class T> AipsIO &operator<< (AipsIO &, const Array<T> &);
-
+template<class T> void putArray (AipsIO &, const Array<T> &, const Char* name);
 template<class T> AipsIO &operator>> (AipsIO &, Array<T> &);
 
 // </group>

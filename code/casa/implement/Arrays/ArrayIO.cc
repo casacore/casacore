@@ -131,7 +131,14 @@ LogIO &operator<<(LogIO &os, const Array<T> &a)
 template<class T>
 AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
 {
-    ios.putstart("Array", Array<T>::arrayVersion());
+    putArray (ios, a, "Array");
+    return ios;
+}
+
+template<class T>
+void putArray (AipsIO &ios, const Array<T> &a, const Char* name)
+{
+    ios.putstart(name, Array<T>::arrayVersion());
     // Write out dimensionality
     ios << a.ndim();
     // Write out length
@@ -144,7 +151,6 @@ AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
     putAipsIO (ios, a.nelements(), storage);
     a.freeStorage(storage, deleteIt);
     ios.putend();
-    return ios;
 }
 
 // <thrown>
