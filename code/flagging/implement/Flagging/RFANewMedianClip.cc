@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <trial/Flagging/RFANewMedianClip.h>
-#include <trial/Tasking/PGPlotterLocal.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <trial/Tasking/PGPlotterInterface.h>

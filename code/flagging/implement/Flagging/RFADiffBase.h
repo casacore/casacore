@@ -43,7 +43,6 @@ const int   RFA_MIN_NAD = 20;
 const Float RFA_AAD_CHANGE = 0.05;
 
 class PGPlotterInterface;
-class PGPlotterLocal;
 
 // <summary>
 // RFADiffBase: abstract class for deviation-based flagging
