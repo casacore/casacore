@@ -2321,3 +2321,4 @@
 11 199 src mv trial/implement/Display/Animator.h trial/implement/DisplayEvents/Animator.h
 11 199 src mv trial/implement/Display/PCMotionEH.cc trial/implement/DisplayEvents/PCMotionEH.cc
 11 199 src mv trial/implement/Display/PCMotionEH.h trial/implement/DisplayEvents/PCMotionEH.h
+11 199 src mv trial/implement/Display/PCMotionEvent.cc trial/implement/DisplayEvents/PCMotionEvent.cc
