@@ -214,6 +214,13 @@ class LatticeRegion;
 template <class T> class MaskedLattice : public Lattice<T>
 {
 public: 
+  // Default constructor.
+  MaskedLattice()
+    : itsDefRegPtr(0) {;}
+
+  // Copy constructor.
+  MaskedLattice (const MaskedLattice<T>&);
+
   // a virtual destructor is needed so that it will use the actual destructor
   // in the derived class
   virtual ~MaskedLattice();
@@ -228,11 +235,6 @@ public:
   // The default implementation returns True if the MaskedLattice has
   // a region with a mask.
   virtual Bool isMasked() const;
-
-  // Is the mask writable?
-  // The default implementation returns True if the MaskedLattice has
-  // a writable region with a mask.
-  virtual Bool isMaskWritable() const;
 
   // Does the lattice have a pixelmask?
   // The default implementation returns False.
@@ -249,7 +251,7 @@ public:
   // This is in principle the region pointed to by <src>getRegionPtr</src>.
   // However, if that pointer is 0, it returns a LatticeRegion for the
   // full image.
-  LatticeRegion region() const;
+  const LatticeRegion& region() const;
 
   // Get the mask or a slice from the mask.
   // This is the mask formed by combination of the possible pixelmask of the
@@ -288,17 +290,6 @@ public:
 			    Bool removeDegenerateAxes=False) const;
   // </group>
   
-  // Write (part of) the mask. They work similarly to the putSlice functions
-  // as described in class <linkto class=Lattice>Lattice</linkto>.
-  // An exception is thrown if the mask is not writable.
-  // <group>   
-  void putMaskSlice (const Array<Bool>& sourceBuffer, const IPosition& where,
-		     const IPosition& stride)
-    { doPutMaskSlice (sourceBuffer, where, stride); }
-  void putMaskSlice (const Array<Bool>& sourceBuffer, const IPosition& where);
-  void putMask (const Array<Bool>& sourceBuffer);
-  // </group>   
-
   // The function (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
   // various Lattice classes.
@@ -312,25 +303,14 @@ public:
 
 protected:
   // Assignment can only be used by derived classes.
-  MaskedLattice<T>& operator= (const MaskedLattice<T>&)
-    { return *this; }
+  MaskedLattice<T>& operator= (const MaskedLattice<T>&);
 
   // Get a pointer to the region used.
   // It can return 0 meaning that the MaskedLattice is the full lattice.
   virtual const LatticeRegion* getRegionPtr() const = 0;
 
-  // Put a section of the mask.
-  // The default implementation writes the mask of the region.
-  // It throws an exception if there is no writable region.
-  virtual void doPutMaskSlice (const Array<Bool>& buffer,
-			       const IPosition& where,
-			       const IPosition& stride);
-
-  // Get a pointer to the non-const region object.
-  // It returns 0 if the MaskedLattice has no region associated with it.
-  // The cast is safe, since the function is non-const.
-  LatticeRegion* rwRegionPtr()
-	{ return (LatticeRegion*)getRegionPtr(); }
+private:
+  mutable LatticeRegion* itsDefRegPtr;
 };
 
 
