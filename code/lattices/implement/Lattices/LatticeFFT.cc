@@ -54,7 +54,7 @@ void LatticeFFT::fft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
     LatticeIterator<Complex> li(cLattice, ls);
     FFTServer<Float,Complex> ffts(cursorShape);
     for (li.reset(); !li.atEnd(); li++)
-      //       if (!allNear(li.cursor(), cZero, 1E-6))
+      if (!allNear(li.cursor(), cZero, 1E-6))
 	 ffts.fft(li.matrixCursor().ac(), toFrequency);
   } // For large transforms , we do line by line FFT's
   else {
@@ -79,12 +79,79 @@ void LatticeFFT::fft(Lattice<Complex> & cLattice,
       TiledStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<Complex> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
-	// 	if (!allNear(li.cursor(), cZero, 1E-6))
+	if (!allNear(li.cursor(), cZero, 1E-6))
 	  ffts.fft(li.vectorCursor(), toFrequency);
       }
     }
   }
 }
+
+void LatticeFFT::fft(Lattice<Complex> & cLattice, const Bool toFrequency) {
+  const Vector<Bool> whichAxes(cLattice.ndim(), True);
+  LatticeFFT::fft(cLattice, whichAxes, toFrequency);
+}
+
+void LatticeFFT::fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+		     const Vector<Bool> & whichAxes, const Bool doShift){
+  const uInt ndim = in.ndim();
+  DebugAssert(ndim > 0, AipsError);
+  AlwaysAssert(ndim == whichAxes.nelements(), AipsError);
+
+  // find the required shape of the output Array
+  const IPosition inShape = in.shape();
+  IPosition outShape = in.shape();
+  uInt i = 0, firstAxis = ndim;
+  while (i < ndim && firstAxis == ndim) {
+    if (whichAxes(i) == True)
+      firstAxis = i;
+    i++;
+  }
+  AlwaysAssert(firstAxis < ndim, AipsError); // At least one axis must be given
+  outShape(firstAxis) = (outShape(firstAxis)+2)/2;
+  AlwaysAssert(outShape.isEqual(out.shape()), AipsError);
+
+  const IPosition tileShape = out.niceCursorShape(out.maxPixels());
+  FFTServer<Float,Complex> ffts;
+  const Complex cZero(0,0);
+
+  for (uInt dim = 0; dim < ndim; dim++) {
+    if (whichAxes(dim) == True) {
+      if (dim == firstAxis) { // Do real->complex Transforms
+	RO_LatticeIterator<Float> inIter(in, 
+					 TiledStepper(inShape, tileShape,dim));
+	LatticeIterator<Complex> outIter(out, 
+					 TiledStepper(outShape,tileShape,dim));
+	for (inIter.reset(), outIter.reset(); 
+	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
+	  if (allNear(inIter.cursor(), 0.0f, 1E-6))
+	    outIter.cursor() = cZero;
+	  else
+	    if (doShift)
+	      ffts.fft(outIter.vectorCursor(), inIter.vectorCursor());
+	    else
+	      ffts.fft0(outIter.vectorCursor(), inIter.vectorCursor());
+	}
+      }
+      else { // Do complex->complex transforms
+	LatticeIterator<Complex> iter(out,
+				      TiledStepper(outShape, tileShape, dim));
+	for (iter.reset(); !iter.atEnd(); iter++) {
+	  if (doShift)
+	    ffts.fft(iter.vectorCursor(), True);
+	  else
+	    ffts.fft0(iter.vectorCursor(), True);
+	}
+      }
+    }
+  }
+}
+
+void LatticeFFT::fft(Lattice<Complex> & out, const Lattice<Float> & in, 
+		     const Bool doShift){
+  const Vector<Bool> whichAxes(in.ndim(), True);
+  LatticeFFT::fft(out, in, whichAxes, doShift);
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
 // End: 
