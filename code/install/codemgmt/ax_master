@@ -3970,3 +3970,4 @@
 14 065 src mv trial/implement/DisplayEvents/PCInvisTool.h trialdisplay/implement/DisplayEvents/PCInvisTool.h
 14 065 src mv trial/implement/DisplayEvents/PCMotionEH.h trialdisplay/implement/DisplayEvents/PCMotionEH.h
 14 065 src mv trial/implement/DisplayEvents/PCMotionEvent.h trialdisplay/implement/DisplayEvents/PCMotionEvent.h
+14 065 src mv trial/implement/DisplayEvents/PCPositionEH.h trialdisplay/implement/DisplayEvents/PCPositionEH.h
