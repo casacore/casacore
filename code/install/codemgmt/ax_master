@@ -5984,3 +5984,6 @@
 17 000 src mv trial/implement/Functionals/NQSimButterworthBandpass.cc aips/implement/Functionals/NQSimButterworthBandpass.cc
 17 000 src mv trial/implement/Functionals/test/tNQSimButterworthBandpass.cc aips/implement/Functionals/test/tNQSimButterworthBandpass.cc
 17 000 src mv trial/implement/Functionals/test/tNQChebyshev.cc aips/implement/Functionals/test/tNQChebyshev.cc
+17 010 src rm trial/implement/Fitting/LQFit2D.h
+17 010 src rm trial/implement/Fitting/LQFit2D.cc
+17 010 src rm trial/implement/Fitting/test/tLQFit2D.cc
