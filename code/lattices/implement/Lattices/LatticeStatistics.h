@@ -632,6 +632,9 @@ private:
 // Accumulators for sum, sum squared, number of points
 // minimum, and maximum
 
+// the typedef here is a workaround for the sun native compiler
+// hopefully this can go away with the new sun compiler.
+
     typedef typename NumericTraits<T>::PrecisionType PrecisionType;
     Block<PrecisionType > *pSum_p;
     Block<PrecisionType > *pSumSq_p;
