@@ -289,25 +289,45 @@ Bool SpectralCoordinate::toWorld(Vector<Double> &world,
     return ok;
 }
 
+Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
+{
+    static Vector<Double> pixel_tmp1(1);
+    static Vector<Double> world_tmp1(1);
+//
+    pixel_tmp1(0) = pixel;
+    if (toWorld(world_tmp1, pixel_tmp1)) {
+       world = world_tmp1(0);
+       return True;
+    } else {
+       return False;
+    }
+}
+
+
 Bool SpectralCoordinate::toPixel(Vector<Double> &pixel, 
 				 const Vector<Double> &world) const
 {
-    static Vector<Double> world_tmp(1);
+    static Vector<Double> world_tmp1(1);
 //
-    world_tmp(0) = world(0);
-    convertFrom(world_tmp);    
-    return worker_p.toPixel(pixel, world_tmp);
+    world_tmp1(0) = world(0);
+    convertFrom(world_tmp1);    
+    return worker_p.toPixel(pixel, world_tmp1);
 }
 
 
-Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
-{
-  return worker_p.toWorld(world, pixel);
-}
 
 Bool SpectralCoordinate::toPixel(Double& pixel, const Double& world) const
 {
-  return worker_p.toPixel(pixel, world);
+    static Vector<Double> pixel_tmp2(1);
+    static Vector<Double> world_tmp2(1);
+//
+    world_tmp2(0) = world;
+    if (toPixel(pixel_tmp2, world_tmp2)) {
+       pixel = pixel_tmp2(0);
+       return True;
+    } else {
+       return False;
+    }
 }
 
 
