@@ -656,26 +656,23 @@ endif
 # the "cleanest" rule.
 PGMRPTRD  = $(PGMRARCH)/ptrepository
 
-
-# -------------- COMPILING AIPS++ CODE USING THE RATIONAL TOOLS --------------
-# There are two ways to compile aips++ code with the Rational code analysis
-# tools.  The first way has been used at Socorro for some time. You invoke
-# purify as
+# Compiling AIPS++ using the Rational tools.
+#-------------------------------------------
+# There are two ways to compile AIPS++ code with the Rational code analysis
+# tools, purify, purecoverage and quantify.  The quick and convenient way is
+# via
 #
 #   gmake PURIFY=1 myApp
-#
-# Similarly you invoke quantify and purecoverage with
-#
-#   gmake QUANTIFY=1 myApp
 #   gmake PURECOV=1 myApp
+#   gmake QUANTIFY=1 myApp
 #
-# Compiling using any of the above examples invokes the relevant tool with the
-# default set of arguments.  If you use additional command line arguments with
-# any of the Rational tools you need to compile you code using
+# These invoke the relevant tool by setting the PURE variable with the default
+# set of arguments.  The PURE variable may instead be set on the command line
+# to invoke the Rational tools with non-standard arguments, for example
 #
 #   gmake PURE="command" myApp
 #
-# where command can be one of:
+# where PURE is of the form:
 #
 #   PURE="purify <purify args>"
 #   PURE="purecov <purecov args>"
@@ -693,38 +690,19 @@ PGMRPTRD  = $(PGMRARCH)/ptrepository
 #
 #-----------------------------------------------------------------------------
 
+# Purify options, always added to each tool.
 PUREOPTIONS = -cache-dir=$(PGMRARCH)/pure_cache -always-use-cache-dir -chain-length=50
 
-ifdef PURE
-   C++ = $(PURE) $(PUREOPTIONS) $(C++)
-   # Don't strip the symbols from the executable
-   LDOPT = $(LDDBG)
-   .cleanest ::
-	- $(RM) -r $(PGMRARCH)/pure_cache
-endif
-
 ifdef PURIFY
-   C++ = purify -best-effort $(PUREOPTIONS) $(C++)
-   # Don't strip with purify
-   LDOPT = $(LDDBG)
-   .cleanest ::
-	- $(RM) -r $(PGMRARCH)/pure_cache
+   PURE := purify -best-effort
 endif
 
 ifdef QUANTIFY
-   C++ = quantify -best-effort $(PUREOPTIONS) $(C++)
-   # Don't strip with quantify
-   LDOPT = $(LDDBG)
-   .cleanest ::
-	- $(RM) -r $(PGMRARCH)/pure_cache
+   PURE := quantify -best-effort
 endif
 
 ifdef PURECOV
-   C++ = purecov $(PUREOPTIONS) $(C++)
-   # Don't strip with purecov
-   LDOPT = $(LDDBG)
-   .cleanest ::
-	- $(RM) -r $(PGMRARCH)/pure_cache
+   PURE := purecov
 endif
 
 # Reset programmer flags; "-k" or "-i" can be added on the command line.
@@ -770,6 +748,19 @@ ifeq "$(MAKEMODE)" "programmer"
    # Programmer-specific definitions.
    -include $(PGMRARCH)/makedefs
 endif
+
+
+# Add support for Rational tools.
+ifdef PURE
+   C++ := $(PURE) $(PUREOPTIONS) $(C++)
+
+   # Don't strip the symbols from the executable
+   LDOPT := $(LDDBG)
+
+   .cleanest ::
+	- $(RM) -r $(PGMRARCH)/pure_cache
+endif
+
 
 # Add internally set options to MAKEFLAGS.
 MAKEFLAGS := $(INTRA_MAKEFLAGS) $(MAKEFLAGS)
