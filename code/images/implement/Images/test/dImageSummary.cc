@@ -1,5 +1,5 @@
 //# imhead.cc: List image header
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,9 +77,9 @@ try {
       ImageSummary<Float> header(inImage);
       header.list(os, type, False);
    } else if (imageType==TpComplex) {    
-      const PagedImage<Complex> inImage(in);
-      ImageSummary<Complex> header(inImage);
-      header.list(os, type, False);
+//      const PagedImage<Complex> inImage(in);
+//      ImageSummary<Complex> header(inImage);
+//      header.list(os, type, False);
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
    }
