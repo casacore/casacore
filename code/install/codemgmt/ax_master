@@ -2547,3 +2547,5 @@
 11 374 src mv trial/scripts/edit.help trial/implement/Utilities/edit.help
 11 374 src mv trial/scripts/note.help trial/implement/Utilities/note.help
 11 374 src mv trial/scripts/sh.help trial/implement/Tasking/sh.help
+11 374 src rm trial/implement/Display/WCLogScaleHandler.h
+11 374 src rm trial/implement/Display/WCLogScaleHandler.cc
