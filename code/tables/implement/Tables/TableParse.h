@@ -481,12 +481,7 @@ inline void TableParseSelect::handleSort (PtrBlock<TableParseSort*>*& sort,
 }
 
 inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
-{
-  Sort::Order tmp =  (key.orderGiven()  ?   key.order() : order_p);
-  cout << "sortorder = " << tmp << endl;
-  return tmp;
-}
-///    { return (key.orderGiven()  ?   key.order() : order_p); }
+    { return (key.orderGiven()  ?   key.order() : order_p); }
 
 inline TableParseSelect* TableParseSelect::currentSelect()
     { return blockSelect_p[currentSelect_p-1]; }
