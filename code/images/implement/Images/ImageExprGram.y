@@ -32,6 +32,7 @@
 %union {
 LatticeExprNode* node;
 ImageExprParse*  val;
+Block<LatticeExprNode>* scalarvector;
 vector<Slice>*   slicelist;
 Slice*           slice;
 }
@@ -56,6 +57,7 @@ Slice*           slice;
 %type <node> relexpr
 %type <node> arithexpr
 %type <node> simexpr
+%type <scalarvector> scalarlist;
 %type <slicelist> rangelist;
 %type <slice> frange;
 
@@ -222,6 +224,22 @@ simexpr:   LPAREN orexpr RPAREN
          | LITERAL {
 	       $$ = new LatticeExprNode ($1->makeLiteralNode());
 	       ImageExprParse::addNode ($$);
+	   }
+         | LBRACKET scalarlist RBRACKET {
+	       $$ = new LatticeExprNode (ImageExprParse::makeValueList(*$2));
+	       delete $2;
+	       ImageExprParse::addNode ($$);
+	   }
+         ;
+
+scalarlist: scalarlist COMMA orexpr {
+               $$ = $1;
+	       uInt nr = $$->nelements();
+	       $$->resize (nr+1);
+	       (*$$)[nr] = *$3;
+	    }
+         | orexpr {
+               $$ = new Block<LatticeExprNode>(1, *$1);
 	   }
          ;
 

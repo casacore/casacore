@@ -329,6 +329,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 	return fractileRange(arg1, arg2);
     } else if (itsSval == "replace") {
 	return replace(arg1, arg2);
+    } else if (itsSval == "rebin") {
+	return rebin(arg1, makeBinning(arg2));
     } else {
 	throw (AipsError ("2-argument function " + itsSval + " is unknown"));
     }
@@ -372,9 +374,98 @@ LatticeExprNode ImageExprParse::makeLiteralNode() const
     return LatticeExprNode();
 }
 
+LatticeExprNode ImageExprParse::makeValueList
+                              (const Block<LatticeExprNode>& values)
+{
+  // First determine the resulting data type (which is the 'highest' one).
+  // It also checks if no mix of e.g. bool and numeric is used.
+  DataType dtype = values[0].dataType();
+  for (uInt i=0; i<values.nelements(); i++) {
+    if (! values[i].isScalar()) {
+      throw AipsError ("ImageExprParse: value in value list is not a scalar");
+    }
+    dtype = LatticeExprNode::resultDataType (dtype, values[i].dataType());
+  }
+  switch (dtype) {
+  case TpBool:
+    {
+      Vector<Bool> vals(values.nelements());
+      for (uInt i=0; i<vals.nelements(); i++) {
+	vals[i] = values[i].getBool();
+      }
+      return LatticeExprNode (ArrayLattice<Bool>(vals));
+    }
+  case TpFloat:
+    {
+      Vector<Float> vals(values.nelements());
+      for (uInt i=0; i<vals.nelements(); i++) {
+	vals[i] = values[i].getFloat();
+      }
+      return LatticeExprNode (ArrayLattice<Float>(vals));
+    }
+  case TpDouble:
+    {
+      Vector<Double> vals(values.nelements());
+      for (uInt i=0; i<vals.nelements(); i++) {
+	vals[i] = values[i].getDouble();
+      }
+      return LatticeExprNode (ArrayLattice<Double>(vals));
+    }
+  case TpComplex:
+    {
+      Vector<Complex> vals(values.nelements());
+      for (uInt i=0; i<vals.nelements(); i++) {
+	vals[i] = values[i].getComplex();
+      }
+      return LatticeExprNode (ArrayLattice<Complex>(vals));
+    }
+  case TpDComplex:
+    {
+      Vector<DComplex> vals(values.nelements());
+      for (uInt i=0; i<vals.nelements(); i++) {
+	vals[i] = values[i].getDComplex();
+      }
+      return LatticeExprNode (ArrayLattice<DComplex>(vals));
+    }
+  default:
+    throw (AipsError ("ImageExprParse: unknown data type for value list"));
+  }
+}
+
+IPosition ImageExprParse::makeBinning (const LatticeExprNode& values)
+{
+  Vector<Double> vals;
+  if (values.dataType() != TpFloat  &&  values.dataType() != TpDouble) {
+    throw (AipsError ("ImageExprParse: invalid data type for rebin factors"));
+  }
+  if (values.isScalar()) {
+    vals.resize (1);
+    vals[0] = values.getDouble();
+  } else {
+    if (values.dataType() == TpFloat) {
+      Vector<Float> val (values.getArrayFloat());
+      vals.resize (val.nelements());
+      for (uInt i=0; i<val.nelements(); i++) {
+	vals[i] = val[i];
+      }
+    } else {
+      vals = values.getArrayDouble();
+    }
+  }
+  IPosition binning(vals.nelements());
+  for (uInt i=0; i<binning.nelements(); i++) {
+    if (vals[i] <= 0) {
+      throw AipsError("ImageExprParse: "
+		      "binning factor has to be a positive value");
+    }
+    binning[i] = Int(0.5 + vals[i]);
+  }
+  return binning;
+}
+
 Slice* ImageExprParse::makeSlice (const ImageExprParse& start)
 {
-  if (start.itsType!=TpInt) {
+  if (start.itsType != TpInt) {
     throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
   }
   return new Slice(start.itsIval-1);

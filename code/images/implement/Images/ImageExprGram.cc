@@ -34,6 +34,7 @@
 
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Arrays/Slice.h>
+#include <aips/Containers/Block.h>
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/ImageExprParse.h>    // routines used by bison actions
 #include <aips/Exceptions/Error.h>

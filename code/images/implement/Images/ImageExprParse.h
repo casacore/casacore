@@ -264,6 +264,13 @@ public:
     static LatticeExprNode makeIndexinNode (const LatticeExprNode& axis,
 					    const vector<Slice>& slices);
 
+    // Make an array from a value list.
+    static LatticeExprNode makeValueList
+                                  (const Block<LatticeExprNode>& values);
+
+    // Make an IPosition containing the binning values.
+    static IPosition makeBinning (const LatticeExprNode& values);
+
     // Set the static node object (used by the .y file).
     static void setNode (const LatticeExprNode& node)
         { theirNode = node; }
