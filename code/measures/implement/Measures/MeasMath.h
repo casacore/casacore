@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998,2000,2002
+//# Copyright (C) 1998,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -218,6 +218,8 @@ private:
   enum FrameInfo {
     TDB = 0,
     LASTR,
+    TT,
+    UT1,
     LONG,
     LAT,
     RADIUS,

@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,17 +119,33 @@ void MeasMath::getFrame(FrameType i) {
 
 // Precession
 void MeasMath::createPrecession() {
-  if (!PRECESIAU) PRECESIAU = new Precession(Precession::STANDARD);
+  if (!PRECESIAU) {
+    if (MeasTable::useIAU2000()) {
+      PRECESIAU = new Precession(Precession::IAU2000);
+    } else {
+      PRECESIAU = new Precession(Precession::IAU1976);
+    };
+  };
 }
 
 void MeasMath::applyPrecession(MVPosition &in) {
-  getInfo(TDB);
-  in *= (*PRECESIAU)(info_p[TDB]);
+    if (MeasTable::useIAU2000()) {
+      getInfo(TT);
+      in *= (*PRECESIAU)(info_p[TT]);
+    } else {
+      getInfo(TDB);
+      in *= (*PRECESIAU)(info_p[TDB]);
+    };
 }
 
 void MeasMath::deapplyPrecession(MVPosition &in) {
-  getInfo(TDB);
-  in = (*PRECESIAU)(info_p[TDB]) * in;
+  if (MeasTable::useIAU2000()) {
+    getInfo(TT);
+    in = (*PRECESIAU)(info_p[TT]) * in;
+  } else {
+    getInfo(TDB);
+    in = (*PRECESIAU)(info_p[TDB]) * in;
+  };
 }
 
 void MeasMath::createPrecessionB1950() {
@@ -148,17 +164,37 @@ void MeasMath::deapplyPrecessionB1950(MVPosition &in) {
 
 // Nutation
 void MeasMath::createNutation() {
-  if (!NUTATIAU) NUTATIAU = new Nutation(Nutation::STANDARD);
+  if (!NUTATIAU) {
+    if (MeasTable::useIAU2000()) {
+      if (MeasTable::useIAU2000A()) {
+	NUTATIAU = new Nutation(Nutation::IAU2000A);
+      } else {
+	NUTATIAU = new Nutation(Nutation::IAU2000B);
+      };
+    } else {
+      NUTATIAU = new Nutation(Nutation::IAU1980);
+    };
+  };
 }
 
 void MeasMath::applyNutation(MVPosition &in) {
-  getInfo(TDB);
-  in *= (*NUTATIAU)(info_p[TDB]);
+  if (MeasTable::useIAU2000()) {
+    getInfo(TT);
+    in *= (*NUTATIAU)(info_p[TT]);
+  } else {
+    getInfo(TDB);
+    in *= (*NUTATIAU)(info_p[TDB]);
+  };
 }
 
 void MeasMath::deapplyNutation(MVPosition &in) {
-  getInfo(TDB);
-  in = (*NUTATIAU)(info_p[TDB]) * in;
+  if (MeasTable::useIAU2000()) {
+    getInfo(TT);
+    in = (*NUTATIAU)(info_p[TT]) * in;
+  } else {
+    getInfo(TDB);
+    in = (*NUTATIAU)(info_p[TDB]) * in;
+  };
 }
 
 void MeasMath::createNutationB1950() {
@@ -177,20 +213,32 @@ void MeasMath::deapplyNutationB1950(MVPosition &in) {
 
 // Precession and Nutation
 void MeasMath::createPrecNutat() {
-  if (!PRECESIAU) PRECESIAU = new Precession(Precession::STANDARD);
-  if (!NUTATIAU) NUTATIAU = new Nutation(Nutation::STANDARD);
+  createPrecession();
+  createNutation();
 }
 
 void MeasMath::applyPrecNutat(MVPosition &in) {
-  getInfo(TDB);
-  in *= (RotMatrix((*PRECESIAU)(info_p[TDB])) *
-	 RotMatrix((*NUTATIAU)(info_p[TDB])));
+  if (MeasTable::useIAU2000()) {
+    getInfo(TT);
+    in *= (RotMatrix((*PRECESIAU)(info_p[TT])) *
+	   RotMatrix((*NUTATIAU)(info_p[TT])));
+  } else {
+    getInfo(TDB);
+    in *= (RotMatrix((*PRECESIAU)(info_p[TDB])) *
+	   RotMatrix((*NUTATIAU)(info_p[TDB])));
+  };
 }
 
 void MeasMath::deapplyPrecNutat(MVPosition &in) {
-  getInfo(TDB);
-  in = (RotMatrix((*PRECESIAU)(info_p[TDB])) *
-	RotMatrix((*NUTATIAU)(info_p[TDB]))) * in;
+  if (MeasTable::useIAU2000()) {
+    getInfo(TT);
+    in = (RotMatrix((*PRECESIAU)(info_p[TT])) *
+	  RotMatrix((*NUTATIAU)(info_p[TT]))) * in;
+  } else {
+    getInfo(TDB);
+    in = (RotMatrix((*PRECESIAU)(info_p[TDB])) *
+	  RotMatrix((*NUTATIAU)(info_p[TDB]))) * in;
+  };
 }
 
 void MeasMath::createPrecNutatB1950() {
@@ -603,13 +651,15 @@ void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
 void MeasMath::getInfo(FrameInfo i) {
   // Frame information groups
   static FrameType InfoType[N_FrameInfo] = {
-    EPOCH, EPOCH, POSITION, POSITION, POSITION, POSITION,
+    EPOCH, EPOCH, EPOCH, EPOCH, POSITION, POSITION, POSITION, POSITION,
     DIRECTION, DIRECTION, DIRECTION, DIRECTION, DIRECTION,
     DIRECTION, DIRECTION, DIRECTION, DIRECTION };
   // Frame information methods
   static FRDINFO InfoDFrame[N_FrameDInfo] = {
     &MCFrame::getTDB,
     &MCFrame::getLASTr,
+    &MCFrame::getTT,
+    &MCFrame::getUT1,
     &MCFrame::getLong,
     &MCFrame::getLat,
     &MCFrame::getRadius,
