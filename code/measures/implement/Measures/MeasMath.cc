@@ -131,6 +131,7 @@ void MeasMath::createPrecession() {
 void MeasMath::applyPrecession(MVPosition &in) {
     if (MeasTable::useIAU2000()) {
       getInfo(TT);
+      in *= MeasTable::frameBias00();
       in *= (*PRECESIAU)(info_p[TT]);
     } else {
       getInfo(TDB);
@@ -141,6 +142,7 @@ void MeasMath::applyPrecession(MVPosition &in) {
 void MeasMath::deapplyPrecession(MVPosition &in) {
   if (MeasTable::useIAU2000()) {
     getInfo(TT);
+    in = MeasTable::frameBias00() * in;
     in = (*PRECESIAU)(info_p[TT]) * in;
   } else {
     getInfo(TDB);
