@@ -321,6 +321,9 @@
   }
 
 # Source possible local AIPS++ initialization files.
+  if (test -r $a_root/.aipsinit.rc) {
+     . $a_root/.aipsinit.rc
+  }
   if (test -r $a_root/aips++local.rc) {
      . $a_root/aips++local.rc
   }
