@@ -4850,3 +4850,4 @@
 14 316 sys rm libexec/dishaverage.g
 14 316 src rm trial/apps/newdish/dishaveragegui.g
 14 316 sys rm libexec/dishaveragegui.g
+14 316 src rm trial/apps/newdish/dishbaseline.g
