@@ -70,10 +70,10 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 	// we can have access to the heap as we step through the table
 	read(nrows());
 	if (notnull(theap())) {
-	    int heapOffset = theap() - rowsize()*nrows();
+	    uInt heapOffset = theap() - rowsize()*nrows();
 	    // Skip to the start of the heap
 	    // I don't see any way except to read these bogus bytes
-	    Block<char> junk(heapOffset);
+	    Block<Char> junk(heapOffset);
 	    ExtensionHeaderDataUnit::read(junk.storage(), heapOffset);
 	}
 	theheap_p = new char [pcount()];
