@@ -684,8 +684,9 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    fieldc.name().put(row,String(pName));
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	    if(pointrow < numpointrows){
-	      for (Int m=0; m < nAnt_p ; m++){
-		pointingc.time().put(pointrow, pointtime);
+	      for (Int m=0; m < nAnt_p ; m++){	
+		pointingc.time().put(pointrow, (pointtime+pinterval/2.0));
+		//pointing time is the mid-point of pointing
 		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m);
 		pointingc.name().put(pointrow, String(pName));
@@ -1186,7 +1187,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	    if(pointrow < numpointrows){
 	      for (Int m=0; m < nAnt_p ; m++){
-		pointingc.time().put(pointrow, pointtime);
+		pointingc.time().put(pointrow, (pointtime+  pinterval/2.0));
 		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m+numOfAnt);
 		pointingc.name().put(pointrow, String(pName));
