@@ -2198,7 +2198,7 @@ main (int argc, char *argv[])
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     exit(1);
- } end_try;
+ } 
  
    exit(0);
 }
@@ -2240,7 +2240,7 @@ Bool checkFloat (LELInterface<Float>& expr,
         expr.eval(Arr, region);
       } catch (AipsError x) {
         if (!suppress) cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     } else {
       if (expr.isScalar()) {
          cout << "   Expression is a scalar but shouldn't be" << endl;
@@ -2260,7 +2260,7 @@ Bool checkFloat (LELInterface<Float>& expr,
        expr.getScalar();
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     expr.prepareScalarExpr();
  
@@ -2305,7 +2305,7 @@ Bool checkDouble (LELInterface<Double>& expr,
         expr.eval(Arr, region);
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     } else {
       if (expr.isScalar()) {
          cout << "   Expression is a scalar but shouldn't be" << endl;
@@ -2325,7 +2325,7 @@ Bool checkDouble (LELInterface<Double>& expr,
        expr.getScalar();
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     expr.prepareScalarExpr();
  
@@ -2370,7 +2370,7 @@ Bool checkComplex (LELInterface<Complex>& expr,
         expr.eval(Arr, region);
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     } else {
       if (expr.isScalar()) {
          cout << "   Expression is a scalar but shouldn't be" << endl;
@@ -2390,7 +2390,7 @@ Bool checkComplex (LELInterface<Complex>& expr,
        expr.getScalar();
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     expr.prepareScalarExpr();
  
@@ -2435,7 +2435,7 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
         expr.eval(Arr, region);
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     } else {
       if (expr.isScalar()) {
          cout << "   Expression is a scalar but shouldn't be" << endl;
@@ -2455,7 +2455,7 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
        expr.getScalar();
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     expr.prepareScalarExpr();
  
@@ -2500,7 +2500,7 @@ Bool checkBool (LELInterface<Bool>& expr,
         expr.eval(Arr, region);
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     } else {
       if (expr.isScalar()) {
          cout << "   Expression is a scalar but shouldn't be" << endl;
@@ -2520,7 +2520,7 @@ Bool checkBool (LELInterface<Bool>& expr,
        expr.getScalar();
       } catch (AipsError x) {
        if (!suppress)  cout << "      Caught expected exception; message is: " << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     expr.prepareScalarExpr();
  

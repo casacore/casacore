@@ -382,7 +382,7 @@ main (int argc, char *argv[])
   } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     foundError = True;
-  } end_try;
+  } 
 
   if (foundError) {
     return 1;

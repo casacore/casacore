@@ -165,7 +165,7 @@ int main()
   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
-   }end_try;
+   }
 
    cout << "ok" << endl; 
    return (0);
@@ -450,7 +450,7 @@ void doitLinear (const Double refVal,
             pC = lc.makeFourierCoordinate (axes, shape);
          } catch (AipsError x) {
             failed = True;
-         } end_try;
+         } 
          if (!failed) {
             throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
          }
@@ -533,7 +533,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
          pC = lc.makeFourierCoordinate (axes, shape);
       } catch (AipsError x) {
          failed = True;
-      } end_try;
+      } 
       if (!failed) {
          throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
       }

@@ -152,7 +152,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 	error = String("Error creating or writing file ") + 
 	    imageName + ":" + x.getMesg();
 	return;
-    } end_try;
+    } 
 
     if (newImage == 0) {
 	error = String("Unknown error writing ") + imageName;
@@ -437,7 +437,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 	error = String("Error writing pixel values to image: " ) + x.getMesg();
 	delete newImage;
 	newImage = 0;
-    } end_try;
+    } 
 
     // Successful
     return;

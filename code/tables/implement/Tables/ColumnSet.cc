@@ -337,7 +337,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	delete col;
 	colMap_p.remove (name);
 	tdescPtr_p->removeColumn (name);
-    } end_try;
+    } 
     // Rethrow if there was an exception.
     if (error) {
 	throw (AipsError (msg));
@@ -394,7 +394,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	    tdescPtr_p->removeColumn (name);
 	}
 	removeLastDataManager();
-    } end_try;
+    } 
     // Rethrow if there was an exception.
     if (error) {
 	throw (AipsError (msg));

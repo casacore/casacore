@@ -1,5 +1,5 @@
 //# tTableRow.cc: Test program for class (RO)TableRow
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,12 +197,12 @@ void b (Bool doExcp)
 	    TableRow row (tab);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // not writable
-	} end_try;
+	} 
 	try {
 	    ROTableRow row (tab, stringToVector("ab,abb"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // abb not exists
-	} end_try;
+	} 
     }
     ROTableRow rowx (tab, stringToVector("ab,arr1"));
     ROTableRow rowy (tab, stringToVector("ab,bcd,arr1"), True);
@@ -357,7 +357,7 @@ main (int argc, char** argv)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

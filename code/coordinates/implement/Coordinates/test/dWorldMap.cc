@@ -212,7 +212,7 @@ try {
    catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       exit(1);
-  }end_try;
+  }
  
   exit(0);
  

@@ -227,7 +227,7 @@ int main()
        } catch (AipsError x) {
 //          cout << "Caught error " << x.getMesg() << endl;
           ok = True;
-       } end_try;
+       } 
        if (!ok) {
           throw(AipsError("Resize did not fail. This was unexpected"));
        }
@@ -449,7 +449,7 @@ int main()
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   exit(0);
 

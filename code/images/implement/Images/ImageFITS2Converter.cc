@@ -830,7 +830,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    delete outfile;
 	}
 	return False;
-    } end_try;
+    } 
 
     delete outfile;
     return True;
@@ -940,7 +940,7 @@ Bool ImageFITSConverter::removeFile (String& error, const File& outFile,
 	    }
          } catch (AipsError x) {
             msg = x.getMesg();
-         } end_try;
+         } 
 //
          if (outFile.exists()) {
 	    error = "Could not remove file " + outName;

@@ -1642,7 +1642,7 @@ Bool ImagePolarimetry::rmLsqFit (Vector<Float>& pars, const Vector<Float>& wsq,
      solution = itsFitterPtr->fit(wsq, pa, paerr);
    } catch (AipsError x) {
      return False;
-   } end_try;
+   } 
 //
    const Vector<Double>& cv = itsFitterPtr->compuCovariance().diagonal();
    pars.resize(5);

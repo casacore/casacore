@@ -1,5 +1,5 @@
 //# fits2image.cc: conversion to aips++ native tables
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
   } catch (AipsError x) {
     cout << "exception: " << x.getMesg() << endl;
     return 1;
-  } end_try;
+  } 
   
   return 0;  
 }

@@ -1,5 +1,5 @@
 //# tVisibilityIterator.cc: Tests the Synthesis MeasurementSet Iterator
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -169,7 +169,7 @@ Int main(int argc, char **argv)
 	cout << "Caught exception " << endl;
 	cout << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "Done." << endl;
     return 0;
 }

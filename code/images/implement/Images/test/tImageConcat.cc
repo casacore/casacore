@@ -341,7 +341,7 @@ int main() {
             lc.setImage(im1, True);
             ok = False;
          } catch (AipsError x) {
-         } end_try;
+         } 
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
          }
@@ -352,7 +352,7 @@ int main() {
                                "tImageConcat_tmp3.img");
             lc.setImage(ml4, True);
             ok = False;
-         } catch (AipsError x) {;} end_try;
+         } catch (AipsError x) {;} 
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
          }
@@ -361,7 +361,7 @@ int main() {
   } catch(AipsError x) {
     cerr << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
   cout << "OK" << endl;
   exit(0);
 };

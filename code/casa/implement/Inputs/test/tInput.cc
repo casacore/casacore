@@ -1,5 +1,5 @@
 //# tInput.cc: this tests the simple argc, argv command line user interface.
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -121,7 +121,7 @@ main(int argc, char *argv[])
     cout << "Caught exception at line " << x.thrownLine()
       << " from file " << x.thrownFile() << endl;
     cout << "Message is: " << x.getMesg() << endl;
-  } end_try;
+  } 
 }
 
   

@@ -1011,7 +1011,7 @@ cout << "weights=" << weights << endl;
    } catch (AipsError x) {
       itsErrorMessage = String("Fitting failed because ") + x.getMesg();
       status = Fit2D::FAILED;
-   } end_try;
+   } 
 //
    return status;
 }

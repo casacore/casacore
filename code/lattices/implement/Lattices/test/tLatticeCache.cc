@@ -208,7 +208,7 @@ int main()
     cout<< "OK"<< endl;
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
-  } end_try;
+  } 
 
   return 0;
 }

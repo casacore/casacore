@@ -479,7 +479,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
    } catch (AipsError x1) {
       nFailed++;
       return False;
-   } end_try;
+   } 
 
 
 // Return values of fit

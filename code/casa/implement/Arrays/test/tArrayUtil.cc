@@ -1,5 +1,5 @@
 //# tArrayUtil.cc: Test program for functions in ArrayUtil.h
-//# Copyright (C) 1995,1996,1998,1999
+//# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -189,11 +189,11 @@ Bool testConcatenateArray (Bool doExcp)
 	try {
 	    concatenateArray (matrix1, matrix2);
 	} catch (ArrayConformanceError x) {
-	} end_try;
+	} 
 	try {
 	    concatenateArray (matrix1, vector1);
 	} catch (ArrayConformanceError x) {
-	} end_try;
+	} 
     }
 
     return ok;
@@ -216,7 +216,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	ok = False;
-    } end_try;
+    } 
     if (!ok) {
 	return 1;
     }

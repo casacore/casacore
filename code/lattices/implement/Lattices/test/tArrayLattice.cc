@@ -323,7 +323,7 @@ main()
       al6ROIter.matrixCursor();
     } catch (AipsError x) {
       caught = True;
-    } end_try;
+    } 
     AlwaysAssert(caught, AipsError);
 
     caught = False;
@@ -331,7 +331,7 @@ main()
       al6ROIter.cubeCursor();
     } catch (AipsError x) {
       caught = True;
-    } end_try;
+    } 
     AlwaysAssert(caught, AipsError);
 
     // check internals for sensibility
@@ -377,7 +377,7 @@ main()
       al6Iter.vectorCursor();
     } catch (AipsError x) {
       caught = True;
-    } end_try;
+    } 
     AlwaysAssert(caught, AipsError);
 
     caught = False;
@@ -385,7 +385,7 @@ main()
       al6Iter.cubeCursor();
     } catch (AipsError x) {
       caught = True;
-    } end_try;
+    } 
     AlwaysAssert(caught, AipsError);
     
 
@@ -862,7 +862,7 @@ main()
     cerr << x.getMesg () << endl;
     cout << "FAIL" << endl; 
     return 1;
-  } end_try;
+  } 
   cout << "OK" << endl; 
   return 0;
 };

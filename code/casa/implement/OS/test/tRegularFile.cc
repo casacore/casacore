@@ -1,5 +1,5 @@
 //# tRegularFile.cc: Test program for class RegularFile
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,17 +65,17 @@ void doIt (Bool doExcp)
 	    RegularFile rf ("tRegularFile_tmp/a/b");         // not creatable
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	    RegularFile rf ("tRegularFile_tmp");             // directory
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	    RegularFile rf ("tRegularFile_tmp/isLink2");     // symlink to dir
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
     // Assignment.
     risLink1 = risLink1;
@@ -92,7 +92,7 @@ void doIt (Bool doExcp)
 	    risFile.create (False);                         // already exists
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
     // Do a valid create and assure its timestamp is greater and it is empty.
     uInt time1 = risFile.modifyTime();
@@ -118,12 +118,12 @@ void doIt (Bool doExcp)
 	    risFile1.copy (Path("tRegularFile_tmp/aa/bb/cc"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // non-writable directory
-	} end_try;
+	} 
 	try {
 	    risFile1.copy (Path("tRegularFile_tmp/isFile"), False);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // already exists
-	} end_try;
+	} 
     }
     risCopy.setPermissions (0444);
     if (doExcp) {
@@ -131,7 +131,7 @@ void doIt (Bool doExcp)
 	    risFile1.copy (Path("tRegularFile_tmp/moveto/isFile1"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // exists, non-writable
-	} end_try;
+	} 
     }
     risCopy.setPermissions (0644);
 
@@ -145,7 +145,7 @@ void doIt (Bool doExcp)
 	    file2.move ("tRegularFile_tmp/moveto/isFile1", False);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // already exists
-	} end_try;
+	} 
     }
     file2.move ("tRegularFile_tmp/moveto");
     AlwaysAssertExit (File("tRegularFile_tmp/moveto/file2").exists());
@@ -183,7 +183,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

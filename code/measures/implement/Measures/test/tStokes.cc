@@ -1,5 +1,5 @@
 //# tStokes.cc: This program tests Stokes interface class to table data
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ int main()
 	cout << endl;
     } catch(AipsError x) {
 	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
-    } end_try;
+    } 
     
     polstr="XY";
     cout << "polstr = " << polstr
@@ -100,7 +100,7 @@ int main()
     cout << endl;
     } catch(AipsError x) {
 	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
-    } end_try;
+    } 
     for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
 	if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
 	    != Stokes::type(i)) {

@@ -82,7 +82,7 @@ main (int argc, char** argv) {
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -489,12 +489,12 @@ void f()
 	arr1.put (0, vecf);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;         // shape cannot change
-    } end_try;
+    } 
     try {
 	arr7.put (0, vecb);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;         // shape cannot change
-    } end_try;
+    } 
     Vector<Bool> removedRows(20);
     removedRows.set (False);
     b (removedRows);

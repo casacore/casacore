@@ -1,5 +1,5 @@
 //# tUVWMachine.cc: This program test the UVWMachine class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -207,7 +207,7 @@ Int main() {
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
 
   try {
 
@@ -300,7 +300,7 @@ Int main() {
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
 
   exit(0);
 }

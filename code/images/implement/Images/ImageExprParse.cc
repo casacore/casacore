@@ -160,7 +160,7 @@ LatticeExprNode ImageExprParse::command
     } catch (AipsError x) {
 	message = x.getMesg();
 	error = True;
-    } end_try;
+    } 
     //# Save the resulting expression and clear the common node object.
     LatticeExprNode node = theirNode;
     theirNode = LatticeExprNode();

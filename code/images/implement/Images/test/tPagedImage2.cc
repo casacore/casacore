@@ -1,5 +1,5 @@
 //# tPagedImage2.cc:  test the regions in the PagedImage class
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -184,7 +184,7 @@ int main()
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   exit(0);
 }

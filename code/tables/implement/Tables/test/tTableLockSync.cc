@@ -101,7 +101,7 @@ void b (Bool noReadLocking)
 	tab.addRow();
     } catch (AipsError x) {
 	cout << "table is write-locked" << endl;
-    } end_try;
+    } 
     ScalarColumn<Int> col1 (tab, "col1");
     ScalarColumn<Int> col2 (tab, "col2");
     ScalarColumn<Int> col3 (tab, "col3");
@@ -162,7 +162,7 @@ void b (Bool noReadLocking)
 	    } catch (AipsError x) {
 	        cout << x.getMesg() << endl;
 		err = True;
-	    } end_try;
+	    } 
 	    if (!err) {
 	        cout << "rownr: ";
 		cin >> rownr;
@@ -213,7 +213,7 @@ void b (Bool noReadLocking)
 	    } catch (AipsError x) {
 	        cout << x.getMesg() << endl;
 		err = True;
-	    } end_try;
+	    } 
 	    if (!err) {
 		cout << "keyword name: ";
 		String name;
@@ -262,7 +262,7 @@ main (int argc, char** argv)
 	} catch (AipsError x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
-	} end_try;
+	} 
     }
     return 0;                           // exit with success status
 }

@@ -1,5 +1,5 @@
 //# tNewMeasurementSet.cc : this program tests the NewMeasurementSet class
-//# Copyright (C) 1995, 1996,1997
+//# Copyright (C) 1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -306,7 +306,7 @@ uInt tConstructors(const String& msName)
       NewMeasurementSet badms("badmsTable");
     } catch (AipsError x) {
       thrown = True;
-    } end_try;
+    } 
     if (!thrown) errCount++;
 
     // alternate form with TableDesc (none specified here)
@@ -317,7 +317,7 @@ uInt tConstructors(const String& msName)
       NewMeasurementSet badms("badmsTable","");
     } catch (AipsError x) {
       thrown = True;
-    } end_try;
+    } 
     if (!thrown) errCount++;
 
     // first, construct a Table
@@ -332,7 +332,7 @@ uInt tConstructors(const String& msName)
       NewMeasurementSet badms(badtab);
     } catch (AipsError x) {
       thrown = True;
-    } end_try;
+    } 
     if (!thrown) errCount++;
 
     // cleanup
@@ -369,7 +369,7 @@ uInt tConstructors(const String& msName)
 	msant2b.markForDelete();
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       // No exception is thrown here, even though the td name is wrong..
       //if (!thrown) errCount++;
       
@@ -385,7 +385,7 @@ uInt tConstructors(const String& msName)
 	NewMSAntenna msant3b(newtab,5);
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       if (!thrown) errCount++;
 
       // cleanup the mess
@@ -410,7 +410,7 @@ uInt tConstructors(const String& msName)
 	NewMSAntenna msant4b(tab);
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       if (!thrown) errCount++;
       
       // construct from existing table
@@ -425,7 +425,7 @@ uInt tConstructors(const String& msName)
 	NewMSAntenna msant5b("badmsantTable");
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       if (!thrown) errCount++;
 
       // Copy construct
@@ -438,7 +438,7 @@ uInt tConstructors(const String& msName)
 	NewMSAntenna msant6b(msfeed);
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       if (!thrown) errCount++;
       
       
@@ -451,7 +451,7 @@ uInt tConstructors(const String& msName)
 	msant.renameColumn("myPos",NewMSAntenna::columnName(NewMSAntenna::POSITION));
       } catch (AipsError x) {
 	thrown = True;
-      } end_try;
+      } 
       // This throws the wrong exception: "Table: cannot rename a column"
       // There seems to be no way to make the table invalid, as both
       // removeColumn and renameColumn throw an exception.
@@ -523,7 +523,7 @@ uInt tSetupNewTabError()
 	NewMeasurementSet ms(setup,0);
     } catch (AipsError x) {
 	thrown = True;
-    } end_try;
+    } 
     if (!thrown) {
 	cerr << "NewMeasurementSet(SetupNewTable &, uInt) " 
 	    << "should have thrown an exception" << endl;
@@ -544,7 +544,7 @@ uInt tDestructorError(const String& sdmsName)
 	ms.removeColumn(NewMS::columnName(NewMS::TIME));
     } catch (AipsError x) {
 	thrown = True;
-    } end_try;
+    } 
 
     if (!thrown) {
 	cerr << "~NewMeasurementSet() should have thrown an exception" << endl;
@@ -628,6 +628,6 @@ int main() {
     return errCount;
   } catch (AipsError x) {
       cerr << x.getMesg() << endl;
-  } end_try;
+  } 
   return 1;
 }

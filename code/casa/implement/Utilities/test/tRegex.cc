@@ -1,5 +1,5 @@
 //# tRegex.cc: Test program for the Regex class
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -54,7 +54,7 @@ main () {
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 

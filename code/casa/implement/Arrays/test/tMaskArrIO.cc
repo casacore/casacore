@@ -1,5 +1,5 @@
 //# tMaskArrIO.cc: Test program for MaskedArray IO
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -99,7 +99,7 @@ int main ()
 
     } catch (AipsError x) {
         cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } end_try;
+    } 
 
     cout << endl << "OK" << endl;
     return 0;

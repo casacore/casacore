@@ -113,7 +113,7 @@ TableExprNode RecordGram::parse (const RecordInterface& record,
     }catch (AipsError x) {
 	message = x.getMesg();
 	error = True;
-    } end_try;
+    } 
     //# If an exception was thrown; throw it again with the message.
     //# Delete the table object if so.
     if (error) {

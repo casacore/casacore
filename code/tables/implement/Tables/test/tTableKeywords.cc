@@ -1,5 +1,5 @@
 //# tTableKeywords.cc Test program for the table keywords
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -104,7 +104,7 @@ void renameTables (const String& newName, const String& oldName)
 	Table tab1(oldName);
     } catch (AipsError x) {
 	excp = True;
-    } end_try;
+    } 
     AlwaysAssertExit (excp);
     // Try to open the table with new name (should succeed).
     Table tab2(newName);
@@ -164,7 +164,7 @@ int main()
 	    "thrown from line: "<< x.thrownLine() << " in file: "<< 
 		x.thrownFile() <<endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0; 
 }

@@ -67,7 +67,7 @@ void testVectorROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -76,7 +76,7 @@ void testVectorROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     AlwaysAssert(latticeShape == iter.latticeShape(), AipsError);
     AlwaysAssert(cursorShape == iter.cursorShape().nonDegenerate(), AipsError);
     Timer clock;
@@ -131,7 +131,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -140,7 +140,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
@@ -196,7 +196,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Matrix<Int> temp(iter.matrixCursor());
         throw(AipsError("tLatticeIterator - "
@@ -205,7 +205,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(expectedResult, iter.cubeCursor())
@@ -255,7 +255,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Matrix<Int> temp(iter.matrixCursor());
         throw(AipsError("tLatticeIterator - "
@@ -264,7 +264,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -273,7 +273,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
         AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, 
@@ -323,7 +323,7 @@ void test8ElemROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -332,7 +332,7 @@ void test8ElemROIter (const Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
         AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
@@ -598,7 +598,7 @@ void testVectorRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -607,7 +607,7 @@ void testVectorRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     
     AlwaysAssert(latticeShape == iter.latticeShape(), AipsError);
     AlwaysAssert(cursorShape == iter.cursorShape().nonDegenerate(),
@@ -666,7 +666,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -675,7 +675,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
@@ -731,7 +731,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Matrix<Int> temp(iter.matrixCursor());
         throw(AipsError("tLatticeIterator - "
@@ -740,7 +740,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(expectedResult, iter.cubeCursor())
@@ -790,7 +790,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("one non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Matrix<Int> temp(iter.matrixCursor());
         throw(AipsError("tLatticeIterator - "
@@ -799,7 +799,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("two non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     try {
         Cube<Int> temp(iter.cubeCursor());
         throw(AipsError("tLatticeIterator - "
@@ -808,7 +808,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
         if (!x.getMesg().contains("three non-degenerate")) {
 	    throw (AipsError (x.getMesg()));
         }
-    } end_try;
+    } 
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
         AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True,
@@ -1210,7 +1210,7 @@ main (int argc, char *argv[])
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
 
   try {
     cout << "Creating an ArrayLattice" << endl;
@@ -1336,7 +1336,7 @@ main (int argc, char *argv[])
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
     cout << "OK" << endl;
     return 0;
 }

@@ -1,5 +1,5 @@
 //# tTableDescHyper.cc: Test program for hypercolumns in TableDesc
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ main (int argc) {
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -178,14 +178,14 @@ void excpDesc()
 			      stringToVector (""));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // no data columns
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      0,
 			      stringToVector ("Data,Weight"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // ndim < 1
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -193,7 +193,7 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // ndim != #coord
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -201,14 +201,14 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,Timex"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Timex does not exist
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data,Weight,Datax"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Datax does not exist
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -217,7 +217,7 @@ void excpDesc()
 			      stringToVector ("Idx"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Idx does not exist
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -225,7 +225,7 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,TimeNotNum"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // TimeNotNum not numeric
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -233,7 +233,7 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,TimeShort"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Coord short not supported
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -241,7 +241,7 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,Data"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Coord Data is array > 1-dim
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -249,21 +249,21 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,Pol"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // coord vectors not at start
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data0,Weight"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim undefined
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
 			      stringToVector ("Data1,Weight"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim != Weight #ndim
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -271,7 +271,7 @@ void excpDesc()
 			      stringToVector ("Pol,Freq,Baseline,Time"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -279,7 +279,7 @@ void excpDesc()
 			      stringToVector ("Pol,Time,Baseline,Time"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -287,7 +287,7 @@ void excpDesc()
 			      stringToVector (",,Pol,"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Data #dim != #coordVector
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -296,7 +296,7 @@ void excpDesc()
 			      stringToVector ("TimeShort"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Id short not supported
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -305,7 +305,7 @@ void excpDesc()
 			      stringToVector ("Data"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Id array not supported
-    } end_try;
+    } 
     try {
 	td.defineHypercolumn ("TSMExample",
 			      4,
@@ -314,5 +314,5 @@ void excpDesc()
 			      stringToVector ("Time"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;             // Time double used 
-    } end_try;
+    } 
 }

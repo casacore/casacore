@@ -1,5 +1,5 @@
 //# tLCConcatenation.cc:  mechanical test of the LCConcatenation class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ main()
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	exit(1);
-    } end_try;
+    } 
     cout << "OK" << endl;
     exit(0);
 }

@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   cout << "OK" << endl;
 }
 

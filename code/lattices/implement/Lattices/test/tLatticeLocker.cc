@@ -62,7 +62,7 @@ void b()
 		    nrll++;
 		} catch (AipsError x) {
 		    cout << x.getMesg() << endl;
-		} end_try;
+		} 
 	    }
 	} else if (opt == 2) {
 	    if (nrll >= 10) {
@@ -73,7 +73,7 @@ void b()
 		    nrll++;
 		} catch (AipsError x) {
 		    cout << x.getMesg() << endl;
-		} end_try;
+		} 
 	    }
 	} else if (opt == 3  || opt == 4) {
 	    if (! tab.hasLock (ToBool(opt==4))) {
@@ -127,7 +127,7 @@ main (int argc, char** argv)
 	} catch (AipsError x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
-	} end_try;
+	} 
     }
     return 0;                           // exit with success status
 }

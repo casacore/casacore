@@ -1,5 +1,5 @@
 //# tUnit.cc: test program for Unit section of Measures module
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,7 +149,7 @@ Int main () {
 
     } catch (AipsError x) {
 	cout << "Unexpected: " << x.getMesg() << endl;
-    } end_try;
+    } 
     
     cout << endl << "--------------------------" << endl;
     cout << "Try illegal Unit values" << endl << endl;
@@ -158,13 +158,13 @@ Int main () {
 	Unit ca="Kpm/s";
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	UnitVal errval(2.,"KpH");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     cout << endl << "--------------------------" << endl;
     

@@ -1,5 +1,5 @@
 //# PagedImage.cc: defines the PagedImage class (non-template code)
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ DataType imagePixelType(const String &fileName)
             nrow = 0;                   // Shut compiler up
 	} catch (AipsError x) {
 	    // Nothing
-	} end_try;
+	} 
     }
     return retval;
 }

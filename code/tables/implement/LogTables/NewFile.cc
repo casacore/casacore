@@ -1,5 +1,5 @@
 //# NewFile.cc: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,7 +109,7 @@ Bool NewFile::valueOK(const String &value, String &error) const
 				removed = False;
 				extra_error = String("Error deleting table ")
 				    + value + ":" + xxx.getMesg();
-			    } end_try;
+			    } 
 			}
 		    }
 		} else if (thefile.isSymLink()) {
@@ -120,7 +120,7 @@ Bool NewFile::valueOK(const String &value, String &error) const
 	    } catch (AipsError x) {
 		extra_error = x.getMesg();
 		removed = False;
-	    } end_try;
+	    } 
 	    if (!removed) {
 		retval = False;
 		error = String("Could not remove file ") + value;

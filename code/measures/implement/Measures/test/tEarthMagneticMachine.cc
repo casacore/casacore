@@ -231,7 +231,7 @@ int main() {
     
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
   
   exit(0);
 }

@@ -103,12 +103,12 @@ void doDefineAssign (const TableRecord& inrecord)
 	*rfstr2 = stringToVector ("abc");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;           // incorrect shape
-    } end_try;
+    } 
     try {
 	*rfstr3 = stringToVector ("abc");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;           // incorrect shape
-    } end_try;
+    } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
     AlwaysAssertExit (allEQ (vec,
 			     stringToVector ("abcd,ghi,jklmn")));
@@ -120,12 +120,12 @@ void doDefineAssign (const TableRecord& inrecord)
 	*rfstr2 = stringToVector ("abc");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;           // incorrect shape
-    } end_try;
+    } 
     try {
 	*rfstr3 = stringToVector ("abc");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;           // incorrect shape
-    } end_try;
+    } 
     record.get (record.fieldNumber ("TpArrayString2"), vec);
     AlwaysAssertExit (allEQ (vec,
 			     stringToVector ("abcd,ghi,jklmn")));
@@ -137,7 +137,7 @@ void doDefineAssign (const TableRecord& inrecord)
 	rfstr2.define (stringToVector ("abc"));
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;           // incorrect shape
-    } end_try;
+    } 
     rfstr3.define (stringToVector ("a"));
     record.get (record.fieldNumber ("TpArrayString2"), vec);
     AlwaysAssertExit (allEQ (vec,
@@ -171,7 +171,7 @@ void doDefineAssign (const TableRecord& inrecord)
         record.define ("TpBool", Vector<Bool>(2, False));
     } catch (AipsError x) {
         cout << x.getMesg() << endl;
-    } end_try;
+    } 
 }
 
 void doSubRecord (Bool doExcp, const RecordDesc& desc)
@@ -219,7 +219,7 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 	    cout << ">>> Instance-specific assertion error message:" << endl;
 	    cout << x.getMesg() << endl;           // not conforming
 	    cout << "<<<" << endl;
-	} end_try;
+	} 
     }
     (*sub1).define (0, float(4));
     AlwaysAssertExit (record.subRecord(subField1).asfloat(0) == 4);
@@ -283,24 +283,24 @@ void doIt (Bool doExcp)
 	    record.define ("", (Int)0);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // empty name
-	} end_try;
+	} 
 	try {
 	    record.define ("aB", (Int)0);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // first no uppercase
-	} end_try;
+	} 
 	extraArgument = 10;
 	try {
 	    record.define ("A", (Int)0);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // extra argument = 10
-	} end_try;
+	} 
 	extraArgument = 0;
 	try {
 	    record.define ("TpShort", (Int)0);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // invalid type
-	} end_try;
+	} 
     }
     AlwaysAssertExit(record.nfields() == rd.nfields() &&
 		     record.nfields() == 22);
@@ -372,7 +372,7 @@ void doIt (Bool doExcp)
 	    record2a.restructure(subDesc);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;  // fixed, not empty ->impossible
-	} end_try;
+	} 
     }
     record2 = record;                     // non-fixed -> possible
     record2a = record;                    // same structure -> possible
@@ -384,7 +384,7 @@ void doIt (Bool doExcp)
 	    cout << ">>> Instance-specific assertion error message:" << endl;
 	    cout << x.getMesg() << endl;  // fixed; non-conforming
 	    cout << "<<<" << endl;
-	} end_try;
+	} 
     }
     
     //    TableRecord(const TableRecord &other);
@@ -456,7 +456,7 @@ void doIt (Bool doExcp)
 	    RecordFieldPtr<Record> fld(record, "SubRecord");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // invalid type
-	} end_try;
+	} 
     }
     RecordFieldPtr<TableRecord> recordField(record, "SubRecord");
     TableRecord& subrec = *recordField;
@@ -475,14 +475,14 @@ void doIt (Bool doExcp)
 	    subrec.defineRecord ("abcd", subrec);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // fixed -> add not possible
-	} end_try;
+	} 
 	try {
 	    record.defineRecord (record.fieldNumber ("SubRecord"), subrec1);
 	} catch (AipsError x) {
 	    cout << ">>> Instance-specific assertion error message:" << endl;
 	    cout << x.getMesg() << endl;     // fixed; non-conforming
 	    cout << "<<<" << endl;
-	} end_try;
+	} 
     }
     TableRecord subrec1a;
     subrec1.defineRecord ("sub", subrec, RecordInterface::Fixed);
@@ -782,12 +782,12 @@ void testTable (Bool doExcp)
 	    rec1.defineTable (rec1.fieldNumber("tab1"), tab2);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // non-conforming
-	} end_try;
+	} 
 	try {
 	    RecordFieldPtr<Table> fld1 (rec1, "tab1");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // invalid type
-	} end_try;
+	} 
     }    
     rec1.defineTable (rec1.fieldNumber("tab2"), tab2);
     Table t3 = rec1.asTable (rec1.fieldNumber("tab2"));
@@ -843,7 +843,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

@@ -1,5 +1,5 @@
 //# tProjection.cc: Test program for Projection class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,7 +110,7 @@ int main()
    } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
-   }end_try;
+   }
 
    cout << "ok" << endl; 
    return (0);
@@ -128,7 +128,7 @@ void testSin()
       Projection proj4(Projection::SIN, pars);
    } catch (AipsError x) {
       return;
-   }end_try;
+   }
    throw(AipsError("Expected error did not occur"));
 }
 

@@ -185,7 +185,7 @@ main() {
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
 
   try {
     cout << "--------------------------------------" << endl;
@@ -196,7 +196,7 @@ main() {
     cout << "Name:           " << comet.getName() << endl;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
   
   exit(0);
 }

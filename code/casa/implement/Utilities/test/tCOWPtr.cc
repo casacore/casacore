@@ -1,5 +1,5 @@
 //# tCOWPtr.cc: This program tests the Copy-On-Write-Pointer class
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -231,7 +231,7 @@ main()
 
   } catch (AipsError x) {
     cerr << x.getMesg () << endl;
-  } end_try;
+  } 
   
   return 0;
 };

@@ -61,7 +61,7 @@ main () {
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -146,7 +146,7 @@ void a()
 	Table tab2(newtab2, 10);                // bound to incorrect column
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 }
 
 void b()

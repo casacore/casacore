@@ -1,5 +1,5 @@
 //# tAppInfo.cc: Test the AppInfo class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,7 +112,7 @@ int main()
 	    file = AppInfo::workFileName(1000000);
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	cerr << "=====There should be no more messages\n\n";
 	AlwaysAssertExit(caught);
     }

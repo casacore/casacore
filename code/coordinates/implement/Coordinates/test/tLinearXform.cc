@@ -1,5 +1,5 @@
 //# tLinearXform.cc: Test program for LinearXform class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -247,7 +247,7 @@ int main()
                LinearXform lxf2 = lxf.fourierInvert(axes, crpix2, scale);
             } catch (AipsError x) {
                failed = True;
-            } end_try;
+            } 
             if (!failed) {
                throw(AipsError("Failed to induce forced fourierInvert error"));
             }
@@ -294,7 +294,7 @@ int main()
    } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
-   }end_try;
+   }
 
    cout << "ok" << endl; 
    return (0);

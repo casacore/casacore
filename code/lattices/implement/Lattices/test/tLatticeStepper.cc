@@ -57,7 +57,7 @@ int main()
  	  cout << x.getMesg() << endl << "FAIL" << endl;
 	  return 1;
  	}
-      } end_try;
+      } 
       if (aips_debug) { // these checks are only done in debug mode.
 	IPosition bigCursor(4,12,1,1,1);
 	try { // test the check for an bad cursor size (upper bound exceeded)
@@ -67,7 +67,7 @@ int main()
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
-	} end_try;
+	} 
 	IPosition zeroCursor(4,0);
 	try { // test the check for an bad cursor size (lower bound exceeded)
 	  LatticeStepper demented(latticeShape, zeroCursor,stepperOrientation);
@@ -76,7 +76,7 @@ int main()
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
-	} end_try;
+	} 
  	IPosition badOrientation(3,1,2,3);
  	try { // test the check for an bad orientation dimension
  	  LatticeStepper demented(latticeShape, stepperShape, badOrientation);
@@ -85,7 +85,7 @@ int main()
  	    cout << x.getMesg() << endl << "FAIL" << endl;
  	    return 1;
  	  }
- 	} end_try;
+ 	} 
 	IPosition badOrientation1(4,1,2,3,4);
 	try { // test the check for an bad orientation bounds
 	  LatticeStepper demented(latticeShape, stepperShape, badOrientation1);
@@ -94,7 +94,7 @@ int main()
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
-	} end_try;
+	} 
 	IPosition badOrientation2(4,0,2,2,3);
 	try { // test the check for an bad orientation contents
 	  LatticeStepper demented(latticeShape, stepperShape, badOrientation2);
@@ -103,7 +103,7 @@ int main()
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
-	} end_try;
+	} 
       }
     }
     logger << "End of section which checks error detection" 
@@ -248,7 +248,7 @@ int main()
   } catch  (AipsError x) {
     cout << x.getMesg() << endl << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
 
   cout << "OK" << endl;
   return 0;

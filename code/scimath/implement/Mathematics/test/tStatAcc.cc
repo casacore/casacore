@@ -1,5 +1,5 @@
 //# tStatAcc.cc: Test program for class StatAcc
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,7 +136,7 @@ main()
     } catch (AipsError x) {
         cout << x.getMesg() << endl;
         return 1;                       // unexpected error
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 

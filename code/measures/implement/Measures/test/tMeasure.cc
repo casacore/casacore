@@ -400,7 +400,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	cout << "Test MeasFrame ..." << endl;
@@ -414,7 +414,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	cout << "Test coordinate conversion ..." << endl;
@@ -787,7 +787,7 @@ main()
 
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     exit(0);
 }

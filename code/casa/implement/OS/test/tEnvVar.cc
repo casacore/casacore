@@ -1,5 +1,5 @@
 //# tEnvVar.cc: This program tests the EnvironmentVariables class
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,7 +69,7 @@ int main ()
     cerr << "----------------------- exception! -------------------" << endl;
     cerr << x.getMesg () << endl;
     cerr << "at line " << x.thrownLine () << " in " << x.thrownFile () << endl;
-  } end_try;
+  } 
   
   cout << "OK" << endl;
   return 0;

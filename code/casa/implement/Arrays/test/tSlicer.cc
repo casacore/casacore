@@ -1,5 +1,5 @@
 //# tSlicer.cc: This program tests the Slicer class
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ main()
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -171,32 +171,32 @@ void a()
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0));
     }catch (AipsError x) {                   // different lengths
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0), Slicer::endIsLast);
     }catch (AipsError x) {                   // different lengths
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,0,0), Slicer::endIsLast);
     }catch (AipsError x) {                   // trc < blc
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,0,-1), Slicer::endIsLength);
     }catch (AipsError x) {                   // length < 0
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,-1,0));
     }catch (AipsError x) {                   // inc < 0
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	Slicer ns(IPosition(2,0,1), IPosition(2,1,1), IPosition(2,0,0));
     }catch (AipsError x) {                   // inc < 0
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     // Check if changing length of trc,blc,inc works fine.
     Slicer ns90;
@@ -209,12 +209,12 @@ void a()
 	ns90.inferShapeFromSource (shape, blc, trc, inc);
     }catch (AipsError x) {                   // shape length invalid
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
 	ns90.inferShapeFromSource (IPosition(1,10), origin, blc, trc, inc);
     }catch (AipsError x) {                   // origin length invalid
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     // Do some erronous infers resulting in too small or large blc/trc.
     // The correct ones are just on the edge.
@@ -226,7 +226,7 @@ void a()
 				   blc, trc, inc);
     }catch (AipsError x) {                   // blc < 0
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     ns91.inferShapeFromSource (IPosition(1,10), IPosition(1,-19),
 			       blc, trc, inc);
     try {
@@ -234,7 +234,7 @@ void a()
 				   blc, trc, inc);
     }catch (AipsError x) {                   // blc > shp
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     Slicer ns92 (IPosition(1,Slicer::MimicSource), IPosition(1,-10),
 		 Slicer::endIsLast);
@@ -245,13 +245,13 @@ void a()
 				   blc, trc, inc);
     }catch (AipsError x) {                   // trc > shp
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     ns92.inferShapeFromSource (IPosition(1,10),IPosition(1,-9),blc,trc,inc);
     try {
 	ns92.inferShapeFromSource (IPosition(1,10), IPosition(1,-8),
 				   blc, trc, inc);
     }catch (AipsError x) {                   // trc < blc-1
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
 }

@@ -1,5 +1,5 @@
 //# tMathFunc.cc: This program tests MathFunc objects
-//# Copyright (C) 1993,1994,1995,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -253,7 +253,7 @@ try{
    cout << "Caught exception at line " << x.thrownLine()
       << " from file " << x.thrownFile() << endl;
     cout << "Message is: " << x.getMesg() << endl;
-  } end_try;
+  } 
 
   cout << "OK" << endl; 
 }

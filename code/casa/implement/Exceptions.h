@@ -1,5 +1,5 @@
 //# Exceptions.h:  a module for exception handling
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@
 //             throw(indexError<int>(5,"Dummy error"));
 //         } catch (IndexError xx) {
 //             cout << "caught IndexError" << endl;
-//         } end_try;
+//         } 
 //     }
 // </srcblock>
 // </example>

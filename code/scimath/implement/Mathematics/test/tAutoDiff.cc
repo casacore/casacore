@@ -1,5 +1,5 @@
 //# tAutoDiff.cc: test program for AutoDiff
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -431,7 +431,7 @@ Int main()
 	}
 //    } catch (AipsError x) {
 //      cout << "Exception : " << x.getMesg() << endl;
-//    } end_try;
+//    } 
     if (nerr != 0) {
       cout << "There were " << nerr << " errors" << endl;
     } else {

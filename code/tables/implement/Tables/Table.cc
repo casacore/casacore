@@ -620,7 +620,7 @@ Bool Table::isReadable (const String& tableName)
 	}
     } catch (AipsError x) {
 	valid = False;
-    } end_try;
+    } 
     return valid;
 }
 //# Test if table exists and is writable.

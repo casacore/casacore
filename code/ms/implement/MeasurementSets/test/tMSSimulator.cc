@@ -183,7 +183,7 @@ int main()
 	cout << "Thrown from file : " << x.thrownFile() << endl;
 	cout << "at line : " << x.thrownLine() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "Done." << endl;
     return 0;
 }

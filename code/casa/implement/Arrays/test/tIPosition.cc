@@ -1,5 +1,5 @@
 //# tIPosition.cc: This program tests the IPosition class
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -324,45 +324,45 @@ main()
     IPosition ip2(3);  // ip1.conform(ip2) == False
     ip1 = 5; ip2 = 6;
     caught = False;
-    try {ip1+=ip2;} catch (AipsError x) {caught = True;} end_try; assert(caught);
+    try {ip1+=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
     caught = False;
-    try {ip1-=ip2;} catch (AipsError x) {caught = True;} end_try; assert(caught);
+    try {ip1-=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
     caught = False;
-    try {ip1*=ip2;} catch (AipsError x) {caught = True;} end_try; assert(caught);
+    try {ip1*=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
     caught = False;
-    try {ip1/=ip2;} catch (AipsError x) {caught = True;} end_try; assert(caught);
+    try {ip1/=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
     caught = False;
-    try {(void)(ip1+ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1+ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1-ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1-ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1*ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1*ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1/ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1/ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1==ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1==ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1!=ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1!=ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1<ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1<ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1<=ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1<=ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1>ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1>ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1>=ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1>=ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
     caught = False;
-    try {(void)(ip1=ip2);} catch (AipsError x) {caught = True;} end_try;
+    try {(void)(ip1=ip2);} catch (AipsError x) {caught = True;} 
     assert(caught);
 }    
                                                // ~IPosition tested implicitly

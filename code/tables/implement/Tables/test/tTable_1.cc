@@ -1,5 +1,5 @@
 //# tTable_1.cc: Test program for the SetupNewTable class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@ main (int argc, char** argv) {
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -86,10 +86,10 @@ void a(uInt nrrow) {
 	newtab.bindColumn ("ab", sm1);     // newtab is already in use
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 ///    try {
 ///	Table tab2(newtab, 10);            // newtab is already in use
 ///    } catch (AipsError x) {
 ///	cout << x.getMesg() << endl;
-///    } end_try;
+///    } 
 }

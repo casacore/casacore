@@ -1,5 +1,5 @@
 //# tDataType.cc: This program tests the DataType related functions
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -305,7 +305,7 @@ void excpAsScalar(DataType type)
 	dummy = asScalar(type);
     } catch (AipsError x) {
 	hadExcp = True;
-    } end_try;
+    } 
     AlwaysAssert(hadExcp, AipsError);
 }
 
@@ -317,7 +317,7 @@ void excpAsArray(DataType type)
 	dummy = asArray(type);
     } catch (AipsError x) {
 	hadExcp = True;
-    } end_try;
+    } 
     AlwaysAssert(hadExcp, AipsError);
 }
 
@@ -339,7 +339,7 @@ int main()
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
 
     cout << "OK" << endl;
     return 0;

@@ -1,5 +1,5 @@
 //# tTableGram.cc: This program tests table commands using TableGram/Parse
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ main (int argc, char** argv) {
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
-    } end_try;
+    } 
     return 0;               // successfully executed
 }
 
@@ -76,7 +76,7 @@ void docomm()
 	    seltab (str);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
 }
 

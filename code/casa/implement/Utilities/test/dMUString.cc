@@ -1,5 +1,5 @@
 //# dMUString.cc: test of MUString class
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -72,7 +72,7 @@ main()
 	cout << in << " = " << res << endl;
    } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
      try {
  	String in = "12.13.15.9p";
@@ -81,7 +81,7 @@ main()
 	cout << in << " = " << res << endl;
   } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
      try {
        String in = "12.5pm";
@@ -109,7 +109,7 @@ main()
        };
      } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
   
    return(0);
 }

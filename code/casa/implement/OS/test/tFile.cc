@@ -1,5 +1,5 @@
 //# tFile.cc: Test program for class File
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,7 @@ void doIt (Bool doExcp)
 	    exist2.userID();
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
 
     // Test permission setting.
@@ -171,7 +171,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

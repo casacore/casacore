@@ -1,5 +1,5 @@
 //# tByteIO.cc: Test program for class ByteIO and derived classes
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,7 +164,7 @@ void checkReopen()
 	fio2.reopenRW();
     } catch (AipsError x) {
 	flag = True;
-    } end_try;
+    } 
     AlwaysAssertExit (flag);
     checkValues (fio2, 150);
     rfile.setPermissions (0644);
@@ -193,12 +193,12 @@ void testMemoryIO()
 	    membuf.read (1, &val);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // read beyond object
-	} end_try;
+	} 
 	try {
 	    membuf.seek (-(length + incr + 1), ByteIO::Current);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // negative seek
-	} end_try;
+	} 
 	membuf.seek (-(length + incr), ByteIO::Current);
     }
     {
@@ -208,12 +208,12 @@ void testMemoryIO()
 	    doIt (membuf);
 	} catch (AipsError x) {                   // not expandable
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	    membuf.seek (10, ByteIO::End);
 	} catch (AipsError x) {                   // not expandable
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	AlwaysAssertExit (membuf.getBuffer() == (const uChar*)buf);
     }
     {
@@ -223,12 +223,12 @@ void testMemoryIO()
 	    doIt (membuf);
 	} catch (AipsError x) {                   // not expandable
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	    membuf.seek (10, ByteIO::End);
 	} catch (AipsError x) {                   // not expandable
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	AlwaysAssertExit (membuf.getBuffer() == (const uChar*)buf);
     }
 }
@@ -247,7 +247,7 @@ main()
 	    file3.write (0, 0);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;          // readonly
-	} end_try;
+	} 
 	checkValues (file3, 100);
 	
 	{
@@ -296,7 +296,7 @@ main()
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 

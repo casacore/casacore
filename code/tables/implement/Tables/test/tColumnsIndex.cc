@@ -1,5 +1,5 @@
 //# tColumnsIndex.cc: Test program for the ColumnsIndex class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -163,7 +163,7 @@ void b()
         colInx0.getRowNumber(found);
     } catch (AipsError x) {
         cout << x.getMesg() << endl;       // values are not unique
-    } end_try;
+    } 
     rows = colInx0.getRowNumbers();
     AlwaysAssertExit (rows.nelements() == (nrrow+1)/2);
     for (i=0; i<rows.nelements(); i++) {
@@ -333,6 +333,6 @@ main()
 	d();
     } catch (AipsError x) {
         cout << "Exception caught: " << x.getMesg() << endl;
-    } end_try;
+    } 
     return 0;
 }

@@ -1,5 +1,5 @@
 //# Directory.cc: Class to define a Directory
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -380,7 +380,7 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
       } catch (RegexExpressnError x) {
          String msg = String("Error parsing file ") + files(i);
          throw (AipsError(msg));
-      } end_try;
+      } 
 
 // Find all the matched files
 

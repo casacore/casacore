@@ -333,7 +333,7 @@ int main ()
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   
 }
 

@@ -1,5 +1,5 @@
 //# tBinTable.cc - this program tests the BinTable class
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -136,6 +136,6 @@ main(int argc, char **argv)
 	cout << "Exception from file : " << x.thrownFile() << endl;
 	cout << "at line : " << x.thrownLine() << endl;
 	cout << "Message : " << x.getMesg() << endl;
-    } end_try;
+    } 
     return 1;
 }

@@ -366,7 +366,7 @@ void testLogSink()
         caught = True;
 	AlwaysAssertExit(x.getMesg().contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 7);
-    } end_try;
+    } 
     AlwaysAssertExit(caught);
 
     // static void postGloballyThenThrow(const LogMessage &message);
@@ -377,7 +377,7 @@ void testLogSink()
         caught = True;
 	AlwaysAssertExit(x.getMesg().contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 8);
-    } end_try;
+    } 
     AlwaysAssertExit(caught);
 
     // LogSink &localSink(LogSinkInterface *&fromNew);
@@ -447,7 +447,7 @@ void testLogIO()
 	    os << "This SHOULD post" << LogIO::EXCEPTION;
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 
 	AlwaysAssert(caught, AipsError);
 	String s(ostr);
@@ -469,7 +469,7 @@ int main()
     } catch (AipsError x) {
         cout << "Caught an exception : " << x.getMesg() << endl;
 	exit(1);
-    } end_try;
+    } 
 
     cerr << "OK (nothing else should have been printed by this program)\n";
     return 0;

@@ -1,5 +1,5 @@
 //# tFallible: Test Fallible class
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -60,14 +60,14 @@ int main()
 	Foo(fi4);
     } catch (AipsError x) {
 	caught = True;
-    } end_try;
+    } 
     AlwaysAssertExit(caught);
     caught = False;
     try {
 	Int x = fi5.value();
     } catch (AipsError x) {
 	caught = True;
-    } end_try;
+    } 
     AlwaysAssertExit(caught);
 	
     cout << "OK" << endl;

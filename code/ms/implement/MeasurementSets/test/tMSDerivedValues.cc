@@ -93,7 +93,7 @@ Int main(int argc, char **argv)
 	cout << "Caught exception " << endl;
 	cout << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "Done." << endl;
     return 0;
 }

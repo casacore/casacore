@@ -1,5 +1,5 @@
 //# dMeasure.cc: This program demonstrates Measures to calculate filed rotation
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -118,7 +118,7 @@ main()
 	    
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     return(0);
 }

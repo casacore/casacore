@@ -679,7 +679,7 @@ void ImageConcat<T>::setCoordinates()
       } catch (AipsError x) {
          ok = False;
          msg = x.getMesg();
-      } end_try;
+      } 
       if (!ok) {
          os << LogIO::WARN << "Could not create TabularCoordinate because " << msg << LogIO::POST;
          os << LogIO::WARN << "CoordinateSystem set to that of first image set instead" << LogIO::POST;
@@ -698,7 +698,7 @@ Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1,
       StokesCoordinate tmp(stokes);
    } catch (AipsError x) {
       ok = False;
-   } end_try;
+   } 
 //
    if (ok) {
       return stokes;

@@ -119,7 +119,7 @@ main ()
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
    cout << "OK" << endl;
    exit(0);

@@ -1,5 +1,5 @@
 //# tByteSinkSource.cc: Test program for class ByteSinkSource
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -190,7 +190,7 @@ int main ()
 	} 
 	catch (AipsError x)  {
 	    cout << x.getMesg () << endl;
-	}end_try; 
+	} 
     }
     return 0;
 }

@@ -405,7 +405,7 @@ int main(int argc)
 	  cout << "The following should report no such column ";
 	  cout << " for TableMeasRefDesc.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TMRefDesc - column exist but is of the wrong type
 	  TableMeasRefDesc tCol(td, "Time4ScaOffset");
@@ -413,7 +413,7 @@ int main(int argc)
 	  cout << "The following should report that the column's ";
 	  cout << "type is no good.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TableMeasValueDesc - column doesn't exist exception
 	  TableMeasValueDesc tCol(td, "SillyColumnName");
@@ -421,7 +421,7 @@ int main(int argc)
 	  cout << "The following should report no such column ";
 	  cout << "for TableMeasValueDesc.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TableMeasValueDesc - column exists but not array
 	  TableMeasValueDesc tCol(td, "Time4StrRef");
@@ -429,7 +429,7 @@ int main(int argc)
 	  cout << "The following should report that the column ";
 	  cout << "is not array for TabelMeasValueDesc.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TableMeasValueDesc - column exists but is double
 	  TableMeasValueDesc tCol(td, "Time2ArrRef");
@@ -437,7 +437,7 @@ int main(int argc)
 	  cout << "The following should report that the column's ";
 	  cout << "type should be double for the TableMeasValueDesc.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TableMeasValueDesc - too many units
 	  Vector<Unit> u(2);
@@ -447,7 +447,7 @@ int main(int argc)
 	  cout << "The following should report that the column's ";
 	  cout << "unit vector is too long.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test TableMeasValueDesc - invalid unit
 	  Vector<Unit> u(1);
@@ -458,7 +458,7 @@ int main(int argc)
 	  cout << "The following should report that the column ";
 	  cout << "has an invalid unit.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
 
 
@@ -480,7 +480,7 @@ int main(int argc)
 	  cout << "Attempt to reference undefined Measure offset ";
 	  cout << " exception on the TableMeasOffsetDesc object.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
 
       // measure reference column and associated offset
@@ -575,7 +575,7 @@ int main(int argc)
 	    cout << "The following line should report an error ";
 	    cout << "in ScalarMeasColumn::setDescUnits - invalid unit.\n";
 	    cout << x.getMesg() << endl;
-	  } end_try;
+	  } 
 	}
 	cout << "Units of Time1Arr: "
 	     << arrayCol.measDesc().getUnits()(0).getName() << endl;
@@ -645,7 +645,7 @@ int main(int argc)
 	  cout << "The following line should report an error ";
 	  cout << "in reconstruct - invalid column exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // test throw if null exception
 	  MEpoch::ScalarColumn nullCol;
@@ -654,7 +654,7 @@ int main(int argc)
 	  cout << "The following line should be a ";
 	  cout << "null column exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	  // try constructing a ScalarMeasColumn with an Array Offset
 	  // column
@@ -663,7 +663,7 @@ int main(int argc)
 	  cout << "The following line should be an illegal ";
 	  cout << "offset column type exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
     }
 
@@ -838,7 +838,7 @@ int main(int argc)
 	  cout << "in ScalarMeasColumn::put - not allowed to put a ";
 	  cout << "measure with a frame in variable column.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
     }
 
@@ -941,7 +941,7 @@ int main(int argc)
 	  cout << "in ScalarMeasColumn::setDescUnits - not allowed to put ";
 	  cout << "when the table is not empty.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
     }
 
@@ -1033,7 +1033,7 @@ int main(int argc)
 	  cout << "The following line should be a ";
 	  cout << "null column exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
 
       // array column with variable string references
@@ -1119,7 +1119,7 @@ int main(int argc)
 	  cout << "The following line should be a ";
 	  cout << "Table array conformance error exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
     }
 
@@ -1134,7 +1134,7 @@ int main(int argc)
     cout << " message:\n";
     cout << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   exit(0);
 }

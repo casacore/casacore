@@ -98,7 +98,7 @@ void a (Bool doExcp)
 	    newtab.setShapeColumn("arr2",IPosition(3,2,3,4));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // not FixedShape
-	} end_try;
+	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
     Table tab(newtabcp, 10);
@@ -189,12 +189,12 @@ void a (Bool doExcp)
 	    af.put (0, "12345678901");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // value too long
-	} end_try;
+	} 
 	try {
 	    arr1.put (0, vec2);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // shape cannot change
-	} end_try;
+	} 
     }
 }
 
@@ -234,7 +234,7 @@ void b (Bool doExcp)
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // does not exist
-	} end_try;
+	} 
     }
     ROScalarColumn<Int> ab2(tab,"ab");
     ROScalarColumn<Int> ac (tab,"ac");
@@ -570,22 +570,22 @@ void c (Bool doExcp)
 	    tab.rename ("tTable_tmp.file", Table::NewNoReplace);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // exists as file
-	} end_try;
+	} 
 	try {
 	    tab.rename ("tTable_tmp.data", Table::NewNoReplace);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // already exists
-	} end_try;
+	} 
 	try {
 	    tab.rename ("tTable.datx", Table::Update);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // does not exist
-	} end_try;
+	} 
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;             // does not exist
-	} end_try;
+	} 
     }
 
     // Rename a column. It'll be renamed back later.
@@ -662,7 +662,7 @@ void c (Bool doExcp)
 	    tab.removeRow (7);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
     cout << ab2.getColumn() << endl;
 
@@ -861,6 +861,6 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }

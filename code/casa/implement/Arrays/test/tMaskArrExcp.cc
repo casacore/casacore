@@ -1,5 +1,5 @@
 //# tMaskArrExcp.cc: Test program for MaskedArray Exceptions
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -111,7 +111,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -138,7 +138,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -169,7 +169,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
 
         }
 
@@ -199,7 +199,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
 
         }
 
@@ -226,7 +226,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -253,7 +253,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -281,7 +281,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -307,7 +307,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -334,7 +334,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -363,7 +363,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -391,7 +391,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
 
         }
 
@@ -420,7 +420,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
 
         }
 
@@ -450,7 +450,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
 
         }
 
@@ -463,7 +463,7 @@ int main ()
              << rtti_decode(x.idv()) << " " << x.GetThrowingType();
         cout << endl;
 #endif
-    } end_try;
+    } 
 
 
 
@@ -494,7 +494,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -522,7 +522,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -551,7 +551,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -583,7 +583,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -611,7 +611,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -642,7 +642,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -673,7 +673,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -708,7 +708,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -739,7 +739,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -770,7 +770,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -805,7 +805,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -836,7 +836,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -867,7 +867,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -902,7 +902,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -935,7 +935,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -963,7 +963,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -995,7 +995,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1026,7 +1026,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1061,7 +1061,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1091,7 +1091,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1121,7 +1121,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1151,7 +1151,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1181,7 +1181,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1211,7 +1211,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1241,7 +1241,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1273,7 +1273,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1304,7 +1304,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1334,7 +1334,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
     } catch (AipsError x) {
@@ -1346,7 +1346,7 @@ int main ()
              << rtti_decode(x.idv()) << " " << x.GetThrowingType();
         cout << endl;
 #endif
-    } end_try;
+    } 
 
 
 
@@ -1380,7 +1380,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1411,7 +1411,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1441,7 +1441,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1472,7 +1472,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1506,7 +1506,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1540,7 +1540,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1570,7 +1570,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1601,7 +1601,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1631,7 +1631,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1662,7 +1662,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1696,7 +1696,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1730,7 +1730,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1760,7 +1760,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1791,7 +1791,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1821,7 +1821,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1852,7 +1852,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1886,7 +1886,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1920,7 +1920,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1951,7 +1951,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -1982,7 +1982,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2017,7 +2017,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2048,7 +2048,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2079,7 +2079,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2110,7 +2110,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2141,7 +2141,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2172,7 +2172,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2203,7 +2203,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2234,7 +2234,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2265,7 +2265,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2296,7 +2296,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
         {
@@ -2327,7 +2327,7 @@ int main ()
                      << rtti_decode(e.idv()) << " " << e.GetThrowingType();
                 cout << endl;
 #endif
-            } end_try;
+            } 
         }
 
 
@@ -2340,7 +2340,7 @@ int main ()
              << rtti_decode(x.idv()) << " " << x.GetThrowingType();
         cout << endl;
 #endif
-    } end_try;
+    } 
 
 
     cout << endl << "OK" << endl;

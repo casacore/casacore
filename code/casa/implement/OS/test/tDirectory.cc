@@ -1,5 +1,5 @@
 //# tDirectory.cc: Test program for class Directory
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,7 +186,7 @@ void doIt (Bool doExcp)
 	    newDir.create();
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // not writable
-	} end_try;
+	} 
     }
     tmp.setPermissions (0755);
     AlwaysAssertExit (! newDir.isDirectory());
@@ -203,12 +203,12 @@ void doIt (Bool doExcp)
 	    Directory file1("tDirectory_tmp/test1/testLink2");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // symlink, no directory
-	} end_try;
+	} 
 	try {
 	    Directory file1("tDirectory_tmp/test1/testFile2");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // symlink, no directory
-	} end_try;
+	} 
     }
     tmp.setPermissions (0555);
     if (doExcp) {
@@ -216,7 +216,7 @@ void doIt (Bool doExcp)
 	    Directory file1("tDirectory_tmp/something");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // not writable
-	} end_try;
+	} 
     }
     tmp.setPermissions (0755);
 
@@ -251,7 +251,7 @@ void doIt (Bool doExcp)
 	    test3.remove();
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // not empty
-	} end_try;
+	} 
     }
     test3.removeRecursive();
     AlwaysAssertExit (!test3.exists());
@@ -293,7 +293,7 @@ void doIt (Bool doExcp)
 	    test6.create (False);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // already existing
-	} end_try;
+	} 
     }
     test6.create (True);
     AlwaysAssertExit (test6.isEmpty());
@@ -306,7 +306,7 @@ void doIt (Bool doExcp)
 	    test7.create (False);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // already existing
-	} end_try;
+	} 
     }
     rfile.remove();
     test7.create (False);
@@ -343,7 +343,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

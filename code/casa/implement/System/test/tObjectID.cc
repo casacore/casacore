@@ -1,5 +1,5 @@
 //# tObjectID.cc: This program tests the ObjectID class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,7 +69,7 @@ main()
     cerr << x.getMesg() << endl;
     return 1;
   }
-  end_try;
+  
 
   cout << "OK" << endl;
   return 0;

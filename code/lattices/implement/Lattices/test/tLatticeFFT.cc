@@ -181,7 +181,7 @@ int main() {
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout<< "FAIL"<< endl;
-  } end_try;
+  } 
 }
 //  	{
 //  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());

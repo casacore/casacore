@@ -86,7 +86,7 @@ void a (Bool doExcp)
 	    td.addColumn (ScalarColumnDesc<Int> ("ab"));   // already exists
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
     td.addColumn (ScalarColumnDesc<Int> ("ac"));
     td.rwColumnDesc("ac").rwKeywordSet().define ("scale", Complex(0,0));
@@ -102,7 +102,7 @@ void a (Bool doExcp)
 			                     ("af", ColumnDesc::Undefined));
     	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // undefined given
-	} end_try;
+	} 
     }
 
     td.addColumn (ArrayColumnDesc<Complex> ("Arr1","comment for Arr1",0));
@@ -113,7 +113,7 @@ void a (Bool doExcp)
 						 IPosition(2,3,4)));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // shape for non-fixedShape array
-	} end_try;
+	} 
     }
     ArrayColumnDesc<uInt> coldes("Arr3","comment for Arr1",
 				 IPosition(2,3,4), ColumnDesc::Direct);
@@ -128,22 +128,22 @@ void a (Bool doExcp)
 	    td.rwColumnDesc("ab").setNdim (2);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // column is a scalar
-	} end_try;
+	} 
 	try {
 	    td.rwColumnDesc("ab").setShape (IPosition());
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // column is a scalar
-	} end_try;
+	} 
 	try {
 	    td.rwColumnDesc("Arr3").setNdim (2);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // ndim already defined
-	} end_try;
+	} 
 	try {
 	    td.rwColumnDesc("Arr3").setShape (IPosition());
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // shape already defined
-	} end_try;
+	} 
     }
     td.addColumn (SubTableDesc("sub1", "subtable by name",
                   "tTableDesc_tmp_sub"));
@@ -162,7 +162,7 @@ void a (Bool doExcp)
 	    td.checkSubTableDesc();
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;     // subtable sub1 does not exist
-	} end_try;
+	} 
     }
 
     // Add another column and keyword to the subtable to test
@@ -229,7 +229,7 @@ void b (Bool doExcp) {
 	    td.rwColumnDesc("Arr1").setShape (IPosition(3,4,5,6));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;        // shape mimatches ndim
-	} end_try;
+	} 
     }
     td.rwColumnDesc("Arr1").setShape (IPosition(2,4,5));
 
@@ -238,7 +238,7 @@ void b (Bool doExcp) {
 	    td["Arr1"].tableDesc();              // no subtable
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
 
     // Define another descr. and add it to the first descr.
@@ -267,7 +267,7 @@ void b (Bool doExcp) {
 	    TableDesc td1("",TableDesc::Update);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
 }
 
@@ -289,7 +289,7 @@ void c (Bool doExcp) {
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
 	    td1 = 0;
-	} end_try;
+	} 
 
 	try {
 	    cout << "Tryerr old not exist" << endl;
@@ -297,7 +297,7 @@ void c (Bool doExcp) {
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
 	    td2 = 0;
-	} end_try;
+	} 
 
 	try {
 	    cout << "Tryerr newnoreplace" << endl;
@@ -305,7 +305,7 @@ void c (Bool doExcp) {
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
 	    td3 = 0;
-	} end_try;
+	} 
     }
 
     delete td1;
@@ -351,12 +351,12 @@ void d (Bool doExcp)
 	    td.renameColumn ("colint2", "colint");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
 	try {
 	    td.renameColumn ("colintnew", "colintxxx");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     }
 
     // Define a keyword for the table.
@@ -397,7 +397,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

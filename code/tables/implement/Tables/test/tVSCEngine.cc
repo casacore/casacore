@@ -1,5 +1,5 @@
 //# tVSCEngine.cc: Test program for class VSCEngine
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ main () {
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -98,7 +98,7 @@ void a() {
 ///	Table tab2(newtab2, 10);                // bound to incorrect column
 ///    } catch (AipsError x) {
 ///	cout << x.getMesg() << endl;
-///    } end_try;
+///    } 
 }
 
 void b()

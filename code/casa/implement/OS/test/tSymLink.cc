@@ -1,5 +1,5 @@
 //# tSymLink.cc: Test program for class SymLink
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,13 +57,13 @@ void doIt (Bool doExcp)
 	}
 	catch (AipsError x) {                                   // regular file
 	    cout << x.getMesg () << endl;
-	} end_try;
+	} 
 	try {
 	    SymLink symLink1(Path("tSymLink_tmp/isDir"));
 	}
 	catch (AipsError x) {
 	    cout << x.getMesg () << endl;                       // directory
-	} end_try;
+	} 
     }
 
     SymLink newLink(Path("tSymLink_tmp/newLink"));
@@ -78,13 +78,13 @@ void doIt (Bool doExcp)
 	}
 	catch (AipsError x) {
 	    cout << x.getMesg () << endl;                    // cannot create
-	} end_try;
+	} 
 	try {
 	    newLink2.create("a");
 	}
 	catch (AipsError x) {
 	    cout << x.getMesg () << endl;                    // cannot create
-	} end_try;
+	} 
     }
     file.setPermissions (0755);
     AlwaysAssertExit (! file1.exists());
@@ -119,7 +119,7 @@ void doIt (Bool doExcp)
 	}
 	catch (AipsError x) {
 	    cout << x.getMesg () << endl;                       // endless loop
-	} end_try;
+	} 
     }
     AlwaysAssertExit (linkI.followSymLink().originalName() == homeName);
     AlwaysAssertExit (newLink.followSymLink().originalName() == homeName);
@@ -134,7 +134,7 @@ void doIt (Bool doExcp)
 	}
 	catch (AipsError x) {
 	    cout << x.getMesg () << endl;                       // endless loop
-	} end_try;
+	} 
     }
 
     // Copy a symlink.
@@ -179,7 +179,7 @@ void doIt (Bool doExcp)
 	    test6.create ("a", False);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // already existing
-	} end_try;
+	} 
     }
     SymLink test7("tSymLink_tmp/newLink2");
     RegularFile rfile("tSymLink_tmp/newLink2");
@@ -189,7 +189,7 @@ void doIt (Bool doExcp)
 	    test7.create ("a");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // already existing
-	} end_try;
+	} 
     }
     rfile.remove();
     SymLink test8(test7);
@@ -208,7 +208,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

@@ -1,5 +1,5 @@
 //# tLatticeRegion.cc: Test program for LatticeRegion class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,7 +76,7 @@ main()
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;
 }

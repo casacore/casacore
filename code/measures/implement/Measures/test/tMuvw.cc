@@ -1,5 +1,5 @@
 //# tMuvw.cc: This program tests Muvw class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -237,7 +237,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
       cout << "Test Muvw exception" << endl;
@@ -247,7 +247,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
       cout << "Test MVuvw exception" << endl;
@@ -257,7 +257,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     cout << "---------------------------" << endl;
 
     exit(0);

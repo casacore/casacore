@@ -1,5 +1,5 @@
 //# tRecordDesc.cc: Test the RecordDesc class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 
@@ -118,28 +118,28 @@ void doIt (Bool doExcp)
 	    a.addField("a", TpDouble); // already exists
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
 	caught = False;
 	try {
 	    a.addField("aaa", TpOther);                // invalid type
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
     }
 
@@ -208,7 +208,7 @@ void doIt (Bool doExcp)
 			      RecordInterface::ThrowOnDuplicates);
 	    } catch (AipsError x) {
 		caught = True;
-	    } end_try;
+	    } 
 	    AlwaysAssertExit(caught);
 	}
     }
@@ -282,14 +282,14 @@ void doIt (Bool doExcp)
 	    g.addField("Other", TpRecord, IPosition(1,1));
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
         caught = False;
 	try {
 	    g.addField("Other", TpTable, IPosition(1,1));
 	} catch (AipsError x) {
 	    caught = True;
-	} end_try;
+	} 
 	AlwaysAssertExit(caught);
     }
 

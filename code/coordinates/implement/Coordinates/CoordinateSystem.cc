@@ -2159,7 +2159,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
 	    "from header";
 	return False;
-    } end_try;
+    } 
 
  
 // Make some consistency checks.  We don't rely on naxis, rather we 
@@ -2337,7 +2337,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		"wrong number of parameters\n(" << x.getMesg() << ")" << 
 		LogIO::POST;
 	    return False;
-	} end_try;
+	} 
 
 // Assume the units are degrees unless we are told otherwise
 
@@ -2564,7 +2564,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    os << "Error forming stokes axis : " << x.getMesg() <<
 		LogIO::SEVERE << LogIO::POST;
 	    return False;
-	} end_try;
+	} 
     }
 
 // SPECTRAL

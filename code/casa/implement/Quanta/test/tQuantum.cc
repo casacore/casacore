@@ -1,5 +1,5 @@
 //# tQuantum.cc: test program for Quantum and QC class
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -182,7 +182,7 @@ try {
     
 } catch (AipsError x) {
     cout << x.getMesg() << endl;
-} end_try;
+} 
     
     cout << endl << "--------------------------" << endl;
     cout << "Try illegal operations" << endl << endl;
@@ -191,38 +191,38 @@ try {
 	Quantity loc(5,"KpH");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     try {
 	Quantity loc(A+D);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     try {
 	Bool loc;
 	loc = A<D;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     try {
 	l4=pow(A,200);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     try {
 	A.convert("JY");
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     try {
 	l4 = sin(A);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     
     cout << endl << "--------------------------" << endl;
     

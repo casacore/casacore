@@ -1,5 +1,5 @@
 //# tQueue.cc: Test program for the Queue class
-//# Copyright (C) 1995
+//# Copyright (C) 1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -64,7 +64,7 @@ int main()
 	(void) qi(); // Should cause an exception - queue is empty
     } catch (AipsError x) {
 	caught = True;
-    } end_try;
+    } 
     AlwaysAssertExit(caught);
 				  // Queue::~Queue() implicit
 

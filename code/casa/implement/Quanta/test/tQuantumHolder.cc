@@ -1,5 +1,5 @@
 //# tQuantumHolder.cc: This program tests QuantumHolder
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -175,7 +175,7 @@ Int main() {
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } end_try;
+  } 
 
   exit(0);
 }

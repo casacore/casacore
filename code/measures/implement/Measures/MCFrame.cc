@@ -518,7 +518,7 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
       break;
     };
   } catch (AipsError x) {
-  } end_try;
+  } 
   
   result = 0;
   return False;
@@ -544,7 +544,7 @@ Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result) {
       break;
     };
   } catch (AipsError x) {
-  } end_try;
+  } 
   MVDirection tmp;
   result = tmp;
   return False;
@@ -566,7 +566,7 @@ Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
       break;
     };
   } catch (AipsError x) {
-  } end_try;
+  } 
   MVPosition tmp;
   result = tmp;
   return False;
@@ -584,7 +584,7 @@ Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result) {
       break;
     };
   } catch (AipsError x) {
-  } end_try;
+  } 
   result = 0;
   return False;
 }

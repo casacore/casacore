@@ -1,5 +1,5 @@
 //# HashMapIO.cc: Classes to perform IO for HashMap classas
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@ template<class key, class val> AipsIO &operator>>(AipsIO &ios, HashMap<key,val> 
   } catch ( AipsError xxx ) {
       OrderedMap<key,val> om(map.defaultVal());
       vers = ios.getstart(rtti_decode(((Map<key,val>*)&om)->id()));
-  } end_try;
+  } 
 #else
   int vers = ios.getstart(rtti_decode(map.id()));
   float max_load;

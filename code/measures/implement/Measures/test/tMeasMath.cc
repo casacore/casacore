@@ -1,5 +1,5 @@
 //# tMeasMath.cc: This program test MeasMath functions
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -181,14 +181,14 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	cout << "Euler(10 deg, 20 m): ";
 	cout << Euler(Quantity(10,"deg"), Quantity(20,"m")) << endl;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	Euler eul10(Quantity(0,"deg"),Quantity(0,"deg"),Quantity(30,"deg"));
@@ -198,7 +198,7 @@ main()
 	    << (rot10*dc10).getAngle("deg") << endl;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	Precession pc2;
@@ -334,7 +334,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
 	cout << "MVEpoch checks ------------------------" << endl;
@@ -345,7 +345,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     try {
       cout << "Separation and near checks -----------" << endl;
@@ -365,7 +365,7 @@ main()
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
 
     return(0);
 }

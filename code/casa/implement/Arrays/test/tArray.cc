@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -557,7 +557,7 @@ main()
 		    seeIfWeMakeMemoryLeak();
 		} catch (ArrayError x) {
 		    caught = True;
-		} end_try;
+		} 
 		AlwaysAssertExit(caught);
 	    }
 	    
@@ -686,7 +686,7 @@ main()
 
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
-    } end_try;
+    } 
 
     cout << "OK" << endl;
     return 0;

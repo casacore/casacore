@@ -1,5 +1,5 @@
 //# tStokesConverter.cc: test program for StokesConverter class
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,7 @@ int main()
     }
   } catch (AipsError x) {
     cout << "Exception: "<< x.getMesg() <<endl;
-  } end_try;
+  } 
   if (err==0) cout<<"OK"<<endl;
   else cout << err << " errors encountered"<<endl;
   return err;

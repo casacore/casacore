@@ -260,7 +260,7 @@ int main(int argc, char **argv)
    }
  } catch (AipsError x) {
       cout << "Failed with message " << x.getMesg() << endl;
- } end_try;  
+ }   
  
 }
 

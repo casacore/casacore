@@ -350,7 +350,7 @@ int main() {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   try {
     // Check that the Table ended up on disk (after the save function). This
     // line may fail if the NewMS ctr checks for the existance of subtables (it

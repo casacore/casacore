@@ -1,5 +1,5 @@
 //# tArrayIO3.cc: This program tests the ArrayIO istream extract  functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
-    } end_try;
+    } 
     cout << "end" << endl;
     return 0;                       // successfully executed
 }

@@ -1,5 +1,5 @@
 //# tParam.cc:  the test code for the Param class.
-//# Copyright (C) 1994,1995,1998,1999
+//# Copyright (C) 1994,1995,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ main()
     cout << "Caught exception at line " << x.thrownLine()
       << " from file " << x.thrownFile() << endl;
     cout << "Message is: " << x.getMesg() << endl;
-  } end_try;   
+  }    
 };
 
 

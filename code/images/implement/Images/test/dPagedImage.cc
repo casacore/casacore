@@ -1,5 +1,5 @@
 //# tPagedImage.cc: This program tests the PagedImage class
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
     cout << "OK" << endl;
   } catch (AipsError x) {
     cerr << "Caught Exception: " << x.getMesg() << endl;
-  } end_try;
+  } 
   return 0;
 }
 

@@ -148,7 +148,7 @@ main ()
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     exit(1);
-  } end_try;
+  } 
   cout << "OK" << endl;
   exit(0);
 }

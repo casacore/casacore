@@ -111,7 +111,7 @@ main()
     } catch (AipsError x) {
         cout << x.getMesg() << endl;
         return 1;                       // unexpected error
-    } end_try;
+    } 
     return 0;                           // exit with success status
 }
 

@@ -1,5 +1,5 @@
 //# tModcompConversion.h: Test program for class ModcompConversion
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -673,7 +673,7 @@ main()
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   // Exit when errors found.
   if (error) {
     cout << "FAIL" << endl;

@@ -1,5 +1,5 @@
 //# tFFTServer: This program tests the FFTServer and FourierTool classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -1290,7 +1290,7 @@ int main() {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   cout << "OK" << endl;
   return 0;
 }

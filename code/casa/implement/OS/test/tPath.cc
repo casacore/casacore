@@ -152,7 +152,7 @@ void doIt (Bool doExcp, Bool& success)
 	    test1.expandedName ();
 	} catch (AipsError x) {
 	    cout << x.getMesg () << endl;
-	} end_try;
+	} 
     }
 	
     // Tests for isValid and isStrictlyPosix
@@ -246,7 +246,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     if (success) {
 	cout << "OK" << endl;
 	return 0;                           // exit with success status

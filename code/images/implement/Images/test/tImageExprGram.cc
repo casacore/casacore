@@ -160,27 +160,27 @@ main (int argc, char *argv[])
       doExpr ("xxx", GlishRecord());
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/a1"));
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("a1/b"));
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("b/b*"));
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
     try {
       LatticeExpr<Double> expr (ImageExprParse::command ("min(b,b,b)"));
     } catch (AipsError x) {
       cout << x.getMesg() << endl;
-    } end_try;
+    } 
   }
   {
     cout << endl;
@@ -526,7 +526,7 @@ main (int argc, char *argv[])
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     foundError = True;
- } end_try;
+ } 
 
  // Delete all created tables (if they exist).
  Table tab; 

@@ -667,7 +667,7 @@ int main() {
             ok = False;
          } catch (AipsError x) {
             ok = True;
-         } end_try;
+         } 
          if (!ok) {
             throw (AipsError("pixelMask forced failure did not work - this was unexpected"));
          }
@@ -791,7 +791,7 @@ int main() {
             lc.setLattice(ml1);
             ok = False;
          } catch (AipsError x) {
-         } end_try;
+         } 
          if (!ok) {
             throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
          }
@@ -802,7 +802,7 @@ int main() {
             SubLattice<Float> ml4(l4, True);
             lc.setLattice(ml4);
             ok = False;
-         } catch (AipsError x) {;} end_try;
+         } catch (AipsError x) {;} 
          if (!ok) {
             throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
          }
@@ -811,7 +811,7 @@ int main() {
   } catch(AipsError x) {
     cerr << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
   cout << "OK" << endl;
   exit(0);
 };

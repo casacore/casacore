@@ -386,7 +386,7 @@ main (int argc, char *argv[])
     } catch (AipsError x) {
 	cerr << "Caught exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;
 }

@@ -135,7 +135,7 @@ int main(int argc)
       } catch (AipsError x) {
 	cout << "A no such column message should follow\n";
 	cout << x.getMesg() << endl;
-      } end_try;
+      } 
 
       try {
 	// variable unit's column doesn't exist.
@@ -143,7 +143,7 @@ int main(int argc)
       } catch (AipsError x) {
 	cout << "A no such unit's column message should follow\n";
 	cout << x.getMesg() << endl;
-      } end_try;
+      } 
 
       try {
 	// The variable unit's column exists but the units type isn't String
@@ -154,7 +154,7 @@ int main(int argc)
       } catch (AipsError x) {
 	cout << "A message about an incorrect variable unit's type...\n";
 	cout << x.getMesg() << endl;
-      } end_try;
+      } 
     }
     // ...and make them persistent.
     tqdSQD.write(td);
@@ -192,7 +192,7 @@ int main(int argc)
 	  } catch (AipsError x) {
 	    cout << "Catch an AipsError. Column is null...\n";
 	    cout << x.getMesg() << endl;
-	  } end_try;
+	  } 
 	}
 	cout << "Object says it is null...attach a column\n";
 	sqCol.attach(qtab, "ScaQuantDouble");
@@ -334,7 +334,7 @@ int main(int argc)
 	} catch (AipsError x) {
 	  cout << "Catch an AipsError. Array column is null...\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
 
 	// test attaching a bogus quantum column
 	try {
@@ -343,7 +343,7 @@ int main(int argc)
 	} catch (AipsError x) {
 	  cout << "Exception should report not a quantum column...\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
       if (tmpCol.isNull()) {
 	cout << "Array Quantum Column is initially null.\n";
@@ -378,7 +378,7 @@ int main(int argc)
 	  cout << "The following line should be a ";
 	  cout << "Table array conformance error exception.\n";
 	  cout << x.getMesg() << endl;
-	} end_try;
+	} 
       }
       {
 	// This should succeed.
@@ -473,7 +473,7 @@ int main(int argc)
   } catch (AipsError x) {
     cout << "Unexpected exception1: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   // Try it with a readonly table.
   try {
@@ -494,7 +494,7 @@ int main(int argc)
   } catch (AipsError x) {
     cout << "Unexpected exception2: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   // Now test the performance by putting arrays in 5000 rows.
   try {
@@ -543,7 +543,7 @@ int main(int argc)
   } catch (AipsError x) {
     cout << "Unexpected exception3: " << x.getMesg() << endl;
     exit(1);
-  } end_try;
+  } 
 
   cout << "\nExecution of tTableQuantum.cc ended normally.\n";
   exit(0);

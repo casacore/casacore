@@ -1,5 +1,5 @@
 //# tRowCopier.cc : tests the RowCopier class
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -276,7 +276,7 @@ int main() {
 	RowCopier rc(partialtab, maintab, colname, colname);
     } catch (TableError x) {
 	caught = True;
-    } end_try;
+    } 
     if (caught) {
 	cout << "OK" << endl;
 	caught = False;
@@ -294,7 +294,7 @@ int main() {
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError x) {
 	caught = True;
-    } end_try;
+    } 
     if (caught) {
 	cout << "OK" << endl;
 	caught = False;
@@ -311,7 +311,7 @@ int main() {
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError x) {
 	caught = True;
-    } end_try;
+    } 
     if (caught) {
 	cout << "OK" << endl;
 	caught = False;
@@ -328,7 +328,7 @@ int main() {
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError x) {
 	caught = True;
-    } end_try;
+    } 
     if (caught) {
 	cout << "OK" << endl;
 	caught = False;

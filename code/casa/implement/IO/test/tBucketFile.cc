@@ -1,5 +1,5 @@
 //# tBucketFile.cc: Test program for the BucketFile class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@ main (int argc)
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }
@@ -126,7 +126,7 @@ void c()
     } catch (AipsError x) {
 	flag = True;
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     AlwaysAssertExit (flag);
     
     // Make the file readonly to test on such errors.
@@ -140,7 +140,7 @@ void c()
     } catch (AipsError x) {
 	flag = True;
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     AlwaysAssertExit (flag);
     
     flag = False;
@@ -151,7 +151,7 @@ void c()
     } catch (AipsError x) {
 	flag = True;
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     AlwaysAssertExit (flag);
 
     flag = False;
@@ -162,7 +162,7 @@ void c()
     } catch (AipsError x) {
 	flag = True;
 	cout << x.getMesg() << endl;
-    } end_try;
+    } 
     AlwaysAssertExit (flag);
 
     // Make it writable again.

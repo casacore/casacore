@@ -1689,7 +1689,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
         solution = fitter.fit(xx, yy, resultSigma);
       } catch (AipsError x) {
         fail = True;
-      } end_try;
+      } 
 //      os_p << LogIO::NORMAL << "Solution=" << solution << LogIO::POST;
 
 

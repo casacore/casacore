@@ -1,5 +1,5 @@
 //# tDirectoryIterator.cc: Test program for class DirectoryIterator
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,12 +80,12 @@ void doIt (Bool doExcp)
 	    iter.name();
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // past end
-	} end_try;
+	} 
 	try {
 	    iter++;
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // past end
-	} end_try;
+	} 
     }
     iter.reset();
     AlwaysAssertExit (iter.name() == "a");
@@ -109,7 +109,7 @@ void doIt (Bool doExcp)
 	    DirectoryIterator iter1 (Directory("tDirectoryIterator_tmp/sub"));
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;               // not existing
-	} end_try;
+	} 
     }
 }
 
@@ -123,7 +123,7 @@ main (int argc)
 	cout << "at line " << x.thrownLine() 
 	     << " in " << x.thrownFile() << endl;
 	return 1;
-    } end_try;
+    } 
     cout << "OK" << endl;
     return 0;                           // exit with success status
 }

@@ -1,5 +1,5 @@
 //# tDlist.cc: This program tests the Dlist class
-//# Copyright (C) 1993,1994,1995,1998
+//# Copyright (C) 1993,1994,1995,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -347,7 +347,7 @@ main() {
     }
   } catch (IterError xx) {
     cout << endl << "IterError: " << xx.getMesg() << endl;
-  } end_try;
+  } 
 
   try {
     onePd--;
@@ -357,7 +357,7 @@ main() {
     }
   } catch (IterError xx) {
     cout << endl << "IterError: " << xx.getMesg() << endl;
-  } end_try;
+  } 
 
   ConstListIter<int> t5,t6;
   ListIter<int> t7,t8;
@@ -385,7 +385,7 @@ main() {
     cout << endl << ">>> Instance-specific assertion error message:" << endl
          << "#X# IterError: " << xx.getMesg() << endl
          << "<<< End of assertion error message." << endl;
-  } end_try;
+  } 
 
 
   ConstListIter<int> t1,t2;
@@ -406,7 +406,7 @@ main() {
     cout << endl
          << "#X# IterError: " << xx.getMesg() << endl
          << "<<< End of assertion error message." << endl;
-  } end_try;
+  } 
 
   ListIter<int> oth;
   oth.assign(new List<int>(),True);

@@ -609,7 +609,7 @@ int main() {
     cout<< "FAIL"<< endl;
     cerr << x.getMesg() << endl;
     return 1;
-  } end_try;
+  } 
   cout<< "OK"<< endl;
   return 0;
 }

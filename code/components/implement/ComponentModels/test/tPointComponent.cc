@@ -1,5 +1,5 @@
 //# tPointShape.cc:  this defines tPointShape.cc
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,7 +152,7 @@ int main() {
  	  return 1;
  	}
       }
-      end_try;
+      
       try {
 	B1934.parameters(parms);
 	throw(AipsError("PointShape incorrectly used a non-zero "
@@ -165,7 +165,7 @@ int main() {
   	  return 1;
   	}
       }
-      end_try;
+      
       cout << "Passed the set/get parameters test for point components" 
 	   << endl;
       B1934.flux().convertUnit("Jy");
@@ -388,7 +388,7 @@ int main() {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  } 
   cout << "OK" << endl;
   return 0;
 }

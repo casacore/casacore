@@ -1,5 +1,5 @@
 //# tLCIntersection.cc:  mechanical test of the LCIntersection class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -131,11 +131,11 @@ main()
 		  IPosition (2,4,16), 5.);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;
-	} end_try;
+	} 
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	exit(1);
-    } end_try;
+    } 
     cout << "OK" << endl;
     exit(0);
 }

@@ -228,7 +228,7 @@ try {
       } catch (AipsError x) {
 //         cout << "aipserror: caught error " << x.getMesg() << endl;
          ok = True;
-      } end_try;
+      } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
       }
@@ -258,7 +258,7 @@ try {
       } catch (AipsError x) {
 //         cout << "aipserror: caught error " << x.getMesg() << endl;
          ok = True;
-      } end_try;
+      } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
       }
@@ -352,7 +352,7 @@ try {
        } catch (AipsError x) {
 //          cout << "aipserror: caught error " << x.getMesg() << endl;
           ok = True;
-       } end_try;
+       } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
       }
@@ -379,7 +379,7 @@ try {
       } catch (AipsError x) {
 //         cout << "aipserror: caught expected error " << x.getMesg() << endl;
          ok = True;
-      } end_try;
+      } 
       if (!ok) { 
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
       }
@@ -429,7 +429,7 @@ try {
       cerr << "aipserror: error " << x.getMesg() << endl;
       cout << "not ok" << endl; 
       exit(1);
-}end_try;
+}
 
   cout << "ok" << endl; 
   exit(0);

@@ -1,5 +1,5 @@
 //# tStack.cc: This program tests the Stack class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -100,7 +100,7 @@ main() {
     cout << "EmptyStackError: " << x.getMesg() << endl;
   } catch (AipsError x) {
     cout << "AipsError: " << x.getMesg() << endl;
-  } end_try;
+  } 
 
   Stack<int> three = two;
   try {
@@ -111,7 +111,7 @@ main() {
     cout << "EmptyStackError: " <<  x.getMesg() << endl;
   } catch (AipsError x) {
     cout << "AipsError: " << x.getMesg() << endl;
-  } end_try;
+  } 
 
   try {
     one.top();
@@ -119,7 +119,7 @@ main() {
     cout << "EmptyStackError: " << x.getMesg() << endl;
   } catch (AipsError x) {
     cout << "AipsError: " << x.getMesg() << endl;
-  } end_try;
+  } 
 
   cout << three.popVal() << endl;
   Stack<int> four;

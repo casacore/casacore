@@ -205,5 +205,5 @@ int main() {
     return 0;
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
-  } end_try;
+  } 
 }
