@@ -5721,3 +5721,4 @@
 16 103 src mv trial/implement/MeasurementComponents/FJones.h trial/implement/MeasurementComponents/FVisJones.h
 16 103 src mv trial/implement/MeasurementComponents/FJones.cc trial/implement/MeasurementComponents/FVisJones.cc
 16 115 src rm trial/apps/sdfits2ms/sdfits2ms_meta.g
+16 133 src mv trial/implement/Tables/TableCopy.h aips/implement/Tables/TableCopy.h
