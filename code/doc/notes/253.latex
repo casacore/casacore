@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 253 -- Development Plan for v2.0 (revision)}
+  
+\author{Joe McMullin}
+
+\date{29 December 2002}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A (gzipped) postscript version of this note is available (21kB).}{../253.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{rev_devplan.latex}
+\end{document}
