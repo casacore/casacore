@@ -128,17 +128,17 @@ class SpectralEstimate {
   // list found.  The first function returns component parameters 
   // in units of pixel indices. The second function calls the first
   // and then converts to the specified abcissa space (the supplied 
-  // vector must be monotonic); if the center is out of range 
-  // of the abcissa vector the conversion is done via extrapolation.
+  // vector must be monotonic); if the pixel-based center is out of range 
+  // of the supplied abcissa vector the conversion is done via extrapolation.
   // The der pointer is meant for debugging, and can return 
   // the derivative profile.
   // <group>
   template <class MT>
-    const SpectralList &estimate(const Vector<MT>& ordinate,
+    const SpectralList& estimate(const Vector<MT>& ordinate,
 				 Vector<MT> *der = 0);
   template <class MT>
-    SpectralList estimate(const Vector<MT>& abcissa,
-                          const Vector<MT>& ordinate);
+    const SpectralList& estimate(const Vector<MT>& abcissa,
+                                 const Vector<MT>& ordinate);
   // </group>
 
   // Return the list found.

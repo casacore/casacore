@@ -59,13 +59,14 @@ const SpectralList &SpectralEstimate::estimate(const Vector<MT> &prof,
 }
 
 template <class MT>
-SpectralList SpectralEstimate::estimate(const Vector<MT>& x,
-                                        const Vector<MT>& y)
+const SpectralList& SpectralEstimate::estimate(const Vector<MT>& x,
+                                               const Vector<MT>& y)
 {
   // Get pixel-based estimate
   const SpectralList& list = estimate(y);
   // Convert
-  return convertList (x, list);
+  slist_p = convertList (x, list);
+  return slist_p;
 }
 
 
@@ -232,10 +233,10 @@ SpectralList SpectralEstimate::convertList (const Vector<MT>& x,
    SpectralList listOut;
    for (uInt i=0; i<n; i++) {
       const SpectralElement& el = list[i];
-      AlwaysAssert(el.getType()==SpectralElement::GAUSSIAN, AipsError);
       SpectralElement elOut(el);
 
-// Get current (pars are amp, center, width)
+// Get current (pars are amp, center, width as the SpectralElement
+// will always be a Gaussian)
 
       Vector<Double> par, err;
       el.get(par);
@@ -289,11 +290,9 @@ SpectralList SpectralEstimate::convertList (const Vector<MT>& x,
 }
 
 
-
-
 //# Cater for Float only
 template SpectralList const & SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> *);
-template SpectralList SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> const &);
+template SpectralList const & SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> const &);
 template SpectralList SpectralEstimate::convertList<Float>(Vector<Float> const &, SpectralList const &) const;
 template void SpectralEstimate::findga<Float>(Vector<Float> const &); 
 template uInt SpectralEstimate::window<Float>(Vector<Float> const &);
