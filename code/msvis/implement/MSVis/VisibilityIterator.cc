@@ -45,22 +45,20 @@ ROVisibilityIterator::ROVisibilityIterator() {}
 // (just to share code between RO version and RW version of iterator)
 ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   const Block<Int>& sortColumns,
-					   Double timeInterval,
-					   Bool resort)
-: nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),msIter_p(ms,sortColumns,timeInterval,resort),
-velSelection_p(False),msIterAtOrigin_p(False),nRowBlocking_p(0)
+					   Double timeInterval)
+: msIter_p(ms,sortColumns,timeInterval),
+curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
+msIterAtOrigin_p(False),freqCacheOK_p(False),lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
 
 ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 					   const Block<Int>& sortColumns,
-					   Double timeInterval,
-					   Bool resort)
-: nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),msIter_p(mss,sortColumns,timeInterval,resort),
-velSelection_p(False),msIterAtOrigin_p(False),nRowBlocking_p(0)
+					   Double timeInterval)
+: msIter_p(mss,sortColumns,timeInterval),
+curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
+msIterAtOrigin_p(False),freqCacheOK_p(False),lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -305,7 +303,7 @@ void ROVisibilityIterator::setState()
     Int spw=msIter_p.spectralWindowId();
     nChan_p = colVis.shape(0)(1);
     nPol_p = colVis.shape(0)(0);
-    if (numChanGroup_p.nelements()<= spw || 
+    if (Int(numChanGroup_p.nelements())<= spw || 
 	numChanGroup_p[spw] == 0) {
       // no selection set yet, set default = all
       // for a reference MS this will normally be set appropriately in VisSet
@@ -560,7 +558,7 @@ void transpose(Matrix<Float>& out, const Matrix<Float>& in)
   Bool deleteIn,deleteOut;
   const Float* pin = in.getStorage(deleteIn);
   Float* pout = out.getStorage(deleteOut);
-  uInt i=0, yOffset=0;
+  uInt i=0;
   for (uInt iy=0; iy<ny; iy++) {
     uInt yOffset=0;
     for (uInt ix=0; ix<nx; ix++, yOffset+=ny) pout[i++] = pin[iy+yOffset];
@@ -819,9 +817,8 @@ VisibilityIterator::VisibilityIterator() {}
 
 VisibilityIterator::VisibilityIterator(MeasurementSet &MS, 
 				       const Block<Int>& sortColumns, 
-				       Double timeInterval,
-				       Bool resort)
-:ROVisibilityIterator(MS, sortColumns, timeInterval, resort)
+				       Double timeInterval)
+:ROVisibilityIterator(MS, sortColumns, timeInterval)
 {
 }
 
@@ -892,7 +889,7 @@ void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
   Bool deleteIt;
   Bool* p=flagCube_p.getStorage(deleteIt);
   const Bool* pflag=flag.getStorage(deleteIt);
-  if (flag.nrow()!=channelGroupSize_p) {
+  if (Int(flag.nrow())!=channelGroupSize_p) {
     throw(AipsError("VisIter::setFlag(flag) - inconsistent number of channels"));
   }
   
@@ -926,7 +923,7 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis,
   //  if (!preselected_p) {
   //    throw(AipsError("VisIter::setVis(vis) - cannot change original data"));
   //  }
-  if (vis.nrow()!=channelGroupSize_p) {
+  if (Int(vis.nrow())!=channelGroupSize_p) {
     throw(AipsError("VisIter::setVis(vis) - inconsistent number of channels"));
   }
   // we need to reform the vis matrix to a cube before we can use

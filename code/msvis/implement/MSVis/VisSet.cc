@@ -50,8 +50,7 @@
 
 
 VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns, 
-	       const Matrix<Int>& chanSelection, Double timeInterval,
-	       Bool reset)
+	       const Matrix<Int>& chanSelection, Double timeInterval)
 :ms_p(ms)
 {
     LogSink logSink;
@@ -64,7 +63,7 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
     // fill in default selection
     selection_p.row(0)=0; //start
     selection_p.row(1)=msSpW.numChan().getColumn(); 
-    for (Int i=0; i<chanSelection.ncolumn(); i++) {
+    for (uInt i=0; i<chanSelection.ncolumn(); i++) {
       Int spw=chanSelection(2,i);
       if (spw>=0 && spw<nSpw && chanSelection(0,i)>=0 && 
 	  chanSelection(0,i)+chanSelection(1,i)<=selection_p(1,spw)) {
@@ -96,21 +95,21 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     }
 
-    iter_p=VisIter(ms_p,columns,timeInterval,reset);
-    for (Int spw=0; spw<selection_p.ncolumn(); spw++) {
+    iter_p=VisIter(ms_p,columns,timeInterval);
+    for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 }
 
 VisSet::VisSet(const VisSet& vs,const Block<Int>& columns, 
-	       Double timeInterval, Bool resort)
+	       Double timeInterval)
 {
     ms_p=vs.ms_p;
     selection_p.resize(vs.selection_p.shape());
     selection_p=vs.selection_p;
 
-    iter_p=VisIter(ms_p,columns,timeInterval, resort);
-    for (Int spw=0; spw<selection_p.ncolumn(); spw++) {
+    iter_p=VisIter(ms_p,columns,timeInterval);
+    for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 }
@@ -183,12 +182,12 @@ void VisSet::addColumns(Table& tab)
   Bool found=False;
   String dataTileId="";
   if (hypercolumnNames.nelements()>0) {
-    for (Int i=0; i<hypercolumnNames.nelements(); i++) {
+    for (uInt i=0; i<hypercolumnNames.nelements(); i++) {
       Vector<String> dataColNames,coordColNames,idColNames;
       td.hypercolumnDesc(hypercolumnNames(i),
 			 dataColNames,coordColNames,
 			 idColNames);
-      for (Int j=0; j<dataColNames.nelements(); j++) {
+      for (uInt j=0; j<dataColNames.nelements(); j++) {
 	if (dataColNames(j)==MS::columnName(MS::DATA)) {
 	  found=ToBool(idColNames.nelements()>0);
 	  if (found) dataTileId=idColNames(0);

@@ -117,14 +117,12 @@ public:
   // Note that the contents of these columns are NOT initialized,
   // you should fill them before trying to read the data.
   VisSet(MeasurementSet & ms, const Block<Int>& columns, 
-	 const Matrix<Int>& chanSelection, Double timeInterval=0,
-	 Bool resort=True);
+	 const Matrix<Int>& chanSelection, Double timeInterval=0);
 
   // Construct from an existing VisSet, this references the underlying
   // MeasurementSet(s) but allows a new iteration order and time interval
   // to be specified.
-  VisSet(const VisSet & vs, const Block<Int>& columns, Double timeInterval=0,
-	 Bool resort=True);
+  VisSet(const VisSet & vs, const Block<Int>& columns, Double timeInterval=0);
 
   // Destructor, flushes the data to disk
   ~VisSet();
