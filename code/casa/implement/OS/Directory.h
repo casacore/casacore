@@ -179,20 +179,18 @@ public:
     void move (const String& target, Bool overwrite = True);
     // </group>
 
-    // Recursively find all files which whose names match <src>regex</src>.
-    // Note that the latter matching is
-    // a regular expression match, not a shell file-expansion match.
-    // However, a shell file pattern can be converted to a regexp
+    // Find all files which whose names match <src>regex</src>.  You
+    // can do this recursively (default) or not.  Note that the 
+    // matching is a regular expression match, not a shell file-expansion 
+    // match. However, a shell file pattern can be converted to a regexp
     // using the function <linkto class=Regex>Regex::fromPattern</linkto>.
     // <src>Regex::fromString</src> allows one to convert a file name
     // to a regexp and to use this function for eact file name matching.
     // <br>To match the semantics of the unix <src>find</src> command,
     // symbolic links are not followed by default, but this behavior
-    // can be over-ridden. If you want to find all the files in a
-    // single directory, not recursively, that match some name,
-    // you should just use the class
-    // <linkto class="DirectoryIterator">DirectoryIterator</linkto>.
-    Vector<String> find (const Regex& regexp, Bool followSymLinks=False) const;
+    // can be over-ridden. 
+    Vector<String> find (const Regex& regexp, Bool followSymLinks=False,
+                         Bool recursive=True) const;
 
 private:
     // Check if the path defines a directory.
