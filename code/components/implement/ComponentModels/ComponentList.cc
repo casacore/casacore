@@ -28,12 +28,12 @@
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/Images/ImageInterface.h>
-
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MCDirection.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
@@ -48,10 +48,10 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-// #include <iostream.h>
 
 #ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_complist_bug1;
+typedef MeasConvert<MDirection,MVDirection,MCDirection> 
+  gpp_measconvert_mdirection_mvdirection_mcdirection;
 #endif
 
 ComponentList::ComponentList()
@@ -60,6 +60,7 @@ ComponentList::ComponentList()
    theTable(),
    theROFlag(False)
 {
+  AlwaysAssert(ok(), AipsError);
 }
 
 ComponentList::ComponentList(const String & fileName, const Bool readOnly)
@@ -91,15 +92,14 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
     AlwaysAssert(compDir.giveMe(frame, refType), AipsError);
     compDir.set(refType);
   }
-  Vector<Double> dir(2);
-  Quantum<Vector<Double> > qdir(dir);
+  Quantum<Vector<Double> > qdir;
   {
     String angleUnit;
     dirKeywords.get("Unit", angleUnit);
     qdir.setUnit(angleUnit);
   }
   const uInt nComp = typeCol.nrow();
-  Vector<Double> flux, parameters;
+  Vector<Double> flux(4), dir(2), parameters;
   String componentName;
   SkyComponent currentComp;
   for (uInt i = 0; i < nComp; i++) {
@@ -113,16 +113,36 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
     add(currentComp);
   }
   theROFlag = readOnly;
+  AlwaysAssert(ok(), AipsError);
+}
+
+ComponentList::ComponentList(const ComponentList & other)
+  :theList(other.theList),
+   theNelements(other.theNelements),
+   theTable(other.theTable),  
+   theROFlag(other.theROFlag)
+{
+  DebugAssert(ok(), AipsError);
 }
 
 ComponentList::~ComponentList() {
   if ((theROFlag == False) && (theTable.isNull() == False)) {
+    AlwaysAssert(theTable.isWritable(), AipsError);
+    const uInt nComps = nelements();
+    {
+      const uInt nRows = theTable.nrow();
+      if (nRows < nComps)
+	theTable.addRow(nComps-nRows);
+      else if (nRows > nComps)
+	for (uInt r = nRows-1; r >= nComps; r--)
+	  theTable.removeRow(r);
+    }
+      
     ScalarColumn<String> typeCol(theTable, "Type");
     ArrayColumn<Double> fluxCol(theTable, "Flux");
     ArrayColumn<Double> dirCol(theTable, "Direction");
     TableRecord dirKeywords(dirCol.keywordSet());
     ArrayColumn<Double> parmCol(theTable, "Parameters");
-    AlwaysAssert(theTable.isWritable(), AipsError);
     
     MDirection compDir;
     uInt refNum;
@@ -137,10 +157,9 @@ ComponentList::~ComponentList() {
     dirKeywords.get("Unit", angleUnits);
     Vector<Double> dirn;
     Vector<Double> compFlux(4), compParms;
-    for (uInt i = 0; i < nelements(); i++) {
+    for (uInt i = 0; i < nComps; i++) {
       typeCol.put(i, ComponentType::name(component(i).type()));
-      component(i).flux(compFlux);
-      fluxCol.put(i, compFlux);
+      component(i).flux(compFlux); fluxCol.put(i, compFlux);
       component(i).position(compDir);
       if (compDir.getRef().getType() != refNum)
 	compDir = MDirection::Convert(compDir, refNum)();
@@ -150,28 +169,43 @@ ComponentList::~ComponentList() {
       component(i).parameters(compParms);
       parmCol.put(i, compParms);
     }
-    if (theTable.nrow() > nelements())
-      for (uInt r = theTable.nrow()-1; r >= nelements(); r--)
-	theTable.removeRow(r);
   }
+  AlwaysAssert(ok(), AipsError);
 }
 
-void ComponentList::sample(Vector<Double> & result, const MDirection & samplePos) const {
+ComponentList & ComponentList::operator=(const ComponentList & other){
+  if (this != &other) {
+    theList = other.theList;
+    theNelements = other.theNelements;
+    theTable = other.theTable;
+    theROFlag = other.theROFlag;
+  }
+  DebugAssert(ok(), AipsError);
+  return *this;
+};
+
+void ComponentList::sample(Vector<Double> & result, 
+			   const MDirection & samplePos,
+			   const MVAngle & pixelSize) const {
+  AlwaysAssert(result.nelements() == 4, AipsError);
+  DebugAssert(ok(), AipsError);
   result = 0.0;
   Vector<Double> compResult(4);
   for (uInt i = 0; i < nelements(); i++) {
-    component(i).sample(compResult, samplePos);
+    component(i).sample(compResult, samplePos, pixelSize);
     result.ac() += compResult.ac();
   }
 }
 
 void ComponentList::project(ImageInterface<Float> & plane) const {
+  DebugAssert(ok(), AipsError);
   for (uInt i = 0; i < nelements(); i++)
     component(i).project(plane);
 }
 
 void ComponentList::add(SkyComponent & component) {
   AlwaysAssert(theROFlag == False, AipsError);
+  DebugAssert(ok(), AipsError);
   uInt blockSize = theList.nelements();
   if (theNelements == blockSize) {
     uInt newSize = (blockSize < 50) ? 2 * blockSize + 1 : blockSize + 100;
@@ -183,6 +217,7 @@ void ComponentList::add(SkyComponent & component) {
 
 void ComponentList::remove(uInt index) {
   AlwaysAssert(theROFlag == False, AipsError);
+  DebugAssert(ok(), AipsError);
   theList.remove(index, False);
   theNelements--;
 }
@@ -193,27 +228,25 @@ uInt ComponentList::nelements() const {
 
 SkyComponent & ComponentList::component(uInt index) {
   AlwaysAssert(theROFlag == False, AipsError);
+  DebugAssert(ok(), AipsError);
   return theList[index];
 }
 
 const SkyComponent & ComponentList::component(uInt index) const {
+  DebugAssert(ok(), AipsError);
   return theList[index];
 }
 
-void ComponentList::rename(const String & fileName, const Table::TableOption
-			   option) {
+void ComponentList::rename(const String & fileName, 
+			   const Table::TableOption option) {
   AlwaysAssert(option != Table::Old, AipsError);
-  if (!theTable.isNull()) {
-    if (theROFlag == False) {
+  AlwaysAssert(theROFlag == False, AipsError);
+  DebugAssert(ok(), AipsError);
+  // See if this list is associated with a Table. 
+  if (!theTable.isNull())
       theTable.rename(fileName, option);
-    }
-    else {
-      theTable.copy(fileName, option);
-      //      theTable = Table();
-      theTable = Table(fileName, option);
-    }
-  }
-  else {
+  // Otherwise construct a Table to hold the list
+  else { 
     // These two constants define the units and frame of the output list
     const String angleUnits("deg");
     const String refFrame("J2000");
@@ -243,7 +276,22 @@ void ComponentList::rename(const String & fileName, const Table::TableOption
     SetupNewTable newTable(fileName, td, option);
     theTable = Table(newTable, nelements(), True);
   }
-  theROFlag = False;
+  DebugAssert(ok(), AipsError);
+}
+
+ComponentList ComponentList::copy() const {
+  DebugAssert(ok(), AipsError);
+  ComponentList copiedList;
+  SkyComponent currentComp;
+  for (uInt c = 0; c < nelements(); c++) {
+    currentComp = component(c).copy();
+    copiedList.add(currentComp);
+  }
+  return copiedList;
+}
+
+Bool ComponentList::ok() const {
+  return True;
 }
 
 // Local Variables: 
