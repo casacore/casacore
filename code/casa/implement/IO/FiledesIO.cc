@@ -34,6 +34,20 @@
 #include <errno.h>                // needed for errno
 #include <string.h>               // needed for strerror
 
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#else
+#define traceFCLOSE fclose
+#define traceFSEEK fseek
+#define traceFREAD fread
+#define traceFWRITE fwrite
+#define traceREAD read
+#define traceWRITE write
+#define trace2OPEN open
+#define traceLSEEK lseek
+#define trace3OPEN open
+#define traceCLOSE close
+#endif // PABLO_IO
 
 FiledesIO::FiledesIO()
 : itsSeekable (False),
@@ -100,7 +114,7 @@ void FiledesIO::write (uInt size, const void* buf)
     if (!itsWritable) {
 	throw (AipsError ("FiledesIO object is not writable"));
     }
-    if (::write (itsFile, buf, size) != Int(size)) {
+    if (::traceWRITE(itsFile, buf, size) != Int(size)) {
 	throw (AipsError (String("FiledesIO: write error: ")
 			  + strerror(errno)));
     }
@@ -112,7 +126,7 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
   if (!itsReadable) {
     throw (AipsError ("FiledesIO::read - descriptor is not readable"));
   }
-  Int bytesRead = ::read (itsFile, buf, size);
+  Int bytesRead = ::traceREAD (itsFile, buf, size);
   if (bytesRead > Int(size)) { // Should never be executed
     throw (AipsError ("FiledesIO::read - read returned a bad value"));
   }
@@ -132,13 +146,13 @@ Long FiledesIO::seek (Long offset, ByteIO::SeekOption dir)
 {
     switch (dir) {
     case ByteIO::Begin:
-	return ::lseek (itsFile, offset, SEEK_SET);
+	return ::traceLSEEK (itsFile, offset, SEEK_SET);
     case ByteIO::End:
-        return ::lseek (itsFile, offset, SEEK_END);
+        return ::traceLSEEK (itsFile, offset, SEEK_END);
     default:
 	break;
     }
-    return ::lseek (itsFile, offset, SEEK_CUR);
+    return ::traceLSEEK (itsFile, offset, SEEK_CUR);
 }
 
 Long FiledesIO::length()
@@ -175,7 +189,7 @@ Bool FiledesIO::isSeekable() const
 
 int FiledesIO::create (const Char* name, int mode)
 {
-    int fd = ::open (name, O_RDWR | O_CREAT | O_TRUNC, mode);
+    int fd = ::trace3OPEN (name, O_RDWR | O_CREAT | O_TRUNC, mode);
     if (fd == -1) {
 	throw (AipsError ("FiledesIO: file " + String(name) +
 			  " could not be created: " + strerror(errno)));
@@ -186,9 +200,9 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 {
     int fd;
     if (writable) {
-	fd = ::open (name, O_RDWR);
+	fd = ::trace2OPEN (name, O_RDWR);
     }else{
-	fd = ::open (name, O_RDONLY);
+	fd = ::trace2OPEN (name, O_RDONLY);
     }
     if (throwExcp  &&  fd == -1) {
 	throw (AipsError ("FiledesIO: file " + String(name) +
@@ -198,7 +212,7 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 }
 void FiledesIO::close (int fd)
 {
-    if (::close (fd)  == -1) {
+    if (::traceCLOSE (fd)  == -1) {
 	throw (AipsError (String("FiledesIO: file could not be closed: ")
 			  + strerror(errno)));
     }
