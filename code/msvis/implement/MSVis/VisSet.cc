@@ -272,11 +272,15 @@ void VisSet::addColumns(Table& tab)
       Record values1; values1.define("MODEL_TILE_ID",tileId(0));
       Record values2; values2.define("CORRECTED_TILE_ID",tileId(0));
       Record values3; values3.define("IMAGING_WT_TILE_ID",tileId(0));
-      Int tileSize=(numChan+numChan/10)/(numChan/10+1);
+      //      Int tileSize=(numChan+numChan/10)/(numChan/10+1);
+      // set the tileSize in the channel direction so that we
+      // read about 10% for single channel access; we also waste less than
+      // 10% at the end of the spectrum. Set the total size to 132k for data.
+      Int tileSize=numChan/10+1;
       IPosition cubeShape(3,numCorr,numChan,obsIter.table().nrow());
-      IPosition tileShape(3,numCorr,numChan,4096/numCorr/tileSize);
+      IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
       IPosition cubeShapeWt(2,numChan,obsIter.table().nrow());
-      IPosition tileShapeWt(2,numChan,4096/tileSize);
+      IPosition tileShapeWt(2,tileSize,16384/tileSize);
       modelDataAccessor.addHypercube(cubeShape,tileShape,values1);
       corrDataAccessor.addHypercube(cubeShape,tileShape,values2);
       imWtAccessor.addHypercube(cubeShapeWt,tileShapeWt,values3);
@@ -286,17 +290,14 @@ void VisSet::addColumns(Table& tab)
     ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
     Int numCorr=data.shape(0)(0);
     Int numChan=selection_p(1,0);
-    // choose a tile size in the channel direction that is <=10
-    Int tileSize=(numChan+numChan/10)/(numChan/10+1);
-    IPosition tileShape(3,numCorr,tileSize,4096/numCorr/tileSize);
+    Int tileSize=numChan/10+1;
+    IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
     TiledColumnStMan tiledStMan1("TiledData-model",tileShape);
     tab.addColumn(td1,tiledStMan1);
     TiledColumnStMan tiledStMan2("TiledData-corrected",tileShape);
     tab.addColumn(td2,tiledStMan2);
-    IPosition tileShapeWt(2,tileSize,4096/tileSize);
+    IPosition tileShapeWt(2,tileSize,16384/tileSize);
     TiledColumnStMan tiledStMan3("TiledImagingWeight",tileShapeWt);
     tab.addColumn(td3,tiledStMan3);
   }
 }
-
-
