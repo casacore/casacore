@@ -1,5 +1,5 @@
 //# TableIter.h: Iterate through a Table
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,6 +125,8 @@ public:
 
     // Define the possible iteration orders.
     enum Order {Ascending=-1, DontCare=0, Descending=1};
+    // Define the possible sorts.
+    enum Option {QuickSort, HeapSort, InsSort, NoSort};
 
     // Create a null TableIterator object (i.e. no iterator is attached yet).
     // The sole purpose of this constructor is to allow construction
@@ -144,20 +146,28 @@ public:
     // Per column a compare function can be given to use other compare
     // functions than the standard ones defined in Compare.h.
     // The compare functions are used for both the sort and the iteration.
+    // The option argument makes it possible to choose from various
+    // sorting algorithms. Usually QuickSort is the fastest, but for
+    // some ill-conditioned input HeapSort performs much better.
+    // InsSort (insertion sort) should only be used when the input
+    // is almost in order.
+    // When the table is already in order, the sort step can be bypassed
+    // by giving the option TableIterator::NoSort.
+    // The default option is HeapSort.
     // <group>
     TableIterator (const Table&, const String& columnName,
-		   Order = DontCare);
+		   Order = DontCare, Option = HeapSort);
     TableIterator (const Table&, const Block<String>& columnNames,
-		   Order = DontCare);
+		   Order = DontCare, Option = HeapSort);
     // Give the iteration order per column.
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const Block<Int>& orders);
+		   const Block<Int>& orders, Option = HeapSort);
     // Give the iteration order per column.
     // Give an optional compare function per column.
     // A zero pointer means that the default compare function will be used.
     TableIterator (const Table&, const Block<String>& columnNames,
 		   const PtrBlock<ObjCompareFunc*>&,
-		   const Block<Int>& orders);
+		   const Block<Int>& orders, Option = HeapSort);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -188,7 +198,11 @@ public:
     Bool pastEnd() const;
 
     // Go to the next group.
+    // <group>
     void next();
+    void operator++();
+    void operator++(Int);
+    // </group>
 
     // Get the current group.
     Table table() const;
@@ -206,6 +220,12 @@ inline Bool TableIterator::pastEnd() const
 
 inline Table TableIterator::table() const
     { return subTable_p; }
+
+inline void TableIterator::operator++()
+    { next(); }
+
+inline void TableIterator::operator++ (Int)
+    { next(); }
 
 
 
