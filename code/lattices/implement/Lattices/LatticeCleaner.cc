@@ -248,8 +248,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     AlwaysAssert(optimumScale<nScalesToClean, AipsError);
 
     // Now add to the total flux
-    totalFlux += strengthOptimum;
-    totalFluxScale(optimumScale) += strengthOptimum;
+    totalFlux += (strengthOptimum*itsGain);
+    totalFluxScale(optimumScale) += (strengthOptimum*itsGain);
 
     // Various ways of stopping:
     //    1. stop if below threshold
