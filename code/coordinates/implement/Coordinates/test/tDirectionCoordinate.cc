@@ -32,7 +32,9 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVDirection.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/Projection.h>
 #include <aips/Exceptions/Error.h>
@@ -351,12 +353,12 @@ void doit3 (const DirectionCoordinate& lc)
    pixel(0) = 12.2;
    pixel(1) = -22.2;
    if (!lc.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+      throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
    }
 //
    Vector<Double> pixel2(2);
    if (!lc.toPixel(pixel2, world)) {
-      throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+      throw(AipsError(String("toPixel conversion (1) failed because ") + lc.errorMessage()));
    }
    if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 1 failed"));
@@ -364,18 +366,32 @@ void doit3 (const DirectionCoordinate& lc)
 //
    MDirection dir;
    if (!lc.toWorld(dir, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage())); 
+      throw(AipsError(String("toWorld conversion (2) failed because ") + lc.errorMessage())); 
    }
    if (!allNear(dir.getAngle().getValue(), world, 1e-6)) {
-         throw(AipsError("Coordinate conversion reflection 2 failed"));
+         throw(AipsError("Coordinate conversion values (MDirection) are wrong"));
    }
-//
    Vector<Double> pixel3;
    if (!lc.toPixel(pixel3, dir)) {
-      throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+      throw(AipsError(String("toPixel conversion (2) failed because ") + lc.errorMessage()));
    }
    if (!allNear(pixel3, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 2 failed"));
+   }
+//
+   MVDirection dirV;
+   if (!lc.toWorld(dirV, pixel)) {
+      throw(AipsError(String("toWorld conversion (3) failed because ") + lc.errorMessage())); 
+   }
+   MDirection dir2(dirV, lc.directionType());
+   if (!allNear(dir2.getAngle().getValue(), world, 1e-6)) {
+         throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
+   }
+   if (!lc.toPixel(pixel3, dirV)) {
+      throw(AipsError(String("toPixel conversion (3) failed because ") + lc.errorMessage()));
+   }
+   if (!allNear(pixel3, pixel, 1e-6)) {
+         throw(AipsError("Coordinate conversion reflection 3 failed"));
    }
 //
 // Formatting.  
