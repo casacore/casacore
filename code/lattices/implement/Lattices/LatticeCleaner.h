@@ -97,16 +97,16 @@ template<class T> class LatticeCleaner
 {
 public:
   // Call back function
-  typedef Bool LatticeCleaner::InfoCallback(const Bool lastcall,
-					    const Int iteration,
-					    const Int numberIterations,
-					    const Lattice<T>& model,
-					    const Vector<Float>& maxima,
-					    const Block<IPosition>& posMaximum,
-					    const Float strengthOptimum,
-					    const Int optimumScale,
-					    const IPosition& positionOptimum,
-					    const Block<TempLattice<T>* >& residuals);
+  typedef Bool InfoCallback(const Bool lastcall,
+			    const Int iteration,
+			    const Int numberIterations,
+			    const Lattice<T>& model,
+			    const Vector<Float>& maxima,
+			    const Block<IPosition>& posMaximum,
+			    const Float strengthOptimum,
+			    const Int optimumScale,
+			    const IPosition& positionOptimum,
+			    const Block<TempLattice<T>* >& residuals);
 
   // Create a cleaner for a specific dirty image and PSF
   LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty,

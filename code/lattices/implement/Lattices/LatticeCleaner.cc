@@ -101,17 +101,21 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsMemoryMB=AppInfo::memoryInMB()/32;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
-  cerr<<"itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);"<<endl;
   itsDirty->copyData(dirty);
-  cerr<<"itsDirty->copyData(dirty);"<<endl;
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  cerr<<"itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);"<<endl;
-  LatticeExpr<Complex> complexPsf(psf, 0.0);
-  cerr<<"LatticeExpr<Complex> complexPsf(psf, 0.0);"<<endl;
-  itsXfr->copyData(complexPsf);
-  cerr<<"itsXfr->copyData(complexPsf);"<<endl;
+  const IPosition tileShape = psf.niceCursorShape();
+  TiledLineStepper ls(psf.shape(), tileShape, 0);
+  {
+    RO_LatticeIterator<T> psfli(psf, ls);
+    LatticeIterator<Complex> xfrli(*itsXfr, ls);
+    for(psfli.reset(),xfrli.reset();!psfli.atEnd();psfli++,xfrli++) {
+      convertArray(xfrli.woCursor(), psfli.cursor());
+    }
+  }
+
+  //  LatticeExpr<Complex> complexPsf(psf, 0.0);
+  //  itsXfr->copyData(toComplex(psf));
   LatticeFFT::cfft(*itsXfr);
-  cerr<<"LatticeFFT::cfft(*itsXfr);"<<endl;
 }
 
 template <class T> LatticeCleaner<T>::
