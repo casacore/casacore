@@ -4785,3 +4785,4 @@
 14 316 src rm trial/apps/dish/dish_fnman.g
 14 316 sys rm libexec/dish_fnman.g
 14 316 src rm trial/apps/dish/dish_gauman.g
+14 316 sys rm libexec/dish_gauman.g
