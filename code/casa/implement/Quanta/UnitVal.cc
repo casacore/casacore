@@ -1,5 +1,5 @@
 //# UnitVal.cc: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,167 +35,153 @@
 #include <aips/Quanta/UnitMap.h>
 
 //# Constants
-UnitVal UnitVal::NODIM(1.);
-UnitVal UnitVal::UNDIM(1., UnitDim::Dnon);
-UnitVal UnitVal::LENGTH(1., UnitDim::Dm);
-UnitVal UnitVal::MASS(1., UnitDim::Dkg);
-UnitVal UnitVal::TIME(1., UnitDim::Ds);
-UnitVal UnitVal::CURRENT(1., UnitDim::DA);
-UnitVal UnitVal::TEMPERATURE(1., UnitDim::DK);
-UnitVal UnitVal::INTENSITY(1., UnitDim::Dcd);
-UnitVal UnitVal::MOLAR(1., UnitDim::Dmol);
-UnitVal UnitVal::ANGLE(1., UnitDim::Drad);
-UnitVal UnitVal::SOLIDANGLE(1., UnitDim::Dsr);
+UnitVal UnitVal::NODIM(		1.);
+UnitVal UnitVal::UNDIM(		1., UnitDim::Dnon);
+UnitVal UnitVal::LENGTH(	1., UnitDim::Dm);
+UnitVal UnitVal::MASS(		1., UnitDim::Dkg);
+UnitVal UnitVal::TIME(		1., UnitDim::Ds);
+UnitVal UnitVal::CURRENT(	1., UnitDim::DA);
+UnitVal UnitVal::TEMPERATURE(	1., UnitDim::DK);
+UnitVal UnitVal::INTENSITY(	1., UnitDim::Dcd);
+UnitVal UnitVal::MOLAR(		1., UnitDim::Dmol);
+UnitVal UnitVal::ANGLE(		1., UnitDim::Drad);
+UnitVal UnitVal::SOLIDANGLE(	1., UnitDim::Dsr);
 
-uShort UnitVal_init::count;
-
-UnitVal_init::UnitVal_init() {
-    if (count++ == 0) {
-      ///	UnitVal::init();		// make sure statics initialized
-    }
-}
-
-UnitVal_init::~UnitVal_init() {
-    if (--count == 0) {
-    }
-}
-
-void UnitVal::init() {}
 
 UnitVal::UnitVal() :
-    kindFactor(1.0),
-    kindDim() {}
+  kindFactor(1.0),
+  kindDim() {}
 
 UnitVal::UnitVal(const UnitVal &other) :
-    kindFactor(other.kindFactor),
-    kindDim(other.kindDim) {}
+  kindFactor(other.kindFactor),
+  kindDim(other.kindDim) {}
 
 UnitVal::UnitVal(Double factor) :
-    kindFactor(factor),
-    kindDim() {}
+  kindFactor(factor),
+  kindDim() {}
 
 UnitVal::UnitVal(Double factor, Int pos) :
-    kindFactor(factor),
-    kindDim(pos) {}
+  kindFactor(factor),
+  kindDim(pos) {}
 
 UnitVal::UnitVal(Double factor, const String& s) :
-    kindFactor(1.),
-    kindDim() {
-	if (UnitMap::getCache(s,*this)) {
-	    kindFactor *= factor;
-	} else if (UnitVal::create(s,*this)) {
-	    UnitMap::putCache(s,*this);
-	    kindFactor *= factor;
-	} else {
-	    throw (AipsError("UnitVal::UnitVal Illegal unit string '" +
-			     s + "'"));
-	}
-    }
+  kindFactor(1.),
+  kindDim() {
+  if (UnitMap::getCache(s,*this)) {
+    kindFactor *= factor;
+  } else if (UnitVal::create(s,*this)) {
+    UnitMap::putCache(s,*this);
+    kindFactor *= factor;
+  } else {
+    throw (AipsError("UnitVal::UnitVal Illegal unit string '" +
+		     s + "'"));
+  };
+}
 
 UnitVal::~UnitVal() {}
 
 UnitVal &UnitVal::operator=(const UnitVal &other) {
-    if (this != &other) {
-	kindFactor=other.kindFactor;
-	kindDim=other.kindDim;
-    }
-    return *this;
+  if (this != &other) {
+    kindFactor=other.kindFactor;
+    kindDim=other.kindDim;
+  };
+  return *this;
 }
 
 UnitVal &UnitVal::operator*=(const UnitVal &other) {
-    kindFactor *= other.kindFactor;
-    kindDim   *= other.kindDim;
-    return *this;
+  kindFactor *= other.kindFactor;
+  kindDim   *= other.kindDim;
+  return *this;
 }
 
 UnitVal operator*(const UnitVal &in, const UnitVal &other) {
-    UnitVal result = in;
-    result *= other;
-    return result;
+  UnitVal result = in;
+  result *= other;
+  return result;
 }
 
 UnitVal &UnitVal::operator/=(const UnitVal &other) {
-    kindFactor /= other.kindFactor;
-    kindDim   /= other.kindDim;
-    return *this;
+  kindFactor /= other.kindFactor;
+  kindDim   /= other.kindDim;
+  return *this;
 }
 
 UnitVal operator/(const UnitVal &in, const UnitVal &other) {
-    UnitVal result = in;
-    result /= other;
-    return result;
+  UnitVal result = in;
+  result /= other;
+  return result;
 }
 
 Bool UnitVal::operator==(const UnitVal &other) const {
-    return kindDim == other.kindDim;
+  return kindDim == other.kindDim;
 }
 
 Bool UnitVal::operator!=(const UnitVal &other) const {
-    return kindDim != other.kindDim;
+  return kindDim != other.kindDim;
 }
 
 ostream& operator<< (ostream &os, const UnitVal &ku) {
-    os << ku.kindFactor << ku.kindDim;
-    return os;
+  os << ku.kindFactor << ku.kindDim;
+  return os;
 }
 
 UnitVal UnitVal::pow(Int p) {
-    UnitVal loc;
-    loc.kindFactor=::pow(kindFactor,Double(p));
-    loc.kindDim=kindDim.pow(p);
-    return(loc);
+  UnitVal loc;
+  loc.kindFactor=::pow(kindFactor,Double(p));
+  loc.kindDim=kindDim.pow(p);
+  return(loc);
 }
 
 const UnitDim &UnitVal::getDim() const {
-    return kindDim;
+  return kindDim;
 }
 
 Double UnitVal::getFac() const {
-    return kindFactor;
+  return kindFactor;
 }
 
 Bool UnitVal::check(const String &s) {
-    UnitVal loc;
-    if (UnitMap::getCache(s,loc)) {
-    } else if (UnitVal::create(s,loc)) {
-	UnitMap::putCache(s,loc);
-    } else {
-	return False;
-    }
-    return True;
+  UnitVal loc;
+  if (UnitMap::getCache(s,loc)) {
+  } else if (UnitVal::create(s,loc)) {
+    UnitMap::putCache(s,loc);
+  } else {
+    return False;
+  };
+  return True;
 }
 
 Bool UnitVal::check(const String &s, UnitVal &loc) {
-    if (UnitMap::getCache(s,loc)) {
-    } else if (UnitVal::create(s,loc)) {
-	UnitMap::putCache(s,loc);
-    } else {
-	return False;
-    }
-    return True;
+  if (UnitMap::getCache(s,loc)) {
+  } else if (UnitVal::create(s,loc)) {
+    UnitMap::putCache(s,loc);
+  } else {
+    return False;
+  };
+  return True;
 }
-    
+
 Bool UnitVal::create(const String &s, UnitVal &res) {
-    MUString str(s);			// non-const copy
-    return create(str, res);
+  MUString str(s);			// non-const copy
+  return create(str, res);
 }
 
 Bool UnitVal::create(MUString &str, UnitVal &res) {
-    UnitVal kind;
-    Int ptr = str.getPtr();
-    if (str.eos()) return True;
-    Int ps = UnitVal::psign(str);	 	// power sign
-    if (str.eos()) return True;
-    if (str.testChar('(')) {
-      if (!str.matchPair(')')) return False;
-      if (!UnitVal::create(str.lastGet(), kind)) return False;
-    } else {
-      if (!UnitVal::field(str, kind)) return False;
-    };
-    ps *= UnitVal::power(str);			// full power
-    if (str.getPtr() == ptr) return False;	// must have been error
-    res *= kind.pow(ps);
-    return UnitVal::create(str,res) ;		// add next part
+  UnitVal kind;
+  Int ptr = str.getPtr();
+  if (str.eos()) return True;
+  Int ps = UnitVal::psign(str);	 	// power sign
+  if (str.eos()) return True;
+  if (str.testChar('(')) {
+    if (!str.matchPair(')')) return False;
+    if (!UnitVal::create(str.lastGet(), kind)) return False;
+  } else {
+    if (!UnitVal::field(str, kind)) return False;
+  };
+  ps *= UnitVal::power(str);			// full power
+  if (str.getPtr() == ptr) return False;	// must have been error
+  res *= kind.pow(ps);
+  return UnitVal::create(str,res) ;		// add next part
 }
 
 Int UnitVal::psign(MUString& str) {

@@ -165,176 +165,117 @@ class ostream;
 // </todo>
 
 class UnitVal {
-//# Friends
-///    friend class UnitVal_init;
-// Multiply
-    friend UnitVal operator*(const UnitVal &in, const UnitVal &other);
-// Divide
-    friend UnitVal operator/(const UnitVal &in, const UnitVal &other);
-// Output a unit as a value and a string of SI defining units
-    friend ostream& operator<<(ostream &os, const UnitVal &ku);
-
-public:
-//# Constructors
-// Construct an non-dimensioned value of 1
-    UnitVal();
-// Copy constructor
-    UnitVal(const UnitVal &other);
-
-// Construct an non-dimensioned value
-    UnitVal(Double factor);
-
-// Construct a fully dimensioned value
-// <thrown>
-//   <li> AipsError
-// </thrown>
-    UnitVal(Double factor, const String &s);
-
-// Construct a value with a single unit at position specified
-    UnitVal(Double factor, Int pos);
-
-// Destructor
-    ~UnitVal();
-
-//# Operators
-// Assignment (copy semantics)
-    UnitVal &operator=(const UnitVal &other);
-
-// Manipulate units
-// <group name="manipulate">
-// Multiply different units
-    UnitVal &operator*=(const UnitVal &other);
-
-// Divide different units
-    UnitVal &operator/=(const UnitVal &other);
-
-// Compare the dimensionality of different units
-    Bool operator==(const UnitVal &other) const;
-    Bool operator!=(const UnitVal &other) const;
-// </group>
-
-//# General member functions
-
-// Raise a unit to an integer power
-    UnitVal pow(Int p);
-
-// Get the data parts of the unit value definition
-// <group name="get data">
-// Get the dimensions in the defining SI units
-    const UnitDim &getDim() const;
-
-// Get the factor of the unit (as compared to pure SI units)
-    Double getFac() const;
-// </group>
-
-//# Helper functions
-// Convert a unit string to a proper unit value and cache the result. The
-// function will return False if invalid string specified
-    static Bool check(const String &s);
-
-// Convert a unit string to a proper unit value, cache the result and compare
-// the dimension with the specified unit value. False if any of the steps fails
-    static Bool check(const String &s, UnitVal &loc);
-
-
-//# Data members
-// Some constants to check type of units
-// <group name="unit kinds">
-static UnitVal NODIM;
-static UnitVal UNDIM;
-static UnitVal LENGTH;
-static UnitVal MASS;
-static UnitVal TIME;
-static UnitVal CURRENT;
-static UnitVal TEMPERATURE;
-static UnitVal INTENSITY;
-static UnitVal MOLAR;
-static UnitVal ANGLE;
-static UnitVal SOLIDANGLE;
-// </group>
-
-private:
-//# Data members
-// The factor necessary to express the specified unit in the defining SI units
-    Double kindFactor;
-
-// The dimensions of the unit in the defining SI units
-    UnitDim kindDim;
-
-//# Helper functions
-// This function is used, in conjunction with the
-// <linkto class=UnitVal_init>UnitVal_init</linkto>
-// class to force construction of statics (see ARM 3.4).
-static void init();
-
-// Convert (and check) a unit string to an SI value representation
-// <group>
+  //# Friends
+  // Multiply
+  friend UnitVal operator*(const UnitVal &in, const UnitVal &other);
+  // Divide
+  friend UnitVal operator/(const UnitVal &in, const UnitVal &other);
+  // Output a unit as a value and a string of SI defining units
+  friend ostream& operator<<(ostream &os, const UnitVal &ku);
+  
+ public:
+  //# Constructors
+  // Construct an non-dimensioned value of 1
+  UnitVal();
+  // Copy constructor
+  UnitVal(const UnitVal &other);
+  
+  // Construct an non-dimensioned value
+  UnitVal(Double factor);
+  
+  // Construct a fully dimensioned value
+  // <thrown>
+  //   <li> AipsError
+  // </thrown>
+  UnitVal(Double factor, const String &s);
+  
+  // Construct a value with a single unit at position specified
+  UnitVal(Double factor, Int pos);
+  
+  // Destructor
+  ~UnitVal();
+  
+  //# Operators
+  // Assignment (copy semantics)
+  UnitVal &operator=(const UnitVal &other);
+  
+  // Manipulate units
+  // <group name="manipulate">
+  // Multiply different units
+  UnitVal &operator*=(const UnitVal &other);
+  
+  // Divide different units
+  UnitVal &operator/=(const UnitVal &other);
+  
+  // Compare the dimensionality of different units
+  Bool operator==(const UnitVal &other) const;
+  Bool operator!=(const UnitVal &other) const;
+  // </group>
+  
+  //# General member functions
+  
+  // Raise a unit to an integer power
+  UnitVal pow(Int p);
+  
+  // Get the data parts of the unit value definition
+  // <group name="get data">
+  // Get the dimensions in the defining SI units
+  const UnitDim &getDim() const;
+  
+  // Get the factor of the unit (as compared to pure SI units)
+  Double getFac() const;
+  // </group>
+  
+  //# Helper functions
+  // Convert a unit string to a proper unit value and cache the result. The
+  // function will return False if invalid string specified
+  static Bool check(const String &s);
+  
+  // Convert a unit string to a proper unit value, cache the result and compare
+  // the dimension with the specified unit value. False if any of the steps fails
+  static Bool check(const String &s, UnitVal &loc);
+  
+  
+  //# Data members
+  // Some constants to check type of units
+  // <group name="unit kinds">
+  static UnitVal NODIM;
+  static UnitVal UNDIM;
+  static UnitVal LENGTH;
+  static UnitVal MASS;
+  static UnitVal TIME;
+  static UnitVal CURRENT;
+  static UnitVal TEMPERATURE;
+  static UnitVal INTENSITY;
+  static UnitVal MOLAR;
+  static UnitVal ANGLE;
+  static UnitVal SOLIDANGLE;
+  // </group>
+  
+ private:
+  //# Data members
+  // The factor necessary to express the specified unit in the defining SI units
+  Double kindFactor;
+  
+  // The dimensions of the unit in the defining SI units
+  UnitDim kindDim;
+  
+  // Convert (and check) a unit string to an SI value representation
+  // <group>
   static Bool create(const String &s, UnitVal &res);
   static Bool create(MUString &str, UnitVal &res);
-// </group>
-
-// Determine sign of unit power (i.e. if '.' or '/')
-    static Int psign(MUString &str);
-
-// Determine exponent of unit symbol
-    static Int power(MUString &str);
-
-// Determine symbol name in unit string
-    static Bool field(MUString &str, UnitVal &res);
-
+  // </group>
+  
+  // Determine sign of unit power (i.e. if '.' or '/')
+  static Int psign(MUString &str);
+  
+  // Determine exponent of unit symbol
+  static Int power(MUString &str);
+  
+  // Determine symbol name in unit string
+  static Bool field(MUString &str, UnitVal &res);
+  
 };
-
-
-// <summary>
-// Class used to force construction of UnitVal.
-// </summary>
-
-// <synopsis>
-// A static object of this class is used to make sure that
-// <linkto class=UnitVal>UnitVal</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="UnitVal_init" classes="UnitVal">
-//   <here>UnitVal_init</here> --
-// Class used to force construction of <linkto class=UnitVal>UnitVal</linkto>.
-// </linkfrom>
-
-class UnitVal_init {
-public:
-    UnitVal_init();
-    ~UnitVal_init();
-private:
-    static uShort count;
-};
-
-// <summary>
-// Object used to force construction of UnitVal.
-// </summary>
-
-// <synopsis>
-// This static object of the <linkto class=UnitVal_init>UnitVal_init</linkto>
-// class is used to make sure that
-// <linkto class=UnitVal>UnitVal</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="UnitVal initialization object" classes="UnitVal UnitVal_init">
-//   <here>UnitVal initialization object</here> --
-// Object used to force construction of <linkto class=UnitVal>UnitVal</linkto>.
-// </linkfrom>
-
-// <group name="UnitVal initialization object">
-
-static UnitVal_init unitval_init;
-
-// </group>
 
 //# Inline Implementations
 
@@ -346,5 +287,4 @@ ostream& operator<<(ostream &os, const UnitVal &ku);
 // </group>
 
 #endif
-
 
