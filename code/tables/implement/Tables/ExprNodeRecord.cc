@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 TableExprNodeRecordField::TableExprNodeRecordField
                                             (DataType dtype,
 					     const Block<Int>& fieldNumbers)
-: TableExprNodeBinary (NTNumeric, VTScalar, OtField, 0),
+: TableExprNodeBinary (NTNumeric, VTScalar, OtField, Table()),
   fieldNrs_p  (fieldNumbers),
   lastEntry_p (fieldNumbers.nelements() - 1)
 {

@@ -51,7 +51,7 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
   origin_p    (origin),
   constAxes_p (False)
 {
-    baseTabPtr_p = source.baseTablePtr();
+    table_p = source.table();
     exprtype_p = Variable;
 }
 

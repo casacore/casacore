@@ -189,13 +189,6 @@ TableExprNode::~TableExprNode ()
     TableExprNodeRep::unlink (node_p);
 }
 
-Table TableExprNode::table() const
-{
-    // Do not take into reference count.
-    return Table(const_cast<BaseTable*>(baseTablePtr()), False);
-}
-
-
 TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
 {
     set.checkEqualDataTypes();
@@ -215,26 +208,26 @@ DataType TableExprNode::getColumnDataType() const
 
 Bool TableExprNode::checkTable (const Table& table) const
 {
-    return  (table.baseTablePtr() == node_p->baseTablePtr());
+    return  (table.baseTablePtr() == node_p->table().baseTablePtr());
 }
 
 Bool TableExprNode::checkReplaceTable (const Table& table,
 				       Bool canBeConst) const
 {
-    if (table.baseTablePtr() == node_p->baseTablePtr()) {
+    if (table.baseTablePtr() == node_p->table().baseTablePtr()) {
 	return True;
     }
-    if (node_p->baseTablePtr() == 0) {
+    if (node_p->table().isNull()) {
 	return canBeConst;
     }
     Bool equalDataTypes;
     if (! table.tableDesc().columnDescSet().isEqual
-	                 (node_p->baseTablePtr()->tableDesc().columnDescSet(),
+	                 (node_p->table().tableDesc().columnDescSet(),
 			  equalDataTypes)
     ||  !equalDataTypes) {
 	return False;
     }
-    node_p->replaceTablePtr (table, table.baseTablePtr());
+    node_p->replaceTablePtr (table);
     return True;
 }
 
@@ -628,7 +621,7 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
 			   TableExprNodeRep::OtIN,
 			   TableExprNodeRep::NoArr, extype,
 			   node_p->ndim(), node_p->shape(),
-			   node_p->baseTablePtr());
+			   node_p->table());
     TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
@@ -755,16 +748,15 @@ TableExprNode TableExprNode::operator! () const
 //# Create a column node on behalf of the Table class.
 //# For builtin data types another type of node is created than
 //# for other data types.
-TableExprNode TableExprNode::newColumnNode (const Table& tab,
-					    const BaseTable* tabptr,
+TableExprNode TableExprNode::newColumnNode (const Table& table,
 					    const String& name,
 					    const Vector<String>& fieldNames)
 {
     //# Get the column description. This throws an exception if
     //# the name is not a column.
     TableExprNodeRep* tsnptr = 0;
-    const ColumnDesc& coldes = tab.tableDesc().columnDesc (name);
-    ROTableColumn col(tab, name);
+    const ColumnDesc& coldes = table.tableDesc().columnDesc (name);
+    ROTableColumn col(table, name);
     if (fieldNames.nelements() > 0  &&  coldes.dataType() != TpRecord) {
 	throw (TableInvExpr ("Column " + name + " does not contain records, "
 			     "so no subfields can be given for it"));
@@ -772,37 +764,37 @@ TableExprNode TableExprNode::newColumnNode (const Table& tab,
     if (coldes.isArray()) {
 	switch(coldes.dataType()) {
 	case TpBool:
-	    tsnptr = new TableExprNodeArrayColumnBool (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnBool (col, table);
 	    break;
 	case TpUChar:
-	    tsnptr = new TableExprNodeArrayColumnuChar (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnuChar (col, table);
 	    break;
 	case TpShort:
-	    tsnptr = new TableExprNodeArrayColumnShort(col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnShort(col, table);
 	    break;
 	case TpUShort:
-	    tsnptr = new TableExprNodeArrayColumnuShort (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnuShort (col, table);
 	    break;
 	case TpInt:
-	    tsnptr = new TableExprNodeArrayColumnInt (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnInt (col, table);
 	    break;
 	case TpUInt:
-	    tsnptr = new TableExprNodeArrayColumnuInt (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnuInt (col, table);
 	    break;
 	case TpFloat:
-	    tsnptr = new TableExprNodeArrayColumnFloat (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnFloat (col, table);
 	    break;
 	case TpDouble:
-	    tsnptr = new TableExprNodeArrayColumnDouble (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnDouble (col, table);
 	    break;
 	case TpComplex:
-	    tsnptr = new TableExprNodeArrayColumnComplex (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnComplex (col, table);
 	    break;
 	case TpDComplex:
-	    tsnptr = new TableExprNodeArrayColumnDComplex (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnDComplex (col, table);
 	    break;
 	case TpString:
-	    tsnptr = new TableExprNodeArrayColumnString (col, tabptr);
+	    tsnptr = new TableExprNodeArrayColumnString (col, table);
 	    break;
 	default:
 	    throw (TableInvExpr (name, "unknown data type"));
@@ -816,7 +808,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& tab,
 	    throw (TableInvExpr ("Sorry, column " + name + " contains records, "
 				 "which is not supported yet"));
 	}
-	tsnptr = new TableExprNodeColumn (tab, tabptr, name);
+	tsnptr = new TableExprNodeColumn (table, name);
     } else {
 	throw (TableInvExpr (name, " must be a Scalar or Array column"));
     }
@@ -1013,7 +1005,7 @@ TableExprNode TableExprNode::newFunctionNode
     }                                         // (in C++ first rownr is 0)
     if (ftype == TableExprFuncNode::rowidFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
-	return newRowidNode (table.baseTabPtr_p);
+	return newRowidNode (table);
     }
     if (ftype == TableExprFuncNode::randFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
@@ -1059,22 +1051,22 @@ TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
 					  inode, False);
 }
 
-TableExprNode TableExprNode::newRownrNode (const BaseTable* tabptr,
+TableExprNode TableExprNode::newRownrNode (const Table& table,
 					   uInt origin)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRownr (tabptr, origin);
+    TableExprNodeRep* tsnptr = new TableExprNodeRownr (table, origin);
     return tsnptr;
 }
 
-TableExprNode TableExprNode::newRowidNode (const BaseTable* tabptr)
+TableExprNode TableExprNode::newRowidNode (const Table& table)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRowid (tabptr);
+    TableExprNodeRep* tsnptr = new TableExprNodeRowid (table);
     return tsnptr;
 }
 
-TableExprNode TableExprNode::newRandomNode (const BaseTable* tabptr)
+TableExprNode TableExprNode::newRandomNode (const Table& table)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRandom (tabptr);
+    TableExprNodeRep* tsnptr = new TableExprNodeRandom (table);
     return tsnptr;
 }
 

@@ -39,7 +39,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)
-: TableExprNodeBinary (dtype, VTArray, otype, 0)
+: TableExprNodeBinary (dtype, VTArray, otype, Table())
 {
     ndim_p = -1;
 }
@@ -49,7 +49,7 @@ TableExprNodeArray::TableExprNodeArray (const TableExprNodeRep& node,
 {}
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype,
 					const IPosition& shape)
-: TableExprNodeBinary (dtype, VTArray, otype, 0)
+: TableExprNodeBinary (dtype, VTArray, otype, Table())
 {
     shape_p = shape;
     ndim_p  = shape.nelements();
@@ -356,7 +356,7 @@ Array<DComplex> TableExprNodeArray::makeArray (const IPosition& shape,
 
 TableExprNodeArrayColumn::TableExprNodeArrayColumn
                                            (const ROTableColumn& tablecol,
-					    const BaseTable* tabptr)
+					    const Table& table)
 : TableExprNodeArray (NTNumeric, OtColumn),
   tabCol_p           (tablecol)
 {
@@ -386,7 +386,7 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
 	throw (TableInvExpr (tabCol_p.columnDesc().name(),
 			     "unknown data type"));
     }
-    baseTabPtr_p = tabptr;
+    table_p = table;
     exprtype_p = Variable;
     // Set the fixed shape and dimensionality (if known).
     ndim_p = tabCol_p.ndimColumn();
@@ -399,12 +399,11 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
 TableExprNodeArrayColumn::~TableExprNodeArrayColumn()
 {}
 
-void TableExprNodeArrayColumn::replaceTablePtr (const Table& table,
-						const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumn::replaceTablePtr (const Table& table)
 {
     String name = tabCol_p.columnDesc().name();
     tabCol_p.reference (ROTableColumn (table, name));
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
 }
 
 const IPosition& TableExprNodeArrayColumn::getShape (const TableExprId& id)
@@ -428,17 +427,16 @@ Bool TableExprNodeArrayColumn::getColumnDataType (DataType& dt) const
 
 TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnBool::~TableExprNodeArrayColumnBool()
 {}
-void TableExprNodeArrayColumnBool::replaceTablePtr (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnBool::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Bool> (tabCol_p));
 }
 
@@ -469,17 +467,16 @@ Array<Bool> TableExprNodeArrayColumnBool::getElemColumnBool
 
 TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnuChar::~TableExprNodeArrayColumnuChar()
 {}
-void TableExprNodeArrayColumnuChar::replaceTablePtr (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnuChar::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<uChar> (tabCol_p));
 }
 
@@ -518,17 +515,16 @@ Array<uChar> TableExprNodeArrayColumnuChar::getElemColumnuChar
 
 TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnShort::~TableExprNodeArrayColumnShort()
 {}
-void TableExprNodeArrayColumnShort::replaceTablePtr (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnShort::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Short> (tabCol_p));
 }
 
@@ -567,18 +563,16 @@ Array<Short> TableExprNodeArrayColumnShort::getElemColumnShort
 
 TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnuShort::~TableExprNodeArrayColumnuShort()
 {}
-void TableExprNodeArrayColumnuShort::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnuShort::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<uShort> (tabCol_p));
 }
 
@@ -617,18 +611,16 @@ Array<uShort> TableExprNodeArrayColumnuShort::getElemColumnuShort
 
 TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnInt::~TableExprNodeArrayColumnInt()
 {}
-void TableExprNodeArrayColumnInt::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnInt::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Int> (tabCol_p));
 }
 
@@ -666,18 +658,16 @@ Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt (const Slicer& index)
 
 TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnuInt::~TableExprNodeArrayColumnuInt()
 {}
-void TableExprNodeArrayColumnuInt::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnuInt::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<uInt> (tabCol_p));
 }
 
@@ -716,18 +706,16 @@ Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
 
 TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnFloat::~TableExprNodeArrayColumnFloat()
 {}
-void TableExprNodeArrayColumnFloat::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnFloat::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Float> (tabCol_p));
 }
 
@@ -766,18 +754,16 @@ Array<Float> TableExprNodeArrayColumnFloat::getElemColumnFloat
 
 TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnDouble::~TableExprNodeArrayColumnDouble()
 {}
-void TableExprNodeArrayColumnDouble::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnDouble::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Double> (tabCol_p));
 }
 
@@ -810,18 +796,16 @@ Array<Double> TableExprNodeArrayColumnDouble::getElemColumnDouble
 
 TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnComplex::~TableExprNodeArrayColumnComplex()
 {}
-void TableExprNodeArrayColumnComplex::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnComplex::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<Complex> (tabCol_p));
 }
 
@@ -862,18 +846,16 @@ Array<Complex> TableExprNodeArrayColumnComplex::getElemColumnComplex
 
 TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnDComplex::~TableExprNodeArrayColumnDComplex()
 {}
-void TableExprNodeArrayColumnDComplex::replaceTablePtr
-                                              (const Table& table,
-		      			       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnDComplex::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<DComplex> (tabCol_p));
 }
 
@@ -907,18 +889,16 @@ Array<DComplex> TableExprNodeArrayColumnDComplex::getElemColumnDComplex
 
 TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
                                            (const ROTableColumn& col,
-					    const BaseTable* tabptr)
-: TableExprNodeArrayColumn (col, tabptr),
+					    const Table& table)
+: TableExprNodeArrayColumn (col, table),
   col_p                    (col)
 {}
 TableExprNodeArrayColumnString::~TableExprNodeArrayColumnString()
 {}
-void TableExprNodeArrayColumnString::replaceTablePtr
-                                              (const Table& table,
-					       const BaseTable* baseTablePtr)
+void TableExprNodeArrayColumnString::replaceTablePtr (const Table& table)
 {
     // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table, baseTablePtr);
+    TableExprNodeArrayColumn::replaceTablePtr (table);
     col_p.reference (ROArrayColumn<String> (tabCol_p));
 }
 

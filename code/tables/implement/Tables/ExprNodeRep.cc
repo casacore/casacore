@@ -30,7 +30,6 @@
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
 #include <tables/Tables/ExprRange.h>
-#include <tables/Tables/Table.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ColumnDesc.h>
@@ -47,17 +46,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The constructor to be used by the derived classes.
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
 				    OperType optype,
-				    const BaseTable* baseTablePtr)
-: count_p     (0),
-  baseTabPtr_p(baseTablePtr),
-  dtype_p     (dtype),
-  vtype_p     (vtype),
-  optype_p    (optype),
-  argtype_p   (NoArr),
-  exprtype_p  (Variable),
-  ndim_p      (0)
+				    const Table& table)
+: count_p    (0),
+  table_p    (table),
+  dtype_p    (dtype),
+  vtype_p    (vtype),
+  optype_p   (optype),
+  argtype_p  (NoArr),
+  exprtype_p (Variable),
+  ndim_p     (0)
 {
-    if (baseTablePtr == 0) {
+    if (table.isNull()) {
 	exprtype_p = Constant;
     }
 }
@@ -66,28 +65,28 @@ TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
 				    OperType optype, ArgType argtype,
 				    ExprType exprtype,
 				    Int ndim, const IPosition& shape,
-				    const BaseTable* baseTablePtr)
-: count_p     (0),
-  baseTabPtr_p(baseTablePtr),
-  dtype_p     (dtype),
-  vtype_p     (vtype),
-  optype_p    (optype),
-  argtype_p   (argtype),
-  exprtype_p  (exprtype),
-  ndim_p      (ndim),
-  shape_p     (shape)
+				    const Table& table)
+: count_p    (0),
+  table_p    (table),
+  dtype_p    (dtype),
+  vtype_p    (vtype),
+  optype_p   (optype),
+  argtype_p  (argtype),
+  exprtype_p (exprtype),
+  ndim_p     (ndim),
+  shape_p    (shape)
 {}
 
 TableExprNodeRep::TableExprNodeRep (const TableExprNodeRep& that)
-: count_p     (0),
-  baseTabPtr_p(that.baseTabPtr_p),
-  dtype_p     (that.dtype_p),
-  vtype_p     (that.vtype_p),
-  optype_p    (that.optype_p),
-  argtype_p   (that.argtype_p),
-  exprtype_p  (that.exprtype_p),
-  ndim_p      (that.ndim_p),
-  shape_p     (that.shape_p)
+: count_p    (0),
+  table_p    (that.table_p),
+  dtype_p    (that.dtype_p),
+  vtype_p    (that.vtype_p),
+  optype_p   (that.optype_p),
+  argtype_p  (that.argtype_p),
+  exprtype_p (that.exprtype_p),
+  ndim_p     (that.ndim_p),
+  shape_p    (that.shape_p)
 {}
 
 TableExprNodeRep::~TableExprNodeRep ()
@@ -110,13 +109,12 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
     }
     os << Int(dtype_p) << ' ' << Int(vtype_p) << ' ' << Int(optype_p)
        << ' ' << Int(exprtype_p) << ' '<< Int(argtype_p) << ' '
-       << ndim_p << ' ' << shape_p << ' ' << baseTabPtr_p << endl;
+       << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
 }
 
-void TableExprNodeRep::replaceTablePtr (const Table&,
-					const BaseTable* baseTablePtr)
+void TableExprNodeRep::replaceTablePtr (const Table& table)
 {
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
 }
 
 //# Determine the number of rows in the table used in the expression.
@@ -125,24 +123,24 @@ uInt TableExprNodeRep::nrow() const
     if (exprtype_p == Constant) {
         return 1;
     }
-    if (baseTabPtr_p == 0) {
+    if (table_p.isNull()) {
 	return 0;
     }
-    return baseTabPtr_p->nrow();
+    return table_p.nrow();
 }
 
 void TableExprNodeRep::convertConstChild()
 {}
 
-void TableExprNodeRep::checkTablePtr (const BaseTable*& baseTablePtr,
+void TableExprNodeRep::checkTablePtr (Table& table,
 				      const TableExprNodeRep* node)
 {
     if (node != 0) {
-	if (baseTablePtr == 0) {
-	    baseTablePtr = node->baseTablePtr();
+	if (table.isNull()) {
+	    table = node->table();
 	}else{
-	    if (node->baseTablePtr() != baseTablePtr
-	    &&  node->baseTablePtr() != 0) {
+	    if (!node->table().isNull()
+            &&  node->table().baseTablePtr() != table.baseTablePtr()) {
 		throw (TableInvExpr ("subexpressions use different tables"));
 	    }
 	}
@@ -514,7 +512,7 @@ TableExprNodeRep* TableExprNodeRep::convertNode (TableExprNodeRep* thisNode,
     }
     // Put a BaseTable in it, so the expression analyzer knows the constant
     // comes from a Table.
-    newNode->replaceTablePtr (Table(), thisNode->baseTablePtr());
+    newNode->replaceTablePtr (thisNode->table());
     delete thisNode;
     return newNode;
 }    
@@ -535,8 +533,8 @@ TableExprNodeRep* TableExprNodeRep::getRep (TableExprNode& node)
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
 					  ValueType vtype,
 					  OperType oper,
-					  const BaseTable* baseTablePtr)
-: TableExprNodeRep (tp, vtype, oper, baseTablePtr),
+					  const Table& table)
+: TableExprNodeRep (tp, vtype, oper, table),
   lnode_p          (0),
   rnode_p          (0)
 {}
@@ -569,15 +567,14 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeBinary::replaceTablePtr (const Table& table,
-					   const BaseTable* baseTablePtr)
+void TableExprNodeBinary::replaceTablePtr (const Table& table)
 {
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
     if (lnode_p != 0) {
-	lnode_p->replaceTablePtr (table, baseTablePtr);
+	lnode_p->replaceTablePtr (table);
     }
     if (rnode_p != 0) {
-	rnode_p->replaceTablePtr (table, baseTablePtr);
+	rnode_p->replaceTablePtr (table);
     }
 }
 
@@ -712,10 +709,10 @@ TableExprNodeRep TableExprNodeBinary::getTypes (const TableExprNodeRep& left,
     }
     // Determine from which table the expression is coming
     // and whether the tables match.
-    const BaseTable* baseTablePtr = left.baseTablePtr();
-    checkTablePtr (baseTablePtr, &right);
+    Table table = left.table();
+    checkTablePtr (table, &right);
     return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape,
-			     baseTablePtr);
+			     table);
 }
 
 // Fill the child pointers of a node.
@@ -801,7 +798,7 @@ void TableExprNodeBinary::convertConstChild()
     }
     // Put a BaseTable in it, so the expression analyzer knows the constant
     // comes from a Table.
-    newNode->replaceTablePtr (Table(), (**constNode).baseTablePtr());
+    newNode->replaceTablePtr ((**constNode).table());
     unlink (*constNode);
     *constNode = newNode->link();
 }
@@ -817,7 +814,7 @@ void TableExprNodeBinary::convertConstChild()
 TableExprNodeMulti::TableExprNodeMulti (NodeDataType tp, ValueType vtype,
 					OperType oper,
 					const TableExprNodeRep& source)
-: TableExprNodeRep (tp, vtype, oper, source.baseTablePtr()),
+: TableExprNodeRep (tp, vtype, oper, source.table()),
   operands_p       (0)
 {
     exprtype_p = source.exprType();
@@ -840,13 +837,12 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeMulti::replaceTablePtr (const Table& table,
-					  const BaseTable* baseTablePtr)
+void TableExprNodeMulti::replaceTablePtr (const Table& table)
 {
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
     for (uInt i=0; i<operands_p.nelements(); i++) {
 	if (operands_p[i] != 0) {
-	    operands_p[i]->replaceTablePtr (table, baseTablePtr);
+	    operands_p[i]->replaceTablePtr (table);
 	}
     }
 }

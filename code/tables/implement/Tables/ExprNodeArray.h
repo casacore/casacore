@@ -178,12 +178,12 @@ class TableExprNodeArrayColumn : public TableExprNodeArray
 public:
     // Create the object for the given column and table.
     TableExprNodeArrayColumn (const ROTableColumn& tablecol,
-			      const BaseTable* tabptr);
+			      const Table& table);
 
     ~TableExprNodeArrayColumn();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     // Get the ROTableColumn object.
     const ROTableColumn& getColumn() const;
@@ -226,11 +226,11 @@ class TableExprNodeArrayColumnBool : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnBool (const ROTableColumn&,
-				  const BaseTable*);
+				  const Table&);
     ~TableExprNodeArrayColumnBool();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Bool getElemBool (const TableExprId& id, const Slicer& index);
     virtual Array<Bool>  getArrayBool (const TableExprId& id);
@@ -263,11 +263,11 @@ class TableExprNodeArrayColumnuChar : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnuChar (const ROTableColumn&,
-				   const BaseTable*);
+				   const Table&);
     ~TableExprNodeArrayColumnuChar();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -301,11 +301,11 @@ class TableExprNodeArrayColumnShort : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnShort (const ROTableColumn&,
-				   const BaseTable*);
+				   const Table&);
     ~TableExprNodeArrayColumnShort();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -339,11 +339,11 @@ class TableExprNodeArrayColumnuShort : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnuShort (const ROTableColumn&,
-				    const BaseTable*);
+				    const Table&);
     ~TableExprNodeArrayColumnuShort();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -377,11 +377,11 @@ class TableExprNodeArrayColumnInt : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnInt (const ROTableColumn&,
-				 const BaseTable*);
+				 const Table&);
     ~TableExprNodeArrayColumnInt();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -415,11 +415,11 @@ class TableExprNodeArrayColumnuInt : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnuInt (const ROTableColumn&,
-				  const BaseTable*);
+				  const Table&);
     ~TableExprNodeArrayColumnuInt();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -453,11 +453,11 @@ class TableExprNodeArrayColumnFloat : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnFloat (const ROTableColumn&,
-				   const BaseTable*);
+				   const Table&);
     ~TableExprNodeArrayColumnFloat();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -491,11 +491,11 @@ class TableExprNodeArrayColumnDouble : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnDouble (const ROTableColumn&,
-				    const BaseTable*);
+				    const Table&);
     ~TableExprNodeArrayColumnDouble();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -529,11 +529,11 @@ class TableExprNodeArrayColumnComplex : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnComplex (const ROTableColumn&,
-				     const BaseTable*);
+				     const Table&);
     ~TableExprNodeArrayColumnComplex();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
@@ -567,11 +567,11 @@ class TableExprNodeArrayColumnDComplex : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnDComplex (const ROTableColumn&,
-				      const BaseTable*);
+				      const Table&);
     ~TableExprNodeArrayColumnDComplex();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
@@ -605,11 +605,11 @@ class TableExprNodeArrayColumnString : public TableExprNodeArrayColumn
 {
 public:
     TableExprNodeArrayColumnString (const ROTableColumn&,
-				    const BaseTable*);
+				    const Table&);
     ~TableExprNodeArrayColumnString();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     virtual String getElemString (const TableExprId& id, const Slicer& index);
     virtual Array<String> getArrayString (const TableExprId& id);

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <tables/Tables/Table.h>
 #include <tables/Tables/TableExprId.h>
 #include <tables/Tables/ExprRange.h>
 #include <casa/BasicSL/Complex.h>
@@ -42,7 +43,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TableExprNode;
-class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
 
@@ -147,10 +147,10 @@ public:
     // Construct a node.
     TableExprNodeRep (NodeDataType, ValueType, OperType, ArgType, ExprType,
 		      Int ndim, const IPosition& shape,
-		      const BaseTable* baseTablePtr);
+		      const Table& table);
 
     // This constructor is called from the derived TableExprNodeRep.
-    TableExprNodeRep (NodeDataType, ValueType, OperType, const BaseTable*);
+    TableExprNodeRep (NodeDataType, ValueType, OperType, const Table&);
 
     // Copy constructor.
     TableExprNodeRep (const TableExprNodeRep&);
@@ -289,14 +289,17 @@ public:
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
 
-    // Get basetable. This gets a pointer to the BaseTable to which a
-    // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
+    // Get table. This gets the Table object to which a
+    // TableExprNode belongs. A TableExprNode belongs to the Table to
     // which the column(s) used in an expression belong. Note that
     // all columns in an expression have to belong to the same table.
-    const BaseTable* baseTablePtr() const;
+    // <group>
+    Table& table();
+    const Table& table() const;
+    // </group>
 
     // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     // Create a range object from a column and an interval.
     static void createRange (Block<TableExprRange>&,
@@ -307,7 +310,7 @@ public:
 
 protected:
     uInt              count_p;       //# Reference count
-    const BaseTable*  baseTabPtr_p;  //# Table from which node is "derived"
+    Table             table_p;       //# Table from which node is "derived"
     NodeDataType      dtype_p;       //# data type of the operation
     ValueType         vtype_p;       //# value type of the result
     OperType          optype_p;      //# operator type
@@ -331,10 +334,10 @@ protected:
     virtual void convertConstChild();
 
     // Check if this node uses the same table pointer.
-    // Fill the pointer if it is still zero.
+    // Fill the Table object if it is still null.
     // <group>
     void checkTablePtr (const TableExprNodeRep* node);
-    static void checkTablePtr (const BaseTable*& baseTablePtr,
+    static void checkTablePtr (Table& table,
 			       const TableExprNodeRep* node);
     // </group>
 
@@ -400,7 +403,7 @@ class TableExprNodeBinary : public TableExprNodeRep
 {
 public:
     // Constructor
-    TableExprNodeBinary (NodeDataType, ValueType, OperType, const BaseTable*);
+    TableExprNodeBinary (NodeDataType, ValueType, OperType, const Table&);
     TableExprNodeBinary (NodeDataType, const TableExprNodeRep&, OperType);
 
     // Destructor
@@ -432,8 +435,8 @@ public:
     // done for each get.
     void convertConstChild();
 
-    // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    // Replace the Table in this node and all its children.
+    virtual void replaceTablePtr (const Table&);
 
   // Get the child nodes.
   // <group>
@@ -508,7 +511,7 @@ public:
 			       const PtrBlock<TableExprNodeRep*>& nodes);
     
     // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     // Get the child nodes.
     // <group>
@@ -561,11 +564,13 @@ inline const IPosition& TableExprNodeRep::shape() const
     { return shape_p; }
 
 //# Get the table from which the node is derived.
-inline const BaseTable* TableExprNodeRep::baseTablePtr() const
-    { return baseTabPtr_p; }
+inline Table& TableExprNodeRep::table()
+    { return table_p; }
+inline const Table& TableExprNodeRep::table() const
+    { return table_p; }
 
 inline void TableExprNodeRep::checkTablePtr (const TableExprNodeRep* node)
-    { checkTablePtr (baseTabPtr_p, node); }
+    { checkTablePtr (table_p, node); }
 inline void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
     { fillExprType (exprtype_p, node); }
 

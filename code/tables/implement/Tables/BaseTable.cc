@@ -633,7 +633,7 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     //# and which type is also a Bool, but it has no table.
     //# It also catches:  tab(tab.key(name) > 5);
     //# since that also has no table (a keyword is converted to a constant).
-    if (node.baseTablePtr() != this) {
+    if (node.table().baseTablePtr() != this) {
 	throw (TableInvExpr ("expression uses different table"));
     }
     //# Create an reference table, which will be in row order.

@@ -1061,7 +1061,7 @@ void TableParseSelect::handleOffset (const TableExprNode& expr)
 
 Double TableParseSelect::evalDSExpr (const TableExprNode& expr) const
 {
-  if (expr.baseTablePtr() != 0) {
+  if (!expr.table().isNull()) {
     throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
   }
   TableExprId rowid(0);

@@ -182,7 +182,7 @@ public:
     void checkTable();
 
     // Replace the BaseTable pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
 private:
     // A copy of a TableExprNodeSetElem cannot be made.
@@ -375,7 +375,7 @@ public:
     // </group>
 
     // Replace the BaseTable pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
 private:
     // A copy of a TableExprNodeSet cannot be made.

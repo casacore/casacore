@@ -40,7 +40,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class BaseTable;
 class Table;
 class String;
 class TableRecord;
@@ -605,21 +604,17 @@ public:
     // thus does not need a table column in it.
     Bool checkReplaceTable (const Table& table, Bool canBeConst=False) const;
 
-    // Get basetable. This gets a pointer to the BaseTable to which a
-    // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
+    // Get table. This gets the Table object to which a
+    // TableExprNode belongs. A TableExprNode belongs to the Table to
     // which the column(s) used in an expression belong. Note that
     // all columns in an expression have to belong to the same table.
-    // <group>
-    Table table() const;
-    const BaseTable* baseTablePtr() const;
-    // </group>
+    const Table& table() const;
 
     // Create a column node on behalf of the Table class.
     // For builtin data types another type of node is created than
     // for other data types.
     // isArray indicates if the column should be an array column.
     static TableExprNode newColumnNode (const Table& tab,
-					const BaseTable* tabptr,
 					const String& name,
 					const Vector<String>& fieldNames);
 
@@ -661,14 +656,14 @@ public:
     // Create rownumber() function node.
     // Origin indicates whether the first row should be zero (for C++ binding)
     // or an other value (one for TaQL binding).
-    static TableExprNode newRownrNode (const BaseTable* tabptr, uInt origin);
+    static TableExprNode newRownrNode (const Table& table, uInt origin);
 
     // Create rowid() function node.
     // Origin is always 0.
-    static TableExprNode newRowidNode (const BaseTable* tabptr);
+    static TableExprNode newRowidNode (const Table& table);
 
     // Create rand() function node.
-    static TableExprNode newRandomNode (const BaseTable* tabptr);
+    static TableExprNode newRandomNode (const Table& table);
 
     // Create ArrayElement node for the given array with the given index.
     // The origin is 0 for C++ and 1 for TaQL.
@@ -713,8 +708,8 @@ inline void TableExprNode::ranges (Block<TableExprRange>& blrange)
     { node_p->ranges (blrange); }
 
 //# Get the table from which the node is derived.
-inline const BaseTable* TableExprNode::baseTablePtr() const
-    { return node_p->baseTablePtr(); }
+inline const Table& TableExprNode::table() const
+    { return node_p->table(); }
 
 //# Get the value of an expression.
 inline void TableExprNode::get (const TableExprId& id, Bool& value) const

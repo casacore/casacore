@@ -265,12 +265,11 @@ private:
 class TableExprNodeColumn : public TableExprNodeBinary
 {
 public:
-    TableExprNodeColumn (const Table&, const BaseTable*,
-			 const String& columnName);
+    TableExprNodeColumn (const Table&, const String& columnName);
     ~TableExprNodeColumn();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&, const BaseTable*);
+    virtual void replaceTablePtr (const Table&);
 
     Bool     getBool     (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
@@ -323,7 +322,7 @@ protected:
 class TableExprNodeRownr : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRownr (const BaseTable*, uInt origin);
+    TableExprNodeRownr (const Table&, uInt origin);
     ~TableExprNodeRownr();
     Double getDouble (const TableExprId& id);
 private:
@@ -357,7 +356,7 @@ private:
 class TableExprNodeRowid : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRowid (const BaseTable*);
+    TableExprNodeRowid (const Table&);
     ~TableExprNodeRowid();
     Double getDouble (const TableExprId& id);
 private:
@@ -388,7 +387,7 @@ private:
 class TableExprNodeRandom : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRandom (const BaseTable*);
+    TableExprNodeRandom (const Table&);
     ~TableExprNodeRandom();
     Double getDouble (const TableExprId& id);
 private:

@@ -640,14 +640,12 @@ TableExprNode Table::key (const Vector<String>& fieldNames) const
 TableExprNode Table::col (const String& columnName) const
 {
     Vector<String> fieldNames;
-    return TableExprNode::newColumnNode (*this, baseTabPtr_p, columnName,
-					 fieldNames);
+    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
 }
 TableExprNode Table::col (const String& columnName,
 			  const Vector<String>& fieldNames) const
 {
-    return TableExprNode::newColumnNode (*this, baseTabPtr_p, columnName,
-					 fieldNames);
+    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
 }
 
 //# Create an expression node for either a keyword or column.
@@ -667,12 +665,12 @@ TableExprNode Table::keyCol (const String& name,
 
 TableExprNode Table::nodeRownr(uInt origin) const
 {
-    return TableExprNode::newRownrNode (baseTabPtr_p, origin);
+    return TableExprNode::newRownrNode (*this, origin);
 }
 
 TableExprNode Table::nodeRandom () const
 {
-    return TableExprNode::newRandomNode (baseTabPtr_p);
+    return TableExprNode::newRandomNode (*this);
 }
 
 

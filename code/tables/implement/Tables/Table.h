@@ -143,6 +143,7 @@ friend class RefTable;
 friend class TableIterator;
 friend class RODataManAccessor;
 friend class TableExprNode;
+friend class TableExprNodeRep;
 
 public:
     enum TableOption {

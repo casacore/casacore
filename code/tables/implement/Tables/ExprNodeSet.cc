@@ -42,7 +42,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
-: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0),
+: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table()),
   itsStart (0),
   itsEnd   (0),
   itsIncr  (0),
@@ -59,7 +59,7 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
 					    const TableExprNode* end,
 					    const TableExprNode* incr)
-: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0),
+: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table()),
   itsStart (0),
   itsEnd   (0),
   itsIncr  (0),
@@ -99,21 +99,21 @@ TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
 					    const TableExprNode& start,
 					    const TableExprNode& end,
 					    Bool isRightClosed)
-: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0)
+: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table())
 {
     setup (isLeftClosed, &start, &end, isRightClosed);
 }
 
 TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
 					    const TableExprNode& start)
-: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0)
+: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table())
 {
     setup (isLeftClosed, &start, 0, False);
 }
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& end,
 					    Bool isRightClosed)
-: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0)
+: TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table())
 {
     setup (False, 0, &end, isRightClosed);
 }
@@ -143,7 +143,7 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNodeSetElem& that,
 					    TableExprNodeRep* start,
 					    TableExprNodeRep* end,
 					    TableExprNodeRep* incr)
-: TableExprNodeRep (that.dataType(), VTSetElem, OtUndef, 0),
+: TableExprNodeRep (that.dataType(), VTSetElem, OtUndef, Table()),
   itsStart       (start),
   itsEnd         (end),
   itsIncr        (incr),
@@ -223,7 +223,7 @@ void TableExprNodeSetElem::show (ostream& os, uInt indent) const
 
 void TableExprNodeSetElem::checkTable()
 {
-    baseTabPtr_p = 0;
+    table_p = Table();
     checkTablePtr (itsStart);
     checkTablePtr (itsEnd);
     checkTablePtr (itsIncr);
@@ -233,18 +233,17 @@ void TableExprNodeSetElem::checkTable()
     fillExprType (itsIncr);
 }
 
-void TableExprNodeSetElem::replaceTablePtr (const Table& table,
-					    const BaseTable* baseTablePtr)
+void TableExprNodeSetElem::replaceTablePtr (const Table& table)
 {
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
     if (itsStart != 0) {
-	itsStart->replaceTablePtr (table, baseTablePtr);
+	itsStart->replaceTablePtr (table);
     }
     if (itsEnd != 0) {
-	itsEnd->replaceTablePtr (table, baseTablePtr);
+	itsEnd->replaceTablePtr (table);
     }
     if (itsIncr != 0) {
-	itsIncr->replaceTablePtr (table, baseTablePtr);
+	itsIncr->replaceTablePtr (table);
     }
 }
 
@@ -536,7 +535,7 @@ void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
 
 
 TableExprNodeSet::TableExprNodeSet()
-: TableExprNodeRep (NTNumeric, VTSet, OtUndef, 0),
+: TableExprNodeRep (NTNumeric, VTSet, OtUndef, Table()),
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -546,7 +545,7 @@ TableExprNodeSet::TableExprNodeSet()
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
-: TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
+: TableExprNodeRep (NTDouble, VTSet, OtUndef, Table()),
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -562,7 +561,7 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
 }
 
 TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
-: TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
+: TableExprNodeRep (NTDouble, VTSet, OtUndef, Table()),
   itsSingle        (False),
   itsDiscrete      (True),
   itsBounded       (True),
@@ -592,7 +591,7 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
 }
 
 TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
-: TableExprNodeRep (elem.dataType(), VTSet, OtUndef, 0),
+: TableExprNodeRep (elem.dataType(), VTSet, OtUndef, Table()),
   itsElems         (n),
   itsSingle        (elem.isSingle()),
   itsDiscrete      (elem.isDiscrete()),
@@ -918,13 +917,12 @@ Bool TableExprNodeSet::hasArrays() const
     return False;
 }
 
-void TableExprNodeSet::replaceTablePtr (const Table& table,
-					const BaseTable* baseTablePtr)
+void TableExprNodeSet::replaceTablePtr (const Table& table)
 {
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
     uInt n = nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->replaceTablePtr (table, baseTablePtr);
+	itsElems[i]->replaceTablePtr (table);
     }
 }
 

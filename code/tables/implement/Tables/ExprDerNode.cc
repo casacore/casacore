@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Implement the constants for each data type.
 
 TableExprNodeConstBool::TableExprNodeConstBool (const Bool& val)
-: TableExprNodeBinary (NTBool, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTBool, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstBool::~TableExprNodeConstBool()
@@ -55,7 +55,7 @@ Bool TableExprNodeConstBool::getBool (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDouble::TableExprNodeConstDouble (const Double& val)
-: TableExprNodeBinary (NTDouble, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTDouble, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstDouble::~TableExprNodeConstDouble()
@@ -66,7 +66,7 @@ DComplex TableExprNodeConstDouble::getDComplex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDComplex::TableExprNodeConstDComplex (const DComplex& val)
-: TableExprNodeBinary (NTComplex, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTComplex, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstDComplex::~TableExprNodeConstDComplex()
@@ -75,7 +75,7 @@ DComplex TableExprNodeConstDComplex::getDComplex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstString::TableExprNodeConstString (const String& val)
-: TableExprNodeBinary (NTString, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTString, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstString::~TableExprNodeConstString()
@@ -84,7 +84,7 @@ String TableExprNodeConstString::getString (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstRegex::TableExprNodeConstRegex (const Regex& val)
-: TableExprNodeBinary (NTRegex, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTRegex, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstRegex::~TableExprNodeConstRegex()
@@ -93,7 +93,7 @@ Regex TableExprNodeConstRegex::getRegex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDate::TableExprNodeConstDate (const MVTime& val)
-: TableExprNodeBinary (NTDate, VTScalar, OtLiteral, 0),
+: TableExprNodeBinary (NTDate, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstDate::~TableExprNodeConstDate()
@@ -111,9 +111,8 @@ MVTime TableExprNodeConstDate::getDate (const TableExprId&)
 //# First use a "dummy" data type and fill it in later.
 //# Similarly for the value type.
 TableExprNodeColumn::TableExprNodeColumn (const Table& table,
-					  const BaseTable* tabptr,
 					  const String& name)
-: TableExprNodeBinary (NTNumeric, VTScalar, OtColumn, tabptr)
+: TableExprNodeBinary (NTNumeric, VTScalar, OtColumn, table)
 {
     //# Create a table column object and check if the column is a scalar.
     tabColPtr_p = new ROTableColumn (table, name);
@@ -140,13 +139,12 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
     }
 }
 
-void TableExprNodeColumn::replaceTablePtr (const Table& table,
-					   const BaseTable* baseTablePtr)
+void TableExprNodeColumn::replaceTablePtr (const Table& table)
 {
     String name = tabColPtr_p->columnDesc().name();
     delete tabColPtr_p;
     tabColPtr_p = new ROTableColumn (table, name);
-    baseTabPtr_p = baseTablePtr;
+    table_p = table;
 }
 
 TableExprNodeColumn::~TableExprNodeColumn()
@@ -245,8 +243,8 @@ Array<String>   TableExprNodeColumn::getColumnString()
 
 
 
-TableExprNodeRownr::TableExprNodeRownr (const BaseTable* tabptr, uInt origin)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, tabptr),
+TableExprNodeRownr::TableExprNodeRownr (const Table& table, uInt origin)
+: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, table),
   origin_p            (origin)
 {}
 TableExprNodeRownr::~TableExprNodeRownr ()
@@ -259,8 +257,8 @@ Double TableExprNodeRownr::getDouble (const TableExprId& id)
 
 
 
-TableExprNodeRowid::TableExprNodeRowid (const BaseTable* tabptr)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, tabptr)
+TableExprNodeRowid::TableExprNodeRowid (const Table& table)
+: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, table)
 {}
 TableExprNodeRowid::~TableExprNodeRowid ()
 {}
@@ -270,7 +268,7 @@ Double TableExprNodeRowid::getDouble (const TableExprId& id)
     // Get all row numbers on first access, so we're sure the correct
     // table is used.
     if (rownrs_p.nelements() == 0) {
-        rownrs_p = baseTabPtr_p->rowNumbers();
+        rownrs_p = table_p.rowNumbers();
     }
     return rownrs_p(id.rownr());
 }
@@ -278,8 +276,8 @@ Double TableExprNodeRowid::getDouble (const TableExprId& id)
 
 
 //# Take the seed from the current time and date.
-TableExprNodeRandom::TableExprNodeRandom (const BaseTable* tabptr)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRandom, tabptr),
+TableExprNodeRandom::TableExprNodeRandom (const Table& table)
+: TableExprNodeBinary (NTDouble, VTScalar, OtRandom, table),
   generator_p         (Int (fmod (Time().modifiedJulianDay(), 1.) * 86400000),
 		       Int (Time().modifiedJulianDay())),
   random_p            (&generator_p, 0, 1)
