@@ -269,12 +269,12 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
    if (saveAxes.nelements() != cursorAxes_p.nelements() ||
        !allEQ(saveAxes, cursorAxes_p)) needStorageLattice_p = True;
 
-
 // Set the display axes vector.  We also do this in ::generateStorageLattice
 // but it is possible the user will want to see the display axes
 // via the public function "displayAxes" before any real work is done
 // so poke this in here too.
 
+   displayAxes_p.resize(0);
    displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
                                         cursorAxes_p).asVector();
 
@@ -1093,6 +1093,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 
 // Set the display axes vector (possibly already set in ::setAxes)
 
+   displayAxes_p.resize(0);
    displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
                                         cursorAxes_p).asVector();
 

@@ -969,6 +969,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 {
 // Set the display axes vector.
 
+   displayAxes_p.resize(0);
    displayAxes_p = IPosition::otherAxes(pInImage_p->ndim(),
                                         cursorAxes_p).asVector();
 
