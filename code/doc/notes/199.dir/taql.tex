@@ -1,4 +1,6 @@
 
+\externallabels{/../../user/Refman}{/../../user/Refman/labels.pl}
+
 \section{Introduction}
 The Table Query Language (TaQL, rhymes with bagel) makes
 it possible to select
@@ -971,8 +973,10 @@ Glish functions form the user interface, while C++ functions
 and classes form the programmer interface.
 \begin{itemize}
 \item
-  The TaQL interface in Glish is formed by the \texttt{query}
-  function in the script \texttt{table.g}. The function can be used
+  The TaQL interface in Glish is formed by the
+  \htmlref{\texttt{query}}{table:query} function in module
+  \htmlref{\texttt{table}}{table} (in script \texttt{table.g}).
+  The function can be used
   to compose and execute a TaQL command using the various (optional)
   arguments given to the \texttt{query} function. E.g.
   \begin{verbatim}
@@ -1012,8 +1016,10 @@ and classes form the programmer interface.
   \\However, be careful with the first 2 queries. It is possible to
   lose accuracy when the glish variables are substituted.
   \\The substitution mechanism is described in more detail in the
-  \texttt{substitute} functions of module \texttt{utility} of the
-  \htmladdnormallink{Reference Manual}{../../html/aips++.html}.
+  \htmlref{\texttt{substitute}}{utility:substitute}
+  functions of module
+  \htmlref{\texttt{utility}}{utility} of the
+  \htmladdnormallink{User Reference Manual}{../../user/Refman/Refman.html}.
   
 \item
   The C++ interface consists of 2 parts.
