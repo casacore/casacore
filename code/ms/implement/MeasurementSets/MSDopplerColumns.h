@@ -192,7 +192,10 @@ public:
   const ROScalarMeasColumn<MDoppler>& velDefMeas() const {
     return RONewMSDopplerColumns::velDefMeas();}
   // </group>
-  
+
+  // set the DOPPLER type for the VELDEF column.
+  void setVelDefRef(MDoppler::Types ref);  
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

@@ -113,6 +113,12 @@ void NewMSDopplerColumns::attach(NewMSDoppler& msDoppler)
 			 columnName(NewMSDoppler::VELDEF));
   }
 }
+
+void NewMSDopplerColumns::setVelDefRef(MDoppler::Types ref)
+{
+  velDefMeas_p.setDescRefCode(ref,False);
+}
+
 // Local Variables: 
 // compile-command: "gmake NewMSDopplerColumns"
 // End: 
