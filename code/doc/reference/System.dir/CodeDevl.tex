@@ -109,6 +109,8 @@ affecting the system binaries.  When you're satisfied with your changes
    \exeref{ai} or \exeref{rai}.  If you also want to update the local slave
    \rcs\ repository then do so with \exeref{au} or \exeref{rau}.  You can
    combine the two operations via \exe{ai -au} or \exe{rai -au}.
+   \\Changes need to be documented in the \aipspp\ changelog file using
+   \exeref{ac} or \exeref{rac}.
 
 \item
    Use \unixexe{ci} if you only want to update the local \rcs\ repository.
@@ -523,7 +525,7 @@ may be used to automatically record timestamp information in the installed
 typically near the end of the file:
 
 \begin{verbatim}
-   <P>Copyright &#169; 1996,1997,1998 Associated Universities Inc., Washington, D.C.</P>
+   <P>Copyright &#169; 1996,1997,1998,2000 Associated Universities Inc., Washington, D.C.</P>
    <ADDRESS>aips2adm@nrao.edu</ADDRESS>
 \end{verbatim}
 
@@ -550,7 +552,7 @@ time when the \file{.html} file was installed in the relevant subdirectory of
 result is as follows:
 
 \begin{verbatim}
-   Copyright (c) 1995,1997,1998 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995,1997,1998,2000 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -570,7 +572,7 @@ It is permissable to insert additional text within the meta-markup as follows:
 This would appear as:
 
 \begin{verbatim}
-   Copyright (c) 1995,1997,1998 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995,1997,1998,2000 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -1626,11 +1628,11 @@ indicate standard input.
 
 If no list of files is provided, the list used is the combination of:
 \begin{enumerate}
-	\item A file named \code{templates} in the current working directory
+        \item A file named \code{templates} in the current working directory
               if any; and
-	\item All files named \code{templates} under the
-	     \code{\$AIPSCODE} tree, unless switches restrict the search to
-	      specified packages and/or repositories and/or non-repositories.
+        \item All files named \code{templates} under the
+             \code{\$AIPSCODE} tree, unless switches restrict the search to
+              specified packages and/or repositories and/or non-repositories.
 \end{enumerate}
 
 Duplicates found in the first (or the default templates file) are indicated
@@ -2095,9 +2097,9 @@ modules and/or libraries.
 \begin{synopsis}
    \code{\exe{unused} [\exe{-z}|\exe{-nz}|\exe{-a}|\exe{-[0-9]\ldots}]
         [\exe{-p}|\exe{-r}|\exe{-u} package]\ldots 
-	[-t templates1 [templates2 \ldots]]
-	\exe{-f}|\exe{-b} file1 [file2 \ldots] 
-	[\exe{-i} list1 [list2 \dots]]}
+        [-t templates1 [templates2 \ldots]]
+        \exe{-f}|\exe{-b} file1 [file2 \ldots] 
+        [\exe{-i} list1 [list2 \dots]]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -2109,7 +2111,7 @@ program of such files as specified by the \exe{-f} switch. I.e. files that
 are to specified following an \exe{-f} switch should have the following
 pre-processing: 
 \begin{verbatim}
-	[g]nm binary.file | g++filt >! file.f
+        [g]nm binary.file | g++filt >! file.f
 \end{verbatim}
 (Note that internally \exe{unused} uses the \exe{gnm} and \exe{g++filt}
 synonyms. If they are not available on your system, the full path of these
@@ -2238,7 +2240,7 @@ object modules.
 
 \begin{synopsis}
    \code{\exe{used} [\exe{-ng}] [\exe{-nc}] [\exe{-tc}]
-	[[\exe{-f}|\exe{-b}] file1 [file2 \ldots]] \ldots }
+        [[\exe{-f}|\exe{-b}] file1 [file2 \ldots]] \ldots }
 \end{synopsis}
 
 \subsection*{Description}
@@ -2250,7 +2252,7 @@ program of such files if specified by the \exe{-f} switch. I.e. files that
 are to specified following an \exe{-f} switch should have the following
 pre-processing: 
 \begin{verbatim}
-	[g]nm binary.file | g++filt >! file.f
+        [g]nm binary.file | g++filt >! file.f
 \end{verbatim}
 (Note that internally \exe{used} uses the \exe{gnm} and \exe{g++filt}
 synonyms. If they are not available on your system, the full path of these
