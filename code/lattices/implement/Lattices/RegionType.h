@@ -46,7 +46,8 @@ public:
 	Invalid = -1,
 	Other = 0,
 	LC = 1,
-	WC = 2
+	WC = 2,
+        nRegionTypes = 3        // Good types only
     };
 };
 
