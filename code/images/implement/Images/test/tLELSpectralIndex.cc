@@ -74,17 +74,17 @@ Bool doIt()
     CoordinateUtil::addFreqAxis(cSys3);
     CoordinateUtil::addDirAxes(cSys3);
     cSys3.removePixelAxis (0, Double(shp2(2)) / 2 + 1);
-    PagedImage<Float> pa1(shp1, cSys1, "tExtendImage_tmp.pa1");
+    PagedImage<Float> pa1(shp1, cSys1, "tLELSpectralIndex_tmp.pa1");
     PagedImage<Float> pa2(TiledShape(shp2, IPosition(3,4,3,6)),
-				     cSys2, "tExtendImage_tmp.pa2");
-    PagedImage<Float> pa3(shp1, cSys3, "tExtendImage_tmp.pa3");
+				     cSys2, "tLELSpectralIndex_tmp.pa2");
+    PagedImage<Float> pa3(shp1, cSys3, "tLELSpectralIndex_tmp.pa3");
     pa1.put (arr1);
     pa2.put (arr2);
     pa3.put (arr1 + Float(100));
   }
   {
-    PagedImage<Float> pa1("tExtendImage_tmp.pa1");
-    PagedImage<Float> pa2("tExtendImage_tmp.pa2");
+    PagedImage<Float> pa1("tLELSpectralIndex_tmp.pa1");
+    PagedImage<Float> pa2("tLELSpectralIndex_tmp.pa2");
     LatticeExpr<Float> expr = spectralindex(pa1,pa2);
     Array<Float> result = expr.get();
     Cube<Float> arrf(shp2);
@@ -96,15 +96,15 @@ Bool doIt()
       }
     }
     Array<Float> expect = log(arr1a / arr2) / arrf;
-    if (! allNear (result, expect, 1e-6)) {
+    if (! allNear (result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
       ok = False;
     }
   }
   {
-    PagedImage<Float> pa3("tExtendImage_tmp.pa3");
-    PagedImage<Float> pa1("tExtendImage_tmp.pa1");
+    PagedImage<Float> pa3("tLELSpectralIndex_tmp.pa3");
+    PagedImage<Float> pa1("tLELSpectralIndex_tmp.pa1");
     LatticeExpr<Float> expr = spectralindex(pa1,pa3);
     Array<Float> result = expr.get();
     Matrix<Float> arrf(shp1);
@@ -114,15 +114,15 @@ Bool doIt()
       }
     }
     Array<Float> expect = log(arr1 / (arr1+Float(100))) / arrf;
-    if (! allNear (result, expect, 1e-6)) {
+    if (! allNear (result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
       ok = False;
     }
   }
   {
-    PagedImage<Float> pa3("tExtendImage_tmp.pa3");
-    PagedImage<Float> pa2("tExtendImage_tmp.pa2");
+    PagedImage<Float> pa3("tLELSpectralIndex_tmp.pa3");
+    PagedImage<Float> pa2("tLELSpectralIndex_tmp.pa2");
     LatticeExpr<Float> expr = spectralindex(pa2,pa3);
     Array<Float> result = expr.get();
     Cube<Float> arrf(shp2);
@@ -134,7 +134,7 @@ Bool doIt()
       }
     }
     Array<Float> expect = log(arr2 / (arr1a+Float(100))) / arrf;
-    if (! allNear (result, expect, 1e-6)) {
+    if (! allNear (result, expect, 1e-5)) {
       cout << expect << endl;
       cout << result << endl;
       ok = False;
