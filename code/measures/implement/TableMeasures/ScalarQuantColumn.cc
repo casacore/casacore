@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/TableMeasures/ScalarQuantColumn.h>
-#include <trial/TableMeasures/TableQuantumDesc.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/TableMeasures/TableQuantumDesc.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Tables/ScalarColumn.h>

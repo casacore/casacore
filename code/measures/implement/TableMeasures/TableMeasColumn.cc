@@ -1,5 +1,5 @@
 //# TableMeasColumn.cc: Access to Measure Columns in Tables.
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 
 //# Includes
-#include <trial/TableMeasures/TableMeasColumn.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
+#include <aips/TableMeasures/TableMeasColumn.h>
+#include <aips/TableMeasures/TableMeasDescBase.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/String.h>

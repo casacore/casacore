@@ -1,5 +1,5 @@
 //# ArrayMeasColumn.h: Access to array Measure columns in Tables.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_ARRAYMEASCOLUMN_H
 
 //# Includes
-#include <trial/TableMeasures/TableMeasColumn.h>
+#include <aips/TableMeasures/TableMeasColumn.h>
 #include <aips/Measures/MeasRef.h>
 
 //# Forward Declarations

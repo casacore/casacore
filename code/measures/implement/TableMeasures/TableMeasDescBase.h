@@ -1,5 +1,5 @@
 //# TableMeasDescBase.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,9 @@
 #define AIPS_TABLEMEASDESCBASE_H
 
 //# Includes
-#include <trial/TableMeasures/TableMeasValueDesc.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <trial/TableMeasures/TableMeasType.h>
+#include <aips/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/TableMeasType.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Vector.h>
 

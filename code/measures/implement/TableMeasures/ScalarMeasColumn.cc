@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,10 +25,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/TableMeasures/ScalarMeasColumn.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
-#include <trial/TableMeasures/TableMeasOffsetDesc.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/TableMeasDescBase.h>
+#include <aips/TableMeasures/TableMeasOffsetDesc.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MeasValue.h>
 #include <aips/Tables/ArrayColumn.h>

@@ -1,5 +1,5 @@
 //# TableMeasOffsetDesc.cc: Definition of a offset measure in a Table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 
 //# Includes
-#include <trial/TableMeasures/TableMeasOffsetDesc.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
+#include <aips/TableMeasures/TableMeasOffsetDesc.h>
+#include <aips/TableMeasures/TableMeasDescBase.h>
+#include <aips/TableMeasures/TableMeasDesc.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions.h>

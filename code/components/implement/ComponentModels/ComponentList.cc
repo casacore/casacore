@@ -1,5 +1,5 @@
 //# ComponentList.cc:  this defines the ComponentList implementation
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,10 +30,10 @@
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/SpectralModel.h>
-#include <trial/TableMeasures/ScalarMeasColumn.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <trial/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/TableMeasDesc.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/TableMeasValueDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

@@ -1,5 +1,5 @@
 //# TableMeasType.h: Encapsulates the Measures type in the TableMeasDesc.
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

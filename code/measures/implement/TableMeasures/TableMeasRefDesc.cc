@@ -1,5 +1,5 @@
 //# TableMeasRefDef.cc: Definition of a MeasRef in a Table.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 
 //# Includes
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <trial/TableMeasures/TableMeasDescBase.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/TableMeasDescBase.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>

@@ -1,5 +1,5 @@
 //# TableMeasDesc.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/TableMeasures/TableMeasDescBase.h>
+#include <aips/TableMeasures/TableMeasDescBase.h>
 
 //# Forward Declarations
 class String;

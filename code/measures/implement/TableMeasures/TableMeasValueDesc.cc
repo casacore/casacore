@@ -1,5 +1,5 @@
 //# TableMeasValueDesc.cc: Definition of a MeasValue in a Table.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/TableMeasValueDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableRecord.h>

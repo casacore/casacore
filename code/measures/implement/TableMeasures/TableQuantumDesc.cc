@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/TableMeasures/TableQuantumDesc.h>
+#include <aips/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableRecord.h>
