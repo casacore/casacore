@@ -223,91 +223,9 @@ to build \aipspp.
 \index{system!installation!end-user}
 \index{system!installation!production-line}
 
-The first step in installing \aipspp\ is to fetch the compressed \unixexe{tar}
-files containing the \aipspp\ sources.  Make sure you're logged in to the
-account which will own the \aipspp\ source code.  The home directory of this
-account is referred to as \file{/aips++} below although you can put the
-\aipspp\ root directory wherever you like.  However, you {\em must} fetch the
-distribution files into a subdirectory called \file{code}.
-
-After creating \file{/aips++} you should give the directory suitable user and
-group ownership.  These can be anything, but you might wish to set up a
-special \aipspp\ manager account and group, the standard name for each of
-which is \acct{aips2mgr} (see \sref{Accounts and groups}).
-
-The complete \unixexe{ftp} sequence should look something like
-
-\begin{verbatim}
-   yourhost% cd /aips++
-   yourhost% chgrp aips2mgr .
-   yourhost% chmod ug=rwx,o=rx,g+s .
-   yourhost% mkdir code
-   yourhost% cd code
-   yourhost% ftp aips2.nrao.edu
-   Connected to tarzan.aoc.nrao.edu.
-   220 tarzan FTP server (Version wu-2.4(5) Fri Jul 14 14:30:10 MDT 1995) ready.
-   Name (aips2.nrao.edu:you): ftp
-   331 Guest login ok, send your complete e-mail address as password.
-   Password:you@yourhost.there
-        :
-     ftp welcome messages
-        :
-   230 Guest login ok, access restrictions apply.
-   ftp> cd /pub/code
-   250 CWD command successful.
-   ftp> binary
-   200 Type set to I.
-   ftp> prompt
-   Interactive mode off.
-   ftp> hash
-   Hash mark printing on (8192 bytes/hash mark).
-   ftp> mget *
-        :
-     lots of messages describing what ftp is fetching
-        :
-   ftp> quit
-   221 Goodbye.
-   yourhost%
-\end{verbatim}
-
-\noindent
-If you only want a subset of the \aipspp\ sources then you need only fetch the
-\file{README}, \file{VERSION}, and \file{configure} files, and the
-\file{install} and \file{aips} distribution \unixexe{tar} files, plus whatever
-else you want.  Don't forget to use the \code{binary} option to \unixexe{ftp}.
-The \code{hash} option is not required but may make you feel better about the
-fetch operation.
-
-The distribution contains two special files, \file{VERSION} and
-\file{configure}.  \file{VERSION} records the version number and date of the
-distribution.  The \exeref{configure} utility attempts to extract and install
-\aipspp\ in a semi-automatic way.  After fetching the distribution as
-described above, you should run \exeref{configure}
-
-\begin{verbatim}
-   yourhost% chmod 544 configure
-   yourhost% ./configure
-\end{verbatim}
-
-\noindent
-The first thing \aipsexe{configure} will do is attempt to extract the
-compressed \unixexe{tar} files.  It then asks a series of questions aimed at
-constructing the \aipspp\ \filref{aipshosts} file.  The procedure should be
-self-explanatory, and most of the questions have sensible defaults.
-
-You will then be asked to edit your site-specific \filref{aipsrc} and
-\filref{makedefs} files.  Template versions of these files are supplied by
-\exeref{configure} and you should read the instructions carefully.  After
-making your site-specific definitions \exeref{configure} will run some tests
-to check whether your \file{makedefs} definitions look sensible.  It will then
-invoke \exeref{gmake} to build the \aipspp\ system for you.  If you made any
-mistakes in \file{makedefs} or \file{aipsrc} which were not caught by the
-diagnostics tests these may become apparent at this stage.  After fixing them
-you can restart the build by
-
-\begin{verbatim}
-   yourhost% gmake -C /aips++/code allsys
-\end{verbatim}
+A set of linux RPMS is available from 
+\htmladdnormallink{ftp://ftp.cv.nrao.edu/pub/aips++}{ftp://ftp.cv.nrao.edu/pub/aips++}.
+Please be aware that we are providing only minimal user support at this time (February 2004).
 
 % ----------------------------------------------------------------------------
 
@@ -319,11 +237,11 @@ you can restart the build by
 \index{code!management!configuration}
 
 Consortium installations differ from end-user installations in having a local
-slave copy of the master \rcs\ source code repositories (see
-\sref{RCS directories}).  The slave is updated regularly by the \aipspp\ code
+copy of the master \cvs\ source code repositories. 
+The local code tree is updated regularly by the \aipspp\ code
 distribution system via a procedure called \exeref{inhale}.  Consortium
 installations also have a mechanism for checking sources out of, and in to,
-the master \rcs\ repositories.
+the master \cvs\ repositories.
 
 \subsection*{Step 1. Create AIPS++ accounts}
 
@@ -382,55 +300,20 @@ remainder of the initial part of the installation can be done by
 
 \subsection*{Step 2. Fetch the \file{install} scripts}
 
-First create the \file{code} subdirectory:
+First fetch the source tree via anonymous CVS:
 
 \begin{verbatim}
    yourhost% cd /aips++
-   yourhost% mkdir code
-   yourhost% chmod ug=rwx,o=rx,g+s code
-   yourhost% cd code
+   yourhost% cvs -r -d :pserver:anonymous@cvs.cv.nrao.edu:/home/cvs checkout -d code aips++/code
 \end{verbatim}
 
 \noindent
-Now you're ready to fetch the sources.  However, instead of fetching
-everything you will only need the \file{install} package plus a few other
-files (the rest will be fetched automatically by \exeref{inhale}):
+This will fetch the main development branch of AIPS++. After the checkout completes you will
+need to configure the source installation
 
 \begin{verbatim}
-   yourhost% ftp aips2.nrao.edu
-   Connected to tarzan.aoc.nrao.edu.
-   220 tarzan FTP server (Version wu-2.4(5) Fri Jul 14 14:30:10 MDT 1995) ready.
-   Name (aips2.nrao.edu:you): ftp
-   331 Guest login ok, send your complete e-mail address as password.
-   Password:you@yourhost.there
-        :
-     ftp welcome messages
-        :
-   230 Guest login ok, access restrictions apply.
-   ftp> cd /pub/code
-   250 CWD command successful.
-   ftp> binary
-   200 Type set to I.
-   ftp> prompt
-   Interactive mode off.
-   ftp> hash
-   Hash mark printing on (8192 bytes/hash mark).
-   ftp> mget README VERSION configure install-*
-        :
-     lots of messages describing what ftp is fetching
-        :
-   ftp> quit
-   221 Goodbye.
-   yourhost%
-\end{verbatim}
-
-\noindent
-(The \file{README} file contains a plain-text copy of these instructions.)
-Then invoke \exeref{configure}:
-
-\begin{verbatim}
-   yourhost% chmod 544 configure
-   yourhost% ./configure --source
+   yourhost% chmod 544 install/configure
+   yourhost% install/configure
 \end{verbatim}
 
 \noindent
@@ -446,21 +329,16 @@ scripts, the most important of which is \exeref{inhale} itself.  Ignore any
 error message from \exeref{gmake} concerning the non-existence of various
 subdirectories of \file{/aips++/code}.
 
-\subsection*{Step 3. Run \aipsexe{inhale}}
+\subsection*{Step 3. Run \aipsexe{sneeze}}
 
 At this point your \aipspp\ installation has been bootstrapped to a state
-where \exeref{inhale} can be run.  However, before invoking it you must ensure
-that \rcs\ is installed.  If it isn't, you can get the sources via anonymous
-\unixexe{ftp} from any \gnu\ archive site or from \host{aips2.nrao.edu} in
-\file{/pub/import}.  Note that the \rcs\ installation goes through a prolonged
-period of apparent inactivity, be patient!
+where \exeref{sneeze} can be run.
 
 You should also have a \cplusplus\ compiler, and a \TeX\ installation which
 includes \LaTeX, \unixexe{dvips}, \textsc{MetaFont} and \textsc{latex2html}.
-If you don't have a \cplusplus\ compiler you can still run \exeref{inhale} but
-should pass it the \exe{-n} option so that it doesn't try to recompile the
-sources.  Likewise, unset the \code{DOCSYS} variable in \file{makedefs} if you
+Unset the \code{DOCSYS} variable in \file{makedefs} if you
 don't have \TeX, it will prevent compilation of the \aipspp\ documentation.
+The documentation may be downloaded using the \aipsexec{aupdate} command.
 
 Users of SysV based systems such as Solaris should be warned that
 \exeref{inhale} requires the BSD version of \unixexe{sum} for computing
@@ -490,24 +368,14 @@ you would use
 
 \noindent
 If you use some other shell you'll have to revert to one of the above for the
-remainder of the installation.  Now invoke \exeref{inhale}
+remainder of the installation.  Now invoke \exeref{sneeze}
 
 \begin{verbatim}
-   yourhost% inhale
+   yourhost% sneeze -l -m cumulative&
 \end{verbatim}
 
 \noindent
-or if you don't want to rebuild
-
-\begin{verbatim}
-   yourhost% inhale -n
-\end{verbatim}
-
-\noindent
-This will fetch all required sources from the master via \unixexe{ftp} and
-install them.  If you are installing \aipspp\ from scratch \aipsexe{inhale}
-will first fetch and install the ``base'' release.  This is the frozen version
-of the source code distributed to end-users.  It will then fetch and install
+This will build and install
 the latest version of the sources which are under active development.  If you
 made any mistakes in your \file{aipsrc} or \file{makedefs} definitions some of
 these may become apparent during the installations.  After fixing them you can
@@ -540,8 +408,8 @@ allow at least an hour's grace before collecting them.  An example
 \file{crontab} file might resemble the following:
 
 \begin{verbatim}
-   # Cumulative update of the AIPS++ slave directories each Saturday evening.
-   00 22 * * 6   (. $HOME/.profile ; inhale -c) 2>&1 | \
+   # Cumulative update of the AIPS++ directories each Saturday evening.
+   00 22 * * 6   (. $HOME/.profile ; inhale.cvs -c) 2>&1 | \
       mail aips2mgr aips2-inhale@nrao.edu
 \end{verbatim}
 
@@ -557,16 +425,10 @@ that a programmer doesn't have ready access to.  You should also add the email
 address of a local person who will monitor the \aipsexe{inhale} logs
 (\acct{aips2mgr} in the above example).
 
-\subsection*{Step 4. Update the SSH keys}
+\subsection*{Step 4. CVS access to the development tree}
 \index{nfs@\textsc{nfs}}
 \index{automount, \textsc{nfs}}
 
-In the past, sites would NFS mount the master directories from \host{aips2.nrao.edu}.
-This was a best problematical considering the vaguarities of NFS.
-The current scheme is to use \sref{rai}, \sref{rao}, and \sref{rau} source code into the master
-develoment tree.  Developers should use
-rai and rao to check in and out files and directories.  For these utilities
-to work, developers must have an account on \host{aips2.nrao.edu}.  These accounts 
-may be created by contacting NRAO in Socorro. Note: you will need to send your aips2mgr ssh key file
-(identity.pub or id\_dsa.pub) to aips2mgr@aoc.nrao.edu for rau to work. Please refer to the
-\htmladdnormallink{Open SSH web page}{http://www.openssh.org} for more details on ssh.
+For active developers, you will need a CVS account on the main CVS repository server.
+Please send an encyrted password to aips2mgr@aoc.nrao.edu. For more information about CVS
+visit the webpage at \htmladdnormallink{http://www.cvshome.org}{http://www.cvshome.org}.
