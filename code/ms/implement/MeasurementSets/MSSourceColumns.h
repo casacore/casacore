@@ -336,11 +336,28 @@ public:
     return RONewMSSourceColumns::transition();}
   // </group>
 
-  // set the Position reference 
+  // set the epoch type for the TIME column. This can only be done when the
+  // table has no rows. Trying to do so at other times will throw an exception.
+  void setEpochRef(MEpoch::Types ref);
+
+  // set the direction type for the DIRECTION column. This can only be done
+  // when the table has no rows. Trying to do so at other times will throw an
+  // exception.
+  void setDirectionRef(MDirection::Types ref);
+
+  // set the position type for the POSITION column. This can only be done when
+  // the table has no rows. Trying to do so at other times will throw an
+  // exception.
   void setPositionRef(MPosition::Types ref);
-  // set the Frequency reference 
+
+  // set the frequency type for the REST_FREQUENCY column. Does nothing if this
+  // column is not defined. This can only be done when the table has no
+  // rows. Trying to do so at other times will throw an exception.
   void setFrequencyRef(MFrequency::Types ref);
-  // set the radialVelocity reference 
+
+  // set the radial velocity type for the SYSVEL column. Does nothing if this
+  // column is not defined. This can only be done when the table has no
+  // rows. Trying to do so at other times will throw an exception.
   void setRadialVelocityRef(MRadialVelocity::Types ref);
 
 protected:

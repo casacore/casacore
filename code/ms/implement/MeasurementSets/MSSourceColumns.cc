@@ -28,7 +28,6 @@
 #include <aips/MeasurementSets/NewMSSourceColumns.h>
 #include <aips/MeasurementSets/NewMSSource.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MFrequency.h>
@@ -297,25 +296,30 @@ void NewMSSourceColumns::attachOptionalCols(NewMSSource& msSource)
   if (cds.isDefined(transition)) transition_p.attach(msSource, transition);
 }
 
+void NewMSSourceColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
+void NewMSSourceColumns::setDirectionRef(MDirection::Types ref) {
+  directionMeas_p.setDescRefCode(ref);
+}
+
 void NewMSSourceColumns::setPositionRef(MPosition::Types ref)
 {
-  position_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MPosition::showType(ref));
+  positionMeas_p.setDescRefCode(ref);
 }
 
 void NewMSSourceColumns::setFrequencyRef(MFrequency::Types ref)
 {
-  if (!restFrequency_p.isNull()) {
-    restFrequency_p.rwKeywordSet().rwSubRecord("MEASINFO").
-      define("Ref", MFrequency::showType(ref));
+  if (!restFrequencyMeas_p.isNull()) {
+    restFrequencyMeas_p.setDescRefCode(ref);
   }
 }
 
 void NewMSSourceColumns::setRadialVelocityRef(MRadialVelocity::Types ref)
 {
-  if (!sysvel_p.isNull()) {
-    sysvel_p.rwKeywordSet().rwSubRecord("MEASINFO").
-      define("Ref", MRadialVelocity::showType(ref));
+  if (!sysvelMeas_p.isNull()) {
+    sysvelMeas_p.setDescRefCode(ref);
   }
 }
 // Local Variables: 
