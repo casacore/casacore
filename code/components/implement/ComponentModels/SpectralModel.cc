@@ -1,0 +1,94 @@
+//# SpectralModel.cc:
+//# Copyright (C) 1998
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <trial/ComponentModels/SpectralModel.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Measures/MFrequency.h>
+
+SpectralModel::~SpectralModel() {
+  DebugAssert(ok(), AipsError);
+}
+
+ComponentType::SpectralShape SpectralModel::spectralShape() const {
+  DebugAssert(ok(), AipsError);
+  return ComponentType::CONSTANT_SPECTRUM;
+}
+
+void SpectralModel::setRefFrequency(const MFrequency & newRefFreq) {
+  // Use newRefFreq for something to suppress a compiler warning
+  if (&newRefFreq == 0) {
+  }
+  DebugAssert(ok(), AipsError);
+}
+  
+const MFrequency & SpectralModel::refFrequency() const {
+  DebugAssert(ok(), AipsError);
+  return MFrequency();
+}
+
+void SpectralModel::refFrequency(MFrequency & refFreq) const {
+  DebugAssert(ok(), AipsError);
+  refFreq = refFrequency();
+}
+
+Double SpectralModel::scale(const MFrequency & centerFrequency) const {
+  DebugAssert(ok(), AipsError);
+  // Use centerFrequency for something to suppress a compiler warning
+  if (&centerFrequency == 0) {
+  }
+  return 1.0;
+}
+
+void SpectralModel::scale(Double & scaleFactor, 
+			  const MFrequency & centerFrequency) const {
+  DebugAssert(ok(), AipsError);
+  scaleFactor = scale(centerFrequency);;
+}
+
+Bool SpectralModel::ok() const {
+  return True;
+}
+
+uInt SpectralModel::nSpectralParameters() const {
+  DebugAssert(ok(), AipsError);
+  return 0;
+}
+
+void SpectralModel::
+setSpectralParameters(const Vector<Double> & newSpectralParms) {
+  DebugAssert(newSpectralParms.nelements() == nSpectralParameters(),AipsError);
+  DebugAssert(ok(), AipsError);
+}
+
+void SpectralModel::spectralParameters(Vector<Double> & spectralParms) const {
+  DebugAssert(ok(), AipsError);
+  DebugAssert(spectralParms.nelements() == nSpectralParameters(),AipsError);
+}
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 SpectralModel"
+// End: 
