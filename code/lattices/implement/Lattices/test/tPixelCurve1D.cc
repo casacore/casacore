@@ -65,4 +65,20 @@ int main()
   pcurve3 = pcurve2;
   AlwaysAssertExit (pcurve2.npoints() == 5);
   pcurve2.getPixelCoord (x, y, 0, 4);
+
+  // Construct from a polyline.
+  Vector<Float> xp(5);
+  Vector<Float> yp(5);
+  xp[0]=2; xp[1]=4; xp[2]=7; xp[3]=8; xp[4]=12;
+  yp[0]=2; yp[1]=6; yp[2]=9; yp[3]=6; yp[4]=6;
+  PixelCurve1D pcurve4(xp,yp,21);
+  AlwaysAssertExit (pcurve4.npoints() == 21);
+  pcurve4 = pcurve4;
+  AlwaysAssertExit (pcurve4.npoints() == 21);
+  pcurve4.getPixelCoord (x, y, 0, 20);
+  cout << x << y << endl;
+  pcurve3 = pcurve4;
+  AlwaysAssertExit (pcurve3.npoints() == 21);
+  pcurve3.getPixelCoord (x, y, 0, 20);
+  cout << x << y << endl;
 }
