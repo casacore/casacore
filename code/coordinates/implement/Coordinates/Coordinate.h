@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997,1999,2000,2001,2002
+//# Copyright (C) 1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,11 +32,17 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
 
-template<class T> class Matrix;
+
 template<class T> class Quantum;
 class RecordInterface;
 class Projection;
+
+
 
 // <summary>
 // Interface for converting between world and pixel coordinates.
@@ -523,10 +529,49 @@ private:
 
 //###### Inlines
 
-inline const String &Coordinate::errorMessage() const
+inline const String& Coordinate::errorMessage() const
 {
     return error_p;
 }
 
+
+inline void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
+{ 
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   world += referenceValue();
+}
+
+
+inline void Coordinate::makeWorldAbsolute (Vector<Double>& world,
+                                           const Vector<Double>& refVal) const
+{ 
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
+   world += refVal;
+}
+
+inline void Coordinate::makeWorldRelative (Vector<Double>& world) const
+{
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   world -= referenceValue();
+}
+
+
+inline void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
+{ 
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel += referencePixel();
+}
+
+inline void Coordinate::makePixelRelative (Vector<Double>& pixel) const
+{
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel -= referencePixel();
+}   
+
+
+
+
 #endif
+
 
