@@ -2095,3 +2095,5 @@
 11 097 src rm trial/scripts/synthesisio.help
 11 097 src rm trial/scripts/synthesisdos.help
 11 097 sys rm libexec/synthesisio.g
+11 097 src rm trial/scripts/visset.g
+11 097 src rm trial/scripts/visset.help
