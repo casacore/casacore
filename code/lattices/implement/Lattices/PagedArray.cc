@@ -48,7 +48,6 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/TableInfo.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/COWPtr.h>
 
 #include <iostream.h>
 
@@ -218,83 +217,17 @@ void PagedArray<T>::resize (const TiledShape& newShape)
 	 << "' of the Table '" << tableName() << "'" << LogIO::POST;
 }
 
-template <class T>
-Bool PagedArray<T>::getSlice (COWPtr<Array<T> >& buffer,
-			      const IPosition& start,
-			      const IPosition& shape,
-			      const IPosition& stride, 
-			      Bool removeDegenerateAxes) const
-{
-  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
-}
-
 template<class T>
-Bool PagedArray<T>::getSlice (COWPtr<Array<T> >& bufPtr,
-			      const Slicer& section, 
-			      Bool removeDegenerateAxes) const
+Bool PagedArray<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
-  // I can remove the constness because the buffer is never returned by
-  // reference.
-  // The COWPtr takes over the pointer to the array.
-  Array<T>* arr = new Array<T>;
-  PagedArray<T>* This = (PagedArray<T>*) this;
-  Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
-  bufPtr = COWPtr<Array<T> > (arr, True, isARef);
-  return False;
-}
-
-template <class T>
-Bool PagedArray<T>::getSlice (Array<T>& buffer,
-			      const IPosition& start,
-			      const IPosition& shape, 
-			      const IPosition& stride,
-			      Bool removeDegenerateAxes)
-{
-  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
-}
-
-template<class T>
-Bool PagedArray<T>::getSlice (Array<T>& buffer, const Slicer& section, 
-			      Bool removeDegenerateAxes)
-{
-  if (buffer.nelements() == 0) {
-    itsROArray.getSlice (itsRowNumber, section, buffer, True);
-    if (removeDegenerateAxes == True) {
-      const IPosition shape = buffer.shape();
-      if (!shape.nonDegenerate().isEqual(shape)) {
-	Array<T> noDegen(buffer.nonDegenerate());
-	buffer.reference(noDegen);
-      }
-    }
-  } else {
-    const IPosition bshape = buffer.shape();
-    const IPosition slength = section.length();
-    if (bshape.nelements() == slength.nelements()) {
-      removeDegenerateAxes = False;
-    }
-    if (removeDegenerateAxes == False) {
-      AlwaysAssert(bshape.isEqual(slength), AipsError);
-      itsROArray.getSlice (itsRowNumber, section, buffer);
-    } else {
-      // There is a little problem here.
-      // ROArrayColumn::getSlice expects an Array that includes all the
-      // axes, including the degenerate ones. So the degenerate
-      // axes have to be added by reforming a reference copy of the array.
-      // First make sure the shapes match.
-      AlwaysAssert(bshape.nonDegenerate().isEqual
-                               (slength.nonDegenerate()), AipsError);
-      Array<T> tmp(buffer);
-      tmp.reform (slength);
-      itsROArray.getSlice (itsRowNumber, section, tmp);
-    }
-  }
+  itsROArray.getSlice (itsRowNumber, section, buffer, True);
   return False;
 }
 
 template<class T>
-void PagedArray<T>::putSlice (const Array<T>& sourceArray, 
-			      const IPosition& where,
-			      const IPosition& stride)
+void PagedArray<T>::doPutSlice (const Array<T>& sourceArray, 
+				const IPosition& where,
+				const IPosition& stride)
 {
   // Create a writable column object when not existing yet.
   getRWArray();
@@ -309,13 +242,6 @@ void PagedArray<T>::putSlice (const Array<T>& sourceArray,
     Slicer section(where, degenerateArr.shape(), stride, Slicer::endIsLength); 
     itsRWArray.putSlice (itsRowNumber, section, degenerateArr);
   } 
-}
-
-template<class T>
-void PagedArray<T>::putSlice (const Array <T>& sourceBuffer,
-			      const IPosition& where)
-{
-  Lattice<T>::putSlice (sourceBuffer, where);
 }
 
 template<class T>
@@ -367,7 +293,7 @@ uInt PagedArray<T>::maxPixels() const
 }
 
 template<class T>
-IPosition PagedArray<T>::niceCursorShape (uInt maxPixels) const
+IPosition PagedArray<T>::doNiceCursorShape (uInt maxPixels) const
 {
   IPosition retval = tileShape();
   if (retval.product() > Int(maxPixels)) {
@@ -420,21 +346,21 @@ void PagedArray<T>::showCacheStatistics (ostream& os) const
 template<class T>
 T PagedArray<T>::getAt(const IPosition& where) const
 {
-  const uInt dim = ndim();
-  AlwaysAssert(dim == where.nelements(), AipsError);
-  const IPosition one(dim, 1);
-  COWPtr<Array<T> > bufPtr(new Array<T>(one));
-  getSlice(bufPtr, Slicer(where, one, one, Slicer::endIsLength));
-  return bufPtr->operator()(IPosition(dim,0));
+  // Use a temporary 1-element array with the correct dimensionality.
+  const IPosition shape(where.nelements(),1);
+  T value;
+  Array<T> buffer (shape, &value, SHARE);
+  itsROArray.getSlice (itsRowNumber, Slicer(where,shape), buffer);
+  return value;
 }
 
 template<class T>
 void PagedArray<T>::putAt (const T& value, const IPosition& where)
 {
-  const IPosition shape(ndim(),1);
-  Array<T> buffer(shape);
-  buffer = value;
-  getRWArray().putSlice(itsRowNumber, Slicer(where,shape), buffer);
+  // Use a temporary 1-element array with the correct dimensionality.
+  const IPosition shape(where.nelements(),1);
+  Array<T> buffer (shape, &value);
+  getRWArray().putSlice (itsRowNumber, Slicer(where,shape), buffer);
 }
 
 template<class T>

@@ -25,17 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Functionals/Functional.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
+#include <aips/Functionals/Functional.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Utilities/COWPtr.h>
 
-//-------------------------Lattice---------------------------------
 
 // destructor
 template <class T>
@@ -86,11 +85,155 @@ LatticeCoordinates Lattice<T>::latticeCoordinates() const
   return LatticeCoordinates();
 }
 
-template <class T>
+
+template<class T>
+Bool Lattice<T>::get (COWPtr<Array<T> >& buffer,
+		      Bool removeDegenerateAxes) const
+{
+  uInt nd = ndim();
+  return getSlice (buffer, Slicer(IPosition(nd,0), shape()),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::get (Array<T>& buffer,
+		      Bool removeDegenerateAxes)
+{
+  uInt nd = ndim();
+  return getSlice (buffer, Slicer(IPosition(nd,0), shape()),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Array<T> Lattice<T>::get (Bool removeDegenerateAxes) const
+{
+  uInt nd = ndim();
+  return getSlice (Slicer(IPosition(nd,0), shape()),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+			   const IPosition& shape,
+			   Bool removeDegenerateAxes) const
+{
+  return getSlice (buffer, Slicer(start, shape),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+			   const IPosition& shape,
+			   const IPosition& stride,
+			   Bool removeDegenerateAxes) const
+{
+  return getSlice (buffer, Slicer(start, shape, stride),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer,
+			   const Slicer& section,
+			   Bool removeDegenerateAxes) const
+{
+  // Cast pointer to non-const.
+  // This is safe, since the array is copied when needed by COWptr.
+  Lattice<T>* This = (Lattice<T>*)this;
+  // The COWPtr takes over the pointer to the array.
+  Array<T>* arr = new Array<T>;
+  Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
+  buffer = COWPtr<Array<T> > (arr, True, isARef);
+  return False;
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
+			   const IPosition& shape,
+			   Bool removeDegenerateAxes)
+{
+  return getSlice (buffer, Slicer(start, shape), removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
+			   const IPosition& shape, const IPosition& stride,
+			   Bool removeDegenerateAxes)
+{
+  return getSlice (buffer, Slicer(start, shape, stride),
+		   removeDegenerateAxes);
+}
+
+template<class T>
+Bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
+			   Bool removeDegenerateAxes)
+{
+  Bool isARef;
+  // When the slicer is fixed, it can be used immediately.
+  // Otherwise unspecified values are to be filled in.
+  if (section.isFixed()) {
+    isARef = doGetSlice (buffer, section);
+  } else {
+    IPosition blc,trc,inc;
+    section.inferShapeFromSource (shape(), blc, trc, inc);
+    isARef = doGetSlice (buffer, Slicer(blc,trc,inc,Slicer::endIsLast));
+  }
+  if (removeDegenerateAxes) {
+    buffer.nonDegenerate();
+  }
+  return isARef;
+}
+
+template<class T>
+Array<T> Lattice<T>::getSlice (const IPosition& start,
+			       const IPosition& shape,
+			       Bool removeDegenerateAxes) const
+{
+  return getSlice (Slicer(start,shape), removeDegenerateAxes);
+}
+
+template<class T>
+Array<T> Lattice<T>::getSlice (const IPosition& start,
+			       const IPosition& shape,
+			       const IPosition& stride,
+			       Bool removeDegenerateAxes) const
+{
+  return getSlice (Slicer(start,shape,stride), removeDegenerateAxes);
+}
+
+template<class T>
+Array<T> Lattice<T>::getSlice (const Slicer& section,
+			       Bool removeDegenerateAxes) const
+{
+  // Cast pointer to non-const.
+  // This is safe, since the array is copied when needed.
+  Lattice<T>* This = (Lattice<T>*)this;
+  // Note that getSlice is used to be sure that section gets filled
+  // when needed.
+  Array<T> arr;
+  Bool isARef = This->getSlice (arr, section, removeDegenerateAxes);
+  // When not referenced, return it as such.
+  // Otherwise make a copy.
+  if (!isARef) {
+    return arr;
+  }
+  Array<T> tmp;
+  tmp = arr;
+  return tmp;
+}
+
+
+template<class T>
 void Lattice<T>::putSlice (const Array<T>& sourceBuffer,
 			   const IPosition& where)
 {
-  putSlice (sourceBuffer, where, IPosition(where.nelements(), 1));
+  doPutSlice (sourceBuffer, where, IPosition(where.nelements(),1));
+}
+
+template<class T>
+void Lattice<T>::put (const Array<T>& sourceBuffer)
+{
+  uInt nd = ndim();
+  doPutSlice (sourceBuffer, IPosition(nd,0), IPosition(nd,1));
 }
 
 template<class T>
@@ -136,12 +279,13 @@ void Lattice<T>::apply (const Functional<T,T>& function)
 template<class T>
 T Lattice<T>::getAt (const IPosition& where) const
 {
-  // Use a temporary 1-element array with the correct dimensionality.
   // Casting the const away is harmless.
-  T value;
-  Array<T> tmp (IPosition(where.nelements(), 1), &value, SHARE);
-  ((Lattice<T>*)this)->getSlice (tmp, Slicer(where));
-  return value;
+  Array<T> tmp;
+  ((Lattice<T>*)this)->doGetSlice (tmp, Slicer(where));
+  // Since the array contains 1 element only, getStorage does not
+  // create a copy.
+  Bool deleteIt;
+  return *(tmp.getStorage(deleteIt));
 }
 
 template<class T>
@@ -194,7 +338,7 @@ uInt Lattice<T>::maxPixels() const
 }
 
 template<class T>
-IPosition Lattice<T>::niceCursorShape (uInt maxPixels) const
+IPosition Lattice<T>::doNiceCursorShape (uInt maxPixels) const
 {
   IPosition originalShape(shape());
   uInt ndim = originalShape.nelements();

@@ -1,5 +1,5 @@
 //# TempLattice.cc:
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,47 +113,16 @@ conform(const Lattice<T>& other) const
 }
 
 template<class T> Bool TempLattice<T>::
-getSlice (COWPtr<Array<T> >& buffer, const IPosition& start,
-	  const IPosition& shape, const IPosition& stride,
-	  Bool removeDegenerateAxes) const
+doGetSlice (Array<T>& buffer, const Slicer& section)
 {
-  return itsLatticePtr->getSlice (buffer, start, shape, stride, 
-				  removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
-	  Bool removeDegenerateAxes) const
-{
-  return itsLatticePtr->getSlice (buffer, section, removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice (Array<T>& buffer, const IPosition& start, 
-	  const IPosition& shape, const IPosition& stride, 
-	  Bool removeDegenerateAxes)
-{
-  return itsLatticePtr->getSlice (buffer, start, shape, stride,
-				  removeDegenerateAxes);
-}
-
-template<class T> Bool TempLattice<T>::
-getSlice (Array<T>& buffer, const Slicer& section, Bool removeDegenerateAxes)
-{
-  return itsLatticePtr->getSlice (buffer, section, removeDegenerateAxes);
+  return itsLatticePtr->doGetSlice (buffer, section);
 }
 
 template<class T> void TempLattice<T>::
-putSlice (const Array<T>& sourceBuffer, const IPosition& where, 
+doPutSlice (const Array<T>& sourceBuffer, const IPosition& where, 
 	  const IPosition& stride)
 {
   itsLatticePtr->putSlice (sourceBuffer, where, stride);
-}
-
-template<class T> void TempLattice<T>::
-putSlice (const Array<T>& sourceBuffer, const IPosition& where)
-{
-  itsLatticePtr->putSlice (sourceBuffer, where);
 }
 
 template<class T> void TempLattice<T>::
@@ -187,7 +156,7 @@ maxPixels() const
 }
 
 template<class T> IPosition TempLattice<T>::
-niceCursorShape (uInt maxPixels) const
+doNiceCursorShape (uInt maxPixels) const
 {
   return itsLatticePtr->niceCursorShape (maxPixels);
 }
