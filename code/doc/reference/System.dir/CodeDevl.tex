@@ -3296,8 +3296,9 @@ Do a reident on templates files in the \aipspp\ code tree.
 
 \noindent
 The \exe{UPreident} script executes the \exe{reident} program on templates
-files in the \aipspp\ system. By default it runs on the \code{aips} and
-\code{trial} packages. Switches are available to execute it for all packages,
+files in the \aipspp\ system. By default it runs on the \code{casa}
+and other base library packages. Switches are available to execute
+it for all packages,
 and also to re-initialize the numbering. A list of succesful and unsuccessful
 files handled will be available in \exe{<type>.done} and \exe{<type>.error}.
 
@@ -3305,8 +3306,7 @@ files handled will be available in \exe{<type>.done} and \exe{<type>.error}.
 
 \begin{description}
 \item[\code{\exe{-a}}]
-    Execute for all packages, rather than only for the \code{aips} and
-    \code{trial} ones.
+    Execute for all packages, rather than only for the \code{casa} base ones.
 \item[\code{\exe{-z}}]
     Apply the \code{-z} switch, i.e. renumber all templates
 \item[\code{\exe{-t}}]
@@ -3320,8 +3320,8 @@ files handled will be available in \exe{<type>.done} and \exe{<type>.error}.
 \begin{verbatim}
 UPreident -h
 Usage:   UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
-  Do a reident for all the templates files in the aips
-  and trial packages (unless -a switch).
+  Do a reident for all the templates files in the casa basic library
+  packages (unless -a switch).
   <typ>.done and <typ>.error will give the templates files
   done and not done.
 Uses:    <typ>.def, <typ>.tsel
@@ -3334,16 +3334,13 @@ Creates: <typ>.done, <typ>.error, <typ>/log, <typ>.diff
   UPreident -tu
   Specify type [xc]: 
   Getting info...
-  44 templates files found in xc.tsel
-  44 files will be changed and checked in/out
+  42 templates files found in xc.tsel
+  42 files will be changed and checked in/out
   Note: in test mode -- no actual file check in after change
-  ./aips/implement/Functionals/test/templates started
-  /aips++/weekly/master/aips/implement/Functionals/test/templates,v  
-		-->  templates
-  revision 15.1
-  done
-  tar: blocksize = 16
-  ./aips/implement/Measures/test/templates started
+  ./calibration/implement/CalTables/test/templates started
+  U templates
+  ./calibration/implement/_ReposFiller/templates started
+  ...
 \end{verbatim}
 \ldots
 
