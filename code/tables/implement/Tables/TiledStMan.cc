@@ -279,10 +279,24 @@ String TiledStMan::dataManagerName() const
 
 Record TiledStMan::dataManagerSpec() const
 {
-  Record rec;
-  rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
-  rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
-  return rec;
+    Record rec;
+    rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
+    rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
+    Record subrec;
+    Int nrrec=0;
+    for (uint i=0; i<cubeSet_p.nelements(); i++) {
+	if (cubeSet_p[i] != 0  &&  cubeSet_p[i]->cubeShape().nelements() > 0) {
+	    Record srec;
+	    srec.define ("CubeShape", cubeSet_p[i]->cubeShape().asVector());
+	    srec.define ("TileShape", cubeSet_p[i]->tileShape().asVector());
+	    srec.define ("CellShape", cubeSet_p[i]->cellShape().asVector());
+	    srec.define ("BucketSize", Int(cubeSet_p[i]->bucketSize()));
+	    srec.defineRecord ("ID", cubeSet_p[i]->valueRecord());
+	    subrec.defineRecord (nrrec++, srec);
+	}
+    }
+    rec.defineRecord ("HYPERCUBES", subrec);
+    return rec;
 }
 
 void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
