@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSHISTORYENUNewMS_H)
-#define AIPS_NewMSHISTORYENUNewMS_H
+#if !defined(AIPS_NEWMSHISTORYENUMS_H)
+#define AIPS_NEWMSHISTORYENUMS_H
 
 // <use visibility=export>
 
@@ -64,7 +64,7 @@ public:
     APPLICATION,
     // Application parameters <BR>
     // String(*)
-    APP_PARANewMS,
+    APP_PARAMS,
     // CLI command sequence <BR>
     // String(*)
     CLI_COMMAND,
