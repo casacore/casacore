@@ -28,7 +28,6 @@
 //# $Id$
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/aips.h>
-#include <aips/Tasking/Index.h>
 #include <aips/Arrays/Vector.h>
 
 
