@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/local/bin/perl
 
 #
 #   This is cxx2html Version 1.2 Patchlevel 4
@@ -73,6 +73,7 @@ $ONLYSCAN = 0;
 @FILE_EXTENSIONS = ('\.h', '\.H', '\.hpp', '\.hxx',
 		    '\.cc', '\.C', '\.cpp', '\.cxx',); 
 $HTML_EXTENSION = 'html';
+$MAX_SUMMARY_LENGTH = 80;
 
 ##
 ## Setup for generating output
@@ -86,6 +87,7 @@ $HTML_EXTENSION = 'html';
 	   'AIPS++ extensions' => 1,
 	   'File Extensions' => \@FILE_EXTENSIONS,
 	   'HTML Extension' => $HTML_EXTENSION,
+	   'Max Summary Length' => $MAX_SUMMARY_LENGTH,
 	   'Copyright Notice' => [],
 	  );
 
@@ -115,6 +117,9 @@ while ($_ = @ARGV[0], (/^-/)) {
     /^-scan$/i && ($ONLYSCAN = 1, next);
     /^-ext(?:ension)?$/i && ($HTML_EXTENSION=shift(@ARGV),
 			     $flags{'HTML Extension'}=$HTML_EXTENSION,
+			     next);
+    /^-maxsumlen$/i && ($MAX_SUMMARY_LENGTH=shift(@ARGV),
+			     $flags{'Max Summary Length'}=$MAX_SUMMARY_LENGTH,
 			     next);
 
     if ( /^-copy(?:right)?$/i ) {
@@ -209,11 +214,17 @@ foreach $file (@ARGV) {
 	die "Can't open output file \"$outfile\"." unless $out->open($outfile);
 	foreach (@classes) {
 	    ($start,$end,$class,$type) = split /:/;
+	    $fulltype = "class";
+	    if ( $type eq 'G' ) {
+	        $fulltype = 'group';
+	    } elsif ( $type eq 'E' ) {
+	        $fulltype = 'enum';
+	    }
 	    $proc->set( limit => $end + 1 );
 	    $out->set( title => "$outname$suffix" );
 	    $comment = $proc->skipto($start);
 	    $out->fixcomment($class,$comment,1);
-	    $summary = $out->getsummary($comment);
+	    $summary = $out->getsummary($comment, $fulltype . " " . $class);
 	    if ( $type eq 'C' ) {
 		$header = $proc->tobrace();
 		($class = $header) =~ s/^.*(?:class|struct)\s*([A-Za-z0-9_]+).*$/$1/;
@@ -393,6 +404,7 @@ sub scanFiles {
 		}
 
 		if ( $type eq 'C' ) {
+print $start, $end, $name, "\n";
 		    if ( $old = $$db{"class*$class"} ) {
 			$$db{"class*$class"} = "$old,$start:$end:$module:$name" if $old !~ m/$start:$end:$name/;
 		    } else {
@@ -504,7 +516,7 @@ sub dumpModule {
 	$proc->set( limit => $end + 1 );
 	$proc->skiptoNoProc($start - 1);
 	$comment = $proc->skipto($end + 1);
-	$xsummaryx = $out->getsummary($comment);
+	$xsummaryx = $out->getsummary($comment, "module " . $module);
 	$out->fixcomment($module,$comment);
 	push(@moduleDoc,@$comment," ");
     }
