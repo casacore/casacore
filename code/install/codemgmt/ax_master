@@ -4096,3 +4096,4 @@
 14 065 src mv trial/implement/DisplayDatas/Histogram2dDD.cc trialdisplay/implement/DisplayDatas/Histogram2dDD.cc
 14 065 src mv trial/implement/DisplayDatas/Histogram2dDM.cc trialdisplay/implement/DisplayDatas/Histogram2dDM.cc
 14 065 src mv trial/implement/DisplayDatas/LatticeAsContour.cc trialdisplay/implement/DisplayDatas/LatticeAsContour.cc
+14 065 src mv trial/implement/DisplayDatas/LatticeAsRaster.cc trialdisplay/implement/DisplayDatas/LatticeAsRaster.cc
