@@ -1,5 +1,5 @@
 //# NewFile.cc: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,8 +80,13 @@ Bool NewFile::valueOK(const String &value, String &error) const
 //
     File thefile(value);
     if (thefile.exists()) {
+	if (!ApplicationEnvironment::hasGUI()) {
+           error = String("File ") + value + 
+                   String(" exists but no GUI available for user removal inquiry");
+           return False;
+        }
+//
 	String text = String("File '") + value + "' already exists. Remove it?";
-	  
 	Vector<String> choices(2);
 	choices(0) = "no";
 	choices(1) = "yes";
