@@ -39,6 +39,7 @@ void test0();
 void test1();
 void test2();
 void test3();
+void test4();
 
 int main()
 {
@@ -47,6 +48,7 @@ try {
    test1();
    test2();
    test3();
+   test4();
 }
    catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
@@ -598,3 +600,39 @@ void test3 ()
 }
 
 
+void test4 ()
+//
+// test function axisLabel
+//
+{
+   CoordinateSystem cSys = CoordinateUtil::defaultCoords4D();      
+//
+   uInt axis = 0;
+   Bool doWorld = True;
+   Bool doAbs = True;
+   Bool doVel = False;
+   String label;
+//
+    for (uInt i=0; i<cSys.nCoordinates(); i++) {
+       Coordinate::Type cType = cSys.type(i);
+       for (uInt j=0; j<cSys.worldAxes(i).nelements(); j++) {
+          axis = j;    
+//
+          if (cType==Coordinate::SPECTRAL) {
+             doVel = False;
+             label = CoordinateUtil::axisLabel (cSys.coordinate(i), axis,  
+                                                doWorld, doAbs, doVel);
+             cerr << "Label = " << label << endl;
+//
+             doVel = True;
+             label = CoordinateUtil::axisLabel (cSys.coordinate(i), axis,  
+                                                doWorld, doAbs, doVel);
+             cerr << "Label = " << label << endl;
+          } else {
+             label = CoordinateUtil::axisLabel (cSys.coordinate(i), axis,  
+                                                doWorld, doAbs, doVel);
+             cerr << "Label = " << label << endl;
+          }
+       }
+    }
+}
