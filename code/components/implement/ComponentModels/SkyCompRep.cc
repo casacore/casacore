@@ -53,6 +53,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <strstream.h>
 //#include <iostream.h>
 
 SkyCompRep::~SkyCompRep()
@@ -415,9 +416,9 @@ void SkyCompRep::fromRecord(MDirection & direction, String & errorMessage,
     errorMessage += dirErrors;
 }
 
-void SkyCompRep::fromRecord(Vector<Double> & flux, String & errorMessage,
+void SkyCompRep::fromFlux(Vector<Double> & flux, String & errorMessage,
 			    const GlishRecord & record) {
-  DebugAssert(flux.nelements() == 4, AipsError);
+  AlwaysAssert(flux.nelements() == 4, AipsError);
   if (!record.exists("flux"))
     errorMessage += "\nThe record does not have a 'flux' field";
   else {
@@ -442,6 +443,36 @@ void SkyCompRep::fromRecord(Vector<Double> & flux, String & errorMessage,
   }
 }
 
+void SkyCompRep::fromParameters(Vector<Double> & parameters, 
+				String & errorMessage,
+				const GlishRecord & record) {
+  if (!record.exists("parameters"))
+    errorMessage += "\nThe record does not have a 'parameters' field";
+  else {
+    if (record.get("parameters").type() != GlishValue::ARRAY)
+      errorMessage += "\nThe 'parameters' field cannot be a record";
+    else {
+      const GlishArray parmField = record.get("parm");
+      if (parmField.elementType() == GlishArray::STRING)
+	errorMessage += "\nThe 'parmeters' field cannot be a string";
+      else {
+	const IPosition shape = parmField.shape();
+	if (shape.nelements() != 1 || shape.product() != nParameters()) {
+	  ostrstream buffer; buffer << nParameters();
+	  errorMessage += 
+	    String("\nThe 'parameters' field must be a vector with ") +
+	    buffer + String(" elements");
+	}
+	else {
+	  parameters.resize(nParameters());
+	  if (parmField.get(parameters.ac()) == False)
+	    errorMessage += "\nCould not read the 'parameters' field"
+	      " for an unknown reason";
+	}
+      }
+    }
+  }
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 

@@ -179,9 +179,9 @@ protected:
   // <group>
   static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
 			 const GlishRecord & record);
+  static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
   static void fromRecord(MDirection & direction, String & errorMessage, 
 			 const GlishRecord & record);
-  static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
   static void toRecord(GlishRecord & record, const MDirection & direction);
   // </group>
 
@@ -189,9 +189,13 @@ protected:
   // versions of the toRecord and fromRecord member functions. But they will
   // always remain here as they are quite specific to the components module.
   // <group>
-  static void fromRecord(Vector<Double> & flux, String & errorMessage,
-			 const GlishRecord & record);
-  static void toRecord(GlishRecord & record, const Vector<Double> & flux);
+  static void fromFlux(Vector<Double> & flux, String & errorMessage,
+		       const GlishRecord & record);
+  static void toFlux(GlishRecord & record, const Vector<Double> & flux);
+
+  void fromParameters(Vector<Double> & parameters, String & errorMessage,
+		      const GlishRecord & record);
+  void toParameters(GlishRecord & record, const Vector<Double> & flux) const;
   // </group>
 };
 
