@@ -1,6 +1,6 @@
 /*
     ImageExprGram.y: Parser for image expressions
-    Copyright (C) 1998
+    Copyright (C) 1998,1999
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,8 @@ ImageExprParse* val;
 %token <val> LITERAL
 %token LPAREN
 %token RPAREN
+%token LBRACKET
+%token RBRACKET
 %token COMMA
 %type <node> orexpr
 %type <node> andexpr
@@ -169,6 +171,11 @@ unaryexpr: simexpr
 
 simexpr:   LPAREN orexpr RPAREN
                { $$ = $2; }
+         | simexpr LBRACKET orexpr RBRACKET {
+               $$ = new LatticeExprNode ((*$1)[*$3]);
+	       delete $1;
+	       delete $3;
+	   }
          | NAME LPAREN RPAREN {
                $$ = new LatticeExprNode ($1->makeFuncNode());
 	       delete $1;
