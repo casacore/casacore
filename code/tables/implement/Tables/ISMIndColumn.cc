@@ -1,5 +1,5 @@
 //# ISMIndColumn.cc: Column of Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,8 +59,10 @@ ISMIndColumn::~ISMIndColumn()
 //# the unique column sequence nr.
 void ISMIndColumn::doCreate (ISMBucket* bucket)
 {
-    getFile (0);
+    // Initialize and create new file.
+    init (ByteIO::New);
     // Insert a dummy zero offset as the first value.
+    lastRowPut_p = 0;
     *(uLong*)lastValue_p = 0;
     char* buffer = stmanPtr_p->tempBuffer();
     uInt leng = writeFunc_p (buffer, lastValue_p, 1);
@@ -68,16 +70,8 @@ void ISMIndColumn::doCreate (ISMBucket* bucket)
 }
 void ISMIndColumn::getFile (uInt nrrow)
 {
-    init();
-    //# Create the type 1 file to hold the arrays in the column.
-    char strc[8];
-    sprintf (strc, "i%i", seqnr_p);
-    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
-				    stmanPtr_p->fileOption(), 1,
-				    stmanPtr_p->asCanonical());
-    if (iosfile_p == 0) {
-	throw (AllocError ("ISMIndColumn::doCreate", 1));
-    }
+    // Initialize and open existing file.
+    init (stmanPtr_p->fileOption());
     lastRowPut_p = nrrow;
 }
 Bool ISMIndColumn::flush (uInt, Bool fsync)
@@ -278,7 +272,7 @@ Bool ISMIndColumn::compareValue (const void*, const void*) const
     return False;
 }
 
-void ISMIndColumn::init()
+void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 {
     DebugAssert (nrelem_p==1, AipsError);
     Bool asCanonical = stmanPtr_p->asCanonical();
@@ -292,6 +286,14 @@ void ISMIndColumn::init()
 	fixedLength_p = nrcopy_p = sizeof(uLong);
     }
     lastValue_p = new uLong;
+    //# Open or create the type 1 file to hold the arrays in the column.
+    char strc[8];
+    sprintf (strc, "i%i", seqnr_p);
+    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
+				    fileOption, 1, asCanonical);
+    if (iosfile_p == 0) {
+	throw (AllocError ("ISMIndColumn::doCreate", 1));
+    }
 }
 
 
