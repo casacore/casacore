@@ -157,9 +157,11 @@ const String &Aipsrc::fillAips(const String &nam) {
     if (aipsPath.empty())
       throw(AipsError(String("The AIPSPATH environment variable has not been set") +
 		      "\n\t(see system administrator)"));
-    Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 1;
+    Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
     String *newdir = new String[n];
     n = split(aipsPath, newdir, n, Regex("[ 	]"));
+    // Cater for non-existing fields
+    for (Int i=n; i<4; i++) newdir[i] = "UnKnOwN";
     root = newdir[0];
     arch = root + "/" + newdir[1];
     site = arch + "/" + newdir[2];
