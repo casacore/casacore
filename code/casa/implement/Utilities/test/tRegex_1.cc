@@ -1,5 +1,5 @@
 //# tRegex_1.cc: Regex test program
-//# Copyright (C) 1996,1998,2000,2001
+//# Copyright (C) 1996,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/iostream.h>
 
 int main () {
-    const Int ntests = 28;
+    const Int ntests = 29;
     String p[ntests];
     p[0]  = "^().+|$";
     p[1]  = "\\,";
@@ -60,12 +60,19 @@ int main () {
     p[25] = "\n\t";
     p[26] = "\\?\\**";
     p[27] = "\\";
+    p[28] = "__3%a%*";
 
     cout << "Pattern --> Regular Expression" << endl;
     cout << "------------------------------" << endl;
     int i;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromPattern(p[i]) << endl;
+    };
+
+    cout << endl << "SQLPattern --> Regular Expression" << endl;
+    cout << "---------------------------------" << endl;
+    for (i=0; i<ntests; i++) {
+	cout << p[i] << " --> " << Regex::fromSQLPattern(p[i]) << endl;
     };
 
     cout << endl << "String --> Regular Expression" << endl;
