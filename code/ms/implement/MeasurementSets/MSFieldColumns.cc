@@ -35,9 +35,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/MeasurementSets/NewMSField.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
@@ -88,41 +86,131 @@ MDirection RONewMSFieldColumns::referenceDirMeas(Int row,
 					       interTime, time()(row)); 
 }
 
+Bool RONewMSFieldColumns::
+matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+		  Matrix<Double>& mdir, MVDirection& mvdir) const 
+{
+  delayDir().get(row, mdir);
+  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  if (dirVal.separation(mvdir) < sepInRad) {
+    return True;
+  } else {
+    return False;
+  }
+}
+
+Bool RONewMSFieldColumns::
+matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+	      Matrix<Double>& mdir, MVDirection& mvdir) const 
+{
+  delayDir().get(row, mdir);
+  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  if (dirVal.separation(mvdir) < sepInRad) {
+    return True;
+  } else {
+    return False;
+  }
+}
+
+Bool RONewMSFieldColumns::
+matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad, 
+	      Matrix<Double>& mdir, MVDirection& mvdir) const 
+{
+  phaseDir().get(row, mdir);
+  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  if (dirVal.separation(mvdir) < sepInRad) {
+    return True;
+  } else {
+    return False;
+  }
+}
+
 Int RONewMSFieldColumns::matchDirection(const MDirection& referenceDirection,
 					const MDirection& delayDirection,
 					const MDirection& phaseDirection,
-					const MVAngle& maxSeparation) {
+					const Quantum<Double>& maxSeparation,
+					Int tryRow) {
+//   uInt r = nrow();
+//   if (r == 0) return -1;
+//   // convert the supplied directions to the same reference frame as the ones in
+//   // the Table. It would be nice if this converter could be cached somewhere.
+//   MDirection::Convert c(referenceDirection, delayDirMeasCol().getMeasRef());
+//   const MVDirection refVal = c().getValue();
+//   // Create these here to avoid creating them lots of times as a temporaries
+//   const MVDirection delayVal = c(delayDirection).getValue();
+//   const MVDirection phaseVal = c(phaseDirection).getValue();
+//   const Double sepInRad = maxSeparation.radian();
+//   Matrix<Double> mdir(IPosition(2,1,2));
+//   Vector<Double> dir(mdir.nonDegenerate()); // A reference to the mdir matrix
+//   while (r > 0) {
+//     r--;
+//     if (flagRow()(r) == False && numPoly()(r) == 0) {
+//       delayDir().get(r, mdir);
+//       if (delayVal.separation(MVDirection(dir)) < sepInRad) {
+//  	phaseDir().get(r, mdir);
+//  	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
+//  	  referenceDir().get(r, mdir);
+//  	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
+//  	    DebugAssert(dir.nrefs() == 2, AipsError); 
+//  	    DebugAssert(mdir.nrefs() == 2, AipsError);
+//  	    return r;
+//  	  }
+//  	}
+//       }
+//     }
+//   }
+//   DebugAssert(dir.nrefs() == 2, AipsError);
+//   DebugAssert(mdir.nrefs() == 2, AipsError);
   uInt r = nrow();
   if (r == 0) return -1;
-  // convert the supplied directions to the same reference frame as the ones in
-  // the Table. It would be nice if this converter could be cached somewhere.
-  MDirection::Convert c(referenceDirection, delayDirMeasCol().getMeasRef());
-  const MVDirection refVal = c().getValue();
-  // Create these here to avoid creating them lots of times as a temporaries
-  const MVDirection delayVal = c(delayDirection).getValue();
-  const MVDirection phaseVal = c(phaseDirection).getValue();
-  const Double sepInRad = maxSeparation.radian();
-  Matrix<Double> mdir(IPosition(2,1,2));
-  Vector<Double> dir(mdir.nonDegenerate()); // A reference to the mdir matrix
+  // Get the reference frame and check it natches
+  const MDirection::Types refType = 
+    MDirection::castType(referenceDirMeasCol().getMeasRef().getType());
+  // If the type does not match then throw an exception! If someone is trying
+  // to do this then they should be doing the conversions elsewhere and the
+  // sooner they know about this error the better.
+  if ((MDirection::castType(referenceDirection.getRef().getType())!=refType) ||
+      (MDirection::castType(delayDirection.getRef().getType()) != refType) ||
+      (MDirection::castType(phaseDirection.getRef().getType()) != refType)) {
+    throw(AipsError("RONewMSFieldColumns::matchDirection(...) - "
+		    "cannot match when reference frames differ"));
+  }
+  const MVDirection& referenceDirVal = referenceDirection.getValue();
+  const MVDirection& delayDirVal = delayDirection.getValue();
+  const MVDirection& phaseDirVal = phaseDirection.getValue();
+  // Convert the maximum separation to radians
+  const Unit rad("rad");
+  DebugAssert(maxSeparation.check(UnitVal::ANGLE), AipsError);
+  const Double tolInRad = maxSeparation.getValue(rad);
+
+  // Main matching loop
+  MVDirection mvdir;
+  Matrix<Double> mdir(1, 2);
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSFieldColumns::matchDirection(...) - "
+		      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	numPoly()(tr) == 0 &&
+	matchReferenceDir(tr, referenceDirVal, tolInRad, mdir, mvdir) &&
+	matchDelayDir(tr, delayDirVal, tolInRad, mdir, mvdir) &&
+	matchPhaseDir(tr, phaseDirVal, tolInRad, mdir, mvdir)) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
   while (r > 0) {
     r--;
-    if (flagRow()(r) == False && numPoly()(r) == 0) {
-      delayDir().get(r, mdir);
-      if (delayVal.separation(MVDirection(dir)) < sepInRad) {
- 	phaseDir().get(r, mdir);
- 	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
- 	  referenceDir().get(r, mdir);
- 	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
- 	    DebugAssert(dir.nrefs() == 2, AipsError); 
- 	    DebugAssert(mdir.nrefs() == 2, AipsError);
- 	    return r;
- 	  }
- 	}
-      }
+    if (!flagRow()(r) &&
+	numPoly()(r) == 0 &&
+	matchReferenceDir(r, referenceDirVal, tolInRad, mdir, mvdir) &&
+	matchDelayDir(r, delayDirVal, tolInRad, mdir, mvdir) &&
+	matchPhaseDir(r, phaseDirVal, tolInRad, mdir, mvdir)) {
+      return r;
     }
   }
-  DebugAssert(dir.nrefs() == 2, AipsError);
-  DebugAssert(mdir.nrefs() == 2, AipsError);
   return -1;
 }
 

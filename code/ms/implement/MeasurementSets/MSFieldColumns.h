@@ -38,8 +38,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
+class MVDirection;
 class NewMSField;
-class MVAngle;
+template <class Qtype> class Quantum;
+template <class T> class Matrix;
 
 // <summary>
 // A class to provide easy access to NewMSField columns
@@ -123,11 +125,17 @@ public:
   // returns the last row that has a reference direction, phase direction and
   // delay direction that match, to within the specified angular separation,
   // the supplied values. Only matches on rows where the direction is constant
-  // ie., NUM_POLY is 0 and where FLAG_ROW is False. Returns -1 if no match
-  // could be found. 
+  // ie., NUM_POLY is 0 and where FLAG_ROW is False. Throws an exception
+  // (AipsError) if the reference frames do not match or if the separation does
+  // not have angular units (when compiled in debug mode). Returns -1 if no
+  // match could be found. If tryRow is positive, then that row is tested to
+  // see if it matches before any others are tested. Setting tryRow to a
+  // positive value greater than the table length will throw an exception
+  // (AipsError), when compiled in debug mode.
   Int matchDirection(const MDirection& referenceDirection, 
 		     const MDirection& delayDirection,
-		     const MDirection& phaseDirection, const MVAngle& maxSeparation);
+		     const MDirection& phaseDirection,
+		     const Quantum<Double>& maxSeparation, Int tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -146,6 +154,23 @@ private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSField& msField);
   
+  //# Functions which check the supplied values against the relevant column and
+  //# the specified row. The row must have a numpoly value of zero and the
+  //# specified mdir arguments must have a shape of [1,2]. It and the mvdir
+  //# argument are temporaries that are passed in to prevent them being
+  //# created inside these small functions.
+  // <group>
+  Bool matchReferenceDir(uInt row, const MVDirection& dirVal,
+			 const Double& sepInRad, 
+			 Matrix<Double>& mdir, MVDirection& mvdir) const;
+  Bool matchDelayDir(uInt row, const MVDirection& dirVal, 
+		     const Double& sepInRad,
+		     Matrix<Double>& mdir, MVDirection& mvdir) const;
+  Bool matchPhaseDir(uInt row, const MVDirection& dirVal,
+		     const Double& sepInRad,
+		     Matrix<Double>& mdir, MVDirection& mvdir) const;
+  // </group>
+
   //# required columns
   ROScalarColumn<String> name_p;
   ROScalarColumn<String> code_p;
