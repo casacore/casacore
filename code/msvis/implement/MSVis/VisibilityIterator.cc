@@ -50,7 +50,7 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 : msIter_p(ms,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
-floatDataFound_p(False),lastUT_p(0),velSelection_p(False)
+floatDataFound_p(False),lastfeedpaUT_p(0),lastazelUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -61,7 +61,7 @@ ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 : msIter_p(mss,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
-floatDataFound_p(False),lastUT_p(0),velSelection_p(False)
+floatDataFound_p(False),lastfeedpaUT_p(0),lastazelUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -123,7 +123,8 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   floatDataFound_p=other.floatDataFound_p;
 
   msd_p=other.msd_p;
-  lastUT_p=other.lastUT_p;
+  lastfeedpaUT_p=other.lastfeedpaUT_p;
+  lastazelUT_p=other.lastazelUT_p;
   nAnt_p=other.nAnt_p;
 
   velSelection_p = other.velSelection_p;
@@ -789,8 +790,8 @@ const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
   // Absolute UT
   Double ut=time;
 
-  if (ut!=lastUT_p) {
-    This->lastUT_p=ut;
+  if (ut!=lastfeedpaUT_p) {
+    This->lastfeedpaUT_p=ut;
 
     // Set up the Epoch using the absolute MJD in seconds
     // get the Epoch reference from the column
@@ -827,8 +828,8 @@ const Vector<MDirection>& ROVisibilityIterator::azel(Double time) const
   // Absolute UT
   Double ut=time;
 
-  if (ut!=lastUT_p) {
-    This->lastUT_p=ut;
+  if (ut!=lastazelUT_p) {
+    This->lastazelUT_p=ut;
 
     // Set up the Epoch using the absolute MJD in seconds
     // get the Epoch reference from the column keyword
