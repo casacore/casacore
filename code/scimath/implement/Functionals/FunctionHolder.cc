@@ -66,8 +66,6 @@ FunctionHolder<T>::FunctionHolder(const Function<T> &in)
     }
 }
 
-#include <aips/Glish/GlishRecord.h>
-
 template <class T>
 FunctionHolder<T>::FunctionHolder(const FunctionHolder<T> &other)
   : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) 
