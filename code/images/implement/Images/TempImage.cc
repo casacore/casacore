@@ -384,6 +384,47 @@ IPosition TempImage<T>::doNiceCursorShape (uInt maxPixels) const
 }
 
 template<class T>
+uInt TempImage<T>::maximumCacheSize() const
+{
+  return mapPtr_p->maximumCacheSize();
+}
+
+template<class T>
+void TempImage<T>::setMaximumCacheSize (uInt howManyPixels)
+{
+  mapPtr_p->setMaximumCacheSize (howManyPixels);
+}
+
+template<class T>
+void TempImage<T>::setCacheSizeFromPath (const IPosition& sliceShape,
+					 const IPosition& windowStart,
+					 const IPosition& windowLength,
+					 const IPosition& axisPath)
+{
+  mapPtr_p->setCacheSizeFromPath (sliceShape, windowStart, windowLength,
+				  axisPath);
+}
+
+template<class T>
+void TempImage<T>::setCacheSizeInTiles (uInt howManyTiles)
+{
+  mapPtr_p->setCacheSizeInTiles (howManyTiles);
+}
+
+template<class T>
+void TempImage<T>::clearCache()
+{
+  mapPtr_p->clearCache();
+}
+
+template<class T>
+void TempImage<T>::showCacheStatistics (ostream& os) const
+{
+  mapPtr_p->showCacheStatistics (os);
+}
+
+
+template<class T>
 T TempImage<T>::getAt (const IPosition& where) const
 {
   return mapPtr_p->getAt (where);

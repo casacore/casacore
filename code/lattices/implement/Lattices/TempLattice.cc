@@ -255,6 +255,48 @@ IPosition TempLattice<T>::doNiceCursorShape (uInt maxPixels) const
   return itsLatticePtr->niceCursorShape (maxPixels);
 }
 
+
+template<class T>
+uInt TempLattice<T>::maximumCacheSize() const
+{
+  return itsLatticePtr->maximumCacheSize();
+}
+
+template<class T>
+void TempLattice<T>::setMaximumCacheSize (uInt howManyPixels)
+{
+  itsLatticePtr->setMaximumCacheSize (howManyPixels);
+}
+
+template<class T>
+void TempLattice<T>::setCacheSizeFromPath (const IPosition& sliceShape,
+					   const IPosition& windowStart,
+					   const IPosition& windowLength,
+					   const IPosition& axisPath)
+{
+  itsLatticePtr->setCacheSizeFromPath (sliceShape, windowStart, windowLength,
+				       axisPath);
+}
+
+template<class T>
+void TempLattice<T>::setCacheSizeInTiles (uInt howManyTiles)
+{
+  itsLatticePtr->setCacheSizeInTiles (howManyTiles);
+}
+
+template<class T>
+void TempLattice<T>::clearCache()
+{
+  itsLatticePtr->clearCache();
+}
+
+template<class T>
+void TempLattice<T>::showCacheStatistics (ostream& os) const
+{
+  itsLatticePtr->showCacheStatistics (os);
+}
+
+
 template<class T>
 T TempLattice<T>::getAt (const IPosition& where) const
 {
