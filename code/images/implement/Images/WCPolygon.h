@@ -191,12 +191,12 @@ public:
    // <group>
    WCPolygon(const Vector<Double>& x,
              const Vector<Double>& y,
-             const Vector<uInt>& worldAxes,
+             const Vector<Int>& worldAxes,
              const CoordinateSystem& cSys,
              const Bool isOffset=False);
    WCPolygon(const Vector<Float>& x,
              const Vector<Float>& y,
-             const Vector<uInt>& worldAxes,
+             const Vector<Int>& worldAxes,
              const CoordinateSystem& cSys,
              const Bool isOffset=False);
    // </group>
@@ -204,7 +204,7 @@ public:
    // Construct from an <src>LCPolygon</src>. You specify which world axes
    // the polygon belongs to (x and then y)
    WCPolygon(const LCPolygon& polygon,
-             const Vector<uInt>& worldAxes,
+             const Vector<Int>& worldAxes,
              const CoordinateSystem& cSys);
 
    // Copy constructor (reference semantics).
@@ -240,7 +240,7 @@ public:
 private:
    Vector<Double> itsXWC;
    Vector<Double> itsYWC;
-   Vector<uInt> itsWorldAxes;
+   Vector<Int> itsWorldAxes;   // must be Int not uInt as no uInt in Glish
    CoordinateSystem itsCSys;
    Bool itsIsOffset;
 
