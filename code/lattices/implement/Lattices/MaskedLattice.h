@@ -245,10 +245,6 @@ public:
   virtual Lattice<Bool>& pixelMask();
   // </group>
 
-  // Get a pointer to the region used.
-  // It can return 0 meaning that the MaskedLattice is the full lattice.
-  virtual const LatticeRegion* getRegionPtr() const = 0;
-
   // Get the region used.
   // This is in principle the region pointed to by <src>getRegionPtr</src>.
   // However, if that pointer is 0, it returns a LatticeRegion for the
@@ -318,6 +314,10 @@ protected:
   // Assignment can only be used by derived classes.
   MaskedLattice<T>& operator= (const MaskedLattice<T>&)
     { return *this; }
+
+  // Get a pointer to the region used.
+  // It can return 0 meaning that the MaskedLattice is the full lattice.
+  virtual const LatticeRegion* getRegionPtr() const = 0;
 
   // Put a section of the mask.
   // The default implementation writes the mask of the region.
