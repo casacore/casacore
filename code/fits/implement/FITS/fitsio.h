@@ -190,7 +190,9 @@ class FitsInput : public FitsIO {
 			       FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	// flag used for read control in errors
-	Bool m_got_rec;		
+	Bool m_got_rec;
+	// total number of hdu in this fits file
+	int m_thdunum;		
 
 	virtual void errmsg(FitsErrs, char *);
 	void init();
