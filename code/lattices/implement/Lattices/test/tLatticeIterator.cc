@@ -425,8 +425,36 @@ void testCopyAssignROIter (const Lattice<Int>& lattice)
     cout << "  Testing the copy constructor and assignment operator" << endl;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
+
+    {
+      // Test default ctor and its handling in copy and assignment.
+      RO_LatticeIterator<Int> iter;
+      AlwaysAssert(iter.isNull(), AipsError);
+      RO_LatticeIterator<Int> iter1 = iter.copy();
+      AlwaysAssert(iter1.isNull(), AipsError);
+      iter = RO_LatticeIterator<Int> (lattice);
+      AlwaysAssert(!iter.isNull(), AipsError);
+      iter = iter1;
+      AlwaysAssert(iter.isNull(), AipsError);
+      iter = RO_LatticeIterator<Int> (lattice);
+      AlwaysAssert(!iter.isNull(), AipsError);
+      iter1 = iter;
+      AlwaysAssert(!iter1.isNull(), AipsError);
+      iter = RO_LatticeIterator<Int>();
+      AlwaysAssert(iter.isNull(), AipsError);
+      AlwaysAssert(!iter1.isNull(), AipsError);
+      RO_LatticeIterator<Int> iterc(iter);
+      AlwaysAssert(iterc.isNull(), AipsError);
+      RO_LatticeIterator<Int> iterc1(iter1);
+      AlwaysAssert(!iterc1.isNull(), AipsError);
+      iterc1 = iterc;
+      AlwaysAssert(iterc1.isNull(), AipsError);
+      AlwaysAssert(!iter1.isNull(), AipsError);
+    }
+
     RO_LatticeIterator<Int> iter(lattice, 
 				 LatticeStepper(latticeShape, cursorShape));
+    AlwaysAssert(!iter.isNull(), AipsError);
     iter++;
     Vector<Int> expectedResult(latticeShape(0));
     indgen(expectedResult);
