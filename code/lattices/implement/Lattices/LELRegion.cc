@@ -28,6 +28,7 @@
 
 #include <trial/Lattices/LELRegion.h>
 #include <trial/Lattices/LattRegionHolder.h>
+#include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LELScalar.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -58,7 +59,7 @@ void LELRegion::eval(LELArray<Bool>&,
 
 LELScalar<Bool> LELRegion::getScalar() const
 {
-   throw (AipsError ("LELLattice::getScalar - cannot be used"));
+   throw (AipsError ("LELRegion::getScalar - cannot be used"));
    return False;
 }
 
@@ -138,4 +139,46 @@ void LELRegion::checkTypes (const LattRegionHolder& left,
     throw (AipsError ("LELRegion::checkTypes - "
 		      "in a compound both regions must have the same "
 		      "type of coordinates (pixel or world)"));
+}
+
+
+
+
+LELRegionAsBool::LELRegionAsBool (const LELRegion& region)
+{
+   const LattRegionHolder& reg = region.region();
+   if (! reg.isLCRegion()) {
+      throw (AipsError ("LELRegionAsBool cannot handle "
+			"a region in world coordinates"));
+   }
+   region_p = LatticeRegion (*(reg.asLCRegionPtr()));
+   setAttr(LELAttribute(False, 
+			region_p.shape(), region_p.niceCursorShape(),
+			region_p.lelCoordinates()));
+}
+
+LELRegionAsBool::~LELRegionAsBool()
+{}
+
+void LELRegionAsBool::eval(LELArray<Bool>& result, 
+			   const Slicer& section) const
+{
+   Array<Bool> tmp = region_p.getSlice (section);
+   result.value().reference(tmp);
+}
+
+LELScalar<Bool> LELRegionAsBool::getScalar() const
+{
+   throw (AipsError ("LELRegionAsBool::getScalar - cannot be used"));
+   return False;
+}
+
+Bool LELRegionAsBool::prepareScalarExpr()
+{
+    return False;
+}
+
+String LELRegionAsBool::className() const
+{
+    return "LELRegionAsBool";
 }
