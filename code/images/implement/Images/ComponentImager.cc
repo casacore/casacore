@@ -182,9 +182,11 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
       const Unit beamUnit("beam");
       const UnitVal fudgeFactor(pixel.getValue().getFac()/
 				beamUnit.getValue().getFac());
+
       // Get the new definition of the imageUnit which uses the new
-      // definition of the beam unit.
-      imageUnit = image.units();
+      // definition of the beam unit.  The re-use of the Unit constructor
+      // from the String forces the new Unit definitions to take effect
+      imageUnit = Unit(image.units().getName());
       fluxUnits.setValue(imageUnit.getValue() * 
 			 beamUnit.getValue() * fudgeFactor);
       fluxUnits.setName(imageUnitName + String(".") + beamUnit.getName());
