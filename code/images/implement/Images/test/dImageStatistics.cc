@@ -1,4 +1,4 @@
-//# imstat.cc: image statistics program
+//# dImageStatistics.cc: image statistics program
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -277,7 +277,7 @@ try {
          if (!stats.setAxes(cursorAxes)) return 1;
       }
       if (validInputs(RANGE)) {
-         if (!stats.setInExCludeRange(include, exclude)) return 1;
+         if (!stats.setInExCludeRange(include, exclude, True)) return 1;
       }
       if (!stats.setList(doList)) return 1;
       if (validInputs(PLOTTING)) {
@@ -288,29 +288,53 @@ try {
 // Recover things
 
      os.post();
+
+     os << "Recovering display axes" << endl;
+     Vector<Int> displayAxes = stats.displayAxes();
+
      Array<Float> data;
      os << LogIO::NORMAL << "Recovering npts array"  << endl;
      Bool ok = stats.getNPts(data);
+     if (!ok) os << "Error recovering npts array" << endl;
 
      os << "Recovering sum array" << endl;
      ok = stats.getSum(data);
+     if (!ok) os << "Error recovering sum array" << endl;
+
      os << "Recovering sum squared array" << endl;
      ok = stats.getSumSquared(data);
+     if (!ok) os << "Error recovering sum squared array" << endl;
 
      os << "Recovering min array" << endl;
      ok = stats.getMin(data);
+     if (!ok) os << "Error recovering min array" << endl;
 
      os << "Recovering max array" << endl;
      ok = stats.getMax(data);
+     if (!ok) os << "Error recovering max array" << endl;
 
      os << "Recovering mean array" << endl;
      ok = stats.getMean(data);
+     if (!ok) os << "Error recovering mean array" << endl;
 
      os << "Recovering sigma array " << endl;
      ok = stats.getSigma(data);
+     if (!ok) os << "Error recovering sigma array" << endl;
 
-     os << "Recovering rms array" << LogIO::POST;
+     os << "Recovering rms array" << endl;
      ok = stats.getRms(data);
+     if (!ok) os << "Error recovering rms array" << endl;
+
+
+     os << "Recovering statistics slice from origin" << endl;
+     IPosition pos(stats.displayAxes().nelements(),0);
+     IPosition pos2(pSubImage->ndim(),0);
+     Vector<Float> dataV;
+     ok = stats.getStats(dataV, pos, False);
+     if (!ok) os << "Error recovering statistics slice " << endl;
+     ok = stats.getStats(dataV, pos2, True);
+     if (!ok) os << "Error recovering statistics slice " << endl;
+     os.post();
 
 
 // Test copy constructor
