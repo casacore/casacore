@@ -104,6 +104,7 @@ int main() {
 	fieldBuffer.delayDir(0, Matrix<Double>(2, 2, 2.0));
 	fieldBuffer.delayDir(4, Matrix<Double>(2, 3, 3.0));
 	fieldBuffer.delayFrame(MDirection::B1950);
+#if defined (AIPS_DEBUG)
 	try { 
 	  fieldBuffer.delayDir(4, Matrix<Double>(2, 2, 3.0));
 	  throw(AipsError("Exception not thrown"));
@@ -111,6 +112,7 @@ int main() {
 	catch (AipsError x) {
 	  AlwaysAssert(x.getMesg().contains("direction.ncolumn()"), AipsError);
 	}
+#endif
       }
       { // test the phaseDir & phaseFrame functions.
 	AlwaysAssert(fieldBuffer.phaseDir(0).shape() == IPosition(2, 2, 2),
@@ -129,6 +131,7 @@ int main() {
 	fieldBuffer.phaseDir(0, Matrix<Double>(2, 2, 20.0));
 	fieldBuffer.phaseDir(4, Matrix<Double>(2, 3, 30.0));
 	fieldBuffer.phaseFrame(MDirection::AZEL);
+#if defined (AIPS_DEBUG)
 	try { 
 	  fieldBuffer.phaseDir(4, Matrix<Double>(2, 2, 3.0));
 	  throw(AipsError("Exception not thrown"));
@@ -136,6 +139,7 @@ int main() {
 	catch (AipsError x) {
 	  AlwaysAssert(x.getMesg().contains("direction.ncolumn()"), AipsError);
 	}
+#endif
       }
       { // test the referenceDir & referenceFrame functions.
 	AlwaysAssert(fieldBuffer.referenceDir(0).shape() == IPosition(2, 2, 2),
@@ -155,6 +159,7 @@ int main() {
 	fieldBuffer.referenceDir(0, Matrix<Double>(2, 2, 10.0));
 	fieldBuffer.referenceDir(4, Matrix<Double>(2, 3, 15.0));
 	fieldBuffer.referenceFrame(MDirection::GALACTIC);
+#if defined (AIPS_DEBUG)
 	try { 
 	  fieldBuffer.referenceDir(4, Matrix<Double>(2, 2, 3.0));
 	  throw(AipsError("Exception not thrown"));
@@ -162,6 +167,7 @@ int main() {
 	catch (AipsError x) {
 	  AlwaysAssert(x.getMesg().contains("direction.ncolumn()"), AipsError);
 	}
+#endif
       }
       { // test the sourceID functions.
 	AlwaysAssert(fieldBuffer.sourceId(0) == -1, AipsError);
