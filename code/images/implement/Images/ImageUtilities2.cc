@@ -38,12 +38,14 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageInterface.h>
 #include <aips/Lattices/TiledShape.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/RebinLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/PtrHolder.h>
 
 
 template <typename T, typename U> 
@@ -60,7 +62,7 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
 template <typename T> 
 void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
                           const MaskedArray<T>& in, const Coordinate& coordIn,
-                          uInt axis, uInt bin)
+                          uInt axis, uInt bin, Bool onDisk)
 {
 
 // Check
@@ -109,16 +111,23 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
       cOut = cIn;
    }
 
-// Make MaskedLattice from input
+// Make MaskedLattice from input. 
 
    TiledShape tShapeIn(shapeIn);
-   TempLattice<T> lat(tShapeIn);
-   lat.put(in.getArray());
+   PtrHolder<Lattice<T> > lat;
+   if (onDisk) {
+      Int maxMemInMB = 0;
+      lat.set(new TempLattice<T>(tShapeIn, maxMemInMB), False, False);
+   } else {
+      lat.set(new ArrayLattice<T>(shapeIn), False, False);
+   }
+   Lattice<T>* pLat = lat.ptr();
+   pLat->put(in.getArray());
 //
    TempLattice<Bool> mask(shapeIn);
    mask.put(in.getMask());
 //
-   SubLattice<T> subLat(lat,True);
+   SubLattice<T> subLat(*pLat, False);
    subLat.setPixelMask(mask,False);
 
 // Rebin

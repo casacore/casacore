@@ -28,11 +28,6 @@
 
 #include <trial/Images/ImageUtilities.h>
 
-#include <aips/Utilities/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/PtrHolder.h>
-
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Tables/Table.h>
@@ -68,6 +63,9 @@
 #include <aips/OS/File.h>
 #include <trial/Tasking/NewFile.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/iostream.h>
 

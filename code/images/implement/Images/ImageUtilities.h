@@ -238,12 +238,13 @@ public:
 // same type and have only one axis (Linear,Spectral & Tabular).
 // The output coordinate is adjusted for the binning.   The binning
 // factor does not have to fit integrally into the shape of the specified
-// axis.
+// axis.  If onDisk is True the temporary Lattice created internally will
+// be disk-based (and aipsrc invoked to find out where to put it)
+// otherwise it will be in core memory.
    template <typename T>
    static void bin (MaskedArray<T>& out, Coordinate& coordIn,
                     const MaskedArray<T>& in, const Coordinate& coordIn,
-                    uInt axis, uInt bin);
-
+                    uInt axis, uInt bin, Bool onDisk=False);
 private:
 
 // Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
