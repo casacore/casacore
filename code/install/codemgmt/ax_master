@@ -2251,3 +2251,5 @@
 09 161 src rm aips/implement/Measures/MeasDetail.h
 09 161 src rm aips/implement/Measures/MeasDetail.cc
 09 170 src rm trial/apps/loadMRefData/
+09 171 src rm trial/implement/Lattices/test/tPagedArrayOld.cc
+09 171 src rm trial/implement/Lattices/test/dPagedArrayOld.cc
