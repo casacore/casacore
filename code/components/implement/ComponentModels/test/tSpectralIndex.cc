@@ -67,8 +67,7 @@ int main() {
       cout << "Passed the index test" << endl;
     }
     {
-      Vector<Double> p(1);
-      siPtr->parameters(p);
+      Vector<Double> p = siPtr->parameters().copy();
       AlwaysAssert(near(p(0), 1.0), AipsError);
       AlwaysAssert(near(siPtr->refFrequency().get("GHz").getValue(), 2.0), 
 		   AipsError);
@@ -85,7 +84,7 @@ int main() {
       copy.setIndex(0.0);
       copy.setRefFrequency(f1);
       p(0) = -10.0;
-      siPtr->parameters(p);
+      p = siPtr->parameters();
       AlwaysAssert(near(p(0), 1.0), AipsError);
       AlwaysAssert(near(siPtr->refFrequency().get("GHz").getValue(), 4.0), 
 		   AipsError);
