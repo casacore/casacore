@@ -190,7 +190,7 @@
 	    Matrix<Int> noselection;
 	    VisSet vs(ms_p,noselection);
 	  }
-	  Table sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
+	  const MeasurementSet sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
 
 	  MSSelection thisSelection;
 	  if(fieldid_p.nelements() > 0)
@@ -198,9 +198,7 @@
 	  if(spw_p.nelements() > 0)
 	    thisSelection.setSpwExpr(MSSelection::indexExprStr(spw_p));
 
-	  const TableExprNode exprNode=thisSelection.toTableExprNode(&ms_p);
-
- 
+	  TableExprNode exprNode=thisSelection.toTableExprNode(&sorted);
 
   {
 
@@ -217,6 +215,8 @@
     }
   }
   // Now remake the selected ms
+
+          cout << "ROWS = " << sorted.nrow() << endl;
   mssel_p = MeasurementSet(sorted(exprNode));
   mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
   if(mssel_p.nrow()==0){
