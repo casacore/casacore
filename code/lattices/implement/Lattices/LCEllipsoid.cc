@@ -186,8 +186,7 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
 	throw (AipsError ("LCEllipsoid::LCEllipsoid - "
 			  "dimensionality of center,radii,lattice mismatch"));
     }
-    // Determine blc and trc. Note that float to int conversion truncates,
-    // so add almost 1 to get correct blc.
+    // Determine blc and trc.
     IPosition blc(nrdim);
     IPosition trc(nrdim);
     for (uInt i=0; i<nrdim; i++) {
@@ -195,11 +194,11 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
 	    throw (AipsError ("LCEllipsoid::LCEllipsoid - "
 			      "invalid center (outside lattice)"));
 	}
-	blc(i) = Int(center(i) - radii(i) + 0.99);
+	blc(i) = Int(center(i) - radii(i) + 0.5);
 	if (blc(i) < 0) {
 	    blc(i) = 0;
 	}
-	trc(i) = Int(center(i) + radii(i));
+	trc(i) = Int(center(i) + radii(i) + 0.5);
 	if (trc(i) >= latticeShape(i)) {
 	    trc(i) = latticeShape(i) - 1;
 	}
@@ -236,25 +235,25 @@ void LCEllipsoid::defineMask()
     Float distsq = 0;
     for (i=1; i<nrdim; i++) {
 	center(i) = itsCenter(i) - box().start()(i);
-	Float d = center(i) / itsRadii(i);
+	Float d = max (float(0), center(i)-0.5) / itsRadii(i);
 	dist(i) = d * d;
 	distsq += dist(i);
     }
     // Loop through all pixels in the ellipsoid.
     // The outer loop iterates over all lines.
-    // The inner loop set the pixel mask for a line by calculating
+    // The inner loop sets the pixel mask for a line by calculating
     // the start and end of the ellipsoid for that line.
     // The variable distsq contains the 'distance' of the line to the center.
     for (;;) {
-	// Ignore the line when the distance exceeds the radii.
+	// Ignore the line when the distance exceeds the radius.
 	Float d = 1 - distsq;
 	if (d >= 0) {
 	    d = sqrt(d * radsq0);
-	    Int st = Int(center0 - d + 0.99);
+	    Int st = Int(center0 - d + 0.5);
 	    if (st < 0) {
 		st = 0;
 	    }
-	    Int end = Int(center0 + d);
+	    Int end = Int(center0 + d + 0.5);
 	    if (end >= np) {
 		end = np-1;
 	    }
@@ -267,14 +266,15 @@ void LCEllipsoid::defineMask()
 	for (i=1; i<nrdim; i++) {
 	    distsq -= dist(i);
 	    if (++pos(i) < length(i)) {
-		Float d = (center(i) - pos(i)) / itsRadii(i);
+		Float d = abs(center(i) - pos(i));
+		d = max(float(0), d-0.5) / itsRadii(i);
 		dist(i) = d*d;
 		distsq += dist(i);
 		break;
 	    }
 	    // This dimension is done. Reset it and continue with the next.
 	    pos(i) = 0;
-	    Float d = center(i) / itsRadii(i);
+	    Float d = max (float(0), center(i)-0.5) / itsRadii(i);
 	    dist(i) = d*d;
 	    distsq += dist(i);
         }

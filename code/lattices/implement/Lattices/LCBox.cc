@@ -71,11 +71,11 @@ LCBox::LCBox (const Vector<Float>& blc, const Vector<Float>& trc,
     uInt i;
     IPosition bl(blc.nelements());
     for (i=0; i<blc.nelements(); i++) {
-	bl(i) = Int(blc(i) + 0.99);
+	bl(i) = Int(blc(i) + 0.5);
     }
     IPosition tr(trc.nelements());
     for (i=0; i<trc.nelements(); i++) {
-	tr(i) = Int(trc(i));
+	tr(i) = Int(trc(i) + 0.5);
     }
     setSlicerBox (bl, tr);
 }
@@ -90,12 +90,12 @@ LCBox::LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
     IPosition bl(blc.nelements());
     for (i=0; i<blc.nelements(); i++) {
 	itsBlc(i) = blc(i);
-	bl(i) = Int(blc(i) + 0.99);
+	bl(i) = Int(blc(i) + 0.5);
     }
     IPosition tr(trc.nelements());
     for (i=0; i<trc.nelements(); i++) {
 	itsTrc(i) = trc(i);
-	tr(i) = Int(trc(i));
+	tr(i) = Int(trc(i) + 0.5);
     }
     setSlicerBox (bl, tr);
 }
