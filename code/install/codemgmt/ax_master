@@ -4026,3 +4026,4 @@
 14 065 src mv trial/implement/DisplayEvents/test/tDisplayTool.cc trialdisplay/implement/DisplayEvents/test/tDisplayTool.cc
 14 065 src mv trial/implement/DisplayEvents/test/makefile trialdisplay/implement/DisplayEvents/test/makefile
 14 065 src mv trial/implement/DisplayCanvas/DefaultWCCoordinateHandler.h trialdisplay/implement/DisplayCanvas/DefaultWCCoordinateHandler.h
+14 065 src mv trial/implement/DisplayCanvas/DefaultWCSizeControlHandler.h trialdisplay/implement/DisplayCanvas/DefaultWCSizeControlHandler.h
