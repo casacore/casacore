@@ -1317,6 +1317,8 @@ EOT
   tz=`expr $tz`
 
   echo "tzoffset: $tz" >>$AIPSARCH/$SITE/aipsrc
+  echo "Added my best guess at timezone offset ($tz) to $AIPSARCH/$SITE/aipsrc"
+
   mem="DEFINE_ME"
   psr="DEFINE_ME"
   case $ARCH in
@@ -1329,19 +1331,26 @@ EOT
     linux*) if [ -f /proc/meminfo ] ; then
 	       mem=`cat /proc/meminfo | grep ^Mem: | awk '{print $2}'`
 	       mem=`expr 2 + $mem / 1024 / 1024`
-	    fi
-	    ;;
+	    fi;;
   esac
+  if [ "$mem" = "DEFINE_ME" ] ; then
+    echo ""; printf "How much memory (Mbytes) does your system have? "
+    read mem
+  fi
+  if [ "$psr" = "DEFINE_ME" ] ; then
+    echo ""; printf "How many processors does your system have? "; read psr
+  fi
+  echo ""
+  echo "Setting memory to $mem and number of processors to $psr"
+  echo "in the $AIPSARCH/$SITE/aipsrc file."
   echo "system.resource.memory: $mem" >>$AIPSARCH/$SITE/aipsrc
   echo "system.resources.numcpu: $psr" >>$AIPSARCH/$SITE/aipsrc
 
   echo ""
-  echo "Default system configuration parameters are defined in"
-  echo ""
-  echo "   $AIPSROOT/$ARCH/aipsrc"
-  echo ""
-  echo "You should NOT have to edit this file.  There is a site- and"
-  echo "architecture-specific version of this file in"
+  echo "The default system configuration parameters are set in"
+  echo "$AIPSROOT/$ARCH/aipsrc though you"
+  echo "should NOT have to edit this file.  There is a site- and architecture-"
+  echo "specific version of this file in"
   echo ""
   echo "   $AIPSROOT/$ARCH/$SITE/aipsrc"
   echo ""
@@ -1351,19 +1360,28 @@ EOT
   echo "And if that's not enough, users may also have their own .aipsrc"
   echo "files in their login directories." 
   echo ""
-  echo "The account definitions are in the form 'user.group' and the"
-  echo "printer sizes are, e.g. 'A4', 'A3', or 'letter' (paper size)."
-  echo "For small installations, all accounts will be the same as this one."
   uid=`id | sed -e 's/^[^(]*(//' -e 's/).*//'`
   gid=`id | awk '{print $2}' | sed -e 's/^[^(]*(//' -e 's/).*//'`
-
   cat $AIPSARCH/$SITE/aipsrc | \
    sed -e "s/^# account\([^:]*\):.*/account\1: $uid.$gid/g" \
    >$AIPSARCH/$SITE/aipsrc.new
   rm -f $AIPSARCH/$SITE/aipsrc; 
   mv $AIPSARCH/$SITE/aipsrc.new $AIPSARCH/$SITE/aipsrc
 
-  echo "Your username is '$uid' and your default group is '$gid'"
+  echo "The account definitions are mainly to say who is the AIPS++ manager."
+  echo "In the aipsrc file, it is specified in the form 'user.group'; this"
+  echo "script will use your current account to set this parameter."
+  echo "Your username is $uid and your group is $gid"
+  echo "If these are not what you want in the aipsrc file as the AIPS++"
+  echo "manager, change them when you edit that file."
+  echo ""
+
+# while we could guess the printers from /etc/printcap if present a la 
+# INSTEP1 in Classic AIPS, there's no easy way to guess the default paper
+# format.  Timezone might give us some hints, but that's a bit hairy...
+
+  echo "The printer sizes are, e.g. 'A4', 'A3', or 'letter' (paper size)."
+  echo "You need to set the default printer, and printer size in the file."
   echo "Please remove the comment '#' characters from the lines you change."
   echo ""
   echo "For any other parameters, see the release notes or install manual."
