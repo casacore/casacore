@@ -39,11 +39,11 @@
 #include <aips/Logging/LogIO.h>
 
 //# predeclarations
-template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 template <class T> class Vector;
 template <class T> class COWPtr;
 class IPosition;
+class TiledShape;
 class LogIO;
 class RecordInterface;
 class Unit;
@@ -141,13 +141,22 @@ class Unit;
 template <class T> class ImageInterface: public Lattice<T>
 {
 public: 
+  ImageInterface (Bool masking=True);
+
+  // Copy constructor (copy semantics).
+  ImageInterface (const ImageInterface& other);
+
+  // Copy constructor (copy semantics).
+  ImageInterface& operator= (const ImageInterface& other);
+
+  ~ImageInterface();
 
   // function which returns the shape of the Image.
   virtual IPosition shape() const = 0;
 
   // Function which changes the shape of the image (N.B. the data is thrown 
   // away - the Image will be filled with nonsense afterwards)
-  virtual void resize(const IPosition &newShape) = 0;
+  virtual void resize(const TiledShape &newShape) = 0;
     
   // Function which extracts an Array of values from a Image - a read-only 
   // operation. 
@@ -199,7 +208,7 @@ public:
   // will) have less axes than the Lattice. The stride defaults to one if not
   // specified.
   // <group>
-  virtual void putSlice(const Array <T> & sourceBuffer, const IPosition & where);
+  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where);
   virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
 			const IPosition & stride) = 0;
   // </group>
@@ -247,16 +256,9 @@ public:
   // before teh actual file name can be optionally stripped off.
   virtual String name(const Bool stripPath=False) const = 0;
 
-
   // Functions to set or replace the coordinate information in the Image
-  // The default implementation of setCoordinateInfo merely updates the
-  // CoordinateSystem object in the interface. Derived classes will
-  // normally flush them to disk as well. Returns False on failure, e.g.
-  // if the number of axes do not match.
+  // Returns False on failure, e.g. if the number of axes do not match.
   // <group>
-  //# In this class it just sets the internal coords object, derived classes
-  //# might have to store it to disk or some such. If just needed in-memory
-  //# Call the provided implementation.
   virtual Bool setCoordinateInfo(const CoordinateSystem &coords) = 0;
   const CoordinateSystem &coordinates() const;
   // </group>
@@ -291,18 +293,8 @@ public:
   
   // These are the implementations of the LatticeIterator letters.
   // <note> not for public use </note>
-  // <group>
-  virtual RO_LatticeIterInterface<T> *makeIter(
+  virtual LatticeIterInterface<T> *makeIter(
 				 const LatticeNavigator &navigator) const = 0;
-
-  virtual RO_LatticeIterInterface<T> *makeIter(
-                                      const IPosition &cursorShape) const = 0;
-  virtual LatticeIterInterface<T> *makeIter(
-				 const LatticeNavigator &navigator) = 0;
-
-  virtual LatticeIterInterface<T> *makeIter(
-                                      const IPosition &cursorShape) = 0;
-  //</group>
 
   //<group>
   // Function to work around the g++ upcast bug
@@ -312,13 +304,10 @@ public:
  
  
 protected:
-
-  ImageInterface(Bool masking=True);
-
-  LogIO log_p;
+  Bool throughmask_p;
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
-  Bool throughmask_p;
+  LogIO log_p;
 };
 
 #endif
