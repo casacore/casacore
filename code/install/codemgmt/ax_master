@@ -4173,3 +4173,4 @@
 14 065 src mv trial/apps/viewer/crosshairb3.xbm trialdisplay/apps/viewer/crosshairb3.xbm
 14 065 src mv trial/apps/viewer/handb0.xbm trialdisplay/apps/viewer/handb0.xbm
 14 065 src mv trial/apps/viewer/handb1.xbm trialdisplay/apps/viewer/handb1.xbm
+14 065 src mv trial/apps/viewer/handb2.xbm trialdisplay/apps/viewer/handb2.xbm
