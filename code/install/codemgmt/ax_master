@@ -1840,3 +1840,4 @@
 08 003 sys rm bin/statistics.atoms
 08 003 sys rm bin/synthesis.atoms
 08 003 sys rm bin/todo-tablebrowser
+08 003 sys rm bin/uvfitsfiller
