@@ -30,7 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/MatrixMathLA.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 
