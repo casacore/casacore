@@ -1123,10 +1123,8 @@ Bool DirectionCoordinate::near(const Coordinate& other,
    Bool found;
    const uInt nExcl = excludeAxes.nelements();
    if (nExcl > 0) {
-      Int j = 0;
       for (uInt i=0; i<nPixelAxes(); i++) {
-         if (linearSearch(found, excludeAxes, Int(i), nExcl) >= 0) 
-           exclude(j++) = True;
+         if (linearSearch(found, excludeAxes, Int(i), nExcl) >= 0) exclude(i) = True;
       }
    }
 
