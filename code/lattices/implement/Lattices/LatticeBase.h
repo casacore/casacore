@@ -135,7 +135,7 @@ public:
   // be a file name for lattices that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
   // <br>The default implementation returns an empty string.
-  virtual String name (const Bool stripPath=False) const;
+  virtual String name (Bool stripPath=False) const;
 
   // Return the shape of the Lattice including all degenerate axes
   // (ie. axes with a length of one)

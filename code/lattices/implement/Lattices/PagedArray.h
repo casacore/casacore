@@ -444,7 +444,7 @@ public:
 
   // Return the current Table name. By default this includes the full path. 
   // The path preceeding the file name can be stripped off on request.
-  virtual String name (const Bool stripPath=False) const;
+  virtual String name (Bool stripPath=False) const;
 
   // Functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
