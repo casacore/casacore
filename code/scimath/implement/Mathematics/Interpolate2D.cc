@@ -33,16 +33,30 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 
-Interpolate2D::Interpolate2D()
+Interpolate2D::Interpolate2D(Interpolate2D::Method method)
 {
    itsY.resize(4);
    itsY1.resize(4);
    itsY2.resize(4);
    itsY12.resize(4);
    itsC.resize(4,4);
+
+// Set up function pointers to correct method
+
+  if (method==Interpolate2D::LINEAR) {
+    itsFuncPtr = &(Interpolate2D::interpLinear);
+    itsFuncPtrBool = &(Interpolate2D::interpLinearBool);
+  } else if (method==Interpolate2D::CUBIC) {
+    itsFuncPtr = &(Interpolate2D::interpCubic);
+    itsFuncPtrBool = &(Interpolate2D::interpCubicBool);
+  } else if (method==Interpolate2D::NEAREST) {
+    itsFuncPtr = &(Interpolate2D::interpNearest);
+    itsFuncPtrBool = &(Interpolate2D::interpNearestBool);
+  }   
 }
 
 Interpolate2D::Interpolate2D(const Interpolate2D& other)
+: itsFuncPtr(0)
 {}
 
 Interpolate2D::~Interpolate2D()
@@ -50,35 +64,26 @@ Interpolate2D::~Interpolate2D()
 
 Interpolate2D& Interpolate2D::operator=(const Interpolate2D& other)
 {
+   itsFuncPtr = other.itsFuncPtr;
+   itsFuncPtrBool = other.itsFuncPtrBool;
    return *this;
 };
 
 
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
-                           const Array<Float>& data,
-                           Interpolate2D::Method method)  const
+                           const Array<Float>& data) const
 {
   const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
-  return interp(result, where, data2, method);
+  return interp(result, where, data2);
 }
 
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
-                           const Matrix<Float>& data,
-                           Interpolate2D::Method method) const
+                           const Matrix<Float>& data) const
 {
-  AlwaysAssert(data.ndim()==2, AipsError);
-//
   const Matrix<Bool>* maskPtr(0);
-  if (method==Interpolate2D::LINEAR) {
-    return interpLinear(result, where, data, maskPtr);
-  } else if (method==Interpolate2D::CUBIC) {
-    return interpCubic(result, where, data, maskPtr);
-  } else if (method==Interpolate2D::NEAREST) {
-    return interpNearest(result, where, data, maskPtr);
-  }
-  return True;
+  return ((*this).*itsFuncPtr)(result, where, data, maskPtr);
 }
 
 
@@ -86,61 +91,37 @@ Bool Interpolate2D::interp(Float& result,
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
                            const Array<Float>& data,
-                           const Array<Bool>& mask,
-                           Interpolate2D::Method method)  const
+                           const Array<Bool>& mask) const
 {
   const Matrix<Float>& data2 = dynamic_cast<const Matrix<Float>&>(data);
   const Matrix<Bool>& mask2 = dynamic_cast<const Matrix<Bool>&>(mask);
-  return interp(result, where, data2, mask2, method);
+  return interp(result, where, data2, mask2);
 }
-
 
 
 Bool Interpolate2D::interp(Float& result, 
                            const Vector<Double>& where, 
                            const Matrix<Float>& data,
-                           const Matrix<Bool>& mask,
-                           Interpolate2D::Method method)  const
+                           const Matrix<Bool>& mask) const
 {
-  AlwaysAssert(data.ndim()==2, AipsError);
-  AlwaysAssert(data.ndim()==mask.ndim(), AipsError);
-  AlwaysAssert(data.shape()==mask.shape(), AipsError);
-//
   const Matrix<Bool>* maskPtr = &mask;
-  if (method==Interpolate2D::LINEAR) {
-    return interpLinear(result, where, data, maskPtr);
-  } else if (method==Interpolate2D::CUBIC) {
-    return interpCubic(result, where, data, maskPtr);
-  } else if (method==Interpolate2D::NEAREST) {
-    return interpNearest(result, where, data, maskPtr);
-  }
-  return True;
+  return ((*this).*itsFuncPtr)(result, where, data, maskPtr);
 }
 
 
 Bool Interpolate2D::interp(Bool& result, 
                            const Vector<Double>& where, 
-                           const Array<Bool>& data,
-                           Interpolate2D::Method method)  const
+                           const Array<Bool>& data) const
 {
-  AlwaysAssert( (data.ndim() == 2 ), AipsError);
   const Matrix<Bool>& data2 = dynamic_cast<const Matrix<Bool>&>(data);
-  return interp(result, where, data2, method);
+  return interp(result, where, data2);
 }
 
 Bool Interpolate2D::interp(Bool& result, 
                            const Vector<Double>& where, 
-                           const Matrix<Bool>& data,
-                           Interpolate2D::Method method) const
+                           const Matrix<Bool>& data) const
 {
-  if (method==Interpolate2D::LINEAR) {
-    return interpLinearBool(result, where, data);
-  } else if (method==Interpolate2D::CUBIC) {
-    return interpCubicBool(result, where, data);
-  } else if (method==Interpolate2D::NEAREST) {
-    return interpNearestBool(result, where, data);
-  }
-  return True;
+  return ((*this).*itsFuncPtrBool)(result, where, data);
 }
 
 
@@ -150,28 +131,30 @@ Bool Interpolate2D::interpNearest(Float& result,
                                   const Matrix<Float>& data,
                                   const Matrix<Bool>*& maskPtr) const
 {
-  AlwaysAssert(where.nelements()==2, AipsError);
   const IPosition& shape = data.shape();
 
 // Find nearest pixel; (i,j) = centre
+// Negatives will give big positive value and this fail the
+// shape test below.
 
-  Int i = Int(where(0)+0.5);
-  Int j = Int(where(1)+0.5);
-  Bool ok = False;
+  uInt i = Int(where(0)+0.5);
+  uInt j = Int(where(1)+0.5);  
 //
-  if (i >= 0 && i <= shape(0)-1 && j >= 0 && j <= shape(1)-1) {
-    if (maskPtr==0) {
+  if (i < uInt(shape(0)) && j < uInt(shape(1))) {
+    if (!maskPtr) {
        result = data(i,j);
-       ok = True;
+       return True;
     } else {
        if ((*maskPtr)(i,j)) {
           result = data(i,j);
-          ok = True;
+          return True;
+       } else {
+          return False;
        }
     }
-  }    
-//
-  return ok;
+  } else {
+     return False;
+  }
 }
 
 
@@ -180,35 +163,31 @@ Bool Interpolate2D::interpLinear(Float& result,
                                  const Matrix<Float>& data,
                                  const Matrix<Bool>*& maskPtr) const
 {
-   AlwaysAssert(where.nelements()==2, AipsError);
    const IPosition& shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
+// Negatives will give big positive value and this fail the
+// shape test below.
 
-   Int i = Int(where(0));
-   Int j = Int(where(1));
+   uInt i = Int(where(0));               // Assuming Int does (1.2 -> 1)
+   uInt j = Int(where(1));
 
 // Handle edge. Just move start left/down by one,
 
-   if (i==shape(0)-1) i--;
-   if (j==shape(1)-1) j--;
+   if (i==uInt(shape(0)-1)) --i;
+   if (j==uInt(shape(1)-1)) --j;
 
 // 2x2 starting from [i,j]
+// mask==True is a good pixel
 
-   Bool doit = False;
-   if (i >= 0 && i+1 <= shape(0)-1 &&  j >= 0 && j+1 <= shape(1)-1) {
-      doit = True;
-   }
+   if (i+1 < uInt(shape(0)) &&  j+1 < uInt(shape(1))) {
+      if (maskPtr) {
+         if ( !(*maskPtr)(i,j) ||
+              !(*maskPtr)(i+1,j) ||
+              !(*maskPtr)(i,j+1) ||
+              !(*maskPtr)(i+1,j+1) ) return False;
+      }
 //
-   Bool ok = False;
-   if (doit && maskPtr!=0) {
-      doit = (*maskPtr)(i,j) &&
-              (*maskPtr)(i+1,j) &&
-              (*maskPtr)(i,j+1) &&
-              (*maskPtr)(i+1,j+1);
-   }
-//
-   if (doit) {
       Double TT = where(0) - i;
       Double UU = where(1) - j;
 //
@@ -216,10 +195,10 @@ Bool Interpolate2D::interpLinear(Float& result,
                TT*(1.0-UU)*data(i+1,j) +
                TT*UU*data(i+1,j+1) +
                (1.0-TT)*UU*data(i,j+1);
-      ok = True;
-  }
-//
-  return ok;
+      return True;
+   } else {
+      return False;
+   }
 }
 
 
@@ -231,7 +210,6 @@ Bool Interpolate2D::interpCubic(Float& result,
 // bi-cubic interpolation
 //
 {
-   AlwaysAssert(where.nelements()==2, AipsError);
    const IPosition& shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
@@ -319,7 +297,7 @@ void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Ve
 // Numerical recipes 3.6 (p99)
 //
 {
-  static const int wt[16][16] =
+  static const float wt[16][16] =
   {{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
    {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
    {-3,0,0,3,0,0,0,0,-2,0,0,-1,0,0,0,0},
