@@ -1375,7 +1375,7 @@ template<class T> T avdev(const Array<T> &a,T mean)
 //    </item> ArrayError
 // </thrown>
 template<class T> T median(const Array<T> &a, Bool sorted,
-			   Bool takeEvenMean)
+			   Bool takeEvenMean, Bool inPlace)
 {
     uInt nelem = a.nelements();
     if (nelem < 1) {
@@ -1389,34 +1389,29 @@ template<class T> T median(const Array<T> &a, Bool sorted,
     T medval = T();
     Bool deleteIt;
     const T *storage = a.getStorage(deleteIt);
-    const T *data = storage;
+    T *data = const_cast<T*>(storage);
     T *copy = 0;
     uInt n2 = (nelem - 1)/2;
-    if (! sorted) {
-	// Sort a copy. Perhaps we should give an option for copying in place?
-	// If deleteIt is true, storage already points to copied storage; we
-	// could optimize away a possible copy in that case by casting away
-	// const and sorting in place.
-	copy = new T[nelem];
-	if (copy == 0) {
-	    a.freeStorage(storage, deleteIt);
-	    throw(AllocError("::median(const Array<T> &) - sort buffer",
-			     nelem));
+    if (!sorted) {
+	// Sort a copy (if not inPlace).
+	// If deleteIt is true, storage already points to copied storage;
+        // So we can optimize away a possible copy in that case by
+        // casting away const and sorting in place.
+        if (!deleteIt && !inPlace) {
+	    copy = new T[nelem];
+	    memcpy (copy, storage, nelem*sizeof(T));
+	    data = copy;
 	}
-	memcpy((char *)copy, (char *)storage, nelem*sizeof(T));
-	data = copy;
-	// Use a faster algorithm when the array is big enough.
 	// If needed take the mean for an even number of elements.
-	// Sort a small array in ascending order.
+	// If the array is small, it is faster to fully sort it.
 	if (nelem > 50) {
+	    medval = GenSort<T>::kthLargest (data, nelem, n2);
 	    if (takeEvenMean) {
-		medval = T(0.5 * (GenSort<T>::kthLargest (copy, nelem, n2) +
-				  GenSort<T>::kthLargest (copy, nelem, n2+1)));
-	    } else {
-		medval = GenSort<T>::kthLargest (copy, nelem, n2);
+		medval = T(0.5 * (medval +
+				  GenSort<T>::kthLargest (data, nelem, n2+1)));
 	    }
 	} else {
-	    GenSort<T>::sort (copy, nelem);
+	    GenSort<T>::sort (data, nelem);
 	    sorted = True;
 	}
     }
@@ -1430,6 +1425,49 @@ template<class T> T median(const Array<T> &a, Bool sorted,
     delete [] copy;
     a.freeStorage(storage, deleteIt);
     return medval;
+}
+
+// <thrown>
+//    </item> ArrayError
+// </thrown>
+template<class T> T fractile(const Array<T> &a, Float fraction, Bool sorted,
+			     Bool inPlace)
+{
+    uInt nelem = a.nelements();
+    if (nelem < 1) {
+	throw(ArrayError("::fractile(const Array<T> &) - Need at least 1 "
+			 "elements"));
+    }
+    T fracval = T();
+    Bool deleteIt;
+    const T *storage = a.getStorage(deleteIt);
+    T *data = const_cast<T*>(storage);
+    T *copy = 0;
+    uInt n2 = uInt((nelem - 1) * fraction);
+    if (!sorted) {
+	// Sort a copy (if not inPlace).
+	// If deleteIt is true, storage already points to copied storage;
+        // So we can optimize away a possible copy in that case by
+        // casting away const and sorting in place.
+        if (!deleteIt && !inPlace) {
+	    copy = new T[nelem];
+	    memcpy (copy, storage, nelem*sizeof(T));
+	    data = copy;
+	}
+	// If the array is small, it is faster to fully sort it.
+	if (nelem > 50) {
+	    fracval = GenSort<T>::kthLargest (data, nelem, n2);
+	} else {
+	    GenSort<T>::sort (data, nelem);
+	    sorted = True;
+	}
+    }
+    if (sorted) {
+        fracval = data[n2];
+    }
+    delete [] copy;
+    a.freeStorage(storage, deleteIt);
+    return fracval;
 }
 
 

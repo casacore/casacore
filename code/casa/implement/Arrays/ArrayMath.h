@@ -346,7 +346,7 @@ template<class T> T avdev(const Array<T> &a);
 // Rather than using a computed mean, use the supplied value.
 template<class T> T avdev(const Array<T> &a,T mean);
 
-// 
+
 // The median of "a" is a(n/2).
 // When a has an even number of elements and the switch takeEvenMean is set,
 // the median is 0.5*(a(n/2) + a((n+1)/2)).
@@ -358,11 +358,27 @@ template<class T> T avdev(const Array<T> &a,T mean);
 // compute the median directly. Otherwise the function GenSort::kthLargest
 // is used to find the median (kthLargest is about 6 times faster
 // than a full quicksort).
+// <br>Finding the median means that the array has to be (partially)
+// sorted. By default a copy will be made, but if "inPlace" is in effect,
+// the data themselves will be sorted. That should only be used if the
+// data are used not thereafter.
 // <group>
 template<class T> inline T median(const Array<T> &a, Bool sorted = False)
-    { return median (a, sorted, (a.nelements() <= 100)); }
-template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean);
+    { return median (a, sorted, (a.nelements() <= 100), False); }
+template<class T> inline T medianInPlace(const Array<T> &a,
+					 Bool sorted = False)
+    { return median (a, sorted, (a.nelements() <= 100), True); }
+template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
+			   Bool inPlace = False);
 // </group>
+
+// Return the fractile of an array.
+// It returns the value at the given fraction of the array.
+// A fraction of 0.5 is the same as the median, be it that no mean of
+// the two middle elements is taken if the array has an even nr of elements.
+// It uses kthLargest if the array is not sorted yet.
+template<class T> T fractile(const Array<T> &a, Float fraction,
+			     Bool sorted = False, Bool inPlace = False);
 
 //
 // Returns the complex conjugate of a complex array.
