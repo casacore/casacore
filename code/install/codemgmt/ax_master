@@ -5346,3 +5346,5 @@
 15 038 src rm aips/implement/Exceptions/test/tExcpD.cc
 15 038 src rm aips/implement/Exceptions/test/tExcpD.out
 15 038 src rm aips/implement/Exceptions/test/tIndexError.cc
+15 038 src rm aips/implement/Exceptions/CanDelete.h
+15 038 src rm aips/implement/Exceptions/CanDelete.cc
