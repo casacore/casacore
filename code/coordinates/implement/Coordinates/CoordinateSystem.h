@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -224,13 +224,16 @@ public:
     // coordinate system, cSys.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that it could not be found in the other
-    // coordinate system.  Note that two world axes of the
-    // same coordinate type (e.g. SpectralCoordinate)
-    // will be considered to not  match if their specific types are 
-    // different (e.g. TOPO versus LSR for the SpectralCoordinate, 
-    // or J2000 versus GALACTIC for DirectionCoordinate).
+    // coordinate system.  The vector <src>refCange</src> says
+    // if the types are the same, is there a reference type change
+    // (e.g. TOPO versus LSR for the SpectralCoordinate, 
+    // or J2000 versus GALACTIC for DirectionCoordinate). Thus
+    // if refChange(i) is True, it means world axis i in the
+    // current coordinate system was matched, but has a different
+    // reference type
     Bool worldMap (Vector<Int>& worldAxisMap,
 		   Vector<Int>& worldAxisTranspose,
+		   Vector<Bool>& refChange,
 		   const CoordinateSystem& cSys) const;
 
     // Remove a world or pixel axis. When its value is required for forward or
@@ -565,6 +568,7 @@ private:
     // Helper functions to group common code.
     Bool mapOne(Vector<Int>& worldAxisMap, 
                 Vector<Int>& worldAxisTranspose, 
+                Vector<Bool>& refChange,
                 const CoordinateSystem& cSys,
                 const CoordinateSystem& cSys2,
                 const uInt coord, const uInt coord2) const;

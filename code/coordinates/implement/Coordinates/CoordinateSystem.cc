@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -339,6 +339,7 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 
 Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
                                 Vector<Int>& worldAxisTranspose,
+                                Vector<Bool>& refChange,
                                 const CoordinateSystem& other) const
 //
 // Make a map from "*this" to "other"
@@ -348,14 +349,16 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // . The coordinate systems can have arbitrary numbers of coordinates
 //   in any relative order.
 // . Removed world and pixel axes are handled.
-// . The value of worldAxisMap(i2) is the world axis of "*this" matching 
-//   world axis i2 in "other".  A value of -1 indicates that 
+// . The value of worldAxisMap(i) is the world axis of "*this" matching 
+//   world axis i in "other".  A value of -1 indicates that 
 //   a world axis could not be matched.  
-// . The value of worldAxisTranspose(i1) is the world axis of "other"
-//   matching world axis i1 of "*this"  It tells you how to transpose
+// . The value of worldAxisTranspose(i) is the world axis of "other"
+//   matching world axis i of "*this"  It tells you how to transpose
 //   "other" to be in the order of "*this".  A value of -1 indicates
 //   that a world axis could not be matched. 
-//
+// . If refChange(i) is True, it means that if the coordinate matched,
+//   there is a difference in reference type (E.g J2000->B1950)
+//   for worldAxis i in "other"
 {
 
 // Resize the maps and initialize
@@ -364,7 +367,9 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
    worldAxisMap = -1;
    worldAxisTranspose.resize(nWorldAxes());
    worldAxisTranspose = -1;
-
+   refChange.resize(other.nWorldAxes());
+   refChange = False;
+//
    if (other.nWorldAxes() ==0) {
       set_error(String("The supplied CoordinateSystem has no valid world axes"));
       return False;
@@ -380,7 +385,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
    const uInt nCoord  =        nCoordinates();
    const uInt nCoord2 = other.nCoordinates();
    Vector<Bool> usedCoords(nCoord,False);
-
    for (uInt coord2=0; coord2<nCoord2; coord2++) {
 
 // If all the world axes for this coordinate have been removed,
@@ -399,7 +403,7 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
             if (!usedCoords(coord)) {
                if (type(coord) == other.type(coord2)) {
                   if (mapOne(worldAxisMap, worldAxisTranspose, 
-                             *this, other, coord, coord2)) {
+                             refChange, *this, other, coord, coord2)) {
                      usedCoords(coord) = True;
                      break;
                   }
@@ -420,13 +424,13 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 
 Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
                               Vector<Int>& worldAxisTranspose,
+                              Vector<Bool>& refChange,
                               const CoordinateSystem& cSys1,
                               const CoordinateSystem& cSys2,
                               const uInt coord1,
                               const uInt coord2) const
 //
 // Update the world axis mappings from one coordinate system to another.  
-// This function support the function "worldMap"
 //
 {
 
@@ -434,12 +438,17 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
 // know that the two cSys are the same coordinate type 
 // (e.g. DIRECTION)
 
+   Bool refDiff = False;
    if (cSys2.coordinate(coord2).type() == Coordinate::DIRECTION) {
       if (cSys1.directionCoordinate(coord1).directionType() != 
-          cSys2.directionCoordinate(coord2).directionType()) return False;
+          cSys2.directionCoordinate(coord2).directionType()) {
+         refDiff = True;
+      }
    } else if (cSys2.coordinate(coord2).type() == Coordinate::SPECTRAL) {
       if (cSys1.spectralCoordinate(coord1).frequencySystem() != 
-          cSys2.spectralCoordinate(coord2).frequencySystem()) return False;
+         cSys2.spectralCoordinate(coord2).frequencySystem()) {
+         refDiff = True;
+      }
    }
 
 
@@ -449,7 +458,6 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
    uInt nWorld2 = cSys2.worldAxes(coord2).nelements();
    uInt nPixel1 = cSys1.pixelAxes(coord1).nelements();
    uInt nPixel2 = cSys2.pixelAxes(coord2).nelements();
-
 
 // These tests should never fail
 
@@ -462,7 +470,6 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
    Vector<Int> pixel1 = cSys1.pixelAxes(coord1);
    Vector<Int> world2 = cSys2.worldAxes(coord2);
    Vector<Int> pixel2 = cSys2.pixelAxes(coord2);
-
  
 // Compare quantities for the world axes.  
 
@@ -479,7 +486,7 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
 
             worldAxisMap(world2(j)) = world1(j);
             worldAxisTranspose(world1(j)) = world2(j);
-
+            refChange(world1(j)) = refDiff;
          } else {
 
 // The world axis is missing in cSys1 and present in cSys2.  
@@ -491,6 +498,7 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
      
       }
    }
+//
    return True;
 }
 
