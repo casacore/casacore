@@ -1,5 +1,5 @@
 //# Record.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,8 +116,8 @@ class AipsIO;
 // of the OO world - an employee:
 // <srcBlock>
 // RecordDesc employeeDesc;
-// employeeDesc.define ("name", TpString);
-// employeeDesc.define ("salary", TpDouble);
+// employeeDesc.addField ("name", TpString);
+// employeeDesc.addField ("salary", TpDouble);
 // </srcBlock>
 // The above creates the description (structure) for some record objects.
 // <srcBlock>
