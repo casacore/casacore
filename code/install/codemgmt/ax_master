@@ -4045,3 +4045,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCCSAxisLabeller.cc trialdisplay/implement/DisplayCanvas/WCCSAxisLabeller.cc
 14 065 src mv trial/implement/DisplayCanvas/WCCSNLAxisLabeller.cc trialdisplay/implement/DisplayCanvas/WCCSNLAxisLabeller.cc
 14 065 src mv trial/implement/DisplayCanvas/WCCoordinateHandler.cc trialdisplay/implement/DisplayCanvas/WCCoordinateHandler.cc
+14 065 src mv trial/implement/DisplayCanvas/WCDataScaleHandler.cc trialdisplay/implement/DisplayCanvas/WCDataScaleHandler.cc
