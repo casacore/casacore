@@ -682,13 +682,88 @@ where the user is allowed to drag a WorldCanvas around a PixelCanvas,
 and the WorldCanvas acts as a ``window'' to some larger dataset
 beneath it --- just an idea!
 
+Of course the final task of a DisplayData is to actually draw data to
+the WorldCanvas upon request.  In the CachingDisplayData branch, this
+is handled by the (already implemented) {\tt refresEH} function
+constructing a new DisplayMethod if necessary, and then calling the
+{\tt draw} method within
+
 \subsection{Adding Agents to the GlishTk Interface}
 
+Adding new {\em proxy}\/ agents to the GlishTk interface is a fiddly
+procedure.  Aside from making decisions about whether the new agent
+maps exactly to an existing Display Library class, or instead makes
+use of multiple classes, there is a moderate amount of coding to be
+done.  Design decisions aside, let us concentrate on the {\tt
+  GTkColormap} class, which contains a Display Library {\tt Colormap}
+object.  This class is an implementation of a {\tt GTkDisplayProxy},
+and makes use of some services from the {\tt DisplayOptions} class.  A
+cursory examination of {\tt GTkColormap.h} will reveal that this class
+mostly provides a brief interface to access the facilities of the {\tt
+  Colormap} class, eg. {\tt char *GTkColormap::setoptions(Value *);}
+is provided to allow a number of settings to be made from \glish.  In
+the way of private data, {\tt GTkColormap} simply stores a pointer to
+a {\tt Colormap}.
 
+Turning now to the implementation file, {\tt GTkColormap.cc}, most of
+the interface work is done in the constructor.  Each proxy agent must
+have a unique {\tt agent\_ID}, and this tag can be used by other agents
+to check that a provided agent for some operation is of the correct
+type, before casting.  The contained {\tt Colormap} is constructed,
+and then a couple of widget commands are installed.  Just follow the
+existing code, which simply sets up a small map of Strings to
+functions (actually offsets into the class object).  At the end of the
+constructor it is very important to mark the agent as valid, so that
+destruction can be handled properly.
+
+The next function is a global C-style function, {\tt
+  GTkColormap\_Create}.  This is actually the function which is
+registered with Tcl to create {\tt colormap} proxy agents, and after
+parsing the arguments ({\tt Value *args}), explicitly constructs a
+{\tt GTkColormap} object.  Many things can go wrong here, so a fair
+component of the code is actually error checking code.  This global
+function is actually registered to create colormap proxy agents by
+code in the {\tt Gdisplay\_Init} function implemented in {\tt
+  gDisplay.cc}.  Destruction of the {\tt GTkColormap} agent is
+straightforward.  There follows a simple implementation of the
+required {\tt IsValid} function, whose return value is examined when
+the destructor of the base class is called.
+
+Finally, in {\tt GTkColormap.cc}, implementations of the widget
+commands themselves (in this case {\tt setoptions} and {\tt
+  getoptions} are given.  Most of their work is involved in turning
+arguments coming in to the function in the {\tt Value *args} style
+into useable data for native Display Library class functions.
+
+Let's now look at the {\tt gDisplay.h} and {\tt gDisplay.cc} files.
+To ``export'' the {\tt GTkColormap} class to \glish, it is necessary
+to add protected data to the {\tt TkDisplayProc} class which can store
+the offset of a widget command in the {\tt GTkColormap} class, and
+provide a constructor which can set up this protected data member when
+necessary.  In {\tt gDisplay.cc} the {\tt operator()(...)} must be 
+extended to handle the case where the stored offset is one into a 
+{\tt GTkColormap}, and call the method at the stored offset.
+Additionally, the global function{\tt GTkColormap\_Create} must be
+declared in this file, and then registered with a call to {\tt
+  GlishTk\_Register} in the implementation of {\tt Gdisplay\_Init}.
+
+It is worth pointing out that the function {\tt Gdisplay\_Init} also
+does a very important thing regarding PGPLOT.  It initialises the
+global pointer {\tt display\_library\_pgplot\_driver} to point to
+the global external function {\tt wcdriv\_}, in order that PGPLOT be
+able to draw on Display Library WorldCanvases.  {\tt Gdisplay\_Init}
+is called when the Display Library module {\tt gDisplay.so} is loaded,
+and so if the Display Library is {\em not}\/ loaded, the global
+pointer {\tt display\_library\_pgplot\_driver} remains zero, and is
+(correctly) never available for use.
+
+The last link in the chain to get {\tt colormap} agents working from
+\glish\ is to add appropriate code to the \glish\ script {\tt
+  gdisplay.g}.  This script actually provides the mechanism from
+\glish\ for loading the {\tt gDisplay.so} module, and thereby installs
+global symbols in \glish\ for constructing the various proxy agents.
+Simply follow the existing code to add a new agent.
 
 \subsection{Extending the Viewer}
 
-
-
-%% remove following line when ready for system
 \end{document}
