@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/Tables/ColumnsIndex.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableLocker.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -301,6 +302,8 @@ void ColumnsIndex::makeObjects (const RecordDesc& description)
 
 void ColumnsIndex::readData()
 {
+  // Acquire a lock if needed.
+  TableLocker locker(itsTable, FileLocker::Read);
   uInt nrrow = itsTable.nrow();
   if (nrrow != itsNrrow) {
     itsColumnChanged.set (True);
