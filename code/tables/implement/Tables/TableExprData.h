@@ -70,12 +70,12 @@ template<class T> class Block;
 // to select entries from the vectors. This example requires that
 // this class TableExprData is used.
 // <p>
-// The <linkto class=TableExprNodeRecord>TableExprNodeRecord</linkto>
+// The <linkto class=TableExprNodeRecordField>TableExprNodeRecordField</linkto>
 // and <linkto class=TableExprId>TableExprId</linkto> classes form
 // the means by which TaQL can deal with any set of data.
 // <br>First the TaQL expression has to be setup. This is done by
-// constructing a <src>TableExprNodeRecord</src> object for each
-// 'field' to be used in the expression. <src>TableExprNodeRecord</src>
+// constructing a <src>TableExprNodeRecordField</src> object for each
+// 'field' to be used in the expression. <src>TableExprNodeRecordField</src>
 // uses a <linkto class=RecordInterface>RecordInterface</linkto> object
 // to make the data type of a field in the data set known and to
 // map a field name to a field index (the index is the sequence number
@@ -89,7 +89,7 @@ template<class T> class Block;
 // <p>
 // It is also possible that the data set contains records and that
 // the selection is based on fields in those records. In such a case
-// the record passed to <src>TableExprNodeRecord</src> should contain
+// the record passed to <src>TableExprNodeRecordField</src> should contain
 // subrecords representing those records. The field index in the various
 // functions as passed as a <src>Block<Int></src> to denote the fields
 // in the subrecords (and possibly subsubrecords, etc..

@@ -72,7 +72,7 @@ class TableExprData;
 // table columns to be used in the expression.
 // <br>
 // For the other cases class
-// <linkto class=TableNodeExprRecord>TableExprNodeRecord</linkto>
+// <linkto class=TableNodeExprRecordField>TableExprNodeRecordField</linkto>
 // has to be used to know the index of the fields in the expression.
 // It uses a record (description) for this purpose.
 // </synopsis>
