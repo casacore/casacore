@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-r #] [-w #]
+# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-r #] [-w #]
 #-----------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
@@ -49,6 +49,8 @@
 #   -m     Do a "mixed" update: (mostly) incremental inhale, cumulative sneeze.
 #   -n     Don't remake the system (allsys).  The "install" and "docsys"
 #          targets will still be remade; see also the "-d" option.
+#   -P     Use passive mode when doing FTP. Useful for firewalls etc. The
+#          FTP client being used must support passive mode.
 #   -r #   Maximum number of ftp attempts, default 12.
 #          Set this to zero to circumvent the ftp.
 #   -w #   Set retry interval for the ftp in seconds, default 900.
@@ -166,6 +168,7 @@
   LATCHKEY=
   FTPLIMIT=12
   FTPINTVL=900
+  PASSIVEFTP=
 
   while [ "$#" -gt 0 ]
   do
@@ -187,6 +190,9 @@
         ;;
      -n)
         TARGETS=install
+        ;;
+     -P)
+        PASSIVEFTP=yes
         ;;
      -l)
         LATCHKEY=1
@@ -216,7 +222,7 @@
      *)
         exec 1>&2
         echo ""
-        echo "Usage: inhale [-c|-m] [-d] [-n] [-l] [-r #] [-w #]"
+        echo "Usage: inhale [-c|-m] [-d] [-n] [-l] [-P] [-r #] [-w #]"
         exit 1
         ;;
      esac
@@ -312,6 +318,10 @@
 #    Create a file containing commands for ftp.
      echo "open $MASTERHOST" > ftpcommands
      echo "user ftp $USERNAME" >> ftpcommands
+     if [ -n "$PASSIVEFTP" ]
+     then
+        echo "passive" >> ftpcommands
+     fi
      echo "cd $MSTRFTPD" >> ftpcommands
      echo "ls master-*.tar.gz masterdir" >> ftpcommands
      if [ "$DINKUM" ]
@@ -614,6 +624,10 @@
 
      echo "open $MASTERHOST" > ftpcommands
      echo "user ftp $USERNAME" >> ftpcommands
+     if [ -n "$PASSIVEFTP" ]
+     then
+        echo "passive" >> ftpcommands
+     fi
      echo "verbose" >> ftpcommands
      echo "binary" >> ftpcommands
      echo "hash" >> ftpcommands
@@ -672,6 +686,10 @@
            then
               echo "open $MASTERHOST" > ftpcommands
               echo "user ftp $USERNAME" >> ftpcommands
+              if [ -n "$PASSIVEFTP" ]
+              then
+                 echo "passive" >> ftpcommands
+              fi
               echo "verbose" >> ftpcommands
               echo "binary" >> ftpcommands
               echo "hash" >> ftpcommands
