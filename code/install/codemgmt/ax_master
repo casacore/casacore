@@ -3759,3 +3759,4 @@
 14 027 src mv atnf/apps/newrpfitsfiller atnf/apps/rpfitsfiller2
 14 027 src mv atnf/apps/rpfitsfiller2/DOnewrpfitsfiller.h atnf/apps/rpfitsfiller2/DOrpfitsfiller2.h
 14 027 src mv atnf/apps/rpfitsfiller2/DOnewrpfitsfiller.cc atnf/apps/rpfitsfiller2/DOrpfitsfiller2.cc
+14 027 src mv atnf/apps/rpfitsfiller2/newrpfitsfiller.g atnf/apps/rpfitsfiller2/rpfitsfiller2.g
