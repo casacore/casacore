@@ -5739,3 +5739,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSFeed.h
 16 134 src rm aips/implement/MeasurementSets/OldMSFeedColumns.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSFeedColumns.h
+16 134 src rm aips/implement/MeasurementSets/OldMSFeedEnums.h
