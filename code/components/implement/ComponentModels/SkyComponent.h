@@ -34,12 +34,13 @@
 #endif
 
 #include <aips/aips.h>
-#include <trial/MeasurementEquations/StokesVector.h>
-#include <aips/Measures/MDirection.h>
+#include <aips/Utilities/CountedPtr.h>
+#include <trial/ComponentModels/ComponentType.h>
 
-class String;
-template<class T> class ImageInterface;
+class SkyCompRep;
+class MDirection;
 template<class T> class Vector;
+template<class T> class ImageInterface;
 
 // <summary> A component of a model of the sky </summary>
 
@@ -108,55 +109,93 @@ template<class T> class Vector;
 // Exceptions are not directly thrown by this class
 // </thrown>
 //
-// <todo asof="1996/09/01">
-//   <li> Should this class be derived from Functional<MDirection, Double>? 
+// <todo asof="1997/05/01">
+//   <li> 
 // </todo>
 
 class SkyComponent
 {
 public:
+  // The default is a Point Component at the J2000 north pole with a flux of
+  // 1Jy in the I polarization only. 
+  SkyComponent();
+
+  // Construct a SkyComponent of the specified type. The default position is
+  // the J2000 north pole and the default flux is 1 Jy in the I polarisation
+  // only. Use the setFlux and SetPosition functions to change this after
+  // construction. 
+  SkyComponent(ComponentType::Type type);
+  
+  // The copy Constructor uses reference semantics
+  SkyComponent(const SkyComponent & other);
+
+  // a virtual destructor is needed so that the actual destructor in derived
+  // classes will be used.
   virtual ~SkyComponent();
 
-  // Return the intensity (in Jy/pixel) of the component at the specified
-  // direction.
-  virtual StokesVector operator()(const MDirection & samplePos) const = 0;
+  // The assignment operator uses reference semantics
+  SkyComponent & operator=(const SkyComponent & other);
 
   // Return the intensity (in Jy/pixel) of the component at the specified
-  // directions.  Default implementation calls the scalar sample function
-  // iteratively.
-  virtual Vector<StokesVector> operator()(const Vector<MDirection> & samplePos)
-                                   const = 0;
+  // direction. The Vector contains all the polarizations (Stokes I,Q,U,V)
+  // of the radiation and must be of length 4.
+  virtual void sample(Vector<Double> & result, 
+		      const MDirection & samplePos) const;
 
-  // Project the component onto an Image. The default implementation calls
-  // the operator() function once for the centre of each pixel. The image
-  // MUST have at least three axes (although any one can be degenerate), and
-  // the third axis must have four or fewer elements as this is the "Stokes"
-  // or polarisation axis. If there are fewer elements than four elemnts
-  // then only the necessary polarisation terms are sampled (order is
-  // I,Q,U,V)
-  virtual void operator()(ImageInterface<Float> & plane) const = 0;
+  // Project the component onto an Image. The default implementation calls the
+  // sample function once for the centre of each pixel. The image needs
+  // only have a one (and only one) direction axis. Other axes are optional and
+  // if there is no Stokes axes then it is assumed that the polarization is
+  // Stokes::I. The component is gridded equally onto all other axes of the
+  // image (ie. spectral axes).
+  virtual void project(ImageInterface<Float> & plane) const;
 
-  // Project the component onto an Image and convolve with the psf. The
-  // default implementation uses the above routine to project the image
-  // then does the convolution separately. However this is not satisfactory
-  // for PointComponents or other very small components. If dimensionality
-  // of the psf is less than the dimensionality of the plane then the
-  // convolution will be done successively over all requied axes. Eg. A two
-  // dimensional psf will be successively convolved over each of the
-  // polarisation components of a three dimensional plane. 
-  virtual void operator()(ImageInterface<Float> & plane,
-			  const ImageInterface<Float> & psf) const = 0;
+  // set/get the integrated flux (in Jy) of the component. The Vector specifies
+  // all the polarizations of the radiation.
+  // <group>
+  virtual void setFlux(const Vector<Double> & newFlux);
+  virtual void flux(Vector<Double> & compflux) const;
+  // </group>
 
-  // set/get the integrated flux (in Jy) of the component
-  virtual void setFlux( StokesVector newFlux) = 0;
-  virtual StokesVector flux() const = 0;
+  // set/get the position (usually the centre) of the component.
+  // <group>
+  virtual void setPosition(const MDirection & newPos);
+  virtual void position(MDirection & compPos) const;
+  // </group>
 
-  // set/get the position (usually the centre) of the component. 
-  virtual void setPosition(const MDirection & newPos) = 0;
-  virtual MDirection position() const = 0;
+  // return the number of parameters in the component and set/get them.
+  // <group>
+  virtual uInt nParameters() const;
+  virtual void setParameters(const Vector<Double> & newParms);
+  virtual void parameters(Vector<Double> & compParms) const;
+  // </group>
 
-  // get the actual type of the component (as a string)
-  virtual const String & type() const = 0;				   
+  // get the actual type of the component 
+  // (as an ComponentTypes::ComponentTypes enum)
+  virtual ComponentType::Type type() const;
+
+  // Return a distinct copy of this component. As both the assignment operator
+  // and the copy constructor use reference semantics this is the only way to
+  // get a real copy.
+  virtual SkyComponent copy() const;
+
+  // Function which checks the internal data of this class for correct
+  // dimensionality and consistant values. Returns True if everything is fine
+  // otherwise returns False.
+  virtual Bool ok() const;
+
+protected:
+  // An easy way for derived classes to initialise the base class is to use
+  // this constructor. The pointer is taken over. 
+  SkyComponent(SkyCompRep * rawPtr);
+
+  // Return the polymorphic pointer that is being reference counted. This is
+  // used by derived classes to cache an downcast pointer.
+  SkyCompRep * rawPtr(); 
+  const SkyCompRep * rawPtr() const; 
+
+private:
+  CountedPtr<SkyCompRep> theCompPtr;
 };
 
 #endif
