@@ -31,7 +31,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <stdio.h>
 #include <unistd.h>
 
 
