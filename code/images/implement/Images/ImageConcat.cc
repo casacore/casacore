@@ -123,8 +123,10 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
      isContig_p = other.isContig_p;
      isImage_p.resize(other.isImage_p.nelements());
      isImage_p = other.isImage_p;
-     pixelValues_p = other.pixelValues_p.copy();
-     worldValues_p = other.worldValues_p.copy();
+     pixelValues_p.resize(other.pixelValues_p.nelements());
+     pixelValues_p = other.pixelValues_p;
+     worldValues_p.resize(other.worldValues_p.nelements());
+     worldValues_p = other.worldValues_p;
   }
   return *this;
 }
@@ -258,8 +260,8 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
    }
 
 // This is causing me problems. Append for now.
-//   logger().addParent (&(image.logger()));
-    logger().append(image.logger());
+   logger().addParent (image.logger());
+   //    logger().append(image.logger());
 } 
 
 
