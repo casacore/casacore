@@ -40,6 +40,28 @@
 #include <iostream.h>
 #include <strstream.h>
 
+// PABLO_IO is used to profile the IO performance of the AIPS++ (in
+// particular to help us locate bottlenecks associated with parallel
+// processing)
+//
+// Please see http://www-pablo.cs.uiuc.edu if you need more details
+// You'll need to set PABLO_IO variable in the makedefs as well as the
+// -I flag to find the header file and -L to resolve with the library.
+//
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#else
+#define traceFCLOSE fclose
+#define traceFSEEK fseek
+#define traceFREAD fread
+#define traceFWRITE fwrite
+#define traceWRITE write
+#define trace2OPEN open
+#define trace3OPEN open
+#define traceLSEEK lseek
+#define traceCLOSE close
+#endif // PABLO_IO
+
 //# canonical size of an Int (checked in constructor).
 #define SIZEINT 4u
 #define NRREQID 32u
@@ -202,7 +224,7 @@ void LockFile::getInfo (MemoryIO& info)
     // - thereafter the entire info
     uChar buffer[2048];
     // Read the first part of the file.
-    lseek (itsLocker.fd(), 0, SEEK_SET);
+    traceLSEEK (itsLocker.fd(), 0, SEEK_SET);
     uInt leng = read (itsLocker.fd(), buffer, sizeof(buffer));
     // Extract the request list from it.
     convReqId (buffer, leng);
@@ -240,13 +262,13 @@ void LockFile::putInfo (const MemoryIO& info) const
     }
     uChar buffer[1024];
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
-    lseek (itsLocker.fd(), SIZEREQID, SEEK_SET);
+    traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
     if (infoLeng > 1024 - leng) {
-	write (itsLocker.fd(), buffer, leng);
-	write (itsLocker.fd(), info.getBuffer(), infoLeng);
+	traceWRITE (itsLocker.fd(), buffer, leng);
+	traceWRITE (itsLocker.fd(), info.getBuffer(), infoLeng);
     }else{
 	memcpy (buffer+leng, info.getBuffer(), infoLeng);
-	write (itsLocker.fd(), buffer, leng+infoLeng);
+	traceWRITE (itsLocker.fd(), buffer, leng+infoLeng);
     }
     fsync (itsLocker.fd());
 }
@@ -254,7 +276,7 @@ void LockFile::putInfo (const MemoryIO& info) const
 Int LockFile::getNrReqId() const
 {
     uChar buffer[8];
-    lseek (itsLocker.fd(), 0, SEEK_SET);
+    traceLSEEK (itsLocker.fd(), 0, SEEK_SET);
     uInt leng = read (itsLocker.fd(), buffer, SIZEINT);
     return getInt (buffer, leng, 0);
 }
@@ -321,8 +343,8 @@ void LockFile::putReqId (int fd) const
 	uInt leng = CanonicalConversion::fromLocal (buffer,
 						    itsReqId.storage(),
 						    itsReqId.nelements());
-	lseek (fd, 0, SEEK_SET);
-	write (fd, buffer, leng);
+	traceLSEEK (fd, 0, SEEK_SET);
+	traceWRITE (fd, buffer, leng);
 	fsync (fd);
     }
 }
@@ -331,7 +353,7 @@ void LockFile::getReqId()
 {
     int fd = itsLocker.fd();
     uChar buffer[SIZEREQID];
-    lseek (fd, 0, SEEK_SET);
+    traceLSEEK (fd, 0, SEEK_SET);
     if (read (fd, buffer, SIZEREQID) > 0) {
 	CanonicalConversion::fromLocal (buffer,
 					itsReqId.storage(),
