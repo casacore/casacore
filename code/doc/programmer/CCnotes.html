@@ -228,6 +228,12 @@ b = a = 0;
 <li> Conversion involving const numbers to Floats need to be done explicitly.
 Something line MyClass &lt Float &gt a = 1.0; fails cause it can't cast the 1.0 to a
 float.  Use MyClass &lt Float &gt a = 1.0f;
+<li> tMuvw failed for some obsure reason on the following construct
+<pre>
+ cout << "Pos constructor:" << MVuvw(x, x2) << endl;         
+
+where x and x2 are MVuvw's
+</pre>
 </ul>
 
 
@@ -238,7 +244,7 @@ float.  Use MyClass &lt Float &gt a = 1.0f;
 <a href="mailto:kweather@aoc.nrao.edu">kweather&#064;nrao.edu</a><br>
 
 
-Copyright &#169; 1995,1996,1997,1998 Associated Universities Inc.,
+Copyright &#169; 1995,1996,1997,1998,1999 Associated Universities Inc.,
 Washington, D.C.</i>
 </table>
 
