@@ -198,6 +198,8 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   explicit Function(const uInt n) : param_p(n) {};
   explicit Function(const Vector<T> &in) : param_p(in) {};
   Function(const FunctionParam<T> &other) : param_p(other) {};
+  Function(const Function<T> &other) : param_p(other.param_p),
+    arg_p(other.arg_p) {};
   // </group>
 
   // Destructor
