@@ -5304,3 +5304,4 @@
 15 034 src rm nrao/apps/gbtutils/ifutils.ps
 15 034 src rm nrao/apps/gbtutils/pulsarutils.ps
 15 034 src rm nrao/apps/gbtutils/utilsfiller2.ps
+15 034 src rm nrao/apps/gbtutils/cparams.g
