@@ -1,5 +1,5 @@
 //# ArrayIter.cc: Iterate an Array cursor through another Array
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,8 @@ template<class T> void ArrayIterator<T>::apSetPointer(Int stepDim)
 	    dataPtr += offset(stepDim);
 	}
 	ap->begin_p = dataPtr;
+	delete ap->itsEndIter;
+	ap->itsEndIter = 0;
     }
 }
 
