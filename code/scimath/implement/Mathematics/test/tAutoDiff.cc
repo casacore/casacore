@@ -1,5 +1,5 @@
 //# tAutoDiff.cc: test program for AutoDiff
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -410,7 +410,7 @@ int main() {
     
     // sqrt(x) : derivative = 0.5/sqrt(x)
     y = sqrt(x);
-    if (y.value() != Float(sqrt(x.value())) ||
+    if (!allNearAbs(y.value(), Float(sqrt(x.value()))) ||
       	!allEQ(y.derivatives(), x.derivatives()*Float(0.5/sqrt(x.value())))) {
       cerr << "sqrt(const AutoDiff<T> &) failed" << endl;
       nerr++;
