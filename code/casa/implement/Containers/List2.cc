@@ -32,7 +32,8 @@ void throw_list_end_error(){
   throw(IterBoundaryError("List operation performed with cursor past the end of the list."));
 }
 void throw_list_init_error(){
-  throw(IterInitError());
+  IterInitError tmp;
+  throw(tmp);
 }
 void throw_list_swapright_same_error() {
   throw(IterError("Attempted 'swapRight' on same list."));
