@@ -1,5 +1,5 @@
 //# Memory.cc: Memory related information and utilities.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,11 @@
 #include <aips/OS/Memory.h>
 #include <aips/OS/malloc.h>
 
+#if defined(AIPS_NO_LEA_MALLOC)
+#include <malloc.h>
+#endif
+
+
 size_t Memory::allocatedMemoryInBytes()
 {
     size_t total = 0;
@@ -58,7 +63,7 @@ void Memory::releaseMemory()
 {
 #if defined(AIPS_RELEASEMEM)
     AIPS_RELEASEMEM;
-#else
+#elif !defined(AIPS_NO_LEA_MALLOC)
     malloc_trim(0);
 #endif
 }
