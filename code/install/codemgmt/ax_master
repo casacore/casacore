@@ -1886,3 +1886,4 @@
 08 004 top rm docs/design/OverviewTemplate.text
 08 004 top rm docs/design/astronomy
 08 004 top rm docs/design/basics
+08 004 top rm docs/design/interface
