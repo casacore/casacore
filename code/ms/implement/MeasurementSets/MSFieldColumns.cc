@@ -98,26 +98,26 @@ Int RONewMSFieldColumns::matchDirection(const MDirection& referenceDirection,
   // the Table. It would be nice if this converter could be cached somewhere.
   MDirection::Convert c(referenceDirection, delayDirMeasCol().getMeasRef());
   const MVDirection refVal = c().getValue();
+  // Create these here to avoid creating them lots of times as a temporaries
   const MVDirection delayVal = c(delayDirection).getValue();
   const MVDirection phaseVal = c(phaseDirection).getValue();
   const Double sepInRad = maxSeparation.radian();
-  // Created these here to avoid creating them lots of times as a temporaries
-  Matrix<Double> mdir(IPosition(2,2,1));
+  Matrix<Double> mdir(IPosition(2,1,2));
   Vector<Double> dir(mdir.nonDegenerate()); // A reference to the mdir matrix
   while (r > 0) {
     r--;
     if (flagRow()(r) == False && numPoly()(r) == 0) {
       delayDir().get(r, mdir);
       if (delayVal.separation(MVDirection(dir)) < sepInRad) {
-	phaseDir().get(r, mdir);
-	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
-	  referenceDir().get(r, mdir);
-	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
-	    DebugAssert(dir.nrefs() == 2, AipsError); 
-	    DebugAssert(mdir.nrefs() == 2, AipsError);
-	    return r;
-	  }
-	}
+ 	phaseDir().get(r, mdir);
+ 	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
+ 	  referenceDir().get(r, mdir);
+ 	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
+ 	    DebugAssert(dir.nrefs() == 2, AipsError); 
+ 	    DebugAssert(mdir.nrefs() == 2, AipsError);
+ 	    return r;
+ 	  }
+ 	}
       }
     }
   }
