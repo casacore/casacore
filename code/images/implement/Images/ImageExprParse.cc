@@ -38,6 +38,10 @@
 #include <aips/Exceptions/Error.h>
 
 
+//# Define a block to hold temporary lattices.
+static const Block<LatticeExprNode>* theTempLattices;
+
+
 //# Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
 
@@ -81,6 +85,14 @@ ImageExprParse::ImageExprParse (const String& value)
 
 LatticeExprNode ImageExprParse::command (const String& str)
 {
+    Block<LatticeExprNode> dummy;
+    return command (str, dummy);
+}
+LatticeExprNode ImageExprParse::command
+                           (const String& str,
+			    const Block<LatticeExprNode>& tempLattices)
+{
+    theTempLattices = &tempLattices;
     String message;
     String command = str + '\n';
     Bool error = False;
@@ -254,6 +266,17 @@ LatticeExprNode ImageExprParse::makeLiteralNode() const
 
 LatticeExprNode ImageExprParse::makeLatticeNode() const
 {
+    // When the name is numeric, we have a temporary lattice number.
+    // Find it in the block of temporary lattices.
+    if (itsType == TpInt) {
+        Int latnr = itsIval-1;
+	if (latnr < 0  ||  latnr >= Int(theTempLattices->nelements())) {
+	    throw (AipsError ("ImageExprParse: invalid temporary image "
+			      "number given"));
+	}
+	return ((*theTempLattices)[latnr]);
+    }
+    // A true name has been given.
     if (! Table::isReadable(itsSval)) {
 	throw (AipsError ("ImageExprParse: '" + itsSval +
 			  "' is not a table or is not readable"));
@@ -320,8 +343,8 @@ LatticeExprNode ImageExprParse::makeLitLattNode() const
     // a constant without ().
     // E.g.            image.file * pi
     // instead of      image.file * pi()
-    // However, itt forbids the use of pi, e, etc. as a lattice name and
-    // may make things unclear. Therefore it is not supported yet.
+    // However, it forbids the use of pi, e, etc. as a lattice name and
+    // may make things unclear. Therefore it is not supported (yet?).
 ///    if (itsSval == "pi") {
 ///	return LatticeExprNode (C::pi);
 ///    } else if (itsSval == "e") {

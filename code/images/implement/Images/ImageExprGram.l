@@ -63,6 +63,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
+TEMPNAME  [$]{INT}
 ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 
 
@@ -119,6 +120,13 @@ ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 {NAME}    {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (ImageExprGramtext);
+	    return NAME;
+	  }
+
+ /* A temporary image number can be given */
+{TEMPNAME} {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+1));
 	    return NAME;
 	  }
 
