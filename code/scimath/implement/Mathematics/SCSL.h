@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #if !defined(AIPS_SCSL_H)
 #define AIPS_SCSL_H
@@ -30,21 +31,25 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 
-class SLSL
-{
-public:
-// <summary>Interface to the 1D complex-to-complex transforms using
-// SCSL (<b>SGI only</b>)</summary>
+class doubleG_COMPLEX;
+typedef doubleG_COMPLEX DComplex;
+class floatG_COMPLEX;
+typedef floatG_COMPLEX Complex;
+// <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>
 // <synopsis>
-// These are C++ wrapper functions for the 1D complex-to-complex transform
-// routines in the SGI/Cray Scientific Library (SCSL). The purpose of these
-// definitions is to overload the functions so that C++ users can access
-// the functions in SCSL with identical function names.
+// These are C++ wrapper functions for the transform routines in the SGI/Cray 
+// Scientific Library (SCSL). The purpose of these definitions is to overload
+// the functions so that C++ users can access the functions in SCSL with
+// identical function names.
 //
 // <note role=warning> 
 // Currently, the SCSL is available only on SGI machines.
 // </note>
-//
+// </synopsis>
+
+class SCSL
+{
+public:
 // These routines compute the Fast Fourier Transform (FFT) of the complex
 // vector x, and store the result in vector y.  <src>ccfft</src> does the
 // complex-to-complex transform and <src>zzfft</src> does the same for double
@@ -86,7 +91,6 @@ public:
 // the inverse FFT by using isign = -1 and scale = 1.0/n.
 //
 // The output array may be the same as the input array.
-// </synopsis>
 //
 // <h3>Initialization</h3>
 // The table array stores the trigonometric tables used in calculation of
@@ -167,8 +171,6 @@ public:
 // </srcblock> 
 // </example>
 //
-// <group name="SCSL 1D Complex-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -233,34 +235,14 @@ public:
 //         space from that of the input and output arrays.
 // </dl>
 // <group>
-static void ccfft(Int isign, Int n, Float* scale, Float* x, Float*
-		  y, Float* table, Float* work, Int isys);
-static void ccfft(Int isign, Int n, Double* scale, Double* x, Double*
-		  y, Double* table, Double* work, Int isys);
-static void ccfft(int* isign, Int n, double scale, double x, double y,
-		  Double* table, double work, int isys);
-static void ccfft(int isign, uInt n, double scale, DComplex* x,
-		  DComplex* y, Double* table, Double* work, int
-		  isys);
-static void zzfft(Int isign, Int n, Double* scale, Double* x,
-		  Double* y, Double* table, Double* work, Int isys);
-
-// </group>
+static void ccfft(Int isign, Int n, Float scale, Complex* x,
+		  Complex* y, Float* table, Float* work, Int isys);
+static void ccfft(Int isign, Int n, Double scale, DComplex* x,
+		  DComplex* y, Double* table, Double* work, Int isys);
+static void zzfft(Int isign, Int n, Double scale, DComplex* x,
+		  DComplex* y, Double* table, Double* work, Int isys);
 // </group>
 
-// <summary>Interface to the 1D real-to-complex & complex-to-real
-// transforms using SCSL (<b>SGI only</b>)</summary>
-// <synopsis>
-// These are C++ wrapper functions for the 1D real-to-complex and
-// complex-to-real transform routines in the SGI/Cray Scientific Library
-// (SCSL). The purpose of these definitions is to overload the functions so
-// that C++ users can access the functions in SCSL with identical function
-// names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
 // <src>scfft/dzfft</src> computes the FFT of the real array x, and it stores
 // the results in the complex array y.  <src>csfft/zdfft</src> computes the
 // corresponding inverse complex-to-real transform.
@@ -302,7 +284,6 @@ static void zzfft(Int isign, Int n, Double* scale, Double* x,
 // 1/(n*scale).  In particular, if you use isign = +1 and scale = 1.0 in 
 // <src>scfft</src> for the forward FFT, you can compute the inverse FFT by
 // using <src>ccfft</src> with isign = -1 and scale = 1.0/n.
-// </synopsis>
 //
 // <h3>Real-to-complex FFTs</h3>
 // Notice in the preceding formula that there are n real input values,
@@ -468,8 +449,6 @@ static void zzfft(Int isign, Int n, Double* scale, Double* x,
 // </srcblock> 
 // </example>
 //
-// <group name="SCSL 1D Real-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -548,38 +527,20 @@ static void zzfft(Int isign, Int n, Double* scale, Double* x,
 //         arrays.
 // </dl>
 // <group>
-static void scfft(Int isign, Int n, Float* scale, Float* x, Float*
-		  y, Float* table, Float* work, Int isys); 
-static void scfft(Int isign, Int n, Double* scale, Double* x, Double*
-		  y, Double* table, Double* work, Int isys);
-static void scfft(int isign, Int n, double scale, double x, double y,
-		  Double* table, double work, int isys);
-static void scfft(int isign, uInt n, double scale, Double* x, Double*
-		  y, Double* table, Double* work, int isys);
-static void dzfft(Int isign, Int n, Double* scale, Double* x,
+static void scfft(Int isign, Int n, Float scale, Float* x,
+		  Complex* y, Float* table, Float* work, Int isys); 
+static void scfft(Int isign, Int n, Double scale, Double* x,
+		  DComplex* y, Double* table, Double* work, Int isys);
+static void dzfft(Int isign, Int n, Double scale, Double* x,
+		  DComplex* y, Double* table, Double* work, Int isys);
+static void csfft(Int isign, Int n, Float scale, Complex* x,
+		  Float* y, Float* table, Float* work, Int isys); 
+static void csfft(Int isign, Int n, Double scale, DComplex* x, 
 		  Double* y, Double* table, Double* work, Int isys);
-static void dzfft(Int isign, Int n, Double* scale, Double* x, Double*
-		  y, Double* table, Double* work, Int isys); 
-static void csfft(Int isign, Int n, Float* scale, Float* x, Float*
-		  y, Float* table, Float* work, Int isys); 
-static void zdfft(Int isign, Int n, Double* scale, Double* x, Double*
-		  y, Double* table, Double* work, Int isys); 
-// </group>
+static void zdfft(Int isign, Int n, Double scale, DComplex* x, 
+		  Double* y, Double* table, Double* work, Int isys);
 // </group>
 
-// <summary>Interface to the multiple complex-to-complex transforms
-// using SCSL (<b>SGI only</b>)</summary>  
-// <synopsis> 
-// These are C++ wrapper functions for the multiple dimension
-// complex-to-complex transform routines in the SGI/Cray Scientific
-// Library (SCSL). The purpose of these definitions is to overload the
-// functions so that C++ users can access the functions in SCSL with
-// identical function names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
 // <src>ccfftm/zzfftm</src> computes the FFT of each column of the
 // complex matrix x, and stores the results in the columns of complex
 // matrix y.
@@ -627,7 +588,6 @@ static void zdfft(Int isign, Int n, Double* scale, Double* x, Double*
 // routines, the initialization of the table array, the declaration of
 // dimensions for x and y arrays, some performance tips, and some
 // implementation-dependent details.
-// </synopsis> 
 //
 // <h3>Algorithm</h3>
 // These routines use decimation-in-frequency type FFT.  It takes the FFT
@@ -723,8 +683,6 @@ static void zdfft(Int isign, Int n, Double* scale, Double* x, Double*
 //
 // </example>
 //
-// <group name="SCSL Multiple Complex-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -815,30 +773,16 @@ static void zdfft(Int isign, Int n, Double* scale, Double* x, Double*
 //         of the input and output arrays.
 // </dl>
 // <group>
-static void ccfftm(Int isign, Int n, Int lot, Float* scale, Float*
-		   x, Int ldx, Float* y, Int ldy, Float* table,
+static void ccfftm(Int isign, Int n, Int lot, Float scale, Complex*
+		   x, Int ldx, Complex* y, Int ldy, Float* table,
 		   Float* work, Int isys); 
-static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
-		   x, Int ldx, Double* y, Int ldy, Double* table,
+static void zzfftm(Int isign, Int n, Int lot, Double scale, DComplex*
+		   x, Int ldx, DComplex* y, Int ldy, Double* table,
 		   Double* work, Int isys);
 // </group>
-// </group>
 
-// <summary>Interface to the multiple real-to-complex &
-// complex-to-real transforms using SCSL (<b>SGI only</b>)</summary> 
-// <synopsis> 
-// These are C++ wrapper functions for the multiple dimension
-// real-to-complex & complex-to-real transform routines in the
-// SGI/Cray Scientific Library (SCSL). The purpose of these
-// definitions is to overload the functions so that C++ users can
-// access the functions in SCSL with identical function names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
-// <src>scfftm/dzfftm</src> computes the FFT of each column of the real matrix X,
-// and it stores the results in the corresponding column of the complex
+// <src>scfftm/dzfftm</src> computes the FFT of each column of the real matrix
+// X, and it stores the results in the corresponding column of the complex
 // matrix Y.  <src>csfftm/zdfftm</src> computes the corresponding inverse
 // transforms.
 //
@@ -878,13 +822,13 @@ static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
 // make these routines compute any of the various possible definitions,
 // however, by choosing the appropriate values for isign and scale.
 //
-// The relevant fact from FFT theory is this:  If you use <src>scfftm</src> to take
-// the real-to-complex FFT, using any particular values of isign and
-// scale, the mathematical inverse function is computed by using <src>csfftm</src>
-// with -isign and 1/ (n*scale).  In particular, if you call <src>scfftm</src> with
-// isign = +1 and scale = 1.0, you can use <src>csfftm</src> to compute the inverse
-// complex-to-real FFT by using isign = -1 and scale = 1.0/n.
-// </synopsis>
+// The relevant fact from FFT theory is this:  If you use <src>scfftm</src> to
+// take the real-to-complex FFT, using any particular values of isign and
+// scale, the mathematical inverse function is computed by using 
+// <src>csfftm</src> with -isign and 1/ (n*scale).  In particular, if you call
+// <src>scfftm</src> with isign = +1 and scale = 1.0, you can use
+// <src>csfftm</src> to compute the inverse complex-to-real FFT by using isign
+// = -1 and scale = 1.0/n.
 //
 // <h3>Real-to-complex FFTs</h3>
 // Notice in the preceding formula that there are n real input values and
@@ -893,11 +837,11 @@ static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
 //
 // The mathematical definition of the Fourier transform takes a sequence
 // of n complex values and transforms it to another sequence of n complex
-// values.  A complex-to-complex FFT routine, such as <src>ccfftm</src>, will take n
-// complex input values and produce n complex output values.  In fact,
+// values.  A complex-to-complex FFT routine, such as <src>ccfftm</src>, will
+// take n complex input values and produce n complex output values.  In fact,
 // one easy way to compute a real-to-complex FFT is to store the input
-// data x in a complex array, then call routine <src>ccfftm</src> to compute the
-// FFT.  You get the same answer when using the <src>scfftm</src> routine.
+// data x in a complex array, then call routine <src>ccfftm</src> to compute
+// the FFT.  You get the same answer when using the <src>scfftm</src> routine.
 //
 // A separate real-to-complex FFT routine is more efficient than the
 // equivalent complex-to-complex routine.  Because the input data is
@@ -1063,8 +1007,6 @@ static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
 // </srcblock>
 // </example>
 //
-// <group name="SCSL Multiple Real-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -1082,14 +1024,14 @@ static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
 // <dd>    Integer.
 //         Size of the transforms (the number of elements in each
 //         column of the input and output matrix to be transformed).
-//         If n is not positive, <src>scfftm</src> or <src>csfftm</src> returns without
-//         computing a transforms.
+//         If n is not positive, <src>scfftm</src> or <src>csfftm</src> returns
+//         without computing a transforms.
 // <dt><b>lot</b>
 // <dd>    Integer.
 //         The number of transforms to be computed (or "lot size").
 //         This is the number of elements in each row of the input and
-//         output matrix.  If lot is not positive, <src>csfftm</src> or <src>scfftm</src>
-//         returns without computing a transforms.
+//         output matrix.  If lot is not positive, <src>csfftm</src> or 
+//         <src>scfftm</src> returns without computing a transforms.
 // <dt><b>scale</b>
 // <dd>    Scale factor.
 //         <src>scfftm</src>: real. 
@@ -1167,32 +1109,20 @@ static void zzfftm(Int isign, Int n, Int lot, Double* scale, Double*
 //         arrays.
 // </dl>
 // <group>
-static void scfftm(Int isign, Int n, Int lot, Float* scale, Float*
-		   x, Int ldx, Float* y, Int ldy, Float* table,
+static void scfftm(Int isign, Int n, Int lot, Float scale, Float*
+		   x, Int ldx, Complex* y, Int ldy, Float* table,
 		   Float* work, Int isys); 
-static void dzfftm(Int isign, Int n, Int lot, Double* scale, Double*
-		   x, Int ldx, Double* y, Int ldy, Double* table,
+static void dzfftm(Int isign, Int n, Int lot, Double scale, Double*
+		   x, Int ldx, DComplex* y, Int ldy, Double* table,
 		   Double* work, Int isys); 
-static void csfftm(Int isign, Int n, Int lot, Float* scale, Float*
+static void csfftm(Int isign, Int n, Int lot, Float scale, Complex*
 		   x, Int ldx, Float* y, Int ldy, Float* table,
 		   Float* work, Int isys); 
-static void zdfftm(Int isign, Int n, Int lot, Double* scale, Double*
+static void zdfftm(Int isign, Int n, Int lot, Double scale, DComplex*
 		   x, Int ldx, Double* y, Int ldy, Double* table,
 		   Double* work, Int isys);
 // </group>
-// </group>
 
-// <summary>Interface to the 2D complex-to-complex transforms using SCSL (<b>SGI only</b>)</summary>
-// <synopsis>
-// These are C++ wrapper functions for the 2D complex-to-complex transform
-// routines in the SGI/Cray Scientific Library (SCSL). The purpose of these
-// definitions is to overload the functions so that C++ users can access
-// the functions in SCSL with identical function names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
 // These routines compute the two-dimensional complex Fast Fourier
 // Transform (FFT) of the complex matrix x, and store the results in the
 // complex matrix y.  <src>ccfft2d</src> does the complex-to-complex
@@ -1238,7 +1168,6 @@ static void zdfftm(Int isign, Int n, Int lot, Double* scale, Double*
 // 1/(n1*n2*scale).  In particular, if you use isign = +1 and scale = 1.0
 // for the forward FFT, you can compute the inverse FFT by using isign =
 // -1 and scale = 1.0/(n1*n2).
-// </synopsis> 
 //
 // <h3>Algorithm</h3>
 // These routines use a routine very much like <src>ccfftm/zzfftm</src> to do
@@ -1334,8 +1263,6 @@ static void zdfftm(Int isign, Int n, Int lot, Double* scale, Double*
 // </srcblock> 
 // </example>
 //
-// <group name="SCSL 2D Complex-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -1417,28 +1344,14 @@ static void zdfftm(Int isign, Int n, Int lot, Double* scale, Double*
 //         of the input and output arrays.
 // </dl>
 // <group>
-static void ccfft2d(Int isign, Int n1, Int n2, Float* scale, Float*
-		    x, Int ldx, Float* y, Int ldy, Float* table,
+static void ccfft2d(Int isign, Int n1, Int n2, Float scale, Complex*
+		    x, Int ldx, Complex* y, Int ldy, Float* table,
 		    Float* work, Int isys); 
-static void zzfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
-		    x, Int ldx, Double* y, Int ldy, Double* table,
+static void zzfft2d(Int isign, Int n1, Int n2, Double scale, DComplex*
+		    x, Int ldx, DComplex* y, Int ldy, Double* table,
 		    Double* work, Int isys);
 // </group>
-// </group>
  
-// <summary>Interface to the 2D real-to-complex & complex-to-real
-// transforms using SCSL (<b>SGI only</b>)</summary> 
-// <synopsis>
-// These are C++ wrapper functions for the 2D real-to-complex and
-// complex-to-real transform routines in the SGI/Cray Scientific Library
-// (SCSL). The purpose of these definitions is to overload the functions so
-// that C++ users can access the functions in SCSL with identical function
-// names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
 // <src>scfft2d/dzfft2d</src> computes the two-dimensional Fast Fourier
 // Transform (FFT) of the real matrix x, and it stores the results in the
 // complex matrix y.  <src>csfft2d/zdfft2d</src> computes the corresponding
@@ -1520,7 +1433,6 @@ static void zzfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
 //       k , k            1                  2
 //        1   2
 // </srcblock>
-// </synopsis>
 //
 // <h3>Algorithm</h3>
 // <src>scfft2d</src> uses a routine similar to <src>scfftm</src> to do a
@@ -1623,8 +1535,6 @@ static void zzfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
 //       CALL SCFFT2D(1, 128, 256, 1.0, X, 130, Y, 65, TABLE, WORK, 0)
 // </srcblock>
 // </example>
-//
-// <group name="SCSL 2D Real-To-Complex Transforms">
 //
 // Input parameters:
 // <dl compact>
@@ -1738,34 +1648,20 @@ static void zzfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
 //         of the input and output arrays.
 // </dl>
 // <group>
-static void scfft2d(Int isign, Int n1, Int n2, Float* scale, Float*
+static void scfft2d(Int isign, Int n1, Int n2, Float scale, Float*
+		    x, Int ldx, Complex* y, Int ldy, Float* table,
+		    Float* work, Int isys); 
+static void dzfft2d(Int isign, Int n1, Int n2, Double scale, Double*
+		    x, Int ldx, DComplex* y, Int ldy, Double* table,
+		    Double* work, Int isys); 
+static void csfft2d(Int isign, Int n1, Int n2, Float scale, Complex*
 		    x, Int ldx, Float* y, Int ldy, Float* table,
 		    Float* work, Int isys); 
-static void dzfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
+static void zdfft2d(Int isign, Int n1, Int n2, Double scale, DComplex*
 		    x, Int ldx, Double* y, Int ldy, Double* table,
 		    Double* work, Int isys); 
-static void csfft2d(Int isign, Int n1, Int n2, Float* scale, Float*
-		    x, Int ldx, Float* y, Int ldy, Float* table,
-		    Float* work, Int isys); 
-static void zdfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
-		    x, Int ldx, Double* y, Int ldy, Double* table,
-		    Double* work, Int isys); 
-// </group>
 // </group>
 
-// <summary>Interface to the 3D complex-to-complex transforms using
-// SCSL (<b>SGI only</b>)</summary>  
-// <synopsis> 
-// These are C++ wrapper functions for the 3D complex-to-complex
-// transform routines in the SGI/Cray Scientific Library (SCSL). The
-// purpose of these definitions is to overload the functions so that
-// C++ users can access the functions in SCSL with identical function
-// names.
-//
-// <note role=warning> 
-// Currently, the SCSL is available only on SGI machines.
-// </note>
-//
 // These routines compute the three-dimensional complex FFT of the
 // complex matrix X, and store the results in the complex matrix Y.
 //
@@ -1879,8 +1775,6 @@ static void zdfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
 // </srcblock>
 // </example>
 //
-// <group name="SCSL 3D Real-To-Complex Transforms">
-//
 // Input parameters:
 // <dl compact>
 // <dt><b>isign</b>
@@ -1984,19 +1878,15 @@ static void zdfft2d(Int isign, Int n1, Int n2, Double* scale, Double*
 //
 // </dl>
 // <group>
-static void ccfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale,
-		    Float* x, Int ldx, Int ldx2, Float* y, Int ldy,
+static void ccfft3d(Int isign, Int n1, Int n2, Int n3, Float scale,
+		    Complex* x, Int ldx, Int ldx2, Complex* y, Int ldy,
 		    Int ldy2, Float* table, Float* work, Int isys);
-static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
-		    Double* x, Int ldx, Int ldx2, Double* y, Int
+static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double scale,
+		    DComplex* x, Int ldx, Int ldx2, DComplex* y, Int
 		    ldy, Int ldy2, Double* table, Double* work, Int
 		    isys); 
 // </group>
-// </group>
 
-// <summary>Interface to the 3D real-to-complex & complex-to-real
-// transforms using SCSL (<b>SGI only</b>)</summary> 
-// <synopsis>
 // These are C++ wrapper functions for the 3D real-to-complex and
 // complex-to-real transform routines in the SGI/Cray Scientific Library
 // (SCSL). The purpose of these definitions is to overload the functions so
@@ -2007,10 +1897,10 @@ static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
 // Currently, the SCSL is available only on SGI machines.
 // </note>
 //
-// <src>scfft3d/dzfft3d</src> computes the three-dimensional Fast Fourier Transform
-// (FFT) of the real matrix X, and it stores the results in the complex
-// matrix Y.  <src>csfft3d/zdfft3d</src> computes the corresponding inverse
-// transform.
+// <src>scfft3d/dzfft3d</src> computes the three-dimensional Fast Fourier
+// Transform (FFT) of the real matrix X, and it stores the results in the
+// complex matrix Y.  <src>csfft3d/zdfft3d</src> computes the corresponding
+// inverse transform.
 //
 // In FFT applications, it is customary to use zero-based subscripts; the
 // formulas are simpler that way.  First, the function of <src>SCFFT3D</src> is
@@ -2059,17 +1949,17 @@ static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
 //      scale = 1.0/(n1*n2*n3).
 // </srcblock>
 //
-// <src>scfft3d</src> is very similar in function to <src>ccfft3d</src>, but it takes the
-// real-to-complex transform in the first dimension, followed by the
-// complex-to-complex transform in the second and third dimensions.
+// <src>scfft3d</src> is very similar in function to <src>ccfft3d</src>, but
+// it takes the real-to-complex transform in the first dimension, followed by
+// the complex-to-complex transform in the second and third dimensions.
 //
-// <src>csfft3d</src> does the reverse.  It takes the complex-to-complex FFT in the
-// third and second dimensions, followed by the complex-to-real FFT in
+// <src>csfft3d</src> does the reverse.  It takes the complex-to-complex FFT
+// in the third and second dimensions, followed by the complex-to-real FFT in
 // the first dimension.
 //
-// See the <src>scfftm</src> man page for more information about real-to-complex
-// and complex-to-real FFTs.  The three dimensional analog of the
-// conjugate formula is as follows:
+// See the <src>scfftm</src> man page for more information about
+// real-to-complex and complex-to-real FFTs.  The three dimensional analog of
+// the conjugate formula is as follows:
 //
 // <srcblock>
 //      Y         = conjg Y
@@ -2103,14 +1993,13 @@ static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
 //
 //           0 <= k  <= n3 - 1
 // </srcblock>
-// </synopsis>
 //
 // <h3>Algorithm</h3>
-// <src>scfft3d</src> uses a routine similar to <src>scfftm</src> to do multiple FFTs first
-// on all columns of the input matrix, then uses a routine similar to
-// <src>ccfftm</src> on all rows of the result, and then on all planes of that
-// result.  See <src>scfftm</src> and <src>ccfftm</src> for more information about the
-// algorithms used.
+// <src>scfft3d</src> uses a routine similar to <src>scfftm</src> to do
+// multiple FFTs first on all columns of the input matrix, then uses a routine
+// similar to <src>ccfftm</src> on all rows of the result, and then on all
+// planes of that result.  See <src>scfftm</src> and <src>ccfftm</src> for
+// more information about the algorithms used.
 //
 // </example>
 // The following examples are for Origin series only.
@@ -2183,8 +2072,6 @@ static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
 //      &    Y, 65, 129, TABLE, WORK, 0)
 // </srcblock>
 // </example>
-//
-// <group name="SCSL 3D Real-To-Complex Transforms">
 //
 // Input parameters:
 // <dl compact>
@@ -2314,21 +2201,20 @@ static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
 //
 // </dl>
 // <group>
-static void scfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale,
-		    Float* x, Int ldx, Int ldx2, Float* y, Int ldy,
+static void scfft3d(Int isign, Int n1, Int n2, Int n3, Float scale,
+		    Float* x, Int ldx, Int ldx2, Complex* y, Int ldy,
 		    Int ldy2, Float* table, Float* work, Int isys); 
-static void dzfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
-		    Double* x, Int ldx, Int ldx2, Double* y, Int
+static void dzfft3d(Int isign, Int n1, Int n2, Int n3, Double scale,
+		    Double* x, Int ldx, Int ldx2, DComplex* y, Int
 		    ldy, Int ldy2, Double* table, Double* work, Int
 		    isys); 
-static void csfft3d(Int isign, Int n1, Int n2, Int n3, Float* scale,
-		    Float* x, Int ldx, Int ldx2, Float* y, Int ldy,
+static void csfft3d(Int isign, Int n1, Int n2, Int n3, Float scale,
+		    Complex* x, Int ldx, Int ldx2, Float* y, Int ldy,
 		    Int ldy2, Float* table, Float* work, Int isys); 
-static void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double* scale,
-		    Double* x, Int ldx, Int ldx2, Double* y, Int
+static void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double scale,
+		    DComplex* x, Int ldx, Int ldx2, Double* y, Int
 		    ldy, Int ldy2, Double* table, Double* work, Int
 		    isys); 
-// </group>
 // </group>
 };
 #endif
