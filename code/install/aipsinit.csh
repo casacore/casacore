@@ -156,7 +156,11 @@
         switch (`uname -s`)
         case SunOS:
            if (`uname -r` =~ 5.*) then
-              set a_arch = sun4sol
+              if (-f "$a_root/solaris/makedefs") then
+                 set a_arch = solaris
+              else
+                 set a_arch = sun4sol
+              endif
            else
               set a_arch = sun4
            endif
