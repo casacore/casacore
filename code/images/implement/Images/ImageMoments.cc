@@ -890,8 +890,9 @@ Bool ImageMoments<T>::createMoments()
 // Account for subsectioning and removal of the collapsed moment axis
 // in the coordinate system.  
 
-   CoordinateSystem outImageCoord = pInImage_p->coordinates();
-   outImageCoord.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
+
+   CoordinateSystem outImageCoord = 
+     pInImage_p->coordinates().subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
    outImageCoord.removePixelAxis(momentAxis_p, Double(0.0));
    outImageCoord.removeWorldAxis(worldMomentAxis, Double(0.0));
 
@@ -3597,8 +3598,8 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
    IPosition outShape(inDim,1);
    for (Int i=0; i<inDim; i++) outShape(i) = trc(i) - blc(i) + 1;
 
-   CoordinateSystem outCSys = cSys;
-   outCSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
+
+   CoordinateSystem outCSys = cSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
    PagedImage<T> outImage(outShape, outCSys, fileName);
 
    CopyLattice (outImage.lc(), pLattice->lc(), blc, trc);
@@ -3831,8 +3832,8 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
 // Set coordinate system
          
-   CoordinateSystem cSys = pInImage_p->coordinates();
-   cSys.subImage(blc_p.asVector(), IPosition(pInImage_p->ndim(),1).asVector());
+   CoordinateSystem cSys = 
+     pInImage_p->coordinates().subImage(blc_p.asVector(), IPosition(pInImage_p->ndim(),1).asVector());
 
 
 // Create smoothed image
