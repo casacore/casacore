@@ -242,6 +242,14 @@ SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& facToJy,
                                                 const Vector<Double>& parameters,
                                                 Stokes::StokesTypes stokes,
                                                 Bool xIsLong)
+// Input:
+//   pars(0) = FLux     image units  (e.g. peak flux in Jy/beam)
+//   pars(1) = x cen    abs pix
+//   pars(2) = y cen    abs pix
+//   pars(3) = major    pix
+//   pars(4) = minor    pix
+//   pars(5) = pa radians (pos +x -> +y)
+//
 {
    SkyComponent sky;
   
@@ -263,6 +271,52 @@ SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& facToJy,
    sky.fromPixel(facToJy, pars, brightnessUnit, beam, cSys, type, stokes);
    return sky;
 } 
+
+
+Vector<Double> ImageUtilities::decodeSkyComponent (const SkyComponent& sky,
+                                                   const ImageInfo& ii,
+                                                   const CoordinateSystem& cSys,
+                                                   const Unit& brightnessUnit,
+                                                   Stokes::StokesTypes stokes,
+                                                   Bool xIsLong)
+//
+// The decomposition of the SkyComponent gives things as longitide 
+// and latitude.  But it is possible that the x and y axes of the 
+// pixel array are lat/long rather than long/lat if the CoordinateSystem 
+// has been reordered.  So we have to take this into account.
+//
+// Output:
+//   pars(0) = FLux     image units  (e.g. peak flux in Jy/beam)
+//   pars(1) = x cen    abs pix
+//   pars(2) = y cen    abs pix
+//   pars(3) = major    pix
+//   pars(4) = minor    pix
+//   pars(5) = pa radians (pos +x -> +y)
+//
+{
+   Vector<Quantum<Double> > beam = ii.restoringBeam();
+
+// pars(1,2) = longitude, latitude centre
+
+   Vector<Double> pars = sky.toPixel (brightnessUnit, beam, cSys, stokes).copy();
+
+// Now account for the fact that 'x' (horizontally displayed axis) could be
+// longitude or latitude.  Urk.
+  
+   Double pa0 = pars(5);
+   if (!xIsLong) {
+      Double tmp = pars(0);
+      pars(0) = pars(1);
+      pars(1) = tmp;
+//   
+      MVAngle pa(pa0 - C::pi_2);
+      pa();                         // +/- pi
+      pa0 = pa.radian();
+   }
+   pars(5) = pa0;
+//
+   return pars;
+}
 
 
 
