@@ -5724,3 +5724,4 @@
 16 133 src mv trial/implement/Tables/TableCopy.h aips/implement/Tables/TableCopy.h
 16 133 src mv trial/implement/Tables/TableCopy.cc aips/implement/Tables/TableCopy.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSAntenna.cc
+16 134 src rm aips/implement/MeasurementSets/OldMSAntenna.h
