@@ -357,8 +357,8 @@ void MeasConvert<M,F,MC>::create() {
   if (model && model->getRefPtr()->empty()) {
     ((MeasBase<F, MeasRef<M> > *)model)->set(MeasRef<M>(M::DEFAULT));
   };
-  if (model && 
-      !(model->getRefPtr()->empty()) && !(outref.empty())) {
+  if (outref.empty()) outref = MeasRef<M>(M::DEFAULT);
+  if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
     MeasFrame mftmp = rptmp->getFrame();
@@ -371,7 +371,7 @@ void MeasConvert<M,F,MC>::create() {
       cvdat->getConvert(*this, *reftmp,
 			outref);
       delete reftmp;
-    }else {
+    } else {
       cvdat->getConvert(*this, *model->getRefPtr(), outref);
     };
   };
