@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -874,3 +874,25 @@ Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const Coordinat
    return stokes;
 }
 
+
+void CoordinateUtil::setNicePreferredAxisLabelUnits(CoordinateSystem& cSys)
+{  
+   cSys.setPreferredWorldAxisUnits(cSys.worldAxisUnits());
+//
+   for (uInt i = 0; i < cSys.nCoordinates(); i++) {
+     Coordinate::Type type = cSys.type(i);
+     if (type==Coordinate::DIRECTION) {
+        DirectionCoordinate coord(cSys.directionCoordinate(i));
+        Vector<String> str(coord.nWorldAxes());
+        for (uInt j = 0; j < str.nelements(); j++) str(j) = "deg";
+        coord.setPreferredWorldAxisUnits(str);
+        cSys.replaceCoordinate(coord, i);
+     } else if (type==Coordinate::SPECTRAL) {
+        SpectralCoordinate coord(cSys.spectralCoordinate(i));
+        Vector<String> str(coord.nWorldAxes());
+        for (uInt j = 0; j < str.nelements(); j++) str(j) = "km/s";
+        coord.setPreferredWorldAxisUnits(str);
+        cSys.replaceCoordinate(coord, i);
+     }
+   }
+}

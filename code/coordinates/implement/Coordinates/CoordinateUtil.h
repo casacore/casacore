@@ -1,5 +1,5 @@
 //# CoordinateUtils.h: static functions dealing with coordinates
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -342,6 +342,11 @@ static Bool removeAxes(CoordinateSystem& cSys,
 // CoordinateSystem, returns Stokes::I
    static Stokes::StokesTypes findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
                                                 uInt pixel=0);
+
+// Set the preferred units in the CS to 'deg' for Direction, 'km/s'
+// for Spectral and the native unit otherwise
+   static void setNicePreferredAxisLabelUnits(CoordinateSystem& cSys);
+
 };
 
 #endif
