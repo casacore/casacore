@@ -3795,3 +3795,4 @@
 14 056 src rm npoi/apps/chatoms
 14 058 src mv trial/implement/Fitting/test/tLSQBase.cc trial/implement/Fitting/test/tLSQ.cc
 14 058 src mv trial/implement/Fitting/test/tLSQBase.out trial/implement/Fitting/test/tLSQ.out
+14 060 src mv trial/apps/aips2help/ac install/docutils/ac
