@@ -2153,3 +2153,6 @@
 11 115 sys rm libexec/gtk.g
 11 116 sys rm bin/gtk
 11 116 sys rm lib/libgtk.so
+11 120 src rm trial/implement/Tasking/objectmanager.g
+11 120 src rm trial/implement/Tasking/objectguiserver.g
+11 120 src rm trial/implement/Tasking/objectcliserver.g
