@@ -79,9 +79,6 @@ template<class T> class Vector;
 // (Note that the use of theta and phi corresponds to the mathematics
 // convention for these angles, not the physics convention.)
 
-// Currently no function is available to set the Gaussian parameters based
-// on flux, but one could be easily added.
-
 // The parameter interface (see 
 // <linkto class="Gaussian3DParam">Gaussian3DParam</linkto> class), 
 // is used to provide an interface to the
