@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/Mathematics/AutoDiffMath.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Mathematics/Constants.h>
 
 // Unary arithmetic operators.
 template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other) { 
@@ -226,7 +227,7 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= T(_2_sqrtpi*exp(-tv*tv));
+  tmp.theRep()->grad_p *= T(T(C::_2_sqrtpi)*exp(-tv*tv));
   tmp.theRep()->val_p = erf(tv);
   return tmp.ref();
 }
@@ -234,7 +235,7 @@ template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erfc(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= T(-_2_sqrtpi*exp(-tv*tv));
+  tmp.theRep()->grad_p *= T(T(-C::_2_sqrtpi)*exp(-tv*tv));
   tmp.theRep()->val_p = erfc(tv);
   return tmp.ref();
 }
