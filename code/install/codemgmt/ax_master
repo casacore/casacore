@@ -3949,3 +3949,4 @@
 14 065 src mv trial/implement/Display/X11PCVectorGraphics.cc trialdisplay/implement/Display/X11PCVectorGraphics.cc
 14 065 src mv trial/implement/Display/X11PixelCanvas.cc trialdisplay/implement/Display/X11PixelCanvas.cc
 14 065 src mv trial/implement/Display/X11PixelCanvasApp.cc trialdisplay/implement/Display/X11PixelCanvasApp.cc
+14 065 src mv trial/implement/Display/X11ResourceManager.cc trialdisplay/implement/Display/X11ResourceManager.cc
