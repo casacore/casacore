@@ -42,13 +42,17 @@ CompiledParam<T>::CompiledParam(const CompiledParam<T> &other) :
 
 template <class T>
 CompiledParam<T>::~CompiledParam() {
-  delete functionPtr_p; functionPtr_p = 0;
+  if(functionPtr_p)
+     delete functionPtr_p;
+  functionPtr_p = 0;
 }
 
 template <class T>
 CompiledParam<T>& CompiledParam<T>::operator=(const CompiledParam<T> &other) {
   if (this != &other) {
-    delete functionPtr_p; functionPtr_p = 0;
+    if(functionPtr_p)
+       delete functionPtr_p;
+    functionPtr_p = 0;
     ndim_p = other.ndim_p;
     msg_p = other.msg_p;
     text_p = other.text_p;
@@ -60,7 +64,9 @@ CompiledParam<T>& CompiledParam<T>::operator=(const CompiledParam<T> &other) {
 template <class T>
 Bool CompiledParam<T>::setFunction(const String &newFunction) {
   // Add the function
-  delete functionPtr_p; functionPtr_p=0;
+  if(functionPtr_p)
+     delete functionPtr_p;
+  functionPtr_p=0;
   functionPtr_p = new FuncExpression();
   ndim_p = 0;
   msg_p = "";
