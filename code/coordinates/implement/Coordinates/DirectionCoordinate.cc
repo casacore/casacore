@@ -166,42 +166,10 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 : Coordinate(other),
-  type_p(other.type_p), 
-  conversionType_p(other.conversionType_p), 
-  projection_p(other.projection_p),
-  to_degrees_p(other.to_degrees_p.copy()),
-  to_radians_p(other.to_radians_p.copy()),
-  names_p(other.names_p.copy()), 
-  units_p(other.units_p.copy()),
-  worldMin_p(other.worldMin_p.copy()),
-  worldMax_p(other.worldMax_p.copy()),
-  rot_p(other.rot_p),
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
 {
-
-// Deep copy of wcs struct
-
-    wcs_p.flag = -1;
-    int err = wcscopy (1, &(other.wcs_p), &wcs_p);
-    if (err != 0) {
-       String errmsg = "wcs wcscopy_error: ";
-       errmsg += wcscopy_errmsg[err];
-       throw(AipsError(errmsg));
-    }
-
-// Finalize setup 
-
-    err = wcsset(&wcs_p);
-    if (err != 0) { 
-        String errmsg = "wcs wcsset_error: ";
-        errmsg += wcsset_errmsg[err];
-        throw(AipsError(errmsg));
-    }
-
-// Set up machines
-
-    makeConversionMachines();
+   operator=(other);
 }
 
 
@@ -239,7 +207,9 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
            errmsg += wcsset_errmsg[err];
            throw(AipsError(errmsg));
        }
-//
+
+// Machines
+
         if (pConversionMachineTo_p) {
            delete pConversionMachineTo_p;
            pConversionMachineTo_p = 0;
