@@ -94,8 +94,14 @@ enum StatisticsTypes {
 // The sum squared
    SUMSQ,
 
-// The median - does not fit well into storage lattice approach
+// The median - the robust stats does not fit well into storage lattice approach
    MEDIAN,
+
+// median of absolute deviation from median
+   MEDABSDEVMED,
+
+// inter-quartile range
+   QUARTILE, 
 
 // The minimum
    MIN,

@@ -85,8 +85,12 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = MAX;
    } else if (stat.contains("FLUX")) {
       statToPlot = FLUX;
+   } else if (stat.contains("MEDABS")) {
+      statToPlot = MEDABSDEVMED;
    } else if (stat.contains("MED")) {
       statToPlot = MEDIAN;
+   } else if (stat.contains("QU")) {
+      statToPlot = QUARTILE;
    }
    return statToPlot;
 }  
