@@ -356,8 +356,7 @@ String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
    Vector<Double> pixel(cSys.nPixelAxes());
    Vector<Double> world(cSys.nWorldAxes());
    for (uInt i=0; i<pixel.nelements(); i++) pixel(i) = pos(i);
-   Bool ok = cSys.toWorld(world, pixel);
-   if (!ok) {
+   if (!cSys.toWorld(world, pixel)) {
       String err = String("Error converting coordinate position because ") + cSys.errorMessage();
       throw(AipsError(err));
    }
@@ -367,7 +366,7 @@ String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
    for (uInt i=0; i<world.nelements(); i++) {
       Int pixelAxis = cSys.worldAxisToPixelAxis(i);
       String tmp = cSys.format(u(pixelAxis), Coordinate::DEFAULT, world(i), i, 
-                               True, -1, False);
+                               True, True, -1);
       if (u(pixelAxis).empty()) {
         s(pixelAxis) = tmp;
       } else {

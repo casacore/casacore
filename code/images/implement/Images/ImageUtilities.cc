@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,8 +111,6 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 // Convert to world and format 
 
    String formatUnits;
-   Bool absolute = True;
-
    const uInt n1 = pixels.nelements();
    sWorld.resize(n1);
 
@@ -122,7 +120,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
       pix(pixelAxis) = pixels(i);
       if (cSysIn.toWorld(world,pix)) {
          sWorld(i) = cSysIn.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), 
-                                 worldAxis, absolute, prec);
+                                   worldAxis, True, True, prec);
       } else {
          sWorld(i) = "?";
       }
