@@ -440,6 +440,21 @@ void LELFunctionReal1D<T>::eval(LELArray<T>& result,
       result.value().reference(tmp);
       break;
    }
+   case LELFunctionEnums::ROUND :
+   {
+      Bool deleteIt;
+      T* data = result.value().getStorage (deleteIt);
+      uInt nr = result.value().nelements();
+      for (uInt i=0; i<nr; i++) {
+	 if (data[i] < 0) {
+	    data[i] = ceil (data[i] - 0.5);
+	 } else {
+	    data[i] = floor (data[i] + 0.5);
+	 }
+      }
+      result.value().putStorage (data, deleteIt);
+      break;
+   }
    case LELFunctionEnums::CEIL :
    {
       Array<T> tmp(ceil(result.value()));
@@ -478,6 +493,14 @@ LELScalar<T> LELFunctionReal1D<T>::getScalar() const
       return tanh(pExpr_p->getScalar().value());
    case LELFunctionEnums::ATAN :
       return atan(pExpr_p->getScalar().value());
+   case LELFunctionEnums::ROUND :
+   {
+      T value = pExpr_p->getScalar().value();
+      if (value < 0) {
+	 return ceil(value - 0.5);
+      }
+      return floor (value + 0.5);
+   }
    case LELFunctionEnums::CEIL :
       return ceil(pExpr_p->getScalar().value());
    case LELFunctionEnums::FLOOR :

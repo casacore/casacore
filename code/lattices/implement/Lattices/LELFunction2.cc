@@ -49,12 +49,17 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
     case LELFunctionEnums::ARG :
     case LELFunctionEnums::REAL :
     case LELFunctionEnums::IMAG :
+    case LELFunctionEnums::NDIM :
     {
        if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionFloat::constructor - functions can only"
+          throw (AipsError ("LELFunctionFloat::constructor - function can only"
                             "have one argument"));
        }
-       setAttr(arg_p[0].getAttribute());
+       if (function_p == LELFunctionEnums::NDIM) {
+	   setAttr (LELAttribute());                         // result is scalar
+       } else {
+	   setAttr(arg_p[0].getAttribute());
+       }
        break;
     }
     case LELFunctionEnums::LENGTH :
@@ -70,6 +75,15 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
        }
        setAttr (LELAttribute());                         // result is scalar
        break;
+    }
+    case LELFunctionEnums::SIGN :
+    {
+// Expect 1 Float argument
+
+	Block<Int> argType(1);
+	argType[0] = TpFloat;
+	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+	break;
     }
     case LELFunctionEnums::ATAN2 :
     case LELFunctionEnums::POW :
@@ -151,6 +165,22 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
          arg_p[0].eval(tmpC, section);
 	 result.setMask(tmpC);
          imag(result.value(), tmpC.value());
+         break;
+      }
+      case LELFunctionEnums::SIGN :
+      {
+	 arg_p[0].eval(result, section);
+	 Bool deleteIt;
+	 Float* data = result.value().getStorage (deleteIt);
+	 uInt nr = result.value().nelements();
+	 for (uInt i=0; i<nr; i++) {
+	    if (data[i] < 0) {
+	       data[i] = -1;
+	    } else if (data[i] > 0) {
+	       data[i] = 1;
+	    }
+	 }
+	 result.value().putStorage (data, deleteIt);
          break;
       }
       default:
@@ -281,6 +311,13 @@ LELScalar<Float> LELFunctionFloat::getScalar() const
 #endif
 
    switch (function_p) {
+   case LELFunctionEnums::NDIM :
+   {
+       if (arg_p[0].isScalar()) {
+	   return 0;
+       }
+       return arg_p[0].shape().nelements();
+   }
    case LELFunctionEnums::LENGTH :       
    {
       Double axis;
@@ -322,6 +359,16 @@ LELScalar<Float> LELFunctionFloat::getScalar() const
        }
    case LELFunctionEnums::IMAG :
        return Float(imag(arg_p[0].getComplex()));
+   case LELFunctionEnums::SIGN :
+   {
+       Float value = arg_p[0].getFloat();
+       if (value < 0) {
+	   value = -1;
+       } else if (value > 0) {
+	   value = 1;
+       }
+       return value;
+   }
    case LELFunctionEnums::ATAN2 :
        return atan2(arg_p[0].getFloat(), arg_p[1].getFloat());
    case LELFunctionEnums::POW :
@@ -346,8 +393,13 @@ Bool LELFunctionFloat::prepareScalarExpr()
 
    uInt i;
    for (i=0; i<arg_p.nelements(); i++) {
-      if (arg_p[i].replaceScalarExpr()) {
-	 return True;
+       Bool invalid = arg_p[i].replaceScalarExpr();
+       if (invalid) {
+	  if (i > 0
+          ||  (function_p != LELFunctionEnums::NDIM
+	   &&  function_p != LELFunctionEnums::LENGTH)) {
+	     return True;
+	  }
       }
    }
    return False;
@@ -376,7 +428,7 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 
     {
        if (arg_p.nelements() != 1) {
-          throw (AipsError ("LELFunctionDouble::constructor - functions can only"
+          throw (AipsError ("LELFunctionDouble::constructor - function can only"
                             "have one argument"));
        }
        if (function_p == LELFunctionEnums::NELEM) {

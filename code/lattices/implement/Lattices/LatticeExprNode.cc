@@ -912,6 +912,26 @@ LatticeExprNode sqrt(const LatticeExprNode& expr)
    return LatticeExprNode::newNumFunc1D (LELFunctionEnums::SQRT, expr);
 }
 
+LatticeExprNode round(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function round" << endl;
+#endif
+   return LatticeExprNode::newRealFunc1D (LELFunctionEnums::ROUND, expr);
+}
+
+LatticeExprNode sign(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function sign" << endl;
+#endif
+   AlwaysAssert (expr.dataType()==TpFloat || expr.dataType()==TpDouble,
+		 AipsError);
+   Block<LatticeExprNode> arg(1);
+   arg[0] = expr.makeFloat();
+   return new LELFunctionFloat(LELFunctionEnums::SIGN, arg);
+}
+
 LatticeExprNode ceil(const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
@@ -1009,6 +1029,14 @@ LatticeExprNode complex(const LatticeExprNode& left,
 }
 
 
+LatticeExprNode sum(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function sum" << endl;
+#endif
+   return LatticeExprNode::newNumFunc1D (LELFunctionEnums::SUM, expr);
+}
+
 LatticeExprNode mean(const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
@@ -1017,12 +1045,44 @@ LatticeExprNode mean(const LatticeExprNode& expr)
    return LatticeExprNode::newNumFunc1D (LELFunctionEnums::MEAN1D, expr);
 }
 
-LatticeExprNode sum(const LatticeExprNode& expr)
+LatticeExprNode variance(const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 1d function sum" << endl;
+   cout << "LatticeExprNode:: 1d function variance" << endl;
 #endif
-   return LatticeExprNode::newNumFunc1D (LELFunctionEnums::SUM, expr);
+   // Use high enough precision for Float and Complex.
+   if (expr.dataType() == TpFloat) {
+      return toFloat(sum(pow(expr - toDouble(mean(expr)), 2)) /
+		     max(1, nelements(expr)-1));
+   } else if (expr.dataType() == TpComplex) {
+      return toComplex(sum(pow(expr - toDComplex(mean(expr)), 2)) /
+		       max(1, nelements(expr)-1));
+   }
+   return sum(pow(expr - mean(expr), 2)) / max(1, nelements(expr)-1);
+}
+
+LatticeExprNode stddev(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function variance" << endl;
+#endif
+   return sqrt(variance(expr));
+}
+
+LatticeExprNode avdev(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function variance" << endl;
+#endif
+   // Use high enough precision for Float and Complex.
+   if (expr.dataType() == TpFloat) {
+      return toFloat(sum(abs(expr - toDouble(mean(expr))))
+		     / max(1, nelements(expr)));
+   } else if (expr.dataType() == TpComplex) {
+      return toComplex(sum(abs(expr - toDComplex(mean(expr))))
+		       / max(1, nelements(expr)));
+   }
+   return sum(abs(expr - mean(expr))) / max(1, nelements(expr));
 }
 
 
@@ -1321,6 +1381,16 @@ LatticeExprNode nelements(const LatticeExprNode& expr)
 #endif
    Block<LatticeExprNode> arg(1, expr);
    return new LELFunctionDouble (LELFunctionEnums::NELEM, arg);
+}
+
+LatticeExprNode ndim (const LatticeExprNode& expr)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function ndim" << endl;
+#endif
+   Block<LatticeExprNode> arg(1);
+   arg[0] = expr;
+   return new LELFunctionFloat(LELFunctionEnums::NDIM, arg);
 }
 
 LatticeExprNode length (const LatticeExprNode& expr,
