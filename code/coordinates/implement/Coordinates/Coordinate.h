@@ -345,7 +345,6 @@ public:
     // </group>
 
 
-
     // Provide a common interface to getting formatted representations of
     // coordinate values.    Different derived Coordinate types are formatted
     // in different ways.  For example, an RA/DEC  DirectionCoordinate
