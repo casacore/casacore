@@ -1306,9 +1306,9 @@ void FITSTable::fill_row()
 	    if (field_types_p[i] == TpComplex) {
 		RecordFieldPtr<Complex> &rowRef =
 		    *((RecordFieldPtr<Complex> *)row_fields_p[i]);
-		(*rowRef) = fitsRef();
-		(*rowRef).real() *= scale;
-		(*rowRef).real() += zero;
+		const Complex& val = fitsRef();
+		(*rowRef) = Complex (val.real() * scale + zero,
+				     val.imag());
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayComplex, AipsError);
 		RecordFieldPtr<Array<Complex> > &rowRef =
@@ -1323,9 +1323,9 @@ void FITSTable::fill_row()
 		Complex *data = (*rowRef).getStorage(deleteIt);
 		while (n) {
 		    n--;
-		    data[n] = fitsRef(n);
-		    data[n].real() *= scale;
-		    data[n].real() += zero;
+		    const Complex& val = fitsRef(n);
+		    data[n] = Complex (val.real() * scale + zero,
+				       val.imag());
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1338,9 +1338,9 @@ void FITSTable::fill_row()
 	    if (field_types_p[i] == TpDComplex) {
 		RecordFieldPtr<DComplex> &rowRef =
 		    *((RecordFieldPtr<DComplex> *)row_fields_p[i]);
-		(*rowRef) = fitsRef();
-		(*rowRef).real() *= scale;
-		(*rowRef).real() += zero;
+		const DComplex& val = fitsRef();
+		(*rowRef) = DComplex (val.real() * scale + zero,
+				      val.imag());
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
 		RecordFieldPtr<Array<DComplex> > &rowRef =
@@ -1355,9 +1355,9 @@ void FITSTable::fill_row()
 		DComplex *data = (*rowRef).getStorage(deleteIt);
 		while (n) {
 		    n--;
-		    data[n] = fitsRef(n);
-		    data[n].real() *= scale;
-		    data[n].real() += zero;
+		    const DComplex& val = fitsRef(n);
+		    data[n] = DComplex (val.real() * scale + zero,
+					val.imag());
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1370,9 +1370,9 @@ void FITSTable::fill_row()
 	    if (field_types_p[i] == TpDComplex) {
 		RecordFieldPtr<DComplex> &rowRef =
 		    *((RecordFieldPtr<DComplex> *)row_fields_p[i]);
-		(*rowRef) = fitsRef();
-		(*rowRef).real() *= scale;
-		(*rowRef).real() += zero;
+		const IComplex& val = fitsRef();
+		(*rowRef) = DComplex (val.real() * scale + zero,
+				      val.imag());
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
 		RecordFieldPtr<Array<DComplex> > &rowRef =
@@ -1387,9 +1387,9 @@ void FITSTable::fill_row()
 		DComplex *data = (*rowRef).getStorage(deleteIt);
 		while (n) {
 		    n--;
-		    data[n] = fitsRef(n);
-		    data[n].real() *= scale;
-		    data[n].real() += zero;
+		    const IComplex& val = fitsRef(n);
+		    data[n] = DComplex (val.real() * scale + zero,
+					val.imag());
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1629,9 +1629,9 @@ void FITSTable::fill_row()
 			Int n = shape.product();
 			while (n) {
 			    n--;
-			    data[n] = vptr[n];
-			    data[n].real() *= scale;
-			    data[n].real() += zero;
+			    const Complex& val = vptr[n];
+			    data[n] = Complex (val.real() * scale + zero,
+					       val.imag());
 			}
 			(*rowRef).putStorage(data, deleteIt);
 		    }
@@ -1651,9 +1651,9 @@ void FITSTable::fill_row()
 			Int n = shape.product();
 			while (n) {
 			    n--;
-			    data[n] = vptr[n];
-			    data[n].real() *= scale;
-			    data[n].real() += zero;
+			    const DComplex& val = vptr[n];
+			    data[n] = DComplex (val.real() * scale + zero,
+						val.imag());
 			}
 			(*rowRef).putStorage(data, deleteIt);
 		    }
