@@ -1,5 +1,5 @@
 //# FFTPack.cc: C++ wrapper functions for Fortran FFTPACK code
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
