@@ -663,6 +663,19 @@ int main (int argc, char *argv[])
       }
     }
   }
+  {
+    cout << "Expr:  a = rebin(b,[1,2/2])" << endl;
+    LatticeExpr<Double> expr(ImageExprParse::command ("rebin(b,[1,2/2])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = bVal;
+    if (! allEQ (aArr, result)) {
+	cout << "Result should be " << result  << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+    }
+  }
 
   cout << endl;
 

@@ -45,4 +45,5 @@ Expr:  a = b+sum(kpa[indexin(1,[1:2,8,4:7:2])])
 Expr:  a = b+sum(kpa[indexnotin(2,[1:2,10,4:7:3,10])])
 Expr:  a = b+sum(kpa[index2 in [1:2,10,4:7:3,10]])
 Expr:  a = b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])
+Expr:  a = rebin(b,[1,2/2])
 
