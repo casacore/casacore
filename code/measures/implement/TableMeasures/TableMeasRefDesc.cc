@@ -118,7 +118,11 @@ TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo,
 	if (fnr >= 0) {
 	    itsVarColName = measInfo.asString(fnr);
 	}
-    	itsVarRefCol = new ScalarColumn<Int>(tab, itsVarColName);
+	// This is a reconstruct.  All that is needed is the variable refcol's
+	// name. The object rectructing the TMD will create the column object.
+	// So the following is commented out (otherwise the following causes
+	// a problem when attempting to open the table RO.
+	//    	itsVarRefCol = new ScalarColumn<Int>(tab, itsVarColName);
     } else {
 	itsRefCode = mDesc.refCode(refString);
     }
