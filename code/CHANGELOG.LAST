@@ -1,0 +1,18 @@
+
+change id: 0030
+ author:   Mark Holdaway
+ date:     2000/08/04
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   imager
+ type:     Code
+ category: Bugfix
+ summary:  Large images didn't work in imager's mfmultiscale algorithm
+The specific problem was that images of size 1024 square or larger failed
+in imager's mfmultiscale algorithm.  This was a symptom of a more general
+problem, that large lattices (and therefore images as well) did not correctly perform lattice expression language's max() function, which 
+could be used in many places besides the imager tool.
+
+Please be adviced that past processing of large images could be incorrect,
+but the errors are likely to have been catastrophic rather than subtle.
