@@ -428,14 +428,128 @@ interfaces which are accessed from \glish.
 
 \subsection{High-level Interface: the Viewer}
 
+The raw interface to the {\tt gDisplay.so} module loaded into the
+{\tt glishtk} client is not a particularly convenient one for building
+up visualisation and display tools at the \aipspp\ level.  To address
+this, the proxy agents of {\tt gDisplay.so} have been ``wrapped up''
+with a substantial layer of \glish\ code.  This code (where possible)
+enforces correct use of the proxy agents, and reinforces the
+object-oriented nature of the display library.  It is very important
+to realise that the Viewer code is merely one possible implementation
+of the {\tt gDisplay.so} proxy agents, and others which look quite
+different to the programmer and end-user are easily imaginable.
+
+One very important feature of the Viewer interface is that it unifies
+pixelcanvas and worldcanvas agents.  As the worldcanvas proxy agent
+combined the WorldCanvas and WorldCanvasHolder classes, the {\tt
+  viewerdisplaypanel} combines the worldcanvas and pixelcanvas agents
+into one entity.  The viewerdisplaypanel is at the time of writing
+probably the highest-level object in the entire chain of \aipspp\ 
+display services.  The viewerdisplaypanel is a valid \aipspp\ tool,
+and thus provides method-oriented interface to control its various and
+many attributes.  Construction arguments for the viewerdisplaypanel
+include width and height settings, foreground and background colors,
+colortable types ('index', 'rgb', 'hsv'), colortable dimension/s, and
+flags indicating what user interface elements should be used to adorn
+the display area itself.  Available interface elements include a menu
+bar, a control bar for selecting and controlling interaction with the
+display, a button bar, and a tapedeck for controlling animation of the
+display.  Most importantly, the viewerdisplaypanel can be placed in an
+existing GlishTk frame, thus enabling the embedding of visualisation
+applications in existing and new \aipspp\ tools.
+
+The {\tt viewerdisplaydata} is the \aipspp\ tool which can be used to
+manage the displaydata proxy agents of {\tt gDisplay.so}.  It is a
+moderately clean interface, wherein most methods provided to the user
+are sent directly on to the proxy agent code in {\tt gDisplay.so}.
+Viewerdisplaydata tools may be freely registered and unregistered on
+viewerdisplaypanel tools.  A top-level tool, the {\tt Viewer}, is
+provided to assist in constructing and managing the various
+viewerdisplaypanels and viewerdisplaydatas, and so a rudimentary, but
+quite powerful, visualisation application can now be expressed this
+simply:
+
+\begin{verbatim}
+- include 'viewer.g'
+- mv := dv.newdisplaypanel();
+- mdd := dv.loaddata('test.im', 'raster');
+- mv.register(mdd);
+\end{verbatim}
 
 \section{Programming Practicalities}
 
 \subsection{Implementing a new PixelCanvas}
 
+To support a new output device for \aipspp\ display applications or
+tools, it will be necessary to implement a new PixelCanvas and
+PixelCanvasColorTable pair.  At the time of writing, two major
+PixelCanvas implementations exist: the X11PixelCanvas for display to X
+Windows devices, and the PSPixelCanvas for hardcopy output using
+PostScript.  A slightly specialised version of the X11PixelCanvas ---
+TclTkPixelCanvas/GTkPixelCanvas --- exists to facilitate the
+implementation of the Display Library interface in {\tt gDisplay.so}.
+New PixelCanvases are envisaged for OpenGL and Java devices in the
+future, but are not yet included in planning documents.
+
+Development of a new PixelCanvas should begin with the design of a
+PixelCanvasColorTable which manages color allocation strategies on the
+new device.  The PixelCanvasColorTable class is quite sophisticated,
+but should be adaptable to most display device allocation schemes in
+the near future.  The most important facilities of the
+PixelCanvasColorTable to implement for new devices are the capability
+to dynamically resize the entire ColorTable itself, and to dynamically
+extend and reduce the color usage of the various Colormaps registered
+on the ColorTable.  Of high importance also is the facility to provide
+multichannel visuals even on devices whose intrinsic software or
+hardware does not provide such.  For example, the X11PCColorTable
+provides HSV and RGB facilities even for native X PseudoColor visuals.
+
+With the PixelCanvasColorTable in hand for the new device, attention
+can turn to the PixelCanvas itself.  From the outset, a decision
+should be made on whether a display list caching facility will be
+provided.  This is highly recommended for interactive devices, such as
+OpenGL, but is seen as less important for non-interactive devices,
+such as the existing PSPixelCanvas which has no great need to offer
+caching services.  For interactive devices, code to turn native events
+(such as mouse movement and key presses) into
+PC\{Motion,Position\}Event object as appropriate must be implemented,
+and finally the graphics primitives must be implemented to a high
+level of quality and trustworthiness.  Ultimately, it is the intention
+to provide full test wrappers for all classes in the Display Library,
+and PixelCanvases being one of the fundamental classes should receive
+such attention early on in the development process.
+
 \subsection{Writing new Tools}
 
+The first decision to make when writing a new tool (control) for the
+Display Library is whether the tool needs to detect events on the
+PixelCanvas, or instead on the WorldCanvas.  Events on the PixelCanvas
+are appropriate, for example, when the user is going to modify a
+parameter which might be applied to objects which are not necessarily
+specific to a WorldCanvas, eg.\ a Colormap.  Events on the WorldCanvas
+are appropriate when the tool will need real world coordinates to
+accomplish its task, as is the case for example in zooming.  Having
+made this choice, the programmer should then derive from either WCTool
+or PCTool in the DisplayEvents module of the display package.  In
+certain cases, deriving from existing higher-level classes such as
+WCRectTool will be good practise and buy the developer {\em and
+  user}\/ significant common ground.  There are sufficient tools now
+implemented to give good example code on how to extend the tool beyond
+the derived capabilities.
+
 \subsection{Writing a DisplayData}
+
+Writing a new DisplayData still remains the most complex task in
+developing the Display Library, and no doubt it would be worth
+spending an amount of time on improving the programmability of
+DisplayDatas.  This complexity is primarily because the DisplayData
+object is expected to do a lot of work, both in accessing and
+extracting data from storage, and actually drawing the data to the
+screen.  It is also due to this aspect of the Display Library having
+been neglected in order to produce finished DisplayDatas, rather than
+fully design a substantial class hierarchy.
+
+...
 
 \subsection{Adding Agents to the GlishTk Interface}
 
