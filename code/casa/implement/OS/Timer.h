@@ -28,7 +28,7 @@
 #if !defined(AIPS_TIMER_H)
 #define AIPS_TIMER_H
 
-#include <aips/aips_exit.h>
+
 #include <sys/types.h>
 
 #if defined(AIPS_STDLIB)

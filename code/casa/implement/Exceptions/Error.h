@@ -29,7 +29,7 @@
 #define AIPS_ERROR_H
 
 
-#include <aips/aips_exit.h>
+
 #include <sys/types.h>
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>

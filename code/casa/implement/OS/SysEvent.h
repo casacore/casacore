@@ -1,5 +1,5 @@
 //# SysEvent.h: abstract  base class for system events
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,8 +28,8 @@
 #if !defined(AIPS_SYSEVENT_H)
 #define AIPS_SYSEVENT_H
 
-#include <aips/aips_exit.h>
-#include <aips/aips_enter.h>
+
+
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/String.h>
 #include <aips/RTTI/Register.h>

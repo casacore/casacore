@@ -1,5 +1,5 @@
 //# MatrixMath.h: The AIPS++ linear algebra functions
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_MATRIXMATH_H
 
 
-#include <aips/aips_exit.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>

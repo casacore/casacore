@@ -34,7 +34,7 @@
 //# modified by AIPS++ to use aips++ style exceptions, move some things out
 //# of line, etc.
 
-#include <aips/aips_exit.h>
+
 #include <iostream.h>
 #include <strstream.h>
 #include <aips/aips.h>

@@ -33,9 +33,9 @@
 #include <aips/Utilities/SortError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/aips_exit.h>
+
 #include <stdlib.h>                 // for rand
-#include <aips/aips_enter.h>
+
 
 
 SortKey::SortKey (const void* dat, ObjCompareFunc* cmpfunc, uInt inc,

@@ -1,5 +1,5 @@
 //# Param: A simple keyword/value pair with internal help Strings.
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #if !defined(AIPS_PARAM_H)
 #define AIPS_PARAM_H
 
-#include <aips/aips_exit.h>
+
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/String.h>
