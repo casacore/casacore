@@ -96,12 +96,13 @@ int main() {
       // Create a Gaussian component at a defined non-J2000 direction
       const MVDirection dir1934(Quantity(293.5,"deg"), Quantity(-63.7, "deg"));
       const MDirection coord1934J2000(dir1934, MDirection::J2000);
-      Vector<Double> flux1934(4);
-      flux1934 = 0.0; flux1934(0) = 6.3;
+      Vector<Double> flux1934(4, 0.0);
+      flux1934(0) = 6.3;
       const MVAngle majorAxis(Quantity(2E-3, "''"));
       const MVAngle minorAxis(Quantity(2E-3, "''"));
-      const GaussianCompRep J1934(flux1934, coord1934J2000, 
-				  majorAxis, minorAxis, MVAngle());
+      const GaussianCompRep J1934(Quantum<Vector<Double> >(flux1934,"Jy"),
+				  coord1934J2000, majorAxis, minorAxis, 
+				  MVAngle());
       // Create a direction that is 1 mas away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
  			    Quantity(90, "deg") - Quantity(1, "mas"));
@@ -146,20 +147,23 @@ int main() {
       const Double initialAxialRatio = 0.1;
       const MVAngle initialPA(MVAngle(Quantity(10, "deg")));
 
-      GaussianCompRep B1934(initialFlux, initialPosition, initialMajorAxis,
-			    initialAxialRatio, initialPA);
-      Vector<Double> componentFlux(4);
+      GaussianCompRep B1934(Quantum<Vector<Double> >(initialFlux,"Jy"),
+			    initialPosition, initialMajorAxis,
+ 			    initialAxialRatio, initialPA);
+      Quantum<Vector<Double> > componentFlux;
       B1934.flux(componentFlux);
-      AlwaysAssert(allNear(initialFlux.ac(), componentFlux.ac(), 1E-10),
+      AlwaysAssert(allNear(initialFlux.ac(), 
+			   componentFlux.getValue("Jy").ac(), 1E-10),
 		   AipsError);
 
       // Set and verify  the flux of the Gaussian component.
-      Vector<Double> flux1934(4);
-      flux1934 = 0.0; flux1934(0) = 6.3;
-      B1934.setFlux(flux1934);
+      Vector<Double> flux1934(4, 0.0);
+      flux1934(0) = 6.3*200;
+      B1934.setFlux(Quantum<Vector<Double> >(flux1934,"WU"));
       B1934.flux(componentFlux);
-      AlwaysAssert(allNear(flux1934.ac(), componentFlux.ac(), 1E-10),
-		   AipsError);
+      flux1934(0) = 6.3;
+      AlwaysAssert(allNear(flux1934.ac(), componentFlux.getValue("Jy").ac(),
+			   1E-10), AipsError);
 
       // Set and verify the direction of the Gaussian component. It is
       // internally converted to a J2000 reference frame
@@ -168,17 +172,17 @@ int main() {
       MDirection coord1934J2000 = coord1934B1950;
       B1934.direction(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
- 		   AipsError); 
+  		   AipsError); 
       AlwaysAssert(coord1934J2000.getValue()
-		   .near(MDirection::Convert(initialPosition,MDirection::J2000)
-			 ().getValue()), AipsError);
+ 		   .near(MDirection::Convert(initialPosition,MDirection::J2000)
+ 			 ().getValue()), AipsError);
       B1934.setDirection(coord1934B1950);
       B1934.direction(coord1934J2000);
       AlwaysAssert(coord1934J2000.getRef().getType() == MDirection::J2000,
- 		   AipsError); 
+  		   AipsError); 
       AlwaysAssert(coord1934J2000.getValue()
-		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
-			 ().getValue()), AipsError);
+ 		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
+ 			 ().getValue()), AipsError);
       // Set and verify the width of the Gaussian component. 
       MVAngle majorAxis;
       B1934.majorAxis(majorAxis);
@@ -261,24 +265,27 @@ int main() {
       const SkyCompRep * compRepPtr = B1934.clone();
       AlwaysAssert(compRepPtr->type() == ComponentType::GAUSSIAN, AipsError);
       flux1934 = 0.0;
-      compRepPtr->flux(flux1934) ;
-      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+      Quantum<Vector<Double> > qFlux(flux1934, "Jy");
+      compRepPtr->flux(qFlux) ;
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 6.3), AipsError);
       GaussianCompRep copiedComp(*((GaussianCompRep *) compRepPtr));
       flux1934 = 0.0;
-      copiedComp.setFlux(flux1934);
-      compRepPtr->flux(flux1934) ;
-      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
-      copiedComp.flux(flux1934);
-      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+      qFlux.setValue(flux1934);
+      copiedComp.setFlux(qFlux);
+      compRepPtr->flux(qFlux) ;
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 6.3), AipsError);
+      copiedComp.flux(qFlux);
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 0.0), AipsError);
       copiedComp = B1934;
-      copiedComp.flux(flux1934);
-      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
+      copiedComp.flux(qFlux);
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 6.3), AipsError);
       flux1934 = 0.0;
-      copiedComp.setFlux(flux1934);
-      B1934.flux(flux1934);
-      AlwaysAssert(near(flux1934(0), 6.3), AipsError);
-      copiedComp.flux(flux1934);
-      AlwaysAssert(near(flux1934(0), 0.0), AipsError);
+      qFlux.setValue(flux1934);
+      copiedComp.setFlux(qFlux);
+      B1934.flux(qFlux);
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 6.3), AipsError);
+      copiedComp.flux(qFlux);
+      AlwaysAssert(near(qFlux.getValue("Jy")(0), 0.0), AipsError);
       AlwaysAssert(B1934.ok(), AipsError);
       AlwaysAssert(copiedComp.SkyCompRep::ok(), AipsError);
       AlwaysAssert(compRepPtr->ok(), AipsError);
@@ -301,7 +308,7 @@ int main() {
   			      coords, "tGaussianCompRep_tmp.image");
       image.set(0.0f);
       GaussianCompRep defComp;
-   
+
       MVAngle majorAxis(Quantity(2., "'"));
       MVAngle minorAxis = majorAxis;
       MVAngle pa(Quantity(0., "deg"));
@@ -311,8 +318,8 @@ int main() {
       flux(1) = 0.5;
       flux(2) = 0.2;
       flux(3) = 0.1;
-      defComp.setFlux(flux);
-   
+      defComp.setFlux(Quantum<Vector<Double> >(flux, "Jy"));
+
       MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
       MDirection coord00(ra0dec0, MDirection::J2000);
       defComp.setDirection(coord00);
@@ -327,7 +334,7 @@ int main() {
       AlwaysAssert(near(image(IPosition(4, 3, 1, 0, 0)),peak*0.5f), AipsError);
       AlwaysAssert(near(image(IPosition(4, 2, 1, 1, 0)),peak*0.2f), AipsError);
       AlwaysAssert(near(image(IPosition(4, 2, 0, 1, 0)),peak*0.1f), AipsError);
-   
+
       majorAxis = Quantity(10., "'");
       minorAxis = Quantity(2., "'");
       pa = Quantity(-1.0*atan(3.0/4.0), "rad");
