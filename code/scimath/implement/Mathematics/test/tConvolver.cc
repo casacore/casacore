@@ -1,5 +1,5 @@
 //# tConvolver.cc:  this tests the Convolver class
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,11 +34,6 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Convolver.h>
 
-#ifdef __GNUG__
-typedef DoubleConvolver Convolver<Double>;
-typedef FloatConvolver Convolver<Float>;
-#endif
-
 int main() {
   Bool anyFailures = False;
   {
@@ -49,7 +44,7 @@ int main() {
     psf(IPosition(1,1)) = 0.1;
     psf(IPosition(1,2)) = 1.;
     psf(IPosition(1,3)) = 0.5;
-    DoubleConvolver conv(psf);
+    Convolver<Double> conv(psf);
     // Now test circular Convolution (1 - Dimensional)
     Vector<Double> mod(4);
     mod = 0;
@@ -104,7 +99,7 @@ int main() {
     psf(0,1) = .5;
     psf(1,0) = .1;
     //    cout << "Psf:" << psf << endl;
-    FloatConvolver conv(psf);
+    Convolver<Float> conv(psf);
     // And test single precision circular convolution
     Matrix<Float> mod(6,6);
     mod = 0;
@@ -141,7 +136,7 @@ int main() {
     psf = 0.;
     psf(IPosition(1,0)) = .5;
     psf(IPosition(1,1)) = 1.;
-    DoubleConvolver conv(psf, IPosition(1,4));
+    Convolver<Double> conv(psf, IPosition(1,4));
     // And test linear convolution
     Array<Double> mod(IPosition(1,4)); 
     mod = 0.;
@@ -234,7 +229,7 @@ int main() {
     psf(1,2) = 1.;
     psf(1,3) = .1;
     Cube<Float> mod(2,4,3); 
-    FloatConvolver conv(psf, mod.shape());
+    Convolver<Float> conv(psf, mod.shape());
     mod = 0.;
     mod(1,2,0) = 1.;
     mod(0,0,1) = 2.;
@@ -276,3 +271,6 @@ int main() {
     return 0;
   }
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 tConvolver"
+// End:
