@@ -273,29 +273,34 @@ void ScaledComplexData<S,T>::scaleOnGet (S scale, S offset,
     if (offset == S(0.0, 0.0)) {
 	if (scale == S(1.0, 1.0)) {
 	    while (ip < last) {
-		op->real() = *ip++;
-		op->imag() = *ip++;
-		op++;
+	      ///		op->real() = *ip++;
+	      ///		op->imag() = *ip++;
+	      *op = S(*ip, ip[1]); ip++; ip++;
+	      op++;
 	    }
 	}else{
 	    while (ip < last) {
-		op->real() = *ip++ * scale.real();
-		op->imag() = *ip++ * scale.imag();
-		op++;
+	      ///		op->real() = *ip++ * scale.real();
+	      ///		op->imag() = *ip++ * scale.imag();
+	      *op = S(*ip * scale.real(), ip[1]  * scale.imag());
+	      ip++; ip++; op++;
 	    }
 	}
     }else{
 	if (scale == S(1.0, 1.0)) {
 	    while (ip < last) {
-		op->real() = *ip++ + offset.real();
-		op->imag() = *ip++ + offset.imag();
-		op++;
+	      ///		op->real() = *ip++ + offset.real();
+	      ///		op->imag() = *ip++ + offset.imag();
+	      *op = S(*ip + offset.real(), ip[1] + offset.imag());
+	      ip++; ip++; op++;
 	    }
 	}else{
 	    while (ip < last) {
-		op->real() = *ip++ * scale.real() + offset.real();
-		op->imag() = *ip++ * scale.imag() + offset.imag();
-		op++;
+///		op->real() = *ip++ * scale.real() + offset.real();
+///		op->imag() = *ip++ * scale.imag() + offset.imag();
+	      *op = S(*ip * scale.real() + offset.real(),
+		      ip[1] * scale.imag() + offset.imag());
+	      ip++; ip++; op++;
 	    }
 	}
     }
