@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,8 +35,7 @@ RecordFieldCopier<outType,inType>::RecordFieldCopier(RecordInterface &outRecord,
 						     RecordFieldId whichOutField,
 						     const RecordInterface &inRecord, 
 						     RecordFieldId whichInField)
-      : out_p(outRecord, whichOutField.fieldName()), 
-	in_p(inRecord, whichInField.fieldName())
+      : out_p(outRecord, whichOutField), in_p(inRecord, whichInField)
 {
     // Nothing
 }
@@ -52,8 +51,7 @@ UnequalShapeCopier<T>::UnequalShapeCopier(RecordInterface &outRecord,
 					  RecordFieldId whichOutField,
 					  const RecordInterface &inRecord, 
 					  RecordFieldId whichInField)
-  : out_p(outRecord, whichOutField.fieldName()), in_p(inRecord, 
-						      whichInField.fieldName())
+  : out_p(outRecord, whichOutField), in_p(inRecord, whichInField)
 {
   // Nothing
 }
