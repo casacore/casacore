@@ -1,5 +1,5 @@
 //# FFTPack.h: C++ wrapper functions for Fortran FFTPACK code
-//# Copyright (C) 1993,1994,1995,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,15 @@
 #define AIPS_FFTPACK_H
 
 #include <aips/aips.h>
+  //
+  // The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
+  // and Complex.h so we bypass the problem by include Complex.h only.
+  //
+#if defined(AIPS_USE_NEW_SGI)
+#include <aips/Mathematics/Complex.h>
+#else
 #include <aips/Mathematics/Complexfwd.h>
+#endif
 
 // <summary>C++ interface to the Fortran FFTPACK library</summary>
 // <synopsis>
