@@ -1,5 +1,5 @@
 //# SpectralEstimate.cc: Get an initial estimate for spectral lines
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
