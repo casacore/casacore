@@ -190,8 +190,6 @@
 //        <LI> an "indirect" array -- which may have different shapes in
 //             different cells of the same column, is arbitrarily large,
 //             and is stored in a separate file; or
-//        <LI> another table -- allowing a table to express arbitrarily
-//             complex data relationships.
 //       </UL>
 //  <li> A column may be
 //       <UL>
@@ -208,8 +206,8 @@
 //       in a cell of the column, when a row is added to the table.
 //  <li> <A HREF="#Tables:Data Managers">Data managers</A> handle the
 //       reading, writing and generation of data. Each column in a table can
-//       be assigned its own data manager, which allows for optimization of the
-//       data storage per column. The choice of data manager determines
+//       be assigned its own data manager, which allows for optimization of
+//       the data storage per column. The choice of data manager determines
 //       whether a column is filled or virtual.
 //  <li> Table data are stored in a canonical format, so they can be read
 //       on any machine. To avoid needless swapping of bytes, the data can
@@ -220,7 +218,24 @@
 //       <code>Table::LocalEndian</code> (thus the endian format of the
 //       machine being used).
 // </ul>
-// Concurrent access from different processes to the same table is
+//
+// Tables can be in one of three forms:
+// <ul>
+// <li> A plain table is a table stored on disk.
+//      It can be shared by multiple processes.
+// <li> A memory table is a table held in memory.
+//      It is a process specific table, thus not sharable.
+//      The <linkto class=Table>Table::copy</linkto> function can be used
+//      to turn a memory table into a plain table.
+// <li> A reference table is a table referencing a plain or memory table.
+//      It is the result of a selection or sort on another table.
+//      A reference table references the data in the other table, thus
+//      changing data in a reference table means that the data in the
+//      original table are changed.
+//      The <linkto class=Table>Table::deepCopy</linkto> function can be
+//      used to turn a reference table into a plain table.
+// <ul>
+// Concurrent access from different processes to the same plain table is
 // fully supported by means of a <A HREF="#Tables:LockSync">
 // locking/synchronization</A> mechanism. Concurrent access over NFS is also
 // supported.
@@ -341,11 +356,19 @@
 //   object from the SetupNewTable object. Here, a final check is performed
 //   and the necessary files are created.
 // </ol>
+// The recipe above is meant for the creation a plain table, but the
+// creation of a memory table is exactly the same. The only difference
+// is that in call to construct the Table object the Table::Memory
+// type has to be given. Note that in the SetupNewTable object the columns
+// can be bound to any data manager. <src>MemoryTable</src> will rebind 
+// stored columns to the <linkto class=MemoryStMan>MemoryStMan</linkto>
+// storage manager, but virtual columns bindings are not changed.
+
 //
 // The following example shows how you can create a table. An example
 // specifically illustrating the creation of the
 // <A HREF="#Tables:Table Description">table description</A> is given
-// in that section. Later sections will discuss the access to the table.
+// in that section. Other sections discuss the access to the table.
 //
 // <srcblock>
 // #include <aips/Tables/TableDesc.h>
@@ -398,6 +421,10 @@
 //     // Now we can fill the table, which is shown in a next section.
 //     // The Table destructor will flush the table to the files.
 // }
+// </srcblock>
+// To create a table in memory, only step 6 has to be modified slightly to:
+// <srcblock>
+//     Table tab(newtab, Table::Memory, 10);
 // </srcblock>
 
 // <A NAME="Tables:write">
