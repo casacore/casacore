@@ -103,7 +103,7 @@ class Table;
 // {
 //     // Open the table and get access to the table keyword set.
 //     Table table("table.data", Table::Update);
-//     TableRecord& keyset = table.keywordSet();
+//     TableRecord& keyset = table.rwKeywordSet();
 //     keyset.defineTable ("KeyTab", subTable);
 // }
 //

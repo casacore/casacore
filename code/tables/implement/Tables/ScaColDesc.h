@@ -126,8 +126,8 @@ class ColumnSet;
 //     // Add a scalar integer column ac, define keywords for it
 //     // and define a default value 0.
 //     ScalarColumnDesc<Int> acColumn("ac");
-//     acColumn.keywordSet().keysComplex()("scale") = 0;
-//     acColumn.keywordSet().keysString()("unit") = "";
+//     acColumn.rwKeywordSet().define ("scale", Complex(0));
+//     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
 //     tabDesc.addColumn (acColumn);
 //

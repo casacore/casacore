@@ -111,8 +111,8 @@ public:
     // Get access to the column keyword set.
     // This is the keyword set in the referenced column.
     // <group>
+    TableRecord& rwKeywordSet();
     TableRecord& keywordSet();
-    const TableRecord& keywordSet() const;
     // </group>
 
     // Get nr of rows in the column.

@@ -126,7 +126,7 @@ imported class ostream;
 //     ColumnDesc colDesc1, colDesc2;
 //     TableDesc td("tTableDesc", "1", TableDesc::New);
 //     td.comment() = "A test of class TableDesc";
-//     td.keywordSet().define ("equinox", 1950.0);
+//     td.rwKeywordSet().define ("equinox", 1950.0);
 //
 //     // Define an integer column ab using the TableDesc::addColumn
 //     // function which creates a scalar column description.
@@ -136,11 +136,11 @@ imported class ostream;
 //     // and define a default value 0.
 //     // Overwrite the value of keyword unit.
 //     ScalarColumnDesc<Int> acColumn("ac");
-//     acColumn.keywordSet().define ("scale", Complex(0.0f));
-//     acColumn.keywordSet().define ("unit", "");
+//     acColumn.rwKeywordSet().define ("scale", Complex(0.0f));
+//     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
 //     td.addColumn (acColumn);
-//     td["ac"].keywordSet().define ("unit", "DEG");
+//     td["ac"].rwKeywordSet().define ("unit", "DEG");
 //
 //     // Add a scalar string column ad and define its comment string.
 //     td.addColumn (ScalarColumnDesc<String>("ad","comment for ad"));
@@ -260,7 +260,7 @@ public:
 
     // Get access to the keyword set.
     // <group>
-    TableRecord& keywordSet();
+    TableRecord& rwKeywordSet();
     const TableRecord& keywordSet() const;
     // </group>
 
@@ -518,7 +518,7 @@ inline const String& TableDesc::version () const
     { return vers_p; }
 
 //# Get access to the sets of keywords.
-inline TableRecord& TableDesc::keywordSet ()
+inline TableRecord& TableDesc::rwKeywordSet ()
     { return *key_p; }
 inline const TableRecord& TableDesc::keywordSet () const
     { return *key_p; }

@@ -403,8 +403,8 @@ public:
     // </group>
 
     // Get access to the column keyword set.
-    TableRecord& keywordSet()
-	{ return baseColPtr_p->keywordSet(); }
+    TableRecord& rwKeywordSet()
+	{ return baseColPtr_p->rwKeywordSet(); }
 
     // Copy the value of a cell of that column to a cell of this column.
     // This function only works for the standard data types.
