@@ -1,0 +1,13 @@
+
+change id: 0053
+ author:   Wim Brouw
+ date:     2000/10/23
+ avers:    1.4
+ area:     Library
+ package:  aips
+ module:   Measures
+ type:     Code
+ category: Change
+ summary:  better baseline and uvw conversions
+The baseline and uvw conversions (i.e. conversions of MBaseline and Muvw using the MCuvw and MCBaseline types) have been improved.
+They now use the belonging direction if necessary, to cater for second order effects.
