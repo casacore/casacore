@@ -208,20 +208,15 @@ Int QuantumHolder::ndim() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for ndim"));
   } else if (isQuantumArrayDouble()) {
-    return dynamic_cast<const Quantum<Array<Double> > *>(hold_p.ptr())->
-      getValue().ndim();
+    return ((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayFloat()) {
-    return dynamic_cast<const Quantum<Array<Float> > *>(hold_p.ptr())->
-      getValue().ndim();
+    return ((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayInt()) {
-    return dynamic_cast<const Quantum<Array<Int> > *>(hold_p.ptr())->
-      getValue().ndim();
+    return ((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayComplex()) {
-    return dynamic_cast<const Quantum<Array<Complex> > *>(hold_p.ptr())->
-      getValue().ndim();
+    return ((Quantum<Array<Complex> > *)(hold_p.ptr()))->getValue().ndim();
   } else if (isQuantumArrayDComplex()) {
-    return dynamic_cast<const Quantum<Array<DComplex> > *>(hold_p.ptr())->
-      getValue().ndim();
+    return ((Quantum<Array<DComplex> > *)(hold_p.ptr()))->getValue().ndim();
   };
   return 0;
 }
