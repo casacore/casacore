@@ -199,7 +199,7 @@
      diff -e ${1}_tmpo.out ${1}_tmp.out > ${1}_atmp.ed
      diff -e ${1}_tmp.out ${1}_tmpo.out > ${1}_btmp.ed
      fchk=`floatcheck.sh ${1}_atmp.ed ${1}_btmp.ed`
-     if [ $fchk = "-1" ]
+     if [ "$fchk" = "-1" ]
      then
         echo "FAIL (output not verified): $*"
         STATUS=2
