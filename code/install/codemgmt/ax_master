@@ -3887,3 +3887,4 @@
 14 065 src mv trial/implement/Display/ColorDistribution.cc trialdisplay/implement/Display/ColorDistribution.cc
 14 065 src mv trial/implement/Display/Colormap.cc trialdisplay/implement/Display/Colormap.cc
 14 065 src mv trial/implement/Display/ColormapDefinition.cc trialdisplay/implement/Display/ColormapDefinition.cc
+14 065 src mv trial/implement/Display/ColormapInfo.cc trialdisplay/implement/Display/ColormapInfo.cc
