@@ -2037,3 +2037,4 @@
 08 216 src rm trial/scripts/TkPGPLOT_demo_scripts/pgtkdemo11.g
 08 220 src rm doc/user/Refman.dir/inputs.htex
 08 220 src rm doc/user/Refman.dir/aips.htex
+08 220 src rm doc/user/Refman.dir/display.htex
