@@ -262,9 +262,9 @@ ifeq "$(MAKEMODE)" "programmer"
 	 @ TEXINPUTS=.:$*.dir:$(CODEDIR)/$*.dir:$(TEXINPUTS) ; \
 	   export TEXINPUTS ; \
 	   if [ "$($*)" != "" ] ; then \
-	      $(LATEX2HTML) $($*) $< ; \
+	      $(LATEX2HTML) -dir ./$(basename $*) $($*) $< ; \
 	   else \
-	      $(LATEX2HTML) $< ; \
+	      $(LATEX2HTML) -dir ./$(basename $*)  $< ; \
 	   fi
 endif
 
