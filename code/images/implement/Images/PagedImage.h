@@ -240,13 +240,6 @@ public:
   // addition operator. Constant
   PagedImage<T> &operator+=(const T &val);
 
-  // function to set the default value.  This value will be returned when 
-  // access to a masked element is attempted.
-  void setDefaultValue(const T &newValue);
-  
-  // function to return the value of the stored default value.
-  const T &defaultValue() const;
-
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
   // False if it cannot set the unit for some reason (e.g. the underlying
@@ -339,7 +332,6 @@ private:
   Table table_p;
   PagedArray<T> map_p;
   PagedArray<Bool> *mask_p;
-  T defaultvalue_p;
 };
 
 

@@ -97,7 +97,6 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
     logSink() << LogIO::DEBUGGING << "No mask was created" << LogIO::POST;
   }
   logSink() << LogIO::NORMAL;
-  ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
@@ -132,7 +131,6 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
     logSink() << LogIO::DEBUGGING << "No mask was created" << LogIO::POST;
   }
   logSink() << LogIO::NORMAL;
-  ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
@@ -165,7 +163,6 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
     logSink() << LogIO::DEBUGGING << "No mask was created" << LogIO::POST;
   }
   logSink() << LogIO::NORMAL;
-  ::defaultValue(defaultvalue_p); 
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
@@ -195,7 +192,6 @@ PagedImage(Table & table, uInt rowNumber)
     throughmask_p = False;
     logSink() << "No mask is defined" << LogIO::POST << LogIO::NORMAL;
   }
-  ::defaultValue(defaultvalue_p); 
   CoordinateSystem* restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
@@ -228,7 +224,6 @@ PagedImage(const String & filename, uInt rowNumber)
     logSink() << LogIO::DEBUGGING << "No mask is defined" << LogIO::POST;
   }
   logSink() << LogIO::NORMAL;
-  ::defaultValue(defaultvalue_p); 
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
@@ -263,7 +258,6 @@ PagedImage(const String & filename, const TableLock& lockOptions,
     logSink() << "No mask is defined" << LogIO::POST;
   }
   logSink() << LogIO::NORMAL;
-  ::defaultValue(defaultvalue_p); 
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
@@ -276,8 +270,7 @@ PagedImage(const PagedImage<T> & other)
 : ImageInterface<T>(other),
   table_p(other.table_p), 
   map_p(other.map_p), 
-  mask_p((PagedArray<Bool> *)0),
-  defaultvalue_p(other.defaultvalue_p)
+  mask_p((PagedArray<Bool> *)0)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
   if (other.mask_p != 0) {
@@ -308,7 +301,6 @@ operator=(const PagedImage<T> & other)
     if (other.mask_p) {
       mask_p = new PagedArray<Bool>(*(other.mask_p));
     }
-    defaultvalue_p = other.defaultvalue_p;
   } 
   return *this;
 };
@@ -415,12 +407,6 @@ getSlice(COWPtr<Array<T> > & buffer,
 	 Bool removeDegenerateAxes) const 
 {
   Bool val = map_p.getSlice(buffer, theSlice, removeDegenerateAxes);
-  if (mask_p) {
-    COWPtr<Array<Bool> > mask;
-    mask_p->getSlice(mask, theSlice, removeDegenerateAxes);
-    // use maskedarrays to do all the work
-    buffer.rwRef()(mask.ref() == True) = defaultvalue_p;
-  }
   return val;
 }
 
@@ -438,12 +424,6 @@ getSlice(Array<T> & buffer, const Slicer & theSlice,
 	 Bool removeDegenerateAxes)
 {
   Bool val = map_p.getSlice(buffer, theSlice, removeDegenerateAxes);
-  if (mask_p) {
-    Array<Bool> mask;
-    mask_p->getSlice(mask, theSlice, removeDegenerateAxes);
-    // use maskedarrays to do all the work
-    buffer(mask == True) = defaultvalue_p;
-  }
   return val;
 }
 
@@ -558,18 +538,6 @@ PagedImage<T>::mask()
   return *mask_p;
 }
 
-template <class T> void PagedImage<T>::
-setDefaultValue(const T & newValue)
-{
-  defaultvalue_p = newValue;
-}
-
-template <class T> const T &
-PagedImage<T>::defaultValue() const
-{
-  return defaultvalue_p;
-}
-
 template <class T> Table PagedImage<T>::
 table()
 {
@@ -579,11 +547,7 @@ table()
 template <class T> T PagedImage<T>::
 getAt(const IPosition & where) const
 {
-  if (mask_p && mask_p->operator()(where)) {
-    return defaultvalue_p;
-  } else {
-    return map_p(where);
-  }
+   return map_p(where);
 }
 
 template <class T> void PagedImage<T>::

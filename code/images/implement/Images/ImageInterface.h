@@ -235,13 +235,6 @@ public:
   // Function to return the value of the mask toggle
   Bool writeThroughMask() const;
   
-  // Function to set the default Value.  This value will be returned when 
-  // access to a masked element is attempted.
-  virtual void setDefaultValue(const T &newValue) = 0;
-  
-  // Function to return the value of the stored default Value.
-  virtual const T &defaultValue() const = 0;
-  
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
   // False if it cannot set the unit for some reason (e.g. the underlying
