@@ -173,8 +173,8 @@ public:
   // specified one. This will only affect the units used in the Record returned
   // by the toRecord function.
   // <group>
-  virtual const Unit& frequencyUnit() const;
-  virtual void convertFrequencyUnit(const Unit& freqUnit);
+  const Unit& frequencyUnit() const;
+  void convertFrequencyUnit(const Unit& freqUnit);
   // </group>
 
   // Return the scaling factor that indicates what proportion of the flux is at
