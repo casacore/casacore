@@ -231,7 +231,10 @@ The data types of such arguments are given as 'numeric'.
   \item[ \texttt{real IMAG(complex)}] Imaginary part of a complex number.
   \item[ \texttt{real NORM(numeric)}]
   \item[ \texttt{real ABS(numeric),  real AMPLITUDE(numeric)}]
-  \item[ \texttt{real ARG(numeric),  real PHASE(numeric)}]
+     both find the amplitude of a complex number.
+     If the  numeric argument is real, imaginary part zero is assumed.
+  \item[ \texttt{real ARG(complex),  real PHASE(complex)}]
+     both find the phase of a complex number.
   \item[ \texttt{numeric MIN(numeric, numeric)}]
   \item[ \texttt{numeric MAX(numeric, numeric)}]
   \item[ \texttt{Float SIGN(real)}]
