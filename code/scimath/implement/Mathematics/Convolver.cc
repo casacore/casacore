@@ -243,11 +243,12 @@ doConvolution(Array<FType>& result,
   else{
     Array<FType> paddedModel=model;
     if(doFast_p){
+      Array<FType> paddedModel=model;
       //    theFFT.flip(paddedModel, True, False);
       theFFT.fft0(fftModel, paddedModel);
     }
     else{
-      theFFT.fft(fftModel, paddedModel);
+      theFFT.fft(fftModel, model);
     } 
   }
   // Multiply by the transfer function
