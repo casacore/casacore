@@ -131,16 +131,21 @@ String ImageHistograms<T>::writeCoordinates(const IPosition& histPos) const
          const Int worldAxis =
            pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          const String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
-         pixels(0) = Double(locHistInLattice(histPos)(j+1));
+
+// Get pixel coordinate relative to current lattice
+
+         pixels(0) = Double(locHistInLattice(histPos,False)(j+1));
 //
          if (ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
-                                          displayAxes_p(j), cursorAxes_p,
-                                          blc, trc, pixels, -1)) {
+                                         displayAxes_p(j), cursorAxes_p,
+                                         blc, trc, pixels, -1)) {
             oss <<  ImageUtilities::shortAxisName(name)
-                << "=" << locHistInLattice(histPos)(j+1)+1 << " (" << sWorld(0) << ")";
+                << "=" << locHistInLattice(histPos,True)+1 
+                << " (" << sWorld(0) << ")";
             if (j < nDisplayAxes-1) oss << ", ";
          } else {
-            oss << "Axis " << displayAxes_p(j) + 1 << "=" << locHistInLattice(histPos)(j+1)+1;
+            oss << "Axis " << displayAxes_p(j) + 1 
+                << "=" << locHistInLattice(histPos,True)+1;
             if (j < nDisplayAxes-1) oss << ", ";
          }
       }

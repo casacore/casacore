@@ -416,8 +416,10 @@ protected:
                       const Vector<T>& mask) const;
 
 // Given a location in the storage lattice, convert those locations on the   
-// non-statistics axis (the last one) to account for the lattice subsectioning
-   IPosition locInLattice (const IPosition& storagePosition) const;
+// non-statistics axis (the last one) and optionally account for the 
+// lattice subsectioning
+   IPosition locInLattice (const IPosition& storagePosition,
+                           Bool relativeToParent=True) const;
  
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (String& label,

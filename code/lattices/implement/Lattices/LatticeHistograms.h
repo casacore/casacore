@@ -178,7 +178,7 @@ public:
    LatticeHistograms(const LatticeHistograms<T> &other);
 
 // Destructor
-  ~LatticeHistograms ();
+   virtual ~LatticeHistograms ();
 
 // Assignment operator (copy semantics)
    LatticeHistograms<T> &operator=(const LatticeHistograms<T> &other);
@@ -292,9 +292,9 @@ protected:
    String error_p;
 
 // Given a location in the histogram storage lattice, convert those locations on the
-// non-histogram axis (the first one) to account for the lattice subsectioning
-   IPosition locHistInLattice (const IPosition& histPosition) const;
-
+// non-histogram axis (the first one) relative to the parent or current lattice
+   IPosition locHistInLattice (const IPosition& histPosition, 
+                               Bool relativeToParent=True) const;  
 
 private:
 

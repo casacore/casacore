@@ -1283,7 +1283,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       IPosition trc(pInLattice_p->shape()-1);
 //
       for (uInt j=1; j<nDisplayAxes; j++) {
-         os_p <<  "Axis " << displayAxes_p(j) + 1 << " = " << locInLattice(dPos)(j)+1;
+         os_p <<  "Axis " << displayAxes_p(j) + 1 << " = " 
+              << locInLattice(dPos,True)(j)+1;
          if (j < nDisplayAxes-1) os_p << ", ";
       }
    }
@@ -1375,7 +1376,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 
 template <class T>
-IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition) const
+IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition,
+                                             Bool relativeToParent) const
                  
 //
 // Given a location in the storage lattice, convert those locations on
@@ -1385,7 +1387,11 @@ IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition) c
 {  
    IPosition pos(storagePosition);
    for (uInt j=0; j<pos.nelements()-1; j++) {
-     pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j));
+     if (relativeToParent) {
+        pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j));
+     } else {
+        pos(j) = storagePosition(j);
+     }
    }
    return pos;
 }
@@ -2005,7 +2011,7 @@ void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosi
       ostrstream oss;
       for (uInt j=1; j<n; j++) {
          oss <<  "Axis " << displayAxes_p(j)+1 << "=" 
-             << locInLattice(dPos)(j)+1;
+             << locInLattice(dPos,True)(j)+1;
          if (j < n-1) oss << ", ";
       }
       hLabel = String(oss);

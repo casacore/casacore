@@ -70,11 +70,12 @@ LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice,
                                          LogIO &os, Bool showProgress,
                                          Bool forceDisk)
 : os_p(os),
+  goodParameterStatus_p(True),
+  error_p(""),
   pInLattice_p(0),
   pStoreLattice_p(0),
   pStats_p(0),
   binAll_p(True),
-  goodParameterStatus_p(True),
   needStorageLattice_p(True),
   doCumu_p(False),
   doGauss_p(False),
@@ -83,8 +84,7 @@ LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice,
   haveLogger_p(True),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  nBins_p(25),
-  error_p("")
+  nBins_p(25)
 //
 // Constructor. 
 //
@@ -113,11 +113,13 @@ template <class T>
 LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice, 
                                          Bool showProgress,
                                          Bool forceDisk)
-: pInLattice_p(0),
+: 
+  goodParameterStatus_p(True),
+  error_p(""),
+  pInLattice_p(0),
   pStoreLattice_p(0),
   pStats_p(0),
   binAll_p(True),
-  goodParameterStatus_p(True),
   needStorageLattice_p(True),
   doCumu_p(False),
   doGauss_p(False),
@@ -126,8 +128,7 @@ LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice,
   haveLogger_p(False),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  nBins_p(25),
-  error_p("")
+  nBins_p(25)
 //
 // Constructor. 
 //
@@ -1003,8 +1004,8 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
 
 
 template <class T>
-IPosition LatticeHistograms<T>::locHistInLattice(const IPosition& storagePosition) const
-
+IPosition LatticeHistograms<T>::locHistInLattice(const IPosition& storagePosition,
+                                                 Bool relativeToParent) const
 //
 // Given a location in the histogram storage lattice, convert those locations on
 // the non-histogram axis (the histogram axis is the first one) to locations
@@ -1014,7 +1015,11 @@ IPosition LatticeHistograms<T>::locHistInLattice(const IPosition& storagePositio
 {
    IPosition pos(storagePosition);
    for (uInt j=1; j<pos.nelements(); j++) {
-     pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j-1));
+     if (relativeToParent) {
+        pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j-1));
+     } else {
+        pos(j) = storagePosition(j);
+     }
    }
    return pos;  
 }
@@ -1160,12 +1165,16 @@ Bool LatticeHistograms<T>::setInclude(Vector<T>& range,
 
 template <class T>
 String LatticeHistograms<T>::writeCoordinates(const IPosition& histPos) const
+//
+// Write pixel coordinates relative to parent lattice
+//
 {
    ostrstream oss;
    const Int nDisplayAxes = displayAxes_p.nelements();
    if (nDisplayAxes > 0) {   
       for (Int j=0; j<nDisplayAxes; j++) {
-         oss << "Axis " << displayAxes_p(j) + 1 << "=" << locHistInLattice(histPos)(j+1)+1;
+         oss << "Axis " << displayAxes_p(j) + 1 << "=" 
+             << locHistInLattice(histPos,True)(j+1)+1;
          if (j < nDisplayAxes-1) oss << ", ";
       }
    }
