@@ -4841,3 +4841,4 @@
 14 316 sys rm libexec/sdimager.g
 14 316 src rm trial/apps/dish/sdimager.help
 14 316 src rm trial/apps/dish/sdimager_meta.g
+14 316 sys rm libexec/sdimager_meta.g
