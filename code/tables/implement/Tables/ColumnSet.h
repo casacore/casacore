@@ -240,9 +240,16 @@ private:
     // Let the data managers (from the given index on) prepare themselves.
     void prepareSomeDataManagers (uInt from);
 
-    // Check if a data manager name has not already been given.
+    // Check if a data manager name has not already been used.
     // Start checking at the given index in the array.
-    void checkDataManagerName (const String& name, uInt from) const;
+    // It returns False if the name has already been used.
+    // By default an exception is thrown if the name has already been used.
+    Bool checkDataManagerName (const String& name, uInt from,
+			       Bool doTthrow=True) const;
+
+    // Make a unique data manager name by appending a suffix _n if needed
+    // where n is a number that makes the name unique.
+    String uniqueDataManagerName (const String& name) const;
 
     // Do the actual addition of a column.
     void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr);
