@@ -152,6 +152,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 			    "aips/Measures")) {
       return False;
     };
+    MeasIERS::openNote(&MeasIERS::closeMeas);
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
 	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
 	!kws.isDefined("AU") || kws.asDouble("AU") < 1e8 ||
@@ -215,6 +216,25 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
     chcv[1] = 1;
   };
   return (measured[which]);
+}
+
+void MeasJPL::closeMeas() {
+  for (uInt i=0; i<N_Files; ++i) {
+    if (Table::isOpened(tp[i]) || measured[i] || !measFlag[i]) {
+      measFlag[i] = True;
+      measured[i] = False;
+      mjd0[i] = 0;
+      mjdl[i] = 0;
+      dmjd[i] = 0;
+      ldat[i] = 0;
+      msgDone = False;
+      np = 2;
+      nv = 3;
+      twot = 0.0;
+      vfac = 0.0;
+      t[i] = Table();
+    };
+  };
 }
 
 Bool MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,

@@ -1,5 +1,5 @@
 //# MeasJPL.h: Interface to JPL DE tables
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -188,6 +188,10 @@ public:
   // Get filed constant with name nam
   static Bool getConst(Double &res, MeasJPL::Files which,
 		       const String &nam);
+
+  // Close the set of JPL tables only
+  static void closeMeas();
+
 private:
   
   //# Constructors

@@ -1,5 +1,5 @@
 //# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,6 +116,10 @@ class String;
 class MeasIERS {	
 
 public:
+  //# Typedefs
+  // Define the function pointer to be called to close files
+  typedef void (*CLOSEFUN) ();
+
   //# Constants
   static const Double INTV;
   
@@ -163,6 +167,13 @@ public:
     DEFAULT = MEASURED };
   
   //# General Member Functions
+  // Get the value from an IERS table, interpolated for date(in MJD).
+  // The file can be PREDICTED or MEASURED, the type as given in enum.
+  static Bool get(Double &returnValue,
+		  MeasIERS::Files file, 
+		  MeasIERS::Types type,
+		  Double date);
+
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
   // Returned are an open table, a row record, pointers (rfp) to row data,
@@ -176,14 +187,18 @@ public:
 		       Int N, const String rfn[],
 		       const String &name,
 		       const String &rc, const String &dir);
-  
-  // Get the value from an IERS table, interpolated for date(in MJD).
-  // The file can be PREDICTED or MEASURED, the type as given in enum.
-  static Bool get(Double &returnValue,
-		  MeasIERS::Files file, 
-		  MeasIERS::Types type,
-		  Double date);
-  
+
+  // Notify that a table has successfully been opened with getTable()
+  static void openNote(CLOSEFUN fun);
+
+  // Make sure all static tables are closed that were opened with getTable
+  // (like JPL, IERS). This is the preferred way to close the
+  // Measures related data tables.
+  static void closeTables();
+
+  // Close the set of IERS tables only
+  static void closeMeas();
+
 private:
   
   //# Constructors
@@ -232,7 +247,12 @@ private:
   static uInt notable_reg;
   // Force prediction
   static uInt forcepredict_reg;
-
+  // Size of close notification list
+  static uInt sizeNote;
+  // Tables notifying that they should be closed
+  static CLOSEFUN *toclose;
+  // Number of close notifications
+  static uInt nNote;
 };
 
 //# Inline Implementations

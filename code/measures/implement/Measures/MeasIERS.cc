@@ -141,6 +141,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
 	LogIO::POST;
       return False;
     };
+    MeasIERS::openNote(&MeasIERS::closeMeas);
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000)
       ok = False;
     if (ok) {
@@ -168,6 +169,50 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
   };
   return (measured[which]);
 }
+
+void MeasIERS::closeMeas() {
+  for (uInt i=0; i<N_Files; ++i) {
+    if (Table::isOpened(tp[i]) || measured[i] || !measFlag[i]) {
+      measFlag[i] = True;
+      measured[i] = False;
+      dateNow = 0.0;
+      mjd0[i] = 0;
+      mjdl[i] = 0;
+      msgDone = False;
+      t[i] = Table();
+    };
+  };
+}
+
+void MeasIERS::openNote(CLOSEFUN fun) {
+  if (nNote <= sizeNote) {
+    CLOSEFUN *tmp = 0;
+    if (sizeNote > 0) {
+      tmp = new CLOSEFUN[sizeNote];
+      for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
+      delete [] toclose; toclose = 0;
+    };
+    toclose = new CLOSEFUN[sizeNote+10];
+    for (uInt i=0; i<sizeNote; ++i) toclose[i] = tmp[i];
+    for (uInt i=sizeNote; i<sizeNote+10; ++i) toclose[i] = 0;
+    sizeNote += 10;
+    delete [] tmp; tmp = 0;
+  };
+  toclose[nNote++] = fun;
+}
+
+void MeasIERS::closeTables() {
+  if (sizeNote > 0) {
+    for (uInt i=sizeNote; i-1 != 0; --i) {
+      if (toclose[i-1] != 0) toclose[i-1]();
+      toclose[i-1] = 0;
+    };
+    delete [] toclose; toclose = 0;
+    sizeNote = 0;
+    nNote = 0;
+  };
+}
+
 
 // Table handling
 Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
@@ -317,3 +362,6 @@ Int MeasIERS::mjdl[MeasIERS::N_Files] = {0, 0};
 Double MeasIERS::ldat[2*MeasIERS::N_Files][MeasIERS::N_Types];
 Bool MeasIERS::msgDone = False;
 const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
+uInt MeasIERS::sizeNote = 0;
+uInt MeasIERS::nNote = 0;
+MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
