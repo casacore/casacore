@@ -295,8 +295,8 @@ int main() {
       const uInt imSize = 6;
       const uInt nPol = 3;
       const uInt nFreq = 2;
-      CoordinateSystem coords(defaultCoords2D());
-      addFreqAxis(coords);
+      CoordinateSystem coords(CoordinateUtil::defaultCoords2D());
+      CoordinateUtil::addFreqAxis(coords);
       {
 	Vector<Int> pols(nPol);
 	pols(0) = Stokes::I;

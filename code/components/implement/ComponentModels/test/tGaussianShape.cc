@@ -282,7 +282,7 @@ int main() {
       const uInt imSize = 6;
       const uInt nPol = 2;
       const uInt nFreq = 1;
-      CoordinateSystem coords(defaultCoords2D());
+      CoordinateSystem coords(CoordinateUtil::defaultCoords2D());
       {
 	Vector<Int> pols(nPol);
 	pols(0) = Stokes::I;
@@ -290,7 +290,7 @@ int main() {
 	StokesCoordinate polAxis(pols);
 	coords.addCoordinate(polAxis);
       }
-      addFreqAxis(coords);
+      CoordinateUtil::addFreqAxis(coords);
       PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
  			      coords, "tGaussianCompRep_tmp.image");
       image.set(0.0f);

@@ -69,7 +69,7 @@ int main() {
 				   refPixel, refPixel);
       coords.addCoordinate(dirCoord);
     }
-    addFreqAxis(coords);
+    CoordinateUtil::addFreqAxis(coords);
     PagedImage<Float> skyModel(IPosition(3,64,64,16), coords,
 			       "model_tmp.image");
     skyModel.set(0.0f);
