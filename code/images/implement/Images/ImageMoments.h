@@ -570,18 +570,22 @@ private:
 // Compute moments by including or excluding pixels from a specified
 // intensity range                          
    void doMomCl        (Vector<T>& calcmoments,
+                        const Vector<Double>& sepWorldCoord,
                         const Vector<T>& data,
-                        const Bool& doMedianI,
-                        const Bool& doMedianV, 
-                        const Bool& doAbsDev);
+                        const Bool doMedianI,
+                        const Bool doMedianV, 
+                        const Bool doAbsDev,
+                        const Bool doCoordCalc);
 
 // Compute moments by fitting gaussians and computing from the fits
    void doMomFit       (Vector<T>& calcMoments,
+                        const Vector<Double>& sepWorldCoord,
                         const Vector<T>& data,
-                        const Bool& doMedianI,
-                        const Bool& doMedianV,
-                        const Bool& doAbsDev,
-                        const Bool& doPlot,
+                        const Bool doMedianI,
+                        const Bool doMedianV,
+                        const Bool doAbsDev,
+                        const Bool doCoordCalc,
+                        const Bool doPlot,
                         const String& momAxisType, 
                         const IPosition& pos);
 
@@ -589,23 +593,27 @@ private:
 // from inclusion or exclusion pixel intensity ranges, and then
 // applying that mask to the unwmoothed data
    void doMomSm        (Vector<T>& calcMoments,
+                        const Vector<Double>& sepWorldCoord,
                         const Vector<T>& data,
                         const Vector<T>& smoothedData,
-                        const Bool& doMedianI, 
-                        const Bool& doMedianV,
-                        const Bool& doAbsDev,
-                        const Bool& doPlot,
+                        const Bool doMedianI, 
+                        const Bool doMedianV,
+                        const Bool doAbsDev,
+                        const Bool doCoordCalc,
+                        const Bool doPlot,
                         const String& momAxisType,
                         const IPosition& pos);
 
 // Compute moments with the window method
    void doMomWin       (Vector<T>& calcMoments,
+                        const Vector<Double>& sepWorldCoord,
                         const Vector<T>& data,
                         const Vector<T>& smoothedData,
-                        const Bool& doMedianI,
-                        const Bool& doMedianV,
-                        const Bool& doAbsDev,     
-                        const Bool& doPlot,
+                        const Bool doMedianI,
+                        const Bool doMedianV,
+                        const Bool doAbsDev,   
+                        const Bool doCoordCalc,
+                        const Bool doPlot,
                         const String& momAxisType,
                         const IPosition& pos, const Double& ks);
 
