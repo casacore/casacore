@@ -111,6 +111,7 @@ main (int argc, char** argv)
 }
 
 #ifdef PABLO_IO
+#include <aips/Utilities/Regex.h>
 void openPablo (char** argv)
 {
   // We set the name of the trace file here.  Typically, you want the
