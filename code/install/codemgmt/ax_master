@@ -2696,3 +2696,4 @@
 10 019 src mv trial/implement/Measures/test/tEarthField.out aips/implement/Measures/test/tEarthField.out
 10 020 src mv trial/apps/datalinetool/dataline.g trial/implement/Datalinetool/dataline.g
 10 020 src mv trial/apps/datalinetool/datalinetool.help trial/implement/Datalinetool/datalinetool.help
+10 020 src mv trial/apps/datalinetool/dgplot.g trial/implement/Datalinetool/dgplot.g
