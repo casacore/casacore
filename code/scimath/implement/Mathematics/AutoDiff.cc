@@ -1,4 +1,4 @@
-//# AutoDiff.cc: an automatic differential class for  parameterized functions
+//# AutoDiff.cc: An automatic differentiating class for functions
 //# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,6 +28,7 @@
 //# Includes
 #include <trial/Mathematics/AutoDiff.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
 
 //# Statics
@@ -46,14 +47,15 @@ template <class T>
 AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt n) :
   rep_p(pool.get(ndiffs)) {
   rep_p->val_p = v;
-  for (uInt i=0; i<ndiffs; i++) rep_p->grad_p[i] = (i==n ? T(1) : T(0));
+  rep_p->grad_p = T(0);
+  rep_p->grad_p[n] = T(1);
 }
 
 template <class T>
 AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs) :
   rep_p(pool.get(ndiffs)) {
   rep_p->val_p = v;
-  for (uInt i=0; i<rep_p->nd_p; i++) rep_p->grad_p[i] = T(0);
+  rep_p->grad_p = T(0);
 }
 
 template <class T>
@@ -63,8 +65,7 @@ AutoDiff<T>::AutoDiff(const AutoDiff<T> &other) :
   else {
     rep_p = pool.get(other.rep_p->nd_p);
     rep_p->val_p = other.rep_p->val_p;
-    for (uInt i=0; i<rep_p->nd_p; i++) rep_p->grad_p[i] =
-					 other.rep_p->grad_p[i];
+    rep_p->grad_p = other.rep_p->grad_p;
   };
 }
 
@@ -72,7 +73,7 @@ template <class T>
 AutoDiff<T>::AutoDiff(const T &v, const Vector<T> &derivs) :
   rep_p(pool.get(derivs.nelements())) {
   rep_p->val_p = v;
-  for (uInt i=0; i<rep_p->nd_p; i++) rep_p->grad_p[i] = derivs(i);
+  rep_p->grad_p = derivs;
 }
 
 template<class T>
@@ -96,8 +97,7 @@ AutoDiff<T> &AutoDiff<T>::operator=(const AutoDiff<T> &other) {
     release();
     rep_p = pool.get(other.rep_p->nd_p);
     rep_p->val_p = other.rep_p->val_p;
-    for (uInt i=0; i<rep_p->nd_p; i++) rep_p->grad_p[i] =
-					 other.rep_p->grad_p[i];
+    rep_p->grad_p = other.rep_p->grad_p;
   };
   return *this;
 }
@@ -109,9 +109,8 @@ void AutoDiff<T>::operator*=(const AutoDiff<T> &other) {
       T v = rep_p->val_p;
       release();
       rep_p = pool.get(other.rep_p->nd_p);
-      for (uInt i=0; i<rep_p->nd_p; i++) {
-	rep_p->grad_p[i] = other.rep_p->grad_p[i]*v;
-      };
+      rep_p->grad_p = other.rep_p->grad_p;
+      rep_p->grad_p *= v;
       rep_p->val_p = v; 
     } else {
       for (uInt i=0; i<rep_p->nd_p ; i++) {
@@ -133,9 +132,8 @@ void AutoDiff<T>::operator/=(const AutoDiff<T> &other) {
       T v = rep_p->val_p;
       release();
       rep_p = pool.get(other.rep_p->nd_p);
-      for (uInt i=0; i<rep_p->nd_p; i++) {
-	rep_p->grad_p[i] = other.rep_p->grad_p[i]*(-v/temp);
-      };
+	rep_p->grad_p = other.rep_p->grad_p;
+ 	rep_p->grad_p *= (-v/temp);
       rep_p->val_p = other.rep_p->val_p;
     } else {
       for (uInt i=0; i<rep_p->nd_p ; i++) {
@@ -144,7 +142,7 @@ void AutoDiff<T>::operator/=(const AutoDiff<T> &other) {
       };
     };
   } else {
-    for (uInt i=0; i<rep_p->nd_p ; i++) rep_p->grad_p[i] /= other.rep_p->val_p;
+    rep_p->grad_p /= other.rep_p->val_p;
   };
   rep_p->val_p /= other.rep_p->val_p;
 }
@@ -156,14 +154,10 @@ void AutoDiff<T>::operator+=(const AutoDiff<T> &other) {
       T v = rep_p->val_p;
       release();
       rep_p = pool.get(other.rep_p->nd_p);
-      for (uInt i=0; i<rep_p->nd_p; i++) {
-	rep_p->grad_p[i] = other.rep_p->grad_p[i];
-      };
+      rep_p->grad_p = other.rep_p->grad_p;
       rep_p->val_p = v;
     } else {
-      for (uInt i=0; i<rep_p->nd_p ; i++) {
-	rep_p->grad_p[i] += other.rep_p->grad_p[i];
-      };
+	rep_p->grad_p += other.rep_p->grad_p;
     };
   };
   rep_p->val_p += other.rep_p->val_p;
@@ -176,14 +170,10 @@ void AutoDiff<T>::operator-=(const AutoDiff<T> &other) {
       T v = rep_p->val_p;
       release();
       rep_p = pool.get(other.rep_p->nd_p);
-      for (uInt i=0; i<rep_p->nd_p ; i++) {
-	rep_p->grad_p[i] = -other.rep_p->grad_p[i];
-      };
+      rep_p->grad_p = -other.rep_p->grad_p;
       rep_p->val_p = v;
     } else {
-      for (uInt i=0; i<rep_p->nd_p ; i++) {
-	rep_p->grad_p[i] -= other.rep_p->grad_p[i];
-      };
+      rep_p->grad_p -= other.rep_p->grad_p;
     };
   };
   rep_p->val_p -= other.rep_p->val_p;
@@ -191,13 +181,13 @@ void AutoDiff<T>::operator-=(const AutoDiff<T> &other) {
 
 template <class T>
 void AutoDiff<T>::operator*=(const T other) {
-  for (uInt i=0; i<rep_p->nd_p ; i++) rep_p->grad_p[i] *= other;
+  rep_p->grad_p *= other;
   rep_p->val_p *= other;
 }
 
 template <class T>
 void AutoDiff<T>::operator/=(const T other) { 
-  for (uInt i=0; i<rep_p->nd_p ; i++) rep_p->grad_p[i] /= other;
+  rep_p->grad_p /= other;
   rep_p->val_p /= other;
 }
 
@@ -212,12 +202,10 @@ void AutoDiff<T>::operator-=(const T other) {
 }
 
 template <class T> Vector<T> AutoDiff<T>::derivatives() const { 
-  Vector<T> vval(rep_p->nd_p);
-  for (uInt i=0; i<rep_p->nd_p; i++) vval(i) = rep_p->grad_p[i];
-  return vval;
+  return rep_p->grad_p;
 }
 
 template <class T> void AutoDiff<T>::derivatives(Vector<T> &res) const { 
   res.resize(rep_p->nd_p);
-  for (uInt i=0; i<rep_p->nd_p; i++) res(i) = rep_p->grad_p[i];
+  res = rep_p->grad_p;
 }
