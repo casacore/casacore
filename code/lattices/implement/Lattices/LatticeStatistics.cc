@@ -2330,7 +2330,7 @@ void LatticeStatistics<T>::summStats ()
          os_p << "Minimum value ";
          os_p.output() << setw(oWidth) << String(os6);
          if (type==TpFloat) {
-            os_p <<  " at " << bldParent_p + minPos_p+1;
+            os_p <<  " at " << blcParent_p + minPos_p+1;
          }
          os_p << endl;
 //
