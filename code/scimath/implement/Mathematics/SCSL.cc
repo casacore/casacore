@@ -123,7 +123,7 @@ void ccfft(Int PN(isign), Int PN(n), Double* PN(scale), Double* PN(x),
 void scfft(Int PN(isign), Int PN(n), Float* PN(scale), Float* PN(x),
 	   Float* PN(y), Float* PN(table), Float* PN(work), Int PN(isys)) { 
 #if defined(AIPS_IRIX)
-  scfft_((int*) &PN(isign, (int*) &n, (float*) scale, (float*) x,
+  scfft_((int*) &PN(isign), (int*) &n, (float*) scale, (float*) x,
 	 (float*) y, (float*) table, (float*) work, (int*) &isys); 
 #endif
 }
