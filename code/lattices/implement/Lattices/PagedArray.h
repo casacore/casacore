@@ -1,5 +1,5 @@
 //# PagedArray.h: templated Lattice, paged from disk to memory on demand
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -226,7 +226,7 @@
 // IPosition shape = diskArray.shape();
 // // Construct a Gaussian Profile to be 10 channels wide and centred on
 // // channel 16. Its height is 1.0.
-// Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
+// NQGaussian1D<Float> g(1.0f, 16.0f, 10.0f);
 // // Create a vector to cache a sampled version of this profile.
 // Vector<Float> profile(shape(3));
 // indgen(profile);
