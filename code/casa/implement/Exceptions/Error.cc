@@ -37,10 +37,10 @@ rtti_imp_init_a1(indexError);
 rtti_imp_mbrf_a1(indexError);
 
 template<class t>
-indexError<t>::indexError(t oI, const Char *str) : oIndex(oI), IndexError(str)
+indexError<t>::indexError(t oI, const Char *str) : IndexError(str), oIndex(oI)
 {}
 template<class t>
-indexError<t>::indexError(t oI, const String &str) : oIndex(oI), IndexError(str)
+indexError<t>::indexError(t oI, const String &str) : IndexError(str), oIndex(oI)
 {}
 
 template<class t>
@@ -86,9 +86,9 @@ duplError<t>::~duplError()
 
 
 template<class t>
-duplError<t>::duplError(t oI, const Char *str) : oKey(oI), DuplError(str)
+duplError<t>::duplError(t oI, const Char *str) : DuplError(str), oKey(oI)
 {}
 template<class t>
-duplError<t>::duplError(t oI, const String &str) : oKey(oI), DuplError(str)
+duplError<t>::duplError(t oI, const String &str) : DuplError(str), oKey(oI)
 {}
 

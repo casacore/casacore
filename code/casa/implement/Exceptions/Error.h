@@ -136,8 +136,8 @@ public:
   // allocation size.
   //
   // <group>
-  AllocError(const Char *str, uInt sze) : Size(sze), AipsError(str) {}
-  AllocError(const String &str, uInt sze) : Size(sze), AipsError(str) {}
+  AllocError(const Char *str, uInt sze) : AipsError(str), Size(sze) {}
+  AllocError(const String &str, uInt sze) : AipsError(str), Size(sze)  {}
   // </group>
 
   //
