@@ -6114,3 +6114,4 @@
 17 151 src rm admin/system/aips2-workers.list
 17 151 src rm admin/system/aips2.list
 17 152 src mv trial/apps/dish/naic trial/apps/naic
+17 154 src mv doc/recipes/General/extlab.tex doc/recipes/General/extlab.lis
