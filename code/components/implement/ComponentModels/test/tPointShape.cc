@@ -241,10 +241,9 @@ int main() {
       AlwaysAssert(ComponentShape::getType(errorMsg, emptyRec) ==
 		   ComponentType::POINT, AipsError);
       AlwaysAssert(errorMsg.length() == 0, AipsError);
-      shapePtr->fromRecord(errorMsg, emptyRec);
-      AlwaysAssert(errorMsg.
-		   contains("The 'direction' field does not exist"), 
+      AlwaysAssert(shapePtr->fromRecord(errorMsg, emptyRec) == True,
 		   AipsError);
+      AlwaysAssert(errorMsg.length() == 0, AipsError);
       emptyRec.defineRecord(RecordFieldId("direction"), dirRec);
       PointShape p;
       errorMsg = "";
