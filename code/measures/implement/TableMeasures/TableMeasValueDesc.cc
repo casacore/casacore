@@ -37,8 +37,8 @@ TableMeasValueDesc::TableMeasValueDesc()
 {}
 
 TableMeasValueDesc::TableMeasValueDesc (const TableDesc& td, 
-					const String& colName)
-: itsColumn(colName)
+					const String& columnName)
+: itsColumn(columnName)
 {
   checkColumn(td);
 }
@@ -61,6 +61,7 @@ TableMeasValueDesc& TableMeasValueDesc::operator=
 
 void TableMeasValueDesc::write (TableDesc& td, const TableRecord& measInfo)
 {
+  checkColumn(td);
   TableRecord& columnKeyset = td.rwColumnDesc(itsColumn).rwKeywordSet();
   if (measInfo.nfields() > 0) {
     columnKeyset.defineRecord ("MEASINFO", measInfo);
