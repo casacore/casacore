@@ -7,11 +7,16 @@ This chapter \footnote{Last change:
 $ $Id$ $}
 describes how to install and contribute to the \aipspp\ data repository.
 
+The \aipspp\ data repository contains all of the standard \textit{global}
+data used internally by \aipspp. This data was separated from the main code tree
+because it greatly increased the volume of the \aipspp\ source distributions.
+
 The intended audience for this repository includes both \aipspp\ developers
 who use data to implement their applications and users who access standard
 catalogs and images which are components of the repository. The data is
 typically provided as \aipspp\ tables, but some data is provided as FITS
-files.
+files. Other data formats may also be included for the purposes of testing
+conversion procedures, e.g. filling non-FITS correlator data.
 
 In the future, the goal is that components of the repository can be
 automatically mirrored to the user's personal workspace when they are not
@@ -35,7 +40,10 @@ The first step to retrieving the data repository is to install
 \htmladdnormallinkfoot{CVSup}{http://www.polstra.com/projects/freeware/CVSup/}. While
 CVSup is optimized for mirroring \htmladdnormallinkfoot{CVS}{http://www.cyclic.com/}
 repositories, it can mirror arbitrary collections of files. CVSup is the mirroring
-tool used by \htmladdnormallinkfoot{FreeBSD}{http://www.freebsd.org/}.
+tool used by \htmladdnormallinkfoot{FreeBSD}{http://www.freebsd.org/}. CVSup
+was chosen because it excels at minimizing the information which must be
+transferred by incrementally updating files using whatever information is
+known about individual files.
 
 It is easiest to just install CVSup binaries because CVSup is written in
 \htmladdnormallinkfoot{Modula-3}{http://www.research.digital.com/SRC/modula-3/html/home.html}.
@@ -53,7 +61,7 @@ you have more than one \aipspp\ installation, you will likely want to mirror the
 repository in a central location and then just create symbolic links from the
 \aipspp\ installations to the repository. If you have only one \aipspp\ installation,
 then calling the directory \file{data} and putting it in the root of the
-\aipspp\ installation (at the same level as \file{code}) is probably the best choice.
+\aipspp\ installation (at the same level as \file{code}) is the best choice.
 
 Next edit a file called \file{supfile} in the directory just created. To retrieve the whole
 repository, which currently isn't so large, you would put the following in the supfile:
@@ -91,7 +99,9 @@ run \unixexe{cvsup} regularly. This entry might look like:
 \end{verbatim}
 
 \noindent
-This would update the data repository once per week on Sunday at 6AM.
+This would update the data repository once per week on Sunday at 6AM. It is
+best to synchronize the updates of the data repository with the update of
+local \aipspp\ installation.
 
 If you have multiple \aipspp\ installations which will be sharing a single
 data repository, create a symbolic link called \file{data} in the root of
@@ -200,7 +210,8 @@ out files from CVS the files are not locked. Other users can check out and
 check in changes to the same files. Checking out the files just provides
 a copy of the current state of the files to work with. Any conflicts
 between your changes and changes which have occurred since you checked
-out the files are addressed at check in time.
+out the files are addressed at check in time (actually \unixexe{cvs update}
+time).
 
 % ----------------------------------------------------------------------------
 
@@ -399,8 +410,9 @@ sets up all of the standard variables and rules for recursively building the
 makedef defines the rule which will copy a table from the current directory
 to the repository. It is assumed that the table is beneath the current directory
 and has the same name as the current directory. Including the \file{install.fits}
-makedef defines the rule which will copy all fits files in the current directory
-to the corresponding directory in the repository.
+makedef defines the rule which will copy all FITS files in the current directory
+to the corresponding directory in the repository. By convention, \textbf{all}
+FITS files have the \verb+.fits+ suffix.
 
 So for example, the makefile to just copy a table which is not updated as
 part of the \code{build} process to the repository would look like:
