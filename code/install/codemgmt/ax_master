@@ -5294,3 +5294,4 @@
 15 028 src rm doc/project/change-proposals/105.latex
 15 028 src rm doc/project/change-proposals/104.latex
 15 028 src rm doc/memos/102
+15 034 src rm nrao/apps/gbtutils/dcrutils.ps
