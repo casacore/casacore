@@ -732,10 +732,11 @@ void MSSimulator::extendMS(MeasurementSet & ms)
     Int SrcId = nSrc-1;
     Int FldCount = nIntFld_p(SrcId);
     Int SpWId = nIntSpW_p.nelements()-1;
+    Int oldSpWId=SpWId;
     Int SpWCount = nIntSpW_p(SpWId);
     Int loopCount= max(sum(nIntSpW_p),sum(nIntFld_p));
     Int counter=0;
-    Int scan=0;
+    Int scan=-1;
     // os <<" Tstart= "<<Tstart_p<<", Tend="<<Tend_p<<LogIO::POST;
     
     row=ms.nrow()-1;
@@ -767,11 +768,16 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	// update counters and field/freq info
 	if (++FldCount >= nIntFld_p(SrcId)) {
 	    FldCount = 0;
+	    ++scan;
 	    if (++FldId >= nField) FldId = 0;
 	    SrcId = msc.field().sourceId()(FldId);
 	}
 	if (++SpWCount >= nIntSpW_p(SpWId)) {
 	    SpWCount = 0;
+	    if(oldSpWId != SpWId){
+	      ++scan;
+	      oldSpWId=SpWId;
+	    }
 	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
 	}
 	
@@ -829,7 +835,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 		  //		  ms.addRow();
 		  //		  accessor.extendHypercube(1,values);
 		  //		  if (firstBaseline) {
-                    msc.scanNumber().put(row,scan++);
+                    msc.scanNumber().put(row,scan);
 		    msc.fieldId().put(row,FldId+numField);
 		    msc.dataDescId().put(row,SpWId+nSpwid);
 		    msc.time().put(row,Time+Tint_p/2);
