@@ -396,7 +396,7 @@ void readAsciiVector (Vector<T>& vect, const Char* filein)
 
     vect.resize(havePoint);
     Int k3 = 0;
-    for (Int i3=0;i3<havePoint;i3++)
+    for (uInt i3=0;i3<havePoint;i3++)
 	vect(i3) = temp[k3++];
 
 }

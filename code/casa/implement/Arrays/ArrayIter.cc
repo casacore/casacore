@@ -29,13 +29,17 @@
 #include <aips/Arrays/ArrayError.h>
 
 template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a, uInt byDim)
-: ArrayPositionIterator(a.shape(), byDim), readOnly(False), ap(0)
+: ArrayPositionIterator(a.shape(), byDim),
+  ap(0),
+  readOnly(False)
 {
     init(a);
 }
 
 template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a)
-: ArrayPositionIterator(a.shape(), 1), readOnly(False), ap(0)
+: ArrayPositionIterator(a.shape(), 1),
+  ap(0),
+  readOnly(False)
 {
     init(a);
 }
@@ -63,8 +67,8 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
     if (dimIter() < a.ndim()) {
 	// See if there is a dimension with more than one element left.
 	// If so take a step in that one. Otherwise nothing to do.
-	for (Int j=dimIter(); j<a.ndim(); j++)
-	    if (pOriginalArray->length_p(j)>1) {
+	for (uInt j=dimIter(); j<a.ndim(); j++)
+	    if (pOriginalArray->length_p(j) > 1) {
 		whereNextStep(j) += 1;
 		step=True;
 		break;
@@ -72,7 +76,7 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
     }
 
     IPosition trc(blc);
-    for (Int i = 0; i < dimIter(); i++) {
+    for (uInt i = 0; i < dimIter(); i++) {
 	trc(i) += pOriginalArray->length_p(i) - 1;
     }
 

@@ -93,9 +93,9 @@ Vector<T> product (const Matrix<T> &A, const Vector<T> &x) {
     throw (ArrayError("product - multiplication of" 
                                     " these matrices shapes is undefined"));
   Vector<T> result(A.nrow());
-  for (Int i = 0; i < A.nrow(); i++) {
+  for (uInt i = 0; i < A.nrow(); i++) {
       result(i) = T(0);
-      for (Int k = 0; k < A.ncolumn(); k++) result(i) += A(i,k) * x(k);
+      for (uInt k = 0; k < A.ncolumn(); k++) result(i) += A(i,k) * x(k);
   }
   return result;
 }
@@ -147,10 +147,10 @@ Matrix<T> product (const Matrix<T> &A, const Matrix<T> &B) {
     throw (ArrayError("product - multiplication of" 
                                     " these matrices shapes is undefined"));
   Matrix<T> result(A.nrow(), B.ncolumn());
-  for (Int i = 0; i < A.nrow(); i++) 
-      for (Int j = 0; j < B.ncolumn(); j++) {
+  for (uInt i = 0; i < A.nrow(); i++) 
+      for (uInt j = 0; j < B.ncolumn(); j++) {
 	  result(i,j) = T(0);
-	  for (Int k = 0; k < A.ncolumn(); k++) result(i,j) += A(i,k) * B(k,j);
+	  for (uInt k = 0; k < A.ncolumn(); k++) result(i,j) += A(i,k) * B(k,j);
       }
   return result;
 }
@@ -174,8 +174,8 @@ template <class T>
 Matrix<T> directProduct(const  Matrix<T> &A, const Matrix<T> &B) {
     Int ncB = B.ncolumn(), nrB = B.nrow();
     Matrix<T> dpAB(A.ncolumn()*B.ncolumn(),A.nrow()*B.nrow());
-    for (Int i=0; i<dpAB.ncolumn(); i++) {
-	for (Int j=0; j<dpAB.nrow(); j++) {
+    for (uInt i=0; i<dpAB.ncolumn(); i++) {
+	for (uInt j=0; j<dpAB.nrow(); j++) {
 	    dpAB(i,j) = A(i/ncB,j/nrB)*B(i%ncB,j%nrB);
 	}
     }
@@ -220,7 +220,7 @@ void invert(Matrix<T> &out, T& det, const Matrix<T> &in)
     // Calculate the determinate
     // It is just the product of the diagonal elements
     det = out(0,0);
-    for (uInt i = 1; i < n; i++)
+    for (Int i = 1; i < n; i++)
       det *= out(i,i);
 
     // Calculate the inverse using back substitution

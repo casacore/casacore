@@ -31,16 +31,22 @@
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,
 					     uInt byDim)
-: Start(origin), Shape(shape),
-  iterationDim(byDim), stepsFromBegin(0), atOrBeyondEnd(False)
+: Start(origin),
+  Shape(shape),
+  atOrBeyondEnd(False),
+  iterationDim(byDim),
+  stepsFromBegin(0)
 {
     setup();
 }
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     uInt byDim)
-: Start(shape.nelements(), 0), Shape(shape),
-  iterationDim(byDim), stepsFromBegin(0), atOrBeyondEnd(False)
+: Start(shape.nelements(), 0),
+  Shape(shape),
+  atOrBeyondEnd(False),
+  iterationDim(byDim),
+  stepsFromBegin(0)
 {
     setup();
 }
@@ -58,7 +64,7 @@ void ArrayPositionIterator::setup()
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				 " - ndim of origin and shape differ"));
     }
-    for (Int i=0; i < ndim(); i++) {
+    for (uInt i=0; i < ndim(); i++) {
 	if (Shape(i) < 0)
          throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				     " - Shape(i) < 0"));

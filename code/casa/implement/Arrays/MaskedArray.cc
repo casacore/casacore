@@ -698,7 +698,7 @@ Array<T> MaskedArray<T>::getCompressedArray () const
 template <class T>
 Array<T> MaskedArray<T>::getCompressedArray (const IPosition & shape) const
 {
-    if (nelementsValid() != shape.product()) {
+    if (Int(nelementsValid()) != shape.product()) {
         throw (ArrayError
         ("void MaskedArray<T>::getCompressedArray (const IPosition & shape)"
          " - input shape will create Array with incorrect number of elements"));

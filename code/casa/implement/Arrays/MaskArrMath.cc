@@ -635,7 +635,7 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const Array<T> &right) \
     uInt ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
-	    *resultarrS = FUNC (*resultarrS, *rightS); \
+	    *resultarrS = T(FUNC (*resultarrS, *rightS)); \
         } \
         resultarrS++; \
         resultmaskS++; \
@@ -679,7 +679,7 @@ MaskedArray<T> FUNC (const Array<T> &left, const MaskedArray<T> &right) \
     uInt ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
-	    *resultarrS = FUNC (*resultarrS, *rightarrS); \
+	    *resultarrS = T(FUNC (*resultarrS, *rightarrS)); \
         } \
         resultarrS++; \
         resultmaskS++; \
@@ -725,7 +725,7 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, \
     uInt ntotal = result.nelements(); \
     while (ntotal--) { \
         if (*resultmaskS) { \
-	    *resultarrS = FUNC (*resultarrS, *rightarrS); \
+	    *resultarrS = T(FUNC (*resultarrS, *rightarrS)); \
         } \
         resultarrS++; \
         resultmaskS++; \

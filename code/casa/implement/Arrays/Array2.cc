@@ -33,15 +33,16 @@
 // an array (i.e. "nelements").
 uInt ArrayVolume (uInt Ndim, const Int *Shape)
 {
+    uInt i;
     if (aips_debug) {
-	for (Int i=0; i < Ndim; i++)
+	for (i=0; i < Ndim; i++)
 	    if (Shape[i] < 0)
 		throw(ArrayError("::ArrayVolume - negative shape"));
     }
     if (Ndim == 0)
 	return 0;
     uInt total=1;
-    for(Int i=0; i < Ndim; i++)
+    for(i=0; i < Ndim; i++)
 	total *= Shape[i];
 
     return total;
@@ -55,15 +56,16 @@ uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
 		       const Int *Origin, const Int *Inc,
 		       const IPosition &Index)
 {
+    uInt i;
     if (aips_debug) {
-	for (Int i=0; i < Ndim; i++)
+	for (i=0; i < Ndim; i++)
 	    if (Index(i) < Origin[i] || Index(i) > (Origin[i] + Shape[i] - 1) ||
 		Shape[i] < 0 || Inc[i] < 1)
 		throw(ArrayError("::ArrayIndexOffset - negative shape or inc"
 				 "<1 or out-of-bounds index"));
     }
     uInt offset = (Index(0) - Origin[0])*Inc[0];
-    for (Int i=1; i < Ndim; i++)
+    for (i=1; i < Ndim; i++)
 	offset += (Index(i) - Origin[i])*Inc[i]*ArrayVolume(i, Shape);
 
     return offset;
@@ -72,15 +74,16 @@ uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
 uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
 		       const Int *Inc, const IPosition &Index)
 {
+    uInt i;
     if (aips_debug) {
-	for (Int i=0; i < Ndim; i++)
+	for (i=0; i < Ndim; i++)
 	    if (Index(i) < 0 || Index(i) >= Shape[i] ||
 		Shape[i] < 0 || Inc[i] < 1)
 		throw(ArrayError("::ArrayIndexOffset - negative shape or inc"
 				 "<1 or out-of-bounds index"));
     }
     uInt offset = Index(0)*Inc[0];
-    for (Int i=1; i < Ndim; i++)
+    for (i=1; i < Ndim; i++)
 	offset += Index(i)*Inc[i]*ArrayVolume(i, Shape);
 
     return offset;
