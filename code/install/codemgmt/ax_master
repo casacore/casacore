@@ -2627,3 +2627,4 @@
 11 393 src mv trial/implement/MeasurementEquations/simulater_meta.g trial/implement/MeasurementEquations/simulator_meta.g
 11 397 src mv trial/scripts/sh.g trial/implement/Utilities/sh.g
 11 397 src rm trial/scripts/tasks.g
+11 397 src rm trial/scripts/pgdemo.g
