@@ -58,6 +58,14 @@ int main() {
 	cout << *j << ", " << j.index<Axis<1> >(1) << endl;
       };
     };
+    ArrayAccessor<Double, Axis<2> > aa(cub);
+    ArrayAccessor<Double, Axis<0> > ab(cub);
+        cout << "t1: " << *aa << ", " << *aa.begin() << ", " <<
+	  *aa.begin(3) << endl;;;
+	  ab.reset(aa.begin(3));
+	  cout << "t2: " << *ab << endl;;
+	  ab++;
+	  cout << "t3: " << *ab << endl;;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   };
