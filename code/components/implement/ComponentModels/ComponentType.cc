@@ -1,5 +1,5 @@
 //# ComponentType.cc:  this defines ComponentType.cc
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ ComponentType::Shape ComponentType::shape(const String & shapeName) {
   canonicalCase.capitalize();
   ComponentType::Shape s;
   for (uInt i = 0; i < NUMBER_SHAPES; i++) {
-    s = (ComponentType::Shape) i;
+    s = static_cast<ComponentType::Shape>(i);
     if (canonicalCase.matches(ComponentType::name(s))) {
       return s;
     }
@@ -73,7 +73,7 @@ ComponentType::Polarisation ComponentType::polarisation(const String &
   canonicalCase.capitalize();
   ComponentType::Polarisation s;
   for (uInt i = 0; i < NUMBER_POLARISATIONS; i++) {
-    s = (ComponentType::Polarisation) i;
+    s = static_cast<ComponentType::Polarisation>(i);
     if (canonicalCase.matches(ComponentType::name(s))) {
       return s;
     }
@@ -98,7 +98,7 @@ ComponentType::SpectralShape ComponentType::spectralShape(const String &
   canonicalCase.capitalize();
   ComponentType::SpectralShape s;
   for (uInt i = 0; i < NUMBER_SPECTRAL_SHAPES; i++) {
-    s = (ComponentType::SpectralShape) i;
+    s = static_cast<ComponentType::SpectralShape>(i);
     if (canonicalCase.matches(ComponentType::name(s))) {
       return s;
     }
