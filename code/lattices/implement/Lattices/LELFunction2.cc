@@ -1,5 +1,5 @@
 //# LELFunction2.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1677,6 +1677,27 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	setAttr (LELAttribute());                       // result is scalar
 	break;
     }
+    case LELFunctionEnums::INDEXIN :
+    {
+       // The first argument must be a real scalar.
+       if (! (exp[0].isScalar()  &&
+              (exp[0].dataType()==TpFloat || exp[0].dataType()==TpDouble))) {
+          throw (AipsError ("LELFunctionBool::constructor - "
+			    "1st argument of INDEXIN function "
+			    "should be a real scalar"));
+       }
+       // The second argument must be a bool vector.
+       if (exp[1].isScalar()  ||  exp[1].dataType()!=TpBool
+       ||  exp[1].shape().nelements() != 1) {
+          throw (AipsError ("LELFunctionBool::constructor - "
+			    "2nd argument of INDEXIN function "
+			    "should be a bool vector"));
+       }
+       // The output shape is unknown.
+       setAttr (LELAttribute (False, IPosition(), IPosition(),
+			      LELCoordinates()));
+       break;
+    }
     case LELFunctionEnums::MASK :
     case LELFunctionEnums::VALUE :
     {
@@ -1765,6 +1786,64 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
 	 tmp.value().freeStorage (in, deleteIn);
       }
       result.value().putStorage (out, deleteOut);
+      break;
+   }
+   case LELFunctionEnums::INDEXIN :
+   {
+      Double daxis;
+      if (arg_p[0].dataType() == TpFloat) {
+	daxis = arg_p[0].getFloat();
+      } else {
+	daxis = arg_p[0].getDouble();
+      }
+      daxis -= 0.5;                // for rounding
+      if (daxis < 0) {
+	throw (AipsError ("Axis argument in INDEXIN function is < 1; "
+			  "(note axis is 1-relative!)"));
+      }
+      else if (daxis >= section.ndim()) {
+	throw (AipsError ("Axis argument in INDEXIN function outside array; "
+			  "(note axis is 1-relative!)"));
+      }
+      uInt axis = uInt(daxis);
+      uInt stinx = section.start()[axis];
+      Array<Bool> tmp(section.length());
+      const IPosition& shp = tmp.shape();
+      uInt nrinx = stinx + shp[axis];
+      uInt nr1 = 1;
+      for (uInt i=0; i<axis; i++) {
+	nr1 *= shp[i];
+      }
+      uInt nr2 = 1;
+      for (uInt i=axis+1; i<shp.nelements(); i++) {
+	nr2 *= shp[i];
+      }
+      Array<Bool> pixelArr = arg_p[1].getArrayBool();
+      Bool deletePix;
+      const Bool* pixels = pixelArr.getStorage (deletePix);
+      uInt nrpix = pixelArr.nelements();
+      Bool deleteIt;
+      Bool* tmpp = tmp.getStorage (deleteIt);
+      uInt inx = 0;
+      if (nr2 == 1) {
+	for (uInt i1=0; i1<nr1; i1++) {
+	  for (uInt i2=stinx; i2<nrinx; i2++) {
+	    tmpp[inx++] = (i2<nrpix  ?  pixels[i2] : False);
+	  }
+	}
+      } else {
+	for (uInt i1=0; i1<nr1; i1++) {
+	  for (uInt i2=stinx; i2<nrinx; i2++) {
+	    Bool flag = (i2<nrpix  ?  pixels[i2] : False);
+	    for (uInt i3=0; i3<nr2; i3++) {
+	      tmpp[inx++] = flag;
+	    }
+	  }
+	}
+      }
+      pixelArr.freeStorage (pixels, deletePix);
+      tmp.putStorage (tmpp, deleteIt);
+      result.value().reference (tmp);
       break;
    }
    case LELFunctionEnums::MASK :
