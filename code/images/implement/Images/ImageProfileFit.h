@@ -37,7 +37,6 @@
 #include <aips/Measures/MDoppler.h>
 //
 #include <trial/SpectralComponents/SpectralElement.h>
-#include <trial/SpectralComponents/SpectralEstimate.h>
 #include <trial/SpectralComponents/SpectralFit.h>
 #include <aips/Utilities/PtrHolder.h>
 
