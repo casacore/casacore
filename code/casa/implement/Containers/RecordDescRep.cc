@@ -42,7 +42,8 @@ RecordDescRep::RecordDescRep()
   shapes_p(0),
   is_array_p(0),
   tableDescNames_p(0),
-  comments_p(0)
+  comments_p(0),
+  name_map_p(-1, 64)
 {
     // Nothing
 }
@@ -55,7 +56,8 @@ RecordDescRep::RecordDescRep (const RecordDescRep& other)
   shapes_p(0),
   is_array_p(0),
   tableDescNames_p(0),
-  comments_p(0)
+  comments_p(0),
+  name_map_p(-1, 64)
 {
     copy_other (other);
 }
@@ -88,6 +90,7 @@ void RecordDescRep::addFieldName (const String& fieldName, DataType type)
     uInt n = n_p - 1;
     types_p[n] = type;
     names_p[n] = fieldName;
+    name_map_p.define (fieldName, n);
     sub_records_p[n] = 0;
     is_array_p[n] = False;
     shapes_p[n].resize(1);
@@ -322,6 +325,16 @@ uInt RecordDescRep::removeField (Int whichField)
 	delete sub_records_p[whichField];
 	sub_records_p[whichField] = 0;
     }
+    n_p--;
+    // Remove the field from the name map.
+    // Decrement the field number of all fields following it.
+    name_map_p.remove (names_p[whichField]);
+    for (uInt i=0; i<n_p; i++) {
+	Int& inx = name_map_p.getVal (i);
+	if (inx > whichField) {
+	    inx--;
+	}
+    }
     types_p.remove (whichField);
     names_p.remove (whichField);
     sub_records_p.remove (whichField);
@@ -329,12 +342,13 @@ uInt RecordDescRep::removeField (Int whichField)
     is_array_p.remove (whichField);
     tableDescNames_p.remove (whichField);
     comments_p.remove (whichField);
-    return --n_p;
+    return n_p;
 }
 
 void RecordDescRep::renameField (const String& newName, Int whichField)
 {
     AlwaysAssert (whichField>=0 && whichField < n_p, AipsError);
+    name_map_p.rename (newName, names_p[whichField]);
     names_p[whichField] = newName;
 }
 
@@ -347,13 +361,8 @@ void RecordDescRep::setShape (const IPosition& shape, Int whichField)
 
 Int RecordDescRep::fieldNumber (const String& fieldName) const
 {
-    for (Int i=0; i < n_p; i++) {
-	if (name(i) == fieldName) {
-	    return i;
-	}
-    }
-
-    return -1;
+    const Int* inx = name_map_p.isDefined (fieldName);
+    return (inx == 0  ?  -1 : *inx);
 }
 
 RecordDesc& RecordDescRep::subRecord (Int whichField)
@@ -488,6 +497,7 @@ void RecordDescRep::copy_other (const RecordDescRep& other)
     n_p = other.n_p;
     types_p = other.types_p;
     names_p = other.names_p;
+    name_map_p = other.name_map_p;
     shapes_p = other.shapes_p;
     is_array_p = other.is_array_p;
     tableDescNames_p = other.tableDescNames_p;

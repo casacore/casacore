@@ -1,5 +1,5 @@
 //# RecordDescRep.h: Representation of a RecordDesc
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/aips.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Containers/Block.h>
+#include <aips/Containers/SimOrdMap.h>
 #include <aips/Lattices/IPosition.h>
 
 //# Forward Declarations
@@ -282,6 +283,8 @@ private:
     Block<String> tableDescNames_p;
     // Comments for each field.
     Block<String> comments_p;
+    // Mapping of field name to field number.
+    SimpleOrderedMap<String,Int> name_map_p;
 };
 
 inline uInt RecordDescRep::nfields() const
