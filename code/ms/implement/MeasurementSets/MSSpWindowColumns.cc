@@ -101,7 +101,7 @@ RONewMSSpWindowColumns::~RONewMSSpWindowColumns() {}
 Int RONewMSSpWindowColumns::
 matchSpw(const MFrequency& refFreq, uInt nChan, 
 	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance) const {
+	 const Quantum<Double>& tolerance, Int tryRow) const {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the reference frequency to Hz
@@ -116,9 +116,25 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   DebugAssert(tolerance.check(Hz.getValue()), AipsError);
   const Double tolInHz = tolerance.getValue(Hz);
   // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSSpWindowColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	matchNumChan(tr, nChan) &&
+	matchIfConvChain(tr, ifChain) &&
+	matchTotalBandwidth(tr, bandwidthInHz, tolInHz) &&
+ 	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
   while (r > 0) {
     r--;
-    if (matchNumChan(r, nChan) &&
+    if (!flagRow()(r) &&
+	matchNumChan(r, nChan) &&
 	matchIfConvChain(r, ifChain) &&
 	matchTotalBandwidth(r, bandwidthInHz, tolInHz) &&
  	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
