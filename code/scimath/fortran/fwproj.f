@@ -134,8 +134,8 @@ C the final image by this term.
                      end if
                   end do
                else
-                  write(*,*) uvw(3,irow), pos(1), pos(2), pos(3),
-     $                 loc(1), loc(2), loc(3)
+C                  write(*,*) uvw(3,irow), pos(1), pos(2), pos(3),
+C     $                 loc(1), loc(2), loc(3)
                end if
             end if
          end do
@@ -275,8 +275,9 @@ C      pos(3)=(scale(3)*uvw(3)*freq/c)+offset(3)+1.0;
       logical function owproj (nx, ny, nw, loc, support)
       implicit none
       integer nx, ny, nw, loc(3), support
-      owproj=(loc(1)-support.ge.1).and.(loc(1)+support.le.nx).and.
-     $        (loc(2)-support.ge.1).and.(loc(2)+support.le.ny).and.
-     $        (loc(3).ge.1).and.(loc(3).le.nw)
+      owproj=(support.gt.0).and.
+     $     (loc(1)-support.ge.1).and.(loc(1)+support.le.nx).and.
+     $     (loc(2)-support.ge.1).and.(loc(2)+support.le.ny).and.
+     $     (loc(3).ge.1).and.(loc(3).le.nw)
       return
       end
