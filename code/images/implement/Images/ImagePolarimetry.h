@@ -1,5 +1,5 @@
 //# ImagePolarimetry.h: Polarimetric analysis of images
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,7 +82,7 @@ class LogIO;
 // This is for debiasing polarized intensity images or working out
 // error images.  By default it is worked out for you with a
 // clipped mean algorithm.  However, you can provide sigma if you
-// know it accurately.   It should be the sigma of the noise in
+// know it accurately.   It should be the standard deviation of the noise in
 // the absence of signal.  You won't measure that very well from
 // Stokes I if it is dynamic range limited.  Better to get it from 
 // V or Q or U.  When this class needs the standard deviation of
@@ -135,11 +135,12 @@ public:
 // Is the construction image masked ?
    Bool isMasked() const {return itsInImagePtr->isMasked();};
 
-// Get the shape of an image for a single Stokes pixel
+// Get the shape and CoordinateSystem of an image for a single Stokes pixel
 // Thus, if the construction image shape was [10,10,4,20] where
 // axis 2 (shape 4) is the Stokes axis, this function
-// would return [10,10,1,20]
-   IPosition singleStokesShape() const;
+// would return [10,10,1,20]    Specify the type of Stokes pixel
+// you want.  
+   IPosition singleStokesShape(CoordinateSystem& cSys, Stokes::StokesTypes type) const;
 
 // <group>
 // Get the Stokes I image and the standard deviation of the
@@ -243,21 +244,63 @@ public:
 
 // Fourier Rotation Measure.  The output image is the complex polarization
 // (Q + iU) with the spectral axis replaced by a RotationMeasure axis.
-// Coordinates, ImageInfo, MiscInfo, Units,
-// history are updated/copied to the output.  If the output has a mask,
+// The appropriate shape and CoordinateSystem must be obtained with
+// function singleStokesShape (ask for type STokes::Plinear).  
+// Howeverm this function will replace the SpectralCoordinate 
+// by a LinearCoordinate describing  the Rotation Measure.  
+// ImageInfo, MiscInfo, Units, and
+// history are copied to the output.  If the output has a mask,
 // and the input is masked, the mask is copied.  If the output
 // has a mask, it should already have been initialized to True
    void fourierRotationMeasure(ImageInterface<Complex>& pol,
                                Bool zeroZeroLag);
 
-// <group>
-// Traditional rotation measure approach. 
-   void rotationMeasureShape(IPosition& shape, CoordinateSystem& cSys,
-                             uInt& fAxis, uInt& sAxis, 
-                             LogIO& os, Int spectralAxis) const;
-   void rotationMeasure(ImageInterface<Float>& rm,  ImageInterface<Float>& rmErr, Int axis, 
-                        Float sigma, Float rmFg, Float rmMax, Float maxPaErr);
-// </group>
+// This function is used in concert with the rotationMeasure function.
+// It tells you what the shape of the output RM image should be, and
+// gives you its CoordinateSystem.  Because the ImagePolarimetry 
+// construction image may house the frequencies coordinate description
+// in a Spectral, Tabular or Linear coordinate, you may explicitly
+// specify which axis is the Spectral axis (spectralAxis).  By default,
+// it tries to find the SpectralCoordinate.  If there is none, it will
+// look for Tabular or Linear coordinates with a "FREQ" label.
+// It returns to you the frequencyAxis (i.e. the one it is concluded
+// houses the frequency spectrum) and the stokesAxis that it
+// finds.
+   IPosition rotationMeasureShape(CoordinateSystem& cSys,
+                                  Int& frequencyAxis, Int& stokesAxis, 
+                                  LogIO& os, Int spectralAxis=-1) const;
+
+// This function is used in concert with the rotationMeasure function.
+// It tells you what the shape of the output Position Angle image should be, and
+// gives you its CoordinateSystem.  Because the ImagePolarimetry
+// construction image may house the frequencies coordinate description
+// in a Spectral, Tabular or Linear coordinate, you may explicitly
+// specify which axis is the Spectral axis (spectralAxis).  By default,
+// it tries to find the SpectralCoordinate.  If there is none, it will
+// look for Tabular or Linear coordinates with a "FREQ" label.
+   IPosition positionAngleShape(CoordinateSystem& cSys,
+                                Int& frequencyAxis, Int& stokesAxis, 
+                                LogIO& os, Int spectralAxis=-1) const;
+
+// This function applies a traditional (i.e. non-Fourier) Rotation Measure 
+// algorithm (Leahy et al, A&A, 256, 234) approach.     For the RM images
+// you must get the shape and CoordinateSYstem from function
+// rotationMeasureShape.  For the position angle images, use function
+// singleStokesShape.  Null pointer ImageInterface objects are 
+// not accessed so you can select which output images you want.
+// The position angle is in degrees. The RM images in rad/m/m.
+// ImageInfo, MiscInfo, Units, and
+// history are copied to the output.
+// You specify which axis houses the frequencies, the noise level of
+// Q and U  if you  know it (by default it is worked out for you) 
+// for error images, the value of the foreground RM if you know it
+// (helps for unwinding ambiguity), the absolute maximum RM it should 
+// solve for, and the maximum error in the position angle (degrees) that should
+// be allowed.
+   void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
+                        ImageInterface<Float>*& pa0Ptr,  ImageInterface<Float>*& pa0ErrPtr,
+                        Int spectralAxis,  Float rmMax, Float maxPaErr,
+                        Float sigma=-1.0, Float rmFg=0.0);
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
@@ -282,6 +325,7 @@ private:
 
 // Change the Stokes Coordinate for the given float image to be of the specified Stokes type
    void fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const;
+   void fiddleStokesCoordinate(CoordinateSystem& cSys, Stokes::StokesTypes type) const;
 
 // Change the Stokes Coordinate for the given complex image to be of the specified Stokes type
    void fiddleStokesCoordinate(ImageInterface<Complex>& ie, Stokes::StokesTypes type) const;
@@ -296,7 +340,9 @@ private:
    Bool findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                              Float& pa0Fitted, Float& pa0ErrFitted, Float& rChiSqFitted, 
                              const Vector<uInt>& sortidx, const Vector<Float>& wsq, 
-                             const Vector<Float>& pa, const Array<Float>& paerr, 
+                             const Vector<Float>& pa, 
+                             const Array<Bool>& paMask, 
+                             const Array<Float>& paerr, 
                              Float rmfg, Float rmmax, Float paErrMax);
 
 // Find the Stokes in the construction image and assign pointers
@@ -305,6 +351,9 @@ private:
 // Find the spectral coordinate. 
    Int findSpectralCoordinate(const CoordinateSystem& cSys, LogIO& os, Bool fail) const;
 
+// FInd frequency axis
+   void findFrequencyAxis (Int& spectralCoord, Int& fAxis,
+                           const CoordinateSystem& cSys, Int spectralAxis) const;
 // Make a LEN for the give types of polarized intensity
    LatticeExprNode makePolIntNode(LogIO& os, Bool debias, Float clip, Float sigma,
                                   Bool doLin, Bool doCirc);
