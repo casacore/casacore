@@ -17,7 +17,6 @@
 \newcommand{\heading}[1]{
 \vspace{0.18in}
 \hrule
-\hrule
 
 \begin{center}{\bf #1}\end{center}
 
@@ -44,9 +43,10 @@
 
 \section{Introduction}
 
-This tutorial attempts to bridge the gap between 
+This tutorial attempts to bridge the gap between the introductory
+glish programming material in 
 \htmladdnormallink{\emph{Getting Started with \glish} by Rick
-Fisher}{../195/195.html} 
+Fisher}{../195/195.html} and the very advanced material in
 \htmladdnormallink{\emph{How to Write an \aipspp\ Application} by
 Brian Glendenning and Tim Cornwell}
 {../197/197.html}
@@ -66,17 +66,15 @@ function calls in older programming languages such as FORTRAN or C.
 
 Although the basic functionality of \glish\ is covered in the 
 \htmladdnormallink{\emph{Glish Manual}}{../../glish/glish.html}
-and \htmladdnormallink{\emph{Getting Started with Glish} by Rick
-Fisher}{../../notes/195/195.html},
-neither of these documents show you a methodology for developing
-object-oriented applications in \glish\ and c++. In particular they do 
-not describe
-the ideas and techniques that lie behind the Distributed Object (DO)
-paradigm used to develop \aipspp\ applications and discussed in the 
-document ``How to Write an \aipspp\ Application''.
-That note assumes a fairly high level
-of awareness about the DO methodology and merely tells you the 
-recipe to be used to create DOs in the \aipspp\ environment. 
+and \htmladdnormallink{\emph{Getting Started with Glish}}
+{../../notes/195/195.html}, neither of these documents show you a
+methodology for developing object-oriented applications in \glish\ and
+c++. In particular they do not describe the ideas and techniques that
+lie behind the Distributed Object (DO) paradigm used to develop
+\aipspp\ applications.  The note by Glendenning and Cornwell assumes a
+fairly high level of awareness about the DO methodology and merely
+tells you the recipe to be used to create DOs in the \aipspp\
+environment.
 
 This tutorial does not make specific use of the \aipspp\ programming
 environment, but after reading it you should be in a fairly good
@@ -86,9 +84,9 @@ to use \glish\ and the \aipspp\ class libraries to develop independent
 applications. 
 
 The section on object-oriented programming may also be of some
-interest to end users of \aipspp. After reading that sections you will
-have a better understanding why
-\aipspp\ commands look and feel the way they do.
+interest to end users of \aipspp. After reading that section you will
+have a better understanding why \aipspp\ commands look and feel the
+way they do.
 
 The second section will focus on parallel programming in the \aipspp\ environment.
 However, the examples shown there will illustrate some properties of \glish
@@ -103,14 +101,14 @@ the past year or so.
 
 There are two things you should know about \glish\ records and \glish
 functions in order to do object-oriented programming with \glish.
-Firstly, you should be aware of the enhanced data types that can be stored 
-in a \glish\ record.  Some of you
-may be familiar with structures from the C programming languages. A \glish
-record is somwhat similar to a C structure, but in addition to holding 
-expected data items of a numeric or string type, \glish\ 
-records can also contain functions, as functions are just another data type
-in \glish. \glish\ records can also contain a mysterious data type called
-an agent which we shall describe in detail later. 
+Firstly, you should be aware of the enhanced data types that can be
+stored in a \glish\ record.  Some of you may be familiar with
+structures from the C programming languages. A \glish record is
+somwhat similar to a C structure, but in addition to holding expected
+data items of a numeric or string type, \glish\ records can also
+contain functions, as functions are just another data type in
+\glish. \glish\ records can also contain a mysterious data type called
+an agent which we shall describe in detail later.
 
 Let's look at a \glish\ record that contains a mixture of 
 traditional data types and \glish\ functions:
