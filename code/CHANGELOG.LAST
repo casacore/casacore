@@ -1,0 +1,13 @@
+
+change id: 0055
+ author:   Wim Brouw
+ date:     2000/11/22
+ avers:    1.5
+ area:     System
+ package:  System
+ module:   mkinst
+ type:     Code
+ category: Change
+ summary:  Allow standard C++ include files
+Allowed the template definition to have standard C++ include files (i.e. without a .h or .cc extension).
+The check is made for files ending in at least 3 lc char, or ending in 646.
