@@ -29,54 +29,54 @@
 #include <trial/Lattices/LatticeConcat.h>
 
 #include <aips/Exceptions/Error.h>
+#include <aips/IO/FileLocker.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Lattices/Slicer.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Tasking/ProgressMeter.h>
-
+#include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/TiledShape.h>
 
 
 template<class T>
 LatticeConcat<T>::LatticeConcat()
-: itsAxis(0),
-  itsShape(IPosition(0)),
-  itsShowProgress(False),
-  itsIsMasked(False)
+: axis_p(0),
+  shape_p(IPosition(0)),
+  isMasked_p(False)
 {
 }
 
 template<class T>
-LatticeConcat<T>::LatticeConcat(uInt axis, Bool showProgress)
-: itsAxis(axis),
-  itsShape(IPosition(0)),
-  itsShowProgress(showProgress),
-  itsIsMasked(False)
+LatticeConcat<T>::LatticeConcat(uInt axis)
+: axis_p(axis),
+  shape_p(IPosition(0)),
+  isMasked_p(False)
 {
 }
 
 template<class T>
 LatticeConcat<T>::LatticeConcat (const LatticeConcat<T>&other) 
-: itsLattices(other.itsLattices.nelements()),
-  itsAxis (other.itsAxis),
-  itsShape(other.itsShape),
-  itsShowProgress(other.itsShowProgress),
-  itsIsMasked(other.itsIsMasked)
+: lattices_p(other.lattices_p.nelements()),
+  axis_p (other.axis_p),
+  shape_p(other.shape_p),
+  isMasked_p(other.isMasked_p)
 {
-   const uInt n = itsLattices.nelements();
+   const uInt n = lattices_p.nelements();
    for (uInt i=0; i<n; i++) {
-      itsLattices[i] = other.itsLattices[i]->cloneML();
+      lattices_p[i] = other.lattices_p[i]->cloneML();
    }
 }
 
 template<class T>
 LatticeConcat<T>::~LatticeConcat()
 {
-   const uInt n = itsLattices.nelements();
+   const uInt n = lattices_p.nelements();
    for (uInt i=0; i<n; i++) {
-      delete itsLattices[i];
+      delete lattices_p[i];
    }
 }
 
@@ -84,314 +84,331 @@ template<class T>
 LatticeConcat<T>& LatticeConcat<T>::operator= (const LatticeConcat<T>& other)
 {
   if (this != &other) {
-    itsAxis         = other.itsAxis;
-    itsShape        = other.itsShape;
-    itsShowProgress = other.itsShowProgress;
-    itsIsMasked     = other.itsIsMasked;
+    axis_p         = other.axis_p;
+    shape_p        = other.shape_p;
+    isMasked_p     = other.isMasked_p;
 //
-    uInt n = itsLattices.nelements();
+    uInt n = lattices_p.nelements();
     for (uInt j=0; j<n; j++) {
-       delete itsLattices[j];
-       itsLattices[j] = 0;
+       delete lattices_p[j];
+       lattices_p[j] = 0;
     }
 //
-    itsLattices.resize(other.itsLattices.nelements(), True);
-    n = itsLattices.nelements();
+    lattices_p.resize(other.lattices_p.nelements(), True);
+    n = lattices_p.nelements();
     for (uInt i=0; i<n; i++) {
-       itsLattices[i] = other.itsLattices[i]->cloneML();
+       lattices_p[i] = other.lattices_p[i]->cloneML();
     }
   }
   return *this;
 }
 
-template<class T>
-void LatticeConcat<T>::setAxis(uInt axis)
-{
-// Nothing to do if no change
-
-   if (axis==itsAxis) return;
-
-// Recheck lattices for consistency with new axis
-
-   const uInt n = itsLattices.nelements();
-   IPosition newShape;
-   if (n>0) {
-
-// Are we raising the dimensionality by one ?
-
-      const uInt ndim = itsLattices[0]->ndim();
-      const Bool dimUpOne = (axis==ndim);
-      checkAxis(axis, ndim);
-//
-      if (dimUpOne) {
-         newShape.resize(ndim+1);
-         newShape.setFirst(itsLattices[0]->shape());
-         newShape(ndim) = 1;
-      } else {
-         newShape = itsLattices[0]->shape();
-      }
-//
-      if (n>1) {
-         for (uInt j=1; j<n; j++) {
-            if (dimUpOne) {
-               IPosition shape = newShape.getFirst(ndim);
-               if (!shape.isEqual(itsLattices[j]->shape())) {
-                  throw (AipsError("Lattice shapes inconsistent"));
-               }
-               newShape(ndim) += 1;
-            } else {
-               if (newShape.nelements() != itsLattices[j]->ndim()) {
-                  throw (AipsError("Lattice dimensions inconsistent"));
-               }
-//
-               const IPosition shape = itsLattices[j]->shape();
-               for (uInt i=0; i<shape.nelements(); i++) {
-                  if (i!=axis && shape(i) != newShape(i)) {
-                     throw (AipsError("Lattice shapes inconsistent"));
-                  }
-               }
-//
-// Update concatenation axis shape and mask indicator
-//
-               newShape(axis) += shape(axis);
-            }
-         }
-      }
-   }
-
-// Update.  Leave it until now so that state
-// is not modified if exception thrown
-
-   itsShape.resize(newShape.nelements());
-   itsShape = newShape;
-   itsAxis = axis;
-}
 
 
 template<class T>
 void LatticeConcat<T>::setLattice(MaskedLattice<T>& lattice)
 {
-   const uInt n = itsLattices.nelements();
+   const uInt n = lattices_p.nelements();
    const uInt ndim = lattice.ndim();
-   const Bool dimUpOne = (itsAxis==ndim);
+   const Bool dimUpOne = (axis_p==ndim);
 //
 // Check for consistency
 //
    if (n==0) {
-      checkAxis(itsAxis, ndim);
+      checkAxis(axis_p, ndim);
 //
       if (dimUpOne) {
 
 // Increasing dimensionality by one
 
          IPosition shape = lattice.shape();
-         itsShape = IPosition(ndim+1);
-         itsShape.setFirst(shape);
-         itsShape(ndim) = 1;
+         shape_p = IPosition(ndim+1);
+         shape_p.setFirst(shape);
+         shape_p(ndim) = 1;
       } else {
-         itsShape = lattice.shape();
+         shape_p = lattice.shape();
       }
    } else {
       if (dimUpOne) {
 
 // Increasing dimensionality by one
 
-         IPosition shape = itsShape.getFirst(ndim);
+         IPosition shape = shape_p.getFirst(ndim);
          if (!shape.isEqual(lattice.shape())) {
             throw (AipsError("Lattice shapes inconsistent"));
          }
-         itsShape(ndim) += 1;
+         shape_p(ndim) += 1;
       } else {
 
 // Dimensionality the same
 
-         if (itsShape.nelements() != ndim) {
+         if (shape_p.nelements() != ndim) {
             throw(AipsError("Lattice dimensions are inconsistent"));
          }
 //
          const IPosition shape = lattice.shape();
          for (uInt i=0; i<shape.nelements(); i++) {
-            if (i!=itsAxis && shape(i) != itsShape(i)) {
+            if (i!=axis_p && shape(i) != shape_p(i)) {
                throw (AipsError("Lattice shapes inconsistent"));
             }
          }
 
 // Update concatenated shape
 
-         itsShape(itsAxis) += shape(itsAxis);
+         shape_p(axis_p) += shape(axis_p);
       }
    }
 //
 // Assign lattice
 //
-   itsLattices.resize(n+1, True);
-   itsLattices[n] = lattice.cloneML();
-   if (lattice.isMasked()) itsIsMasked = True;
+   lattices_p.resize(n+1, True);
+   lattices_p[n] = lattice.cloneML();
+   if (lattice.isMasked()) isMasked_p = True;
 } 
 
 
-template<class T>
-void LatticeConcat<T>::reset()
+template <class T>
+uInt LatticeConcat<T>::latticeDim() const
 {
-   const uInt n = itsLattices.nelements();
-   for (uInt i=0; i<n; i++) {
-      delete itsLattices[i];
-   }
-   itsLattices.resize(0, True);
-   itsAxis = 0;
-   itsShape.resize(0);
-   itsShowProgress = False;
-   itsIsMasked = False;
+   uInt n = 0;
+   if (lattices_p.nelements()>0) n = lattices_p[0]->ndim();
+   return n;
 }
 
 
 
+//Public virtual functions
 
-template<class T>
-IPosition LatticeConcat<T>::shape() const
+template <class T>
+MaskedLattice<T>* LatticeConcat<T>::cloneML() const
 {
-   return itsShape;
-} 
+   return new LatticeConcat(*this);
+}
 
 template<class T>
 Bool LatticeConcat<T>::isMasked() const
 {
-   return itsIsMasked;
+   return isMasked_p;
 } 
 
 
-template<class T>
-void LatticeConcat<T>::copyData(MaskedLattice<T>& lattice)
+template <class T>
+const LatticeRegion* LatticeConcat<T>::getRegionPtr() const
 {
-// Check
+   return 0;
+}
 
-   const uInt nLattices = itsLattices.nelements();
+
+template <class T>
+Bool LatticeConcat<T>::isWritable() const
+{
+    const uInt n = lattices_p.nelements();
+    for (uInt i=0; i<n; i++) {
+       if (!lattices_p[i]->isWritable()) return False;
+    }
+    return True;
+}
+
+template <class T>
+Bool LatticeConcat<T>::isMaskWritable() const
+{
+    const uInt n = lattices_p.nelements();
+    for (uInt i=0; i<n; i++) {
+       if (!lattices_p[i]->isMaskWritable()) return False;
+    }
+    return True;
+}
+
+template<class T>
+IPosition LatticeConcat<T>::shape() const
+{
+   return shape_p;
+} 
+
+
+template <class T>
+IPosition LatticeConcat<T>::doNiceCursorShape (uInt) const 
+//
+// This isn't very meaningful  for a LatticeConcat
+// object since it isn't on disk !  But if you do
+// copy it out, this is what you should use...
+//
+{
+   TiledShape ts(shape());
+   return ts.tileShape();
+}
+
+
+
+template <class T>
+Bool LatticeConcat<T>::doGetSlice (Array<T>& buffer,
+                                   const Slicer& section)
+{
+   const uInt nLattices = lattices_p.nelements();
    if (nLattices==0) {
-      throw (AipsError("No lattices to concatenate - use function setLattice"));
+      throw (AipsError("No lattices set - use function setLattice"));
+   }
+
+   Bool ok = False;
+   if (axis_p==lattices_p[0]->ndim()) {
+
+// Increase dimensionality by one
+
+     ok = getSlice1 (buffer, section, nLattices);
+   } else {
+
+// No dimensionality increase
+
+     ok = getSlice2(buffer, section, nLattices);
    }
 //
-   if (!itsShape.isEqual(lattice.shape())) {
-      throw (AipsError("Output lattice has wrong shape"));
-   }
+   return ok;
+}
+ 
 
-// Setup progress meter
-
-   ProgressMeter* clockPtr = 0;
-   Double meterValue = 0.0;
-   if (itsShowProgress) {
-      const Double nPixels = Double(itsShape.product());
-      clockPtr = new ProgressMeter(0.0, Double(nPixels), "Lattice Concatenation",
-                                  "pixels copied", "", "", True, 1);
-   }
-
-// Is the output masked and writable ?
-
-   Bool isOutputMasked = lattice.isMasked();
-   if (itsIsMasked) {
-      if (!isOutputMasked) {
-         throw (AipsError("The input lattices are masked but the output lattice is not masked"));
-      }
-//
-      if (isOutputMasked && !lattice.isMaskWritable()) {
-         throw (AipsError("The input lattices are masked but the output lattice mask is not writable"));
-      }
-   }
-
-// Copy
-
-   const uInt dim = itsShape.nelements();
-   IPosition blcOut(dim,0);
-   IPosition trcOut(dim);
-
-// See if we are increasing the dimensionality by one
-
-   const Bool dimUpOne = (itsAxis==itsLattices[0]->ndim());
-   if (dimUpOne) trcOut = itsShape - 1;
-//
-   for (uInt i=0; i<nLattices; i++) {
-      if (dimUpOne) {
-         blcOut(dim-1) = i;
-         trcOut(dim-1) = i;
-      } else {
-         trcOut = blcOut + itsLattices[i]->shape() - 1;
-      }
-      LCBox regionOut(blcOut, trcOut, lattice.shape());
-      SubLattice<T> subLatticeOut(lattice, LatticeRegion(regionOut), True);
-//
-      if (itsIsMasked && isOutputMasked) {
-         copyDataAndMask(subLatticeOut, *(itsLattices[i]));
-      } else {
-         copyDataOnly(subLatticeOut, *(itsLattices[i]));
-      }
-
-// Update
-
-      if (!dimUpOne) blcOut(itsAxis) += itsLattices[i]->shape()(itsAxis);
-      if (itsShowProgress) {
-         meterValue += itsLattices[i]->shape().product();
-         clockPtr->update(meterValue);
-      }
-   }
-   if (clockPtr!=0) {
-      delete clockPtr;
-      clockPtr = 0;
-   }
-} 
-
-
-template<class T>
-void LatticeConcat<T>::copyDataAndMask(MaskedLattice<Float>& out,
-                                       MaskedLattice<Float>& in) const
-//
-// We make slightly heavy weather of this to account for
-// the case that the output dimensionality is one more than
-// the input
+template <class T>
+Bool LatticeConcat<T>::doGetMaskSlice (Array<Bool>& buffer,
+                                       const Slicer& section)
 {
-
-// Get hold of the mask
-
-   if (!out.hasPixelMask()) {
-      throw(AipsError("Cannot gain access to pixel mask of output lattice"));
+   const uInt nLattices = lattices_p.nelements();
+   if (nLattices==0) {
+      throw (AipsError("No lattices set - use function setLattice"));
    }
-   Lattice<Bool>& maskOut = out.pixelMask();
-//
-   LatticeStepper stepper (out.shape(), out.niceCursorShape(), LatticeStepper::RESIZE);
-   LatticeIterator<Float> iter(out, stepper);
-//
-   const uInt nDimIn = in.ndim();
-   IPosition posIn(nDimIn);
-   IPosition shapeIn(nDimIn);
-//
-   for (iter.reset(); !iter.atEnd(); iter++) {
-      posIn = iter.position().getFirst(nDimIn);
-      shapeIn = iter.cursorShape().getFirst(nDimIn);
-      out.putSlice (in.getSlice(posIn, shapeIn, False), iter.position()); 
-      maskOut.putSlice(in.getMaskSlice(posIn, shapeIn, False), iter.position());
+
+   Bool ok = False;
+   if (isMasked_p) {
+      if (axis_p==lattices_p[0]->ndim()) {
+
+// Increase dimensionality by one
+
+        ok = getMaskSlice1 (buffer, section, nLattices);
+      } else {
+
+// No dimensionality increase
+
+        ok = getMaskSlice2 (buffer, section, nLattices);
+      }
+   } else {
+      buffer.resize (section.length());
+      buffer = True;
+      ok = True;
    }
+//
+   return ok;   
 }
 
 
-template<class T>
-void LatticeConcat<T>::copyDataOnly(MaskedLattice<Float>& out,
-                                    MaskedLattice<Float>& in) const
-//
-// We make slightly heavy weather of this to account for
-// the case that the output dimensionality is one more than
-// the input
-{
-   LatticeStepper stepper (out.shape(), out.niceCursorShape(), LatticeStepper::RESIZE);
-   LatticeIterator<Float> iter(out, stepper);
-//
-   const uInt nDimIn = in.ndim();
-   IPosition posIn(nDimIn);
-   IPosition shapeIn(nDimIn);
-//
-   for (iter.reset(); !iter.atEnd(); iter++) {
-      posIn = iter.position().getFirst(nDimIn);
-      shapeIn = iter.cursorShape().getFirst(nDimIn);
-      out.putSlice (in.getSlice(posIn, shapeIn, False), iter.position()); 
+template <class T>
+void LatticeConcat<T>::doPutSlice (const Array<T>& buffer, const IPosition& where,
+                                   const IPosition& stride)
+{      
+   const uInt nLattices = lattices_p.nelements();
+   if (nLattices==0) {
+      throw (AipsError("No lattices set - use function setLattice"));
    }
+//
+   if (!isWritable()) {
+      throw(AipsError("Some of the underlying lattices are not writable"));
+   }
+//
+   Bool ok = False;
+   if (axis_p==lattices_p[0]->ndim()) {
+
+// Increase dimensionality by one
+
+     ok = putSlice1 (buffer, where, stride, nLattices);
+   } else {
+
+// No dimensionality increase
+
+     ok = putSlice2 (buffer, where, stride, nLattices);
+   }
+}        
+
+
+template <class T>
+void LatticeConcat<T>::doPutMaskSlice (const Array<Bool>& buffer, const IPosition& where,
+                                       const IPosition& stride)
+{      
+   const uInt nLattices = lattices_p.nelements();
+   if (nLattices==0) {
+      throw (AipsError("No lattices set - use function setLattice"));
+   }
+//
+   if (!isMaskWritable()) {
+      throw(AipsError("Some of the underlying lattices do not have writable masks"));
+   }
+//
+   Bool ok = False;
+   if (axis_p==lattices_p[0]->ndim()) {
+
+// Increase dimensionality by one
+
+     ok = putMaskSlice1 (buffer, where, stride, nLattices);
+   } else {
+
+// No dimensionality increase
+
+     ok = putMaskSlice2 (buffer, where, stride, nLattices);
+   }
+}        
+
+
+
+template <class T>
+Bool LatticeConcat<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+    const uInt n = lattices_p.nelements();
+    Vector<Bool> hadReadLock(n);
+    Vector<Bool> hadWriteLock(n);
+//
+    for (uInt i=0; i<n; i++) {
+       hadReadLock(i) = lattices_p[i]->hasLock(FileLocker::Read);
+       hadWriteLock(i) = lattices_p[i]->hasLock(FileLocker::Write);
+       if (!lattices_p[i]->lock(type, nattempts)) {
+
+// Try to put things back how they were if fails
+
+          for (uInt j=0; j<i; j++) {
+             if (hadReadLock(j)) {
+                lattices_p[j]->lock(FileLocker::Read, 1);
+             } else if (hadWriteLock(j)) {
+                lattices_p[j]->lock(FileLocker::Write, 1);
+             } else {
+                lattices_p[j]->unlock();
+             }
+          }
+          return False;
+       }
+    }
+    return True;
 }
+
+template <class T>
+void LatticeConcat<T>::unlock()
+{
+    const uInt n = lattices_p.nelements();
+    for (uInt i=0; i<n; i++) {
+
+// No Bool return so can't check if successful
+
+       lattices_p[i]->unlock();
+    }
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::hasLock (FileLocker::LockType type) const
+{
+    const uInt n = lattices_p.nelements();
+    for (uInt i=0; i<n; i++) {
+       if (!lattices_p[i]->hasLock(type)) return False;
+    }
+    return True;
+}
+ 
+
+// Private functions
 
 
 
@@ -406,4 +423,455 @@ void LatticeConcat<T>::checkAxis(uInt axis, uInt ndim) const
    }
 }
 
+
+template <class T>
+void LatticeConcat<T>::setup1 (IPosition& blc, IPosition& trc, IPosition& stride,
+                               IPosition& blc2, IPosition& trc2, 
+                               IPosition& blc3, IPosition& trc3, IPosition& stride3, 
+                               const Slicer& section)
+{
+// The Slicer section for the whole concatenated lattice
+
+   blc = section.start();
+   trc = section.end();
+   stride = section.stride();
+
+// The Slicer section for an individual lattice contribution
+// in coordinates of that lattice
+
+   blc2 = blc;
+   trc2 = trc;
+
+// The Slicer section for an individual lattice contribution
+// in the output Array coordinates
+
+   blc3 = blc;
+   blc3 = 0;
+   trc3 = section.length() - 1;
+   stride3 = stride;
+   stride3 = 1;
+}
+
+template<class T>
+Slicer LatticeConcat<T>::setup2 (Bool& first, IPosition& blc2, IPosition& trc2, 
+                                 Int shape2, Int axis, const IPosition& blc, 
+                                 const IPosition& trc, const IPosition& stride, Int start)
+{
+
+// This lattice contributes to the slice.  Find section
+// in local lattice[i] coordinates 
+
+   blc2(axis) = max(0,blc(axis)-start);
+   trc2(axis) = min(trc(axis)-start,shape2-1);
+
+// Adjust blc for stride if not first lattice
+
+   if (!first) {
+      blc2(axis) += (start-blc(axis))%stride(axis);
+   }
+   first = False;
+//
+   return Slicer(blc2, trc2, stride, Slicer::endIsLast);
+}
+
+template <class T>
+Bool LatticeConcat<T>::getSlice1 (Array<T>& buffer,
+                                  const Slicer& section,
+                                  uInt nLattices)
+{
+   const uInt dimIn = axis_p;
+
+// The concatenated lattice section
+
+   if (section.end()(axis_p)+1 > Int(nLattices)) {
+      throw(AipsError("Number of lattices and requested slice are inconsistent"));      
+   }
+   IPosition blc3(dimIn+1,0);
+   IPosition trc3(section.length()-1);
+   IPosition stride3(dimIn+1,1);
+
+
+// The underlying lattice section - it never changes
+
+   Slicer section2(section.start().getFirst(dimIn), section.end().getFirst(dimIn), 
+                   section.stride().getFirst(dimIn), Slicer::endIsLast);
+//
+   buffer.resize(section.length());
+
+// We are looping over the last axis of the concatenated lattice
+// Each input lattice contributes just one pixel to that axis
+
+   uInt k = 0;
+   for (Int i=section.start()(axis_p); i<=section.end()(axis_p); i+=section.stride()(axis_p)) {
+       Array<T> buf = lattices_p[i]->getSlice(section2);
+       blc3(axis_p) = k;
+       trc3(axis_p) = k;
+       buffer(blc3, trc3, stride3) = buf.addDegenerate(1);
+       k++;
+   }
+
+// Result is a copy
+
+   return False;
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::getSlice2 (Array<T>& buffer,
+                                  const Slicer& section,
+                                  uInt nLattices)
+{
+//cout << "blc, trc, stride=" << section.start() << section.end() << section.stride() << endl;
+
+// Setup positions
+
+   IPosition blc, trc, stride;   
+   IPosition blc2, trc2;
+   IPosition blc3, trc3, stride3;
+   setup1 (blc, trc, stride, blc2, trc2, blc3, trc3, stride3, section);
+//
+   buffer.resize(section.length());
+//cout << "Buffer shape = " << buffer.shape() << endl;
+//
+   Int start = 0;
+   Bool first = True;
+   Slicer section2;
+//
+   for (uInt i=0; i<nLattices; i++) {
+//cout << "Lattice shape = " << lattices_p[i]->shape() << endl;
+
+// Find start and end of this lattice inside the concatenated lattice
+
+      Int shape2 = lattices_p[i]->shape()(axis_p);
+      Int end = start + shape2 - 1;
+//
+      if (! (blc(axis_p)>end || trc(axis_p)<start)) {
+
+// Find section of input Lattice to copy
+
+         section2 = setup2(first, blc2, trc2, shape2, axis_p, blc, trc, 
+                           stride, start);
+
+// Put it in output buffer
+
+//cout << "blc2, trc2, stride2, shape = " 
+//     << section2.start() << section2.end() << section2.stride() << section2.length() << endl;
+
+         trc3(axis_p) = blc3(axis_p) + section2.length()(axis_p) - 1;
+
+//IPosition sh(Slicer(blc3, trc3, stride3, Slicer::endIsLast).length());
+//cout << "blc3, trc3, stride3, shape = " << blc3 << trc3 << stride3  << sh << endl << endl;
+
+         buffer(blc3, trc3, stride3) = lattices_p[i]->getSlice(section2);
+//
+         blc3(axis_p) += section2.length()(axis_p);
+      }
+      start += shape2;
+   }
+
+// Result is a copy
+
+   return False;
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::putSlice1 (const Array<T>& buffer, const IPosition& where,
+                                  const IPosition& stride, uInt nLattices)
+{
+   const uInt dimIn = axis_p;
+
+// The concatenated Lattice section
+
+   Slicer section(where, buffer.shape(), stride, Slicer::endIsLength);
+   if (section.end()(axis_p)+1 > Int(nLattices)) {
+      throw(AipsError("Number of lattices and given data buffer are inconsistent"));
+   }
+//      
+   IPosition blc3(dimIn+1,0);
+   IPosition trc3(section.length()-1);
+   IPosition stride3(dimIn+1,1);
+
+// The underlying Lattice section. It never changes
+   
+   Slicer section2(section.start().getFirst(dimIn), section.end().getFirst(dimIn),
+                   section.stride().getFirst(dimIn), Slicer::endIsLast);
+
+// We are looping over the last axis of the concatenated lattice
+// Each input lattice contributes just one pixel to that axis
+                                  
+   uInt k = 0;
+   for (Int i=section.start()(axis_p); i<=section.end()(axis_p); i+=section.stride()(axis_p)) {
+       blc3(axis_p) = k;
+       trc3(axis_p) = k;
+       Array<Float> buf0(buffer);
+       lattices_p[i]->putSlice(buf0(blc3, trc3, stride3).nonDegenerate(axis_p-1), 
+                                section2.start(), section2.stride());
+//
+       k++;
+   }
+//  
+   return True;
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::putSlice2 (const Array<T>& buffer, const IPosition& where,
+                                  const IPosition& strider, uInt nLattices)
+{
+
+// Make a Slicer for the region to be put so we can reuse the functions
+// for setting locations used in the getSlice functions
+// Objects blc and stride will duplicate where and strider respectively
+
+//cout << "Buffer shape = " << buffer.shape() << endl;
+
+   Slicer section(where, buffer.shape(), strider, Slicer::endIsLength);
+
+//cout << "Section = " << section << endl;
+
+// Setup positions
+
+   IPosition blc, trc, stride;   
+   IPosition blc2, trc2;
+   IPosition blc3, trc3, stride3;
+   setup1 (blc, trc, stride, blc2, trc2, blc3, trc3, stride3, section);
+//
+   Int start = 0;
+   Bool first = True;
+   Slicer section2;
+//
+   for (uInt i=0; i<nLattices; i++) {
+//cout << "Lattice " << i << " shape = " << lattices_p[i]->shape() << endl;
+
+// Find start and end of this lattice inside the concatenated lattice
+
+      Int shape2 = lattices_p[i]->shape()(axis_p);
+      Int end = start + shape2 - 1;
+//
+      if (! (blc(axis_p)>end || trc(axis_p)<start)) {
+
+//cout << "Lattice included" << endl;
+
+// Find section of input Lattice to put in coordinates of that lattice
+
+         section2 = setup2(first, blc2, trc2, shape2, axis_p, blc, trc, 
+                           stride, start);
+
+// Put it in lattice
+
+//cout << "blc2, trc2, stride2, shape = " 
+//     << section2.start() << section2.end() << section2.stride() << section2.length() << endl;
+
+         trc3(axis_p) = blc3(axis_p) + section2.length()(axis_p) - 1;
+
+//IPosition sh(Slicer(blc3, trc3, stride3, Slicer::endIsLast).length());
+//cout << "blc3, trc3, stride3, shape = " << blc3 << trc3 << stride3  << sh << endl << endl;
+
+         Array<T> buf(buffer);
+         lattices_p[i]->putSlice(buf(blc3, trc3, stride3), blc2, stride);
+//
+         blc3(axis_p) += section2.length()(axis_p);
+      }
+      start += shape2;
+   }
+//
+   return True;
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::getMaskSlice1 (Array<Bool>& buffer,
+                                      const Slicer& section,
+                                      uInt nLattices)
+{
+   const uInt dimIn = axis_p;
+
+// The concatenated lattice section
+
+   if (section.end()(axis_p)+1 > Int(nLattices)) {
+      throw(AipsError("Number of lattices and requested slice are inconsistent"));
+   }
+   IPosition blc3(dimIn+1,0);
+   IPosition trc3(section.length()-1);
+   IPosition stride3(dimIn+1,1);
+
+
+// The underlying lattice section - it never changes
+   
+   Slicer section2(section.start().getFirst(dimIn), section.end().getFirst(dimIn),
+                   section.stride().getFirst(dimIn), Slicer::endIsLast);
+//
+   buffer.resize(section.length());
+
+// We are looping over the last axis of the concatenated lattice
+// Each input lattice contributes just one pixel to that axis
+                                  
+   uInt k = 0;
+   for (Int i=section.start()(axis_p); i<=section.end()(axis_p); i+=section.stride()(axis_p)) {
+       blc3(axis_p) = k;
+       trc3(axis_p) = k;
+       Array<Bool> buf = lattices_p[i]->getMaskSlice(section2);
+       buffer(blc3, trc3, stride3) = buf.addDegenerate(1);
+       k++;
+   }
+
+// Result is a copy
+
+   return False;
+}
+ 
+
+
+template <class T>
+Bool LatticeConcat<T>::getMaskSlice2 (Array<Bool>& buffer,
+                                      const Slicer& section,
+                                      uInt nLattices)
+{
+
+// Setup positions
+
+   IPosition blc, trc, stride;   
+   IPosition blc2, trc2;
+   IPosition blc3, trc3, stride3;
+   setup1 (blc, trc, stride, blc2, trc2, blc3, trc3, stride3, section);
+//
+   buffer.resize(section.length());
+//
+   Int start = 0;
+   Bool first = True;
+   Slicer section2;
+//
+   for (uInt i=0; i<nLattices; i++) {
+
+// Find start and end of this lattice inside the concatenated lattice
+
+      Int shape2 = lattices_p[i]->shape()(axis_p);
+      Int end = start + shape2 - 1;
+//
+      if (! (blc(axis_p)>end || trc(axis_p)<start)) {
+
+// Whack slice into the output
+
+         section2 = setup2(first, blc2, trc2, shape2, axis_p, blc, trc, 
+                           stride, start);
+//
+         trc3(axis_p) = blc3(axis_p) + section2.length()(axis_p) - 1;
+         buffer(blc3, trc3, stride3) = lattices_p[i]->getMaskSlice(section2);
+//
+         blc3(axis_p) += section2.length()(axis_p);
+      }
+      start += shape2;
+   }
+
+// Result is a copy
+
+   return False;
+}
+
+
+
+template <class T>
+Bool LatticeConcat<T>::putMaskSlice1 (const Array<Bool>& buffer, const IPosition& where,
+                                      const IPosition& stride, uInt nLattices)
+{
+   const uInt dimIn = axis_p;
+
+// The concatenated Lattice section
+
+   Slicer section(where, buffer.shape(), stride, Slicer::endIsLength);
+   if (section.end()(axis_p)+1 > Int(nLattices)) {
+      throw(AipsError("Number of lattices and given data buffer are inconsistent"));
+   }
+//      
+   IPosition blc3(dimIn+1,0);
+   IPosition trc3(section.length()-1);
+   IPosition stride3(dimIn+1,1);
+
+// The underlying Lattice section. It never changes
+   
+   Slicer section2(section.start().getFirst(dimIn), section.end().getFirst(dimIn),
+                   section.stride().getFirst(dimIn), Slicer::endIsLast);
+
+// We are looping over the last axis of the concatenated lattice
+// Each input lattice contributes just one pixel to that axis
+                                  
+   uInt k = 0;
+   for (Int i=section.start()(axis_p); i<=section.end()(axis_p); i+=section.stride()(axis_p)) {
+       blc3(axis_p) = k;
+       trc3(axis_p) = k;
+       Array<Bool> buf0(buffer);
+       lattices_p[i]->putMaskSlice(buf0(blc3, trc3, stride3).nonDegenerate(axis_p-1), 
+                                    section2.start(), section2.stride());
+//
+       k++;
+   }
+//  
+   return True;
+}
+
+
+template <class T>
+Bool LatticeConcat<T>::putMaskSlice2 (const Array<Bool>& buffer, const IPosition& where,
+                                      const IPosition& strider, uInt nLattices)
+{
+
+// Make a Slicer for the region to be put so we can reuse the functions
+// for setting locations used in the getSlice functions
+// Objects blc and stride will duplicate where and strider respectively
+
+//cout << "Buffer shape = " << buffer.shape() << endl;
+
+   Slicer section(where, buffer.shape(), strider, Slicer::endIsLength);
+
+//cout << "Section = " << section << endl;
+
+// Setup positions
+
+   IPosition blc, trc, stride;   
+   IPosition blc2, trc2;
+   IPosition blc3, trc3, stride3;
+   setup1 (blc, trc, stride, blc2, trc2, blc3, trc3, stride3, section);
+//
+   Int start = 0;
+   Bool first = True;
+   Slicer section2;
+//
+   for (uInt i=0; i<nLattices; i++) {
+//cout << "Lattice " << i << " shape = " << lattices_p[i]->shape() << endl;
+
+// Find start and end of this lattice inside the concatenated lattice
+
+      Int shape2 = lattices_p[i]->shape()(axis_p);
+      Int end = start + shape2 - 1;
+//
+      if (! (blc(axis_p)>end || trc(axis_p)<start)) {
+
+//cout << "Lattice included" << endl;
+
+// Find section of input Lattice to put in coordinates of that lattice
+
+         section2 = setup2(first, blc2, trc2, shape2, axis_p, blc, trc, 
+                           stride, start);
+
+// Put it in lattice
+
+//cout << "blc2, trc2, stride2, shape = " 
+//     << section2.start() << section2.end() << section2.stride() << section2.length() << endl;
+
+         trc3(axis_p) = blc3(axis_p) + section2.length()(axis_p) - 1;
+
+//IPosition sh(Slicer(blc3, trc3, stride3, Slicer::endIsLast).length());
+//cout << "blc3, trc3, stride3, shape = " << blc3 << trc3 << stride3  << sh << endl << endl;
+
+         Array<Bool> buf(buffer);
+         lattices_p[i]->putMaskSlice(buf(blc3, trc3, stride3), blc2, stride);
+//
+         blc3(axis_p) += section2.length()(axis_p);
+      }
+      start += shape2;
+   }
+//
+   return True;
+}
 
