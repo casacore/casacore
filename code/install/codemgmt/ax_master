@@ -4033,3 +4033,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCCSNLAxisLabeller.h trialdisplay/implement/DisplayCanvas/WCCSNLAxisLabeller.h
 14 065 src mv trial/implement/DisplayCanvas/WCCoordinateHandler.h trialdisplay/implement/DisplayCanvas/WCCoordinateHandler.h
 14 065 src mv trial/implement/DisplayCanvas/WCDataScaleHandler.h trialdisplay/implement/DisplayCanvas/WCDataScaleHandler.h
+14 065 src mv trial/implement/DisplayCanvas/WCLinearScaleHandler.h trialdisplay/implement/DisplayCanvas/WCLinearScaleHandler.h
