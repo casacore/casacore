@@ -2476,3 +2476,4 @@
 11 312 sys rm libexec/hdsfile_meta.g
 11 312 src mv trial/apps/hds/makefile npoi/apps/hds/makefile
 11 312 src mv trial/apps/hds/hdsFactory.cc npoi/apps/hds/hdsFactory.cc
+11 312 src mv trial/apps/hds/hdsFactory.h npoi/apps/hds/hdsFactory.h
