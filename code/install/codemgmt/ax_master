@@ -5766,3 +5766,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSSpWindowEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSSpectralWindow.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSSpectralWindow.h
+16 134 src rm aips/implement/MeasurementSets/OldMSSysCal.cc
