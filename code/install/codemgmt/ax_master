@@ -2584,3 +2584,4 @@
 09 475 src mv doc/notes/notes.dir/index.tex doc/notes/notes.dir/nindex.tex
 09 499 src rm nrao/apps/dish/dish_wsman.g
 09 503 src rm trial/apps/quickimage
+09 511 src mv doc/html/aips++.html doc/html/oldaips++.html
