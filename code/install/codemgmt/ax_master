@@ -4906,3 +4906,4 @@
 14 316 src rm trial/apps/newdish/newdish_recbrowser.g
 14 316 sys rm libexec/newdish_recbrowser.g
 14 316 src rm trial/apps/newdish/newdish_sranges.g
+14 316 sys rm libexec/newdish_sranges.g
