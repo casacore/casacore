@@ -65,6 +65,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
                                      LogIO &os,
                                      Bool showProgressU)
 : os_p(os),
+  pInImage_p(0),
   pStoreImage_p(0),
   pStats_p(0),
   binAll_p(True),
@@ -100,7 +101,8 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
 template <class T>
 ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
                                      Bool showProgressU)
-: pStoreImage_p(0),
+: pInImage_p(0),
+  pStoreImage_p(0),
   pStats_p(0),
   binAll_p(True),
   goodParameterStatus_p(True),
@@ -134,75 +136,41 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
  
 template <class T>
 ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
-                      : os_p(other.os_p),
-                        binAll_p(other.binAll_p),
-                        goodParameterStatus_p(other.goodParameterStatus_p),
-                        needStorageImage_p(other.needStorageImage_p),
-                        doCumu_p(other.doCumu_p),
-                        doGauss_p(other.doGauss_p),
-                        doList_p(other.doList_p),
-                        doLog_p(other.doLog_p),
-                        haveLogger_p(other.haveLogger_p),
-                        showProgress_p(other.showProgress_p),
-                        nBins_p(other.nBins_p),
-                        pInImage_p(other.pInImage_p),
-                        plotter_p(other.plotter_p),
-                        cursorAxes_p(other.cursorAxes_p),
-                        displayAxes_p(other.displayAxes_p),
-                        nxy_p(other.nxy_p),
-                        range_p(other.range_p),
-                        blcParent_p(other.blcParent_p)
+                      : pInImage_p(0),
+                        pStoreImage_p(0),
+                        pStats_p(0)
 //
-// Copy constructor
+// Copy constructor.  Storage image not copied.
 //
 { 
-
-// I used to copy the storage image and statistics object
-// but now I think it is cleaner to just make them as neeed.
-
-   pStoreImage_p = 0;
-   pStats_p = 0;
-
-
-// Need new storage image and statistics object
-
-   needStorageImage_p = True;
+   operator=(other);
 }      
 
 
 template <class T>
 ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &other)
 //
-// Assignment operator.   Any storage images associated with the object
-// being assigned to are deleted first.
+// Assignment operator.   Storage images not copied.
 //
 {
    if (this != &other) {
       
-// Assign to image pointer
+// Deal with pointer
       
-      pInImage_p = other.pInImage_p;
+      if (pInImage_p!=0) delete pInImage_p;
+      pInImage_p = other.pInImage_p->cloneII();
       
-// Delete storage image and signify we need a new one.
-// I used to copy the storage image, but now I think
-// this is cleaner.
+// Delete storage and statistics objects.
 
       if (pStoreImage_p != 0) {
          delete pStoreImage_p;
          pStoreImage_p = 0;
       }
-
-// Delete ImageStatistics object. I used to copy it
-// but now I think this is cleaner
-
+//
       if (pStats_p != 0) {
          delete pStats_p;
          pStats_p = 0;
       }
-
-
-// Need new storage image and statistics object
-
       needStorageImage_p = True;
 
 
@@ -234,9 +202,11 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
 template <class T>
 ImageHistograms<T>::~ImageHistograms()
 //
-// Destructor.  Delete storage images memory
+// Destructor.  
 //
 {
+   delete pInImage_p;
+   pInImage_p = 0;
    if (pStoreImage_p != 0) {
       delete pStoreImage_p;
       pStoreImage_p = 0;
@@ -476,7 +446,6 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
       return False;
    }
 
-   pInImage_p = &image;
    T *dummy = 0;
    DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
@@ -488,6 +457,12 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
        pInImage_p = 0;
        return False;
    }
+
+// Make a clone of the image
+      
+   if (pInImage_p!=0) delete pInImage_p;
+   pInImage_p = image.cloneII();
+
 
 // This is the location of the input SubImage in
 // the parent Image
@@ -767,7 +742,6 @@ Bool ImageHistograms<T>::displayHistograms ()
                               vectorAxis, IPosition::makeAxisPath(pStoreImage_p->ndim()));
    RO_LatticeIterator<T> histIterator(*pStoreImage_p, histStepper);
 
-
 // Histogram vectors and other bits and pieces
       
    Vector<T> counts(pStoreImage_p->shape()(0));
@@ -776,7 +750,6 @@ Bool ImageHistograms<T>::displayHistograms ()
    T linearSum, linearYMax;
    IPosition imagePos(pInImage_p->ndim(),0);
   
-
 // Iterate through histogram storage image
 
    for (histIterator.reset(); !histIterator.atEnd(); histIterator++) {
@@ -797,7 +770,6 @@ Bool ImageHistograms<T>::displayHistograms ()
                                 stats, values, counts, 
                                 plotter_p)) return False;
    }
-
    return True;
 }
  
@@ -936,6 +908,7 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
 
 // Plot
          
+
    plotter.page();
    plotter.swin(xMinF, xMaxF, 0.0, yMaxF);
    plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
@@ -1272,9 +1245,8 @@ void ImageHistograms<T>::makeHistograms()
 
 
 // Create collapser for LatticeApply
-  
+
    HistTiledCollapser<T> collapser(pStats_p, nBins_p);
-  
    ImageHistProgress* pProgressMeter = 0;
    if (showProgress_p) pProgressMeter = new ImageHistProgress();
 
@@ -1473,7 +1445,6 @@ void HistTiledCollapser<T>::process (uInt index1,
    clip(0) = stats(ImageStatsBase::MIN);
    clip(1) = stats(ImageStatsBase::MAX);
 
-
 // Set histogram bin width
    
    const T binWidth = setBinWidth(clip, nBins_p);
@@ -1492,7 +1463,6 @@ void HistTiledCollapser<T>::process (uInt index1,
       T datum;
       for (uInt i=0; i<nrval; i++) {
          datum = *pInData;
-
          if (datum >= clip(0) && datum <= clip(1)) {   
             Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
    
@@ -1514,12 +1484,12 @@ void HistTiledCollapser<T>::process (uInt index1,
 
          if (mask && datum >= clip(0) && datum <= clip(1)) {   
             Int iBin = min(nBins_p-1, uInt((datum-clip(0))/binWidth));
-   
             index = iBin + offset;
             uInt& hist = (*pHist_p)[index];
             hist++;
          }
          pInData += inIncr;
+         pInMask += inIncr;
       }
    }
 
