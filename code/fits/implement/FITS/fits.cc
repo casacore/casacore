@@ -691,18 +691,11 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 				msg = "Illegal time.";
 				return 1;
 			    }
-			    if (v_len > 19 && !(p[19] == '.' || 
-					       (v_len == 20 && p[19] == 'Z'))) {
+			    if (v_len > 19 && !(p[19] == '.')) {
 				msg = "Illegal date format.";
 				return 1;
 			    }
-			    Int lastDigit;
-			    if (p[v_len-1] == 'Z') {
-				lastDigit = v_len-2;
-			    } else {
-				lastDigit = v_len-1;
-			    }
-			    for (Int curr = 20;curr <= lastDigit; curr++) {
+			    for (Int curr = 20;curr <= (v_len-1); curr++) {
 				if (!FITS::isa_digit(p[curr])) {
 				    msg = "Illegal date format.";
 				    return 1;
