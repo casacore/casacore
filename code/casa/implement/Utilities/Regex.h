@@ -1,5 +1,5 @@
 //# Regex.h: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,27 +28,15 @@
 #if !defined(AIPS_REGEX_H)
 #define AIPS_REGEX_H
 
-#if defined(__GNUG__)
-#pragma interface
-#endif
-
-#if defined(SHORT_NAMES) || defined(VMS)
-#define re_compile_pattern	recmppat
-#define re_pattern_buffer	repatbuf
-#define re_registers		reregs
-#endif
+//# Includes
+#include <aips/aips.h>
 
 // Forward declarations.
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-class  String;
-class  AipsIO;
-struct re_pattern_buffer;       // defined elsewhere
-struct re_registers;
+#include <aips/aipsiosfwd.h>
 
+class  String;
+struct re_pattern_buffer;
+struct re_registers;
 
 // <summary>
 // Regular expression class
@@ -182,17 +170,18 @@ struct re_registers;
 // </srcblock>
 // </example>
 
-//# <todo asof="1995/03/17">
-//#   <li> Decide on documentation of GNU stuff (cregex.h, cregex.cc)
-//# </todo>
+// <todo asof="2001/01/15">
+//   <li> Derive from RegexBase to allow more different classes
+//   <li> Let sgi ifdef go
+//   <li> Decide on documentation of GNU stuff (cregex.h, cregex.cc)
+// </todo>
 
 
-class Regex
-{
+class Regex {
 public:
     // Default constructor uses a zero-length regular expression.
     // <thrown>
-    //  <li> RegexExpressnError
+    //  <li> invalid_argument
     // </thrown>
     Regex();
     
@@ -204,60 +193,59 @@ public:
     // See cregex.cc (the extended regular expression matching and search
     // library) for detailed information.
     // <thrown>
-    //  <li> RegexExpressnError
+    //  <li> invalid_argument
     // </thrown>
-    Regex(const String&, 
-	  int fast = 0, 
-	  int bufsize = 40, 
-	  const char* transtable = 0);
+    Regex(const String &exp, Bool fast = False, Int sz = 40, 
+	  const Char *translation = 0);
     
     // Copy constructor (copy semantics).
     // <thrown>
-    //  <li> RegexExpressnError
+    //  <li> invalid_argument
     // </thrown>
-    Regex(const Regex&);
+    Regex(const Regex &that);
     
     ~Regex();
     
     // Assignment (copy semantics).
     // <thrown>
-    //  <li> RegexExpressnError
+    //  <li> invalid_argument
     // </thrown>
     // <group>
-    Regex& operator = (const Regex&);
-    Regex& operator = (const String&);
+    Regex &operator=(const Regex &that);
+    Regex &operator=(const String &strng);
     // </group>
 
     // Convert a shell-like pattern to a regular expression.
     // This is useful for people who are more familiar with patterns
     // than with regular expressions.
-    static String fromPattern (const String& string);
+    static String fromPattern(const String &pattern);
 
     // Convert a normal string to a regular expression.
     // This consists of escaping the special characters.
     // This is useful when one wants to provide a normal string
     // (which may contain special characters) to a function working
     // on regular expressions.
-    static String fromString (const String& string);
+    static String fromString(const String &strng);
 
     // Get the regular expression string.
-    const String& regexp() const;
+    const String &regexp() const;
     
     // Get the translation table (can be a zero pointer).
-    const char* transtable() const;
+    const Char *transtable() const;
     
     // Test if the regular expression matches (part of) string <src>s</src>.
     // The return value gives the length of the matching string part,
     // -1 if there is no match, or -2 in case of an internal error.
     // The string has <src>len</src> characters and the test starts at
     // position <src>pos</src>. The string may contain null characters.
+    // Negative p is allowed to match at end.
     //
     // <note role=tip>
     // Use the appropriate <linkto class=String>String</linkto> functions
     // to test if a string matches a regular expression. 
     // <src>Regex::match</src> is pretty low-level.
     // </note>
-    int match(const char* s, int len, int pos = 0) const;
+    Int match(const Char *s, Int len, Int p=0) const;
     
     // Test if the regular expression occurs in string <src>s</src>.
     // The return value gives the position of the first substring
@@ -271,45 +259,33 @@ public:
     // to test if a regular expression occurs in a string.
     // <src>Regex::search</src> is pretty low-level.
     // </note>
-    int search(const char* s, int len, int& matchlen, int startpos = 0) const;
+    Int search(const Char *s, Int len, Int &matchlen, Int startpos=0) const;
     
     // Return some internal <src>cregex</src> info.
-    int match_info(int& start, int& length, int nth = 0) const;
-    
-    // Representation invariant.
-    // <thrown>
-    //  <li> RegexMemAllocError
-    // </thrown>
-    int OK() const;
+    Int match_info(Int& start, Int& length, Int nth = 0) const;
+
+    // Does it contain a valid Regex?
+    Bool OK() const;
     
     // Write as ASCII.
-    friend ostream& operator<< (ostream&, const Regex&);
-    
-    // Write into AipsIO.
-    friend AipsIO& operator<< (AipsIO&, const Regex&);
-    
-    // Read from AipsIO.
-    // <thrown>
-    //  <li> RegexExpressnError
-    // </thrown>
-    friend AipsIO& operator>> (AipsIO&, Regex&);
+    friend ostream &operator<<(ostream &ios, const Regex &exp);
     
 protected:
     String*            str;                 // the reg. exp.
-    int                fastval;             // fast flag
-    int                bufsz;               // buffer size given
-    char*              trans;               // possible translation table
+    Int                fastval;             // fast flag
+    Int                bufsz;               // buffer size given
+    Char*              trans;               // possible translation table
     re_pattern_buffer* buf;                 // compiled reg.exp.
-    re_registers*      reg;                 //# internal reg.exp. stuff
+    re_registers*      reg;                 // internal reg.exp. stuff
     
     // Compile the regular expression
     // <thrown>
-    //  <li> RegexExpressnError
+    //  <li> invalid_argument
     // </thrown>
-    void create (const String&, int, int, const char*);
+    void create(const String&, Int, Int, const Char*);
     
     // Deallocate the stuff allocated by <src>create</src>.
-    void dealloc ();
+    void dealloc();
 };
 
 
