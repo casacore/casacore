@@ -1214,6 +1214,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setWorldAxisNames(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
     return ok;
@@ -1238,6 +1239,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
     return ok;
@@ -1262,6 +1264,7 @@ Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setReferencePixel(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
     return ok;
@@ -1285,6 +1288,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setLinearTransform(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
     return ok;
 }
@@ -1308,6 +1312,7 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setIncrement(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
     return ok;
@@ -1332,6 +1337,7 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 	    }
 	}
 	ok = ToBool(coordinates_p[i]->setReferenceValue(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
     return ok;
