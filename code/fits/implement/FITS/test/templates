@@ -8,10 +8,29 @@
      template class OrderedMapIterRep<String, Double> 
 1000 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
      template class OrderedPair<String, Double> 
-1000 fits/FITS/hdu.cc 
+1070 fits/FITS/hdu.cc 
      template class PrimaryGroup<Double> 
-1010 fits/FITS/hdu.cc 
+1075 fits/FITS/hdu.cc 
+     template class PrimaryGroup<float> 
+1100 fits/FITS/hdu.cc 
      template class PrimaryGroup<uChar> 
+1110 fits/FITS/hdu.cc 
+     template class PrimaryGroup<FitsLong> 
+1080 fits/FITS/hdu.cc 
+     template class PrimaryArray<Double> 
+1120 fits/FITS/hdu.cc 
+     template class PrimaryArray<uChar> 
+1130 fits/FITS/hdu.cc 
+     template class PrimaryArray<FitsLong> 
+1140 fits/FITS/hdu.cc 
+     template class PrimaryArray<float>
+1150 fits/FITS/hdu.cc 
+     template class PrimaryArray<short>
+1180 fits/FITS/hdu.cc 
+     template class ImageExtension<FitsLong> 
+1181 casa/Arrays/Vector.cc 
+     = casa/BasicSL/String.h 
+     template class Vector<String>
 1000 casa/Utilities/Register.cc casa/Containers/OrderedMap.h 
      = casa/BasicSL/String.h 
      template uInt Register(OrderedMapNotice<String, Double> const *) 
