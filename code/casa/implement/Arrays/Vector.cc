@@ -54,7 +54,7 @@ template<class T> Vector<T>::Vector(uInt Length)
 }
 
 
-template<class T> Vector<T>::Vector(Position &len, IPosition &or)
+template<class T> Vector<T>::Vector(IPosition &len, IPosition &or)
   : Array<T>(len,or)
 {
     AlwaysAssert(len.nelements() == 1 && or.nelements() == 1, ArrayError);
