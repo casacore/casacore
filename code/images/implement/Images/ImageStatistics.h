@@ -42,12 +42,12 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
+#include <aips/Logging/LogIO.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class TempLattice;
 class IPosition;
-class LogIO;
 class CoordinateSystem;
 
 
