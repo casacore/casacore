@@ -1,5 +1,5 @@
 //# ComponentType2.cc:  this defines ComponentType2.cc
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 // all the derived classes from unnecessarily being linked in when they are not
 // needed.
 
-ComponentShape * ComponentType::
+ComponentShape* ComponentType::
 construct(ComponentType::Shape shapeEnum) {
   switch (shapeEnum) {
   case ComponentType::POINT: 
@@ -48,11 +48,11 @@ construct(ComponentType::Shape shapeEnum) {
   case ComponentType::DISK:
     return new DiskShape;
   default:
-    return (ComponentShape *) 0;
+    return reinterpret_cast<ComponentShape*>(0);
   };
 }
 
-SpectralModel * ComponentType::
+SpectralModel* ComponentType::
 construct(ComponentType::SpectralShape spectralEnum) {
   switch (spectralEnum) {
   case ComponentType::CONSTANT_SPECTRUM: 
@@ -60,9 +60,9 @@ construct(ComponentType::SpectralShape spectralEnum) {
   case ComponentType::SPECTRAL_INDEX:
     return new SpectralIndex;
   default:
-    return (SpectralModel *) 0;
+    return reinterpret_cast<SpectralModel*>(0);
   };
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 ComponentType2"
+// compile-command: "gmake ComponentType2"
 // End: 
