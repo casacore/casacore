@@ -35,6 +35,8 @@
 
 //# Forward Declarations
 class TableExprNode;
+class IPosition;
+class Slicer;
 template<class T> class Vector;
 
 
@@ -247,6 +249,13 @@ inline const TableExprNodeRep* TableExprNodeSetElem::increment() const
 // The set consists of <linkto class=TableExprNodeSetElem>TableExprNodeSetElem
 // <linkto> elements. The <src>add</src> function has to be used to
 // add an element to the set.
+// <p>
+// It is possible to construct the object directly from an
+// <linkto class=IPosition>IPosition</linkto> object.
+// In that case all elements are single.
+// Furthermore it is possible to construct it directly from a
+// <linkto class=Slicer>Slicer</linkto> object.
+// In that case all elements represent a discrete interval.
 // </synopsis> 
 
 class TableExprNodeSet : public TableExprNodeRep
@@ -254,6 +263,18 @@ class TableExprNodeSet : public TableExprNodeRep
 public:
     // Construct an empty set.
     TableExprNodeSet();
+
+    // Construct from an <src>IPosition</src>.
+    // The number of elements in the set is the number of elements
+    // in the <src>IPosition</src>. All set elements are single values.
+    TableExprNodeSet (const IPosition&);
+
+    // Construct from a <src>Slicer</src>.
+    // The number of elements in the set is the dimensionality
+    // of the <src>Slicer</src>. All set elements are discrete intervals.
+    // Their start and/or end is undefined if it is was not defined
+    // (i.e. Slicer::MimicSource used) in the <src>Slicer</src> object.
+    TableExprNodeSet (const Slicer&);
 
     // Construct a set with n elements.
     // Element i is constructed by evaluating the input element
