@@ -1,5 +1,5 @@
 //# BaseTable.h: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -416,10 +416,16 @@ public:
     // Create a RefTable object.
     RefTable* makeRefTable (Bool rowOrder, uInt initialNrrow);
 
+    // Check if the row number is valid.
+    // It throws an exception if out of range.
+    void checkRowNumber (uInt rownr) const
+        { if (rownr >= nrrow_p + nrrowToAdd_p) checkRowNumberThrow (rownr); }
+
 
 protected:
     uInt           nrlink_p;            //# #references to this table
     uInt           nrrow_p;             //# #rows in this table
+    uInt           nrrowToAdd_p;        //# #rows to be added
     TableDesc*     tdescPtr_p;          //# Pointer to table description
     String         name_p;              //# table name
     int            option_p;            //# Table constructor option
@@ -481,6 +487,9 @@ private:
     // some more knowledge (like table name of result).
     // Declaring it private, makes it unusable.
     BaseTable& operator= (const BaseTable&);
+
+    // Throw an exception for checkRowNumber.
+    void checkRowNumberThrow (uInt rownr) const;
 
     // Check if the tables combined in a logical operation have the
     // same root.

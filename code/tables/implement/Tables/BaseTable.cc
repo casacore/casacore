@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,14 +52,15 @@
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
 BaseTable::BaseTable (const String& name, int option, uInt nrrow)
-: nrlink_p   (0),
-  nrrow_p    (nrrow),
-  tdescPtr_p (0),
-  name_p     (name),
-  option_p   (option),
-  noWrite_p  (False),
-  delete_p   (False),
-  madeDir_p  (True)
+: nrlink_p    (0),
+  nrrow_p     (nrrow),
+  nrrowToAdd_p(0),
+  tdescPtr_p  (0),
+  name_p      (name),
+  option_p    (option),
+  noWrite_p   (False),
+  delete_p    (False),
+  madeDir_p   (True)
 {
     if (name_p.empty()) {
 	name_p = File::newUniqueName ("", "tab").originalName();
@@ -873,3 +874,10 @@ Bool BaseTable::checkRemoveColumn (const Vector<String>& columnNames,
     return True;
 }
 
+void BaseTable::checkRowNumberThrow (uInt rownr) const
+{
+    throw (TableError ("TableColumn: row number " + String::toString(rownr) +
+		       " exceeds #rows " +
+		       String::toString(nrrow_p+nrrowToAdd_p)
+		       + " in table " + tableName()));
+}
