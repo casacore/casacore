@@ -122,3 +122,67 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 orderby round(2*sin(ab)),
  8 9
  2 3
  1 2
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab < mean([3:6,ab])
+    has been executed
+    5 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+ 4 5
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select ac from tab where ab>4]
+    has been executed
+    4 rows selected
+2 selected columns:  ab ac
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [:=2,4=:<6,7<:]
+    has been executed
+    7 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 4 5
+ 5 6
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select from tab where ab>4 giving [ac=:=ac+0.5]]
+    has been executed
+    4 rows selected
+2 selected columns:  ab ac
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN arr1
+    has been executed
+    1 rows selected
+2 selected columns:  ab ac
+ 0 1
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr1 > 100  &&  arr1<200)
+    has been executed
+    5 rows selected
+2 selected columns:  ab ac
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)
+    has been executed
+    10 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
