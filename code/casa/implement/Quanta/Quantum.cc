@@ -287,7 +287,7 @@ Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
   ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
   ///		      in[0] == 'Y')) {
   if (!in.empty() && !in.contains(ex2) && !in.contains(ex)) {
-    tmp = MUString(String('0.0') + in);		// Pointed non-const String
+    tmp = MUString(String("0.0") + in);		// Pointed non-const String
   };
   return Quantum<Qtype>::read(res, tmp);
 }
