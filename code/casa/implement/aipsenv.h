@@ -1,5 +1,5 @@
 //# aipsenv.h: Global initialization for special aips++ macros
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,6 +108,13 @@
 #endif
 #if defined(__kai)
 #define AIPS_KAI
+#endif
+
+#if defined(AIPS_AIX)
+#undef AIPS_AIX
+#endif
+#if defined(_AIX)
+#define AIPS_AIX
 #endif
 
 #if defined(AIPS_INTELCC)
