@@ -272,20 +272,25 @@ template <class T>
 Bool ImageSummary<T>::restFrequency(String& restFreqString, 
                                     Quantum<Double>& restFreq) const
 {
-   Bool ok;
+   Bool ok = False;
    Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
    if (spectralAxis >= 0) {
       Int coordinate, axisInCoordinate;
       cSys_p.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
 //
-      restFreq.setValue(cSys_p.spectralCoordinate(coordinate).restFrequency());
-      restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
+      Double rf = cSys_p.spectralCoordinate(coordinate).restFrequency();
+      if (rf > 0.0) {
+         restFreq.setValue(rf);
+         restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
+         ok = True;
+      }
+   }
+   if (ok) {
       ostrstream oss;
 //      oss.output().setf(ios::scientific, ios::floatfield);
 //      oss.output().precision(8);
       oss << restFreq << endl;
       restFreqString= String(oss);
-      ok = True;
    } else {
       restFreq.setValue(0.0);
       restFreq.setUnit("Hz");
@@ -414,8 +419,6 @@ void ImageSummary<T>::list (LogIO& os,
    String restFreqString;
    if (restFrequency(restFreqString, restFreq)) {
       os << "Rest Frequency   : " << restFreqString << endl;
-   } else {
-      os << "Rest Frequency   : Absent" << endl;
    }
 
 
