@@ -2100,3 +2100,15 @@
 11 103 src mv trial/implement/Guiutils/combobox.g trial/implement/Widgets/combobox.g
 11 105 src mv trial/implement/Display/DisplayData.h trial/implement/DisplayDatas/DisplayData.h
 11 105 src mv trial/implement/Display/DisplayData.cc trial/implement/DisplayDatas/DisplayData.cc
+11 105 src rm trial/implement/Display/ImDDMotionEH.cc
+11 105 src rm trial/implement/Display/ImDDMotionEH.h
+11 105 src rm trial/implement/Display/ImDDMotionEvent.cc
+11 105 src rm trial/implement/Display/ImDDMotionEvent.h
+11 105 src rm trial/implement/Display/ImDDPositionEH.cc
+11 105 src rm trial/implement/Display/ImDDPositionEH.h
+11 105 src rm trial/implement/Display/ImDDPositionEvent.cc
+11 105 src rm trial/implement/Display/ImDDPositionEvent.h
+11 105 src rm trial/implement/Display/ImageDDImage.cc
+11 105 src rm trial/implement/Display/ImageDDImage.h
+11 105 src rm trial/implement/Display/ImageDisplayData.cc
+11 105 src rm trial/implement/Display/ImageDisplayData.h
