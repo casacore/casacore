@@ -1,9 +1,11 @@
 1000 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
+   namespace casa {
      template Bool allEQ(Array<Complex> const &, Complex const &) 
      template Bool allEQ(Array<DComplex> const &, DComplex const &) 
      template Bool allEQ(Array<Short> const &, Short const &) 
      template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
      template LogicalArray operator<(Array<Double> const &, Double const &) 
+   }
 1010 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
      template LogicalArray operator<(Array<Double> const &, Array<Double> const &) 
      template LogicalArray operator<(Double const &, Array<Double> const &) 
@@ -21,7 +23,8 @@
      template LogicalArray operator<=(Array<String> const &, Array<String> const &) 
      template LogicalArray operator<=(Array<String> const &, String const &) 
      template LogicalArray operator<=(String const &, Array<String> const &) 
-     template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
+     template Bool allNear(Array<DComplex> const &, Array<DComplex>
+const &, Double) 
 1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template void indgen(Array<Complex> &) 
      template void indgen(Array<Complex> &, Complex, Complex) 

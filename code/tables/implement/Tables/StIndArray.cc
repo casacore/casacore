@@ -283,7 +283,7 @@ void StIndArray::getSliceData (StManArrayFile& ios, const Slicer& ns,
 	getVec (ios, fileOffset, blc(0), leng, inc(0), 0, value);
     }else{
 	//# Loop through the slice a vector at a time.
-	ArrayPositionIterator iter(shape, IPosition(ndim,0), 1);
+	ArrayPositionIterator iter(shape, 1);
 	IPosition pos(ndim);
 	uInt i, offset;
 	uInt count=0;
@@ -345,7 +345,7 @@ void StIndArray::putSliceData (StManArrayFile& ios, const Slicer& ns,
     if (ndim == 1) {
 	putVec (ios, fileOffset, blc(0), leng, inc(0), 0, value);
     }else{
-	ArrayPositionIterator iter(shape, IPosition(ndim,0), 1);
+	ArrayPositionIterator iter(shape, 1);
 	IPosition pos(ndim);
 	uInt i, offset;
 	uInt count=0;
