@@ -2407,3 +2407,6 @@
 09 351 src rm aips/implement/Functionals/BinaryArithEnums.h
 09 351 src rm aips/implement/Functionals/BinaryArithmetic.h
 09 351 src rm aips/implement/Functionals/BinaryArithmetic.cc
+09 351 src rm aips/implement/Functionals/BinaryCombEnums.h
+09 351 src rm aips/implement/Functionals/BinaryComb.h
+09 351 src rm aips/implement/Functionals/BinaryComb.cc
