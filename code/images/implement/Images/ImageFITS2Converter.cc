@@ -473,8 +473,11 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
 
     try {
+        Int nIter = max(1,image.shape().product()/cursorShape.product());
+        Int iUpdate = max(1,nIter/20);
 	ProgressMeter meter(0.0, 1.0*image.shape().product(),
-			    "Image to FITS", "Pixels copied", "", "");
+			    "Image to FITS", "Pixels copied", "", 
+                            "", True, iUpdate);
 	uInt count = 0;
 	Double curpixels = 1.0*cursorShape.product();
 
