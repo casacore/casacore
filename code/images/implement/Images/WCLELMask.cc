@@ -127,8 +127,10 @@ Bool WCLELMask::operator== (const WCRegion& that) const
   const WCLELMask& That = dynamic_cast<const WCLELMask&>(that);
   // Check private data
   if (itsCommand != That.itsCommand) return False;
-  if ((itsImageExpr==0) != (That.itsImageExpr==0)) return False;
-  if ((itsLattExpr==0) != (That.itsLattExpr==0)) return False;
+  if (itsCommand.empty()) {
+    if (itsImageExpr != That.itsImageExpr) return False;
+    if (itsLattExpr != That.itsLattExpr) return False;
+  }
   return True;
 }
 
