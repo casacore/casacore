@@ -2402,3 +2402,5 @@
 09 346 src mv trial/scripts/lsfit.g trial/implement/Mathematics/lsfit.g
 09 351 src rm trial/implement/Images/ImageBinaryOp.h
 09 351 src rm trial/implement/Images/ImageBinaryOp.cc
+09 351 src rm trial/implement/Lattices/LatticeBinaryOp.h
+09 351 src rm trial/implement/Lattices/LatticeBinaryOp.cc
