@@ -147,27 +147,27 @@ void StokesConverter::setConversion(const Vector<Int>& out,
 	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.) ||
 				   iquvConv_p(3,j)!=Complex(0.));
-	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
-	      abs(iquvConv_p(3,j));
+	    wtConv_p(i,j)=(abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
+	      abs(iquvConv_p(3,j)))/3;
 	    break;
 	  case Stokes::Plinear:
 	  case Stokes::Pangle: 
 	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
-	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j));
+	    wtConv_p(i,j)=(abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j)))/2;
 	    break;
 	  case Stokes::PFtotal:
 	    flagConv_p(i,j)=True;
 	    // not certain how to compute the weight for this one
-	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
-	      abs(iquvConv_p(3,j));
+	    wtConv_p(i,j)=(abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j))+
+	      abs(iquvConv_p(3,j)))/3;
 	    break;
 	  case Stokes::PFlinear:
 	    flagConv_p(i,j)=(iquvConv_p(0,j)!=Complex(0.) ||
 				   iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
 	    // not certain how to compute the weight for this one
-	    wtConv_p(i,j)=abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j));
+	    wtConv_p(i,j)=(abs(iquvConv_p(1,j))+abs(iquvConv_p(2,j)))/2;
 	    break;
 	  default:
 	    break;
@@ -399,10 +399,12 @@ void StokesConverter::convert(Array<Float>& out, const Array<Float>& in) const
 					   out.nelements()/outShape(0)));
   for (uInt i=0; i<out_p.nelements(); i++) {
     for (uInt j=0; j<inMat.ncolumn(); j++) {
-      outMat(i,j)=0.0;
+      outMat(i,j)=0;
       for (Int k=0; k<nCorrIn; k++) {
-	outMat(i,j)+=wtConv_p(i,k)*inMat(k,j);
+	if (inMat(k,j)!=0) outMat(i,j)+=square(wtConv_p(i,k))/inMat(k,j);
+	else { outMat(i,j)=0; break;}  // flag output if one of inputs is zero
       }
+      if (outMat(i,j)!=0) outMat(i,j)=1/outMat(i,j);
     }
   }
 }
