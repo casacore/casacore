@@ -51,7 +51,7 @@ Int main(int argc, char *argv[])
     try {
 	// Inputs
 	Input inp(1);
-	inp.Version(" ");
+	inp.Version(""); // By setting to null, we turn of the announcement
 	inp.Create("in", "in.image", "Input AIPS++ Image name", "string");
 	inp.Create("out", "out.fits", "Output FITS file name", "string");
 	inp.Create("overwrite", "False", "Allow output to be overwritten?",
