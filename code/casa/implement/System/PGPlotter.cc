@@ -1,5 +1,5 @@
 //# PGPlotter.h: Standard plotting object for application programmers.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,6 +56,7 @@ PGPlotter::~PGPlotter()
 
 void PGPlotter::detach()
 {
+    worker_p->resetPlotNumber();        // Implemented for PGPlotterGlish only
     CountedPtr<PGPlotterInterface> empty;
     worker_p = empty;
 }
