@@ -380,7 +380,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
 }
 
 template <class T, Int n> 
-SquareMatrix<T,n> SquareMatrix<T,n>::casa::conj(const SquareMatrix<T,n>& other) {
+SquareMatrix<T,n> SquareMatrix<T,n>::conj(const SquareMatrix<T,n>& other) {
   SquareMatrix<T,n> result(other);
   return conj(result);
 }
