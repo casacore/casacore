@@ -103,9 +103,9 @@ public:
 
     // Enum describing the different models you can fit
     enum Types {
-      LEVEL = 0,
+      GAUSSIAN = 0,
       DISK = 1,
-      GAUSSIAN = 2,
+      LEVEL=2,
       nTypes
     };
 
@@ -243,6 +243,9 @@ public:
 
     // Return type as a string
     static String type(Fit2D::Types type);
+
+    // Return string type as enum
+    static Fit2D::Types type(const String& type);
 
     // Find type of specific model
     Fit2D::Types type(uInt which);
