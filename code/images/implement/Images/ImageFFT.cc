@@ -546,154 +546,29 @@ Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes,
 void ImageFFT::setInverseCoordinate (CoordinateSystem& cSys, uInt which, 
                                      const IPosition& shape, 
                                      const Vector<Bool>& axes)
-//
-// axes is the list of all pixel axes in the image to be FFTs.  
-// It has already been checked valid. For DirectionCoordinates,
-// both axes have been checked to be there
-//
-// This stuff should move to the Coordinates classes as virtual 
-// functions.  Let's see if it works first.
-//
-// I make a big fudge here currently. I assume xform is a unit
-// diagonal matrix.  This is not the case for rotated coordinates
-// Have to do some mathematics to work out what to do...
-// Currently we don't write out anything other than non-rotated
-// coordinates, but this will change one day
-//
 {
    LogIO os(LogOrigin("ImageFFT", "setInverseCoordinate(,)", WHERE));
 //
    delete itsCoordPtr;
    itsCoordPtr = 0;
-//
-   if (cSys.type(which)==Coordinate::LINEAR) {
-      LinearCoordinate coord(cSys.linearCoordinate(which));
-      Vector<Int> pixelAxes = cSys.pixelAxes(which);
-      AlwaysAssert(pixelAxes.nelements()==coord.nPixelAxes(), AipsError);
 
-// The coordinate doesn't know anything about silly pixel/world orderings
-// Pixels and world are the same order
+// For this coordinate, find the axes and shape corresponding to the 
+// specified axes in the CoordinateSystem
 
-      Vector<String> units = coord.worldAxisUnits();
-      Vector<String> names = coord.worldAxisNames();
-      Vector<Double> inc = coord.increment();
-      Vector<Double> refVal = coord.referenceValue();      
-      Vector<Double> refPix = coord.referencePixel();
-
-// Loop over the axes for this coordinate and see if its in
-// the users list
-
-      for (uInt i=0; i<pixelAxes.nelements(); i++) {
-         if (axes(pixelAxes(i))) {
-
-// User wants to FFT this pixel axis 
- 
-            String tmp = String("1/") + units(i);
-            units(i) = tmp;
-            refVal(i) = 0.0;
-            refPix(i) = Int(shape(pixelAxes(i))/2);
-            inc(i) = 1.0 / (shape(pixelAxes(i))*inc(i));
-            names(i) = String("Inverse(") + names(i) + String(")");
-         }
-      }
-      Matrix<Double> xform(pixelAxes.nelements(),pixelAxes.nelements());
-      xform = 0.0; xform.diagonal() = 1.0;
-      itsCoordPtr = new LinearCoordinate(names, units, refVal, 
-                                         inc, xform, refPix);
-   } else if (cSys.type(which)==Coordinate::DIRECTION) {
-      DirectionCoordinate coord(cSys.directionCoordinate(which));
-
-// Get increment in radians
-
-      Vector<String> units = coord.worldAxisUnits();
-      units.set("rad");
-      if (!coord.setWorldAxisUnits(units)) {
-        os << "Failed to set DirectionCoordinate units to radians" << LogIO::EXCEPTION;
-      }
-      Vector<Double> inc = coord.increment();
-
-// Fiddle about with coordinates.  We replace the DirectionCoordinate
-// by a LinearCoordinate.  The mapping in the CoordinateSYStem of world
-// axes etc remains the same.
-
-      Vector<String> names = coord.worldAxisNames();
-      Vector<Double> refVal = coord.referenceValue();      
-      Vector<Double> refPix = coord.referencePixel();
-//      
-      Matrix<Double> xform(2,2);
-      xform = 0.0; xform.diagonal() = 1.0;
-//
-      Vector<Int> pixelAxes = cSys.pixelAxes(which);
-      Vector<Int> worldAxes = cSys.worldAxes(which);
-      AlwaysAssert(worldAxes.nelements()==2, AipsError);  // Should not happen
-      AlwaysAssert(pixelAxes.nelements()==2, AipsError);
-//
-      refVal.set(0.0);
-      refPix(0) = Int(shape(pixelAxes(0))/2);
-      refPix(1) = Int(shape(pixelAxes(1))/2);
-      inc(0) = 1.0 / (shape(pixelAxes(0))*inc(0));
-      inc(1) = 1.0 / (shape(pixelAxes(1))*inc(1));
-//
-      names(0) = String("UU");
-      names(1) = String("VV");
-      units(0) = String("lambda");
-      units(1) = String("lambda");
-//
-      itsCoordPtr = new LinearCoordinate(names, units, refVal, 
-                                         inc, xform, refPix);
-   } else if (cSys.type(which)==Coordinate::SPECTRAL) {
-
-// Spectal Coordinate only has one pixel axis
-
-      SpectralCoordinate coord(cSys.spectralCoordinate(which));
-      Vector<Int> pixelAxes = cSys.pixelAxes(which);
-      AlwaysAssert(pixelAxes.nelements()==coord.nPixelAxes(), AipsError);
-      AlwaysAssert(pixelAxes.nelements()==1, AipsError);
-
-// The coordinate doesn't know anything about silly pixel/world orderings
-// Pixels and world are the same order
-
-      Vector<String> units = coord.worldAxisUnits();
-      Vector<String> names = coord.worldAxisNames();
-      Vector<Double> refVal = coord.referenceValue();      
-      Vector<Double> refPix = coord.referencePixel();
-
-// Set the axis units to Hz
-
-      units.set("Hz");
-      if (!coord.setWorldAxisUnits(units)) {
-        os << "Failed to set SpectralCoordinate units to Hz" << LogIO::EXCEPTION;
-      }
-      Vector<Double> inc = coord.increment();
-
-
-// Loop over the axes for this coordinate and see if its in
-// the users list
-
-      Unit tmp2;
-      if (axes(pixelAxes(0))) {
-
-// User wants to FFT this pixel axis 
- 
-         units(0) = "s";
-         refVal(0) = 0.0;
-         refPix(0) = Int(shape(pixelAxes(0))/2);
-         inc(0) = 1.0 / (shape(pixelAxes(0))*inc(0));
-         names(0) = String("Time");
-      }
-      Matrix<Double> xform(1, 1);
-      xform = 0.0; xform.diagonal() = 1.0;
-      itsCoordPtr = new LinearCoordinate(names, units, refVal, 
-                                         inc, xform, refPix);
-   } else if (cSys.type(which)==Coordinate::STOKES) {
-      os << "You cannot Fourier Transform the Stokes axis" << LogIO::EXCEPTION;
-   } else if (cSys.type(which)==Coordinate::TABULAR) {
-      os << "You cannot Fourier Transform a Tabular axis" << LogIO::EXCEPTION;
-   } else {
-      os << "Unrecognized Coordinate type" << LogIO::EXCEPTION;
+   const Coordinate& coord = cSys.coordinate(which);
+   Vector<Int> pixelAxes = cSys.pixelAxes(which);
+   Vector<Bool> coordAxes(coord.nPixelAxes(), False);
+   Vector<Int> coordShape(coordAxes.nelements());
+   for (uInt i=0; i<pixelAxes.nelements(); i++) {
+      if (axes(pixelAxes(i))) coordAxes(i) = True;
+      coordShape(i) = shape(pixelAxes(i));
    }
 
-// Replace coordinate 
+// Find the Fourier Coordinate
+
+   itsCoordPtr = coord.makeFourierCoordinate(coordAxes, coordShape);
+
+// Replace it in the CS
 
    cSys.replaceCoordinate(*itsCoordPtr, which);
 }
