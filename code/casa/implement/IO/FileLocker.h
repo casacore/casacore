@@ -139,6 +139,7 @@ private:
     int    itsError;
     int    itsStart;
     int    itsLength;
+    Bool   itsMsgShown;           /// temporary for SUSE 6.1
     Bool   itsReadLocked;
     Bool   itsWriteLocked;
 };
