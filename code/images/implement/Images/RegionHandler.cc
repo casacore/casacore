@@ -42,10 +42,14 @@ void RegionHandler::setDefaultMask (Table& table,
 {
   // Store the new default name (when writable).
   if (table.isWritable()) {
+    TableRecord& keys = table.rwKeywordSet();
     if (regionName.empty()) {
-      table.rwKeywordSet().removeField ("Image_defaultmask");
+      // Only delete default mask if it exists.
+      if (keys.isDefined ("Image_defaultmask")) {
+	keys.removeField ("Image_defaultmask");
+      }
     } else {
-      table.rwKeywordSet().define ("Image_defaultmask", regionName);
+      keys.define ("Image_defaultmask", regionName);
     }
   }
 }
@@ -103,6 +107,41 @@ Bool RegionHandler::hasRegion (const Table& table, const String& name,
 			       RegionHandler::GroupType type)
 {
   return ToBool (findRegionGroup (table, name, type, False) >= 0);
+}
+
+Bool RegionHandler::renameRegion (Table& table, const String& oldName,
+				  const String& newName,
+				  RegionHandler::GroupType type,
+				  Bool overwrite)
+{
+  if (! table.isWritable()) {
+    return False;
+  }
+  // Check that the region exists.
+  Int oldGroupField = findRegionGroup (table, oldName, type, True);
+  // First check if the region is already defined in "regions" or "masks".
+  // If so, remove it if possible. Otherwise throw an exception.
+  // Check that the region is in the same group as the original.
+  TableRecord& keys = table.rwKeywordSet();
+  Int groupField = findRegionGroup (table, newName, RegionHandler::Any, False);
+  if (groupField >= 0) {
+    if (groupField != oldGroupField) {
+      throw (AipsError ("RegionHandler::renameRegion - table " +
+			table.tableName() +
+			" already has a region or mask with name " + newName +
+			" in another group"));
+    }
+    if (!overwrite) {
+      throw (AipsError ("RegionHandler::renameRegion - table " +
+			table.tableName() +
+			" already has a region or mask with name " + newName));
+    }
+    TableRecord& regs = keys.rwSubRecord(groupField);
+    regs.removeField (newName);
+  }
+  TableRecord& regs = keys.rwSubRecord(oldGroupField);
+  regs.renameField (newName, oldName);
+  return True;
 }
 
 Bool RegionHandler::removeRegion (Table& table, const String& name,
