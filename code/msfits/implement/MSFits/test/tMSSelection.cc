@@ -55,8 +55,8 @@ int main(int argc, char **argv)
         MeasurementSet ms(msName);
 
         MSSelection select;
-        select.setUvDistExpr("uvdist='3727km:5%'");
-        select.setFieldExpr("field='>0'");
+        select.setUvDistExpr("'3727km:5%'");
+        select.setFieldExpr("'>0'");
 
         cout << "Original table has rows " << ms.nrow() << endl;
 
