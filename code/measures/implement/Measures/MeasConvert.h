@@ -221,7 +221,7 @@ public:
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
   virtual void addMethod(uInt method);
   // Add the frame type (Note: tp should be an MeasFrame::FrameType)
-  void addFrameType(uInt tp);
+  virtual void addFrameType(uInt tp);
   // Get number of methods
   virtual Int nMethod() const;
   // Get method
