@@ -1,5 +1,5 @@
 //# tLattice.cc:  test the Lattice class
-//# Copyright (C) 1994,1995,1997,1999,2000
+//# Copyright (C) 1994,1995,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -72,7 +72,7 @@ void a() {
     PagedArray<Complex> pi2(TiledShape(map2shape, imageTileShape));
     pi2.setCacheSizeInTiles(1);
     LatticeCache<Complex> itc(pi2, cacheSize, tileShape, tileOverlapVec,
-			       ToBool(tileOverlap>0.));      
+			       (tileOverlap>0.));      
     MLCG rng(835, 05401);
     DiscreteUniform randomPos(&rng, tileSize, arraySize-tileSize-1);
     Uniform randomChoice(&rng, 0.0, 1.0);
@@ -144,7 +144,7 @@ void b() {
     PagedArray<Float> pi4(TiledShape(map4shape, imageTileShape));
     pi4.setCacheSizeInTiles(0);
     LatticeCache<Float> itc(pi4, cacheSize, tileShape, tileOverlapVec,
-			       ToBool(tileOverlap>0.0));      
+			       (tileOverlap>0.0));      
     MLCG rng(835, 05401);
     DiscreteUniform randomPos(&rng, tileSize, arraySize-tileSize-1);
     DiscreteUniform randomChan(&rng, 0, 31);

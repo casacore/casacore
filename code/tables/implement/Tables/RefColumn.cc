@@ -1,5 +1,5 @@
 //# RefColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,7 +108,7 @@ Bool RefColumn::canAccessColumnSlice (Bool& reask) const
     if (reask1) {
 	reask = reask1;
     }
-    return ToBool (acc1 && acc2);
+    return  (acc1 && acc2);
 }
 
 Bool RefColumn::canChangeShape() const

@@ -1,5 +1,5 @@
 //# StokesConverter.cc: convert polarizations from one frame to another
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,7 +116,7 @@ void StokesConverter::setConversion(const Vector<Int>& out,
     if (out(i)<Stokes::PP) {
       for (Int j=0; j<nIn; j++) { 
 	conv_p(i,j)=polConv_p(out(i)-1,in(j)-1);
-	flagConv_p(i,j)=ToBool(conv_p(i,j)!=Complex(0.));
+	flagConv_p(i,j)=(conv_p(i,j)!=Complex(0.));
       }
     } else {
       // if output has Ptotal, Plinear or Pangle (or PFtotal, PFlinear), we
@@ -134,20 +134,20 @@ void StokesConverter::setConversion(const Vector<Int>& out,
 	for (Int j=0; j<nIn; j++) {
 	  switch (out(i)) {
 	  case Stokes::Ptotal: 
-	    flagConv_p(i,j)=ToBool(iquvConv_p(1,j)!=Complex(0.) ||
+	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.) ||
 				   iquvConv_p(3,j)!=Complex(0.));
 	    break;
 	  case Stokes::Plinear:
 	  case Stokes::Pangle: 
-	    flagConv_p(i,j)=ToBool(iquvConv_p(1,j)!=Complex(0.) ||
+	    flagConv_p(i,j)=(iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
 	    break;
 	  case Stokes::PFtotal:
 	    flagConv_p(i,j)=True;
 	    break;
 	  case Stokes::PFlinear:
-	    flagConv_p(i,j)=ToBool(iquvConv_p(0,j)!=Complex(0.) ||
+	    flagConv_p(i,j)=(iquvConv_p(0,j)!=Complex(0.) ||
 				   iquvConv_p(1,j)!=Complex(0.) ||
 				   iquvConv_p(2,j)!=Complex(0.));
 	    break;

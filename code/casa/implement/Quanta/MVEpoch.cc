@@ -1,5 +1,5 @@
 //# MVEpoch.cc: a class for high precision time
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,11 +128,11 @@ MVEpoch MVEpoch::operator-(const MVEpoch &other) const {
 }
 
 Bool MVEpoch::operator==(const MVEpoch &other) const {
-  return ToBool(wday == other.wday && frday == other.frday);
+  return (wday == other.wday && frday == other.frday);
 }
 
 Bool MVEpoch::operator!=(const MVEpoch &other) const {
-  return ToBool(!( *this == other));
+  return (!( *this == other));
 }
 
 Bool MVEpoch::near(const MVEpoch &other, Double tol) const {

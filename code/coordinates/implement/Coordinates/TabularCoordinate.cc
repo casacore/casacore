@@ -1,5 +1,5 @@
 //# TabularCoordinate.cc: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -265,7 +265,7 @@ Matrix<Double> TabularCoordinate::linearTransform() const
 
 Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = ToBool(names.nelements()==1);
+    Bool ok = (names.nelements()==1);
     if (!ok) {
        set_error ("names vector must be of length 1");
     } else {
@@ -276,7 +276,7 @@ Bool TabularCoordinate::setWorldAxisNames(const Vector<String> &names)
 
 Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = ToBool(units.nelements()==1);
+    Bool ok = (units.nelements()==1);
     if (!ok) {
        set_error ("units vector must be of length 1");
     } else {
@@ -291,7 +291,7 @@ Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units)
 
 Bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    Bool ok = ToBool(refPix.nelements()==1);
+    Bool ok = (refPix.nelements()==1);
     if (!ok) {
        set_error ("reference pixel vector must be of length 1");
     } else {
@@ -302,7 +302,7 @@ Bool TabularCoordinate::setReferencePixel(const Vector<Double> &refPix)
 
 Bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    Bool ok = ToBool(xform.nelements()==1);
+    Bool ok = (xform.nelements()==1);
     if (!ok) {
        set_error ("linear transform matrix must be of length 1");
     } else {
@@ -313,7 +313,7 @@ Bool TabularCoordinate::setLinearTransform(const Matrix<Double> &xform)
 
 Bool TabularCoordinate::setIncrement(const Vector<Double> &inc) 
 {
-    Bool ok = ToBool(inc.nelements()==1);
+    Bool ok = (inc.nelements()==1);
     if (!ok) {
        set_error ("increment vector must be of length 1");
     } else {
@@ -324,7 +324,7 @@ Bool TabularCoordinate::setIncrement(const Vector<Double> &inc)
 
 Bool TabularCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements()==1);
+    Bool ok = (refval.nelements()==1);
     if (!ok) {
        set_error ("reference values vector must be of lenth 1");
     } else {
@@ -460,7 +460,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
 Bool TabularCoordinate::save(RecordInterface &container,
 			     const String &fieldName) const
 {
-    Bool ok = ToBool(!container.isDefined(fieldName));
+    Bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	subrec.define("crval", referenceValue());

@@ -1,5 +1,5 @@
 //# CountedPtr.h: Referenced counted pointer classes
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -274,7 +274,7 @@ public:
     // Check to see if this <src>SimpleCountedConstPtr</src> is
     // un-initialized, null.
     //
-    Bool null() const { return ToBool(ref==0 || (ref->val == 0));}
+    Bool null() const { return (ref==0 || (ref->val == 0));}
 
 protected:
 

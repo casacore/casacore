@@ -1,5 +1,5 @@
 //# SpectralCoordinate.cc: this defines SpectralCoordinate
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -344,7 +344,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 Bool SpectralCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 {
-    Bool ok = ToBool(!container.isDefined(fieldName));
+    Bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	String system = "unknown";
@@ -362,7 +362,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	}
 	subrec.define("system", system);
 	subrec.define("restfreq", restFrequency());
-	ok = ToBool(worker_p.save(subrec, "tabular"));
+	ok = (worker_p.save(subrec, "tabular"));
 
 	container.defineRecord(fieldName, subrec);
     }

@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,7 +75,7 @@ ObjectID &ObjectID::operator=(const ObjectID &other)
 
 Bool ObjectID::isNull() const 
 {
-    return ToBool(sequence_number_p == 0 &&
+    return (sequence_number_p == 0 &&
 		  process_id_p == 0 &&
 		  creation_time_p == 0 &&
 		  hostname_p == "");
@@ -83,7 +83,7 @@ Bool ObjectID::isNull() const
 
 Bool ObjectID::operator==(const ObjectID &other) const
 {
-    return ToBool(sequence_number_p == other.sequence_number_p &&
+    return (sequence_number_p == other.sequence_number_p &&
 		  process_id_p == other.process_id_p &&
 		  creation_time_p == other.creation_time_p &&
 		  hostname_p == other.hostname_p);
@@ -91,7 +91,7 @@ Bool ObjectID::operator==(const ObjectID &other) const
 
 Bool ObjectID::operator!=(const ObjectID &other) const
 {
-    return ToBool(! (*this == other));
+    return (! (*this == other));
 }
 
 Int ObjectID::sequence_number()

@@ -1,5 +1,5 @@
 //# TempLattice.cc: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,7 +167,7 @@ void TempLattice<T>::tempReopen() const
 template<class T>
 Bool TempLattice<T>::isPaged() const
 {
-  return ToBool (! itsTableName.empty());
+  return  (! itsTableName.empty());
 }
 
 template<class T>

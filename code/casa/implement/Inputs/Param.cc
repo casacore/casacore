@@ -1,5 +1,5 @@
 //# Param.cc: Helper class for key=value user interface
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -234,7 +234,7 @@ Param::getBool(Bool prompt) const		// Bool value
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
     }
-    return ToBool (value.contains(Regex("[TtYy1Jj]")));
+    return  (value.contains(Regex("[TtYy1Jj]")));
 }
 
 #if 0
@@ -258,7 +258,7 @@ Param::getBoolArray(Bool prompt) const
             z=value.after(idx);
             idx += z.index(",") + 1;
         }
-        x[i] = ToBool (z.contains(Regex("[TtYy1Jj]")));
+        x[i] =  (z.contains(Regex("[TtYy1Jj]")));
     }
     return x;
 }

@@ -1,5 +1,5 @@
 //# MSLister.cc:  Class for listing records from a MeasurementSet
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -313,7 +313,7 @@ Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
   dataRecords_p.get("time", msTimeLimits);
 
   // Make sure requested times make sense
-  Bool ok = ToBool(inputStartTime < inputStopTime &&
+  Bool ok = (inputStartTime < inputStopTime &&
 		   inputStartTime < msTimeLimits(1) &&
 		   inputStopTime > msTimeLimits(0));
   if (!ok) {

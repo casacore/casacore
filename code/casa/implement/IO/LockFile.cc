@@ -1,5 +1,5 @@
 //# LockFile.cc: Class to handle file locking
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,7 +138,7 @@ LockFile::~LockFile()
 Bool LockFile::isMultiUsed()
 {
     //# If a write lock cannot be obtained, the file is in use.
-    return (ToBool (itsUseLocker.fd() >= 0
+    return ( (itsUseLocker.fd() >= 0
                 &&  !itsUseLocker.canLock (FileLocker::Write)));
 }
 
@@ -213,7 +213,7 @@ Bool LockFile::inspect()
     //# Get the number of request id's and reset the time.
     uInt nr = getNrReqId();
     itsLastTime.now();
-    return ToBool (nr > 0);
+    return  (nr > 0);
 }
 
 void LockFile::getInfo (MemoryIO& info)

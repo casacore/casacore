@@ -179,7 +179,7 @@ Bool MSSelector::initSelection(Int dataDescId, Bool reset)
   lastDataDescId_p=dataDescId_p;
 
   // if selection is empty, reject it
-  initSel_p = ToBool(selms_p.nrow()>0);
+  initSel_p = (selms_p.nrow()>0);
   if (!initSel_p) {
     os<< LogIO::WARN << "Selected Table has zero rows"<<LogIO::POST;
   } else {
@@ -217,7 +217,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
        << LogIO::POST;
     return False;
   }
-  Bool ok = ToBool(nChan>0 && start>=0 && width>0 && incr>0);
+  Bool ok = (nChan>0 && start>=0 && width>0 && incr>0);
   if (!ok) {
     os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
     return False;
@@ -227,14 +227,14 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
   Int numChan=msc.spectralWindow().numChan()
     (msc.dataDescription().spectralWindowId()(dd));
   Int end=start+(nChan-1)*incr+(width-1);
-  ok=ToBool(ok && end < numChan);
-  //#  if (incr < 0) ok=ToBool(ok && start+(nChan-1)*incr-(width-1) >= 0);
+  ok=(ok && end < numChan);
+  //#  if (incr < 0) ok=(ok && start+(nChan-1)*incr-(width-1) >= 0);
   if (!ok) {
     os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
     return False;
   }
   haveSlicer_p=False;
-  useSlicer_p=ToBool(start>0 || end<(numChan-1) || incr>1 ||wantedOne_p>=0);
+  useSlicer_p=(start>0 || end<(numChan-1) || incr>1 ||wantedOne_p>=0);
   chanSel_p.resize(4);
   chanSel_p(0)=nChan; 
   chanSel_p(1)=start; 
@@ -352,7 +352,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
     Int end=chanSel_p(1)+(chanSel_p(0)-1)*chanSel_p(3)+chanSel_p(2)-1;
     // use slicer if: start > 0, end< nChan-1, inc>1 && width<inc, one pol only
     useSlicer_p=
-      ToBool(chanSel_p(1)>0 || 
+      (chanSel_p(1)>0 || 
 	     end<(chanSel_p(0)-1) || 
 	     (chanSel_p(3)>1 && chanSel_p(2)<chanSel_p(3)) 
 	     || wantedOne_p>=0);
@@ -513,7 +513,7 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 	      Double uvdist=square(uvw(0,k))+square(uvw(1,k));
 	      //attempt to cope with roundoff error in square
 	      rowsel[k]=
-		ToBool(( uvdist >= range(0) || near(uvdist,range(0)) ) && 
+		(( uvdist >= range(0) || near(uvdist,range(0)) ) && 
 		       ( uvdist <= range(1) || near(uvdist,range(1)) ) );
 	    }
 	    selms_p=selms_p(rowsel);
@@ -629,7 +629,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Vector<Int> ifrSlot;
   Vector<Int> timeSlot;
   Vector<Int> timeSlotRow;
-  Bool doIfrAxis = ToBool(ifrAxis && nIfr>0);
+  Bool doIfrAxis = (ifrAxis && nIfr>0);
   if (doIfrAxis) {
     // figure out which rows go with which timeslot
     Vector<Int> ifr=msc.antenna1().getColumn();
@@ -1240,11 +1240,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
     }
   }
-  Bool wantOR = ToBool(wantORAmp || wantORPhase || wantORReal || wantORImag ||
+  Bool wantOR = (wantORAmp || wantORPhase || wantORReal || wantORImag ||
 		       wantORData);
-  Bool wantR = ToBool(wantRAmp || wantRPhase || wantRReal || wantRImag ||
+  Bool wantR = (wantRAmp || wantRPhase || wantRReal || wantRImag ||
 		      wantRData );
-  Bool wantRat = ToBool(wantRatAmp || wantRatPhase || wantRatReal || 
+  Bool wantRat = (wantRatAmp || wantRatPhase || wantRatReal || 
 			wantRatImag || wantRatData );
   Array<Complex> observed_data;
   if (wantAmp || wantPhase || wantReal || wantImag || wantData
@@ -1730,7 +1730,7 @@ void MSSelector::getAveragedFlag(Array<Bool>& avFlag,
       for (Int j=0; j<nPol;j++) {
 	for (Int k=0; k<nRow; k++) {
 	  avFlag(IPosition(3,j,i,k))=
-	    ToBool(anyEQ(flag(IPosition(3,j,chn,k),
+	    (anyEQ(flag(IPosition(3,j,chn,k),
 			      IPosition(3,j,chn+chanSel_p(2)-1,k)),True));
 	}
       }

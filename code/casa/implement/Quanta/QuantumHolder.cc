@@ -1,5 +1,5 @@
 //# QuantumHolder.cc: A holder for Quantum to enable record conversions
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,27 +66,27 @@ QuantumHolder &QuantumHolder::operator=(const QuantumHolder &other) {
 
 //# Member Functions
 Bool QuantumHolder::isEmpty() const {
-  return ToBool(!hold_p.ptr());
+  return (!hold_p.ptr());
 }
 
 Bool QuantumHolder::isQuantum() const {
-  return ToBool(hold_p.ptr());
+  return (hold_p.ptr());
 }
 
 Bool QuantumHolder::isScalar() const {
-  return ToBool(hold_p.ptr() && nelements() == 1);
+  return (hold_p.ptr() && nelements() == 1);
 }
 
 Bool QuantumHolder::isVector() const {
-  return ToBool(hold_p.ptr() && ndim() == 1);
+  return (hold_p.ptr() && ndim() == 1);
 }
 
 Bool QuantumHolder::isArray() const {
-  return ToBool(hold_p.ptr() && ndim() > 0);
+  return (hold_p.ptr() && ndim() > 0);
 }
 
 Bool QuantumHolder::isReal() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		(isQuantumDouble() ||
 		 isQuantumFloat() ||
 		 isQuantumInt() ||
@@ -96,7 +96,7 @@ Bool QuantumHolder::isReal() const {
 }
 
 Bool QuantumHolder::isComplex() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		(isQuantumComplex() ||
 		 isQuantumDComplex() ||
 		 isQuantumArrayComplex() ||
@@ -104,82 +104,82 @@ Bool QuantumHolder::isComplex() const {
 }
 
 Bool QuantumHolder::isQuantity() const {
-  return ToBool(hold_p.ptr() && isQuantumDouble());
+  return (hold_p.ptr() && isQuantumDouble());
 }
 
 Bool QuantumHolder::isQuantumDouble() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		hold_p.ptr()->type() == Quantum<Double>::myType());
 }
 
 Bool QuantumHolder::isQuantumFloat() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		hold_p.ptr()->type() == Quantum<Float>::myType());
 }
 
 Bool QuantumHolder::isQuantumInt() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		hold_p.ptr()->type() == Quantum<Int>::myType());
 }
 
 Bool QuantumHolder::isQuantumComplex() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		hold_p.ptr()->type() == Quantum<Complex>::myType());
 }
 
 Bool QuantumHolder::isQuantumDComplex() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		hold_p.ptr()->type() == Quantum<DComplex>::myType());
 }
 
 Bool QuantumHolder::isQuantumArrayDouble() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
 		(hold_p.ptr()->type() == Quantum<Array<Double> >::myType() ||
 		 hold_p.ptr()->type() == Quantum<Vector<Double> >::myType()));
 }
 
 Bool QuantumHolder::isQuantumArrayFloat() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
   		(hold_p.ptr()->type() == Quantum<Array<Float> >::myType() ||
 		 hold_p.ptr()->type() == Quantum<Vector<Float> >::myType()));
 }
 
 Bool QuantumHolder::isQuantumArrayInt() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
   		(hold_p.ptr()->type() == Quantum<Array<Int> >::myType() ||
 		 hold_p.ptr()->type() == Quantum<Vector<Int> >::myType()));
 }
 
 Bool QuantumHolder::isQuantumArrayComplex() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
   		(hold_p.ptr()->type() == Quantum<Array<Complex> >::myType() ||
 		 hold_p.ptr()->type() == Quantum<Vector<Complex> >::myType()));
 }
 
 Bool QuantumHolder::isQuantumArrayDComplex() const {
-  return ToBool(hold_p.ptr() &&
+  return (hold_p.ptr() &&
   		(hold_p.ptr()->type() == Quantum<Array<DComplex> >::myType() ||
 		 hold_p.ptr()->type() == Quantum<Vector<DComplex> >::myType()));
 }
 
 Bool QuantumHolder::isQuantumVectorDouble() const {
-  return ToBool(isQuantumArrayDouble() && ndim() == 1);
+  return (isQuantumArrayDouble() && ndim() == 1);
 }
 
 Bool QuantumHolder::isQuantumVectorFloat() const {
-  return ToBool(isQuantumArrayFloat() && ndim() == 1);
+  return (isQuantumArrayFloat() && ndim() == 1);
 }
 
 Bool QuantumHolder::isQuantumVectorInt() const {
-  return ToBool(isQuantumArrayInt() && ndim() == 1);
+  return (isQuantumArrayInt() && ndim() == 1);
 }
 
 Bool QuantumHolder::isQuantumVectorComplex() const {
-  return ToBool(isQuantumArrayComplex() && ndim() == 1);
+  return (isQuantumArrayComplex() && ndim() == 1);
 }
 
 Bool QuantumHolder::isQuantumVectorDComplex() const {
-  return ToBool(isQuantumArrayDComplex() && ndim() == 1);
+  return (isQuantumArrayDComplex() && ndim() == 1);
 }
 
 Int QuantumHolder::nelements() const {

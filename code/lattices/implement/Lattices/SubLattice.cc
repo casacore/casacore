@@ -1,5 +1,5 @@
 //# SubLattice.cc: A subset of a Lattice
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -270,7 +270,7 @@ void SubLattice<T>::setAxesMap (const AxesSpecifier& axesSpec)
 template<class T>
 Bool SubLattice<T>::isMasked() const
 {
-  return ToBool (itsMaskLatPtr != 0  ||  itsRegion.hasMask());
+  return  (itsMaskLatPtr != 0  ||  itsRegion.hasMask());
 }
 
 template<class T>

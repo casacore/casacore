@@ -1,5 +1,5 @@
 //# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,7 +93,7 @@ void MUString::skipBlank() {
 
 Bool MUString::testBlank() const {
   static Regex ex("[ \t]");
-  return ToBool(ptr >= len || testChar(ex));
+  return (ptr >= len || testChar(ex));
 }
 
 Bool MUString::tSkipBlank() {
@@ -257,7 +257,7 @@ Bool MUString::tSkipNum() {
 }
 
 Bool MUString::testChar(Char ch) const {
-  return ToBool(ptr < len && str[ptr] == ch);
+  return (ptr < len && str[ptr] == ch);
 }
 
 Bool MUString::testCharNC(Char ch) const {
@@ -267,7 +267,7 @@ Bool MUString::testCharNC(Char ch) const {
 }
 
 Bool MUString::testChar(const Regex &ex) const {
-  return ToBool(ptr < len && String(str[ptr]).index(ex) == 0);
+  return (ptr < len && String(str[ptr]).index(ex) == 0);
 }
 
 Bool MUString::testAlpha() const {
@@ -302,7 +302,7 @@ String MUString::getAlphaNum() {
 }
 
 Bool MUString::testString(const Regex &ex) const {
-  return ToBool(ptr < len &&
+  return (ptr < len &&
 		String(String(str).from(Int(ptr))).index(ex) == 0);
 }
 
@@ -310,7 +310,7 @@ Bool MUString::testString(const String &ex) const {
   if (ptr < len) {
     Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
     String t = String(str)(ptr,tl); 
-    return ToBool(t.matches(ex));
+    return (t.matches(ex));
   };
   return False;
 }
@@ -320,7 +320,7 @@ Bool MUString::testStringNC(const String &ex) const {
     Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
     String t = String(str)(ptr,tl); t.downcase();
     String u = ex; u.downcase();
-    return ToBool(t.matches(u));
+    return (t.matches(u));
   };
   return False;
 }
@@ -424,7 +424,7 @@ void MUString::setPtr(Int in) {
 }
 
 Bool MUString::eos() const {
-  return ToBool(ptr >= len);
+  return (ptr >= len);
 }
 
 Bool MUString::status() const {

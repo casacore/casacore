@@ -1,5 +1,5 @@
 //# ScaColData.cc: Access to a table column containing scalars
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,7 +98,7 @@ Bool ScalarColumnData<T>::isDefined (uInt rownr) const
     }
     T val;
     dataColPtr_p->get (rownr, &val);
-    return (ToBool (!(val == undefVal_p)));
+    return ( (!(val == undefVal_p)));
 }
 
 

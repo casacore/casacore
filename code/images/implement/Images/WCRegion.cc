@@ -1,5 +1,5 @@
 //# WCRegion.cc: Class to define a region of interest in an image
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ WCRegion::~WCRegion()
 Bool WCRegion::operator== (const WCRegion& other) const
 {
     // Type check.
-    return ToBool (type() == other.type());
+    return  (type() == other.type());
 }
 
 uInt WCRegion::ndim() const

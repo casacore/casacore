@@ -1,5 +1,5 @@
 //# MeasFrame.cc: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,16 +152,16 @@ MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
 }
 
 Bool MeasFrame::operator==(const MeasFrame &other) const{
-  return ToBool(rep == other.rep);
+  return (rep == other.rep);
 }
 
 Bool MeasFrame::operator!=(const MeasFrame &other) const{
-  return ToBool(rep != other.rep);
+  return (rep != other.rep);
 }
 
 // General member functions
 Bool MeasFrame::empty() const{
-  return ToBool( !(rep && (rep->epval || rep->posval || 
+  return ( !(rep && (rep->epval || rep->posval || 
 			   rep->dirval || rep->radval)) );
 }
 

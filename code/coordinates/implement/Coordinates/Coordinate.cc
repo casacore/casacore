@@ -1,5 +1,5 @@
 //# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -406,7 +406,7 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 				   const Vector<String> &oldUnits)
 {
     factor.resize(units.nelements());
-    Bool ok = ToBool(units.nelements() == oldUnits.nelements());
+    Bool ok = (units.nelements() == oldUnits.nelements());
     if (! ok) {
 	error = "units and oldUnits are different sizes!";
     } else {
@@ -416,7 +416,7 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 	    if (UnitVal::check(oldUnits(i)) && UnitVal::check(units(i))) {
 		Unit before = oldUnits(i);
 		Unit after = units(i);
-		ok = ToBool(before.getValue() == after.getValue());
+		ok = (before.getValue() == after.getValue());
 		if (!ok) {
 		    error = "Units are not compatible dimensionally";
 		} else {

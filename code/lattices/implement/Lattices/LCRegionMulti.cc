@@ -1,5 +1,5 @@
 //# LCRegionMulti.cc: Abstract base class for regions composed of other regions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ LCRegionMulti& LCRegionMulti::operator= (const LCRegionMulti& other)
 
 Bool LCRegionMulti::hasMask() const
 {
-    return ToBool(itsHasMask >= 0);
+    return (itsHasMask >= 0);
 }
 
 void LCRegionMulti::multiTranslate (PtrBlock<const LCRegion*>& regions,

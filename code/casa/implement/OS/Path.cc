@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -429,7 +429,7 @@ String Path::removeDots (const String& inString) const
     // Combine the parts into the output string.
     // Start it with a slash if the input started with a slash.
     String outString;
-    Bool doSlash = ToBool(parts(0).empty());
+    Bool doSlash = (parts(0).empty());
     for (i=0; i<nvalid; i++) {
         if (doSlash) {
 	    outString += '/';

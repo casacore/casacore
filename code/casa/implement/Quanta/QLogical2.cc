@@ -1,5 +1,5 @@
 //# QLogical.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Exceptions/Error.h>
 
 Bool QMakeBool(Int val) {
-    return (ToBool(val));
+    return ((val));
 }
 
 Bool QMakeBool(const LogicalArray &val) {

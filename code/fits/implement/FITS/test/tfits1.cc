@@ -1,5 +1,5 @@
 //# tfits1.cc: FITS test program to read and display values from a FITS file
-//# Copyright (C) 1993,1994,1996,1998,1999
+//# Copyright (C) 1993,1994,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -235,10 +235,10 @@ void do_binary_table(BinaryTableExtension &x) {
 		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
 		    Int whichByte = 0;
 		    unsigned char mask = 0200;
-		    cout << ToBool(vptr[0] & mask);
+		    cout << (vptr[0] & mask);
 		    for (int k=1;k<thisva.num();++k) {
 		      if (k%8 == 0) whichByte++;
-		      cout << ", " << ToBool(vptr[whichByte] & (mask >> k%8));
+		      cout << ", " << (vptr[whichByte] & (mask >> k%8));
 		    }
 		  }
 		  break;

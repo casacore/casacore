@@ -108,7 +108,7 @@ Bool MSRange::checkSelection()
     }
     checked_p=True;
   }
-  return ToBool(ddId_p>=ALL);
+  return (ddId_p>=ALL);
 }
 
 GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)

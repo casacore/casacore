@@ -1,5 +1,5 @@
 //# tLCLELMask.cc:  mechanical test of the LCLELMask class
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(iter.vectorCursor(), value), AipsError);
 	if (alternates) {
-	    value = ToBool(!value);
+	    value = (!value);
 	}
     }
     nstep = iter.nsteps();

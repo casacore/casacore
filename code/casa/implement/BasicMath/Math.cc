@@ -1,5 +1,5 @@
 //# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,20 +36,20 @@
 
 Bool near(uInt val1, uInt val2, Double tol) {
   if (tol <= 0) {
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   }
   if (val1 == val2) {
     return True;
   } else if (val1 > val2) {
-    return ToBool(Double(val1-val2) <= tol*max(val1,val2));
+    return (Double(val1-val2) <= tol*max(val1,val2));
   } else {
-    return ToBool(Double(val2-val1) <= tol*max(val1,val2));
+    return (Double(val2-val1) <= tol*max(val1,val2));
   }
 }
 
 Bool near(Int val1, Int val2, Double tol) {
   if (tol <=0) {
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   }
   if (val1 == val2) {
     return True;
@@ -59,26 +59,26 @@ Bool near(Int val1, Int val2, Double tol) {
   }
   const Int aval1 = abs(val1);
   const Int aval2 = abs(val2);
-  return ToBool(Double(aval1-aval2) <= tol*Double(max(aval1,aval2)));
+  return (Double(aval1-aval2) <= tol*Double(max(aval1,aval2)));
 }
 
 Bool near(Float val1, Float val2, Double tol) {
   if (tol <=0) {
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   }
   if (val1 == val2) {
     return True;
   }
   if (val1 == 0) {
-    return ToBool(abs(val2) <= (1+tol)*C::flt_min);
+    return (abs(val2) <= (1+tol)*C::flt_min);
   }
   else if (val2 == 0) {
-    return ToBool(abs(val1) <= (1+tol)*C::flt_min);
+    return (abs(val1) <= (1+tol)*C::flt_min);
   }
   if ((0<val1) != (0<val2)) {
     return False;
   }
-  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
 Bool near(Float val1, Double val2, Double tol) {
@@ -91,43 +91,43 @@ Bool near(Double val1, Float val2, Double tol) {
 
 Bool near(Double val1, Double val2, Double tol) {
   if (tol <=0) {
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   }
   if (val1 == val2) {
     return True;
   }
   if (val1 == 0) {
-    return ToBool(abs(val2) <= (1+tol)*C::dbl_min);
+    return (abs(val2) <= (1+tol)*C::dbl_min);
   }
   else if (val2 == 0) {
-    return ToBool(abs(val1) <= (1+tol)*C::dbl_min);
+    return (abs(val1) <= (1+tol)*C::dbl_min);
   }
   if ((0<val1) != (0<val2)) {
     return False;
   }
-  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
 Bool nearAbs(uInt val1, uInt val2, Double tol) {
   if (val1 == val2) {
     return True;
   } else if (val1 > val2) {
-    return ToBool(tol > Double(val1 - val2));
+    return (tol > Double(val1 - val2));
   } else {
-    return ToBool(tol > Double(val2 - val1));
+    return (tol > Double(val2 - val1));
   }
 }
 
 Bool nearAbs(Int val1, Int val2, Double tol) {
-  return ToBool(tol > Double(abs(val2 - val1)));
+  return (tol > Double(abs(val2 - val1)));
 }
 
 Bool nearAbs(Float val1, Float val2, Double tol) {
-  return ToBool(tol > Double(abs(val2 - val1)));
+  return (tol > Double(abs(val2 - val1)));
 }
 
 Bool nearAbs(Double val1, Double val2, Double tol) {
-  return ToBool(tol > abs(val2 - val1));
+  return (tol > abs(val2 - val1));
 }
 
 
@@ -175,10 +175,10 @@ Bool isInf(Float val) {
   // determine this.
 #if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #if defined(AIPS_LINUX)
-  return ToBool(isinf(Double(val)));
+  return (isinf(Double(val)));
 #endif
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return ToBool(!finite(Double(val)) && !isnanf(val));
+  return (!finite(Double(val)) && !isnanf(val));
 #endif
 #else // Otherwise this is a default implementation.
   const uChar* uptr = (const uChar*) &val;
@@ -210,10 +210,10 @@ Bool isInf(Double val) {
   // determine this.
 #if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #if defined(AIPS_LINUX)
-  return ToBool(isinf(val));
+  return (isinf(val));
 #endif
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return ToBool(!finite(val) && !isnan(val));
+  return (!finite(val) && !isnan(val));
 #endif
 #else // Otherwise this is a default implementation.
   const uChar* uptr = (const uChar*) &val;

@@ -1,5 +1,5 @@
 //# DataType.h: data types (primarily) in the table system
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,12 +70,12 @@ ostream &operator<<(ostream &os, DataType type)
 
 Bool isScalar(DataType type)
 {
-    return ToBool((type <= TpString) || (type == TpQuantity));
+    return ((type <= TpString) || (type == TpQuantity));
 }
 
 Bool isArray(DataType type)
 {
-    return ToBool((type >= TpArrayBool && type <= TpArrayString) ||
+    return ((type >= TpArrayBool && type <= TpArrayString) ||
 		  (type == TpArrayQuantity));
 }
 

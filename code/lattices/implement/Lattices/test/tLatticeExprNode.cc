@@ -1,5 +1,5 @@
 //# tLatticeExprNode.cc:  Basic test program for LEL classes
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -350,13 +350,13 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Bool Scalar" << endl;
       LatticeExprNode expr1(bBVal);
       LatticeExprNode expr2 = !expr1;
-      if (!checkBool(expr2, ToBool(!bBVal), shape, True, False)) ok = False;
+      if (!checkBool(expr2, (!bBVal), shape, True, False)) ok = False;
    }
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2 = !expr1;
-      if (!checkBool(expr2, ToBool(!bBVal), shape, False, False)) ok = False;
+      if (!checkBool(expr2, (!bBVal), shape, False, False)) ok = False;
    }
 //
 //************************************************************************
@@ -398,7 +398,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = expr1+expr2;
       if (!checkFloat (expr3, bFVal+cFVal, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -443,7 +443,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = expr1-expr2;
       if (!checkFloat (expr3, bFVal-cFVal, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -474,7 +474,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = expr1*expr2;
       if (!checkFloat (expr3, bFVal*cFVal, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -505,7 +505,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = expr1/expr2;
       if (!checkFloat (expr3, bFVal/cFVal, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -521,7 +521,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bBVal);
       LatticeExprNode expr2(cBVal);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bBVal==cBVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bBVal==cBVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1==expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -530,7 +530,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bFVal==cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal==cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1==expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -539,7 +539,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bCVal==cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal==cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1==expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -548,8 +548,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2(cB);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bBVal==cBVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bB.isMasked() || cB.isMasked()),
+      if (!checkBool (expr3, (bBVal==cBVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bB.isMasked() || cB.isMasked()),
 		      bB.getMask() && cB.getMask())) ok = False;
       LatticeExprNode expr4(expr1==expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
@@ -561,8 +561,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bFVal==cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal==cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1==expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
@@ -574,7 +574,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(bC);
       LatticeExprNode expr3(expr1==expr2);
-      if (!checkBool (expr3, ToBool(bCVal==bCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal==bCVal), shape, False, False)) ok = False;
    }
    cout << "Binary operator !=" << endl;
    {
@@ -582,7 +582,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bBVal);
       LatticeExprNode expr2(cBVal);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bBVal!=cBVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bBVal!=cBVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -591,7 +591,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bFVal!=cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal!=cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -600,7 +600,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bCVal!=cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal!=cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -609,8 +609,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2(cB);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bBVal!=cBVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bB.isMasked() || cB.isMasked()),
+      if (!checkBool (expr3, (bBVal!=cBVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bB.isMasked() || cB.isMasked()),
 		      bB.getMask() && cB.getMask())) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
@@ -622,8 +622,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bFVal!=cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal!=cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
@@ -635,7 +635,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(cC);
       LatticeExprNode expr3(expr1!=expr2);
-      if (!checkBool (expr3, ToBool(bCVal!=cCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal!=cCVal), shape, False, False)) ok = False;
       LatticeExprNode expr4(expr1!=expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
    }
@@ -645,7 +645,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1>expr2);
-      if (!checkBool (expr3, ToBool(bFVal>cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal>cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -654,7 +654,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1>expr2);
-      if (!checkBool (expr3, ToBool(bCVal>cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal>cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -663,8 +663,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1>expr2);
-      if (!checkBool (expr3, ToBool(bFVal>cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal>cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1>expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
@@ -676,7 +676,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(cC);
       LatticeExprNode expr3(expr1>expr2);
-      if (!checkBool (expr3, ToBool(bCVal>cCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal>cCVal), shape, False, False)) ok = False;
       LatticeExprNode expr4(expr1>expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
    }
@@ -686,7 +686,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1>=expr2);
-      if (!checkBool (expr3, ToBool(bFVal>=cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal>=cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -695,7 +695,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1>=expr2);
-      if (!checkBool (expr3, ToBool(bCVal>=cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal>=cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -704,8 +704,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1>=expr2);
-      if (!checkBool (expr3, ToBool(bFVal>=cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal>=cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
@@ -717,7 +717,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(cC);
       LatticeExprNode expr3(expr1>=expr2);
-      if (!checkBool (expr3, ToBool(bCVal>=cCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal>=cCVal), shape, False, False)) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
    }
@@ -727,7 +727,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1<expr2);
-      if (!checkBool (expr3, ToBool(bFVal<cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal<cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -736,7 +736,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1<expr2);
-      if (!checkBool (expr3, ToBool(bCVal<cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal<cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<expr1);
       if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
@@ -745,8 +745,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1<expr2);
-      if (!checkBool (expr3, ToBool(bFVal<cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal<cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1<expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
@@ -758,7 +758,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(cC);
       LatticeExprNode expr3(expr1<expr2);
-      if (!checkBool (expr3, ToBool(bCVal<cCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal<cCVal), shape, False, False)) ok = False;
       LatticeExprNode expr4(expr1<expr1);
       if (!checkBool (expr4, False, shape, False, False)) ok = False;
    }
@@ -768,7 +768,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3(expr1<=expr2);
-      if (!checkBool (expr3, ToBool(bFVal<=cFVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bFVal<=cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -777,7 +777,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bCVal);
       LatticeExprNode expr2(cCVal);
       LatticeExprNode expr3(expr1<=expr2);
-      if (!checkBool (expr3, ToBool(bCVal<=cCVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bCVal<=cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
       if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
@@ -786,8 +786,8 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3(expr1<=expr2);
-      if (!checkBool (expr3, ToBool(bFVal<=cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkBool (expr3, (bFVal<=cFVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
@@ -799,7 +799,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2(cC);
       LatticeExprNode expr3(expr1<=expr2);
-      if (!checkBool (expr3, ToBool(bCVal<=cCVal), shape, False, False)) ok = False;
+      if (!checkBool (expr3, (bCVal<=cCVal), shape, False, False)) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
       if (!checkBool (expr4, True, shape, False, False)) ok = False;
    }
@@ -809,15 +809,15 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bBVal);
       LatticeExprNode expr2(cBVal);
       LatticeExprNode expr3(expr1&&expr2);
-      if (!checkBool (expr3, ToBool(bBVal&&cBVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bBVal&&cBVal), shape, True, False)) ok = False;
    }
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2(cB);
       LatticeExprNode expr3(expr1&&expr2);
-      if (!checkBool (expr3, ToBool(bBVal&&cBVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bB.isMasked() || cB.isMasked()),
+      if (!checkBool (expr3, (bBVal&&cBVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bB.isMasked() || cB.isMasked()),
 		      (!bB.get() && bB.getMask()) ||
 		      (!cB.get() && cB.getMask()) ||
 		      (bB.getMask() && cB.getMask()))) ok = False;
@@ -828,15 +828,15 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bBVal);
       LatticeExprNode expr2(cBVal);
       LatticeExprNode expr3(expr1||expr2);
-      if (!checkBool (expr3, ToBool(bBVal||cBVal), shape, True, False)) ok = False;
+      if (!checkBool (expr3, (bBVal||cBVal), shape, True, False)) ok = False;
    }
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2(cB);
       LatticeExprNode expr3(expr1||expr2);
-      if (!checkBool (expr3, ToBool(bBVal||cBVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bB.isMasked() || cB.isMasked()),
+      if (!checkBool (expr3, (bBVal||cBVal), shape, False, False)) ok = False;
+      if (!checkMask (expr3, (bB.isMasked() || cB.isMasked()),
 		      (bB.get() && bB.getMask()) ||
 		      (cB.get() && cB.getMask()) ||
 		      (bB.getMask() && cB.getMask()))) ok = False;
@@ -1361,13 +1361,13 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = min(expr1);
-      if (!checkFloat (expr2, bFVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
    }
    {
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = min(expr1);
-      if (!checkComplex(expr2, bCVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkComplex(expr2, bCVal, shape, True, (nb==0))) ok = False;
    }
     cout << "max" << endl;
    {
@@ -1386,13 +1386,13 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = max(expr1);
-      if (!checkFloat (expr2, bFVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
    }
    {
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = max(expr1);
-      if (!checkComplex(expr2, bCVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkComplex(expr2, bCVal, shape, True, (nb==0))) ok = False;
    }
     cout << "sign" << endl;
    {
@@ -1521,7 +1521,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = median(expr1);
-      if (!checkFloat (expr2, bFVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
    }
     cout << "mean" << endl;
    {
@@ -1540,34 +1540,34 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = mean(expr1);
-      if (!checkFloat (expr2, bFVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
    }
    {
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = mean(expr1);
-      if (!checkComplex(expr2, bCVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkComplex(expr2, bCVal, shape, True, (nb==0))) ok = False;
    }
     cout << "variance" << endl;
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = variance(expr1);
-      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, 0.0, shape, True, (nb==0))) ok = False;
    }
     cout << "stddev" << endl;
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = stddev(expr1);
-      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, 0.0, shape, True, (nb==0))) ok = False;
    }
     cout << "avdev" << endl;
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2 = avdev(expr1);
-      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr2, 0.0, shape, True, (nb==0))) ok = False;
    }
     cout << "sum" << endl;
    {
@@ -1680,14 +1680,14 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2 = any(expr1);
-      if (!checkBool(expr2, ToBool(nb>0 && bBVal), shape, True, False)) ok = False;
+      if (!checkBool(expr2, (nb>0 && bBVal), shape, True, False)) ok = False;
    }
     cout << "all" << endl;
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
       LatticeExprNode expr2 = all(expr1);
-      if (!checkBool(expr2, ToBool(nb==0 || bBVal), shape, True, False)) ok = False;
+      if (!checkBool(expr2, (nb==0 || bBVal), shape, True, False)) ok = False;
    }
    cout << "ntrue" << endl;
    {
@@ -1738,7 +1738,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = atan2(expr1,expr2);
       if (!checkFloat (expr3, atan2(bFVal,cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
     cout << "pow" << endl;
@@ -1762,7 +1762,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = pow(expr1,expr2);
       if (!checkFloat (expr3, pow(bFVal,cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -1786,7 +1786,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = fmod(expr1,expr2);
       if (!checkFloat (expr3, fmod(bFVal,cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
     cout << "min" << endl;
@@ -1803,7 +1803,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = min(expr1,expr2);
       if (!checkFloat (expr3, min(bFVal,cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
     cout << "max" << endl;
@@ -1820,7 +1820,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = max(expr1,expr2);
       if (!checkFloat (expr3, max(bFVal,cFVal), shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    cout << "amp" << endl;
@@ -1847,7 +1847,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3 = amp(expr1,expr2);
       Float result = sqrt(bFVal*bFVal+cFVal*cFVal);
       if (!checkFloat (expr3, result, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -1874,7 +1874,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3 = pa(expr1,expr2);
       Float result = 90.0/C::pi*atan2(bFVal,cFVal);
       if (!checkFloat (expr3, result, shape, False, False)) ok = False;
-      if (!checkMask (expr3, ToBool(bF.isMasked() || cF.isMasked()),
+      if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
    }
    {
@@ -1914,7 +1914,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       if (! checkInfo (expr3, shape, True, False, TpBool)) {
 	ok = False;
       } else {
-	Bool result = ToBool(nb!=0);
+	Bool result = (nb!=0);
 	if (expr3.getBool() != result) {
 	  cout << "  expected " << result
 	       << "; result is " << expr3.getBool() << endl;
@@ -1982,7 +1982,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       cout << " Float Scalar 2" << endl;
       LatticeExprNode expr1(min(bF));
       LatticeExprNode expr3 = value(expr1);
-      if (!checkFloat (expr3, bFVal, shape, True, ToBool(nb==0))) ok = False;
+      if (!checkFloat (expr3, bFVal, shape, True, (nb==0))) ok = False;
    }
    {
       cout << " Float Array" << endl;

@@ -1,5 +1,5 @@
 //# LCBox.cc: Class to define a rectangular box of interest
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -322,10 +322,10 @@ Bool LCBox::verify (IPosition& blc, IPosition& trc,
       }
    }
 //
-   Bool changed = ToBool(blc.nelements()!=inBlc.nelements() ||
+   Bool changed = (blc.nelements()!=inBlc.nelements() ||
                          trc.nelements()!=inTrc.nelements() ||
                          inc.nelements()!=inInc.nelements());
-   if (!changed) changed = ToBool(blc!=inBlc || trc!=inTrc || inc!=inInc);
+   if (!changed) changed = (blc!=inBlc || trc!=inTrc || inc!=inInc);
 //
    return changed;
 }

@@ -1,5 +1,5 @@
 //# tLatticeExprNode2.cc:  Test program for masks in LatticeExprNode
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ Bool checkFloat (const LatticeExprNode& expr,
     Slicer region(origin, shape);
     expr.eval (arr, region);
     // Check if there is a mask if it should be.
-    if (ToBool(mask.nelements()==0) == arr.isMasked()) {
+    if ((mask.nelements()==0) == arr.isMasked()) {
 	cout << "   mismatch in arr.isMasked" << endl;
 	return False;
     }
@@ -144,7 +144,7 @@ Bool checkComplex (const LatticeExprNode& expr,
     Slicer region(origin, shape);
     expr.eval (arr, region);
     // Check if there is a mask if it should be.
-    if (ToBool(mask.nelements()==0) == arr.isMasked()) {
+    if ((mask.nelements()==0) == arr.isMasked()) {
 	cout << "   mismatch in arr.isMasked" << endl;
 	return False;
     }
@@ -211,7 +211,7 @@ Bool checkBool (const LatticeExprNode& expr,
     // Check if there is a mask if it should be.
     // When an or/and was done, it can be the case that no mask is
     // present if entire mask is true.
-    if (ToBool(mask.nelements()==0) == arr.isMasked()) {
+    if ((mask.nelements()==0) == arr.isMasked()) {
 	if (!orand  ||  mask.nelements() == 0) {
 	    cout << "   mismatch in arr.isMasked" << endl;
 	    return False;
@@ -272,7 +272,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     } else if (! aF.isMasked()) {
         asMask.reference (emptyMask);
     }
-    Bool invalid = ToBool(aInvalid || bInvalid);
+    Bool invalid = (aInvalid || bInvalid);
     if (!aF.isMasked() && !bF.isMasked()) {
 	mask.reference (emptyMask);
 	abMask.reference (emptyMask);
@@ -525,25 +525,25 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 		    0, False, lmask, True)) ok = False;
 
     // Test anding of scalar and scalar.
-    invalid = ToBool (!((min(arra)==0 && !aInvalid) ||
+    invalid =  (!((min(arra)==0 && !aInvalid) ||
 	                (max(arrb)==0 && !bInvalid) ||
 		        (!aInvalid && !bInvalid)));
     if (!checkBool (min(aF)!=0 && max(bF)!=0, emptyBArr,
 		    min(arra)!=0 && max(arrb)!=0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool (!((min(arra)==0 && !aInvalid) ||
+    invalid =  (!((min(arra)==0 && !aInvalid) ||
 	                (max(arrb)!=0 && !bInvalid) ||
 		        (!aInvalid && !bInvalid)));
     if (!checkBool (min(aF)!=0 && max(bF)==0, emptyBArr,
 		    min(arra)!=0 && max(arrb)==0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool (!((min(arra)!=0 && !aInvalid) ||
+    invalid =  (!((min(arra)!=0 && !aInvalid) ||
 	                (max(arrb)==0 && !bInvalid) ||
 		        (!aInvalid && !bInvalid)));
     if (!checkBool (min(aF)==0 && max(bF)!=0, emptyBArr,
 		    min(arra)==0 && max(arrb)!=0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool (!((min(arra)!=0 && !aInvalid) ||
+    invalid =  (!((min(arra)!=0 && !aInvalid) ||
 	                (max(arrb)!=0 && !bInvalid) ||
 		        (!aInvalid && !bInvalid)));
     if (!checkBool (min(aF)==0 && max(bF)==0, emptyBArr,
@@ -625,25 +625,25 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 		    0, False, lmask, True)) ok = False;
 
     // Test oring of scalar and scalar.
-    invalid = ToBool ((min(arra)==0 && bInvalid) ||
+    invalid =  ((min(arra)==0 && bInvalid) ||
 	              (max(arrb)==0 && aInvalid) ||
 		      (aInvalid && bInvalid));
     if (!checkBool (min(aF)!=0 || max(bF)!=0, emptyBArr,
 		    min(arra)!=0 || max(arrb)!=0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool ((min(arra)==0 && bInvalid) ||
+    invalid =  ((min(arra)==0 && bInvalid) ||
 	              (max(arrb)!=0 && aInvalid) ||
 		      (aInvalid && bInvalid));
     if (!checkBool (min(aF)!=0 || max(bF)==0, emptyBArr,
 		    min(arra)!=0 || max(arrb)==0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool ((min(arra)!=0 && bInvalid) ||
+    invalid =  ((min(arra)!=0 && bInvalid) ||
 	              (max(arrb)==0 && aInvalid) ||
 		      (aInvalid && bInvalid));
     if (!checkBool (min(aF)==0 || max(bF)!=0, emptyBArr,
 		    min(arra)==0 || max(arrb)!=0, invalid,
 		    emptyMask, True)) ok = False;
-    invalid = ToBool ((min(arra)!=0 && bInvalid) ||
+    invalid =  ((min(arra)!=0 && bInvalid) ||
 	              (max(arrb)!=0 && aInvalid) ||
 		      (aInvalid && bInvalid));
     if (!checkBool (min(aF)==0 || max(bF)==0, emptyBArr,
@@ -708,11 +708,11 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 
     if (!checkFloat (iif(min(aF)==0,max(aF),min(bF)), emptyFArr,
 		     min(arra)==0?max(arra):min(arrb),
-		     ToBool(aInvalid || (min(arra)!=0 && bInvalid)),
+		     (aInvalid || (min(arra)!=0 && bInvalid)),
 		     emptyMask)) ok = False;
     if (!checkFloat (iif(min(aF)!=0,max(aF),min(bF)), emptyFArr,
 		     min(arra)!=0?max(arra):min(arrb),
-		     ToBool(aInvalid || (min(arra)==0 && bInvalid)),
+		     (aInvalid || (min(arra)==0 && bInvalid)),
 		     emptyMask)) ok = False;
 
     // Now test iif with an array condition.

@@ -1,5 +1,5 @@
 //# tRecordDesc.cc: Test the RecordDesc class
-//# Copyright (C) 1995,1996,2000
+//# Copyright (C) 1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@ void doIt (Bool doExcp);
 main (int argc)
 {
     try {
-	doIt (ToBool (argc<2));
+	doIt ( (argc<2));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

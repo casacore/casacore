@@ -1,5 +1,5 @@
 //# Bintable.cc:  this defines BinaryTable, which converts FITS binary tables to aips++ Tables
-//# Copyright (C) 1994-1999,2000
+//# Copyright (C) 1994-1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -252,7 +252,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        //               NOTE: VADESC are always assumed to be array columns
        //               but that fact is ignored by isArray - but thats ok,
        //               it is not used in that case.
-       Bool isArray = ToBool(nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR
+       Bool isArray = (nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR
 			     && field(i).fieldtype() != FITS::STRING);
        //		switch on the type of column
        switch (field(i).fieldtype()) {
@@ -505,7 +505,7 @@ void BinaryTable::fillRow()
 		    *(FitsField<FitsBit> *)&field(j);
 		Vector<Bool> vec(nelem[j]);
 		for (uInt k=0;k<field(j).nelements();k++) {
-		    vec(k) = ToBool(int(thisfield(k)));
+		    vec(k) = (int(thisfield(k)));
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<Bool> arrcol(tabcol);
@@ -732,7 +732,7 @@ void BinaryTable::fillRow()
 			uChar mask = 0200;
 			for (Int k=0;k<thisva.num();k++) {
 			    if (k%8 == 0) whichByte++;
-			    vec(k) = ToBool(vptr[whichByte] & (mask >> k%8));
+			    vec(k) = (vptr[whichByte] & (mask >> k%8));
 			}
 			ArrayColumn<Bool> arrcol(tabcol);
 			arrcol.put(0,vec);

@@ -1,5 +1,5 @@
 //# tMathNaN.cc: Test program for NaN
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,26 +42,26 @@
 			    ((*(Int *)&(x) & 0x007fffff) != 0x00000000))
 
 inline Bool isNaN_isnan(Float val) {
-  return ToBool(isnan(Double(val)));
+  return (isnan(Double(val)));
 }
 
 inline Bool isNaN_isnanf(Float val) {
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return ToBool(isnanf(val));
+  return (isnanf(val));
 #else
-  return ToBool(isnanfmacro(val));
+  return (isnanfmacro(val));
 #endif
 }
 
 inline Bool isNaN_ref(const Float &x)
 {
-  return ToBool(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
+  return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
 		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
 inline Bool isNaN_val(Float x)
 {
-  return ToBool(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
+  return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
 		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
@@ -86,7 +86,7 @@ Bool doIt (Int n, Float x, Bool nan)
    t.mark();
    for (Int i=0; i<n; i++) {
      for (Int j=0; j<narr; j++) {
-       if (ToBool(arr[j] != arr[j])) {
+       if ((arr[j] != arr[j])) {
 	 nf++;
        }
      }

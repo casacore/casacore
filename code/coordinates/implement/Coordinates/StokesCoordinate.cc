@@ -1,5 +1,5 @@
 //# StokesCoordinate.cc: this defines StokesCoordinate which shoe-horns Stokes axes into a Coordinate
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -252,7 +252,7 @@ Vector<Double> StokesCoordinate::referenceValue() const
 
 Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = ToBool(names.nelements()==1);
+    Bool ok = (names.nelements()==1);
     if (!ok) {
        set_error ("names vector must be of length 1");
     } else {
@@ -355,7 +355,7 @@ Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 
 {
-    Bool ok = ToBool(!container.isDefined(fieldName));
+    Bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	subrec.define("axes", worldAxisNames());

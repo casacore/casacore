@@ -1,5 +1,5 @@
 //# LinearCoordinate.cc: this defines LinearCoordinate
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -238,7 +238,7 @@ Vector<Double> LinearCoordinate::referencePixel() const
 
 Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = ToBool(names.nelements() == nWorldAxes());
+    Bool ok = (names.nelements() == nWorldAxes());
     if (! ok) {
 	set_error("names vector has the wrong size");
     } else {
@@ -252,7 +252,7 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     Bool ok = Coordinate::setWorldAxisUnits(units);
     if (ok) {
-	ok = ToBool(units.nelements() == nWorldAxes());
+	ok = (units.nelements() == nWorldAxes());
 	if (ok) {
 	    units_p = units;
 	}
@@ -275,7 +275,7 @@ Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
 
 Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    Bool ok = ToBool(refPix.nelements() == nWorldAxes());
+    Bool ok = (refPix.nelements() == nWorldAxes());
     if (! ok) {
 	set_error("reference pixel vector has the wrong size");
     } else {
@@ -287,7 +287,7 @@ Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
 
 Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &pc)
 {
-    Bool ok = ToBool(pc.nrow() == nWorldAxes() && 
+    Bool ok = (pc.nrow() == nWorldAxes() && 
 		     pc.ncolumn() == nWorldAxes() );
     if (! ok) {
 	set_error("Transform matrix has the wrong size");
@@ -300,7 +300,7 @@ Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &pc)
 
 Bool LinearCoordinate::setIncrement(const Vector<Double> &inc)
 {
-    Bool ok = ToBool(inc.nelements() == nWorldAxes());
+    Bool ok = (inc.nelements() == nWorldAxes());
     if (! ok) {
 	set_error("increment vector has the wrong size");
     } else {
@@ -312,7 +312,7 @@ Bool LinearCoordinate::setIncrement(const Vector<Double> &inc)
 
 Bool LinearCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements() == nWorldAxes());
+    Bool ok = (refval.nelements() == nWorldAxes());
     if (! ok) {
 	set_error("reference value vector has the wrong size");
     } else {
@@ -464,7 +464,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
 Bool LinearCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 {
-    Bool ok = ToBool(!container.isDefined(fieldName));
+    Bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	subrec.define("crval", referenceValue());

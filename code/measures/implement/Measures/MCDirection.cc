@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,8 +108,8 @@ void MCDirection::getConvert(MConvertBase &mc,
     uInt iin  = inref.getType();
     uInt iout = outref.getType();
     if (iin != iout) {
-      Bool iplan = ToBool(iin & MDirection::EXTRA);
-      Bool oplan = ToBool(iout & MDirection::EXTRA);
+      Bool iplan = (iin & MDirection::EXTRA);
+      Bool oplan = (iout & MDirection::EXTRA);
       if (iplan) {
 	if (iin != MDirection::COMET) {
 	  mc.addMethod(MCDirection::R_PLANET0);

@@ -1,5 +1,5 @@
 //# LELAttribute.cc: Ancillary information for the LEL letter classes
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,7 +77,7 @@ LELAttribute::LELAttribute (const LELAttribute& leftAttr,
 {
    isScalar_p = False;
    isRegion_p = False;
-   isMasked_p = ToBool (leftAttr.isMasked() || rightAttr.isMasked());
+   isMasked_p =  (leftAttr.isMasked() || rightAttr.isMasked());
    if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
       throw (AipsError ("LELAttribute: regions cannot be combined here"));
    }

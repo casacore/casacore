@@ -1,5 +1,5 @@
 //# ImageRegion.cc: Class to hold a region of interest in an image
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,7 +126,7 @@ Bool ImageRegion::operator== (const LattRegionHolder& other) const
 
 Bool ImageRegion::isWCRegion() const
 {
-    return ToBool (itsWC != 0);
+    return  (itsWC != 0);
 }
 
 const WCRegion* ImageRegion::asWCRegionPtr() const

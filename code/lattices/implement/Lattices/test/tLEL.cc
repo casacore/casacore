@@ -1,5 +1,5 @@
 //# tLEL.cc:  Tests the LEL* classes directly
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -371,7 +371,7 @@ int main (int argc, char *argv[])
       cout << "   Operator !" << endl;     
       CountedPtr<LELInterface<Bool> > pExpr = new LELLattice<Bool>(aB);
       LELUnaryBool expr(LELUnaryEnums::NOT, pExpr);
-      if (!checkBool(expr, ToBool(!aBVal), String("LELUnaryBool"), shape, False, suppress)) ok = False;
+      if (!checkBool(expr, (!aBVal), String("LELUnaryBool"), shape, False, suppress)) ok = False;
     }
   }
 //
@@ -540,14 +540,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    BResult = ToBool(bFVal==cFVal);
+    BResult = (bFVal==cFVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    BResult = ToBool(bFVal!=cFVal);
+    BResult = (bFVal!=cFVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
@@ -555,14 +555,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator >" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
-    BResult = ToBool(bFVal>cFVal);
+    BResult = (bFVal>cFVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator >=" << endl;     
     LELBinaryCmp<Float> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
-    BResult = ToBool(bFVal>=cFVal);
+    BResult = (bFVal>=cFVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
   }
@@ -579,14 +579,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryCmp<Double> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    BResult = ToBool(bDVal==cDVal);
+    BResult = (bDVal==cDVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryCmp<Double> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    BResult = ToBool(bDVal!=cDVal);
+    BResult = (bDVal!=cDVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
@@ -594,14 +594,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator >" << endl;     
     LELBinaryCmp<Double> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
-    BResult = ToBool(bDVal>cDVal);
+    BResult = (bDVal>cDVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator >=" << endl;     
     LELBinaryCmp<Double> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
-    BResult = ToBool(bDVal>=cDVal);
+    BResult = (bDVal>=cDVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
   }
@@ -618,14 +618,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryCmp<Complex> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    BResult = ToBool(bCVal==cCVal);
+    BResult = (bCVal==cCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryCmp<Complex> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    BResult = ToBool(bCVal!=cCVal);
+    BResult = (bCVal!=cCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
@@ -633,14 +633,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator >" << endl;     
     LELBinaryCmp<Complex> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
-    BResult = ToBool(bCVal>cCVal);
+    BResult = (bCVal>cCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator >=" << endl;     
     LELBinaryCmp<Complex> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
-    BResult = ToBool(bCVal>=cCVal);
+    BResult = (bCVal>=cCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
   }
@@ -657,14 +657,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryCmp<DComplex> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    BResult = ToBool(bDCVal==cDCVal);
+    BResult = (bDCVal==cDCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryCmp<DComplex> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    BResult = ToBool(bDCVal!=cDCVal);
+    BResult = (bDCVal!=cDCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
@@ -672,14 +672,14 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator >" << endl;     
     LELBinaryCmp<DComplex> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
-    BResult = ToBool(bDCVal>cDCVal);
+    BResult = (bDCVal>cDCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator >=" << endl;     
     LELBinaryCmp<DComplex> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
-    BResult = ToBool(bDCVal>=cDCVal);
+    BResult = (bDCVal>=cDCVal);
     if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, False, suppress)) ok = False;
     }
   }
@@ -696,21 +696,21 @@ int main (int argc, char *argv[])
     {
     cout << "   Operator ==" << endl;     
     LELBinaryBool expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
-    BResult = ToBool(bBVal==cBVal);
+    BResult = (bBVal==cBVal);
     if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator !=" << endl;     
     LELBinaryBool expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
-    BResult = ToBool(bBVal!=cBVal);
+    BResult = (bBVal!=cBVal);
     if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, suppress)) ok = False;
     }
 
     {
     cout << "   Operator &&" << endl;     
     LELBinaryBool expr(LELBinaryEnums::AND, pExprLeft, pExprRight);
-    BResult = ToBool(bBVal&&cBVal);
+    BResult = (bBVal&&cBVal);
     if (!checkBool(expr, BResult, String("LELBinaryBool"), shape, False, suppress)) ok = False;
     }
   }

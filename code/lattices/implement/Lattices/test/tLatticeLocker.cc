@@ -1,5 +1,5 @@
 //# tLatticeLocker: Interactive test program for concurrent access to lattices
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -76,7 +76,7 @@ void b()
 		} 
 	    }
 	} else if (opt == 3  || opt == 4) {
-	    if (! tab.hasLock (ToBool(opt==4))) {
+	    if (! tab.hasLock ((opt==4))) {
 		cout << "Cannot get/put; lattice is not (correctly) locked"
 		     << endl;
 	    } else {

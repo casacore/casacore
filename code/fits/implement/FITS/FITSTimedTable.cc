@@ -1,5 +1,5 @@
 //# FITSTimedTable.cc: A Table with a time column
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -137,7 +137,7 @@ const RecordDesc &FITSTimedTable::description() const
 Bool FITSTimedTable::pastEnd() const
 {
   // the constant version can not try and resync with underlying table
-    return ToBool(!table_p || table_p->pastEnd());
+    return (!table_p || table_p->pastEnd());
 }
 
 Bool FITSTimedTable::pastEnd()
@@ -161,7 +161,7 @@ Bool FITSTimedTable::pastEnd()
 	*row_next_p = table_p->currentRow();
     }
 
-    return ToBool(how_past_end_p > 1);
+    return (how_past_end_p > 1);
 }
 
 void FITSTimedTable::next()

@@ -1,5 +1,5 @@
 //# tBucketCache.cc: Test program for the BucketCache class
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,8 +43,8 @@ void d (uInt bufSize);
 main (int argc)
 {
     try {
-	a (ToBool (argc<2));
-	b (ToBool (argc<2));
+	a ( (argc<2));
+	b ( (argc<2));
 	c (0);
 //	c (1024);
 //	c (32768);

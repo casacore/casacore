@@ -1,5 +1,5 @@
 //# complex.cc:
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,32 +73,32 @@ one_arg_error_handler_t set_Complex_error_handler(one_arg_error_handler_t f)
 
 Bool near(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
   if (tol <= 0)
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   if (val1 == val2) return True;
   if (val1 == 0)
-    return ToBool(abs(val2) <= (1+tol)*FLT_MIN);
+    return (abs(val2) <= (1+tol)*FLT_MIN);
   else if (val2 == 0)
-    return ToBool(abs(val1) <= (1+tol)*FLT_MIN);
-  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+    return (abs(val1) <= (1+tol)*FLT_MIN);
+  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
 Bool near(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
   if (tol <= 0)
-    return ToBool(val1 == val2);
+    return (val1 == val2);
   if (val1 == val2) return True;
   if (val1 == 0)
-    return ToBool(abs(val2) <= (1+tol)*DBL_MIN);
+    return (abs(val2) <= (1+tol)*DBL_MIN);
   else if (val2 == 0)
-    return ToBool(abs(val1) <= (1+tol)*DBL_MIN);
-  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+    return (abs(val1) <= (1+tol)*DBL_MIN);
+  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
 Bool nearAbs(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
-  return ToBool(abs(val2 - val1) <= tol);
+  return (abs(val2 - val1) <= tol);
 }
 
 Bool nearAbs(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
-  return ToBool(abs(val2 - val1) <= tol);
+  return (abs(val2 - val1) <= tol);
 }
 
 g_implement2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_IMP(double,int) G_COMPLEX_CTOR_OP_IMP(double,float) G_COMPLEX_ASSIGN_OP_IMP(double,float) G_COMPLEX_ASSIGN_OP_IMP(double,int) G_COMPLEX_OPEQ_IMP(double,float) G_COMPLEX_OPEQ_IMP(double,int))
@@ -115,12 +115,12 @@ G_COMPLEX_DO_BIN_OP_IMP
 
 Bool isNaN(const Complex &val)
 {
-    return ToBool(isNaN(val.real()) || isNaN(val.imag()));
+    return (isNaN(val.real()) || isNaN(val.imag()));
 }
 
 Bool isNaN(const DComplex &val)
 {
-    return ToBool(isNaN(val.real()) || isNaN(val.imag()));
+    return (isNaN(val.real()) || isNaN(val.imag()));
 }
 
 void setNaN(Complex &val)

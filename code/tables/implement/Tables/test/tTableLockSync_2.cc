@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Test program for concurrent access to tables
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -142,7 +142,7 @@ void a()
 void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
 {
     // Check if user locking.
-    Bool userLocking = ToBool (lockMode.option() == TableLock::UserLocking);
+    Bool userLocking =  (lockMode.option() == TableLock::UserLocking);
     // Open the table for update.
     Table tab ("tTableLockSync_2_tmp.tab", lockMode, Table::Update);
     ScalarColumn<uInt> seq (tab, "seq");
@@ -196,7 +196,7 @@ void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
 void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
 {
     // Check if user locking.
-    Bool userLocking = ToBool (lockMode.option() == TableLock::UserLocking);
+    Bool userLocking =  (lockMode.option() == TableLock::UserLocking);
     // Open the table for read.
     Table tab ("tTableLockSync_2_tmp.tab", lockMode);
     ROScalarColumn<uInt> seq (tab, "seq");
@@ -317,7 +317,7 @@ main (int argc, char** argv)
 	        " to stop" << endl;
 	return 0;
     }
-    Bool show = ToBool (argc > 6);
+    Bool show =  (argc > 6);
 	
     uInt var[5];
     for (uInt i=0; i<5; i++) {
@@ -334,7 +334,7 @@ main (int argc, char** argv)
     } else if (var[0] == 3) {
 	lockMode = TableLock(TableLock::AutoLocking, var[1]);
     }
-    Bool getsw = ToBool(var[3] == 0);
+    Bool getsw = (var[3] == 0);
     try {
 	if (!getsw) {
 	    a();

@@ -1,5 +1,5 @@
 //# Math.h: AIPS++ interface to <math.h> and other scalar math functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -263,12 +263,12 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
 // <group>
 inline Bool isNaN (const Float& val)
 {
-  return ToBool(((*(Int *)&(val) & 0x7f800000) == 0x7f800000) &&
+  return (((*(Int *)&(val) & 0x7f800000) == 0x7f800000) &&
 		((*(Int *)&(val) & 0x007fffff) != 0x00000000));
 }
 inline Bool isNaN(Double val)
 {
-  return ToBool(isnan(val));
+  return (isnan(val));
 }
 // </group>
 

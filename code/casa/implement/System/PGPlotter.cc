@@ -1,5 +1,5 @@
 //# PGPlotter.h: Standard plotting object for application programmers.
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ void PGPlotter::detach()
 
 Bool PGPlotter::isAttached() const
 {
-    return ToBool(!worker_p.null());
+    return (!worker_p.null());
 }
 
 void PGPlotter::message(const String &text)

@@ -1,5 +1,5 @@
 //# RecordDescRep.cc: Description of the fields in a Record object
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -434,7 +434,7 @@ Bool RecordDescRep::operator== (const RecordDescRep& other) const
 
 Bool RecordDescRep::operator!= (const RecordDescRep& other) const
 {
-    return ToBool(! ((*this) == other));
+    return (! ((*this) == other));
 }
 
 Bool RecordDescRep::isEqual (const RecordDescRep& other,

@@ -1,5 +1,5 @@
 //# Unit.cc: defines the Unit class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,15 +71,15 @@ Unit &Unit::operator=(const Unit &other) {
 }
 
 Bool Unit::operator==(const Unit &other) const {
-    return ToBool(uVal == other.uVal);
+    return (uVal == other.uVal);
 }
 
 Bool Unit::operator!=(const Unit &other) const {
-    return ToBool(uVal != other.uVal);
+    return (uVal != other.uVal);
 }
 
 Bool Unit::empty() const{
-    return ToBool(uName.empty());
+    return (uName.empty());
 }
 
 const UnitVal &Unit::getValue() const {

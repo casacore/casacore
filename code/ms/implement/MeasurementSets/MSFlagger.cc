@@ -1,5 +1,5 @@
 //# MSFlagger.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -573,7 +573,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
 	    }
 	  }
 	}
-	iter= ToBool(iter || chanCount>0 || timeCount>0 ||count>0);
+	iter= (iter || chanCount>0 || timeCount>0 ||count>0);
 	sumChan(pol,ifr)+=chanCount;
 	sumTime(pol,ifr)+=timeCount;
 	sum(pol,ifr)+=count;
@@ -788,7 +788,7 @@ Bool MSFlagger::findHypercubeId(String& hypercubeId, const String& column,
 			 idColNames);
       for (uInt j=0; j<colNames.nelements(); j++) {
 	if (colNames(j)==column) {
-	  found=ToBool(idColNames.nelements()>0);
+	  found=(idColNames.nelements()>0);
 	  if (found) hypercubeId=idColNames(0);
 	}
       }

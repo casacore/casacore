@@ -1,5 +1,5 @@
 //# LELBinary.cc:  this defines templated classes in LELBinary.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -374,16 +374,16 @@ LELScalar<Bool> LELBinaryCmp<T>::getScalar() const
 
    switch(op_p) {
    case LELBinaryEnums::EQ :
-      return ToBool (pLeftExpr_p->getScalar().value() ==
+      return  (pLeftExpr_p->getScalar().value() ==
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::GT :
-      return ToBool (pLeftExpr_p->getScalar().value() >
+      return  (pLeftExpr_p->getScalar().value() >
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::GE :
-      return ToBool (pLeftExpr_p->getScalar().value() >=
+      return  (pLeftExpr_p->getScalar().value() >=
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::NE :
-      return ToBool (pLeftExpr_p->getScalar().value() !=
+      return  (pLeftExpr_p->getScalar().value() !=
 		     pRightExpr_p->getScalar().value());
    default:
        throw(AipsError("LELBinaryCmp::eval - unknown operation"));

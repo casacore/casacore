@@ -1,5 +1,5 @@
 //# TableRecord.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,7 +133,7 @@ void TableRecord::assign (const RecordInterface& that)
     // is variable and empty.
     // Operator= does not always preserve the type of subrecords,
     // so we do a hack by setting the type explicitly.
-    Bool var = ToBool (nfields() == 0  &&  !isFixed());
+    Bool var =  (nfields() == 0  &&  !isFixed());
     *this = TableRecord (that);
     if (var) {
 	setRecordType (Variable);

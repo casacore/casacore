@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -832,7 +832,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
+        miss = (xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
                       yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
@@ -867,7 +867,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
+        miss = (xCurLocF<minMax(0) || xCurLocF>minMax(1) ||
                       yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
@@ -897,7 +897,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
+        miss = (xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
                       yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
@@ -925,7 +925,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
      if (str == "X") {
         miss = False;
      } else {
-        miss = ToBool(xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
+        miss = (xCurLocF<minMax(0) || xCurLocF>minMax(1) || 
                       yCurLocF<minMax(2) || yCurLocF>minMax(3));
      }
      if (miss) plotter.message("Cursor off image");
@@ -1140,8 +1140,8 @@ void MomentCalcBase<T>::selectRange(Vector<T>& pixelRange,
 // Get it from ImageMoments private data
 
    pixelRange = iMom.selectRange_p;
-   doInclude = ToBool(!(iMom.noInclude_p));
-   doExclude = ToBool(!(iMom.noExclude_p));
+   doInclude = (!(iMom.noInclude_p));
+   doExclude = (!(iMom.noExclude_p));
 }
 
 
@@ -1655,7 +1655,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
 // Were the profile coordinates precomputed ?
       
-   Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
+   Bool preComp = (sepWorldCoord_p.nelements() > 0);
 
 // 
 // We must fill in the input pixel coordinate if we need
@@ -2125,7 +2125,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
 
 // Were the profile coordinates precomputed ?
       
-   Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
+   Bool preComp = (sepWorldCoord_p.nelements() > 0);
 
 // 
 // We must fill in the input pixel coordinate if we need
@@ -2782,7 +2782,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 
 // Were the profile coordinates precomputed ?
       
-   Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
+   Bool preComp = (sepWorldCoord_p.nelements() > 0);
 // 
 // We must fill in the input pixel coordinate if we need
 // coordinates, but did not pre compute them

@@ -1,5 +1,5 @@
 //# UVWMachine.cc: Converts UVW coordinates between coordinate systems
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -269,12 +269,12 @@ void UVWMachine::init() {
 }
 
 void UVWMachine::planetinit() {
-  if (ToBool(outref_p.getType() & MDirection::EXTRA)) {  // out planet
+  if ((outref_p.getType() & MDirection::EXTRA)) {  // out planet
     out_p.set(outref_p);		// make sure frame set
     MDirection::Ref ref(MDirection::J2000, in_p.getRef().getFrame());
     out_p = MDirection::Convert(out_p, ref)();
   };
-  if (ToBool(in_p.getRef().getType() & MDirection::EXTRA)) {  // in planet
+  if ((in_p.getRef().getType() & MDirection::EXTRA)) {  // in planet
     MDirection::Ref ref(MDirection::J2000, outref_p.getFrame());
     in_p = MDirection::Convert(in_p, ref)();
   };

@@ -1,5 +1,5 @@
 //# tTableDesc.cc: Test program for the TableDesc class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -439,11 +439,11 @@ void e (Bool)
 main (int argc)
 {
     try {
-	d (ToBool (argc<2));
-	e (ToBool (argc<2));
-	a (ToBool (argc<2));
-	b (ToBool (argc<2));
-	c (ToBool (argc<2));
+	d ( (argc<2));
+	e ( (argc<2));
+	a ( (argc<2));
+	b ( (argc<2));
+	c ( (argc<2));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

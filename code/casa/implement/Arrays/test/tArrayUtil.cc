@@ -1,5 +1,5 @@
 //# tArrayUtil.cc: Test program for functions in ArrayUtil.h
-//# Copyright (C) 1995,1996,1998,1999,2000
+//# Copyright (C) 1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -204,13 +204,13 @@ main (int argc)
 {
     Bool ok = True;
     try {
-	if (! testVectorToString (ToBool (argc < 2))) {
+	if (! testVectorToString ( (argc < 2))) {
 	    ok = False;
 	}
-	if (! testVectorToStringRegex (ToBool (argc < 2))) {
+	if (! testVectorToStringRegex ( (argc < 2))) {
 	    ok = False;
 	}
-	if (! testConcatenateArray(ToBool (argc < 2))) {
+	if (! testConcatenateArray( (argc < 2))) {
 	    ok = False;
 	}
     } catch (AipsError x) {

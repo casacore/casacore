@@ -1,5 +1,5 @@
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,7 +64,7 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   const Record& values)
 : stmanPtr_p     (stman),
   values_p       (values),
-  extensible_p   (ToBool (cubeShape(cubeShape.nelements()-1) == 0)),
+  extensible_p   ( (cubeShape(cubeShape.nelements()-1) == 0)),
   nrdim_p        (0),
   tileSize_p     (0),
   filePtr_p      (file),
@@ -925,7 +925,7 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
     uInt stTile = startTile(lineIndex);
     // Get the stride to get to the next pixel in a tile.
     uInt stride = expandedTileShape_p(lineIndex) * localPixelSize;
-    Bool contiguous = ToBool(stride == localPixelSize);
+    Bool contiguous = (stride == localPixelSize);
     // Calculate the absolute pixel offset in the first tile
     // and in the other tiles.
     uInt offset = pixelOffset + localPixelSize *
@@ -1153,7 +1153,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
     uInt sectionOffset;
 
     // Determine if the first dimension is strided.
-    Bool strided = ToBool (stride(0) != 1);
+    Bool strided =  (stride(0) != 1);
     // The first time all dimensions are evaluated to set pixelStart/End
     // correctly.
     Bool firstTime = True;

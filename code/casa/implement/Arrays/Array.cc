@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -974,7 +974,7 @@ template<class T> IPosition Array<T>::end() const
 template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 {
     DebugAssert(ok(), ArrayError);
-    deleteIt = ToBool(!contiguousStorage());
+    deleteIt = (!contiguousStorage());
 
     if (ndim() == 0) {
 	return 0;
@@ -1089,7 +1089,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
 	if (data_p.null() || data_p.nrefs() > 1) {
 	    data_p = new Block<T>(0);
 	}
-	data_p->replaceStorage(new_nels, storage, ToBool(policy == TAKE_OVER));
+	data_p->replaceStorage(new_nels, storage, (policy == TAKE_OVER));
 	break;
     default:
 	throw(AipsError("Array<T>::takeStorage - unknown policy"));

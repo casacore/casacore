@@ -1,5 +1,5 @@
 //# tImageExprGram.cc: Test program for image expression parser
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -436,7 +436,7 @@ main (int argc, char *argv[])
     aBool.copyData(expr);
     aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
 		   shape, IPosition(aBoolArr.ndim(),1));
-    Bool result = ToBool(True||False);
+    Bool result = (True||False);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aBoolArr << endl;
@@ -450,7 +450,7 @@ main (int argc, char *argv[])
     aBool.copyData(expr);
     aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
 		   shape, IPosition(aBoolArr.ndim(),1));
-    Bool result = ToBool(!bBoolVal);
+    Bool result = (!bBoolVal);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aBoolArr << endl;

@@ -922,7 +922,7 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 
 	    set_error(coordinates_p[i]->errorMessage());
 	}
-	ok = ToBool(ok && oldok);
+	ok = (ok && oldok);
 	const uInt nwa = world_maps_p[i]->nelements();
 	for (j=0; j<nwa; j++) {
 	    Int where = world_maps_p[i]->operator[](j);
@@ -982,7 +982,7 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 	    // is as good as any.
 	    set_error(coordinates_p[i]->errorMessage());
 	}
-	ok = ToBool(ok && oldok);
+	ok = (ok && oldok);
 	const uInt npxa = pixel_maps_p[i]->nelements();
 	for (j=0; j<npxa; j++) {
 	    where = pixel_maps_p[i]->operator[](j);
@@ -1355,7 +1355,7 @@ Vector<Double> CoordinateSystem::referenceValue() const
 
 Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = ToBool(names.nelements()==nWorldAxes());
+    Bool ok = (names.nelements()==nWorldAxes());
     if (!ok) {
       set_error("names vector must be of length nWorldAxes()");
       return False;
@@ -1371,7 +1371,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 		tmp(j) = names(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setWorldAxisNames(tmp) && ok);
+	ok = (coordinates_p[i]->setWorldAxisNames(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
@@ -1380,7 +1380,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 
 Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = ToBool(units.nelements()==nWorldAxes());
+    Bool ok = (units.nelements()==nWorldAxes());
     if (!ok) {
       set_error("units vector must be of length nWorldAxes()");
       return False;
@@ -1396,7 +1396,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 		tmp(j) = units(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
+	ok = (coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
@@ -1405,7 +1405,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 
 Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 {
-    Bool ok = ToBool(refPix.nelements()==nPixelAxes());
+    Bool ok = (refPix.nelements()==nPixelAxes());
     if (!ok) {
       set_error("ref. pix vector must be of length nPixelAxes()");
       return False;
@@ -1421,7 +1421,7 @@ Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 		tmp(j) = refPix(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setReferencePixel(tmp) && ok);
+	ok = (coordinates_p[i]->setReferencePixel(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
@@ -1445,7 +1445,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 		}
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setLinearTransform(tmp) && ok);
+	ok = (coordinates_p[i]->setLinearTransform(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
     return ok;
@@ -1453,7 +1453,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 
 Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 {
-    Bool ok = ToBool(inc.nelements()==nWorldAxes());
+    Bool ok = (inc.nelements()==nWorldAxes());
     if (!ok) {
       set_error("increment vector must be of length nWorldAxes()");
       return False;
@@ -1469,7 +1469,7 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 		tmp(j) = inc(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setIncrement(tmp) && ok);
+	ok = (coordinates_p[i]->setIncrement(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 
@@ -1478,7 +1478,7 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 
 Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements()==nWorldAxes());
+    Bool ok = (refval.nelements()==nWorldAxes());
     if (!ok) {
       set_error("ref. val vector must be of length nWorldAxes()");
       return False;
@@ -1494,7 +1494,7 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 		tmp(j) = refval(which);
 	    }
 	}
-	ok = ToBool(coordinates_p[i]->setReferenceValue(tmp) && ok);
+	ok = (coordinates_p[i]->setReferenceValue(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
 

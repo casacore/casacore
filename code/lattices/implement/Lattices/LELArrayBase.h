@@ -1,5 +1,5 @@
 //# LELArrayBase.h: Base class for LELArray holding the mask
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,7 +77,7 @@ public:
 
 // Does the value have a mask?
    Bool isMasked() const
-      { return ToBool (itsMaskPtr != 0); }
+      { return  (itsMaskPtr != 0); }
 
 // Get mask.
 // <group>

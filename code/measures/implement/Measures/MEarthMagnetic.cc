@@ -1,5 +1,5 @@
 //# MEarthMagnetic.cc: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -288,7 +288,7 @@ uInt MEarthMagnetic::myType() {
 }
 
 Bool MEarthMagnetic::isModel() const {
-  return ToBool((ref.getType() & MEarthMagnetic::EXTRA) != 0);
+  return ((ref.getType() & MEarthMagnetic::EXTRA) != 0);
 }
 
 Quantum<Vector<Double> > MEarthMagnetic::get(const Unit &inunit) const {

@@ -1,5 +1,5 @@
 //# RecordInterface.h: Abstract base class for Record classes
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -461,11 +461,11 @@ private:
 
 inline Bool RecordInterface::isFixed() const
 {
-    return ToBool (type_p == Fixed);
+    return  (type_p == Fixed);
 }
 inline Bool RecordInterface::isDefined (const String& fieldName) const
 {
-    return ToBool (fieldNumber(fieldName) >= 0);
+    return  (fieldNumber(fieldName) >= 0);
 }
 inline RecordInterface::RecordType& RecordInterface::recordType()
 {

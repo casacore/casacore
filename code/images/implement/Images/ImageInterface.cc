@@ -1,5 +1,5 @@
 //# ImageInterface.cc: defines the Image base class non pure virtual stuff
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,7 +125,7 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
     ostrstream errmsg;
     errmsg << "Cannot set coordinate system: ";
 
-    Bool ok = ToBool(coords.nPixelAxes() == shape().nelements());
+    Bool ok = (coords.nPixelAxes() == shape().nelements());
     if (!ok) {
 	errmsg << "coords.nPixelAxes() == " << coords.nPixelAxes() << 
 	    ", image.ndim() == " << shape().nelements();

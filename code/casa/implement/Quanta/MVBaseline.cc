@@ -1,5 +1,5 @@
 //# MVBaseline.cc: A 3D vector on Earth
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,7 +102,7 @@ operator==(const MVBaseline &other) const {
 
 Bool MVBaseline::
 operator!=(const MVBaseline &other) const {
-  return ToBool(!(*this == other));
+  return (!(*this == other));
 }
 
 Bool MVBaseline::

@@ -1,5 +1,5 @@
 //# TableSyncData.cc: Class to hold table synchronization data
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,7 +136,7 @@ Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
     itsAipsIO >> tableChangeCounter;
     itsAipsIO >> dataManChangeCounter;
     itsAipsIO.getend();
-    tableChanged = ToBool (tableChangeCounter != itsTableChangeCounter);
+    tableChanged =  (tableChangeCounter != itsTableChangeCounter);
     itsTableChangeCounter = tableChangeCounter;
     // A data manager has changed when its change counter has changed.
     // Increment a change counter when a data manager has changed.

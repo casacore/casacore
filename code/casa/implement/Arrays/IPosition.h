@@ -1,5 +1,5 @@
 //# IPosition.h: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -456,7 +456,7 @@ inline const Int *IPosition::storage() const
 
 inline Bool IPosition::conform(const IPosition& other) const
 {
-    return ToBool (size_p == other.size_p);
+    return  (size_p == other.size_p);
 }
 // </group>
 #endif

@@ -1,5 +1,5 @@
 //# LogOrigin.cc: The source code location of the originator of a LogMessage.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -191,7 +191,7 @@ String LogOrigin::toString() const
 
 Bool LogOrigin::isUnset() const
 {
-  return ToBool(function_p == "" && class_p == "" && id_p.isNull() && 
+  return (function_p == "" && class_p == "" && id_p.isNull() && 
 		line_p == 0 && file_p == "");
 }
 

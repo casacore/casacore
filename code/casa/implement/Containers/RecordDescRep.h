@@ -1,5 +1,5 @@
 //# RecordDescRep.h: Representation of a RecordDesc
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -328,12 +328,12 @@ inline Bool RecordDescRep::isScalar (Int whichField) const
 
 inline Bool RecordDescRep::isSubRecord (Int whichField) const
 {
-    return ToBool (types_p[whichField] == TpRecord);
+    return  (types_p[whichField] == TpRecord);
 }
 
 inline Bool RecordDescRep::isTable (Int whichField) const
 {
-    return ToBool (types_p[whichField] == TpTable);
+    return  (types_p[whichField] == TpTable);
 }
 
 inline const RecordDesc& RecordDescRep::subRecord (Int whichField) const

@@ -1,5 +1,5 @@
 //# RegionHandlerMemory.cc: Class for keeping regions in memory
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,7 +135,7 @@ Bool RegionHandlerMemory::defineRegion (const String& name,
 Bool RegionHandlerMemory::hasRegion (const String& name,
 				     RegionHandler::GroupType type) const
 {
-  return ToBool (findRegionGroup (name, type, False) >= 0);
+  return  (findRegionGroup (name, type, False) >= 0);
 }
 
 Bool RegionHandlerMemory::renameRegion (const String& newName,

@@ -1,5 +1,5 @@
 //# FileLocker.cc: Class to handle file locking
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -200,7 +200,7 @@ Bool FileLocker::canLock (uInt& pid, LockType type)
     ls.l_len    = itsLength;
     if (fcntl (itsFD, F_GETLK, &ls) != -1) {
         pid = ls.l_pid;
-	return ToBool (ls.l_type == F_UNLCK);
+	return  (ls.l_type == F_UNLCK);
     }
     itsError = errno;
     return False;

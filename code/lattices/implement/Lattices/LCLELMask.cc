@@ -1,5 +1,5 @@
 //# LCLELMask.cc: Class to define a mask as a LEL expression
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,7 +76,7 @@ Bool LCLELMask::operator== (const LCRegion& that) const
   }
   const LCLELMask& That = dynamic_cast<const LCLELMask&>(that);
   // Check the box and mask.
-  return ToBool (itsBox == That.itsBox  &&  masksEqual (That));
+  return  (itsBox == That.itsBox  &&  masksEqual (That));
 }
 
 

@@ -1,5 +1,5 @@
 //# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ template <> Bool AipsrcValue<Bool>::find(Bool &value,
   const Regex tTrue("^([tT]|[yY]|[1-9])");
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
-  if (x) value = ToBool(res.contains(tTrue));
+  if (x) value = (res.contains(tTrue));
   return x;
 }
 

@@ -1,5 +1,5 @@
 //# PagedArray.cc: this defines the PagedArray class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -213,10 +213,10 @@ Bool PagedArray<T>::isWritable() const
   // PagedArray is writable if underlying table is already open for write
   // or if the underlying table is in principle writable.
   if (itsIsClosed) {
-    return ToBool (itsWritable  ||
+    return  (itsWritable  ||
 		   Table::isWritable (itsTableName));
   }
-  return ToBool (itsTable.isWritable()  ||
+  return  (itsTable.isWritable()  ||
 		 Table::isWritable (itsTable.tableName()));
 }
 

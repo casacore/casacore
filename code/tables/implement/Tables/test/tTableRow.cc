@@ -1,5 +1,5 @@
 //# tTableRow.cc: Test program for class (RO)TableRow
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -352,8 +352,8 @@ int main (int argc, char** argv)
 	istr >> nr;
     }
     try {
-	a (ToBool (argc<2));
-	b (ToBool (argc<2));
+	a ( (argc<2));
+	b ( (argc<2));
 	c (nr);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;

@@ -1,5 +1,5 @@
 //# BitVector.cc: A BitVector class with variable bit vector size
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -76,7 +76,7 @@ void BitVector::putBit (uInt pos, Bool state)
 Bool BitVector::toggleBit (uInt pos)
 {
     Bool result = getBit (pos);
-    putBit (pos, ToBool (!result));
+    putBit (pos,  (!result));
     return result;
 }
 

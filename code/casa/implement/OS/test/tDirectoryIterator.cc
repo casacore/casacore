@@ -1,5 +1,5 @@
 //# tDirectoryIterator.cc: Test program for class DirectoryIterator
-//# Copyright (C) 1996,2000
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@ void doIt (Bool doExcp)
 int main (int argc)
 {
     try {
-	doIt (ToBool (argc<2));
+	doIt ( (argc<2));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

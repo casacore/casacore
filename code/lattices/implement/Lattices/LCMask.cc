@@ -1,5 +1,5 @@
 //# LCMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,7 +122,7 @@ Bool LCMask::operator== (const LCRegion& other) const
   }
   const LCMask& that = (const LCMask&)other;
   // Check the box and mask.
-  return ToBool (itsBox == that.itsBox  &&  masksEqual (that));
+  return  (itsBox == that.itsBox  &&  masksEqual (that));
 }
 
 

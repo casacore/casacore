@@ -1,5 +1,5 @@
 //# WCRegion.h: Class to define a region of interest in an image
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -222,7 +222,7 @@ private:
 
 inline Bool WCRegion::operator!= (const WCRegion& other) const
 {
-   return ToBool(!operator==(other));
+   return (!operator==(other));
 }
 inline const String& WCRegion::comment() const
 {

@@ -1,5 +1,5 @@
 //# tTableRecord.cc: Test the TableRecord class
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -837,9 +837,9 @@ void testTable2 (Bool)
 main (int argc)
 {
     try {
-	doIt (ToBool (argc<2));
-	testTable (ToBool (argc<2));
-	testTable2 (ToBool (argc<2));
+	doIt ( (argc<2));
+	testTable ( (argc<2));
+	testTable2 ( (argc<2));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

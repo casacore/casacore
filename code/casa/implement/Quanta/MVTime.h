@@ -1,5 +1,5 @@
 //# MVTime.h: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -430,7 +430,7 @@ ostream &operator<<(ostream &os, const MVTime::Format &form);
 
 // is equal operator, uses operator Double which returns days
 inline Bool operator==(const MVTime &lh, const MVTime &rh) 
-{ return ToBool(lh.operator Double() == rh.operator Double());}
+{ return (lh.operator Double() == rh.operator Double());}
 
 
 #endif

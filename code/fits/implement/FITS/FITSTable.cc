@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -996,7 +996,7 @@ void FITSTable::fill_row()
 	    if (field_types_p[i] == TpBool) {
 		RecordFieldPtr<Bool> &rowRef =
 		    *((RecordFieldPtr<Bool> *)row_fields_p[i]);
-		(*rowRef) = ToBool(int(fitsRef()));
+		(*rowRef) = (int(fitsRef()));
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
 		RecordFieldPtr<Array<Bool> > &rowRef =
@@ -1011,7 +1011,7 @@ void FITSTable::fill_row()
 		Bool *data = (*rowRef).getStorage(deleteIt);
 		while (n) {
 		    n--;
-		    data[n] = ToBool(int(fitsRef(n)));
+		    data[n] = (int(fitsRef(n)));
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1438,7 +1438,7 @@ void FITSTable::fill_row()
 			while (n) {
 			    n--;
 			    if (n%8 == 7) whichByte--;
-			    data[n] = ToBool(vptr[whichByte] & (mask >> n%8));
+			    data[n] = (vptr[whichByte] & (mask >> n%8));
 			}
 			(*rowRef).putStorage(data, deleteIt);
 		    }
@@ -1805,7 +1805,7 @@ void FITSTable::move(Int torow) {
 
 Bool FITSTable::pastEnd() const
 {
-    return ToBool((isValid() && row_nr_p >= raw_table_p->nrows()) || ! isValid());
+    return ((isValid() && row_nr_p >= raw_table_p->nrows()) || ! isValid());
 }
 
 Bool FITSTable::virtualColumns(const Vector<String>& keyNames)

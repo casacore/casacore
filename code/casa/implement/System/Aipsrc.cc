@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -316,7 +316,7 @@ void Aipsrc::save(const String keyword, const String val) {
 	  ostr << editBuf << endl;
 	};
       };
-      editSeen = ToBool(buffer.index(editTxt) == 0);
+      editSeen = (buffer.index(editTxt) == 0);
       if (editSeen) {
 	editBuf = buffer;
       } else {

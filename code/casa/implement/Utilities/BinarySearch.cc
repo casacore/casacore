@@ -1,5 +1,5 @@
 //# BinarySearch.cc: Binary search through linear, sorted, data structures
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@ template<class Container, class ElType>
     Int upper = lower + n - 1;
     Int middle = 0;
 
-    Bool ascending = ToBool(! (container(upper) < container(lower)));
+    Bool ascending = (! (container(upper) < container(lower)));
     Bool toLeft, toRight;
 
     ElType midval;
@@ -53,17 +53,17 @@ template<class Container, class ElType>
 	middle = (upper + lower) / 2;
 	midval = container(middle);
 	if (ascending) {
-	    toLeft = ToBool(value < midval);
+	    toLeft = (value < midval);
 	} else {
-	    toLeft = ToBool(value > midval);
+	    toLeft = (value > midval);
 	}
         if (toLeft) {
             upper = middle - 1;
 	} else {
 	    if (ascending) {
-		toRight = ToBool(value > midval);
+		toRight = (value > midval);
 	    } else {
-		toRight = ToBool(value < midval);
+		toRight = (value < midval);
 	    }
 	    if (toRight) {
 		middle++;
@@ -93,7 +93,7 @@ template<class Container, class ElType>
     Int upper = lower + n - 1;
     Int middle = 0;
 
-    Bool ascending = ToBool(! (container[upper] < container[lower]));
+    Bool ascending = (! (container[upper] < container[lower]));
     Bool toLeft, toRight;
 
     ElType midval;
@@ -102,17 +102,17 @@ template<class Container, class ElType>
 	middle = (upper + lower) / 2;
 	midval = container[middle];
 	if (ascending) {
-	    toLeft = ToBool(value < midval);
+	    toLeft = (value < midval);
 	} else {
-	    toLeft = ToBool(value > midval);
+	    toLeft = (value > midval);
 	}
         if (toLeft) {
             upper = middle - 1;
 	} else {
 	    if (ascending) {
-		toRight = ToBool(value > midval);
+		toRight = (value > midval);
 	    } else {
-		toRight = ToBool(value < midval);
+		toRight = (value < midval);
 	    }
 	    if (toRight) {
 		middle++;

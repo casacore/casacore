@@ -1,5 +1,5 @@
 //# tLatticeApply2.cc: Test program for class LatticeApply
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -208,7 +208,7 @@ void MyTiledCollapser::endAccumulator (Array<Float>& result,
 	Bool* maskptr2 = maskptr;
         for (uInt j=0; j<itsn1; j++) {
 	    *resptr++ = *sum1ptr++;
-	    *maskptr++ = ToBool(*nptsptr++ != 0);
+	    *maskptr++ = (*nptsptr++ != 0);
 	}
 	objcopy (resptr, sum2ptr, itsn1);
 	resptr += itsn1;

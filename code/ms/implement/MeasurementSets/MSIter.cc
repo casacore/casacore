@@ -1,5 +1,5 @@
 //# MSIter.cc: Step through MeasurementSet by table
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ Bool MSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   for (i=0,j=0; i<n1 && j<n2; i++) {
     while (p1[i]!=p2[j++] && j<n2);
   }
-  Bool ok=ToBool(j<n2 || (i==n1 && p1[n1-1]==p2[n2-1]));
+  Bool ok=(j<n2 || (i==n1 && p1[n1-1]==p2[n2-1]));
   r1.freeStorage(p1,freeR1);
   r2.freeStorage(p2,freeR2);
   return ok;
@@ -393,7 +393,7 @@ const MFrequency& MSIter::restFrequency(Int line) const
 
 void MSIter::setMSInfo()
 {
-  newMS_p=ToBool(lastMS_p!=curMS_p);
+  newMS_p=(lastMS_p!=curMS_p);
   if (newMS_p) {
     lastMS_p=curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
@@ -439,7 +439,7 @@ void MSIter::setArrayInfo()
 {
   // Set the array info
   curArray_p=colArray_p(0);
-  newArray_p=ToBool(lastArray_p!=curArray_p);
+  newArray_p=(lastArray_p!=curArray_p);
   if (newArray_p) {
     lastArray_p=curArray_p;
   };
@@ -493,10 +493,10 @@ void MSIter::setDataDescInfo()
     (curDataDescId_p);
   curPolarizationId_p = msc_p->dataDescription().polarizationId()
     (curDataDescId_p);
-  newDataDescId_p=ToBool(lastDataDescId_p!=curDataDescId_p);
+  newDataDescId_p=(lastDataDescId_p!=curDataDescId_p);
   if (newDataDescId_p) lastDataDescId_p=curDataDescId_p;
-  newSpectralWindow_p=ToBool(lastSpectralWindow_p!=curSpectralWindow_p);
-  newPolarizationId_p=ToBool(lastPolarizationId_p!=curPolarizationId_p);
+  newSpectralWindow_p=(lastSpectralWindow_p!=curSpectralWindow_p);
+  newPolarizationId_p=(lastPolarizationId_p!=curPolarizationId_p);
   if (newSpectralWindow_p) {
     lastSpectralWindow_p = curSpectralWindow_p;
     startChan_p= (preselected_p ? preselectedChanStart_p[curSpectralWindow_p] :
@@ -516,7 +516,7 @@ void MSIter::setDataDescInfo()
 void MSIter::setFieldInfo()
 {
   curField_p=colField_p(0);
-  newField_p=ToBool(lastField_p!=curField_p);
+  newField_p=(lastField_p!=curField_p);
   if (newField_p) {
     lastField_p = curField_p;
     This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p);

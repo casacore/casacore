@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -228,8 +228,8 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
   // or int.
 
   MeasRef<M> locMRef = itsMeasRef;
-  Bool refPerElem = ToBool((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  Bool strRefs = ToBool(itsArrRefStrCol != 0);
+  Bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
+  Bool strRefs = (itsArrRefStrCol != 0);
   Array<Int> intRefArr;
   Array<String> strRefArr;
   const Int* r_p;
@@ -254,7 +254,7 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
   }
 
   // Setup for offset component of MeasRef.
-  Bool offsetPerElem = ToBool(itsArrOffsetCol != 0);
+  Bool offsetPerElem = (itsArrOffsetCol != 0);
   Array<M> offsetArr;
   const M* os_p;
   Bool deleteOffset;
@@ -568,8 +568,8 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
   //   3. Ref varies per element of array. An array of references is written.
   // With 2 and 3 references are stored as either Strings or Ints.
   MeasRef<M> locMRef = itsMeasRef;
-  Bool refPerElem = ToBool((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  Bool strRefs = ToBool(itsArrRefStrCol != 0);
+  Bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
+  Bool strRefs = (itsArrRefStrCol != 0);
   Array<Int> intRefArr;
   Array<String> strRefArr;
   Int* r_p;
@@ -601,7 +601,7 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
   }
 
   // Setup for offset.
-  Bool offsetPerElem = ToBool(itsArrOffsetCol != 0);
+  Bool offsetPerElem = (itsArrOffsetCol != 0);
   Array<M> offsetArr;
   M* os_p;
   Bool deleteOffset;

@@ -1,5 +1,5 @@
 //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,7 +103,7 @@ void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 
     Bool useMask = latticeIn.isMasked();
     if (!useMask) {
-	useMask = ToBool (! collapser.canHandleNullMask());
+	useMask =  (! collapser.canHandleNullMask());
     }
 
 // Input lines are extracted with the TiledLineStepper.
@@ -241,7 +241,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 
     Bool useMask = latticeIn.isMasked();
     if (!useMask) {
-	useMask = ToBool (! collapser.canHandleNullMask());
+	useMask =  (! collapser.canHandleNullMask());
     }
 
 // Input lines are extracted with the TiledLineStepper.
@@ -376,7 +376,7 @@ void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 
     Bool useMask = latticeIn.isMasked();
     if (!useMask) {
-	useMask = ToBool (! collapser.canHandleNullMask());
+	useMask =  (! collapser.canHandleNullMask());
     }
 
 // The input is traversed using a TileStepper.

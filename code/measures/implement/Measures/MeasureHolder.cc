@@ -1,5 +1,5 @@
 //# MeasureHolder.cc: A holder for Measures to enable record conversions
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,47 +89,47 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
 
 //# Member Functions
 Bool MeasureHolder::isEmpty() const {
-  return ToBool(!hold_p.ptr());
+  return (!hold_p.ptr());
 }
 
 Bool MeasureHolder::isMeasure() const {
-  return ToBool(hold_p.ptr());
+  return (hold_p.ptr());
 }
 
 Bool MeasureHolder::isMDirection() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MDirection::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MDirection::myType());
 }
 
 Bool MeasureHolder::isMDoppler() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MDoppler::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MDoppler::myType());
 }
 
 Bool MeasureHolder::isMEpoch() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MEpoch::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MEpoch::myType());
 }
 
 Bool MeasureHolder::isMFrequency() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MFrequency::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MFrequency::myType());
 }
 
 Bool MeasureHolder::isMPosition() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MPosition::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MPosition::myType());
 }
 
 Bool MeasureHolder::isMRadialVelocity() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MRadialVelocity::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MRadialVelocity::myType());
 }
 
 Bool MeasureHolder::isMBaseline() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MBaseline::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MBaseline::myType());
 }
 
 Bool MeasureHolder::isMuvw() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == Muvw::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == Muvw::myType());
 }
 
 Bool MeasureHolder::isMEarthMagnetic() const {
-  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MEarthMagnetic::myType());
+  return (hold_p.ptr() && hold_p.ptr()->type() == MEarthMagnetic::myType());
 }
 
 const Measure &MeasureHolder::asMeasure() const {

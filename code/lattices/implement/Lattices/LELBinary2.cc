@@ -1,5 +1,5 @@
 //# LELBinary.cc:  this defines non-templated classes in LELBinary.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -191,10 +191,10 @@ LELScalar<Bool> LELBinaryBool::getScalar() const
 
    switch(op_p) {
    case LELBinaryEnums::EQ :
-      return ToBool (pLeftExpr_p->getScalar().value() ==
+      return  (pLeftExpr_p->getScalar().value() ==
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::NE :
-      return ToBool (pLeftExpr_p->getScalar().value() !=
+      return  (pLeftExpr_p->getScalar().value() !=
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::OR :
    {
@@ -206,8 +206,8 @@ LELScalar<Bool> LELBinaryBool::getScalar() const
       if (tempr.value()  &&  tempr.mask()) {
 	 return True;
       }
-      return LELScalar<Bool> (ToBool (templ.value() || tempr.value()),
-			      ToBool (templ.mask() && tempr.mask()));
+      return LELScalar<Bool> ( (templ.value() || tempr.value()),
+			       (templ.mask() && tempr.mask()));
    }
    case LELBinaryEnums::AND :
    {
@@ -219,8 +219,8 @@ LELScalar<Bool> LELBinaryBool::getScalar() const
       if (!tempr.value()  &&  tempr.mask()) {
 	 return False;
       }
-      return LELScalar<Bool> (ToBool (templ.value() && tempr.value()),
-			      ToBool (templ.mask() && tempr.mask()));
+      return LELScalar<Bool> ( (templ.value() && tempr.value()),
+			       (templ.mask() && tempr.mask()));
    }
    default:
        throw(AipsError("LELBinaryBool::eval - unknown operation"));
@@ -250,7 +250,7 @@ Bool LELBinaryBool::prepareScalarExpr()
 	 return True;
       }
    }
-   return ToBool (nrinv==2);
+   return  (nrinv==2);
 }
 
 

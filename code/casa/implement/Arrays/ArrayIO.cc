@@ -1,5 +1,5 @@
 //# ArrayIO.cc: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -544,7 +544,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
     s >> ws;
     s.get(ch);
     if (ch == 't' || ch == 'T') {
-      trans = ToBool(!trans);
+      trans = (!trans);
       s >> ws;
       s.get(ch);
     };

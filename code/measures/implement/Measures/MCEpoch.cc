@@ -1,5 +1,5 @@
 //# MCEpoch.cc: MEpoch conversion routines
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ void MCEpoch::getConvert(MConvertBase &mc,
 			 const MRBase &outref) {
 
     Int iin  = inref.getType();
-    Bool iraze = ToBool(iin & MEpoch::RAZE);
+    Bool iraze = (iin & MEpoch::RAZE);
     iin &= ~MEpoch::EXTRA;
     Int iout = outref.getType();
     iout &= ~MEpoch::EXTRA;

@@ -1,5 +1,5 @@
 //# tPath.cc: Test program for class Path
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -240,7 +240,7 @@ int main (int argc)
 {
     Bool success = True;
     try {
-	doIt (ToBool (argc<2), success);
+	doIt ( (argc<2), success);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;

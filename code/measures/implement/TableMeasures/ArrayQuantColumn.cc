@@ -1,5 +1,5 @@
 //# ArrayQuantColumn.cc: Access to an Array Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
   init (tab, columnName);
   itsUnitOut.resize(1);
   itsUnitOut(0) = u;
-  itsConvOut = ToBool(! itsUnitOut(0).getName().empty());
+  itsConvOut = (! itsUnitOut(0).getName().empty());
 }
 
 template<class T>

@@ -1,5 +1,5 @@
 //# Fitsmultitablex.h: View multiple FITS files as a single table
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,7 +106,7 @@ const Record &FITSMultiTable::nulls() const
 
 Bool FITSMultiTable::pastEnd() const
 {
-    return ToBool(which_file_p >= nfiles_p);
+    return (which_file_p >= nfiles_p);
 }
 
 void FITSMultiTable::next()

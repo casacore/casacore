@@ -1,5 +1,5 @@
 //# LCPagedMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,7 +108,7 @@ Bool LCPagedMask::operator== (const LCRegion& other) const
     }
     const LCPagedMask& that = (const LCPagedMask&)other;
     // Check the box and mask.
-    return ToBool (itsBox == that.itsBox  &&  masksEqual (that));
+    return  (itsBox == that.itsBox  &&  masksEqual (that));
 }
 
 

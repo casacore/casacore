@@ -1,5 +1,5 @@
 //# ExprNodeRep.h: Abstract base class for a node in a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -530,7 +530,7 @@ inline TableExprNodeRep::ExprType TableExprNodeRep::exprType() const
 
 //# Is the expression a constant?
 inline Bool TableExprNodeRep::isConstant() const
-    { return ToBool (exprtype_p == Constant); }
+    { return  (exprtype_p == Constant); }
 
 //# Get the fixed dimensionality of the node.
 inline Int TableExprNodeRep::ndim() const

@@ -1,5 +1,5 @@
 //# TableRow.h: Access to a table row
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -474,7 +474,7 @@ private:
 
 inline Bool ROTableRow::isAttached() const
 {
-    return ToBool (itsRecord != 0);
+    return  (itsRecord != 0);
 }
 inline const Table& ROTableRow::table() const
 {

@@ -1,5 +1,5 @@
 //# LatticeStepper.cc: defines LatticeStepper class
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,7 +153,7 @@ Bool LatticeStepper::operator++(int)
       while (i < ndim  &&  curEndPos(i) < latShape(i)  &&  curPos(i) >= 0) {
 	i++;
       }
-      itsHangover = ToBool (i != ndim);
+      itsHangover =  (i != ndim);
     }
   } else {
     itsEnd = True;
@@ -185,7 +185,7 @@ Bool LatticeStepper::operator--(int)
       while (i < ndim  &&  curPos(i) >= 0  &&  curEndPos(i) < latShape(i)) {
 	i++;
       }
-      itsHangover = ToBool (i != ndim);
+      itsHangover =  (i != ndim);
     }
   } else {
     itsStart = True;
@@ -449,7 +449,7 @@ Bool LatticeStepper::niceFit() const
   while (i < cursorDim  &&  itsIndexer.shape(i)%itsCursorShape(i) == 0) {
     i++;
   }
-  return ToBool (i == cursorDim);
+  return  (i == cursorDim);
 }
 
 LatticeNavigator* LatticeStepper::clone() const

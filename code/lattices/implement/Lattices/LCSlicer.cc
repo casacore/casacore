@@ -1,5 +1,5 @@
 //# LCSlicer.cc: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -488,7 +488,7 @@ Slicer LCSlicer::toSlicer (const Vector<Float>& referencePixel,
 
 Bool LCSlicer::isComplete() const
 {
-    return ToBool (!itsIsFractional && itsIsAbsolute && !itsIsUnspecified);
+    return  (!itsIsFractional && itsIsAbsolute && !itsIsUnspecified);
 }
 
 String LCSlicer::className()

@@ -1,5 +1,5 @@
 //# MVDoppler.cc: Internal value for MDoppler
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -104,11 +104,11 @@ MVDoppler &MVDoppler::operator-=(const MVDoppler &other) {
 }
 
 Bool MVDoppler::operator==(const MVDoppler &other) const {
-  return ToBool(val == other.val);
+  return (val == other.val);
 }
 
 Bool MVDoppler::operator!=(const MVDoppler &other) const {
-  return ToBool(val != other.val);
+  return (val != other.val);
 }
 
 Bool MVDoppler::near(const MVDoppler &other, Double tol) const {

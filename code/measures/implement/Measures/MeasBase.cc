@@ -1,5 +1,5 @@
 //# MeasBase.cc: Base class for all measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -91,7 +91,7 @@ void MeasBase<Mv,Mr>::clear() {
 
 template <class Mv, class Mr>
 Bool MeasBase<Mv,Mr>::areYou(const String &tp) const {
-  return ToBool(capitalize(tp) == tellMe());
+  return (capitalize(tp) == tellMe());
 }
 
 template <class Mv, class Mr>

@@ -1,5 +1,5 @@
 //# LattRegionHolder.h: Class to hold a region of interest in an image
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -166,15 +166,15 @@ private:
 
 inline Bool LattRegionHolder::isLCRegion() const
 {
-    return ToBool (itsLC != 0);
+    return  (itsLC != 0);
 }
 inline Bool LattRegionHolder::isLCSlicer() const
 {
-    return ToBool (itsSlicer != 0);
+    return  (itsSlicer != 0);
 }
 inline Bool LattRegionHolder::operator!= (const LattRegionHolder& other) const
 {
-    return ToBool (! operator== (other));
+    return  (! operator== (other));
 }
 inline uInt LattRegionHolder::ndim() const
 {

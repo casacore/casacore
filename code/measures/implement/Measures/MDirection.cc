@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -346,7 +346,7 @@ uInt MDirection::myType() {
 }
 
 Bool MDirection::isModel() const {
-  return ToBool((ref.getType() & MDirection::EXTRA) != 0);
+  return ((ref.getType() & MDirection::EXTRA) != 0);
 }
 
 Quantum<Vector<Double> > MDirection::getAngle() const {

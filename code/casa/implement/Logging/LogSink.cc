@@ -1,5 +1,5 @@
 //# LogSink.cc: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,7 +94,7 @@ Bool LogSink::post(const LogMessage &message)
 {
     Bool postedLocally =   postLocally(message);
     Bool postedGlobally =  postGlobally(message);
-    return ToBool(postedLocally || postedGlobally);
+    return (postedLocally || postedGlobally);
 }
 
 Bool LogSink::postGlobally(const LogMessage &message)

@@ -1,5 +1,5 @@
 //# ExprNode.cc: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,7 +193,7 @@ DataType TableExprNode::getColumnDataType() const
 
 Bool TableExprNode::checkTable (const Table& table) const
 {
-    return ToBool (table.baseTablePtr() == node_p->baseTablePtr());
+    return  (table.baseTablePtr() == node_p->baseTablePtr());
 }
 
 Bool TableExprNode::checkReplaceTable (const Table& table) const

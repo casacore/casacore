@@ -1,5 +1,5 @@
 //# LELUnary.cc:  this defines templated classes in LELUnary.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ LELScalar<T> LELUnaryConst<T>::getScalar() const
 template <class T>
 Bool LELUnaryConst<T>::prepareScalarExpr()
 {
-   return ToBool (!val_p.mask());
+   return  (!val_p.mask());
 }
 
 template <class T>

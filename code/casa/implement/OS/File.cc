@@ -1,5 +1,5 @@
 //# File.cc: Class to define a File
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ Bool File::isRegular (Bool followSymLink) const
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
-    return ToBool (S_ISREG (buf.st_mode));
+    return  (S_ISREG (buf.st_mode));
 }
 
 Bool File::isDirectory (Bool followSymLink) const
@@ -102,7 +102,7 @@ Bool File::isDirectory (Bool followSymLink) const
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
-    return ToBool (S_ISDIR (buf.st_mode));
+    return  (S_ISDIR (buf.st_mode));
 }
 
 Bool File::isSymLink() const
@@ -113,7 +113,7 @@ Bool File::isSymLink() const
     if (mylstat (itsPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
-    return ToBool (S_ISLNK (buf.st_mode));
+    return  (S_ISLNK (buf.st_mode));
 }
 
 Bool File::isPipe() const
@@ -122,7 +122,7 @@ Bool File::isPipe() const
     // if the file is a pipe.
     struct stat buf;
     getstat (&buf);
-    return ToBool(S_ISFIFO (buf.st_mode)); 
+    return (S_ISFIFO (buf.st_mode)); 
 }
 
 Bool File::isCharacterSpecial() const
@@ -131,7 +131,7 @@ Bool File::isCharacterSpecial() const
     // if the file is a characterspecialfile.
     struct stat buf;
     getstat (&buf);
-    return ToBool(S_ISCHR (buf.st_mode));
+    return (S_ISCHR (buf.st_mode));
 }
 
 Bool File::isBlockSpecial() const
@@ -140,7 +140,7 @@ Bool File::isBlockSpecial() const
     // if the file is a blokspecialfile.
     struct stat buf;
     getstat (&buf);
-    return ToBool(S_ISBLK (buf.st_mode));
+    return (S_ISBLK (buf.st_mode));
 }
 
 Bool File::isSocket() const
@@ -149,7 +149,7 @@ Bool File::isSocket() const
     // if the file is a socket.
     struct stat buf;
     getstat (&buf);
-    return ToBool(S_ISSOCK (buf.st_mode));
+    return (S_ISSOCK (buf.st_mode));
 }
 
 Bool File::exists() const
@@ -157,25 +157,25 @@ Bool File::exists() const
     // The function access always substitutes symlinks.
     // Therefore use lstat instead.
     struct stat buf;
-    return ToBool (mylstat((itsPath.expandedName()).chars(), &buf) == 0);
+    return  (mylstat((itsPath.expandedName()).chars(), &buf) == 0);
 }
 
 Bool File::isReadable() const
 {
     // The function access checks if the file is readable.
-    return ToBool(access ((itsPath.expandedName()).chars(), R_OK)==0);
+    return (access ((itsPath.expandedName()).chars(), R_OK)==0);
 }
 
 Bool File::isWritable() const
 {
     // The function access checks if the file is writable.
-    return ToBool(access ((itsPath.expandedName()).chars(), W_OK)==0);
+    return (access ((itsPath.expandedName()).chars(), W_OK)==0);
 }
 
 Bool File::isExecutable() const
 {
     // The function access checks if the file is executable.
-    return ToBool(access ((itsPath.expandedName()).chars(), X_OK)==0);
+    return (access ((itsPath.expandedName()).chars(), X_OK)==0);
 }
 
 Bool File::canCreate() const

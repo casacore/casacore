@@ -1,5 +1,5 @@
 //# MVEarthMagnetic.cc: A 3D Earth magnetic field vector
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,7 +170,7 @@ operator==(const MVEarthMagnetic &other) const {
 
 Bool MVEarthMagnetic::
 operator!=(const MVEarthMagnetic &other) const {
-  return ToBool(!(*this == other));
+  return (!(*this == other));
 }
 
 Bool MVEarthMagnetic::

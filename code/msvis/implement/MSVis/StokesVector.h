@@ -1,5 +1,5 @@
 //# StokesVector.h: A fast RigidVector with Stokes conversions
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -154,12 +154,12 @@ public:
   }
   // Equality
   Bool operator==(const CStokesVector& v) const {
-    return ToBool(v_p[0]==v.v_p[0] && v_p[1]==v.v_p[1] &&
+    return (v_p[0]==v.v_p[0] && v_p[1]==v.v_p[1] &&
 		  v_p[2]==v.v_p[2] && v_p[3]==v.v_p[3]);
   }
   // Inequality
   Bool operator!=(const CStokesVector& v) const {
-    return ToBool(v_p[0]!=v.v_p[0] || v_p[1]!=v.v_p[1] ||
+    return (v_p[0]!=v.v_p[0] || v_p[1]!=v.v_p[1] ||
 		  v_p[2]!=v.v_p[2] || v_p[3]!=v.v_p[3]);
   }
 
@@ -276,12 +276,12 @@ public:
   }
   // Equality
   Bool operator==(const StokesVector& v) const {
-    return ToBool(v_p[0]==v.v_p[0] && v_p[1]==v.v_p[1] &&
+    return (v_p[0]==v.v_p[0] && v_p[1]==v.v_p[1] &&
 		  v_p[2]==v.v_p[2] && v_p[3]==v.v_p[3]);
   }
   // Inequality
   Bool operator!=(const StokesVector& v) const {
-    return ToBool(v_p[0]!=v.v_p[0] || v_p[1]!=v.v_p[1] ||
+    return (v_p[0]!=v.v_p[0] || v_p[1]!=v.v_p[1] ||
 		  v_p[2]!=v.v_p[2] || v_p[3]!=v.v_p[3]);
   }
   // Compute the maximum EigenValue

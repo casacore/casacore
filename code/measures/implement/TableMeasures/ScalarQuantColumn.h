@@ -1,5 +1,5 @@
 //# ScalarQuantColumn.h: Access to a Scalar Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -174,7 +174,7 @@ public:
 
   // Test whether the Quantum column has variable units
   Bool isUnitVariable() const
-    { return ToBool(itsUnitsCol != 0); }
+    { return (itsUnitsCol != 0); }
 
   // Returns the column's value for Units as a string.
   // An empty string is returned if the column has variable units.
@@ -183,7 +183,7 @@ public:
 
   // Test if the object is null.
   Bool isNull() const
-    { return ToBool(itsDataCol == 0); }
+    { return (itsDataCol == 0); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;

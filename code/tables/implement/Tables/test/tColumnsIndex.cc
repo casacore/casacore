@@ -1,5 +1,5 @@
 //# tColumnsIndex.cc: Test program for the ColumnsIndex class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ void a()
     ScalarColumn<String> astring(tab, "astring");
     char str[8];
     for (Int i=0; i<nrrow; i++) {
-	abool.put (i, ToBool(i%2 == 0));
+	abool.put (i, (i%2 == 0));
 	auchar.put (i, i);
 	ashort.put (i, i);
 	aint.put (i, i);
@@ -128,7 +128,7 @@ void b()
     uInt i;
     for (i=0; i<nrrow; i++) {
         rec.define ("auint", i);
-        AlwaysAssertExit (ToBool (colInx4.getRowNumber(found, rec) == i
+        AlwaysAssertExit ( (colInx4.getRowNumber(found, rec) == i
 				  && found));
         *auchar = i;
         *ashort = i;
@@ -140,23 +140,23 @@ void b()
         *adcomplex = DComplex(i,i);
 	sprintf (str, "V%i", i);
         *astring = str;
-        AlwaysAssertExit (ToBool (colInx1.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx2.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx3.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx4.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx5.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx6.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx7.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx8.getRowNumber(found) == i  && found));
-        AlwaysAssertExit (ToBool (colInx9.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx1.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx2.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx3.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx4.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx5.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx6.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx7.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx8.getRowNumber(found) == i  && found));
+        AlwaysAssertExit ( (colInx9.getRowNumber(found) == i  && found));
     }
     // Make sure low and high value are not found.
     *aint = -1;
     colInx3.getRowNumber(found);
-    AlwaysAssertExit (ToBool(!found));
+    AlwaysAssertExit ((!found));
     *aint = nrrow;
     colInx3.getRowNumber(found);
-    AlwaysAssertExit (ToBool(!found));
+    AlwaysAssertExit ((!found));
     // Test a bool.
     *abool = True;
     try {
@@ -238,7 +238,7 @@ void c()
     for (i=0; i<21; i++) {
         Int inx = colInx0.getRowNumber(found);
 	if (i%2 == 0) {
-	    AlwaysAssertExit (ToBool(!found));
+	    AlwaysAssertExit ((!found));
 	} else {
 	    AlwaysAssertExit (inx == i/2  &&  found);
 	}
@@ -258,7 +258,7 @@ void d()
     Int i;
     for (i=0; i<nrrow; i++) {
         *aint = -i;
-        AlwaysAssertExit (ToBool (Int(colInx3.getRowNumber(found)) == i
+        AlwaysAssertExit ( (Int(colInx3.getRowNumber(found)) == i
 				  && found));
         *auint = 1+2*(i/3);
 	cout << colInx4.getRowNumbers() << endl;
@@ -317,7 +317,7 @@ void d()
     Timer timer;
     for (i=0; i<100*nrrow; i++) {
         *adouble = i/100;
-        AlwaysAssertExit (ToBool (Int(colInx6.getRowNumber(found)) == i/100
+        AlwaysAssertExit ( (Int(colInx6.getRowNumber(found)) == i/100
 				  && found));
     }
     timer.show ("100000*find");

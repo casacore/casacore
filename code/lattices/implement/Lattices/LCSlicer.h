@@ -1,5 +1,5 @@
 //# LCSlicer.h: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -233,7 +233,7 @@ private:
 
 inline Bool LCSlicer::operator!= (const LCSlicer& other) const
 {
-    return ToBool (! operator==(other));
+    return  (! operator==(other));
 }
 inline uInt LCSlicer::ndim() const
 {

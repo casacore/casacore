@@ -1,5 +1,5 @@
 //# ColDescSet.h: This class defines a set of column descriptions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,7 +115,7 @@ public:
 
     // Test if a column is defined in this set.
     Bool isDefined (const String& name) const
-	{ return ToBool (cols_p.isDefined (name)); }
+	{ return  (cols_p.isDefined (name)); }
 
     // Test if this set equals another one.
     // It is equal if the number of columns is equal and all field names in

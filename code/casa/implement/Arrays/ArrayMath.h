@@ -1,5 +1,5 @@
 //# ArrayMath.h: ArrayMath: Simple mathematics done on an entire array.
-//# Copyright (C) 1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -360,7 +360,7 @@ template<class T> T avdev(const Array<T> &a,T mean);
 // than a full quicksort).
 // <group>
 template<class T> inline T median(const Array<T> &a, Bool sorted = False)
-    { return median (a, sorted, ToBool(a.nelements() <= 100)); }
+    { return median (a, sorted, (a.nelements() <= 100)); }
 template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean);
 // </group>
 

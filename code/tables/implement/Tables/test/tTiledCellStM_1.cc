@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -99,7 +99,7 @@ main (int argc, char** argv)
         openPablo(argv);
 #endif
 	makeCube(argv);
-        getCube (ToBool(argc>4 && String(argv[4])!="0"), ToBool(argc>5));
+        getCube ((argc>4 && String(argv[4])!="0"), (argc>5));
 #ifdef PABLO_IO
         closePablo();
 #endif

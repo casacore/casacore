@@ -1,5 +1,5 @@
 //# MaskedArray.cc: A templated N-D masked array class with variable origin.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,7 +193,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
                              const LogicalArray &inmask,
                              Bool isreadonly)
 : pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False),
-  isRO (ToBool (inarray.isRO || isreadonly))
+  isRO ( (inarray.isRO || isreadonly))
 {
 //    if (! conform2 (inarray, inmask)) {
     if (inarray.shape() != inmask.shape()) {
@@ -392,7 +392,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
                              const MaskedLogicalArray &inmask,
                              Bool isreadonly)
 : pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False),
-  isRO (ToBool (inarray.isRO || isreadonly))
+  isRO ( (inarray.isRO || isreadonly))
 {
 //    if (! conform2 (inarray, inmask)) {
     if (inarray.shape() != inmask.shape()) {
@@ -432,7 +432,7 @@ template<class T> MaskedArray<T>::MaskedArray(const MaskedArray<T> &other,
                                               Bool isreadonly)
 : pArray (0), pMask (0),
   nelemValid (other.nelemValid), nelemValidIsOK (other.nelemValidIsOK),
-  isRO (ToBool (other.isRO || isreadonly))
+  isRO ( (other.isRO || isreadonly))
 {
 
     pArray = new Array<T> (*(other.pArray));

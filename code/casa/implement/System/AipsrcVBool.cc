@@ -1,5 +1,5 @@
 //# AipsrcVBool.cc: Specialisation for AipsrcVector<Bool>
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
     m = split(res, nres, m, " ");
     value = Vector<Bool>(m);
     for (Int i=0; i<m; i++) {
-      value(i) = ToBool((nres[i]).contains(tTrue));;
+      value(i) = ((nres[i]).contains(tTrue));;
     };
     delete [] nres;
   };

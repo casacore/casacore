@@ -1,5 +1,5 @@
 //# TableLock.h: Class to hold table lock options
-//# Copyright (C) 1997,1998,2000
+//# Copyright (C) 1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ inline Bool TableLock::readLocking() const
 
 inline Bool TableLock::isPermanent() const
 {
-    return ToBool (itsOption == PermanentLocking
+    return  (itsOption == PermanentLocking
 	       ||  itsOption == PermanentLockingWait);
 }
 

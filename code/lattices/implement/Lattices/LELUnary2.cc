@@ -1,5 +1,5 @@
 //# LELUnary2.cc:  this defines non-templated classes in LELUnary.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,7 +82,7 @@ LELScalar<Bool> LELUnaryBool::getScalar() const
    LELScalar<Bool> temp (pExpr_p->getScalar());
    switch(op_p) {
    case LELUnaryEnums::NOT :
-      temp.value() = ToBool (!(temp.value()));
+      temp.value() =  (!(temp.value()));
       break;
    default:
       throw(AipsError("LELUnaryBool::getScalar - unknown operation"));

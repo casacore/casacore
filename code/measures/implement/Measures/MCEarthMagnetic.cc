@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.cc:  MEarthMagnetic conversion routines 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,8 +108,8 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc,
   Int iin  = inref.getType();
   Int iout = outref.getType();
   if (iin != iout) {
-    Bool iplan = ToBool(iin & MEarthMagnetic::EXTRA);
-    Bool oplan = ToBool(iout & MEarthMagnetic::EXTRA);
+    Bool iplan = (iin & MEarthMagnetic::EXTRA);
+    Bool oplan = (iout & MEarthMagnetic::EXTRA);
     if (iplan) {
       mc.addMethod(MCEarthMagnetic::R_MODEL0);
       mc.addMethod((iin & ~MEarthMagnetic::EXTRA) + 

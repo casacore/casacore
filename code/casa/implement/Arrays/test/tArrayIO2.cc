@@ -1,5 +1,5 @@
 //# tArrayIO2.cc: This program tests the tArrayIO2 functions
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ void doVec();
 main (int argc)
 {
     try {
-	doBin (ToBool (argc<2));
+	doBin ( (argc<2));
 	doMat();
 	doVec();
     } catch (AipsError x) {

@@ -1,5 +1,5 @@
 //# MeasRef.cc:  Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,18 +101,18 @@ MeasRef<Ms>::~MeasRef() {
 //# Operators
 template<class Ms>
 Bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
-  return ToBool(rep == other.rep);
+  return (rep == other.rep);
 }
 
 template<class Ms>
 Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
-  return ToBool(rep != other.rep);
+  return (rep != other.rep);
 }
 
 //# Member functions
 template<class Ms>
 Bool MeasRef<Ms>::empty() const {
-  return ToBool(!rep);
+  return (!rep);
 }
 
 template<class Ms>

@@ -1,5 +1,5 @@
 //# DirectionCoordinate.cc: this defines the DirectionCoordinate class
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -264,7 +264,7 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	int errnum = celrev(pcodes[projection_p.type()],
 			    d_x, d_y, prjprm_p, &d_phi, &d_theta,
 			    celprm_p, &d_lng, &d_lat);
-	ok = ToBool((errnum == 0));
+	ok = ((errnum == 0));
 	if (ok) {
 	    world(0) = d_lng;
 	    world(1) = d_lat;
@@ -310,7 +310,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     int errnum = celfwd(pcodes[projection_p.type()], d_lng, d_lat,
 			celprm_p, &d_phi, &d_theta, prjprm_p, 
                         &d_x, &d_y);
-    Bool ok = ToBool(errnum == 0);
+    Bool ok = (errnum == 0);
     if (!ok) {
        errorMsg = "wcslib celfwd error: ";
        errorMsg += celfwd_errmsg[errnum];
@@ -479,7 +479,7 @@ Vector<Double> DirectionCoordinate::referencePixel() const
 
 Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    Bool ok = ToBool(names.nelements()==nWorldAxes());
+    Bool ok = (names.nelements()==nWorldAxes());
     if (!ok) {
        set_error("names vector must be of length 2");
        return False;
@@ -491,7 +491,7 @@ Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 
 Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = ToBool(units.nelements()==nWorldAxes());
+    Bool ok = (units.nelements()==nWorldAxes());
     if (!ok) {
        set_error("units vector must be of length 2");
        return False;
@@ -516,7 +516,7 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
 
 Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    Bool ok = ToBool(refPix.nelements()==nPixelAxes());
+    Bool ok = (refPix.nelements()==nPixelAxes());
     if (!ok) {
        set_error("reference pixels vector must be of length 2");
        return False;
@@ -528,7 +528,7 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
 
 Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    Bool ok = ToBool(xform.nrow() == nWorldAxes() && 
+    Bool ok = (xform.nrow() == nWorldAxes() && 
                      xform.ncolumn() == nWorldAxes());
     if (!ok) {
        set_error("linear transform matrix has wrong shape");
@@ -541,7 +541,7 @@ Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
 
 Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
 {
-    Bool ok = ToBool(inc.nelements()==nWorldAxes());
+    Bool ok = (inc.nelements()==nWorldAxes());
     if (!ok) {
        set_error("Two increments must be provided!");
        return False;
@@ -556,7 +556,7 @@ Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
 
 Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements()==nWorldAxes());
+    Bool ok = (refval.nelements()==nWorldAxes());
     if (!ok) {
        set_error("Two ref. values must be provided!");
        return False;
@@ -570,7 +570,7 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
     String name = Projection::name(projection().type());
     const char *nameptr = name.chars();
     int errnum = celset(nameptr, celprm_p, prjprm_p);
-    ok = ToBool(errnum==0);
+    ok = (errnum==0);
     if (!ok) {
        String errmsg = "wcs celset_error: ";
        errmsg += celset_errmsg[errnum];
@@ -1095,7 +1095,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 Bool DirectionCoordinate::save(RecordInterface &container,
                                const String &fieldName) const
 {
-    Bool ok = ToBool(!container.isDefined(fieldName));
+    Bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	Projection proj = projection();

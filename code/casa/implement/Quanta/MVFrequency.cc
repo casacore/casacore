@@ -1,5 +1,5 @@
 //# MVFrequency.cc: Internal value for MFrequency
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,11 +106,11 @@ MVFrequency &MVFrequency::operator-=(const MVFrequency &other) {
 }
 
 Bool MVFrequency::operator==(const MVFrequency &other) const {
-  return ToBool(val == other.val);
+  return (val == other.val);
 }
 
 Bool MVFrequency::operator!=(const MVFrequency &other) const {
-  return ToBool(val != other.val);
+  return (val != other.val);
 }
 
 Bool MVFrequency::near(const MVFrequency &other, Double tol) const {

@@ -1,5 +1,5 @@
 //# QBase.cc: base class for Quantum
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,11 +55,11 @@ void QBase::setUnit(const QBase &other) {
 }
 
 Bool QBase::isConform(const Unit &s) const {
-    return ToBool(qUnit.getValue() == s.getValue());
+    return (qUnit.getValue() == s.getValue());
 }
 
 Bool QBase::isConform(const QBase &other) const {
-    return ToBool(qUnit.getValue() == other.qUnit.getValue());
+    return (qUnit.getValue() == other.qUnit.getValue());
 }
 
 

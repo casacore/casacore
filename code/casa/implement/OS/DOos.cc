@@ -1,5 +1,5 @@
 //# DOos.cc: Functions used to implement the DO functionality
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,7 +45,7 @@ Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)
   Vector<Bool> result(pathName.nelements());
   for (uInt i=0; i<pathName.nelements(); i++) {
     File file(pathName(i));
-    result(i) = ToBool (file.exists() || file.canCreate());
+    result(i) =  (file.exists() || file.canCreate());
   }
   return result;
 }
@@ -59,7 +59,7 @@ Vector<Bool> DOos::fileExists (const Vector<String>& pathName,
     if (follow && file.isSymLink()) {
       file = File(SymLink(file).followSymLink());
     }
-    result(i) = ToBool (file.exists());
+    result(i) =  (file.exists());
   }
   return result;
 }
@@ -96,15 +96,15 @@ Vector<String> DOos::fileNames (const String& directoryName,
 				Bool all, Bool follow)
 {
   // Determine if and how to select on file type.
-  Bool takeRegular = ToBool (fileTypes.contains ('r'));
-  Bool takeDirectory = ToBool (fileTypes.contains ('d'));
-  Bool takeSymLink = ToBool (fileTypes.contains ('s'));
-  Bool takeReadable = ToBool (fileTypes.contains ('R'));
-  Bool takeWritable = ToBool (fileTypes.contains ('W'));
-  Bool takeExecutable = ToBool (fileTypes.contains ('X'));
-  Bool checkType = ToBool (takeRegular || takeDirectory || takeSymLink);
-  Bool checkAcc = ToBool (takeReadable || takeWritable || takeExecutable);
-  Bool check = ToBool (checkType || checkAcc);
+  Bool takeRegular =  (fileTypes.contains ('r'));
+  Bool takeDirectory =  (fileTypes.contains ('d'));
+  Bool takeSymLink =  (fileTypes.contains ('s'));
+  Bool takeReadable =  (fileTypes.contains ('R'));
+  Bool takeWritable =  (fileTypes.contains ('W'));
+  Bool takeExecutable =  (fileTypes.contains ('X'));
+  Bool checkType =  (takeRegular || takeDirectory || takeSymLink);
+  Bool checkAcc =  (takeReadable || takeWritable || takeExecutable);
+  Bool check =  (checkType || checkAcc);
   // Set up the iterator. Default pattern is all.
   Vector<String> result;
   Directory dir (directoryName);

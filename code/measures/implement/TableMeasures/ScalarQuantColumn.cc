@@ -1,5 +1,5 @@
 //# ScalarQuantColumn.cc: Access to a Scalar Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,7 +65,7 @@ ROScalarQuantColumn<T>::ROScalarQuantColumn (const Table& tab,
 {
   init (tab, columnName);
   itsUnitOut = u;
-  itsConvOut = ToBool(! itsUnitOut.getName().empty());
+  itsConvOut = (! itsUnitOut.getName().empty());
 }
 
 template<class T>

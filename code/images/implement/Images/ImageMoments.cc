@@ -1,5 +1,5 @@
 //# ImageMoments.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -344,7 +344,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
    linearSearch(doWindow_p, methodU, Int(WINDOW), methodU.nelements());
    linearSearch(doFit_p, methodU, Int(FIT), methodU.nelements());
    linearSearch(doAuto_p, methodU, Int(INTERACTIVE), methodU.nelements());
-   doAuto_p  = ToBool(!doAuto_p);
+   doAuto_p  = (!doAuto_p);
 
    return True;
 }
@@ -593,7 +593,7 @@ Bool ImageMoments<T>::setPlotting(PGPlotter& plotterU,
 
 // Set number subplots
 
-   fixedYLimits_p = ToBool(!yIndU);
+   fixedYLimits_p = (!yIndU);
    nxy_p.resize(0);
    nxy_p = nxyU;
    if (!LatticeStatsBase::setNxy(nxy_p, os_p.output())) {
@@ -1026,7 +1026,7 @@ Bool ImageMoments<T>::checkMethod ()
 
 // Now check all the silly methods
 
-   const Bool doInter = ToBool(!doAuto_p);
+   const Bool doInter = (!doAuto_p);
 
    if (!( (!doSmooth_p && !doWindow_p && !doFit_p && ( noInclude_p &&  noExclude_p) && !doInter) ||
           ( doSmooth_p && !doWindow_p && !doFit_p && (!noInclude_p || !noExclude_p) && !doInter) ||
@@ -1298,8 +1298,8 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    String temp;
 //
    Bool goodUnits = True;
-   Bool goodImageUnits = ToBool(!imageUnits.getName().empty());
-   Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
+   Bool goodImageUnits = (!imageUnits.getName().empty());
+   Bool goodAxisUnits = (!momentAxisUnits.empty());
 //
    if (moment == AVERAGE) {
       suffix = ".average";
@@ -1309,7 +1309,7 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
       suffix = ".integrated";
       temp = imageUnits.getName() + "." + momentAxisUnits;
       if (convertToVelocity) temp = imageUnits.getName() + String(".km/s");
-      goodUnits = ToBool(goodImageUnits && goodAxisUnits);
+      goodUnits = (goodImageUnits && goodAxisUnits);
    } else if (moment == WEIGHTED_MEAN_COORDINATE) {
       suffix = ".weighted_coord";
       temp = momentAxisUnits;
