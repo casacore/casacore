@@ -1,4 +1,4 @@
-//# dAutoDiff.cc: test program for AutoDiff timing
+//# dFunction.cc: test program for functional (AutoDiff) timing
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
   cout << ">>>" << endl;
   Input inputs(1);
   inputs.version("$Id$");
-  inputs.create("n", "", "n"); 
+  inputs.create("n", "100000", "n"); 
   inputs.readArguments(argc, argv);
   Int N = inputs.getInt("n"); 
   cout << "<<<" << endl;
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
   Double v;
 
   // Check results
-  cout << "Values:" << endl;
+  cout << "Values (g0: 1 line; g1: 2 lines; g2: RPN type):" << endl;
   cout << "g0: " << a0(par, x) << endl;
   cout << "g1: " << a1(par, x) << endl;
   cout << "g2: " << a2(par, x) << endl;
@@ -205,6 +205,10 @@ int main(int argc, char **argv) {
     "\na0:        2.29 real        2.27 user           0 system"
     "\na1:        1.84 real        1.82 user           0 system"
     "\na2:        1.35 real        1.33 user           0 system" << endl;
+  cout << "--------- Revamp; vector g0 etc (OPT=1 N=100000) ----------" <<
+    "\na0:        1.49 real        1.49 user           0 system"
+    "\na1:        1.09 real        1.09 user           0 system"
+    "\na2:        0.77 real        0.77 user           0 system" << endl;
   
   // Loop values
   cout << "\nTiming values:" << endl;
@@ -273,7 +277,7 @@ int main(int argc, char **argv) {
       para(1) = AutoDiff<Double>(2, 3, 1);
       para(2) = AutoDiff<Double>(3, 3, 2);
     };
-    cout << "N = " << N << " (at Double)" << endl;
+    cout << "N = " << N << " (at x=Double)" << endl;
 
     tim.mark();
     for (Int i=0; i<N; i++) resa = a0(para, x);
@@ -286,7 +290,7 @@ int main(int argc, char **argv) {
     cout << "a2: "; tim.show();
 
     if (j == 3) { ///
-      cout << "N = " << N << " (at AutoDiff x)" << endl;
+      cout << "N = " << N << " (at x=AutoDiff)" << endl;
       AutoDiff<Double> xa(4, j);
       
       tim.mark();
