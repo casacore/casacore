@@ -187,10 +187,10 @@ void ComponentList::remove(const uInt & index) {
 
 void ComponentList::remove(const Vector<Int> & indices) {
   AlwaysAssert(allGE(indices.ac(), 0), AipsError);
-  Vector<uInt> uIndices;
+  uInt c = indices.nelements();
+  Vector<uInt> uIndices(c);
   convertArray(uIndices.ac(), indices.ac());
   GenSort<uInt>::sort(uIndices);
-  uInt c = uIndices.nelements();
   while (c != 0) {
     c--;
     remove(uIndices(c));
