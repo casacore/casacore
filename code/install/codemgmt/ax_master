@@ -4831,3 +4831,4 @@
 14 316 src rm trial/apps/dish/dishresman.g
 14 316 sys rm libexec/dishresman.g
 14 316 src rm trial/apps/dish/dparams.g
+14 316 sys rm libexec/dparams.g
