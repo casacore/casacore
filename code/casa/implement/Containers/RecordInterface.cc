@@ -1,5 +1,5 @@
 //# RecordInterface.cc: Abstract base class for a hierarchical collection of named fields of various types
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,6 +100,14 @@ Int RecordInterface::newIdToNumber (const RecordFieldId& id) const
     if (id.byName()) {
 	return fieldNumber (id.fieldName());
     }
+    Int nfield = nfields();
+    if (id.fieldNumber() > nfield) {
+	throw (AipsError ("RecordInterface::define - "
+			  "new fieldNumber exceeds #fields"));
+    }
+    if (id.fieldNumber() == nfield) {
+	return -1;
+    }
     return id.fieldNumber();
 }
 Int RecordInterface::idToNumber (const RecordFieldId& id) const
@@ -150,24 +158,23 @@ IPosition RecordInterface::shape (const RecordFieldId& id) const
 void RecordInterface::defineField (const RecordFieldId& id, DataType type,
 				   const void* value)
 {
-    Int whichField = newIdToNumber (id);
-    if (whichField < 0  &&  id.byName()) {
-	throwIfFixed();
-	checkName (id.fieldName(), type);
-	addDataField (id.fieldName(), type, value);
-    }else{
-	defineDataField (whichField, type, value);
-    }
+    defineField (id, type, IPosition(), False, value);
 }
 void RecordInterface::defineField (const RecordFieldId& id, DataType type,
 				   const IPosition& shape, Bool fixedShape,
 				   const void* value)
 {
     Int whichField = newIdToNumber (id);
-    if (whichField < 0  &&  id.byName()) {
+    if (whichField < 0) {
 	throwIfFixed();
-	checkName (id.fieldName(), type);
-	addDataField (id.fieldName(), type, shape, fixedShape, value);
+	String name;
+	if (id.byName()) {
+	    name = id.fieldName();
+	}else{
+	    name = description().makeName (id.fieldNumber());
+	}
+	checkName (name, type);
+	addDataField (name, type, shape, fixedShape, value);
     }else{
 	defineDataField (whichField, type, value);
     }

@@ -1,5 +1,5 @@
 //# RecordInterface.h: Abstract base class for Record classes
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -404,10 +404,6 @@ public:
 
 
 protected:
-    // Let the derived class add a scalar field with the given type and value.
-    virtual void addDataField (const String& name, DataType type,
-			       const void* value) = 0;
-
     // Let the derived class add an array field with the given type, shape,
     // and value.
     virtual void addDataField (const String& name, DataType type,

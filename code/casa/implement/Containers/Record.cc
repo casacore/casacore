@@ -1,5 +1,5 @@
 //# Record.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -185,11 +185,6 @@ void Record::renameField (const String& newName, const RecordFieldId& id)
 
 
 void Record::addDataField (const String& name, DataType type,
-			   const void* value)
-{
-    rwRef().addDataField (name, type, IPosition(), False, value);
-}
-void Record::addDataField (const String& name, DataType type,
 			   const IPosition& shape, Bool fixedShape,
 			   const void* value)
 {
@@ -221,10 +216,16 @@ void Record::defineRecord (const RecordFieldId& id,
 			   const Record& value, RecordType type)
 {
     Int whichField = newIdToNumber (id);
-    if (whichField < 0  &&  id.byName()) {
+    if (whichField < 0) {
 	throwIfFixed();
-	checkName (id.fieldName(), TpRecord);
-	rwRef().addField (id.fieldName(), value, type);
+	String name;
+	if (id.byName()) {
+	    name = id.fieldName();
+	}else{
+	    name = description().makeName (id.fieldNumber());
+	}
+	checkName (name, TpRecord);
+	rwRef().addField (name, value, type);
     }else{
 	rwRef().defineDataField (whichField, TpRecord, &value);
     }

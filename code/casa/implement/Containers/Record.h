@@ -1,5 +1,5 @@
 //# Record.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -382,11 +382,7 @@ protected:
     // objects will be notified.
     RecordRep& rwRef();
 
-    // Add a scalar field to the record.
-    virtual void addDataField (const String& name, DataType type,
-			       const void* value);
-
-    // Add an array field to the record.
+    // Add a field to the record.
     virtual void addDataField (const String& name, DataType type,
 			       const IPosition& shape, Bool fixedShape,
 			       const void* value);
