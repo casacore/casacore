@@ -38,6 +38,8 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Lattices/IPosition.h>
+//# Needed to get the proper Complex typedef's
+#include <aips/Mathematics/Complex.h>
 
 
 // <summary>
@@ -240,8 +242,8 @@ template<class T>
     MaskedArray<T> operator* (const MaskedArray<T> &left, const T &right);
 template<class T> 
     MaskedArray<T> operator/ (const MaskedArray<T> &left, const T &right);
-template<class T, class S>
-    MaskedArray<S> operator* (const MaskedArray<S> &left, const T &right);
+    MaskedArray<Complex> operator* (const MaskedArray<Complex> &left, 
+                                    const Float &right);
 // </group>
 
 // 
@@ -256,8 +258,8 @@ template<class T>
     MaskedArray<T> operator* (const T &left, const MaskedArray<T> &right);
 template<class T>  
     MaskedArray<T> operator/ (const T &left, const MaskedArray<T> &right);
-template<class T, class S>
-    MaskedArray<S> operator* (const T &left, const MaskedArray<S> &right);
+    MaskedArray<Complex> operator* (const Float &left, 
+                                    const MaskedArray<Complex> &right);
 //
 // </group>
 
