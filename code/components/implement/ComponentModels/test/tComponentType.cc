@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,7 +122,7 @@ int main() {
     }
     catch (AipsError x) {
       if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
-	rethrow(x);
+	throw;
       }
     }
     try {
@@ -132,7 +132,7 @@ int main() {
     }
     catch (AipsError x) {
       if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
-	rethrow(x);
+	throw;
       }
     }
     cout << "Two SEVERE logger error messages are expected" << endl;

@@ -176,7 +176,7 @@ int main() {
       }
       catch (AipsError x) {
 	if(!x.getMesg().contains("newParms.nelements() == nParameters()")) {
-	  rethrow(x);
+	  throw;
 	}
       }
       try{
@@ -185,7 +185,7 @@ int main() {
       }
       catch (AipsError x) {
 	if(!x.getMesg().contains("compParms.nelements() == nParameters()")) {
-	  rethrow(x);
+	  throw;
 	}
       }
 #endif
