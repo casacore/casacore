@@ -1,5 +1,5 @@
 //# ArrayAccessor.h: Fast 1D accessor/iterator for nD array classes
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
