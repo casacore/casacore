@@ -158,10 +158,24 @@ public:
     // According to the assignment rules of class Array, the destination
     // vector must be empty or its length must be the number of cells
     // in the column (i.e. the number of rows in the table).
-    void getColumn (Vector<T>& vec) const;
+    void getColumn (Vector<T>& vec, Bool resize = False) const;
 
     // Get the vector of all values in the column.
     Vector<T> getColumn() const;
+
+    // Get the vector of a range of values in the column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to get.
+    // According to the assignment rules of class Array, the destination
+    // vector must be empty or its length must be the number of cells
+    // in the column (i.e. the number of rows in the slicer).
+    void getColumnRange (const Slicer& rowRange, Vector<T>& vec,
+			 Bool resize = False) const;
+
+    // Get the vector of a range of values in the column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to get..
+    Vector<T> getColumnRange (const Slicer& rowRange) const;
 
 private:
     // Assignment makes no sense for a readonly class.
@@ -308,6 +322,12 @@ public:
     // The length of the vector must be the number of cells in the column
     // (i.e. the number of rows in the table).
     void putColumn (const Vector<T>& vec);
+
+    // Put the vector of a range of values in the column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to put.
+    // The length of the vector must be the number of cells in the slice.
+    void putColumnRange (const Slicer& rowRange, const Vector<T>& vec);
 
     // Put the same value in all cells of the column.
     void fillColumn (const T& value);

@@ -298,6 +298,54 @@ void ROArrayColumn<T>::getColumn (const Slicer& ns,
 }
 
 
+template<class T>
+Array<T> ROArrayColumn<T>::getColumnRange (const Slicer& rowRange) const
+{
+    Array<T> arr;
+    getColumnRange (rowRange, arr);
+    return arr;
+}
+
+template<class T>
+void ROArrayColumn<T>::getColumnRange (const Slicer& rowRange,
+				       Array<T>& arr, Bool resize) const
+{
+    uInt nrrow = nrow();
+    IPosition shp, blc, trc, inc;
+    shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
+    //# When the entire column is accessed, use that function.
+    if (shp(0) == nrrow) {
+	getColumn (arr, resize);
+	return;
+    }
+    //# Take shape of array in first row.
+    nrrow = shp(0);
+    IPosition arrshp;
+    if (nrrow > 0) {
+	arrshp = shape(blc(0));
+    }
+    //# Total shape is array shape plus nr of table rows.
+    arrshp.resize (arrshp.nelements() + 1);
+    arrshp(arrshp.nelements()-1) = nrrow;
+    if (! arrshp.isEqual (arr.shape())) {
+	if (resize  ||  arr.nelements() == 0) {
+	    arr.resize (arrshp);
+	}else{
+	    throw (TableArrayConformanceError("ArrayColumn::getColumnRange"));
+	}
+    }
+    //# Fill the entire array by looping through all cells.
+    uInt rownr = blc(0);
+    uInt incr = inc(0);
+    ArrayIterator<T> iter(arr, arr.ndim()-1);
+    for (uInt i=0; i<nrrow; i++) {
+	baseColPtr_p->get (rownr, &(iter.array()));
+	rownr += incr;
+	iter.next();
+    }
+}
+
+
 
 
 template<class T>
@@ -503,6 +551,55 @@ void ArrayColumn<T>::putColumn (const Slicer& ns, const Array<T>& arr)
 	    putSlice (rownr, ns, iter.array());
 	    iter.next();
 	}
+    }
+}
+
+
+template<class T>
+void ArrayColumn<T>::putColumnRange (const Slicer& rowRange,
+				     const Array<T>& arr)
+{
+    uInt nrrow = nrow();
+    IPosition shp, blc, trc, inc;
+    shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
+    //# When the entire column is accessed, use that function.
+    if (shp(0) == nrrow) {
+	putColumn (arr);
+	return;
+    }
+    //# First check if number of rows matches.
+    nrrow = shp(0);
+    IPosition arrshp  = arr.shape();
+    uInt last = arrshp.nelements() - 1;
+    if (arrshp(last) != nrrow) {
+	throw (TableArrayConformanceError(
+	                              "ArrayColumn::putColumnRange (nrrow)"));
+    }
+    //# Remove #rows from shape to get the shape of each cell.
+    arrshp.resize (last);
+    //# When the array is fixed shape, check if the shape matches.
+    if ((columnDesc().options() & ColumnDesc::FixedShape)
+	                                     == ColumnDesc::FixedShape) {
+	if (! arrshp.isEqual (shapeColumn())) {
+	    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+	}
+    }else{
+	//# Otherwise set the shape of each cell (as far as needed).
+	uInt rownr = blc(0);
+	uInt incr = inc(0);
+	for (uInt i=0; i<nrrow; i++) {
+	    setShape (rownr, arrshp);
+	    rownr += incr;
+	}
+    }
+    //# Put the entire array by looping through all cells.
+    uInt rownr = blc(0);
+    uInt incr = inc(0);
+    ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
+    for (uInt i=0; i<nrrow; i++) {
+	baseColPtr_p->put (rownr, &(iter.array()));
+	rownr += incr;
+	iter.next();
     }
 }
 

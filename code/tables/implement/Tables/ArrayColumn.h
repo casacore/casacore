@@ -215,6 +215,24 @@ public:
     Array<T> getColumn (const Slicer&) const;
     // </group>
 
+    // Get the array of some values in a column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to get.
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim
+    // with the last dimension representing the number of rows in the slicer..
+    // The arrays in the column must have the same shape in all those cells.
+    // <group>
+    // According to the assignment rules of class Array, the destination
+    // array must be empty or its shape must conform the resulting (n+1)-dim
+    // array.
+    // However, if the resize flag is set the destination array will be
+    // resized if not conforming.
+    // <group>
+    void getColumnRange (const Slicer& rowRange, Array<T>& vec,
+			 Bool resize = False) const;
+    Array<T> getColumnRange (const Slicer& rowRange) const;
+    // </group>
+
 private:
     // Assignment makes no sense for a readonly class.
     // Declaring this operator private, makes it unusable.
@@ -371,7 +389,6 @@ public:
     // The row numbers count from 0 until #rows-1.
     // If the shape of the table array in that cell has not already been
     // defined, it will be defined implicitly.
-    // If it has been defined, the shape of the source array must conform.
     void put (uInt rownr, const Array<T>& array);
 
     // Copy the value of a cell of that column to a cell of this column.
@@ -410,9 +427,6 @@ public:
     // Put the array of all values in the column.
     // If the column contains n-dim arrays, the source array must be (n+1)-dim
     // with the last dimension representing the number of rows.
-    // If the shapes of arrays in the column cells are defined, they must be
-    // the same. For undefined shapes (thus empty cells), the sahpe
-    // will be defined implicitly.
     void putColumn (const Array<T>& array);
 
     // Put into subsections of the table arrays in the column.
@@ -422,9 +436,14 @@ public:
     // The dimensionality of the slice must match the dimensionality
     // of the table array, thus must be n-dim. Also the slice definition
     // should not exceed the shape of the table arrays.
-    // The shape of the arrays in the column must be defined and must
-    // be the same in all cells
     void putColumn (const Slicer& ns, const Array<T>& array);
+
+    // Put the array of some values in the column.
+    // The Slicer object can be used to specify start, end (or length),
+    // and stride of the rows to put.
+    // If the column contains n-dim arrays, the source array must be (n+1)-dim
+    // with the last dimension representing the number of rows in the slicer.
+    void putColumnRange (const Slicer& rowRange, const Array<T>& vec);
 
     // Put the same value in all cells of the column.
     void fillColumn (const Array<T>& value);
