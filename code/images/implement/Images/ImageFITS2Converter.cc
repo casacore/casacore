@@ -1056,6 +1056,14 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
        ignore(0) = "restfreq";
        FITSKeywordUtil::removeKeywords(header, ignore);
     }
+
+// Fix up Direction coordinate so that longitudes is in range [-180,l80]
+// as assumed by wcs.
+
+    String errMsg;
+    if (!CoordinateUtil::cylindricalFix (cSys, errMsg, shape)) {
+       os << errMsg << LogIO::EXCEPTION;  
+    }   
 //
     return cSys;
 }
