@@ -672,7 +672,9 @@ preamble()
    time_t clock;
    struct tm *tmstruct;
    struct passwd *pw;
+#if defined (AIPS_SVID3)
    struct utsname hostid;
+#endif
 
 /* Determine the time. */
    time(&clock);
