@@ -1,5 +1,5 @@
 //# MSTableImpl.h: Helper class to implement common functions for MS Tables
-//# Copyright (C) 1996,2000,2001
+//# Copyright (C) 1996,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,7 @@ public:
 
     // Add the compress option for the given column to the TableDesc.
     static void addColumnCompression (TableDesc&, const String& colName,
-				      Bool autoScale);
+				      Bool autoScale, const String& type);
 
     // Setup the compression data managers if needed.
     static SetupNewTable& setupCompression (SetupNewTable&);

@@ -1,5 +1,5 @@
 //# MSTable.h: A Table to hold astronomical data (a set of Measurements)
-//# Copyright (C) 1996,1997,2000,2001
+//# Copyright (C) 1996,1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,8 +208,13 @@ public:
     static const TableDesc& requiredTableDesc();
 
     // Add the compress option for the given column to the TableDesc.
+    // It can only be used for a Float or a Complex column.
+    // For complex columns the type determines which CompressComplex
+    // engine is used. "SD" means that CompressComplexSD is used; otherwise
+    // CompressComplex is used.
     static void addColumnCompression (TableDesc& td, ColEnum which,
-				      Bool autoScale = True);
+				      Bool autoScale = True,
+				      const String& type = String());
 
     // </group>
 

@@ -223,9 +223,10 @@ void MSTable<ColEnum,KeyEnum>::addKeyToDesc(TableDesc& td, KeyEnum key)
 template <class ColEnum, class KeyEnum> 
 void MSTable<ColEnum,KeyEnum>::addColumnCompression (TableDesc& td,
 						     ColEnum which,
-						     Bool autoScale)
+						     Bool autoScale,
+						     const String& type)
 {
-    MSTableImpl::addColumnCompression (td, columnName(which), autoScale);
+    MSTableImpl::addColumnCompression (td, columnName(which), autoScale, type);
 }
 
 template <class ColEnum, class KeyEnum> 

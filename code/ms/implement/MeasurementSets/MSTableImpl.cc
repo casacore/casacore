@@ -347,7 +347,7 @@ void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
 }
 
 void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
-					Bool autoScale)
+					Bool autoScale, const String& type)
 {
   // Check if the column name exists in the description.
   // Check it is a Float or Complex array.
@@ -363,6 +363,7 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
 					  cdesc.ndim(),
 					  cdesc.options()));
     cdesc.rwKeywordSet().define ("CompressFloat_AutoScale", autoScale);
+    cdesc.rwKeywordSet().define ("CompressFloat_Type", type);
   } else {
     td.addColumn (ArrayColumnDesc<Int> (colName + "_COMPRESSED",
 					"",
@@ -371,6 +372,7 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
 					cdesc.ndim(),
 					cdesc.options()));
     cdesc.rwKeywordSet().define ("CompressComplex_AutoScale", autoScale);
+    cdesc.rwKeywordSet().define ("CompressComplex_Type", type);
   }
   if (cdesc.shape().nelements() > 0) {
     ColumnDesc& cd = td.rwColumnDesc (colName + "_COMPRESSED");
@@ -383,7 +385,7 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
 SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
 {
   // Loop through all columns of the description.
-  // If compression is needed (defined by keyword CompressX_AutoScaling)
+  // If compression is needed (defined by keyword CompressX_AutoScale)
   // create a compression engine, bind the compressed column to the
   // data manager of the original column, and bind the column to the engine.
   const TableDesc& td = newtab.tableDesc();
@@ -402,13 +404,24 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
       newtab.bindColumn (cdesc.name(), engine);
     } else if (keyset.isDefined ("CompressComplex_AutoScale")) {
       cname = cdesc.name() + "_COMPRESSED";
-      CompressComplex engine (cdesc.name(),
-			      cname,
-			      cdesc.name() + "_SCALE",
-			      cdesc.name() + "_OFFSET",
-			      keyset.asBool ("CompressComplex_AutoScale"));
-      newtab.bindColumn (cname, cdesc.name());
-      newtab.bindColumn (cdesc.name(), engine);
+      String type = keyset.asString ("CompressComplex_Type");
+      if (type == "SD") {
+	CompressComplexSD engine (cdesc.name(),
+				  cname,
+				  cdesc.name() + "_SCALE",
+				  cdesc.name() + "_OFFSET",
+				  keyset.asBool ("CompressComplex_AutoScale"));
+	newtab.bindColumn (cname, cdesc.name());
+	newtab.bindColumn (cdesc.name(), engine);
+      } else {
+	CompressComplex engine (cdesc.name(),
+				cname,
+				cdesc.name() + "_SCALE",
+				cdesc.name() + "_OFFSET",
+				keyset.asBool ("CompressComplex_AutoScale"));
+	newtab.bindColumn (cname, cdesc.name());
+	newtab.bindColumn (cdesc.name(), engine);
+      }
     }
     // If the column is used in a hypercolumn definition, change it
     // to contain the compressed column.
