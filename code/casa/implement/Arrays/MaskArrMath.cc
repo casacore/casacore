@@ -35,6 +35,15 @@
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Utilities/GenSort.h>
 
+// Some test programs seem to want this. It doesn't seem to make
+// any sense!
+#if defined(AIPS_STDLIB)
+inline Int atan2(Int a1, Int a2)
+{
+  return Int(atan2(double(a1),double(a2)));
+}
+#endif
+
 #define MARRM_IOP_MA(IOP,STRIOP) \
 template<class T> \
 const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
