@@ -416,6 +416,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 // Generate more accurate fit if required giveing shape information
 
    Matrix<NumericTraits<T>::PrecisionType> ss(nFound, 3);    // major, minor, pa
+   Matrix<NumericTraits<T>::PrecisionType> rs2(rs.copy());   // copy
+//
    if (!doPoint) {
 
 // Loop over found sources
@@ -519,8 +521,24 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
          pars(5) = ss(k,2);
       }
 //   
-      listOut.add(ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
-                                                      cType, pars, stokes, xIsLong));
+      try {
+         SkyComponent sky = ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
+                                                                cType, pars, stokes, xIsLong);
+         listOut.add(sky);
+      }  catch (AipsError x) {
+         os << LogIO::WARN << "Could not convert fitted pixel parameters to world for source " << k+1 << endl;
+         os << "Probably this means the fitted parameters were wildly wrong" << endl;
+         os << "Reverting to original POINT source parameters for this source " << LogIO::POST;
+//
+         Vector<Double> pars2(3);
+         pars2(0) = rs2(k,0);
+         pars2(1) = rs2(k,1); 
+         pars2(2) = rs2(k,2);
+         SkyComponent sky = ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
+                                                                ComponentType::POINT, 
+                                                                pars2, stokes, xIsLong);
+         listOut.add(sky);
+      }
    } 
    return listOut;
 }
