@@ -56,7 +56,7 @@
 void check (const Record&, Int intValue, uInt nrField);
 void doIt (Bool doExcp);
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doIt ( (argc<2));
@@ -210,7 +210,7 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 
     // Test if the assignment works fine.
     record1 = record;
-    AlwaysAssertExit (record1.subRecord(subField1).asfloat(0) == 3);
+    AlwaysAssertExit (record1.subRecord(subField1).asFloat(0) == 3);
     AlwaysAssertExit (record1.subRecord(subField1).asInt(1) == 2);
 
     // Add another field to SubRecord1 in record.
@@ -229,9 +229,9 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 	} 
     }
     (*sub1).define (0, float(4));
-    AlwaysAssertExit (record.subRecord(subField1).asfloat(0) == 4);
+    AlwaysAssertExit (record.subRecord(subField1).asFloat(0) == 4);
     record = record1;
-    AlwaysAssertExit (record.subRecord(subField1).asfloat(0) == 3);
+    AlwaysAssertExit (record.subRecord(subField1).asFloat(0) == 3);
 }
 
 void doIt (Bool doExcp)
@@ -779,11 +779,77 @@ void check (const Record& record, Int intValue, uInt nrField)
     AlwaysAssertExit (allEQ (record.asArrayShort(24), sv));
     AlwaysAssertExit (allEQ (record.asArrayInt(25), iv));
     AlwaysAssertExit (allEQ (record.asArrayuInt(26), uiv));
-    AlwaysAssertExit (allEQ (record.asArrayfloat(27), fv));
-    AlwaysAssertExit (allEQ (record.asArraydouble(28), dv));
+    AlwaysAssertExit (allEQ (record.asArrayFloat(27), fv));
+    AlwaysAssertExit (allEQ (record.asArrayDouble(28), dv));
     AlwaysAssertExit (allEQ (record.asArrayComplex(29), cv));
     AlwaysAssertExit (allEQ (record.asArrayDComplex(30), dcv));
     AlwaysAssertExit (allEQ (record.asArrayString(33), strv));
+
+    AlwaysAssertExit (allEQ (record.toArrayBool(22), bv));
+    AlwaysAssertExit (allEQ (record.toArrayuChar(23), ucv));
+    AlwaysAssertExit (allEQ (record.toArrayShort(24), sv));
+    AlwaysAssertExit (allEQ (record.toArrayInt(25), iv));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(26), uiv));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(27), fv));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(28), dv));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(29), cv));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(30), dcv));
+    AlwaysAssertExit (allEQ (record.toArrayString(33), strv));
+    AlwaysAssertExit (allEQ (record.toArrayBool(10), *boolField));
+    AlwaysAssertExit (allEQ (record.toArrayuChar(11), *ucharField));
+    AlwaysAssertExit (allEQ (record.toArrayShort(11), Short(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayInt(11), Int(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(11), uInt(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(11), Float(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(11), Double(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(11),
+			     Complex(*ucharField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(11),
+			     DComplex(*ucharField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayShort(12), *shortField));
+    AlwaysAssertExit (allEQ (record.toArrayInt(12), Int(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(12), uInt(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(12), Float(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(12), Double(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(12),
+			     Complex(*shortField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(12),
+			     DComplex(*shortField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayInt(13), *intField));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(13), Float(*intField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(13), Double(*intField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(13),
+			     Complex(*intField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(13),
+			     DComplex(*intField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(14), *uintField));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(14), Float(*uintField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(14), Double(*uintField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(14),
+			     Complex(*uintField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(14),
+			     DComplex(*uintField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(15), *floatField));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(15), Double(*floatField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(15),
+			     Complex(*floatField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(15),
+			     DComplex(*floatField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(16), *doubleField));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(16), Float(*doubleField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(16),
+			     Complex(*doubleField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(16),
+			     DComplex(*doubleField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(17), *complexField));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(17),
+			     DComplex(*complexField)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(18), *dcomplexField));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(18),
+			     Complex((*dcomplexField).real(),
+				     (*dcomplexField).imag())));
+    AlwaysAssertExit (allEQ (record.toArrayString(19),
+                                    stringToVector("Hello,Goodbye")));
 
     // Scalars as Arrays.
     RORecordFieldPtr<Array<Bool> >     boolFieldA(record, 0);
@@ -857,10 +923,10 @@ void check (const Record& record, Int intValue, uInt nrField)
     RORecordFieldPtr<Record> sub1(subrec1, "sub1");
     AlwaysAssertExit(! (*sub1).isFixed());
     AlwaysAssertExit((*sub1).nfields() == 2);
-    AlwaysAssertExit((*sub1).asfloat(0) == 6.0);
+    AlwaysAssertExit((*sub1).asFloat(0) == 6.0);
 
     RORecordFieldPtr<Record> sub2(subrec1, "sub2");
     AlwaysAssertExit(! (*sub2).isFixed());
     AlwaysAssertExit((*sub2).nfields() == 2);
-    AlwaysAssertExit((*sub2).asdouble("SubFloat") == 8.0);
+    AlwaysAssertExit((*sub2).asDouble("SubFloat") == 8.0);
 }
