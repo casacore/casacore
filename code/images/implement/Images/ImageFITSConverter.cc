@@ -98,7 +98,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     Bool hasSpectralCoordinate = (coords.findCoordinate(Coordinate::SPECTRAL, after)>=0);
     if (! ok) {
 	os << LogIO::WARN << 
-	  "Error creating coordinate system from FITS keywords.\n" 
+	  "Cannot create the coordinate system from FITS keywords.\n" 
 	  "I will use a dummy linear coordinate along each axis instead.\n"
 	  "If you your FITS file actually does contain a coordinate system\n"
 	  "please submit a bug report."  << LogIO::POST;
