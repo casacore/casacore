@@ -101,12 +101,6 @@ class CoordinateSystem;
 // the storage image will be left over.  It has a name starting with the string
 // "ImageStatistics::" and then a unique number. You can safely delete it.
 //
-// <note role=caution>
-// Note that if the <src>ImageInterface</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
-// </note>
-//
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the
 // state of the class, the internal status of the class is set to bad.
@@ -317,7 +311,6 @@ private:
 // Data
 
    LogIO os_p;
-
    const ImageInterface<T>* pInImage_p;
    PagedArray<T>* pStoreImage_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
