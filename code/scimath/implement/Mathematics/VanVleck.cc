@@ -202,11 +202,11 @@ void VanVleck::initInterpolator()
       for (Int i=1;i<=midi;i++) {
 	  // for the rhos, choose the modified Chebyshev points
 	  // upper side
-	  Double hi = midi+i;
+	  Int hi = midi+i;
 	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
 	  rs[hi] = rs[hi-1] + rinc(rhos[hi-1],rhos[hi]);
 	  // lower side
-	  Double lo = midi-i;
+	  Int lo = midi-i;
 	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
 	  rs[lo] = rs[lo+1] + rinc(rhos[lo+1],rhos[lo]);
       }
@@ -214,10 +214,10 @@ void VanVleck::initInterpolator()
       for (Int i=1;i<=midi;i++) {
 	  // for the rhos, choose the modified Chebyshev points
 	  // upper side
-	  Double hi = midi+i;
+	  Int hi = midi+i;
 	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
 	  // lower side
-	  Double lo = midi-i;
+	  Int lo = midi-i;
 	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
       }
       if (nearAbs(itsXlev, itsYlev)) {
@@ -283,9 +283,36 @@ void VanVleck::initInterpolator()
 	  }
       }
   }
+  // watch for repeat values - happens in really bad cases, but if it
+  // this isn't done, Interpolate1D throws an exception.  We can do
+  // this here and turn off the check there - so there shouldn't be
+  // any additional cost here unless the data is bad and it has to be
+  // decreased in size.
+  uInt nels = rs.nelements();
+  uInt i = 0;
+  while (i<(nels-1)) {
+      if (nearAbs(rs[i], rs[i+1])) {
+	  // find the next value that isn't a duplicate
+	  uInt ndrop=1;
+	  while(ndrop<(nels-i-1) && nearAbs(rs[i],rs[i+1+ndrop])) ndrop++;
+	  // slide everything to the lower value
+	  nels -= ndrop;
+	  uInt j = i;
+	  while (j<(nels-1)) {
+	      rs[j+1] = rs[j+1+ndrop];
+	      rhos[j+1] = rhos[j+1+ndrop];
+	      j++;
+	  }
+      }
+      i++;
+  }
+  if (nels != rs.nelements()) {
+      rs.resize(nels,True);
+      rhos.resize(nels,True);
+  }
   ScalarSampledFunctional<Double> fx(rs);
   ScalarSampledFunctional<Double> fy(rhos);
-  itsInterp = new Interpolate1D<Double,Double>(fx, fy, True);
+  itsInterp = new Interpolate1D<Double,Double>(fx, fy, True, True);
   AlwaysAssert(itsInterp, AipsError);
   itsInterp->setMethod(Interpolate1D<Double,Double>::spline);
 }
