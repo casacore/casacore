@@ -35,6 +35,7 @@
 #include <aips/Tables/BaseColumn.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/BaseTabIter.h>
+#include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -255,6 +256,9 @@ void BaseTable::writeEnd (AipsIO& ios)
     ios.putend ();
 }
 
+
+void BaseTable::setTableChanged()
+{}
 
 
 void BaseTable::markForDelete (Bool callback, const String& oldName)
@@ -484,6 +488,28 @@ void BaseTable::addColumn (const ColumnDesc&, const DataManager&)
     { throw (TableInvOper ("Table: cannot add a column")); }
 void BaseTable::addColumn (const TableDesc&, const DataManager&)
     { throw (TableInvOper ("Table: cannot add a column")); }
+
+void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo)
+{
+  // Create the correct data manager using the record.
+  // The record can be the dminfo description itself or contain a
+  // single subrecord with the dminfo.
+  Record rec(dmInfo);
+  if (dmInfo.nfields() == 1  &&  dmInfo.dataType(0) == TpRecord) {
+    rec = dmInfo.subRecord(0);
+  }
+  if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")
+  &&  rec.isDefined("SPEC")) {
+    String dmType = rec.asString ("TYPE");
+    String dmGroup = rec.asString ("NAME");
+    const Record& sp = rec.subRecord ("SPEC");;
+    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
+    addColumn (desc, *dataMan);
+    delete dataMan;
+  } else {
+    throw TableError ("Invalid dmInfo record given in Table::addColumn");
+  }
+}
 
 
 //# Get a vector of row numbers.
