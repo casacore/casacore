@@ -1,5 +1,5 @@
 //# LatticeStatistics.h: generate statistics from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -632,8 +632,9 @@ private:
 // Accumulators for sum, sum squared, number of points
 // minimum, and maximum
 
-    Block<typename NumericTraits<T>::PrecisionType>* pSum_p;
-    Block<typename NumericTraits<T>::PrecisionType>* pSumSq_p;
+    typedef typename NumericTraits<T>::PrecisionType PrecisionType;
+    Block<PrecisionType > *pSum_p;
+    Block<PrecisionType > *pSumSq_p;
     Block<T>* pNPts_p;
     Block<T>* pMin_p;
     Block<T>* pMax_p;
