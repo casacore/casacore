@@ -685,6 +685,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   Int lastAnt1, lastAnt2, lastArray, lastSpW, lastSourceId;
   lastAnt1=-1; lastAnt2=-1; lastArray=-1; lastSpW=-1; lastSourceId=-1;
   Double lastTime=0;
+  Int fixToRow=-1;
   Bool lastRowFlag=False;
   for (Int group=0; group<nGroups; group++) {
     // Read next group and
@@ -713,6 +714,14 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 	interval=tempint;
         // assume exposure=interval (wrong for pulsar gating!)
         exposure=interval;
+	// fix up the rows for which we didn't set a valid interval/exposure
+	if (fixToRow>=0) {
+	  for (Int i=0; i<=fixToRow; i++) {
+	    msc.interval().put(i,interval);
+	    msc.exposure().put(i,exposure);
+	  }
+	  fixToRow=-1;
+	}
       }
     }
 
@@ -816,6 +825,10 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       if (time!=lastTime) {
  	msc.time().put(row,time);
  	msc.timeCentroid().put(row,time);
+	// the second integration: record row number
+	if (fixToRow==-2) fixToRow=row-1;
+	// the first integration: get ready to record row number 
+	if (lastTime==0) fixToRow=-2;
  	lastTime=time;
       }
       msc.uvw().put(row,uvw);
@@ -1302,7 +1315,7 @@ void MSFitsInput::fillFeedTable() {
     msfc.antennaId().put(row,ant);
     msfc.beamId().put(row,-1);
     msfc.feedId().put(row,0);
-    msfc.interval().put(row,DBL_MAX);
+    msfc.interval().put(row,0);
     //    msfc.phasedFeedId().put(row,-1);
     msfc.spectralWindowId().put(row,-1); // all
     msfc.time().put(row,obsTimes(0));
@@ -1350,7 +1363,7 @@ void MSFitsInput::fillPointingTable()
 	ms_p.pointing().addRow();
 	msc_p->pointing().time().put(np+j,time);
 	msc_p->pointing().timeOrigin().put(np+j,time);
-	msc_p->pointing().interval().put(np+j,DBL_MAX);
+	msc_p->pointing().interval().put(np+j,0);
 	msc_p->pointing().antennaId().put(np+j, j);
 	msc_p->pointing().name().put(np+j, name);
 	msc_p->pointing().numPoly().put(np+j, numPoly);
