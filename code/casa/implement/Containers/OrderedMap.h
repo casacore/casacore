@@ -389,13 +389,19 @@ public:
   // ListMap.
   //
   //+grp
-  OrderedMapIterRep(OrderedMap<key,value> *st) : MapIterRep<key,value>(st), container(st),
-                                                 NoticeTarget((NoticeSource *)((OrderedMapRep<key,value> *) st->Rep)),
-						 CurIndex(0) {}
+  OrderedMapIterRep(OrderedMap<key,value> *st)
+    : MapIterRep<key,value>(st),
+      NoticeTarget((NoticeSource *)((OrderedMapRep<key,value> *) st->Rep)),
+      container(st),
+      CurIndex(0)
+    {}
 
-  OrderedMapIterRep(OrderedMap<key,value> &st) : MapIterRep<key,value>(st), container(&st),
-                                                 NoticeTarget((NoticeSource *)((OrderedMapRep<key,value> *) st.Rep)),
-						 CurIndex(0) {}
+  OrderedMapIterRep(OrderedMap<key,value> &st)
+    : MapIterRep<key,value>(st),
+      NoticeTarget((NoticeSource *)((OrderedMapRep<key,value> *) st.Rep)),
+      container(&st),
+      CurIndex(0)
+    {}
   //-grp
 
   enum {OrderedMapIterRepVersion = 1};

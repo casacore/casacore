@@ -47,12 +47,17 @@ public:
   //  Creates a map with a particular default value
   //
   //+grp
-  ListMapRep(const value &dflt) : list(new List<OrderedPair<key,value> >,True), 
-                          MapRep<key,value>(dflt), deforder(Undefined) { }
+  ListMapRep(const value &dflt)
+    : MapRep<key,value>(dflt),
+      list(new List<OrderedPair<key,value> >,True), 
+      deforder(Undefined)
+    { }
 
-  ListMapRep(const value &dflt, DefineOrder InOrder) : 
-                          list(new List<OrderedPair<key,value> >,True), 
-                          MapRep<key,value>(dflt), deforder(InOrder) { }
+  ListMapRep(const value &dflt, DefineOrder InOrder)
+    : MapRep<key,value>(dflt),
+      list(new List<OrderedPair<key,value> >,True), 
+      deforder(InOrder)
+    { }
   //-grp
 
   //
