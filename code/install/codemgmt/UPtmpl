@@ -29,11 +29,11 @@
 # $Id$
 #
 set script = "UPtmpl"
-set usage = 'Usage: UPtmpl <typ>
+set usage = 'Usage: UPtmpl [-c] [-r] [-d] [-n] <typ>'
 #
 # UPtmpl script (must have x allowed)
-# Get all files in the tmplinst directories 
-# The file list will be in ${tp}.tmpinst
+# Get all files in the tmplinst directories. 
+# The file list will be in <typ>.tmpinst
 #
 # See UPinfo for details
 #
@@ -62,7 +62,11 @@ source $uppath/UPinfo
 if (! $ok) exit 1
 #
 # Get specific data
-# 
+#
+if ($nox) exit 0 
+#
+# Get data
+#
 cd $dir/code
 echo "Getting template file list..."
 find . -name '*_????.cc' -print | \
