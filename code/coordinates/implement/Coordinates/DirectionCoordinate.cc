@@ -68,6 +68,7 @@ DirectionCoordinate::DirectionCoordinate()
     xform.diagonal() = 1.0;
     makeDirectionCoordinate (0.0, 0.0, 1.0, 1.0,
                              xform, 0.0, 0.0, 999.0, 999.0);
+
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -503,8 +504,8 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
       to_degrees_p[0] /= factor(0);
       to_degrees_p[1] /= factor(1);
 //
-      to_radians_p[0] = to_degrees_p[0] * C::pi / 180.0;
-      to_radians_p[1] = to_degrees_p[1] * C::pi / 180.0;
+      to_radians_p[0] = to_degrees_p[0] * piOver180_p;
+      to_radians_p[1] = to_degrees_p[1] * piOver180_p;
     } else {
       set_error(error);
     }
@@ -1539,6 +1540,7 @@ void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
     to_radians_p[0] = 1.0;
     to_radians_p[1] = 1.0; 
     units_p = "rad";
+    piOver180_p = C::pi / 180.0;
 //
     Vector<Double> crval(2), cdelt(2), crpix(2);
     crval(0) = refLong; 
@@ -1576,3 +1578,41 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
     x(3) = celprm_p->ref[3];          // latPole
     return x;
 }
+
+
+
+void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
+//
+// relLong = (absLong - refLong) * cos(refLat)
+//
+{
+    AlwaysAssert(world.nelements()==2, AipsError);
+//   
+    static Double cosLat1, tLong;
+//
+    cosLat1 = cos(celprm_p->ref[1] * piOver180_p);
+    tLong = world(0)*to_degrees_p[0] - celprm_p->ref[0];
+    if (tLong > 180.0) {
+      tLong -= 360.0;
+    } else if (tLong < -180) {
+      tLong += 360.0;
+    }    
+    world(0) = tLong / to_degrees_p[0] * cosLat1;
+    world(1) -= celprm_p->ref[1] / to_degrees_p[1];
+}
+
+
+void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
+//
+// absLong = relLong/cos(refLat) + refLong
+//
+{
+    AlwaysAssert(world.nelements()==2, AipsError);
+//   
+    static Double cosLat2;
+//
+    cosLat2 = cos(celprm_p->ref[1] * piOver180_p);
+    world(0) = (world(0)/cosLat2) + (celprm_p->ref[0]/to_degrees_p[0]);
+    world(1) += celprm_p->ref[1] / to_degrees_p[1];
+}
+

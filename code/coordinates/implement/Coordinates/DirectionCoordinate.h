@@ -86,12 +86,17 @@ template<class T> class Quantum;
 // Of course the <linkto class=MDirection>MDirection</linkto> object you can
 // obtain from this class would be the prime input for that conversion.
 //
+// Relative world coordinates are defined according to
+//
+// relLong = (absLong - refLong) * cos(refLat)
+// relLat  =  absLat  - refLat
+//
 // The actual computations are carried out with the WCS library.
 // </synopsis>
 //
 //
 // <note role=caution>
-// All pixels coordinates are zero relative.
+// All absolute pixels coordinates are zero relative.
 // </note>
 //
 // <example>
@@ -356,6 +361,12 @@ public:
     Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
      //</group>
 
+    // Make absolute coordinates relative and vice-versa.
+    //<group>
+    virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    //</group>
+
     // Recover the requested attribute.
     // <group>
     MDirection::Types directionType() const;
@@ -492,6 +503,7 @@ private:
     // degrees and the currently requested units.
     Double to_degrees_p[2];
     Double to_radians_p[2];
+    Double piOver180_p;
 
     // Axis names.
     Vector<String> names_p;
