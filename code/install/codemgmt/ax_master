@@ -2183,3 +2183,4 @@
 09 047 src rm trial/apps/unused/templates
 09 047 src rm trial/apps/measures/aipsrc.help
 09 047 src rm trial/implement/Display/AttributeValue.cc
+09 047 src rm trial/implement/Display/AttributeValue.h
