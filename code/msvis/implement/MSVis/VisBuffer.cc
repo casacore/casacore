@@ -28,6 +28,7 @@
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Utilities/Assert.h>
 
 VisBuffer::VisBuffer():visIter_p((ROVisibilityIterator*)0),This(this),
   nChannel_p(0),nRow_p(0),twoWayConnection_p(False)
