@@ -43,6 +43,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/OS/File.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
@@ -135,6 +136,7 @@ int main()
 			RegionHandler::Masks);
       pIm.setDefaultMask ("reg2");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2");
+      AlwaysAssertExit (File("tPagedImage2_tmp.img/reg2").isDirectory());
       AlwaysAssertExit (pIm.isMasked());
       AlwaysAssertExit (pIm.isMaskWritable());
       AlwaysAssertExit (pIm.hasPixelMask());
@@ -145,9 +147,11 @@ int main()
       pIm.putMask (mask);
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
-// Rename that mask and make sure the default mask is renamed too.
+// Rename that mask and make sure the table and  default mask are renamed too.
       pIm.renameRegion ("reg2n", "reg2");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2n");
+      AlwaysAssertExit (File("tPagedImage2_tmp.img/reg2n").isDirectory());
+      AlwaysAssertExit (! File("tPagedImage2_tmp.img/reg2").exists());
       AlwaysAssertExit (pIm.isMasked());
       AlwaysAssertExit (pIm.isMaskWritable());
 
