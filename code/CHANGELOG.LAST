@@ -1,0 +1,12 @@
+
+change id: 0024
+ author:   Darrell Schiebel
+ date:     2000/07/23
+ avers:    1.4
+ area:     Glish
+ package:  Glish
+ module:   glish intrepreter
+ type:     Code
+ category: Change
+ summary:  unary + and - now convert booleans to integers
+When the unary plus and minus operators are applied to boolean values the the result is now an integer. Previously the result was boolean; '+' was a no-op and '-' was the same as '!'.
