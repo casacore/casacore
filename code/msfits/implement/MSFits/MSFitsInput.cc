@@ -1109,7 +1109,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
   MDirection::Types epochRefZero=MDirection::J2000;
-  if (nearAbs(epoch(id(0)-1),1950.0,0.01)) {
+  if (nearAbs(epoch(0),1950.0,0.01)) {
     epochRefZero=MDirection::B1950;
   }
   msc_p->setDirectionRef(epochRefZero);
