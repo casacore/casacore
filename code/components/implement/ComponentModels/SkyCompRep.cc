@@ -92,8 +92,6 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   uInt axis;
   {
     const IPosition tileShape(image.niceCursorShape(image.maxPixels()));
-    cout << "Image shape: " << image.shape() << endl;
-    cout << "Tile shape: " << tileShape << endl;
     for (uInt k = 0; k < nPixAxes; k++) {
       axis = dirAxes(k);
       elementShape(axis) = 1;
