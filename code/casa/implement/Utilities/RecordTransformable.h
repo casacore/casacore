@@ -69,12 +69,15 @@ class GlishRecord;
 // function should return False and append an error message to the supplied
 // String when the transformation cannot be accomplished.
 //
-// <note role=warn>
+// <note role=warning>
 // At the moment only Records & TableRecords are derived from
 // RecordInterface. In future all records (like GlishRecord) will be derived
 // from this one base. Till then separate to/fromRecord() methods should be
 // provided for the different record types. Implementation of these could
-// be in a separate file to make sure they are only included when needed.
+// be in a separate file to make sure they are only included when
+// needed. Alternatively you could use the to/fromGlishRecord functions. As the
+// implementation of these functions is in a seperate file
+// (Record2Transformable.cc) they are only linked in when necessary.
 // </note>
 // </synopsis>
 //
@@ -84,16 +87,13 @@ class GlishRecord;
 // <srcblock>
 // void printAsRecord(const RecordTransformable & myClass) {
 //   String errorMessage;
-//   Record rec;
-//   if (!myClass.toRecord(errorMessage, rec)) {
+//   GlishRecord rec;
+//   if (!myClass.toGlishRecord(errorMessage, rec)) {
 //     cout << "Cannot convert class to a Record. The reason is:" << endl; 
 //     cout << errorMessage << endl;
+//   } else {
+//     cout << rec.format() << endl;
 //   }
-//   // Eventually GlishRecords will be derived from RecordInterface. Then it 
-//   // will not be necessary to use the Record class.
-//   GlishRecord gRec;
-//   gRec.fromRecord(rec);
-//   cout << gRec.format() << endl;
 // }
 // </srcblock>
 // </example>
