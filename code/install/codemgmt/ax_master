@@ -4136,3 +4136,4 @@
 14 065 src mv trial/apps/gDisplay/GTkLogSink.cc trialdisplay/apps/gDisplay/GTkLogSink.cc
 14 065 src mv trial/apps/gDisplay/GTkLogSink.h trialdisplay/apps/gDisplay/GTkLogSink.h
 14 065 src mv trial/apps/gDisplay/GTkPSPixelCanvas.cc trialdisplay/apps/gDisplay/GTkPSPixelCanvas.cc
+14 065 src mv trial/apps/gDisplay/GTkPSPixelCanvas.h trialdisplay/apps/gDisplay/GTkPSPixelCanvas.h
