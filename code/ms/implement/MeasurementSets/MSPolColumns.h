@@ -31,8 +31,11 @@
 #include <aips/aips.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Measures/Stokes.h>
 
 class NewMSPolarization;
+template <class T> class Vector;
+template <class T> class Matrix;
 
 // <summary>
 // A class to provide easy read-only access to NewMSPolarization columns
@@ -87,6 +90,15 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return corrProduct_p.nrow();}
 
+  // returns the last row that contains the an entry in the CORR_TYPE column
+  // that matches, in length and value, the supplied corrType Vector.  Returns
+  // -1 if no match could be found. Flagged rows can never match. If tryRow is
+  // non-negative, then that row is tested to see if it matches before any
+  // others are tested. Setting tryRow to a positive value greater than the
+  // table length will throw an exception (AipsError), when compiled in debug
+  // mode.
+  Int match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1);
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -96,6 +108,11 @@ protected:
   void attach(const NewMSPolarization& msPolarization);
 
 private:
+  //# Functions which check the supplied values against the relevant column and
+  //# the specified row.
+  Bool matchCorrType(uInt row, const Vector<Int>& polType) const;
+  Bool matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const;
+
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
   RONewMSPolarizationColumns(const RONewMSPolarizationColumns&);

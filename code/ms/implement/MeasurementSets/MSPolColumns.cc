@@ -28,6 +28,9 @@
 #include <aips/MeasurementSets/NewMSPolColumns.h>
 #include <aips/MeasurementSets/NewMSPolarization.h>
 #include <aips/Utilities/String.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
 
 RONewMSPolarizationColumns::
 RONewMSPolarizationColumns(const NewMSPolarization& msPolarization):
@@ -62,6 +65,53 @@ attach(const NewMSPolarization& msPolarization)
 		   columnName(NewMSPolarization::FLAG_ROW));
   numCorr_p.attach(msPolarization, NewMSPolarization::
 		   columnName(NewMSPolarization::NUM_CORR));
+}
+
+Int RONewMSPolarizationColumns::
+match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1) {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the corrType to Integers.
+  const Int nCorr = polType.nelements();
+  Vector<Int> polInt(nCorr);
+  for (Int p = 0; p < nCorr; p++) {
+    polInt(p) = polType(p);
+  }
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSPolarszationColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	numCorr()(tr) != nCorr && 
+	matchCorrType(tr, polInt)) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	numCorr()(r) != nCorr && 
+	matchCorrType(r, polInt)) {
+      return r;
+    }
+  }
+  return -1;
+}
+
+Bool RONewMSPolarizationColumns::
+matchCorrType(uInt row, const Vector<Int>& polType) const {
+  DebugAssert(row < nrow(), AipsError);
+  return allEQ(corrType()(row), polType);
+}
+
+Bool RONewMSPolarizationColumns::
+matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const {
+  DebugAssert(row < nrow(), AipsError);
+  return allEQ(corrProduct()(row), polProduct);
 }
 
 NewMSPolarizationColumns::
