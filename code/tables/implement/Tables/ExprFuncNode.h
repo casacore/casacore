@@ -61,10 +61,10 @@ class TableExprNodeSet;
 // the following has to be done:
 // <ul>
 //  <li> Add the function to the enum below.
-//  <li> Implement the function in the get functions in ExprFuncNode.cc.
+//  <li> Implement the function in the get functions in ExprFuncNode(Array).cc.
 //  <li> Implement the function in the checkOperands in ExprFuncNode.cc.
 //  <li> Declare and define the function in ExprNode.h (for C++ binding).
-//  <li> Add the function to tableParseFunc in TableParse.cc (for TaQL).
+//  <li> Add the function to findFunc in TableParse.cc (for TaQL).
 // </ul>
 // </synopsis> 
 
@@ -119,6 +119,7 @@ public:
 	    // for Double or Complex array returning scalar
 	arrsumFUNC,
 	arrproductFUNC,
+	arrsumsqrFUNC,
 	    // for Double array returning Double
 	arrminFUNC,
 	arrmaxFUNC,
@@ -127,6 +128,7 @@ public:
 	arrstddevFUNC,
 	arravdevFUNC,
 	arrmedianFUNC,
+	arrfractileFUNC,
 	    // for Bool array returning Bool
         anyFUNC,
 	allFUNC,
@@ -166,6 +168,8 @@ public:
 	rownrFUNC,
             // special function to return row id (meant for GIVING)
 	rowidFUNC,
+            // special function resembling if statement
+	iifFUNC,
 	NRFUNC      //# should be last
 	};
 
@@ -184,9 +188,6 @@ public:
     String   getString   (const TableExprId& id);
     Regex    getRegex    (const TableExprId& id);
     MVTime   getDate     (const TableExprId& id);
-    Array<Double> getArrayDouble (const TableExprId& id);
-    Array<String> getArrayString (const TableExprId& id);
-    Array<MVTime> getArrayDate (const TableExprId& id);
     // </group>
 
     // Check the data and value types of the operands.
@@ -205,6 +206,22 @@ public:
     static TableExprNodeRep* fillNode (TableExprFuncNode* thisNode,
 				       PtrBlock<TableExprNodeRep*>& nodes,
 				       const Block<Int>& dtypeOper);
+
+    // Link the children to the node and convert the children
+    // to constants if possible.
+    static void fillChildNodes (TableExprFuncNode* thisNode,
+				PtrBlock<TableExprNodeRep*>& nodes,
+				const Block<Int>& dtypeOper);
+
+    // Some functions to be used by TableExprNodeFuncArray.
+    // <group>
+    PtrBlock<TableExprNodeRep*> operands()
+        { return operands_p; }
+    FunctionType funcType() const
+        { return funcType_p; }
+    NodeDataType argDataType() const
+        { return argDataType_p; }
+    // </group>
 
 private:
     // Try if the function gives a constant result.
