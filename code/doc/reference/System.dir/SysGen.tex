@@ -2182,7 +2182,7 @@ with names of the form \file{updatelib.*}.  These are described below.
    (``\code{kill -9}'') since this would prevent it from cleaning up its
    semaphore files and possibly cause library updates to be locked out for 24
    hours.  \exe{updatelib} exits gracefully on receiving a \code{SIGHUP}
-   (``\code{kill -15}'').
+   (``\code{kill -1}'') or a \code{SIGTERM} (``\code{kill -15}'').
 \item
    Stand-alone invokations of \exe{updatelib} obtain \file{makedefs} variable
    definitions via the \code{eval\_vars} target.
@@ -2196,7 +2196,10 @@ Status return values
 \\ \verb+   2+: library update failed
 
 \noindent
-If any library update fails, none of the libraries will be updated.
+If any library update fails, none of the libraries will be
+updated---with one exception: if a static library build succeeds and its
+corresponding shared library build fails then the static library will be
+updated.
 
 \subsection*{Examples}
 
