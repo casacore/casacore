@@ -5027,6 +5027,7 @@ const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
+
 // LSR velocity (dynamical)
 const Vector<Double> &MeasTable::velocityLSR(uInt which) {
   static Bool needInit = True;
@@ -5049,7 +5050,7 @@ const Vector<Double> &MeasTable::velocityLSR(uInt which) {
   return argArray[which];
 }
 
-// LSR velocity wrt galctic centre
+// LSR velocity wrt galactic centre
 const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
   static Bool needInit = True;
   static Vector<Double> argArray[2];
@@ -5071,6 +5072,49 @@ const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
   return argArray[which];
 }
 
+// LGROUP velocity wrt bary center
+const Vector<Double> &MeasTable::velocityLGROUP(uInt which) {
+  static Bool needInit = True;
+  static Vector<Double> argArray[2];
+  static const Double LGROUP[2][3] = {
+    {0.593553979227, -0.177954636914, 0.784873124106}, 
+    {0.5953342407,   -0.184600136022, 0.781984610866} 
+  };
+  if (needInit) {
+    needInit = False;
+    Double v = 308.*1000.;
+    for (Int i=0; i<2; i++) {
+      argArray[i].resize(3);
+      for (Int j=0; j<3; j++) {
+	argArray[i](j) = v * LGROUP[i][j];
+      };
+    };
+  };
+  DebugAssert(which < 2, AipsError);
+  return argArray[which];
+}
+
+// CMB velocity wrt bary center
+const Vector<Double> &MeasTable::velocityCMB(uInt which) {
+  static Bool needInit = True;
+  static Vector<Double> argArray[2];
+  static const Double CMB[2][3] = {
+    {-0.97176985257,  0.202393953108, -0.121243727187},
+    {-0.970024232022, 0.213247954272, -0.11652595972}
+  };
+  if (needInit) {
+    needInit = False;
+    Double v = 369.5*1000.;
+    for (Int i=0; i<2; i++) {
+      argArray[i].resize(3);
+      for (Int j=0; j<3; j++) {
+	argArray[i](j) = v * CMB[i][j];
+      };
+    };
+  };
+  DebugAssert(which < 2, AipsError);
+  return argArray[which];
+}
 
 // Earth and Sun position
 const Polynomial<Double> &MeasTable::posArg(uInt which) { 

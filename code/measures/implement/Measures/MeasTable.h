@@ -310,7 +310,13 @@ public:
   // Velocity of LSR with respect to galactic centre. 220 km/s in direction
   // l,b = 270, +0 deg. 0 returns J2000, 1 B1950
   static const Vector<Double> &velocityLSRGal(uInt which);
-  
+  // Velocity of Local Group wrt bary center (F.Ghigo): 308km/s towards
+  // l,b = 105,-7. 0 for J2000, 1 for B1950
+  static const Vector<Double> &velocityCMB(uInt which);
+  // Velocity of CMB wrt bary center (F.Ghigo): 369.5km/s towards
+  // l,b = 264.4,48.4. 0 for J2000, 1 for B1950
+
+  static const Vector<Double> &velocityLGROUP(uInt which);
   // Earth and Sun position related data
   // <group>
   // Fundamental arguments for Soma et al. methods
