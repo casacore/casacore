@@ -49,9 +49,10 @@ using std::vector;
 #undef AIPS_VECTOR_AUX_TEMPLATES
 #endif
 
-#if defined(AIPS_GCC)
-#if defined(AIPS_GCC3)
-#define AIPS_VECTOR_AUX_TEMPLATES(T) \
+#if !defined(AIPS_AUTO_STL)
+# if defined(AIPS_GCC)
+#  if defined(AIPS_GCC3)
+#   define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template \
    T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
 template \
@@ -90,8 +91,8 @@ T const &, __false_type); \
 template \
    void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
-#else
-#define AIPS_VECTOR_AUX_TEMPLATES(T) \
+#  else
+#   define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template \
 T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
 template \
@@ -110,19 +111,24 @@ void std::fill<T *, T >(T *, T *, T const &); \
 template \
 void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
-#endif
+#  endif
 
-#else
-#if defined(AIPS_SUN_NATIVE)
-#define AIPS_VECTOR_AUX_TEMPLATES(T) \
+# else
+#  if defined(AIPS_SUN_NATIVE)
+#   define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template T* std::copy_backward<const T*, T* >(const T*, const T*, T*);\
 template T* std::copy_backward<T*, T* >(T*, T*, T*);\
 template T* std::copy<const T*, T* >(const T*, const T*, T*);\
 template T* std::copy<T*, T* >(T*, T*, T*);\
 template void std::fill<T*, T >(T*, T*, const T&);
+#  else
+#   define AIPS_VECTOR_AUX_TEMPLATES(T)
+#  endif
+# else
+#  define AIPS_VECTOR_AUX_TEMPLATES(T)
+# endif
 #else
-#define AIPS_VECTOR_AUX_TEMPLATES(T)
-#endif
+# define AIPS_VECTOR_AUX_TEMPLATES(T)
 #endif
 
 #endif

@@ -50,9 +50,10 @@ using std::less;
 #undef AIPS_MAP_AUX_TEMPLATES
 #endif
 
-#if defined(AIPS_GCC)
-#if defined(AIPS_GCC3)
-#define AIPS_MAP_AUX_TEMPLATES(T, U) \
+#if !defined(AIPS_AUTO_STL)
+# if defined(AIPS_GCC)
+#  if defined(AIPS_GCC3)
+#   define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   std::_Rb_tree<T, std::pair<T const, U >, \
   std::_Select1st<std::pair<T const, U> >, \
@@ -61,16 +62,16 @@ template class \
   std::_Rb_tree<T, std::pair<T const, U >, \
   std::_Select1st<std::pair<T const, U> >, \
   std::less<T>, std::allocator<pair<T const, U > > >;
-#else
-#define AIPS_MAP_AUX_TEMPLATES(T, U) \
+#  else
+#   define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   _Rb_tree<T, pair<T const, U >, \
   _Select1st<pair<T const, U> >, \
   less<T>, allocator<U > >;
-#endif
-#else
-#if defined(AIPS_SUN_NATIVE)
-#define AIPS_MAP_AUX_TEMPLATES(T, U) \
+#  endif
+# else
+#  if defined(AIPS_SUN_NATIVE)
+#   define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   __rwstd::__rb_tree<T, pair<T const, U >, \
   __rwstd::__select1st<pair<T const, U>, T  >, \
@@ -79,10 +80,14 @@ template void std::__distance<\
   map<T, U>::iterator, uInt> (map<T, U>::iterator, map<T, U>::iterator, uInt&, std::bidirectional_iterator_tag);\
 template void std::__distance<\
   map<T, U>::const_iterator, uInt> (map<T, U>::const_iterator, map<T, U>::const_iterator, uInt&, std::bidirectional_iterator_tag);
-#else
-
-#define AIPS_MAP_AUX_TEMPLATES(T, U)
-#endif
+#  else
+#   define AIPS_MAP_AUX_TEMPLATES(T, U)
+#  endif
+# else
+#  define AIPS_MAP_AUX_TEMPLATES(T, U)
+# endif
+# else
+#  define AIPS_MAP_AUX_TEMPLATES(T, U)
 #endif
 
 #endif
