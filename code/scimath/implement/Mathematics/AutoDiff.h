@@ -160,7 +160,8 @@ template <class T> class AutoDiff;
 // of the <src>f<AutoDiff<> ></src> implementation.
 //
 // The <src>AutoDiff</src> class is the class the user communicates with.
-// An alias class (<linkto class=AutoDiffA>AutoDiffA</linkto>) exists
+// Alias classes (<linkto class=AutoDiffA>AutoDiffA</linkto> and
+// <linkto class=AutoDiffA>AutoDiffX</linkto>) exists
 // to make it possible to have different incarnations of a templated
 // method (e.g. a generic one and a specialized one). See the
 // <src>dAutoDiff</src> demo for an example of its use.
