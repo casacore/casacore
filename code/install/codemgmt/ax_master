@@ -2652,3 +2652,4 @@
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.cc aips/implement/Tables/test/tReadAsciiTable.cc
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.out aips/implement/Tables/test/tReadAsciiTable.out
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.in_tab aips/implement/Tables/test/tReadAsciiTable.in_tab
+11 402 src mv aips/implement/Tables/test/tAsciiFileIO.in_tkd aips/implement/Tables/test/tReadAsciiTable.in_tkd
