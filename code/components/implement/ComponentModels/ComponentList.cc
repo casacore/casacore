@@ -180,7 +180,8 @@ void ComponentList::remove(const uInt & index) {
 }
 
 void ComponentList::remove(const Vector<Int> & indices) {
-  AlwaysAssert(allGE(indices, 0), AipsError);
+  Vector<Int> zeroCheck(indices);
+  AlwaysAssert(allGE(zeroCheck, 0), AipsError);
   uInt c = indices.nelements();
   Vector<uInt> uIndices(c);
   convertArray(uIndices, indices);
