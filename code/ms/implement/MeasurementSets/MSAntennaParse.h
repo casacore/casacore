@@ -95,6 +95,7 @@ public:
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds);
     // const TableExprNode* selectAntennaName(const Vector<String>& antennaNames);
     const TableExprNode* selectNameOrStation(const String& identifier);
+    const TableExprNode* selectNameOrStation(const Vector<String>& antennaNames);
     // selection from antenna and CP
     const TableExprNode* selectFromIdsAndCPs(const Int index, const String& cp);
     const TableExprNode* selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, const Int secondIndex, const String& secondcp);

@@ -38,16 +38,16 @@ using namespace casa;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  Int ival;
-  char* str;
+  Int ival[2];
+  char * str;
   Double dval;
 }
 
 
 %token EQASS
 %token SQUOTE
+%token <ival> NUMBER
 %token <str> IDENTIFIER
-%token <dval> FNUMBER
 %token COMMA
 
 %token LBRACKET
@@ -57,7 +57,6 @@ using namespace casa;
 %token LBRACE
 %token RBRACE
 
-%token DASH
 %token STAR
 %token COLON
 
@@ -69,7 +68,7 @@ using namespace casa;
 %type <node> idandcp
 
 %left OR AND
-%nonassoc EQ EQASS GT GE LT LE NE COMMA AMPERSAND
+%nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -99,23 +98,23 @@ combnameorstation: namesorstations
 		     $$ = $2;}
                  ;
 namesorstations: IDENTIFIER {
-               	   $$ = MSAntennaParse().selectNameOrStation(String($1));
+                   $$ = MSAntennaParse().selectNameOrStation(String($1));
                  }
                | namesorstations COMMA IDENTIFIER {
 		   $$ = MSAntennaParse().selectNameOrStation(String($3));
 	         }
                | IDENTIFIER DASH IDENTIFIER {
-                   if(isdigit(atoi($1))) {
-		     Int len = atoi($3) - atoi($1) + 1;
-		     String antennanms;
-		     for(Int i = 0; i < len; i++) {
-		       antennanms = String(atoi($1) + i);
-		       $$ = MSAntennaParse().selectNameOrStation(antennanms);
-		     }
-		   }else {
-		     cout << " Incorrect range expresssion " << endl;
-		   }
+		 Int start = atoi($1);
+                 Int end   = atoi($3);
+		 Int len = end - start + 1;
+		 Vector<String> antennanms(len);
+		 for(Int i = 0; i < len; i++) {
+		   antennanms[i] = String(start + i);
 		 }
+		 free($1);
+		 free($3);
+		 $$ = MSAntennaParse().selectNameOrStation(antennanms);	   
+	       }
                ;
 		  
 indexcombexpr  : IDENTIFIER {

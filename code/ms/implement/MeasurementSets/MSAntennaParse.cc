@@ -65,9 +65,20 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
   return node();
 }
 
+const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antennaNames)
+{
+  MSAntennaIndex msAI(ms()->antenna());
+  TableExprNode condition = ms()->col(colName1).in(msAI.matchAntennaName(antennaNames)) || ms()->col(colName2).in(msAI.matchAntennaName(antennaNames));
+  if(node_p->isNull())
+    *node_p = condition;
+  else {
+    *node_p = *node_p || condition;
+  }
+  return node();
+}
+
 const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifier)
 {
-
   Vector<Int> antennaIdsFromStation ;
   //  Bool searchStation = True;
   TableExprNode condition;

@@ -103,10 +103,24 @@ Vector<Int> MSAntennaIndex::matchAntennaStation(const String& station)
 // Output:
 //    matchAntennaStation   Vector<Int>              Matching antenna id's
 //
-  LogicalArray maskArray = (msAntennaCols_p.station().getColumn()==station &&
-			    !msAntennaCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
-  return maskAntennaId.getCompressedArray();
+  if(station.contains('*')) {
+    String subStationName = station.at(0, station.length()-1);
+    Vector<String> stationNames = msAntennaCols_p.station().getColumn();
+    uInt len = stationNames.nelements();
+    Vector<Bool> matchstationnames(len, False);
+    for(uInt j = 0; j < len; j++) {
+      if(stationNames[j].contains(subStationName))
+	matchstationnames(j) = True;
+    }
+    LogicalArray maskArray( matchstationnames && !msAntennaCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+    return maskAntennaId.getCompressedArray();
+  }else {
+    LogicalArray maskArray = (msAntennaCols_p.station().getColumn()==station &&
+			      !msAntennaCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+    return maskAntennaId.getCompressedArray();
+  }
 }; 
 
 //-------------------------------------------------------------------------

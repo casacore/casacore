@@ -50,7 +50,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-IDENTIFIER  [A-Za-z:0-9]*
+IDENTIFIER  [A-Za-z:0-9]*|[A-Za-z:0-9]*"*"
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -123,6 +123,7 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
   /* Literals */
 
 {IDENTIFIER} { msAntennaGramPosition() += yyleng;
+               lvalp->str = (char *)malloc((strlen(MSAntennaGramtext) + 1) * sizeof(char));
                strcpy(lvalp->str, MSAntennaGramtext);
                return IDENTIFIER;
              }
