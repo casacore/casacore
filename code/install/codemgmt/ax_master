@@ -2493,3 +2493,4 @@
 11 341 src rm doc/faq/faqabout.html
 11 341 src rm doc/faq/faqabout.html
 11 341 src rm doc/faq/index.html
+11 342 src mv atnf/apps/atload atnf/apps/rpfitsfiller
