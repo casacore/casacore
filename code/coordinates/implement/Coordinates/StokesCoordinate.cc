@@ -113,9 +113,11 @@ uInt StokesCoordinate::nWorldAxes() const
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-    // Avoid going to the Vector version for efficiency reasons.
+// Avoid going to the Vector version for efficiency reasons.
+
     Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + 0.5);
-    if (index >= 0 && index < values_p.nelements()) {
+    Double nValues = Double(values_p.nelements());
+    if (index >= 0.0 && index < nValues) {
 	stokes = Stokes::type(values_p[Int(index)]);
 	return True;
     } else {
@@ -156,7 +158,8 @@ Bool StokesCoordinate::toWorld(Vector<Double> &world,
     AlwaysAssert(pixel.nelements()==1, AipsError);
     if (world.nelements()!=1) world.resize(1);
     Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + 0.5);
-    if (index < 0 || index > values_p.nelements()-1) {
+    Double nValues = Double(values_p.nelements()) - 1.0;
+    if (index < 0.0 || index > nValues) {
 	ostrstream os;
 	os << "Index value of " << index << " is out of range [0.." <<
 	    values_p.nelements()-1 << "]";
