@@ -457,9 +457,10 @@ public:
     // whether value is absolute (or relative). For output
     // specify units and abs/rel.  Units may be 'pix' and velocity consistent
     // units (e.g. m/s).  Specify doppler types if velocities
-    // involved.   The default pixel offsets allow for the input
-    // and output pixel coordinates to be 1-rel.  If your pixel
-    // coordinates are all 0-rel, set both offsets to zero.
+    // involved.   The pixel offsets allow for the input
+    // and output pixel coordinates to be something other than 0-rel.  
+    // If your pixel coordinates are 1-rel input and output, set the 
+    // offsets to -1 and 1
     //
     // The Matrix interface lets you do many conversions efficiently.
     // Use <src>Matrix(nAxes, nConversions) </src> and 
@@ -478,8 +479,8 @@ public:
                   const Vector<Bool>& absOut,
                   const Vector<String>& unitsOut,
                   MDoppler::Types dopplerOut,
-                  Double pixInOffset = -1.0,
-                  Double pixOutOffset = 1.0);
+                  Double pixInOffset = 0.0,
+                  Double pixOutOffset = 0.0);
     Bool convert (Matrix<Double>& coordOut, 
                   const Matrix<Double>& coordIn,
                   const Vector<Bool>& absIn,
@@ -488,8 +489,8 @@ public:
                   const Vector<Bool>& absOut,
                   const Vector<String>& unitsOut,
                   MDoppler::Types dopplerOut,
-                  Double pixInOffset = -1.0,
-                  Double pixOutOffset = 1.0);
+                  Double pixInOffset = 0.0,
+                  Double pixOutOffset = 0.0);
     // </group>
 
     // Return the requested attribute.
