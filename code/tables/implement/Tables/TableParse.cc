@@ -916,6 +916,23 @@ TableParseVal* TableParseSelect::doFromQuery()
     return val;
 }
 
+//# Execute a subquery for an EXISTS operator.
+TableExprNode TableParseSelect::doExists (Bool notexists)
+{
+#if defined(AIPS_TRACE)
+    Timer timer;
+#endif
+    // Execute the nested command.
+    String cmd;
+    // Default limit_p is 1.
+    execute (True, cmd, True, 1);
+#if defined(AIPS_TRACE)
+    timer.show ("Subquery");
+#endif
+    // Flag notexists tells if NOT EXISTS or EXISTS was given.
+    return TableExprNode (notexists == (table_p.nrow() < limit_p));
+}
+
 //# Execute a subquery and create the correct node object for it.
 TableExprNode TableParseSelect::doSubQuery()
 {
@@ -2004,8 +2021,12 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 
 //# Execute all parts of the SELECT command.
 void TableParseSelect::execute (Bool setInGiving, String& commandType,
-				Bool mustSelect)
+				Bool mustSelect, uInt maxRow)
 {
+    //# Set limit if not given.
+    if (limit_p == 0) {
+        limit_p = maxRow;
+    }
     //# Give an error if no command part has been given.
     if (mustSelect  &&  commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
     &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
@@ -2046,7 +2067,7 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType,
 //#//	    cout << rang[i].getColumn().columnDesc().name() << rang[i].start()
 //#//		 << rang[i].end() << endl;
 //#//	}
-	table = table(*node_p);
+	table = table(*node_p, nrmax);
     }
     //# Then do the sort and the limit/offset.
     if (sort_p != 0) {
