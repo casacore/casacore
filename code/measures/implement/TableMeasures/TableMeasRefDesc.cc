@@ -57,11 +57,12 @@ TableMeasRefDesc::TableMeasRefDesc(const String& column)
   itsOffset(0)
 {}
 
-TableMeasRefDesc::TableMeasRefDesc(const ScalarColumnDesc<Int>& column)
+TableMeasRefDesc::TableMeasRefDesc(const String& column,
+	    	    	    	   const TableMeasOffsetDesc& offset)
 : itsRefCode(0),
-  itsVarColName(column.name()),
+  itsVarColName(column),
   itsVarRefCol(0),
-  itsOffset(0)
+  itsOffset(new TableMeasOffsetDesc(offset))
 {}
 
 TableMeasRefDesc::TableMeasRefDesc(const TableMeasRefDesc& that)
@@ -135,6 +136,9 @@ TableMeasRefDesc* TableMeasRefDesc::reconstruct(const TableRecord& measInfo,
     if (fnr >= 0) {
 	refString = measInfo.asString(fnr);
     	P = new TableMeasRefDesc(measInfo, tab, mDesc, refString);
+    } else {
+	// set up TableMeasRefDesc with a default non-variable reference
+	P = new TableMeasRefDesc(0);
     }
     
     return P;
