@@ -1,5 +1,5 @@
 //# Interpolate1DArray.h: Interpolation in last dimension of an Array
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,7 +167,7 @@ public:
 			  const Array<Range>& yin,
 			  const Array<Bool>& yinFlags,
 			  Int method,
-                          Bool goodIsTrue=F);
+                          Bool goodIsTrue=False);
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
