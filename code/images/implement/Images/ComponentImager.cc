@@ -33,6 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasRef.h>
@@ -87,7 +88,10 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
   {
     Vector<Double> inc = dirCoord.increment();
     Double latInc = abs(inc(0));
-    DebugAssert(near(latInc, abs(inc(1))), AipsError);
+    if (!near(latInc, abs(inc(1)))) {
+	throw(AipsError("ComponentImager::project(...) - "
+			"cannot handle non-square pixels yet"));
+    }
     pixelSize = MVAngle(latInc);
   }
   
