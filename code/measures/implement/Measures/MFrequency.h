@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,6 +96,10 @@ template <class M> class ROScalarMeasColumn;
 //  <li> MFrequency::TOPO -- Topocentric
 //  <li> MFrequency::GALACTO -- Galacto centric (with rotation of 220 km/s
 //		in direction l,b = [90,0] deg.
+//  <li> MFrequency::LGROUP -- Local group velocity -- 308km/s towards
+//		 l,b = [105,-7] deg (F. Ghigo)
+//  <li> MFrequency::CMB -- CMB velocity -- 369.5km/s towards
+//		l,b = [264.4, 48.4] deg (F. Ghigo)
 //  <li> MFrequency::DEFAULT = LSRK
 // </ul>
 // <p>
@@ -141,8 +145,7 @@ template <class M> class ROScalarMeasColumn;
 // <motivation>
 // </motivation>
 //
-// <todo asof="2000/06/15">
-//	<li>
+// <todo asof="2003/03/03">
 // </todo>
 
 class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
@@ -168,6 +171,8 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
     GEO,
     TOPO,
     GALACTO,
+    LGROUP,
+    CMB,
     N_Types,
     // Defaults
     DEFAULT=LSRK,

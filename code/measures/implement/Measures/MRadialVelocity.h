@@ -1,5 +1,5 @@
 //# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,6 +86,10 @@ class MVDoppler;
 //  <li> MRadialVelocity::TOPO -- Topocentric
 //  <li> MRadialVelocity::GALACTO -- Galacto centric (with rotation of 220 km/s
 //		in direction l,b = [90,0] deg.
+//  <li> MRadialVelocity::LGROUP -- Local group velocity -- 308km/s towards
+//		 l,b = [105,-7] deg (F. Ghigo)
+//  <li> MRadialVelocity::CMB -- CMB velocity -- 369.5km/s towards
+//		l,b = [264.4, 48.4] deg (F. Ghigo)
 //  <li> MRadialVelocity::DEFAULT = LSRK
 // </ul>
 // <p>
@@ -127,8 +131,7 @@ class MVDoppler;
 // <motivation>
 // </motivation>
 //
-// <todo asof="2000/06/15">
-//	<li>
+// <todo asof="2003/03/03">
 // </todo>
 
 class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > {
@@ -153,6 +156,8 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
     GEO,
     TOPO,
     GALACTO,
+    LGROUP,
+    CMB,
     N_Types,
     // Defaults
     DEFAULT=LSRK,

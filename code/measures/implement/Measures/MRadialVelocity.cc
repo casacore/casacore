@@ -1,5 +1,5 @@
 //# MRadialVelocity.cc: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,7 +111,9 @@ const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
     "BARY",
     "GEO",	    
     "TOPO",
-    "GALACTO"}; 
+    "GALACTO",
+    "LGROUP",
+    "CMB" }; 
 
   MRadialVelocity::checkMyTypes();
   return tname[tp];
@@ -123,7 +125,7 @@ const String &MRadialVelocity::showType(uInt tp) {
 
 const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 6;
+  static const Int N_name  = 8;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "LSRK",
@@ -131,7 +133,9 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
     "BARY",
     "GEO",	    
     "TOPO",
-    "GALACTO"}; 
+    "GALACTO",
+    "LGROUP",
+    "CMB" }; 
 
   static const uInt oname[N_name] = {
     MRadialVelocity::LSRK,
@@ -139,7 +143,9 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
     MRadialVelocity::BARY,
     MRadialVelocity::GEO,
     MRadialVelocity::TOPO,
-    MRadialVelocity::GALACTO};
+    MRadialVelocity::GALACTO,
+    MRadialVelocity::LGROUP,
+    MRadialVelocity::CMB };
 
   MRadialVelocity::checkMyTypes();
   nall   = N_name;

@@ -1,5 +1,5 @@
 //# MFrequency.cc: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,7 +103,9 @@ const String &MFrequency::showType(MFrequency::Types tp) {
     "BARY",
     "GEO",	    
     "TOPO",
-    "GALACTO"}; 
+    "GALACTO",
+    "LGROUP",
+    "CMB" }; 
 
   MFrequency::checkMyTypes();
   return tname[tp];
@@ -115,7 +117,7 @@ const String &MFrequency::showType(uInt tp) {
 
 const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 7;
+  static const Int N_name  = 9;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "REST",
@@ -124,7 +126,9 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
     "BARY",
     "GEO",	    
     "TOPO",
-    "GALACTO" }; 
+    "GALACTO",
+    "LGROUP",
+    "CMB" }; 
   
   static const uInt oname[N_name] = {
     MFrequency::REST,
@@ -133,7 +137,9 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
     MFrequency::BARY,
     MFrequency::GEO,
     MFrequency::TOPO,
-    MFrequency::GALACTO };
+    MFrequency::GALACTO,
+    MFrequency::LGROUP,
+    MFrequency::CMB };
 
   MFrequency::checkMyTypes();
   nall   = N_name;
