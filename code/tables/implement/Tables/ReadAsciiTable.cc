@@ -69,7 +69,7 @@ Int readAsciiTableGetNext (const Char* string, Int strlen, Char* result,
     }
     for (; at<strlen; at++) {
 	ihave = string[at];
-	if (ihave == '\'' || ihave == '"') {
+	if (ihave == '"') {
 	    if (quoted) {
 		quoted = False;
 		continue;
