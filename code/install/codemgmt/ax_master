@@ -3106,3 +3106,4 @@
 12 022 src mv doc/papers/rgadass95.dir doc/papers/adass95/rgadass95.dir
 12 022 src rm doc/papers/addass93
 12 026 src mv nrao/apps/vlafiller/vlafiller.cc nrao/apps/vlatoms/vlatoms.cc
+12 026 src rm nrao/implement/VLA/vlatoms.g
