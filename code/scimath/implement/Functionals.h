@@ -42,9 +42,6 @@
 #include <aips/Functionals/NQCompoundFunction.h>
 
 /// remainder will be removed
-#include <aips/Functionals/Parameterized.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Functionals/FunctionND.h>
 #include <aips/Functionals/SampledFunctional.h>
 
 //# 1-D Functions
