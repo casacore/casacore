@@ -183,7 +183,7 @@ try {
    cout << "" << endl;
    cout << "Stokes Coordinate" << endl;
    cout << "*******************" << endl;
-   Vector<Int> whichPols;
+   Vector<Stokes::StokesTypes> whichPols;
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
       cout << "No stokes axis" << endl;
