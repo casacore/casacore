@@ -1,5 +1,5 @@
 //# ExprFuncNode.h: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -206,7 +206,8 @@ private:
     void tryToConst();
 
 
-    FunctionType funcType_p;    // which function
+    FunctionType funcType_p;        // which function
+    NodeDataType argDataType_p;     // common argument data type
 };
 
 
