@@ -36,6 +36,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Fitting/FitLSQ.h>
 #include <trial/Images/ImageInterface.h>
@@ -96,11 +97,9 @@ Bool ImageSourceFinder<T>::setNewImage (const ImageInterface<T>& image)
 }
 
 template <class T>
-Vector<SkyComponent> ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax, 
+ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax, 
                                                         Double cutoff, Bool absFind)
 {
-   Vector<SkyComponent> listOut;
-
 // Make sure the Image is 2D and that it holds the sky.  Exception if not.
 
    const CoordinateSystem& cSys = pImage_p->coordinates();
@@ -276,7 +275,6 @@ Vector<SkyComponent> ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax
      if (abs(rs(i,0)) < x || rs(i,0) == 0) break;
      nFound++;   
    }      
-   listOut.resize(nFound);
    Vector<Double> pars(3);
    
 // What Stokes is the plane we are finding in ?
@@ -286,6 +284,7 @@ Vector<SkyComponent> ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax
   
 // Fill SkyComponents
 
+   ComponentList listOut;
    if (nFound==0) {
       os << LogIO::WARN << "No sources were found" << LogIO::POST;
    } else {
@@ -296,9 +295,9 @@ Vector<SkyComponent> ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax
          pars(0) = rs(i,0);
          pars(1) = rs(i,2);
          pars(2) = rs(i,1);
-         listOut(i) = ImageUtilities::encodeSkyComponent (os, ii, cSys, bU,
-                                                          ComponentType::POINT, 
-                                                          pars, stokes, xIsLong);
+         listOut.add(ImageUtilities::encodeSkyComponent (os, ii, cSys, bU,
+                                                         ComponentType::POINT, 
+                                                         pars, stokes, xIsLong));
       }
    } 
 //
