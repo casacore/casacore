@@ -707,4 +707,6 @@ Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes,
         }
       }
    }
+//
+   return True;
 }
