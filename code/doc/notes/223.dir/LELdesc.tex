@@ -343,7 +343,7 @@ The result of these functions is a scalar.
     The examples shows that scalars and lattices can be freely mixed.
     When all arguments are scalars, the result is a scalar. Otherwise
     the result is a lattice.
-    \\Note that the mask of the result is formed by combining the
+    \\ Note that the mask of the result is formed by combining the
     mask of the arguments in an appropriate way as explained in the
     section about \htmlref{mask handling}{LEL:HANDMASKS}.
 \end{description}
@@ -489,7 +489,7 @@ box.
 \\A pixel is bad when the image has a mask and when the
 mask value for that pixel is False. Functions like
 \texttt{max} ignore the bad pixels.
-\\Note that in a MeasurementSet a False mask value indicates a good
+\\ Note that in a MeasurementSet a False mask value indicates a good
 visibility. Alas this is a historically grown distinction in
 radio-astronomy.
 
@@ -990,7 +990,7 @@ creates another image on disk, which may or may not be desirable.
     \htmladdnormallink{LatticeExprNode}
     {../../trial/implement/Lattices/LatticeExprNode.html}
     ensure that the expression is formed in the correct way.
-    \\Note that a \texttt{LatticeExprNode} object is usually
+    \\ Note that a \texttt{LatticeExprNode} object is usually
     automatically converted to a templated \texttt{LatticeExpr} object,
     which makes it possible to use it as a normal \texttt{Lattice}.
     \\So far the expression is only formed, but not evaluated.
@@ -1007,9 +1007,9 @@ creates another image on disk, which may or may not be desirable.
 
 \section{\label{LEL:EXAMPLES}{Examples}}
 The following examples show some LEL expressions (equally valid 
-in C\+\+ or \Glish.
+in C++ or Glish.
 
-\\Note that LEL is readonly; i.e. it does not change any value in
+Note that LEL is readonly; i.e. it does not change any value in
 the images given. A function in the \texttt{image} client has to
 be used to do something with the result (e.g. storing in another image).
 \begin{description}
