@@ -36,7 +36,6 @@
 
 #include <map>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
 
 using std::map;
 using std::multimap;
@@ -90,7 +89,5 @@ template void std::__distance<\
 #  define AIPS_MAP_AUX_TEMPLATES(T, U)
 #endif
 
-
-} //# NAMESPACE CASA - END
 
 #endif

@@ -36,9 +36,7 @@
 
 #if !defined(AIPS_SGI)
 #include <vector>
-namespace casa { //# NAMESPACE CASA - BEGIN
 using std::vector;
-} //# NAMESPACE CASA - END
 #else
 #include <vector.h>
 #endif
@@ -57,6 +55,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 # if defined(AIPS_GCC)
 #  if defined(AIPS_GCC3)
 #   define AIPS_VECTOR_AUX_TEMPLATES(T) \
+using casa::uInt; \
+using casa::uLong; \
 template \
    T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
 template \
