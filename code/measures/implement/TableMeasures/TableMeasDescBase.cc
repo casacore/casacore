@@ -1,5 +1,5 @@
 //# TableMeasDefBase.cc: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 #include <trial/TableMeasures/TableMeasDescBase.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
+#include <trial/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/TableDesc.h>
@@ -85,26 +85,14 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   }
   
   // get the units
-  fnr = measInfo.fieldNumber("NumUnits");
-  uInt numUnits;
-  if (fnr >= 0) {
-    numUnits = measInfo.asuInt(fnr);
-  } else {
-    throw(AipsError("TableMeasDescBase::reconstruct; No Units found"
-		    " for column: " + columnName));
+  TableQuantumDesc* tqdesc = TableQuantumDesc::reconstruct (tab.tableDesc(),
+							    columnName);
+  Vector<String> names(tqdesc->getUnits());
+  Vector<Unit> units(names.nelements());
+  for (uInt i=0; i<names.nelements(); i++) {
+    units(i) = names(i);
   }
-  
-  Vector<Unit> units(numUnits);
-  for (uInt i=0; i<numUnits; i++) {
-    String uname = "unit" + String::toString(i);
-    fnr = measInfo.fieldNumber(uname);
-    if (fnr >= 0) {
-      units(i) = measInfo.asString(fnr);
-    } else {
-      throw(AipsError("TableMeasDescBase::reconstruct; Unit not found"
-		      " for column: " + columnName));
-    }
-  }
+  delete tqdesc;
   
   String error;
   MeasureHolder measHolder;
@@ -115,7 +103,6 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   p->itsMeasType = TableMeasType(measHolder.asMeasure());
   p->itsUnits = units;
   p->itsRef = TableMeasRefDesc (measInfo, tab, *p);
-
   return p;
 }
 
@@ -138,13 +125,11 @@ void TableMeasDescBase::write (TableDesc& td)
   // Create a record from the MeasType and add it to measInfo
   itsMeasType.toRecord (measType);
   measInfo.defineRecord ("Type", measType);
-  // Add the units
-  measInfo.define ("NumUnits", itsUnits.nelements());
-  for (uInt i=0; i<itsUnits.nelements(); i++) {
-    String uname = "unit" + String::toString(i);
-    measInfo.define (uname, itsUnits(i).getName());
-  }
-
+  // Put the units.
+  // Use TableQuantumDesc, so the column can be used that way too.
+  TableQuantumDesc tqdesc(td, itsValue.columnName(), itsUnits);
+  tqdesc.write (td);
+		    
   // Write the reference.
   itsRef.write (td, measInfo, *this);
   // Write the MEASINFO record into the keywords of the value column.
