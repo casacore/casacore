@@ -45,7 +45,7 @@ SkyComponent::SkyComponent()
 SkyComponent::SkyComponent(ComponentType::Type type) {
   switch (type){
   case ComponentType::POINT:
-    theCompPtr.replace(new PointCompRep); break;
+    theCompPtr = new PointCompRep; break;
 //   case GAUSSIAN:
 //     theCompPtr.replace(new GaussianCompRep); break;
   };    
@@ -142,7 +142,7 @@ SkyComponent SkyComponent::copy() const {
 };
 
 Bool SkyComponent::ok() const {
-  if (theCompPtr.null() == False) {
+  if (theCompPtr.null() == True) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));
     logErr << LogIO::SEVERE << "Internal pointer is not pointing to anything"
            << LogIO::POST;
