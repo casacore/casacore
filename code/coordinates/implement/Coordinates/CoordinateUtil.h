@@ -419,6 +419,12 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 			      const CoordinateSystem& oldCsys);
   // </group>
 
+  // Fix up Cylindrical parameters in any DirectionCoordinate for when the longitude 
+  // is outside of [-180,180] range.  If it returns False, it failed and an error 
+  // message is returned as well.  This function should be called on any
+  // CS made from an imported image like FITS
+  static Bool cylindricalFix (CoordinateSystem& cSys, String& errorMessage, const IPosition& shape);
+
 };
 
 #endif
