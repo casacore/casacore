@@ -1,6 +1,6 @@
 //# fits2image.cc: conversion to aips++ native tables
-//# Copyright (C) 1996
-//# Associated Universities, Inc. Washington DC, USA.
+//# Copyright (C) 1996,1997
+n//# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU General Public License as published by the Free
@@ -26,19 +26,15 @@
 //# $Id$
 
 #include <aips/aips.h>
-
-#include <trial/ImgCrdSys/ImageCoordinate.h>
-#include <trial/Images/PagedImage.h>
-
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/MapIO.h>
-#include <aips/Containers/OrderedMap.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/FITS.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Lattices/IPosition.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
+
+#include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageFITSConverter.h>
+#include <trial/Tasking/ApplicationEnvironment.h>
 
 #include <iostream.h>
 
@@ -50,68 +46,25 @@ int main(int argc, char **argv)
     inp.Version("2.0: PagedImage with coordinate conversion");
     inp.Create("in", " ", "Input FITS file name", "string");
     inp.Create("out", " ", "Output AIPS++ Image name", "string");
-    inp.Create("verbose", "False", "Verbose?", "Bool");
     inp.ReadArguments(argc, argv);
 
-    Bool verbose=inp.GetBool("verbose");
-
-    File inputFilename = inp.GetString("in");
-    if (!inputFilename.isReadable()) 
-      throw (AipsError ("input FITS file unreadable"));
-
-    String outputFilename = inp.GetString("out");
-    if(outputFilename==" ") 
-	outputFilename=inputFilename.path().originalName()+".image";
-
-    Array <Float> fitsArray;
-    Bool ok;
-    String errorMessage;
-    String unitName;
-    Vector <String> axisNames (10);
-    Vector <Float> referenceValues (10);
-    Vector <Float> referencePixels (10);
-    Vector <Float> deltas (10);
-    OrderedMap <String, Double> keywords (0.0);
-
-    if (verbose) 
-      cout << "ReadFITS: " << inputFilename.path().originalName() << endl;
-
-    fitsArray = ReadFITS (inputFilename.path().originalName(), 
-                          ok, errorMessage, &unitName,
-                          &axisNames,  &referencePixels, &referenceValues,
-			  &deltas, &keywords);
-
-    if (verbose){
-      cout << "============= back from ReadFITS" << endl;
-      cout << "number of axes:     " << axisNames.nelements() << endl;
-      cout << "axisNames:          " << axisNames.ac() << endl;
-      cout << "unit name:          " << unitName << endl;
-      cout << "reference pixel:    " << referencePixels.ac() << endl;
-      cout << "reference location: " << referenceValues.ac() << endl;
-      cout << "delta:              " << deltas.ac() << endl;
-      cout << "keywords:           " << (Map<String,Double>&) keywords << endl;
-      cout << "number of keywords: " << keywords.ntot () << endl;
-      cout << "array shape:        " << fitsArray.shape () << endl;
+    String fitsFile = inp.GetString("in");
+    String outFile = inp.GetString("out");
+    if(outFile.empty() ) {
+       File inFile(fitsFile);
+       outFile=inFile.path().expandedName()+".image";
     }
 
-    Int numberOfAxes = axisNames.nelements();
-    ImageCoordinate coords;
-    for (int i=0;i<numberOfAxes;i++){
-      ReferenceValue ref(ReferenceValue::UNKNOWN, 0);
-      LinearAxis tmp(MeasuredValue::UNKNOWN, referenceValues(i), ref,
-		     deltas(i), referencePixels(i));
-      tmp.setAxisName(axisNames(i));
-      coords.addAxis(tmp);
+    String error;
+    PagedImage<Float>* pOutImage;
+    ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
+                                    ApplicationEnvironment::memoryInMB());
+    LogIO os(LogOrigin("fits2image", "main()", WHERE));
+    if (!pOutImage) {
+        os << LogIO::SEVERE << error << LogIO::EXCEPTION;
     }
     
-    // Copy values and output if required. For the moment we
-    // don't give any coordinates
-    PagedImage<Float> image2(fitsArray.shape(), coords, outputFilename);
-    image2.putSlice(fitsArray, IPosition(fitsArray.ndim(), 0),
-		    IPosition(fitsArray.ndim(), 1));
-    
-    if (verbose)
-      cout << "table " << outputFilename << " write complete " << endl;
+    os << "table " << outFile << " write complete " << endl;
 
   } catch (AipsError x) {
     cout << "exception: " << x.getMesg() << endl;
