@@ -646,13 +646,19 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 
 // Scale and blank
 
-    Double s,o;
-    header.get("bscale", s);
-    header.get("bzero", o);
+    Double s = 1.0;
+    Double o = 0.0;
+    if (header.isDefined("bscale")) {
+       header.get("bscale", s);
+       header.removeField("bscale");
+    }
+    if (header.isDefined("bscale")) {
+       header.get("bzero", o);
+       header.removeField("bzero");
+    }
     scale = s; 
     offset = o;
-    header.removeField("bscale");
-    header.removeField("bzero");
+
 //
     hasBlanks = False;
     if (header.isDefined("blank")) {
