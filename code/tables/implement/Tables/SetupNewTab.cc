@@ -1,5 +1,5 @@
 //# SetupNewTab.cc: Class to construct a new or scratch table
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,8 +97,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   option_p    (opt),
   delete_p    (False),
   tdescPtr_p  (0),
-  colSetPtr_p (0),
-  dataManMap_p((void*)0)
+  colSetPtr_p (0)
 {
     //# Copy the table description.
     tdescPtr_p = new TableDesc(tableDescName);
@@ -117,8 +116,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   option_p    (opt),
   delete_p    (False),
   tdescPtr_p  (0),
-  colSetPtr_p (0),
-  dataManMap_p((void*)0)
+  colSetPtr_p (0)
 {
     //# Read the table description.
     tdescPtr_p = new TableDesc(tableDesc, "", "", TableDesc::Scratch);
@@ -180,14 +178,14 @@ DataManager* SetupNewTableRep::getDataManager (const DataManager& dataMan)
     //# Clone if this DataManager has not been cloned yet.
     //# The map maintains a mapping of an original DataManager object
     //# and its clone.
-    DataManager* dmp = (DataManager*) (dataManMap_p((void*)&dataMan));
+    DataManager* dmp = dataMan.getClone();
     if (dmp == 0) {
 	//# Not cloned yet, so clone it.
 	//# Add it to the map in the ColumnSet object.
-	//# Assign it a unique sequence number and update that.
+	//# Tell the original object that it has been cloned.
 	dmp = dataMan.clone();
 	colSetPtr_p->addDataManager (dmp);
-	dataManMap_p((void*)&dataMan) = dmp;
+	dataMan.setClone (dmp);
     }
     return dmp;
 }
