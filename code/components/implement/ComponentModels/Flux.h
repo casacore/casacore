@@ -42,7 +42,7 @@
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 
-class GlishRecord;
+class RecordInterface;
 
 // <summary>A class that represents the Flux (copy semantics)</summary>
 
@@ -194,7 +194,7 @@ public:
   // by a Vector that must have four elements. The polarisation representation
   // must also be specified. It assumes the units are "Jy".
   FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
-  		const ComponentType::Polarisation & pol)
+	  ComponentType::Polarisation pol)
     :itsVal(flux.copy()),
      itsPol(pol),
      itsUnit("Jy")
@@ -215,7 +215,7 @@ public:
   // units of the FluxRep object. The polarisation representation must also be
   // specified.
   FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
-	  const ComponentType::Polarisation & pol)
+	  ComponentType::Polarisation pol)
     :itsVal(flux.getValue().copy()),
      itsPol(pol),
      itsUnit(flux.getFullUnit())
@@ -250,18 +250,18 @@ public:
 
   // These two functions return the current polarisation representation.
   // <group>
-  const ComponentType::Polarisation & pol() const;
+  ComponentType::Polarisation pol() const;
   void pol(ComponentType::Polarisation & pol) const;
   // </group>
 
   // This function sets the current polarisation representation. It does NOT
   // convert the flux values.
-  void setPol(const ComponentType::Polarisation & pol);
+  void setPol(ComponentType::Polarisation pol);
 
   // This function sets the current polarisation representation to the supplied
   // value and additionally converts the internal flux values to the correspond
   // to the new polarisation representation.
-  void convertPol(const ComponentType::Polarisation & pol);
+  void convertPol(ComponentType::Polarisation pol);
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
@@ -299,7 +299,7 @@ public:
   // whatever is specified. The units of the returned Quantum are the current
   // units.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-  	    const ComponentType::Polarisation & pol) {
+	     ComponentType::Polarisation pol) {
     uInt len = value.getValue().nelements();
     DebugAssert(len == 4 || len == 0, AipsError);
     convertUnit(value.getFullUnit());
@@ -338,7 +338,7 @@ public:
   // units of the Quantum must be dimensionally equivalent to the "Jy" and the
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
-		const ComponentType::Polarisation & pol) {
+		ComponentType::Polarisation pol) {
     DebugAssert (value.getValue().nelements() == 4, AipsError);
     itsVal = value.getValue();
     itsUnit = value.getFullUnit();
@@ -347,15 +347,15 @@ public:
   };
 
   // Scale the Flux value by the specified amount. These functions multiply the
-  // flux values irrespective of the current polarisation
-  // representation. Scalar factors multiply all four polarisations of the
-  // flux.
+  // flux values irrespective of the current polarisation representation. If
+  // only one scale factor is supplied then only the first component of the
+  // flux is scaled.
   // <group>
   void scaleValue(const T & factor);
   void scaleValue(const T & factor0, const T & factor1,
 		  const T & factor2, const T & factor3);
   void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
-    itsVal.ac() *= factor;
+    itsVal(0) *= factor;
     DebugAssert(ok(), AipsError);
   };
   void scaleValue(const NumericTraits<T>::ConjugateType & factor0,
@@ -375,8 +375,8 @@ public:
   // glish record is malformed and append an error message to the supplied
   // string giving the reason.
   // <group>
-  Bool fromRecord(String & errorMessage, const GlishRecord & record);
-  Bool toRecord(String & errorMessage, GlishRecord & record) const;
+  Bool fromRecord(String & errorMessage, const RecordInterface & record);
+  Bool toRecord(String & errorMessage, RecordInterface & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -508,7 +508,7 @@ public:
   // by a Vector that must have four elements. The polarisation representation
   // must also be specified. It assumes the units are "Jy".
   Flux(const Vector<NumericTraits<T>::ConjugateType> & flux,
-       const ComponentType::Polarisation & pol)
+       ComponentType::Polarisation pol)
     :itsFluxPtr(new FluxRep<T>(flux, pol))
     {
       DebugAssert(ok(), AipsError);
@@ -527,7 +527,7 @@ public:
   // units of the FluxRep object. The polarisation representation must also be
   // specified.
   Flux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
-       const ComponentType::Polarisation & pol);
+       ComponentType::Polarisation pol);
 
   // The copy constructor uses reference semantics.
   Flux(const Flux<T> & other);
@@ -561,18 +561,18 @@ public:
 
   // These two functions return the current polarisation representation.
   // <group>
-  const ComponentType::Polarisation & pol() const;
+  ComponentType::Polarisation pol() const;
   void pol(ComponentType::Polarisation & pol) const;
   // </group>
 
   // This function sets the current polarisation representation. It does NOT
   // convert the flux values.
-  void setPol(const ComponentType::Polarisation & pol);
+  void setPol(ComponentType::Polarisation pol);
 
   // This function sets the current polarisation representation to the supplied
   // value and additionally converts the internal flux values to the correspond
   // to the new polarisation representation.
-  void convertPol(const ComponentType::Polarisation & pol);
+  void convertPol(ComponentType::Polarisation pol);
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
@@ -607,7 +607,7 @@ public:
   // whatever is specified. The units of the returned Quantum are the current
   // units.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-	     const ComponentType::Polarisation & pol) {
+	     ComponentType::Polarisation pol) {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->value(value, pol);
   };
@@ -641,15 +641,15 @@ public:
   // units of the Quantum must be dimensionally equivalent to the "Jy" and the
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
-		const ComponentType::Polarisation & pol) {
+		ComponentType::Polarisation pol) {
     DebugAssert(ok(), AipsError);
     itsFluxPtr->setValue(value, pol);
   };
 
   // Scale the Flux value by the specified amount. These functions multiply the
-  // flux values irrespective of the current polarisation
-  // representation. Scalar factors multiply all four polarisations of the
-  // flux.
+  // flux values irrespective of the current polarisation representation. If
+  // only one scale factor is supplied then only the first component of the
+  // flux is scaled.
   // <group>
   void scaleValue(const T & factor);
   void scaleValue(const T & factor0, const T & factor1,
@@ -672,8 +672,8 @@ public:
   // record is malformed and append an error message to the supplied string
   // giving the reason.
   // <group>
-  Bool fromRecord(String & errorMessage, const GlishRecord & record);
-  Bool toRecord(String & errorMessage, GlishRecord & record) const;
+  Bool fromRecord(String & errorMessage, const RecordInterface & record);
+  Bool toRecord(String & errorMessage, RecordInterface & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

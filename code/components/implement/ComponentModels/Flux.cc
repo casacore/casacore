@@ -26,9 +26,10 @@
 //# $Id$
 
 #include <trial/ComponentModels/Flux.h>
-#include <aips/Glish/GlishArray.h>
-#include <aips/Glish/GlishRecord.h>
-#include <aips/Glish/GlishValue.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Containers/RecordInterface.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Complex.h>
@@ -149,7 +150,7 @@ convertUnit(const Unit & unit) {
   DebugAssert(ok(), AipsError);
 }
 
-template<class T> const ComponentType::Polarisation & FluxRep<T>::
+template<class T> ComponentType::Polarisation FluxRep<T>::
 pol() const {
   DebugAssert(ok(), AipsError);
   return itsPol;
@@ -162,13 +163,13 @@ pol(ComponentType::Polarisation & pol) const {
 }
 
 template<class T> void FluxRep<T>::
-setPol(const ComponentType::Polarisation & pol) {
+setPol(ComponentType::Polarisation pol) {
   itsPol = pol;
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
-convertPol(const ComponentType::Polarisation & pol) {
+convertPol(ComponentType::Polarisation pol) {
   if (itsPol != pol) {
     switch (pol){
     case ComponentType::STOKES:
@@ -261,9 +262,7 @@ setValue(const Quantum<Vector<T> > & value) {
 
 template<class T> void FluxRep<T>::
 scaleValue(const T & factor) {
-  for (uInt i = 0; i < 4; i++) {
-    itsVal(i) *= factor;
-  }
+  itsVal(0) *= factor;
   DebugAssert(ok(), AipsError);
 }
 
@@ -278,113 +277,101 @@ scaleValue(const T & factor0, const T & factor1,
 }
 
 template<class T> Bool FluxRep<T>::
-fromRecord(String & errorMessage, const GlishRecord & record) {
+fromRecord(String & errorMessage, const RecordInterface & record) {
   {
-    if (!record.exists("polarisation")) {
+    const String polarisationString("polarisation");
+    if (!record.isDefined(polarisationString)) {
       setPol(ComponentType::STOKES);
     } else {
-      if (record.get("polarisation").type() != GlishValue::ARRAY) {
-	errorMessage += "\nThe 'polarisation' field cannot be a record";
-	return False;
-      }
-      const GlishArray polField = record.get("polarisation");
-      if (polField.elementType() != GlishArray::STRING) {
-	errorMessage += "\nThe 'polarisation' field must be a string";
-	return False;
-      }
+      const RecordFieldId polarisation(polarisationString);
       // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
       // is harder to parse but more flexible for the future.
-      if (polField.shape().product() != 1) {
-	errorMessage += 
-	  String("\nThe 'polarisation' field cannot be an array ");
+      if (record.shape(polarisation) != IPosition(1,1)) {
+	errorMessage += "\nThe 'polarisation' field must have only 1 element";
 	return False;
-      }
+      }      
       String polVal;
-      if (!polField.get(polVal)) {
-	errorMessage += String("\nCould not read the 'polarisation' field ") + 
-	  String("in the flux record for an unknown reason");
-	return False;
+      try {
+ 	polVal = record.asString(polarisation);
       }
+      catch (AipsError x) {
+	errorMessage += "\nThe 'polarisation' field must be a string";
+	return False;
+      } end_try;
       const ComponentType::Polarisation 
 	pol(ComponentType::polarisation(polVal));
       if (pol == ComponentType::UNKNOWN_POLARISATION) {
 	errorMessage += String("\nThe polarisation type is not known. ") +
-	  String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
+	  String("\nAllowed values are 'Stokes', 'Linear' & 'Circular'");
 	return False;
       }
       setPol(pol);
     }
   }
   {
-    if (!record.exists("value")) {
+    const String valueString("value");
+    if (!record.isDefined(valueString)) {
       errorMessage += "\nThe 'flux' record must have a 'value' field";
       return False;
     }
-    if (record.get("value").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'value' field cannot be a record";
+    const RecordFieldId value(valueString);
+    if (record.shape(value) != IPosition(1,4)) {
+      errorMessage += "\nThe 'value' field must have 4 elements";
       return False;
-    }
-    const GlishArray valueField = record.get("value");
-    if (valueField.elementType() == GlishArray::STRING) {
-      errorMessage += "\nThe 'value' field cannot be a string";
-      return False;
-    }
-    const IPosition shape = valueField.shape();
-    if (shape.nelements() != 1 || shape.product() != 4) {
-      errorMessage += String("\nThe 'value' field in the flux record ") + 
-	String("must contain a vector with 4 elements");
-      return False;
-    }
+    }      
     Vector<NumericTraits<T>::ConjugateType> fluxVal(4);
-    if (!valueField.get(fluxVal.ac())) {
-      errorMessage += String("\nCould not read the 'value' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
+    try {
+      Array<DComplex> val = record.asArrayDComplex(value);
+      // This is needed as there is not an automatic conversion from
+      // Array<DComplex> to Array<Complex> (when instantiated Flux<Float>)
+      for (uInt i = 1; i < 4; i++) {
+	fluxVal(i) = val(i);
+      }
     }
+    catch (AipsError x) {
+      errorMessage += "\nThe 'value' field must have 4 numbers";
+      return False;
+    } end_try;
     setValue(fluxVal);
   }
   {
-    if (!record.exists("unit")) {
+    const String unitString("unit");
+    if (!record.isDefined(unitString)) {
       errorMessage += "\nThe 'flux' record must have a 'unit' field";
       return False;
     }
-    if (record.get("unit").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'unit' field cannot be a record";
+    const RecordFieldId unit(unitString);
+    if (record.shape(unit) != IPosition(1,1)) {
+      errorMessage += "\nThe 'unit' field must have only 1 element";
       return False;
+    }      
+    String unitVal;
+    try {
+      unitVal = record.asString(unit);
     }
-    const GlishArray unitField = record.get("unit");
-    if (unitField.elementType() != GlishArray::STRING) {
+    catch (AipsError x) {
       errorMessage += "\nThe 'unit' field must be a string";
       return False;
-    }
-    if (unitField.shape().product() != 1) {
-      errorMessage += String("\nThe 'unit' field cannot be an array ");
-      return False;
-    }
-    String unitVal;
-    if (!unitField.get(unitVal)) {
-      errorMessage += String("\nCould not read the 'unit' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
-    }
-    setUnit(Unit(unitVal));
+    } end_try;
+    setUnit(unitVal);
   }
   return True;
 }
 
 template<class T> Bool FluxRep<T>::
-toRecord(String & errorMessage, GlishRecord & record) const {
+toRecord(String & errorMessage, RecordInterface & record) const {
   if (pol() == ComponentType::STOKES) {
     FluxRep<T> fluxCopy = *this;
     Vector<T> fluxVal(4);
     fluxCopy.value(fluxVal);
-    record.add("value", GlishArray(fluxVal.ac()));
-    record.add("polarisation", ComponentType::name(ComponentType::STOKES));
+    record.define(RecordFieldId("value"), fluxVal.ac());
+    record.define(RecordFieldId("polarisation"), 
+		  ComponentType::name(ComponentType::STOKES));
   } else {
-    record.add("value", GlishArray(value().ac()));
-    record.add("polarisation", ComponentType::name(pol()));
+    record.define(RecordFieldId("value"), value().ac());
+    record.define(RecordFieldId("polarisation"), ComponentType::name(pol()));
   }
-  record.add("unit", unit().getName());
+  record.define("unit", unit().getName());
   if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
 }
@@ -471,9 +458,7 @@ operator=(const Flux<T> & other) {
 template<class T> Flux<T> Flux<T>::
 copy() const {
   DebugAssert(ok(), AipsError);
-  Vector<NumericTraits<T>::ConjugateType> thisVal(4);
-  value(thisVal);
-  Flux<T> newFlux(thisVal, pol());
+  Flux<T> newFlux(value(), pol());
   newFlux.setUnit(unit());
   return newFlux;
 }
@@ -502,7 +487,7 @@ convertUnit(const Unit & unit) {
   itsFluxPtr->convertUnit(unit);
 }
 
-template<class T> const ComponentType::Polarisation & Flux<T>::
+template<class T> ComponentType::Polarisation Flux<T>::
 pol() const {
   DebugAssert(ok(), AipsError);
   return itsFluxPtr->pol();
@@ -515,13 +500,13 @@ pol(ComponentType::Polarisation & pol) const {
 }
 
 template<class T> void Flux<T>::
-setPol(const ComponentType::Polarisation & pol) {
+setPol(ComponentType::Polarisation pol) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->setPol(pol);
 }
 
 template<class T> void Flux<T>::
-convertPol(const ComponentType::Polarisation & pol) {
+convertPol(ComponentType::Polarisation pol) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->convertPol(pol);
 }
@@ -570,13 +555,13 @@ scaleValue(const T & factor0, const T & factor1,
 }
 
 template<class T> Bool Flux<T>::
-fromRecord(String & errorMessage, const GlishRecord & record) {
+fromRecord(String & errorMessage, const RecordInterface & record) {
   DebugAssert(ok(), AipsError);
   return itsFluxPtr->fromRecord(errorMessage, record);
 }
 
 template<class T> Bool Flux<T>::
-toRecord(String & errorMessage, GlishRecord & record) const {
+toRecord(String & errorMessage, RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
   return itsFluxPtr->toRecord(errorMessage, record);
 }
