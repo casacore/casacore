@@ -1,5 +1,5 @@
 //# BucketCache.h: Cache for buckets in a part of a file
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,11 +30,11 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/IO/BucketFile.h>
 #include <aips/Containers/Block.h>
 #include <aips/OS/CanonicalConversion.h>
 
 //# Forward clarations
-class BucketFile;
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
 #else
@@ -225,7 +225,7 @@ public:
     // bucketSize*nrOfBuckets bytes.
     // When the file is smaller, the remainder is indicated as an extension
     // similarly to the behaviour of function extend.
-    BucketCache (BucketFile* file, uInt startOffset, uInt bucketSize,
+    BucketCache (BucketFile* file, Int64 startOffset, uInt bucketSize,
 		 uInt nrOfBuckets, uInt cacheSize,
 		 void* ownerObject,
 		 BucketCacheToLocal readCallBack,
@@ -300,11 +300,11 @@ public:
 
     // Get a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
-    void get (char* buf, uInt length, uInt offset);
+    void get (char* buf, uInt length, Int64 offset);
 
     // Put a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
-    void put (const char* buf, uInt length, uInt offset);
+    void put (const char* buf, uInt length, Int64 offset);
 
     // Get the bucket number of the first free bucket.
     // -1 = no free buckets.
@@ -333,7 +333,7 @@ private:
     // The delete callback function.
     BucketCacheDeleteBuffer its_DeleteCallBack;
     // The starting offsets of the buckets in the file.
-    uInt     its_StartOffset;
+    Int64    its_StartOffset;
     // The bucket size.
     uInt     its_BucketSize;
     // The current nr of buckets in the file.
@@ -395,7 +395,7 @@ private:
     void initializeBuckets (uInt bucketNr);
 
     // Check if the offset of a non-cached part is correct.
-    void checkOffset (uInt length, uInt offset) const;
+    void checkOffset (uInt length, Int64 offset) const;
 };
 
 

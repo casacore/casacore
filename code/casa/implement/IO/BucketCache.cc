@@ -1,5 +1,5 @@
 //# BucketCache.cc: Cache for buckets in a file
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,13 +27,12 @@
 
 
 //# Includes
-#include <aips/Tables/BucketCache.h>
-#include <aips/Tables/BucketFile.h>
+#include <aips/IO/BucketCache.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
 
-BucketCache::BucketCache (BucketFile* file, uInt startOffset,
+BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
 			  uInt bucketSize, uInt nrOfBuckets,
 			  uInt cacheSize, void* ownerObject,
 			  BucketCacheToLocal readCallBack,
@@ -84,7 +83,7 @@ BucketCache::BucketCache (BucketFile* file, uInt startOffset,
     // Open the file if not open yet and get its physical size.
     // Use that to determine the number of buckets in the file.
     its_file->open();
-    uInt size = its_file->fileSize();
+    Int64 size = its_file->fileSize();
     if (size > startOffset) {
 	its_CurNrOfBuckets = (size - startOffset) / bucketSize;
 	if (its_CurNrOfBuckets > its_NewNrOfBuckets) {
@@ -249,9 +248,9 @@ uInt BucketCache::addBucket (char* data)
     if (its_FirstFree >= 0) {
 	// There is a free list, so get the first bucket from it.
 	bucketNr = its_FirstFree;
-	its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
+	its_file->seek (its_StartOffset + Int64(bucketNr) * its_BucketSize);
 	its_file->read (its_Buffer,
-			CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
+		   CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
 	CanonicalConversion::toLocal (its_FirstFree, its_Buffer);
 	its_NrOfFree--;
     }else{
@@ -277,8 +276,9 @@ void BucketCache::removeBucket()
     // and make this bucket the first free.
     uInt bucketNr = its_BucketNr[its_ActualSlot];
     CanonicalConversion::fromLocal (its_Buffer, its_FirstFree);
-    its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
-    its_file->write (its_Buffer, CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
+    its_file->seek (its_StartOffset + Int64(bucketNr) * its_BucketSize);
+    its_file->write (its_Buffer,
+                  CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
     its_Dirty[its_ActualSlot] = 0;
     its_FirstFree = bucketNr;
     its_NrOfFree++;
@@ -292,23 +292,23 @@ void BucketCache::removeBucket()
 }
 
 
-void BucketCache::get (char* buf, uInt length, uInt offset)
+void BucketCache::get (char* buf, uInt length, Int64 offset)
 {
     checkOffset (length, offset);
     its_file->seek (offset);
     its_file->read (buf, length);
 }
-void BucketCache::put (const char* buf, uInt length, uInt offset)
+void BucketCache::put (const char* buf, uInt length, Int64 offset)
 {
     checkOffset (length, offset);
     its_file->seek (offset);
     its_file->write (buf, length);
 }
-void BucketCache::checkOffset (uInt length, uInt offset) const
+void BucketCache::checkOffset (uInt length, Int64 offset) const
 {
     // Check if not before or after cached area.
     if (offset + length > its_StartOffset
-    &&  offset < its_StartOffset + its_CurNrOfBuckets * its_BucketSize) {
+    &&  offset < its_StartOffset + Int64(its_CurNrOfBuckets)*its_BucketSize) {
 	throw (indexError<Int> (offset));
     }
 }
@@ -346,7 +346,8 @@ void BucketCache::writeBucket (uInt slotNr)
 {
 ///    cout << "write " << its_BucketNr[slotNr] << " " << slotNr;
     its_WriteCallBack (its_Owner, its_Buffer, its_Cache[slotNr]);
-    its_file->seek (its_StartOffset + its_BucketNr[slotNr] * its_BucketSize);
+    its_file->seek (its_StartOffset +
+		    Int64(its_BucketNr[slotNr]) * its_BucketSize);
     its_file->write (its_Buffer, its_BucketSize);
     its_Dirty[slotNr] = 0;
     nwrite_p++;
@@ -354,7 +355,8 @@ void BucketCache::writeBucket (uInt slotNr)
 void BucketCache::readBucket (uInt slotNr)
 {
 ///    cout << "read " << its_BucketNr[slotNr] << " " << slotNr;
-    its_file->seek (its_StartOffset + its_BucketNr[slotNr] * its_BucketSize);
+    its_file->seek (its_StartOffset +
+		    Int64(its_BucketNr[slotNr]) * its_BucketSize);
     its_file->read (its_Buffer, its_BucketSize);
     its_Cache[slotNr] = its_ReadCallBack (its_Owner, its_Buffer);
     nread_p++;
