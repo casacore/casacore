@@ -2495,3 +2495,4 @@
 11 341 src rm doc/faq/index.html
 11 342 src mv atnf/apps/atload atnf/apps/rpfitsfiller
 11 342 src mv atnf/apps/rpfitsfiller/ATLoad.cc atnf/apps/rpfitsfiller/DOrpfitsfiller.cc
+11 342 src mv atnf/apps/rpfitsfiller/ATLoad.h atnf/apps/rpfitsfiller/DOrpfitsfiller.h
