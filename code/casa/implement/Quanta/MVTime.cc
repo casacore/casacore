@@ -251,7 +251,7 @@ MVTime::Format MVTime::getFormat() {
 }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
-  const Int N_name = 11;
+  const Int N_name = 13;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -263,7 +263,9 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     "MJD",
     "DAY",
     "NO_TIME",
-    "DIG2"
+    "DIG2",
+    "FITS",
+    "LOCAL",
   };
   static MVTime::formatTypes nam[N_name] = {
     MVTime::ANGLE,
@@ -276,7 +278,9 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     MVTime::MJD,
     MVTime::DAY,
     MVTime::NO_TIME,
-    MVTime::DIG2
+    MVTime::DIG2,
+    MVTime::FITS,
+    MVTime::LOCAL,
   };
   Int t = MUString::minimaxNC(in, N_name, tab);
   return (t<N_name ? nam[t] : (MVTime::formatTypes) 0);
