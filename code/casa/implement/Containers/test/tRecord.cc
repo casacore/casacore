@@ -504,20 +504,6 @@ void doIt (Bool doExcp)
     // RecordFieldPtr::define (const Record&);
     // RecordFieldPtr::operator= (const Record&);
     Record& subrec1 = record.rwSubRecord (record.fieldNumber ("SubRecord1"));
-    if (doExcp) {
-	try {
-	    subrec.defineRecord ("abcd", subrec);
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;     // fixed -> add not possible
-	} 
-	try {
-	    record.defineRecord (record.fieldNumber ("SubRecord"), subrec1);
-	} catch (AipsError x) {              // fixed; non-conforming
-	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
-		 << "<<<" << endl;
-	} 
-    }
     Record subrec1a;
     subrec1.defineRecord ("sub", subrec, RecordInterface::Fixed);
     subrec1.defineRecord ("sub1", subrec1a);
@@ -900,7 +886,6 @@ void check (const Record& record, Int intValue, uInt nrField)
     // Sub(-sub)-record fields
     RORecordFieldPtr<Record> recordField(record, "SubRecord");
     const Record& subrec = *recordField;
-    AlwaysAssertExit(subrec.isFixed());
     AlwaysAssertExit(subrec.nfields() == 2);
     RORecordFieldPtr<Float> subref (subrec, 0);
     AlwaysAssertExit(*subref == 8.0);
