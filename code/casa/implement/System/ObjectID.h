@@ -1,5 +1,5 @@
 //# ObjectID.h: A unique identifier for distributed and other objects
-//# Copyright (C) 1996,1998,1999,2000,2001
+//# Copyright (C) 1996,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,16 +26,15 @@
 //# $Id$
 
 
-#if !defined(AIPS_OBJECT_ID_H)
-#define AIPS_OBJECT_ID_H
+#if !defined(AIPS_OBJECTID_H)
+#define AIPS_OBJECTID_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 
 //# Forward declarations
-class RecordInterface;
 #include <aips/iosfwd.h>
-class GlishRecord;
 template<class T> class Block;
 
 // <summary> 
@@ -118,28 +117,6 @@ public:
     void toString(String &out) const;
     // </group>
 
-    // It is useful to be able to interconvert between ObjectID's and Records.
-    // At present the Tasking system only uses GlishRecords, but we might want
-    // to change this to RecordInterfaces at some point. Note that if you do
-    // not call this function you will not link against Glish, as it is in its
-    // own .cc file.
-    //
-    // Although you shouldn't need to know the exact form of the record, it is:
-    // <srcblock>
-    // [_seq=sequence, _pid=pid, _time=time, _host=hostname]
-    // </srcblock>
-    // Note that the prefix ("_") may be defined.
-    //
-    // This mapping may change with time. If any of the above fields already
-    // exist they will be overwritten when writing. When reading, all fields
-    // must be set. The field names begin with an underscore so that they may
-    // may be set into the same record as "user" data.
-    // <group>
-    void toRecord(GlishRecord &out, const char *prefix = "_") const;
-    Bool fromRecord(String &error, const GlishRecord &in, 
-		    const char*prefix = "_");
-    // </group>
-
     // Ordinarily the user does not need to get at the exact state of the,
     // ObjectID, however it is available for those times when it is necessary.
     // <group>
@@ -193,4 +170,3 @@ inline const String &ObjectID::hostName() const
 }
 
 #endif
-
