@@ -1,5 +1,5 @@
-//# Link.h: Singly linked list primitive
-//# Copyright (C) 1993,1994,1995,1999
+//# Link.h: Doubly linked list primitive
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@
 //  This class can be thought of as the "nodes" of a linked list, but
 //  conceptually each of the nodes is a list itself. This class will
 //  typically not be used by the average user because although it is
-//  a functional singly linked list implementation, <src>List<t></src>
+//  a functional doubly linked list implementation, <src>List<t></src>
 //  provides a higher level of abstraction.
 // </synopsis>
 //
