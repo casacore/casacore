@@ -608,7 +608,7 @@ Bool LatticeStatistics<T>::display()
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getMedian(Array<T>& stats)
+Bool LatticeStatistics<T>::getMedian(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the MEDIAN statistics from the
 // accumulation lattice
@@ -624,12 +624,12 @@ Bool LatticeStatistics<T>::getMedian(Array<T>& stats)
 
    if (!doRobust_p) needStorageLattice_p = True;
    doRobust_p = True;
-   return retrieveStorageStatistic(stats, Int(MEDIAN));
+   return retrieveStorageStatistic(stats, Int(MEDIAN), dropDeg);
 }
 
  
 template <class T>
-Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats)
+Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the MEDABSDEVMED statistics from the
 // accumulation lattice
@@ -645,12 +645,12 @@ Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats)
 
    if (!doRobust_p) needStorageLattice_p = True;
    doRobust_p = True;
-   return retrieveStorageStatistic(stats, Int(MEDABSDEVMED));
+   return retrieveStorageStatistic(stats, Int(MEDABSDEVMED), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getQuartile(Array<T>& stats)
+Bool LatticeStatistics<T>::getQuartile(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the QUARTILE statistics from the
 // accumulation lattice
@@ -666,14 +666,14 @@ Bool LatticeStatistics<T>::getQuartile(Array<T>& stats)
 
    if (!doRobust_p) needStorageLattice_p = True;
    doRobust_p = True;
-   return retrieveStorageStatistic(stats, Int(QUARTILE));
+   return retrieveStorageStatistic(stats, Int(QUARTILE), dropDeg);
 }
 
 
 
 
 template <class T>
-Bool LatticeStatistics<T>::getNPts(Array<T>& stats)
+Bool LatticeStatistics<T>::getNPts(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the NPTS statistics from the
 // accumulation lattice
@@ -687,12 +687,12 @@ Bool LatticeStatistics<T>::getNPts(Array<T>& stats)
 
 // Retrieve storage array statistic
 
-   return retrieveStorageStatistic(stats, Int(NPTS));
+   return retrieveStorageStatistic(stats, Int(NPTS), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getSum(Array<T>& stats)
+Bool LatticeStatistics<T>::getSum(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the SUM statistics from the
 // accumulation lattice
@@ -707,36 +707,37 @@ Bool LatticeStatistics<T>::getSum(Array<T>& stats)
 
 // Retrieve storage array statistic
 
-   return retrieveStorageStatistic(stats, Int(SUM));
+   return retrieveStorageStatistic(stats, Int(SUM), dropDeg);
 }
 
 
 template <class T>
 Bool LatticeStatistics<T>::getStatistic (Array<T>& stats, 
-                                         LatticeStatsBase::StatisticsTypes type)
+                                         LatticeStatsBase::StatisticsTypes type,
+                                         Bool dropDeg)
 {
    if (type==LatticeStatsBase::NPTS) {
-      return getNPts(stats);
+      return getNPts(stats, dropDeg);
    } else if (type==LatticeStatsBase::SUM) {
-      return getSum(stats);
+      return getSum(stats, dropDeg);
    } else if (type==LatticeStatsBase::SUMSQ) {
-      return getSumSquared(stats);
+      return getSumSquared(stats, dropDeg);
    } else if (type==LatticeStatsBase::MEDIAN) {
-      return getMedian(stats);
+      return getMedian(stats, dropDeg);
    } else if (type==LatticeStatsBase::MEDABSDEVMED) {
-      return getMedAbsDevMed(stats);
+      return getMedAbsDevMed(stats, dropDeg);
    } else if (type==LatticeStatsBase::QUARTILE) {
-      return getQuartile(stats);
+      return getQuartile(stats, dropDeg);
    } else if (type==LatticeStatsBase::MIN) {
-      return getMin(stats);
+      return getMin(stats, dropDeg);
    } else if (type==LatticeStatsBase::MAX) {
-      return getMax(stats);
+      return getMax(stats, dropDeg);
    } else if (type==LatticeStatsBase::VARIANCE) {
-      return getVariance(stats);
+      return getVariance(stats, dropDeg);
    } else if (type==LatticeStatsBase::SIGMA) {
-      return getSigma(stats);
+      return getSigma(stats, dropDeg);
    } else if (type==LatticeStatsBase::FLUX) {
-      return getFluxDensity(stats);
+      return getFluxDensity(stats, dropDeg);
    }
    return True;
 }
@@ -794,7 +795,7 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
 
 
 template <class T>
-Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats)
+Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the SUMSQ statistics from the
 // accumulation lattice
@@ -810,11 +811,11 @@ Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats)
 
 // Retrieve storage array statistic
 
-   return retrieveStorageStatistic (stats, Int(SUMSQ));
+   return retrieveStorageStatistic (stats, Int(SUMSQ), dropDeg);
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getMin(Array<T>& stats)
+Bool LatticeStatistics<T>::getMin(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the MIN statistics from the
 // accumulation lattice
@@ -828,12 +829,12 @@ Bool LatticeStatistics<T>::getMin(Array<T>& stats)
 
 // Retrieve storage array statistic
 
-   return retrieveStorageStatistic(stats, Int(MIN));
+   return retrieveStorageStatistic(stats, Int(MIN), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getMax(Array<T>& stats)
+Bool LatticeStatistics<T>::getMax(Array<T>& stats, Bool dropDeg)
 // 
 // This function retrieves the MAX statistics from the
 // accumulation lattice
@@ -847,13 +848,13 @@ Bool LatticeStatistics<T>::getMax(Array<T>& stats)
 
 // Retrieve storage array statistic
 
-   return retrieveStorageStatistic (stats, Int(MAX));
+   return retrieveStorageStatistic (stats, Int(MAX), dropDeg);
 }
 
 
 
 template <class T>
-Bool LatticeStatistics<T>::getMean(Array<T>& stats)
+Bool LatticeStatistics<T>::getMean(Array<T>& stats, Bool dropDeg)
 // 
 // This function calculates the MEAN statistics from the
 // accumulation lattice
@@ -868,12 +869,12 @@ Bool LatticeStatistics<T>::getMean(Array<T>& stats)
 
 // Do it
 
-   return calculateStatistic(stats, Int(MEAN));
+   return calculateStatistic(stats, Int(MEAN), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats)
+Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats, Bool dropDeg)
 // 
 // This function calculates the Flux density from the
 // accumulation lattice if it can.
@@ -888,12 +889,12 @@ Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats)
 
 // Do it
 
-   return calculateStatistic(stats, Int(FLUX));
+   return calculateStatistic(stats, Int(FLUX), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getSigma(Array<T>& stats)
+Bool LatticeStatistics<T>::getSigma(Array<T>& stats, Bool dropDeg)
 // 
 // This function calculates the SIGMA statistics from the
 // accumulation lattice
@@ -908,11 +909,11 @@ Bool LatticeStatistics<T>::getSigma(Array<T>& stats)
 
 // Do it
 
-   return calculateStatistic(stats, Int(SIGMA));
+   return calculateStatistic(stats, Int(SIGMA), dropDeg);
 }
 
 template <class T>
-Bool LatticeStatistics<T>::getVariance(Array<T>& stats)
+Bool LatticeStatistics<T>::getVariance(Array<T>& stats, Bool dropDeg)
 // 
 // This function calculates the VARIANCE statistics from the
 // accumulation lattice
@@ -927,12 +928,12 @@ Bool LatticeStatistics<T>::getVariance(Array<T>& stats)
 
 // Do it
 
-   return calculateStatistic(stats, Int(VARIANCE));
+   return calculateStatistic(stats, Int(VARIANCE), dropDeg);
 }
 
 
 template <class T>
-Bool LatticeStatistics<T>::getRms(Array<T>& stats)
+Bool LatticeStatistics<T>::getRms(Array<T>& stats, Bool dropDeg)
 // 
 // This function calculates the RMS statistics from the
 // accumulation lattice
@@ -947,7 +948,7 @@ Bool LatticeStatistics<T>::getRms(Array<T>& stats)
 
 // Do it
 
-   return calculateStatistic(stats, Int(RMS));
+   return calculateStatistic(stats, Int(RMS), dropDeg);
 }
 
 
@@ -976,7 +977,8 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
 
 
 template <class T>
-Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
+Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT,
+                                               Bool dropDeg)
 //
 // Calculate desired statistic from storage lattice and return in array
 //
@@ -1006,7 +1008,7 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
 // Retrieve nPts statistics
 
    Array<T> nPts;
-   retrieveStorageStatistic (nPts, Int(NPTS));
+   retrieveStorageStatistic (nPts, Int(NPTS), dropDeg);
    ReadOnlyVectorIterator<T> nPtsIt(nPts);
    const uInt n1 = nPtsIt.vector().nelements();
 
@@ -1020,7 +1022,7 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
 
    if (ISTAT == MEAN) {
        Array<T> sum;
-       retrieveStorageStatistic (sum, Int(SUM));
+       retrieveStorageStatistic (sum, Int(SUM), dropDeg);
        ReadOnlyVectorIterator<T> sumIt(sum);
 
        while (!nPtsIt.pastEnd()) {
@@ -1041,7 +1043,7 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
        }
 //
        Array<T> sum;
-       retrieveStorageStatistic (sum, Int(SUM));
+       retrieveStorageStatistic (sum, Int(SUM), dropDeg);
        ReadOnlyVectorIterator<T> sumIt(sum);
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
@@ -1055,11 +1057,11 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
        }
     } else if (ISTAT == SIGMA) {
        Array<T> sum;
-       retrieveStorageStatistic (sum, Int(SUM));
+       retrieveStorageStatistic (sum, Int(SUM), dropDeg);
        ReadOnlyVectorIterator<T> sumIt(sum);
 
        Array<T> sumSq;
-       retrieveStorageStatistic (sumSq, Int(SUMSQ));
+       retrieveStorageStatistic (sumSq, Int(SUMSQ), dropDeg);
        ReadOnlyVectorIterator<T> sumSqIt(sumSq);
 
        while (!nPtsIt.pastEnd()) {
@@ -1076,11 +1078,11 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
        }
     } else if (ISTAT == VARIANCE) {
        Array<T> sum;
-       retrieveStorageStatistic (sum, Int(SUM));
+       retrieveStorageStatistic (sum, Int(SUM), dropDeg);
        ReadOnlyVectorIterator<T> sumIt(sum);
 
        Array<T> sumSq;
-       retrieveStorageStatistic (sumSq, Int(SUMSQ));
+       retrieveStorageStatistic (sumSq, Int(SUMSQ), dropDeg);
        ReadOnlyVectorIterator<T> sumSqIt(sumSq);
 
        while (!nPtsIt.pastEnd()) {
@@ -1098,7 +1100,7 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT
        }
     } else if (ISTAT == RMS) {
        Array<T> sumSq;
-       retrieveStorageStatistic (sumSq, Int(SUMSQ));
+       retrieveStorageStatistic (sumSq, Int(SUMSQ), dropDeg);
        ReadOnlyVectorIterator<T> sumSqIt(sumSq);
 
        while (!nPtsIt.pastEnd()) {
@@ -1250,7 +1252,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     if (forceDisk_p) useMemory = 0.0;
     if (haveLogger_p) {
        os_p << LogIO::NORMAL 
-            << "Creating new statistics storage lattice" << endl << LogIO::POST;
+            << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
     pStoreLattice_p = new TempLattice<T>(TiledShape(storeLatticeShape,
                                          tileShape), useMemory);
@@ -2332,7 +2334,8 @@ void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosi
 
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<T>& slice, 
-                                                  const Int& ISTAT)
+                                                    const Int& ISTAT,
+                                                    Bool dropDeg)
 //
 // Retrieve values from accumulation lattice
 //
@@ -2370,7 +2373,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<T>& slice,
       pos(nDim-1) = ISTAT;
 
       pStoreLattice_p->getSlice(slice, pos, sliceShape, 
-                              IPosition(nDim,1), True);
+                              IPosition(nDim,1), dropDeg);
    }
    return True;
 }
@@ -2379,8 +2382,8 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<T>& slice,
 
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<T>& slice, 
-                                                  const IPosition& pos,
-                                                  const Bool posInLattice)
+                                                    const IPosition& pos,
+                                                    const Bool posInLattice)
 //
 // Retrieve values from accumulation lattice
 //
