@@ -1,5 +1,5 @@
 //# String.h: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997
+//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,12 +136,12 @@ class SubString;
 // will change the value of the parent String.  This was the intent behind 
 // their creation.  SubStrings allow you to change the rapidly varying part
 // of a String without needing to concatinate the String back together.
-// <srcblock> String myOutput = "Error: class foo has thrown an exception.";
-// SubString className = myOutput.at("foo");
-// className = "Oinker";
-// cout << myOutput << endl;
-// className = "Swine";
-// cout << myOutput << endl;
+// <srcblock> 
+//     String myOutput = "Error: class foo has thrown an exception.";
+//     myOutput.at("foo") = "Oinker";
+//     cout << myOutput << endl;
+//     myOutput.at("Oinker") = "Swine";
+//     cout << myOutput << endl;
 // </srcblock> Would print the following:
 //
 // Error: class Oinker has thrown an exception.
