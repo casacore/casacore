@@ -1,5 +1,5 @@
 //# COWPtr.h: this defines the Copy-On-Write-Pointer class.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,7 +106,7 @@
 // </synopsis>
 //
 // <example>
-// Example 1:
+// <h4>Example 1:</h4>
 // <srcblock>
 //    class String {
 //    public:
@@ -129,8 +129,7 @@
 //	char* itsData;
 //    };
 //</srcblock>
-//<b>
-// Example 2:
+// <h4>Example 2:</h4>
 // This function requires a const Array be passed out from the local scope.  
 // The Array is created with non-const functions out of necessity (i.e. no
 // const versions of the Array::getSlice() function exist.)  Preventing
