@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/QLogical.h>
-#include <trial/Measures/QuantumHolder.h>
+#include <aips/Measures/QuantumHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 

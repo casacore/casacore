@@ -36,8 +36,8 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
-#include <trial/Measures/QuantumHolder.h>
-#include <trial/Measures/MeasureHolder.h>
+#include <aips/Measures/QuantumHolder.h>
+#include <aips/Measures/MeasureHolder.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
