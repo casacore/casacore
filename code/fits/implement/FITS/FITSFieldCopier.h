@@ -1,5 +1,5 @@
 //# FITSFieldCopier.h: Copy RORecordFields to FitsFields
-//# Copyright (C) 1996,1998,1999,2000
+//# Copyright (C) 1996,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Utilities/String.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
 
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields

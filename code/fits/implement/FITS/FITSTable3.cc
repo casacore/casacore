@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/FITS/fits.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
 #include <aips/OS/Path.h>
 
 #include <aips/Logging/LogIO.h>

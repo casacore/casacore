@@ -42,7 +42,7 @@
 #include <trial/Lattices/LCRegionSingle.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
 
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Arrays/Matrix.h>
