@@ -257,9 +257,11 @@ void ImageFFT::fftsky2(ImageInterface<Complex>& out,
    findSky(os, dC, pixelAxes, worldAxes, cSysIn);
 
 // Do the FFT.  Use in place complex because it does
-// all the unscrambling for me.
+// all the unscrambling for me.  Replace masked values
+// by zero and then convert to Complex.  LEL is a marvel.
 
-   LatticeExpr<Complex> expr(toComplex(in));
+   Float zero = 0.0;
+   LatticeExpr<Complex> expr(toComplex(replace(in,zero)));
    out.copyData(expr);
 //
    Vector<Bool> whichAxes(in.ndim(), False);
