@@ -2474,3 +2474,4 @@
 11 312 src mv trial/implement/HDS/test npoi/implement/HDS/test
 11 312 sys rm libexec/hdsfile.g
 11 312 sys rm libexec/hdsfile_meta.g
+11 312 src mv trial/apps/hds/makefile npoi/apps/hds/makefile
