@@ -44,6 +44,9 @@ template <class T> class Lattice;
 template <class T> class MaskedLattice;
 template <class T> class Array;
 template <class T> class Block;
+class LCRegion;
+class Slicer;
+class LattRegionHolder;
 
 
 // <summary>
@@ -387,18 +390,26 @@ public:
    LatticeExprNode (const MaskedLattice<Bool>& lattice);
 // </group>
 
+// Create a lattice expression from a region.
+// It results in a boolean expression node.
+// <group>
+   LatticeExprNode (const LCRegion& region);
+   LatticeExprNode (const Slicer& slicer);
+   LatticeExprNode (const LattRegionHolder& region);
+// </group>
+
 // Masking operator using a condition.
-// The given boolean expression forms a mask for this expression node.
+// The given boolean expression forms a mask/region for this expression node.
    LatticeExprNode operator[] (const LatticeExprNode& cond) const;
 
 // Copy constructor (reference semantics)
-   LatticeExprNode(const LatticeExprNode& other);
+   LatticeExprNode (const LatticeExprNode& other);
 
 // Destructor, does nothing
    virtual ~LatticeExprNode();
 
 // Assignment (reference semantics)
-   LatticeExprNode& operator=(const LatticeExprNode& other);
+   LatticeExprNode& operator= (const LatticeExprNode& other);
 
 // Convert the expression to another data type.
 // <group>
@@ -457,6 +468,10 @@ public:
    DataType dataType() const
       {return dtype_p;}
 
+// Is the expression node a region?
+   Bool isRegion() const
+      {return pAttr_p->isRegion();}
+
 // Is the result of "eval" a scalar?
    Bool isScalar() const
       {return pAttr_p->isScalar();}
@@ -499,11 +514,11 @@ public:
 // These casting functions are added because the g++ compiler did 
 // not use the LatticeExpr constructor for an automatic conversion.
 // <group>
-   operator LatticeExpr<Float>();
-   operator LatticeExpr<Double>();
-   operator LatticeExpr<Complex>();
-   operator LatticeExpr<DComplex>();
-   operator LatticeExpr<Bool>();
+   operator LatticeExpr<Float>() const;
+   operator LatticeExpr<Double>() const;
+   operator LatticeExpr<Complex>() const;
+   operator LatticeExpr<DComplex>() const;
+   operator LatticeExpr<Bool>() const;
 // </group>
 
 // Determine the resulting data type from the given data types.
@@ -525,6 +540,11 @@ private:
    LatticeExprNode(LELInterface<DComplex>* expr);
    LatticeExprNode(LELInterface<Bool>* expr);
 // </group>
+
+// Test if both operands represent a region.
+// An exception is thrown if only one of them is a region.
+   static Bool areRegions (const LatticeExprNode& left,
+			   const LatticeExprNode& right);
 
 // Create a new node for a numerical unary operation.
 // The result has the same data type as the input.
@@ -585,5 +605,6 @@ private:
    CountedPtr<LELInterface<DComplex> > pExprDComplex_p;
    CountedPtr<LELInterface<Bool> >     pExprBool_p;
 };
+
 
 #endif
