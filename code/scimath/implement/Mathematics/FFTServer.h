@@ -44,7 +44,7 @@ template <class T> class Array;
 
 // <use visibility=export>
 
-// <reviewed reviewer="wbrouw" date="yyyy/mm/dd" tests="tFFTServer">
+// <reviewed reviewer="wbrouw" date="1997/10/29" tests="tFFTServer">
 
 // <prerequisite> 
 // <li> Basic concepts of Fast Fourier Transforms.
@@ -66,14 +66,15 @@ template <class T> class Array;
 
 // Because the output from a real to complex transform is Hermitian only half
 // of the complex result is returned. Similarly with a complex to real
-// transform only half of the complex plane needs to be supplied.
+// transform only half of the complex plane is required, the other half
+// is implicitly assumed to be the complex conjugate of the supplied half-plane.
 // <note role=warning> The complex to real transform does not check that the
-// imaginary component of the values where u=0 are zero </note>
+// imaginary component of the values where u=0 are zero</note>
 
 // This class can be initialised with a shape that indicates the length of the
 // transforms that will be performed, and whether they are going to be
 // real<->complex transforms or complex<->complex ones. This initialisation
-// sets up variety of internal buffers and computes factorizations and twiddle
+// sets up a variety of internal buffers and computes factorizations and twiddle
 // factors used during the transform. The initialised transform shape is always
 // compared with the shape of the supplied arguments when a transform is done
 // and the FFTServer class will automatically resize itself if necessary. So
@@ -86,18 +87,19 @@ template <class T> class Array;
 // real->complex transform the output Array will be the same size as the input
 // Array except in the first dimension which will have a length of (nx+2)/2. So
 // if nx=7 the output length will be 4 and if nx=8 the output length will be 5,
-// on the first axis. nx is the length of the first axis on the input Array.
+// on the first axis. nx is the length of the first axis on the <em>real</em>
+// input Array and cx (which is used later) is the length of the first axis on
+// the <em>complex</em> input Array.
 
 // For complex to real transforms the output length on the first axis is not
 // uniquely defined by the shape of the complex input Array. This class uses the
-// following algorithm to work out the length of the first output Array on the
-// output Array. 
-// <ul> 
-// <li> If the size of the output Array is non-zero then it must match the size
-// of the input Array except for the first axis. The length of the first axis
-// must either be 2*cx-2 or 2*cx-1 and this determines the length of the
-// transform on the first axis. cx is the length of the first axis on the input
+// following algorithm to work out the length of the first axis on the output
 // Array.
+// <ul> 
+// <li> If the size of the output Array is non-zero then its shape must match
+// the size of the input Array except for the first axis. The length of the
+// first axis must either be 2*cx-2 or 2*cx-1 and this determines the length of
+// the transform on the first axis.
 // <li> If the size of the output Array is zero then scan the imaginary
 // components of the values at the end of the first axis on the input Array (ie
 // at <src>[cx-1,....]</src> If any of these are non-zero the output Array
@@ -112,18 +114,20 @@ template <class T> class Array;
 // first axis.
 // </ul>
 
-// This class does transforms using the the FORTRAN fftpack package. This
-// package only does one dimensional transforms and this class decomposes
+// This class does transforms using the widely used FORTRAN fftpack package.<br>
+// <em> P.N. Swarztrauber, Vectorizing the FFTs, in Parallel Computations
+// (G. Rodrigue, ed.), Academic Press, 1982, pp. 51--83. </em><br>
+// This package only does one dimensional transforms and this class decomposes
 // multi-dimensional transforms into a series of 1-dimensional ones.
 
 // In this class a forward transform is defined as one that goes from the real
 // to the complex (or the time to frequency) domain. In a forward transform the
-// exponent is -1 and no scaling is done on the output.  The backward transform
-// goes from the complex to the real (or the frequency to the time) domain. The
-// exponent is +1 and the result is always scaled by 1/N were N is the total
-// number of elements in the Array.
+// sign of the exponent is negative and no scaling is done on the output.  The
+// backward transform goes from the complex to the real (or the frequency to
+// the time) domain. The sign of the exponent is positive and the result is
+// always scaled by 1/N were N is the total number of elements in the Array.
 
-// The origin of the transform is defined as the point were setting only that
+// The origin of the transform is defined as the point where setting only that
 // element to one, and then doing a forward transform results in an Array that
 // is all one. The <src>fft</src> member functions in this class all assume
 // that the origin of the Transform is at the centre of the Array ie. at
@@ -175,7 +179,8 @@ template <class T> class Array;
 // example can trivially be extended to any number of dimensions.
 // <srcblock>
 // FFTServer<Float,Complex> server;
-// Vector<Float> input(32), output(17);
+// Vector<Float> input(32);
+// Vector<Complex> output(17);
 // input = 0.0f;
 // input(16) = 1.0f;
 // cout << "Input:" << input.ac() << endl;
@@ -198,12 +203,13 @@ template <class T> class Array;
 template<class T, class S> class FFTServer
 {
 public:
-  // The default constructor. Initialises the server to do transforms of length
-  // 1! 
+  // The default constructor. The server will automatically resize to do
+  // transforms of the appropriate length when necessary.
   FFTServer();
 
-  // Initialise the Server to do transforms on Arrays of the specified
-  // shape. See the resize function for a description of the
+  // Initialise the server to do transforms on Arrays of the specified
+  // shape. The server will, however, resize to do transforms of other lengths
+  // if necessary. See the resize function for a description of the
   // complexTransforms flag.
   FFTServer(const IPosition & fftSize, const Bool complexTransforms=False);
   
