@@ -133,6 +133,9 @@ public:
     // thus force the data to be written to disk.
     virtual void unlock();
 
+    // Do a release of an AutoLock when the inspection interval has expired.
+    void autoReleaseLock();
+
     // Flush the table, i.e. write it to disk.
     // Nothing will be done if the table is not writable.
     // A flush can be executed at any time.

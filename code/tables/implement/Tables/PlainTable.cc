@@ -259,6 +259,11 @@ void PlainTable::unlock()
     lockPtr_p->release();
 }
 
+void PlainTable::autoReleaseLock()
+{
+    lockPtr_p->autoRelease();
+}
+
 uInt PlainTable::getModifyCounter() const
 {
     return lockSync_p.getModifyCounter();
