@@ -42,7 +42,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
-main() {
+int main() {
 
   try {
 
@@ -261,7 +261,7 @@ main() {
     cout << "----------------------------------------------------" << endl;
     cout << "Test MeasureHolder extension  " << endl;
     cout << "----------------------------------------------------" << endl;
-    MDirection x00(MVDirection(Quantity(1, "deg")));
+    MDirection x00((MVDirection(Quantity(1, "deg"))));
     MeasureHolder q00(x00);
     cout << "Direction: " << x00 << endl;
     cout << "Holder:    " << q00.asMDirection() << endl;
@@ -270,8 +270,8 @@ main() {
     cout << "0: " << q00.getMV(0) << endl;
     cout << "1: " << q00.getMV(1) << endl;
     cout << "2: " << q00.getMV(2) << endl;
-    MVDirection mvd(Quantity(2, "deg"));
-    MVDirection mvd2(Quantity(10, "deg"));
+    MVDirection mvd((Quantity(2, "deg")));
+    MVDirection mvd2((Quantity(10, "deg")));
     cout << "Set 0: " << q00.setMV(0, *q00.asMeasure().getData()) << endl;
     cout << "Set 1: " << q00.setMV(1, mvd2) << endl;
     cout << "Set 2: " << q00.setMV(2, mvd) << endl;
