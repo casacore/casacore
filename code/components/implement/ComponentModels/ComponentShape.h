@@ -118,7 +118,7 @@ public:
   virtual ~ComponentShape();
 
   // return the actual component shape.
-  virtual ComponentType::Shape shape() const = 0;
+  virtual ComponentType::Shape type() const = 0;
 
   // set/get the reference direction
   // <group>
@@ -155,13 +155,13 @@ public:
   // ComponentShape object. The class that uses this function is responsible
   // for deleting the pointer. This is used to implement a virtual copy
   // constructor.
-  virtual ComponentShape * cloneShape() const = 0;
+  virtual ComponentShape * clone() const = 0;
 
   // return the number of parameters in this shape and set/get them.
   // <group>
-  virtual uInt nShapeParameters() const = 0;
-  virtual void setShapeParameters(const Vector<Double> & newParms) = 0;
-  virtual void shapeParameters(Vector<Double> & compParms) const = 0;
+  virtual uInt nParameters() const = 0;
+  virtual void setParameters(const Vector<Double> & newParms) = 0;
+  virtual void parameters(Vector<Double> & compParms) const = 0;
   // </group>
 
   // This functions convert between a record and a ComponentShape. This way
