@@ -4261,3 +4261,4 @@
 14 127 src mv trialdisplay/implement/DisplayEvents/DisplayEvent.cc display/implement/DisplayEvents/DisplayEvent.cc
 14 127 src mv trialdisplay/implement/DisplayEvents/DisplayEvent.h display/implement/DisplayEvents/DisplayEvent.h
 14 127 src mv trialdisplay/implement/DisplayEvents/test/tDisplayEvent.cc display/implement/DisplayEvents/test/tDisplayEvent.cc
+14 127 src mv trial/implement/Fitting.h aips/implement/Fitting.h
