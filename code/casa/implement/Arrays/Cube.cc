@@ -47,8 +47,23 @@ template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3)
     DebugAssert(ok(), ArrayError);
 }
 
+template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3,
+				const T &initialValue)
+: Array<T>(IPosition(3, l1, l2, l3), initialValue)
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
 template<class T> Cube<T>::Cube(const IPosition &len)
   : Array<T>(len)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 3, ArrayError);
+}
+
+template<class T> Cube<T>::Cube(const IPosition &len, const T &initialValue)
+  : Array<T>(len, initialValue)
 {
     makeIndexingConstants();
     AlwaysAssert(len.nelements() == 3, ArrayError);

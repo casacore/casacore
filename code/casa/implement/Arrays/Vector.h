@@ -96,11 +96,18 @@ public:
     explicit Vector(const IPosition& Length);
     // </group>
 
+    // A Vector with a defined length and origin of zero.
+    // Fill it with the initial value.
+    // <group>
+    Vector(uInt Length, const T &initialValue);
+    Vector(const IPosition& Length, const T &initialValue);
+    // </group>
+
     // Create a Vector from the given Block "other." Make it length "nr"
     // and copy over that many elements.
     Vector(const Block<T> &other, Int nr);
     // Create a Vector of lenght other.nelements() and copy over its values.
-    Vector(const Block<T> &other);
+    explicit Vector(const Block<T> &other);
 
     // Create a reference to other.
     // <note role=warning> The copy constructor should normally be avoided. More

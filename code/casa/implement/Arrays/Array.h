@@ -196,6 +196,10 @@ public:
     // The origin of the Array is zero.
     explicit Array(const IPosition &shape);
 
+    // Create an array of the given shape and initialize it with the
+    // initial value.
+    Array(const IPosition &shape, const T &initialValue);
+
     // After construction, this and other reference the same storage.
     Array(const Array<T> &other);
 

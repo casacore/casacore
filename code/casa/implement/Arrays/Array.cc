@@ -63,13 +63,38 @@ template<class T> Array<T>::Array(const IPosition &Shape)
     for (Int i = 0; i < ndimen_p; i++) {
 	if (Shape(i) < 0) {
 	    throw(ArrayShapeError(shape(), Shape,
-	      "Array<T>::Array(constIPosition &, const IPosition &)"
+	      "Array<T>::Array(const IPosition &)"
 	      " - Negative shape"));
 	}
     }
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
+}
+
+// <thrown>
+//   <item> ArrayShapeError
+// </thrown>
+template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
+: length_p (Shape),
+  inc_p    (Shape.nelements(), 1),
+  originalLength_p(Shape),
+  ndimen_p (Shape.nelements()),
+  nels_p   (Shape.product()),
+  data_p   (0),
+  contiguous_p (True)
+{
+    for (Int i = 0; i < ndimen_p; i++) {
+	if (Shape(i) < 0) {
+	    throw(ArrayShapeError(shape(), Shape,
+	      "Array<T>::Array(const IPosition &, const T &)"
+	      " - Negative shape"));
+	}
+    }
+    data_p = new Block<T>(nelements());
+    begin_p = data_p->storage();
+    DebugAssert(ok(), ArrayError);
+    objset (begin_p, initialValue, nels_p);
 }
 
 

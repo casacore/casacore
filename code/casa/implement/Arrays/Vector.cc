@@ -48,9 +48,20 @@ template<class T> Vector<T>::Vector(uInt Length)
     DebugAssert(ok(), ArrayError);
 }
 
-
 template<class T> Vector<T>::Vector(const IPosition& len)
   : Array<T>(len)
+{
+    AlwaysAssert(len.nelements() == 1, ArrayError);
+}
+
+template<class T> Vector<T>::Vector(uInt Length, const T &initialValue)
+: Array<T>(IPosition(1, Length), initialValue)
+{
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Vector<T>::Vector(const IPosition& len, const T &initialValue)
+  : Array<T>(len, initialValue)
 {
     AlwaysAssert(len.nelements() == 1, ArrayError);
 }

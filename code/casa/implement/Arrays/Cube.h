@@ -96,8 +96,16 @@ public:
     // A l1xl2xl3 sized cube.
     Cube(uInt l1, uInt l2, uInt l3);
 
+    // A l1xl2xl3 sized cube.
+    // Fill it with the initial value.
+    Cube(uInt l1, uInt l2, uInt l3, const T &initialValue);
+
     // A Cube where the shape ("len") is defined with IPositions.
     Cube(const IPosition &len);
+
+    // A Cube where the shape ("len") is defined with IPositions.
+    // Fill it with the initial value.
+    Cube(const IPosition &len, const T &initialValue);
 
     // The copy constructor uses reference semantics.
     // <note role=warning> The copy constructor should normally be avoided. More

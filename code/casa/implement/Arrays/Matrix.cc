@@ -47,8 +47,22 @@ template<class T> Matrix<T>::Matrix(const IPosition &len)
     AlwaysAssert(len.nelements() == 2, ArrayError);
 }
 
+template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
+  : Array<T>(len, initialValue)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 2, ArrayError);
+}
+
 template<class T> Matrix<T>::Matrix(uInt l1, uInt l2)
 : Array<T>(IPosition(2, l1, l2))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(uInt l1, uInt l2, const T &initialValue)
+: Array<T>(IPosition(2, l1, l2), initialValue)
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);

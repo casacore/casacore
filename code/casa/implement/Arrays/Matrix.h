@@ -94,8 +94,16 @@ public:
     // A Matrix with "l1" rows and "l2" columns.
     Matrix(uInt l1, uInt l2);
 
+    // A Matrix with "l1" rows and "l2" columns.
+    // Fill it with the initial value.
+    Matrix(uInt l1, uInt l2, const T &initialValue);
+
     // A matrix of shape with shape "len".
     Matrix(const IPosition &len);
+
+    // A matrix of shape with shape "len".
+    // Fill it with the initial value.
+    Matrix(const IPosition &len, const T &initialValue);
 
     // The copy constructor uses reference semantics.
     // <note role=warning> The copy constructor should normally be avoided. More
