@@ -1,5 +1,5 @@
 //# Time.h: enquiry functions for calendar and clock time, with some operations
-//# Copyright (C) 1994,1995,1999,2000
+//# Copyright (C) 1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,12 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-class istream;
-#endif
+#include <aips/iosfwd.h>
 
 // <Summary> date and time enquiry functions, with some operations.
 // </summary>

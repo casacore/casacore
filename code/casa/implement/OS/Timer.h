@@ -1,5 +1,5 @@
 //# Timer.h:  measure the time it takes to execute parts of a program
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,13 +29,11 @@
 #define AIPS_TIMER_H
 
 
+#include <aips/aips.h>
 #include <sys/types.h>
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+//# Forward declarations
+#include <aips/iosfwd.h>
 
 #if defined(DOS) || defined(MSDOS)
 #include <sys/timeb.h>
@@ -55,7 +53,6 @@ extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
 #endif
 
-#include <aips/aips.h>
 
 // Class declaration.
 class String;
