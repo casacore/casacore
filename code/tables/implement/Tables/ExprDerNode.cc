@@ -258,14 +258,18 @@ Double TableExprNodeRownr::getDouble (const TableExprId& id)
 
 
 TableExprNodeRowid::TableExprNodeRowid (const BaseTable* tabptr)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, tabptr),
-  rownrs_p            (tabptr->rowNumbers())
+: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, tabptr)
 {}
 TableExprNodeRowid::~TableExprNodeRowid ()
 {}
 Double TableExprNodeRowid::getDouble (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
+    // Get all row numbers on first access, so we're sure the correct
+    // table is used.
+    if (rownrs_p.nelements() == 0) {
+        rownrs_p = baseTabPtr_p->rowNumbers();
+    }
     return rownrs_p(id.rownr());
 }
 
