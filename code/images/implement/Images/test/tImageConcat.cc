@@ -98,7 +98,7 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0);
+         ImageConcat<Float> lc (0, True);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
 
@@ -120,7 +120,7 @@ int main() {
 // Copy to output
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -133,7 +133,7 @@ int main() {
 
 // Concatenate along axis 1
 
-         ImageConcat<Float> lc (1);
+         ImageConcat<Float> lc (1, False);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
 
@@ -155,7 +155,7 @@ int main() {
 // Copy to output
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -180,7 +180,8 @@ int main() {
          AlwaysAssert(outShape(0)==3*shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
-         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.pixelMask().isWritable()==False, AipsError);
 
 // Make output
 
@@ -191,7 +192,7 @@ int main() {
 // Copy to output
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -254,7 +255,7 @@ int main() {
             
      {
          cout << "Testing locking" << endl;
-         ImageConcat<Float> lc2 (0);
+         ImageConcat<Float> lc2 (0, False);
          lc2.setImage(im1, True);
          lc2.setImage(im2, True);
          AlwaysAssert(lc2.lock(FileLocker::Read, 1), AipsError);
@@ -291,7 +292,7 @@ int main() {
 // Copy to output
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -323,7 +324,7 @@ int main() {
 // Copy to output
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -431,10 +432,7 @@ void check (uInt axis, MaskedLattice<Float>& ml,
 
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
 {
-   LCPagedMask mask = LCPagedMask(RegionHandler::makeMask (im, "mask0"));
-   if (set) mask.set(maskValue);
-   im.defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
-   im.setDefaultMask("mask0");
+   im.makeMask ("mask0", True, True, set, maskValue);
 }
 
 
