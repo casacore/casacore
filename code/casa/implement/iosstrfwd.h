@@ -1,5 +1,5 @@
 //# iosstrfwd.h: Interim solution for standard/nonstandard system iosfwd
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,5 +40,7 @@
 
 using std::istrstream;
 using std::ostrstream;
+using std::istringstream;
+using std::ostringstream;
 
 #endif
