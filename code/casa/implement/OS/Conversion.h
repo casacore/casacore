@@ -1,5 +1,5 @@
 //# Conversion.h: A class with general conversion definitions
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -146,7 +146,7 @@ public:
 
 inline Conversion::ByteFunction* Conversion::getmemcpy()
 {
-#if defined(__CLCC__)  ||  defined(__alpha__) ||  defined(SGI64)
+#if defined(__CLCC__)  ||  defined(AIPS_64B)
     return mymemcpy;
 #else
     return memcpy;
