@@ -2258,3 +2258,4 @@
 11 173 src mv doc/user/gettingstarted/f01-logger.ps doc/user/f01-logger.ps
 11 173 src mv trial/apps/dish/dish.help trial/apps/dish/dishenv.help
 11 173 src mv trial/scripts/nrao.g nrao/scripts/nrao.g
+11 175 src rm aips/glish/glish/clients/glishtk/pgplot/pgplot.g
