@@ -433,6 +433,14 @@ public:
     // Replace the Table pointer in this node and all its children.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
+  // Get the child nodes.
+  // <group>
+  const TableExprNodeRep* getLeftChild() const
+    { return lnode_p; }
+  const TableExprNodeRep* getRightChild() const
+    { return rnode_p; }
+  // </group>
+
 protected:
     TableExprNodeRep* lnode_p;     //# left operand
     TableExprNodeRep* rnode_p;     //# right operand
@@ -499,6 +507,11 @@ public:
     
     // Replace the Table pointer in this node and all its children.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    // Get the child nodes.
+    // <group>
+    const PtrBlock<TableExprNodeRep*>& getChildren() const
+      { return operands_p; }
 
 protected:
     PtrBlock<TableExprNodeRep*> operands_p;
