@@ -1,5 +1,5 @@
 //# Mathematics.h: Module header for Mathematical operations
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,11 +39,8 @@
 #include <aips/Mathematics/Random.h>
 //# The following will be renamed FFTPack in a future release
 #include <aips/Mathematics/extern_fft.h>
-// The following are scheduled to be removed in a future AIPS++ release
-#include <aips/Mathematics/ConvVector.h>
+//# The following are scheduled to be removed in a future AIPS++ release
 #include <aips/Mathematics/DFTServer.h>
-#include <aips/Mathematics/FourierTool.h>
-#include <aips/Mathematics/GridTool.h>
 #include <aips/Mathematics/MathFunc.h>
 
 // <module>
@@ -91,7 +88,6 @@
 //      (for gridded data)
 // <li> Numerical <linkto class="Convolver">Convolution</linkto> 
 //      (both linear and circular) of multi-dimensional Arrays.
-// <li> <linkto class="GridTool">Gridding</linkto> of irregular data 
 // <li> <linkto file="Random.h">Random</linkto> numbers in a wide 
 //      variety of distributions. 
 // <li> <linkto class="Primes">Prime</linkto> numbers
@@ -104,10 +100,7 @@
 // required or have been superceeded by newer classes. The following classes
 // will be removed in future AIPS++ releases.
 // <ul>
-// <li> ConvVector (replaced by Convolver)
 // <li> DFTServer (ungridded Fourier Transforms are not required)
-// <li> FourierTool (replaced by the updated FFTServer class)
-// <li> GridTool (replaced by classes in the trial package)
 // <li> MathFunc (this code will move into the Functionals module)
 // </ul>
 // In addition the extern_fft class will be renamed FFTPack and the Constants
