@@ -525,6 +525,10 @@ private:
     void checkFormat(Coordinate::formatType& format,         
                      const Bool absolute) const;
 
+    void makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const; 
+    void makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const; 
+
+
 };
 
 //###### Inlines
