@@ -104,13 +104,31 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 
     // Fill the CORRECTED_DATA, MODEL_DATA and IMAGING_WEIGHT
     // columns when first created.
+    // Set the cross polarization correlations of the MODEL_DATA to zero
     if (init) {
+      Vector<Int> lastCorrType;
+      Vector<Bool> zero;
       for (iter_p->originChunks(); iter_p->moreChunks(); iter_p->nextChunk()) {
+	// figure out which correlations to set to 1. and 0. for the model.
+	Vector<Int> corrType; iter_p->corrType(corrType);
+	Int nCorr = corrType.nelements();
+	if (nCorr!=lastCorrType.nelements() ||
+	    !allEQ(corrType,lastCorrType)) {
+	  lastCorrType.resize(nCorr); lastCorrType=corrType;
+	  zero.resize(nCorr);
+	  for (Int i=0; i<nCorr; i++) {
+	    zero[i]=(corrType[i]==Stokes::RL || corrType[i]==Stokes::LR ||
+		      corrType[i]==Stokes::XY || corrType[i]==Stokes::YX);
+	  }
+	}
 	for (iter_p->origin(); iter_p->more(); (*iter_p)++) {
 	  Cube<Complex> data;
 	  iter_p->setVis(iter_p->visibility(data,VisibilityIterator::Observed),
 		     VisibilityIterator::Corrected);
 	  data=Complex(1.0,0.0);
+	  for (Int i=0; i<nCorr; i++) {
+	    if (zero[i]) data(Slice(i),Slice(),Slice())=Complex(0.0,0.0);
+	  }
 	  iter_p->setVis(data,VisibilityIterator::Model);
 	};
       };
