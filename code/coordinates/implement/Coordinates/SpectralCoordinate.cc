@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,23 +48,25 @@ typedef Interpolate1D<Double,Double> gpp_bug;
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 				       Double f0, Double inc, Double refChan,
 				       Double restFrequency)
- : type_p(type), restfreq_p(restFrequency),
+ : Coordinate(),
+   type_p(type), restfreq_p(restFrequency),
    worker_p(f0, inc, refChan, "Hz", "Frequency")
 {
-    // Nothing
 }
 
+
 SpectralCoordinate::SpectralCoordinate()
- : type_p(MFrequency::TOPO), restfreq_p(0.0),
+ : Coordinate(),
+   type_p(MFrequency::TOPO), restfreq_p(0.0),
    worker_p(0.0,1.0,0.0,"Hz", "Frequency")
 {
-    // Nothing
 }
 
 SpectralCoordinate::SpectralCoordinate(
 		       MFrequency::Types type, const Vector<Double> &freqs,
 		       Double restFrequency)
-    : type_p(type), restfreq_p(restFrequency)
+    : Coordinate(),
+      type_p(type), restfreq_p(restFrequency)
 {
     Vector<Double> channels(freqs.nelements());
     indgen(channels.ac());
@@ -73,16 +75,18 @@ SpectralCoordinate::SpectralCoordinate(
 
 
 SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
+: Coordinate(other),
+  type_p(other.type_p),
+  restfreq_p(other.restfreq_p),
+  worker_p(other.worker_p)
 {
-    type_p = other.type_p;
-    restfreq_p = other.restfreq_p;
-    worker_p = other.worker_p;
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(
 					  const SpectralCoordinate &other)
 {
     if (this != &other) {
+        Coordinate::operator=(other);
 	type_p = other.type_p;
 	restfreq_p = other.restfreq_p;
 	worker_p = other.worker_p;
