@@ -289,16 +289,18 @@ public:
     Quantum<Vector<Double> > getAngle() const;
     Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
 // </group>
-  // Shift the direction in longitude (radians if Double) and latitude.
+  // Shift the direction in longitude (radians if Double) and/or latitude.
+  // If the trueAngle switch is True, the longitude shift will be in
+  // angular units perpendicular to the direction to pole.
   // <group>
-  void shift(const Quantity &lng);
-  void shift(Double lng);
   void shift(const Quantum<Double> &lng,
-	     const Quantum<Double> &lat);
-  void shift(Double lng, Double lat);
-  void shiftLatitude(const Quantum<Double> &lat);
-  void shiftLatitude(Double lat);
-  void shift(const MVDirection &shft);
+	     const Quantum<Double> &lat, Bool trueAngle=False);
+  void shift(Double lng, Double lat, Bool trueAngle=False);
+  void shiftLongitude(const Quantity &lng, Bool trueAngle=False);
+  void shiftLongitude(Double lng, Bool trueAngle=False);
+  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
+  void shiftLatitude(Double lat, Bool trueAngle=False);
+  void shift(const MVDirection &shft, Bool trueAngle=False);
   // </group>
 
 // Make a copy

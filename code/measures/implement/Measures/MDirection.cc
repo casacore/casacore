@@ -295,33 +295,33 @@ Quantum<Vector<Double> > MDirection::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 
-void MDirection::shift(const Quantum<Double> &lng) {
-  data.shift(lng);
-}
-
-void MDirection::shift(Double lng) {
-  data.shift(lng);
-}
-
 void MDirection::shift(const Quantum<Double> &lng,
-			const Quantum<Double> &lat) {
-  data.shift(lng, lat);
+			const Quantum<Double> &lat, Bool trueAngle) {
+  data.shift(lng, lat, trueAngle);
 }
 
-void MDirection::shift(Double lng, Double lat) {
-  data.shift(lng);
+void MDirection::shift(Double lng, Double lat, Bool trueAngle) {
+  data.shift(lng, lat, trueAngle);
 }
 
-void MDirection::shiftLatitude(const Quantum<Double> &lat) {
-  data.shiftLatitude(lat);
+void MDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {
+  data.shiftLongitude(lng, trueAngle);
 }
 
-void MDirection::shiftLatitude(Double lat) {
-  data.shiftLatitude(lat);
+void MDirection::shiftLongitude(Double lng, Bool trueAngle) {
+  data.shiftLongitude(lng, trueAngle);
 }
 
-void MDirection::shift(const MVDirection &shft) {
-  data.shift(shft);
+void MDirection::shiftLatitude(const Quantum<Double> &lat, Bool trueAngle) {
+  data.shiftLatitude(lat, trueAngle);
+}
+
+void MDirection::shiftLatitude(Double lat, Bool trueAngle) {
+  data.shiftLatitude(lat, trueAngle);
+}
+
+void MDirection::shift(const MVDirection &shft, Bool trueAngle) {
+  data.shift(shft, trueAngle);
 }
 
 Measure *MDirection::clone() const {

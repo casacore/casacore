@@ -85,7 +85,8 @@
 // The multiplication of two direction cosines produces the inner product.<br>
 // shift() methods are available to shift in angular coordinates. E.g.
 // shift(Quantity(5, "arcsec"), Quantity(-7, "arcsec")) will shift 5 arcsec
-// in longitude, and -7 arcsec in latitude.
+// in longitude, and -7 arcsec in latitude. They have a trueAngle switch
+// to shift in latitude and perpendicular to it.
 // </synopsis>
 //
 // <example>
@@ -96,7 +97,8 @@
 // To aid coordinate transformations
 // </motivation>
 //
-// <todo asof="1996/02/04">
+// <todo asof="1998/04/22">
+//   <li> check if true shifts can be done faster
 // </todo>
 
 class MVDirection : public MVPosition {
@@ -185,16 +187,19 @@ public:
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
-  // Shift the direction in longitude (radians if Double) and latitude.
+  // Shift the direction in longitude (radians if Double) and/or latitude.
+  // If the trueAngle switch is True, the longitude shift will be in
+  // angular units perpendicular to the direction to pole at the shifted
+  // latitude.
   // <group>
-  void shift(const Quantity &lng);
-  void shift(Double lng);
   void shift(const Quantum<Double> &lng,
-	     const Quantum<Double> &lat);
-  void shift(Double lng, Double lat);
-  void shiftLatitude(const Quantum<Double> &lat);
-  void shiftLatitude(Double lat);
-  void shift(const MVDirection &shft);
+	     const Quantum<Double> &lat, Bool trueAngle=False);
+  void shift(Double lng, Double lat, Bool trueAngle=False);
+  void shiftLongitude(const Quantity &lng, Bool trueAngle=False);
+  void shiftLongitude(Double lng, Bool trueAngle=False);
+  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
+  void shiftLatitude(Double lat, Bool trueAngle=False);
+  void shift(const MVDirection &shft, Bool trueAngle=False);
   // </group>
   
 protected:

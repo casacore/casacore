@@ -32,6 +32,7 @@ typedef Quantum<Double> gpp_mvdirection_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/Euler.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
@@ -243,39 +244,47 @@ MVDirection MVDirection::crossProduct(const MVDirection &other) const {
   return res;
 }
 
-void MVDirection::shift(const Quantum<Double> &lng) {
-  shift(lng.getBaseValue(), 0);
-}
-
-void MVDirection::shift(Double lng) {
-  shift(lng, 0);
-}
-
 void MVDirection::shift(const Quantum<Double> &lng,
-			const Quantum<Double> &lat) {
-  shift(lng.getBaseValue(), lat.getBaseValue());
+			const Quantum<Double> &lat, Bool trueAngle) {
+  shift(lng.getBaseValue(), lat.getBaseValue(), trueAngle);
 }
 
-void MVDirection::shift(Double lng, Double lat) {
+void MVDirection::shift(Double lng, Double lat, Bool trueAngle) {
   Vector<Double> x(2);
   x = get();
-  x(0) += lng;
-  x(1) += lat;
-  xyz = MVDirection(x).getValue();
+  if (trueAngle) {
+  // The following calculation could maybe done quicker, but for now this
+  // is more transparent.
+    RotMatrix rm=RotMatrix(Euler(-lng, 3, x(1)+lat, 2, -x(0), 3));
+    *this = MVDirection(1,0,0) * rm;
+  } else {
+    x(0) += lng;
+    x(1) += lat;
+    *this = MVDirection(x);
+  };
 }
 
-void MVDirection::shiftLatitude(const Quantum<Double> &lat) {
-  shift(0, lat.getBaseValue());
+void MVDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {
+  shift(lng.getBaseValue(), 0, trueAngle);
 }
 
-void MVDirection::shiftLatitude(Double lat) {
-  shift(0, lat);
+void MVDirection::shiftLongitude(Double lng, Bool trueAngle) {
+  shift(lng, 0, trueAngle);
 }
 
-void MVDirection::shift(const MVDirection &shft) {
+void MVDirection::shiftLatitude(const Quantum<Double> &lat, 
+				Bool trueAngle) {
+  shift(0, lat.getBaseValue(), trueAngle);
+}
+
+void MVDirection::shiftLatitude(Double lat, Bool trueAngle) {
+  shift(0, lat, trueAngle);
+}
+
+void MVDirection::shift(const MVDirection &shft, Bool trueAngle) {
   Vector<Double> x(2);
   x = get();
-  shift(x(0), x(1));
+  shift(x(0), x(1), trueAngle);
 }
 
 MeasValue *MVDirection::clone() const {
