@@ -133,7 +133,9 @@ public:
 	// Polyconic.
 	PCO, 
 	// Sanson-Flamsteed (global sinusoidal).
-	GLS, 
+        // The old GLS projection is now SFL. The 'GLS'
+        // string will be converted to 'SFL'
+	SFL, 
 	// Parabolic.
 	PAR, 
 	// Hammer-Aitoff.
