@@ -183,9 +183,11 @@ public:
     virtual uInt nWorldAxes() const = 0;
     // </group>
 
-    // Convert an absolute pixel position to an absolute world position or vice versa. Returns True
+    // Convert an absolute pixel position to an absolute world position or vice 
+    // versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
-    // errorMessage contains an error message.
+    // errorMessage contains an error message. The input vector must be of length
+    // <src>nPixelAxes</src> or <src>nWorldAxes</src>.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const = 0;
