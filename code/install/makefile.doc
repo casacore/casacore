@@ -188,14 +188,16 @@ $(DOCSAREA)/%.html : $(CODEDIR)/%.html
 	-@ echo ""
 	 @ $(RM) $@
 	-@ echo "$< -> $@"
-	 @ sed -e '/^<!\$$\Date: /{s#<!\$$\Date: #<HR><I>Modified: #;s#\$$#GMT#;s#>$$#<BR>Installed: '"`adate -d`"'</I>#;}' $< > $@
+	 @ sed -e '/^<!\$$\Date: /{s#<!\$$\Date: #<HR><I>Modified: #;s#\$$#GMT#;s#>$$#<BR>Installed: '"`adate -d`"'</I>#;}'\
+               -e "s/VERSIONID/`avers | awk -v FS=. '{print \"Version\", \$$1, \"Build\", \$$2}'`/" $< > $@
 	 @ chmod 664 $@
 
 $(DOCSAREA)/%.htm : $(CODEDIR)/%.htm
 	-@ echo ""
 	 @ $(RM) $@
 	-@ echo "$< -> $@"
-	 @ sed -e '/^<!\$$\Date: /{s#<!\$$\Date: #<HR><I>Modified: #;s#\$$#GMT#;s#>$$#<BR>Installed: '"`adate -d`"'</I>#;}' $< > $@
+	 @ sed -e '/^<!\$$\Date: /{s#<!\$$\Date: #<HR><I>Modified: #;s#\$$#GMT#;s#>$$#<BR>Installed: '"`adate -d`"'</I>#;}' \
+               -e "s/VERSIONID/`avers | awk -v FS=. '{print \"Version\", \$$1, \"Build\", \$$2}'`/" $< > $@
 	 @ chmod 664 $@
 
 $(DOCSAREA)/%.gif : $(CODEDIR)/%.gif
