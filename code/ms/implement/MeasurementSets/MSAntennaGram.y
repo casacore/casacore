@@ -39,18 +39,18 @@ using namespace casa;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   Int ival;
-  Double dval;
   char* str;
+  Double dval;
+
 }
 
 %token <str> IDENTIFIER
+%token EQASS
 %token <ival> INDEX
 %token <dval> FNUMBER
+%token SQUOTE
 %token DASH
 %token STAR
-
-%token EQASS
-%token SQUOTE
 
 %token LBRACKET
 %token LPAREN
@@ -90,9 +90,10 @@ antennastatement: SQUOTE antennaexpr SQUOTE {
                 ;
 
 antennaexpr: IDENTIFIER {
-                  Vector<String> name(1);
-                  name[0] = String($1);
-		  $$ = MSAntennaParse().selectAntennaName(name);
+		  cout << "input " << $1 << endl;
+                  String identifier = String($1);
+		  cout << "input string " << identifier << endl;
+		  $$ = MSAntennaParse().selectNameOrStation(identifier);
              }
 	   | indexcombexprlist 
 	   ;

@@ -48,7 +48,9 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
 //
   // Generate an array of antenna id's, used in later queries
   nrows_p = msAntennaCols_p.nrow();
+  cout << " nrows " << nrows_p << endl;
   antennaIds_p.resize(nrows_p);
+  cout << " ndimy "  << antennaIds_p.ndim() << endl;
   indgen(antennaIds_p);
 };
 
@@ -92,6 +94,22 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names)
   };
   return matchedAntennaIds;
 };
+
+//-------------------------------------------------------------------------
+
+Vector<Int> MSAntennaIndex::matchAntennaStation(const String& station)
+{
+// Match a antenna station to a set of antenna id's
+// Input:
+//    station               const String&         Antenna station to match
+// Output:
+//    matchAntennaStation   Vector<Int>              Matching antenna id's
+//
+  LogicalArray maskArray = (msAntennaCols_p.station().getColumn()==station &&
+			    !msAntennaCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+  return maskAntennaId.getCompressedArray();
+}; 
 
 //-------------------------------------------------------------------------
 

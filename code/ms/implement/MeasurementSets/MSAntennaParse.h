@@ -93,8 +93,8 @@ public:
     MSAntennaParse (const MeasurementSet* ms);
 
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds);
-    const TableExprNode* selectAntennaName(const Vector<String>& antennaNames);
-
+    // const TableExprNode* selectAntennaName(const Vector<String>& antennaNames);
+    const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifier);
     // Get table expression node object.
     static const TableExprNode* node();
 

@@ -92,6 +92,9 @@ public:
   Vector<Int> matchAntennaName(const String& name);
   Vector<Int> matchAntennaName(const Vector<String>& names);
 
+  // Look up ANTENNA_ID's for a given antenna station
+  Vector<Int> matchAntennaStation(const String& station);
+
   // Look up ANTENNA_ID's for a given antenna and station name pair
   Vector<Int> matchAntennaNameAndStation(const String& name,
 					 const String& station);
