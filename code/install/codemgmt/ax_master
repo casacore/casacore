@@ -2363,3 +2363,14 @@
 11 206 src rm trial/implement/Widgets/regionentry.g
 11 206 src rm trial/implement/Widgets/recordentry.g
 11 206 src rm trial/implement/Widgets/untypedentry.g
+11 206 sys rm libexec/scalarentry.g
+11 206 sys rm libexec/fileentry.g
+11 206 sys rm libexec/measureentry.g
+11 206 sys rm libexec/checkentry.g
+11 206 sys rm libexec/choiceentry.g
+11 206 sys rm libexec/quantityentry.g
+11 206 sys rm libexec/untypedentry.g
+11 206 sys rm libexec/vectorentry.g
+11 206 sys rm libexec/regionentry.g
+11 206 sys rm libexec/recordentry.g
+11 206 sys rm libexec/untypedentry.g
