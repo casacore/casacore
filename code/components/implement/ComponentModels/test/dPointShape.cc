@@ -27,62 +27,61 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/Flux.h>
-/////#include <trial/ComponentModels/PointCompRep.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Matrix.h>
+#include <trial/ComponentModels/PointShape.h>
+#include <trial/ComponentModels/SkyComponent.h>
+#include <trial/ComponentModels/ConstantSpectrum.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/ComponentShape.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
+void printShape(const ComponentShape& theShape) {
+  cout << "This is a " << ComponentType::name(theShape.type())
+       << " shape " << endl 
+       << "with a reference direction of "
+       << theShape.refDirection() << endl;
+}
+
 int main() {
   try {
-
-/*
-    const Quantity J1934_ra = Quantity(19.0, "h").get("'") + Quantity(39, "'");
-    const Quantity J1934_dec = Quantity(-63, "deg") + Quantity(-43, "'");
-    const MDirection J1934_pos(J1934_ra, J1934_dec, MDirection::J2000);
-    Flux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
-    const PointCompRep J1934(J1934_flux, J1934_pos);
-    // This component can now be projected onto an image
-    CoordinateSystem coords;
-    {
-      const Double pixInc = Quantity(1, "''").getValue("rad");
-      Matrix<Double> xform(2,2);
-      xform = 0.0; xform.diagonal() = 1.0;
-      const Double refPixel = 32.0;
-      const DirectionCoordinate dirCoord(MDirection::J2000,
-					 Projection(Projection::SIN),
-					 J1934_ra.getValue("rad"),
-					 J1934_dec.getValue("rad"),
-					 pixInc , pixInc, xform,
-					 refPixel, refPixel);
-      coords.addCoordinate(dirCoord);
+    MDirection J1934_dir;
+    { // get the right direction into J1934_dir
+      Quantity J1934_ra; MVAngle::read(J1934_ra, "19:39:");
+      Quantity J1934_dec; MVAngle::read(J1934_dec, "-63.43.");
+      J1934_dir = MDirection(J1934_ra, J1934_dec, MDirection::J2000);
     }
-    CoordinateUtil::addIQUVAxis(coords);
-    CoordinateUtil::addFreqAxis(coords);
-    PagedImage<Float> skyModel(IPosition(4,64,64,4,8), coords, 
-			       "dPointCompRep_tmp.image");
-    skyModel.set(0.0f);
-    J1934.project(skyModel);
-
-*/
+    { // One way to construct the SkyComponent
+      SkyComponent J1934(ComponentType::POINT, ComponentType::CONSTANT_SPECTRUM);
+      J1934.shape().setRefDirection(J1934_dir);
+      J1934.flux() = Flux<Double>(6.28, 0.1, 0.15, 0.01);
+      printShape(J1934.shape());
+    }
+    { // An alternative way to construct the SkyComponent
+      const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
+      const PointShape shape(J1934_dir);
+      const ConstantSpectrum spectrum;
+      SkyComponent component(flux, shape, spectrum);
+      printShape(component.shape());
+    }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
-  } end_try;
+  }
+  catch (...) {
+    cerr << "Exception not derived from AipsError" << endl;
+    cout << "FAIL" << endl;
+    return 2;
+  }
   cout << "OK" << endl;
   return 0;
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 dPointCompRep"
+// compile-command: "gmake OPTLIB=1 dPointShape"
 // End: 
