@@ -12,9 +12,6 @@
 #    0:  success
 #    1:  initialization error
 #
-# Notes:
-#    1) Failures are only counted for the "aips" package.
-#
 # Original: 1997/01/29 by Mark Calabretta, ATNF
 # $Id$
 #-----------------------------------------------------------------------------
@@ -31,14 +28,7 @@
 # Get the current version number.
   VERSION=`avers | awk '{printf("%.6s",$1)}'`
 
-# HP-UX needs to use mailx (for the -s switch). Other systems use mail.
-  if [ `uname` = "HP-UX" ] ; then
-    MAILCMD=mailx
-  else
-    MAILCMD=mail
-  fi 
- 
-# Do it, sending the results to aips2-inhale.
+# Do it.
   {  exec 2>&1
 
      echo ""
@@ -50,9 +40,8 @@
      cd $AIPSROOT
      gmake -C code TESTOPT=opt NODEP=1 runtests > $BINTESTD/runtests.log 2>&1
  
-#    Check for failures in the aips and display packages only (nobody relies on trial).
      cd $BINTESTD
-     FAILED=`grep '\(\(^aips\)\|\(^display\)\)-.*FAIL (' runtests.report | wc -l`
+     FAILED=`grep 'FAIL (' runtests.report | wc -l`
      FAILED=`echo $FAILED`
      echo ""
      echo "runtests: Version $VERSION finished with $FAILED failures."
@@ -63,10 +52,21 @@
      echo ""
      cat $BINTESTD/runtests.log
      echo $PATH
-     testsum.sh $AIPSARCH aips > $BINTESTD/runtests_aips.summary 2>&1
-     testsum.sh $AIPSARCH trial > $BINTESTD/runtests_trial.summary 2>&1
-     testsum.sh $AIPSARCH display > $BINTESTD/runtests_display.summary 2>&1
-     testsum.sh $AIPSARCH trialdisplay > $BINTESTD/runtests_trialdisplay.summary 2>&1
+     # Create a summary for each package.
+     # Do it only if the package occurs in the runtests output.
+     # Append the number of failed, etc. to the brief result.
+     rm -f $BINTESTD/runtests.summary_brief
+     touch $BINTESTD/runtests.summary_brief
+     for PKG in $AIPSROOT/code
+     do
+       PKGNM=`basename $PKG`
+       grep "${PKG}-" $BINTESTD/runtests.report > /dev/null 2>&1
+       if [ $? = 0 ]; then
+         testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
+         fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '*****' >> $BINTESTD/runtests.summary_brief
+       fi
+     done
+     cat $BINTESTD/runtests_*.summary > $BINTESTD/runtests.summary
   } > $BINTESTD/runtests.rptNlog
 
   exit 0

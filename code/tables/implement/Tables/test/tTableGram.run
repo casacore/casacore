@@ -8,7 +8,7 @@
   rm -rf tTableGram_tmp.tab*
   mkdir tTableGram_tmp.tab
   AIPSCODE=`echo $AIPSPATH | awk '{printf("%s/code",$1)}'`
-  cp -r $AIPSCODE/aips/implement/Tables/test/tTable_2.data_v0/table.* tTableGram_tmp.tab
+  cp -r $AIPSCODE/tables/implement/Tables/test/tTable_2.data_v0/table.* tTableGram_tmp.tab
   chmod 644 tTableGram_tmp.tab/*
   cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
 

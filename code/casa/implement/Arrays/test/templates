@@ -212,9 +212,5 @@
      template Vector<Float> crossProduct(Vector<Float> const &, Vector<Float> const &) 
      template Vector<Int> crossProduct(Vector<Int> const &, Vector<Int> const &) 
      template Vector<Int> product(Matrix<Int> const &, Vector<Int> const &) 
-1000 aips/Mathematics/MatrixMathLA.cc 
-     = casa/BasicSL/Complex.h 
-     template Matrix<DComplex> invert(Matrix<DComplex> const &) 
-     template void invert(Matrix<DComplex> &, DComplex &, Matrix<DComplex> const &) 
 1000 casa/Utilities/Register.cc casa/BasicSL/String.h 
      = casa/BasicSL/Complex.h 

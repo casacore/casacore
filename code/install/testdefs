@@ -185,9 +185,9 @@ define CheckLink
    shift ; \
    for PKG do \
       case $$PKG in \
-      aips | dish | display | synthesis | vlbi) \
+      casa | scimath | tables | measures | fits | lattices | coordinates | components | images | ms | msvis | calibration | ionosphere | flagging | dish | simulators | synthesis | graphics | tasking) \
          ;; \
-      contrib | trial | trialdisplay) \
+      appsglish | contrib | vlbi | display | trialdisplay) \
          ;; \
       alma | atnf | bima | hia | jive | nfra | npoi | nral | nrao | tifr) \
          ;; \
@@ -619,15 +619,30 @@ system :
 	-@ echo ""
 	-@ echo "Package-dependent shared-library link lists."
 	-@ echo "--------------------------------------------"
-	-@ echo "XLIBLIST_shared_aips=$(XLIBLIST_shared_aips)"
-	-@ echo ""
+	-@ echo "XLIBLIST_shared_casa=$(XLIBLIST_shared_casa)"
+	-@ echo "XLIBLIST_shared_scimath=$(XLIBLIST_shared_scimath)"
+	-@ echo "XLIBLIST_shared_tables=$(XLIBLIST_shared_tables)"
+	-@ echo "XLIBLIST_shared_measures=$(XLIBLIST_shared_measures)"
+	-@ echo "XLIBLIST_shared_fits=$(XLIBLIST_shared_fits)"
+	-@ echo "XLIBLIST_shared_lattices=$(XLIBLIST_shared_lattices)"
+	-@ echo "XLIBLIST_shared_coordinates=$(XLIBLIST_shared_coordinates)"
+	-@ echo "XLIBLIST_shared_components=$(XLIBLIST_shared_components)"
+	-@ echo "XLIBLIST_shared_images=$(XLIBLIST_shared_images)"
+	-@ echo "XLIBLIST_shared_ms=$(XLIBLIST_shared_ms)"
+	-@ echo "XLIBLIST_shared_msvis=$(XLIBLIST_shared_msvis)"
+	-@ echo "XLIBLIST_shared_calibration=$(XLIBLIST_shared_calibration)"
+	-@ echo "XLIBLIST_shared_ionosphere=$(XLIBLIST_shared_ionosphere)"
+	-@ echo "XLIBLIST_shared_flagging=$(XLIBLIST_shared_flagging)"
 	-@ echo "XLIBLIST_shared_dish=$(XLIBLIST_shared_dish)"
-	-@ echo "XLIBLIST_shared_display=$(XLIBLIST_shared_display)"
+	-@ echo "XLIBLIST_shared_simulators=$(XLIBLIST_shared_simulators)"
+	-@ echo "XLIBLIST_shared_graphics=$(XLIBLIST_shared_graphics)"
 	-@ echo "XLIBLIST_shared_synthesis=$(XLIBLIST_shared_synthesis)"
-	-@ echo "XLIBLIST_shared_vlbi=$(XLIBLIST_shared_vlbi)"
+	-@ echo "XLIBLIST_shared_tasking=$(XLIBLIST_shared_tasking)"
 	-@ echo ""
+	-@ echo "XLIBLIST_shared_display=$(XLIBLIST_shared_display)"
+	-@ echo "XLIBLIST_shared_trialdisplay=$(XLIBLIST_shared_trialdisplay)"
+	-@ echo "XLIBLIST_shared_vlbi=$(XLIBLIST_shared_vlbi)"
 	-@ echo "XLIBLIST_shared_contrib=$(XLIBLIST_shared_contrib)"
-	-@ echo "XLIBLIST_shared_trial=$(XLIBLIST_shared_trial)"
 	-@ echo ""
 	-@ echo "XLIBLIST_shared_alma=$(XLIBLIST_shared_alma)"
 	-@ echo "XLIBLIST_shared_atnf=$(XLIBLIST_shared_atnf)"
@@ -763,21 +778,81 @@ system :
 	-@ echo "                   C++            C          FORTRAN"
 	-@ echo "                dbg    opt    dbg    opt    dbg    opt"
 	-@ echo "              ------------- ------------- -------------"
-	-@ echo "LIBaips      =$(LIBaips)"
+	-@ echo "LIBcasa        =$(LIBcasa)"
     ifdef DO_TEST
-	-@ set SERIOUS $(LIBaips) ; $(CheckLCV)
+	-@ set SERIOUS $(LIBcasa) ; $(CheckLCV)
     endif
-	-@ echo "LIBdish      =$(LIBdish)"
+	-@ echo "LIBscimath     =$(LIBscimath)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LIBscimath) ; $(CheckLCV)
+    endif
+	-@ echo "LIBtables      =$(LIBtables)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LIBtables) ; $(CheckLCV)
+    endif
+	-@ echo "LIBmeasures    =$(LIBmeasures)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LIBmeasures) ; $(CheckLCV)
+    endif
+	-@ echo "LIBfits        =$(LIBfits)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBfits) ; $(CheckLCV)
+    endif
+	-@ echo "LIBlattices    =$(LIBlattices)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBlattices) ; $(CheckLCV)
+    endif
+	-@ echo "LIBcoordinates =$(LIBcoordinates)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBcoordinates) ; $(CheckLCV)
+    endif
+	-@ echo "LIBcomponents  =$(LIBcomponents)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBcomponents) ; $(CheckLCV)
+    endif
+	-@ echo "LIBimages      =$(LIBimages)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBimages) ; $(CheckLCV)
+    endif
+	-@ echo "LIBms          =$(LIBms)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBms) ; $(CheckLCV)
+    endif
+	-@ echo "LIBmsvis       =$(LIBmsvis)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBmsvis) ; $(CheckLCV)
+    endif
+	-@ echo "LIBcalibration =$(LIBcalibration)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBcalibration) ; $(CheckLCV)
+    endif
+	-@ echo "LIBionosphere  =$(LIBionosphere)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBionosphere) ; $(CheckLCV)
+    endif
+	-@ echo "LIBflagging    =$(LIBflagging)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBflagging) ; $(CheckLCV)
+    endif
+	-@ echo "LIBdish        =$(LIBdish)"
     ifdef DO_TEST
 	-@ set WARNING $(LIBdish) ; $(CheckLCV)
     endif
-	-@ echo "LIBdisplay   =$(LIBdisplay)"
+	-@ echo "LIBsimulators  =$(LIBsimulators)"
     ifdef DO_TEST
-	-@ set WARNING $(LIBdisplay) ; $(CheckLCV)
+	-@ set WARNING $(LIBsimulators) ; $(CheckLCV)
     endif
-	-@ echo "LIBsynthesis =$(LIBsynthesis)"
+	-@ echo "LIBsynthesis   =$(LIBsynthesis)"
     ifdef DO_TEST
-	-@ set ADVISORY $(LIBsynthesis) ; $(CheckLCV)
+	-@ set WARNING $(LIBsynthesis) ; $(CheckLCV)
+    endif
+	-@ echo "LIBgraphics    =$(LIBgraphics)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBgraphics) ; $(CheckLCV)
+    endif
+	-@ echo "LIBtasking     =$(LIBtasking)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBtasking) ; $(CheckLCV)
     endif
 	-@ echo "LIBvlbi      =$(LIBvlbi)"
     ifdef DO_TEST
@@ -787,9 +862,9 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(LIBcontrib) ; $(CheckLCV)
     endif
-	-@ echo "LIBtrial     =$(LIBtrial)"
+	-@ echo "LIBdisplay   =$(LIBdisplay)"
     ifdef DO_TEST
-	-@ set WARNING $(LIBtrial) ; $(CheckLCV)
+	-@ set WARNING $(LIBdisplay) ; $(CheckLCV)
     endif
 	-@ echo "LIBtrialdisplay=$(LIBtrialdisplay)"
     ifdef DO_TEST
@@ -836,21 +911,85 @@ system :
 	-@ set ADVISORY $(LIBtifr) ; $(CheckLCV)
     endif
 	-@ echo ""
-	-@ echo "LINKaips     =$(LINKaips)"
+	-@ echo "LINKcasa        =$(LINKcasa)"
     ifdef DO_TEST
-	-@ set SERIOUS $(LINKaips) ; $(CheckLink)
+	-@ set SERIOUS $(LINKcasa) ; $(CheckLink)
     endif
-	-@ echo "LINKdish     =$(LINKdish)"
+	-@ echo "LINKscimath     =$(LINKscimath)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKscimath) ; $(CheckLink)
+    endif
+	-@ echo "LINKtables      =$(LINKtables)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKtables) ; $(CheckLink)
+    endif
+	-@ echo "LINKmeasures    =$(LINKmeasures)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKmeasures) ; $(CheckLink)
+    endif
+	-@ echo "LINKfits        =$(LINKfits)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKfits) ; $(CheckLink)
+    endif
+	-@ echo "LINKlattices    =$(LINKlattices)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKlattices) ; $(CheckLink)
+    endif
+	-@ echo "LINKcoordinates =$(LINKcoordinates)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKcoordinates) ; $(CheckLink)
+    endif
+	-@ echo "LINKcomponents  =$(LINKcomponents)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKcomponents) ; $(CheckLink)
+    endif
+	-@ echo "LINKimages      =$(LINKimages)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKimages) ; $(CheckLink)
+    endif
+	-@ echo "LINKms          =$(LINKms)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKms) ; $(CheckLink)
+    endif
+	-@ echo "LINKmsvis       =$(LINKmsvis)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKmsvis) ; $(CheckLink)
+    endif
+	-@ echo "LINKcalibration =$(LINKcalibration)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKcalibration) ; $(CheckLink)
+    endif
+	-@ echo "LINKionosphere  =$(LINKionosphere)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKionosphere) ; $(CheckLink)
+    endif
+	-@ echo "LINKflagging    =$(LINKflagging)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKflagging) ; $(CheckLink)
+    endif
+	-@ echo "LINKdish        =$(LINKdish)"
     ifdef DO_TEST
 	-@ set WARNING $(LINKdish) ; $(CheckLink)
     endif
-	-@ echo "LINKdisplay  =$(LINKdisplay)"
+	-@ echo "LINKsimulators  =$(LINKsimulators)"
     ifdef DO_TEST
-	-@ set WARNING $(LINKdisplay) ; $(CheckLink)
+	-@ set WARNING $(LINKsimulators) ; $(CheckLink)
     endif
-	-@ echo "LINKsynthesis=$(LINKsynthesis)"
+	-@ echo "LINKsynthesis   =$(LINKsynthesis)"
     ifdef DO_TEST
-	-@ set ADVISORY $(LINKsynthesis) ; $(CheckLink)
+	-@ set WARNING $(LINKsynthesis) ; $(CheckLink)
+    endif
+	-@ echo "LINKgraphics    =$(LINKgraphics)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKgraphics) ; $(CheckLink)
+    endif
+	-@ echo "LINKtasking     =$(LINKtasking)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKtasking) ; $(CheckLink)
+    endif
+	-@ echo "LINKappsglish  =$(LINKappsglish)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKappsglish) ; $(CheckLink)
     endif
 	-@ echo "LINKvlbi     =$(LINKvlbi)"
     ifdef DO_TEST
@@ -860,9 +999,9 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(LINKcontrib) ; $(CheckLink)
     endif
-	-@ echo "LINKtrial    =$(LINKtrial)"
+	-@ echo "LINKdisplay  =$(LINKdisplay)"
     ifdef DO_TEST
-	-@ set WARNING $(LINKtrial) ; $(CheckLink)
+	-@ set WARNING $(LINKdisplay) ; $(CheckLink)
     endif
 	-@ echo "LINKtrialdisplay=$(LINKtrialdisplay)"
     ifdef DO_TEST
@@ -1049,7 +1188,7 @@ system :
 	-@ FAIL=0 ; \
 	   for i in "" $(AUXILIARY) ; do \
 	      case $$i in \
-	      "" | contrib | trial | trialdisplay) \
+	      "" | contrib | trialdisplay) \
 	         ;; \
 	      *) \
 	         echo "   ...WARNING, $$i is not an auxiliary package" ; \

@@ -18,6 +18,6 @@
   fi
 
   AIPSCODE=`echo $AIPSPATH | awk '{printf("%s/code",$1)}'`
-  TABLES="$AIPSCODE/aips/implement/Tables/test/tTable_2.data_v*"
+  TABLES="$AIPSCODE/tables/implement/Tables/test/tTable_2.data_v*"
 
   tTable_2 $TABLES

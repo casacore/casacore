@@ -58,7 +58,7 @@ endif
 
 # Subdirectories in which to invoke "allsys", in order.
 #------------------------------------------------------
-ALLSYSD  := install aips dish display synthesis vlbi
+ALLSYSD  := install aips $(PACKAGES)
 
 # Should only exist in consortium installations.
 ALLSYSD  += admin

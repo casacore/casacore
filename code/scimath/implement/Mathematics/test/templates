@@ -8,6 +8,7 @@
      template Bool allNearAbs(Array<Double> const &, Double const &, Double) 
      = casa/BasicSL/Complex.h 
      template Bool allNearAbs(Array<Complex> const &, Array<Complex> const &, Double) 
+     template Bool allNearAbs(Array<DComplex> const &, Array<DComplex> const &, Double) 
 1000 casa/Arrays/ArrayMath.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
@@ -48,6 +49,8 @@
      = scimath/Mathematics/AutoDiff.h 
      template <class T> class AutoDiffRep 
      template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<AutoDiff<Double> >, uInt>*> 
+1000 casa/Utilities/Fallible.h 
+     template class Fallible<Float> 
 1000 scimath/Mathematics/AutoDiff.cc scimath/Mathematics/AutoDiffMath.h 
      template class AutoDiff<AutoDiff<Double> > 
 1000 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
@@ -63,8 +66,6 @@
      template class Convolver<Double> 
 1000 scimath/Mathematics/FFTServer.cc casa/BasicSL/Complex.h 
      template class FFTServer<Double, DComplex> 
-1000 casa/Utilities/Fallible.h 
-     template class Fallible<Float> 
 1000 scimath/Mathematics/HistAcc.cc 
      template class HistAcc<Float> 
      template class HistAcc<Int> 
@@ -86,6 +87,10 @@
      template class Sinc_Conv<Float> 
      template class Sph_Conv<Float> 
      template class Unary<Float> 
+1000 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/BasicSL/Complex.h 
+     template Matrix<DComplex> invert(Matrix<DComplex> const &) 
+     template void invert(Matrix<DComplex> &, DComplex &, Matrix<DComplex> const &) 
 1000 scimath/Mathematics/StatAcc.cc 
      template class StatAcc<Float> 
      template class StatAcc<Int> 
