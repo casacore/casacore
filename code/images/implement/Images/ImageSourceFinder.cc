@@ -466,7 +466,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                   fit2d.estimate(Fit2D::GAUSSIAN, dataIn, maskIn);
                model(0) = rs(k,0);
                fit2d.addModel(Fit2D::GAUSSIAN, model);
-               Fit2D::ErrorTypes ret = fit2d.fit(dataIn, maskIn, sigmaIn, False);
+               Fit2D::ErrorTypes ret = fit2d.fit(dataIn, maskIn, sigmaIn);
 //              
                if (ret==Fit2D::OK) {
                   Vector<NumericTraits<T>::PrecisionType> solution = 
