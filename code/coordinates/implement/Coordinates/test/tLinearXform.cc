@@ -148,7 +148,7 @@ int main()
 //   
 // Nothing I can do with this to test it
 //
-         linprm lp = lxf.linprmWCS();
+         linprm* lp = lxf.linprmWCS();
       }
 
 // Test conversion
