@@ -158,7 +158,7 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
 //# Templates (for test purposes)
 template class map<String, FuncExprData::ExprOperator>;
 template class map<FuncExprData::opTypes, FuncExprData::ExprOperator>;
-#if !defined(AIPS_SUN_NATIVE) || !defined(AIPS_KAICC) || !defined(AIPS_SGI)
+#if !defined(AIPS_SUN_NATIVE) || !defined(AIPS_KAICC) || !defined(AIPS_IRIX)
 template class
 _Rb_tree<FuncExprData::opTypes,
 			 pair<FuncExprData::opTypes const,
