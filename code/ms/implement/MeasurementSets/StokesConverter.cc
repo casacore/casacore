@@ -85,7 +85,7 @@ void StokesConverter::setConversion(const Vector<Int>& out,
   Vector<Float> factor(Stokes::YL+1,1.0);
   if (rescale) {
     for (uInt i=Stokes::RR; i<=Stokes::YY; i++) factor(i)=0.5;
-    for (uInt i=Stokes::RX; i<=Stokes::YL; i++) factor(i)=sqrt(2)/4.0;
+    for (uInt i=Stokes::RX; i<=Stokes::YL; i++) factor(i)=sqrt(2.0)/4.0;
   }
   // analyze the input - all inputs have to be in the same frame
   Bool linear=False, circular=False, iquv=False, circlin=False, lincirc=False;
