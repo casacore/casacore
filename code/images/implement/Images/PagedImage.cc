@@ -935,3 +935,15 @@ Bool PagedImage<T>::setImageInfo(const ImageInfo& info)
   return ok;
 }
 
+
+template<class T>
+void PagedImage<T>::mergeTableLogSink (const ImageInterface<T>& other)
+{
+  if (logSink().localSink().isTableLogSink()) {
+    if (other.logSink().localSink().isTableLogSink()) {
+      reopenRW();
+      logSink().localSink().castToTableLogSink().concatenate (
+		      other.logSink().localSink().castToTableLogSink());
+    }
+  }
+}
