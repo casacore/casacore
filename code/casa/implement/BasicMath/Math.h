@@ -55,8 +55,12 @@
 // <group>
 #if !defined(AIPS_STDLIB)
 #endif
-inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
+// IRIX seems to need this one, but other OS's (e.g. recent Linux) can't
+// handle it.
+#if defined(AIPS_IRIX)
 inline float pow(float f1, double f2) {return pow (double(f1), f2);}
+#endif
+inline float pow(float f1, float f2) {return pow (double(f1), double(f2));}
 inline int pow(int f1,int f2) {return int(pow(double(f1), double(f2)));}
 // </group>
 
