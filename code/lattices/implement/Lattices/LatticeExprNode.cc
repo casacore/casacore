@@ -840,6 +840,14 @@ LatticeExprNode toDComplex(const LatticeExprNode& expr)
    return expr.makeDComplex();
 }
 
+LatticeExprNode toBool(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function bool" << endl;
+#endif
+   return expr.makeBool();
+}
+
 
 LatticeExprNode sin(const LatticeExprNode& expr)
 { 
@@ -1256,8 +1264,6 @@ LatticeExprNode operator> (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator >" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
-		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, left, right);
 }
 
@@ -1267,8 +1273,6 @@ LatticeExprNode operator>= (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator >=" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
-		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, left, right);
 }
 
@@ -1278,12 +1282,8 @@ LatticeExprNode operator< (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator <" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
-		 AipsError);
-
 // Note we use GT for LT by reversing the order of the arguments
 // requiring less code in LELBinaryCmp
-
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, right, left);
 }
 
@@ -1293,12 +1293,8 @@ LatticeExprNode operator<= (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator <=" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
-		 AipsError);
-
 // Note we use GE for LE by reversing the order of the arguments
 // requiring less code in LELBinaryCmp
-
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, right, left);
 }
 
@@ -1325,8 +1321,8 @@ LatticeExprNode operator&& (const LatticeExprNode& left,
       return LELRegion::makeIntersection (*left.pExprBool_p,
 					  *right.pExprBool_p);
    }
-   return new LELBinaryBool(LELBinaryEnums::AND, left.pExprBool_p,
-			    right.pExprBool_p);
+   return new LELBinaryBool(LELBinaryEnums::AND, left.makeBool(),
+			    right.makeBool());
 }
 
 LatticeExprNode operator|| (const LatticeExprNode& left,
@@ -1340,8 +1336,8 @@ LatticeExprNode operator|| (const LatticeExprNode& left,
    if (LatticeExprNode::areRegions (left, right)) {
       return LELRegion::makeUnion (*left.pExprBool_p, *right.pExprBool_p);
    }
-   return new LELBinaryBool(LELBinaryEnums::OR, left.pExprBool_p,
-			    right.pExprBool_p);
+   return new LELBinaryBool(LELBinaryEnums::OR, left.makeBool(),
+			    right.makeBool());
 }
 
 LatticeExprNode operator! (const LatticeExprNode& expr)
@@ -1350,7 +1346,7 @@ LatticeExprNode operator! (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: unary operator !" << endl;
 #endif
    AlwaysAssert (expr.dataType() == TpBool, AipsError);
-   if (LatticeExprNode::areRegions (expr, expr)) {
+   if (expr.isRegion()) {
       return LELRegion::makeComplement (*expr.pExprBool_p);
    }
    return new LELUnaryBool(LELUnaryEnums::NOT, expr.pExprBool_p);
@@ -1397,8 +1393,7 @@ LatticeExprNode all (const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function all" << endl;
 #endif
-   AlwaysAssert (expr.dataType() == TpBool  &&  !expr.isRegion(), AipsError);
-   Block<LatticeExprNode> arg(1, expr);
+   Block<LatticeExprNode> arg(1, toBool(expr));
    return new LELFunctionBool(LELFunctionEnums::ALL, arg);
 }
 
@@ -1407,8 +1402,7 @@ LatticeExprNode any (const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function any" << endl;
 #endif
-   AlwaysAssert (expr.dataType() == TpBool  &&  !expr.isRegion(), AipsError);
-   Block<LatticeExprNode> arg(1, expr);
+   Block<LatticeExprNode> arg(1, toBool(expr));
    return new LELFunctionBool(LELFunctionEnums::ANY, arg);
 }
 
@@ -1417,8 +1411,7 @@ LatticeExprNode ntrue (const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function ntrue" << endl;
 #endif
-   AlwaysAssert (expr.dataType() == TpBool  &&  !expr.isRegion(), AipsError);
-   Block<LatticeExprNode> arg(1, expr);
+   Block<LatticeExprNode> arg(1, toBool(expr));
    return new LELFunctionDouble(LELFunctionEnums::NTRUE, arg);
 }
 
@@ -1427,8 +1420,7 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function nfalse" << endl;
 #endif
-   AlwaysAssert (expr.dataType() == TpBool  &&  !expr.isRegion(), AipsError);
-   Block<LatticeExprNode> arg(1, expr);
+   Block<LatticeExprNode> arg(1, toBool(expr));
    return new LELFunctionDouble(LELFunctionEnums::NFALSE, arg);
 }
 
@@ -1437,8 +1429,10 @@ LatticeExprNode nelements(const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function nelements" << endl;
 #endif
-   AlwaysAssert (!expr.isRegion(), AipsError);
    Block<LatticeExprNode> arg(1, expr);
+   if (expr.isRegion()) {
+      arg[0] = toBool (expr);
+   }
    return new LELFunctionDouble (LELFunctionEnums::NELEM, arg);
 }
 
@@ -1471,11 +1465,11 @@ LatticeExprNode iif (const LatticeExprNode& condition,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: function iif" << endl;
 #endif
-   AlwaysAssert (condition.dataType() == TpBool  &&  !condition.isRegion(), AipsError);
+   AlwaysAssert (condition.dataType() == TpBool, AipsError);
    DataType dtype = LatticeExprNode::resultDataType (arg1.dataType(),
 						     arg2.dataType());
    Block<LatticeExprNode> arg(3);
-   arg[0] = condition;
+   arg[0] = condition.makeBool();
    switch (dtype) {
    case TpFloat:
        arg[1] = arg1.makeFloat();
@@ -1505,18 +1499,7 @@ LatticeExprNode iif (const LatticeExprNode& condition,
 Bool LatticeExprNode::areRegions (const LatticeExprNode& left,
 				  const LatticeExprNode& right)
 {
-   if (left.isRegion()) {
-      if (right.isRegion()) {
-	 return True;
-      }
-   } else {
-      if (!right.isRegion()) {
-	 return False;
-      }
-   }
-   throw (AipsError ("LatticeExprNode::areRegions - "
-		     "both operands should be a region or both not"));
-   return False;
+   return ToBool (left.isRegion() && right.isRegion());
 }
 
 LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
@@ -1725,16 +1708,12 @@ LatticeExprNode LatticeExprNode::newBinaryCmp (LELBinaryEnums::Operation oper,
       return new LELBinaryCmp<DComplex> (oper, left.makeDComplex(),
 					 right.makeDComplex());
    case TpBool:
-      if (left.isRegion()  ||  right.isRegion()) {
-	 throw (AipsError ("LatticeExprNode::newBinaryCmp - "
-			   "regions cannot be used in comparison"));
-      }
       if (oper != LELBinaryEnums::EQ  &&  oper != LELBinaryEnums::NE) {
 	 throw (AipsError ("LatticeExprNode::newBinaryCmp - "
 			   "Bool data type cannot be used with "
 			   ">, >=, <, and <= operator"));
       }
-      return new LELBinaryBool (oper, left.pExprBool_p, right.pExprBool_p);
+      return new LELBinaryBool (oper, left.makeBool(), right.makeBool());
    default:
       throw (AipsError ("LatticeExprNode::newBinaryCmp - "
 			"invalid data type used in comparison"));
@@ -1860,4 +1839,16 @@ CountedPtr<LELInterface<DComplex> > LatticeExprNode::makeDComplex() const
 			  "conversion to DComplex not possible"));
     }
     return 0;
+}
+
+CountedPtr<LELInterface<Bool> > LatticeExprNode::makeBool() const
+{
+    if (dataType() != TpBool) {
+	throw (AipsError ("LatticeExprNode::makeBool - "
+			  "conversion to non-Bool not possible"));
+    }
+    if (isRegion()) {
+        return new LELRegionAsBool ((const LELRegion&)(*pExprBool_p));
+    }
+    return pExprBool_p;
 }

@@ -167,7 +167,7 @@ class LattRegionHolder;
 //  In this example, the expression is "sin(f2) + pow(f2,2.0)",
 //  but we have put it together from two subexpressions contained
 //  in LatticeExprNode objects exp1 and exp2.  Again the LatticeExprNode
-//  object froemd from summing exp1 and exp2 is automatically converted
+//  object formed from summing exp1 and exp2 is automatically converted
 //  to a LatticeExpr for consumption by copyData
 //
 // </example>
@@ -353,12 +353,16 @@ class LatticeExprNode
 // meaningful for down-conversions (e.g. double to float),
 // since up-conversions are automatically done to get matching data types
 // when needed.  Note that some conversions are not supported, such
-// as Complex to Double or Float
+// as Complex to Double or Float.
+// <br>The conversion to Bool is useful to convert a region to a
+// boolean lattice, which is only possible if the region is given
+// in world coordinates. Otherwise an exception is thrown.
 // <group>
    friend LatticeExprNode toFloat   (const LatticeExprNode& expr);
    friend LatticeExprNode toDouble  (const LatticeExprNode& expr);
    friend LatticeExprNode toComplex (const LatticeExprNode& expr);
    friend LatticeExprNode toDComplex(const LatticeExprNode& expr);
+   friend LatticeExprNode toBool    (const LatticeExprNode& expr);
 // </group>
 
 public:
@@ -417,6 +421,7 @@ public:
    CountedPtr<LELInterface<Double> >   makeDouble() const;
    CountedPtr<LELInterface<Complex> >  makeComplex() const;
    CountedPtr<LELInterface<DComplex> > makeDComplex() const;
+   CountedPtr<LELInterface<Bool> >     makeBool() const;
 // </group>
 
 // Evaluate the expression.
@@ -561,12 +566,12 @@ private:
    static LatticeExprNode newRealFunc1D (LELFunctionEnums::Function func,
 					 const LatticeExprNode& expr);
 
-// Create a new node for a complex numerical function with 1
-// argument. The result has the same data type as the input.
+// Create a new node for a complex numerical function with 1 argument.
+// The result has the same data type as the input.
    static LatticeExprNode newComplexFunc1D (LELFunctionEnums::Function func,
                                             const LatticeExprNode& expr);
 
-// Create a new node for a numerical function with 1 arguments that 
+// Create a new node for a numerical function with 1 argument that 
 // returns a real number
    static LatticeExprNode newNumReal1D (LELFunctionEnums::Function func,
 					const LatticeExprNode& expr);
