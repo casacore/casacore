@@ -41,6 +41,11 @@
 #include <aips/Tables/DataManError.h>
 
 
+//# Allocate an empty record to avoid reconstructing it over and over
+//# again when addRow is called many times.
+static Record emptyRecord;
+
+
 
 TiledColumnStMan::TiledColumnStMan ()
 : TiledStMan ()
@@ -93,7 +98,7 @@ void TiledColumnStMan::create (uInt nrrow)
     cubeShape(nrdim_p - 1) = 0;
     cubeSet_p.resize (1);
     cubeSet_p[0] = new TSMCube (this, fileSet_p[0],
-				cubeShape, tileShape_p, Record());
+				cubeShape, tileShape_p, emptyRecord);
     if (cubeSet_p[0] == 0) {
 	throw (AllocError ("TiledColumnStMan::create", 1));
     }
@@ -158,7 +163,7 @@ void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
 
 void TiledColumnStMan::addRow (uInt nrow)
 {
-    cubeSet_p[0]->extend (nrow, Record(), coordColSet_p[nrdim_p - 1]);
+    cubeSet_p[0]->extend (nrow, emptyRecord, coordColSet_p[nrdim_p - 1]);
     nrrow_p += nrow;
     setDataChanged();
 }
