@@ -37,7 +37,6 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-template <class T> class LatticeConvolver;
 template <class T> class TempLattice;
 
 // <summary>Lists the different types of Convolutions that can be done</summary>
@@ -133,8 +132,7 @@ private:
 
   TempLattice<T>* itsDirty;
   TempLattice<T>* itsPsf;
-
-  LatticeConvolver<T>* itsConvolver;
+  TempLattice<Complex>* itsXfr;
 
   Int itsNscales;
 
@@ -149,6 +147,15 @@ private:
   Quantity itsThreshold;
 
   IPosition itsPositionPeakPsf;
+
+  // Memory to be allocated per TempLattice
+  uInt itsMemoryMB;
+
+  // Let the user choose whether to stop
+  Bool itsChoose;
+
+  // Stop now?
+  Bool stopnow();
 
   // Make an lattice of the specified scale
   void makeScale(Lattice<T>& scale, const Float& scaleSize);
