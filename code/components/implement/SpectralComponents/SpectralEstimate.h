@@ -204,9 +204,8 @@ class SpectralEstimate {
     void findga(const Vector<MT> &prof);
   // Convert the parameters of the components in the list from 
   // pixel-based indices to the given abcissa-vector space.
-  template <class MT>
-    SpectralList convertList (const Vector<MT>& abcissa,
-                              const SpectralList& list) const;
+  template <class MT> SpectralElement convertElement (const Vector<MT>& abcissa,
+                                                      const SpectralElement& el) const;
 };
 
 #endif

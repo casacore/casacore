@@ -65,10 +65,17 @@ const SpectralList& SpectralEstimate::estimate(const Vector<MT>& x,
   if (x.nelements() != y.nelements()) {
      throw(AipsError("Abcissa and ordinate vectors must be the same length"));
   }
-  // Get pixel-based estimate
-  const SpectralList& list = estimate(y);
+  if (x.nelements()==1) {
+     throw(AipsError("Not enough elements in vectors")); 
+  }
+  // Get pixel-based estimate (into slist_p)
+  estimate(y);
   // Convert
-  slist_p = convertList (x, list);
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+     const SpectralElement& elIn = slist_p[i];
+     SpectralElement elOut = convertElement (x, elIn);
+     slist_p.set(elOut, i);
+  }
   return slist_p;
 }
 
@@ -224,79 +231,65 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
 }
 
 template <class MT>
-SpectralList SpectralEstimate::convertList (const Vector<MT>& x,
-                                            const SpectralList& list) const
-//
-// It's rather awkward that the X vector is of type <MT> whereas
-// all of the parameters in a SpectralElement are Double
-//
+SpectralElement SpectralEstimate::convertElement (const Vector<MT>& x, 
+                                                  const SpectralElement& el) const
 {
-   const Int idxMax = x.nelements()-1;
-   const uInt n = list.nelements();
-   SpectralList listOut;
-   for (uInt i=0; i<n; i++) {
-      const SpectralElement& el = list[i];
-      SpectralElement elOut(el);
+   SpectralElement elOut(el);
+   const Int& idxMax = x.nelements()-1;
 
 // Get current (pars are amp, center, width as the SpectralElement
 // will always be a Gaussian)
 
-      Vector<Double> par, err;
-      el.get(par);
-      el.getError(err);
+   Vector<Double> par, err;
+   el.get(par);
+   el.getError(err);
 
 // Center
 
-      Int cenIdx = Int(par[1]);
+   Int cenIdx = Int(par[1]);
 
 // Get the x-increment, local to the center, as best we can from 
 // the abcissa vector.  The following algorithm assumes the X
 // vector is monotonic
 
-      Double incX, x0(x[0]);
-      if (cenIdx-1<0) {
-         AlwaysAssert(idxMax>0, AipsError);
-         incX = x[1] - x[0];
-         x0 = x[0];
-      } else if (cenIdx+1>idxMax) {
-         AlwaysAssert(idxMax>0, AipsError);
-         incX = x[idxMax] - x[idxMax-1];
-         x0 = x[idxMax];
-      } else {
-         incX = 0.5 * (x(cenIdx+1) - x(cenIdx-1));  
-      }
+   Double incX;
+   if (cenIdx-1<0) {
+      incX = x[1] - x[0];
+   } else if (cenIdx+1>idxMax) {
+      incX = x[idxMax] - x[idxMax-1];
+   } else {
+      incX = 0.5 * (x(cenIdx+1) - x(cenIdx-1));  
+   }
 //
-      if (cenIdx<0) {
-         par[1] = incX*par[1] + x0;              // Extrapolate from x[0]
-      } else if (cenIdx>idxMax) {
-         par[1] = incX*(par[1]-idxMax) + x0;     // Extrapolate from x[idxMax]
-      } else {
-         Double dIdx = par[1] - cenIdx;
-         par[1] = x[cenIdx] + dIdx*incX;         // Interpolate
-      }
-      err[1] = abs(err[1] * incX);
+   if (cenIdx<0) {
+      par[1] = incX*par[1] + x[0];                 // Extrapolate from x[0]
+   } else if (cenIdx>idxMax) {
+      par[1] = incX*(par[1]-idxMax) + x[idxMax];   // Extrapolate from x[idxMax]
+   } else {
+      Double dIdx = par[1] - cenIdx;
+      par[1] = x[cenIdx] + dIdx*incX;              // Interpolate
+   }
+   err[1] = abs(err[1] * incX);
 
 // Width
 
-      par[2] = abs(par[2] * incX);
-      err[2] = abs(err[2] * incX);
+   par[2] = abs(par[2] * incX);
+   err[2] = abs(err[2] * incX);
 
 // Set new
 
-      elOut.set(par);
-      elOut.setError(err);
+   elOut.set(par);
+   elOut.setError(err);
 //
-      listOut.add(elOut);
-   }
-//
-   return listOut;
+   return elOut;
 }
 
 
 //# Cater for Float only
 template SpectralList const & SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> *);
 template SpectralList const & SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> const &);
-template SpectralList SpectralEstimate::convertList<Float>(Vector<Float> const &, SpectralList const &) const;
+template SpectralElement SpectralEstimate::convertElement<Float>(Vector<Float> const &,
+                                                                 SpectralElement const &) const;
 template void SpectralEstimate::findga<Float>(Vector<Float> const &); 
 template uInt SpectralEstimate::window<Float>(Vector<Float> const &);
 template void SpectralEstimate::findc2<Float>(Vector<Float> const &); 
