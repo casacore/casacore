@@ -1,5 +1,5 @@
 //# SubLattice.cc: A subset of a Lattice
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -239,6 +239,14 @@ Bool SubLattice<T>::isMasked() const
 }
 
 template<class T>
+Bool SubLattice<T>::isPersistent() const
+{
+  return itsLatticePtr->isPersistent()
+     &&  !isMasked()
+     &&  shape().isEqual (itsLatticePtr->shape());
+}
+
+template<class T>
 Bool SubLattice<T>::isPaged() const
 {
   return itsLatticePtr->isPaged();
@@ -290,15 +298,9 @@ IPosition SubLattice<T>::shape() const
 }
 
 template<class T>
-uInt SubLattice<T>::ndim() const
+String SubLattice<T>::name (const Bool stripPath) const
 {
-  return itsRegion.slicer().ndim();
-}
-
-template<class T>
-uInt SubLattice<T>::nelements() const
-{
-  return itsRegion.nelements();
+  return itsLatticePtr->name(stripPath);
 }
 
 template<class T>
