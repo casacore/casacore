@@ -33,7 +33,6 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 #include <trial/Images/ImageSummary.h>
-#include <trial/Images/SubImage.h>
 #include <trial/Images/PagedImage.h>
 #include <aips/Measures/MDoppler.h>
 
@@ -75,13 +74,11 @@ try {
 
    if (imageType==TpFloat) {    
       const PagedImage<Float> inImage(in);
-      const SubImage<Float> subIm(inImage);
-      ImageSummary<Float> header(subIm);
+      ImageSummary<Float> header(inImage);
       header.list(os, type, False);
    } else if (imageType==TpComplex) {    
       const PagedImage<Complex> inImage(in);
-      const SubImage<Complex> subIm(inImage);
-      ImageSummary<Complex> header(subIm);
+      ImageSummary<Complex> header(inImage);
       header.list(os, type, False);
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
