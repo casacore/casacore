@@ -433,6 +433,29 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 }
 
 
+String Coordinate::typeToString (Coordinate::Type type)
+{
+// 
+// I would prefer to call the virtual function
+// Coordinate::showType() but then I need an object
+//
+   if (type==Coordinate::LINEAR) {
+      return String("Linear");
+   } else if (type==Coordinate::DIRECTION) {
+      return String("Direction");
+   } else if (type==Coordinate::SPECTRAL) {
+      return String("Spectral");
+   } else if (type==Coordinate::STOKES) {
+      return String("Stokes");
+   } else if (type==Coordinate::TABULAR) {
+      return String("Tabular");
+   } else if (type==Coordinate::COORDSYS) {      
+      return String("System");
+   } else {
+      return String("Unknown - function Coordinate::typeToString needs development");
+   }
+   return String("");
+}
 
 void Coordinate::set_error(const String &errorMsg) const
 {

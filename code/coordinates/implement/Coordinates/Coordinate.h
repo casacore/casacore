@@ -149,11 +149,11 @@ public:
     // Destructor.  Needs to be public so the user can delete Coordinate* objects
     virtual ~Coordinate();
 
-    // List the type of this Coordinate object. Generally you shouldn't have
-    // to call this function, it is used mostly in the CoordinateSystem class.
+    // List the type of this Coordinate object. 
     // <group>
     virtual Type type() const = 0;
     virtual String showType() const = 0;
+    static String typeToString (Coordinate::Type type);
     // </group>
 
     // How many world/pixel axes are there in this Coordinate? While the number
