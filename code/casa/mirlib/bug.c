@@ -1,6 +1,10 @@
+From: Doug Roberts [droberts@astro.uiuc.edu]
+Sent: Friday, March 31, 2000 9:12 PM
+To: tcornwel@cv3.cv.nrao.edu
+
 /*
     bug.c: Miriad library routine for error handling.
-    Copyright (C) 1999
+    Copyright (C) 1999,2000
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -158,7 +162,7 @@ int n;
   return(string);
 #else
   extern int sys_nerr;
-  extern char *sys_errlist[];
+  extern const char *const sys_errlist[];
 
 
   if(n > 0 && n <= sys_nerr)return(sys_errlist[n]);
