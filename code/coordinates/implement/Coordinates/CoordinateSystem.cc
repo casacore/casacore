@@ -55,7 +55,7 @@
 #include <aips/Utilities/Regex.h>
 
 #include <strstream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <iostream.h>
 
 

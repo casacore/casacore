@@ -1,5 +1,5 @@
 //# dRemoveAxes.cc: demonstrate use of CoordinateUtil::removeAxes function
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Utilities/String.h>
 
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 
 void listIt (const CoordinateSystem& cSys,

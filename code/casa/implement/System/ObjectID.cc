@@ -33,7 +33,7 @@
 
 #include <strstream.h>
 #include <iostream.h>
-#include <stdio.h>                  // needed for sprintf
+#include <aips/stdio.h>                  // needed for sprintf
 
 
 ObjectID::ObjectID(Bool makeNull)

@@ -1,5 +1,5 @@
 //# tTime.cc: a test program for the Time class
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -27,8 +27,8 @@
 
 #include <aips/OS/Time.h>
 #include <iostream.h>
-#include <stdlib.h>
-#include <math.h>
+#include <aips/stdlib.h>
+#include <aips/math.h>
 
 main() {
 

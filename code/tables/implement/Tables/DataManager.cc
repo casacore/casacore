@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/DataManError.h>
-#include <stdio.h>                     // for sprintf
+#include <aips/stdio.h>                     // for sprintf
 
 
 DataManager::DataManager()

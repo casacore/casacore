@@ -35,8 +35,8 @@
 #include <fcntl.h>                // needed for creat
 #include <unistd.h>               // needed for unlink, etc.
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
-#include <stdlib.h>               // needed for system
+#include <aips/string.h>               // needed for strerror
+#include <aips/stdlib.h>               // needed for system
 #if defined(__hpux__)
 #include <limits.h>               // needed for MAX__UINT
 #endif

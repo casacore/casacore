@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 
 // <summary> Class for IO on a large file using standard IO.</summary>
 

@@ -78,7 +78,7 @@
 #include <trial/Tasking/NewFile.h>
 
 #include <strstream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 
 template <class T> 

@@ -31,7 +31,7 @@
 #include <aips/Mathematics/IComplex.h>
 
 #include <assert.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 #include <fstream.h>
 #include <unistd.h>
 

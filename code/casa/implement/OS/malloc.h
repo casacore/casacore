@@ -1,5 +1,5 @@
 //# malloc.h: malloc functions from Doug Lea
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -309,7 +309,7 @@
 extern "C" {
 #endif
 
-#include <stdio.h>    /* needed for malloc_stats */
+#include <aips/stdio.h>    /* needed for malloc_stats */
 
 
 /*

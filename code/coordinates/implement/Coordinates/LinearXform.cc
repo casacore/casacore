@@ -36,7 +36,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <wcslib/lin.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
 
 
 LinearXform::LinearXform(uInt naxis)

@@ -39,7 +39,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 
 
 // <summary>

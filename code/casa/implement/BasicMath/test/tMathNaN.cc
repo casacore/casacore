@@ -35,7 +35,7 @@
 #include <ieeefp.h>
 #endif
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 
 #define	isnanfmacro(x)	(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \

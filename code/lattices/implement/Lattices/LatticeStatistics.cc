@@ -56,8 +56,8 @@
 #include <aips/Utilities/ValType.h>
 
 #include <iostream.h>
-#include <iomanip.h>
-#include <stdlib.h>
+#include <aips/iomanip.h>
+#include <aips/stdlib.h>
 #include <strstream.h>
 
 #include <aips/OS/Timer.h>

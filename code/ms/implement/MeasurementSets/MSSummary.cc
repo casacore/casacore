@@ -43,7 +43,7 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementSets/MSSummary.h>
 
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <iostream.h>
 
 

@@ -46,7 +46,7 @@
 
 #include <aips/Arrays/Array.h>
 
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <strstream.h>
 
 // Just returns the scalar type.

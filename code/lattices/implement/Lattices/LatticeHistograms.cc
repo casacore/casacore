@@ -1,5 +1,5 @@
 //# LatticeHistograms.cc: generate histograms from a Lattice
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,8 +54,8 @@
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/String.h>
 
-#include <iomanip.h>
-#include <stdlib.h>
+#include <aips/iomanip.h>
+#include <aips/stdlib.h>
 #include <strstream.h>
 
 

@@ -31,7 +31,7 @@
 #include <aips/Exceptions/Error.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
+#include <aips/string.h>               // needed for strerror
 
 //
 // PABLO_IO is used to profile the IO performance of the AIPS++ (in particular

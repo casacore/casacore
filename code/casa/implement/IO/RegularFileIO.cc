@@ -1,5 +1,5 @@
 //# RegularFileIO.cc: Class for IO on a regular file
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,9 +30,9 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
+#include <aips/string.h>               // needed for strerror
 
 
 // This ifdef lets us instruments the IO system using PABLO

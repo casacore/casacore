@@ -1,5 +1,5 @@
 //# tPagedImage.cc:  test the PagedImage class
-//# Copyright (C) 1994,1995,1998,1999,2000
+//# Copyright (C) 1994,1995,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@
 #include <aips/Utilities/String.h>
 
 
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <iostream.h>
 
 Float const_arg_func(const Float& val)

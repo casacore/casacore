@@ -35,7 +35,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/String.h>
-#include <string.h>
+#include <aips/string.h>
 
 
 TSMDataColumn::TSMDataColumn (const TSMColumn& column)

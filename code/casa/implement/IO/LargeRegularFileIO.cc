@@ -31,9 +31,9 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
+#include <aips/string.h>               // needed for strerror
 
 
 LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,

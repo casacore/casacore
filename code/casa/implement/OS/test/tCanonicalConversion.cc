@@ -29,7 +29,7 @@
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/Mathematics/Math.h>
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 
 // Check if all conversion definitions are set correctly.

@@ -33,7 +33,7 @@
 #include <unistd.h>               // needed for ::close
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
+#include <aips/string.h>               // needed for strerror
 #include <sys/mtio.h>             // needed for ioctl
 #if defined(AIPS_SOLARIS)
 #include <sys/ioctl.h>            // needed for ioctl

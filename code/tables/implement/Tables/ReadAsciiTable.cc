@@ -1,5 +1,5 @@
 //# ReadAsciiTable.cc: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,8 +40,8 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 
-#include <stdio.h>
-#include <string.h>
+#include <aips/stdio.h>
+#include <aips/string.h>
 #include <iostream.h>
 #include <fstream.h>             // needed for file IO
 #include <strstream.h>           // needed for internal IO

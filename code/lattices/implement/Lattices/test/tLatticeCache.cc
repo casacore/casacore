@@ -49,7 +49,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Mathematics/Random.h>
 
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <iostream.h>
 
 void a() {

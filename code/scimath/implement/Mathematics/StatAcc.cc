@@ -1,5 +1,5 @@
 //# StatAcc.cc: Statistics Accumulator
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Arrays.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 // Constructors:
 

@@ -47,7 +47,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/ValType.h>
 
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <iostream.h>
 
 #include <trial/Images/ImageSummary.h>

@@ -1,5 +1,5 @@
 //# tRowCopier.cc : tests the RowCopier class
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 
 #include <aips/Tables/TableError.h>
 
-#include <stdio.h>
+#include <aips/stdio.h>
 
 int main() {
 

@@ -1,5 +1,5 @@
 //# Directory.cc: Class to define a Directory
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
-#include <string.h>                 // needed for strerror
+#include <aips/string.h>                 // needed for strerror
 
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
@@ -60,7 +60,7 @@
 
 // Shouldn't be needed, but is needed to get rename under linux. The
 // man page claims it's in unistd.h.
-#include <stdio.h>
+#include <aips/stdio.h>
 
 
 Directory::Directory()

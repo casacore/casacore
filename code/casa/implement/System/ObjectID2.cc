@@ -1,5 +1,5 @@
 //# ObjectID2.cc: Hash related OjectID functions. Prevent link coupling.
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 
 #if defined(AIPS_SOLARIS)
 #include <sys/systeminfo.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 #endif
 
 uInt hashFunc(const ObjectID &key)

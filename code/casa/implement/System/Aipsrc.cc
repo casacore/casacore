@@ -41,7 +41,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.

@@ -32,8 +32,8 @@
 
 #include <unistd.h>               // needed for unlink
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
-#include <stdlib.h>               // needed for system
+#include <aips/string.h>               // needed for strerror
+#include <aips/stdlib.h>               // needed for system
 
 SymLink::SymLink()
 : File()

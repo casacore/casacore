@@ -33,8 +33,8 @@
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/String.h>
 #include <aips/IO/AipsIO.h>
-#include <stdlib.h>
-#include <string.h>             // need things like strlen() and such
+#include <aips/stdlib.h>
+#include <aips/string.h>             // need things like strlen() and such
 
 //# Forward declarations
 #include <aips/iosfwd.h>

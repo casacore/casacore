@@ -28,7 +28,7 @@
 #include <aips/OS/EnvVar.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
 
 extern char **environ;  
 

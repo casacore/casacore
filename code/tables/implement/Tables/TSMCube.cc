@@ -41,7 +41,7 @@
 #include <aips/IO/BucketCache.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Conversion.h>
-#include <string.h>                           // for memcpy
+#include <aips/string.h>                           // for memcpy
 #include <iostream.h>
 
 

@@ -1,5 +1,5 @@
 //# tSpectralModel.cc:  tests the SpectralModel class
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 // #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 // #include <aips/Glish/GlishRecord.h>
-// #include <iomanip.h>
+// #include <aips/iomanip.h>
 #include <iostream.h>
 
 

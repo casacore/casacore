@@ -43,7 +43,7 @@
 #include <aips/Logging.h>
 
 #include <strstream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,

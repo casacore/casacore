@@ -1,5 +1,5 @@
 //# Timer.cc: Timing facility
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 void Timer::mark()
 {

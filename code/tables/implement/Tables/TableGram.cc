@@ -41,7 +41,7 @@
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <TableGram.ycc>                  // flex output
 #include <TableGram.lcc>                  // bison output
 

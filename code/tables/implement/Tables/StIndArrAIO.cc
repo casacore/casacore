@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/DataManError.h>
-#include <stdio.h>                            //# for sprintf
+#include <aips/stdio.h>                            //# for sprintf
 
 
 //# Define a macro which gets the pointer for the given row

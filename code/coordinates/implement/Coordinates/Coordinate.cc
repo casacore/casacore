@@ -39,7 +39,7 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iomanip.h>  
+#include <aips/iomanip.h>  
 #include <strstream.h>
 
 

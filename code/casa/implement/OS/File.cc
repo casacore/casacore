@@ -36,8 +36,8 @@
 #include <sys/stat.h>               // needed for lstat
 #include <utime.h>                  // needed for utimbuf
 #include <errno.h>                  // needed for errno
-#include <string.h>                 // needed for strerror
-#include <stdio.h>                  // needed for sprintf
+#include <aips/string.h>                 // needed for strerror
+#include <aips/stdio.h>                  // needed for sprintf
 #include <time.h>                   // needed for asctime/localtime on linux
 
 

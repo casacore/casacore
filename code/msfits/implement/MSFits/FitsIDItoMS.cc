@@ -75,7 +75,7 @@
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <strstream.h>
-#include <stdio.h>
+#include <aips/stdio.h>
 
 
 // Returns the 0-based position of the key string in the map,

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Exceptions/Error.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <iostream.h>
 
 

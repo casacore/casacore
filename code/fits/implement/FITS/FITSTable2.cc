@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 
 #include <strstream.h>
 
-#include <stdio.h>
+#include <aips/stdio.h>
 
 uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
 		       uInt whichField)

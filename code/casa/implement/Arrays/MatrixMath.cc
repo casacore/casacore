@@ -1,5 +1,5 @@
 //# MatrixMath.cc: The AIPS++ linear algebra functions
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,8 +34,8 @@
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
-#include <stdio.h>
-#include <math.h>
+#include <aips/stdio.h>
+#include <aips/math.h>
 
 #include <aips/Arrays/ArrayIO.h>
                                       // the vector dot/scalar/inner product

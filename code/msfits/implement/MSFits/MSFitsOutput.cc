@@ -55,9 +55,9 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <trial/Tasking/NewFile.h>
 
-#include <stdlib.h> // for atoi()
+#include <aips/stdlib.h> // for atoi()
 #include <strstream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 
 #include <aips/Logging/LogIO.h>
 

@@ -1,5 +1,5 @@
 //# tTapeIO.cc: Test program for TapeIO class
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/OS/Path.h>
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <aips/OS/Timer.h>
 #include <aips/Mathematics/Random.h>
 #include <aips/Inputs.h>

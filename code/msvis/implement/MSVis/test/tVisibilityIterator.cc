@@ -1,5 +1,5 @@
 //# tVisibilityIterator.cc: Tests the Synthesis MeasurementSet Iterator
-//# Copyright (C) 1995,1999,2000
+//# Copyright (C) 1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Tables.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Constants.h>

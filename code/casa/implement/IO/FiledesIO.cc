@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <string.h>               // needed for strerror
+#include <aips/string.h>               // needed for strerror
 
 #ifdef PABLO_IO
 #include "IOTrace.h"

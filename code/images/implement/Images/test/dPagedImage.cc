@@ -1,5 +1,5 @@
 //# tPagedImage.cc: This program tests the PagedImage class
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/Tables.h>
 #include <aips/Utilities/String.h>
 
-#include <stdlib.h>
+#include <aips/stdlib.h>
 #include <iostream.h>
 
 main()

@@ -46,7 +46,7 @@
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
 
-#include <iomanip.h>  
+#include <aips/iomanip.h>  
 #include <strstream.h>
 
 
