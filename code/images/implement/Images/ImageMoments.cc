@@ -30,15 +30,10 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/VectorIter.h>
+#include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Functionals/SumFunction.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
@@ -47,26 +42,23 @@
 #include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
 
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/CopyLattice.h>
+#include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/MomentCalculator.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/TiledStepper.h>
-#include <trial/Mathematics/AutoDiffIO.h>
-#include <trial/Tasking/ProgressMeter.h>
                
 #include <strstream.h>
 #include <iomanip.h>
@@ -79,8 +71,9 @@ extern "C" {
 };
 
 
+
 template <class T> 
-ImageMoments<T>::ImageMoments (const ImageInterface<T>& image, 
+ImageMoments<T>::ImageMoments (ImageInterface<T>& image, 
                                LogIO &os) : os_p(os)
 //
 // Constructor. 
@@ -118,11 +111,6 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
 
    if (setNewImage(image)) {
 
-// Coordinate conversion vectors
-
-      pixelIn_p.resize (pInImage_p->ndim());
-      worldOut_p.resize(pInImage_p->ndim());
- 
 // Region defaults to entire image
                                      
       IPosition blc, trc, inc;
@@ -142,11 +130,46 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         kernelTypes_p(other.kernelTypes_p),
                         kernelWidths_p(other.kernelWidths_p),
                         nxy_p(other.nxy_p),
-                        pixelIn_p(other.pixelIn_p),
                         moments_p(other.moments_p),
                         range_p(other.range_p),
                         smoothAxes_p(other.smoothAxes_p),
-                        worldOut_p(other.worldOut_p),
+                        blc_p(other.blc_p),
+                        trc_p(other.trc_p),
+                        inc_p(other.inc_p),
+                        peakSNR_p(other.peakSNR_p),
+                        stdDeviation_p(other.stdDeviation_p),
+                        yMin_p(other.yMin_p),
+                        yMax_p(other.yMax_p),
+                        device_p(other.device_p),
+                        out_p(other.out_p),
+                        psfOut_p(other.psfOut_p),
+                        smoothOut_p(other.smoothOut_p),
+                        goodParameterStatus_p(other.goodParameterStatus_p),
+                        doWindow_p(other.doWindow_p),
+                        doFit_p(other.doFit_p),
+                        doAuto_p(other.doAuto_p),
+                        doSmooth_p(other.doSmooth_p),
+                        noInclude_p(other.noInclude_p),
+                        noExclude_p(other.noExclude_p),
+                        fixedYLimits_p(other.fixedYLimits_p)
+//
+// Copy constructor
+//
+{}
+
+
+template <class T>
+ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
+                      : os_p(other.os_p),
+                        pInImage_p(other.pInImage_p),
+                        momentAxis_p(other.momentAxis_p),
+                        momentAxisDefault_p(other.momentAxisDefault_p),
+                        kernelTypes_p(other.kernelTypes_p),
+                        kernelWidths_p(other.kernelWidths_p),
+                        nxy_p(other.nxy_p),
+                        moments_p(other.moments_p),
+                        range_p(other.range_p),
+                        smoothAxes_p(other.smoothAxes_p),
                         blc_p(other.blc_p),
                         trc_p(other.trc_p),
                         inc_p(other.inc_p),
@@ -202,11 +225,9 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       kernelTypes_p = other.kernelTypes_p;
       kernelWidths_p = other.kernelWidths_p;
       nxy_p = other.nxy_p;
-      pixelIn_p = other.pixelIn_p;
       moments_p = other.moments_p;
       range_p = other.range_p;
       smoothAxes_p = other.smoothAxes_p;
-      worldOut_p = other.worldOut_p;
       blc_p = other.blc_p;
       trc_p = other.trc_p;  
       inc_p = other.inc_p;
@@ -232,7 +253,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 
 
 template <class T> 
-Bool ImageMoments<T>::setNewImage(const ImageInterface<T>& image)
+Bool ImageMoments<T>::setNewImage(ImageInterface<T>& image)
 //
 // Assign pointer to image
 //
@@ -792,22 +813,15 @@ Bool ImageMoments<T>::createMoments()
       fitMethod = True;
    } else {
       clipMethod = True;
-      doPlot = False;
    }     
-
-
-// Create a vector, each element of which points to the appropriate
-// moment in the moments array
-         
-   Vector<Int> selMom(NMOMENTS);
-   selMom = 0;
-   Int i, j;
-   Int  inDim = pInImage_p->ndim();
-   Int outDim = pInImage_p->ndim() - 1;
 
 
 // Create table to map input to output axes
 
+         
+   Int i, j;
+   Int  inDim = pInImage_p->ndim();
+   Int outDim = pInImage_p->ndim() - 1;
    IPosition ioMap(outDim);
    for (i=0,j=0; i<inDim; i++) {
       if (i != momentAxis_p) {
@@ -815,18 +829,6 @@ Bool ImageMoments<T>::createMoments()
          j++;
       }
    }            
-
-// Set up image iterator.  Use the TiledStepper navigator because it knows 
-// the shape of tiles and will return the profiles in the optimal efficiency 
-// order. 
-   
-   TiledStepper navigator (pInImage_p->shape(), 
-                           pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
-                           momentAxis_p);
-   navigator.subSection(blc_p, trc_p);
-   IPosition latticeShape = navigator.subLatticeShape();
-   RO_LatticeIterator<T> imageIterator(*pInImage_p, navigator);
-
 
 // We only smooth the image if we are doing the smooth/clip method
 // or possibly the interactive window method.  Note that the convolution
@@ -836,7 +838,7 @@ Bool ImageMoments<T>::createMoments()
    PagedImage<T>* pSmoothedImage = 0;
    String smoothName;
    if (doSmooth_p) {
-      if (!smoothImage(smoothName, pSmoothedImage, latticeShape)) {
+      if (!smoothImage(smoothName, pSmoothedImage)) {
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
@@ -863,7 +865,7 @@ Bool ImageMoments<T>::createMoments()
 // limits for plotting
 
    if (fixedYLimits_p && doPlot) {
-      if (!doSmooth_p && (windowMethod || fitMethod)) {
+      if (!doSmooth_p && (clipMethod || windowMethod || fitMethod)) {
          os_p.priority(LogMessage::SEVERE);
          ImageStatistics<T> stats(*pInImage_p, os_p);
          stats.setRegion (blc_p, trc_p, inc_p, False);
@@ -885,7 +887,7 @@ Bool ImageMoments<T>::createMoments()
 // Set output images shape
    
    IPosition outImageShape(outDim);
-   for (j=0; j<outDim; j++) outImageShape(j) = latticeShape(ioMap(j));
+   for (j=0; j<outDim; j++) outImageShape(j) = trc_p(ioMap(j)) - blc_p(ioMap(j)) + 1;
 
 
 // Account for subsectioning and removal of the collapsed moment axis
@@ -898,30 +900,27 @@ Bool ImageMoments<T>::createMoments()
    outImageCoord.removeWorldAxis(worldMomentAxis, Double(0.0));
 
 
-// Create array of pointers for output images 
 
-   PagedImage<T>* outPt[NMOMENTS];
-   for (i=0; i<NMOMENTS; i++)  outPt[i] = 0;
+// Create a vector of pointers for output images 
+
+   PtrBlock<Lattice<Float> *> outPt(moments_p.nelements());
+   for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
+
+
+// Loop over desired output moments
+
    String suffix;
-   Bool doMedianI = False;
-   Bool doMedianV = False;
-   Bool doAbsDev = False;
-   Bool doCoordCalc = False;
    Bool goodUnits;
    Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
    
-
-// Loop over desired output moments
-
    for (i=0; i<moments_p.nelements(); i++) {
 
 // Set moment image units and assign pointer to output moments array
 // Value of goodUnits is the same for each output moment image
 
       Unit momentUnits;
-      goodUnits = selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), 
-                                momentUnits, imageUnits, momentAxisUnits, i);
+      goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, moments_p(i));
    
 // Create output image(s)
 
@@ -930,19 +929,19 @@ Bool ImageMoments<T>::createMoments()
          if (out_p.empty()) out_p = in+suffix;
          outPt[i] = new PagedImage<T>(outImageShape, outImageCoord, out_p);
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
-         outPt[i]->setMiscInfo(pInImage_p->miscInfo());
+         ((PagedImage<T>*)outPt[i])->setMiscInfo(pInImage_p->miscInfo());
       } else {
          if (out_p.empty()) out_p = in;
          outPt[i] = new PagedImage<T>(outImageShape, outImageCoord,
                                       out_p+suffix);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
-         outPt[i]->setMiscInfo(pInImage_p->miscInfo());
+         ((PagedImage<T>*)outPt[i])->setMiscInfo(pInImage_p->miscInfo());
       }
 
 // Set output image units if possible
 
       if (goodUnits) {
-         (outPt[i])->setUnits(momentUnits);
+         ((PagedImage<T>*)outPt[i])->setUnits(momentUnits);
       } else {
         if (giveMessage) {
            os_p << LogIO::NORMAL 
@@ -951,55 +950,10 @@ Bool ImageMoments<T>::createMoments()
            giveMessage = False;
         }
       }
-
-
-// Figure out if we need to compute the coordinate of each profile pixel index
-// for each profile.  This is very expensive for non-separable axes.
-
-     if (moments_p(i) == WEIGHTED_MEAN_COORDINATE ||
-         moments_p(i) == WEIGHTED_DISPERSION_COORDINATE) doCoordCalc = True;
    } 
 
 
-// Pre compute a vector of coordinates converting profile pixel index to world
-// coordinate if the profile axis is a non-coupled axis (spectral).  For
-// axes like RA and DEC, we have to compute the coordinate for each pixel
-// of each profile
 
-   Vector<Double> sepWorldCoord;
-   if (doCoordCalc) {
-
-// Find the coordinate for the moment axis
-
-     Int coordinate, axisInCoordinate;
-     pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, 
-                                             momentAxis_p);
-
-// Find out whether this coordinate is separable or not
-
-     Int nPixelAxes = pInImage_p->coordinates().coordinate(coordinate).nPixelAxes();
-     Int nWorldAxes = pInImage_p->coordinates().coordinate(coordinate).nWorldAxes();
-
-//     cout << "nPixelAxes=" << nPixelAxes << endl;
-//     cout << "nWorldAxes=" << nWorldAxes << endl;
-
-// Precompute the profile coordinates if it is separable
-
-     if (nPixelAxes == 1 && nWorldAxes == 1) {
-        pixelIn_p = pInImage_p->coordinates().referencePixel();
-        sepWorldCoord.resize(latticeShape(momentAxis_p));
-
-        for (i=0; i<sepWorldCoord.nelements(); i++) {
-           sepWorldCoord(i) = getMomentCoord (Double(i));
-        }
-     } else {
-        os_p << LogIO::NORMAL 
-             << "You have asked for a coordinate moment from a non-separable " << endl;
-        os_p << "axis.  This means a coordinate must be computed for each pixel " << endl;
-        os_p << "of each profile which will cause performance degradation" << LogIO::POST;        
-     }
-   }
-            
 // If the user is using the automatic, non-fitting window method, they need
 // a good assement of the noise.  The user can input that value, but if
 // they don't, we work it out here.
@@ -1028,125 +982,36 @@ Bool ImageMoments<T>::createMoments()
        cpgvstd();
    }        
 
-// Array to hold moments
-   
-   Vector<T> calcMoments(NMOMENTS);   
-   String momAxisType = pInImage_p->coordinates().worldAxisNames()(worldMomentAxis);
    
 
-// TESTING KS method
-
-   const Double ks = 0.03;
-
-
-// Set up progress indicator
-
-   Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
-   ProgressMeter clock(0.0, Double(nProfiles), "Compute Moments", "Profiles computed",
-                       "", "", True, max(1,Int(nProfiles/20)));
-   Double meterValue = 0.0;
-
-
-   IPosition stride, sliceShape;
-   if (pSmoothedImage) {
-      stride.resize(pSmoothedImage->ndim());
-      stride = 1;
-      sliceShape.resize(pSmoothedImage->ndim());
-      sliceShape = 1;
-      sliceShape(momentAxis_p) = pSmoothedImage->shape()(momentAxis_p);
-   }
-   IPosition outPos(outDim);
-   Vector<T> smoothSliceRef;
-
-// Iterate through image and do all the wonderful things with each profile
+// Create appropriate MomentCalculator object 
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
-   while (!imageIterator.atEnd()) {
 
-
-// Set pixel values of all axes (used for coordinate transformation)
-// to be start of cursor array.  The desired value for the moment axis 
-// is set in getMomentCoord. 
-
-      for (i=0; i<pixelIn_p.nelements(); i++) {
-         pixelIn_p(i) = imageIterator.position()(i);
-      }
-
-// Fish out smoothed image slice
-
-      if (pSmoothedImage) {
-         Array<T> smoothSlice;
-         pSmoothedImage->getSlice(smoothSlice, (imageIterator.position()-blc_p),
-                                  sliceShape, stride, True);
-         smoothSliceRef.reference(smoothSlice);
-      }
-
-
-// Choose method
-
-      if (smoothClipMethod) {
-      
-// Smooth and clip
-
-         doMomSm(calcMoments, sepWorldCoord, imageIterator.vectorCursor(),
-                 smoothSliceRef, doMedianI, doMedianV, doAbsDev,
-                 doCoordCalc, doPlot, momAxisType, imageIterator.position());
-
-      } else if (windowMethod) {
-    
-// Window, with smoothed or unsmoothed data
-
-         doMomWin (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
-                   smoothSliceRef, doMedianI, doMedianV, doAbsDev, 
-                   doCoordCalc, doPlot, momAxisType, imageIterator.position(), ks);
-
-      } else if (fitMethod) {
-
-// Fit   
-   
-         doMomFit (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
-                   doMedianI, doMedianV, doAbsDev, doCoordCalc, 
-                   doPlot, momAxisType, imageIterator.position());
-      } else if (clipMethod) {
-            
-// no clip or clip
-        
-         doMomCl (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
-                  doMedianI, doMedianV, doAbsDev, doCoordCalc);
-      }  else {
-         os_p << LogIO::SEVERE << "Internal logic error.  Big trouble." << LogIO::POST;
-         return False;
-      }
-
-// Fill output images; set position of output image (has one
-// axis removed) and assign value
-// The one point slice is slower than the direct access method.
-// Need to iterate through output images and buffer up slices
-//
-
-      for (Int j=0; j<outDim; j++) {
-         outPos(j) = imageIterator.position()(ioMap(j)) - blc_p(ioMap(j));
-      }
-      for (i=0; i<moments_p.nelements(); i++) {
-         (*(outPt[i]))(outPos) = calcMoments(selMom(i));
-      }
-
-// Increment iterators and progress meter
-
-      imageIterator++;
-
-      meterValue += 1.0; 
-      clock.update(meterValue);
+   MomentCalcBase<T>* pMomentCalculator = 0;   
+   if (clipMethod || smoothClipMethod) {
+      pMomentCalculator = new MomentClip<T>(pSmoothedImage, *this, os_p, outPt.nelements());
+   } else if (windowMethod) {
+      pMomentCalculator = new MomentWindow<T>(pSmoothedImage, *this, os_p, outPt.nelements());
+   } else if (fitMethod) {
+      pMomentCalculator = new MomentFit<T>(*this, os_p, outPt.nelements());
    }
 
-// Delete memory
+// Iterate optimally through the image, compute the moments, fill the output lattices
+
+   LatticeApply<T>::vectorMultiApply(outPt, *pInImage_p, *pMomentCalculator,
+                                     momentAxis_p, blc_p, trc_p, True, True,
+                                     "Compute Moments");
+
+// Clean up
          
+   delete pMomentCalculator;
    for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
 
    if (pSmoothedImage) {
       delete pSmoothedImage;
        
-// Remove the disk file if they don't want to save it
+// Remove the smoothed image file if they don't want to save it
  
       if (smoothOut_p.empty()) {
          Directory dir(smoothName);
@@ -1165,142 +1030,7 @@ Bool ImageMoments<T>::createMoments()
 
 
 
-
-
-
 // Private member functions
-
-template <class T> 
-void ImageMoments<T>::accumSums (Double& s0,
-                                 Double& s0Sq,
-                                 Double& s1,
-                                 Double& s2,
-                                 Int& iMin,
-                                 Int& iMax,
-                                 Double& dMin,
-                                 Double& dMax,
-                                 const Int& i,
-                                 const T& datum,
-                                 const Double& coord)
-// 
-// Accumulate statistical sums from this datum
-//
-// Input:
-//  i              Index
-//  datum          Pixel value
-//  coord          Coordinate value on moment axis
-// Input/output:
-//  iMin,max       index of dMin and dMax
-//  dMin,dMax      minimum and maximum value
-// Output:
-//  s0             sum (I)
-//  s0Sq           sum (I*I)
-//  s1             sum (I*v)
-//  s2             sum (I*v*v)
-{           
-   const Double dDatum = Double(datum);
-   s0 += dDatum;   
-   s0Sq += dDatum*dDatum;
-   s1 += dDatum*coord;
-   s2 += dDatum*coord*coord;
-   if (dDatum < dMin) {
-     iMin = i;
-     dMin = dDatum;
-   }
-   if (dDatum > dMax) {
-     iMax = i;
-     dMax = dDatum;
-   }
-}
-
-
-template <class T> 
-Bool ImageMoments<T>::allNoise (T& dMean,
-                                const Vector<T>& data)
-//                
-// Try and work out whether this spectrum is all noise
-// or not.  We don't bother with it if it is noise.
-// We compare the peak with sigma and a cutoff SNR
-//
-{         
-   T dMin, dMax;
-   minMax (dMin, dMax, data.ac());
-   dMean = mean(data.ac());
-
-// Assume we are continuum subtracted so outside of line mean=0
-
-   const T rat = max(abs(dMin),abs(dMax)) / stdDeviation_p;
-
-//   os_p << "min,max,mean,sigma,peakSNR_p,SNR=" << dMin << " " << dMax << " " << dMean << " " 
-//        << stdDeviation_p << " " << peakSNR_p << " " << rat << LogIO::POST;
-   if (rat < peakSNR_p) {
-      return True; 
-   } else {
-      return False;
-   }
-}        
-   
-
-
-template <class T> 
-Bool ImageMoments<T>::allNoise (const Vector<T>& spectrum,
-                                const Double& sigma, 
-                                const Double& ks)
-//
-// Try and work out whether this spectrum is all noise
-// or not.  We don't bother with it if it is noise.
-// We use the Kolmogorov-Smirnov test for this.
-//
-// Inputs:
-//  sigma  The sigma of the theoretical noise distribution
-//
-{
-// Copy spectrum  
-
-   const Int nPts = spectrum.nelements();
-   Vector<T> tSpectrum(nPts);
-   tSpectrum = spectrum;
-
-// Sort it
-
-   const uInt nSort = GenSort<T>::sort(tSpectrum, Sort::Ascending, Sort::QuickSort);
-
-// Make cumulative and find maximum D statistic  
-          
-   Double CData = 0;
-   const Double step = 1.0 / Double(nSort);
-   Double DMax = 0.0;
-   Double CGauss;
-   for (uInt i=1; i<nSort; i++) {
-      
-// Data
-   
-      CData += step;
-         
-// Model
-        
-      CGauss = getGaussianCumulativeProb(sigma, Double(tSpectrum(i)));
-
-// Maximum D
-               
-      DMax = max(DMax, abs(CData-CGauss)*1.0);
-   }
-
-
-// Get KS probability
-
-   os_p << LogIO::NORMAL << "DMax = " << DMax << LogIO::POST;
-   Double prob = getKSProbability(nSort, DMax);
-   os_p << LogIO::NORMAL << "KS prob = " << prob << LogIO::POST;
-   if (prob < ks) {
-      return False;
-   } else {
-      return True;
-   }
-}
-
-
-
 
 template <class T> 
 Bool ImageMoments<T>::checkMethod ()
@@ -1480,640 +1210,6 @@ Bool ImageMoments<T>::checkMethod ()
 }
 
 
-
-
-template <class T> 
-void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
-                               const Vector<Double>& sepWorldCoord, 
-                               const Vector<T>& data,
-                               const Bool doMedianI,
-                               const Bool doMedianV,
-                               const Bool doAbsDev,
-                               const Bool doCoordCalc)
-//
-// Generate clipped moments of this profile
-//
-// Output:
-//   calcMomentsThe many moments
-// Input:
-//   sepWorldCoord
-//               If the profile axis is separable, the coordinates for
-//               each pixel are precomputed and in here.  If of zero length,
-//               they weren't precomputed.
-//   data        The profile
-//   doMedian    Don't bother with median unless we really have to
-//   doAbsDev    Don't bother with absolute deviations unless we really have to
-//   doCoordCalc Don't bother computing coordinate transformations if false
-{
-   const Bool doInclude = ToBool(!noInclude_p);
-   const Bool doExclude = ToBool(!noExclude_p);
-   
-// Assign array for median.  Is resized appropriately later
-      
-   Int nPts = data.nelements();
-   Vector<T> selectedData(nPts);
-   Vector<Int> selectedDataIndex(nPts);
-
-// Were the profile coordinates precomputed ?
-
-   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
-       
-// Compute moments
-
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
-   Int iMin = -1;   
-   Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
-   Double coord = 0.0;
-   Int i,j;
-   if (doInclude) {
-      for (i=0,j=0; i<nPts; i++) {
-         if (data(i) >= range_p(0) && data(i) <= range_p(1)) {
-            if (preComp) {
-               coord = sepWorldCoord(i);
-            } else if (doCoordCalc) {
-               coord = getMomentCoord (Double(i));
-            }
-            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                       dMin, dMax, i, data(i), coord);
-            selectedData(j) = data(i);
-            selectedDataIndex(j) = i;
-            j++;
-         }
-      }
-      nPts = j;
-   } else if (doExclude) {
-      for (i=0,j=0; i<nPts; i++) {
-         if (data(i) <= range_p(0) || data(i) >= range_p(1)) {
-            if (preComp) {
-               coord = sepWorldCoord(i);
-            } else if (doCoordCalc) {
-               coord = getMomentCoord (Double(i));
-            }
-            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                       dMin, dMax, i, data(i), coord);
-            selectedData(j) = data(i);
-            selectedDataIndex(j) = i;
-            j++;
-         }
-      }
-      nPts = j;
-   } else {
-      for (i=0; i<nPts; i++) {
-         if (preComp) {
-            coord = sepWorldCoord(i);
-         } else if (doCoordCalc) {
-            coord = getMomentCoord (Double(i));
-         }
-         accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                    dMin, dMax, i, data(i), coord);
-         selectedData(i) = data(i);
-         selectedDataIndex(i) = i;
-      }   
-   }
-
-
-// If no points make moments zero. Blank at a later date.
-
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
-   }
-
-    
-// Absolute deviations of I from mean needs an extra pass.
-               
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData(i) - iMean);
-   }
-
- 
-// Median of I
-            
-   T dMedian = 0.0;
-   if (doMedianI) {
-      selectedData.resize(nPts,True);
-      dMedian = median(selectedData.ac());
-   }
-              
-
-// Median coordinate.  Only available with an include or exclude range
-// and still pretty dodgy
-
-   T vMedian = 0.0;
-   if (doMedianV) {
-      if (doInclude || doExclude) {
-
-// Treat spectrum as a probability distribution for velocity
-// and generate cumulative probability (it's already sorted
-// of course).
-
-         selectedData.resize(nPts,True);
-         selectedData(0) = abs(selectedData(0));
-         T dataMax = selectedData(0);
-         for (i=1; i<nPts; i++) {
-            selectedData(i) += abs(selectedData(i-1));
-            dataMax = max(dataMax,selectedData(i));
-         }
-
-// Find 1/2 way value (well, the first one that occurs)
-
-         T halfMax = dataMax/2.0;
-         Int iVal;
-         for (i=0; i<nPts; i++) {
-            if (selectedData(i) >= halfMax) {
-               iVal = i;
-               break;
-            }
-         }
-
-// Linearly interpolate to velocity index
-
-         Double interpPixel;
-         if (iVal > 0) {
-            Double m = (selectedData(iVal) - selectedData(iVal-1)) /
-                      (selectedDataIndex(iVal) - selectedDataIndex(iVal-1));
-            Double b = selectedData(iVal) - m*selectedDataIndex(iVal);
-            interpPixel = (selectedData(iVal) -b) / m;
-         } else {
-            interpPixel = selectedDataIndex(iVal);
-         }           
-
-// Find world coordinate of that pixel on the moment axis
-
-        vMedian = getMomentCoord (interpPixel);
-      }
-   } 
-               
-
-
-
-// Fill moments array
- 
-   setCalcMoments (calcMoments, dMedian, vMedian, nPts, s0, s1, s2, s0Sq, sumAbsDev,
-                   dMin, dMax, iMin, iMax);
-            
-}
-
-
-
-template <class T> 
-void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
-                                const Vector<Double>& sepWorldCoord, 
-                                const Vector<T>& data,
-                                const Bool doMedianI,
-                                const Bool doMedianV,
-                                const Bool doAbsDev,
-                                const Bool doCoordCalc,
-                                const Bool doPlot,               
-                                const String& momAxisType,
-                                const IPosition& pos)
-//
-// Generate moments from a Gaussian fit of this profile
-// 
-// Output:
-//   calcMoments The many moments
-// Input:
-//   sepWorldCoord
-//               If the profile axis is separable, the coordinates for
-//               each pixel are precomputed and in here.  If of zero length,
-//               they weren't precomputed.
-//   data        The profile
-//   doMedian    Don't bother with median unless we really have to
-//   doAbsDev    Don't bother with absolute deviations unless we really have to
-//   doCoordCalc Don't bother with coordinate transformations unless we really have to
-//   doPlot      Plotting device is active
-//   momAxisType Name of moment axis
-//   pos         Position in image of start of data vector
-// 
-{
-   
-// Create the abcissa array and some labels
-   
-   Vector<T> gaussPars(4);
-   Vector<T> abcissa;
-   makeAbcissa (abcissa, data.nelements());
-   String xLabel;
-   if (momAxisType.empty()) 
-      xLabel = "x (pixels)";
-   else
-      xLabel = momAxisType + " (pixels)";
-   String yLabel("Intensity");
-   String title;
-   setPosLabel (title, pos);
- 
-
-   if (doAuto_p) {
-   
-// Automatic
-
-      if (!getAutoGaussianFit (gaussPars, abcissa, data, doPlot, xLabel, yLabel, title)) {
-         calcMoments = 0;
-         return;
-      }
-   
-   } else {
-      
-// Interactive
-   
-      if (!getInterGaussianFit (gaussPars, abcissa, data, xLabel, yLabel, title)) {
-         calcMoments = 0;
-         return;
-      }
-   }
- 
-
-
-// Were the profile coordinates precomputed ?
-
-   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
-
-// Generate Gaussian functional
-
-   const Int nPts = data.nelements();
-   const Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
-
-   
-// Compute moments
-   
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
-   Int iMin = -1;
-   Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;   
-   Double coord = 0.0;
-   T xx;
-   Vector<T> gData(nPts);
-
-   for (Int i=0; i<nPts; i++) {
-      xx = i;
-      gData(i) = gauss(xx) + gaussPars(3);
-
-      if (preComp) {
-         coord = sepWorldCoord(i);
-      } else if (doCoordCalc) {
-         coord = getMomentCoord (Double(i));
-      }
-      accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                 dMin, dMax, i, gData(i), coord);
-   }
-
-
-// Absolute deviations of I from mean.  Requires a second pass
-       
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      for (Int i=0; i<=nPts; i++) sumAbsDev += abs(Double(gData(i)) - iMean);
-    }
-
-
-// Medians
-   
-   T dMedian = 0.0;
-   if (doMedianI) dMedian = median(gData.ac());
-   T vMedian = 0.0;
-   
-         
-// Fill moments array
-       
-   setCalcMoments (calcMoments, dMedian, vMedian, nPts, s0, s1, s2, s0Sq, sumAbsDev,
-                     dMin, dMax, iMin, iMax);
-}        
-
-
-
-template <class T> 
-void ImageMoments<T>::doMomSm(Vector<T>& calcMoments,
-                               const Vector<Double>& sepWorldCoord, 
-                               const Vector<T>& data, 
-                               const Vector<T>& smoothedData,
-                               const Bool doMedianI,
-                               const Bool doMedianV,
-                               const Bool doAbsDev,
-                               const Bool doCoordCalc,
-                               const Bool doPlot,
-                               const String& momAxisType,
-                               const IPosition& pos)
-//   
-// Generate masked moments of this profile where the mask is
-// generated from the smoothed data
-//
-// Output:
-//   calcMomentsThe many moments
-// Input:    
-//   sepWorldCoord If the profile axis is separable, the coordinates for
-//                 each pixel are precomputed and in here.  If of zero length,
-//                 they weren't precomputed.
-//   data          The profile
-//   smoothedData  The smoothed profile
-//   doMedian      Don't bother with median unless we really have to
-//   doAbsDev      Don't bother with absolute deviations unless we really have to
-//   doCoordCalc   Don't bother with coordinate transformations unless we really have to
-//   doPlot        Make plots
-//   momAxisType   Name of moment axis
-//   pos           Position in image of start of profile
-//
-{
-
-// Plot if asked
-
-   if (doPlot) {
-      Vector<T> abcissa;
-      makeAbcissa (abcissa, data.nelements());
-      String xLabel;
-      if (momAxisType.empty()) {
-         xLabel = "x (pixels)";
-      } else {
-         xLabel = momAxisType + " (pixels)";
-      }
-      const String yLabel("Intensity");
-      String title;
-      setPosLabel (title, pos);
-
-      cpgpage();
-      drawLine (abcissa, smoothedData, xLabel, yLabel, title);
-
-// Draw on clip levels and arrows
-
-      cpgsci (5);
-      drawHorizontal(T(range_p(0)));
-      drawHorizontal(T(range_p(1)));
-  
-      float xMin, xMax, yMin, yMax; 
-      cpgqwin (&xMin, &xMax, &yMin, &yMax);
-      float x = xMin + 0.05*(xMax-xMin);
-      float y = range_p(1) - 0.2*range_p(1);
-      cpgarro (x, float(range_p(1)), x, y);
-      y = range_p(0) + 0.2*range_p(0);
-      cpgarro (x, y, x, float(range_p(0)));
-      cpgsci(1);
-   }
-
-
-// Assign array for median.  
-
-   Int nPts = data.nelements();
-   Vector<T> selectedData(nPts);
-
-// Were the profile coordinates precomputed ?
-    
-   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
- 
-
-// Compute moments
-
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
-   Int iMin = -1;
-   Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
-   Double coord = 0.0;
-   Bool doInclude = ToBool(!noInclude_p);
-   Int i,j;
-
-
-// We won't be in this method unless the range is set and either noInclude_p
-// or noExclude_p are set.  So we don't have to check them both or provide
-// a selectedData with all points
-
-   if (doInclude) {
-      for (i=0,j=0; i<nPts; i++) {
-         if (smoothedData(i) >= range_p(0) && smoothedData(i) <= range_p(1)) {
-            if (preComp) {
-               coord = sepWorldCoord(i);
-            } else if (doCoordCalc) {
-               coord = getMomentCoord (Double(i));
-            }
-            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                       dMin, dMax, i, data(i), coord);
-            selectedData(j) = data(i);
-            j++;
-         }
-      }
-      nPts = j;
-   } else {
-      for (i=0,j=0; i<nPts; i++) {
-         if (smoothedData(i) <= range_p(0) || smoothedData(i) >= range_p(1)) {
-            if (preComp) {
-               coord = sepWorldCoord(i);
-            } else if (doCoordCalc) {
-               coord = getMomentCoord (Double(i));
-            }
-            accumSums (s0, s0Sq, s1, s2, iMin, iMax,
-                       dMin, dMax, i, data(i), coord);
-            selectedData(j) = data(i);
-            j++;
-         }
-      }
-   }
-   nPts = j;
-
-
-// If no points make moments zero. Blank at a later date.
-
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
-   }
-
-
-// Absolute deviations of I from mean.  Requires a second pass
-
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      for (i=0; i<nPts; i++) sumAbsDev += abs(Double(selectedData(i) - iMean));
-   }
-
-
-// Medians
-
-   T dMedian = 0.0;
-   if (doMedianI) {
-      selectedData.resize(nPts,True);
-      dMedian = median(selectedData.ac());
-   }
-   T vMedian = 0.0;
-
-
-
-// Fill moments array
-
-   setCalcMoments (calcMoments, dMedian, vMedian, nPts, s0, s1, s2, s0Sq, sumAbsDev, 
-                   dMin, dMax, iMin, iMax);
-}
-
-
-template <class T> 
-void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
-                                const Vector<Double>& sepWorldCoord, 
-                                const Vector<T>& data, 
-                                const Vector<T>& smoothedData, 
-                                const Bool doMedianI,
-                                const Bool doMedianV,
-                                const Bool doAbsDev,
-                                const Bool doCoordCalc,
-                                const Bool doPlot,
-                                const String& momAxisType,
-                                const IPosition& pos, 
-                                const Double& ks)
-//   
-// Generate windowed moments of this profile
-//
-// Output:
-//   calcMoments The many moments
-// Input:    
-//   sepWorldCoord 
-//               If the profile axis is separable, the coordinates for
-//               each pixel are precomputed and in here.  If of zero length,
-//               they weren't precomputed.
-//   data        The spectrum
-//   smoothedData
-//               The smoothed spectrum
-//   doMedian    Don't bother with median unless we really have to
-//   doAbsDev    Don't bother with absolute deviations unless we really have to
-//   doCoordCalc   Don't bother with coordinate transformations unless we really have to
-//   doPlot      Plotting device is active
-//   momAxisType Name of moment axis
-//   pos         Position in image of start of profile
-//
-{
-
-// Make abcissa and labels
-
-   static Bool allSubsequent = False;
-   static Vector<Int> window(2);
-   static Int nPts = 0;
-
-   Vector<T> abcissa;
-   makeAbcissa (abcissa, data.nelements());
-   String xLabel;
-   if (momAxisType.empty()) {
-      xLabel = "x (pixels)";
-   } else {
-      xLabel = momAxisType + " (pixels)";
-   }
-   const String yLabel("Intensity");
-   String title;
-   setPosLabel (title, pos);
-
-
-// Set up pointer to the smoothed or unsmoothed data
-
-   const Vector<T>* pData;
-   if (doSmooth_p) {
-      pData = &smoothedData;
-   } else {
-      pData = &data;
-   }
-
-
-   if (doAuto_p) {
-
-// Define the window automatically
-
-      Vector<T> gaussPars;
-      getAutoWindow (window,  abcissa, *pData, doPlot,
-                     xLabel, yLabel, title, ks);
-   } else {
-
-// Define the window interactively, unless the user has told us when
-// doing the previous spectrum that they wish to apply that window
-// to all subsequent ones
-
-
-      if (!doFit_p && !allSubsequent) {
-         os_p << endl;
-         os_p << LogIO::NORMAL << "Mark extremum (left), redo (middle), reject (right), all subsequent (S)" << LogIO::POST;
-      }
-
-      if (!allSubsequent) {
-         getInterWindow (allSubsequent, window, abcissa, *pData,
-                         xLabel, yLabel, title);
-      } else if (nPts != 0) {
-         cpgpage();
-         drawLine (abcissa, *pData, xLabel, yLabel, title);
-         drawWindow (window);
-      }
-   }
-   nPts = window(1) - window(0) + 1;
-
-
-// If no points make moments zero. Blank at a later date.
-
-   if (nPts==0) {
-      calcMoments = 0.0;
-      return;
-   }
-
-// Assign array for median.  
-
-   Vector<T> selectedData(nPts);
-
-// Were the profile coordinates precomputed ?
-    
-   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
- 
-
-// Compute moments
-
-   Double s0  = 0.0;
-   Double s0Sq = 0.0;
-   Double s1  = 0.0;
-   Double s2  = 0.0;
-   Int iMin = -1;
-   Int iMax = -1;
-   Double dMin =  1.0e30;
-   Double dMax = -1.0e30;
-   Double coord;
-
-   for (Int i=window(0); i<=window(1); i++) {
-      if (preComp) {
-         coord = sepWorldCoord(i);
-      } else if (doCoordCalc) {
-         coord = getMomentCoord (Double(i));
-      }
-      accumSums (s0, s0Sq, s1, s2, iMin, iMax, 
-                 dMin, dMax, i, data(i), coord);
-      selectedData(i-window(0)) = data(i);
-   }
-
-// Medians
-
-   T dMedian = 0.0;
-   if (doMedianI) dMedian = median(selectedData.ac());
-   T vMedian = 0.0;
-
-// Absolute deviations of I from mean.  Requires a second pass
-
-   Double sumAbsDev = 0.0;
-   if (doAbsDev) {
-      Double iMean = s0 / nPts;
-      for (Int i=window(0); i<=window(1); i++) sumAbsDev += abs(Double(data(i) - iMean));
-    }
-
-
-// Fill moments array
-
-   setCalcMoments (calcMoments, dMedian, vMedian, nPts, s0, s1, s2, s0Sq, sumAbsDev, 
-                   dMin, dMax, iMin, iMax);
-  
-}
-
-
 template <class T> 
 void ImageMoments<T>::drawHistogram (const T& dMin,
                                      const Int& nBins,
@@ -2188,924 +1284,6 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 }
 
 
-template <class T> 
-void ImageMoments<T>::drawLine (const Vector<T>& x,
-                                const Vector<T>& y,
-                                const String& xLabel,
-                                const String& yLabel,
-                                const String& title)
-//
-// Draw and label a spectrum on the current panel
-//
-{
-// Find extrema
-
-   const Int nPts = x.nelements();
-   Float xMin = 0.0;
-   Float xMax = Float(nPts);
-   ImageUtilities::stretchMinMax (xMin, xMax);
-
-   T yMin, yMax;
-   Float yMinF, yMaxF;
-   if (!fixedYLimits_p) {
-      minMax(yMin, yMax, y.ac());
-      yMinF = Float(yMin);
-      yMaxF = Float(yMax);
-      ImageUtilities::stretchMinMax (yMinF, yMaxF);
-   }
-
-
-// Plot
-
-   if (fixedYLimits_p) {
-      cpgswin (float(xMin), float(xMax), yMin_p, yMax_p);
-   } else {
-      cpgswin (float(xMin), float(xMax), yMinF, yMaxF);
-   }
-   cpgbox ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   drawLine (x, y);
-   cpglab (xLabel.chars(), yLabel.chars(), "");
-   cpgmtxt ("T", 1.0, 0.5, 0.5, title.chars());
-}
-
-
-template <class T> 
-void ImageMoments<T>::drawMeanSigma (const T& dMean,
-                                     const T& dSigma)
-//
-// Draw a horizontal line on the spectrum plot at
-// the mean value, and 2 horizontal lines at
-// mean +/- sigma
-//
-{
-   cpgsci(7);
-   drawHorizontal(dMean);
-   cpgsci(5);
-   drawHorizontal(dMean+dSigma);
-   drawHorizontal(dMean-dSigma);
-   cpgsci(1);
-}
-
-
-template <class T> 
-void ImageMoments<T>::drawHorizontal(const T& y)
-//
-// Draw a horizontal line across the full x range of the plot
-//
-{
-   float xMin, xMax, yMin, yMax; 
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
-
-   cpgmove (xMin, float(y));
-   cpgdraw (xMax, float(y));
-}
-
-
-template <class T> 
-void ImageMoments<T>::drawWindow (const Vector<Int>& window)
-//
-// Mark the current window on the plot
-//
-{  
-   float x1, x2, y1, y2;
-   cpgqwin (&x1, &x2, &y1, &y2);
-   drawVertical (float(window(0)), y1, y2);
-   drawVertical (float(window(1)), y1, y2);
-}
-
-
-template <class T> 
-Bool ImageMoments<T>::fitGaussian (T& peak,
-                                   T& pos,
-                                   T& width, 
-                                   T& level,
-                                   const Vector<T>& x,
-                                   const Vector<T>& y,
-                                   const T& peakGuess,
-                                   const T& posGuess,
-                                   const T& widthGuess,
-                                   const T& levelGuess)
-//
-// Fit Gaussian pos * exp(-4ln2*(x-pos)**2/width**2)
-// width = fwhm
-//
-{
-
-// Create fitter
-
-   NonLinearFitLM<T> fitter;
-
-
-// Create and set the functionals
-
-   const Gaussian1D<AutoDiff<T> > gauss;
-   const Polynomial<AutoDiff<T> > poly;
-   SumFunction<AutoDiff<T>,AutoDiff<T> > func;
-   func.addFunction(gauss);
-   func.addFunction(poly);
-
-   FuncWithAutoDerivs<T,T> autoFunc(func);
-   fitter.setFunction(autoFunc);
-
-//   Gaussian1D<AutoDiff<T> > gauss;
-//   fitter.setFunction(gauss);
-
-
-
-// Initial guess
-
-
-   Vector<T> v(4);
-
-   v(0) = peakGuess;             // peak
-   v(1) = posGuess;              // position
-   v(2) = widthGuess;            // width
-   v(3) = levelGuess;            // level
-
-   fitter.setFittedFuncParams(v);
-
-      
-// Set maximum number of iterations to 50.  Default is 10  
-
-   fitter.setMaxIter(50);
-     
-
-// Set converge criteria.  
-
-   T tol = 0.001;
-   fitter.setCriteria(tol);
-
-
-// perform fit
- 
-   Vector<T> resultSigma(x.nelements());
-   resultSigma = 1;
-   Vector<T> solution = fitter.fit(x, y, resultSigma);
-
-// Return values of fit 
-
-//   cout << "SOlution = " << solution.ac() << LogIO::POST;
-
-   peak  = solution(0);
-   pos   = solution(1);
-   width = abs(solution(2));
-   level = solution(3);   
-
-
-// Return status
-    
-   return fitter.converged();
-
-}
-
-
-template <class T> 
-void ImageMoments<T>::getAutoGaussianGuess (T& peakGuess, 
-                                            T& posGuess,
-                                            T& widthGuess,
-                                            const Vector<T>& x,
-                                            const Vector<T>& y)
-//
-// Make a wild stab in the dark as to what the Gaussian
-// parameters of this spectrum might be
-//
-{
-
-// Find peak and position of peak
-
-   IPosition minPos(1);
-   IPosition maxPos(1);
-   T dMin, dMax;
-   minMax(dMin, dMax, minPos, maxPos, y.ac());
-
-   posGuess = x(maxPos(0));
-   peakGuess = dMax;
-
-// Nothing much is very robust.  Assume the line is reasonably
-// sampled and set its width to a few pixels.  Totally ridiculous.
-
-   widthGuess = 5;
-
-//   cout << "Guess: peak,pos,width=" << peakGuess << ", " << posGuess << "," <<
-//           widthGuess << LogIO::POST;
-  
-}
-
-
-template <class T> 
-Bool ImageMoments<T>::getAutoGaussianFit (Vector<T>& gaussPars,
-                                          const Vector<T>& x,
-                                          const Vector<T>& y,
-                                          const Bool& doPlot,
-                                          const String& xLabel,
-                                          const String& yLabel,
-                                          const String& title)
-//
-// Automatically fit a Gaussian and return the Gaussian parameters.
-// If a plotting device is active, we also plot the spectra and fits
-//
-// Inputs:
-//   x,y        Vector containing the data
-//   doPlot     Plot spectrum and optionally the  window
-//   x,yLabel   Labels
-//   title
-// Output:
-//   gaussPars  The gaussian parameters, peak, pos, fwhm
-//   Bool       If False then this spectrum has been rejected (all
-//              noise, failed fit)
-//
-{
-
-
-// Plot spectrum if desired
-
-   if (doPlot) {
-      cpgpage();
-      drawLine (x, y, xLabel, yLabel, title);
-   }
-
-
-// See if this spectrum is all noise first.  If so, forget it.
-
-   T dMean;
-   const Bool noisy = allNoise(dMean, y.ac());
-
-// Draw on mean and sigma
-
-   const T sigma = stdDeviation_p;
-   if (doPlot) {
-      drawMeanSigma (dMean, sigma);
-      if (noisy) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
-   }
-   if (noisy) {
-      gaussPars = 0;
-      return False;
-   }
-
-
-// Work out guesses for Gaussian
-
-   T peakGuess, posGuess, widthGuess, levelGuess;
-   T pos, width, peak, level;
-   getAutoGaussianGuess(peakGuess, posGuess, widthGuess, x, y);
-   levelGuess = mean(y.ac());
-   peakGuess = peakGuess - levelGuess;
-
-// Fit gaussian. Do it twice.
-
-   if (!fitGaussian (peak, pos, width, level, x, y, peakGuess, posGuess, 
-                     widthGuess, levelGuess)) {
-      gaussPars = 0;
-      return False;
-   }
-   gaussPars(0) = peak;
-   gaussPars(1) = pos;
-   gaussPars(2) = width;
-   gaussPars(3) = level;
-
-
-// Plot the fit
-
-   if (doPlot) showGaussFit (peak, pos, width, level, x, y);
-
-   return True;
-}
-
-
-
-
-template <class T> 
-void ImageMoments<T>::getAutoWindow (Vector<Int>& window,
-                                     const Vector<T>& x,
-                                     const Vector<T>& y,
-                                     const Bool& doPlot,
-                                     const String& xLabel,
-                                     const String& yLabel,
-                                     const String& title, const Double& ks)
-//
-// Automatically fit a Gaussian and return the +/- 3-sigma window or
-// invoke Bosma's method to set a window.  If a plotting device is 
-// active, we also plot the spectra and fits
-//
-// Inputs:
-//   x,y        Spectrum
-//   doPlot     Plot spectrum and optionally the  window
-//   x,yLabel   x label for plots
-//   title
-// Output:
-//   window     The window (pixels).  If both 0,  then discard this spectrum 
-//              and blank moments
-//
-{
-   if (doFit_p) {
-      Vector<T> gaussPars(4);
-      if (!getAutoGaussianFit (gaussPars, x, y, doPlot, xLabel, yLabel, title)) {
-         window = 0;
-         return;
-      } else {
-
-// Set 3-sigma limits.  
-
-         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2), 
-                               y.nelements(), 3)) {
-            window = 0;
-            return;
-         }
-      }
-   } else {
-
-// Invoke Albert's method (see AJ, 86, 1791)
-
-      if (!getBosmaWindow (window, x, y, doPlot, xLabel, yLabel, title, ks)) {
-         window = 0;
-         return;
-      }
-   }
-
-// Plot window if desired
-
-   if (doPlot) drawWindow (window);
-
-}
-
-template <class T> 
-Double ImageMoments<T>::getMomentCoord (const Double& momentPixel)
-//
-// Find the value of the world coordinate on the moment axis
-// for the given moment axis pixel value.  The pixel coordinate
-// for the other axes are already set and intrinsically have
-// the blc_p added to them
-// 
-// Input
-//   momentPixel   is the index in the profile extracted from the data 
-//                 so it is relative to the start of the extracted profile
-//
-{
-   pixelIn_p(momentAxis_p) = momentPixel + blc_p(momentAxis_p);
-   Bool ok = pInImage_p->coordinates().toWorld(worldOut_p, pixelIn_p);
-   return worldOut_p(momentAxis_p);
-}
-
-
-template <class T> 
-Double ImageMoments<T>::getErfC (const Double& x)
-//
-// Find 1-erf(x) using the Chebyshev polynomial
-// fit in Numerical recipes p 164
-//
-{
-  Double z = abs(x);
-  Double t = 1.0 / (1+z/2.0);
-  Double v = t * exp(-z*z-1.26551223 + t*(1.00002368+t*(0.37409196+
-            t*(0.09678418+t*(-0.18628806+t*(0.27886807+t*(-1.13520398+
-            t*(1.48851587+t*(-0.82215223+t*0.17087277)))))))));
- 
-  if (x < 0) v = 2.0-v;
-  return v;
-}
-
-
-template <class T> 
-Double ImageMoments<T>::getGaussianCumulativeProb (const Double& sigma, 
-                                                   const Double& x)
-//
-// Evaluate the cumulative probability function for
-// a zero mean Gaussian
-//
-// Inputs
-//   sigma    width of Gaussian (exp(-x**2/2/sigma**2)
-//   x        location to evaluate it for
-// Output:
-//   Double   the value
-{
-   const Double z = -x / sigma * C::_1_sqrt2;
-   return getErfC(z) / 2.0;
-}
-
-
-
-template <class T> 
-void ImageMoments<T>::getInterDirectWindow (Bool& allSubsequent,
-                                            Vector<Int>& window,
-                                            const Vector<T>& x,
-                                            const Vector<T>& y,
-                                            const String& xLabel,
-                                            const String& yLabel,
-                                            const String& title)
-//
-// With the cursor, mark the range_p for the window method
-//
-// Outputs:
-//  window    The window (pixels)
-//
-{
-
-// First plot the spectrum
-
-   cpgpage();
-   drawLine (x, y, xLabel, yLabel, title);
-
-// Try and get a decent range_p from user
-
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
-   Bool more = True;
-   Bool ditch, redo;
-   const Int nPts = y.nelements();
-   T tX, tY1, tY2;
-
-   while (more) {
-
-// Get and draw first location
-
-      Bool final = False;
-      T x1 = nPts/2;
-      allSubsequent = True;
-      while (!getLoc(x1, allSubsequent, ditch, redo, final)) {};
-      if (ditch) {
-         window = 0;
-         return;
-      }
-   
-      if (!redo) {
-         window(0) = max(0,Int(x1+0.5)); 
-         tX = window(0);
-         tY1 = yMin;
-         tY2 = yMax;
-         drawVertical (tX, tY1, tY2);
-
-
-// Get and draw second location
-
-         T x2 = Float(window(0));
-         final = True;
-         allSubsequent = True;
-         while (!getLoc(x2, allSubsequent, ditch, redo, final)) {};
-         if (ditch) {
-            window = 0;
-            return;
-         } else if (redo) {
-            cpgeras();
-            drawLine (x, y, xLabel, yLabel, title);
-         } else {
-            window(1) = min(nPts-1,Int(x2+0.5));
-            tX = window(1);
-            drawVertical (tX, tY1, tY2);
-
-// Set window
-
-            Int iTemp = window(0);
-            window(0) = min(iTemp, window(1));
-            window(1) = max(iTemp, window(1));
-
-
-// If they stuffed it up, have another go.  Erase the line and redraw 
-// the spectrum segment
-
-            if (window(0) == window(1)) {
-               os_p << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
-               cpgeras();
-               drawLine (x, y, xLabel, yLabel, title);
-            } else
-               more = False;
-         }
-      }
-   }
-}
-
-
-template <class T> 
-void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess, 
-                                              T& posGuess,
-                                              T& widthGuess, 
-                                              Vector<Int>& window,
-                                              Bool& reject,
-                                              const Int& nPts)
-//
-// Use the cursor to get the user's guess for the
-// Gaussian peak, position and width (fwhm)
-// and fitting window
-//
-{
-   os_p << LogIO::NORMAL << "Mark the location of the peak and position" << endl;
-   os_p << "Press right button to reject spectrum" << LogIO::POST;
-
-   float x1, x2, y1, y2;
-   cpgqwin (&x1, &x2, &y1, &y2);
-
-
-// Peak/pos first
-
-   char ch;
-   static float x = (x1+x2)/2;
-   static float y = (y1+y2)/2;
-   Bool miss=True;
-   while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
-     if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
-   }
-   String str(ch);
-   str.upcase();
-   reject = False;
-
-   if (str == "X") {
-     os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-     reject = True;
-     return;
-   }
-
-   cpgsci(3);
-   cpgpt (1, &x, &y, 2);
-   cpgupdt ();
-   cpgsci (1);
-   posGuess = x;
-   peakGuess = y;
-
-
-// Now FWHM
-   
-   os_p << endl;
-   os_p << LogIO::NORMAL << "Mark the location of the FWHM" << endl;
-   os_p << "Press right button to reject spectrum" << LogIO::POST;
-   miss = True;
-   while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
-     if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
-   }
-   str = ch;
-   str.upcase();
-   if (str == "X") {
-     os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-     reject = True;
-   }  
-   cpgsci (3);
-   cpgpt (1, &x, &y, 2);
-   cpgsci (1);
-   y = float(peakGuess)/2;
-   cpgupdt ();
-   widthGuess = 2*abs(posGuess-x);
-  
-
-// Now window
-
-   os_p << endl;
-   os_p << LogIO::NORMAL << "Mark the location of the fit window" << endl;
-   os_p << "Press right button to reject spectrum" << endl;
-   os_p << "Press middle button to fit the whole spectrum" << LogIO::POST;
-   miss=True;
-   while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
-     if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
-   }
-   str = ch;
-   str.upcase();
-   if (str == "X") {
-     os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-     reject = True;
-     return;
-   } else if (str == "D") {
-     os_p << LogIO::NORMAL << "Fit to entire spectrum" << LogIO::POST;
-     window(0) = 0;
-     window(1) = nPts-1;
-     return;
-   }
-   T tX = x;
-   T tY1 = y1;
-   T tY2 = y2;
-   drawVertical (tX, tY1, tY2);
-   window(0) = Int(x+0.5);
-
-   miss = True;
-   while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
-     if (miss) os_p << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
-   }
-   str.upcase();
-   if (str == "X") {
-     os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-     reject = True;
-     return;
-   } else if (str == "D") {
-     os_p << LogIO::NORMAL << "Fit to entire spectrum" << LogIO::POST;
-     window(0) = 0;
-     window(1) = nPts-1;
-     return;
-   }
-   tX = x;
-   tY1 = y1;
-   tY2 = y2;
-   drawVertical (tX, tY1, tY2);
-   window(1) = Int(x+0.5);  
-   Int iTemp = window(0);
-   window(0) = min(iTemp, window(1));
-   window(1) = max(iTemp, window(1));
-   window(0) = max(0,window(0));
-   window(1) = min(nPts-1,window(1));
-
-   cpgsci(1);
-//   cout << "Guess:peak,pos,width=" << peakGuess << "," << posGuess << "," << widthGuess << LogIO::POST;
-}
-
-
-
-template <class T> 
-Bool ImageMoments<T>::getInterGaussianFit (Vector<T>& gaussPars,
-                                           const Vector<T>& x,
-                                           const Vector<T>& y,
-                                           const String& xLabel,
-                                           const String& yLabel,
-                                           const String& title)
-//
-// With the cursor, define a guess for a Gaussian fit,
-// and do the fit over and over until they are happy. 
-// Then return the Gaussian parameters.
-//
-// Inputs:
-//   x,y       The abcissa and spectrum
-//   x,yLabel  Labels
-//   title     Title of plot
-// Outputs:
-//   gaussPars The gaussian parameters (peak, pos, width, level)
-//   Bool      True if all successful, False if spectrum rejected
-//
-{
-
-// First draw the spectrum
-
-   cpgpage();
-   drawLine (x, y, xLabel, yLabel, title);
-
-// Get users guess and fit until satisfied
-
-   Bool more = True;
-   Bool ditch, redo;
-   Vector<Int> window(2);
-   os_p << endl;
-
-   while (more) {
-
-// Get users guess for position, peak and width
-
-      T peakGuess, posGuess, widthGuess, levelGuess, level;
-      Bool reject;
-      getInterGaussianGuess (peakGuess, posGuess, widthGuess, window, 
-                             reject, y.nelements());
-      if (reject) {
-         gaussPars = 0;
-         return False;
-      }
-
-
-// Get guess for level and adjust peak
-
-      levelGuess = mean(y.ac());
-      peakGuess = peakGuess - levelGuess;
-
-
-// Fit a Gaussian
-
-      Int n = window(1) - window(0) + 1;
-      Vector<T> xFit(n);
-      Vector<T> yFit(n);
-      for (Int i=0; i<n; i++) {
-         xFit(i) = x(i+window(0));
-         yFit(i) = y(i+window(0));
-      }
-      T pos, width, peak;
-      if (fitGaussian (peak, pos, width, level, xFit, yFit, peakGuess,
-                       posGuess, widthGuess, levelGuess)) {
-
-// Show fit 
-      
-         showGaussFit (peak, pos, width, level, x, y);
-      } else {
-         os_p << LogIO::NORMAL << "Fit did not converge" << LogIO::POST;
-      }
-
-
-// Are we happy ?
-
-      os_p << LogIO::NORMAL << "Accept (left),  redo (middle), reject (right)" << LogIO::POST;
-      getButton(ditch, redo);
-      if (ditch) {
-         os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-         gaussPars = 0;
-         return False;
-      } else if (redo) {
-
-// Redraw spectrum
-
-         cpgeras();
-         drawLine (x, y, xLabel, yLabel, title);
-      } else {
-
-// OK, set parameters of fit
-
-         more = False;
-         gaussPars(0) = peak;
-         gaussPars(1) = pos;
-         gaussPars(2) = width;
-         gaussPars(3) = level;
-         return True;
-      }
-   }
-
-   return True;
-}
-
-
-template <class T> 
-void ImageMoments<T>::getInterWindow (Bool& allSubsequent,
-                                      Vector<Int>& window,
-                                      const Vector<T>& x,
-                                      const Vector<T>& y,
-                                      const String& xLabel,
-                                      const String& yLabel,
-                                      const String& title)
-//
-// Interactively select the moment window by fitting a Gaussian 
-// or directly setting the window with the cursor.
-//
-// Inputs:
-//   x,y        Spectrum
-//   x,yLabel   Labels for plots
-//   title
-// Output:
-//   window     Include pixels in this range of indices.  If both 0,
-//              then discard this spectrum and blank moments
-//   allSubsequent
-//              If True, then the user has instructed that
-//              all subsequent spectra are to use this window
-//              and we are to stop the interactive plotting
-{
-   if (doFit_p) {
-
-
-// We interactively fit a Gaussian and choose +/- 3 sigma limits as the range
-
-      Vector<T> gaussPars(4);
-      if (!getInterGaussianFit (gaussPars, x, y, xLabel, yLabel, title)) {
-         window = 0;
-         return;
-      } else {
-
-// Set 3-sigma range
-
-         if (!setNSigmaWindow (window, gaussPars(1), gaussPars(2), y.nelements(), 3)) {
-            os_p << LogIO::NORMAL << "Window too small for this spectrum" << LogIO::POST;
-            window = 0;
-            return;
-         }
-
-// Mark window on plot
-
-         cpgeras ();
-         drawLine (x, y, xLabel, yLabel, title);
-         drawWindow (window);
-      }
-      allSubsequent = False;
-   } else {
-
-// The user just marks the range with the cursor
-
-      getInterDirectWindow (allSubsequent, window, x, y, xLabel, yLabel, title);
-   }
-
-   return;
-}
-
-
-
-template <class T> 
-Double ImageMoments<T>::getKSProbability (const uInt& n,
-                                          const Double& D)
-//
-// Get the probability that D > the observed value
-// for the Kolmogorov-Smirnov test (see Numerical
-// Recipes p 474)
-//
-// Inputs:
-//   n       Number of points
-//   D       The D statistic
-// Outputs:
-//   Double  The probability. 0 means that the
-//           distributions being compared are different
-//           1 means they are the same
-//
-{
-   const Int itMax = 50;
-   const Double alpha = 0.001;
-   const Double beta  = 1e-8;
-   Double lamFac = Double(-2) * Double(n) * D * D;
-   Double sum = 0.0;
-   Double term, oldTerm;
-   Int sign = 1;
-   Bool converge = False;
-   Bool first = True;
-   for (Int i=0; (!converge && i<itMax); i++) {
-      term = sign * exp(lamFac*(i+1)*(i+1));
-      sum += term;
-      if (!first && (abs(term)<alpha*oldTerm || abs(term)<= beta*sum) ) {
-         converge = True;
-      } else {
-         sign = -sign;
-         oldTerm = abs(term);
-         first = False;
-      }
-   }
-
-   if (!converge){
-      os_p << LogIO::NORMAL << "KS probability did not converge, final difference=" << sum << LogIO::POST;
-      return 0.0;
-   } else {
-      os_p << LogIO::NORMAL << "KS probability converged in " << i << " iterations" << LogIO::POST;
-      return 2 * sum;
-   }
-}
-
-
-
-template <class T> 
-Bool ImageMoments<T>::getLoc (T& x,
-                              Bool& allSubsequent,
-                              Bool& ditch,
-                              Bool& redo,
-                              const Bool& final)
-//
-// Read the PGPLOT cursor and return its coordinates if not off the plot
-// Also interpret which button was pressed
-//
-// Inputs:
-//   final   If we are marking a window, this indicates that we are
-//           trying to mark the last location, so that allSubsequent
-//           might be activated.
-// Input/Output:
-//   x       X location of cursor.  Input value is used to position cursor
-// Outputs:
-//   allSubsequent
-//           If True it means that whatever we have done to this spectrum, 
-//           the user would like it done to all subsequent ones.
-//   ditch   The user has indicated to reject this spectrum
-//   redo    The user has indicated to redo whaetver it is we are doing !
-//   Bool    False if cursor off the window
-//
-{
-// Fish out window
-
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
-
-// Position and read cursor
-
-   float xx = float(x);
-   static float yy = 0.0;
-   char ch;
-   cpgcurs (&xx, &yy, &ch);
-
-// Interpret location and character
-
-   String str = ch;
-   str.upcase();
-   ditch = False;
-   redo = False;
-   allSubsequent = False;
-
-   if (str == "X") {
-      os_p << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
-      ditch = True;
-   } else if (str == "D") {
-      os_p << LogIO::NORMAL << "Redoing window for this spectrum" << LogIO::POST;     
-      redo = True;
-   } else {
-      if (xx >= xMin && xx <= xMax) {
-         x = xx;
-      } else {
-         os_p << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
-         return False;
-      }
-
-      if (str == "S") {
-         if (!final) {
-            os_p << LogIO::NORMAL << 
-	              "You must define both ends of the range before it can be" << endl;
-            os_p   << "applied to all subsequent spectra. Enter S to define the" << endl;
-            os_p   << "second extremum and indicate it will be used for all " << endl;
-            os_p   << "subsequent spectra" << LogIO::POST;
-            return False;
-         } else {
-            os_p << LogIO::NORMAL << "All subsequent spectra will use this window" << LogIO::POST;
-            allSubsequent = True;
-         }
-      }
-   }
-   return True;
-}
-
-
 
 template <class T> 
 Bool ImageMoments<T>::getLoc (T& x,
@@ -3136,46 +1314,6 @@ Bool ImageMoments<T>::getLoc (T& x,
    return True;
 }
 
-
-
-template <class T> 
-void ImageMoments<T>::getButton (Bool& ditch,
-                                 Bool& redo)
-//
-// Read the PGPLOT cursor and interpret the button
-// pushed
-//
-{
-// Fish out window
-
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
-
-   float x = (xMin+xMax)/2;
-   float y = (yMin+yMax)/2;
-   char ch;
-   cpgcurs (&x, &y, &ch);
-
-   String str = ch;
-   str.upcase();
-   ditch = False;
-   redo = False;
-   if (str == "X") 
-      ditch = True;
-   else if (str == "D") 
-      redo = True;
-
-}
-
-
-
-template <class T> 
-void ImageMoments<T>::makeAbcissa (Vector<T>& x, 
-                                   const Int& n)
-{
-   x.resize(n);
-   for (Int i=0; i<n; i++) x(i) = i;
-}
 
 
 template <class T> 
@@ -3318,31 +1456,22 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 
 
 template <class T> 
-Bool ImageMoments<T>::selectMoment (Bool& doMedianI, 
-                                    Bool& doMedianV,
-                                    Bool& doAbsDev, 
-                                    String& suffix, 
-                                    Int& selMom,
-                                    Unit& momentUnits,
-                                    const Unit& imageUnits,
-                                    const String& momentAxisUnits,
-                                    const Int& index)
+Bool ImageMoments<T>::setOutThings(String& suffix, 
+                                   Unit& momentUnits,
+                                   const Unit& imageUnits,
+                                   const String& momentAxisUnits,
+                                   const Int moment)
 //
-// Set the output image suffixes and fill the moment
-// selection array according to what the user requests
+// Set the output image suffixes and units
 //
 // Input:
 //   momentAxisUnits
 //                The units of the moment axis
-//   index        Array index of moments array for this moment
+//   moment       The current selected moment
 //   imageUnits   The brightness units of the input image.
 // Outputs:
 //   momentUnits  The brightness units of the moment
 //                image. Depends upon moment type
-//   doMedianI,V  The user has asked for median (I or V) moments
-//   doAbsDev     The user has asked for the absolute deviation moment
-//   selMom       pointer into moments array computed by the
-//                doMom* functions for this moment
 //   suffix       suffix for output file name
 //   Bool         True if could set units for moment image, false otherwise
 {
@@ -3352,72 +1481,56 @@ Bool ImageMoments<T>::selectMoment (Bool& doMedianI,
    Bool goodImageUnits = ToBool(!imageUnits.getName().empty());
    Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
 
-   if (moments_p(index) == AVERAGE) {
+   if (moment == AVERAGE) {
       suffix = "_MAverage";
-      selMom = AVERAGE;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == INTEGRATED) {
+   } else if (moment == INTEGRATED) {
       suffix = "_MIntegrated";
-      selMom = INTEGRATED;
       temp = imageUnits.getName() + "." + momentAxisUnits;
       goodUnits = ToBool(goodImageUnits && goodAxisUnits);
-   } else if (moments_p(index) == WEIGHTED_MEAN_COORDINATE) {
+   } else if (moment == WEIGHTED_MEAN_COORDINATE) {
       suffix = "_MWeighted_Mean_Coord";
-      selMom = WEIGHTED_MEAN_COORDINATE;
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
-   } else if (moments_p(index) == WEIGHTED_DISPERSION_COORDINATE) {
+   } else if (moment == WEIGHTED_DISPERSION_COORDINATE) {
       suffix = "_MWeighted_Dispersion_Coord";
-      selMom = WEIGHTED_DISPERSION_COORDINATE;
       temp = momentAxisUnits + "." + momentAxisUnits;
       goodUnits = goodAxisUnits;
-   } else if (moments_p(index) == MEDIAN) {
+   } else if (moment == MEDIAN) {
       suffix = "_MMedian";
-      selMom = MEDIAN;
-      doMedianI = True;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == STANDARD_DEVIATION) {
+   } else if (moment == STANDARD_DEVIATION) {
       suffix = "_MStandard_Deviation";
-      selMom = STANDARD_DEVIATION;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == RMS) {
+   } else if (moment == RMS) {
       suffix = "_MRms";
-      selMom = RMS;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == ABS_MEAN_DEVIATION) {
+   } else if (moment == ABS_MEAN_DEVIATION) {
       suffix = "_MAbs_Mean_Dev";
-      selMom = ABS_MEAN_DEVIATION;
-      doAbsDev = True;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == MAXIMUM) {
+   } else if (moment == MAXIMUM) {
       suffix = "_MMaximum";
-      selMom = MAXIMUM;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == MAXIMUM_COORDINATE) {
+   } else if (moment == MAXIMUM_COORDINATE) {
       suffix = "_MMaximum_Coord";
-      selMom = MAXIMUM_COORDINATE;
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
-   } else if (moments_p(index) == MINIMUM) {
+   } else if (moment == MINIMUM) {
       suffix = "_MMinimum";
-      selMom = MINIMUM;
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
-   } else if (moments_p(index) == MINIMUM_COORDINATE) {
+   } else if (moment == MINIMUM_COORDINATE) {
       suffix = "_MMinimum_Coord";
-      selMom = MINIMUM_COORDINATE;
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
-   } else if (moments_p(index) == MEDIAN_COORDINATE) {
+   } else if (moment == MEDIAN_COORDINATE) {
       suffix = "_MMedian_Coord";
-      selMom = MEDIAN_COORDINATE;
-      doMedianV = True;
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    }
@@ -3426,121 +1539,6 @@ Bool ImageMoments<T>::selectMoment (Bool& doMedianI,
 }
 
 
-template <class T> 
-Bool ImageMoments<T>::getBosmaWindow (Vector<Int>& window,
-                                      const Vector<T>& x, 
-                                      const Vector<T>& y,
-                                      const Bool& doPlot,
-                                      const String& xLabel,
-                                      const String& yLabel,
-                                      const String& title, const Double& ks)
-//
-// Automatically work out the spectral window
-// with Albert Bosma's algorithm.
-//
-// Inputs:
-//   x,y       Spectrum
-//   doPlot    Plot device active if True
-//   x,yLabel  Labels for plots
-// Output:
-//   window    The window
-//   Bool      False if we reject this spectrum
-//
-{
-
-   if (doPlot) {
-
-// Plot spectrum
-
-      cpgpage();
-      drawLine (x, y, xLabel, yLabel, title);
-   }
-
-
-// See if this spectrum is all noise first.  If so, forget it.
-
-   T dMean;
-   const Bool noisy1 = allNoise(dMean, y.ac());
-//   Bool noisy2 = allNoise(y.ac(), ks);
-//   cout << LogIO::POST << "noisy1, noisy2 =" << noisy1 << "," << noisy2 << LogIO::POST;
-// Draw on mean and sigma
-
-   const T sigma = stdDeviation_p;
-   if (doPlot) {
-      drawMeanSigma (dMean, sigma);
-      if (noisy1) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
-   }
-   if (noisy1) {
-      window = 0;
-      return False;
-   }
-
-
-// Find peak
-
-   const Int nPts = y.nelements();
-   IPosition minPos(1), maxPos(1);
-   T yMin, yMax;
-   minMax(yMin, yMax, minPos, maxPos, y.ac());
-   Int iMin = max(0,maxPos(0)-2);
-   Int iMax = min(nPts-1,maxPos(0)+2);
-   Double tol = sigma / (nPts - (iMax-iMin-1));
-
-
-// Iterate to convergence
-
-   Bool first = True;
-   Bool converged = False;
-   Bool more = True;
-   Double mean;
-   Double oldMean = 0;
-
-   while (more) {
-
-//     os_p << LogIO::NORMAL << "iMin,iMax,oldmean,tol=" << iMin << "," << iMax << "," << oldMean << "," << tol << LogIO::POST;
-
-// Find mean outside of peak region
-
-      Double sum = 0.0;  
-      for (Int i=0,j=0; i<nPts; i++) {
-         if (i < iMin || i > iMax) {
-            sum += Double(y(i));
-            j++;
-         }
-      }
-      if (j>0) mean = sum / Double(j);
-      
-
-// Interpret result
-
-      if (!first && j>0 && abs(mean-oldMean) < tol) {
-         converged = True;
-         more = False;
-      } else if (iMin==0 && iMax==nPts-1) 
-         more = False;
-      else {
-
-// Widen window and redetermine tolerance
-
-         oldMean = mean; 
-         iMin = max(0,iMin - 2);
-         iMax = min(nPts-1,iMax+2);
-         tol = sigma / (nPts - (iMax-iMin-1));
-      }
-      first = False;
-   }
-
-// Return window
-
-   if (converged) {
-      window(0) = iMin;
-      window(1) = iMax;
-      return True;
-   } else {
-      window = 0;
-      return False;
-   }
-}
 
 
 template <class T> 
@@ -3575,200 +1573,14 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
 
 
 
-template <class T> 
-Bool ImageMoments<T>::setNSigmaWindow (Vector<Int>& window,
-                                       const T& pos,
-                                       const T& width,
-                                       const Int& nPts,
-                                       const Int& N)
-//
-// Take the fitted Gaussian position and width and
-// set an N-sigma window.  If the window is too small
-// return a Fail condition.
-//
-// Inputs:
-//   pos,width   The position and width in pixels
-//   nPts        The number of points in the spectrum that was fit
-//   N           The N-sigma
-// Outputs:
-//   window      The window in pixels
-//   Bool        False if window too small to be sensible
-//
-{
-   window(0) = Int((pos-N*width)+0.5);
-   window(0) = min(nPts-1,max(0,window(0)));
-   window(1) = Int((pos+N*width)+0.5);
-   window(1) = min(nPts-1,max(0,window(1)));
-
-   if ( abs(window(1)-window(0)) < 3) return False;
-   return True;
-
-}
-
-
-
-template <class T> 
-void ImageMoments<T>::setCalcMoments (Vector<T>& calcMoments,
-                                      const T& dMedian,
-                                      const T& vMedian,
-                                      const Int& nPts,
-                                      const Double& s0,
-                                      const Double& s1,
-                                      const Double& s2,
-                                      const Double& s0Sq,
-                                      const Double& sumAbsDev,
-                                      const Double& dMin,
-                                      const Double& dMax,
-                                      const Int& iMin,
-                                      const Int& iMax)
-
-//
-// Fill the moments array
-//
-// Outputs:
-//   calcMoments The moments
-//
-{
-
-// Normalize and fill moments
-
-   calcMoments(AVERAGE) = s0 / nPts;
-   calcMoments(INTEGRATED) = s0;
-   calcMoments(WEIGHTED_MEAN_COORDINATE) = s1 / s0;
-   calcMoments(WEIGHTED_DISPERSION_COORDINATE) = 
-     (s2 / s0) - calcMoments(WEIGHTED_MEAN_COORDINATE) *
-                 calcMoments(WEIGHTED_MEAN_COORDINATE);
-   calcMoments(WEIGHTED_DISPERSION_COORDINATE) =
-      abs(calcMoments(WEIGHTED_DISPERSION_COORDINATE));
-   if (calcMoments(WEIGHTED_DISPERSION_COORDINATE) > 0.0) {
-     calcMoments(WEIGHTED_DISPERSION_COORDINATE) =
-        sqrt(calcMoments(WEIGHTED_DISPERSION_COORDINATE));
-   }
-   else {
-//     cout << "m2=" << sqrt(abs(calcMoments(WEIGHTED_DISPERSION_COORDINATE))) << LogIO::POST;
-     calcMoments(WEIGHTED_DISPERSION_COORDINATE) = 0.0;
-   }
-
-// Standard deviation about mean of I
-
-   if (Float((s0Sq - s0*s0/nPts)/(nPts-1)) > 0) 
-      calcMoments(STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
-   else
-      calcMoments(STANDARD_DEVIATION) = 0;
-
-
-// Rms of I
-
-   calcMoments(RMS) = sqrt(s0Sq/nPts);
-
-
-// Absolute mean deviation
-
-   calcMoments(ABS_MEAN_DEVIATION) = sumAbsDev / nPts;
-
-
-// Maximum value
-
-   calcMoments(MAXIMUM) = dMax;
-
-
-// Coordinate of maximum value
-
-   calcMoments(MAXIMUM_COORDINATE) = getMomentCoord(Double(iMax));
-
-
-// Minimum value
-
-   calcMoments(MINIMUM) = dMin;
-
-
-// Coordinate of minimum value
-
-   calcMoments(MINIMUM_COORDINATE) = getMomentCoord(Double(iMin));
-
-
-// Medians
-
-   calcMoments(MEDIAN) = dMedian;
-   calcMoments(MEDIAN_COORDINATE) = vMedian;
-}
-
-
-template <class T> 
-void ImageMoments<T>::setPosLabel (String& title,
-                                   const IPosition& pos)
-{
-   ostrstream oss;
-
-   oss << "Position = " << pos+1 << ends;
-   String temp(oss.str());
-   title = temp;
-}
-
-
-template <class T> 
-void ImageMoments<T>::showGaussFit   (const T& peak,
-                                      const T& pos, 
-                                      const T& width,
-                                      const T& level,
-                                      const Vector<T>& x,
-                                      const Vector<T>& y)
-//
-// Plot the Gaussian fit and residual
-//
-{
-   const Int nDPts = x.nelements();
-   T xMin = x(0);
-   T xMax = x(nDPts-1);
-   Int nGPts = 100;
-   T dx = (xMax - xMin)/nGPts;
-
-// Setup functional
-   
-   const Gaussian1D<T> gauss(peak, pos, width);
-
-
-// Allocate arrays
-
-   Vector<T> xG(nGPts);
-   Vector<T> yG(nGPts);
-
-
-// Generate plot values
-
-   int i = 0;
-   Float xx;
-   for (i=0,xx=xMin; i<nGPts; xx+=dx,i++) {
-      xG(i) = xx;
-      yG(i) = gauss(xx) + level;
-   }
-   cpgsci (7);
-   drawLine (xG, yG);
-
-
-// Now difference
-
-   Vector<T> d(nDPts);
-   for (i=0; i<nDPts; i++) {
-      d(i) = y(i) - gauss(x(i));
-   }
-   cpgsci (2);
-   drawLine (x, d);
-   cpgsci (1);
-
-}
-
 
 template <class T> 
 Bool ImageMoments<T>::smoothImage (String& smoothName, 
-                                   PagedImage<T>*& pSmoothedImage,
-                                   const IPosition& latticeShape)
+                                   PagedImage<T>*& pSmoothedImage)
 //
 // Smooth image.  We smooth only the sublattice that the user
 // has asked for.
 //
-// Input
-//   latticeSHape   Shape of output smoothed lattice
 // Output
 //   pSmoothedImage Pointer to smoothed Lattice
 //   smoothName     Name of smoothed image file
@@ -3804,8 +1616,9 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
 
 // Create smoothed image
-       
-   pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
+
+   IPosition shape = trc_p - blc_p + 1;
+   pSmoothedImage = new PagedImage<T>(shape, cSys, smoothName);
    pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
    pSmoothedImage->set(0.0);
    if (!smoothOut_p.empty()) {
@@ -3879,7 +1692,7 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
 
 template <class T> 
-void ImageMoments<T>::smoothRow (PagedImage<T>*& pIn,
+void ImageMoments<T>::smoothRow (Lattice<T>* pIn,
                                  const Int& row,
                                  const Vector<T>& psf)
 {
@@ -4071,7 +1884,6 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
       NonLinearFitLM<T> fitter;
       Gaussian1D<T> gauss;
-//      FuncWithAutoDerivs<T,T> autoFunc(gauss);
       fitter.setFunction(gauss);
 
 
