@@ -56,20 +56,20 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
 	if (function_p == LELFunctionEnums::POW) {
 	    if (arg_p[0].isScalar()  &&  ! arg_p[1].isScalar()) {
-		throw (AipsError ("LatticeExpr: POW(scalar,lattice) "
+		throw (AipsError ("LELFunctionFloat:: - POW(scalar,lattice) "
 				  "is not possible"));
 	    }
 	} else if (function_p != LELFunctionEnums::MIN  &&
 		   function_p != LELFunctionEnums::MAX) {
 	    if (arg_p[0].isScalar()  !=  arg_p[1].isScalar()) {
-		throw (AipsError ("LatticeExpr: arguments for function "
+		throw (AipsError ("LELFunctionFloat:: - arguments for function "
 				  "should be both scalar or both array"));
 	    }
 	}
 	break;
     }
     default:
-	throw (AipsError ("LatticeExpr: unknown Float function"));
+	throw (AipsError ("LELFunctionFloat:: - unknown Float function"));
     }
 
 #if defined(AIPS_TRACE)
@@ -121,7 +121,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
 	 max (result, arrayTemp, scalarTemp);
 	 break;
       default:
-	 throw (AipsError ("LatticeExpr: unknown Float function"));
+	 throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
       }
 
    } else if (arg_p[1].isScalar()) {
@@ -143,7 +143,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
 	 break;
       }
       default:
-	 throw (AipsError ("LatticeExpr: unknown Float function"));
+	 throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
       }
 
    } else {
@@ -177,7 +177,7 @@ void LELFunctionFloat::eval(Array<Float>& result,
 	 max(result, tempLeft, tempRight);
 	 break;
       default:
-	 throw(AipsError("LELFunctionFloat::eval; unknown function"));
+	 throw(AipsError("LELFunctionFloat::eval - unknown function"));
       }
    }
 }
@@ -200,7 +200,7 @@ Float LELFunctionFloat::getScalar() const
    case LELFunctionEnums::MAX :
        return max(arg_p[0].getFloat(), arg_p[1].getFloat());
    default:
-      throw(AipsError("LELFunctionFloat: unknown function"));
+      throw(AipsError("LELFunctionFloat::getScalar - unknown function"));
    }
    return 0;                            // Make compiler happy
 }
@@ -225,7 +225,7 @@ String LELFunctionFloat::className() const
 
 // LELFunctionDouble
 LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
-				   const Block<LatticeExprNode>& exp)
+  				     const Block<LatticeExprNode>& exp)
 : function_p(function), arg_p(exp)
 {
     switch (function_p) {
@@ -254,20 +254,20 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
 	if (function_p == LELFunctionEnums::POW) {
 	    if (arg_p[0].isScalar()  &&  ! arg_p[1].isScalar()) {
-		throw (AipsError ("LatticeExpr: POW(scalar,lattice) "
+		throw (AipsError ("LELFunctionDouble:: - POW(scalar,lattice) "
 				  "is not possible"));
 	    }
 	} else if (function_p != LELFunctionEnums::MIN  &&
 		   function_p != LELFunctionEnums::MAX) {
 	    if (arg_p[0].isScalar()  !=  arg_p[1].isScalar()) {
-		throw (AipsError ("LatticeExpr: arguments for function "
+		throw (AipsError ("LELFunctionDouble:: - arguments for function "
 				  "should be both scalar or both array"));
 	    }
 	}
 	break;
     }
     default:
-	throw (AipsError ("LatticeExpr: unknown Double function"));
+	throw (AipsError ("LELFunctionDouble:: - unknown Double function"));
     }
 
 #if defined(AIPS_TRACE)
@@ -303,7 +303,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
 	 max (result, arrayTemp, scalarTemp);
 	 break;
       default:
-	 throw (AipsError ("LatticeExpr: unknown Double function"));
+	 throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
       }
 
    } else if (arg_p[1].isScalar()) {
@@ -325,7 +325,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
 	 break;
       }
       default:
-	 throw (AipsError ("LatticeExpr: unknown Double function"));
+	 throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
       }
 
    } else {
@@ -359,7 +359,7 @@ void LELFunctionDouble::eval(Array<Double>& result,
 	 max(result, tempLeft, tempRight);
 	 break;
       default:
-	 throw(AipsError("LELFunctionDouble::eval; unknown function"));
+	 throw(AipsError("LELFunctionDouble::eval - unknown function"));
       }
    }
 }
@@ -427,7 +427,7 @@ Double LELFunctionDouble::getScalar() const
    case LELFunctionEnums::MAX :
        return max(arg_p[0].getDouble(), arg_p[1].getDouble());
    default:
-      throw(AipsError("LELFunctionDouble: unknown function"));
+      throw(AipsError("LELFunctionDouble::getScalar - unknown function"));
    }
    return 0;                          // Make compiler happy
 }
@@ -465,13 +465,13 @@ LELFunctionComplex::LELFunctionComplex
 	argType[1] = TpComplex;
 	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
 	if (arg_p[0].isScalar()  &&  ! arg_p[1].isScalar()) {
-	   throw (AipsError ("LatticeExpr: POW(scalar,lattice) "
+	   throw (AipsError ("LELFunctionComplex:: - POW(scalar,lattice) "
 			     "is not possible"));
 	}
 	break;
     }
     default:
-	throw (AipsError ("LatticeExpr: unknown Complex function"));
+	throw (AipsError ("LELFunctionComplex:: - unknown Complex function"));
     }
 
 #if defined(AIPS_TRACE)
@@ -495,13 +495,13 @@ void LELFunctionComplex::eval(Array<Complex>& result,
 #endif
 
    if (arg_p[0].isScalar()) {
-      throw (AipsError ("LatticeExpr: unknown Complex function"));
+      throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
 
    } else if (arg_p[1].isScalar()) {
       Complex scalarTemp;
       arg_p[1].eval(scalarTemp);
       if (scalarTemp.imag() != 0) {
-	 throw (AipsError ("LatticeExpr: When raising a complex lattice to a "
+	 throw (AipsError ("LELFunctionComplex::eval - When raising a complex lattice to a "
 			   "power the scalar exponent should be real"));
       }
       Double exponent = scalarTemp.real();
@@ -515,7 +515,7 @@ void LELFunctionComplex::eval(Array<Complex>& result,
 	 break;
       }
       default:
-	 throw (AipsError ("LatticeExpr: unknown Complex function"));
+	 throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
       }
 
    } else {
@@ -531,7 +531,7 @@ void LELFunctionComplex::eval(Array<Complex>& result,
 	 break;
       }
       default:
-	 throw(AipsError("LELFunctionComplex::eval; unknown function"));
+	 throw(AipsError("LELFunctionComplex::eval - unknown function"));
       }
    }
 }
@@ -546,7 +546,7 @@ Complex LELFunctionComplex::getScalar() const
    case LELFunctionEnums::POW :
        return pow(arg_p[0].getComplex(), arg_p[1].getComplex());
    default:
-      throw(AipsError("LELFunctionComplex: unknown function"));
+      throw(AipsError("LELFunctionComplex::getScalar - unknown function"));
    }
    return False;                       // Make compiler happy
 }
@@ -584,13 +584,13 @@ LELFunctionDComplex::LELFunctionDComplex
 	argType[1] = TpDComplex;
 	setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
 	if (arg_p[0].isScalar()  &&  ! arg_p[1].isScalar()) {
-	   throw (AipsError ("LatticeExpr: POW(scalar,lattice) "
+	   throw (AipsError ("LELFunctionDComplex:: - POW(scalar,lattice) "
 			     "is not possible"));
 	}
 	break;
     }
     default:
-	throw (AipsError ("LatticeExpr: unknown DComplex function"));
+	throw (AipsError ("LELFunctionDComplex:: - unknown DComplex function"));
     }
 
 #if defined(AIPS_TRACE)
@@ -614,13 +614,13 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
 #endif
 
    if (arg_p[0].isScalar()) {
-      throw (AipsError ("LatticeExpr: unknown DComplex function"));
+      throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
 
    } else if (arg_p[1].isScalar()) {
       DComplex scalarTemp;
       arg_p[1].eval(scalarTemp);
       if (scalarTemp.imag() != 0) {
-	 throw (AipsError ("LatticeExpr: When raising a complex lattice to a "
+	 throw (AipsError ("LELFunctionDComplex::eval - When raising a complex lattice to a "
 			   "power the scalar exponent should be real"));
       }
       Double exponent = scalarTemp.real();
@@ -634,7 +634,7 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
 	 break;
       }
       default:
-	 throw (AipsError ("LatticeExpr: unknown DComplex function"));
+	 throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
       }
 
    } else {
@@ -650,7 +650,7 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
 	 break;
       }
       default:
-	 throw(AipsError("LELFunctionDComplex::eval; unknown function"));
+	 throw(AipsError("LELFunctionDComplex::eval - unknown function"));
       }
    }
 }
@@ -665,7 +665,7 @@ DComplex LELFunctionDComplex::getScalar() const
    case LELFunctionEnums::POW :
        return pow(arg_p[0].getDComplex(), arg_p[1].getDComplex());
    default:
-      throw(AipsError("LELFunctionDComplex: unknown function"));
+      throw(AipsError("LELFunctionDComplex::getScalar - unknown function"));
    }
    return False;                       // Make compiler happy
 }
@@ -704,7 +704,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	break;
     }
     default:
-	throw (AipsError ("LatticeExpr: unknown Bool function"));
+	throw (AipsError ("LELFunctionBool:: - unknown Bool function"));
     }
 
 #if defined(AIPS_TRACE)
@@ -728,7 +728,7 @@ void LELFunctionBool::eval(Array<Bool>&,
 #endif
 
 // All Bool function result in a scalar, so cannot be used.
-   throw (AipsError ("LELFunctionBool::eval cannot be used"));
+   throw (AipsError ("LELFunctionBool::eval - cannot be used"));
 }
 
 Bool LELFunctionBool::getScalar() const
@@ -780,7 +780,7 @@ Bool LELFunctionBool::getScalar() const
       return False;
    }
    default:
-      throw(AipsError("LELFunctionBool: unknown function"));
+      throw(AipsError("LELFunctionBool::getScalar - unknown function"));
    }
    return False;                       // Make compiler happy
 }
