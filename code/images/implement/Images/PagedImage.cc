@@ -181,8 +181,8 @@ PagedImage(const String & filename, uInt rowNumber)
   table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
-  logSink() << "The image shape is " << map_p.shape() << endl;
-  logSink() << LogIO::NORMAL;
+  logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
+  logSink() << LogIO::DEBUGGING;
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
@@ -207,8 +207,8 @@ PagedImage(const String & filename, const TableLock& lockOptions,
   table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
-  logSink() << "The image shape is " << map_p.shape() << endl;
-  logSink() << LogIO::NORMAL;
+  logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
+  logSink() << LogIO::DEBUGGING;
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
