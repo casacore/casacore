@@ -371,6 +371,11 @@ LatticeExprNode& LatticeExprNode::operator=(const LatticeExprNode& other)
 
 
 void LatticeExprNode::replaceScalarExpr()
+// 
+// If the current expression evaluates to a scalar, then it can 
+// be optimized in the tree by replacement by a scalar constant 
+// expression such as LELUnaryConst
+//
 {
    switch (dataType()) {
    case TpFloat:
@@ -1087,8 +1092,9 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
 LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
 					      const LatticeExprNode& expr)
 //
-// Create a new node for a numerical unary operation.   
-// The result has the same data type as the input.  
+// Create a new node for a numerical unary operation.
+// The result has the same data type as the input.
+//
 {
    switch (expr.dataType()) {
    case TpFloat:
@@ -1135,8 +1141,8 @@ LatticeExprNode LatticeExprNode::newNumFunc1D (LELFunctionEnums::Function func,
 LatticeExprNode LatticeExprNode::newRealFunc1D (LELFunctionEnums::Function func,
 						const LatticeExprNode& expr)
 //
-// Create a new node for a real numerical function with 1
-// argument. The result has the same data type as the input.
+// Create a new node for a real numerical function with 1 argument.
+// The result has the same data type as the input.
 // 
 {
    switch (expr.dataType()) {
@@ -1176,8 +1182,8 @@ LatticeExprNode LatticeExprNode::newComplexFunc1D (LELFunctionEnums::Function fu
 LatticeExprNode LatticeExprNode::newNumReal1D (LELFunctionEnums::Function func,
 					       const LatticeExprNode& expr)
 //
-// Create a new node for a real numerical function with 1
-// argument. The resultant type is non-complex
+// Create a new node for a numerical function with 1 arguments that 
+// returns a real number
 //
 {
    DataType dtype = expr.dataType();
@@ -1205,8 +1211,8 @@ LatticeExprNode LatticeExprNode::newNumFunc2D (LELFunctionEnums::Function func,
 					       const LatticeExprNode& left,
 					       const LatticeExprNode& right)
 //
-//  Create a new node for a numerical function with 2 arguments.
-//  The result has the same data type as the combined input type.
+// Create a new node for a numerical function with 2 arguments.
+// The result has the same data type as the combined input type.
 // 
 {
    DataType dtype = resultDataType (left.dataType(), right.dataType());
@@ -1239,6 +1245,10 @@ LatticeExprNode LatticeExprNode::newNumFunc2D (LELFunctionEnums::Function func,
 LatticeExprNode LatticeExprNode::newNumBinary (LELBinaryEnums::Operation oper,
 					       const LatticeExprNode& left,
 					       const LatticeExprNode& right)
+//
+// Create a new node for a numerical binary operator.
+// The result has the same data type as the combined input type.
+//
 {
    DataType dtype = resultDataType (left.dataType(), right.dataType());
    switch (dtype) {
@@ -1265,6 +1275,10 @@ LatticeExprNode LatticeExprNode::newNumBinary (LELBinaryEnums::Operation oper,
 LatticeExprNode LatticeExprNode::newBinaryCmp (LELBinaryEnums::Operation oper,
 					       const LatticeExprNode& left,
 					       const LatticeExprNode& right)
+//
+// Create a new node for a comparison binary operator.
+// The result has the same data type as the combined input type.
+//
 {
    DataType dtype = resultDataType (left.dataType(), right.dataType());
    switch (dtype) {
@@ -1294,6 +1308,10 @@ LatticeExprNode LatticeExprNode::newBinaryCmp (LELBinaryEnums::Operation oper,
 
 
 DataType LatticeExprNode::resultDataType (DataType left, DataType right)
+//
+// Work out the resultant data type when two expressions are combined
+// Favours the higher precision
+//
 {
     if (left == right) {
 	return left;

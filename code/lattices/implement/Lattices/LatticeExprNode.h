@@ -1,4 +1,4 @@
-//# LatticeExprNode.h:  LatticeExprNode
+//# LatticeExprNode.h:  LatticeExprNode.h
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -48,60 +48,135 @@ template <class T> class Block;
 
 
 // <summary>
-// Class to allow C++ expressions involving lattices
+// Bridging class to allow C++ expressions involving lattices
 // </summary>
-
+//
 // <use visibility=export>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
 // </prerequisite>
-
+//
 // <etymology>
 // The name is derived from the fact that this class provides
 // an expression interface to the user which s/he may use to
-// write C++ expressions involving Lattices.
+// write C++ expressions involving Lattices.  This class actually
+// constructs the nodes of the expression tree, hence its name.
+// It is used by the envelope class LatticeExpr and provides a 
+// bridge to the letter classes derived from LELInterface.
 // </etymology>
-
-// <synopsis>
-//    This class provides an interface which allows the C++ programmer
-//    to enter expressions such as "sin(a)+b" where "a" and "b"
-//    are Lattices.   
 //
-//    This class is termed an envelope class, and inside it are the
-//    letter classes which do the real work.  These classes iterate
-//    through the Lattice and evaluate the expression for each
-//    chunk of the iteration (usually a tile shape).
+// <synopsis>
+//    This class is part of the interface which allows the C++ programmer
+//    to enter mathematical expressions involving Lattices. It is
+//    is part of a Letter/envelope scheme.  It's actually a bridge
+//    between the envelope class (LatticeExpr) and the letter classes
+//    (derived from LELInterface) and it exists largely to handle
+//    type conversions.  In a single type environment, the envelope
+//    class could have directly called the letter classes.
+//
+//    The envelope and bridge provide the interface which the programmer
+//    sees.  The letter classes do the real work and are hidden from
+//    the programmer.
+//
+//    All the expression manipulation functionality that the user has 
+//    access to is viewable in this class; it is here that the operators,
+//    functions and constructors are defined.  These allow the programmer
+//    to write mathematical expressions which involve Lattices.  The
+//    letter classes take care of the optimal traversal of the Lattice
+//    and the memory mangement thereof.  Thus the Lattices are iterated
+//    through and the expressions evaluated for each chunk (usually 
+//    a tile shape) of the iteration.
+//
+//    The available functionality is defined by the global friend functions
+//    and operators, plus the public constructors.  The other public members
+//    functions are generally not of interest to the user of this class.
+//
+//    Generally, if one writes an expression such as <src>a.copyData(sin(b))</src>,
+//    the expression is automatically converted first to a LatticeExprNode and
+//    then to a LatticeExpr (which is a Lattice) before evaluation occurs.
+//    However, it may occur that you wish to build an expression from
+//    subexpressions.  To do this, you must explcitly create objects of 
+//    class LatticeExprNode.  You cannot manipulate subexpressions of type
+//    LatticeExpr<T>.  See below for an example.
 // </synopsis> 
-
+//
 // <example>
 // <srcblock>
-//  ArrayLattice<Float> a (IPosition (2,nx,ny));
-//  ArrayLattice<Float> b (IPosition (2,nx,ny));
-//  ArrayLattice<Float> c (IPosition (2,nx,ny));
-//  ArrayLattice<Float> d (IPosition (2,nx,ny));
-//  a.set(0.0); b.set(1.0); c.set(2.0); d.set(3.0); 
-//  a.copyData( (3.5*b) + (cos(c)) - (10/min(c,b)*(-d)*log(d)) - (C::pi) );
-// </srcblock>
-//  
-//  In this rather silly example, we create 4 small ArrayLattices and fill them
-//  with some constants.  Then we fill Lattice "a" with the result of
-//  the expression.  The expression shows the use
-//  of scalars, unary operations, binary operations, 1D and 2D functions,
-//  and constants.
+//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  f2.set(2.0);
+//  f1.copyData(2*f2+f2);
+//
+//  In this example, the values of the pixels in Lattice f1 are set
+//  to the values resulting from the expression "2*f2 + f2"
+//  I.e. the expression is evaluated for each pixel in the Lattices
+//
+//  Note that :
+//
+//  1) the Lattice::copyData function is expecting a Lattice argument.  
+//  2) LatticeExpr inherits from Lattice and therefore a LatticeExpr
+//     object is a valid argument object type
+//  3) The expression in the copyData call is automatically converted to 
+//     a LatticeExprNode by the constructors and operators in LatticeExprNode
+//  4) The LatticeExprNode object so created is automatically converted
+//     to a LatticeExpr by casting functions in LatticeExprNode.
 //
 // </example>
-
+//
+// <example>
+// <srcblock>
+//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<Double>  d(IPosition (2,nx,ny));
+//  ArrayLattice<Complex> c(IPosition (2,nx,ny));
+//  ArrayLattice<Bool>    b(IPosition (2,nx,ny));
+//
+//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(True);
+//  f1.copyData( (3.5*f2) + (cos(d)) - (10/min(d,f2)*(-abs(c))*ntrue(b)) - (C::pi) );
+// </srcblock>
+//  
+//  In this rather silly example, we fill Lattice "f1" with the result of the
+//  expression.  The expression shows the use of constants, unary operations, 
+//  binary operations, 1D and 2D functions.  It also shows how mixed types can 
+//  be handled.  The output Lattice is a Float, whereas  mixed into the 
+//  expression are subexpressions involving Float, Double, Complex and Bool
+//  Lattices.
+//
+// </example>
+//
+// <example>
+// <srcblock>
+//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  f2.set(2.0);
+//  LatticeExprNode exp1(sin(f2));
+//  LatticeExprNode exp2(pow(f2,2.0));
+//  f1.copyData(exp1+exp2);
+//
+//  In this example, the expression is "sin(f2) + pow(f2,2.0)",
+//  but we have put it together from two subexpressions contained
+//  in LatticeExprNode objects exp1 and exp2.  Again the LatticeExprNode
+//  object froemd from summing exp1 and exp2 is automatically converted
+//  to a LatticeExpr for consumption by copyData
+//
+// </example>
+//
 // <motivation>
-//  Brian said I had to do this before I was allowed my icecream.
+//  The Lattice expression classes enable the C++ programmer much simpler 
+//  handling of mathematical expressions involving lattices.  In addition, 
+//  these classes provide the infrastructure on top of which we can build 
+//  an image calculator for Glish users
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1997/01/15">
 //   <li> masks
-//   <li> mixed data types (e.g. don't lose double precision)
+//   <li> regions
 // </todo>
 
 
@@ -126,7 +201,7 @@ class LatticeExprNode
                                      const LatticeExprNode& right);
 // </group>
 
-// Relational operators
+// Relational binary operators
 // <group>
    friend LatticeExprNode operator== (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
@@ -142,7 +217,7 @@ class LatticeExprNode
 				      const LatticeExprNode& right);
 // </group>
 
-// Logical operators
+// Logical binary operators
 // <group>
    friend LatticeExprNode operator&& (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
@@ -150,7 +225,7 @@ class LatticeExprNode
 				      const LatticeExprNode& right);
 // </group>
 
-// Numerical functions
+// Numerical 1-argument functions
 // <group>
    friend LatticeExprNode sin  (const LatticeExprNode& expr);
    friend LatticeExprNode sinh (const LatticeExprNode& expr);
@@ -161,51 +236,55 @@ class LatticeExprNode
    friend LatticeExprNode tan  (const LatticeExprNode& expr);
    friend LatticeExprNode tanh (const LatticeExprNode& expr);
    friend LatticeExprNode atan (const LatticeExprNode& expr);
-   friend LatticeExprNode atan2(const LatticeExprNode& left,
-				const LatticeExprNode& right);
    friend LatticeExprNode exp  (const LatticeExprNode& expr);
    friend LatticeExprNode log  (const LatticeExprNode& expr);
    friend LatticeExprNode log10(const LatticeExprNode& expr);
-   friend LatticeExprNode pow  (const LatticeExprNode& left,
-				const LatticeExprNode& right);
    friend LatticeExprNode sqrt (const LatticeExprNode& expr);
    friend LatticeExprNode ceil (const LatticeExprNode& expr);
    friend LatticeExprNode floor(const LatticeExprNode& expr);
+   friend LatticeExprNode conj (const LatticeExprNode& expr);
+// </group>
+
+// Numerical 2-argument functions
+// <group>
+   friend LatticeExprNode atan2(const LatticeExprNode& left,
+				const LatticeExprNode& right);
+   friend LatticeExprNode pow  (const LatticeExprNode& left,
+				const LatticeExprNode& right);
    friend LatticeExprNode fmod (const LatticeExprNode& left,
                                 const LatticeExprNode& right);
    friend LatticeExprNode min  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
    friend LatticeExprNode max  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
+// </group>
+
+
+// Numerical 1-argument functions which result in a real number
+// regardless of input expression type
+// <group>
    friend LatticeExprNode abs  (const LatticeExprNode& expr);
    friend LatticeExprNode arg  (const LatticeExprNode& expr);
    friend LatticeExprNode real (const LatticeExprNode& expr);
    friend LatticeExprNode imag (const LatticeExprNode& expr);
-   friend LatticeExprNode conj (const LatticeExprNode& expr);
 // </group>
 
-// Specialized numerical functions 
-// <group>
-// sqrt(a^2+b^2)
-   friend LatticeExprNode amp (const LatticeExprNode& left,
-                               const LatticeExprNode& right);
-// </group>   
-
-
-
-// Functions operating on a numeric expression resulting in a scalar
+// 1-argument functions operating on a numeric expression resulting 
+// in a scalar
 // <group>
    friend LatticeExprNode min   (const LatticeExprNode& expr);
    friend LatticeExprNode max   (const LatticeExprNode& expr);
    friend LatticeExprNode mean  (const LatticeExprNode& expr);
-   friend LatticeExprNode sum  (const LatticeExprNode& expr);
+   friend LatticeExprNode sum   (const LatticeExprNode& expr);
 // </group>
 
-// Function to get the number of elements in a lattice
+// 1-argument function to get the number of elements in a lattice
    friend LatticeExprNode nelements (const LatticeExprNode& expr);
 
 // Functions operating on a logical expression resulting in a scalar;
-// any and all result in a Bool; ntrue and nfalse result in a float.
+// Functions "any" (are any pixels "True") and "all" (are all pixels
+// "True") result in a Bool; functions "ntrue" and "nfalse" result 
+// in a float.
 // <group>
    friend LatticeExprNode any   (const LatticeExprNode& expr);
    friend LatticeExprNode all   (const LatticeExprNode& expr);
@@ -213,10 +292,19 @@ class LatticeExprNode
    friend LatticeExprNode nfalse(const LatticeExprNode& expr);
 // </group>
 
-// Functions to convert to the given data type.
-// These are mostly meaningful for down-conversions (e.g. double to float),
+// Specialized astronomical numerical 2-argument functions 
+// <group>
+// sqrt(a^2+b^2)
+   friend LatticeExprNode amp (const LatticeExprNode& left,
+                               const LatticeExprNode& right);
+// </group>   
+
+
+// Functions to convert to the given data type.  These are mostly 
+// meaningful for down-conversions (e.g. double to float),
 // since up-conversions are automatically done to get matching data types
-// when needed.
+// when needed.  Note that some conversions are not supported, such
+// as Complex to Double or Float
 // <group>
    friend LatticeExprNode toFloat   (const LatticeExprNode& expr);
    friend LatticeExprNode toDouble  (const LatticeExprNode& expr);
@@ -229,8 +317,7 @@ public:
 // Default constructor
    LatticeExprNode();
 
-// Unary expression constructor. Relies on implicit conversion from 
-// other types (e.g. Double) with resultant loss of precision
+// Unary constant expression constructors.
 // <group>
    LatticeExprNode (Int constant);
    LatticeExprNode (Float constant);
@@ -240,7 +327,7 @@ public:
    LatticeExprNode (Bool constant);
 // </group>
 
-// Lattice expression (gets Lattice chunk) constructor.
+// Lattice expression (gets Lattice pixels) constructors.
 // <group>
    LatticeExprNode (const Lattice<Float>& lattice);
    LatticeExprNode (const Lattice<Double>& lattice);
@@ -275,7 +362,9 @@ public:
    void eval (Array<Bool>& result, const PixelRegion& region) const;
 // </group>
 
-// Evaluate the expression (in case it is a scalar).
+// Evaluate the expression (in case it is a scalar).  The "eval"
+// and "get*" functions do the same thing, they just have
+// a slightly different interface.
 // <group>
    void eval (Float& result) const;
    void eval (Double& result) const;
@@ -293,7 +382,7 @@ public:
    DataType dataType() const
       {return dtype_p;}
 
-// Is the result of eval a scalar?
+// Is the result of "eval" a scalar?
    Bool isScalar() const
       {return pAttr_p->isScalar();}
 
@@ -317,8 +406,8 @@ public:
 // </group>
 
 // Convert automatically to a LatticeExpr object.
-// These functions are added because the g++ compiler did not use
-// the LatticeExpr constructor for an automatic conversion.
+// These casting functions are added because the g++ compiler did 
+// not use the LatticeExpr constructor for an automatic conversion.
 // <group>
    operator LatticeExpr<Float>();
    operator LatticeExpr<Double>();
@@ -349,7 +438,6 @@ private:
 
 // Create a new node for a numerical unary operation.
 // The result has the same data type as the input.
-
    static LatticeExprNode newNumUnary (LELUnaryEnums::Operation oper,
 				       const LatticeExprNode& expr);
 
@@ -392,7 +480,8 @@ private:
 					const LatticeExprNode& right);
 
    
-//# Member variables.
+// Member variables.  
+
    Bool                donePrepare_p;
    DataType            dtype_p;
    const LELAttribute* pAttr_p;
