@@ -3644,3 +3644,4 @@
 13 349 src mv atnf/implement/pks/mbfits_common.h atnf/apps/pksmbfits/mbfits_common.h
 13 349 src rm atnf/apps/pksmbfits/mbfits_common.h
 13 365 src rm atnf/apps/livedata/livedata.help
+13 365 src rm atnf/apps/pksgridzilla/gridzilla.help
