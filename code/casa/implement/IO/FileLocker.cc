@@ -1,5 +1,5 @@
 //# FileLocker.cc: Class to handle file locking
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,8 +56,6 @@ FileLocker::~FileLocker()
 
 Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
-    itsReadLocked  = False;
-    itsWriteLocked = False;
     itsError = 0;
     flock ls;
     if (type == Write) {
@@ -70,19 +68,19 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
     ls.l_len    = itsLength;
     if (nattempts == 0) {
 	// Wait until lock succeeds.
-	if (fcntl (itsFD, F_SETLKW, &ls) == -1) {
-	    itsError = errno;
-	    return False;
+	if (fcntl (itsFD, F_SETLKW, &ls) != -1) {
+	    itsReadLocked = True;
+	    if (type == Write) {
+		itsWriteLocked = True;
+	    }
+	    return True;
 	}
-	itsReadLocked = True;
-	if (write) {
-	    itsWriteLocked = True;
-	}
-	return True;
+	itsError = errno;
     }
     // Do finite number of attempts. Wait 1 second between each attempt.
     for (uInt i=0; i<nattempts; i++) {
 	if (fcntl (itsFD, F_SETLK, &ls) != -1) {
+	    itsError = 0;
 	    itsReadLocked = True;
 	    if (type == Write) {
 		itsWriteLocked = True;
@@ -91,12 +89,14 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	}
 	itsError = errno;
 	if (errno != EAGAIN  &&  errno != EACCES) {
-	    return False;               // other error than already locked
+	    i = nattempts;                             // exit the loop
 	}
 	if (i < nattempts-1) {
 	    sleep (1);
 	}
     }
+    itsWriteLocked = False;
+    itsReadLocked = canLock (Read);
     return False;
 }
 
