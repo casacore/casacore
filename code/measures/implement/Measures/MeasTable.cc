@@ -824,7 +824,9 @@ void MeasTable::initObservatories() {
 			   WHERE));
 	os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
       };
-      obsPos(i) = MPosition(MVPosition(*(rfp[0]), *(rfp[1]), *(rfp[2])), mr);
+      obsPos(i) = MPosition(MVPosition(Quantity(*(rfp[2]), "m"),
+				       Quantity(*(rfp[0]), "deg"),
+				       Quantity(*(rfp[1]), "deg")), mr);
     };
   };
 }
