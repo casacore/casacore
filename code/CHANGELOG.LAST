@@ -40,3 +40,15 @@ cloneAD()	T	AD<T>	AD<T>	AD<T>
 cloneNonAD()	T	T	AD<T>	<T>
 
 See tGauusian1D for an example
+
+change id: 0164
+ author:   Wim Brouw
+ date:     2005/02/15
+ avers:    1.9
+ area:     Library
+ package:  scimath
+ module:   Fitting
+ type:     Code
+ category: New
+ summary:  Merge separate normal equations
+Added merge() option to LSQFit (and derived classes) to merge separately created normal equations (e.g. on multi-processor machines)
