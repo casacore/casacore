@@ -1,6 +1,6 @@
 # $Id$
 
-XLIBLIST := WCSLIB MIRLIB LAPACK F77
+XLIBLIST := WCSLIB MIRLIB LAPACK F77 CFITSIO
 
 # Use the generic AIPS++ test makefile.
 #--------------------------------------
