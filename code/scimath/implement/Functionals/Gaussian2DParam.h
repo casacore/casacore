@@ -267,13 +267,15 @@ protected:
   // Constant to scale halfwidth at 1/e to FWHM
   ///  static const T fwhm2int;
   T fwhm2int;
+  // cached vale of the PA
+  mutable T thePA;
   // cached values of the cos and sine of thePA
   // <group>
-  T theSpa;
-  T theCpa;
+  mutable T theSpa;
+  mutable T theCpa;
   // </group>
   // cached vale of the Xwidth = ratio*theYwidth;
-  T theXwidth;
+  mutable T theXwidth;
 };
 
 #endif
