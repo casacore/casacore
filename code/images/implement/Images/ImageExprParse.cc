@@ -41,10 +41,11 @@
 //# Define a block to hold temporary lattices.
 static const Block<LatticeExprNode>* theTempLattices;
 
+//# Hold the last table used to lookup unqualified 
+static Table theLastTable;
 
 //# Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
-
 
 
 ImageExprParse::ImageExprParse (Bool value)
