@@ -93,7 +93,7 @@ sub aips2script {
 "<SCRIPT LANGUAGE = \"JavaScript\">\n" .
 "<!--\n" .
 " // Function need to place directory relative to docs tree.\n" .
-" aMenu = new aipsMenu(\"$DOCSROOT\", \"\#$DOCSCOLOR\");\n" .
+" aMenu = new aipsMenu(\"$DOCSROOT\", \"$DOCSCOLOR\");\n" .
 " function onLoad() {\n" .
 "    if (document.layers) {\n" .
 "        aMenu.loadMenus();\n" .
