@@ -150,6 +150,11 @@ try {
         AlwaysAssert(allNear(ie.get(), val, 1e-6), AipsError);
      }
      {
+        ImageExpr<Complex> ie = pol.complexLinearPolarization();
+        Complex val(qVal,uVal);
+        AlwaysAssert(allNear(ie.get(), val, 1e-6), AipsError);
+     }
+     {
         ImageExpr<Float> ie = pol.totPolInt(False, 0.0);
         Float val = sqrt(qVal*qVal + uVal*uVal + vVal*vVal);
         AlwaysAssert(allNear(ie.get(), val, 1e-6), AipsError);
