@@ -28,6 +28,7 @@
 //# Includes
 #include <trial/Functionals/FuncExpression.h>
 #include <trial/Functionals/FuncExprData.h>
+#include <trial/Functionals/CompiledFunction.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 
@@ -73,8 +74,22 @@ int main() {
       cout << expr;
       Double res;
       cout << "Value: ";
-      if (!expr.exec(res)) cout <<expr.errorMessage() << endl;
+      if (!expr.exec(res)) cout << expr.errorMessage() << endl;
       else cout << res << endl;
+      cout << "----------------------------------------------------" << endl;
+    };
+    for (uInt i=0; i<n; ++i) {
+      CompiledFunction<Double> expr;
+      String myexpr = exprlist[i];
+      cout << "Expression: '" << myexpr << "'" << endl; 
+      if (!expr.setFunction(myexpr)) {
+	cout << expr.errorMessage() << endl;
+      };
+      if (expr.nparameters() > 0) expr[0] = 1.5;
+      if (expr.nparameters() > 1) expr[1] = 2.5;
+      ///      cout << expr;
+      cout << "Value: ";
+      cout << expr(3.5) << endl;
       cout << "----------------------------------------------------" << endl;
     };
   }  catch (AipsError x) {
