@@ -29,7 +29,7 @@
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Logging.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/Time.h>
 #include <aips/Quanta/Quantum.h>

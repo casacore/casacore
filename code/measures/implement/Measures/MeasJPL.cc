@@ -33,7 +33,7 @@
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/OS/Time.h>
-#include <aips/Logging.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Tables/TableDesc.h>
 

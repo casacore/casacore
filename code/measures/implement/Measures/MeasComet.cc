@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/MVRadialVelocity.h>
 #include <aips/Quanta/MVDirection.h>
-#include <aips/Logging.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/TableRecord.h>

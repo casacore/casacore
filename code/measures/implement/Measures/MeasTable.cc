@@ -29,7 +29,7 @@
 #include <aips/Measures/MeasTable.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordField.h>
-#include <aips/Logging.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MPosition.h>
