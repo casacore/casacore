@@ -4427,3 +4427,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSField.cc aips/implement/MeasurementSets/OldMSField.cc
 14 296 src mv aips/implement/MeasurementSets/MSField.h aips/implement/MeasurementSets/OldMSField.h
 14 296 src mv aips/implement/MeasurementSets/MSFieldColumns.cc aips/implement/MeasurementSets/OldMSFieldColumns.cc
+14 296 src mv aips/implement/MeasurementSets/MSFieldColumns.h aips/implement/MeasurementSets/OldMSFieldColumns.h
