@@ -28,7 +28,7 @@
 #include <trial/Images/SepImageConvolver.h>
 
 #include <aips/aips.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
@@ -132,7 +132,7 @@ try {
       if (axis<=0) {
          for (uInt j=0; j<shape.nelements(); j++) {
             const Double refPix = shape(j)/2;
-            const Gaussian1D<Double> gauss(norm, refPix, fwhm);
+            const NQGaussian1D<Double> gauss(norm, refPix, fwhm);
             Vector<Float> kernel(shape(j));
             for (Int i=0; i<shape(j); i++) kernel(i) = gauss(Double(i));
             sic.setKernel(j, kernel);
@@ -140,7 +140,7 @@ try {
       } else {
          axis--;
          const Double refPix = shape(axis)/2;
-         const Gaussian1D<Double> gauss(norm, refPix, fwhm);
+         const NQGaussian1D<Double> gauss(norm, refPix, fwhm);
          Vector<Float> kernel(shape(axis));
          for (Int i=0; i<shape(axis); i++) kernel(i) = gauss(Double(i));
          sic.setKernel(axis, kernel);

@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -69,7 +69,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       } else {
          norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
       }
-      const Gaussian1D<Double> gauss(norm, refPix, Double(width));
+      const NQGaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
       if (useShapeExactly> 0) {
