@@ -85,7 +85,7 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
   uInt k;
   AutoDiff<T> tmp;
 //  
-  if (stoT != param_p[THETA] || stoP != param_p[PHI]) settrigvals();
+  if (stoT_p != param_p[THETA] || stoP_p != param_p[PHI]) settrigvals();
 
   const T cosTV = cosT_p.value();
   const T cosPV = cosP_p.value();
