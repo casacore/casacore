@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/QMath.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MDoppler.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Logging/LogIO.h>
@@ -396,9 +397,14 @@ enum MethodTypes {
 // parameters.  If you don't call this function the default state of the
 // class is to do no smoothing.  The kernel types are specified with
 // the VectorKernel::KernelTypes enum
+// <group>
+   Bool setSmoothMethod(const Vector<Int>& smoothAxes,
+                        const Vector<Int>& kernelTypes,
+                        const Vector<Quantum<Double> >& kernelWidths);
    Bool setSmoothMethod(const Vector<Int>& smoothAxes,
                         const Vector<Int>& kernelTypes,
                         const Vector<Double>& kernelWidths);
+// </group>
 
 // You may specify a pixel intensity range as either one for which
 // all pixels in that range are included in the moment calculation,
@@ -529,7 +535,7 @@ private:
    Int momentAxis_p;
    Int worldMomentAxis_p;
    Vector<Int> kernelTypes_p;
-   Vector<Double> kernelWidths_p;   
+   Vector<Quantum<Double> > kernelWidths_p;   
    Vector<Int> nxy_p;
    Vector<Int> moments_p;
    Vector<T> selectRange_p;
