@@ -95,7 +95,7 @@
 // Matrix<Double> solution;
 // solution = fitgauss.fit(x,y);
 // cout << solution;
-// <srcblock>
+// </srcblock>
 // I haven't checked that this example actually works, though...
 // </example>
 
@@ -121,6 +121,7 @@
   
 // <todo asof="2002/06/19">
 //   <li> Automatically generate retry matrices
+//   <li> Send messages to logger instead of console
 //   <li> Consider using a more sophisticated retry ststem (above).
 //   <li> Consider adding other models (polynomial, etc) to make this a Fit3D
 //        class.
