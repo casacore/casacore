@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,12 +31,13 @@
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/AipsIO.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Copy.h>
+#include <aips/Utilities/DataType.h>
+#include <aips/IO/AipsIO.h>
+#include <aips/OS/DOos.h>
 #include <aips/Tables/DataManError.h>
 
 
@@ -663,9 +664,9 @@ DataManager* StManAipsIO::clone() const
     return smp;
 }
 
-DataManager* StManAipsIO::makeObject (const String&)
+DataManager* StManAipsIO::makeObject (const String& storageManagerName)
 {
-    StManAipsIO* smp = new StManAipsIO();
+    StManAipsIO* smp = new StManAipsIO (storageManagerName);
     if (smp == 0) {
 	throw (AllocError ("StManAipsIO::makeObject", 1));
     }
@@ -907,4 +908,12 @@ void StManAipsIO::reopenRW()
     for (uInt i=0; i<ncolumn(); i++) {
 	colSet_p[i]->reopenRW();
     }
+}
+
+void StManAipsIO::deleteManager()
+{
+    delete iosfile_p;
+    iosfile_p = 0;
+    DOos::remove (fileName() + 'i', False, False);
+    DOos::remove (fileName(), False, False);
 }
