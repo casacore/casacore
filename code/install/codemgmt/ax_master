@@ -4490,3 +4490,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSFeed.h aips/implement/MeasurementSets/MSFeed.h
 14 296 src mv aips/implement/MeasurementSets/NewMSFeedColumns.cc aips/implement/MeasurementSets/MSFeedColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSFeedColumns.h aips/implement/MeasurementSets/MSFeedColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSFeedEnums.h aips/implement/MeasurementSets/MSFeedEnums.h
