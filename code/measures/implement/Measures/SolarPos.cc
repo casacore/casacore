@@ -35,9 +35,13 @@ typedef Quantum<Double> gpp_solarpos_bug1;
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Measures/MeasTable.h>
+#include <aips/Tasking/AipsrcValue.h>
 
 //# Constants
 const Double SolarPos::INTV = 0.04;
+
+//# Static data
+uInt SolarPos::interval_reg = 0;
 
 //# Constructors
 SolarPos::SolarPos() : method(SolarPos::STANDARD), lres(0) {
@@ -146,8 +150,15 @@ const MVPosition &SolarPos::barySunDerivative(Double epoch) {
 }
 
 void SolarPos::fill() {
-    checkEpoch = 1e30;
-    checkSunEpoch = 1e30;
+  // Get the interpolation interval
+  if (!SolarPos::interval_reg) {
+    interval_reg = 
+      AipsrcValue<Double>::registerRC(String("measures.solarpos.d_interval"),
+				      Unit("d"), Unit("d"),
+				      SolarPos::INTV);
+  };
+  checkEpoch = 1e30;
+  checkSunEpoch = 1e30;
 }
 
 void SolarPos::refresh() {
@@ -157,9 +168,8 @@ void SolarPos::refresh() {
 
 void SolarPos::calcEarth(Double t) {
     Double intv;
-    if (!nearAbs(t,checkEpoch,
-		 (MeasDetail::get(SolarPos::D_Interval,intv) ? 
-		  intv : SolarPos::INTV))) {
+    if (!nearAbs(t, checkEpoch,
+		 AipsrcValue<Double>::get(SolarPos::interval_reg))) {
 	checkEpoch = t;
 	switch (method) {
 	    default:
@@ -223,9 +233,8 @@ void SolarPos::calcEarth(Double t) {
     
 void SolarPos::calcSun(Double t) {
     Double intv;
-    if (!nearAbs(t,checkSunEpoch,
-		 (MeasDetail::get(SolarPos::D_Interval,intv) ? 
-		  intv : SolarPos::INTV))) {
+    if (!nearAbs(t, checkEpoch,
+		 AipsrcValue<Double>::get(SolarPos::interval_reg))) {
 	checkSunEpoch = t;
 	switch (method) {
 	    default:
