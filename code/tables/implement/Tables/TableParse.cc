@@ -452,7 +452,7 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::sinFUNC;
     } else if (funcName == "sinh") {
 	ftype = TableExprFuncNode::sinhFUNC;
-    } else if (funcName == "square") {
+    } else if (funcName == "square"  ||  funcName == "sqr") {
 	ftype = TableExprFuncNode::squareFUNC;
     } else if (funcName == "sqrt") {
 	ftype = TableExprFuncNode::sqrtFUNC;
@@ -496,6 +496,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::arrsumFUNC;
     } else if (funcName == "product") {
 	ftype = TableExprFuncNode::arrproductFUNC;
+    } else if (funcName == "sumsqr"  ||  funcName == "sumsquare") {
+	ftype = TableExprFuncNode::arrsumsqrFUNC;
     } else if (funcName == "mean") {
 	ftype = TableExprFuncNode::arrmeanFUNC;
     } else if (funcName == "variance") {
@@ -506,6 +508,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::arravdevFUNC;
     } else if (funcName == "median") {
 	ftype = TableExprFuncNode::arrmedianFUNC;
+    } else if (funcName == "fractile") {
+	ftype = TableExprFuncNode::arrfractileFUNC;
     } else if (funcName == "any") {
 	ftype = TableExprFuncNode::anyFUNC;
     } else if (funcName == "all") {
@@ -578,6 +582,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::rowidFUNC;
     } else if (funcName == "rand") {
 	ftype = TableExprFuncNode::randFUNC;
+    } else if (funcName == "iif") {
+	ftype = TableExprFuncNode::iifFUNC;
     } else {
 	ok = False;
     }
