@@ -227,8 +227,8 @@ private:
   IPosition itsModelShape;
   ConvEnums::ConvType itsType;
   IPosition itsFFTShape;
-  TempLattice<typename NumericTraits<T>::ConjugateType> itsXfr;
-  TempLattice<T> itsPsf;
+  TempLattice<typename NumericTraits<T>::ConjugateType>* itsXfr;
+  TempLattice<T>* itsPsf;
   Bool itsCachedPsf;
   Bool doFast_p;
 };
