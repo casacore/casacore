@@ -1,5 +1,5 @@
 //# Dlist.cc: Doubly linked list
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -217,11 +217,3 @@ template<class t>
 ConstDlistIter<t> &DlistIter<t>::operator=(const ConstDlistIter<t> *) {
   throw_list_init_error();
   return *this;}
-
-rtti_imp_init_a1(Dlist);
-rtti_imp_mbrf_a1(Dlist);
-
-rtti_imp_init_a1(DlistIter);
-rtti_imp_mbrf_a1(DlistIter);
-rtti_imp_init_a1(ConstDlistIter);
-rtti_imp_mbrf_a1(ConstDlistIter);

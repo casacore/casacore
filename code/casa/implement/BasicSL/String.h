@@ -423,7 +423,7 @@ public:
   friend istream &operator>>(istream &s, String &x);
   // </group>
 
-  // Concatinate by prepending the argument onto String
+  // Concatenate by prepending the argument onto String
   //<group name=concatenation_method>
   void prepend(const String &y); 
   void prepend(const SubString &y);
@@ -666,8 +666,6 @@ protected:
 
 };
 
-// Initialize the String type() rtti functions.
-rtti_dcl_init(String);
 
 // This is here for backward compatibility.
 typedef String StrTmp;

@@ -1,5 +1,5 @@
 //# ListMap.cc: Map with list ordering/operations
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,6 @@
 
 #include <aips/Containers/ListMap.h>
 
-//rtti_imp_init_a2(ListMap);
-//rtti_imp_mbrf_a2(ListMap);
 
 template<class key, class value> value *ListMapRep<key,value>::isDefined(const key &kv) {
   if (!list.atEnd() && list.getRight().x() == kv) {
@@ -138,13 +136,13 @@ MapRep<key,value> *ListMapRep<key,value>::Clone() const {
 template<class key, class value> 
 void ListMapIterRep<key,value>::operator++() {
   if (listp.atEnd() == True)
-    throw(ExcpError(71));
+    throw(AipsError("ListMap::operator++ - at end"));
   ++listp;
 }
 
 template<class key, class value>
 void ListMapIterRep<key,value>::operator++(int) {
   if (listp.atEnd() == True)
-    throw(ExcpError(71));
+    throw(AipsError("ListMap::operator++ - at end"));
   ++listp;
 }

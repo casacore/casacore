@@ -49,10 +49,6 @@ class  AipsIO;
 struct re_pattern_buffer;       // defined elsewhere
 struct re_registers;
 
-#include <aips/RTTI/Typeinfo.h>
-
-// Initialize the String type() rtti functions.
-rtti_dcl_init(Regex);
 
 // <summary>
 // Regular expression class

@@ -402,12 +402,3 @@ template<class t>
 ConstListIter<t> &ListIter<t>::operator=(const ConstListIter<t> *) {
   throw_list_init_error();
   return *this;}
-
-
-rtti_imp_init_a1(List)
-rtti_imp_mbrf_a1(List)
-
-rtti_imp_init_a1(ListIter)
-rtti_imp_mbrf_a1(ListIter)
-rtti_imp_init_a1(ConstListIter)
-rtti_imp_mbrf_a1(ConstListIter)

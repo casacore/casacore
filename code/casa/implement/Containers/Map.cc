@@ -1,5 +1,5 @@
 //# Map.cc: Associative array classes (templated)
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,13 +26,6 @@
 //# $Id$
 
 #include <aips/Containers/Map.h>
-
-rtti_imp_init_a2(Map);
-rtti_imp_mbrf_a2(Map);
-rtti_imp_init_a2(ConstMapIter);
-rtti_imp_mbrf_a2(ConstMapIter);
-rtti_imp_init_a2(MapIter);
-rtti_imp_mbrf_a2(MapIter);
 
 
 //# template<class key, class value> value &Map<key,value>::operator()(const key &ky) {

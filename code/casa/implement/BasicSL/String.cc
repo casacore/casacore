@@ -74,8 +74,6 @@ inline static StrRep* Snew(int newsiz)
   return rep;
 }
 
-// Define rtti functions.
-rtti_imp_init(String);
 
 String::String() : rep(&_nilStrRep)
 {

@@ -32,7 +32,7 @@
 #include <aips/Containers/Map.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Containers/List.h>
-#include <aips/RTTI/Typeinfo.h>
+
 
 template<class key, class value> class ListMap;
 template<class key, class value> class ListMapIterRep;
@@ -240,7 +240,7 @@ public:
   //
   const key &getKey() const {
     if (listp.atEnd() == True)
-      throw(ExcpError(71));
+      throw(AipsError("ListMap::getKey - at end"));
     return(((ConstListIter<OrderedPair<key,value> >) listp).getRight().x());
   }
 
@@ -250,12 +250,12 @@ public:
   //+grp
   const value &getVal() const {
     if (listp.atEnd() == True)
-      throw(ExcpError(71));
+      throw(AipsError("ListMap::getVal - at end"));
     return(((ConstListIter<OrderedPair<key,value> >) listp).getRight().y());
   }
   value &getVal() {
     if (listp.atEnd() == True)
-      throw(ExcpError(71));
+      throw(AipsError("ListMap::getVal - at end"));
     return(listp.getRight().y());
   }
   //-grp

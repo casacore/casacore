@@ -1,5 +1,5 @@
 //# Regex.cc: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,8 +44,6 @@
 #include <aips/IO/AipsIO.h>
 #include <iostream.h>
 
-// Define rtti functions.
-rtti_imp_init(Regex);
 
 Regex::Regex ()
     { create ("",0,0,0); }

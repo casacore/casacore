@@ -32,7 +32,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/RTTI/Typeinfo.h>
 
 //
 // Work around bugs in SUN\'s stupid compiler
@@ -135,7 +134,6 @@ protected:
 
 };
 
-rtti_dcl_init_a2(Map);
 
 //
 // <category lib=aips sect="Containers">
@@ -225,9 +223,6 @@ public:
   // Does nothing.
   //
   virtual ~Map();
-
-  // Macro to define the typeinfo member functions
-  rtti_dcl_mbrf(TMPL_ARG2(Map,key,value));
 
   enum {MapVersion = 1};
 
@@ -404,7 +399,6 @@ protected:
 
 };
 
-rtti_dcl_init_a2(ConstMapIter);
 //
 // <category lib=aips sect="Containers">
 // <summary>Const associative array iterator</summary>
@@ -542,9 +536,6 @@ public:
 
   virtual ~ConstMapIter();
 
-  // Macro to define the typeinfo member functions
-  rtti_dcl_mbrf(TMPL_ARG2(ConstMapIter,key,value));
-
   enum {ConstMapIterVersion = 1};
 
 protected:
@@ -568,7 +559,6 @@ protected:
 
 
 //#
-rtti_dcl_init_a2(MapIter);
 //
 // <category lib=aips sect="Containers">
 // <summary>Associative array iterator</summary>
@@ -742,9 +732,6 @@ public:
   //-grp
 
   ~MapIter() {}
-
-  // Macro to define the typeinfo member functions
-  rtti_dcl_mbrf_p1(TMPL_ARG2(MapIter,key,value), TMPL_ARG2(ConstMapIter,key,value));
 
   enum {MapIterVersion = 1};
 

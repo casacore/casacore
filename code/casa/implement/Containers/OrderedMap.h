@@ -36,7 +36,7 @@
 #include <aips/Containers/OrderedPair.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Utilities/Notice.h>
-#include <aips/Containers/OrdMapRtti.h>
+
 
 template<class t, class v> class OrderedMap;
 template<class t, class v> class OrderedMapRep;

@@ -33,7 +33,7 @@
 
 template<class t> class DlistIter;
 
-rtti_dcl_init_a1(Dlist);
+
 // <summary><b>Deprecated</b> use <linkto class=List>List</linkto> instead</summary>
 // <h2>Deprecated use <linkto class=List><src>List</src></linkto> instead.</h2>
 //
@@ -41,13 +41,10 @@ template<class t> class Dlist : public List<t> {
   public:
     Dlist();
 
-  rtti_dcl_mbrf_p1(Dlist<t> , List<t>);
-
   enum {DlistVersion = 2};
 };
 
 
-rtti_dcl_init_a1(ConstDlistIter);
 
 // <summary><b>Deprecated</b> use 
 // <linkto class=ConstListIter>ConstListIter</linkto>
@@ -78,14 +75,11 @@ public:
 
   ConstDlistIter();
 
-  rtti_dcl_mbrf_p1(ConstDlistIter<t>, ConstListIter<t>);
-
   enum {ConstDlistIterVersion = 2};
 
 };
 
 
-rtti_dcl_init_a1(DlistIter);
 // <summary><b>Deprecated</b> use <linkto class=ListIter>ListIter</linkto> instead</summary>
 // <h2>Deprecated use <linkto class=ListIter><src>ListIter</src></linkto> instead.</h2>
 //
@@ -136,8 +130,6 @@ public:
   }
 
   DlistIter();
-
-  rtti_dcl_mbrf_p2(DlistIter<t>, ListIter<t>, ConstDlistIter<t>);
 
   enum {DlistIterVersion = 2};
 

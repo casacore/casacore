@@ -35,8 +35,7 @@
 #include <aips/Containers/Link.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/IterError.h>
-#include <aips/RTTI/Typeinfo.h>
-#include <aips/Exceptions/Excp.h>
+
 
 // The function which throws an exception for advancing the internal
 // cursor past the end of a list
@@ -120,9 +119,6 @@ private:
 
 };
 
-//
-//# Initialize the Slist type() rtti functions
-rtti_dcl_init_a1(List);
 //
 // <summary>Doubly linked list</summary> 
 // <use visibility=export>
@@ -212,10 +208,6 @@ public:
     //
     uInt len() const {return length;}
 
-    //*display 9
-    //# Macro to define the typeinfo member functions
-    rtti_dcl_mbrf(List<t>);
-
     //
     // List version
     //
@@ -236,8 +228,6 @@ protected:
     // </group>
 };
 
-//# Initialize the Slist type() rtti functions
-rtti_dcl_init_a1(ConstListIter);
 
 // 
 // <summary>Doubly linked constant list iterator</summary> 
@@ -513,10 +503,6 @@ public:
     //
     const List<t> *container() const {return container_;}
 
-    //*display 9
-    //# Macro to define the typeinfo member functions
-    rtti_dcl_mbrf(ConstListIter<t>);
-
     // enum outside class because of compiler errors on HPUX
     //enum {ConstListIterVersion = 1};
 
@@ -527,9 +513,6 @@ protected:
     uInt curPos;
     List<t> *container_;
 };
-
-//# Initialize the List type() rtti functions
-rtti_dcl_init_a1(ListIter);
 
 // 
 // <summary>Doubly linked non-constant list iterator</summary> 
@@ -722,10 +705,6 @@ public:
     // </group>
 
     ~ListIter();
-
-    //*display 9
-    //# Macro to define the typeinfo member functions
-    rtti_dcl_mbrf_p1(ListIter<t> , ConstListIter<t>);
 
 //# **Seems to cause an internal compiler error on Sun's
 //# **Cfront compiler. Remove when really need or compiler
