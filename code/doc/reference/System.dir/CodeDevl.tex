@@ -1624,12 +1624,19 @@ If no list of files is provided, the list used is the combination of:
 	\item A file named \code{templates} in the current working directory
               if any; and
 	\item All files named \code{templates} under the
-	     \code{\$AIPSCODE}
+	     \code{\$AIPSCODE} tree
 \end{enumerate}
 
 \subsection*{Options}
 
-None.
+Options are provided to limit the inclusion of templates files that will be
+included in the search. Check with:
+
+\begin{verbatim}
+   duplicates -h
+\end{verbatim}
+
+to find the currently available switches.
 
 \subsection*{Examples}
 
@@ -1645,6 +1652,7 @@ the listed files.
 \subsection*{See also}
 
 \aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
+\exeref{reident}, reformat in canonical form the template instantiation file.
 
 \subsection*{Author}
 
@@ -1948,14 +1956,18 @@ so that each combination of ident and \file{.cc} file is unique.
 \exe{reident} also converts each entry in the input to a canonical form with
 respect to the use of spacing and \code{typedef}'d variables so that trivial
 duplications are automatically eliminated, and it warns of any non-trivial
-duplications.
+deviation from the canonical forms.
+
+\exe{reident} also converts each entry in the input to a fromatted multi-line
+output.
 
 If multiple files are specified they will be merged together.  One file may
 be specified as ``\file{-}'' to denote input from \file{stdin}.  Output is
 written to \file{templates} -- if the input came from \file{templates} it will
 be overwritten.
 
-Normally idents of \code{0000} and the second and subsequent occurrence of
+Normally missing idents, idents specified as \code{0000} and the second and
+subsequent occurrence of
 duplicate idents are replaced by a unique value for each \file{.cc} file.  If
 the \exe{-z} option is specified, all idents are replaced with an ascending
 sequence starting at \code{1000} for each \file{.cc} file.
@@ -1964,7 +1976,7 @@ The idents are incremented by \code{10} to allow manual insertion of new
 template declarations in the correct sequence.
 
 Comments in the templates file (lines beginning with ``\code{\#}'') will be
-collected at the top of the file in sort order.
+collected at the top or bottom of the file in sort order.
 
 \subsection*{Options}
 
@@ -2006,11 +2018,14 @@ package and at the same time completely refresh the idents
 \noindent
 If seldom used the \exe{-z} option has the potential to cause a great deal of
 recompilation because of accumulated changes.  However, if used regularly the
-incremental cost should be modest.
+incremental cost should be modest. Also, all care should be taken that
+templates included are not duplicated (see \exeref{duplicates}).
 
 \subsection*{See also}
 
-\exeref{mkinst}, Generate template instantiation files from a list.
+\exeref{mkinst}, Generate template instantiation files from a list.\\
+\exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
+   across the system.
 
 \subsection*{Author}
 

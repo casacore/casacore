@@ -1221,7 +1221,7 @@ scheme used by \unixexe{g++} differs from other compilers).
 
 It is up to the programmer to supply the name of the class implementation file
 and any required header files for each template to be instantiated.  This
-information is recorded as a one-line entry in the \file{templates} file as
+information is recorded as an entry in the \file{templates} file as
 described in the entry for \exeref{mkinst}.  The \file{templates} files are
 maintained within the \aipspp\ system and programmers may also create private
 copies for code development.
@@ -1249,8 +1249,9 @@ system (see chapter~\ref{Code development} for programmer usage):
 \subsection*{See also}
  
 \exeref{mkinst}, Generate template instantiation files from a list.\\
-\exeref{reident}, Remake the idents in a \file{templates} list.
-
+\exeref{reident}, Remake the idents in a \file{templates} list.\\
+\exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
+   across the system.
 % ----------------------------------------------------------------------------
  
 \newpage
@@ -1968,14 +1969,14 @@ specified file, (\file{templates} by default).  It leaves the resulting
 \file{templates} file is
 
 \begin{verbatim}
-   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
+   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration> ...
 \end{verbatim}
 
 \noindent
 or
 
 \begin{verbatim}
-   <ident> <.h file> [<extra .h files>] <template declaration>
+   <ident> <.h file> [<extra .h files>] <template declaration> ...
 \end{verbatim}
 
 \noindent
@@ -1986,8 +1987,8 @@ respect to \file{\$AIPSROOT/code/include}.  For example:
 \begin{verbatim}
    1050 aips/Set/Set.cc template class Set<Int>
    1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
-   1060 aips/Set/Set.cc template operator+(Set<Int> const &, Set<Int> const &)
-   1060 aips/Set/Set.cc template union(Set<Int> const &, Set<Int> const &)
+   1060 aips/Set/Set.cc template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
+   1060 aips/Set/Set.cc template void union(Set<Int> const &, Set<Int> const &)
 \end{verbatim}
 
 \noindent
@@ -2001,6 +2002,23 @@ example, the instantiation file for the first entry above would be
 Comments in the \file{templates} file are signalled by a ``\code{\#}'' in the
 first field.  Blank lines are also allowed.
 
+Each entry in the \file{templates} must have at least one template
+declaration. More are allowed (each starting with the word
+\code{template}). They can be specified all on one line, or on separate lines
+per template declaration. Template declarations can be bracketed by \#if
+\#else \#endif. For example:
+
+\begin{verbatim}
+   1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
+   1050 aips/Set/Set.cc 
+	template class Set<Int>
+	#if !defined(STD_LIB)
+    	  template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
+      	  template void union(Set<Int> const &, Set<Int> const &)
+	#endif
+\end{verbatim}
+
+\noindent
 Any template instantiation \file{.cc} file in the current directory which does
 not correspond to an entry in the templates file will be deleted.  These files
 are recognized by having names of the form \file{*\_[0-9][0-9][0-9][0-9].cc}.
@@ -2047,7 +2065,9 @@ files in a subdirectory (\file{tmplinst}) of the directory where the
  
 \subsection*{See also}
  
-\exeref{reident}, Remake the idents in a \file{templates} list.
+\exeref{reident}, Remake the idents in a \file{templates} list.\\
+\exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
+   across the system.
  
 \subsection*{Author}
  
