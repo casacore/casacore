@@ -1,0 +1,273 @@
+#!/usr/local/bin/tcsh
+#-----------------------------------------------------------------------------
+# UPchange script
+# Usage: UPchange <typ>
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+set script = "UPchange"
+set usage = 'Usage: UPchange [-c] [-mv] [-t] [-l] [-i] [-mk] [-d] <typ>'
+# UPchange script (must have x allowed)
+# Update all files (ao change ai) as given in <typ>.found created by UPfind.
+# As a result the <typ>.moved list will contain the found list after a move.
+#   -c  will clear all relevant information
+#   -mv will initiate a move before the change
+#   -t  will not execute for real, but only for test
+#   -l  will leave the found file names, in default case the file names
+#       will be changed according to the change pattern as well.
+#   -i  will not check any files in/out, but only work on files in work area
+#   -mk will make the changed files to test if correct
+#   -d  will show some debug information
+# <typ>.done and <typ>.error give lists of files successfully done or not.
+#
+# See UPinfo for details
+#
+#
+# Get general info
+#
+set x = "`which UPinfo`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]
+endif
+unset x
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+if (! -r $ldir/${tp}.sed) then
+   touch $ldir/${tp}.sed
+   echo "Specify the sed patterns used to change the contents of the file, "
+   echo "and, if no -l switch present, also the names of the found files. "
+   echo 'Example: s#/Measures/MV#/Quanta/MV#g'
+   echo '         s#/Measures/MeasVal#/Quanta/MeasVal#g'
+   echo '         s#/Measures/MUString#/Quanta/MUString#g'
+   echo '         s#/Measures/MVAngle#/Quanta/MVAngle#g'
+   echo '         s#[.]arrayCast[(][)]##g'
+   echo '         s#[.]ac[(][)]##g'
+   echo '         s#at_cc[(]#(#g'
+   echo '         s#at_c[(]#(#g'
+   while (1)
+      echo -n 'Change pattern: '
+      set x = "$<"
+      if ("$x" == "") break
+      echo "$x" >> $ldir/${tp}.sed
+   end
+   unset x
+   if (-z $ldir/${tp}.sed) then
+      echo "No change patterns specified in ${tp}.sed"
+      exit (1)
+   endif
+endif
+
+if ($domv) then
+   if (! -r $ldir/${tp}.sel) then
+      touch $ldir/${tp}.sel
+      echo "Specify file patterns to list the files to move"
+      echo 'Example: aips/implement/Measures/{MX,MeasVal}*'
+      echo '         aips/implement/Quanta'
+      while (1)
+         echo -n 'File pattern: '
+         set x = "$<"
+         if ("$x" == "") break
+         echo "$x" >> $ldir/${tp}.sel
+      end
+      unset x
+   endif
+   if (-z $ldir/${tp}.sel) then
+      echo "No file patterns specified in ${tp}.sel"
+      exit (1)
+   endif
+   if (! -r $ldir/${tp}.cfnm) then
+      touch $ldir/${tp}.cfnm
+      echo "Specify sed patterns to change the names of files to move"
+      echo 'Example: s#/Measures#/Quanta#'
+      while (1)
+         echo -n 'File pattern: '
+         set x = "$<"
+         if ("$x" == "") break
+         echo "$x" >> $ldir/${tp}.cfnm
+      end
+      unset x      
+   endif
+   if (-z $ldir/${tp}.cfnm) then
+      echo "No sed patterns specified in ${tp}.cfnm"
+      exit (1)
+   endif
+   cd $dir/code/
+   foreach i (`cat $ldir/${tp}.sel`)
+     set j = `echo $i | sed -f $ldir/${tp}.cfnm`
+     if ($upreal) then
+	amv -src $i $j
+     else
+	echo "amv -src $i $j"
+     endif
+   end
+   cd $ldir
+endif
+
+if ($upaoi) then
+   if (! -r $ldir/${tp}.rcs) then
+      touch $ldir/${tp}.rcs
+      echo "Specify the message lines for the RCS log"
+      echo 'Example: Moved from Quanta to Measures'
+      while (1)
+         echo -n 'Text line: '
+         set x = "$<"
+         if ("$x" == "") break
+         echo "$x" >> $ldir/${tp}.rcs
+      end
+      unset x
+   endif
+   if (-z $ldir/${tp}.rcs) then
+      echo "No RCS message specified in ${tp}.rcs"
+      exit (1)
+   endif
+   echo "." >> $ldir/${tp}.rcs
+endif
+
+cd $ldir
+
+if (-e $ldir/${tp}.done) rm -f $ldir/${tp}.done
+if (-e $ldir/${tp}.error) rm -f $ldir/${tp}.error
+touch $ldir/${tp}.done
+touch $ldir/${tp}.error
+
+set a = ( `wc ${tp}.found` )
+echo $a[1] files in ${tp}.found
+unset a
+
+if (-e ${tp}.changed) rm -f ${tp}.changed
+if (! $leav) then
+    echo "Change the file names in ${tp}.found (to ${tp}.changed)..."
+    ${uppath}UPsed $ldir/$tp ${tp}.found ${tp}.changed force
+else
+    cat ${tp}.found >! ${tp}.changed
+endif
+
+# Do the real change or do a dry run of it
+set a = (`wc ${tp}.changed`)
+echo "$a[1] files will be changed and checked in/out"
+unset a
+if (! $upreal) then
+   echo "Note: in test mode -- no actual file check in/out and change"
+endif
+
+if (! $upmake) then
+  foreach i (`cat $ldir/${tp}.changed`)
+   echo "$i started"
+   cd $mdir/code/$i:h
+   if (-e $i:t && $upaoi) rm -f $i:t
+      if ($upreal) then
+  	if ($upaoi) $xao -l $i:t
+      else
+        if ($upaoi) echo "$xao -l $i:t"
+  	echo "UPsed $tp $i:t $i:t"
+ 	if ($upaoi) then
+	  echo "$xai $i:t"
+	  cat $ldir/${tp}.rcs
+	  if ($xai == rai) echo "rm -f $i:t"
+	endif
+    endif
+    if (-e $i:t) then
+        ${uppath}UPsed $ldir/$tp $i:t $i:t force
+	if ($upaoi) $xai $i:t < $ldir/${tp}.rcs
+        echo "$i done" >> $ldir/${tp}.done
+        if ($xai == rai && $upaoi) rm -f $i:t
+    else
+        echo "$i could not be checked out"
+        echo "$i could not be checked out" >> $ldir/${tp}.error
+    endif
+  end
+endif
+
+# Checkout change and do appropriate makes
+if ($upmake) then
+  set a = (`wc ${tp}.changed`)
+  echo "$a[1] files will be checked out, changed and made"
+  unset a
+
+  if (! -e ${tp}.tmpinst) then
+     cd $dir/code
+     echo "Getting template file list..."
+     find . -name '*_????.cc' -print | \
+        grep tmplinst \
+           >! $ldir/${tp}.tmpinst
+     cd $ldir
+     set a = ( `wc ${tp}.tmpinst` )
+     echo $a[1] files found in ${tp}.tmpinst
+     unset a
+  endif
+
+  ${uppath}UPtmpl $tp force
+  set tf = $$.tmp
+
+  foreach i (`cat $ldir/${tp}.changed`)
+      echo "$i started"
+      cd $mdir/code/$i:h
+      if (-e $i:t && $upaoi) rm -f $i:t
+      if (-e $tf) rm -f $tf
+      touch $tf
+      if ($upaoi) $xao $i:t
+      if (-e $i:t) then
+          chmod 644 $i:t
+          ${uppath}UPsed $ldir/$tp $i:t $i:t force
+	  chmod 444 $i:t
+	  set ok = 0
+	  if (${i:t:e} == cc) then
+	    echo "gmake OPT=1 ${i:t:r}.o"
+	    gmake OPT=1 ${i:t:r}.o >>& $tf
+	    if ($status) set ok = $status
+	    foreach j (`grep '[/]'${i:t:r}_ $ldir/${tp}.tmpinst`)
+	      cp $dir/code/$j .
+	      echo "gmake OPT=1 ${j:t:r}.o"
+	      gmake OPT=1 ${j:t:r}.o >>& $tf
+	      if ($status) set ok = $status
+	      rm -f $j:t
+	    end
+	  endif
+	  if ($upaoi) rm -f $i:t
+	  if (! $ok) then
+            echo "$i done" >> $ldir/${tp}.done
+	  else
+	    echo "$i had make errors" >> $ldir/${tp}.error
+	    cat $tf >> $ldir/${tp}.error
+	    echo " "  >> $ldir/${tp}.error
+	    echo "-------------------------------------" >> $ldir/${tp}.error
+	  endif
+      else
+          echo "$i could not be checked out"
+          echo "$i could not be checked out" >> $ldir/${tp}.error
+      endif
+      rm -f $tf
+  end
+endif
+
+exit 0
