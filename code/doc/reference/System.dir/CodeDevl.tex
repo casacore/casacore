@@ -525,7 +525,7 @@ may be used to automatically record timestamp information in the installed
 typically near the end of the file:
 
 \begin{verbatim}
-   <P>Copyright &#169; 1996-98,2000 Associated Universities Inc., Washington, D.C.</P>
+   <P>Copyright &#169; 1996-98,2000,2001 Associated Universities Inc., Washington, D.C.</P>
    <ADDRESS>aips2adm@nrao.edu</ADDRESS>
 \end{verbatim}
 
@@ -552,7 +552,7 @@ time when the \file{.html} file was installed in the relevant subdirectory of
 result is as follows:
 
 \begin{verbatim}
-   Copyright (c) 1995-98,2000 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995-98,2000,2001 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -572,7 +572,7 @@ It is permissable to insert additional text within the meta-markup as follows:
 This would appear as:
 
 \begin{verbatim}
-   Copyright (c) 1995-98,2000 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995-98,2000,2001 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -2037,6 +2037,9 @@ If no list of files is provided, the list used is the combination of:
 Duplicates found in the first (or the default templates file) are indicated
 by asterisks next to the line number.
 
+The output can be restricted to duplicates that are only present in a package
+repository file and/or in a single file.
+
 \subsubsection*{Options}
 
 Options are provided to limit the number of templates files that will be
@@ -2051,6 +2054,9 @@ to find the currently available switches.
 \begin{description}
 \item[\code{\exe{-h}}]
     Give some useage information
+\item[\code{\exe{-s}}]
+    Restrict the output ('s' for 'system') to duplicates found in a single
+    file or in \code{\_ReposFiller} files.
 \item[\code{\exe{-p} \exe{package}|\exe{all}}]
     Restrict tests to templates files in the specified package (or all
     packages)
