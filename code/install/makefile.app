@@ -406,6 +406,8 @@ ifeq "$(MAKEMODE)" "programmer"
 	      $(CPP) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) $< | \
 	      sed -n \
 	          -e '\%^# *[0-9][0-9]* ".*"%!d' \
+                  -e "\%.*built.in.*%d" \
+                  -e "\%.*command line.*%d"  \
 	          -e 's%.*"./\(.*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
 	          -e 's%.*"\([^/].*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
 	          -e 's%.*"$(CODEDIR)/\(.*\)".*%'"$$TARGET"'\1%p' \
