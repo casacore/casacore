@@ -1,4 +1,3 @@
-
 //# tImageFit1D.cc: test the ImageFit1D class
 //# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -26,6 +25,7 @@
 //#
 //# $Id$
 
+
 #include <casa/aips.h>
 #include<images/Images/ImageFit1D.h>
 
@@ -33,6 +33,7 @@
 #include<casa/Arrays/ArrayMath.h>
 #include<casa/Arrays/ArrayLogical.h>
 #include<casa/Arrays/IPosition.h>
+#include <casa/Inputs/Input.h>
 #include<lattices/Lattices/TiledShape.h>
 #include<lattices/Lattices/ArrayLattice.h>
 #include<lattices/Lattices/LatticeUtilities.h>
@@ -49,14 +50,13 @@
 #include <casa/iostream.h>
 
 
-void testSpectral(uInt what, Bool doVector);
+void testSpectral(uInt what, Bool doVector, Double fac);
 //
-SpectralCoordinate makeSpectralCoordinate();
+SpectralCoordinate makeSpectralCoordinate(Double fac);
 void makeSpectralData (Vector<Double>& pPars,
                        Vector<Double>& gPars,
                        Vector<Float>& y, 
-                       uInt n, const SpectralCoordinate& c, uInt abcType,
-                       Bool doGauss, Bool doPoly);
+                       Bool doGauss, Bool doPoly, const Vector<Double>& x);
 void makeImage (TempImage<Float>*& pIm, Int n, const Coordinate& c,
                 const Vector<Float>& y, Bool doVector);
 void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
@@ -64,21 +64,28 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
 void forcedFailure();
 
 
-int main() {
+int main (int argc, char **argv) {
+
 
 try {
 
+   Input inputs(1);
+   inputs.version ("$Revision$");
+   inputs.create("fac", "1.0", "Increment factor");
+   inputs.readArguments(argc, argv);
+   const Double fac = inputs.getDouble("fac");
+
 // Vector image
 
-      testSpectral(0, True);
-      testSpectral(1, True);
-      testSpectral(2, True);
+      testSpectral(0, True, fac);
+      testSpectral(1, True, fac);
+      testSpectral(2, True, fac);
 
 // Non-vector image
 
-      testSpectral(0, False);
-      testSpectral(1, False);
-      testSpectral(2, False);
+      testSpectral(0, False, fac);
+      testSpectral(1, False, fac);
+      testSpectral(2, False, fac);
 
 // Forced failure
 
@@ -93,8 +100,10 @@ try {
  }
 }
 
-void testSpectral (uInt abcType, Bool doVector)
+void testSpectral (uInt abcType, Bool doVector, Double fac)
 {
+   cerr << endl << endl;
+//cerr << "********************************************************************************" << endl;
    if (abcType==0) {
       cerr << "Abcissa in Pixels" << endl;
    } else if (abcType==1) { 
@@ -103,82 +112,8 @@ void testSpectral (uInt abcType, Bool doVector)
       cerr << "Abcissa in velocity" << endl;
    }
 //
-   const uInt n = 128;
-   SpectralCoordinate sC = makeSpectralCoordinate();
-//
-   Vector<Double> pPars;
-   Vector<Double> gPars;
-   Vector<Float> y;
-
-// Gaussian
-
- {
-      cerr << "   Gaussian" << endl;
-      Bool doGauss = True;
-      Bool doPoly = False;
-      makeSpectralData (pPars, gPars, y, n, sC, abcType, doGauss, doPoly);
-      TempImage<Float>* pIm = 0;
-      makeImage(pIm, n, sC, y, doVector);
-//
-      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
-      delete pIm;
-   }
-
-// Polynomial
-
-/*
- {
-      cerr << "   Polynomial" << endl;
-      Bool doGauss = False;
-      Bool doPoly = True;
-      makeSpectralData (pPars, gPars, y, n, sC, abcType, doGauss, doPoly);
-      TempImage<Float>* pIm = 0;
-      makeImage(pIm, n, sC, y, doVector);
-//
-      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
-      delete pIm;
-   }
-*/
-
-// Gaussian + polynomial
-/*
- {
-      cerr << "   Gaussian + polynomial" << endl;
-      Bool doGauss = True;
-      Bool doPoly = True;
-      makeSpectralData (pPars, gPars, y, n, sC, abcType, doGauss, doPoly);
-      TempImage<Float>* pIm = 0;
-      makeImage(pIm, n, sC, y, doVector);
-//
-      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
-      delete pIm;
-   }
-*/
-}
-
-
-
-SpectralCoordinate makeSpectralCoordinate()
-{
-   SpectralCoordinate c(MFrequency::TOPO, 1.4e9, 1.0e3, 0.0, 1.41421e9);
-/*
-   Vector<String> units(1);
-   units = "GHz";
-   c.setWorldAxisUnits(units);
-*/
-   return c;
-}
-
-void makeSpectralData (Vector<Double>& pPars, Vector<Double>& gPars,
-                       Vector<Float>& y, uInt n, const SpectralCoordinate& c,
-                       uInt abcType, Bool doGauss, Bool doPoly)
-//
-// what
-//  0     pixel
-//  1     native
-//  2     velocity
-//
-{
+   const uInt n = 100;
+   SpectralCoordinate sC = makeSpectralCoordinate(fac);
 
 // Make abcissa
 
@@ -188,15 +123,101 @@ void makeSpectralData (Vector<Double>& pPars, Vector<Double>& gPars,
       if (abcType==0) {
          world = i;
       } else if (abcType==1) {
-         c.toWorld(world, Double(i));
+         sC.toWorld(world, Double(i));
       } else if (abcType==2) {
-         c.pixelToVelocity(world, Double(i));
+         sC.pixelToVelocity(world, Double(i));
       }
       x(i) = world;
    }
+/*
+cerr.setf(ios::fixed, ios::floatfield);
+cerr.precision(6);
+
+cerr << "x = " << x << endl;
+*/
+
+// Gaussian and Polynomial parameters
+
+   Vector<Double> pPars;
+   Vector<Double> gPars;
+
+// Generate Gaussian
+
+   Vector<Float> y;
+   {
+      cerr << "   Gaussian" << endl;
+      Bool doGauss = True;
+      Bool doPoly = False;
+      makeSpectralData (pPars, gPars, y, doGauss, doPoly, x);
+      TempImage<Float>* pIm = 0;
+      makeImage(pIm, n, sC, y, doVector);
+//
+      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
+      delete pIm;
+   }
+
+// Polynomial
+
+ {
+      cerr << "   Polynomial" << endl;
+      Bool doGauss = False;
+      Bool doPoly = True;
+      makeSpectralData (pPars, gPars, y, doGauss, doPoly, x);
+      TempImage<Float>* pIm = 0;
+      makeImage(pIm, n, sC, y, doVector);
+//
+      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
+      delete pIm;
+   }
+
+// Gaussian + polynomial
+
+ {
+      cerr << "   Gaussian + polynomial" << endl;
+      Bool doGauss = True;
+      Bool doPoly = True;
+      makeSpectralData (pPars, gPars, y, doGauss, doPoly, x);
+      TempImage<Float>* pIm = 0;
+      makeImage(pIm, n, sC, y, doVector);
+//
+      check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
+      delete pIm;
+   }
+}
+
+
+
+SpectralCoordinate makeSpectralCoordinate(Double fac)
+{
+   SpectralCoordinate c(MFrequency::TOPO, 1.4e9, 1.0e3, 0.0, 1.41421e9);
+   Vector<String> units(1);
+   units = "GHz";
+   Bool ok = c.setWorldAxisUnits(units);
+//
+   Vector<Double> inc;
+   inc = c.increment();
+   inc *= fac;
+   c.setIncrement(inc);
+//
+   cerr << "Abcissa increment = " << c.increment() << endl;
+//
+   return c;
+}
+
+void makeSpectralData (Vector<Double>& pPars, Vector<Double>& gPars,
+                       Vector<Float>& y, Bool doGauss, 
+                       Bool doPoly, const Vector<Double>& x)
+//
+// abcType
+//  0     pixel
+//  1     native
+//  2     velocity
+//
+{
 
 // Set Gaussian
 
+   uInt n = x.nelements();
    y.resize(n);
    y = 0.0;
 //
@@ -206,7 +227,7 @@ void makeSpectralData (Vector<Double>& pPars, Vector<Double>& gPars,
    if (doGauss) {
       gPars(0) = 2.5;
       gPars(1) = x(n/2);
-      uInt idx = 25;
+      uInt idx = 15;                                  // Make width 10 pixels
       AlwaysAssert(n>idx,AipsError);
       gPars(2) = abs(x(idx) - x(0));
       SpectralElement g(SpectralElement::GAUSSIAN, gPars(0), 
@@ -222,24 +243,30 @@ void makeSpectralData (Vector<Double>& pPars, Vector<Double>& gPars,
    pPars.resize(2);
    pPars = 0.0;
    if (doPoly) { 
+      Float yMax;
       if (doGauss) {
-         Float yMax = max(y);
-         Float yMin = min(y);
-         pPars(0) = (yMax + yMin) / 2.0;
-         pPars(1) = yMax / abs((x[n-1] - x[0]));
+         yMax = max(y) / 10.0;
       } else {
-         pPars(0) = 0.0;
-         pPars(1) = 1.0 / abs((x[n-1] - x[0]));
+         yMax = 1.0;
       }
+//
+      pPars(1) = yMax / (x[n-1] - x[0]);         // 0->yMax
+      pPars(0) = -pPars(1) * x[0];
+//
       SpectralElement p(pPars.nelements()-1);
       p.set(pPars);
+/*
+cerr << "x[0], x[1] = " << x[0] << ", " << x[n-1] << endl;
+cerr << "Polynomial Parameters = " << pPars << endl;
+*/
 
 // Generate ordinate
 
       for (uInt i=0; i<n; i++) {
-         y(i) += p(x(i));
+	y[i] += p(x(i));
       }
    }
+// cerr << "y = " << y << endl << endl;
 }
 
 void makeImage (TempImage<Float>*& pIm, Int n, const Coordinate& c,
@@ -313,9 +340,16 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
       AlwaysAssert(fitter.setGaussianElements(nGauss),AipsError);
    }
    if (doPoly) {
-      SpectralElement s(pPars.nelements()-1);
+      SpectralElement s(pPars.nelements()-1);            // 0 parameters
       fitter.addElement(s);
    }
+
+/*
+{
+SpectralList list = fitter.getList(False);
+cerr << "Estimate = " << list << endl;
+}
+*/
 
 // Fit
 
@@ -338,9 +372,9 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
       cerr << "      Parameters of gaussian model = " << gPars << endl;
       cerr << "      Parameters of gaussian fit   = " << p << endl;
       if (!(doGauss&&doPoly)) {
-         AlwaysAssert(near(gPars[0], p[0], tol), AipsError);
-         AlwaysAssert(near(gPars[1], p[1], tol), AipsError); 
-         AlwaysAssert(near(gPars[2], p[2], tol), AipsError);
+	AlwaysAssert(near(gPars[0], p[0], tol), AipsError);
+	AlwaysAssert(near(gPars[1], p[1], tol), AipsError); 
+	AlwaysAssert(near(gPars[2], p[2], tol), AipsError);
       }
    }
    if (doPoly) {
@@ -352,9 +386,18 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
       }
       cerr << "      Parameters of polynomial model = " << pPars << endl;
       cerr << "      Parameters of polynomial fit   = " << p << endl;
+/*
+      if (what==1 && doGauss&&doPoly) {
+         cerr << "       Solution known not to work" << endl;
+      }
+*/
       AlwaysAssert(p.nelements()==2,AipsError);
       if (!(doGauss&&doPoly)) {
-        AlwaysAssert(nearAbs(pPars[0], p[0], tol), AipsError);
+	if (nearAbs(pPars[0], 0.0, tol)) { 
+	  AlwaysAssert(nearAbs(pPars[0], p[0], tol), AipsError);
+	} else {
+	  AlwaysAssert(near(pPars[0], p[0], tol), AipsError);
+	};
         AlwaysAssert(near(pPars[1], p[1], tol), AipsError);
       }
    }      
