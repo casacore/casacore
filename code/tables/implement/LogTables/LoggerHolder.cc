@@ -1,5 +1,5 @@
 //# LoggerHolder.cc: Class to handle a hierarchy of loggers
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <trial/Logging/LoggerHolder.h>
 #include <aips/Logging/MemoryLogSink.h>
 #include <aips/Logging/TableLogSink.h>
+#include <aips/Logging/LogFilter.h>
 
 
 LoggerHolder::LoggerHolder (Bool nullSink)
