@@ -2145,3 +2145,4 @@
 11 111 src rm doc/papers/gvdadass93.dir/paspconf.sty
 11 113 src mv doc/papers/oonski.latex doc/papers/misc/oonski.latex
 11 113 src mv doc/papers/hjadassIIpap.latex doc/papers/misc/hjadassIIpap.latex
+11 113 src rm trial/apps/objectcatalog
