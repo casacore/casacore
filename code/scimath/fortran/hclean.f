@@ -47,6 +47,10 @@ c     Now find peak in residual image
                      mev=maxeig(limageStep(ix,iy,1),
      $                    limageStep(ix,iy,2), limageStep(ix,iy,3),
      $                    limageStep(ix,iy,4))
+                  else if(npol.EQ.3) then
+                     mev=maxeig(limageStep(ix,iy,1),
+     $                    limageStep(ix,iy,2), limageStep(ix,iy,3),
+     $                    0.0)
                   else if(npol.EQ.2) then
                      mev=limageStep(ix,iy,1)+ abs(limageStep(ix,iy,2))
                   else 
@@ -66,6 +70,11 @@ c     Now find peak in residual image
             maxVal(2)=limageStep(px,py,2)
             maxVal(3)=limageStep(px,py,3)
             maxVal(4)=limageStep(px,py,4)
+         else if(npol.EQ.3) then
+            maxVal(1)=limageStep(px,py,1)
+            maxVal(2)=limageStep(px,py,2)
+            maxVal(3)=limageStep(px,py,3)
+            maxVal(4)=0.0
          else if(npol.EQ.2) then
             maxVal(1)=limageStep(px,py,1)
             maxVal(2)=0.0
@@ -90,7 +99,7 @@ c     // Output ten lines of information if run to the end
          endif
          
 c  Add the scaled peak to the current image
-         if(npol.EQ.4) then
+         if((npol.EQ.4).OR.(npol.EQ.3)) then
             do pol=1,npol
                pv(pol)=gain*maxVal(pol)
             end do
