@@ -670,7 +670,7 @@ private:
 
 // Return the complementary error function (1-erf(x)) via a 
 // polynomial approximation                     
-   Double getErfC      (Double& alpha);
+   Double getErfC      (const Double& x);
 
 // Get the cumulative probability distribution of a Gaussian
    Double getGaussianCumulativeProb 
