@@ -438,7 +438,7 @@ void MVEarthMagnetic::putVector(const Vector<Double> &in) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (Int i=0; i<in.nelements; i++) xyz(i) = in(i);
+    for (Int i=0; i<in.nelements(); i++) xyz(i) = in(i);
   };
 }
 
