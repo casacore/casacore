@@ -1,0 +1,134 @@
+Test SpectralFit
+---------------------------------------------------
+Spectral elements: 
+GAUSSIAN element: 
+  Amplitude: 1
+  Center:    1402.5
+  Sigma:     0.0195312
+
+GAUSSIAN element: 
+  Amplitude: 2.5
+  Center:    1405
+  Sigma:     0.0390625
+
+GAUSSIAN element: 
+  Amplitude: 0.5
+  Center:    1407.5
+  Sigma:     0.078125
+
+GAUSSIAN element: 
+  Amplitude: 5
+  Center:    1403
+  Sigma:     0.0292969
+
+---------------------------------------------------
+Data for frequencies 1402.93 - 1403.08
+1402.93: 0.346479
+1402.94: -0.759988
+1402.95: -0.445616
+1402.96: 0.0542814
+1402.97: 0.00845671
+1402.98: 1.01413
+1402.99: 3.10099
+1403: 4.92518
+1403.01: 4.78433
+1403.02: 1.37155
+1403.03: 0.132033
+1403.04: -0.839767
+1403.05: 0.0682422
+1403.06: -0.0821468
+1403.07: -1.18733
+1403.08: 0.789914
+---------------------------------------------------
+Specify fitter on the 4 gaussians:
+GAUSSIAN element: 
+  Amplitude: 1
+  Center:    1402.5
+  Sigma:     0.0195312
+
+GAUSSIAN element: 
+  Amplitude: 2.5
+  Center:    1405
+  Sigma:     0.0390625
+
+GAUSSIAN element: 
+  Amplitude: 0.5
+  Center:    1407.5
+  Sigma:     0.078125
+
+GAUSSIAN element: 
+  Amplitude: 5
+  Center:    1403
+  Sigma:     0.0292969
+
+---------------------------------------------------
+Execute the fitter, can do (1:Y): 1
+The results: 
+GAUSSIAN element: 
+  Amplitude: 0.758448
+  Center:    1402.5
+  Sigma:     0.0242276
+
+GAUSSIAN element: 
+  Amplitude: 2.91229
+  Center:    1405
+  Sigma:     0.0342584
+
+GAUSSIAN element: 
+  Amplitude: 0.558048
+  Center:    1407.43
+  Sigma:     0.000298385
+
+GAUSSIAN element: 
+  Amplitude: 5.39508
+  Center:    1403
+  Sigma:     0.0263626
+
+---------------------------------------------------
+Different start values: 
+GAUSSIAN element: 
+  Amplitude: 0.9
+  Center:    1402.5
+  Sigma:     0.0185547
+
+GAUSSIAN element: 
+  Amplitude: 2.25
+  Center:    1405
+  Sigma:     0.0371094
+
+GAUSSIAN element: 
+  Amplitude: 0.45
+  Center:    1407.5
+  Sigma:     0.0742188
+
+GAUSSIAN element: 
+  Amplitude: 4.5
+  Center:    1403
+  Sigma:     0.027832
+
+Execute the fitter, can do (1:Y): 1
+The results: 
+GAUSSIAN element: 
+  Amplitude: 0.725073
+  Center:    1402.5
+  Sigma:     0.0245704
+
+GAUSSIAN element: 
+  Amplitude: 2.91207
+  Center:    1405
+  Sigma:     0.0342639
+
+GAUSSIAN element: 
+  Amplitude: 0.562647
+  Center:    1407.43
+  Sigma:     0.0258912
+
+GAUSSIAN element: 
+  Amplitude: 5.39369
+  Center:    1403
+  Sigma:     0.0263769
+
+---------------------------------------------------
+Differences: 
+Min difference: -1.73915, max: 1.60124, average: 0.0173243, sigma: 0.0159238
+---------------------------------------------------
