@@ -88,6 +88,10 @@ stdstokes: CORRTYPE {
                 String identifier = String($1);
                 $$ = MSCorrParse().selectCorrType(identifier);
               }
+          | stdstokes COMMA CORRTYPE {
+                String identifier = String($3);		
+                $$ = MSCorrParse().selectCorrType(identifier);
+              }
          ;
 %%
 
