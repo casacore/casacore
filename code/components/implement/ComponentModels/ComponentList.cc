@@ -511,7 +511,7 @@ void ComponentList::writeTable() {
   Vector<Double> compParms;
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
-    typeCol.put(i, ComponentType::name(component(i).shapeType()));
+    typeCol.put(i, ComponentType::name(component(i).shape()));
     component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
     component(i).direction(compDir);
     if (compDir.getRef().getType() != refNum)
