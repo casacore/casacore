@@ -1,0 +1,62 @@
+Test UVWMachine class
+--------------------------------------
+Original reference:    Reference for an Direction with Type: B1950
+Original phase centre: Direction: [-0.992475, -0.11551, 0.0406321]
+                       [-173.361, 2.32869] deg
+Input UVW: [-739.048, -1939.11, 1168.63]
+-------- B1950 -> J2000 --------------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: J2000
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.999751, 0.00133453, 0.0223064
+ -0.00154899, 0.999952, 0.00962561
+ -0.0222944, -0.00965947, 0.999705]
+
+New UVW:        [-761.914, -1951.29, 1133.13]
+Phase rotation: 0
+Phase: 0, UVW: [-761.914, -1951.29, 1133.13]
+-------- B1950 -> B1950+offset ---------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: B1950
+Converted to:  Direction: [-0.990818, -0.125371, 0.0506217]
+               [-172.789, 2.90165] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.99995, 0.000506192, 0.0099867
+ -0.000406302, 0.99995, -0.0100019
+ -0.00999126, 0.00999729, 0.9999]
+
+New UVW:        [-749.9, -1927.7, 1180.52]
+Phase rotation: 15.7655
+Phase: 15.7655, UVW: [-749.9, -1927.7, 1180.52]
+-------- B1950 -> J2000+offset ---------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: J2000
+Converted to:  Direction: [-0.991949, -0.117866, 0.0463105]
+               [-173.224, 2.65434] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.999908, 0.00116337, 0.0135461
+ -0.00115114, 0.999999, -0.000868169
+ -0.013549, 0.000850781, 0.999908]
+
+New UVW:        [-752.582, -1938.97, 1160.19]
+Phase rotation: 25.5827
+Phase: 25.5827, UVW: [-752.582, -1938.97, 1160.19]
+-------- J2000+offset -> B1950 ---------
+Input coordinates: Direction: [-0.991949, -0.117866, 0.0463105]
+                 : [-173.224, 2.65434] deg
+Conversion to: Reference for an Direction with Type: B1950
+Converted to:  Direction: [-0.992475, -0.11551, 0.0406321]
+               [-173.361, 2.32869] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.999907, -0.00115174, -0.0135471
+ 0.00116277, 0.999999, 0.00085249
+ 0.013548, -0.000866457, 0.999908]
+
+New UVW:        [-739.048, -1939.11, 1168.63]
+Phase rotation: -25.5826
+Phase: -25.5826, UVW: [-739.048, -1939.11, 1168.63]
