@@ -66,6 +66,9 @@ class LCBox: public LCRegionFixed
 public:
     LCBox();
 
+    // Construct a box for the full lattice shape.
+    explicit LCBox (const IPosition& latticeShape);
+
     // Construct from the Slicer defining the box.
     // The slicer may not contain a stride.
     LCBox (const Slicer& box, const IPosition& latticeShape);
@@ -99,12 +102,6 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCBox (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the class name (to store in the record).
     static String className();
 
@@ -118,8 +115,15 @@ public:
     static LCBox* fromRecord (const TableRecord&,
 			      const String& tablename);
 
-    Vector<Float> blc() const {return itsBlc;};
-    Vector<Float> trc() const {return itsTrc;};
+    Vector<Float> blc() const;
+    Vector<Float> trc() const;
+
+protected:
+    // Construct another LCBox (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
 
 private:
     // Make a box from the blc,trc such that it does not exceed the
@@ -134,6 +138,16 @@ private:
     Vector<Float> itsBlc;
     Vector<Float> itsTrc;
 };
+
+
+inline Vector<Float> LCBox::blc() const
+{
+    return itsBlc;
+}
+inline Vector<Float> LCBox::trc() const
+{
+    return itsTrc;
+}
 
 
 #endif
