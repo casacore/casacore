@@ -1,5 +1,5 @@
 //# FITSFieldCopier.h: Copy RORecordFields to FitsFields
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,8 @@
 #include <aips/FITS/hdu.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Utilities/String.h>
+#include <trial/FITS/FITSUtil.h>
 
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields
@@ -258,6 +260,10 @@ public:
 	for (uInt i=0; i<nmin; i++) {
 	    (*fits_p)(i) = rptr[i];
 	}
+	// pad with nulls
+	for (uInt i=nmin;i<nfits;i++) {
+	    (*fits_p)(i) = recordType(0);
+	}
 	(**rec_p).freeStorage(rptr, deleteIt);
     }
 private:
@@ -268,6 +274,57 @@ private:
     ArrayFITSFieldCopier(const ArrayFITSFieldCopier<recordType,fitsType> &other);
     ArrayFITSFieldCopier &operator=(
 			    const ArrayFITSFieldCopier<recordType,fitsType> &other);
+};
+
+template<class recordType, class fitsType> class VariableArrayFITSFieldCopier :
+  public FITSFieldCopier
+{
+public:
+    VariableArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType> > *recptr, 
+			 FitsField<fitsType> *fitsptr,
+			 FitsField<char> *tdirptr) 
+      : rec_p(recptr), fits_p(fitsptr), tdir_p(tdirptr) {}
+    ~VariableArrayFITSFieldCopier() {delete rec_p; delete fits_p;}
+  // Copy the current contents of the input RORecordFieldPtr to the 
+  // output FitsField
+    virtual void copyToFITS() {
+        uInt nfits = fits_p->nelements();
+	uInt narray = (**rec_p).nelements();
+	uInt nmin = narray < nfits ? narray : nfits;
+	Bool deleteIt;
+	const recordType *rptr = (**rec_p).getStorage(deleteIt);
+	for (uInt i=0; i<nmin; i++) {
+	    (*fits_p)(i) = rptr[i];
+	}
+	for (uInt i=nmin;i<nfits;i++) {
+	    (*fits_p)(i) = recordType(0);
+	}
+	(**rec_p).freeStorage(rptr, deleteIt);
+	// and construct the TDIM value for this array
+	String thisTDIR;
+	FITSKeywordUtil::toTDIM(thisTDIR, (**rec_p).shape());
+	// and store it in the tdir_p FitsField
+	Int fitslength = tdir_p->nelements();
+	Int reclength = thisTDIR.length();
+	Int minlength = fitslength < reclength ? fitslength : reclength;
+	const char *chars = thisTDIR.chars();
+	Int i;
+	for (i=0; i<minlength; i++) {
+	    (*tdir_p)(i) = chars[i];
+	}
+	for (Int i=minlength; i<fitslength; i++) {
+	    (*tdir_p)(i) = '\0'; // null terminate if possible
+	}
+    }
+private:
+    RORecordFieldPtr<Array<recordType> > *rec_p;
+    FitsField<fitsType> *fits_p;
+    FitsField<char> *tdir_p;
+
+    // Undefined and inaccessible
+    VariableArrayFITSFieldCopier(const VariableArrayFITSFieldCopier<recordType,fitsType> &other);
+    VariableArrayFITSFieldCopier &operator=(
+			    const VariableArrayFITSFieldCopier<recordType,fitsType> &other);
 };
 
 #endif
