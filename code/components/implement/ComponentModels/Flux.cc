@@ -1,5 +1,5 @@
 //# Flux.cc:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1054,7 +1054,7 @@ stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out,
   const NumericTraits<T>::ConjugateType q = in(1);
   const NumericTraits<T>::ConjugateType u = in(2);
   const NumericTraits<T>::ConjugateType& v = in(3);
-  const NumericTraits<T>::ConjugateType jv(-v.im, v.re);
+  const NumericTraits<T>::ConjugateType jv(-v.imag(), v.real());
   out(0) = i + q;
   out(1) = u + jv;
   out(2) = u - jv;
