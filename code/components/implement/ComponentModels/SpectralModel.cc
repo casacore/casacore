@@ -72,8 +72,15 @@ Bool SpectralModel::readFreq(String & errorMessage,
   }
   const RecordFieldId frequency(freqString);
   if (record.dataType(frequency) != TpRecord) {
-    errorMessage += "The 'frequency' field must be a record\n";
-    return False;
+    if ((record.dataType(frequency) == TpString) && 
+	(record.shape(frequency) == IPosition(1,1)) &&
+	(record.asString(frequency) == String("current"))) {
+      return True;
+    } else {
+      errorMessage += "The 'frequency' field must be a record\n";
+      errorMessage += "or the string 'current' (to use the current value)\n";
+      return False;
+    }
   }
   const Record & freqRecord = record.asRecord(frequency);
   MeasureHolder mh;
