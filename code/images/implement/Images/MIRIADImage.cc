@@ -1,5 +1,5 @@
 //# MIRIADImage.cc: Class providing native access to MIRIAD images
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,6 +51,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/File.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Regex.h>
@@ -485,7 +486,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   Vector<Int> naxes;
   Vector<String> ctype;
   Matrix<Double> pc(2,2);
-  String cunit, tmps, digit;
+  String tmps, digit;
   char tmps64[64];
   
   cdelt.resize(ndim);
@@ -493,9 +494,23 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   ctype.resize(ndim);
   crpix.resize(ndim);
   
-  // Units : miriad uses 'bunit'
+  // Units : miriad uses 'bunit'.  Miriad does not care about
+  // case whereas aips++ does.  Catch the obvious things but this
+  // is not a good situation...
+
   rdhda_c(tno_p, "bunit", tmps64,"",64);
-  cunit = tmps64;
+  String cunit = tmps64;
+  if (cunit==String("JY/BEAM")) {
+     brightnessUnit = Unit(String("Jy/beam"));
+  } else if (cunit==String("JY/PIXEL")) {
+     brightnessUnit = Unit(String("Jy/pixel"));
+  } else if (cunit==String("JY")) {
+     brightnessUnit = Unit(String("Jy"));
+  } else {
+     brightnessUnit = Unit(cunit);
+  }
+//     brightnessUnit = UnitMap::fromFITS(Unit(cunit));
+  
 
   // get the miriad axes descriptors
   for (i=0; i<ndim; i++) {
