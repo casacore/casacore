@@ -5927,3 +5927,4 @@
 16 329 src rm trial/apps/dish/dishcli.g
 16 329 src rm trial/apps/dish/gbtuts_standard.gp
 16 329 sys rm libexec/gbtuts_standard.gp
+16 329 sys rm libexec/dishcli.g
