@@ -236,7 +236,7 @@ Bool MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,
   return True;
 }
 
-void MeasJPL::interMeas(Double res[], MeasJPL::Files which, Double intv, 
+void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv, 
 			Double ivf, Int ncf, Int ncm, Int na, 
 			const Double buf[]) {
   Double tc = 2.0*(fmod(Double(na)*intv, Double(1.0)) + Int(intv)) - 1.0;
@@ -248,19 +248,19 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files which, Double intv,
     twot = 2*tc;
   };
   if (np < ncf) {
-    for (uInt i=np; i<ncf; i++)
-      chc[i] = twot*chc[i-1] - chc[i-2];
+    for (Int i=np; i<ncf; i++) chc[i] = twot*chc[i-1] - chc[i-2];
     np = ncf;
   };
   vfac = 2.0*Double(na)/ivf;
   chcv[2] = 2.0*twot;
   if (nv < ncf) {
-    for (uInt i=nv; i<ncf; i++)
+    for (Int i=nv; i<ncf; i++) {
       chcv[i] = twot*chcv[i-1] + 2.0*chc[i-1] - chcv[i-2];
+    };
     nv = ncf;
   };
   { // Position
-    for (uInt i=0; i<ncm; i++) {
+    for (Int i=0; i<ncm; i++) {
       res[i] = 0;
       for (Int j=ncf-1; j>=0; j--) {
 	res[i] += chc[j]*buf[(l*ncm+i)*ncf+j];
@@ -268,7 +268,7 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files which, Double intv,
     };
   }
   { // Velocity
-    for (uInt i=0; i<ncm; i++) {
+    for (Int i=0; i<ncm; i++) {
       res[i+ncm] = 0;
       for (Int j=ncf-1; j>0; j--) {
 	res[i+ncm] += chcv[j]*buf[(l*ncm+i)*ncf+j];

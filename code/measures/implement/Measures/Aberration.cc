@@ -143,7 +143,6 @@ void Aberration::refresh() {
 }
 
 void Aberration::calcAber(Double t) {
-  Double intv;
   if (!nearAbs(t, checkEpoch,
 	       AipsrcValue<Double>::get(Aberration::interval_reg)) ||
       (AipsrcValue<Bool>::get(Aberration::usejpl_reg) &&
