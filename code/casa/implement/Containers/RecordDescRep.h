@@ -1,5 +1,5 @@
 //# RecordDescRep.h: Representation of a RecordDesc
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,6 +164,15 @@ public:
 
     // What is the name of the given field.
     const String& name (Int whichField) const;
+
+    // Create a name for a field defined by index as *i (similar to glish).
+    // It takes care that the resulting name is unique by adding a suffix _j
+    // when needed.
+    String makeName (Int whichField) const;
+
+    // Make the given name unique by adding a suffix _j when needed.
+    // j is the minimal number needed to make it unique.
+    String uniqueName (const String& name) const;
 
     // Returns True if whichField is an array.
     Bool isArray (Int whichField) const;

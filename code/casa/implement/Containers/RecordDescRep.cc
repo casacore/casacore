@@ -1,5 +1,5 @@
 //# RecordDescRep.cc: Description of the fields in a Record object
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -274,17 +274,8 @@ uInt RecordDescRep::mergeField (const RecordDescRep& other,
 	    removeField (duplicateNumber);     // We'll add it back below
 	    break;
 	case RecordInterface::RenameDuplicates:
-	{
-	    String newNameBase = newName;
-	    char strc[10]; // should be plenty large...
-	    int n = 0;
-	    do {
-		++n;
-		sprintf(strc, "_%i", n);
-		newName = newNameBase + strc;
-	    } while (fieldNumber(newName) >= 0);
-	}
-	break;
+	    newName = uniqueName (newName);
+	    break;
 	default:
 	    AlwaysAssert ((0), AipsError); // NOTREACHED
 	}
@@ -364,6 +355,26 @@ Int RecordDescRep::fieldNumber (const String& fieldName) const
 {
     const Int* inx = name_map_p.isDefined (fieldName);
     return (inx == 0  ?  -1 : *inx);
+}
+
+String RecordDescRep::makeName (Int whichField) const
+{
+    char strc[8];
+    sprintf(strc, "*%i", whichField+1);
+    return uniqueName (strc);
+}
+
+String RecordDescRep::uniqueName (const String& name) const
+{
+    String newName = name;
+    char strc[8];      // should be plenty large...
+    int n = 0;
+    while (fieldNumber(newName) >= 0) {
+	++n;
+	sprintf(strc, "_%i", n);
+	newName = name + strc;
+    }
+    return newName;
 }
 
 RecordDesc& RecordDescRep::subRecord (Int whichField)
