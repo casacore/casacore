@@ -62,6 +62,7 @@ extern Bool aips_debug_on;
 // Note that for the gcc compiler 'std::' is recognised as '::' for now.
 #if defined(__sgi)
 #define AIPS_USE_NEW_SGI
+#define AIPS_SGI
 namespace std {};
 #endif
 
@@ -81,6 +82,14 @@ namespace std {};
 #define WHATEVER_SUN_TYPEDEF(X)
 #define WHATEVER_TYPENAME typename
 #define WHATEVER_SUN_EXCEPTSPEC(X)
+#endif
+
+#if defined(AIPS_USE_NEW_SGI)
+#if defined(WHATEVER_VECTOR_FORWARD_DEC)
+#undef WHATEVER_VECTOR_FORWARD_DEC
+#endif
+#else
+#define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> vector
 #endif
 
 
