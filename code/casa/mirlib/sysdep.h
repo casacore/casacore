@@ -1,4 +1,33 @@
 /*
+    sysdep.h: System definitions for miriad library.
+    Copyright (C) 1999
+    Associated Universities, Inc. Washington DC, USA.
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Library General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or (at your
+    option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+    License for more details.
+
+    You should have received a copy of the GNU Library General Public License
+    along with this library; if not, write to the Free Software Foundation,
+    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+
+    Correspondence concerning AIPS++ should be addressed as follows:
+           Internet email: aips2-request@nrao.edu.
+           Postal address: AIPS++ Project Office
+                           National Radio Astronomy Observatory
+                           520 Edgemont Road
+                           Charlottesville, VA 22903-2475 USA
+
+    $Id$
+*/
+
+/*
  *  History:
  *    pjt 31oct89 _trace_ added as defined() option, BUFALIGN 8.
  *    rjs 21feb90 Added alternate way of defining FORT_TRUE and FALSE
@@ -23,6 +52,9 @@
  *                to aide forward declartion prototyping.
  *    rjs 20nov94 Added "alpha" ifdef.
  */
+
+#if !defined(BIMA_SYSDEP_H)
+#define BIMA_SYSDEP_H
 
 #ifndef Null
 #define Null '\0'
@@ -135,3 +167,5 @@ typedef int int2;
 #  define unpack32_c(a,b,c) memcpy((char *)(b),(a),sizeof(int)*(c))
 #endif
 #endif
+
+#endif /* BIMA_SYSDEP_H */
