@@ -3769,3 +3769,4 @@
 14 029 src mv aips/implement/OS/test/tRegularFile.exec aips/implement/OS/test/tRegularFile.run
 14 029 src mv aips/implement/OS/test/tSymLink.exec aips/implement/OS/test/tSymLink.run
 14 029 src mv aips/implement/Tables/test/tTable_2.exec aips/implement/Tables/test/tTable_2.run
+14 029 src mv aips/implement/Tables/test/tIncrementalStMan.exec aips/implement/Tables/test/tIncrementalStMan.run
