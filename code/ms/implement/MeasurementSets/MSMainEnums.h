@@ -158,11 +158,11 @@ public:
     //
     // Not a column, but just an enum specifying the number of required columns.
     //# Note: first enum after this one should be assigned value of this enum.
-    NUMBER_REQUIRED_COLUMNS,
+    NUMBER_REQUIRED_COLUMNS=WEIGHT,
     //
     // Antenna3 - for triple correlations products. <BR>
     // Int
-    ANTENNA3=NUMBER_REQUIRED_COLUMNS,
+    ANTENNA3,
     //
     // Reference antenna for this baseline, True for ANTENNA1 <BR>
     // Bool
