@@ -6377,3 +6377,4 @@
 18 242 src mv doc/cookbook/grvol3.dir doc/cookbook/cbvol3.dir
 18 242 src mv doc/cookbook/gettingresults.dir doc/cookbook/cookbook.dir
 18 244 src mv doc/cookbook/grvol1.latex doc/cookbook/cbvol1.latex
+18 244 src mv doc/cookbook/grvol2.latex doc/cookbook/cbvol2.latex
