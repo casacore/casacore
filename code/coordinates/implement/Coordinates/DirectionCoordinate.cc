@@ -29,6 +29,7 @@
 #include <wcslib/wcs.h>
 #include <wcslib/cel.h>
 #include <wcslib/proj.h>
+#include <wcslib/cylfix.h>
 
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
@@ -1572,13 +1573,11 @@ void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDo
     String name = Projection::name(proj.type());
     const char *nameptr = name.chars();
     int errnum = celset(nameptr, pCelPrm, pPrjPrm);
-
     if (errnum != 0) {
         String errmsg = "wcs celset_error: ";
         errmsg += celset_errmsg[errnum];
         throw(AipsError(errmsg));
     }
-
 // 
 // All the things we make next are needed by the toMix2 function
 // We don't want to make them every time this is called
@@ -1763,11 +1762,106 @@ void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
     if (latPole < 999.0) {
        latPole2 = latPole * to_degrees_p[1];
     }
+//
     make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
                            prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
                            projection_p, type_p, crval(0), crval(1),  
                            longPole2, latPole2);
 }
+
+
+
+
+Bool DirectionCoordinate::cylindricalFix (Int shapeLong, Int shapeLat)
+
+{
+//
+// Fix up Cylindrical parameters for when longitude outside of [-180,180] range
+// This has to be in its own function because the image shape intrudes.
+
+
+// Fish out the bits and pieces we need to poke into the WCS routine
+
+   Vector<Double> refPix = referencePixel().copy();
+   double c_crpix[2];
+   c_crpix[0] = refPix[0];
+   c_crpix[1] = refPix[1];
+//
+   Vector<Double> refVal = referenceValue().copy();
+   toDegrees(refVal);
+   double c_crval[2];
+   c_crval[0] = refVal[0];  
+   c_crval[1] = refVal[1];
+//
+   Vector<Double> incr = increment().copy();
+   toDegrees(incr);
+   double c_cdelt[2];
+   c_cdelt[0] = incr[0];
+   c_cdelt[1] = incr[1];
+//
+   linprm* pLin = linear_p.linprmWCS();
+   double pc[2][2] = {{pLin->pc[0], pLin->pc[1]},
+                      {pLin->pc[2], pLin->pc[3]}};
+   double c_lonPole = celprm_p->ref[2];
+   double c_latPole = celprm_p->ref[3];
+//
+   int naxis[2];
+   naxis[0] = shapeLong;
+   naxis[1] = shapeLat;
+
+// Updates crval, crpix, and lonPole
+
+/*
+cerr << "Initially: " << endl;
+cerr << "crpix = " << c_crpix[0] << ", " <<  c_crpix[1] << endl;
+cerr << "crval = " << c_crval[0] << ", " <<  c_crval[1] << endl;
+cerr << "lonpol = " << c_lonPole << endl;
+*/
+
+   int ierr = cylfix (naxis, c_crpix, pc, c_cdelt, c_ctype_p, prjprm_p->p, c_crval,
+                      &c_lonPole, c_latPole);
+
+// ierr = 0 means successful update.
+// ierr = -1 means no changed needed
+
+   if (ierr==-1) return True;
+//
+   if (ierr == 0) {
+
+/*
+cerr << "Cylindrical update required" << endl;
+cerr << "ierr = " << ierr << endl;
+cerr << "New values : " << endl;
+cerr << "crpix = " << c_crpix[0] << ", " <<  c_crpix[1] << endl;
+cerr << "crval = " << c_crval[0] << ", " <<  c_crval[1] << endl;
+cerr << "lonpol = " << c_lonPole << endl;
+*/
+
+// Update internals
+
+      refVal[0] = c_crval[0];
+      refVal[1] = c_crval[1];
+      toOther(refVal);
+      setReferenceValue (refVal);
+
+// We have to poke in the new lonPole by hand
+
+      celprm_p->ref[2] = c_lonPole;
+//
+      refPix[0] = c_crpix[0];
+      refPix[1] = c_crpix[1];
+      setReferencePixel(refPix);
+   } else {
+      set_error(String("DirectionCoordinate::cylindricalFix - ") +
+                String("Could not convert CYL header to [-180,180] longitude range"));
+      return False;
+   }
+  
+// 
+   return True;
+}
+
+
 
 
 Vector<Double> DirectionCoordinate::longLatPoles () const
@@ -1813,6 +1907,24 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
     Double lat = world[1]*to_radians_p[1];
     mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
     mv = rot_p * mv;
+//
+    world[0] = mv.getLong() / to_radians_p[0];
+    world[1]= mv.getLat()  / to_radians_p[1];
+}
+
+void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world,
+                                             const Vector<Double>& refVal) const
+{
+    static MVDirection mv;
+    AlwaysAssert(world.nelements()==2, AipsError);
+    AlwaysAssert(refVal.nelements()==2, AipsError);
+//   
+    RotMatrix rot;
+    setRotationMatrix(rot, refVal(0), refVal(1));
+//
+    Double lat = world[1]*to_radians_p[1];
+    mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
+    mv = rot * mv;
 //
     world[0] = mv.getLong() / to_radians_p[0];
     world[1]= mv.getLat()  / to_radians_p[1];
@@ -1948,19 +2060,27 @@ void DirectionCoordinate::setDefaultWorldMixRanges ()
    worldMax_p(1) =   90.0/to_degrees_p[1];
 }
 
-void DirectionCoordinate::setRotationMatrix () 
+void DirectionCoordinate::setRotationMatrix ()
+{
+   setRotationMatrix(rot_p, referenceValue()(0), referenceValue()(1));
+}
+
+
+void DirectionCoordinate::setRotationMatrix (RotMatrix& rot, 
+                                             Double lon, Double lat) const
 // 
 // Set rotation matrix for use in handling offset coordinates
 //
 {
-    Double refLon = referenceValue()(0) * to_radians_p[0];
-    Double refLat = referenceValue()(1) * to_radians_p[1];
+    Double refLon = lon * to_radians_p[0];
+    Double refLat = lat * to_radians_p[1];
+//
     MVDirection refPos(refLon, refLat);
     Euler eul(refLat, 2u, -refLon, 3);
-    RotMatrix rot(eul);
-    rot.transpose();
+    RotMatrix rot2(eul);
+    rot2.transpose();
 //
-    rot_p = rot;
+    rot = rot2;
 }
 
 void DirectionCoordinate::makeConversionMachines ()

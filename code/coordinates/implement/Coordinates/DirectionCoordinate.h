@@ -24,7 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$
+//# $Id: DirectionCoordinate.h,v 18.0 2002/06/07 21:18:59 aips2adm Exp nkilleen
+
 
 #if !defined(AIPS_DIRECTION_COORDINATE_H)
 #define AIPS_DIRECTION_COORDINATE_H
@@ -415,15 +416,25 @@ public:
     Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
      //</group>
 
-    // Make absolute coordinates relative and vice-versa.  Note that
+    // Make absolute world coordinates relative and vice-versa (relatuve to
+    // the reference value).  Note that
     // these functions are independent of the MDirection::Types 
     // (set either at construction or by function
-    // <src>setReferenceConversion</src>).
+    // <src>setReferenceConversion</src>).  The vectors must be
+    // of length <src>nWorldAxes</src> or memory access errors will occur
     //<group>
     virtual void makeWorldRelative (Vector<Double>& world) const;
     virtual void makeWorldRelative (MDirection& world) const;
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
     virtual void makeWorldAbsolute (MDirection& world) const;
+    //</group>
+
+    // Make absolute coordinates relative and vice versa with respect
+    // to the given reference value.  Add the other functions in this grouping
+    // as needed.
+    //<group>
+    virtual void makeWorldAbsolute (Vector<Double>& world,
+                                    const Vector<Double>& refVal) const;
     //</group>
 
     // Recover the requested attribute.
@@ -520,6 +531,13 @@ public:
                           Bool showAsAbsolute,
                           Int precision=-1);
     //</group>
+
+    // Fix cylindrical coordinates to put the longitude in [-180,180] range.
+    // If False returned, it failed an an error is in <src>errorMessage</src>
+    // This fix is not done automatically internally because of the dependence
+    // on the image shape.  It should be called for any foreign image
+    // (such as FITS) that is imported
+    Bool cylindricalFix (Int shapeLong, Int shapeLat);
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
@@ -675,8 +693,12 @@ private:
    // Convert from conversionType_p -> type_p
    void convertFrom (Vector<Double>& world) const;
 
-   // Set up the offset coordinate rotation matrix
+   // Set up the offset coordinate rotation matrix.  Units
+   // of long and lat are current world units
+   // <group>
    void setRotationMatrix ();
+   void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
+   // </group>
 };
 
 #endif
