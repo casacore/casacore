@@ -104,3 +104,14 @@ void setNaN(DComplex &val)
   Double y; setNaN(y);
   val = DComplex(x, y);
 }
+
+// Temporary for now, likely should go into templates
+
+#if defined(AIPS_SUN_NATIVE)
+
+template Complex std::log10(const Complex&);
+template DComplex std::log10(const DComplex&);
+template Complex std::conj(const Complex&);
+template DComplex std::conj(const DComplex&);
+
+#endif
