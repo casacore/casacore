@@ -4122,3 +4122,4 @@
 14 065 src mv trial/implement/DisplayDatas/test/makefile trialdisplay/implement/DisplayDatas/test/makefile
 14 065 src mv trial/apps/gencolormaptable/changelog trialdisplay/apps/gencolormaptable/changelog
 14 065 src mv trial/apps/gencolormaptable/gencolormaptable.cc trialdisplay/apps/gencolormaptable/gencolormaptable.cc
+14 065 src mv trial/apps/gencolormaptable/makefile trialdisplay/apps/gencolormaptable/makefile
