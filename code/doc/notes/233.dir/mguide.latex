@@ -1,0 +1,159 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mes}{{\em Measure}}
+\newcommand{\mess}{{\em Measures}}
+\newcommand{\quans}{{\em Quantities}}
+\newcommand{\val}{{\sc value}}
+\newcommand{\refq}{{\sc reference}}
+
+% Add home page navigation button
+%
+
+\htmladdtonavigation{\htmladdnormallink
+  {\htmladdimg{../../gif/home.gif}}{{../../html/aips++.html}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+This guide gives a short overview of the background and use of the
+\mes\ module in C++. Detailed information can be found in the
+\mess\ module description, and in the individual header files of the
+classes in this module.
+
+Section 2 explains what a \mes\ consists of, and why; section 3
+discusses conversion; section 4 some notes on efficient use and
+section 5 gives the common interface of \mess\ and their values. Appendices 
+give some details per \mes, and also some information on \quans.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Background}
+
+Currently the following measures exist:
+\begin{description}
+%{1}{}
+%{\setlength{\labelwidth}{60em}}
+\item[$Epoch$] a high precision epoch, a moment in time
+\item[$Position$] a 3-dimensional position vector, in general indicating
+a position w.r.t. Earth
+\item[$Direction$] a direction in space (i.e. a position of unit length)
+\item[$Frequency$] the frequency of an electro-magnetic wave
+\item[$RadialVelocity$] velocity along a direction
+\item[$EarthMagneticField$] the earth magnetic field vector 
+\item[$Baseline$] a direction with a length
+\item[$uvw$] a $u,v,w$ coordinate: a baseline projected on some plane
+\end{description}
+
+
+A specific \mes\ class is indicated with an $M$, e.g. a direction measure is
+an $MDirection$.
+
+A \mes\ consists of a \val\ and a \refq. The \val\ of a \mes\ is a vector
+of double floating point numbers, in some internal format. The \val\ is
+called a {\em MeasValue}, and specific ones are indicated with the
+letters $MV$, e.g. $MVDirection$. 
+\footnote{Note that it is un
+unfortunate circumstance that there exist the classes $MVTime$ and
+$MVAngle$, which are not {\em MeasValues}, but only formatting classes
+for times and angles.}
+Appendix A gives the various internal values.
+
+A \val\ can be constructed in many different ways. An $MVDirection$
+can, e.g. be constructed from 2 angles or from 3 direction cosines; an
+$MVFrequency$ from a wavelength or the wave energy.
+
+Some \mess\ can often also be obtained from a catalog, especially a list of
+observatories, a source list and a spectral line list. They can be
+obtained as: \\
+\\
+\hspace{.05\linewidth}
+\begin{minipage}[t]{.9\linewidth}
+\begin{verbatim}
+	MDirection source;
+	MFrequency line;
+	MPosition obs;
+	if (MeasTable::Observatory(obs, "ATCA")) {};
+	if (MeasTable::Line(line, "HI")) {};
+	if (MeasTable::Source(source, "0008-421")) {};
+\end{verbatim}
+\end{minipage}
+\\
+
+The \refq\ consists of up to 3 {\em fields}:
+\begin{itemize}
+\item a {\em reference code}, describing how the \val\ should be
+interpreted. This field is mandatory, and has an enumerated value (see
+Appendix A for the possible codes). Examples are:
+\begin{itemize}
+\item {\tt MDirection::J2000}
+\item {\tt MDirection::AZEL}
+\item {\tt MEpoch::TAI}
+\item {\tt MEarthMagnetic::DEFAULT}
+\end{itemize}
+In some cases the code has all the available information to be able to
+interpret the \val\ (like the {\tt MDirection::J2000}). In other cases
+the information is not sufficient. An example is the {\tt
+MDirection::AZEL}. If you have measured some {\em AZEL} values, and
+are only interested in say a pointing model for the telescope, the
+{\tt MDirection::AZEL} is sufficient information. However, if you want
+to convert the measured {\em AZEL} into a {\em J2000} right ascension
+and declination, it is necessary to know where your telescope is, and
+what the epoch of the observation is. This can be specified in 
+\item a {\em frame}. The {\em frame} is a {\em MeasFrame} class
+object, and can contain \mess\ describing the epoch, the position on
+Earth, the direction in which you are observing (for Doppler
+calculations), the rest frequency of a spectral line and a table
+describing the detailed orbit of a non-standard solar system object
+(like a comet). The {\em frame} can be filled with the {\em MeasFrame}
+constructor, or with {\em MeasFrame} {\tt set()} methods.
+\item an optional {\em offset}. In some cases it can be advantageous
+to specify an offset. An example could be 0h on a specific date, with
+the actual {\em Epoch} only specifying the time since that point in
+time. Note that offsets are not very useful for {\em Directions},
+since directions are always vectors of unit lengths. However, special
+{\tt offset} methods exist for directions.
+\end{itemize}
+
+A \refq\ is created as a specialised {\em MeasRef} object, using the
+{\tt Measure::Ref} alias (e.g. {\tt MDirection::Ref}). A full
+reference could be:\\
+\\
+\hspace{.05\linewidth}
+\begin{minipage}[t]{.9\linewidth}
+\begin{verbatim}
+	MEpoch epoch(Quantity("50500.5d"), MEpoch::UTC); // An MJD
+	MPosition obs;
+	MeasTable::Observatory(obs, "WSRT");
+	MeasFrame frame(obs, epoch);
+	MDirection::Ref ref(MDirection::VENUS, frame);
+\end{verbatim}
+\end{minipage}
+
+\section{Conversion}
+
+\section{Efficiency}
+
+\subsection{Measure or MeasValue}
+
+\subsection{Re-use the effort of frame}
+
+\subsection{Re-use of conversion engines}
+
+\subsection{Specialised conversion engines}
+
+\subsection{Specifying details}
+
+\section{Interface}
+
+\subsection{Getting values from a Measure}
+
+\subsection{Getting values from a MeasValue}
+
+\subsection{Can I obtain information from the MeasFrame?}
+
+\appendix{Details for individual Measures}
+
+\appendix{Use of units and quantities}
+
+
+
+
