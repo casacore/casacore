@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/ParAngleMachine.h>
+#include <aips/Measures/ParAngleMachine.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasTable.h>

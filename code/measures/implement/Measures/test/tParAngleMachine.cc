@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Measures/ParAngleMachine.h>
+#include <aips/Measures/ParAngleMachine.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MeasConvert.h>
