@@ -293,7 +293,7 @@ void doIt (int argc, char *argv[])
     {
         PagedImage<Float> image(TiledShape(latticeShape, tileShape), 
                                 CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply_tmp.image");
+                                "tLatticeApply2_tmp.image");
 //
 // Make mask and make the corner x profiles all False
 //
@@ -325,20 +325,22 @@ void doIt (int argc, char *argv[])
     l2Shape(0) = 1;
     t2Shape(0) = 1;
     {
-	PagedImage<Float> lat("tLatticeApply_tmp.image");
+	PagedImage<Float> lat("tLatticeApply2_tmp.image");
 //
         PagedImage<Float> latout0(TiledShape(l2Shape, t2Shape), 
                                   CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply_tmp.image2a");
+                                "tLatticeApply2_tmp.image2a");
         LCPagedMask mask0(RegionHandler::makeMask (latout0, "mask0"));
-        latout0.defineRegion ("mask0", ImageRegion(mask0), RegionHandler::Masks);
+        latout0.defineRegion ("mask0", ImageRegion(mask0),
+			      RegionHandler::Masks);
         latout0.setDefaultMask("mask0");
 //
         PagedImage<Float> latout1(TiledShape(l2Shape, t2Shape), 
                                   CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply_tmp.image2b");
+                                "tLatticeApply2_tmp.image2b");
         LCPagedMask mask1(RegionHandler::makeMask (latout1, "mask0"));
-        latout1.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
+        latout1.defineRegion ("mask0", ImageRegion(mask1),
+			      RegionHandler::Masks);
         latout1.setDefaultMask("mask0");
 //
 	PtrBlock<MaskedLattice<Float>*> blat(2);
@@ -350,22 +352,21 @@ void doIt (int argc, char *argv[])
 	tim.show("multiline 0");
     }
     {
-	PagedImage<Float> lat("tLatticeApply_tmp.image2b");
+	PagedImage<Float> lat("tLatticeApply2_tmp.image2b");
 	Float sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
 	Timer tim;
-	for (Int i=0; i<l2Shape(2); i++) {
+	for (Int i=0; i<nz; i++) {
 	    pos(2) = i;
-	    for (Int j=0; j<l2Shape(1); j++) {
+	    for (Int j=0; j<ny; j++) {
 		pos(1) = j;
 		Float value = lat.getAt (pos);
-//
-// We expect some messages here because I have masked some
-// of the input PagedImage.  I cant be bothered to not test
-// on those ones !
-//
-		if (value != -sum) {
-		    cout << "Value=" << value << ", expected " << -sum
+		Float expval = -sum;
+		if ((i==0 || i==nz-1)  &&  (j==0 || j==ny-1)) {
+		    expval = 0;
+		}
+		if (value != expval) {
+		    cout << "Value=" << value << ", expected " << expval
 			 << "   at position " << pos << endl;
 		}
 		sum += Float(nx*nx);
