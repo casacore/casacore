@@ -234,13 +234,15 @@ public:
                        const Vector<Double>& worldMax) const;
 
     // Set the world min and max ranges, for use in toMix, for 
-    // a lattice of the given shape for this coordinate. The default
-    // implementation returns [-1e99->1e99] for each axis. The output
-    // vectors are resized.   Returns False if fails with a reason
-    // in <src>errorMessage()</src>.  Of the derived  classes, ony 
-    // DirectionCoordinate actually needs this information.
+    // a lattice of the given shape for this coordinate. The 
+    // implementation here gives a coordinate dangling 25% off the
+    // edge of the image assuming a linear Coordinate.
+    // Returns False if fails with a reason  in <src>errorMessage()</src>.
+    // If it fails, the function <src>setDefaultMixRanges</src>
+    // supplies the values.  Of the derived  classes, only
+    // DirectionCoordinate actually needs these ranges.
     // The <src>setDefaultMixRanges</src> function
-    // also gives you [-1e99->1e99]. It is meant to be used
+    // gives you [-1e99->1e99]. It is meant to be used
     // if you don't have a shape, and then for each coordinate
     // type it gives you a full range.
     //<group>

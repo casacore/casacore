@@ -1695,6 +1695,7 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
       set_error("Shape must be of length nPixelAxes");
       return False;
    }
+   AlwaysAssert(nWorldAxes()==nPixelAxes(), AipsError);
 //
    worldMin.resize(2);
    worldMax.resize(2);
@@ -1706,26 +1707,29 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
    Vector<Double> world(2);
    pixel(0) = shape(0) / 2.0;
    pixel(1) = shape(1) / 2.0;
+//
+   Vector<Double> dwMax, dwMin;
+   setDefaultMixRanges(dwMin, dwMax);
    if (!toWorld(world, pixel)) {
-      worldMin(0) = -180.0/to_degrees_p[0];     //long
-      worldMin(1) =  -90.0/to_degrees_p[1];     //lat
-      worldMax(0) =  180.0/to_degrees_p[0];     //long
-      worldMax(1) =   90.0/to_degrees_p[1];     //lat
+      worldMin = dwMin;
+      worldMax = dwMax;
       return False;
    }
 //
-   Int nLon = shape(0) + Int(0.5*shape(0));
    Double cosdec = cos(world(1) * to_radians_p[1]);
-   worldMin(0) = world(0) - abs(cdelt(0))*nLon/2/cosdec;    // long
-   worldMin(0) = max(worldMin(0), -180.0/to_degrees_p[0]);
-   worldMax(0) = world(0) + abs(cdelt(0))*nLon/2/cosdec;    
-   worldMax(0) = min(worldMax(0),  180.0/to_degrees_p[0]);
+   Double fac = 1.0;
+   for (uInt i=0; i<2; i++) {
+      fac = 1.0;
+      if (i==0) fac = cosdec;
 //
-   Int nLat = shape(1) + Int(0.5*shape(1));
-   worldMin(1) = world(1) - abs(cdelt(1))*nLat/2;           // lat
-   worldMin(1) = max(worldMin(1), -90.0/to_degrees_p[1]);
-   worldMax(1) = world(1) + abs(cdelt(1))*nLat/2;
-   worldMax(1) = min(worldMax(1),  90.0/to_degrees_p[1]);
+      Int n2 = (shape(i) + Int(0.5*shape(i))) / 2;
+
+      worldMin(i) = world(i) - abs(cdelt(i))*n2/fac;    
+      worldMin(i) = max(worldMin(i), dwMin(i));
+//
+      worldMax(i) = world(i) + abs(cdelt(i))*n2/fac;
+      worldMax(i) = min(worldMax(i),  dwMax(i));
+   }
 //
    return True;
 }

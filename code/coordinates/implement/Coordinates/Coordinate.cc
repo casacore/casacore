@@ -700,12 +700,31 @@ Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
       set_error("Shape has must be of length nPixelAxes");
       return False;
    }
-//
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
-   worldMin.resize(n);
-   worldMax.resize(n);
-   worldMin = -1.0e99;
-   worldMax =  1.0e99;
+
+// Return defaults if conversion fails
+
+   setDefaultMixRanges(worldMin, worldMax);
+
+// Do conversions 25% off edge of image
+
+   Vector<Double> pMin(n), pMax(n);
+   Vector<Double> wMin, wMax;
+   for (uInt i=0; i<n; i++) {
+      Double n2 = 1.5 * Double(shape(i)) / 2.0;
+      pMin(i) = shape(i)/2.0 - n2;
+      pMax(i) = shape(i)/2.0 + n2;
+   }
+   Bool ok1 = toWorld(wMin, pMin);
+   Bool ok2 = toWorld(wMax, pMax);
+   if (ok1 && ok2) {
+      worldMin = wMin;
+      worldMax = wMax;
+      return True;
+   } else {
+      return False;
+   }
+//
    return True;
 }
 

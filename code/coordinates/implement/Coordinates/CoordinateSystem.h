@@ -424,20 +424,22 @@ public:
     // Set the world min and max ranges, for use in toMix, for
     // a lattice of the given shape for this coordinate. The output
     // vectors are resized.    Returns False if fails with a reason
-    // in <src>errorMessage()</src>.  The idea is that for a given
-    // image, you can set the range so that the mixed conversions
+    // in <src>errorMessage()</src>. If it fails, the function
+    // <src>setDefaultMixRanges</src> supplies the values.  The 
+    // idea is that for a given lattice,
+    // you can set the range so that the mixed conversions
     // will be faster (they are done iteratively) and less likely
-    // to suffer from ambiguity from degenerate solutions.  The
-    // range is set so that you shouold be able to do a mixed
+    // to suffer from ambiguity of degenerate solutions.  The
+    // range is set so that you should be able to do a mixed
     // conversion with any world or pixel coordinate contained
-    // within the image.  The <src>setDefaultMixRanges</src> function
+    // within the image (about 25% guard band is added).
+    // The <src>setDefaultMixRanges</src> function
     // just gives you [-90->90], [-180,180] for DirectionCoordinates
-    // (in appropriate units) and [-1e99->1e99] for other coordinates 
+    // (in appropriate units) and [-1e99->1e99] for other Coordinates 
     //<group>
     virtual Bool setMixRanges (Vector<Double>& worldMin,
                                Vector<Double>& worldMax,
                                const IPosition& shape) const;
-
     virtual void setDefaultMixRanges (Vector<Double>& worldMin,
                                       Vector<Double>& worldMax) const;
     //</group>

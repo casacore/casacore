@@ -4033,13 +4033,29 @@ Bool CoordinateSystem::setMixRanges (Vector<Double>& worldMin,
                                      const IPosition& shape) const
 {
    const uInt nWorld = nWorldAxes();
+   const uInt nCoord = nCoordinates();
+   AlwaysAssert(shape.nelements()==nPixelAxes(), AipsError);
 
-// Only for DirectionCoordinate are the ranges ever used
+// Set default ranges first
 
    worldMin.resize(nWorld);
    worldMax.resize(nWorld);
+   for (uInt i=0; i<nCoord; i++) {
+      const Coordinate& coord = coordinate(i);
+      Vector<Double> wMin, wMax;
+      coord.setDefaultMixRanges (wMin, wMax);
 //
-   const uInt nCoord = nCoordinates();
+      Vector<Int> wA = worldAxes(i);
+      for (uInt j=0; j<wA.nelements(); j++) {
+         if (wA(j) != -1) {
+            worldMin(wA(j)) = wMin(j);
+            worldMax(wA(j)) = wMax(j);
+         }
+      }
+   }
+
+// OK, now set real ranges
+
    for (uInt i=0; i<nCoord; i++) {
 
 // Set shape for this coordinate
@@ -4054,8 +4070,6 @@ Bool CoordinateSystem::setMixRanges (Vector<Double>& worldMin,
       Vector<Double> wMin, wMax;
       if (!coord.setMixRanges (wMin, wMax, shape2)) {
          set_error(coord.errorMessage());
-         worldMin.resize(0);
-         worldMax.resize(0);
          return False;
       }
 
