@@ -3,7 +3,7 @@
 # aipsinit.es: Define the AIPS++ environment for the "es" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1997
+#   Copyright (C) 1994-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -119,16 +119,14 @@
 #       Look for a DEFAULT entry.
         a_temp=`{egrep '^[ 	]*'^DEFAULT^'[ 	]' $a_root/aipshosts}
      }
-  } {
-     echo aipsinit: Please create the $a_root/aipshosts database.
-     a_temp=()
   }
 
-# Request an update to aipshosts.
-  if {~ ($AIPSPATH $a_temp) () } {
-     echo aipsinit: Please add an entry for $a_host to $a_root/aipshosts.
+# Use default if no aipshosts file or if not found
+  if {! test $^a_temp} {
+     a_temp=DEFAULT
   }
 
+  GLISHROOT=$a_root
 # Set the architecture and site.
   a_arch=$a_temp(2)
   a_site=$a_temp(3)
@@ -176,10 +174,37 @@
      }
 
      if {~ $a_site} {
-#       Try to deduce the site name.
-        a_temp=$a_root/$a_arch/*/makedefs
-        a_site=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
-        if {~ $a_site '*'} {a_site=UNKNOWN_SITE}
+#       Sometimes the host name is used as the architecture (eg. dop03_egcs).
+#       So look if such a directory with files exists.
+        a_temp=$a_root/$a_host^*/*/makedefs
+        a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+        if {!~ $a_temp '*'} {
+	   a_arch=$a_host
+        }
+
+#       Try to deduce the site name by looking for aipsrc or makedefs file
+#       in a subdirectory of the architecture (with possible extension).
+#       Use the first subdirectory as the site name.
+        a_temp=$a_root/$a_arch/*/aipsrc
+        a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+        if {~ $a_temp '*'} {
+           a_temp=$a_root/$a_arch^*/*/aipsrc
+           a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+           if {~ $a_temp '*'} {
+              a_temp=$a_root/$a_arch/*/makedefs
+	      a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+              if {~ $a_temp '*'} {
+                 a_temp=$a_root/$a_arch^*/*/makedefs
+                 a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+              }
+           }
+        }
+
+        if {~ $a_temp '*'} {
+           a_site=UNKNOWN_SITE
+        } {
+           a_site=$a_temp
+        }
      }
 
 #    Reset the architecture extension if required.
@@ -191,6 +216,14 @@
         }
 
         aips_ext=()
+     } {
+        a_ext=`{echo $a_arch | sed -e 's/.*_//'}
+        if {~ $a_ext $a_arch} {
+           a_temp=$a_root/$a_arch\_*/bin
+           a_temp=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+           a_ext=`{echo $a_temp | sed -e 's/.*_//'}
+           if {!~ $a_ext '*'} { a_arch=$a_arch\_$a_ext }
+        }
      }
 
 #    Is AIPSPATH already defined?
@@ -240,6 +273,27 @@
 #    Reset it, with sanity check!
      test $^a_new && path=$a_new
 
+#    Reset LD_LIBRARY_PATH.
+     if {test $^LD_LIBRARY_PATH} {
+        a_new=`{echo ' '^$LD_LIBRARY_PATH^' ' | \
+           sed -e 's#::*# #g' \
+               -e 's# '^$a_old/lib^' # aips_lib #g' \
+               -e 's# aips_lib # '^$a_root/$a_arch/lib^' #g'}
+
+#       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
+        if {~ 1 <={echo ' '^$^a_new^' ' | \
+           grep ' '^$a_root/$a_arch/lib^' ' > /dev/null >[2=1]}} {
+           a_new=$a_root/$a_arch/lib $a_new
+        }
+
+#       Reset it, with sanity check!
+        a_new=`{echo $a_new | sed -e 's# #:#g'}
+        test $^a_new && LD_LIBRARY_PATH=$a_new
+     } {
+        LD_LIBRARY_PATH=$a_root/$a_arch/lib
+     }
+
+
 #    Reset MANPATH.
      if {test $^MANPATH} {
         a_new=`{echo ' '^$MANPATH^' ' |
@@ -267,6 +321,23 @@
      }
   }
 
+# Source possible local AIPS++ initialization files.
+  if {test -r $a_root/aips++local.es} {
+     . $a_root/aips++local.es
+  }
+  if {test -r $a_root/$a_arch/aips++local.es} {
+     . $a_root/$a_arch/aips++local.es
+  }
+  if {test -r $a_root/$a_arch/$a_site/aips++local.es} {
+     . $a_root/$a_arch/$a_site/aips++local.es
+  }
+  if {test -r $a_root/$a_arch/$a_site/$a_host/aips++local.es} {
+     . $a_root/$a_arch/$a_site/$a_host/aips++local.es
+  }
+  if {test -r $HOME/.aips++local.es} {
+     echo 'Sourcing personal .aips++local.es file.'
+     . $HOME/.aips++local.es
+  }
 
 # Clean up
   a_arch=()

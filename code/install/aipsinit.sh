@@ -129,6 +129,8 @@
      a_temp="DEFAULT"
   fi
 
+  GLISHROOT="$a_root"
+  export GLISHROOT
 # Set the architecture and site.
   a_arch=`echo $a_temp | awk '{ print $2 }'`
   a_site=`echo $a_temp | awk '{ print $3 }'`
@@ -143,8 +145,8 @@
      if [ "${LD_LIBRARY_PATH-}" != "" ]
      then
         LD_LIBRARY_PATH=`echo ":${LD_LIBRARY_PATH}:" | sed -e {'s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
-        export LD_LIBRARY_PATH
      fi
+     export LD_LIBRARY_PATH
 
      if [ "${MANPATH-}" != "" ]
      then
@@ -324,8 +326,10 @@
 #       Reset it, with sanity check!
         a_new=`echo $a_new | sed -e 's# #:#g'`
         [ "$a_new" != "" ] && LD_LIBRARY_PATH="$a_new"
-        export LD_LIBRARY_PATH
+     else
+        LD_LIBRARY_PATH="$a_root/$a_arch/lib"
      fi
+     export LD_LIBRARY_PATH
 
 
 #    Reset MANPATH.

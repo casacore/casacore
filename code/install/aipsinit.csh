@@ -128,6 +128,7 @@
      set a_temp = "DEFAULT"
   endif
 
+  setenv GLISHROOT "$a_root"
 # Set the architecture and site.
   set a_arch = ""
   set a_site = ""
@@ -289,6 +290,8 @@
 #       Reset it, with sanity check!
         set a_new = `echo $a_new | sed -e 's# #:#g'`
         if ("$a_new" != "") setenv LD_LIBRARY_PATH "$a_new"
+     else
+        setenv LD_LIBRARY_PATH "$a_root/$a_arch/lib"
      endif
 
 
