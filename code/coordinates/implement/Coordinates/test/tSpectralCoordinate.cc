@@ -1,5 +1,5 @@
 //# tSpectralCoordinate.cc: Test program for SpectralCoordinate
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -279,22 +279,68 @@ int main()
             throw(AipsError("Failed getPrecision test 2"));
          }
 //
-         String unit;
-         Double val = 20.12345;
-         Quantum<Double> valq(20.12345, String(units(0)));
-         String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                   True, 4);
-         String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0,
-                   True, 4);
-         if (str != "20.1234" || str2 != "20.1234") {
-            throw(AipsError("Failed format test 1"));
+         lc.setPreferredVelocityType (MDoppler::BETA);
+         AlwaysAssert(lc.preferredVelocityType()==MDoppler::BETA, AipsError);
+         lc.setPreferredVelocityType (MDoppler::RADIO);
+         AlwaysAssert(lc.preferredVelocityType()==MDoppler::RADIO, AipsError);
+         AlwaysAssert(lc.setPreferredSpectralUnit("km/s"), AipsError);
+         AlwaysAssert(lc.preferredSpectralUnit()==String("km/s"), AipsError);
+         AlwaysAssert(lc.setPreferredSpectralUnit("Hz"), AipsError);
+         AlwaysAssert(!lc.setPreferredSpectralUnit("kg"), AipsError);
+         AlwaysAssert(lc.setPreferredSpectralUnit(""), AipsError);
+//
+         {
+            AlwaysAssert(lc.setPreferredSpectralUnit(""), AipsError);
+            String unit;
+            Double val = 20.12345;
+            Quantum<Double> valq(20.12345, String(units(0)));
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, 4);
+            String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, True, 4);
+            if (str != "20.1234" || str2 != "20.1234") {
+               throw(AipsError("Failed format test 1"));
+            }
+            str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
+                      True, 4);
+            str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
+                      True, 4);
+            if (str != "2.0123e+01" || str2 != "2.0123e+01") {
+               throw(AipsError("Failed format test 2"));
+            }
          }
-         str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
-                   True, 4);
-         str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
-                   True, 4);
-         if (str != "2.0123e+01" || str2 != "2.0123e+01") {
-            throw(AipsError("Failed format test 2"));
+//
+         {
+            String unit("km/s");
+            Double val = lc.restFrequency();
+            lc.setPreferredVelocityType (MDoppler::Z);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0,
+                                   True, 4);
+            if (str != String("0.0000")) {
+               throw(AipsError("Failed format test 3"));
+            }
+         }
+         {
+            lc.setPreferredSpectralUnit ("km/s");
+            lc.setPreferredVelocityType (MDoppler::Z);
+//
+            String unit;
+            Double val = lc.restFrequency();
+            String str = lc.format(unit, Coordinate::FIXED, val, 0,
+                                   True, 4);
+            if (str != String("0.0000")) {
+               throw(AipsError("Failed format test 4"));
+            }
+         }
+         {
+            String unit;
+            Double val = 1.4e9;
+            lc.setRestFrequency(val);
+            lc.setPreferredSpectralUnit (lc.worldAxisUnits()(0));
+            lc.setPreferredVelocityType (MDoppler::Z);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0,
+                                   True, 4);
+            if (str != String("1400000000.0000")) {
+               throw(AipsError("Failed format test 5"));
+            }
          }
 //
          {
