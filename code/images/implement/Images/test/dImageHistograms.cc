@@ -248,23 +248,40 @@ try {
 // Construct image
      
       PagedImage<Float> inImage(in);
-      SubImage<Float>* pSubImage = 0;
-  
-      if (validInputs(REGION)) {   
-         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());  
-         cout << "Selected region : " << blc+1<< " to "
+      SubImage<Float>* pSubImage2 = 0;
+    
+      if (validInputs(REGION)) {  
+         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
+         cout << "Selected region : " << blc+1<< " to "  
               << trc+1 << endl;
          const LCSlicer region(blc, trc);
-   
-         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
+//
+         SubImage<Float>* pSubImage = 0;
+         if (inImage.isMasked()) {
+            ImageRegion mask =
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);
+            pSubImage = new SubImage<Float>(inImage, mask);
+         } else {
+            pSubImage = new SubImage<Float>(inImage);
+         }
+         pSubImage2 = new SubImage<Float>(*pSubImage, ImageRegion(region));
+         delete pSubImage;
       } else {
-         pSubImage = new SubImage<Float>(inImage);
+         if (inImage.isMasked()) {
+            ImageRegion mask =
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);
+            pSubImage2 = new SubImage<Float>(inImage, mask);
+         } else {
+            pSubImage2 = new SubImage<Float>(inImage);
+         }
       }
 
-  
 // Construct histogram object
   
-      ImageHistograms<Float> histo(*pSubImage, os, True);
+      ImageHistograms<Float> histo(*pSubImage2, os, True);
+      if (pSubImage2!=0) delete pSubImage2;
 
    
 // Set state
@@ -286,7 +303,6 @@ try {
 
       Bool ok = histo.display();
 
-
 // Get histograms   
 
       Array<Float> values, counts;
@@ -298,7 +314,6 @@ try {
       }
 //      cout << "values=" << values.ac() << endl;
 //      cout << "counts=" << counts.ac() << endl;
-
  
       os << LogIO::NORMAL << "Recovering individual histogram arrays" << LogIO::POST;
       Vector<Float> valuesV, countsV;
@@ -308,9 +323,9 @@ try {
         os <<  LogIO::SEVERE <<  "Error recovering individual histograms" << LogIO::POST;
         return 1;
       }
+
 //      cout << "values=" << valuesV.ac() << endl;
 //      cout << "counts=" << countsV.ac() << endl;
-
 
 
 // Test copy constructor
@@ -322,6 +337,12 @@ try {
 
       os << "Applying assignment operator" << LogIO::POST;
       histo = histo2;
+
+// Test setNewImage
+ 
+     os << "Test setNewImage" << LogIO::POST;
+     histo.setNewImage(inImage);
+     if (!histo.display()) return 1;
 
    } else {
       os << "images of type " << imageType << " not yet supported" << endl;

@@ -384,40 +384,39 @@ try {
 // Construct image
 
       PagedImage<Float> inImage(in);
-      SubImage<Float>* pSubImage;
+      SubImage<Float>* pSubImage2 = 0;
       if (validInputs(REGION)) {
-
-      ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
-      cout << "Selected region : " << blc+1<< " to "
-           << trc+1 << endl;
-
-
-         Vector<Float> cen(inImage.ndim());
-         Vector<Float> rad(inImage.ndim());
-         for (uInt i=0;i<inImage.ndim(); i++) {
-           cen(i) = inImage.shape()(i)/2;  
-           rad(i) = cen(i);
-         }
-
-     
-//         WCEllipsoid region(cen, rad, inImage.shape());
-
+         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
+         cout << "Selected region : " << blc+1<< " to "
+              << trc+1 << endl;
          const LCSlicer region(blc, trc);
-
-         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
-//         cout << "sub image shape = " << pSubImage->shape() << endl;
-//         cout << "Region bounding box = " << region.box().start() << ", "
-//              << region.box().end() <<  endl;
-
+//
+         if (inImage.isMasked()) {
+            ImageRegion mask =
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);
+            SubImage<Float> subImage(inImage, mask);
+            pSubImage2 = new SubImage<Float>(subImage, ImageRegion(region));
+         } else {
+            pSubImage2 = new SubImage<Float>(inImage);
+         }
       } else {
-         pSubImage = new SubImage<Float>(inImage);
-      }
+         if (inImage.isMasked()) {
+            ImageRegion mask =
+              inImage.getRegion(inImage.getDefaultMask(),
+                                RegionHandler::Masks);
+            pSubImage2 = new SubImage<Float>(inImage, mask);
+         } else {
+            pSubImage2 = new SubImage<Float>(inImage);
+         }
+     }
 
 // Construct moment class
 
       LogOrigin or("imoment", "main()", WHERE);
       LogIO os(or);
-      ImageMoments<Float> moment(*pSubImage, os, True, True);
+      ImageMoments<Float> moment(*pSubImage2, os, True, True);
+      delete pSubImage2;
 
 // Set inputs.  
 
@@ -439,11 +438,9 @@ try {
          if (!moment.setPlotting (plotter, nxy, yInd)) return 1;
       }
 
-
 // Do work
 
       if (!moment.createMoments()) {
-         delete pSubImage;
          return 1;
       }
 
@@ -457,10 +454,6 @@ try {
 
       os << "Testing assignment operator" << endl;
       moment = moment2;
-
-// Clean up
-
-      delete pSubImage;
 
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
