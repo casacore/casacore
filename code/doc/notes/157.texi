@@ -40,6 +40,11 @@ Copyright @copyright{} 1993, 1994, 1995 AIPS++
 @node Intro, Frequency Domain Data Structures, Top, Top
 @chapter Introduction
 
+@strong{Most of the details in this document have been made obsolete by
+the overhaul of the FFTServer class made in October 1997. It is now
+recommended you read the class documentation for a description of how to
+use the FFTServer class.}
+
 The @sc{aips++} @code{FFTServer} class provides application programmers
 with a flexible and efficient tool for doing multi-dimensional Fast
 Fourier Transforms on @sc{aips++} Array objects.  This document describes the
