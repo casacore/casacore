@@ -431,10 +431,6 @@ void doTry (AipsIO& io)
     io.open ("tAipsIO_tmp.aa", ByteIO::New);
     io.close();
 
-    cout << "TryDel" << endl;
-    io.open ("tAipsIO_tmp.aa", ByteIO::Delete);
-    io.close();
-
     cout << "TryApp" << endl;
     io.open ("tAipsIO_tmp.aa", ByteIO::Append);
     io.close();
