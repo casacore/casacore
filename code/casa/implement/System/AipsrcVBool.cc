@@ -31,6 +31,9 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 
+// This specialisation is necessary to be able to analyse all values that
+// are supposed to be True (strings starting with one of 'tTyY123456789')
+
 //# Constructor
 AipsrcVector<Bool>::AipsrcVector() : 
   ntlst(0), tlst(0) {}

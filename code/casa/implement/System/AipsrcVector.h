@@ -1,4 +1,4 @@
-//# AipsrcVector.h: Class to read multiple values from the  Aipsrc resource files
+//# AipsrcVector.h: Read multiple values from the  Aipsrc resource files
 //# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,11 +41,11 @@
 template<class T> class Vector;
 class Unit;
 
-// <summary> Class to read values from the Aipsrc general resource files </summary>
+// <summary> Read multiple values from the  Aipsrc resource files </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="1997/08/20" tests="tAipsrcValue" demos="">
+// <reviewed reviewer="mhaller" date="1997/10/08" tests="tAipsrcValue" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -53,19 +53,28 @@ class Unit;
 // </prerequisite>
 //
 // <etymology>
-// A class for getting values from the Aipsrc files
+// A class for getting multiple values from the Aipsrc files
 // </etymology>
 //
 // <synopsis>
-// The available functions are the same as in
+// The available functions (and notes) are the same as in
 // <linkto class=AipsrcValue>AipsrcValue</linkto>, but with a Vector result.
 // </synopsis>
+// 
+// <templating>
+//  <li> All types with a <src>>></src> defined. 
+// <note role=warning>
+// Since interpretation of the keyword value string is done with the standard
+// input right-shift operator, specialisations are necessary for non-standard
+// cases like Bool and String. They are provided.
+// </note>
+// </templating>
 //
 // <example>
 // </example>
 //
 // <motivation>
-// Programs need a way to interact with the AipsrcVector files.
+// Programs need a way to get multi-valued keywords from the Aipsrc files.
 // </motivation>
 //
 // <thrown>
@@ -90,7 +99,11 @@ public:
   static Bool find(Vector<T> &value, const String &keyword, 
 		   const Vector<T> &deflt);
   // </group>
-  // find to insert and convert the specified units
+  // These <src>find()</src> functions will, given a keyword, read the values
+  // of a matched keyword as a Quantity. If no unit has been given in the
+  // keyword value, the defun Unit will be assumed. The value returned
+  // will be converted to the resun Unit. If no match found, the default
+  // value is returned (see example above).
   // <group>
   static Bool find(Vector<T> &value, const String &keyword,
 		   const Unit &defun, const Unit &resun);
@@ -103,8 +116,6 @@ public:
   // <group>
   static uInt registerRC(const String &keyword,
 			 const Vector<T> &deflt);
-  // </group>
-  // <group>
   static uInt registerRC(const String &keyword,
 			 const Unit &defun, const Unit &resun,
 			 const Vector<T> &deflt);

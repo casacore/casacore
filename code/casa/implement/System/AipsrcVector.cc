@@ -1,4 +1,4 @@
-//# AipsrcVector.cc: Class to read the Aipsrc general resource files 
+//# AipsrcVector.cc: Read multiple values from the  Aipsrc resource files
 //# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#

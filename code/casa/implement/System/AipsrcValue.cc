@@ -1,4 +1,4 @@
-//# AipsrcValue.cc: Class to read the Aipsrc general resource files 
+//# AipsrcValue.cc: Class to read values from the Aipsrc general resource files 
 //# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#

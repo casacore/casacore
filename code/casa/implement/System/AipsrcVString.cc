@@ -31,6 +31,9 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 
+// This specialisation is necessary to make sure a list of Strings is read
+// appropiately, and no Units are handled as in the standard Vector case.
+
 //# Constructor
 AipsrcVector<String>::AipsrcVector() : 
   ntlst(0), tlst(0) {}

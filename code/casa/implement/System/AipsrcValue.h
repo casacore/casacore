@@ -44,7 +44,7 @@ class Unit;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="1997/08/20" tests="tAipsrcValue" demos="">
+// <reviewed reviewer="mhaller" date="1997/10/08" tests="tAipsrcValue" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -103,6 +103,14 @@ class Unit;
 // per Type basis, and hence registration of the same keyword in different
 // types (and possible sets) act on different values, but with the same
 // result if no set has been done.
+//
+// Specialisation exists for <src>Bool</src>, where <src>True</src> is
+// any value string starting with one of 'yYtT123456789', and False in
+// all other cases, and no finds with Units are provided. Strings are
+// supposed to be handled by standard <linkto class=Aipsrc>Aipsrc</linkto>
+// class for single values, and a specialisation exists for the
+// <linkto class=AipsrcVector>AipsrcVector</linkto> case.
+//
 // </synopsis>
 //
 // <example>
@@ -125,6 +133,17 @@ class Unit;
 // at all.
 // </example>
 //
+// 
+// <templating>
+//  <li> All types with a <src>>></src> defined. 
+// <note role=warning>
+// Since interpretation of the keyword value string is done with the standard
+// input right-shift operator, specialisations are necessary for non-standard
+// cases like Bool. They are provided. String is supposed to be handled by
+// standard Aipsrc.
+// </note>
+// </templating>
+//
 // <motivation>
 // Programs need a way to interact with the AipsrcValue files.
 // </motivation>
@@ -140,6 +159,7 @@ template <class T> class AipsrcValue : public Aipsrc {
 
 public:
   //# Destructor
+  // See note with constructor
   ~AipsrcValue();
 
   //# Member functions
@@ -150,7 +170,11 @@ public:
   static Bool find(T &value, const String &keyword);
   static Bool find(T &value, const String &keyword, const T &deflt);
   // </group>
-  // find to insert and convert the specified units
+  // These <src>find()</src> functions will, given a keyword, read the value
+  // of a matched keyword as a Quantity. If no unit has been given in the
+  // keyword value, the defun Unit will be assumed. The value returned
+  // will be converted to the resun Unit. If no match found, the default
+  // value is returned (see example above).
   // <group>
   static Bool find(T &value, const String &keyword,
 		   const Unit &defun, const Unit &resun);
@@ -163,14 +187,13 @@ public:
   // <group>
   static uInt registerRC(const String &keyword,
 			 const T &deflt);
-  // </group>
-  // <group>
   static uInt registerRC(const String &keyword,
-		   const Unit &defun, const Unit &resun,
+			 const Unit &defun, const Unit &resun,
 			 const T &deflt);
   // </group>
 
-  // Gets are like find, but using registered integers rather than names.
+  // Gets are like find, but using registered integers rather than names. The
+  // aipsrc file is read only once, and values can be set as well.
   // <group>
   static const T &get(uInt keyword);
   // </group>
@@ -182,8 +205,9 @@ public:
 
 private:
   //# Data
+  // Method to get reference to static AipsrcValue objcet
   static AipsrcValue<T> &init();
-  // register list
+  // Register list
   // <group>
   Block<T> tlst;
   Block<String> ntlst;
@@ -191,6 +215,14 @@ private:
 
   //# Constructors
   // Default constructor
+  // <note role=tip>
+  // A constructor (and destructor) have been provided to be able to generate
+  // a (routine-level) static register list. This had to be done since
+  // static data members are not yet implemented in the gcc compiler for
+  // templated classes. Once they are available the <em>tlist</em> and
+  // <em>ntlst</em> data can become static, constructor and desctructor and
+  // all references to the init() method can disappear.
+  // </note>
   AipsrcValue();
   // Copy constructor (not implemented)
   AipsrcValue<T> &operator=(const AipsrcValue<T> &other);

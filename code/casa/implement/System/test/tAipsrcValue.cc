@@ -32,6 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Measures/Unit.h>
+#include <aips/Measures/MVTime.h>
 #include <aips/Utilities/Assert.h>
 
 int main(){
@@ -43,7 +44,9 @@ int main(){
   Bool bVal;
   Vector<Double> vVal;
 
-  cout << "Time zone offset: " << AipsrcData::timeZone() << endl;
+  cout << "Time zone offset: " << 
+    MVTime(AipsrcData::timeZone()).string(MVTime::TIME | MVTime::CLEAN, 4) <<
+    endl;
 
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
   cout << aipsrcKeyword << " " << aipsrcValue << endl;

@@ -30,6 +30,9 @@
 #include <trial/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 
+// This specialisation is necessary to be able to analyse all values that
+// are supposed to be True (strings starting with one of 'tTyY123456789')
+
 //# Constructor
 AipsrcValue<Bool>::AipsrcValue() :
   ntlst(0), tlst(0) {}
