@@ -41,6 +41,7 @@
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LattRegionHolder.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/Block.h>
@@ -1348,8 +1349,11 @@ LatticeExprNode LatticeExprNode::operator[] (const LatticeExprNode& cond) const
       // used without ImageCoordinates.
       const LELRegion& region = (const LELRegion&)(*cond.pExprBool_p);
       AlwaysAssert (!isRegion(), AipsError);
-      return getAttribute().coordinates().coordinates().makeSubLattice
-                                                 (*this, region.region());
+      const LELLattCoordBase* cbptr =
+                            &(getAttribute().coordinates().coordinates());
+      const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
+      AlwaysAssert (cptr != 0, AipsError);
+      return cptr->makeSubLattice (*this, region.region());
    }
    switch (dataType()) {
    case TpBool:
