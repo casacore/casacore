@@ -29,7 +29,7 @@
 # $Id$
 #
 set script = "UPsed"
-set usage = 'Usage: UPsed <sed> <filename in> [<filename out>]'
+set usage = 'Usage: UPsed [-t <log>] <sed> <filename in> [<filename out>]'
 #
 # UPsed script (must have x allowed)
 # Change a file according to a sed rule
@@ -46,6 +46,18 @@ if ($# < 2) then
     echo "$usage"
     exit (1)
 endif
+set xtst = 0
+set tlog = ""
+if ("$1" == "-t") then
+    set xtst = 1
+    shift
+    set tlog = "$1"
+    shift
+endif
+if ($# < 2) then
+    echo "$usage"
+    exit (1)
+endif
 #
 # Get specific data
 #
@@ -58,12 +70,17 @@ else
 endif
 
 set tmp = $$
+if (-e $tmp.tmp) rm -f $tmp.tmp
 if (! -e $tp) then
     echo "Cannot access $tp"
     exit 1
 endif
 
 sed -f $tp $fin >! $tmp.tmp
+
+if ($xtst) then
+   diff $fin $tmp.tmp >> $tlog
+endif
 
 mv -f $tmp.tmp $fout
 
