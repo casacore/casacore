@@ -352,6 +352,7 @@ void MeasConvert<M>::create() {
     ((MeasBase<typename M::MVType, typename M::Ref > *)model)
       ->set(typename M::Ref(M::DEFAULT));
   };
+  if (outref.empty()) outref = typename M::Ref(M::DEFAULT);
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
