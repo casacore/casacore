@@ -1,3 +1,4 @@
+
 //# TSMCube.h: Tiled hypercube in a table
 //# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -325,6 +326,9 @@ private:
     void writeTile (char* external, const char* local);
     // </group>
 
+    // Resize the IPosition member variables used in accessSection()
+    // if nrdim_p changes value.
+    void resizeTileSections();
 
     //# Declare member variables.
     // Pointer to the parent storage manager.
@@ -371,6 +375,22 @@ private:
     AccessType      lastColAccess_p;
     // The slice shape of the last column access to a slice.
     IPosition       lastColSlice_p;
+
+    // IPosition variables used in accessSection(); declared here
+    // as member variables to avoid significant construction and
+    // desctruction overhead if they are local to accessSection()
+    // #tiles needed for the section
+    IPosition nrTileSection_p;
+    // First tile needed
+    IPosition startTile_p;
+    // Last tile needed
+    IPosition endTile_p;
+    // First pixel in first tile
+    IPosition startPixelInFirstTile_p;
+    // Last pixel in first tile
+    IPosition endPixelInFirstTile_p;
+    // Last pixel in last tile
+    IPosition endPixelInLastTile_p;
 };
 
 

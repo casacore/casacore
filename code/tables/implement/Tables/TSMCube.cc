@@ -1,3 +1,4 @@
+
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
 //# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -227,6 +228,9 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     cache_p = 0;
     fileOffset_p = filePtr_p->length();
     nrdim_p      = cubeShape.nelements();
+    // Resize the tile section member variables used in accessSection()
+    resizeTileSections();
+
     cubeShape_p  = cubeShape;
     tileShape_p  = adjustTileShape (cubeShape, tileShape);
     // Calculate the various variables.
@@ -314,6 +318,9 @@ void TSMCube::setup()
     bucketSize_p = stmanPtr_p->getLengthOffset (tileSize_p, externalOffset_p,
 						localOffset_p,
 						localTileLength_p);
+
+    // Resize IPosition member variables used in accessSection()
+    resizeTileSections();
 }
 
 void TSMCube::setupNrTiles()
@@ -801,6 +808,20 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
     return 1;
 }
 
+void TSMCube::resizeTileSections()
+{
+  // Resize to dimension nrdim_p
+  if (nrTileSection_p.nelements() != nrdim_p) {
+    nrTileSection_p.resize(nrdim_p);
+    startTile_p.resize(nrdim_p);
+    endTile_p.resize(nrdim_p);
+    startPixelInFirstTile_p.resize(nrdim_p);
+    endPixelInFirstTile_p.resize(nrdim_p);
+    endPixelInLastTile_p.resize(nrdim_p);
+  };
+  return;
+};
+
 void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                              char* section, uInt colnr,
                              uInt localPixelSize, Bool writeFlag)
@@ -810,12 +831,6 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
 	stmanPtr_p->setDataChanged();
     }
     // Prepare for the iteration through the necessary tiles.
-    IPosition nrTiles (nrdim_p);               // #tiles needed for the section
-    IPosition startTile (nrdim_p);             // first tile needed
-    IPosition endTile (nrdim_p);               // last tile needed
-    IPosition startPixelInFirstTile (nrdim_p); // first pixel in first tile
-    IPosition endPixelInFirstTile (nrdim_p);   // last pixel in first tile
-    IPosition endPixelInLastTile (nrdim_p);    // last pixel in last tile
     uInt i, j;
 
     // Initialize the various variables and determine the number of
@@ -827,16 +842,16 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     uInt lineIndex = 0;
     uInt nOneLong = 0;
     for (i=0; i<nrdim_p; i++) {
-        startTile(i) = start(i) / tileShape_p(i);
-        endTile(i)   = end(i) / tileShape_p(i);
-        nrTiles(i)   = 1 + endTile(i) - startTile(i);
-        startPixelInFirstTile(i) = start(i) - startTile(i) * tileShape_p(i);
-        endPixelInLastTile(i)    = end(i) - endTile(i) * tileShape_p(i);
-        endPixelInFirstTile(i)   = tileShape_p(i) - 1;
-        if (nrTiles(i) == 1) {
-            endPixelInFirstTile(i) = endPixelInLastTile(i);
-            if (startPixelInFirstTile(i) != 0
-            ||  endPixelInFirstTile(i) != tileShape_p(i) - 1) {
+        startTile_p(i) = start(i) / tileShape_p(i);
+        endTile_p(i)   = end(i) / tileShape_p(i);
+        nrTileSection_p(i)   = 1 + endTile_p(i) - startTile_p(i);
+        startPixelInFirstTile_p(i) = start(i) - startTile_p(i)*tileShape_p(i);
+        endPixelInLastTile_p(i)    = end(i) - endTile_p(i) * tileShape_p(i);
+        endPixelInFirstTile_p(i)   = tileShape_p(i) - 1;
+        if (nrTileSection_p(i) == 1) {
+            endPixelInFirstTile_p(i) = endPixelInLastTile_p(i);
+            if (startPixelInFirstTile_p(i) != 0
+            ||  endPixelInFirstTile_p(i) != tileShape_p(i) - 1) {
                 oneEntireTile = False;
             }
         }else{
@@ -851,12 +866,12 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     // Get the cache.
     BucketCache* cachePtr = getCache();
     
-//    cout << "nrTiles=" << nrTiles << endl;
-//    cout << "startTile=" << startTile << endl;
-//    cout << "endTile=" << endTile << endl;
-//    cout << "startPixelInFirstTile" << startPixelInFirstTile << endl;
-//    cout << "endPixelInFirstTile" << endPixelInFirstTile << endl;
-//    cout << "endPixelInLastTile" << endPixelInLastTile << endl;
+//    cout << "nrTileSection_p=" << nrTileSection_p << endl;
+//    cout << "startTile_p=" << startTile_p << endl;
+//    cout << "endTile_p=" << endTile_p << endl;
+//    cout << "startPixelInFirstTile_p" << startPixelInFirstTile_p << endl;
+//    cout << "endPixelInFirstTile_p" << endPixelInFirstTile_p << endl;
+//    cout << "endPixelInLastTile_p" << endPixelInLastTile_p << endl;
 
     // A tile can contain more than one data array.
     // Each array is contiguous, so the first pixel of an array
@@ -867,7 +882,7 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     // copy all values and do not have to do difficult iterations.
     if (oneEntireTile) {
         // Get the tile from the cache.
-        uInt tileNr = expandedTilesPerDim_p.offset (startTile);
+        uInt tileNr = expandedTilesPerDim_p.offset (startTile_p);
         char* dataArray = cachePtr->getBucket (tileNr);
         // When writing, set cache slot to dirty.
         if (writeFlag) {
@@ -886,8 +901,8 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     if (nOneLong >= nrdim_p - 1) {
         accessLine (section, pixelOffset, localPixelSize,
                     writeFlag, cachePtr,
-                    startTile, endTile(lineIndex),
-                    startPixelInFirstTile, endPixelInLastTile(lineIndex),
+                    startTile_p, endTile_p(lineIndex),
+                    startPixelInFirstTile_p, endPixelInLastTile_p(lineIndex),
                     lineIndex);
         return;
     }
@@ -899,10 +914,11 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     IPosition startSection (start);            // start of section in cube
     IPosition sectionShape (end - start + 1);  // section shape
     TSMShape expandedSectionShape (sectionShape);
-    IPosition startPixel (startPixelInFirstTile);
-    IPosition endPixel   (endPixelInFirstTile);
-    IPosition tilePos    (startTile);
-    IPosition tileIncr = expandedTilesPerDim_p.offsetIncrement (nrTiles);
+    IPosition startPixel (startPixelInFirstTile_p);
+    IPosition endPixel   (endPixelInFirstTile_p);
+    IPosition tilePos    (startTile_p);
+    IPosition tileIncr = 
+      expandedTilesPerDim_p.offsetIncrement (nrTileSection_p);
     IPosition dataLength(nrdim_p);
     IPosition dataPos   (nrdim_p);
     IPosition sectionPos(nrdim_p);
@@ -970,18 +986,18 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
         for (i=0; i<nrdim_p; i++) {
             tileNr += tileIncr(i);
             startPixel(i) = 0;
-            if (++tilePos(i) < endTile(i)) {
+            if (++tilePos(i) < endTile_p(i)) {
                 break;                                 // not at last tile
             }
-            if (tilePos(i) == endTile(i)) {
-                endPixel(i) = endPixelInLastTile(i);   // last tile
+            if (tilePos(i) == endTile_p(i)) {
+                endPixel(i) = endPixelInLastTile_p(i);   // last tile
                 break;
             }
             // Past last tile in this dimension.
             // Reset start and end.
-            tilePos(i) = startTile(i);
-            startPixel(i) = startPixelInFirstTile(i);
-            endPixel(i)   = endPixelInFirstTile(i);
+            tilePos(i) = startTile_p(i);
+            startPixel(i) = startPixelInFirstTile_p(i);
+            endPixel(i)   = endPixelInFirstTile_p(i);
         }
         if (i == nrdim_p) {
             break;                                     // ready
@@ -1336,3 +1352,4 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
         }
     }
 }
+
