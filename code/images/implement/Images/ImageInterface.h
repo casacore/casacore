@@ -31,8 +31,8 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <trial/Images/RegionHandler.h>
 #include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeCoordinates.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
 
@@ -182,8 +182,8 @@ public:
   const CoordinateSystem& coordinates() const;
   // </group>
 
-  // Function to get a LatticeCoordinate object containing the coordinates.
-  virtual LatticeCoordinates latticeCoordinates() const;
+  // Function to get a LELCoordinate object containing the coordinates.
+  virtual LELCoordinates lelCoordinates() const;
   
   // Allow messages to be logged to this ImageInterface.
   // <group>
@@ -209,16 +209,23 @@ public:
   // of the functions.
   // <group>
   virtual void defineRegion (const String& name, const ImageRegion& region,
-			     Bool overwrite = True);
-  virtual ImageRegion* getImageRegionPtr (const String& name) const;
-  virtual void removeRegion (const String& name);
+			     RegionHandler::GroupType,
+			     Bool overwrite = False);
+  virtual ImageRegion* getImageRegionPtr
+                            (const String& name,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool throwIfUnknown = True) const;
+  virtual void removeRegion (const String& name,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool throwIfUnknown = True);
   virtual void setDefaultMask (const String& regionName);
   virtual String getDefaultMask() const;
   // </group>
 
   // Get a region belonging to the image.
   // An exception is thrown if the region does not exist.
-  ImageRegion getRegion (const String& regionName) const;
+  ImageRegion getRegion (const String& regionName,
+			 RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Check class invariants. 
   virtual Bool ok() const = 0;
