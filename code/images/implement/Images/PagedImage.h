@@ -156,6 +156,9 @@ public:
   virtual ImageInterface<T>* cloneII() const;
   // </group>
 
+  // A PagedImage is always paged to disk.
+  virtual Bool isPaged() const;
+
   // Is the PagedImage writable?
   virtual Bool isWritable() const;
 

@@ -274,6 +274,12 @@ ImageInterface<T>* PagedImage<T>::cloneII() const
   return new PagedImage<T> (*this);
 }
 
+template<class T>
+Bool PagedImage<T>::isPaged() const
+{
+  return True;
+}
+
 template <class T> 
 Bool PagedImage<T>::isWritable() const
 {
