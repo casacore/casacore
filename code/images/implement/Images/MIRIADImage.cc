@@ -494,23 +494,12 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   ctype.resize(ndim);
   crpix.resize(ndim);
   
-  // Units : miriad uses 'bunit'.  Miriad does not care about
-  // case whereas aips++ does.  Catch the obvious things but this
-  // is not a good situation...
+  // Units : miriad uses 'bunit' FITS like units without case cares.
 
   rdhda_c(tno_p, "bunit", tmps64,"",64);
   String cunit = tmps64;
-  if (cunit==String("JY/BEAM")) {
-     brightnessUnit = Unit(String("Jy/beam"));
-  } else if (cunit==String("JY/PIXEL")) {
-     brightnessUnit = Unit(String("Jy/pixel"));
-  } else if (cunit==String("JY")) {
-     brightnessUnit = Unit(String("Jy"));
-  } else {
-     brightnessUnit = Unit(cunit);
-  }
-//     brightnessUnit = UnitMap::fromFITS(Unit(cunit));
-  
+  UnitMap::addFITS();
+  brightnessUnit = UnitMap::fromFITS(Unit(cunit));
 
   // get the miriad axes descriptors
   for (i=0; i<ndim; i++) {
