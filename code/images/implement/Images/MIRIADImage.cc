@@ -634,7 +634,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	 // According to Greisen and Calabretta
 
 	 projp(0) = 0.0;
-	 projp(1) = 1.0/tan(crval(latAxis)*C::pi/180.0);
+	 projp(1) = 1.0/tan(crval(latAxis));
     } else {
 	 ptype = Projection::type(proj1);
 	 if (ptype == Projection::N_PROJ) {
