@@ -161,7 +161,7 @@ void LargeFilebufIO::writeBuffer (Int64 offset, const char* buf, Int size)
       ::traceLSEEK (itsFile, offset, SEEK_SET);
       itsSeekOffset = offset;
     }
-    if (::traceWRITE (itsFile, buf, size) != size) {
+    if (::traceWRITE (itsFile, const_cast<char*>(buf), size) != size) {
       itsSeekOffset = -1;
       throw AipsError (String("LargeFilebufIO: write error for file ")
 		       + fileName() + ": " + strerror(errno));
