@@ -6076,3 +6076,4 @@
 17 151 src rm admin/system/aips2-develop.list
 17 151 src rm admin/system/aips2-astro-design.list
 17 151 src rm admin/system/aips2-atnf.list
+17 151 src rm admin/system/aips2-beta.list
