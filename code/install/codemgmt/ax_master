@@ -5586,3 +5586,6 @@
 15 211 src rm nrao/implement/GBTFillers/GBTMSObsLogFiller.h
 15 211 src rm nrao/implement/GBTFillers/GBTMSObsLogFiller.cc
 15 211 src rm nrao/implement/GBTFillers/GBTCubeIndex.h
+15 211 src rm trial/implement/SDIterators/test/tOldSDIterator.cc
+15 211 src rm trial/implement/SDIterators/test/tOldSDIterator.exec
+15 211 src rm trial/implement/SDIterators/test/tOldSDRecord.cc
