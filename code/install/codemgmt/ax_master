@@ -3217,3 +3217,4 @@
 13 058 src rm doc/newsletters/sept99
 13 059 src mv atnf/apps/livedata/gridzilla atnf/apps/pksgridzilla/gridzilla
 13 059 src mv atnf/apps/livedata/gridzilla.g atnf/apps/pksgridzilla/gridzilla.g
+13 059 src mv atnf/apps/livedata/gridzilla.xbm atnf/apps/pksgridzilla/gridzilla.xbm
