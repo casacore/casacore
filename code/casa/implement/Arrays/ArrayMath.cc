@@ -1269,7 +1269,7 @@ template<class T> T median(const Array<T> &a, Bool sorted,
     if (nelem%2 != 0) {
 	takeEvenMean = False;
     }
-    T medval = 0;
+    T medval = T();
     Bool deleteIt;
     const T *storage = a.getStorage(deleteIt);
     const T *data = storage;
