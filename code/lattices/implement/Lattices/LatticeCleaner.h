@@ -137,9 +137,9 @@ private:
 
   Int itsNscales;
 
-  Block<TempLattice<T>* > itsScales;
-  Block<TempLattice<T>* > itsPsfConvScales;
-  Block<TempLattice<T>* > itsDirtyConvScales;
+  PtrBlock<TempLattice<T>* > itsScales;
+  PtrBlock<TempLattice<T>* > itsPsfConvScales;
+  PtrBlock<TempLattice<T>* > itsDirtyConvScales;
 
   Bool itsScalesValid;
 
