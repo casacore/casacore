@@ -2332,3 +2332,4 @@
 11 199 src mv trial/implement/Display/PCRefreshEvent.cc trial/implement/DisplayEvents/PCRefreshEvent.cc
 11 199 src mv trial/implement/Display/PCRefreshEvent.h trial/implement/DisplayEvents/PCRefreshEvent.h
 11 199 src mv trial/implement/Display/WCMotionEH.cc trial/implement/DisplayEvents/WCMotionEH.cc
+11 199 src mv trial/implement/Display/WCMotionEH.h trial/implement/DisplayEvents/WCMotionEH.h
