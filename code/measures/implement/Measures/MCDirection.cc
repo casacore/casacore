@@ -237,22 +237,24 @@ void MCDirection::getConvert(MConvertBase &mc,
     
     Int iin  = inref.getType();
     Int iout = outref.getType();
-    Bool iplan = ToBool(iin & MDirection::EXTRA);
-    Bool oplan = ToBool(iout & MDirection::EXTRA);
-    if (iplan) {
-      mc.addMethod(MCDirection::R_PLANET0);
-      mc.addMethod((iin & ~MDirection::EXTRA) + MCDirection::R_MERCURY);
-      mc.addMethod(MCDirection::R_PLANET);
-      initConvert(MCDirection::R_PLANET, mc);
-      iin = MDirection::JNAT;
-    };
-    if (oplan) iout = MDirection::J2000;
-    Int tmp;
-    while (iin != iout) {
-      tmp = FromTo[iin][iout];
-      iin = ToRef[tmp];
-      mc.addMethod(tmp);
-      initConvert(tmp, mc);
+    if (iin != iout) {
+      Bool iplan = ToBool(iin & MDirection::EXTRA);
+      Bool oplan = ToBool(iout & MDirection::EXTRA);
+      if (iplan) {
+	mc.addMethod(MCDirection::R_PLANET0);
+	mc.addMethod((iin & ~MDirection::EXTRA) + MCDirection::R_MERCURY);
+	mc.addMethod(MCDirection::R_PLANET);
+	initConvert(MCDirection::R_PLANET, mc);
+	iin = MDirection::JNAT;
+      };
+      if (oplan) iout = MDirection::J2000;
+      Int tmp;
+      while (iin != iout) {
+	tmp = FromTo[iin][iout];
+	iin = ToRef[tmp];
+	mc.addMethod(tmp);
+	initConvert(tmp, mc);
+      };
     };
 }
 
