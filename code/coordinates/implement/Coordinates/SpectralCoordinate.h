@@ -37,11 +37,11 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/Quantum.h>
 
 class LogIO;
-class MEpoch;
-class MPosition;
 class MVFrequency;
 class VelocityMachine;
 template<class T> class Quantum;
@@ -209,7 +209,8 @@ public:
     // the world value is then further converted to this MFrequency::Types value.
     // For example, your SpectralCoordinate may be defined in LSRK.
     // You can use this to get the world values out in say BARY. You must
-    // specify the position on earth, the epoch and the direction for the conversions.
+    // specify the position on earth, the epoch and the direction for the conversions
+    // and it is your responsibility to ensure they are viable.
     // Similarly, whenever you convert from world to pixel, the world
     // value is assumed to be that appropriate to the setReferenceConversion type.
     // It is first converted to the MFrequency::Types with which the
@@ -223,8 +224,13 @@ public:
     void setReferenceConversion (MFrequency::Types type,
                                  const MEpoch& epoch, const MPosition& position,
                                  const MDirection& direction);
-    void getReferenceConversion (MFrequency::Types& type) const 
-        {type = conversionType_p;};
+    void getReferenceConversion (MFrequency::Types& type,
+                                 MEpoch& epoch, MPosition& position,
+                                 MDirection& direction) const
+       {type = conversionType_p; 
+         epoch=epoch_p; 
+         position=position_p;
+         direction=direction_p;};
     // </group>
 
     // Convert a pixel to a world coordinate or vice versa. Returns True
@@ -344,8 +350,9 @@ public:
   
     // Retrieve/set the frequency system.  Note that setting the
     // frequency system just changes the internal value of the
-    // frequency system, it does not cause any recomputation
-    // or cause the result of <src>toWorld</src> to change.
+    // frequency system.  In addition, it will reset the internal
+    // conversion frequency system to the new type and delete any
+    // conversion machines.  
     // <group>
     MFrequency::Types frequencySystem() const;
     void  setFrequencySystem(MFrequency::Types type);
@@ -510,7 +517,7 @@ private:
     TabularCoordinate worker_p;
 
     // Conversion machines.
-    // The first two are for pixel<->world conversions only.
+    // These are for pixel<->world conversions only.
     // "To"   handles type_p -> conversionType_p 
     // "From" handles conversionType_p -> type_p;
     mutable MFrequency::Convert* pConversionMachineTo_p;  
@@ -523,9 +530,15 @@ private:
     MDoppler::Types prefVelType_p;         // Preferred velocity type
     String prefUnit_p;                     //                    units
     Unit unit_p;                           // A Unit version of the String
+// 
+    MDirection direction_p;                // These are a part of the frame set
+    MPosition position_p;                  // for the reference conversions machines
+    MEpoch epoch_p;                        // They are only private so we can save their state
 
 // Set up pixel<->world conversion machines
-    void makeConversionMachines (const MEpoch& epoch, const MPosition& position,
+    void makeConversionMachines (MFrequency::Types type,  MFrequency::Types conversionType,
+                                 const MEpoch& epoch, 
+                                 const MPosition& position, 
                                  const MDirection& direction);
 
 // Create velocity<->frequency machine 
