@@ -2388,7 +2388,10 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 	    }
 	    if (kwlist.curr()->isreserved() && 
 	        kwlist.curr()->kw().name() == FITS::END)
+	      {
 		end_found = 1;
+                break; // don't attempt to read beyond END card (fails on ASCII null)
+	      }
 	}
 
 	return kwlist;
