@@ -32,9 +32,10 @@
 #include <aips/aips.h>
 #include <aips/Functionals/Functional.h>
 #include <trial/Functionals/FunctionParam.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Assert.h>
 
 //# Forward declarations
-template <class T> class Vector;
 
 // <summary> Numerical functional interface class
 // </summary>
@@ -196,7 +197,7 @@ template<class T> class Function : public Functional<T, T>,
   // </group>
 
   // Destructor
-  virtual ~Function();
+  virtual ~Function() {};
   
   // Returns the number of dimensions of function
   virtual uInt ndim() const = 0;
@@ -205,9 +206,13 @@ template<class T> class Function : public Functional<T, T>,
   // Evaluate this function object at <src>x</src>. The length of <src>
   // x</src> must be greater than or equal to as <src>ndim()</src>.
   // <group>
-  virtual T operator()(const Vector<T> &x) const;
-  virtual T operator()(const T &x) const;
-  virtual T operator()() const;
+  virtual T operator()() const {
+    DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
+  virtual T operator()(const T &x) const {
+    DebugAssert(ndim()<=1, AipsError); return this->eval(&x); };
+  virtual T operator()(const Vector<T> &x) const {
+    DebugAssert(x.contiguousStorage() && ndim()<=x.nelements(), AipsError);
+    return this->eval(&(x[0])); };
   virtual T operator()(FunctionArg x) const { return this->eval(x); };
   // </group>
   // Evaluate the function object
