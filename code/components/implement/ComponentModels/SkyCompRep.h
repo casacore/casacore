@@ -35,22 +35,20 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
-// #include <aips/Arrays/Vector.h>
-// #include <aips/Measures/MDirection.h>
 
 class MDirection;
 class String;
 template<class T> class ImageInterface;
 template<class T> class Vector;
 
-// <summary> A component of a model of the sky </summary>
+// <summary>A component of a model of the sky</summary>
 
 // <use visibility=export>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
 // <prerequisite> 
-// <li> MDirection 
+// <li> <linkto class=MDirection>MDirection</linkto>
 // </prerequisite>
 //
 
@@ -64,13 +62,11 @@ template<class T> class Vector;
 // position in the sky as well as grid the component onto a specified image.
 
 // The functions in this class allow the user to sample the intensity of the
-// component in by specifying either a direction, or an image onto which the
+// component by specifying either a direction, or an image onto which the
 // component should be projected. While most of these functions are pure
-// virtual a default implementation is provided for the project function is
-// defined in terms of the sample function.
+// virtual a default implementation is provided for the project function
+// uses the sample function to get the intensity at the centre of each pixel.
 
-// The type function returns a string stating the actual type of component
-// that is used.
 // </synopsis>
 
 // <example>
@@ -159,7 +155,6 @@ public:
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
   virtual SkyCompRep * clone() const = 0;
-
 };
 
 #endif
