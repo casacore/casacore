@@ -386,6 +386,36 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 // </group>
 
 
+
+// 
+// Determine the number of true or false elements.
+// Note that is meant for Bool arrays, but can also be used for
+// e.g. Int arrays.
+// <group>
+
+// Determine it for the full array.
+// <group>
+template<class T> uInt ntrue (const Array<T> &array);
+template<class T> uInt nfalse (const Array<T> &array)
+  { return array.nelements() - ntrue(array); }
 // </group>
+
+// The same functions as above, but determine ntrue and nfalse for the
+// given axes only. The result is an array with a shape fomed by the
+// remaining axes.
+// For example, for an array with shape [3,4,5], collapsing axis 0
+// results in an array with shape [4,5] containing ntrue or nfalse for
+// each X line.
+// Summing for axes 0 and 2 results in an array with shape [4] containing
+// ntrue or nfalse for each XZ plane.
+// <group>
+template<class T> Array<uInt> partialNTrue (const Array<T>& array,
+					    const IPosition& collapseAxes);
+template<class T> Array<uInt> partialNFalse (const Array<T>& array,
+					     const IPosition& collapseAxes);
+// </group>
+
+// </group>
+
 
 #endif

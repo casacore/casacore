@@ -1,5 +1,5 @@
 //# ArrayLogical.cc: Element by element logical operations on arrays.
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayError.h>
 //# For scalar near() functions.
 #include <aips/Mathematics/Math.h>
@@ -1089,4 +1090,104 @@ template<class T> Bool anyNearAbs (const T &val, const Array<T> &array,
 
     array.freeStorage(as, deleteIt);
     return retval;
+}
+
+template<class T> uInt ntrue (const Array<T> &array)
+{
+    uInt ntotal = array.nelements();
+    Bool deleteIt;
+    const T *as = array.getStorage(deleteIt);
+    uInt retval = 0;
+    for (uInt i=0; i<ntotal; i++) {
+	if (as[i]) {
+	    retval++;
+	}
+    }
+    array.freeStorage(as, deleteIt);
+    return retval;
+}
+
+template<class T> Array<uInt> partialNTrue (const Array<T>& array,
+					    const IPosition& collapseAxes)
+{
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<uInt>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<uInt> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  uInt* resData = result.getStorage (deleteRes);
+  uInt* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // const tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // no gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      uInt tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	if (*data++) {
+	  tmp++;
+	}
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	if (*data++) {
+	  (*res)++;
+	}
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<uInt> partialNFalse (const Array<T>& array,
+					     const IPosition& collapseAxes)
+{
+  Array<uInt> result = partialNTrue (array, collapseAxes);
+  uInt nr = result.nelements();
+  if (nr > 0) {
+    uInt factor = array.nelements() / nr;
+    Bool deleteRes;
+    uInt* res = result.getStorage (deleteRes);
+    for (uInt i=0; i<nr; i++) {
+      res[i] = factor - res[i];
+    }
+    result.putStorage (res, deleteRes);
+  }
+  return result;
 }
