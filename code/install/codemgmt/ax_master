@@ -3613,3 +3613,4 @@
 13 331 src rm doc/user/gettingstarted.dir/f14-pgplotterfui.gif
 13 331 src rm doc/user/gettingstarted.dir/f15-gaussplot.gif
 13 331 src rm doc/user/gettingstarted.dir/gsedition2.dir/
+13 333 src rm aips/implement/MeasurementSets/test/templates
