@@ -9,7 +9,7 @@
 //#
 //# This library is distributed in the hope that it will be useful, but WITHOUT
 //# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public
 //# License for more details.
 //#
 //# You should have received a copy of the GNU Library General Public License
@@ -39,6 +39,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TiledDataStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledDataStManAccessor.h>
 #include <aips/Tables/TableIter.h>
@@ -111,12 +112,12 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
       for (iter_p->originChunks(); iter_p->moreChunks(); iter_p->nextChunk()) {
 	// figure out which correlations to set to 1. and 0. for the model.
 	Vector<Int> corrType; iter_p->corrType(corrType);
-	Int nCorr = corrType.nelements();
+	uInt nCorr = corrType.nelements();
 	if (nCorr!=lastCorrType.nelements() ||
 	    !allEQ(corrType,lastCorrType)) {
 	  lastCorrType.resize(nCorr); lastCorrType=corrType;
 	  zero.resize(nCorr);
-	  for (Int i=0; i<nCorr; i++) {
+	  for (uInt i=0; i<nCorr; i++) {
 	    zero[i]=(corrType[i]==Stokes::RL || corrType[i]==Stokes::LR ||
 		      corrType[i]==Stokes::XY || corrType[i]==Stokes::YX);
 	  }
@@ -124,9 +125,9 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 	for (iter_p->origin(); iter_p->more(); (*iter_p)++) {
 	  Cube<Complex> data;
 	  iter_p->setVis(iter_p->visibility(data,VisibilityIterator::Observed),
-		     VisibilityIterator::Corrected);
+			 VisibilityIterator::Corrected);
 	  data=Complex(1.0,0.0);
-	  for (Int i=0; i<nCorr; i++) {
+	  for (uInt i=0; i<nCorr; i++) {
 	    if (zero[i]) data(Slice(i),Slice(),Slice())=Complex(0.0,0.0);
 	  }
 	  iter_p->setVis(data,VisibilityIterator::Model);
@@ -210,7 +211,7 @@ void VisSet::removeColumns(Table& tab)
 
 // add the model and corrected data columns and the imaging weight
 void VisSet::addColumns(Table& tab) 
-{		    
+{		   
   TableDesc td(tab.tableDesc());
   // Determine if a FLOAT_DATA column is present
   Bool floatData=td.isColumn(MS::columnName(MS::FLOAT_DATA));
@@ -218,7 +219,8 @@ void VisSet::addColumns(Table& tab)
   // Look for the FLOAT_DATA or DATA column among the 
   // hypercolumns to find the corresponding id column (if any)
   Vector<String> hypercolumnNames=td.hypercolumnNames();
-  Bool found=False;
+  Bool tiled=False;
+  Bool tiledWithID=False;
   String dataHypercubeId="";
   if (hypercolumnNames.nelements()>0) {
     for (uInt i=0; i<hypercolumnNames.nelements(); i++) {
@@ -229,8 +231,9 @@ void VisSet::addColumns(Table& tab)
       for (uInt j=0; j<dataColNames.nelements(); j++) {
 	if ((floatData && dataColNames(j)==MS::columnName(MS::FLOAT_DATA)) ||
 	    (!floatData && dataColNames(j)==MS::columnName(MS::DATA))) {
-	  found=idColNames.nelements()>0;
-	  if (found) dataHypercubeId=idColNames(0);
+	  tiled=True;
+	  tiledWithID=idColNames.nelements()>0;
+	  if (tiledWithID) dataHypercubeId=idColNames(0);
 	}
       }
     }
@@ -239,7 +242,9 @@ void VisSet::addColumns(Table& tab)
   Vector<String> coordColNames(0), idColNames(1);
   TableDesc td1;
   IPosition shape,shapeWt;
-  if (!found) {
+
+  // If not tiled, the assume a fixed shape
+  if (!tiled) {
     Int numCorr;
     if (floatData) {
       ArrayColumn<Float> data(tab,MS::columnName(MS::FLOAT_DATA));
@@ -252,36 +257,62 @@ void VisSet::addColumns(Table& tab)
     shape=IPosition(2,numCorr,numChan);
     shapeWt=IPosition(1,numChan);
   }
-  if (found) {
-    idColNames(0)="MODEL_HYPERCUBE_ID"; 
+
+  // Add the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
+  idColNames.resize(0);
+  if (tiled) {
     td1.addColumn(ArrayColumnDesc<Complex>("MODEL_DATA","model data",2));
-    td1.addColumn(ScalarColumnDesc<Int>("MODEL_HYPERCUBE_ID","hypercube index"));
+    // Add hypercube id column if using TiledDataStMan for DATA/FLOAT_DATA
+    if (tiledWithID) {
+      idColNames.resize(1);
+      idColNames(0)="MODEL_HYPERCUBE_ID"; 
+      td1.addColumn(ScalarColumnDesc<Int>("MODEL_HYPERCUBE_ID",
+					  "hypercube index"));
+    }
   } else {
-    idColNames.resize(0);
+    // Else assume fixed shape
     td1.addColumn(ArrayColumnDesc<Complex>("MODEL_DATA","model data",shape,
 					   ColumnDesc::Direct));
-  }    
+  }
   td1.defineHypercolumn("TiledData-model",3,
 			stringToVector("MODEL_DATA"),coordColNames,
 			idColNames);
+
   TableDesc td2;
-  if (found) {
-    idColNames(0)="CORRECTED_HYPERCUBE_ID"; 
-    td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA","corrected data",2));
-    td2.addColumn(ScalarColumnDesc<Int>("CORRECTED_HYPERCUBE_ID","hypercube index"));
+  idColNames.resize(0);
+  if (tiled) {
+    td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA",
+					   "corrected data",2));
+    // Add hypercube id column if using TiledDataStMan for DATA/FLOAT_DATA
+    if (tiledWithID) {
+      idColNames.resize(1);
+      idColNames(0)="CORRECTED_HYPERCUBE_ID"; 
+      td2.addColumn(ScalarColumnDesc<Int>("CORRECTED_HYPERCUBE_ID",
+					  "hypercube index"));
+    }
   } else {
-    td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA","corrected data",
-					   shape,ColumnDesc::Direct));
+    // Else assume fixed shape
+    td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA",
+					   "corrected data",shape,
+					   ColumnDesc::Direct));
   }
   td2.defineHypercolumn("TiledData-corrected",3,
 			stringToVector("CORRECTED_DATA"),coordColNames,
 			idColNames);
+
   TableDesc td3;
-  if (found) {
-    idColNames(0)="IMAGING_WT_HYPERCUBE_ID"; 
+  idColNames.resize(0);
+  if (tiled) {
     td3.addColumn(ArrayColumnDesc<Float>("IMAGING_WEIGHT","imaging weight",1));
-    td3.addColumn(ScalarColumnDesc<Int>("IMAGING_WT_HYPERCUBE_ID","hypercube index"));
+    // Add hypercube id column if using TiledDataStMan for DATA/FLOAT_DATA
+    if (tiledWithID) {
+      idColNames.resize(1);
+      idColNames(0)="IMAGING_WT_HYPERCUBE_ID"; 
+      td3.addColumn(ScalarColumnDesc<Int>("IMAGING_WT_HYPERCUBE_ID",
+					  "hypercube index"));
+    }
   } else {
+    // Assume fixed shape
     td3.addColumn(ArrayColumnDesc<Float>("IMAGING_WEIGHT","imaging weight",
 					 shapeWt,ColumnDesc::Direct));
   }
@@ -290,9 +321,8 @@ void VisSet::addColumns(Table& tab)
 		       coordColNames,
 		       idColNames);
 
-  Bool tiledData=False;
-
-  if (found) {
+  // Case of TiledDataStMan (tiled and using hypercube ID column)
+  if (tiled && tiledWithID) {
     // data shape may change
     TiledDataStMan tiledStMan1("TiledData-model");
     tab.addColumn(td1,tiledStMan1);
@@ -300,7 +330,6 @@ void VisSet::addColumns(Table& tab)
     tab.addColumn(td2,tiledStMan2);
     TiledDataStMan tiledStMan3("TiledImagingWeight");
     tab.addColumn(td3,tiledStMan3);
-    tiledData=True;
     TiledDataStManAccessor modelDataAccessor(tab,"TiledData-model");
     TiledDataStManAccessor corrDataAccessor(tab,"TiledData-corrected");
     TiledDataStManAccessor imWtAccessor(tab,"TiledImagingWeight");
@@ -357,8 +386,38 @@ void VisSet::addColumns(Table& tab)
       count++;
     }
     delete od;
+    // Case of TiledShapeStMan (tiled with explicit hypercube ID column)
+  } else if (tiled && !tiledWithID) {
+    // Create variable tiled shape storage managers
+    // (Set same tile shape as DATA/FLOAT_DATA later)
+    IPosition tileShapeData(3,4,20,256);
+    IPosition tileShapeImWgt(2,20,768);
+    TiledShapeStMan tiledStMan1("TiledData-model",tileShapeData);
+    TiledShapeStMan tiledStMan2("TiledData-corrected",tileShapeData);
+    TiledShapeStMan tiledStMan3("TiledImagingWeight",tileShapeImWgt);
+    // Bind to the appropriate columns
+    tab.addColumn(td1,tiledStMan1);
+    tab.addColumn(td2,tiledStMan2);
+    tab.addColumn(td3,tiledStMan3);
+    // Set the shapes for each row
+    ROTableColumn* data;
+    if (floatData) {
+      data = new ROArrayColumn<Float> (tab,MS::columnName(MS::FLOAT_DATA));
+    } else {
+      data = new ROArrayColumn<Complex> (tab,MS::columnName(MS::DATA));
+    };
+    ArrayColumn<Complex> modelData(tab,"MODEL_DATA");
+    ArrayColumn<Complex> correctedData(tab,"CORRECTED_DATA");
+    ArrayColumn<Float> imagingWeight(tab,"IMAGING_WEIGHT");
+    for (uInt row=0; row<tab.nrow(); row++) {
+      IPosition rowShape=data->shape(row);
+      modelData.setShape(row,rowShape);
+      correctedData.setShape(row,rowShape);
+      imagingWeight.setShape(row,rowShape.getLast(1));
+    };
+    delete data;
   } else {
-  // If there's no id, assume the data is fixed shape throughout
+  // Else assume the data is fixed shape throughout
     Int numCorr;
     if (floatData) {
       ArrayColumn<Float> data(tab,MS::columnName(MS::FLOAT_DATA));
@@ -378,4 +437,5 @@ void VisSet::addColumns(Table& tab)
     TiledColumnStMan tiledStMan3("TiledImagingWeight",tileShapeWt);
     tab.addColumn(td3,tiledStMan3);
   }
+
 }
