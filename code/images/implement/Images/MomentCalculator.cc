@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1282,7 +1282,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 
 // Convert
 
-         sc0.updateVelocityMachine (String("km/s"), iMom.velocityType_p);
+         sc0.setVelocity (String("km/s"), iMom.velocityType_p);
          if (doCoordProfile) {
             sc0.frequencyToVelocity (sepWorldCoord, frequency);
          }
