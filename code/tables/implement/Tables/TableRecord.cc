@@ -324,6 +324,9 @@ Table TableRecord::asTable (const RecordFieldId& id,
       ((const TableKeyword*)get_pointer (whichField, TpTable))->table();
     String name = tab.tableName();
     int option = tab.tableOption();
+    if (option == Table::New) {
+      option = Table::Update;
+    }
     // Close the table in the record, otherwise the new lock options
     // may have no effect.
     closeTable (id);
