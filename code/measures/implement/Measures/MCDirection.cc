@@ -33,6 +33,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
+#include <aips/Measures/MeasFrame.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
@@ -113,12 +114,16 @@ void MCDirection::getConvert(MConvertBase &mc,
       if (iplan) {
 	if (iin != MDirection::COMET) {
 	  mc.addMethod(MCDirection::R_PLANET0);
+	  mc.addFrameType(MeasFrame::EPOCH);
 	  mc.addMethod((iin & ~MDirection::EXTRA) + MCDirection::R_MERCURY);
 	  mc.addMethod(MCDirection::R_PLANET);
 	  initConvert(MCDirection::R_PLANET, mc);
 	  iin = MDirection::JNAT;
 	} else {
 	  mc.addMethod(MCDirection::R_COMET0);
+	  mc.addFrameType(MeasFrame::EPOCH);
+	  mc.addFrameType(MeasFrame::COMET);
+	  mc.addFrameType(MeasFrame::POSITION);
 	  mc.addMethod(MCDirection::R_COMET);
 	  initConvert(MCDirection::R_COMET, mc);
 	  iin = MDirection::APP;
@@ -159,64 +164,97 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
     
   case J2000_JMEAN:
     measMath.createPrecession();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case B1950_BMEAN:
     measMath.createPrecessionB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JMEAN_J2000:
+    mc.addFrameType(MeasFrame::EPOCH);
     measMath.createPrecession();
     break;
     
   case JMEAN_JTRUE:
+    mc.addFrameType(MeasFrame::EPOCH);
     measMath.createNutation();
     break;
     
   case BMEAN_B1950:
+    mc.addFrameType(MeasFrame::EPOCH);
     measMath.createPrecessionB1950();
     break;
     
   case BMEAN_BTRUE:
     measMath.createNutationB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JTRUE_JMEAN:
     measMath.createNutation();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case BTRUE_BMEAN:
     measMath.createNutationB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case J2000_JNAT:
     measMath.createSolarPos();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JNAT_APP:
     measMath.createAberration();
     measMath.createPrecNutat();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case JNAT_J2000:
     measMath.createSolarPos();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case APP_JNAT:
     measMath.createAberration();
     measMath.createPrecNutat();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case B1950_APP:
     measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case APP_B1950:
     measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
+    mc.addFrameType(MeasFrame::EPOCH);
     break;
     
+  case HADEC_ITRF:
+  case ITRF_HADEC: 
+  case HADEC_AZEL:
+  case AZEL_HADEC:
+  case MECLIP_JMEAN:
+  case JMEAN_MECLIP:
+  case TECLIP_JTRUE:
+  case JTRUE_TECLIP:
+    mc.addFrameType(MeasFrame::POSITION);
+    break;
+
+  case TOPO_HADEC: 
+  case HADEC_TOPO: 
+  case APP_TOPO: 
+  case TOPO_APP: 
+    mc.addFrameType(MeasFrame::EPOCH);
+    mc.addFrameType(MeasFrame::POSITION);
+    break;
+
   default:
     break;
     
