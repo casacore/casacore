@@ -28,7 +28,7 @@
 #include<trial/Fitting/LatticeFit.h>
 
 #include<aips/Arrays.h>
-#include<trial/Fitting/LQLinearFitSVD.h>
+#include<trial/Fitting/LinearFitSVD.h>
 #include <aips/Functionals/Polynomial.h>
 #include<aips/Lattices/ArrayLattice.h>
 #include<aips/Utilities/Assert.h>

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LQLinearFitSVD.h>
+#include <trial/Fitting/LinearFitSVD.h>
 #include <aips/Mathematics/Primes.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Random.h>

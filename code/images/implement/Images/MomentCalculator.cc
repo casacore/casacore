@@ -32,7 +32,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/CompoundFunction.h>
 #include <trial/Images/ImageMoments.h>

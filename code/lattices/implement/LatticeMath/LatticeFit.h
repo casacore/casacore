@@ -30,7 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
-#include <trial/Fitting/LQLinearFit.h>
+#include <trial/Fitting/LinearFit.h>
 
 class GlishSysEventSource;
 

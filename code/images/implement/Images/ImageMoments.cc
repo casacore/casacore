@@ -60,7 +60,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>

@@ -29,10 +29,10 @@
 
 #include <aips/aips.h>
 #include <aips/Fitting/FitLSQ.h>
-#include <trial/Fitting/LQLinearFit.h>
-#include <trial/Fitting/LQLinearFitSVD.h>
-#include <trial/Fitting/LQNonLinearFit.h>
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/LinearFit.h>
+#include <trial/Fitting/LinearFitSVD.h>
+#include <trial/Fitting/NonLinearFit.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Fitting/LatticeFit.h>
 
 // <module>

@@ -1,5 +1,5 @@
 //# LQNonLinearFit.cc: Class for non-linear least-squares fit.
-//# Copyright (C) 1995,1999,2000,2001
+//# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LQNonLinearFit.h>
+#include <trial/Fitting/NonLinearFit.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>
 

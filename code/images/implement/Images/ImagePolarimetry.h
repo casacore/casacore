@@ -36,7 +36,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Fitting/LQLinearFitSVD.h>
+#include <trial/Fitting/LinearFitSVD.h>
 
 
 //# Forward Declarations

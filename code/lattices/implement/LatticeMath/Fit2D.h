@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Functionals/CompoundFunction.h>
 #include <aips/Mathematics/Constants.h>
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Logging.h>
 
 template<class T> class Array;

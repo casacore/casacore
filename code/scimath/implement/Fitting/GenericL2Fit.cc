@@ -1,6 +1,6 @@
 //# LQGenericL2Fit.cc: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Fitting/LQGenericL2Fit.h>
+#include <trial/Fitting/GenericL2Fit.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>

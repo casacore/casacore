@@ -33,7 +33,7 @@
 #include <trial/Flagging/RFRowClipper.h> 
 #include <trial/Flagging/RFDebugPlot.h> 
 #include <aips/Functionals/Polynomial.h>
-#include <trial/Fitting/LQLinearFit.h>
+#include <trial/Fitting/LinearFit.h>
 #include <aips/Containers/Queue.h>
 #include <aips/Arrays/LogiVector.h>
     

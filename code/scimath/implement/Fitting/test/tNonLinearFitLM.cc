@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Mathematics/Math.h>

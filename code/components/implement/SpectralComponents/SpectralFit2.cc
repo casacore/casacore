@@ -32,7 +32,7 @@
 #include <aips/Functionals/CompoundParam.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Polynomial.h>
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions

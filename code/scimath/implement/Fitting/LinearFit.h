@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Fitting/LQGenericL2Fit.h>
+#include <trial/Fitting/GenericL2Fit.h>
 
 //# Forward declarations
 

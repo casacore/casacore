@@ -1,5 +1,5 @@
 //# LQNonLinearFitLM.cc: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999,2000,2001
+//# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Function.h>

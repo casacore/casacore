@@ -1,6 +1,6 @@
 //# LQLinearFitSVD.h: Linear fit using Singular Value Decomposition method. 
 //#
-//# Copyright (C) 1995,1999,2000,2001
+//# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#								
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #define AIPS_LQLINEARFITSVD_H
 
 #include <aips/aips.h>
-#include <trial/Fitting/LQLinearFit.h>
+#include <trial/Fitting/LinearFit.h>
 
 // <summary> 
 // Linear least-squares fit using Singular Value Decomposition method. 
