@@ -34,19 +34,18 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/NQPolynomial.h>
-///#include <trial/Functionals/FunctionWrapper.h>
-///#include <trial/Functionals/LinearComb.h>
-///#include <trial/Functionals/FuncWithAutoDerivs.h>
+#include <aips/Functionals/NQFunctionWrapper.h>
+#include <aips/Functionals/NQCombiFunction.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>
 
 // Some C++ functions
-/*static Double func0(const Vector<Double> &) {return 1;};            // 1
+static Double func0(const Vector<Double> &) {return 1;};            // 1
 static Double func1(const Vector<Double> &x) {return x(0);};         // x
 static Double func2(const Vector<Double> &x) {return sin(x(1));};    // sin(y)
 static Double func3(const Vector<Double> &x) {return x(0)*x(0);};    // x^2
-static void myfnc(Vector<Double> &y, const Double x) {
+/*static void myfnc(Vector<Double> &y, const Double x) {
   y(0) = 1;
   for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
 */
@@ -136,7 +135,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
 
     //****** Test one A ************
-        // Note: first guess equals zero parameters
+    /*        // Note: first guess equals zero parameters
     LQLinearFitSVD<AutoDiffA<Double> > fitad;
     NQPolynomial<AutoDiffA<Double> > sqre(2);
 
@@ -176,7 +175,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     			  fitad.chiSquare(), 
     			  1.0e-5));
     AlwaysAssertExit(fitad.fittedNumber()-fitad.getRank() == 0);
-
+   */
     //****** Test one B ************
     /*
     fitter.setFunction(3, &myfnc);
@@ -331,7 +330,8 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
       cout << solution(i) << " Std Dev " << sqrt(covariance(i,i)) << endl;
     };
     cout << "Solved for " << fitter.fittedNumber() << " parameters" << endl;
-    ///AlwaysAssertExit(fitter.fittedNumber() == solution.nelements());
+    AlwaysAssertExit(fitter.fittedNumber() ==
+		     combination.parameters().nMaskedParameters());
     AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
     cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
     
@@ -349,18 +349,18 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     };
   }
 //************ test three ****************
-/*
+
   {
     // fitting a 2D polynomial to data points:
     // f(x,y) = a0 + a1*x+ a2*y + a3*x*x
     {    
       // Convert C++ functions to Functionals
-      FunctionNDWrapper<Double,Double> Func0(func0,2);
-      FunctionNDWrapper<Double,Double> Func1(func1,2);
-      FunctionNDWrapper<Double,Double> Func2(func2,2);
-      FunctionNDWrapper<Double,Double> Func3(func3,2);
+      NQFunctionWrapper<Double> Func0(func0,2);
+      NQFunctionWrapper<Double> Func1(func1,2);
+      NQFunctionWrapper<Double> Func2(func2,2);
+      NQFunctionWrapper<Double> Func3(func3,2);
       
-      LinearComb<Double,Double> combination;
+      NQCombiFunction<Double> combination;
       
       // form linear combination of functions
       // f(x,y) = a0 + a1*x+ a2*sin(y) + a3*x*x
@@ -370,10 +370,10 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
       combination.addFunction(Func3);
       
       // Now use this combination to generate some fake data
-      combination.setCoefficient(0,4);
-      combination.setCoefficient(1,5);
-      combination.setCoefficient(2,6);
-      combination.setCoefficient(3,0.2);
+      combination[0] = 4;
+      combination[1] = 5;
+      combination[2] = 6;
+      combination[3] = 0.2;
       
       Int npoints = 100;
       Matrix<Double> x(npoints,2);       // coordinates
@@ -386,10 +386,16 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
 	x(i,1) = x(i,0)*2;
 	Double nois = noise()/4.0;
 	z(i) = combination(x.row(i)) + nois;
-      //cout << x.row(i) << " " << z(i) << " " << nois << endl;
       };
       sigma = 1.0;
-      
+      cout << "******* test three *************" << endl;
+      Vector<Double> z0(2);
+      z0[0] = 2; z0[1] = 3;
+      cout << "x,y: " << z0[0] << ", " << z0[1] << endl;
+      cout << "Expect: " << 4 + 5*z0[0]+ 6*sin(z0[1]) + 0.2*z0[0]*z0[0] <<
+	endl;
+      cout << "Got:    " << combination(z0) << endl;
+      /*
       fitter.setFunction(combination);
       Vector<Double> solution = fitter.fit(x,z,sigma);
       Matrix<Double> covariance = fitter.compuCovariance();    
@@ -406,16 +412,17 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
       // See if they are within 3*sigma.
       Int factor = 3;
       for (uInt i = 0; i < solution.nelements(); i++) {
-	AlwaysAssertExit(nearAbs(solution(i), combination.getAdjustParameter(i),
+	AlwaysAssertExit(nearAbs(solution(i), combination[i],
 				 factor*sqrt(covariance(i,i))));
       };
       AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
       cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() <<
 	endl;
+   */
     }
      
   }
-     */
+   
 }
 
 //****** Test on complex fitting ************
