@@ -28,6 +28,9 @@
 //
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Mathematics/FFTServer.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
@@ -39,7 +42,13 @@
 
 #include <iostream.h>
 
-
+void checkNumbers (const ImageInterface<Float>& rIn,
+                   const ImageInterface<Float>& rOut,
+                   const ImageInterface<Float>& iOut,
+                   const ImageInterface<Float>& aOut,
+                   const ImageInterface<Float>& pOut,
+                   const ImageInterface<Complex>& cOut,
+                   const ImageInterface<Complex>& c2Out);
 
 main (int argc, char **argv)
 {
@@ -83,6 +92,7 @@ try {
 //
       ImageFFT fft;
       fft.fftsky(inImage);
+      Array<Float> rArray0 = inImage.get();
 //
       fft.getReal(outReal);
       fft.getImaginary(outImag);
@@ -91,13 +101,8 @@ try {
       fft.getComplex(outComplex);
       const ImageInterface<Complex>& outComplex2 = fft.getComplex();
 //
-      Array<Float> rArray1 = outReal.get();
-      Array<Float> iArray1 = outImag.get();
-      Array<Float> aArray1 = outAmp.get();
-      Array<Float> pArray1 = outPhase.get();
-      Array<Complex> cArray1 = outComplex.get();
-      Array<Complex> c2Array1 = outComplex2.get();
-      AlwaysAssert(allEQ(cArray1,c2Array1), AipsError);
+      checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                   outComplex, outComplex2);
 
 // Copy constructor
 
@@ -109,19 +114,8 @@ try {
       fft2.getComplex(outComplex);
       const ImageInterface<Complex>& outComplex3 = fft2.getComplex();
 //
-      Array<Float> rArray2 = outReal.get();
-      Array<Float> iArray2 = outImag.get();
-      Array<Float> aArray2 = outAmp.get();
-      Array<Float> pArray2 = outPhase.get();
-      Array<Complex> cArray2 = outComplex.get();
-      Array<Complex> c2Array2 = outComplex3.get();
-      AlwaysAssert(allEQ(cArray2,c2Array2), AipsError);
-//
-      AlwaysAssert(allEQ(rArray1,rArray2), AipsError);
-      AlwaysAssert(allEQ(iArray1,iArray2), AipsError);
-      AlwaysAssert(allEQ(aArray1,aArray2), AipsError);
-      AlwaysAssert(allEQ(pArray1,pArray2), AipsError);
-      AlwaysAssert(allEQ(cArray1,cArray2), AipsError);
+      checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                   outComplex, outComplex3);
 
 // Assignment operator
 
@@ -134,19 +128,8 @@ try {
       fft3.getComplex(outComplex);
       const ImageInterface<Complex>& outComplex4 = fft3.getComplex();
 //
-      Array<Float> rArray3 = outReal.get();
-      Array<Float> iArray3 = outImag.get();
-      Array<Float> aArray3 = outAmp.get();
-      Array<Float> pArray3 = outPhase.get();
-      Array<Complex> cArray3 = outComplex.get();
-      Array<Complex> c2Array3 = outComplex4.get();
-      AlwaysAssert(allEQ(cArray3,c2Array3), AipsError);
-//
-      AlwaysAssert(allEQ(rArray1,rArray3), AipsError);
-      AlwaysAssert(allEQ(iArray1,iArray3), AipsError);
-      AlwaysAssert(allEQ(aArray1,aArray3), AipsError);
-      AlwaysAssert(allEQ(pArray1,pArray3), AipsError);
-      AlwaysAssert(allEQ(cArray1,cArray3), AipsError);
+      checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                   outComplex, outComplex4);
    } else {
       os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
       exit(1);
@@ -159,5 +142,59 @@ try {
   } end_try;
 
   exit(0);
+}
+
+
+
+void checkNumbers (const ImageInterface<Float>& rIn,
+                   const ImageInterface<Float>& rOut,
+                   const ImageInterface<Float>& iOut,
+                   const ImageInterface<Float>& aOut,
+                   const ImageInterface<Float>& pOut,
+                   const ImageInterface<Complex>& cOut,
+                   const ImageInterface<Complex>& c2Out)
+//
+// Make tests on first plane of image only as ImageFFT
+// only FFTs the sky plane whereas FFTServer does a
+// multi-dimensional FFT
+//
+{
+// Fill a complex array with the real input
+// image.  Replace masked values by zero
+      
+      IPosition blc(rIn.ndim(),0);
+      IPosition shape(rIn.shape());
+      for (uInt i=0; i<rIn.ndim(); i++) {
+         if (i>1) shape(i) = 1;
+      }
+      Array<Float> r0 = rIn.getSlice(blc, shape, True);
+      Array<Bool> m0 = rIn.getMaskSlice(blc, shape, True);
+      if (rIn.isMasked()) {
+         Bool deleteIt1, deleteIt2;
+         Float* pP = r0.getStorage(deleteIt1);
+         const Bool*  pM = m0.getStorage(deleteIt2);
+         for (Int i=0; i<r0.shape().product(); i++) {
+            if (!pM[i]) pP[i] = 0.0;
+         }
+         r0.putStorage(pP, deleteIt1);
+         m0.freeStorage(pM, deleteIt2);
+      }
+//
+      Array<Complex> c(r0.shape());
+      convertArray(c, r0);
+
+// Make FFT server and FFT
+
+      FFTServer<Float,Complex> fftServer(c.shape(),FFTEnums::COMPLEX);
+      fftServer.fft(c, True);
+
+// Check numbers
+
+      AlwaysAssert(allNear(rOut.getSlice(blc,shape,True), real(c), 1e-6), AipsError);
+      AlwaysAssert(allNear(iOut.getSlice(blc,shape,True), imag(c), 1e-6), AipsError);
+      AlwaysAssert(allNear(aOut.getSlice(blc,shape,True), amplitude(c), 1e-6), AipsError);
+      AlwaysAssert(allNear(pOut.getSlice(blc,shape,True), phase(c), 1e-6), AipsError);
+      AlwaysAssert(allNear(cOut.getSlice(blc,shape,True), c, 1e-6), AipsError);
+      AlwaysAssert(allNear(cOut.get(), c2Out.get(), 1e-6), AipsError);
 }
 
