@@ -140,8 +140,8 @@ void openPablo (char** argv)
         if(gevs.isSet(String("PABLOSTATSDIR"))){
            pablostatsdir = gevs.value("PABLOSTATSDIR");
         }
-        oss << pablostatsdir << "/" << myname.baseName() << "_node" <<
-	   tracenode << ".PabloIO" << ends;
+        oss << pablostatsdir << "/" << myname.baseName() << "_node"
+	    << tracenode << ".PabloIO";
         setTraceFileName( oss.str() );
 
         initIOTrace();

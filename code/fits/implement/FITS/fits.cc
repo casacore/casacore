@@ -2280,7 +2280,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 			    if (x.asInt() < 0) {
 				ostringstream msgline;
 				msgline << "Illegal value for keyword NAXIS"
-					<< x.index() << ends;
+					<< x.index();
 				const char * mptr = msgline.str().data();
 				errhandler(mptr, FITSError::SEVERE);
 				// delete [] mptr;
@@ -2308,7 +2308,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 			if (x.asInt() < 0) {
 			    ostringstream msgline;
 			    msgline << "Illegal value for keyword TBCOL"
-				    << x.index() << ends;
+				    << x.index();
 			    const char * mptr = msgline.str().data();
 			    errhandler(mptr, FITSError::SEVERE);
 			    // delete [] mptr;
@@ -2413,7 +2413,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
-		msgline << ends;
+		msgline << std::ends;
 		const char * mptr = msgline.str().data();
 		errhandler(mptr, errlev);
 		// delete [] mptr;
@@ -2432,7 +2432,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    	msgline << "FITS card " 
 				<< (count * 36 + cardno) << ": ";
 		    	msgline.write(&buff[i*80],80);
-			msgline << ends;
+			msgline << std::ends;
 			const char * mptr = msgline.str().data();
 			errhandler(mptr, FITSError::WARN);
 			// delete [] mptr;
