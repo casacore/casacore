@@ -36,7 +36,6 @@
 class MDirection;
 class MVAngle;
 template <class Qtype> class Quantum;
-template <class T> class Flux;
 template <class T> class Vector;
 
 // <summary>A disk model for the spatial distribution of emission</summary>
@@ -52,110 +51,21 @@ template <class T> class Vector;
 
 // <synopsis> 
 
-// A GaussianShape models the spatial distribution of radiation from the sky as
-// a two-dimensional Gaussian function with user specified major axis width,
-// minor axis width and position angle.
-
-// The reference direction is defined in celestial co-ordinates, using a
-// <linkto class=MDirection>MDirection</linkto> object. It indicates where the
-// centre of the Gaussian is on the sky. The direction can be specified both in
-// the constructor or with the <src>setRefDirection</src> function.
-
-// The width of the Gaussian is defined as the angle subtended by the full
-// width at half maximum of the Gaussian. The major axis has the larger width
-// and is aligned North-South when the position angle is zero. A positive
-// position angle moves the Northern side of the component to the East.  The
-// axial ratio is the ratio of the minor to major axis widths. The major axis
-// MUST not be smaller than the minor axis otherwise an AipsError is thrown.
-
-// The flux, or integrated intensity, is always normalised to one. This class
-// does not model the actual flux or its variation with frequency. It solely
-// models the way the emission varies with position on the sky.
-
-// The <src>scale</src> member function is used to sample the component at any
-// point on the sky. The scale factor calculated by this function is the
-// proportion of the flux that is within a specified pixel size centered on the
-// specified direction. Ultimatly this function will integrate the emission
-// from the Gaussian over the entire pixel but currently it just assumes the
-// flux can be calculated by the height of the Gaussian at the centre of the
-// pixel scaled by the pixel area. This is <em>NOT<\em> accurate for Gaussians
-// whose width is small compared with the pixel size.
-
-// This class contains functions that return the Fourier transform of the
-// component at a specified spatial frequency. There are described more fully
-// in the description of the <src>visibility</src> functions below.
-
-// This class also contains functions which perform the conversion between
-// records and GaussianShape objects. This defines how a GaussianShape object
-// is represented in glish. The format of the record that is generated and
-// accepted by these functions is:
-// <srcblock>
-// c := [type = "gaussian",
-//       direction = [type = "direction",
-//                    refer = "j2000",
-//                    m0 = [value = 0, unit = "deg"]
-//                    m1 = [value = 0, unit = "deg"]
-//                   ]
-//      ]
-// </srcblock>
-// The direction field contains a record representation of a direction measure
-// and its format is defined in the Measures module. Its refer field defines
-// the reference frame for the direction and the m0 and m1 fields define the
-// latitude and longitude in that frame.
-
 // </synopsis>
 //
 // <example>
-// Suppose I had an image of a region of the sky and we wanted to subtract
-// a gaussian source from it. This could be done as follows:
-// <ul> 
-// <li> Construct a GaussianCompRep to represent the gaussian source
-// <li> Project the component onto an image
-// <li> Convolve the image by the gaussian spread function
-// <li> subtract the convolved model from the dirty image.
-// </ul>
-// Shown below is the code to perform the first two steps in this process. See
-// the <linkto class=Convolver>Convolver</linkto> class and the
-// <linkto module=Lattices>Lattice</linkto> module for the functions necessary
-// to perform the last two items. This example is also available in the
-// <src>dGaussianCompRep.cc</src> file.
-// <srcblock>
-// Quantity J1934_ra = Quantity(19.0/24*360, "deg") + Quantity(39, "'");
-// Quantity J1934_dec = Quantity(-63, "deg") + Quantity(43, "'");
-// MDirection J1934_dir(J1934_ra, J1934_dec, MDirection::J2000);
-// Flux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
-// GaussianCompRep J1934(J1934_flux, J1934_dir);
-// // This component can now be projected onto an image
-// CoordinateSystem coords;
-// {
-//   Double pixInc = Quantity(1, "''").getValue("rad");
-//   Matrix<Double> xform(2,2);
-//   xform = 0.0; xform.diagonal() = 1.0;
-//   Double refPixel = 32.0;
-//   DirectionCoordinate dirCoord(MDirection::J2000,
-// 				 Projection(Projection::SIN),
-// 				 J1934_ra.getValue("rad"),
-// 				 J1934_dec.getValue("rad"),
-// 				 pixInc , pixInc, xform,
-// 				 refPixel, refPixel);
-//   coords.addCoordinate(dirCoord);
-// }
-// CoordinateUtil::addIQUVAxis(coords);
-// CoordinateUtil::addFreqAxis(coords);
-// PagedImage<Float> skyModel(IPosition(4,64,64,4,8), coords, 
-// 			     "model_tmp.image");
-// skyModel.set(0.0f);
-// J1934.project(skyModel);
-// </srcblock>
 // </example>
 //
 // <todo asof="1997/07/16">
 //   <li> Nothing so far
 // </todo>
 
-// <linkfrom anchor="GaussianCompRep" classes="SkyCompRep GaussianComponent">
-//  <here>GaussianCompRep</here> - a gaussian component with copy semantics
+// <linkfrom anchor="GaussianShape" 
+//           classes="ComponentShape TwoSidedShape PointShape GaussianShape">
+//  <here>GaussianShape</here>
+// - a Uniform brightness disk shape.
 // </linkfrom>
+
 
 class DiskShape: public TwoSidedShape
 {
@@ -238,7 +148,10 @@ public:
 
   // The total flux of the component must be supplied in the flux variable and
   // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+  virtual DComplex visibility(const Vector<Double>& uvw,
+			      const Double& frequency) const;
+
+  virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 
   // Return a pointer to a copy of this object upcast to a ComponentShape

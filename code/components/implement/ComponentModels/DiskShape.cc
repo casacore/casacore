@@ -211,8 +211,8 @@ void DiskShape::sample(Vector<Double>& scale,
   if (deleteValue) delete compDirValue;
 }
 
-void DiskShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
-			   const Double& frequency) const {
+DComplex DiskShape::visibility(const Vector<Double>& uvw,
+			       const Double& frequency) const {
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
@@ -230,8 +230,13 @@ void DiskShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
   u *= itsMinValue;
   v *= itsMajValue;
   const Double r = hypot(u, v) * C::pi * frequency/C::c;
-  const Double scale = 2.0 * j1(r)/r;
-  flux.scaleValue(scale, scale, scale, scale);
+  return DComplex(2.0 * j1(r)/r, 0.0);
+}
+
+void DiskShape::visibility(Vector<DComplex>& scale,
+			       const Matrix<Double>& uvw,
+			       const Double& frequency) const {
+  ComponentShape::visibility(scale, uvw, frequency);
 }
 
 ComponentShape* DiskShape::clone() const {
