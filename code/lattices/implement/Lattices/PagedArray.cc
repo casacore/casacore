@@ -65,8 +65,21 @@ template<class T> PagedArray<T>::PagedArray(const IPosition &arrayShape,
 {
   T overloadhelper;
   // build the column: 
+  const Int maxPixels=256*256;
   buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-	      rownumber_p, indirectArray_p, arrayShape);
+	      rownumber_p, indirectArray_p, arrayShape, maxPixels);
+  setTableType();
+};
+
+// IPosition, file name and maxPixels constructor
+template<class T> PagedArray<T>::PagedArray(const IPosition &arrayShape, 
+					    Table &table, const Int maxPixels)
+: table_p(table), columnname_p(COLUMNNAME), rownumber_p(0)
+{
+  T overloadhelper;
+  // build the column: 
+  buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
+	      rownumber_p, indirectArray_p, arrayShape, maxPixels);
   setTableType();
 };
 
@@ -79,8 +92,9 @@ template<class T> PagedArray<T>::PagedArray(const IPosition &arrayShape,
 {
   T overloadhelper;
   // build the column: 
+  const Int maxPixels=32768;
   buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-	      rownumber_p, indirectArray_p, arrayShape);
+	      rownumber_p, indirectArray_p, arrayShape, maxPixels);
   setTableType();
 };
 
@@ -219,7 +233,7 @@ template<class T> void PagedArray<T>::resize(const IPosition &newShape)
 	T overloadhelper;
 	// build the column: 
 	buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-		    rownumber_p, indirectArray_p, newShape);
+		    rownumber_p, indirectArray_p, newShape, maxPixels());
 	for(int i =0;i<numrows;i++) {
 	  if (i != rownumber_p) indirectArray_p.put(i,hold(i));
 	  else indirectArray_p.setShape(i, newShape);
@@ -231,7 +245,7 @@ template<class T> void PagedArray<T>::resize(const IPosition &newShape)
 	T overloadhelper;
 	// build the column: 
 	buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-		    rownumber_p, indirectArray_p, newShape);
+		    rownumber_p, indirectArray_p, newShape, maxPixels());
       }
     } else {
       // the column is not deletable, throw an error
@@ -242,7 +256,7 @@ template<class T> void PagedArray<T>::resize(const IPosition &newShape)
     // the indirect array is null, we must build the whole shebang
     T overloadhelper;
     buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-		rownumber_p, indirectArray_p, newShape);
+		rownumber_p, indirectArray_p, newShape, maxPixels());
   }
 };
 
@@ -317,7 +331,7 @@ template<class T> void PagedArray<T>::putSlice(const Array<T> &sourceArray,
   if (indirectArray_p.isNull()) {
     T overloadhelper;
     buildColumn(overloadhelper, table_p, columnname_p, COLUMNCOMMENT, 
-		rownumber_p, indirectArray_p, sourceArray.shape());
+		rownumber_p, indirectArray_p, sourceArray.shape(), maxPixels());
   }
   uInt arrDim = sourceArray.ndim();
   uInt latDim = ndim();
@@ -470,17 +484,14 @@ template <class T>
 void buildStandardColumn(Table &table, const String &columnName,
 			 const String &columnComment, Int rowNumber, 
 			 ArrayColumn<T> &indirectArray, 
-			 const IPosition &shape)
+			 const IPosition &shape,
+			 Int maxPixels)
 {
     LogOrigin where("buildStandardColumn(Table &table, const String &columnName,"
 		    "const String &columnComment, Int rowNumber, "
 		    "ArrayColumn<T> &indirectArray, "
 		    "const IPosition &shape)", WHERE);
     LogMessage message(where);
-
-
-  // we need to bring this constant out somewhere where it can be manipulated!
-  const uInt maxPixels = 1024*1024;
 
   // if the column doesn't exist, build it
   if (!table.tableDesc().isColumn(columnName)){
@@ -513,7 +524,7 @@ void buildStandardColumn(Table &table, const String &columnName,
 	    // 2. While (tile.volume() <= stman volume && tile can grow)
 	    // 3.    adjust next axis to the next larger size that fits
 
-	    // This algorith should always provide at least a row-cursor
+	    // This algorithm should always provide at least a row-cursor
 	    // that fits. The worst case is if the first axis is degenerate
 	    // and the other axes are all large primes.
 
