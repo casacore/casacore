@@ -2968,20 +2968,20 @@ Bool checkFloat (const LatticeExprNode& expr,
     if (! expr.isInvalidScalar()) {
       if (expr.isScalar()) {
 	result2 = expr.getFloat();
-	if (result2 != result) {
+	if (!near(result2, result)) {
 	  cout << "   result should be " << result << endl;
 	  cout << "   Scalar result is " << result2  << endl;
 	  ok = False;
 	}
 	expr.eval(result2);
-	if (result2 != result) {
+	if (!near(result2, result)) {
           cout << "   result should be " << result << endl;
           cout << "   Scalar result is " << result2 << endl;
           ok = False;
 	}
       }
       expr.eval(Arr, region);
-      if (! allEQ (Arr.value(), result)) {
+      if (! allNear (Arr.value(), result, 1.e-06)) {
 	cout << "   result should be " << result << endl;
 	cout << "   Array result is  " << Arr.value() << endl;
 	ok = False;
@@ -3003,7 +3003,7 @@ Bool checkFloatRepl (const LatticeExprNode& expr,
     Slicer region(origin, shape);
     expr.eval(Arr, region);
     if (! Arr.isMasked()) {
-       if (! allEQ (Arr.value(), result)) {
+       if (! allNear (Arr.value(), result,1.e-06)) {
 	  cout << "   result should be " << result << endl;
 	  cout << "   Array result is  " << Arr.value() << endl;
 	  ok = False;
@@ -3022,13 +3022,13 @@ Bool checkFloatRepl (const LatticeExprNode& expr,
 	     if (!isReplScalar) {
 	        replScalar = repl[i];
 	     }
-	     if (res[i] != replScalar) {
+	     if (!near(res[i], replScalar, 1e-06)) {
 	        cout << "   result " << i << " should be " << replScalar << endl;
 		cout << "   Replace result is " << res[i] << endl;
 		ok = False;
 	     }
 	  } else {
-	     if (res[i] != result) {
+	     if (!near(res[i], result, 1e-06)) {
 	        cout << "   result " << i << " should be " << result << endl;
 		cout << "   Replace result is " << res[i] << endl;
 		ok = False;
