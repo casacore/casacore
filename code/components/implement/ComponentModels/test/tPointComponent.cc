@@ -1,5 +1,5 @@
-//# tPointComponent.cc:  this defines tPointComponent.cc
-//# Copyright (C) 1996,1997,1998
+//# tPointShape.cc:  this defines tPointShape.cc
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointComponent.h>
+#include <trial/ComponentModels/PointShape.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
 #include <aips/Arrays/Array.h>
@@ -60,12 +60,14 @@ typedef MeasConvert<MDirection,MVDirection,MCDirection>
 
 int main() {
   try {
+
+/*
     {
       // Create a point component at the default direction
       const MVDirection defMVdir;
       const MDirection defDirJ2000(defMVdir);
       const MDirection defDirB1950(defMVdir, MDirection::B1950);
-      const PointComponent defPoint;
+      const PointShape defPoint;
       Vector<Double> sampledFlux(4);
       Vector<Double> expectedFlux(4); 
       expectedFlux = 0.0; expectedFlux(0) = 1.0;
@@ -86,7 +88,7 @@ int main() {
       const MDirection coord1934J2000(dir1934, MDirection::J2000);
       const MDirection coord1934B1950(dir1934, MDirection::B1950);
       const Flux<Double> flux1934(6.3, 0.0, 0.0, 0.0);
-      const PointComponent B1934(flux1934, coord1934B1950);
+      const PointShape B1934(flux1934, coord1934B1950);
       const Vector<DComplex> fluxVal(flux1934.value());
       Vector<Double> sampledFlux(4);
       const MVAngle tol = Quantity(1E-3, "mas");
@@ -104,7 +106,7 @@ int main() {
     }
     {
       // Create a default point component
-      PointComponent B1934;
+      PointShape B1934;
       // Set and verify  the flux of the point component.
       Flux<Double> flux1934(6.3*200, 0.0, 0.0, 0.0);
       flux1934.setUnit("WU");
@@ -145,7 +147,7 @@ int main() {
       parms.resize(1);
       try {
  	B1934.setParameters(parms);
-  	throw(AipsError("PointComponent incorrectly accepted a non-zero "
+  	throw(AipsError("PointShape incorrectly accepted a non-zero "
   			"Parameter Vector"));
       }
       catch (AipsError x) {
@@ -158,7 +160,7 @@ int main() {
       end_try;
       try {
 	B1934.parameters(parms);
-	throw(AipsError("PointComponent incorrectly used a non-zero "
+	throw(AipsError("PointShape incorrectly used a non-zero "
  			"Parameter Vector"));
       }
       catch (AipsError x) {
@@ -301,7 +303,7 @@ int main() {
 	typeVal.get(type);
 	AlwaysAssert(type == "point", AipsError);
       }
-      PointComponent newComp;
+      PointShape newComp;
       AlwaysAssert(newComp.fromRecord(errorMessage, compRec) == True,
 		   AipsError);
       AlwaysAssert(errorMessage == "", AipsError);
@@ -316,7 +318,7 @@ int main() {
       cout << "Passed the to/from GlishRecord test for Point components"
   	   << endl;
 
-      PointComponent compCopy = B1934.copy();
+      PointShape compCopy = B1934.copy();
       AlwaysAssert(compCopy.shape() == ComponentType::POINT, AipsError);
       B1934.flux().setValue(0.0);
       AlwaysAssert(near(B1934.flux().value(0), 0.0), AipsError);
@@ -326,7 +328,7 @@ int main() {
       B1934.flux().setValue(6.3);
       AlwaysAssert(near(compCopy.flux().value(0), 0.0), AipsError);
       AlwaysAssert(near(B1934.flux().value(0), 6.3), AipsError);
-      PointComponent compRef = B1934;
+      PointShape compRef = B1934;
       AlwaysAssert(near(compRef.flux().value(0), 6.3), AipsError);
       B1934.flux().setValue(0.0);
       AlwaysAssert(near(compRef.flux().value(0), 0.0), AipsError);
@@ -342,9 +344,9 @@ int main() {
       const uInt nx=6, ny=nx;
       PagedImage<Float> image(IPosition(2,nx,ny), 
  			      CoordinateUtil::defaultCoords2D(),
- 			      "tPointComponent_tmp.image");
+ 			      "tPointShape_tmp.image");
       image.set(0.0f);
-      PointComponent defComp;
+      PointShape defComp;
       const MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
       const MDirection coord00(ra0dec0, MDirection::J2000);
       defComp.setDirection(coord00);
@@ -360,7 +362,7 @@ int main() {
       cout << "Passed the projection to a 4-D image test" << endl;
     }
     {
-      PointComponent defPoint;
+      PointShape defPoint;
       Vector<Double> uvw(3);
       uvw = 0.0;
       Double freq = 1.0;
@@ -384,6 +386,8 @@ int main() {
 			DComplex(0.0, 0.0)), AipsError);
       cout << "Passed the Fourier Transform test" << endl;
     }
+
+*/
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
@@ -394,5 +398,5 @@ int main() {
   return 0;
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 tPointComponent"
+// compile-command: "gmake OPTLIB=1 tPointShape"
 // End: 

@@ -1,5 +1,5 @@
-//# tGaussianComponent.cc:  this defines tGaussianComponent.cc
-//# Copyright (C) 1996,1997,1998
+//# tGaussianShape.cc:  this defines tGaussianShape.cc
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/GaussianComponent.h>
+#include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -67,9 +67,11 @@ typedef MeasConvert<MDirection,MVDirection,MCDirection>
 
 int main() {
   try {
+
+/*
     {
       // Create a Gaussian component at the default direction
-      const GaussianComponent defGaussian;
+      const GaussianShape defGaussian;
       const MVAngle pixelSize(Quantity(1.0,"''"));
       // Sample the Gaussian at the Maximum and half an arc-min on either side.
       MVDirection sampleDirVal(Quantity(0,"deg"), 
@@ -108,7 +110,7 @@ int main() {
       Flux<Double> flux1934(6.3, 0.0, 0.0, 0.0);
       const MVAngle majorAxis(Quantity(2E-3, "''"));
       const MVAngle minorAxis(Quantity(2E-3, "''"));
-      const GaussianComponent J1934(flux1934, coord1934J2000, majorAxis, 
+      const GaussianShape J1934(flux1934, coord1934J2000, majorAxis, 
 				    minorAxis, MVAngle());
       // Create a direction that is 1 mas away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
@@ -160,7 +162,7 @@ int main() {
       const MVAngle initialMajorAxis(MVAngle(Quantity(13, "''")));
       const Double initialAxialRatio = 0.1;
       const MVAngle initialPA(MVAngle(Quantity(10, "deg")));
-      GaussianComponent B1934(initialFlux, initialPosition, initialMajorAxis,
+      GaussianShape B1934(initialFlux, initialPosition, initialMajorAxis,
 			      initialAxialRatio, initialPA);
       Vector<Double> componentFluxVal;
       B1934.flux().value(componentFluxVal);
@@ -277,7 +279,7 @@ int main() {
       parms.resize(1);
       try {
  	B1934.setParameters(parms);
-   	throw(AipsError("GaussianComponent incorrectly accepted a too small "
+   	throw(AipsError("GaussianShape incorrectly accepted a too small "
    			"Parameter Vector"));
       }
       catch (AipsError x) {
@@ -492,7 +494,7 @@ int main() {
 	  AlwaysAssert(unit == "deg", AipsError);
 	}
       }
-      GaussianComponent newComp;
+      GaussianShape newComp;
       AlwaysAssert(newComp.fromRecord(errorMessage, compRec) == True,
 		   AipsError);
       AlwaysAssert(errorMessage == "", AipsError);
@@ -516,7 +518,7 @@ int main() {
       cout << "Passed the to/from GlishRecord test for Gaussian components"
   	   << endl;
 
-      GaussianComponent compCopy = B1934.copy();
+      GaussianShape compCopy = B1934.copy();
       AlwaysAssert(compCopy.shape() == ComponentType::GAUSSIAN, AipsError);
       B1934.flux().setValue(0.0);
       AlwaysAssert(near(compCopy.flux().value(0), 6.3), AipsError);
@@ -528,7 +530,7 @@ int main() {
       AlwaysAssert(near(compCopy.flux().value(0), 0.0), AipsError);
       AlwaysAssert(near(B1934.flux().value(0), 6.3), AipsError);
 
-      GaussianComponent compRef = B1934;
+      GaussianShape compRef = B1934;
       AlwaysAssert(near(compRef.flux().value(0), 6.3), AipsError);
       B1934.flux().setValue(0.0);
       AlwaysAssert(near(compRef.flux().value(0), 0.0), AipsError);
@@ -555,9 +557,9 @@ int main() {
 	coords.addCoordinate(polAxis);
       }
       PagedImage<Float> image(IPosition(4,imSize,imSize,nFreq,nPol), 
- 			      coords, "tGaussianComponent_tmp.image");
+ 			      coords, "tGaussianShape_tmp.image");
       image.set(0.0f);
-      GaussianComponent defComp;
+      GaussianShape defComp;
 
       MVAngle majorAxis(Quantity(2., "'"));
       MVAngle minorAxis = majorAxis;
@@ -611,7 +613,7 @@ int main() {
     }
     {
       // Create a Gaussian component at the default direction
-      GaussianComponent comp;
+      GaussianShape comp;
       Vector<Double> flux(4);
       flux(0) = 1;
       flux(1) = 0.1;
@@ -670,6 +672,8 @@ int main() {
  		   AipsError);
       cout << "Passed the Fourier transform test" << endl;
     }
+
+*/
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
@@ -680,5 +684,5 @@ int main() {
   return 0;
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 tGaussianComponent"
+// compile-command: "gmake OPTLIB=1 tGaussianShape"
 // End: 

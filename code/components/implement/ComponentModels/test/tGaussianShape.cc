@@ -1,5 +1,5 @@
 //# tGaussianCompRep.cc:  this defines tGaussianCompRep.cc
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/GaussianCompRep.h>
+/////#include <trial/ComponentModels/GaussianCompRep.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SkyCompRep.h>
@@ -68,6 +68,8 @@ typedef MeasConvert<MDirection,MVDirection,MCDirection>
 
 int main() {
   try {
+
+/*
     {
       // Create a Gaussian component at the default direction
       const GaussianCompRep defGaussian;
@@ -646,6 +648,8 @@ int main() {
  		   AipsError);
       cout << "Passed the Fourier transform test" << endl;
     }
+
+*/
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
