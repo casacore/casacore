@@ -5837,3 +5837,4 @@
 16 217 src mv trial/implement/Functionals/Gaussian1DParam.cc aips/implement/Functionals/Gaussian1DParam.cc
 16 217 src mv trial/implement/Images/ImageLogger.h trial/implement/Logging/LoggerHolder.h
 16 217 src mv trial/implement/Images/ImageLogger.cc trial/implement/Logging/LoggerHolder.cc
+16 217 src mv trial/implement/Images/test/tImageLogger.cc trial/implement/Logging/test/tLoggerHolder.cc
