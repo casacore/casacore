@@ -1,4 +1,4 @@
-//# NQCompound2Function2.cc:  Compoundnation of Functions AutoDiff specialization
+//# NQCompound2Function.cc:  Compound of functions AutoDiff specialization
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#

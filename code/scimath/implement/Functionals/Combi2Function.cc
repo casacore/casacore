@@ -1,4 +1,4 @@
-//# NQCombi2Function2.cc:  Combination of Functions AutoDiff specialization
+//# NQCombi2Function.cc:  Combination of Functions AutoDiff specialization
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
