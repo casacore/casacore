@@ -713,7 +713,7 @@ String DirectionCoordinate::format(String& units,
                                    uInt axis,
                                    Bool absolute,
                                    Int precision,
-                                   Bool nativeU) const
+                                   Bool nativeU) 
 //
 // native=T means radians !
 // native=F means degrees, or hours
