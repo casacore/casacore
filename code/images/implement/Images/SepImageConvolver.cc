@@ -31,6 +31,7 @@
 #include <aips/aips.h>
 
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
@@ -126,14 +127,15 @@ void SepImageConvolver<T>::setKernel(uInt axis, const Vector<T>& kernel)
 
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
-                                     const Quantum<Double>& width, Bool peakIsUnity)
+                                     const Quantum<Double>& width, Bool autoScale,
+                                     Double scale)
 {
 // Catch pixel units
 
    UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
    String sunit = width.getFullUnit().getName();
    if (sunit==String("pix")) {
-      setKernel (axis, kernelType, width.getValue(), peakIsUnity);
+      setKernel (axis, kernelType, width.getValue(), autoScale, scale);
       return;
    }
 //
@@ -152,19 +154,21 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
             << unit.getName() << LogIO::EXCEPTION;
    }
    Double width2 = width.getValue(unit)/inc;
-   setKernel(axis, kernelType, width2, peakIsUnity);
+   setKernel(axis, kernelType, width2, autoScale, scale);
 }
 
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
-                                     Double width, Bool peakIsUnity)
+                                     Double width, Bool autoScale, Double scale)
 {
    checkAxis(axis);
 //
 // T can only be Float or Double
 //
+   Bool peakIsUnity = !autoScale;
    Vector<T> x = VectorKernel::make(kernelType, T(width), 
                                     itsImagePtr->shape()(axis), peakIsUnity);
+   if (!autoScale && !near(scale,1.0)) x *= Float(scale);
    uInt n = itsVectorKernels.nelements() + 1;
    itsVectorKernels.resize(n, True);
    itsVectorKernels[n-1] = new Vector<T>(x.copy());

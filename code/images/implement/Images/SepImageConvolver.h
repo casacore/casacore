@@ -1,5 +1,5 @@
 //# SepImageConvolver.h: separable convolution of an image
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,12 +109,14 @@ public:
    void setKernel(uInt axis, const Vector<T>& kernel);
 
 // Set convolution kernel.  The specified axis is convolved
-// by the given kernel.
+// by the given kernel.  If autoScale is True then kernel volume is unity,
+// else kernel peak is 1 * scale
 // <group>
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
-                  const Quantum<Double>& width, Bool peakIsUnity=False);
+                  const Quantum<Double>& width, Bool autoScale,
+                  Double scale=1.0);
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
-                  Double width, Bool peakIsUnity=False);
+                  Double width, Bool autoScale, Double scale=1.0);
 // </group>
 
 // Get the convolution kernel for the specified axis
