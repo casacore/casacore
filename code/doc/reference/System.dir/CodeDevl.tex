@@ -2352,6 +2352,85 @@ Original: 1997/09/14 by Wim Brouw, ATNF.
 \index{UPscripts@\exe{UPscripts}}
 \index{source files!source file management |see{\exe{UPscripts}}}
 
+The \code{UP} scripts' main purpose is to either change occurrences of
+certain patterns in the \aipspp\ code (\exeref{UPchange}), or to move code
+files from one directory to another, and update all references to the files
+(\exeref{UPmove}). A list of files to be processed is generated in all cases
+most easily by the \exeref{UPfind} script (possibly with manual editing of
+the list).
+
+Information is exchanged between the different scripts by files. These files
+are created in the current working directory, and all have the same name, but
+different extensions. The name is the code used to bind different calls
+together. To change all files that contain the word {\em cat} into {\em dog},
+the following sequence would do that (strcat being the code name): \\
+Find the list of files containing the word cat:
+\begin{verbatim}
+UPfind strcat
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Assuming master search tree in /nfs/aips++/weekly/code. ok? (y|n) [n]: y
+Assuming use of rao/rai, rather than ao/ai. ok? (y|n) [y]: 
+Specify egrep  expression(s) to find files
+Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))
+      or: [(][^(]*[*] *[)][ \t]*0
+Multi-line expressions will be ORed
+Find expression: [^a-zA-Z_0-9]cat[^a-zA-Z_0-9]   
+Find expression: 
+Specify egrep pattern for files to be removed from list found.
+Example: [/]glish[/]
+tmplinst files will always be removed
+Remove glish files? (y|n) [y]: 
+Remove pattern: 
+Starting find...
+7 files found in strcat.raw
+Starting selected removal...
+7 files left in strcat.found
+\end{verbatim}
+
+The change is then made by:
+\begin{verbatim}
+UPchange strcat
+Getting info...
+Specify the sed patterns used to change the contents of the files 
+in the files in the strcat.found list. 
+Example: s#/Measures/MV#/Quanta/MV#g
+         s#/Measures/MeasVal#/Quanta/MeasVal#g
+         s#/Measures/MUString#/Quanta/MUString#g
+         s#/Measures/MVAngle#/Quanta/MVAngle#g
+         s#[.]arrayCast[(][)]##g
+         s#[.]ac[(][)]##g
+         s#at_cc[(]#(#g
+         s#at_c[(]#(#g
+Change pattern: s#\([^a-zA-Z_0-9]\)cat\([^a-zA-Z_0-9]\)#\1dog\2#g
+Change pattern: 
+Specify the message lines for the RCS log
+Example: Moved includes from Quanta to Measures
+Text line: Changed the cat into the dog
+Text line: 
+7 files in strcat.found
+7 files will be changed and checked in/out
+./aips/implement/Utilities/test/tString.cc started
+\end{verbatim}
+\ldots
+
+Information exchange files produced at this stage:
+\begin{verbatim}
+ strcat.def
+ strcat.done
+ strcat.error
+ strcat.found
+ strcat.raw
+ strcat.rcs
+ strcat.rm
+ strcat.sed
+ strcat.up1
+\end{verbatim}
+
+The scripts are written assuming tcsh is available at the computer used, and
+at the standard {\em /usr/local/bin/} path. The script may have to be changed
+if this is not the case. Also, the \exeref{UPmove} script uses the {\em amv}
+command, only available at the master site, and can only be run from there.
 
 % ----------------------------------------------------------------------------
 
@@ -2360,7 +2439,8 @@ Original: 1997/09/14 by Wim Brouw, ATNF.
 \index{UPfind@\exe{UPfind}}
 \index{source files |see{\exe{UPfind}}}
 
-Find files containing patterns. File list to be used in action \exe{UP scripts}.
+Find files containing patterns. File list to be used in action \exe{UP}
+scripts.
 
 \subsubsection*{Synopsis}
 
@@ -2371,7 +2451,14 @@ Find files containing patterns. File list to be used in action \exe{UP scripts}.
 
 \subsubsection*{Description}
 
-\exe{UPfind} is a script.
+The \exe{UPfind} script finds all files in the \aipspp\ code tree (normally
+in the {\em .\{h,cc\}} files, but see the {\em -g} flag) that contain the
+specified pattern. The files found will be stored in the \code{<type
+name>.raw} file. A filter is applied to leave files to be processed in the
+\code{<type name>.found} file.
+
+The information supplied in answer to questions asked will be stored as well,
+for the use in subsequent scripts with the same \code{<type name>}.
 
 \subsubsection*{Options}
 
@@ -2402,11 +2489,14 @@ Find files containing patterns. File list to be used in action \exe{UP scripts}.
    UPfind assert
 \end{verbatim}
 
+will generate a file list, depending on questions asked (see full example in
+introduction), in \code{assert.found}.
+
 \subsubsection*{See also}
 
 \subsubsection*{Author}
 
-Original: 2000/09/020 by Wim Brouw, ATNF
+Original: 2000/09/20 by Wim Brouw, ATNF
 
 % ----------------------------------------------------------------------------
 
