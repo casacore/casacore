@@ -1,5 +1,5 @@
 //# Interpolate1D.h: Interpolate in one dimension
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,8 +135,7 @@ template<class Range> class SampledFunctional;
 //        assignment operator after making the above change. 
 // </todo>
 
-template <class Domain, class Range> class Interpolate1D: 
-  public Function1D<Domain, Range>
+template <class Domain, class Range> class Interpolate1D: public Function1D<Domain, Range>
 {
 public:
   // The different interpolation methods are enumerated here
@@ -187,6 +186,13 @@ public:
   // <group>
   uInt getMethod() const {return curMethod;}
   void setMethod(uInt method);
+  // </group>
+
+  // Access the data set that interpolation is done over. This will usually be
+  // sorted. 
+  // <group>
+  Vector<Domain> getX() const;
+  Vector<Range> getY() const;
   // </group>
 
   // A function to copy the Interpolate1D object

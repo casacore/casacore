@@ -1,5 +1,5 @@
 //# Interpolate1D.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,6 +243,18 @@ setMethod(uInt newMethod) {
   }
   curMethod = newMethod;
 }
+
+template <class Domain, class Range> Vector<Domain> Interpolate1D<Domain, Range>::
+getX() const{
+  Vector<Domain> x(xValues, nElements);
+  return x;
+};
+
+template <class Domain, class Range> Vector<Range> Interpolate1D<Domain, Range>::
+getY() const {
+  Vector<Range> y(yValues, nElements);
+  return y;
+};
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
 operator()(const Domain &x_req) const {
