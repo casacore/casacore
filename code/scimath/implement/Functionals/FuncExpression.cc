@@ -228,6 +228,11 @@ Bool FuncExpression::compTerm(MUString &prg) {
     oper.info = const_p.size();
     if (!setVal(d)) return False;
     if (!setCode(oper)) return False;
+    if (prg.testChar('i')) {
+      prg.skipChar();
+      oper = exd.special()["TOIMAG"];
+      if (!setCode(oper)) return False;
+    };
   } else {
     error_p = "Missing value";
     return False;
@@ -476,6 +481,8 @@ Bool FuncExpression::exec(Double &res) const {
       switch (pos->code) {
       case FuncExprData::CONST:
 	exec_p.push_back(constp[pos->info]);
+	break;
+      case FuncExprData::TOIMAG:
 	break;
       case FuncExprData::NOP:
 	break;

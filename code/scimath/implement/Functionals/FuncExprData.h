@@ -97,6 +97,7 @@ public:
     CONST,
     PARAM,
     ARG,
+    TOIMAG,
     LBRACE,
     RBRACE,
     LPAREN,

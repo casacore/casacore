@@ -30,6 +30,7 @@
 #include <trial/Functionals/FuncExpression.h>
 #include <aips/Functionals/FunctionTraits.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/NumericTraits.h>
 #include <aips/Utilities/String.h>
 #include <aips/vector.h>
 
@@ -110,7 +111,15 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
     case FuncExprData::ARG:
       exec_p.push_back(T(x[pos->info]));
       break;
-    case FuncExprData::NOP:
+    case FuncExprData::TOIMAG:
+      NumericTraits<T>::setValue(exec_p.back(),
+				 NumericTraits<T>::getValue(exec_p.back(), 0),
+				 1);
+      NumericTraits<T>::setValue(exec_p.back(),
+				 typename NumericTraits<T>::BaseType(0.0),
+				 0);
+      break;
+   case FuncExprData::NOP:
       break;
     case FuncExprData::GOTO:
       pos += pos->info -

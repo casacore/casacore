@@ -59,6 +59,7 @@ FuncExprData::FuncExprData() :
     {CONST, 	"CONST",	SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
     {PARAM, 	"PARAM",	SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
     {ARG, 	"ARG",		SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
+    {TOIMAG,	"TOIMAG",	SPEC,	SPCPRI,		0, 0, 0, 0, NONE},
     {LBRACE, 	"{",		SPEC,	SPCPRI,		0, 0, 0, 0, NONE},
     {RBRACE, 	"}",		SPEC,	FINPRI,		0, 0, 0, 0, NONE},
     {LPAREN, 	"(",		SPEC,	SPCPRI,		0, 0, 0, 0, SAVENV},
