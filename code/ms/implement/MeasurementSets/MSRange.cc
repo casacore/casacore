@@ -150,12 +150,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     return out;
   }
   ROMSColumns msc(ms_p);
-  Bool wantAmp, wantPhase, wantReal, wantImag, wantData, wantFloat,
-    wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
-    wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData;
-  wantAmp=wantPhase=wantReal=wantImag=wantData=wantFloat=
-    wantCAmp=wantCPhase=wantCReal=wantCImag=wantCData=
-    wantMAmp=wantMPhase=wantMReal=wantMImag=wantMData=False;
+  Matrix<Bool> want(nFuncType,nDataType,False);
   // use HeapSort as it's performance is guaranteed, quicksort is often
   // extremely slow (O(n*n)) for inputs with many successive duplicates
   Matrix<Double> uvw;
@@ -168,13 +163,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     keyword=MSS::keyword(fld);
     switch (fld) {
     case MSS::AMPLITUDE:
-      wantAmp=True;
-      break;
     case MSS::CORRECTED_AMPLITUDE:
-      wantCAmp=True;
-      break;
     case MSS::MODEL_AMPLITUDE:
-      wantMAmp=True;
+    case MSS::RATIO_AMPLITUDE:
+    case MSS::RESIDUAL_AMPLITUDE:
+    case MSS::OBS_RESIDUAL_AMPLITUDE:
+      want(Amp,fld-MSS::AMPLITUDE)=True;
       break;
     case MSS::ANTENNA1:
       scalarRange(out,keyword,msc.antenna1(),oneBased);
@@ -221,13 +215,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       }
       break;
     case MSS::DATA:
-      wantData=True;
-      break;
     case MSS::CORRECTED_DATA:
-      wantCData=True;
-      break;
     case MSS::MODEL_DATA:
-      wantMData=True;
+    case MSS::RATIO_DATA:
+    case MSS::RESIDUAL_DATA:
+    case MSS::OBS_RESIDUAL_DATA:
+      want(Data,fld-MSS::DATA)=True;
       break;
     case MSS::DATA_DESC_ID:
       scalarRange(out,keyword,msc.dataDescId(),oneBased);
@@ -245,7 +238,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       out.add(keyword,msc.field().name().getColumn());
       break;
     case MSS::FLOAT_DATA:
-      wantFloat=True;
+      want(Data,ObsFloat)=True;
       break;
     case MSS::IFR_NUMBER:
       {
@@ -255,13 +248,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       }
       break;
     case MSS::IMAGINARY:
-      wantImag=True;
-      break;
     case MSS::CORRECTED_IMAGINARY:
-      wantCImag=True;
-      break;
     case MSS::MODEL_IMAGINARY:
-      wantMImag=True;
+    case MSS::RATIO_IMAGINARY:
+    case MSS::RESIDUAL_IMAGINARY:
+    case MSS::OBS_RESIDUAL_IMAGINARY:
+      want(Imag,fld-MSS::IMAGINARY)=True;
       break;
     case MSS::IMAGING_WEIGHT:
       {
@@ -292,13 +284,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       }
       break;
     case MSS::PHASE:
-      wantPhase=True;
-      break;
     case MSS::CORRECTED_PHASE:
-      wantCPhase=True;
-      break;
     case MSS::MODEL_PHASE:
-      wantMPhase=True;
+    case MSS::RATIO_PHASE:
+    case MSS::RESIDUAL_PHASE:
+    case MSS::OBS_RESIDUAL_PHASE:
+      want(Phase,fld-MSS::PHASE)=True;
       break;
     case MSS::PHASE_DIR:
       {
@@ -318,13 +309,12 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       }
       break;
     case MSS::REAL:
-      wantReal=True;
-      break;
     case MSS::CORRECTED_REAL:
-      wantCReal=True;
-      break;
     case MSS::MODEL_REAL:
-      wantMReal=True;
+    case MSS::RATIO_REAL:
+    case MSS::RESIDUAL_REAL:
+    case MSS::OBS_RESIDUAL_REAL:
+      want(Real,fld-MSS::REAL)=True;
       break;
     case MSS::REF_FREQUENCY:
       {
@@ -419,125 +409,83 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   }
   // throw away the uvw data (if any)
   uvw.resize(0,0);
-  if (wantAmp || wantPhase || wantReal || wantImag || wantData) {
-    if (!msc.data().isNull()) {
-      if (checkShapes()) {
-	// this now gets the data in smaller chunks (8MB) with getColumnRange
-	// but it no longer caches the data read if more than one item is
-	// requested. Maybe we need to make a 4-fold minMax that can do
-	// 1-4 items at once if needed.
-	if (wantAmp) {
-	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.data(),msc.flag(),useFlags);
-	  out.add("amplitude",amp);
-	}
-	if (wantPhase) {
-	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.data(),msc.flag(),useFlags);
-	  out.add("phase",phas);
-	}
-	if (wantReal) {
-	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.data(),msc.flag(),useFlags);
-	  out.add("real",re);
-	}
-	if (wantImag) {
-	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.data(),msc.flag(),useFlags);
-	  out.add("imaginary",im);
-	}
-	if (wantData) {
-	  os << LogIO::WARN << "range not available for complex DATA"
-	     <<LogIO::POST;
+  for (Int dataType=Observed; dataType<nDataType; dataType++) {
+    Bool needCol2=False;
+    if (anyEQ(want.column(dataType),True)) {
+      ROArrayColumn<Complex> colData1, colData2;
+      if (dataType==Observed || dataType==ObsResidual) {
+	colData1.reference(msc.data());
+      } else if (dataType==Corrected || dataType==Ratio || dataType==Residual){
+	colData1.reference(msc.correctedData());
+      } else if (dataType==Model) {
+	colData1.reference(msc.modelData());
+      }
+      if (dataType>=Ratio && dataType<=ObsResidual) {
+	colData2.reference(msc.modelData());
+	needCol2=True;
+      }
+      if (dataType!=ObsFloat) {
+	if (!colData1.isNull()&&(!needCol2 || !colData2.isNull())) {
+	  if (checkShapes()) {
+	    if (anyEQ(want(Slice(Amp,4),dataType),True)) {
+	      Matrix<Float> minmax(2,4);
+	      Vector<Bool> funcSel(4);
+	      for (Int funcType=Amp; funcType<=Imag; funcType++) {
+		funcSel[funcType]=want(funcType,dataType);
+	      }
+	      minMax(minmax,funcSel,colData1,colData2,msc.flag(),
+		     dataType,useFlags);
+	      String name;
+	      switch (dataType) {
+	      case Corrected: name="corrected_"; break;
+	      case Model: name="model_";break;
+	      case Ratio: name="ratio_"; break;
+	      case Residual: name="residual_"; break;
+	      case ObsResidual: name="obs_residual_"; break;
+	      default:;
+	      }
+	      Vector<String> funcName(4);
+	      funcName(Amp)="amplitude";
+	      funcName(Phase)="phase";
+	      funcName(Real)="real";
+	      funcName(Imag)="imaginary";
+	      for (Int funcType=Amp; funcType<=Imag; funcType++) {
+		if (want(funcType,dataType)) {
+		  out.add(name+funcName(funcType),minmax.column(funcType));
+		}
+	      }
+	    }
+	    if (want(Data,dataType)) {
+	      os << LogIO::WARN << "range not available for complex DATA"
+		 <<LogIO::POST;
+	    }
+	  } else {
+	    shapeChangesWarning=True;
+	  }
+	} else {
+	  if (colData1.isNull()) {
+	    os << LogIO::WARN << colData1.columnDesc().name()
+	       <<" column doesn't exist"<<LogIO::POST;
+	  }
+	  if (needCol2 && colData2.isNull()) {
+	    os<< LogIO::WARN << colData2.columnDesc().name()
+	      <<" column doesn't exist"<<LogIO::POST;
+	  }
 	}
       } else {
-	shapeChangesWarning=True;
+	if (!msc.floatData().isNull()) {
+	  if (checkShapes()) {
+	    Vector<Float> amp(2);
+	    minMax(amp(0),amp(1),msc.floatData(),msc.flag(),useFlags);
+	    out.add("float_data",amp);
+	  }
+	} else {
+	  os << LogIO::WARN << "FLOAT_DATA column doesn't exist"<<LogIO::POST;
+	}
       }
-    } else {
-      os << LogIO::WARN << "DATA column doesn't exist"<<LogIO::POST;
     }
   }
 
-  if (wantFloat) {
-    if (!msc.floatData().isNull()) {
-      if (checkShapes()) {
-	Vector<Float> amp(2);
-	minMax(amp(0),amp(1),msc.floatData(),msc.flag(),useFlags);
-	out.add("float_data",amp);
-      }
-    }
-  }
-
-  if (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData) {
-    if (!msc.correctedData().isNull()) {
-      if (checkShapes()) {
-	// get the data
-	if (wantCAmp) {
-	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.correctedData(),msc.flag(),useFlags);
-	  out.add("corrected_amplitude",amp);
-	}
-	if (wantCPhase) {
-	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.correctedData(),msc.flag(),useFlags);
-	  out.add("corrected_phase",phas);
-	}
-	if (wantCReal) {
-	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.correctedData(),msc.flag(),useFlags);
-	  out.add("corrected_real",re);
-	}
-	if (wantCImag) {
-	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.correctedData(),msc.flag(),useFlags);
-	  out.add("corrected_imaginary",im);
-	}
-	if (wantCData) {
-	  os << LogIO::WARN << "range not available for complex CORRECTED_DATA"
-	     <<LogIO::POST;
-	}
-      } else {
-	shapeChangesWarning=True;
-      }
-    } else {
-	os << LogIO::WARN << "CORRECTED_DATA column doesn't exist"<<LogIO::POST;
-    }
-  }
-  if (wantMAmp || wantMPhase || wantMReal || wantMImag || wantMData) {
-    if (!msc.modelData().isNull()) {
-      if (checkShapes()) {
-	// get the data
-	if (wantMAmp) {
-	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.modelData(),msc.flag(),useFlags);
-	  out.add("model_amplitude",amp);
-	}
-	if (wantMPhase) {
-	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.modelData(),msc.flag(),useFlags);
-	  out.add("model_phase",phas);
-	}
-	if (wantMReal) {
-	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.modelData(),msc.flag(),useFlags);
-	  out.add("model_real",re);
-	}
-	if (wantMImag) {
-	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.modelData(),msc.flag(),useFlags);
-	  out.add("model_imaginary",im);
-	}
-	if (wantMData) {
-	  os << LogIO::WARN << "range not available for complex MODEL_DATA"
-	     <<LogIO::POST;
-	}
-      } else { 
-	shapeChangesWarning=True;
-      }
-    } else {
-      os << LogIO::WARN << "MODEL_DATA column doesn't exist"<<LogIO::POST;
-    }
-  }
   if (shapeChangesWarning) {
     os << LogIO::WARN << "Not all requested items were returned because "
        <<"the input contains "<< endl 
@@ -589,11 +537,11 @@ void MSRange::minMax(Float& mini, Float& maxi,
     Float minf, maxf;
     Slicer rowSlicer(Slice(start,n));
     if (sel_p) {
+      Array<Bool> avFlag;
+      Array<Bool> flags = sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
       Array<Float> avData;
-      sel_p->getAveragedData(avData,data,rowSlicer);
+      sel_p->getAveragedData(avData,flags,data,rowSlicer);
       if (useFlags) {
-	Array<Bool> avFlag;
-	sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
 	::minMax(minf,maxf,avData(!avFlag));
       } else {
 	::minMax(minf,maxf,avData);
@@ -616,43 +564,68 @@ void MSRange::minMax(Float& mini, Float& maxi,
   }
 }
 
-void MSRange::minMax(Float& mini, Float& maxi, 
-		     Array<Float> (*func)(const Array<Complex>&),
-		     const ROArrayColumn<Complex>& data,
+void MSRange::minMax(Matrix<Float>& minmax, 
+		     const Vector<Bool>& funcSel,
+		     const ROArrayColumn<Complex>& data1,
+		     const ROArrayColumn<Complex>& data2,
 		     const ROArrayColumn<Bool>& flag,
+		     Int dataType,
 		     Bool useFlags)
 {
-  IPosition shp=data.shape(0);
-  Int nrow=data.nrow();
+  IPosition shp=data1.shape(0);
+  Int nrow=data1.nrow();
   Int numrow=Int(blockSize_p*1.0e6/(sizeof(Complex)*shp(0)*shp(1)));
   for (Int start=0; start<nrow; start+=numrow) {
     Int n=min(numrow,nrow-start);
-    Float minf, maxf;
+    Vector<Float> minf(4), maxf(4);
     Slicer rowSlicer(Slice(start,n));
+    Array<Complex> avData;
     if (sel_p) {
-      Array<Complex> avData;
-      sel_p->getAveragedData(avData,data,rowSlicer);
-      if (useFlags) {
-	Array<Bool> avFlag;
-	sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
-      ::minMax(minf,maxf,func(avData(!avFlag).getCompressedArray()));
-      } else {
-	::minMax(minf,maxf,func(avData));
+      Array<Bool> avFlag;
+      Array<Bool> flags=sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
+      Array<Complex> tData;
+      sel_p->getAveragedData(tData,flags,data1,rowSlicer);
+      if (dataType>=Ratio && dataType<=ObsResidual) {
+	Array<Complex> tData2;
+	sel_p->getAveragedData(tData2,flags,data2,rowSlicer);
+	if (dataType==Ratio) {
+	  LogicalArray mask(tData2!=Complex(0.));
+	  tData/=tData2(mask);
+	  tData(!mask)=1.0;
+	} else {
+	  tData-=tData2;
+	}
       }
+      if (useFlags) avData=tData(!avFlag).getCompressedArray();
+      else avData.reference(tData);
     } else {
-      Array<Complex> tData=data.getColumnRange(rowSlicer);
+      Array<Complex> tData=data1.getColumnRange(rowSlicer);
+      if (dataType>=Ratio && dataType<=ObsResidual) {
+	Array<Complex> tData2=data2.getColumnRange(rowSlicer);
+	if (dataType==Ratio) {
+	  LogicalArray mask(tData2!=Complex(0.));
+	  tData/=tData2(mask);
+	  tData(!mask)=1.0;
+	} else {
+	  tData-=tData2;
+	}
+      }
       if (useFlags) {
-	Array<Bool> tFlag=flag.getColumnRange(rowSlicer);
-	::minMax(minf,maxf,func(tData(!tFlag).getCompressedArray()));
+	Array<Bool> avFlag=flag.getColumnRange(rowSlicer);
+	avData=tData(!avFlag).getCompressedArray();
       } else {
-	::minMax(minf,maxf,func(tData));
+	avData.reference(tData);
       }
     }
+    if (funcSel[0]) ::minMax(minf[0],maxf[0],amplitude(avData));
+    if (funcSel[1]) ::minMax(minf[1],maxf[1],phase(avData));
+    if (funcSel[2]) ::minMax(minf[2],maxf[2],real(avData));
+    if (funcSel[3]) ::minMax(minf[3],maxf[3],imag(avData));
     if (start==0) {
-      mini=minf; maxi=maxf;
+      minmax.row(0)=minf; minmax.row(1)=maxf;
     } else {
-      mini=min(mini,minf);
-      maxi=max(maxi,maxf);
+      minmax.row(0)=min(minmax.row(0),minf);
+      minmax.row(1)=max(minmax.row(1),maxf);
     }
   }
 }

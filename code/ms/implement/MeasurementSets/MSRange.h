@@ -175,10 +175,12 @@ protected:
   // application of some function to convert to Float (e.g., real,
   // amplitude,...). This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
-  void minMax(Float& mini, Float& maxi, 
-	      Array<Float> (*func)(const Array<Complex>&),
-	      const ROArrayColumn<Complex>& data,
+  void minMax(Matrix<Float>& minmax, 
+	      const Vector<Bool>& funcSel,
+	      const ROArrayColumn<Complex>& data1,
+	      const ROArrayColumn<Complex>& data2,
 	      const ROArrayColumn<Bool>& flag,
+	      Int dataType,
 	      Bool useFlags);
 
   // get the minimum and maximum of a Float data column
@@ -195,6 +197,11 @@ protected:
 			 const ROScalarColumn<Int>& ant2);
 
 private:
+  // The function types
+  enum {Amp,Phase,Real,Imag,Data,nFuncType};
+
+  // The data types
+  enum {Observed,Corrected,Model,Ratio,Residual,ObsResidual,ObsFloat,nDataType};
 
   MeasurementSet ms_p; // the original ms
   Int blockSize_p;
