@@ -287,7 +287,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     Unit& brightnessUnit, Record& miscInfo, 
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
-                                    Double& scale, Double& offset, Short& magic,
+                                    Float& scale, Float& offset, Short& magic,
                                     Bool& hasBlanks, const String& name)
 {
 // Open sesame
@@ -455,7 +455,7 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
 void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
                                   IPosition& shape, ImageInfo& imageInfo,
                                   Unit& brightnessUnit, Record& miscInfo,
-                                  Double& scale, Double& offset, Short& magic,
+                                  Float& scale, Float& offset, Short& magic,
                                   Bool& hasBlanks, LogIO& os, FitsInput& infile)
 {
 // Shape
@@ -486,10 +486,14 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 
 // Scale and blank
 
-    header.get("bscale", scale);
-    header.get("bzero", offset);
+    Double s,o;
+    header.get("bscale", s);
+    header.get("bzero", o);
+    scale = s; 
+    offset = o;
     header.removeField("bscale");
     header.removeField("bzero");
+//
     hasBlanks = False;
     if (header.isDefined("blank")) {
        Int m;

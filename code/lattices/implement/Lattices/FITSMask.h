@@ -96,7 +96,10 @@ class FITSMask : public Lattice<Bool>
 public:
 
   // Constructor.    The pointer is not cloned, just copied
-  FITSMask (TiledFileAccess* tiledFileAccess, Double scale, Double offset,
+  // The scale, offset, maguc blanking value and indication that the
+  // FITS file has blanks are needed for 16bit integer FITS only.
+  // The values must come from the FITS header ('bscale', 'bzero', 'blank')
+  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
             Short magic, Bool hasBlanks);
   // </group>
   
@@ -137,7 +140,7 @@ private:
 //
   TiledFileAccess* itsTiledFilePtr;
   Array<Float> itsBuffer;
-  Double itsScale, itsOffset;
+  Float itsScale, itsOffset;
   Short itsMagic;
   Bool itsHasBlanks;
 };

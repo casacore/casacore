@@ -127,10 +127,10 @@ public:
   // TiledFileAccess object.
   // A deleteValue is set to a NaN without being scaled.
   // <group>
-  Array<Float> getFloat (const Slicer& section, Double scale, Double offset,
+  Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
 			 Short deleteValue, Bool examineForDeleteValues=True);
   void get (Array<Float>&, const Slicer& section,
-	    Double scale, Double offset, Short deleteValue,
+	    Float scale, Float offset, Short deleteValue,
             Bool examineForDeleteValues=True);
   // </group>
 

@@ -205,7 +205,7 @@ void TiledFileAccess::get (Array<DComplex>& buffer, const Slicer& section)
 
 
 Array<Float> TiledFileAccess::getFloat (const Slicer& section,
-					Double scale, Double offset,
+					Float scale, Float offset,
 					Short deleteValue, Bool examineForDeleteValues)
 {
   Array<Float> arr;
@@ -214,7 +214,7 @@ Array<Float> TiledFileAccess::getFloat (const Slicer& section,
 }
 
 void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
-			   Double scale, Double offset, Short deleteValue,
+			   Float scale, Float offset, Short deleteValue,
                            Bool examineForDeleteValues)
 {
   Array<Short> arr = getShort (section);

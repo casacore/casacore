@@ -207,7 +207,7 @@ private:
   IPosition tileShape_p;
   CountedPtr<TiledFileAccess> pTiledFile_p;
   Lattice<Bool>* pPixelMask_p;
-  Double scale_p, offset_p;
+  Float scale_p, offset_p;
   Short magic_p;
   Bool hasBlanks_p;
 
@@ -216,7 +216,7 @@ private:
                             IPosition& shape, ImageInfo& info,
                             Unit& brightnessUnit, Record& miscInfo, 
                             Int& recsize, Int& recno, FITS::ValueType& dataType, 
-                            Double& scale, Double& offset, Short& magic, 
+                            Float& scale, Float& offset, Short& magic, 
                             Bool& hasBlanks, const String& name);
 
 // Should really be written as a templated function
@@ -229,7 +229,7 @@ private:
    void crackHeaderShort (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
                           Unit& brightnessUnit, Record& miscInfo,
-                          Double& scale, Double& offset, Short& magic,
+                          Float& scale, Float& offset, Short& magic,
                           Bool& hasBlanks, LogIO& os, FitsInput& infile);
 // </group>
 

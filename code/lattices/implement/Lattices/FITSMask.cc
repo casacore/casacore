@@ -38,7 +38,7 @@
 
 
 
-FITSMask::FITSMask (TiledFileAccess* tiledFile, Double scale, Double offset,
+FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
                     Short magic, Bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
