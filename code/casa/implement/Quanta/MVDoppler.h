@@ -1,5 +1,5 @@
 //# MVDoppler.h: Internal value for MDoppler
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,7 +175,7 @@ private:
   
   //# Member functions
   // Get correct data type conversion factor from input Quantum
-  Double makeD(Double v, const Unit &dt) const;
+  Double makeD(Double v, const Unit &dt, Bool rev=False) const;
 };
 
 #endif

@@ -1,5 +1,5 @@
 //# MVDoppler.cc: Internal value for MDoppler
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -157,7 +157,7 @@ Quantity MVDoppler::get() const {
 }
 
 Quantity MVDoppler::get(const Unit &unit) const {
-  return Quantity(1.0/makeD(1.0/(val*C::c), unit), unit);
+  return Quantity(makeD(val, unit, True), unit);
 }
 
 Vector<Double> MVDoppler::getVector() const {
@@ -174,7 +174,7 @@ void MVDoppler::putVector(const Vector<Double> &in) {
   };
 }
 
-Double MVDoppler::makeD(Double v, const Unit &dt) const{
+Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
   static Bool needInit = True;
   static UnitVal Velocity;
   static Double LVel;
@@ -183,10 +183,13 @@ Double MVDoppler::makeD(Double v, const Unit &dt) const{
     Velocity = UnitVal::LENGTH/UnitVal::TIME;
     LVel = (QC::c).getBaseValue();
   };
+  Double x;
   if (dt.getValue() == UnitVal::NODIM) {
-    return (dt.getValue().getFac()*v);
+    x = dt.getValue().getFac();
   } else {
     Quantity(1.0,dt).assert(Velocity);
-    return (dt.getValue().getFac()/LVel*v);
+    x = dt.getValue().getFac()/LVel;
   }
+  if (rev) return (v/x);
+  return (v*x);
 }
