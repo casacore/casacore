@@ -313,10 +313,11 @@ public:
 
     // It is occasionally useful to have an array which access the same
     // storage appear to have a different shape. For example,
-    // Turning an N-dimensional array into a Vector. This will work when
-    // before.nelements() == after.nelements() and if this array refers
-    // to other storage, the increment on all axes must be one (guaranteed,
-    // for example, by unique()).
+    // turning an N-dimensional array into a Vector.
+    // <br>When the array data are contiguous, the array can be reshaped
+    // to any form as long as the number of elements stays the same.
+    // When not contiguous, it is only possible to remove or add axes
+    // with length 1.
     // <srcblock>
     // IPosition squareShape(2,5,5);
     // Array<Float> square(squareShape);
@@ -345,9 +346,8 @@ public:
 
     // These member functions return an Array reference with the specified
     // number of extra axes, all of length one, appended to the end of the
-    // Array. Use these functions rather than the <src>reform</src>
-    // functions to add extra axes, as these functions do not require the
-    // Array to be contiguous in memory.
+    // Array. Note that the <src>reform</src> function can also be
+    // used to add extra axes.
     // <group> 
     Array<T> addDegenerate(uInt numAxes);
     const Array<T> addDegenerate(uInt numAxes) const;
@@ -426,14 +426,19 @@ public:
     // is the IPosition of the last element of the Array.
     IPosition end() const;
 
+    // Are the array data contiguous?
+    // If they are not contiguous, <src>getStorage</src> (see below)
+    // needs to make a copy.
+    Bool contiguousStorage() const { return contiguous_p; }
+
     // Generally use of this should be shunned, except to use a FORTRAN routine
     // or something similar. Because you can't know the state of the underlying
     // data layout (in particular, if there are increments) sometimes the
     // pointer returned will be to a copy, but often this won't be necessary.
     // A boolean is returned which tells you if this is a copy (and hence the
     // storage must be deleted). Note that if you don't do anything unusual,
-    // getStorage followed by putStorage will do the deletion for you (if
-    // required). e.g.:
+    // getStorage followed by freeStorage or putStorage will do the deletion
+    // for you (if required). e.g.:
     // <srcblock>
     // Array<Int> a(shape); ...
     // Bool deleteIt; Int *storage = a.getStorage(deleteIt);
@@ -525,17 +530,16 @@ protected:
     // into the block.
     T *begin_p;
 
-    // A switch to tell if the data is contiguous.
+    // A switch to tell if the array data are contiguous.
     Bool contiguous_p;
 
 
-    // Various helper functions that should be deleted.
+    // Various helper functions.
     // <group>
-///    Array(uInt, const Block<Int> &);
     void validateConformance(const Array<T> &) const;
     void validateIndex(const IPosition &) const;
-    Bool contiguousStorage() const { return contiguous_p; }
     Bool isStorageContiguous() const;
+    // </group>
 };
 
 
