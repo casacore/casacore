@@ -64,7 +64,8 @@ found at\\
 Latex2html should be found in the system area (/opt/local/bin/latex2html at the
 AOC).  \aips  uses version 96.1h (1997-Nov-6).  Version 97.1 is available but
 does not generate html tables from tabular environments.  The 96.1h version
-has a \htmladdnormallink{local patch}{path-to-patch file} applied to it to
+has a %\htmladdnormallink{local patch}{path-to-patch file}
+local patch applied to it to
 enable longtables.  
 
 \subsubsection{HTML Links to Other Documents}
@@ -108,10 +109,10 @@ Funny things can happen if labels are multiply defined.
 
 
 Cross referencing into HTML files created by cxx2html is possible using
-\verb!\htmladdnormallink!.  To make a reference to the array class from
-a note or memo use:
+\verb!\htmladdnormallink!.  To make a reference to the array class
+\htmladdnormallink{array class}{../../aips/implement/Arrays/Array.html#Array}
+from a note or memo use:
 \begin{verbatim}
-\htmladdnormallink{Array Class}{../../aips/implement/Arrays/Array.html#Array}
 \end{verbatim}
 
 Please consult the \htmladdnormallink{cxx2html documentation}
