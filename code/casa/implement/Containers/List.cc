@@ -1,5 +1,5 @@
 //# List.cc: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,9 +130,10 @@ template<class t> List<t>::~List() {
 }    
 
 template<class t>
-ConstListIter<t>::ConstListIter(const List<t> *st) : cur((*st).head), prev(0),
-                                     curPos(0), container_((List<t> *)st), 
-                                     NoticeTarget((NoticeSource *)st) {}
+ConstListIter<t>::ConstListIter(const List<t> *st) :  
+                                     NoticeTarget((NoticeSource *)st),
+                                     cur((*st).head), prev(0),
+                                     curPos(0), container_((List<t> *)st) {}
 
 template<class t>
 ConstListIter<t>::ConstListIter(const ConstListIter<t> *other) : NoticeTarget((NoticeTarget *)other) {

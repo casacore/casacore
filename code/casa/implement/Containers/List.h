@@ -1,5 +1,5 @@
 //# List.h: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -318,9 +318,10 @@ public:
     //
     // <group>
     ConstListIter(const List<t> *st);
-    ConstListIter(const List<t> &st) : cur(st.head), prev(0), curPos(0), 
-					container_((List<t> *) (&st)), 
-					NoticeTarget((NoticeSource &)st) {}
+    ConstListIter(const List<t> &st) : NoticeTarget((NoticeSource &)st),
+                                       cur(st.head), prev(0), curPos(0), 
+				       container_((List<t> *) (&st)) 
+					 {}
     // </group>
 
     //
@@ -328,9 +329,10 @@ public:
     // same list tracked by the "ConstListIter<t>" parameter.
     //
     // <group>
-    ConstListIter(const ConstListIter<t> &other) : cur(other.cur), 
-			prev(other.prev), curPos(other.curPos), 
-			container_(other.container_), NoticeTarget((NoticeTarget &)other) {}
+    ConstListIter(const ConstListIter<t> &other) : 
+                        NoticeTarget((NoticeTarget &)other),
+                        cur(other.cur), prev(other.prev), curPos(other.curPos),
+			container_(other.container_) {}
 
     ConstListIter(const ConstListIter<t> *other);
     // </group>
@@ -341,8 +343,8 @@ public:
     // to create an initially invalid empty ConstListIter.  The instantiated
     // class will accept assignment and thus become valid later.
     //
-    ConstListIter() : cur(0), prev(0), curPos(0), container_(0), 
-			NoticeTarget() {}
+    ConstListIter() : NoticeTarget(),cur(0), prev(0), curPos(0), 
+                      container_(0) {}
 
     //*display 4
     //
