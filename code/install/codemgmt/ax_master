@@ -2813,3 +2813,4 @@
 11 008 src mv trial/apps/numerics/polyfitter.h trial/implement/Mathematics/polyfitter.h
 11 008 src mv trial/apps/numerics/interpolate1d.h trial/implement/Mathematics/interpolate1d.h
 11 008 src mv trial/apps/numerics/interpolate1d.cc trial/implement/Mathematics/interpolate1d.cc
+11 008 src rm trial/apps/numerics/fftserver.help
