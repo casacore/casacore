@@ -599,7 +599,7 @@ G_COMPLEX(type) cube(const G_COMPLEX(type) val)					\
 										\
 ostream& operator << (ostream& s, const G_COMPLEX(type) x)			\
 {										\
-  return s << "(" << x.re << ", " << x.im << ")" ;			\
+  return s << "(" << x.re << "," << x.im << ")" ;			\
 }										\
 										\
 istream& operator >> (istream& s, G_COMPLEX(type)& x)				\
