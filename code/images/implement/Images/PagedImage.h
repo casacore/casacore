@@ -70,6 +70,7 @@ class ostream;
 //   <item> <linkto class=Lattice>Lattice</linkto>
 //   <item> <linkto class=LatticeIterator>LatticeIterator</linkto>
 //   <item> <linkto class=LatticeNavigator>LatticeNavigator</linkto>
+//   <item> <linkto class=ImageRegion>ImageRegion</linkto>
 // </list>
 // </prerequisite>
 
@@ -93,8 +94,34 @@ class ostream;
 // </synopsis> 
 
 // <example>
+// This example shows how to create a mask for an image, fill it, and
+// make it known to the image.
 // <srcblock>
+//   // Open the image (as readonly for the moment).
+//   PagedImage<Float> myimage ("image.name");
+//   // Create a mask for the image.
+//   // The mask will be stored in a subtable of the image.
+//   LCPagedMask mask (RegionHandler::makeMask (myimage, "mask.name"));
+//   // Fill the mask with whatever values (e.g. all True).
+//   mask.set (True);
+//   // Make the mask known to the image (with name mask1).
+//   myimage.defineRegion ("mask1", mask, RegionHandler::Masks);
+//   // Make the mask the default mask for this image.
+//   myimage.setDefaultMask ("mask1");
 // </srcblock>
+// It is possible to create as many masks as one likes. They can all
+// be defined as masks for the image (with different names, of course).
+// However, only one of them can be the default mask (the mask used
+// by default when the image is opened). When another mask has to be
+// used, one can do two things:
+// <ul>
+//  <li> Use setDefaultMask to make the other mask the default mask.
+//   This is advisable when the change should be more or less permanent.
+//  <li> Open the PagedImage without using a default mask. Thereafter
+//   a <linkto class=SubImage>SubImage</linkto> object can be created
+//   from the PagedImage and the mask. This is advisable when it the
+//   mask has to be used only one time.
+// </ul>
 // </example>
 
 // <motivation>
@@ -141,7 +168,7 @@ public:
 	      const String& nameOfNewFile,
 	      const TableLock& lockOptions,
 	      uInt rowNumber = 0);
-  // <group>
+  // </group>
   
   // Reconstruct an image from a pre-existing file.
   // Use the default mask if the flag is True.
