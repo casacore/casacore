@@ -30,15 +30,94 @@
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-
 #include <aips/iostream.h>
+
+
+void testCompare()
+{
+  CoordinateSystem csys2 = CoordinateUtil::defaultCoords2D();
+  CoordinateSystem csys3 = CoordinateUtil::defaultCoords3D();
+  CoordinateSystem csys4 = CoordinateUtil::defaultCoords4D();
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys2) == 0);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys3, csys3) == 0);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys4, csys4) == 0);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys3) == -1);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys4) == -1);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys3, csys4) == -1);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys3, csys2) == 1);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys4, csys2) == 1);
+  AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys4, csys3) == 1);
+
+  IPosition newAxes, stretchAxes;
+  AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+						    IPosition(4,5,6,1,5),
+						    IPosition(4,5,1,1,1),
+						    csys4, csys4));
+  AlwaysAssertExit (newAxes.isEqual (IPosition()));
+  AlwaysAssertExit (stretchAxes.isEqual (IPosition(2,1,3)));
+  AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+						    IPosition(3,5,6,3),
+						    IPosition(2,5,6),
+						    csys3, csys2));
+  AlwaysAssertExit (newAxes.isEqual (IPosition(1,2)));
+  AlwaysAssertExit (stretchAxes.isEqual (IPosition()));
+  AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+						    IPosition(4,5,6,3,4),
+						    IPosition(2,5,6),
+						    csys4, csys2));
+  AlwaysAssertExit (newAxes.isEqual (IPosition(2,2,3)));
+  AlwaysAssertExit (stretchAxes.isEqual (IPosition()));
+  AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+						    IPosition(4,5,6,3,4),
+						    IPosition(3,5,6,1),
+						    csys4, csys3));
+  AlwaysAssertExit (newAxes.isEqual (IPosition(1,2)));
+  AlwaysAssertExit (stretchAxes.isEqual (IPosition(1,3)));
+}
+
+void testCompare2()
+{
+  IPosition newAxes, stretchAxes;
+  {
+    CoordinateSystem csys1;
+    CoordinateSystem csys2;
+    CoordinateUtil::addDirAxes (csys1);
+    CoordinateUtil::addFreqAxis (csys2);
+    AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys1, csys2) == 9);
+    AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys1) == 9);
+    AlwaysAssertExit (! CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+							IPosition(2,5,6),
+							IPosition(1,8),
+							csys1, csys2));
+
+    CoordinateUtil::addDirAxes (csys2);
+    AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+						      IPosition(3,8,5,6),
+						      IPosition(2,1,1),
+						      csys2, csys1));
+    AlwaysAssertExit (newAxes.isEqual (IPosition(1,0)));
+    AlwaysAssertExit (stretchAxes.isEqual (IPosition(2,1,2)));
+
+    CoordinateUtil::addFreqAxis (csys1);
+    AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys1, csys2) == 9);
+    AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys1) == 9);
+    AlwaysAssertExit (! CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
+							IPosition(3,5,6,3),
+							IPosition(3,3,4,6),
+							csys1, csys2));
+  }
+}
 
 
 int main()
 {
 try {
+   testCompare();
+   testCompare2();
+
 // 
 // DirectionCoordinate
 //
