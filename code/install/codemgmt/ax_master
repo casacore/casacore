@@ -5758,3 +5758,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSObservation.h
 16 134 src rm aips/implement/MeasurementSets/OldMSSource.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSSource.h
+16 134 src rm aips/implement/MeasurementSets/OldMSSourceColumns.cc
