@@ -1139,15 +1139,13 @@ void ImageStatistics<T>::generateStorageImage()
 // Iterate through the image and generate the accumulation image
 {
 
-// Work out dimensions of accumulation image, resize 
-// and initialize it
+// Work out dimensions of storage image
 
    IPosition storeImageShape;
    ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
                                         displayAxes_p, pInImage_p->shape());
 
-
-// Create new storage image.  Delete old one first !
+// Delete old storage image
 
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
@@ -1168,12 +1166,8 @@ void ImageStatistics<T>::generateStorageImage()
    storeImageTileShape(storeImageShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
    if (displayAxes_p.nelements() > 0) 
       storeImageTileShape(0) = imageTileShape(displayAxes_p(0));
-//   cout << "image tile shape = " << imageTileShape << endl;
-//   cout << "store image shape = " << storeImageShape << endl;
-//   cout << "store tile shape = " << storeImageTileShape << endl;
 
    pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, storeImageTileShape);
-//   pStoreImage_p = new PagedArray<Double>(storeImageShape);
    pStoreImage_p->set(Double(0.0));
    os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
    needStorageImage_p = False;     
