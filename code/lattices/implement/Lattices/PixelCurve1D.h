@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/Functionals/Function1D.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
 
@@ -56,6 +57,7 @@
 // The curve can be any function supported in the
 // <linkto module=Functionals>Functionals</linkto> module.
 // <br>A special constructor exists to define a straight line.
+// <br>Another special constructor exists for a polyline.
 //
 // The domain for which the curve is valid is given by the interval
 // [x1,x2]. The granularity of the domain is given by the number of
@@ -81,6 +83,12 @@
 // an arbitrary curve.
 // </motivation>
 
+// <todo asof=2003/10/23>
+//  <li> Maybe it is better to make itsNpoints part of CurvedLattice
+//  <li> If itsNpoint is still part of this class, it is possible to
+//       precompute all possible Y values in the constructors. This may
+//       speed things up for the polyline case.
+// </todo>
 
 class PixelCurve1D
 {
@@ -93,7 +101,17 @@ public:
   // Define a curve with an arbitrary function from x1 to x2 with
   // the given number of points.
   PixelCurve1D (const Function1D<Float,Float>&,
-		float x1, float x2, uInt npoints);
+		Float x1, Float x2, uInt npoints);
+
+  // Define a curve from a polyline with the given points.
+  // Both vectors have to be equally long and at least 2 long.
+  // The X-points have to be in ascending order.
+  // When pixel coordinates are asked (using getPixelCoord), it uses
+  // linear interpolation between the points.
+  // The argument <src>npoints</src> defines the number of points
+  // (with regular steps) in which the curve is divided.
+  PixelCurve1D (const Vector<Float>& x, const Vector<Float>& y,
+		uInt npoints);
 
   PixelCurve1D (const PixelCurve1D& that);
 
@@ -115,6 +133,9 @@ private:
   Float itsX2;
   Float itsStep;
   uInt  itsNpoints;
+  Vector<Float> itsX;
+  Vector<Float> itsY;
+  Vector<Float> itsSlope;
 };
 
 
