@@ -2,7 +2,7 @@
 # Generic AIPS++ documentation makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1998
+#   Copyright (C) 1992-1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -84,7 +84,9 @@ override TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.di
 #---------------
 docs/% : $(DOCSAREA)/% ;
 
-$(DOCSAREA)/%.ps : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
+# Need the $(basename $(basename $@)) to handle the fact it .ps.gz
+
+$(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	-@ echo ""
 	 @ trap "cd $(AIPSROOT) ; $(RM) -r $(TMPDOCD)" 0 1 2 3 15 ; \
 	      mkdir $(TMPDOCD) ; \
@@ -111,16 +113,25 @@ $(DOCSAREA)/%.ps : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	      fi ; \
 	      $(LATEX) $< ; \
 	      $(RM) $@ ; \
-	      $(DVIPS) -o $@ $(@F:ps=dvi) ; \
+	      echo $(DVIPS) -o $(basename $@)  $(@F:ps.gz=dvi) ; \
+	      $(DVIPS) -o $(basename $@)  $(@F:ps.gz=dvi) ; \
 	      if [ "$($*)" != "" ] ; then \
-	         $(RM) -r $(basename $@) ; \
+	         $(RM) -r $(basename $(basename $@)) ; \
 	         ln -s $< ; \
-	         $(LATEX2HTML) -dir $(basename $@) $($*) $(<F) ; \
+	         $(LATEX2HTML) -dir $(basename $(basename $@)) $($*) $(<F) ; \
                  if [ "$(ICONSERVER)" != "" -a \
                       "$(ICONS2LOCAL)" != "" ] ; then \
-                    $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $@) ; \
+                      $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $@) ; \
                  fi ; \
-	      fi
+                 if [ "$($*).s2ps" != "" ] ; then \
+                    mkpsfiles.sh $(AIPSCODE) | dvips.sh $(DVIPS) $(@F:ps.gz=dvi) > mkdfiles.sh ; \
+                    chmod u+x mkdfiles.sh ; \
+                    ./mkdfiles.sh ; \
+                    gzip *.ps ; \
+                    cp *.ps.gz $(DOCSAREA) ; \
+                 fi ; \
+	      fi ;\
+              gzip -f $(basename $@)
 	@ chmod 664 $@
 
 $(DOCSAREA)/%.ps : $(CODEDIR)/%.texi $(CODEDIR)/%.dir
@@ -202,6 +213,10 @@ ifeq "$(MAKEMODE)" "programmer"
 	   export TEXINPUTS ; \
 	   $(DVIPS) -o $@ $<
 
+   %.gz : %.ps
+	-@ echo ""
+	 @  gzip $<
+
    %.dvi : %.latex %.dir $(CODEDIR)/%.dir
 	-@ echo ""
 	 @ TEXINPUTS=.:$*.dir:$(CODEDIR)/$*.dir:$(TEXINPUTS) ; \
@@ -273,7 +288,7 @@ ifdef AIPSRCS
 endif
 
 docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
-    $(addprefix $(DOCSAREA)/,$(subst .latex,.ps,$(LATEXDCS))) \
+    $(addprefix $(DOCSAREA)/,$(subst .latex,.ps.gz,$(LATEXDCS))) \
     $(addprefix $(DOCSAREA)/,$(subst .texi,.ps,$(TEXIDOCS))) \
     $(addprefix $(DOCSAREA)/,$(subst .tex,.ps,$(TEXDOCS))) \
     $(addprefix $(DOCSAREA)/,$(PSDOCS)) \
