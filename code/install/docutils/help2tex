@@ -229,6 +229,7 @@ sub make_tex_file{
          $iname = $1;
          $dum = $2;
          $iname =~ s/\\_/_/g;
+         $oiname = $iname;
          if($opt_glish == 1){
             print "$pack.$mname.objs.$oname := [=];\n";
             print "$pack.$mname.objs.$oname.m := [=];\n";
@@ -327,7 +328,7 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$oname.$1 - $mname.$oname:Method \\label{$mname:$oname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
+   \\subsection{$oname.$1 - $mname.$oname:Method \\label{$mname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
    $2
    \\ahsynopsis{$1}
    /g;
@@ -349,7 +350,7 @@ sub make_tex_file{
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname.$oname:Constructor \\label{$mname:$oname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
+   \\subsection{$1 - $mname.$oname:Constructor \\label{$mname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
    $2
    \\ahsynopsis{$1}
    /g;
