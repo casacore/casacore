@@ -695,7 +695,7 @@ int main()
       Double tp;
       for (uInt i=0; i<MFrequency::N_Types; i++) {
 	for (uInt j=0; j<MFrequency::N_Types; j++) {
-	  tp = 1e-6;
+	  tp = 1e-9;
 	  MFrequency::Ref rin(i, mf);
 	  MFrequency::Ref rout(j, mf);
 	  MFrequency mb0(mvd0, rin);
