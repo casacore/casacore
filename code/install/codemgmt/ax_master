@@ -1716,3 +1716,4 @@
 11 076 src rm doc/html/navpages/programmer/HowTo/howtos.html
 11 076 src rm doc/html/navpages/programmer/HowTo/images.pl
 11 076 src rm doc/html/navpages/programmer/HowTo/index.html
+11 076 src rm doc/html/navpages/programmer/HowTo/internals.pl
