@@ -663,7 +663,6 @@ String DirectionCoordinate::format(String& units,
 // native=F means degrees, or hours
 //
 {
-cerr << "DirectionCoordinate::format" << endl;
    AlwaysAssert(axis< nWorldAxes(), AipsError);
    AlwaysAssert(nWorldAxes()==2, AipsError);
 
