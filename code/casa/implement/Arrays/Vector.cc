@@ -171,10 +171,6 @@ template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
     }
     DebugAssert(ok(), ArrayError);
 }
-template<class T> void Vector<T>::resize(uInt len, Bool copyValues)
-{
-    Vector<T>::resize(IPosition(1,len), copyValues);
-}
 
 
 // <thrown>

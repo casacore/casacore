@@ -128,7 +128,8 @@ public:
     //# be hidden).
     // Resize without argument is equal to resize(0, False).
     // <group>
-    void resize(uInt len, Bool copyValues = False);
+    void resize(uInt len, Bool copyValues = False)
+      { if (len != nelements()) resize (IPosition(1,len), copyValues); }
     void resize(const IPosition &len, Bool copyValues);
     virtual void resize();
     virtual void resize(const IPosition &len);
