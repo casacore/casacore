@@ -451,6 +451,9 @@ void UnitMap::initUM() {
   UnitMap::mapCust->define("yr",   	UnitName("yr",
 						 UnitVal(24.*3600.*365.25,"s"),
 						 "year"));
+  UnitMap::mapCust->define("beam",	UnitName("beam",
+						 UnitVal(1.),
+						 "undefined beam area"));
 
   //# Start with clean cache
   UnitMap::mapCache->clear();
@@ -551,7 +554,7 @@ Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
     UnitName("METERS",	UnitVal(1.0, "m"),	"meter"),
     UnitName("M",	UnitVal(1.0, "m"),	"meter"),
     UnitName("PASCAL",	UnitVal(1.0, "Pa"),	"pascal"),
-    UnitName("PIXEL",   UnitVal(1.0, "_"),"dimensionless pixel"),
+    UnitName("PIXEL",   UnitVal(1.0, "_"),	"dimensionless pixel"),
     UnitName("S",	UnitVal(1.0, "s"),	"second"),
     UnitName("SECONDS",	UnitVal(1.0, "s"),	"second"),
     UnitName("SEC",	UnitVal(1.0, "s"),	"second"),
