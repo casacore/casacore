@@ -1,5 +1,5 @@
 //# tStArrayFile.cc: Test program for the StManArrayFile class
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -39,9 +39,9 @@
 // This class is meant to store indirect table arrays, but could
 // in principle also be used for other array purposes.
 
-void a (Bool, uInt, uLong&, uLong&, uLong&, uLong&);
-void b (Bool, uLong, uLong, uLong, uLong, uLong&, uLong&, uLong&, uLong&);
-void c (Bool, uLong, uLong, uLong, uLong);
+void a (Bool, uInt, Int64&, Int64&, Int64&, Int64&);
+void b (Bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
+void c (Bool, Int64, Int64, Int64, Int64);
 
 main (int argc, char** argv) {
     uInt stVersion = 0;
@@ -57,7 +57,7 @@ main (int argc, char** argv) {
     }
     try {
 	for (uInt i=stVersion; i<=endVersion; i++) {
-	    uLong off1, off2, off3, off4, offc1, offc2, offc3, offc4;
+	    Int64 off1, off2, off3, off4, offc1, offc2, offc3, offc4;
 	    cout << "test of StArrayFile with version " << i
 		 << " in canonical format " << endl;
 	    a (True, i, off1, off2, off3, off4);
@@ -80,7 +80,7 @@ main (int argc, char** argv) {
 
 // Write some arrays (in chunks).
 void a (Bool canonical, uInt version,
-	uLong& off1, uLong& off2, uLong& off3, uLong& off4)
+	Int64& off1, Int64& off2, Int64& off3, Int64& off4)
 {
     uInt l1,l2,l3,l4;
     Bool bbuf[10000];
@@ -130,13 +130,13 @@ void a (Bool canonical, uInt version,
 }
 
 // Read back and update and copy some arrays.
-void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
-	uLong& offc1, uLong& offc2, uLong& offc3, uLong& offc4)
+void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
+	Int64& offc1, Int64& offc2, Int64& offc3, Int64& offc4)
 {
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Update, 0, canonical);
     cout << "Length=" << io.length() << endl;
     IPosition shp, shp1, shp2, shp3, shp4;
-    uLong offs;
+    Int64 offs;
     uInt nref;
     Bool bbuf[10000];
     Int ibuf[10000];
@@ -216,7 +216,7 @@ void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
 }
 
 // Read back.
-void c (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4)
+void c (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4)
 {
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Old, 0, canonical);
     cout << "Length=" << io.length() << endl;

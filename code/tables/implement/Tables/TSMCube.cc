@@ -32,13 +32,12 @@
 #include <aips/Tables/TiledStMan.h>
 #include <aips/Tables/TSMFile.h>
 #include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/BucketCache.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Containers/Block.h>
+#include <aips/IO/BucketCache.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Conversion.h>
 #include <string.h>                           // for memcpy
@@ -64,7 +63,7 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   const Record& values)
 : stmanPtr_p     (stman),
   values_p       (values),
-  extensible_p   ( (cubeShape(cubeShape.nelements()-1) == 0)),
+  extensible_p   (cubeShape(cubeShape.nelements()-1) == 0),
   nrdim_p        (0),
   tileSize_p     (0),
   filePtr_p      (file),
@@ -202,7 +201,14 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
 void TSMCube::putObject (AipsIO& ios)
 {
     flushCache();
-    ios << 1;                          // version 1
+    // If the offset is small enough, write it as an old style file,
+    // so older software can still read it.
+    Bool vers1 = (fileOffset_p <= 2u*1024u*1024u*1024u);
+    if (vers1) {
+        ios << 1;                          // version 1
+    } else {
+        ios << 2;                          // version 2
+    }
     ios << values_p;
     ios << extensible_p;
     ios << nrdim_p;
@@ -213,7 +219,11 @@ void TSMCube::putObject (AipsIO& ios)
 	seqnr = filePtr_p->sequenceNumber();
     }
     ios << seqnr;
-    ios << fileOffset_p;
+    if (vers1) {
+        ios << uInt(fileOffset_p);
+    } else {
+	ios << fileOffset_p;
+    }
 }
 Int TSMCube::getObject (AipsIO& ios)
 {
@@ -226,7 +236,13 @@ Int TSMCube::getObject (AipsIO& ios)
     ios >> cubeShape_p;
     ios >> tileShape_p;
     ios >> fileSeqnr;
-    ios >> fileOffset_p;
+    if (version == 1) {
+        uInt offs;
+	ios >> offs;
+	fileOffset_p = offs;
+    } else {
+        ios >> fileOffset_p;
+    }
     return fileSeqnr;
 }
 
@@ -1153,7 +1169,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
     uInt sectionOffset;
 
     // Determine if the first dimension is strided.
-    Bool strided =  (stride(0) != 1);
+    Bool strided = (stride(0) != 1);
     // The first time all dimensions are evaluated to set pixelStart/End
     // correctly.
     Bool firstTime = True;
