@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -242,8 +242,8 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
 	    uInt n = objectIDs.nelements() + 1;
 	    objectIDs.resize (n);
 	    objectIDs[n-1] = oid;
-	    char buf[8];
-	    sprintf (buf, "$%i", n);
+	    char buf[16];
+	    sprintf (buf, "$OBJ#%i#O", n);
 	    result += buf;
 	    str = str.after(pos+1);
 	}

@@ -154,9 +154,9 @@ public:
     // </group>
 
     // Extract objectID strings (as set by glish script substitute.g) from
-    // a command, convert them to ObjectID object, store those in the
-    // Block, and replace the strings by their Block indices as <src>$n</src>..
-    // various persistence mechanisms.
+    // a command, convert them to ObjectID objects, store those in the
+    // Block, and replace the strings by their Block indices as
+    // <src>$OBJ#n#O</src> where n is the index.
     static String extractIDs (Block<ObjectID>& objectIDs,
 			      const String& command);
 

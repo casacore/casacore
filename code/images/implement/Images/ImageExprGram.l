@@ -1,6 +1,6 @@
 /*
     ImageExprGram.l: Lexical analyzer for image expressions
-    Copyright (C) 1998,1999
+    Copyright (C) 1998,1999,2000
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
-TMPNAME   [$]{INT}
+TMPNAME   "$OBJ#"{INT}"#O"
 TMPREGION "$REGION#"{INT}
 ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
@@ -136,7 +136,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
  /* A temporary image number can be given */
 {TMPNAME} {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+1));
+            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+5));
 	    ImageExprParse::addNode (lvalp->val);
 	    return NAME;
 	  }
