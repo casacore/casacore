@@ -374,9 +374,11 @@ public:
 	{ return newTable_p->tableDesc(); }
 
     // Adjust the hypercolumn definitions.
-    // It renames columns as necessary.
-    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new)
-        { return newTable_p->tableDescPtr()->adjustHypercolumns (old2new); }
+    // It renames and?or removes columns as necessary.
+    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new,
+			     Bool keepUnknown)
+        { return newTable_p->tableDescPtr()->adjustHypercolumns (old2new,
+								 keepUnknown); }
 
     // Bind a column to the given data manager.
     // If already bound, the binding will be overwritten.

@@ -1,5 +1,5 @@
 //# TableDesc.cc: Description of a table
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -577,7 +577,8 @@ uInt TableDesc::hypercolumnDesc (const String& name,
 }
 
 void TableDesc::adjustHypercolumns
-                        (const SimpleOrderedMap<String, String>& old2new)
+                        (const SimpleOrderedMap<String, String>& old2new,
+			 Bool keepUnknown)
 {
   Vector<String> hcNames = hypercolumnNames();
   Vector<String> dataNames, coordNames, idNames;
@@ -591,6 +592,8 @@ void TableDesc::adjustHypercolumns
       const String* newName = old2new.isDefined (dataNames(j));
       if (newName) {
 	dataNames(nr++) = *newName;
+      } else if (keepUnknown) {
+	nr++;
       }
     }
     if (nr == 0) {

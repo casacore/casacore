@@ -1,5 +1,5 @@
 //# TableDesc.h:  specify structure of aips++ tables
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -453,9 +453,12 @@ public:
 
     // Adjust the hypercolumn definitions (for a RefTable).
     // It removes and/or renames columns as necessary.
+    // Column names which are not part of the map are removed if
+    // <src>keepUnknown==False</src>.
     // If all data columns of a hypercolumn are removed, the entire
     // hypercolumn is removed.
-    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new);
+    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new,
+			     Bool keepUnknown = False);
 
     // Remove ID-columns from the given hypercolumn definitions
     // and set their default data manager type to IncrementalStMan
