@@ -823,7 +823,7 @@ restore_units() {
   
   if (unitName == "") {
     // Empty unit, but I guess we should overwrite!
-    setUnits(unitName);
+    setUnits(Unit(unitName));
     return;
   }
   // OK, non-empty unit, see if it's valid, if not try some known things to
@@ -844,7 +844,7 @@ restore_units() {
     return;
   }
   // Cool, the unit is known.
-  setUnits(unitName);
+  setUnits(Unit(unitName));
 };
 
 template<class T> void PagedImage<T>::
