@@ -183,49 +183,49 @@ Complex erfc(const Complex &in) {
   return ::erfc(in.real());
 }
 
-/// Temporary for now, likely should go into templates (or in a macro
-// preferably in define.h)
+} //# NAMESPACE CASA - END
 
-#ifdef NAMESPACE_WORKING
+// Instantiate some templates if needed.
+#if !defined(AIPS_AUTO_STL)
+
 #if defined(AIPS_SUN_NATIVE)
-
-template Complex std::log10(const Complex&);
-template DComplex std::log10(const DComplex&);
-template Complex std::conj(const Complex&);
-template DComplex std::conj(const DComplex&);
-
+template std::complex<float> std::log10(const std::complex<float>&);
+template std::complex<double> std::log10(const std::complex<double>&);
+template std::complex<float> std::conj(const std::complex<float>&);
+template std::complex<double> std::conj(const std::complex<double>&);
 #endif
 
 #if defined(AIPS_GCC3)
-template Float std::norm(const Complex&);
-template Double std::norm(const DComplex&);
-template Float std::arg(const Complex&);
-template Double std::arg(const DComplex&);
-template Float std::abs(const Complex&);
-template Double std::abs(const DComplex&);
-template Complex std::polar(const Float&, const Float&);
-template DComplex std::polar(const Double&, const Double&);
-template Complex std::sqrt(const Complex&);
-template DComplex std::sqrt(const DComplex&);
-template Complex std::conj(const Complex&);
-template DComplex std::conj(const DComplex&);
-template Complex std::pow(const Complex&, const Float&);
-template DComplex std::pow(const DComplex&, const Double&);
-template Complex std::pow(const Complex&, const Complex&);
-template DComplex std::pow(const DComplex&, const DComplex&);
-template Complex std::log(const Complex&);
-template DComplex std::log(const DComplex&);
-template Complex std::exp(const Complex&);
-template DComplex std::exp(const DComplex&);
-template Complex std::cos(const Complex&);
-template DComplex std::cos(const DComplex&);
-template Complex std::cosh(const Complex&);
-template DComplex std::cosh(const DComplex&);
-template Complex std::sin(const Complex&);
-template DComplex std::sin(const DComplex&);
-template Complex std::sinh(const Complex&);
-template DComplex std::sinh(const DComplex&);
+namespace std {
+template float norm<float>(const complex<float>&);
+template double norm<double>(const complex<double>&);
+template float arg<float>(const complex<float>&);
+template double arg<double>(const complex<double>&);
+template float abs<float>(const complex<float>&);
+template double abs<double>(const complex<double>&);
+template complex<float> polar<float>(const float&, const float&);
+template complex<double> polar<double>(const double&, const double&);
+template complex<float> sqrt<float>(const complex<float>&);
+template complex<double> sqrt<double>(const complex<double>&);
+template complex<float> conj<float>(const complex<float>&);
+template complex<double> conj<double>(const complex<double>&);
+template complex<float> pow<float>(const complex<float>&, const float&);
+template complex<double> pow<double>(const complex<double>&, const double&);
+template complex<float> pow<float>(const complex<float>&, const complex<float>&);
+template complex<double> pow<double>(const complex<double>&, const complex<double>&);
+template complex<float> log<float>(const complex<float>&);
+template complex<double> log<double>(const complex<double>&);
+template complex<float> exp<float>(const complex<float>&);
+template complex<double> exp<double>(const complex<double>&);
+template complex<float> cos<float>(const complex<float>&);
+template complex<double> cos<double>(const complex<double>&);
+template complex<float> cosh<float>(const complex<float>&);
+template complex<double> cosh<double>(const complex<double>&);
+template complex<float> sin<float>(const complex<float>&);
+template complex<double> sin<double>(const complex<double>&);
+template complex<float> sinh<float>(const complex<float>&);
+template complex<double> sinh<double>(const complex<double>&);
+}
 #endif
-#endif
-} //# NAMESPACE CASA - END
 
+#endif
