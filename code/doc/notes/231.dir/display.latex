@@ -170,7 +170,31 @@ of drawing commands to be used on any valid PixelCanvas.
 
 \subsection{The WorldCanvas and its Holders}
 
+The {\em WorldCanvas} implements a higher level of drawing
+capabilities on top of the PixelCanvas class.  Multiple WorldCanvas
+instances can be constructed on a single PixelCanvas, each drawing on
+a subset of the entire PixelCanvas.  The bulk of the infrastructure
+provided at the level of the WorldCanvas is concerned with coordinate
+transformations, so that drawing on a WorldCanvas is accomplished by
+the programmer in full world coordinates, or in a linear coordinate
+system which mediates between the pixel coordinate system of the
+PixelCanvas, and the full world coordinate system of the WorldCanvas.
+Further facilities include higher-level handling of interactive
+events, and data resampling and rescaling facilities.
 
+Each WorldCanvas is constructed with reference to a specific instance
+of a PixelCanvas, and occupies some fraction of the PixelCanvas.  The
+position of the WorldCanvas is dynamically adjustable, and an
+interface can be imagined in which the user freely positions multiple
+WorldCanvases across a single PixelCanvas, in order to depict several
+views of one or more datasets in a form suitable for publication, for
+example.  Overlapping WorldCanvases will ultimately need a ``depth
+specifier'', so that drawing order can be controlled and preserved by
+the programmer and/or user.
+
+In terms of graphic primitives, the WorldCanvas essentially replicates
+those present in the PixelCanvas, and applies coordinate conversions
+to input positions as necessary.
 
 \subsection{Events and Tools}
 
