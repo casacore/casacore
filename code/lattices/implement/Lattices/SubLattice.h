@@ -134,6 +134,9 @@ public:
   virtual MaskedLattice<T>* cloneML() const;
   // </group>
 
+  // Is the SubLattice paged to disk?
+  virtual Bool isPaged() const;
+
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
 

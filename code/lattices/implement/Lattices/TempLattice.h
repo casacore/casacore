@@ -1,4 +1,4 @@
-//# TempLattice.h:
+//# TempLattice.h: A Lattice that can be used for temporary storage
 //# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -50,7 +50,7 @@ class LatticeNavigator;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTempLattice.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -61,35 +61,33 @@ class LatticeNavigator;
 
 // <etymology>
 // A TempLattice disappears from both memory and disk when it goes out of
-// scope. Hence it is only useful for temporary storage of data. Unlike Arrays
-// however TempLattices can get huge and not place excessive demands on the
-// computers paging system. This is because 
+// scope. Hence it is only useful for temporary storage of data.
 // </etymology>
 
 // <synopsis>
 // Lattice classes are designed to allow the memory efficient handling of large
 // amounts of data. But they can also used with much smaller arrays. With
 // large amounts of data the <linkto class="PagedArray">PagedArray</linkto>
-// class should be used as this will store the data on disk and effeciently
+// class should be used as this will store the data on disk and efficiently
 // accesses specified portions of the data on request. With small amounts of
 // data the <linkto class="ArrayLattice">ArrayLattice</linkto> class should be
 // used as all the data is always in memory avoiding the I/O associated with
 // PagedArrays.
-//
-// However applications often cannot predict until run time whether they will
+// <p>
+// Applications often cannot predict until run time whether they will
 // be dealing with a large or small amount of data. So that the use of a
 // PagedArray or an ArrayLattice cannot be made until the size of the arrays
-// are known. TempLattices make this decision given the size of the Arrays. To
+// are known. TempLattice makes this decision given the size of the Array. To
 // help in making a good choice the TempLattice class also examines how much
-// memory the operating system has and compares it with the size of the
-// requested Arrays.
-//
+// memory the operating system has (using an aipsrc variable) and compares
+// it with the size of the requested Array.
+// <p>
 // The algorithm currently used is to create an ArrayLattice if the size of the
 // array is less than a quarter of the total system memory otherwise a
 // PagedArray is created. The PagedArray is currently stored in the current
 // working directory and given a unique name that contains the string
 // "pagedArray". This pagedArray will be deleted once the TempArray goes out of
-// scope. SO unlike PagedArrays which can be made to exist longer than the time
+// scope. So unlike PagedArrays which can be made to exist longer than the time
 // they are used by a process, the PagedArrays created by the TempArray class
 // are always scratch arrays.
 // </synopsis>
@@ -100,27 +98,27 @@ class LatticeNavigator;
 // </example>
 
 // <motivation>
-// I needed a temporaryt Lattice when converting the Convolver class to using
-// Lattices. This was to store the Transfre function.
+// I needed a temporary Lattice when converting the Convolver class to using
+// Lattices. This was to store the Transfer function.
 // </motivation>
 
 // <templating arg=T>
-// Any type that can be used by the Tables System can also be used by
+// Any type that can be used by the Lattices can also be used by
 // this class.
 // </templating>
 
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
-// </todo>
+//# <todo asof="yyyy/mm/dd">
+//#   <li> add this feature
+//#   <li> fix this bug
+//#   <li> start discussion of this possible extension
+//# </todo>
+
 
 template <class T> class TempLattice : public Lattice<T>
 {
 public:
-  // The default constructor creates a TempLattice that is useless for just
-  // about everything, except that it can be assigned to with the assignment
-  // operator.
+  // The default constructor creates a TempLattice containing a
+  // default ArrayLattice object.
   TempLattice();
 
   // Create a TempLattice of the specified Shape. You can specify how much
@@ -145,6 +143,9 @@ public:
 
   // Make a copy of the object (reference semantics).
   virtual Lattice<T>* clone() const;
+
+  // Is the TempLattice paged to disk?
+  virtual Bool isPaged() const;
 
   // Is the TempLattice writable? It should be.
   virtual Bool isWritable() const;
@@ -188,7 +189,8 @@ public:
   // include in the cursor of an iterator.
   virtual uInt maxPixels() const;
 
-  // These are the true implementations of the parentheses operator.
+  // Get or put a single element in the lattice.
+  // Note that Lattice::operator() can also be used to get a single element.
   // <group>
   virtual T getAt (const IPosition& where) const;
   virtual void putAt (const T& value, const IPosition& where);

@@ -79,15 +79,15 @@ class LatticeNavigator;
 //    <li> how to apply a function to all elements
 //    <li> various shape related functions.
 // </ul>
-// <note role=tip> Lattices are always zero origined. </note>
+// <note role=tip> Lattices always have a zero origin. </note>
 // </synopsis> 
 
 // <example>
 // Because Lattice is an abstract base class, an actual instance of this
 // class cannot be constructed. However the interface it defines can be used
-// inside a function. This is always recommended as it allows Functions
+// inside a function. This is always recommended as it allows functions
 // which have Lattices as arguments to work for any derived class.
-//
+// <p>
 // I will give a few examples here and then refer the reader to the 
 // <linkto class="ArrayLattice">ArrayLattice</linkto> class (a memory resident
 // Lattice) and the <linkto class="PagedArray">PagedArray</linkto> class (a
@@ -176,13 +176,16 @@ class LatticeNavigator;
 //   }
 // }
 // </srcblock>
+// Note that the <linkto class=LatticeFFT>LatticeFFT</linkto> class
+// offers a nice way to do lattice based FFTs.
 //
 // <h4>Example 3:</h4>
 // Occasionally you may want to access a few elements of a Lattice without
 // all the difficulty involved in setting up Iterators or calling getSlice
-// and putSlice. This is demonstrated in the example below and uses the
-// parenthesis operator, along with the LatticeValueRef companion
-// class. Using these functions to access many elements of a Lattice is not
+// and putSlice. This is demonstrated in the example below.
+// Setting a single element can be done with the <src>putAt</src> function,
+// while getting a single element can be done with the parenthesis operator.
+// Using these functions to access many elements of a Lattice is not
 // recommended as this is the slowest access method.
 //
 // In this example an ideal point spread function will be inserted into an
@@ -194,7 +197,7 @@ class LatticeNavigator;
 //   const IPosition centrePos = psf.shape()/2;
 //   psf.set(0.0f);       // this sets all the elements to zero
 //                        // As it uses a LatticeIterator it is efficient
-//   psf(centrePos) = 1;  // This sets just the centre element to one
+//   psf.putAt (1, centrePos);  // This sets just the centre element to one
 //   AlwaysAssert(near(psf(centrePos), 1.0f, 1E-6), AipsError);
 //   AlwaysAssert(near(psf(centrePos*0), 0.0f, 1E-6), AipsError);
 // }
@@ -217,7 +220,9 @@ class LatticeNavigator;
 // <todo asof="1996/07/01">
 //   <li> Remove the latticeCast member when the GNU compiler is 
 //        sufficiently robust.
+//   <li> Make PagedArray cache functions virtual in this base class.
 // </todo>
+
 
 template <class T> class Lattice 
 {
@@ -228,6 +233,10 @@ public:
 
   // Make a copy of the derived object (reference semantics).
   virtual Lattice<T>* clone() const = 0;
+
+  // Is the lattice paged to disk?
+  // <br>Default implementation returns False.
+  virtual Bool isPaged() const;
 
   // Is the lattice writable?
   // <br>Default implementation returns True.
@@ -248,7 +257,7 @@ public:
   
   // Return a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
-  virtual Bool conform(const Lattice <T>& other) const;
+  virtual Bool conform(const Lattice<T>& other) const;
 
   // Return the coordinates of the lattice.
   // The default implementation returns an 'empty' LattCoord object.
@@ -256,16 +265,15 @@ public:
 
   // Return the value of the single element located at the argument
   // IPosition.  
-  T operator() (const IPosition& where) const;
-  
-  // These are the true implementations of the parentheses operator.  While
-  // you can use them the access methods shown in Example three above have a
-  // nicer syntax and are equivalent.
-  // <br> The default implementation uses getSlice and putSlice.
+  // <br> The default implementation uses getSlice.
   // <group>
+  T operator() (const IPosition& where) const;
   virtual T getAt (const IPosition& where) const;
-  virtual void putAt (const T& value, const IPosition& where);
   // </group>
+  
+  // Put the value of a single element.
+  // <br> The default implementation uses putSlice.
+  virtual void putAt (const T& value, const IPosition& where);
 
   // Functions which extract an Array of values from a Lattice. All the
   // IPosition arguments must have the same number of axes as the underlying
@@ -348,10 +356,10 @@ public:
   
   // </group>   
 
-  // function which sets all of the elements in the Lattice to a value.
+  // Set all elements in the Lattice to the given value.
   virtual void set (const T& value);
   
-  // replace every element, x, of the Lattice with the result of f(x).  You
+  // Replace every element, x, of the Lattice with the result of f(x).  You
   // must pass in the address of the function -- so the function must be
   // declared and defined in the scope of your program.  All versions of
   // apply require a function that accepts a single argument of type T (the
