@@ -1,0 +1,723 @@
+//# MCDirection.cc:  MDirection conversion routines 
+//# Copyright (C) 1995,1996,1997
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+//# Includes
+#ifdef __GNUG__
+#include <aips/Measures/Quantum.h>
+typedef Quantum<Double> gpp_direction_bug1;
+#endif
+#include <aips/Exceptions.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Measures/MCDirection.h>
+#include <aips/Measures/MCFrame.h>
+#include <aips/Measures/RotMatrix.h>
+#include <aips/Measures/MVPosition.h>
+#include <aips/Measures/SolarPos.h>
+#include <aips/Measures/Aberration.h>
+#include <aips/Measures/Precession.h>
+#include <aips/Measures/Nutation.h>
+#include <aips/Measures/MeasTable.h>
+
+//# Constructors
+MCDirection::MCDirection() :
+  ROTMAT1(0),
+  EULER1(0),
+  MVPOS1(0), MVPOS2(0), MVPOS3(0),
+  SOLPOSFROM(0), SOLPOSTO(0),
+  ABERFROM(0), ABERTO(0),
+  NUTATFROM(0), NUTATTO(0),
+  PRECESFROM(0), PRECESTO(0) {}
+
+//# Destructor
+MCDirection::~MCDirection() {
+  clearConvert();
+}
+
+//# Operators
+
+//# Member functions
+
+void MCDirection::getConvert(MConvertBase &mc,
+			     const MRBase &inref, 
+			     const MRBase &outref) {
+
+// Array of conversion routines to call
+    static const MCDirection::Routes 
+	FromTo[MDirection::N_Types][MDirection::N_Types] = {
+	{ MCDirection::N_Routes,
+	  MCDirection::J2000_JMEAN,
+	  MCDirection::J2000_JMEAN,
+	  MCDirection::J2000_APP, 
+	  MCDirection::J2000_B1950,
+	  MCDirection::J2000_B1950, 
+	  MCDirection::J2000_B1950,
+	  MCDirection::J2000_GAL,
+	  MCDirection::J2000_APP,
+	  MCDirection::J2000_APP},
+    { MCDirection::JMEAN_J2000, 
+      MCDirection::N_Routes,    
+      MCDirection::JMEAN_JTRUE,
+      MCDirection::JMEAN_J2000, 
+      MCDirection::JMEAN_J2000, 
+      MCDirection::JMEAN_J2000, 
+      MCDirection::JMEAN_J2000,
+      MCDirection::JMEAN_J2000,
+      MCDirection::JMEAN_J2000, 
+      MCDirection::JMEAN_J2000},
+    { MCDirection::JTRUE_JMEAN, 
+      MCDirection::JTRUE_JMEAN, 
+      MCDirection::N_Routes,
+      MCDirection::JTRUE_JMEAN,  
+      MCDirection::JTRUE_JMEAN, 
+      MCDirection::JTRUE_JMEAN, 
+      MCDirection::JTRUE_JMEAN,
+      MCDirection::JTRUE_JMEAN,
+      MCDirection::JTRUE_JMEAN,  
+      MCDirection::JTRUE_JMEAN},
+    { MCDirection::APP_J2000,  
+      MCDirection::APP_J2000,  
+      MCDirection::APP_J2000,  
+      MCDirection::N_Routes,    
+      MCDirection::APP_B1950,  
+      MCDirection::APP_B1950,  
+      MCDirection::APP_B1950,
+      MCDirection::APP_J2000,
+      MCDirection::APP_HADEC, 
+      MCDirection::APP_HADEC},
+    { MCDirection::B1950_J2000, 
+      MCDirection::B1950_J2000, 
+      MCDirection::B1950_J2000, 
+      MCDirection::B1950_APP, 
+      MCDirection::N_Routes,    
+      MCDirection::B1950_BMEAN,
+      MCDirection::B1950_BMEAN,
+      MCDirection::B1950_GAL,
+      MCDirection::B1950_APP, 
+      MCDirection::B1950_APP},
+    { MCDirection::BMEAN_B1950, 
+      MCDirection::BMEAN_B1950, 
+      MCDirection::BMEAN_B1950,
+      MCDirection::BMEAN_B1950, 
+      MCDirection::BMEAN_B1950, 
+      MCDirection::N_Routes,
+      MCDirection::BMEAN_BTRUE,
+      MCDirection::BMEAN_B1950,
+      MCDirection::BMEAN_B1950, 
+      MCDirection::BMEAN_B1950},
+    { MCDirection::BTRUE_BMEAN, 
+      MCDirection::BTRUE_BMEAN, 
+      MCDirection::BTRUE_BMEAN,
+      MCDirection::BTRUE_BMEAN, 
+      MCDirection::BTRUE_BMEAN, 
+      MCDirection::BTRUE_BMEAN, 
+      MCDirection::N_Routes,   
+      MCDirection::BTRUE_BMEAN,
+      MCDirection::BTRUE_BMEAN, 
+      MCDirection::BTRUE_BMEAN},
+    { MCDirection::GAL_J2000,   
+      MCDirection::GAL_J2000,   
+      MCDirection::GAL_J2000, 
+      MCDirection::GAL_J2000,   
+      MCDirection::GAL_B1950,   
+      MCDirection::GAL_B1950,
+      MCDirection::GAL_B1950,
+      MCDirection::N_Routes,
+      MCDirection::GAL_J2000,   
+      MCDirection::GAL_J2000},
+    { MCDirection::HADEC_APP,   
+      MCDirection::HADEC_APP,   
+      MCDirection::HADEC_APP, 
+      MCDirection::HADEC_APP,   
+      MCDirection::HADEC_APP,   
+      MCDirection::HADEC_APP,
+      MCDirection::HADEC_APP,
+      MCDirection::HADEC_APP,
+      MCDirection::N_Routes,    
+      MCDirection::HADEC_AZEL},
+    { MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::AZEL_HADEC,  
+      MCDirection::N_Routes}
+    };
+
+// List of codes converted to
+    static const MDirection::Types ToRef[MCDirection::N_Routes] = {
+	MDirection::J2000,    	MDirection::B1950,
+	MDirection::GALACTIC, 	MDirection::GALACTIC,
+	MDirection::B1950,    	MDirection::J2000,
+	MDirection::JMEAN,    	MDirection::BMEAN,
+	MDirection::J2000,    	MDirection::JTRUE,
+	MDirection::B1950,    	MDirection::BTRUE,
+	MDirection::JMEAN,	MDirection::BMEAN,    	
+	MDirection::APP,      	MDirection::J2000,
+	MDirection::APP,      	MDirection::B1950,
+	MDirection::HADEC,    	MDirection::AZEL,
+	MDirection::HADEC,    	MDirection::APP
+	};
+
+    Int iout = outref.getType();
+    Int iin  = inref.getType();
+    Int tmp;
+    while (iin != iout) {
+	tmp = FromTo[iin][iout];
+	iin = ToRef[tmp];
+	mc.addMethod(tmp);
+	initConvert(tmp, mc);
+    }
+}
+
+void MCDirection::clearConvert() {
+  delete ROTMAT1;    ROTMAT1 = 0;
+  delete EULER1;     EULER1 = 0;
+  delete MVPOS1;     MVPOS1 = 0;
+  delete MVPOS2;     MVPOS2 = 0;
+  delete MVPOS3;     MVPOS3 = 0;
+  delete SOLPOSFROM; SOLPOSFROM = 0;
+  delete SOLPOSTO;   SOLPOSTO = 0;
+  delete ABERFROM;   ABERFROM = 0;
+  delete ABERTO;     ABERTO = 0;
+  delete NUTATFROM;  NUTATFROM = 0;
+  delete NUTATTO;    NUTATTO = 0;
+  delete PRECESFROM; PRECESFROM = 0;
+  delete PRECESTO;   PRECESTO = 0;
+}
+
+//# Conversion routines
+void MCDirection::initConvert(uInt which, MConvertBase &mc) {
+  if (!ROTMAT1) {
+    ROTMAT1 = new RotMatrix();
+  };
+  if (!MVPOS1) {
+    MVPOS1 = new MVPosition();
+  };
+  if (!MVPOS2) {
+    MVPOS2 = new MVPosition();
+  };
+  if (!MVPOS3) {
+    MVPOS3 = new MVPosition();
+  };
+  if (!EULER1) {
+    EULER1 = new Euler();
+  };
+
+  switch (which) {
+
+  case GAL_J2000:
+    break;
+
+  case GAL_B1950:
+    break;
+
+  case J2000_GAL:
+    break;
+
+  case B1950_GAL:
+    break;
+
+  case J2000_B1950:
+    break;
+
+  case B1950_J2000:
+    break;
+
+  case J2000_JMEAN:
+    if (PRECESFROM) delete PRECESFROM;
+    PRECESFROM = new Precession(Precession::STANDARD);
+    break;
+
+  case B1950_BMEAN:
+    if (PRECESFROM) delete PRECESFROM;
+    PRECESFROM = new Precession(Precession::B1950);
+    break;
+
+  case JMEAN_J2000:
+    if (PRECESTO) delete PRECESTO;
+    PRECESTO = new Precession(Precession::STANDARD);
+    break;
+
+  case JMEAN_JTRUE:
+    if (NUTATFROM) delete NUTATFROM;
+    NUTATFROM = new Nutation(Nutation::STANDARD);
+    break;
+
+  case BMEAN_B1950:
+    if (PRECESTO) delete PRECESTO;
+    PRECESTO = new Precession(Precession::B1950);
+    break;
+
+  case BMEAN_BTRUE:
+    if (NUTATFROM) delete NUTATFROM;
+    NUTATFROM = new Nutation(Nutation::B1950);
+    break;
+
+  case JTRUE_JMEAN:
+    if (NUTATTO) delete NUTATTO;
+    NUTATTO = new Nutation(Nutation::STANDARD);
+    break;
+
+  case BTRUE_BMEAN:
+    if (NUTATTO) delete NUTATTO;
+    NUTATTO = new Nutation(Nutation::B1950);
+    break;
+
+  case J2000_APP:
+    if (SOLPOSFROM) delete SOLPOSFROM;
+    SOLPOSFROM = new SolarPos(SolarPos::STANDARD);
+    if (ABERFROM) delete ABERFROM;
+    ABERFROM = new Aberration(Aberration::STANDARD);
+    if (NUTATFROM) delete NUTATFROM;
+    NUTATFROM = new Nutation(Nutation::STANDARD);
+    if (PRECESFROM) delete PRECESFROM;
+    PRECESFROM = new Precession(Precession::STANDARD);
+    break;
+
+  case APP_J2000:
+    if (SOLPOSTO) delete SOLPOSTO;
+    SOLPOSTO = new SolarPos(SolarPos::STANDARD);
+    if (ABERTO) delete ABERTO;
+    ABERTO = new Aberration(Aberration::STANDARD);
+    if (NUTATTO) delete NUTATTO;
+    NUTATTO = new Nutation(Nutation::STANDARD);
+    if (PRECESTO) delete PRECESTO;
+    PRECESTO = new Precession(Precession::STANDARD);
+    break;
+
+  case B1950_APP:
+    if (ABERFROM) delete ABERFROM;
+    ABERFROM = new Aberration(Aberration::B1950);
+    if (NUTATFROM) delete NUTATFROM;
+    NUTATFROM = new Nutation(Nutation::B1950);
+    if (PRECESFROM) delete PRECESFROM;
+    PRECESFROM = new Precession(Precession::B1950);
+    break;
+
+  case APP_B1950:
+    if (ABERTO) delete ABERTO;
+    ABERTO = new Aberration(Aberration::B1950);
+    if (NUTATTO) delete NUTATTO;
+    NUTATTO = new Nutation(Nutation::B1950);
+    if (PRECESTO) delete PRECESTO;
+    PRECESTO = new Precession(Precession::B1950);
+    break;
+
+  case APP_HADEC:
+    break;
+
+  case HADEC_AZEL:
+    break;
+
+  case AZEL_HADEC:
+    break;
+
+  case HADEC_APP:
+    break;
+
+  default:
+    break;
+
+  }
+}
+
+void MCDirection::doConvert(MeasValue &in,
+			    MRBase &inref,
+			    MRBase &outref,
+			    const MConvertBase &mc) {
+  doConvert(*(MVDirection*)&in,
+	    inref, outref, mc);
+}
+
+void MCDirection::doConvert(MVDirection &in,
+			    MRBase &inref,
+			    MRBase &outref,
+			    const MConvertBase &mc) {
+  Double g1, g2, g3, lengthE, tdbTime;
+
+  MCFrame::make(inref.getFrame());
+  MCFrame::make(outref.getFrame());
+
+  for (Int i=0; i<mc.nMethod(); i++) {
+
+    switch (mc.getMethod(i)) {
+	
+    case GAL_J2000:
+      in = MeasData::GALtoJ2000() * in;
+      break;
+
+    case GAL_B1950:
+      in = MeasData::GALtoB1950() * in;
+      break;
+
+    case J2000_GAL:
+      in = MeasData::J2000toGAL() * in;
+      break;
+
+    case B1950_GAL:
+      in = MeasData::B1950toGAL() * in;
+      break;
+
+    case J2000_B1950: {
+// Frame rotation
+	*ROTMAT1 = MeasData::MToB1950(4);
+	in *= *ROTMAT1;
+	in.adjust();
+// E-terms
+// Iterate
+	*MVPOS1 = MeasTable::AberETerm(0);
+	*MVPOS2 = in;
+	do {
+	  g1 = *MVPOS2 * *MVPOS1;
+	  *MVPOS3 = *MVPOS2 - *MVPOS1 + (g1 * *MVPOS2);
+	  MVPOS3->adjust();
+	  *MVPOS3 -= in;
+	  *MVPOS2 -= *MVPOS3;
+	} 
+	while (MVPOS3->radius() > 1e-10);
+	in = *MVPOS2;
+      }
+      break;
+
+      case B1950_J2000: {
+// E-terms
+	*MVPOS1 = MeasTable::AberETerm(0);
+	g1 = in * *MVPOS1;
+	in += g1 * in;
+	in -= *MVPOS1;
+	in.adjust();
+// Frame rotation
+	*ROTMAT1 = MeasData::MToJ2000(0);
+	in *= *ROTMAT1;
+	in.adjust();
+      }	
+      break;
+
+      case J2000_JMEAN: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Precession
+	*ROTMAT1 = PRECESFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+      }
+      break;
+
+      case B1950_BMEAN: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Precession
+	*ROTMAT1 = PRECESFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+      }
+      break;
+
+      case JMEAN_J2000: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Precession
+	*ROTMAT1 = PRECESTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+      }
+      break;
+
+      case JMEAN_JTRUE: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+      }
+      break;
+
+      case BMEAN_B1950: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Precession
+	*ROTMAT1 = PRECESTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+      }
+      break;
+
+      case BMEAN_BTRUE: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+      }
+      break;
+
+      case JTRUE_JMEAN: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+      }
+      break;
+
+      case BTRUE_BMEAN: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+      }
+      break;
+
+      case J2000_APP: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Solar position in ecliptic coordinates
+	*MVPOS1 = SOLPOSFROM->operator()(tdbTime);
+// Solar position in rectangular coordinates
+	*MVPOS1 = MeasTable::posToRect() * *MVPOS1;
+// Get length and unit vector
+	MVPOS1->adjust(lengthE);
+	g1 = -1.974e-8 / lengthE;
+	g2 = in * *MVPOS1;
+// Check if near sun
+	if (!nearAbs(g2, 1.0,
+		     1.0-cos(MeasData::SunSemiDiameter()/lengthE))) {
+	  *MVPOS1 -= g2 * in;
+	  *MVPOS1 *= (g1 / (1.0 - g2));
+	  in += *MVPOS1;
+	};
+// Aberration
+	*MVPOS1 =  ABERFROM->operator()(tdbTime);
+// Get length
+	lengthE = MVPOS1->radius();
+// Beta^-1 (g1)
+	g1 = sqrt(1 - lengthE * lengthE);
+	g2 = in * *MVPOS1;
+	in = (g1*in + (1+g2/(1+g1)) * *MVPOS1)*(1.0/(1.0+g2));
+// Precession
+	*ROTMAT1 = PRECESFROM->operator()(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+      }
+      break;
+
+      case APP_J2000: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Nutation
+	*ROTMAT1 = NUTATTO->operator()(tdbTime);
+// Precession
+	*ROTMAT1 *= PRECESTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+// Aberration
+	*MVPOS1 = ABERTO->operator()(tdbTime);
+// Get length
+	lengthE = MVPOS1->radius();
+// Beta^-1 (g1)
+	g1 = sqrt(1 - lengthE * lengthE);
+// First guess
+	*MVPOS2 = in - *MVPOS1;
+// Solve for aberration solution
+	do {
+	  g2 = *MVPOS2 * *MVPOS1;
+	  *MVPOS3 = ((g1 * *MVPOS2 + 
+		      (1+g2/(1+g1)) * *MVPOS1)*(1.0/(1.0+g2)));
+	  MVPOS3->adjust();
+	  for (Int j=0; j<3; j++) {
+	    g3 = MVPOS1->operator()(j);
+	    MVPOS2->operator()(j) -= 
+	      (MVPOS3->operator()(j) - in(j))/
+	      (((g1+g3*g3/(1+g1))-
+		g3*MVPOS3->operator()(j))/(1+g2));
+	  };
+	  *MVPOS3 -= in;
+	}
+	while (MVPOS3->radius() > 1e-10);
+	in = *MVPOS2;
+// Solar position in ecliptic coordinates
+	*MVPOS1 = SOLPOSTO->operator()(tdbTime);
+// Solar position in rectangular coordinates
+	*MVPOS1 = MeasTable::posToRect() * *MVPOS1;
+// Get length and unit vector
+	MVPOS1->adjust(lengthE);
+	g1 = -1.974e-8 / lengthE;
+// Check if near sun
+	g2 = in * *MVPOS1;
+	if (!nearAbs(g2, 1.0,
+		     1.0-cos(MeasData::SunSemiDiameter()/lengthE))) {
+// First guess
+	  *MVPOS2 = in;
+	  do {
+	    *MVPOS3 = (*MVPOS1 - g2 * *MVPOS2) * (g1/(1.0 - g2));
+	    MVPOS3->adjust();
+	    for (Int j=0; j<3; j++) {
+	      g3 = MVPOS1->operator()(j);
+	      MVPOS2->operator()(j) -= 
+		(MVPOS3->operator()(j) + 
+		 MVPOS2->operator()(j) - in(j))/
+		(1 + (g3 * MVPOS3->operator()(j) -
+		      g1 * (g2 + g3 *
+			    MVPOS2->operator()(j)))/(1-g2));
+	    };
+	    g2 = *MVPOS2 * *MVPOS1;
+	    *MVPOS3 += *MVPOS2;
+	    *MVPOS3 -= in;
+	  }
+	  while (MVPOS3->radius() > 1e-10);
+	  in = *MVPOS2;
+	};
+      }
+      break;
+
+      case B1950_APP: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// E-terms
+	*MVPOS1 = MeasTable::AberETerm(0);
+	g1 = in * *MVPOS1;
+	in += g1 * in;
+	in -= *MVPOS1;
+	in.adjust();
+// Precession
+	*ROTMAT1 = PRECESFROM->operator()(tdbTime);
+// Nutation
+	*ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+	in *= *ROTMAT1;
+// Aberration
+	*MVPOS1 = ABERFROM->operator()(tdbTime);
+	in += *MVPOS1;
+	in.adjust();
+      }
+      break;
+
+      case APP_B1950: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+// Aberration
+	*MVPOS1 = ABERTO->operator()(tdbTime);
+	in -= *MVPOS1;
+	in.adjust();
+// Nutation
+	*ROTMAT1 = NUTATTO->operator()(tdbTime);
+// Precession
+	*ROTMAT1 *= PRECESTO->operator()(tdbTime);
+	in = *ROTMAT1 * in;
+// E-terms
+	*MVPOS1 = MeasTable::AberETerm(0);
+	g1 = in * *MVPOS1;
+	in += g1 * in;
+	in += *MVPOS1;
+	in.adjust();
+      }
+      break;
+
+      case APP_HADEC: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getLASTr(g1);
+	((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
+		     getMCFramePoint()))->
+	  getRadius(lengthE);
+	((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+	((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
+		     getMCFramePoint()))->
+	  getLat(g3);
+	g2 = MeasTable::diurnalAber(lengthE, tdbTime);
+	*MVPOS3 = MVDirection(g1, g3);
+	MVPOS3->readjust(g2);
+	in += *MVPOS3;
+	*EULER1 = MeasTable::polarMotion(tdbTime);
+	EULER1->operator()(2) = g1;
+	*ROTMAT1 = RotMatrix(*EULER1);
+	in *= *ROTMAT1;
+	in(1) = -in(1);
+      }
+      break;
+
+      case HADEC_AZEL:
+	((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
+		     getMCFramePoint()))->
+	  getLat(g1);
+	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2));
+	in *= *ROTMAT1;
+	break;
+
+      case AZEL_HADEC:
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLat(g1);
+	*ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2));
+	in = *ROTMAT1 * in;
+	break;
+	
+      case HADEC_APP: {
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getLASTr(g1);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getRadius(lengthE);
+	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
+		     getMCFramePoint()))->
+	  getTDB(tdbTime);
+	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
+		     getMCFramePoint()))->
+	  getLat(g3);
+	g2 = MeasTable::diurnalAber(lengthE, tdbTime);
+	*MVPOS3 = MVDirection(g1, g3);
+	MVPOS3->readjust(g2);
+	in(1) = -in(1);
+	*ROTMAT1 = RotMatrix(Euler(g1 ,(uInt) 3));
+	in = *ROTMAT1 * in;
+	in -= *MVPOS3;
+      }
+      break;
+
+      default:
+	break;
+	
+      }
+    }
+}
