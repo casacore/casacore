@@ -50,6 +50,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
                                        Double restFrequency )
 : Coordinate(),
   type_p(freqType),
+  conversionType_p(type_p),
   restfreqs_p(0),
   restfreqIdx_p(0),
   pConversionMachineTo_p(0),
@@ -257,32 +258,50 @@ void SpectralCoordinate::reinitializeVelocityMachine ()
 }
 
 
-void SpectralCoordinate::makeConversionMachines (const MEpoch& epoch, const MPosition& position,
+void SpectralCoordinate::makeConversionMachines (MFrequency::Types type, 
+                                                 MFrequency::Types conversionType,
+                                                 const MEpoch& epoch, 
+                                                 const MPosition& position,
                                                  const MDirection& direction)
 {
    LogIO os(LogOrigin("SpectralCoordinate", "makeConversionMachines"));
-//
+
+// Clean up extent machines
+
+   deleteConversionMachines();
+
+// If the types are the same, don't make the machines.
+
+   if (conversionType==type_p) return;
+
+// It is assumed the passed in Measures are viable
+
    pConversionMachineTo_p = new MFrequency::Convert();
-   Bool madeItTo = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineTo_p,
-                                                         type_p, conversionType_p,
-                                                         direction, direction, 
-                                                         epoch, epoch,
-                                                         position, position);
+   Bool ok = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineTo_p,
+                                                   type, conversionType,
+                                                   direction, direction, 
+                                                   epoch, epoch,
+                                                   position, position);
+//
    pConversionMachineFrom_p = new MFrequency::Convert();
-   Bool madeItFrom = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineFrom_p,
-                                                           conversionType_p, type_p,
-                                                           direction, direction,
-                                                           epoch, epoch,
-                                                           position, position);
+   ok = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineFrom_p,
+                                              conversionType, type,
+                                              direction, direction,
+                                              epoch, epoch,
+                                              position, position);
+
 // If the machines are noOps, delete them
    
    if (pConversionMachineTo_p->isNOP() && pConversionMachineFrom_p->isNOP()) {
-      delete pConversionMachineTo_p;
-      delete pConversionMachineFrom_p;
-      pConversionMachineTo_p = 0;
-      pConversionMachineFrom_p = 0;
-   }
+      deleteConversionMachines();
+   } else {
 
+// Set up units so we can just use doubles in conversions
+ 
+      String unit = worldAxisUnits()(0);
+      pConversionMachineTo_p->set(Unit(unit));
+      pConversionMachineFrom_p->set(Unit(unit));
+   }
 }
 
 void SpectralCoordinate::convertTo (Vector<Double>& world) const
