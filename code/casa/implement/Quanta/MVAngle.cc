@@ -250,7 +250,7 @@ void MVAngle::print(ostream &oss,
 	};
     };
     // The next 0.1 necessary for some rounding errors
-    t = abs((floor(t/t1+0.5)+0.1)*t1);
+    t = abs((floor(abs(t)/t1+0.5)+0.1)*t1);
     Int h = ifloor(t);
     if ((intyp & MVAngle::NO_D) != MVAngle::NO_D) {
 	if (i1 == MVAngle::ANGLE) {
