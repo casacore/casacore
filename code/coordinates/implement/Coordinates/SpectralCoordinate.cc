@@ -38,6 +38,7 @@
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/VelocityMachine.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Containers/RecordInterface.h>
@@ -215,23 +216,13 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
   pVelocityMachine_p(0),
   prefVelType_p(other.prefVelType_p),
   prefUnit_p(other.prefUnit_p),
-  unit_p(other.unit_p)  
+  unit_p(other.unit_p),
+  direction_p(other.direction_p),
+  position_p(other.position_p),
+  epoch_p(other.epoch_p)
 {
    pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
-//
-   if (type_p != conversionType_p) {
-
-// Are these shallow or deep copies ?  I'd rather use makeConversionMachines
-// but need those extra variables (position/epoch/direction) which I
-// am presently not storing privately.
-
-      if (other.pConversionMachineTo_p) {
-         pConversionMachineTo_p = new MFrequency::Convert(*(other.pConversionMachineTo_p));
-      }
-      if (other.pConversionMachineFrom_p) {
-         pConversionMachineFrom_p = new MFrequency::Convert(*(other.pConversionMachineFrom_p));
-      }
-   }
+   makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -239,7 +230,6 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
     if (this != &other) {
         Coordinate::operator=(other);
 	type_p = other.type_p;
-	conversionType_p = other.conversionType_p;
 //
         restfreqs_p.resize(0);
         restfreqs_p = other.restfreqs_p;
@@ -247,18 +237,11 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
 	restfreqIdx_p = other.restfreqIdx_p;
 	worker_p = other.worker_p;
 //
-        deleteConversionMachines();
-        if (type_p != conversionType_p) {
-
-// Are these shallow or deep copies ?
-
-           if (other.pConversionMachineTo_p) {
-              pConversionMachineTo_p = new MFrequency::Convert(*(other.pConversionMachineTo_p));
-           }
-           if (other.pConversionMachineFrom_p) {
-              pConversionMachineFrom_p = new MFrequency::Convert(*(other.pConversionMachineFrom_p));
-           }
-        }
+	conversionType_p = other.conversionType_p;
+        direction_p = other.direction_p;
+        position_p = other.position_p;
+        epoch_p = other.epoch_p;
+        makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
 //
         deleteVelocityMachine();
         if (other.pVelocityMachine_p) {
@@ -416,32 +399,16 @@ Vector<String> SpectralCoordinate::preferredWorldAxisUnits () const
    return t;
 }
 
-void SpectralCoordinate::setReferenceConversion (MFrequency::Types type,
+void SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionType,
                                                  const MEpoch& epoch, const MPosition& position,
                                                  const MDirection& direction)
 {
 // See if something to do
 
-   if (conversionType_p==type) return;
-
-// If the conversion type is the same as the native type, just 
-// remove the machines
-
-   conversionType_p = type;
-   deleteConversionMachines();
-   if (conversionType_p==type_p) {
-      return;
-   }
-
-// Now make new machines
-
-   makeConversionMachines(epoch, position, direction);
-
-// Set up units so we can just use doubles in conversions
-
-   String unit = worldAxisUnits()(0);
-   pConversionMachineTo_p->set(Unit(unit));
-   pConversionMachineFrom_p->set(Unit(unit));
+   if (conversionType_p==conversionType) return;
+//
+   conversionType_p = conversionType;
+   makeConversionMachines(type_p, conversionType_p, epoch, position, direction);
 }
 
 
@@ -487,12 +454,36 @@ MFrequency::Types SpectralCoordinate::frequencySystem() const
 
 void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 {
+    if (type==type_p) return;
+//   
+    MFrequency::Types oldType = type_p;
     type_p = type;
-//
     deleteVelocityMachine();
     makeVelocityMachine (String("km/s"), prefVelType_p, 
                          worker_p.worldAxisUnits()(0),
                          type_p, restfreqs_p(restfreqIdx_p));
+
+// The conversion machines are no longer viable. However, it is 
+// is risky to re-create the machines with the new type_p.  This 
+// is because the only way to ensure epoch_p, position_p, direction_p 
+// are valid (default construction values are arbitrary)  is for
+// the user to have called setReferenceConversion. Now initially,
+// conversionType_p = type_p.  If the user changes type_p to
+// something else, and then we remake the machine, that would 
+// use whatever values are in the above Measures, and that
+// could still be the default values.  So better is to turn off
+// the current conversion, and demand the user re-issues the
+// setReferenceConversion function
+
+   if (oldType != conversionType_p) {
+      LogIO os(LogOrigin("SpectralCoordinate", "setFrequencySystem"));
+      os << LogIO::WARN << "Resetting the conversion frequency system " << MFrequency::showType(conversionType_p) << endl;
+      os << "to the new native frequency system " << MFrequency::showType(type_p) << endl;
+      os << "You must explicitly reset the conversion frequency system if desired" << LogIO::POST;
+   }
+//
+   deleteConversionMachines();
+   conversionType_p = type_p;
 }
 
 
@@ -604,11 +595,15 @@ Bool SpectralCoordinate::near(const Coordinate& other,
          return False;
       }
    }
-//
+
+// Velocity Machine
+
    if (prefVelType_p != sCoord.preferredVelocityType()) {
       set_error("The SpectralCoordinates have differing preferred velocity types");
       return False;
    }
+
+// Conversion Machine. Do we really care about it ? It's not fundamental
 
 // Leave it to TabularCoordinate to report errors
 
@@ -626,20 +621,9 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 {
     Bool ok = (!container.isDefined(fieldName));
     if (ok) {
+        String system = MFrequency::showType(type_p);
+//
 	Record subrec;
-	String system = "unknown";
-	switch (type_p) {
-	case MFrequency::REST: system = "REST"; break;
-	case MFrequency::LSRD: system = "LSRD"; break;
-	case MFrequency::LSRK: system = "LSRK"; break;
-	case MFrequency::BARY: system = "BARY"; break;
-	case MFrequency::GEO:  system = "GEO";  break;
-	case MFrequency::TOPO: system = "TOPO"; break;
-	case MFrequency::GALACTO: system = "GALACTO"; break;
-	case MFrequency::N_Types: // Fallthrough
-	default:
-	    AlwaysAssert(0, AipsError); // NOTREACHED
-	}
 	subrec.define("system", system);
 	subrec.define("restfreq", restFrequency());
         subrec.define("restfreqs", restFrequencies());
@@ -647,10 +631,32 @@ Bool SpectralCoordinate::save(RecordInterface &container,
         subrec.define("preferredunits", preferredWorldAxisUnits());
 	ok = (worker_p.save(subrec, "tabular"));
 
-// We need to save a few things pertaining to the conversion
-// machine state.  What a pain this is.  Can I save a machine
-// to a record and recover it ???  Have to wait for Wim...
+// Conversion machine state
 
+        String error;
+        Record subrec2;
+        {
+           MeasureHolder mh(direction_p);
+           Record subrec3;
+           mh.toRecord (error, subrec3);
+           subrec2.defineRecord("direction", subrec3);
+        }
+        {
+           MeasureHolder mh(position_p);
+           Record subrec3;
+           mh.toRecord (error, subrec3);
+           subrec2.defineRecord("position", subrec3);
+        }
+        {
+           MeasureHolder mh(epoch_p);
+           Record subrec3;
+           mh.toRecord (error, subrec3);
+           subrec2.defineRecord("epoch", subrec3);
+        }
+        String conversionType = MFrequency::showType(conversionType_p);
+        subrec2.define("system", conversionType);
+        subrec.defineRecord("conversion", subrec2);
+//
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
@@ -665,13 +671,13 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
 
     Record subrec(container.asRecord(fieldName));
     
-    // We should probably do more type-checking as well as checking
-    // for existence of the fields.
-    if (! subrec.isDefined("system")) {
+// We should probably do more type-checking as well as checking
+// for existence of the fields.
+
+    if (!subrec.isDefined("system")) {
 	return 0;
     }
-
-
+//
     String system;
     subrec.get("system", system);
     MFrequency::Types sys;
@@ -708,12 +714,6 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     delete tabular;
     retval->type_p = sys;
     retval->unit_p = Unit(retval->worldAxisUnits()(0));
-
-// Until such time that I save the state of the conversion layer
-// for now, have to ensure that the conversion is reinitialized
-// to not being on.
-
-   retval->conversionType_p = retval->type_p;
 //
     if (subrec.isDefined("prefVelType")) {                 // optional
        MDoppler::Types type = 
@@ -744,10 +744,56 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     }
 
 // The velocity machine is made empty because the default
-// constructor was used.  Therefore we must recreate it with the
+// SpectralCoordinate constructor was used.  Therefore we must recreate it with the
 // correct internals
 
     retval->reinitializeVelocityMachine();
+
+// Recover conversion machine state.   Old SpectralCoordinates won't have it.
+
+    if (subrec.isDefined("conversion")) {                   // Optional 
+       Record subrec2 = subrec.asRecord("conversion");
+       MeasureHolder mh;
+//
+       String tmp = subrec2.asString("system");
+       MFrequency::Types tp;
+       if (MFrequency::getType(tp, tmp)) {
+          retval->conversionType_p = tp;
+       } else {
+          retval->conversionType_p = retval->type_p;
+       }
+//
+       String error;
+       if (!mh.fromRecord(error,subrec2.asRecord("direction"))) {
+          delete retval;
+          throw(AipsError(error));         
+       } else {
+          retval->direction_p = mh.asMDirection();
+       }
+       if (!mh.fromRecord(error,subrec2.asRecord("position"))) {
+          delete retval;
+          throw(AipsError(error));         
+       } else {
+          retval->position_p = mh.asMPosition();
+       }
+       if (!mh.fromRecord(error,subrec2.asRecord("epoch"))) {
+          delete retval;
+          throw(AipsError(error));         
+       } else {
+          retval->epoch_p = mh.asMEpoch();
+       }
+//
+       retval->makeConversionMachines(retval->type_p, retval->conversionType_p,
+                                      retval->epoch_p, 
+                                      retval->position_p, 
+                                      retval->direction_p);
+    } else {
+
+// Old SpectralCoordinates won't have this state.  The conversion
+// machines remain unmade until setReferenceConversion is called.
+
+       retval->conversionType_p = retval->type_p;
+    }
 //
    return retval;
 }
