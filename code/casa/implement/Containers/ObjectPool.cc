@@ -36,19 +36,12 @@ ObjectPool<T, Key>::ObjectPool() :
   map_p(defStack_p) {}
 
 template <class T, class Key>
-ObjectPool<T, Key>::~ObjectPool() {}
-
-template <class T, class Key>
-T *ObjectPool<T, Key>::get(const Key key) {
-  if (key == cacheKey_p && cacheStack_p) return cacheStack_p->get();
-  else if (key == defKey_p) return defStack_p->get();
-  PoolStack<T, Key> **v0;
-  if (!(v0 = map_p.isDefined(key))) {
-    v0 = &(map_p.define(key, new PoolStack<T, Key>(key)));
+ObjectPool<T, Key>::~ObjectPool() {
+  delete defStack_p;
+  for (uInt i=0; i<map_p.ndefined(); i++) {
+    delete map_p.getVal(i);
+    map_p.getVal(i) = 0;
   };
-  cacheKey_p = key;
-  cacheStack_p = *v0;
-  return (*v0)->get();
 }
 
 template <class T, class Key>
@@ -89,6 +82,10 @@ template <class T, class Key>
 void ObjectPool<T, Key>::clear() {
   clearStacks();
   for (uInt i=0; i<map_p.ndefined(); i++) {
-    if (map_p.getVal(i)->nelements() == 0) map_p.remove(map_p.getKey(i));
+    if (map_p.getVal(i)->nelements() == 0) {
+      delete map_p.getVal(i);
+      map_p.getVal(i) = 0;
+      map_p.remove(map_p.getKey(i));
+    };
   };
 }

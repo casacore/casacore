@@ -108,7 +108,7 @@ template <class T, class Key> class ObjectPool {
   // object is detached from the stack, and has to be returned with the 
   // <src>release</src> method. The object should not be deleted by caller.
   // <group>
-  T *get(const Key key=Key());
+  T *get(const Key key=Key()) { return getStack(key).get(); };
   // </group>
 
   // Get the object stack for the given key
