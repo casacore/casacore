@@ -26,8 +26,14 @@ contain data. Instead it contains references to the rows and columns
 in the original table. Thus modifying data in a reference table means
 that effectively the data in the original table is modified.
 
+Apart from the aforementioned abilities, TaQL can
+calculate an arbitrary expression (including subqueries) on a
+table. This can be useful to derive values from a table (e.g. the
+number of flags set in a measurement set). It could even be used as a
+desk calculator.
+
 \section{Syntax}
-TaQL contains four commands.
+TaQL contains five commands.
 In the commands shown below the square brackets are not part of the
 syntax, but indicate the optional parts of the commands.
 
@@ -65,13 +71,24 @@ table list.
 \end{verbatim}
 It can be used to delete some or all rows from the first table
 in the table list.
+
+\item calculation
+\begin{verbatim}
+  CALC [FROM table_list CALC] expression
+\end{verbatim}
+It can be used to calculate an expression, in which columns
+in a table can be used.
+
 \end{itemize}
 The commands and verbs in the commands are
 case-insensitive, but case is important in string values and
 in names of columns and keywords. Whitespace (blanks and tabs) can
 be used at will.
 \\\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
-UPDATE, INSERT, and DELETE command in more detail. Hereafter the
+UPDATE, INSERT, and DELETE command in more detail.
+\\\htmlref{Another section (Calculations on a table)}{TAQL:CALCULATING}
+explains the CALC command in more detail.
+\\Hereafter the
 various parts of the SELECT command are explained.
 
 \begin{description}
@@ -1481,6 +1498,39 @@ deletes the rows matching the WHERE expression.
 be able to use, for example, keywords from other tables.
 Rows will be deleted from the first table mentioned in the FROM part.
 
+\section{\label{TAQL:CALCULATING}Calculations on a table}
+TaQL can be used to get derived values from a table by means of an
+expression. The expression can result in any data type and value type.
+For example, if the expression uses an array column, the result might
+be a vector of arrays (an array for each row). If the expression uses
+a scalar column, the result might be a vector of scalars or even a
+single scalar if a reduction function like SUM is used.
+
+The exact syntax is:
+\begin{verbatim}
+  CALC [FROM table_list CALC] expression
+\end{verbatim}
+The part in square brackets can be omitted if no column is (directly)
+used in the expression. The examples will make clear what that means.
+
+\begin{verbatim}
+  CALC 1+2
+\end{verbatim}
+is a simple expression not using a table. It shows how the CALC
+command can be used as a desk calculator.
+
+\begin{verbatim}
+  CALC FROM mytable CALC mean(column1+column2)
+\end{verbatim}
+gives a vector of scalars containing the mean per row.
+
+\begin{verbatim}
+  CALC sum([SELECT FROM mytable CALC GIVING [mean(column1+column2)]])
+\end{verbatim}
+gives a single scalar giving the sum of the means in each row.
+Note that in this command the CALC command does not need the FROM
+clause, because it does not use a column itself. Columns are only
+used in the nested query which has a FROM clause itself.
 
 \section{Examples}
 \begin{description}
@@ -1617,6 +1667,37 @@ Rows will be deleted from the first table mentioned in the FROM part.
           \\\texttt{values (1,0,F)}
       \\adds a row to the DATA\_DESCRIPTION subtable and initializes it.
                    
+\end{description}
+
+\subsection{Calculation examples}
+\begin{description}
+  \item[] \texttt{ calc 1+2 }
+      \\uses TaQL as a desktop calculator.
+
+  \item[] \texttt{ calc sum([select from MY.MS giving [ntrue(FLAG)]]) }
+      \\determines the total number of flags set in the measurement set.
+
+  \item[] \texttt{ calc from [select from MY.MS where ANTENNA1==0] }
+          \\\texttt{ calc mean(abs(DATA)) }
+
+        calculates for each row the mean of the data for the selected
+        subset of the measurement set.
+
+  \item[] \texttt{ calc mean([select from MY.MS where ANTENNA1==0 }
+          \\\texttt{giving [mean(abs(DATA))]]) }
+
+        looks like the previous example. It, however, calculates the
+        mean of the mean of the data in each row for the selected
+        subset of the measurement set.
+
+  \item[] \texttt{ calc max([select from MY.MS where isdefined(DATA) }
+          \\\texttt{ giving [max(abs(VIDEO\_POINT-MEANS(DATA,2)))]]) }
+
+        shows the maximum absolute difference between VIDEO\_POINT of
+        each correlation and the mean of the DATA for that correlation.
+        Note that the 2 indicates averaging over the second axis,
+        thus the frequency axis.
+
 \end{description}
 
 
