@@ -5609,3 +5609,4 @@
 15 238 src rm atnf/implement/test
 15 240 src mv app_image trial/apps/app_image
 15 249 src rm nrao/apps/vlatoms
+15 249 sys rm bin/vlatoms
