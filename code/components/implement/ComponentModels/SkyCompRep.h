@@ -285,7 +285,6 @@ public:
                   const CoordinateSystem& cSys,
                   ComponentType::Shape componentShape,
                   Stokes::StokesTypes stokes);
-  // </group>
 
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
