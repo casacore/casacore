@@ -88,18 +88,21 @@
 //
 //            The default is not to invoke windowing or fitting.
 //
-//   smaxes   Specifies which axes (1 relative) you want to smooth to invoke
+//   smoothaxes
+//            Specifies which axes (1 relative) you want to smooth to invoke
 //            the smooth and clip method.  You must also specify keywords
 //            "smwidth", "smtype", "include" or "exclude"
 //
 //            Default is to smooth no axes.
 //
-//   smtype   Specifies the type of smoothing kernel for each axis.   Choices are
+//   smoothtypes
+//            Specifies the type of smoothing kernel for each axis.   Choices are
 //            from "gaussian", "boxcar", and "hanning". 
 //
 //            There is no default (if axes set).
 //            
-//   smwidth  Specifies the width (in pixels) of the smoothing kernel for each 
+//   smoothwidths 
+//            Specifies the width (in pixels) of the smoothing kernel for each 
 //            axis given by the "axes" keyword.   For Hanning kernels,       
 //            FWHM is always set to 3, as triangular kernels of greater width have 
 //            no mathematical basis.  For boxcar kernels, you must give an
@@ -200,9 +203,9 @@ try {
    inputs.Create("trc", "-10", "trc");
    inputs.Create("inc", "-10", "inc");
    inputs.Create("method","","Method (window,fit,inter)");
-   inputs.Create("smaxes","-100","Smoothing axes");
-   inputs.Create("smwidth", "-100.0", "Smoothing width along axes");
-   inputs.Create("smtype","","Smoothing kernel types");
+   inputs.Create("smoothaxes","-100","Smoothing axes");
+   inputs.Create("smoothwidths", "-100.0", "Smoothing width along axes");
+   inputs.Create("smoothtypes","","Smoothing kernel types");
    inputs.Create("include", "0.0", "Pixel range to include");
    inputs.Create("exclude", "0.0", "Pixel range to exclude");
    inputs.Create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
@@ -220,9 +223,9 @@ try {
    const Block<Int> trcB(inputs.GetIntArray("trc"));
    const Block<Int> incB(inputs.GetIntArray("inc"));
    const String method = inputs.GetString("method");
-   const Block<Int> smoothAxesB = inputs.GetIntArray("smaxes");
-   const String kernels = inputs.GetString("smtype");
-   const Block<Double> kernelWidthsB = inputs.GetDoubleArray("smwidth");
+   const Block<Int> smoothAxesB = inputs.GetIntArray("smoothaxes");
+   const String kernels = inputs.GetString("smoothtypes");
+   const Block<Double> kernelWidthsB = inputs.GetDoubleArray("smoothwidths");
    const Block<Double> includeB = inputs.GetDoubleArray("include");
    const Block<Double> excludeB = inputs.GetDoubleArray("exclude");
    const Block<Double> snrB = inputs.GetDoubleArray("snr");
@@ -413,27 +416,61 @@ try {
 
 // Set inputs.  
 
-      if (validInputs(MOMENTS)) {if (!moment.setMoments(moments)) return 1;}
-      if (validInputs(AXIS)) {if (!moment.setMomentAxis(momentAxis)) return 1;}
+      if (validInputs(MOMENTS)) {
+         if (!moment.setMoments(moments)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
+      if (validInputs(AXIS)) {
+         if (!moment.setMomentAxis(momentAxis)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
       if (validInputs(METHOD)) {
-         if (!moment.setWinFitMethod(winFitMethods)) return 1;
+         if (!moment.setWinFitMethod(winFitMethods)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
       if (validInputs(SMOOTH)) {
-         if (!moment.setSmoothMethod(smoothAxes, kernelTypes, kernelWidths)) return 1;
+         if (!moment.setSmoothMethod(smoothAxes, kernelTypes, kernelWidths)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
-      if (validInputs(RANGE)) {if (!moment.setInExCludeRange(include, exclude)) return 1;}
-      if (validInputs(SNR)) {if (!moment.setSnr(peakSNR, stdDeviation)) return 1;}
-      if (validInputs(OUT)) {moment.setOutName(out);}
-      if (validInputs(SMOUT)) moment.setSmoothOutName(smOut);
+      if (validInputs(RANGE)) {
+         if (!moment.setInExCludeRange(include, exclude)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
+      if (validInputs(SNR)) {
+         if (!moment.setSnr(peakSNR, stdDeviation)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
+      }
+      if (validInputs(OUT)) {
+         moment.setOutName(out);
+      }
+      if (validInputs(SMOUT)) {
+         moment.setSmoothOutName(smOut);
+      }
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
-         if (!moment.setPlotting (plotter, nxy, yInd)) return 1;
+         if (!moment.setPlotting (plotter, nxy, yInd)) {
+            os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
 
 // Do work
 
       if (!moment.createMoments()) {
-         return 1;
+         os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
+         exit(1);
       }
 
 // Test copy constructor// Test assignment operator

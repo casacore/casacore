@@ -289,30 +289,53 @@ try {
 // Set state
       
       if (validInputs(AXES)) {
-         if (!histo.setAxes(cursorAxes)) return 1;
+         if (!histo.setAxes(cursorAxes)) {
+            os << histo.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
-      if (!histo.setNBins(nBins)) return 1;
+      if (!histo.setNBins(nBins)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
       if (validInputs(RANGE)) {
-         if (!histo.setIncludeRange(include)) return 1;
+         if (!histo.setIncludeRange(include)) {
+            os << histo.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
-      if (!histo.setGaussian (doGauss)) return 1;
-      if (!histo.setForm(doLog, doCumu)) return 1;
-      if (!histo.setStatsList(doList)) return 1;
+      if (!histo.setGaussian (doGauss)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
+      if (!histo.setForm(doLog, doCumu)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
+      if (!histo.setStatsList(doList)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
       PGPlotter plotter(device);
-      if (!histo.setPlotting(plotter, nxy)) return 1;
+      if (!histo.setPlotting(plotter, nxy)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
 
 // Display histograms
 
-      Bool ok = histo.display();
+      if (!histo.display()) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+      }
 
 // Get histograms   
 
       Array<Float> values, counts;
       os << LogIO::NORMAL << "Recovering histogram arrays" << LogIO::POST;
-      ok = histo.getHistograms(values,counts);
-      if (!ok) {
-        os << LogIO::SEVERE << "Error recovering histograms" << LogIO::POST;
-        return 1;
+      if (!histo.getHistograms(values,counts)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
       }
 //      cout << "values=" << values.ac() << endl;
 //      cout << "counts=" << counts.ac() << endl;
@@ -320,10 +343,9 @@ try {
       os << LogIO::NORMAL << "Recovering individual histogram arrays" << LogIO::POST;
       Vector<Float> valuesV, countsV;
       IPosition pos(histo.displayAxes().nelements(),0);
-      ok = histo.getHistogram(valuesV,countsV,pos,False);
-      if (!ok) {
-        os <<  LogIO::SEVERE <<  "Error recovering individual histograms" << LogIO::POST;
-        return 1;
+      if (!histo.getHistogram(valuesV,countsV,pos,False)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
       }
 
 //      cout << "values=" << valuesV.ac() << endl;
@@ -343,8 +365,14 @@ try {
 // Test setNewImage
  
      os << "Test setNewImage" << LogIO::POST;
-     histo.setNewImage(inImage);
-     if (!histo.display()) return 1;
+     if (!histo.setNewImage(inImage)) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+     } 
+     if (!histo.display()) {
+         os << histo.errorMessage() << LogIO::POST;
+         exit(1);
+     }
 
    } else {
       os << "images of type " << imageType << " not yet supported" << endl;

@@ -299,15 +299,27 @@ try {
 
 // Set state
       if (validInputs(AXES)) {
-         if (!stats.setAxes(cursorAxes)) return 1;
+         if (!stats.setAxes(cursorAxes)) {
+            os << stats.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
       if (validInputs(RANGE)) {
-         if (!stats.setInExCludeRange(include, exclude, True)) return 1;
+         if (!stats.setInExCludeRange(include, exclude, True)) {
+            os << stats.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
-      if (!stats.setList(doList)) return 1;
+      if (!stats.setList(doList)) {
+         os << stats.errorMessage() << LogIO::POST;
+         exit(1);
+      }
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
-         if (!stats.setPlotting(plotter, statisticTypes, nxy)) return 1;
+         if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
+            os << stats.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
 
 // Recover things
@@ -319,55 +331,59 @@ try {
 
      Array<Float> data;
      os << LogIO::NORMAL << "Recovering npts array"  << endl;
-     Bool ok = stats.getNPts(data);
-     if (!ok) os << "Error recovering npts array" << endl;
-
+     if (!stats.getNPts(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering sum array" << endl;
-     ok = stats.getSum(data);
-     if (!ok) os << "Error recovering sum array" << endl;
-
+     if (!stats.getSum(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering sum squared array" << endl;
-     ok = stats.getSumSquared(data);
-     if (!ok) os << "Error recovering sum squared array" << endl;
-
+     if (!stats.getSumSquared(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering min array" << endl;
-     ok = stats.getMin(data);
-     if (!ok) os << "Error recovering min array" << endl;
-
+     if (!stats.getMin(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering max array" << endl;
-     ok = stats.getMax(data);
-     if (!ok) os << "Error recovering max array" << endl;
-
+     if (!stats.getMax(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering mean array" << endl;
-     ok = stats.getMean(data);
-     if (!ok) os << "Error recovering mean array" << endl;
-
+     if (!stats.getMean(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering sigma array " << endl;
-     ok = stats.getSigma(data);
-     if (!ok) os << "Error recovering sigma array" << endl;
-
+     if (!stats.getSigma(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering variance array " << endl;
-     ok = stats.getVariance(data);
-     if (!ok) os << "Error recovering variance array" << endl;
-     
+     if (!stats.getVariance(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering rms array" << endl;
-     ok = stats.getRms(data);
-     if (!ok) os << "Error recovering rms array" << endl;
-
-
+     if (!stats.getRms(data)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
      os << "Recovering statistics slice from origin" << endl;
      IPosition pos(stats.displayAxes().nelements(),0);
      IPosition pos2(nDim,0);
      Vector<Float> dataV;
-     ok = stats.getStats(dataV, pos, False);
-     if (!ok) os << "Error recovering statistics slice " << endl;
-     ok = stats.getStats(dataV, pos2, True);
-     if (!ok) os << "Error recovering statistics slice " << endl;
-     os.post();
+     if (!stats.getStats(dataV, pos, False)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
+     if (!stats.getStats(dataV, pos2, True)) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
 
 // Display statistics
 
-     if (!stats.display()) return 1;
+     if (!stats.display()) {
+        os << stats.errorMessage() << LogIO::POST;
+        exit(1);
+     }
+
 
 
 // Test copy constructor
@@ -384,8 +400,9 @@ try {
 
      os << "Test setNewImage" << LogIO::POST; 
      stats.setNewImage(inImage);
-     if (!stats.display()) return 1;
-
+     if (!stats.display()) {
+        os << stats.errorMessage() << LogIO::POST;
+     }
    } else {
       os << LogIO::NORMAL << "images of type " << imageType << " not yet supported" << LogIO::POST;
       return 1;
