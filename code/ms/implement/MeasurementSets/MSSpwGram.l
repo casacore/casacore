@@ -129,11 +129,18 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
                 }
 
 {INT}     { msSpwGramPosition() += yyleng;
-            lvalp->dval = atof(MSSpwGramtext);
+            lvalp->ival = atoi(MSSpwGramtext);
             return INDEX;
 	  }
 
+{FNUMBER} { msSpwGramPosition() += yyleng;
+            lvalp->dval = atof(MSSpwGramtext);
+            return NUMBER;
+	  }
+
+
 {SPWNAME} { msSpwGramPosition() += yyleng;
+            lvalp->str = MSSpwGramtext;
             return SPWNAME;
 	  }
 
