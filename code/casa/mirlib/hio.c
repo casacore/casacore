@@ -1,6 +1,6 @@
 /*
     hio.c: Routines to manipulate the file heirarch for miriad library.
-    Copyright (C) 1999
+    Copyright (C) 1999,2001
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it

@@ -1,5 +1,5 @@
 # README: README file for miriad library.
-# Copyright (C) 1993,1994,1995,1997,1999
+# Copyright (C) 1993,1994,1995,1997,1999,2001
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This library is free software; you can redistribute it and/or modify it
@@ -33,17 +33,19 @@ for their offline calibration and data reduction needs.
 More details on the MIRIAD package can be found on:
 
 	http://bima.astro.umd.edu/bima/miriad/
-or	http://www.atnf.csiro.au/Software/Analysis/miriad/
+or	http://www.atnf.csiro.au/computing/software/miriad/
 
 Although the BIMA and ATNF versions use a slightly different directory
-structure (January 1997), the source code is the same. You should be
-able to find all subroutines in $MIR/src/sub, except for miriad.h,
-which was specifically generated for the AIPS++ project.
+structure (January 1997), the source code is essentially the same. You 
+should be able to find all subroutines in $MIR/src/subs, except for
+miriad.h, which was specifically generated for the AIPS++ project.
+MIRIAD V3 (the BIMA version of MIRIAD) has been placed under CVS control,
+mirlib is a direct extraction of that release (June 2001)
 
 Most of the low level C code was developed by Bob Sault
 (rsault@atnf.csiro.au).
 
-Correspondence concerning MIRLIB may also be directed to Doug Roberts
-(dougr@ncsa.uiuc.edu) or Peter Teuben (teuben@astro.umd.edu).
+Correspondence concerning MIRLIB should be directed to Peter Teuben
+(teuben@astro.umd.edu).
 
 
