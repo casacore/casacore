@@ -1,5 +1,5 @@
 //# WCCompound.h: Base class for compound WCRegion objects
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@ public:
     
 protected:
     // Assignment (copy semantics) makes only sense for a derived class.
-    virtual WCCompound& operator= (const WCCompound& other);
+    WCCompound& operator= (const WCCompound& other);
 
     // Convert each WCRegion to an LCRegion.
     // The axes argument tells which axes to use from the coordinate
