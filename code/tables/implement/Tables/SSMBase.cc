@@ -49,24 +49,25 @@
 
 
 SSMBase::SSMBase (uInt aBucketSize,uInt aCacheSize)
-  : DataManager          (),
-    itsVersion           (1),
-    itsIosFile           (0),
-    itsNrRows            (0),
-    itsCache             (0),
-    itsFile              (0),
-    itsStringHandler     (0),
-    itsPersCacheSize     (max(aCacheSize,2u)),
-    itsCacheSize         (0),
-    itsNrBuckets         (0), 
-    itsNrIdxBuckets      (0),
-    itsFirstIdxBucket    (-1),
-    itsLastStringBucket  (-1),
-    itsIndexLength       (0),
-    itsFreeBucketsNr     (0),
-    itsFirstFreeBucket   (-1),
-    itsBucketSize        (aBucketSize),
-    isDataChanged        (False)
+: DataManager          (),
+  itsDataManName       ("SSM"),
+  itsVersion           (1),
+  itsIosFile           (0),
+  itsNrRows            (0),
+  itsCache             (0),
+  itsFile              (0),
+  itsStringHandler     (0),
+  itsPersCacheSize     (max(aCacheSize,2u)),
+  itsCacheSize         (0),
+  itsNrBuckets         (0), 
+  itsNrIdxBuckets      (0),
+  itsFirstIdxBucket    (-1),
+  itsLastStringBucket  (-1),
+  itsIndexLength       (0),
+  itsFreeBucketsNr     (0),
+  itsFirstFreeBucket   (-1),
+  itsBucketSize        (aBucketSize),
+  isDataChanged        (False)
 {
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
@@ -76,25 +77,25 @@ SSMBase::SSMBase (uInt aBucketSize,uInt aCacheSize)
 SSMBase::SSMBase (const String& aDataManName,
 		  uInt aBucketSize,
                   uInt aCacheSize)
-  : DataManager          (),
-    itsDataManName       (aDataManName),
-    itsVersion           (1),
-    itsIosFile           (0),
-    itsNrRows            (0),
-    itsCache             (0),
-    itsFile              (0),
-    itsStringHandler     (0),
-    itsPersCacheSize     (max(aCacheSize,2u)),
-    itsCacheSize         (0),
-    itsNrBuckets         (0),
-    itsNrIdxBuckets      (0),
-    itsFirstIdxBucket    (-1),
-    itsLastStringBucket  (-1),
-    itsIndexLength       (0),
-    itsFreeBucketsNr     (0),
-    itsFirstFreeBucket   (-1),
-    itsBucketSize        (aBucketSize),
-    isDataChanged        (False)
+: DataManager          (),
+  itsDataManName       (aDataManName),
+  itsVersion           (1),
+  itsIosFile           (0),
+  itsNrRows            (0),
+  itsCache             (0),
+  itsFile              (0),
+  itsStringHandler     (0),
+  itsPersCacheSize     (max(aCacheSize,2u)),
+  itsCacheSize         (0),
+  itsNrBuckets         (0),
+  itsNrIdxBuckets      (0),
+  itsFirstIdxBucket    (-1),
+  itsLastStringBucket  (-1),
+  itsIndexLength       (0),
+  itsFreeBucketsNr     (0),
+  itsFirstFreeBucket   (-1),
+  itsBucketSize        (aBucketSize),
+  isDataChanged        (False)
 {
   // Determine the data format (local or canonical).
   // For the moment it is always canonical (until Table supports it).
@@ -159,6 +160,7 @@ String SSMBase::dataManagerName() const
 void SSMBase::clearCache()
 {
   if (itsCache != 0) {
+    itsStringHandler->flush();
     itsCache->clear();
   }
 }
@@ -270,7 +272,7 @@ void SSMBase::makeCache()
     
     if (itsPtrIndex.nelements() == 0) {
       itsFile->open();
-      readIndex();
+      readHeader();
       forceFill=True;
     }
     
@@ -289,7 +291,7 @@ void SSMBase::makeCache()
 		      itsFirstFreeBucket);
 
     if (forceFill) {
-      fillIndexBuckets();
+      readIndexBuckets();
     }
   }
 }
@@ -307,7 +309,7 @@ uInt SSMBase::getNewBucket()
   return getCache().addBucket(aBucketPtr);
 }
 
-void SSMBase::readIndex()
+void SSMBase::readHeader()
 {
   itsFile->seek(0);
   
@@ -352,7 +354,7 @@ void SSMBase::readIndex()
   itsPtrIndex = 0;
 }
 
-void SSMBase::fillIndexBuckets()
+void SSMBase::readIndexBuckets()
 {
   TypeIO*   aMio;
   MemoryIO  aMemBuf(itsIndexLength);
@@ -674,13 +676,13 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
   isDataChanged = True;
 }
 
-void SSMBase::removeBucket(const uInt aBucketNr)
+void SSMBase::removeBucket (uInt aBucketNr)
 {
   getCache().getBucket(aBucketNr);
   getCache().removeBucket();
 }  
 
-char*  SSMBase::getBucket(const uInt aBucketNr)
+char*  SSMBase::getBucket (uInt aBucketNr)
 {
   return itsCache->getBucket(aBucketNr);
 }
@@ -854,14 +856,14 @@ void SSMBase::resync (uInt aNrRows)
 {
   itsNrRows = aNrRows;
   if (itsPtrIndex.nelements() != 0) {
-    readIndex();
+    readHeader();
   }
   if (itsCache != 0) {
     itsCache->resync (itsNrBuckets, itsFreeBucketsNr, 
 		      itsFirstFreeBucket);
   }
   if (itsPtrIndex.nelements() != 0) {
-    fillIndexBuckets();
+    readIndexBuckets();
   }  
   if (itsStringHandler != 0) {
     itsStringHandler->resync();
@@ -924,11 +926,6 @@ void SSMBase::reopenRW()
 void SSMBase::init (Bool doMakeIndex)
 {
   // Determine the size of a uInt in external format.
-  if (isCanonical) {
-    itsUIntSize = ValType::getCanonicalSize (TpUInt);
-  }else{
-    itsUIntSize = ValType::getTypeSize (TpUInt);
-  }
   if (doMakeIndex) {
     uInt aNrCol = ncolumn();
     itsColumnOffset.resize(aNrCol,True);                            
