@@ -172,6 +172,9 @@ public:
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
 private:
+    // A copy of a TableExprNodeSetElem cannot be made.
+    TableExprNodeSetElem& operator= (const TableExprNodeSetElem&);
+
     // Construct an element from the given parts and take over their pointers.
     // It is used by evaluate to construct an element in a rather cheap way.
     TableExprNodeSetElem (const TableExprNodeSetElem& that,
@@ -348,6 +351,9 @@ public:
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
 private:
+    // A copy of a TableExprNodeSet cannot be made.
+    TableExprNodeSet& operator= (const TableExprNodeSet&);
+
     // Convert a bounded set to an Array.
     // <group>
     Array<Bool>     toArrayBool     (uInt rownr) const;
