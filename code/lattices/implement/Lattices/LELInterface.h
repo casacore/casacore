@@ -118,13 +118,13 @@ class PixelRegion;
 //  The results of the computations are either returned in the buffer in
 //  the <src>eval</src> function or by value by <src>getScalar</src>
 //
-//  The <src>region</src> argument in the <src>eval</src> function 
-//  specifies which part of the Lattice is being evaluated. 
 //  The classes evaluate the expression for each specified Lattice
-//  chunk (usually tile by tile).    The absence of
-//  the <src>region</src> argument in the <src>getScalar</src> function 
-//  emphasises the scalar nature; the result does not depend upon
-//  some chunk of the Lattice, but the whole Lattice.
+//  chunk (usually tile by tile).    The <src>region</src> argument 
+//  in the <src>eval</src> function specifies the shape of the 
+//  Lattice being evaluated (not the shape of the current chunk being 
+//  iterated through and evaluated).  The absence of the <src>region</src> 
+//  argument in the <src>getScalar</src> function emphasises the 
+//  scalar nature; a scalar expression does not have a shape.
 //
 // </synopsis> 
 //
