@@ -400,7 +400,18 @@ void RFFlagCube::plotImage ( PGPlotterInterface &pgp,const Matrix<Float> &img,
 // draw box and color bar 
   pgp.box(xopt,xtick,0,yopt,0,0);
   if( wedge )
+  {
     pgp.wedg("RI",.5,4,max(img),0,"");
+    if( max(img)>100.01 )  // .01 avoids precision effects
+    { 
+      IPosition imin(2),imax(2);
+      Float vmin,vmax;
+      minMax(vmin,vmax,imin,imax,img);
+      default_sink<<LogIO::WARN<<"Oops, flag density "<<vmax<<"% in plot \""<<ltop<<"\"\n"
+          "at position "<<imax(0)<<","<<imax(1)<<"\n"
+          "Please submit a bug report!\n"<<LogIO::POST;
+    }
+  }
 // label frequencies
   if( xfreq ) 
   {
@@ -773,13 +784,15 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
           if( rowAgentFlagged(ifr,it) )
           {
             img1(it,revant(a1)) += scale1;
-            img1(it,revant(a2)) += scale2;
+            if( a1!=a2 )
+              img1(it,revant(a2)) += scale2;
           }
           uInt n=chunk.nfIfrTime(ifr,it);
           if( n )
           {
             img2(it,revant(a1)) += n*scale1/num(CHAN);
-            img2(it,revant(a2)) += n*scale2/num(CHAN);
+            if( a1!=a2 )
+              img2(it,revant(a2)) += n*scale2/num(CHAN);
           }
         }
       if( num(CHAN)>1 )
@@ -790,7 +803,8 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
             if( n )
             {
               img3(ich,revant(a1)) += n*100./row_per_ant(a1);
-              img3(ich,revant(a2)) += n*100./row_per_ant(a2);
+              if( a1!=a2 )
+                img3(ich,revant(a2)) += n*100./row_per_ant(a2);
             }
           }
     }
