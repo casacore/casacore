@@ -1031,7 +1031,8 @@ LatticeExprNode sign(const LatticeExprNode& expr)
 		 AipsError);
    Block<LatticeExprNode> arg(1);
    arg[0] = expr.makeFloat();
-   return new LELFunctionFloat(LELFunctionEnums::SIGN, arg);
+   LELFunctionFloat* ptr = new LELFunctionFloat(LELFunctionEnums::SIGN, arg);
+   return ptr;
 }
 
 LatticeExprNode ceil(const LatticeExprNode& expr)
@@ -1127,7 +1128,9 @@ LatticeExprNode formComplex(const LatticeExprNode& left,
    }
    arg[0] = left.makeDouble();
    arg[1] = right.makeDouble();
-   return new LELFunctionDComplex (LELFunctionEnums::COMPLEX, arg);
+   LELFunctionDComplex* ptr = new LELFunctionDComplex
+                                           (LELFunctionEnums::COMPLEX, arg);
+   return ptr;
 }
 
 
@@ -1574,7 +1577,8 @@ LatticeExprNode all (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function all" << endl;
 #endif
    Block<LatticeExprNode> arg(1, toBool(expr));
-   return new LELFunctionBool(LELFunctionEnums::ALL, arg);
+   LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::ALL, arg);
+   return ptr;
 }
 
 LatticeExprNode any (const LatticeExprNode& expr)
@@ -1583,7 +1587,8 @@ LatticeExprNode any (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function any" << endl;
 #endif
    Block<LatticeExprNode> arg(1, toBool(expr));
-   return new LELFunctionBool(LELFunctionEnums::ANY, arg);
+   LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::ANY, arg);
+   return ptr;
 }
 
 LatticeExprNode ntrue (const LatticeExprNode& expr)
@@ -1592,7 +1597,9 @@ LatticeExprNode ntrue (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function ntrue" << endl;
 #endif
    Block<LatticeExprNode> arg(1, toBool(expr));
-   return new LELFunctionDouble(LELFunctionEnums::NTRUE, arg);
+   LELFunctionDouble* ptr = new LELFunctionDouble
+                                           (LELFunctionEnums::NTRUE, arg);
+   return ptr;
 }
 
 LatticeExprNode nfalse (const LatticeExprNode& expr)
@@ -1601,7 +1608,9 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function nfalse" << endl;
 #endif
    Block<LatticeExprNode> arg(1, toBool(expr));
-   return new LELFunctionDouble(LELFunctionEnums::NFALSE, arg);
+   LELFunctionDouble* ptr = new LELFunctionDouble
+                                           (LELFunctionEnums::NFALSE, arg);
+   return ptr;
 }
 
 LatticeExprNode nelements(const LatticeExprNode& expr)
@@ -1613,7 +1622,9 @@ LatticeExprNode nelements(const LatticeExprNode& expr)
    if (expr.isRegion()) {
       arg[0] = toBool (expr);
    }
-   return new LELFunctionDouble (LELFunctionEnums::NELEM, arg);
+   LELFunctionDouble* ptr = new LELFunctionDouble
+                                           (LELFunctionEnums::NELEM, arg);
+   return ptr;
 }
 
 LatticeExprNode ndim (const LatticeExprNode& expr)
@@ -1622,7 +1633,8 @@ LatticeExprNode ndim (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 2d function ndim" << endl;
 #endif
    Block<LatticeExprNode> arg(1, expr);
-   return new LELFunctionFloat(LELFunctionEnums::NDIM, arg);
+   LELFunctionFloat* ptr = new LELFunctionFloat(LELFunctionEnums::NDIM, arg);
+   return ptr;
 }
 
 LatticeExprNode length (const LatticeExprNode& expr,
@@ -1634,7 +1646,8 @@ LatticeExprNode length (const LatticeExprNode& expr,
    Block<LatticeExprNode> arg(2);
    arg[0] = expr;
    arg[1] = axis;
-   return new LELFunctionFloat(LELFunctionEnums::LENGTH, arg);
+   LELFunctionFloat* ptr = new LELFunctionFloat(LELFunctionEnums::LENGTH, arg);
+   return ptr;
 }
 
 LatticeExprNode isnan (const LatticeExprNode& expr)
@@ -1643,7 +1656,8 @@ LatticeExprNode isnan (const LatticeExprNode& expr)
    cout << "LatticeExprNode:: 1d function isnan" << endl;
 #endif
    Block<LatticeExprNode> arg(1, expr);
-   return new LELFunctionBool(LELFunctionEnums::ISNAN, arg);
+   LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::ISNAN, arg);
+   return ptr;
 }
 
 LatticeExprNode mask (const LatticeExprNode& expr)
@@ -1655,7 +1669,8 @@ LatticeExprNode mask (const LatticeExprNode& expr)
    if (expr.isRegion()) {
       arg[0] = toBool (expr);
    }
-   return new LELFunctionBool(LELFunctionEnums::MASK, arg);
+   LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::MASK, arg);
+   return ptr;
 }
 
 LatticeExprNode value (const LatticeExprNode& expr)
