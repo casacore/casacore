@@ -42,7 +42,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
-#include <trial/Measures/VelocityMachine.h>
+#include <aips/Measures/VelocityMachine.h>
 #include <aips/Utilities/ValType.h>
 
 #include <iomanip.h>
