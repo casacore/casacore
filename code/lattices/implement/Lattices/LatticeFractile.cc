@@ -505,7 +505,9 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
     T* dataPtr = array.getStorage (delData);
     result(0) = GenSort<T>::kthLargest (dataPtr, ntodo1, leftInx);
     result(1) = GenSort<T>::kthLargest (dataPtr, ntodo1, rightInx);
-    array.putStorage (dataPtr, delData);
+    // Storage only needs to be freed, but we need a const pointer for that.
+    const T* constDataPtr = dataPtr;
+    array.freeStorage (constDataPtr, delData);
     return result;
   }
   // Bad luck. We have to do some more work.
