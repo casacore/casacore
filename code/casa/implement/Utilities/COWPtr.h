@@ -237,6 +237,7 @@ public:
   // <group>
   void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
   void setReadOnly (const T *obj);
+  void setReadOnly ();
   // </group>
 
   // return a const reference to the object.
@@ -299,6 +300,11 @@ inline COWPtr<T> &COWPtr<T>::operator=(const COWPtr<T> &other)
 template <class T> inline void COWPtr<T>::setReadOnly (const T *obj)
 {
   set ((T*)obj, False, True);
+}
+
+template <class T> inline void COWPtr<T>::setReadOnly ()
+{
+  const_p = True;
 }
 
 template <class T> inline const T *COWPtr<T>::operator->() const
