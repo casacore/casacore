@@ -1,0 +1,15 @@
+
+change id: 0036
+ author:   Wim Brouw
+ date:     2000/08/22
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   quanta
+ type:     Code Documentation
+ category: New Bugfix
+ summary:  Added splitdate()
+Fulfilling enhancement request #1589, I have added a splitdate() function.
+Example:
+- dq.splitdate('today')
+[mjd=51778.948, year=2000, yearday=235, month=8, monthday=22, week=34, weekday=2, hour=22, min=45, sec=5]
