@@ -119,7 +119,7 @@ gpp_VS ImageSummary<T>::axisNames () const
    Int coordinate, axisInCoordinate;
    Vector<String> names(cSys.nPixelAxes());
 
-   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
       names(pixelAxis) = cSys.worldAxisNames()(worldAxis);
@@ -140,7 +140,7 @@ Vector<Double> ImageSummary<T>::referencePixels () const
    Int coordinate, axisInCoordinate;
    Vector<Double> refPix(cSys.nPixelAxes());
  
-   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       refPix(pixelAxis) = cSys.referencePixel()(pixelAxis) + 1.0;
    }
@@ -159,7 +159,7 @@ Vector<Double> ImageSummary<T>::referenceValues () const
    Int coordinate, axisInCoordinate;
    Vector<Double> refVals(cSys.nPixelAxes());
  
-   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
       refVals(pixelAxis) = cSys.referenceValue()(worldAxis);
@@ -178,7 +178,7 @@ Vector<Double> ImageSummary<T>::axisIncrements () const
    Int coordinate, axisInCoordinate;
    Vector<Double> incs(cSys.nPixelAxes());
  
-   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
       incs(pixelAxis) = cSys.increment()(worldAxis);
@@ -197,7 +197,7 @@ Vector<String> ImageSummary<T>::axisUnits () const
  
    Vector<String> units(cSys.nPixelAxes());
  
-   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
       units(pixelAxis) = cSys.worldAxisUnits()(worldAxis);
@@ -234,7 +234,8 @@ Bool ImageSummary<T>::hasAMask () const
 // See if image has a mask
 //
 {
-   return pImage_p->isMasked();
+  //   return pImage_p->isMasked();
+  return False;
 }
 
 
@@ -354,7 +355,7 @@ void ImageSummary<T>::list (LogIO& os,
 // as number of axes in image) 
 
 
-   Int pixelAxis;
+   uInt pixelAxis;
    Int coordinate, axisInCoordinate;
    for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
 
@@ -379,7 +380,7 @@ void ImageSummary<T>::list (LogIO& os,
 // Now find those pixel axes that have been removed and list their
 // associated coordinate information.
 
-   Int worldAxis;
+   uInt worldAxis;
    for (worldAxis=0; worldAxis<cSys.nWorldAxes(); worldAxis++) {
 
 
@@ -490,7 +491,7 @@ void ImageSummary<T>::getFieldWidths (uInt& widthName,
 
 // Loop over number of pixel axes
 
-   Int pixelAxis;
+   uInt pixelAxis;
    Int coordinate, axisInCoordinate;
    for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
 
