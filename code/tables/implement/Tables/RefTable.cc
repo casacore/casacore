@@ -461,9 +461,9 @@ Bool RefTable::isWritable() const
 
 void RefTable::deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
-			 int tableOption, Bool) const
+			 int tableOption, Bool, int endianFormat) const
 {
-    trueDeepCopy (newName, dataManagerInfo, tableOption);
+    trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat);
 }
 
 TableDesc RefTable::actualTableDesc() const

@@ -205,7 +205,7 @@ public:
     // It copies the contents of each row to get a real copy.
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
-			   int tableOption, Bool) const;
+			   int tableOption, Bool, int endianFormat) const;
 
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const;

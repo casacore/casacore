@@ -218,7 +218,8 @@ public:
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
 			   int tableOption,
-			   Bool valueCopy) const;
+			   Bool valueCopy,
+			   int endianFormat) const;
     // </group>
 
     // Get the table type.
@@ -464,7 +465,8 @@ protected:
     // Make a true deep copy of the table.
     void trueDeepCopy (const String& newName,
 		       const Record& dataManagerInfo,
-		       int tableOption) const;
+		       int tableOption,
+		       int endianFormat) const;
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it

@@ -87,6 +87,7 @@ public:
 			       const Record& dataManagerInfo,
 			       const Table& tab,
 			       Table::TableOption option,
+			       Table::EndianFormat endianFormat,
 			       Bool replaceTSM = True,
 			       Bool noRows = False);
 

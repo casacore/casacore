@@ -541,14 +541,18 @@ public:
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
     // <group>
-    // When making a deep copy, it is possible to specify the data managers
+    // The new table gets the given endian format. Note that the endian option
+    // is only used if a true deep copy of a table is made.
+    // <br>When making a deep copy, it is possible to specify the data managers
     // using the <src>dataManagerInfo</src> argument.
     // See <src>getDataManagerInfo</src> for more info about that record.
     void copy (const String& newName, TableOption) const;
     void deepCopy (const String& newName,
-		   TableOption, Bool valueCopy=False) const;
+		   TableOption, Bool valueCopy=False,
+		   EndianFormat=AipsrcEndian) const;
     void deepCopy (const String& newName, const Record& dataManagerInfo,
-		   TableOption, Bool valueCopy=False) const;
+		   TableOption, Bool valueCopy=False,
+		   EndianFormat=AipsrcEndian) const;
     // </group>
 
     // Make a copy of a table to a MemoryTable object.
@@ -964,8 +968,10 @@ inline void Table::copy (const String& newName, TableOption option) const
 inline void Table::deepCopy (const String& newName,
 			     const Record& dataManagerInfo,
 			     TableOption option,
-			     Bool valueCopy) const
-    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, option, valueCopy); }
+			     Bool valueCopy,
+			     EndianFormat endianFormat) const
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, option, valueCopy,
+			      endianFormat); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()

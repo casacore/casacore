@@ -92,7 +92,8 @@ public:
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
 			 int tableOption,
-			 Bool valueCopy) const;
+			 Bool valueCopy,
+			 int endianFormat) const;
   virtual TableDesc actualTableDesc() const;
   virtual Record dataManagerInfo() const;
   virtual TableRecord& keywordSet();

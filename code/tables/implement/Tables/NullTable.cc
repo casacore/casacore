@@ -116,7 +116,7 @@ Bool NullTable::isWritable() const
   return False;
 }
 
-void NullTable::deepCopy (const String&, const Record&, int, Bool) const
+void NullTable::deepCopy (const String&, const Record&, int, Bool, int) const
 {
   throwError ("deepCopy");
 }

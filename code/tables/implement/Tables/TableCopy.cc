@@ -46,7 +46,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 Table TableCopy::makeEmptyTable (const String& newName,
 				 const Record& dataManagerInfo,
 				 const Table& tab,
-				 Table::TableOption option, Bool replaceTSM,
+				 Table::TableOption option,
+				 Table::EndianFormat endianFormat,
+				 Bool replaceTSM,
 				 Bool noRows)
 {
   TableDesc tabDesc = tab.actualTableDesc();
@@ -65,7 +67,7 @@ Table TableCopy::makeEmptyTable (const String& newName,
   }
   SetupNewTable newtab (newName, tabDesc, Table::New);
   newtab.bindCreate (dminfo);
-  return Table(newtab, (noRows ? 0 : tab.nrow()));
+  return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
 }
 
 Table TableCopy::makeEmptyMemoryTable (const String& newName,

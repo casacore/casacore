@@ -326,9 +326,11 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
 
 void Table::deepCopy (const String& newName,
 		      TableOption option,
-		      Bool valueCopy) const
+		      Bool valueCopy,
+		      EndianFormat endianFormat) const
 {
-    baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy);
+    baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy,
+			    endianFormat);
 }
 
 Table Table::copyToMemoryTable (const String& newName) const

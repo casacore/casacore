@@ -375,10 +375,11 @@ void BaseTable::renameSubTables (const String&, const String&)
 void BaseTable::deepCopy (const String& newName,
 			  const Record& dataManagerInfo,
 			  int tableOption,
-			  Bool valueCopy) const
+			  Bool valueCopy,
+			  int endianFormat) const
 {
     if (valueCopy  ||  dataManagerInfo.nfields() > 0) {
-        trueDeepCopy (newName, dataManagerInfo, tableOption);
+        trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat);
     } else {
         copy (newName, tableOption);
     }
@@ -386,9 +387,10 @@ void BaseTable::deepCopy (const String& newName,
 
 void BaseTable::trueDeepCopy (const String& newName,
 			      const Record& dataManagerInfo,
-			      int tableOption) const
+			      int tableOption,
+			      int endianFormat) const
 {
-    // Throw exception is new name is same as old one.
+    // Throw exception if new name is same as old one.
     if (newName == name_p) {
         throw TableError
 	       ("Table::deepCopy: new name equal to old name " + name_p);
@@ -400,8 +402,9 @@ void BaseTable::trueDeepCopy (const String& newName,
     prepareCopyRename (newName, tableOption);
     // Create the new table and copy everything.
     Table oldtab(ncThis);
-    Table newtab = TableCopy::makeEmptyTable (newName, dataManagerInfo,
-					      oldtab, Table::New);
+    Table newtab = TableCopy::makeEmptyTable
+                        (newName, dataManagerInfo, oldtab, Table::New,
+			 Table::EndianFormat(endianFormat));
     TableCopy::copyRows (newtab, oldtab);
     TableCopy::copyInfo (newtab, oldtab);
     TableCopy::copySubTables (newtab, oldtab);

@@ -148,12 +148,12 @@ void MemoryTable::copy (const String& newName, int tableOption) const
   // Only use the current data manager info for possible
   // virtual column engines.
   Record dmInfo = colSetPtr_p->dataManagerInfo(True);
-  deepCopy (newName, dmInfo, tableOption, True);
+  deepCopy (newName, dmInfo, tableOption, True, Table::AipsrcEndian);
 }
 
 void MemoryTable::deepCopy (const String& newName,
 			    const Record& dataManagerInfo,
-			    int tableOption, Bool) const
+			    int tableOption, Bool, int endianFormat) const
 {
   // Make sure that all columns get by default the StandardStMan.
   // The given dmInfo is used to overwrite those defaults.
@@ -169,7 +169,7 @@ void MemoryTable::deepCopy (const String& newName,
   for (uInt i=0; i<dataManagerInfo.nfields(); i++) {
     dmInfo.defineRecord (i+1, dataManagerInfo.subRecord(i));
   }
-  trueDeepCopy (newName, dmInfo, tableOption);
+  trueDeepCopy (newName, dmInfo, tableOption, endianFormat);
 }
 
 void MemoryTable::rename (const String& newName, int)

@@ -139,7 +139,7 @@ public:
   virtual void copy (const String& newName, int tableOption) const;
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
-			 int tableOption, Bool) const;
+			 int tableOption, Bool, int endianFormat) const;
   // </group>
 
   // Rename the table. The tableOption is ignored.
