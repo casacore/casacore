@@ -80,8 +80,10 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     newtab.handleUnbound();
     newtab.columnSetPtr()->checkDataManagerNames();
     //# Get the data from the SetupNewTable object.
+    //# Set SetupNewTable object to in use.
     tdescPtr_p   = newtab.tableDescPtr();
     colSetPtr_p  = newtab.columnSetPtr();
+    newtab.setInUse();
     //# Create the table directory (and possibly delete existing files)
     //# as needed.
     makeTableDir();
@@ -93,10 +95,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     lockPtr_p->acquire (0, FileLocker::Write, 1);
     colSetPtr_p->linkToLockObject (this, lockPtr_p);
     //# Initialize the data managers.
-    //# Set SetupNewTable object to in use.
     Table tab(this, False);
     colSetPtr_p->initDataManagers (nrrow, tab);
-    newtab.setInUse();
     //# Initialize the columns if needed.
     if (initialize) {
 	colSetPtr_p->initialize (0, nrrow-1);
