@@ -3349,3 +3349,4 @@
 13 249 src rm atnf/implement/Atoms/make.csh
 13 249 src rm atnf/implement/Atoms/servo_clnt.c
 13 249 src rm atnf/implement/Atoms/servo_svc.c
+13 249 src rm atnf/implement/Atoms/DOatoms.cc.txt
