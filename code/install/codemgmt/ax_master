@@ -4407,3 +4407,4 @@
 14 293 src rm trial/implement/Ionosphere/test/rt2.cc
 14 293 src rm trial/implement/Ionosphere/test/rt3.cc
 14 296 src mv aips/implement/MeasurementSets/MSAntenna.h OldMSAntenna.h
+14 296 src mv OldMSAntenna.h aips/implement/MeasurementSets/OldMSAntenna.h
