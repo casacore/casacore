@@ -168,10 +168,10 @@ SkyComponent ImageSourceFinder<T>::findSourceInSky (LogIO& os, Vector<Double>& a
       }
    }
 // 
-   blc(pixelAxes(0)) -= 3;
-   blc(pixelAxes(1)) -= 3;
-   trc(pixelAxes(0)) += 3;
-   trc(pixelAxes(1)) += 3;
+   blc(pixelAxes(0)) -= 5;
+   blc(pixelAxes(1)) -= 5;
+   trc(pixelAxes(0)) += 5;
+   trc(pixelAxes(1)) += 5;
 //
    IPosition inc(nDim,1);
    LCBox::verify (blc, trc, inc, shape);
@@ -209,10 +209,22 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                                                  Double cutoff, Bool absFind,
                                                  Bool doPoint)
 {
+
 // Make sure the Image is 2D and that it holds the sky.  Exception if not.
 
    const CoordinateSystem& cSys = image.coordinates();
    Bool xIsLong = CoordinateUtil::isSky(os, cSys);
+
+// Width support
+
+   Int w = 5;
+   Int off = 2;
+   Int off2 = 1;
+   if (doPoint) {
+      w = 3;
+      off = 1;
+      off2 = 0;
+   }
 
 // Results matrix
 
@@ -227,7 +239,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 
 // Fitting data
  
-   NumericTraits<T>::PrecisionType mat[3][3];
+   NumericTraits<T>::PrecisionType mat[w][w];
    FitLSQ fit(6);
    Vector<T> gel(6);
    uInt rank;
@@ -237,83 +249,81 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 // Input data arrays
 
    IPosition inShape = image.shape();
-   uInt nx(inShape(0));
-   uInt ny(inShape(1));
-   if (ny <=3) {
-     os << "Need at least 3 rows in image" << LogIO::EXCEPTION;
+   Int nx = inShape(0);
+   Int ny = inShape(1);
+   if (ny <= w) {
+     os << "Need at least " << w << " rows in image" << LogIO::EXCEPTION;
    }  
 //
    IPosition inSliceShape(2, nx, 1);
-   Block<COWPtr<Array<T> > > inPtr(3);
-   Block<COWPtr<Array<Bool> > > inMaskPtr(3);
-   Matrix<Bool> inDone(3,nx);
+   Block<COWPtr<Array<T> > > inPtr(w);
+   Block<COWPtr<Array<Bool> > > inMaskPtr(w);
+   Matrix<Bool> inDone(w,nx);
    inDone = False;
-   for (uInt i=0; i<3; i++) {
-     inPtr[i] = COWPtr<Array<T> >(new Array<T>(inSliceShape));
-     inMaskPtr[i] = COWPtr<Array<Bool> >(new Array<Bool>(inSliceShape));
+   for (Int j=0; j<w; j++) {
+     inPtr[j] = COWPtr<Array<T> >(new Array<T>(inSliceShape));
+     inMaskPtr[j] = COWPtr<Array<Bool> >(new Array<Bool>(inSliceShape));
    }
-   Int inp(0);
-//
+      
+// Read first w-1 lines 
+
+   Int inp = 0;
    IPosition start(inShape);
    start = 0;  
-      
-// Read first line and set mask  
-
+   IPosition pos(1,0);
    Bool isRef, isMaskRef;   
-   isRef = image.getSlice(inPtr[inp], Slicer(start, inSliceShape), True);
-   isMaskRef = image.getMaskSlice(inMaskPtr[inp], Slicer(start, inSliceShape),
-                                  True);
-   for (uInt i0=0; i0<nx; i0++) inDone(inp, i0) =
-				  inMaskPtr[inp].ref()(IPosition(1, i0));
-   start(1) += 1;
-   
-// Read 2nd line and set mask
-
-   isRef = image.getSlice(inPtr[inp+1], Slicer(start, inSliceShape), True);
-   isMaskRef = image.getMaskSlice(inMaskPtr[inp+1], Slicer(start, inSliceShape),
-				     True);
-   for (uInt i0=0; i0<nx; i0++) {
-      inDone(inp+1, i0) = inMaskPtr[inp+1].ref()(IPosition(1, i0));
+//
+   for (Int j=0; j<(w-1); j++) {
+      isRef = image.getSlice(inPtr[inp+j], Slicer(start, inSliceShape), True);
+      isMaskRef = image.getMaskSlice(inMaskPtr[inp+j], Slicer(start, inSliceShape), True);
+      for (Int i=0; i<nx; i++) {
+         pos(0) = i;
+         inDone(inp+j, i) = inMaskPtr[inp+j].ref()(pos);
+      }
+      start(1) += 1;
    }
-   start(1) += 1;
    
-// Do all remaining lines  
+   
+// Loop through remaining lines  
                
-   for (uInt i=2; i<ny; i++) {
+   for (Int j=(w-1); j<ny; j++) {
       inp++;
-      inp %= 3;
-      isRef = image.getSlice(inPtr[(inp+1)%3],
-                             Slicer(start, inSliceShape), True);
-      isMaskRef = image.getMaskSlice(inMaskPtr[(inp+1)%3],
-                                     Slicer(start, inSliceShape), True);
-      for (uInt i0=0; i0<nx; i0++) inDone((inp+1)%3, i0) =
-				     !(inMaskPtr[(inp+1)%3].ref()(IPosition(1, i0)));
+      inp %= w;
+      isRef = image.getSlice(inPtr[(inp+1)%w], Slicer(start, inSliceShape), True);
+      isMaskRef = image.getMaskSlice(inMaskPtr[(inp+1)%w], Slicer(start, inSliceShape), True);
+      for (Int i=0; i<nx; i++) {
+         pos(0) = i;
+         inDone((inp+1)%w, i) = !(inMaskPtr[(inp+1)%w].ref()(pos));
+      }
       start(1) += 1;
          
 // All points
 
-      for (uInt j=1; j<nx-1; j++) {
-         if (inDone(inp, j)) continue;             // point already used or masked
+      for (Int i=off; i<(nx-off); i++) {
+         if (inDone(inp, i)) continue;             // point already used or masked
 //
-         NumericTraits<T>::PrecisionType x(inPtr[inp].ref()(IPosition(1,j)));
+         pos(0) = i;
+         NumericTraits<T>::PrecisionType v(inPtr[inp].ref()(pos));
          if (absFind) {                            // find pos/neg
-            asign = (x<0) ? -1.0 : 1.0;
-            x = abs(x);
+            asign = (v<0) ? -1.0 : 1.0;
+            v = abs(v);
          }  
-         if (x<0.8*cutoff*abs(rs(0,0)) ||
-             x<0.8*abs(rs(nMax-1,0))) continue;      // too small
+         if (v<0.8*cutoff*abs(rs(0,0)) ||
+             v<0.8*abs(rs(nMax-1,0))) continue;      // too small
          
 // Make local data field
             
-         Bool xt(False);
-         for (Int i0=-1; i0<2; i0++) {
-            for (Int i1=-1; i1<2; i1++) {
-               if (inDone((inp+i0+3)%3, j+i1)) {    // already used
+         Bool xt = False;
+         for (Int jj=-off; jj<(off+1); jj++) {
+            for (Int ii=-off; ii<(off+1); ii++) {
+               if (inDone((inp+jj+w)%w, i+ii)) {    // already used
                   xt = True; 
                   break;
                }
-               mat[i0+1][i1+1] = inPtr[(inp+i0+3)%3].ref()(IPosition(1, j+i1));
-               mat[i0+1][i1+1] *= asign;            // make abs
+//
+               pos(0) = i+ii;
+               mat[jj+off][ii+off] = inPtr[(inp+jj+w)%w].ref()(pos);
+               mat[jj+off][ii+off] *= asign;            // make abs
             }
             if (xt) break;
          }
@@ -321,25 +331,26 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                      
 // Test if a local peak
                 
-         if (x<=abs(mat[0][1]) || x<=abs(mat[2][1]) ||
-             x<=abs(mat[1][0]) || x<=abs(mat[1][2])) continue;
+         if (v<=abs(mat[0+off2][1+off2]) || v<=abs(mat[2+off2][1+off2]) ||
+             v<=abs(mat[1+off2][0+off2]) || v<=abs(mat[1+off2][2+off2])) continue;
 
 // Solve general ellipsoid
     
          fit.set(6);
-         for (Int i0=-1; i0<2; i0++) {
-            for (Int i1=-1; i1<2; i1++) {
+         for (Int jj=-off; jj<(off+1); jj++) {
+            for (Int ii=-off; ii<(off+1); ii++) {
                gel(0)= 1;
-               gel(1) = i0;
-               gel(2) = i1;
-               gel(3) = i0*i0;
-               gel(4) = i1*i1;
-               gel(5) = i0*i1;
-               fit.makeNorm(gel, 1.0 - 0.5*(abs(i1)+abs(i0)) + 0.25*abs(i0*i1),
-                            mat[i0+1][i1+1]);
+               gel(1) = jj;
+               gel(2) = ii;
+               gel(3) = jj*jj;
+               gel(4) = ii*ii;
+               gel(5) = jj*ii;
+               fit.makeNorm(gel, 1.0 - 0.5*(abs(ii)+abs(jj)) + 0.25*abs(jj*ii),
+                            mat[jj+off][ii+off]);
             }
          }
-         if (!fit.invert(rank)) continue;         // Cannot solve
+//
+         if (!fit.invert(rank)) continue;        // Cannot solve
          fit.solve(sol, sd, mu);
    
 // Find max
@@ -353,28 +364,35 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 // Amplitude
    
          sol(0) += sol(1)*r0 + sol(2)*r1 + sol(3)*r0*r0 + sol(4)*r1*r1 + sol(5)*r0*r1;
-         x = sol(0);
+         v = sol(0);
          if (absFind) {
-            x = abs(x);
+            v = abs(v);
             sol(0) = asign*sol(0);
          }
-         if (x<cutoff*abs(rs(0,0))) continue;             // too small
-         for (Int k=0; k<nMax; k++) {
-            if (x>=rs(k,0)) {
-               for (Int l=nMax-1; l>k; l--) {
-                  for (uInt i0=0; i0<3; i0++) rs(l,i0) = rs(l-1,i0);
-               }
-               rs(k,0) = sol(0);                      // Peak
-               rs(k,1) = i+r1-1;                      // Y
-               rs(k,2) = j+r0;                        // X
+         if (v<cutoff*abs(rs(0,0))) continue;             // too small
 //
+         for (Int k=0; k<nMax; k++) {
+            if (v>=rs(k,0)) {
+               for (Int l=nMax-1; l>k; l--) {
+                  for (uInt i0=0; i0<3; i0++) {
+                     rs(l,i0) = rs(l-1,i0);
+                     ss(l,i0) = ss(l-1,i0);
+                  }
+               }
+//
+               rs(k,0) = sol(0);                      // Peak
+               rs(k,1) = j+r1-1;                      // Y
+               rs(k,2) = i+r0;                        // X
+
+// Wim will fill in these three numbers.
+
                ss(k,0) = 3.01;                        // major
                ss(k,1) = 3.0;                         // minor
                ss(k,2) = 0.0;                         // pa
 //
-               for (Int l=-1; l<2; l++) {
-                  for (Int m=-1; m<2; m++) {
-                     inDone((inp+l+3)%3, j+m) = True;
+               for (Int jj=-off; jj<(off+1); jj++) {
+                  for (Int ii=-off; ii<(off+1); ii++) {
+                     inDone((inp+jj+w)%w, i+ii) = True;
                   }
                }
                break;
@@ -387,8 +405,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
                        
    Int nFound = 0;
    NumericTraits<T>::PrecisionType x = cutoff*abs(rs(0,0));
-   for (Int i=0; i<nMax; i++) {
-     if (abs(rs(i,0)) < x || rs(i,0) == 0) break;
+   for (Int k=0; k<nMax; k++) {
+     if (abs(rs(k,0)) < x || rs(k,0) == 0) break;
      nFound++;   
    }      
    
@@ -404,7 +422,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
       os << LogIO::WARN << "No sources were found" << LogIO::POST;
    } else {
       os << LogIO::NORMAL << "Found " << nFound << " sources" << LogIO::POST;
-      const ImageInfo& ii = image.imageInfo();
+      const ImageInfo& info = image.imageInfo();
       const Unit& bU = image.units();
       Double rat;
 //
@@ -418,19 +436,19 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
         pars.resize(6);
       }
 //
-      for (Int i=0; i<nFound; i++) {
-         pars(0) = rs(i,0);
-         pars(1) = rs(i,2);
-         pars(2) = rs(i,1);
+      for (Int k=0; k<nFound; k++) {
+         pars(0) = rs(k,0);
+         pars(1) = rs(k,2);            // x & y flipped
+         pars(2) = rs(k,1);
 
 //
          if (!doPoint) {
-            pars(3) = ss(i,0);
-            pars(4) = ss(i,1);
-            pars(5) = ss(i,2);
+            pars(3) = ss(k,0);
+            pars(4) = ss(k,1);
+            pars(5) = ss(k,2);
          }
 // 
-         listOut.add(ImageUtilities::encodeSkyComponent (os, rat, ii, cSys, bU,
+         listOut.add(ImageUtilities::encodeSkyComponent (os, rat, info, cSys, bU,
                                                          cType, pars, stokes, xIsLong));
       }
    } 
