@@ -56,23 +56,14 @@ extern Bool aips_debug_on;
 #define aips_debug aips_debug_on
 #endif
 
-// Define the use of the old string and stream classes (for sgi at the moment)
-// The use of the old classes (including complex) can be overwritten
-// with the use of -DAIPS_USE_NEW_SGI.
-// It also defines and uses the std namespace as required.
-// It is the intention to use the relevant 'USE_OLD' macros only
-// if and when closely related to the String class itself; the Complex
-// class and the stream proxy includes.
+// With sgi the AIPS_USE_NEW_SGI switch is always set t0 cater for
+// still existing problesm in FFTPack and SquareMatrix. It should be removed
+// at some stage
 // Note that for the gcc compiler 'std::' is recognised as '::' for now.
 #if defined(__sgi)
-#if !defined(AIPS_USE_NEW_SGI)
-#define AIPS_USE_OLD_STREAM
-#else
-#undef AIPS_USE_OLD_STREAM
-#undef AIPS_USE_OLD_COMPLEX
+#define AIPS_USE_NEW_SGI
 namespace std {};
 using namespace std;
-#endif
 #endif
 
 #endif
