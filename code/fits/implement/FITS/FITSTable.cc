@@ -1783,8 +1783,8 @@ const Record &FITSTable::currentRow() const
 
 void FITSTable::move(Int torow) {
     // we can only move within the table and only ahead
-    // if we have to change the rownr, set result to False to
-    // indicate that the result might not be where the user
+    // if this table contains no rows, moving is impossible, just return
+    if (nrow() == 0) return;
     if (torow < rownr()) torow = rownr();
     if (torow >= Int(nrow())) torow = Int(nrow()) - 1;
     // if we are already there, just return
