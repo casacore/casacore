@@ -930,9 +930,9 @@ void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
     fraction2 = fraction1/square(s);
   }
   // if antenna1 is in behind, w is > 0, 2 is NOT shadowed
-  if (uvw(3) > 0.0) fraction2 = 0.0;
+  if (uvw(2) > 0.0) fraction2 = 0.0;
   // if antenna1 is in front, w is < 0, 1 is NOT shadowed
-  if (uvw(3) < 0.0) fraction1 = 0.0;
+  if (uvw(2) < 0.0) fraction1 = 0.0;
 
   return;
 };
