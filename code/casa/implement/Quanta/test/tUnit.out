@@ -167,7 +167,7 @@ User unit table (2):
 --------------------------
 List contents of Cache
 
-Cached unit table (17):
+Cached unit table (16):
     "_2       ()                           2.35044305391e-11 sr
     AU3/d2/S0 ()                           2.25492217393e-07 m3.kg-1.s-2
     C         ()                           1 s.A
@@ -184,7 +184,6 @@ Cached unit table (17):
     m         ()                           1 m
     m/s       ()                           1 m.s-1
     mol-1     ()                           1 mol-1
-    rad       ()                           1 rad
 
 --------------------------
 Check if prefixes known
