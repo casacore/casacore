@@ -1,5 +1,5 @@
 //# TableSyncData.cc: Class to hold table synchronization data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,7 +105,7 @@ void TableSyncData::write (uInt nrrow)
     itsAipsIO.putend();
 }
 
-void TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
+Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
 			  Block<Bool>& dataManChanged)
 {
     // Read the data into the memoryIO object.
@@ -124,8 +124,9 @@ void TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
 	dataManChanged.set (True);
 	if (itsMemIO.length() > 0) {
 	    itsAipsIO.getend();
+	    return True;                       // not empty
 	}
-	return;
+	return False;                          // empty MemoryIO object
     }
     // The table has changed when the change counter has changed.
     uInt tableChangeCounter;
@@ -155,5 +156,6 @@ void TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
 	    itsDataManChangeCounter[i] = dataManChangeCounter[i];
 	}
     }
+    return True;
 }
 

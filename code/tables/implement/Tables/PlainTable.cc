@@ -284,16 +284,21 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 	    return False;
 	}
 	if (!noSync) {
+	    // Older readonly table files may have empty locksync data.
+	    // Skip the sync-ing in that case.
 	    uInt ncolumn;
-	    lockSync_p.read (nrrow_p, ncolumn, tableChanged,
-			     colSetPtr_p->dataManChanged());
-	    if (ncolumn != tableDesc().ncolumn()) {
-		throw (TableError ("Table::lock cannot sync; another process "
-				   "changed the number of columns"));
-	    }
-	    colSetPtr_p->resync (nrrow_p);
-	    if (tableChanged) {
-		syncTable();
+	    if (! lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+				   colSetPtr_p->dataManChanged())) {
+		tableChanged = False;
+	    } else {
+		if (ncolumn != tableDesc().ncolumn()) {
+		    throw (TableError ("Table::lock cannot sync; another "
+				     "process changed the number of columns"));
+		}
+		colSetPtr_p->resync (nrrow_p);
+		if (tableChanged  &&  ncolumn > 0) {
+		    syncTable();
+		}
 	    }
 	}
     }
@@ -307,7 +312,7 @@ void PlainTable::syncTable()
     // Use a different locknr for it to preserve possible existing locks.
     BaseTable* btab = Table::makeBaseTable
                          (tableName(), "", Table::Old,
-			  TableLock(TableLock::PermanentLockingWait),
+			  TableLock(TableLock::PermanentLocking),
 			  False, 1);
     PlainTable* tab = (PlainTable*)btab;
     // Now check if all columns are the same.

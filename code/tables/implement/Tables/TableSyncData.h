@@ -1,5 +1,5 @@
 //# TableSyncData.h: Class to hold table synchronization data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,7 +98,8 @@ public:
     // Read the synchronization data from the MemoryIO object.
     // This function is called when a lock is acquired to see if
     // table data has to be reread.
-    void read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
+    // <br>It returns False when the MemoryIO object is empty.
+    Bool read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
 	       Block<Bool>& dataManChanged);
 
     // Get the MemoryIO object.
