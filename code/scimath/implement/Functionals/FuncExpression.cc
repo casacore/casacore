@@ -155,10 +155,11 @@ Bool FuncExpression::compTerm(MUString &prg) {
     prg.skipBlank();
     if (!compExpr(prg)) return False;
     prg.skipBlank();
-    if (!prg.tSkipChar(')')) {
+    if (!prg.testChar(')')) {
       error_p = "Missing closing right parenthesis";
       return False;
     };
+    prg.skipChar();
     if (!setOp(exd.special()[")"])) return False;
   } else if (prg.testAlpha()) {
     Regex parrx("p[0-9]*$");
@@ -169,20 +170,23 @@ Bool FuncExpression::compTerm(MUString &prg) {
     if (exd.function().find(t) != exd.function().end()) {
       if (!setOp(exd.function().find(t)->second)) return False;
       prg.skipBlank();
-      if (prg.tSkipChar('(')) {
+      if (prg.testChar('(')) {
+	prg.skipChar();
 	if (!compExpr(prg)) return False;
 	prg.skipBlank();
-	if (!prg.tSkipChar(')')) {
+	if (!prg.testChar(')')) {
 	  error_p = "No closing function paranethesis";
 	  return False;
 	};
+	prg.skipChar();
       };
       if (!setOp(exd.special()[")"])) return False;
     } else if (t.matches(parrx) || t.matches(argrx)) {
       tmu.skipChar();
       uInt n = tmu.getuInt();
       prg.skipBlank();
-      if (prg.tSkipChar('[')) {
+      if (prg.testChar('[')) {
+	prg.skipChar();
 	prg.skipBlank();
 	uInt m = prg.getuInt();
 	if (m == 0) {
@@ -191,10 +195,11 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	};
 	n += m-1;
 	prg.skipBlank();
-	if (!prg.tSkipChar(']')) {
+	if (!prg.testChar(']')) {
 	  error_p = "Missing closing bracket";
 	  return False;
 	};
+	prg.skipChar();
       };
       FuncExprData::ExprOperator oper;
       if (t.matches(parrx)) {
