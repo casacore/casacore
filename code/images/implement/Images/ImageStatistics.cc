@@ -37,11 +37,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MVAngle.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
 
@@ -1129,18 +1125,11 @@ void ImageStatistics<T>::generateStorageImage()
 
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
+// Warn user
+
+   os_p << LogIO::NORMAL << "Creating new storage image" << endl << LogIO::POST;
 
    {
-
-// Find the directory of the input image and set the name of the storage image file
- 
-      File inputImageName(pInImage_p->name());
-      const String path = inputImageName.path().dirName() + "/";
-
-      Path fileName = File::newUniqueName(path, String("Scratch_ImageStatistics_"));
-      SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-      Table myTable(setup);
-
 
 // Work out dimensions of storage image
 
@@ -1159,10 +1148,11 @@ void ImageStatistics<T>::generateStorageImage()
       tileShape(0) = storeImageShape(0);
       tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
   
+      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
+                                                String("Scratch_ImageStatistics_"));
       pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
       pStoreImage_p->set(Double(0.0));
 
-      os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
    }
 
 

@@ -35,11 +35,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MVAngle.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
   
@@ -1119,24 +1115,20 @@ void ImageHistograms<T>::generateStorageImage()
 //
 {
 
-// Find the directory of the input image
-
-   File inputImageName(pInImage_p->name());
-   const String path = inputImageName.path().dirName() + "/";
-
-
 // Delete old histogram storage image
 
    if (pHistImage_p != 0) delete pHistImage_p;
 
+
+
+// Note to the unwary user 
+
+   os_p << LogIO::NORMAL << "Creating new storage images" << LogIO::POST;
+   needStorageImage_p = False;     
+   
+
+
    {      
-
-// Create scratch histogram storage image file name.  
-
-      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
-      SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-      Table myTable(setup);   
-
 
 // Set storage image shape.  The first axis is the histogram axis
       
@@ -1152,9 +1144,13 @@ void ImageHistograms<T>::generateStorageImage()
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
 
+
 // Create new histogram storage image.    The first axis
 // is the histogram axis, the higher axes are the display axes
 
+
+      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
+                          String("Scratch_ImageHistograms_"));
       pHistImage_p = new PagedArray<Int>(storeImageShape, myTable, tileShape);
       pHistImage_p->set(0);
    }
@@ -1166,12 +1162,6 @@ void ImageHistograms<T>::generateStorageImage()
    if (pMinMaxImage_p != 0) delete pMinMaxImage_p;
 
    {      
-
-// Generate the min/max storage image file name
-
-      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
-      SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-      Table myTable(setup);   
 
 // Set storage image shape.  The last axis is min and max.  The preceding
 // ones are the display axes
@@ -1192,6 +1182,8 @@ void ImageHistograms<T>::generateStorageImage()
       
 // Create new min/max storage image.   
 
+      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
+                          String("Scratch_ImageHistograms_"));
       pMinMaxImage_p = new PagedArray<T>(storeImageShape, myTable, tileShape);
       pMinMaxImage_p->set(T(0.0)); 
    }
@@ -1203,12 +1195,6 @@ void ImageHistograms<T>::generateStorageImage()
    if (pStatsImage_p != 0) delete pStatsImage_p;
 
    {
-
-// Create statistics storage image file name
-
-      Path fileName = File::newUniqueName(path, String("Scratch_ImageHistograms_"));
-      SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-      Table myTable(setup);   
 
 // Set storage image shape.  The last axis is the statistics axis
       
@@ -1225,16 +1211,13 @@ void ImageHistograms<T>::generateStorageImage()
       
 // Create new statistics storage image.   
 
+      Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
+                          String("Scratch_ImageHistograms_"));
       pStatsImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
       pStatsImage_p->set(Double(0.0));
    }
 
 
-// Note to the unwary user that we have made the storage images
-
-   os_p << LogIO::NORMAL << "Created new storage images" << LogIO::POST;
-   needStorageImage_p = False;     
-   
 // Create image iterator
 
    RO_LatticeIterator<T> *pPixelIterator;
