@@ -1,5 +1,5 @@
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -571,7 +571,7 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
         ntiles(i) = 1 + endTile - startTile;
         nused(i) = max (1, tileShape_p(axis) / slice(axis));
         // When start or slice not aligned, add one extra.
-        if (slice(axis) <= start(axis) - end(axis)) {
+        if (slice(axis) <= end(axis) - start(axis)) {
             if (start(axis) % slice(axis) != 0
             ||  tileShape_p(axis) % slice(axis) != 0) {
                 nused(i)++;
