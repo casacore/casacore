@@ -152,6 +152,13 @@ public:
   Vector<Bool>& flagRow() {return flagRowOK_p ? flagRow_p : fillFlagRow();}
   const Vector<Bool>& flagRow() const { return This->flagRow();}
 
+  Vector<Int>& scan() {return scanOK_p ? scan_p : fillScan();}
+  const Vector<Int>& scan() const { return This->scan();}
+
+  // scalar version for convenience, when scan known constant for
+  // entire iteration/buffer.
+  Int scan0() { return scan()(0);  }
+
   Vector<Double>& frequency() {return freqOK_p ? frequency_p : fillFreq();}
   const Vector<Double>& frequency() const {return This->frequency();}
 
@@ -289,6 +296,7 @@ private:
   Matrix<Bool>& fillFlag();
   Cube<Bool>& fillFlagCube();
   Vector<Bool> & fillFlagRow();
+  Vector<Int> & fillScan();
   Vector<Double>& fillFreq();
   Vector<Double>& fillLSRFreq();
   MDirection& fillPhaseCenter();
@@ -313,10 +321,9 @@ private:
   VisBuffer* This;
   // variables to track validity of cache
   Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
-    fieldIdOK_p, arrayIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, lsrFreqOK_p,
-    phaseCenterOK_p, polFrameOK_p,
-    sigmaOK_p, spwOK_p, timeOK_p, timeIntervalOK_p, uvwOK_p, visOK_p,
-    weightOK_p;
+    fieldIdOK_p, arrayIdOK_p, flagOK_p, flagRowOK_p, scanOK_p, freqOK_p,
+    lsrFreqOK_p, phaseCenterOK_p, polFrameOK_p, sigmaOK_p, spwOK_p,
+    timeOK_p, timeIntervalOK_p, uvwOK_p, visOK_p, weightOK_p;
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
 
@@ -328,6 +335,7 @@ private:
   Int arrayId_p;
   Matrix<Bool> flag_p;
   Vector<Bool> flagRow_p;
+  Vector<Int> scan_p;
   Vector<Double> frequency_p, lsrFrequency_p;
   MDirection phaseCenter_p;
   Int polFrame_p;

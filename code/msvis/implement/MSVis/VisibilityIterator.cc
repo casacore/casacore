@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,6 +150,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colSigma.reference(other.colSigma);
   colFlag.reference(other.colFlag);
   colFlagRow.reference(other.colFlagRow);
+  colScan.reference(other.colScan);
   colUVW.reference(other.colUVW);
 
   return *this;
@@ -373,6 +374,7 @@ void ROVisibilityIterator::attachColumns()
   colUVW.attach(selTable_p,MS::columnName(MS::UVW));
   colFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   colFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
+  colScan.attach(selTable_p,MS::columnName(MS::SCAN_NUMBER));
   colSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   colWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
   if (cds.isDefined("IMAGING_WEIGHT")) 
@@ -478,6 +480,13 @@ Vector<Bool>& ROVisibilityIterator::flagRow(Vector<Bool>& rowflags) const
   rowflags.resize(curNumRow_p);
   colFlagRow.getColumn(rowflags);
   return rowflags;
+}
+
+Vector<Int>& ROVisibilityIterator::scan(Vector<Int>& scans) const
+{
+  scans.resize(curNumRow_p);
+  colScan.getColumn(scans);
+  return scans;
 }
 
 Vector<Double>& ROVisibilityIterator::frequency(Vector<Double>& freq) const

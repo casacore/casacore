@@ -1,5 +1,5 @@
 //# VisBuffer.cc: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,6 +81,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       flagOK_p=other.flagOK_p;
       flagCubeOK_p=other.flagCubeOK_p;
       flagRowOK_p=other.flagRowOK_p;
+      scanOK_p=other.scanOK_p;
       freqOK_p=other.freqOK_p;
       lsrFreqOK_p=other.lsrFreqOK_p;
       phaseCenterOK_p=other.phaseCenterOK_p;
@@ -137,6 +138,10 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       if (flagRowOK_p) {
 	flagRow_p.resize(other.flagRow_p.nelements());
 	flagRow_p=other.flagRow_p;
+      }
+      if (scanOK_p) {
+	scan_p.resize(other.scan_p.nelements());
+	scan_p=other.scan_p;
       }
       if (freqOK_p) {
 	frequency_p.resize(other.frequency_p.nelements()); 
@@ -243,8 +248,9 @@ void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 void VisBuffer::invalidate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
+    fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=lsrFreqOK_p=
+    phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=
+    uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
 }
@@ -252,8 +258,9 @@ void VisBuffer::invalidate()
 void VisBuffer::validate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
+    fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=lsrFreqOK_p=
+    phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=
+    uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
 }
@@ -519,6 +526,8 @@ Cube<Bool>& VisBuffer::fillFlagCube()
 { flagCubeOK_p=True; return visIter_p->flag(flagCube_p); }
 Vector<Bool>& VisBuffer::fillFlagRow()
 { flagRowOK_p=True; return visIter_p->flagRow(flagRow_p);}
+Vector<Int>& VisBuffer::fillScan()
+{ scanOK_p=True; return visIter_p->scan(scan_p);}
 Vector<Double>& VisBuffer::fillFreq()
 { freqOK_p=True; return visIter_p->frequency(frequency_p); }
 Vector<Double>& VisBuffer::fillLSRFreq()

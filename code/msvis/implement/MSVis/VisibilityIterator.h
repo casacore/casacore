@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -233,6 +233,9 @@ public:
   // Return row flag
   Vector<Bool>& flagRow(Vector<Bool>& rowflags) const;
 
+  // Return scan number
+  Vector<Int>& scan(Vector<Int>& scans) const;
+
   // Return current frequencies
   Vector<Double>& frequency(Vector<Double>& freq) const;
 
@@ -452,6 +455,7 @@ protected:
   ROArrayColumn<Float> colSigma;
   ROArrayColumn<Bool> colFlag;
   ROScalarColumn<Bool> colFlagRow;
+  ROScalarColumn<Int> colScan;
   ROArrayColumn<Double> colUVW;
 
 };
