@@ -35,6 +35,7 @@
 
 //# Forward Declarations
 class SpectralElement;
+template <class T> class Vector;
 
 // <summary>
 // A set of SpectralElements
@@ -99,16 +100,47 @@ class SpectralList {
   // <thrown>
   //  <li> AipsError if illegal n
   // </thrown>
+  // <group>
   const SpectralElement &operator[](const uInt n) const;
+  SpectralElement &operator[](const uInt n);
+  // </group>
 
   //# Member functions
   // Get the number of elements in list
   uInt nelements() const { return list_p.nelements(); };
 
-  // Add an element to list (False if list has max length and full)
+  // Get the profile values for all elements in list. The evaluation
+  // is for the length of the given <src>prof</src>, assuming x values of
+  // 0,1,... if no x given.
+  // <group>
+  void evaluate(Vector<Float> &y) const;
+  void evaluate(Vector<Float> &y, const Vector<Float> &x) const;
+  void evaluate(Vector<Double> &y) const;
+  void evaluate(Vector<Double> &y, const Vector<Double> &x) const;
+   // </group>
+
+  // Calculate the residuals at the points x; by subtracting the model from y.
+  // x=0,1,2,.. if not given.
+  // <thrown>
+  //  <li> AipsError if y and x have different lengths
+  // </thrown>
+  // <group>
+  void residual(Vector<Float> &y) const;
+  void residual(Vector<Double> &y) const;
+  void residual(Vector<Float> &y, const Vector<Float> &x) const;
+  void residual(Vector<Double> &y, const Vector<Double> &x) const;
+  // </group>
+
+  // Add elements to list (False if list has max length and full)
+  // <group>
   Bool add(const SpectralElement &in);
+  Bool add(const SpectralList &in);
+  // </group>
   // Insert in sort order in the list
+  // <group>
   void insert(const SpectralElement &in);
+  void insert(const SpectralList &in);
+  // </group>
   // Set an element in the list. Return False if more than one place beyond
   // end of list; or if beyond max size.
   Bool set(const SpectralElement &in, const uInt which);
@@ -126,6 +158,9 @@ class SpectralList {
   PtrBlock<SpectralElement *> list_p;
 
   //# Member functions
+  // Compare two elements
+  Int compar(const SpectralElement &p1, const SpectralElement &p2);
+
 };
 
 //# Global functions
