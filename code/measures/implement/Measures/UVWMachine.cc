@@ -31,8 +31,8 @@
 
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
-		       Bool EW) 
-  : ew_p(EW), zp_p(True), in_p(in) {
+		       Bool EW, Bool project) 
+  : ew_p(EW), proj_p(project), zp_p(True), in_p(in) {
     outref_p = out;
     out_p = MDirection(outref_p);
     planetinit();
@@ -43,8 +43,8 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
 }
 
 UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
-	     Bool EW)
-  : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
+		       Bool EW, Bool project)
+  : ew_p(EW), proj_p(project), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
     planetinit();
     conv_p = MDirection::Convert(in_p, outref_p);
@@ -53,8 +53,8 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
   }
 
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
-		       const MeasFrame &frame, Bool EW)
-  : ew_p(EW), zp_p(True), in_p(in) {
+		       const MeasFrame &frame, Bool EW, Bool project)
+  : ew_p(EW), proj_p(project), zp_p(True), in_p(in) {
     outref_p = out;
     out_p = MDirection(outref_p);
     outref_p.set(frame);
@@ -66,8 +66,8 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
   }
   
 UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, 
-		       const MeasFrame &frame, Bool EW)
-  : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
+		       const MeasFrame &frame, Bool EW, Bool project)
+  : ew_p(EW), proj_p(project), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
     outref_p.set(frame);
     planetinit();
@@ -94,27 +94,27 @@ UVWMachine::~UVWMachine() {}
 
 //# Operators
 MVPosition UVWMachine::operator()(const MVPosition &uv) const {
-  return uv * uvrot_p;
+  return uv * uvproj_p;
 }
 
 Vector<MVPosition>
 UVWMachine::operator()(const Vector<MVPosition> &uv) const {
   Vector<MVPosition> tmp(uv.nelements());
-  for (Int i=0; i<uv.nelements(); i++) {
-    tmp(i) = uv(i) * uvrot_p;
+  for (uInt i=0; i<uv.nelements(); i++) {
+    tmp(i) = uv(i) * uvproj_p;
   };
   return tmp;
 }
 
 Vector<Double> UVWMachine::operator()(const Vector<Double> &uv) const {
-  return (MVPosition(uv) * uvrot_p).getValue();
+  return (MVPosition(uv) * uvproj_p).getValue();
 }
 
 Vector<Vector<Double> >
 UVWMachine::operator()(const Vector<Vector<Double> > &uv) const {
   Vector<Vector<Double> > tmp(uv.nelements());
-  for (Int i=0; i<uv.nelements(); i++) {
-    tmp(i) = (MVPosition(uv(i)) * uvrot_p).getValue();
+  for (uInt i=0; i<uv.nelements(); i++) {
+    tmp(i) = (MVPosition(uv(i)) * uvproj_p).getValue();
   };
   return tmp;
 }
@@ -129,7 +129,7 @@ const MDirection &UVWMachine::phaseCenter() const {
 }
 
 const RotMatrix &UVWMachine::rotationUVW() const {
-  return uvrot_p;
+  return uvproj_p;
 }
 
 const MVPosition &UVWMachine::rotationPhase() const {
@@ -137,29 +137,30 @@ const MVPosition &UVWMachine::rotationPhase() const {
 }
 
 void UVWMachine::convertUVW(Vector<Double> &uv) const {
-  uv = (MVPosition(uv) * uvrot_p).getValue();
+  uv = (MVPosition(uv) * uvproj_p).getValue();
 }
 
 void UVWMachine::convertUVW(Vector<Vector<Double> > &uv) const {
-  for (Int i=0; i<uv.nelements(); i++) {
-    uv(i) = (MVPosition(uv(i)) * uvrot_p).getValue();
+  for (uInt i=0; i<uv.nelements(); i++) {
+    uv(i) = (MVPosition(uv(i)) * uvproj_p).getValue();
   };
 }
 
 void UVWMachine::convertUVW(MVPosition &uv) const {
-  uv *= uvrot_p;
+  uv *= uvproj_p;
 }
 
 void UVWMachine::convertUVW(Vector<MVPosition > &uv) const {
-  for (Int i=0; i<uv.nelements(); i++) {
-    uv(i) *= uvrot_p;
+  for (uInt i=0; i<uv.nelements(); i++) {
+    uv(i) *= uvproj_p;
   };
 }
 
 void UVWMachine::convertUVW(Double &phase, Vector<Double> &uv) const {
   MVPosition tmp(uv);
   tmp *= uvrot_p;
-  phase = tmp * phrot_p;
+  phase = phrot_p * tmp;
+  if (proj_p) tmp *= rot4_p;
   uv = tmp.getValue();
 }
 
@@ -167,10 +168,11 @@ void UVWMachine::convertUVW(Vector<Double> &phase,
 			    Vector<Vector<Double> > &uv) const {
   MVPosition tmp;
   phase.resize(uv.nelements());
-  for (Int i=0; i<uv.nelements(); i++) {
+  for (uInt i=0; i<uv.nelements(); i++) {
     tmp = uv(i);
     tmp *= uvrot_p;
-    phase(i) = tmp * phrot_p;
+    phase(i) = phrot_p * tmp;
+    if (proj_p) tmp *= rot4_p;
     uv(i) = tmp.getValue();
   };
 }
@@ -178,14 +180,16 @@ void UVWMachine::convertUVW(Vector<Double> &phase,
 void UVWMachine::convertUVW(Double &phase, MVPosition &uv) const {
   uv *= uvrot_p;
   phase = phrot_p * uv;
+  if (proj_p) uv *= rot4_p;
 }
 
 void UVWMachine::convertUVW(Vector<Double> &phase,
 			    Vector<MVPosition> &uv) const {
   phase.resize(uv.nelements());
-  for (Int i=0; i<uv.nelements(); i++) {
+  for (uInt i=0; i<uv.nelements(); i++) {
     uv(i) *= uvrot_p;
     phase(i) = phrot_p * uv(i);
+    if (proj_p) uv(i) *= rot4_p;
   };
 }
 
@@ -226,8 +230,20 @@ void UVWMachine::init() {
   rot2_p.transpose();
   rot3_p = RotMatrix(Euler(C::pi_2 - out_p.getValue().get()(1), 1,
 			   -(out_p.getValue().get()(0) - C::pi_2), 3));
+  rot4_p = RotMatrix();
+  if (proj_p) {
+    RotMatrix x(Euler(-(C::pi_2 - out_p.getValue().get()(1)), 1,
+                      out_p.getValue().get()(0) -
+                      in_p.getValue().get()(0), 3,
+                      (C::pi_2 - in_p.getValue().get()(1)), 1));
+    rot4_p(0,0) = x(1,1)/x(2,2);
+    rot4_p(1,1) = x(0,0)/x(2,2);
+    rot4_p(0,1) = x(1,0)/x(2,2);
+    rot4_p(1,0) = x(0,1)/x(2,2);
+  };
   uvrot_p = rot3_p * rot2_p * rot1_p;
   uvrot_p.transpose();
+  uvproj_p = uvrot_p * rot4_p;
   phrot_p = rot3_p * (MVPosition(out_p.getValue())
   		      - MVPosition(outin_p.getValue()));
 }
@@ -246,6 +262,7 @@ void UVWMachine::planetinit() {
 
 void UVWMachine::copy(const UVWMachine &other) {
   ew_p = other.ew_p;
+  proj_p = other.proj_p;
   zp_p = other.zp_p;
   in_p = other.in_p;
   outref_p = other.outref_p;
@@ -255,4 +272,5 @@ void UVWMachine::copy(const UVWMachine &other) {
   rot1_p = other.rot1_p;
   rot2_p = other.rot2_p;
   rot3_p = other.rot3_p;
+  rot4_p = other.rot4_p;
 }

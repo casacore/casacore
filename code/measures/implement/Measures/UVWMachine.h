@@ -66,6 +66,8 @@ template <class T> class Vector;
 // coordinates reference direction and coordinate system.
 // An EW flag can be specified to indicate the different type of UVW 
 // coordinates (not implemented yet).
+// A project flag, if set, will re-project the resulting UV plane onto the
+// in direction reference plane.
 //
 // The constructors also need an output coordinate system
 // (<linkto class=MeasRef>MDirection::Ref</linkto>) or an output
@@ -146,21 +148,27 @@ template <class T> class Vector;
 class UVWMachine {
 public:
 //# Constructors
+  // Constructors have an EW flag, which will give a projection parallel to
+  // the polar axis rather than in the direction of the fieldcentre, and a
+  // project flag. The last will correct the UV coordinates to re-project
+  // them onto the plane specified by the in direction
+  // <group>
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate system (output absolute direction 
   //remains the same)
   UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     Bool EW=False);
+	     Bool EW=False, Bool project=False);
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate and its system
   UVWMachine(const MDirection &out, const MDirection &in,
-	     Bool EW=False);
+	     Bool EW=False, Bool project=False);
   // Construct UVW conversion machine with an explicitly given frame
   // <group>
   UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     const MeasFrame &frame, Bool EW=False);
+	     const MeasFrame &frame, Bool EW=False, Bool project=False);
   UVWMachine(const MDirection &out, const MDirection &in, 
-	     const MeasFrame &frame, Bool EW=False);
+	     const MeasFrame &frame, Bool EW=False, Bool project=False);
+  // </group>
   // </group>
   // Copy constructor
   UVWMachine(const UVWMachine &other);
@@ -218,6 +226,8 @@ private:
   //# Data
   // EW flag
   Bool ew_p;
+  // Projection flag
+  Bool proj_p;
   // Zero phase flag (for speed)
   Bool zp_p;
   // Old phase centre
@@ -234,8 +244,12 @@ private:
   RotMatrix rot2_p;
   // Rotation Matrix to go from new coordinate system to output UVW
   RotMatrix rot3_p;
+  // Rotation Matrix to project UV-plane onto
+  RotMatrix rot4_p;
   // UVW rotation
   RotMatrix uvrot_p;
+  // UVW rotation including projection
+  RotMatrix uvproj_p;
   // Phase rotation
   MVPosition phrot_p;
   // Conversion engine
