@@ -5615,3 +5615,4 @@
 15 251 src rm bima/apps/bimatester/bimatester_data.cc
 15 265 src rm aips/implement/Deconvolution/test/templates
 15 266 src mv trial/implement/Tables/ExprFuncNodeArray.cc aips/implement/Tables/ExprFuncNodeArray.cc
+15 266 src mv trial/implement/Tables/ExprFuncNodeArray.h aips/implement/Tables/ExprFuncNodeArray.h
