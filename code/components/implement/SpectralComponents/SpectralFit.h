@@ -112,10 +112,10 @@ class SpectralFit {
   // at the frequencies x with values y. Weights of all points are equal.
   // Fitting of polynomial possible
   // <group>
-  Bool SpectralFit::fit(const Vector<Double> &x,
-			const Vector<Double> &y);
-  Bool SpectralFit::fit(const Vector<Float> &x,
-			const Vector<Float> &y);
+  Bool fit(const Vector<Double> &x,
+	   const Vector<Double> &y);
+  Bool fit(const Vector<Float> &x,
+   	   const Vector<Float> &y);
   // </group>
 
  private:
