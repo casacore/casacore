@@ -915,7 +915,7 @@ LatticeExprNode operator> (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator >" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType != TpBool,
+   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, left, right);
 }
@@ -926,7 +926,7 @@ LatticeExprNode operator>= (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator >=" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType != TpBool,
+   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, left, right);
 }
@@ -937,7 +937,7 @@ LatticeExprNode operator< (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator <" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType != TpBool,
+   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GT, right, left);
 }
@@ -948,7 +948,7 @@ LatticeExprNode operator<= (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator <=" << endl;
 #endif
-   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType != TpBool,
+   AlwaysAssert (left.dataType() != TpBool  &&  right.dataType() != TpBool,
 		 AipsError);
    return LatticeExprNode::newBinaryCmp (LELBinaryEnums::GE, right, left);
 }
@@ -970,7 +970,7 @@ LatticeExprNode operator&& (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator &&" << endl;
 #endif
-   AlwaysAssert (left.dataType() == TpBool  &&  right.dataType == TpBool,
+   AlwaysAssert (left.dataType() == TpBool  &&  right.dataType() == TpBool,
 		 AipsError);
    return new LELBinaryBool(LELBinaryEnums::AND, left.pExprBool_p,
 			    right.pExprBool_p);
@@ -982,7 +982,7 @@ LatticeExprNode operator|| (const LatticeExprNode& left,
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: binary operator ||" << endl;
 #endif
-   AlwaysAssert (left.dataType() == TpBool  &&  right.dataType == TpBool,
+   AlwaysAssert (left.dataType() == TpBool  &&  right.dataType() == TpBool,
 		 AipsError);
    return new LELBinaryBool(LELBinaryEnums::OR, left.pExprBool_p,
 			    right.pExprBool_p);
