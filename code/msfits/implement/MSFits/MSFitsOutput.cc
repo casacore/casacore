@@ -174,14 +174,14 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
   }
 
   // Write the SOURCE table.
-  if (ok) {
+  if (ok && !ms.source().isNull()) {
     os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
     ok = writeSU(fitsOutput, ms, fieldidMap, nrfield);
+    if (!ok) {
+      os << LogIO::SEVERE << "Could not write SU table\n" << LogIO::POST;
+    }
   }
-  if (!ok) {
-    os << LogIO::SEVERE << "Could not write SU table\n" << LogIO::POST;
-  }
-
+  
   // If needed, create tables from the SYSCAL table.
   // Determine if we have to skip the first SYSCAL time.
   // This is needed for WSRT MS's, where the first time in the SYSCAL
@@ -239,13 +239,28 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // First scan the SPECTRAL_WINDOW table to make sure that the data
   // shape is constant, the correlation type is constant, and that the
   // frequencies can be represented as f = f0 + i*inc
+  MSDataDescription ddTable = rawms.dataDescription();
   MSSpectralWindow spectralTable = rawms.spectralWindow();
   MSPolarization polTable = rawms.polarization();
+  const uInt ndds = ddTable.nrow();
   const uInt nspec = spectralTable.nrow();
+  const uInt npol = polTable.nrow();
+  if (ndds == 0) {
+    os << LogIO::SEVERE << "No data description table in MS" << LogIO::POST;
+    return 0;
+  }
   if (nspec == 0) {
     os << LogIO::SEVERE << "No spectral window table in MS" << LogIO::POST;
     return 0;
   }
+  if (npol == 0) {
+    os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
+    return 0;
+  }
+  ROScalarColumn<Int> spwId(ddTable, 
+	 MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
+  ROScalarColumn<Int> polId(ddTable, 
+	 MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
   ROScalarColumn<Int> numcorr(polTable, 
 	      MSPolarization::columnName(MSPolarization::NUM_CORR));
   ROScalarColumn<Int> numchan(spectralTable, 
@@ -267,41 +282,43 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   Double bw0 = 0;
   Vector<Int> stokes;
   uInt i;
-  for (i=0; i<nspec; i++) {
+  for (i=0; i<ndds; i++) {
     if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
+      const Int s = spwId(i);
+      const Int p = polId(i);
       // Get channel width.
-      Vector<Double> freqs = frequencies(i);
+      Vector<Double> freqs = frequencies(s);
       if (freqs.nelements() > 1) {
-	delta = freqs(1) - freqs(0);
+ 	delta = freqs(1) - freqs(0);
       } else {
-	delta = totalbw(0);
+ 	delta = totalbw(0);
       }
       // If first time, set the various values.
       if (numcorr0 == 0) {
-	numcorr0 = numcorr(i);
-	numchan0 = numchan(i);
-	if (numcorr0 <= 0 || numchan0 <= 0) {
-	  os << LogIO::SEVERE
-	     << "Number of correlations or channels is zero" << LogIO::POST;
-	  return 0;
-	}
+ 	numcorr0 = numcorr(p);
+ 	numchan0 = numchan(s);
+ 	if (numcorr0 <= 0 || numchan0 <= 0) {
+ 	  os << LogIO::SEVERE
+ 	     << "Number of correlations or channels is zero" << LogIO::POST;
+ 	  return 0;
+ 	}
 	f0 = freqs(0);
 	bw0 = delta;
 	chanbw = abs(delta);
-	stokes = stokesTypes(i);
+	stokes = stokesTypes(p);
       }
       // Check if values match.
-      if (numcorr(i) != numcorr0) {
-	os << LogIO::SEVERE << "Number of correlations varies in the MS"
+      if (numcorr(p) != numcorr0) {
+ 	os << LogIO::SEVERE << "Number of correlations varies in the MS"
 	   << LogIO::POST;
-	return 0;
+ 	return 0;
       }
-      if (numchan(i) != numchan0) {
+      if (numchan(s) != numchan0) {
 	os << LogIO::SEVERE << "Number of channels varies in the MS"
 	   << LogIO::POST;
 	return 0;
       }
-      if (!allEQ(stokes, stokesTypes(i))) {
+      if (!allEQ(stokes, stokesTypes(p))) {
 	os << LogIO::SEVERE
 	   << "Stokes types vary for different spectral windows"
 	   << LogIO::POST;
@@ -314,7 +331,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       }
       for (uInt j=1; j<freqs.nelements(); j++) {
 	if (!near(delta, freqs(j) - freqs(j-1), 1.0e-5)) {
-	  os << LogIO::SEVERE << "Bandwidth varies across the band"
+	  os << LogIO::SEVERE << "Channel width varies across the band"
 	     << LogIO::POST;
 	  return 0;
 	}
@@ -472,7 +489,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   ek.define("cdelt7", 1.0);
   ek.define("crpix7", 1.0);
   ek.define("crota7", 0.0);
-	
+  
 
   // PTYPE PSCALE PZERO
   ek.define("ptype1", "UU");
@@ -544,6 +561,10 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
   // TELESCOP INSTRUME
   ROMSObservationColumns obsC(rawms.observation());
+  if (obsC.nrow() == 0) {
+    os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
+    return 0;
+  }
   ek.define("telescop", obsC.telescopeName()(0));
   ek.define("instrume", obsC.telescopeName()(0));
   ek.define("observer", obsC.observer()(0));
@@ -592,7 +613,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   const Complex *iptr = indatatmp.getStorage(deleteIptr);
 
   Bool deleteWtPtr;
-  Array<Float> inwttmp(IPosition(1, numchan0));
+  Matrix<Float> inwttmp(numcorr0, numchan0);
   const Float *wptr = inwttmp.getStorage(deleteWtPtr);
 
   Bool deleteFlagPtr;
@@ -617,17 +638,17 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // Sort the table in order of TIME, ANTENNA1, ANTENNA2, FIELDID, SPWID.
   // Iterate through the table on the first 4 fields.
   Block<String> sortNames(5);
-  sortNames[0] = "TIME";
-  sortNames[1] = "ANTENNA1";
-  sortNames[2] = "ANTENNA2";
-  sortNames[3] = "FIELD_ID";
-  sortNames[4] = "SPECTRAL_WINDOW_ID";
+  sortNames[0] = MS::columnName(MS::TIME);
+  sortNames[1] = MS::columnName(MS::ANTENNA1);
+  sortNames[2] = MS::columnName(MS::ANTENNA2);
+  sortNames[3] = MS::columnName(MS::FIELD_ID);
+  sortNames[4] = MS::columnName(MS::DATA_DESC_ID);
   Table sortTable = rawms.sort (sortNames);
 
   // Make objects for the various columns.
   ROArrayColumn<Complex> indata(sortTable, columnName);
-  ROScalarColumn<Float> inweightscalar(sortTable, 
-				       MS::columnName(MS::WEIGHT));
+  ROArrayColumn<Float> inweightscalar(sortTable, 
+				      MS::columnName(MS::WEIGHT));
   ROArrayColumn<Float> inweightarray;
   if (hasWeightArray) {
     inweightarray.attach(sortTable, MS::columnName(MS::WEIGHT_SPECTRUM));
@@ -685,7 +706,10 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	}
       }
       if (getwt) {
-	inwttmp = inweightscalar(rownr);
+	const Vector<Float> wght = inweightscalar(rownr);
+	for (Int p = 0; p < numcorr0; p++) {
+	  inwttmp.row(p) = wght(p);
+	}
       }
       // We should optimize this loop more, probably do frequency as
       // the inner loop?
@@ -735,7 +759,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       *osource = 1 + fieldidMap[infieldid(i)];
       *ointtim = inexposure(i);
     }
-    
+
     writer.write();
   }
 
@@ -821,7 +845,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
   }
   // Write the row if everything is combined.
   if (combineSpw) {
-    *freqsel = 0;
+    *freqsel = 1;
     writer.write();
   }
   return True;
@@ -847,7 +871,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
      << LogIO::POST;
 
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
-  ScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
+  ROScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
   MEpoch utctime (intime(0), MEpoch::UTC);
   MEpoch iattime = MEpoch::Convert (utctime, MEpoch::IAT) ();
   MEpoch ut1time = MEpoch::Convert (utctime, MEpoch::UT1) ();
@@ -910,7 +934,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     // header.define("DATUTC", 0.0);
     // header.define("P_REFANT", 15);
     // header.define("P_DIFF01", 0.0);
-	
+     
 
     // #### Row description
     RecordDesc desc;
@@ -1712,3 +1736,6 @@ Int MSFitsOutput::makeIdMap (Block<Int>& map, Vector<Int>& selids,
   }
   return nrid;
 }
+// Local Variables: 
+// compile-command: "gmake MSFitsOutput"
+// End: 
