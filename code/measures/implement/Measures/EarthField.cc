@@ -247,12 +247,12 @@ void EarthField::calcField(const MVPosition &pos) {
 	// Rotate from local vertical/meridian to ITRF one
 	if (lp == 0) {
 	  pval[0] = -x*slat*clong + z*clat*clong - y*slong;
-	  pval[1] =  x*slat*slong - z*clat*slong - y*clong;
+	  pval[1] = -x*slat*slong + z*clat*slong + y*clong;
 	  pval[2] =  x*clat + z*slat;
 	} else {
 	  dval[lp-1][0] = (-x*slat*clong + z*clat*clong - y*slong -
 			    pval[0])/DER_INTV;
-	  dval[lp-1][1] = ( x*slat*slong - z*clat*slong - y*clong -
+	  dval[lp-1][1] = (-x*slat*slong + z*clat*slong + y*clong -
 			   pval[1])/DER_INTV;
 	  dval[lp-1][2] = ( x*clat + z*slat -
 			    pval[2])/DER_INTV;
