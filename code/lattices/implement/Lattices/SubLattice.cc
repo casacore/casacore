@@ -281,7 +281,8 @@ void SubLattice<T>::setAxesMap (const AxesSpecifier& axesSpec)
 template<class T>
 Bool SubLattice<T>::isMasked() const
 {
-  return  (itsMaskLatPtr != 0  ||  itsRegion.hasMask());
+  return  (itsMaskLatPtr != 0  ||  itsRegion.hasMask()
+	   ||  itsOwnPixelMask != 0);
 }
 
 template<class T>
