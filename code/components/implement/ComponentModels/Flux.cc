@@ -250,6 +250,9 @@ convertPol(ComponentType::Polarisation pol) {
     default:
       throw(AipsError("FluxRep<T>::convertPol(...) - bad polarisation type"));
     };
+
+    setPol(pol);                    ` // New pol rep label
+
     if (!allNearAbs(itsErr, NumericTraits<T>::ConjugateType(0,0), 
 		    C::dbl_epsilon)) {
       LogIO logErr(LogOrigin("FluxRep", "convertPol()"));
