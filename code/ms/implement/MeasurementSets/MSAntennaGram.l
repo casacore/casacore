@@ -28,7 +28,6 @@
 */
 
 %{
-#include <string.h>
 #undef YY_INPUT
 #define YY_INPUT(buf,result,max_size) result=msAntennaGramInput(buf,max_size)
 
@@ -51,7 +50,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-IDENTIFIER     [A-Za-z_0-9]+
+IDENTIFIER  [A-Za-z_:0-9]*
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -59,7 +58,6 @@ REGEX3    m#[^#]+#
 REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
   /* rules */
-
 %%
 
 "["       { msAntennaGramPosition() += yyleng;
@@ -74,7 +72,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 ")"       { msAntennaGramPosition() += yyleng;
             return RPAREN;
           }
-
 ":"       { msAntennaGramPosition() += yyleng;
             return COLON; }
 "=="      { msAntennaGramPosition() += yyleng;
@@ -126,10 +123,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
   /* Literals */
 
 {IDENTIFIER} { msAntennaGramPosition() += yyleng;
-               cout << "scan " << MSAntennaGramtext << endl;
                lvalp->str = MSAntennaGramtext;
                return IDENTIFIER;
              }
-
 %%
 

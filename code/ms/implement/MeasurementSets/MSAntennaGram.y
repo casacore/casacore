@@ -41,16 +41,14 @@ using namespace casa;
   Int ival;
   char* str;
   Double dval;
-
 }
 
-%token <str> IDENTIFIER
+
 %token EQASS
-%token <ival> INDEX
-%token <dval> FNUMBER
 %token SQUOTE
-%token DASH
-%token STAR
+%token <str> IDENTIFIER
+%token <dval> FNUMBER
+%token COMMA
 
 %token LBRACKET
 %token LPAREN
@@ -58,15 +56,17 @@ using namespace casa;
 %token RPAREN
 %token LBRACE
 %token RBRACE
-%token COMMA
+
+%token DASH
+%token STAR
 %token COLON
 
 %type <node> antennastatement
 %type <node> antennaexpr
-%type <node> indexcombexprlist
+%type <node> combnameorstation
+%type <node> namesorstations
 %type <node> indexcombexpr
-%type <node> indexlist
-%type <node> antennalistexpr
+%type <node> idandcp
 
 %left OR AND
 %nonassoc EQ EQASS GT GE LT LE NE COMMA AMPERSAND
@@ -81,52 +81,59 @@ int MSAntennaGramlex (YYSTYPE*);
 %}
 
 %%
-antennastatement: SQUOTE antennaexpr SQUOTE {
+antennastatement: indexcombexpr 
+                | SQUOTE antennaexpr SQUOTE {
                     $$ = $2;
-                  }
-                | antennalistexpr {
-                    $$ = $1;
                   }
                 ;
 
-antennaexpr: IDENTIFIER {
-		  cout << "input " << $1 << endl;
-                  String identifier = String($1);
-		  cout << "input string " << identifier << endl;
-		  $$ = MSAntennaParse().selectNameOrStation(identifier);
-             }
-	   | indexcombexprlist 
-	   ;
-		   
-indexcombexprlist: indexcombexpr
-                 | indexcombexprlist COMMA indexcombexpr 
+antennaexpr: combnameorstation 
+           | combnameorstation AMPERSAND combnameorstation {
+                  $$ = new TableExprNode ($1 || $3) ;}
+           | combnameorstation AMPERSAND STAR {
+                  $$ = $1;}
+           ;
+
+combnameorstation: namesorstations 
+                 | LPAREN namesorstations RPAREN {
+		     $$ = $2;}
                  ;
-
-indexcombexpr: indexlist AMPERSAND indexlist
-             | indexlist AMPERSAND STAR
-             ;
-
-indexlist: LPAREN antennalistexpr RPAREN {
-             $$ = $2;
-           }
-         | antennalistexpr {
-             $$ = $1;
-           }
-         ;
-antennalistexpr: IDENTIFIER {
+namesorstations: IDENTIFIER {
+                   String identifier = String($1);
+		   $$ = MSAntennaParse().selectNameOrStation(identifier);
+                 }
+               | namesorstations COMMA IDENTIFIER {
+		   $$ = MSAntennaParse().selectNameOrStation(String($3));
+	         }
+               | IDENTIFIER DASH IDENTIFIER {
+                   if(isdigit(atoi($1))) {
+		     Int len = atoi($3) - atoi($1) + 1;
+		     String antennanms;
+		     for(Int i = 0; i < len; i++) {
+		       antennanms = String(atoi($1) + i);
+		       $$ = MSAntennaParse().selectNameOrStation(antennanms);
+		     }
+		   }else {
+		     cout << " Incorrect range expresssion " << endl;
+		   }
+		 }
+               ;
+		  
+indexcombexpr  : IDENTIFIER {
                    Vector<Int> ind(1);
                    ind[0] = atoi($1);
                    $$ = MSAntennaParse().selectAntennaIds(ind);
                  }
-               | antennalistexpr COMMA IDENTIFIER
-               | IDENTIFIER DASH IDENTIFIER {
-                   Int len = atoi($3)-atoi($1)+1;
-                   Vector<Int> antennaidx(len);
-                   for(Int i = 0; i < len; i++) {
-                     antennaidx[i] = atoi($1) + i;
-                   }
-                   $$ = MSAntennaParse().selectAntennaIds(antennaidx);
-		 }
-               ;
+
+               | idandcp
+	       | idandcp AMPERSAND idandcp {
+                   $$ = new TableExprNode ($1 || $3); 
+   	         }
+	       ;
+idandcp: IDENTIFIER COLON IDENTIFIER {
+           $$ = MSAntennaParse().selectFromIdsAndCPs(atoi($1), String($3));
+	   }
+       ;
+
 %%
 
