@@ -54,9 +54,14 @@ TiledStepper::TiledStepper(const IPosition& latticeShape,
   AlwaysAssert(nrdim > 0, AipsError);
   AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
   AlwaysAssert(axis < nrdim, AipsError);
-  for (Int i=0; i<nrdim; i++) {
+  uInt i;
+  for (i=0; i<theAxis; i++) {
     theAxisPath(i) = i;
   }
+  for (i=theAxis; i<nrdim-1; i++) {
+    theAxisPath(i) = i+1;
+  }
+  theAxisPath(nrdim-1) = theAxis;
   reset();
   DebugAssert(ok() == True, AipsError);
 };
