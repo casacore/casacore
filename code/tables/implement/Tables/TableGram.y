@@ -56,6 +56,8 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token INTO
 %token SORTASC
 %token SORTDESC
+%token LIMIT
+%token OFFSET
 %token ALL                  /* ALL (in SELECT ALL) or name of function */
 %token <val> NAME           /* name of function or shorthand for table */
 %token <val> FLDNAME        /* name of field or shorthand for table */
@@ -108,7 +110,7 @@ PtrBlock<TableParseUpdate*>* updateb;
 
 %left OR
 %left AND
-%nonassoc EQ GT GE LT LE NE
+%nonassoc EQ EQASS GT GE LT LE NE
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -135,8 +137,8 @@ select:    SELECT {
 	   }
          ;
 
-selrow:    selcol selwh order given
-         | selcol into selwh order
+selrow:    selcol selwh order limitoff given
+         | selcol into selwh order limitoff
          ;
 
 selcol:    columns
@@ -161,7 +163,7 @@ update:    UPDATE {
            }
          ;
 
-updrow:    tables updpart updfrom whexpr {
+updrow:    tables updpart updfrom whexpr order limitoff {
 	       TableParseSelect::currentSelect()->handleSelect ($4);
 	       delete $4;
            }
@@ -183,12 +185,19 @@ updlist:   updlist COMMA updexpr {
            }
          ;
 
-updexpr:   NAME EQ orexpr {
+updexpr:   NAME EQASS orexpr {
                $$ = new TableParseUpdate ($1->str, *$3);
 	       delete $1;
 	       delete $3;
            }
+         | NAME LBRACKET subscripts RBRACKET EQASS orexpr {
+               $$ = new TableParseUpdate ($1->str, *$3, *$6);
+	       delete $1;
+	       delete $3;
+	       delete $6;
+           }
          ;
+
 
 updfrom:        /* no FROM */
          | FROM tables
@@ -239,7 +248,7 @@ insexpr:   orexpr {
            }
          ;
 
-delcomm:   delete selwh
+delcomm:   delete selwh order limitoff
          ;
 
 delete:    DELETE {
@@ -279,6 +288,29 @@ order:               /* no sort */
          | ORDERBY SORTDESC NODUPL sortlist {
 	       TableParseSelect::currentSelect()->handleSort ($4, True,
 							     Sort::Descending);
+	   }
+         ;
+
+limitoff:           /* no limit,offset */
+         | LIMIT orexpr {
+	       TableParseSelect::currentSelect()->handleLimit (*$2);
+	       delete $2;
+	   }
+         | OFFSET orexpr {
+	       TableParseSelect::currentSelect()->handleOffset (*$2);
+	       delete $2;
+	   }
+         | LIMIT orexpr OFFSET orexpr {
+	       TableParseSelect::currentSelect()->handleLimit (*$2);
+	       TableParseSelect::currentSelect()->handleOffset (*$4);
+	       delete $2;
+	       delete $4;
+	   }
+         | OFFSET orexpr LIMIT orexpr {
+	       TableParseSelect::currentSelect()->handleOffset (*$2);
+	       TableParseSelect::currentSelect()->handleLimit (*$4);
+	       delete $2;
+	       delete $4;
 	   }
          ;
 
@@ -408,6 +440,11 @@ andexpr:   relexpr
 
 relexpr:   arithexpr
          | arithexpr EQ arithexpr {
+	       $$ = new TableExprNode (*$1 == *$3);
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr EQASS arithexpr {
 	       $$ = new TableExprNode (*$1 == *$3);
 	       delete $1;
 	       delete $3;

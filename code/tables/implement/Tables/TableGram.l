@@ -36,7 +36,6 @@
 %}
 
 /* states */
-%s UPDATEstate
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
@@ -107,6 +106,8 @@ GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
+LIMIT     [Ll][Ii][Mm][Ii][Tt]
+OFFSET    [Oo][Ff][Ff][Ss][Ee][Tt]
 IN        [Ii][Nn]
 AS        [Aa][Ss]
 AND       [Aa][Nn][Dd]
@@ -135,8 +136,9 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
     In a subquery care must be taken that the state is switched back to
     EXPRstate, because a FROM can be the last part in a subquery and
     because a set can be specified in the GIVING part.
-    This is done by setting the state when square brackets are found.
-    [ indicates the beginning of a set. ] indicates end of subquery.
+    This is done by setting the state when parentheses or square brackets
+    are found. ( and [ indicate the beginning of a set(subquery).
+    ) and ] indicate the end of subquery.
  */
 {SELECT}  {
             tableGramPosition() += yyleng;
@@ -145,10 +147,10 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	  }
 {UPDATE}  {
             tableGramPosition() += yyleng;
-	    BEGIN(UPDATEstate);
+	    BEGIN(FROMstate);
 	    return UPDATE;
 	  }
-<UPDATEstate>{SET}  {
+{SET}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return UPDSET;
@@ -204,6 +206,16 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             tableGramPosition() += yyleng;
 	    return INTO;
           }
+{LIMIT}   {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return LIMIT;
+          }
+{OFFSET}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return OFFSET;
+          }
 {GROUPBY} {
             tableGramPosition() += yyleng;
             throw (TableInvExpr ("GROUPBY is not supported yet"));
@@ -226,10 +238,20 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             BEGIN(EXPRstate);
             return LBRACKET;
           }
+"("       {
+            tableGramPosition() += yyleng;
+            BEGIN(EXPRstate);
+            return LPAREN;
+          }
 "]"       {
             tableGramPosition() += yyleng;
             BEGIN(EXPRstate);
             return RBRACKET;
+          }
+")"       {
+            tableGramPosition() += yyleng;
+            BEGIN(EXPRstate);
+            return RPAREN;
           }
 
 "<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
@@ -242,7 +264,7 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 ":="      { tableGramPosition() += yyleng; return EMPTYCLOSED; }
 ":"       { tableGramPosition() += yyleng; return COLON; }
 "=="      { tableGramPosition() += yyleng; return EQ; }
-"="       { tableGramPosition() += yyleng; return EQ; }
+"="       { tableGramPosition() += yyleng; return EQASS; }
 "!="      { tableGramPosition() += yyleng; return NE; }
 "<>"      { tableGramPosition() += yyleng; return NE; }
 ">="      { tableGramPosition() += yyleng; return GE; }
@@ -261,8 +283,6 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 "%"       { tableGramPosition() += yyleng; return MODULO; }
 "+"       { tableGramPosition() += yyleng; return PLUS; }
 "-"       { tableGramPosition() += yyleng; return MINUS; }
-"("       { tableGramPosition() += yyleng; return LPAREN; }
-")"       { tableGramPosition() += yyleng; return RPAREN; }
 "{"       { tableGramPosition() += yyleng; return LBRACE; }
 "}"       { tableGramPosition() += yyleng; return RBRACE; }
 ","       {
@@ -378,7 +398,7 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	  }
 
  /* A table file name can be given in the UPDATE, FROM or GIVING clause */
-<UPDATEstate,FROMstate,GIVINGstate>{NAMETAB} {
+<FROMstate,GIVINGstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 's';

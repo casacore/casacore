@@ -39,6 +39,7 @@
 
 //# Forward Declarations
 class TableExprNodeSet;
+class TableExprNodeIndex;
 class AipsIO;
 template<class T> class Vector;
 
@@ -271,13 +272,14 @@ private:
 // </prerequisite>
 
 // <etymology>
-// TableParseUpdate holds a column name and an update expression.
+// TableParseUpdate holds a column name, optional indices, and an
+// update expression.
 // </etymology>
 
 // <synopsis> 
 // A table command is parsed.
-// An object of this class is used to hold the column name and value
-// expression for the UPDATE command.
+// An object of this class is used to hold the column name, optional indices,
+// and value expression for the UPDATE command.
 // </synopsis> 
 
 
@@ -287,6 +289,11 @@ public:
     // Construct from a column name and expression.
     TableParseUpdate (const String& columnName, const TableExprNode&);
 
+    // Construct from a column name, subscripts, and expression.
+    TableParseUpdate (const String& columnName,
+		      const TableExprNodeSet& indices,
+		      const TableExprNode&);
+
     ~TableParseUpdate();
 
     // Set the column name.
@@ -295,12 +302,20 @@ public:
     // Get the column name.
     const String& columnName() const;
 
+    // Get the pointer to the indices.
+    TableExprNodeIndex* indexPtr() const;
+
+    // Get the index expression node.
+    const TableExprNode& indexNode() const;
+
     // Get the expression node.
     const TableExprNode& node() const;
 
 private:
-    String        columnName_p;
-    TableExprNode node_p;
+    String              columnName_p;
+    TableExprNodeIndex* indexPtr_p;
+    TableExprNode       indexNode_p;
+    TableExprNode       node_p;
 };
 
 
@@ -350,9 +365,12 @@ public:
     ~TableParseSelect();
 
     // Execute the select command (select/sort/projection/giving).
-    // The flag tells if a set in the GIVING part is allowed.
+    // The setInGiving flag tells if a set in the GIVING part is allowed.
+    // The mustSelect flag tells if a SELECT command must do something.
+    // Usually that is required, but not for a SELECT in an INSERT command.
     // The commandType (select or update) is filled in.
-    void execute (Bool setInGiving, String& commandType);
+    void execute (Bool setInGiving, String& commandType,
+		  Bool mustSelect=True);
 
     // Execute a query in a from clause and create an appropriate value
     // for the result.
@@ -386,6 +404,12 @@ public:
     // It takes over the pointer (and clears the input pointer).
     void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates,
 		     Sort::Order defaultSortOrder);
+
+    // Evaluate and keep the limit value.
+    void handleLimit (const TableExprNode& expr);
+
+    // Evaluate and keep the offset value.
+    void handleOffset (const TableExprNode& expr);
 
     // Add a table name to the linked list.
     void addTable (const TableParseVal* name, const String& shorthand);
@@ -465,6 +489,9 @@ private:
     // Do the sort step.
     Table doSort (const Table& table);
 
+    // Do the limit/offset step.
+    Table doLimOff (const Table& table);
+
     // Do the 'select distinct' step.
     Table doDistinct (const Table& table);
 
@@ -474,6 +501,9 @@ private:
 
     // Make a set from the results of the subquery.
     TableExprNode makeSubSet() const;
+
+    // Evaluate a double scalar expression.
+    Double evalDSExpr (const TableExprNode& expr) const;
 
     // Split a name into its parts (shorthand, column and field names).
     // True is returned when the name contained a keyword part.
@@ -532,6 +562,10 @@ private:
     TableExprNodeSet* resultSet_p;
     //# The WHERE expression tree.
     TableExprNode* node_p;
+    //# The possible limit (= max nr of selected rows) (0 means no limit).
+    uInt limit_p;
+    //# The possible offset (= nr of selected rows to skip).
+    uInt offset_p;
     //# The update or insert expression list.
     PtrBlock<TableParseUpdate*>* update_p;
     //# The table selection to be inserted.
@@ -563,6 +597,10 @@ inline void TableParseUpdate::setColumnName (const String& name)
     { columnName_p = name; }
 inline const String& TableParseUpdate::columnName() const
     { return columnName_p; }
+inline TableExprNodeIndex* TableParseUpdate::indexPtr() const
+    { return indexPtr_p; }
+inline const TableExprNode& TableParseUpdate::indexNode() const
+    { return indexNode_p; }
 inline const TableExprNode& TableParseUpdate::node() const
     { return node_p; }
 

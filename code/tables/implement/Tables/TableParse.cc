@@ -114,10 +114,24 @@ TableParseVal* TableParseVal::makeValue()
 TableParseUpdate::TableParseUpdate (const String& columnName,
 				    const TableExprNode& node)
 : columnName_p (columnName),
+  indexPtr_p   (0),
   node_p       (node)
 {}
+TableParseUpdate::TableParseUpdate (const String& columnName,
+				    const TableExprNodeSet& indices,
+				    const TableExprNode& node)
+: columnName_p (columnName),
+  indexPtr_p   (0),
+  node_p       (node)
+{
+  // Make the index node from the 1-relative subscripts.
+  indexPtr_p  = new TableExprNodeIndex (indices, 1);
+  indexNode_p = TableExprNode(indexPtr_p);
+}
 TableParseUpdate::~TableParseUpdate()
-{}
+{
+  // indexPtr_p is deleted because it is used in indexNode_p.
+}
 
 
 
@@ -146,6 +160,8 @@ TableParseSelect::TableParseSelect (Int commandType)
   distinct_p    (False),
   resultSet_p   (0),
   node_p        (0),
+  limit_p       (0),
+  offset_p      (0),
   update_p      (0),
   insSel_p      (0),
   sort_p        (0),
@@ -974,6 +990,32 @@ TableExprNode TableParseSelect::makeSubSet() const
     return set.setOrArray();
 }
 
+void TableParseSelect::handleLimit (const TableExprNode& expr)
+{
+  Double val = evalDSExpr (expr);
+  if (val < 1) {
+      throw TableInvExpr ("LIMIT must have a value >= 1");
+  }
+  limit_p = uInt(val);
+}
+
+void TableParseSelect::handleOffset (const TableExprNode& expr)
+{
+  Double val = evalDSExpr (expr);
+  offset_p = (val<0  ?  0 : uInt(val));
+}
+
+Double TableParseSelect::evalDSExpr (const TableExprNode& expr) const
+{
+  if (expr.baseTablePtr() != 0) {
+    throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
+  }
+  TableExprId rowid(0);
+  Double val;
+  expr.get (rowid, val);
+  return val;
+}
+
 void TableParseSelect::handleUpdate (PtrBlock<TableParseUpdate*>*& upd)
 {
   update_p = upd;
@@ -1032,51 +1074,99 @@ void TableParseSelect::doUpdate (Table& table)
   uInt nrkey = update_p->nelements();
   Block<TableColumn> cols(nrkey);
   Block<Int> dtypeCol(nrkey);
+  Block<Bool> scalarCol(nrkey);
   for (uInt i=0; i<nrkey; i++) {
     const TableParseUpdate& key = *(*update_p)[i];
-    //# Check if the correct table is used in the update expression.
+    const String& colName = key.columnName();
+    //# Check if the correct table is used in the update and index expression.
     //# A constant expression can be given.
     if (! key.node().checkReplaceTable (table, True)) {
-      throw (TableInvExpr ("Incorrect table used in an UPDATE expr"));
+      throw TableInvExpr ("Incorrect table used in the UPDATE expr "
+			  "of column " + colName);
+    }
+    if (key.indexPtr() != 0) {
+      if (! key.indexNode().checkReplaceTable (table, True)) {
+      	throw TableInvExpr ("Incorrect table used in the index expr "
+      			    "in UPDATE of column " + colName);
+      }
     }
     //# This throws an exception for unknown data types (datetime, regex).
     key.node().getColumnDataType();
-    const String& colName = key.columnName();
     //# Check if the column exists and is writable.
     if (! tabdesc.isColumn (colName)) {
-      throw TableInvExpr ("Column " + colName +
+      throw TableInvExpr ("Update column " + colName +
 			  " does not exist in table " +
 			  table.tableName());
     }
     if (! table.isColumnWritable (colName)) {
-      throw TableInvExpr ("Column " + colName +
+      throw TableInvExpr ("Update column " + colName +
 			  " is not writable in table " +
 			  table.tableName());
     }
+    //# An index expression can only be given for an array column.
+    const ColumnDesc& coldesc = tabdesc[colName];
+    Bool isScalar = coldesc.isScalar();
+    scalarCol[i] = isScalar;
+    if (key.indexPtr() != 0) {
+      if (isScalar) {
+	throw TableInvExpr ("Index value cannot be given in UPDATE of "
+			    " scalar column " + colName);
+      }
+      if (key.indexPtr()->isSingle()) {
+	isScalar = True;
+      }
+    }
     //# Check if the value type matches.
-    if (key.node().isScalar() != tabdesc[colName].isScalar()) {
-      throw TableInvExpr ("Value type (scalar or array) of column " +
+    if (isScalar  &&  !key.node().isScalar()) {
+      throw TableInvExpr ("An array value cannot be used in UPDATE of "
+			  " scalar element of column " +
 			  colName + " in table " +
-			  table.tableName() +
-			  " mismatches the type of the new value");
+			  table.tableName());
     }
     cols[i].attach (table, colName);
-    dtypeCol[i] = tabdesc[colName].dataType();
+    dtypeCol[i] = coldesc.dataType();
   }
+  // IPosition objects in case slicer.inferShapeFromSource has to be used.
+  IPosition trc,blc,inc;
   // Loop through all rows in the table and update each row.
   TableExprId rowid(0);
   for (uInt row=0; row<table.nrow(); row++) {
     rowid.setRownr (row);
     for (uInt i=0; i<nrkey; i++) {
       TableColumn& col = cols[i];
-      const TableExprNode& node = (*update_p)[i]->node();
+      const TableParseUpdate& key = *(*update_p)[i];
+      const TableExprNode& node = key.node();
+      // Get possible subscripts.
+      const Slicer* slicerPtr = 0;
+      if (key.indexPtr() != 0) {
+	slicerPtr = &(key.indexPtr()->getSlicer(rowid));
+      }
       switch (node.dataType()) {
       case TpBool:
 	if (node.isScalar()) {
 	  if (dtypeCol[i] == TpBool) {
 	    Bool value;
 	    node.get (rowid, value);
-	    col.putScalar (row, value);
+	    if (scalarCol[i]) {
+	      col.putScalar (row, value);
+	    } else {
+	      ArrayColumn<Bool> acol(col);
+	      Array<Bool> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = value;
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = value;
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	  } else {
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
 				" has an invalid data type for an"
@@ -1087,7 +1177,11 @@ void TableParseSelect::doUpdate (Table& table)
 	    Array<Bool> value;
 	    node.get (rowid, value);
 	    ArrayColumn<Bool> acol(col);
-	    acol.put (row, value);
+	    if (slicerPtr == 0) {
+	      acol.put (row, value);
+	    } else {
+	      acol.putSlice (row, *slicerPtr, value);
+	    }
 	  } else {
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
 				" has an invalid data type for an"
@@ -1100,7 +1194,26 @@ void TableParseSelect::doUpdate (Table& table)
 	  if (dtypeCol[i] == TpString) {
 	    String value;
 	    node.get (rowid, value);
-	    col.putScalar (row, value);
+	    if (scalarCol[i]) {
+	      col.putScalar (row, value);
+	    } else {
+	      ArrayColumn<String> acol(col);
+	      Array<String> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = value;
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = value;
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	  } else {
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
 				" has an invalid data type for an"
@@ -1111,7 +1224,11 @@ void TableParseSelect::doUpdate (Table& table)
 	    Array<String> value;
 	    node.get (rowid, value);
 	    ArrayColumn<String> acol(col);
-	    acol.put (row, value);
+	    if (slicerPtr == 0) {
+	      acol.put (row, value);
+	    } else {
+	      acol.putSlice (row, *slicerPtr, value);
+	    }
 	  } else {
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
 				" has an invalid data type for an"
@@ -1125,31 +1242,202 @@ void TableParseSelect::doUpdate (Table& table)
 	  node.get (rowid, value);
 	  switch (dtypeCol[i]) {
 	  case TpUChar:
-	    col.putScalar (row, uChar(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, uChar(value));
+	    } else {
+	      ArrayColumn<uChar> acol(col);
+	      Array<uChar> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = uChar(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = uChar(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpShort:
-	    col.putScalar (row, Short(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, Short(value));
+	    } else {
+	      ArrayColumn<Short> acol(col);
+	      Array<Short> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = Short(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = Short(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpUShort:
-	    col.putScalar (row, uShort(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, uShort(value));
+	    } else {
+	      ArrayColumn<uShort> acol(col);
+	      Array<uShort> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = uShort(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = uShort(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpInt:
-	    col.putScalar (row, Int(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, Int(value));
+	    } else {
+	      ArrayColumn<Int> acol(col);
+	      Array<Int> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = Int(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = Int(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpUInt:
-	    col.putScalar (row, uInt(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, uInt(value));
+	    } else {
+	      ArrayColumn<uInt> acol(col);
+	      Array<uInt> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = uInt(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = uInt(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpFloat:
-	    col.putScalar (row, Float(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, Float(value));
+	    } else {
+	      ArrayColumn<Float> acol(col);
+	      Array<Float> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = Float(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = Float(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpDouble:
-	    col.putScalar (row, value);
+	    if (scalarCol[i]) {
+	      col.putScalar (row, value);
+	    } else {
+	      ArrayColumn<Double> acol(col);
+	      Array<Double> arr(acol.shape(row));
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = value;
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = value;
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpComplex:
-	    col.putScalar (row, Complex(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, Complex(value));
+	    } else {
+	      ArrayColumn<Complex> acol(col);
+	      Array<Complex> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = Complex(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = Complex(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpDComplex:
-	    col.putScalar (row, DComplex(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, DComplex(value));
+	    } else {
+	      ArrayColumn<DComplex> acol(col);
+	      Array<DComplex> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = DComplex(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = DComplex(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  default:
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
@@ -1165,7 +1453,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<uChar> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<uChar> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpShort:
@@ -1173,7 +1465,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<Short> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<Short> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpUShort:
@@ -1181,7 +1477,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<uShort> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<uShort> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpInt:
@@ -1189,7 +1489,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<Int> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<Int> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpUInt:
@@ -1197,7 +1501,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<uInt> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<uInt> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpFloat:
@@ -1205,13 +1513,21 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<Float> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<Float> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpDouble:
 	    {
 	      ArrayColumn<Double> acol(col);
-	      acol.put (row, value);
+	      if (slicerPtr == 0) {
+		acol.put (row, value);
+	      } else {
+		acol.putSlice (row, *slicerPtr, value);
+	      }
 	    }
 	    break;
 	  case TpComplex:
@@ -1219,7 +1535,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<Complex> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<Complex> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpDComplex:
@@ -1227,7 +1547,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<DComplex> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<DComplex> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  default:
@@ -1243,10 +1567,48 @@ void TableParseSelect::doUpdate (Table& table)
 	  node.get (rowid, value);
 	  switch (dtypeCol[i]) {
 	  case TpComplex:
-	    col.putScalar (row, Complex(value));
+	    if (scalarCol[i]) {
+	      col.putScalar (row, Complex(value));
+	    } else {
+	      ArrayColumn<Complex> acol(col);
+	      Array<Complex> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = Complex(value);
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = Complex(value);
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  case TpDComplex:
-	    col.putScalar (row, value);
+	    if (scalarCol[i]) {
+	      col.putScalar (row, value);
+	    } else {
+	      ArrayColumn<DComplex> acol(col);
+	      Array<DComplex> arr;
+	      if (slicerPtr == 0) {
+		arr.resize (acol.shape(row));
+		arr = value;
+		acol.put (row, arr);
+	      } else {
+		if (slicerPtr->isFixed()) {
+		  arr.resize (slicerPtr->length());
+		} else {
+		  arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+							       blc, trc, inc));
+		}
+		arr = value;
+		acol.putSlice (row, *slicerPtr, arr);
+	      }
+	    }
 	    break;
 	  default:
 	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
@@ -1262,7 +1624,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<Complex> avalue(value.shape());
 	      convertArray (avalue, value);
 	      ArrayColumn<Complex> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  case TpDComplex:
@@ -1270,7 +1636,11 @@ void TableParseSelect::doUpdate (Table& table)
 	      Array<DComplex> avalue;
 	      convertArray (avalue, value);
 	      ArrayColumn<DComplex> acol(col);
-	      acol.put (row, avalue);
+	      if (slicerPtr == 0) {
+		acol.put (row, avalue);
+	      } else {
+		acol.putSlice (row, *slicerPtr, avalue);
+	      }
 	    }
 	    break;
 	  default:
@@ -1310,7 +1680,7 @@ Table TableParseSelect::doInsert (Table& table)
   // Handle the inserts from another selection.
   // Do the selection.
   String cmd;
-  insSel_p->execute (False, cmd);
+  insSel_p->execute (False, cmd, False);
   Table sel = insSel_p->getTable();
   if (sel.nrow() == 0) {
     return Table();
@@ -1569,6 +1939,21 @@ Table TableParseSelect::doSort (const Table& table)
 }
 
 
+Table TableParseSelect::doLimOff (const Table& table)
+{
+    Vector<uInt> rownrs;
+    if (table.nrow() > offset_p) {
+        uInt nrleft = table.nrow() - offset_p;
+	if (limit_p > 0  &&  limit_p < nrleft) {
+	    nrleft = limit_p;
+	}
+	rownrs.resize (nrleft);
+	indgen (rownrs, offset_p);
+    }
+    return table(rownrs);
+}
+
+
 Table TableParseSelect::doDistinct (const Table& table)
 {
     Vector<uInt> rownrs;
@@ -1603,14 +1988,16 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 
 
 //# Execute all parts of the SELECT command.
-void TableParseSelect::execute (Bool setInGiving, String& commandType)
+void TableParseSelect::execute (Bool setInGiving, String& commandType,
+				Bool mustSelect)
 {
     //# Give an error if no command part has been given.
-    if (commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
-    &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0) {
+    if (mustSelect  &&  commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
+    &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
+    &&  limit_p < 0  &&  offset_p <= 0) {
 	throw (TableError
 	    ("TableParse error: no projection, selection, sorting, "
-	     "or giving-set given in SELECT command"));
+	     "limit, offset, or giving-set given in SELECT command"));
     }
     // Test if a "giving set" is possible.
     if (resultSet_p != 0  &&  !setInGiving) {
@@ -1629,6 +2016,12 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType)
 			       table.tableName()));
 	}
     }
+    //# Determine if we can pre-empt the selection loop.
+    //# That is possible if a limit is given without sorting.
+    uInt nrmax=0;
+    if (sort_p == 0  &&  limit_p > 0) {
+	nrmax = limit_p + offset_p;
+    }
     //# First do the select.
     if (node_p != 0) {
 //#//	cout << "Showing TableExprRange values ..." << endl;
@@ -1640,7 +2033,14 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType)
 //#//	}
 	table = table(*node_p);
     }
-    //# Then do the update or sort and so.
+    //# Then do the sort and the limit/offset.
+    if (sort_p != 0) {
+        table = doSort (table);
+    }
+    if (offset_p > 0  ||  limit_p > 0) {
+        table = doLimOff (table);
+    }
+    //# Then do the update, delete, insert, or projection and so.
     if (commandType_p == 2) {
         doUpdate (table);
 	table.flush();
@@ -1657,10 +2057,6 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType)
 	origTab.flush();
 	commandType = "delete";
     } else {
-        //# Then do the sort.
-        if (sort_p != 0) {
-	    table = doSort (table);
-	}
 	//# Then do the projection.
 	if (columnNames_p.nelements() > 0) {
 	    table = table.project (columnNames_p);
