@@ -194,7 +194,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   if (doPadding) { // Unpad the result
     unpad(result, *resultPtr);
     delete modelPtr;
-    resultPtr = modelPtr = 0;
+    modelPtr = resultPtr = 0;
   }
 }
 
