@@ -192,11 +192,11 @@ Bool Interpolate2D::interpNearestFloat (Float& result,
   const IPosition& shape = data.shape();
 
   Double imax = shape(0) - 1.;
-  Double wi = where(0);
+  Double wi = where[0];
   if(wi < 0. - half || wi > imax + half || imax < 0) return False;
 
   Double jmax = shape(1) - 1.;
-  Double wj = where(1);
+  Double wj = where[1];
   if(wj < 0 - half || wj > jmax + half || jmax < 0) return False;
 
   uInt i = (wi <= 0.)?		0
@@ -223,11 +223,11 @@ Bool Interpolate2D::interpNearestDouble (Double& result,
   const IPosition& shape = data.shape();
 
   Double imax = shape(0) - 1.;
-  Double wi = where(0);
+  Double wi = where[0];
   if(wi < 0. - half || wi > imax + half || imax < 0) return False;
 
   Double jmax = shape(1) - 1.;
-  Double wj = where(1);
+  Double wj = where[1];
   if(wj < 0 - half || wj > jmax + half || jmax < 0) return False;
 
   uInt i = (wi <= 0.)?		0
@@ -258,8 +258,8 @@ Bool Interpolate2D::interpLinearFloat (Float& result,
 // big positive plus 1 may become 0 and then we will spuriously
 // pass the shape test
 
-   uInt i = Int(where(0));               // Assuming Int does (1.2 -> 1)
-   uInt j = Int(where(1));
+   uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
+   uInt j = Int(where[1]);
    uInt si = uInt(shape(0)-1);
    uInt sj = uInt(shape(1)-1);
 
@@ -279,8 +279,8 @@ Bool Interpolate2D::interpLinearFloat (Float& result,
               !(*maskPtr)(i+1,j+1) ) return False;
       }
 //
-      Double TT = where(0) - i;
-      Double UU = where(1) - j;
+      Double TT = where[0] - i;
+      Double UU = where[1] - j;
       result = (1.0-TT)*(1.0-UU)*data(i,j) +
                TT*(1.0-UU)*data(i+1,j) +
                TT*UU*data(i+1,j+1) +
@@ -307,8 +307,8 @@ Bool Interpolate2D::interpLinearDouble (Double& result,
 // big positive plus 1 may become 0 and then we will spuriously
 // pass the shape test
 
-   uInt i = Int(where(0));               // Assuming Int does (1.2 -> 1)
-   uInt j = Int(where(1));
+   uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
+   uInt j = Int(where[1]);
    uInt si = uInt(shape(0)-1);
    uInt sj = uInt(shape(1)-1);
 
@@ -328,8 +328,8 @@ Bool Interpolate2D::interpLinearDouble (Double& result,
               !(*maskPtr)(i+1,j+1) ) return False;
       }
 //
-      Double TT = where(0) - i;
-      Double UU = where(1) - j;
+      Double TT = where[0] - i;
+      Double UU = where[1] - j;
       result = (1.0-TT)*(1.0-UU)*data(i,j) +
                TT*(1.0-UU)*data(i+1,j) +
                TT*UU*data(i+1,j+1) +
@@ -365,8 +365,8 @@ Bool Interpolate2D::interpCubicFloat (Float& result,
 // we use points in a 4 x 4 grid in total (to get derivatives)
 // [i-1,j-1] -> [i+2,j+2]
 
-   Int i = Int(where(0));
-   Int j = Int(where(1));
+   Int i = Int(where[0]);
+   Int j = Int(where[1]);
 
 // Handle edge (and beyond) by using linear.
 
@@ -382,8 +382,8 @@ Bool Interpolate2D::interpCubicFloat (Float& result,
 
    Double d1 = 1.0;
    Double d2 = 1.0;
-   Double TT = where(0) - i;
-   Double UU = where(1) - j;
+   Double TT = where[0] - i;
+   Double UU = where[1] - j;
 
 //
 // define values of function and its derivatives on the
@@ -453,8 +453,8 @@ Bool Interpolate2D::interpCubicDouble (Double& result,
 // we use points in a 4 x 4 grid in total (to get derivatives)
 // [i-1,j-1] -> [i+2,j+2]
 
-   Int i = Int(where(0));
-   Int j = Int(where(1));
+   Int i = Int(where[0]);
+   Int j = Int(where[1]);
 
 // Handle edge (and beyond) by using linear.
 
@@ -470,8 +470,8 @@ Bool Interpolate2D::interpCubicDouble (Double& result,
 
    Double d1 = 1.0;
    Double d2 = 1.0;
-   Double TT = where(0) - i;
-   Double UU = where(1) - j;
+   Double TT = where[0] - i;
+   Double UU = where[1] - j;
 
 //
 // define values of function and its derivatives on the
@@ -530,8 +530,8 @@ Bool Interpolate2D::interpNearestBool (Bool& result,
 
 // Find nearest pixel; (i,j) = centre
 
-  Int i = Int(where(0)+0.5);
-  Int j = Int(where(1)+0.5);
+  Int i = Int(where[0]+0.5);
+  Int j = Int(where[1]+0.5);
   Bool ok = False;
   if (i >= 0 && i <= shape(0)-1 && j >= 0 && j <= shape(1)-1) {
     result = data(i,j);
@@ -551,8 +551,8 @@ Bool Interpolate2D::interpLinearBool (Bool& result,
 
 // Find nearest pixel; (i,j) = centre
 
-   Int i = Int(where(0)+0.5);
-   Int j = Int(where(1)+0.5);
+   Int i = Int(where[0]+0.5);
+   Int j = Int(where[1]+0.5);
 
 // Handle edge. Just move start left/down by one,
 
@@ -583,8 +583,8 @@ Bool Interpolate2D::interpCubicBool (Bool& result,
 
 // Find nearest pixel; (i,j) = centre
 
-   Int i = Int(where(0)+0.5);
-   Int j = Int(where(1)+0.5);
+   Int i = Int(where[0]+0.5);
+   Int j = Int(where[1]+0.5);
 
 // Interpolation grid is 4x4 :  [i-1,j-1] -> [i+2,j+2]
 // Handle edge (and beyond) by using linear.
@@ -636,10 +636,10 @@ void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Ve
 // Pack temporary
 
   for (i=0;i<4;i++) {
-    X(i) = y(i);
-    X(i+4) = y1(i)*d1;
-    X(i+8) = y2(i)*d2;
-    X(i+12) = y12(i)*d1d2;
+    X[i] = y[i];
+    X[i+4] = y1[i]*d1;
+    X[i+8] = y2[i]*d2;
+    X[i+12] = y12[i]*d1d2;
   }
 
  // Matrix multiply the stored table
@@ -648,9 +648,9 @@ void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Ve
     xx = 0.0;
     for (k=0;k<=15;k++) {
        j = (15 * i) + k;
-       xx += wt[i][k] * X(k);
+       xx += wt[i][k] * X[k];
     }
-    CL(i) = xx;
+    CL[i] = xx;
   }
 
 // Unpack the result into the output table
@@ -658,7 +658,7 @@ void Interpolate2D::bcucof (Matrix<Double>& c, const Vector<Double>& y, const Ve
   l = 0;
   for (i=0;i<4;i++) {
     for (j=0;j<4;j++) {
-      c(i,j) = CL(l++);
+      c(i,j) = CL[l++];
     }
   }
 }
