@@ -31,8 +31,8 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
+#include <aips/Arrays/Vector.h>
 
-template<class T> class Vector;
 template<class T> class Matrix;
 class RecordInterface;
 
@@ -131,8 +131,15 @@ public:
        // DDD:MM:SS.SSS style formatting 
        TIME };
 
+
+
+    Coordinate();
+
     // Destructor
     virtual ~Coordinate();
+
+    // Copy constructor (copy semantics)
+    Coordinate(const Coordinate& other);
 
     // List the type of this Coordinate object. Generally you shouldn't have
     // to call this function, it is used mostly in the CoordinateSystem class.
@@ -163,6 +170,36 @@ public:
 			 const Vector<Double> &world) const = 0;
     // </group>
 
+    // Mixed pixel/world coordinate conversion.
+    // worldIn and worldAxes are of length nWorldAxes.
+    // pixelIn and pixelAxes are of length nPixelAxes.
+    // worldAxes(i) = True specifies you have given a world
+    // value in worldIn(i) to convert to pixel.
+    // pixelAxes(i)=True specifies you have given a pixel 
+    // value in pixelIn(i) to convert to world.
+    // You cannot specify the same axis via worldAxes
+    // and pixelAxes.
+    // Values in pixelIn are converted to world and
+    // put into worldOut in the appropriate worldAxis
+    // location.  Values in worldIn are copied to
+    // worldOut.   
+    // Values in worldIn are converted to pixel and
+    // put into pixelOut in the appropriate pixelAxis
+    // location.  Values in pixelIn are copied to
+    // pixelOut
+    // Removed axes are handled (for example, a removed pixel
+    // axis with remaining corresponding world axis will
+    // correctly be converted to world using the replacement
+    // value).
+    // Returns True if the conversion succeeds, otherwise it returns False and
+    // <src>errorMessage()</src> contains an error message. The output vectors
+    // are resized.
+    virtual Bool toMix(Vector<Double>& worldOut,
+                       Vector<Double>& pixelOut,
+                       const Vector<Double>& worldIn,
+                       const Vector<Double>& pixelIn,
+                       const Vector<Bool>& worldAxes,   
+                       const Vector<Bool>& pixelAxes) const;
 
     // Batch up a lot of transformation. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Return the number of failures.
@@ -293,12 +330,17 @@ public:
     // <src>new</src> and must be deleted by the caller.
     virtual Coordinate *clone() const = 0;
 protected:
+    // Assignment (copy semantics) is only useful for derived classes
+    Coordinate& operator=(const Coordinate& other);
+
     void set_error(const String &errorMsg) const;
     Bool find_scale_factor(String &error, Vector<Double> &factor, 
 			   const Vector<String> &units, 
 			   const Vector<String> &oldUnits);
 private:
-    String error_p;
+    mutable String error_p;
+    mutable Vector<Double> pixel_tmp_p;
+    mutable Vector<Double> world_tmp_p;
 
     // Check format type
     void checkFormat(Coordinate::formatType& format,         
