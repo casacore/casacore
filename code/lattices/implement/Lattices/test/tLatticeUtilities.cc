@@ -29,11 +29,15 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Lattices/TempLattice.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeUtilities.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -45,6 +49,7 @@
 void doMinMax();
 void doCollapse();
 void doCopy();
+void doReplicate();
 
 int main()
 {
@@ -61,6 +66,10 @@ int main()
 // Copy
 
      doCopy();
+
+// Replicate
+
+     doReplicate();
 
   } catch (AipsError x) {
     cout<< "FAIL"<< endl;
@@ -212,6 +221,49 @@ void doCopy ()
           AlwaysAssert(near(dataOut(pos), Float(0.0), 1.0e-6), AipsError);
           AlwaysAssert(maskOut(pos)==False, AipsError);
        }
+   }
+}
+
+void doReplicate ()
+{
+   IPosition shapeLat(2,10,20);
+   ArrayLattice<Float> lat(shapeLat);
+
+// Just use full lattice.  Having the region in the function
+// call is pretty useless
+
+   IPosition start(2,0,0);
+   IPosition end(shapeLat-1);
+   Slicer slice(start, end, Slicer::endIsLast);
+
+// Replcicate array 4 times
+
+   {
+      IPosition shapePixels(2,5,10);
+      Array<Float> arr(shapePixels);
+      indgen(arr);
+      LatticeUtilities::replicate (lat, slice, arr);
+//
+      Double tol = 1.0e-6;
+      LatticeStepper stepper(shapeLat, shapePixels, LatticeStepper::RESIZE);
+      LatticeIterator<Float> iter(lat, stepper);
+      for (iter.reset(); !iter.atEnd(); iter++) {
+         AlwaysAssert(allNear(iter.cursor(),arr,tol), AipsError);
+      }
+   }
+
+// Forced errro
+
+   {
+      IPosition shapePixels(2,7,13);
+      Array<Float> arr(shapePixels);
+      indgen(arr);
+      try {
+         LatticeUtilities::replicate (lat, slice, arr);
+         throw(AipsError("replicate unexpectedly did not fail"));
+      } catch (AipsError x) {
+         cerr << "Expected error = " << x.getMesg() << endl;
+      }
    }
 }
 
