@@ -673,9 +673,6 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	      }
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
-	      pointtime=pointtime+
-		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
-		+qGapTime_p.getValue("s");
 	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	      for (Int m=0; m < nAnt_p ; m++){
 		pointingc.time().put(pointrow, pointtime);
@@ -684,6 +681,9 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);
+		pointtime=pointtime+
+		  nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+		  +qGapTime_p.getValue("s");
 		pointrow++;
 	      }
 	      // os << pName << LogIO::POST;
@@ -1163,9 +1163,6 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	      }
 	      char* pName=name.str();
 	      fieldc.name().put(row,String(pName));
-	      pointtime=pointtime+
-		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
-		+qGapTime_p.getValue("s");
 	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
 	      for (Int m=0; m < nAnt_p ; m++){
 		pointingc.time().put(pointrow, pointtime);
@@ -1174,6 +1171,9 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);
+		pointtime=pointtime+
+		  nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+		  +qGapTime_p.getValue("s");
 		pointrow++;
 	      }
 	      // os << pName << LogIO::POST;
