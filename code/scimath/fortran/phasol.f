@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999
+*     Copyright (C) 1999,2001
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -26,6 +26,13 @@
 *
 *     $Id$
 *-----------------------------------------------------------------------
+c
+c  This code has been extracted from MIRIAD's selfcal.for routine,
+c  originally written by Bob Sault. Also note that the BIMA and ATNF
+c  versions of MIRIAD have slightly different versions of selfcal.for
+c  (but not these two subroutines) and derivate programs, such as
+c  BIMA's mselfcal.for and gmake.for
+c
 	subroutine phasol(Nblines,NAnts,Sum,SumVM,b1,b2,Gain,Convrg)
 c
 	implicit none
