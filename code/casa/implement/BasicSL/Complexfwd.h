@@ -40,27 +40,14 @@
 
 // <group name=declare>
 
-#if (!defined(AIPS_USE_OLD_COMPLEX))
-
-//# Forward declarations
 namespace std {
   template<class T> class complex;
   typedef complex<Float>  Complex;
   typedef complex<Double> DComplex;
 }
 
-#else
-
-//# Forward declarations
-class floatG_COMPLEX;
-class doubleG_COMPLEX;
-//# Typedefs
-typedef floatG_COMPLEX Complex;
-typedef doubleG_COMPLEX DComplex;
-
-#endif
-
 class IComplex;
 // </group>
+
 
 #endif

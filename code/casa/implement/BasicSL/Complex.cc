@@ -26,8 +26,6 @@
 //# $Id$
 
 
-#if (!defined(AIPS_USE_OLD_COMPLEX))
-
 //# Includes
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
@@ -103,88 +101,3 @@ void setNaN(DComplex &val)
   Double y; setNaN(y);
   val = DComplex(x, y);
 }
-
-
-#else
-
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
-
-//
-// FROM builtin.h in libg++
-//
-typedef void (*one_arg_error_handler_t)(const char*);
-
-
-// error handling
-
-void default_Complex_error_handler(const char* msg)
-{
-  cerr << "Fatal Complex arithmetic error. " << msg << "\n";
-  exit(1);
-}
-
-one_arg_error_handler_t Complex_error_handler = default_Complex_error_handler;
-
-one_arg_error_handler_t set_Complex_error_handler(one_arg_error_handler_t f)
-{
-  one_arg_error_handler_t old = Complex_error_handler;
-  Complex_error_handler = f;
-  return old;
-}
-
-Bool near(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
-  if (tol <= 0)
-    return (val1 == val2);
-  if (val1 == val2) return True;
-  if (val1 == 0)
-    return (abs(val2) <= (1+tol)*FLT_MIN);
-  else if (val2 == 0)
-    return (abs(val1) <= (1+tol)*FLT_MIN);
-  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
-}
-
-Bool near(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
-  if (tol <= 0)
-    return (val1 == val2);
-  if (val1 == val2) return True;
-  if (val1 == 0)
-    return (abs(val2) <= (1+tol)*DBL_MIN);
-  else if (val2 == 0)
-    return (abs(val1) <= (1+tol)*DBL_MIN);
-  return (abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
-}
-
-Bool nearAbs(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
-  return (abs(val2 - val1) <= tol);
-}
-
-Bool nearAbs(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
-  return (abs(val2 - val1) <= tol);
-}
-
-g_implement2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_IMP(double,float) G_COMPLEX_ASSIGN_OP_IMP(double,float))
-g_implement2(G_COMPLEX,float,G_COMPLEX_CTOR_OP_IMP(float,double))
-
-
-Bool isNaN(const Complex &val)
-{
-    return (isNaN(val.real()) || isNaN(val.imag()));
-}
-
-Bool isNaN(const DComplex &val)
-{
-    return (isNaN(val.real()) || isNaN(val.imag()));
-}
-
-void setNaN(Complex &val)
-{
-    setNaN(val.real()); setNaN(val.imag());
-}
-
-void setNaN(DComplex &val)
-{
-    setNaN(val.real()); setNaN(val.imag());
-}
-
-#endif
