@@ -3817,28 +3817,19 @@ Vector<String> CoordinateSystem::list (LogIO& os,
    os.output() << setfill(' ');
 
 
-// Loop over the number of world axes in the coordinate system.
-// Now these may not list in pixel axis order, which is
-// what the user really wants to see.   However, I do want to
-// loop over world axes, not pixel axes, to handle any removed
-// pixel axes.   The only solution is to make a map from world
-// to pixel axis and sort them.  One day...
+// Loop over the pixel axes in the CS.
 
-   Int pixelAxis;
-   uInt worldAxis;
    Int axisInCoordinate, coordinate;
-   for (worldAxis=0; worldAxis<nWorldAxes(); worldAxis++) {
+   for (uInt pixelAxis=0; pixelAxis<nPixelAxes(); pixelAxis++) {
 
-// Find coordinate number for this pixel axis
+// Find coordinate number for this pixel axis. A pixel axis is guarenteed to have 
+// a world axis.  A world axis might not have a pixel axis.
  
-      findWorldAxis(coordinate, axisInCoordinate, worldAxis);
-      pixelAxis = worldAxisToPixelAxis(worldAxis);
+      findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
 // List it
 
       Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
-//      cout << "type = " << pc->type() << endl;
-
       listHeader(os, pc, widthAxis, widthCoordType, widthCoordNumber, widthName, 
                  widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
@@ -3859,6 +3850,35 @@ Vector<String> CoordinateSystem::list (LogIO& os,
                        precRefPixFloat, precIncSci);
 
       }
+
+// If we have listed all of the pixel axes from this coordinate,  then
+// see if there are any world axes without pixel axes and list them
+
+      Vector<Int> pixelAxes = this->pixelAxes(coordinate);
+      Vector<Int> worldAxes = this->worldAxes(coordinate);
+      Int maxPixAxis  = max(pixelAxes);
+      if (Int(pixelAxis) == maxPixAxis) {
+         for (uInt axis=0; axis<worldAxes.nelements(); axis++) {
+            if (pixelAxes(axis)<0 && worldAxes(axis) >= 0) {
+               listHeader(os, pc, widthAxis, widthCoordType, widthCoordNumber, widthName, 
+                          widthProj, widthShape, widthTile, 
+                          widthRefValue, widthRefPixel, widthInc, widthUnits,
+                          False, coordinate, axis, -1, 
+                          precRefValSci, precRefValFloat, precRefValRADEC, 
+                          precRefPixFloat, precIncSci, latticeShape, tileShape);
+//
+               if (pc->type() == Coordinate::SPECTRAL) {
+                  listVelocity (os, pc, widthAxis, widthCoordType, widthCoordNumber, widthName, 
+                                widthProj, widthShape, widthTile, 
+                                widthRefValue, widthRefPixel, widthInc, widthUnits,
+                                False, axis, -1, doppler,
+                                precRefValSci, precRefValFloat, precRefValRADEC, 
+                                precRefPixFloat, precIncSci);
+               }
+            }
+         }
+      }
+//
       delete pc;
    }
    os << endl;
