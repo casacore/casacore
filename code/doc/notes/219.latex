@@ -1,0 +1,115 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+
+\begin{document}
+
+\title{NOTE 219 -- AIPS++ Mosaicing development plan}
+  
+
+\author{Tim Cornwell}
+
+\date{Draft 1997 April 30}
+
+\maketitle
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../219.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\section{Introduction}
+
+This document describes a phased plan to realize the Mosaicing
+specifications as described by Holdaway {\em et al.}
+\htmladdnormallink{(AIP++ Specification memo
+120)}{../specs/120/120.html}
+(hereafter HSCR).
+
+\section{Phase I: Improve sky}
+
+{\tt sky} currently (April 1998) provides simple mosaicing
+capabilities. Specifically, the program can correct for VLA and WSRT
+primary beams in either a linear mosaic or via a clean-based
+algorithm.  In the clean-based algorithm, the minor cycles are
+performed using an average PSF, and major cycles using the fully
+correct PSF (including any time-variation). Both these capabilities
+result from an initiative to demonstrate that the synthesis framework
+is capable of supporting mosaicing data reduction. The calibration
+object, {\tt cal}, knows nothing about mosaicing: all prediction
+of model visibilities is done by {\tt sky}. 
+
+To build on this, we need to do the following:
+
+\begin{itemize}
+\item Improve the PBSkyJones class hierachy to allow the types of
+PB models described in HSCR. In this phase, we will only allow
+PBs with known form. Solveable primary beams will come later.
+\item Optimize the use of FFTs in the Gridded transform (class GridFT)
+to avoid FFTing regions outside the primary beam model (need Image
+region support).
+\item Provide different deconvolution methods: 
+\begin{itemize}
+\item inverse and Wiener filtering (including production of
+the effective uv coverage {\em i.e.} the FT of the average
+PSF).
+\item SDI-CLEAN
+\item MEM using Cornwell-Evans algorithm (as modified by Sault)
+\end{itemize}
+\item ComponentModel processing should be optimized.
+\end{itemize}
+
+A suitable concluding milestone for this phase would be to able to
+make mosaics correcting known assymetries in the primary beam model {\em
+e.g.} the VLA primary beam squint when observing circular polarization
+on the Sun. This would test many of the changes mentioned above.
+
+\section{Phase II: Simulation capability}
+
+Once the changes above have been made, we can move on to develop
+a simulation capability using the tools refined in the previous
+work. Specifically, the SkyEquation can be used to provide
+transforms of models, and the refined PBSkyJones can be used to
+implement various primary beams in the mosaicing.
+
+I suggest that the simulator be a separate object, with an interface
+similar in spirit to that of {\tt sky} {\em i.e.}  tending towards
+atomic, low-level operations rather than high-level operations.
+
+Part of the simulation tools should be devoted towards examining
+the three measures of accuracy of reconstruction described
+by Cornwell, Holdaway and Uson (1992):
+
+\begin{description}
+\item[Dynamic range]: Peak on-source brightness divided by
+rms off-source rumble.
+\item[Fidelity]: Median of on-source brightness divided by 
+error in reconstruction.
+\item[Visibility SNR curve]: Radial average of visibility
+divided by rms error in reconstruction.
+\end{description}
+
+\section{Phase III: Mosaicing tools}
+
+This phase is actually quite independent of I and II and could
+be scheduled concurrently (or ahead).
+
+There is a need for a number of basic tools for aiding mosaicing.
+
+\begin{itemize}
+\item Summary of a mosaic observation, both textual and graphical.
+\begin{itemize}
+\item Display pointing centers graphically. Possibly overlay with 
+{\em e.g.} spectra, or visibility curves.
+\item For any given point in an image, display which pointings (field-ids)
+are relevant (and with what weight).
+\end{itemize}
+\item Selection tools, textual and graphical.
+\begin{itemize}
+\item Based on field-id, {\em etc.}
+\item Based on proximity to a given point on the sky
+\item Based on data criteria {\em e.g.} peak visibility
+\end{itemize}
+\item Weighting tools
+\end{itemize}
+
+\end{document}
