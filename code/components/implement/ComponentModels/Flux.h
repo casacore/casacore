@@ -1,5 +1,5 @@
 //# Flux.h:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/NumericTraits.h>
+#include <aips/Measures/Stokes.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
@@ -265,6 +266,10 @@ public:
   // 4 elements if it is not already that length.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const;
 
+  // Return the flux value in a Quantum for the specified Stokes.  Can convert
+  // to Jy if requested.  
+   Quantum<T> value (Stokes::StokesTypes stokes, Bool toJy=True);
+
   // This function sets the Flux values assuming the supplied value represents
   // the Stokes I flux in the current units. The other Stokes parameters are
   // set to zero.
@@ -292,6 +297,9 @@ public:
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
 		ComponentType::Polarisation pol);
+
+// Set flux for given Stokes from Quantum. 
+  void setValue (const Quantum<T>& value, Stokes::StokesTypes stokes);
 
   // Scale the Flux value by the specified amount. These functions multiply the
   // flux values irrespective of the current polarisation representation. If
@@ -533,6 +541,10 @@ public:
   // 4 elements if it is not already that length.
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const;
 
+  // Return the flux value in a Quantum for the specified Stokes. Can convert
+  // to Jy if requested.  
+   Quantum<T> value (Stokes::StokesTypes stokes, Bool toJy=True);
+
   // This function sets the Flux values assuming the supplied value represents
   // the Stokes I flux in the current units. The other Stokes parameters are
   // set to zero.
@@ -560,6 +572,9 @@ public:
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
 		ComponentType::Polarisation pol);
+
+// Set flux for given Stokes from Quantum. 
+  void setValue (const Quantum<T>& value, Stokes::StokesTypes stokes);
 
   // Scale the Flux value by the specified amount. These functions multiply the
   // flux values irrespective of the current polarisation representation. If

@@ -34,6 +34,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Measures/Stokes.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Utilities/Assert.h>
@@ -287,6 +288,53 @@ value(Quantum<Vector<T> >& value) {
   DebugAssert(ok(), AipsError);
 }
 
+template<class T> Quantum<T>  FluxRep<T>::
+value (Stokes::StokesTypes stokes, Bool toJy) 
+{
+   LogIO os(LogOrigin("FluxRep", "value(Stokes::StokesTypes)"));
+
+// Get the vector of values that we are holding
+  
+   Vector<T> values;
+   value(values);
+  
+// Make a quantum for the result
+      
+   Quantum<T> value;
+   value.setUnit(unit());
+
+// Fish it out
+   
+   ComponentType::Polarisation cPol = pol();
+   if ( (stokes==Stokes::I || stokes==Stokes::Q ||
+         stokes==Stokes::U || stokes==Stokes::V)  &&
+         cPol==ComponentType::STOKES) {
+//
+      String error("Failed to extract Flux from SkyComponent because not enough Stokes values");
+      if (stokes==Stokes::I) {
+         if (values.nelements()<1) os << error << LogIO::EXCEPTION;
+         value.setValue(values(0));
+      } else if (stokes==Stokes::Q) {
+         if (values.nelements()<2) os << error << LogIO::EXCEPTION;
+         value.setValue(values(1));
+      } else if (stokes==Stokes::U) {
+         if (values.nelements()<3) os << error << LogIO::EXCEPTION;
+         value.setValue(values(2));
+      } else if (stokes==Stokes::V) {
+         if (values.nelements()<4) os << error << LogIO::EXCEPTION;
+         value.setValue(values(3));
+      }
+   } else {
+      os << "It is not possible currently to extract the flux value" << endl;
+      os << "for Stokes type " << Stokes::name(stokes)  << " from the SkyComponent" << LogIO::EXCEPTION;
+   }
+//
+   if (toJy) value.convert(Unit("Jy"));
+   return value;
+}
+
+
+
 template<class T> void FluxRep<T>::
 value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const {
   const Unit& curUnit = value.getFullUnit();
@@ -350,6 +398,30 @@ setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
   itsUnit = value.getFullUnit();
   itsPol = pol;
   DebugAssert(ok(), AipsError);
+}
+
+template<class T> void FluxRep<T>::
+setValue(const Quantum<T>& value, Stokes::StokesTypes stokes)
+{
+   LogIO os(LogOrigin("FluxRep", "setValue(const Quantum<Double>&, Stokes::StokesTypes)"));
+   Vector<T> tmp(4, 0.0);
+//
+   if (stokes==Stokes::I || stokes==Stokes::Q || stokes==Stokes::U || stokes==Stokes::V) {
+      if (stokes==Stokes::I) {
+         tmp(0) = value.getValue(Unit("Jy"));
+      } else if (stokes==Stokes::Q) {
+         tmp(1) = value.getValue(Unit("Jy"));
+      } else if (stokes==Stokes::U) {
+         tmp(2) = value.getValue(Unit("Jy"));
+      } else if (stokes==Stokes::V) {
+         tmp(3) = value.getValue(Unit("Jy"));
+      }
+   } else {
+      os << LogIO::WARN << "Can only properly handle I,Q,U,V presently." << endl;
+      os << "The brightness is assumed to be Stokes I"  << LogIO::POST;
+      tmp(0) = value.getValue(Unit("Jy"));
+   }
+   setValue(tmp);
 }
 
 template<class T> void FluxRep<T>::
@@ -711,6 +783,15 @@ value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const {
   itsFluxPtr->value(value);
 }
 
+template<class T> Quantum<T>  Flux<T>::
+value (Stokes::StokesTypes stokes, Bool toJy) 
+{
+  DebugAssert(ok(), AipsError);
+  return itsFluxPtr->value(stokes, toJy);
+}
+
+
+
 template<class T> void Flux<T>::
 setValue(T value) {
   DebugAssert(ok(), AipsError);
@@ -740,6 +821,13 @@ setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
 	 ComponentType::Polarisation pol) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value, pol);
+}
+
+template<class T> void Flux<T>::
+setValue(const Quantum<T>& value, Stokes::StokesTypes stokes)
+{
+  DebugAssert(ok(), AipsError);
+  itsFluxPtr->setValue(value, stokes);
 }
 
 template<class T> void Flux<T>::
