@@ -194,6 +194,7 @@ convertUnit(const Unit& unit) {
     T factor = itsUnit.getValue().getFac()/unit.getValue().getFac();
     for (uInt i = 0; i < 4; i++) {
       itsVal(i) *= factor;
+      itsErr(i) *= factor;
     }
     itsUnit = unit;
   }
