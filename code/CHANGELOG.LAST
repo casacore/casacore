@@ -1,0 +1,16 @@
+
+change id: 0056
+ author:   Wim Brouw
+ date:     2000/11/22
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Utilities
+ type:     Code Test
+ category: Change
+ summary:  Removed unused cat() functions
+The String class had, what was called, 'zillions' of cat() functions. These functions were nowhere used in the system (the concatenate operators + and += are used in practice), and their presence would make a change to dependency on the standard String class more difficult.
+
+I have removed these cat() functions from the String class (and the tString)
+
+In addition I have removed the hash() function, which was also not used.
