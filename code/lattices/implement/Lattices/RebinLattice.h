@@ -53,7 +53,8 @@ class IPosition;
 // </prerequisite>
 
 // <synopsis>
-//  This class enables you to rebin a MaskedLattice by a given factor per axis
+//  This class enables you to rebin (data are averaged over bin) a MaskedLattice by 
+//  a given factor per axis
 // </synopsis>
 
 // <example>
