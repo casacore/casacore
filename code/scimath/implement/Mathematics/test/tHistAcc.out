@@ -1,0 +1,129 @@
+ Nr of input values= 1000
+ 
+ Histogram: vvi hmani(-2,10,1)
+  bin value=     -2 : n=  81
+  bin value=     -1 : n=  66
+  bin value=      0 : n=  82
+  bin value=      1 : n=  12
+  bin value=      2 : n=   9
+  bin value=      3 : n=   3
+  bin value=      4 : n=   4
+  bin value=      5 : n=   0
+  bin value=      6 : n=   0
+  bin value=      7 : n=   0
+  bin value=      8 : n=   0
+  bin value=      9 : n=   0
+  bin value=     10 : n=   0
+  nTotal=1000    binWidth=1
+  nSpurious=743   nLow=743(vMin=-15)   nHigh=0(vMax=4)
+  mean=-4.543   median= ..  rms=3.0676
+ 
+ Histogram: vvf hmanf(-2,10,1)
+  bin value=     -2 : n=  81
+  bin value=     -1 : n=  66
+  bin value=      0 : n=  82
+  bin value=      1 : n=  12
+  bin value=      2 : n=   9
+  bin value=      3 : n=   3
+  bin value=      4 : n=   4
+  bin value=      5 : n=   0
+  bin value=      6 : n=   0
+  bin value=      7 : n=   0
+  bin value=      8 : n=   0
+  bin value=      9 : n=   0
+  bin value=     10 : n=   0
+  nTotal=1000    binWidth=1
+  nSpurious=743   nLow=743(vMin=-15)   nHigh=0(vMax=4)
+  mean=-4.543   median= ..  rms=3.0676
+ 
+ Histogram: vvf hsemif(25,2)
+  bin value=    -12 : n=   9
+  bin value=    -10 : n=  48
+  bin value=     -8 : n= 109
+  bin value=     -6 : n= 219
+  bin value=     -4 : n= 230
+  bin value=     -2 : n= 208
+  bin value=      0 : n= 148
+  nTotal=1000    binWidth=2
+  nSpurious=29   nLow=1(vMin=-15)   nHigh=28(vMax=4)
+  mean=-4.543   median=-4  rms=3.0676
+ 
+ Histogram: vvf hautof(25)
+  bin value=    -11 : n=  20
+  bin value=    -10 : n=  28
+  bin value=     -9 : n=  43
+  bin value=     -8 : n=  66
+  bin value=     -7 : n= 103
+  bin value=     -6 : n= 116
+  bin value=     -5 : n= 114
+  bin value=     -4 : n= 116
+  bin value=     -3 : n= 127
+  bin value=     -2 : n=  81
+  bin value=     -1 : n=  66
+  bin value=      0 : n=  82
+  nTotal=1000    binWidth=1
+  nSpurious=38   nLow=10(vMin=-15)   nHigh=28(vMax=4)
+  mean=-4.543   median=-4  rms=3.0676
+ 
+   wtot   npts   mean    rms    min    max  : remove low-contents bins
+    257      7-0.6732  1.267     -2      4  : hmani 
+    257      7-0.6732  1.267     -2      4  : hmanf 
+    962     12 -4.652  2.806    -11      0  : hautof 
+ 
+ Histogram: hautof
+  bin value=    -11 : n=  20
+  bin value=    -10 : n=  28
+  bin value=     -9 : n=  43
+  bin value=     -8 : n=  66
+  bin value=     -7 : n= 103
+  bin value=     -6 : n= 116
+  bin value=     -5 : n= 114
+  bin value=     -4 : n= 116
+  bin value=     -3 : n= 127
+  bin value=     -2 : n=  81
+  bin value=     -1 : n=  66
+  bin value=      0 : n=  82
+  nTotal=962    binWidth=1
+  nSpurious=0   nLow=0(vMin=-11)   nHigh=0(vMax=0)
+  mean=-4.652   median=-5  rms=2.806
+ 
+  hmanf.getStatistics().getMean():    -0.6732
+  length of binsi=13
+  length of valsf=13
+ 
+ Histogram: hmanf reset
+  bin value=     -2 : n=   0
+  bin value=     -1 : n=   0
+  bin value=      0 : n=   0
+  bin value=      1 : n=   0
+  bin value=      2 : n=   0
+  bin value=      3 : n=   0
+  bin value=      4 : n=   0
+  bin value=      5 : n=   0
+  bin value=      6 : n=   0
+  bin value=      7 : n=   0
+  bin value=      8 : n=   0
+  bin value=      9 : n=   0
+  bin value=     10 : n=   0
+  nTotal=0    binWidth=1
+  nSpurious=0   nLow=0(vMin= ..)   nHigh=0(vMax= ..)
+  mean= ..   median= ..   rms= ..
+ 
+ Histogram: hmanf put bvf
+  bin value=     -2 : n=  81
+  bin value=     -1 : n=  66
+  bin value=      0 : n=  82
+  bin value=      1 : n=  12
+  bin value=      2 : n=   9
+  bin value=      3 : n=   3
+  bin value=      4 : n=   4
+  bin value=      5 : n=   0
+  bin value=      6 : n=   0
+  bin value=      7 : n=   0
+  bin value=      8 : n=   0
+  bin value=      9 : n=   0
+  bin value=     10 : n=   0
+  nTotal=1000    binWidth=1
+  nSpurious=743   nLow=743(vMin=-15)   nHigh=0(vMax=4)
+  mean=-4.543   median= ..  rms=3.068
+ *** end of tHistAcc *** 
