@@ -169,6 +169,15 @@ void ColumnSet::resync (uInt nrrow)
     }
 }
 
+
+void ColumnSet::invalidateColumnCaches()
+{
+    for (uInt i=0; i<colMap_p.ndefined(); i++) {
+	COLMAPVAL(i)->columnCache().invalidate();
+    }
+}
+
+
 //# Do all data managers allow to add and remove rows and columns?
 Bool ColumnSet::canAddRow() const
 {
