@@ -504,7 +504,7 @@ void compare(Int& error, Float exp, Float res) {
   // Compare the results. Allow the answers to differ in the LSB as the
   // conversion from Double to Float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
-  if (abs(res - exp) > 1.4013e-45) {         // This number is the
+  if (std::abs(res - exp) > 1.4013e-45) {    // This number is the
                                              // smallest subnormal number
     error = 1;
     uChar byteResult[4];
@@ -586,7 +586,7 @@ void compare(Int& error, Double exp, Double res) {
   // Compare the results. Allow the answers to differ in the LSB as the
   // conversion from Double to Float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
-  if (abs(res - exp) > 0) {
+  if (std::abs(res - exp) > 0) {
     error = 1;
     uChar byteResult[8];
     uChar byteExpected[8];
@@ -676,7 +676,7 @@ void checkDouble (Int& error) {
   }
 }
 
-main()
+int main()
 {
   Int error = 0;
   try {
