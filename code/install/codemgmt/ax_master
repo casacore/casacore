@@ -4445,3 +4445,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSSpectralWindow.cc aips/implement/MeasurementSets/OldMSSpectralWindow.cc
 14 296 src mv aips/implement/MeasurementSets/MSSpectralWindow.h aips/implement/MeasurementSets/OldMSSpectralWindow.h
 14 296 src mv aips/implement/MeasurementSets/MSSpWindowColumns.cc aips/implement/MeasurementSets/OldMSSpWindowColumns.cc
+14 296 src mv aips/implement/MeasurementSets/MSSpWindowColumns.h aips/implement/MeasurementSets/OldMSSpWindowColumns.h
