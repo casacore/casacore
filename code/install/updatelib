@@ -3,7 +3,7 @@
 # updatelib: Update an AIPS++ library
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -130,10 +130,10 @@
 
 # Load makedefs variables into the environment if necessary.
   echo "#$AR#$ARFLAGS#$RANLIB#$CXXAR$CXXARDBG#$CXXAROPT#$UPDBATCH#$LD#" \
-       "#$SFXSTAT#$SFXSHAR#" | grep '##' > /dev/null 2>&1
+       "#$SFXSTAT#$SFXSHAR#$MKSO#" | grep '##' > /dev/null 2>&1
   if [ "$?" = 0 ]
   then
-     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE"
+     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE MKSO"
      eval `gmake -f $AIPSARCH/makedefs VARS="$VARS" eval_vars`
   fi
 
@@ -326,7 +326,7 @@
         LIBS="$LIBS $PCKGTMPD/$PCKGSHAR"
 
         case $ARCH in
-        sun4* | *_gnu)
+        linux* | sun4* | *_gnu | *_egcs)
 #          Sharable libraries in SunOS 4.x and 5.x.
            rm -rf BLDSHR.*
            mkdir BLDSHR.$ID
@@ -335,7 +335,7 @@
            rm -f __.SYMDEF
 
 	   SHRFAILD=""
-           $LD -o $PCKGSHAR $LDSOPTS *
+           $MKSO $LDSOPTS -o $PCKGSHAR *
 
            if [ "$?" != 0 ]
            then
