@@ -115,7 +115,10 @@ compoundexpr: INDEX {
             | singlerange {
                 $$ = $1;}
             | compoundexpr COMMA INDEX {
-                $$ = new TableExprNode ($1 || $3);} 
+	        Vector<Int> fieldids(1);
+	        fieldids[0] = $3;
+	        $$ = MSFieldParse().selectFieldIds(fieldids);
+	      }
             | compoundexpr COMMA singlerange {
 		  $$ = new TableExprNode ($1 || $3);}
             ;
