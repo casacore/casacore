@@ -1,6 +1,6 @@
 //# tTableQuantum.cc: test program for Quantum columns in the TableMeasures
 //#   	    	      module.
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,6 +82,9 @@ int main(int argc)
 	"String column for array of units");
     ScalarColumnDesc<String> ascdStr("varArrScaUnitsColumn", 
 	"Scalar string column for variable units per row");
+
+    ArrayColumnDesc<Double> bogusCol("BogusQuantCol", 
+	"an array column but won't be made a quantum column");
     
     // These must be added to the table descriptor
     cout << "Adding column descriptors to the table...\n";
@@ -93,6 +96,7 @@ int main(int argc)
     td.addColumn(scdStr);
     td.addColumn(acdStr);
     td.addColumn(ascdStr);
+    td.addColumn(bogusCol);
     
     // Now create the Table Quantum Descriptors.  Three are used below but
     // a couple of dummy objects are created to test assignment and the copy
@@ -289,19 +293,30 @@ int main(int argc)
     {
 	// Now for array columns.  This set up a Quant Array column with
 	// variable units where the units vary per array element.
-	ArrayQuantColumn<Double> aqCol;
+	ArrayQuantColumn<Double> tmpCol;
 	if (doExcep) {
 	  try {
-	      aqCol.throwIfNull();
+	      tmpCol.throwIfNull();
 	  } catch (AipsError x) {
 	      cout << "Catch an AipsError. Array column is null...\n";
 	      cout << x.getMesg() << endl;
 	  } end_try;
+
+	  // test attaching a bogus quantum column
+	  try {
+	      // create with a real column but not a quantum column
+	      ArrayQuantColumn<Double> testCol(qtab, "BogusQuantCol");
+	  } catch (AipsError x) {
+	      cout << "Exception should report not a quantum column...\n";
+	      cout << x.getMesg() << endl;
+	  } end_try;
 	}
-	if (aqCol.isNull()) {
+	if (tmpCol.isNull()) {
 	    cout << "Array Quantum Column is initially null.\n";
-	    aqCol.attach(qtab, "ArrQuantDouble");
+	    tmpCol.attach(qtab, "ArrQuantDouble");
 	}
+	// cover copy constructor
+	ArrayQuantColumn<Double> aqCol = tmpCol;
 	aqCol.throwIfNull();
 	if (aqCol.isUnitVariable()) {
 	    cout << "Array quantum column: units are variable.\n";
@@ -337,8 +352,20 @@ int main(int argc)
     }
     {
 	ROArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantDouble");
-	cout << roaqCol(0) << endl;
-	
+
+	// test array conformance error exception on get()
+	if (doExcep) {
+	    try { 
+		Array<Quantum<Double> > badShapeArr(IPosition(2,2));
+		roaqCol.get(badShapeArr, 0, False);
+	    } catch (AipsError x) {
+		cout << "The following line should be a ";
+		cout << "Table array conformance error exception.\n";
+		cout << x.getMesg() << endl;
+	    } end_try;
+	}
+
+	cout << roaqCol(0) << endl;	
 	cout << roaqCol(0, "m/s") << endl;
     }    
     {
@@ -347,7 +374,9 @@ int main(int argc)
 	// per row as in the example above.  This can be done because the
 	// TableQuantDesc for the row specified a ScalarColumn as the
 	// units column.
-	ArrayQuantColumn<Double> aqCol(qtab, "ArrQuantScaUnits");
+	// Could just construct the column completely but test attach member
+	ArrayQuantColumn<Double> aqCol;
+	aqCol.attach(qtab, "ArrQuantScaUnits");
 	if (aqCol.isUnitVariable()) {
 	    cout << "Array quantum column: units are variable.\n";
 	} else {
@@ -357,6 +386,11 @@ int main(int argc)
 	IPosition shape(2, 3, 2);
 	Array<Quantum<Double> > qArr1(shape);
 	Array<Quantum<Double> > qArr2(shape);
+
+	// cover putting an empty array (which should be OK)
+	Array<Quantum<Double> > emptyArr;
+	aqCol.put(0, emptyArr);
+
 	Bool deleteIt;
 	Quantum<Double>* q_p1 = qArr1.getStorage(deleteIt);
 	// when these are eventually stored in the column all will be stored
@@ -408,7 +442,7 @@ int main(int argc)
     }
     {
 	// another way of creating the object
-	ROArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantDouble", "deg");
+	ROArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantScaUnits");
 	cout << roaqCol(0) << endl;	
 	cout << roaqCol(0, "m/s") << endl;
 
@@ -441,11 +475,23 @@ int main(int argc)
 	aqc2.attach(qtab, "ArrQuantDouble", "m/s");
 
 	// non-variable units column
-	ROArrayQuantColumn<Double> aqc3(qtab, "ArrQuantDoubleNonVar");
-	cout << aqc3.getUnits() << endl;
+	ArrayQuantColumn<Double> aqc3(qtab, "ArrQuantDoubleNonVar");
+	IPosition shape(2, 3, 2);
+	Array<Quantum<Double> > qArr1(shape);
+	Bool deleteIt;
+	Quantum<Double>* q_p1 = qArr1.getStorage(deleteIt);
+	for (uInt i=0; i<10; i++, q_p1++) {
+	    q_p1->setValue(1.2 * i);
+	}
+	qArr1.putStorage(q_p1, deleteIt);
+	aqc3.put(0, qArr1);
+	    
+
+	ROArrayQuantColumn<Double> aqc4(qtab, "ArrQuantDoubleNonVar");
+	cout << aqc4.getUnits() << endl;
     }
     
-    cout << "End tTableQuantum.cc.\n";
+    cout << "Execution of tTableQuantum.cc ended normally.\n";
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } end_try;
