@@ -1929,7 +1929,7 @@ Coordinate *CoordinateSystem::clone() const
 Bool CoordinateSystem::toFITSHeader(RecordInterface &header, 
 				    IPosition &shape,
 				    Bool oneRelative,
-				    char prefix, Bool writeWCS,
+				    Char prefix, Bool writeWCS,
 				    Bool preferVelocity, 
 				    Bool opticalVelocity) const
 {
@@ -1953,7 +1953,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 // Validation
 
     const Int n = nWorldAxes();
-    String sprefix = prefix;
+    String sprefix(prefix);
     if (header.isDefined(sprefix + "rval") ||
 	header.isDefined(sprefix + "rpix") ||
 	header.isDefined(sprefix + "delt") ||
@@ -2302,7 +2302,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 				      const RecordInterface &header,
                                       const IPosition& shape,
 				      Bool oneRelative,
-				      char prefix)
+				      Char prefix)
 {
     LogIO os(LogOrigin("CoordinateSystem", "fromFITSHeader", WHERE));
 
@@ -2311,7 +2311,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	coordsys = empty;
     }
 
-    String sprefix = prefix;
+    String sprefix(prefix);
     Double offset = 0.0;
     if (oneRelative) {
 	offset = 1.0;
