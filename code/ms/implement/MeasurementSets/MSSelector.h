@@ -182,13 +182,15 @@ public:
   // Missing interferometers will be marked flagged.
   // The order of the interferometers is that specified by the last
   // select call.
+  // Add a (flagged) gap in the data at every antenna1 change if ifrAxisGap>0.
   // Use inc > 1 to return data from every inc'th row.
   // Use average=True to vector average the data along the row or time axis 
   // taking the weights column into account (use selectChannel to average
   // channels together as well). Note that different interferometers will be
   // averaged together if ifrAxis is False.
   // Correct for one-based indexing if oneBased is True.
-  GlishRecord getData(const Vector<String>& items, Bool ifrAxis, Int inc=1,
+  GlishRecord getData(const Vector<String>& items, Bool ifrAxis, 
+		      Int ifrAxisGap=0, Int inc=1,
 		      Bool average=False, Bool oneBased=False);
 
   // Put the data for the items provided. Note that only fields corresponding
@@ -301,7 +303,7 @@ private:
   Bool convert_p, subSet_p;
   StokesConverter stokesConverter_p;
   Vector<String> polSelection_p;
-  Vector<Int> ifrSelection_p;
+  Vector<Int> ifrSelection_p,ifrAxis_p;
   Matrix<Double> chanFreq_p,bandwidth_p;
   MSDerivedValues msd_p;
   Matrix<Int> rowIndex_p; // mapping of rows to time and ifr slots
