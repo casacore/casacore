@@ -287,6 +287,9 @@ void FitsInput::init() {
 		        m_extend = True;
 	    }
 	    m_rec_type = FITS::HDURecord;
+		// Next block of code is to get the total number of hdu in this fits file
+		// remember the cfitsio bytepos before calling any cfitsio function
+	   OFF_T l_bytepos = (m_fptr->Fptr)->bytepos; 	
 		// get the total number of hdu in this fits file
 		int l_status = 0;
 		if( ffthdu(m_fptr, &m_thdunum, &l_status)>0){
@@ -294,6 +297,16 @@ void FitsInput::init() {
 		   errmsg(IOERR,"[FitsInput::init()] Error when getting total number of HDU.");
          return;
 	   }
+		// set the cfitsio bytepos to what it was at begnning of this method.
+		if( l_bytepos < ((m_fptr->Fptr)->filesize) ){
+		   if(ffmbyt(m_fptr, l_bytepos, REPORT_EOF, &l_status)>0 ){
+			   fits_report_error(stderr, l_status); // print error report
+			   errmsg(BADOPER,"[FitsInput::init()] bytepos setting error!");
+		   }
+	   }else{
+		   (m_fptr->Fptr)->bytepos = l_bytepos;
+	   }
+      //cout << "The change is in effect." << endl;
 	}
 }
 //===============================================================================================
