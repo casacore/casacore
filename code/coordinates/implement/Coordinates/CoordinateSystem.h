@@ -545,6 +545,13 @@ public:
                       Double tol=1e-6) const;
     // </group>
 
+    // This function compares this and the other coordinate system,
+    // but ONLY for the non-removed pixel axes.   It is less strict
+    // than near, which, for example, insists the number of coordinates
+    // is the same in each CS
+    Bool nearPixel (const CoordinateSystem& other, Double tol=1e-6) const;
+
+
     // Format a world value nicely through the
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
@@ -711,6 +718,9 @@ private:
     // Do subImage for Stokes
     StokesCoordinate stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,
                                     Int newShape) const;
+
+    // Strip out coordinates with all world and pixel axes removed
+    CoordinateSystem stripRemovedAxes (const CoordinateSystem& cSys) const;
 
     // Generate FITS keywords
     Bool toFITSHeaderGenerateKeywords (LogIO& os, Bool& isNCP,
