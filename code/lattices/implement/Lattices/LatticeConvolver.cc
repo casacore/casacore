@@ -1,4 +1,3 @@
-
 //# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,8 +26,11 @@
 
 #include <trial/Lattices/LatticeConvolver.h>
 #include <trial/Lattices/LatticeFFT.h>
-#include <trial/Lattices/LatticeExpr.h>
+//#include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/TileStepper.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
 
@@ -172,7 +174,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   // paddedModel TempLattice so that it is more likely to be memory based.
   IPosition XFRShape(itsFFTShape);
   XFRShape(0) = (XFRShape(0)+2)/2;
-  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape, 1);
+  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape);
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
   Bool doPadding = False;
@@ -180,15 +182,26 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   Lattice<T> * resultPtr = &result;
   if (!(itsFFTShape <= modelShape)) {
     doPadding = True;
-    modelPtr = resultPtr = new TempLattice<T>(itsFFTShape, 1);
+    modelPtr = resultPtr = new TempLattice<T>(itsFFTShape);
     pad(*resultPtr, model);
   } 
   // Do the forward transform
   LatticeFFT::rcfft(fftModel.lc(), *modelPtr);
   { // Multiply the transformed model with the transfer function
-    LatticeExpr<Complex> product(fftModel*itsXfr); 
-    // The LatticeExpr temporary is needed to work around a bug in egcs-1.0.2
-    fftModel.copyData(product);
+    IPosition tileShape(itsXfr.niceCursorShape());
+    const IPosition otherTileShape(fftModel.niceCursorShape());
+    for (uInt i = 0; i < ndim; i++) {
+      if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
+    }
+    TileStepper tiledNav(XFRShape, tileShape);
+    RO_LatticeIterator<NumericTraits<T>::ConjugateType> 
+      xfrIter(itsXfr, tiledNav);
+    LatticeIterator<NumericTraits<T>::ConjugateType> 
+      fftModelIter(fftModel, tiledNav);
+    for (xfrIter.reset(), fftModelIter.reset(); !fftModelIter.atEnd(); 
+	xfrIter++, fftModelIter++) {
+       fftModelIter.rwCursor() *= xfrIter.cursor();
+    }
   } 
   // Do the inverse transform
   LatticeFFT::crfft(*resultPtr, fftModel.lc());
@@ -218,7 +231,7 @@ resize(const IPosition & modelShape, ConvEnums::ConvType type) {
   // need to know the psf.
   TempLattice<T> psf = itsPsf;
   if (itsCachedPsf == False) { // calculate the psf from the transfer function
-    psf = TempLattice<T>(itsPsfShape, 1);
+    psf = TempLattice<T>(itsPsfShape);
     makePsf(psf);
   }
   makeXfr(psf);
@@ -288,11 +301,11 @@ makeXfr(const Lattice<T> & psf) {
   { // calculate the transfer function
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
-    itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(XFRShape, 1);
+    itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(XFRShape);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
       LatticeFFT::rcfft(itsXfr, psf);
     } else { // need to pad the psf 
-      TempLattice<T> paddedPsf(itsFFTShape, 1);
+      TempLattice<T> paddedPsf(itsFFTShape);
       pad(paddedPsf, psf);
       LatticeFFT::rcfft(itsXfr, paddedPsf);
     }
@@ -317,7 +330,7 @@ makePsf(Lattice<T> & psf) const {
                                     // padded so no unpadding is necessary 
     LatticeFFT::crfft(psf, itsXfr);
   } else { // need to unpad the transfer function
-    TempLattice<T> paddedPsf(itsFFTShape, 1);
+    TempLattice<T> paddedPsf(itsFFTShape);
     LatticeFFT::crfft(paddedPsf, itsXfr);
     unpad(psf, paddedPsf);
   }
