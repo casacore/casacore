@@ -340,7 +340,7 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 		       coordColumnNames, columnNames);
 }
 
-void TableDesc::defineHypercolumn (const String& name,
+void TableDesc::defineHypercolumn (const String& hypercolumnName,
 				   uInt ndim,
 				   const Vector<String>& dataColumnNames,
 				   const Vector<String>& coordColumnNames,
@@ -348,14 +348,15 @@ void TableDesc::defineHypercolumn (const String& name,
 {
     // Check if data and coordinate columns have been given.
     if (dataColumnNames.nelements() < 1) {
-	throwHypercolumn (name, "dataColumnNames is empty");
+	throwHypercolumn (hypercolumnName, "dataColumnNames is empty");
     }
     if (ndim < 1) {
-	throwHypercolumn (name, "ndim < 1");
+	throwHypercolumn (hypercolumnName, "ndim < 1");
     }
     uInt ncoord = coordColumnNames.nelements();
     if (ncoord != 0  &&  ncoord != ndim) {
-	throwHypercolumn (name, "#coordColumnNames mismatches ndim");
+	throwHypercolumn (hypercolumnName,
+			  "#coordColumnNames mismatches ndim");
     }
     uInt i, j;
     // Check if the coordinate columns exist and are numeric
@@ -367,7 +368,7 @@ void TableDesc::defineHypercolumn (const String& name,
     for (i=0; i<ncoord; i++) {
 	if (! coordColumnNames(i).empty()) {
 	    if (!isColumn (coordColumnNames(i))) {
-		throwHypercolumn (name, "coordColumnName " +
+		throwHypercolumn (hypercolumnName, "coordColumn " +
 				  coordColumnNames(i) + " does not exist");
 	    }
 	    const ColumnDesc& desc = columnDesc (coordColumnNames(i));
@@ -379,19 +380,20 @@ void TableDesc::defineHypercolumn (const String& name,
 	    ||  dataType == TpTable
 	    ||  dataType == TpRecord
 	    ||  dataType == TpOther) {
-		throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
-				  " is not numeric");
+		throwHypercolumn (hypercolumnName, "coordColumn " +
+				  coordColumnNames(i) + " is not numeric");
 	    }
 	    if (dataType == TpChar   ||  dataType == TpArrayChar
 	    ||  dataType == TpUChar  ||  dataType == TpArrayUChar
 	    ||  dataType == TpShort  ||  dataType == TpArrayShort
 	    ||  dataType == TpUShort ||  dataType == TpArrayUShort) {
-		throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
+		throwHypercolumn (hypercolumnName, "coordColumn " +
+				  coordColumnNames(i) +
 				  ": (u)Char and (u)Short not supported");
 	    }
 	    if (desc.isArray()) {
 		if (desc.ndim() != 1) {
-		    throwHypercolumn (name, "coordColumn " +
+		    throwHypercolumn (hypercolumnName, "coordColumn " +
 				      coordColumnNames(i) +
 				      " is not a scalar or vector");
 		}
@@ -404,43 +406,52 @@ void TableDesc::defineHypercolumn (const String& name,
 	}
     }
     if (firstCoordSca > 0  &&  lastCoordVec > firstCoordSca) {
-	throwHypercolumn (name,
+	throwHypercolumn (hypercolumnName,
 			 "coordinate vectors have to describe the first axes");
     }
     // Check if the data columns exist and have fixed length
     // (i.e. no String, Table or Other type).
     // Also check if their dimensionality matches the number of
     // coordinate vectors (if coordinates are defined).
+    // Find out if all data columns have FixedShape.
+    Bool fixedShape = True;
     uInt cellNdim = 0;
     for (i=0; i<dataColumnNames.nelements(); i++) {
 	if (!isColumn (dataColumnNames(i))) {
-	    throwHypercolumn (name, "dataColumnName " + dataColumnNames(i) +
-			            " does not exist");
+	    throwHypercolumn (hypercolumnName, "dataColumn " +
+			      dataColumnNames(i) + " does not exist");
 	}
 	const ColumnDesc& desc = columnDesc (dataColumnNames(i));
 	if (desc.dataType() == TpString
 	||  desc.dataType() == TpArrayString
 	||  desc.dataType() == TpTable
 	||  desc.dataType() == TpOther) {
-	    throwHypercolumn (name, "dataColumn " + dataColumnNames(i) +
-			            " is not numeric or boolean");
+	    throwHypercolumn (hypercolumnName, "dataColumn " +
+			      dataColumnNames(i) +
+			      " is not numeric or boolean");
 	}
 	if (desc.isArray()  &&  desc.ndim() <= 0) {
-	    throwHypercolumn (name, "the dimensionality of data column " +
-			            dataColumnNames(i) + " is undefined");
+	    throwHypercolumn (hypercolumnName,
+			      "the dimensionality of data column " +
+			      dataColumnNames(i) + " is undefined");
 	}
 	if (cellNdim == 0) {
 	    cellNdim = desc.ndim();
 	}
 	if (Int(cellNdim) != desc.ndim()) {
-	    throwHypercolumn (name, "the dimensionality of data column " +
-                   dataColumnNames(i) +
-		   " mismatches that of previous data columns");
+	    throwHypercolumn (hypercolumnName,
+			      "the dimensionality of data column " +
+			      dataColumnNames(i) +
+			      " mismatches that of previous data columns");
+	}
+        if (! desc.isFixedShape()) {
+	    fixedShape = False;
 	}
     }
     if ((firstCoordSca > 0  &&  firstCoordSca <= cellNdim)
     ||  lastCoordVec > cellNdim) {
-	throwHypercolumn (name, "the dimensionality of the data columns"
+	throwHypercolumn (hypercolumnName,
+			  "the dimensionality of the data columns"
 			  " mismatches nr of coordinate columns with a"
 			  " vector value");
     }
@@ -448,23 +459,23 @@ void TableDesc::defineHypercolumn (const String& name,
     // Type (u)Char and (u)Short are not possible.
     for (i=0; i<idColumnNames.nelements(); i++) {
 	if (!isColumn (idColumnNames(i))) {
-	    throwHypercolumn (name, "idColumnName " + idColumnNames(i) +
-			            " does not exist");
+	    throwHypercolumn (hypercolumnName, "idColumn " +
+			      idColumnNames(i) + " does not exist");
 	}
 	const ColumnDesc& desc = columnDesc (idColumnNames(i));
 	if (!desc.isScalar()) {
-	    throwHypercolumn (name, "idColumn " + idColumnNames(i) +
-			            " is not a scalar");
+	    throwHypercolumn (hypercolumnName, "idColumn " +
+			      idColumnNames(i) + " is not a scalar");
 	}
 	int dataType = desc.dataType();
 	if (dataType == TpOther) {
-	    throwHypercolumn (name, "idColumn " + idColumnNames(i) +
-			            " has no standard data type");
+	    throwHypercolumn (hypercolumnName, "idColumn " +
+			      idColumnNames(i) + " has no standard data type");
 	}
 	if (dataType == TpChar   ||  dataType == TpUChar
 	||  dataType == TpShort  ||  dataType == TpUShort) {
-	    throwHypercolumn (name, "idColumn " + idColumnNames(i) +
-			            ": (u)Char and (u)Short not supported");
+	    throwHypercolumn (hypercolumnName, "idColumn " + idColumnNames(i) +
+			      ": (u)Char and (u)Short not supported");
 	}
     }
     // Check if all names are used only once.
@@ -482,21 +493,32 @@ void TableDesc::defineHypercolumn (const String& name,
 	if (! names(i).empty()) {
 	    for (j=i+1; j<nr; j++) {
 		if (names(i) == names(j)) {
-		    throwHypercolumn (name, "column name " + names(i) +
-				      " is multiply used");
+		    throwHypercolumn (hypercolumnName, "column name " +
+				      names(i) + " is multiply used");
 		}
 	    }
 	}
     }
     // Put all the stuff into a keyword set.
     // This will be attached to a table keyword with name Hypercolumn_"name".
-    String keyName = theHyperPrefix + name;
+    String keyName = theHyperPrefix + hypercolumnName;
     TableRecord set;
     set.define ("ndim", ndim);
     set.define ("data", dataColumnNames);
     set.define ("coord", coordColumnNames);
     set.define ("id", idColumnNames);
     privKey_p->defineRecord (keyName, set);
+    // Set the default data manager to TiledShapeStMan or TiledColumnStMan.
+    // (use TiledColumnStMan if all data columns have FixedShape).
+    // Set default data manager group to hypercolumn name.
+    String dmName = (fixedShape  ?  "TiledColumnStMan" : "TiledShapeStMan");
+    for (i=0; i<names.nelements(); i++) {
+        if (! names(i).empty()) {
+	    ColumnDesc& desc = rwColumnDesc(names(i));
+	    desc.dataManagerType() = dmName;
+	    desc.dataManagerGroup() = hypercolumnName;
+	}
+    }
 }
 
 void TableDesc::throwHypercolumn (const String& name, const String& message)
