@@ -3946,3 +3946,4 @@
 14 065 src mv trial/implement/Display/X11PCLimits.cc trialdisplay/implement/Display/X11PCLimits.cc
 14 065 src mv trial/implement/Display/X11PCRasterGfx2.cc trialdisplay/implement/Display/X11PCRasterGfx2.cc
 14 065 src mv trial/implement/Display/X11PCRasterGraphics.cc trialdisplay/implement/Display/X11PCRasterGraphics.cc
+14 065 src mv trial/implement/Display/X11PCVectorGraphics.cc trialdisplay/implement/Display/X11PCVectorGraphics.cc
