@@ -2437,7 +2437,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	proj.gsub(Regex("^-*"), "");
 	proj2.gsub(Regex("^-*"), "");
 	proj.gsub(Regex(" *"), "");    // Get rid of spaces
-	proj2.gsub(Regex(" *"), "");
+	proj2.gsub(String(" "), String(""));
 	if (proj == "" && proj2 == "") {
 
 // Default to cartesian if no projection is defined.
