@@ -266,8 +266,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     // The entire column is accessed, thus all scalar coordinates.
     // A slice of each data cell is accessed, thus copy the Slicer
     // info for the vector coordinates.
-    uInt i;
-    for (i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 	start(i)  = blc(i);
 	end(i)    = trc(i);
 	stride(i) = inc(i);
@@ -280,7 +279,8 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	    // dimensions.
 	    uInt naxis = 0;
 	    IPosition axisPath (end.nelements());
-	    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+	    uInt i;
+	    for (i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 		if (blc(i) == 0  &&  trc(i) == endcp(i)) {
 		    axisPath(naxis++) = i;
 		}
