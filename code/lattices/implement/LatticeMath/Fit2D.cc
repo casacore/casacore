@@ -319,7 +319,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
    }
    if (itsIsNormalized) normalizeModels (0);
 //
-   return fit(values, pos, weights);
+   return fitData(values, pos, weights);
 }
 
 
@@ -360,7 +360,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
    }
    if (itsIsNormalized) normalizeModels (0);
 //
-   return fit(values, pos, weights);
+   return fitData(values, pos, weights);
 
 }
 
@@ -957,9 +957,9 @@ void Fit2D::normalizeModels (uInt direction)
 }
 
  
-Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values, 
-                             const Matrix<Double>& pos,
-                             const Vector<Double>& weights)
+Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values, 
+                                 const Matrix<Double>& pos,
+                                 const Vector<Double>& weights)
 //
 // Do the actual fit
 //

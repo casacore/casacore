@@ -73,10 +73,9 @@ template<class T> class MaskedLattice;
 // parameter Vector.  A value of True indicates the parameter
 // will be fitted for.
 // 
-// For Gaussians, the parameter Vector consists, in order, of
-// the peak, x location, y location, FWHM of major axis, 
-// FWHM of minor axis, and position angle of the major 
-// axis (in radians). The 
+// For Gaussians, the parameter Vector (input or output) consists, in order, of
+// the peak, x location, y location, FWHM of major axis, FWHM of minor axis, 
+// and position angle of the major axis (in radians). The 
 // position angle is positive +x to +y 
 // in the pixel coordinate system ([0,0] in center of image) and 
 // in the range -2pi to 2pi.  When the solution is recovered, the
@@ -277,12 +276,9 @@ private:
    Double itsNormVal;
    Double itsNormPos;
 //
-   
-
-//
-   Fit2D::ErrorTypes fit(const Vector<Double>& values,
-			   const Matrix<Double>& pos,
-			   const Vector<Double>& sigma);
+   Fit2D::ErrorTypes fitData(const Vector<Double>& values,
+                             const Matrix<Double>& pos,
+                             const Vector<Double>& sigma);
 
    Vector<Double> getAvailableSolution() const;
    Vector<Double> getSolution(uInt& iStart, uInt which);
