@@ -110,11 +110,6 @@ template<class T> class NQCompoundParam : public Function<T> {
   virtual ~NQCompoundParam();
 
   //# Operators
-  // Manipulate the nth parameter (0-based) with no index check
-  // <group>
-  virtual T &operator[](const uInt n);
-  virtual const T &operator[](const uInt n) const;
-  // </group>
   
   //# Member functions
   
@@ -143,25 +138,19 @@ template<class T> class NQCompoundParam : public Function<T> {
     DebugAssert(nparameters() > which, AipsError); return funpar_p[which]; };
   // Returns the dimension of functions in the linear combination
   virtual uInt ndim() const { return ndim_p; };
-  // Manipulate the mask associated with the nth parameter
-  // (e.g. to indicate whether the parameter should be adjusted or not).
-  // Note no index check.
+
+ protected:
+  //# Member functions
+  // Copy the local parameters to/from general block
   // <group>
-  virtual Bool &mask(const uInt n);
-  virtual const Bool &mask(const uInt n) const;
-  // </group>
-  // Return the parameter interface
-  // <group>
-  virtual const FunctionParam<T> &parameters() const;
-  virtual FunctionParam<T> &parameters();
+  void toParam_p() const;
+  void fromParam_p() const;
   // </group>
 
-private:
+ private:
   //# Data
   // Number of dimensions of underlying functions
   uInt ndim_p;
-  // Set if the main parameter list could have been updated
-  mutable Bool updated_p;
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;
   // Index of offset for each function to its parameters in general list
@@ -170,13 +159,6 @@ private:
   Block<uInt> funpar_p;
   // Index of local parameter
   Block<uInt> locpar_p;
-
-  //# Member functions
-  // Copy the local parameters to/from general block
-  // <group>
-  void toParam_p() const;
-  void fromParam_p() const;
-  // </group>
 
 };
 

@@ -34,6 +34,7 @@
 template<class T>
 AutoDiff<T> NQCompoundFunction<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
+  if (parset_p) fromParam_p();
   AutoDiff<T> tmp(0);
   for (uInt i=0; i<nFunctions(); ++i) {
     for (uInt j=0; j<function(i).nparameters(); ++j) {
@@ -44,6 +45,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     };
     if (tmp.nDerivatives() > 0) break;
   };
+  tmp.value() = 0;
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
   for (uInt i = 0; i< nFunctions(); ++i) tmp += function(i)(x);

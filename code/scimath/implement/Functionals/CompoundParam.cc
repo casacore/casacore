@@ -30,13 +30,13 @@
 
 template <class T>
 NQCompoundParam<T>::NQCompoundParam() : 
-  Function<T>(), ndim_p(0), updated_p(False),
+  Function<T>(), ndim_p(0),
   functionPtr_p(0),
   paroff_p(0), funpar_p(0), locpar_p(0) {}
 
 template <class T>
 NQCompoundParam<T>::NQCompoundParam(const NQCompoundParam<T> &other) :
-  Function<T>(other), ndim_p(other.ndim_p), updated_p(other.updated_p),
+  Function<T>(other), ndim_p(other.ndim_p),
   functionPtr_p(other.functionPtr_p.nelements()),
   paroff_p(other.paroff_p.nelements()),
   funpar_p(other.funpar_p.nelements()), 
@@ -65,7 +65,6 @@ operator=(const NQCompoundParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     ndim_p = other.ndim_p;
-    updated_p = other.updated_p;
     for (uInt i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
     };
@@ -87,17 +86,6 @@ operator=(const NQCompoundParam<T> &other) {
 }
 
 // Operators
-template <class T>
-T &NQCompoundParam<T>::operator[](const uInt n) {
-  fromParam_p();
-  return (*functionPtr_p[funpar_p[n]])[locpar_p[n]];
-}
-
-template <class T>
-const T &NQCompoundParam<T>::operator[](const uInt n) const {
-  fromParam_p();
-  return (*functionPtr_p[funpar_p[n]])[locpar_p[n]];
-}
 
 // Member functions
 template <class T>
@@ -129,44 +117,17 @@ uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
 }
 
 template <class T>
-Bool &NQCompoundParam<T>::mask(const uInt n) {
-  fromParam_p();
-  return functionPtr_p[funpar_p[n]]->mask(locpar_p[n]);
-}
-
-template <class T>
-const Bool &NQCompoundParam<T>::mask(const uInt n) const {
-  fromParam_p();
-  return functionPtr_p[funpar_p[n]]->mask(locpar_p[n]);
-}
-
-template <class T>
-const FunctionParam<T> &NQCompoundParam<T>::parameters() const {
-  toParam_p();
-  return param_p;
-}
-
-template <class T>
-FunctionParam<T> &NQCompoundParam<T>::parameters() {
-  toParam_p();
-  updated_p = True;
-  return param_p;
-}
-
-template <class T>
 void NQCompoundParam<T>::toParam_p() const {
-  if (!updated_p) {
-    for (uInt i=0; i<nparameters(); ++i) {
-      const_cast<FunctionParam<T> &>(param_p)[i] =
-	(*functionPtr_p[funpar_p[i]])[locpar_p[i]];
-    };
+  for (uInt i=0; i<nparameters(); ++i) {
+    const_cast<FunctionParam<T> &>(param_p)[i] =
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
   };
 }
 
 template <class T>
 void NQCompoundParam<T>::fromParam_p() const {
-  if (updated_p) {
-    updated_p = False;
+  if (parset_p) {
+    parset_p = False;
     for (uInt i=0; i<nparameters(); ++i) {
       (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = param_p[i];
     };

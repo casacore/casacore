@@ -133,12 +133,13 @@ private:
 
 #define NQCompoundFunction_PS NQCompoundFunction
 
-// <summary> Partial specialization of NQCompoundFunction for <src>AutoDiff</src>
+// <summary> Partial <src>AutoDiff</src> specialization of NQCompoundFunction
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQPolynomial_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQPolynomial</src> in your code.</note>
+// <note role=warning> The name <src>NQCompoundFunction_PS</src> is only
+// for cxx2html documentation problems. Use
+// <src>NQCompoundFunction</src> in your code.</note>
 // </synopsis>
 
 template <class T> class NQCompoundFunction_PS<AutoDiff<T> > :
@@ -162,7 +163,8 @@ public NQCompoundParam<AutoDiff<T> > {
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
   // to the coefficients.
-  virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
+  virtual AutoDiff<T>
+    eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for

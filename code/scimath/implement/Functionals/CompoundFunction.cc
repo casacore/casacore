@@ -33,6 +33,7 @@
 //# Operators
 template<class T>
 T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
+  if (parset_p) fromParam_p();
   T tmp(0);
   for (uInt i = 0; i< nFunctions(); ++i) tmp += function(i)(x);
   return tmp;
