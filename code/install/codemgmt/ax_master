@@ -2152,3 +2152,4 @@
 11 115 src rm aips/glish/glish/clients/glishtk/include/Glish/gtk.h
 11 115 sys rm libexec/gtk.g
 11 116 sys rm bin/gtk
+11 116 sys rm lib/libgtk.so
