@@ -42,7 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-SCRIPTS  := depstat ldmap unmap dosedincl dosed_one dosedguard dosedguard_one fillreviewtag
+SCRIPTS  := depstat ldmap unmap dosedincl dosed_one dosedguard dosedguard_one dosedns dosedns_one fillreviewtag
 
 
 # Pattern rules.
