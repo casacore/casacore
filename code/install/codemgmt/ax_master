@@ -4404,3 +4404,5 @@
 14 287 src rm trial/apps/measures/VTOP/
 14 293 src rm trial/implement/Ionosphere/test/templates
 14 293 src rm trial/implement/Ionosphere/test/rt1.cc
+14 293 src rm trial/implement/Ionosphere/test/rt2.cc
+14 293 src rm trial/implement/Ionosphere/test/rt3.cc
