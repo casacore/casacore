@@ -214,7 +214,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile)
   }
 }
 
-Bool MSFitsInput::readFitsFile()
+void MSFitsInput::readFitsFile()
 {
   itsLog << LogOrigin("MSFitsInput", "readFitsFile");
   Int nField=0, nSpW=0;
@@ -272,13 +272,10 @@ Bool MSFitsInput::readFitsFile()
   }
   fixEpochReferences();
 
-  if (haveAn==False) {
+  if (!haveAn) {
     itsLog << "Cannot find an AN Table. This is required." << LogIO::EXCEPTION;
   }
   fillFeedTable();
-
-  itsLog << LogIO::NORMAL << "Flushing MS to disk" << LogIO::POST;
-  return True;
 } 
  
 MSFitsInput::~MSFitsInput() 
