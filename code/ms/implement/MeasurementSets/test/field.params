@@ -4,7 +4,7 @@
 ! mosx,mosy, mosspacing (0=>FHWM/2), #integrations/pointing
 ! source 1
 src1 120. 45.
-3 3  0.1  2
+1 1  0.0  6
 ! source 2
 cal 121.0 46.0 
-1 1  0.0  6
+1 1  0.0  2
