@@ -40,31 +40,60 @@ template <class T> class Array;
 class PixelRegion;
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles numerical (real and complex) 1-argument functions </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical (real and complex) 
+//  1-argument functions
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply numerical 1-argument functions to Lattice 
+// expressions. They operate on numerical (Float,Double,Complex,DComplex) 
+// Lattice expressions and return the same type. The available C++ functions are 
+// <src>sin,sinh,cos,cosh,exp,log,log10,sqrt,min,max,mean,sum</src> with 
+// equivalents in the enum of SIN,SINH,COS,COSH,EXP,LOG,LOG10,SQRT,MIN1D,MAX1D,
+// MEAN1D, and SUM.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Complex> x(shape); x.set(1.0);
+// ArrayLattice<Complex> y(shape); 
+// y.copyData(sin(x));                 // y = sin(x)
+// y.copyData(min(x));                 // y = min(x)
+// </srcblock>
+// Note that the min function returns a scalar, and the output
+// Lattice is filled with that one value.
 // </example>
-
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -79,11 +108,11 @@ public:
 // Destructor 
   ~LELFunction1D();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression.
    virtual T getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -100,31 +129,59 @@ private:
 
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles numerical (real only) 1-argument functions </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical (real only) 
+//  1-argument functions
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply numerical (real only)  1-argument functions to 
+// Lattice expressions. They operate on Float and Double numerical Lattice 
+// expressions and return the same type. The available C++ functions are 
+// <src>asin,acos,tan,tanh,ceil,floor</src> with 
+// equivalents in the enum of ASIN, ACOS, TAN, TANH, CEIL, and FLOOR.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Float> x(shape); x.set(0.05);
+// ArrayLattice<Float> y(shape); 
+// y.copyData(asin(x));                 // y = asin(x)
+// y.copyData(tan(x));                  // y = tan(x)
+// </srcblock>
+// Note that the min function returns a scalar, and the output
+// Lattice is filled with that one value.
 // </example>
-
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -143,11 +200,11 @@ public:
 // Destructor 
   ~LELFunctionReal1D();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<T>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual T getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -164,31 +221,65 @@ private:
 
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles numerical functions whose return type is a Float </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical functions (arbitrary
+//  number of arguments) which return a Float
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply numerical functions of arbitrary number of
+// arguments (but only 1 or 2 arguments currently implemented) to Lattice 
+// expressions. They operate on Float or Complex Lattices 
+// and return a Float. The available C++ functions are 
+// <src>min,max,pow,atan2,fmod,abs,arg,real,imag</src> with 
+// equivalents in the enum of MIN,MAX,POW,ATAN2,FMOD,ABS,ARG,REAL, and IMAG.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
 // </synopsis> 
-
+//
 // <example>
-// </example>
-
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Complex> w(shape); w.set(Complex(2.0,3.0));
+// ArrayLattice<Float> x(shape); x.set(0.05);
+// ArrayLattice<Float> y(shape); y.set(2.0);
+// ArrayLattice<Float> z(shape); y.set(2.0);
+//
+// z.copyData(min(x,y));                // z = min(x,y)
+// z.copyData(imag(w));                 // z = imag(w)
+//
+// </srcblock>
+// Note that this min function takes two arguments and returns
+// the minimum of the two, pixel by pixel (i.e. it does not
+// return one scalar from the whole Lattice)
+// </example>b
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -204,11 +295,11 @@ public:
 // Destructor 
   ~LELFunctionFloat();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<Float>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual Float getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -224,31 +315,72 @@ private:
 
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles numerical functions whose return type is a Double </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical functions (arbitrary
+//  number of arguments) which return a Double
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply numerical functions of arbitrary number of
+// arguments (but only 1 or 2 arguments currently implemented) to Lattice 
+// expressions. They operate on Double or DComplex Lattices 
+// and return a Double. The available C++ functions are 
+// <src>min,max,pow,atan2,fmod,abs,arg,real,imag</src> with 
+// equivalents in the enum of MIN,MAX,POW,ATAN2,FMOD,ABS,ARG,REAL, and IMAG.
+//
+// There are also two other functions for which the input Lattice expression
+// type must be a Bool.  These are <src>ntrue,nfalse</src> with 
+// equivalents in the enum of NTRUE and NFALSE.
+//
+// There is a further function for which the input Lattice expression
+// type can be anything.  This is <src>nelements</src> with 
+// equivalent in the enum of NELEMENTS.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Bool> v(shape); v.set(True);
+// ArrayLattice<DComplex> w(shape); w.set(DComplex(2.0,3.0));
+// ArrayLattice<Double> x(shape); x.set(0.05);
+// ArrayLattice<Double> y(shape); y.set(2.0);
+// ArrayLattice<Double> z(shape); y.set(2.0);
+//
+// z.copyData(min(x,y));                // z = min(x,y)
+// z.copyData(imag(w));                 // z = imag(w)
+// z.copyData(nelements(v));            // z = nelements(v)
+// z.copyData(ntrue(v));                // z = ntrue(v)
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression.
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -264,11 +396,11 @@ public:
 // Destructor 
   ~LELFunctionDouble();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<Double>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual Double getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -284,31 +416,57 @@ private:
 
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles complex numerical functions </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles complex numerical functions (arbitrary
+//  number of arguments) 
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply complex numerical functions of arbitrary number of
+// arguments (but only 1 or 2 arguments currently implemented) to Lattice 
+// expressions. They operate on Complex Lattice expressions only
+// and return a Complex. The available C++ functions are 
+// <src>pow,conj</src> with equivalents in the enum of POW and CONJ.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Complex> x(shape); x.set(Complex(2.0,3.0));
+// ArrayLattice<Complex> y(shape); 
+// y.copyData(conj(x));                // y = conj(x)
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -324,11 +482,11 @@ public:
 // Destructor 
   ~LELFunctionComplex();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<Complex>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual Complex getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -344,33 +502,60 @@ private:
 
 
 
-// <summary>
-// </summary>
 
+
+// <summary> This LEL class handles double complex numerical functions </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles double complex numerical functions (arbitrary
+//  number of arguments) 
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply double complex numerical functions of arbitrary number of
+// arguments (but only 1 or 2 arguments currently implemented) to Lattice 
+// expressions. They operate on DComplex Lattice expressions only
+// and return a DComplex. The available C++ functions are 
+// <src>pow,conj</src> with equivalents in the enum of POW and CONJ.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<DComplex> x(shape); x.set(DComplex(2.0,3.0));
+// ArrayLattice<DComplex> y(shape); 
+// y.copyData(conj(x));                // y = conj(x)
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Numerical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
-
 
 class LELFunctionDComplex : public LELInterface<DComplex>
 {
@@ -384,11 +569,11 @@ public:
 // Destructor 
   ~LELFunctionDComplex();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<DComplex>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual DComplex getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -403,34 +588,60 @@ private:
 };
 
 
-
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles logical functions </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunctionEnums"> LELFunctionEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles logical functions (arbitrary
+//  number of arguments) 
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It is used to construct 
+// LEL objects that apply logical functions of arbitrary number of
+// arguments (but only 1 or 2 arguments currently implemented) to Lattice 
+// expressions. They operate on Bool Lattice expressions only
+// and return a Bool. The available C++ functions are 
+// <src>all,any</src> with equivalents in the enum of ALL and ANY.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Bool> x(shape); x.set(True);
+// ArrayLattice<Bool> y(shape); 
+// y.copyData(any(x));                // y = any(x)
+// </srcblock>
+// The result of the any function (were any of the values True) is 
+// a Bool scalar. So the output Lattice is filled with that one value.
 // </example>
-
+//
 // <motivation>
+// Logical functions are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
-
 
 class LELFunctionBool : public LELInterface<Bool>
 {
@@ -444,11 +655,11 @@ public:
 // Destructor 
   ~LELFunctionBool();
 
-// Evaluate the expression and put the result in the array
+// Recursively evaluate the expression 
    virtual void eval (Array<Bool>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression 
    virtual Bool getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
