@@ -111,9 +111,18 @@ Help files auto-generate some labels based on the following scheme:
 \begin{itemize}
 \item module
 \item module:function
-\item module:object
+\item module:tool
 \item module:object.method
 \end{itemize}
+There are also two special case where a function and constructor have the
+same name:
+\begin{itemize}
+\item module:tool.constructor
+\item module:tool.function
+\end{itemize}
+Note the constructor and function are added to the end of the label, i.e.
+images:image.calc.constructor or images:image.calc.function to identify them
+uniquely.
 Additional labels may be put in the .help file by the author using the 
 \verb!\label! command.
 
