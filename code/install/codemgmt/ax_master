@@ -5777,3 +5777,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSTableImpl.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSTableImpl.h
 16 134 src rm aips/implement/MeasurementSets/OldMSWeather.cc
+16 134 src rm aips/implement/MeasurementSets/OldMSWeather.h
