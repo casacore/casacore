@@ -3,7 +3,7 @@
 # mkinst: Generate template instantiation files from a list
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1997,2000
+#   Copyright (C) 1996,1997,2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -182,6 +182,30 @@
         continue
       fi
       echo "$*" >> tmp1.$$
+      continue
+      ;;
+    AIPS_*)
+      if [ "$TFILE" = "" ]
+      then
+        echo "   Bad entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+      fi
+      echo "$*" >> tmp1.$$
+      continue
+      ;;
+    typedef)
+      if [ "$TFILE" = "" ]
+      then
+        echo "   Bad entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+      fi
+      echo "$*;" >> tmp1.$$
       continue
       ;;
     =)
