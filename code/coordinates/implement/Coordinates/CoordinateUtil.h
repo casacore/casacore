@@ -371,6 +371,13 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 // for Spectral and the native unit otherwise
    static void setNicePreferredAxisLabelUnits(CoordinateSystem& cSys);
 
+// Convert an absolute pixel coordinate to world and format with 
+// default Coordinate formatting
+// <group>
+   static String formatCoordinate(const IPosition& pixel, CoordinateSystem& cSys);
+   static String formatCoordinate(const Vector<Double>& pixel, CoordinateSystem& cSys);
+// </group>
+
 };
 
 #endif
