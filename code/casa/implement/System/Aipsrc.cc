@@ -300,7 +300,7 @@ void Aipsrc::save(const String keyword, const String val) {
     String editBuf;		// edit line buffer
     Int editCnt = 0;		// count for edits
     String kwt = keyword + ":";  // keyword test
-    ifstream istr(filno, ios::in | ios::nocreate);
+    ifstream istr(filno, ios::in );
     while (istr.getline(buf, 8192)) {
       buffer = buf;
       if (editSeen) {
@@ -391,7 +391,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     //   Ok now if we have a filename let's see if we can open it
     File fil(keywordFile[nfile]);
     if (fil.exists()) {
-      ifstream fileAipsrc(keywordFile[nfile], ios::in | ios::nocreate);
+      ifstream fileAipsrc(keywordFile[nfile], ios::in);
       String buffer;
       String keyword;
       String value;
