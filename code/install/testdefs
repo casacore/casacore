@@ -2,7 +2,7 @@
 # testdefs: Test makedefs variable definitions
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-1999
+#   Copyright (C) 1996-2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -45,14 +45,11 @@
 # Original: 1996/03/15 by Mark Calabretta, ATNF
 # $Id$
 #=============================================================================
+
+ifeq "$(TESTDEFS)" "test"
+  DO_TEST := 1
+endif
  
-# AIPS++ fundamentals.
-#---------------------
-AIPSROOT := $(word 1, $(AIPSPATH))
-AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
-include $(AIPSARCH)/makedefs
-
-
 # Canned test command sequences.
 #-------------------------------
 # Check for the existence of a file.
@@ -221,8 +218,6 @@ endef
 # Static and static pattern rules.
 #---------------------------------
 .PHONY : auxiliary global programmer system
-
-all allsys : global
 
 global : system programmer auxiliary
 
@@ -464,6 +459,7 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(RPFITSLIBD) $(RPFITSLIB) ; $(CheckLibs)
     endif
+	-@ echo ""
 	-@ echo "MIRLIBROOT=$(MIRLIBROOT)"
     ifdef DO_TEST
 	-@ set ADVISORY $(MIRLIBROOT) ; $(CheckDir)
@@ -482,7 +478,34 @@ system :
 	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
-	-@ echo "XLIBLIST=$($(XLIBSEL))"
+	-@ echo "Package-dependent shared-library link lists."
+	-@ echo "--------------------------------------------"
+	-@ echo "XLIBLIST_shared_aips=$(XLIBLIST_shared_aips)"
+	-@ echo ""
+	-@ echo "XLIBLIST_shared_dish=$(XLIBLIST_shared_dish)"
+	-@ echo "XLIBLIST_shared_display=$(XLIBLIST_shared_display)"
+	-@ echo "XLIBLIST_shared_synthesis=$(XLIBLIST_shared_synthesis)"
+	-@ echo "XLIBLIST_shared_vlbi=$(XLIBLIST_shared_vlbi)"
+	-@ echo ""
+	-@ echo "XLIBLIST_shared_contrib=$(XLIBLIST_shared_contrib)"
+	-@ echo "XLIBLIST_shared_trial=$(XLIBLIST_shared_trial)"
+	-@ echo ""
+	-@ echo "XLIBLIST_shared_atnf=$(XLIBLIST_shared_atnf)"
+	-@ echo "XLIBLIST_shared_bima=$(XLIBLIST_shared_bima)"
+	-@ echo "XLIBLIST_shared_hia =$(XLIBLIST_shared_hia)"
+	-@ echo "XLIBLIST_shared_jive=$(XLIBLIST_shared_jive)"
+	-@ echo "XLIBLIST_shared_nfra=$(XLIBLIST_shared_nfra)"
+	-@ echo "XLIBLIST_shared_npoi=$(XLIBLIST_shared_npoi)"
+	-@ echo "XLIBLIST_shared_nral=$(XLIBLIST_shared_nral)"
+	-@ echo "XLIBLIST_shared_nrao=$(XLIBLIST_shared_nrao)"
+	-@ echo "XLIBLIST_shared_tifr=$(XLIBLIST_shared_tifr)"
+	-@ echo ""
+	-@ echo "Link lists and include paths."
+	-@ echo "-----------------------------"
+	-@ echo "XLIBSEL =$(XLIBSEL)"
+	-@ echo "XLIBLIST=$(XLIBLIST)"
+	-@ echo "XLIBLIST_shared=$(XLIBLIST_shared)"
+	-@ echo ""
 	-@ echo "XLIBPATH=$(XLIBPATH)"
 	-@ echo "XTRNLIBS=$(XTRNLIBS)"
 	-@ echo "XTRNDEFS=$(XTRNDEFS)"
