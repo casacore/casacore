@@ -765,13 +765,21 @@ Bool Coordinate::setWorldMixRanges (Vector<Double>& worldMin,
    Vector<Double> pMin(n), pMax(n);
    Vector<Double> wMin, wMax;
    for (uInt i=0; i<n; i++) {
-      if (shape(i) > 0) {
-         Double n2 = 1.5 * Double(shape(i)) / 2.0;
-         pMin(i) = shape(i)/2.0 - n2;
-         pMax(i) = shape(i)/2.0 + n2;
-      } else {                            // Shape not known (probably pixel axis in CS removed)
-         pMin(i) = 0;
-         pMax(i) = 0;
+      Double s2 = Double(shape(i)) / 2.0;
+//
+      if (shape(i)==0) {
+
+// shape not known (probably pixel axis in CS removed)
+
+         pMin(i) = referencePixel()(i) - 10.0;
+         pMax(i) = referencePixel()(i) + 10.0;
+      } else if (shape(i) == 1) {
+         pMin(i) = 0 - 10.0;
+         pMax(i) = 0 + 10.0;
+      } else if (shape(i) > 0) {
+         Double n2 = 1.5 * s2;
+         pMin(i) = s2 - n2;
+         pMax(i) = s2 + n2;
       }
    }
    Bool ok1 = toWorld(wMin, pMin);
