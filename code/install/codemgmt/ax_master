@@ -3411,3 +3411,4 @@
 13 264 src mv trial/implement/TableMeasures/ArrayQuantColumn.h aips/implement/TableMeasures/ArrayQuantColumn.h
 13 264 src mv trial/implement/TableMeasures/ArrayQuantColumn.cc aips/implement/TableMeasures/ArrayQuantColumn.cc
 13 264 src mv trial/implement/TableMeasures/ScalarMeasColumn.h aips/implement/TableMeasures/ScalarMeasColumn.h
+13 264 src mv trial/implement/TableMeasures/ScalarMeasColumn.cc aips/implement/TableMeasures/ScalarMeasColumn.cc
