@@ -346,6 +346,18 @@ Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units)
     return ok;
 }
 
+Bool TabularCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
+{
+   Bool ok = (units.nelements()==1);
+   if (ok) {
+      unit_p = units(0);
+   } else {
+      set_error ("units vector must be of length 1");
+   }
+   return ok;
+}
+
+
 Bool TabularCoordinate::setPreferredWorldAxisUnits(const Vector<String> &units)
 {
     if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
