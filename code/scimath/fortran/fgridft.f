@@ -2,9 +2,10 @@ C
 C Grid a number of visibility records
 C
       subroutine ggridft (uvw, rotmat, values, nvispol, nvischan,
-     $     flag, weight, nrow, irow,
-     $     scale, offset, grid, nx, ny, npol, nchan, freq, c,
-     $     support, sampling, convFunc, chanmap, polmap, sumwt)
+     $   flag, weight, nrow, irow,
+     $   scale, offset, grid, nx, ny, npol, nchan, freq, c,
+     $   support, sampling, convFunc, chanmap, polmap, sumwt,
+     $   dopsf)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
@@ -19,6 +20,7 @@ C
       integer irow
       integer support, sampling
       integer chanmap(nvischan), polmap(nvischan)
+      logical dopsf
 
       complex nvalue
 
@@ -53,8 +55,14 @@ C
                      apol=polmap(ipol)+1
                      if((.not.flag(ipol,ichan,irow)).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
-                        nvalue=weight(ichan,irow)*
-     $                       conjg(values(ipol,ichan,irow)*phasor)
+C If we are making a PSF then we don't want to phase
+C rotate but we do want to reproject uvw
+                        if(dopsf) then
+                           nvalue=weight(ichan,irow)
+                        else
+                           nvalue=weight(ichan,irow)*
+     $                        conjg(values(ipol,ichan,irow)*phasor)
+                        end if
                         norm=0.0
                         do iy=-support,support
                            iloc(2)=abs(sampling*iy+off(2))+1
@@ -171,7 +179,7 @@ C
       do jdim=1,3
         uvwrot(jdim)=0.0
         do idim=1,3
-           uvwrot(jdim)=uvwrot(jdim)+rotmat(idim,jdim)*uvw(idim)
+           uvwrot(jdim)=uvwrot(jdim)+rotmat(jdim,idim)*uvw(idim)
         end do
       end do
 
