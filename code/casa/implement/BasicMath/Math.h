@@ -234,12 +234,35 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
 // </group>
 
 
-// Functions to set and test for IEEE NaN's.
+// Functions to test for IEEE NaN's.
 // <group>
-Bool isNaN(const Float &val);
-Bool isNaN(const Double &val);
-void setNaN(Float &val);
-void setNaN(Double &val);
+Bool isNaN(Float val);
+Bool isNaN(Double val);
+// </group>
+
+// Functions that return IEEE NaN's. The specific NaN returned has all bits
+// set. This is 'quiet' NaN, and because the sign bit is set it may be
+// considered a negative number (but NaN's are not numbers!).
+// <group>
+Float floatNaN();
+Double doubleNaN();
+void setNaN(Float& val);
+void setNaN(Double& val);
+// </group>
+
+// Functions to test for IEEE Infinity's. Should work for positive or negative
+// infinity.
+// <group>
+Bool isInf(Float val);
+Bool isInf(Double val);
+// </group>
+
+// Functions that return an IEEE Infinity,  (positive infinity).
+// <group>
+Float floatInf();
+Double doubleInf();
+void setInf(Float& val);
+void setInf(Double& val);
 // </group>
 // </group>
 

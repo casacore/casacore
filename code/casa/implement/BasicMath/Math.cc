@@ -1,5 +1,5 @@
  //# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,10 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 
+// the following is needed to get the finite function used in isInf
+#if defined (AIPS_SOLARIS) || defined(AIPS_IRIX)
+#include <ieeefp.h>
+#endif
 
 Bool near(uInt val1, uInt val2, Double tol) {
   if (tol <= 0) {
@@ -118,15 +122,15 @@ Bool nearAbs(Double val1, Double val2, Double tol) {
   return ToBool(tol > abs(val2 - val1));
 }
 
-Bool isNaN(const Float &val) {
+Bool isNaN(Float val) {
   return ToBool(isnan(Double(val)));
 }
 
-Bool isNaN(const Double &val) {
+Bool isNaN(Double val) {
   return ToBool(isnan(val));
 }
 
-void setNaN(Float &val) {
+Float floatNaN() {
   static Float nanval;
   static Bool init = False;
   if (!init) {
@@ -138,10 +142,10 @@ void setNaN(Float &val) {
     }
     AlwaysAssert(isNaN(nanval), AipsError);
   }
-  val = nanval;
+  return nanval;
 }
 
-void setNaN(Double &val) {
+Double doubleNaN() {
   static Double nanval;
   static Bool init = False;
   if (!init) {
@@ -153,8 +157,138 @@ void setNaN(Double &val) {
     }
     AlwaysAssert(isNaN(nanval), AipsError);
   }
-  val = nanval;
+  return nanval;
 }
+
+void setNaN(Float& val) {
+  val = floatNaN();
+}
+
+void setNaN(Double& val) {
+  val = doubleNaN();
+}
+
+Bool isInf(Float val) {
+  // first see if the OS has a function for determining if the number is
+  // infinite. I can only have access to Solaris, Linux and SGI machines to
+  // determine this.
+#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+#if defined(AIPS_LINUX)
+  return ToBool(isinf(Double(val)));
+#endif
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+  return ToBool(!finite(Double(val)) && !isnanf(val));
+#endif
+#else // Otherwise this is a default implementation.
+  const uChar* uptr = (const uChar*) &val;
+  uInt start, stop;
+#if defined(AIPS_LITTLE_ENDIAN)
+    if (((uptr[sizeof(val)-1] & 0x7f) != 0x7f) || 
+        (uptr[sizeof(val)-2] != 0x80) ) {
+      return False;
+    }
+    start = 0; 
+    stop = sizeof(val)-2;
+#else
+    if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0x80) ) {
+      return False;
+    }
+    start = 2; 
+    stop = sizeof(val);
+#endif
+  for (uInt i = start; i < stop; i++) {
+    if (uptr[i] != 0x00) return False;
+  }
+  return True;
+#endif
+}
+
+Bool isInf(Double val) {
+  // first see if the OS has a function for determining if the number is
+  // infinite. I can only have access to Solaris, Linux and SGI machines to
+  // determine this.
+#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+#if defined(AIPS_LINUX)
+  return ToBool(isinf(val));
+#endif
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+  return ToBool(!finite(val) && !isnan(val));
+#endif
+#else // Otherwise this is a default implementation.
+  const uChar* uptr = (const uChar*) &val;
+  uInt start, stop;
+#if defined(AIPS_LITTLE_ENDIAN)
+    if (((uptr[sizeof(val)-1] & 0x7f) != 0x7f) || 
+        (uptr[sizeof(val)-2] != 0xf0) ) {
+      return False;
+    }
+    start = 0; 
+    stop = sizeof(val)-2;
+#else
+    if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0xf0) ) {
+      return False;
+    }
+    start = 2; 
+    stop = sizeof(val);
+#endif
+  for (uInt i = start; i < stop; i++) {
+    if (uptr[i] != 0x00) return False;
+  }
+  return True;
+#endif
+}
+
+Float floatInf() {
+  static Float infval;
+  static Bool init = False;
+  if (!init) {
+    init = True;
+    uChar *uptr = (uChar*) &infval;
+
+    for (uInt i=0; i<sizeof(infval); i++) {
+      uptr[i] = 0x00;
+    }
+#if defined(AIPS_LITTLE_ENDIAN)
+    uptr[sizeof(infval)-1] = 0x7f;
+    uptr[sizeof(infval)-2] = 0x80;
+#else
+    uptr[0] = 0x7f;
+    uptr[1] = 0x80;
+#endif
+  AlwaysAssert(isInf(infval), AipsError);
+  }
+  return infval;
+}
+
+Double doubleInf() {
+  static Double infval;
+  static Bool init = False;
+  if (!init) {
+    init = True;
+    uChar *uptr = (uChar*) &infval;
+    for (uInt i=0; i<sizeof(infval); i++) {
+      uptr[i] = 0x00;
+    }
+#if defined(AIPS_LITTLE_ENDIAN)
+    uptr[sizeof(infval)-1] = 0x7f;
+    uptr[sizeof(infval)-2] = 0xf0;
+#else
+    uptr[0] = 0x7f;
+    uptr[1] = 0xf0;
+#endif
+    AlwaysAssert(isInf(infval), AipsError);
+  }
+  return infval;
+}
+
+void setInf(Float& val) {
+  val = floatInf();
+}
+
+void setInf(Double& val) {
+  val = doubleInf();
+}
+
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 Math"
+// compile-command: "gmake Math"
 // End: 
