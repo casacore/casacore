@@ -133,6 +133,7 @@ operator=(const LatticeConvolver<T> & other) {
     itsXfr = other.itsXfr;
     itsPsf = other.itsPsf;
     itsCachedPsf = other.itsCachedPsf;
+    doFast_p=other.doFast_p;
   }
   return *this;
 }
@@ -218,7 +219,8 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       resultPtr = &resultSlice;
     }
     // Do the forward transform
-    LatticeFFT::rcfft(fftModel, *modelPtr, False);
+
+    LatticeFFT::rcfft(fftModel, *modelPtr, True, doFast_p);
     { // Multiply the transformed model with the transfer function
       IPosition tileShape(itsXfr.niceCursorShape());
       const IPosition otherTileShape(fftModel.niceCursorShape());
@@ -380,11 +382,11 @@ makeXfr(const Lattice<T> & psf) {
     itsXfr = TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
-      LatticeFFT::rcfft(itsXfr, psf, False); //was true
+      LatticeFFT::rcfft(itsXfr, psf, True, doFast_p); 
     } else { // need to pad the psf 
       TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
-      LatticeFFT::rcfft(itsXfr, paddedPsf, False); //was true
+      LatticeFFT::rcfft(itsXfr, paddedPsf, True, doFast_p); 
     }
   }
   // Only cache the psf if it cannot be reconstructed from the transfer
@@ -409,7 +411,7 @@ makePsf(Lattice<T> & psf) const {
     LatticeFFT::crfft(psf, itsXfr, True, doFast_p);
   } else { // need to unpad the transfer function
     TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
-    LatticeFFT::crfft(paddedPsf, itsXfr, True);
+    LatticeFFT::crfft(paddedPsf, itsXfr, True, doFast_p);
     unpad(psf, paddedPsf);
   }
 }
