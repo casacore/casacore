@@ -650,11 +650,11 @@ Bool Erlang::checkParameters(const Vector<Double>& pars) const {
     pars(1) > 0.0;
 }
 
-Geometric::Geometric(RNG* gen, Double mean) 
+Geometric::Geometric(RNG* gen, Double probability) 
   :Random(gen),
-   itsMean(mean)
+   itsProbability(probability)
 {
-  AlwaysAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
+  AlwaysAssert(itsProbability >= 0.0 && itsProbability < 1.0, AipsError);
 }
 
 Geometric::~Geometric() {
@@ -666,22 +666,22 @@ Double Geometric::operator()() {
 
 uInt Geometric::asInt() {
   uInt samples;
-  for (samples = 1; itsRNG->asDouble() < itsMean; samples++);
+  for (samples = 1; itsRNG->asDouble() < itsProbability; samples++);
   return samples;
 }
 
-void Geometric::mean(Double x) {
-  itsMean = x; 
-  AlwaysAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
+void Geometric::probability(Double x) {
+  itsProbability = x; 
+  AlwaysAssert(itsProbability >= 0.0 && itsProbability < 1.0, AipsError);
 }
 
 void Geometric::setParameters(const Vector<Double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
-  mean(pars(0));
+  probability(pars(0));
 }
 
 Vector<Double> Geometric::parameters() const {
-  return Vector<Double>(1, mean());
+  return Vector<Double>(1, probability());
 }
 
 Bool Geometric::checkParameters(const Vector<Double>& pars) const {
