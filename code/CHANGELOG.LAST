@@ -125,3 +125,24 @@ provides a wider context e.g. the name of a measurement set that is
 being used in the tool. This is work in progress.
 
 Tim
+
+change id: 0043
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   combochooser
+ type:     Code
+ category: New
+ summary:  combochooser allows choosing of combinations
+
+combochooser allows graphical choosing of combinations such as 
+baselines. The user selects regions of combination using the
+cursor on a plot similar to that in gchooser.
+
+The interface could and probably will be generalized to allow
+combinations between A and B instead of between elements of A
+only.
+
+Tim
