@@ -47,7 +47,7 @@
 #   -F     Force mode; turn off all sanity checks for things like
 #          running under the correct account, the proper site, etc.
 #          DO NOT USE!  This option is only intended for use as a
-#          debugging tool to maintain exhale itself.  DOT NOT USE!
+#          debugging tool to maintain exhale itself.  DO NOT USE!
 #          Also suppresses all e-mail output.
 #          (This option is not listed in any usage instructions.)
 #
@@ -1007,7 +1007,7 @@
   if [ "$LATCHKEY" = "" ]
   then
 #    New prayer: forget about any previous blessings.
-     OLDBLESSED=`echo blessed-master-*.tar.gz`
+     OLDBLESSED=`echo .blessed-master-*.tar.gz`
      echo
      echo "exhale: Removing old blessed versions:"
 
@@ -1024,13 +1024,13 @@
 
         for BLESSING in $BLESSED
         do
-           # Need to prevent attempting duplicate links here.
+#          Need to prevent attempting duplicate links here.
            [ -f "master-$BLESSING.tar.gz" ] && \
             echo "exhale: Blessing incremental $BLESSING" && \
-            ln "master-$BLESSING.tar.gz" "blessed-master-$BLESSING.tar.gz"
+            ln "master-$BLESSING.tar.gz" ".blessed-master-$BLESSING.tar.gz"
            [ -f "master-$BLESSING.ALL.tar.gz" ] && \
             echo "exhale: Blessing cumulative $BLESSING" && \
-            ln "master-$BLESSING.ALL.tar.gz" "blessed-master-$BLESSING.ALL.tar.gz"
+            ln "master-$BLESSING.ALL.tar.gz" ".blessed-master-$BLESSING.ALL.tar.gz"
         done
      fi
 
@@ -1227,4 +1227,6 @@
 
 # Local Variables:
 # indent-tabs-mode: nil
+# ksh-indent: 3
+# ksh-group-offset: -3
 # End:
