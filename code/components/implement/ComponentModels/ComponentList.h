@@ -161,6 +161,11 @@ public:
   // reduced by one.
   void remove(const uInt & index);
 
+  // Remove all the inactive components from the ComponentList. The index
+  // of the remaining active components will be reduced by the number of 
+  // inactive components with a lower index.
+  void remove();
+
   // returns how many components are in the list.
   uInt nelements() const;
 
