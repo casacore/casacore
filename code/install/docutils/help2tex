@@ -259,7 +259,7 @@ sub make_tex_file{
       $_ = $thing;
       if(/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/){
          $isObj = 0;
-         $aipsrc = 0;
+         $needsSynopsis = 0;
          $terminateObject = 0;
          $mname = $1;
          $miname = $1;
@@ -290,14 +290,12 @@ sub make_tex_file{
       if(/\\end{ahrecord}/){
         $recname = '';
       }
-      if(/\\end{ahaipsrc}/){
-         $aipsrc = 0;
-      }
       if(/\\begin{ahaipsrc}/){
-         $aipsrc = 1;
+         $needsSynopsis = 0;
       }
       if(/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
+         $needsSynopsis = 0;
          $terminateObject = 0;
          $objs{$1} = $2;
          push @objsid, $1;
@@ -329,6 +327,7 @@ sub make_tex_file{
       }
       if(/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
+         $needsSynopsis = 0;
          $terminateObject = 0;
          $objs{$1} = $2;
          push @objsid, $1;
@@ -360,6 +359,7 @@ sub make_tex_file{
       }
       if(/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/){
          $args = "";
+         $needsSynopsis = 1;
          $constructors{$oname}{$1} = $2;
          push @{$constructorsid{$oname}}, $1;
          # print "Adding ", $1, @{$methodsid{$oname}}, "\n";
@@ -385,6 +385,7 @@ sub make_tex_file{
          $recIndent = "\\hspace{0.25in}";
       }
       if(/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/){
+         $needsSynopsis = 1;
          $args = "";
          $fname = $1;
          $iname = $1;
@@ -469,7 +470,7 @@ sub make_tex_file{
      if($hasArgs == 1){
         $args =~ s/, $//g;
      }
-     if($opt_glish == 1 && length $argroot && !$aipsrc){
+     if($opt_glish == 1 && length $argroot && $needsSynopsis == 1){
         $glish_args = $args;
         $glish_args =~ s/\\_/_/g;
         $glish_args =~ s/\\aipspp/AIPS++/g;
