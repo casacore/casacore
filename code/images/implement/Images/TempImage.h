@@ -90,7 +90,7 @@
 // </motivation>
 
 //# <todo asof="1998/10/27">
-//#  <li>
+//#  <li> Maybe move applyMask, maskPtr_p, etc to base class ImageInterface
 //# </todo>
 
 
@@ -132,20 +132,38 @@ public:
   // Is the TempImage writable?
   virtual Bool isWritable() const;
 
-  // Attach a mask to the TempImage.
-  // It replaces a probably already attached mask.
-  // It has to have the same shape as the image.
-  void attachMask (const Lattice<Bool>& mask);
+  // Set the default pixelmask to the mask with the given name
+  // (which has to exist in the "masks" group).
+  // If the image table is writable, the setting is persistent by writing
+  // the name as a keyword.
+  // If the given regionName is the empty string,
+  // the default pixelmask is unset.
+  virtual void setDefaultMask (const String& maskName);
 
   // Delete the pixel mask attached to the TempImage.
   // Does nothing if there isn't one
-  void removeMask();
+  void removeMask()
+    { setDefaultMask (""); }
+
+  // Use the mask as specified.
+  // If a mask was already in use, it is replaced by the new one.
+  virtual void useMask (MaskSpecifier = MaskSpecifier());
+
+  // Remove a region/mask belonging to the image from the given group
+  // (which can be Any).
+  // If a mask removed is the default mask, the image gets unmasked.
+  // <br>Optionally an exception is thrown if the region does not exist.
+  virtual void removeRegion (const String& name,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool throwIfUnknown = True);
+
+  // Attach a mask to the TempImage.
+  // It replaces a probably already attached mask.
+  // It has to have the same shape as the image.
+  virtual void attachMask (const Lattice<Bool>& mask);
 
   // It a mask attached to the image?
   virtual Bool isMasked() const;
-
-  // Is the mask writable?
-  virtual Bool isMaskWritable() const;
 
   // Does the image object use a pixelmask?
   // This is similar to <src>isMasked()</src>.
@@ -162,25 +180,17 @@ public:
   // It throws an exception if there is no mask.
   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
-  // Put a section of the mask.
-  // It throws an exception if there is no writable mask.
-  virtual void doPutMaskSlice (const Array<Bool>& buffer,
-			       const IPosition& where,
-			       const IPosition& stride);
-
-  // Get the region used (it always returns 0).
-  virtual const LatticeRegion* getRegionPtr() const;
+  // Flush the data.
+  virtual void flush();
 
   // Close the TempImage temporarily (if it is paged to disk).
   // Note that a possible mask is not closed.
   // It'll be reopened automatically when needed or when
   // <src>reopen</src> is called explicitly.
-  void tempClose()
-    { mapPtr_p->tempClose(); }
+  virtual void tempClose();
 
   // If needed, reopen a temporarily closed TempLattice.
-  void reopen()
-    { mapPtr_p->reopen(); }
+  virtual void reopen();
 
   // Function which changes the shape of the image (N.B. the data is thrown 
   // away - the Image will be filled with nonsense afterwards)
@@ -188,7 +198,7 @@ public:
   
   // Return the name of the current TempImage object.
   // It is always "Temporary_Image"
-  virtual String name (const Bool stripPath=False) const;
+  virtual String name (Bool stripPath=False) const;
 
   // Return the shape of the image
   virtual IPosition shape() const;
@@ -252,6 +262,9 @@ public:
   virtual Bool ok() const;
 
 protected:
+  // Get the region used (it always returns 0).
+  virtual const LatticeRegion* getRegionPtr() const;
+
   // Function which extracts an array from the map.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
@@ -265,6 +278,9 @@ protected:
 
 
 private:  
+  void applyMaskSpecifier (const MaskSpecifier&);
+  void applyMask (const String& maskName);
+
   TempLattice<T>* mapPtr_p;
   Lattice<Bool>*  maskPtr_p;
   Unit            unit_p;
