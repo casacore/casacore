@@ -33,7 +33,7 @@
 
 #include <aips/aips.h>
 #include <trial/Images/ImageStatsBase.h>
-template <class T> class PagedImage;
+template <class T> class ImageInterface;
 template <class T> class ArrayLattice;
 template <class T> class Vector;
 class IPosition;
@@ -151,6 +151,7 @@ class LogIO;
 //   <li> Standard errors on statistical quantities
 //   <li> Median, other more exotic statistics.  Life made difficult by accumulation
 //        image approach
+//   <li> Memory model is poor
 // </todo>
 //
 
@@ -159,11 +160,17 @@ template <class T> class ImageStatistics : public ImageStatsBase
 public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
-   ImageStatistics (const PagedImage<T>& image, 
+   ImageStatistics (const ImageInterface<T>& image, 
                     LogIO& os);
+
+// Copy constructor
+   ImageStatistics(const ImageStatistics<T> &other);
 
 // Destructor
   ~ImageStatistics ();
+
+// Assignment operator
+   ImageStatistics<T> &operator=(const ImageStatistics<T> &other);
 
 // Set the cursor axes (0 relative).  A return value of <src>False</src>
 //  indicates you have asked for an invalid axis.  The default state of the class
@@ -239,7 +246,7 @@ public:
 
 // Set a new PagedImage.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
-   Bool setNewImage (const PagedImage<T>& image);
+   Bool setNewImage (const ImageInterface<T>& image);
 
 private:
 
@@ -247,7 +254,7 @@ private:
 // Data
 
    LogIO &os_p;
-   const PagedImage<T>* pInImage_p;
+   const ImageInterface<T>* pInImage_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<Float> range_p;
@@ -260,10 +267,6 @@ private:
    Int nVirCursorIter_p;   
 
    ArrayLattice<Double>* pStoreImage_p;
-
-   float* pAbc_p;
-   float* pOrd_p[NSTATS];
-   Int n1_p;
 
 
 // Functions
@@ -297,10 +300,16 @@ private:
                           ();
 
 // List the statistics
-   void listStats         (const IPosition& dPos);
+   void listStats         (const IPosition& dPos, 
+                           const Int& n1,
+                           const Vector<Float>& abc,
+                           const Matrix<Float>& ord);
 
 // Plot the statistics
-   void plotStats         (const IPosition& dPos);
+   void plotStats         (const IPosition& dPos,
+                           const Int& n,
+                           const Vector<Float>& abc,
+                           const Matrix<Float>& ord);
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (Int& iFound,
@@ -330,18 +339,18 @@ private:
 
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
-   void multiPlot         (const Int& n,
-                           const float* px,
-                           const float* py,
-                           const float* pn);
+   void multiPlot        (const Int& n1,
+                          const Vector<Float>& x,
+                          const Vector<Float>& y,
+                          const Vector<Float>& n);
 
 // Find min and max of good data in arrays specified by pointers
    void minMax            (Bool& none,
                            Float& dMin,
                            Float& dMax,
-                           const float* pd,
-                           const float* pn,
-                           const Int& n);
+                           const Vector<Float>& d,
+                           const Vector<Float>& n,
+                           const Int& n1);
 
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours);
