@@ -100,6 +100,9 @@ $(INCLINKS) :
 
 docsys : $(DOCSYS)
 
+atoms :
+	$(MAKE) -C $(addprefix $(CODEDIR)/, doc/user) atoms
+
 resolvedocs :
 	find $(addprefix $(CODEDIR)/, doc) -name "*.latex" -exec touch {} \;
 	$(MAKE) -C $(addprefix $(CODEDIR)/, doc)
