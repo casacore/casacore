@@ -1,5 +1,5 @@
 //# StackError.cc: Error class for the stack class
-//# Copyright (C) 1993,1994,1995,1998
+//# Copyright (C) 1993,1994,1995,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,23 +27,10 @@
 
 #include <aips/Containers/StackError.h>
 
-rtti_imp_init(EmptyStackError);
-rtti_imp_mbrf(EmptyStackError);
 
 // The normal constructor when throwing the exception.
 EmptyStackError::EmptyStackError (const char *msg) : 
           AipsError(msg ? msg : "Invalid operation on an empty Stack.") {}
-
-// The constructor for the exception handler.
-EmptyStackError::EmptyStackError(ExcpError* excp) : AipsError(excp) {
-    EmptyStackError *tmp;
-    PCAST(tmp,EmptyStackError,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 
 EmptyStackError::~EmptyStackError ()
 { ; }

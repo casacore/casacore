@@ -1,5 +1,5 @@
 //# StackError.h: Error class for the stack class
-//# Copyright (C) 1993,1994,1995,1998
+//# Copyright (C) 1993,1994,1995,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,16 +28,15 @@
 #if !defined(AIPS_STACKERROR_H)
 #define AIPS_STACKERROR_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
-rtti_dcl_init(EmptyStackError);
+
 class EmptyStackError : public AipsError {
 public:
   EmptyStackError(const char *msg = 0);      // normal constructor
-  EmptyStackError(ExcpError*);        // constructor for exception handler
   ~EmptyStackError ();
-  rtti_dcl_mbrf_p1(EmptyStackError,AipsError);
 };
 
 #endif

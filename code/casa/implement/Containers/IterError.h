@@ -1,5 +1,5 @@
 //# IterError.h:
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,43 +28,32 @@
 #if !defined(AIPS_ITERERROR_H)
 #define AIPS_ITERERROR_H
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
-rtti_dcl_init(IterError);
 class IterError : public AipsError {
 public:
   IterError(const char *msg = 0);      // normal constructor
-  IterError(ExcpError*);        // constructor for exception handler
   ~IterError ();
-  rtti_dcl_mbrf_p1(IterError,AipsError);
 };
 
-rtti_dcl_init(IterBoundaryError);
 class IterBoundaryError : public IterError {
 public:
   IterBoundaryError(const char *msg = 0);      // normal constructor
-  IterBoundaryError(ExcpError*);        // constructor for exception handler
   ~IterBoundaryError ();
-  rtti_dcl_mbrf_p1(IterBoundaryError,IterError);
 };
 
-rtti_dcl_init(IterInitError);
 class IterInitError : public IterError {
 public:
   IterInitError(const char *msg = 0);      // normal constructor
-  IterInitError(ExcpError*);        // constructor for exception handler
   ~IterInitError ();
-  rtti_dcl_mbrf_p1(IterInitError,IterError);
 };
 
-rtti_dcl_init(InvalidIterError);
 class InvalidIterError : public IterError {
 public:
   InvalidIterError(const char *msg = 0);      // normal constructor
-  InvalidIterError(ExcpError*);        // constructor for exception handler
   ~InvalidIterError ();
-  rtti_dcl_mbrf_p1(InvalidIterError,IterError);
 };
 
 #endif
