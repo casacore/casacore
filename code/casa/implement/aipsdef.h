@@ -1,5 +1,5 @@
 //# aipsdef.h: Global initialization for special aips++ macros
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,6 +54,11 @@ extern Bool aips_debug_on;
 // we can link against libraries compiled with or without AIPS_DEBUG
 // without having any missing symbols.
 #define aips_debug aips_debug_on
+#endif
+
+// Define the use of the old string class (for sgi at the moment)
+#if defined(__sgi)
+#define USE_OLD_STRING
 #endif
 
 #endif
