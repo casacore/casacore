@@ -284,6 +284,7 @@ public:
     // <group>
     Bool removeWorldAxis(uInt axis, Double replacement);
     Bool removePixelAxis(uInt axis, Double replacement);
+    // </group>
 
     // You can recover the replacement values with these functions.
     // Use the same axis number as in the <src>removePixelAxis</src> and 
