@@ -111,10 +111,6 @@ protected:
   // Construct the Iterator with the supplied data, and iteration strategy
   PagedArrIter (const PagedArray<T>& data, const LatticeNavigator& method);
 
-  // Lattice and cursor shape constructor - LatticeNavigator method is
-  // automatically defined to be a LatticeStepper.		  
-  PagedArrIter (const PagedArray<T>& data, const IPosition& cursorShape);
-
   // The copy constructor uses reference sematics for the PagedArray and
   // copy semantics for the cursor and Navigator. This way the newly
   // constructed PagedArrIter can independently iterate through the same
@@ -133,79 +129,13 @@ protected:
   // Clone the object.
   virtual LatticeIterInterface<T>* clone() const;
 
-  // Increment operator - increment the cursor to the next position. These
-  // functions are forwarded to the current LatticeNavigator and both
-  // postfix and prefix versions will usually do the same thing.
-  virtual Bool operator++(Int);
-  
-  // Decrement operator - decrement the cursor to the previous
-  // position. These functions are forwarded to the current LatticeNavigator
-  // and both postfix and prefix versions will usually do the same thing.
-  virtual Bool operator--(Int);
-  
-  // Function which resets the cursor to the beginning of the Lattice and
-  // resets the number of steps taken to zero. Forwarded to the current
-  // LatticeNavigator. 
-  virtual void reset();
-  
-  // Functions which returns a window to the data in the Lattice. These are
-  // used to read AND write the data within the Lattice.  Use the function
-  // that is appropriate to the current cursor dimension, AFTER REMOVING
-  // DEGENERATE AXES, or use the <src>cursor</src> function which works with
-  // any number of dimensions in the cursor. A call of the function whose
-  // return value is inappropriate with respect to the current cursor
-  // dimension will throw an exception (AipsError).
-  // <br>The <src>doRead</src> flag indicates if the data need to be read or
-  // if only a cursor with the correct shape has to be returned.
-  // <br>The <src>autoRewrite</src> flag indicates if the data has to be
-  // rewritten when the iterator state changes (e.g. moved, destructed).
-  //<group>
-  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite);
-  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite);
-  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite);
-  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite);
-  //</group>
-  
-  // Function which checks the internal data of this class for correct
-  // dimensionality and consistant values. 
-  // Returns True if everything is fine otherwise returns False
-  virtual Bool ok() const;
-
 private:
-  // Update the cursor for the next chunk of data (resize if needed).
-  void cursorUpdate();
-
-  // Allocate the internal cursor to be a pointer to the correct type
-  // Returns False if the memory could not be allocated.
-  Bool allocateCursor();
-
   // Setup the cache in the tiled storage manager.
   void setupTileCache();
 
-  // Synchronise the storage in the "degenerate axis Array" with itsCurPtr.
-  void relinkArray();
 
-  // Do the actual read of the data.
-  void readData (Bool doRead);
-
-  // Rewrite the cursor data and clear the rewrite flag.
-  void rewriteData();
-
-
-  // reference to the Lattice
+  // reference to the PagedArray
   PagedArray<T> itsData;
-  // Polymorphic pointer to a subpart of the Lattice
-  Array<T>*     itsCurPtr;
-  // An Array which references the same data as the itsCurPtr, but has all
-  // the degenerate axes. This is an optimisation to avoid the overhead of
-  // having to add the degenerate axes for each iteration.
-  Array<T>      itsCursor;
-  // Have the data been read after a cursor update? (False=not read)
-  Bool          itsHaveRead;
-  // Rewrite the cursor data before moving or destructing?
-  Bool          itsRewrite;
-  // The axes forming the cursor.
-  IPosition     itsCursorAxes;
 };
 
 
