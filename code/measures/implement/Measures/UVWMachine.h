@@ -38,9 +38,7 @@
 class MeasFrame;
 template <class T> class Vector;
 
-// <summary>
-// Converts UVW coordinates between coordinate systems 
-// </summary>
+// <summary> Converts UVW coordinates between coordinate systems  </summary>
 
 // <use visibility=export>
 
