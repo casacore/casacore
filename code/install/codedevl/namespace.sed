@@ -1,1687 +1,1687 @@
-\%^ *//%!s/\([ <(]\)ACG\([ &*,)<>]\)/ casa::\1ACG\2/g
-\%^ *//%!s/\([ <(]\)ACoh\([ &*,)<>]\)/ casa::\1ACoh\2/g
-\%^ *//%!s/\([ <(]\)Aberration\([ &*,)<>]\)/ casa::\1Aberration\2/g
-\%^ *//%!s/\([ <(]\)AbortError\([ &*,)<>]\)/ casa::\1AbortError\2/g
-\%^ *//%!s/\([ <(]\)AbsCoeff\([ &*,)<>]\)/ casa::\1AbsCoeff\2/g
-\%^ *//%!s/\([ <(]\)AbsCoeffDer\([ &*,)<>]\)/ casa::\1AbsCoeffDer\2/g
-\%^ *//%!s/\([ <(]\)ActiveCaching2dDD\([ &*,)<>]\)/ casa::\1ActiveCaching2dDD\2/g
-\%^ *//%!s/\([ <(]\)AipsError\([ &*,)<>]\)/ casa::\1AipsError\2/g
-\%^ *//%!s/\([ <(]\)AipsIO\([ &*,)<>]\)/ casa::\1AipsIO\2/g
-\%^ *//%!s/\([ <(]\)AipsIOCarray\([ &*,)<>]\)/ casa::\1AipsIOCarray\2/g
-\%^ *//%!s/\([ <(]\)Aipsrc\([ &*,)<>]\)/ casa::\1Aipsrc\2/g
-\%^ *//%!s/\([ <(]\)AipsrcValue\([ &*,)<>]\)/ casa::\1AipsrcValue\2/g
-\%^ *//%!s/\([ <(]\)AipsrcValue_Bool\([ &*,)<>]\)/ casa::\1AipsrcValue_Bool\2/g
-\%^ *//%!s/\([ <(]\)AipsrcVector\([ &*,)<>]\)/ casa::\1AipsrcVector\2/g
-\%^ *//%!s/\([ <(]\)AipsrcVector_Bool\([ &*,)<>]\)/ casa::\1AipsrcVector_Bool\2/g
-\%^ *//%!s/\([ <(]\)AipsrcVector_String\([ &*,)<>]\)/ casa::\1AipsrcVector_String\2/g
-\%^ *//%!s/\([ <(]\)Algorithm\([ &*,)<>]\)/ casa::\1Algorithm\2/g
-\%^ *//%!s/\([ <(]\)AllocError\([ &*,)<>]\)/ casa::\1AllocError\2/g
-\%^ *//%!s/\([ <(]\)AniPosEH\([ &*,)<>]\)/ casa::\1AniPosEH\2/g
-\%^ *//%!s/\([ <(]\)Animator\([ &*,)<>]\)/ casa::\1Animator\2/g
-\%^ *//%!s/\([ <(]\)AnimatorRefEH\([ &*,)<>]\)/ casa::\1AnimatorRefEH\2/g
-\%^ *//%!s/\([ <(]\)Annotations\([ &*,)<>]\)/ casa::\1Annotations\2/g
-\%^ *//%!s/\([ <(]\)AppInfo\([ &*,)<>]\)/ casa::\1AppInfo\2/g
-\%^ *//%!s/\([ <(]\)AppUtil\([ &*,)<>]\)/ casa::\1AppUtil\2/g
-\%^ *//%!s/\([ <(]\)ApplicationEnvironment\([ &*,)<>]\)/ casa::\1ApplicationEnvironment\2/g
-\%^ *//%!s/\([ <(]\)ApplicationObject\([ &*,)<>]\)/ casa::\1ApplicationObject\2/g
-\%^ *//%!s/\([ <(]\)ApplicationObjectFactory\([ &*,)<>]\)/ casa::\1ApplicationObjectFactory\2/g
-\%^ *//%!s/\([ <(]\)Applicator\([ &*,)<>]\)/ casa::\1Applicator\2/g
-\%^ *//%!s/\([ <(]\)Array\([ &*,)<>]\)/ casa::\1Array\2/g
-\%^ *//%!s/\([ <(]\)ArrayAccessor\([ &*,)<>]\)/ casa::\1ArrayAccessor\2/g
-\%^ *//%!s/\([ <(]\)ArrayAccessor_RT\([ &*,)<>]\)/ casa::\1ArrayAccessor_RT\2/g
-\%^ *//%!s/\([ <(]\)ArrayBase\([ &*,)<>]\)/ casa::\1ArrayBase\2/g
-\%^ *//%!s/\([ <(]\)ArrayBaseAccessor\([ &*,)<>]\)/ casa::\1ArrayBaseAccessor\2/g
-\%^ *//%!s/\([ <(]\)ArrayColumn\([ &*,)<>]\)/ casa::\1ArrayColumn\2/g
-\%^ *//%!s/\([ <(]\)ArrayColumnData\([ &*,)<>]\)/ casa::\1ArrayColumnData\2/g
-\%^ *//%!s/\([ <(]\)ArrayColumnDesc\([ &*,)<>]\)/ casa::\1ArrayColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)ArrayConformanceError\([ &*,)<>]\)/ casa::\1ArrayConformanceError\2/g
-\%^ *//%!s/\([ <(]\)ArrayError\([ &*,)<>]\)/ casa::\1ArrayError\2/g
-\%^ *//%!s/\([ <(]\)ArrayIndexError\([ &*,)<>]\)/ casa::\1ArrayIndexError\2/g
-\%^ *//%!s/\([ <(]\)ArrayIterator\([ &*,)<>]\)/ casa::\1ArrayIterator\2/g
-\%^ *//%!s/\([ <(]\)ArrayIteratorError\([ &*,)<>]\)/ casa::\1ArrayIteratorError\2/g
-\%^ *//%!s/\([ <(]\)ArrayLattice\([ &*,)<>]\)/ casa::\1ArrayLattice\2/g
-\%^ *//%!s/\([ <(]\)ArrayMeasColumn\([ &*,)<>]\)/ casa::\1ArrayMeasColumn\2/g
-\%^ *//%!s/\([ <(]\)ArrayModel\([ &*,)<>]\)/ casa::\1ArrayModel\2/g
-\%^ *//%!s/\([ <(]\)ArrayNDimError\([ &*,)<>]\)/ casa::\1ArrayNDimError\2/g
-\%^ *//%!s/\([ <(]\)ArrayParameterAccessor\([ &*,)<>]\)/ casa::\1ArrayParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ArrayPositionIterator\([ &*,)<>]\)/ casa::\1ArrayPositionIterator\2/g
-\%^ *//%!s/\([ <(]\)ArrayQuantColumn\([ &*,)<>]\)/ casa::\1ArrayQuantColumn\2/g
-\%^ *//%!s/\([ <(]\)ArraySampledFunctional\([ &*,)<>]\)/ casa::\1ArraySampledFunctional\2/g
-\%^ *//%!s/\([ <(]\)ArrayShapeError\([ &*,)<>]\)/ casa::\1ArrayShapeError\2/g
-\%^ *//%!s/\([ <(]\)ArraySlicerError\([ &*,)<>]\)/ casa::\1ArraySlicerError\2/g
-\%^ *//%!s/\([ <(]\)AtmType\([ &*,)<>]\)/ casa::\1AtmType\2/g
-\%^ *//%!s/\([ <(]\)Atmosphere\([ &*,)<>]\)/ casa::\1Atmosphere\2/g
-\%^ *//%!s/\([ <(]\)AttValue\([ &*,)<>]\)/ casa::\1AttValue\2/g
-\%^ *//%!s/\([ <(]\)Attribute\([ &*,)<>]\)/ casa::\1Attribute\2/g
-\%^ *//%!s/\([ <(]\)AttributeBuffer\([ &*,)<>]\)/ casa::\1AttributeBuffer\2/g
-\%^ *//%!s/\([ <(]\)AttributeValue\([ &*,)<>]\)/ casa::\1AttributeValue\2/g
-\%^ *//%!s/\([ <(]\)AttributeValueBase\([ &*,)<>]\)/ casa::\1AttributeValueBase\2/g
-\%^ *//%!s/\([ <(]\)AttributeValuePoi\([ &*,)<>]\)/ casa::\1AttributeValuePoi\2/g
-\%^ *//%!s/\([ <(]\)AttributeValuePoiTol\([ &*,)<>]\)/ casa::\1AttributeValuePoiTol\2/g
-\%^ *//%!s/\([ <(]\)AttributeValueTol\([ &*,)<>]\)/ casa::\1AttributeValueTol\2/g
-\%^ *//%!s/\([ <(]\)AutoDiff\([ &*,)<>]\)/ casa::\1AutoDiff\2/g
-\%^ *//%!s/\([ <(]\)AutoDiffA\([ &*,)<>]\)/ casa::\1AutoDiffA\2/g
-\%^ *//%!s/\([ <(]\)AutoDiffRep\([ &*,)<>]\)/ casa::\1AutoDiffRep\2/g
-\%^ *//%!s/\([ <(]\)AutoDiffX\([ &*,)<>]\)/ casa::\1AutoDiffX\2/g
-\%^ *//%!s/\([ <(]\)AxesDisplayData\([ &*,)<>]\)/ casa::\1AxesDisplayData\2/g
-\%^ *//%!s/\([ <(]\)AxesDisplayMethod\([ &*,)<>]\)/ casa::\1AxesDisplayMethod\2/g
-\%^ *//%!s/\([ <(]\)AxesMapping\([ &*,)<>]\)/ casa::\1AxesMapping\2/g
-\%^ *//%!s/\([ <(]\)AxesSpecifier\([ &*,)<>]\)/ casa::\1AxesSpecifier\2/g
-\%^ *//%!s/\([ <(]\)Axis\([ &*,)<>]\)/ casa::\1Axis\2/g
-\%^ *//%!s/\([ <(]\)AxisN\([ &*,)<>]\)/ casa::\1AxisN\2/g
-\%^ *//%!s/\([ <(]\)BJones\([ &*,)<>]\)/ casa::\1BJones\2/g
-\%^ *//%!s/\([ <(]\)BJonesDesc\([ &*,)<>]\)/ casa::\1BJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)BJonesMBuf\([ &*,)<>]\)/ casa::\1BJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)BJonesMCol\([ &*,)<>]\)/ casa::\1BJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)BJonesMRec\([ &*,)<>]\)/ casa::\1BJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)BJonesPoly\([ &*,)<>]\)/ casa::\1BJonesPoly\2/g
-\%^ *//%!s/\([ <(]\)BJonesPolyDesc\([ &*,)<>]\)/ casa::\1BJonesPolyDesc\2/g
-\%^ *//%!s/\([ <(]\)BJonesPolyMBuf\([ &*,)<>]\)/ casa::\1BJonesPolyMBuf\2/g
-\%^ *//%!s/\([ <(]\)BJonesPolyMCol\([ &*,)<>]\)/ casa::\1BJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)BJonesPolyTable\([ &*,)<>]\)/ casa::\1BJonesPolyTable\2/g
-\%^ *//%!s/\([ <(]\)BJonesTable\([ &*,)<>]\)/ casa::\1BJonesTable\2/g
-\%^ *//%!s/\([ <(]\)BaseColumn\([ &*,)<>]\)/ casa::\1BaseColumn\2/g
-\%^ *//%!s/\([ <(]\)BaseColumnDesc\([ &*,)<>]\)/ casa::\1BaseColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)BaseMappedArrayEngine\([ &*,)<>]\)/ casa::\1BaseMappedArrayEngine\2/g
-\%^ *//%!s/\([ <(]\)BaseSinkSource\([ &*,)<>]\)/ casa::\1BaseSinkSource\2/g
-\%^ *//%!s/\([ <(]\)BaseTable\([ &*,)<>]\)/ casa::\1BaseTable\2/g
-\%^ *//%!s/\([ <(]\)BaseTableIterator\([ &*,)<>]\)/ casa::\1BaseTableIterator\2/g
-\%^ *//%!s/\([ <(]\)BeamSkyJones\([ &*,)<>]\)/ casa::\1BeamSkyJones\2/g
-\%^ *//%!s/\([ <(]\)BeamSquint\([ &*,)<>]\)/ casa::\1BeamSquint\2/g
-\%^ *//%!s/\([ <(]\)Benchmark\([ &*,)<>]\)/ casa::\1Benchmark\2/g
-\%^ *//%!s/\([ <(]\)Binomial\([ &*,)<>]\)/ casa::\1Binomial\2/g
-\%^ *//%!s/\([ <(]\)BitVector\([ &*,)<>]\)/ casa::\1BitVector\2/g
-\%^ *//%!s/\([ <(]\)BitVectorHelper\([ &*,)<>]\)/ casa::\1BitVectorHelper\2/g
-\%^ *//%!s/\([ <(]\)Block\([ &*,)<>]\)/ casa::\1Block\2/g
-\%^ *//%!s/\([ <(]\)BlockIO\([ &*,)<>]\)/ casa::\1BlockIO\2/g
-\%^ *//%!s/\([ <(]\)BucketCache\([ &*,)<>]\)/ casa::\1BucketCache\2/g
-\%^ *//%!s/\([ <(]\)BucketCache_CallBack\([ &*,)<>]\)/ casa::\1BucketCache_CallBack\2/g
-\%^ *//%!s/\([ <(]\)BucketFile\([ &*,)<>]\)/ casa::\1BucketFile\2/g
-\%^ *//%!s/\([ <(]\)ByteIO\([ &*,)<>]\)/ casa::\1ByteIO\2/g
-\%^ *//%!s/\([ <(]\)ByteSink\([ &*,)<>]\)/ casa::\1ByteSink\2/g
-\%^ *//%!s/\([ <(]\)ByteSinkSource\([ &*,)<>]\)/ casa::\1ByteSinkSource\2/g
-\%^ *//%!s/\([ <(]\)ByteSource\([ &*,)<>]\)/ casa::\1ByteSource\2/g
-\%^ *//%!s/\([ <(]\)CCList\([ &*,)<>]\)/ casa::\1CCList\2/g
-\%^ *//%!s/\([ <(]\)CEMemImageSkyModel\([ &*,)<>]\)/ casa::\1CEMemImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)CEMemModel\([ &*,)<>]\)/ casa::\1CEMemModel\2/g
-\%^ *//%!s/\([ <(]\)CEMemProgress\([ &*,)<>]\)/ casa::\1CEMemProgress\2/g
-\%^ *//%!s/\([ <(]\)CJones\([ &*,)<>]\)/ casa::\1CJones\2/g
-\%^ *//%!s/\([ <(]\)CJonesDesc\([ &*,)<>]\)/ casa::\1CJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)CJonesMBuf\([ &*,)<>]\)/ casa::\1CJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)CJonesMCol\([ &*,)<>]\)/ casa::\1CJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)CJonesMRec\([ &*,)<>]\)/ casa::\1CJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)CJonesTable\([ &*,)<>]\)/ casa::\1CJonesTable\2/g
-\%^ *//%!s/\([ <(]\)CLIPNearest2D\([ &*,)<>]\)/ casa::\1CLIPNearest2D\2/g
-\%^ *//%!s/\([ <(]\)CLInterpolator2D\([ &*,)<>]\)/ casa::\1CLInterpolator2D\2/g
-\%^ *//%!s/\([ <(]\)COWPtr\([ &*,)<>]\)/ casa::\1COWPtr\2/g
-\%^ *//%!s/\([ <(]\)CSCleanImageSkyModel\([ &*,)<>]\)/ casa::\1CSCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)CStokesVector\([ &*,)<>]\)/ casa::\1CStokesVector\2/g
-\%^ *//%!s/\([ <(]\)CachingDisplayData\([ &*,)<>]\)/ casa::\1CachingDisplayData\2/g
-\%^ *//%!s/\([ <(]\)CachingDisplayMethod\([ &*,)<>]\)/ casa::\1CachingDisplayMethod\2/g
-\%^ *//%!s/\([ <(]\)CalBuffer\([ &*,)<>]\)/ casa::\1CalBuffer\2/g
-\%^ *//%!s/\([ <(]\)CalDescBuffer\([ &*,)<>]\)/ casa::\1CalDescBuffer\2/g
-\%^ *//%!s/\([ <(]\)CalDescColumns\([ &*,)<>]\)/ casa::\1CalDescColumns\2/g
-\%^ *//%!s/\([ <(]\)CalDescRecord\([ &*,)<>]\)/ casa::\1CalDescRecord\2/g
-\%^ *//%!s/\([ <(]\)CalHistoryBuffer\([ &*,)<>]\)/ casa::\1CalHistoryBuffer\2/g
-\%^ *//%!s/\([ <(]\)CalHistoryColumns\([ &*,)<>]\)/ casa::\1CalHistoryColumns\2/g
-\%^ *//%!s/\([ <(]\)CalHistoryRecord\([ &*,)<>]\)/ casa::\1CalHistoryRecord\2/g
-\%^ *//%!s/\([ <(]\)CalInterpolation\([ &*,)<>]\)/ casa::\1CalInterpolation\2/g
-\%^ *//%!s/\([ <(]\)CalInterpolator\([ &*,)<>]\)/ casa::\1CalInterpolator\2/g
-\%^ *//%!s/\([ <(]\)CalIntpMatch\([ &*,)<>]\)/ casa::\1CalIntpMatch\2/g
-\%^ *//%!s/\([ <(]\)CalIter\([ &*,)<>]\)/ casa::\1CalIter\2/g
-\%^ *//%!s/\([ <(]\)CalIterBase\([ &*,)<>]\)/ casa::\1CalIterBase\2/g
-\%^ *//%!s/\([ <(]\)CalMainBuffer\([ &*,)<>]\)/ casa::\1CalMainBuffer\2/g
-\%^ *//%!s/\([ <(]\)CalMainColumns\([ &*,)<>]\)/ casa::\1CalMainColumns\2/g
-\%^ *//%!s/\([ <(]\)CalMainRecord\([ &*,)<>]\)/ casa::\1CalMainRecord\2/g
-\%^ *//%!s/\([ <(]\)CalTable\([ &*,)<>]\)/ casa::\1CalTable\2/g
-\%^ *//%!s/\([ <(]\)CalTableDesc\([ &*,)<>]\)/ casa::\1CalTableDesc\2/g
-\%^ *//%!s/\([ <(]\)Calibrater\([ &*,)<>]\)/ casa::\1Calibrater\2/g
-\%^ *//%!s/\([ <(]\)CanonicalConversion\([ &*,)<>]\)/ casa::\1CanonicalConversion\2/g
-\%^ *//%!s/\([ <(]\)CanonicalDataConversion\([ &*,)<>]\)/ casa::\1CanonicalDataConversion\2/g
-\%^ *//%!s/\([ <(]\)CanonicalIO\([ &*,)<>]\)/ casa::\1CanonicalIO\2/g
-\%^ *//%!s/\([ <(]\)Chebyshev\([ &*,)<>]\)/ casa::\1Chebyshev\2/g
-\%^ *//%!s/\([ <(]\)ChebyshevEnums\([ &*,)<>]\)/ casa::\1ChebyshevEnums\2/g
-\%^ *//%!s/\([ <(]\)ChebyshevParam\([ &*,)<>]\)/ casa::\1ChebyshevParam\2/g
-\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl\([ &*,)<>]\)/ casa::\1ChebyshevParamModeImpl\2/g
-\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl_PS\([ &*,)<>]\)/ casa::\1ChebyshevParamModeImpl_PS\2/g
-\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl_PSA\([ &*,)<>]\)/ casa::\1ChebyshevParamModeImpl_PSA\2/g
-\%^ *//%!s/\([ <(]\)Choice\([ &*,)<>]\)/ casa::\1Choice\2/g
-\%^ *//%!s/\([ <(]\)ClarkCleanAlgorithm\([ &*,)<>]\)/ casa::\1ClarkCleanAlgorithm\2/g
-\%^ *//%!s/\([ <(]\)ClarkCleanImageSkyModel\([ &*,)<>]\)/ casa::\1ClarkCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)ClarkCleanLatModel\([ &*,)<>]\)/ casa::\1ClarkCleanLatModel\2/g
-\%^ *//%!s/\([ <(]\)ClarkCleanModel\([ &*,)<>]\)/ casa::\1ClarkCleanModel\2/g
-\%^ *//%!s/\([ <(]\)ClarkCleanProgress\([ &*,)<>]\)/ casa::\1ClarkCleanProgress\2/g
-\%^ *//%!s/\([ <(]\)CleanEnums\([ &*,)<>]\)/ casa::\1CleanEnums\2/g
-\%^ *//%!s/\([ <(]\)CleanImageSkyModel\([ &*,)<>]\)/ casa::\1CleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)Colormap\([ &*,)<>]\)/ casa::\1Colormap\2/g
-\%^ *//%!s/\([ <(]\)ColormapDefinition\([ &*,)<>]\)/ casa::\1ColormapDefinition\2/g
-\%^ *//%!s/\([ <(]\)ColormapInfo\([ &*,)<>]\)/ casa::\1ColormapInfo\2/g
-\%^ *//%!s/\([ <(]\)ColormapManager\([ &*,)<>]\)/ casa::\1ColormapManager\2/g
-\%^ *//%!s/\([ <(]\)ColumnCache\([ &*,)<>]\)/ casa::\1ColumnCache\2/g
-\%^ *//%!s/\([ <(]\)ColumnDesc\([ &*,)<>]\)/ casa::\1ColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)ColumnDescSet\([ &*,)<>]\)/ casa::\1ColumnDescSet\2/g
-\%^ *//%!s/\([ <(]\)ColumnSet\([ &*,)<>]\)/ casa::\1ColumnSet\2/g
-\%^ *//%!s/\([ <(]\)ColumnsIndex\([ &*,)<>]\)/ casa::\1ColumnsIndex\2/g
-\%^ *//%!s/\([ <(]\)ColumnsIndexArray\([ &*,)<>]\)/ casa::\1ColumnsIndexArray\2/g
-\%^ *//%!s/\([ <(]\)CombiFunction\([ &*,)<>]\)/ casa::\1CombiFunction\2/g
-\%^ *//%!s/\([ <(]\)CombiFunction_PS\([ &*,)<>]\)/ casa::\1CombiFunction_PS\2/g
-\%^ *//%!s/\([ <(]\)CombiParam\([ &*,)<>]\)/ casa::\1CombiParam\2/g
-\%^ *//%!s/\([ <(]\)CompiledFunction\([ &*,)<>]\)/ casa::\1CompiledFunction\2/g
-\%^ *//%!s/\([ <(]\)CompiledParam\([ &*,)<>]\)/ casa::\1CompiledParam\2/g
-\%^ *//%!s/\([ <(]\)ComponentImager\([ &*,)<>]\)/ casa::\1ComponentImager\2/g
-\%^ *//%!s/\([ <(]\)ComponentList\([ &*,)<>]\)/ casa::\1ComponentList\2/g
-\%^ *//%!s/\([ <(]\)ComponentShape\([ &*,)<>]\)/ casa::\1ComponentShape\2/g
-\%^ *//%!s/\([ <(]\)ComponentType\([ &*,)<>]\)/ casa::\1ComponentType\2/g
-\%^ *//%!s/\([ <(]\)CompositeNumber\([ &*,)<>]\)/ casa::\1CompositeNumber\2/g
-\%^ *//%!s/\([ <(]\)CompoundFunction\([ &*,)<>]\)/ casa::\1CompoundFunction\2/g
-\%^ *//%!s/\([ <(]\)CompoundFunction_PS\([ &*,)<>]\)/ casa::\1CompoundFunction_PS\2/g
-\%^ *//%!s/\([ <(]\)CompoundParam\([ &*,)<>]\)/ casa::\1CompoundParam\2/g
-\%^ *//%!s/\([ <(]\)CompressComplex\([ &*,)<>]\)/ casa::\1CompressComplex\2/g
-\%^ *//%!s/\([ <(]\)CompressComplexSD\([ &*,)<>]\)/ casa::\1CompressComplexSD\2/g
-\%^ *//%!s/\([ <(]\)CompressFloat\([ &*,)<>]\)/ casa::\1CompressFloat\2/g
-\%^ *//%!s/\([ <(]\)ConstHashMapIter\([ &*,)<>]\)/ casa::\1ConstHashMapIter\2/g
-\%^ *//%!s/\([ <(]\)ConstListIter\([ &*,)<>]\)/ casa::\1ConstListIter\2/g
-\%^ *//%!s/\([ <(]\)ConstMapIter\([ &*,)<>]\)/ casa::\1ConstMapIter\2/g
-\%^ *//%!s/\([ <(]\)ConstantSpectrum\([ &*,)<>]\)/ casa::\1ConstantSpectrum\2/g
-\%^ *//%!s/\([ <(]\)ConvEnums\([ &*,)<>]\)/ casa::\1ConvEnums\2/g
-\%^ *//%!s/\([ <(]\)Conversion\([ &*,)<>]\)/ casa::\1Conversion\2/g
-\%^ *//%!s/\([ <(]\)ConversionIO\([ &*,)<>]\)/ casa::\1ConversionIO\2/g
-\%^ *//%!s/\([ <(]\)ConvolutionEquation\([ &*,)<>]\)/ casa::\1ConvolutionEquation\2/g
-\%^ *//%!s/\([ <(]\)ConvolveGridder\([ &*,)<>]\)/ casa::\1ConvolveGridder\2/g
-\%^ *//%!s/\([ <(]\)Convolver\([ &*,)<>]\)/ casa::\1Convolver\2/g
-\%^ *//%!s/\([ <(]\)Coordinate\([ &*,)<>]\)/ casa::\1Coordinate\2/g
-\%^ *//%!s/\([ <(]\)CoordinateSystem\([ &*,)<>]\)/ casa::\1CoordinateSystem\2/g
-\%^ *//%!s/\([ <(]\)CoordinateUtil\([ &*,)<>]\)/ casa::\1CoordinateUtil\2/g
-\%^ *//%!s/\([ <(]\)CountedConstPtr\([ &*,)<>]\)/ casa::\1CountedConstPtr\2/g
-\%^ *//%!s/\([ <(]\)CountedPtr\([ &*,)<>]\)/ casa::\1CountedPtr\2/g
-\%^ *//%!s/\([ <(]\)CrosshairEvent\([ &*,)<>]\)/ casa::\1CrosshairEvent\2/g
-\%^ *//%!s/\([ <(]\)Cube\([ &*,)<>]\)/ casa::\1Cube\2/g
-\%^ *//%!s/\([ <(]\)CurvedImage2D\([ &*,)<>]\)/ casa::\1CurvedImage2D\2/g
-\%^ *//%!s/\([ <(]\)CurvedLattice2D\([ &*,)<>]\)/ casa::\1CurvedLattice2D\2/g
-\%^ *//%!s/\([ <(]\)DBeamSkyJones\([ &*,)<>]\)/ casa::\1DBeamSkyJones\2/g
-\%^ *//%!s/\([ <(]\)DDDEllipse\([ &*,)<>]\)/ casa::\1DDDEllipse\2/g
-\%^ *//%!s/\([ <(]\)DDDHandle\([ &*,)<>]\)/ casa::\1DDDHandle\2/g
-\%^ *//%!s/\([ <(]\)DDDObject\([ &*,)<>]\)/ casa::\1DDDObject\2/g
-\%^ *//%!s/\([ <(]\)DDDPolygon\([ &*,)<>]\)/ casa::\1DDDPolygon\2/g
-\%^ *//%!s/\([ <(]\)DDDRectangle\([ &*,)<>]\)/ casa::\1DDDRectangle\2/g
-\%^ *//%!s/\([ <(]\)DDDiffFunc\([ &*,)<>]\)/ casa::\1DDDiffFunc\2/g
-\%^ *//%!s/\([ <(]\)DDDummy\([ &*,)<>]\)/ casa::\1DDDummy\2/g
-\%^ *//%!s/\([ <(]\)DDFunc\([ &*,)<>]\)/ casa::\1DDFunc\2/g
-\%^ *//%!s/\([ <(]\)DDFuncDiff\([ &*,)<>]\)/ casa::\1DDFuncDiff\2/g
-\%^ *//%!s/\([ <(]\)DDFuncSum\([ &*,)<>]\)/ casa::\1DDFuncSum\2/g
-\%^ *//%!s/\([ <(]\)DDMapper\([ &*,)<>]\)/ casa::\1DDMapper\2/g
-\%^ *//%!s/\([ <(]\)DDModEvent\([ &*,)<>]\)/ casa::\1DDModEvent\2/g
-\%^ *//%!s/\([ <(]\)DDSumFunc\([ &*,)<>]\)/ casa::\1DDSumFunc\2/g
-\%^ *//%!s/\([ <(]\)DFTServer\([ &*,)<>]\)/ casa::\1DFTServer\2/g
-\%^ *//%!s/\([ <(]\)DJonesDesc\([ &*,)<>]\)/ casa::\1DJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)DJonesMBuf\([ &*,)<>]\)/ casa::\1DJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)DJonesMCol\([ &*,)<>]\)/ casa::\1DJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)DJonesMRec\([ &*,)<>]\)/ casa::\1DJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)DJonesTable\([ &*,)<>]\)/ casa::\1DJonesTable\2/g
-\%^ *//%!s/\([ <(]\)DLFont\([ &*,)<>]\)/ casa::\1DLFont\2/g
-\%^ *//%!s/\([ <(]\)DOos\([ &*,)<>]\)/ casa::\1DOos\2/g
-\%^ *//%!s/\([ <(]\)DParameterButton\([ &*,)<>]\)/ casa::\1DParameterButton\2/g
-\%^ *//%!s/\([ <(]\)DParameterChoice\([ &*,)<>]\)/ casa::\1DParameterChoice\2/g
-\%^ *//%!s/\([ <(]\)DParameterColorChoice\([ &*,)<>]\)/ casa::\1DParameterColorChoice\2/g
-\%^ *//%!s/\([ <(]\)DParameterFontChoice\([ &*,)<>]\)/ casa::\1DParameterFontChoice\2/g
-\%^ *//%!s/\([ <(]\)DParameterMapKeyChoice\([ &*,)<>]\)/ casa::\1DParameterMapKeyChoice\2/g
-\%^ *//%!s/\([ <(]\)DParameterRange\([ &*,)<>]\)/ casa::\1DParameterRange\2/g
-\%^ *//%!s/\([ <(]\)DParameterString\([ &*,)<>]\)/ casa::\1DParameterString\2/g
-\%^ *//%!s/\([ <(]\)DParameterSwitch\([ &*,)<>]\)/ casa::\1DParameterSwitch\2/g
-\%^ *//%!s/\([ <(]\)DSArrow\([ &*,)<>]\)/ casa::\1DSArrow\2/g
-\%^ *//%!s/\([ <(]\)DSBasic\([ &*,)<>]\)/ casa::\1DSBasic\2/g
-\%^ *//%!s/\([ <(]\)DSCircle\([ &*,)<>]\)/ casa::\1DSCircle\2/g
-\%^ *//%!s/\([ <(]\)DSClosed\([ &*,)<>]\)/ casa::\1DSClosed\2/g
-\%^ *//%!s/\([ <(]\)DSEllipse\([ &*,)<>]\)/ casa::\1DSEllipse\2/g
-\%^ *//%!s/\([ <(]\)DSLine\([ &*,)<>]\)/ casa::\1DSLine\2/g
-\%^ *//%!s/\([ <(]\)DSMarker\([ &*,)<>]\)/ casa::\1DSMarker\2/g
-\%^ *//%!s/\([ <(]\)DSPixelArrow\([ &*,)<>]\)/ casa::\1DSPixelArrow\2/g
-\%^ *//%!s/\([ <(]\)DSPixelEllipse\([ &*,)<>]\)/ casa::\1DSPixelEllipse\2/g
-\%^ *//%!s/\([ <(]\)DSPixelMarker\([ &*,)<>]\)/ casa::\1DSPixelMarker\2/g
-\%^ *//%!s/\([ <(]\)DSPixelPoly\([ &*,)<>]\)/ casa::\1DSPixelPoly\2/g
-\%^ *//%!s/\([ <(]\)DSPixelPolyLine\([ &*,)<>]\)/ casa::\1DSPixelPolyLine\2/g
-\%^ *//%!s/\([ <(]\)DSPixelRectangle\([ &*,)<>]\)/ casa::\1DSPixelRectangle\2/g
-\%^ *//%!s/\([ <(]\)DSPixelText\([ &*,)<>]\)/ casa::\1DSPixelText\2/g
-\%^ *//%!s/\([ <(]\)DSPoly\([ &*,)<>]\)/ casa::\1DSPoly\2/g
-\%^ *//%!s/\([ <(]\)DSPolyLine\([ &*,)<>]\)/ casa::\1DSPolyLine\2/g
-\%^ *//%!s/\([ <(]\)DSRectangle\([ &*,)<>]\)/ casa::\1DSRectangle\2/g
-\%^ *//%!s/\([ <(]\)DSScreenArrow\([ &*,)<>]\)/ casa::\1DSScreenArrow\2/g
-\%^ *//%!s/\([ <(]\)DSScreenEllipse\([ &*,)<>]\)/ casa::\1DSScreenEllipse\2/g
-\%^ *//%!s/\([ <(]\)DSScreenMarker\([ &*,)<>]\)/ casa::\1DSScreenMarker\2/g
-\%^ *//%!s/\([ <(]\)DSScreenPoly\([ &*,)<>]\)/ casa::\1DSScreenPoly\2/g
-\%^ *//%!s/\([ <(]\)DSScreenPolyLine\([ &*,)<>]\)/ casa::\1DSScreenPolyLine\2/g
-\%^ *//%!s/\([ <(]\)DSScreenRectangle\([ &*,)<>]\)/ casa::\1DSScreenRectangle\2/g
-\%^ *//%!s/\([ <(]\)DSScreenText\([ &*,)<>]\)/ casa::\1DSScreenText\2/g
-\%^ *//%!s/\([ <(]\)DSSquare\([ &*,)<>]\)/ casa::\1DSSquare\2/g
-\%^ *//%!s/\([ <(]\)DSText\([ &*,)<>]\)/ casa::\1DSText\2/g
-\%^ *//%!s/\([ <(]\)DSWorldArrow\([ &*,)<>]\)/ casa::\1DSWorldArrow\2/g
-\%^ *//%!s/\([ <(]\)DSWorldEllipse\([ &*,)<>]\)/ casa::\1DSWorldEllipse\2/g
-\%^ *//%!s/\([ <(]\)DSWorldMarker\([ &*,)<>]\)/ casa::\1DSWorldMarker\2/g
-\%^ *//%!s/\([ <(]\)DSWorldPoly\([ &*,)<>]\)/ casa::\1DSWorldPoly\2/g
-\%^ *//%!s/\([ <(]\)DSWorldPolyLine\([ &*,)<>]\)/ casa::\1DSWorldPolyLine\2/g
-\%^ *//%!s/\([ <(]\)DSWorldRectangle\([ &*,)<>]\)/ casa::\1DSWorldRectangle\2/g
-\%^ *//%!s/\([ <(]\)DSWorldText\([ &*,)<>]\)/ casa::\1DSWorldText\2/g
-\%^ *//%!s/\([ <(]\)DTVisible\([ &*,)<>]\)/ casa::\1DTVisible\2/g
-\%^ *//%!s/\([ <(]\)DataConversion\([ &*,)<>]\)/ casa::\1DataConversion\2/g
-\%^ *//%!s/\([ <(]\)DataManError\([ &*,)<>]\)/ casa::\1DataManError\2/g
-\%^ *//%!s/\([ <(]\)DataManInternalError\([ &*,)<>]\)/ casa::\1DataManInternalError\2/g
-\%^ *//%!s/\([ <(]\)DataManInvDT\([ &*,)<>]\)/ casa::\1DataManInvDT\2/g
-\%^ *//%!s/\([ <(]\)DataManInvOper\([ &*,)<>]\)/ casa::\1DataManInvOper\2/g
-\%^ *//%!s/\([ <(]\)DataManUnknownCtor\([ &*,)<>]\)/ casa::\1DataManUnknownCtor\2/g
-\%^ *//%!s/\([ <(]\)DataManUnknownVirtualColumn\([ &*,)<>]\)/ casa::\1DataManUnknownVirtualColumn\2/g
-\%^ *//%!s/\([ <(]\)DataManager\([ &*,)<>]\)/ casa::\1DataManager\2/g
-\%^ *//%!s/\([ <(]\)DataManagerColumn\([ &*,)<>]\)/ casa::\1DataManagerColumn\2/g
-\%^ *//%!s/\([ <(]\)DataManagerCtor\([ &*,)<>]\)/ casa::\1DataManagerCtor\2/g
-\%^ *//%!s/\([ <(]\)DataType\([ &*,)<>]\)/ casa::\1DataType\2/g
-\%^ *//%!s/\([ <(]\)DiracDFunction\([ &*,)<>]\)/ casa::\1DiracDFunction\2/g
-\%^ *//%!s/\([ <(]\)DiracDParam\([ &*,)<>]\)/ casa::\1DiracDParam\2/g
-\%^ *//%!s/\([ <(]\)DirectionCoordinate\([ &*,)<>]\)/ casa::\1DirectionCoordinate\2/g
-\%^ *//%!s/\([ <(]\)Directory\([ &*,)<>]\)/ casa::\1Directory\2/g
-\%^ *//%!s/\([ <(]\)DirectoryIterator\([ &*,)<>]\)/ casa::\1DirectoryIterator\2/g
-\%^ *//%!s/\([ <(]\)DiscreteUniform\([ &*,)<>]\)/ casa::\1DiscreteUniform\2/g
-\%^ *//%!s/\([ <(]\)DiskShape\([ &*,)<>]\)/ casa::\1DiskShape\2/g
-\%^ *//%!s/\([ <(]\)Display\([ &*,)<>]\)/ casa::\1Display\2/g
-\%^ *//%!s/\([ <(]\)DisplayData\([ &*,)<>]\)/ casa::\1DisplayData\2/g
-\%^ *//%!s/\([ <(]\)DisplayDataEvent\([ &*,)<>]\)/ casa::\1DisplayDataEvent\2/g
-\%^ *//%!s/\([ <(]\)DisplayEH\([ &*,)<>]\)/ casa::\1DisplayEH\2/g
-\%^ *//%!s/\([ <(]\)DisplayEvent\([ &*,)<>]\)/ casa::\1DisplayEvent\2/g
-\%^ *//%!s/\([ <(]\)DisplayMethod\([ &*,)<>]\)/ casa::\1DisplayMethod\2/g
-\%^ *//%!s/\([ <(]\)DisplayOptions\([ &*,)<>]\)/ casa::\1DisplayOptions\2/g
-\%^ *//%!s/\([ <(]\)DisplayParameter\([ &*,)<>]\)/ casa::\1DisplayParameter\2/g
-\%^ *//%!s/\([ <(]\)DisplayShape\([ &*,)<>]\)/ casa::\1DisplayShape\2/g
-\%^ *//%!s/\([ <(]\)DisplayShapeInterface\([ &*,)<>]\)/ casa::\1DisplayShapeInterface\2/g
-\%^ *//%!s/\([ <(]\)DisplayShapeWithCoords\([ &*,)<>]\)/ casa::\1DisplayShapeWithCoords\2/g
-\%^ *//%!s/\([ <(]\)DisplayTool\([ &*,)<>]\)/ casa::\1DisplayTool\2/g
-\%^ *//%!s/\([ <(]\)DrawingDisplayData\([ &*,)<>]\)/ casa::\1DrawingDisplayData\2/g
-\%^ *//%!s/\([ <(]\)DrawingDisplayMethod\([ &*,)<>]\)/ casa::\1DrawingDisplayMethod\2/g
-\%^ *//%!s/\([ <(]\)Dummy_Constants_class\([ &*,)<>]\)/ casa::\1Dummy_Constants_class\2/g
-\%^ *//%!s/\([ <(]\)DuplError\([ &*,)<>]\)/ casa::\1DuplError\2/g
-\%^ *//%!s/\([ <(]\)DynBuffer\([ &*,)<>]\)/ casa::\1DynBuffer\2/g
-\%^ *//%!s/\([ <(]\)EarthField\([ &*,)<>]\)/ casa::\1EarthField\2/g
-\%^ *//%!s/\([ <(]\)EarthMagneticMachine\([ &*,)<>]\)/ casa::\1EarthMagneticMachine\2/g
-\%^ *//%!s/\([ <(]\)EclecticFunctionFactory\([ &*,)<>]\)/ casa::\1EclecticFunctionFactory\2/g
-\%^ *//%!s/\([ <(]\)EmptyStackError\([ &*,)<>]\)/ casa::\1EmptyStackError\2/g
-\%^ *//%!s/\([ <(]\)Entropy\([ &*,)<>]\)/ casa::\1Entropy\2/g
-\%^ *//%!s/\([ <(]\)EntropyEmptiness\([ &*,)<>]\)/ casa::\1EntropyEmptiness\2/g
-\%^ *//%!s/\([ <(]\)EntropyI\([ &*,)<>]\)/ casa::\1EntropyI\2/g
-\%^ *//%!s/\([ <(]\)EnvironmentVariable\([ &*,)<>]\)/ casa::\1EnvironmentVariable\2/g
-\%^ *//%!s/\([ <(]\)Erlang\([ &*,)<>]\)/ casa::\1Erlang\2/g
-\%^ *//%!s/\([ <(]\)Euler\([ &*,)<>]\)/ casa::\1Euler\2/g
-\%^ *//%!s/\([ <(]\)EvenPolynomial\([ &*,)<>]\)/ casa::\1EvenPolynomial\2/g
-\%^ *//%!s/\([ <(]\)EvenPolynomialParam\([ &*,)<>]\)/ casa::\1EvenPolynomialParam\2/g
-\%^ *//%!s/\([ <(]\)EvenPolynomial_PS\([ &*,)<>]\)/ casa::\1EvenPolynomial_PS\2/g
-\%^ *//%!s/\([ <(]\)ExpSincConv\([ &*,)<>]\)/ casa::\1ExpSincConv\2/g
-\%^ *//%!s/\([ <(]\)ExtendImage\([ &*,)<>]\)/ casa::\1ExtendImage\2/g
-\%^ *//%!s/\([ <(]\)ExtendLattice\([ &*,)<>]\)/ casa::\1ExtendLattice\2/g
-\%^ *//%!s/\([ <(]\)ExtendSpecifier\([ &*,)<>]\)/ casa::\1ExtendSpecifier\2/g
-\%^ *//%!s/\([ <(]\)ExternalLockSync\([ &*,)<>]\)/ casa::\1ExternalLockSync\2/g
-\%^ *//%!s/\([ <(]\)FFTEnums\([ &*,)<>]\)/ casa::\1FFTEnums\2/g
-\%^ *//%!s/\([ <(]\)FFTPack\([ &*,)<>]\)/ casa::\1FFTPack\2/g
-\%^ *//%!s/\([ <(]\)FFTServer\([ &*,)<>]\)/ casa::\1FFTServer\2/g
-\%^ *//%!s/\([ <(]\)FITSIDItoMS1\([ &*,)<>]\)/ casa::\1FITSIDItoMS1\2/g
-\%^ *//%!s/\([ <(]\)FITSImage\([ &*,)<>]\)/ casa::\1FITSImage\2/g
-\%^ *//%!s/\([ <(]\)FITSMask\([ &*,)<>]\)/ casa::\1FITSMask\2/g
-\%^ *//%!s/\([ <(]\)FTMachine\([ &*,)<>]\)/ casa::\1FTMachine\2/g
-\%^ *//%!s/\([ <(]\)FVisJonesDesc\([ &*,)<>]\)/ casa::\1FVisJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)FVisJonesIonoDesc\([ &*,)<>]\)/ casa::\1FVisJonesIonoDesc\2/g
-\%^ *//%!s/\([ <(]\)FVisJonesIonoMRec\([ &*,)<>]\)/ casa::\1FVisJonesIonoMRec\2/g
-\%^ *//%!s/\([ <(]\)FVisJonesMRec\([ &*,)<>]\)/ casa::\1FVisJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)Fallible\([ &*,)<>]\)/ casa::\1Fallible\2/g
-\%^ *//%!s/\([ <(]\)FieldNotFoundError\([ &*,)<>]\)/ casa::\1FieldNotFoundError\2/g
-\%^ *//%!s/\([ <(]\)File\([ &*,)<>]\)/ casa::\1File\2/g
-\%^ *//%!s/\([ <(]\)FileLocker\([ &*,)<>]\)/ casa::\1FileLocker\2/g
-\%^ *//%!s/\([ <(]\)FilebufIO\([ &*,)<>]\)/ casa::\1FilebufIO\2/g
-\%^ *//%!s/\([ <(]\)FiledesIO\([ &*,)<>]\)/ casa::\1FiledesIO\2/g
-\%^ *//%!s/\([ <(]\)Fit2D\([ &*,)<>]\)/ casa::\1Fit2D\2/g
-\%^ *//%!s/\([ <(]\)FitGaussian\([ &*,)<>]\)/ casa::\1FitGaussian\2/g
-\%^ *//%!s/\([ <(]\)FitLSQ\([ &*,)<>]\)/ casa::\1FitLSQ\2/g
-\%^ *//%!s/\([ <(]\)FlaggerEnums\([ &*,)<>]\)/ casa::\1FlaggerEnums\2/g
-\%^ *//%!s/\([ <(]\)Flux\([ &*,)<>]\)/ casa::\1Flux\2/g
-\%^ *//%!s/\([ <(]\)FluxRep\([ &*,)<>]\)/ casa::\1FluxRep\2/g
-\%^ *//%!s/\([ <(]\)FluxStandard\([ &*,)<>]\)/ casa::\1FluxStandard\2/g
-\%^ *//%!s/\([ <(]\)ForeignArrayParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignArrayParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignBaseArrayParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignBaseArrayParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignBaseParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignBaseParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignBaseVectorParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignBaseVectorParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignNSArrayParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignNSArrayParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignNSParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignNSParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignNSVectorParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignNSVectorParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForeignVectorParameterAccessor\([ &*,)<>]\)/ casa::\1ForeignVectorParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ForwardColumn\([ &*,)<>]\)/ casa::\1ForwardColumn\2/g
-\%^ *//%!s/\([ <(]\)ForwardColumnEngine\([ &*,)<>]\)/ casa::\1ForwardColumnEngine\2/g
-\%^ *//%!s/\([ <(]\)ForwardColumnIndexedRow\([ &*,)<>]\)/ casa::\1ForwardColumnIndexedRow\2/g
-\%^ *//%!s/\([ <(]\)ForwardColumnIndexedRowEngine\([ &*,)<>]\)/ casa::\1ForwardColumnIndexedRowEngine\2/g
-\%^ *//%!s/\([ <(]\)FuncExprData\([ &*,)<>]\)/ casa::\1FuncExprData\2/g
-\%^ *//%!s/\([ <(]\)FuncExpression\([ &*,)<>]\)/ casa::\1FuncExpression\2/g
-\%^ *//%!s/\([ <(]\)Function\([ &*,)<>]\)/ casa::\1Function\2/g
-\%^ *//%!s/\([ <(]\)Function1D\([ &*,)<>]\)/ casa::\1Function1D\2/g
-\%^ *//%!s/\([ <(]\)FunctionFactory\([ &*,)<>]\)/ casa::\1FunctionFactory\2/g
-\%^ *//%!s/\([ <(]\)FunctionFactoryError\([ &*,)<>]\)/ casa::\1FunctionFactoryError\2/g
-\%^ *//%!s/\([ <(]\)FunctionHolder\([ &*,)<>]\)/ casa::\1FunctionHolder\2/g
-\%^ *//%!s/\([ <(]\)FunctionMarshallable\([ &*,)<>]\)/ casa::\1FunctionMarshallable\2/g
-\%^ *//%!s/\([ <(]\)FunctionOrder\([ &*,)<>]\)/ casa::\1FunctionOrder\2/g
-\%^ *//%!s/\([ <(]\)FunctionParam\([ &*,)<>]\)/ casa::\1FunctionParam\2/g
-\%^ *//%!s/\([ <(]\)FunctionTraits\([ &*,)<>]\)/ casa::\1FunctionTraits\2/g
-\%^ *//%!s/\([ <(]\)FunctionTraits_P\([ &*,)<>]\)/ casa::\1FunctionTraits_P\2/g
-\%^ *//%!s/\([ <(]\)FunctionTraits_PA\([ &*,)<>]\)/ casa::\1FunctionTraits_PA\2/g
-\%^ *//%!s/\([ <(]\)FunctionTraits_PX\([ &*,)<>]\)/ casa::\1FunctionTraits_PX\2/g
-\%^ *//%!s/\([ <(]\)FunctionWrapper\([ &*,)<>]\)/ casa::\1FunctionWrapper\2/g
-\%^ *//%!s/\([ <(]\)Functional\([ &*,)<>]\)/ casa::\1Functional\2/g
-\%^ *//%!s/\([ <(]\)GJonesDSB\([ &*,)<>]\)/ casa::\1GJonesDSB\2/g
-\%^ *//%!s/\([ <(]\)GJonesDelayRateSBDesc\([ &*,)<>]\)/ casa::\1GJonesDelayRateSBDesc\2/g
-\%^ *//%!s/\([ <(]\)GJonesDelayRateSBTable\([ &*,)<>]\)/ casa::\1GJonesDelayRateSBTable\2/g
-\%^ *//%!s/\([ <(]\)GJonesDesc\([ &*,)<>]\)/ casa::\1GJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)GJonesMBuf\([ &*,)<>]\)/ casa::\1GJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)GJonesMCol\([ &*,)<>]\)/ casa::\1GJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)GJonesMRec\([ &*,)<>]\)/ casa::\1GJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)GJonesPoly\([ &*,)<>]\)/ casa::\1GJonesPoly\2/g
-\%^ *//%!s/\([ <(]\)GJonesPolyDesc\([ &*,)<>]\)/ casa::\1GJonesPolyDesc\2/g
-\%^ *//%!s/\([ <(]\)GJonesPolyMBuf\([ &*,)<>]\)/ casa::\1GJonesPolyMBuf\2/g
-\%^ *//%!s/\([ <(]\)GJonesPolyMCol\([ &*,)<>]\)/ casa::\1GJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)GJonesPolyTable\([ &*,)<>]\)/ casa::\1GJonesPolyTable\2/g
-\%^ *//%!s/\([ <(]\)GJonesSpline\([ &*,)<>]\)/ casa::\1GJonesSpline\2/g
-\%^ *//%!s/\([ <(]\)GJonesSplineDesc\([ &*,)<>]\)/ casa::\1GJonesSplineDesc\2/g
-\%^ *//%!s/\([ <(]\)GJonesSplineMBuf\([ &*,)<>]\)/ casa::\1GJonesSplineMBuf\2/g
-\%^ *//%!s/\([ <(]\)GJonesSplineMCol\([ &*,)<>]\)/ casa::\1GJonesSplineMCol\2/g
-\%^ *//%!s/\([ <(]\)GJonesSplineTable\([ &*,)<>]\)/ casa::\1GJonesSplineTable\2/g
-\%^ *//%!s/\([ <(]\)GJonesTable\([ &*,)<>]\)/ casa::\1GJonesTable\2/g
-\%^ *//%!s/\([ <(]\)GLLogIO\([ &*,)<>]\)/ casa::\1GLLogIO\2/g
-\%^ *//%!s/\([ <(]\)GLPCDisplayList\([ &*,)<>]\)/ casa::\1GLPCDisplayList\2/g
-\%^ *//%!s/\([ <(]\)GLPCDisplayListElement\([ &*,)<>]\)/ casa::\1GLPCDisplayListElement\2/g
-\%^ *//%!s/\([ <(]\)GLPCDisplayListEntry\([ &*,)<>]\)/ casa::\1GLPCDisplayListEntry\2/g
-\%^ *//%!s/\([ <(]\)GLPCTextureParams\([ &*,)<>]\)/ casa::\1GLPCTextureParams\2/g
-\%^ *//%!s/\([ <(]\)GLPCTexturedImage\([ &*,)<>]\)/ casa::\1GLPCTexturedImage\2/g
-\%^ *//%!s/\([ <(]\)GLPixelCanvas\([ &*,)<>]\)/ casa::\1GLPixelCanvas\2/g
-\%^ *//%!s/\([ <(]\)GLPixelCanvasColorTable\([ &*,)<>]\)/ casa::\1GLPixelCanvasColorTable\2/g
-\%^ *//%!s/\([ <(]\)GLTraceLevel\([ &*,)<>]\)/ casa::\1GLTraceLevel\2/g
-\%^ *//%!s/\([ <(]\)GLVColorTableEntry\([ &*,)<>]\)/ casa::\1GLVColorTableEntry\2/g
-\%^ *//%!s/\([ <(]\)GNoiseFunction\([ &*,)<>]\)/ casa::\1GNoiseFunction\2/g
-\%^ *//%!s/\([ <(]\)GNoiseParam\([ &*,)<>]\)/ casa::\1GNoiseParam\2/g
-\%^ *//%!s/\([ <(]\)GPSDCB\([ &*,)<>]\)/ casa::\1GPSDCB\2/g
-\%^ *//%!s/\([ <(]\)GPSDomain\([ &*,)<>]\)/ casa::\1GPSDomain\2/g
-\%^ *//%!s/\([ <(]\)GPSEphemeris\([ &*,)<>]\)/ casa::\1GPSEphemeris\2/g
-\%^ *//%!s/\([ <(]\)GPSGroupDelay\([ &*,)<>]\)/ casa::\1GPSGroupDelay\2/g
-\%^ *//%!s/\([ <(]\)Galaxy\([ &*,)<>]\)/ casa::\1Galaxy\2/g
-\%^ *//%!s/\([ <(]\)Gaussian1D\([ &*,)<>]\)/ casa::\1Gaussian1D\2/g
-\%^ *//%!s/\([ <(]\)Gaussian1DParam\([ &*,)<>]\)/ casa::\1Gaussian1DParam\2/g
-\%^ *//%!s/\([ <(]\)Gaussian1D_PS\([ &*,)<>]\)/ casa::\1Gaussian1D_PS\2/g
-\%^ *//%!s/\([ <(]\)Gaussian2D\([ &*,)<>]\)/ casa::\1Gaussian2D\2/g
-\%^ *//%!s/\([ <(]\)Gaussian2DParam\([ &*,)<>]\)/ casa::\1Gaussian2DParam\2/g
-\%^ *//%!s/\([ <(]\)Gaussian2D_PS\([ &*,)<>]\)/ casa::\1Gaussian2D_PS\2/g
-\%^ *//%!s/\([ <(]\)Gaussian3D\([ &*,)<>]\)/ casa::\1Gaussian3D\2/g
-\%^ *//%!s/\([ <(]\)Gaussian3DParam\([ &*,)<>]\)/ casa::\1Gaussian3DParam\2/g
-\%^ *//%!s/\([ <(]\)Gaussian3D_PS\([ &*,)<>]\)/ casa::\1Gaussian3D_PS\2/g
-\%^ *//%!s/\([ <(]\)GaussianConv\([ &*,)<>]\)/ casa::\1GaussianConv\2/g
-\%^ *//%!s/\([ <(]\)GaussianConvert\([ &*,)<>]\)/ casa::\1GaussianConvert\2/g
-\%^ *//%!s/\([ <(]\)GaussianND\([ &*,)<>]\)/ casa::\1GaussianND\2/g
-\%^ *//%!s/\([ <(]\)GaussianNDParam\([ &*,)<>]\)/ casa::\1GaussianNDParam\2/g
-\%^ *//%!s/\([ <(]\)GaussianShape\([ &*,)<>]\)/ casa::\1GaussianShape\2/g
-\%^ *//%!s/\([ <(]\)GenSort\([ &*,)<>]\)/ casa::\1GenSort\2/g
-\%^ *//%!s/\([ <(]\)GenSortIndirect\([ &*,)<>]\)/ casa::\1GenSortIndirect\2/g
-\%^ *//%!s/\([ <(]\)GenericL2Fit\([ &*,)<>]\)/ casa::\1GenericL2Fit\2/g
-\%^ *//%!s/\([ <(]\)Geometric\([ &*,)<>]\)/ casa::\1Geometric\2/g
-\%^ *//%!s/\([ <(]\)GlishArray\([ &*,)<>]\)/ casa::\1GlishArray\2/g
-\%^ *//%!s/\([ <(]\)GlishArrayParameterAccessor\([ &*,)<>]\)/ casa::\1GlishArrayParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)GlishFieldNotFoundError\([ &*,)<>]\)/ casa::\1GlishFieldNotFoundError\2/g
-\%^ *//%!s/\([ <(]\)GlishLogSink\([ &*,)<>]\)/ casa::\1GlishLogSink\2/g
-\%^ *//%!s/\([ <(]\)GlishRecord\([ &*,)<>]\)/ casa::\1GlishRecord\2/g
-\%^ *//%!s/\([ <(]\)GlishRecordExpr\([ &*,)<>]\)/ casa::\1GlishRecordExpr\2/g
-\%^ *//%!s/\([ <(]\)GlishRecordParameterAccessor\([ &*,)<>]\)/ casa::\1GlishRecordParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)GlishSerialHelper\([ &*,)<>]\)/ casa::\1GlishSerialHelper\2/g
-\%^ *//%!s/\([ <(]\)GlishSysEvent\([ &*,)<>]\)/ casa::\1GlishSysEvent\2/g
-\%^ *//%!s/\([ <(]\)GlishSysEventProcTargetInfo\([ &*,)<>]\)/ casa::\1GlishSysEventProcTargetInfo\2/g
-\%^ *//%!s/\([ <(]\)GlishSysEventSource\([ &*,)<>]\)/ casa::\1GlishSysEventSource\2/g
-\%^ *//%!s/\([ <(]\)GlishSysEventTarget\([ &*,)<>]\)/ casa::\1GlishSysEventTarget\2/g
-\%^ *//%!s/\([ <(]\)GlishValue\([ &*,)<>]\)/ casa::\1GlishValue\2/g
-\%^ *//%!s/\([ <(]\)GlishValueParameterAccessor\([ &*,)<>]\)/ casa::\1GlishValueParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)GridBoth\([ &*,)<>]\)/ casa::\1GridBoth\2/g
-\%^ *//%!s/\([ <(]\)GridFT\([ &*,)<>]\)/ casa::\1GridFT\2/g
-\%^ *//%!s/\([ <(]\)Gridder\([ &*,)<>]\)/ casa::\1Gridder\2/g
-\%^ *//%!s/\([ <(]\)HashClass\([ &*,)<>]\)/ casa::\1HashClass\2/g
-\%^ *//%!s/\([ <(]\)HashMap\([ &*,)<>]\)/ casa::\1HashMap\2/g
-\%^ *//%!s/\([ <(]\)HashMapIter\([ &*,)<>]\)/ casa::\1HashMapIter\2/g
-\%^ *//%!s/\([ <(]\)HistAcc\([ &*,)<>]\)/ casa::\1HistAcc\2/g
-\%^ *//%!s/\([ <(]\)HistTiledCollapser\([ &*,)<>]\)/ casa::\1HistTiledCollapser\2/g
-\%^ *//%!s/\([ <(]\)Histogram2dDD\([ &*,)<>]\)/ casa::\1Histogram2dDD\2/g
-\%^ *//%!s/\([ <(]\)Histogram2dDM\([ &*,)<>]\)/ casa::\1Histogram2dDM\2/g
-\%^ *//%!s/\([ <(]\)HogbomCleanImageSkyModel\([ &*,)<>]\)/ casa::\1HogbomCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)HogbomCleanModel\([ &*,)<>]\)/ casa::\1HogbomCleanModel\2/g
-\%^ *//%!s/\([ <(]\)HostInfo\([ &*,)<>]\)/ casa::\1HostInfo\2/g
-\%^ *//%!s/\([ <(]\)HostMachineInfo\([ &*,)<>]\)/ casa::\1HostMachineInfo\2/g
-\%^ *//%!s/\([ <(]\)HyperGeometric\([ &*,)<>]\)/ casa::\1HyperGeometric\2/g
-\%^ *//%!s/\([ <(]\)HyperPlane\([ &*,)<>]\)/ casa::\1HyperPlane\2/g
-\%^ *//%!s/\([ <(]\)HyperPlaneParam\([ &*,)<>]\)/ casa::\1HyperPlaneParam\2/g
-\%^ *//%!s/\([ <(]\)HyperPlane_PS\([ &*,)<>]\)/ casa::\1HyperPlane_PS\2/g
-\%^ *//%!s/\([ <(]\)IAU_SOFA\([ &*,)<>]\)/ casa::\1IAU_SOFA\2/g
-\%^ *//%!s/\([ <(]\)IBMConversion\([ &*,)<>]\)/ casa::\1IBMConversion\2/g
-\%^ *//%!s/\([ <(]\)IBMDataConversion\([ &*,)<>]\)/ casa::\1IBMDataConversion\2/g
-\%^ *//%!s/\([ <(]\)IComplex\([ &*,)<>]\)/ casa::\1IComplex\2/g
-\%^ *//%!s/\([ <(]\)IPLatConvEquation\([ &*,)<>]\)/ casa::\1IPLatConvEquation\2/g
-\%^ *//%!s/\([ <(]\)IPosition\([ &*,)<>]\)/ casa::\1IPosition\2/g
-\%^ *//%!s/\([ <(]\)ISMBase\([ &*,)<>]\)/ casa::\1ISMBase\2/g
-\%^ *//%!s/\([ <(]\)ISMBucket\([ &*,)<>]\)/ casa::\1ISMBucket\2/g
-\%^ *//%!s/\([ <(]\)ISMColumn\([ &*,)<>]\)/ casa::\1ISMColumn\2/g
-\%^ *//%!s/\([ <(]\)ISMIndColumn\([ &*,)<>]\)/ casa::\1ISMIndColumn\2/g
-\%^ *//%!s/\([ <(]\)ISMIndex\([ &*,)<>]\)/ casa::\1ISMIndex\2/g
-\%^ *//%!s/\([ <(]\)Image2DConvolver\([ &*,)<>]\)/ casa::\1Image2DConvolver\2/g
-\%^ *//%!s/\([ <(]\)ImageConcat\([ &*,)<>]\)/ casa::\1ImageConcat\2/g
-\%^ *//%!s/\([ <(]\)ImageConvolver\([ &*,)<>]\)/ casa::\1ImageConvolver\2/g
-\%^ *//%!s/\([ <(]\)ImageDataSampling\([ &*,)<>]\)/ casa::\1ImageDataSampling\2/g
-\%^ *//%!s/\([ <(]\)ImageDecomposer\([ &*,)<>]\)/ casa::\1ImageDecomposer\2/g
-\%^ *//%!s/\([ <(]\)ImageExpr\([ &*,)<>]\)/ casa::\1ImageExpr\2/g
-\%^ *//%!s/\([ <(]\)ImageExprGramFunctions\([ &*,)<>]\)/ casa::\1ImageExprGramFunctions\2/g
-\%^ *//%!s/\([ <(]\)ImageExprParse\([ &*,)<>]\)/ casa::\1ImageExprParse\2/g
-\%^ *//%!s/\([ <(]\)ImageFFT\([ &*,)<>]\)/ casa::\1ImageFFT\2/g
-\%^ *//%!s/\([ <(]\)ImageFITSConverter\([ &*,)<>]\)/ casa::\1ImageFITSConverter\2/g
-\%^ *//%!s/\([ <(]\)ImageFITSConverterImpl\([ &*,)<>]\)/ casa::\1ImageFITSConverterImpl\2/g
-\%^ *//%!s/\([ <(]\)ImageFit1D\([ &*,)<>]\)/ casa::\1ImageFit1D\2/g
-\%^ *//%!s/\([ <(]\)ImageHistograms\([ &*,)<>]\)/ casa::\1ImageHistograms\2/g
-\%^ *//%!s/\([ <(]\)ImageInfo\([ &*,)<>]\)/ casa::\1ImageInfo\2/g
-\%^ *//%!s/\([ <(]\)ImageInterface\([ &*,)<>]\)/ casa::\1ImageInterface\2/g
-\%^ *//%!s/\([ <(]\)ImageMoments\([ &*,)<>]\)/ casa::\1ImageMoments\2/g
-\%^ *//%!s/\([ <(]\)ImageMomentsProgress\([ &*,)<>]\)/ casa::\1ImageMomentsProgress\2/g
-\%^ *//%!s/\([ <(]\)ImagePolarimetry\([ &*,)<>]\)/ casa::\1ImagePolarimetry\2/g
-\%^ *//%!s/\([ <(]\)ImageProfileFit\([ &*,)<>]\)/ casa::\1ImageProfileFit\2/g
-\%^ *//%!s/\([ <(]\)ImageRegion\([ &*,)<>]\)/ casa::\1ImageRegion\2/g
-\%^ *//%!s/\([ <(]\)ImageRegrid\([ &*,)<>]\)/ casa::\1ImageRegrid\2/g
-\%^ *//%!s/\([ <(]\)ImageSkyModel\([ &*,)<>]\)/ casa::\1ImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)ImageSourceFinder\([ &*,)<>]\)/ casa::\1ImageSourceFinder\2/g
-\%^ *//%!s/\([ <(]\)ImageStatistics\([ &*,)<>]\)/ casa::\1ImageStatistics\2/g
-\%^ *//%!s/\([ <(]\)ImageSummary\([ &*,)<>]\)/ casa::\1ImageSummary\2/g
-\%^ *//%!s/\([ <(]\)ImageTwoPtCorr\([ &*,)<>]\)/ casa::\1ImageTwoPtCorr\2/g
-\%^ *//%!s/\([ <(]\)ImageUtilities\([ &*,)<>]\)/ casa::\1ImageUtilities\2/g
-\%^ *//%!s/\([ <(]\)Imager\([ &*,)<>]\)/ casa::\1Imager\2/g
-\%^ *//%!s/\([ <(]\)IncCEMemModel\([ &*,)<>]\)/ casa::\1IncCEMemModel\2/g
-\%^ *//%!s/\([ <(]\)IncEntropy\([ &*,)<>]\)/ casa::\1IncEntropy\2/g
-\%^ *//%!s/\([ <(]\)IncEntropyEmptiness\([ &*,)<>]\)/ casa::\1IncEntropyEmptiness\2/g
-\%^ *//%!s/\([ <(]\)IncEntropyI\([ &*,)<>]\)/ casa::\1IncEntropyI\2/g
-\%^ *//%!s/\([ <(]\)IncrementalStMan\([ &*,)<>]\)/ casa::\1IncrementalStMan\2/g
-\%^ *//%!s/\([ <(]\)Index\([ &*,)<>]\)/ casa::\1Index\2/g
-\%^ *//%!s/\([ <(]\)IndexError\([ &*,)<>]\)/ casa::\1IndexError\2/g
-\%^ *//%!s/\([ <(]\)IndexParameterAccessor\([ &*,)<>]\)/ casa::\1IndexParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)IndexVectorParameterAccessor\([ &*,)<>]\)/ casa::\1IndexVectorParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)Input\([ &*,)<>]\)/ casa::\1Input\2/g
-\%^ *//%!s/\([ <(]\)Interpolate1D\([ &*,)<>]\)/ casa::\1Interpolate1D\2/g
-\%^ *//%!s/\([ <(]\)Interpolate2D\([ &*,)<>]\)/ casa::\1Interpolate2D\2/g
-\%^ *//%!s/\([ <(]\)InterpolateArray1D\([ &*,)<>]\)/ casa::\1InterpolateArray1D\2/g
-\%^ *//%!s/\([ <(]\)InvalidGlishSerializationError\([ &*,)<>]\)/ casa::\1InvalidGlishSerializationError\2/g
-\%^ *//%!s/\([ <(]\)InvalidIterError\([ &*,)<>]\)/ casa::\1InvalidIterError\2/g
-\%^ *//%!s/\([ <(]\)InvalidSerializationError\([ &*,)<>]\)/ casa::\1InvalidSerializationError\2/g
-\%^ *//%!s/\([ <(]\)IonosphDataGPS\([ &*,)<>]\)/ casa::\1IonosphDataGPS\2/g
-\%^ *//%!s/\([ <(]\)IonosphModel\([ &*,)<>]\)/ casa::\1IonosphModel\2/g
-\%^ *//%!s/\([ <(]\)IonosphModelPIM\([ &*,)<>]\)/ casa::\1IonosphModelPIM\2/g
-\%^ *//%!s/\([ <(]\)IterBoundaryError\([ &*,)<>]\)/ casa::\1IterBoundaryError\2/g
-\%^ *//%!s/\([ <(]\)IterError\([ &*,)<>]\)/ casa::\1IterError\2/g
-\%^ *//%!s/\([ <(]\)IterInitError\([ &*,)<>]\)/ casa::\1IterInitError\2/g
-\%^ *//%!s/\([ <(]\)Iterate\([ &*,)<>]\)/ casa::\1Iterate\2/g
-\%^ *//%!s/\([ <(]\)KB_Conv\([ &*,)<>]\)/ casa::\1KB_Conv\2/g
-\%^ *//%!s/\([ <(]\)KaiserBFunction\([ &*,)<>]\)/ casa::\1KaiserBFunction\2/g
-\%^ *//%!s/\([ <(]\)KaiserBParam\([ &*,)<>]\)/ casa::\1KaiserBParam\2/g
-\%^ *//%!s/\([ <(]\)LCBox\([ &*,)<>]\)/ casa::\1LCBox\2/g
-\%^ *//%!s/\([ <(]\)LCComplement\([ &*,)<>]\)/ casa::\1LCComplement\2/g
-\%^ *//%!s/\([ <(]\)LCConcatenation\([ &*,)<>]\)/ casa::\1LCConcatenation\2/g
-\%^ *//%!s/\([ <(]\)LCDifference\([ &*,)<>]\)/ casa::\1LCDifference\2/g
-\%^ *//%!s/\([ <(]\)LCEllipsoid\([ &*,)<>]\)/ casa::\1LCEllipsoid\2/g
-\%^ *//%!s/\([ <(]\)LCExtension\([ &*,)<>]\)/ casa::\1LCExtension\2/g
-\%^ *//%!s/\([ <(]\)LCIntersection\([ &*,)<>]\)/ casa::\1LCIntersection\2/g
-\%^ *//%!s/\([ <(]\)LCLELMask\([ &*,)<>]\)/ casa::\1LCLELMask\2/g
-\%^ *//%!s/\([ <(]\)LCMask\([ &*,)<>]\)/ casa::\1LCMask\2/g
-\%^ *//%!s/\([ <(]\)LCPagedMask\([ &*,)<>]\)/ casa::\1LCPagedMask\2/g
-\%^ *//%!s/\([ <(]\)LCPixelSet\([ &*,)<>]\)/ casa::\1LCPixelSet\2/g
-\%^ *//%!s/\([ <(]\)LCPolygon\([ &*,)<>]\)/ casa::\1LCPolygon\2/g
-\%^ *//%!s/\([ <(]\)LCRegion\([ &*,)<>]\)/ casa::\1LCRegion\2/g
-\%^ *//%!s/\([ <(]\)LCRegionFixed\([ &*,)<>]\)/ casa::\1LCRegionFixed\2/g
-\%^ *//%!s/\([ <(]\)LCRegionMulti\([ &*,)<>]\)/ casa::\1LCRegionMulti\2/g
-\%^ *//%!s/\([ <(]\)LCRegionSingle\([ &*,)<>]\)/ casa::\1LCRegionSingle\2/g
-\%^ *//%!s/\([ <(]\)LCSlicer\([ &*,)<>]\)/ casa::\1LCSlicer\2/g
-\%^ *//%!s/\([ <(]\)LCStretch\([ &*,)<>]\)/ casa::\1LCStretch\2/g
-\%^ *//%!s/\([ <(]\)LCUnion\([ &*,)<>]\)/ casa::\1LCUnion\2/g
-\%^ *//%!s/\([ <(]\)LECanonicalConversion\([ &*,)<>]\)/ casa::\1LECanonicalConversion\2/g
-\%^ *//%!s/\([ <(]\)LECanonicalDataConversion\([ &*,)<>]\)/ casa::\1LECanonicalDataConversion\2/g
-\%^ *//%!s/\([ <(]\)LECanonicalIO\([ &*,)<>]\)/ casa::\1LECanonicalIO\2/g
-\%^ *//%!s/\([ <(]\)LELArray\([ &*,)<>]\)/ casa::\1LELArray\2/g
-\%^ *//%!s/\([ <(]\)LELArrayBase\([ &*,)<>]\)/ casa::\1LELArrayBase\2/g
-\%^ *//%!s/\([ <(]\)LELArrayRef\([ &*,)<>]\)/ casa::\1LELArrayRef\2/g
-\%^ *//%!s/\([ <(]\)LELAttribute\([ &*,)<>]\)/ casa::\1LELAttribute\2/g
-\%^ *//%!s/\([ <(]\)LELBinary\([ &*,)<>]\)/ casa::\1LELBinary\2/g
-\%^ *//%!s/\([ <(]\)LELBinaryBool\([ &*,)<>]\)/ casa::\1LELBinaryBool\2/g
-\%^ *//%!s/\([ <(]\)LELBinaryCmp\([ &*,)<>]\)/ casa::\1LELBinaryCmp\2/g
-\%^ *//%!s/\([ <(]\)LELBinaryEnums\([ &*,)<>]\)/ casa::\1LELBinaryEnums\2/g
-\%^ *//%!s/\([ <(]\)LELCondition\([ &*,)<>]\)/ casa::\1LELCondition\2/g
-\%^ *//%!s/\([ <(]\)LELConvert\([ &*,)<>]\)/ casa::\1LELConvert\2/g
-\%^ *//%!s/\([ <(]\)LELCoordinates\([ &*,)<>]\)/ casa::\1LELCoordinates\2/g
-\%^ *//%!s/\([ <(]\)LELFunction1D\([ &*,)<>]\)/ casa::\1LELFunction1D\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionBool\([ &*,)<>]\)/ casa::\1LELFunctionBool\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionComplex\([ &*,)<>]\)/ casa::\1LELFunctionComplex\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionDComplex\([ &*,)<>]\)/ casa::\1LELFunctionDComplex\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionDouble\([ &*,)<>]\)/ casa::\1LELFunctionDouble\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionEnums\([ &*,)<>]\)/ casa::\1LELFunctionEnums\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionFloat\([ &*,)<>]\)/ casa::\1LELFunctionFloat\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionND\([ &*,)<>]\)/ casa::\1LELFunctionND\2/g
-\%^ *//%!s/\([ <(]\)LELFunctionReal1D\([ &*,)<>]\)/ casa::\1LELFunctionReal1D\2/g
-\%^ *//%!s/\([ <(]\)LELImageCoord\([ &*,)<>]\)/ casa::\1LELImageCoord\2/g
-\%^ *//%!s/\([ <(]\)LELInterface\([ &*,)<>]\)/ casa::\1LELInterface\2/g
-\%^ *//%!s/\([ <(]\)LELLattCoord\([ &*,)<>]\)/ casa::\1LELLattCoord\2/g
-\%^ *//%!s/\([ <(]\)LELLattCoordBase\([ &*,)<>]\)/ casa::\1LELLattCoordBase\2/g
-\%^ *//%!s/\([ <(]\)LELLattice\([ &*,)<>]\)/ casa::\1LELLattice\2/g
-\%^ *//%!s/\([ <(]\)LELRegion\([ &*,)<>]\)/ casa::\1LELRegion\2/g
-\%^ *//%!s/\([ <(]\)LELRegionAsBool\([ &*,)<>]\)/ casa::\1LELRegionAsBool\2/g
-\%^ *//%!s/\([ <(]\)LELScalar\([ &*,)<>]\)/ casa::\1LELScalar\2/g
-\%^ *//%!s/\([ <(]\)LELSpectralIndex\([ &*,)<>]\)/ casa::\1LELSpectralIndex\2/g
-\%^ *//%!s/\([ <(]\)LELUnary\([ &*,)<>]\)/ casa::\1LELUnary\2/g
-\%^ *//%!s/\([ <(]\)LELUnaryBool\([ &*,)<>]\)/ casa::\1LELUnaryBool\2/g
-\%^ *//%!s/\([ <(]\)LELUnaryConst\([ &*,)<>]\)/ casa::\1LELUnaryConst\2/g
-\%^ *//%!s/\([ <(]\)LELUnaryEnums\([ &*,)<>]\)/ casa::\1LELUnaryEnums\2/g
-\%^ *//%!s/\([ <(]\)LSQ\([ &*,)<>]\)/ casa::\1LSQ\2/g
-\%^ *//%!s/\([ <(]\)LSQBase\([ &*,)<>]\)/ casa::\1LSQBase\2/g
-\%^ *//%!s/\([ <(]\)LSQComplex\([ &*,)<>]\)/ casa::\1LSQComplex\2/g
-\%^ *//%!s/\([ <(]\)LSQFit\([ &*,)<>]\)/ casa::\1LSQFit\2/g
-\%^ *//%!s/\([ <(]\)LSQMatrix\([ &*,)<>]\)/ casa::\1LSQMatrix\2/g
-\%^ *//%!s/\([ <(]\)LSQNull\([ &*,)<>]\)/ casa::\1LSQNull\2/g
-\%^ *//%!s/\([ <(]\)LSQReal\([ &*,)<>]\)/ casa::\1LSQReal\2/g
-\%^ *//%!s/\([ <(]\)LSQTraits\([ &*,)<>]\)/ casa::\1LSQTraits\2/g
-\%^ *//%!s/\([ <(]\)LSQTraits_CD\([ &*,)<>]\)/ casa::\1LSQTraits_CD\2/g
-\%^ *//%!s/\([ <(]\)LSQTraits_CF\([ &*,)<>]\)/ casa::\1LSQTraits_CF\2/g
-\%^ *//%!s/\([ <(]\)LSQTraits_D\([ &*,)<>]\)/ casa::\1LSQTraits_D\2/g
-\%^ *//%!s/\([ <(]\)LSQTraits_F\([ &*,)<>]\)/ casa::\1LSQTraits_F\2/g
-\%^ *//%!s/\([ <(]\)LSQType\([ &*,)<>]\)/ casa::\1LSQType\2/g
-\%^ *//%!s/\([ <(]\)LSQaips\([ &*,)<>]\)/ casa::\1LSQaips\2/g
-\%^ *//%!s/\([ <(]\)LargeFilebufIO\([ &*,)<>]\)/ casa::\1LargeFilebufIO\2/g
-\%^ *//%!s/\([ <(]\)LargeFiledesIO\([ &*,)<>]\)/ casa::\1LargeFiledesIO\2/g
-\%^ *//%!s/\([ <(]\)LargeRegularFileIO\([ &*,)<>]\)/ casa::\1LargeRegularFileIO\2/g
-\%^ *//%!s/\([ <(]\)LatConvEquation\([ &*,)<>]\)/ casa::\1LatConvEquation\2/g
-\%^ *//%!s/\([ <(]\)LattRegionHolder\([ &*,)<>]\)/ casa::\1LattRegionHolder\2/g
-\%^ *//%!s/\([ <(]\)LattStatsProgress\([ &*,)<>]\)/ casa::\1LattStatsProgress\2/g
-\%^ *//%!s/\([ <(]\)LattStatsSpecialize\([ &*,)<>]\)/ casa::\1LattStatsSpecialize\2/g
-\%^ *//%!s/\([ <(]\)Lattice\([ &*,)<>]\)/ casa::\1Lattice\2/g
-\%^ *//%!s/\([ <(]\)LatticeAddNoise\([ &*,)<>]\)/ casa::\1LatticeAddNoise\2/g
-\%^ *//%!s/\([ <(]\)LatticeApply\([ &*,)<>]\)/ casa::\1LatticeApply\2/g
-\%^ *//%!s/\([ <(]\)LatticeAsContour\([ &*,)<>]\)/ casa::\1LatticeAsContour\2/g
-\%^ *//%!s/\([ <(]\)LatticeAsMarker\([ &*,)<>]\)/ casa::\1LatticeAsMarker\2/g
-\%^ *//%!s/\([ <(]\)LatticeAsRaster\([ &*,)<>]\)/ casa::\1LatticeAsRaster\2/g
-\%^ *//%!s/\([ <(]\)LatticeAsVector\([ &*,)<>]\)/ casa::\1LatticeAsVector\2/g
-\%^ *//%!s/\([ <(]\)LatticeBase\([ &*,)<>]\)/ casa::\1LatticeBase\2/g
-\%^ *//%!s/\([ <(]\)LatticeCache\([ &*,)<>]\)/ casa::\1LatticeCache\2/g
-\%^ *//%!s/\([ <(]\)LatticeCleanProgress\([ &*,)<>]\)/ casa::\1LatticeCleanProgress\2/g
-\%^ *//%!s/\([ <(]\)LatticeCleaner\([ &*,)<>]\)/ casa::\1LatticeCleaner\2/g
-\%^ *//%!s/\([ <(]\)LatticeConcat\([ &*,)<>]\)/ casa::\1LatticeConcat\2/g
-\%^ *//%!s/\([ <(]\)LatticeConvolver\([ &*,)<>]\)/ casa::\1LatticeConvolver\2/g
-\%^ *//%!s/\([ <(]\)LatticeExpr\([ &*,)<>]\)/ casa::\1LatticeExpr\2/g
-\%^ *//%!s/\([ <(]\)LatticeExprNode\([ &*,)<>]\)/ casa::\1LatticeExprNode\2/g
-\%^ *//%!s/\([ <(]\)LatticeFFT\([ &*,)<>]\)/ casa::\1LatticeFFT\2/g
-\%^ *//%!s/\([ <(]\)LatticeFit\([ &*,)<>]\)/ casa::\1LatticeFit\2/g
-\%^ *//%!s/\([ <(]\)LatticeFractile\([ &*,)<>]\)/ casa::\1LatticeFractile\2/g
-\%^ *//%!s/\([ <(]\)LatticeHistProgress\([ &*,)<>]\)/ casa::\1LatticeHistProgress\2/g
-\%^ *//%!s/\([ <(]\)LatticeHistSpecialize\([ &*,)<>]\)/ casa::\1LatticeHistSpecialize\2/g
-\%^ *//%!s/\([ <(]\)LatticeHistograms\([ &*,)<>]\)/ casa::\1LatticeHistograms\2/g
-\%^ *//%!s/\([ <(]\)LatticeIndexer\([ &*,)<>]\)/ casa::\1LatticeIndexer\2/g
-\%^ *//%!s/\([ <(]\)LatticeIterInterface\([ &*,)<>]\)/ casa::\1LatticeIterInterface\2/g
-\%^ *//%!s/\([ <(]\)LatticeIterator\([ &*,)<>]\)/ casa::\1LatticeIterator\2/g
-\%^ *//%!s/\([ <(]\)LatticeLocker\([ &*,)<>]\)/ casa::\1LatticeLocker\2/g
-\%^ *//%!s/\([ <(]\)LatticeModel\([ &*,)<>]\)/ casa::\1LatticeModel\2/g
-\%^ *//%!s/\([ <(]\)LatticeNavigator\([ &*,)<>]\)/ casa::\1LatticeNavigator\2/g
-\%^ *//%!s/\([ <(]\)LatticePADMContour\([ &*,)<>]\)/ casa::\1LatticePADMContour\2/g
-\%^ *//%!s/\([ <(]\)LatticePADMMarker\([ &*,)<>]\)/ casa::\1LatticePADMMarker\2/g
-\%^ *//%!s/\([ <(]\)LatticePADMRaster\([ &*,)<>]\)/ casa::\1LatticePADMRaster\2/g
-\%^ *//%!s/\([ <(]\)LatticePADMVector\([ &*,)<>]\)/ casa::\1LatticePADMVector\2/g
-\%^ *//%!s/\([ <(]\)LatticePADisplayData\([ &*,)<>]\)/ casa::\1LatticePADisplayData\2/g
-\%^ *//%!s/\([ <(]\)LatticePADisplayMethod\([ &*,)<>]\)/ casa::\1LatticePADisplayMethod\2/g
-\%^ *//%!s/\([ <(]\)LatticeProgress\([ &*,)<>]\)/ casa::\1LatticeProgress\2/g
-\%^ *//%!s/\([ <(]\)LatticeRegion\([ &*,)<>]\)/ casa::\1LatticeRegion\2/g
-\%^ *//%!s/\([ <(]\)LatticeSlice1D\([ &*,)<>]\)/ casa::\1LatticeSlice1D\2/g
-\%^ *//%!s/\([ <(]\)LatticeStatistics\([ &*,)<>]\)/ casa::\1LatticeStatistics\2/g
-\%^ *//%!s/\([ <(]\)LatticeStatsBase\([ &*,)<>]\)/ casa::\1LatticeStatsBase\2/g
-\%^ *//%!s/\([ <(]\)LatticeStepper\([ &*,)<>]\)/ casa::\1LatticeStepper\2/g
-\%^ *//%!s/\([ <(]\)LatticeTwoPtCorr\([ &*,)<>]\)/ casa::\1LatticeTwoPtCorr\2/g
-\%^ *//%!s/\([ <(]\)LatticeUtilities\([ &*,)<>]\)/ casa::\1LatticeUtilities\2/g
-\%^ *//%!s/\([ <(]\)LineCollapser\([ &*,)<>]\)/ casa::\1LineCollapser\2/g
-\%^ *//%!s/\([ <(]\)LinearCoordinate\([ &*,)<>]\)/ casa::\1LinearCoordinate\2/g
-\%^ *//%!s/\([ <(]\)LinearEquation\([ &*,)<>]\)/ casa::\1LinearEquation\2/g
-\%^ *//%!s/\([ <(]\)LinearFit\([ &*,)<>]\)/ casa::\1LinearFit\2/g
-\%^ *//%!s/\([ <(]\)LinearFitSVD\([ &*,)<>]\)/ casa::\1LinearFitSVD\2/g
-\%^ *//%!s/\([ <(]\)LinearModel\([ &*,)<>]\)/ casa::\1LinearModel\2/g
-\%^ *//%!s/\([ <(]\)LinearXform\([ &*,)<>]\)/ casa::\1LinearXform\2/g
-\%^ *//%!s/\([ <(]\)Link\([ &*,)<>]\)/ casa::\1Link\2/g
-\%^ *//%!s/\([ <(]\)List\([ &*,)<>]\)/ casa::\1List\2/g
-\%^ *//%!s/\([ <(]\)ListIter\([ &*,)<>]\)/ casa::\1ListIter\2/g
-\%^ *//%!s/\([ <(]\)ListMap\([ &*,)<>]\)/ casa::\1ListMap\2/g
-\%^ *//%!s/\([ <(]\)ListMapIterRep\([ &*,)<>]\)/ casa::\1ListMapIterRep\2/g
-\%^ *//%!s/\([ <(]\)ListMapRep\([ &*,)<>]\)/ casa::\1ListMapRep\2/g
-\%^ *//%!s/\([ <(]\)ListNotice\([ &*,)<>]\)/ casa::\1ListNotice\2/g
-\%^ *//%!s/\([ <(]\)LittleEndianConversion\([ &*,)<>]\)/ casa::\1LittleEndianConversion\2/g
-\%^ *//%!s/\([ <(]\)LockFile\([ &*,)<>]\)/ casa::\1LockFile\2/g
-\%^ *//%!s/\([ <(]\)LogFilter\([ &*,)<>]\)/ casa::\1LogFilter\2/g
-\%^ *//%!s/\([ <(]\)LogFilterExpr\([ &*,)<>]\)/ casa::\1LogFilterExpr\2/g
-\%^ *//%!s/\([ <(]\)LogFilterInterface\([ &*,)<>]\)/ casa::\1LogFilterInterface\2/g
-\%^ *//%!s/\([ <(]\)LogFilterTaql\([ &*,)<>]\)/ casa::\1LogFilterTaql\2/g
-\%^ *//%!s/\([ <(]\)LogHolderIter\([ &*,)<>]\)/ casa::\1LogHolderIter\2/g
-\%^ *//%!s/\([ <(]\)LogHolderIterEntry\([ &*,)<>]\)/ casa::\1LogHolderIterEntry\2/g
-\%^ *//%!s/\([ <(]\)LogIO\([ &*,)<>]\)/ casa::\1LogIO\2/g
-\%^ *//%!s/\([ <(]\)LogMessage\([ &*,)<>]\)/ casa::\1LogMessage\2/g
-\%^ *//%!s/\([ <(]\)LogMessage_ostream\([ &*,)<>]\)/ casa::\1LogMessage_ostream\2/g
-\%^ *//%!s/\([ <(]\)LogNormal\([ &*,)<>]\)/ casa::\1LogNormal\2/g
-\%^ *//%!s/\([ <(]\)LogOrigin\([ &*,)<>]\)/ casa::\1LogOrigin\2/g
-\%^ *//%!s/\([ <(]\)LogOrigin_ostream\([ &*,)<>]\)/ casa::\1LogOrigin_ostream\2/g
-\%^ *//%!s/\([ <(]\)LogSink\([ &*,)<>]\)/ casa::\1LogSink\2/g
-\%^ *//%!s/\([ <(]\)LogSinkInterface\([ &*,)<>]\)/ casa::\1LogSinkInterface\2/g
-\%^ *//%!s/\([ <(]\)LoggerHolder\([ &*,)<>]\)/ casa::\1LoggerHolder\2/g
-\%^ *//%!s/\([ <(]\)LoggerHolderIterator\([ &*,)<>]\)/ casa::\1LoggerHolderIterator\2/g
-\%^ *//%!s/\([ <(]\)LoggerHolderRep\([ &*,)<>]\)/ casa::\1LoggerHolderRep\2/g
-\%^ *//%!s/\([ <(]\)LogicalArray\([ &*,)<>]\)/ casa::\1LogicalArray\2/g
-\%^ *//%!s/\([ <(]\)LogicalCube\([ &*,)<>]\)/ casa::\1LogicalCube\2/g
-\%^ *//%!s/\([ <(]\)LogicalMatrix\([ &*,)<>]\)/ casa::\1LogicalMatrix\2/g
-\%^ *//%!s/\([ <(]\)LogicalVector\([ &*,)<>]\)/ casa::\1LogicalVector\2/g
-\%^ *//%!s/\([ <(]\)MBaseline\([ &*,)<>]\)/ casa::\1MBaseline\2/g
-\%^ *//%!s/\([ <(]\)MCBase\([ &*,)<>]\)/ casa::\1MCBase\2/g
-\%^ *//%!s/\([ <(]\)MCBaseline\([ &*,)<>]\)/ casa::\1MCBaseline\2/g
-\%^ *//%!s/\([ <(]\)MCDirection\([ &*,)<>]\)/ casa::\1MCDirection\2/g
-\%^ *//%!s/\([ <(]\)MCDoppler\([ &*,)<>]\)/ casa::\1MCDoppler\2/g
-\%^ *//%!s/\([ <(]\)MCEarthMagnetic\([ &*,)<>]\)/ casa::\1MCEarthMagnetic\2/g
-\%^ *//%!s/\([ <(]\)MCEpoch\([ &*,)<>]\)/ casa::\1MCEpoch\2/g
-\%^ *//%!s/\([ <(]\)MCFrame\([ &*,)<>]\)/ casa::\1MCFrame\2/g
-\%^ *//%!s/\([ <(]\)MCFrequency\([ &*,)<>]\)/ casa::\1MCFrequency\2/g
-\%^ *//%!s/\([ <(]\)MCPosition\([ &*,)<>]\)/ casa::\1MCPosition\2/g
-\%^ *//%!s/\([ <(]\)MCRadialVelocity\([ &*,)<>]\)/ casa::\1MCRadialVelocity\2/g
-\%^ *//%!s/\([ <(]\)MConvertBase\([ &*,)<>]\)/ casa::\1MConvertBase\2/g
-\%^ *//%!s/\([ <(]\)MCuvw\([ &*,)<>]\)/ casa::\1MCuvw\2/g
-\%^ *//%!s/\([ <(]\)MDirection\([ &*,)<>]\)/ casa::\1MDirection\2/g
-\%^ *//%!s/\([ <(]\)MDoppler\([ &*,)<>]\)/ casa::\1MDoppler\2/g
-\%^ *//%!s/\([ <(]\)MEarthMagnetic\([ &*,)<>]\)/ casa::\1MEarthMagnetic\2/g
-\%^ *//%!s/\([ <(]\)MEpoch\([ &*,)<>]\)/ casa::\1MEpoch\2/g
-\%^ *//%!s/\([ <(]\)MFCEMemImageSkyModel\([ &*,)<>]\)/ casa::\1MFCEMemImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)MFCleanImageSkyModel\([ &*,)<>]\)/ casa::\1MFCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)MFMSCleanImageSkyModel\([ &*,)<>]\)/ casa::\1MFMSCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)MFrequency\([ &*,)<>]\)/ casa::\1MFrequency\2/g
-\%^ *//%!s/\([ <(]\)MIRIADImage\([ &*,)<>]\)/ casa::\1MIRIADImage\2/g
-\%^ *//%!s/\([ <(]\)MIfrDesc\([ &*,)<>]\)/ casa::\1MIfrDesc\2/g
-\%^ *//%!s/\([ <(]\)MIfrMRec\([ &*,)<>]\)/ casa::\1MIfrMRec\2/g
-\%^ *//%!s/\([ <(]\)MJonesDesc\([ &*,)<>]\)/ casa::\1MJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)MJonesMRec\([ &*,)<>]\)/ casa::\1MJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)MLCG\([ &*,)<>]\)/ casa::\1MLCG\2/g
-\%^ *//%!s/\([ <(]\)MPIError\([ &*,)<>]\)/ casa::\1MPIError\2/g
-\%^ *//%!s/\([ <(]\)MPITransport\([ &*,)<>]\)/ casa::\1MPITransport\2/g
-\%^ *//%!s/\([ <(]\)MPosition\([ &*,)<>]\)/ casa::\1MPosition\2/g
-\%^ *//%!s/\([ <(]\)MRBase\([ &*,)<>]\)/ casa::\1MRBase\2/g
-\%^ *//%!s/\([ <(]\)MRadialVelocity\([ &*,)<>]\)/ casa::\1MRadialVelocity\2/g
-\%^ *//%!s/\([ <(]\)MS1ToMS2Converter\([ &*,)<>]\)/ casa::\1MS1ToMS2Converter\2/g
-\%^ *//%!s/\([ <(]\)MSAntenna\([ &*,)<>]\)/ casa::\1MSAntenna\2/g
-\%^ *//%!s/\([ <(]\)MSAntennaColumns\([ &*,)<>]\)/ casa::\1MSAntennaColumns\2/g
-\%^ *//%!s/\([ <(]\)MSAntennaEnums\([ &*,)<>]\)/ casa::\1MSAntennaEnums\2/g
-\%^ *//%!s/\([ <(]\)MSAntennaIndex\([ &*,)<>]\)/ casa::\1MSAntennaIndex\2/g
-\%^ *//%!s/\([ <(]\)MSAsRaster\([ &*,)<>]\)/ casa::\1MSAsRaster\2/g
-\%^ *//%!s/\([ <(]\)MSAsRasterDM\([ &*,)<>]\)/ casa::\1MSAsRasterDM\2/g
-\%^ *//%!s/\([ <(]\)MSCalEnums\([ &*,)<>]\)/ casa::\1MSCalEnums\2/g
-\%^ *//%!s/\([ <(]\)MSCleanImageSkyModel\([ &*,)<>]\)/ casa::\1MSCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)MSColumns\([ &*,)<>]\)/ casa::\1MSColumns\2/g
-\%^ *//%!s/\([ <(]\)MSConcat\([ &*,)<>]\)/ casa::\1MSConcat\2/g
-\%^ *//%!s/\([ <(]\)MSDataDescColumns\([ &*,)<>]\)/ casa::\1MSDataDescColumns\2/g
-\%^ *//%!s/\([ <(]\)MSDataDescIndex\([ &*,)<>]\)/ casa::\1MSDataDescIndex\2/g
-\%^ *//%!s/\([ <(]\)MSDataDescription\([ &*,)<>]\)/ casa::\1MSDataDescription\2/g
-\%^ *//%!s/\([ <(]\)MSDataDescriptionEnums\([ &*,)<>]\)/ casa::\1MSDataDescriptionEnums\2/g
-\%^ *//%!s/\([ <(]\)MSDerivedValues\([ &*,)<>]\)/ casa::\1MSDerivedValues\2/g
-\%^ *//%!s/\([ <(]\)MSDoppler\([ &*,)<>]\)/ casa::\1MSDoppler\2/g
-\%^ *//%!s/\([ <(]\)MSDopplerColumns\([ &*,)<>]\)/ casa::\1MSDopplerColumns\2/g
-\%^ *//%!s/\([ <(]\)MSDopplerEnums\([ &*,)<>]\)/ casa::\1MSDopplerEnums\2/g
-\%^ *//%!s/\([ <(]\)MSDopplerIndex\([ &*,)<>]\)/ casa::\1MSDopplerIndex\2/g
-\%^ *//%!s/\([ <(]\)MSDopplerUtil\([ &*,)<>]\)/ casa::\1MSDopplerUtil\2/g
-\%^ *//%!s/\([ <(]\)MSFeed\([ &*,)<>]\)/ casa::\1MSFeed\2/g
-\%^ *//%!s/\([ <(]\)MSFeedColumns\([ &*,)<>]\)/ casa::\1MSFeedColumns\2/g
-\%^ *//%!s/\([ <(]\)MSFeedEnums\([ &*,)<>]\)/ casa::\1MSFeedEnums\2/g
-\%^ *//%!s/\([ <(]\)MSFeedIndex\([ &*,)<>]\)/ casa::\1MSFeedIndex\2/g
-\%^ *//%!s/\([ <(]\)MSField\([ &*,)<>]\)/ casa::\1MSField\2/g
-\%^ *//%!s/\([ <(]\)MSFieldColumns\([ &*,)<>]\)/ casa::\1MSFieldColumns\2/g
-\%^ *//%!s/\([ <(]\)MSFieldEnums\([ &*,)<>]\)/ casa::\1MSFieldEnums\2/g
-\%^ *//%!s/\([ <(]\)MSFieldIndex\([ &*,)<>]\)/ casa::\1MSFieldIndex\2/g
-\%^ *//%!s/\([ <(]\)MSFitsIDI\([ &*,)<>]\)/ casa::\1MSFitsIDI\2/g
-\%^ *//%!s/\([ <(]\)MSFitsInput\([ &*,)<>]\)/ casa::\1MSFitsInput\2/g
-\%^ *//%!s/\([ <(]\)MSFitsOutput\([ &*,)<>]\)/ casa::\1MSFitsOutput\2/g
-\%^ *//%!s/\([ <(]\)MSFlagCmd\([ &*,)<>]\)/ casa::\1MSFlagCmd\2/g
-\%^ *//%!s/\([ <(]\)MSFlagCmdColumns\([ &*,)<>]\)/ casa::\1MSFlagCmdColumns\2/g
-\%^ *//%!s/\([ <(]\)MSFlagCmdEnums\([ &*,)<>]\)/ casa::\1MSFlagCmdEnums\2/g
-\%^ *//%!s/\([ <(]\)MSFlagger\([ &*,)<>]\)/ casa::\1MSFlagger\2/g
-\%^ *//%!s/\([ <(]\)MSFreqOffIndex\([ &*,)<>]\)/ casa::\1MSFreqOffIndex\2/g
-\%^ *//%!s/\([ <(]\)MSFreqOffset\([ &*,)<>]\)/ casa::\1MSFreqOffset\2/g
-\%^ *//%!s/\([ <(]\)MSFreqOffsetColumns\([ &*,)<>]\)/ casa::\1MSFreqOffsetColumns\2/g
-\%^ *//%!s/\([ <(]\)MSFreqOffsetEnums\([ &*,)<>]\)/ casa::\1MSFreqOffsetEnums\2/g
-\%^ *//%!s/\([ <(]\)MSHistory\([ &*,)<>]\)/ casa::\1MSHistory\2/g
-\%^ *//%!s/\([ <(]\)MSHistoryColumns\([ &*,)<>]\)/ casa::\1MSHistoryColumns\2/g
-\%^ *//%!s/\([ <(]\)MSHistoryEnums\([ &*,)<>]\)/ casa::\1MSHistoryEnums\2/g
-\%^ *//%!s/\([ <(]\)MSHistoryHandler\([ &*,)<>]\)/ casa::\1MSHistoryHandler\2/g
-\%^ *//%!s/\([ <(]\)MSInterval\([ &*,)<>]\)/ casa::\1MSInterval\2/g
-\%^ *//%!s/\([ <(]\)MSIter\([ &*,)<>]\)/ casa::\1MSIter\2/g
-\%^ *//%!s/\([ <(]\)MSLister\([ &*,)<>]\)/ casa::\1MSLister\2/g
-\%^ *//%!s/\([ <(]\)MSMBase\([ &*,)<>]\)/ casa::\1MSMBase\2/g
-\%^ *//%!s/\([ <(]\)MSMColumn\([ &*,)<>]\)/ casa::\1MSMColumn\2/g
-\%^ *//%!s/\([ <(]\)MSMDirColumn\([ &*,)<>]\)/ casa::\1MSMDirColumn\2/g
-\%^ *//%!s/\([ <(]\)MSMIndColumn\([ &*,)<>]\)/ casa::\1MSMIndColumn\2/g
-\%^ *//%!s/\([ <(]\)MSMainColumns\([ &*,)<>]\)/ casa::\1MSMainColumns\2/g
-\%^ *//%!s/\([ <(]\)MSMainEnums\([ &*,)<>]\)/ casa::\1MSMainEnums\2/g
-\%^ *//%!s/\([ <(]\)MSObservation\([ &*,)<>]\)/ casa::\1MSObservation\2/g
-\%^ *//%!s/\([ <(]\)MSObservationColumns\([ &*,)<>]\)/ casa::\1MSObservationColumns\2/g
-\%^ *//%!s/\([ <(]\)MSObservationEnums\([ &*,)<>]\)/ casa::\1MSObservationEnums\2/g
-\%^ *//%!s/\([ <(]\)MSObservationIndex\([ &*,)<>]\)/ casa::\1MSObservationIndex\2/g
-\%^ *//%!s/\([ <(]\)MSPointing\([ &*,)<>]\)/ casa::\1MSPointing\2/g
-\%^ *//%!s/\([ <(]\)MSPointingColumns\([ &*,)<>]\)/ casa::\1MSPointingColumns\2/g
-\%^ *//%!s/\([ <(]\)MSPointingEnums\([ &*,)<>]\)/ casa::\1MSPointingEnums\2/g
-\%^ *//%!s/\([ <(]\)MSPointingIndex\([ &*,)<>]\)/ casa::\1MSPointingIndex\2/g
-\%^ *//%!s/\([ <(]\)MSPolarization\([ &*,)<>]\)/ casa::\1MSPolarization\2/g
-\%^ *//%!s/\([ <(]\)MSPolarizationColumns\([ &*,)<>]\)/ casa::\1MSPolarizationColumns\2/g
-\%^ *//%!s/\([ <(]\)MSPolarizationEnums\([ &*,)<>]\)/ casa::\1MSPolarizationEnums\2/g
-\%^ *//%!s/\([ <(]\)MSPolarizationIndex\([ &*,)<>]\)/ casa::\1MSPolarizationIndex\2/g
-\%^ *//%!s/\([ <(]\)MSPrimaryGroupHolder\([ &*,)<>]\)/ casa::\1MSPrimaryGroupHolder\2/g
-\%^ *//%!s/\([ <(]\)MSProcessor\([ &*,)<>]\)/ casa::\1MSProcessor\2/g
-\%^ *//%!s/\([ <(]\)MSProcessorColumns\([ &*,)<>]\)/ casa::\1MSProcessorColumns\2/g
-\%^ *//%!s/\([ <(]\)MSProcessorEnums\([ &*,)<>]\)/ casa::\1MSProcessorEnums\2/g
-\%^ *//%!s/\([ <(]\)MSRange\([ &*,)<>]\)/ casa::\1MSRange\2/g
-\%^ *//%!s/\([ <(]\)MSReader\([ &*,)<>]\)/ casa::\1MSReader\2/g
-\%^ *//%!s/\([ <(]\)MSSelUtil\([ &*,)<>]\)/ casa::\1MSSelUtil\2/g
-\%^ *//%!s/\([ <(]\)MSSelUtil2\([ &*,)<>]\)/ casa::\1MSSelUtil2\2/g
-\%^ *//%!s/\([ <(]\)MSSelection\([ &*,)<>]\)/ casa::\1MSSelection\2/g
-\%^ *//%!s/\([ <(]\)MSSelectionKeywords\([ &*,)<>]\)/ casa::\1MSSelectionKeywords\2/g
-\%^ *//%!s/\([ <(]\)MSSelector\([ &*,)<>]\)/ casa::\1MSSelector\2/g
-\%^ *//%!s/\([ <(]\)MSSimFeedBuf\([ &*,)<>]\)/ casa::\1MSSimFeedBuf\2/g
-\%^ *//%!s/\([ <(]\)MSSimFeedRec\([ &*,)<>]\)/ casa::\1MSSimFeedRec\2/g
-\%^ *//%!s/\([ <(]\)MSSimulator\([ &*,)<>]\)/ casa::\1MSSimulator\2/g
-\%^ *//%!s/\([ <(]\)MSSource\([ &*,)<>]\)/ casa::\1MSSource\2/g
-\%^ *//%!s/\([ <(]\)MSSourceColumns\([ &*,)<>]\)/ casa::\1MSSourceColumns\2/g
-\%^ *//%!s/\([ <(]\)MSSourceEnums\([ &*,)<>]\)/ casa::\1MSSourceEnums\2/g
-\%^ *//%!s/\([ <(]\)MSSourceIndex\([ &*,)<>]\)/ casa::\1MSSourceIndex\2/g
-\%^ *//%!s/\([ <(]\)MSSpWindowColumns\([ &*,)<>]\)/ casa::\1MSSpWindowColumns\2/g
-\%^ *//%!s/\([ <(]\)MSSpWindowIndex\([ &*,)<>]\)/ casa::\1MSSpWindowIndex\2/g
-\%^ *//%!s/\([ <(]\)MSSpectralWindow\([ &*,)<>]\)/ casa::\1MSSpectralWindow\2/g
-\%^ *//%!s/\([ <(]\)MSSpectralWindowEnums\([ &*,)<>]\)/ casa::\1MSSpectralWindowEnums\2/g
-\%^ *//%!s/\([ <(]\)MSState\([ &*,)<>]\)/ casa::\1MSState\2/g
-\%^ *//%!s/\([ <(]\)MSStateColumns\([ &*,)<>]\)/ casa::\1MSStateColumns\2/g
-\%^ *//%!s/\([ <(]\)MSStateEnums\([ &*,)<>]\)/ casa::\1MSStateEnums\2/g
-\%^ *//%!s/\([ <(]\)MSSummary\([ &*,)<>]\)/ casa::\1MSSummary\2/g
-\%^ *//%!s/\([ <(]\)MSSysCal\([ &*,)<>]\)/ casa::\1MSSysCal\2/g
-\%^ *//%!s/\([ <(]\)MSSysCalColumns\([ &*,)<>]\)/ casa::\1MSSysCalColumns\2/g
-\%^ *//%!s/\([ <(]\)MSSysCalEnums\([ &*,)<>]\)/ casa::\1MSSysCalEnums\2/g
-\%^ *//%!s/\([ <(]\)MSSysCalIndex\([ &*,)<>]\)/ casa::\1MSSysCalIndex\2/g
-\%^ *//%!s/\([ <(]\)MSTable\([ &*,)<>]\)/ casa::\1MSTable\2/g
-\%^ *//%!s/\([ <(]\)MSTableImpl\([ &*,)<>]\)/ casa::\1MSTableImpl\2/g
-\%^ *//%!s/\([ <(]\)MSTableIndex\([ &*,)<>]\)/ casa::\1MSTableIndex\2/g
-\%^ *//%!s/\([ <(]\)MSTileLayout\([ &*,)<>]\)/ casa::\1MSTileLayout\2/g
-\%^ *//%!s/\([ <(]\)MSValidIds\([ &*,)<>]\)/ casa::\1MSValidIds\2/g
-\%^ *//%!s/\([ <(]\)MSWeather\([ &*,)<>]\)/ casa::\1MSWeather\2/g
-\%^ *//%!s/\([ <(]\)MSWeatherColumns\([ &*,)<>]\)/ casa::\1MSWeatherColumns\2/g
-\%^ *//%!s/\([ <(]\)MSWeatherEnums\([ &*,)<>]\)/ casa::\1MSWeatherEnums\2/g
-\%^ *//%!s/\([ <(]\)MSWeatherIndex\([ &*,)<>]\)/ casa::\1MSWeatherIndex\2/g
-\%^ *//%!s/\([ <(]\)MUString\([ &*,)<>]\)/ casa::\1MUString\2/g
-\%^ *//%!s/\([ <(]\)MVAngle\([ &*,)<>]\)/ casa::\1MVAngle\2/g
-\%^ *//%!s/\([ <(]\)MVBaseline\([ &*,)<>]\)/ casa::\1MVBaseline\2/g
-\%^ *//%!s/\([ <(]\)MVDirection\([ &*,)<>]\)/ casa::\1MVDirection\2/g
-\%^ *//%!s/\([ <(]\)MVDoppler\([ &*,)<>]\)/ casa::\1MVDoppler\2/g
-\%^ *//%!s/\([ <(]\)MVDouble\([ &*,)<>]\)/ casa::\1MVDouble\2/g
-\%^ *//%!s/\([ <(]\)MVEarthMagnetic\([ &*,)<>]\)/ casa::\1MVEarthMagnetic\2/g
-\%^ *//%!s/\([ <(]\)MVEpoch\([ &*,)<>]\)/ casa::\1MVEpoch\2/g
-\%^ *//%!s/\([ <(]\)MVFrequency\([ &*,)<>]\)/ casa::\1MVFrequency\2/g
-\%^ *//%!s/\([ <(]\)MVPosition\([ &*,)<>]\)/ casa::\1MVPosition\2/g
-\%^ *//%!s/\([ <(]\)MVRadialVelocity\([ &*,)<>]\)/ casa::\1MVRadialVelocity\2/g
-\%^ *//%!s/\([ <(]\)MVTime\([ &*,)<>]\)/ casa::\1MVTime\2/g
-\%^ *//%!s/\([ <(]\)MVuvw\([ &*,)<>]\)/ casa::\1MVuvw\2/g
-\%^ *//%!s/\([ <(]\)MWCAnimator\([ &*,)<>]\)/ casa::\1MWCAnimator\2/g
-\%^ *//%!s/\([ <(]\)MWCCrosshairTool\([ &*,)<>]\)/ casa::\1MWCCrosshairTool\2/g
-\%^ *//%!s/\([ <(]\)MWCPTRegion\([ &*,)<>]\)/ casa::\1MWCPTRegion\2/g
-\%^ *//%!s/\([ <(]\)MWCPannerTool\([ &*,)<>]\)/ casa::\1MWCPannerTool\2/g
-\%^ *//%!s/\([ <(]\)MWCPolyTool\([ &*,)<>]\)/ casa::\1MWCPolyTool\2/g
-\%^ *//%!s/\([ <(]\)MWCPolylineTool\([ &*,)<>]\)/ casa::\1MWCPolylineTool\2/g
-\%^ *//%!s/\([ <(]\)MWCRTRegion\([ &*,)<>]\)/ casa::\1MWCRTRegion\2/g
-\%^ *//%!s/\([ <(]\)MWCRTZoomer\([ &*,)<>]\)/ casa::\1MWCRTZoomer\2/g
-\%^ *//%!s/\([ <(]\)MWCRectTool\([ &*,)<>]\)/ casa::\1MWCRectTool\2/g
-\%^ *//%!s/\([ <(]\)MakeApproxPSFAlgorithm\([ &*,)<>]\)/ casa::\1MakeApproxPSFAlgorithm\2/g
-\%^ *//%!s/\([ <(]\)Map\([ &*,)<>]\)/ casa::\1Map\2/g
-\%^ *//%!s/\([ <(]\)MapIter\([ &*,)<>]\)/ casa::\1MapIter\2/g
-\%^ *//%!s/\([ <(]\)MapIterRep\([ &*,)<>]\)/ casa::\1MapIterRep\2/g
-\%^ *//%!s/\([ <(]\)MapRep\([ &*,)<>]\)/ casa::\1MapRep\2/g
-\%^ *//%!s/\([ <(]\)MarshButterworthBandpass\([ &*,)<>]\)/ casa::\1MarshButterworthBandpass\2/g
-\%^ *//%!s/\([ <(]\)MarshallableChebyshev\([ &*,)<>]\)/ casa::\1MarshallableChebyshev\2/g
-\%^ *//%!s/\([ <(]\)MaskSpecifier\([ &*,)<>]\)/ casa::\1MaskSpecifier\2/g
-\%^ *//%!s/\([ <(]\)MaskedArray\([ &*,)<>]\)/ casa::\1MaskedArray\2/g
-\%^ *//%!s/\([ <(]\)MaskedArrayModel\([ &*,)<>]\)/ casa::\1MaskedArrayModel\2/g
-\%^ *//%!s/\([ <(]\)MaskedHogbomCleanModel\([ &*,)<>]\)/ casa::\1MaskedHogbomCleanModel\2/g
-\%^ *//%!s/\([ <(]\)MaskedLattice\([ &*,)<>]\)/ casa::\1MaskedLattice\2/g
-\%^ *//%!s/\([ <(]\)MaskedLogicalArray\([ &*,)<>]\)/ casa::\1MaskedLogicalArray\2/g
-\%^ *//%!s/\([ <(]\)MathFunc\([ &*,)<>]\)/ casa::\1MathFunc\2/g
-\%^ *//%!s/\([ <(]\)Matrix\([ &*,)<>]\)/ casa::\1Matrix\2/g
-\%^ *//%!s/\([ <(]\)MatrixIterator\([ &*,)<>]\)/ casa::\1MatrixIterator\2/g
-\%^ *//%!s/\([ <(]\)MatrixSolver\([ &*,)<>]\)/ casa::\1MatrixSolver\2/g
-\%^ *//%!s/\([ <(]\)MeasBase\([ &*,)<>]\)/ casa::\1MeasBase\2/g
-\%^ *//%!s/\([ <(]\)MeasComet\([ &*,)<>]\)/ casa::\1MeasComet\2/g
-\%^ *//%!s/\([ <(]\)MeasConvert\([ &*,)<>]\)/ casa::\1MeasConvert\2/g
-\%^ *//%!s/\([ <(]\)MeasData\([ &*,)<>]\)/ casa::\1MeasData\2/g
-\%^ *//%!s/\([ <(]\)MeasFrame\([ &*,)<>]\)/ casa::\1MeasFrame\2/g
-\%^ *//%!s/\([ <(]\)MeasFrameInterface\([ &*,)<>]\)/ casa::\1MeasFrameInterface\2/g
-\%^ *//%!s/\([ <(]\)MeasIERS\([ &*,)<>]\)/ casa::\1MeasIERS\2/g
-\%^ *//%!s/\([ <(]\)MeasJPL\([ &*,)<>]\)/ casa::\1MeasJPL\2/g
-\%^ *//%!s/\([ <(]\)MeasMath\([ &*,)<>]\)/ casa::\1MeasMath\2/g
-\%^ *//%!s/\([ <(]\)MeasRef\([ &*,)<>]\)/ casa::\1MeasRef\2/g
-\%^ *//%!s/\([ <(]\)MeasTable\([ &*,)<>]\)/ casa::\1MeasTable\2/g
-\%^ *//%!s/\([ <(]\)MeasValue\([ &*,)<>]\)/ casa::\1MeasValue\2/g
-\%^ *//%!s/\([ <(]\)Measure\([ &*,)<>]\)/ casa::\1Measure\2/g
-\%^ *//%!s/\([ <(]\)MeasureHolder\([ &*,)<>]\)/ casa::\1MeasureHolder\2/g
-\%^ *//%!s/\([ <(]\)MeasurementSet\([ &*,)<>]\)/ casa::\1MeasurementSet\2/g
-\%^ *//%!s/\([ <(]\)MedianSlider\([ &*,)<>]\)/ casa::\1MedianSlider\2/g
-\%^ *//%!s/\([ <(]\)Memory\([ &*,)<>]\)/ casa::\1Memory\2/g
-\%^ *//%!s/\([ <(]\)MemoryIO\([ &*,)<>]\)/ casa::\1MemoryIO\2/g
-\%^ *//%!s/\([ <(]\)MemoryLogSink\([ &*,)<>]\)/ casa::\1MemoryLogSink\2/g
-\%^ *//%!s/\([ <(]\)MemoryStMan\([ &*,)<>]\)/ casa::\1MemoryStMan\2/g
-\%^ *//%!s/\([ <(]\)MemoryTable\([ &*,)<>]\)/ casa::\1MemoryTable\2/g
-\%^ *//%!s/\([ <(]\)MethodResult\([ &*,)<>]\)/ casa::\1MethodResult\2/g
-\%^ *//%!s/\([ <(]\)Mod_KB_Conv\([ &*,)<>]\)/ casa::\1Mod_KB_Conv\2/g
-\%^ *//%!s/\([ <(]\)ModcompConversion\([ &*,)<>]\)/ casa::\1ModcompConversion\2/g
-\%^ *//%!s/\([ <(]\)ModcompDataConversion\([ &*,)<>]\)/ casa::\1ModcompDataConversion\2/g
-\%^ *//%!s/\([ <(]\)MomentCalcBase\([ &*,)<>]\)/ casa::\1MomentCalcBase\2/g
-\%^ *//%!s/\([ <(]\)MomentClip\([ &*,)<>]\)/ casa::\1MomentClip\2/g
-\%^ *//%!s/\([ <(]\)MomentFit\([ &*,)<>]\)/ casa::\1MomentFit\2/g
-\%^ *//%!s/\([ <(]\)MomentWindow\([ &*,)<>]\)/ casa::\1MomentWindow\2/g
-\%^ *//%!s/\([ <(]\)MosaicFT\([ &*,)<>]\)/ casa::\1MosaicFT\2/g
-\%^ *//%!s/\([ <(]\)MosaicSkyEquation\([ &*,)<>]\)/ casa::\1MosaicSkyEquation\2/g
-\%^ *//%!s/\([ <(]\)MultiRecordFieldWriter\([ &*,)<>]\)/ casa::\1MultiRecordFieldWriter\2/g
-\%^ *//%!s/\([ <(]\)MultiWCHolder\([ &*,)<>]\)/ casa::\1MultiWCHolder\2/g
-\%^ *//%!s/\([ <(]\)MultiWCTool\([ &*,)<>]\)/ casa::\1MultiWCTool\2/g
-\%^ *//%!s/\([ <(]\)Muvw\([ &*,)<>]\)/ casa::\1Muvw\2/g
-\%^ *//%!s/\([ <(]\)NBody\([ &*,)<>]\)/ casa::\1NBody\2/g
-\%^ *//%!s/\([ <(]\)NNGridder\([ &*,)<>]\)/ casa::\1NNGridder\2/g
-\%^ *//%!s/\([ <(]\)NNLSImageSkyModel\([ &*,)<>]\)/ casa::\1NNLSImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)NNLSMatrixSolver\([ &*,)<>]\)/ casa::\1NNLSMatrixSolver\2/g
-\%^ *//%!s/\([ <(]\)NegativeExpntl\([ &*,)<>]\)/ casa::\1NegativeExpntl\2/g
-\%^ *//%!s/\([ <(]\)NewFile\([ &*,)<>]\)/ casa::\1NewFile\2/g
-\%^ *//%!s/\([ <(]\)NewFileConstraint\([ &*,)<>]\)/ casa::\1NewFileConstraint\2/g
-\%^ *//%!s/\([ <(]\)NewMSSimulator\([ &*,)<>]\)/ casa::\1NewMSSimulator\2/g
-\%^ *//%!s/\([ <(]\)NewSimDJones\([ &*,)<>]\)/ casa::\1NewSimDJones\2/g
-\%^ *//%!s/\([ <(]\)NewSimGJones\([ &*,)<>]\)/ casa::\1NewSimGJones\2/g
-\%^ *//%!s/\([ <(]\)NewSimTimeDepVisJones\([ &*,)<>]\)/ casa::\1NewSimTimeDepVisJones\2/g
-\%^ *//%!s/\([ <(]\)NewSimVisJones\([ &*,)<>]\)/ casa::\1NewSimVisJones\2/g
-\%^ *//%!s/\([ <(]\)NonLinearFit\([ &*,)<>]\)/ casa::\1NonLinearFit\2/g
-\%^ *//%!s/\([ <(]\)NonLinearFitLM\([ &*,)<>]\)/ casa::\1NonLinearFitLM\2/g
-\%^ *//%!s/\([ <(]\)Normal\([ &*,)<>]\)/ casa::\1Normal\2/g
-\%^ *//%!s/\([ <(]\)Notice\([ &*,)<>]\)/ casa::\1Notice\2/g
-\%^ *//%!s/\([ <(]\)NoticeSource\([ &*,)<>]\)/ casa::\1NoticeSource\2/g
-\%^ *//%!s/\([ <(]\)NoticeTarget\([ &*,)<>]\)/ casa::\1NoticeTarget\2/g
-\%^ *//%!s/\([ <(]\)NullLogSink\([ &*,)<>]\)/ casa::\1NullLogSink\2/g
-\%^ *//%!s/\([ <(]\)NullTable\([ &*,)<>]\)/ casa::\1NullTable\2/g
-\%^ *//%!s/\([ <(]\)NumericTraits\([ &*,)<>]\)/ casa::\1NumericTraits\2/g
-\%^ *//%!s/\([ <(]\)NumericTraits_C\([ &*,)<>]\)/ casa::\1NumericTraits_C\2/g
-\%^ *//%!s/\([ <(]\)NumericTraits_D\([ &*,)<>]\)/ casa::\1NumericTraits_D\2/g
-\%^ *//%!s/\([ <(]\)NumericTraits_DC\([ &*,)<>]\)/ casa::\1NumericTraits_DC\2/g
-\%^ *//%!s/\([ <(]\)NumericTraits_F\([ &*,)<>]\)/ casa::\1NumericTraits_F\2/g
-\%^ *//%!s/\([ <(]\)Nutation\([ &*,)<>]\)/ casa::\1Nutation\2/g
-\%^ *//%!s/\([ <(]\)ObjCompare\([ &*,)<>]\)/ casa::\1ObjCompare\2/g
-\%^ *//%!s/\([ <(]\)ObjCompareFunc\([ &*,)<>]\)/ casa::\1ObjCompareFunc\2/g
-\%^ *//%!s/\([ <(]\)ObjectController\([ &*,)<>]\)/ casa::\1ObjectController\2/g
-\%^ *//%!s/\([ <(]\)ObjectDispatcher\([ &*,)<>]\)/ casa::\1ObjectDispatcher\2/g
-\%^ *//%!s/\([ <(]\)ObjectID\([ &*,)<>]\)/ casa::\1ObjectID\2/g
-\%^ *//%!s/\([ <(]\)ObjectIDParameterAccessor\([ &*,)<>]\)/ casa::\1ObjectIDParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ObjectIDRecord\([ &*,)<>]\)/ casa::\1ObjectIDRecord\2/g
-\%^ *//%!s/\([ <(]\)ObjectPool\([ &*,)<>]\)/ casa::\1ObjectPool\2/g
-\%^ *//%!s/\([ <(]\)ObjectType\([ &*,)<>]\)/ casa::\1ObjectType\2/g
-\%^ *//%!s/\([ <(]\)ObsInfo\([ &*,)<>]\)/ casa::\1ObsInfo\2/g
-\%^ *//%!s/\([ <(]\)OddPolynomial\([ &*,)<>]\)/ casa::\1OddPolynomial\2/g
-\%^ *//%!s/\([ <(]\)OddPolynomialParam\([ &*,)<>]\)/ casa::\1OddPolynomialParam\2/g
-\%^ *//%!s/\([ <(]\)OddPolynomial_PS\([ &*,)<>]\)/ casa::\1OddPolynomial_PS\2/g
-\%^ *//%!s/\([ <(]\)Opacity\([ &*,)<>]\)/ casa::\1Opacity\2/g
-\%^ *//%!s/\([ <(]\)OpacitySpec\([ &*,)<>]\)/ casa::\1OpacitySpec\2/g
-\%^ *//%!s/\([ <(]\)OrderedMap\([ &*,)<>]\)/ casa::\1OrderedMap\2/g
-\%^ *//%!s/\([ <(]\)OrderedMapIterRep\([ &*,)<>]\)/ casa::\1OrderedMapIterRep\2/g
-\%^ *//%!s/\([ <(]\)OrderedMapNotice\([ &*,)<>]\)/ casa::\1OrderedMapNotice\2/g
-\%^ *//%!s/\([ <(]\)OrderedMapRep\([ &*,)<>]\)/ casa::\1OrderedMapRep\2/g
-\%^ *//%!s/\([ <(]\)OrderedPair\([ &*,)<>]\)/ casa::\1OrderedPair\2/g
-\%^ *//%!s/\([ <(]\)Output\([ &*,)<>]\)/ casa::\1Output\2/g
-\%^ *//%!s/\([ <(]\)PBMath\([ &*,)<>]\)/ casa::\1PBMath\2/g
-\%^ *//%!s/\([ <(]\)PBMath1D\([ &*,)<>]\)/ casa::\1PBMath1D\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DAiry\([ &*,)<>]\)/ casa::\1PBMath1DAiry\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DCosPoly\([ &*,)<>]\)/ casa::\1PBMath1DCosPoly\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DGauss\([ &*,)<>]\)/ casa::\1PBMath1DGauss\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DIPoly\([ &*,)<>]\)/ casa::\1PBMath1DIPoly\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DNumeric\([ &*,)<>]\)/ casa::\1PBMath1DNumeric\2/g
-\%^ *//%!s/\([ <(]\)PBMath1DPoly\([ &*,)<>]\)/ casa::\1PBMath1DPoly\2/g
-\%^ *//%!s/\([ <(]\)PBMath2D\([ &*,)<>]\)/ casa::\1PBMath2D\2/g
-\%^ *//%!s/\([ <(]\)PBMath2DImage\([ &*,)<>]\)/ casa::\1PBMath2DImage\2/g
-\%^ *//%!s/\([ <(]\)PBMathInterface\([ &*,)<>]\)/ casa::\1PBMathInterface\2/g
-\%^ *//%!s/\([ <(]\)PCITFiddler\([ &*,)<>]\)/ casa::\1PCITFiddler\2/g
-\%^ *//%!s/\([ <(]\)PCInvisTool\([ &*,)<>]\)/ casa::\1PCInvisTool\2/g
-\%^ *//%!s/\([ <(]\)PCMotionEH\([ &*,)<>]\)/ casa::\1PCMotionEH\2/g
-\%^ *//%!s/\([ <(]\)PCMotionEvent\([ &*,)<>]\)/ casa::\1PCMotionEvent\2/g
-\%^ *//%!s/\([ <(]\)PCPositionEH\([ &*,)<>]\)/ casa::\1PCPositionEH\2/g
-\%^ *//%!s/\([ <(]\)PCPositionEvent\([ &*,)<>]\)/ casa::\1PCPositionEvent\2/g
-\%^ *//%!s/\([ <(]\)PCRefreshEH\([ &*,)<>]\)/ casa::\1PCRefreshEH\2/g
-\%^ *//%!s/\([ <(]\)PCRefreshEvent\([ &*,)<>]\)/ casa::\1PCRefreshEvent\2/g
-\%^ *//%!s/\([ <(]\)PCTestPattern\([ &*,)<>]\)/ casa::\1PCTestPattern\2/g
-\%^ *//%!s/\([ <(]\)PCTool\([ &*,)<>]\)/ casa::\1PCTool\2/g
-\%^ *//%!s/\([ <(]\)PCToolMotEH\([ &*,)<>]\)/ casa::\1PCToolMotEH\2/g
-\%^ *//%!s/\([ <(]\)PCToolPosEH\([ &*,)<>]\)/ casa::\1PCToolPosEH\2/g
-\%^ *//%!s/\([ <(]\)PCToolRefEH\([ &*,)<>]\)/ casa::\1PCToolRefEH\2/g
-\%^ *//%!s/\([ <(]\)PCVGBuffer\([ &*,)<>]\)/ casa::\1PCVGBuffer\2/g
-\%^ *//%!s/\([ <(]\)PClarkCleanImageSkyModel\([ &*,)<>]\)/ casa::\1PClarkCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)PGPlot1d\([ &*,)<>]\)/ casa::\1PGPlot1d\2/g
-\%^ *//%!s/\([ <(]\)PGPlot1dDataAttr\([ &*,)<>]\)/ casa::\1PGPlot1dDataAttr\2/g
-\%^ *//%!s/\([ <(]\)PGPlotEnums\([ &*,)<>]\)/ casa::\1PGPlotEnums\2/g
-\%^ *//%!s/\([ <(]\)PGPlotter\([ &*,)<>]\)/ casa::\1PGPlotter\2/g
-\%^ *//%!s/\([ <(]\)PGPlotterGlish\([ &*,)<>]\)/ casa::\1PGPlotterGlish\2/g
-\%^ *//%!s/\([ <(]\)PGPlotterInterface\([ &*,)<>]\)/ casa::\1PGPlotterInterface\2/g
-\%^ *//%!s/\([ <(]\)PGPlotterLocal\([ &*,)<>]\)/ casa::\1PGPlotterLocal\2/g
-\%^ *//%!s/\([ <(]\)PJones\([ &*,)<>]\)/ casa::\1PJones\2/g
-\%^ *//%!s/\([ <(]\)PJonesDesc\([ &*,)<>]\)/ casa::\1PJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)PJonesMBuf\([ &*,)<>]\)/ casa::\1PJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)PJonesMCol\([ &*,)<>]\)/ casa::\1PJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)PJonesMRec\([ &*,)<>]\)/ casa::\1PJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)PJonesTable\([ &*,)<>]\)/ casa::\1PJonesTable\2/g
-\%^ *//%!s/\([ <(]\)PKSMultiBeamDD\([ &*,)<>]\)/ casa::\1PKSMultiBeamDD\2/g
-\%^ *//%!s/\([ <(]\)PSDriver\([ &*,)<>]\)/ casa::\1PSDriver\2/g
-\%^ *//%!s/\([ <(]\)PSPixelCanvas\([ &*,)<>]\)/ casa::\1PSPixelCanvas\2/g
-\%^ *//%!s/\([ <(]\)PSPixelCanvasColorTable\([ &*,)<>]\)/ casa::\1PSPixelCanvasColorTable\2/g
-\%^ *//%!s/\([ <(]\)PSWorldCanvasApp\([ &*,)<>]\)/ casa::\1PSWorldCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)PSkyEquation\([ &*,)<>]\)/ casa::\1PSkyEquation\2/g
-\%^ *//%!s/\([ <(]\)PTransport\([ &*,)<>]\)/ casa::\1PTransport\2/g
-\%^ *//%!s/\([ <(]\)PWFCleanImageSkyModel\([ &*,)<>]\)/ casa::\1PWFCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)PabloIO\([ &*,)<>]\)/ casa::\1PabloIO\2/g
-\%^ *//%!s/\([ <(]\)PagedArrIter\([ &*,)<>]\)/ casa::\1PagedArrIter\2/g
-\%^ *//%!s/\([ <(]\)PagedArray\([ &*,)<>]\)/ casa::\1PagedArray\2/g
-\%^ *//%!s/\([ <(]\)PagedImage\([ &*,)<>]\)/ casa::\1PagedImage\2/g
-\%^ *//%!s/\([ <(]\)PagedImageParameterAccessor\([ &*,)<>]\)/ casa::\1PagedImageParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)PanelDisplay\([ &*,)<>]\)/ casa::\1PanelDisplay\2/g
-\%^ *//%!s/\([ <(]\)ParAngleMachine\([ &*,)<>]\)/ casa::\1ParAngleMachine\2/g
-\%^ *//%!s/\([ <(]\)Param\([ &*,)<>]\)/ casa::\1Param\2/g
-\%^ *//%!s/\([ <(]\)Parameter\([ &*,)<>]\)/ casa::\1Parameter\2/g
-\%^ *//%!s/\([ <(]\)ParameterAccessor\([ &*,)<>]\)/ casa::\1ParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ParameterAccessorBase\([ &*,)<>]\)/ casa::\1ParameterAccessorBase\2/g
-\%^ *//%!s/\([ <(]\)ParameterConstraint\([ &*,)<>]\)/ casa::\1ParameterConstraint\2/g
-\%^ *//%!s/\([ <(]\)ParameterRange\([ &*,)<>]\)/ casa::\1ParameterRange\2/g
-\%^ *//%!s/\([ <(]\)ParameterSet\([ &*,)<>]\)/ casa::\1ParameterSet\2/g
-\%^ *//%!s/\([ <(]\)PassiveCachingDD\([ &*,)<>]\)/ casa::\1PassiveCachingDD\2/g
-\%^ *//%!s/\([ <(]\)PassiveTableDD\([ &*,)<>]\)/ casa::\1PassiveTableDD\2/g
-\%^ *//%!s/\([ <(]\)Path\([ &*,)<>]\)/ casa::\1Path\2/g
-\%^ *//%!s/\([ <(]\)PhaseFactor\([ &*,)<>]\)/ casa::\1PhaseFactor\2/g
-\%^ *//%!s/\([ <(]\)PixelCanvas\([ &*,)<>]\)/ casa::\1PixelCanvas\2/g
-\%^ *//%!s/\([ <(]\)PixelCanvasColorTable\([ &*,)<>]\)/ casa::\1PixelCanvasColorTable\2/g
-\%^ *//%!s/\([ <(]\)PixelCanvasEvent\([ &*,)<>]\)/ casa::\1PixelCanvasEvent\2/g
-\%^ *//%!s/\([ <(]\)PixelCurve1D\([ &*,)<>]\)/ casa::\1PixelCurve1D\2/g
-\%^ *//%!s/\([ <(]\)PixonProcessor\([ &*,)<>]\)/ casa::\1PixonProcessor\2/g
-\%^ *//%!s/\([ <(]\)PlainColumn\([ &*,)<>]\)/ casa::\1PlainColumn\2/g
-\%^ *//%!s/\([ <(]\)PlainTable\([ &*,)<>]\)/ casa::\1PlainTable\2/g
-\%^ *//%!s/\([ <(]\)Plot1d\([ &*,)<>]\)/ casa::\1Plot1d\2/g
-\%^ *//%!s/\([ <(]\)Plot1dData\([ &*,)<>]\)/ casa::\1Plot1dData\2/g
-\%^ *//%!s/\([ <(]\)Plot1dSelection\([ &*,)<>]\)/ casa::\1Plot1dSelection\2/g
-\%^ *//%!s/\([ <(]\)PointShape\([ &*,)<>]\)/ casa::\1PointShape\2/g
-\%^ *//%!s/\([ <(]\)Poisson\([ &*,)<>]\)/ casa::\1Poisson\2/g
-\%^ *//%!s/\([ <(]\)Polynomial\([ &*,)<>]\)/ casa::\1Polynomial\2/g
-\%^ *//%!s/\([ <(]\)PolynomialParam\([ &*,)<>]\)/ casa::\1PolynomialParam\2/g
-\%^ *//%!s/\([ <(]\)Polynomial_PS\([ &*,)<>]\)/ casa::\1Polynomial_PS\2/g
-\%^ *//%!s/\([ <(]\)PoolStack\([ &*,)<>]\)/ casa::\1PoolStack\2/g
-\%^ *//%!s/\([ <(]\)Precession\([ &*,)<>]\)/ casa::\1Precession\2/g
-\%^ *//%!s/\([ <(]\)PredictAlgorithm\([ &*,)<>]\)/ casa::\1PredictAlgorithm\2/g
-\%^ *//%!s/\([ <(]\)Primes\([ &*,)<>]\)/ casa::\1Primes\2/g
-\%^ *//%!s/\([ <(]\)PrincipalAxesDD\([ &*,)<>]\)/ casa::\1PrincipalAxesDD\2/g
-\%^ *//%!s/\([ <(]\)PrincipalAxesDM\([ &*,)<>]\)/ casa::\1PrincipalAxesDM\2/g
-\%^ *//%!s/\([ <(]\)Profile\([ &*,)<>]\)/ casa::\1Profile\2/g
-\%^ *//%!s/\([ <(]\)Profile2dDD\([ &*,)<>]\)/ casa::\1Profile2dDD\2/g
-\%^ *//%!s/\([ <(]\)Profile2dDM\([ &*,)<>]\)/ casa::\1Profile2dDM\2/g
-\%^ *//%!s/\([ <(]\)ProfileFit1D\([ &*,)<>]\)/ casa::\1ProfileFit1D\2/g
-\%^ *//%!s/\([ <(]\)ProgressMeter\([ &*,)<>]\)/ casa::\1ProgressMeter\2/g
-\%^ *//%!s/\([ <(]\)Projection\([ &*,)<>]\)/ casa::\1Projection\2/g
-\%^ *//%!s/\([ <(]\)PtrBlock\([ &*,)<>]\)/ casa::\1PtrBlock\2/g
-\%^ *//%!s/\([ <(]\)PtrHolder\([ &*,)<>]\)/ casa::\1PtrHolder\2/g
-\%^ *//%!s/\([ <(]\)PtrRep\([ &*,)<>]\)/ casa::\1PtrRep\2/g
-\%^ *//%!s/\([ <(]\)QBase\([ &*,)<>]\)/ casa::\1QBase\2/g
-\%^ *//%!s/\([ <(]\)QC\([ &*,)<>]\)/ casa::\1QC\2/g
-\%^ *//%!s/\([ <(]\)Qimager\([ &*,)<>]\)/ casa::\1Qimager\2/g
-\%^ *//%!s/\([ <(]\)Quantum\([ &*,)<>]\)/ casa::\1Quantum\2/g
-\%^ *//%!s/\([ <(]\)QuantumHolder\([ &*,)<>]\)/ casa::\1QuantumHolder\2/g
-\%^ *//%!s/\([ <(]\)Queue\([ &*,)<>]\)/ casa::\1Queue\2/g
-\%^ *//%!s/\([ <(]\)RFABase\([ &*,)<>]\)/ casa::\1RFABase\2/g
-\%^ *//%!s/\([ <(]\)RFADiffBase\([ &*,)<>]\)/ casa::\1RFADiffBase\2/g
-\%^ *//%!s/\([ <(]\)RFADiffMapBase\([ &*,)<>]\)/ casa::\1RFADiffMapBase\2/g
-\%^ *//%!s/\([ <(]\)RFAFlagCubeBase\([ &*,)<>]\)/ casa::\1RFAFlagCubeBase\2/g
-\%^ *//%!s/\([ <(]\)RFAFreqMedian\([ &*,)<>]\)/ casa::\1RFAFreqMedian\2/g
-\%^ *//%!s/\([ <(]\)RFANewMedianClip\([ &*,)<>]\)/ casa::\1RFANewMedianClip\2/g
-\%^ *//%!s/\([ <(]\)RFASelector\([ &*,)<>]\)/ casa::\1RFASelector\2/g
-\%^ *//%!s/\([ <(]\)RFASpectralRej\([ &*,)<>]\)/ casa::\1RFASpectralRej\2/g
-\%^ *//%!s/\([ <(]\)RFATimeMedian\([ &*,)<>]\)/ casa::\1RFATimeMedian\2/g
-\%^ *//%!s/\([ <(]\)RFAUVBinner\([ &*,)<>]\)/ casa::\1RFAUVBinner\2/g
-\%^ *//%!s/\([ <(]\)RFChunkStats\([ &*,)<>]\)/ casa::\1RFChunkStats\2/g
-\%^ *//%!s/\([ <(]\)RFCubeLattice\([ &*,)<>]\)/ casa::\1RFCubeLattice\2/g
-\%^ *//%!s/\([ <(]\)RFCubeLatticeIterator\([ &*,)<>]\)/ casa::\1RFCubeLatticeIterator\2/g
-\%^ *//%!s/\([ <(]\)RFDataMapper\([ &*,)<>]\)/ casa::\1RFDataMapper\2/g
-\%^ *//%!s/\([ <(]\)RFDebugPlot\([ &*,)<>]\)/ casa::\1RFDebugPlot\2/g
-\%^ *//%!s/\([ <(]\)RFFlagCube\([ &*,)<>]\)/ casa::\1RFFlagCube\2/g
-\%^ *//%!s/\([ <(]\)RFRowClipper\([ &*,)<>]\)/ casa::\1RFRowClipper\2/g
-\%^ *//%!s/\([ <(]\)RINEX\([ &*,)<>]\)/ casa::\1RINEX\2/g
-\%^ *//%!s/\([ <(]\)RINEXHeader\([ &*,)<>]\)/ casa::\1RINEXHeader\2/g
-\%^ *//%!s/\([ <(]\)RINEXSat\([ &*,)<>]\)/ casa::\1RINEXSat\2/g
-\%^ *//%!s/\([ <(]\)RNG\([ &*,)<>]\)/ casa::\1RNG\2/g
-\%^ *//%!s/\([ <(]\)ROArrayColumn\([ &*,)<>]\)/ casa::\1ROArrayColumn\2/g
-\%^ *//%!s/\([ <(]\)ROArrayMeasColumn\([ &*,)<>]\)/ casa::\1ROArrayMeasColumn\2/g
-\%^ *//%!s/\([ <(]\)ROArrayQuantColumn\([ &*,)<>]\)/ casa::\1ROArrayQuantColumn\2/g
-\%^ *//%!s/\([ <(]\)ROBJonesMCol\([ &*,)<>]\)/ casa::\1ROBJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROBJonesPolyMCol\([ &*,)<>]\)/ casa::\1ROBJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)ROCJonesMCol\([ &*,)<>]\)/ casa::\1ROCJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROCalDescColumns\([ &*,)<>]\)/ casa::\1ROCalDescColumns\2/g
-\%^ *//%!s/\([ <(]\)ROCalHistoryColumns\([ &*,)<>]\)/ casa::\1ROCalHistoryColumns\2/g
-\%^ *//%!s/\([ <(]\)ROCalMainColumns\([ &*,)<>]\)/ casa::\1ROCalMainColumns\2/g
-\%^ *//%!s/\([ <(]\)RODJonesMCol\([ &*,)<>]\)/ casa::\1RODJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)RODataManAccessor\([ &*,)<>]\)/ casa::\1RODataManAccessor\2/g
-\%^ *//%!s/\([ <(]\)ROGJonesMCol\([ &*,)<>]\)/ casa::\1ROGJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROGJonesPolyMCol\([ &*,)<>]\)/ casa::\1ROGJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)ROGJonesSplineMCol\([ &*,)<>]\)/ casa::\1ROGJonesSplineMCol\2/g
-\%^ *//%!s/\([ <(]\)ROIncrementalStManAccessor\([ &*,)<>]\)/ casa::\1ROIncrementalStManAccessor\2/g
-\%^ *//%!s/\([ <(]\)ROMSAntennaColumns\([ &*,)<>]\)/ casa::\1ROMSAntennaColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSColumns\([ &*,)<>]\)/ casa::\1ROMSColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSDataDescColumns\([ &*,)<>]\)/ casa::\1ROMSDataDescColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSDopplerColumns\([ &*,)<>]\)/ casa::\1ROMSDopplerColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSFeedColumns\([ &*,)<>]\)/ casa::\1ROMSFeedColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSFieldColumns\([ &*,)<>]\)/ casa::\1ROMSFieldColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSFlagCmdColumns\([ &*,)<>]\)/ casa::\1ROMSFlagCmdColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSFreqOffsetColumns\([ &*,)<>]\)/ casa::\1ROMSFreqOffsetColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSHistoryColumns\([ &*,)<>]\)/ casa::\1ROMSHistoryColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSMainColumns\([ &*,)<>]\)/ casa::\1ROMSMainColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSObservationColumns\([ &*,)<>]\)/ casa::\1ROMSObservationColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSPointingColumns\([ &*,)<>]\)/ casa::\1ROMSPointingColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSPolarizationColumns\([ &*,)<>]\)/ casa::\1ROMSPolarizationColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSProcessorColumns\([ &*,)<>]\)/ casa::\1ROMSProcessorColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSSourceColumns\([ &*,)<>]\)/ casa::\1ROMSSourceColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSSpWindowColumns\([ &*,)<>]\)/ casa::\1ROMSSpWindowColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSStateColumns\([ &*,)<>]\)/ casa::\1ROMSStateColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSSysCalColumns\([ &*,)<>]\)/ casa::\1ROMSSysCalColumns\2/g
-\%^ *//%!s/\([ <(]\)ROMSWeatherColumns\([ &*,)<>]\)/ casa::\1ROMSWeatherColumns\2/g
-\%^ *//%!s/\([ <(]\)ROPJonesMCol\([ &*,)<>]\)/ casa::\1ROPJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)RORecordFieldPtr\([ &*,)<>]\)/ casa::\1RORecordFieldPtr\2/g
-\%^ *//%!s/\([ <(]\)ROScalarColumn\([ &*,)<>]\)/ casa::\1ROScalarColumn\2/g
-\%^ *//%!s/\([ <(]\)ROScalarMeasColumn\([ &*,)<>]\)/ casa::\1ROScalarMeasColumn\2/g
-\%^ *//%!s/\([ <(]\)ROScalarQuantColumn\([ &*,)<>]\)/ casa::\1ROScalarQuantColumn\2/g
-\%^ *//%!s/\([ <(]\)ROSolvableVisJonesMCol\([ &*,)<>]\)/ casa::\1ROSolvableVisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROStandardStManAccessor\([ &*,)<>]\)/ casa::\1ROStandardStManAccessor\2/g
-\%^ *//%!s/\([ <(]\)ROTJonesMCol\([ &*,)<>]\)/ casa::\1ROTJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROTJonesPolyMCol\([ &*,)<>]\)/ casa::\1ROTJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)ROTJonesSplineMCol\([ &*,)<>]\)/ casa::\1ROTJonesSplineMCol\2/g
-\%^ *//%!s/\([ <(]\)ROTableColumn\([ &*,)<>]\)/ casa::\1ROTableColumn\2/g
-\%^ *//%!s/\([ <(]\)ROTableMeasColumn\([ &*,)<>]\)/ casa::\1ROTableMeasColumn\2/g
-\%^ *//%!s/\([ <(]\)ROTableRow\([ &*,)<>]\)/ casa::\1ROTableRow\2/g
-\%^ *//%!s/\([ <(]\)ROTableVector\([ &*,)<>]\)/ casa::\1ROTableVector\2/g
-\%^ *//%!s/\([ <(]\)ROTiledStManAccessor\([ &*,)<>]\)/ casa::\1ROTiledStManAccessor\2/g
-\%^ *//%!s/\([ <(]\)ROTimeVarVisJonesMCol\([ &*,)<>]\)/ casa::\1ROTimeVarVisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROVisJonesMCol\([ &*,)<>]\)/ casa::\1ROVisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)ROVisibilityIterator\([ &*,)<>]\)/ casa::\1ROVisibilityIterator\2/g
-\%^ *//%!s/\([ <(]\)RO_LatticeIterator\([ &*,)<>]\)/ casa::\1RO_LatticeIterator\2/g
-\%^ *//%!s/\([ <(]\)RO_MaskedLatticeIterator\([ &*,)<>]\)/ casa::\1RO_MaskedLatticeIterator\2/g
-\%^ *//%!s/\([ <(]\)Random\([ &*,)<>]\)/ casa::\1Random\2/g
-\%^ *//%!s/\([ <(]\)RawDataConversion\([ &*,)<>]\)/ casa::\1RawDataConversion\2/g
-\%^ *//%!s/\([ <(]\)RawIO\([ &*,)<>]\)/ casa::\1RawIO\2/g
-\%^ *//%!s/\([ <(]\)ReadAsciiTable\([ &*,)<>]\)/ casa::\1ReadAsciiTable\2/g
-\%^ *//%!s/\([ <(]\)ReadMSAlgorithm\([ &*,)<>]\)/ casa::\1ReadMSAlgorithm\2/g
-\%^ *//%!s/\([ <(]\)ReadOnlyArrayIterator\([ &*,)<>]\)/ casa::\1ReadOnlyArrayIterator\2/g
-\%^ *//%!s/\([ <(]\)ReadOnlyMatrixIterator\([ &*,)<>]\)/ casa::\1ReadOnlyMatrixIterator\2/g
-\%^ *//%!s/\([ <(]\)ReadOnlyVectorIterator\([ &*,)<>]\)/ casa::\1ReadOnlyVectorIterator\2/g
-\%^ *//%!s/\([ <(]\)RebinImage\([ &*,)<>]\)/ casa::\1RebinImage\2/g
-\%^ *//%!s/\([ <(]\)RebinLattice\([ &*,)<>]\)/ casa::\1RebinLattice\2/g
-\%^ *//%!s/\([ <(]\)Record\([ &*,)<>]\)/ casa::\1Record\2/g
-\%^ *//%!s/\([ <(]\)RecordDesc\([ &*,)<>]\)/ casa::\1RecordDesc\2/g
-\%^ *//%!s/\([ <(]\)RecordDescRep\([ &*,)<>]\)/ casa::\1RecordDescRep\2/g
-\%^ *//%!s/\([ <(]\)RecordExpr\([ &*,)<>]\)/ casa::\1RecordExpr\2/g
-\%^ *//%!s/\([ <(]\)RecordFieldCopier\([ &*,)<>]\)/ casa::\1RecordFieldCopier\2/g
-\%^ *//%!s/\([ <(]\)RecordFieldId\([ &*,)<>]\)/ casa::\1RecordFieldId\2/g
-\%^ *//%!s/\([ <(]\)RecordFieldPtr\([ &*,)<>]\)/ casa::\1RecordFieldPtr\2/g
-\%^ *//%!s/\([ <(]\)RecordFieldWriter\([ &*,)<>]\)/ casa::\1RecordFieldWriter\2/g
-\%^ *//%!s/\([ <(]\)RecordGram\([ &*,)<>]\)/ casa::\1RecordGram\2/g
-\%^ *//%!s/\([ <(]\)RecordGramFunctions\([ &*,)<>]\)/ casa::\1RecordGramFunctions\2/g
-\%^ *//%!s/\([ <(]\)RecordInterface\([ &*,)<>]\)/ casa::\1RecordInterface\2/g
-\%^ *//%!s/\([ <(]\)RecordNotice\([ &*,)<>]\)/ casa::\1RecordNotice\2/g
-\%^ *//%!s/\([ <(]\)RecordRep\([ &*,)<>]\)/ casa::\1RecordRep\2/g
-\%^ *//%!s/\([ <(]\)RecordTransformable\([ &*,)<>]\)/ casa::\1RecordTransformable\2/g
-\%^ *//%!s/\([ <(]\)RectRegionEvent\([ &*,)<>]\)/ casa::\1RectRegionEvent\2/g
-\%^ *//%!s/\([ <(]\)RedFlagger\([ &*,)<>]\)/ casa::\1RedFlagger\2/g
-\%^ *//%!s/\([ <(]\)RefColumn\([ &*,)<>]\)/ casa::\1RefColumn\2/g
-\%^ *//%!s/\([ <(]\)RefRows\([ &*,)<>]\)/ casa::\1RefRows\2/g
-\%^ *//%!s/\([ <(]\)RefRowsSliceIter\([ &*,)<>]\)/ casa::\1RefRowsSliceIter\2/g
-\%^ *//%!s/\([ <(]\)RefTable\([ &*,)<>]\)/ casa::\1RefTable\2/g
-\%^ *//%!s/\([ <(]\)RegSequence\([ &*,)<>]\)/ casa::\1RegSequence\2/g
-\%^ *//%!s/\([ <(]\)Regex\([ &*,)<>]\)/ casa::\1Regex\2/g
-\%^ *//%!s/\([ <(]\)RegexBase\([ &*,)<>]\)/ casa::\1RegexBase\2/g
-\%^ *//%!s/\([ <(]\)RegionHandler\([ &*,)<>]\)/ casa::\1RegionHandler\2/g
-\%^ *//%!s/\([ <(]\)RegionHandlerMemory\([ &*,)<>]\)/ casa::\1RegionHandlerMemory\2/g
-\%^ *//%!s/\([ <(]\)RegionHandlerTable\([ &*,)<>]\)/ casa::\1RegionHandlerTable\2/g
-\%^ *//%!s/\([ <(]\)RegionType\([ &*,)<>]\)/ casa::\1RegionType\2/g
-\%^ *//%!s/\([ <(]\)RegularFile\([ &*,)<>]\)/ casa::\1RegularFile\2/g
-\%^ *//%!s/\([ <(]\)RegularFileIO\([ &*,)<>]\)/ casa::\1RegularFileIO\2/g
-\%^ *//%!s/\([ <(]\)ResetCrosshairEvent\([ &*,)<>]\)/ casa::\1ResetCrosshairEvent\2/g
-\%^ *//%!s/\([ <(]\)ResetRTRegionEvent\([ &*,)<>]\)/ casa::\1ResetRTRegionEvent\2/g
-\%^ *//%!s/\([ <(]\)ResidualAlgorithm\([ &*,)<>]\)/ casa::\1ResidualAlgorithm\2/g
-\%^ *//%!s/\([ <(]\)ResidualEquation\([ &*,)<>]\)/ casa::\1ResidualEquation\2/g
-\%^ *//%!s/\([ <(]\)RetypedArrayEngine\([ &*,)<>]\)/ casa::\1RetypedArrayEngine\2/g
-\%^ *//%!s/\([ <(]\)RetypedArrayEngineSetGet\([ &*,)<>]\)/ casa::\1RetypedArrayEngineSetGet\2/g
-\%^ *//%!s/\([ <(]\)RigidVector\([ &*,)<>]\)/ casa::\1RigidVector\2/g
-\%^ *//%!s/\([ <(]\)RotMatrix\([ &*,)<>]\)/ casa::\1RotMatrix\2/g
-\%^ *//%!s/\([ <(]\)RowCopier\([ &*,)<>]\)/ casa::\1RowCopier\2/g
-\%^ *//%!s/\([ <(]\)SCSL\([ &*,)<>]\)/ casa::\1SCSL\2/g
-\%^ *//%!s/\([ <(]\)SDAntennaHandler\([ &*,)<>]\)/ casa::\1SDAntennaHandler\2/g
-\%^ *//%!s/\([ <(]\)SDDataDescHandler\([ &*,)<>]\)/ casa::\1SDDataDescHandler\2/g
-\%^ *//%!s/\([ <(]\)SDDataSampling\([ &*,)<>]\)/ casa::\1SDDataSampling\2/g
-\%^ *//%!s/\([ <(]\)SDFITSDataIterator\([ &*,)<>]\)/ casa::\1SDFITSDataIterator\2/g
-\%^ *//%!s/\([ <(]\)SDFITSHandler\([ &*,)<>]\)/ casa::\1SDFITSHandler\2/g
-\%^ *//%!s/\([ <(]\)SDFeedHandler\([ &*,)<>]\)/ casa::\1SDFeedHandler\2/g
-\%^ *//%!s/\([ <(]\)SDFieldHandler\([ &*,)<>]\)/ casa::\1SDFieldHandler\2/g
-\%^ *//%!s/\([ <(]\)SDGrid\([ &*,)<>]\)/ casa::\1SDGrid\2/g
-\%^ *//%!s/\([ <(]\)SDHistoryHandler\([ &*,)<>]\)/ casa::\1SDHistoryHandler\2/g
-\%^ *//%!s/\([ <(]\)SDMainHandler\([ &*,)<>]\)/ casa::\1SDMainHandler\2/g
-\%^ *//%!s/\([ <(]\)SDObservationHandler\([ &*,)<>]\)/ casa::\1SDObservationHandler\2/g
-\%^ *//%!s/\([ <(]\)SDPointingHandler\([ &*,)<>]\)/ casa::\1SDPointingHandler\2/g
-\%^ *//%!s/\([ <(]\)SDPolarizationHandler\([ &*,)<>]\)/ casa::\1SDPolarizationHandler\2/g
-\%^ *//%!s/\([ <(]\)SDSourceHandler\([ &*,)<>]\)/ casa::\1SDSourceHandler\2/g
-\%^ *//%!s/\([ <(]\)SDSpWindowHandler\([ &*,)<>]\)/ casa::\1SDSpWindowHandler\2/g
-\%^ *//%!s/\([ <(]\)SDSysCalHandler\([ &*,)<>]\)/ casa::\1SDSysCalHandler\2/g
-\%^ *//%!s/\([ <(]\)SDWeatherHandler\([ &*,)<>]\)/ casa::\1SDWeatherHandler\2/g
-\%^ *//%!s/\([ <(]\)SPolynomial\([ &*,)<>]\)/ casa::\1SPolynomial\2/g
-\%^ *//%!s/\([ <(]\)SPolynomialParam\([ &*,)<>]\)/ casa::\1SPolynomialParam\2/g
-\%^ *//%!s/\([ <(]\)SSMBase\([ &*,)<>]\)/ casa::\1SSMBase\2/g
-\%^ *//%!s/\([ <(]\)SSMColumn\([ &*,)<>]\)/ casa::\1SSMColumn\2/g
-\%^ *//%!s/\([ <(]\)SSMDirColumn\([ &*,)<>]\)/ casa::\1SSMDirColumn\2/g
-\%^ *//%!s/\([ <(]\)SSMIndColumn\([ &*,)<>]\)/ casa::\1SSMIndColumn\2/g
-\%^ *//%!s/\([ <(]\)SSMIndStringColumn\([ &*,)<>]\)/ casa::\1SSMIndStringColumn\2/g
-\%^ *//%!s/\([ <(]\)SSMIndex\([ &*,)<>]\)/ casa::\1SSMIndex\2/g
-\%^ *//%!s/\([ <(]\)SSMStringHandler\([ &*,)<>]\)/ casa::\1SSMStringHandler\2/g
-\%^ *//%!s/\([ <(]\)SampledFunctional\([ &*,)<>]\)/ casa::\1SampledFunctional\2/g
-\%^ *//%!s/\([ <(]\)ScalarColumn\([ &*,)<>]\)/ casa::\1ScalarColumn\2/g
-\%^ *//%!s/\([ <(]\)ScalarColumnData\([ &*,)<>]\)/ casa::\1ScalarColumnData\2/g
-\%^ *//%!s/\([ <(]\)ScalarColumnDesc\([ &*,)<>]\)/ casa::\1ScalarColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)ScalarMeasColumn\([ &*,)<>]\)/ casa::\1ScalarMeasColumn\2/g
-\%^ *//%!s/\([ <(]\)ScalarParameterAccessor\([ &*,)<>]\)/ casa::\1ScalarParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)ScalarQuantColumn\([ &*,)<>]\)/ casa::\1ScalarQuantColumn\2/g
-\%^ *//%!s/\([ <(]\)ScalarRecordColumnData\([ &*,)<>]\)/ casa::\1ScalarRecordColumnData\2/g
-\%^ *//%!s/\([ <(]\)ScalarRecordColumnDesc\([ &*,)<>]\)/ casa::\1ScalarRecordColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)ScalarSampledFunctional\([ &*,)<>]\)/ casa::\1ScalarSampledFunctional\2/g
-\%^ *//%!s/\([ <(]\)ScaledArrayEngine\([ &*,)<>]\)/ casa::\1ScaledArrayEngine\2/g
-\%^ *//%!s/\([ <(]\)ScaledComplexData\([ &*,)<>]\)/ casa::\1ScaledComplexData\2/g
-\%^ *//%!s/\([ <(]\)ScrollingRasterDD\([ &*,)<>]\)/ casa::\1ScrollingRasterDD\2/g
-\%^ *//%!s/\([ <(]\)ScrollingRasterDM\([ &*,)<>]\)/ casa::\1ScrollingRasterDM\2/g
-\%^ *//%!s/\([ <(]\)SepImageConvolver\([ &*,)<>]\)/ casa::\1SepImageConvolver\2/g
-\%^ *//%!s/\([ <(]\)Sequence\([ &*,)<>]\)/ casa::\1Sequence\2/g
-\%^ *//%!s/\([ <(]\)SerialHelper\([ &*,)<>]\)/ casa::\1SerialHelper\2/g
-\%^ *//%!s/\([ <(]\)SerialTransport\([ &*,)<>]\)/ casa::\1SerialTransport\2/g
-\%^ *//%!s/\([ <(]\)SetupNewTable\([ &*,)<>]\)/ casa::\1SetupNewTable\2/g
-\%^ *//%!s/\([ <(]\)SetupNewTableRep\([ &*,)<>]\)/ casa::\1SetupNewTableRep\2/g
-\%^ *//%!s/\([ <(]\)Shape\([ &*,)<>]\)/ casa::\1Shape\2/g
-\%^ *//%!s/\([ <(]\)SimACohCalc\([ &*,)<>]\)/ casa::\1SimACohCalc\2/g
-\%^ *//%!s/\([ <(]\)SimAntGainCache\([ &*,)<>]\)/ casa::\1SimAntGainCache\2/g
-\%^ *//%!s/\([ <(]\)SimButterworthBandpass\([ &*,)<>]\)/ casa::\1SimButterworthBandpass\2/g
-\%^ *//%!s/\([ <(]\)SimDJones\([ &*,)<>]\)/ casa::\1SimDJones\2/g
-\%^ *//%!s/\([ <(]\)SimGJones\([ &*,)<>]\)/ casa::\1SimGJones\2/g
-\%^ *//%!s/\([ <(]\)SimVisJones\([ &*,)<>]\)/ casa::\1SimVisJones\2/g
-\%^ *//%!s/\([ <(]\)SimpComponentGridMachine\([ &*,)<>]\)/ casa::\1SimpComponentGridMachine\2/g
-\%^ *//%!s/\([ <(]\)SimpleComponentFTMachine\([ &*,)<>]\)/ casa::\1SimpleComponentFTMachine\2/g
-\%^ *//%!s/\([ <(]\)SimpleComponentGridMachine\([ &*,)<>]\)/ casa::\1SimpleComponentGridMachine\2/g
-\%^ *//%!s/\([ <(]\)SimpleCountedConstPtr\([ &*,)<>]\)/ casa::\1SimpleCountedConstPtr\2/g
-\%^ *//%!s/\([ <(]\)SimpleCountedPtr\([ &*,)<>]\)/ casa::\1SimpleCountedPtr\2/g
-\%^ *//%!s/\([ <(]\)SimpleOrderedMap\([ &*,)<>]\)/ casa::\1SimpleOrderedMap\2/g
-\%^ *//%!s/\([ <(]\)SimplePixelCanvasApp\([ &*,)<>]\)/ casa::\1SimplePixelCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)SimpleRGBPixelCanvasApp\([ &*,)<>]\)/ casa::\1SimpleRGBPixelCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)SimpleWorldCanvasApp\([ &*,)<>]\)/ casa::\1SimpleWorldCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)SimpleWorldGLCanvasApp\([ &*,)<>]\)/ casa::\1SimpleWorldGLCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)SincFunction\([ &*,)<>]\)/ casa::\1SincFunction\2/g
-\%^ *//%!s/\([ <(]\)SincParam\([ &*,)<>]\)/ casa::\1SincParam\2/g
-\%^ *//%!s/\([ <(]\)Sinc_Conv\([ &*,)<>]\)/ casa::\1Sinc_Conv\2/g
-\%^ *//%!s/\([ <(]\)Sinusoid1D\([ &*,)<>]\)/ casa::\1Sinusoid1D\2/g
-\%^ *//%!s/\([ <(]\)Sinusoid1DParam\([ &*,)<>]\)/ casa::\1Sinusoid1DParam\2/g
-\%^ *//%!s/\([ <(]\)Sinusoid1D_PS\([ &*,)<>]\)/ casa::\1Sinusoid1D_PS\2/g
-\%^ *//%!s/\([ <(]\)SkyCatOverlayDD\([ &*,)<>]\)/ casa::\1SkyCatOverlayDD\2/g
-\%^ *//%!s/\([ <(]\)SkyCatOverlayDM\([ &*,)<>]\)/ casa::\1SkyCatOverlayDM\2/g
-\%^ *//%!s/\([ <(]\)SkyCompBase\([ &*,)<>]\)/ casa::\1SkyCompBase\2/g
-\%^ *//%!s/\([ <(]\)SkyCompRep\([ &*,)<>]\)/ casa::\1SkyCompRep\2/g
-\%^ *//%!s/\([ <(]\)SkyComponent\([ &*,)<>]\)/ casa::\1SkyComponent\2/g
-\%^ *//%!s/\([ <(]\)SkyComponentParameterAccessor\([ &*,)<>]\)/ casa::\1SkyComponentParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)SkyEquation\([ &*,)<>]\)/ casa::\1SkyEquation\2/g
-\%^ *//%!s/\([ <(]\)SkyJones\([ &*,)<>]\)/ casa::\1SkyJones\2/g
-\%^ *//%!s/\([ <(]\)SkyJonesDesc\([ &*,)<>]\)/ casa::\1SkyJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)SkyModel\([ &*,)<>]\)/ casa::\1SkyModel\2/g
-\%^ *//%!s/\([ <(]\)Slice\([ &*,)<>]\)/ casa::\1Slice\2/g
-\%^ *//%!s/\([ <(]\)SliceEH\([ &*,)<>]\)/ casa::\1SliceEH\2/g
-\%^ *//%!s/\([ <(]\)SlicePanelDisplay\([ &*,)<>]\)/ casa::\1SlicePanelDisplay\2/g
-\%^ *//%!s/\([ <(]\)Slicer\([ &*,)<>]\)/ casa::\1Slicer\2/g
-\%^ *//%!s/\([ <(]\)SofaTest\([ &*,)<>]\)/ casa::\1SofaTest\2/g
-\%^ *//%!s/\([ <(]\)SolarPos\([ &*,)<>]\)/ casa::\1SolarPos\2/g
-\%^ *//%!s/\([ <(]\)SolvableMJones\([ &*,)<>]\)/ casa::\1SolvableMJones\2/g
-\%^ *//%!s/\([ <(]\)SolvableMJonesDesc\([ &*,)<>]\)/ casa::\1SolvableMJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)SolvableMJonesMRec\([ &*,)<>]\)/ casa::\1SolvableMJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)SolvableVisJonesDesc\([ &*,)<>]\)/ casa::\1SolvableVisJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)SolvableVisJonesMBuf\([ &*,)<>]\)/ casa::\1SolvableVisJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)SolvableVisJonesMCol\([ &*,)<>]\)/ casa::\1SolvableVisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)SolvableVisJonesMRec\([ &*,)<>]\)/ casa::\1SolvableVisJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)SolvableVisJonesTable\([ &*,)<>]\)/ casa::\1SolvableVisJonesTable\2/g
-\%^ *//%!s/\([ <(]\)Sort\([ &*,)<>]\)/ casa::\1Sort\2/g
-\%^ *//%!s/\([ <(]\)SortError\([ &*,)<>]\)/ casa::\1SortError\2/g
-\%^ *//%!s/\([ <(]\)SortInvDT\([ &*,)<>]\)/ casa::\1SortInvDT\2/g
-\%^ *//%!s/\([ <(]\)SortInvIncr\([ &*,)<>]\)/ casa::\1SortInvIncr\2/g
-\%^ *//%!s/\([ <(]\)SortInvOpt\([ &*,)<>]\)/ casa::\1SortInvOpt\2/g
-\%^ *//%!s/\([ <(]\)SortKey\([ &*,)<>]\)/ casa::\1SortKey\2/g
-\%^ *//%!s/\([ <(]\)SortNoData\([ &*,)<>]\)/ casa::\1SortNoData\2/g
-\%^ *//%!s/\([ <(]\)SourceLocation\([ &*,)<>]\)/ casa::\1SourceLocation\2/g
-\%^ *//%!s/\([ <(]\)SpecificFunctionFactory\([ &*,)<>]\)/ casa::\1SpecificFunctionFactory\2/g
-\%^ *//%!s/\([ <(]\)SpectralCoordinate\([ &*,)<>]\)/ casa::\1SpectralCoordinate\2/g
-\%^ *//%!s/\([ <(]\)SpectralElement\([ &*,)<>]\)/ casa::\1SpectralElement\2/g
-\%^ *//%!s/\([ <(]\)SpectralEstimate\([ &*,)<>]\)/ casa::\1SpectralEstimate\2/g
-\%^ *//%!s/\([ <(]\)SpectralFit\([ &*,)<>]\)/ casa::\1SpectralFit\2/g
-\%^ *//%!s/\([ <(]\)SpectralIndex\([ &*,)<>]\)/ casa::\1SpectralIndex\2/g
-\%^ *//%!s/\([ <(]\)SpectralList\([ &*,)<>]\)/ casa::\1SpectralList\2/g
-\%^ *//%!s/\([ <(]\)SpectralModel\([ &*,)<>]\)/ casa::\1SpectralModel\2/g
-\%^ *//%!s/\([ <(]\)Sph_Conv\([ &*,)<>]\)/ casa::\1Sph_Conv\2/g
-\%^ *//%!s/\([ <(]\)SqM_global_functions\([ &*,)<>]\)/ casa::\1SqM_global_functions\2/g
-\%^ *//%!s/\([ <(]\)SquareMatrix\([ &*,)<>]\)/ casa::\1SquareMatrix\2/g
-\%^ *//%!s/\([ <(]\)StIndArray\([ &*,)<>]\)/ casa::\1StIndArray\2/g
-\%^ *//%!s/\([ <(]\)StManAipsIO\([ &*,)<>]\)/ casa::\1StManAipsIO\2/g
-\%^ *//%!s/\([ <(]\)StManArrayFile\([ &*,)<>]\)/ casa::\1StManArrayFile\2/g
-\%^ *//%!s/\([ <(]\)StManColumn\([ &*,)<>]\)/ casa::\1StManColumn\2/g
-\%^ *//%!s/\([ <(]\)StManColumnAipsIO\([ &*,)<>]\)/ casa::\1StManColumnAipsIO\2/g
-\%^ *//%!s/\([ <(]\)StManColumnArrayAipsIO\([ &*,)<>]\)/ casa::\1StManColumnArrayAipsIO\2/g
-\%^ *//%!s/\([ <(]\)StManColumnIndArrayAipsIO\([ &*,)<>]\)/ casa::\1StManColumnIndArrayAipsIO\2/g
-\%^ *//%!s/\([ <(]\)Stack\([ &*,)<>]\)/ casa::\1Stack\2/g
-\%^ *//%!s/\([ <(]\)StandardObjectFactory\([ &*,)<>]\)/ casa::\1StandardObjectFactory\2/g
-\%^ *//%!s/\([ <(]\)StandardStMan\([ &*,)<>]\)/ casa::\1StandardStMan\2/g
-\%^ *//%!s/\([ <(]\)Star\([ &*,)<>]\)/ casa::\1Star\2/g
-\%^ *//%!s/\([ <(]\)StatAcc\([ &*,)<>]\)/ casa::\1StatAcc\2/g
-\%^ *//%!s/\([ <(]\)StatsTiledCollapser\([ &*,)<>]\)/ casa::\1StatsTiledCollapser\2/g
-\%^ *//%!s/\([ <(]\)Stokes\([ &*,)<>]\)/ casa::\1Stokes\2/g
-\%^ *//%!s/\([ <(]\)StokesConverter\([ &*,)<>]\)/ casa::\1StokesConverter\2/g
-\%^ *//%!s/\([ <(]\)StokesCoordinate\([ &*,)<>]\)/ casa::\1StokesCoordinate\2/g
-\%^ *//%!s/\([ <(]\)StokesImageUtil\([ &*,)<>]\)/ casa::\1StokesImageUtil\2/g
-\%^ *//%!s/\([ <(]\)StokesVector\([ &*,)<>]\)/ casa::\1StokesVector\2/g
-\%^ *//%!s/\([ <(]\)StorageInitPolicy\([ &*,)<>]\)/ casa::\1StorageInitPolicy\2/g
-\%^ *//%!s/\([ <(]\)StreamIO\([ &*,)<>]\)/ casa::\1StreamIO\2/g
-\%^ *//%!s/\([ <(]\)StreamLogSink\([ &*,)<>]\)/ casa::\1StreamLogSink\2/g
-\%^ *//%!s/\([ <(]\)String\([ &*,)<>]\)/ casa::\1String\2/g
-\%^ *//%!s/\([ <(]\)SubImage\([ &*,)<>]\)/ casa::\1SubImage\2/g
-\%^ *//%!s/\([ <(]\)SubLattice\([ &*,)<>]\)/ casa::\1SubLattice\2/g
-\%^ *//%!s/\([ <(]\)SubMS\([ &*,)<>]\)/ casa::\1SubMS\2/g
-\%^ *//%!s/\([ <(]\)SubString\([ &*,)<>]\)/ casa::\1SubString\2/g
-\%^ *//%!s/\([ <(]\)SubTableDesc\([ &*,)<>]\)/ casa::\1SubTableDesc\2/g
-\%^ *//%!s/\([ <(]\)SymLink\([ &*,)<>]\)/ casa::\1SymLink\2/g
-\%^ *//%!s/\([ <(]\)SynDataSampling\([ &*,)<>]\)/ casa::\1SynDataSampling\2/g
-\%^ *//%!s/\([ <(]\)SysEvent\([ &*,)<>]\)/ casa::\1SysEvent\2/g
-\%^ *//%!s/\([ <(]\)SysEventSource\([ &*,)<>]\)/ casa::\1SysEventSource\2/g
-\%^ *//%!s/\([ <(]\)SysEventTarget\([ &*,)<>]\)/ casa::\1SysEventTarget\2/g
-\%^ *//%!s/\([ <(]\)SysEventTargetInfo\([ &*,)<>]\)/ casa::\1SysEventTargetInfo\2/g
-\%^ *//%!s/\([ <(]\)TJonesDesc\([ &*,)<>]\)/ casa::\1TJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)TJonesMBuf\([ &*,)<>]\)/ casa::\1TJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)TJonesMCol\([ &*,)<>]\)/ casa::\1TJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)TJonesMRec\([ &*,)<>]\)/ casa::\1TJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)TJonesPoly\([ &*,)<>]\)/ casa::\1TJonesPoly\2/g
-\%^ *//%!s/\([ <(]\)TJonesPolyDesc\([ &*,)<>]\)/ casa::\1TJonesPolyDesc\2/g
-\%^ *//%!s/\([ <(]\)TJonesPolyMBuf\([ &*,)<>]\)/ casa::\1TJonesPolyMBuf\2/g
-\%^ *//%!s/\([ <(]\)TJonesPolyMCol\([ &*,)<>]\)/ casa::\1TJonesPolyMCol\2/g
-\%^ *//%!s/\([ <(]\)TJonesPolyTable\([ &*,)<>]\)/ casa::\1TJonesPolyTable\2/g
-\%^ *//%!s/\([ <(]\)TJonesSpline\([ &*,)<>]\)/ casa::\1TJonesSpline\2/g
-\%^ *//%!s/\([ <(]\)TJonesSplineDesc\([ &*,)<>]\)/ casa::\1TJonesSplineDesc\2/g
-\%^ *//%!s/\([ <(]\)TJonesSplineMBuf\([ &*,)<>]\)/ casa::\1TJonesSplineMBuf\2/g
-\%^ *//%!s/\([ <(]\)TJonesSplineMCol\([ &*,)<>]\)/ casa::\1TJonesSplineMCol\2/g
-\%^ *//%!s/\([ <(]\)TJonesSplineTable\([ &*,)<>]\)/ casa::\1TJonesSplineTable\2/g
-\%^ *//%!s/\([ <(]\)TJonesTable\([ &*,)<>]\)/ casa::\1TJonesTable\2/g
-\%^ *//%!s/\([ <(]\)TSMColumn\([ &*,)<>]\)/ casa::\1TSMColumn\2/g
-\%^ *//%!s/\([ <(]\)TSMCoordColumn\([ &*,)<>]\)/ casa::\1TSMCoordColumn\2/g
-\%^ *//%!s/\([ <(]\)TSMCube\([ &*,)<>]\)/ casa::\1TSMCube\2/g
-\%^ *//%!s/\([ <(]\)TSMDataColumn\([ &*,)<>]\)/ casa::\1TSMDataColumn\2/g
-\%^ *//%!s/\([ <(]\)TSMError\([ &*,)<>]\)/ casa::\1TSMError\2/g
-\%^ *//%!s/\([ <(]\)TSMFile\([ &*,)<>]\)/ casa::\1TSMFile\2/g
-\%^ *//%!s/\([ <(]\)TSMIdColumn\([ &*,)<>]\)/ casa::\1TSMIdColumn\2/g
-\%^ *//%!s/\([ <(]\)TSMShape\([ &*,)<>]\)/ casa::\1TSMShape\2/g
-\%^ *//%!s/\([ <(]\)TaQLResult\([ &*,)<>]\)/ casa::\1TaQLResult\2/g
-\%^ *//%!s/\([ <(]\)TabPath\([ &*,)<>]\)/ casa::\1TabPath\2/g
-\%^ *//%!s/\([ <(]\)TabVecRep\([ &*,)<>]\)/ casa::\1TabVecRep\2/g
-\%^ *//%!s/\([ <(]\)TabVecScaCol\([ &*,)<>]\)/ casa::\1TabVecScaCol\2/g
-\%^ *//%!s/\([ <(]\)TabVecTemp\([ &*,)<>]\)/ casa::\1TabVecTemp\2/g
-\%^ *//%!s/\([ <(]\)Table\([ &*,)<>]\)/ casa::\1Table\2/g
-\%^ *//%!s/\([ <(]\)TableArrayConformanceError\([ &*,)<>]\)/ casa::\1TableArrayConformanceError\2/g
-\%^ *//%!s/\([ <(]\)TableAttr\([ &*,)<>]\)/ casa::\1TableAttr\2/g
-\%^ *//%!s/\([ <(]\)TableCache\([ &*,)<>]\)/ casa::\1TableCache\2/g
-\%^ *//%!s/\([ <(]\)TableColumn\([ &*,)<>]\)/ casa::\1TableColumn\2/g
-\%^ *//%!s/\([ <(]\)TableConformanceError\([ &*,)<>]\)/ casa::\1TableConformanceError\2/g
-\%^ *//%!s/\([ <(]\)TableCopy\([ &*,)<>]\)/ casa::\1TableCopy\2/g
-\%^ *//%!s/\([ <(]\)TableDesc\([ &*,)<>]\)/ casa::\1TableDesc\2/g
-\%^ *//%!s/\([ <(]\)TableDescNoName\([ &*,)<>]\)/ casa::\1TableDescNoName\2/g
-\%^ *//%!s/\([ <(]\)TableDuplFile\([ &*,)<>]\)/ casa::\1TableDuplFile\2/g
-\%^ *//%!s/\([ <(]\)TableError\([ &*,)<>]\)/ casa::\1TableError\2/g
-\%^ *//%!s/\([ <(]\)TableExprData\([ &*,)<>]\)/ casa::\1TableExprData\2/g
-\%^ *//%!s/\([ <(]\)TableExprFuncNode\([ &*,)<>]\)/ casa::\1TableExprFuncNode\2/g
-\%^ *//%!s/\([ <(]\)TableExprFuncNodeArray\([ &*,)<>]\)/ casa::\1TableExprFuncNodeArray\2/g
-\%^ *//%!s/\([ <(]\)TableExprId\([ &*,)<>]\)/ casa::\1TableExprId\2/g
-\%^ *//%!s/\([ <(]\)TableExprNode\([ &*,)<>]\)/ casa::\1TableExprNode\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeAND\([ &*,)<>]\)/ casa::\1TableExprNodeAND\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArray\([ &*,)<>]\)/ casa::\1TableExprNodeArray\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayAND\([ &*,)<>]\)/ casa::\1TableExprNodeArrayAND\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumn\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumn\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnBool\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnFloat\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnFloat\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnInt\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnInt\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnShort\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnShort\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuChar\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnuChar\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuInt\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnuInt\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuShort\([ &*,)<>]\)/ casa::\1TableExprNodeArrayColumnuShort\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstBool\([ &*,)<>]\)/ casa::\1TableExprNodeArrayConstBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayConstDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayConstDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayConstDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayConstString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayDivideDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayDivideDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayDivideDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayDivideDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQBool\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQRegex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQRegex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayEQString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGEDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGEDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGEDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGEString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGTDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGTDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGTDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayGTString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayINDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayINDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayINDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayINString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayINString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayMIN\([ &*,)<>]\)/ casa::\1TableExprNodeArrayMIN\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayMinusDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayMinusDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayMinusDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayMinusDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayModuloDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayModuloDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEBool\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNEBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNEDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDate\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNEDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNEDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNERegex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNERegex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNEString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayNOT\([ &*,)<>]\)/ casa::\1TableExprNodeArrayNOT\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayOR\([ &*,)<>]\)/ casa::\1TableExprNodeArrayOR\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayPart\([ &*,)<>]\)/ casa::\1TableExprNodeArrayPart\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayPlusDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayPlusDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusString\([ &*,)<>]\)/ casa::\1TableExprNodeArrayPlusString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayTimesDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeArrayTimesDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeArrayTimesDouble\([ &*,)<>]\)/ casa::\1TableExprNodeArrayTimesDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeBinary\([ &*,)<>]\)/ casa::\1TableExprNodeBinary\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeColumn\([ &*,)<>]\)/ casa::\1TableExprNodeColumn\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstBool\([ &*,)<>]\)/ casa::\1TableExprNodeConstBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeConstDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstDate\([ &*,)<>]\)/ casa::\1TableExprNodeConstDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstDouble\([ &*,)<>]\)/ casa::\1TableExprNodeConstDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstRegex\([ &*,)<>]\)/ casa::\1TableExprNodeConstRegex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeConstString\([ &*,)<>]\)/ casa::\1TableExprNodeConstString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeDivideDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeDivideDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeDivideDouble\([ &*,)<>]\)/ casa::\1TableExprNodeDivideDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQBool\([ &*,)<>]\)/ casa::\1TableExprNodeEQBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeEQDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQDate\([ &*,)<>]\)/ casa::\1TableExprNodeEQDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQDouble\([ &*,)<>]\)/ casa::\1TableExprNodeEQDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQRegex\([ &*,)<>]\)/ casa::\1TableExprNodeEQRegex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeEQString\([ &*,)<>]\)/ casa::\1TableExprNodeEQString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGEDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeGEDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGEDate\([ &*,)<>]\)/ casa::\1TableExprNodeGEDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGEDouble\([ &*,)<>]\)/ casa::\1TableExprNodeGEDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGEString\([ &*,)<>]\)/ casa::\1TableExprNodeGEString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGTDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeGTDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGTDate\([ &*,)<>]\)/ casa::\1TableExprNodeGTDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGTDouble\([ &*,)<>]\)/ casa::\1TableExprNodeGTDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeGTString\([ &*,)<>]\)/ casa::\1TableExprNodeGTString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeINDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeINDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeINDate\([ &*,)<>]\)/ casa::\1TableExprNodeINDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeINDouble\([ &*,)<>]\)/ casa::\1TableExprNodeINDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeINString\([ &*,)<>]\)/ casa::\1TableExprNodeINString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeIndex\([ &*,)<>]\)/ casa::\1TableExprNodeIndex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeMIN\([ &*,)<>]\)/ casa::\1TableExprNodeMIN\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeMinusDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeMinusDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeMinusDate\([ &*,)<>]\)/ casa::\1TableExprNodeMinusDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeMinusDouble\([ &*,)<>]\)/ casa::\1TableExprNodeMinusDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeModuloDouble\([ &*,)<>]\)/ casa::\1TableExprNodeModuloDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeMulti\([ &*,)<>]\)/ casa::\1TableExprNodeMulti\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNEBool\([ &*,)<>]\)/ casa::\1TableExprNodeNEBool\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNEDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeNEDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNEDate\([ &*,)<>]\)/ casa::\1TableExprNodeNEDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNEDouble\([ &*,)<>]\)/ casa::\1TableExprNodeNEDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNERegex\([ &*,)<>]\)/ casa::\1TableExprNodeNERegex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNEString\([ &*,)<>]\)/ casa::\1TableExprNodeNEString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeNOT\([ &*,)<>]\)/ casa::\1TableExprNodeNOT\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeOR\([ &*,)<>]\)/ casa::\1TableExprNodeOR\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodePlusDComplex\([ &*,)<>]\)/ casa::\1TableExprNodePlusDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodePlusDate\([ &*,)<>]\)/ casa::\1TableExprNodePlusDate\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodePlusDouble\([ &*,)<>]\)/ casa::\1TableExprNodePlusDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodePlusString\([ &*,)<>]\)/ casa::\1TableExprNodePlusString\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRandom\([ &*,)<>]\)/ casa::\1TableExprNodeRandom\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRecordField\([ &*,)<>]\)/ casa::\1TableExprNodeRecordField\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRecordFieldArray\([ &*,)<>]\)/ casa::\1TableExprNodeRecordFieldArray\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRep\([ &*,)<>]\)/ casa::\1TableExprNodeRep\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRowid\([ &*,)<>]\)/ casa::\1TableExprNodeRowid\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeRownr\([ &*,)<>]\)/ casa::\1TableExprNodeRownr\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeSet\([ &*,)<>]\)/ casa::\1TableExprNodeSet\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeSetElem\([ &*,)<>]\)/ casa::\1TableExprNodeSetElem\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeTimesDComplex\([ &*,)<>]\)/ casa::\1TableExprNodeTimesDComplex\2/g
-\%^ *//%!s/\([ <(]\)TableExprNodeTimesDouble\([ &*,)<>]\)/ casa::\1TableExprNodeTimesDouble\2/g
-\%^ *//%!s/\([ <(]\)TableExprRange\([ &*,)<>]\)/ casa::\1TableExprRange\2/g
-\%^ *//%!s/\([ <(]\)TableGramFunctions\([ &*,)<>]\)/ casa::\1TableGramFunctions\2/g
-\%^ *//%!s/\([ <(]\)TableInfo\([ &*,)<>]\)/ casa::\1TableInfo\2/g
-\%^ *//%!s/\([ <(]\)TableInternalError\([ &*,)<>]\)/ casa::\1TableInternalError\2/g
-\%^ *//%!s/\([ <(]\)TableInvColumnDesc\([ &*,)<>]\)/ casa::\1TableInvColumnDesc\2/g
-\%^ *//%!s/\([ <(]\)TableInvDT\([ &*,)<>]\)/ casa::\1TableInvDT\2/g
-\%^ *//%!s/\([ <(]\)TableInvExpr\([ &*,)<>]\)/ casa::\1TableInvExpr\2/g
-\%^ *//%!s/\([ <(]\)TableInvHyperDesc\([ &*,)<>]\)/ casa::\1TableInvHyperDesc\2/g
-\%^ *//%!s/\([ <(]\)TableInvLogic\([ &*,)<>]\)/ casa::\1TableInvLogic\2/g
-\%^ *//%!s/\([ <(]\)TableInvOper\([ &*,)<>]\)/ casa::\1TableInvOper\2/g
-\%^ *//%!s/\([ <(]\)TableInvOpt\([ &*,)<>]\)/ casa::\1TableInvOpt\2/g
-\%^ *//%!s/\([ <(]\)TableInvSort\([ &*,)<>]\)/ casa::\1TableInvSort\2/g
-\%^ *//%!s/\([ <(]\)TableInvType\([ &*,)<>]\)/ casa::\1TableInvType\2/g
-\%^ *//%!s/\([ <(]\)TableIterator\([ &*,)<>]\)/ casa::\1TableIterator\2/g
-\%^ *//%!s/\([ <(]\)TableKeyword\([ &*,)<>]\)/ casa::\1TableKeyword\2/g
-\%^ *//%!s/\([ <(]\)TableLock\([ &*,)<>]\)/ casa::\1TableLock\2/g
-\%^ *//%!s/\([ <(]\)TableLockData\([ &*,)<>]\)/ casa::\1TableLockData\2/g
-\%^ *//%!s/\([ <(]\)TableLocker\([ &*,)<>]\)/ casa::\1TableLocker\2/g
-\%^ *//%!s/\([ <(]\)TableLogSink\([ &*,)<>]\)/ casa::\1TableLogSink\2/g
-\%^ *//%!s/\([ <(]\)TableMeasDesc\([ &*,)<>]\)/ casa::\1TableMeasDesc\2/g
-\%^ *//%!s/\([ <(]\)TableMeasDescBase\([ &*,)<>]\)/ casa::\1TableMeasDescBase\2/g
-\%^ *//%!s/\([ <(]\)TableMeasOffsetDesc\([ &*,)<>]\)/ casa::\1TableMeasOffsetDesc\2/g
-\%^ *//%!s/\([ <(]\)TableMeasRefDesc\([ &*,)<>]\)/ casa::\1TableMeasRefDesc\2/g
-\%^ *//%!s/\([ <(]\)TableMeasType\([ &*,)<>]\)/ casa::\1TableMeasType\2/g
-\%^ *//%!s/\([ <(]\)TableMeasValueDesc\([ &*,)<>]\)/ casa::\1TableMeasValueDesc\2/g
-\%^ *//%!s/\([ <(]\)TableNoFile\([ &*,)<>]\)/ casa::\1TableNoFile\2/g
-\%^ *//%!s/\([ <(]\)TableParameterAccessor\([ &*,)<>]\)/ casa::\1TableParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)TableParse\([ &*,)<>]\)/ casa::\1TableParse\2/g
-\%^ *//%!s/\([ <(]\)TableParseError\([ &*,)<>]\)/ casa::\1TableParseError\2/g
-\%^ *//%!s/\([ <(]\)TableParseSelect\([ &*,)<>]\)/ casa::\1TableParseSelect\2/g
-\%^ *//%!s/\([ <(]\)TableParseSort\([ &*,)<>]\)/ casa::\1TableParseSort\2/g
-\%^ *//%!s/\([ <(]\)TableParseUpdate\([ &*,)<>]\)/ casa::\1TableParseUpdate\2/g
-\%^ *//%!s/\([ <(]\)TableParseVal\([ &*,)<>]\)/ casa::\1TableParseVal\2/g
-\%^ *//%!s/\([ <(]\)TableQuantumDesc\([ &*,)<>]\)/ casa::\1TableQuantumDesc\2/g
-\%^ *//%!s/\([ <(]\)TableRecord\([ &*,)<>]\)/ casa::\1TableRecord\2/g
-\%^ *//%!s/\([ <(]\)TableRecordRep\([ &*,)<>]\)/ casa::\1TableRecordRep\2/g
-\%^ *//%!s/\([ <(]\)TableRow\([ &*,)<>]\)/ casa::\1TableRow\2/g
-\%^ *//%!s/\([ <(]\)TableSyncData\([ &*,)<>]\)/ casa::\1TableSyncData\2/g
-\%^ *//%!s/\([ <(]\)TableUnknownDesc\([ &*,)<>]\)/ casa::\1TableUnknownDesc\2/g
-\%^ *//%!s/\([ <(]\)TableVector\([ &*,)<>]\)/ casa::\1TableVector\2/g
-\%^ *//%!s/\([ <(]\)TableVectorNonConform\([ &*,)<>]\)/ casa::\1TableVectorNonConform\2/g
-\%^ *//%!s/\([ <(]\)TabularCoordinate\([ &*,)<>]\)/ casa::\1TabularCoordinate\2/g
-\%^ *//%!s/\([ <(]\)TapeIO\([ &*,)<>]\)/ casa::\1TapeIO\2/g
-\%^ *//%!s/\([ <(]\)TblAsContourDD\([ &*,)<>]\)/ casa::\1TblAsContourDD\2/g
-\%^ *//%!s/\([ <(]\)TblAsContourDM\([ &*,)<>]\)/ casa::\1TblAsContourDM\2/g
-\%^ *//%!s/\([ <(]\)TblAsRasterDD\([ &*,)<>]\)/ casa::\1TblAsRasterDD\2/g
-\%^ *//%!s/\([ <(]\)TblAsRasterDM\([ &*,)<>]\)/ casa::\1TblAsRasterDM\2/g
-\%^ *//%!s/\([ <(]\)TblAsXYDD\([ &*,)<>]\)/ casa::\1TblAsXYDD\2/g
-\%^ *//%!s/\([ <(]\)TblAsXYDM\([ &*,)<>]\)/ casa::\1TblAsXYDM\2/g
-\%^ *//%!s/\([ <(]\)TempImage\([ &*,)<>]\)/ casa::\1TempImage\2/g
-\%^ *//%!s/\([ <(]\)TempLattice\([ &*,)<>]\)/ casa::\1TempLattice\2/g
-\%^ *//%!s/\([ <(]\)TemperatureType\([ &*,)<>]\)/ casa::\1TemperatureType\2/g
-\%^ *//%!s/\([ <(]\)Template\([ &*,)<>]\)/ casa::\1Template\2/g
-\%^ *//%!s/\([ <(]\)ThrowBlockError\([ &*,)<>]\)/ casa::\1ThrowBlockError\2/g
-\%^ *//%!s/\([ <(]\)TileStepper\([ &*,)<>]\)/ casa::\1TileStepper\2/g
-\%^ *//%!s/\([ <(]\)TiledCellStMan\([ &*,)<>]\)/ casa::\1TiledCellStMan\2/g
-\%^ *//%!s/\([ <(]\)TiledCollapser\([ &*,)<>]\)/ casa::\1TiledCollapser\2/g
-\%^ *//%!s/\([ <(]\)TiledColumnStMan\([ &*,)<>]\)/ casa::\1TiledColumnStMan\2/g
-\%^ *//%!s/\([ <(]\)TiledDataStMan\([ &*,)<>]\)/ casa::\1TiledDataStMan\2/g
-\%^ *//%!s/\([ <(]\)TiledDataStManAccessor\([ &*,)<>]\)/ casa::\1TiledDataStManAccessor\2/g
-\%^ *//%!s/\([ <(]\)TiledFileAccess\([ &*,)<>]\)/ casa::\1TiledFileAccess\2/g
-\%^ *//%!s/\([ <(]\)TiledFileHelper\([ &*,)<>]\)/ casa::\1TiledFileHelper\2/g
-\%^ *//%!s/\([ <(]\)TiledLineStepper\([ &*,)<>]\)/ casa::\1TiledLineStepper\2/g
-\%^ *//%!s/\([ <(]\)TiledShape\([ &*,)<>]\)/ casa::\1TiledShape\2/g
-\%^ *//%!s/\([ <(]\)TiledShapeStMan\([ &*,)<>]\)/ casa::\1TiledShapeStMan\2/g
-\%^ *//%!s/\([ <(]\)TiledStMan\([ &*,)<>]\)/ casa::\1TiledStMan\2/g
-\%^ *//%!s/\([ <(]\)Time\([ &*,)<>]\)/ casa::\1Time\2/g
-\%^ *//%!s/\([ <(]\)TimeVarMJones\([ &*,)<>]\)/ casa::\1TimeVarMJones\2/g
-\%^ *//%!s/\([ <(]\)TimeVarMJonesDesc\([ &*,)<>]\)/ casa::\1TimeVarMJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)TimeVarMJonesMRec\([ &*,)<>]\)/ casa::\1TimeVarMJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJones\([ &*,)<>]\)/ casa::\1TimeVarVisJones\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJonesDesc\([ &*,)<>]\)/ casa::\1TimeVarVisJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJonesMBuf\([ &*,)<>]\)/ casa::\1TimeVarVisJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJonesMCol\([ &*,)<>]\)/ casa::\1TimeVarVisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJonesMRec\([ &*,)<>]\)/ casa::\1TimeVarVisJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)TimeVarVisJonesTable\([ &*,)<>]\)/ casa::\1TimeVarVisJonesTable\2/g
-\%^ *//%!s/\([ <(]\)Timer\([ &*,)<>]\)/ casa::\1Timer\2/g
-\%^ *//%!s/\([ <(]\)TwoSidedShape\([ &*,)<>]\)/ casa::\1TwoSidedShape\2/g
-\%^ *//%!s/\([ <(]\)TypeIO\([ &*,)<>]\)/ casa::\1TypeIO\2/g
-\%^ *//%!s/\([ <(]\)UVWMachine\([ &*,)<>]\)/ casa::\1UVWMachine\2/g
-\%^ *//%!s/\([ <(]\)Unary\([ &*,)<>]\)/ casa::\1Unary\2/g
-\%^ *//%!s/\([ <(]\)UnaryFunction\([ &*,)<>]\)/ casa::\1UnaryFunction\2/g
-\%^ *//%!s/\([ <(]\)UnaryParam\([ &*,)<>]\)/ casa::\1UnaryParam\2/g
-\%^ *//%!s/\([ <(]\)UnequalShapeCopier\([ &*,)<>]\)/ casa::\1UnequalShapeCopier\2/g
-\%^ *//%!s/\([ <(]\)Uniform\([ &*,)<>]\)/ casa::\1Uniform\2/g
-\%^ *//%!s/\([ <(]\)Unit\([ &*,)<>]\)/ casa::\1Unit\2/g
-\%^ *//%!s/\([ <(]\)UnitDim\([ &*,)<>]\)/ casa::\1UnitDim\2/g
-\%^ *//%!s/\([ <(]\)UnitMap\([ &*,)<>]\)/ casa::\1UnitMap\2/g
-\%^ *//%!s/\([ <(]\)UnitName\([ &*,)<>]\)/ casa::\1UnitName\2/g
-\%^ *//%!s/\([ <(]\)UnitVal\([ &*,)<>]\)/ casa::\1UnitVal\2/g
-\%^ *//%!s/\([ <(]\)UnitVal_static_initializer\([ &*,)<>]\)/ casa::\1UnitVal_static_initializer\2/g
-\%^ *//%!s/\([ <(]\)UnrecognizedFunctionError\([ &*,)<>]\)/ casa::\1UnrecognizedFunctionError\2/g
-\%^ *//%!s/\([ <(]\)Unset\([ &*,)<>]\)/ casa::\1Unset\2/g
-\%^ *//%!s/\([ <(]\)VAXConversion\([ &*,)<>]\)/ casa::\1VAXConversion\2/g
-\%^ *//%!s/\([ <(]\)VAXDataConversion\([ &*,)<>]\)/ casa::\1VAXDataConversion\2/g
-\%^ *//%!s/\([ <(]\)VColorTableEntry\([ &*,)<>]\)/ casa::\1VColorTableEntry\2/g
-\%^ *//%!s/\([ <(]\)VPSkyJones\([ &*,)<>]\)/ casa::\1VPSkyJones\2/g
-\%^ *//%!s/\([ <(]\)VSCEngine\([ &*,)<>]\)/ casa::\1VSCEngine\2/g
-\%^ *//%!s/\([ <(]\)ValType\([ &*,)<>]\)/ casa::\1ValType\2/g
-\%^ *//%!s/\([ <(]\)VanVleck\([ &*,)<>]\)/ casa::\1VanVleck\2/g
-\%^ *//%!s/\([ <(]\)Vector\([ &*,)<>]\)/ casa::\1Vector\2/g
-\%^ *//%!s/\([ <(]\)VectorIterator\([ &*,)<>]\)/ casa::\1VectorIterator\2/g
-\%^ *//%!s/\([ <(]\)VectorKernel\([ &*,)<>]\)/ casa::\1VectorKernel\2/g
-\%^ *//%!s/\([ <(]\)VectorParameterAccessor\([ &*,)<>]\)/ casa::\1VectorParameterAccessor\2/g
-\%^ *//%!s/\([ <(]\)VectorSTLIterator\([ &*,)<>]\)/ casa::\1VectorSTLIterator\2/g
-\%^ *//%!s/\([ <(]\)VelocityMachine\([ &*,)<>]\)/ casa::\1VelocityMachine\2/g
-\%^ *//%!s/\([ <(]\)VirtualArrayColumn\([ &*,)<>]\)/ casa::\1VirtualArrayColumn\2/g
-\%^ *//%!s/\([ <(]\)VirtualColumnEngine\([ &*,)<>]\)/ casa::\1VirtualColumnEngine\2/g
-\%^ *//%!s/\([ <(]\)VirtualScalarColumn\([ &*,)<>]\)/ casa::\1VirtualScalarColumn\2/g
-\%^ *//%!s/\([ <(]\)VisBuffer\([ &*,)<>]\)/ casa::\1VisBuffer\2/g
-\%^ *//%!s/\([ <(]\)VisEquation\([ &*,)<>]\)/ casa::\1VisEquation\2/g
-\%^ *//%!s/\([ <(]\)VisJonesDesc\([ &*,)<>]\)/ casa::\1VisJonesDesc\2/g
-\%^ *//%!s/\([ <(]\)VisJonesMBuf\([ &*,)<>]\)/ casa::\1VisJonesMBuf\2/g
-\%^ *//%!s/\([ <(]\)VisJonesMCol\([ &*,)<>]\)/ casa::\1VisJonesMCol\2/g
-\%^ *//%!s/\([ <(]\)VisJonesMRec\([ &*,)<>]\)/ casa::\1VisJonesMRec\2/g
-\%^ *//%!s/\([ <(]\)VisJonesTable\([ &*,)<>]\)/ casa::\1VisJonesTable\2/g
-\%^ *//%!s/\([ <(]\)VisSet\([ &*,)<>]\)/ casa::\1VisSet\2/g
-\%^ *//%!s/\([ <(]\)VisSetUtil\([ &*,)<>]\)/ casa::\1VisSetUtil\2/g
-\%^ *//%!s/\([ <(]\)VisTimeAverager\([ &*,)<>]\)/ casa::\1VisTimeAverager\2/g
-\%^ *//%!s/\([ <(]\)VisibilityIterator\([ &*,)<>]\)/ casa::\1VisibilityIterator\2/g
-\%^ *//%!s/\([ <(]\)WCBox\([ &*,)<>]\)/ casa::\1WCBox\2/g
-\%^ *//%!s/\([ <(]\)WCComplement\([ &*,)<>]\)/ casa::\1WCComplement\2/g
-\%^ *//%!s/\([ <(]\)WCCompound\([ &*,)<>]\)/ casa::\1WCCompound\2/g
-\%^ *//%!s/\([ <(]\)WCConcatenation\([ &*,)<>]\)/ casa::\1WCConcatenation\2/g
-\%^ *//%!s/\([ <(]\)WCCrosshairTool\([ &*,)<>]\)/ casa::\1WCCrosshairTool\2/g
-\%^ *//%!s/\([ <(]\)WCDifference\([ &*,)<>]\)/ casa::\1WCDifference\2/g
-\%^ *//%!s/\([ <(]\)WCExtension\([ &*,)<>]\)/ casa::\1WCExtension\2/g
-\%^ *//%!s/\([ <(]\)WCIntersection\([ &*,)<>]\)/ casa::\1WCIntersection\2/g
-\%^ *//%!s/\([ <(]\)WCInvisTool\([ &*,)<>]\)/ casa::\1WCInvisTool\2/g
-\%^ *//%!s/\([ <(]\)WCLELMask\([ &*,)<>]\)/ casa::\1WCLELMask\2/g
-\%^ *//%!s/\([ <(]\)WCMotionEH\([ &*,)<>]\)/ casa::\1WCMotionEH\2/g
-\%^ *//%!s/\([ <(]\)WCMotionEvent\([ &*,)<>]\)/ casa::\1WCMotionEvent\2/g
-\%^ *//%!s/\([ <(]\)WCPGFilter\([ &*,)<>]\)/ casa::\1WCPGFilter\2/g
-\%^ *//%!s/\([ <(]\)WCPTRegion\([ &*,)<>]\)/ casa::\1WCPTRegion\2/g
-\%^ *//%!s/\([ <(]\)WCPolyTool\([ &*,)<>]\)/ casa::\1WCPolyTool\2/g
-\%^ *//%!s/\([ <(]\)WCPolygon\([ &*,)<>]\)/ casa::\1WCPolygon\2/g
-\%^ *//%!s/\([ <(]\)WCPositionEH\([ &*,)<>]\)/ casa::\1WCPositionEH\2/g
-\%^ *//%!s/\([ <(]\)WCPositionEvent\([ &*,)<>]\)/ casa::\1WCPositionEvent\2/g
-\%^ *//%!s/\([ <(]\)WCRTRegion\([ &*,)<>]\)/ casa::\1WCRTRegion\2/g
-\%^ *//%!s/\([ <(]\)WCRTZoomer\([ &*,)<>]\)/ casa::\1WCRTZoomer\2/g
-\%^ *//%!s/\([ <(]\)WCRectTool\([ &*,)<>]\)/ casa::\1WCRectTool\2/g
-\%^ *//%!s/\([ <(]\)WCRefreshEH\([ &*,)<>]\)/ casa::\1WCRefreshEH\2/g
-\%^ *//%!s/\([ <(]\)WCRefreshEvent\([ &*,)<>]\)/ casa::\1WCRefreshEvent\2/g
-\%^ *//%!s/\([ <(]\)WCRegion\([ &*,)<>]\)/ casa::\1WCRegion\2/g
-\%^ *//%!s/\([ <(]\)WCTool\([ &*,)<>]\)/ casa::\1WCTool\2/g
-\%^ *//%!s/\([ <(]\)WCToolMotEH\([ &*,)<>]\)/ casa::\1WCToolMotEH\2/g
-\%^ *//%!s/\([ <(]\)WCToolPosEH\([ &*,)<>]\)/ casa::\1WCToolPosEH\2/g
-\%^ *//%!s/\([ <(]\)WCToolRefEH\([ &*,)<>]\)/ casa::\1WCToolRefEH\2/g
-\%^ *//%!s/\([ <(]\)WCUnion\([ &*,)<>]\)/ casa::\1WCUnion\2/g
-\%^ *//%!s/\([ <(]\)WFCleanImageSkyModel\([ &*,)<>]\)/ casa::\1WFCleanImageSkyModel\2/g
-\%^ *//%!s/\([ <(]\)WFGridFT\([ &*,)<>]\)/ casa::\1WFGridFT\2/g
-\%^ *//%!s/\([ <(]\)WFSkyEquation\([ &*,)<>]\)/ casa::\1WFSkyEquation\2/g
-\%^ *//%!s/\([ <(]\)WProjectFT\([ &*,)<>]\)/ casa::\1WProjectFT\2/g
-\%^ *//%!s/\([ <(]\)WaterVaporFit\([ &*,)<>]\)/ casa::\1WaterVaporFit\2/g
-\%^ *//%!s/\([ <(]\)WedgeDD\([ &*,)<>]\)/ casa::\1WedgeDD\2/g
-\%^ *//%!s/\([ <(]\)WedgeDM\([ &*,)<>]\)/ casa::\1WedgeDM\2/g
-\%^ *//%!s/\([ <(]\)Weibull\([ &*,)<>]\)/ casa::\1Weibull\2/g
-\%^ *//%!s/\([ <(]\)WorldAxesDD\([ &*,)<>]\)/ casa::\1WorldAxesDD\2/g
-\%^ *//%!s/\([ <(]\)WorldAxesDM\([ &*,)<>]\)/ casa::\1WorldAxesDM\2/g
-\%^ *//%!s/\([ <(]\)WorldCanvas\([ &*,)<>]\)/ casa::\1WorldCanvas\2/g
-\%^ *//%!s/\([ <(]\)WorldCanvasEvent\([ &*,)<>]\)/ casa::\1WorldCanvasEvent\2/g
-\%^ *//%!s/\([ <(]\)WorldCanvasHolder\([ &*,)<>]\)/ casa::\1WorldCanvasHolder\2/g
-\%^ *//%!s/\([ <(]\)WrapperBase\([ &*,)<>]\)/ casa::\1WrapperBase\2/g
-\%^ *//%!s/\([ <(]\)WrapperData\([ &*,)<>]\)/ casa::\1WrapperData\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_FF\([ &*,)<>]\)/ casa::\1WrapperData_FF\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_FT\([ &*,)<>]\)/ casa::\1WrapperData_FT\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_FV\([ &*,)<>]\)/ casa::\1WrapperData_FV\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_TF\([ &*,)<>]\)/ casa::\1WrapperData_TF\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_TT\([ &*,)<>]\)/ casa::\1WrapperData_TT\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_TV\([ &*,)<>]\)/ casa::\1WrapperData_TV\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_VF\([ &*,)<>]\)/ casa::\1WrapperData_VF\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_VT\([ &*,)<>]\)/ casa::\1WrapperData_VT\2/g
-\%^ *//%!s/\([ <(]\)WrapperData_VV\([ &*,)<>]\)/ casa::\1WrapperData_VV\2/g
-\%^ *//%!s/\([ <(]\)WrapperParam\([ &*,)<>]\)/ casa::\1WrapperParam\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLClear\([ &*,)<>]\)/ casa::\1X11PCDLClear\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLClearRegion\([ &*,)<>]\)/ casa::\1X11PCDLClearRegion\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLColoredLines\([ &*,)<>]\)/ casa::\1X11PCDLColoredLines\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLColoredPoints\([ &*,)<>]\)/ casa::\1X11PCDLColoredPoints\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLDisable\([ &*,)<>]\)/ casa::\1X11PCDLDisable\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLDisplayList\([ &*,)<>]\)/ casa::\1X11PCDLDisplayList\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLEnable\([ &*,)<>]\)/ casa::\1X11PCDLEnable\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLFilledPolygon\([ &*,)<>]\)/ casa::\1X11PCDLFilledPolygon\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLFilledRectangle\([ &*,)<>]\)/ casa::\1X11PCDLFilledRectangle\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLGraphicsContext\([ &*,)<>]\)/ casa::\1X11PCDLGraphicsContext\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLImage\([ &*,)<>]\)/ casa::\1X11PCDLImage\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLImageComponent\([ &*,)<>]\)/ casa::\1X11PCDLImageComponent\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLLine\([ &*,)<>]\)/ casa::\1X11PCDLLine\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLLines\([ &*,)<>]\)/ casa::\1X11PCDLLines\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLLoadIdentity\([ &*,)<>]\)/ casa::\1X11PCDLLoadIdentity\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLMaskedImage\([ &*,)<>]\)/ casa::\1X11PCDLMaskedImage\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLMaskedPixmap\([ &*,)<>]\)/ casa::\1X11PCDLMaskedPixmap\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPixmap\([ &*,)<>]\)/ casa::\1X11PCDLPixmap\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPoint\([ &*,)<>]\)/ casa::\1X11PCDLPoint\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPoints\([ &*,)<>]\)/ casa::\1X11PCDLPoints\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPolyline\([ &*,)<>]\)/ casa::\1X11PCDLPolyline\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPopMatrix\([ &*,)<>]\)/ casa::\1X11PCDLPopMatrix\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLPushMatrix\([ &*,)<>]\)/ casa::\1X11PCDLPushMatrix\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLSetClearColor\([ &*,)<>]\)/ casa::\1X11PCDLSetClearColor\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLSetClipWin\([ &*,)<>]\)/ casa::\1X11PCDLSetClipWin\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLText\([ &*,)<>]\)/ casa::\1X11PCDLText\2/g
-\%^ *//%!s/\([ <(]\)X11PCDLTranslate\([ &*,)<>]\)/ casa::\1X11PCDLTranslate\2/g
-\%^ *//%!s/\([ <(]\)X11PixelCanvas\([ &*,)<>]\)/ casa::\1X11PixelCanvas\2/g
-\%^ *//%!s/\([ <(]\)X11PixelCanvasApp\([ &*,)<>]\)/ casa::\1X11PixelCanvasApp\2/g
-\%^ *//%!s/\([ <(]\)X11PixelCanvasColorTable\([ &*,)<>]\)/ casa::\1X11PixelCanvasColorTable\2/g
-\%^ *//%!s/\([ <(]\)X11ResourceManager\([ &*,)<>]\)/ casa::\1X11ResourceManager\2/g
-\%^ *//%!s/\([ <(]\)XCorr\([ &*,)<>]\)/ casa::\1XCorr\2/g
-\%^ *//%!s/\([ <(]\)XSysEvent\([ &*,)<>]\)/ casa::\1XSysEvent\2/g
-\%^ *//%!s/\([ <(]\)XSysEventSource\([ &*,)<>]\)/ casa::\1XSysEventSource\2/g
-\%^ *//%!s/\([ <(]\)XSysEventSourceInfo\([ &*,)<>]\)/ casa::\1XSysEventSourceInfo\2/g
-\%^ *//%!s/\([ <(]\)XSysEventTarget\([ &*,)<>]\)/ casa::\1XSysEventTarget\2/g
-\%^ *//%!s/\([ <(]\)Bool\([ &*,)<>]\)/ casa::\1Bool\2/g
-\%^ *//%!s/\([ <(]\)Char\([ &*,)<>]\)/ casa::\1Char\2/g
-\%^ *//%!s/\([ <(]\)uChar\([ &*,)<>]\)/ casa::\1uChar\2/g
-\%^ *//%!s/\([ <(]\)Short\([ &*,)<>]\)/ casa::\1Short\2/g
-\%^ *//%!s/\([ <(]\)uShort\([ &*,)<>]\)/ casa::\1uShort\2/g
-\%^ *//%!s/\([ <(]\)Int\([ &*,)<>]\)/ casa::\1Int\2/g
-\%^ *//%!s/\([ <(]\)uInt\([ &*,)<>]\)/ casa::\1uInt\2/g
-\%^ *//%!s/\([ <(]\)Long\([ &*,)<>]\)/ casa::\1Long\2/g
-\%^ *//%!s/\([ <(]\)uLong\([ &*,)<>]\)/ casa::\1uLong\2/g
-\%^ *//%!s/\([ <(]\)Float\([ &*,)<>]\)/ casa::\1Float\2/g
-\%^ *//%!s/\([ <(]\)Double\([ &*,)<>]\)/ casa::\1Double\2/g
-\%^ *//%!s/\([ <(]\)lDouble\([ &*,)<>]\)/ casa::\1lDouble\2/g
-\%^ *//%!s/\([ <(]\)Complex\([ &*,)<>]\)/ casa::\1Complex\2/g
-\%^ *//%!s/\([ <(]\)DComplex\([ &*,)<>]\)/ casa::\1DComplex\2/g
+\%^ *//%!s/\([ <(]\)ACG\([ &*,)<>]\)/\1casa::ACG\2/g
+\%^ *//%!s/\([ <(]\)ACoh\([ &*,)<>]\)/\1casa::ACoh\2/g
+\%^ *//%!s/\([ <(]\)Aberration\([ &*,)<>]\)/\1casa::Aberration\2/g
+\%^ *//%!s/\([ <(]\)AbortError\([ &*,)<>]\)/\1casa::AbortError\2/g
+\%^ *//%!s/\([ <(]\)AbsCoeff\([ &*,)<>]\)/\1casa::AbsCoeff\2/g
+\%^ *//%!s/\([ <(]\)AbsCoeffDer\([ &*,)<>]\)/\1casa::AbsCoeffDer\2/g
+\%^ *//%!s/\([ <(]\)ActiveCaching2dDD\([ &*,)<>]\)/\1casa::ActiveCaching2dDD\2/g
+\%^ *//%!s/\([ <(]\)AipsError\([ &*,)<>]\)/\1casa::AipsError\2/g
+\%^ *//%!s/\([ <(]\)AipsIO\([ &*,)<>]\)/\1casa::AipsIO\2/g
+\%^ *//%!s/\([ <(]\)AipsIOCarray\([ &*,)<>]\)/\1casa::AipsIOCarray\2/g
+\%^ *//%!s/\([ <(]\)Aipsrc\([ &*,)<>]\)/\1casa::Aipsrc\2/g
+\%^ *//%!s/\([ <(]\)AipsrcValue\([ &*,)<>]\)/\1casa::AipsrcValue\2/g
+\%^ *//%!s/\([ <(]\)AipsrcValue_Bool\([ &*,)<>]\)/\1casa::AipsrcValue_Bool\2/g
+\%^ *//%!s/\([ <(]\)AipsrcVector\([ &*,)<>]\)/\1casa::AipsrcVector\2/g
+\%^ *//%!s/\([ <(]\)AipsrcVector_Bool\([ &*,)<>]\)/\1casa::AipsrcVector_Bool\2/g
+\%^ *//%!s/\([ <(]\)AipsrcVector_String\([ &*,)<>]\)/\1casa::AipsrcVector_String\2/g
+\%^ *//%!s/\([ <(]\)Algorithm\([ &*,)<>]\)/\1casa::Algorithm\2/g
+\%^ *//%!s/\([ <(]\)AllocError\([ &*,)<>]\)/\1casa::AllocError\2/g
+\%^ *//%!s/\([ <(]\)AniPosEH\([ &*,)<>]\)/\1casa::AniPosEH\2/g
+\%^ *//%!s/\([ <(]\)Animator\([ &*,)<>]\)/\1casa::Animator\2/g
+\%^ *//%!s/\([ <(]\)AnimatorRefEH\([ &*,)<>]\)/\1casa::AnimatorRefEH\2/g
+\%^ *//%!s/\([ <(]\)Annotations\([ &*,)<>]\)/\1casa::Annotations\2/g
+\%^ *//%!s/\([ <(]\)AppInfo\([ &*,)<>]\)/\1casa::AppInfo\2/g
+\%^ *//%!s/\([ <(]\)AppUtil\([ &*,)<>]\)/\1casa::AppUtil\2/g
+\%^ *//%!s/\([ <(]\)ApplicationEnvironment\([ &*,)<>]\)/\1casa::ApplicationEnvironment\2/g
+\%^ *//%!s/\([ <(]\)ApplicationObject\([ &*,)<>]\)/\1casa::ApplicationObject\2/g
+\%^ *//%!s/\([ <(]\)ApplicationObjectFactory\([ &*,)<>]\)/\1casa::ApplicationObjectFactory\2/g
+\%^ *//%!s/\([ <(]\)Applicator\([ &*,)<>]\)/\1casa::Applicator\2/g
+\%^ *//%!s/\([ <(]\)Array\([ &*,)<>]\)/\1casa::Array\2/g
+\%^ *//%!s/\([ <(]\)ArrayAccessor\([ &*,)<>]\)/\1casa::ArrayAccessor\2/g
+\%^ *//%!s/\([ <(]\)ArrayAccessor_RT\([ &*,)<>]\)/\1casa::ArrayAccessor_RT\2/g
+\%^ *//%!s/\([ <(]\)ArrayBase\([ &*,)<>]\)/\1casa::ArrayBase\2/g
+\%^ *//%!s/\([ <(]\)ArrayBaseAccessor\([ &*,)<>]\)/\1casa::ArrayBaseAccessor\2/g
+\%^ *//%!s/\([ <(]\)ArrayColumn\([ &*,)<>]\)/\1casa::ArrayColumn\2/g
+\%^ *//%!s/\([ <(]\)ArrayColumnData\([ &*,)<>]\)/\1casa::ArrayColumnData\2/g
+\%^ *//%!s/\([ <(]\)ArrayColumnDesc\([ &*,)<>]\)/\1casa::ArrayColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)ArrayConformanceError\([ &*,)<>]\)/\1casa::ArrayConformanceError\2/g
+\%^ *//%!s/\([ <(]\)ArrayError\([ &*,)<>]\)/\1casa::ArrayError\2/g
+\%^ *//%!s/\([ <(]\)ArrayIndexError\([ &*,)<>]\)/\1casa::ArrayIndexError\2/g
+\%^ *//%!s/\([ <(]\)ArrayIterator\([ &*,)<>]\)/\1casa::ArrayIterator\2/g
+\%^ *//%!s/\([ <(]\)ArrayIteratorError\([ &*,)<>]\)/\1casa::ArrayIteratorError\2/g
+\%^ *//%!s/\([ <(]\)ArrayLattice\([ &*,)<>]\)/\1casa::ArrayLattice\2/g
+\%^ *//%!s/\([ <(]\)ArrayMeasColumn\([ &*,)<>]\)/\1casa::ArrayMeasColumn\2/g
+\%^ *//%!s/\([ <(]\)ArrayModel\([ &*,)<>]\)/\1casa::ArrayModel\2/g
+\%^ *//%!s/\([ <(]\)ArrayNDimError\([ &*,)<>]\)/\1casa::ArrayNDimError\2/g
+\%^ *//%!s/\([ <(]\)ArrayParameterAccessor\([ &*,)<>]\)/\1casa::ArrayParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ArrayPositionIterator\([ &*,)<>]\)/\1casa::ArrayPositionIterator\2/g
+\%^ *//%!s/\([ <(]\)ArrayQuantColumn\([ &*,)<>]\)/\1casa::ArrayQuantColumn\2/g
+\%^ *//%!s/\([ <(]\)ArraySampledFunctional\([ &*,)<>]\)/\1casa::ArraySampledFunctional\2/g
+\%^ *//%!s/\([ <(]\)ArrayShapeError\([ &*,)<>]\)/\1casa::ArrayShapeError\2/g
+\%^ *//%!s/\([ <(]\)ArraySlicerError\([ &*,)<>]\)/\1casa::ArraySlicerError\2/g
+\%^ *//%!s/\([ <(]\)AtmType\([ &*,)<>]\)/\1casa::AtmType\2/g
+\%^ *//%!s/\([ <(]\)Atmosphere\([ &*,)<>]\)/\1casa::Atmosphere\2/g
+\%^ *//%!s/\([ <(]\)AttValue\([ &*,)<>]\)/\1casa::AttValue\2/g
+\%^ *//%!s/\([ <(]\)Attribute\([ &*,)<>]\)/\1casa::Attribute\2/g
+\%^ *//%!s/\([ <(]\)AttributeBuffer\([ &*,)<>]\)/\1casa::AttributeBuffer\2/g
+\%^ *//%!s/\([ <(]\)AttributeValue\([ &*,)<>]\)/\1casa::AttributeValue\2/g
+\%^ *//%!s/\([ <(]\)AttributeValueBase\([ &*,)<>]\)/\1casa::AttributeValueBase\2/g
+\%^ *//%!s/\([ <(]\)AttributeValuePoi\([ &*,)<>]\)/\1casa::AttributeValuePoi\2/g
+\%^ *//%!s/\([ <(]\)AttributeValuePoiTol\([ &*,)<>]\)/\1casa::AttributeValuePoiTol\2/g
+\%^ *//%!s/\([ <(]\)AttributeValueTol\([ &*,)<>]\)/\1casa::AttributeValueTol\2/g
+\%^ *//%!s/\([ <(]\)AutoDiff\([ &*,)<>]\)/\1casa::AutoDiff\2/g
+\%^ *//%!s/\([ <(]\)AutoDiffA\([ &*,)<>]\)/\1casa::AutoDiffA\2/g
+\%^ *//%!s/\([ <(]\)AutoDiffRep\([ &*,)<>]\)/\1casa::AutoDiffRep\2/g
+\%^ *//%!s/\([ <(]\)AutoDiffX\([ &*,)<>]\)/\1casa::AutoDiffX\2/g
+\%^ *//%!s/\([ <(]\)AxesDisplayData\([ &*,)<>]\)/\1casa::AxesDisplayData\2/g
+\%^ *//%!s/\([ <(]\)AxesDisplayMethod\([ &*,)<>]\)/\1casa::AxesDisplayMethod\2/g
+\%^ *//%!s/\([ <(]\)AxesMapping\([ &*,)<>]\)/\1casa::AxesMapping\2/g
+\%^ *//%!s/\([ <(]\)AxesSpecifier\([ &*,)<>]\)/\1casa::AxesSpecifier\2/g
+\%^ *//%!s/\([ <(]\)Axis\([ &*,)<>]\)/\1casa::Axis\2/g
+\%^ *//%!s/\([ <(]\)AxisN\([ &*,)<>]\)/\1casa::AxisN\2/g
+\%^ *//%!s/\([ <(]\)BJones\([ &*,)<>]\)/\1casa::BJones\2/g
+\%^ *//%!s/\([ <(]\)BJonesDesc\([ &*,)<>]\)/\1casa::BJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)BJonesMBuf\([ &*,)<>]\)/\1casa::BJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)BJonesMCol\([ &*,)<>]\)/\1casa::BJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)BJonesMRec\([ &*,)<>]\)/\1casa::BJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)BJonesPoly\([ &*,)<>]\)/\1casa::BJonesPoly\2/g
+\%^ *//%!s/\([ <(]\)BJonesPolyDesc\([ &*,)<>]\)/\1casa::BJonesPolyDesc\2/g
+\%^ *//%!s/\([ <(]\)BJonesPolyMBuf\([ &*,)<>]\)/\1casa::BJonesPolyMBuf\2/g
+\%^ *//%!s/\([ <(]\)BJonesPolyMCol\([ &*,)<>]\)/\1casa::BJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)BJonesPolyTable\([ &*,)<>]\)/\1casa::BJonesPolyTable\2/g
+\%^ *//%!s/\([ <(]\)BJonesTable\([ &*,)<>]\)/\1casa::BJonesTable\2/g
+\%^ *//%!s/\([ <(]\)BaseColumn\([ &*,)<>]\)/\1casa::BaseColumn\2/g
+\%^ *//%!s/\([ <(]\)BaseColumnDesc\([ &*,)<>]\)/\1casa::BaseColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)BaseMappedArrayEngine\([ &*,)<>]\)/\1casa::BaseMappedArrayEngine\2/g
+\%^ *//%!s/\([ <(]\)BaseSinkSource\([ &*,)<>]\)/\1casa::BaseSinkSource\2/g
+\%^ *//%!s/\([ <(]\)BaseTable\([ &*,)<>]\)/\1casa::BaseTable\2/g
+\%^ *//%!s/\([ <(]\)BaseTableIterator\([ &*,)<>]\)/\1casa::BaseTableIterator\2/g
+\%^ *//%!s/\([ <(]\)BeamSkyJones\([ &*,)<>]\)/\1casa::BeamSkyJones\2/g
+\%^ *//%!s/\([ <(]\)BeamSquint\([ &*,)<>]\)/\1casa::BeamSquint\2/g
+\%^ *//%!s/\([ <(]\)Benchmark\([ &*,)<>]\)/\1casa::Benchmark\2/g
+\%^ *//%!s/\([ <(]\)Binomial\([ &*,)<>]\)/\1casa::Binomial\2/g
+\%^ *//%!s/\([ <(]\)BitVector\([ &*,)<>]\)/\1casa::BitVector\2/g
+\%^ *//%!s/\([ <(]\)BitVectorHelper\([ &*,)<>]\)/\1casa::BitVectorHelper\2/g
+\%^ *//%!s/\([ <(]\)Block\([ &*,)<>]\)/\1casa::Block\2/g
+\%^ *//%!s/\([ <(]\)BlockIO\([ &*,)<>]\)/\1casa::BlockIO\2/g
+\%^ *//%!s/\([ <(]\)BucketCache\([ &*,)<>]\)/\1casa::BucketCache\2/g
+\%^ *//%!s/\([ <(]\)BucketCache_CallBack\([ &*,)<>]\)/\1casa::BucketCache_CallBack\2/g
+\%^ *//%!s/\([ <(]\)BucketFile\([ &*,)<>]\)/\1casa::BucketFile\2/g
+\%^ *//%!s/\([ <(]\)ByteIO\([ &*,)<>]\)/\1casa::ByteIO\2/g
+\%^ *//%!s/\([ <(]\)ByteSink\([ &*,)<>]\)/\1casa::ByteSink\2/g
+\%^ *//%!s/\([ <(]\)ByteSinkSource\([ &*,)<>]\)/\1casa::ByteSinkSource\2/g
+\%^ *//%!s/\([ <(]\)ByteSource\([ &*,)<>]\)/\1casa::ByteSource\2/g
+\%^ *//%!s/\([ <(]\)CCList\([ &*,)<>]\)/\1casa::CCList\2/g
+\%^ *//%!s/\([ <(]\)CEMemImageSkyModel\([ &*,)<>]\)/\1casa::CEMemImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)CEMemModel\([ &*,)<>]\)/\1casa::CEMemModel\2/g
+\%^ *//%!s/\([ <(]\)CEMemProgress\([ &*,)<>]\)/\1casa::CEMemProgress\2/g
+\%^ *//%!s/\([ <(]\)CJones\([ &*,)<>]\)/\1casa::CJones\2/g
+\%^ *//%!s/\([ <(]\)CJonesDesc\([ &*,)<>]\)/\1casa::CJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)CJonesMBuf\([ &*,)<>]\)/\1casa::CJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)CJonesMCol\([ &*,)<>]\)/\1casa::CJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)CJonesMRec\([ &*,)<>]\)/\1casa::CJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)CJonesTable\([ &*,)<>]\)/\1casa::CJonesTable\2/g
+\%^ *//%!s/\([ <(]\)CLIPNearest2D\([ &*,)<>]\)/\1casa::CLIPNearest2D\2/g
+\%^ *//%!s/\([ <(]\)CLInterpolator2D\([ &*,)<>]\)/\1casa::CLInterpolator2D\2/g
+\%^ *//%!s/\([ <(]\)COWPtr\([ &*,)<>]\)/\1casa::COWPtr\2/g
+\%^ *//%!s/\([ <(]\)CSCleanImageSkyModel\([ &*,)<>]\)/\1casa::CSCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)CStokesVector\([ &*,)<>]\)/\1casa::CStokesVector\2/g
+\%^ *//%!s/\([ <(]\)CachingDisplayData\([ &*,)<>]\)/\1casa::CachingDisplayData\2/g
+\%^ *//%!s/\([ <(]\)CachingDisplayMethod\([ &*,)<>]\)/\1casa::CachingDisplayMethod\2/g
+\%^ *//%!s/\([ <(]\)CalBuffer\([ &*,)<>]\)/\1casa::CalBuffer\2/g
+\%^ *//%!s/\([ <(]\)CalDescBuffer\([ &*,)<>]\)/\1casa::CalDescBuffer\2/g
+\%^ *//%!s/\([ <(]\)CalDescColumns\([ &*,)<>]\)/\1casa::CalDescColumns\2/g
+\%^ *//%!s/\([ <(]\)CalDescRecord\([ &*,)<>]\)/\1casa::CalDescRecord\2/g
+\%^ *//%!s/\([ <(]\)CalHistoryBuffer\([ &*,)<>]\)/\1casa::CalHistoryBuffer\2/g
+\%^ *//%!s/\([ <(]\)CalHistoryColumns\([ &*,)<>]\)/\1casa::CalHistoryColumns\2/g
+\%^ *//%!s/\([ <(]\)CalHistoryRecord\([ &*,)<>]\)/\1casa::CalHistoryRecord\2/g
+\%^ *//%!s/\([ <(]\)CalInterpolation\([ &*,)<>]\)/\1casa::CalInterpolation\2/g
+\%^ *//%!s/\([ <(]\)CalInterpolator\([ &*,)<>]\)/\1casa::CalInterpolator\2/g
+\%^ *//%!s/\([ <(]\)CalIntpMatch\([ &*,)<>]\)/\1casa::CalIntpMatch\2/g
+\%^ *//%!s/\([ <(]\)CalIter\([ &*,)<>]\)/\1casa::CalIter\2/g
+\%^ *//%!s/\([ <(]\)CalIterBase\([ &*,)<>]\)/\1casa::CalIterBase\2/g
+\%^ *//%!s/\([ <(]\)CalMainBuffer\([ &*,)<>]\)/\1casa::CalMainBuffer\2/g
+\%^ *//%!s/\([ <(]\)CalMainColumns\([ &*,)<>]\)/\1casa::CalMainColumns\2/g
+\%^ *//%!s/\([ <(]\)CalMainRecord\([ &*,)<>]\)/\1casa::CalMainRecord\2/g
+\%^ *//%!s/\([ <(]\)CalTable\([ &*,)<>]\)/\1casa::CalTable\2/g
+\%^ *//%!s/\([ <(]\)CalTableDesc\([ &*,)<>]\)/\1casa::CalTableDesc\2/g
+\%^ *//%!s/\([ <(]\)Calibrater\([ &*,)<>]\)/\1casa::Calibrater\2/g
+\%^ *//%!s/\([ <(]\)CanonicalConversion\([ &*,)<>]\)/\1casa::CanonicalConversion\2/g
+\%^ *//%!s/\([ <(]\)CanonicalDataConversion\([ &*,)<>]\)/\1casa::CanonicalDataConversion\2/g
+\%^ *//%!s/\([ <(]\)CanonicalIO\([ &*,)<>]\)/\1casa::CanonicalIO\2/g
+\%^ *//%!s/\([ <(]\)Chebyshev\([ &*,)<>]\)/\1casa::Chebyshev\2/g
+\%^ *//%!s/\([ <(]\)ChebyshevEnums\([ &*,)<>]\)/\1casa::ChebyshevEnums\2/g
+\%^ *//%!s/\([ <(]\)ChebyshevParam\([ &*,)<>]\)/\1casa::ChebyshevParam\2/g
+\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl\([ &*,)<>]\)/\1casa::ChebyshevParamModeImpl\2/g
+\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl_PS\([ &*,)<>]\)/\1casa::ChebyshevParamModeImpl_PS\2/g
+\%^ *//%!s/\([ <(]\)ChebyshevParamModeImpl_PSA\([ &*,)<>]\)/\1casa::ChebyshevParamModeImpl_PSA\2/g
+\%^ *//%!s/\([ <(]\)Choice\([ &*,)<>]\)/\1casa::Choice\2/g
+\%^ *//%!s/\([ <(]\)ClarkCleanAlgorithm\([ &*,)<>]\)/\1casa::ClarkCleanAlgorithm\2/g
+\%^ *//%!s/\([ <(]\)ClarkCleanImageSkyModel\([ &*,)<>]\)/\1casa::ClarkCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)ClarkCleanLatModel\([ &*,)<>]\)/\1casa::ClarkCleanLatModel\2/g
+\%^ *//%!s/\([ <(]\)ClarkCleanModel\([ &*,)<>]\)/\1casa::ClarkCleanModel\2/g
+\%^ *//%!s/\([ <(]\)ClarkCleanProgress\([ &*,)<>]\)/\1casa::ClarkCleanProgress\2/g
+\%^ *//%!s/\([ <(]\)CleanEnums\([ &*,)<>]\)/\1casa::CleanEnums\2/g
+\%^ *//%!s/\([ <(]\)CleanImageSkyModel\([ &*,)<>]\)/\1casa::CleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)Colormap\([ &*,)<>]\)/\1casa::Colormap\2/g
+\%^ *//%!s/\([ <(]\)ColormapDefinition\([ &*,)<>]\)/\1casa::ColormapDefinition\2/g
+\%^ *//%!s/\([ <(]\)ColormapInfo\([ &*,)<>]\)/\1casa::ColormapInfo\2/g
+\%^ *//%!s/\([ <(]\)ColormapManager\([ &*,)<>]\)/\1casa::ColormapManager\2/g
+\%^ *//%!s/\([ <(]\)ColumnCache\([ &*,)<>]\)/\1casa::ColumnCache\2/g
+\%^ *//%!s/\([ <(]\)ColumnDesc\([ &*,)<>]\)/\1casa::ColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)ColumnDescSet\([ &*,)<>]\)/\1casa::ColumnDescSet\2/g
+\%^ *//%!s/\([ <(]\)ColumnSet\([ &*,)<>]\)/\1casa::ColumnSet\2/g
+\%^ *//%!s/\([ <(]\)ColumnsIndex\([ &*,)<>]\)/\1casa::ColumnsIndex\2/g
+\%^ *//%!s/\([ <(]\)ColumnsIndexArray\([ &*,)<>]\)/\1casa::ColumnsIndexArray\2/g
+\%^ *//%!s/\([ <(]\)CombiFunction\([ &*,)<>]\)/\1casa::CombiFunction\2/g
+\%^ *//%!s/\([ <(]\)CombiFunction_PS\([ &*,)<>]\)/\1casa::CombiFunction_PS\2/g
+\%^ *//%!s/\([ <(]\)CombiParam\([ &*,)<>]\)/\1casa::CombiParam\2/g
+\%^ *//%!s/\([ <(]\)CompiledFunction\([ &*,)<>]\)/\1casa::CompiledFunction\2/g
+\%^ *//%!s/\([ <(]\)CompiledParam\([ &*,)<>]\)/\1casa::CompiledParam\2/g
+\%^ *//%!s/\([ <(]\)ComponentImager\([ &*,)<>]\)/\1casa::ComponentImager\2/g
+\%^ *//%!s/\([ <(]\)ComponentList\([ &*,)<>]\)/\1casa::ComponentList\2/g
+\%^ *//%!s/\([ <(]\)ComponentShape\([ &*,)<>]\)/\1casa::ComponentShape\2/g
+\%^ *//%!s/\([ <(]\)ComponentType\([ &*,)<>]\)/\1casa::ComponentType\2/g
+\%^ *//%!s/\([ <(]\)CompositeNumber\([ &*,)<>]\)/\1casa::CompositeNumber\2/g
+\%^ *//%!s/\([ <(]\)CompoundFunction\([ &*,)<>]\)/\1casa::CompoundFunction\2/g
+\%^ *//%!s/\([ <(]\)CompoundFunction_PS\([ &*,)<>]\)/\1casa::CompoundFunction_PS\2/g
+\%^ *//%!s/\([ <(]\)CompoundParam\([ &*,)<>]\)/\1casa::CompoundParam\2/g
+\%^ *//%!s/\([ <(]\)CompressComplex\([ &*,)<>]\)/\1casa::CompressComplex\2/g
+\%^ *//%!s/\([ <(]\)CompressComplexSD\([ &*,)<>]\)/\1casa::CompressComplexSD\2/g
+\%^ *//%!s/\([ <(]\)CompressFloat\([ &*,)<>]\)/\1casa::CompressFloat\2/g
+\%^ *//%!s/\([ <(]\)ConstHashMapIter\([ &*,)<>]\)/\1casa::ConstHashMapIter\2/g
+\%^ *//%!s/\([ <(]\)ConstListIter\([ &*,)<>]\)/\1casa::ConstListIter\2/g
+\%^ *//%!s/\([ <(]\)ConstMapIter\([ &*,)<>]\)/\1casa::ConstMapIter\2/g
+\%^ *//%!s/\([ <(]\)ConstantSpectrum\([ &*,)<>]\)/\1casa::ConstantSpectrum\2/g
+\%^ *//%!s/\([ <(]\)ConvEnums\([ &*,)<>]\)/\1casa::ConvEnums\2/g
+\%^ *//%!s/\([ <(]\)Conversion\([ &*,)<>]\)/\1casa::Conversion\2/g
+\%^ *//%!s/\([ <(]\)ConversionIO\([ &*,)<>]\)/\1casa::ConversionIO\2/g
+\%^ *//%!s/\([ <(]\)ConvolutionEquation\([ &*,)<>]\)/\1casa::ConvolutionEquation\2/g
+\%^ *//%!s/\([ <(]\)ConvolveGridder\([ &*,)<>]\)/\1casa::ConvolveGridder\2/g
+\%^ *//%!s/\([ <(]\)Convolver\([ &*,)<>]\)/\1casa::Convolver\2/g
+\%^ *//%!s/\([ <(]\)Coordinate\([ &*,)<>]\)/\1casa::Coordinate\2/g
+\%^ *//%!s/\([ <(]\)CoordinateSystem\([ &*,)<>]\)/\1casa::CoordinateSystem\2/g
+\%^ *//%!s/\([ <(]\)CoordinateUtil\([ &*,)<>]\)/\1casa::CoordinateUtil\2/g
+\%^ *//%!s/\([ <(]\)CountedConstPtr\([ &*,)<>]\)/\1casa::CountedConstPtr\2/g
+\%^ *//%!s/\([ <(]\)CountedPtr\([ &*,)<>]\)/\1casa::CountedPtr\2/g
+\%^ *//%!s/\([ <(]\)CrosshairEvent\([ &*,)<>]\)/\1casa::CrosshairEvent\2/g
+\%^ *//%!s/\([ <(]\)Cube\([ &*,)<>]\)/\1casa::Cube\2/g
+\%^ *//%!s/\([ <(]\)CurvedImage2D\([ &*,)<>]\)/\1casa::CurvedImage2D\2/g
+\%^ *//%!s/\([ <(]\)CurvedLattice2D\([ &*,)<>]\)/\1casa::CurvedLattice2D\2/g
+\%^ *//%!s/\([ <(]\)DBeamSkyJones\([ &*,)<>]\)/\1casa::DBeamSkyJones\2/g
+\%^ *//%!s/\([ <(]\)DDDEllipse\([ &*,)<>]\)/\1casa::DDDEllipse\2/g
+\%^ *//%!s/\([ <(]\)DDDHandle\([ &*,)<>]\)/\1casa::DDDHandle\2/g
+\%^ *//%!s/\([ <(]\)DDDObject\([ &*,)<>]\)/\1casa::DDDObject\2/g
+\%^ *//%!s/\([ <(]\)DDDPolygon\([ &*,)<>]\)/\1casa::DDDPolygon\2/g
+\%^ *//%!s/\([ <(]\)DDDRectangle\([ &*,)<>]\)/\1casa::DDDRectangle\2/g
+\%^ *//%!s/\([ <(]\)DDDiffFunc\([ &*,)<>]\)/\1casa::DDDiffFunc\2/g
+\%^ *//%!s/\([ <(]\)DDDummy\([ &*,)<>]\)/\1casa::DDDummy\2/g
+\%^ *//%!s/\([ <(]\)DDFunc\([ &*,)<>]\)/\1casa::DDFunc\2/g
+\%^ *//%!s/\([ <(]\)DDFuncDiff\([ &*,)<>]\)/\1casa::DDFuncDiff\2/g
+\%^ *//%!s/\([ <(]\)DDFuncSum\([ &*,)<>]\)/\1casa::DDFuncSum\2/g
+\%^ *//%!s/\([ <(]\)DDMapper\([ &*,)<>]\)/\1casa::DDMapper\2/g
+\%^ *//%!s/\([ <(]\)DDModEvent\([ &*,)<>]\)/\1casa::DDModEvent\2/g
+\%^ *//%!s/\([ <(]\)DDSumFunc\([ &*,)<>]\)/\1casa::DDSumFunc\2/g
+\%^ *//%!s/\([ <(]\)DFTServer\([ &*,)<>]\)/\1casa::DFTServer\2/g
+\%^ *//%!s/\([ <(]\)DJonesDesc\([ &*,)<>]\)/\1casa::DJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)DJonesMBuf\([ &*,)<>]\)/\1casa::DJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)DJonesMCol\([ &*,)<>]\)/\1casa::DJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)DJonesMRec\([ &*,)<>]\)/\1casa::DJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)DJonesTable\([ &*,)<>]\)/\1casa::DJonesTable\2/g
+\%^ *//%!s/\([ <(]\)DLFont\([ &*,)<>]\)/\1casa::DLFont\2/g
+\%^ *//%!s/\([ <(]\)DOos\([ &*,)<>]\)/\1casa::DOos\2/g
+\%^ *//%!s/\([ <(]\)DParameterButton\([ &*,)<>]\)/\1casa::DParameterButton\2/g
+\%^ *//%!s/\([ <(]\)DParameterChoice\([ &*,)<>]\)/\1casa::DParameterChoice\2/g
+\%^ *//%!s/\([ <(]\)DParameterColorChoice\([ &*,)<>]\)/\1casa::DParameterColorChoice\2/g
+\%^ *//%!s/\([ <(]\)DParameterFontChoice\([ &*,)<>]\)/\1casa::DParameterFontChoice\2/g
+\%^ *//%!s/\([ <(]\)DParameterMapKeyChoice\([ &*,)<>]\)/\1casa::DParameterMapKeyChoice\2/g
+\%^ *//%!s/\([ <(]\)DParameterRange\([ &*,)<>]\)/\1casa::DParameterRange\2/g
+\%^ *//%!s/\([ <(]\)DParameterString\([ &*,)<>]\)/\1casa::DParameterString\2/g
+\%^ *//%!s/\([ <(]\)DParameterSwitch\([ &*,)<>]\)/\1casa::DParameterSwitch\2/g
+\%^ *//%!s/\([ <(]\)DSArrow\([ &*,)<>]\)/\1casa::DSArrow\2/g
+\%^ *//%!s/\([ <(]\)DSBasic\([ &*,)<>]\)/\1casa::DSBasic\2/g
+\%^ *//%!s/\([ <(]\)DSCircle\([ &*,)<>]\)/\1casa::DSCircle\2/g
+\%^ *//%!s/\([ <(]\)DSClosed\([ &*,)<>]\)/\1casa::DSClosed\2/g
+\%^ *//%!s/\([ <(]\)DSEllipse\([ &*,)<>]\)/\1casa::DSEllipse\2/g
+\%^ *//%!s/\([ <(]\)DSLine\([ &*,)<>]\)/\1casa::DSLine\2/g
+\%^ *//%!s/\([ <(]\)DSMarker\([ &*,)<>]\)/\1casa::DSMarker\2/g
+\%^ *//%!s/\([ <(]\)DSPixelArrow\([ &*,)<>]\)/\1casa::DSPixelArrow\2/g
+\%^ *//%!s/\([ <(]\)DSPixelEllipse\([ &*,)<>]\)/\1casa::DSPixelEllipse\2/g
+\%^ *//%!s/\([ <(]\)DSPixelMarker\([ &*,)<>]\)/\1casa::DSPixelMarker\2/g
+\%^ *//%!s/\([ <(]\)DSPixelPoly\([ &*,)<>]\)/\1casa::DSPixelPoly\2/g
+\%^ *//%!s/\([ <(]\)DSPixelPolyLine\([ &*,)<>]\)/\1casa::DSPixelPolyLine\2/g
+\%^ *//%!s/\([ <(]\)DSPixelRectangle\([ &*,)<>]\)/\1casa::DSPixelRectangle\2/g
+\%^ *//%!s/\([ <(]\)DSPixelText\([ &*,)<>]\)/\1casa::DSPixelText\2/g
+\%^ *//%!s/\([ <(]\)DSPoly\([ &*,)<>]\)/\1casa::DSPoly\2/g
+\%^ *//%!s/\([ <(]\)DSPolyLine\([ &*,)<>]\)/\1casa::DSPolyLine\2/g
+\%^ *//%!s/\([ <(]\)DSRectangle\([ &*,)<>]\)/\1casa::DSRectangle\2/g
+\%^ *//%!s/\([ <(]\)DSScreenArrow\([ &*,)<>]\)/\1casa::DSScreenArrow\2/g
+\%^ *//%!s/\([ <(]\)DSScreenEllipse\([ &*,)<>]\)/\1casa::DSScreenEllipse\2/g
+\%^ *//%!s/\([ <(]\)DSScreenMarker\([ &*,)<>]\)/\1casa::DSScreenMarker\2/g
+\%^ *//%!s/\([ <(]\)DSScreenPoly\([ &*,)<>]\)/\1casa::DSScreenPoly\2/g
+\%^ *//%!s/\([ <(]\)DSScreenPolyLine\([ &*,)<>]\)/\1casa::DSScreenPolyLine\2/g
+\%^ *//%!s/\([ <(]\)DSScreenRectangle\([ &*,)<>]\)/\1casa::DSScreenRectangle\2/g
+\%^ *//%!s/\([ <(]\)DSScreenText\([ &*,)<>]\)/\1casa::DSScreenText\2/g
+\%^ *//%!s/\([ <(]\)DSSquare\([ &*,)<>]\)/\1casa::DSSquare\2/g
+\%^ *//%!s/\([ <(]\)DSText\([ &*,)<>]\)/\1casa::DSText\2/g
+\%^ *//%!s/\([ <(]\)DSWorldArrow\([ &*,)<>]\)/\1casa::DSWorldArrow\2/g
+\%^ *//%!s/\([ <(]\)DSWorldEllipse\([ &*,)<>]\)/\1casa::DSWorldEllipse\2/g
+\%^ *//%!s/\([ <(]\)DSWorldMarker\([ &*,)<>]\)/\1casa::DSWorldMarker\2/g
+\%^ *//%!s/\([ <(]\)DSWorldPoly\([ &*,)<>]\)/\1casa::DSWorldPoly\2/g
+\%^ *//%!s/\([ <(]\)DSWorldPolyLine\([ &*,)<>]\)/\1casa::DSWorldPolyLine\2/g
+\%^ *//%!s/\([ <(]\)DSWorldRectangle\([ &*,)<>]\)/\1casa::DSWorldRectangle\2/g
+\%^ *//%!s/\([ <(]\)DSWorldText\([ &*,)<>]\)/\1casa::DSWorldText\2/g
+\%^ *//%!s/\([ <(]\)DTVisible\([ &*,)<>]\)/\1casa::DTVisible\2/g
+\%^ *//%!s/\([ <(]\)DataConversion\([ &*,)<>]\)/\1casa::DataConversion\2/g
+\%^ *//%!s/\([ <(]\)DataManError\([ &*,)<>]\)/\1casa::DataManError\2/g
+\%^ *//%!s/\([ <(]\)DataManInternalError\([ &*,)<>]\)/\1casa::DataManInternalError\2/g
+\%^ *//%!s/\([ <(]\)DataManInvDT\([ &*,)<>]\)/\1casa::DataManInvDT\2/g
+\%^ *//%!s/\([ <(]\)DataManInvOper\([ &*,)<>]\)/\1casa::DataManInvOper\2/g
+\%^ *//%!s/\([ <(]\)DataManUnknownCtor\([ &*,)<>]\)/\1casa::DataManUnknownCtor\2/g
+\%^ *//%!s/\([ <(]\)DataManUnknownVirtualColumn\([ &*,)<>]\)/\1casa::DataManUnknownVirtualColumn\2/g
+\%^ *//%!s/\([ <(]\)DataManager\([ &*,)<>]\)/\1casa::DataManager\2/g
+\%^ *//%!s/\([ <(]\)DataManagerColumn\([ &*,)<>]\)/\1casa::DataManagerColumn\2/g
+\%^ *//%!s/\([ <(]\)DataManagerCtor\([ &*,)<>]\)/\1casa::DataManagerCtor\2/g
+\%^ *//%!s/\([ <(]\)DataType\([ &*,)<>]\)/\1casa::DataType\2/g
+\%^ *//%!s/\([ <(]\)DiracDFunction\([ &*,)<>]\)/\1casa::DiracDFunction\2/g
+\%^ *//%!s/\([ <(]\)DiracDParam\([ &*,)<>]\)/\1casa::DiracDParam\2/g
+\%^ *//%!s/\([ <(]\)DirectionCoordinate\([ &*,)<>]\)/\1casa::DirectionCoordinate\2/g
+\%^ *//%!s/\([ <(]\)Directory\([ &*,)<>]\)/\1casa::Directory\2/g
+\%^ *//%!s/\([ <(]\)DirectoryIterator\([ &*,)<>]\)/\1casa::DirectoryIterator\2/g
+\%^ *//%!s/\([ <(]\)DiscreteUniform\([ &*,)<>]\)/\1casa::DiscreteUniform\2/g
+\%^ *//%!s/\([ <(]\)DiskShape\([ &*,)<>]\)/\1casa::DiskShape\2/g
+\%^ *//%!s/\([ <(]\)Display\([ &*,)<>]\)/\1casa::Display\2/g
+\%^ *//%!s/\([ <(]\)DisplayData\([ &*,)<>]\)/\1casa::DisplayData\2/g
+\%^ *//%!s/\([ <(]\)DisplayDataEvent\([ &*,)<>]\)/\1casa::DisplayDataEvent\2/g
+\%^ *//%!s/\([ <(]\)DisplayEH\([ &*,)<>]\)/\1casa::DisplayEH\2/g
+\%^ *//%!s/\([ <(]\)DisplayEvent\([ &*,)<>]\)/\1casa::DisplayEvent\2/g
+\%^ *//%!s/\([ <(]\)DisplayMethod\([ &*,)<>]\)/\1casa::DisplayMethod\2/g
+\%^ *//%!s/\([ <(]\)DisplayOptions\([ &*,)<>]\)/\1casa::DisplayOptions\2/g
+\%^ *//%!s/\([ <(]\)DisplayParameter\([ &*,)<>]\)/\1casa::DisplayParameter\2/g
+\%^ *//%!s/\([ <(]\)DisplayShape\([ &*,)<>]\)/\1casa::DisplayShape\2/g
+\%^ *//%!s/\([ <(]\)DisplayShapeInterface\([ &*,)<>]\)/\1casa::DisplayShapeInterface\2/g
+\%^ *//%!s/\([ <(]\)DisplayShapeWithCoords\([ &*,)<>]\)/\1casa::DisplayShapeWithCoords\2/g
+\%^ *//%!s/\([ <(]\)DisplayTool\([ &*,)<>]\)/\1casa::DisplayTool\2/g
+\%^ *//%!s/\([ <(]\)DrawingDisplayData\([ &*,)<>]\)/\1casa::DrawingDisplayData\2/g
+\%^ *//%!s/\([ <(]\)DrawingDisplayMethod\([ &*,)<>]\)/\1casa::DrawingDisplayMethod\2/g
+\%^ *//%!s/\([ <(]\)Dummy_Constants_class\([ &*,)<>]\)/\1casa::Dummy_Constants_class\2/g
+\%^ *//%!s/\([ <(]\)DuplError\([ &*,)<>]\)/\1casa::DuplError\2/g
+\%^ *//%!s/\([ <(]\)DynBuffer\([ &*,)<>]\)/\1casa::DynBuffer\2/g
+\%^ *//%!s/\([ <(]\)EarthField\([ &*,)<>]\)/\1casa::EarthField\2/g
+\%^ *//%!s/\([ <(]\)EarthMagneticMachine\([ &*,)<>]\)/\1casa::EarthMagneticMachine\2/g
+\%^ *//%!s/\([ <(]\)EclecticFunctionFactory\([ &*,)<>]\)/\1casa::EclecticFunctionFactory\2/g
+\%^ *//%!s/\([ <(]\)EmptyStackError\([ &*,)<>]\)/\1casa::EmptyStackError\2/g
+\%^ *//%!s/\([ <(]\)Entropy\([ &*,)<>]\)/\1casa::Entropy\2/g
+\%^ *//%!s/\([ <(]\)EntropyEmptiness\([ &*,)<>]\)/\1casa::EntropyEmptiness\2/g
+\%^ *//%!s/\([ <(]\)EntropyI\([ &*,)<>]\)/\1casa::EntropyI\2/g
+\%^ *//%!s/\([ <(]\)EnvironmentVariable\([ &*,)<>]\)/\1casa::EnvironmentVariable\2/g
+\%^ *//%!s/\([ <(]\)Erlang\([ &*,)<>]\)/\1casa::Erlang\2/g
+\%^ *//%!s/\([ <(]\)Euler\([ &*,)<>]\)/\1casa::Euler\2/g
+\%^ *//%!s/\([ <(]\)EvenPolynomial\([ &*,)<>]\)/\1casa::EvenPolynomial\2/g
+\%^ *//%!s/\([ <(]\)EvenPolynomialParam\([ &*,)<>]\)/\1casa::EvenPolynomialParam\2/g
+\%^ *//%!s/\([ <(]\)EvenPolynomial_PS\([ &*,)<>]\)/\1casa::EvenPolynomial_PS\2/g
+\%^ *//%!s/\([ <(]\)ExpSincConv\([ &*,)<>]\)/\1casa::ExpSincConv\2/g
+\%^ *//%!s/\([ <(]\)ExtendImage\([ &*,)<>]\)/\1casa::ExtendImage\2/g
+\%^ *//%!s/\([ <(]\)ExtendLattice\([ &*,)<>]\)/\1casa::ExtendLattice\2/g
+\%^ *//%!s/\([ <(]\)ExtendSpecifier\([ &*,)<>]\)/\1casa::ExtendSpecifier\2/g
+\%^ *//%!s/\([ <(]\)ExternalLockSync\([ &*,)<>]\)/\1casa::ExternalLockSync\2/g
+\%^ *//%!s/\([ <(]\)FFTEnums\([ &*,)<>]\)/\1casa::FFTEnums\2/g
+\%^ *//%!s/\([ <(]\)FFTPack\([ &*,)<>]\)/\1casa::FFTPack\2/g
+\%^ *//%!s/\([ <(]\)FFTServer\([ &*,)<>]\)/\1casa::FFTServer\2/g
+\%^ *//%!s/\([ <(]\)FITSIDItoMS1\([ &*,)<>]\)/\1casa::FITSIDItoMS1\2/g
+\%^ *//%!s/\([ <(]\)FITSImage\([ &*,)<>]\)/\1casa::FITSImage\2/g
+\%^ *//%!s/\([ <(]\)FITSMask\([ &*,)<>]\)/\1casa::FITSMask\2/g
+\%^ *//%!s/\([ <(]\)FTMachine\([ &*,)<>]\)/\1casa::FTMachine\2/g
+\%^ *//%!s/\([ <(]\)FVisJonesDesc\([ &*,)<>]\)/\1casa::FVisJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)FVisJonesIonoDesc\([ &*,)<>]\)/\1casa::FVisJonesIonoDesc\2/g
+\%^ *//%!s/\([ <(]\)FVisJonesIonoMRec\([ &*,)<>]\)/\1casa::FVisJonesIonoMRec\2/g
+\%^ *//%!s/\([ <(]\)FVisJonesMRec\([ &*,)<>]\)/\1casa::FVisJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)Fallible\([ &*,)<>]\)/\1casa::Fallible\2/g
+\%^ *//%!s/\([ <(]\)FieldNotFoundError\([ &*,)<>]\)/\1casa::FieldNotFoundError\2/g
+\%^ *//%!s/\([ <(]\)File\([ &*,)<>]\)/\1casa::File\2/g
+\%^ *//%!s/\([ <(]\)FileLocker\([ &*,)<>]\)/\1casa::FileLocker\2/g
+\%^ *//%!s/\([ <(]\)FilebufIO\([ &*,)<>]\)/\1casa::FilebufIO\2/g
+\%^ *//%!s/\([ <(]\)FiledesIO\([ &*,)<>]\)/\1casa::FiledesIO\2/g
+\%^ *//%!s/\([ <(]\)Fit2D\([ &*,)<>]\)/\1casa::Fit2D\2/g
+\%^ *//%!s/\([ <(]\)FitGaussian\([ &*,)<>]\)/\1casa::FitGaussian\2/g
+\%^ *//%!s/\([ <(]\)FitLSQ\([ &*,)<>]\)/\1casa::FitLSQ\2/g
+\%^ *//%!s/\([ <(]\)FlaggerEnums\([ &*,)<>]\)/\1casa::FlaggerEnums\2/g
+\%^ *//%!s/\([ <(]\)Flux\([ &*,)<>]\)/\1casa::Flux\2/g
+\%^ *//%!s/\([ <(]\)FluxRep\([ &*,)<>]\)/\1casa::FluxRep\2/g
+\%^ *//%!s/\([ <(]\)FluxStandard\([ &*,)<>]\)/\1casa::FluxStandard\2/g
+\%^ *//%!s/\([ <(]\)ForeignArrayParameterAccessor\([ &*,)<>]\)/\1casa::ForeignArrayParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignBaseArrayParameterAccessor\([ &*,)<>]\)/\1casa::ForeignBaseArrayParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignBaseParameterAccessor\([ &*,)<>]\)/\1casa::ForeignBaseParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignBaseVectorParameterAccessor\([ &*,)<>]\)/\1casa::ForeignBaseVectorParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignNSArrayParameterAccessor\([ &*,)<>]\)/\1casa::ForeignNSArrayParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignNSParameterAccessor\([ &*,)<>]\)/\1casa::ForeignNSParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignNSVectorParameterAccessor\([ &*,)<>]\)/\1casa::ForeignNSVectorParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignParameterAccessor\([ &*,)<>]\)/\1casa::ForeignParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForeignVectorParameterAccessor\([ &*,)<>]\)/\1casa::ForeignVectorParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ForwardColumn\([ &*,)<>]\)/\1casa::ForwardColumn\2/g
+\%^ *//%!s/\([ <(]\)ForwardColumnEngine\([ &*,)<>]\)/\1casa::ForwardColumnEngine\2/g
+\%^ *//%!s/\([ <(]\)ForwardColumnIndexedRow\([ &*,)<>]\)/\1casa::ForwardColumnIndexedRow\2/g
+\%^ *//%!s/\([ <(]\)ForwardColumnIndexedRowEngine\([ &*,)<>]\)/\1casa::ForwardColumnIndexedRowEngine\2/g
+\%^ *//%!s/\([ <(]\)FuncExprData\([ &*,)<>]\)/\1casa::FuncExprData\2/g
+\%^ *//%!s/\([ <(]\)FuncExpression\([ &*,)<>]\)/\1casa::FuncExpression\2/g
+\%^ *//%!s/\([ <(]\)Function\([ &*,)<>]\)/\1casa::Function\2/g
+\%^ *//%!s/\([ <(]\)Function1D\([ &*,)<>]\)/\1casa::Function1D\2/g
+\%^ *//%!s/\([ <(]\)FunctionFactory\([ &*,)<>]\)/\1casa::FunctionFactory\2/g
+\%^ *//%!s/\([ <(]\)FunctionFactoryError\([ &*,)<>]\)/\1casa::FunctionFactoryError\2/g
+\%^ *//%!s/\([ <(]\)FunctionHolder\([ &*,)<>]\)/\1casa::FunctionHolder\2/g
+\%^ *//%!s/\([ <(]\)FunctionMarshallable\([ &*,)<>]\)/\1casa::FunctionMarshallable\2/g
+\%^ *//%!s/\([ <(]\)FunctionOrder\([ &*,)<>]\)/\1casa::FunctionOrder\2/g
+\%^ *//%!s/\([ <(]\)FunctionParam\([ &*,)<>]\)/\1casa::FunctionParam\2/g
+\%^ *//%!s/\([ <(]\)FunctionTraits\([ &*,)<>]\)/\1casa::FunctionTraits\2/g
+\%^ *//%!s/\([ <(]\)FunctionTraits_P\([ &*,)<>]\)/\1casa::FunctionTraits_P\2/g
+\%^ *//%!s/\([ <(]\)FunctionTraits_PA\([ &*,)<>]\)/\1casa::FunctionTraits_PA\2/g
+\%^ *//%!s/\([ <(]\)FunctionTraits_PX\([ &*,)<>]\)/\1casa::FunctionTraits_PX\2/g
+\%^ *//%!s/\([ <(]\)FunctionWrapper\([ &*,)<>]\)/\1casa::FunctionWrapper\2/g
+\%^ *//%!s/\([ <(]\)Functional\([ &*,)<>]\)/\1casa::Functional\2/g
+\%^ *//%!s/\([ <(]\)GJonesDSB\([ &*,)<>]\)/\1casa::GJonesDSB\2/g
+\%^ *//%!s/\([ <(]\)GJonesDelayRateSBDesc\([ &*,)<>]\)/\1casa::GJonesDelayRateSBDesc\2/g
+\%^ *//%!s/\([ <(]\)GJonesDelayRateSBTable\([ &*,)<>]\)/\1casa::GJonesDelayRateSBTable\2/g
+\%^ *//%!s/\([ <(]\)GJonesDesc\([ &*,)<>]\)/\1casa::GJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)GJonesMBuf\([ &*,)<>]\)/\1casa::GJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)GJonesMCol\([ &*,)<>]\)/\1casa::GJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)GJonesMRec\([ &*,)<>]\)/\1casa::GJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)GJonesPoly\([ &*,)<>]\)/\1casa::GJonesPoly\2/g
+\%^ *//%!s/\([ <(]\)GJonesPolyDesc\([ &*,)<>]\)/\1casa::GJonesPolyDesc\2/g
+\%^ *//%!s/\([ <(]\)GJonesPolyMBuf\([ &*,)<>]\)/\1casa::GJonesPolyMBuf\2/g
+\%^ *//%!s/\([ <(]\)GJonesPolyMCol\([ &*,)<>]\)/\1casa::GJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)GJonesPolyTable\([ &*,)<>]\)/\1casa::GJonesPolyTable\2/g
+\%^ *//%!s/\([ <(]\)GJonesSpline\([ &*,)<>]\)/\1casa::GJonesSpline\2/g
+\%^ *//%!s/\([ <(]\)GJonesSplineDesc\([ &*,)<>]\)/\1casa::GJonesSplineDesc\2/g
+\%^ *//%!s/\([ <(]\)GJonesSplineMBuf\([ &*,)<>]\)/\1casa::GJonesSplineMBuf\2/g
+\%^ *//%!s/\([ <(]\)GJonesSplineMCol\([ &*,)<>]\)/\1casa::GJonesSplineMCol\2/g
+\%^ *//%!s/\([ <(]\)GJonesSplineTable\([ &*,)<>]\)/\1casa::GJonesSplineTable\2/g
+\%^ *//%!s/\([ <(]\)GJonesTable\([ &*,)<>]\)/\1casa::GJonesTable\2/g
+\%^ *//%!s/\([ <(]\)GLLogIO\([ &*,)<>]\)/\1casa::GLLogIO\2/g
+\%^ *//%!s/\([ <(]\)GLPCDisplayList\([ &*,)<>]\)/\1casa::GLPCDisplayList\2/g
+\%^ *//%!s/\([ <(]\)GLPCDisplayListElement\([ &*,)<>]\)/\1casa::GLPCDisplayListElement\2/g
+\%^ *//%!s/\([ <(]\)GLPCDisplayListEntry\([ &*,)<>]\)/\1casa::GLPCDisplayListEntry\2/g
+\%^ *//%!s/\([ <(]\)GLPCTextureParams\([ &*,)<>]\)/\1casa::GLPCTextureParams\2/g
+\%^ *//%!s/\([ <(]\)GLPCTexturedImage\([ &*,)<>]\)/\1casa::GLPCTexturedImage\2/g
+\%^ *//%!s/\([ <(]\)GLPixelCanvas\([ &*,)<>]\)/\1casa::GLPixelCanvas\2/g
+\%^ *//%!s/\([ <(]\)GLPixelCanvasColorTable\([ &*,)<>]\)/\1casa::GLPixelCanvasColorTable\2/g
+\%^ *//%!s/\([ <(]\)GLTraceLevel\([ &*,)<>]\)/\1casa::GLTraceLevel\2/g
+\%^ *//%!s/\([ <(]\)GLVColorTableEntry\([ &*,)<>]\)/\1casa::GLVColorTableEntry\2/g
+\%^ *//%!s/\([ <(]\)GNoiseFunction\([ &*,)<>]\)/\1casa::GNoiseFunction\2/g
+\%^ *//%!s/\([ <(]\)GNoiseParam\([ &*,)<>]\)/\1casa::GNoiseParam\2/g
+\%^ *//%!s/\([ <(]\)GPSDCB\([ &*,)<>]\)/\1casa::GPSDCB\2/g
+\%^ *//%!s/\([ <(]\)GPSDomain\([ &*,)<>]\)/\1casa::GPSDomain\2/g
+\%^ *//%!s/\([ <(]\)GPSEphemeris\([ &*,)<>]\)/\1casa::GPSEphemeris\2/g
+\%^ *//%!s/\([ <(]\)GPSGroupDelay\([ &*,)<>]\)/\1casa::GPSGroupDelay\2/g
+\%^ *//%!s/\([ <(]\)Galaxy\([ &*,)<>]\)/\1casa::Galaxy\2/g
+\%^ *//%!s/\([ <(]\)Gaussian1D\([ &*,)<>]\)/\1casa::Gaussian1D\2/g
+\%^ *//%!s/\([ <(]\)Gaussian1DParam\([ &*,)<>]\)/\1casa::Gaussian1DParam\2/g
+\%^ *//%!s/\([ <(]\)Gaussian1D_PS\([ &*,)<>]\)/\1casa::Gaussian1D_PS\2/g
+\%^ *//%!s/\([ <(]\)Gaussian2D\([ &*,)<>]\)/\1casa::Gaussian2D\2/g
+\%^ *//%!s/\([ <(]\)Gaussian2DParam\([ &*,)<>]\)/\1casa::Gaussian2DParam\2/g
+\%^ *//%!s/\([ <(]\)Gaussian2D_PS\([ &*,)<>]\)/\1casa::Gaussian2D_PS\2/g
+\%^ *//%!s/\([ <(]\)Gaussian3D\([ &*,)<>]\)/\1casa::Gaussian3D\2/g
+\%^ *//%!s/\([ <(]\)Gaussian3DParam\([ &*,)<>]\)/\1casa::Gaussian3DParam\2/g
+\%^ *//%!s/\([ <(]\)Gaussian3D_PS\([ &*,)<>]\)/\1casa::Gaussian3D_PS\2/g
+\%^ *//%!s/\([ <(]\)GaussianConv\([ &*,)<>]\)/\1casa::GaussianConv\2/g
+\%^ *//%!s/\([ <(]\)GaussianConvert\([ &*,)<>]\)/\1casa::GaussianConvert\2/g
+\%^ *//%!s/\([ <(]\)GaussianND\([ &*,)<>]\)/\1casa::GaussianND\2/g
+\%^ *//%!s/\([ <(]\)GaussianNDParam\([ &*,)<>]\)/\1casa::GaussianNDParam\2/g
+\%^ *//%!s/\([ <(]\)GaussianShape\([ &*,)<>]\)/\1casa::GaussianShape\2/g
+\%^ *//%!s/\([ <(]\)GenSort\([ &*,)<>]\)/\1casa::GenSort\2/g
+\%^ *//%!s/\([ <(]\)GenSortIndirect\([ &*,)<>]\)/\1casa::GenSortIndirect\2/g
+\%^ *//%!s/\([ <(]\)GenericL2Fit\([ &*,)<>]\)/\1casa::GenericL2Fit\2/g
+\%^ *//%!s/\([ <(]\)Geometric\([ &*,)<>]\)/\1casa::Geometric\2/g
+\%^ *//%!s/\([ <(]\)GlishArray\([ &*,)<>]\)/\1casa::GlishArray\2/g
+\%^ *//%!s/\([ <(]\)GlishArrayParameterAccessor\([ &*,)<>]\)/\1casa::GlishArrayParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)GlishFieldNotFoundError\([ &*,)<>]\)/\1casa::GlishFieldNotFoundError\2/g
+\%^ *//%!s/\([ <(]\)GlishLogSink\([ &*,)<>]\)/\1casa::GlishLogSink\2/g
+\%^ *//%!s/\([ <(]\)GlishRecord\([ &*,)<>]\)/\1casa::GlishRecord\2/g
+\%^ *//%!s/\([ <(]\)GlishRecordExpr\([ &*,)<>]\)/\1casa::GlishRecordExpr\2/g
+\%^ *//%!s/\([ <(]\)GlishRecordParameterAccessor\([ &*,)<>]\)/\1casa::GlishRecordParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)GlishSerialHelper\([ &*,)<>]\)/\1casa::GlishSerialHelper\2/g
+\%^ *//%!s/\([ <(]\)GlishSysEvent\([ &*,)<>]\)/\1casa::GlishSysEvent\2/g
+\%^ *//%!s/\([ <(]\)GlishSysEventProcTargetInfo\([ &*,)<>]\)/\1casa::GlishSysEventProcTargetInfo\2/g
+\%^ *//%!s/\([ <(]\)GlishSysEventSource\([ &*,)<>]\)/\1casa::GlishSysEventSource\2/g
+\%^ *//%!s/\([ <(]\)GlishSysEventTarget\([ &*,)<>]\)/\1casa::GlishSysEventTarget\2/g
+\%^ *//%!s/\([ <(]\)GlishValue\([ &*,)<>]\)/\1casa::GlishValue\2/g
+\%^ *//%!s/\([ <(]\)GlishValueParameterAccessor\([ &*,)<>]\)/\1casa::GlishValueParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)GridBoth\([ &*,)<>]\)/\1casa::GridBoth\2/g
+\%^ *//%!s/\([ <(]\)GridFT\([ &*,)<>]\)/\1casa::GridFT\2/g
+\%^ *//%!s/\([ <(]\)Gridder\([ &*,)<>]\)/\1casa::Gridder\2/g
+\%^ *//%!s/\([ <(]\)HashClass\([ &*,)<>]\)/\1casa::HashClass\2/g
+\%^ *//%!s/\([ <(]\)HashMap\([ &*,)<>]\)/\1casa::HashMap\2/g
+\%^ *//%!s/\([ <(]\)HashMapIter\([ &*,)<>]\)/\1casa::HashMapIter\2/g
+\%^ *//%!s/\([ <(]\)HistAcc\([ &*,)<>]\)/\1casa::HistAcc\2/g
+\%^ *//%!s/\([ <(]\)HistTiledCollapser\([ &*,)<>]\)/\1casa::HistTiledCollapser\2/g
+\%^ *//%!s/\([ <(]\)Histogram2dDD\([ &*,)<>]\)/\1casa::Histogram2dDD\2/g
+\%^ *//%!s/\([ <(]\)Histogram2dDM\([ &*,)<>]\)/\1casa::Histogram2dDM\2/g
+\%^ *//%!s/\([ <(]\)HogbomCleanImageSkyModel\([ &*,)<>]\)/\1casa::HogbomCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)HogbomCleanModel\([ &*,)<>]\)/\1casa::HogbomCleanModel\2/g
+\%^ *//%!s/\([ <(]\)HostInfo\([ &*,)<>]\)/\1casa::HostInfo\2/g
+\%^ *//%!s/\([ <(]\)HostMachineInfo\([ &*,)<>]\)/\1casa::HostMachineInfo\2/g
+\%^ *//%!s/\([ <(]\)HyperGeometric\([ &*,)<>]\)/\1casa::HyperGeometric\2/g
+\%^ *//%!s/\([ <(]\)HyperPlane\([ &*,)<>]\)/\1casa::HyperPlane\2/g
+\%^ *//%!s/\([ <(]\)HyperPlaneParam\([ &*,)<>]\)/\1casa::HyperPlaneParam\2/g
+\%^ *//%!s/\([ <(]\)HyperPlane_PS\([ &*,)<>]\)/\1casa::HyperPlane_PS\2/g
+\%^ *//%!s/\([ <(]\)IAU_SOFA\([ &*,)<>]\)/\1casa::IAU_SOFA\2/g
+\%^ *//%!s/\([ <(]\)IBMConversion\([ &*,)<>]\)/\1casa::IBMConversion\2/g
+\%^ *//%!s/\([ <(]\)IBMDataConversion\([ &*,)<>]\)/\1casa::IBMDataConversion\2/g
+\%^ *//%!s/\([ <(]\)IComplex\([ &*,)<>]\)/\1casa::IComplex\2/g
+\%^ *//%!s/\([ <(]\)IPLatConvEquation\([ &*,)<>]\)/\1casa::IPLatConvEquation\2/g
+\%^ *//%!s/\([ <(]\)IPosition\([ &*,)<>]\)/\1casa::IPosition\2/g
+\%^ *//%!s/\([ <(]\)ISMBase\([ &*,)<>]\)/\1casa::ISMBase\2/g
+\%^ *//%!s/\([ <(]\)ISMBucket\([ &*,)<>]\)/\1casa::ISMBucket\2/g
+\%^ *//%!s/\([ <(]\)ISMColumn\([ &*,)<>]\)/\1casa::ISMColumn\2/g
+\%^ *//%!s/\([ <(]\)ISMIndColumn\([ &*,)<>]\)/\1casa::ISMIndColumn\2/g
+\%^ *//%!s/\([ <(]\)ISMIndex\([ &*,)<>]\)/\1casa::ISMIndex\2/g
+\%^ *//%!s/\([ <(]\)Image2DConvolver\([ &*,)<>]\)/\1casa::Image2DConvolver\2/g
+\%^ *//%!s/\([ <(]\)ImageConcat\([ &*,)<>]\)/\1casa::ImageConcat\2/g
+\%^ *//%!s/\([ <(]\)ImageConvolver\([ &*,)<>]\)/\1casa::ImageConvolver\2/g
+\%^ *//%!s/\([ <(]\)ImageDataSampling\([ &*,)<>]\)/\1casa::ImageDataSampling\2/g
+\%^ *//%!s/\([ <(]\)ImageDecomposer\([ &*,)<>]\)/\1casa::ImageDecomposer\2/g
+\%^ *//%!s/\([ <(]\)ImageExpr\([ &*,)<>]\)/\1casa::ImageExpr\2/g
+\%^ *//%!s/\([ <(]\)ImageExprGramFunctions\([ &*,)<>]\)/\1casa::ImageExprGramFunctions\2/g
+\%^ *//%!s/\([ <(]\)ImageExprParse\([ &*,)<>]\)/\1casa::ImageExprParse\2/g
+\%^ *//%!s/\([ <(]\)ImageFFT\([ &*,)<>]\)/\1casa::ImageFFT\2/g
+\%^ *//%!s/\([ <(]\)ImageFITSConverter\([ &*,)<>]\)/\1casa::ImageFITSConverter\2/g
+\%^ *//%!s/\([ <(]\)ImageFITSConverterImpl\([ &*,)<>]\)/\1casa::ImageFITSConverterImpl\2/g
+\%^ *//%!s/\([ <(]\)ImageFit1D\([ &*,)<>]\)/\1casa::ImageFit1D\2/g
+\%^ *//%!s/\([ <(]\)ImageHistograms\([ &*,)<>]\)/\1casa::ImageHistograms\2/g
+\%^ *//%!s/\([ <(]\)ImageInfo\([ &*,)<>]\)/\1casa::ImageInfo\2/g
+\%^ *//%!s/\([ <(]\)ImageInterface\([ &*,)<>]\)/\1casa::ImageInterface\2/g
+\%^ *//%!s/\([ <(]\)ImageMoments\([ &*,)<>]\)/\1casa::ImageMoments\2/g
+\%^ *//%!s/\([ <(]\)ImageMomentsProgress\([ &*,)<>]\)/\1casa::ImageMomentsProgress\2/g
+\%^ *//%!s/\([ <(]\)ImagePolarimetry\([ &*,)<>]\)/\1casa::ImagePolarimetry\2/g
+\%^ *//%!s/\([ <(]\)ImageProfileFit\([ &*,)<>]\)/\1casa::ImageProfileFit\2/g
+\%^ *//%!s/\([ <(]\)ImageRegion\([ &*,)<>]\)/\1casa::ImageRegion\2/g
+\%^ *//%!s/\([ <(]\)ImageRegrid\([ &*,)<>]\)/\1casa::ImageRegrid\2/g
+\%^ *//%!s/\([ <(]\)ImageSkyModel\([ &*,)<>]\)/\1casa::ImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)ImageSourceFinder\([ &*,)<>]\)/\1casa::ImageSourceFinder\2/g
+\%^ *//%!s/\([ <(]\)ImageStatistics\([ &*,)<>]\)/\1casa::ImageStatistics\2/g
+\%^ *//%!s/\([ <(]\)ImageSummary\([ &*,)<>]\)/\1casa::ImageSummary\2/g
+\%^ *//%!s/\([ <(]\)ImageTwoPtCorr\([ &*,)<>]\)/\1casa::ImageTwoPtCorr\2/g
+\%^ *//%!s/\([ <(]\)ImageUtilities\([ &*,)<>]\)/\1casa::ImageUtilities\2/g
+\%^ *//%!s/\([ <(]\)Imager\([ &*,)<>]\)/\1casa::Imager\2/g
+\%^ *//%!s/\([ <(]\)IncCEMemModel\([ &*,)<>]\)/\1casa::IncCEMemModel\2/g
+\%^ *//%!s/\([ <(]\)IncEntropy\([ &*,)<>]\)/\1casa::IncEntropy\2/g
+\%^ *//%!s/\([ <(]\)IncEntropyEmptiness\([ &*,)<>]\)/\1casa::IncEntropyEmptiness\2/g
+\%^ *//%!s/\([ <(]\)IncEntropyI\([ &*,)<>]\)/\1casa::IncEntropyI\2/g
+\%^ *//%!s/\([ <(]\)IncrementalStMan\([ &*,)<>]\)/\1casa::IncrementalStMan\2/g
+\%^ *//%!s/\([ <(]\)Index\([ &*,)<>]\)/\1casa::Index\2/g
+\%^ *//%!s/\([ <(]\)IndexError\([ &*,)<>]\)/\1casa::IndexError\2/g
+\%^ *//%!s/\([ <(]\)IndexParameterAccessor\([ &*,)<>]\)/\1casa::IndexParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)IndexVectorParameterAccessor\([ &*,)<>]\)/\1casa::IndexVectorParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)Input\([ &*,)<>]\)/\1casa::Input\2/g
+\%^ *//%!s/\([ <(]\)Interpolate1D\([ &*,)<>]\)/\1casa::Interpolate1D\2/g
+\%^ *//%!s/\([ <(]\)Interpolate2D\([ &*,)<>]\)/\1casa::Interpolate2D\2/g
+\%^ *//%!s/\([ <(]\)InterpolateArray1D\([ &*,)<>]\)/\1casa::InterpolateArray1D\2/g
+\%^ *//%!s/\([ <(]\)InvalidGlishSerializationError\([ &*,)<>]\)/\1casa::InvalidGlishSerializationError\2/g
+\%^ *//%!s/\([ <(]\)InvalidIterError\([ &*,)<>]\)/\1casa::InvalidIterError\2/g
+\%^ *//%!s/\([ <(]\)InvalidSerializationError\([ &*,)<>]\)/\1casa::InvalidSerializationError\2/g
+\%^ *//%!s/\([ <(]\)IonosphDataGPS\([ &*,)<>]\)/\1casa::IonosphDataGPS\2/g
+\%^ *//%!s/\([ <(]\)IonosphModel\([ &*,)<>]\)/\1casa::IonosphModel\2/g
+\%^ *//%!s/\([ <(]\)IonosphModelPIM\([ &*,)<>]\)/\1casa::IonosphModelPIM\2/g
+\%^ *//%!s/\([ <(]\)IterBoundaryError\([ &*,)<>]\)/\1casa::IterBoundaryError\2/g
+\%^ *//%!s/\([ <(]\)IterError\([ &*,)<>]\)/\1casa::IterError\2/g
+\%^ *//%!s/\([ <(]\)IterInitError\([ &*,)<>]\)/\1casa::IterInitError\2/g
+\%^ *//%!s/\([ <(]\)Iterate\([ &*,)<>]\)/\1casa::Iterate\2/g
+\%^ *//%!s/\([ <(]\)KB_Conv\([ &*,)<>]\)/\1casa::KB_Conv\2/g
+\%^ *//%!s/\([ <(]\)KaiserBFunction\([ &*,)<>]\)/\1casa::KaiserBFunction\2/g
+\%^ *//%!s/\([ <(]\)KaiserBParam\([ &*,)<>]\)/\1casa::KaiserBParam\2/g
+\%^ *//%!s/\([ <(]\)LCBox\([ &*,)<>]\)/\1casa::LCBox\2/g
+\%^ *//%!s/\([ <(]\)LCComplement\([ &*,)<>]\)/\1casa::LCComplement\2/g
+\%^ *//%!s/\([ <(]\)LCConcatenation\([ &*,)<>]\)/\1casa::LCConcatenation\2/g
+\%^ *//%!s/\([ <(]\)LCDifference\([ &*,)<>]\)/\1casa::LCDifference\2/g
+\%^ *//%!s/\([ <(]\)LCEllipsoid\([ &*,)<>]\)/\1casa::LCEllipsoid\2/g
+\%^ *//%!s/\([ <(]\)LCExtension\([ &*,)<>]\)/\1casa::LCExtension\2/g
+\%^ *//%!s/\([ <(]\)LCIntersection\([ &*,)<>]\)/\1casa::LCIntersection\2/g
+\%^ *//%!s/\([ <(]\)LCLELMask\([ &*,)<>]\)/\1casa::LCLELMask\2/g
+\%^ *//%!s/\([ <(]\)LCMask\([ &*,)<>]\)/\1casa::LCMask\2/g
+\%^ *//%!s/\([ <(]\)LCPagedMask\([ &*,)<>]\)/\1casa::LCPagedMask\2/g
+\%^ *//%!s/\([ <(]\)LCPixelSet\([ &*,)<>]\)/\1casa::LCPixelSet\2/g
+\%^ *//%!s/\([ <(]\)LCPolygon\([ &*,)<>]\)/\1casa::LCPolygon\2/g
+\%^ *//%!s/\([ <(]\)LCRegion\([ &*,)<>]\)/\1casa::LCRegion\2/g
+\%^ *//%!s/\([ <(]\)LCRegionFixed\([ &*,)<>]\)/\1casa::LCRegionFixed\2/g
+\%^ *//%!s/\([ <(]\)LCRegionMulti\([ &*,)<>]\)/\1casa::LCRegionMulti\2/g
+\%^ *//%!s/\([ <(]\)LCRegionSingle\([ &*,)<>]\)/\1casa::LCRegionSingle\2/g
+\%^ *//%!s/\([ <(]\)LCSlicer\([ &*,)<>]\)/\1casa::LCSlicer\2/g
+\%^ *//%!s/\([ <(]\)LCStretch\([ &*,)<>]\)/\1casa::LCStretch\2/g
+\%^ *//%!s/\([ <(]\)LCUnion\([ &*,)<>]\)/\1casa::LCUnion\2/g
+\%^ *//%!s/\([ <(]\)LECanonicalConversion\([ &*,)<>]\)/\1casa::LECanonicalConversion\2/g
+\%^ *//%!s/\([ <(]\)LECanonicalDataConversion\([ &*,)<>]\)/\1casa::LECanonicalDataConversion\2/g
+\%^ *//%!s/\([ <(]\)LECanonicalIO\([ &*,)<>]\)/\1casa::LECanonicalIO\2/g
+\%^ *//%!s/\([ <(]\)LELArray\([ &*,)<>]\)/\1casa::LELArray\2/g
+\%^ *//%!s/\([ <(]\)LELArrayBase\([ &*,)<>]\)/\1casa::LELArrayBase\2/g
+\%^ *//%!s/\([ <(]\)LELArrayRef\([ &*,)<>]\)/\1casa::LELArrayRef\2/g
+\%^ *//%!s/\([ <(]\)LELAttribute\([ &*,)<>]\)/\1casa::LELAttribute\2/g
+\%^ *//%!s/\([ <(]\)LELBinary\([ &*,)<>]\)/\1casa::LELBinary\2/g
+\%^ *//%!s/\([ <(]\)LELBinaryBool\([ &*,)<>]\)/\1casa::LELBinaryBool\2/g
+\%^ *//%!s/\([ <(]\)LELBinaryCmp\([ &*,)<>]\)/\1casa::LELBinaryCmp\2/g
+\%^ *//%!s/\([ <(]\)LELBinaryEnums\([ &*,)<>]\)/\1casa::LELBinaryEnums\2/g
+\%^ *//%!s/\([ <(]\)LELCondition\([ &*,)<>]\)/\1casa::LELCondition\2/g
+\%^ *//%!s/\([ <(]\)LELConvert\([ &*,)<>]\)/\1casa::LELConvert\2/g
+\%^ *//%!s/\([ <(]\)LELCoordinates\([ &*,)<>]\)/\1casa::LELCoordinates\2/g
+\%^ *//%!s/\([ <(]\)LELFunction1D\([ &*,)<>]\)/\1casa::LELFunction1D\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionBool\([ &*,)<>]\)/\1casa::LELFunctionBool\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionComplex\([ &*,)<>]\)/\1casa::LELFunctionComplex\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionDComplex\([ &*,)<>]\)/\1casa::LELFunctionDComplex\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionDouble\([ &*,)<>]\)/\1casa::LELFunctionDouble\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionEnums\([ &*,)<>]\)/\1casa::LELFunctionEnums\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionFloat\([ &*,)<>]\)/\1casa::LELFunctionFloat\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionND\([ &*,)<>]\)/\1casa::LELFunctionND\2/g
+\%^ *//%!s/\([ <(]\)LELFunctionReal1D\([ &*,)<>]\)/\1casa::LELFunctionReal1D\2/g
+\%^ *//%!s/\([ <(]\)LELImageCoord\([ &*,)<>]\)/\1casa::LELImageCoord\2/g
+\%^ *//%!s/\([ <(]\)LELInterface\([ &*,)<>]\)/\1casa::LELInterface\2/g
+\%^ *//%!s/\([ <(]\)LELLattCoord\([ &*,)<>]\)/\1casa::LELLattCoord\2/g
+\%^ *//%!s/\([ <(]\)LELLattCoordBase\([ &*,)<>]\)/\1casa::LELLattCoordBase\2/g
+\%^ *//%!s/\([ <(]\)LELLattice\([ &*,)<>]\)/\1casa::LELLattice\2/g
+\%^ *//%!s/\([ <(]\)LELRegion\([ &*,)<>]\)/\1casa::LELRegion\2/g
+\%^ *//%!s/\([ <(]\)LELRegionAsBool\([ &*,)<>]\)/\1casa::LELRegionAsBool\2/g
+\%^ *//%!s/\([ <(]\)LELScalar\([ &*,)<>]\)/\1casa::LELScalar\2/g
+\%^ *//%!s/\([ <(]\)LELSpectralIndex\([ &*,)<>]\)/\1casa::LELSpectralIndex\2/g
+\%^ *//%!s/\([ <(]\)LELUnary\([ &*,)<>]\)/\1casa::LELUnary\2/g
+\%^ *//%!s/\([ <(]\)LELUnaryBool\([ &*,)<>]\)/\1casa::LELUnaryBool\2/g
+\%^ *//%!s/\([ <(]\)LELUnaryConst\([ &*,)<>]\)/\1casa::LELUnaryConst\2/g
+\%^ *//%!s/\([ <(]\)LELUnaryEnums\([ &*,)<>]\)/\1casa::LELUnaryEnums\2/g
+\%^ *//%!s/\([ <(]\)LSQ\([ &*,)<>]\)/\1casa::LSQ\2/g
+\%^ *//%!s/\([ <(]\)LSQBase\([ &*,)<>]\)/\1casa::LSQBase\2/g
+\%^ *//%!s/\([ <(]\)LSQComplex\([ &*,)<>]\)/\1casa::LSQComplex\2/g
+\%^ *//%!s/\([ <(]\)LSQFit\([ &*,)<>]\)/\1casa::LSQFit\2/g
+\%^ *//%!s/\([ <(]\)LSQMatrix\([ &*,)<>]\)/\1casa::LSQMatrix\2/g
+\%^ *//%!s/\([ <(]\)LSQNull\([ &*,)<>]\)/\1casa::LSQNull\2/g
+\%^ *//%!s/\([ <(]\)LSQReal\([ &*,)<>]\)/\1casa::LSQReal\2/g
+\%^ *//%!s/\([ <(]\)LSQTraits\([ &*,)<>]\)/\1casa::LSQTraits\2/g
+\%^ *//%!s/\([ <(]\)LSQTraits_CD\([ &*,)<>]\)/\1casa::LSQTraits_CD\2/g
+\%^ *//%!s/\([ <(]\)LSQTraits_CF\([ &*,)<>]\)/\1casa::LSQTraits_CF\2/g
+\%^ *//%!s/\([ <(]\)LSQTraits_D\([ &*,)<>]\)/\1casa::LSQTraits_D\2/g
+\%^ *//%!s/\([ <(]\)LSQTraits_F\([ &*,)<>]\)/\1casa::LSQTraits_F\2/g
+\%^ *//%!s/\([ <(]\)LSQType\([ &*,)<>]\)/\1casa::LSQType\2/g
+\%^ *//%!s/\([ <(]\)LSQaips\([ &*,)<>]\)/\1casa::LSQaips\2/g
+\%^ *//%!s/\([ <(]\)LargeFilebufIO\([ &*,)<>]\)/\1casa::LargeFilebufIO\2/g
+\%^ *//%!s/\([ <(]\)LargeFiledesIO\([ &*,)<>]\)/\1casa::LargeFiledesIO\2/g
+\%^ *//%!s/\([ <(]\)LargeRegularFileIO\([ &*,)<>]\)/\1casa::LargeRegularFileIO\2/g
+\%^ *//%!s/\([ <(]\)LatConvEquation\([ &*,)<>]\)/\1casa::LatConvEquation\2/g
+\%^ *//%!s/\([ <(]\)LattRegionHolder\([ &*,)<>]\)/\1casa::LattRegionHolder\2/g
+\%^ *//%!s/\([ <(]\)LattStatsProgress\([ &*,)<>]\)/\1casa::LattStatsProgress\2/g
+\%^ *//%!s/\([ <(]\)LattStatsSpecialize\([ &*,)<>]\)/\1casa::LattStatsSpecialize\2/g
+\%^ *//%!s/\([ <(]\)Lattice\([ &*,)<>]\)/\1casa::Lattice\2/g
+\%^ *//%!s/\([ <(]\)LatticeAddNoise\([ &*,)<>]\)/\1casa::LatticeAddNoise\2/g
+\%^ *//%!s/\([ <(]\)LatticeApply\([ &*,)<>]\)/\1casa::LatticeApply\2/g
+\%^ *//%!s/\([ <(]\)LatticeAsContour\([ &*,)<>]\)/\1casa::LatticeAsContour\2/g
+\%^ *//%!s/\([ <(]\)LatticeAsMarker\([ &*,)<>]\)/\1casa::LatticeAsMarker\2/g
+\%^ *//%!s/\([ <(]\)LatticeAsRaster\([ &*,)<>]\)/\1casa::LatticeAsRaster\2/g
+\%^ *//%!s/\([ <(]\)LatticeAsVector\([ &*,)<>]\)/\1casa::LatticeAsVector\2/g
+\%^ *//%!s/\([ <(]\)LatticeBase\([ &*,)<>]\)/\1casa::LatticeBase\2/g
+\%^ *//%!s/\([ <(]\)LatticeCache\([ &*,)<>]\)/\1casa::LatticeCache\2/g
+\%^ *//%!s/\([ <(]\)LatticeCleanProgress\([ &*,)<>]\)/\1casa::LatticeCleanProgress\2/g
+\%^ *//%!s/\([ <(]\)LatticeCleaner\([ &*,)<>]\)/\1casa::LatticeCleaner\2/g
+\%^ *//%!s/\([ <(]\)LatticeConcat\([ &*,)<>]\)/\1casa::LatticeConcat\2/g
+\%^ *//%!s/\([ <(]\)LatticeConvolver\([ &*,)<>]\)/\1casa::LatticeConvolver\2/g
+\%^ *//%!s/\([ <(]\)LatticeExpr\([ &*,)<>]\)/\1casa::LatticeExpr\2/g
+\%^ *//%!s/\([ <(]\)LatticeExprNode\([ &*,)<>]\)/\1casa::LatticeExprNode\2/g
+\%^ *//%!s/\([ <(]\)LatticeFFT\([ &*,)<>]\)/\1casa::LatticeFFT\2/g
+\%^ *//%!s/\([ <(]\)LatticeFit\([ &*,)<>]\)/\1casa::LatticeFit\2/g
+\%^ *//%!s/\([ <(]\)LatticeFractile\([ &*,)<>]\)/\1casa::LatticeFractile\2/g
+\%^ *//%!s/\([ <(]\)LatticeHistProgress\([ &*,)<>]\)/\1casa::LatticeHistProgress\2/g
+\%^ *//%!s/\([ <(]\)LatticeHistSpecialize\([ &*,)<>]\)/\1casa::LatticeHistSpecialize\2/g
+\%^ *//%!s/\([ <(]\)LatticeHistograms\([ &*,)<>]\)/\1casa::LatticeHistograms\2/g
+\%^ *//%!s/\([ <(]\)LatticeIndexer\([ &*,)<>]\)/\1casa::LatticeIndexer\2/g
+\%^ *//%!s/\([ <(]\)LatticeIterInterface\([ &*,)<>]\)/\1casa::LatticeIterInterface\2/g
+\%^ *//%!s/\([ <(]\)LatticeIterator\([ &*,)<>]\)/\1casa::LatticeIterator\2/g
+\%^ *//%!s/\([ <(]\)LatticeLocker\([ &*,)<>]\)/\1casa::LatticeLocker\2/g
+\%^ *//%!s/\([ <(]\)LatticeModel\([ &*,)<>]\)/\1casa::LatticeModel\2/g
+\%^ *//%!s/\([ <(]\)LatticeNavigator\([ &*,)<>]\)/\1casa::LatticeNavigator\2/g
+\%^ *//%!s/\([ <(]\)LatticePADMContour\([ &*,)<>]\)/\1casa::LatticePADMContour\2/g
+\%^ *//%!s/\([ <(]\)LatticePADMMarker\([ &*,)<>]\)/\1casa::LatticePADMMarker\2/g
+\%^ *//%!s/\([ <(]\)LatticePADMRaster\([ &*,)<>]\)/\1casa::LatticePADMRaster\2/g
+\%^ *//%!s/\([ <(]\)LatticePADMVector\([ &*,)<>]\)/\1casa::LatticePADMVector\2/g
+\%^ *//%!s/\([ <(]\)LatticePADisplayData\([ &*,)<>]\)/\1casa::LatticePADisplayData\2/g
+\%^ *//%!s/\([ <(]\)LatticePADisplayMethod\([ &*,)<>]\)/\1casa::LatticePADisplayMethod\2/g
+\%^ *//%!s/\([ <(]\)LatticeProgress\([ &*,)<>]\)/\1casa::LatticeProgress\2/g
+\%^ *//%!s/\([ <(]\)LatticeRegion\([ &*,)<>]\)/\1casa::LatticeRegion\2/g
+\%^ *//%!s/\([ <(]\)LatticeSlice1D\([ &*,)<>]\)/\1casa::LatticeSlice1D\2/g
+\%^ *//%!s/\([ <(]\)LatticeStatistics\([ &*,)<>]\)/\1casa::LatticeStatistics\2/g
+\%^ *//%!s/\([ <(]\)LatticeStatsBase\([ &*,)<>]\)/\1casa::LatticeStatsBase\2/g
+\%^ *//%!s/\([ <(]\)LatticeStepper\([ &*,)<>]\)/\1casa::LatticeStepper\2/g
+\%^ *//%!s/\([ <(]\)LatticeTwoPtCorr\([ &*,)<>]\)/\1casa::LatticeTwoPtCorr\2/g
+\%^ *//%!s/\([ <(]\)LatticeUtilities\([ &*,)<>]\)/\1casa::LatticeUtilities\2/g
+\%^ *//%!s/\([ <(]\)LineCollapser\([ &*,)<>]\)/\1casa::LineCollapser\2/g
+\%^ *//%!s/\([ <(]\)LinearCoordinate\([ &*,)<>]\)/\1casa::LinearCoordinate\2/g
+\%^ *//%!s/\([ <(]\)LinearEquation\([ &*,)<>]\)/\1casa::LinearEquation\2/g
+\%^ *//%!s/\([ <(]\)LinearFit\([ &*,)<>]\)/\1casa::LinearFit\2/g
+\%^ *//%!s/\([ <(]\)LinearFitSVD\([ &*,)<>]\)/\1casa::LinearFitSVD\2/g
+\%^ *//%!s/\([ <(]\)LinearModel\([ &*,)<>]\)/\1casa::LinearModel\2/g
+\%^ *//%!s/\([ <(]\)LinearXform\([ &*,)<>]\)/\1casa::LinearXform\2/g
+\%^ *//%!s/\([ <(]\)Link\([ &*,)<>]\)/\1casa::Link\2/g
+\%^ *//%!s/\([ <(]\)List\([ &*,)<>]\)/\1casa::List\2/g
+\%^ *//%!s/\([ <(]\)ListIter\([ &*,)<>]\)/\1casa::ListIter\2/g
+\%^ *//%!s/\([ <(]\)ListMap\([ &*,)<>]\)/\1casa::ListMap\2/g
+\%^ *//%!s/\([ <(]\)ListMapIterRep\([ &*,)<>]\)/\1casa::ListMapIterRep\2/g
+\%^ *//%!s/\([ <(]\)ListMapRep\([ &*,)<>]\)/\1casa::ListMapRep\2/g
+\%^ *//%!s/\([ <(]\)ListNotice\([ &*,)<>]\)/\1casa::ListNotice\2/g
+\%^ *//%!s/\([ <(]\)LittleEndianConversion\([ &*,)<>]\)/\1casa::LittleEndianConversion\2/g
+\%^ *//%!s/\([ <(]\)LockFile\([ &*,)<>]\)/\1casa::LockFile\2/g
+\%^ *//%!s/\([ <(]\)LogFilter\([ &*,)<>]\)/\1casa::LogFilter\2/g
+\%^ *//%!s/\([ <(]\)LogFilterExpr\([ &*,)<>]\)/\1casa::LogFilterExpr\2/g
+\%^ *//%!s/\([ <(]\)LogFilterInterface\([ &*,)<>]\)/\1casa::LogFilterInterface\2/g
+\%^ *//%!s/\([ <(]\)LogFilterTaql\([ &*,)<>]\)/\1casa::LogFilterTaql\2/g
+\%^ *//%!s/\([ <(]\)LogHolderIter\([ &*,)<>]\)/\1casa::LogHolderIter\2/g
+\%^ *//%!s/\([ <(]\)LogHolderIterEntry\([ &*,)<>]\)/\1casa::LogHolderIterEntry\2/g
+\%^ *//%!s/\([ <(]\)LogIO\([ &*,)<>]\)/\1casa::LogIO\2/g
+\%^ *//%!s/\([ <(]\)LogMessage\([ &*,)<>]\)/\1casa::LogMessage\2/g
+\%^ *//%!s/\([ <(]\)LogMessage_ostream\([ &*,)<>]\)/\1casa::LogMessage_ostream\2/g
+\%^ *//%!s/\([ <(]\)LogNormal\([ &*,)<>]\)/\1casa::LogNormal\2/g
+\%^ *//%!s/\([ <(]\)LogOrigin\([ &*,)<>]\)/\1casa::LogOrigin\2/g
+\%^ *//%!s/\([ <(]\)LogOrigin_ostream\([ &*,)<>]\)/\1casa::LogOrigin_ostream\2/g
+\%^ *//%!s/\([ <(]\)LogSink\([ &*,)<>]\)/\1casa::LogSink\2/g
+\%^ *//%!s/\([ <(]\)LogSinkInterface\([ &*,)<>]\)/\1casa::LogSinkInterface\2/g
+\%^ *//%!s/\([ <(]\)LoggerHolder\([ &*,)<>]\)/\1casa::LoggerHolder\2/g
+\%^ *//%!s/\([ <(]\)LoggerHolderIterator\([ &*,)<>]\)/\1casa::LoggerHolderIterator\2/g
+\%^ *//%!s/\([ <(]\)LoggerHolderRep\([ &*,)<>]\)/\1casa::LoggerHolderRep\2/g
+\%^ *//%!s/\([ <(]\)LogicalArray\([ &*,)<>]\)/\1casa::LogicalArray\2/g
+\%^ *//%!s/\([ <(]\)LogicalCube\([ &*,)<>]\)/\1casa::LogicalCube\2/g
+\%^ *//%!s/\([ <(]\)LogicalMatrix\([ &*,)<>]\)/\1casa::LogicalMatrix\2/g
+\%^ *//%!s/\([ <(]\)LogicalVector\([ &*,)<>]\)/\1casa::LogicalVector\2/g
+\%^ *//%!s/\([ <(]\)MBaseline\([ &*,)<>]\)/\1casa::MBaseline\2/g
+\%^ *//%!s/\([ <(]\)MCBase\([ &*,)<>]\)/\1casa::MCBase\2/g
+\%^ *//%!s/\([ <(]\)MCBaseline\([ &*,)<>]\)/\1casa::MCBaseline\2/g
+\%^ *//%!s/\([ <(]\)MCDirection\([ &*,)<>]\)/\1casa::MCDirection\2/g
+\%^ *//%!s/\([ <(]\)MCDoppler\([ &*,)<>]\)/\1casa::MCDoppler\2/g
+\%^ *//%!s/\([ <(]\)MCEarthMagnetic\([ &*,)<>]\)/\1casa::MCEarthMagnetic\2/g
+\%^ *//%!s/\([ <(]\)MCEpoch\([ &*,)<>]\)/\1casa::MCEpoch\2/g
+\%^ *//%!s/\([ <(]\)MCFrame\([ &*,)<>]\)/\1casa::MCFrame\2/g
+\%^ *//%!s/\([ <(]\)MCFrequency\([ &*,)<>]\)/\1casa::MCFrequency\2/g
+\%^ *//%!s/\([ <(]\)MCPosition\([ &*,)<>]\)/\1casa::MCPosition\2/g
+\%^ *//%!s/\([ <(]\)MCRadialVelocity\([ &*,)<>]\)/\1casa::MCRadialVelocity\2/g
+\%^ *//%!s/\([ <(]\)MConvertBase\([ &*,)<>]\)/\1casa::MConvertBase\2/g
+\%^ *//%!s/\([ <(]\)MCuvw\([ &*,)<>]\)/\1casa::MCuvw\2/g
+\%^ *//%!s/\([ <(]\)MDirection\([ &*,)<>]\)/\1casa::MDirection\2/g
+\%^ *//%!s/\([ <(]\)MDoppler\([ &*,)<>]\)/\1casa::MDoppler\2/g
+\%^ *//%!s/\([ <(]\)MEarthMagnetic\([ &*,)<>]\)/\1casa::MEarthMagnetic\2/g
+\%^ *//%!s/\([ <(]\)MEpoch\([ &*,)<>]\)/\1casa::MEpoch\2/g
+\%^ *//%!s/\([ <(]\)MFCEMemImageSkyModel\([ &*,)<>]\)/\1casa::MFCEMemImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)MFCleanImageSkyModel\([ &*,)<>]\)/\1casa::MFCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)MFMSCleanImageSkyModel\([ &*,)<>]\)/\1casa::MFMSCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)MFrequency\([ &*,)<>]\)/\1casa::MFrequency\2/g
+\%^ *//%!s/\([ <(]\)MIRIADImage\([ &*,)<>]\)/\1casa::MIRIADImage\2/g
+\%^ *//%!s/\([ <(]\)MIfrDesc\([ &*,)<>]\)/\1casa::MIfrDesc\2/g
+\%^ *//%!s/\([ <(]\)MIfrMRec\([ &*,)<>]\)/\1casa::MIfrMRec\2/g
+\%^ *//%!s/\([ <(]\)MJonesDesc\([ &*,)<>]\)/\1casa::MJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)MJonesMRec\([ &*,)<>]\)/\1casa::MJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)MLCG\([ &*,)<>]\)/\1casa::MLCG\2/g
+\%^ *//%!s/\([ <(]\)MPIError\([ &*,)<>]\)/\1casa::MPIError\2/g
+\%^ *//%!s/\([ <(]\)MPITransport\([ &*,)<>]\)/\1casa::MPITransport\2/g
+\%^ *//%!s/\([ <(]\)MPosition\([ &*,)<>]\)/\1casa::MPosition\2/g
+\%^ *//%!s/\([ <(]\)MRBase\([ &*,)<>]\)/\1casa::MRBase\2/g
+\%^ *//%!s/\([ <(]\)MRadialVelocity\([ &*,)<>]\)/\1casa::MRadialVelocity\2/g
+\%^ *//%!s/\([ <(]\)MS1ToMS2Converter\([ &*,)<>]\)/\1casa::MS1ToMS2Converter\2/g
+\%^ *//%!s/\([ <(]\)MSAntenna\([ &*,)<>]\)/\1casa::MSAntenna\2/g
+\%^ *//%!s/\([ <(]\)MSAntennaColumns\([ &*,)<>]\)/\1casa::MSAntennaColumns\2/g
+\%^ *//%!s/\([ <(]\)MSAntennaEnums\([ &*,)<>]\)/\1casa::MSAntennaEnums\2/g
+\%^ *//%!s/\([ <(]\)MSAntennaIndex\([ &*,)<>]\)/\1casa::MSAntennaIndex\2/g
+\%^ *//%!s/\([ <(]\)MSAsRaster\([ &*,)<>]\)/\1casa::MSAsRaster\2/g
+\%^ *//%!s/\([ <(]\)MSAsRasterDM\([ &*,)<>]\)/\1casa::MSAsRasterDM\2/g
+\%^ *//%!s/\([ <(]\)MSCalEnums\([ &*,)<>]\)/\1casa::MSCalEnums\2/g
+\%^ *//%!s/\([ <(]\)MSCleanImageSkyModel\([ &*,)<>]\)/\1casa::MSCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)MSColumns\([ &*,)<>]\)/\1casa::MSColumns\2/g
+\%^ *//%!s/\([ <(]\)MSConcat\([ &*,)<>]\)/\1casa::MSConcat\2/g
+\%^ *//%!s/\([ <(]\)MSDataDescColumns\([ &*,)<>]\)/\1casa::MSDataDescColumns\2/g
+\%^ *//%!s/\([ <(]\)MSDataDescIndex\([ &*,)<>]\)/\1casa::MSDataDescIndex\2/g
+\%^ *//%!s/\([ <(]\)MSDataDescription\([ &*,)<>]\)/\1casa::MSDataDescription\2/g
+\%^ *//%!s/\([ <(]\)MSDataDescriptionEnums\([ &*,)<>]\)/\1casa::MSDataDescriptionEnums\2/g
+\%^ *//%!s/\([ <(]\)MSDerivedValues\([ &*,)<>]\)/\1casa::MSDerivedValues\2/g
+\%^ *//%!s/\([ <(]\)MSDoppler\([ &*,)<>]\)/\1casa::MSDoppler\2/g
+\%^ *//%!s/\([ <(]\)MSDopplerColumns\([ &*,)<>]\)/\1casa::MSDopplerColumns\2/g
+\%^ *//%!s/\([ <(]\)MSDopplerEnums\([ &*,)<>]\)/\1casa::MSDopplerEnums\2/g
+\%^ *//%!s/\([ <(]\)MSDopplerIndex\([ &*,)<>]\)/\1casa::MSDopplerIndex\2/g
+\%^ *//%!s/\([ <(]\)MSDopplerUtil\([ &*,)<>]\)/\1casa::MSDopplerUtil\2/g
+\%^ *//%!s/\([ <(]\)MSFeed\([ &*,)<>]\)/\1casa::MSFeed\2/g
+\%^ *//%!s/\([ <(]\)MSFeedColumns\([ &*,)<>]\)/\1casa::MSFeedColumns\2/g
+\%^ *//%!s/\([ <(]\)MSFeedEnums\([ &*,)<>]\)/\1casa::MSFeedEnums\2/g
+\%^ *//%!s/\([ <(]\)MSFeedIndex\([ &*,)<>]\)/\1casa::MSFeedIndex\2/g
+\%^ *//%!s/\([ <(]\)MSField\([ &*,)<>]\)/\1casa::MSField\2/g
+\%^ *//%!s/\([ <(]\)MSFieldColumns\([ &*,)<>]\)/\1casa::MSFieldColumns\2/g
+\%^ *//%!s/\([ <(]\)MSFieldEnums\([ &*,)<>]\)/\1casa::MSFieldEnums\2/g
+\%^ *//%!s/\([ <(]\)MSFieldIndex\([ &*,)<>]\)/\1casa::MSFieldIndex\2/g
+\%^ *//%!s/\([ <(]\)MSFitsIDI\([ &*,)<>]\)/\1casa::MSFitsIDI\2/g
+\%^ *//%!s/\([ <(]\)MSFitsInput\([ &*,)<>]\)/\1casa::MSFitsInput\2/g
+\%^ *//%!s/\([ <(]\)MSFitsOutput\([ &*,)<>]\)/\1casa::MSFitsOutput\2/g
+\%^ *//%!s/\([ <(]\)MSFlagCmd\([ &*,)<>]\)/\1casa::MSFlagCmd\2/g
+\%^ *//%!s/\([ <(]\)MSFlagCmdColumns\([ &*,)<>]\)/\1casa::MSFlagCmdColumns\2/g
+\%^ *//%!s/\([ <(]\)MSFlagCmdEnums\([ &*,)<>]\)/\1casa::MSFlagCmdEnums\2/g
+\%^ *//%!s/\([ <(]\)MSFlagger\([ &*,)<>]\)/\1casa::MSFlagger\2/g
+\%^ *//%!s/\([ <(]\)MSFreqOffIndex\([ &*,)<>]\)/\1casa::MSFreqOffIndex\2/g
+\%^ *//%!s/\([ <(]\)MSFreqOffset\([ &*,)<>]\)/\1casa::MSFreqOffset\2/g
+\%^ *//%!s/\([ <(]\)MSFreqOffsetColumns\([ &*,)<>]\)/\1casa::MSFreqOffsetColumns\2/g
+\%^ *//%!s/\([ <(]\)MSFreqOffsetEnums\([ &*,)<>]\)/\1casa::MSFreqOffsetEnums\2/g
+\%^ *//%!s/\([ <(]\)MSHistory\([ &*,)<>]\)/\1casa::MSHistory\2/g
+\%^ *//%!s/\([ <(]\)MSHistoryColumns\([ &*,)<>]\)/\1casa::MSHistoryColumns\2/g
+\%^ *//%!s/\([ <(]\)MSHistoryEnums\([ &*,)<>]\)/\1casa::MSHistoryEnums\2/g
+\%^ *//%!s/\([ <(]\)MSHistoryHandler\([ &*,)<>]\)/\1casa::MSHistoryHandler\2/g
+\%^ *//%!s/\([ <(]\)MSInterval\([ &*,)<>]\)/\1casa::MSInterval\2/g
+\%^ *//%!s/\([ <(]\)MSIter\([ &*,)<>]\)/\1casa::MSIter\2/g
+\%^ *//%!s/\([ <(]\)MSLister\([ &*,)<>]\)/\1casa::MSLister\2/g
+\%^ *//%!s/\([ <(]\)MSMBase\([ &*,)<>]\)/\1casa::MSMBase\2/g
+\%^ *//%!s/\([ <(]\)MSMColumn\([ &*,)<>]\)/\1casa::MSMColumn\2/g
+\%^ *//%!s/\([ <(]\)MSMDirColumn\([ &*,)<>]\)/\1casa::MSMDirColumn\2/g
+\%^ *//%!s/\([ <(]\)MSMIndColumn\([ &*,)<>]\)/\1casa::MSMIndColumn\2/g
+\%^ *//%!s/\([ <(]\)MSMainColumns\([ &*,)<>]\)/\1casa::MSMainColumns\2/g
+\%^ *//%!s/\([ <(]\)MSMainEnums\([ &*,)<>]\)/\1casa::MSMainEnums\2/g
+\%^ *//%!s/\([ <(]\)MSObservation\([ &*,)<>]\)/\1casa::MSObservation\2/g
+\%^ *//%!s/\([ <(]\)MSObservationColumns\([ &*,)<>]\)/\1casa::MSObservationColumns\2/g
+\%^ *//%!s/\([ <(]\)MSObservationEnums\([ &*,)<>]\)/\1casa::MSObservationEnums\2/g
+\%^ *//%!s/\([ <(]\)MSObservationIndex\([ &*,)<>]\)/\1casa::MSObservationIndex\2/g
+\%^ *//%!s/\([ <(]\)MSPointing\([ &*,)<>]\)/\1casa::MSPointing\2/g
+\%^ *//%!s/\([ <(]\)MSPointingColumns\([ &*,)<>]\)/\1casa::MSPointingColumns\2/g
+\%^ *//%!s/\([ <(]\)MSPointingEnums\([ &*,)<>]\)/\1casa::MSPointingEnums\2/g
+\%^ *//%!s/\([ <(]\)MSPointingIndex\([ &*,)<>]\)/\1casa::MSPointingIndex\2/g
+\%^ *//%!s/\([ <(]\)MSPolarization\([ &*,)<>]\)/\1casa::MSPolarization\2/g
+\%^ *//%!s/\([ <(]\)MSPolarizationColumns\([ &*,)<>]\)/\1casa::MSPolarizationColumns\2/g
+\%^ *//%!s/\([ <(]\)MSPolarizationEnums\([ &*,)<>]\)/\1casa::MSPolarizationEnums\2/g
+\%^ *//%!s/\([ <(]\)MSPolarizationIndex\([ &*,)<>]\)/\1casa::MSPolarizationIndex\2/g
+\%^ *//%!s/\([ <(]\)MSPrimaryGroupHolder\([ &*,)<>]\)/\1casa::MSPrimaryGroupHolder\2/g
+\%^ *//%!s/\([ <(]\)MSProcessor\([ &*,)<>]\)/\1casa::MSProcessor\2/g
+\%^ *//%!s/\([ <(]\)MSProcessorColumns\([ &*,)<>]\)/\1casa::MSProcessorColumns\2/g
+\%^ *//%!s/\([ <(]\)MSProcessorEnums\([ &*,)<>]\)/\1casa::MSProcessorEnums\2/g
+\%^ *//%!s/\([ <(]\)MSRange\([ &*,)<>]\)/\1casa::MSRange\2/g
+\%^ *//%!s/\([ <(]\)MSReader\([ &*,)<>]\)/\1casa::MSReader\2/g
+\%^ *//%!s/\([ <(]\)MSSelUtil\([ &*,)<>]\)/\1casa::MSSelUtil\2/g
+\%^ *//%!s/\([ <(]\)MSSelUtil2\([ &*,)<>]\)/\1casa::MSSelUtil2\2/g
+\%^ *//%!s/\([ <(]\)MSSelection\([ &*,)<>]\)/\1casa::MSSelection\2/g
+\%^ *//%!s/\([ <(]\)MSSelectionKeywords\([ &*,)<>]\)/\1casa::MSSelectionKeywords\2/g
+\%^ *//%!s/\([ <(]\)MSSelector\([ &*,)<>]\)/\1casa::MSSelector\2/g
+\%^ *//%!s/\([ <(]\)MSSimFeedBuf\([ &*,)<>]\)/\1casa::MSSimFeedBuf\2/g
+\%^ *//%!s/\([ <(]\)MSSimFeedRec\([ &*,)<>]\)/\1casa::MSSimFeedRec\2/g
+\%^ *//%!s/\([ <(]\)MSSimulator\([ &*,)<>]\)/\1casa::MSSimulator\2/g
+\%^ *//%!s/\([ <(]\)MSSource\([ &*,)<>]\)/\1casa::MSSource\2/g
+\%^ *//%!s/\([ <(]\)MSSourceColumns\([ &*,)<>]\)/\1casa::MSSourceColumns\2/g
+\%^ *//%!s/\([ <(]\)MSSourceEnums\([ &*,)<>]\)/\1casa::MSSourceEnums\2/g
+\%^ *//%!s/\([ <(]\)MSSourceIndex\([ &*,)<>]\)/\1casa::MSSourceIndex\2/g
+\%^ *//%!s/\([ <(]\)MSSpWindowColumns\([ &*,)<>]\)/\1casa::MSSpWindowColumns\2/g
+\%^ *//%!s/\([ <(]\)MSSpWindowIndex\([ &*,)<>]\)/\1casa::MSSpWindowIndex\2/g
+\%^ *//%!s/\([ <(]\)MSSpectralWindow\([ &*,)<>]\)/\1casa::MSSpectralWindow\2/g
+\%^ *//%!s/\([ <(]\)MSSpectralWindowEnums\([ &*,)<>]\)/\1casa::MSSpectralWindowEnums\2/g
+\%^ *//%!s/\([ <(]\)MSState\([ &*,)<>]\)/\1casa::MSState\2/g
+\%^ *//%!s/\([ <(]\)MSStateColumns\([ &*,)<>]\)/\1casa::MSStateColumns\2/g
+\%^ *//%!s/\([ <(]\)MSStateEnums\([ &*,)<>]\)/\1casa::MSStateEnums\2/g
+\%^ *//%!s/\([ <(]\)MSSummary\([ &*,)<>]\)/\1casa::MSSummary\2/g
+\%^ *//%!s/\([ <(]\)MSSysCal\([ &*,)<>]\)/\1casa::MSSysCal\2/g
+\%^ *//%!s/\([ <(]\)MSSysCalColumns\([ &*,)<>]\)/\1casa::MSSysCalColumns\2/g
+\%^ *//%!s/\([ <(]\)MSSysCalEnums\([ &*,)<>]\)/\1casa::MSSysCalEnums\2/g
+\%^ *//%!s/\([ <(]\)MSSysCalIndex\([ &*,)<>]\)/\1casa::MSSysCalIndex\2/g
+\%^ *//%!s/\([ <(]\)MSTable\([ &*,)<>]\)/\1casa::MSTable\2/g
+\%^ *//%!s/\([ <(]\)MSTableImpl\([ &*,)<>]\)/\1casa::MSTableImpl\2/g
+\%^ *//%!s/\([ <(]\)MSTableIndex\([ &*,)<>]\)/\1casa::MSTableIndex\2/g
+\%^ *//%!s/\([ <(]\)MSTileLayout\([ &*,)<>]\)/\1casa::MSTileLayout\2/g
+\%^ *//%!s/\([ <(]\)MSValidIds\([ &*,)<>]\)/\1casa::MSValidIds\2/g
+\%^ *//%!s/\([ <(]\)MSWeather\([ &*,)<>]\)/\1casa::MSWeather\2/g
+\%^ *//%!s/\([ <(]\)MSWeatherColumns\([ &*,)<>]\)/\1casa::MSWeatherColumns\2/g
+\%^ *//%!s/\([ <(]\)MSWeatherEnums\([ &*,)<>]\)/\1casa::MSWeatherEnums\2/g
+\%^ *//%!s/\([ <(]\)MSWeatherIndex\([ &*,)<>]\)/\1casa::MSWeatherIndex\2/g
+\%^ *//%!s/\([ <(]\)MUString\([ &*,)<>]\)/\1casa::MUString\2/g
+\%^ *//%!s/\([ <(]\)MVAngle\([ &*,)<>]\)/\1casa::MVAngle\2/g
+\%^ *//%!s/\([ <(]\)MVBaseline\([ &*,)<>]\)/\1casa::MVBaseline\2/g
+\%^ *//%!s/\([ <(]\)MVDirection\([ &*,)<>]\)/\1casa::MVDirection\2/g
+\%^ *//%!s/\([ <(]\)MVDoppler\([ &*,)<>]\)/\1casa::MVDoppler\2/g
+\%^ *//%!s/\([ <(]\)MVDouble\([ &*,)<>]\)/\1casa::MVDouble\2/g
+\%^ *//%!s/\([ <(]\)MVEarthMagnetic\([ &*,)<>]\)/\1casa::MVEarthMagnetic\2/g
+\%^ *//%!s/\([ <(]\)MVEpoch\([ &*,)<>]\)/\1casa::MVEpoch\2/g
+\%^ *//%!s/\([ <(]\)MVFrequency\([ &*,)<>]\)/\1casa::MVFrequency\2/g
+\%^ *//%!s/\([ <(]\)MVPosition\([ &*,)<>]\)/\1casa::MVPosition\2/g
+\%^ *//%!s/\([ <(]\)MVRadialVelocity\([ &*,)<>]\)/\1casa::MVRadialVelocity\2/g
+\%^ *//%!s/\([ <(]\)MVTime\([ &*,)<>]\)/\1casa::MVTime\2/g
+\%^ *//%!s/\([ <(]\)MVuvw\([ &*,)<>]\)/\1casa::MVuvw\2/g
+\%^ *//%!s/\([ <(]\)MWCAnimator\([ &*,)<>]\)/\1casa::MWCAnimator\2/g
+\%^ *//%!s/\([ <(]\)MWCCrosshairTool\([ &*,)<>]\)/\1casa::MWCCrosshairTool\2/g
+\%^ *//%!s/\([ <(]\)MWCPTRegion\([ &*,)<>]\)/\1casa::MWCPTRegion\2/g
+\%^ *//%!s/\([ <(]\)MWCPannerTool\([ &*,)<>]\)/\1casa::MWCPannerTool\2/g
+\%^ *//%!s/\([ <(]\)MWCPolyTool\([ &*,)<>]\)/\1casa::MWCPolyTool\2/g
+\%^ *//%!s/\([ <(]\)MWCPolylineTool\([ &*,)<>]\)/\1casa::MWCPolylineTool\2/g
+\%^ *//%!s/\([ <(]\)MWCRTRegion\([ &*,)<>]\)/\1casa::MWCRTRegion\2/g
+\%^ *//%!s/\([ <(]\)MWCRTZoomer\([ &*,)<>]\)/\1casa::MWCRTZoomer\2/g
+\%^ *//%!s/\([ <(]\)MWCRectTool\([ &*,)<>]\)/\1casa::MWCRectTool\2/g
+\%^ *//%!s/\([ <(]\)MakeApproxPSFAlgorithm\([ &*,)<>]\)/\1casa::MakeApproxPSFAlgorithm\2/g
+\%^ *//%!s/\([ <(]\)Map\([ &*,)<>]\)/\1casa::Map\2/g
+\%^ *//%!s/\([ <(]\)MapIter\([ &*,)<>]\)/\1casa::MapIter\2/g
+\%^ *//%!s/\([ <(]\)MapIterRep\([ &*,)<>]\)/\1casa::MapIterRep\2/g
+\%^ *//%!s/\([ <(]\)MapRep\([ &*,)<>]\)/\1casa::MapRep\2/g
+\%^ *//%!s/\([ <(]\)MarshButterworthBandpass\([ &*,)<>]\)/\1casa::MarshButterworthBandpass\2/g
+\%^ *//%!s/\([ <(]\)MarshallableChebyshev\([ &*,)<>]\)/\1casa::MarshallableChebyshev\2/g
+\%^ *//%!s/\([ <(]\)MaskSpecifier\([ &*,)<>]\)/\1casa::MaskSpecifier\2/g
+\%^ *//%!s/\([ <(]\)MaskedArray\([ &*,)<>]\)/\1casa::MaskedArray\2/g
+\%^ *//%!s/\([ <(]\)MaskedArrayModel\([ &*,)<>]\)/\1casa::MaskedArrayModel\2/g
+\%^ *//%!s/\([ <(]\)MaskedHogbomCleanModel\([ &*,)<>]\)/\1casa::MaskedHogbomCleanModel\2/g
+\%^ *//%!s/\([ <(]\)MaskedLattice\([ &*,)<>]\)/\1casa::MaskedLattice\2/g
+\%^ *//%!s/\([ <(]\)MaskedLogicalArray\([ &*,)<>]\)/\1casa::MaskedLogicalArray\2/g
+\%^ *//%!s/\([ <(]\)MathFunc\([ &*,)<>]\)/\1casa::MathFunc\2/g
+\%^ *//%!s/\([ <(]\)Matrix\([ &*,)<>]\)/\1casa::Matrix\2/g
+\%^ *//%!s/\([ <(]\)MatrixIterator\([ &*,)<>]\)/\1casa::MatrixIterator\2/g
+\%^ *//%!s/\([ <(]\)MatrixSolver\([ &*,)<>]\)/\1casa::MatrixSolver\2/g
+\%^ *//%!s/\([ <(]\)MeasBase\([ &*,)<>]\)/\1casa::MeasBase\2/g
+\%^ *//%!s/\([ <(]\)MeasComet\([ &*,)<>]\)/\1casa::MeasComet\2/g
+\%^ *//%!s/\([ <(]\)MeasConvert\([ &*,)<>]\)/\1casa::MeasConvert\2/g
+\%^ *//%!s/\([ <(]\)MeasData\([ &*,)<>]\)/\1casa::MeasData\2/g
+\%^ *//%!s/\([ <(]\)MeasFrame\([ &*,)<>]\)/\1casa::MeasFrame\2/g
+\%^ *//%!s/\([ <(]\)MeasFrameInterface\([ &*,)<>]\)/\1casa::MeasFrameInterface\2/g
+\%^ *//%!s/\([ <(]\)MeasIERS\([ &*,)<>]\)/\1casa::MeasIERS\2/g
+\%^ *//%!s/\([ <(]\)MeasJPL\([ &*,)<>]\)/\1casa::MeasJPL\2/g
+\%^ *//%!s/\([ <(]\)MeasMath\([ &*,)<>]\)/\1casa::MeasMath\2/g
+\%^ *//%!s/\([ <(]\)MeasRef\([ &*,)<>]\)/\1casa::MeasRef\2/g
+\%^ *//%!s/\([ <(]\)MeasTable\([ &*,)<>]\)/\1casa::MeasTable\2/g
+\%^ *//%!s/\([ <(]\)MeasValue\([ &*,)<>]\)/\1casa::MeasValue\2/g
+\%^ *//%!s/\([ <(]\)Measure\([ &*,)<>]\)/\1casa::Measure\2/g
+\%^ *//%!s/\([ <(]\)MeasureHolder\([ &*,)<>]\)/\1casa::MeasureHolder\2/g
+\%^ *//%!s/\([ <(]\)MeasurementSet\([ &*,)<>]\)/\1casa::MeasurementSet\2/g
+\%^ *//%!s/\([ <(]\)MedianSlider\([ &*,)<>]\)/\1casa::MedianSlider\2/g
+\%^ *//%!s/\([ <(]\)Memory\([ &*,)<>]\)/\1casa::Memory\2/g
+\%^ *//%!s/\([ <(]\)MemoryIO\([ &*,)<>]\)/\1casa::MemoryIO\2/g
+\%^ *//%!s/\([ <(]\)MemoryLogSink\([ &*,)<>]\)/\1casa::MemoryLogSink\2/g
+\%^ *//%!s/\([ <(]\)MemoryStMan\([ &*,)<>]\)/\1casa::MemoryStMan\2/g
+\%^ *//%!s/\([ <(]\)MemoryTable\([ &*,)<>]\)/\1casa::MemoryTable\2/g
+\%^ *//%!s/\([ <(]\)MethodResult\([ &*,)<>]\)/\1casa::MethodResult\2/g
+\%^ *//%!s/\([ <(]\)Mod_KB_Conv\([ &*,)<>]\)/\1casa::Mod_KB_Conv\2/g
+\%^ *//%!s/\([ <(]\)ModcompConversion\([ &*,)<>]\)/\1casa::ModcompConversion\2/g
+\%^ *//%!s/\([ <(]\)ModcompDataConversion\([ &*,)<>]\)/\1casa::ModcompDataConversion\2/g
+\%^ *//%!s/\([ <(]\)MomentCalcBase\([ &*,)<>]\)/\1casa::MomentCalcBase\2/g
+\%^ *//%!s/\([ <(]\)MomentClip\([ &*,)<>]\)/\1casa::MomentClip\2/g
+\%^ *//%!s/\([ <(]\)MomentFit\([ &*,)<>]\)/\1casa::MomentFit\2/g
+\%^ *//%!s/\([ <(]\)MomentWindow\([ &*,)<>]\)/\1casa::MomentWindow\2/g
+\%^ *//%!s/\([ <(]\)MosaicFT\([ &*,)<>]\)/\1casa::MosaicFT\2/g
+\%^ *//%!s/\([ <(]\)MosaicSkyEquation\([ &*,)<>]\)/\1casa::MosaicSkyEquation\2/g
+\%^ *//%!s/\([ <(]\)MultiRecordFieldWriter\([ &*,)<>]\)/\1casa::MultiRecordFieldWriter\2/g
+\%^ *//%!s/\([ <(]\)MultiWCHolder\([ &*,)<>]\)/\1casa::MultiWCHolder\2/g
+\%^ *//%!s/\([ <(]\)MultiWCTool\([ &*,)<>]\)/\1casa::MultiWCTool\2/g
+\%^ *//%!s/\([ <(]\)Muvw\([ &*,)<>]\)/\1casa::Muvw\2/g
+\%^ *//%!s/\([ <(]\)NBody\([ &*,)<>]\)/\1casa::NBody\2/g
+\%^ *//%!s/\([ <(]\)NNGridder\([ &*,)<>]\)/\1casa::NNGridder\2/g
+\%^ *//%!s/\([ <(]\)NNLSImageSkyModel\([ &*,)<>]\)/\1casa::NNLSImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)NNLSMatrixSolver\([ &*,)<>]\)/\1casa::NNLSMatrixSolver\2/g
+\%^ *//%!s/\([ <(]\)NegativeExpntl\([ &*,)<>]\)/\1casa::NegativeExpntl\2/g
+\%^ *//%!s/\([ <(]\)NewFile\([ &*,)<>]\)/\1casa::NewFile\2/g
+\%^ *//%!s/\([ <(]\)NewFileConstraint\([ &*,)<>]\)/\1casa::NewFileConstraint\2/g
+\%^ *//%!s/\([ <(]\)NewMSSimulator\([ &*,)<>]\)/\1casa::NewMSSimulator\2/g
+\%^ *//%!s/\([ <(]\)NewSimDJones\([ &*,)<>]\)/\1casa::NewSimDJones\2/g
+\%^ *//%!s/\([ <(]\)NewSimGJones\([ &*,)<>]\)/\1casa::NewSimGJones\2/g
+\%^ *//%!s/\([ <(]\)NewSimTimeDepVisJones\([ &*,)<>]\)/\1casa::NewSimTimeDepVisJones\2/g
+\%^ *//%!s/\([ <(]\)NewSimVisJones\([ &*,)<>]\)/\1casa::NewSimVisJones\2/g
+\%^ *//%!s/\([ <(]\)NonLinearFit\([ &*,)<>]\)/\1casa::NonLinearFit\2/g
+\%^ *//%!s/\([ <(]\)NonLinearFitLM\([ &*,)<>]\)/\1casa::NonLinearFitLM\2/g
+\%^ *//%!s/\([ <(]\)Normal\([ &*,)<>]\)/\1casa::Normal\2/g
+\%^ *//%!s/\([ <(]\)Notice\([ &*,)<>]\)/\1casa::Notice\2/g
+\%^ *//%!s/\([ <(]\)NoticeSource\([ &*,)<>]\)/\1casa::NoticeSource\2/g
+\%^ *//%!s/\([ <(]\)NoticeTarget\([ &*,)<>]\)/\1casa::NoticeTarget\2/g
+\%^ *//%!s/\([ <(]\)NullLogSink\([ &*,)<>]\)/\1casa::NullLogSink\2/g
+\%^ *//%!s/\([ <(]\)NullTable\([ &*,)<>]\)/\1casa::NullTable\2/g
+\%^ *//%!s/\([ <(]\)NumericTraits\([ &*,)<>]\)/\1casa::NumericTraits\2/g
+\%^ *//%!s/\([ <(]\)NumericTraits_C\([ &*,)<>]\)/\1casa::NumericTraits_C\2/g
+\%^ *//%!s/\([ <(]\)NumericTraits_D\([ &*,)<>]\)/\1casa::NumericTraits_D\2/g
+\%^ *//%!s/\([ <(]\)NumericTraits_DC\([ &*,)<>]\)/\1casa::NumericTraits_DC\2/g
+\%^ *//%!s/\([ <(]\)NumericTraits_F\([ &*,)<>]\)/\1casa::NumericTraits_F\2/g
+\%^ *//%!s/\([ <(]\)Nutation\([ &*,)<>]\)/\1casa::Nutation\2/g
+\%^ *//%!s/\([ <(]\)ObjCompare\([ &*,)<>]\)/\1casa::ObjCompare\2/g
+\%^ *//%!s/\([ <(]\)ObjCompareFunc\([ &*,)<>]\)/\1casa::ObjCompareFunc\2/g
+\%^ *//%!s/\([ <(]\)ObjectController\([ &*,)<>]\)/\1casa::ObjectController\2/g
+\%^ *//%!s/\([ <(]\)ObjectDispatcher\([ &*,)<>]\)/\1casa::ObjectDispatcher\2/g
+\%^ *//%!s/\([ <(]\)ObjectID\([ &*,)<>]\)/\1casa::ObjectID\2/g
+\%^ *//%!s/\([ <(]\)ObjectIDParameterAccessor\([ &*,)<>]\)/\1casa::ObjectIDParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ObjectIDRecord\([ &*,)<>]\)/\1casa::ObjectIDRecord\2/g
+\%^ *//%!s/\([ <(]\)ObjectPool\([ &*,)<>]\)/\1casa::ObjectPool\2/g
+\%^ *//%!s/\([ <(]\)ObjectType\([ &*,)<>]\)/\1casa::ObjectType\2/g
+\%^ *//%!s/\([ <(]\)ObsInfo\([ &*,)<>]\)/\1casa::ObsInfo\2/g
+\%^ *//%!s/\([ <(]\)OddPolynomial\([ &*,)<>]\)/\1casa::OddPolynomial\2/g
+\%^ *//%!s/\([ <(]\)OddPolynomialParam\([ &*,)<>]\)/\1casa::OddPolynomialParam\2/g
+\%^ *//%!s/\([ <(]\)OddPolynomial_PS\([ &*,)<>]\)/\1casa::OddPolynomial_PS\2/g
+\%^ *//%!s/\([ <(]\)Opacity\([ &*,)<>]\)/\1casa::Opacity\2/g
+\%^ *//%!s/\([ <(]\)OpacitySpec\([ &*,)<>]\)/\1casa::OpacitySpec\2/g
+\%^ *//%!s/\([ <(]\)OrderedMap\([ &*,)<>]\)/\1casa::OrderedMap\2/g
+\%^ *//%!s/\([ <(]\)OrderedMapIterRep\([ &*,)<>]\)/\1casa::OrderedMapIterRep\2/g
+\%^ *//%!s/\([ <(]\)OrderedMapNotice\([ &*,)<>]\)/\1casa::OrderedMapNotice\2/g
+\%^ *//%!s/\([ <(]\)OrderedMapRep\([ &*,)<>]\)/\1casa::OrderedMapRep\2/g
+\%^ *//%!s/\([ <(]\)OrderedPair\([ &*,)<>]\)/\1casa::OrderedPair\2/g
+\%^ *//%!s/\([ <(]\)Output\([ &*,)<>]\)/\1casa::Output\2/g
+\%^ *//%!s/\([ <(]\)PBMath\([ &*,)<>]\)/\1casa::PBMath\2/g
+\%^ *//%!s/\([ <(]\)PBMath1D\([ &*,)<>]\)/\1casa::PBMath1D\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DAiry\([ &*,)<>]\)/\1casa::PBMath1DAiry\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DCosPoly\([ &*,)<>]\)/\1casa::PBMath1DCosPoly\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DGauss\([ &*,)<>]\)/\1casa::PBMath1DGauss\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DIPoly\([ &*,)<>]\)/\1casa::PBMath1DIPoly\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DNumeric\([ &*,)<>]\)/\1casa::PBMath1DNumeric\2/g
+\%^ *//%!s/\([ <(]\)PBMath1DPoly\([ &*,)<>]\)/\1casa::PBMath1DPoly\2/g
+\%^ *//%!s/\([ <(]\)PBMath2D\([ &*,)<>]\)/\1casa::PBMath2D\2/g
+\%^ *//%!s/\([ <(]\)PBMath2DImage\([ &*,)<>]\)/\1casa::PBMath2DImage\2/g
+\%^ *//%!s/\([ <(]\)PBMathInterface\([ &*,)<>]\)/\1casa::PBMathInterface\2/g
+\%^ *//%!s/\([ <(]\)PCITFiddler\([ &*,)<>]\)/\1casa::PCITFiddler\2/g
+\%^ *//%!s/\([ <(]\)PCInvisTool\([ &*,)<>]\)/\1casa::PCInvisTool\2/g
+\%^ *//%!s/\([ <(]\)PCMotionEH\([ &*,)<>]\)/\1casa::PCMotionEH\2/g
+\%^ *//%!s/\([ <(]\)PCMotionEvent\([ &*,)<>]\)/\1casa::PCMotionEvent\2/g
+\%^ *//%!s/\([ <(]\)PCPositionEH\([ &*,)<>]\)/\1casa::PCPositionEH\2/g
+\%^ *//%!s/\([ <(]\)PCPositionEvent\([ &*,)<>]\)/\1casa::PCPositionEvent\2/g
+\%^ *//%!s/\([ <(]\)PCRefreshEH\([ &*,)<>]\)/\1casa::PCRefreshEH\2/g
+\%^ *//%!s/\([ <(]\)PCRefreshEvent\([ &*,)<>]\)/\1casa::PCRefreshEvent\2/g
+\%^ *//%!s/\([ <(]\)PCTestPattern\([ &*,)<>]\)/\1casa::PCTestPattern\2/g
+\%^ *//%!s/\([ <(]\)PCTool\([ &*,)<>]\)/\1casa::PCTool\2/g
+\%^ *//%!s/\([ <(]\)PCToolMotEH\([ &*,)<>]\)/\1casa::PCToolMotEH\2/g
+\%^ *//%!s/\([ <(]\)PCToolPosEH\([ &*,)<>]\)/\1casa::PCToolPosEH\2/g
+\%^ *//%!s/\([ <(]\)PCToolRefEH\([ &*,)<>]\)/\1casa::PCToolRefEH\2/g
+\%^ *//%!s/\([ <(]\)PCVGBuffer\([ &*,)<>]\)/\1casa::PCVGBuffer\2/g
+\%^ *//%!s/\([ <(]\)PClarkCleanImageSkyModel\([ &*,)<>]\)/\1casa::PClarkCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)PGPlot1d\([ &*,)<>]\)/\1casa::PGPlot1d\2/g
+\%^ *//%!s/\([ <(]\)PGPlot1dDataAttr\([ &*,)<>]\)/\1casa::PGPlot1dDataAttr\2/g
+\%^ *//%!s/\([ <(]\)PGPlotEnums\([ &*,)<>]\)/\1casa::PGPlotEnums\2/g
+\%^ *//%!s/\([ <(]\)PGPlotter\([ &*,)<>]\)/\1casa::PGPlotter\2/g
+\%^ *//%!s/\([ <(]\)PGPlotterGlish\([ &*,)<>]\)/\1casa::PGPlotterGlish\2/g
+\%^ *//%!s/\([ <(]\)PGPlotterInterface\([ &*,)<>]\)/\1casa::PGPlotterInterface\2/g
+\%^ *//%!s/\([ <(]\)PGPlotterLocal\([ &*,)<>]\)/\1casa::PGPlotterLocal\2/g
+\%^ *//%!s/\([ <(]\)PJones\([ &*,)<>]\)/\1casa::PJones\2/g
+\%^ *//%!s/\([ <(]\)PJonesDesc\([ &*,)<>]\)/\1casa::PJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)PJonesMBuf\([ &*,)<>]\)/\1casa::PJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)PJonesMCol\([ &*,)<>]\)/\1casa::PJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)PJonesMRec\([ &*,)<>]\)/\1casa::PJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)PJonesTable\([ &*,)<>]\)/\1casa::PJonesTable\2/g
+\%^ *//%!s/\([ <(]\)PKSMultiBeamDD\([ &*,)<>]\)/\1casa::PKSMultiBeamDD\2/g
+\%^ *//%!s/\([ <(]\)PSDriver\([ &*,)<>]\)/\1casa::PSDriver\2/g
+\%^ *//%!s/\([ <(]\)PSPixelCanvas\([ &*,)<>]\)/\1casa::PSPixelCanvas\2/g
+\%^ *//%!s/\([ <(]\)PSPixelCanvasColorTable\([ &*,)<>]\)/\1casa::PSPixelCanvasColorTable\2/g
+\%^ *//%!s/\([ <(]\)PSWorldCanvasApp\([ &*,)<>]\)/\1casa::PSWorldCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)PSkyEquation\([ &*,)<>]\)/\1casa::PSkyEquation\2/g
+\%^ *//%!s/\([ <(]\)PTransport\([ &*,)<>]\)/\1casa::PTransport\2/g
+\%^ *//%!s/\([ <(]\)PWFCleanImageSkyModel\([ &*,)<>]\)/\1casa::PWFCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)PabloIO\([ &*,)<>]\)/\1casa::PabloIO\2/g
+\%^ *//%!s/\([ <(]\)PagedArrIter\([ &*,)<>]\)/\1casa::PagedArrIter\2/g
+\%^ *//%!s/\([ <(]\)PagedArray\([ &*,)<>]\)/\1casa::PagedArray\2/g
+\%^ *//%!s/\([ <(]\)PagedImage\([ &*,)<>]\)/\1casa::PagedImage\2/g
+\%^ *//%!s/\([ <(]\)PagedImageParameterAccessor\([ &*,)<>]\)/\1casa::PagedImageParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)PanelDisplay\([ &*,)<>]\)/\1casa::PanelDisplay\2/g
+\%^ *//%!s/\([ <(]\)ParAngleMachine\([ &*,)<>]\)/\1casa::ParAngleMachine\2/g
+\%^ *//%!s/\([ <(]\)Param\([ &*,)<>]\)/\1casa::Param\2/g
+\%^ *//%!s/\([ <(]\)Parameter\([ &*,)<>]\)/\1casa::Parameter\2/g
+\%^ *//%!s/\([ <(]\)ParameterAccessor\([ &*,)<>]\)/\1casa::ParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ParameterAccessorBase\([ &*,)<>]\)/\1casa::ParameterAccessorBase\2/g
+\%^ *//%!s/\([ <(]\)ParameterConstraint\([ &*,)<>]\)/\1casa::ParameterConstraint\2/g
+\%^ *//%!s/\([ <(]\)ParameterRange\([ &*,)<>]\)/\1casa::ParameterRange\2/g
+\%^ *//%!s/\([ <(]\)ParameterSet\([ &*,)<>]\)/\1casa::ParameterSet\2/g
+\%^ *//%!s/\([ <(]\)PassiveCachingDD\([ &*,)<>]\)/\1casa::PassiveCachingDD\2/g
+\%^ *//%!s/\([ <(]\)PassiveTableDD\([ &*,)<>]\)/\1casa::PassiveTableDD\2/g
+\%^ *//%!s/\([ <(]\)Path\([ &*,)<>]\)/\1casa::Path\2/g
+\%^ *//%!s/\([ <(]\)PhaseFactor\([ &*,)<>]\)/\1casa::PhaseFactor\2/g
+\%^ *//%!s/\([ <(]\)PixelCanvas\([ &*,)<>]\)/\1casa::PixelCanvas\2/g
+\%^ *//%!s/\([ <(]\)PixelCanvasColorTable\([ &*,)<>]\)/\1casa::PixelCanvasColorTable\2/g
+\%^ *//%!s/\([ <(]\)PixelCanvasEvent\([ &*,)<>]\)/\1casa::PixelCanvasEvent\2/g
+\%^ *//%!s/\([ <(]\)PixelCurve1D\([ &*,)<>]\)/\1casa::PixelCurve1D\2/g
+\%^ *//%!s/\([ <(]\)PixonProcessor\([ &*,)<>]\)/\1casa::PixonProcessor\2/g
+\%^ *//%!s/\([ <(]\)PlainColumn\([ &*,)<>]\)/\1casa::PlainColumn\2/g
+\%^ *//%!s/\([ <(]\)PlainTable\([ &*,)<>]\)/\1casa::PlainTable\2/g
+\%^ *//%!s/\([ <(]\)Plot1d\([ &*,)<>]\)/\1casa::Plot1d\2/g
+\%^ *//%!s/\([ <(]\)Plot1dData\([ &*,)<>]\)/\1casa::Plot1dData\2/g
+\%^ *//%!s/\([ <(]\)Plot1dSelection\([ &*,)<>]\)/\1casa::Plot1dSelection\2/g
+\%^ *//%!s/\([ <(]\)PointShape\([ &*,)<>]\)/\1casa::PointShape\2/g
+\%^ *//%!s/\([ <(]\)Poisson\([ &*,)<>]\)/\1casa::Poisson\2/g
+\%^ *//%!s/\([ <(]\)Polynomial\([ &*,)<>]\)/\1casa::Polynomial\2/g
+\%^ *//%!s/\([ <(]\)PolynomialParam\([ &*,)<>]\)/\1casa::PolynomialParam\2/g
+\%^ *//%!s/\([ <(]\)Polynomial_PS\([ &*,)<>]\)/\1casa::Polynomial_PS\2/g
+\%^ *//%!s/\([ <(]\)PoolStack\([ &*,)<>]\)/\1casa::PoolStack\2/g
+\%^ *//%!s/\([ <(]\)Precession\([ &*,)<>]\)/\1casa::Precession\2/g
+\%^ *//%!s/\([ <(]\)PredictAlgorithm\([ &*,)<>]\)/\1casa::PredictAlgorithm\2/g
+\%^ *//%!s/\([ <(]\)Primes\([ &*,)<>]\)/\1casa::Primes\2/g
+\%^ *//%!s/\([ <(]\)PrincipalAxesDD\([ &*,)<>]\)/\1casa::PrincipalAxesDD\2/g
+\%^ *//%!s/\([ <(]\)PrincipalAxesDM\([ &*,)<>]\)/\1casa::PrincipalAxesDM\2/g
+\%^ *//%!s/\([ <(]\)Profile\([ &*,)<>]\)/\1casa::Profile\2/g
+\%^ *//%!s/\([ <(]\)Profile2dDD\([ &*,)<>]\)/\1casa::Profile2dDD\2/g
+\%^ *//%!s/\([ <(]\)Profile2dDM\([ &*,)<>]\)/\1casa::Profile2dDM\2/g
+\%^ *//%!s/\([ <(]\)ProfileFit1D\([ &*,)<>]\)/\1casa::ProfileFit1D\2/g
+\%^ *//%!s/\([ <(]\)ProgressMeter\([ &*,)<>]\)/\1casa::ProgressMeter\2/g
+\%^ *//%!s/\([ <(]\)Projection\([ &*,)<>]\)/\1casa::Projection\2/g
+\%^ *//%!s/\([ <(]\)PtrBlock\([ &*,)<>]\)/\1casa::PtrBlock\2/g
+\%^ *//%!s/\([ <(]\)PtrHolder\([ &*,)<>]\)/\1casa::PtrHolder\2/g
+\%^ *//%!s/\([ <(]\)PtrRep\([ &*,)<>]\)/\1casa::PtrRep\2/g
+\%^ *//%!s/\([ <(]\)QBase\([ &*,)<>]\)/\1casa::QBase\2/g
+\%^ *//%!s/\([ <(]\)QC\([ &*,)<>]\)/\1casa::QC\2/g
+\%^ *//%!s/\([ <(]\)Qimager\([ &*,)<>]\)/\1casa::Qimager\2/g
+\%^ *//%!s/\([ <(]\)Quantum\([ &*,)<>]\)/\1casa::Quantum\2/g
+\%^ *//%!s/\([ <(]\)QuantumHolder\([ &*,)<>]\)/\1casa::QuantumHolder\2/g
+\%^ *//%!s/\([ <(]\)Queue\([ &*,)<>]\)/\1casa::Queue\2/g
+\%^ *//%!s/\([ <(]\)RFABase\([ &*,)<>]\)/\1casa::RFABase\2/g
+\%^ *//%!s/\([ <(]\)RFADiffBase\([ &*,)<>]\)/\1casa::RFADiffBase\2/g
+\%^ *//%!s/\([ <(]\)RFADiffMapBase\([ &*,)<>]\)/\1casa::RFADiffMapBase\2/g
+\%^ *//%!s/\([ <(]\)RFAFlagCubeBase\([ &*,)<>]\)/\1casa::RFAFlagCubeBase\2/g
+\%^ *//%!s/\([ <(]\)RFAFreqMedian\([ &*,)<>]\)/\1casa::RFAFreqMedian\2/g
+\%^ *//%!s/\([ <(]\)RFANewMedianClip\([ &*,)<>]\)/\1casa::RFANewMedianClip\2/g
+\%^ *//%!s/\([ <(]\)RFASelector\([ &*,)<>]\)/\1casa::RFASelector\2/g
+\%^ *//%!s/\([ <(]\)RFASpectralRej\([ &*,)<>]\)/\1casa::RFASpectralRej\2/g
+\%^ *//%!s/\([ <(]\)RFATimeMedian\([ &*,)<>]\)/\1casa::RFATimeMedian\2/g
+\%^ *//%!s/\([ <(]\)RFAUVBinner\([ &*,)<>]\)/\1casa::RFAUVBinner\2/g
+\%^ *//%!s/\([ <(]\)RFChunkStats\([ &*,)<>]\)/\1casa::RFChunkStats\2/g
+\%^ *//%!s/\([ <(]\)RFCubeLattice\([ &*,)<>]\)/\1casa::RFCubeLattice\2/g
+\%^ *//%!s/\([ <(]\)RFCubeLatticeIterator\([ &*,)<>]\)/\1casa::RFCubeLatticeIterator\2/g
+\%^ *//%!s/\([ <(]\)RFDataMapper\([ &*,)<>]\)/\1casa::RFDataMapper\2/g
+\%^ *//%!s/\([ <(]\)RFDebugPlot\([ &*,)<>]\)/\1casa::RFDebugPlot\2/g
+\%^ *//%!s/\([ <(]\)RFFlagCube\([ &*,)<>]\)/\1casa::RFFlagCube\2/g
+\%^ *//%!s/\([ <(]\)RFRowClipper\([ &*,)<>]\)/\1casa::RFRowClipper\2/g
+\%^ *//%!s/\([ <(]\)RINEX\([ &*,)<>]\)/\1casa::RINEX\2/g
+\%^ *//%!s/\([ <(]\)RINEXHeader\([ &*,)<>]\)/\1casa::RINEXHeader\2/g
+\%^ *//%!s/\([ <(]\)RINEXSat\([ &*,)<>]\)/\1casa::RINEXSat\2/g
+\%^ *//%!s/\([ <(]\)RNG\([ &*,)<>]\)/\1casa::RNG\2/g
+\%^ *//%!s/\([ <(]\)ROArrayColumn\([ &*,)<>]\)/\1casa::ROArrayColumn\2/g
+\%^ *//%!s/\([ <(]\)ROArrayMeasColumn\([ &*,)<>]\)/\1casa::ROArrayMeasColumn\2/g
+\%^ *//%!s/\([ <(]\)ROArrayQuantColumn\([ &*,)<>]\)/\1casa::ROArrayQuantColumn\2/g
+\%^ *//%!s/\([ <(]\)ROBJonesMCol\([ &*,)<>]\)/\1casa::ROBJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROBJonesPolyMCol\([ &*,)<>]\)/\1casa::ROBJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)ROCJonesMCol\([ &*,)<>]\)/\1casa::ROCJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROCalDescColumns\([ &*,)<>]\)/\1casa::ROCalDescColumns\2/g
+\%^ *//%!s/\([ <(]\)ROCalHistoryColumns\([ &*,)<>]\)/\1casa::ROCalHistoryColumns\2/g
+\%^ *//%!s/\([ <(]\)ROCalMainColumns\([ &*,)<>]\)/\1casa::ROCalMainColumns\2/g
+\%^ *//%!s/\([ <(]\)RODJonesMCol\([ &*,)<>]\)/\1casa::RODJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)RODataManAccessor\([ &*,)<>]\)/\1casa::RODataManAccessor\2/g
+\%^ *//%!s/\([ <(]\)ROGJonesMCol\([ &*,)<>]\)/\1casa::ROGJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROGJonesPolyMCol\([ &*,)<>]\)/\1casa::ROGJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)ROGJonesSplineMCol\([ &*,)<>]\)/\1casa::ROGJonesSplineMCol\2/g
+\%^ *//%!s/\([ <(]\)ROIncrementalStManAccessor\([ &*,)<>]\)/\1casa::ROIncrementalStManAccessor\2/g
+\%^ *//%!s/\([ <(]\)ROMSAntennaColumns\([ &*,)<>]\)/\1casa::ROMSAntennaColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSColumns\([ &*,)<>]\)/\1casa::ROMSColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSDataDescColumns\([ &*,)<>]\)/\1casa::ROMSDataDescColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSDopplerColumns\([ &*,)<>]\)/\1casa::ROMSDopplerColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSFeedColumns\([ &*,)<>]\)/\1casa::ROMSFeedColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSFieldColumns\([ &*,)<>]\)/\1casa::ROMSFieldColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSFlagCmdColumns\([ &*,)<>]\)/\1casa::ROMSFlagCmdColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSFreqOffsetColumns\([ &*,)<>]\)/\1casa::ROMSFreqOffsetColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSHistoryColumns\([ &*,)<>]\)/\1casa::ROMSHistoryColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSMainColumns\([ &*,)<>]\)/\1casa::ROMSMainColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSObservationColumns\([ &*,)<>]\)/\1casa::ROMSObservationColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSPointingColumns\([ &*,)<>]\)/\1casa::ROMSPointingColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSPolarizationColumns\([ &*,)<>]\)/\1casa::ROMSPolarizationColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSProcessorColumns\([ &*,)<>]\)/\1casa::ROMSProcessorColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSSourceColumns\([ &*,)<>]\)/\1casa::ROMSSourceColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSSpWindowColumns\([ &*,)<>]\)/\1casa::ROMSSpWindowColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSStateColumns\([ &*,)<>]\)/\1casa::ROMSStateColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSSysCalColumns\([ &*,)<>]\)/\1casa::ROMSSysCalColumns\2/g
+\%^ *//%!s/\([ <(]\)ROMSWeatherColumns\([ &*,)<>]\)/\1casa::ROMSWeatherColumns\2/g
+\%^ *//%!s/\([ <(]\)ROPJonesMCol\([ &*,)<>]\)/\1casa::ROPJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)RORecordFieldPtr\([ &*,)<>]\)/\1casa::RORecordFieldPtr\2/g
+\%^ *//%!s/\([ <(]\)ROScalarColumn\([ &*,)<>]\)/\1casa::ROScalarColumn\2/g
+\%^ *//%!s/\([ <(]\)ROScalarMeasColumn\([ &*,)<>]\)/\1casa::ROScalarMeasColumn\2/g
+\%^ *//%!s/\([ <(]\)ROScalarQuantColumn\([ &*,)<>]\)/\1casa::ROScalarQuantColumn\2/g
+\%^ *//%!s/\([ <(]\)ROSolvableVisJonesMCol\([ &*,)<>]\)/\1casa::ROSolvableVisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROStandardStManAccessor\([ &*,)<>]\)/\1casa::ROStandardStManAccessor\2/g
+\%^ *//%!s/\([ <(]\)ROTJonesMCol\([ &*,)<>]\)/\1casa::ROTJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROTJonesPolyMCol\([ &*,)<>]\)/\1casa::ROTJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)ROTJonesSplineMCol\([ &*,)<>]\)/\1casa::ROTJonesSplineMCol\2/g
+\%^ *//%!s/\([ <(]\)ROTableColumn\([ &*,)<>]\)/\1casa::ROTableColumn\2/g
+\%^ *//%!s/\([ <(]\)ROTableMeasColumn\([ &*,)<>]\)/\1casa::ROTableMeasColumn\2/g
+\%^ *//%!s/\([ <(]\)ROTableRow\([ &*,)<>]\)/\1casa::ROTableRow\2/g
+\%^ *//%!s/\([ <(]\)ROTableVector\([ &*,)<>]\)/\1casa::ROTableVector\2/g
+\%^ *//%!s/\([ <(]\)ROTiledStManAccessor\([ &*,)<>]\)/\1casa::ROTiledStManAccessor\2/g
+\%^ *//%!s/\([ <(]\)ROTimeVarVisJonesMCol\([ &*,)<>]\)/\1casa::ROTimeVarVisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROVisJonesMCol\([ &*,)<>]\)/\1casa::ROVisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)ROVisibilityIterator\([ &*,)<>]\)/\1casa::ROVisibilityIterator\2/g
+\%^ *//%!s/\([ <(]\)RO_LatticeIterator\([ &*,)<>]\)/\1casa::RO_LatticeIterator\2/g
+\%^ *//%!s/\([ <(]\)RO_MaskedLatticeIterator\([ &*,)<>]\)/\1casa::RO_MaskedLatticeIterator\2/g
+\%^ *//%!s/\([ <(]\)Random\([ &*,)<>]\)/\1casa::Random\2/g
+\%^ *//%!s/\([ <(]\)RawDataConversion\([ &*,)<>]\)/\1casa::RawDataConversion\2/g
+\%^ *//%!s/\([ <(]\)RawIO\([ &*,)<>]\)/\1casa::RawIO\2/g
+\%^ *//%!s/\([ <(]\)ReadAsciiTable\([ &*,)<>]\)/\1casa::ReadAsciiTable\2/g
+\%^ *//%!s/\([ <(]\)ReadMSAlgorithm\([ &*,)<>]\)/\1casa::ReadMSAlgorithm\2/g
+\%^ *//%!s/\([ <(]\)ReadOnlyArrayIterator\([ &*,)<>]\)/\1casa::ReadOnlyArrayIterator\2/g
+\%^ *//%!s/\([ <(]\)ReadOnlyMatrixIterator\([ &*,)<>]\)/\1casa::ReadOnlyMatrixIterator\2/g
+\%^ *//%!s/\([ <(]\)ReadOnlyVectorIterator\([ &*,)<>]\)/\1casa::ReadOnlyVectorIterator\2/g
+\%^ *//%!s/\([ <(]\)RebinImage\([ &*,)<>]\)/\1casa::RebinImage\2/g
+\%^ *//%!s/\([ <(]\)RebinLattice\([ &*,)<>]\)/\1casa::RebinLattice\2/g
+\%^ *//%!s/\([ <(]\)Record\([ &*,)<>]\)/\1casa::Record\2/g
+\%^ *//%!s/\([ <(]\)RecordDesc\([ &*,)<>]\)/\1casa::RecordDesc\2/g
+\%^ *//%!s/\([ <(]\)RecordDescRep\([ &*,)<>]\)/\1casa::RecordDescRep\2/g
+\%^ *//%!s/\([ <(]\)RecordExpr\([ &*,)<>]\)/\1casa::RecordExpr\2/g
+\%^ *//%!s/\([ <(]\)RecordFieldCopier\([ &*,)<>]\)/\1casa::RecordFieldCopier\2/g
+\%^ *//%!s/\([ <(]\)RecordFieldId\([ &*,)<>]\)/\1casa::RecordFieldId\2/g
+\%^ *//%!s/\([ <(]\)RecordFieldPtr\([ &*,)<>]\)/\1casa::RecordFieldPtr\2/g
+\%^ *//%!s/\([ <(]\)RecordFieldWriter\([ &*,)<>]\)/\1casa::RecordFieldWriter\2/g
+\%^ *//%!s/\([ <(]\)RecordGram\([ &*,)<>]\)/\1casa::RecordGram\2/g
+\%^ *//%!s/\([ <(]\)RecordGramFunctions\([ &*,)<>]\)/\1casa::RecordGramFunctions\2/g
+\%^ *//%!s/\([ <(]\)RecordInterface\([ &*,)<>]\)/\1casa::RecordInterface\2/g
+\%^ *//%!s/\([ <(]\)RecordNotice\([ &*,)<>]\)/\1casa::RecordNotice\2/g
+\%^ *//%!s/\([ <(]\)RecordRep\([ &*,)<>]\)/\1casa::RecordRep\2/g
+\%^ *//%!s/\([ <(]\)RecordTransformable\([ &*,)<>]\)/\1casa::RecordTransformable\2/g
+\%^ *//%!s/\([ <(]\)RectRegionEvent\([ &*,)<>]\)/\1casa::RectRegionEvent\2/g
+\%^ *//%!s/\([ <(]\)RedFlagger\([ &*,)<>]\)/\1casa::RedFlagger\2/g
+\%^ *//%!s/\([ <(]\)RefColumn\([ &*,)<>]\)/\1casa::RefColumn\2/g
+\%^ *//%!s/\([ <(]\)RefRows\([ &*,)<>]\)/\1casa::RefRows\2/g
+\%^ *//%!s/\([ <(]\)RefRowsSliceIter\([ &*,)<>]\)/\1casa::RefRowsSliceIter\2/g
+\%^ *//%!s/\([ <(]\)RefTable\([ &*,)<>]\)/\1casa::RefTable\2/g
+\%^ *//%!s/\([ <(]\)RegSequence\([ &*,)<>]\)/\1casa::RegSequence\2/g
+\%^ *//%!s/\([ <(]\)Regex\([ &*,)<>]\)/\1casa::Regex\2/g
+\%^ *//%!s/\([ <(]\)RegexBase\([ &*,)<>]\)/\1casa::RegexBase\2/g
+\%^ *//%!s/\([ <(]\)RegionHandler\([ &*,)<>]\)/\1casa::RegionHandler\2/g
+\%^ *//%!s/\([ <(]\)RegionHandlerMemory\([ &*,)<>]\)/\1casa::RegionHandlerMemory\2/g
+\%^ *//%!s/\([ <(]\)RegionHandlerTable\([ &*,)<>]\)/\1casa::RegionHandlerTable\2/g
+\%^ *//%!s/\([ <(]\)RegionType\([ &*,)<>]\)/\1casa::RegionType\2/g
+\%^ *//%!s/\([ <(]\)RegularFile\([ &*,)<>]\)/\1casa::RegularFile\2/g
+\%^ *//%!s/\([ <(]\)RegularFileIO\([ &*,)<>]\)/\1casa::RegularFileIO\2/g
+\%^ *//%!s/\([ <(]\)ResetCrosshairEvent\([ &*,)<>]\)/\1casa::ResetCrosshairEvent\2/g
+\%^ *//%!s/\([ <(]\)ResetRTRegionEvent\([ &*,)<>]\)/\1casa::ResetRTRegionEvent\2/g
+\%^ *//%!s/\([ <(]\)ResidualAlgorithm\([ &*,)<>]\)/\1casa::ResidualAlgorithm\2/g
+\%^ *//%!s/\([ <(]\)ResidualEquation\([ &*,)<>]\)/\1casa::ResidualEquation\2/g
+\%^ *//%!s/\([ <(]\)RetypedArrayEngine\([ &*,)<>]\)/\1casa::RetypedArrayEngine\2/g
+\%^ *//%!s/\([ <(]\)RetypedArrayEngineSetGet\([ &*,)<>]\)/\1casa::RetypedArrayEngineSetGet\2/g
+\%^ *//%!s/\([ <(]\)RigidVector\([ &*,)<>]\)/\1casa::RigidVector\2/g
+\%^ *//%!s/\([ <(]\)RotMatrix\([ &*,)<>]\)/\1casa::RotMatrix\2/g
+\%^ *//%!s/\([ <(]\)RowCopier\([ &*,)<>]\)/\1casa::RowCopier\2/g
+\%^ *//%!s/\([ <(]\)SCSL\([ &*,)<>]\)/\1casa::SCSL\2/g
+\%^ *//%!s/\([ <(]\)SDAntennaHandler\([ &*,)<>]\)/\1casa::SDAntennaHandler\2/g
+\%^ *//%!s/\([ <(]\)SDDataDescHandler\([ &*,)<>]\)/\1casa::SDDataDescHandler\2/g
+\%^ *//%!s/\([ <(]\)SDDataSampling\([ &*,)<>]\)/\1casa::SDDataSampling\2/g
+\%^ *//%!s/\([ <(]\)SDFITSDataIterator\([ &*,)<>]\)/\1casa::SDFITSDataIterator\2/g
+\%^ *//%!s/\([ <(]\)SDFITSHandler\([ &*,)<>]\)/\1casa::SDFITSHandler\2/g
+\%^ *//%!s/\([ <(]\)SDFeedHandler\([ &*,)<>]\)/\1casa::SDFeedHandler\2/g
+\%^ *//%!s/\([ <(]\)SDFieldHandler\([ &*,)<>]\)/\1casa::SDFieldHandler\2/g
+\%^ *//%!s/\([ <(]\)SDGrid\([ &*,)<>]\)/\1casa::SDGrid\2/g
+\%^ *//%!s/\([ <(]\)SDHistoryHandler\([ &*,)<>]\)/\1casa::SDHistoryHandler\2/g
+\%^ *//%!s/\([ <(]\)SDMainHandler\([ &*,)<>]\)/\1casa::SDMainHandler\2/g
+\%^ *//%!s/\([ <(]\)SDObservationHandler\([ &*,)<>]\)/\1casa::SDObservationHandler\2/g
+\%^ *//%!s/\([ <(]\)SDPointingHandler\([ &*,)<>]\)/\1casa::SDPointingHandler\2/g
+\%^ *//%!s/\([ <(]\)SDPolarizationHandler\([ &*,)<>]\)/\1casa::SDPolarizationHandler\2/g
+\%^ *//%!s/\([ <(]\)SDSourceHandler\([ &*,)<>]\)/\1casa::SDSourceHandler\2/g
+\%^ *//%!s/\([ <(]\)SDSpWindowHandler\([ &*,)<>]\)/\1casa::SDSpWindowHandler\2/g
+\%^ *//%!s/\([ <(]\)SDSysCalHandler\([ &*,)<>]\)/\1casa::SDSysCalHandler\2/g
+\%^ *//%!s/\([ <(]\)SDWeatherHandler\([ &*,)<>]\)/\1casa::SDWeatherHandler\2/g
+\%^ *//%!s/\([ <(]\)SPolynomial\([ &*,)<>]\)/\1casa::SPolynomial\2/g
+\%^ *//%!s/\([ <(]\)SPolynomialParam\([ &*,)<>]\)/\1casa::SPolynomialParam\2/g
+\%^ *//%!s/\([ <(]\)SSMBase\([ &*,)<>]\)/\1casa::SSMBase\2/g
+\%^ *//%!s/\([ <(]\)SSMColumn\([ &*,)<>]\)/\1casa::SSMColumn\2/g
+\%^ *//%!s/\([ <(]\)SSMDirColumn\([ &*,)<>]\)/\1casa::SSMDirColumn\2/g
+\%^ *//%!s/\([ <(]\)SSMIndColumn\([ &*,)<>]\)/\1casa::SSMIndColumn\2/g
+\%^ *//%!s/\([ <(]\)SSMIndStringColumn\([ &*,)<>]\)/\1casa::SSMIndStringColumn\2/g
+\%^ *//%!s/\([ <(]\)SSMIndex\([ &*,)<>]\)/\1casa::SSMIndex\2/g
+\%^ *//%!s/\([ <(]\)SSMStringHandler\([ &*,)<>]\)/\1casa::SSMStringHandler\2/g
+\%^ *//%!s/\([ <(]\)SampledFunctional\([ &*,)<>]\)/\1casa::SampledFunctional\2/g
+\%^ *//%!s/\([ <(]\)ScalarColumn\([ &*,)<>]\)/\1casa::ScalarColumn\2/g
+\%^ *//%!s/\([ <(]\)ScalarColumnData\([ &*,)<>]\)/\1casa::ScalarColumnData\2/g
+\%^ *//%!s/\([ <(]\)ScalarColumnDesc\([ &*,)<>]\)/\1casa::ScalarColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)ScalarMeasColumn\([ &*,)<>]\)/\1casa::ScalarMeasColumn\2/g
+\%^ *//%!s/\([ <(]\)ScalarParameterAccessor\([ &*,)<>]\)/\1casa::ScalarParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)ScalarQuantColumn\([ &*,)<>]\)/\1casa::ScalarQuantColumn\2/g
+\%^ *//%!s/\([ <(]\)ScalarRecordColumnData\([ &*,)<>]\)/\1casa::ScalarRecordColumnData\2/g
+\%^ *//%!s/\([ <(]\)ScalarRecordColumnDesc\([ &*,)<>]\)/\1casa::ScalarRecordColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)ScalarSampledFunctional\([ &*,)<>]\)/\1casa::ScalarSampledFunctional\2/g
+\%^ *//%!s/\([ <(]\)ScaledArrayEngine\([ &*,)<>]\)/\1casa::ScaledArrayEngine\2/g
+\%^ *//%!s/\([ <(]\)ScaledComplexData\([ &*,)<>]\)/\1casa::ScaledComplexData\2/g
+\%^ *//%!s/\([ <(]\)ScrollingRasterDD\([ &*,)<>]\)/\1casa::ScrollingRasterDD\2/g
+\%^ *//%!s/\([ <(]\)ScrollingRasterDM\([ &*,)<>]\)/\1casa::ScrollingRasterDM\2/g
+\%^ *//%!s/\([ <(]\)SepImageConvolver\([ &*,)<>]\)/\1casa::SepImageConvolver\2/g
+\%^ *//%!s/\([ <(]\)Sequence\([ &*,)<>]\)/\1casa::Sequence\2/g
+\%^ *//%!s/\([ <(]\)SerialHelper\([ &*,)<>]\)/\1casa::SerialHelper\2/g
+\%^ *//%!s/\([ <(]\)SerialTransport\([ &*,)<>]\)/\1casa::SerialTransport\2/g
+\%^ *//%!s/\([ <(]\)SetupNewTable\([ &*,)<>]\)/\1casa::SetupNewTable\2/g
+\%^ *//%!s/\([ <(]\)SetupNewTableRep\([ &*,)<>]\)/\1casa::SetupNewTableRep\2/g
+\%^ *//%!s/\([ <(]\)Shape\([ &*,)<>]\)/\1casa::Shape\2/g
+\%^ *//%!s/\([ <(]\)SimACohCalc\([ &*,)<>]\)/\1casa::SimACohCalc\2/g
+\%^ *//%!s/\([ <(]\)SimAntGainCache\([ &*,)<>]\)/\1casa::SimAntGainCache\2/g
+\%^ *//%!s/\([ <(]\)SimButterworthBandpass\([ &*,)<>]\)/\1casa::SimButterworthBandpass\2/g
+\%^ *//%!s/\([ <(]\)SimDJones\([ &*,)<>]\)/\1casa::SimDJones\2/g
+\%^ *//%!s/\([ <(]\)SimGJones\([ &*,)<>]\)/\1casa::SimGJones\2/g
+\%^ *//%!s/\([ <(]\)SimVisJones\([ &*,)<>]\)/\1casa::SimVisJones\2/g
+\%^ *//%!s/\([ <(]\)SimpComponentGridMachine\([ &*,)<>]\)/\1casa::SimpComponentGridMachine\2/g
+\%^ *//%!s/\([ <(]\)SimpleComponentFTMachine\([ &*,)<>]\)/\1casa::SimpleComponentFTMachine\2/g
+\%^ *//%!s/\([ <(]\)SimpleComponentGridMachine\([ &*,)<>]\)/\1casa::SimpleComponentGridMachine\2/g
+\%^ *//%!s/\([ <(]\)SimpleCountedConstPtr\([ &*,)<>]\)/\1casa::SimpleCountedConstPtr\2/g
+\%^ *//%!s/\([ <(]\)SimpleCountedPtr\([ &*,)<>]\)/\1casa::SimpleCountedPtr\2/g
+\%^ *//%!s/\([ <(]\)SimpleOrderedMap\([ &*,)<>]\)/\1casa::SimpleOrderedMap\2/g
+\%^ *//%!s/\([ <(]\)SimplePixelCanvasApp\([ &*,)<>]\)/\1casa::SimplePixelCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)SimpleRGBPixelCanvasApp\([ &*,)<>]\)/\1casa::SimpleRGBPixelCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)SimpleWorldCanvasApp\([ &*,)<>]\)/\1casa::SimpleWorldCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)SimpleWorldGLCanvasApp\([ &*,)<>]\)/\1casa::SimpleWorldGLCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)SincFunction\([ &*,)<>]\)/\1casa::SincFunction\2/g
+\%^ *//%!s/\([ <(]\)SincParam\([ &*,)<>]\)/\1casa::SincParam\2/g
+\%^ *//%!s/\([ <(]\)Sinc_Conv\([ &*,)<>]\)/\1casa::Sinc_Conv\2/g
+\%^ *//%!s/\([ <(]\)Sinusoid1D\([ &*,)<>]\)/\1casa::Sinusoid1D\2/g
+\%^ *//%!s/\([ <(]\)Sinusoid1DParam\([ &*,)<>]\)/\1casa::Sinusoid1DParam\2/g
+\%^ *//%!s/\([ <(]\)Sinusoid1D_PS\([ &*,)<>]\)/\1casa::Sinusoid1D_PS\2/g
+\%^ *//%!s/\([ <(]\)SkyCatOverlayDD\([ &*,)<>]\)/\1casa::SkyCatOverlayDD\2/g
+\%^ *//%!s/\([ <(]\)SkyCatOverlayDM\([ &*,)<>]\)/\1casa::SkyCatOverlayDM\2/g
+\%^ *//%!s/\([ <(]\)SkyCompBase\([ &*,)<>]\)/\1casa::SkyCompBase\2/g
+\%^ *//%!s/\([ <(]\)SkyCompRep\([ &*,)<>]\)/\1casa::SkyCompRep\2/g
+\%^ *//%!s/\([ <(]\)SkyComponent\([ &*,)<>]\)/\1casa::SkyComponent\2/g
+\%^ *//%!s/\([ <(]\)SkyComponentParameterAccessor\([ &*,)<>]\)/\1casa::SkyComponentParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)SkyEquation\([ &*,)<>]\)/\1casa::SkyEquation\2/g
+\%^ *//%!s/\([ <(]\)SkyJones\([ &*,)<>]\)/\1casa::SkyJones\2/g
+\%^ *//%!s/\([ <(]\)SkyJonesDesc\([ &*,)<>]\)/\1casa::SkyJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)SkyModel\([ &*,)<>]\)/\1casa::SkyModel\2/g
+\%^ *//%!s/\([ <(]\)Slice\([ &*,)<>]\)/\1casa::Slice\2/g
+\%^ *//%!s/\([ <(]\)SliceEH\([ &*,)<>]\)/\1casa::SliceEH\2/g
+\%^ *//%!s/\([ <(]\)SlicePanelDisplay\([ &*,)<>]\)/\1casa::SlicePanelDisplay\2/g
+\%^ *//%!s/\([ <(]\)Slicer\([ &*,)<>]\)/\1casa::Slicer\2/g
+\%^ *//%!s/\([ <(]\)SofaTest\([ &*,)<>]\)/\1casa::SofaTest\2/g
+\%^ *//%!s/\([ <(]\)SolarPos\([ &*,)<>]\)/\1casa::SolarPos\2/g
+\%^ *//%!s/\([ <(]\)SolvableMJones\([ &*,)<>]\)/\1casa::SolvableMJones\2/g
+\%^ *//%!s/\([ <(]\)SolvableMJonesDesc\([ &*,)<>]\)/\1casa::SolvableMJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)SolvableMJonesMRec\([ &*,)<>]\)/\1casa::SolvableMJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)SolvableVisJonesDesc\([ &*,)<>]\)/\1casa::SolvableVisJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)SolvableVisJonesMBuf\([ &*,)<>]\)/\1casa::SolvableVisJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)SolvableVisJonesMCol\([ &*,)<>]\)/\1casa::SolvableVisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)SolvableVisJonesMRec\([ &*,)<>]\)/\1casa::SolvableVisJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)SolvableVisJonesTable\([ &*,)<>]\)/\1casa::SolvableVisJonesTable\2/g
+\%^ *//%!s/\([ <(]\)Sort\([ &*,)<>]\)/\1casa::Sort\2/g
+\%^ *//%!s/\([ <(]\)SortError\([ &*,)<>]\)/\1casa::SortError\2/g
+\%^ *//%!s/\([ <(]\)SortInvDT\([ &*,)<>]\)/\1casa::SortInvDT\2/g
+\%^ *//%!s/\([ <(]\)SortInvIncr\([ &*,)<>]\)/\1casa::SortInvIncr\2/g
+\%^ *//%!s/\([ <(]\)SortInvOpt\([ &*,)<>]\)/\1casa::SortInvOpt\2/g
+\%^ *//%!s/\([ <(]\)SortKey\([ &*,)<>]\)/\1casa::SortKey\2/g
+\%^ *//%!s/\([ <(]\)SortNoData\([ &*,)<>]\)/\1casa::SortNoData\2/g
+\%^ *//%!s/\([ <(]\)SourceLocation\([ &*,)<>]\)/\1casa::SourceLocation\2/g
+\%^ *//%!s/\([ <(]\)SpecificFunctionFactory\([ &*,)<>]\)/\1casa::SpecificFunctionFactory\2/g
+\%^ *//%!s/\([ <(]\)SpectralCoordinate\([ &*,)<>]\)/\1casa::SpectralCoordinate\2/g
+\%^ *//%!s/\([ <(]\)SpectralElement\([ &*,)<>]\)/\1casa::SpectralElement\2/g
+\%^ *//%!s/\([ <(]\)SpectralEstimate\([ &*,)<>]\)/\1casa::SpectralEstimate\2/g
+\%^ *//%!s/\([ <(]\)SpectralFit\([ &*,)<>]\)/\1casa::SpectralFit\2/g
+\%^ *//%!s/\([ <(]\)SpectralIndex\([ &*,)<>]\)/\1casa::SpectralIndex\2/g
+\%^ *//%!s/\([ <(]\)SpectralList\([ &*,)<>]\)/\1casa::SpectralList\2/g
+\%^ *//%!s/\([ <(]\)SpectralModel\([ &*,)<>]\)/\1casa::SpectralModel\2/g
+\%^ *//%!s/\([ <(]\)Sph_Conv\([ &*,)<>]\)/\1casa::Sph_Conv\2/g
+\%^ *//%!s/\([ <(]\)SqM_global_functions\([ &*,)<>]\)/\1casa::SqM_global_functions\2/g
+\%^ *//%!s/\([ <(]\)SquareMatrix\([ &*,)<>]\)/\1casa::SquareMatrix\2/g
+\%^ *//%!s/\([ <(]\)StIndArray\([ &*,)<>]\)/\1casa::StIndArray\2/g
+\%^ *//%!s/\([ <(]\)StManAipsIO\([ &*,)<>]\)/\1casa::StManAipsIO\2/g
+\%^ *//%!s/\([ <(]\)StManArrayFile\([ &*,)<>]\)/\1casa::StManArrayFile\2/g
+\%^ *//%!s/\([ <(]\)StManColumn\([ &*,)<>]\)/\1casa::StManColumn\2/g
+\%^ *//%!s/\([ <(]\)StManColumnAipsIO\([ &*,)<>]\)/\1casa::StManColumnAipsIO\2/g
+\%^ *//%!s/\([ <(]\)StManColumnArrayAipsIO\([ &*,)<>]\)/\1casa::StManColumnArrayAipsIO\2/g
+\%^ *//%!s/\([ <(]\)StManColumnIndArrayAipsIO\([ &*,)<>]\)/\1casa::StManColumnIndArrayAipsIO\2/g
+\%^ *//%!s/\([ <(]\)Stack\([ &*,)<>]\)/\1casa::Stack\2/g
+\%^ *//%!s/\([ <(]\)StandardObjectFactory\([ &*,)<>]\)/\1casa::StandardObjectFactory\2/g
+\%^ *//%!s/\([ <(]\)StandardStMan\([ &*,)<>]\)/\1casa::StandardStMan\2/g
+\%^ *//%!s/\([ <(]\)Star\([ &*,)<>]\)/\1casa::Star\2/g
+\%^ *//%!s/\([ <(]\)StatAcc\([ &*,)<>]\)/\1casa::StatAcc\2/g
+\%^ *//%!s/\([ <(]\)StatsTiledCollapser\([ &*,)<>]\)/\1casa::StatsTiledCollapser\2/g
+\%^ *//%!s/\([ <(]\)Stokes\([ &*,)<>]\)/\1casa::Stokes\2/g
+\%^ *//%!s/\([ <(]\)StokesConverter\([ &*,)<>]\)/\1casa::StokesConverter\2/g
+\%^ *//%!s/\([ <(]\)StokesCoordinate\([ &*,)<>]\)/\1casa::StokesCoordinate\2/g
+\%^ *//%!s/\([ <(]\)StokesImageUtil\([ &*,)<>]\)/\1casa::StokesImageUtil\2/g
+\%^ *//%!s/\([ <(]\)StokesVector\([ &*,)<>]\)/\1casa::StokesVector\2/g
+\%^ *//%!s/\([ <(]\)StorageInitPolicy\([ &*,)<>]\)/\1casa::StorageInitPolicy\2/g
+\%^ *//%!s/\([ <(]\)StreamIO\([ &*,)<>]\)/\1casa::StreamIO\2/g
+\%^ *//%!s/\([ <(]\)StreamLogSink\([ &*,)<>]\)/\1casa::StreamLogSink\2/g
+\%^ *//%!s/\([ <(]\)String\([ &*,)<>]\)/\1casa::String\2/g
+\%^ *//%!s/\([ <(]\)SubImage\([ &*,)<>]\)/\1casa::SubImage\2/g
+\%^ *//%!s/\([ <(]\)SubLattice\([ &*,)<>]\)/\1casa::SubLattice\2/g
+\%^ *//%!s/\([ <(]\)SubMS\([ &*,)<>]\)/\1casa::SubMS\2/g
+\%^ *//%!s/\([ <(]\)SubString\([ &*,)<>]\)/\1casa::SubString\2/g
+\%^ *//%!s/\([ <(]\)SubTableDesc\([ &*,)<>]\)/\1casa::SubTableDesc\2/g
+\%^ *//%!s/\([ <(]\)SymLink\([ &*,)<>]\)/\1casa::SymLink\2/g
+\%^ *//%!s/\([ <(]\)SynDataSampling\([ &*,)<>]\)/\1casa::SynDataSampling\2/g
+\%^ *//%!s/\([ <(]\)SysEvent\([ &*,)<>]\)/\1casa::SysEvent\2/g
+\%^ *//%!s/\([ <(]\)SysEventSource\([ &*,)<>]\)/\1casa::SysEventSource\2/g
+\%^ *//%!s/\([ <(]\)SysEventTarget\([ &*,)<>]\)/\1casa::SysEventTarget\2/g
+\%^ *//%!s/\([ <(]\)SysEventTargetInfo\([ &*,)<>]\)/\1casa::SysEventTargetInfo\2/g
+\%^ *//%!s/\([ <(]\)TJonesDesc\([ &*,)<>]\)/\1casa::TJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)TJonesMBuf\([ &*,)<>]\)/\1casa::TJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)TJonesMCol\([ &*,)<>]\)/\1casa::TJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)TJonesMRec\([ &*,)<>]\)/\1casa::TJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)TJonesPoly\([ &*,)<>]\)/\1casa::TJonesPoly\2/g
+\%^ *//%!s/\([ <(]\)TJonesPolyDesc\([ &*,)<>]\)/\1casa::TJonesPolyDesc\2/g
+\%^ *//%!s/\([ <(]\)TJonesPolyMBuf\([ &*,)<>]\)/\1casa::TJonesPolyMBuf\2/g
+\%^ *//%!s/\([ <(]\)TJonesPolyMCol\([ &*,)<>]\)/\1casa::TJonesPolyMCol\2/g
+\%^ *//%!s/\([ <(]\)TJonesPolyTable\([ &*,)<>]\)/\1casa::TJonesPolyTable\2/g
+\%^ *//%!s/\([ <(]\)TJonesSpline\([ &*,)<>]\)/\1casa::TJonesSpline\2/g
+\%^ *//%!s/\([ <(]\)TJonesSplineDesc\([ &*,)<>]\)/\1casa::TJonesSplineDesc\2/g
+\%^ *//%!s/\([ <(]\)TJonesSplineMBuf\([ &*,)<>]\)/\1casa::TJonesSplineMBuf\2/g
+\%^ *//%!s/\([ <(]\)TJonesSplineMCol\([ &*,)<>]\)/\1casa::TJonesSplineMCol\2/g
+\%^ *//%!s/\([ <(]\)TJonesSplineTable\([ &*,)<>]\)/\1casa::TJonesSplineTable\2/g
+\%^ *//%!s/\([ <(]\)TJonesTable\([ &*,)<>]\)/\1casa::TJonesTable\2/g
+\%^ *//%!s/\([ <(]\)TSMColumn\([ &*,)<>]\)/\1casa::TSMColumn\2/g
+\%^ *//%!s/\([ <(]\)TSMCoordColumn\([ &*,)<>]\)/\1casa::TSMCoordColumn\2/g
+\%^ *//%!s/\([ <(]\)TSMCube\([ &*,)<>]\)/\1casa::TSMCube\2/g
+\%^ *//%!s/\([ <(]\)TSMDataColumn\([ &*,)<>]\)/\1casa::TSMDataColumn\2/g
+\%^ *//%!s/\([ <(]\)TSMError\([ &*,)<>]\)/\1casa::TSMError\2/g
+\%^ *//%!s/\([ <(]\)TSMFile\([ &*,)<>]\)/\1casa::TSMFile\2/g
+\%^ *//%!s/\([ <(]\)TSMIdColumn\([ &*,)<>]\)/\1casa::TSMIdColumn\2/g
+\%^ *//%!s/\([ <(]\)TSMShape\([ &*,)<>]\)/\1casa::TSMShape\2/g
+\%^ *//%!s/\([ <(]\)TaQLResult\([ &*,)<>]\)/\1casa::TaQLResult\2/g
+\%^ *//%!s/\([ <(]\)TabPath\([ &*,)<>]\)/\1casa::TabPath\2/g
+\%^ *//%!s/\([ <(]\)TabVecRep\([ &*,)<>]\)/\1casa::TabVecRep\2/g
+\%^ *//%!s/\([ <(]\)TabVecScaCol\([ &*,)<>]\)/\1casa::TabVecScaCol\2/g
+\%^ *//%!s/\([ <(]\)TabVecTemp\([ &*,)<>]\)/\1casa::TabVecTemp\2/g
+\%^ *//%!s/\([ <(]\)Table\([ &*,)<>]\)/\1casa::Table\2/g
+\%^ *//%!s/\([ <(]\)TableArrayConformanceError\([ &*,)<>]\)/\1casa::TableArrayConformanceError\2/g
+\%^ *//%!s/\([ <(]\)TableAttr\([ &*,)<>]\)/\1casa::TableAttr\2/g
+\%^ *//%!s/\([ <(]\)TableCache\([ &*,)<>]\)/\1casa::TableCache\2/g
+\%^ *//%!s/\([ <(]\)TableColumn\([ &*,)<>]\)/\1casa::TableColumn\2/g
+\%^ *//%!s/\([ <(]\)TableConformanceError\([ &*,)<>]\)/\1casa::TableConformanceError\2/g
+\%^ *//%!s/\([ <(]\)TableCopy\([ &*,)<>]\)/\1casa::TableCopy\2/g
+\%^ *//%!s/\([ <(]\)TableDesc\([ &*,)<>]\)/\1casa::TableDesc\2/g
+\%^ *//%!s/\([ <(]\)TableDescNoName\([ &*,)<>]\)/\1casa::TableDescNoName\2/g
+\%^ *//%!s/\([ <(]\)TableDuplFile\([ &*,)<>]\)/\1casa::TableDuplFile\2/g
+\%^ *//%!s/\([ <(]\)TableError\([ &*,)<>]\)/\1casa::TableError\2/g
+\%^ *//%!s/\([ <(]\)TableExprData\([ &*,)<>]\)/\1casa::TableExprData\2/g
+\%^ *//%!s/\([ <(]\)TableExprFuncNode\([ &*,)<>]\)/\1casa::TableExprFuncNode\2/g
+\%^ *//%!s/\([ <(]\)TableExprFuncNodeArray\([ &*,)<>]\)/\1casa::TableExprFuncNodeArray\2/g
+\%^ *//%!s/\([ <(]\)TableExprId\([ &*,)<>]\)/\1casa::TableExprId\2/g
+\%^ *//%!s/\([ <(]\)TableExprNode\([ &*,)<>]\)/\1casa::TableExprNode\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeAND\([ &*,)<>]\)/\1casa::TableExprNodeAND\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArray\([ &*,)<>]\)/\1casa::TableExprNodeArray\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayAND\([ &*,)<>]\)/\1casa::TableExprNodeArrayAND\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumn\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumn\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnBool\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnFloat\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnFloat\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnInt\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnInt\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnShort\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnShort\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnString\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuChar\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnuChar\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuInt\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnuInt\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayColumnuShort\([ &*,)<>]\)/\1casa::TableExprNodeArrayColumnuShort\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstBool\([ &*,)<>]\)/\1casa::TableExprNodeArrayConstBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayConstDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayConstDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayConstDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayConstString\([ &*,)<>]\)/\1casa::TableExprNodeArrayConstString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayDivideDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayDivideDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayDivideDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayDivideDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQBool\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQRegex\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQRegex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayEQString\([ &*,)<>]\)/\1casa::TableExprNodeArrayEQString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayGEDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayGEDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayGEDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGEString\([ &*,)<>]\)/\1casa::TableExprNodeArrayGEString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayGTDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayGTDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayGTDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayGTString\([ &*,)<>]\)/\1casa::TableExprNodeArrayGTString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayINDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayINDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayINDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayINDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayINString\([ &*,)<>]\)/\1casa::TableExprNodeArrayINString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayMIN\([ &*,)<>]\)/\1casa::TableExprNodeArrayMIN\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayMinusDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayMinusDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayMinusDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayMinusDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayModuloDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayModuloDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEBool\([ &*,)<>]\)/\1casa::TableExprNodeArrayNEBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayNEDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDate\([ &*,)<>]\)/\1casa::TableExprNodeArrayNEDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayNEDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNERegex\([ &*,)<>]\)/\1casa::TableExprNodeArrayNERegex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNEString\([ &*,)<>]\)/\1casa::TableExprNodeArrayNEString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayNOT\([ &*,)<>]\)/\1casa::TableExprNodeArrayNOT\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayOR\([ &*,)<>]\)/\1casa::TableExprNodeArrayOR\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayPart\([ &*,)<>]\)/\1casa::TableExprNodeArrayPart\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayPlusDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayPlusDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayPlusString\([ &*,)<>]\)/\1casa::TableExprNodeArrayPlusString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayTimesDComplex\([ &*,)<>]\)/\1casa::TableExprNodeArrayTimesDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeArrayTimesDouble\([ &*,)<>]\)/\1casa::TableExprNodeArrayTimesDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeBinary\([ &*,)<>]\)/\1casa::TableExprNodeBinary\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeColumn\([ &*,)<>]\)/\1casa::TableExprNodeColumn\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstBool\([ &*,)<>]\)/\1casa::TableExprNodeConstBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstDComplex\([ &*,)<>]\)/\1casa::TableExprNodeConstDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstDate\([ &*,)<>]\)/\1casa::TableExprNodeConstDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstDouble\([ &*,)<>]\)/\1casa::TableExprNodeConstDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstRegex\([ &*,)<>]\)/\1casa::TableExprNodeConstRegex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeConstString\([ &*,)<>]\)/\1casa::TableExprNodeConstString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeDivideDComplex\([ &*,)<>]\)/\1casa::TableExprNodeDivideDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeDivideDouble\([ &*,)<>]\)/\1casa::TableExprNodeDivideDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQBool\([ &*,)<>]\)/\1casa::TableExprNodeEQBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQDComplex\([ &*,)<>]\)/\1casa::TableExprNodeEQDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQDate\([ &*,)<>]\)/\1casa::TableExprNodeEQDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQDouble\([ &*,)<>]\)/\1casa::TableExprNodeEQDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQRegex\([ &*,)<>]\)/\1casa::TableExprNodeEQRegex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeEQString\([ &*,)<>]\)/\1casa::TableExprNodeEQString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGEDComplex\([ &*,)<>]\)/\1casa::TableExprNodeGEDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGEDate\([ &*,)<>]\)/\1casa::TableExprNodeGEDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGEDouble\([ &*,)<>]\)/\1casa::TableExprNodeGEDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGEString\([ &*,)<>]\)/\1casa::TableExprNodeGEString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGTDComplex\([ &*,)<>]\)/\1casa::TableExprNodeGTDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGTDate\([ &*,)<>]\)/\1casa::TableExprNodeGTDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGTDouble\([ &*,)<>]\)/\1casa::TableExprNodeGTDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeGTString\([ &*,)<>]\)/\1casa::TableExprNodeGTString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeINDComplex\([ &*,)<>]\)/\1casa::TableExprNodeINDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeINDate\([ &*,)<>]\)/\1casa::TableExprNodeINDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeINDouble\([ &*,)<>]\)/\1casa::TableExprNodeINDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeINString\([ &*,)<>]\)/\1casa::TableExprNodeINString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeIndex\([ &*,)<>]\)/\1casa::TableExprNodeIndex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeMIN\([ &*,)<>]\)/\1casa::TableExprNodeMIN\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeMinusDComplex\([ &*,)<>]\)/\1casa::TableExprNodeMinusDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeMinusDate\([ &*,)<>]\)/\1casa::TableExprNodeMinusDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeMinusDouble\([ &*,)<>]\)/\1casa::TableExprNodeMinusDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeModuloDouble\([ &*,)<>]\)/\1casa::TableExprNodeModuloDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeMulti\([ &*,)<>]\)/\1casa::TableExprNodeMulti\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNEBool\([ &*,)<>]\)/\1casa::TableExprNodeNEBool\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNEDComplex\([ &*,)<>]\)/\1casa::TableExprNodeNEDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNEDate\([ &*,)<>]\)/\1casa::TableExprNodeNEDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNEDouble\([ &*,)<>]\)/\1casa::TableExprNodeNEDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNERegex\([ &*,)<>]\)/\1casa::TableExprNodeNERegex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNEString\([ &*,)<>]\)/\1casa::TableExprNodeNEString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeNOT\([ &*,)<>]\)/\1casa::TableExprNodeNOT\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeOR\([ &*,)<>]\)/\1casa::TableExprNodeOR\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodePlusDComplex\([ &*,)<>]\)/\1casa::TableExprNodePlusDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodePlusDate\([ &*,)<>]\)/\1casa::TableExprNodePlusDate\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodePlusDouble\([ &*,)<>]\)/\1casa::TableExprNodePlusDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodePlusString\([ &*,)<>]\)/\1casa::TableExprNodePlusString\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRandom\([ &*,)<>]\)/\1casa::TableExprNodeRandom\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRecordField\([ &*,)<>]\)/\1casa::TableExprNodeRecordField\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRecordFieldArray\([ &*,)<>]\)/\1casa::TableExprNodeRecordFieldArray\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRep\([ &*,)<>]\)/\1casa::TableExprNodeRep\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRowid\([ &*,)<>]\)/\1casa::TableExprNodeRowid\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeRownr\([ &*,)<>]\)/\1casa::TableExprNodeRownr\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeSet\([ &*,)<>]\)/\1casa::TableExprNodeSet\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeSetElem\([ &*,)<>]\)/\1casa::TableExprNodeSetElem\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeTimesDComplex\([ &*,)<>]\)/\1casa::TableExprNodeTimesDComplex\2/g
+\%^ *//%!s/\([ <(]\)TableExprNodeTimesDouble\([ &*,)<>]\)/\1casa::TableExprNodeTimesDouble\2/g
+\%^ *//%!s/\([ <(]\)TableExprRange\([ &*,)<>]\)/\1casa::TableExprRange\2/g
+\%^ *//%!s/\([ <(]\)TableGramFunctions\([ &*,)<>]\)/\1casa::TableGramFunctions\2/g
+\%^ *//%!s/\([ <(]\)TableInfo\([ &*,)<>]\)/\1casa::TableInfo\2/g
+\%^ *//%!s/\([ <(]\)TableInternalError\([ &*,)<>]\)/\1casa::TableInternalError\2/g
+\%^ *//%!s/\([ <(]\)TableInvColumnDesc\([ &*,)<>]\)/\1casa::TableInvColumnDesc\2/g
+\%^ *//%!s/\([ <(]\)TableInvDT\([ &*,)<>]\)/\1casa::TableInvDT\2/g
+\%^ *//%!s/\([ <(]\)TableInvExpr\([ &*,)<>]\)/\1casa::TableInvExpr\2/g
+\%^ *//%!s/\([ <(]\)TableInvHyperDesc\([ &*,)<>]\)/\1casa::TableInvHyperDesc\2/g
+\%^ *//%!s/\([ <(]\)TableInvLogic\([ &*,)<>]\)/\1casa::TableInvLogic\2/g
+\%^ *//%!s/\([ <(]\)TableInvOper\([ &*,)<>]\)/\1casa::TableInvOper\2/g
+\%^ *//%!s/\([ <(]\)TableInvOpt\([ &*,)<>]\)/\1casa::TableInvOpt\2/g
+\%^ *//%!s/\([ <(]\)TableInvSort\([ &*,)<>]\)/\1casa::TableInvSort\2/g
+\%^ *//%!s/\([ <(]\)TableInvType\([ &*,)<>]\)/\1casa::TableInvType\2/g
+\%^ *//%!s/\([ <(]\)TableIterator\([ &*,)<>]\)/\1casa::TableIterator\2/g
+\%^ *//%!s/\([ <(]\)TableKeyword\([ &*,)<>]\)/\1casa::TableKeyword\2/g
+\%^ *//%!s/\([ <(]\)TableLock\([ &*,)<>]\)/\1casa::TableLock\2/g
+\%^ *//%!s/\([ <(]\)TableLockData\([ &*,)<>]\)/\1casa::TableLockData\2/g
+\%^ *//%!s/\([ <(]\)TableLocker\([ &*,)<>]\)/\1casa::TableLocker\2/g
+\%^ *//%!s/\([ <(]\)TableLogSink\([ &*,)<>]\)/\1casa::TableLogSink\2/g
+\%^ *//%!s/\([ <(]\)TableMeasDesc\([ &*,)<>]\)/\1casa::TableMeasDesc\2/g
+\%^ *//%!s/\([ <(]\)TableMeasDescBase\([ &*,)<>]\)/\1casa::TableMeasDescBase\2/g
+\%^ *//%!s/\([ <(]\)TableMeasOffsetDesc\([ &*,)<>]\)/\1casa::TableMeasOffsetDesc\2/g
+\%^ *//%!s/\([ <(]\)TableMeasRefDesc\([ &*,)<>]\)/\1casa::TableMeasRefDesc\2/g
+\%^ *//%!s/\([ <(]\)TableMeasType\([ &*,)<>]\)/\1casa::TableMeasType\2/g
+\%^ *//%!s/\([ <(]\)TableMeasValueDesc\([ &*,)<>]\)/\1casa::TableMeasValueDesc\2/g
+\%^ *//%!s/\([ <(]\)TableNoFile\([ &*,)<>]\)/\1casa::TableNoFile\2/g
+\%^ *//%!s/\([ <(]\)TableParameterAccessor\([ &*,)<>]\)/\1casa::TableParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)TableParse\([ &*,)<>]\)/\1casa::TableParse\2/g
+\%^ *//%!s/\([ <(]\)TableParseError\([ &*,)<>]\)/\1casa::TableParseError\2/g
+\%^ *//%!s/\([ <(]\)TableParseSelect\([ &*,)<>]\)/\1casa::TableParseSelect\2/g
+\%^ *//%!s/\([ <(]\)TableParseSort\([ &*,)<>]\)/\1casa::TableParseSort\2/g
+\%^ *//%!s/\([ <(]\)TableParseUpdate\([ &*,)<>]\)/\1casa::TableParseUpdate\2/g
+\%^ *//%!s/\([ <(]\)TableParseVal\([ &*,)<>]\)/\1casa::TableParseVal\2/g
+\%^ *//%!s/\([ <(]\)TableQuantumDesc\([ &*,)<>]\)/\1casa::TableQuantumDesc\2/g
+\%^ *//%!s/\([ <(]\)TableRecord\([ &*,)<>]\)/\1casa::TableRecord\2/g
+\%^ *//%!s/\([ <(]\)TableRecordRep\([ &*,)<>]\)/\1casa::TableRecordRep\2/g
+\%^ *//%!s/\([ <(]\)TableRow\([ &*,)<>]\)/\1casa::TableRow\2/g
+\%^ *//%!s/\([ <(]\)TableSyncData\([ &*,)<>]\)/\1casa::TableSyncData\2/g
+\%^ *//%!s/\([ <(]\)TableUnknownDesc\([ &*,)<>]\)/\1casa::TableUnknownDesc\2/g
+\%^ *//%!s/\([ <(]\)TableVector\([ &*,)<>]\)/\1casa::TableVector\2/g
+\%^ *//%!s/\([ <(]\)TableVectorNonConform\([ &*,)<>]\)/\1casa::TableVectorNonConform\2/g
+\%^ *//%!s/\([ <(]\)TabularCoordinate\([ &*,)<>]\)/\1casa::TabularCoordinate\2/g
+\%^ *//%!s/\([ <(]\)TapeIO\([ &*,)<>]\)/\1casa::TapeIO\2/g
+\%^ *//%!s/\([ <(]\)TblAsContourDD\([ &*,)<>]\)/\1casa::TblAsContourDD\2/g
+\%^ *//%!s/\([ <(]\)TblAsContourDM\([ &*,)<>]\)/\1casa::TblAsContourDM\2/g
+\%^ *//%!s/\([ <(]\)TblAsRasterDD\([ &*,)<>]\)/\1casa::TblAsRasterDD\2/g
+\%^ *//%!s/\([ <(]\)TblAsRasterDM\([ &*,)<>]\)/\1casa::TblAsRasterDM\2/g
+\%^ *//%!s/\([ <(]\)TblAsXYDD\([ &*,)<>]\)/\1casa::TblAsXYDD\2/g
+\%^ *//%!s/\([ <(]\)TblAsXYDM\([ &*,)<>]\)/\1casa::TblAsXYDM\2/g
+\%^ *//%!s/\([ <(]\)TempImage\([ &*,)<>]\)/\1casa::TempImage\2/g
+\%^ *//%!s/\([ <(]\)TempLattice\([ &*,)<>]\)/\1casa::TempLattice\2/g
+\%^ *//%!s/\([ <(]\)TemperatureType\([ &*,)<>]\)/\1casa::TemperatureType\2/g
+\%^ *//%!s/\([ <(]\)Template\([ &*,)<>]\)/\1casa::Template\2/g
+\%^ *//%!s/\([ <(]\)ThrowBlockError\([ &*,)<>]\)/\1casa::ThrowBlockError\2/g
+\%^ *//%!s/\([ <(]\)TileStepper\([ &*,)<>]\)/\1casa::TileStepper\2/g
+\%^ *//%!s/\([ <(]\)TiledCellStMan\([ &*,)<>]\)/\1casa::TiledCellStMan\2/g
+\%^ *//%!s/\([ <(]\)TiledCollapser\([ &*,)<>]\)/\1casa::TiledCollapser\2/g
+\%^ *//%!s/\([ <(]\)TiledColumnStMan\([ &*,)<>]\)/\1casa::TiledColumnStMan\2/g
+\%^ *//%!s/\([ <(]\)TiledDataStMan\([ &*,)<>]\)/\1casa::TiledDataStMan\2/g
+\%^ *//%!s/\([ <(]\)TiledDataStManAccessor\([ &*,)<>]\)/\1casa::TiledDataStManAccessor\2/g
+\%^ *//%!s/\([ <(]\)TiledFileAccess\([ &*,)<>]\)/\1casa::TiledFileAccess\2/g
+\%^ *//%!s/\([ <(]\)TiledFileHelper\([ &*,)<>]\)/\1casa::TiledFileHelper\2/g
+\%^ *//%!s/\([ <(]\)TiledLineStepper\([ &*,)<>]\)/\1casa::TiledLineStepper\2/g
+\%^ *//%!s/\([ <(]\)TiledShape\([ &*,)<>]\)/\1casa::TiledShape\2/g
+\%^ *//%!s/\([ <(]\)TiledShapeStMan\([ &*,)<>]\)/\1casa::TiledShapeStMan\2/g
+\%^ *//%!s/\([ <(]\)TiledStMan\([ &*,)<>]\)/\1casa::TiledStMan\2/g
+\%^ *//%!s/\([ <(]\)Time\([ &*,)<>]\)/\1casa::Time\2/g
+\%^ *//%!s/\([ <(]\)TimeVarMJones\([ &*,)<>]\)/\1casa::TimeVarMJones\2/g
+\%^ *//%!s/\([ <(]\)TimeVarMJonesDesc\([ &*,)<>]\)/\1casa::TimeVarMJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)TimeVarMJonesMRec\([ &*,)<>]\)/\1casa::TimeVarMJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJones\([ &*,)<>]\)/\1casa::TimeVarVisJones\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJonesDesc\([ &*,)<>]\)/\1casa::TimeVarVisJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJonesMBuf\([ &*,)<>]\)/\1casa::TimeVarVisJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJonesMCol\([ &*,)<>]\)/\1casa::TimeVarVisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJonesMRec\([ &*,)<>]\)/\1casa::TimeVarVisJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)TimeVarVisJonesTable\([ &*,)<>]\)/\1casa::TimeVarVisJonesTable\2/g
+\%^ *//%!s/\([ <(]\)Timer\([ &*,)<>]\)/\1casa::Timer\2/g
+\%^ *//%!s/\([ <(]\)TwoSidedShape\([ &*,)<>]\)/\1casa::TwoSidedShape\2/g
+\%^ *//%!s/\([ <(]\)TypeIO\([ &*,)<>]\)/\1casa::TypeIO\2/g
+\%^ *//%!s/\([ <(]\)UVWMachine\([ &*,)<>]\)/\1casa::UVWMachine\2/g
+\%^ *//%!s/\([ <(]\)Unary\([ &*,)<>]\)/\1casa::Unary\2/g
+\%^ *//%!s/\([ <(]\)UnaryFunction\([ &*,)<>]\)/\1casa::UnaryFunction\2/g
+\%^ *//%!s/\([ <(]\)UnaryParam\([ &*,)<>]\)/\1casa::UnaryParam\2/g
+\%^ *//%!s/\([ <(]\)UnequalShapeCopier\([ &*,)<>]\)/\1casa::UnequalShapeCopier\2/g
+\%^ *//%!s/\([ <(]\)Uniform\([ &*,)<>]\)/\1casa::Uniform\2/g
+\%^ *//%!s/\([ <(]\)Unit\([ &*,)<>]\)/\1casa::Unit\2/g
+\%^ *//%!s/\([ <(]\)UnitDim\([ &*,)<>]\)/\1casa::UnitDim\2/g
+\%^ *//%!s/\([ <(]\)UnitMap\([ &*,)<>]\)/\1casa::UnitMap\2/g
+\%^ *//%!s/\([ <(]\)UnitName\([ &*,)<>]\)/\1casa::UnitName\2/g
+\%^ *//%!s/\([ <(]\)UnitVal\([ &*,)<>]\)/\1casa::UnitVal\2/g
+\%^ *//%!s/\([ <(]\)UnitVal_static_initializer\([ &*,)<>]\)/\1casa::UnitVal_static_initializer\2/g
+\%^ *//%!s/\([ <(]\)UnrecognizedFunctionError\([ &*,)<>]\)/\1casa::UnrecognizedFunctionError\2/g
+\%^ *//%!s/\([ <(]\)Unset\([ &*,)<>]\)/\1casa::Unset\2/g
+\%^ *//%!s/\([ <(]\)VAXConversion\([ &*,)<>]\)/\1casa::VAXConversion\2/g
+\%^ *//%!s/\([ <(]\)VAXDataConversion\([ &*,)<>]\)/\1casa::VAXDataConversion\2/g
+\%^ *//%!s/\([ <(]\)VColorTableEntry\([ &*,)<>]\)/\1casa::VColorTableEntry\2/g
+\%^ *//%!s/\([ <(]\)VPSkyJones\([ &*,)<>]\)/\1casa::VPSkyJones\2/g
+\%^ *//%!s/\([ <(]\)VSCEngine\([ &*,)<>]\)/\1casa::VSCEngine\2/g
+\%^ *//%!s/\([ <(]\)ValType\([ &*,)<>]\)/\1casa::ValType\2/g
+\%^ *//%!s/\([ <(]\)VanVleck\([ &*,)<>]\)/\1casa::VanVleck\2/g
+\%^ *//%!s/\([ <(]\)Vector\([ &*,)<>]\)/\1casa::Vector\2/g
+\%^ *//%!s/\([ <(]\)VectorIterator\([ &*,)<>]\)/\1casa::VectorIterator\2/g
+\%^ *//%!s/\([ <(]\)VectorKernel\([ &*,)<>]\)/\1casa::VectorKernel\2/g
+\%^ *//%!s/\([ <(]\)VectorParameterAccessor\([ &*,)<>]\)/\1casa::VectorParameterAccessor\2/g
+\%^ *//%!s/\([ <(]\)VectorSTLIterator\([ &*,)<>]\)/\1casa::VectorSTLIterator\2/g
+\%^ *//%!s/\([ <(]\)VelocityMachine\([ &*,)<>]\)/\1casa::VelocityMachine\2/g
+\%^ *//%!s/\([ <(]\)VirtualArrayColumn\([ &*,)<>]\)/\1casa::VirtualArrayColumn\2/g
+\%^ *//%!s/\([ <(]\)VirtualColumnEngine\([ &*,)<>]\)/\1casa::VirtualColumnEngine\2/g
+\%^ *//%!s/\([ <(]\)VirtualScalarColumn\([ &*,)<>]\)/\1casa::VirtualScalarColumn\2/g
+\%^ *//%!s/\([ <(]\)VisBuffer\([ &*,)<>]\)/\1casa::VisBuffer\2/g
+\%^ *//%!s/\([ <(]\)VisEquation\([ &*,)<>]\)/\1casa::VisEquation\2/g
+\%^ *//%!s/\([ <(]\)VisJonesDesc\([ &*,)<>]\)/\1casa::VisJonesDesc\2/g
+\%^ *//%!s/\([ <(]\)VisJonesMBuf\([ &*,)<>]\)/\1casa::VisJonesMBuf\2/g
+\%^ *//%!s/\([ <(]\)VisJonesMCol\([ &*,)<>]\)/\1casa::VisJonesMCol\2/g
+\%^ *//%!s/\([ <(]\)VisJonesMRec\([ &*,)<>]\)/\1casa::VisJonesMRec\2/g
+\%^ *//%!s/\([ <(]\)VisJonesTable\([ &*,)<>]\)/\1casa::VisJonesTable\2/g
+\%^ *//%!s/\([ <(]\)VisSet\([ &*,)<>]\)/\1casa::VisSet\2/g
+\%^ *//%!s/\([ <(]\)VisSetUtil\([ &*,)<>]\)/\1casa::VisSetUtil\2/g
+\%^ *//%!s/\([ <(]\)VisTimeAverager\([ &*,)<>]\)/\1casa::VisTimeAverager\2/g
+\%^ *//%!s/\([ <(]\)VisibilityIterator\([ &*,)<>]\)/\1casa::VisibilityIterator\2/g
+\%^ *//%!s/\([ <(]\)WCBox\([ &*,)<>]\)/\1casa::WCBox\2/g
+\%^ *//%!s/\([ <(]\)WCComplement\([ &*,)<>]\)/\1casa::WCComplement\2/g
+\%^ *//%!s/\([ <(]\)WCCompound\([ &*,)<>]\)/\1casa::WCCompound\2/g
+\%^ *//%!s/\([ <(]\)WCConcatenation\([ &*,)<>]\)/\1casa::WCConcatenation\2/g
+\%^ *//%!s/\([ <(]\)WCCrosshairTool\([ &*,)<>]\)/\1casa::WCCrosshairTool\2/g
+\%^ *//%!s/\([ <(]\)WCDifference\([ &*,)<>]\)/\1casa::WCDifference\2/g
+\%^ *//%!s/\([ <(]\)WCExtension\([ &*,)<>]\)/\1casa::WCExtension\2/g
+\%^ *//%!s/\([ <(]\)WCIntersection\([ &*,)<>]\)/\1casa::WCIntersection\2/g
+\%^ *//%!s/\([ <(]\)WCInvisTool\([ &*,)<>]\)/\1casa::WCInvisTool\2/g
+\%^ *//%!s/\([ <(]\)WCLELMask\([ &*,)<>]\)/\1casa::WCLELMask\2/g
+\%^ *//%!s/\([ <(]\)WCMotionEH\([ &*,)<>]\)/\1casa::WCMotionEH\2/g
+\%^ *//%!s/\([ <(]\)WCMotionEvent\([ &*,)<>]\)/\1casa::WCMotionEvent\2/g
+\%^ *//%!s/\([ <(]\)WCPGFilter\([ &*,)<>]\)/\1casa::WCPGFilter\2/g
+\%^ *//%!s/\([ <(]\)WCPTRegion\([ &*,)<>]\)/\1casa::WCPTRegion\2/g
+\%^ *//%!s/\([ <(]\)WCPolyTool\([ &*,)<>]\)/\1casa::WCPolyTool\2/g
+\%^ *//%!s/\([ <(]\)WCPolygon\([ &*,)<>]\)/\1casa::WCPolygon\2/g
+\%^ *//%!s/\([ <(]\)WCPositionEH\([ &*,)<>]\)/\1casa::WCPositionEH\2/g
+\%^ *//%!s/\([ <(]\)WCPositionEvent\([ &*,)<>]\)/\1casa::WCPositionEvent\2/g
+\%^ *//%!s/\([ <(]\)WCRTRegion\([ &*,)<>]\)/\1casa::WCRTRegion\2/g
+\%^ *//%!s/\([ <(]\)WCRTZoomer\([ &*,)<>]\)/\1casa::WCRTZoomer\2/g
+\%^ *//%!s/\([ <(]\)WCRectTool\([ &*,)<>]\)/\1casa::WCRectTool\2/g
+\%^ *//%!s/\([ <(]\)WCRefreshEH\([ &*,)<>]\)/\1casa::WCRefreshEH\2/g
+\%^ *//%!s/\([ <(]\)WCRefreshEvent\([ &*,)<>]\)/\1casa::WCRefreshEvent\2/g
+\%^ *//%!s/\([ <(]\)WCRegion\([ &*,)<>]\)/\1casa::WCRegion\2/g
+\%^ *//%!s/\([ <(]\)WCTool\([ &*,)<>]\)/\1casa::WCTool\2/g
+\%^ *//%!s/\([ <(]\)WCToolMotEH\([ &*,)<>]\)/\1casa::WCToolMotEH\2/g
+\%^ *//%!s/\([ <(]\)WCToolPosEH\([ &*,)<>]\)/\1casa::WCToolPosEH\2/g
+\%^ *//%!s/\([ <(]\)WCToolRefEH\([ &*,)<>]\)/\1casa::WCToolRefEH\2/g
+\%^ *//%!s/\([ <(]\)WCUnion\([ &*,)<>]\)/\1casa::WCUnion\2/g
+\%^ *//%!s/\([ <(]\)WFCleanImageSkyModel\([ &*,)<>]\)/\1casa::WFCleanImageSkyModel\2/g
+\%^ *//%!s/\([ <(]\)WFGridFT\([ &*,)<>]\)/\1casa::WFGridFT\2/g
+\%^ *//%!s/\([ <(]\)WFSkyEquation\([ &*,)<>]\)/\1casa::WFSkyEquation\2/g
+\%^ *//%!s/\([ <(]\)WProjectFT\([ &*,)<>]\)/\1casa::WProjectFT\2/g
+\%^ *//%!s/\([ <(]\)WaterVaporFit\([ &*,)<>]\)/\1casa::WaterVaporFit\2/g
+\%^ *//%!s/\([ <(]\)WedgeDD\([ &*,)<>]\)/\1casa::WedgeDD\2/g
+\%^ *//%!s/\([ <(]\)WedgeDM\([ &*,)<>]\)/\1casa::WedgeDM\2/g
+\%^ *//%!s/\([ <(]\)Weibull\([ &*,)<>]\)/\1casa::Weibull\2/g
+\%^ *//%!s/\([ <(]\)WorldAxesDD\([ &*,)<>]\)/\1casa::WorldAxesDD\2/g
+\%^ *//%!s/\([ <(]\)WorldAxesDM\([ &*,)<>]\)/\1casa::WorldAxesDM\2/g
+\%^ *//%!s/\([ <(]\)WorldCanvas\([ &*,)<>]\)/\1casa::WorldCanvas\2/g
+\%^ *//%!s/\([ <(]\)WorldCanvasEvent\([ &*,)<>]\)/\1casa::WorldCanvasEvent\2/g
+\%^ *//%!s/\([ <(]\)WorldCanvasHolder\([ &*,)<>]\)/\1casa::WorldCanvasHolder\2/g
+\%^ *//%!s/\([ <(]\)WrapperBase\([ &*,)<>]\)/\1casa::WrapperBase\2/g
+\%^ *//%!s/\([ <(]\)WrapperData\([ &*,)<>]\)/\1casa::WrapperData\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_FF\([ &*,)<>]\)/\1casa::WrapperData_FF\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_FT\([ &*,)<>]\)/\1casa::WrapperData_FT\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_FV\([ &*,)<>]\)/\1casa::WrapperData_FV\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_TF\([ &*,)<>]\)/\1casa::WrapperData_TF\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_TT\([ &*,)<>]\)/\1casa::WrapperData_TT\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_TV\([ &*,)<>]\)/\1casa::WrapperData_TV\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_VF\([ &*,)<>]\)/\1casa::WrapperData_VF\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_VT\([ &*,)<>]\)/\1casa::WrapperData_VT\2/g
+\%^ *//%!s/\([ <(]\)WrapperData_VV\([ &*,)<>]\)/\1casa::WrapperData_VV\2/g
+\%^ *//%!s/\([ <(]\)WrapperParam\([ &*,)<>]\)/\1casa::WrapperParam\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLClear\([ &*,)<>]\)/\1casa::X11PCDLClear\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLClearRegion\([ &*,)<>]\)/\1casa::X11PCDLClearRegion\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLColoredLines\([ &*,)<>]\)/\1casa::X11PCDLColoredLines\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLColoredPoints\([ &*,)<>]\)/\1casa::X11PCDLColoredPoints\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLDisable\([ &*,)<>]\)/\1casa::X11PCDLDisable\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLDisplayList\([ &*,)<>]\)/\1casa::X11PCDLDisplayList\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLEnable\([ &*,)<>]\)/\1casa::X11PCDLEnable\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLFilledPolygon\([ &*,)<>]\)/\1casa::X11PCDLFilledPolygon\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLFilledRectangle\([ &*,)<>]\)/\1casa::X11PCDLFilledRectangle\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLGraphicsContext\([ &*,)<>]\)/\1casa::X11PCDLGraphicsContext\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLImage\([ &*,)<>]\)/\1casa::X11PCDLImage\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLImageComponent\([ &*,)<>]\)/\1casa::X11PCDLImageComponent\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLLine\([ &*,)<>]\)/\1casa::X11PCDLLine\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLLines\([ &*,)<>]\)/\1casa::X11PCDLLines\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLLoadIdentity\([ &*,)<>]\)/\1casa::X11PCDLLoadIdentity\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLMaskedImage\([ &*,)<>]\)/\1casa::X11PCDLMaskedImage\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLMaskedPixmap\([ &*,)<>]\)/\1casa::X11PCDLMaskedPixmap\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPixmap\([ &*,)<>]\)/\1casa::X11PCDLPixmap\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPoint\([ &*,)<>]\)/\1casa::X11PCDLPoint\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPoints\([ &*,)<>]\)/\1casa::X11PCDLPoints\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPolyline\([ &*,)<>]\)/\1casa::X11PCDLPolyline\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPopMatrix\([ &*,)<>]\)/\1casa::X11PCDLPopMatrix\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLPushMatrix\([ &*,)<>]\)/\1casa::X11PCDLPushMatrix\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLSetClearColor\([ &*,)<>]\)/\1casa::X11PCDLSetClearColor\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLSetClipWin\([ &*,)<>]\)/\1casa::X11PCDLSetClipWin\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLText\([ &*,)<>]\)/\1casa::X11PCDLText\2/g
+\%^ *//%!s/\([ <(]\)X11PCDLTranslate\([ &*,)<>]\)/\1casa::X11PCDLTranslate\2/g
+\%^ *//%!s/\([ <(]\)X11PixelCanvas\([ &*,)<>]\)/\1casa::X11PixelCanvas\2/g
+\%^ *//%!s/\([ <(]\)X11PixelCanvasApp\([ &*,)<>]\)/\1casa::X11PixelCanvasApp\2/g
+\%^ *//%!s/\([ <(]\)X11PixelCanvasColorTable\([ &*,)<>]\)/\1casa::X11PixelCanvasColorTable\2/g
+\%^ *//%!s/\([ <(]\)X11ResourceManager\([ &*,)<>]\)/\1casa::X11ResourceManager\2/g
+\%^ *//%!s/\([ <(]\)XCorr\([ &*,)<>]\)/\1casa::XCorr\2/g
+\%^ *//%!s/\([ <(]\)XSysEvent\([ &*,)<>]\)/\1casa::XSysEvent\2/g
+\%^ *//%!s/\([ <(]\)XSysEventSource\([ &*,)<>]\)/\1casa::XSysEventSource\2/g
+\%^ *//%!s/\([ <(]\)XSysEventSourceInfo\([ &*,)<>]\)/\1casa::XSysEventSourceInfo\2/g
+\%^ *//%!s/\([ <(]\)XSysEventTarget\([ &*,)<>]\)/\1casa::XSysEventTarget\2/g
+\%^ *//%!s/\([ <(]\)Bool\([ &*,)<>]\)/\1casa::Bool\2/g
+\%^ *//%!s/\([ <(]\)Char\([ &*,)<>]\)/\1casa::Char\2/g
+\%^ *//%!s/\([ <(]\)uChar\([ &*,)<>]\)/\1casa::uChar\2/g
+\%^ *//%!s/\([ <(]\)Short\([ &*,)<>]\)/\1casa::Short\2/g
+\%^ *//%!s/\([ <(]\)uShort\([ &*,)<>]\)/\1casa::uShort\2/g
+\%^ *//%!s/\([ <(]\)Int\([ &*,)<>]\)/\1casa::Int\2/g
+\%^ *//%!s/\([ <(]\)uInt\([ &*,)<>]\)/\1casa::uInt\2/g
+\%^ *//%!s/\([ <(]\)Long\([ &*,)<>]\)/\1casa::Long\2/g
+\%^ *//%!s/\([ <(]\)uLong\([ &*,)<>]\)/\1casa::uLong\2/g
+\%^ *//%!s/\([ <(]\)Float\([ &*,)<>]\)/\1casa::Float\2/g
+\%^ *//%!s/\([ <(]\)Double\([ &*,)<>]\)/\1casa::Double\2/g
+\%^ *//%!s/\([ <(]\)lDouble\([ &*,)<>]\)/\1casa::lDouble\2/g
+\%^ *//%!s/\([ <(]\)Complex\([ &*,)<>]\)/\1casa::Complex\2/g
+\%^ *//%!s/\([ <(]\)DComplex\([ &*,)<>]\)/\1casa::DComplex\2/g
 \%^ *//%!s%\(//.*\)casa::%\1%
 \%^ *//%!s%\(//.*\)casa::%\1%
 \%^ *//%!s%\(//.*\)casa::%\1%
