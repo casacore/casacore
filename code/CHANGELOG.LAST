@@ -1,0 +1,19 @@
+
+change id: 0096
+ author:   Ger van Diepen
+ date:     2001/05/28
+ avers:    1.6
+ area:     Library
+ package:  trial
+ module:   Lattices
+ type:     Code
+ category: New
+ summary:  Additions to LEL
+LEL has been improved in 2 ways:
+- 2 new functions have been added.
+  isnan can be used to test for NaNs
+  spectralindex can be used to calculate the spectral index for 2 images as
+     log(s1/s2) / log(f1/f2)
+
+- It can handle images with different dimensionalities. It makes it e.g.
+  possible to subtract continuum data from a line cube.
