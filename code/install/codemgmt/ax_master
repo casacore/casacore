@@ -3434,3 +3434,11 @@
 13 264 src mv trial/implement/TableMeasures.h aips/implement/TableMeasures.h
 13 264 src mv trial/implement/TableMeasures/test aips/implement/TableMeasures/test
 13 265 src rm doc/gettingstarted.latex
+13 265 src rm nrao/apps/oldgbtmsfiller/oldgbtmsfiller.g
+13 265 src rm nrao/apps/oldgbtmsfiller/oldgbtmsfiller.help
+13 265 src rm nrao/apps/oldgbtmsfiller/oldgbtmsfiller.cc
+13 265 src rm nrao/apps/oldgbtmsfiller/makefile
+13 265 src rm nrao/apps/oldgbtmsfiller/OldGBTMSFillerState.cc
+13 265 src rm nrao/apps/oldgbtmsfiller/OldGBTMSFillerState.h
+13 265 src rm nrao/apps/oldgbtmsfiller/OldGBTMSFillerInputs.h
+13 265 src rm nrao/apps/oldgbtmsfiller/OldGBTMSFillerInputs.cc
