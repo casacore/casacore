@@ -1,5 +1,5 @@
 //# MCFrame.h: Measure frame calculations proxy
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 
 //# Forward Declarations
 class MVDirection;
+class MVPosition;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -115,6 +116,8 @@ public:
   Bool getLong(Double &tdb);
   // Get the latitude (in rad)
   Bool getLat(Double &tdb);
+  // Get the position
+  Bool getITRF(MVPosition &tdb);
   // Get the gecentric position (in m)
   Bool getRadius(Double &tdb);
   // Get the LAST (in days)
@@ -149,6 +152,8 @@ private:
   void *posConvLong;
   // Longitude
   Vector<Double> *posLongp;
+  // Position
+  MVPosition *posITRFp;
   // Conversion to J2000
   void *dirConvJ2000;
   // J2000 coordinates
@@ -207,6 +212,8 @@ void MCFrameDelete(void *dmf);
 Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
 // Get MVDirection value for MeasFrame
 Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
+// Get MVPosition value for MeasFrame
+Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
 // </group>
 
 #endif
