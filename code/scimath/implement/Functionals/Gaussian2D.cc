@@ -50,3 +50,26 @@ T NQGaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+//# Member functions
+template<class T>
+Function<typename FunctionTraits<T>::DiffType>
+*NQGaussian2D<T>::cloneAD() const {
+  Function<typename FunctionTraits<T>::DiffType> *t =
+    new NQGaussian2D<typename FunctionTraits<T>::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<T>::BaseType>
+*NQGaussian2D<T>::cloneBase() const {
+  Function<typename FunctionTraits<T>::BaseType> *t =
+    new NQGaussian2D<typename FunctionTraits<T>::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
+  };
+  return t;
+}

@@ -41,7 +41,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
       break;
     };
   };
-  for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
   Int j = nparameters();
   tmp.value() = param_p[--j].value();
@@ -49,13 +48,39 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     tmp.value() *= x[0];
     tmp.value() += param_p[j].value();
   };
-  // derivatives
-  T dev(1);
-  for (uInt i=0; i<nparameters(); ++i) {
-    if (param_p.mask(i)) tmp.deriv(i) = dev;
-    dev *= x[0];
+  // get derivatives (assuming either all or none)
+  if (tmp.nDerivatives()>0) {
+    for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
+    T dev(1);
+    for (uInt i=0; i<nparameters(); ++i) {
+      if (param_p.mask(i)) tmp.deriv(i) = dev;
+      dev *= x[0];
+    };
   };
   return tmp;
 }
 
 //# Member functions
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+*NQPolynomial<AutoDiff<T> >::cloneAD() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
+    new NQPolynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+*NQPolynomial<AutoDiff<T> >::cloneBase() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
+    new NQPolynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]).value();
+  };
+  return t;
+}

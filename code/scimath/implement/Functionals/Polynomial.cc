@@ -52,3 +52,24 @@ NQPolynomial<T> NQPolynomial<T>::derivative() const {
 }
 
 //# Member functions
+template<class T>
+Function<typename FunctionTraits<T>::DiffType>
+*NQPolynomial<T>::cloneAD() const {
+  Function<typename FunctionTraits<T>::DiffType> *t =
+    new NQPolynomial<typename FunctionTraits<T>::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<T>::BaseType>
+*NQPolynomial<T>::cloneBase() const {
+  Function<typename FunctionTraits<T>::BaseType> *t =
+    new NQPolynomial<typename FunctionTraits<T>::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
+  };
+  return t;
+}

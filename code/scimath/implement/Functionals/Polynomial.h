@@ -115,10 +115,16 @@ template<class T> class NQPolynomial: public NQPolynomialParam<T> {
   NQPolynomial<T> derivative() const;
   
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
+  // deleting the pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<T> *clone() const { return new NQPolynomial<T>(*this); };
-
-private:
+  virtual Function<typename FunctionTraits<T>::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<T>::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 
@@ -164,9 +170,17 @@ public NQPolynomialParam<AutoDiff<T> > {
 
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer.
+  // for deleting this pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQPolynomial<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 

@@ -66,29 +66,57 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   T exponential = exp(-(xnorm2/xwidth2 + ynorm2/ywidth2));
   // function value
   tmp.value() = param_p[HEIGHT].value()*exponential;
-  for (uInt k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
-  // derivative wrt height
-  T dev = exponential;
-  if (param_p.mask(HEIGHT)) tmp.deriv(HEIGHT) = dev;
-  // derivative wrt x0 (mean)
-  dev *= param_p[HEIGHT].value();
-  if (param_p.mask(XCENTER)) tmp.deriv(XCENTER) = dev*
-			       (x2w*theCpa.value() - y2w*theSpa.value());
-  // derivative wrt y0 (mean)
-  if (param_p.mask(YCENTER)) tmp.deriv(YCENTER) = dev*
-			       (theSpa.value()*x2w + theCpa.value()*y2w);
-  // derivative wrt wy (width)
-  if (param_p.mask(YWIDTH)) tmp.deriv(YWIDTH) = dev*
-			      ((x2w2+y2w2)/param_p[YWIDTH].value());
-  // derivative wrt ratio (r=wx/wy, df/dr=(df/wx)*(dwx/dr), and dwx/dr=wy)
-  if (param_p.mask(RATIO)) tmp.deriv(RATIO) = dev*
-			     x2w2*param_p[YWIDTH].value()/
-			     (theXwidth.value());
-  // derivative wrt theta (rotation)
-  if (param_p.mask(PANGLE)) tmp.deriv(PANGLE) = -dev*
-			      (x2w*(-x2mean*theSpa.value() +
-				    y2mean*theCpa.value()) +
-			       y2w*(-x2mean*theCpa.value() -
-				    y2mean*theSpa.value()));
+  // get derivatives (assuming either all or none)
+  if (tmp.nDerivatives()>0) {
+    for (uInt k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
+    // derivative wrt height
+    T dev = exponential;
+    if (param_p.mask(HEIGHT)) tmp.deriv(HEIGHT) = dev;
+    // derivative wrt x0 (mean)
+    dev *= param_p[HEIGHT].value();
+    if (param_p.mask(XCENTER)) tmp.deriv(XCENTER) = dev*
+				 (x2w*theCpa.value() - y2w*theSpa.value());
+    // derivative wrt y0 (mean)
+    if (param_p.mask(YCENTER)) tmp.deriv(YCENTER) = dev*
+				 (theSpa.value()*x2w + theCpa.value()*y2w);
+    // derivative wrt wy (width)
+    if (param_p.mask(YWIDTH)) tmp.deriv(YWIDTH) = dev*
+				((x2w2+y2w2)/param_p[YWIDTH].value());
+    // derivative wrt ratio (r=wx/wy, df/dr=(df/wx)*(dwx/dr), and dwx/dr=wy)
+    if (param_p.mask(RATIO)) tmp.deriv(RATIO) = dev*
+			       x2w2*param_p[YWIDTH].value()/
+			       (theXwidth.value());
+    // derivative wrt theta (rotation)
+    if (param_p.mask(PANGLE)) tmp.deriv(PANGLE) = -dev*
+				(x2w*(-x2mean*theSpa.value() +
+				      y2mean*theCpa.value()) +
+				 y2w*(-x2mean*theCpa.value() -
+				      y2mean*theSpa.value()));
+  };
   return tmp;
+}
+
+//# Member functions
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+*NQGaussian2D<AutoDiff<T> >::cloneAD() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
+    new NQGaussian2D<typename FunctionTraits<AutoDiff<T> >::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+*NQGaussian2D<AutoDiff<T> >::cloneBase() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
+    new NQGaussian2D<typename FunctionTraits<AutoDiff<T> >::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]).value();
+  };
+  return t;
 }
