@@ -305,7 +305,7 @@ IPosition PagedArray<T>::tileShape() const
 }
 
 template<class T>
-uInt PagedArray<T>::maxPixels() const
+uInt PagedArray<T>::advisedMaxPixels() const
 {
   return tileShape().product();
 }

@@ -301,7 +301,7 @@ LatticeIterInterface<T>* Lattice<T>::makeIter
 }
 
 template<class T>
-uInt Lattice<T>::maxPixels() const
+uInt Lattice<T>::advisedMaxPixels() const
 {
   // The returned number of pixels is always a power of two for unknown
   // reasons, and occupies between 4 and 8 MBytes

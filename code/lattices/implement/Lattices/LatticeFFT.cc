@@ -45,7 +45,7 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 1, AipsError);
   const IPosition& latticeShape = cLattice.shape();
-  const uInt maxPixels = cLattice.maxPixels();
+  const uInt maxPixels = cLattice.advisedMaxPixels();
   IPosition slabShape = cLattice.niceCursorShape(maxPixels);
   const uInt nx = slabShape(0) = latticeShape(0);
   const uInt ny = slabShape(1) = latticeShape(1);
@@ -73,7 +73,7 @@ void LatticeFFT::cfft(Lattice<Complex>& cLattice,
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
   FFTServer<Float,Complex> ffts;
   const IPosition latticeShape = cLattice.shape();
-  const IPosition tileShape = cLattice.niceCursorShape(cLattice.maxPixels());
+  const IPosition tileShape = cLattice.niceCursorShape();
 
   for (uInt dim = 0; dim < ndim; dim++) {
     if (whichAxes(dim) == True) {
@@ -115,7 +115,7 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 //     return;
 //   }
 
-  const IPosition tileShape = out.niceCursorShape(out.maxPixels());
+  const IPosition tileShape = out.niceCursorShape();
   FFTServer<Float,Complex> ffts;
 
   for (uInt dim = 0; dim < ndim; dim++) {
@@ -189,7 +189,7 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 //     return;
 //   }
 
-  const IPosition tileShape = in.niceCursorShape(in.maxPixels());
+  const IPosition tileShape = in.niceCursorShape();
   FFTServer<Float,Complex> ffts;
 
   uInt dim = ndim;

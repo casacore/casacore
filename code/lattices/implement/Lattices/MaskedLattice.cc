@@ -35,10 +35,6 @@
 #include <aips/Exceptions/Error.h>
 
 
-typedef Array<Bool> gppbug1_maskedlattice;
-typedef COWPtr<Array<Bool> > gppbug2_maskedlattice;
-
-
 template <class T>
 MaskedLattice<T>::~MaskedLattice()
 {}

@@ -228,10 +228,10 @@ void TempLattice<T>::apply (const Functional<T,T>& function)
 }
 
 template<class T>
-uInt TempLattice<T>::maxPixels() const
+uInt TempLattice<T>::advisedMaxPixels() const
 {
   doReopen();
-  return itsLatticePtr->maxPixels();
+  return itsLatticePtr->advisedMaxPixels();
 }
 
 template<class T>

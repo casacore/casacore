@@ -97,3 +97,28 @@ Bool LatticeBase::ok() const
 {
   return True;
 }
+
+
+uInt LatticeBase::maximumCacheSize() const
+{
+  return 0;
+}
+
+void LatticeBase::setMaximumCacheSize (uInt)
+{}
+
+void LatticeBase::setCacheSizeInTiles (uInt)
+{}
+
+void LatticeBase::setCacheSizeFromPath (const IPosition&,
+					const IPosition&,
+					const IPosition&,
+					const IPosition&)
+{}
+
+void LatticeBase::clearCache()
+{}
+
+void LatticeBase::showCacheStatistics (ostream&) const
+{}
+

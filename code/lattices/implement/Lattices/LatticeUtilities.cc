@@ -37,15 +37,15 @@
 
 template <class T> 
 void minMax(T & globalMin, T & globalMax, 
-		   IPosition & globalMinPos, IPosition & globalMaxPos, 
-		   const Lattice<T> & lat) {
+	    IPosition & globalMinPos, IPosition & globalMaxPos, 
+	    const Lattice<T> & lat) {
 
   //check if IPositions are conformant
   IPosition zeroPos = IPosition( lat.shape().nelements(), 0); 
   DebugAssert((zeroPos.nelements() == globalMinPos.nelements()), AipsError);
   DebugAssert((zeroPos.nelements() == globalMaxPos.nelements()), AipsError);
   
-  IPosition cursorShape(lat.niceCursorShape(lat.maxPixels()));
+  IPosition cursorShape(lat.niceCursorShape());
   RO_LatticeIterator<T> latIter(lat, cursorShape);
   
   globalMin = lat.getAt( zeroPos );

@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/LatticeIterInterface.h>
 #include <trial/Lattices/Lattice.h>
+#include <trial/Lattices/LatticeNavigator.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>

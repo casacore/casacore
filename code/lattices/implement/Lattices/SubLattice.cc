@@ -33,9 +33,6 @@
 #include <aips/Exceptions/Error.h>
 
 
-typedef Array<Bool> sublattice_gppbug1;
-
-
 template<class T>
 SubLattice<T>::SubLattice()
 : itsLatticePtr   (0),
@@ -332,9 +329,9 @@ void SubLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
 
 
 template<class T>
-uInt SubLattice<T>::maxPixels() const
+uInt SubLattice<T>::advisedMaxPixels() const
 {
-  return itsLatticePtr->maxPixels();
+  return itsLatticePtr->advisedMaxPixels();
 }
 
 template<class T>

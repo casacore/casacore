@@ -48,9 +48,9 @@ ArrayLattice<T>::ArrayLattice (const IPosition& shape)
 }
 
 template<class T>
-ArrayLattice<T>::ArrayLattice (Array<T>& array) 
+ArrayLattice<T>::ArrayLattice (Array<T>& array, Bool isWritable) 
 : itsData     (array),
-  itsWritable (True)
+  itsWritable (isWritable)
 {
 }
 
@@ -166,7 +166,7 @@ void ArrayLattice<T>::putAt (const T& value, const IPosition& where)
 }
 
 template<class T>
-uInt ArrayLattice<T>::maxPixels() const
+uInt ArrayLattice<T>::advisedMaxPixels() const
 {
   return itsData.nelements();
 }

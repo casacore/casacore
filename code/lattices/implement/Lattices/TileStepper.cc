@@ -1,5 +1,5 @@
 //# TileStepper.cc: defines TileStepper class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 #include <trial/Lattices/TileStepper.h>
 #include <aips/Exceptions/Error.h>
-//#include <aips/Logging/LogIO.h>
-//#include <aips/Logging/LogOrigin.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 
 
@@ -400,96 +400,91 @@ LatticeNavigator* TileStepper::clone() const
 
 Bool TileStepper::ok() const
 {
-//   LogIO logErr(LogOrigin("TileStepper", "ok()"));
-//   const uInt latticeDim = itsTiler.ndim();
-//   // Check the cursor shape is OK
-//   if (itsCursorShape.nelements() != latticeDim) {
-//     logErr << LogIO::SEVERE << "cursor shape"
-// 	   << " (=" << itsCursorShape << ")"
-// 	   << " has wrong number of dimensions"
-// 	   << " (ie. not" << latticeDim << ")" << endl;
-//      return False;
-//   }
-//   for (uInt i=0; i < latticeDim; i++) 
-//     // the cursor shape must be <= the corresponding lattice axes AND
-//     // a cursor shape with an axis of length zero makes no sense
-//     if (itsCursorShape(i) > itsTiler.shape(i) || itsCursorShape(i) <= 0) {
-//       logErr << LogIO::SEVERE << "cursor shape"
-// 	     << " (=" << itsCursorShape << ")"
-// 	     << " is too big or small for lattice shape"
-// 	     << " (=" << itsTiler.shape() << ")" << LogIO::POST;
-//       return False;
-//     }
-//   // Check the cursor position is OK
-//   if (itsCursorPos.nelements() != latticeDim) {
-//     logErr << LogIO::SEVERE << "cursor position"
-// 	   << " (=" << itsCursorPos << ")"
-// 	   << " has wrong number of dimensions"
-// 	   << " (ie. not" << latticeDim << ")" << LogIO::POST;
-//      return False;
-//   }
-  
-//   // cursor position or its "far corner" must be inside the (sub)-Lattice
-//   if (!(itsTiler.isInside(itsCursorPos) ||
-// 	itsTiler.isInside(itsCursorPos+itsCursorShape-1))){
-//     logErr << LogIO::SEVERE << "cursor beginning"
-// 	   << " (=" << itsCursorPos << ")"
-// 	   << " or end"
-// 	   << " (=" << itsCursorPos + itsCursorShape - 1 << ")"
-// 	   << " is entirely outside the lattice shape"
-// 	   << " (=" << itsTiler.shape() << ")" << LogIO::POST;
-//     return False;
-//   }
+  const uInt latticeDim = itsTiler.ndim();
+  // Check the cursor shape is OK
+  if (itsTileShape.nelements() != latticeDim) {
+    LogIO logErr(LogOrigin("TileStepper", "ok()"));
+    logErr << LogIO::SEVERE << "cursor shape"
+ 	   << " (=" << itsTileShape << ")"
+ 	   << " has wrong number of dimensions"
+ 	   << " (ie. not" << latticeDim << ")" << LogIO::POST;
+    return False;
+  }
+  for (uInt i=0; i < latticeDim; i++) {
+    // the cursor shape must be <= the corresponding lattice axes AND
+    // a cursor shape with an axis of length zero makes no sense
+    if (itsTileShape(i) > Int(itsTiler.shape(i)) || itsTileShape(i) <= 0) {
+      LogIO logErr(LogOrigin("TileStepper", "ok()"));
+      logErr << LogIO::SEVERE << "cursor shape"
+ 	     << " (=" << itsTileShape << ")"
+ 	     << " is too big or small for lattice shape"
+ 	     << " (=" << itsTiler.shape() << ")" << LogIO::POST;
+      return False;
+    }
+  }
+  // Check the cursor position is OK
+  if (itsTilerCursorPos.nelements() != latticeDim) {
+    LogIO logErr(LogOrigin("TileStepper", "ok()"));
+    logErr << LogIO::SEVERE << "cursor position"
+ 	   << " (=" << itsTilerCursorPos << ")"
+ 	   << " has wrong number of dimensions"
+ 	   << " (ie. not" << latticeDim << ")" << LogIO::POST;
+    return False;
+  }
 
-//   // check the Axis Path is OK
-//   if(itsAxisPath.nelements() != latticeDim){
-//     logErr << LogIO::SEVERE << "axis path"
-// 	   << " (=" << itsAxisPath << ")"
-// 	   << " has wrong number of dimensions"
-// 	   << " (ie. not " << latticeDim << ")" << LogIO::POST;
-//     return False;
-//   }
-//   // each itsAxisPath value must be a lattice axis number, 0..n-1
-//   for (uInt n=0; n < latticeDim; n++)
-//     if (itsAxisPath(n) >= latticeDim){
-//       logErr << LogIO::SEVERE << "axis path"
-// 	     << " (=" << itsAxisPath << ")"
-// 	     << " has elements bigger than the lattice dim -1 "
-// 	     << " (ie. " << latticeDim - 1 << ")" << LogIO::POST;
-//       return False;
-//     }
+  // cursor position or its "far corner" must be inside the (sub)-Lattice
+  if (!(itsTiler.isInside(itsTilerCursorPos) ||
+ 	itsTiler.isInside(itsTilerCursorPos+itsTileShape-1))) {
+    LogIO logErr(LogOrigin("TileStepper", "ok()"));
+    logErr << LogIO::SEVERE << "cursor beginning"
+ 	   << " (=" << itsTilerCursorPos << ")"
+ 	   << " or end"
+ 	   << " (=" << itsTilerCursorPos + itsTileShape - 1 << ")"
+ 	   << " is entirely outside the lattice shape"
+ 	   << " (=" << itsTiler.shape() << ")" << LogIO::POST;
+    return False;
+  }
 
-//   // each itsAxisPath value must be unique
-//   for (uInt k=0; k < (latticeDim - 1); k++)
-//     for (uInt j=k+1; j < latticeDim; j++)
-//       if (itsAxisPath(k) == itsAxisPath(j)) {
-// 	logErr << LogIO::SEVERE << "axis path"
-// 	       << " (=" << itsAxisPath << ")"
-// 	       << " does not have unique elements " << LogIO::POST;
-// 	return False;
-//       }
-//   // Check the LatticeIndexer is OK
-//   if (itsIndexer.ok() == False) {
-//     logErr << LogIO::SEVERE << "LatticeIndexer"
-//  	   << " thinks things are bad" << LogIO::POST;
-//     return False;
-//   }
-  
-//   // Check if itsStart flag is correct
-//   if ((itsCursorPos.isEqual(IPosition(latticeDim,0)) && (itsStart == False)) ||
-//       (!itsCursorPos.isEqual(IPosition(latticeDim,0)) && (itsStart == True))){
-//     logErr << LogIO::SEVERE << "cursor position"
-// 	   << " (=" << itsCursorPos << ")"
-// 	   << " is inconsistant with itsStart flag"
-// 	   << " (itsStart = ";
-//     if (itsStart == True)
-//       logErr << "True";
-//     else
-//       logErr << "False";
-//     cout << ")" << LogIO::POST;
-//     return False;
-//   }
-  
-//   // Otherwise it has passed all the tests
+  // check the Axis Path is OK
+  if (itsAxisPath.nelements() != latticeDim) {
+    LogIO logErr(LogOrigin("TileStepper", "ok()"));
+    logErr << LogIO::SEVERE << "axis path"
+ 	   << " (=" << itsAxisPath << ")"
+ 	   << " has wrong number of dimensions"
+ 	   << " (ie. not " << latticeDim << ")" << LogIO::POST;
+    return False;
+  }
+  // each itsAxisPath value must be a lattice axis number, 0..n-1
+  for (uInt n=0; n < latticeDim; n++) {
+    if (itsAxisPath(n) >= Int(latticeDim)) {
+      LogIO logErr(LogOrigin("TileStepper", "ok()"));
+      logErr << LogIO::SEVERE << "axis path"
+ 	     << " (=" << itsAxisPath << ")"
+ 	     << " has elements bigger than the lattice dim -1 "
+ 	     << " (ie. " << latticeDim - 1 << ")" << LogIO::POST;
+      return False;
+    }
+  }
+
+  // each itsAxisPath value must be unique
+  for (uInt k=0; k < (latticeDim - 1); k++) {
+    for (uInt j=k+1; j < latticeDim; j++) {
+      if (itsAxisPath(k) == itsAxisPath(j)) {
+	LogIO logErr(LogOrigin("TileStepper", "ok()"));
+ 	logErr << LogIO::SEVERE << "axis path"
+ 	       << " (=" << itsAxisPath << ")"
+ 	       << " does not have unique elements " << LogIO::POST;
+ 	return False;
+      }
+    }
+  }
+  // Check the LatticeIndexer is OK
+  if (itsTiler.ok() == False) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
+    logErr << LogIO::SEVERE << "LatticeIndexer"
+ 	   << " thinks things are bad" << LogIO::POST;
+    return False;
+  }
+  // Otherwise it has passed all the tests
   return True;
 }
