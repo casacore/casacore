@@ -69,13 +69,12 @@ class IPosition;
 //  This restriction is because of the plotting capabilities which are a
 //  bit awkward for other types.
 //
-//  This class makes a distinction between a "moment" and a "method".
-//  This boundary is a little blurred, but it claims to refer to the
-//  distinction of what you are computing, as to how the pixels that
-//  were included in the computation were selected.  For example, 
-//  a "moment" would be the average value of some pixels.  A method
-//  for selecting those pixels would be a simple range specifying
-//  a range for which pixels should be included.
+//  This class makes a distinction between a "moment" and a "method". This
+//  boundary is a little blurred, but it claims to refer to the distinction 
+//  of what you are computing, as to how the pixels that were included in the 
+//  computation were selected.  For example,  a "moment" would be the average value 
+//  of some pixels.  A method for selecting those pixels would be a simple range 
+//  specifying  a range for which pixels should be included.
 //
 //  The default state of this class is to do nothing.  If you specify an image via
 //  the <src>setImage</src> function then invoking the <src>createMoments</src>
@@ -106,7 +105,18 @@ class IPosition;
 //  The fitting method fits Gaussians to spectral features either automatically
 //  or interactively.  The moments are then computed from the Gaussian fits
 //  (not the data themselves).
-//  
+//
+//  When an output image is created, it will have N-1 axes, where the input image
+//  has N axes.  In the output image, the physical axis corresponding to the moment
+//  axis will have been removed, but the coordinate information will be retained 
+//  for future coordinate transformations. For example, if you have a RA-DEC-VELOCITY 
+//  image and you collapsed axis 2 (the DEC axis) the output images would be 
+//  RA-VELOCITY with the coordinate information retained for the DEC axis so that 
+//  the coupled nature of RA/DEC coordinates is preserved.    
+//
+//  When making plots, the order in which the spectra are  displayed is determined
+//  by the tiling sequence of the image (for optimum speed of access).  
+//
 //
 // <srcblock>
 //                   Allowed Methods
@@ -604,9 +614,6 @@ private:
 
 // Draw two vertical lines marking a spectral window                     
    void drawWindow     (const Vector<Int>& window);
-
-// Find the spectral axis in the image
-   Int findSpectralAxis(const ImageInterface<T>* pImage);
 
 // Fit a Gaussian to x and y arrays give guesses for the gaussian parameters
    Bool fitGaussian    (T& peak,
