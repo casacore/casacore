@@ -31,8 +31,11 @@
 
 //# Includes
 #include <trial/Images/ImageInterface.h>
+#include <trial/Tables/TiledFileAccess.h>
 #include <aips/Containers/Record.h>
+#include <aips/FITS/fits.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
 
 
 //# Forward Declarations
@@ -43,7 +46,7 @@ class IPosition;
 class Slicer;
 class CoordinateSystem;
 class FITSMask;
-class TiledFileAccess;
+class FitsInput;
 
 
 // <summary>
@@ -63,8 +66,9 @@ class TiledFileAccess;
 // </prerequisite>
 //
 // <etymology>
-//  This class provides native access to FITS images.  Only
-//  floating point FITS images are presently supported.
+//  This class provides native access to FITS images. 
+//  32bit floating point and 16bit integer FITS images are 
+//  presently supported.
 // </etymology>
 //
 // <synopsis> 
@@ -192,21 +196,42 @@ public:
 
   // Check class invariants.
   virtual Bool ok() const;
-  
-private:  
 
+  // Non-virtual functions
+  DataType dataType () const {return pTiledFile_p->dataType();};
+
+private:  
   String name_p;
   Unit unit_p;
   Record rec_p;
   IPosition tileShape_p;
   CountedPtr<TiledFileAccess> pTiledFile_p;
   Lattice<Bool>* pPixelMask_p;
+  Double scale_p, offset_p;
+  Short magic_p;
+  Bool hasBlanks_p;
 
 // Fish things out of the FITS file
    void getImageAttributes (CoordinateSystem& cSys,
                             IPosition& shape, ImageInfo& info,
                             Unit& brightnessUnit, Record& miscInfo, 
-                            Int& recsize, Int& recno, const String& name);
+                            Int& recsize, Int& recno, FITS::ValueType& dataType, 
+                            Double& scale, Double& offset, Short& magic, 
+                            Bool& hasBlanks, const String& name);
+
+// Should really be written as a templated function
+// <group>
+   void crackHeaderFloat (CoordinateSystem& cSys,
+                          IPosition& shape, ImageInfo& imageInfo,
+                          Unit& brightnessUnit, Record& miscInfo,
+                          LogIO&os, FitsInput& infile);
+
+   void crackHeaderShort (CoordinateSystem& cSys,
+                          IPosition& shape, ImageInfo& imageInfo,
+                          Unit& brightnessUnit, Record& miscInfo,
+                          Double& scale, Double& offset, Short& magic,
+                          Bool& hasBlanks, LogIO& os, FitsInput& infile);
+// </group>
 
  // The default constructor
   FITSImage();
