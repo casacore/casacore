@@ -56,7 +56,11 @@
 //
 // The scalar/dot/inner product of two equal length vectors.
 //
+//<group>
 template <class T> T innerProduct (const Vector<T> &x, const Vector<T> &y);
+Complex innerProduct (const Vector<Complex> &x, const Vector<Complex> &y);
+DComplex innerProduct (const Vector<DComplex> &x, const Vector<DComplex> &y);
+//</group>
 
 //
 // The magnitude/norm of a vector.
@@ -160,6 +164,8 @@ template <class T> Matrix<T> transpose (const Matrix<T> &A);
 // Axis is 0,1,2 for x,y,z; angle is in radians.
 // <group>
 template <class T> Matrix<T> Rot3D(Int axis, T angle);
+Matrix<Double> Rot3D(Int axis, Double angle);
+Matrix<Float> Rot3D(Int axis, Float angle);
 // </group>
 
 // 
