@@ -126,7 +126,7 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
                       "$(ICONS2LOCAL)" != "" ] ; then \
                       $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $(basename $@)) ; \
                  fi ; \
-                 if [ "$($*).s2ps" != "" ] ; then \
+                 if [ "$($(basename $(basename $(@F))).s2ps)" != "" ] ; then \
                     mkpsfiles.sh $(AIPSCODE) $(basename $(basename $(@F))) | dvips.sh $(DVIPS) $(@F:ps.gz=dvi) > mkdfiles.sh ; \
                     chmod u+x mkdfiles.sh ; \
                     ./mkdfiles.sh ; \
