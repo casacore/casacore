@@ -1,0 +1,12 @@
+
+change id: 0027
+ author:   Wim Brouw
+ date:     2000/07/27
+ avers:    1.4
+ area:     Library
+ package:  aips
+ module:   Measures
+ type:     Code
+ category: New
+ summary:  Added toType() and toFrom() to MeasureHolder
+To be able to create a skeleton default Measure (e.g. for a measurement set column woth a TableMeasure), I added the toType() and fromType() methods to the MeasureHolder record conversions.
