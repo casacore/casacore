@@ -5788,3 +5788,4 @@
 16 134 src rm trial/implement/MeasurementSets/test/tOldMSSpWindowBuffer.cc
 16 134 src rm trial/implement/MeasurementSets/OldMSDerivedValues.cc
 16 134 src rm trial/implement/MeasurementSets/OldMSDerivedValues.h
+16 134 src rm trial/implement/MeasurementSets/OldMSFitsInput.cc
