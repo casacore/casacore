@@ -1,0 +1,38 @@
+----------------------------------------------------
+Test MeasureHolder  
+----------------------------------------------------
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Record output value:      Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Glish output value:       Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Is measure:        1
+Is direction:      1
+Is empty:          0
+Is epoch:          0
+Is doppler:        0
+Is position:       0
+Is frequency:      0
+Is radialvelocity: 0
+As measure:        Direction: [0.663414, 0.383022, -0.642788]
+As direction:      Direction: [0.663414, 0.383022, -0.642788]
+Error expected:
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+From error: Illegal Measure record in MeasureHolder::fromRecord
+
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Record output value:      Direction: [0.663414, 0.383022, -0.642788] (J2000)
+As epoch:      Empty or wrong MeasureHolder for asMEpoch
+Input value:              Epoch: 30456::00:00:00.0000 (UTC)
+Record output value:      Epoch: 30456::00:00:00.0000 (UTC)
+As epoch:      Epoch: 30456::00:00:00.0000
+Input value:              Doppler: 0.00010159 (RADIO)
+Record output value:      Doppler: 0.00010159 (RADIO)
+As Doppler:      Doppler: 0.00010159
+Input value:              Frequency: 3.0456e+10 (LSR)
+Record output value:      Frequency: 3.0456e+10 (LSR)
+As Frequency:      Frequency: 3.0456e+10
+Input value:              Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
+Record output value:      Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
+As Position:      Position: [4.88279e+06, 1.77719e+06, 3e+06]
+Input value:              Radialvelocity: 30456 (LSR)
+Record output value:      Radialvelocity: 30456 (LSR)
+As RadialVelocity:      Radialvelocity: 30456

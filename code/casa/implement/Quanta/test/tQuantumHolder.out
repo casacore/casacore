@@ -1,0 +1,15 @@
+Test QuantityHolder  
+----------------------------------------------------
+Input quantity:              12.5 km/s
+Record output quantity:      12.5 km/s
+Glish output quantity:       12.5 km/s
+Is quantity:                 1
+Is empty:                    0
+As quantity:                 12.5 km/s
+Input quantity:              30.3 Jy/a
+Record output quantity:      30.3 Jy/a
+Input quantity:              2 pc3/d
+Record output quantity:      2 pc3/d
+Error expected:
+Input quantity:              12.5 km/s
+From error: Illegal Quantity record in QuantityHolder::fromRecord
