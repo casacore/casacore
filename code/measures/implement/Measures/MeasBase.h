@@ -72,8 +72,9 @@ template <class T> class Vector;
 // <todo asof="1997/04/15">
 //	<li>
 // </todo>
-
-template<class Mv, class Mr> class MeasBase : public virtual Measure {
+//# Made non-virtual for MeasureHolder
+//#template<class Mv, class Mr> class MeasBase : public virtual Measure {
+template<class Mv, class Mr> class MeasBase : public Measure {
 
 public:
   //# Friends
