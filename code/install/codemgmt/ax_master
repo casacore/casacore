@@ -4013,3 +4013,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCPTRegion.cc trialdisplay/implement/DisplayEvents/WCPTRegion.cc
 14 065 src mv trial/implement/DisplayEvents/WCPolyTool.cc trialdisplay/implement/DisplayEvents/WCPolyTool.cc
 14 065 src mv trial/implement/DisplayEvents/WCPositionEH.cc trialdisplay/implement/DisplayEvents/WCPositionEH.cc
+14 065 src mv trial/implement/DisplayEvents/WCPositionEvent.cc trialdisplay/implement/DisplayEvents/WCPositionEvent.cc
