@@ -41,13 +41,16 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-main()
+int main()
 {
 {
     IPosition ip(3, 0, 1, 2);
     
     assert(ip.nelements() == 3);
     assert(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
+    assert(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
+    ip[2] = 21;
+    assert(ip(2) == 21);
     ip(2) = 22;
     assert(ip(2) == 22);
     
@@ -98,7 +101,7 @@ main()
 
 {
     // Now test the IPosition class more exhaustively
-    uInt i;
+    Int i;
 
     IPosition ip1;                             // IPosition()
     assert(ip1.nelements() == 0);              // nelements()
@@ -262,7 +265,7 @@ main()
     IPosition ip8 (ip1.nelements() + 1);
     ip7 = 0;
     ip8 = 0;
-    for (Int ipindex=0; ipindex < ip1.nelements(); ipindex++) {
+    for (uInt ipindex=0; ipindex < ip1.nelements(); ipindex++) {
         ip7(ipindex) = ip1(ipindex);
         ip8(ipindex) = ip1(ipindex);
     }
