@@ -5308,3 +5308,4 @@
 15 034 src rm nrao/apps/gbtutils/dcr.g
 15 034 src rm nrao/apps/gbtutils/dcr_data
 15 034 src rm nrao/apps/gbtutils/gbtcom.g
+15 034 src rm nrao/apps/gbtutils/gbtutils.g
