@@ -3407,3 +3407,4 @@
 13 261 src mv trial/implement/ComponentModels/test/tComponentImager.cc trial/implement/Images/test/tComponentImager.cc
 13 264 src mv trial/implement/XX aips/implement/TableMeasures
 13 264 src mv trial/implement/TableMeasures/ArrayMeasColumn.cc aips/implement/TableMeasures/ArrayMeasColumn.cc
+13 264 src mv trial/implement/TableMeasures/ArrayMeasColumn.h aips/implement/TableMeasures/ArrayMeasColumn.h
