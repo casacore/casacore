@@ -82,7 +82,7 @@ Bool SpectralCoordinate::toWorld(MFrequency& world,
 Bool SpectralCoordinate::toWorld(MVFrequency& world, 
 				 Double pixel) const
 {
-    static Double world_tmp;
+    Double world_tmp;
     static Quantum<Double> q_tmp;
 //
     if (toWorld(world_tmp, pixel)) {
@@ -103,21 +103,21 @@ Bool SpectralCoordinate::toPixel(Double& pixel,
 Bool SpectralCoordinate::toPixel(Double& pixel,
                                  const MVFrequency& world) const
 {
-   static Double world_tmp;
+   Double world_tmp;
    world_tmp = world.get(Unit(worldAxisUnits()(0))).getValue();
    return toPixel(pixel, world_tmp);
 }
  
 Bool SpectralCoordinate::pixelToVelocity (Quantum<Double>& velocity, Double pixel)
 {
-   static Double world;
+   Double world;
    if (!toWorld(world, pixel)) return False;
    return frequencyToVelocity (velocity, world);
 }
 
 Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel)
 {
-   static Double world;
+   Double world;
    if (!toWorld(world, pixel)) return False;
    velocity = pVelocityMachine_p->makeVelocity(world).getValue();
 //
@@ -131,7 +131,7 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
 // Perhaps its faster to make a vector of world and do them 
 // all in one go in the machine ?  Haven't tested it.
 
-   static Double world;
+   Double world;
    for (uInt i=0; i<pixel.nelements(); i++) {
       if (!toWorld(world, pixel(i))) return False;
       velocity(i) = pVelocityMachine_p->makeVelocity(world).getValue();
@@ -182,7 +182,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const M
 
 Bool SpectralCoordinate::velocityToPixel (Double& pixel, Double velocity)
 {
-   static Double frequency;
+   Double frequency;
    if (!velocityToFrequency(frequency, velocity)) return False;
    return toPixel(pixel, frequency);
 }
@@ -190,7 +190,7 @@ Bool SpectralCoordinate::velocityToPixel (Double& pixel, Double velocity)
 Bool SpectralCoordinate::velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity)
 {
    pixel.resize(velocity.nelements());
-   static Double frequency, pix;
+   Double frequency, pix;
    for (uInt i=0; i<velocity.nelements(); i++) {
       if (!velocityToFrequency(frequency, velocity(i))) return False;
       if (!toPixel(pix, frequency)) return False;
