@@ -119,10 +119,6 @@ public:
     // The default implementation does nothing.
     virtual void handleRename (const String& newName, Bool overwrite);
 
-    // Unlock the tables possibly associated with this region.
-    // The default implementation does nothing.
-    virtual void unlock();
-
     // Region type.  Returns className() of derived class.
     virtual String type() const = 0;
 
