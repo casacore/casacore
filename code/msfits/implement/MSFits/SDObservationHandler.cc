@@ -119,6 +119,7 @@ void SDObservationHandler::fill(const Record &row, const String &telescopeName,
 		// need to add a new column to hold this field
 		msObs_p->addColumn(ScalarColumnDesc<String>("NS_OBSID",
 							    "SDFITS OBSID keyword/column value"));
+		nsObsIdCol_p.attach(*msObs_p, "NS_OBSID");
 		// and renake the index with this column
 		makeIndex();
 	    }
