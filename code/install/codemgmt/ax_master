@@ -3891,3 +3891,4 @@
 14 065 src mv trial/implement/Display/ColormapManager.cc trialdisplay/implement/Display/ColormapManager.cc
 14 065 src mv trial/implement/Display/DParameterChoice.cc trialdisplay/implement/Display/DParameterChoice.cc
 14 065 src mv trial/implement/Display/DParameterColorChoice.cc trialdisplay/implement/Display/DParameterColorChoice.cc
+14 065 src mv trial/implement/Display/DParameterRange.cc trialdisplay/implement/Display/DParameterRange.cc
