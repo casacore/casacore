@@ -268,6 +268,8 @@ extern "C" Double
 IAUR(gmst00)(const Double &uta, const Double &utb,
 	     const Double &tta, const Double &ttb);
 extern "C" Double 
+IAUR(era00)(const Double &uta, const Double &utb);
+extern "C" Double 
 IAUR(gmst82)(const Double &dj1, const Double &dj2);
 extern "C" Double 
 IAUR(ee00a)(const Double &date1, const Double &date2);
