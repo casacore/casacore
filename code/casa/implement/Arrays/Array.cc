@@ -63,7 +63,7 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 	      " - Negative shape"));
 	}
     }
-    makeIndexingConstants();
+    makeSteps();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -88,7 +88,7 @@ template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
 	      " - Negative shape"));
 	}
     }
-    makeIndexingConstants();
+    makeSteps();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -458,7 +458,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	tmp.inc_p = 1;
 	tmp.originalLength_p.resize (newNdim);
 	tmp.originalLength_p = tmp.length_p;
-	tmp.makeIndexingConstants();
+	tmp.makeSteps();
 	return tmp;
     }
     // A reform of a non-contiguous array has to be done.
@@ -517,7 +517,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	    startAxis = copyAxes(i) + 1;
 	}
     }
-    tmp.makeIndexingConstants();
+    tmp.makeSteps();
     return tmp;
 }
 
@@ -638,7 +638,7 @@ void Array<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 	    }
 	}
     }
-    makeIndexingConstants();
+    makeSteps();
 }
 
 template<class T>
@@ -678,7 +678,7 @@ Array<T> Array<T>::addDegenerate(uInt numAxes)
     tmp.inc_p = newInc;
     tmp.originalLength_p.resize (newDim);
     tmp.originalLength_p = newOriginal;
-    tmp.makeIndexingConstants();
+    tmp.makeSteps();
     return tmp;
 }
 
@@ -798,7 +798,7 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
     }
     tmp.nels_p = tmp.length_p.product();
     tmp.contiguous_p = tmp.isStorageContiguous();
-    tmp.makeIndexingConstants();
+    tmp.makeSteps();
     DebugAssert (tmp.ok(), ArrayError);
     return tmp;
 }
@@ -929,7 +929,7 @@ template<class T> Bool Array<T>::isStorageContiguous() const
     return True;
 }
 
-template<class T> void Array<T>::makeIndexingConstants()
+template<class T> void Array<T>::makeSteps()
 {
     // No Assert since the Array often isn't constructed yet when
     // calling this
@@ -966,11 +966,20 @@ template<class T> Bool Array<T>::ok() const
     uInt i;
     uInt count = 1;
 
+    IPosition pos(ndimen_p, 0);
     for (i=0; i < ndim(); i++) {
 	if (length_p(i) < 0  ||  inc_p(i) < 1
 	||  originalLength_p(i) < length_p(i))
 	    return False;
 	count *= length_p(i);
+	if (length_p(i) > 1) {
+	    pos(i) = 1;
+	    Int off = ArrayIndexOffset(ndim(), originalLength_p.storage(),
+				       inc_p.storage(), pos);
+	    pos(i) = 0;
+	    if (steps_p(i) != off) 
+	        return False;
+	}
     }
     if (ndim() == 0)
 	count = 0;
@@ -1132,7 +1141,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
     begin_p  = data_p->storage();
     nels_p   = new_nels;
     ndimen_p = new_ndimen;
-    makeIndexingConstants();
+    makeSteps();
     // Call OK at the end rather than the beginning since this might
     // be called from a constructor.
     DebugAssert(ok(), ArrayError);
