@@ -1,5 +1,5 @@
 //# LELFunction.h:  LELFunction.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,6 +121,14 @@ public:
 // Get class name
    virtual String className() const;
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    LELFunctionEnums::Function   function_p;
    CountedPtr<LELInterface<T> > pExpr_p;
@@ -210,6 +218,14 @@ public:
 
 // Get class name
    virtual String className() const;
+
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 // Determine the median of the given lattice by making successive histograms.
 // When <src>smallsize<src> elements are left, an in-memory algorithm
@@ -318,6 +334,14 @@ public:
 // Get class name
    virtual String className() const;
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    LELFunctionEnums::Function function_p;
    Block<LatticeExprNode> arg_p;
@@ -414,6 +438,14 @@ public:
 
 // Get class name
    virtual String className() const;
+
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 private:
    LELFunctionEnums::Function function_p;
@@ -518,6 +550,14 @@ public:
 // Get class name
    virtual String className() const;
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    // Count number of masked elements in a LatticeExprNode.
    // <group>
@@ -612,6 +652,14 @@ public:
 // Get class name
    virtual String className() const;
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    LELFunctionEnums::Function function_p;
    Block<LatticeExprNode> arg_p;
@@ -701,6 +749,14 @@ public:
 // Get class name
    virtual String className() const;
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    LELFunctionEnums::Function function_p;
    Block<LatticeExprNode> arg_p;
@@ -788,6 +844,14 @@ public:
 
 // Get class name
    virtual String className() const;
+
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 private:
    LELFunctionEnums::Function function_p;

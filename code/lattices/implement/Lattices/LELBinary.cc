@@ -1,5 +1,5 @@
 //# LELBinary.cc:  this defines templated classes in LELBinary.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -198,6 +198,32 @@ String LELBinary<T>::className() const
 }
 
 
+template<class T>
+Bool LELBinary<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  if (! pLeftExpr_p->lock (type, nattempts)) {
+    return False;
+  }
+  return pRightExpr_p->lock (type, nattempts);
+}
+template<class T>
+void LELBinary<T>::unlock()
+{
+    pLeftExpr_p->unlock();
+    pRightExpr_p->unlock();
+}
+template<class T>
+Bool LELBinary<T>::hasLock (FileLocker::LockType type) const
+{
+    return pLeftExpr_p->hasLock (type)  &&   pRightExpr_p->hasLock (type);
+}
+template<class T>
+void LELBinary<T>::resync()
+{
+    pLeftExpr_p->resync();
+    pRightExpr_p->resync();
+}
+
 
 
 // LELBinaryCmp
@@ -383,4 +409,31 @@ template <class T>
 String LELBinaryCmp<T>::className() const
 {
    return String("LELBinaryCmp");
+}
+
+
+template<class T>
+Bool LELBinaryCmp<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  if (! pLeftExpr_p->lock (type, nattempts)) {
+    return False;
+  }
+  return pRightExpr_p->lock (type, nattempts);
+}
+template<class T>
+void LELBinaryCmp<T>::unlock()
+{
+    pLeftExpr_p->unlock();
+    pRightExpr_p->unlock();
+}
+template<class T>
+Bool LELBinaryCmp<T>::hasLock (FileLocker::LockType type) const
+{
+    return pLeftExpr_p->hasLock (type)  &&   pRightExpr_p->hasLock (type);
+}
+template<class T>
+void LELBinaryCmp<T>::resync()
+{
+    pLeftExpr_p->resync();
+    pRightExpr_p->resync();
 }

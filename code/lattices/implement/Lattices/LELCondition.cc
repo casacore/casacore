@@ -1,5 +1,5 @@
 //# LELCondition.cc:  Class to make a mask from a condition 
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,4 +115,31 @@ template <class T>
 String LELCondition<T>::className() const
 {
    return "LELCondition";
+}
+
+
+template<class T>
+Bool LELCondition<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  if (! pExpr_p->lock (type, nattempts)) {
+    return False;
+  }
+  return pCond_p->lock (type, nattempts);
+}
+template<class T>
+void LELCondition<T>::unlock()
+{
+    pExpr_p->unlock();
+    pCond_p->unlock();
+}
+template<class T>
+Bool LELCondition<T>::hasLock (FileLocker::LockType type) const
+{
+    return pExpr_p->hasLock (type)  &&   pCond_p->hasLock (type);
+}
+template<class T>
+void LELCondition<T>::resync()
+{
+    pExpr_p->resync();
+    pCond_p->resync();
 }

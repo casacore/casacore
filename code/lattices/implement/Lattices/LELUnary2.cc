@@ -1,5 +1,5 @@
 //# LELUnary2.cc:  this defines non-templated classes in LELUnary.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,4 +102,22 @@ Bool LELUnaryBool::prepareScalarExpr()
 String LELUnaryBool::className() const
 {
    return String("LELUnaryBool");
+}
+
+
+Bool LELUnaryBool::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return pExpr_p->lock (type, nattempts);
+}
+void LELUnaryBool::unlock()
+{
+    pExpr_p->unlock();
+}
+Bool LELUnaryBool::hasLock (FileLocker::LockType type) const
+{
+    return pExpr_p->hasLock (type);
+}
+void LELUnaryBool::resync()
+{
+    pExpr_p->resync();
 }

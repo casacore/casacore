@@ -393,6 +393,28 @@ String LELFunction1D<T>::className() const
 }
 
 
+template<class T>
+Bool LELFunction1D<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return pExpr_p->lock (type, nattempts);
+}
+template<class T>
+void LELFunction1D<T>::unlock()
+{
+    pExpr_p->unlock();
+}
+template<class T>
+Bool LELFunction1D<T>::hasLock (FileLocker::LockType type) const
+{
+    return pExpr_p->hasLock (type);
+}
+template<class T>
+void LELFunction1D<T>::resync()
+{
+    pExpr_p->resync();
+}
+
+
 
 
 // LELFunctionReal1D
@@ -563,6 +585,30 @@ String LELFunctionReal1D<T>::className() const
 {
    return String("LELFunctionReal1D");
 }
+
+
+
+template<class T>
+Bool LELFunctionReal1D<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return pExpr_p->lock (type, nattempts);
+}
+template<class T>
+void LELFunctionReal1D<T>::unlock()
+{
+    pExpr_p->unlock();
+}
+template<class T>
+Bool LELFunctionReal1D<T>::hasLock (FileLocker::LockType type) const
+{
+    return pExpr_p->hasLock (type);
+}
+template<class T>
+void LELFunctionReal1D<T>::resync()
+{
+    pExpr_p->resync();
+}
+
 
 template <class T>
 LELScalar<T> LELFunctionReal1D<T>::unmaskedMedian (const Lattice<T>& lattice,
@@ -1320,4 +1366,40 @@ template <class T>
 String LELFunctionND<T>::className() const
 {
    return String("LELFunctionND");
+}
+
+
+template<class T>
+Bool LELFunctionND<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+template<class T>
+void LELFunctionND<T>::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+template<class T>
+Bool LELFunctionND<T>::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+template<class T>
+void LELFunctionND<T>::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
 }

@@ -1,5 +1,5 @@
 //# LELUnary.h:  LELUnary.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -201,6 +201,14 @@ public:
 // Get class name
    virtual String className() const;    
 
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
+
 private:
    LELUnaryEnums::Operation op_p;
    CountedPtr<LELInterface<T> > pExpr_p;
@@ -287,6 +295,14 @@ public:
 
 // Get class name
    virtual String className() const;    
+
+  // Handle locking/syncing of a lattice in a lattice expression.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual void resync();
+  // </group>
 
 private:
    LELUnaryEnums::Operation op_p;

@@ -1,5 +1,5 @@
 //# LELBinary.cc:  this defines non-templated classes in LELBinary.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -258,4 +258,27 @@ Bool LELBinaryBool::prepareScalarExpr()
 String LELBinaryBool::className() const
 {
    return String("LELBinaryBool");
+}
+
+
+Bool LELBinaryBool::lock (FileLocker::LockType type, uInt nattempts)
+{
+  if (! pLeftExpr_p->lock (type, nattempts)) {
+    return False;
+  }
+  return pRightExpr_p->lock (type, nattempts);
+}
+void LELBinaryBool::unlock()
+{
+    pLeftExpr_p->unlock();
+    pRightExpr_p->unlock();
+}
+Bool LELBinaryBool::hasLock (FileLocker::LockType type) const
+{
+    return pLeftExpr_p->hasLock (type)  &&   pRightExpr_p->hasLock (type);
+}
+void LELBinaryBool::resync()
+{
+    pLeftExpr_p->resync();
+    pRightExpr_p->resync();
 }

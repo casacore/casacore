@@ -410,6 +410,37 @@ String LELFunctionFloat::className() const
    return String("LELFunctionFloat");
 }
 
+Bool LELFunctionFloat::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionFloat::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+Bool LELFunctionFloat::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionFloat::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
+}
+
 
 
 // LELFunctionDouble
@@ -895,6 +926,37 @@ String LELFunctionDouble::className() const
    return String("LELFunctionDouble");
 }
 
+Bool LELFunctionDouble::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionDouble::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+Bool LELFunctionDouble::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionDouble::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
+}
+
 
 
 // LELFunctionComplex
@@ -1134,6 +1196,37 @@ String LELFunctionComplex::className() const
    return String("LELFunctionComplex");
 }
 
+Bool LELFunctionComplex::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionComplex::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+Bool LELFunctionComplex::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionComplex::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
+}
+
 
 
 // LELFunctionDComplex
@@ -1370,6 +1463,37 @@ Bool LELFunctionDComplex::prepareScalarExpr()
 String LELFunctionDComplex::className() const
 {
    return String("LELFunctionDComplex");
+}
+
+Bool LELFunctionDComplex::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionDComplex::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+Bool LELFunctionDComplex::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionDComplex::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
 }
 
 
@@ -1615,4 +1739,35 @@ Bool LELFunctionBool::prepareScalarExpr()
 String LELFunctionBool::className() const
 {
    return String("LELFunctionBool");
+}
+
+Bool LELFunctionBool::lock (FileLocker::LockType type, uInt nattempts)
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].lock (type, nattempts)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionBool::unlock()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].unlock();
+  }
+}
+Bool LELFunctionBool::hasLock (FileLocker::LockType type) const
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    if (! arg_p[i].hasLock (type)) {
+      return False;
+    }
+  }
+  return True;
+}
+void LELFunctionBool::resync()
+{
+  for (uInt i=0; i<arg_p.nelements(); i++) {
+    arg_p[i].resync();
+  }
 }

@@ -1,5 +1,5 @@
 //# LELConvert.cc:  LELConvert.cc
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -104,4 +104,26 @@ template <class T, class F>
 String LELConvert<T,F>::className() const
 {
    return "LELConvert";
+}
+
+
+template <class T, class F>
+Bool LELConvert<T,F>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return pExpr_p->lock (type, nattempts);
+}
+template <class T, class F>
+void LELConvert<T,F>::unlock()
+{
+    pExpr_p->unlock();
+}
+template <class T, class F>
+Bool LELConvert<T,F>::hasLock (FileLocker::LockType type) const
+{
+    return pExpr_p->hasLock (type);
+}
+template <class T, class F>
+void LELConvert<T,F>::resync()
+{
+    pExpr_p->resync();
 }
