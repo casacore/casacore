@@ -3402,3 +3402,4 @@
 13 249 src rm trial/implement/Fitting/LSQMethods2.h
 13 249 src rm trial/implement/Fitting/LeastSquares.cc
 13 249 src rm trial/implement/Fitting/LeastSquares.h
+13 261 src mv trial/implement/ComponentModels/ComponentImager.h trial/implement/Images/ComponentImager.h
