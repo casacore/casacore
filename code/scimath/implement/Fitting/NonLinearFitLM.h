@@ -1,5 +1,5 @@
 //# NonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,8 @@
 // Solve non-linear fit with Levenberg-Marquardt method.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tNonLinearFitLM.cc" demos="">
+// <reviewed reviewer="wbrouw" date="2004/06/15" tests="tNonLinearFitLM.cc"
+//	 demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -56,6 +57,9 @@
 // </etymology>
 //
 // <synopsis>
+// NOTE: Constraints added. Documentation out of date at moment, check
+// the tLinearFitSVD and tNonLinearFirLM programs for examples.
+//
 // See the <linkto class=NonLinearFit>NonLinearFit</linkto> class for a
 // general description.
 //

@@ -1,5 +1,5 @@
 //# NonLinearFitLM.cc: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Function.h>
-#include <aips/typeinfo.h>
 
 template<class T>
 NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
@@ -67,10 +66,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   converge_p = False;
   Double fitit_p = 1.0;
   // Initialise fitter
-  reset();
-  set(aCount_ai,
-      typename LSQTraits<typename FunctionTraits<T>::BaseType>::num_type());
-  Double mu, me;
   sol.resize(pCount_p);
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
@@ -81,9 +76,10 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     setMaskedParameterValues(sol_p);
     // Build normal equations
     buildMatrix(x, y, sigma, mask);
+    // Build constraint equations
+    buildConstraint();
     // Do an LM loop
-    ///    if (!solveLoop(fitit_p, nr_p, sol_p)) {
-    VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);;;
+    VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);
     if (!solveLoop(fitit_p, nr_p, csolit)) {
       throw(AipsError("NonLinearFitLM: error in loop solution"));
     };
@@ -95,18 +91,15 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   // Solve last time
   setMaskedParameterValues(sol_p);
   buildMatrix(x, y, sigma, mask);
+  buildConstraint();
   invert(nr_p, True);
   solve(condEq_p);
-  mu = getSD();
-  me = getWeightedSD();
   sol_p += condEq_p;
   getErrors(err_p);
   errors_p = True;
   for (uInt i=0, k=0; i<pCount_p; i++) {
-    if (ptr_derive_p->mask(i)) {
-      sol[i] = sol_p[k++];
-      (*ptr_derive_p)[i].value() = sol[i];
-    };    
+    if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
+    (*ptr_derive_p)[i].value() = sol[i];
   };	
   solved_p = converge_p;
   return converge_p;
