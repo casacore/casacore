@@ -288,10 +288,6 @@ public:
     // delete.
     virtual Coordinate *clone() const;
 
-    // This is so CS has access to the static function make_FITS_type
-    // The alternative is to make it public or replicate the code.
-    friend class CoordinateSystem;
-
 private:
     // Direction type
     MDirection::Types type_p;
@@ -358,24 +354,19 @@ private:
 
     // Helper functions interfacing to WCS
     // <group>
-    static Vector<String> make_FITS_ctype (MDirection::Types type,
-                                           const Projection& proj,
-                                           Double refLat, Bool printError);
-
-
-    static void make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
+    void make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
                                    char c_ctype[2][9], double c_crval[2],
                                    const Projection& proj,
                                    MDirection::Types type,
                                    Double refLong, Double refLat,
-                                   Double longPole, Double latPole);
+                                   Double longPole, Double latPole) const;
 
-    static void copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
+    void copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
                                    wcsprm* &pToWcs,
                                    char toctype[2][9], double tocrval[2],
                                    const celprm *pFromCel, const prjprm *pFromPrj,
                                    const wcsprm *pFromWcs,
-                                   const char fromctype[2][9], const double fromcrval[2]);
+                                   const char fromctype[2][9], const double fromcrval[2]) const;
     // </group>
 
 };

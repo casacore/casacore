@@ -48,196 +48,6 @@
 #include <strstream.h>
 
 
-// Helper functions to help us interface to WCS
-
-
-Vector<String> DirectionCoordinate::make_FITS_ctype (MDirection::Types type,
-                                                     const Projection& proj,
-                                                     Double refLat, Bool printError)
-{
-    LogIO os(LogOrigin("DirectionCoordinate", "void make_FITS_ctype", WHERE));
-    Vector<String> ctype(2);
-    Vector<String> names = DirectionCoordinate::axisNames(type, True);
-    Vector<Double> projParameters = proj.parameters();
-//
-    Bool isNCP = False;
-    for (uInt i=0; i<2; i++) {
-       String name = names(i);
-       while (name.length() < 4) {
-           name += "-";
-       }
-       switch(proj.type()) {
-          case Projection::TAN:  // Fallthrough
-          case Projection::ARC:
-              name = name + "-" + proj.name();
-              break;
-          case Projection::SIN:
-
-// This is either "real" SIN or NCP
-
-              AlwaysAssert(projParameters.nelements() == 2, AipsError);
-              if (::near(projParameters(0), 0.0) && ::near(projParameters(1), 0.0)) {
-                  // True SIN
-                  name = name + "-" + proj.name();
-              } else {
-                  // NCP?
-                  // From Greisen and Calabretta
-                  if (::near(projParameters(0), 0.0) &&
-                      ::near(projParameters(1), 1.0/tan(refLat*C::pi/180.0))) {
-                      // Is NCP
-                      isNCP = True;
-                      name = name + "-NCP";
-                  } else {
-                      // Doesn't appear to be NCP
-                      // Only print this once
-                      if (!isNCP) {
-                          os << LogIO::WARN << "SIN projection with non-zero"
-                              " projp does not appear to be NCP." << endl <<
-                              "However, assuming NCP anyway." << LogIO::POST;
-                      }
-                      name = name + "-NCP";
-                      isNCP = True;
-                  }
-              }
-              break;
-          default:
-             if (i == 0) {
-
-// Only print the message once for long/lat
-                if (printError) {
-                   os << LogIO::WARN << proj.name()
-                      << " is not known to standard FITS (it is known to WCS)."
-                      << LogIO::POST;
-                }
-             }
-             name = name + "-" + proj.name();
-             break;
-       }
-       ctype(i) = name;
-    }
-    return ctype;
-}
-
-void DirectionCoordinate::make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
-                                   char c_ctype[2][9], double c_crval[2],
-                                   const Projection& proj,
-                                   MDirection::Types type,
-                                   Double refLong, Double refLat, 
-                                   Double longPole, Double latPole)
-{
-    pCelPrm = new celprm;
-    if (! pCelPrm) {
-        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(celprm)));
-    }
-    pCelPrm->flag = 0;
-    pCelPrm->ref[0] = refLong;
-    pCelPrm->ref[1] = refLat;
-    pCelPrm->ref[2] = longPole;
-    pCelPrm->ref[3] = latPole;
-
-    pPrjPrm = new prjprm;
-    if (! pPrjPrm) {
-        delete pCelPrm;
-        pCelPrm = 0;
-        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(prjprm)));
-    }
-    pPrjPrm->flag = 0;
-    pPrjPrm->r0 = 0.0;
-    objset(pPrjPrm->p, double(0.0), uInt(10));
-    uInt nRequiredParameters = Projection::nParameters(proj.type());
-    Vector<Double> projParameters = proj.parameters();
-    AlwaysAssert(projParameters.nelements() >= nRequiredParameters, AipsError);
-    int startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);
-    for (uInt i=0; i < nRequiredParameters; i++) {
-        pPrjPrm->p[i + startAt] = projParameters(i);
-    }
-    String name = Projection::name(proj.type());
-    const char *nameptr = name.chars();
-    int errnum = celset(nameptr, pCelPrm, pPrjPrm);
-
-    if (errnum != 0) {
-        String errmsg = "wcs celset_error: ";
-        errmsg += celset_errmsg[errnum];
-        throw(AipsError(errmsg));
-    }
-// 
-// All the things we make next are needed by the toMix2 function
-// We don't want to make them every time this is called
-//
-    pWcs = new wcsprm;
-    if (!pWcs) {
-        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(wcsprm)));
-    }
-//
-// Construct FITS ctype vector
-//
-    Vector<String> ctype = DirectionCoordinate::make_FITS_ctype(type, proj, refLat, False);
-    strncpy (c_ctype[0], ctype(0).chars(), 9);
-    strncpy (c_ctype[1], ctype(1).chars(), 9);
-//
-    c_crval[0] = refLong;
-    c_crval[1] = refLat;
-//
-// Fill in the wcs structure
-//
-    int iret = wcsset(2, c_ctype, pWcs);
-    if (iret!=0) {
-        String errorMsg = "wcs wcsset_error: ";
-        errorMsg += wcsset_errmsg[iret];
-        throw(AipsError(errorMsg));
-    }
-}
-
-
-
-void DirectionCoordinate::copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
-                                   wcsprm* &pToWcs, 
-                                   char toctype[2][9], double tocrval[2],
-				   const celprm *pFromCel, const prjprm *pFromPrj,
-                                   const wcsprm *pFromWcs, 
-                                   const char fromctype[2][9], const double fromcrval[2])
-//
-// This function is used by the copy constructor (for which the
-// output pointers will be 0) and assignment, for which the
-// output pointers will be non-zero
-//
-// Note that none of these structures have pointers in them. Therefore
-// we can copy them easily.  SOme of the wcs strcutures have pointers
-// in them and deep copies must be made.
-//
-{
-    AlwaysAssert(pFromCel!=0 && pFromPrj!=0 && pFromWcs!=0, AipsError);
-//
-    if (pToCel==0) pToCel = new celprm;
-    if (!pToCel) {
-        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(celprm)));
-    }
-    *pToCel = *pFromCel;
-//
-    if (pToPrj==0) pToPrj = new prjprm;
-    if (!pToPrj) {
-        delete pToCel;
-        pToCel = 0;
-        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(prjprm)));
-    }
-    *pToPrj = *pFromPrj;
-//
-    if (pToWcs==0) pToWcs = new wcsprm;
-    if (!pToWcs) {
-        delete pToCel;
-        pToCel = 0;
-        delete pToPrj;
-        pToPrj = 0;
-        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(wcsprm)));
-    }
-    *pToWcs = *pFromWcs;
-//
-    strncpy (toctype[0], fromctype[0], 9);
-    strncpy (toctype[1], fromctype[1], 9);
-    tocrval[0] = fromcrval[0];
-    tocrval[1] = fromcrval[1];
-}
-
 DirectionCoordinate::DirectionCoordinate()
 : Coordinate(),
   type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
@@ -260,13 +70,10 @@ DirectionCoordinate::DirectionCoordinate()
     toDegrees(crval);
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
-    DirectionCoordinate::make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
-                           c_ctype_p, c_crval_p,
-                           projection_p,
-                           type_p, crval(0), crval(1), 
+    make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, c_crval_p,
+                           projection_p, type_p, crval(0), crval(1), 
 			   999.0, 999.0);
 }
-
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Projection &projection,
@@ -294,11 +101,9 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
 
-    DirectionCoordinate::make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
-                           c_ctype_p, c_crval_p,
-                           projection_p,
-                           type_p, crval(0), crval(1), 
-			   999.0, 999.0);
+    make_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
+                           c_crval_p, projection_p, type_p, 
+                           crval(0), crval(1),  999.0, 999.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
@@ -309,7 +114,7 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 {
     to_degrees_p[0] = other.to_degrees_p[0];
     to_degrees_p[1] = other.to_degrees_p[1];
-    DirectionCoordinate::copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
+    copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
                            c_crval_p, other.celprm_p, other.prjprm_p,
                            other.wcs_p, other.c_ctype_p, other.c_crval_p);
 }
@@ -1307,6 +1112,7 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //cout << "doMix2: input pixel = " << mix_pixcrd_p[0] << ", " << mix_pixcrd_p[1] << endl;
 //cout << "doMix2: input vspan_p = " << mix_vspan_p[0] << ", " << mix_vspan_p[1] << endl;
 //cout << "doMix2: c_crval= " << c_crval_p[0] << " " << c_crval_p[1] << endl;
+//
     mix_vstep_p = 1.0;
     mix_viter_p = 2;
     int iret = wcsmix(c_ctype_p, wcs_p, mixpix_p, mixcel_p, mix_vspan_p, 
@@ -1340,3 +1146,128 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
     return True;
 }
+
+
+// Helper functions to help us interface to WCS
+
+void DirectionCoordinate::make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
+                                                 char c_ctype[2][9], double c_crval[2],
+                                                 const Projection& proj,
+                                                 MDirection::Types directionType,
+                                                 Double refLong, Double refLat,  
+                                                 Double longPole, Double latPole) const
+{
+    pCelPrm = new celprm;
+    if (! pCelPrm) {
+        throw(AllocError("DirectionCoordinate::make_celprm_and_prjprm()", sizeof(celprm)));
+    }
+    pCelPrm->flag = 0;
+    pCelPrm->ref[0] = refLong;
+    pCelPrm->ref[1] = refLat;
+    pCelPrm->ref[2] = longPole;
+    pCelPrm->ref[3] = latPole;
+
+    pPrjPrm = new prjprm;
+    if (! pPrjPrm) {
+        delete pCelPrm;
+        pCelPrm = 0;
+        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(prjprm)));
+    }
+    pPrjPrm->flag = 0;
+    pPrjPrm->r0 = 0.0;
+    objset(pPrjPrm->p, double(0.0), uInt(10));
+    uInt nRequiredParameters = Projection::nParameters(proj.type());
+    Vector<Double> projParameters = proj.parameters();
+    AlwaysAssert(projParameters.nelements() >= nRequiredParameters, AipsError);
+    int startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);
+    for (uInt i=0; i < nRequiredParameters; i++) {
+        pPrjPrm->p[i + startAt] = projParameters(i);
+    }
+    String name = Projection::name(proj.type());
+    const char *nameptr = name.chars();
+    int errnum = celset(nameptr, pCelPrm, pPrjPrm);
+
+    if (errnum != 0) {
+        String errmsg = "wcs celset_error: ";
+        errmsg += celset_errmsg[errnum];
+        throw(AipsError(errmsg));
+    }
+// 
+// All the things we make next are needed by the toMix2 function
+// We don't want to make them every time this is called
+//
+    pWcs = new wcsprm;
+    if (!pWcs) {
+        throw(AllocError("static ::make_celprm_and_prjprm()", sizeof(wcsprm)));
+    }
+//
+// Construct FITS ctype vector
+//
+    Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, True);
+    Vector<String> ctype = make_Direction_FITS_ctype(proj, axisNames, refLat, False);
+    strncpy (c_ctype[0], ctype(0).chars(), 9);
+    strncpy (c_ctype[1], ctype(1).chars(), 9);
+//
+    c_crval[0] = refLong;
+    c_crval[1] = refLat;
+//
+// Fill in the wcs structure
+//
+    int iret = wcsset(2, c_ctype, pWcs);
+    if (iret!=0) {
+        String errorMsg = "wcs wcsset_error: ";
+        errorMsg += wcsset_errmsg[iret];
+        throw(AipsError(errorMsg));
+    }
+}
+
+
+
+void DirectionCoordinate::copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
+                                                 wcsprm* &pToWcs, 
+                                                 char toctype[2][9], double tocrval[2],
+                                                 const celprm *pFromCel, const prjprm *pFromPrj,
+                                                 const wcsprm *pFromWcs, 
+                                                 const char fromctype[2][9], const double fromcrval[2]) const
+//
+// This function is used by the copy constructor (for which the
+// output pointers will be 0) and assignment, for which the
+// output pointers will be non-zero
+//
+// Note that none of these structures have pointers in them. Therefore
+// we can copy them easily.  SOme of the wcs strcutures have pointers
+// in them and deep copies must be made.
+//
+{
+    AlwaysAssert(pFromCel!=0 && pFromPrj!=0 && pFromWcs!=0, AipsError);
+//
+    if (pToCel==0) pToCel = new celprm;
+    if (!pToCel) {
+        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(celprm)));
+    }
+    *pToCel = *pFromCel;
+//
+    if (pToPrj==0) pToPrj = new prjprm;
+    if (!pToPrj) {
+        delete pToCel;
+        pToCel = 0;
+        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(prjprm)));
+    }
+    *pToPrj = *pFromPrj;
+//
+    if (pToWcs==0) pToWcs = new wcsprm;
+    if (!pToWcs) {
+        delete pToCel;
+        pToCel = 0;
+        delete pToPrj;
+        pToPrj = 0;
+        throw(AllocError("static ::copy_celprm_and_prjprm()", sizeof(wcsprm)));
+    }
+    *pToWcs = *pFromWcs;
+//
+    strncpy (toctype[0], fromctype[0], 9);
+    strncpy (toctype[1], fromctype[1], 9);
+    tocrval[0] = fromcrval[0];
+    tocrval[1] = fromcrval[1];
+}
+
