@@ -1,5 +1,5 @@
 //# LinearXform.h: Perform a linear transform between input and output vectors
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,10 +142,10 @@ public:
     // otherwise False is returned and errorMsg is set.  The output vectors
     // are resized appropriately.
     // <group>
-    Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
-                 String &errorMsg) const;
-    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
-                 String &errorMsg) const;
+    inline Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
+                        String &errorMsg) const;
+    inline Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
+                        String &errorMsg) const;
     // </group>
 
     // Retrieve the value of crpix, cdelt, and pc.
