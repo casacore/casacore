@@ -128,7 +128,7 @@ public:
     // <src>f0</src> is the frequency of the reference pixel, <src>inc</src> is the pixel increment,
     // <src>refPix</src> is the reference pixel. You can
     // optionally store the rest frequency for later use in calculating radial
-    // velocities.
+    // velocities.  Use 0 for restFrequency if continuum.
     //
     // Frequencies and increments initially in Hz.
     SpectralCoordinate(MFrequency::Types type, Double f0, Double inc, 
@@ -139,6 +139,7 @@ public:
     // Regardless of the units of the Quanta, the initial units
     // of the SpectralCoordinate will be Hz.  You can change it to 
     // something else with the setWorldAxisUnits method later if you want.
+    // Use 0 for restFrequency if continuum.
     SpectralCoordinate(MFrequency::Types type, const Quantum<Double>& f0, 
                        const Quantum<Double>& inc, Double refPix, 
                        const Quantum<Double>& restFrequency = Quantum<Double>(0.0,"Hz"));
@@ -152,6 +153,7 @@ public:
     // not supplied. The reference pixel is chosen to be 0.
     // The frequencies must increase or decrease monotonically (otherwise
     // the toPixel lookup would not be possible).
+    // Use 0 for restFrequency if continuum.
     SpectralCoordinate(MFrequency::Types type, const Vector<Double> &freqs,
 		       Double restFrequency = 0.0);
     
@@ -160,6 +162,7 @@ public:
     // Parameters are the same as above.
     // Regardless of the units of the Quanta, the initial units
     // of the SpectralCoordinate will be Hz.
+    // Use 0 for restFrequency if continuum.
     SpectralCoordinate(MFrequency::Types type, const Quantum<Vector<Double> >& freqs,
 		       const Quantum<Double>& restFrequency = Quantum<Double>(0.0,"Hz"));
 
