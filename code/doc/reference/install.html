@@ -146,7 +146,12 @@ scripts to set up the necessary environment and then
 phase takes a few minutes, and the <i><b>inhale</b></i> typically
 takes many hours.  The <i><b>inhale</b></i> ftp's a total of about 50
 MB and then builds the system. The space required for a full
-installation is about 500MB.
+installation is about 500MB. The one likely complication is that
+AIPS++ relies upon some other packages and compilers to be
+present. Copies of the required packages are kept in the ftp area
+in pub/import and are fetched by the configure script (see below)
+if necessary. More information can be found in the <a
+href="../../reference/System/System.html"> AIPS++ System Manual</a>.
 <p>
 
 In the following, commands to feed to your shell are <em>in this font and 
