@@ -3515,3 +3515,5 @@
 13 288 src mv trial/implement/Lattices/LELLattCoordBase.h aips/implement/Lattices/LELLattCoordBase.h
 13 290 src mv trial/implement/Measures/test/tMeasComet.cc aips/implement/Measures/test/tMeasComet.cc
 13 290 src mv trial/implement/Measures/test/tMeasComet.out aips/implement/Measures/test/tMeasComet.out
+13 291 src rm trial/implement/Display/AttBufferScalarTemplates.cc
+13 291 src rm trial/implement/Display/AttBufferVectorTemplates.cc
