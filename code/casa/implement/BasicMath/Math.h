@@ -237,9 +237,9 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13)
 
 // Functions to test for IEEE NaN's.  The Float variant uses an in-line
 // Macro examining the bit pattern (for portability and efficiency). The
-// DOuble version invokes the IEEE function isnan found in ieeefp.h or math.h
+// Double version invokes the IEEE function isnan found in ieeefp.h or math.h
 // <group>
-inline Bool isNaN (const Float& val)
+inline Bool isNaN (Float val)
 {
   return ToBool(((*(long *)&(val) & 0x7f800000L) == 0x7f800000L) && \
 			    ((*(long *)&(val) & 0x007fffffL) != 0x00000000L));
