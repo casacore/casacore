@@ -1,5 +1,5 @@
 //# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <iomanip.h>
+#include <aips/iomanip.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Measures.h>

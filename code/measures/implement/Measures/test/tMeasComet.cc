@@ -1,5 +1,5 @@
 //# tMeasComet.cc: MeasComet test
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,8 +44,8 @@
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Arrays/Vector.h>
-#include <strstream.h>
-#include <iomanip.h>
+#include <aips/strstream.h>
+#include <aips/iomanip.h>
 
 main() {
   try {
