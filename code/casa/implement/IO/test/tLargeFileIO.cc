@@ -31,6 +31,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 #include <aips/strstream.h>
+#include <unistd.h>
 
 
 int main (int argc, char** argv)
@@ -58,12 +59,14 @@ int main (int argc, char** argv)
 
     {
 	Timer timer;
-	LargeFiledesIO file2 (LargeFiledesIO::create("tLargeFileIO_tmp.dat2"));
+	int fd = LargeFiledesIO::create("tLargeFileIO_tmp.dat2");
+	LargeFiledesIO file2 (fd);
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    buf[0] = i;
 	    file2.write (tleng, buf);
 	}
+	::fsync(fd);
 	timer.show ("LargeFiledesIO     write");
     }
     {
