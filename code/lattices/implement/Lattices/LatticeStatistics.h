@@ -301,6 +301,8 @@ public:
    Bool getMax (Array<T>&);
    Bool getMean (Array<T>&);
    Bool getMedian (Array<T>&);
+   Bool getMedAbsDevMed (Array<T>&);
+   Bool getQuartile(Array<T>&);
    Bool getVariance (Array<T>&);
    Bool getSigma (Array<T>&);
    Bool getRms (Array<T>&);
