@@ -55,8 +55,8 @@ LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName, 
 	  const ObjectID &id, const SourceLocation *where)
 : function_p(memberFuncName), class_p(className), 
-  line_p(where ? where->lineNumber : 0),
   id_p(id), 
+  line_p(where ? where->lineNumber : 0),
   file_p(where ? where->fileName : "")
 {
     // Nothing
@@ -163,7 +163,7 @@ String LogOrigin::fullName() const
     return className() + "::" + functionName();
 }
 
-String LogOrigin::toString() const
+String LogOrigin::location() const
 {
     ostrstream os;
     String nullString;
@@ -175,10 +175,18 @@ String LogOrigin::toString() const
 	}
 	os << ")";
     }
-    if (! objectID().isNull()) {
-        os << " ObjectID " << objectID();
-    }
     return os;
+}
+
+String LogOrigin::toString() const
+{
+    String retval = location();
+    if (! objectID().isNull()) {
+	ostrstream os;
+        os << " ObjectID=" << objectID();
+	retval += String(os);
+    }
+    return retval;
 }
 
 Bool LogOrigin::isUnset() const
