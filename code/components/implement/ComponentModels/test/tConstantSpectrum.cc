@@ -30,7 +30,7 @@
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <trial/ComponentModels/ConstantSpectrum.h>
 #include <trial/ComponentModels/SpectralModel.h>
-#include <trial/Measures/MeasureHolder.h>
+#include <aips/Measures/MeasureHolder.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
