@@ -67,14 +67,13 @@ ALT	[ A-Z]
 /* Keyvalue data types. */
 INTEGER	[+-]?[0-9]+
 FLOAT	[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?
-STRING	'.*/'[^']
+STRING	'([^']|'')*'
 
 /* Exclusive start states. */
 %x CROTAi PROJPn
 %x CCCCCia CCi_ja CCi_ma CCCCCCCa CCCCCCCC
 %x VALUE
 %x INTEGER_VAL FLOAT_VAL STRING_VAL
-%x ENDQUOTE
 %x COMMENT
 %x DISCARD ERROR FLUSH
 
@@ -330,7 +329,7 @@ int  wcspih_nkeys;
 	    if (*wcs) {
 	      vptr = epoch;
 	      if (alt >= 'A') {
-	        vptr += alts[alt-'A'+1];
+	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
 
@@ -387,7 +386,7 @@ int  wcspih_nkeys;
 	    if (*wcs) {
 	      vptr = velref;
 	      if (alt >= 'A') {
-	        vptr += alts[alt-'A'+1];
+	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
 
@@ -633,7 +632,7 @@ int  wcspih_nkeys;
 	  BEGIN(VALUE);
 	}
 
-<VALUE>=" " {
+<VALUE>=" "+ {
 	  if (type == INTEGER) {
 	    BEGIN(INTEGER_VAL);
 	  } else if (type == FLOAT) {
@@ -651,7 +650,7 @@ int  wcspih_nkeys;
 	  BEGIN(ERROR);
 	}
 
-<INTEGER_VAL>" "*{INTEGER} {
+<INTEGER_VAL>{INTEGER} {
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -695,7 +694,7 @@ int  wcspih_nkeys;
 	  BEGIN(ERROR);
 	}
 
-<FLOAT_VAL>" "*{FLOAT} {
+<FLOAT_VAL>{FLOAT} {
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -751,7 +750,7 @@ int  wcspih_nkeys;
 	  BEGIN(ERROR);
 	}
 
-<STRING_VAL>'.*/'[^'] {
+<STRING_VAL>{STRING} {
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -791,19 +790,21 @@ int  wcspih_nkeys;
 	          if (k < j) {
 	            cptr[k] = cptr[j];
 	          }
-	          k++;
 
 	          if (cptr[j] == '\0') {
+	            if (k) cptr[k-1] = '\0';
 	            break;
 	          } else if (cptr[j] == '\'' && cptr[j+1] == '\'') {
 	            j++;
 	          }
+
+	          k++;
 	        }
 
 	        if (alt) break;
 	      }
 
-	      BEGIN(ENDQUOTE);
+	      BEGIN(COMMENT);
 
 	    } else {
 	      sprintf(errmsg, "Internal parser error, null string pointer");
@@ -815,10 +816,6 @@ int  wcspih_nkeys;
 <STRING_VAL>. {
 	  sprintf(errmsg, "A string value was expected");
 	  BEGIN(ERROR);
-	}
-
-<ENDQUOTE>' {
-	  BEGIN(COMMENT);
 	}
 
 <COMMENT>" "*\/.* {
@@ -855,7 +852,7 @@ int  wcspih_nkeys;
 	  BEGIN(INITIAL);
 	}
 
-<<EOF>>	{
+<<EOF>> {
 	  if (pass == 1) {
 	    if (status = wcspih_inits(alts, npv, nps, nwcs, wcs) ||
 	        *nwcs == 0) {
@@ -887,7 +884,7 @@ int  wcspih_nkeys;
 	      fprintf(stderr, "%d WCS cards were rejected.\n", *nreject);
 	    }
 
-            wcspih_final(alts, epoch, velref, nwcs, wcs);
+	    wcspih_final(alts, epoch, velref, nwcs, wcs);
 
 	    return 0;
 	  }
