@@ -438,7 +438,6 @@ void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
   }
   Quantum<Vector<Double> > fluxStokes;
   flux(fluxStokes);
-
   Vector<Complex> complexStokes(4), singleLinear(4);
   for (uInt i = 0; i < 4; i++) {
     complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
@@ -455,11 +454,68 @@ void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
 }
 
 void SkyCompRep::setFluxCircular(const Quantum<Vector<DComplex> > & compFlux) {
-  // just a stub
+  AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
+  const Vector<DComplex> & fluxCircular = compFlux.getValue();
+  AlwaysAssert(fluxCircular.nelements() == 4, AipsError);
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), circular(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    circular(0) = Stokes::RR;
+    circular(1) = Stokes::RL;
+    circular(2) = Stokes::LR;
+    circular(3) = Stokes::LL;
+    sc.setConversion(stokes, circular);
+  }
+  Vector<Complex> singleCircular(4), complexStokes(4);
+  for (uInt s = 0; s < 4; s++) {
+    singleCircular(s) = fluxCircular(s);
+  }
+  sc.convert(complexStokes, singleCircular);
+
+  Vector<Double> fluxStokes(4);
+  for (uInt i = 0; i < 4; i++) {
+    fluxStokes(i) = real(complexStokes(i));
+  }
+  setFlux(Quantum<Vector<Double> >(fluxStokes, compFlux.getFullUnit()));
 }
 
 void SkyCompRep::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
-  // just a stub
+  // NOTE: Precision is LOST here because we do not yet have double precision
+  // version of the conversions available.
+  StokesConverter sc;
+  {
+    Vector<Int> stokes(4), circular(4);
+    stokes(0) = Stokes::I;
+    stokes(1) = Stokes::Q;
+    stokes(2) = Stokes::U;
+    stokes(3) = Stokes::V;
+    circular(0) = Stokes::RR;
+    circular(1) = Stokes::RL;
+    circular(2) = Stokes::LR;
+    circular(3) = Stokes::LL;
+    sc.setConversion(circular, stokes);
+  }
+  Quantum<Vector<Double> > fluxStokes;
+  flux(fluxStokes);
+  Vector<Complex> complexStokes(4), singleCircular(4);
+  for (uInt i = 0; i < 4; i++) {
+    complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
+  }
+
+  sc.convert(singleCircular, complexStokes);
+
+  Vector<DComplex> doubleCircular(4);
+  for (uInt s = 0; s < 4; s++) {
+    doubleCircular(s) = singleCircular(s);
+  }
+  compFlux.setValue(doubleCircular);
+  compFlux.setUnit(fluxStokes.getFullUnit());
 }
 
 void SkyCompRep::visibilityLinear(Vector<DComplex> & vis, 
