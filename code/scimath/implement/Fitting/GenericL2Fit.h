@@ -262,6 +262,15 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // </group>
   // Return the number of fitted parameters
   uInt fittedNumber() const { return aCount_ai; };
+
+  // Set the parameter values. The input is a vector of parameters; all
+  // or only the masked ones' values will be set, using the input values
+  // <group>
+  void setParameterValues
+    (const Vector<typename FunctionTraits<T>::BaseType> &parms);
+  void setMaskedParameterValues
+    (const Vector<typename FunctionTraits<T>::BaseType> &parms);
+  // </group>
   
   // Fit the function to the data. If no sigma provided, all ones assumed.
   // In the case of no x,y,sigma the fitting equations are supposed to be
