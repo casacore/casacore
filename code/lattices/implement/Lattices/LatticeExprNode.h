@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -339,7 +339,7 @@ class LatticeExprNode
 				  const LatticeExprNode& axis);
 
 // Test if a value is a NaN.
-   friend LatticeExprNode isnan (const LatticeExprNode& expr);
+   friend LatticeExprNode isNaN (const LatticeExprNode& expr);
 
 // Functions operating on a logical expression resulting in a scalar;
 // Functions "any" (are any pixels "True") and "all" (are all pixels
