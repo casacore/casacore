@@ -933,10 +933,9 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     String obsName = inarrayname(arraynum);
     MPosition pos;
     MeasTable::Observatory(pos, obsName);
-    MPosition pos1 = MPosition::Convert (pos, MPosition::ITRF)();
-    MPosition pos2 = MPosition::Convert (pos, MPosition::WGS84)();
-    Vector<Double> arraypos = pos1.getValue().getValue(); 
-    Vector<Double> wgspos = pos2.getValue().getValue(); 
+    MPosition itrfpos = MPosition::Convert (pos, MPosition::ITRF)();
+    MVPosition mvpos = itrfpos.getValue();
+    Vector<Double> arraypos = mvpos.getValue();
 
     // Prepare handling of peculiar UVFITS antenna position conventions:
     // VLA and WSRT requires rotation into local frame:
@@ -946,12 +945,14 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
     if (doRot) {
       // form rotation around Z-axis by longitude:
-      Double posLong = atan2(arraypos(1),arraypos(0));
+      Double posLong = mvpos.getLong();
       posRot=Rot3D(2,-posLong);  // opposite rotation cf MSFitsInput
     }
     // "VLBI" (==arraypos<1000m) requires y-axis reflection:
     //   (ATCA looks like VLBI in UVFITS, but is already RHed.)
-    Bool doRefl=((arrayName!="ATCA") && allLE(abs(wgspos),1000.0));
+    // It looks as if WSRT needs y-axis reflection for UVFIX.
+    Bool doRefl=((arrayName=="WSRT")  ||
+		((arrayName!="ATCA") && allLE(abs(arraypos),1000.0)));
 
     // #### Header
     Record header;
@@ -1091,6 +1092,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
       if (doRot) corstabxyz = product(posRot,corstabxyz);
       if (doRefl) corstabxyz(1)=-corstabxyz(1);
       *stabxyz = corstabxyz;
+      cout << corstabxyz << endl;
 
       *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
