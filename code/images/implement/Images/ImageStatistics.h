@@ -34,7 +34,7 @@
 #include <aips/aips.h>
 #include <trial/Images/ImageStatsBase.h>
 template <class T> class ImageInterface;
-template <class T> class ArrayLattice;
+template <class T> class PagedArray;
 template <class T> class Vector;
 class IPosition;
 class LogIO;
@@ -268,7 +268,7 @@ private:
    Bool needStorageImage_p;
    Int nVirCursorIter_p;   
 
-   ArrayLattice<Double>* pStoreImage_p;
+   PagedArray<Double>* pStoreImage_p;
 
 
 // Functions
@@ -302,7 +302,7 @@ private:
                           ();
 
 // List the statistics
-   Bool listStats         (const IPosition& dPos, 
+   void listStats         (const IPosition& dPos, 
                            const Int& n1,
                            const Matrix<Float>& ord);
 
@@ -360,7 +360,7 @@ private:
                             const Int& pixelAxis);
 
 // Convert pixel coordinate to world coordinate string
-   Bool pix2World         (Vector<String>& sWorld,
+   void pix2World         (Vector<String>& sWorld,
                            const Int& worldAxis,
                            const Vector<Double>& pixel,
                            const Int& prec);

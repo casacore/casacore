@@ -37,6 +37,12 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MVAngle.h>
+#include <aips/OS/Timer.h>
+#include <aips/OS/File.h>
+#include <aips/OS/Path.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/SetupNewTab.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
 
@@ -44,7 +50,7 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
@@ -131,7 +137,7 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
 // Copy storage image
 
    if (other.pStoreImage_p !=0) {
-      pStoreImage_p = new ArrayLattice<Double>(*(other.pStoreImage_p));
+      pStoreImage_p = new PagedArray<Double>(*(other.pStoreImage_p));
    } else {
       pStoreImage_p = 0;
    }
@@ -155,7 +161,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 // Copy storage image
 
       if (other.pStoreImage_p !=0) {
-         pStoreImage_p = new ArrayLattice<Double>(*(other.pStoreImage_p));
+         pStoreImage_p = new PagedArray<Double>(*(other.pStoreImage_p));
       } else {
          pStoreImage_p = 0;
       }
@@ -385,6 +391,29 @@ Bool ImageStatistics<T>::display()
    }
 
 
+// Do we have anything to do
+
+   if (!doList_p && device_p.empty()) {
+     os_p << LogIO::NORMAL
+          << "There is nothing to plot or list" << endl << LogIO::POST;
+     return True;
+   }
+
+
+// Open plotting device if required and set up some plotting things
+
+   if (!device_p.empty()) {
+      if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
+         os_p << LogIO::SEVERE << endl << "Couldn't open display device" 
+              << endl << LogIO::POST;
+         return False;
+      }
+      cpgask(1);
+      cpgsch (1.2);
+      cpgsvp(0.1,0.9,0.1,0.9);
+   }
+
+
 // Generate storage image if required
 
    if (needStorageImage_p) generateStorageImage();
@@ -408,30 +437,14 @@ Bool ImageStatistics<T>::display()
 
    Int n1 = pStoreImage_p->shape()(0);
 
+
 // Allocate ordinate arrays for plotting and listing
 
    Matrix<Float> ord(n1,NSTATS);
 
 
-// Open plotting device if required and set up some plotting things
-
-   Bool doPlot = False;
-   if (!device_p.empty()) {
-      if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
-         os_p << LogIO::SEVERE << endl << "Couldn't open display device" 
-              << endl << LogIO::POST;
-         return False;
-      }
-      doPlot = True;
-
-      cpgask(1);
-      cpgsch (1.2);
-      cpgsvp(0.1,0.9,0.1,0.9);
-   }
-
-
 // Iterate through storage image. The cursor may be of > 2 dimensions, but 
-// only the first (first display axsi) and last (statistics) axes are of 
+// only the first (first display axis) and last (statistics) axes are of 
 // non-unit size, so it  is effectively a matrix.  
 
    IPosition cursorShape(pStoreImage_p->ndim(),1);
@@ -472,23 +485,21 @@ Bool ImageStatistics<T>::display()
 
 // Plot statistics
 
-      if (doPlot) {
+      if (!device_p.empty()) {
         if (!plotStats (pixelIterator.position(), n1, ord)) return False;
       }
 
 
 // List statistics
 
-      if (doList_p) {
-        if (!listStats(pixelIterator.position(), n1, ord)) return False;
-      }
+      if (doList_p) listStats(pixelIterator.position(), n1, ord);
 
     }
 
 
 // Finish up
 
-   if (doPlot) cpgend();
+   if (!device_p.empty()) cpgend();
    return True;
 }
 
@@ -748,6 +759,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 //                   axes) so that we know we have to reinit min and max.  
 {
 
+
 // Iterate through cursor array by vectors as its faster than
 // doing it pixel by pixel
 
@@ -760,8 +772,6 @@ void ImageStatistics<T>::accumulate (Int& nIter,
    Int nPts = 0;
    Int n1 = posIt.vector().nelements();
    Int i;
-   Bool include = Bool(!noInclude_p);
-   Bool exclude = Bool(!noExclude_p);
 
 
 // Iterate; {} destroys iterator when done with it
@@ -771,7 +781,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
       while (!posIt.pastEnd()) {
          Int orig = posIt.vector().origin()(0);
 
-         if (include) {
+         if (!noInclude_p) {
 
 // Inclusion range
 
@@ -787,7 +797,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
                                i, posIt.pos(), tmp);
                }
             }
-         } else if (exclude) {
+         } else if (!noExclude_p) {
 
 // Exclusion range
 
@@ -821,44 +831,50 @@ void ImageStatistics<T>::accumulate (Int& nIter,
    }
 
 
+// Extract statistics slice
 
-// Fill storage image
-
-   IPosition storeImagePos(pStoreImage_p->ndim());
+   IPosition start(pStoreImage_p->ndim());
    Int lastAxis = pStoreImage_p->ndim() - 1;
-   for (i=0; i<lastAxis; i++) storeImagePos(i) = cursorPos(displayAxes_p(i));
+   for (i=0; i<lastAxis; i++) start(i) = cursorPos(displayAxes_p(i));
+   start(lastAxis) = 0;
 
-   storeImagePos(lastAxis)  = NPTS;
-   tmp = (*pStoreImage_p)(storeImagePos);
-   tmp = tmp + nPts;
-   (*pStoreImage_p)(storeImagePos) = tmp;
+   IPosition shape(pStoreImage_p->ndim(),1);
+   shape(lastAxis) = NACCUM;
+   Array<Double> slice(shape);
+   pStoreImage_p->getSlice(slice, start, shape, 
+                           IPosition(pStoreImage_p->ndim(),1));
 
-   storeImagePos(lastAxis) = SUM;
-   tmp = (*pStoreImage_p)(storeImagePos);
+// Update slice
 
-   tmp = tmp + sum;
-   (*pStoreImage_p)(storeImagePos) = tmp;
+   IPosition pos(start);
+   pos = 0;
+   pos(lastAxis) = NPTS;
+   slice(pos) += nPts;
 
-   storeImagePos(lastAxis) = SUMSQ;
-   tmp = (*pStoreImage_p)(storeImagePos);
-   tmp = tmp + sumsq;
-   (*pStoreImage_p)(storeImagePos) = tmp;
+   pos(lastAxis) = SUM;
+   slice(pos) += sum;
 
-   storeImagePos(lastAxis) = MIN;
-   tmp = (*pStoreImage_p)(storeImagePos);
-   if (nIter == 0 || (nIter !=0 && sMin < tmp)) {
-     (*pStoreImage_p)(storeImagePos) = sMin;
+   pos(lastAxis) = SUMSQ;
+   slice(pos) += sumsq;
+
+   pos(lastAxis) = MIN;
+   if (nIter == 0 || (nIter !=0 && sMin < slice(pos))) {
+     slice(pos) = sMin;
      minPos_p = cursorPos;
      for (i=0; i<cursor.ndim(); i++) minPos_p(i) += tMinPos(i);
    }
-
-   storeImagePos(lastAxis) = MAX;
-   tmp = (*pStoreImage_p)(storeImagePos);
-   if (nIter == 0 || (nIter !=0 && sMax > tmp)) {
-     (*pStoreImage_p)(storeImagePos) = sMax;
+   pos(lastAxis) = MAX;
+   if (nIter == 0 || (nIter !=0 && sMax > slice(pos))) {
+     slice(pos) = sMax;
      maxPos_p = cursorPos;
      for (i=0; i<cursor.ndim(); i++) maxPos_p(i) += tMaxPos(i);
    }
+
+
+// Put it back
+
+   pStoreImage_p->putSlice(slice, start);
+
 
 // Work out if it is time to initialize the min and max accumulators
 // This algorithm will only work if the virtual cursor is worked through
@@ -1130,10 +1146,34 @@ void ImageStatistics<T>::generateStorageImage()
    ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
                                         displayAxes_p, pInImage_p->shape());
 
+
 // Create new storage image.  Delete old one first !
 
    if (pStoreImage_p != 0) delete pStoreImage_p;
-   pStoreImage_p = new ArrayLattice<Double>(storeImageShape);
+
+
+// Create scratch storage image file name
+
+   Path fileName = File::newUniqueName(String("./"),String("PagedArray"));
+   SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
+   Table myTable(setup);
+
+// Set tile shape.   Only first and last axes should have non unit 
+// tile shape as the storage image is only ever accessed by vectors
+// along these axes 
+
+   IPosition imageTileShape(pInImage_p->niceCursorShape(pInImage_p->maxPixels()));
+   IPosition storeImageTileShape(storeImageShape.nelements(),1);
+
+   storeImageTileShape(storeImageShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
+   if (displayAxes_p.nelements() > 0) 
+      storeImageTileShape(0) = imageTileShape(displayAxes_p(0));
+//   cout << "image tile shape = " << imageTileShape << endl;
+//   cout << "store image shape = " << storeImageShape << endl;
+//   cout << "store tile shape = " << storeImageTileShape << endl;
+
+   pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, storeImageTileShape);
+//   pStoreImage_p = new PagedArray<Double>(storeImageShape);
    pStoreImage_p->set(Double(0.0));
    os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
    needStorageImage_p = False;     
@@ -1148,7 +1188,6 @@ void ImageStatistics<T>::generateStorageImage()
 // Set up pixel iterator and navigator
 
    RO_LatticeIterator<T> pixelIterator(*pInImage_p, cursorShape_p);
-
 
 // Iterate through image and accumulate statistical sums
 
@@ -1221,7 +1260,7 @@ void ImageStatistics<T>::lineSegments (Int& nSeg,
 
 typedef Matrix<Float> gpp_MatrixFloat;
 template <class T>
-Bool ImageStatistics<T>::listStats (const IPosition& dPos,
+void ImageStatistics<T>::listStats (const IPosition& dPos,
                                     const Int& n1,
                                     const gpp_MatrixFloat& ord)
 //
@@ -1238,6 +1277,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 {
    os_p << endl;
 
+
 // Get number of statistics and display axes
 
    Int nDisplayAxes = displayAxes_p.nelements();
@@ -1248,9 +1288,10 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
    Int nMax = 0;
    for (Int j=0; j<n1; j++) nMax = max(nMax, Int(ord.column(NPTS)(j)+0.1));
-   Int logNMax = Int(log10(nMax+1.5));
-   Int oIWidth = max(6, logNMax);
+   Int logNMax = Int(log10(nMax)) + 2;
+   Int oIWidth = max(5, logNMax);
    Int oDWidth = 15;
+   Int oSWidth = 7;
    Int oPrec = 6;
 
 
@@ -1270,9 +1311,8 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
       Vector<Double> pixel(1);
       for (Int j=1; j<nDisplayAxes; j++) {
          pixel(0) = Double(dPos(j));
-         if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec)) return False;
+         pix2World (sWorld, displayAxes_p(j), pixel, oPrec);
 
-      
          Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
          os_p <<  ImageUtilities::shortAxisName(name)
@@ -1303,8 +1343,28 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
       len0 = 11;
    }
 
-   os_p.output() << setw(oDWidth) << 
-      ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
+// If the first display axis is a Stokes axis, then we list its value (in
+// column 2) non numerically (e.g. I or Q).  Thus we must find this out and
+// set the width of the field appropriately
+
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   Int coord, axisInCoordinate;
+   cSys.findPixelAxis (coord, axisInCoordinate, displayAxes_p(0));
+   Int width2;
+   if (cSys.type(coord) == Coordinate::STOKES) {
+      width2 = oSWidth;
+   } else {
+      width2 = oDWidth;
+   }
+
+// Now this is all getting rather ugly.  Width2 is not guarenteed to be wide enough 
+// to take the name of the first display axis.   The shortAxisNames function passes 
+// unknown types back as is so we have to make one more check and fiddle.
+
+   String temp = ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
+   if (temp.length() > width2) width2 = temp.length() + 1;
+
+   os_p.output() << setw(width2) << temp;
    os_p.output() << setw(oIWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    os_p.output() << setw(oDWidth) << "Mean"; 
@@ -1319,14 +1379,14 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    Vector<String> sWorld(n1);
    Vector<Double> pixel(n1);
    for (Int i=0; i<n1; i++) pixel(i) = Double(i);
-   if (!pix2World(sWorld, displayAxes_p(0), pixel, oPrec)) return False;
+   pix2World(sWorld, displayAxes_p(0), pixel, oPrec);
 
 
 // Write statistics to logger
 
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+1;
-      os_p.output() << setw(oDWidth)   << sWorld(j);
+      os_p.output() << setw(width2)   << sWorld(j);
       os_p.output() << setw(oIWidth)   << Int(ord.column(NPTS)(j)+0.1);
 
       if (Int(ord.column(NPTS)(j)+0.1) > 0) {
@@ -1659,7 +1719,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
          pixel(0) = Double(dPos(j));
-         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6)) return False;
+         pix2World (sWorld, displayAxes_p(j), pixel, 6);
 
          Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
@@ -1891,7 +1951,7 @@ Int ImageStatistics<T>::pixelAxisToWorldAxis(const CoordinateSystem& cSys,
 
 
 template <class T>
-Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
+void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
                                     const Int& pixelAxis,
                                     const Vector<Double>& pixel,
                                     const Int& prec)
@@ -1927,7 +1987,7 @@ Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
    pix = cSys.referencePixel(); 
    for (Int i=0; i<pix.nelements(); i++) {
      if (ImageUtilities::inVector(i, cursorAxes_p)) {
-       pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
+       pix(i) = Double(pInImage_p->shape()(i)-1) / 2.0;
      }
    }
 
@@ -1959,60 +2019,69 @@ Bool ImageStatistics<T>::pix2World (Vector<String>& sWorld,
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
  
-         if (!cSys.toWorld(world,pix)) return False;
-         MVAngle mVA(world(pixelAxis));
+         if (cSys.toWorld(world,pix)) {
+            MVAngle mVA(world(pixelAxis));
          
-         if (tString.contains("RIGHT ASCENSION")) {
-            sWorld(i) = mVA.string(MVAngle::TIME,8);
-         } else if (tString.contains("DECLINATION")) {
-            sWorld(i) = mVA.string(MVAngle::DIG2,8);
+            if (tString.contains("RIGHT ASCENSION")) {
+               sWorld(i) = mVA.string(MVAngle::TIME,8);
+            } else if (tString.contains("DECLINATION")) {
+               sWorld(i) = mVA.string(MVAngle::DIG2,8);
+            } else {
+               ostrstream oss;
+               oss.setf(ios::scientific, ios::floatfield);
+               oss.setf(ios::left);
+               oss.precision(prec);
+               oss << mVA.degree() << ends;
+               String temp(oss.str());
+               sWorld(i) = temp;
+            }
          } else {
+           sWorld(i) = "?";
+         }
+      }
+   } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
+      for (Int i=0; i<n1; i++) {
+         pix(pixelAxis) = pixel(i);
+         Bool ok = cSys.toWorld(world,pix);
+         if (ok) {
             ostrstream oss;
             oss.setf(ios::scientific, ios::floatfield);
             oss.setf(ios::left);
             oss.precision(prec);
-            oss << mVA.degree() << ends;
+            oss << world(pixelAxis) << ends;
             String temp(oss.str());
             sWorld(i) = temp;
-         }
-      }
-   } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
- 
-      for (Int i=0; i<n1; i++) {
-         pix(pixelAxis) = pixel(i);
-         if (!cSys.toWorld(world,pix)) return False;
- 
-         ostrstream oss;
-         oss.setf(ios::scientific, ios::floatfield);
-         oss.setf(ios::left);
-         oss.precision(prec);
-         oss << world(pixelAxis) << ends;
-         String temp(oss.str());
-         sWorld(i) = temp;
+          } else {
+            sWorld(i) = "?";
+          }
       }
    } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
       for (Int i=0; i<n1; i++) {
          pix(pixelAxis) = pixel(i);
-         if (!cSys.toWorld(world,pix)) return False;
-      
-         ostrstream oss;
-         oss.setf(ios::scientific, ios::floatfield);
-         oss.setf(ios::left);
-         oss.precision(prec);
-         oss << world(pixelAxis) << ends;
-         String temp(oss.str());
-         sWorld(i) = temp;
+         if (cSys.toWorld(world,pix)) {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.setf(ios::left);
+            oss.precision(prec);
+            oss << world(pixelAxis) << ends;
+            String temp(oss.str());
+            sWorld(i) = temp;
+          } else {
+            sWorld(i) = "?";
+          }
       }  
    } else if (cSys.type(coordinate) == Coordinate::STOKES) {
       const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
       for (Int i=0; i<n1; i++) {
          Stokes::StokesTypes iStokes;
          Int pix = Int(pixel(i));
-         if (!coord.toWorld(iStokes, pix)) return False;
-         sWorld(i) = Stokes::name(Stokes::type(iStokes));
+         if (coord.toWorld(iStokes, pix)) {
+            sWorld(i) = Stokes::name(Stokes::type(iStokes));
+         } else {
+            sWorld(i) = "?";
+         }
       }
    }
-   return True;
 }
             
 
