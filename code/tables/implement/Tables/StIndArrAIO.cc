@@ -109,12 +109,14 @@ void StManColumnIndArrayAipsIO::addRow (uInt nrnew, uInt nrold)
 void StManColumnIndArrayAipsIO::setShape (uInt rownr, const IPosition& shape)
 {
     StIndArray* ptr = STMANINDGETBLOCK(rownr);
-    if (ptr != 0) {
-	throw (DataManInvOper ("IndArray: shape already defined"));
+    if (ptr == 0) {
+	ptr = new StIndArray (0);
     }
-    ptr = new StIndArray (0);
-    ptr->setShape (*iosfile_p, dtype_p, shape);
-    putArrayPtr (rownr, ptr);
+    //# Put the new shape (if changed).
+    //# When changed, put the file offset.
+    if (ptr->setShape (*iosfile_p, dtype_p, shape)) {
+	putArrayPtr (rownr, ptr);
+    }
 }
 
 //# Get the shape for the array (if any) in the given row.
@@ -137,6 +139,9 @@ uInt StManColumnIndArrayAipsIO::ndim (uInt rownr)
 
 IPosition StManColumnIndArrayAipsIO::shape (uInt rownr)
     { return getShape(rownr)->shape(); }
+
+Bool StManColumnIndArrayAipsIO::canChangeShape() const
+    { return (shapeIsFixed_p  ?  False : True); }
 
 
 Bool StManColumnIndArrayAipsIO::canAccessSlice (Bool& reask) const

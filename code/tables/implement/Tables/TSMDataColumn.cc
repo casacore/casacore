@@ -1,5 +1,5 @@
 //# TSMDataColumn.cc: Tiled Hypercube Storage Manager for data columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,6 +97,16 @@ Bool TSMDataColumn::canAccessColumnSlice (Bool& reask) const
 }
 
 
+Bool TSMDataColumn::canChangeShape() const
+{
+    // This storage manager can handle changing array shapes
+    // for non-FixedShape columns.
+    if (shapeColumn().nelements() != 0) {
+	return False;
+    }
+    return stmanPtr_p->canChangeShape();
+}
+
 void TSMDataColumn::setShape (uInt rownr, const IPosition& shape)
 {
     setShapeTiled (rownr, shape, stmanPtr_p->defaultTileShape());
@@ -111,7 +121,14 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
 	hypercube->setShape (shape, tileShape);
     }else{
 	if (shape != cubeShape) {
-	    throw (TSMError ("Shape of data cells in same hypercube differs"));
+	    if (! canChangeShape()) {
+		throw (TSMError
+		       ("Shape of data cells in same hypercube differs"));
+	    }
+	    //# Set the new shape and take care that on the next access
+	    //# the cache size is recalculated.
+	    hypercube->setShape (shape, tileShape);
+//	    lastAccess_p = NoAccess;
 	}
     }
 }
