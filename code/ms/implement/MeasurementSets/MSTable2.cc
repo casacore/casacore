@@ -59,5 +59,7 @@ NewMSTableStatics(NewMSSpectralWindow::PredefinedColumns,NewMSSpectralWindow::Pr
 NewMSTableStatics(NewMSState::PredefinedColumns,NewMSState::PredefinedKeywords)
 NewMSTableStatics(NewMSSysCal::PredefinedColumns,NewMSSysCal::PredefinedKeywords)
 NewMSTableStatics(NewMSWeather::PredefinedColumns,NewMSWeather::PredefinedKeywords)
- 
+NewMSTableStatics(NewMSDoppler::PredefinedColumns,NewMSDoppler::PredefinedKeywords)
+
+
 #endif
