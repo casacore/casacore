@@ -351,16 +351,10 @@ operator=(const Flux<T> & other) {
 template<class T> Flux<T> Flux<T>::
 copy() const {
   DebugAssert(ok(), AipsError);
-  Flux<T> newFlux;
-  {
-    Vector<NumericTraits<T>::ConjugateType> thisVal(4);
-    value(thisVal);
-    newFlux.setValue(thisVal, pol());
-  }
-  {
-    Unit thisUnit(unit());
-    newFlux.setUnit(thisUnit);
-  }
+  Vector<NumericTraits<T>::ConjugateType> thisVal(4);
+  value(thisVal);
+  Flux<T> newFlux(thisVal, pol());
+  newFlux.setUnit(unit());
   return newFlux;
 }
 
