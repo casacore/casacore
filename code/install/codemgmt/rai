@@ -47,16 +47,11 @@
 #    1) Where the remote account name differs from the local account name an
 #       environment variable may be used to translate between them:
 #
-#          ARSH="ssh -C aips2.nrao.edu -l <remotename>"
+#          AUID="<remotename>"
 #
-#       The .rhosts file for the <remotename> account on aips2.nrao.edu should
-#       have an entry of the form
 #
-#          <localhost> <localname>
-#
-#       where <localhost> is the (case-sensitive) name by which the local host
-#       identifies itself when 'ping -s' is run on aips2.nrao.edu, and
-#       <localname> is the local account name.
+#    2) If you specify a key in your .ssh/authorized_keys files you will not
+#       be prompted for a password
 #
 # Original: 1996/08/06 by Mark Calabretta, ATNF
 # $Id$
@@ -134,7 +129,7 @@
   if [ "$AUID" ] ; then
      REMOTE_USER="-l $AUID"
   fi
-  ARSH=${ARSH-"ssh -C aips2.nrao.edu $REMOTE_USER"}
+  ARSH="ssh -C aips2.nrao.edu $REMOTE_USER"
 
   if [ "$FILES" != "" ]
   then
