@@ -4297,3 +4297,4 @@
 14 183 src mv atnf/apps/pksreader/pksmsreader.cc atnf/apps/pksreader/pksreader.cc
 14 192 sys rm libexec/dgplot.g
 14 192 sys rm libexec/dltplot.g
+14 192 sys rm libexec/pksstats.g
