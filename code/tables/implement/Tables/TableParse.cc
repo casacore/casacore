@@ -206,7 +206,7 @@ void TableParseSelect::addTable (const TableParseVal* name,
 	//# SELECT statement.
 	String shand, columnName;
 	Vector<String> fieldNames;
-	if (splitName (shand, columnName, fieldNames, name->str)) { 
+	if (splitName (shand, columnName, fieldNames, name->str, False)) { 
 	    table = tableKey (shand, columnName, fieldNames);
 	}else{
 	    // If no or equal shorthand is given, try to see if the
@@ -294,7 +294,8 @@ Table TableParseSelect::findTableKey (const Table& table,
 // which is something for the far away future.
 Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 				  Vector<String>& fieldNames,
-				  const String& name) const
+				  const String& name,
+				  Bool checkError) const
 {
     //# Make a copy, because some String functions are non-const.
     //# Usually the name consists of a columnName only, so use that.
@@ -315,12 +316,14 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	// the keyword is a record.
 	restName = columnName.after(j+1);
 	if (restName.empty()) {
-	    throw (TableInvExpr ("No keyword given in name " + name));
+	    if (checkError) {
+	        throw (TableInvExpr ("No keyword given in name " + name));
+	    }
+	    return False;
 	}
 	fldNam = stringToVector (restName, '.');
 	// The part before the :: can be empty, an optional shorthand,
 	// and an optional column name (separated by a dot).
-	columnName = "";
 	if (j > 0) {
 	    Vector<String> scNames = stringToVector(columnName.before(j), '.');
 	    switch (scNames.nelements()) {
@@ -332,8 +335,11 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 		columnName = scNames(0);
 		break;
 	    default:
-		throw TableInvExpr ("Name " + name + " is invalid: "
-				    "More than 2 name parts given before ::");
+	        if (checkError) {
+		    throw TableInvExpr ("Name " + name + " is invalid: More"
+					" than 2 name parts given before ::");
+		}
+		return False;
 	    }
 	}
     } else {
@@ -360,13 +366,20 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	}
 	columnName = fldNam(stfld++);
 	if (columnName.empty()) {
-	    throw (TableInvExpr ("No column given in name " + name));
+	    if (checkError) {
+	        throw (TableInvExpr ("No column given in name " + name));
+	    }
+	    return False;
 	}
     }
     fieldNames.resize (fldNam.nelements() - stfld);
     for (uInt i=stfld; i<fldNam.nelements(); i++) {
 	if (fldNam(i).empty()) {
-	    throw (TableInvExpr ("Name " + name + " has empty field names"));
+	    if (checkError) {
+	        throw (TableInvExpr ("Name " + name +
+				     " has empty field names"));
+	    }
+	    return False;
 	}
 	fieldNames(i-stfld) = fldNam(i);
     }
@@ -400,7 +413,7 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name)
     //# Split the name into shorthand, column and keyword.
     String shand, columnName;
     Vector<String> fieldNames;
-    Bool hasKey = splitName (shand, columnName, fieldNames, name);
+    Bool hasKey = splitName (shand, columnName, fieldNames, name, True);
     //# Use first table if there is no shorthand given.
     //# Otherwise find the table.
     Table tab = findTable (shand);
@@ -612,7 +625,7 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ok = !found;
     }
     if (!ok) {
-        throw (TableInvExpr ("Function " + funcName + " is unknown"));
+        throw (TableInvExpr ("Function '" + funcName + "' is unknown"));
     }
     return ftype;
 }

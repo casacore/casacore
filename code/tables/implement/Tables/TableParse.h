@@ -394,13 +394,16 @@ private:
 
     // Split a name into its parts (shorthand, column and field names).
     // True is returned when the name contained a keyword part.
-    // In that case fieldNames contains the keyword name and possible subfields.
-    // The column name is filled in when it is a column keyword.
-    // If the name represent a column, fieldNames contains the subfields
+    // In that case fieldNames contains the keyword name and the possible
+    // subfields. The possible shorthand and the column name are
+    // filled in if it is a column keyword.
+    // If the name represents a column, fieldNames contains the subfields
     // of the column (for the case where the column contains records).
-    // An exception is thrown if the name was invalid.
+    // If the name is invalid, an exception is thrown if checkError=True.
+    // Otherwise the name is treated as a normal name without keyword.
     Bool splitName (String& shorthand, String& columnName,
-		    Vector<String>& fieldNames, const String& name) const;
+		    Vector<String>& fieldNames, const String& name,
+		    Bool checkError) const;
 
     // Find a table for the given shorthand.
     // If no shorthand is given, the first table is returned (if there).
