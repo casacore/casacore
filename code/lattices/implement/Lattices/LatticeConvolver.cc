@@ -31,7 +31,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TileStepper.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
 
 // This sets the maximum size, in MB of any memory based Lattices created by

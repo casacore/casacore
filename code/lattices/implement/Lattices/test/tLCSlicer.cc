@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LCSlicer.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>

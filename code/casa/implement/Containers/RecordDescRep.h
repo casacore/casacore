@@ -1,5 +1,5 @@
 //# RecordDescRep.h: Representation of a RecordDesc
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/SimOrdMap.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 class RecordDesc;

@@ -28,7 +28,7 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LELArray.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 

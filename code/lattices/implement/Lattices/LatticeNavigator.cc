@@ -1,5 +1,5 @@
 //# LatticeNavigator.cc: an abstract base class to steer lattice iterators
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeNavigator.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 

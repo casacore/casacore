@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Functionals/SampledFunctional.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 // <summary> Index into an array using the longest axis </summary>
 

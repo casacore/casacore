@@ -30,7 +30,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>

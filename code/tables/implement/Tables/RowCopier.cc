@@ -1,5 +1,5 @@
 //# RowCopier.cc:  RowCopier copies part or all of a row from one table to another.
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Tables/Table.h>
 
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
 

@@ -34,7 +34,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Arrays/LogiArrayFwd.h>
 #include <aips/Arrays/MaskLogiArrFwd.h>

@@ -39,8 +39,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>

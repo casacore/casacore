@@ -33,7 +33,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/FFTServer.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/NumericTraits.h>
 
 // Forward Declarations

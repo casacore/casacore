@@ -29,7 +29,7 @@
 #define AIPS_TILEDSHAPE_H
 
 //# Includes
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 template<class T> class Vector;

@@ -46,7 +46,7 @@
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <trial/ComponentModels/SpectralModel.h>
 // #include <aips/Arrays/Vector.h>
-// #include <aips/Lattices/IPosition.h>
+// #include <aips/Arrays/IPosition.h>
 // #include <aips/Quanta/MVAngle.h>
 // #include <trial/Coordinates/CoordinateSystem.h>
 // #include <trial/Coordinates/CoordinateUtil.h>

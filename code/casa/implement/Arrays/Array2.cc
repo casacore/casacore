@@ -1,5 +1,5 @@
 //# Array2.cc: Template Arrays with slices, logical operations, and arithmetic
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayError.h>
 
 // This probably isn't of interest to normal users. It returns the "volume" of

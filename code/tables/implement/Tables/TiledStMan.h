@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Containers/Block.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations

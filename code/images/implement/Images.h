@@ -1,5 +1,5 @@
 //# Images.h: N-dimensional astronomical images
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,18 +29,18 @@
 #define AIPS_IMAGES_H
 
 
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slice.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slice.h>
+#include <aips/Arrays/Slicer.h>
 
-// #include <aips/Lattices/ArrayLattice.h>
-// #include <aips/Lattices/PagedArray.h>
-// #include <aips/Lattices/TempLattice.h>
-// #include <aips/Lattices/TiledShape.h>
-// #include <aips/Lattices/LatticeIterator.h>
-// #include <aips/Lattices/LatticeStepper.h>
-// #include <aips/Lattices/TileStepper.h>
-// #include <aips/Lattices/TiledLineStepper.h>
+// #include <aips/Arrays/ArrayLattice.h>
+// #include <aips/Arrays/PagedArray.h>
+// #include <aips/Arrays/TempLattice.h>
+// #include <aips/Arrays/TiledShape.h>
+// #include <aips/Arrays/LatticeIterator.h>
+// #include <aips/Arrays/LatticeStepper.h>
+// #include <aips/Arrays/TileStepper.h>
+// #include <aips/Arrays/TiledLineStepper.h>
 
 // #include <trial/Lattices/SubLattice.h>
 // #include <trial/Lattices/LatticeExpr.h>

@@ -33,8 +33,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/IO/FileLocker.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 

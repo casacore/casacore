@@ -1,5 +1,5 @@
 //# ExprNodeSet.cc: Classes representing an set in table select expression
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 

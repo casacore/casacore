@@ -36,7 +36,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder() {};

@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Tables.h>
 #include <aips/Utilities/String.h>
 

@@ -36,7 +36,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>

@@ -32,7 +32,7 @@
 
 //# Includes
 #include <trial/Lattices/Lattice.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 
 //# Forward Declarations
 class LCRegion;

@@ -38,7 +38,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/PlainTable.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/DataManError.h>
 #include <stdio.h>                     // for sprintf

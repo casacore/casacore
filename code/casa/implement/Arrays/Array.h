@@ -37,7 +37,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/LogiArray.h>
 #include <aips/Arrays/MaskLogiArrFwd.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 class AipsIO;

@@ -1,5 +1,5 @@
 //# Program.cc: This program tests the binary search functions
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #endif
 
 #include <aips/Utilities/BinarySearch.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

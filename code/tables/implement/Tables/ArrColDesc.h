@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/BaseColDesc.h>
 #include <aips/Containers/SimOrdMap.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 
 //# Forward Declarations

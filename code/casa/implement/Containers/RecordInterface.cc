@@ -1,5 +1,5 @@
 //# RecordInterface.cc: Abstract base class for a hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordDesc.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>

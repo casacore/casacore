@@ -29,7 +29,7 @@
 #include <aips/Tables/TableKeyword.h>
 #include <aips/Tables/Table.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 

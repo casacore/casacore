@@ -36,8 +36,8 @@
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>

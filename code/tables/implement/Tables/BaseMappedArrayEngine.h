@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/Tables/VirtColEng.h>
 #include <aips/Tables/VirtArrCol.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 template<class T> class ROArrayColumn;

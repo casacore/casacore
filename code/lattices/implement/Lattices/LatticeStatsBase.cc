@@ -29,7 +29,7 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>

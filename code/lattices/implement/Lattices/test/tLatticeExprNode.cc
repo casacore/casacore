@@ -38,7 +38,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LCBox.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Matrix.h>
@@ -47,7 +47,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/DataType.h>

@@ -61,8 +61,8 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 
 //#   keywords
 #include <aips/Tables/TableRecord.h>
@@ -272,7 +272,7 @@
 // #include <aips/Tables/ScalarColumn.h>
 // #include <aips/Tables/ArrayColumn.h>
 // #include <aips/Arrays/Vector.h>
-// #include <aips/Lattices/Slicer.h>
+// #include <aips/Arrays/Slicer.h>
 // #include <aips/Arrays/ArrayMath.h>
 // #include <iostream.h>
 // 
@@ -427,7 +427,7 @@
 // #include <aips/Tables/ScalarColumn.h>
 // #include <aips/Tables/ArrayColumn.h>
 // #include <aips/Arrays/Vector.h>
-// #include <aips/Lattices/Slicer.h>
+// #include <aips/Arrays/Slicer.h>
 // #include <aips/Arrays/ArrayMath.h>
 // #include <iostream.h>
 // 
@@ -859,7 +859,7 @@
 // #include <aips/Tables/ArrColDesc.h>
 // #include <aips/Tables/ScaRecordTabDesc.h>
 // #include <aips/Tables/TableRecord.h>
-// #include <aips/Lattices/IPosition.h>
+// #include <aips/Arrays/IPosition.h>
 // #include <aips/Arrays/Vector.h>
 //
 // main()

@@ -28,7 +28,7 @@
 #include <trial/Lattices/LELBinary.h>
 #include <trial/Lattices/LELScalar.h>
 #include <trial/Lattices/LELArray.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h> 

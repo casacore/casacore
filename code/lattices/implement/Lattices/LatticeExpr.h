@@ -33,7 +33,7 @@
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 
 //# Forward Declarations
 template <class T> class Array;

@@ -1,5 +1,5 @@
 //# Slicer.cc: Class to specify which elements to extract from an n-dimensional array
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayError.h>
 
 Slicer::Slicer()

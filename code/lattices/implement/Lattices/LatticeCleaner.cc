@@ -44,7 +44,7 @@
 #include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCBox.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 

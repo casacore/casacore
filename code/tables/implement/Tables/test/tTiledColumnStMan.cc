@@ -41,7 +41,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIter.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 

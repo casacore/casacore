@@ -31,7 +31,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Quanta/Unit.h>

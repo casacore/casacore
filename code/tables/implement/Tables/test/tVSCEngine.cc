@@ -37,7 +37,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/TableError.h>
 

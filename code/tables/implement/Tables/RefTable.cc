@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Containers/SimOrdMapIO.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Path.h>

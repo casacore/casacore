@@ -1,5 +1,5 @@
 //# VirtArrCol.cc: Base virtual column data manager class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 #include <aips/Tables/VirtArrCol.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIter.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Utilities/ValTypeId.h>
 

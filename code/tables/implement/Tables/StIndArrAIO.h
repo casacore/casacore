@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/StManAipsIO.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/IO/ByteIO.h>
 
 //# Forward Declarations

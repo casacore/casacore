@@ -36,11 +36,11 @@
 #include <trial/Lattices/LCDifference.h>
 #include <trial/Lattices/LCComplement.h>
 #include <trial/Lattices/LCPixelSet.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 

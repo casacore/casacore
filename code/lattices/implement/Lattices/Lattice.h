@@ -31,7 +31,7 @@
 
 //# Includes
 #include <trial/Lattices/LatticeBase.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 
 //# Forward Declarations
 class IPosition;

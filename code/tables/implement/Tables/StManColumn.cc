@@ -1,5 +1,5 @@
 //# StManColumn.cc: Base storage manager column class
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,10 @@
 //# Includes
 #include <aips/Tables/StManColumn.h>
 #include <aips/Tables/RefRows.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIter.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Tables/DataManError.h>

@@ -30,7 +30,7 @@
 #include <aips/Tables/ISMBucket.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>

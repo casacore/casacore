@@ -1,5 +1,5 @@
 //# WCCompound.h: Base class for compound WCRegion objects
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 //# Includes
 #include <trial/Images/WCRegion.h>
 #include <aips/Containers/Block.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 class ImageRegion;

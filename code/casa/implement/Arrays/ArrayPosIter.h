@@ -30,7 +30,7 @@
 
 #include <aips/aips.h>
 //# Change the following to a forward declare?
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 // 
 // <summary> Iterate an IPosition through the shape of an Array </summary>

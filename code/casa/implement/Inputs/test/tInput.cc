@@ -28,7 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Containers/Block.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>

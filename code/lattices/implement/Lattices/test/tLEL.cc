@@ -36,13 +36,13 @@
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/ArrayLattice.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
 #include <iostream.h>

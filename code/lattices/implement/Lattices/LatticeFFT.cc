@@ -31,7 +31,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/FFTServer.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Lattices/Lattice.h>

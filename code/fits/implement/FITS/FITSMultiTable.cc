@@ -1,5 +1,5 @@
 //# Fitsmultitablex.h: View multiple FITS files as a single table
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 #include <aips/OS/Directory.h>
 #include <aips/OS/DirectoryIterator.h>
 #include <aips/OS/Timer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Utilities/GenSort.h>
 
 // Used for debug print statements

@@ -28,7 +28,7 @@
 #include <trial/Mathematics/InterpolateArray1D.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Utilities/GenSort.h>

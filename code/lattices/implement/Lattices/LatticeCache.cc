@@ -37,8 +37,8 @@
 
 #include <aips/Exceptions/Error.h>
 
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>

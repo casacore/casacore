@@ -38,7 +38,7 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <trial/Arrays/RigidVector.h>
 #include <trial/Arrays/SquareMatrix.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <iostream.h>
 
 //# Forward Declarations

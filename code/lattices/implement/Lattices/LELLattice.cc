@@ -30,8 +30,8 @@
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Exceptions/Error.h> 
 #include <iostream.h>

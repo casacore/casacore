@@ -1,5 +1,5 @@
 //# ArrColDesc.cc: Templated class to describe columns of arrays in tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrColData.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Utilities/ValTypeId.h>
 #include <aips/Tables/TableError.h>

@@ -29,10 +29,10 @@
 #include <trial/Lattices/LELFunctionEnums.h>
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LELScalar.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h> 

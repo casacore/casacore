@@ -43,7 +43,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
 
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayIO.h>

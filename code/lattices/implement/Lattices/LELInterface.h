@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LELAttribute.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/DataType.h>
 

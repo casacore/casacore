@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/TSMShape.h>
 #include <aips/Containers/Record.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/OS/Conversion.h>
 
 //# Forward declarations

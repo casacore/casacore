@@ -30,7 +30,7 @@
 
 //# Includes
 #include <trial/Lattices/LCRegionFixed.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Vector.h>
 
 

@@ -31,7 +31,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Tasking/AppInfo.h>
 
 

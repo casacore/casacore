@@ -29,7 +29,7 @@
 #include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Assert.h>

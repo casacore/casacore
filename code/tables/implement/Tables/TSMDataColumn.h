@@ -34,7 +34,7 @@
 #include <aips/Tables/TSMColumn.h>
 #include <aips/Tables/TSMCube.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/OS/Conversion.h>
 

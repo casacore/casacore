@@ -1,5 +1,5 @@
 //# tTable_3.cc: Program to test some performance aspects of the table system
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>

@@ -1,5 +1,5 @@
 //# RefColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Tables/RefColumn.h>
 #include <aips/Tables/RefTable.h>
 #include <aips/Tables/RefRows.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 
 RefColumn::RefColumn (const BaseColumnDesc* bcdp,

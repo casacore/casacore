@@ -48,8 +48,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Tables/Table.h>

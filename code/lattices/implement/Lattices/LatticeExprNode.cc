@@ -41,7 +41,7 @@
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LattRegionHolder.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/Block.h>
 #include <aips/Mathematics/Constants.h>

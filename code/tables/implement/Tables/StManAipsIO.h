@@ -35,7 +35,7 @@
 #include <aips/Tables/StManColumn.h>
 #include <aips/Containers/Block.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/IO/ByteIO.h>
 

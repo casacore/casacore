@@ -28,7 +28,7 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateUtil.h>

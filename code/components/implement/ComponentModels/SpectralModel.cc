@@ -30,7 +30,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Quanta/Quantum.h>

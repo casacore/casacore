@@ -31,7 +31,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/String.h>
 #include <aips/Containers/BlockIO.h>
 #include <aips/IO/AipsIO.h>

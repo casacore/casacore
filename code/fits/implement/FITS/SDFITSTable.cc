@@ -1,5 +1,5 @@
 //# SDFITSTable.cc: defines SDFITSTable, a FITSTable following the SD convention
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <trial/FITS/SDFITSTable.h>
 #include <aips/FITS/fits.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Assert.h>
 
 Block<String> SDFITSTable::kwNames;

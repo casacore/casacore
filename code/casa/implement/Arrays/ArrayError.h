@@ -30,7 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 // Initialize the ArrayError type() functions (RTTI).
 rtti_dcl_init(ArrayError);

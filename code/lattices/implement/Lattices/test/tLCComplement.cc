@@ -1,5 +1,5 @@
 //# tLCComplement.cc:  mechanical test of the LCComplement class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <trial/Lattices/LCEllipsoid.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>

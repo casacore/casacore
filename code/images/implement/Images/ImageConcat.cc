@@ -34,7 +34,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>

@@ -31,7 +31,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 
   

@@ -33,7 +33,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <trial/Lattices/LatticeExpr.h>

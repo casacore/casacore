@@ -1,5 +1,5 @@
 //# IPosition2.cc: A vector of integers, used to index into arrays (for Array<Int>)
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 //# to and from Array<Int>, i.e. if you don't want IPosition's to depend
 //# on arrays.
 
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Copy.h>

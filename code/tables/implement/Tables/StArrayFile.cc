@@ -31,7 +31,7 @@
 #include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/OS/Path.h>

@@ -36,7 +36,7 @@
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #endif
 
 //# Wouldn't be necessary if we could forward declare properly

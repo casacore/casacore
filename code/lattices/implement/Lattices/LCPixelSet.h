@@ -30,7 +30,7 @@
 
 //# Includes
 #include <trial/Lattices/LCBox.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 
 
 // <summary>

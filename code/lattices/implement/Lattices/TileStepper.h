@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeIndexer.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 
 // <summary>

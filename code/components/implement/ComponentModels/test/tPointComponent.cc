@@ -40,7 +40,7 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>

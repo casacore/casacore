@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Quanta/Quantum.h>
 #include <trial/Lattices/TempLattice.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations

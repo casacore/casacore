@@ -42,7 +42,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/FITS.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>

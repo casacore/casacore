@@ -42,7 +42,7 @@
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Glish/GlishValue.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>

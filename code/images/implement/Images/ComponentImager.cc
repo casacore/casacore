@@ -32,7 +32,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasRef.h>

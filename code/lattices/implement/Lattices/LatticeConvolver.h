@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Lattices/TempLattice.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 //template <class T> class LatticeConvolver;

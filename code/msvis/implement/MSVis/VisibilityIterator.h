@@ -31,7 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MeasConvert.h>

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/Tasking/ApplicationObject.h>
 #include <aips/Tasking/Index.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>

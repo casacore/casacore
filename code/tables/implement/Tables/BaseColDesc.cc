@@ -1,5 +1,5 @@
 //# BaseColDesc.cc: Abstract base class for table column descriptions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableError.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <iostream.h>
 
 

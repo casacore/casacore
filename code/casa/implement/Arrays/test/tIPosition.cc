@@ -1,5 +1,5 @@
 //# tIPosition.cc: This program tests the IPosition class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <assert.h>
 #include <iostream.h>
 #include <strstream.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>

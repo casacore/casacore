@@ -38,7 +38,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>

@@ -39,7 +39,7 @@ main()
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/DataManError.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Utilities/String.h>
 #include <aips/IO/AipsIO.h>

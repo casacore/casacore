@@ -36,7 +36,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Functionals/Polynomial.h>
-#include <aips/Lattices/Slicer.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
 

@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/MaskedArray.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 //# Needed to get the proper Complex typedef's
 #include <aips/Mathematics/Complex.h>
 

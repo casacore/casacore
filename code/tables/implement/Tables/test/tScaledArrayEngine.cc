@@ -34,11 +34,11 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Arrays/Cube.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Tables/TableError.h>
 
 // <summary> Test program for class ScaledArrayEngine </summary>

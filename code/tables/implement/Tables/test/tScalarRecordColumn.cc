@@ -1,5 +1,5 @@
 //# tScalarRecordColumn.cc: Test program for the ScalarRecordColumn classes
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #include <aips/Tables/ScaRecordColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>

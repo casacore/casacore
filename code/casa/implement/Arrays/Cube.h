@@ -32,12 +32,12 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/CubeRtti.h>
 // Could forward declare
-#include <aips/Lattices/Slice.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/MaskedArray.h>
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #endif
 
 //# Wouldn't be necessary if we could forward declare properly.

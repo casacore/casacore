@@ -37,7 +37,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Inputs/Input.h>

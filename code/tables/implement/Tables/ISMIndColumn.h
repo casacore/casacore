@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ISMColumn.h>
 #include <aips/Tables/StIndArray.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations
 class StManArrayFile;

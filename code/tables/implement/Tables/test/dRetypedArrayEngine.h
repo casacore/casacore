@@ -1,5 +1,5 @@
 //# dRetypedArrayEngine.h: Example virtual column engines to handle an arbitrary data type
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/Utilities/String.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Tables/RetypedArraySetGet.h>
 
