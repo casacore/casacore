@@ -3630,3 +3630,5 @@
 13 345 src rm trial/implement/Datalinetool/dltplot.g
 13 345 src rm trial/implement/Datalinetool/textgroup.g
 13 345 src rm trial/implement/Datalinetool/tgplot.g
+13 345 src rm trial/implement/Datalinetool/datalinetool.help
+13 345 src rm trial/implement/Datalinetool/makefile
