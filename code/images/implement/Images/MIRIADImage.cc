@@ -499,7 +499,13 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   rdhda_c(tno_p, "bunit", tmps64,"",64);
   String cunit = tmps64;
   UnitMap::addFITS();
-  brightnessUnit = UnitMap::fromFITS(Unit(cunit));
+  if (UnitVal::check(cunit)) {
+     brightnessUnit = UnitMap::fromFITS(Unit(cunit));
+  } else {
+     Unit t;
+     brightnessUnit = t;
+     os << "FITS unit " << cunit << " unknown to AIPS++ - ignoring." << LogIO::POST;
+  }
 
   // get the miriad axes descriptors
   for (i=0; i<ndim; i++) {
