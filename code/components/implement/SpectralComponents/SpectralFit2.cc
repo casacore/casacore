@@ -1,5 +1,5 @@
 //# SpectralFit2.cc: Least Squares fitting of spectral elements: templated part
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   };
   // Force (as interim solution) all values in solution
   for (uInt i=0; i<npar; ++i) {
-    func[i] = v[i];
+    func[i] = AutoDiff<MT>(v[i], func.nparameters(), i);
     func.mask(i) = vb[i];
   };
   fitter.setFunction(func);
