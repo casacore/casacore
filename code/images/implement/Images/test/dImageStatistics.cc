@@ -141,6 +141,7 @@ try {
    inputs.Create("list", "True", "List statistics as well as plot ?");
    inputs.Create("plotter", "none", "PGPlot device");
    inputs.Create("nxy", "-1", "Number of subplots in x & y");
+   inputs.Create("disk", "F", "Force storage image to be disk based");
    inputs.ReadArguments(argc, argv);
 
    const String in = inputs.GetString("in");
@@ -154,6 +155,7 @@ try {
    const Bool doList = inputs.GetBool("list");
    const Block<Int> nxyB(inputs.GetIntArray("nxy"));
    String device = inputs.GetString("plotter");
+   const Bool forceDisk = inputs.GetBool("disk");
 
 
 // Create defaults array
@@ -286,7 +288,7 @@ try {
 
 // Construct statistics object
    
-      ImageStatistics<Float> stats(*pSubImage2, os);
+      ImageStatistics<Float> stats(*pSubImage2, os, True, forceDisk);
 
   
 // Clean up SUbImage pointers
