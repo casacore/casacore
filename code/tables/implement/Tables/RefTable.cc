@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Containers/SimOrdMapIO.h>
+#include <aips/Containers/Record.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/OS/Path.h>
@@ -358,7 +359,7 @@ void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
     ios >> nameMap;
     Vector<String> names;
     if (version > 1) {
-        ios << names;
+        ios >> names;
     }
     // Get description of the parent table.
     TableDesc pdesc;
@@ -460,6 +461,62 @@ void RefTable::setNrrow (uInt nrrow)
 Bool RefTable::isWritable() const
     { return baseTabPtr_p->isWritable(); }
 
+TableDesc RefTable::actualTableDesc() const
+{
+    TableDesc actualDesc;
+    // Get the table description of reftable.
+    const TableDesc& refDesc = tableDesc();
+    // Get actual table desc of parent.
+    // Copy the relevant columns and rename (because reftable
+    // can have renamed columns).
+    TableDesc rootDesc = baseTabPtr_p->actualTableDesc();
+    for (uInt i=0; i<refDesc.ncolumn(); i++) {
+	const String& newName = refDesc.columnDesc(i).name();
+	const String& oldName = nameMap_p(newName);
+	ColumnDesc cdesc = rootDesc.columnDesc (oldName);
+	cdesc.setName (newName);
+	actualDesc.addColumn (cdesc);
+    }
+    return actualDesc;
+}
+
+Record RefTable::dataManagerInfo() const
+{
+    // Get the info of the parent table.
+    // We only have to have this info for the columns in this table.
+    Record dmi = baseTabPtr_p->dataManagerInfo();
+    // Invert the map to get map of old to new name.
+    SimpleOrderedMap<String,String> map("", nameMap_p.ndefined());
+    for (uInt i=0; i<nameMap_p.ndefined(); i++) {
+        map.define (nameMap_p.getVal(i), nameMap_p.getKey(i));
+    }
+    // Now remove all columns not part of it.
+    // Use the new name.
+    // Remove data managers without columns left.
+    // Iterate in reverse order because of the remove we do.
+    for (uInt i=dmi.nfields(); i>0;) {
+        i--;
+        Record& rec = dmi.rwSubRecord(i);
+	Vector<String> vec (rec.asArrayString ("COLUMNS"));
+	Vector<String> newVec(vec.nelements());
+	uInt nc=0;
+	for (uInt j=0; j<vec.nelements(); j++) {
+	    const String* val = map.isDefined (vec(j));
+	    if (val != 0) {
+	        newVec(nc++) = *val;
+	    }
+	}
+	// Remove field if no columns are left.
+	// Otherwise store new names in subrecord.
+	if (nc == 0) {
+	    dmi.removeField(i);
+	} else {
+	    rec.define ("COLUMNS", newVec(Slice(0,nc)));
+	}
+    }
+    return dmi;
+}
+
 //# Get the keyword set.
 TableRecord& RefTable::keywordSet()
     { return baseTabPtr_p->keywordSet(); }
@@ -516,8 +573,10 @@ Vector<uInt> RefTable::rowNumbers () const
 //# Rows and columns can be removed and renamed.
 Bool RefTable::canRemoveRow() const
     { return True; }
-Bool RefTable::canRemoveColumn (const String&) const
-    { return False; }
+Bool RefTable::canRemoveColumn (const Vector<String>& columnNames) const
+{
+    return checkRemoveColumn (columnNames, False);
+}
 Bool RefTable::canRenameColumn (const String& columnName) const
   ///    { return tdescPtr_p->isColumn (columnName); }
     { return False; }
@@ -535,8 +594,18 @@ void RefTable::removeRow (uInt rownr)
 }
 
 
-void RefTable::removeColumn (const String&)
-{ throw (TableInvOper ("RefTable::removeColumn not implemented yet")); }
+void RefTable::removeColumn (const Vector<String>& columnNames)
+{
+    checkRemoveColumn (columnNames, True);
+    for (uInt i=0; i<columnNames.nelements(); i++) {
+        const String& name = columnNames(i);
+        tdescPtr_p->removeColumn (name);
+	nameMap_p.remove (name);
+	delete colMap_p(name);
+	colMap_p.remove (name);
+    }
+    changed_p = True;
+}
  
 void RefTable::renameColumn (const String& newName, const String& oldName)
 {
@@ -547,6 +616,7 @@ void RefTable::renameColumn (const String& newName, const String& oldName)
     tdescPtr_p->renameColumn (newName, oldName);
     colMap_p.rename (newName, oldName);
     nameMap_p.rename (newName, oldName);
+    changed_p = True;
 }
 
 

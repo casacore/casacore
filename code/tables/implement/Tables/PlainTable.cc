@@ -36,6 +36,7 @@
 #include <aips/Tables/PlainColumn.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Block.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
 
 
@@ -480,6 +481,19 @@ Bool PlainTable::isWritable() const
 }
 
 
+// Get the actual table description.
+TableDesc PlainTable::actualTableDesc() const
+{
+  return colSetPtr_p->actualTableDesc();
+}
+
+// Get the data manager info.
+Record PlainTable::dataManagerInfo() const
+{
+  return colSetPtr_p->dataManagerInfo();
+}
+
+
 //# Get access to the keyword set.
 TableRecord& PlainTable::keywordSet()
 {
@@ -512,8 +526,13 @@ Bool PlainTable::canAddRow() const
     { return colSetPtr_p->canAddRow(); }
 Bool PlainTable::canRemoveRow() const
     { return colSetPtr_p->canRemoveRow(); }
-Bool PlainTable::canRemoveColumn (const String& columnName) const
-    { return colSetPtr_p->canRemoveColumn (columnName); }
+Bool PlainTable::canRemoveColumn (const Vector<String>& columnNames) const
+{
+    if (!checkRemoveColumn (columnNames, False)) {
+        return False;
+    }
+    return colSetPtr_p->canRemoveColumn (columnNames);
+}
 
 //# Renaming a column is possible.
 Bool PlainTable::canRenameColumn (const String& columnName) const
@@ -592,12 +611,12 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
     tableChanged_p = True;
 }
 
-void PlainTable::removeColumn (const String& columnName)
+void PlainTable::removeColumn (const Vector<String>& columnNames)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::removeColumn; table is not writable"));
     }
-    colSetPtr_p->removeColumn (columnName);
+    colSetPtr_p->removeColumn (columnNames);
     tableChanged_p = True;
 }
 

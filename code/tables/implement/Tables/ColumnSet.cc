@@ -34,6 +34,8 @@
 #include <aips/Tables/PlainTable.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Record.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/Utilities/Assert.h>
 
@@ -200,13 +202,18 @@ Bool ColumnSet::canRemoveRow() const
     }
     return True;
 }
-Bool ColumnSet::canRemoveColumn (const String& columnName) const
+Bool ColumnSet::canRemoveColumn (const Vector<String>& columnNames) const
 {
     // Cannot be removed if column is unknown.
-    if (! tdescPtr_p->isColumn (columnName)) {
-	return False;
+    for (uInt i=0; i<columnNames(i); i++) {
+        if (! tdescPtr_p->isColumn (columnNames(i))) {
+	    return False;
+	}
+	if (! getColumn(columnNames(i))->dataManager()->canRemoveColumn()) {
+	    return False;
+	}
     }
-    return getColumn(columnName)->dataManager()->canRemoveColumn();
+    return True;
 }
 Bool ColumnSet::canRenameColumn (const String& columnName) const
 {
@@ -406,25 +413,82 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
     autoReleaseLock();
 }
 
-void ColumnSet::removeColumn (const String& columnName)
+void ColumnSet::removeColumn (const Vector<String>& columnNames)
 {
-    if (! tdescPtr_p->isColumn (columnName)) {
-        throw (TableInvOper ("Table::removeColumn; column " + columnName +
-			     " does not exist"));
-    }
-    if (! canRemoveColumn (columnName)) {
-	throw (TableInvOper ("Table::removeColumn; column " + columnName +
-			     " cannot be removed"));
-    }
+        
+    // Check if the columns can be removed.
+    // Also find out about the data managers.
+    SimpleOrderedMap<void*,Int> dmCounts = checkRemoveColumn (columnNames);
+    // Write lock table.
     checkWriteLock (True);
-    tdescPtr_p->removeColumn (columnName);
-    PlainColumn* colPtr = COLMAPNAME(columnName);
-    DataManagerColumn* dmcolPtr = colPtr->dataManagerColumn();
-    DataManager* dmPtr = colPtr->dataManager();
-    dmPtr->removeColumn (dmcolPtr);
-    delete colPtr;
-    colMap_p.remove (columnName);
+    // Remove all data managers possible.
+    for (uInt i=0; i<dmCounts.ndefined(); i++) {
+        if (dmCounts.getVal(i) < 0) {
+	    DataManager* dmPtr = static_cast<DataManager*>(dmCounts.getKey(i));
+	    dmPtr->deleteManager();
+	    Bool found = False;
+	    for (uInt j=0; j<blockDataMan_p.nelements(); j++) {
+	        if (dmPtr == blockDataMan_p[j]) {
+		    found = True;
+		    delete dmPtr;
+		    uInt nr = blockDataMan_p.nelements() - j - 1;
+		    if (nr > 0) {
+		        objmove (&blockDataMan_p[j], &blockDataMan_p[j+1], nr);
+		    }
+		    blockDataMan_p.resize (blockDataMan_p.nelements() - 1,
+					   True, True);
+		    break;
+		}
+	    }
+	    AlwaysAssert (found, AipsError);
+	}
+    }
+    // Remove all columns from description, data managers, and maps.
+    for (uInt i=0; i<columnNames.nelements(); i++) {
+        const String& name = columnNames(i);
+	tdescPtr_p->removeColumn (name);
+	PlainColumn* colPtr = COLMAPNAME(name);
+	DataManager* dmPtr = colPtr->dataManager();
+	if (dmCounts(dmPtr) >= 0) {
+	    DataManagerColumn* dmcolPtr = colPtr->dataManagerColumn();
+	    dmPtr->removeColumn (dmcolPtr);
+	}
+	delete colPtr;
+	colMap_p.remove (name);
+    }
     autoReleaseLock();
+}
+
+SimpleOrderedMap<void*,Int> ColumnSet::checkRemoveColumn 
+					(const Vector<String>& columnNames)
+{
+    // Check if the column names are valid.
+    plainTablePtr_p->checkRemoveColumn (columnNames, True);
+    // Count how many columns in each data manager are to be deleted.
+    SimpleOrderedMap<void*,Int> dmCounts(0, 16);
+    for (uInt i=0; i<columnNames.nelements(); i++) {
+        dmCounts(COLMAPNAME(columnNames(i))->dataManager())++;
+    }
+    // If all columns in a data manager are to be deleted, set count to -1.
+    for (uInt i=0; i<dmCounts.ndefined(); i++) {
+        DataManager* dmPtr = static_cast<DataManager*>(dmCounts.getKey(i));
+	if (dmCounts.getVal(i) == Int(dmPtr->ncolumn())) {
+	    dmCounts.getVal(i) = -1;
+	}
+    }
+    // Now we have to check if a column can be deleted.
+    // It can if all columns of its data manager are deleted or
+    // if the data manager can handle column deletion.
+    // Set a flag for the columns for which the entire data manager
+    // cannot be deleted, thus the column has to be deleted explicitly.
+    for (uInt i=0; i<columnNames.nelements(); i++) {
+        DataManager* dmPtr = COLMAPNAME(columnNames(i))->dataManager();
+        if (dmCounts(dmPtr) >= 0  &&  ! dmPtr->canRemoveColumn()) {
+	    throw TableInvOper ("Table::removeColumn - column " +
+				columnNames(i) + " cannot be removed");
+	}
+    }
+    return dmCounts;
 }
 
 void ColumnSet::renameColumn (const String& newName, const String& oldName)
@@ -494,6 +558,54 @@ String ColumnSet::uniqueDataManagerName (const String& name) const
 	dmName = name + '_' + String::toString(nr);
     }
     return dmName;
+}
+
+
+TableDesc ColumnSet::actualTableDesc() const
+{
+    TableDesc td = *tdescPtr_p;
+    for (uInt i=0; i<td.ncolumn(); i++) {
+        ColumnDesc& cd = td.rwColumnDesc(i);
+	PlainColumn* pc = COLMAPNAME(cd.name());
+	cd.dataManagerType() = pc->dataManager()->dataManagerType();
+	cd.dataManagerGroup() = pc->dataManager()->dataManagerName();
+	if (cd.isArray()  &&  cd.isFixedShape()) {
+	    if (cd.shape().nelements() == 0) {
+	        cd.setShape (pc->shapeColumn());
+	    }
+	}
+    }
+    return td;
+}
+
+Record ColumnSet::dataManagerInfo() const
+{
+    Record rec;
+    uInt nrec=0;
+    // Loop through all data managers.
+    for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
+        DataManager* dmPtr = BLOCKDATAMANVAL(i);
+	Record subrec;
+	subrec.define ("TYPE", dmPtr->dataManagerType());
+	subrec.define ("NAME", dmPtr->dataManagerName());
+	// Loop through all columns with this data manager and add
+	// its name to the vector.
+	uInt ncol = colMap_p.ndefined();
+	Vector<String> columns(ncol);
+	uInt nc=0;
+	for (uInt j=0; j<ncol; j++) {
+	    if (COLMAPVAL(j)->dataManager() == dmPtr) {
+	      columns(nc++) = colMap_p.getKey(j);
+	    }
+	}
+	if (nc > 0) {
+	    columns.resize (nc, True);
+	    subrec.define ("COLUMNS", columns);
+	    rec.defineRecord (nrec, subrec);
+	    nrec++;
+	}
+    }
+    return rec;
 }
 
 

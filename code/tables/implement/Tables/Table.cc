@@ -40,6 +40,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Containers/Block.h>
+#include <aips/Containers/Record.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Directory.h>
@@ -444,6 +445,14 @@ TableRecord& Table::rwKeywordSet()
     return baseTabPtr_p->rwKeywordSet();
 }
 
+Bool Table::canRemoveColumn (const String& columnName) const
+{
+    return baseTabPtr_p->canRemoveColumn (Vector<String>(1, columnName));
+}
+void Table::removeColumn (const String& columnName)
+{
+    baseTabPtr_p->removeColumn (Vector<String>(1, columnName));
+}
 
 Vector<uInt> Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
@@ -646,6 +655,16 @@ Bool Table::isWritable (const String& tableName)
     return file.isWritable();
 }
 
+
+TableDesc Table::actualTableDesc() const
+{
+    return baseTabPtr_p->actualTableDesc();
+}
+
+Record Table::dataManagerInfo() const
+{
+    return baseTabPtr_p->dataManagerInfo();
+}
 
 //# Make the table file name.
 String Table::fileName (const String& tableName)
