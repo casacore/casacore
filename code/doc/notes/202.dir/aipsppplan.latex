@@ -1,6 +1,4 @@
-\newcommand{\remark}[1]{{\small\begin{itemize}\em \item #1\end{itemize}}}
-%\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/project/releasenotes/releasenotes.html}
-\newcommand{\thisdocURL}{http://www.nrao.edu/~tcornwel/aipsppplan/aipsppplan.html}
+\newcommand{\thisdocURL}{http://aips2.nrao.edu/aips++/docs/notes/202/202.html}
 \newcommand{\searchURL}{../../html/aips2search.html}
 \newcommand{\aipsviewURL}{../../user/aipsview/aipsview.html}
 \newcommand{\GlishmanualURL}{../../reference/Glish/Glish.html}
@@ -24,12 +22,12 @@
 
 \section{Purpose}
 
-The purpose of this document is to lay out the development of
-AIPS++ from the recently-released V0.8 to version 3.0, to be released
-in late 1999. It is intended to be broad rather than detailed,
-and to set out the major events in the development of AIPS++ that
-we can expect over the next 2 1/2 years. We should expect that
-this plan will change in some details as we gain experience.
+The purpose of this document is to lay out the development of AIPS++
+from the recently-released V0.8 to version 3.0, to be released in late
+1999. It is intended to be broad rather than detailed, and to set out
+the major events in the development of AIPS++ that we can expect over
+the next 2 1/2 - 3 years. We should expect that this plan will change in
+some details as we gain experience.
 
 \section{Current capabilities}
 
@@ -92,7 +90,7 @@ and on-line help is available from the command line.
 \section{Needed capabilities}
 
 This section gives an overview of the needed capabilities in various
-areas. The aim is to be comprehensive rather than detailed. We
+areas. The aim is to be comprehensive and brief rather than detailed. We
 cover only areas in the core AIPS++ system. In addition, there
 are local site-based requirements that are not covered here.
 
@@ -100,36 +98,75 @@ are local site-based requirements that are not covered here.
 
 The development of the synthesis system is laid out in the
 \htmladdnormallink{Updated Synthesis Development Plan: Note
-201}{../../notes/201/201.html}.
+201}{../../notes/201/201.html}. This calls for a significant
+amount of work to be done either improving current capabilities
+or adding new ones. If the plan proceeds on schedule, the core
+synthesis system will be frozen by November 1997. 
 
 \subsection{Single dish}
+
+The main driver for single dish support in AIPS++ continues to be the
+NRAO Green Bank Telescope, which has chosen AIPS++ as the platform for
+data reduction. Although this is really a site-specific need, it forms
+the focus of our single dish efforts now that we have completed
+support for the Parkes Multibeam project.
+
+Development of SDCalc is now the highest priority. Once this is
+complete (a few months), we need to revisit the overall development of
+single dish capabilities.
+
 \begin{itemize}
-\item SDCalc: a GUI-based single dish spectral analyzer.
+\item SDCalc: a GUI-based single dish spectral data browser and
+analysis package.
 \item SDImager: package for various imaging operations such as On-The-Fly
 imaging.
-\item More sophisticated tools for multi-dimensional
-data analysis.
+\item More sophisticated tools for multi-dimensional data analysis.
 \end{itemize}
 
 \subsection{System}
 
+The changes needed in system support cover a lot of different
+topics, ranging from supporting operating systems to optimization
+of the use of various resources.
+
 \begin{itemize}
 \item Port to other OSes, most particularly Windows 95/NT.
-\item Java support. 
+\item Java support. We have yet to determine exactly what this means.
+The STAG advised waiting further.
 \item Improved bug tracking: the current level of bug tracking is
 adequate for our current needs but may be too limited for
 long-term use.
-\item Optimization of memory use and speed
-\item Optimization of the use of templates
+\item Optimization of memory use and speed.
+\item Optimization of the use of templates.
 \item Parallelization both at coarse and fine levels. Doug Roberts 
-has written a plan to cover the development of Parallelized
-code inside AIPS++.
+has written a plan to cover the development of parallelized code
+inside AIPS++: see \htmladdnormallink{AIPS++ Note
+203}{../../notes/203/203.html}.
+\end{itemize}
+
+\subsection{User Interface}
+
+It is clear from beta testing that the user interface is very
+important in determining adoption of the system by end-users.  This
+was also emphasized by the STAG report. This is an area that will need
+the greatest amount of user-testing.
+
+\begin{itemize}
+\item GUIs for specific applications, most importantly the synthesis applications.
+\item Auto-GUI for DOs. This would generate a simple GUI automatically
+for any DO.
+\item Stream-lined mini-interpreter ({\em i.e.} simplified interface
+compared to Glish?
 \end{itemize}
 
 \subsection{User-level tools}
 
+One of the key goals of AIPS++ is to provide a rich set of tools
+for the end-user for data processing needs that are not met by core
+applications. The following are needed:
+
 \begin{itemize}
-\item Improved table browser: faster, cleaner.
+\item Improved table browser: faster, cleaner, use-controlled formatting.
 \item MS browser, with Measures support
 \item Plotter and table DOs
 \item MS persistence via FITS, perhaps based on Diamond-Wells-{\em etc.}
@@ -139,8 +176,6 @@ as a pipeline of operations, which can be repeated if one
 inputs is changed.
 \item Miscellaneous DO-based tools, {\em e.g.} deconvolution, optimization,
 other numerical methods, image calculator. {\em etc.}
-\item Auto-GUI for DOs. This would generate a simple GUI automatically
-for any DO.
 \item Observation planning tools: while scheduling programs are
 quite specific to a particular telescope, planning tools are of
 general utility.
@@ -148,22 +183,32 @@ general utility.
 
 \subsection{DO system}
 
+The binding between C++ and Glish (and thus the end-user) is via the
+Distributed Object system (see \htmladdnormallink{AIPS++ Note
+197}{../../notes/197/197.html}). Version 2 is now available
+but a number of additions are needed.
+
 \begin{itemize}
 \item Application services {\em e.g.} plotting, display, notification, {\em etc.}
-\item Asynchronous execution of DO capabilities.
 \item Coarse parallelization: running on different hosts.
-\item Layer on top of CORBA.
+\item Layer on top of CORBA or equivalent.
 \end{itemize}
 
 \subsection{Measures}
+
+The Measures system is largely complete. The following are needed:
+
 \begin{itemize}
-\item Integration in rest of system
+\item Integration in rest of system so that applications use
+the Measures system for conversions.
 \item Data tables needed for Measures: acquisition,
-distribution, use.
+distribution, and use.
 \item High precision support for VLBI and pulsar work.
 \end{itemize}
 
 \subsection{Library}
+
+The library requires various miscellaneous additions:
 
 \begin{itemize}
 \item Rework Image library to add functionality, improve performance,
@@ -190,7 +235,6 @@ can. However, some changes will be necessary.
 \item Complete the Glish/Tk widgets interface
 \item Object-orientation
 \item Multi-threading
-\item Stream-lined mini-interpreter
 \end{itemize}
 
 \subsection{Documentation}
@@ -207,17 +251,20 @@ and tutorials.
 \item Tutorials for {\em e.g.} synthesis processing.
 \end{itemize}
 
-\subsubsection{User support}
+\subsection{User support}
+
+Rather than attempt to design this from scratch, I'd like to get 
+the help of someone with experience in supporting an existing package.
+The goal for delivering an outline of how this is done should be
+mid June.
 
 \begin{itemize}
 \item User support via virtual helpdesk and similar mechanisms. 
-Rather than attempt to design this from scratch, I'd like to get 
-the help of someone with experience in supporting an existing package.
 \item AIPS++ User Group (to meeting yearly, starting summer 98)
-\item Workshops?
+\item Workshops
 \end{itemize}
 
-\subsubsection{Programming support}
+\subsection{Programming support}
 
 \begin{itemize}
 \item Programmer support. By the time of V1.5, we need to provide
@@ -228,27 +275,26 @@ contributed code in late 1998. We need coding standards, policies for
 accepting code into the core system, mechanisms for distributing 
 code as-is, {\em etc.}
 \item Procedures for testing and releases: we need timetables for testing,
-and releases. We should try to establish a dedicated testing group. In commercial models,
-testing is performed by an experienced and somewhat separate group.
-In the past, we've said that we don't have the staffing necessary for
-this type of activity. However, I think given the scale of AIPS++, this
-would eventually be a net gain. It would be an ideal specialized task for a 
-site to take responsibility for. Note that the staffing requirements are
-different: end-users rather than C++ programmers are called for.
+and releases. We should try to establish a dedicated testing group. In
+commercial models, testing is performed by an experienced and somewhat
+separate group.  In the past, we've said that we don't have the
+staffing necessary for this type of activity. However, I think given
+the scale of AIPS++, this would eventually be a net gain. It would be
+an ideal specialized task for a site to take responsibility for. Note
+that the staffing requirements are different: end-users rather than
+C++ programmers are called for.
 \end{itemize}
 
-\subsubsection{Management}
+\subsection{Management}
 
 The management structure for the last two years has aided rapid
-decision making by being centralized. We have benefited from the
-acquiesence of the various consortium partners in this. However, in
-the operations phase that is approaching, the need will be for
-considered balancing of work in different areas. This requires a
-different management structure. I think this new structure should
-include an operations manager with experience in support of a large
-package, and perhaps an advisory board. We would do well to look
-closely at the operations of other large collaborative software
-packages such as IRAF.
+decision making by being centralized. However, in the operations phase
+that is approaching, the need will be for considered balancing of work
+in different areas. This requires a different management structure. I
+think this new structure should include an operations manager with
+experience in support of a large package, and perhaps an operations
+advisory board. We would do well to look closely at the operations of
+other large collaborative software packages such as IRAF.
 
 We also need to provide structure at the group level. If we are to
 have a testing group, as suggested above, it could well be centered at
@@ -257,18 +303,21 @@ around the world with one or two people in each 8 hour chunk of
 timezones. We must determine what role will be played by the current
 project center.
 
-Commitments to provide personnel have to become stronger
-once operations commence since user support cannot be deferred or
-rescheduled as we now have to do in development.
+Commitments to provide programming and support personnel have to
+become stronger once operations commence since user support cannot be
+deferred or rescheduled as we now have to do in development.
 
 Finally, I'd like to see connections to the consortium astronomers
-formalized and tightened. My proposal is that at every site,
-an astronomer be designated as being the key scientific contact.
+formalized and tightened. One approach, is that at every site, an
+astronomer should be designated as being the key scientific contact.
 I'd like to see a commitment from the consortium members that each
 scientist can be called upon for a certain fraction of time for duties
 like testing software, advising on specific scientific needs, writing
-documentation, {\em etc}. Our experience is that informal contacts
-are inadequate for this.
+documentation, {\em etc}. Our experience is that informal contacts are
+inadequate for this.
+
+These are all changes that must be discussed with the AIPS++ Executive
+Committee.
 
 \section{Timeline}
 
@@ -289,12 +338,18 @@ involved with AIPS++ to provide help on documentation.
 \item[AIPS++ V0.8 {\em Feb 97}]: First beta release
 \begin{itemize}
 \item Continuum synthesis imaging and self-calibration,
-\item general Glish-based tools.
+\item General Glish-based tools.
 \end{itemize}
-\item[AIPS++ V0.9 {\em April 97}]: Second beta release
+\item[AIPS++ V0.9 {\em May 97}]: Second beta release
 \begin{itemize}
 \item Rectify remaining problems in V0.8
 \item Spectral line additions to synthesis processing,
+\end{itemize}
+\item[AIPS++ V0.95 {\em August 97}]: Third beta release
+\begin{itemize}
+\item Rectify remaining problems in V0.9
+\item Improvements to the user interface, specifically via a number of
+gui-based applications.
 \end{itemize}
 \item[AIPS++ V1.0 {\em Q3 97}]: Limited Public Release
 \begin{itemize}
@@ -320,7 +375,8 @@ involved with AIPS++ to provide help on documentation.
 \item[AIPS++ User Group {\em Q3 99}]:
 \item[AIPS++ V3.0 {\em Q4 99}]:
 \begin{itemize}
-\item Complete replacement for consortium packages
+\item Complete replacement for consortium packages. {\em Since this is
+a site-based choice, I suggest it as a target rather than a core milestone.}
 \end{itemize}
 \end{description}
 
