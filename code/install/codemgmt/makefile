@@ -96,7 +96,7 @@ $(AISCRIPT) $(WRAPPED) $(DISTSCRP) $(SCRIPTS) : % : $(ARCHBIND)/% ;
 
 # "Wrapped" source code management scripts.
 $(addprefix $(ARCHBIND)/,$(WRAPPED)) : $(ARCHBIND)/s%.sh : $(ARCHBIND)/%
-	cat $< | sed "s#MSTRETCD/$*_master#MSTRETCD/s$*_master#g" > $@
+	cat $< | sed "s#MSTRETCD/$*_master#MSTRETCD/s$*_master.pl#g" > $@
 	@ chmod ug=rwx,o=r $@
 
 # Source code management scripts.
