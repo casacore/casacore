@@ -1,5 +1,5 @@
 //# Complex.h: Single and double precision complex numbers
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,25 +36,31 @@
 #include <aips/complex.h>
 
 // <summary>
-// Single precision complex numbers
+// Single and double precision complex numbers
 // </summary>
 
 // <synopsis>
 // The class <src>Complex</src> is a straight typedef as the 
 // standard library <src>complex<float></src>.
-// A global functions are added for historic reasons (they were present
-// in the original complex implementation).
 //
 // In a similar way <src>DComplex</src> is typedef-ed as
 // <src>complex<double></src>.
 //
 // <linkto class=IComplex>IComplex</linkto> is defined as a specific class.
-// It is only used by <src>FITS</src> classes.
+// It is only used by the <src>FITS</src> classes.
+//
 // <src>lDComplex</src> has not been defined: <src>long double</src> is not
-// part of the standard aips++ data suite.
+// part of the standard aips++ data suite (yet)
+//
+// A set of global functions are added for historic reasons (they were present
+// in the original aips++/gcc complex implementation).
 //
 // See the standard library documentation for the expected behaviour of 
 // the <src>Complex</src> and <src>DComplex</src> classes.
+//
+// <note role=tip> In the following all references to <src>Complex</src>
+// can be replaced with <src>DComplex</src>. with simultaneous
+// replacement of <src>Float</src> with <src>Double</src>. </note>
 //
 // Complex numbers may be constructed and used in the following ways:
 // <dl>
@@ -70,26 +76,27 @@
 // <dt>Complex u(x); Complex v = x;</dt>
 // <dd>  Set u and v to the same value as x. </dd>
 // 
-// <dt>double real(Complex& x);</dt>
+// <dt>Float real(Complex& x);</dt>
 // <dd>  returns the real part of x. </dd>
 // 
-// <dt>double imag(Complex& x);</dt>
+// <dt>Float imag(Complex& x);</dt>
 // <dd>  returns the imaginary part of x. </dd>
 // 
-// <dt>double abs(Complex& x);</dt>
+// <dt>Float abs(Complex& x);</dt>
 // <dd>  returns the magnitude of x. </dd>
 // 
-// <dt>double norm(Complex& x);</dt>
+// <dt>Float norm(Complex& x);</dt>
 // <dd>  returns the square of the magnitude of x. </dd>
 // 
-// <dt>double arg(Complex& x);</dt>
+// <dt>Float arg(Complex& x);</dt>
 // <dd>  returns the argument (amplitude) of x. </dd>
 // 
-// <dt>Complex polar(double r, double t = 0.0);</dt>
+// <dt>Complex polar(Float r, Float t = 0.0);</dt>
 // <dd>  returns a Complex with abs of r and arg of t. </dd>
 // 
 // <dt>Complex conj(Complex& x);</dt>
-// <dd>  returns the complex conjugate o </dd>f x.
+// <dd>  returns the complex conjugate of x </dd>
+// 
 // <dt>Complex cos(Complex& x);</dt>
 // <dd>  returns the complex cosine of x. </dd>
 // 
@@ -124,10 +131,12 @@
 // <dd> Returns the maximum of x,y (using operator>=, i.e. the norm).
 //
 // <dt>Bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
-// <dd>  returns whether val1 is relatively near val2 (see Math.h). </dd>
+// <dd>  returns whether val1 is relatively near val2 (see Math.h).
+//	(Note the Double tolerance) </dd>
 //
 // <dt>Bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
-// <dd>  returns whether val1 is absolutely near val2 (see Math.h). </dd>
+// <dd>  returns whether val1 is absolutely near val2 (see Math.h).
+//	(Note the Double tolerance) </dd>
 //
 // <dt>ostream << x;</dt>
 // <dd>  prints x in the form (re, im). </dd>
