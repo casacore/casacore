@@ -116,7 +116,7 @@
   done
 
   REMOTE_USER=''
-  if [ "$AUID" } ; then
+  if [ "$AUID" ] ; then
     REMOTE_USER="-l $AUID"
   fi
 # Find out which of these are files and which are directories.
