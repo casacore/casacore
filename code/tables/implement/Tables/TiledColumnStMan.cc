@@ -93,12 +93,15 @@ String TiledColumnStMan::dataManagerType() const
     return "TiledColumnStMan";
 }
 
-IPosition TiledColumnStMan::defaultTileShape() const
+Record TiledColumnStMan::dataManagerSpec() const
 {
-  if (tileShape_p.nelements() == 0  &&  cubeSet_p.nelements() > 0) {
-      return cubeSet_p[0]->tileShape();
-  }
-  return tileShape_p;
+    Record rec;
+    rec.define ("DEFAULTTILESHAPE", tileShape_p.asVector());
+    rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
+    if (cubeSet_p.nelements() > 0) {
+        rec.define ("TILESHAPE", cubeSet_p[0]->tileShape().asVector());
+    }
+    return rec;
 }
 
 Bool TiledColumnStMan::canAccessColumn (Bool& reask) const

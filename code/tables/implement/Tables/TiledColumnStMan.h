@@ -187,6 +187,9 @@ public:
     // Get the type name of the data manager (i.e. TiledColumnStMan).
     virtual String dataManagerType() const;
 
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
+
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
     static DataManager* makeObject (const String& dataManagerType,
@@ -197,9 +200,6 @@ private:
     // This constructor is private, because it should only be used
     // by makeObject.
     TiledColumnStMan();
-
-    // Get the default tile shape (which is the actual tile shape).
-    virtual IPosition defaultTileShape() const;
 
     // Add rows to the storage manager.
     // This will extend the hypercube.
