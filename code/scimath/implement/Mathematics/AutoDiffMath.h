@@ -121,8 +121,10 @@ template<class T> AutoDiff<T> sqrt(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> tan(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> tanh(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> abs(const AutoDiff<T> &ad);
+// </group>
 // Floating-point remainder of x/c, with the same sign as x, where c is
 // a constant.
+// <group>
 template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T &c);
 // </group>
  
@@ -157,8 +159,9 @@ template<class T> Bool nearAbs(const AutoDiff<T> &left,
 			       const AutoDiff<T> &right, const Double tol);
 template<class T> Bool allnearAbs(const AutoDiff<T> &left,
 				  const AutoDiff<T> &right, const Double tol);
-
+// </group>
 // Compare an AutoDiff and a constant
+// <group>
 template<class T> Bool operator>(const AutoDiff<T> &left, const T &right);
 template<class T> Bool operator<(const AutoDiff<T> &left, const T &right);
 template<class T> Bool operator>=(const AutoDiff<T> &left, const T &right);
@@ -174,8 +177,9 @@ template<class T> Bool nearAbs(const AutoDiff<T> &left, const T &right,
 			       const Double tol);
 template<class T> Bool allnearAbs(const AutoDiff<T> &left, const T &right,
 				  const Double tol);
-
+// </group>
 // Compare a constant and an AutoDiff
+// <group>
 template<class T> Bool operator>(const T &left, const AutoDiff<T> &right);
 template<class T> Bool operator<(const T &left, const AutoDiff<T> &right);
 template<class T> Bool operator>=(const T &left, const AutoDiff<T> &right);
@@ -190,10 +194,13 @@ template<class T> Bool nearAbs(const T &left, const AutoDiff<T> &right,
 			       const Double tol);
 template<class T> Bool allnearAbs(const T &left, const AutoDiff<T> &right,
 				  const Double tol);
-
+// </group>
 // Test special values
+// <group>
 template<class T> Bool isNaN (const AutoDiff<T> &val);
 template<class T> Bool isInf(AutoDiff<T> &val);
+
+// </group>
 
 // </group>
 
