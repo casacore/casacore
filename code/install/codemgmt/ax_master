@@ -3141,3 +3141,4 @@
 13 029 sys rm libexec/dish_opMenu.g
 13 029 sys rm libexec/aipsbrowser.g
 13 030 src mv trial/implement/Lattices/ExprLogicNodeArray.h aips/implement/Tables/ExprLogicNodeArray.h
+13 030 src mv trial/implement/Lattices/ExprLogicNodeArray.cc aips/implement/Tables/ExprLogicNodeArray.cc
