@@ -1,5 +1,5 @@
 //# ScalarColumn.cc: Access to a scalar table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,14 +107,6 @@ void ROScalarColumn<T>::checkDataType() const
     }
 }
 
-
-template<class T>
-T ROScalarColumn<T>::operator() (uInt rownr) const
-{
-    T val;
-    get (rownr, val);
-    return val;
-}
 
 template<class T>
 Vector<T> ROScalarColumn<T>::getColumn() const
