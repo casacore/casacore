@@ -297,8 +297,8 @@ void doIt (int argc, char *argv[])
 //
 // Make mask and make the corner x profiles all False
 //
-        LCPagedMask mask(RegionHandler::makeMask (image, "mask0"));
-        mask.set(True);
+	ImageRegion imreg = image.makeMask ("mask0", True, True, True, True);
+	LCRegion& mask = imreg.asMask();
 //
         Array<Bool> slice(IPosition(3,nx,1,1));
         slice = False;
@@ -306,9 +306,6 @@ void doIt (int argc, char *argv[])
         mask.putSlice(slice, IPosition(3,0,0,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,0));
-//
-        image.defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
-        image.setDefaultMask("mask0");
 //
 	Array<Float> arr(IPosition(3,nx,ny,1));
 	indgen(arr);
@@ -330,18 +327,12 @@ void doIt (int argc, char *argv[])
         PagedImage<Float> latout0(TiledShape(l2Shape, t2Shape), 
                                   CoordinateUtil::defaultCoords3D(),
                                 "tLatticeApply2_tmp.image2a");
-        LCPagedMask mask0(RegionHandler::makeMask (latout0, "mask0"));
-        latout0.defineRegion ("mask0", ImageRegion(mask0),
-			      RegionHandler::Masks);
-        latout0.setDefaultMask("mask0");
+	latout0.makeMask ("mask0", True, True);
 //
         PagedImage<Float> latout1(TiledShape(l2Shape, t2Shape), 
                                   CoordinateUtil::defaultCoords3D(),
                                 "tLatticeApply2_tmp.image2b");
-        LCPagedMask mask1(RegionHandler::makeMask (latout1, "mask0"));
-        latout1.defineRegion ("mask0", ImageRegion(mask1),
-			      RegionHandler::Masks);
-        latout1.setDefaultMask("mask0");
+	latout1.makeMask ("mask0", True, True);
 //
 	PtrBlock<MaskedLattice<Float>*> blat(2);
 	blat[0] = &latout0;
