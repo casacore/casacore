@@ -97,12 +97,7 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 
       logSink.post(message);
       removeCalSet(ms);
-      if (compress) {
-	addCalSet(ms, compress);
-      } else {
-	// Leave this in for debugging for now
-	addColumns(ms);
-      };
+      addCalSet(ms, compress);
       ArrayColumn<Complex> mcd(ms,"MODEL_DATA");
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     }
