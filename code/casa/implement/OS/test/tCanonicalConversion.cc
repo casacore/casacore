@@ -1,5 +1,5 @@
 //# tCanonicalConversion.h: Test program for class CanonicalConversion
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -162,6 +162,32 @@ void checkFlags (int& error)
 	error = 1;
     }
 
+    // Check for (unsigned) long long.
+#if !defined(AIPS_LITTLE_ENDIAN)
+    flag = sizeof(long long) != SIZE_CAN_LLONG;
+#endif
+    if ((flag^CONVERT_CAN_LLONG) != 0) {
+	cout << "invalid CONVERT_CAN_LLONG definition"
+	     << endl;
+	error = 1;
+    }
+#if !defined(AIPS_LITTLE_ENDIAN)
+    flag = sizeof(unsigned long long) != SIZE_CAN_ULLONG;
+#endif
+    if ((flag^CONVERT_CAN_ULLONG) != 0) {
+	cout << "invalid CONVERT_CAN_ULLONG definition"
+	     << endl;
+	error = 1;
+    }
+    if (sizeof(long long) < 8) {
+	cout << "sizeof(long long) must be >=8" << endl;
+	error = 1;
+    }
+    if (sizeof(unsigned long long) < 8) {
+	cout << "sizeof(unsigned long) must >=8" << endl;
+	error = 1;
+    }
+
     // Check for float and double.
 #if !defined(AIPS_LITTLE_ENDIAN)
     flag = sizeof(float) != SIZE_CAN_FLOAT;
@@ -200,7 +226,7 @@ void checkConversion (int& error)
 	char result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != -1) {
-	    cout << "invalid char to conversion" << result << endl;
+	    cout << "invalid char to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -214,7 +240,7 @@ void checkConversion (int& error)
 	unsigned char result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 254) {
-	    cout << "invalid unsigned char to conversion" << result << endl;
+	    cout << "invalid unsigned char to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -229,7 +255,7 @@ void checkConversion (int& error)
 	short result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 258) {
-	    cout << "invalid short to conversion 1" << result << endl;
+	    cout << "invalid short to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -240,7 +266,7 @@ void checkConversion (int& error)
 	val[1] = -2;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256 + 254)) {
-	    cout << "invalid short to conversion 2" << result << endl;
+	    cout << "invalid short to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -255,7 +281,7 @@ void checkConversion (int& error)
 	unsigned short result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 7*256 + 111) {
-	    cout << "invalid unsigned short to conversion" << result << endl;
+	    cout << "invalid unsigned short to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -272,7 +298,7 @@ void checkConversion (int& error)
 	int result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 1*256*256*256 + 2*256*256 + 3*256 + 0) {
-	    cout << "invalid int to conversion 1" << result << endl;
+	    cout << "invalid int to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -284,7 +310,7 @@ void checkConversion (int& error)
 	val[1] = -127;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != -(126*256*256*256 + 253*256*256 + 252*256 + 256)) {
-	    cout << "invalid int to conversion 2" << result << endl;
+	    cout << "invalid int to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -302,7 +328,7 @@ void checkConversion (int& error)
 	unsigned int result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 11*256*256*256 + 23*256*256 + 35*256 + 07) {
-	    cout << "invalid unsigned int to conversion" << result << endl;
+	    cout << "invalid unsigned int to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -324,7 +350,7 @@ void checkConversion (int& error)
 	long result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
-	    cout << "invalid long to conversion 1" << result << endl;
+	    cout << "invalid long to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -332,7 +358,7 @@ void checkConversion (int& error)
 	||  out[3] != val[3]  ||  out[4] != val[4]
 	||  out[5] != val[5]  ||  out[6] != val[6]
 	||  out[7] != val[7]  ||  out[8] != val[8]) {
-	    cout << "invalid long from conversion 2" << endl;
+	    cout << "invalid long from conversion 1" << endl;
 	    error = 1;
 	}
 	val[1] = -1;
@@ -342,7 +368,7 @@ void checkConversion (int& error)
 	val[5] = -2;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256*256*256 + 201*256*256 + 177*256 + 111)) {
-	    cout << "invalid long to conversion 2" << result << endl;
+	    cout << "invalid long to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -366,7 +392,7 @@ void checkConversion (int& error)
 	unsigned long result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U) {
-	    cout << "invalid unsigned long to conversion" << result << endl;
+	    cout << "invalid unsigned long to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -375,6 +401,75 @@ void checkConversion (int& error)
 	||  out[5] != val[5]  ||  out[6] != val[6]
 	||  out[7] != val[7]  ||  out[8] != val[8]) {
 	    cout << "invalid unsigned long from conversion" << endl;
+	    error = 1;
+	}
+    }
+    {
+	val[1] = 0;
+	val[2] = 0;
+	val[3] = 0;
+	val[4] = 6;
+	val[5] = 2;
+	val[6] = 54;
+	val[7] = 78;
+	val[8] = 145;
+	long long result;
+	CanonicalConversion::toLocal (&result, val+1, 1);
+	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145
+	              + 6*(long long)(256)*256*256*256) {
+	    cout << "invalid long long to conversion 1 " << result << endl;
+	    error = 1;
+	}
+	CanonicalConversion::fromLocal (out+1, &result, 1);
+	if (out[1] != val[1]  ||  out[2] != val[2]
+	||  out[3] != val[3]  ||  out[4] != val[4]
+	||  out[5] != val[5]  ||  out[6] != val[6]
+	||  out[7] != val[7]  ||  out[8] != val[8]) {
+	    cout << "invalid long long from conversion 1" << endl;
+	    error = 1;
+	}
+	val[1] = -1;
+	val[2] = -1;
+	val[3] = -1;
+	val[4] = -2;
+	CanonicalConversion::toLocal (&result, val+1, 1);
+	if (result != -((long long)(256)*256*256*256
+			+ (long long)(253)*256*256*256
+			+ 201*256*256 + 177*256 + 111)) {
+	    cout << "invalid long long to conversion 2 " << result << endl;
+	    error = 1;
+	}
+	CanonicalConversion::fromLocal (out+1, &result, 1);
+	if (out[1] != val[1]  ||  out[2] != val[2]
+	||  out[3] != val[3]  ||  out[4] != val[4]
+	||  out[5] != val[5]  ||  out[6] != val[6]
+	||  out[7] != val[7]  ||  out[8] != val[8]) {
+	    cout << "invalid long long from conversion 2" << endl;
+	    error = 1;
+	}
+    }
+    {
+	val[1] = 0;
+	val[2] = 0;
+	val[3] = 0;
+	val[4] = 5;
+	val[5] = 128;
+	val[6] = 54;
+	val[7] = 78;
+	val[8] = 100;
+	unsigned long long result;
+	CanonicalConversion::toLocal (&result, val+1, 1);
+	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U
+	              + 5U*(unsigned long long)(256)*256U*256U*256U) {
+	    cout << "invalid unsigned long long to conversion " << result << endl;
+	    error = 1;
+	}
+	CanonicalConversion::fromLocal (out+1, &result, 1);
+	if (out[1] != val[1]  ||  out[2] != val[2]
+	||  out[3] != val[3]  ||  out[4] != val[4]
+	||  out[5] != val[5]  ||  out[6] != val[6]
+	||  out[7] != val[7]  ||  out[8] != val[8]) {
+	    cout << "invalid unsigned long long from conversion" << endl;
 	    error = 1;
 	}
     }
@@ -393,7 +488,7 @@ void checkConversion (int& error)
 	d *= double(192)/256 + double(1)/(256*256) + double(7)/(256*256*256);
 	float v = d;
 	if (result != float(v)) {
-	    cout << "invalid float to conversion" << result << " " <<v<<endl;
+	    cout << "invalid float to conversion " << result << " " <<v<<endl;
 	    unsigned char* cv = (unsigned char*)&result;
 	    cout << hex;
 	    cout << int(cv[0]) << ' ' << int(cv[1]) << ' '
@@ -429,7 +524,7 @@ void checkConversion (int& error)
 	d *= double(192)/256 + double(23)/(256*256) + double(34)/(256*256*256);
 	float v = d;
 	if (result != v) {
-	    cout << "invalid float to conversion" << setprecision(20)
+	    cout << "invalid float to conversion " << setprecision(20)
 		 << result << " " << setprecision(20) << v <<endl;
 	    unsigned char* cv = (unsigned char*)&result;
 	    cout << hex;
@@ -477,7 +572,7 @@ void checkConversion (int& error)
 	    + double(4)/(32*double(256*256*256)*256)
 	    + double(5)/(32*double(256*256*256)*256*256);
 	if (result != v) {
-	    cout << "invalid double to conversion" << result << " " <<v<<endl;
+	    cout << "invalid double to conversion " << result << " " <<v<<endl;
 	    unsigned char* cv = (unsigned char*)&result;
 	    cout << hex;
 	    cout << int(cv[0]) << ' ' << int(cv[1]) << ' '
