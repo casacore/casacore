@@ -114,8 +114,15 @@ endif
 DBGVERSO := $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
 OPTVERSO := $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
 
+# Is there an overriding link list for this application?
+ifneq "$(origin LINK$(THISAPP))" "undefined"
+  LINKAPP := $(LINK$(THISAPP))
+else
+  LINKAPP := $(LINK$(PACKAGE))
+endif
+
 # Parse the link lists and library control variables.
-DBGLIBS  := $(foreach PCKG,$(LINK$(PACKAGE)), \
+DBGLIBS  := $(foreach PCKG,$(LINKAPP), \
                $(subst $(LIBDBGD)/lib$(PCKG).defeat, \
                   $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))), \
                   $(subst $(LIBDBGD)/lib$(PCKG)_c.defeat, \
@@ -131,7 +138,7 @@ DBGLIBS  := $(strip \
                      $(subst .shared,.$(SFXSHAR), \
                         $(filter-out %.defeat,$(DBGLIBS))))))
 
-OPTLIBS  := $(foreach PCKG,$(LINK$(PACKAGE)), \
+OPTLIBS  := $(foreach PCKG,$(LINKAPP), \
                $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
                   $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))), \
                   $(subst $(LIBOPTD)/lib$(PCKG)_c.defeat, \
@@ -158,7 +165,7 @@ ifeq "$(MAKEMODE)" "programmer"
 
    ifdef PGMRLIBD
       ifndef OPTLIB
-         PGMRLIBR := $(foreach PCKG,$(LINK$(PACKAGE)), \
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
             $(wildcard $(PGMRLIBD)/lib$(PCKG).$(SFXSTAT)) \
             $(wildcard $(PGMRLIBD)/lib$(PCKG)_c.$(SFXSTAT)) \
             $(wildcard $(PGMRLIBD)/lib$(PCKG)_f.$(SFXSTAT)) \
@@ -172,7 +179,7 @@ ifeq "$(MAKEMODE)" "programmer"
                         $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))) \
                         $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG)))))))
       else
-         PGMRLIBR := $(foreach PCKG,$(LINK$(PACKAGE)), \
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
             $(wildcard $(PGMRLIBD)/lib$(PCKG).$(SFXSTAT)) \
             $(wildcard $(PGMRLIBD)/lib$(PCKG)_c.$(SFXSTAT)) \
             $(wildcard $(PGMRLIBD)/lib$(PCKG)_f.$(SFXSTAT)) \
@@ -188,7 +195,7 @@ ifeq "$(MAKEMODE)" "programmer"
       endif
    else
       ifndef OPTLIB
-         PGMRLIBR := $(foreach PCKG,$(LINK$(PACKAGE)), \
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
             $(wildcard $(PGMRCODE)/$(PCKG)/implement/lib$(PCKG).$(SFXSTAT)) \
             $(wildcard $(PGMRCODE)/$(PCKG)/C/lib$(PCKG)_c.$(SFXSTAT))       \
             $(wildcard $(PGMRCODE)/$(PCKG)/fortran/lib$(PCKG)_f.$(SFXSTAT)) \
@@ -202,7 +209,7 @@ ifeq "$(MAKEMODE)" "programmer"
                         $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))) \
                         $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG)))))))
       else
-         PGMRLIBR := $(foreach PCKG,$(LINK$(PACKAGE)), \
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
             $(wildcard $(PGMRCODE)/$(PCKG)/implement/lib$(PCKG).$(SFXSTAT)) \
             $(wildcard $(PGMRCODE)/$(PCKG)/C/lib$(PCKG)_c.$(SFXSTAT))       \
             $(wildcard $(PGMRCODE)/$(PCKG)/fortran/lib$(PCKG)_f.$(SFXSTAT)) \
@@ -649,6 +656,7 @@ show_local :
 	-@ echo "DBGVERSO=$(DBGVERSO)"
 	-@ echo "OPTVERSO=$(OPTVERSO)"
 	-@ echo ""
+	-@ echo "LINKAPP =$(LINKAPP)"
 	-@ echo "DBGLIBS =$(DBGLIBS)"
 	-@ echo "OPTLIBS =$(OPTLIBS)"
 	-@ echo ""
