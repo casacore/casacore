@@ -150,7 +150,7 @@ public:
   // Return a pointer to a copy of the derived object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual SpectralModel * cloneSpectrum() const = 0;
+  virtual SpectralModel * clone() const = 0;
 
   // return the number of parameters in this spectral shape and set/get them.
   // <group>
