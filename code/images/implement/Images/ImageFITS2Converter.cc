@@ -599,7 +599,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // HISTORY
 //
   ImageLogger& logger = image.logger();
-  LogSink& logSink = logger.sink();
 //
   Vector<String> historyChunk;
   uInt nstrings;
@@ -607,7 +606,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
   uInt firstLine = 0;
   while (1) {
      firstLine = FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat, 
-                                            nstrings, firstLine, logSink);
+                                            nstrings, firstLine, logger);
      if (nstrings == 0) {
         break;
      }
@@ -1070,16 +1069,15 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
 void ImageFITSConverter::restoreHistory (ImageLogger& logger,
                                          ConstFitsKeywordList& kw) 
 {
-    LogSink& sink = logger.sink();
     Vector<String> lines;
     String groupType;
     kw.first();
     uInt n;
     while ((n=FITSHistoryUtil::getHistoryGroup(lines, groupType, kw))!=0) {
        if (groupType == "LOGTABLE") {
-          FITSHistoryUtil::fromHISTORY(sink, lines, n, True);
+          FITSHistoryUtil::fromHISTORY(logger, lines, n, True);
         } else if (groupType == "") {
-          FITSHistoryUtil::fromHISTORY(sink, lines, n, False);
+          FITSHistoryUtil::fromHISTORY(logger, lines, n, False);
         }
     }
 }
