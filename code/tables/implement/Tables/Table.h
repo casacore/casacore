@@ -277,8 +277,8 @@ public:
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
     // <group>
-    Bool hasLock (Bool write = True) const;
-    Bool hasLock (TableLock::LockMode mode) const;
+    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
+    Bool hasLock (Bool write) const;
     // </group>
 
     // Try to lock the table for read or write access (default is write).
@@ -290,8 +290,8 @@ public:
     // When <src>PermanentLocking</src> is in effect, a lock is already
     // present, so nothing will be done.
     // <group>
-    Bool lock (Bool write = True, uInt nattempts = 0);
-    Bool lock (TableLock::LockMode mode, uInt nattempts = 0);
+    Bool lock (FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+    Bool lock (Bool write, uInt nattempts = 0);
     // </group>
 
     // Unlock the table. This will also synchronize the table data,
@@ -511,10 +511,18 @@ public:
     // in the table keyword set.
     // This can be used in selecting rows from a table using
     // <src>operator()</src> described below.
+    // <br>The functions taking the fieldNames vector are meant for
+    // the cases where the keyword or column contains records.
+    // The fieldNames indicate which field to take from that record
+    // (which can be a record again, etc.).
     // <group name=keycol>
     TableExprNode key (const String& keywordName) const;
+    TableExprNode key (const Vector<String>& fieldNames) const;
     TableExprNode col (const String& columnName) const;
-    TableExprNode keyCol (const String& name) const;
+    TableExprNode col (const String& columnName,
+		       const Vector<String>& fieldNames) const;
+    TableExprNode keyCol (const String& name,
+			  const Vector<String>& fieldNames) const;
     // </group>
 
     // Create a TableExprNode object for the rownumber function.
@@ -741,16 +749,21 @@ inline Bool Table::isMultiUsed() const
     { return baseTabPtr_p->isMultiUsed(); }
 inline const TableLock& Table::lockOptions() const
     { return baseTabPtr_p->lockOptions(); }
+inline Bool Table::lock (FileLocker::LockType type, uInt nattempts)
+    { return baseTabPtr_p->lock (type, nattempts); }
 inline Bool Table::lock (Bool write, uInt nattempts)
-    { return baseTabPtr_p->lock (write, nattempts); }
-inline Bool Table::lock (TableLock::LockMode mode, uInt nattempts)
-    { return baseTabPtr_p->lock (ToBool (mode==TableLock::Write), nattempts); }
+{
+    return baseTabPtr_p->lock (write ? FileLocker::Write : FileLocker::Read,
+			       nattempts);
+}
 inline void Table::unlock()
     { baseTabPtr_p->unlock(); }
+inline Bool Table::hasLock (FileLocker::LockType type) const
+    { return baseTabPtr_p->hasLock (type); }
 inline Bool Table::hasLock (Bool write) const
-    { return baseTabPtr_p->hasLock (write); }
-inline Bool Table::hasLock (TableLock::LockMode mode) const
-    { return baseTabPtr_p->hasLock (ToBool (mode==TableLock::Write)); }
+{
+    return baseTabPtr_p->hasLock (write ? FileLocker::Write : FileLocker::Read);
+}
 
 inline Bool Table::isWritable() const
     { return baseTabPtr_p->isWritable(); }
