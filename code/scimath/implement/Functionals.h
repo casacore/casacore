@@ -1,5 +1,5 @@
 //# Functionals.h: A module that represents various function-like classes.
-//# Copyright (C) 1995,1996,1998,1999,2001
+//# Copyright (C) 1995,1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,6 @@
 #include <aips/Functionals/SampledFunctional.h>
 
 //# 1-D Functions
-#include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ArraySampledFunctional.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
