@@ -186,20 +186,15 @@ Int QuantumHolder::nelements() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty QuantumHolder argument for nelements"));
   } else if (isQuantumArrayDouble()) {
-    return dynamic_cast<const Quantum<Array<Double> > *>(hold_p.ptr())->
-      getValue().nelements();
+    return ((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayFloat()) {
-    return dynamic_cast<const Quantum<Array<Float> > *>(hold_p.ptr())->
-      getValue().nelements();
+    return ((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayInt()) {
-    return dynamic_cast<const Quantum<Array<Int> > *>(hold_p.ptr())->
-      getValue().nelements();
+    return ((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayComplex()) {
-    return dynamic_cast<const Quantum<Array<Complex> > *>(hold_p.ptr())->
-      getValue().nelements();
+    return ((Quantum<Array<Complex> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumArrayDComplex()) {
-    return dynamic_cast<const Quantum<Array<DComplex> > *>(hold_p.ptr())->
-      getValue().nelements();
+    return ((Quantum<Array<DComplex> > *)(hold_p.ptr()))->getValue().nelements();
   };
   return 1;
 }
