@@ -249,11 +249,12 @@ template<class T> inline void minMax(const Array<T> &a, T &min, T &max)
 }
 //
 // The minimum element of the array.
-// Requires that the type "T" have comparison operators.
+// Requires that the type "T" has comparison operators.
 template<class T>  T min(const Array<T> &a);
 // The maximum element of the array.
-// Requires that the type "T" have comparison operators.
+// Requires that the type "T" has comparison operators.
 template<class T>  T max(const Array<T> &a);
+
 // "result" contains the maximum of "a" and "b" at each position. "result",
 // "a", and "b" must be conformant.
 template<class T> void max(Array<T> &result, const Array<T> &a, 
@@ -266,8 +267,21 @@ template<class T> void min(Array<T> &result, const Array<T> &a,
 // "a" and "b" must be conformant.
 template<class T> Array<T> max(const Array<T> &a, const Array<T> &b);
 // Return an array that contains the minimum of "a" and "b" at each position.
-template<class T> Array<T> min(const Array<T> &a, const Array<T> &b);
 // "a" and "b" must be conformant.
+template<class T> Array<T> min(const Array<T> &a, const Array<T> &b);
+
+// "result" contains the maximum of "a" and "b" at each position. "result",
+// and "a" must be conformant.
+template<class T> void max(Array<T> &result, const Array<T> &a, 
+			   const T &b);
+// "result" contains the minimum of "a" and "b" at each position. "result",
+// and "a" must be conformant.
+template<class T> void min(Array<T> &result, const Array<T> &a, 
+			   const T &b);
+// Return an array that contains the maximum of "a" and "b" at each position.
+template<class T> Array<T> max(const Array<T> &a, const T &b);
+// Return an array that contains the minimum of "a" and "b" at each position.
+template<class T> Array<T> min(const Array<T> &a, const T &b);
 // </group>
 
 // 
