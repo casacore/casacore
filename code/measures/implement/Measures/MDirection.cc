@@ -128,7 +128,8 @@ const String &MDirection::showType(uInt tp) {
 	"MECLIPTIC",
 	"TECLIPTIC",
 	"SUPERGAL",
-	"ITRF" };
+	"ITRF",
+	"TOPO" };
     static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
 	"MERCURY",
 	"VENUS",
@@ -151,7 +152,7 @@ const String &MDirection::showType(uInt tp) {
 }
 
 Bool MDirection::getType(MDirection::Types &tp, const String &in) {
-  static const Int N_name = 28;
+  static const Int N_name = 29;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -171,6 +172,7 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     "TECLIPTIC",
     "SUPERGAL",
     "ITRF",
+    "TOPO",
     "MERCURY",
     "VENUS",
     "MARS",
@@ -201,6 +203,7 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     MDirection::TECLIPTIC,
     MDirection::SUPERGAL,
     MDirection::ITRF,
+    MDirection::TOPO,
     MDirection::MERCURY,
     MDirection::VENUS,
     MDirection::MARS,
@@ -255,7 +258,9 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GLONGLAT,
 	MDirection::GLONGLAT,
 	MDirection::GLONGLAT,
-	MDirection::GLONGLAT };
+	MDirection::GLONGLAT,
+	MDirection::GRADEC,
+	MDirection::GRADEC };
     if ((tp & MDirection::EXTRA) != 0) tp = 0;
     DebugAssert(tp < MDirection::N_Types, AipsError);
 
