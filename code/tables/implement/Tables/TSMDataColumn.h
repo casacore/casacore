@@ -379,11 +379,6 @@ private:
     // Forbid assignment.
     TSMDataColumn& operator= (const TSMDataColumn&);
 
-    // Size the cache in an optimal way when accessing a (slice of a) cell.
-    // It will try to cache the data of as many dimensions as possible.
-    void sizeCellCache (TSMCube* hypercube, const IPosition& start,
-			const IPosition& end, const IPosition& stride);
-
     // Read or write a data cell in the cube.
     // A cell can contain a scalar or an array (depending on the
     // column definition).
