@@ -30,7 +30,7 @@
 #include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mBaseline_bug1;
 #endif
-#include <trial/Measures/MBaseline.h>
+#include <aips/Measures/MBaseline.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>

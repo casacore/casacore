@@ -31,7 +31,7 @@
 typedef Quantum<Double> gpp_Baseline_bug1;
 #endif
 #include <aips/Exceptions.h>
-#include <trial/Measures/MCBaseline.h>
+#include <aips/Measures/MCBaseline.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>

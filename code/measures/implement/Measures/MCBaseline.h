@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Measures/MBaseline.h>
+#include <aips/Measures/MBaseline.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MCBase.h>
