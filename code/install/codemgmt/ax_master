@@ -3506,3 +3506,4 @@
 13 285 src mv trial/implement/Lattices/test/tTileStepper.out aips/implement/Lattices/test/tTileStepper.out
 13 285 src mv trial/implement/Lattices/test/tTiledLineStepper.out aips/implement/Lattices/test/tTiledLineStepper.out
 13 285 src mv trial/implement/Lattices/test/tTiledLineStepper.cc aips/implement/Lattices/test/tTiledLineStepper.cc
+13 285 src mv trial/implement/Lattices/test/tTiledShape.cc aips/implement/Lattices/test/tTiledShape.cc
