@@ -103,7 +103,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                             typename Interpolate2D::Method method,
                             const IPosition& outPixelAxesU,
                             const ImageInterface<T>& inImage,
-                            Bool showProgress)
+                            Bool replicate, Bool showProgress)
 {
    LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
 //
@@ -180,7 +180,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                               inPtr, outPtr, outCoords, inCoords2,
                               pixelAxisMap1, pixelAxisMap2, 
                               outPixelAxes(i), inImage, outShape,
-                              outIsMasked, showProgress, method);
+                              replicate, outIsMasked, showProgress, method);
       }
    }
 
@@ -196,6 +196,8 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 }
 
 
+
+
 template<class T>
 void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                                           Vector<Bool>& doneOutPixelAxes,
@@ -208,6 +210,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                                           Int outPixelAxis, 
                                           const ImageInterface<T>& inImage,    
                                           const IPosition& outShape,
+                                          Bool replicate,
                                           Bool outIsMasked, Bool showProgress,
                                           typename Interpolate2D::Method method)
 {
@@ -304,7 +307,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        }
        regrid2D (*outPtr, *inPtr, inDir, outDir, inPixelAxes,
                  outPixelAxes, pixelAxisMap1, pixelAxisMap2, method,
-                 machine, madeIt, showProgress, scale);
+                 machine, replicate, madeIt, showProgress, scale);
 
 // Note that we have done two pixel axes in this pass
 
@@ -361,7 +364,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        }
        regrid1D (*outPtr, *inPtr, inCoord, outCoord, inPixelAxes,
                  outPixelAxes, inAxisInCoordinate, outAxisInCoordinate,
-                 pixelAxisMap2, method, machine, madeIt, showProgress);
+                 pixelAxisMap2, method, machine, replicate, 
+                 madeIt, showProgress);
 
 // Note that we have done one pixel axis in this pass
 
@@ -597,6 +601,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap2,
                                typename Interpolate2D::Method method,
                                MDirection::Convert& machine,
+                               Bool replicate,
                                Bool useMachine, Bool showProgress, Double scale)
 //
 // Compute output coordinate, find region around this coordinate
@@ -609,8 +614,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    AlwaysAssert(outPixelAxes.nelements()==2, AipsError);
 //
    Timer timer1;
-   Bool resample = False;
-//   if (itsDisableConversions) resample = True;
+   Bool resample = replicate;
 //
    Bool inIsMasked = inLattice.isMasked();
    Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
@@ -728,7 +732,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
   
    Vector<Double> world(2), inPixel(2), outPixel(2);
 //
-   Vector<Float> pixelScale(nDim); pixelScale = 1.0;
+   Vector<Float> pixelScale(nDim); 
+   pixelScale = 1.0;
    pixelScale(xInAxis) = Float(outShape(xOutCorrAxis)) / Float(inShape(xInAxis));
    pixelScale(yInAxis) = Float(outShape(yOutCorrAxis)) / Float(inShape(yInAxis));
    if (itsShowLevel > 0) {
@@ -765,7 +770,11 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // Iterate through output image
 
    Timer timer2;
+   Timer timer3;
+   Timer timer4;
    Double sum2 = 0.0;
+   Double sum3 = 0.0;
+   Double sum4 = 0.0;
    Double iPix = 0.0;
    Int i2;
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
@@ -781,12 +790,11 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // For each pixel in the output cursor, compute the absolute pixel coordinate 
 // of the full input lattice.   
 
+      timer2.mark();
       Cube<Double> pix2DPos(outCursorShape(xOutAxis), outCursorShape(yOutAxis), 2);
       Matrix<Bool> failed(outCursorShape(xOutAxis), outCursorShape(yOutAxis));
       Bool allFailed = False;
       Bool missedIt = True;
-//
-      timer2.mark();
       if (resample) {
          make2DCoordinateGrid (pix2DPos, minInX, minInY, maxInX, maxInY,
                                pixelScale, xInAxis, yInAxis, xOutAxis, yOutAxis,
@@ -803,7 +811,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                outCursorShape, useMachine);
       }
       sum2 += timer2.all();
-      if (itsShowLevel>0) {
+      if (itsShowLevel>1) {
          cerr << "Coordinate grid = " << pix2DPos << endl;
       }
        
@@ -831,12 +839,13 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // For the non-regrid axes, the input and output shapes, and hence positions, are the same. 
 // pixelAxisMap2(i) says where pixel axis i in the input image is in the output image.  
 
+         timer4.mark();
          for (uInt k=0; k<nDim; k++) {
             inChunkBlc(k) = outPos(pixelAxisMap2(k));
             inChunkTrc(k) = outIter.endPosition()(pixelAxisMap2(k));
          }
 
-// Now overwrite for the regrid axes. The interpolation schemes (Interpolate2D) use 
+// Now overwrite the blc/trc for the regrid axes. The interpolation schemes (Interpolate2D) use 
 // a small grid about the pixel of interest I happen to know that allowing 3 
 // pixels on either side is enough.   If this should change, the interpolation 
 // would return False at the edges
@@ -898,15 +907,16 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             cerr << "outMatrixCursorIterShape = " << outCursorIter.matrixCursor().shape() << endl;
          }
 //
-         Float kk = 0.0;
          inChunkBlc2D = 0;
          inChunkTrc2D = inChunkShape - 1;
          IPosition inChunk2DShape(2);
          inChunk2DShape(0) = inChunkTrc2D(xInAxis) - inChunkBlc2D(xInAxis) + 1;
          inChunk2DShape(1) = inChunkTrc2D(yInAxis) - inChunkBlc2D(yInAxis) + 1;
+         sum4 += timer4.all();
 //
          for (outCursorIter.reset(); !outCursorIter.atEnd(); outCursorIter++) {
-           kk += 1.0;
+         timer4.mark();
+
 
 // outPos2 in the location of the BLC of the current matrix within the current
 // cursor (tile) of data. outPos3 is the location of the BLC of the current matrix within
@@ -935,11 +945,14 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 //                  new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).nonDegenerate());
                   new Matrix<Bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape));
             }
+            sum4 += timer4.all();
+
 
 // Now work through each output pixel in the data Matrix and do the interpolation
 
             uInt nCol = outCursorIter.matrixCursor().ncolumn();
             uInt nRow = outCursorIter.matrixCursor().nrow();
+            timer3.mark();
             for (uInt j=0; j<nCol; j++) {
                for (uInt i=0; i<nRow; i++) {
                   if (itsShowLevel>1) {
@@ -1002,6 +1015,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             }
             if (outIsMasked) (*outMaskCursorIterPtr)++;
             if (inIsMasked) delete inMaskChunk2DPtr;
+            sum3 += timer3.all();
          }
 
 // TEMP FUDGE
@@ -1024,8 +1038,12 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    if (outIsMasked) delete outMaskIterPtr;
    if (showProgress) delete pProgressMeter;
 //
-   cerr << "Regrid2d took             " << timer1.all() << " seconds, of which" << endl;
-   cerr << "make2DcoordinateGrid took " << sum2 << " seconds" << endl;
+   if (itsShowLevel>0) {
+      cerr << "Regrid2d took                " << timer1.all() << " seconds" << endl;
+      cerr << "   make2DcoordinateGrid took " << sum2 << " seconds" << endl;
+      cerr << "   data i/o took             " << sum4 << " seconds" << endl;
+      cerr << "   interpolation loop took   " << sum3 << " seconds" << endl;
+   }
 }
 
 
@@ -1084,23 +1102,100 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
       cerr << "outXIdx, outYIdx = " << outXIdx << ", " << outYIdx << endl;
    }
 //
-   for (uInt j=0; j<nj; j++) {
-      for (uInt i=0; i<ni; i++) {
-         outPixel(outXIdx) = i + outPos(xOutAxis);
-         outPixel(outYIdx) = j + outPos(yOutAxis);
+   if (useMachine) {
+      for (uInt j=0; j<nj; j++) {
+         for (uInt i=0; i<ni; i++) {
+            outPixel(outXIdx) = i + outPos(xOutAxis);
+            outPixel(outYIdx) = j + outPos(yOutAxis);
 
 // Do coordinate conversions (outpixel to world to inpixel)
 // for the axes of interest
             
-         if (useMachine) {
-           ok1 = outCoord.toWorld(outMVD, outPixel);            
-           ok2 = False;
-           if (ok1) {
-              inMVD = machine(outMVD).getValue();
-              ok2 = inCoord.toPixel(inPixel, inMVD);
-           } 
-         } else { 
-            world = 0.0;
+            ok1 = outCoord.toWorld(outMVD, outPixel);            
+            ok2 = False;
+            if (ok1) {
+               inMVD = machine(outMVD).getValue();
+               ok2 = inCoord.toPixel(inPixel, inMVD);
+            } 
+//
+            if (!ok1 || !ok2) {
+               failed(i,j) = True;
+            } else {
+
+// This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
+// to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
+
+               in2DPos(i,j,0) = inPixel(inXIdx);
+               in2DPos(i,j,1) = inPixel(inYIdx);
+               allFailed = False;
+               failed(i,j) = False;
+//
+               minInX = min(minInX,inPixel(inXIdx));
+               minInY = min(minInY,inPixel(inYIdx));
+               maxInX = max(maxInX,inPixel(inXIdx));
+               maxInY = max(maxInY,inPixel(inYIdx));
+            }
+         }
+      }
+   } else {
+/*
+
+// There is no performance benefit using the *Many functions because
+// of the loading and unloading
+
+// Load
+
+      Matrix<Double> worldMany(2,ni*nj), inPixelMany(2,ni*nj), outPixelMany(2,ni*nj);
+      uInt i,j;
+      for (uInt k=0; k<ni*nj; k++) {
+         j = k/ni;
+         i = k - j*ni;
+//
+         outPixelMany(outXIdx,k) = i + outPos(xOutAxis);
+         outPixelMany(outYIdx,k) = j + outPos(yOutAxis);
+      }
+
+// Convert
+
+      Vector<Int> failures1, failures2;
+      uInt nFail1 = outCoord.toWorldMany(worldMany, outPixelMany, failures1);
+      uInt nFail2 = inCoord.toPixelMany(inPixelMany, worldMany, failures2);
+
+// Unload
+
+      for (uInt k=0; k<ni*nj; k++) {
+         j = k/ni;
+         i = k - j*ni;
+//
+         if ( (k<nFail1 && failures1(k)) || 
+              (k<nFail2 && failures2(k)) ) {
+            failed(i,j) = True;
+         } else {
+
+// This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
+// to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
+
+            in2DPos(i,j,0) = inPixelMany(inXIdx,k);
+            in2DPos(i,j,1) = inPixelMany(inYIdx, k);
+            allFailed = False;
+            failed(i,j) = False;
+//
+            minInX = min(minInX,inPixelMany(inXIdx,k));
+            minInY = min(minInY,inPixelMany(inYIdx,k));
+            maxInX = max(maxInX,inPixelMany(inXIdx,k));
+            maxInY = max(maxInY,inPixelMany(inYIdx,k));
+         }
+      }
+*/
+      uInt k = 0;
+      for (uInt j=0; j<nj; j++) {
+         for (uInt i=0; i<ni; i++,k++) {
+            outPixel(outXIdx) = i + outPos(xOutAxis);
+            outPixel(outYIdx) = j + outPos(yOutAxis);
+
+// Do coordinate conversions (outpixel to world to inpixel)
+// for the axes of interest
+            
             ok1 = outCoord.toWorld(world, outPixel);
             ok2 = False;
             if (ok1) ok2 = inCoord.toPixel(inPixel, world);
@@ -1111,26 +1206,28 @@ void ImageRegrid<T>::make2DCoordinateGrid (Bool& allFailed, Bool&missedIt,
               cerr  << outPixel << world << inPixel << ", " << ok1 << ", " << 
                     ok2 << endl;
             }
-         }
-         if (!ok1 || !ok2) {
-            failed(i,j) = True;
-         } else {
+//
+            if (!ok1 || !ok2) {
+               failed(i,j) = True;
+            } else {
 
 // This gives the 2D input pixel coordinate (relative to the start of the full Lattice)
 // to find the interpolated result at.  (,,0) pertains to inX and (,,1) to inY
 
-            in2DPos(i,j,0) = inPixel(inXIdx);
-            in2DPos(i,j,1) = inPixel(inYIdx);
-            allFailed = False;
-            failed(i,j) = False;
+               in2DPos(i,j,0) = inPixel(inXIdx);
+               in2DPos(i,j,1) = inPixel(inYIdx);
+               allFailed = False;
+               failed(i,j) = False;
 //
-            minInX = min(minInX,inPixel(inXIdx));
-            minInY = min(minInY,inPixel(inYIdx));
-            maxInX = max(maxInX,inPixel(inXIdx));
-            maxInY = max(maxInY,inPixel(inYIdx));
+               minInX = min(minInX,inPixel(inXIdx));
+               minInY = min(minInY,inPixel(inYIdx));
+               maxInX = max(maxInX,inPixel(inXIdx));
+               maxInY = max(maxInY,inPixel(inYIdx));
+            }
          }
       }
    }
+
 
 // Does the output map to anywhere on the input ?
 
@@ -1216,12 +1313,15 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap,
                                typename Interpolate2D::Method method,
                                MFrequency::Convert& machine,
+                               Bool replicate,
                                Bool useMachine, Bool showProgress)
 
 //
 // Any output mask is overwritten
 //
 {
+   Timer timer1, timer2, timer3, timer4;
+//
    const Bool inIsMasked = inLattice.isMasked();
    const Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
                             outLattice.pixelMask().isWritable();
@@ -1237,108 +1337,24 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    const Int inPixelAxis = inPixelAxes(inAxisInCoordinate);
    const Int outPixelAxis = outPixelAxes(outAxisInCoordinate);
 
-// Precompute vector of output coordinates to interpolate data at
-  
-   Vector<Double> world, inPixel;
-   Vector<Double> outPixel = outCoord.referencePixel().copy();
-   Double outPixel2, inPixel2;
-//
+// Generate vector of pixel coordinates
+
    const uInt nLine = outShape(outPixelAxis);
    Vector<Bool> failed(nLine);
    Block<Float> outX(nLine);
-   Bool allFailed = True;
+   Bool allFailed = False;
    Bool allGood = True;
-   Bool ok1 = False;
-   Bool ok2 = False;
-   MFrequency inMVF, outMVF;
 //
-   if (useMachine) {
-
-// If we are going to Stoke up the MFrequency machine it means
-// we have a SpectralCoordinate, do cast to it
-
-      const SpectralCoordinate& inSpecCoord = dynamic_cast<const SpectralCoordinate&>(inCoord);
-      const SpectralCoordinate& outSpecCoord = dynamic_cast<const SpectralCoordinate&>(outCoord);
-//
-      for (uInt i=0; i<nLine; i++) {
-
-// Fill Coordinate pixel locations
-
-         if (itsShowLevel>1) {
-            cerr.setf(ios::scientific, ios::floatfield);
-            cerr.precision(12);
-            cerr << "pixel out, world out, pixel in  = " << outPixel;
-         }
-//
-         outPixel2 = i;
-         ok1 = outSpecCoord.toWorld(outMVF, outPixel2);
-         if (ok1) {
-            inMVF = machine(outMVF).getValue();
-            ok2 = inSpecCoord.toPixel(inPixel2, inMVF);
-         } 
-//
-         if (!ok1 || !ok2) {
-            failed(i) = True;
-            allGood = False;
-         } else {
-            if (itsShowLevel>1) {
-               cerr.setf(ios::scientific, ios::floatfield);
-               cerr.precision(12);
-               cerr << ", " << world << " " << inPixel << endl;
-            }
-
-// This one ok
-
-            outX[i] = inPixel2;
-            failed(i) = False;
-            allFailed = False;
-         }
-      }
+   timer2.mark();
+   if (replicate) {
+      Float pixelScale = Float(outShape(outPixelAxis)) / Float(inShape(inPixelAxis));
+      make1DCoordinateGrid (outX, pixelScale);
    } else {
-      for (uInt i=0; i<nLine; i++) {
-
-// Fill Coordinate pixel locations
-
-         if (itsShowLevel>1) {
-            cerr.setf(ios::scientific, ios::floatfield);
-            cerr.precision(12);
-           cerr << "pixel out, world out, pixel in  = " << outPixel;
-         }
-//
-         outPixel(outAxisInCoordinate) = i;
-         ok1 = outCoord.toWorld(world, outPixel);
-         if (ok1) ok2 = inCoord.toPixel(inPixel, world);
-         inPixel2 = inPixel(inAxisInCoordinate);
-//
-         if (!ok1 || !ok2) {
-            failed(i) = True;
-            allGood = False;
-         } else {
-            if (itsShowLevel>1) {
-               cerr.setf(ios::scientific, ios::floatfield);
-               cerr.precision(12);
-               cerr << ", " << world << " " << inPixel << endl;
-            }
-
-// This one ok
-
-            outX[i] = inPixel2;
-            failed(i) = False;
-            allFailed = False;
-         }
-      }
+      make1DCoordinateGrid (outX, failed, allFailed, allGood,
+                            inCoord, outCoord, inAxisInCoordinate,
+                            outAxisInCoordinate, machine, useMachine);
    }
-//
-   if (itsShowLevel>0) {
-      cerr << "allFailed=" << allFailed << endl;
-      cerr << "allGood =" << allGood << endl;
-//
-       cerr << "outX=";
-       for (uInt i=0;i<nLine;i++) {
-          cerr << outX[i] << ", ";
-       }
-       cerr << endl;
-   }
+   Double sum2 = timer2.all();
 
 // Short cut if all conversions cactus
 
@@ -1350,7 +1366,6 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       }
       return;
    }
-
 
 // Generate vector of input X values for interpolator
 
@@ -1424,10 +1439,13 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                         True, max(1,Int(nMax/20)));
    }
 
-// Iterate through output image
+// Iterate through output image by line
 
    Bool goodIsTrue = True;
    Vector<Bool> dummyMask(nLine);
+   Double sum3 = 0.0;
+   Double sum4 = 0.0;
+   timer3.mark();
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
       const IPosition& outPos = outIter.position();
       if (itsShowLevel>1) {
@@ -1456,60 +1474,68 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
             if (itsShowLevel>1) {
                cerr << "inMask=" << inMask << endl;
             }
+            timer4.mark();
             if (outIsMasked) {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    outMaskIterPtr->rwVectorCursor(),
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        outMaskIterPtr->rwVectorCursor(),
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    dummyMask,
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        dummyMask,
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             }
+            sum4 += timer4.all();
          } else {
             const Vector<Bool>& inMask = 
                (failed && inLattice.getMaskSlice(inPos, inSubShape, True));
             if (itsShowLevel>1) {
                cerr << "inMask=" << inMask << endl;
             }
+            timer4.mark();
             if (outIsMasked) {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    outMaskIterPtr->rwVectorCursor(),
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        outMaskIterPtr->rwVectorCursor(),
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    dummyMask,
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        dummyMask,
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             }
+            sum4 += timer4.all();
          }
       } else {
          if (allGood) {
             if (itsShowLevel>1) {
                cerr << "inMask all T" << endl;
             }
+            timer4.mark();
             InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                 outX, inX, inY, 
-                                                 method1D);
+                                                     outX, inX, inY, 
+                                                     method1D);
+            sum4 += timer4.all();
             if (outIsMasked) outMaskIterPtr->rwVectorCursor().set(True);
          } else {
             const Vector<Bool>& inMask = failed;
             if (itsShowLevel>1) {
                cerr << "inMask=" << inMask << endl;
             }
+            timer4.mark();
             if (outIsMasked) {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    outMaskIterPtr->rwVectorCursor(),
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        outMaskIterPtr->rwVectorCursor(),
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                    dummyMask,
-                                                    outX, inX, inY, 
-                                                    inMask, method1D, goodIsTrue);
+                                                        dummyMask,
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue);
             }
+            sum4 += timer4.all();
          }
       }
 //
@@ -1521,9 +1547,146 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       if (outIsMasked) (*outMaskIterPtr)++;
       if (showProgress) pProgressMeter->update(Double(outIter.nsteps()));
    } 
+   sum3 += timer3.all();
+//
+   if (itsShowLevel>0) {
+      cerr << "Regrid1d took                  " << timer1.all() << " seconds" << endl;
+      cerr << "   make1DcoordinateGrid took   " << sum2 << " seconds" << endl;
+      cerr << "   data get/interpolation took " << sum3 << " seconds" << endl;
+      cerr << "   interpolation took          " << sum4 << " seconds" << endl;
+   }
 //
    if (outIsMasked) delete outMaskIterPtr;
    if (showProgress) delete pProgressMeter;
+}
+
+
+
+template<class T>
+void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
+                                           Vector<Bool>& failed,
+                                           Bool& allFailed,
+                                           Bool& allGood,
+                                           const Coordinate& inCoord,
+                                           const Coordinate& outCoord,
+                                           Int inAxisInCoordinate,
+                                           Int outAxisInCoordinate,
+                                           MFrequency::Convert& machine,
+                                           Bool useMachine)
+{
+// Precompute vector of output coordinates to interpolate data at
+
+   Double outPixel2, inPixel2;
+   Vector<Double> world, inPixel;
+   Vector<Double> outPixel = outCoord.referencePixel().copy();
+//
+   const uInt nLine = outX.nelements();
+   failed.resize(nLine);
+   allFailed = True;
+   allGood = True;
+   Bool ok1 = False;
+   Bool ok2 = False;
+   MFrequency inMVF, outMVF;
+//
+   if (useMachine) {
+
+// If we are going to Stoke up the MFrequency machine it means
+// we have a SpectralCoordinat; cast to it
+
+      const SpectralCoordinate& inSpecCoord = dynamic_cast<const SpectralCoordinate&>(inCoord);
+      const SpectralCoordinate& outSpecCoord = dynamic_cast<const SpectralCoordinate&>(outCoord);
+//
+      for (uInt i=0; i<nLine; i++) {
+
+// Fill Coordinate pixel locations
+
+         if (itsShowLevel>1) {
+            cerr.setf(ios::scientific, ios::floatfield);
+            cerr.precision(12);
+            cerr << "pixel out, world out, pixel in  = " << outPixel;
+         }
+//
+         outPixel2 = i;
+         ok1 = outSpecCoord.toWorld(outMVF, outPixel2);
+         if (ok1) {
+            inMVF = machine(outMVF).getValue();
+            ok2 = inSpecCoord.toPixel(inPixel2, inMVF);
+         } 
+//
+         if (!ok1 || !ok2) {
+            failed(i) = True;
+            allGood = False;
+         } else {
+            if (itsShowLevel>1) {
+               cerr.setf(ios::scientific, ios::floatfield);
+               cerr.precision(12);
+               cerr << ", " << world << " " << inPixel << endl;
+            }
+
+// This one ok
+
+            outX[i] = inPixel2;
+            failed(i) = False;
+            allFailed = False;
+         }
+      }
+   } else {
+      for (uInt i=0; i<nLine; i++) {
+
+// Fill Coordinate pixel locations
+
+         if (itsShowLevel>1) {
+            cerr.setf(ios::scientific, ios::floatfield);
+            cerr.precision(12);
+            cerr << "pixel out, world out, pixel in  = " << outPixel;
+         }
+//
+         outPixel(outAxisInCoordinate) = i;
+         ok1 = outCoord.toWorld(world, outPixel);
+         if (ok1) ok2 = inCoord.toPixel(inPixel, world);
+//
+         if (!ok1 || !ok2) {
+            failed(i) = True;
+            allGood = False;
+         } else {
+            if (itsShowLevel>1) {
+               cerr.setf(ios::scientific, ios::floatfield);
+               cerr.precision(12);
+               cerr << ", " << world << " " << inPixel << endl;
+            }
+
+// This one ok
+
+            outX[i] = inPixel(inAxisInCoordinate);
+            failed(i) = False;
+            allFailed = False;
+         }
+      }
+   }
+//
+   if (itsShowLevel>0) {
+      cerr << "allFailed=" << allFailed << endl;
+      cerr << "allGood =" << allGood << endl;
+//
+       cerr << "outX=";
+       for (uInt i=0;i<nLine;i++) {
+          cerr << outX[i] << ", ";
+       }
+       cerr << endl;
+   }
+}
+
+
+
+template<class T>
+void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
+                                           Float pixelScale) const
+{
+   Float oX = -0.5 + (1.0/2/pixelScale);
+   const uInt nLine = outX.nelements();
+   for (uInt i=0; i<nLine; i++) {
+      outX[i]  = (Float(i) / pixelScale) + oX;
+   }
 }
 
 
