@@ -1,5 +1,5 @@
 //# PagedImage.cc: defines the PagedImage class
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,8 @@
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/PagedArrIter.h>
+#include <trial/Lattices/LatticeExprNode.h>
+#include <trial/Lattices/LatticeExpr.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/TableLogSink.h>
 
@@ -564,6 +566,7 @@ PagedImage<T> & PagedImage<T>::operator+= (const T & val)
 }
 */
 
+
 template <class T> 
 PagedImage<T> & PagedImage<T>::operator+= (const Lattice<T> & other)
 {
@@ -574,7 +577,7 @@ PagedImage<T> & PagedImage<T>::operator+= (const Lattice<T> & other)
   check_conformance(other);
   logSink() << LogIO::POST;
   logSink() << LogIO::NORMAL;
-  
+/*  
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
   RO_LatticeIterator<T> otheriter(other, cursorShape);
@@ -582,8 +585,14 @@ PagedImage<T> & PagedImage<T>::operator+= (const Lattice<T> & other)
        toiter++, otheriter++) {
     toiter.rwCursor() += otheriter.cursor();
   }
+*/
+
+  this->copyData(LatticeExprNode(*this)+LatticeExprNode(other));
   return *this;
 }
+
+
+
 
 template<class T> 
 void PagedImage<T>::attach_logtable()
