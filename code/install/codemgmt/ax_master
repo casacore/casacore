@@ -2407,3 +2407,11 @@
 11 219 src rm trial/apps/gDisplay/GTkDDPosEH.h
 11 219 src rm trial/apps/gDisplay/GTkDDPositioner.cc
 11 219 src rm trial/apps/gDisplay/GTkDDPositioner.h
+11 219 src rm trial/implement/DisplayDatas/PADDMotionEH.cc
+11 219 src rm trial/implement/DisplayDatas/PADDMotionEH.h
+11 219 src rm trial/implement/DisplayDatas/PADDMotionEvent.cc
+11 219 src rm trial/implement/DisplayDatas/PADDMotionEvent.h
+11 219 src rm trial/implement/DisplayDatas/PADDPositionEH.cc
+11 219 src rm trial/implement/DisplayDatas/PADDPositionEH.h
+11 219 src rm trial/implement/DisplayDatas/PADDPositionEvent.cc
+11 219 src rm trial/implement/DisplayDatas/PADDPositionEvent.h
