@@ -30,8 +30,8 @@
 #define TRIAL_IMAGEREGRID_H
 
 #include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
 #include <trial/Mathematics/Interpolate2D.h>
 
 template<class T> class MaskedLattice;
@@ -39,7 +39,11 @@ template<class T> class ImageInterface;
 template<class T> class Lattice;
 template<class T> class Vector;
 
+class CoordinateSystem;
 class DirectionCoordinate;
+class Coordinate;
+class ObsInfo;
+class IPosition;
 
 // <summary>This regrids one image to match the coordinate system of another</summary>
 
@@ -144,9 +148,13 @@ public:
   // 1 is some, 2 is too much)
   void showDebugInfo(Int level=0) {itsShowLevel = level;};
 
+  // Enable/disable Measures Reference conversions
+  void disableReferenceConversions(Bool disable=True) {itsDisableConversions = disable;};
+
  private:
 
   Int itsShowLevel;
+  Bool itsDisableConversions;
   
   // Find if any of the mask pixels are bad
   Bool anyBadPixels(uInt width, const Matrix<Bool>& mask);
@@ -176,15 +184,31 @@ public:
                  const CoordinateSystem& inCoords,
                  const CoordinateSystem& outCoords) const;
 
+  // Make Direction machine
+  Bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+                            const DirectionCoordinate& dirCoordIn,
+                            const DirectionCoordinate& dirCoordOut,
+                            const ObsInfo& obsIn,
+                            const ObsInfo& obsOut) const;
+
+  // Make Frequency machine
+  Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
+                            Int coordinateTo, Int coordinateFrom,
+                            const CoordinateSystem& coordsTo,
+                            const CoordinateSystem& coordsFrom,
+                            const ObsInfo& obsTo, const ObsInfo& obsFrom) const;
+
   // Regrid 2 coupled axes
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
-                 const Coordinate& inCoord,
-                 const Coordinate& outCoord,   
+                 const DirectionCoordinate& inCoord,
+                 const DirectionCoordinate& outCoord,   
                  const Vector<Int> inPixelAxes, 
                  const Vector<Int> outPixelAxes,
                  const Vector<Int> pixelAxisMap,
-                 Interpolate2D<T>::Method method);
+                 Interpolate2D<T>::Method method,
+                 MDirection::Convert& machine,
+                 Bool useMachine);
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
@@ -196,7 +220,10 @@ public:
                  Int inAxisInCoordinate,
                  Int outAxisInCoordinate,
                  const Vector<Int> pixelAxisMap,
-                 Interpolate2D<T>::Method method);
+                 Interpolate2D<T>::Method method,
+                 MFrequency::Convert& machine,
+                 Bool useMachine);
+
 };
 
  
