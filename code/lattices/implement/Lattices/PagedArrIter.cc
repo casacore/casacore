@@ -85,6 +85,7 @@ template<class T> RO_PagedArrIter<T> & RO_PagedArrIter<T>::
 operator=(const RO_PagedArrIter<T> & other) {
   if (this != &other) {
     delete theCurPtr;
+    theCurPtr = 0;
     theData = other.theData;
     theNavPtr = other.theNavPtr->clone();
     AlwaysAssert(allocateCursor() == True, AipsError);
@@ -212,11 +213,26 @@ cursor() const {
 template<class T> void RO_PagedArrIter<T>::
 getData()
 {
-  // Cast away the constness (which is harmless).
-  Bool isARef = theData.getSlice (theCursor, theNavPtr->position(),
-				  theNavPtr->cursorShape(),
-				  theNavPtr->increment());
-  AlwaysAssert (isARef == False, AipsError);
+  const IPosition shape = theNavPtr->cursorShape();
+  const IPosition start = theNavPtr->position();
+  const IPosition incr = theNavPtr->increment();
+  if (theNavPtr->hangOver() == False) {
+    Bool isARef = theData.getSlice(theCursor, start, shape, incr);
+    DebugAssert(isARef == False, AipsError);
+  } else {
+    IPosition extractShape = 1 + (theNavPtr->endPosition() - start) / incr;
+    // If needed the entire cursor is initialized first.
+    if (extractShape != shape) {
+      T overHangVal;
+      defaultValue(overHangVal); 
+      *theCurPtr = overHangVal;
+    }
+    // Then fill in the appropriate region with the bit that does not overhang.
+    const uInt nrdim = extractShape.nelements();
+    Array<T> subArr(theCursor(IPosition(nrdim, 0), extractShape-1));
+    Bool isARef = theData.getSlice(subArr, start, extractShape, incr);
+    DebugAssert(isARef == False, AipsError);
+  }
   theReadFlag = True;
 };
 
@@ -248,14 +264,13 @@ ok() const {
     message += "Cursors are inconsistent lengths\n"; 
     flag = False;
   }
-  // Check that both cursors have the same contents. 
-  // This test can be a performance pig.
-#if defined(AIPS_DEBUG)
-  if (allEQ(theCursor.nonDegenerate(theCursorAxes), *theCurPtr) == False) {
+  // Check that both cursors point to the same data.
+  const T* p1 = &(theCursor(IPosition (theCursor.ndim(), 0)));
+  const T* p2 = &((*theCurPtr)(IPosition (theCurPtr->ndim(), 0)));
+  if (p1 != p2) {
     message += "Cursors contain different data\n"; 
     flag = False;
   }
-#endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
     message += "Navigator pointer is uninitialised\n";
@@ -267,23 +282,14 @@ ok() const {
     flag = False;
   }
   // Check the Navigator and Lattice are the same shape
-  if (!(theNavPtr->latticeShape()).isEqual(theData.shape())) {
+  if (!(theNavPtr->latticeShape().isEqual(theData.shape()))) {
     message += "Navigator Lattice and Data Lattice are different shapes\n";
     flag = False;
   }
   // Check the Navigator cursor and cached Array are the same shape
-  // There is a special case if the cursor has only one element
-  if ((theCurPtr->nelements() == 1)) {
-    if (theNavPtr->cursorShape().product() != 1) {
-      message += "Navigator cursor and Data cursor are not both unit shapes\n"; 
-      flag = False;
-    }
-  }else{
-    if (!(theNavPtr->cursorShape().nonDegenerate(theCursorAxes))
-                                  .isEqual(theCurPtr->shape())) {
-      message += "Navigator cursor and Data cursor are different shapes\n"; 
-      flag = False;
-    }
+  if (!(theNavPtr->cursorShape().isEqual(theCursor.shape()))) {
+    message += "Navigator cursor and Data cursor are different shapes\n"; 
+    flag = False;
   }
   if (!flag) {
     LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
@@ -298,56 +304,12 @@ cursorUpdate()
   // Set to data not read.
   theReadFlag = False;
   // Check if the cursor shape has changed.
-  {
-    const IPosition oldShape(theCurPtr->shape());
-    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate(theCursorAxes));
-    if (oldShape != newShape) {
-      theCurPtr->resize(newShape);
-      relinkArray();
-    }
-  }
-  if (theNavPtr->hangOver() == False) {
-    Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                   theNavPtr->cursorShape(),
-                                   theNavPtr->increment());
-    DebugAssert(isARef == False, AipsError);
-  }
-  else {
-    // Here I set the entire cursor to zero.
-    // (the alternative is to set the cursor to an undefined value 
-    //  using ValType.h)
-    T overHangVal;
-    defaultValue(overHangVal); 
-    *theCurPtr = overHangVal;
-    // and then fill in the appropriate region with the bit that does not
-    // overhang.
-    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
-    const IPosition fullShape(theNavPtr->cursorShape());
-    const uInt latDim = fullShape.nelements();
-    IPosition cursorBlc(latDim, 0);
-    IPosition cursorTrc(fullShape - 1);
-    IPosition blc(theNavPtr->position());
-    IPosition trc(theNavPtr->endPosition());
-    const IPosition inc(theNavPtr->increment());
-    IPosition extractShape(latDim,0);
-
-    Int trim;
-    for (uInt d = 0; d < latDim; d++) {
-      if (blc(d) < 0) {
-        trim = ((inc(d) - 1 - blc(d))/inc(d));
-        cursorBlc(d) = trim;
-        blc(d) += trim*inc(d);
-      }
-      if (trc(d) > latticeTrc(d)) {
-        trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
-        cursorTrc(d) -= trim;
-        trc(d) -= trim*inc(d);
-      }
-    }
-    extractShape = (trc - blc)/inc + 1;
-    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
-    Bool isARef = theData.getSlice(subArr, blc, extractShape, inc); 
-    AlwaysAssert(isARef == False, AipsError);
+  const IPosition oldShape(theCurPtr->shape());
+  const IPosition newShape(theNavPtr->cursorShape().
+			                      nonDegenerate(theCursorAxes));
+  if (oldShape != newShape) {
+    theCurPtr->resize (newShape);
+    relinkArray();
   }
 };
 
@@ -382,20 +344,25 @@ allocateCursor() {
 
 template<class T> void RO_PagedArrIter<T>::
 setup_tile_cache() {
-  IPosition axisPath;
+  IPosition axisPath (theNavPtr->axisPath());
   LatticeStepper * stepper = theNavPtr->castToStepper();
 
   if (stepper != 0) {
-    axisPath = stepper->axisPath();
     theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
                                  theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
     return;
   }
   TiledStepper * tilerPtr = theNavPtr->castToTiler();
   if (tilerPtr != 0){
-    theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
-                                 tilerPtr->trc() - tilerPtr->blc() + 1,
-                                 tilerPtr->axisPath());
+    // The main axis is the last axis in the path.
+    Int axis = axisPath (axisPath.nelements() - 1);
+    // Tile per tile is accessed, but the main axis needs the entire window.
+    // So calculate the start and end tile for the window.
+    IPosition tileShape = tilerPtr->tileShape();
+    Int tilesz = tileShape(axis);
+    Int stTile = (theNavPtr->blc()(axis) + tilesz - 1) / tilesz;
+    Int endTile = (theNavPtr->trc()(axis) + tilesz) / tilesz;
+    theData.setCacheSize ((endTile - stTile) * tileShape.product());
     return;
   }
   // Because the current stepper is not a LatticeStepper or TiledStepper
@@ -415,7 +382,7 @@ relinkArray() {
   Bool isACopy;
   theCursor.takeStorage(theNavPtr->cursorShape(), 
                         theCurPtr->getStorage(isACopy), SHARE);
-  AlwaysAssert(isACopy == False, AipsError);
+  DebugAssert(isACopy == False, AipsError);
 };
 
 // +++++++++++++++++++++++ PagedArrIter ++++++++++++++++++++++++++++++++
@@ -428,10 +395,7 @@ PagedArrIter(PagedArray<T> & data, const LatticeNavigator & nav)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                 theNavPtr->cursorShape(),
-                                 theNavPtr->increment());
-  AlwaysAssert(isARef == False, AipsError);
+  cursorUpdate();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -443,10 +407,7 @@ PagedArrIter(PagedArray<T> & data, const IPosition & curShape)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                 theNavPtr->cursorShape(),
-                                 theNavPtr->increment());
-  AlwaysAssert(isARef == False, AipsError);
+  cursorUpdate();
   AlwaysAssert(ok() == True, AipsError);
 };
 
@@ -473,8 +434,8 @@ operator=(const PagedArrIter<T> & other) {
   if (this != &other) {
     cursorWrite();
     theData.clearCache();
-    if (theCurPtr != 0) 
-      delete theCurPtr;
+    delete theCurPtr;
+    theCurPtr = 0;
     theData = other.theData;
     theNavPtr = other.theNavPtr->clone();
     AlwaysAssert(allocateCursor() == True, AipsError);
@@ -625,16 +586,15 @@ ok() const {
            << LogIO::POST;
      return False;
   }
-  // Check that both cursors have the same contents. 
-  // This test is a performance pig.
-#if defined(AIPS_DEBUG)
-  if (allEQ(theCursor.nonDegenerate(theCursorAxes), *theCurPtr) == False) {
+  // Check that both cursors point to the same data.
+  const T* p1 = &(theCursor(IPosition (theCursor.ndim(), 0)));
+  const T* p2 = &((*theCurPtr)(IPosition (theCurPtr->ndim(), 0)));
+  if (p1 != p2) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
     logErr << LogIO::SEVERE << "Cursors contain different data" 
 	   << LogIO::POST;
     return False;
   }
-#endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
@@ -650,7 +610,7 @@ ok() const {
     return False;
   }
   // Check the Navigator and Lattice are the same shape
-  if (!(theNavPtr->latticeShape()).isEqual(theData.shape())) {
+  if (!(theNavPtr->latticeShape().isEqual(theData.shape()))) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
     logErr << LogIO::SEVERE 
            << "Navigator Lattice and Data Lattice are different shapes"
@@ -658,57 +618,28 @@ ok() const {
      return False;
   }
   // Check the Navigator cursor and cached Array are the same shape
-  // There is a special case if the cursor has only one element
-  if ((theCurPtr->nelements() == 1)) {
-    if (theNavPtr->cursorShape().product() != 1) {
-      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-      logErr << LogIO::SEVERE 
-             << "Navigator cursor and Data cursor are not both unit shapes" 
-             << LogIO::POST;
-      return False;
-    }
-  } else {
-    if (!(theNavPtr->cursorShape().nonDegenerate(theCursorAxes))
-        .isEqual(theCurPtr->shape())) {
-      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
-      logErr << LogIO::SEVERE 
-             << "Navigator cursor and Data cursor are different shapes" 
-             << LogIO::POST;
-      return False;
-    }
+  if (!(theNavPtr->cursorShape().isEqual(theCursor.shape()))) {
+    LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+    logErr << LogIO::SEVERE 
+	   << "Navigator cursor and Data cursor are different shapes" 
+	   << LogIO::POST;
+    return False;
   }
   return True;
 };
 
 template<class T> void PagedArrIter<T>::
 cursorWrite() {
+  const IPosition start = theNavPtr->position();
+  const IPosition incr = theNavPtr->increment();
   if (theNavPtr->hangOver() == False)
-    theData.putSlice(theCursor, theNavPtr->position(), theNavPtr->increment());
+    theData.putSlice(theCursor, start, incr);
   else {
-    // Find the appropriate region and just put that bit into the Lattice
-    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
-    const IPosition fullShape(theNavPtr->cursorShape());
-    const uInt latDim = fullShape.nelements();
-    IPosition cursorBlc(latDim, 0);
-    IPosition cursorTrc(fullShape - 1);
-    IPosition blc(theNavPtr->position());
-    IPosition trc(theNavPtr->endPosition());
-    const IPosition inc(theNavPtr->increment());
-
-    Int trim;
-    for (uInt d = 0; d < latDim; d++) {
-      if (blc(d) < 0) {
-        trim = ((inc(d) - 1 - blc(d))/inc(d));
-        cursorBlc(d) = trim;
-        blc(d) += trim*inc(d);
-      }
-      if (trc(d) > latticeTrc(d)) {
-        trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
-        cursorTrc(d) -= trim;
-      }
-    }
-    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
-    theData.putSlice(subArr, blc, inc); 
+    // Write the appropriate region.
+    IPosition extractShape = 1 + (theNavPtr->endPosition() - start) / incr;
+    const uInt nrdim = extractShape.nelements();
+    Array<T> subArr(theCursor(IPosition(nrdim, 0), extractShape-1));
+    theData.putSlice(subArr, start, incr); 
   }
 };
 
@@ -716,57 +647,35 @@ template<class T> void PagedArrIter<T>::
 cursorUpdate() {
   // Set to data not read.
   theReadFlag = False;
+  const IPosition shape = theNavPtr->cursorShape();
+  const IPosition start = theNavPtr->position();
+  const IPosition incr = theNavPtr->increment();
   // Check if the cursor shape has changed.
   {
     const IPosition oldShape(theCurPtr->shape());
-    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate(theCursorAxes));
+    const IPosition newShape(shape.nonDegenerate(theCursorAxes));
     if (oldShape != newShape) {
       theCurPtr->resize(newShape);
       relinkArray();
     }
   }
   if (theNavPtr->hangOver() == False) {
-    Bool isARef = theData.getSlice(theCursor, theNavPtr->position(),
-                                   theNavPtr->cursorShape(),
-                                   theNavPtr->increment());
+    Bool isARef = theData.getSlice(theCursor, start, shape, incr);
     DebugAssert(isARef == False, AipsError);
   }
   else {
-    // Here I set the entire cursor to zero.
-    // (the alternative is to set the cursor to an undefined value 
-    //  using ValType.h)
-    T overHangVal;
-    defaultValue(overHangVal); 
-    *theCurPtr = overHangVal;
-    // and then fill in the appropriate region with the bit that does not
-    // overhang.
-    const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
-    const IPosition fullShape(theNavPtr->cursorShape());
-    const uInt latDim = fullShape.nelements();
-    IPosition cursorBlc(latDim, 0);
-    IPosition cursorTrc(fullShape - 1);
-    IPosition blc(theNavPtr->position());
-    IPosition trc(theNavPtr->endPosition());
-    const IPosition inc(theNavPtr->increment());
-    IPosition extractShape(latDim,0);
-
-    Int trim;
-    for (uInt d = 0; d < latDim; d++) {
-      if (blc(d) < 0) {
-        trim = ((inc(d) - 1 - blc(d))/inc(d));
-        cursorBlc(d) = trim;
-        blc(d) += trim*inc(d);
-      }
-      if (trc(d) > latticeTrc(d)) {
-        trim = ((inc(d) - 1 + trc(d) - latticeTrc(d))/inc(d));
-        cursorTrc(d) -= trim;
-        trc(d) -= trim*inc(d);
-      }
+    IPosition extractShape = 1 + (theNavPtr->endPosition() - start) / incr;
+    // If needed the entire cursor is initialized first.
+    if (extractShape != shape) {
+      T overHangVal;
+      defaultValue(overHangVal); 
+      *theCurPtr = overHangVal;
     }
-    extractShape = (trc - blc)/inc + 1;
-    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
-    Bool isARef = theData.getSlice(subArr, blc, extractShape, inc); 
-    AlwaysAssert(isARef == False, AipsError);
+    // Then fill in the appropriate region with the bit that does not overhang.
+    const uInt nrdim = extractShape.nelements();
+    Array<T> subArr(theCursor(IPosition(nrdim, 0), extractShape-1));
+    Bool isARef = theData.getSlice(subArr, start, extractShape, incr);
+    DebugAssert(isARef == False, AipsError);
   }
 };
 
@@ -801,26 +710,29 @@ allocateCursor() {
 
 template<class T> void PagedArrIter<T>::
 setup_tile_cache() {
-  IPosition axisPath;
+  IPosition axisPath (theNavPtr->axisPath());
   LatticeStepper * stepper = theNavPtr->castToStepper();
 
   if (stepper != 0) {
-    axisPath = stepper->axisPath();
     theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
                                  theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
     return;
   }
   TiledStepper * tilerPtr = theNavPtr->castToTiler();
   if (tilerPtr != 0){
-    IPosition cursorShape = tilerPtr->cursorShape();
-    Int whichLongest = 0;
-    for (uInt i=1; i < cursorShape.nelements(); i++)
-      if (cursorShape(i) > cursorShape(whichLongest))
-        whichLongest = i;
-    axisPath = IPosition(1,whichLongest);
-    theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
-                                 tilerPtr->blc() + tilerPtr->tileShape(),
-                                 axisPath);
+    // The main axis is the last axis in the path.
+    Int axis = axisPath (axisPath.nelements() - 1);
+    // Tile per tile is accessed, but the main axis needs the entire window.
+    // So calculate the start and end tile for the window.
+    IPosition tileShape = tilerPtr->tileShape();
+    Int tilesz = tileShape(axis);
+    Int stTile = (theNavPtr->blc()(axis) + tilesz - 1) / tilesz;
+    Int endTile = (theNavPtr->trc()(axis) + tilesz) / tilesz;
+    theData.setCacheSize ((endTile - stTile) * tileShape.product());
+//    IPosition cursorShape = tilerPtr->cursorShape();
+//    cursorShape(axis) = theNavPtr->trc()(axis) - theNavPtr->blc()(axis) + 1;
+//    theData.setCacheSizeFromPath(cursorShape, IPosition(),
+//                                 IPosition(), IPosition(1,axis));
     return;
   }
   // Because the current stepper is not a LatticeStepper or TiledStepper
@@ -840,5 +752,5 @@ relinkArray() {
   Bool isACopy;
   theCursor.takeStorage(theNavPtr->cursorShape(), 
                         theCurPtr->getStorage(isACopy), SHARE);
-  AlwaysAssert(isACopy == False, AipsError);
+  DebugAssert(isACopy == False, AipsError);
 };
