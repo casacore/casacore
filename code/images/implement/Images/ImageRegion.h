@@ -1,5 +1,5 @@
 //# ImageRegion.h: Class to hold a region of interest in an image
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,7 +113,7 @@ public:
     ImageRegion& operator= (const ImageRegion& other);
 
     // Clone the object.
-    virtual LattRegionHolder* clone() const;
+    virtual ImageRegion* clone() const;
 
     // Comparison
     virtual Bool operator==(const LattRegionHolder& other) const;
@@ -134,6 +134,11 @@ public:
     const LCSlicer& asLCSlicer() const;
     const WCRegion& asWCRegion() const;
     // </group>
+
+    // Get the region as a writable mask.
+    // It throws an exception if the region is not an LCRegion or if
+    // its mask is not writable.
+    LCRegion& asMask();
 
     // Convert to a LatticeRegion using the given coordinate system
     // (with reference pixel) and shape.
