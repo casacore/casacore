@@ -41,9 +41,12 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
     : values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
       cdelt_p(1), name_p("Stokes"), unit_p("")
 {
+    Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
+    if (whichStokes.nelements > 0) {
+	crval_p = whichStokes(0);
+    }
     whichStokes.toBlock(values_p);
     // Make sure the stokes occur at most once
-    Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
     alreadyUsed = False;
     for (uInt i=0; i<values_p.nelements(); i++) {
 	AlwaysAssert(Stokes::type(values_p[i]) != Stokes::Undefined, AipsError);
@@ -146,7 +149,7 @@ Bool StokesCoordinate::toWorld(Vector<Double> &world,
 			       const Vector<Double> &pixel) const
 {
     AlwaysAssert(pixel.nelements()==1 && world.nelements()==1, AipsError);
-    Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + crval_p + 0.5);
+    Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + 0.5);
     if (index < 0 || index > values_p.nelements()-1) {
 	ostrstream os;
 	os << "Index value of " << index << " is out of range [0.." <<
@@ -181,7 +184,7 @@ Bool StokesCoordinate::toPixel(Vector<Double> &pixel,
     }
 
     // OK, we found it, compute pixel position
-    pixel(0) = (Double(index) - crval_p)/cdelt_p/matrix_p + crpix_p;
+    pixel(0) = (Double(index))/cdelt_p/matrix_p + crpix_p;
     
     return True;
 }
