@@ -415,7 +415,7 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
+Bool ImageHistograms<T>::setPlotting(PGPlotter& plotterU,
                                      const Vector<Int>& nxyU)
 //
 // Assign the desired PGPLOT device name and number
@@ -428,9 +428,29 @@ Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
    }
 
 
+// Is new plotter attached ?
+ 
+   if (!plotterU.isAttached()) {
+      if (haveLogger_p) {
+         os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST;
+      }
+      goodParameterStatus_p = False;  
+      return False;
+   }
+
+
+// Don't reattach to the same plotter.  The assignment will
+// close the previous device
+   
+   if (plotter_p.isAttached()) {
+      if (plotter_p.qid() != plotterU.qid()) plotter_p = plotterU;
+   } else {
+      plotter_p = plotterU;
+   }
+  
+
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
-   plotter_p = plotterU;
    nxy_p.resize(0);
    nxy_p = nxyU;
    ostrstream os;
@@ -481,6 +501,14 @@ Bool ImageHistograms<T>::setNewImage(const MaskedImage<T>& image)
 
    return True;
 }
+
+
+template <class T>
+void ImageHistograms<T>::closePlotting()
+{  
+   if (plotter_p.isAttached()) plotter_p.detach();
+}
+ 
 
 template <class T>
 Bool ImageHistograms<T>::display()

@@ -611,7 +611,7 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
 
 
 template <class T>
-Bool ImageMoments<T>::setPlotting(const PGPlotter& plotterU,
+Bool ImageMoments<T>::setPlotting(PGPlotter& plotterU,
                                   const Vector<Int>& nxyU,
                                   const Bool yIndU)
 //   
@@ -624,7 +624,26 @@ Bool ImageMoments<T>::setPlotting(const PGPlotter& plotterU,
       return False;
    }
 
-   plotter_p = plotterU;
+// Is new plotter attached ?
+         
+   if (!plotterU.isAttached()) {
+       os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST;
+      goodParameterStatus_p = False;
+      return False;
+   }
+
+// Don't reattach to the same plotter.  The assignment will
+// close the previous device
+   
+   if (plotter_p.isAttached()) {
+      if (plotter_p.qid() != plotterU.qid()) plotter_p = plotterU;
+   } else {
+      plotter_p = plotterU;
+   }
+
+
+// Set number subplots
+
    fixedYLimits_p = ToBool(!yIndU);
    nxy_p.resize(0);
    nxy_p = nxyU;
@@ -635,6 +654,15 @@ Bool ImageMoments<T>::setPlotting(const PGPlotter& plotterU,
    return True;
 }
  
+
+template <class T>
+void ImageMoments<T>::closePlotting()
+{  
+   if (plotter_p.isAttached()) plotter_p.detach();
+}
+ 
+
+
 
 
 template <class T>
