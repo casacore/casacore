@@ -5649,3 +5649,4 @@
 15 301 src rm npoi/implement/Cuttlefish/geoparm.help
 15 301 src rm npoi/implement/Cuttlefish/ibdata.g
 15 301 src rm npoi/implement/Cuttlefish/obdata.g
+15 301 src rm npoi/apps/Cuttlefish/IBDataFactory.cc
