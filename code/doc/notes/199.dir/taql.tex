@@ -546,7 +546,7 @@ precedence) for scalars:
   \item Unary \textbf{+} and \textbf{-}
        \\Can only be used with double and complex operands.
        They do not have a higher precedence than the binary operators.
-       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
+       \\E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
   \item Unary \textbf{!} (or \textbf{NOT})
        \\Logical NOT operator.
        Can only be used with Bool operands.
@@ -796,7 +796,7 @@ Note that the trigonometric functions need their arguments in radians.
 
 \subsubsection{Array to scalar reduction functions}
 The following functions reduce an array to a scalar.
-They are meant for an array. but can also be used for a scalar.
+They are meant for an array, but can also be used for a scalar.
 \begin{description}
   \item[ \texttt{bool ANY(bool)}] Is any element true?
   \item[ \texttt{bool ALL(bool)}] Are all elements true?
@@ -1281,11 +1281,11 @@ can generate many identical or overlapping intervals. They are
 sorted and combined where possible to make the set as small as possible.
 \end{itemize}
 
-However, the user can optimize a query by specifying the expression
-carefully. Especially when using operator $\mid\mid$ or \&\&,
+The user can optimize a query by specifying the expression
+carefully. When using operator $\mid\mid$ or \&\&,
 attention should be
 paid to the contents of the left and right branches. Both operators
-evaluate the right branch only if needed, so the left branch
+evaluate the right branch only if needed, so if possible the left branch
 should be the shortest one, i.e., the fastest to evaluate.
 
 The user should also use functions, operators, and subqueries in a careful way.
@@ -1342,7 +1342,7 @@ and
 \end{verbatim}
 The second form is by far the best, because in that case the subquery
 will stop the matching process as soon as N matching rows are found.
-The second form will do the subquery for the entire table.
+The first form will do the subquery for the entire table.
 \\Furthermore in the first form a column has to be selected, which is
 not needed in the second form.
 
