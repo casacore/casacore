@@ -78,6 +78,9 @@ class String;
 class DOos
 {
 public:
+  // Is the given path name valid?
+  static Bool isValidPathName (const String& pathName);
+
   // Give all file names in the directory matching the given pattern
   // and file types.
   // <br>The pattern can be a string like the filename pattern given in
