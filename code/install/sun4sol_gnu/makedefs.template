@@ -90,7 +90,7 @@ F77LIBD  := $(F77ROOT)/lib
 F77LIB   += -lM77 -lV77
 
 # Platform-specific libraries.
-ARCHLIBS := -lsocket -lnsl -ldl -lm -L/opt/SUNWspro/lib -lsunmath
+ARCHLIBS := -lsocket -lnsl -ldl -lm -L/opt/SUNWspro/lib -lsunmath -lmalloc
 
 
 #-----------------------------------------------------------------------------
