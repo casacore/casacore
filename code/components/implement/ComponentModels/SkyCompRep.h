@@ -145,8 +145,8 @@ public:
   // not store the labels and always return an empty string. Hence by default
   // labels are not supported.
   // <group>
-  virtual void setLabel(const String & newLabel);
-  virtual void label(String & compLabel) const;
+  virtual void setLabel(const String & newLabel) = 0;
+  virtual void label(String & compLabel) const = 0;
   // </group>
 
   // return the number of parameters in the component and set/get them.
@@ -200,6 +200,9 @@ protected:
 
   Bool readDir(String & errorMessage, const GlishRecord & record);
   void addDir(GlishRecord & record) const;
+
+  Bool readLabel(String & errorMessage, const GlishRecord & record);
+  void addLabel(GlishRecord & record) const;
 
   void readParameters(Vector<Double> & parameters, String & errorMessage,
 		      const GlishRecord & record) const;
