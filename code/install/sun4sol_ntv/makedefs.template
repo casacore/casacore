@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1995,1996,1997,1998,1999,2000
+#   Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -103,7 +103,11 @@ CPPOPT   += -DAIPS_SOLARIS -DAIPS_SUN_NATIVE -DNATIVE_EXCP
 # C compiler flags for system debug/optimized compilations.
 CC       := /opt/SUNWspro/bin/cc
 CDBG     += -DAIPS_SVID3 
-COPT     += -DAIPS_SVID3 -PIC
+COPT     += -KPIC
+
+# Glish compiler flags
+GLISH_CFLAGS += -w -DAIPS_SUN_NATIVE
+GLISH_CXXFLAGS += -w -compat=5 -DAIPS_SUN_NATIVE
 
 # C++ compiler flags for system debug/optimized compilations.
 C++      := $(C++ROOT)/bin/CC
@@ -112,16 +116,21 @@ C++DBGLVL:= -g
 C++DBG   += -ptr$(PTRDBGD)
 PTROPTD  := $(AIPSARCH)/lib
 C++OPTLVL:= -fast
-C++OPT   += -ptr$(PTROPTD) -PIC
+C++OPT   += -ptr$(PTROPTD) -KPIC
+
+C++STD    += -instances=explicit -verbose=template
+C++STD    += -compat=5 -library=Cstd,Crun -w
+`
 
 # FORTRAN compiler flags for system debug/optimized compilations.
 FC       := $(F77ROOT)/bin/f77
 FCDBG    += -Qoption ld -i
 FCOPTLVL := -fast
-FCOPT    += -PIC -Qoption ld -i
+FCOPT    += -KPIC -Qoption ld -i
 
 # Linker flags for system debug/optimized compilations.
-LDDBG := -Qoption ld -R$(subst $(space),:,$(strip $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)) /opt/SUNWspro/lib:/usr/openwin/lib:/usr/local/lib:/usr/ccs/lib:/usr/ucblib:$(AIPSARCH)/lib.))
+LDDBG := -Qoption ld -R$(subst $(space),:,$(strip $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)) /opt/SUNWspro/lib:/usr/openwin/lib:/usr/local/lib:/usr/ccs/lib:/usr/ucblib:$(AIPSARCH)/lib.))  -library=Cstd,Crun -lmalloc
+
 LDOPT := $(LDDBG)
 
 # Object library utilities.
@@ -153,11 +162,11 @@ ifeq "$(MAKEMODE)" "programmer"
       PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
       ifneq "$(PGMRLIBD)" ""
          PGMRPTRD := $(PGMRLIBD)/Templates.DB
-         C++FLAGS := -ptr$(PGMRLIBD) $(C++OPTLVL) -PIC
+         C++FLAGS := -ptr$(PGMRLIBD) $(C++OPTLVL) -KPIC
          CXXARFLAGS := -ptr$(PGMRLIBD) -o
       else
          PGMRPTRD := ./Templates.DB
-         C++FLAGS := -ptr. $(C++OPTLVL) -PIC
+         C++FLAGS := -ptr. $(C++OPTLVL) -KPIC
          CXXARFLAGS := -ptr. -o
       endif
    else
@@ -181,11 +190,11 @@ ifeq "$(MAKEMODE)" "programmer"
       PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
       ifneq "$(PGMRLIBD)" ""
          PGMRPTRD := $(PGMRLIBD)/Templates.DB
-         override C++FLAGS := -ptr$(PGMRLIBD) $(C++OPTLVL) -PIC
+         override C++FLAGS := -ptr$(PGMRLIBD) $(C++OPTLVL) -KPIC
          CXXARFLAGS := -ptr$(PGMRLIBD) -o
       else
          PGMRPTRD := ./Templates.DB
-         override C++FLAGS := -ptr. $(C++OPTLVL) -PIC
+         override C++FLAGS := -ptr. $(C++OPTLVL) -KPIC
          CXXARFLAGS := -ptr. -o
       endif
    endif
