@@ -37,23 +37,21 @@ typedef Vector<Int> lcmask_gppbug1;
 LCMask::LCMask()
 {}
 
-LCMask::LCMask (const IPosition& blc, const Array<Bool>& mask,
-		const IPosition& latticeShape)
-: LCBox (blc, blc+mask.shape()-1, latticeShape)
+LCMask::LCMask (const Array<Bool>& mask, const LCBox& box)
+: LCRegionFixed (box.latticeShape()),
+  itsBox        (box)
 {
-    // When the mask exceeded the lattice, the bounding box has been adapted.
-    // If so, take only the appropriate part of the mask.
-    if (box().length() == mask.shape()) {
-        setMask (mask);
-    } else {
-        Array<Bool> refmask(mask);
-        IPosition bl (box().start() - blc);
-	setMask (refmask(bl, bl+box().length()-1));
+    if (! mask.shape().isEqual (itsBox.shape())) {
+	throw (AipsError ("LCMask::LCMask - "
+			  "shape of mask and box differ"));
     }
+    setBoundingBox (itsBox.boundingBox());
+    setMask (mask);
 }
 
 LCMask::LCMask (const LCMask& that)
-: LCBox (that)
+: LCRegionFixed (that),
+  itsBox        (that.itsBox)
 {}
 
 LCMask::~LCMask()
@@ -62,26 +60,22 @@ LCMask::~LCMask()
 LCMask& LCMask::operator= (const LCMask& that)
 {
     if (this != &that) {
-	LCBox::operator= (that);
+	LCRegionFixed::operator= (that);
+	itsBox = that.itsBox;
     }
     return *this;
 }
 
 Bool LCMask::operator== (const LCRegion& other) const
-//
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-   
-   if (!LCBox::operator==(other)) return False;
-
-// Check the masks
-
-   if (!masksEqual(other)) return False;
-
-   return True;
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegionFixed::operator== (other)) {
+	return False;
+    }
+    const LCMask& that = (const LCMask&)other;
+    // Check the box and mask.
+    return ToBool (itsBox == that.itsBox  &&  masksEqual (that));
 }
  
 
@@ -93,16 +87,11 @@ LCRegion* LCMask::cloneRegion() const
 LCRegion* LCMask::doTranslate (const Vector<Float>& translateVector,
 			       const IPosition& newLatticeShape) const
 {
-    uInt ndim = latticeShape().nelements();
-    if (translateVector.nelements() != ndim
-    ||  newLatticeShape.nelements() != ndim) {
-        throw (AipsError ("LCMask::translate - dimensionalities mismatch"));
-    }
-    IPosition blc = box().start();
-    for (uInt i=0; i<ndim; i++) {
-        blc(i) += Int(translateVector(i));
-    }
-    return new LCMask (blc, maskArray(), newLatticeShape);
+    LCBox* boxPtr = (LCBox*)(itsBox.translate (translateVector,
+					       newLatticeShape));
+    LCMask* regPtr = new LCMask (maskArray(), *boxPtr);
+    delete boxPtr;
+    return regPtr;
 }
 
 String LCMask::className()
@@ -115,24 +104,20 @@ String LCMask::type() const
     return className();
 }
 
-TableRecord LCMask::toRecord (const String&) const
+TableRecord LCMask::toRecord (const String& tableName) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.define ("blc", box().start().asVector());
     rec.define ("mask", maskArray());
-    rec.define ("shape", latticeShape().asVector());
+    rec.defineRecord ("box", itsBox.toRecord (tableName));
     return rec;
 }
 
-LCMask* LCMask::fromRecord (const TableRecord& rec, const String&)
+LCMask* LCMask::fromRecord (const TableRecord& rec, const String& tableName)
 {
-    return new LCMask (Vector<Int>(rec.asArrayInt ("blc")),
-		       rec.asArrayBool ("mask"),
-		       Vector<Int>(rec.asArrayInt ("shape")));
-}
-
-Bool LCMask::isWritable() const
-{
-    return True;
+    LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
+						   tableName));
+    LCMask* regPtr = new LCMask (rec.asArrayBool ("mask"), *boxPtr);
+    delete boxPtr;
+    return regPtr;
 }
