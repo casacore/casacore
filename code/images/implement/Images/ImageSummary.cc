@@ -39,120 +39,177 @@
 #include <iomanip.h>
 #include <iostream.h>
 
-template <class T> ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
+template <class T> 
+ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
 //
 // Constructor assigns pointer.  If ImageInterface goes out of scope you
 // will get rubbish.
 //
 {
-   pImage = &image;
+   pImage_p = &image;
 }
 
-template <class T> ImageSummary<T>::~ImageSummary ()
+template <class T> 
+ImageSummary<T>::ImageSummary (const ImageSummary<T> &other)
+                   : widthName_p(other.widthName_p),
+                     widthProj_p(other.widthProj_p),
+                     widthNPix_p(other.widthNPix_p),
+                     widthTile_p(other.widthTile_p),
+                     widthRefValue_p(other.widthRefValue_p),
+                     widthAxUnits_p(other.widthAxUnits_p),
+                     precRefValueSci_p(other.precRefValueSci_p),
+                     precRefValueFixed_p(other.precRefValueFixed_p),
+                     widthRefPixel_p(other.widthRefPixel_p),
+                     precRefPixel_p(other.precRefPixel_p),
+                     widthInc_p(other.widthInc_p),
+                     precInc_p(other.precInc_p)
+
+//
+// Copy constructor
+//
+{
+   pImage_p = other.pImage_p;
+}
+
+template <class T> 
+ImageSummary<T>::~ImageSummary ()
 //
 // Destructor does nothing
 //
 {}
 
-template <class T> Int ImageSummary<T>::ndim () const
+template <class T>
+ImageSummary<T> &ImageSummary<T>::operator=(const ImageSummary<T> &other)
+// 
+// Assignment operator
+//
+{
+   pImage_p = other.pImage_p;
+   widthName_p = other.widthName_p;
+   widthProj_p = other.widthProj_p;
+   widthNPix_p = other.widthNPix_p;
+   widthTile_p = other.widthTile_p;
+   widthRefValue_p = other.widthRefValue_p;
+   widthAxUnits_p = other.widthAxUnits_p;
+   precRefValueSci_p = other.precRefValueSci_p;
+   precRefValueFixed_p = other.precRefValueFixed_p;
+   widthRefPixel_p = other.widthRefPixel_p;
+   precRefPixel_p = other.precRefPixel_p;
+   widthInc_p = other.widthInc_p;
+   precInc_p = other.precInc_p;
+}
+
+template <class T> 
+Int ImageSummary<T>::ndim () const
 //
 // Retrieve number of image dimension 
 //
 {
-   return pImage->ndim();
+   return pImage_p->ndim();
 }
 
 
-template <class T> IPosition ImageSummary<T>::shape () const
+template <class T> 
+IPosition ImageSummary<T>::shape () const
 //
 // Get image shape
 //
 {
-   return pImage->shape();
+   return pImage_p->shape();
 }
 
-template <class T> IPosition ImageSummary<T>::tileShape () const
+template <class T> 
+IPosition ImageSummary<T>::tileShape () const
 //
 // Get image tile shape
 //
 {
-   return pImage->niceCursorShape(pImage->maxPixels());
+   return pImage_p->niceCursorShape(pImage_p->maxPixels());
 }
 
 typedef Vector<String> gpp_VS;
-template <class T> gpp_VS ImageSummary<T>::axisNames () const
+template <class T> 
+gpp_VS ImageSummary<T>::axisNames () const
 // 
 // Get axis names
 //
 {
-   return pImage->coordinates().worldAxisNames();
+   return pImage_p->coordinates().worldAxisNames();
 }
 
 
-template <class T> Vector<Double> ImageSummary<T>::referencePixels () const
+template <class T> 
+Vector<Double> ImageSummary<T>::referencePixels () const
 // 
 // Get reference pixels
 //
 {
-   return pImage->coordinates().referencePixel().ac() + 1.0;
+   return pImage_p->coordinates().referencePixel().ac() + 1.0;
 }
 
 
-template <class T> Vector<Double> ImageSummary<T>::referenceValues () const
+template <class T> 
+Vector<Double> ImageSummary<T>::referenceValues () const
 // 
 // Get reference values
 //
 {
-   return pImage->coordinates().referenceValue().ac();
+   return pImage_p->coordinates().referenceValue().ac();
 }
 
 
-template <class T> Vector<Double> ImageSummary<T>::axisIncrements () const
+template <class T> 
+Vector<Double> ImageSummary<T>::axisIncrements () const
 // 
 // Get axis increments
 //
 {
-   return pImage->coordinates().increment().ac();
+   return pImage_p->coordinates().increment().ac();
 }
 
-template <class T> Vector<String> ImageSummary<T>::axisUnits () const
+template <class T> 
+Vector<String> ImageSummary<T>::axisUnits () const
 // 
 // Get axis units
 //
 {
-   return pImage->coordinates().worldAxisUnits().ac();
+   return pImage_p->coordinates().worldAxisUnits().ac();
 }
 
 
-template <class T> Unit ImageSummary<T>::units () const
+template <class T> 
+Unit ImageSummary<T>::units () const
 //
 // Get image units
 //
 {
-   return pImage->units();
+   return pImage_p->units();
 }
 
 
-template <class T> String ImageSummary<T>::name () const
+template <class T> 
+String ImageSummary<T>::name () const
 //
 // Get image name
 //
 {
-   return pImage->name();
+   return pImage_p->name();
 }
 
 
-template <class T> Bool ImageSummary<T>::hasAMask () const
+template <class T> 
+Bool ImageSummary<T>::hasAMask () const
 //
 // See if image has a mask
 //
 {
-   return pImage->isMasked();
+   return pImage_p->isMasked();
 }
 
 
-template <class T> void ImageSummary<T>::list (LogIO& os,
-                                               Bool nativeFormat) 
+template <class T> 
+void ImageSummary<T>::list (LogIO& os,
+                            Bool nativeFormat) 
 //
 // List information about an image to the logger
 //
@@ -182,7 +239,7 @@ template <class T> void ImageSummary<T>::list (LogIO& os,
 
 // Obtain CoordinateSystem
 
-   CoordinateSystem cSys = pImage->coordinates();
+   CoordinateSystem cSys = pImage_p->coordinates();
 
 // Maximum width of names fields
 
@@ -240,33 +297,74 @@ template <class T> void ImageSummary<T>::list (LogIO& os,
    os << " " << endl;
    os.output() << setfill(' ');
 
-// Loop over the number of world axes in the coordinate system (this better 
-// correspond to the number of axes in the image) and find out what the
-// coordinate number for that axis is, then find out its type and what the 
-// axis in that coordinate is and list all the good stuff.
 
-   uInt worldAxis;
+// Loop over the number of pixel axes in the coordinate system (same
+// as number of axes in image) 
+
+   Int pixelAxis;
    Int coordinate, axisInCoordinate;
-   for (worldAxis=0; worldAxis<cSys.nWorldAxes(); worldAxis++) {
+   for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
 
-// Find coordinate axis for this wolrd axis
+
+// Find coordinate number for this pixel axis
  
-      cSys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
-// List according to type
+
+// List according to coordinate type
 
       if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
         const DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
-        listDirection (os, dCoord, worldAxis, axisInCoordinate, nativeFormat);
-     } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
+        listDirection (os, dCoord, axisInCoordinate, pixelAxis, 
+                       nativeFormat);
+      } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
         const SpectralCoordinate sCoord = cSys.spectralCoordinate(coordinate);
-        listSpectral (os, sCoord, worldAxis, axisInCoordinate);
-     } else if (cSys.type(coordinate) == Coordinate::LINEAR) { 
+        listSpectral (os, sCoord, axisInCoordinate, pixelAxis);
+      } else if (cSys.type(coordinate) == Coordinate::LINEAR) { 
         const LinearCoordinate lCoord = cSys.linearCoordinate(coordinate);
-        listLinear (os, lCoord, worldAxis, axisInCoordinate);
-     } else if (cSys.type(coordinate) == Coordinate::STOKES) { 
+        listLinear (os, lCoord, axisInCoordinate, pixelAxis);
+      } else if (cSys.type(coordinate) == Coordinate::STOKES) { 
         const StokesCoordinate sCoord = cSys.stokesCoordinate(coordinate);
-        listStokes (os, sCoord, worldAxis, axisInCoordinate, nativeFormat);
+        listStokes (os, sCoord, axisInCoordinate, pixelAxis,
+                    nativeFormat);
+      }
+   }
+   os << endl;
+
+
+// Now find those pixel axes that have been removed and list their
+// associated coordinate information.
+
+   Int worldAxis;
+   for (worldAxis=0; worldAxis<cSys.nWorldAxes(); worldAxis++) {
+
+
+// Find coordinate number for this pixel axis
+ 
+      cSys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+
+
+// See if this world axis has an associated removed pixel axis
+      
+      Vector<Int> pixelAxes = cSys.pixelAxes(coordinate);
+      if (pixelAxes(axisInCoordinate) == -1) {
+
+
+// List according to coordinate type
+
+        if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
+          const DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
+          listDirection (os, dCoord, axisInCoordinate, -1, nativeFormat);
+        } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
+          const SpectralCoordinate sCoord = cSys.spectralCoordinate(coordinate);
+          listSpectral (os, sCoord, axisInCoordinate, -1);
+        } else if (cSys.type(coordinate) == Coordinate::LINEAR) { 
+          const LinearCoordinate lCoord = cSys.linearCoordinate(coordinate);
+          listLinear (os, lCoord, axisInCoordinate, -1);
+        } else if (cSys.type(coordinate) == Coordinate::STOKES) { 
+          const StokesCoordinate sCoord = cSys.stokesCoordinate(coordinate);
+          listStokes (os, sCoord, axisInCoordinate, -1, nativeFormat);
+        }
      }
    }
  
@@ -278,7 +376,8 @@ template <class T> void ImageSummary<T>::list (LogIO& os,
 }
 
 
-template <class T> Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& image)
+template <class T> 
+Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& image)
 //
 // Reassign pointer.  
 //
@@ -288,26 +387,27 @@ template <class T> Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& i
    if (pTemp == 0) {
       return False;
    } else {
-      pImage = pTemp;
+      pImage_p = pTemp;
       return True;
    }
 }
 
 
 
-template <class T> void ImageSummary<T>::listDirection (LogIO& os, 
-                                                        const DirectionCoordinate& coord,
-                                                        const uInt& worldAxis,
-                                                        const Int& axisInCoordinate,
-                                                        const Bool& nativeFormat) const
+template <class T> 
+void ImageSummary<T>::listDirection (LogIO& os, 
+                                     const DirectionCoordinate& coord,
+                                     const Int& axisInCoordinate,
+                                     const Int& pixelAxis,
+                                     const Bool& nativeFormat) const
 //
 // Output the descriptors for a DIRECTION axis
 //
 //  Input:
 //     os               The LogIO to write to
 //     coord            The direction coordinate
-//     worldAxis        The axis in the image (increments for every axis in each coordinate)
-//     axisIncoordinate The axis number in this coordinate for this worldAxis and coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
 //     nativeFormat     If true don't convert any units
 //           
 {
@@ -329,14 +429,22 @@ template <class T> void ImageSummary<T>::listDirection (LogIO& os,
    os << coord.projection().name();
 
 // Number of pixels
-
+   
    os.output().width(widthNPix_p);
-   os << this->shape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->shape()(pixelAxis);
+   } else {
+      os << " ";
+   }
 
 // Tile shape
 
    os.output().width(widthTile_p);
-   os << this->tileShape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->tileShape()(pixelAxis);
+   } else {
+      os << " ";
+   }
 
 // Reference value
 
@@ -365,55 +473,68 @@ template <class T> void ImageSummary<T>::listDirection (LogIO& os,
    os.output().setf(ios::fixed, ios::floatfield);
    os.output().width(widthRefPixel_p);
    os.output().precision(precRefPixel_p);
-   os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   if (pixelAxis != -1) {
+      os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   } else {
+      os << " ";
+   }
+
 
 // Increment
 
    os.output().setf(ios::scientific, ios::floatfield);
    os.output().width(widthInc_p);
    os.output().precision(precInc_p);
-   if (nativeFormat) {
-      os << coord.increment()(axisInCoordinate);
-   } else { 
-      if (tString.contains("RIGHT ASCENSION") ||   
-          tString.contains("DECLINATION")) {
-         os << coord.increment()(axisInCoordinate) * 3600.0 * 180.0 / C::pi;
-      } else {
-         os << coord.increment()(axisInCoordinate) * 180.0 / C::pi;
+   if (pixelAxis != -1) {
+      if (nativeFormat) {
+         os << coord.increment()(axisInCoordinate);
+      } else { 
+         if (tString.contains("RIGHT ASCENSION") ||   
+             tString.contains("DECLINATION")) {
+            os << coord.increment()(axisInCoordinate) * 3600.0 * 180.0 / C::pi;
+         } else {
+            os << coord.increment()(axisInCoordinate) * 180.0 / C::pi;
+         }
       }
+   } else {
+      os << " ";
    }
+
+
 
 // Increment units
 
    os.output().setf(ios::left, ios::adjustfield);
-   if (nativeFormat) {
-      os << " " << coord.worldAxisUnits()(axisInCoordinate);
-   } else {
-      if (tString.contains("RIGHT ASCENSION") ||
-         tString.contains("DECLINATION")) {
-         os << " arcsec";
+   if (pixelAxis != -1) {
+      if (nativeFormat) {
+         os << " " << coord.worldAxisUnits()(axisInCoordinate);
       } else {
-         os << " degrees";
+         if (tString.contains("RIGHT ASCENSION") ||
+            tString.contains("DECLINATION")) {
+            os << " arcsec";
+         } else {
+            os << " degrees";
+         }
       }
    }
 
    os << endl;    
-
 }
 
 
-template <class T> void ImageSummary<T>::listSpectral (LogIO& os, 
-                                                       const SpectralCoordinate& coord,
-                                                       const uInt& worldAxis,
-                                                       const Int& axisInCoordinate) const
+template <class T> 
+void ImageSummary<T>::listSpectral (LogIO& os, 
+                                    const SpectralCoordinate& coord,
+                                    const Int& axisInCoordinate,
+                                    const Int& pixelAxis) const
 //
 // Output the descriptors for a SPECTRAL axis
 //
 //  Input:
 //     os               The LogIO to write to
 //     coord            The spectral coordinate
-//     worldAxis        The axis in the image (increments for every axis in each coordinate)
-//     axisIncoordinate The axis number in this coordinate for this worldAxis and coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
 //           
 {
 
@@ -434,14 +555,23 @@ template <class T> void ImageSummary<T>::listSpectral (LogIO& os,
    os << " ";
 
 // Number of pixels
-
+   
    os.output().width(widthNPix_p);
-   os << this->shape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->shape()(pixelAxis);
+   } else {
+      os << " ";
+   }
 
 // Tile shape
 
    os.output().width(widthTile_p);
-   os << this->tileShape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->tileShape()(pixelAxis);
+   } else {
+      os << " ";
+   }
+
 
 // Reference value
 
@@ -455,36 +585,50 @@ template <class T> void ImageSummary<T>::listSpectral (LogIO& os,
    os.output().setf(ios::fixed, ios::floatfield);
    os.output().width(widthRefPixel_p);
    os.output().precision(precRefPixel_p);
-   os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   if (pixelAxis != -1) {
+      os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   } else {
+      os << " ";
+   }
+      
 
 // Increment
 
    os.output().setf(ios::scientific, ios::floatfield);
    os.output().width(widthInc_p);
    os.output().precision(precInc_p);
-   os << coord.increment()(axisInCoordinate);
+   if (pixelAxis != -1) {
+      os << coord.increment()(axisInCoordinate);
+   } else {
+      os << " ";
+   }
+
 
 // Increment units
   
    os.output().setf(ios::left, ios::adjustfield);
-   os << " " << coord.worldAxisUnits()(axisInCoordinate);
+   if (pixelAxis != -1) {
+      os << " " << coord.worldAxisUnits()(axisInCoordinate);
+   }
+
 
    os << endl; 
 }
 
 
-template <class T> void ImageSummary<T>::listLinear (LogIO& os, 
-                                                     const LinearCoordinate& coord,
-                                                     const uInt& worldAxis,
-                                                     const Int& axisInCoordinate) const
+template <class T> 
+void ImageSummary<T>::listLinear (LogIO& os, 
+                                  const LinearCoordinate& coord,
+                                  const Int& axisInCoordinate,
+                                  const Int& pixelAxis) const
 //
 // Output the descriptors for a LINEAR axis
 //
 //  Input:
 //     os               The LogIO to write to
 //     coord            The linear coordinate
-//     worldAxis        The axis in the image (increments for every axis in each coordinate)
-//     axisIncoordinate The axis number in this coordinate for this worldAxis and coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
 //           
 {
 
@@ -504,15 +648,25 @@ template <class T> void ImageSummary<T>::listLinear (LogIO& os,
    os.output().width(widthProj_p);
    os << " ";
 
-// Number of pixels
 
+// Number of pixels
+   
    os.output().width(widthNPix_p);
-   os << this->shape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->shape()(pixelAxis);
+   } else {
+      os << " ";
+   }
 
 // Tile shape
 
    os.output().width(widthTile_p);
-   os << this->tileShape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->tileShape()(pixelAxis);
+   } else {
+      os << " ";
+   }
+
 
 // Reference value
 
@@ -526,19 +680,31 @@ template <class T> void ImageSummary<T>::listLinear (LogIO& os,
    os.output().setf(ios::fixed, ios::floatfield);
    os.output().width(widthRefPixel_p);
    os.output().precision(precRefPixel_p);
-   os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   if (pixelAxis != -1) {
+      os << coord.referencePixel()(axisInCoordinate) + 1.0;
+   } else {
+      os << " ";
+   }
+
 
 // Increment
 
    os.output().setf(ios::scientific, ios::floatfield);
    os.output().width(widthInc_p);
    os.output().precision(precInc_p);
-   os << coord.increment()(axisInCoordinate);
+   if (pixelAxis != -1) {
+      os << coord.increment()(axisInCoordinate);
+   } else {
+      os << " ";
+   }
+
 
 // Increment units
   
    os.output().setf(ios::left, ios::adjustfield);
-   os << " " << coord.worldAxisUnits()(axisInCoordinate);
+   if (pixelAxis != -1) {
+      os << " " << coord.worldAxisUnits()(axisInCoordinate);
+   }
 
    os << endl; 
 }
@@ -546,19 +712,20 @@ template <class T> void ImageSummary<T>::listLinear (LogIO& os,
 
 
 
-template <class T> void ImageSummary<T>::listStokes (LogIO& os, 
-                                                     const StokesCoordinate& coord,
-                                                     const uInt& worldAxis,
-                                                     const Int& axisInCoordinate,
-                                                     const Bool& nativeFormat) const
+template <class T> 
+void ImageSummary<T>::listStokes (LogIO& os, 
+                                  const StokesCoordinate& coord,
+                                  const Int& axisInCoordinate,
+                                  const Int& pixelAxis,
+                                  const Bool& nativeFormat) const
 //
 // Output the descriptors for a STOKES axis
 //
 //  Input:
 //     os               The LogIO to write to
 //     coord            The stokes coordinate
-//     worldAxis        The axis in the image (increments for every axis in each coordinate)
-//     axisIncoordinate The axis number in this coordinate for this worldAxis and coordinate
+//     axisIncoordinate The axis number in this coordinate 
+//     pixelAxis        The axis in the image for this axis in this coordinate
 //     nativeFormat     If true don't convert any units
 //
 {
@@ -580,37 +747,88 @@ template <class T> void ImageSummary<T>::listStokes (LogIO& os,
    os << " ";
 
 // Number of pixels
-
+   
    os.output().width(widthNPix_p);
-   os << this->shape()(worldAxis);
+   if (pixelAxis != -1) {
+      os << this->shape()(pixelAxis);
+   } else {
+      os << " ";
+   }
 
 // Tile shape
 
    os.output().width(widthTile_p);
-   os << this->tileShape()(worldAxis);
-
-// Reference value
-
-   os.output().width(widthRefValue_p);
-   if (nativeFormat) {
-      os.output().setf(ios::scientific, ios::floatfield);
-      os.output().precision(precRefValueFixed_p);
-      os << coord.referenceValue()(axisInCoordinate);
+   if (pixelAxis != -1) {
+      os << this->tileShape()(pixelAxis);
    } else {
-      String sName;
-      for (Int i=0; i<this->shape()(worldAxis); i++) {
-         Stokes::StokesTypes iStokes;
-         Bool ok = coord.toWorld(iStokes, i);
-         sName += Stokes::name(Stokes::type(iStokes));
-      }
-      os << sName;
+      os << " ";
    }
 
+
+// Reference value, reference pixel, increment
+
+   if (nativeFormat) {
+      os.output().setf(ios::scientific, ios::floatfield);
+      os.output().width(widthRefValue_p);
+      os.output().precision(precRefValueFixed_p);
+      os << coord.referenceValue()(axisInCoordinate);
+
+      os.output().setf(ios::fixed, ios::floatfield);
+      os.output().width(widthRefPixel_p);
+      os.output().precision(precRefPixel_p);
+      if (pixelAxis != -1) {
+         os << coord.referencePixel()(axisInCoordinate) + 1.0;
+      } else {
+         os << " ";
+      }
+
+      os.output().setf(ios::scientific, ios::floatfield);
+      os.output().width(widthInc_p);
+      os.output().precision(precInc_p);
+      if (pixelAxis != -1) {
+         os << coord.increment()(axisInCoordinate);
+      } else {
+         os << " ";
+      }
+
+      os.output().setf(ios::left, ios::adjustfield);
+      if (pixelAxis != -1) {
+         os << " " << coord.worldAxisUnits()(axisInCoordinate);
+      } else {
+         os << " ";
+      }
+   } else {
+
+// We write here the names of each pixel on the Stokes axes
+// such as IQUV or XXYYXYYX etc  
+
+      os.output().width(widthRefValue_p);
+      if (pixelAxis != -1) {
+         String sName;
+         for (Int i=0; i<this->shape()(pixelAxis); i++) {
+            Stokes::StokesTypes iStokes;
+            Bool ok = coord.toWorld(iStokes, i);
+            sName += Stokes::name(Stokes::type(iStokes));
+         }
+         os << sName;
+      } else {
+         String sName;
+         Stokes::StokesTypes iStokes;
+         Int i = Int(coord.referencePixel()(axisInCoordinate));
+         Bool ok = coord.toWorld(iStokes, i);
+         sName = Stokes::name(Stokes::type(iStokes));
+         os << sName;
+      }
+   }
+
+
    os << endl; 
+
 }
 
 
-template <class T> void ImageSummary<T>::clearFlags(LogIO& os) const
+template <class T> 
+void ImageSummary<T>::clearFlags(LogIO& os) const
 //
 // Clear all the formatting flags
 //
