@@ -5849,3 +5849,4 @@
 16 229 src mv ./trial/implement/Mathematics/AutoDiffIO.cc ./aips/implement/Mathematics/AutoDiffIO.cc
 16 229 src mv ./trial/implement/Mathematics/AutoDiffIO.h ./aips/implement/Mathematics/AutoDiffIO.h
 16 229 src mv ./trial/implement/Mathematics/AutoDiffMath.cc ./aips/implement/Mathematics/AutoDiffMath.cc
+16 229 src mv ./trial/implement/Mathematics/AutoDiffMath.h ./aips/implement/Mathematics/AutoDiffMath.h
