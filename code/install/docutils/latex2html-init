@@ -171,6 +171,10 @@ sub aips2topbar {
 "         onMouseOut=\"imgOff('img2')\">\n" .
 "<IMG NAME=\"img2\" SRC=\"$DOCSROOT/html/navpages/images/topdocoff.gif\" BORDER=0></A>\n" .
 "</td><td>\n" .
+"<A HREF=\"$DOCSROOT/reference/Glish/Glish.html\" \n" .
+"          onMouseOver=\"imgOn('img7')\" \n" .
+"          onMouseOut=\"imgOff('img7')\">\n" .
+"<IMG NAME=\"img7\" SRC=\"$DOCSROOT/html/navpages/images/topglishoff.gif\" BORDER=0></A>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/learnmore6.html\" \n" .
 "         onMouseOver=\"imgOn('img3')\" \n" .
 "         onMouseOut=\"imgOff('img3')\">\n" .
@@ -185,7 +189,8 @@ sub aips2topbar {
 "          onMouseOver=\"imgOn('img5')\" \n" .
 "          onMouseOut=\"imgOff('img5')\">\n" .
 "<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td><td>\n" .
+"</td></tr>\n" .
+"<td><tr>\n" .
 "<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
 "          onMouseOver=\"imgOn('img6')\" \n" .
 "          onMouseOut=\"imgOff('img6')\">\n" .
