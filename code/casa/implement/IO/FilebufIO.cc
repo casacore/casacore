@@ -211,7 +211,9 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
       throw (AipsError ("FilebufIO::read - fread returned a bad value"));
     }
     if (bytesRead != Int(size) && throwException) {
-      throw (AipsError ("FilebufIO::read - incorrect number of bytes read"));
+      String errmsg = "FilebufIO::read - incorrect number of bytes read";
+      errmsg += " from file " + fileName();
+      throw (AipsError (errmsg));
     }
     return bytesRead;
 }
