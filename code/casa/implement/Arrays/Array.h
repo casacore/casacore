@@ -51,6 +51,7 @@ WHATEVER_VECTOR_FORWARD_DEC;
 #include <aips/vector.h>
 #endif
 
+
 // <summary>
 // A global enum used by some Array constructors.
 // </summary>
@@ -75,7 +76,6 @@ enum StorageInitPolicy {
 
 // <summary> A templated N-D Array class with zero origin </summary>
 
-// <synopsis>
 // Array<T> is a templated, N-dimensional, Array class. The origin is zero,
 // but by default indices are zero-based. This Array class is the
 // base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
@@ -106,7 +106,8 @@ enum StorageInitPolicy {
 // part of another array (by refer we mean that if you change a pixel in 
 // the current array, a pixel in the referred to array also changes, i.e.
 // they share underlying storage).
-// <note role=warning> One way one array can reference another is through the copy 
+// <note role=warning>
+//        One way one array can reference another is through the copy 
 //        constructor. While this might be what you want, you should
 //        probably use the reference() member function to make it explicit.
 //        The copy constructor is used when arguments are passed by value;
@@ -177,11 +178,10 @@ enum StorageInitPolicy {
 //
 // <note role=tip>
 // Most of the data members and functions which are "protected" should
-// likely become "private". </note>
+// likely become "private".
+// </note>
 //
-// </synopsis>
-//
-// <todo asof="1999/12/30">
+// <todo asof="1999/12/30"
 //   <li> Integrate into the Lattice hierarchy
 //   <li> Factor out the common functions (shape etc) into a type-independent
 //        base class.
@@ -292,11 +292,11 @@ public:
     Array<T> copy() const;                         // Make a copy of this
 
     // This ensures that this array does not reference any other storage.
-    // <note role=tip> When a section is taken of an array with non-unity strides,
+    // <note role=tip>
+    //        When a section is taken of an array with non-unity strides,
     //        storage can be wasted if the array which originally contained
     //        all the data goes away. unique() also reclaims storage. This
     //        is an optimization users don't normally need to understand.
-    // </note>
     //
     //        <srcblock>
     //        IPosition shape(...), blc(...), trc(...), inc(...);
@@ -308,6 +308,7 @@ public:
     //        // in it, but nothing else is. Storage is wasted.
     //        aSection.unique();
     //        </srcblock>
+    // </note>
     void unique();
 
     // Create an STL vector from an Array. The created vector is a linear
@@ -419,10 +420,12 @@ public:
     uInt nrefs() const;
 
     // The dimensionality of this array.
-    uInt ndim() const { return ndimen_p; }
+    uInt ndim() const
+        { return ndimen_p; }
 
     // How many elements does this array have? Product of all axis lengths.
-    uInt nelements() const { return nels_p; }
+    uInt nelements() const
+        { return nels_p; }
 
     // Check to see if the Array is consistent. This is about the same thing
     // as checking for invariants. If AIPS_DEBUG is defined, this is invoked
@@ -431,23 +434,23 @@ public:
 
     // Are the shapes identical?
     // <group>
-    Bool conform(const Array<T> &other) const;
-    Bool conform(const MaskedArray<T> &other) const;
+    Bool conform (const Array<T> &other) const;
+    Bool conform (const MaskedArray<T> &other) const;
     // </group>
 
     // The length of each axis.
-    const IPosition &shape() const { return length_p; }
+    const IPosition &shape() const
+        { return length_p; }
 
     // A convenience function: endPosition(i) = shape(i) - 1; i.e. this
     // is the IPosition of the last element of the Array.
-    // <group>
     IPosition endPosition() const;
-    // </group>
 
     // Are the array data contiguous?
     // If they are not contiguous, <src>getStorage</src> (see below)
     // needs to make a copy.
-    Bool contiguousStorage() const { return contiguous_p; }
+    Bool contiguousStorage() const
+        { return contiguous_p; }
 
     // Get a pointer to the beginning of the array.
     // Note that the array may not be contiguous.
@@ -522,7 +525,99 @@ public:
     // Array version for major change (used by ArrayIO).
     // enum did not work properly with cfront 3.0.1), so replaced
     // by a static inline function. Users won't normally use this.
-    static uInt arrayVersion() {return 3;}
+    static uInt arrayVersion()
+        {return 3;}
+
+
+    class ConstIteratorSTL
+    {
+    public:
+      ConstIteratorSTL (const Array<T>&, Bool isBegin);
+
+      void operator++()
+      {
+	itsPos++;
+	if (!itsContig) {
+	  itsPos += itsLineIncr;
+	  if (itsPos > itsLineEnd) increment();
+	}
+      }
+      void operator++(int)
+        { this->operator++(); }
+
+      void nextLine()
+      {
+	itsPos = itsLineEnd;
+	increment();
+      }
+
+      bool operator== (const ConstIteratorSTL& other) const
+        { return itsPos == other.itsPos; }
+
+      bool operator!= (const ConstIteratorSTL& other) const
+        { return itsPos != other.itsPos; }
+
+      const T& operator*() const
+        { return *itsPos; }
+
+    protected:
+      // Increment iterator for a non-contiguous array.
+      void increment();
+
+      const T* itsPos;
+      const T* itsLineEnd;
+      uInt itsLineIncr;
+      uInt itsLineAxis;
+      IPosition itsCurPos;
+      IPosition itsLastPos;
+      const Array<T>* itsArray; 
+      Bool itsContig;
+    };
+
+    class IteratorSTL: public ConstIteratorSTL
+    {
+    public:
+      IteratorSTL (Array<T>& arr, Bool isBegin)
+	: ConstIteratorSTL (arr, isBegin) {}
+      T& operator*()
+        { return *const_cast<T*>(itsPos); }
+
+      bool operator== (const IteratorSTL& other) const
+        { return itsPos == other.itsPos; }
+
+      bool operator!= (const IteratorSTL& other) const
+        { return itsPos != other.itsPos; }
+
+    };
+
+
+    // Define the STL-style iterators.
+    // It makes it possible to iterate through all data elements of an array.
+    // <srcblock>
+    //  Array<Int> arr(shape);
+    //  for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+    //    *iter += 1;
+    //  }
+    // </srcblock>
+    // <group name=STL-iterator>
+    // STL-style typedefs.
+    // <group>
+    typedef T value_type;
+    typedef IteratorSTL iterator;
+    typedef ConstIteratorSTL const_iterator;
+    // </group>
+    // Get the begin iterator object.
+    iterator begin()
+        { return iterator (*this, True); }
+    const_iterator begin() const
+        { return const_iterator (*this, True); }
+    const iterator& end()
+        { if (!itsEndIter) itsEndIter = new iterator(*this, False);
+          return *itsEndIter; }
+    const const_iterator& end() const
+        { return const_cast<Array<T>*>(this)->end(); }
+    // </group>
+
 
 protected:
     // Remove the degenerate axes from the Array object.
@@ -533,6 +628,7 @@ protected:
 
     // Make the indexing step sizes.
     void makeSteps();
+
 
     // Number of elements in the array. Cached rather than computed.
     uInt nels_p;
@@ -558,6 +654,10 @@ protected:
 
     // A switch to tell if the array data are contiguous.
     Bool contiguous_p;
+
+    // The end for an STL-style iteration.
+    // It is allocated when used for the first time.
+    mutable iterator* itsEndIter;
 
 
     // Various helper functions.
