@@ -1,5 +1,5 @@
 //# ArrayLattice.cc: this defines the Lattice wrapper class for Arrays.
-//# Copyright (C) 1995,1997
+//# Copyright (C) 1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,45 +38,52 @@
 template<class T>
 ArrayLattice<T>::ArrayLattice()
 : itsWritable (False)
-{}
+{
+  itsData.makePermanent();           // avoid double deletion by Cleanup
+}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const IPosition& shape) 
 : itsData     (shape),
   itsWritable (True)
-{}
+{
+  itsData.makePermanent();           // avoid double deletion by Cleanup
+}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (Array<T>& array) 
 : itsData     (array),
   itsWritable (True)
-{}
+{
+  itsData.makePermanent();           // avoid double deletion by Cleanup
+}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const Array<T>& array) 
 : itsData     (array),
   itsWritable (False)
-{}
+{
+  itsData.makePermanent();           // avoid double deletion by Cleanup
+}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const ArrayLattice<T>&other) 
 : itsData     (other.itsData),
   itsWritable (other.itsWritable)
 {
-    // Nothing
+  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
 ArrayLattice<T>::~ArrayLattice()
-{
-  // Nothing
-}
+{}
 
 template<class T>
 ArrayLattice<T>& ArrayLattice<T>::operator= (const ArrayLattice<T>& other)
 {
   if (this != &other) {
     itsData     = other.itsData;
+    itsData.makePermanent();           // avoid double deletion by Cleanup
     itsWritable = other.itsWritable;
   }
   return *this;
