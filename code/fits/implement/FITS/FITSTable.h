@@ -303,9 +303,10 @@ public:
 		    const RecordDesc &description,
 		    // nrows is a synonym for ngroups
 		    uInt nrows,
+		    // Keywords other than those that will be added 
+		    // automatically. (SIMPLE, BITPIX, NAXIS*, EXTEND,
+		    // BLOCKED, GROUPS, PCOUNT, GCOUNT, ORIGIN, END).
 		    const Record &extraKeywords,
-		    // the units, where available
-		    const Record &units,
 		    // You might want to write many fits files in the same
 		    // physical file.  If True, "file" must come from new,
 		    // since it will be deleted upon destruction.
