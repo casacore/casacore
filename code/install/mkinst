@@ -40,16 +40,18 @@
 #
 # The 
 #   <ident> <.cc file> <.h file> [<extra .h files>] 
-# part has to be on one line (the first line), the <template declaration>
-# can be on a separate line following the first. Multiple template
-# declarations (on separate lines if wanted) are possible. Each declaration
-# can have either of 3 forms:
+# part has to be on one line (the first line), the first <template declaration>
+# can be on the same line. More declarations (on separate lines) are
+possible.
+# Each declaration line can have either of 5 forms:
 #	template .......
+#	template <> class ....		(template-less forward declaration)
 #	#if .....     (or #ifdef, #ifndef)
 #       #else
 #	#endif
 # An example of a definition could be (shown in format as output by reident):
-# 1020 aips/Arrays/Array.cc aips/Arrays/Vector.h trial/Arrays/SquareMatrix.h 
+# 1020 aips/Arrays/Array.cc aips/Arrays/Vector.h trial/Arrays/SquareMatrix.h
+#      template <> class ostream 
 #      template class Array<Vector<SquareMatrix<Float, 2> > > 
 #      #if !defined(AIPS_STDLIB) 
 #      template class Array<Vector<SquareMatrix<Float, 4> > > 
@@ -64,8 +66,7 @@
 #
 #  1050 aips/Set/Set.cc template class Set<Int>
 #  1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
-#  1060 aips/Set/Set.cc template operator+(Set<Int> const &, Set<Int> const &)
-#  1060 aips/Set/Set.cc template union(Set<Int> const &, Set<Int> const &)
+#  1060 aips/Set/Set.cc template Set<Int> operator+(Set<Int> const &, Set<Int> const &)
 #
 # The ident contains a 4-digit number which is unique amongst all templates
 # based on a particular class implementation .cc or .h file.  The name of the
@@ -128,7 +129,7 @@
 
   rm -f before after tmp.$$ tmp1.$$
   trap 'echo "Cleaning up..." ; \
-        rm -f before after ; \
+        rm -f before after tmp.$$ tmp1.$$ ; \
         trap 0 ; \
         exit' 0 1 2 3 15
 
@@ -186,6 +187,11 @@
 	BAD=`expr $BAD + 1`
 	STATUS=1
 	continue
+      fi
+      if [ "$2" = "<>" ]
+      then
+	shift
+	shift
       fi
       echo "$*;" >> tmp1.$$
       continue
