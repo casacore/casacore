@@ -109,6 +109,16 @@ Bool TiledShapeStMan::canAccessColumn (Bool& reask) const
 }
 
 
+TSMCube* TiledShapeStMan::singleHypercube()
+{
+    if (nrUsedRowMap_p != 1  ||  rowMap_p[0] != nrrow_p-1) {
+	throw (TSMError ("TiledShapeStMan: function on hypercolumn " +
+			 hypercolumnName_p + " cannot be done "
+			 "when it is using multiple hypercubes"));
+    }
+    return cubeSet_p[1];
+}
+
 void TiledShapeStMan::setShape (uInt rownr, TSMCube*,
 				const IPosition& shape,
 				const IPosition& tileShape)

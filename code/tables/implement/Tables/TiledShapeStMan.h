@@ -213,6 +213,10 @@ public:
     // reask is set to True (because next time things might be different).
     virtual Bool canAccessColumn (Bool& reask) const;
 
+    // Test if only one hypercube is used by this storage manager.
+    // If not, throw an exception. Otherwise return the hypercube.
+    virtual TSMCube* singleHypercube();
+
     // Set the shape and tile shape of the given hypercube.
     // It is used when the first row in a new hypercube is written.
     // If needed it adds a dimension to the shape, which reflects the
