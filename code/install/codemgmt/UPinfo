@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPinfo: help and general parameters for UP scripts
 #-----------------------------------------------------------------------------
-# Copyright (C) 2000,2001,2002
+# Copyright (C) 2000,2001,2002,2004
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -66,6 +66,8 @@ else if ("$script" == "UPreident") then
     set upsw = "az$upsw"
 else if ("$script" == "UPtmpl") then
     set upsw = "$upsw"
+else if ("$script" == "UPcasa") then
+    set upsw = "h"
 else
     echo "Unknown script ${script} present. Abort."
     exit 1
@@ -162,13 +164,15 @@ if ($upswh) then
     end
   endif
   if ($?usage) then
-    echo "  -c clear all defining information files for this script"
-    echo "  -r clear only the general defining information in .def"
-    echo "  -u clear all but the general defining information in .def"
-    echo "  -d give some debug information (mostly not implemented)"
-    echo "  -n run script only to get defining information, without executing"
-    echo "  -Q run quietly"
-    echo "  -F force acceptance of normally asked for data"
+    if ("$script" != "UPcasa") then
+      echo "  -c clear all defining information files for this script"
+      echo "  -r clear only the general defining information in .def"
+      echo "  -u clear all but the general defining information in .def"
+      echo "  -d give some debug information (mostly not implemented)"
+      echo "  -n run script only to get defining information, without executing"
+      echo "  -Q run quietly"
+      echo "  -F force acceptance of normally asked for data"
+    endif
     echo "  -h this information"
   endif
   cat << '_EOF_'
@@ -183,6 +187,7 @@ The following UP scripts are available:
     UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
+    UPcasa
 '_EOF_'
   exit 0
 endif
@@ -217,6 +222,23 @@ set ldir = `pwd`
 if (! -w $ldir) then
     echo "Local directory ${ldir} not writeable "
     exit 1
+endif
+#
+# Set package information
+#
+# Basic package names in order
+#
+set casapack = (casa scimath tables measures fits lattices coordinates \
+	components images ms msvis calibration ionosphere flagging \
+	dish simulators synthesis graphics tasking)
+#
+# Directories (packages) to skip
+#
+set skippack = (CVS admin aips doc include install test)
+#
+if ("$script" == "UPcasa") then
+  set ok = 1
+  exit 0
 endif
 #
 # Get type
