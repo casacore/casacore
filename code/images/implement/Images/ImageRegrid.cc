@@ -191,37 +191,22 @@ ImageInterface<T>* ImageRegrid<T>::regrid(ImageInterface<T>& imageData,
       throw(AipsError("In ImageRegrid::fitIntoStokesImage: images SPECTRAL shapes differ"));
     } 
 
-    Bool convergentCoords = True;   
 
-    Vector<Double> tRefVal = templateDirCoord.referenceValue();
-    Vector<Double> tInc = templateDirCoord.increment();
-    Vector<Double> tRefPix = templateDirCoord.referencePixel();
-
-    Vector<Double> dRefVal = dataDirCoord.referenceValue();
-    Vector<Double> dInc = dataDirCoord.increment();
-    Vector<Double> dRefPix = dataDirCoord.referencePixel();
-
-    if ( (tRefVal(0) != dRefVal(0)) ||  (tRefVal(1) != dRefVal(1)) ||
-	 (tInc(0) != dInc(0)) || (tInc(1) != dInc(1))) {
-      convergentCoords = False;
-    }
-
-    if (convergentCoords) {
+    if (convergentDirCoords(dataDirCoord, templateDirCoord)) {
       return ( fitIntoStokesImage(imageData) );
     } else {
-      throw(AipsError("hgeom not implemented yet"));
+      throw(AipsError("ImageRegrid::regrid() - hgeom not implemented yet"));
       // return ( hgeomStokesImage(imageData) );
     }
 
   } else {  // nonStokesImage conventions
-    throw(AipsError("generic case not implemented yet"));
+    throw(AipsError("ImageRegrid::regrid() - currently requires StokesImage assumptions"));
 
     /*
 
     Bool convergentCoords = True;
     // Need to test for convergentCoords, which will be a different test
     // than above
-
     if (convergentCoords) {        
       return ( fitIntoGenericImage(imageData) );
     } else {
@@ -230,6 +215,58 @@ ImageInterface<T>* ImageRegrid<T>::regrid(ImageInterface<T>& imageData,
     */
 
   }
+};
+
+
+template<class T>
+Bool
+ImageRegrid<T>::convergentDirCoords(const DirectionCoordinate& aaa,
+				    const DirectionCoordinate& bbb)
+{
+  // test for convergent coordinates
+  Bool isConvergent = True;   
+
+  Vector<Double> aRefVal = aaa.referenceValue();
+  Vector<Double> aInc = aaa.increment();
+  Vector<Double> aRefPix = aaa.referencePixel();
+  Vector<String> aAxisNames = aaa.worldAxisNames();
+  Matrix<Double> aLinearTransform = aaa.linearTransform();
+
+  Vector<Double> bRefVal = bbb.referenceValue();
+  Vector<Double> bInc = bbb.increment();
+  Vector<Double> bRefPix = bbb.referencePixel();
+  Vector<String> bAxisNames = bbb.worldAxisNames();
+  Matrix<Double> blinearTransform = bbb.linearTransform();
+  
+  if ( (aRefVal(0) != bRefVal(0)) ||  (aRefVal(1) != bRefVal(1)) ) {
+    isConvergent = False;
+  }
+  if ( (aInc(0) != bInc(0)) || (aInc(1) != bInc(1)) ) {
+    isConvergent = False;
+  }
+  if ( (aAxisNames(0) != bAxisNames(0)) || (aAxisNames(1) != bAxisNames(1)) ) {
+    isConvergent = False;
+  }
+  
+  uInt iax, iay, ibx, iby;
+  alinearTransform.shape(iax, iay);
+  blinearTransform.shape(ibx, iby);
+  if (iax != ibx || iay != iby) {
+      isConvergent = False;
+  }
+  for (uInt ix=0;ix<iax; ix++) {
+    for (uInt iy=0;iy<iay; iy++) {
+      if (alinearTransform(ix, iy) !=  blinearTransform(ix, iy)) {
+	isConvergent = False;
+      }
+    }
+  }
+
+  if ( (taxisNames(0) != daxisNames(0)) || (taxisNames(1) != daxisNames(1)) ) {
+    isConvergent = False;
+  }
+
+  return  isConvergent;
 };
 
 
