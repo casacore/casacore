@@ -4509,3 +4509,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSHistory.cc aips/implement/MeasurementSets/MSHistory.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSHistory.h aips/implement/MeasurementSets/MSHistory.h
 14 296 src mv aips/implement/MeasurementSets/NewMSHistoryColumns.cc aips/implement/MeasurementSets/MSHistoryColumns.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSHistoryColumns.h aips/implement/MeasurementSets/MSHistoryColumns.h
