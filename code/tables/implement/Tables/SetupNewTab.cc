@@ -1,5 +1,5 @@
 //# SetupNewTab.cc: Class to construct a new or scratch table
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -267,7 +267,8 @@ void SetupNewTableRep::handleUnbound()
 	    //# in the static DataManager map.
 	    //# Clone and add DataManager object.
 	    String dmType = coldes.dataManagerType();
-	    DataManager* dataMan = DataManager::getCtor(dmType) (dmType);
+	    String dmGroup = coldes.dataManagerGroup();
+	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup);
 	    DataManager* dataManPtr = getDataManager (*dataMan);
 	    delete dataMan;
 	    //# Bind the column.
