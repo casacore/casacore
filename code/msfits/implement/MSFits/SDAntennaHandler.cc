@@ -78,7 +78,7 @@ SDAntennaHandler &SDAntennaHandler::operator=(const SDAntennaHandler &other)
 				 NewMSAntenna::columnName(NewMSAntenna::NAME));
 	msAnt_p = new NewMSAntenna(*(other.msAnt_p));
 	AlwaysAssert(msAnt_p, AipsError);
-	msAntCols_p = new NewMSAntennaColumns(*(other.msAntCols_p));
+	msAntCols_p = new NewMSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	
 	rownr_p = other.rownr_p;
