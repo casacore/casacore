@@ -1,5 +1,5 @@
 //# TiledShape.cc: Define the shape and tile shape
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 
 
