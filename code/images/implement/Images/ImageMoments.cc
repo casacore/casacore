@@ -54,6 +54,7 @@
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/TiledStepper.h>
 #include <trial/Mathematics/AutoDiffIO.h>
                
 #include <strstream.h>
@@ -77,18 +78,29 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
    goodParameterStatus_p = True;
 
    if (setNewImage(image)) {
-      moments_p.resize(1);
-      moments_p(0) = INTEGRATED;
       momentAxisDefault_p = -10;
       momentAxis_p = momentAxisDefault_p;
+      moments_p.resize(1);
+      moments_p(0) = INTEGRATED;
+      kernelTypes_p.resize(0);
+      kernelWidths_p.resize(0);
+      nxy_p.resize(0);
+      range_p.resize(0);
+      smoothAxes_p.resize(0);
+      pixelIn_p.resize (pInImage_p->ndim());
+      worldOut_p.resize(pInImage_p->ndim());
+      peakSNR_p = 3;
+      stdDeviation_p = 0.0;
+      device_p = "";
+      out_p = "";
+      psfOut_p = "";
+      smoothOut_p = "";
       doWindow_p = False;
       doFit_p = False;
       doAuto_p = True;   
       doSmooth_p = False;
       noInclude_p = True;
       noExclude_p = True;
-      peakSNR_p = 3;
-      stdDeviation_p = 0.0;
    } else {
       goodParameterStatus_p = False;
    }
@@ -269,7 +281,8 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 
    momentAxis_p= momentAxisU;
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = findSpectralAxis(pInImage_p);
+     momentAxis_p = ImageUtilities::findSpectralAxis(pInImage_p->shape(),
+                                                     pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << "There is no spectral axis in this image -- specify the axis" << LogIO::POST;
        goodParameterStatus_p = False;
@@ -277,16 +290,23 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
      }
    } else {
       if (momentAxis_p < 0 || momentAxis_p > pInImage_p->ndim()-1) {
-         os_p << LogIO::SEVERE << "Illegal moment axis" << LogIO::POST;
+         os_p << LogIO::SEVERE << "Illegal moment axis; out of range" << LogIO::POST;
+         goodParameterStatus_p = False;
+         return False;
+      }
+      if (pInImage_p->shape()(momentAxis_p) <= 1) {
+         os_p << LogIO::SEVERE << "Illegal moment axis; it has only 1 pixel" << LogIO::POST;
          goodParameterStatus_p = False;
          return False;
       }
    }
+
    return True;
 }
 
 
 template <class T>
+
 Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 //
 // Assign the desired windowing and fitting methods
@@ -315,6 +335,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
    doWindow_p = Bool(ImageUtilities::inVector(WINDOW, methodU)!=-1);
    doFit_p    = Bool(ImageUtilities::inVector(FIT, methodU)!=-1);
    doAuto_p   = Bool(ImageUtilities::inVector(INTERACTIVE, methodU)==-1);
+
    return True;
 }
 
@@ -594,11 +615,17 @@ Bool ImageMoments<T>::createMoments()
    }
  
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = findSpectralAxis(pInImage_p);
+     momentAxis_p = ImageUtilities::findSpectralAxis(pInImage_p->shape(),
+                                                     pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << endl << "There is no spectral axis in this image -- specify "
 	 "the axis" << LogIO::POST;
        return False;
+     }
+     if (pInImage_p->shape()(momentAxis_p) <= 1) {
+        os_p << LogIO::SEVERE << "Illegal moment axis; it has only 1 pixel" << LogIO::POST;
+        goodParameterStatus_p = False;
+        return False;
      }
    }
 
@@ -636,22 +663,18 @@ Bool ImageMoments<T>::createMoments()
 
 
 // Fish out the coordinate systems and remove the collapsed moment pixel axis, 
-// leaving behind the world axis
-       
+// Tell the output image CoordinateSystem that when it makes conversions 
+// involving the removed axis, to use the average pixel of that axis.  
+
+   Int coordinate, axisInCoordinate;
+   pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, momentAxis_p);
+   Int momentWorldAxis = pInImage_p->coordinates().worldAxes(coordinate)(axisInCoordinate);
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
-      << pInImage_p->coordinates().worldAxisNames()(momentAxis_p) << LogIO::POST;
+        << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
-
    uInt removeAxis = momentAxis_p;
-   outImageCoord.removePixelAxis(removeAxis, 1.0);
-
-
-// Resize the moment axis coordinate transformation arrays
-
-   worldOut_p.resize(pInImage_p->ndim());
-   pixelIn_p.resize (pInImage_p->ndim());
-
+   outImageCoord.removePixelAxis(removeAxis, pInImage_p->shape()(momentAxis_p)/2.0);
 
 
 // Create a vector, each element of which points to the appropriate
@@ -661,11 +684,11 @@ Bool ImageMoments<T>::createMoments()
    selMom = 0;
     
 
-// Create array of pointers for output images
+// Create array of pointers for output images and create shape array
 
    PagedImage<T>* outPt[NMOMENTS];
    for (Int i=0; i<NMOMENTS; i++)  outPt[i] = 0;
-   
+   IPosition outImageShape(pInImage_p->ndim()-1);   
 
 // Loop over the user specified moments and assign output image pointers and the
 // selection array
@@ -675,15 +698,20 @@ Bool ImageMoments<T>::createMoments()
    Bool doMedianV = False;
    Bool doAbsDev = False;
 
+
    for (i=0; i<moments_p.nelements(); i++) {
       selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), i);
    
 // Create output image(s)
 
-      IPosition outImageShape(pInImage_p->shape());
-      outImageShape(momentAxis_p) = 1;
-      const String in = pInImage_p->name();   
+      for (Int j=0,k=0; j<pInImage_p->ndim(); j++) {
+        if (j != momentAxis_p) {
+           outImageShape(k) = pInImage_p->shape()(j);
+           k++;
+        }
+      }
 
+      const String in = pInImage_p->name();   
       if (moments_p.nelements() == 1) {
          if (out_p.empty()) out_p = in+suffix;
          outPt[i] = new PagedImage<T>(outImageShape, outImageCoord, out_p);
@@ -738,18 +766,25 @@ Bool ImageMoments<T>::createMoments()
    }
 
 
-// Set up image iterator 
+// Set up image iterator.  Use the tiledStepper navigator because it knows 
+// the shape of tiles and will return the profiles in the optimal order
    
    IPosition cursorShape(pInImage_p->ndim(),1);
    cursorShape(momentAxis_p) = pInImage_p->shape()(momentAxis_p);   
-   RO_LatticeIterator<T> imageIterator(*pInImage_p, cursorShape);
+   TiledStepper imageNavigator (pInImage_p->shape(), 
+                                pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
+                                momentAxis_p);
+   RO_LatticeIterator<T> imageIterator(*pInImage_p, imageNavigator);
    
       
 // Set up smoothed image iterator and navigator
          
    RO_LatticeIterator<T>* pSmoothedImageIterator = 0;
    if (pSmoothedImage) {
-      pSmoothedImageIterator = new RO_LatticeIterator<T>(*pSmoothedImage, cursorShape);
+      TiledStepper smoothedImageNavigator (pSmoothedImage->shape(),
+                       pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels()),
+                       momentAxis_p);
+      pSmoothedImageIterator = new RO_LatticeIterator<T>(*pSmoothedImage, smoothedImageNavigator);
    }
 
 
@@ -757,7 +792,10 @@ Bool ImageMoments<T>::createMoments()
          
    RO_LatticeIterator<Bool>* pMaskIterator = 0;
    if (pMask) {
-      pMaskIterator = new RO_LatticeIterator<Bool>(*pMask, cursorShape);
+      TiledStepper maskNavigator (pMask->shape(),
+                                  pMask->niceCursorShape(pMask->maxPixels()),
+                                  momentAxis_p);
+      pMaskIterator = new RO_LatticeIterator<Bool>(*pMask, maskNavigator);
    }
             
             
@@ -782,13 +820,12 @@ Bool ImageMoments<T>::createMoments()
    
    Vector<T> calcMoments(NMOMENTS);   
    calcMoments = 0.0;
-   String momAxisType = pInImage_p->coordinates().worldAxisNames()(momentAxis_p);
+   String momAxisType = pInImage_p->coordinates().worldAxisNames()(momentWorldAxis);
    
 
 // TESTING KS method
 
    const Double ks = 0.03;
-
 
 
 // Open plot device
@@ -806,7 +843,6 @@ Bool ImageMoments<T>::createMoments()
       }
    }        
 
-
       
 // Iterate through image and do all the wonderful things
 
@@ -814,8 +850,8 @@ Bool ImageMoments<T>::createMoments()
    while (!imageIterator.atEnd()) {
 
 // Set pixel values of all axes (used for coordinate transformation)
-// to be start of cursor array.  The values for the moment axis 
-// are set in getMomentCoord
+// to be start of cursor array.  The desired value for the moment axis 
+// is set in getMomentCoord
 
       for (i=0; i<pixelIn_p.nelements(); i++) {pixelIn_p(i) = imageIterator.position()(i);}
 
@@ -854,12 +890,18 @@ Bool ImageMoments<T>::createMoments()
                   doMedianI, doMedianV, doAbsDev);
       }     
 
-// Fill output images
+// Fill output images; set position of output image (has one
+// axis removed) and assign value
 
-      IPosition outPos(imageIterator.position()); 
-      outPos(momentAxis_p) = 0;
+      IPosition outPos(outImageShape.nelements());
+      for (Int j=0,k=0; j<pInImage_p->ndim(); j++) {
+        if (j != momentAxis_p) {
+           outPos(k) = imageIterator.position()(j);
+           k++;
+        }
+      }
       for (i=0; i<moments_p.nelements(); i++) (*(outPt[i]))(outPos) = calcMoments(selMom(i));
-      
+
 
 // Increment iterators
                   
@@ -1804,27 +1846,6 @@ void ImageMoments<T>::drawWindow (const Vector<Int>& window)
    cpgqwin (&x1, &x2, &y1, &y2);
    drawLoc (float(window(0)), y1, y2);
    drawLoc (float(window(1)), y1, y2);
-}
-
-
-template <class T> 
-Int ImageMoments<T>::findSpectralAxis (const ImageInterface<T>* pImage) 
-//
-// Return the index of the first axis in an image which is spectral
-//   
-// Input:
-//   pImage   Pointer to image
-// Output:
-//   the axis number by value.  -1 if there isn't one.
-//
-{
- 
-   for (Int i=0; i<pImage->shape().nelements(); i++) {
-      String tString = pImage->coordinates().worldAxisNames()(i);
-      tString.upcase();
-      if (tString.contains("FREQ") || tString.contains("VELO")) return i;
-   }
-   return -1;
 }
 
 
@@ -2781,7 +2802,7 @@ void ImageMoments<T>::makeMask (gpp_ArrayLatticeBool* pMask,
          maskIt++;
       }
    } else {
-      while (!imageIt.atEnd()) {      
+      while (!imageIt.atEnd()) {
          Int orig = imageIt.vectorCursor().origin()(0);
          for (Int i=0; i<n1; i++) {
             datum = imageIt.vectorCursor()(i+orig);
