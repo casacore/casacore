@@ -213,7 +213,7 @@ private:
   Int getCell(Int x, Int y) const;             
   Int getCell(Int x, Int y, Int z) const;    
   Int getCell(const IPosition& coord) const;
-// </endgroup>
+// </group>
 
 // Assigns the specified cell to the specified component
 // <group>
