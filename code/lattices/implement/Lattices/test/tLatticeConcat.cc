@@ -59,6 +59,8 @@ void check4 (const Slicer& sl, MaskedLattice<Float>& ml1,
              Array<Float>& ml2);
 void check5 (const Slicer& sl, MaskedLattice<Float>& ml1, 
              Array<Bool>& ml2);
+void check6 (uInt axis, Lattice<Bool>& ml,
+             Lattice<Bool>& ml1, Lattice<Bool>& ml2);
 
 void makeMask (ImageInterface<Float>& a, Bool maskValue, Bool set);
 
@@ -651,6 +653,39 @@ int main() {
      }
 
 
+// pixelMask tests
+
+     {
+         cout << "Testing pixelMask" << endl;
+         LatticeConcat<Float> lc (0);
+         lc.setLattice(ml1);
+         lc.setLattice(ml2);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
+         Bool ok;
+         try {
+            Lattice<Bool>& pixelMask = lc.pixelMask();
+            ok = False;
+         } catch (AipsError x) {
+            ok = True;
+         } end_try;
+         if (!ok) {
+            throw (AipsError("pixelMask forced failure did not work - this was unexpected"));
+         }
+     }
+     {
+         LatticeConcat<Float> lc (0);
+         lc.setLattice(im1);
+         lc.setLattice(im2);
+//
+         Lattice<Bool>& mask1 = im1.pixelMask();
+         mask1.set(True);
+         Lattice<Bool>& mask2 = im2.pixelMask();
+         mask2.set(False);
+//
+         AlwaysAssert(lc.hasPixelMask(), AipsError);
+         Lattice<Bool>& pixelMask = lc.pixelMask();
+         check6(0, pixelMask, mask1, mask2);
+     }
 
 // Test lock etc
 
@@ -840,6 +875,26 @@ void check5 (const Slicer& sl, MaskedLattice<Float>& ml1,
              Array<Bool>& ml2) 
 {
    AlwaysAssert(allEQ(ml1.getMaskSlice(sl), ml2), AipsError);
+}
+
+void check6 (uInt axis, Lattice<Bool>& ml,
+             Lattice<Bool>& ml1, Lattice<Bool>& ml2)
+{
+   IPosition shape1 = ml1.shape();
+   IPosition shape2 = ml2.shape();
+//
+   IPosition blc(2,0,0);
+   AlwaysAssert(allEQ(ml1.get(), ml.getSlice(blc,shape1)), AipsError);
+//
+   if (axis==0) {
+      blc(0) += shape1(0);
+      AlwaysAssert(allEQ(ml2.get(), ml.getSlice(blc,shape2)), AipsError);      
+   } else if (axis==1) {
+      blc(1) += shape1(1);
+      AlwaysAssert(allEQ(ml2.get(), ml.getSlice(blc,shape2)), AipsError);
+   } else {
+      AlwaysAssert(axis==0||axis==1, AipsError);
+   }
 }
 
 
