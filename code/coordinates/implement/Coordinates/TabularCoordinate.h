@@ -31,6 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
 #include <trial/Coordinates/Coordinate.h>
 
 template<class Domain, class Range> class Interpolate1D;

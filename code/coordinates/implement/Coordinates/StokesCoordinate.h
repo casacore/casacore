@@ -33,6 +33,7 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Containers/Block.h>
+#include <aips/Arrays/Vector.h>
 
 
 // <summary>
