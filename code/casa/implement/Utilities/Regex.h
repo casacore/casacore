@@ -1,5 +1,5 @@
 //# Regex.h: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,9 @@
 #endif
 
 // Forward declarations.
+#if !defined(__KCC)
+imported class ostream;
+#endif
 class  String;
 class  AipsIO;
 struct re_pattern_buffer;       // defined elsewhere
@@ -286,7 +289,6 @@ public:
     int OK() const;
     
     // Write as ASCII.
-   
     friend ostream& operator<< (ostream&, const Regex&);
     
     // Write into AipsIO.
