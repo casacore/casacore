@@ -1,5 +1,5 @@
 //# TableColumn.cc: Const access to a table column
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Array.h>
+
 
 ROTableColumn::ROTableColumn ()
 : baseTabPtr_p(0),
@@ -92,6 +93,8 @@ void ROTableColumn::throwIfNull() const
 const ColumnDesc& ROTableColumn::columnDesc() const
     { return baseColPtr_p->columnDesc(); }
 
+Table ROTableColumn::table() const
+    { return Table (baseTabPtr_p, False); }
 
 void ROTableColumn::checkRowNumber (uInt rownr) const
 {
