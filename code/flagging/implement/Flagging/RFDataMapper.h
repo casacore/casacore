@@ -91,7 +91,7 @@ public:
   // uses mapper to compute a correlations mask
   RFlagWord corrMask (const VisibilityIterator &vi);
   
-  // point the datamapper at a visbuffer
+  // point the datamapper at a visbuffer - called for every new buffer
   void  setVisBuffer (VisBuffer &vb);
 
   // returns description
@@ -125,6 +125,11 @@ protected:
   Float AbsV_RowMapper (uInt);
   Float AbsW_RowMapper (uInt);
   Float UVD_RowMapper (uInt);
+  Float UVA_RowMapper (uInt);
+  Float HA_RowMapper (uInt);
+  
+// required by the HA mapper - sin(declination) of phase center; 
+  Double sin_dec;
 };
 
 inline RFDataMapper::MapperType RFDataMapper::type ()
