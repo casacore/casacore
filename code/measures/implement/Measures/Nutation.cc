@@ -177,7 +177,8 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
 void Nutation::calcNut(Double t, Bool calcDer) {
   // Calculate the nutation value at epoch
   Bool renew(False);
-  if (!nearAbs(t, checkEpoch_p,
+  if ((calcDer && t != checkEpoch_p) ||	
+      !nearAbs(t, checkEpoch_p,
 	       AipsrcValue<Double>::get(Nutation::myInterval_reg))) {
     checkEpoch_p = t;
     renew = True;
@@ -325,7 +326,9 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     }
   };
   if ((renew && calcDer) ||
-      (!renew && t != checkEpoch_p && checkEpoch_p != checkDerEpoch_p)) {
+      (!renew && calcDer && checkEpoch_p != checkDerEpoch_p) ||
+      (!renew && !calcDer && t != checkEpoch_p &&
+       checkEpoch_p != checkDerEpoch_p)) {
     t = checkEpoch_p;
     checkDerEpoch_p = t;
     Double dEps = 0;
