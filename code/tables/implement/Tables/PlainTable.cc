@@ -365,13 +365,19 @@ void PlainTable::syncTable()
 			  TableLock(TableLock::PermanentLocking),
 			  False, 1);
     PlainTable* tab = (PlainTable*)btab;
+    TableAttr defaultAttr (tableName(), isWritable(), lockOptions());
     // Now check if all columns are the same.
     // Update the column keywords.
-    colSetPtr_p->syncColumns (*tab->colSetPtr_p);
+    colSetPtr_p->syncColumns (*tab->colSetPtr_p, defaultAttr);
+    // Adjust the attributes of subtables.
     // Update the table keywords.
-    keywordSet() = tab->keywordSet();
+    TableRecord& oldKeySet = keywordSet();
+    TableRecord& newKeySet = tab->keywordSet();
+    newKeySet.setTableAttr (oldKeySet, defaultAttr);
+    oldKeySet = newKeySet;
     delete tab;
 }
+
 
 void PlainTable::unlock()
 {

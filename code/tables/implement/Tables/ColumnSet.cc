@@ -841,7 +841,8 @@ void ColumnSet::setTableChanged()
     plainTablePtr_p->setTableChanged();
 }
 
-void ColumnSet::syncColumns (const ColumnSet& other)
+void ColumnSet::syncColumns (const ColumnSet& other,
+			     const TableAttr& defaultAttr)
 {
     uInt ncol = colMap_p.ndefined();
     if (other.colMap_p.ndefined() != ncol) {
@@ -856,6 +857,11 @@ void ColumnSet::syncColumns (const ColumnSet& other)
 			       "changed the description of column " +
 		               thiscol->columnDesc().name()));
 	}
-	thiscol->keywordSet() = othercol->keywordSet();
+	// Adjust the attributes of subtables.
+	// Update the table keywords.
+	TableRecord& oldKeySet = thiscol->keywordSet();
+	TableRecord& newKeySet = othercol->keywordSet();
+	newKeySet.setTableAttr (oldKeySet, defaultAttr);
+	oldKeySet = newKeySet;
     }
 }
