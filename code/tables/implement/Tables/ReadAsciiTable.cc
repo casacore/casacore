@@ -589,35 +589,35 @@ void ReadAsciiTable::handleScalar (char* string1, Int lineSize, char* first,
   switch (type) {
   case RATBool:
     {
-      Bool value;
+      Bool value = False;
       getValue (string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar (rownr, value);
     }
     break;
   case RATShort:
     {
-      Short value;
+      Short value = 0;
       getValue (string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar (rownr, value);
     }
     break;
   case RATInt:
     {
-      Int value;
+      Int value = 0;
       getValue (string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar (rownr, value);
     }
     break;
   case RATFloat:
     {
-      Float value;
+      Float value = 0;
       getValue (string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar (rownr, value);
     }
     break;
   case RATDouble:
     {
-      Double value;
+      Double value = 0;
       getValue (string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar (rownr, value);
     }
