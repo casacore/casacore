@@ -129,6 +129,11 @@ public:
 		    const Table::TableOption = Table::NewNoReplace,
 		    Bool useMiriadSM = False);
 
+    // This version  of the fullTable return a Memory based table
+    // Its recommended if its being used as a temporary
+
+    Table fullTable();
+
     //	Get an appropriate TableDesc (this is the same TableDesc used to 
     // construct any Table objects returned by this class.
     const TableDesc& getDescriptor();
