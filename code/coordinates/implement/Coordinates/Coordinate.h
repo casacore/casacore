@@ -108,6 +108,9 @@ public:
 	SPECTRAL, 
 	// A Stokes axis.
 	STOKES, 
+	// A one-dimensional Cooordinate system, usually created from a table
+        // although it can also be purely linear.
+	TABULAR,
 	// A coordinate system (a collection of coordinates).
 	COORDSYS };
 
