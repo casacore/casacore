@@ -1,5 +1,5 @@
 //# UnitMap.h: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -295,45 +295,56 @@ public:
   static const SimpleOrderedMap<String, UnitName> &giveUser();
   static const SimpleOrderedMap<String, UnitVal> &giveCache();
   // </group>
-private:
-//# Constructors
-// Copy constructor (not implemented)
-    UnitMap(const UnitMap &other);
 
-//# Operators
-// Copy assignment (not implemented)
-    UnitMap &operator=(const UnitMap &other);
+ private:
+  //# Constructors
+  // Copy constructor (not implemented)
+  UnitMap(const UnitMap &other);
+  
+  //# Operators
+  // Copy assignment (not implemented)
+  UnitMap &operator=(const UnitMap &other);
+  
+  //# Data members
+  
+  // Decimal prefix list
+  static SimpleOrderedMap<String, UnitName> *mapPref;
+  
+  // Defining SI unit list
+  static SimpleOrderedMap<String, UnitName> *mapDef;
+  
+  // SI unit list
+  static SimpleOrderedMap<String, UnitName> *mapSI;
+  
+  // Customary list
+  static SimpleOrderedMap<String, UnitName> *mapCust;
+  
+  // User defined unit list
+  static SimpleOrderedMap<String, UnitName> *mapUser;
+  
+  // Cached list
+  static SimpleOrderedMap<String, UnitVal> *mapCache;
+  
+  // FITS unit list inclusion
+  static Bool doneFITS;
+  
+  //# member functions
+  // Get the name of a FITS unit
+  static Bool getNameFITS(UnitName *&name, uInt which);
+  // Get the belonging unit to a FITS unit
+  static const String &getStringFITS(uInt which);
+  // Initialise the static map
+  static void initUM();
+  // Bits and pieces of initUM() to get compilation speed improved
+  // <group>
+  static void initUMPrefix();
+  static void initUMSI1();
+  static void initUMSI2();
+  static void initUMCust1();
+  static void initUMCust2();
+  static void initUMCust3();
+  // </group>
 
-//# Data members
-
-// Decimal prefix list
-    static SimpleOrderedMap<String, UnitName> *mapPref;
-
-// Defining SI unit list
-    static SimpleOrderedMap<String, UnitName> *mapDef;
-
-// SI unit list
-    static SimpleOrderedMap<String, UnitName> *mapSI;
-
-// Customary list
-    static SimpleOrderedMap<String, UnitName> *mapCust;
-
-// User defined unit list
-    static SimpleOrderedMap<String, UnitName> *mapUser;
-
-// Cached list
-    static SimpleOrderedMap<String, UnitVal> *mapCache;
-
-// FITS unit list inclusion
-    static Bool doneFITS;
-
-//# Functions
-// Get the name of a FITS unit
-    static Bool getNameFITS(UnitName *&name, uInt which);
-// Get the belonging unit to a FITS unit
-    static const String &getStringFITS(uInt which);
-// Initialise the static map
-    static void initUM();
 };
 
 //# Inline Implementations
