@@ -148,7 +148,11 @@
 #       Try to deduce the architecture.
         if {~ `{uname -s} SunOS} {
            if {~ `{uname -r} 5.*} {
-              a_arch=sun4sol
+              if {test -f $a_root/solaris/makedefs} {
+                 a_arch=solaris
+              } {
+                 a_arch=sun4sol
+              }
            } {
               a_arch=sun4
            }
