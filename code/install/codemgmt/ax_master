@@ -2463,3 +2463,5 @@
 09 401 src rm trial/implement/ComponentModels/PointComponent.cc
 09 401 src rm trial/implement/ComponentModels/GaussianComponent.h
 09 401 src rm trial/implement/ComponentModels/GaussianComponent.cc
+09 401 src rm trial/implement/ComponentModels/SIPointCompRep.h
+09 401 src rm trial/implement/ComponentModels/SIPointCompRep.cc
