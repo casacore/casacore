@@ -448,6 +448,12 @@ int main()
          if (!lc.toWorld(world, pixel)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
+
+// Adjust coordinate units to make test harder
+
+         Vector<String> units = lc.worldAxisUnits();
+         units.set("KHz");
+         lc.setWorldAxisUnits(units, True);
 //
          Double pixel2;
          if (!lc.toPixel(pixel2, world)) {
@@ -472,7 +478,7 @@ int main()
 
          Vector<String> units = lc.worldAxisUnits();
          units.set("KHz");
-         lc.setWorldAxisUnits(units);
+         lc.setWorldAxisUnits(units, True);
 //
          Double pixel2;
          if (!lc.toPixel(pixel2, world)) {
