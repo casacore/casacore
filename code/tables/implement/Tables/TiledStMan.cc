@@ -263,7 +263,6 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 	    break;
 	}
     }
-    cout << "0 " << bestShape << endl;
     // Optimize the tile shape by recalculating tile length for the same
     // number of tiles.
     for (i=0; i<nrdim; i++) {
