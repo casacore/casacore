@@ -219,8 +219,8 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 	    record1 = record;
 	} catch (AipsError x) {                    // not conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << "#X#" << x.getMesg() << endl
-		 << "<<< End of assertion error message." << endl;
+		 << x.getMesg() << endl
+		 << "<<<" << endl;
 	} end_try;
     }
     (*sub1).define (0, float(4));
@@ -302,8 +302,8 @@ void doIt (Bool doExcp)
 	} catch (AipsError x) {
                                                    // invalid type
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << "#X#" << x.getMesg() << endl
-		 << "<<< End of assertion error message." << endl;
+		 << x.getMesg() << endl
+		 << "<<<" << endl;
 	} end_try;
 	RecordDesc rd1(rd);
 	rd1.addField ("TpTable", TpTable);
@@ -375,8 +375,8 @@ void doIt (Bool doExcp)
 	    record2a = record2b;
 	} catch (AipsError x) {           // fixed; non-conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << "#X#" << x.getMesg() << endl
-		 << "<<< End of assertion error message." << endl;
+		 << x.getMesg() << endl
+		 << "<<<" << endl;
 	} end_try;
     }
     
@@ -490,8 +490,8 @@ void doIt (Bool doExcp)
 	    record.defineRecord (record.fieldNumber ("SubRecord"), subrec1);
 	} catch (AipsError x) {              // fixed; non-conforming
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << "#X#" << x.getMesg() << endl
-		 << "<<< End of assertion error message." << endl;
+		 << x.getMesg() << endl
+		 << "<<<" << endl;
 	} end_try;
     }
     Record subrec1a;
@@ -518,6 +518,22 @@ void doIt (Bool doExcp)
     check (record, -1234566, 34);
     savrec2 = record;
     check (savrec2, -1234566, 34);
+
+    // Clone the record.
+    RecordInterface* recClone = record.clone();
+    check (Record(*recClone), -1234566, 34);
+    *intField += 11;
+    *arrayintField = -1234555;
+    Record reccp (record);
+    check (reccp, -1234555, 34);
+    check (Record(*recClone), -1234566, 34);
+    reccp.assign (*recClone);
+    check (reccp, -1234566, 34);
+    check (Record(*recClone), -1234566, 34);
+    delete recClone;
+    *intField -= 11;
+    *arrayintField = -1234566;
+    check (record, -1234566, 34);
 
     // Change some more fields and check if the original is kept intact
     // (thus if copy-on-write works fine). This also checks if
@@ -635,8 +651,8 @@ void doIt (Bool doExcp)
 	    record.merge (record, RecordInterface::SkipDuplicates);
 	} catch (AipsError x) {              // merge of itself
 	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << "#X#" << x.getMesg() << endl
-		 << "<<< End of assertion error message." << endl;
+		 << x.getMesg() << endl
+		 << "<<<" << endl;
 	} end_try;
 	try {
 	    record.mergeField (record5, "TpBool",
