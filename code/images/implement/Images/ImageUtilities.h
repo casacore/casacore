@@ -120,12 +120,12 @@ public:
    static Bool setNxy (Vector<Int>& nxy,
                        ostream& os);
 
-// Return a Scratch Table where the Table name was constructed from the directory 
-// of a given file, a specified string and a unique number appended to the string
-// and worked out by this function.  This can be handy to generate, say, a scratch 
-// storage image (maybe it is a <src>PagedArray</src>) in the same directory as the 
-// image being traversed. 
-   static Table setScratchTable (const String &inFileName, const String &tableName);
+// Return a Scratch Table where the Table name is constructed from the concatenation
+// of three strings.  These are 1) the first path with the specified available space in Mb given
+// by the entry <src>user.directories.work</src> in the user's <src>.aipsrc</src> 
+// resource file, 2) a specified string and 3) a unique number 
+// worked out by this function.  
+   static Table setScratchTable (const String &tableName, const uInt size=0);
 
 // A storage image is used to accumulate information as a function of the display
 // axes as an image is iterated through.  This function sets the storage image shape 

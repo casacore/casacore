@@ -37,6 +37,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
+#include <aips/Tasking/AppInfo.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 
@@ -314,19 +315,18 @@ Bool ImageUtilities::setNxy (Vector<Int>& nxy,
    return True;
 }
 
-
-Table ImageUtilities::setScratchTable (const String &inFileName, 
-                                       const String &name)
+Table ImageUtilities::setScratchTable (const String &name,
+                                       const uInt size)
 //
-// Return a Scratch Table where the Table names was constructed from 
-// the directory of a given file,  a specified string and a unique 
-// number worked out by this function.
+// Return a Scratch Table where the Table name is constructed from the concatenation
+// of three strings.  These are 1) the first path with the specified 
+// available space in Mb given by the entry user.directories.work in the user's 
+// .aipsrc resource file, 2) a specified string and 3) a unique number 
+// worked out by this function.  
 //
 // Scratch Tables are deleted when destructed
 //
 // Inputs
-//   inFileName   The directory in which this file lives will be used
-//                for the directory of the output Table
 //   name         The name of the Table will be the directory/name_NNN
 //                where NNN is a unique number
 //
@@ -340,10 +340,10 @@ Table ImageUtilities::setScratchTable (const String &inFileName,
 //   the table name would be "mydata/Scratch_NNN"
 //
 {
-   File inputImageName(inFileName);
-   const String path = inputImageName.path().dirName() + "/";
-      
-   Path fileName = File::newUniqueName(path, name);
+   String where = AppInfo::workDirectory(size);
+   Path tmp(where);
+   where = tmp.expandedName();
+   Path fileName = File::newUniqueName(where, name);
    SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
    return Table(setup);
 }
