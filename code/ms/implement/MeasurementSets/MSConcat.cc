@@ -27,6 +27,7 @@
 
 #include <trial/MeasurementSets/MSConcat.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
@@ -414,7 +415,15 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
 
   const ROMSDataDescColumns otherDDCols(otherDD);
   MSDataDescColumns& ddCols = dataDescription();
-  const Quantum<Double> freqTol(0.01, "Hz");
+  // Get a guess at the tolerance
+  Double tolerance;
+  {
+    ROArrayColumn<Double> frequencies(spw,
+		    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
+    Vector<Double> frequ=frequencies(0);
+    tolerance=max(frequ)/1.0e7;
+  }
+  const Quantum<Double> freqTol(tolerance, "Hz");
 
   const String& spwIdxName = 
     MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID);
