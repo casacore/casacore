@@ -1216,8 +1216,8 @@ EOT
      case $ARCH in
 	sun*|linux*)
            # put code here to check LD_LIBRARY_PATH and other obvious places
-	   # to see if you can find relevant libpgplot and libtcl .so's.
-	   OLDIFS="$IFS"; IFS="$IFS:"; pgloc=""; tcloc=""
+	   # to see if you can find relevant libpgplot and possibly other .so's
+	   OLDIFS="$IFS"; IFS="$IFS:"; pgloc=""; tcloc="dummy"
 	   # first see if we can find it in existing LD_LIBRARY_PATH
 	   search="$LD_LIBRARY_PATH"
 	   if [ "$search" != "" ] ; then
@@ -1228,21 +1228,21 @@ EOT
 		       [ "$tcloc" != "" ] && break
 		    fi
 	   	 fi
-	   	 if [ -f $i/libtcl7.6.so ] ; then
-		    if [ "$tcloc" = "" ] ; then
-		       tcloc=$i
-		       [ "$pgloc" != "" ] && break
-		    fi
-	   	 fi
+# 	   	 if [ -f $i/libtcl7.6.so ] ; then
+# 		    if [ "$tcloc" = "" ] ; then
+# 		       tcloc=$i
+# 		       [ "$pgloc" != "" ] && break
+# 		    fi
+# 	   	 fi
 	      done
 	   fi
 	   if [ \( "$tcloc" != "" \) -a \( "$pgloc" != "" \) ] ; then
 	      echo "# found LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >>$script
 	      echo "# on `date` and assumed it was valid." >>$script
-	      echo "# Found both libpgplot.so and libtcl7.6.so in it" >>$script
-	   elif [ "$tcloc" != "" ] ; then
-	      echo "# configure found $tcloc/libtcl7.6.so on `date`" >>$script
-	      echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$tcloc; export LD_LIBRARY_PATH" >>$script
+	      echo "# Found libpgplot.so in it" >>$script
+# 	   elif [ "$tcloc" != "" ] ; then
+# 	      echo "# configure found $tcloc/libtcl7.6.so on `date`" >>$script
+# 	      echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$tcloc; export LD_LIBRARY_PATH" >>$script
 	   elif [ "$pgloc" != "" ] ; then
 	      echo "# configure found $pgloc/libpgplot.so on `date`" >>$script
 	      echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$pgloc; export LD_LIBRARY_PATH" >>$script
@@ -1256,12 +1256,12 @@ EOT
 		       [ "$tcloc" != "" ] && break
 		    fi
 		 fi
-		 if [ -f $i/libtcl7.6.so ] ; then
-		    if [ "$tcloc" = "" ] ; then
-		       tcloc=$i
-		       [ "$pgloc" != "" ] && break
-		    fi
-		 fi
+# 		 if [ -f $i/libtcl7.6.so ] ; then
+# 		    if [ "$tcloc" = "" ] ; then
+# 		       tcloc=$i
+# 		       [ "$pgloc" != "" ] && break
+# 		    fi
+# 		 fi
 	      done
 	      pgtc=0
 	      if [ "$LD_LIBRARY_PATH" = "" ] ; then
@@ -1284,16 +1284,16 @@ EOT
 		 echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$AIPSARCH/lib; export LD_LIBRARY_PATH" >>$script
 		 pgtc=1
 	      fi
-	      if [ "$tcloc" != "" ]
-	      then
-	         echo "# configure found $tcloc/libtcl7.6.so on `date`" >>$script
-	         echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$tcloc; export LD_LIBRARY_PATH" >>$script
-	      elif [ $pgtc != 1 ]
-              then
-		 echo "# configure failed to find libtcl anywhere..." >>$script
-		 echo "# falling back on installation version" >>$script
-		 echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$AIPSARCH/lib; export LD_LIBRARY_PATH" >>$script
-	      fi
+# 	      if [ "$tcloc" != "" ]
+# 	      then
+# 	         echo "# configure found $tcloc/libtcl7.6.so on `date`" >>$script
+# 	         echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$tcloc; export LD_LIBRARY_PATH" >>$script
+# 	      elif [ $pgtc != 1 ]
+#               then
+# 		 echo "# configure failed to find libtcl anywhere..." >>$script
+# 		 echo "# falling back on installation version" >>$script
+# 		 echo "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$AIPSARCH/lib; export LD_LIBRARY_PATH" >>$script
+# 	      fi
 	      
 	   fi
 		 
