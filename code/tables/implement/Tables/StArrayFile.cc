@@ -338,7 +338,9 @@ void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr,
 		iofil_p->read (data->length(), (char*)(data->chars()));
 		//# Do some kind of dirty trick to set the trailing zero.
 		//# The cast is needed because String::chars() returns const.
+#ifdef USE_OLD_STRING
 		((char*)(data->chars()))[l] = '\0';
+#endif
 	    }
 	    data++;
 	}
