@@ -64,6 +64,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       cjonesOK_p=other.cjonesOK_p;
       fieldIdOK_p=other.fieldIdOK_p;
       flagOK_p=other.flagOK_p;
+      flagCubeOK_p=other.flagCubeOK_p;
       flagRowOK_p=other.flagRowOK_p;
       freqOK_p=other.freqOK_p;
       phaseCenterOK_p=other.phaseCenterOK_p;
@@ -73,7 +74,9 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       timeOK_p=other.timeOK_p;
       uvwOK_p=other.uvwOK_p;
       visOK_p=other.visOK_p;
+      visCubeOK_p=other.visCubeOK_p;
       weightOK_p=other.weightOK_p;
+      weightMatOK_p=other.weightMatOK_p;
     }
     if (nChannelOK_p) nChannel_p=other.nChannel_p;
     if (nRowOK_p) nRow_p=other.nRow_p;
@@ -97,6 +100,10 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
     if (flagOK_p) {
       flag_p.resize(other.flag_p.shape()); 
       flag_p=other.flag_p;
+    }
+    if (flagCubeOK_p) {
+      flagCube_p.resize(other.flagCube_p.shape()); 
+      flagCube_p=other.flagCube_p;
     }
     if (flagRowOK_p) {
       flagRow_p.resize(other.flagRow_p.nelements());
@@ -125,9 +132,17 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       visibility_p.resize(other.visibility_p.shape());
       visibility_p=other.visibility_p;
     }
+    if (visCubeOK_p) {
+      visCube_p.resize(other.visCube_p.shape());
+      visCube_p=other.visCube_p;
+    }
     if (weightOK_p) {
       weight_p.resize(other.weight_p.nelements()); 
       weight_p=other.weight_p;
+    }
+    if (weightMatOK_p) {
+      weightMat_p.resize(other.weightMat_p.nelements()); 
+      weightMat_p=other.weightMat_p;
     }
   }
   return *this;
@@ -175,6 +190,7 @@ void VisBuffer::invalidate()
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = False;
+  flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
 }
 
 void VisBuffer::validate()
@@ -182,6 +198,7 @@ void VisBuffer::validate()
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = True;
+  flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
 }
 
 void VisBuffer::freqAverage() 
@@ -237,6 +254,8 @@ Vector<Int>& VisBuffer::fillAnt2()
 { ant2OK_p=True; return visIter_p->antenna2(antenna2_p);}
 Vector<SquareMatrix<Complex,2> >& VisBuffer::fillCjones()
 { cjonesOK_p=True; return visIter_p->CJones(cjones_p); }
+Vector<Int>& VisBuffer::fillCorrType()
+{ corrTypeOK_p=True; return visIter_p->corrType(corrType_p); }
 
 Int& VisBuffer::fillFieldId()
 { 
@@ -247,6 +266,8 @@ Int& VisBuffer::fillFieldId()
 
 Matrix<Bool>& VisBuffer::fillFlag()
 { flagOK_p=True; return visIter_p->flag(flag_p); }
+Cube<Bool>& VisBuffer::fillFlagCube()
+{ flagCubeOK_p=True; return visIter_p->flag(flagCube_p); }
 Vector<Bool>& VisBuffer::fillFlagRow()
 { flagRowOK_p=True; return visIter_p->flagRow(flagRow_p);}
 Vector<Double>& VisBuffer::fillFreq()
@@ -260,7 +281,6 @@ Int& VisBuffer::fillPolFrame()
   polFrame_p=visIter_p->polFrame();
   return polFrame_p;
 }
-//Vector<Int>& VisBuffer::fillPolTypes()
 Vector<Float>& VisBuffer::fillSigma()
 { sigmaOK_p=True; return visIter_p->sigma(sigma_p);}
 
@@ -277,8 +297,12 @@ Vector<RigidVector<Double,3> >& VisBuffer::filluvw()
 { uvwOK_p=True; return visIter_p->uvw(uvw_p);}
 Matrix<CStokesVector>& VisBuffer::fillVis()
 { visOK_p=True; return visIter_p->visibility(visibility_p);}
+Cube<Complex>& VisBuffer::fillVisCube()
+{ visCubeOK_p=True; return visIter_p->visibility(visCube_p);}
 Vector<Float>& VisBuffer::fillWeight()
 { weightOK_p=True; return visIter_p->weight(weight_p);}
+Matrix<Float>& VisBuffer::fillWeightMat()
+{ weightMatOK_p=True; return visIter_p->weightSpectrum(weightMat_p);}
 
 const Vector<Float>& VisBuffer::feed_pa(Double time) const
 {return visIter_p->feed_pa(time);}
