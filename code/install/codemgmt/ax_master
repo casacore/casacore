@@ -2728,3 +2728,4 @@
 10 060 src mv aips/implement/Measures/MVFrequency.cc aips/implement/Quanta/MVFrequency.cc
 10 060 src mv aips/implement/Measures/MVFrequency.h aips/implement/Quanta/MVFrequency.h
 10 060 src mv aips/implement/Measures/MVPosition.cc aips/implement/Quanta/MVPosition.cc
+10 060 src mv aips/implement/Measures/MVPosition.h aips/implement/Quanta/MVPosition.h
