@@ -251,20 +251,19 @@ public:
   // class for a description of this function.
   Bool ok() const;
 
-  // Convert from and to pixel vectors
+  // Convert from and to pixel vectors. See the SkyCompRep class for details.
   // <group>
+   Vector<Double> toPixel (const Unit& brightnessUnitIn,
+                           const Vector<Quantum<Double> >& restoringBeam,
+                           const CoordinateSystem& cSys,
+                           Stokes::StokesTypes stokes) const;
   void fromPixel (const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
                   const Vector<Quantum<Double> >& restoringBeam,
                   const CoordinateSystem& cSys,
                   ComponentType::Shape componentShape,
-                  Stokes::StokesTypes stokes,
-                  Bool xIsLong);
-   Vector<Double> toPixel (const Unit& brightnessUnitIn,
-                           const Vector<Quantum<Double> >& restoringBeam,
-                           const CoordinateSystem& cSys,
-                           Stokes::StokesTypes stokes,  
-                           Bool xIsLong) const;
+                  Stokes::StokesTypes stokes);
+
   // </group>
 
 
