@@ -249,8 +249,14 @@ void RFAUVBinner::startDry ()
 
 IPosition RFAUVBinner::computeBin( Float uv,Float y,uInt ich )
 {
-  Int i = (Int)((uv-uvmin(ich))/uvbinsize(ich));
-  Int j = (Int)((y -ymin(ich))/ybinsize(ich));
+  uInt i = (uInt)((uv-uvmin(ich))/uvbinsize(ich));
+  uInt j = (uInt)((y -ymin(ich))/ybinsize(ich));
+// loss of precision near max values can sometimes put us into bin 
+// N+1, so correct for this:
+  if( i >= nbin_uv )
+    i = nbin_uv-1;
+  if( j >= nbin_y )
+    j = nbin_y-1;
   return IPosition(3,i,j,ich);
 }
 
@@ -295,7 +301,10 @@ RFA::IterMode RFAUVBinner::iterDry (uInt it)
         for( uInt ich=0; ich<num(CHAN); ich++ )
           if( !flag.preFlagged(ich,ifr) )
           {
-            bincounts( computeBin(uv,yvalue(ich,ifr),ich) )++;
+            Float y = yvalue(ich,ifr);
+            IPosition binpos( computeBin(uv,y,ich) );
+            bincounts(binpos)++;
+//            bincounts( computeBin(uv,yvalue(ich,ifr),ich) )++;
             totcounts(ich)++;
           }
     }
