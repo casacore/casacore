@@ -4200,3 +4200,4 @@
 14 065 src mv trial/apps/viewer/viewercanvasmanager.help trialdisplay/apps/viewer/viewercanvasmanager.help
 14 065 src mv trial/apps/viewer/viewercanvasprintmanager.help trialdisplay/apps/viewer/viewercanvasprintmanager.help
 14 065 src mv trial/apps/viewer/viewercolormapmanager.g trialdisplay/apps/viewer/viewercolormapmanager.g
+14 065 src mv trial/apps/viewer/viewercolormapmanager.help trialdisplay/apps/viewer/viewercolormapmanager.help
