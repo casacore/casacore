@@ -48,9 +48,9 @@ Bool RefColumn::isWritable() const
 Bool RefColumn::isStored() const
     { return colPtr_p->isStored(); }
 
+TableRecord& RefColumn::rwKeywordSet()
+    { return colPtr_p->rwKeywordSet(); }
 TableRecord& RefColumn::keywordSet()
-    { return colPtr_p->keywordSet(); }
-const TableRecord& RefColumn::keywordSet() const
     { return colPtr_p->keywordSet(); }
 
 

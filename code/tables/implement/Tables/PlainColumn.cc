@@ -52,10 +52,14 @@ uInt PlainColumn:: nrow() const
     { return colSetPtr_p->nrow(); }
 
 
+TableRecord& PlainColumn::rwKeywordSet()
+{
+    colSetPtr_p->checkLock (True, True);
+    colSetPtr_p->setTableChanged();
+    return colDesc_p.rwKeywordSet(); 
+}
 TableRecord& PlainColumn::keywordSet()
-    { return colDesc_p.keywordSet(); }
-const TableRecord& PlainColumn::keywordSet() const
-    { return colDesc_p.keywordSet(); }
+    { return colDesc_p.rwKeywordSet(); }
 
 
 //# By default defining the array shape is invalid.
