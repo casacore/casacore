@@ -811,6 +811,12 @@
      = scimath/Mathematics/AutoDiffIO.h 
      template class vector<AutoDiff<Double> > 
      AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Double>) 
+1040 casa/vector.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = scimath/Mathematics/AutoDiffIO.h 
+     template class vector<AutoDiff<Float> > 
+     AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Float>) 
 1000 scimath/Fitting/FitGaussian.cc 
      template class FitGaussian<Float> 
 1000 scimath/Fitting/GenericL2Fit.cc 
