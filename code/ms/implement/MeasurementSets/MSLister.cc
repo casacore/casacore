@@ -56,7 +56,8 @@ MSLister::MSLister ()
 // listing.
 //
 MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
-  : pMS(&ms),
+  //  : pMS(&ms),
+  : pMS(const_cast<MeasurementSet*>(&ms)),
     os_p(os),
     dashline_p(replicate("-",80))
 {
@@ -166,6 +167,11 @@ void MSLister::initList()
   //  freqs_p.resize(4,False);
   freqs_p=msSpWinC.refFrequency().getColumn();
 
+  // Create map from data_desc_id to spwid:
+  ROMSDataDescColumns msDDI(pMS->dataDescription());
+  spwins_p=msDDI.spectralWindowId().getColumn();
+
+
   // Signal completion of initList
   os_p << "Lister initialised for this MS" << LogIO::POST;
 }
@@ -242,6 +248,7 @@ void MSLister::getRanges()
 // input strings to Double times
 void MSLister::list (const String stimeStart, const String stimeStop)
 {
+
   // Convert the time strings
   Quantum<Double> qtime;
   MVTime::read(qtime, stimeStart);	Double dtimeStart= qtime.getValue("s");
@@ -369,6 +376,7 @@ void MSLister::listData()
   // appears to be necessary (instead of V-double) despite the get()
   // function's claim to do type promotion.
   Vector <Double>	time,uvdist;
+  Vector <Int>          datadescid;
   Vector <Int>		ant1,ant2,spwinid,fieldid;
   Array <Float>		ampl,phase;
   Array <Float>	        weight;
@@ -379,7 +387,7 @@ void MSLister::listData()
   dataRecords_p.get("antenna2", ant2);
   dataRecords_p.get("uvdist", uvdist);  // in meters
   //  dataRecords_p.get("spectral_window_id", spwinid);
-  dataRecords_p.get("data_desc_id", spwinid);
+  dataRecords_p.get("data_desc_id", datadescid);
   dataRecords_p.get("field_id", fieldid);
   dataRecords_p.get("amplitude", ampl);
   dataRecords_p.get("phase", phase);  // in rad
@@ -387,13 +395,19 @@ void MSLister::listData()
 
   // Number of rows that will be listed
   Int nrows = time.nelements();
+
+  spwinid.resize(nrows);
   
   // Convert units of some params:
   time = time/C::day;        // time now in days
   phase = phase/C::degree;   // phase now in degrees
-  // Change uvdist to wavelengths as function of spwinid:
+  // For each row:
   for (Int row=0;row<nrows;row++) {
+    // Translate data_desc_id to spwid:  
+    spwinid(row)=spwins_p(datadescid(row));
+    // Change uvdist to wavelengths as function of spwinid:
     uvdist(row) = uvdist(row)/(C::c/freqs_p(spwinid(row)));  // uvdist in wavelengths
+
   }    
 
 
@@ -460,11 +474,11 @@ void MSLister::listData()
   if ( precTime_p > 0 ) oTime_p++; // add space for decimal
 
 
-  oUVDist_p = (uInt)rint(log10(max(uvdist))+0.5); // order
+  oUVDist_p = (uInt)max(1,(Int)rint(log10(max(uvdist))+0.5)); // order
   if ( precUVDist_p < 0 ) precUVDist_p = 0;
   if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
 
-  oAmpl_p = (uInt)rint(log10(max(ampl))+0.5); 
+  oAmpl_p = (uInt)max(1,(Int)rint(log10(max(ampl))+0.5)); 
   if ( precAmpl_p < 0 ) precAmpl_p = 3;  // mJy
   if ( precAmpl_p > 0 ) oAmpl_p++;  // add space for decimal
 
@@ -474,7 +488,7 @@ void MSLister::listData()
   if ( precPhase_p > 0 ) oPhase_p++; // add space for decimal
   oPhase_p++; // add space for sign
 
-  oWeight_p = (uInt)rint(log10(max(weight))+0.5);  // order
+  oWeight_p = (uInt)max(1,(Int)rint(log10(max(weight))+0.5));  // order
   if ( precWeight_p < 0 ) precWeight_p = 0;
   if ( precWeight_p > 0 ) oWeight_p++;  // add space for decimal
 
