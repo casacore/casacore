@@ -4400,3 +4400,5 @@
 14 287 src rm trial/apps/measures/VTOP/table.lock
 14 287 src rm trial/apps/measures/VGEO/makefile
 14 287 src rm trial/apps/measures/VTOP/makefile
+14 287 src rm trial/apps/measures/VGEO/
+14 287 src rm trial/apps/measures/VTOP/
