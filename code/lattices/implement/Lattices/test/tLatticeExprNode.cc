@@ -54,6 +54,11 @@
 
 #include <iostream.h>
 
+Bool checkInfo (const LatticeExprNode& expr,
+		const IPosition& shape,
+		const Bool shouldBeScalar,
+		const Bool undefinedScalar,
+		const DataType dtype);
 Bool compareScalarFloat  (const LatticeExprNode expr,
                           const LatticeExprNode expr2,
                           const Float bFVal,
@@ -1874,6 +1879,117 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3 = pa(expr1,expr2);
       Double result = 90.0/C::pi*atan2(bDVal,cDVal);
       if (!checkDouble (expr3, result, shape, False, False)) ok = False;
+   }
+   cout << "mask" << endl;
+   {
+      cout << " Float Scalar 1" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr3 = mask(expr1);
+      if (! checkInfo (expr3, shape, True, False, TpBool)) {
+	ok = False;
+      } else {
+	if (expr3.getBool() != True) {
+	  cout << "  expected True; result is " << expr3.getBool() << endl;
+	  ok = False;
+	}
+      }
+   }
+   {
+      cout << " Float Scalar 2" << endl;
+      LatticeExprNode expr1(min(bF));
+      LatticeExprNode expr3 = mask(expr1);
+      if (! checkInfo (expr3, shape, True, False, TpBool)) {
+	ok = False;
+      } else {
+	Bool result = ToBool(nb!=0);
+	if (expr3.getBool() != result) {
+	  cout << "  expected " << result
+	       << "; result is " << expr3.getBool() << endl;
+	  ok = False;
+	}
+      }
+   }
+   {
+      cout << " Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr3 = mask(expr1);
+      if (! checkInfo (expr3, shape, False, False, TpBool)) {
+	ok = False;
+      } else {
+	LELArray<Bool> result(shape);
+	Slicer section(IPosition(shape.nelements(), 0), shape);
+	expr3.eval (result, section);
+	if (! allEQ(result.value(), bF.getMask())) {
+	  cout << "  expected " << bF.getMask()
+	       << " result is " << result.value() << endl;
+	  ok = False;
+	}
+      }
+      if (!checkMask (expr3, False, bF.getMask())) ok = False;
+   }
+   {
+      cout << " Bool Scalar" << endl;
+      LatticeExprNode expr1(bBVal);
+      LatticeExprNode expr3 = mask(expr1);
+      if (! checkInfo (expr3, shape, True, False, TpBool)) {
+	ok = False;
+      } else {
+	if (expr3.getBool() != True) {
+	  cout << "  expected True; result is " << expr3.getBool() << endl;
+	  ok = False;
+	}
+      }
+   }
+   {
+      cout << " Bool Array" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr3 = mask(expr1);
+      if (! checkInfo (expr3, shape, False, False, TpBool)) {
+	ok = False;
+      } else {
+	LELArray<Bool> result(shape);
+	Slicer section(IPosition(shape.nelements(), 0), shape);
+	expr3.eval (result, section);
+	if (! allEQ(result.value(), bB.getMask())) {
+	  cout << "  expected " << bB.getMask()
+	       << " result is " << result.value() << endl;
+	  ok = False;
+	}
+      }
+      if (!checkMask (expr3, False, bB.getMask())) ok = False;
+   }
+   cout << "value" << endl;
+   {
+      cout << " Float Scalar 1" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr3 = value(expr1);
+      if (!checkFloat (expr3, bFVal, shape, True, False)) ok = False;
+   }
+   {
+      cout << " Float Scalar 2" << endl;
+      LatticeExprNode expr1(min(bF));
+      LatticeExprNode expr3 = value(expr1);
+      if (!checkFloat (expr3, bFVal, shape, True, ToBool(nb==0))) ok = False;
+   }
+   {
+      cout << " Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr3 = value(expr1);
+      if (!checkFloat (expr3, bFVal, shape, False, False)) ok = False;
+      if (!checkMask (expr3, False, bF.getMask())) ok = False;
+   }
+   {
+      cout << " Bool Scalar" << endl;
+      LatticeExprNode expr1(bBVal);
+      LatticeExprNode expr3 = value(expr1);
+      if (!checkBool (expr3, bBVal, shape, True, False)) ok = False;
+   }
+   {
+      cout << " Bool Array" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr3 = value(expr1);
+      if (!checkBool (expr3, bBVal, shape, False, False)) ok = False;
+      if (!checkMask (expr3, False, bB.getMask())) ok = False;
    }
    cout << "replace" << endl;
    {
