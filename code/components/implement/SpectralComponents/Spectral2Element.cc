@@ -134,7 +134,7 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
       errs(2) = sigmaFromFWHM (errs(2));
       par_p.resize(3);
       err_p.resize(3);
-    } else if (tp_p == POLYNOMIAL) {
+    } else if (tp == POLYNOMIAL) {
       if (param.nelements() == 0) {
 	error += String("Polynomial spectral element must have order "
 			"of at least zero\n");
@@ -143,9 +143,10 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
       n_p = param.nelements()-1;
       par_p.resize(n_p+1);
       err_p.resize(n_p+1);
-    };
+    }
     par_p = param;
     err_p = errs;
+    tp_p = tp;
 
    return True;
   };
