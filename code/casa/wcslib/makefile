@@ -20,7 +20,7 @@ FIRST := $(shell amkdir -p ug=rwx,g+s,o=rx -v $(WCSTMPD))
 
 # WCSLIB library.
 #----------------
-WCSLIB := $(LIBOPTD)/libwcs.$(SFXSTAT)
+WCSLIB := $(LIBOPTD)/libwcs
 
 
 # Source lists.
@@ -34,10 +34,10 @@ endif
 
 # Pattern rules.
 #---------------
-$(WCSLIB)(%.o) : $(CODEDIR)/%.c
+$(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 	-@ echo ""
 	-@ echo "$%"
-	 @ cd $(WCSTMPD) && $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
+	 @ cd $(WCSTMPD) && $(CC) -fPIC $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
 	-@ $(TIMER)
 
 
@@ -46,15 +46,27 @@ $(WCSLIB)(%.o) : $(CODEDIR)/%.c
 allsys : wcslib
 
 .cleansys ::
-	-$Q $(RM) $(WCSLIB)
+	-$Q $(RM) $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
 
-wcslib : $(WCSIMPS:%.c=$(WCSLIB)(%.o))
+wcslib: $(WCSLIB).$(SFXSTAT) $(WCSLIB).$(SFXSHAR)
+
+$(WCSLIB).$(SFXSTAT): $(WCSIMPS:%.c=$(WCSLIB).$(SFXSTAT)(%.o))
 	-@ cd $(WCSTMPD) ; \
 	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
 	      echo "" ; \
-	      echo "Updating WCSLIB..." ; \
-	      $(AR) $(ARFLAGS) $(WCSLIB) *.o ; \
-	      $(RANLIB) $(WCSLIB) ; \
+	      echo "Updating static WCSLIB..." ; \
+	      $(AR) $(ARFLAGS) $(WCSLIB).$(SFXSTAT) *.o ; \
+	      $(RANLIB) $(WCSLIB).$(SFXSTAT) ; \
+	      $(RM) $(WCSTMPD)/*.o ; \
+	   fi
+
+$(WCSLIB).$(SFXSHAR): $(WCSLIB).$(SFXSTAT)
+	-@ cd $(WCSTMPD) ; \
+	   $(AR) x $(WCSLIB).$(SFXSTAT) ; \
+	   if [ "`ls *.o 2>/dev/null`" != "" ] ; then \
+	      echo "" ; \
+	      echo "Updating shared WCSLIB..." ; \
+	      $(MKSO) -o $(WCSLIB).$(SFXSHAR) *.o -lm; \
 	      $(RM) $(WCSTMPD)/*.o ; \
 	   fi
 
@@ -66,24 +78,24 @@ show_local :
 	-@ echo "System"
 	-@ echo "------"
 	-@ echo "WCSTMPD =$(WCSTMPD)"
-	-@ echo "WCSLIB  =$(WCSLIB)"
+	-@ echo "WCSLIB  =$(WCSLIB).$(SFXSTAT)"
 	-@ echo "WCSIMPS =$(WCSIMPS)"
 
 
 # Dependency list.
 #-----------------
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/wcsmath.h
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/wcs.h
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/cel.h
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/proj.h
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/wcstrig.h
-$(WCSLIB)(wcs.o)  : $(CODEDIR)/lin.h
-$(WCSLIB)(cel.o)  : $(CODEDIR)/cel.h
-$(WCSLIB)(cel.o)  : $(CODEDIR)/proj.h
-$(WCSLIB)(cel.o)  : $(CODEDIR)/wcstrig.h
-$(WCSLIB)(sph.o)  : $(CODEDIR)/wcstrig.h
-$(WCSLIB)(proj.o) : $(CODEDIR)/wcsmath.h
-$(WCSLIB)(proj.o) : $(CODEDIR)/proj.h
-$(WCSLIB)(proj.o) : $(CODEDIR)/wcstrig.h
-$(WCSLIB)(lin.o)  : $(CODEDIR)/lin.h
-$(WCSLIB)(wcstrig.o) : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcs.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/proj.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(wcs.o)  : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/proj.h
+$(WCSLIB).$(SFXSTAT)(cel.o)  : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(sph.o)  : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/proj.h
+$(WCSLIB).$(SFXSTAT)(proj.o) : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(lin.o)  : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
