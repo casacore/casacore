@@ -142,6 +142,7 @@ try {
    inputs.Create("list", "False", "List statistics for each histogram");
    inputs.Create("plotter", "/null", "Plot device");
    inputs.Create("nxy", "1,1", "Number of subplots in x & y");
+   inputs.Create("disk", "False", "Force storage image to be disk based");
    inputs.ReadArguments(argc, argv);
 
    const String in = inputs.GetString("in");
@@ -157,6 +158,7 @@ try {
    const Bool doList = inputs.GetBool("list");
    const Block<Int> nxyB(inputs.GetIntArray("nxy"));
    const String device = inputs.GetString("plotter");
+   const Bool force = inputs.GetBool("disk");
 
 
 // Create defaults array
@@ -280,7 +282,7 @@ try {
 
 // Construct histogram object
   
-      ImageHistograms<Float> histo(*pSubImage2, os, True);
+      ImageHistograms<Float> histo(*pSubImage2, os, True, force);
       if (pSubImage2!=0) delete pSubImage2;
 
    
