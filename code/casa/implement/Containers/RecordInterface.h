@@ -78,8 +78,8 @@ class IPosition;
 // <li> <linkto class=GlishRecord>GlishRecord</linkto>
 // </ul>
 // Presently, the scalar types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, float,
-// double, Complex, DComplex, String.
+// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Float,
+// Double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // It is fairly straightforward to extend this set if necessary, although it
 // will result in more template instantiations with the current implementation.
@@ -290,8 +290,8 @@ public:
     void define (const RecordFieldId&, Short value);
     void define (const RecordFieldId&, Int value);
     void define (const RecordFieldId&, uInt value);
-    void define (const RecordFieldId&, float value);
-    void define (const RecordFieldId&, double value);
+    void define (const RecordFieldId&, Float value);
+    void define (const RecordFieldId&, Double value);
     void define (const RecordFieldId&, const Complex& value);
     void define (const RecordFieldId&, const DComplex& value);
     void define (const RecordFieldId&, const String& value);
@@ -305,9 +305,9 @@ public:
 		 Bool FixedShape = False);
     void define (const RecordFieldId&, const Array<uInt>& value,
 		 Bool FixedShape = False);
-    void define (const RecordFieldId&, const Array<float>& value,
+    void define (const RecordFieldId&, const Array<Float>& value,
 		 Bool FixedShape = False);
-    void define (const RecordFieldId&, const Array<double>& value,
+    void define (const RecordFieldId&, const Array<Double>& value,
 		 Bool FixedShape = False);
     void define (const RecordFieldId&, const Array<Complex>& value,
 		 Bool FixedShape = False);
@@ -331,8 +331,8 @@ public:
     void get (const RecordFieldId&, Short& value) const;
     void get (const RecordFieldId&, Int& value) const;
     void get (const RecordFieldId&, uInt& value) const;
-    void get (const RecordFieldId&, float& value) const;
-    void get (const RecordFieldId&, double& value) const;
+    void get (const RecordFieldId&, Float& value) const;
+    void get (const RecordFieldId&, Double& value) const;
     void get (const RecordFieldId&, Complex& value) const;
     void get (const RecordFieldId&, DComplex& value) const;
     void get (const RecordFieldId&, String& value) const;
@@ -341,23 +341,22 @@ public:
     void get (const RecordFieldId&, Array<Short>& value) const;
     void get (const RecordFieldId&, Array<Int>& value) const;
     void get (const RecordFieldId&, Array<uInt>& value) const;
-    void get (const RecordFieldId&, Array<float>& value) const;
-    void get (const RecordFieldId&, Array<double>& value) const;
+    void get (const RecordFieldId&, Array<Float>& value) const;
+    void get (const RecordFieldId&, Array<Double>& value) const;
     void get (const RecordFieldId&, Array<Complex>& value) const;
     void get (const RecordFieldId&, Array<DComplex>& value) const;
     void get (const RecordFieldId&, Array<String>& value) const;
     // </group>
 
-    // The following functions get the value based on field number. They
-    // are here for backward compatibility with the old KeywordSet classes.
+    // The following functions get the value based on field name or number.
     // <group>
     Bool            asBool    (const RecordFieldId&) const;
     uChar           asuChar   (const RecordFieldId&) const;
     Short           asShort   (const RecordFieldId&) const;
     Int             asInt     (const RecordFieldId&) const;
     uInt            asuInt    (const RecordFieldId&) const;
-    float           asfloat   (const RecordFieldId&) const;
-    double          asdouble  (const RecordFieldId&) const;
+    Float           asFloat   (const RecordFieldId&) const;
+    Double          asDouble  (const RecordFieldId&) const;
     Complex         asComplex (const RecordFieldId&) const;
     DComplex        asDComplex(const RecordFieldId&) const;
     const String&   asString  (const RecordFieldId&) const;
@@ -366,13 +365,21 @@ public:
     const Array<Short>&    asArrayShort   (const RecordFieldId&) const;
     const Array<Int>&      asArrayInt     (const RecordFieldId&) const;
     const Array<uInt>&     asArrayuInt    (const RecordFieldId&) const;
-    const Array<float>&    asArrayfloat   (const RecordFieldId&) const;
-    const Array<double>&   asArraydouble  (const RecordFieldId&) const;
+    const Array<Float>&    asArrayFloat   (const RecordFieldId&) const;
+    const Array<Double>&   asArrayDouble  (const RecordFieldId&) const;
     const Array<Complex>&  asArrayComplex (const RecordFieldId&) const; 
     const Array<DComplex>& asArrayDComplex(const RecordFieldId&) const;
     const Array<String>&   asArrayString  (const RecordFieldId&) const;
     virtual const RecordInterface& asRecord (const RecordFieldId&) const = 0;
     // </group>
+
+    // Get value based on field name or number.
+    // They are here for backward compatibility with the old KeywordSet
+    // classes and will be removed in the future..
+    Float           asfloat   (const RecordFieldId&) const;
+    Double          asdouble  (const RecordFieldId&) const;
+    const Array<Float>&    asArrayfloat   (const RecordFieldId&) const;
+    const Array<Double>&   asArraydouble  (const RecordFieldId&) const;
     
     // Make a unique record representation
     // (for copy-on-write in RecordFieldPtr).
@@ -473,6 +480,24 @@ inline RecordInterface::RecordType RecordInterface::recordType() const
 inline DataType RecordInterface::dataType (const RecordFieldId& id) const
 {
     return type (idToNumber(id));
+}
+inline Float RecordInterface::asFloat (const RecordFieldId& id) const
+{
+    return asfloat (id);
+}
+inline Double RecordInterface::asDouble (const RecordFieldId& id) const
+{
+    return asdouble (id);
+}
+inline const Array<Float>& RecordInterface::asArrayFloat
+                                         (const RecordFieldId& id) const
+{
+    return asArrayfloat (id);
+}
+inline const Array<Double>& RecordInterface::asArrayDouble
+                                         (const RecordFieldId& id) const
+{
+    return asArraydouble (id);
 }
 
 
