@@ -562,10 +562,6 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
                                           const DirectionCoordinate& dirCoordFrom,
                                           const ObsInfo& obsTo,
                                           const ObsInfo& obsFrom) 
-//
-// We need MDirection type, position on earth and epoch.  But 
-// maybe not all of them...
-//
 {
    const MDirection::Types& typeFrom = dirCoordFrom.directionType();
    const MDirection::Types& typeTo = dirCoordTo.directionType();
@@ -729,7 +725,9 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       }
       const DirectionCoordinate& dCoord = coordsTo.directionCoordinate(c);   
       const Vector<Double>& rp = dCoord.referencePixel();   
-      Bool ok = dCoord.toWorld(dirTo, rp);
+      if (dCoord.toWorld(dirTo, rp)) {
+         os << dCoord.errorMessage() << LogIO::EXCEPTION;
+      }
    }
 //
    {
@@ -741,7 +739,9 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       }
       const DirectionCoordinate& dCoord = coordsFrom.directionCoordinate(c);   
       const Vector<Double>& rp = dCoord.referencePixel();   
-      Bool ok = dCoord.toWorld(dirFrom, rp);
+      if (!dCoord.toWorld(dirFrom, rp)) {
+         os << dCoord.errorMessage() << LogIO::EXCEPTION;
+      }
    }
 //
    MFrequency::Types typeTo, typeFrom;
@@ -766,46 +766,38 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       typeFrom = sCoord.frequencySystem();
    }
 //
+   const ObsInfo& obsInfoTo = coordsTo.obsInfo();
+   const ObsInfo& obsInfoFrom = coordsFrom.obsInfo();
+//   
+   String telFrom = obsInfoFrom.telescope();
+   String telTo = obsInfoTo.telescope();
+   MPosition posFrom, posTo; 
+   Bool found = MeasTable::Observatory(posFrom, telFrom);
+   if (!found) {
+      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   found = MeasTable::Observatory(posTo, telTo);
+   if (!found) {
+      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+//
    return makeFrequencyMachine(os, machine, typeTo, typeFrom,
                                dirTo, dirFrom, 
-                               coordsTo.obsInfo(),
-                               coordsFrom.obsInfo());
+                               obsInfoTo.obsDate(), 
+                               obsInfoFrom.obsDate(), 
+                               posTo, posFrom);
 }
 
 
 Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                           MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                           const MDirection& dirTo, const MDirection& dirFrom,
-                                          const ObsInfo& obsTo, const ObsInfo& obsFrom)
-//
-// We need MDirection type, position on earth and epoch.  But 
-// maybe not all of them...
-//
+                                          const MEpoch& epochTo, const MEpoch& epochFrom,
+                                          const MPosition& posTo, const MPosition& posFrom)
+
 {
-// See if we need machine
-
-   Bool typesEqual = (typeTo==typeFrom);
-   const Double lonTo = dirTo.getValue().getLong();
-   const Double latTo = dirTo.getValue().getLat();
-   const Double lonFrom = dirFrom.getValue().getLong();
-   const Double latFrom = dirFrom.getValue().getLat();
-   Bool dirCoordEqual = (dirTo.type()==dirFrom.type()) &&
-                        (near(lonTo,lonFrom)) && (near(latTo,latFrom));
-//
-   MEpoch epochFrom = obsFrom.obsDate();
-   MEpoch epochTo = obsTo.obsDate();
-   Double t1 = epochFrom.getValue().get();
-   Double t2 = epochTo.getValue().get();
-   Bool epochEqual = near(t1,t2);
-//
-   String telFrom = obsFrom.telescope();
-   String telTo = obsTo.telescope();
-   Bool posEqual = (telFrom==telTo);
-
-// Bug out if everything is the same
-
-   if (dirCoordEqual && typesEqual && epochEqual && posEqual) return False;
-
 // Create frames
 
    MeasFrame frameFrom;
@@ -833,28 +825,6 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 
 // Add the position 
 
-   if (telFrom==String("UNKNOWN")) {
-      os << "In setting up the frequency conversion machinery, the output ObsInfo" << endl;
-      os << "has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
-   }
-   if (telTo==String("UNKNOWN")) {
-      os << "In setting up the frequency conversion machinery, the output ObsInfo" << endl;
-      os << "has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
-   }
-//
-   MPosition posFrom, posTo;
-   Bool found = MeasTable::Observatory(posFrom, telFrom);
-   if (!found) {
-      os << "In setting up the frequency conversion machinery, cannot lookup" << endl;
-      os << "lookup the observatory name " << telFrom << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
-   found = MeasTable::Observatory(posTo, telTo);
-   if (!found) {
-      os << "In setting up the frequency conversion machinery" << endl;
-      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
    frameFrom.set(posFrom);
    frameTo.set(posTo);
 
@@ -881,7 +851,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       os << "the radial velocity - this is not implemented yet" << LogIO::EXCEPTION;
    }
 //
-   return True;
+   return machine.isNOP();
 }
 
 
