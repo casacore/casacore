@@ -265,28 +265,6 @@ XLIBLIST_shared_nfra:=$(XLIBLIST_shared_trial)
 endif
 
 ###
-### select the shared library list for applications select
-### shared library linking if either of the C++ library is
-### specified as shared
-###
-ifneq "$(word 1,$(LIB$(PACKAGE)))" "static"
-XLIB_do_shared := YES
-endif
-ifneq "$(word 2,$(LIB$(PACKAGE)))" "static"
-XLIB_do_shared := YES
-endif
-
-ifneq "$(XLIB_do_shared)" ""
-ifneq "$(XLIBLIST_override)" ""
-XLIBSEL:=XLIBLIST_override
-else
-ifneq "$(XLIBLIST_shared_$(PACKAGE))" ""
-XLIBSEL := XLIBLIST_shared_$(PACKAGE)
-endif
-endif
-endif
-
-###
 ### You shouldn't need to modify any of the following four variables.
 ### List of directories in which to search for libraries.
 XLIBPATH  = $(addprefix -L,$(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)))
@@ -666,6 +644,28 @@ endif
 # definition of SITEDEFS on the gmake command line.
 SITEDEFS := makedefs
 -include $(AIPSSITE)/$(SITEDEFS)
+
+###
+### select the shared library list for applications select
+### shared library linking if either of the C++ library is
+### specified as shared
+###
+ifneq "$(word 1,$(LIB$(PACKAGE)))" "static"
+XLIB_do_shared = YES
+endif
+ifneq "$(word 2,$(LIB$(PACKAGE)))" "static"
+XLIB_do_shared = YES
+endif
+
+ifneq "$(XLIB_do_shared)" ""
+ifneq "$(XLIBLIST_override)" ""
+XLIBSEL:=XLIBLIST_override
+else
+ifneq "$(XLIBLIST_shared_$(PACKAGE))" ""
+XLIBSEL := XLIBLIST_shared_$(PACKAGE)
+endif
+endif
+endif
 
 ifeq "$(MAKEMODE)" "programmer"
    # Programmer-specific definitions.
