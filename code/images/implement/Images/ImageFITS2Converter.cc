@@ -266,8 +266,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     Bool applyMask = False;
     Array<Bool>* pMask = 0;
     if (image.isMasked()) {
-       os << LogIO::NORMAL << "Applying mask of name '" 
-          << image.getDefaultMask() << "'" << LogIO::POST;
        applyMask = True;
        pMask = new Array<Bool>(IPosition(0,0));
     } 
