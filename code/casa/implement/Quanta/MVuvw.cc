@@ -170,11 +170,11 @@ MVuvw MVuvw::operator-(const MVuvw &right) const{
 //# Member functions
 
 uInt MVuvw::type() const {
-  return Register((MVuvw *)0);
+  return Register(static_cast<MVuvw *>(0));
 }
 
 void MVuvw::assert(const MeasValue &in) {
-  if (in.type() != Register((MVuvw *)0)) {
+  if (in.type() != Register(static_cast<MVuvw *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVuvw"));
   };
 }

@@ -485,19 +485,19 @@ void MeasFrame::create() {
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
-    if (in->type() == Register((MEpoch *)0)) {
+    if (in->type() == Register(static_cast<MEpoch *>(0))) {
       delete rep->epval;
       rep->epval = in->clone();
       makeEpoch();
-    } else if (in->type() == Register((MPosition *)0)) {
+    } else if (in->type() == Register(static_cast<MPosition *>(0))) {
       delete rep->posval;
       rep->posval = in->clone();
       makePosition();
-    } else if (in->type() == Register((MDirection *)0)) {
+    } else if (in->type() == Register(static_cast<MDirection *>(0))) {
       delete rep->dirval;
       rep->dirval = in->clone();
       makeDirection();
-    } else if (in->type() == Register((MRadialVelocity *)0)) {
+    } else if (in->type() == Register(static_cast<MRadialVelocity *>(0))) {
       delete rep->radval;
       rep->radval = in->clone();
       makeRadialVelocity();

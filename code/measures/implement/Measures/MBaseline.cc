@@ -82,11 +82,11 @@ const String &MBaseline::showMe() {
 }
 
 uInt MBaseline::type() const {
-  return Register((MBaseline *)0);
+  return Register(static_cast<MBaseline *>(0));
 }
 
 void MBaseline::assert(const Measure &in) {
-  if (in.type() != Register((MBaseline *)0)) {
+  if (in.type() != Register(static_cast<MBaseline *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MBaseline::showMe()));
   };
@@ -198,7 +198,7 @@ Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
 };
 
 Bool MBaseline::setOffset(const Measure &in) {
-  if (in.type() != Register((MBaseline *)0)) return False;
+  if (in.type() != Register(static_cast<MBaseline *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -222,7 +222,7 @@ String MBaseline::getRefString() const {
 }
 
 uInt MBaseline::myType() {
-  return Register((MBaseline *)0);
+  return Register(static_cast<MBaseline *>(0));
 }
 
 Quantum<Vector<Double> > MBaseline::get(const Unit &inunit) const {

@@ -160,11 +160,11 @@ MVBaseline MVBaseline::operator-(const MVBaseline &right) const{
 //# Member functions
 
 uInt MVBaseline::type() const {
-  return Register((MVBaseline *)0);
+  return Register(static_cast<MVBaseline *>(0));
 }
 
 void MVBaseline::assert(const MeasValue &in) {
-  if (in.type() != Register((MVBaseline *)0)) {
+  if (in.type() != Register(static_cast<MVBaseline *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVBaseline"));
   };
 }

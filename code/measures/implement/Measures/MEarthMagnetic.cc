@@ -92,11 +92,11 @@ const String &MEarthMagnetic::showMe() {
 }
 
 uInt MEarthMagnetic::type() const {
-  return Register((MEarthMagnetic *)0);
+  return Register(static_cast<MEarthMagnetic *>(0));
 }
 
 void MEarthMagnetic::assert(const Measure &in) {
-  if (in.type() != Register((MEarthMagnetic *)0)) {
+  if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEarthMagnetic::showMe()));
   };
@@ -218,7 +218,7 @@ Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
 };
 
 Bool MEarthMagnetic::setOffset(const Measure &in) {
-  if (in.type() != Register((MEarthMagnetic *)0)) return False;
+  if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -242,7 +242,7 @@ String MEarthMagnetic::getRefString() const {
 }
 
 uInt MEarthMagnetic::myType() {
-  return Register((MEarthMagnetic *)0);
+  return Register(static_cast<MEarthMagnetic *>(0));
 }
 
 Bool MEarthMagnetic::isModel() const {

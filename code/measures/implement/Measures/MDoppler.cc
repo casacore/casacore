@@ -74,11 +74,11 @@ const String &MDoppler::showMe() {
 }
 
 uInt MDoppler::type() const {
-  return Register((MDoppler *)0);
+  return Register(static_cast<MDoppler *>(0));
 }
 
 void MDoppler::assert(const Measure &in) {
-  if (in.type() != Register((MDoppler *)0)) {
+  if (in.type() != Register(static_cast<MDoppler *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDoppler::showMe()));
   };
@@ -162,7 +162,7 @@ Bool MDoppler::giveMe(const String &in, MDoppler::Ref &mr) {
 }
 
 Bool MDoppler::setOffset(const Measure &in) {
-  if (in.type() != Register((MDoppler *)0)) return False;
+  if (in.type() != Register(static_cast<MDoppler *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -185,7 +185,7 @@ String MDoppler::getRefString() const {
   return MDoppler::showType(ref.getType());
 }
 uInt MDoppler::myType() {
-  return Register((MDoppler *)0);
+  return Register(static_cast<MDoppler *>(0));
 }
 
 Quantity MDoppler::get(const Unit &un) const {

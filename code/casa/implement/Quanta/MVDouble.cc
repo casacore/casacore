@@ -111,11 +111,11 @@ Bool MVDouble::operator!=(const MVDouble &other) const {
 //# Member functions
 
 uInt MVDouble::type() const {
-  return Register((MVDouble *)0);
+  return Register(static_cast<MVDouble *>(0));
 }
 
 void MVDouble::assert(const MeasValue &in) {
-  if (in.type() != Register((MVDouble *)0)) {
+  if (in.type() != Register(static_cast<MVDouble *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDouble"));
   };
 }

@@ -365,11 +365,11 @@ QBase *Quantum<Qtype>::clone() const {
 
 template <class Qtype>
 uInt Quantum<Qtype>::type() const {
-  return Register((Quantum<Qtype> *)0);
+  return Register(static_cast<Quantum<Qtype> *>(0));
 }
 
 template <class Qtype>
 uInt Quantum<Qtype>::myType() {
-  return Register((Quantum<Qtype> *)0);
+  return Register(static_cast<Quantum<Qtype> *>(0));
 }
 

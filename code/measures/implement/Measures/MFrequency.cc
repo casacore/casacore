@@ -79,11 +79,11 @@ const String &MFrequency::showMe() {
 }
 
 uInt MFrequency::type() const {
-  return Register((MFrequency *)0);
+  return Register(static_cast<MFrequency *>(0));
 }
 
 void MFrequency::assert(const Measure &in) {
-  if (in.type() != Register((MFrequency *)0)) {
+  if (in.type() != Register(static_cast<MFrequency *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MFrequency::showMe()));
   };
@@ -166,7 +166,7 @@ Bool MFrequency::giveMe(const String &in, MFrequency::Ref &mr) {
 }
 
 Bool MFrequency::setOffset(const Measure &in) {
-  if (in.type() != Register((MFrequency *)0)) return False;
+  if (in.type() != Register(static_cast<MFrequency *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -190,7 +190,7 @@ String MFrequency::getRefString() const {
 }
 
 uInt MFrequency::myType() {
-  return Register((MFrequency *)0);
+  return Register(static_cast<MFrequency *>(0));
 }
 
 Quantity MFrequency::get(const Unit &un) const {

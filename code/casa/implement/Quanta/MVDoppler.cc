@@ -122,11 +122,11 @@ Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
 // Member functions
 
 uInt MVDoppler::type() const {
-  return Register((MVDoppler *)0);
+  return Register(static_cast<MVDoppler *>(0));
 }
 
 void MVDoppler::assert(const MeasValue &in) {
-  if (in.type() != Register((MVDoppler *)0)) {
+  if (in.type() != Register(static_cast<MVDoppler *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDoppler"));
   };
 }

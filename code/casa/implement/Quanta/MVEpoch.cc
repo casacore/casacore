@@ -146,11 +146,11 @@ Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
 //# Member functions
 
 uInt MVEpoch::type() const {
-  return Register((MVEpoch *)0);
+  return Register(static_cast<MVEpoch *>(0));
 }
 
 void MVEpoch::assert(const MeasValue &in) {
-  if (in.type() != Register((MVEpoch *)0)) {
+  if (in.type() != Register(static_cast<MVEpoch *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVEpoch"));
   };
 }

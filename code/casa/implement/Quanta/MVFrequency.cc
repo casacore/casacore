@@ -124,11 +124,11 @@ Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
 // Member functions
 
 uInt MVFrequency::type() const {
-  return Register((MVFrequency *)0);
+  return Register(static_cast<MVFrequency *>(0));
 }
 
 void MVFrequency::assert(const MeasValue &in) {
-  if (in.type() != Register((MVFrequency *)0)) {
+  if (in.type() != Register(static_cast<MVFrequency *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVFrequency"));
   };
 }

@@ -96,11 +96,11 @@ const String &MDirection::showMe() {
 }
 
 uInt MDirection::type() const {
-  return Register((MDirection *)0);
+  return Register(static_cast<MDirection *>(0));
 }
 
 void MDirection::assert(const Measure &in) {
-  if (in.type() != Register((MDirection *)0)) {
+  if (in.type() != Register(static_cast<MDirection *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDirection::showMe()));
   };
@@ -282,7 +282,7 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 }
 
 Bool MDirection::setOffset(const Measure &in) {
-  if (in.type() != Register((MDirection *)0)) return False;
+  if (in.type() != Register(static_cast<MDirection *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -306,7 +306,7 @@ String MDirection::getRefString() const {
 }
 
 uInt MDirection::myType() {
-  return Register((MDirection *)0);
+  return Register(static_cast<MDirection *>(0));
 }
 
 Bool MDirection::isModel() const {

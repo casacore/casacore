@@ -81,11 +81,11 @@ const String &Muvw::showMe() {
 }
 
 uInt Muvw::type() const {
-  return Register((Muvw *)0);
+  return Register(static_cast<Muvw *>(0));
 }
 
 void Muvw::assert(const Measure &in) {
-  if (in.type() != Register((Muvw *)0)) {
+  if (in.type() != Register(static_cast<Muvw *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    Muvw::showMe()));
   };
@@ -197,7 +197,7 @@ Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
 };
 
 Bool Muvw::setOffset(const Measure &in) {
-  if (in.type() != Register((Muvw *)0)) return False;
+  if (in.type() != Register(static_cast<Muvw *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -221,7 +221,7 @@ String Muvw::getRefString() const {
 }
 
 uInt Muvw::myType() {
-  return Register((Muvw *)0);
+  return Register(static_cast<Muvw *>(0));
 }
 
 Quantum<Vector<Double> > Muvw::get(const Unit &inunit) const {

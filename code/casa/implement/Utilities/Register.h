@@ -112,7 +112,7 @@
 // a pointer rather than a <em>value</em> for efficiency reasons. With a 
 // <em>value</em> parameter, it would be difficult to do things like:
 // <srcblock>
-//    Register((MyClass*)0);
+//    Register(static_cast<MyClass*>(0));
 // </srcblock>
 // to find the <src>Register</src> type id for a random class.
 template<class t> uInt Register(const t *);

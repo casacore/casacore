@@ -122,11 +122,11 @@ Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const 
 // Member functions
 
 uInt MVRadialVelocity::type() const {
-  return Register((MVRadialVelocity *)0);
+  return Register(static_cast<MVRadialVelocity *>(0));
 }
 
 void MVRadialVelocity::assert(const MeasValue &in) {
-  if (in.type() != Register((MVRadialVelocity *)0)) {
+  if (in.type() != Register(static_cast<MVRadialVelocity *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVRadialVelocity"));
   };
 }

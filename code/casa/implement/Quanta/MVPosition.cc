@@ -281,11 +281,11 @@ MVPosition &MVPosition::operator*=(Double right) {
 //# Member functions
 
 uInt MVPosition::type() const {
-  return Register((MVPosition *)0);
+  return Register(static_cast<MVPosition *>(0));
 }
 
 void MVPosition::assert(const MeasValue &in) {
-  if (in.type() != Register((MVPosition *)0)) {
+  if (in.type() != Register(static_cast<MVPosition *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVPosition"));
   };
 }

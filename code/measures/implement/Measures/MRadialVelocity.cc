@@ -86,11 +86,11 @@ const String &MRadialVelocity::showMe() {
 }
 
 uInt MRadialVelocity::type() const {
-  return Register((MRadialVelocity *)0);
+  return Register(static_cast<MRadialVelocity *>(0));
 }
 
 void MRadialVelocity::assert(const Measure &in) {
-  if (in.type() != Register((MRadialVelocity *)0)) {
+  if (in.type() != Register(static_cast<MRadialVelocity *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MRadialVelocity::showMe()));
   };
@@ -170,7 +170,7 @@ Bool MRadialVelocity::giveMe(const String &in, MRadialVelocity::Ref &mr) {
 }
 
 Bool MRadialVelocity::setOffset(const Measure &in) {
-  if (in.type() != Register((MRadialVelocity *)0)) return False;
+  if (in.type() != Register(static_cast<MRadialVelocity *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -194,7 +194,7 @@ String MRadialVelocity::getRefString() const {
 }
 
 uInt MRadialVelocity::myType() {
-  return Register((MRadialVelocity *)0);
+  return Register(static_cast<MRadialVelocity *>(0));
 }
 
 Quantity MRadialVelocity::get(const Unit &un) const {

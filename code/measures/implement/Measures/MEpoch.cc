@@ -76,11 +76,11 @@ const String &MEpoch::showMe() {
 }
 
 uInt MEpoch::type() const {
-  return Register((MEpoch *)0);
+  return Register(static_cast<MEpoch *>(0));
 }
 
 void MEpoch::assert(const Measure &in) {
-  if (in.type() != Register((MEpoch *)0)) {
+  if (in.type() != Register(static_cast<MEpoch *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEpoch::showMe()));
   };
@@ -188,7 +188,7 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
 }
 
 Bool MEpoch::setOffset(const Measure &in) {
-  if (in.type() != Register((MEpoch *)0)) return False;
+  if (in.type() != Register(static_cast<MEpoch *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -225,7 +225,7 @@ String MEpoch::getRefString() const {
 }
 
 uInt MEpoch::myType() {
-  return Register((MEpoch *)0);
+  return Register(static_cast<MEpoch *>(0));
 }
 
 Quantity MEpoch::get(const Unit &inunit) const {

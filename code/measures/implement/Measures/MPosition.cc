@@ -106,11 +106,11 @@ const String &MPosition::showMe() {
 }
 
 uInt MPosition::type() const {
-  return Register((MPosition *)0);
+  return Register(static_cast<MPosition *>(0));
 }
 
 void MPosition::assert(const Measure &in) {
-  if (in.type() != Register((MPosition *)0)) {
+  if (in.type() != Register(static_cast<MPosition *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MPosition::showMe()));
   };
@@ -178,7 +178,7 @@ Bool MPosition::giveMe(const String &in, MPosition::Ref &mr) {
 }
 
 Bool MPosition::setOffset(const Measure &in) {
-  if (in.type() != Register((MPosition *)0)) return False;
+  if (in.type() != Register(static_cast<MPosition *>(0))) return False;
   ref.set(in);
   return True;
 }
@@ -202,7 +202,7 @@ String MPosition::getRefString() const {
 }
 
 uInt MPosition::myType() {
-  return Register((MPosition *)0);
+  return Register(static_cast<MPosition *>(0));
 }
 
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {
