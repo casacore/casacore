@@ -40,27 +40,42 @@
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff.cc" demos="">
+// <reviewed reviewer="Ger van Diepen" date="2001/07/03" tests="tPoolStack.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
-// <li> <linkto class=ObjectPool>ObjectPool</linkto>
+// <li>
 // </prerequisite>
 //
 // <synopsis>
 // A PoolStack contains a set of pre-allocated Objects of the type
-// <src>T</src>. The stack is a very simple stack, without the
+// <src>T</src>, with a parameter <src>Key</src> (e.g. an object could be
+// a <src>Vector</src> of <src>T Double</src> with an <src>uInt Key</src>).
+// The stack is a very simple stack, without the
 // linking/unlinking of a normal Stack implementation.
 // This lightweight implementation was especially designed for use
 // with the <linkto class=ObjectPool>ObjectPool</linkto>
 // class, but can be used independently.
-// 
-// As an example, a <src><Vector<Double> ></src> PoolStack can
-// be used to pre-allocate some vectors of a specified length.
 //
-// Objects can be obtained with the <src>popVal()</src> method, and
-// returned with <src>push()</src>.
+// Objects can be obtained with the <src>get()</src> method, and
+// returned for re-use with <src>release()</src>.
+//
+// Objects are not initialised when popped. The user should never delete the
+// object returned by get; but return it to the pool.
 // </synopsis>
+//
+// <example>
+// <srcblock>
+//   // Create a pool of length 5 vectors
+//   PoolStack<Vector<Double>, uInt> pool5(5);
+//   // Get an element
+//   Vector<Double> *elem(pool5.get());
+//   // Use it
+//   (*elem)(2) = 27;
+//   // Release it
+//   pool5.release(elem);
+// </srcblock>
+// </example>
 //
 // <motivation>
 // To improve the speed for the auto differentiating class.
@@ -71,7 +86,7 @@
 // </templating>
 //
 // <templating arg=Key>
-//  <li> the class Key must be sortable to be used as a key in the Map
+//  <li> the class Key must be usable as a constructor argument for T
 // </templating>
 //
 // <todo asof="2001/06/07">
@@ -84,32 +99,35 @@ template <class T, class Key> class PoolStack {
   // Number of default stack entries.
   static const uInt NDEF=8;
   //# Constructors
-  // Create the stack
+  // Create the stack with the default Key
   PoolStack();
+  // Create the stack for the specified key
+  explicit PoolStack(const Key &key);
   // Delete the stack
   ~PoolStack();
 
   //# Member functions
   // Get a pointer to an object in the stack. The stack will be extended if
-  // no objects left.
-  // <group>
-  T *popVal(const Key &key);
-  // </group>
+  // no objects left. Extension is done with the NDEF number of elements.
+  // Different extension can be done manually with the addElements() method.
+  T *get() { if (!top_p) addElements(NDEF); return stack_p[--top_p]; };
 
   // Return an object to the stack for re-use
-  void push(T *obj);
+  void release(T *obj) {if (obj) stack_p[top_p++] = obj; };
 
   // Add n elements
   void addElements(const uInt n);
 
-  // Decimate the stack
+  // Decimate the stack by getting rid of all unused elements in it
   void clear();
 
   // Test if stack empty
   Bool empty() { return top_p == 0; };
 
-  // return the stack extend (for debugging use only)
-  uInt nelements() { return stack_p.nelements(); };
+  // Return the key belonging to the stack
+  const Key &key() const { return key_p; } 
+  // return the stack extend (for debugging use and checking mainly)
+  const uInt nelements() const { return stack_p.nelements(); };
 
 private:
   //# Data
@@ -117,6 +135,8 @@ private:
   uInt top_p;
   // The stack
   PtrBlock<T*> stack_p;
+  // The key belonging to this stack
+  Key key_p;
 
   //# Constructors
   // Copy and assignment constructors and assignment (not implemented)
