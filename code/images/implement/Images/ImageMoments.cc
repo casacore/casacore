@@ -132,6 +132,7 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
 template <class T>
 ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                       : os_p(other.os_p),
+                        pInImage_p(other.pInImage_p),
                         momentAxis_p(other.momentAxis_p),
                         momentAxisDefault_p(other.momentAxisDefault_p),
                         kernelTypes_p(other.kernelTypes_p),
@@ -164,13 +165,7 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
 //
 // Copy constructor
 //
-{
-   
-// Assign to image pointer 
-   
-   pInImage_p = other.pInImage_p;
-   
-}
+{}
 
 
 
