@@ -1,5 +1,5 @@
 //# AipsrcValue.h: Class to read values from the  Aipsrc general resource files
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,8 @@
 //# Forward declarations
 class Unit;
 
-// <summary> Class to read values from the Aipsrc general resource files </summary>
+// <summary> Class to read values from the Aipsrc general resource files
+// </summary>
 
 // <use visibility=export>
 
@@ -215,8 +216,8 @@ public:
 
 private:
   //# Data
-  // Method to get reference to static AipsrcValue objcet
-  static AipsrcValue<T> &init();
+  // The global AipsrcValue object
+  static AipsrcValue myp_p;
   // Register list
   // <group>
   Block<T> tlst;
@@ -233,7 +234,34 @@ private:
   //# General member functions
 };
 
+#define AipsrcValue_Bool AipsrcValue
+
+// <summary> Specialization of AipsrcValue for Bool </summary>
+
+// <synopsis>
+// <note role=warning>
+// The name <src>AipsrcValue_Bool</src> is only for cxx2html
+// documentation problems. Use <src>AipsrcValue</src> in your code.</note>
+// </synopsis>
+
+template <> class AipsrcValue_Bool<Bool> : public Aipsrc {
+public:
+  AipsrcValue_Bool();
+  ~AipsrcValue_Bool();
+  static Bool find(Bool &value, const String &keyword);
+  static Bool find(Bool &value, const String &keyword, const Bool &deflt);
+  static uInt registerRC(const String &keyword, const Bool &deflt);
+  static const Bool &get(uInt keyword);
+  static void set(uInt keyword, const Bool &deflt);
+  static void save(uInt keyword);
+private:
+  static AipsrcValue_Bool myp_p;
+  Block<Bool> tlst;
+  Block<String> ntlst;
+  AipsrcValue_Bool<Bool> &operator=(const AipsrcValue_Bool<Bool> &other);
+  AipsrcValue_Bool(const AipsrcValue_Bool<Bool> &other);
+};
+
+#undef AipsrcValue_Bool
 
 #endif
-
-
