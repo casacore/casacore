@@ -35,6 +35,8 @@
 #include <aips/Measures/MPosition.h>
 #include <trial/Measures/MBaseline.h>
 #include <aips/Measures/MCFrame.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 
 main()
 {
@@ -72,6 +74,46 @@ main()
 	cout << "Back      " << bconv() << endl <<
 	  " as " << bconvb(bconv()) << endl;
 
+	Vector<Double> tvec(3);
+	tvec = 0.0;
+	for (uInt i=MBaseline::ITRF; i<MBaseline::N_Types; i++) {
+	  for (uInt j=MBaseline::ITRF; j<MBaseline::N_Types; j++) {
+	    MBaseline::Ref rin(i, mf);
+	    MBaseline::Ref rout(j, mf);
+	    MBaseline mb0(mvb0, rin);
+	    MBaseline::Convert forw(rin, rout);
+	    MBaseline::Convert backw(rout, rin);
+	    if (!allNearAbs(mb0.getValue().getValue().ac() -
+			 backw(forw(mb0)).getValue().getValue().ac(), 
+			 tvec.ac(), 1e-5)) {
+	      cout << MBaseline::showType(i) << " to " <<
+		MBaseline::showType(j) << ": " <<
+		mb0.getValue().getValue().ac() -
+		backw(forw(mb0)).getValue().getValue().ac() << endl;
+	    };
+	  };
+	};
+ 	{
+	  MVDirection mvd0(0.5, 0.5, 0.5);
+	  for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
+	    for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
+	      MDirection::Ref rin(i, mf);
+	      MDirection::Ref rout(j, mf);
+	      MDirection mb0(mvd0, rin);
+	      MDirection::Convert forw(rin, rout);
+	      MDirection::Convert backw(rout, rin);
+	      if (!allNearAbs(mb0.getValue().getValue().ac() -
+			      backw(forw(mb0)).getValue().getValue().ac(), 
+			      tvec.ac(), 1e-5)) {
+		cout << MDirection::showType(i) << " to " <<
+		  MDirection::showType(j) << ": " <<
+		  mb0.getValue().getValue().ac() -
+		  backw(forw(mb0)).getValue().getValue().ac() << endl;
+	      };
+	    };
+	  };
+	}
+       
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } end_try;
