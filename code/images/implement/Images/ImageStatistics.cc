@@ -1194,9 +1194,11 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 //      imageNavigator.subSection(blc_p, trc_p);
 //      latticeShape = imageNavigator.subLatticeShape();
+// Temporary FUDGE
+
       latticeShape = imageNavigator.latticeShape();
       blc_p = 0;
-      trc_p = 0;
+      trc_p = pInImage_p->shape() - 1;
 
 // Create the image iterator
 
