@@ -121,8 +121,9 @@ class SpectralEstimate {
   // Generate the estimates for a profile and return the 
   // list found.  The der pointer is
   // meant for debugging, and can return the derivative profile.
-  const SpectralList &estimate(const Vector<Float> &prof,
-			       Vector<Float> *der = 0);
+  template <class MT>
+    const SpectralList &estimate(const Vector<MT> &prof,
+				 Vector<MT> *der = 0);
 
   // Return the list found.
   const SpectralList &list() const {return slist_p; };
@@ -180,11 +181,14 @@ class SpectralEstimate {
 
   //# Member functions
   // Get the window or the total spectrum
-  uInt window(const Vector<Float> &prof);
+  template <class MT>
+    uInt window(const Vector<MT> &prof);
   // Get the second derivatives
-  void findc2(const Vector<Float> &prof);
+  template <class MT>
+    void findc2(const Vector<MT> &prof);
   // Find the Gaussians
-  void findga(const Vector<Float> &prof);
+  template <class MT>
+    void findga(const Vector<MT> &prof);
 };
 
 #endif
