@@ -1,5 +1,5 @@
 //# ImageSummary.h: List descriptive information from an image 
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,7 +145,7 @@ public:
 // Retrieve axis names in pixel axis order.
    Vector<String> axisNames () const;
 
-// Retrieve reference pixels
+// Retrieve reference pixels (note 1 relative)
    Vector<Double> referencePixels () const;
 
 // Retrieve reference values in pixel axis order. 
