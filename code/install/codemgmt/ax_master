@@ -4090,3 +4090,4 @@
 14 065 src mv trial/implement/DisplayDatas/DDDRectangle.cc trialdisplay/implement/DisplayDatas/DDDRectangle.cc
 14 065 src mv trial/implement/DisplayDatas/DisplayData.cc trialdisplay/implement/DisplayDatas/DisplayData.cc
 14 065 src mv trial/implement/DisplayDatas/DisplayMethod.cc trialdisplay/implement/DisplayDatas/DisplayMethod.cc
+14 065 src mv trial/implement/DisplayDatas/DrawingDisplayData.cc trialdisplay/implement/DisplayDatas/DrawingDisplayData.cc
