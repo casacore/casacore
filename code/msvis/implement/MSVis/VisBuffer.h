@@ -45,6 +45,12 @@ class ROVisibilityIterator;
 // overheads for processing per visibility point or spectrum.
 //</synopsis>
 
+//<todo>
+// reconcile vis/visCube usage: visCube, flagCube and weightMatrix
+// are currently only correct when this VisBuffer got them from a
+// VisIter, operations like -=, freqAverage() are only done for
+// visibility() and flag().
+//</todo>
 class VisBuffer
 {
 public:
@@ -99,6 +105,8 @@ public:
   Int fieldId() const {return fieldIdOK_p ? fieldId_p : This->fillFieldId();}
   Matrix<Bool>& flag() { return flagOK_p ? flag_p : fillFlag();}
   const Matrix<Bool>& flag() const { return This->flag();}
+  Cube<Bool>& flagCube() { return flagCubeOK_p ? flagCube_p : fillFlagCube();}
+  const Cube<Bool>& flagCube() const { return This->flagCube();}
   Vector<Bool>& flagRow() {return flagRowOK_p ? flagRow_p : fillFlagRow();}
   const Vector<Bool>& flagRow() const { return This->flagRow();}
   Vector<Double>& frequency() {return freqOK_p ? frequency_p : fillFreq();}
@@ -107,7 +115,7 @@ public:
   { return phaseCenterOK_p ? phaseCenter_p : fillPhaseCenter();}
   const MDirection& phaseCenter() const {return This->phaseCenter_p;}
   Int polFrame() const {return polFrameOK_p ? polFrame_p : This->fillPolFrame();}
-  //#Vector<Int>& polTypes() { return polTypesOK_p ? polTypes_p : fillPolTypes();}
+  Vector<Int>& corrType() { return corrTypeOK_p ? corrType_p : fillCorrType();}
   Vector<Float>& sigma() {return sigmaOK_p ? sigma_p : fillSigma();}
   const Vector<Float>& sigma() const {return This->sigma();}
   Int spectralWindow() const {return spwOK_p ? spectralWindow_p : This->fillSpW();}
@@ -118,8 +126,14 @@ public:
   Matrix<CStokesVector>& visibility() 
   { return visOK_p ? visibility_p : fillVis();}
   const Matrix<CStokesVector>& visibility() const {return This->visibility();}
+  Cube<Complex>& visCube() 
+  { return visCubeOK_p ? visCube_p : fillVisCube();}
+  const Cube<Complex>& visCube() const {return This->visCube();}
   Vector<Float>& weight() {return weightOK_p ? weight_p : fillWeight();}
   const Vector<Float>& weight() const {return This->weight();}
+  Matrix<Float>& weightMatrix() 
+  {return weightMatOK_p ? weightMat_p : fillWeightMat();}
+  const Matrix<Float>& weightMatrix() const {return This->weightMatrix();}
   //</group>
 
   // Frequency average the buffer
@@ -139,17 +153,20 @@ private:
   Vector<SquareMatrix<Complex,2> >& fillCjones();
   Int& fillFieldId();
   Matrix<Bool>& fillFlag();
+  Cube<Bool>& fillFlagCube();
   Vector<Bool> & fillFlagRow();
   Vector<Double>& fillFreq();
   MDirection& fillPhaseCenter();
   Int& fillPolFrame();
-  //Vector<Int>& fillPolTypes();
+  Vector<Int>& fillCorrType();
   Vector<Float>& fillSigma();
   Int& fillSpW();
   Vector<Double>& fillTime();
   Vector<RigidVector<Double,3> >& filluvw();
   Matrix<CStokesVector>& fillVis();
+  Cube<Complex>& fillVisCube();
   Vector<Float>& fillWeight();
+  Matrix<Float>& fillWeightMat();
 
   ROVisibilityIterator* visIter_p;
   Bool twoWayConnection_p;
@@ -159,6 +176,7 @@ private:
   Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
     fieldIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, phaseCenterOK_p, polFrameOK_p,
     sigmaOK_p, spwOK_p, timeOK_p, uvwOK_p, visOK_p, weightOK_p;
+  Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p;
 
   // cached variables
   Int nChannel_p, nRow_p;
@@ -170,13 +188,17 @@ private:
   Vector<Double> frequency_p;
   MDirection phaseCenter_p;
   Int polFrame_p;
-  Vector<Int> polTypes_p;
+  Vector<Int> corrType_p;
   Vector<Float> sigma_p;
   Int spectralWindow_p;
   Vector<Double> time_p;
   Vector<RigidVector<Double,3> > uvw_p;
   Matrix<CStokesVector> visibility_p;
   Vector<Float> weight_p;
+  Cube<Bool> flagCube_p;
+  Cube<Complex> visCube_p;
+  Matrix<Float> weightMat_p;
+
 };
 
 #endif

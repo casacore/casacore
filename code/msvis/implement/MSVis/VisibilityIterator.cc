@@ -230,9 +230,11 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colAntenna2.reference(other.colAntenna2);
   colFieldID.reference(other.colFieldID);
   colChanFreq.reference(other.colChanFreq);
+  colCorrType.reference(other.colCorrType);
   colTime.reference(other.colTime);
   colVis.reference(other.colVis);
   colSigma.reference(other.colSigma);
+  colWeightSpectrum.reference(other.colWeightSpectrum);
   colWeight.reference(other.colWeight);
   colFlag.reference(other.colFlag);
   colFlagRow.reference(other.colFlagRow);
@@ -394,6 +396,8 @@ void ROVisibilityIterator::attachColumns()
   colFieldID.attach(selTable_p,MS::columnName(MS::FIELD_ID));
   colChanFreq.attach(ms.spectralWindow(),
 		     MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
+  colCorrType.attach(ms.spectralWindow(),
+		     MSSpectralWindow::columnName(MSSpectralWindow::CORR_TYPE));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
   colVis.attach(selTable_p,MS::columnName(MS::DATA));
   colUVW.attach(selTable_p,MS::columnName(MS::UVW));
@@ -401,6 +405,9 @@ void ROVisibilityIterator::attachColumns()
   colFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
   colSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   colWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
+  const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
+  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) 
+    colWeightSpectrum.attach(selTable_p,MS::columnName(MS::WEIGHT_SPECTRUM));
   colDirection.attach(ms.field(),MSField::columnName(MSField::PHASE_DIR));
   colAntPos.attach(ms.antenna(),MSAntenna::columnName(MSAntenna::POSITION));
   colMount.attach(ms.antenna(),MSAntenna::columnName(MSAntenna::MOUNT));
@@ -442,6 +449,19 @@ Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
     chan(i)=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw]+i;
   }
   return chan;
+}
+
+Vector<Int>& ROVisibilityIterator::corrType(Vector<Int>& corrTypes) const
+{
+  colCorrType.get(curSpectralWindow_p,corrTypes,True);
+  return corrTypes;
+}
+
+Cube<Bool>& ROVisibilityIterator::flag(Cube<Bool>& flags) const
+{
+  if (useSlicer_p) colFlag.getColumn(slicer_p,flags,True);
+  else colFlag.getColumn(flags,True);
+  return flags;
 }
 
 Matrix<Bool>& ROVisibilityIterator::flag(Matrix<Bool>& flags) const
@@ -512,7 +532,16 @@ const MDirection& ROVisibilityIterator::phaseCenter() const
 Vector<Double>& ROVisibilityIterator::time(Vector<Double>& t) const
 {
   t.resize(curNumRow_p);
-  colTime.getColumn(t); return t;
+  colTime.getColumn(t); 
+  return t;
+}
+
+Cube<Complex>& 
+ROVisibilityIterator::visibility(Cube<Complex>& vis) const
+{
+  if (useSlicer_p) colVis.getColumn(slicer_p,vis,True);
+  else colVis.getColumn(vis,True);
+  return vis;
 }
 
 Matrix<CStokesVector>& 
@@ -521,7 +550,6 @@ ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis) const
   // We do selection on the fly here and
   // in related member funtions (frequency, flag etc.)
   // get out spectrum from start to start+channelGroupSize-1
-  Int spw = curSpectralWindow_p;
   if (useSlicer_p) colVis.getColumn(slicer_p,This->visCube_p,True);
   else colVis.getColumn(This->visCube_p,True);
   vis.resize(channelGroupSize_p,curNumRow_p);
@@ -699,6 +727,13 @@ Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
   return wt;
 }
 
+Matrix<Float>& ROVisibilityIterator::weightSpectrum(Matrix<Float>& wt) const
+{
+  if (useSlicer_p) colWeightSpectrum.getColumn(slicer_p,wt,True);
+  else colWeightSpectrum.getColumn(wt,True);
+  return wt;
+}
+
 ROVisibilityIterator& 
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
@@ -851,7 +886,6 @@ void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
   if (flag.nrow()!=channelGroupSize_p) {
     throw(AipsError("VisIter::setFlag(flag) - inconsistent number of channels"));
   }
-  Int spw = curSpectralWindow_p;
   
   for (Int row=0; row<curNumRow_p; row++) {
     Bool* p=pflagmat;

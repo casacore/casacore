@@ -143,6 +143,9 @@ public:
   // Return the current FieldId
   Int fieldId() const;
 
+  // Return flag for each polarization, channel and row
+  Cube<Bool>& flag(Cube<Bool>& flags) const;
+
   // Return flag for each channel & row
   Matrix<Bool>& flag(Matrix<Bool>& flags) const;
 
@@ -158,6 +161,9 @@ public:
   // Return frame for polarization (returns PolFrame enum)
   Int polFrame() const;
 
+  // Return the correlation type (returns Stokes enums)
+  Vector<Int>& corrType(Vector<Int>& corrTypes) const;
+
   // Return sigma
   Vector<Float>& sigma(Vector<Float>& sig) const;
 
@@ -167,7 +173,12 @@ public:
   // Return MJD 
   Vector<Double>& time(Vector<Double>& t) const;
 
-  // Return the visibility 4-vector of polarizations for each channel
+  // Return the visibilities as found in the MS, Cube(npol,nchan,nrow).
+  Cube<Complex>& visibility(Cube<Complex>& vis) const;
+
+  // Return the visibility 4-vector of polarizations for each channel.
+  // If the MS doesn't contain all polarizations, it is assumed it
+  // contains one or two parallel hand polarizations.
   Matrix<CStokesVector>& visibility(Matrix<CStokesVector>& vis) const;
 
   // Return u,v and w (in meters)
@@ -176,6 +187,9 @@ public:
 
   // Return weight
   Vector<Float>& weight(Vector<Float>& wt) const;
+
+  // Return weight_spectrum
+  Matrix<Float>& weightSpectrum(Matrix<Float>& wt) const;
 
   // Return True if FieldId/Source has changed since last iteration
   Bool newFieldId() const;
@@ -274,6 +288,7 @@ protected:
   ROArrayColumn<Double> colChanFreq;
   ROScalarColumn<Double> colTime;
   ROScalarColumn<Float> colWeight;
+  ROArrayColumn<Float> colWeightSpectrum;
   ROArrayColumn<Complex> colVis;
   ROArrayColumn<Float> colSigma;
   ROArrayColumn<Bool> colFlag;
@@ -283,6 +298,7 @@ protected:
   ROArrayColumn<Double> colDirection;
   ROArrayColumn<Double> colAntPos;
   ROScalarColumn<String> colMount;
+  ROArrayColumn<Int> colCorrType;
 };
 
 inline Bool ROVisibilityIterator::more() const { return more_p;}
@@ -330,19 +346,35 @@ public:
   VisibilityIterator & operator++(int);
   VisibilityIterator & operator++();
 
-  // Set/modify the weights in the data
+  // Set/modify the weights
   void setWeight(const Vector<Float>& wt);
+
+  // Set/modify the weight spectrum
+  void setWeightSpectrum(const Matrix<Float>& wt);
 
   // Set/modify the flags in the data.
   // This will flag all channels in the original data that contributed to
   // the output channel in the case of channel averaging.
+  // All polarizations have the same flag value.
   void setFlag(const Matrix<Bool>& flag);
+
+  // Set/modify the flags in the data.
+  // This sets the flags as found in the MS, Cube(npol,nchan,nrow),
+  // where nrow is the number of rows in the current iteration (given by
+  // nRow()).
+  void setFlag(const Cube<Bool>& flag);
 
   // Set/modify the visibilities.
   // This is possibly only for a 'reference' MS which has a new DATA column.
-  // The length of the vector should equal the selected number of channels
+  // The first axis of the matrix should equal the selected number of channels
   // in the original MS.
+  // If the MS does not contain all polarizations, only the parallel
+  // hand polarizations are used.
   void setVis(const Matrix<CStokesVector>& vis);
+
+  // Set/modify the visibilities
+  // This sets the data as found in the MS, Cube(npol,nchan,nrow).
+  void setVis(const Cube<Complex>& vis);
 
 protected:
   virtual void attachColumns();
@@ -350,6 +382,7 @@ protected:
   // column access functions
   ArrayColumn<Complex> RWcolVis;
   ScalarColumn<Float> RWcolWeight;
+  ArrayColumn<Float> RWcolWeightSpectrum;
   ArrayColumn<Bool> RWcolFlag;
 
 };
