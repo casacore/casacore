@@ -103,6 +103,9 @@ private:
 			    uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const ROMSMainColumns& otherCols) const;
+  Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
+  Int copyObservation(const MSObservation& otherObs, 
+		      Vector<Int>& otherObsId);
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyField(const MSField& otherFld);

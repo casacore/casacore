@@ -212,9 +212,14 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     && otherFlagCat.isDefined(0);
   const ROScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
   ScalarColumn<Bool>& thisFlagRow = flagRow();
+  const ROScalarColumn<Int>& otherObsId=otherMainCols.observationId();
+  Vector<Int> obsIds=otherObsId.getColumn();
+  Int numObsId=copyObservation(otherMS.observation(), obsIds);
+  copyPointing(otherMS.pointing(), newAntIndices);
+
   // This needs to be fixed when I relaxe the restriction that the input MS
   // must have been created using the uvfits filler.
-  const Int curObsId =  observationId()(curRow-1);
+  const Int curObsId =  observationId()(curRow-1) + 1;
   ScalarColumn<Int>& thisObsId = observationId();
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& thisWeightSp = weightSpectrum();
@@ -235,7 +240,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisTimeCen.put(curRow, otherTimeCen, r);
     thisScan.put(curRow, otherScan, r);
     thisArrayId.put(curRow, otherArrayId, r);
-    thisObsId.put(curRow, curObsId);
+    thisObsId.put(curRow, obsIds[r]);
     thisStateId.put(curRow, otherStateId, r);
     thisUvw.put(curRow, otherUvw, r);
     if(itsChanReversed[otherDDId(r)]){
@@ -320,6 +325,82 @@ void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
     }
   }
 }
+
+
+Bool MSConcat::copyPointing(const MSPointing& otherPoint,const 
+			    Block<uInt>& newAntIndices ){
+
+  LogIO os(LogOrigin("MSConcat", "concatenate"));
+
+  if(itsMS.pointing().isNull()){
+    //We do not have a valid pointing table so we don't care
+    return False;
+  }
+  if(otherPoint.isNull()){
+
+    os << LogIO::WARN 
+       << "No valid pointing table in ms that is being concatenated" 
+       << LogIO::POST;
+    os << LogIO::WARN 
+       << "It may be a problem for e.g mosaicing, if that is the case: " 
+       << LogIO::POST;
+    os << LogIO::WARN 
+       << "please delete the rows in the POINTING table of the resulting ms " 
+       << LogIO::POST;
+    os << LogIO::WARN 
+       << "imager then will use the FIELD table to get the pointing info " 
+       << LogIO::POST;
+    return False;
+
+  }
+     
+  MSPointing& point=itsMS.pointing();
+  Int actualRow=point.nrow()-1;
+  Int origNRow= actualRow+1;
+  Int rowToBeAdded=otherPoint.nrow();
+  TableRow pointRow(point);
+  const ROTableRow otherPointRow(otherPoint);
+  for (Int k=0; k <  rowToBeAdded; ++k){
+    ++actualRow;
+    point.addRow();
+    pointRow.put(actualRow, otherPointRow.get(k, True));
+
+  }
+
+  //Now reassigning antennas to the new indices of the ANTENNA table
+  MSPointingColumns pointCol(point);
+  Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
+  for (Int k=origNRow; k <  (origNRow+rowToBeAdded); ++k){
+    pointCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+  }
+  return True;
+
+}
+
+
+Int MSConcat::copyObservation(const MSObservation& otherObs, 
+			      Vector<Int>& otherObsId){
+
+  Int obsId=-1;
+  MSObservation& obs=itsMS.observation();
+  TableRow obsRow(obs);
+  Int actualRow=obs.nrow()-1;
+  const ROTableRow otherObsRow(otherObs);
+  for (uInt k=0; k < otherObsId.nelements() ; ++k){ 
+    if(obsId != otherObsId[k]){
+      obsId=otherObsId[k];
+      obs.addRow();
+      ++actualRow;
+      obsRow.put(actualRow, otherObsRow.get(obsId, True));
+      
+    }
+
+    otherObsId[k]=actualRow;
+  }
+  return itsMS.observation().nrow();
+
+}
+
 
 Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 					 const MSFeed& otherFeed) {
