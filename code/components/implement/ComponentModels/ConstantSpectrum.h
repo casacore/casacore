@@ -1,4 +1,4 @@
-//# ConstantSpectrum.h:
+//# ConstantSpectrum.h: Model the spectral variation with a constant
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,48 +32,76 @@
 #include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Measures/MFrequency.h>
 
-template <class T> class Vector;
 class RecordInterface;
+class String;
+template <class T> class Flux;
+template <class T> class Vector;
 
-// <summary></summary>
+// <summary>Model the spectral variation with a constant</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tConstantSpectrum" demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> <linkto class="SpectralModel">SpectralModel</linkto>
 // </prerequisite>
 //
-// <etymology>
-// </etymology>
-//
 // <synopsis>
+// This class models the spectral variation of a component as constant,
+// ie. unchanging with frequency. It is the simplest possible model for
+// spectral variation. 
+
+// Because the flux is constant with frequency the concept of a reference
+// frequency is meaningless with this class. But it can still be accessed using
+// the <src>refFrequency</src> and <src>setRefFrequency</src>. However changing
+// its value will not affect the behaviour of this class. For this reason the
+// <src>fromRecord</src> function will not parse the frequency field of the
+// supplied record and the <src>toRecord</src> function will not add a
+// frequency field to the generated Record.
+
+// This class does not have any parameters and the <src>nParameters</src>
+// function will return zero. It is an error that will generate an exception
+// (in Debug mode) to call the <src>setParameters</src> and
+// <src>parameters</src> functions with anything other than a zero length
+// vector.
+
+// The <src>sample</src> function always scales the supplied flux by 1. In
+// other words the input flux is always the same as the returned value for all
+// frequencies and polarisations.
+
 // </synopsis>
 //
 // <example>
+// Its hard to think of a good example for this class as it is basically does
+// nothing! This example is coded in the file tConstantSpectrum.cc
+// <h4>Example 1:</h4>
+// In this example the spectral variation of a component is set to
+// to a constant value.
+// <srcblock>
+// SkyComponent myComp(...);
+// ...
+// if (myComp.spectrum().type() != ComponentType::CONSTANT_SPECTRUM) {
+//   myComp.spectrum() = ConstantSpectrum();
+// }
+// </srcblock>
 // </example>
 //
 // <motivation>
+// A ConstantSpectrum class is needed for users who are not interested in
+// modelling any spectral variation in there components.
 // </motivation>
 //
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-//
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/05/18">
+//   <li> Nothing I hope!
 // </todo>
 
 class ConstantSpectrum: public SpectralModel
 {
 public:
+  // The default constructor is the only one you really need as this class has
+  // no parameters!
   ConstantSpectrum();
 
   // The copy constructor uses copy semantics
@@ -114,11 +142,12 @@ public:
   virtual void parameters(Vector<Double> & spectralParms) const;
   // </group>
 
-  // This functions convert between a RecordInterface and a SpectralModel. This
-  // way derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish.  They
-  // return False if the RecordInterface is malformed and append an error
-  // message to the supplied string giving the reason.
+  // These functions convert between a record and a ConstantSpectrum. These
+  // functions define how a spectral model is represented in glish.  A
+  // ConstantSpectrum class is defined by the record:
+  // <src>[type='constantspectrum']</src>. No reference frequency field is
+  // necessary.  These functions return False if the record is malformed and
+  // append an error message to the supplied string giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
@@ -129,7 +158,10 @@ public:
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const;
+
 private:
+  //# needed so that the refFrequency function can return a reference to
+  //# something.
   MFrequency itsRefFreq;
 };
 #endif
