@@ -31,6 +31,7 @@
 
 #include <aips/aips.h>
 
+class Record;
 class String;
 template<class T> class Vector;
 
@@ -91,14 +92,29 @@ template<class T> class Vector;
 // form of the plot to vary.
 // </motivation>
 //
-// <todo asof="1997/12/31">
+// <todo asof="1997/1/15">
 //   <li> Add the missing PGPLOT functions.
+//   <li> Emulate band as well as curs?
 // </todo>
 
 class PGPlotterInterface
 {
 public:
     virtual ~PGPlotterInterface();
+
+    // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it
+    // puts a message in the message line. By default it sends it to the logger.
+    // In any event, this is intended for one liner helpful messages (e.g.
+    // saying which keys to press to mark a spectrum).
+    virtual void message(const String &text);
+
+    // This is an emulated standard PGPLOT command. It returns a record
+    // containing the fields:
+    // <srcblock>
+    // [ok=Bool, x=Float, y=Float, ch=String];
+    // If the remote device cannot do cursor feedback, ok==F.
+    // </srcblock>
+    virtual Record curs() = 0;
 
     // Standard PGPLOT commands. Documentation for the individual commands
     // can be found in the Glish manual and in the standard PGPLOT documentation

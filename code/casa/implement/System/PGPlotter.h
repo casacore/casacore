@@ -118,6 +118,20 @@ public:
     // True if it is OK to plot to this object.
     Bool isAttached() const;
 
+    // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it
+    // puts a message in the message line. By default it sends it to the logger.
+    // In any event, this is intended for one liner helpful messages (e.g.
+    // saying which keys to press to mark a spectrum).
+    virtual void message(const String &text);
+
+    // This is an emulated standard PGPLOT command. It returns a record
+    // containing the fields:
+    // <srcblock>
+    // [ok=Bool, x=Float, y=Float, ch=String];
+    // If the remote device cannot do cursor feedback, ok==F.
+    // </srcblock>
+    virtual Record curs();
+
     // Standard PGPLOT commands. Documentation for the individual commands
     // can be found in the Glish manual and in the standard PGPLOT documentation
     // which may be found at <src>http://astro.caltech.edu/~tjp/pgplot/</src>.

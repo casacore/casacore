@@ -29,6 +29,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Containers/Record.h>
 
 PGPlotter::PGPlotter() : worker_p(0)
 {
@@ -50,6 +51,18 @@ PGPlotter &PGPlotter::operator=(const PGPlotter &other)
 PGPlotter::~PGPlotter()
 {
     // Nothing
+}
+
+void PGPlotter::message(const String &text)
+{
+    ok();
+    worker_p->message(text);
+}
+
+Record PGPlotter::curs()
+{
+    ok();
+    return worker_p->curs();
 }
 
 void PGPlotter::arro(Float x1, Float y1, Float x2, Float y2)

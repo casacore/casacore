@@ -27,8 +27,18 @@
 //# $Id$
 
 #include <trial/Tasking/PGPlotterInterface.h>
+#include <aips/Logging/LogIO.h>
 
 PGPlotterInterface::~PGPlotterInterface()
 {
     // Nothing
+}
+
+void PGPlotterInterface::message(const String &text)
+{
+    // On the logger we want to suppres blank lines.
+    if (text != "") {
+	LogIO os;
+	os << text;
+    }
 }
