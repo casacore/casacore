@@ -248,6 +248,10 @@ public:
   // An empty string is returned if no default pixelmask.
   virtual String getDefaultMask() const;
 
+  // Use the mask as specified.
+  // If a mask was already in use, it is replaced by the new one.
+  virtual void useMask (MaskSpecifier = MaskSpecifier());
+
   // Function to change the name of the Table file on disk.
   // PagedImage is given a file name at construction time.  You may change
   // that name here.
