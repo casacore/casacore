@@ -1,5 +1,5 @@
 //# String.cc: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997
+//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1242,11 +1242,11 @@ istream& operator>>(istream& s, String& x)
     return s;
   }
 #endif
-  char ch;
+  int ch;
   int i = 0;
   x.rep = Sresize(x.rep, 20);
   register streambuf *sb = s.rdbuf();
-  while ((int)(ch = sb->sbumpc()) != EOF)
+  while ((ch = sb->sbumpc()) != EOF)
   {
     if (isspace(ch))
       break;
@@ -1257,7 +1257,7 @@ istream& operator>>(istream& s, String& x)
   x.rep->s[i] = 0;
   x.rep->len = i;
   if (i == 0) s.clear(ios::failbit|s.rdstate());
-  if ((int)ch == EOF) s.clear(ios::eofbit|s.rdstate());
+  if (ch == EOF) s.clear(ios::eofbit|s.rdstate());
   return s;
 }
 
