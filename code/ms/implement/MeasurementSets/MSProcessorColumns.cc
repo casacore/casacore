@@ -25,38 +25,107 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSProcessorColumns.h>
+#include <aips/MeasurementSets/NewMSProcessor.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
+#include <aips/Utilities/String.h>
 
-NewMSProcessorColumns::NewMSProcessorColumns(NewMSProcessor& msProcessor):
-flagRow_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::FLAG_ROW)),
-modeId_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::MODE_ID)),
-type_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::TYPE)),
-typeId_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::TYPE_ID)),
-subType_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::SUB_TYPE))
+RONewMSProcessorColumns::
+RONewMSProcessorColumns(const NewMSProcessor& msProcessor):
+  flagRow_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::FLAG_ROW)),
+  modeId_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::MODE_ID)),
+  type_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::TYPE)),
+  typeId_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::TYPE_ID)),
+  subType_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::SUB_TYPE)),
+  passId_p()
 {
-  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
-  const String& passId=NewMSProcessor::columnName(NewMSProcessor::PASS_ID);
-  if (cds.isDefined(passId)) passId_p.attach(msProcessor,passId);
-}
-
-NewMSProcessorColumns::~NewMSProcessorColumns() {}
-
-RONewMSProcessorColumns::RONewMSProcessorColumns(const NewMSProcessor& msProcessor):
-flagRow_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::FLAG_ROW)),
-modeId_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::MODE_ID)),
-type_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::TYPE)),
-typeId_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::TYPE_ID)),
-subType_p(msProcessor,NewMSProcessor::columnName(NewMSProcessor::SUB_TYPE))
-{
-  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
-  const String& passId=NewMSProcessor::columnName(NewMSProcessor::PASS_ID);
-  if (cds.isDefined(passId)) passId_p.attach(msProcessor,passId);
+  attachOptionalCols(msProcessor);
 }
 
 RONewMSProcessorColumns::~RONewMSProcessorColumns() {}
 
+RONewMSProcessorColumns::RONewMSProcessorColumns():
+  flagRow_p(),
+  modeId_p(),
+  type_p(),
+  typeId_p(),
+  subType_p(),
+  passId_p()
+{
+}
 
+void RONewMSProcessorColumns::attach(const NewMSProcessor& msProcessor)
+{
+  flagRow_p.attach(msProcessor, NewMSProcessor::
+		   columnName(NewMSProcessor::FLAG_ROW));
+  modeId_p.attach(msProcessor, NewMSProcessor::
+		  columnName(NewMSProcessor::MODE_ID));
+  type_p.attach(msProcessor, NewMSProcessor::
+		columnName(NewMSProcessor::TYPE));
+  typeId_p.attach(msProcessor, NewMSProcessor::
+		  columnName(NewMSProcessor::TYPE_ID));
+  subType_p.attach(msProcessor, NewMSProcessor::
+		   columnName(NewMSProcessor::SUB_TYPE));
+  attachOptionalCols(msProcessor);
+}
 
+void RONewMSProcessorColumns::
+attachOptionalCols(const NewMSProcessor& msProcessor)
+{
+  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
+  const String& passId=NewMSProcessor::columnName(NewMSProcessor::PASS_ID);
+  if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
+}
+
+NewMSProcessorColumns::NewMSProcessorColumns(NewMSProcessor& msProcessor):
+  RONewMSProcessorColumns(msProcessor),
+  flagRow_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::FLAG_ROW)),
+  modeId_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::MODE_ID)),
+  type_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::TYPE)),
+  typeId_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::TYPE_ID)),
+  subType_p(msProcessor, NewMSProcessor::columnName(NewMSProcessor::SUB_TYPE))
+{
+  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
+  const String& passId=NewMSProcessor::columnName(NewMSProcessor::PASS_ID);
+  if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
+}
+
+NewMSProcessorColumns::~NewMSProcessorColumns() {}
+
+NewMSProcessorColumns::NewMSProcessorColumns():
+  RONewMSProcessorColumns(),
+  flagRow_p(),
+  modeId_p(),
+  type_p(),
+  typeId_p(),
+  subType_p(),
+  passId_p()
+{
+}
+
+void NewMSProcessorColumns::attach(NewMSProcessor& msProcessor)
+{
+  RONewMSProcessorColumns::attach(msProcessor);
+  flagRow_p.attach(msProcessor, NewMSProcessor::
+		   columnName(NewMSProcessor::FLAG_ROW));
+  modeId_p.attach(msProcessor, NewMSProcessor::
+		  columnName(NewMSProcessor::MODE_ID));
+  type_p.attach(msProcessor, NewMSProcessor::
+		columnName(NewMSProcessor::TYPE));
+  typeId_p.attach(msProcessor, NewMSProcessor::
+		  columnName(NewMSProcessor::TYPE_ID));
+  subType_p.attach(msProcessor, NewMSProcessor::
+		   columnName(NewMSProcessor::SUB_TYPE));
+  attachOptionalCols(msProcessor);
+}
+
+void NewMSProcessorColumns::attachOptionalCols(NewMSProcessor& msProcessor)
+{
+  const ColumnDescSet& cds=msProcessor.tableDesc().columnDescSet();
+  const String& passId=NewMSProcessor::columnName(NewMSProcessor::PASS_ID);
+  if (cds.isDefined(passId)) passId_p.attach(msProcessor, passId);
+}
+// Local Variables: 
+// compile-command: "gmake NewMSProcessorColumns"
+// End: 
