@@ -32,7 +32,7 @@
 #endif
 
 #include <aips/aips.h>
-template <class T> class PagedImage;
+template <class T> class ImageInterface;
 template <class T> class ArrayLattice;
 template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
@@ -46,7 +46,7 @@ class LogIO;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> PagedImage
+//   <li> ImageInterface
 // </prerequisite>
 //
 // <etymology>
@@ -145,10 +145,17 @@ public:
 // Attach this histogram calculator to some image and logging sink.
 // Note that the image must live as long as the histogram calculator 
 // since no internal memory management occurs.
-   ImageHistograms (const PagedImage<T>& image, LogIO& os);
+   ImageHistograms(const ImageInterface<T>& image, 
+                   LogIO& os);
+
+// Copy constructor
+   ImageHistograms(const ImageHistograms<T> &other);
 
 // Destructor
   ~ImageHistograms ();
+
+// Assignment operator
+   ImageHistograms<T> &operator=(const ImageHistograms<T> &other);
 
 // Set the cursor axes (0 relative).  A return value of <src>False</src>
 // indicates you have asked for an invalid axis or that the internal
@@ -225,30 +232,32 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
-// Set a new PagedImage.  A return value of <src>False</src> indicates the 
+// Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal status of the class is bad.
-   Bool setNewImage (const PagedImage<T>& image);
+   Bool setNewImage (const ImageInterface<T>& image);
 
 private:
-
-   const PagedImage<T>* pInImage_p;
-   LogIO &os_p;
-   Vector<Int> displayAxes_p;
-   Vector<Float> range_p;
-   String device_p; 
-   Vector<Int> nxy_p;
-   Bool goodParameterStatus_p;
-   Bool needStorageImage_p;
-   Bool binAll_p;
-   Bool doGauss_p, doLog_p, doCumu_p;
-   Bool doList_p;
-   Int nVirCursorIter_p;   
-   Int nBins_p;
-   IPosition cursorShape_p;
 
    ArrayLattice<Int>* pHistImage_p;
    ArrayLattice<T>* pMinMaxImage_p;
    ArrayLattice<Double>* pStatsImage_p;
+
+   Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
+   Bool doCumu_p, doGauss_p, doList_p, doLog_p;
+
+   const ImageInterface<T>* pInImage_p;
+
+   Int nBins_p, nVirCursorIter_p;   
+
+   IPosition cursorShape_p;
+
+   LogIO &os_p;
+
+   String device_p; 
+
+   Vector<Int> displayAxes_p;
+   Vector<Int> nxy_p;
+   Vector<Float> range_p;
 
 
 // Accumulate the histograms and statistical sums 

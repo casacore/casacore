@@ -34,11 +34,12 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
   
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageHistograms.h>
-#include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
@@ -63,27 +64,32 @@ enum stats  {SUM=0, SUMSQ=1, NPTS=2, NSTATS=3};
 // Public functions
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const PagedImage<T>& imageU, 
+ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
                                      LogIO &os) : os_p(os)
 //
 // Constructor. 
 //
 {
-   goodParameterStatus_p = True;
    pHistImage_p = 0;
    pMinMaxImage_p = 0;
    pStatsImage_p = 0;
+
+   binAll_p = True;
+   goodParameterStatus_p = True;
    needStorageImage_p = True;
+   doCumu_p = False;
+   doGauss_p = False;
+   doList_p = False;
+   doLog_p = False;
+   nBins_p = 25;
+   nVirCursorIter_p = 0;
+   cursorShape_p.resize(0);   
+   device_p = "";
+   nxy_p.resize(0); 
+   range_p.resize(0);
+
   
    if (setNewImage(imageU)) {
-      nBins_p = 25;
-      doList_p = False;
-      binAll_p = True;
-      doGauss_p = False;
-      doLog_p = False;
-      doCumu_p = False;
-      doList_p = False;
-
 // Default cursor axes are entire image
 
       Vector<Int> cursorAxes(pInImage_p->ndim());
@@ -94,6 +100,110 @@ ImageHistograms<T>::ImageHistograms (const PagedImage<T>& imageU,
       goodParameterStatus_p = False;
    }
 }
+
+ 
+template <class T>
+ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
+                      : os_p(other.os_p),
+                        binAll_p(other.binAll_p),
+                        goodParameterStatus_p(other.goodParameterStatus_p),
+                        needStorageImage_p(other.needStorageImage_p),
+                        doCumu_p(other.doCumu_p),
+                        doGauss_p(other.doGauss_p),
+                        doList_p(other.doList_p),
+                        doLog_p(other.doLog_p),
+                        nBins_p(other.nBins_p),
+                        nVirCursorIter_p(other.nVirCursorIter_p),
+                        cursorShape_p(other.cursorShape_p),
+                        device_p(other.device_p),
+                        nxy_p(other.nxy_p),
+                        range_p(other.range_p)
+//
+// Copy constructor
+//
+{ 
+ // Assign to image pointer
+ 
+   pInImage_p = other.pInImage_p;
+                        
+// Copy storage images
+
+   if (other.pHistImage_p !=0) {   
+      pHistImage_p = new ArrayLattice<Int>(*(other.pHistImage_p));
+   } else {
+      pHistImage_p = 0;
+   }
+
+   if (other.pMinMaxImage_p !=0) {   
+      pMinMaxImage_p = new ArrayLattice<T>(*(other.pMinMaxImage_p));
+   } else {
+      pMinMaxImage_p = 0;
+   }
+
+   if (other.pStatsImage_p !=0) {   
+      pStatsImage_p = new ArrayLattice<Double>(*(other.pStatsImage_p));
+   } else {
+      pStatsImage_p = 0;
+   }
+
+}
+      
+
+
+template <class T>
+ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &other)
+//
+// Assignment operator
+//
+{
+   if (this != &other) {
+      
+// Assign to image pointer
+      
+      pInImage_p = other.pInImage_p;
+      
+// Copy storage images
+      
+      if (other.pHistImage_p !=0) {   
+         pHistImage_p = new ArrayLattice<Int>(*(other.pHistImage_p));
+      } else {
+         pHistImage_p = 0;
+      }
+
+      if (other.pMinMaxImage_p !=0) {   
+         pMinMaxImage_p = new ArrayLattice<T>(*(other.pMinMaxImage_p));
+      } else {
+         pMinMaxImage_p = 0;
+      }
+
+      if (other.pStatsImage_p !=0) {   
+         pStatsImage_p = new ArrayLattice<Double>(*(other.pStatsImage_p));
+      } else {
+         pStatsImage_p = 0;
+      }
+
+// Do the rest
+  
+      os_p = other.os_p;
+      binAll_p = other.binAll_p;
+      goodParameterStatus_p = other.goodParameterStatus_p;
+      needStorageImage_p = other.needStorageImage_p;
+      doCumu_p = other.doCumu_p;
+      doGauss_p = other.doGauss_p;
+      doList_p = other.doList_p;
+      doLog_p = other.doLog_p;
+      nBins_p = other.nBins_p;
+      nVirCursorIter_p = other.nVirCursorIter_p;
+      cursorShape_p = other.cursorShape_p;
+      device_p = other.device_p;
+      nxy_p = other.nxy_p;
+      range_p = other.range_p;
+
+      return *this;
+   }
+  
+}
+
  
 
 template <class T>
@@ -161,6 +271,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<Double>& includeU)
 // Signal that we need a new accumulation image
     
    needStorageImage_p = True;
+
    return True;
 }
 
@@ -169,7 +280,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<Double>& includeU)
 template <class T>
 Bool ImageHistograms<T>::setGaussian (const Bool& doGaussU)
 //
-// Specify whether there shouldbe a Gaussian overlay or not
+// Specify whether there should be a Gaussian overlay or not
 //
 {
    if (!goodParameterStatus_p) {
@@ -178,6 +289,7 @@ Bool ImageHistograms<T>::setGaussian (const Bool& doGaussU)
    }
 
    doGauss_p = doGaussU;
+
    return True;
 }
 
@@ -196,6 +308,7 @@ Bool ImageHistograms<T>::setForm (const Bool& doLogU, const Bool& doCumuU)
 
     doLog_p = doLogU;
     doCumu_p = doCumuU;
+
     return True;
 }
 
@@ -213,6 +326,7 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
    }
 
    doList_p = doListU;
+
    return True;
 } 
 
@@ -242,12 +356,13 @@ Bool ImageHistograms<T>::setPlotting(const String& deviceU,
       goodParameterStatus_p = False;
       return False;
    }
+
    return True;
 }
 
 
 template <class T>
-Bool ImageHistograms<T>::setNewImage(const PagedImage<T>& image)
+Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
 //    
 // Assign pointer to image
 //
@@ -259,8 +374,8 @@ Bool ImageHistograms<T>::setNewImage(const PagedImage<T>& image)
 
   
    pInImage_p = &image;
-   DataType imageType = imagePixelType(pInImage_p->name());
-  
+   T *dummy = 0;
+   DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
        os_p << LogIO::SEVERE << "Histograms can only be evaluated from images of type : " <<
 	   TpFloat << " and " << TpDouble << LogIO::POST;
@@ -273,6 +388,7 @@ Bool ImageHistograms<T>::setNewImage(const PagedImage<T>& image)
 // image
 
    needStorageImage_p = True;
+
    return True;
 }
 
@@ -333,8 +449,8 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
 
    counts.resize(pHistImage_p->shape());
    values.resize(pHistImage_p->shape());
-   VectorIterator<T> valuesIterator(values);
-   VectorIterator<T> countsIterator(counts);
+   VectorIterator<Float> valuesIterator(values);
+   VectorIterator<Float> countsIterator(counts);
 
 
 // Create image indexing IPositions. Make as much of them as we
@@ -477,6 +593,7 @@ Bool ImageHistograms<T>::displayHistograms ()
 //
 {
 // Open plotting device
+
  
     if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
        os_p << LogIO::SEVERE << "Cannot open display device" << LogIO::POST;
@@ -495,8 +612,8 @@ Bool ImageHistograms<T>::displayHistograms ()
    RO_LatticeIterator<Int> histIterator(*pHistImage_p, cursorShape);
     
 
-// Create image indexing IPositions. Make as much of them as we
-// can outside of the iteration loop  
+// Create storage image indexing IPositions. Make as much of them 
+// as we can outside of the iteration loop  
  
    Int lastAxis = pMinMaxImage_p->ndim() - 1;
    IPosition minPos(pMinMaxImage_p->ndim());
@@ -787,7 +904,7 @@ void ImageHistograms<T>::extractOneHistogram (Vector<Float>& values,
 }
 
 template <class T>
-Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
+Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 //
 // This function sets the cursor axes and the display axes
 //
@@ -799,7 +916,8 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
 
 
 // Set cursor arrays (can't assign to potentially zero length array)
-   Vector<Int> cursorAxes(axes);
+
+   Vector<Int> cursorAxes(axesU);
    ostrstream os;
    if (!ImageUtilities::setCursor(nVirCursorIter_p, cursorShape_p, 
         cursorAxes, pInImage_p, True, 2, os)) {
@@ -808,11 +926,12 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
    }   
    
 // Set display axes array
+
    ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes, pInImage_p->ndim());
 
 
-// Signal that we have changed the axes and need a new accumulaiton
-// image
+// Signal that we have changed the axes and need a new accumulation image
+
    needStorageImage_p = True;
 
    return True;
@@ -1247,7 +1366,6 @@ void ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
      }           
      oss << ends;
      char* tLabel = oss.str();
-   
    
 // Write on plot
  
