@@ -1,5 +1,5 @@
 //# ImageExpr.cc: defines the ImageExpr class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
 
 template <class T>
 ImageExpr<T>::ImageExpr (const ImageExpr<T>& other)
-: MaskedImage<T>(other),
+: ImageInterface<T>(other),
   latticeExpr_p (other.latticeExpr_p),
   pBool_p(other.pBool_p),
   name_p(other.name_p)
@@ -83,7 +83,7 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
 //
 {
    if (this != &other) {
-      MaskedImage<T>::operator= (other);
+      ImageInterface<T>::operator= (other);
       latticeExpr_p = other.latticeExpr_p;
       pBool_p = other.pBool_p;
       name_p = other.name_p;
@@ -97,12 +97,7 @@ ImageExpr<T>::~ImageExpr()
 
 
 template <class T>
-Lattice<T>* ImageExpr<T>::clone() const
-{
-   return new ImageExpr (*this);
-}   
-template <class T>
-MaskedImage<T>* ImageExpr<T>::cloneMI() const
+ImageInterface<T>* ImageExpr<T>::cloneII() const
 {
    return new ImageExpr (*this);
 }
@@ -115,9 +110,9 @@ Bool ImageExpr<T>::isMasked() const
 }
 
 template <class T>
-const LatticeRegion& ImageExpr<T>::region() const
+const LatticeRegion* ImageExpr<T>::getRegionPtr() const
 {
-   return latticeExpr_p.region();
+   return latticeExpr_p.getRegionPtr();
 }
 
 template <class T>
