@@ -280,7 +280,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    os_p.output() << setw(oDWidth) << "Mean"; 
    if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
-   os_p.output() << setw(oDWidth) << "Sigma";
+   os_p.output() << setw(oDWidth) << "Std dev";
    if (doneLEL_p) os_p.output() << setw(oDWidth) << "LEL"; 
    os_p.output() << setw(oDWidth) << "Minimum";
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
