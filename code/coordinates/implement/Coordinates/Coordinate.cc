@@ -38,6 +38,8 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/Regex.h>
+
 
 #include <aips/iomanip.h>  
 #include <aips/strstream.h>
@@ -818,3 +820,124 @@ Bool Coordinate::setPreferredWorldAxisUnits (const Vector<String>& prefUnits)
     return True;
 }
 
+
+Bool Coordinate::near (const Coordinate& other,
+                       const Vector<Bool>& thisAxes,
+                       const Vector<Bool>& otherAxes,
+                       Double tol) const
+{
+   if (allEQ(thisAxes, False) && allEQ(otherAxes, False)) {
+      return True;
+   }
+//
+   if (nPixelAxes() != other.nPixelAxes()) {
+      set_error("Number of pixel axes differs");
+      return False;
+   }
+   if (nWorldAxes() != other.nWorldAxes()) {
+      set_error("Number of world axes differs");
+      return False;
+   }
+//
+   const Vector<Double>&  thisRefVal(referenceValue());
+   const Vector<Double>& otherRefVal(other.referenceValue());
+   const Vector<Double>&  thisInc(increment());
+   const Vector<Double>& otherInc(other.increment());
+   const Vector<Double>&  thisRefPix(referencePixel());
+   const Vector<Double>& otherRefPix(other.referencePixel());
+/*
+   const Vector<String>&  thisNames(worldAxisNames());
+   const Vector<String>& otherNames(other.worldAxisNames());
+*/
+   const Vector<String>&  thisUnits(worldAxisUnits());
+   const Vector<String>& otherUnits(other.worldAxisUnits());
+//
+   const Matrix<Double>&  thisPC(linearTransform());
+   const Matrix<Double>& otherPC(other.linearTransform());
+   if (thisPC.nrow() != otherPC.nrow()) {
+      set_error ("PC matrices have different numbers of rows");
+      return False;
+   }
+   if (thisPC.ncolumn() != otherPC.ncolumn()) {
+      set_error ("PC matrices have different numbers of columns");
+      return False;
+   }
+//
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      if (thisAxes(i) && otherAxes(i)) {
+
+// Units
+
+         String x1 = thisUnits(i);
+         x1.upcase();
+         String x2 = otherUnits(i);
+         x2.upcase();
+//
+         Int i1 = x1.index(RXwhite,0);
+         if (i1==-1) i1 = x1.length();
+         Int i2 = x2.index(RXwhite,0);
+         if (i2==-1) i2 = x2.length();
+//
+         String y1 = String(x1.before(i1));
+         String y2 = String(x2.before(i2));
+         ostrstream oss;
+         if (y1 != y2) {
+           oss << "The Coordinates have differing axis units for axis "
+               << i << ends;
+           set_error(String(oss));
+           return False;
+         }
+
+// Ref val
+
+         if (!::near(thisRefVal(i), otherRefVal(i), tol)) {
+            oss << "The Coordinates have differing reference values for axis "
+                 << i << ends;
+            set_error(String(oss));
+            return False;
+         }
+
+// Increment
+
+         if (!::near(thisInc(i), otherInc(i), tol)) {
+            oss << "The Coordinates have differing increments for axis "
+                 << i << ends;
+            set_error(String(oss));
+            return False;
+         }
+
+// Ref pix
+ 
+         if (!::near(thisRefPix(i), otherRefPix(i), tol)) {
+            oss << "The Coordinates have differing reference pixels for axis "
+                 << i << ends;
+            set_error(String(oss));
+            return False;        
+         }
+
+// pc matrix. Compare row by row.  An axis will turn up in the PC
+// matrix in any row or column with that number. E.g.,
+// values pertaining to axis "i" will be found in all
+// entries of row "i" and all entries of column "i"
+// So just get the ith row and ith column and compare
+// PC is always SQUARE
+    
+         AlwaysAssert(thisPC.nrow()==thisPC.ncolumn(), AipsError);
+//   
+         Vector<Double> r1 = thisPC.row(i);
+         Vector<Double> r2 = otherPC.row(i);
+         for (uInt j=0; j<r1.nelements(); j++) {
+            if (!::near(r1(j),r2(j),tol)) return False;
+         }
+//
+         Vector<Double> c1 = thisPC.column(i);
+         Vector<Double> c2 = otherPC.column(i);
+         for (uInt j=0; j<r1.nelements(); j++) {
+            if (!::near(c1(j),c2(j),tol)) return False;
+         }
+      }
+   }
+
+//
+   return True;
+}

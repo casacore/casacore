@@ -344,6 +344,13 @@ public:
                       Double tol=1.0e-6) const = 0;
     // </group>
 
+    // Comparison only made for specified axes in this and other Coordinate 
+    Bool near (const Coordinate& other, 
+               const Vector<Bool>&  thisAxes,
+               const Vector<Bool>& otherAxes,
+               Double tol=1.0e-6) const;
+
+
 
     // Set and recover the preferred world axis units.  These can be used to specify
     // a favoured unit for conversions for example.  The given units must be empty
