@@ -165,8 +165,11 @@ PagedArray<T>::~PagedArray()
   // Only need to do something if really constructed.
   if (! itsTable.isNull()) {
     // Table may not be written if ref count > 1 - here we force a write.
-    DebugAssert (ok(), AipsError);
-    itsTable.flush();
+    // (but only if it is not a scratch table).
+    if (! itsTable.isMarkedForDelete()) {
+      DebugAssert (ok(), AipsError);
+      itsTable.flush();
+    }
   }
 }
 
