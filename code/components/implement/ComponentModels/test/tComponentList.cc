@@ -254,7 +254,7 @@ int main() {
       const uInt nFreq = 1;
       CoordinateSystem imCoords;
       {
- 	DirectionCoordinate dirCoord(defaultCoords2D().directionCoordinate(0));
+ 	DirectionCoordinate dirCoord(CoordinateUtil::defaultCoords2D().directionCoordinate(0));
  	Vector<String> units(2); units = "deg";
   	dirCoord.setWorldAxisUnits(units);
   	Vector<Double> refValue(2);
@@ -268,8 +268,8 @@ int main() {
   	dirCoord.setReferencePixel(refPixel);
  	imCoords.addCoordinate(dirCoord);
       }
-      addIQUVAxis(imCoords);
-      addFreqAxis(imCoords);
+      CoordinateUtil::addIQUVAxis(imCoords);
+      CoordinateUtil::addFreqAxis(imCoords);
       PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
   			      imCoords, "tComponentList_tmp.image");
       image.set(0.0f);
