@@ -2089,3 +2089,4 @@
 11 090 src rm doc/html/navpages/ref/glossary/prolsphi.gif
 11 090 src rm doc/html/navpages/ref/glossary/y.html
 11 090 src rm doc/html/navpages/ref/glossary/yseries.gif
+11 096 src rm doc/texinputs.dir/misc
