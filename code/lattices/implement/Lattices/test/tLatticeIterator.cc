@@ -1,4 +1,4 @@
-//# tPagedArrIter.cc:  mechanical test of {RO_,}PagedArrIter class
+//# tPagedArrIter.cc:  mechanical test of the {RO_,}PagedArrIter class
 //# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
