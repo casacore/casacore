@@ -1,5 +1,5 @@
 //# MSSummary.cc:  Helper class for applications listing a MeasurementSet
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -165,8 +165,9 @@ void MSSummary::listWhat (LogIO& os, Bool verbose) const
 
 void MSSummary::listHow (LogIO& os, Bool verbose) const
 {
-  listSpectralWindow (os,verbose);
-  listPolarization (os,verbose);
+  // listSpectralWindow (os,verbose);
+  // listPolarization (os,verbose);
+  listSpectralAndPolInfo(os, verbose);
   listFeed (os,verbose);
   listAntenna (os,verbose);
 }
@@ -297,7 +298,7 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     os << "The FIELD table is empty" << endl;
   }
   else {
-    os << "Fields: " << msFC.phaseDir().nrow();
+    os << "Fields: " << msFC.phaseDir().nrow()<<endl;
     Int widthLead  =  3;	
     Int widthField =  5;	
     Int widthName  = 10;
@@ -330,8 +331,9 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 	os.output().width(widthField);	os << (row+1);
       }
       else {
-	if (row==0) {os << "Name: ";}
-	else {os << "         Name: ";}
+	os << "Name: ";
+	//	if (row==0) {os << "Name: ";}
+	//	else {os << "         Name: ";}
       }
       os.output().width(widthName);	os << msFC.name()(row);
       if (!verbose) os << "RA: ";
@@ -602,6 +604,83 @@ void MSSummary::listPolarization (LogIO& os, Bool verbose) const
   os << LogIO::POST;
 }
 
+void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
+{
+  // Create a MS-spwin-columns object
+  ROMSSpWindowColumns msSWC(pMS->spectralWindow());
+  // Create a MS-pol-columns object
+  ROMSPolarizationColumns msPolC(pMS->polarization());
+  // Create a MS-data_desc-columns object
+  ROMSDataDescColumns msDDC(pMS->dataDescription());
+
+  if (verbose) {}	//null; always the same output
+
+  if (msDDC.nrow()<=0) {
+    os << "The DATA_DESCRIPTION table is empty: see the FEED table" << endl;
+  }
+  if (msSWC.nrow()<=0) {
+    os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << endl;
+  }
+  if (msPolC.nrow()<=0) {
+    os << "The POLARIZATION table is empty: see the FEED table" << endl;
+  }
+
+  if (msDDC.nrow()>0) {
+    os << "DataDescription table rows: "<< msDDC.nrow();
+    os << " ("<<msSWC.nrow()<<" spectral windows and " << msPolC.nrow();
+    os << " polarization setups)"<<endl;
+
+    // Define the column widths
+    Int widthLead	=  3;
+    Int widthDDId       =  6;
+    Int widthFreq	= 12;
+    Int widthFrqNum	=  7;
+    Int widthNumChan	=  8;
+    Int widthCorrTypes	= msPolC.corrType()(0).nelements()*4;
+    Int widthCorrType	=  4;
+
+    // Write the column headers
+    os.output().setf(ios::left, ios::adjustfield);
+    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthDDId);	os << "ID    ";
+    os.output().width(widthFreq);	os << "Ref.Freq";
+    os.output().width(widthNumChan);	os << "#Chans";
+    os.output().width(widthFreq);	os << "Resolution";
+    os.output().width(widthFreq);	os << "TotalBW";
+    os.output().width(widthCorrTypes);  os << "Correlations";
+    os << endl;
+
+    // For each row of the DataDesc subtable, write the info
+    for (uInt row=0; row<msDDC.nrow(); row++) {
+      Int spw = msDDC.spectralWindowId()(row);
+      Int pol = msDDC.polarizationId()(row);
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthLead);		os << "   ";
+      // 1th column: Data description Id
+      os.output().width(widthDDId); os << (row+1);
+      // 2nd column: reference frequency
+      os.output().width(widthFrqNum);
+      os<< msSWC.refFrequency()(spw)/1.0e6 <<"MHz  ";
+      // 3rd column: number of channels in the spectral window
+      os.output().width(widthNumChan);		os << msSWC.numChan()(spw);
+      // 4th column: channel resolution
+      os.output().width(widthFrqNum);
+      os << msSWC.resolution()(spw)(IPosition(1,0))/1000<<"kHz  ";
+      // 5th column: total bandwidth of the spectral window
+      os.output().width(widthFrqNum);
+      os<< msSWC.totalBandwidth()(row)/1000<<"kHz  ";
+      // 6th column: the correlation type(s)
+      for (uInt i=0; i<msPolC.corrType()(pol).nelements(); i++) {
+	os.output().width(widthCorrType);
+      	Int index = msPolC.corrType()(pol)(IPosition(1,i));
+      	os << Stokes::name(Stokes::type(index));
+      }
+      os << endl;
+    }
+  }
+  os << LogIO::POST;
+}
+
 
 void MSSummary::listSysCal (LogIO& os, Bool verbose) const 
 {
@@ -746,7 +825,7 @@ void MSSummary::listTables (LogIO& os, Bool verbose) const
       os.output().width(10);	os << rowStrings(i);
       os << endl;
     }
-    else {if (i==5) os << endl;}
+    else {if ((i%5)==0) os << endl;}
   }
   os << LogIO::POST;
 }
@@ -772,3 +851,7 @@ void MSSummary::clearFlags(LogIO& os) const
   os.output().unsetf(ios::fixed);
 
 }
+
+
+
+
