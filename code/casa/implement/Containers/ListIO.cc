@@ -1,5 +1,5 @@
-//# ListIO.cc: Singly linked list IO
-//# Copyright (C) 1993,1994,1995
+//# ListIO.cc: Doubly linked list IO
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/IO/AipsIO.h>
 
 //
-//  Inputs a singly linked list to the specified AipsIO stream.
+//  Inputs a doubly linked list to the specified AipsIO stream.
 //
 template<class t> AipsIO &operator>>(AipsIO &ios, List<t> &list) {
   t val;
@@ -52,7 +52,7 @@ template<class t> AipsIO &operator>>(AipsIO &ios, List<t> &list) {
 
 
 //
-//  Outputs a singly linked list iterator to the specified AipsIO stream.
+//  Outputs a doubly linked list iterator to the specified AipsIO stream.
 //
 #define AIPS_LIST_AIPSIO_OUT(TYPE) 						\
 template<class t> AipsIO &operator<<(AipsIO &ios, const TYPE<t> &list) {	\
@@ -73,7 +73,7 @@ AIPS_LIST_AIPSIO_OUT(List)
 AIPS_LIST_AIPSIO_OUT(ConstListIter)
 
 //
-//  Inputs a singly linked list iterator to the specified AipsIO stream.
+//  Inputs a doubly linked list iterator to the specified AipsIO stream.
 //
 template<class t> AipsIO &operator>>(AipsIO &ios, ListIter<t> &list) {
   t val;
@@ -98,7 +98,7 @@ template<class t> AipsIO &operator>>(AipsIO &ios, ListIter<t> &list) {
 }
 
 //
-//  Outputs a singly linked list to the specified ostream stream.
+//  Outputs a doubly linked list to the specified ostream stream.
 //
 template<class t> ostream &operator<<(ostream &ios, const List<t> &list) {
   ConstListIter<t> listp = list;
@@ -113,7 +113,7 @@ template<class t> ostream &operator<<(ostream &ios, const List<t> &list) {
 }
 
 //
-//  Outputs a singly linked list iterator to the specified ostream stream.
+//  Outputs a doubly linked list iterator to the specified ostream stream.
 //
 template<class t> ostream &operator<<(ostream &ios, const ConstListIter<t> &list) {
   ConstListIter<t> listp = list;

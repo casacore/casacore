@@ -1,5 +1,5 @@
-//# Stack.h: Implementation of a stack using the singly linked list class
-//# Copyright (C) 1993,1994,1995,1999
+//# Stack.h: Implementation of a stack using the doubly linked list class
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 extern void throw_empty_Stack_error(const char *msg = 0);
 
 //  This class, Stack<t>, defines an implementation of a stack using
-//  the singly linked list primitive, Link<t>. It has the standard
+//  the doubly linked list primitive, Link<t>. It has the standard
 //  push and pop operations.
 //
 // <summary> 

@@ -1,5 +1,5 @@
-//# Stack.cc: Implementation of a stack using the singly linked list class
-//# Copyright (C) 1993,1994,1995,1996
+//# Stack.cc: Implementation of a stack using the doubly linked list class
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
