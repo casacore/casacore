@@ -43,6 +43,12 @@ Lattice<T>::~Lattice()
   // does nothing
 }
 
+template <class T>
+Bool Lattice<T>::isWritable() const
+{
+  return True;
+}
+
 // rvalue subscript operator for const objects
 template <class T>
 T Lattice<T>::operator() (const IPosition& where) const
@@ -82,44 +88,40 @@ void Lattice<T>::putSlice (const Array<T>& sourceBuffer,
 template<class T>
 void Lattice<T>::set (const T& value)
 {
-  IPosition windowShape(niceCursorShape(maxPixels()));
+  IPosition windowShape(niceCursorShape());
   LatticeIterator<T> iter(*this, windowShape);
   for (iter.reset(); !iter.atEnd(); iter++) {
-    iter.cursor() = value;
-    iter.writeCursor();
+    iter.woCursor() = value;
   }
 }
 
 template<class T>
 void Lattice<T>::apply (T (*function) (T))
 {
-  IPosition windowShape(niceCursorShape(maxPixels()));
+  IPosition windowShape(niceCursorShape());
   LatticeIterator<T> iter(*this, windowShape);
   for (iter.reset(); !iter.atEnd(); iter++) {
-    iter.cursor().apply (function);
-    iter.writeCursor();
+    iter.rwCursor().apply (function);
   }
 }
 
 template<class T>
 void Lattice<T>::apply (T (*function) (const T&))
 {
-  IPosition windowShape(niceCursorShape(maxPixels()));
+  IPosition windowShape(niceCursorShape());
   LatticeIterator<T> iter(*this, windowShape);
   for (iter.reset(); !iter.atEnd(); iter++) {
-    iter.cursor().apply(function);
-    iter.writeCursor();
+    iter.rwCursor().apply(function);
   }
 }
 
 template<class T>
 void Lattice<T>::apply (const Functional<T,T>& function)
 {
-  IPosition windowShape(niceCursorShape(maxPixels()));
+  IPosition windowShape(niceCursorShape());
   LatticeIterator<T> iter(*this, windowShape);
   for (iter.reset(); !iter.atEnd(); iter++) {
-    iter.cursor().apply(function);
-    iter.writeCursor();
+    iter.rwCursor().apply(function);
   }
 }
 
