@@ -3281,3 +3281,4 @@
 13 208 src rm aips/glish/glish/clients/make/config.h
 13 210 src mv doc/user/SythesisRef.dir doc/user/SynthesisRef.dir
 13 213 src mv aips/implement/Lattices/IPosition.h aips/implement/Arrays/IPosition.h
+13 213 src mv aips/implement/Lattices/Slice.h aips/implement/Arrays/Slice.h
