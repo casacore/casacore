@@ -287,6 +287,11 @@ protected:
   Bool checkSelection();
 
 private:
+  // The function types
+  enum {Amp,Phase,Real,Imag,Data,nFuncType};
+
+  // The data types
+  enum {Observed,Corrected,Model,Ratio,Residual,ObsResidual,ObsFloat,nDataType};
 
   MeasurementSet ms_p; // the original ms
   MeasurementSet selms_p; // the selected ms
