@@ -5316,3 +5316,4 @@
 15 034 src rm nrao/apps/gbtutils/ptemplates.g
 15 034 src rm nrao/apps/gbtutils/pulsar.g
 15 034 src rm nrao/apps/gbtutils/pulsar_data
+15 034 src rm nrao/apps/gbtutils/rfi.aips++
