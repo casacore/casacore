@@ -277,6 +277,9 @@ void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice)
 } 
 
 
+// Public non-virtual over-ridden functions from ImageInterface
+
+
 
 // Public virtual functions
 
@@ -675,7 +678,7 @@ void ImageConcat<T>::setCoordinates()
       } catch (AipsError x) {
          ok = False;
          msg = x.getMesg();
-      }
+      } end_try;
       if (!ok) {
          os << LogIO::WARN << "Could not create TabularCoordinate because " << msg << LogIO::POST;
          os << LogIO::WARN << "CoordinateSystem set to that of first image set instead" << LogIO::POST;
