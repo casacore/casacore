@@ -567,7 +567,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
   
 // SECTION 1: IFR (ANT-ANT) coverage maps  
 // draw Antenna-Antenna row flag and pixel flag density image
-  Vector<uInt> rowant(num(ANT),0),pixant(num(ANT),0u);
+  Vector<uInt> rowant(num(ANT),0u),pixant(num(ANT),0u);
   Matrix<Float> img1(num(ANT),num(ANT),0),img2(num(ANT),num(ANT),0);
   for( uInt ifr=0; ifr<num(IFR); ifr++ )
     if( row_per_ifr(ifr) )
