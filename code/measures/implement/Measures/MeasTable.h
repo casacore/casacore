@@ -142,9 +142,9 @@ public:
   // Selection related data
   // <group>
   // Are the IAU2000 precession/nutation to be used or not (IAU1984)
-  Bool useIAU2000();
+  static Bool useIAU2000();
   // If IAU2000 model, do we use the high precision 2000A model?
-  Bool useIAU2000A();
+  static Bool useIAU2000A();
   // </group>
 
   // Precession related data
