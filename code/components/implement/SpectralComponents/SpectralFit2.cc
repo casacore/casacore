@@ -93,11 +93,11 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   fitter.setCriteria(0.001);
   // Fit
   Vector<MT> sol;
-  Vector<Double> err;
+  Vector<MT> err;
   Vector<MT> sigma(x.nelements());
   sigma = 1.0;
   sol = fitter.fit(x, y, sigma, mask, &corsol);
-  fitter.getErrors(err);
+  err = fitter.errors();
   // Number of iterations
   iter_p = fitter.currentIteration();
   j = 0;
