@@ -903,7 +903,7 @@ setErrors(const NumericTraits<T>::ConjugateType& error0,
 }
 
 template<class T> const Vector<NumericTraits<T>::ConjugateType>& Flux<T>::
-errors() {
+errors() const {
   return itsFluxPtr->errors();
 }
 
