@@ -1,5 +1,5 @@
 //# DirectionCoordinate.cc: this defines the DirectionCoordinate class
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -328,7 +328,7 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
     double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
 //
     world.resize(2);
-    AlwaysAssert(pixel.nelements() == 2, AipsError);
+    DebugAssert(pixel.nelements() == 2, AipsError);
 
 // world contains linear xformed numbers
 
@@ -375,7 +375,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     double d_theta, d_phi, d_lng, d_lat, d_x, d_y;
     String errorMsg;
 //
-    AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
+    DebugAssert(world.nelements() == nWorldAxes(), AipsError);
     pixel.resize(2);
     world_tmp.resize(nWorldAxes());
 //
@@ -432,12 +432,12 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
-   AlwaysAssert(nWorld==nWorldAxes(), AipsError);
-   AlwaysAssert(nPixel==nPixelAxes(), AipsError);
-   AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
-   AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);
-   AlwaysAssert(worldMin.nelements()==nWorld, AipsError);
-   AlwaysAssert(worldMax.nelements()==nWorld, AipsError);
+   DebugAssert(nWorld==nWorldAxes(), AipsError);
+   DebugAssert(nPixel==nPixelAxes(), AipsError);
+   DebugAssert(worldIn.nelements()==nWorld, AipsError);
+   DebugAssert(pixelIn.nelements()==nPixel, AipsError);
+   DebugAssert(worldMin.nelements()==nWorld, AipsError);
+   DebugAssert(worldMax.nelements()==nWorld, AipsError);
 //
    for (uInt i=0; i<nPixel; i++) {   
       if (pixelAxes(i) && worldAxes(i)) {
@@ -835,8 +835,8 @@ String DirectionCoordinate::format(String& units,
                                    Bool showAsAbsolute,
                                    Int precision)
 {
-   AlwaysAssert(worldAxis< nWorldAxes(), AipsError);
-   AlwaysAssert(nWorldAxes()==2, AipsError);
+   DebugAssert(worldAxis< nWorldAxes(), AipsError);
+   DebugAssert(nWorldAxes()==2, AipsError);
 
 // Convert given world value to absolute or relative as needed
    
@@ -1887,7 +1887,7 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
 void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
 {
     static MVDirection mv;
-    AlwaysAssert(world.nelements()==2, AipsError);
+    DebugAssert(world.nelements()==2, AipsError);
 //
     mv.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
     mv *= rot_p;
@@ -1910,7 +1910,7 @@ void DirectionCoordinate::makeWorldRelative (MDirection& world) const
 void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 {
     static MVDirection mv;
-    AlwaysAssert(world.nelements()==2, AipsError);
+    DebugAssert(world.nelements()==2, AipsError);
 //   
     Double lat = world[1]*to_radians_p[1];
     mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
@@ -1924,8 +1924,8 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world,
                                              const Vector<Double>& refVal) const
 {
     static MVDirection mv;
-    AlwaysAssert(world.nelements()==2, AipsError);
-    AlwaysAssert(refVal.nelements()==2, AipsError);
+    DebugAssert(world.nelements()==2, AipsError);
+    DebugAssert(refVal.nelements()==2, AipsError);
 //   
     RotMatrix rot;
     setRotationMatrix(rot, refVal(0), refVal(1));
