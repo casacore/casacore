@@ -56,7 +56,7 @@
 void a();
 void b();
 
-main()
+int main()
 {
     try {
 	a ();
@@ -70,7 +70,7 @@ main()
 
 void init (Matrix<Float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
 {
-    indgen (static_cast< Array<Float> >(array));
+    indgen (array);
     uInt i=0;
     for (uInt k=0; k<20; k++) {
 	for (uInt j=0; j<12; j++) {
