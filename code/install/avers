@@ -73,7 +73,7 @@
            MODE="release"
            ;;
         *)
-           echo "Usage: adate [-b | -l | -r]"
+           echo "Usage: avers [-b | -l | -r]"
            exit 1
            ;;
      esac
