@@ -79,6 +79,9 @@ Bool PlainColumn::isWritable() const
 Bool PlainColumn::isStored() const
     { return dataManPtr_p->isStorageManager(); }
 
+ColumnCache& PlainColumn::columnCache()
+    { return dataColPtr_p->columnCache(); }
+
 
 //# Read/write the column.
 //# Its data will be read/written by the appropriate storage manager.

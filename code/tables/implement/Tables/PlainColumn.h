@@ -125,6 +125,9 @@ public:
     // Get the pointer to the data manager column.
     DataManagerColumn*& dataManagerColumn();
 
+    // Get a pointer to the underlying column cache.
+    virtual ColumnCache& columnCache();
+
     // Write the column.
     void putFile (AipsIO&, const String& tableName);
 

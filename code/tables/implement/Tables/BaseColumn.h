@@ -1,5 +1,5 @@
 //# BaseColumn.h: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 
 //# Forward Declarations
 class BaseColumnDesc;
+class ColumnCache;
 class TableRecord;
 class IPosition;
 class Slicer;
@@ -240,6 +241,9 @@ public:
     void putScalar (uInt rownr, const DComplex& value);
     void putScalar (uInt rownr, const String& value);
     // </group>
+
+    // Get a pointer to the underlying column cache.
+    virtual ColumnCache& columnCache() = 0;
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved
