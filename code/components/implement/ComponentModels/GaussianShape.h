@@ -38,7 +38,6 @@
 
 class MVAngle;
 class RecordInterface;
-class GlishRecord;
 class String;
 template <class T> class Vector;
 template <class T> class Flux;
@@ -269,19 +268,16 @@ public:
   virtual void shapeParameters(Vector<Double> & compParms) const;
   // </group>
 
-  // This functions convert between a record and a GaussianShape. These
-  // functions define how a GaussianShape is represented in glish and this is
-  // detailed in the synopsis above.  They return False if the record is
-  // malformed and append an error message to the supplied string giving the
-  // reason.
+  // This functions convert between a RecordInterface and a
+  // GaussianShape. These functions define how a GaussianShape is represented
+  // in glish and this is detailed in the synopsis above.  They return False if
+  // the record is malformed and append an error message to the supplied string
+  // giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
-  virtual Bool fromRecord(String & errorMessage,
-			  const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage,
 			RecordInterface & record) const;
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

@@ -36,7 +36,6 @@
 
 template <class T> class Flux;
 class RecordInterface;
-class GlishRecord;
 class String;
 
 // <summary></summary>
@@ -156,9 +155,7 @@ public:
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
-  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

@@ -34,7 +34,6 @@
 
 template <class T> class Vector;
 class RecordInterface;
-class GlishRecord;
 
 // <summary></summary>
 
@@ -115,18 +114,15 @@ public:
   virtual void spectralParameters(Vector<Double> & spectralParms) const;
   // </group>
 
-  // This functions convert between a glish record and a SpectralModel. This
+  // This functions convert between a RecordInterface and a SpectralModel. This
   // way derived classes can interpret fields in the record in a class specific
   // way. These functions define how a component is represented in glish.  They
-  // return False if the glish record is malformed and append an error message
-  // to the supplied string giving the reason.
+  // return False if the RecordInterface is malformed and append an error
+  // message to the supplied string giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
-  virtual Bool fromRecord(String & errorMessage,
-			  const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

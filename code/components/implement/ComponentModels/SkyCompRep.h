@@ -41,7 +41,6 @@ class MDirection;
 class MFrequency;
 class MVAngle;
 class RecordInterface;
-class GlishRecord;
 template <class T> class Vector;
 // template <class T> class ImageInterface;
 
@@ -76,7 +75,7 @@ template <class T> class Vector;
 // <li> set and change other parameters, whose interpretation depends on the
 //      specific component type.
 // <li> enquire what specific type of component this is.
-// <li> convert the component to and from a glish record so that it can be
+// <li> convert the component to and from a record so that it can be
 //      manipulated within glish.
 
 // </synopsis>
@@ -256,12 +255,8 @@ public:
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
 			  const RecordInterface & record);
-  virtual Bool fromRecord(String & errorMessage, 
-			  const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage, 
 			RecordInterface & record) const;
-  virtual Bool toRecord(String & errorMessage, 
-			GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

@@ -37,7 +37,6 @@
 
 class MVAngle;
 class RecordInterface;
-class GlishRecord;
 class String;
 class doubleG_COMPLEX;
 typedef doubleG_COMPLEX DComplex;
@@ -223,16 +222,15 @@ public:
   virtual void shapeParameters(Vector<Double> & compParms) const;
   // </group>
 
-  // This functions convert between a record and a PointShape. These functions
-  // define how a point shape is represented in glish and this is detailed in
-  // the synopsis above.  They return False if the glish record is malformed
-  // and append an error message to the supplied string giving the reason.
+  // This functions convert between a RecordInterface and a PointShape. These
+  // functions define how a point shape is represented in glish and this is
+  // detailed in the synopsis above.  They return False if the RecordInterface
+  // is malformed and append an error message to the supplied string giving the
+  // reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
-  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
