@@ -23,12 +23,11 @@
 #                        520 Edgemont Road
 #                        Charlottesville, VA 22903-2475 USA
 #
+# $Id$
 
 # include guard
 pragma include once
  
-templateglishobj_g_included := 'yes';
-  
 # Include whatever files are necessary. aips.g will nearly always
 # be required.
 
