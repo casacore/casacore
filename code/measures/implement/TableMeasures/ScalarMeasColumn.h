@@ -73,12 +73,10 @@ template <class M, class MV> class ScalarMeasColumn;
 // ROScalarMeasColumn and ScalarMeasColumn objects can be used to access 
 // scalar measure columns in tables.  The ROScalarMeasColumn provides read
 // only access whereas the ScalarMeasColumn object can be used for writing
-// and reading of measures to/from a Table column.
-//
+// and reading of measures to/from a Table column.<br>
 // Before a column can be accessed it must have previously been defined as
 // a measure column by use of the
-// <linkto class="TableMeasDesc">TableMeasDesc</linkto> class.
-//
+// <linkto class="TableMeasDesc">TableMeasDesc</linkto> class.<br>
 // The (RO)ScalarMeasColumn class is templated on Measure type and MeasValue
 // type but typedefs exist for making declaration less long winded.
 // To create a (RO)ScalarMeasColumn a reference to the table containing the
@@ -91,10 +89,7 @@ template <class M, class MV> class ScalarMeasColumn;
 // Measures can be added to the column using the put() member (at 
 // least for the ScalarMeasColumn) in a
 // way which mimics the put() member of regular Table column objects. 
-// Similarly, get() and operator() can be used to retrieve measures.
-//
-// 
-//   
+// Similarly, get() and operator() can be used to retrieve measures.<br>
 // </synopsis>
 
 // <example>
@@ -166,7 +161,7 @@ public:
     // Get the measure in specified row..
     // <group>
     void get(uInt rownr, M& meas) const;
-    M operator()(uInt rownr);
+    M operator()(uInt rownr) const;
     // </group>
     
     // Tests is a row has a defined value.
@@ -189,26 +184,26 @@ protected:
     // Resets itsMeasRef. Needed when the MeasRef varies from row to row.
     void setMeasRef(uInt rownr=0) const;
 
-    //# Column which contains the Measure's actual data
-    ArrayColumn<Double>* itsDataCol;
-    
     //# Measure reference could be constant or vary per row.
     Bool itsVarRefFlag;
     
-    //# Its MeasRef code column when references are variable.
-    ScalarColumn<Int>* itsRefCodeCol;
-    
-    //# Column containing its variable offsets.  Only applicable if the 
-    //# measure references have offsets and they are variable.
-    ScalarMeasColumn<M, MV>* itsOffsetCol;
+    //# Its measure reference when the MeasRef is constant per row.
+    mutable MeasRef<M> itsMeasRef;
     
 private:
     // Assignment makes no sense in a read only class.
     // Declaring this operator private makes it unusable.
     ROScalarMeasColumn& operator= (const ROScalarMeasColumn& that);  
 
-    //# Its measure reference when the MeasRef is constant per row.
-    mutable MeasRef<M> itsMeasRef;
+    //# Column which contains the Measure's actual data
+    ROArrayColumn<Double>* itsDataCol;
+    
+    //# Its MeasRef code column when references are variable.
+    ROScalarColumn<Int>* itsRefCodeCol;
+    
+    //# Column containing its variable offsets.  Only applicable if the 
+    //# measure references have offsets and they are variable.
+    ROScalarMeasColumn<M, MV>* itsOffsetCol;
     
     // Deletes allocated memory etc. Called by ~tor and any member which needs
     // to reallocate data.
@@ -255,6 +250,19 @@ public:
     void put(uInt rownr, const M& meas);
         
 private:
+    //# Column which contains the Measure's actual data
+    ArrayColumn<Double>* itsDataCol;
+    
+    //# Its MeasRef code column when references are variable.
+    ScalarColumn<Int>* itsRefCodeCol;
+    
+    //# Column containing its variable offsets.  Only applicable if the 
+    //# measure references have offsets and they are variable.
+    ScalarMeasColumn<M, MV>* itsOffsetCol; 
+   
+    // Deletes allocated memory etc. Called by ~tor and any member which needs
+    // to reallocate data.
+    void cleanUp();
 };
 
 //# Typedefs

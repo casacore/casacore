@@ -67,7 +67,7 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
     AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
         
     if (tab.tableDesc().columnDesc(columnName).isArray()) {
-    	itsDataCol = new ArrayColumn<Double>(tab, columnName);
+    	itsDataCol = new ROArrayColumn<Double>(tab, columnName);
     } else {
 	throw(AipsError(String("The column " + columnName) 
 		+ " is not an ArrayColumn."));
@@ -75,7 +75,7 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
     
     // Set up the reference code component of the MeasRef
     if (tmDesc->isRefCodeVariable()) {
-	itsRefCodeCol = new ScalarColumn<Int>(tab, tmDesc->refColumnName());
+	itsRefCodeCol = new ROScalarColumn<Int>(tab, tmDesc->refColumnName());
 	itsVarRefFlag = True;
     } else {
 	itsRefCodeCol = 0;
@@ -87,7 +87,7 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
 	    itsOffsetCol = 
-		new ScalarMeasColumn<M, MV>(tab,tmDesc->offsetColumnName());
+		new ROScalarMeasColumn<M, MV>(tab,tmDesc->offsetColumnName());
 	} else {
 	    itsMeasRef.set(tmDesc->getOffset());
 	}
@@ -98,20 +98,20 @@ ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(const Table& tab,
 template<class M, class MV>
 ROScalarMeasColumn<M, MV>::ROScalarMeasColumn(
     const ROScalarMeasColumn<M, MV>& that)
-: itsDataCol(that.itsDataCol),
-  itsVarRefFlag(that.itsVarRefFlag),
+: itsVarRefFlag(that.itsVarRefFlag),
+  itsMeasRef(that.itsMeasRef),
+  itsDataCol(that.itsDataCol),
   itsRefCodeCol(that.itsRefCodeCol),
-  itsOffsetCol(that.itsOffsetCol),
-  itsMeasRef(that.itsMeasRef)
+  itsOffsetCol(that.itsOffsetCol)
 {
     if (itsDataCol != 0) {
-	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
     if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
     }
     if (itsOffsetCol != 0) {
-	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
+	itsOffsetCol = new ROScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
 }
 
@@ -140,13 +140,13 @@ void ROScalarMeasColumn<M, MV>::reference(
     itsOffsetCol = that.itsOffsetCol;
     itsMeasRef = that.itsMeasRef;
     if (itsDataCol != 0) {
-	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+	itsDataCol = new ROArrayColumn<Double>(*itsDataCol);
     }
     if (itsRefCodeCol != 0) {
-	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+	itsRefCodeCol = new ROScalarColumn<Int>(*itsRefCodeCol);
     }
     if (itsOffsetCol != 0) {
-	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
+	itsOffsetCol = new ROScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
 }
 
@@ -169,7 +169,7 @@ void ROScalarMeasColumn<M, MV>::get(uInt rownr, M& meas) const
 }
     	
 template<class M, class MV> 
-M ROScalarMeasColumn<M, MV>::operator()(uInt rownr)
+M ROScalarMeasColumn<M, MV>::operator()(uInt rownr) const
 {
     M meas;
     get(rownr, meas);
@@ -203,32 +203,102 @@ void ROScalarMeasColumn<M, MV>::throwIfNull() const
  
 template<class M, class MV>
 ScalarMeasColumn<M, MV>::ScalarMeasColumn()
-: ROScalarMeasColumn<M, MV>()
+: ROScalarMeasColumn<M, MV>(),
+  itsDataCol(0),
+  itsRefCodeCol(0),
+  itsOffsetCol(0)
 {}
 
 template<class M, class MV>
 ScalarMeasColumn<M, MV>::ScalarMeasColumn(const Table& tab, 
 	    	    	    	    	  const String& columnName)
-: ROScalarMeasColumn<M, MV>(tab, columnName)
-{}
+: ROScalarMeasColumn<M, MV>(tab, columnName),
+  itsDataCol(0),
+  itsRefCodeCol(0),
+  itsOffsetCol(0)
+{
+    TableMeasDesc<M>* tmDesc = (TableMeasDesc<M>*) 
+	TableMeasDescBase::reconstruct(tab, columnName);
+	
+    AlwaysAssert(M::showMe() == tmDesc->type(), AipsError);
+        
+    if (tab.tableDesc().columnDesc(columnName).isArray()) {
+    	itsDataCol = new ArrayColumn<Double>(tab, columnName);
+    } else {
+	throw(AipsError(String("The column " + columnName) 
+		+ " is not an ArrayColumn."));
+    }
+    
+    // Set up the reference code component of the MeasRef
+    if (tmDesc->isRefCodeVariable()) {
+	itsRefCodeCol = new ScalarColumn<Int>(tab, tmDesc->refColumnName());
+    } else {
+	itsRefCodeCol = 0;
+    }
+    
+    // Set up the offset component of the MeasRef
+    if (tmDesc->hasOffset()) {
+	if (tmDesc->isOffsetVariable()) {
+	    itsOffsetCol = 
+		new ScalarMeasColumn<M, MV>(tab,tmDesc->offsetColumnName());
+	}
+    } 
+    delete tmDesc;
+}
 
 template<class M, class MV>
 ScalarMeasColumn<M, MV>::ScalarMeasColumn(const ScalarMeasColumn<M, MV>& that)
-: ROScalarMeasColumn<M, MV>(that)
-{}
+: ROScalarMeasColumn<M, MV>(that),
+  itsDataCol(that.itsDataCol),
+  itsRefCodeCol(that.itsRefCodeCol),
+  itsOffsetCol(that.itsOffsetCol)
+{
+    if (itsDataCol != 0) {
+	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+    }
+    if (itsRefCodeCol != 0) {
+	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    }
+    if (itsOffsetCol != 0) {
+	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
+    }
+}
 
 template<class M, class MV>
 ScalarMeasColumn<M, MV>::~ScalarMeasColumn()
-{}
+{
+    cleanUp();
+}
+
+template<class M, class MV>
+void ScalarMeasColumn<M, MV>::cleanUp()
+{
+    delete itsDataCol;
+    delete itsRefCodeCol;
+    delete itsOffsetCol;
+}
 
 template<class M, class MV>
 void ScalarMeasColumn<M, MV>::reference(const ScalarMeasColumn<M, MV>& that)
 {
     ROScalarMeasColumn<M, MV>::reference(that);
+    itsDataCol = that.itsDataCol;
+    itsRefCodeCol = that.itsRefCodeCol;
+    itsOffsetCol = that.itsOffsetCol;
+    if (itsDataCol != 0) {
+	itsDataCol = new ArrayColumn<Double>(*itsDataCol);
+    }
+    if (itsRefCodeCol != 0) {
+	itsRefCodeCol = new ScalarColumn<Int>(*itsRefCodeCol);
+    }
+    if (itsOffsetCol != 0) {
+	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
+    }
 }
 
 template<class M, class MV>
-void ScalarMeasColumn<M, MV>::attach(const Table& tab, const String& columnName)
+void ScalarMeasColumn<M, MV>::attach(const Table& tab, 
+				     const String& columnName)
 {
     reference(ScalarMeasColumn<M, MV>(tab, columnName)); 
 }
