@@ -27,7 +27,6 @@
 
 
 #include <trial/Lattices/LCUnion.h>
-#include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
@@ -83,16 +82,8 @@ LCUnion& LCUnion::operator= (const LCUnion& other)
 }
 
 Bool LCUnion::operator== (const LCRegion& other) const
-// 
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-    
-   if (!LCRegionMulti::operator==(other)) return False;
-
-   return True;
+   return LCRegionMulti::operator== (other);
 }
 
 LCRegion* LCUnion::cloneRegion() const
@@ -140,23 +131,23 @@ void LCUnion::defineBox()
     // Get the union of blc and trc.
     const IPosition& shape = latticeShape();
     uInt nrdim = shape.nelements();
-    IPosition blc(shape - 1);
-    IPosition trc(nrdim, 0);
+    IPosition blc (regions()[0]->boundingBox().start());
+    IPosition trc (regions()[0]->boundingBox().end());
     uInt nr = regions().nelements();
-    for (i=0; i<nr; i++) {
-	const IPosition& regblc = regions()[i]->box().start();
-	const IPosition& regtrc = regions()[i]->box().end();
+    for (i=1; i<nr; i++) {
+	const IPosition& regblc = regions()[i]->boundingBox().start();
+	const IPosition& regtrc = regions()[i]->boundingBox().end();
 	for (uInt j=0; j<nrdim; j++) {
 	    if (regblc(j) < blc(j)) {
-	        blc(j) = regblc(j);
+		blc(j) = regblc(j);
 	    }
 	    if (regtrc(j) > trc(j)) {
-	        trc(j) = regtrc(j);
+		trc(j) = regtrc(j);
 	    }
 	}
     }
     // Set the bounding box in the parent object.
-    setBox (Slicer(blc, trc, Slicer::endIsLast));
+    setBoundingBox (Slicer(blc, trc, Slicer::endIsLast));
 }
 
 
@@ -170,12 +161,14 @@ void LCUnion::multiGetSlice (Array<Bool>& buffer,
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
+    const IPosition& inc = section.stride();
     uInt nr = regions().nelements();
     for (uInt i=0; i<nr; i++) {
         if (findAreas (stbuf, endbuf, streg, endreg, section, i)) {
 	    Array<Bool> tmpbuf;
 	    LCRegion* reg = (LCRegion*)(regions()[i]);
-	    reg->doGetSlice (tmpbuf, Slicer(streg, endreg, Slicer::endIsLast));
+	    reg->doGetSlice (tmpbuf, Slicer(streg, endreg, inc,
+					    Slicer::endIsLast));
 	    Array<Bool> bufreg = buffer(stbuf,endbuf);
 	    DebugAssert (bufreg.shape() == tmpbuf.shape(), AipsError);
 	    // Make pixel in buffer True when tmpbuf has a True pixel.
