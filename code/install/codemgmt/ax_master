@@ -4946,3 +4946,4 @@
 14 364 src rm trial/scripts/gaintable.help
 15 006 sys rm bin/rpfitsfiller
 15 006 sys rm bin/rpfitsfiller2
+15 006 top rm code/trialdisplay/implement/DisplayDatas/test/templates
