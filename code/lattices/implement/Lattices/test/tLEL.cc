@@ -799,6 +799,15 @@ main (int argc, char *argv[])
     }
 
     {
+    cout << "   Function median" << endl;     
+    LELFunctionReal1D<Float> expr(LELFunctionEnums::MEDIAN1D, pExpr);
+    bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
+                FArr.shape(), IPosition(FArr.ndim(),1));
+    FResult = median(FArr);
+    if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, True, suppress)) ok = False;
+    }
+
+    {
     cout << "   Function mean" << endl;     
     LELFunction1D<Float> expr(LELFunctionEnums::MEAN1D, pExpr);
     bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
@@ -900,6 +909,15 @@ main (int argc, char *argv[])
                 DArr.shape(), IPosition(DArr.ndim(),1));
     DResult = max(DArr);
     if (!checkDouble (expr, DResult, String("LELFunction1D"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function median" << endl;     
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::MEDIAN1D, pExpr);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = median(DArr);
+    if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, True, suppress)) ok = False;
     }
 
     {

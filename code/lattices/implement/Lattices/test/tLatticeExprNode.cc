@@ -1510,6 +1510,19 @@ Bool doIt (const MaskedLattice<Float>& aF,
       if (!checkFloat (expr2, -(11+floor(abs(bFVal))), shape,
 		       False, False)) ok = False;
    }
+    cout << "median" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = median(expr1);
+      if (!checkFloat (expr2, bFVal, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = median(expr1);
+      if (!checkFloat (expr2, bFVal, shape, True, ToBool(nb==0))) ok = False;
+   }
     cout << "mean" << endl;
    {
       cout << "  Float Scalar" << endl;
