@@ -2129,3 +2129,10 @@
 08 393 src rm trial/implement/Display/cubesTable.h
 08 393 src rm trial/implement/Display/X11PCDLColormap.h
 08 393 src rm trial/implement/Display/X11PCDLColormap.cc
+08 403 src rm trial/implement/Display/EventHandlers.h
+08 403 src rm trial/implement/Display/Events.h
+08 403 src rm trial/implement/Display/PCEvents.h
+08 403 src rm trial/implement/Display/PCResizeEH.h
+08 403 src rm trial/implement/Display/PCResizeEH.cc
+08 403 src rm trial/implement/Display/PCResizeEvent.h
+08 403 src rm trial/implement/Display/PCResizeEvent.cc
