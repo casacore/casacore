@@ -50,7 +50,7 @@ RO_PagedArrIter(const PagedArray<T> & data, const LatticeNavigator & nav)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  theData.getSlice(*theCurPtr, theNavPtr->position(),
+  theData.getSlice(theCursor, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
   AlwaysAssert(ok() == True, AipsError);
 };
@@ -62,7 +62,7 @@ RO_PagedArrIter(const PagedArray<T> & data, const IPosition & curShape)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  theData.getSlice(*theCurPtr, theNavPtr->position(),
+  theData.getSlice(theCursor, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
   AlwaysAssert(ok() == True, AipsError);
 };
@@ -86,10 +86,10 @@ template<class T> RO_PagedArrIter<T>::
 template<class T> RO_PagedArrIter<T> & RO_PagedArrIter<T>::
 operator=(const RO_PagedArrIter<T> & other) {
   if (this != &other) {
-    theData = other.theData;
-    theNavPtr = other.theNavPtr->clone();
     if (theCurPtr != 0) 
       delete theCurPtr;
+    theData = other.theData;
+    theNavPtr = other.theNavPtr->clone();
     AlwaysAssert(allocateCursor() == True, AipsError);
     *theCurPtr = *(other.theCurPtr);
   }
@@ -104,7 +104,7 @@ operator++() {
 
 template<class T> Bool RO_PagedArrIter<T>::
 operator++(Int) {
-  Bool retval = theNavPtr->operator++(0);
+  Bool retval = theNavPtr->operator++();
   cursorUpdate();
   DebugAssert(ok() == True, AipsError);
   return retval;
@@ -117,7 +117,7 @@ operator--() {
 
 template<class T> Bool RO_PagedArrIter<T>::
 operator--(Int) {
-  Bool retval = theNavPtr->operator--(0);
+  Bool retval = theNavPtr->operator--();
   cursorUpdate();
   DebugAssert(ok() == True, AipsError);
   return retval;
@@ -218,6 +218,40 @@ ok() const {
 	   << LogIO::POST;
      return False;
   }
+  // Do the same for the Array cursor
+  if (theCursor.ok() == False) {
+    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
+    ROlogErr << LogIO::SEVERE << "Array Cursor internals are inconsistant" 
+	   << LogIO::POST;
+     return False;
+  }
+  // Check that both cursors have the same number of elements
+  if (theCursor.nelements() != theCurPtr->nelements()) {
+    LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
+    ROlogErr << LogIO::SEVERE << "Cursors are inconsistant lengths" 
+	   << LogIO::POST;
+     return False;
+  }
+  // Check that both cursors have the same contents. 
+  // This test is a performance pig.
+#if defined(AIPS_DEBUG)
+  if (theCurPtr->nelements() == 1) {
+    if (theCursor(IPosition(theCursor.ndim(),0)) != 
+	theCurPtr->operator()(IPosition(1,0))) {
+      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
+      ROlogErr << LogIO::SEVERE << "Cursors contain different data" 
+	     << LogIO::POST;
+      return False;
+    }
+  }
+  else
+    if (allEQ(theCursor.nonDegenerate(), *theCurPtr) == False) {
+      LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
+      ROlogErr << LogIO::SEVERE << "Cursors contain different data" 
+	     << LogIO::POST;
+      return False;
+    }
+#endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
     LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
@@ -242,12 +276,12 @@ ok() const {
   }
   // Check the Navigator cursor and cached Array are the same shape
   // There is a special case if the cursor has only one element
-  if ((theCurPtr->shape().product() == 1)) {
+  if ((theCurPtr->nelements() == 1)) {
     if (theNavPtr->cursorShape().product() != 1) {
       LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
       ROlogErr << LogIO::SEVERE 
-	       << "Navigator cursor and Data cursor are not both unit shapes" 
-	       << LogIO::POST;
+	     << "Navigator cursor and Data cursor are not both unit shapes" 
+	     << LogIO::POST;
       return False;
     }
   }
@@ -256,8 +290,8 @@ ok() const {
 	.isEqual(theCurPtr->shape())) {
       LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
       ROlogErr << LogIO::SEVERE 
-	       << "Navigator cursor and Data cursor are different shapes" 
-	       << LogIO::POST;
+	     << "Navigator cursor and Data cursor are different shapes" 
+	     << LogIO::POST;
       return False;
     }
   return True;
@@ -268,17 +302,19 @@ cursorUpdate() {
   DebugAssert(ok() == True, AipsError);
   // Check if the cursor shape has changed.
   {
-    IPosition newShape(theCurPtr->shape());
-    IPosition oldShape(theNavPtr->cursorShape().nonDegenerate());
+    const IPosition oldShape(theCurPtr->shape());
+    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate());
     if (newShape.nelements() != oldShape.nelements()){
       delete theCurPtr;
-      allocateCursor();
+      AlwaysAssert(allocateCursor() == True, AipsError);
     }
-    else if (oldShape != newShape)
+    else if (oldShape != newShape){
       theCurPtr->resize(newShape);
+      relinkArray();
+    }
   }
   if (theNavPtr->hangOver() == False)
-    theData.getSlice(*theCurPtr, theNavPtr->position(),
+    theData.getSlice(theCursor, theNavPtr->position(),
 		     theNavPtr->cursorShape(), theNavPtr->increment(), True); 
   else {
     // Here I set the entire cursor to zero.
@@ -313,15 +349,15 @@ cursorUpdate() {
       }
     }
     extractShape = (trc - blc)/inc + 1;
-    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
-    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
     theData.getSlice(subArr, blc, extractShape, inc, False); 
   }
 };
 
 template<class T> Bool RO_PagedArrIter<T>::
 allocateCursor() {
-  IPosition realShape(theNavPtr->cursorShape().nonDegenerate());
+  const IPosition cursorShape(theNavPtr->cursorShape());
+  const IPosition realShape(cursorShape.nonDegenerate());
   switch (realShape.nelements()) {
   case 0:
     theCurPtr = new Vector<T>(1);
@@ -341,47 +377,52 @@ allocateCursor() {
   };
   if (theCurPtr == 0) 
     return False;
-  else
-    return True;
+  relinkArray();
+  return True;
 };
 
 template<class T> void RO_PagedArrIter<T>::
 setup_tile_cache() {
   IPosition axisPath;
-  LatticeStepper *stepper = theNavPtr->castToStepper();
+  LatticeStepper * stepper = theNavPtr->castToStepper();
 
   if (stepper != 0) {
     axisPath = stepper->axisPath();
     theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
 				 theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+    return;
   }
-  else {
-    TiledStepper * tilerPtr = theNavPtr->castToTiler();
-    if (tilerPtr != 0){
-      IPosition cursorShape = tilerPtr->cursorShape();
-      Int whichLongest = 0;
-      for (uInt i=1; i < cursorShape.nelements(); i++)
-	if (cursorShape(i) > cursorShape(whichLongest))
-	  whichLongest = i;
-      axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
-				   tilerPtr->blc() + tilerPtr->tileShape(),
-				   axisPath);
-    }
-    else {
-      // Because the current stepper is not a LatticeStepper or TiledStepper
-      // assume that the
-      // longest axis is the fastest moving one.
-      IPosition shape = theData.shape();
-      Int whichLongest = 0;
-      for (uInt i=1; i<shape.nelements(); i++)
-	if (shape(i) > shape(whichLongest))
-	  whichLongest = i;
-      axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
-				   theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
-    }
+  TiledStepper * tilerPtr = theNavPtr->castToTiler();
+  if (tilerPtr != 0){
+    IPosition cursorShape = tilerPtr->cursorShape();
+    Int whichLongest = 0;
+    for (uInt i=1; i < cursorShape.nelements(); i++)
+      if (cursorShape(i) > cursorShape(whichLongest))
+	whichLongest = i;
+    axisPath = IPosition(1,whichLongest);
+    theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
+				 tilerPtr->blc() + tilerPtr->tileShape(),
+				 axisPath);
+    return;
   }
+  // Because the current stepper is not a LatticeStepper or TiledStepper
+  // assume that the longest axis is the fastest moving one.
+  IPosition shape = theData.shape();
+  Int whichLongest = 0;
+  for (uInt i=1; i<shape.nelements(); i++)
+    if (shape(i) > shape(whichLongest))
+      whichLongest = i;
+  axisPath = IPosition(1,whichLongest);
+  theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+			       theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+};
+
+template<class T> void RO_PagedArrIter<T>::
+relinkArray() {
+  Bool isACopy;
+  theCursor.takeStorage(theNavPtr->cursorShape(), 
+			theCurPtr->getStorage(isACopy), SHARE);
+  AlwaysAssert(isACopy == False, AipsError);
 };
 
 // +++++++++++++++++++++++ PagedArrIter ++++++++++++++++++++++++++++++++
@@ -393,7 +434,7 @@ PagedArrIter(PagedArray<T> & data, const LatticeNavigator & nav)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  theData.getSlice(*theCurPtr, theNavPtr->position(),
+  theData.getSlice(theCursor, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
   AlwaysAssert(ok() == True, AipsError);
 };
@@ -405,7 +446,7 @@ PagedArrIter(PagedArray<T> & data, const IPosition & curShape)
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   setup_tile_cache();
-  theData.getSlice(*theCurPtr, theNavPtr->position(),
+  theData.getSlice(theCursor, theNavPtr->position(),
 		   theNavPtr->cursorShape(), theNavPtr->increment(), True);
   AlwaysAssert(ok() == True, AipsError);
 };
@@ -429,7 +470,7 @@ template<class T> PagedArrIter<T>::
 
 template<class T> PagedArrIter<T> & PagedArrIter<T>::
 operator=(const PagedArrIter<T> & other) {
-  if (this != &other) { 
+  if (this != &other) {
     cursorWrite();
     theData.clearCache();
     if (theCurPtr != 0) 
@@ -453,6 +494,7 @@ operator++(Int) {
   cursorWrite();
   Bool retval = theNavPtr->operator++();
   cursorUpdate();
+  DebugAssert(ok() == True, AipsError);
   return retval;
 };
 
@@ -516,7 +558,7 @@ cursorShape() const {
 template<class T> Vector<T> & PagedArrIter<T>::
 vectorCursor() {
   DebugAssert(ok() == True, AipsError);
-  if(theCurPtr->ndim() != 1)
+  if (theCurPtr->ndim() != 1)
     throw(AipsError("PagedArrIter<T>::vectorCursor()"
 		    " - check the cursor shape is 1-dimensional"));
   return *(Vector<T> *) theCurPtr;
@@ -525,18 +567,18 @@ vectorCursor() {
 template<class T> Matrix<T> & PagedArrIter<T>::
 matrixCursor() {
   DebugAssert(ok() == True, AipsError);
-  if(theCurPtr->ndim() != 2)
+  if (theCurPtr->ndim() != 2)
     throw(AipsError("PagedArrIter<T>::matrixCursor()"
-		    " check the cursor shape is 2-dimensional"));
+		    " - check the cursor shape is 2-dimensional"));
   return *(Matrix<T> *) theCurPtr;
 };
 
 template<class T> Cube<T> & PagedArrIter<T>::
 cubeCursor() {
   DebugAssert(ok() == True, AipsError);
-  if(theCurPtr->ndim() != 3)
+  if (theCurPtr->ndim() != 3)
     throw(AipsError("PagedArrIter<T>::cubeCursor()"
-		    " check the cursor shape is 3-dimensional"));
+		    " - check the cursor shape is 3-dimensional"));
   return *(Cube<T> *) theCurPtr;
 };
 
@@ -566,6 +608,40 @@ ok() const {
 	   << LogIO::POST;
      return False;
   }
+  // Do the same for the Array cursor
+  if (theCursor.ok() == False) {
+    LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+    logErr << LogIO::SEVERE << "Array Cursor internals are inconsistant" 
+	   << LogIO::POST;
+     return False;
+  }
+  // Check that both cursors have the same number of elements
+  if (theCursor.nelements() != theCurPtr->nelements()) {
+    LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+    logErr << LogIO::SEVERE << "Cursors are inconsistant lengths" 
+	   << LogIO::POST;
+     return False;
+  }
+  // Check that both cursors have the same contents. 
+  // This test is a performance pig.
+#if defined(AIPS_DEBUG)
+  if (theCurPtr->nelements() == 1) {
+    if (theCursor(IPosition(theCursor.ndim(),0)) != 
+	theCurPtr->operator()(IPosition(1,0))) {
+      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+      logErr << LogIO::SEVERE << "Cursors contain different data" 
+	     << LogIO::POST;
+      return False;
+    }
+  }
+  else
+    if (allEQ(theCursor.nonDegenerate(), *theCurPtr) == False) {
+      LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
+      logErr << LogIO::SEVERE << "Cursors contain different data" 
+	     << LogIO::POST;
+      return False;
+    }
+#endif
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (theNavPtr.null() == True) {
     LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
@@ -590,7 +666,7 @@ ok() const {
   }
   // Check the Navigator cursor and cached Array are the same shape
   // There is a special case if the cursor has only one element
-  if ((theCurPtr->shape().product() == 1)) {
+  if ((theCurPtr->nelements() == 1)) {
     if (theNavPtr->cursorShape().product() != 1) {
       LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
       logErr << LogIO::SEVERE 
@@ -613,28 +689,8 @@ ok() const {
 
 template<class T> void PagedArrIter<T>::
 cursorWrite() {
-  IPosition fullShape(theNavPtr->cursorShape());
-  uInt fullDim(fullShape.nelements());
-
-  if (theNavPtr->hangOver() == False) {
-    // putSlice requires a same dimensional sourceBuffer as the underlying
-    // Lattice so check if the cursor shape has had degenerate axes
-    // stripped.
-    if (theCurPtr->ndim() == fullDim){
-//       IPosition temp(theCurPtr->ndim(), 0); // temp(0) = 1;
-//       cout << temp << " "
-// 	   << theCurPtr->operator()(temp) << endl;
-      theData.putSlice(*theCurPtr, theNavPtr->position(), theNavPtr->increment());
-      //      theData.getSlice(*theCurPtr, theNavPtr->blc(), theNavPtr->increment());
-
-    }
-    else {
-      // make a temporary Array with degenerate axes and 
-      // have it reference the data in the actual cursor.
-      theData.putSlice(theCurPtr->reform(fullShape, IPosition(fullDim,0)), 
-		       theNavPtr->position(), theNavPtr->increment());
-    }
-  }
+  if (theNavPtr->hangOver() == False)
+    theData.putSlice(theCursor, theNavPtr->position(), theNavPtr->increment());
   else {
     // Find the appropriate region and just put that bit into the Lattice
     const IPosition latticeTrc(theNavPtr->latticeShape() - 1);
@@ -658,36 +714,9 @@ cursorWrite() {
 	cursorTrc(d) -= trim;
       }
     }
-    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
-    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
     theData.putSlice(subArr, blc, inc); 
   }
-};
-
-template<class T> Bool PagedArrIter<T>::
-allocateCursor() {
-  IPosition realShape(theNavPtr->cursorShape().nonDegenerate());
-  switch (realShape.nelements()) {
-  case 0:
-    theCurPtr = new Vector<T>(1);
-    break;
-  case 1:
-    theCurPtr = new Vector<T>(realShape);
-    break;
-  case 2:
-    theCurPtr = new Matrix<T>(realShape);
-    break;
-  case 3:
-    theCurPtr = new Cube<T>(realShape);
-    break;
-  default:
-    theCurPtr = new Array<T>(realShape);
-    break;
-  };
-  if (theCurPtr == 0) 
-    return False;
-  else
-    return True;
 };
 
 template<class T> void PagedArrIter<T>::
@@ -695,17 +724,19 @@ cursorUpdate() {
   DebugAssert(ok() == True, AipsError);
   // Check if the cursor shape has changed.
   {
-    IPosition newShape(theCurPtr->shape());
-    IPosition oldShape(theNavPtr->cursorShape().nonDegenerate());
+    const IPosition oldShape(theCurPtr->shape());
+    const IPosition newShape(theNavPtr->cursorShape().nonDegenerate());
     if (newShape.nelements() != oldShape.nelements()){
       delete theCurPtr;
-      allocateCursor();
+      AlwaysAssert(allocateCursor() == True, AipsError);
     }
-    else if (oldShape != newShape)
+    else if (oldShape != newShape){
       theCurPtr->resize(newShape);
+      relinkArray();
+    }
   }
   if (theNavPtr->hangOver() == False)
-    theData.getSlice(*theCurPtr, theNavPtr->position(),
+    theData.getSlice(theCursor, theNavPtr->position(),
 		     theNavPtr->cursorShape(), theNavPtr->increment(), True); 
   else {
     // Here I set the entire cursor to zero.
@@ -740,47 +771,78 @@ cursorUpdate() {
       }
     }
     extractShape = (trc - blc)/inc + 1;
-    Array<T> allDims(theCurPtr->reform(fullShape, IPosition(latDim,0)));
-    Array<T> subArr(allDims(cursorBlc, cursorTrc));
+    Array<T> subArr(theCursor(cursorBlc, cursorTrc));
     theData.getSlice(subArr, blc, extractShape, inc, False); 
   }
+};
+
+template<class T> Bool PagedArrIter<T>::
+allocateCursor() {
+  const IPosition cursorShape(theNavPtr->cursorShape());
+  const IPosition realShape(cursorShape.nonDegenerate());
+  switch (realShape.nelements()) {
+  case 0:
+    theCurPtr = new Vector<T>(1);
+    break;
+  case 1:
+    theCurPtr = new Vector<T>(realShape);
+    break;
+  case 2:
+    theCurPtr = new Matrix<T>(realShape);
+    break;
+  case 3:
+    theCurPtr = new Cube<T>(realShape);
+    break;
+  default:
+    theCurPtr = new Array<T>(realShape);
+    break;
+  };
+  if (theCurPtr == 0) 
+    return False;
+  relinkArray();
+  return True;
 };
 
 template<class T> void PagedArrIter<T>::
 setup_tile_cache() {
   IPosition axisPath;
-  LatticeStepper *stepper = theNavPtr->castToStepper();
+  LatticeStepper * stepper = theNavPtr->castToStepper();
 
   if (stepper != 0) {
     axisPath = stepper->axisPath();
     theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
 				 theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+    return;
   }
-  else {
-    TiledStepper * tilerPtr = theNavPtr->castToTiler();
-    if (tilerPtr != 0){
-      IPosition cursorShape = tilerPtr->cursorShape();
-      Int whichLongest = 0;
-      for (uInt i=1; i < cursorShape.nelements(); i++)
-	if (cursorShape(i) > cursorShape(whichLongest))
-	  whichLongest = i;
-      axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
-				   tilerPtr->blc() + tilerPtr->tileShape(),
-				   axisPath);
-    }
-    else {
-      // Because the current stepper is not a LatticeStepper or TiledStepper
-      // assume that the
-      // longest axis is the fastest moving one.
-      IPosition shape = theData.shape();
-      Int whichLongest = 0;
-      for (uInt i=1; i<shape.nelements(); i++)
-	if (shape(i) > shape(whichLongest))
-	  whichLongest = i;
-      axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
-				   theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
-    }
+  TiledStepper * tilerPtr = theNavPtr->castToTiler();
+  if (tilerPtr != 0){
+    IPosition cursorShape = tilerPtr->cursorShape();
+    Int whichLongest = 0;
+    for (uInt i=1; i < cursorShape.nelements(); i++)
+      if (cursorShape(i) > cursorShape(whichLongest))
+	whichLongest = i;
+    axisPath = IPosition(1,whichLongest);
+    theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
+				 tilerPtr->blc() + tilerPtr->tileShape(),
+				 axisPath);
+    return;
   }
+  // Because the current stepper is not a LatticeStepper or TiledStepper
+  // assume that the longest axis is the fastest moving one.
+  IPosition shape = theData.shape();
+  Int whichLongest = 0;
+  for (uInt i=1; i<shape.nelements(); i++)
+    if (shape(i) > shape(whichLongest))
+      whichLongest = i;
+  axisPath = IPosition(1,whichLongest);
+  theData.setCacheSizeFromPath(theNavPtr->cursorShape(), theNavPtr->blc(), 
+			       theNavPtr->trc()-theNavPtr->blc()+1, axisPath);
+};
+
+template<class T> void PagedArrIter<T>::
+relinkArray() {
+  Bool isACopy;
+  theCursor.takeStorage(theNavPtr->cursorShape(), 
+			theCurPtr->getStorage(isACopy), SHARE);
+  AlwaysAssert(isACopy == False, AipsError);
 };
