@@ -1918,3 +1918,4 @@
 08 015 src mv trial/apps/iofits/UVFitsWriter.cc trial/apps/ms/UVFitsWriter.cc
 08 027 src rm doc/user/Aipsview.dir/viewAxisControl.eps
 08 030 src rm atnf/implement/MBGridder.cc
+08 030 src rm atnf/implement/MBGridder.h
