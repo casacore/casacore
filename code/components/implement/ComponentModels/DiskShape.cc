@@ -292,9 +292,22 @@ void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
+  Double u = uvw(0);
+  Double v = uvw(1);
+  if (!nearAbs(itsPaValue, 0.0, C::dbl_min)) {
+    // If this function becomes a computation bottleneck then spa & cpa can be
+    // cached as can itsMinValue/itsMajValue. My tests show it is not a
+    // bottleneck at the moment.
+    const Double cpa = cos(itsPaValue);
+    const Double spa = sin(itsPaValue);
+    u = u * cpa - v * spa;
+    v = uvw(0) * spa + v * cpa;
+  }
+  if (!near(itsMajValue, itsMinValue, C::dbl_epsilon)) {
+    u *= itsMinValue/itsMajValue;
+  }
   const Double wavenumber = frequency/C::c;
-  // Assume the disk is symmetric for now.
-  const Double r = hypot(uvw(0) * wavenumber, uvw(1) * wavenumber);
+  const Double r = hypot(u * wavenumber, v * wavenumber);
   const Double scale = j1(itsMajValue*C::pi*r)*itsMajValue/(2*r);
   flux.scaleValue(scale, scale, scale, scale);
 }
