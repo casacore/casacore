@@ -1,7 +1,3 @@
-From: Doug Roberts [droberts@astro.uiuc.edu]
-Sent: Friday, March 31, 2000 9:12 PM
-To: tcornwel@cv3.cv.nrao.edu
-
 /*
     bug.c: Miriad library routine for error handling.
     Copyright (C) 1999,2000
