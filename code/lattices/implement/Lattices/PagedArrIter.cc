@@ -108,10 +108,11 @@ operator++() {
 
 template<class T> Bool RO_PagedArrIter<T>::
 operator++(Int) {
-  Bool retval = theNavPtr->operator++();
-  cursorUpdate();
+  Bool moved = theNavPtr->operator++();
+  if (moved)
+    cursorUpdate();
   DebugAssert(ok() == True, AipsError);
-  return retval;
+  return moved;
 };
 
 template<class T> Bool RO_PagedArrIter<T>::
@@ -121,10 +122,11 @@ operator--() {
 
 template<class T> Bool RO_PagedArrIter<T>::
 operator--(Int) {
-  Bool retval = theNavPtr->operator--();
-  cursorUpdate();
+  Bool moved = theNavPtr->operator--();
+  if (moved)
+    cursorUpdate();
   DebugAssert(ok() == True, AipsError);
-  return retval;
+  return moved;
 };
 
 template<class T> void RO_PagedArrIter<T>::
@@ -503,10 +505,11 @@ operator++() {
 template<class T> Bool PagedArrIter<T>::
 operator++(Int) {
   cursorWrite();
-  Bool retval = theNavPtr->operator++();
-  cursorUpdate();
+  Bool moved = theNavPtr->operator++();
+  if (moved)
+    cursorUpdate();
   DebugAssert(ok() == True, AipsError);
-  return retval;
+  return moved;
 };
 
 template<class T> Bool PagedArrIter<T>::
@@ -517,10 +520,11 @@ operator--() {
 template<class T> Bool PagedArrIter<T>::
 operator--(Int) {
   cursorWrite();
-  Bool retval = theNavPtr->operator--();
-  cursorUpdate();
+  Bool moved = theNavPtr->operator--();
+  if (moved)
+    cursorUpdate();
   DebugAssert(ok() == True, AipsError);
-  return retval;
+  return moved;
 };
 
 template<class T> void PagedArrIter<T>::
