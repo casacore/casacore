@@ -487,22 +487,22 @@ template Bool FunctionHolder<Double>::getRecord<AutoDiff<Double> >(String &,
 						Function<AutoDiff<Double> > *&,
 						const RecordInterface &);
 template class FunctionHolder<DComplex>;
-template Bool FunctionHolder<DComplex>::getType(String &,
+template Bool FunctionHolder<DComplex>::getType<DComplex>(String &,
 						Function<DComplex> *&,
 						const RecordInterface &);
-template Bool FunctionHolder<DComplex>::getType(String &,
+template Bool FunctionHolder<DComplex>::getType<DComplex>(String &,
 						Function<DComplex> *&);
-template Bool FunctionHolder<DComplex>::getRecord(String &,
+template Bool FunctionHolder<DComplex>::getRecord<DComplex>(String &,
 						  Function<DComplex> *&,
 						  const RecordInterface &);
 template Bool FunctionHolder<DComplex>::
-getType(String &,
+getType<AutoDiff<DComplex> >(String &,
 	Function<AutoDiff<DComplex> > *&,
 	const RecordInterface &);
 template Bool FunctionHolder<DComplex>::
-getType(String &,
+getType<AutoDiff<DComplex> >(String &,
 	Function<AutoDiff<DComplex> > *&);
 template Bool FunctionHolder<DComplex>::
-getRecord(String &,
+getRecord<AutoDiff<DComplex> >(String &,
 	  Function<AutoDiff<DComplex> > *&,
 	  const RecordInterface &);
