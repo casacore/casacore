@@ -8,26 +8,30 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
    Name=Time1   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = An MEpoch column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=TimeOffset   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = MEpoch column with fix reference and offset
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=TimeVarOffset   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Variable Offset col
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=MDirColumn   DataType=double   Nrdim=1   Shape=[2]
    DataManager=StManAipsIO/StManAipsIO
    Comment = Simple mdirection column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=TimeRef   DataType=Int
    DataManager=StManAipsIO/StManAipsIO   Default=0
@@ -42,14 +46,16 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
    Name=MEpochVarStr   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = Another MEpoch column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=Time1Arr   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = An MEpoch array column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=TimeArrRef   DataType=Int
    DataManager=StManAipsIO/StManAipsIO   Default=0
@@ -59,14 +65,16 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
    Name=Time2Arr   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = An MEpoch array column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=Time2ArrOffset   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = Offset column for Time2Arr
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=Time2ArrRef   DataType=Int   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
@@ -76,8 +84,9 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
    Name=Time3Arr   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = An MEpoch array column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=Time3ArrStrRef   DataType=String   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
@@ -102,16 +111,19 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
    Name=SpareCol1   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = Test of exception column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
    Name=SpareArrOffset   DataType=double   Nrdim=-1   Shape=[]
    DataManager=StManAipsIO/StManAipsIO
    Comment = Spare int array column
-   #keywords=1
-0  MEASINFO : SUBRECORD
+   #keywords=2
+0  QuantumUnits : Array<String>[-1]
+1  MEASINFO : SUBRECORD
 
 * Time1
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -119,12 +131,11 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       VarRefCol = TimeRef  (String)
       RefOffCol = TimeVarOffset  (String)
       RefOffvarPerArr = 0  (Bool)
 * TimeOffset
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -132,8 +143,6 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       Ref = TAI  (String)
       RefOffMsr =   (Record)
         type = epoch  (String)
@@ -142,6 +151,7 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
           value = 49854.3  (Double)
           unit = d  (String)
 * TimeVarOffset
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -149,10 +159,9 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       Ref = UTC  (String)
 * MDirColumn
+    QuantumUnits = [rad, rad]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = direction  (String)
@@ -163,13 +172,11 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           unit = rad  (String)
           value = 0  (Double)
-      NumUnits = 2  (uInt)
-      unit0 = rad  (String)
-      unit1 = rad  (String)
       Ref = J2000  (String)
 * TimeRef
 * TimeRefStr
 * MEpochVarStr
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -177,12 +184,11 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       VarRefCol = TimeRefStr  (String)
       RefOffCol = TimeVarOffset  (String)
       RefOffvarPerArr = 0  (Bool)
 * Time1Arr
+    QuantumUnits = [h]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -190,8 +196,6 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = h  (String)
       VarRefCol = TimeArrRef  (String)
       RefOffMsr =   (Record)
         type = epoch  (String)
@@ -201,6 +205,7 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
           unit = d  (String)
 * TimeArrRef
 * Time2Arr
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -208,12 +213,11 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       VarRefCol = Time2ArrRef  (String)
       RefOffCol = Time2ArrOffset  (String)
       RefOffvarPerArr = 1  (Bool)
 * Time2ArrOffset
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -221,11 +225,10 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       Ref = UTC  (String)
 * Time2ArrRef
 * Time3Arr
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -233,14 +236,13 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       VarRefCol = Time3ArrStrRef  (String)
 * Time3ArrStrRef
 * Time4Arr
 * Time4StrRef
 * Time4ScaOffset
 * SpareCol1
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -248,12 +250,11 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       Ref = GAST  (String)
       RefOffCol = SpareArrOffset  (String)
       RefOffvarPerArr = 1  (Bool)
 * SpareArrOffset
+    QuantumUnits = [d]  (String)
     MEASINFO =   (Record)
       Type =   (Record)
         type = epoch  (String)
@@ -261,8 +262,6 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           value = 0  (Double)
           unit = d  (String)
-      NumUnits = 1  (uInt)
-      unit0 = d  (String)
       Ref = UTC  (String)
 The following should report no such column  for TableMeasRefDesc.
 TableMeasRefDesc::checkColumn; No such column: SillyColumnName
