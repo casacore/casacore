@@ -2072,18 +2072,23 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     if (oneRelative) {
 	offset = 1.0;
     }
+
+// FITS angular units are degrees
+
     Vector<Double> cdelt, crval, crpix;
     Vector<Int> naxes;
     Vector<String> ctype, cunit;
     Matrix<Double> pc;
     Bool haveUnit = False;
     Int rotationAxis = -1;
+    Bool hasCD = False;
+    Int n = 0;
     try {
 	header.get(sprefix + "rval", crval);
 	header.get(sprefix + "rpix", crpix);
 	crpix -= offset;
-	header.get(sprefix + "delt", cdelt);
 	header.get(sprefix + "type", ctype);
+        n = ctype.nelements();
 
 	// Units are optional
 	if (header.isDefined(sprefix + "unit")) {
@@ -2092,74 +2097,98 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    haveUnit = True;
 	}
 
-	// PC and/or CROTA is optional. We prefer PC if it is defined.
-	if (header.isDefined("pc")) {
-	    if (header.isDefined(sprefix + "rota")) {
-		os << "Ignoring redundant " << sprefix << "rota in favour of "
-		    "pc matrix." << LogIO::NORMAL << LogIO::POST;
-	    }
-	    header.get("pc", pc);
-	} else if (header.isDefined(sprefix + "rota")) {
-	    Vector<Double> crota;
-	    header.get(sprefix + "rota", crota);
-	    // Turn crota into PC matrix
-	    pc.resize(crota.nelements(), crota.nelements());
-	    pc = 0.0;
-	    pc.diagonal() = 1.0;
-	    // We can only handle one non-zero angle
-	    for (uInt i=0; i<crota.nelements(); i++) {
-		if (!::near(crota(i), 0.0)) {
-		    if (rotationAxis >= 0) {
-			os << LogIO::SEVERE << "Can only convert one non-zero"
-			    " angle from " << sprefix << 
-			    "rota to pc matrix. Using the first." <<
-			    LogIO::POST;
-		    } else {
-			rotationAxis = i;
-		    }
-		}
-	    }
-	    if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
-		if (rotationAxis > 0) {
-		    pc(rotationAxis-1,rotationAxis-1) =
-			pc(rotationAxis,rotationAxis) = 
-			cos(crota(rotationAxis)*C::pi/180.0);
-		    pc(rotationAxis-1,rotationAxis)=
-			-sin(crota(rotationAxis)*C::pi/180.0);
-		    pc(rotationAxis,rotationAxis-1)=
-			sin(crota(rotationAxis)*C::pi/180.0);
-		} else {
-		    os << LogIO::NORMAL << "Unusual to rotate about first"
-			" axis." << LogIO::POST;
-		    pc(rotationAxis+1,rotationAxis+1) =
-			pc(rotationAxis,rotationAxis) = 
-			cos(crota(rotationAxis)*C::pi/180.0);
-		    // Might be backwards?
-		    pc(rotationAxis+1,rotationAxis)=
-			-sin(crota(rotationAxis)*C::pi/180.0);
-		    pc(rotationAxis,rotationAxis+1)=
-			sin(crota(rotationAxis)*C::pi/180.0);
-		}
-	    }
-	} else {
-	    // Pure diagonal PC matrix
-	    pc.resize(ctype.nelements(), ctype.nelements());
-	    pc = 0.0;
-	    pc.diagonal() = 1.0;
-	}
-	
+	// PC, CD (PC*CDELT) and/or CROTA is optional. We prefer CD if it is defined.
+        // We will use variable "pc" to house the true PC matrix, or the CD matrix
+
+	hasCD = getCDCardsFromHeader(pc, n, header);
+	if (hasCD) {
+           if (header.isDefined(sprefix + "delt")) {
+              os << LogIO::NORMAL << "Ignoring meaningless " << sprefix << "delt because CD cards present" << LogIO::POST;
+           }
+           cdelt.resize(pc.nrow());
+           cdelt = 1.0;               // degrees
+        } else {
+
+// Get cdelt 
+   
+           header.get(sprefix + "delt", cdelt);
+//
+           if (header.isDefined("pc")) {
+
+// Unlikely to encounter this, as the current WCS papers
+// use the CD rather than PC matrix. The aips++ user binding
+// (Image tool) does not allow the WCS definition to be written
+// so probably we could remove this
+
+              if (header.isDefined(sprefix + "rota")) {
+   		   os << "Ignoring redundant " << sprefix << "rota in favour of "
+		       "pc matrix." << LogIO::NORMAL << LogIO::POST;
+	      }
+	      header.get("pc", pc);
+              if (pc.ncolumn() != pc.nrow()) {
+                 os << "The PC matrix must be square" << LogIO::EXCEPTION;
+              }
+   	   } else if (header.isDefined(sprefix + "rota")) {
+	       Vector<Double> crota;
+	       header.get(sprefix + "rota", crota);
+	       // Turn crota into PC matrix
+	       pc.resize(crota.nelements(), crota.nelements());
+	       pc = 0.0;
+	       pc.diagonal() = 1.0;
+
+// We can only handle one non-zero angle
+
+	       for (uInt i=0; i<crota.nelements(); i++) {
+   		   if (!::near(crota(i), 0.0)) {
+   		       if (rotationAxis >= 0) {
+			   os << LogIO::SEVERE << "Can only convert one non-zero"
+			       " angle from " << sprefix << 
+			       "rota to pc matrix. Using the first." <<
+			       LogIO::POST;
+		       } else {
+			   rotationAxis = i;
+		       }
+  		   }
+	       }
+   	       if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
+   		   if (rotationAxis > 0) {
+		       pc(rotationAxis-1,rotationAxis-1) =
+			  pc(rotationAxis,rotationAxis) = 
+			  cos(crota(rotationAxis)*C::pi/180.0);
+		       pc(rotationAxis-1,rotationAxis)=
+			  -sin(crota(rotationAxis)*C::pi/180.0);
+		       pc(rotationAxis,rotationAxis-1)=
+			  sin(crota(rotationAxis)*C::pi/180.0);
+		   } else {
+		       os << LogIO::NORMAL << "Unusual to rotate about first"
+			   " axis." << LogIO::POST;
+		       pc(rotationAxis+1,rotationAxis+1) =
+			  pc(rotationAxis,rotationAxis) = 
+			  cos(crota(rotationAxis)*C::pi/180.0);
+		       // Might be backwards?
+		       pc(rotationAxis+1,rotationAxis)=
+			  -sin(crota(rotationAxis)*C::pi/180.0);
+		       pc(rotationAxis,rotationAxis+1)=
+ 			  sin(crota(rotationAxis)*C::pi/180.0);
+ 		   }
+	       }
+	   } else {
+   	       // Pure diagonal PC matrix
+	       pc.resize(ctype.nelements(), ctype.nelements());
+ 	       pc = 0.0;
+	       pc.diagonal() = 1.0;
+           }
+       }  
     } catch (AipsError x) {
 	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
 	    "from header";
 	return False;
     } end_try;
 
-
+ 
 // Make some consistency checks.  We don't rely on naxis, rather we 
 // look at the length of the descriptor vectors.  If some missing 
 // values, give guesses
-
-    const Int n = ctype.nelements();
 
     if (Int(crval.nelements()) != n) {
        Int n2 = crval.nelements();
@@ -2167,11 +2196,11 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
        for (Int i=n2; i<n; i++) crval(i) = 0.0;
        os << LogIO::WARN << "Padding missing crval values with 0.0" << LogIO::POST;
     }
-    if (Int(cdelt.nelements()) != n) {
+    if (!hasCD && Int(cdelt.nelements()) != n) {
        Int n2 = cdelt.nelements();
        cdelt.resize(n,True);
-       for (Int i=n2; i<n; i++) cdelt(i) = 1.0;
-       os << LogIO::WARN << "Padding missing cdelt values with 1.0" << LogIO::POST;
+       for (Int i=n2; i<n; i++) cdelt(i) = 1.0;       // Degrees
+       os << LogIO::WARN << "Padding missing cdelt values with 1.0deg" << LogIO::POST;
     }
     if (Int(crpix.nelements()) != n) {
        Int n2 = crpix.nelements();
@@ -2214,7 +2243,6 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    specAxis = i;
 	}
     }
-
 
     // We must have longitude AND latitude
     if (longAxis >= 0 && latAxis < 0) {
@@ -2366,7 +2394,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		    "equinox from the FITS header, using J2000" << LogIO::POST;
 	    }
 	}	
-	    
+
 	Matrix<Double> dirpc(2,2);
 	dirpc(0,0) = pc(longAxis, longAxis);
 	dirpc(0,1) = pc(longAxis, latAxis);
@@ -2380,15 +2408,18 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	// PC matrix will be reported as singular since its first 
 	// multiplied by cdelt before its used and in this case, that
 	// doesn't matter since other pixels on that axis are never used.
-	if (::near(cdelt(latAxis), 0.0) && 
-	    ::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
-	    cdelt(latAxis) = 1.0;
-	} 
 
-	if (::near(cdelt(longAxis), 0.0) && 
-	    ::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
-	    cdelt(longAxis) = 1.0;
-	}
+        if (!hasCD) {
+          if (::near(cdelt(latAxis), 0.0) && 
+              ::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
+             cdelt(latAxis) = 1.0;            // degrees
+          }
+//
+          if (::near(cdelt(longAxis), 0.0) && 
+              ::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
+             cdelt(longAxis) = 1.0;          // degrees
+          }
+        }
 
 	DirectionCoordinate dir(radecsys,
 				projn,
@@ -2553,7 +2584,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    specAxis = -1;
 	}
     }
-    
+
     // Remaining axes are LINEAR
     uInt nlin = n;
     if (longAxis >= 0) {nlin--;}
@@ -2606,6 +2637,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	coordsys.addCoordinate(lc);
     }
 
+
     // Now we need to work out the transpose order
     Vector<Int> order(n);
     Int nspecial = 0;
@@ -2650,7 +2682,6 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	os << LogIO::SEVERE << 
 	    "Error reading ObsInfo: " << error << LogIO::POST;
     }
-    
     return ok;
 }
 
@@ -2771,4 +2802,31 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
       }
    }
    return wantIt;
+}
+
+
+Bool CoordinateSystem::getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 
+//
+// I am pretty sure I am reading these into the matrix
+// in the correct order.  I have done substantial checking.
+//
+{
+   cd.resize(n,n);
+   cd = 0.0;
+   cd.diagonal() = 1.0;
+//
+   for (uInt i=0; i<n; i++) {
+      for (uInt j=0; j<n; j++) {
+         ostrstream oss;
+         oss << "cd" << j+1 << "_" << i+1;
+         String field(oss);
+  	 if (header.isDefined(field)) {         
+            header.get(field, cd(i,j));
+         } else {
+            cd.resize(0,0);
+            return False;
+         }
+      }
+   }
+   return True;
 }
