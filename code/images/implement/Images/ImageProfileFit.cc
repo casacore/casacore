@@ -922,56 +922,70 @@ void ImageProfileFit::fit (RecordInterface& rec,
 //
    Vector<Float> x(inShape(itsProfileAxis));
    Vector<Float> y(inShape(itsProfileAxis));
-   for (uInt i=0; i<x.nelements(); i++) x(i) = i;
+   for (uInt i=0; i<x.nelements(); i++) x[i] = i;
 
 // Fish out initial estimate (defines number of components to fit)
+// We just use it to get the number of components
 
    const SpectralList& l = itsSpectralFitPtr->list();
-   if (l.nelements() == 0) {
-      throw(AipsError("You must specify an initial estimate"));
-   }
+   uInt nEl = max(l.nelements(),uInt(1));
 
-// Make fitter and add poly if desired
+// Make an auto-estimator, which we use for each spectrum
+// after the initial one
 
-   SpectralFit fit;
-   fit.addFitElement(l);
-   if (order >= 0) {
-      SpectralElement el(order);
-      fit.addFitElement(el);
-   }
+   SpectralEstimate estimator(nEl);
+
+// Make fitter and poly element if desired
+
+//   SpectralFit fitter;
+   SpectralElement poly(order);
+   SpectralList estimate;
 //
    Vector<Bool> inMask;
    Vector<Float> inSigma;
    Bool ok = False;
    uInt nFail = 0;
+//
    while (!inIter.atEnd()) {
 
-// Get mask (reflects pixelMask and region mask of SubImage)
+// Get data and mask (reflects pixelMask and region mask of SubImage)
 
+      const Vector<Float>& data = inIter.vectorCursor();
       inMask = itsImagePtr->getMaskSlice(inIter.position(), 
                                          inIter.cursorShape(), True);
+
+// Make estimate
+
+      estimate = estimator.estimate(data);
+
+
+// Set fitter
+
+//      fitter.clear();           // segv if i do this
+      SpectralFit fitter;
+      fitter.addFitElement(estimate);
+      if (order >= 0) fitter.addFitElement(poly);
 //
       if (itsSigmaImagePtr) {
          inSigma = itsSigmaImagePtr->getSlice(inIter.position(), 
                                               inIter.cursorShape(), True);
          try {
-            ok = fit.fit(inSigma, inIter.vectorCursor(), x, inMask);
+            ok = fitter.fit(inSigma, data, x, inMask);
          } catch (AipsError x) {
             ok = False;
          }
 
       } else {
          try {
-            ok = fit.fit(inIter.vectorCursor(), x, inMask);
+            ok = fitter.fit(data, x, inMask);
          } catch (AipsError x) {
             ok = False;
          }
       }
 
-// If the fit fails, the state of the fit object is the failed
-// fit, not the estimate it started with...
+// Evaluate
 
-      SpectralList list(fit.list());
+      SpectralList list(fitter.list());
       if (ok) {
          if (pFit) {
             list.evaluate(pFitIter->rwVectorCursor());   
@@ -980,7 +994,7 @@ void ImageProfileFit::fit (RecordInterface& rec,
             pFitMaskIter->rwVectorCursor() = inMask;
          }
          if (pResid) {
-            pResidIter->rwVectorCursor() = inIter.vectorCursor();
+            pResidIter->rwVectorCursor() = data;
             list.residual(pResidIter->rwVectorCursor());   
          }
          if (pResidMaskIter) {
