@@ -123,6 +123,14 @@ void TempLattice<T>::init (const TiledShape& shape, Double maxMemoryInMB)
 }
 
 template<class T>
+void TempLattice<T>::flush()
+{
+  if (itsTablePtr != 0) {
+    itsTablePtr->flush();
+  }
+}
+
+template<class T>
 void TempLattice<T>::tempClose()
 {
   if (itsTablePtr != 0 && isPaged()) {
@@ -133,6 +141,12 @@ void TempLattice<T>::tempClose()
     itsLatticePtr = 0;           // CountedPtr does delete of pointer
     itsIsClosed = True;
   }
+}
+
+template<class T>
+void TempLattice<T>::reopen()
+{
+  doReopen();
 }
 
 template<class T>
