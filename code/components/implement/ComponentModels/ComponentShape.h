@@ -160,7 +160,7 @@ public:
 			  const Double & frequency) const = 0;
 
   // returns True if the shape is symmetric about the reference direction.
-  virtual Bool isSymmetric() = 0;
+  virtual Bool isSymmetric() const = 0;
 
   // return the number of parameters in this shape and set/get them.
   // <group>
