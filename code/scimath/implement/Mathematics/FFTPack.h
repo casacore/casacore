@@ -1,5 +1,5 @@
 //# FFTPack.h: C++ wrapper functions for Fortran FFTPACK code
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,11 +30,8 @@
 #define AIPS_FFTPACK_H
 
 #include <aips/aips.h>
+#include <aips/Mathematics/Complexfwd.h>
 
-class doubleG_COMPLEX;
-typedef doubleG_COMPLEX DComplex;
-class floatG_COMPLEX;
-typedef floatG_COMPLEX Complex;
 // <summary>C++ interface to the Fortran FFTPACK library</summary>
 // <synopsis>
 // The static functions in this class are C++ wrappers to the Fortran FFTPACK
