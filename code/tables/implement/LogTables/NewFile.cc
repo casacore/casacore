@@ -95,13 +95,20 @@ Bool NewFile::valueOK(const String &value, String &error) const
 			removed = False;
 			extra_error = "Table is not writable!";
 		    } else {
-			Table table(value, Table::Update);
-			if (table.isMultiUsed()) {
-			    removed = False;
-			    extra_error = "The table is already in use!";
+                        if (Table::isOpened(value)) {
+                            removed = False;
+                            extra_error = "The table is already open in the "
+                                          "process. It needs to be closed first";
 			} else {
+			  Table table(value, Table::Update);
+			  if (table.isMultiUsed()) {
+			    removed = False;
+                                extra_error = "The table is in use by another "
+                                              "process. It must be closed first.";
+			  } else {
 			    table.markForDelete();
 			    removed = True;
+			  }
 			}
 		    }
 		} else if (thefile.isSymLink()) {
