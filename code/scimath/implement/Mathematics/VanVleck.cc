@@ -38,38 +38,73 @@
 // initial values for the static data members
 
 Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
+uInt VanVleck::itsSize = 33;
+uInt VanVleck::itsNx = 0;
+uInt VanVleck::itsNy = 0;
 Vector<Double> VanVleck::itsQx0;
 Vector<Double> VanVleck::itsQx1;
 Vector<Double> VanVleck::itsQy0;
 Vector<Double> VanVleck::itsQy1;
-Int VanVleck::itsSize = 65;
+Vector<Double> VanVleck::itsQx0Qx0;
+Vector<Double> VanVleck::itsQy0Qy0;
+Matrix<Double> VanVleck::itsQx0Qy0;
+Matrix<Double> VanVleck::itsQx1Qy1diffs;
 
-void VanVleck::size(Int npts)
+void VanVleck::size(uInt npts)
 {
-  if (itsSize != npts) {
-    itsSize = npts;
-    initInterpolator();
-  }
+    if (itsSize != npts) {
+	itsSize = npts;
+	initInterpolator();
+    }
+}
+
+uInt VanVleck::getsize()
+{
+    return itsSize;
 }
 
 void VanVleck::setQuantization(const Matrix<Double> &qx, 
 			       const Matrix<Double> &qy)
 {
+    // should double check that first dimension is 2
 
-  // should double check that first dimension is 2
-  if (itsQx1.nelements() != qx.ncolumn()) {
-    itsQx0.resize(qx.ncolumn());
-    itsQx1.resize(qx.ncolumn());
-  }
-  if (itsQy0.nelements() != qy.ncolumn()) {
-    itsQy0.resize(qy.ncolumn());
-    itsQy1.resize(qy.ncolumn());
-  }
-  itsQx0 = qx.row(0);
-  itsQx1 = qx.row(1);
-  itsQy0 = qy.row(0);
-  itsQy1 = qy.row(1);
-  initInterpolator();
+    uInt nx = qx.ncolumn();
+    uInt ny = qy.ncolumn();
+    Bool nxChanged = itsNx != nx;
+    Bool nyChanged = itsNy != ny;
+
+    if (nxChanged) {
+	itsQx0.resize(nx);
+	itsQx1.resize(nx);
+	itsQx0Qx0.resize(nx);
+	itsNx = nx;
+    }
+    if (nyChanged) {
+	itsQy0.resize(ny);
+	itsQy1.resize(ny);
+	itsQy0Qy0.resize(ny);
+	itsNy = ny;
+    }
+    if (nxChanged || nyChanged) {
+	itsQx0Qy0.resize(nx,ny);
+	itsQx1Qy1diffs.resize(nx,ny);
+    }
+    itsQx0 = qx.row(0);
+    itsQx1 = qx.row(1);
+    itsQy0 = qy.row(0);
+    itsQy1 = qy.row(1);
+    for (uInt i=0;i<itsNx;i++) {
+	itsQx0Qx0[i] = -.5*itsQx0[i]*itsQx0[i];
+	Double a = itsQx1[i+1]-itsQx1[i];
+	for (uInt j=0;j<itsNy;j++) {
+	    itsQx0Qy0(i,j) = itsQx0[i]*itsQy0[j];
+	    itsQx1Qy1diffs(i,j) = a*(itsQy1[j+1]-itsQy1[j]);
+	}
+    }
+    for (uInt j=0;j<itsNy;j++) {
+	itsQy0Qy0[j] = -.5*itsQy0[j]*itsQy0[j];
+    }
+    initInterpolator();
 }
 
 void VanVleck::initInterpolator()
@@ -116,16 +151,19 @@ void VanVleck::getTable(Vector<Double> &rs,
 
 double VanVleck::drbydrho(double *rho)
 {
-  Double s = 0.0;
-  Double a;
-  for (uInt i=0;i<(itsQx0.nelements()-1);i++) {
-    a = itsQx1[i+1]-itsQx1[i];
-    for (uInt j=0;j<(itsQy0.nelements()-1);j++) {
-      s+=a*(itsQy1[j+1]-itsQy1[j])
-	*g(itsQx0[i],itsQy0[j],*rho);
+    Double s = 0.0;
+    Double thisRho = *rho;
+    Double oneMinusRhoRho = 1.0 - thisRho*thisRho;
+    Double denom = C::_2pi*sqrt(oneMinusRhoRho);
+
+    for (uInt i=0;i<(itsNx-1);i++) {
+	for (uInt j=0;j<(itsNy-1);j++) {
+	    s+=itsQx1Qy1diffs(i,j) *
+		exp((itsQx0Qx0[i]+thisRho*itsQx0Qy0(i,j)+itsQy0Qy0[j])/oneMinusRhoRho) /
+		denom;
+	}
     }
-  }
-  return s;
+    return s;
 }
 
 #define NEED_UNDERSCORES

@@ -90,101 +90,102 @@
 class VanVleck
 {
 public:
-  // Set the interpolation table size.
-  // Must be an odd number.  The default size is 65.
-  static void size(Int npts);
-  
-  // Set the x and y quantization functions.
-  // Each matrix should have dimensions (2,n)
-  // where n is the number of levels.  The first
-  // row (0,...) is the (n-1) threshold levels and 
-  // the second row is the n quantizations based 
-  // on those thresholds.  The thresholds may 
-  // include a DC offset. The (0,(n-1)) element is
-  // never used and need not be set.
-  static void setQuantization(const Matrix<Double> &qx,
-			      const Matrix<Double> &qy);
-  
-  // Get the data used in setting up the interpolation
-  static void getTable(Vector<Double> &rs, Vector<Double> &rhos);
-  
-  // Given a rho return the corresponding corrected r
-  // Returns 0.0 if no quantization has been set yet.
-  static Double r(const Double rho);
+    // Set the interpolation table size.
+    // Should be an odd number.  The default size is 65.
+    static void size(uInt npts);
 
-  // Given a measured zero-lag autocorrelation and number of
-  // levels (n>=3) return the first positive quantizer input
-  // threshold level.  This can be used to set the up the
-  // matrix arguments used in setQuantization.
-  static Double thresh(Int n, Double zerolag)
-  { return ( (n>3) ? threshNgt3(n,zerolag) : threshN3(zerolag) ); }
-
-  // Predict a given zero-lag given n and a threshold.  This
-  // is included here to be used as a check against the output
-  // of thresh.
-  static Double predict(Int n, Double threshhold)
-  { return ( (n>3) ? predictNgt3(n,threshhold) : predictN3(threshhold));}
-
+    // get the current size.
+    static uInt getsize();
+    
+    // Set the x and y quantization functions.
+    // Each matrix should have dimensions (2,n)
+    // where n is the number of levels.  The first
+    // row (0,...) is the (n-1) threshold levels and 
+    // the second row is the n quantizations based 
+    // on those thresholds.  The thresholds may 
+    // include a DC offset. The (0,(n-1)) element is
+    // never used and need not be set.
+    static void setQuantization(const Matrix<Double> &qx,
+				const Matrix<Double> &qy);
+    
+    // Get the data used in setting up the interpolation
+    static void getTable(Vector<Double> &rs, Vector<Double> &rhos);
+    
+    // Given a rho return the corresponding corrected r
+    // Returns 0.0 if no quantization has been set yet.
+    static Double r(const Double rho);
+    
+    // Given a measured zero-lag autocorrelation and number of
+    // levels (n>=3) return the first positive quantizer input
+    // threshold level.  This can be used to set the up the
+    // matrix arguments used in setQuantization.
+    static Double thresh(Int n, Double zerolag)
+    { return ( (n>3) ? threshNgt3(n,zerolag) : threshN3(zerolag) ); }
+    
+    // Predict a given zero-lag given n and a threshold.  This
+    // is included here to be used as a check against the output
+    // of thresh.
+    static Double predict(Int n, Double threshhold)
+    { return ( (n>3) ? predictNgt3(n,threshhold) : predictN3(threshhold));}
+    
 private:
-  // the number of points to use in setting up the interpolator
-  static Int itsSize;
-  
-  // The interpolator
-  static Interpolate1D<Double, Double> *itsInterp;
-  
-  // the quantization functions
-  static Vector<Double> itsQx0, itsQx1, itsQy0, itsQy1;
-
-  // The fortran numerical integration function will call this.
-  // For a given rho and quantization functions, this computes,
-  // via Price's theorem, the value dr/drho of the derivative,
-  // with respect to rho, of the expected value of the correlator
-  // output.
-  static Double drbydrho(Double *rho);
-
-  // For a given rhoi, rhof, this produces a high-accuracy numerical
-  // approximation to the integral of drbydrho over the range
-  // rhoi to rhof.  It calls the standard QUADPACK adaptive Gaussian quadrature
-  // procedure, dqags, to do the numerical integration.
-  static Double rinc(Double &rhoi, Double &rhof);
-
-  // Function used within drbydrho.
-  static Double g(const Double &x, const Double &y, const Double &rho);
-
-  // initialize the interpolator
-  static void initInterpolator();
-
-  // compute first threshhold for a given zerolag for n>3
-  static Double threshNgt3(Int n, Double zerolag);
-
-  // compute first threshhold for a given zerolag for n==3
-  static Double threshN3(Double zerolag)
-  { return sqrt(2.0)*invErfc(zerolag);}
-  
-  // inverse err fn - used by invErfc
-  static Double invErf(Double x);
-  
-  // inverse complementary err fn - used by threshN3
-  static Double invErfc(Double x);
-
-  // Predict a zero-lag value given the indicated first threshold level
-  // for n>3.
-  static Double predictNgt3(Int n, Double threshhold);
-
-  // Predict a zero-lag value given the indicated first threshold level
-  // for n=3.
-  static Double predictN3(Double threshhold)
-  { return erfc(threshhold/sqrt(2.0));}
+    // the number of points to use in setting up the interpolator
+    static uInt itsSize, itsNx, itsNy;
+    
+    // The interpolator
+    static Interpolate1D<Double, Double> *itsInterp;
+    
+    // the quantization functions
+    static Vector<Double> itsQx0, itsQx1, itsQy0, itsQy1;
+    
+    // Useful combinations of the above - to speed up drbydrho
+    // these are -1/2*(Qx0*Qx0) and -1/2*(Qy0*Qy0)
+    // These are only used for i up to (itsQx0.nelements() and
+    // for j up to (itsQy0.nelements()).
+    static Vector<Double> itsQx0Qx0, itsQy0Qy0;
+    // This is Qx0[i]*Qy0[j]
+    static Matrix<Double> itsQx0Qy0;
+    // This is (Qx1[i+1]-Qx1[i])*(Qy1[j+1]*Qy1[j])
+    static Matrix<Double> itsQx1Qy1diffs;
+    
+    // The fortran numerical integration function will call this.
+    // For a given rho and quantization functions, this computes,
+    // via Price's theorem, the value dr/drho of the derivative,
+    // with respect to rho, of the expected value of the correlator
+    // output.
+    static Double drbydrho(Double *rho);
+    
+    // For a given rhoi, rhof, this produces a high-accuracy numerical
+    // approximation to the integral of drbydrho over the range
+    // rhoi to rhof.  It calls the standard QUADPACK adaptive Gaussian quadrature
+    // procedure, dqags, to do the numerical integration.
+    static Double rinc(Double &rhoi, Double &rhof);
+    
+    // initialize the interpolator
+    static void initInterpolator();
+    
+    // compute first threshhold for a given zerolag for n>3
+    static Double threshNgt3(Int n, Double zerolag);
+    
+    // compute first threshhold for a given zerolag for n==3
+    static Double threshN3(Double zerolag)
+    { return sqrt(2.0)*invErfc(zerolag);}
+    
+    // inverse err fn - used by invErfc
+    static Double invErf(Double x);
+    
+    // inverse complementary err fn - used by threshN3
+    static Double invErfc(Double x);
+    
+    // Predict a zero-lag value given the indicated first threshold level
+    // for n>3.
+    static Double predictNgt3(Int n, Double threshhold);
+    
+    // Predict a zero-lag value given the indicated first threshold level
+    // for n=3.
+    static Double predictN3(Double threshhold)
+    { return erfc(threshhold/sqrt(2.0));}
 };
-
-
-inline 
-Double VanVleck::g(const Double &x, const Double &y,
-		   const Double &rho)
-{
-  return exp(-.5*(x*x-2.0*rho*x*y+y*y)/(1.0-rho*rho))/
-    (C::_2pi*sqrt(1.0-rho*rho));
-}
 
 inline 
 Double VanVleck::r(const Double rho)
