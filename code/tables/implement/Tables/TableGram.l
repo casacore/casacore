@@ -35,21 +35,16 @@
 #define YY_DECL int TableGramlex (YYSTYPE* lvalp)
 %}
 
-/* start conditions */
-%s SELECTpart
-%s FROMpart
-%s WHEREpart
-%s ORDERpart
-%s GIVINGpart
+/* states */
+%s EXPRstate
+%s NAMEstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
    Similarly, an alphanumeric string must be recognized as NAME
    and not as NAMETAB or NAMEFLD.
-   Note that ORDER BY and ORDERED BY are both allowed; the blank is optional. 
-   Complex values can be given as:
-    :     float s floati
-          where s is + or -  and  i is the letter i (in lowercase only).
+   Complex values can be given as:   FLOATi
+          where i is the letter i (in lowercase only).
    In a NAME the backslash can be used to escape special characters like -.
    In that way a name like DATE-OBS can be given as DATE\-OBS.
 */
@@ -76,23 +71,29 @@ POSDM     {INT}[dD]({INT}?([mM]({FLINT})?)?)?
 POSD      {INT}"."{INT}?"."{FLINT}?
 TIME      {DTIMEHM}|{TIMEU}|{POSDM}|{POSD}
 /*
-     do not allow positions with colons yet
+     positions with colons cannot be allowed, because they interfere
+     with the interval syntax (and a starting slash is rather ambiguous).
 TIME      {DTIMEHM}|{TIMESL}|{TIMEU}|{POSDM}|{POSD}
 */
 
-QSTRING   \"[^\"]*\"
-ASTRING   \'[^\']*\'
+QSTRING   \"[^\"\n]*\"
+ASTRING   \'[^\'\n]*\'
+UQSTRING   \"[^\"\n]*\n
+UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
+USTRING   ({UQSTRING}|{UASTRING})+
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
 ORDERBY   [Oo][Rr][Dd][Ee][Rr][Bb][Yy]
+NODUPL    [Nn][Oo][Dd][Uu][Pp][Ll][Ii][Cc][Aa][Tt][Ee][Ss]
 GIVING    [Gg][Ii][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
+IN        [Ii][Nn]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
-NAMEFLD   ({NAME}".")?{NAME}
-NAMETAB   [A-Za-z0-9./_+-~$]+
+NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
+NAMETAB   [A-Za-z0-9./_+\-~$]+
 
 
 %%
@@ -104,74 +105,110 @@ NAMETAB   [A-Za-z0-9./_+-~$]+
     A table-name can be only a table file name or a table file name
     followed by whitespace and an alphanumeric name. That 2nd name
     serves as a shorthand for possible later use in the field name.
+    A table name can be given in the FROM part and in the giving PART.
+    These are indicated by the NAMEstate, because a table name can contain
+    special characters like -.
+    In a subquery care must be taken that the state is switched back to
+    EXPRstate, because a FROM can be the last part in a subquery and
+    because a set can be specified in the GIVING part.
+    This is done by setting the state when square brackets are found.
+    [ indicates the beginning of a set. ] indicates end of subquery.
  */
-<INITIAL>{SELECT} {
-	    BEGIN(SELECTpart);
+{SELECT}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return SELECT;
 	  }
-<SELECTpart>{FROM} {
-	    BEGIN(FROMpart);
+{FROM}    {
+            tableGramPosition() += yyleng;
+	    BEGIN(NAMEstate);
 	    return FROM;
 	  }
-<FROMpart>{WHERE} {
-	    BEGIN(WHEREpart);
+{WHERE}   {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return WHERE;
 	  }
-<FROMpart,WHEREpart>{ORDERBY} {
-	    BEGIN(ORDERpart);
+{ORDERBY} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return ORDERBY;
           }
- /* Note that the following line assures that GIVING can only be given
-    when a FROM, WHERE or ORDERBY clause has been given.
- */
-<FROMpart,WHEREpart,ORDERpart>{GIVING} {
-	    BEGIN(GIVINGpart);
+{NODUPL}  {
+            tableGramPosition() += yyleng;
+	    return NODUPL;
+          }
+{GIVING}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(NAMEstate);
 	    return GIVING;
+          }
 
+{IN}      {
+            tableGramPosition() += yyleng;
+            return INTOKEN;
+          }
+"["       {
+            tableGramPosition() += yyleng;
+            BEGIN(EXPRstate);
+            return LBRACKET;
+          }
+"]"       {
+            tableGramPosition() += yyleng;
+            BEGIN(EXPRstate);
+            return RBRACKET;
           }
 
  /* In the ORDERBY clause the sort qualifier ASC or DESC can be given.
  */
-<ORDERpart>{DESC} {
+{DESC}    {
+            tableGramPosition() += yyleng;
 	    return SORTDESC;
           }
-<ORDERpart>{ASC} {
+{ASC}     {
+            tableGramPosition() += yyleng;
 	    return SORTASC;
           }
 
- /* Literals can only be used in the WHERE and ORDERBY expression */
-<WHEREpart,ORDERpart>{COMPLEX} {
+ /* Literals */
+{COMPLEX} {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 'c';
 	    sscanf (TableGramtext, "%lf%*c", &(lvalp->val->dval[1]));
 	    lvalp->val->dval[0] = 0;
 	    return LITERAL;
 	  }
-<WHEREpart,ORDERpart>{FLOAT} {
+{FLOAT}   {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 'f';
 	    lvalp->val->dval[0] = atof(TableGramtext);
 	    return LITERAL;
 	  }
-<WHEREpart,ORDERpart>{INT} {
+{INT}     {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
             lvalp->val->type = 'i';
             lvalp->val->ival = atoi(TableGramtext);
             return LITERAL;
 	  }
-<WHEREpart,ORDERpart>{STRING} {
+{STRING}  {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = TableGramtext;
 	    return LITERAL;
 	  }
-<WHEREpart,ORDERpart>{DATETIME} {
+{DATETIME} {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 'd';
 	    lvalp->val->str = TableGramtext;
 	    return LITERAL;
 	  }
-<WHEREpart,ORDERpart>{TIME} {
+{TIME}    {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 't';
 	    lvalp->val->str = TableGramtext;
@@ -181,48 +218,61 @@ NAMETAB   [A-Za-z0-9./_+-~$]+
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
  */
-<FROMpart,WHEREpart,ORDERpart>{NAME} {
+{NAME}    {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return NAME;
 	  }
- /* Field names can be used in the SELECT, WHERE and ORDERBY clause.
+ /* Field names can be used in the SELECT, FROM, WHERE, and ORDERBY clause.
  */
-<SELECTpart,WHEREpart,ORDERpart>{NAMEFLD} {
+{NAMEFLD} {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
 	    return NAME;
 	  }
  /* A NAMETAB is always a table file name */
-<FROMpart,GIVINGpart>{NAMETAB} {
+<NAMEstate>{NAMETAB} {
+            tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->str = TableGramtext;
 	    return TABNAME;
 	  }
 
-"=="      { return EQ; }
-">="      { return GE; }
-">"       { return GT; }
-"<="      { return LE; }
-"<"       { return LT; }
-"!="      { return NE; }
-"&&"      { return AND; }
-"||"      { return OR; }
-"!"       { return NOT; }
-"^"       { return POWER; }
-"*"       { return TIMES; }
-"/"       { return DIVIDE; }
-"%"       { return MODULO; }
-"+"       { return PLUS; }
-"-"       { return MINUS; }
-"("       { return LPAREN; }
-")"       { return RPAREN; }
-","       { return COMMA; }
-"["       { return LBRACKET; }
-"]"       { return RBRACKET; }
+"<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
+"<:="     { tableGramPosition() += yyleng; return OPENCLOSED; }
+"=:<"     { tableGramPosition() += yyleng; return CLOSEDOPEN; }
+"=:="     { tableGramPosition() += yyleng; return CLOSEDCLOSED; }
+"<:"      { tableGramPosition() += yyleng; return OPENEMPTY; }
+":<"      { tableGramPosition() += yyleng; return EMPTYOPEN; }
+"=:"      { tableGramPosition() += yyleng; return CLOSEDEMPTY; }
+":="      { tableGramPosition() += yyleng; return EMPTYCLOSED; }
+":"       { tableGramPosition() += yyleng; return COLON; }
+"=="      { tableGramPosition() += yyleng; return EQ; }
+">="      { tableGramPosition() += yyleng; return GE; }
+">"       { tableGramPosition() += yyleng; return GT; }
+"<="      { tableGramPosition() += yyleng; return LE; }
+"<"       { tableGramPosition() += yyleng; return LT; }
+"!="      { tableGramPosition() += yyleng; return NE; }
+"&&"      { tableGramPosition() += yyleng; return AND; }
+"||"      { tableGramPosition() += yyleng; return OR; }
+"!"       { tableGramPosition() += yyleng; return NOT; }
+"^"       { tableGramPosition() += yyleng; return POWER; }
+"*"       { tableGramPosition() += yyleng; return TIMES; }
+"/"       { tableGramPosition() += yyleng; return DIVIDE; }
+"%"       { tableGramPosition() += yyleng; return MODULO; }
+"+"       { tableGramPosition() += yyleng; return PLUS; }
+"-"       { tableGramPosition() += yyleng; return MINUS; }
+"("       { tableGramPosition() += yyleng; return LPAREN; }
+")"       { tableGramPosition() += yyleng; return RPAREN; }
+","       { tableGramPosition() += yyleng; return COMMA; }
 
  /* Whitespace is skipped */
-{WHITE}
+{WHITE}   { tableGramPosition() += yyleng; }
+
+ /* An unterminated string is an error */
+{USTRING} { throw (TableInvExpr ("Unterminated string")); }
 
  /* terminate on EOF */
 <<EOF>>   { yyterminate(); }
@@ -231,4 +281,3 @@ NAMETAB   [A-Za-z0-9./_+-~$]+
 .         { return YYERRCODE; }
 
 %%
-

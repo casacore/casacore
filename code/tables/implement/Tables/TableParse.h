@@ -28,10 +28,6 @@
 #if !defined(AIPS_TABLEPARSE_H)
 #define AIPS_TABLEPARSE_H
 
-#if defined(_AIX)
-#pragma implementation ("TableParse.cc")
-#endif 
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/Table.h>
@@ -42,96 +38,9 @@
 #include <aips/Tables/ExprNode.h>
 
 //# Forward Declarations
-class TableExprNode;
+class TableExprNodeSet;
 class AipsIO;
 template<class T> class Vector;
-
-
-// <summary>
-// Helper class for class TableParse
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="" date="" tests="">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> TableParse
-// </prerequisite>
-
-// <etymology>
-// TableParseVal holds a value found when analyzing a table command.
-// </etymology>
-
-// <synopsis> 
-// A table command is lexically analyzed via flex.
-// An object of this class is used to hold a value (like a name
-// or a literal) for later use in the parser code.
-// </synopsis> 
-
-
-class TableParseVal
-{
-public:
-    Int      type;              //# i=Int, f=double, c=DComplex, s=String
-    String   str;               //# string literal; table name; field name
-    Int      ival;              //# integer literal
-    double   dval[2];           //# double/DComplex literal
-
-    // Make a new TableParseVal object (for the flex actions).
-    static TableParseVal* makeValue();
-};
-
-
-
-
-// <summary>
-// Helper class for class TableParse
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="" date="" tests="">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> TableParse
-// </prerequisite>
-
-// <etymology>
-// TableParseSort holds a sort expression and order.
-// </etymology>
-
-// <synopsis> 
-// A table command is parsed.
-// An object of this class is used to hold the sort expression
-// and sort order.
-// </synopsis> 
-
-
-class TableParseSort
-{
-public:
-    // Construct from a given expression and for the given order.
-    TableParseSort (const TableExprNode&, Sort::Order);
-
-    ~TableParseSort();
-
-    // Get the expression node.
-    const TableExprNode& node() const;
-
-    // Get the sort order.
-    Sort::Order order() const;
-
-private:
-    TableExprNode node_p;
-    Sort::Order   order_p;
-};
-
-
 
 
 // <summary>
@@ -233,6 +142,95 @@ private:
 };
 
 
+
+
+// <summary>
+// Helper class for class TableParse
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableParse
+// </prerequisite>
+
+// <etymology>
+// TableParseVal holds a value found when analyzing a table command.
+// </etymology>
+
+// <synopsis> 
+// A table command is lexically analyzed via flex.
+// An object of this class is used to hold a value (like a name
+// or a literal) for later use in the parser code.
+// </synopsis> 
+
+
+class TableParseVal
+{
+public:
+    Int      type;              //# i=Int, f=Double, c=DComplex, s=String
+    String   str;               //# string literal; table name; field name
+    Int      ival;              //# integer literal
+    Double   dval[2];           //# Double/DComplex literal
+
+    // Make a new TableParseVal object (for the flex actions).
+    static TableParseVal* makeValue();
+};
+
+
+
+
+// <summary>
+// Helper class for class TableParse
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableParse
+// </prerequisite>
+
+// <etymology>
+// TableParseSort holds a sort expression and order.
+// </etymology>
+
+// <synopsis> 
+// A table command is parsed.
+// An object of this class is used to hold the sort expression
+// and sort order.
+// </synopsis> 
+
+
+class TableParseSort
+{
+public:
+    // Construct from a given expression and for the given order.
+    TableParseSort (const TableExprNode&, Sort::Order);
+
+    ~TableParseSort();
+
+    // Get the expression node.
+    const TableExprNode& node() const;
+
+    // Get the sort order.
+    Sort::Order order() const;
+
+private:
+    TableExprNode node_p;
+    Sort::Order   order_p;
+};
+
+
+
+
 // <summary>
 // Select-class for flex/bison scanner/parser for TableParse
 // </summary>
@@ -276,84 +274,129 @@ public:
     // Destructor.
     ~TableParseSelect();
 
-    // Execute the selection.
-    void doSelect (const TableExprNode*);
+    // Execute the select command (select/sort/projection/giving).
+    void execute();
+
+    // Execute a subquery and create an appropriate node for the result.
+    TableExprNode doSubQuery();
+
+    // Show the expression tree.
+    void show (ostream& os) const;
+
+    // Keep the selection expression.
+    // It takes over the pointer (and clear the input pointer).
+    void handleSelect (TableExprNode*& node);
 
     // Sort the resulting table.
-    // After the sort it deletes the list and the elements in it.
-    void doSort (PtrBlock<TableParseSort*>* sortList);
+    // It takes over the pointer (and clears the input pointer).
+    void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates);
 
     // Add a table name to the linked list.
     void addTable (const String& name, const String& shorthand);
 
-    // Find the field name and create a TableExprNode from it.
-    //# String has to be non-const due to use of String::before/after.
-    TableExprNode handleName (String& str, Bool isArray);
+    // Find the keyword or column name and create a TableExprNode from it.
+    TableExprNode handleKeyCol (const String& name);
 
-    // Handle an array.
-    TableExprNode handleArray (String& str, Block<TableExprNode>& indices);
+    // Handle a slice operator.
+    TableExprNode handleSlice (const TableExprNode& array,
+			       const TableExprNodeSet& indices);
 
     // Handle a function.
     TableExprNode handleFunc (const String& name,
-			      Block<TableExprNode>& arguments);
+			      const TableExprNodeSet& arguments);
 
     // Create a TableExprNode from a literal.
     TableExprNode handleLiteral (TableParseVal*);
 
     // Add a column to the list of selected column names.
     //# String has to be non-const due to use of String::before/after.
-    void handleColumn (String& name);
+    void handleSelectColumn (const String& name);
 
     // Handle the name given in a GIVING clause.
-    void handleGiving (const String&);
+    void handleGiving (const String& name);
 
-    // functions to 'get' stored data
-    // <group>
-//    ListIter<TableParse>& getList();
-//    Block<String>*        getSkey();
-//    Block<Int>*           getSord();
-    const Block<String>&  getColumnNames() const;
-    const Table&          getTable() const;
-    const String&         getTableName() const;
-    Bool                  getNothingDone() const;
-    // </group>
+    // Handle the set given in a GIVING clause.
+    void handleGiving (const TableExprNodeSet&);
+
+    // Get the projected column names.
+    const Block<String>& getColumnNames() const;
+
+    // Get the resulting table.
+    const Table& getTable() const;
 
     // Create a new TableParseSelect-object and put it on the stack (block)
-    // If currentTableParseSelect-object does not exist, create it.
     static void newSelect();
 
-    // Delete currentTableParseSelect object and get the next one.
-    // The last one is not deleted; this is done by the tableCommand function.
-    // In that way tableCommand can extract information from it
-    // (e.g. the selected columns).
-    static void deleteSelect();
+    // Get and remove the last element from the "select stack".
+    // Note that this does not delete the object pointed to. It only
+    // clears the pointer and decrements the stack size.
+    static TableParseSelect* popSelect();
 
     // Get current TableParseSelect object.
-    static TableParseSelect*& currentSelect();
+    static TableParseSelect* currentSelect();
+
+    // Clear the select stack.
+    // Normally this won't do anything, but in case of exceptions
+    // something may be left.
+    static void clearSelect();
 
 
 private:
+    // Do the sort step.
+    Table doSort (const Table& table);
+
+    // Make a set from the results of the subquery.
+    TableExprNode makeSubSet() const;
+
+    // Split a name into its parts (shorthand, column and keyword name).
+    // True is returned when the name contained a keyword part.
+    // An exception is thrown if the name was invalid.
+    Bool splitName (String& shorthand, String& columnName,
+		    String& keyName, const String& name) const;
+
+    // Find a table for the given shorthand.
+    // If no shorthand is given, the first table is returned (if there).
+    // If not found, a null Table object is returned.
+    Table findTable (const String& shorthand) const;
+
+    // Try to find the keyword representing a table in one of the tables
+    // in any select block (from inner to outer).
+    // If not found, an exception is thrown.
+    static Table tableKey (const String& shorthand, const String& columnName,
+			   const String& keyName);
+
+    // Try to find the keyword representing a table in the given table.
+    // If the columnName is empty, the keyword is a table keyword.
+    // If not found, a null Table object is returned.
+    static Table findTableKey (const Table& table, const String& columnName,
+			       const String& keyName);
+
     // Block of TableParseSelect objects (acts like a stack).
     static PtrBlock<TableParseSelect*> blockSelect_p;
 
-    // Pointer to current TableParseSelect object (in Block above).
+    // Pointer to current TableParseSelect object (in PtrBlock above).
     // (Acts like pointer to top of stack).
-    static TableParseSelect* currentSelect_p;
+    static uInt currentSelect_p;
 
     //# Pointer to a linked list of TableParse objects.
     //# This is needed for the functions above, otherwise they have no
     //# way to communicate.
     List<TableParse>*     parseList_p;
     ListIter<TableParse>* parseIter_p;
-
     //# Block of selected column names.
     Block<String> columnNames_p;
-
     //# Name of the resulting table (from GIVING part).
     String resultName_p;
-
-    //# Determine if selection or sorting is done.
-    Bool nothingDone_p;
+    //# Resulting set (from GIVING part).
+    TableExprNodeSet* resultSet_p;
+    //# The WHERE expression tree.
+    TableExprNode* node_p;
+    //# The sort list.
+    PtrBlock<TableParseSort*>* sort_p;
+    //# The noDuplicates switch.
+    Bool  noDupl_p;
+    //# The resulting table.
+    Table table_p;
 };
 
 
@@ -369,24 +412,35 @@ inline const Table& TableParse::table() const
     { return table_p; }
 
 
-inline const Block<String>& TableParseSelect::getColumnNames() const
-    { return columnNames_p; }
-
-inline const String& TableParseSelect::getTableName() const
-    { return resultName_p; }
- 
-inline Bool TableParseSelect::getNothingDone() const
-    { return nothingDone_p; }
-
-inline TableParseSelect*& TableParseSelect::currentSelect()
-    { return TableParseSelect::currentSelect_p; }
-
-
 inline const TableExprNode& TableParseSort::node() const
     { return node_p; }
 
 inline Sort::Order TableParseSort::order() const
     { return order_p; }
+
+
+inline const Block<String>& TableParseSelect::getColumnNames() const
+    { return columnNames_p; }
+
+inline const Table& TableParseSelect::getTable() const
+    { return table_p; }
+
+inline void TableParseSelect::handleSelect (TableExprNode*& node)
+{
+    node_p = node;
+    node = 0;
+}
+
+inline void TableParseSelect::handleSort (PtrBlock<TableParseSort*>*& sort,
+					  Bool noDuplicates)
+{
+    noDupl_p = noDuplicates;
+    sort_p = sort;
+    sort = 0;
+}
+
+inline TableParseSelect* TableParseSelect::currentSelect()
+    { return blockSelect_p[currentSelect_p-1]; }
 
 
 

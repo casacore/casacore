@@ -73,6 +73,14 @@
 // Declare the bison parser (is implemented by bison command).
 int tableGramParseCommand (const String& command);
 
+// The yyerror function for the parser.
+// It throws an exception with the current token.
+void TableGramerror (char*);
+
+// Give the current position in the string.
+// This can be used when parse errors occur.
+Int& tableGramPosition();
+
 // Declare the input routine for flex/bison.
 int tableGramInput (char* buf, int max_size);
 

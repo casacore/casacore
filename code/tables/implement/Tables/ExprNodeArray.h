@@ -28,17 +28,18 @@
 #if !defined(AIPS_EXPRNODEARRAY_H)
 #define AIPS_EXPRNODEARRAY_H
 
-#if defined(_AIX)
-#pragma implementation ("ExprNodeArray.cc")
-#endif
-
+//# Includes
 #include <aips/Tables/ExprNodeRep.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Lattices/Slicer.h>
+
+//# Forward Declarations
+class TableExprNodeSet;
 
 
 // <summary>
-// Base class for Array column in table select expression
+// Base class for arrays in table select expression
 // </summary>
 
 // <use visibility=local>
@@ -54,50 +55,138 @@
 // </prerequisite>
 
 // <synopsis> 
-// This class is the base class to store an array column.
-// The actual storing of the array column is done by it's derivations.
+// This class is the base class to represent an array.
+// The actual storing of the array column is done by its derivations.
 // </synopsis> 
 
 class TableExprNodeArray : public TableExprNodeBinary
 {
 public:
-    // Create the object for the given column and table.
-    TableExprNodeArray (const ROTableColumn& tablecol,
-			const BaseTable* tabptr);
+    // Create the object.
+    // <group>
+    TableExprNodeArray (NodeDataType, OperType);
+    TableExprNodeArray (const TableExprNodeRep& node, NodeDataType, OperType);
+    TableExprNodeArray (NodeDataType, OperType, const IPosition& shape);
+    // </group>
 
     ~TableExprNodeArray();
+
+    // Get the shape of the array in the given row.
+    // This default implementation evaluates the value and returns its shape.
+    virtual const IPosition& getShape (uInt rownr);
+
+    // The default implementation of getArrayDComplex does
+    // getArrayDouble and converts the result.
+    virtual Array<DComplex> getArrayDComplex (uInt rownr);
+
+    // Get a single element from the array in the given row.
+    // <group>
+    virtual Bool     getElemBool     (uInt rownr, const Slicer& index);
+    virtual Double   getElemDouble   (uInt rownr, const Slicer& index);
+    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
+    virtual String   getElemString   (uInt rownr, const Slicer& index);
+    virtual MVTime   getElemDate     (uInt rownr, const Slicer& index);
+    // </group>
+
+    // Get a slice of the array in the given row.
+    // <group>
+    virtual Array<Bool>     getSliceBool     (uInt rownr, const Slicer&);
+    virtual Array<Double>   getSliceDouble   (uInt rownr, const Slicer&);
+    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
+    virtual Array<String>   getSliceString   (uInt rownr, const Slicer&);
+    virtual Array<MVTime>   getSliceDate     (uInt rownr, const Slicer&);
+    // </group>
+
+    // Get a single element for the entire column (used by sort).
+    // <group>
+    virtual Array<Bool>     getElemColumnBool     (const Slicer&);
+    virtual Array<uChar>    getElemColumnuChar    (const Slicer&);
+    virtual Array<Short>    getElemColumnShort    (const Slicer&);
+    virtual Array<uShort>   getElemColumnuShort   (const Slicer&);
+    virtual Array<Int>      getElemColumnInt      (const Slicer&);
+    virtual Array<uInt>     getElemColumnuInt     (const Slicer&);
+    virtual Array<Float>    getElemColumnFloat    (const Slicer&);
+    virtual Array<Double>   getElemColumnDouble   (const Slicer&);
+    virtual Array<Complex>  getElemColumnComplex  (const Slicer&);
+    virtual Array<DComplex> getElemColumnDComplex (const Slicer&);
+    virtual Array<String>   getElemColumnString   (const Slicer&);
+    // </group>
+
+    // Does a value occur in the array?
+    // <group>
+    virtual Bool hasBool     (uInt rownr, Bool value);
+    virtual Bool hasDouble   (uInt rownr, Double value);
+    virtual Bool hasDComplex (uInt rownr, const DComplex& value);
+    virtual Bool hasString   (uInt rownr, const String& value);
+    virtual Bool hasDate     (uInt rownr, const MVTime& value);
+    virtual Array<Bool> hasArrayBool     (uInt rownr,
+					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayDouble   (uInt rownr,
+					  const Array<Double>& value);
+    virtual Array<Bool> hasArrayDComplex (uInt rownr,
+					  const Array<DComplex>& value);
+    virtual Array<Bool> hasArrayString   (uInt rownr,
+					  const Array<String>& value);
+    virtual Array<Bool> hasArrayDate     (uInt rownr,
+					  const Array<MVTime>& value);
+    // </group>
+
+    // Make an array with the given shape and fill it with the value.
+    static Array<Double>   makeArray (const IPosition& shape, Double value);
+    static Array<DComplex> makeArray (const IPosition& shape,
+				      const DComplex& value);
+
+protected:
+    IPosition varShape_p;
+};
+
+
+
+// <summary>
+// Base class for Array column in table select expression
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArray
+// </prerequisite>
+
+// <synopsis> 
+// This class is the base class to store an array column.
+// The actual storing of the array column is done by its derivations.
+// </synopsis> 
+
+class TableExprNodeArrayColumn : public TableExprNodeArray
+{
+public:
+    // Create the object for the given column and table.
+    TableExprNodeArrayColumn (const ROTableColumn& tablecol,
+			      const BaseTable* tabptr);
+
+    ~TableExprNodeArrayColumn();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
 
     // Get the ROTableColumn object.
     const ROTableColumn& getColumn() const;
 
-    // Get the dimensionality and shape of arrays in a column.
-    // <group>
-    virtual uInt ndim() const;
-    virtual IPosition shape() const;
-    // </group>
+    // Get the shape of the array in the given row.
+    virtual const IPosition& getShape (uInt rownr);
+
+    // Is the value in the given row defined?
+    virtual Bool isDefined (uInt rownr);
 
     // Get the data type of this column.
     // It returns with a True status.
     virtual Bool getColumnDataType (DataType&) const;
 
-    virtual Bool     getElemBool     (uInt rownr, const IPosition& index);
-    virtual Double   getElemDouble   (uInt rownr, const IPosition& index);
-    virtual DComplex getElemDComplex (uInt rownr, const IPosition& index);
-    virtual String   getElemString   (uInt rownr, const IPosition& index);
-
-    virtual Array<Bool>     getElemColumnBool     (const IPosition&);
-    virtual Array<uChar>    getElemColumnuChar    (const IPosition&);
-    virtual Array<Short>    getElemColumnShort    (const IPosition&);
-    virtual Array<uShort>   getElemColumnuShort   (const IPosition&);
-    virtual Array<Int>      getElemColumnInt      (const IPosition&);
-    virtual Array<uInt>     getElemColumnuInt     (const IPosition&);
-    virtual Array<Float>    getElemColumnFloat    (const IPosition&);
-    virtual Array<Double>   getElemColumnDouble   (const IPosition&);
-    virtual Array<Complex>  getElemColumnComplex  (const IPosition&);
-    virtual Array<DComplex> getElemColumnDComplex (const IPosition&);
-    virtual Array<String>   getElemColumnString   (const IPosition&);
-
-private:
+protected:
     ROTableColumn tabCol_p;
 };
 
@@ -114,141 +203,207 @@ private:
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> TableExprNodeArray
+//   <li> TableExprNodeArrayColumn
 // </prerequisite>
 
 // <synopsis> 
 // These classes store an array column of type X.
 // </synopsis> 
 
-class TableExprNodeArrayBool : public TableExprNodeArray
+class TableExprNodeArrayColumnBool : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayBool (const ROTableColumn&,
-			    const BaseTable*);
-    ~TableExprNodeArrayBool();
-    Bool getElemBool (uInt rownr, const IPosition& index);
-    Array<Bool>     getElemColumnBool (const IPosition&);
+    TableExprNodeArrayColumnBool (const ROTableColumn&,
+				  const BaseTable*);
+    ~TableExprNodeArrayColumnBool();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Bool getElemBool (uInt rownr, const Slicer& index);
+    virtual Array<Bool>  getArrayBool (uInt rownr);
+    virtual Array<Bool>  getSliceBool     (uInt rownr, const Slicer&);
+    virtual Array<Bool>  getElemColumnBool (const Slicer&);
 protected:
     ROArrayColumn<Bool> col_p;
 };
 
-class TableExprNodeArrayuChar : public TableExprNodeArray
+class TableExprNodeArrayColumnuChar : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayuChar (const ROTableColumn&,
-			     const BaseTable*);
-    ~TableExprNodeArrayuChar();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<uChar>    getElemColumnuChar (const IPosition&);
+    TableExprNodeArrayColumnuChar (const ROTableColumn&,
+				   const BaseTable*);
+    ~TableExprNodeArrayColumnuChar();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<uChar>  getElemColumnuChar (const Slicer&);
 protected:
     ROArrayColumn<uChar> col_p;
 };
 
-class TableExprNodeArrayShort : public TableExprNodeArray
+class TableExprNodeArrayColumnShort : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayShort (const ROTableColumn&,
-			     const BaseTable*);
-    ~TableExprNodeArrayShort();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<Short>    getElemColumnShort (const IPosition&);
+    TableExprNodeArrayColumnShort (const ROTableColumn&,
+				   const BaseTable*);
+    ~TableExprNodeArrayColumnShort();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<Short>  getElemColumnShort (const Slicer&);
 protected:
     ROArrayColumn<Short> col_p;
 };
 
-class TableExprNodeArrayuShort : public TableExprNodeArray
+class TableExprNodeArrayColumnuShort : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayuShort (const ROTableColumn&,
-			      const BaseTable*);
-    ~TableExprNodeArrayuShort();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<uShort>   getElemColumnuShort (const IPosition&);
+    TableExprNodeArrayColumnuShort (const ROTableColumn&,
+				    const BaseTable*);
+    ~TableExprNodeArrayColumnuShort();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<uShort> getElemColumnuShort (const Slicer&);
 protected:
     ROArrayColumn<uShort> col_p;
 };
 
-class TableExprNodeArrayInt : public TableExprNodeArray
+class TableExprNodeArrayColumnInt : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayInt (const ROTableColumn&,
-			   const BaseTable*);
-    ~TableExprNodeArrayInt();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<Int>      getElemColumnInt (const IPosition&);
+    TableExprNodeArrayColumnInt (const ROTableColumn&,
+				 const BaseTable*);
+    ~TableExprNodeArrayColumnInt();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<Int>    getElemColumnInt (const Slicer&);
 protected:
     ROArrayColumn<Int> col_p;
 };
 
-class TableExprNodeArrayuInt : public TableExprNodeArray
+class TableExprNodeArrayColumnuInt : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayuInt (const ROTableColumn&,
-			    const BaseTable*);
-    ~TableExprNodeArrayuInt();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<uInt>     getElemColumnuInt (const IPosition&);
+    TableExprNodeArrayColumnuInt (const ROTableColumn&,
+				  const BaseTable*);
+    ~TableExprNodeArrayColumnuInt();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<uInt>   getElemColumnuInt (const Slicer&);
 protected:
     ROArrayColumn<uInt> col_p;
 };
 
-class TableExprNodeArrayFloat : public TableExprNodeArray
+class TableExprNodeArrayColumnFloat : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayFloat (const ROTableColumn&,
-			     const BaseTable*);
-    ~TableExprNodeArrayFloat();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<Float>    getElemColumnFloat (const IPosition&);
+    TableExprNodeArrayColumnFloat (const ROTableColumn&,
+				   const BaseTable*);
+    ~TableExprNodeArrayColumnFloat();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<Float>  getElemColumnFloat (const Slicer&);
 protected:
     ROArrayColumn<Float> col_p;
 };
 
-class TableExprNodeArrayDouble : public TableExprNodeArray
+class TableExprNodeArrayColumnDouble : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayDouble (const ROTableColumn&,
-			      const BaseTable*);
-    ~TableExprNodeArrayDouble();
-    double getElemDouble (uInt rownr, const IPosition& index);
-    Array<Double>   getElemColumnDouble (const IPosition&);
+    TableExprNodeArrayColumnDouble (const ROTableColumn&,
+				    const BaseTable*);
+    ~TableExprNodeArrayColumnDouble();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual Double getElemDouble (uInt rownr, const Slicer& index);
+    virtual Array<Double> getArrayDouble (uInt rownr);
+    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Array<Double> getElemColumnDouble (const Slicer&);
 protected:
     ROArrayColumn<Double> col_p;
 };
 
-class TableExprNodeArrayComplex : public TableExprNodeArray
+class TableExprNodeArrayColumnComplex : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayComplex (const ROTableColumn&,
-			       const BaseTable*);
-    ~TableExprNodeArrayComplex();
-    DComplex getElemDComplex (uInt rownr, const IPosition& index);
-    Array<Complex>  getElemColumnComplex (const IPosition&);
+    TableExprNodeArrayColumnComplex (const ROTableColumn&,
+				     const BaseTable*);
+    ~TableExprNodeArrayColumnComplex();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
+    virtual Array<DComplex> getArrayDComplex (uInt rownr);
+    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
+    virtual Array<Complex>  getElemColumnComplex (const Slicer&);
 protected:
     ROArrayColumn<Complex> col_p;
 };
 
-class TableExprNodeArrayDComplex : public TableExprNodeArray
+class TableExprNodeArrayColumnDComplex : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayDComplex (const ROTableColumn&,
-				const BaseTable*);
-    ~TableExprNodeArrayDComplex();
-    DComplex getElemDComplex (uInt rownr, const IPosition& index);
-    Array<DComplex> getElemColumnDComplex (const IPosition&);
+    TableExprNodeArrayColumnDComplex (const ROTableColumn&,
+				      const BaseTable*);
+    ~TableExprNodeArrayColumnDComplex();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
+    virtual Array<DComplex> getArrayDComplex (uInt rownr);
+    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
+    virtual Array<DComplex> getElemColumnDComplex (const Slicer&);
 protected:
     ROArrayColumn<DComplex> col_p;
 };
 
-class TableExprNodeArrayString : public TableExprNodeArray
+class TableExprNodeArrayColumnString : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayString (const ROTableColumn&,
-			      const BaseTable*);
-    ~TableExprNodeArrayString();
-    String getElemString (uInt rownr, const IPosition& index);
-    Array<String>   getElemColumnString (const IPosition&);
+    TableExprNodeArrayColumnString (const ROTableColumn&,
+				    const BaseTable*);
+    ~TableExprNodeArrayColumnString();
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+    virtual String getElemString (uInt rownr, const Slicer& index);
+    virtual Array<String> getArrayString (uInt rownr);
+    virtual Array<String> getSliceString (uInt rownr, const Slicer&);
+    virtual Array<String> getElemColumnString (const Slicer&);
 protected:
     ROArrayColumn<String> col_p;
 };
@@ -272,7 +427,7 @@ protected:
 
 // <etymology>
 // TableExprNodeIndex is used to store an index.
-// All the operands must be double.
+// All the operands must be Double.
 // </etymology>
 
 // <synopsis> 
@@ -281,7 +436,7 @@ protected:
 // </synopsis> 
 
 // <motivation>
-// All operands of TableExprNodeIndex must be double,
+// All operands of TableExprNodeIndex must be Double,
 // therefore it is a derivation of TableExprNodeMulti
 // </motivation>
 
@@ -294,44 +449,47 @@ class TableExprNodeIndex : public TableExprNodeMulti
 {
 public:
     // Constructor
-    explicit TableExprNodeIndex (uInt origin = 0);
+    explicit TableExprNodeIndex (const TableExprNodeSet& indices,
+				 uInt origin = 0);
 
     // Destructor
     virtual ~TableExprNodeIndex();
 
     // Link all the operands and check datatype.
-    // Calculate the IPosition value for the const operands.
-    void fillNode (const PtrBlock<TableExprNodeRep*>& indices);
-
-    // Check indices, all indices must be double
-    // If not, an exception is thrown.
-    static void checkIndices (const PtrBlock<TableExprNodeRep*>& indices);
+    // Calculate the IPosition values for the const operands.
+    void fillIndex (const TableExprNodeSet& indices);
 
     // Check if the index values match the dimensionality and shape
     // of fixed-shaped array.
     void checkIndexValues (const TableExprNodeRep* arrayNode);
 
-    // Get the IPosition value of the index
-    const IPosition& getIndex (uInt rownr);
+    // Get the Slicer value for the slice.
+    const Slicer& getSlicer (uInt rownr);
+
+    // Does it index a single element?
+    Bool isSingle() const;
 
 protected:
-    uInt        origin_p;    //# origin 0 for C++; 1 for TaQL
-    IPosition   index_p;     //# precalculated constant IPosition values
-    Block<Bool> varAxes_p;   //# if the index for an axis variable?
-    Bool        isConst_p;   //# are all axes constant?
+    Int         origin_p;        //# origin 0 for C++; 1 for TaQL
+    IPosition   start_p;         //# precalculated start values
+    IPosition   end_p;           //# precalculated end values (<0 = till end)
+    IPosition   incr_p;          //# precalculated increment values
+    Slicer      slicer_p;        //# combined start, end, and incr
+    Block<Bool> varIndex_p;      //# is the start for the axes variable?
+    Bool        isSingle_p;      //# Index a single value?
 
-    // Precalculate the constant indices and store them in index_p.
-    void convertConst();
+    // Precalculate the constant indices and store them.
+    void convertConstIndex();
 
-    // Fill the index for this row.
-    void fillIndex (uInt rownr);
+    // Fill the slicer for this row.
+    void fillSlicer (uInt rownr);
 };
 
 
 
 
 // <summary>
-// Array column element in table select expression
+// Array column part in table select expression
 // </summary>
 
 // <use visibility=local>
@@ -347,20 +505,31 @@ protected:
 // </prerequisite>
 
 // <synopsis> 
-// This class stores one element of an array column.
-// It uses a TableExprNodeArray to store the array column
+// This class handles a part of an array.
+// It uses a TableExprNodeArray to handle the array
 // and a TableExprNodeIndex to store the index.
 // </synopsis> 
 
-class TableExprNodeArrayElement : public TableExprNodeBinary
+class TableExprNodeArrayPart : public TableExprNodeArray
 {
 public:
-    TableExprNodeArrayElement (TableExprNodeIndex*, NodeDataType tp);
-    ~TableExprNodeArrayElement();
+    TableExprNodeArrayPart (TableExprNodeRep* arrayNode, TableExprNodeIndex*);
+    ~TableExprNodeArrayPart();
+
+    // Show the node.
+    void show (ostream& os, uInt indent) const;
+
     Bool     getBool     (uInt rownr);
-    double   getDouble   (uInt rownr);
+    Double   getDouble   (uInt rownr);
     DComplex getDComplex (uInt rownr);
     String   getString   (uInt rownr);
+    MVTime   getDate     (uInt rownr);
+
+    Array<Bool>     getArrayBool     (uInt rownr);
+    Array<Double>   getArrayDouble   (uInt rownr);
+    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<String>   getArrayString   (uInt rownr);
+    Array<MVTime>   getArrayDate     (uInt rownr);
 
     // Get the data type of this column (if possible).
     // It returns with a False status when the index is not constant
@@ -385,16 +554,22 @@ private:
 
 
 
-inline const IPosition& TableExprNodeIndex::getIndex (uInt rownr)
+
+inline Bool TableExprNodeIndex::isSingle() const
 {
-    if (!isConst_p) {
-	fillIndex (rownr);
-    }
-    return index_p;
+    return isSingle_p;
 }
-inline const ROTableColumn& TableExprNodeArray::getColumn() const
+inline const Slicer& TableExprNodeIndex::getSlicer (uInt rownr)
+{
+    if (!isConstant()) {
+	fillSlicer (rownr);
+    }
+    return slicer_p;
+}
+inline const ROTableColumn& TableExprNodeArrayColumn::getColumn() const
     { return tabCol_p; }
 
 
 
 #endif
+

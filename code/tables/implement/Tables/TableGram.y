@@ -27,46 +27,60 @@
     $Id$
 */
 
-%{
-// Forward declaration of YYSTYPE.
-// It gets defined by Bison at the %union statement.
-void TableGramerror (char* s)
-    { printf ("%s\n", s); }
-%}
-
 %pure_parser                /* make parser re-entrant */
 
 %union {
 TableExprNode* node;
 TableParseVal* val;
 Block<TableExprNode>* exprb;
+TableExprNodeSetElem* elem;
+TableExprNodeSet* settp;
 PtrBlock<TableParseSort*>* sortb;
 TableParseSort* sort;
+TableParseSelect* select;
 }
 
 %token SELECT
 %token FROM
 %token WHERE
 %token ORDERBY
+%token NODUPL
 %token GIVING
 %token SORTASC
 %token SORTDESC
 %token <val> NAME           /* name of field or shorthand for table */
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
+%token INTOKEN
 %token LPAREN
 %token RPAREN
 %token COMMA
 %token LBRACKET
 %token RBRACKET
+%token COLON
+%token OPENOPEN
+%token OPENCLOSED
+%token CLOSEDOPEN
+%token CLOSEDCLOSED
+%token OPENEMPTY
+%token EMPTYOPEN
+%token CLOSEDEMPTY
+%token EMPTYCLOSED
+%type <val> tabname
 %type <node> whexpr
 %type <node> orexpr
 %type <node> andexpr
 %type <node> relexpr
 %type <node> arithexpr
+%type <node> unaryexpr
+%type <node> inxexpr
 %type <node> simexpr
-%type <exprb> paramlist
-%type <exprb> params
+%type <node> set
+%type <settp> subscripts
+%type <settp> elemlist
+%type <settp> elems
+%type <elem> elem
+%type <elem> colonrange
 %type <sort>  sortexpr
 %type <sortb> sortlist
 
@@ -84,9 +98,7 @@ int TableGramlex (YYSTYPE*);
 %}
 
 %%
-command:   select selrow {
-               TableParseSelect::deleteSelect();
-	   }
+command:   select selrow
          ;
 
 select:    SELECT {
@@ -97,31 +109,38 @@ selrow:    selwh order given
          ;
 
 selwh:     columns FROM table whexpr {
-	       TableParseSelect::currentSelect()->doSelect ($4);
+	       TableParseSelect::currentSelect()->handleSelect ($4);
 	       delete $4;
 	   }
          ;
 
 order:               /* no sort */
          | ORDERBY sortlist {
-	       TableParseSelect::currentSelect()->doSort ($2);
+	       TableParseSelect::currentSelect()->handleSort ($2, False);
+	   }
+         | ORDERBY NODUPL sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($3, True);
 	   }
          ;
 
 given:               /* no result */
-         | GIVING TABNAME {
+         | GIVING tabname {
                TableParseSelect::currentSelect()->handleGiving ($2->str);
 	       delete $2;
+	   }
+         | GIVING LBRACKET elems RBRACKET {
+               TableParseSelect::currentSelect()->handleGiving (*$3);
+	       delete $3;
 	   }
          ;
 
 columns:             /* no column names given (thus take all) */
          | NAME {
-	       TableParseSelect::currentSelect()->handleColumn ($1->str);
+	       TableParseSelect::currentSelect()->handleSelectColumn ($1->str);
 	       delete $1;
 	   }
          | columns COMMA NAME {
-	       TableParseSelect::currentSelect()->handleColumn ($3->str);
+	       TableParseSelect::currentSelect()->handleSelectColumn ($3->str);
 	       delete $3;
 	   }
          ;
@@ -134,12 +153,7 @@ table:     NAME {                            /* table is shorthand */
 	       TableParseSelect::currentSelect()->addTable ($1->str, "");
 	       delete $1;
 	   }
-	 | NAME NAME {
-	       TableParseSelect::currentSelect()->addTable ($1->str, $2->str);
-	       delete $1;
-	       delete $2;
-	   }
-	 | TABNAME NAME {
+	 | tabname NAME {
 	       TableParseSelect::currentSelect()->addTable ($1->str, $2->str);
 	       delete $1;
 	       delete $2;
@@ -152,16 +166,17 @@ table:     NAME {                            /* table is shorthand */
 	       TableParseSelect::currentSelect()->addTable ($3->str, "");
 	       delete $3;
 	   }
-	 | table COMMA NAME NAME {
+	 | table COMMA tabname NAME {
 	       TableParseSelect::currentSelect()->addTable ($3->str, $4->str);
 	       delete $3;
 	       delete $4;
 	   }
-	 | table COMMA TABNAME NAME {
-	       TableParseSelect::currentSelect()->addTable ($3->str, $4->str);
-	       delete $3;
-	       delete $4;
-	   }
+         ;
+
+tabname:   NAME
+               { $$ = $1; }
+         | TABNAME
+               { $$ = $1; }
          ;
 
 whexpr:
@@ -217,9 +232,14 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $3;
 	   }
+         | arithexpr INTOKEN arithexpr {
+               $$ = new TableExprNode ($1->in (*$3));
+               delete $1;
+               delete $3;
+           }
          ;
 
-arithexpr: simexpr
+arithexpr: unaryexpr
          | arithexpr PLUS  arithexpr {
 	       $$ = new TableExprNode (*$1 + *$3);
 	       delete $1;
@@ -252,60 +272,187 @@ arithexpr: simexpr
 	   }
          ;
 
-simexpr:   LPAREN orexpr RPAREN
-               { $$ = $2; }
-         | NAME LPAREN paramlist RPAREN {
-               $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                   handleFunc ($1->str, *$3));
-	       delete $1;
-	       delete $3;
-	   }
-         | NAME LBRACKET paramlist RBRACKET {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                   handleArray ($1->str, *$3));
-	       delete $1;
-	       delete $3;
-	   }
-         | NAME {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                   handleName($1->str, False));
-	       delete $1;
-	   }
-         | LITERAL {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                   handleLiteral ($1));
-	       delete $1;
-	   }
-         | MINUS simexpr {
+unaryexpr: inxexpr
+               { $$ = $1; }
+         | MINUS unaryexpr {
 	       $$ = new TableExprNode (-*$2);
 	       delete $2;
 	   }
-         | PLUS  simexpr
+         | PLUS  unaryexpr
                { $$ = $2; }
-         | NOT   simexpr {
+         | NOT   unaryexpr {
 	       $$ = new TableExprNode (!*$2);
 	       delete $2;
 	   }
          ;
 
-paramlist: params {
-	       $$ = $1;
-	   }
-         |
-               { $$ = new Block<TableExprNode>; }      /* no parameters */
-         ;
-
-params:    params COMMA orexpr {
-               $$ = $1;
-               $$->resize($$->nelements() + 1);
-	       (*$$)[$$->nelements() - 1] = *$3;
+inxexpr:   simexpr
+         | simexpr LBRACKET subscripts RBRACKET {
+	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleSlice (*$1, *$3));
+	       delete $1;
 	       delete $3;
 	   }
-         | orexpr {
-	       $$ = new Block<TableExprNode>(1);
-	       (*$$)[0] = *$1;
+         ;
+
+simexpr:   LPAREN orexpr RPAREN
+               { $$ = $2; }
+         | NAME LPAREN elemlist RPAREN {
+               $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleFunc ($1->str, *$3));
+	       delete $1;
+	       delete $3;
+	   }
+         | NAME {
+	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleKeyCol($1->str));
 	       delete $1;
 	   }
+         | LITERAL {
+	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
+                                                 handleLiteral ($1));
+	       delete $1;
+	   }
+         | set {
+	       $$ = $1;
+	   }
+         ;
+
+set:       LBRACKET elems RBRACKET {
+               $$ = new TableExprNode ($2->setOrArray());
+               delete $2;
+           }
+         | LBRACKET command RBRACKET {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+               $$ = new TableExprNode (p->doSubQuery());
+	       delete p;
+           }
+         ;
+
+elemlist: elems
+               { $$ = $1; }
+         |
+               { $$ = new TableExprNodeSet; }       /* no elements */
+         ;
+
+elems:     elems COMMA elem {
+               $$ = $1;
+	       $$->add (*$3);
+	       delete $3;
+	   }
+         | elem {
+	       $$ = new TableExprNodeSet;
+	       $$->add (*$1);
+	       delete $1;
+	   }
+         ;
+
+elem:    colonrange {
+               $$ = $1;
+           }
+         | orexpr OPENOPEN orexpr {
+               $$ = new TableExprNodeSetElem (False, *$1, *$3, False);
+	       delete $1;
+	       delete $3;
+           }
+         | orexpr OPENCLOSED orexpr {
+               $$ = new TableExprNodeSetElem (False, *$1, *$3, True);
+	       delete $1;
+	       delete $3;
+           }
+         | orexpr CLOSEDOPEN orexpr {
+               $$ = new TableExprNodeSetElem (True, *$1, *$3, False);
+	       delete $1;
+	       delete $3;
+           }
+         | orexpr CLOSEDCLOSED orexpr {
+               $$ = new TableExprNodeSetElem (True, *$1, *$3, True);
+	       delete $1;
+	       delete $3;
+           }
+	 | EMPTYOPEN orexpr {
+               $$ = new TableExprNodeSetElem (*$2, False);
+	       delete $2;
+           }
+	 | EMPTYCLOSED orexpr {
+               $$ = new TableExprNodeSetElem (*$2, True);
+	       delete $2;
+           }
+	 | orexpr OPENEMPTY {
+               $$ = new TableExprNodeSetElem (False, *$1);
+	       delete $1;
+           }
+	 | orexpr CLOSEDEMPTY {
+               $$ = new TableExprNodeSetElem (True, *$1);
+	       delete $1;
+           }
+         ;
+
+subscripts: subscripts COMMA colonrange {
+               $$ = $1;
+	       $$->add (*$3);
+	       delete $3;
+	   }
+         | subscripts COMMA {
+               $$ = $1;
+	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	   }
+         | COMMA {
+	       $$ = new TableExprNodeSet;
+	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	   }
+         | COMMA colonrange {
+	       $$ = new TableExprNodeSet;
+	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	       $$->add (*$2);
+	       delete $2;
+	   }
+         | colonrange {
+	       $$ = new TableExprNodeSet;
+	       $$->add (*$1);
+	       delete $1;
+	   }
+         ;
+
+colonrange: orexpr {
+               $$ = new TableExprNodeSetElem (*$1);
+	       delete $1;
+            }
+         |  orexpr COLON orexpr {
+               $$ = new TableExprNodeSetElem ($1, $3, 0);
+	       delete $1;
+	       delete $3;
+            }
+         |  orexpr COLON orexpr COLON orexpr {
+               $$ = new TableExprNodeSetElem ($1, $3, $5);
+	       delete $1;
+	       delete $3;
+	       delete $5;
+            }
+         |  orexpr COLON {
+	       TableExprNode incr(1);
+               $$ = new TableExprNodeSetElem ($1, 0, &incr);
+	       delete $1;
+            }
+         |  orexpr COLON COLON orexpr {
+               $$ = new TableExprNodeSetElem ($1, 0, $4);
+	       delete $1;
+	       delete $4;
+            }
+         |  COLON orexpr {
+               $$ = new TableExprNodeSetElem (0, $2, 0);
+	       delete $2;
+            }
+         |  COLON orexpr COLON orexpr {
+               $$ = new TableExprNodeSetElem (0, $2, $4);
+	       delete $2;
+	       delete $4;
+            }
+         |  COLON COLON orexpr {
+               $$ = new TableExprNodeSetElem (0, 0, $3);
+	       delete $3;
+            }
          ;
 
 sortlist : sortlist COMMA sortexpr {
@@ -333,11 +480,3 @@ sortexpr : orexpr {
            }
          ;
 %%
-
-
-
-
-
-
-
-

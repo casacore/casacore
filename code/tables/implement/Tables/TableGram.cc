@@ -32,7 +32,6 @@
 // This is a preliminary version; eventually it has to be incorporated
 // in the AIPS++ command language.
 
-#include <stdio.h> // for printf on linux
 
 #if defined (sparc)
 #if !defined(AIPS_SUN_NATIVE) && !defined(__GNUG__) && !defined(AIPS_STDLIB)
@@ -46,8 +45,10 @@ extern "C" char *__builtin_alloca(int);
 #endif
 
 #include <aips/Tables/ExprNode.h>
+#include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/TableGram.h>
 #include <aips/Tables/TableParse.h>       // routines used by bison actions
+#include <aips/Tables/TableError.h>
 
 #include <TableGram.ycc>                  // flex output
 #include <TableGram.lcc>                  // bison output
@@ -55,6 +56,7 @@ extern "C" char *__builtin_alloca(int);
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpTableGram = 0;
+static Int          posTableGram = 0;
 
 
 // Define the yywrap function for flex.
@@ -69,10 +71,16 @@ int tableGramParseCommand (const String& command)
 {
     TableGramrestart (TableGramin);
     yy_start = 1;
-    strpTableGram = command.chars();    // get pointer to command string
-    return TableGramparse();            // parse command string
+    strpTableGram = command.chars();     // get pointer to command string
+    posTableGram  = 0;                   // initialize string position
+    return TableGramparse();             // parse command string
 }
 
+//# Give the string position.
+Int& tableGramPosition()
+{
+    return posTableGram;
+}
 
 //# Get the next input characters for flex.
 int tableGramInput (char* buf, int max_size)
@@ -87,6 +95,10 @@ int tableGramInput (char* buf, int max_size)
     return nr;
 }
 
+void TableGramerror (char*)
+{
+    throw (TableInvExpr ("Parse error at or near '" + String(yytext) + "'"));
+}
 
 String tableGramRemoveEscapes (const String& in)
 {

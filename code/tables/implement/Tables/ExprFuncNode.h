@@ -28,12 +28,11 @@
 #if !defined(AIPS_EXPRFUNCNODE_H)
 #define AIPS_EXPRFUNCNODE_H
 
-#if defined(_AIX)
-#pragma implementation ("ExprFuncNode.cc")
-#endif
-
 //# Includes
 #include <aips/Tables/ExprNodeRep.h>
+
+//# Forward Declarations
+class TableExprNodeSet;
 
 
 // <summary>
@@ -73,7 +72,13 @@ public:
     enum FunctionType {
 	piFUNC,
 	eFUNC,
-            // for double and DComplex returning same data type
+	    // for Double and Complex returning Bool
+	    // (2 is with default tolerance)
+	near2FUNC,
+	near3FUNC,
+	nearabs2FUNC,
+	nearabs3FUNC,
+            // for Double and DComplex returning same data type
 	sinFUNC,
 	sinhFUNC,
 	cosFUNC,
@@ -87,13 +92,13 @@ public:
 	conjFUNC,
 	minFUNC,
 	maxFUNC,
-            // for double and DComplex returning double
+            // for Double and DComplex returning Double
 	normFUNC,
 	absFUNC,
 	argFUNC,
 	realFUNC,
 	imagFUNC,
-            // for double returning double
+            // for Double returning Double
 	asinFUNC,
 	acosFUNC,
 	atanFUNC,
@@ -105,10 +110,34 @@ public:
 	floorFUNC,
 	ceilFUNC,
 	fmodFUNC,
-            // for double returning DComplex
+            // for Double returning DComplex
 	complexFUNC,
+	    // for Double or Complex array returning scalar
+	arrsumFUNC,
+	arrproductFUNC,
+	    // for Double array returning Double
+	arrminFUNC,
+	arrmaxFUNC,
+	arrmeanFUNC,
+	arrvarianceFUNC,
+	arrstddevFUNC,
+	arravdevFUNC,
+	arrmedianFUNC,
+	    // for Bool array returning Bool
+        anyFUNC,
+	allFUNC,
+	    // for Bool array returning Double
+	ntrueFUNC,
+	nfalseFUNC,
+	    // for any array returning Bool
+	isdefFUNC,
+	    // for any array returning Double
+	ndimFUNC,
+	nelemFUNC,
+	    // for any array returning Double array
+	shapeFUNC,
             // for String
-	strlengthFUNC,         //# returning double
+	strlengthFUNC,         //# returning Double
 	upcaseFUNC,            //# returning String
 	downcaseFUNC,          //# returning String
 	trimFUNC,              //# returning String
@@ -117,16 +146,16 @@ public:
             // for Date
 	datetimeFUNC,          //# returning Date
 	mjdtodateFUNC,         //# returning Date
-	mjdFUNC,               //# returning double
+	mjdFUNC,               //# returning Double
 	dateFUNC,              //# returning Date
-	timeFUNC,              //# returning double (in radians)
-	yearFUNC,              //# returning double
-	monthFUNC,             //# returning double
-	dayFUNC,               //# returning double
+	timeFUNC,              //# returning Double (in radians)
+	yearFUNC,              //# returning Double
+	monthFUNC,             //# returning Double
+	dayFUNC,               //# returning Double
 	cmonthFUNC,            //# returning String
-	weekdayFUNC,           //# returning double
+	weekdayFUNC,           //# returning Double
 	cdowFUNC,              //# returning String
-	weekFUNC,              //# returning double
+	weekFUNC,              //# returning Double
 	    // special function to select on a random number
 	randFUNC,
             // special function to select on row number
@@ -135,7 +164,8 @@ public:
 	};
 
     // Constructor
-    TableExprFuncNode (FunctionType, NodeDataType);
+    TableExprFuncNode (FunctionType, NodeDataType, ValueType,
+		       const TableExprNodeSet& source);
 
     // Destructor
     ~TableExprFuncNode ();
@@ -143,21 +173,39 @@ public:
     // 'get' Functions to get te desired result of a function
     // <group>
     Bool     getBool     (uInt rownr);
-    double   getDouble   (uInt rownr);
+    Double   getDouble   (uInt rownr);
     DComplex getDComplex (uInt rownr);
     String   getString   (uInt rownr);
     Regex    getRegex    (uInt rownr);
     MVTime   getDate     (uInt rownr);
+    Array<Double> getArrayDouble (uInt rownr);
+    Array<String> getArrayString (uInt rownr);
+    Array<MVTime> getArrayDate (uInt rownr);
     // </group>
 
-    // Check the datatypes of the operands.
-    // It sets the exptected data types of the operands.
-    // Returns the resulting datatype of the function.
+    // Check the data and value types of the operands.
+    // It sets the exptected data and value types of the operands.
+    // Set the value type of the function result and returns
+    // the data type of the function result.
     static NodeDataType checkOperands (Block<Int>& dtypeOper,
+				       ValueType& resVT,
+				       Block<Int>& vtypeOper,
 				       FunctionType,
 				       PtrBlock<TableExprNodeRep*>&);
 
+    // Link the children to the node and convert the children
+    // to constants if possible. Also convert the node to
+    // constant if possible.
+    static TableExprNodeRep* fillNode (TableExprFuncNode* thisNode,
+				       PtrBlock<TableExprNodeRep*>& nodes,
+				       const Block<Int>& dtypeOper);
+
 private:
+    // Try if the function gives a constant result.
+    // If so, set the expression type to Constant.
+    void tryToConst();
+
+
     FunctionType funcType_p;    // which function
 };
 

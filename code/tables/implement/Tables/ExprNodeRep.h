@@ -28,10 +28,6 @@
 #if !defined(AIPS_EXPRNODEREP_H)
 #define AIPS_EXPRNODEREP_H
 
-#if defined(_AIX)
-#pragma implementation ("ExprNodeRep.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/ExprRange.h>
@@ -44,6 +40,11 @@ class TableExprNode;
 class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+imported class ostream;
+#endif
 
 
 // <summary>
@@ -95,7 +96,7 @@ template<class T> class Block;
 class TableExprNodeRep
 {
 public:
-    // Define the datatype of the nodes
+    // Define the data types of a node.
     enum NodeDataType {
 	NTBool,
 	NTDouble,
@@ -103,35 +104,53 @@ public:
 	NTString,
 	NTRegex,
 	NTDate,
-	NTNumeric             // NTDouble or NTComplex
-	};
-    
-    //# Define the operator types.
-    //# Automatic means that the object was created automatically by
-    //# the TableExprNode constructors taking a constant.
-    //# They will be removed from the tree and deleted by the system.
-    //# LE and LT are handled as GE and GT with swapped operands.
-    enum OperType {OtPlus, OtMinus, OtTimes, OtDivide, OtModulo,
-		   OtEQ, OtGE, OtGT, OtNE,
-		   OtAND, OtOR, OtNOT, OtMIN,
-		   OtConst, OtFunc, OtScaCol, OtArrCol,
-	           OtArray, OtIndex, OtRownr, OtRandom
-		   };
+	NTNumeric,             //# NTDouble or NTComplex
+	NTAny                  //# Any data type
+    };
 
-    //# Define (sub-)expression type
+    // Define the value types.
+    enum ValueType {
+	VTScalar,
+	VTArray,
+	VTRecord,
+	VTSetElem,
+	VTSet,
+	VTIndex
+    };
+
+    // Define the operator types.
+    // LE and LT are handled as GE and GT with swapped operands.
+    enum OperType {OtPlus, OtMinus, OtTimes, OtDivide, OtModulo,
+		   OtEQ, OtGE, OtGT, OtNE, OtIN,
+		   OtAND, OtOR, OtNOT, OtMIN,
+		   OtColumn, OtLiteral, OtFunc, OtSlice, OtUndef,
+	           OtRownr, OtRandom
+    };
+
+    // Define the value types of the 2 arguments when arrays are involved.
+    enum ArgType {
+	NoArr, ArrArr, ArrSca, ScaArr
+    };
+
+    // Define (sub-)expression type
     enum ExprType {
 	// A constant subexpression which can be evaluated immediately.
 	Constant,
 	// A variable (i.e. row dependent) subexpression which
-	// has to be eval;uated for each table row.
+	// has to be evaluated for each table row.
 	Variable,
 	// An expensive constant subexpression which should only be
 	// evaluated when needed (e.g. a subquery).
-	Lazy
-	};
+//	Lazy
+    };
+
+    // Construct a node.
+    TableExprNodeRep (NodeDataType, ValueType, OperType, ArgType, ExprType,
+		      Int ndim, const IPosition& shape,
+		      const BaseTable* baseTablePtr);
 
     // This constructor is called from the derived TableExprNodeRep.
-    TableExprNodeRep (NodeDataType, OperType);
+    TableExprNodeRep (NodeDataType, ValueType, OperType, const BaseTable*);
 
     // The destructor deletes all the underlying TableExprNode objects.
     virtual ~TableExprNodeRep();
@@ -143,30 +162,55 @@ public:
     // If its reference count is zero, delete it.
     static void unlink (TableExprNodeRep*);
 
-    // Get a value for this node in the given row.
+    // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
     // operator on the resulting values.
     // <group>
     virtual Bool getBool         (uInt rownr);
-    virtual double getDouble     (uInt rownr);
+    virtual Double getDouble     (uInt rownr);
     virtual DComplex getDComplex (uInt rownr);
     virtual String getString     (uInt rownr);
     virtual Regex getRegex       (uInt rownr);
     virtual MVTime getDate       (uInt rownr);
     // </group>
 
+    // Get an array value for this node in the given row.
+    // The appropriate functions are implemented in the derived classes and
+    // will usually invoke the get in their children and apply the
+    // operator on the resulting values.
+    // <group>
+    virtual Array<Bool> getArrayBool         (uInt rownr);
+    virtual Array<Double> getArrayDouble     (uInt rownr);
+    virtual Array<DComplex> getArrayDComplex (uInt rownr);
+    virtual Array<String> getArrayString     (uInt rownr);
+    virtual Array<MVTime> getArrayDate       (uInt rownr);
+    // </group>
+
+    // Does a value occur in an array or set?
+    // <group>
+    virtual Bool hasBool     (uInt rownr, Bool value);
+    virtual Bool hasDouble   (uInt rownr, Double value);
+    virtual Bool hasDComplex (uInt rownr, const DComplex& value);
+    virtual Bool hasString   (uInt rownr, const String& value);
+    virtual Bool hasDate     (uInt rownr, const MVTime& value);
+    virtual Array<Bool> hasArrayBool     (uInt rownr,
+					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayDouble   (uInt rownr,
+					  const Array<Double>& value);
+    virtual Array<Bool> hasArrayDComplex (uInt rownr,
+					  const Array<DComplex>& value);
+    virtual Array<Bool> hasArrayString   (uInt rownr,
+					  const Array<String>& value);
+    virtual Array<Bool> hasArrayDate     (uInt rownr,
+					  const Array<MVTime>& value);
+    // </group>
+
     // Get the number of rows in the table associated with this expression.
     // Zero is returned when no table is associated with it.
     uInt nrow() const;
 
-    // Get the dimensionality and shape of arrays in a column.
-    // <group>
-    virtual uInt ndim() const;
-    virtual IPosition shape() const;
-    // </group>
-
-    // Get the data type of the data type.
+    // Get the data type of the column.
     // It returns True when it could set the data type (which it can
     // if the expression is a scalar column or a constant array column pixel).
     // Otherwise it returns False.
@@ -208,8 +252,34 @@ public:
     // the example above the data type of T.
     NodeDataType dataType() const;
 
-    // Get operator type.
+    // Get the value type.
+    ValueType valueType() const;
+
+    // Get the operator type.
     OperType operType() const;
+
+    // Get the expression type.
+    ExprType exprType() const;
+
+    // Is the exprerssion a constant?
+    Bool isConstant() const;
+
+    // Get the fixed dimensionality (same for all rows).
+    Int ndim() const;
+
+    // Get the fixed shape (same for all rows).
+    const IPosition& shape() const;
+
+    // Get the shape for the given row.
+    // It returns the fixed shape if defined, otherwise getShape(rownr).
+    const IPosition& shape (uInt rownr);
+
+    // Is the value in the given row defined?
+    // The default implementation returns True.
+    virtual Bool isDefined (uInt rownr);
+
+    // Show the expression tree.
+    virtual void show (ostream&, uInt indent) const;
 
     // Get basetable. This gets a pointer to the BaseTable to which a
     // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
@@ -217,9 +287,12 @@ public:
     // all columns in an expression have to belong to the same table.
     const BaseTable* baseTablePtr() const;
 
+    // Replace the Table pointer in this node and all its children.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
     // Create a range object from a column and an interval.
     static void createRange (Block<TableExprRange>&,
-			     TableExprNodeColumn*, double start, double end);
+			     TableExprNodeColumn*, Double start, Double end);
 
     // Create a empty range object.
     static void createRange (Block<TableExprRange>&);
@@ -228,9 +301,19 @@ protected:
     uInt              count_p;       //# Reference count
     const BaseTable*  baseTabPtr_p;  //# Table from which node is "derived"
     NodeDataType      dtype_p;       //# data type of the operation
+    ValueType         vtype_p;       //# value type of the result
     OperType          optype_p;      //# operator type
-    Bool              isNull_p;      //# NULL value flag
-    ExprType          exprtype_p;    //# expression type
+    ExprType          exprtype_p;    //# Constant or Variable
+    ArgType           argtype_p;     //# argument types
+    Int               ndim_p;        //# Fixed dimensionality of node values
+                                     //# -1 = variable dimensionality
+    IPosition         shape_p;       //# Fixed shape of node values
+
+    // Copy constructor.
+    TableExprNodeRep (const TableExprNodeRep&);
+
+    // Get the shape for the given row.
+    virtual const IPosition& getShape (uInt rownr);
 
     // Get pointer to REPresentation object.
     // This is used by derived classes.
@@ -239,21 +322,33 @@ protected:
     // When one of the children is a constant, convert its data type
     // to that of the other operand. This avoids that conversions are
     // done for each get.
-    virtual void convertConst() = 0;
+    // The default implementation does nothing.
+    virtual void convertConstChild();
 
-    // Get the table of a node and check if the children use the same table.
-    virtual void checkTable() = 0;
+    // Check if this node uses the same table pointer.
+    // Fill the pointer if it is still zero.
+    // <group>
+    void checkTablePtr (const TableExprNodeRep* node);
+    static void checkTablePtr (const BaseTable*& baseTablePtr,
+			       const TableExprNodeRep* node);
+    // </group>
 
-    // Calls convertConst() and checkTable()
-    // and converts thisNode to a constant if possible
-    static TableExprNodeRep* convertNode (TableExprNodeRep* thisNode);
+    // Set expression type to Variable if node is Variable.
+    // <group>
+    void fillExprType (const TableExprNodeRep* node);
+    static void fillExprType (ExprType&, const TableExprNodeRep* node);
+    // </group>
+
+    // When the node is constant, it is evaluated and replaced by
+    // the appropriate TableExprNodeConst object.
+    // If not constant, it calls the virtual ConvertConstChild function
+    // which can convert a constant child when appropriate.
+    static TableExprNodeRep* convertNode (TableExprNodeRep* thisNode,
+					  Bool convertConstType);
 
 private:
     // A copy of a TableExprNodeRep cannot be made.
-    // <group>
-    TableExprNodeRep (const TableExprNodeRep&);
     TableExprNodeRep& operator= (const TableExprNodeRep&);
-    // </group>
 };
 
 
@@ -300,34 +395,44 @@ class TableExprNodeBinary : public TableExprNodeRep
 {
 public:
     // Constructor
-    TableExprNodeBinary (NodeDataType, OperType);
+    TableExprNodeBinary (NodeDataType, ValueType, OperType, const BaseTable*);
+    TableExprNodeBinary (NodeDataType, const TableExprNodeRep&, OperType);
 
     // Destructor
     virtual ~TableExprNodeBinary();
     
-    // Check the datatypes and get the common one.
-    static NodeDataType getDT (NodeDataType left_dt,
-			       NodeDataType right_dt,
-			       OperType opt);
+    // Show the expression tree.
+    virtual void show (ostream&, uInt indent) const;
 
-    // link the children to the node and convert the children
-    // to constants if possible. Also convert the node to
+    // Check the data types and get the common one.
+    static NodeDataType getDT (NodeDataType leftDtype,
+			       NodeDataType rightDype,
+			       OperType operType);
+
+    // Check the data and value types and get the common one.
+    static TableExprNodeRep getTypes (const TableExprNodeRep& left,
+				      const TableExprNodeRep& right,
+				      OperType operType);
+
+    // Link the children to the node and convert the children
+    // to constants if needed and possible. Also convert the node to
     // constant if possible.
     static TableExprNodeRep* fillNode (TableExprNodeBinary* thisNode,
 				       TableExprNodeRep* left,
-				       TableExprNodeRep* right);
-
-protected:
-    TableExprNodeRep* lnode_p;   // left operand
-    TableExprNodeRep* rnode_p;   // right operand
+				       TableExprNodeRep* right,
+				       Bool convertConstType);
 
     // When one of the children is a constant, convert its data type
     // to that of the other operand. This avoids that conversions are
     // done for each get.
-    void convertConst();
+    void convertConstChild();
 
-    // Get the table of a node and check if the children use the same table.
-    void checkTable();
+    // Replace the Table pointer in this node and all its children.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
+
+protected:
+    TableExprNodeRep* lnode_p;     //# left operand
+    TableExprNodeRep* rnode_p;     //# right operand
 };
 
 
@@ -348,12 +453,12 @@ protected:
 // </prerequisite>
 
 // <etymology>
-// TableExprNodeBinary is a node in the table expression tree
+// TableExprNodeMulti is a node in the table expression tree
 // which can have MULTIple child nodes.
 // </etymology>
 
 // <synopsis> 
-// TableExprNodeBinary is the abstract base class for all nodes in a table
+// TableExprNodeMulti is the abstract base class for all nodes in a table
 // expression tree using multiple operands.
 // It is used as the base class for the node classes representing
 // functions, sets, indices, etc..
@@ -374,36 +479,28 @@ class TableExprNodeMulti : public TableExprNodeRep
 {
 public:
     // Constructor
-    TableExprNodeMulti (NodeDataType, OperType);
+    TableExprNodeMulti (NodeDataType, ValueType, OperType,
+			const TableExprNodeRep& source);
 
     // Destructor
     virtual ~TableExprNodeMulti();
 
-    // Link the children to the node and convert the children
-    // to constants if possible. Also convert the node to
-    // constant if possible.
-    static TableExprNodeRep* fillNode (TableExprNodeMulti* thisNode,
-				       PtrBlock<TableExprNodeRep*>& nodes,
-				       const Block<Int>& dtypeOper);
+    // Show the expression tree.
+    virtual void show (ostream&, uInt indent) const;
+
+    // Check number of arguments
+    // low <= number_of_args <= high
+    // It throws an exception if wrong number of arguments.
+    static uInt checkNumOfArg (uInt low, uInt high,
+			       const PtrBlock<TableExprNodeRep*>& nodes);
+    
+    // Replace the Table pointer in this node and all its children.
+    virtual void replaceTablePtr (const Table&, const BaseTable*);
 
 protected:
     PtrBlock<TableExprNodeRep*> operands_p;
 
 
-    // When one of the children is a constant, convert its data type
-    // to that of the other operand. This avoids that conversions are
-    // done for each get.
-    void convertConst();
-
-    // Get the table of a node and check if the children use the same table.
-    void checkTable();
-
-    // Check number of arguments
-    // low <= number_of_args <= high
-    // throw an exception if wrong number of arguments
-    static uInt checkNumOfArg (uInt low, uInt high,
-			       const PtrBlock<TableExprNodeRep*>& nodes);
-    
     // Check datatype of nodes and return output type.
     // It also sets the expected data type of the operands (from dtIn).
     static NodeDataType checkDT (Block<Int>& dtypeOper,
@@ -417,13 +514,38 @@ protected:
 inline TableExprNodeRep::NodeDataType TableExprNodeRep::dataType() const
     { return dtype_p; }
 
+//# Get the data type of the node.
+inline TableExprNodeRep::ValueType TableExprNodeRep::valueType() const
+    { return vtype_p; }
+
 //# Get the operator type of the node.
 inline TableExprNodeRep::OperType TableExprNodeRep::operType() const
     { return optype_p; }
 
+//# Get the expression type of the node.
+inline TableExprNodeRep::ExprType TableExprNodeRep::exprType() const
+    { return exprtype_p; }
+
+//# Is the expression a constant?
+inline Bool TableExprNodeRep::isConstant() const
+    { return ToBool (exprtype_p == Constant); }
+
+//# Get the fixed dimensionality of the node.
+inline Int TableExprNodeRep::ndim() const
+    { return ndim_p; }
+
+//# Get the fixed shape of the node.
+inline const IPosition& TableExprNodeRep::shape() const
+    { return shape_p; }
+
 //# Get the table from which the node is derived.
 inline const BaseTable* TableExprNodeRep::baseTablePtr() const
     { return baseTabPtr_p; }
+
+inline void TableExprNodeRep::checkTablePtr (const TableExprNodeRep* node)
+    { checkTablePtr (baseTabPtr_p, node); }
+inline void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
+    { fillExprType (exprtype_p, node); }
 
 //# Link to the node.
 inline TableExprNodeRep* TableExprNodeRep::link()

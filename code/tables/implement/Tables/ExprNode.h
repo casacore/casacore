@@ -28,10 +28,6 @@
 #if !defined(AIPS_EXPRNODE_H)
 #define AIPS_EXPRNODE_H
 
-#if defined(_AIX)
-#pragma implementation ("ExprNode.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/ExprNodeRep.h>
@@ -45,6 +41,7 @@ class BaseTable;
 class Table;
 class String;
 class TableRecord;
+class TableExprNodeSet;
 template<class T> class Block;
 template<class T> class Array;
 
@@ -61,6 +58,7 @@ template<class T> class Array;
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=Table>Table</linkto>
+//   <li> Note 199 describing <a href="../../../notes/199/199.html>TaQL</a>
 // </prerequisite>
 
 // <etymology>
@@ -84,19 +82,20 @@ template<class T> class Array;
 // Constant subexpressions (like 2*3) are evaluated immediately and
 // only the result is stored as a node.
 // <p>
-// There are a few TableExprNode constructors taking a constant.
+// There are a few TableExprNode constructors taking a constant scalar or array.
 // In this way constant value are automatically converted to the
 // appropriate TableExprNodeConst object.
 // <p>
 // The derived classes also reflect the data type of the node.
-// Data types Bool, double, DComplex and String are used.
+// Data types Bool, Double, DComplex and String are used.
 // Char, uChar, Short, uShort, Int, uInt and float are converted 
-// to double and Complex to DComplex.
+// to Double and Complex to DComplex.
 // Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 // Also &&, ||, parentheses and unary +, - and ! are recognized.
 // For strings the binary operator + can also be used.
 // The operators have the normal C++ precedence.
 // Furthermore functions (like sin, max, ceil) can be used in an expression.
+// <br>Operator() can be used to take a slice from an array.
 // <p>
 // The Table function col has to be used to create a TableExprNode
 // object for a column in the table. The Table
@@ -143,7 +142,9 @@ template<class T> class Array;
 
 class TableExprNode
 {
+    //# Define the next 2 classes as friends to get the node_p.
     friend class TableExprNodeRep;
+    friend class TableParse;
 
     //# Define the operations we allow.
     //# Note that the arguments are defined as const. This is necessary
@@ -193,6 +194,26 @@ class TableExprNode
 				     const TableExprNode& right);
     friend TableExprNode operator|| (const TableExprNode& left,
 				     const TableExprNode& right);
+    // </group>
+
+    // Functions to return whether a value is "relatively" near another.
+    // Returns <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>. 
+    // If tol <= 0, returns val1 == val2. If either val is 0.0, takes
+    // care of area around the minimum number that can be represented.
+    // <br>The nearAbs functions return whether a value is "absolutely" near
+    // another. Returns <src> tol > abs(val2 - val1)</src>.
+    // Default tolerance is 1.0e-13.
+    // <group>
+    friend TableExprNode near    (const TableExprNode& left,
+				  const TableExprNode& right);
+    friend TableExprNode near    (const TableExprNode& left,
+				  const TableExprNode& right,
+				  const TableExprNode& tolerance);
+    friend TableExprNode nearAbs (const TableExprNode& left,
+				  const TableExprNode& right);
+    friend TableExprNode nearAbs (const TableExprNode& left,
+				  const TableExprNode& right,
+				  const TableExprNode& tolerance);
     // </group>
 
     // Transcendental functions that can be applied to essentially all numeric
@@ -290,35 +311,93 @@ class TableExprNode
     // The arg (i.e. atan2(im, re)) of a complex node.
     friend TableExprNode arg (const TableExprNode& node);
 
-    // Form a complex number from two doubles.
+    // Form a complex number from two Doubles.
     friend TableExprNode complex (const TableExprNode& real,
 				  const TableExprNode& imag);
 
+    // Functions operating on a Double or Complex array.
+    // <group>
+    friend TableExprNode sum (const TableExprNode& array);
+    friend TableExprNode product (const TableExprNode& array);
+    // </group>
+
+    // Functions operating on a Double array.
+    // <group>
+    friend TableExprNode min (const TableExprNode& array);
+    friend TableExprNode max (const TableExprNode& array);
+    friend TableExprNode mean (const TableExprNode& array);
+    friend TableExprNode variance (const TableExprNode& array);
+    friend TableExprNode stddev (const TableExprNode& array);
+    friend TableExprNode avdev (const TableExprNode& array);
+    friend TableExprNode median (const TableExprNode& array);
+    // </group>
+
+    // Functions operating on a Bool array.
+    // <group>
+    friend TableExprNode any (const TableExprNode& array);
+    friend TableExprNode all (const TableExprNode& array);
+    friend TableExprNode ntrue (const TableExprNode& array);
+    friend TableExprNode nfalse (const TableExprNode& array);
+    // </group>
+
+    // Functions operating on any array.
+    // <group>
+    friend TableExprNode isDefined (const TableExprNode& array);
+    friend TableExprNode nelements (const TableExprNode& array);
+    friend TableExprNode ndim (const TableExprNode& array);
+    friend TableExprNode shape (const TableExprNode& array);
+    // <group>
+
+
 public:
-				    TableExprNode ();
+    TableExprNode ();
 
     // Unary operators on numeric TableExprNode's.
     // <group>
-    TableExprNode operator+ ();
-    TableExprNode operator- ();
+    TableExprNode operator+ () const;
+    TableExprNode operator- () const;
     // </group>
     // Unary NOT-operator on boolean TableExprNode's.
-    TableExprNode operator! ();
+    TableExprNode operator! () const;
+
+    // Slicing in a node containing an array. It is possible to
+    // address a single pixel or an n-dimensional subarray.
+    // In case of a single pixel the result is a scalar node.
+    // Otherwise the result is an array node with the same dimensionality
+    // as the source.
+    TableExprNode operator() (const TableExprNodeSet& indices);
+
+    // The IN operator to test if a value is contained in an array or set.
+    // <group>
+    TableExprNode in (const TableExprNode& array) const;
+    TableExprNode in (const TableExprNodeSet& set) const;
+    // </group>
 
     // Constructors to convert a constant value to a TableExprNode.
-    // <group>
-    TableExprNode (const Bool& value);
-    TableExprNode (const Int& value);
-    TableExprNode (const double& value);
-    TableExprNode (const DComplex& value);
-    TableExprNode (const String& value);
-    TableExprNode (const Regex& value);
-    TableExprNode (const MVTime& value);
-
     // The constructor for char* is also supported to convert a
     // character-array to a string, since a two step conversion
     // is not done automatically.
+    // <group>
+    TableExprNode (const Bool& value);
+    TableExprNode (const Int& value);
+    TableExprNode (const Double& value);
+    TableExprNode (const DComplex& value);
+    TableExprNode (const String& value);
     TableExprNode (const char*);
+    TableExprNode (const Regex& value);
+    TableExprNode (const MVTime& value);
+    TableExprNode (const Array<Bool>& value);
+    TableExprNode (const Array<uChar>& value);
+    TableExprNode (const Array<Short>& value);
+    TableExprNode (const Array<uShort>& value);
+    TableExprNode (const Array<Int>& value);
+    TableExprNode (const Array<uInt>& value);
+    TableExprNode (const Array<Float>& value);
+    TableExprNode (const Array<Double>& value);
+    TableExprNode (const Array<Complex>& value);
+    TableExprNode (const Array<DComplex>& value);
+    TableExprNode (const Array<String>& value);
+    TableExprNode (const Array<MVTime>& value);
     // </group>
 
     // Construct a node from a node representation.
@@ -336,6 +415,8 @@ public:
     // Get the data type of the expression.
     // Currently the only possible values are TpBool, TpDouble,
     // TpDComplex and TpString.
+    // An expression is thrown if the result is not a scalar of one
+    // of those types.
     DataType dataType() const;
 
     // Get a value for this node in the given row.
@@ -344,7 +425,7 @@ public:
     // operator on the resulting values.
     // <group>
     void get (uInt rownr, Bool& value) const;
-    void get (uInt rownr, double& value) const;
+    void get (uInt rownr, Double& value) const;
     void get (uInt rownr, DComplex& value) const;
     void get (uInt rownr, String& value) const;
     void get (uInt rownr, Regex& value) const;
@@ -375,6 +456,9 @@ public:
     Array<String>   getColumnString() const;
     // </group>
 
+    // Show the tree.
+    void show (ostream&) const;
+
     // Convert the tree to a number of range vectors which at least
     // select the same things.
     // This function is very useful to convert the expression to
@@ -386,10 +470,17 @@ public:
     // using && or ||.
     void ranges (Block<TableExprRange>&);
 
-    // Check if the Table used in the expression matches the given
-    // Table. This is used by the Table selection and sorting to
-    // check if it is correct.
+    // Check if the table used in the expression matches the given
+    // Table. This is used by the Table selection to check if it is correct.
     Bool checkTable (const Table& table) const;
+
+    // Same as checkTable, but the given table only needs to have the
+    // same description as the table in the expression. This is used by
+    // sorting which parses the expression with the original table,
+    // but has to operate on the output of the selection process.
+    // If the tables are different, the table pointers in the expression
+    // are replaced.
+    Bool checkReplaceTable (const Table& table) const;
 
     // Get basetable. This gets a pointer to the BaseTable to which a
     // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
@@ -403,13 +494,11 @@ public:
     // isArray indicates if the column should be an array column.
     static TableExprNode newColumnNode (const Table& tab,
 					const BaseTable* tabptr,
-					const String& name,
-					Bool isArray);
+					const String& name);
 
     // Create a TableExprNodeConst for a table keyword
     // (which is handled as a constant).
-    static TableExprNode newKeyConst (const TableRecord&, const String& name,
-				      Bool isArray);
+    static TableExprNode newKeyConst (const TableRecord&, const String& name);
 
     // Throw invalid data type exception.
     // <group>
@@ -420,13 +509,17 @@ public:
     // Create function node of the given type with the given arguments.
     // <group>
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
-					  Block<TableExprNode>& nodes,
+					  const TableExprNodeSet& set,
 					  const Table& table);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
 					  const TableExprNode& node);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
 					  const TableExprNode& node1,
 					  const TableExprNode& node2);
+    static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
+					  const TableExprNode& node1,
+					  const TableExprNode& node2,
+					  const TableExprNode& node3);
     // </group>
 
     // Create rownumber() function node.
@@ -437,10 +530,9 @@ public:
     // Create rand() function node.
     static TableExprNode newRandomNode (const BaseTable* tabptr);
 
-    // Create ArrayElement node for the given array column
-    // with the given index
-    static TableExprNode newArrayElementNode (TableExprNode& arrayColumn,
-					      Block<TableExprNode>& indices);
+    // Create ArrayElement node for the given array with the given index.
+    static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
+					   const TableExprNodeSet& indices);
  
 
 private:
@@ -462,6 +554,7 @@ private:
     TableExprNodeRep* newNE     (TableExprNodeRep* right) const;
     TableExprNodeRep* newGE     (TableExprNodeRep* right) const;
     TableExprNodeRep* newGT     (TableExprNodeRep* right) const;
+    TableExprNodeRep* newIN     (TableExprNodeRep* right) const;
     TableExprNodeRep* newOR     (TableExprNodeRep* right) const;
     TableExprNodeRep* newAND    (TableExprNodeRep* right) const;
     // </group>
@@ -483,7 +576,7 @@ inline const BaseTable* TableExprNode::baseTablePtr() const
 //# Get the value of an expression.
 inline void TableExprNode::get (uInt rownr, Bool& value) const
     { value = node_p->getBool (rownr); }
-inline void TableExprNode::get (uInt rownr, double& value) const
+inline void TableExprNode::get (uInt rownr, Double& value) const
     { value = node_p->getDouble (rownr); }
 inline void TableExprNode::get (uInt rownr, DComplex& value) const
     { value = node_p->getDComplex (rownr); }
@@ -573,17 +666,51 @@ inline TableExprNode operator< (const TableExprNode& left,
 {
     return right.newGT (left.node_p);
 }
+inline TableExprNode TableExprNode::in (const TableExprNode& right) const
+{
+    return newIN (right.node_p);
+}
 inline TableExprNode operator&& (const TableExprNode& left,
-	const TableExprNode& right)
+				 const TableExprNode& right)
 {
     return left.newAND (right.node_p);
 }
 inline TableExprNode operator|| (const TableExprNode& left,
-				const TableExprNode& right)
+				 const TableExprNode& right)
 {
     return left.newOR (right.node_p);
 }
+inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
+{
+    return newArrayPartNode (*this, indices);
+}
 
+inline TableExprNode near (const TableExprNode& left,
+			   const TableExprNode& right)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::near2FUNC,
+					   left, right);
+}
+inline TableExprNode near (const TableExprNode& left,
+			   const TableExprNode& right,
+			   const TableExprNode& tolerance)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::near3FUNC,
+					   left, right, tolerance);
+}
+inline TableExprNode nearAbs (const TableExprNode& left,
+			      const TableExprNode& right)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs2FUNC,
+					   left, right);
+}
+inline TableExprNode nearAbs (const TableExprNode& left,
+			      const TableExprNode& right,
+			      const TableExprNode& tolerance)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs3FUNC,
+					   left, right, tolerance);
+}
 inline TableExprNode cos (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::cosFUNC, node);
@@ -795,7 +922,87 @@ inline TableExprNode trim (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::trimFUNC, node);
 }
+inline TableExprNode min (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::minFUNC, node);
+}
+inline TableExprNode max (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::maxFUNC, node);
+}
+inline TableExprNode sum (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumFUNC,
+					   node);
+}
+inline TableExprNode product (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrproductFUNC,
+					   node);
+}
+inline TableExprNode mean (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmeanFUNC,
+					   node);
+}
+inline TableExprNode variance (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrvarianceFUNC,
+					   node);
+}
+inline TableExprNode stddev (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrstddevFUNC,
+					   node);
+}
+inline TableExprNode avdev (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arravdevFUNC,
+					   node);
+}
+inline TableExprNode median (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmedianFUNC,
+					   node);
+}
+inline TableExprNode any (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::anyFUNC, node);
+}
+inline TableExprNode all (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::allFUNC, node);
+}
+inline TableExprNode ntrue (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ntrueFUNC, node);
+}
+inline TableExprNode nfalse (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalseFUNC, node);
+}
+inline TableExprNode isdefined (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::isdefFUNC, node);
+}
+inline TableExprNode nelements (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::nelemFUNC, node);
+}
+inline TableExprNode ndim (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ndimFUNC, node);
+}
+inline TableExprNode shape (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::shapeFUNC, node);
+}
 
+
+inline void TableExprNode::show (ostream& os) const
+{
+    node_p->show (os, 0);
+}
 inline TableExprNodeRep* TableExprNode::getRep()
 {
     return node_p;

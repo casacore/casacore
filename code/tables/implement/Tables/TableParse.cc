@@ -27,10 +27,14 @@
 
 #include <aips/Tables/TableParse.h>
 #include <aips/Tables/TableGram.h>
-#include <aips/Tables/ExprDerNode.h>
 #include <aips/Tables/ExprNode.h>
+#include <aips/Tables/ExprDerNode.h>
+#include <aips/Tables/ExprDerNodeArray.h>
+#include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/TableColumn.h>
+#include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
@@ -42,30 +46,10 @@
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/AipsIO.h>
+#include <aips/OS/Timer.h>
 #include <iostream.h>
 
-typedef Quantum<double> gpp_bug1;
-
-
-
-//# Make a new TableParseVal object.
-TableParseVal* TableParseVal::makeValue()
-{
-    TableParseVal* tp = new TableParseVal;
-    if (tp == 0) {
-	throw (AllocError ("TableParseVal", 1));
-    }
-    return tp;
-}
-
-
-
-TableParseSort::TableParseSort (const TableExprNode& node, Sort::Order order)
-: node_p  (node),
-  order_p (order)
-{}
-TableParseSort::~TableParseSort()
-{}
+typedef Quantum<Double> gpp_bug1;
 
 
 
@@ -112,55 +96,86 @@ AipsIO& operator>> (AipsIO& ios, TableParse&)
 
 
 
-//# Initialize the static members.
+//# Make a new TableParseVal object.
+TableParseVal* TableParseVal::makeValue()
+{
+    TableParseVal* tp = new TableParseVal;
+    if (tp == 0) {
+	throw (AllocError ("TableParseVal", 1));
+    }
+    return tp;
+}
+
+
+
+TableParseSort::TableParseSort (const TableExprNode& node, Sort::Order order)
+: node_p  (node),
+  order_p (order)
+{}
+TableParseSort::~TableParseSort()
+{}
+
+
+
+//# Initialize static members.
 PtrBlock<TableParseSelect*> TableParseSelect::blockSelect_p;
-TableParseSelect* TableParseSelect::currentSelect_p = 0;
+uInt TableParseSelect::currentSelect_p = 0;
 
 
 TableParseSelect::TableParseSelect()
-: nothingDone_p (True)
+: node_p      (0),
+  sort_p      (0),
+  resultSet_p (0),
+  noDupl_p    (False)
 {
     parseList_p = new List<TableParse>;
     parseIter_p = new ListIter<TableParse> (parseList_p);
     parseList_p->makePermanent();
     parseIter_p->makePermanent();
+    table_p.makePermanent();
 }
 
 TableParseSelect::~TableParseSelect()
 {
     delete parseIter_p;
     delete parseList_p;
+    delete node_p;
+    if (sort_p != 0) {
+	uInt nrkey = sort_p->nelements();
+	for (uInt i=0; i<nrkey; i++) {
+	    delete (*sort_p)[i];
+	}
+	delete sort_p;
+    }
+    delete resultSet_p;
 }
 
-const Table& TableParseSelect::getTable() const
-{
-    parseIter_p->toStart();
-    return parseIter_p->getRight().table();
-}
- 
 void TableParseSelect::newSelect()
 {
-    // Create a new one and put in the Block.
-    // currentSelect_p always points to the first one
-    // Check if it's the first object.
-    uInt n = 0;
-    if (currentSelect_p != 0) {
-	n = blockSelect_p.nelements();
-    }
-    blockSelect_p.resize (n+1);
-    currentSelect_p = new TableParseSelect;
-    blockSelect_p[n] = currentSelect_p;
+    // Create a new one and push it on the "stack".
+    uInt n = currentSelect_p;
+    currentSelect_p++;
+    blockSelect_p.resize (currentSelect_p);
+    blockSelect_p[n] = new TableParseSelect;
 }
 
-void TableParseSelect::deleteSelect()
+TableParseSelect* TableParseSelect::popSelect()
 {
-    // Don't delete current if it's the only one.
-    uInt n = blockSelect_p.nelements() - 1;
-    if (n > 0) {
-	// Delete current and let currentSelect_p point to previous.
-	delete currentSelect_p;
-	blockSelect_p.resize (n, True, True);
-	currentSelect_p = blockSelect_p[n-1];
+    if (currentSelect_p == 0) {
+	throw (TableError ("TableParse::popSelect: internal error"));
+    }
+    currentSelect_p--;
+    TableParseSelect* p = blockSelect_p[currentSelect_p];
+    blockSelect_p[currentSelect_p] = 0;
+    return p;
+}
+
+void TableParseSelect::clearSelect()
+{
+    while (currentSelect_p > 0) {
+	currentSelect_p--;
+	delete blockSelect_p[currentSelect_p];
+	blockSelect_p[currentSelect_p] = 0;
     }
 }
 
@@ -168,49 +183,152 @@ void TableParseSelect::deleteSelect()
 //# Construct a TableParse object and add it to the linked list.
 void TableParseSelect::addTable (const String& name, const String& shorthand)
 {
-    parseIter_p->addRight (TableParse(Table(name), shorthand));
-    (*parseIter_p)++;
+    //# When the name contains ::, it is a keyword in a table at an outer
+    //# SELECT statement.
+    Table table;
+    String shand, columnName, keyName;
+    if (splitName (shand, columnName, keyName, name)) { 
+	table = tableKey (shand, columnName, keyName);
+    }else{
+	table = Table(name);
+    }
+    parseIter_p->toEnd();
+    parseIter_p->addRight (TableParse(table, shorthand));
 }
 
+Table TableParseSelect::tableKey (const String& shorthand,
+				  const String& columnName,
+				  const String& keyName)
+{
+    //# Find the given shorthand on all levels.
+    for (Int i=currentSelect_p - 1; i>=0; i--) {
+	Table tab = blockSelect_p[i]->findTable (shorthand);
+	if (! tab.isNull()) {
+	    Table result = findTableKey (tab, columnName, keyName);
+	    if (! result.isNull()) {
+		return result;
+	    }
+	}
+    }
+    throw (TableInvExpr ("Keyword " + columnName + "::" + keyName +
+			 " not found in tables in outer SELECT's"));
+    return Table();
+}
+
+Table TableParseSelect::findTableKey (const Table& table,
+				      const String& columnName,
+				      const String& keyName)
+{
+    //# Pick the table or column keyword set.
+    if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
+	const TableRecord& keyset = 
+		           columnName.empty()  ?
+		                 table.keywordSet() :
+		                 ROTableColumn (table, columnName).keywordSet();
+	//# If the keyword exists and is a table, take it.
+	Int fieldnr = keyset.fieldNumber (keyName);
+	if (fieldnr >= 0  &&  keyset.dataType(fieldnr) == TpTable) {
+	    return keyset.asTable (fieldnr);
+	}
+    }
+    //# Not found.
+    return Table();
+}
+
+Bool TableParseSelect::splitName (String& shorthand, String& columnName,
+				  String& keyName, const String& name) const
+{
+    //# Make a copy, because some String functions are non-const.
+    //# Usually the name consists of a columnName only, so use that.
+    //# Find the . which is the separator between shorthand and field name.
+    //# Find the :: which indicates a keyword.
+    columnName = name;
+    int i = columnName.index('.');
+    int j = columnName.index("::");
+    if (j >= 0  &&  j < i) {
+	throw (TableInvExpr (name + " is invalid name: . not before ::"));
+    }
+    if (i > 0) {
+	shorthand = columnName.before(i);
+	j -= i+1;
+	columnName = columnName.after(i);
+    }else{
+	shorthand = "";
+    }
+    if (j < 0) {
+	keyName = "";
+	return False;
+    }
+    keyName = columnName.after(j+1);
+    columnName = columnName.before(j);
+    if (keyName.empty()) {
+	throw (TableInvExpr ("No keyword given in name " + name));
+    }
+    return True;
+}
+
+Table TableParseSelect::findTable (const String& shorthand) const
+{
+    //# If no shorthand given, take first table (if there).
+    parseIter_p->toStart();
+    if (shorthand == "") {
+	if (parseIter_p->len() > 0) {
+	    return parseIter_p->getRight().table();
+	}
+    }else{
+	while (! parseIter_p->atEnd()) {
+	    if (parseIter_p->getRight().test (shorthand)) {
+		return parseIter_p->getRight().table();
+	    }
+	    (*parseIter_p)++;
+	}
+    }
+    return Table();
+}
 
 //# Lookup a field name in the table for which the shorthand is given.
 //# If no shorthand is given, use the first table.
 //# The shorthand and name are separated by a period.
-TableExprNode TableParseSelect::handleName (String& str, Bool isArray)
+TableExprNode TableParseSelect::handleKeyCol (const String& name)
 {
-    parseIter_p->toStart();
-    int i = str.index('.');
+    //# Split the name into shorthand, column and keyword.
+    String shand, columnName, keyName;
+    Bool hasKey = splitName (shand, columnName, keyName, name);
     //# Use first table if there is no shorthand given.
-    //# Construct a TableExprNode object for this column or keyword.
-    if (i < 0) {
-	return parseIter_p->getRight().table().keyCol(str, isArray);
+    //# Otherwise find the table.
+    Table tab = findTable (shand);
+    if (tab.isNull()) {
+	throw (TableInvExpr
+	       ("Shorthand " + shand + " has not been defined"));
+	return 0;
     }
-    //# Split string in shorthand table name and the field name.
-    //# Try to find the table with that shorthand name.
-    //# Exception if unknown.
-    String shand = str.before(i);
-    String name  = str.after(i);
-    while (!parseIter_p->atEnd()) {
-	if (parseIter_p->getRight().test (shand)) {
-	    return parseIter_p->getRight().table().keyCol(name, isArray);
-	}
-	(*parseIter_p)++;
+    //# If :: is not given, we have a column or keyword.
+    if (!hasKey) {
+	return tab.keyCol (columnName);
     }
-    throw (TableInvExpr ("Shorthand " + shand + " has not been defined"));
-    return 0;
+    //# If no column name, we have a table keyword.
+    //# Otherwise we have a column keyword.
+    if (columnName.empty()) {
+	return tab.key (keyName);
+    }
+    ROTableColumn col (tab, columnName);
+    return TableExprNode::newKeyConst (col.keywordSet(), keyName);
 }
 
-TableExprNode TableParseSelect::handleArray (String& str,
-					     Block<TableExprNode>& indices)
+TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
+					     const TableExprNodeSet& indices)
 {
-    TableExprNode anode = handleName (str, True);
-    return TableExprNode::newArrayElementNode (anode, indices);
+    return TableExprNode::newArrayPartNode (array, indices);
 }
  
 //# Parse the name of a function.
 TableExprNode TableParseSelect::handleFunc (const String& name,
-					    Block<TableExprNode>& nodes)
+					    const TableExprNodeSet& arguments)
 {
+    //# Determine if there is a single argument
+    //# (needed for overloading functions min and max).
+    Bool isOneArg = ToBool (arguments.nelements() == 1);
+    //# Determine the function type.
     TableExprFuncNode::FunctionType ftype;
     String funcName (name);
     funcName.downcase();
@@ -218,6 +336,16 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 	ftype = TableExprFuncNode::piFUNC;
     } else if (funcName == "e") {
 	ftype = TableExprFuncNode::eFUNC;
+    } else if (funcName == "near") {
+	ftype = TableExprFuncNode::near2FUNC;
+	if (arguments.nelements() == 3) {
+	    ftype = TableExprFuncNode::near3FUNC;
+	}
+    } else if (funcName == "nearabs") {
+	ftype = TableExprFuncNode::nearabs2FUNC;
+	if (arguments.nelements() == 3) {
+	    ftype = TableExprFuncNode::nearabs3FUNC;
+	}
     } else if (funcName == "cos") {
 	ftype = TableExprFuncNode::cosFUNC;
     } else if (funcName == "cosh") {
@@ -264,8 +392,44 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 	ftype = TableExprFuncNode::fmodFUNC;
     } else if (funcName == "min") {
 	ftype = TableExprFuncNode::minFUNC;
+	if (isOneArg) {
+	    ftype = TableExprFuncNode::arrminFUNC;
+	}
     } else if (funcName == "max") {
 	ftype = TableExprFuncNode::maxFUNC;
+	if (isOneArg) {
+	    ftype = TableExprFuncNode::arrmaxFUNC;
+	}
+    } else if (funcName == "sum") {
+	ftype = TableExprFuncNode::arrsumFUNC;
+    } else if (funcName == "product") {
+	ftype = TableExprFuncNode::arrproductFUNC;
+    } else if (funcName == "mean") {
+	ftype = TableExprFuncNode::arrmeanFUNC;
+    } else if (funcName == "variance") {
+	ftype = TableExprFuncNode::arrvarianceFUNC;
+    } else if (funcName == "stddev") {
+	ftype = TableExprFuncNode::arrstddevFUNC;
+    } else if (funcName == "avdev") {
+	ftype = TableExprFuncNode::arravdevFUNC;
+    } else if (funcName == "median") {
+	ftype = TableExprFuncNode::arrmedianFUNC;
+    } else if (funcName == "any") {
+	ftype = TableExprFuncNode::anyFUNC;
+    } else if (funcName == "all") {
+	ftype = TableExprFuncNode::allFUNC;
+    } else if (funcName == "ntrue") {
+	ftype = TableExprFuncNode::ntrueFUNC;
+    } else if (funcName == "nfalse") {
+	ftype = TableExprFuncNode::nfalseFUNC;
+    } else if (funcName == "isdefined") {
+	ftype = TableExprFuncNode::isdefFUNC;
+    } else if (funcName == "nelements"  ||  funcName == "count") {
+	ftype = TableExprFuncNode::nelemFUNC;
+    } else if (funcName == "ndim") {
+	ftype = TableExprFuncNode::ndimFUNC;
+    } else if (funcName == "shape") {
+	ftype = TableExprFuncNode::shapeFUNC;
     } else if (funcName == "complex") {
 	ftype = TableExprFuncNode::complexFUNC;
     } else if (funcName == "abs"  ||  funcName == "amplitude") {
@@ -322,7 +486,7 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 	throw (TableInvExpr ("Function " + funcName + " is unknown"));
     }
     parseIter_p->toStart();
-    return TableExprNode::newFunctionNode (ftype, nodes,
+    return TableExprNode::newFunctionNode (ftype, arguments,
 					   parseIter_p->getRight().table());
 }
 
@@ -337,7 +501,7 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
     int inx;
     switch (val->type) {
     case 'i':
-	tsnp = new TableExprNodeConstDouble (double (val->ival));
+	tsnp = new TableExprNodeConstDouble (Double (val->ival));
 	break;
     case 'f':
 	tsnp = new TableExprNodeConstDouble (val->dval[0]);
@@ -400,31 +564,117 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
 //# Only take the part beyond the period.
 //# Extend the block each time. Since there are only a few column names,
 //# this will not be too expensive.
-void TableParseSelect::handleColumn (String& name)
+void TableParseSelect::handleSelectColumn (const String& name)
 {
-    Int i = name.index('.');
+    String str = name;
+    Int i = str.index('.');
     Int j = columnNames_p.nelements();
     columnNames_p.resize (j+1);                  // extend block
     if (i < 0) {
-	(columnNames_p)[j] = name;
+	(columnNames_p)[j] = str;
     }else{
-	(columnNames_p)[j] = name.after(i);
+	(columnNames_p)[j] = str.after(i);
     }
 }
 
+//# Eexecute a subquery and create the correct node object for it.
+TableExprNode TableParseSelect::doSubQuery()
+{
+#if defined(AIPS_TRACE)
+    Timer timer;
+#endif
+    // Execute the nested command.
+    execute();
+#if defined(AIPS_TRACE)
+    timer.show ("Subquery");
+#endif
+    // Handle a set when that is given.
+    if (resultSet_p != 0) {
+	return makeSubSet();
+    }
+    // Otherwise a column should be given.
+    // Check if there is only one column which has to contain a scalar.
+    const TableDesc& tableDesc = table_p.tableDesc();
+    if (tableDesc.ncolumn() != 1) {
+	throw (TableInvExpr ("Nested query should select 1 column"));
+    }
+    const ColumnDesc& colDesc = tableDesc.columnDesc(0);
+    if (! colDesc.isScalar()) {
+	throw (TableInvExpr ("Nested query should select a scalar column"));
+    }
+    const String& name = colDesc.name();
+    switch (colDesc.dataType()) {
+    case TpBool:
+	return new TableExprNodeArrayConstBool
+                        (ROScalarColumn<Bool> (table_p, name).getColumn());
+    case TpUChar:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uChar> (table_p, name).getColumn());
+    case TpShort:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Short> (table_p, name).getColumn());
+    case TpUShort:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uShort> (table_p, name).getColumn());
+    case TpInt:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Int> (table_p, name).getColumn());
+    case TpUInt:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uInt> (table_p, name).getColumn());
+    case TpFloat:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Float> (table_p, name).getColumn());
+    case TpDouble:
+	return new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Double> (table_p, name).getColumn());
+    case TpComplex:
+	return new TableExprNodeArrayConstDComplex
+                        (ROScalarColumn<Complex> (table_p, name).getColumn());
+    case TpDComplex:
+	return new TableExprNodeArrayConstDComplex
+                        (ROScalarColumn<DComplex> (table_p, name).getColumn());
+    case TpString:
+	return new TableExprNodeArrayConstString
+                        (ROScalarColumn<String> (table_p, name).getColumn());
+    default:
+	throw (TableInvExpr ("Nested query column has unknown data type"));
+    }
+    return 0;
+}
 
-//# Execute the sort (if possible).
-//# The result will be the table now.
-void TableParseSelect::doSort (PtrBlock<TableParseSort*>* sortList)
+
+TableExprNode TableParseSelect::makeSubSet() const
+{
+    // Perform some checks on the given set.
+    if (resultSet_p->nelements() != 1) {
+	throw (TableInvExpr ("Set in GIVING clause can have 1 element only"));
+    }
+    if (resultSet_p->hasArrays()) {
+	throw (TableInvExpr ("Set in GIVING clause should contain scalar"
+			     " elements"));
+    }
+    // Link to set to make sure that TableExprNode hereafter does not delete
+    // the object.
+    resultSet_p->link();
+    if (! TableExprNode(resultSet_p).checkReplaceTable (table_p)) {
+	throw (TableInvExpr ("Incorrect table used in GIVING set expression"));
+    }
+    uInt nrow = table_p.nrow();
+    TableExprNodeSet set(nrow, (*resultSet_p)[0]);
+    return set.setOrArray();
+}
+
+//# Execute the sort.
+Table TableParseSelect::doSort (const Table& table)
 {
     uInt i;
-    const Table& table = getTable();
-    uInt nrkey = sortList->nelements();
+    uInt nrkey = sort_p->nelements();
     //# First check if the sort keys are correct.
     for (i=0; i<nrkey; i++) {
-	const TableParseSort& key = *(*sortList)[i];
+	const TableParseSort& key = *(*sort_p)[i];
 	//# Check if the correct table is used in the sort key expression.
-	if (! key.node().checkTable (table)) {
+	if (! key.node().checkReplaceTable (table)) {
 	    throw (TableInvExpr ("Incorrect table used in a sort key"));
 	}
 	//# This throws an exception for unknown data types (datetime, regex).
@@ -434,7 +684,7 @@ void TableParseSelect::doSort (PtrBlock<TableParseSort*>* sortList)
     Sort sort;
     Bool deleteIt;
     for (i=0; i<nrkey; i++) {
-	const TableParseSort& key = *(*sortList)[i];
+	const TableParseSort& key = *(*sort_p)[i];
 	switch (key.node().getColumnDataType()) {
 	case TpBool:
 	    {
@@ -552,9 +802,13 @@ void TableParseSelect::doSort (PtrBlock<TableParseSort*>* sortList)
     }
     uInt nrrow = table.nrow();
     Vector<uInt> rownrs (nrrow);
-    sort.sort (rownrs, nrrow);
+    int sortOpt = Sort::HeapSort;                  
+    if (noDupl_p) {
+	sortOpt += Sort::NoDuplicates;
+    }
+    sort.sort (rownrs, nrrow, sortOpt);
     for (i=0; i<nrkey; i++) {
-	const TableParseSort& key = *(*sortList)[i];
+	const TableParseSort& key = *(*sort_p)[i];
 	switch (key.node().getColumnDataType()) {
 	case TpBool:
 	    delete (Array<Bool>*)arrays[i];
@@ -592,54 +846,77 @@ void TableParseSelect::doSort (PtrBlock<TableParseSort*>* sortList)
 	default:
 	    AlwaysAssert (False, AipsError);
 	}
-	delete (*sortList)[i];
     }
-    delete sortList;
-    Table resultTable (table(rownrs));
-    nothingDone_p = False;
-    //# Store the resulting table in the list, so it will be used
-    //# by the possible sorting step.
-    TableParse* primary = &(parseIter_p->getRight());
-    *primary = TableParse (resultTable, primary->shorthand());
+    return table(rownrs);
 }
 
 
-//# Write the table.
-//# This should only be done if selection and/or sorting has been done,
-//# otherwise the original table may get renamed.
+//# Keep the name of the resulting table.
 void TableParseSelect::handleGiving (const String& name)
 {
     resultName_p = name;
 }
-
-
-//# Execute the selection on the 1st table and save the resulting table.
-//# This will also delete all TableExprNode objects.
-void TableParseSelect::doSelect (const TableExprNode* tsnp)
+//# Keep the resulting set expression.
+void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 {
-    //# Use the first table mentioned as the source table.
+    resultSet_p = new TableExprNodeSet (set);
+}
+
+
+//# Execute all parts of the SELECT command.
+void TableParseSelect::execute()
+{
+    //# Give an error if no command part has been given.
+    if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0) {
+	throw (TableError
+	    ("TableParse error: no projection, selection or sorting given"));
+    }
+    //# The first table in the list is the source table.
     parseIter_p->toStart();
-    //# Return entire table if no selection given, otherwise select.
-    Table resultTable;
-    if (tsnp == 0) {
-	resultTable = parseIter_p->getRight().table();
-    }else{
+    Table table = parseIter_p->getRight().table();
+    //# Check if all projected columns exist.
+    for (uInt i=0; i<columnNames_p.nelements(); i++) {
+	if (! table.tableDesc().isColumn (columnNames_p[i])) {
+	    throw (TableError ("TableParse: projected column " +
+			       columnNames_p[i] +
+			       " does not exist in table " +
+			       table.tableName()));
+	}
+    }
+    //# First do the select.
+    if (node_p != 0) {
 //#//	cout << "Showing TableExprRange values ..." << endl;
 //#//	Block<TableExprRange> rang;
-//#//	tsnp->ranges(rang);
+//#//	node_p->ranges(rang);
 //#//	for (Int i=0; i<rang.nelements(); i++) {
 //#//	    cout << rang[i].getColumn().columnDesc().name() << rang[i].start()
 //#//		 << rang[i].end() << endl;
 //#//	}
-	resultTable = parseIter_p->getRight().table() (*tsnp);
-	nothingDone_p = False;
+	table = table(*node_p);
     }
-    //# Store the resulting table in the list, so it will be used
-    //# by the possible sorting step.
-    TableParse* primary = &(parseIter_p->getRight());
-    *primary = TableParse (resultTable, primary->shorthand());
-}
+    //# Then do the sort.
+    if (sort_p != 0) {
+	table = doSort (table);
+    }
+    //# Then do the projection.
+    if (columnNames_p.nelements() > 0) {
+	table = table.project (columnNames_p);
+    }
+    //# Finally give it the given name.
+    if (! resultName_p.empty()) {
+	table.rename (resultName_p, Table::New);
+    }
+    //# Keep the table for later.
+    table_p = table;
+    table_p.makePermanent();
+}    
 
+void TableParseSelect::show (ostream& os) const
+{
+    if (node_p != 0) {
+	node_p->show (os);
+    }
+}
 
 
 //# Simplified form of general tableCommand function.
@@ -652,56 +929,46 @@ Table tableCommand (const String& str)
 //# Do the actual parsing of a command and execute it.
 Table tableCommand (const String& str, Vector<String>& cols)
 {
-    TableParseSelect::currentSelect() = 0;
+#if defined(AIPS_TRACE)
+    Timer timer;
+#endif
+    TableParseSelect::clearSelect();
     String message;
+    String command = str + '\n';
     Bool error = False;
     try {
-	if (tableGramParseCommand(str) != 0) { // parse and execute the command
+	// Parse and execute the command.
+	if (tableGramParseCommand(command) != 0) {
 	    throw (TableParseError(str));      // throw exception if error
 	}
     }catch (AipsError x) {
 	message = x.getMesg();
 	error = True;
     } end_try;
-
+#if defined(AIPS_TRACE)
+    timer.show ("Parsing ");
+#endif
     //# If an exception was thrown; throw it again with the message.
     //# Delete the table object if so.
     if (error) {
-	delete TableParseSelect::currentSelect();
-	throw (AipsError(message));
+	TableParseSelect::clearSelect();
+	throw (AipsError(message + '\n' + "Scanned so far: " +
+	                 command.before(tableGramPosition())));
     }
-
+    //# Execute the command and get the resulting table.
+    TableParseSelect* p = TableParseSelect::popSelect();
+#if defined(AIPS_TRACE)
+    p->show (cout);
+    timer.mark();
+#endif
+    p->execute();
+#if defined(AIPS_TRACE)
+    timer.show ("Execute ");
+#endif
+    Table table = p->getTable();
     //# Copy the possibly selected column names.
-    cols.resize (TableParseSelect::currentSelect()->
-		                            getColumnNames().nelements());
-    cols = TableParseSelect::currentSelect()->getColumnNames();
-    //# Do projection if columns were selected.
-    //# Throw exception if no operations are done on the table.
-    Table tab;
-    if (cols.nelements() == 0) {
-	if (TableParseSelect::currentSelect()->getNothingDone()) {
-	    delete TableParseSelect::currentSelect();
-	    throw (TableError
-	    ("tableCommand error: no projection, selection or sorting done"));
-	}
-	tab = TableParseSelect::currentSelect()->getTable();     // copy table
-    }else{
-	Block<String> block(cols.nelements());
-	uInt nr = 0;
-	for (uInt i=0; i<block.nelements(); i++) {
-	    if (TableParseSelect::currentSelect()->
-		               getTable().tableDesc().isColumn (cols(i))) {
-		block[nr++] = cols(i);
-	    }
-	}
-	block.resize (nr, True);
-	tab = TableParseSelect::currentSelect()->getTable().project (block); 
-    }
-    //# Name the output table when needed.
-    if (TableParseSelect::currentSelect()->getTableName() != "") {
-	tab.rename (TableParseSelect::currentSelect()->getTableName(),
-		    Table::New);
-    }
-    delete TableParseSelect::currentSelect();
-    return tab;
+    cols.resize (p->getColumnNames().nelements());
+    cols = p->getColumnNames();
+    delete p;
+    return table;
 }

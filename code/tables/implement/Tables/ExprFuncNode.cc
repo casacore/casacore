@@ -28,24 +28,91 @@
 #include <aips/Tables/ExprFuncNode.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Tables/ExprNode.h>
+#include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/ExprDerNode.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Measures/MVTime.h>
 #include <aips/OS/Time.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 
-typedef Quantum<double> gpp_bug1;
+typedef Quantum<Double> ExprFuncNode_gpp_bug1;
+typedef Vector<Int> ExprFuncNode_gpp_bug2;
 
-TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype)
-: TableExprNodeMulti (dtype, OtFunc),
+
+TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
+				      ValueType vtype,
+				      const TableExprNodeSet& source)
+: TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype)
 {}
 
 TableExprFuncNode::~TableExprFuncNode()
 {}
 
+// Fill the children pointers of a node.
+// Also reduce the tree if possible by combining constants.
+// When one of the nodes is a constant, convert its type if
+// it does not match the other one.
+TableExprNodeRep* TableExprFuncNode::fillNode
+                                   (TableExprFuncNode* thisNode,
+				    PtrBlock<TableExprNodeRep*>& nodes,
+				    const Block<Int>& dtypeOper)
+{
+    uInt i;
+    // Copy block of children.
+    thisNode->operands_p.resize (nodes.nelements());
+    for (i=0; i<nodes.nelements(); i++) {
+	thisNode->operands_p[i] = nodes[i]->link();
+    }
+    // Convert String to Date if needed
+    for (i=0; i<nodes.nelements(); i++) {
+	if (nodes[i]->dataType() == NTString  &&  dtypeOper[i] == NTDate) {
+	    TableExprNode dNode = datetime (thisNode->operands_p[i]);
+	    unlink (thisNode->operands_p[i]);
+	    thisNode->operands_p[i] = getRep (dNode)->link();
+	}
+    }
+    // Some functions on a variable can already give a constant result.
+    thisNode->tryToConst();
+    if (thisNode->operands_p.nelements() > 0) {
+	return convertNode (thisNode, True);
+    }
+    return thisNode;
+}
+
+void TableExprFuncNode::tryToConst()
+{
+    switch (funcType_p) {
+    case ndimFUNC:
+	if (operands_p[0]->ndim() >= 0) {
+	    exprtype_p = Constant;
+	}
+	break;
+    case shapeFUNC:
+    case nelemFUNC:
+    case isdefFUNC:
+	if (operands_p[0]->ndim() == 0
+        ||  operands_p[0]->shape().nelements() > 0  ) {
+	    exprtype_p = Constant;
+	}
+	break;
+    default:
+	break;
+    }
+}
+
 Bool TableExprFuncNode::getBool (uInt rownr)
 {
     switch (funcType_p) {
+    case anyFUNC:
+	return anyEQ (operands_p[0]->getArrayBool(rownr), True);
+    case allFUNC:
+	return allEQ (operands_p[0]->getArrayBool(rownr), True);
+    case isdefFUNC:
+	return operands_p[0]->isDefined (rownr);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getBool, "
 			     "unknown function"));
@@ -60,6 +127,22 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	return C::pi;
     case eFUNC:
 	return C::e;
+    case near2FUNC:
+	return near     (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 1.0e-13);
+    case near3FUNC:
+	return near     (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 operands_p[2]->getDouble(rownr));
+    case nearabs2FUNC:
+	return nearAbs  (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 1.0e-13);
+    case nearabs3FUNC:
+	return nearAbs  (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 operands_p[2]->getDouble(rownr));
     case sinFUNC:
 	return sin      (operands_p[0]->getDouble(rownr));
     case sinhFUNC:
@@ -79,7 +162,7 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 		         operands_p[1]->getDouble(rownr));
     case squareFUNC:
 	{
-	    double val = operands_p[0]->getDouble(rownr);
+	    Double val = operands_p[0]->getDouble(rownr);
 	    return val * val;
 	}
     case sqrtFUNC:
@@ -94,7 +177,7 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 		    operands_p[1]->getDouble(rownr));
     case normFUNC:
 	if (operands_p[0]->dataType() == NTDouble) {
-	    double val = operands_p[0]->getDouble(rownr);
+	    Double val = operands_p[0]->getDouble(rownr);
 	    return val*val;
 	}
 	return norm (operands_p[0]->getDComplex(rownr));
@@ -108,7 +191,7 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	    if (operands_p[0]->getDouble(rownr) >= 0) {
 		return 0;
 	    }
-	    return atan2 (double(0), double(-1));  // results in pi
+	    return atan2 (Double(0), Double(-1));  // results in pi
 	}
 	return arg (operands_p[0]->getDComplex(rownr));
     case realFUNC:
@@ -136,7 +219,7 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 			 operands_p[1]->getDouble(rownr));
     case signFUNC:
 	{
-	    double val = operands_p[0]->getDouble(rownr);
+	    Double val = operands_p[0]->getDouble(rownr);
 	    if (val > 0) {
 		return 1;
 	    }
@@ -147,7 +230,7 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	}
     case roundFUNC:
 	{
-	    double val = operands_p[0]->getDouble(rownr);
+	    Double val = operands_p[0]->getDouble(rownr);
 	    if (val < 0) {
 		return ceil (val - 0.5);
 	    }
@@ -176,6 +259,65 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	return operands_p[0]->getDate(rownr).yearweek();
     case timeFUNC:                                       //# return in radians
 	return fmod (Double(operands_p[0]->getDate(rownr)), 1.) * C::_2pi;
+    case arrminFUNC:
+	return min (operands_p[0]->getArrayDouble (rownr));
+    case arrmaxFUNC:
+	return max (operands_p[0]->getArrayDouble (rownr));
+    case arrsumFUNC:
+	return sum (operands_p[0]->getArrayDouble (rownr));
+    case arrproductFUNC:
+	return product (operands_p[0]->getArrayDouble (rownr));
+    case arrmeanFUNC:
+	return mean (operands_p[0]->getArrayDouble (rownr));
+    case arrvarianceFUNC:
+	return variance (operands_p[0]->getArrayDouble (rownr));
+    case arrstddevFUNC:
+	return stddev (operands_p[0]->getArrayDouble (rownr));
+    case arravdevFUNC:
+	return avdev (operands_p[0]->getArrayDouble (rownr));
+    case arrmedianFUNC:
+	return median (operands_p[0]->getArrayDouble (rownr));
+    case ntrueFUNC:
+    {
+	Array<Bool> arr = operands_p[0]->getArrayBool (rownr);
+	Bool deleteIt;
+	const Bool* data = arr.getStorage (deleteIt);
+	const Bool* p = data;
+	const Bool* end = p + arr.nelements();
+	uInt n = 0;
+	while (p < end) {
+	    if (*p++) {
+		n++;
+	    }
+	}
+	arr.freeStorage (data, deleteIt);
+	return n;
+    }
+    case nfalseFUNC:
+    {
+	Array<Bool> arr = operands_p[0]->getArrayBool (rownr);
+	Bool deleteIt;
+	const Bool* data = arr.getStorage (deleteIt);
+	const Bool* p = data;
+	const Bool* end = p + arr.nelements();
+	uInt n = 0;
+	while (p < end) {
+	    if (! *p++) {
+		n++;
+	    }
+	}
+	arr.freeStorage (data, deleteIt);
+	return n;
+    }
+    case ndimFUNC:
+    {
+	// Return fixed dimensionality if available.
+	Int nrdim = operands_p[0]->ndim();
+	return (nrdim >= 0  ?  nrdim : operands_p[0]->shape(rownr).nelements());
+    }
+    case nelemFUNC:
+	return (operands_p[0]->valueType() == VTScalar  ?
+                                   1 : operands_p[0]->shape(rownr).product());
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getDouble, "
 			     "unknown function"));
@@ -189,6 +331,22 @@ DComplex TableExprFuncNode::getDComplex (uInt rownr)
 	return TableExprFuncNode::getDouble (rownr);
     }
     switch (funcType_p) {
+    case near2FUNC:
+	return near     (operands_p[0]->getDComplex(rownr),
+			 operands_p[1]->getDComplex(rownr),
+			 1.0e-13);
+    case near3FUNC:
+	return near     (operands_p[0]->getDComplex(rownr),
+			 operands_p[1]->getDComplex(rownr),
+			 operands_p[2]->getDouble(rownr));
+    case nearabs2FUNC:
+	return nearAbs  (operands_p[0]->getDComplex(rownr),
+			 operands_p[1]->getDComplex(rownr),
+			 1.0e-13);
+    case nearabs3FUNC:
+	return nearAbs  (operands_p[0]->getDComplex(rownr),
+			 operands_p[1]->getDComplex(rownr),
+			 operands_p[2]->getDouble(rownr));
     case sinFUNC:
 	return sin      (operands_p[0]->getDComplex(rownr));
     case sinhFUNC:
@@ -236,6 +394,10 @@ DComplex TableExprFuncNode::getDComplex (uInt rownr)
     case complexFUNC:
 	return DComplex (operands_p[0]->getDouble (rownr),
 			 operands_p[1]->getDouble (rownr));
+    case arrsumFUNC:
+	return sum (operands_p[0]->getArrayDComplex (rownr));
+    case arrproductFUNC:
+	return product (operands_p[0]->getArrayDComplex (rownr));
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getDComplex, "
 			     "unknown function"));
@@ -262,11 +424,13 @@ String TableExprFuncNode::getString (uInt rownr)
 	{
 	    String str = operands_p[0]->getString (rownr);
 	    int pos = str.length();
-	    while (--pos >= 0 && str[pos] == ' ' ) ;
+	    while (--pos >= 0  &&  str[pos] == ' ' ) ;
 	    if (pos < 0) {
 		return "";
+	    } else if (pos+1 < str.length()) {
+		return str.through(pos);
 	    }
-	    return str.through(pos);
+	    return str;
 	}
     case cmonthFUNC:
 	return operands_p[0]->getDate(rownr).monthName();
@@ -316,61 +480,293 @@ MVTime TableExprFuncNode::getDate (uInt rownr)
     return MVTime();
 }
 
-
-TableExprFuncNode::NodeDataType TableExprFuncNode::checkOperands
-				    (Block<Int>& dtypeOper,
-				     FunctionType fType,
-				     PtrBlock<TableExprNodeRep*>& nodes)
+Array<Double> TableExprFuncNode::getArrayDouble (uInt rownr)
 {
+    switch (funcType_p) {
+    case shapeFUNC:
+    {
+	Array<Int> shp = operands_p[0]->shape(rownr).asVector();
+	Array<Double> result(shp.shape());
+	convertArray (result, shp);
+	return result;
+    }
+    case strlengthFUNC:
+    {
+	Array<String> values = operands_p[0]->getArrayString(rownr);
+	Array<Double> doubles(values.shape());
+	Bool deleteVal, deleteDoub;
+	const String* val = values.getStorage (deleteVal);
+	Double* doub = doubles.getStorage (deleteDoub);
+	uInt n = values.nelements();
+	for (uInt i=0; i<n; i++) {
+	    doub[i] = val[i].length();
+	}
+	values.freeStorage (val, deleteVal);
+	doubles.putStorage (doub, deleteDoub);
+	return doubles;
+    }
+    case mjdFUNC:
+    case yearFUNC:
+    case monthFUNC:
+    case dayFUNC:
+    case weekdayFUNC:
+    case weekFUNC:
+    case timeFUNC:
+    {
+	Array<MVTime> values = operands_p[0]->getArrayDate(rownr);
+	Array<Double> doubles(values.shape());
+	Bool deleteVal, deleteDoub;
+	const MVTime* val = values.getStorage (deleteVal);
+	Double* doub = doubles.getStorage (deleteDoub);
+	uInt n = values.nelements();
+	uInt i;
+	switch (funcType_p) {
+	case mjdFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].day();
+	    }
+	    break;
+	case yearFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].year();
+	    }
+	    break;
+	case monthFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].month();
+	    }
+	    break;
+	case dayFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].monthday();
+	    }
+	    break;
+	case weekdayFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].weekday();
+	    }
+	    break;
+	case weekFUNC:
+	    for (i=0; i<n; i++) {
+		doub[i] = val[i].yearweek();
+	    }
+	    break;
+	case timeFUNC:                                   //# return in radians
+	    for (i=0; i<n; i++) {
+		doub[i] = fmod (Double(val[i]), 1.) * C::_2pi;
+	    }
+	    break;
+	}
+	values.freeStorage (val, deleteVal);
+	doubles.putStorage (doub, deleteDoub);
+	return doubles;
+    }
+    default:
+	throw (TableInvExpr ("TableExprFuncNode::getArrayDouble, "
+			     "unknown function"));
+    }
+    return Array<Double>();
+}
+
+Array<String> TableExprFuncNode::getArrayString (uInt rownr)
+{
+    switch (funcType_p) {
+    case upcaseFUNC:
+    case downcaseFUNC:
+    case trimFUNC:
+    {
+	Array<String> strings = operands_p[0]->getArrayString(rownr);
+	Bool deleteStr;
+	String* str = strings.getStorage (deleteStr);
+	uInt n = strings.nelements();
+	uInt i;
+	switch (funcType_p) {
+	case upcaseFUNC:
+	    for (i=0; i<n; i++) {
+		str[i].upcase();
+	    }
+	    break;
+	case downcaseFUNC:
+	    for (i=0; i<n; i++) {
+		str[i].downcase();
+	    }
+	    break;
+	case trimFUNC:
+	    for (i=0; i<n; i++) {
+		String& s = str[i];
+		int pos = s.length();
+		while (--pos >= 0  &&  s[pos] == ' ' ) ;
+		if (pos < 0) {
+		    s = "";
+		} else if (pos+1 < s.length()) {
+		    s = s.through(pos);
+		}
+	    }
+	    break;
+	}
+	strings.putStorage (str, deleteStr);
+	return strings;
+    }
+    case cmonthFUNC:
+    case cdowFUNC:	
+    {
+	Array<MVTime> values = operands_p[0]->getArrayDate(rownr);
+	Array<String> strings(values.shape());
+	Bool deleteVal, deleteStr;
+	const MVTime* val = values.getStorage (deleteVal);
+	String* str = strings.getStorage (deleteStr);
+	uInt n = values.nelements();
+	uInt i;
+	switch (funcType_p) {
+	case cmonthFUNC:
+	    for (i=0; i<n; i++) {
+		str[i] = val[i].monthName();
+	    }
+	    break;
+	case cdowFUNC:	
+	    for (i=0; i<n; i++) {
+		str[i] = val[i].dayName();
+	    }
+	    break;
+	}
+	values.freeStorage (val, deleteVal);
+	strings.putStorage (str, deleteStr);
+	return strings;
+    }
+    default:
+	throw (TableInvExpr ("TableExprFuncNode::getArrayDouble, "
+			     "unknown function"));
+    }
+    return Array<String>();
+}
+
+Array<MVTime> TableExprFuncNode::getArrayDate (uInt rownr)
+{
+    switch (funcType_p) {
+    case datetimeFUNC:
+    {
+	Array<String> values = operands_p[0]->getArrayString(rownr);
+	Array<MVTime> dates(values.shape());
+	Bool deleteVal, deleteDat;
+	const String* val = values.getStorage (deleteVal);
+	MVTime* dat = dates.getStorage (deleteDat);
+	Quantity quant;
+	uInt n = values.nelements();
+	for (uInt i=0; i<n; i++) {
+	    if (MVTime::read (quant, val[i])) {
+		dat[i] = quant;
+	    }
+	    throw (TableInvExpr ("invalid date string " + val[i]));
+	}
+	values.freeStorage (val, deleteVal);
+	dates.putStorage (dat, deleteDat);
+	return dates;
+    }
+    case mjdtodateFUNC:
+    {
+	Array<Double> values = operands_p[0]->getArrayDouble(rownr);
+	Array<MVTime> dates(values.shape());
+	Bool deleteVal, deleteDat;
+	const Double* val = values.getStorage (deleteVal);
+	MVTime* dat = dates.getStorage (deleteDat);
+	uInt n = values.nelements();
+	for (uInt i=0; i<n; i++) {
+	    dat[i] = MVTime (val[i]);
+	}
+	values.freeStorage (val, deleteVal);
+	dates.putStorage (dat, deleteDat);
+	return dates;
+    }
+    case dateFUNC:
+    {
+	Array<MVTime> values = operands_p[0]->getArrayDate(rownr);
+	Array<MVTime> dates(values.shape());
+	Bool deleteVal, deleteDat;
+	const MVTime* val = values.getStorage (deleteVal);
+	MVTime* dat = dates.getStorage (deleteDat);
+	uInt n = values.nelements();
+	for (uInt i=0; i<n; i++) {
+	    dat[i] = MVTime (floor (Double (val[i])));
+	}
+	values.freeStorage (val, deleteVal);
+	dates.putStorage (dat, deleteDat);
+	return dates;
+    }
+    default:
+	throw (TableInvExpr ("TableExprFuncNode::getDate, "
+			     "unknown function"));
+    }
+    return Array<MVTime>();
+}
+
+
+TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
+                                 (Block<Int>& dtypeOper,
+				  ValueType& resVT, Block<Int>& vtypeOper,
+				  FunctionType fType,
+				  PtrBlock<TableExprNodeRep*>& nodes)
+{
+    uInt i;
+    // The default returned value type is a scalar.
+    resVT = VTScalar;
+    // The following functions accept an array argument only.
     switch (fType) {
-    case randFUNC:
-    case rownrFUNC:
-    case piFUNC:
-    case eFUNC:
-	checkNumOfArg (0, 0, nodes);
-	return NTDouble;
-    case sinFUNC:
-    case sinhFUNC:
-    case cosFUNC:
-    case coshFUNC:
-    case expFUNC:
-    case logFUNC:
-    case log10FUNC:
-    case squareFUNC:
-    case sqrtFUNC:
-    case conjFUNC:
+    case arrminFUNC:
+    case arrmaxFUNC:
+    case arrmeanFUNC:
+    case arrvarianceFUNC:
+    case arrstddevFUNC:
+    case arravdevFUNC:
+    case arrmedianFUNC:
 	checkNumOfArg (1, 1, nodes);
-	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
-    case powFUNC:
-    case minFUNC:
-    case maxFUNC:
-	checkNumOfArg (2, 2, nodes);
-	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
-    case normFUNC:
-    case absFUNC:
-    case argFUNC:
-    case realFUNC:
-    case imagFUNC:
-	checkNumOfArg (1, 1, nodes);
-	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
-    case asinFUNC:
-    case acosFUNC:
-    case atanFUNC:
-    case tanFUNC:
-    case tanhFUNC:
-    case signFUNC:
-    case roundFUNC:
-    case floorFUNC:
-    case ceilFUNC:
-	checkNumOfArg (1, 1, nodes);
+	if (nodes[0]->valueType() != VTArray) {
+	    throw (TableInvExpr ("Function has to have an array argument"));
+	}
 	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
-    case atan2FUNC:
-    case fmodFUNC:
-	checkNumOfArg (2, 2, nodes);
-	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
-    case complexFUNC:
-	checkNumOfArg (2, 2, nodes);
-	return checkDT (dtypeOper, NTDouble, NTComplex, nodes);
+    case arrsumFUNC:
+    case arrproductFUNC:
+	checkNumOfArg (1, 1, nodes);
+	if (nodes[0]->valueType() != VTArray) {
+	    throw (TableInvExpr ("Function has to have an array argument"));
+	}
+	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case anyFUNC:
+    case allFUNC:
+	checkNumOfArg (1, 1, nodes);
+	if (nodes[0]->valueType() != VTArray) {
+	    throw (TableInvExpr ("Function has to have an array argument"));
+	}
+	return checkDT (dtypeOper, NTBool, NTBool, nodes);
+    case ntrueFUNC:
+    case nfalseFUNC:
+	checkNumOfArg (1, 1, nodes);
+	if (nodes[0]->valueType() != VTArray) {
+	    throw (TableInvExpr ("Function has to have an array argument"));
+	}
+	return checkDT (dtypeOper, NTBool, NTDouble, nodes);
+    case nelemFUNC:
+    case ndimFUNC:
+    case shapeFUNC:
+	checkNumOfArg (1, 1, nodes);
+	if (fType == shapeFUNC) {
+	    resVT = VTArray;
+	}
+	return checkDT (dtypeOper, NTAny, NTDouble, nodes);
+    case isdefFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTAny, NTBool, nodes);
+    }
+    // The following functions accept scalars and arrays.
+    // The return a scalar or array (same as the input argument).
+    // When a function has no argument, it results in a scalar.
+    for (i=0; i< nodes.nelements(); i++) {
+	resVT = nodes[i]->valueType();
+	if (resVT != VTScalar  &&  resVT != VTArray) {
+	    throw (TableInvExpr
+                          ("Function has to have a scalar or array argument"));
+	}
+    }
+    switch (fType) {
     case strlengthFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTString, NTDouble, nodes);
@@ -379,10 +775,6 @@ TableExprFuncNode::NodeDataType TableExprFuncNode::checkOperands
     case trimFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTString, NTString, nodes);
-    case regexFUNC:
-    case patternFUNC:
-	checkNumOfArg (1, 1, nodes);
-	return checkDT (dtypeOper, NTString, NTRegex, nodes);
     case datetimeFUNC:
 	if (checkNumOfArg (0, 1, nodes) == 1) {
 	    return checkDT (dtypeOper, NTString, NTDate, nodes);
@@ -429,6 +821,75 @@ TableExprFuncNode::NodeDataType TableExprFuncNode::checkOperands
 	nodes.resize (1);
 	nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
 	return NTString;
+    }
+    // The following functions accept scalars only.
+    // In the future they may also need to support arrays.
+    for (i=0; i< nodes.nelements(); i++) {
+	if (nodes[i]->valueType() != VTScalar) {
+	    throw (TableInvExpr ("Function has to have a scalar argument"));
+	}
+    }
+    switch (fType) {
+    case randFUNC:
+    case rownrFUNC:
+    case piFUNC:
+    case eFUNC:
+	checkNumOfArg (0, 0, nodes);
+	return NTDouble;
+    case near2FUNC:
+    case nearabs2FUNC:
+	checkNumOfArg (2, 2, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case near3FUNC:
+    case nearabs3FUNC:
+	checkNumOfArg (3, 3, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case sinFUNC:
+    case sinhFUNC:
+    case cosFUNC:
+    case coshFUNC:
+    case expFUNC:
+    case logFUNC:
+    case log10FUNC:
+    case squareFUNC:
+    case sqrtFUNC:
+    case conjFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case powFUNC:
+    case minFUNC:
+    case maxFUNC:
+	checkNumOfArg (2, 2, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case normFUNC:
+    case absFUNC:
+    case argFUNC:
+    case realFUNC:
+    case imagFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
+    case asinFUNC:
+    case acosFUNC:
+    case atanFUNC:
+    case tanFUNC:
+    case tanhFUNC:
+    case signFUNC:
+    case roundFUNC:
+    case floorFUNC:
+    case ceilFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
+    case atan2FUNC:
+    case fmodFUNC:
+	checkNumOfArg (2, 2, nodes);
+	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
+    case complexFUNC:
+	checkNumOfArg (2, 2, nodes);
+	return checkDT (dtypeOper, NTDouble, NTComplex, nodes);
+    case regexFUNC:
+    case patternFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTString, NTRegex, nodes);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::checkOperands, "
 			     "function not contained in switch statement"));
