@@ -455,7 +455,7 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
    parameters(0) = pixelCen(0);
    parameters(1) = pixelCen(1);
 
-// Now convert the tips of the major & minor axes to x/y pixel coordinates
+// Now convert the tip of the major axis to x/y pixel coordinates
 
    const MDirection dirRef = refDirection();
    Quantum<Double> majorWorld = majorAxis();
@@ -463,18 +463,53 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
    majorWorld.scale(0.5);
    Vector<Double> majorCart = widthToCartesian (majorWorld, paMajor, dirRef, dirCoord, pixelCen);
 
-// The following is in error.  I cannot just add 90deg. It is 90deg in the
-// pixel coordinate frame, not the world frame.  
-
-   Quantum<Double> minorWorld = minorAxis();
-   Quantum<Double> paMinor = paMajor + Quantum<Double>(C::pi/2.0, Unit("rad"));
-   minorWorld.scale(0.5);
-   Vector<Double> minorCart = widthToCartesian (minorWorld, paMinor, dirRef, dirCoord, pixelCen);
-
+// Position angle of major axis.  
 // atan2 gives pos +x (long) -> +y (lat).   put in range +/- pi
                                         
    MVAngle pa(atan2(majorCart(1), majorCart(0)));
    pa();
+
+// I cannot just add 90deg to the world position angle. It is 90deg in the
+// pixel coordinate frame, not the world frame.    So I have to work
+// my way along the minor axis in pixel coordinates and locate
+// the tip of the minor axis iteratively.  The algorithm
+// below could be much smarter/faster with a binary search.
+
+   Quantum<Double> minorWorld = minorAxis();
+   Quantum<Double> paMinor = paMajor + Quantum<Double>(C::pi/2.0, Unit("rad"));
+   minorWorld.scale(0.5);
+//
+   Double dX = sin(pa.radian());
+   Double dY = cos(pa.radian());
+//
+   Vector<Double> posPix = pixelCen.copy();
+   MDirection posWorld;
+   MVDirection mvdRef = dirRef.getValue();
+   Vector<Double> prevPosPix(2);
+//
+   Double minorWorldRad = minorWorld.getValue(Unit("rad"));
+   Double sep = 0.0;
+   Double prevSep = 0.0;
+   Bool more = True;
+   while (more) {
+      dirCoord.toWorld(posWorld, posPix);
+      MVDirection mvd = posWorld.getValue();
+      sep = mvdRef.separation(mvd);
+      if (sep > minorWorldRad) break;
+//  
+      prevPosPix = posPix;
+      prevSep = sep;
+//
+      posPix(0) += dX;
+      posPix(1) += dY;
+   }
+   Double frac = (minorWorldRad - prevSep) / (sep - prevSep);
+   Double fracX = dX * frac;
+   Double fracY = dY * frac;
+//
+   Vector<Double> minorCart(2);
+   minorCart(0) = prevPosPix(0) + fracX - pixelCen(0);
+   minorCart(1) = prevPosPix(1) + fracY - pixelCen(1);
 //
    Double tmp1 =  2.0 * hypot(majorCart(0), majorCart(1));
    Double tmp2 =  2.0 * hypot(minorCart(0), minorCart(1));
@@ -482,10 +517,6 @@ Vector<Double> TwoSidedShape::toPixel (const DirectionCoordinate& dirCoord)  con
    parameters(2) = max(tmp1,tmp2);
    parameters(3) = min(tmp1,tmp2);
    parameters(4) = pa.radian();
-//
-//
-   MVAngle pa00(atan2(minorCart(1), minorCart(0)));
-   pa00();
 //
    return parameters;
 }
@@ -569,7 +600,7 @@ Vector<Double> TwoSidedShape::widthToCartesian (const Quantum<Double>& width,
          << dirCoord.errorMessage() << LogIO::EXCEPTION;
    }
 
-// Find cartesian components
+// Find offset cartesian components
    
    Vector<Double> cart(2);
    cart(0) = pixelTip(0) - pixelCen(0);
