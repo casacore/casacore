@@ -98,12 +98,12 @@
      = casa/Arrays/Array.h 
      template class SampledFunctional<Array<Float> > 
 1020 scimath/Functionals/SampledFunctional.h 
-     template class SampledFunctional<Int> 
      = casa/BasicSL/Complex.h 
+     template class SampledFunctional<Int> 
      template class SampledFunctional<DComplex> 
 1000 scimath/Functionals/ScalarSampledFunctional.cc 
-     template class ScalarSampledFunctional<Int> 
      = casa/BasicSL/Complex.h 
+     template class ScalarSampledFunctional<Int> 
      template class ScalarSampledFunctional<DComplex> 
 1000 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
      = casa/Arrays/Vector.h 
