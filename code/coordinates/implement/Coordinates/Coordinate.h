@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -281,7 +281,7 @@ public:
     // error, report that error. If the last conversion succeeded, it is
     // undefined what this will return (it might well contain the last error
     // message).
-    const String &errorMessage() const;
+    const String& errorMessage() const;
 
     // Comparison to fractional tolerance (for floating point values). 
     // Don't compare on specified axes in coordinate. If the comparison
@@ -330,30 +330,36 @@ public:
     // the formatted number are returned in <src>units</src>.
     // You can also use the Quantum interface.  The units can then be anything 
     // consistent with the Coordinate.
+    // 
+    // When native is True, no units conversions are done. If False,
+    // the coordinate values are converted to a conventional unit,
+    // if appropriate (e.g. Galatic Longitude in degrees).  
     //
     // The default implementation here in this base class is to format only
-    // with scientific or fixed formats.  absolute is ignored.
+    // with scientific or fixed formats and in native format. absolute is ignored.
     // If precision is negative, a the default precision is used.
     //
     //<group>
     virtual void getPrecision(Int &precision,
                               Coordinate::formatType& format,
-                              const Bool absolute,
-                              const Int defPrecScientific,
-                              const Int defPrecFixed,
-                              const Int defPrecTime) const;
+                              Bool absolute,
+                              Int defPrecScientific,
+                              Int defPrecFixed,
+                              Int defPrecTime) const;
     virtual String format(String& units,
-                          const Coordinate::formatType format, 
-                          const Double worldValue, 
-                          const uInt worldAxis, 
-                          const Bool absolute,
- 			  const Int precision = -1) const;
-    virtual String format(String& units,
-                          const Coordinate::formatType format, 
+                          Coordinate::formatType format, 
+                          Double worldValue, 
+                          uInt worldAxis, 
+                          Bool absolute,
+ 			  Int precision=-1,
+                          Bool native=False) const;
+    String formatQuantity(String& units,
+                          Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 
-                          const uInt worldAxis, 
-                          const Bool absolute,
- 			  const Int precision = -1) const;
+                          uInt worldAxis, 
+                          Bool absolute,
+        		  Int precision=-1,
+                          Bool native=False) const;
     //</group>
 
     // Used for persistence. Derived classes will have similar static
@@ -365,6 +371,7 @@ public:
     // Make a copy of ourself. This pointer has been allocated with
     // <src>new</src> and must be deleted by the caller.
     virtual Coordinate *clone() const = 0;
+
 protected:
     // Assignment (copy semantics) is only useful for derived classes
     Coordinate& operator=(const Coordinate& other);

@@ -1,5 +1,5 @@
 //# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -315,10 +315,10 @@ void Coordinate::checkFormat(Coordinate::formatType& format,
 
 void Coordinate::getPrecision(Int &precision,
                               Coordinate::formatType& format,
-                              const Bool absolute,
-                              const Int defPrecScientific,
-                              const Int defPrecFixed,
-                              const Int ) const
+                              Bool absolute,
+                              Int defPrecScientific,
+                              Int defPrecFixed,
+                              Int ) const
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
@@ -342,11 +342,12 @@ void Coordinate::getPrecision(Int &precision,
 
 
 String Coordinate::format(String& units,
-                          const Coordinate::formatType format, 
-                          const Double worldValue, 
-                          const uInt worldAxis, 
-                          const Bool absolute, 
-                          const Int precision) const
+                          Coordinate::formatType format, 
+                          Double worldValue, 
+                          uInt worldAxis, 
+                          Bool absolute, 
+                          Int precision,
+                          Bool native) const
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
  
@@ -362,7 +363,8 @@ String Coordinate::format(String& units,
    if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
        
    
-// Format and get units
+// Format and get units.  Always format in native coordinates
+// here.  native is only active in derived classes
          
    ostrstream oss;
    if (form == Coordinate::SCIENTIFIC) {
@@ -380,12 +382,13 @@ String Coordinate::format(String& units,
 }
 
 
-String Coordinate::format(String& units,
-                          const Coordinate::formatType format2, 
-                          const Quantum<Double>& worldValue, 
-                          const uInt worldAxis, 
-                          const Bool absolute, 
-                          const Int precision) const
+String Coordinate::formatQuantity (String& units,
+                                   Coordinate::formatType format2, 
+                                   const Quantum<Double>& worldValue, 
+                                   uInt worldAxis, 
+                                   Bool absolute, 
+                                   Int precision,
+                                   Bool native) const
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 
@@ -393,7 +396,7 @@ String Coordinate::format(String& units,
 
    String unit = worldAxisUnits()(worldAxis);
    return format(units, format2, worldValue.getValue(Unit(unit)),
-                 worldAxis, absolute, precision);
+                 worldAxis, absolute, precision, native);
 }
 
 
