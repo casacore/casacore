@@ -59,8 +59,8 @@ class ostream;
 // <ul>
 // <li> The time at which the message was generated ("computer" time, not high
 //      precision astronomical time).
-// <li> A priority - one of <src>DEBUGGING</src>, <src>NORMAL</src>, or
-//      <src>SEVERE</src>.
+// <li> A priority - one of <src>DEBUGGING</src>, <src>NORMAL</src>, 
+//      <src>WARN</src>, or  <src>SEVERE</src>.
 // <li> A <linkto class="LogOrigin">LogOrigin</linkto>, containing the source
 //      code location where the message originated. It also contains the
 //      <linkto class="ObjectID">ObjectID</linkto> if the originator was a
@@ -113,6 +113,10 @@ public:
 	// "interesting" informational messages from normally executing
 	// software.
 	NORMAL, 
+	// Use messages of warning level to flag things that are unusual and
+	// might well be errors. Normally the software should proceed anyway
+	// rather than throw an exception.
+	WARN, 
 	// Report on a problem detected by the software. Messages logged at
 	// this priority will often be followed by a thrown exception.
 	SEVERE};

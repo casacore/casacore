@@ -171,6 +171,9 @@ public:
 	// SEVERE.
 	SEVERE, 
 	// If there is a message, post it then change the message priority to
+	// WARN.
+	WARN, 
+	// If there is a message, post it then change the message priority to
 	// NORMAL.
 	NORMAL, 
 	// If there is a message, post it then change the message priority to

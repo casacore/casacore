@@ -68,9 +68,9 @@
 // interface to logging.
 //
 // A <src>LogMessage</src> consists of an informational message tagged with the
-// time, a priority (<src>DEBUGGING, NORMAL,</src> or <src>SEVERE</src>) and
-// the source code location of the origin of the message (for use in debugging
-// primarily).
+// time, a priority (<src>DEBUGGING, NORMAL,</src>, <src>WARN</src>, or
+// <src>SEVERE</src>) and the source code location of the origin of the message
+// (for use in debugging primarily).
 //
 // The <src>LogSink</src> is used to send the <src>LogMessage</src> to its
 // destinations. Usually the message will be sent to both a global sink,
@@ -108,7 +108,7 @@
 // to decide at every location he wants to log:
 // <ol>
 //     <li> What content do you want the message to have; and
-//     <li> what priority does the message have (DEBUGGING, NORMAL, SEVERE).
+//     <li> what priority does the message have (DEBUGGING, NORMAL, WARN, SEVERE).
 // </ol>
 // Schematically, application programmers would use the logging system as
 // follows:

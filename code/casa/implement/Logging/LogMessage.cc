@@ -152,8 +152,8 @@ LogMessage &LogMessage::messageTime(const Time &theTime)
 
 // Goes with the following function. Not function-static because that can
 // cause problems with our exception emulation.
-    static String names[3] = {
-        "DEBUGGING", "NORMAL", "SEVERE"
+    static String names[4] = {
+        "DEBUGGING", "NORMAL", "WARN", "SEVERE"
     };
 const String &LogMessage::toString(Priority which)
 {

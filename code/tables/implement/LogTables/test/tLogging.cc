@@ -48,6 +48,7 @@ void testLogFilter()
     // LogFilter(LogMessage::Priority lowest=LogMessage::DEBUGGING);
     LogFilter low(LogMessage::DEBUGGING);
     LogFilter normal(LogMessage::NORMAL);
+    LogFilter warn(LogMessage::WARN);
     LogFilter severe(LogMessage::SEVERE);
     LogFilter tmp;
     LogMessage message;
@@ -56,6 +57,7 @@ void testLogFilter()
     AlwaysAssertExit(low.lowestPriority() == LogMessage::DEBUGGING);
     AlwaysAssertExit(normal.lowestPriority() == LogMessage::NORMAL);
     AlwaysAssertExit(severe.lowestPriority() == LogMessage::SEVERE);
+    AlwaysAssertExit(warn.lowestPriority() == LogMessage::WARN);
     AlwaysAssertExit(tmp.lowestPriority() == LogMessage::NORMAL);
 
     // LogFilter(const LogFilter &other);
@@ -68,13 +70,16 @@ void testLogFilter()
     // Bool pass(const LogMessage &message) const;
     message.priority(LogMessage::DEBUGGING);
     AlwaysAssertExit(low.pass(message) && !normal.pass(message) &&
-		     !severe.pass(message));
+		     !warn.pass(message) && !severe.pass(message));
     message.priority(LogMessage::NORMAL);
     AlwaysAssertExit(low.pass(message) && normal.pass(message) &&
-		     !severe.pass(message));
+		     !warn.pass(message) && !severe.pass(message));
     message.priority(LogMessage::SEVERE);
     AlwaysAssertExit(low.pass(message) && normal.pass(message) &&
-		     severe.pass(message));
+		     warn.pass(message) && severe.pass(message));
+    message.priority(LogMessage::WARN);
+    AlwaysAssertExit(low.pass(message) && normal.pass(message) &&
+		     warn.pass(message) && !severe.pass(message));
 
     // LogFilter &lowestPriority(LogMessage::Priority newPriority);
     tmp.lowestPriority(LogMessage::DEBUGGING);

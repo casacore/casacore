@@ -142,6 +142,7 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
     case LogIO::POST:          os.post(); break;
     case LogIO::EXCEPTION:     os.postThenThrow(); break;
     case LogIO::SEVERE:        os.priority(LogMessage::SEVERE); break;
+    case LogIO::WARN:          os.priority(LogMessage::WARN); break;
     case LogIO::NORMAL:        os.priority(LogMessage::NORMAL); break;
     case LogIO::DEBUGGING:     os.priority(LogMessage::DEBUGGING); break;
     default:
