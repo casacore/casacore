@@ -199,11 +199,10 @@ public:
                    const Vector<Int> &newPixelOrder);
 
     // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
-    // from the current <src>CoordinateSystem</src>. <src>True</src> is 
-    // returned only if a valid mapping can be made; this means that for every
-    // world axis in the supplied <src>CoordinateSystem</src>, a corresponding
-    // world axis could be found somewhere (order is unimportant) in the 
-    // current <src>CoordinateSystem</src>.  
+    // from the current <src>CoordinateSystem</src>. <src>False</src> is 
+    // returned if either the supplied or current <src>CoordinateSystem</src>, 
+    // has no world axes (and a message recoverable with function
+    // <src>errorMessage</src> indicating why).  Othwerwise <src>True</src> is returned.
     // <src>worldAxisMap(i)</src> is the location of world axis <src>i</src> (from the
     // supplied <src>CoordinateSystem</src>, <src>cSys</src>,
     // in the current <src>CoordinateSystem</src>.
@@ -213,16 +212,8 @@ public:
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that it could not be found in the other
     // <src>CoordinateSystem</src>.  
-    // Conformance (world axis intrinsic units, types) of 
+    // Conformance (world axis intrinsic units and world axis types) of 
     // the <src>CoordinateSystems</src> is checked.
-    // The primary target of this function is the supplied <src>CoordinateSystem</src>; 
-    // a valid <src>worldAxisMap</src> can sometimes be made even if the
-    // <src>worldAxisTranspose</src> vector contains values of -1, and this
-    // is considered a success (returns True).  For example if you supply
-    // an [RA,DEC] <src>CoordinateSystem</src> to an [RA,DEC,Frequency]
-    // <src>CoordinateSystem</src>, this will happen.  If False is 
-    // returned, a  message can  be recovered with the function
-    // <src>errorMessage</src> indicating why.
        Bool worldMap (Vector<Int>& worldAxisMap,
                       Vector<Int>& worldAxisTranspose,
                       const CoordinateSystem& cSys) const;
