@@ -406,3 +406,231 @@ void PGPlotter::sitf(Int itf)
     ok();
     worker_p->sitf(itf);
 }
+
+void PGPlotter::bin(const Vector<Float> &x, const Vector<Float> &data,
+		     Bool center)
+{
+    ok();
+    worker_p->bin(x, data, center);
+}
+
+void PGPlotter::conb(const Matrix<Float> &a, const Vector<Float> &c,
+		      const Vector<Float> &tr, Float blank)
+{
+    ok();
+    worker_p->conb(a, c, tr, blank);
+}
+
+void PGPlotter::cons(const Matrix<Float> &a, const Vector<Float> &c,
+		      const Vector<Float> &tr)
+{
+    ok();
+    worker_p->cons(a, c, tr);
+}
+
+void PGPlotter::errx(const Vector<Float> &x1, const Vector<Float> &x2,
+		      const Vector<Float> &y, Float t)
+{
+    ok();
+    worker_p->errx(x1, x2, y, t);
+}
+
+void PGPlotter::hi2d(const Matrix<Float> &data, const Vector<Float> &x,
+		      Int ioff, Float bias, Bool center, 
+		      const Vector<Float> &ylims)
+{
+    ok();
+    worker_p->hi2d(data, x, ioff, bias, center, ylims);
+}
+
+void PGPlotter::ldev()
+{
+    ok();
+    worker_p->ldev();
+}
+
+Vector<Float> PGPlotter::len(Int units, const String &string)
+{
+    ok();
+    return worker_p->len(units, string);
+}
+
+String PGPlotter::numb(Int mm, Int pp, Int form)
+{
+    ok();
+    return worker_p->numb(mm, pp, form);
+}
+
+void PGPlotter::panl(Int ix, Int iy)
+{
+    ok();
+    worker_p->panl(ix, iy);
+}
+
+void PGPlotter::pap(Float width, Float aspect)
+{
+    ok();
+    worker_p->pap(width, aspect);
+}
+
+void PGPlotter::pixl(const Matrix<Int> &ia, Float x1, Float x2,
+		      Float y1, Float y2)
+{
+    ok();
+    worker_p->pixl(ia, x1, x2, y1, y2);
+}
+
+void PGPlotter::pnts(const Vector<Float> &x, const Vector<Float> &y,
+		      const Vector<Int> symbol)
+{
+    ok();
+    worker_p->pnts(x, y, symbol);
+}
+
+Vector<Float>  PGPlotter::qah()
+{
+    ok();
+    return worker_p->qah();
+}
+
+Int PGPlotter::qcf()
+{
+    ok();
+    return worker_p->qcf();
+}
+
+Float PGPlotter::qch()
+{
+    ok();
+    return worker_p->qch();
+}
+
+Vector<Float> PGPlotter::qcr(Int ci)
+{
+    ok();
+    return worker_p->qcr(ci);
+}
+
+Vector<Float> PGPlotter::qcs(Int units)
+{
+    ok();
+    return worker_p->qcs(units);
+}
+
+Int PGPlotter::qfs()
+{
+    ok();
+    return worker_p->qfs();
+}
+
+Vector<Float> PGPlotter::qhs()
+{
+    ok();
+    return worker_p->qhs();
+}
+
+Int PGPlotter::qid()
+{
+    ok();
+    return worker_p->qid();
+}
+
+String PGPlotter::qinf(const String &item)
+{
+    ok();
+    return worker_p->qinf(item);
+}
+
+Int PGPlotter::qitf()
+{
+    ok();
+    return worker_p->qitf();
+}
+
+Int PGPlotter::qls()
+{
+    ok();
+    return worker_p->qls();
+}
+
+Int PGPlotter::qlw()
+{
+    ok();
+    return worker_p->qlw();
+}
+
+Vector<Float> PGPlotter::qpos()
+{
+    ok();
+    return worker_p->qpos();
+}
+
+Vector<Float> PGPlotter::qvp(Int units)
+{
+    ok();
+    return worker_p->qvp(units);
+}
+
+Vector<Float> PGPlotter::qvsz(Int units)
+{
+    ok();
+    return worker_p->qvsz(units);
+}
+
+Float PGPlotter::rnd(Float x, Int nsub)
+{
+    ok();
+    return worker_p->rnd(x, nsub);
+}
+
+Vector<Float> PGPlotter::rnge(Float x1, Float x2)
+{
+    ok();
+    return worker_p->rnge(x1, x2);
+}
+
+void PGPlotter::scf(Int font)
+{
+    ok();
+    worker_p->scf(font);
+}
+
+void PGPlotter::scrn(Int ci, const String &name)
+{
+    ok();
+    worker_p->scrn(ci, name);
+}
+
+void PGPlotter::shls(Int ci, Float ch, Float cl, Float cs)
+{
+    ok();
+    worker_p->shls(ci, ch, cl, cs);
+}
+
+void PGPlotter::shs(Float angle, Float sepn, Float phase)
+{
+    ok();
+    worker_p->shs(angle, sepn, phase);
+}
+
+void PGPlotter::vect(const Matrix<Float> &a, const Matrix<Float> &b,
+		      Float c, Int nc, 
+		      const Vector<Float> &tr, Float blank)
+{
+    ok();
+    worker_p->vect(a, b, c, nc, tr, blank);
+}
+
+void PGPlotter::vsiz(Float xleft, Float xright, Float ybot,
+		      Float ytop)
+{
+    ok();
+    worker_p->vsiz(xleft, xright, ybot, ytop);
+}
+
+void PGPlotter::wedg(const String &side, Float disp, Float width,
+		      Float fg, Float bg, const String &label)
+{
+    ok();
+    worker_p->wedg(side, disp, width, fg, bg, label);
+}
