@@ -254,9 +254,17 @@ class MeasFrame {
   Bool getJ2000Lat(Double &tdb);
   // </group>
   // Get B1950 coordinates (direction cosines)
+  // <group>
   Bool getB1950(MVDirection &tdb);
+  Bool getB1950Long(Double &tdb);
+  Bool getB1950Lat(Double &tdb);
+  // </group>
   // Get apparent coordinates (direction cosines)
+  // <group>
   Bool getApp(MVDirection &tdb);
+  Bool getAppLong(Double &tdb);
+  Bool getAppLat(Double &tdb);
+  // </group>
   // Get LSR radial velocity (m/s)
   Bool getLSR(Double &tdb);
   // Get the comet table reference type
@@ -294,8 +302,16 @@ private:
     GetJ2000Lat,
     // Get B1950 coordinates (direction cosines)
     GetB1950,
+    // Get B1950 coordinates (longitude)
+    GetB1950Long,
+    // Get B1950 coordinates (latitude)
+    GetB1950Lat,
     // Get apparent coordinates (direction cosines)
     GetApp,
+    // Get App coordinates (longitude)
+    GetAppLong,
+    // Get App coordinates (latitude)
+    GetAppLat,
     // Get LSR radial velocity (m/s)
     GetLSR,
     // Get the position

@@ -527,8 +527,32 @@ Bool MeasFrame::getB1950(MVDirection &tdb) {
   return False; 
 }
 
+Bool MeasFrame::getB1950Long(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetB1950Long, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getB1950Lat(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetB1950Lat, tdb);
+  tdb = 0;
+  return False; 
+}
+
 Bool MeasFrame::getApp(MVDirection &tdb) {
   if (rep && rep->mymcf) return rep->getmvdir(rep->mymcf, GetApp, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getAppLong(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetAppLong, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getAppLat(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetAppLat, tdb);
   tdb = 0;
   return False; 
 }

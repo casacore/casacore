@@ -126,10 +126,18 @@ public:
   Bool getJ2000Long(Double &tdb);
   Bool getJ2000Lat(Double &tdb);
   // </group>
-  // Get B1950 coordinates (direction cosines)
+  // Get B1950 coordinates (direction cosines) and long/lat (rad)
+  // <group>
   Bool getB1950(MVDirection &tdb);
-  // Get apparent coordinates (direction cosines)
+  Bool getB1950Long(Double &tdb);
+  Bool getB1950Lat(Double &tdb);
+  // </group>
+  // Get apparent coordinates (direction cosines) and long/lat (rad)
+  // <group>
   Bool getApp(MVDirection &tdb);
+  Bool getAppLong(Double &tdb);
+  Bool getAppLat(Double &tdb);
+  // </group>
   // Get LSR radial velocity (m/s)
   Bool getLSR(Double &tdb);
   // Get Comet type
@@ -166,10 +174,14 @@ private:
   MVDirection *dirJ2000p;
   // Conversion to B1950
   void *dirConvB1950;
+  // Longitude
+  Vector<Double> *b1950Longp;
   // B1950 coordinates
   MVDirection *dirB1950p;
   // Conversion to apparent coordinates
   void *dirConvApp;
+  // Longitude
+  Vector<Double> *appLongp;
   // Apparent coordinates
   MVDirection *dirAppp;
   // Conversion to LSR radial velocity

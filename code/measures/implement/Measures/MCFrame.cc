@@ -51,8 +51,8 @@ MCFrame::MCFrame(MeasFrame &inf) :
   epConvLAST(0), epLASTp(0), 
   posConvLong(0), posLongp(0), posITRFp(0),
   dirConvJ2000(0), j2000Longp(0), dirJ2000p(0),
-  dirConvB1950(0), dirB1950p(0),
-  dirConvApp(0), dirAppp(0),
+  dirConvB1950(0), b1950Longp(0), dirB1950p(0),
+  dirConvApp(0), appLongp(0), dirAppp(0),
   radConvLSR(0), radLSRp(0) {
     myf.setMCFramePoint(static_cast<void *>(this));
     myf.setMCFrameDelete(MCFrameDelete);
@@ -77,8 +77,10 @@ MCFrame::~MCFrame() {
   delete j2000Longp;
   delete dirJ2000p;
   delete static_cast<MDirection::Convert *>(dirConvB1950);
+  delete b1950Longp;
   delete dirB1950p;
   delete static_cast<MDirection::Convert *>(dirConvApp);
+  delete appLongp;
   delete dirAppp;
   delete static_cast<MRadialVelocity::Convert *>(radConvLSR);
   delete radLSRp;
@@ -128,10 +130,12 @@ void MCFrame::resetDirection() {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
   };
-  if (dirB1950p) {
+  if (b1950Longp) {
+    delete b1950Longp; b1950Longp = 0;
     delete dirB1950p; dirB1950p = 0;
   };
-  if (dirAppp) {
+  if (appLongp) {
+    delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
   };
   if (radLSRp) {
@@ -303,6 +307,40 @@ Bool MCFrame::getJ2000(MVDirection &tdb) {
   return False;
 }
 
+Bool MCFrame::getB1950Long(Double &tdb) {
+  if (myf.direction()) {
+    if (!b1950Longp) {
+      b1950Longp = new Vector<Double>(2);
+      dirB1950p = new MVDirection;
+      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *b1950Longp = dirB1950p->get();
+    };
+    tdb = b1950Longp->operator()(0);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getB1950Lat(Double &tdb) {
+  if (myf.direction()) {
+    if (!b1950Longp) {
+      b1950Longp = new Vector<Double>(2);
+      dirB1950p = new MVDirection;
+      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *b1950Longp = dirB1950p->get();
+    };
+    tdb = b1950Longp->operator()(1);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
 Bool MCFrame::getB1950(MVDirection &tdb) {
   if (myf.direction()) {
     if (!dirB1950p) {
@@ -315,6 +353,40 @@ Bool MCFrame::getB1950(MVDirection &tdb) {
     return True;
   };
   tdb = MVDirection(0.0);
+  return False;
+}
+
+Bool MCFrame::getAppLong(Double &tdb) {
+  if (myf.direction()) {
+    if (!appLongp) {
+      appLongp = new Vector<Double>(2);
+      dirAppp = new MVDirection;
+      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *appLongp = dirAppp->get();
+    };
+    tdb = appLongp->operator()(0);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getAppLat(Double &tdb) {
+  if (myf.direction()) {
+    if (!appLongp) {
+      appLongp = new Vector<Double>(2);
+      dirAppp = new MVDirection;
+      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *appLongp = dirAppp->get();
+    };
+    tdb = appLongp->operator()(1);
+    return True;
+  };
+  tdb = 0.0;
   return False;
 }
 
@@ -503,10 +575,12 @@ void MCFrame::makeDirection() {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
   };
-  if (dirB1950p) {
+  if (b1950Longp) {
+    delete b1950Longp; b1950Longp = 0;
     delete dirB1950p; dirB1950p = 0;
   };
-  if (dirAppp) {
+  if (appLongp) {
+    delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
   };
   if (radLSRp) {
@@ -558,6 +632,22 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
       
     case MeasFrame::GetJ2000Lat:
       return static_cast<MCFrame *>(dmf)->getJ2000Lat(result);
+      break;
+      
+    case MeasFrame::GetB1950Long:
+      return static_cast<MCFrame *>(dmf)->getB1950Long(result);
+      break;
+      
+    case MeasFrame::GetB1950Lat:
+      return static_cast<MCFrame *>(dmf)->getB1950Lat(result);
+      break;
+      
+    case MeasFrame::GetAppLong:
+      return static_cast<MCFrame *>(dmf)->getAppLong(result);
+      break;
+      
+    case MeasFrame::GetAppLat:
+      return static_cast<MCFrame *>(dmf)->getAppLat(result);
       break;
       
     case MeasFrame::GetLAST:
