@@ -1,5 +1,5 @@
 //# ComponentType.cc:  this defines ComponentType.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,21 +28,28 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/String.h>
 
-String ComponentType::name(Type componentEnum) {
+String ComponentType::name(ComponentType::Shape componentEnum) {
   switch (componentEnum) {
-  case POINT: return "Point";
-  case GAUSSIAN: return "Gaussian";
-  default: return "Unknown";
+  case ComponentType::POINT: 
+    return "Point";
+  case ComponentType::GAUSSIAN:
+    return "Gaussian";
+  default:
+    return "Unknown";
   };
 }
 
-ComponentType::Type ComponentType::type(const String & componentName) {
+ComponentType::Shape ComponentType::shape(const String & componentName) {
   String canonicalCase(componentName);
   canonicalCase.capitalize();
-  for (uInt i = 0; i < NUMBER_TYPES; i++)
-    if (canonicalCase.matches(name((Type) i)))
-      return (Type) i;
-  return UNKNOWN;
+  ComponentType::Shape s;
+  for (uInt i = 0; i < NUMBER_SHAPES; i++) {
+    s = (ComponentType::Shape) i;
+    if (canonicalCase.matches(ComponentType::name(s))) {
+      return s;
+    }
+  }
+  return ComponentType::UNKNOWN;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentType"
