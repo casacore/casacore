@@ -805,10 +805,6 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 // where n1, n2 etc are the display axes
 {
 
-// Delete old storage lattice
-
-   if (pStoreLattice_p != 0) delete pStoreLattice_p;
-
 // Set the display axes vector (possibly already set in ::setAxes)
 
    displayAxes_p.resize(0);
@@ -842,6 +838,8 @@ Bool LatticeStatistics<T>::generateStorageLattice()
        os_p << LogIO::NORMAL 
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
+//
+    if (pStoreLattice_p != 0) delete pStoreLattice_p;
     pStoreLattice_p = new TempLattice<AccumType>(TiledShape(storeLatticeShape,
                                                  tileShape), useMemory);
 
@@ -866,7 +864,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     LatticeApply<T,AccumType>::tiledApply(outLatt, *pInLattice_p, 
                                           collapser, IPosition(cursorAxes_p),
                                           newOutAxis, pProgressMeter);
-    if (pProgressMeter !=0) {
+    if (pProgressMeter) {
        delete pProgressMeter;
        pProgressMeter = 0;
     }
@@ -2755,12 +2753,15 @@ void StatsTiledCollapser<T,U>::endAccumulator(Array<U>& result,
     for (i=0; i<n3_p; i++) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * n1_p);
        objcopy (resptr, nPtsPtr, n1_p);
+       nPtsPtr += n1_p;
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
        objcopy (resptr, sumPtr, n1_p);
+       sumPtr += n1_p;
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
        objcopy (resptr, sumSqPtr, n1_p);
+       sumSqPtr += n1_p;
 //
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * n1_p);
        for (j=0; j<n1_p; j++) {   
