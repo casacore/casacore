@@ -116,7 +116,7 @@ DataType LogFilterExpr::dataType (const Block<Int>& fieldNrs) const
 {
   switch (fieldNrs[0]) {
   case 0:
-    return TpInt;
+    return TpDouble;
   case 1:
   case 2:
   case 3:
