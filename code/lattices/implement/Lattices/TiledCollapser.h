@@ -31,6 +31,8 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Mathematics/NumericTraits.h>
+
 
 //# Forward Declarations
 template <class T> class Array;
@@ -66,6 +68,13 @@ class IPosition;
 // <br> The main function is <src>process</src>, which needs to do the
 // calculation.
 // <br> Other functions make it possible to perform an initial check.
+// <p>
+// The class is Doubly templated.  Ths first template type
+// is for the data type you are processing.  The second type is
+// for what type you want the results of the processing assigned to.
+// For example, if you are computing sums of squares for statistical
+// purposes, you might use higher precision (FLoat->Double) for this.
+// No check is made that the template types are self-consistent.
 // </synopsis>
 
 // <example>
@@ -81,9 +90,11 @@ class IPosition;
 // </todo>
 
 
-template <class T> class TiledCollapser
+template <class T, class U=T> class TiledCollapser
 {
 public:
+
+// Destructor
     virtual ~TiledCollapser();
 
 // The init function for a derived class.
@@ -136,9 +147,10 @@ public:
 			  const IPosition& shape) = 0;
 
 // End the accumulator. It should return the accumulator as an
-// Array of datatype T with the given shape.
-// The accumulator should thereafter be deleted when needed.
-    virtual void endAccumulator (Array<T>& result, Array<Bool>& resultMask,
+// Array of datatype U (e.g. double the precision of type T) 
+// with the given shape. The accumulator should thereafter be deleted when needed.
+    virtual void endAccumulator (Array<U>& result, 
+                                 Array<Bool>& resultMask,
 				 const IPosition& shape) = 0;
 };
 

@@ -29,12 +29,12 @@
 #include <trial/Lattices/LineCollapser.h>
 
 
-template<class T>
-LineCollapser<T>::~LineCollapser()
+template<class T, class U>
+LineCollapser<T,U>::~LineCollapser()
 {}
 
-template<class T>
-Bool LineCollapser<T>::canHandleNullMask() const
+template<class T, class U>
+Bool LineCollapser<T,U>::canHandleNullMask() const
 {
     return False;
 }

@@ -32,10 +32,11 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
+#include <aips/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
-template <class T> class TiledCollapser;
-template <class T> class LineCollapser;
+template <class T, class U> class TiledCollapser;
+template <class T, class U> class LineCollapser;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
 class LatticeProgress;
@@ -101,6 +102,13 @@ class LatticeRegion;
 // The <src>process</src> function in these classes has to process
 // the chunk of data passed in. The <src>nstepsDone</src> function
 // in these classes can be used to monitor the progress.
+// <p>
+// The class is Doubly templated.  Ths first template type
+// is for the data type you are processing.  The second type is
+// for what type you want the results of the processing assigned to.
+// For example, if you are computing sums of squares for statistical
+// purposes, you might use higher precision (Float->Double) for this.
+// No check is made that the template types are self-consistent.
 // </synopsis>
 
 // <example>
@@ -110,8 +118,8 @@ class LatticeRegion;
 //    PagedArray<Float> latticeIn("lattice.file");
 //    IPosition shape = latticeIn.shape();
 //    shape(1) = 1;
-//    ArrayLattice<Float> latticeOut(shape);
-//    LatticeApply<Float>::lineApply (latticeOut, latticeIn, collapser, 1);
+//    ArrayLattice<Double> latticeOut(shape);
+//    LatticeApply<Float,Double>::lineApply (latticeOut, latticeIn, collapser, 1);
 // </srcblock>
 // </example>
 
@@ -126,9 +134,10 @@ class LatticeRegion;
 //# </todo>
 
  
-template <class T> class LatticeApply
+template <class T, class U=T> class LatticeApply
 {
 public:
+
 // This function iterates line by line through an input lattice and applies
 // a user supplied function object to each line along the specified axis.
 // The scalar result of the function object is written into the output
@@ -136,15 +145,15 @@ public:
 // be supplied with the correct shape (the shape of the supplied region).
 // The default region is the entire input lattice.
 // <group>
-    static void lineApply (MaskedLattice<T>& latticeOut, 
+    static void lineApply (MaskedLattice<U>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
-			   LineCollapser<T>& collapser,
+			   LineCollapser<T,U>& collapser,
 			   uInt collapseAxis,
 			   LatticeProgress* tellProgress = 0);
-    static void lineApply (MaskedLattice<T>& latticeOut, 
+    static void lineApply (MaskedLattice<U>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
 			   const LatticeRegion& region,
-			   LineCollapser<T>& collapser,
+			   LineCollapser<T,U>& collapser,
 			   uInt collapseAxis,
 			   LatticeProgress* tellProgress = 0);
 // </group>
@@ -157,15 +166,15 @@ public:
 // of the supplied region).
 // The default region is the entire input lattice.
 // <group>
-    static void lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
+    static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
-				LineCollapser<T>& collapser,
+				LineCollapser<T,U>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
-    static void lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
+    static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
-				LineCollapser<T>& collapser,
+				LineCollapser<T,U>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
 // </group>
@@ -181,16 +190,16 @@ public:
 // plus the number of values resulting from the collapse).
 // The default region is the entire input lattice.
 // <group>
-    static void tiledApply (MaskedLattice<T>& latticeOut,
+    static void tiledApply (MaskedLattice<U>& latticeOut,
 			    const MaskedLattice<T>& latticeIn,
-			    TiledCollapser<T>& collapser,
+			    TiledCollapser<T,U>& collapser,
 			    const IPosition& collapseAxes,
 			    Int newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
-    static void tiledApply (MaskedLattice<T>& latticeOut,
+    static void tiledApply (MaskedLattice<U>& latticeOut,
 			    const MaskedLattice<T>& latticeIn,
 			    const LatticeRegion& region,
-			    TiledCollapser<T>& collapser,
+			    TiledCollapser<T,U>& collapser,
 			    const IPosition& collapseAxes,
 			    Int newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
@@ -210,15 +219,15 @@ public:
 // Thus they cannot be used yet.
 // </note>
 // <group>
-    static void tiledMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
+    static void tiledMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
-				 TiledCollapser<T>& collapser,
+				 TiledCollapser<T,U>& collapser,
 				 const IPosition& collapseAxes,
 				 LatticeProgress* tellProgress = 0);
-    static void tiledMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
+    static void tiledMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
 				 const LatticeRegion& region,
-				 TiledCollapser<T>& collapser,
+				 TiledCollapser<T,U>& collapser,
 				 const IPosition& collapseAxes,
 				 LatticeProgress* tellProgress = 0);
 // </group>

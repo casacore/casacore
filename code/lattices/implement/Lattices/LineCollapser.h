@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class Vector;
@@ -66,6 +67,13 @@ class IPosition;
 // <br> The main function is <src>process</src>, which needs to do the
 // calculation.
 // <br> Other functions make it possible to perform an initial check.
+// <p>
+// The class is Doubly templated.  Ths first template type 
+// is for the data type you are processing.  The second type is
+// for what type you want the results of the processing assigned to.
+// For example, if you are computing sums of squares for statistical
+// purposes, you might use higher precision (FLoat->Double) for this.
+// No check is made that the template types are self-consistent.
 // </synopsis>
 
 // <example>
@@ -80,9 +88,10 @@ class IPosition;
 //   <li> 
 // </todo>
 
-template <class T> class LineCollapser
+template <class T, class U=T> class LineCollapser
 {
 public:
+// Destructor
     virtual ~LineCollapser();
 
 // The init function for a derived class.
@@ -107,7 +116,7 @@ public:
 // it is possible that <src>mask</src> is an empty vector indicating
 // that the input has no mask, thus all values are valid.
 // If not empty, the mask has the same length as the line.
-    virtual void process (T& result, Bool& resultMask,
+    virtual void process (U& result, Bool& resultMask,
 			  const Vector<T>& line,
 			  const Vector<Bool>& mask,
 			  const IPosition& pos) = 0;
@@ -119,7 +128,7 @@ public:
 // it is possible that <src>mask</src> is an empty vector indicating
 // that the input has no mask, thus all values are valid.
 // If not empty, the mask has the same length as the line.
-    virtual void multiProcess (Vector<T>& result, Vector<Bool>& resultMask,
+    virtual void multiProcess (Vector<U>& result, Vector<Bool>& resultMask,
 			       const Vector<T>& line,
 			       const Vector<Bool>& mask,
 			       const IPosition& pos) = 0;

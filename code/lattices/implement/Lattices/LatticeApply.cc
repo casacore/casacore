@@ -46,11 +46,11 @@
 #include <aips/iostream.h>
 
 
-template <class T>
-void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
 				 const MaskedLattice<T>& latticeIn,
 				 const LatticeRegion& region,
-				 LineCollapser<T>& collapser,
+				 LineCollapser<T,U>& collapser,
 				 uInt collapseAxis,
 				 LatticeProgress* tellProgress)
 {
@@ -58,11 +58,11 @@ void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 	       collapser, collapseAxis, tellProgress);
 }
 
-template <class T>
-void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
 				      const LatticeRegion& region,
-				      LineCollapser<T>& collapser,
+				      LineCollapser<T,U>& collapser,
 				      uInt collapseAxis,
 				      LatticeProgress* tellProgress)
 {
@@ -70,11 +70,11 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 		    collapser, collapseAxis, tellProgress);
 }
 
-template <class T>
-void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::tiledApply (MaskedLattice<U>& latticeOut,
 				  const MaskedLattice<T>& latticeIn,
 				  const LatticeRegion& region,
-				  TiledCollapser<T>& collapser,
+				  TiledCollapser<T,U>& collapser,
 				  const IPosition& collapseAxes,
 				  Int newOutAxis,
 				  LatticeProgress* tellProgress)
@@ -85,10 +85,10 @@ void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 
 
 
-template <class T>
-void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
 				 const MaskedLattice<T>& latticeIn,
-				 LineCollapser<T>& collapser,
+				 LineCollapser<T,U>& collapser,
 				 uInt collapseAxis,
 				 LatticeProgress* tellProgress)
 {
@@ -177,10 +177,10 @@ void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 	
 // Put the collapsed lines into an output buffer
 	
-	Array<T> array(outShape);
+	Array<U> array(outShape);
 	Array<Bool> arrayMask(outShape);
 	Bool deleteIt, deleteMask;
-	T* result = array.getStorage (deleteIt);
+	U* result = array.getStorage (deleteIt);
 	Bool* resultMask = arrayMask.getStorage (deleteMask);
 	uInt n = array.nelements() / nResult;
 	for (uInt i=0; i<n; i++) {
@@ -212,10 +212,10 @@ void LatticeApply<T>::lineApply (MaskedLattice<T>& latticeOut,
 
 
 
-template <class T>
-void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
-				      LineCollapser<T>& collapser,
+				      LineCollapser<T,U>& collapser,
 				      uInt collapseAxis,
 				      LatticeProgress* tellProgress)
 {
@@ -305,11 +305,11 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 // The buffer contains nOut arrays (and is filled that way).
 	
 	uInt n = outShape.product();
-	Block<T> block(n*nOut);
+	Block<U> block(n*nOut);
 	Block<Bool> blockMask(n*nOut);
-	T* data = block.storage();
+	U* data = block.storage();
 	Bool* dataMask = blockMask.storage();
-	Vector<T> result(nOut);
+	Vector<U> result(nOut);
 	Vector<Bool> resultMask(nOut);
 	for (i=0; i<n; i++) {
 	    DebugAssert (! inIter.atEnd(), AipsError);
@@ -326,7 +326,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 	    collapser.multiProcess (result, resultMask,
 				    inIter.vectorCursor(), mask, pos);
 	    DebugAssert (result.nelements() == nOut, AipsError);
-	    T* datap = data+i;
+	    U* datap = data+i;
 	    Bool* dataMaskp = dataMask+i;
 	    for (uInt j=0; j<nOut; j++) {
 		*datap = result(j);
@@ -341,7 +341,7 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 // Write the arrays (one in each output lattice).
 
 	for (uInt k=0; k<nOut; k++) {
-	    Array<T> tmp (outShape, data + k*n, SHARE);
+	    Array<U> tmp (outShape, data + k*n, SHARE);
 	    latticeOut[k]->putSlice (tmp, outPos);
 	    if (latticeOut[k]->hasPixelMask()) {
 	        Lattice<Bool>& maskOut = latticeOut[k]->pixelMask();
@@ -356,10 +356,10 @@ void LatticeApply<T>::lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut,
 }
 
 
-template <class T>
-void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
+template <class T, class U>
+void LatticeApply<T,U>::tiledApply (MaskedLattice<U>& latticeOut,
 				  const MaskedLattice<T>& latticeIn,
-				  TiledCollapser<T>& collapser,
+				  TiledCollapser<T,U>& collapser,
 				  const IPosition& collapseAxes,
 				  Int newOutAxis,
 				  LatticeProgress* tellProgress)
@@ -485,7 +485,7 @@ void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 	}
 	if (firstTime  ||  outPos != iterPos) {
 	    if (!firstTime) {
-		Array<T> result;
+		Array<U> result;
 		Array<Bool> resultMask;
 		collapser.endAccumulator (result, resultMask, outShape);
 		latticeOut.putSlice (result, outPos);
@@ -593,7 +593,7 @@ void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
     }
 
 // Write out the last output array.
-    Array<T> result;
+    Array<U> result;
     Array<Bool> resultMask;
     collapser.endAccumulator (result, resultMask, outShape);
     latticeOut.putSlice (result, outPos);
@@ -605,8 +605,8 @@ void LatticeApply<T>::tiledApply (MaskedLattice<T>& latticeOut,
 
 
 
-template <class T>
-IPosition LatticeApply<T>::prepare (const IPosition& inShape,
+template <class T, class U>
+IPosition LatticeApply<T,U>::prepare (const IPosition& inShape,
 				    const IPosition& outShape,
 				    const IPosition& collapseAxes,
 				    Int newOutAxis)
