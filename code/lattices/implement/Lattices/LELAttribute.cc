@@ -39,27 +39,31 @@ LELAttribute::LELAttribute()
   coords_p   (new LELLattCoord())
 {}
 
-LELAttribute::LELAttribute(Bool isMasked,
-			   const IPosition& shape,
-			   const IPosition& tileShape,
-			   const LELCoordinates& coordinates)
+LELAttribute::LELAttribute (Bool isMasked,
+			    const IPosition& shape,
+			    const IPosition& tileShape,
+			    const LELCoordinates& coordinates)
 : isScalar_p  (False),
   isRegion_p  (False),
   isMasked_p  (isMasked),
   shape_p     (shape),
   tileShape_p (tileShape),
   coords_p    (coordinates)
-{}
+{
+  if (coords_p.isNull()) {
+    coords_p = LELCoordinates (new LELLattCoord());
+  }
+}
 
-LELAttribute::LELAttribute(uInt regionNdim)
+LELAttribute::LELAttribute (uInt regionNdim)
 : isScalar_p  (False),
   isRegion_p  (True),
   isMasked_p  (False),
   shape_p     (IPosition(regionNdim, 0)),
-  coords_p   (new LELLattCoord())
+  coords_p    (new LELLattCoord())
 {}
 
-LELAttribute::LELAttribute(const LELAttribute& other)
+LELAttribute::LELAttribute (const LELAttribute& other)
 : isScalar_p  (other.isScalar_p),
   isRegion_p  (other.isRegion_p),
   isMasked_p  (other.isMasked_p),
@@ -68,8 +72,8 @@ LELAttribute::LELAttribute(const LELAttribute& other)
   coords_p    (other.coords_p)
 {}
 
-LELAttribute::LELAttribute(const LELAttribute& leftAttr,
-			   const LELAttribute& rightAttr)
+LELAttribute::LELAttribute (const LELAttribute& leftAttr,
+			    const LELAttribute& rightAttr)
 {
    isScalar_p = False;
    isRegion_p = False;
