@@ -1,5 +1,5 @@
 //# SpectralElement.cc: Describes (a set of related) spectral lines
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,11 @@
 //# Includes
 #include <components/SpectralComponents/SpectralElement.h>
 
-#include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/MUString.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/MUString.h>
+#include <scimath/Functionals/CompiledFunction.h>
 
 #include <casa/iostream.h>
 
@@ -40,7 +41,7 @@ const Double SpectralElement::SigmaToFWHM = sqrt(8.0*C::ln2);
 
 //# Constructors
 SpectralElement::SpectralElement() :
-  tp_p(SpectralElement::GAUSSIAN), n_p(0),
+  tp_p(SpectralElement::GAUSSIAN), n_p(0), str_p(),
   par_p(3), err_p(3), fix_p(3) {
   par_p(0) = 1.0;
   par_p(1) = 0.0;
@@ -51,7 +52,7 @@ SpectralElement::SpectralElement() :
 
 SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 				 const Double center, const Double sigma) :
-  tp_p(tp), n_p(0),
+  tp_p(tp), n_p(0), str_p(),
   par_p(3), err_p(3), fix_p(3) {
   if (tp != GAUSSIAN) {
     throw(AipsError("SpectralElement: Only GAUSSIAN can have ampl, "
@@ -66,16 +67,31 @@ SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 }
 
 SpectralElement::SpectralElement(const uInt n) :
-  tp_p(SpectralElement::POLYNOMIAL), n_p(n),
+  tp_p(SpectralElement::POLYNOMIAL), n_p(n), str_p(),
   par_p(n+1), err_p(n+1), fix_p(n+1) {
   par_p = 0;
   err_p = 0;
   fix_p = False;
 }
 
+SpectralElement::SpectralElement(const String &str,
+				 const Vector<Double> &param) :
+  tp_p(SpectralElement::COMPILED), n_p(0), str_p(str),
+  par_p(0), err_p(0), fix_p(0) {
+  check();
+  par_p = 0;
+  err_p = 0;
+  fix_p = False;
+  if (param.nelements() != par_p.nelements()) {
+    throw(AipsError("SpectralElement: COMPILED number of parameters "
+		    "disagress with given number of parameters"));
+  };
+  par_p = param;
+}
+
 SpectralElement::SpectralElement(SpectralElement::Types tp,
 				 const Vector<Double> &param) :
-  tp_p(tp), n_p(0),
+  tp_p(tp), n_p(0), str_p(),
   par_p(0), err_p(0), fix_p(0) {
   uInt n = 0;
   if (tp_p == GAUSSIAN) {
@@ -103,7 +119,7 @@ SpectralElement::SpectralElement(SpectralElement::Types tp,
 }
 
 SpectralElement::SpectralElement(const SpectralElement &other) :
-  tp_p(other.tp_p), n_p(other.n_p),
+  tp_p(other.tp_p), n_p(other.n_p), str_p(other.str_p),
   par_p(0), err_p(0), fix_p(0) {
   par_p = other.par_p;
   if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
@@ -118,6 +134,7 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
   if (this != &other) {
     tp_p = other.tp_p;
     n_p = other.n_p;
+    str_p = other.str_p;
     par_p = other.par_p;
     if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
     err_p = other.err_p;
@@ -136,7 +153,13 @@ Double SpectralElement::operator()(const Double x) const {
     for (uInt i=n_p-1; i<n_p; i--) {
       s *= x; s += par_p(i); 
     };
-  };    
+  };
+  if (tp_p == COMPILED) {
+    CompiledFunction<Double> comp;
+    comp.setFunction(str_p);
+    comp.parameters().setParameters(par_p);
+    s = comp(x);
+  };
   return s;
 }
 
@@ -152,11 +175,13 @@ const String *const SpectralElement::allTypes(Int &nall,
 					      *&typ) {
   static const String tname[SpectralElement::N_Types] = {
     String("GAUSSIAN"),
-    String("POLYNOMIAL") };
+    String("POLYNOMIAL"),
+    String("COMPILED") };
 
   static const SpectralElement::Types oname[SpectralElement::N_Types] = {
     SpectralElement::GAUSSIAN,
-    SpectralElement::POLYNOMIAL };
+    SpectralElement::POLYNOMIAL,
+    SpectralElement::COMPILED };
 
   nall = SpectralElement::N_Types;
   typ    = oname;
@@ -239,6 +264,12 @@ uInt SpectralElement::getDegree() const {
   return n_p;
 };
 
+const String &SpectralElement::getCompiled() const {
+  checkCompiled();
+  return str_p;
+};
+
+
 void SpectralElement::setError(const Vector<Double> &err) {
     if (err.nelements() != err_p.nelements()) {
       throw(AipsError("SpectralElement: setting incorrect number of errors "
@@ -277,6 +308,15 @@ void SpectralElement::setDegree(uInt n) {
   par_p.resize(n_p+1);
   err_p.resize(n_p+1);
   fix_p.resize(n_p+1);
+  par_p = 0;
+  err_p = 0;
+  fix_p = False;
+}
+
+void SpectralElement::setCompiled(const String &str) {
+  checkCompiled();
+  str_p = str;
+  check();
   par_p = 0;
   err_p = 0;
   fix_p = False;
@@ -351,10 +391,26 @@ void SpectralElement::checkPoly() const {
   };
 }
 
-void SpectralElement::check() const {
+void SpectralElement::checkCompiled() const {
+  if (tp_p != COMPILED) {
+    throw(AipsError("SpectralElement: COMPILED element expected"));
+  };
+}
+
+void SpectralElement::check() {
   if (tp_p == GAUSSIAN && par_p(2) <= 0.0) {
     throw(AipsError("SpectralElement: An illegal zero sigma was "
-		    "specified for a gaussian SpectralElement"));
+		    "specified for a Gaussian SpectralElement"));
+  };
+  if (tp_p == COMPILED) {
+    CompiledFunction<Double> comp;
+    if (!comp.setFunction(str_p)) {
+      throw(AipsError("SpectralElement: An illegal functional string "
+		      "was specified for a compiled SpectralElement"));
+    };
+    par_p.resize(comp.nparameters());
+    err_p.resize(comp.nparameters());
+    fix_p.resize(comp.nparameters());
   };
 }
 
@@ -373,6 +429,10 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
     break;
   case SpectralElement::POLYNOMIAL:
     os << "  Degree:    " << elem.getDegree() << endl;
+  case SpectralElement::COMPILED:
+    if (elem.getType() == SpectralElement::COMPILED) {
+      os << "  Function:    " << elem.getCompiled() << endl;
+    };
   default:
     for (uInt i=0; i<elem.getOrder(); i++) {
       os << "  Parameter " << i << ":" << elem[i];

@@ -1,5 +1,5 @@
 //# SpectralFit2.cc: Least Squares fitting of spectral elements: templated part
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,12 +28,13 @@
 //# Includes
 #include <components/SpectralComponents/SpectralFit.h>
 #include <casa/Arrays/Vector.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <scimath/Functionals/CompiledFunction.h>
 #include <scimath/Functionals/CompoundFunction.h>
 #include <scimath/Functionals/CompoundParam.h>
 #include <scimath/Functionals/Gaussian1D.h>
 #include <scimath/Functionals/Polynomial.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <components/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions
 
@@ -57,6 +58,7 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
   // The functions to fit
   Gaussian1D<AutoDiff<MT> > gauss;
   Polynomial<AutoDiff<MT> > poly;
+  CompiledFunction<AutoDiff<MT> > comp;
   CompoundFunction<AutoDiff<MT> > func;
   // Initial guess
   uInt npar(0);
@@ -78,6 +80,16 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
 	poly.mask(j) = !slist_p[i].fixed()(j);
       };
       func.addFunction(poly);
+    } else if (slist_p[i].getType() == SpectralElement::COMPILED) {
+      CompiledFunction<AutoDiff<MT> > comp;
+      comp.setFunction(slist_p[i].getCompiled());
+      Vector<Double> param;
+      slist_p[i].get(param);
+      for (uInt j=0; j<comp.nparameters(); ++j) {
+	comp[j] = AutoDiff<MT>(param[j], comp.nparameters(), j);
+	comp.mask(j) = !slist_p[i].fixed()(j);
+      };
+      func.addFunction(comp);
     };
   };
   fitter.setFunction(func);

@@ -1,5 +1,5 @@
 //# Spectral2Element.cc: Record conversion for SpectralElement
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,6 +50,9 @@ Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
 
   out.define(RecordFieldId("parameters"), ptmp);  
   out.define(RecordFieldId("errors"), etmp);
+  if (tp_p == COMPILED) {
+    out.define(RecordFieldId("compiled"), str_p);
+  };
 
   return True;
 }
@@ -143,7 +146,17 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
       n_p = param.nelements()-1;
       par_p.resize(n_p+1);
       err_p.resize(n_p+1);
-    }
+    } else if (tp == COMPILED) {
+      if (in.isDefined("compiled") && 
+	  in.type(in.idToNumber(RecordFieldId("compiled"))) == TpString) {
+	in.get(RecordFieldId("compiled"), str_p);
+	uInt n = param.nelements();
+	par_p.resize(n);
+	err_p.resize(n);
+      } else {
+	error += String("No compiled string in SpectralElement::fromRecord\n");
+      };
+    };
     par_p = param;
     err_p = errs;
     tp_p = tp;
@@ -163,5 +176,7 @@ Bool SpectralElement::fromString(String &error, const String &in) {
   };
   if (tp == GAUSSIAN) *this = SpectralElement();
   else if (tp_p == POLYNOMIAL)  *this = SpectralElement(0);
+  else if (tp_p == COMPILED)  *this = SpectralElement(String("0"),
+						      Vector<Double>());
   return True;
 }

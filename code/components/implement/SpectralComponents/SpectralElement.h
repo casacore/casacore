@@ -1,5 +1,5 @@
 //# SpectralElement.h: Describes (a set of related) spectral lines
-//# Copyright (C) 2001,2003
+//# Copyright (C) 2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,8 @@ class SpectralElement : public RecordTransformable {
     GAUSSIAN,
     // A polynomial baseline
     POLYNOMIAL,
+    // Any compiled string functional
+    COMPILED,
     N_Types
   };
 
@@ -112,9 +114,10 @@ class SpectralElement : public RecordTransformable {
   // </thrown>
   SpectralElement(SpectralElement::Types tp, const Double ampl,
 		  const Double center, const Double sigma);
-
   // Construct an n-degree polynomial
   explicit SpectralElement(const uInt n);
+  // Construct a compiled string
+  explicit SpectralElement(const String &str, const Vector<Double> &param);
   // Construct the given tp with the given param
   // <thrown>
   //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
@@ -187,6 +190,8 @@ class SpectralElement : public RecordTransformable {
   void getError(Vector<Double> &err) const;
   // Get the degree of e.g. polynomial
   uInt getDegree() const;
+  // Get the string of a compiled functional
+  const String &getCompiled() const;
   // </group>
   // Get the order (i.e. the number of parameters)
   uInt getOrder() const { return par_p.nelements(); };
@@ -237,6 +242,11 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if non POLYNOMIAL
   // </thrown>
   void setDegree(uInt n);
+  // Set a new compiled string
+  // <thrown>
+  //   <li> AipsError if non COMPILED and illegal string
+  // </thrown>
+  void setCompiled(const String &str);
 
   // Set fixed parameters (True) or unset them (False)
   // <thrown>
@@ -304,6 +314,8 @@ class SpectralElement : public RecordTransformable {
   SpectralElement::Types tp_p;
   // A number (like polynomial degree or number of doublet lines)
   uInt n_p;
+  // The string value for compiled functional
+  String str_p;
   // The parameters of the function. I.e. the polynomial coefficients;
   // amplitude, center and sigma of a Gaussian.
   Vector<Double> par_p;
@@ -324,11 +336,17 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if non-polynomial
   // </thrown>
   void SpectralElement::checkPoly() const;
-  // Check if sigma non-equal to zero and positive if a GAUSSIAN
+  // Check if COMPILED type
+  // <thrown>
+  //   <li> AipsError if non-compiled
+  // </thrown>
+  void SpectralElement::checkCompiled() const;
+  // Check if sigma non-equal to zero and positive if a GAUSSIAN;
+  // if COMPILED check for correct string
   // <thrown>
   //   <li> AipsError if illegal sigm
   // </thrown>
-  void SpectralElement::check() const;
+  void SpectralElement::check();
 
   // Sigma to FWHM
   // Convert from sigma to FWHM and vice versa

@@ -1,5 +1,5 @@
 //# Spectral4Element.cc: Member templates for SpectralElement
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,6 +51,8 @@ void SpectralElement::set(SpectralElement::Types tp,
     };
     n_p = param.nelements()-1;
     n = n_p+1;
+  } else if (tp_p == COMPILED) {
+    n = param.nelements();
   };
   par_p.resize(n);
   err_p.resize(n);
