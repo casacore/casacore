@@ -89,7 +89,7 @@ SI unit table (50):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
     t         (tonne)                      1000 kg
-Customary unit table (74):
+Customary unit table (75):
     "         (arcsec)                     4.8481368111e-06 rad
     "_2       (square arcsec)              2.35044305391e-11 sr
     '         (arcmin)                     0.000290888208666 rad
@@ -144,6 +144,7 @@ Customary unit table (74):
     hp        (horsepower)                 745.7 m2.kg.s-3
     in        (inch)                       0.0254 m
     kn        (knot (Imp))                 0.514773333333 m.s-1
+    lambda    (lambda)                     1 _
     lb        (pound (avoirdupois))        0.45359237 kg
     ly        (light year)                 9.46073047e+15 m
     mHg       (metre of mercury)           133322.387415 m-1.kg.s-2
