@@ -42,7 +42,8 @@
 
 Bool DOos::isValidPathName (const String& pathName)
 {
-  return Path(pathName).isValid();
+  File file(pathName);
+  return ToBool (file.exists() || file.canCreate());
 }
 
 Vector<String> DOos::fileNames (const String& directoryName,
