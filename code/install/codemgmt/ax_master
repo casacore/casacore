@@ -6087,3 +6087,4 @@
 17 151 src rm admin/system/aips2-bugs.list
 17 151 src rm admin/system/aips2-changes.list
 17 151 src rm admin/system/aips2-cv.list
+17 151 src rm admin/system/aips2-develop.list
