@@ -122,11 +122,11 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   vStart_p=other.vStart_p;
   vInc_p=other.vInc_p;
   // NOTE: following causes a seg violation
-  // cFromBETA_p=other.cFromBETA_p;
+  cFromBETA_p=other.cFromBETA_p;
   vDef_p=other.vDef_p;
   // use this instead of assignment for the moment
-  cFromBETA_p.set(MDoppler(MVDoppler(Quantity(0.,"m/s")),
-			   MDoppler::BETA),vDef_p);
+  //cFromBETA_p.set(MDoppler(MVDoppler(Quantity(0.,"m/s")),
+  //			   MDoppler::BETA),vDef_p);
   selFreq_p.resize(other.selFreq_p.nelements()); selFreq_p=other.selFreq_p;
 
   // column access functions
@@ -455,7 +455,10 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   flag(This->flagCube_p); 
   weightSpectrum(This->weightSpectrum_p);
   This->velSelection_p = True;
+
   // now interpolate visibilities, using selFreq as the sample points
+  // we should have two options: flagging output points that have
+  // any flagged inputs or interpolating across flagged data.
   Vector<Double> freq; frequency(freq);
   // convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
@@ -467,6 +470,7 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   Vector<MaskedArray<Complex> > visPlanes(nChan_p);
   // we should probably be using the flags for weight interpolation as well
   // but it's not clear how to combine the 4 pol flags into one.
+  // (AND the flags-> weight flagged if all flagged)
   Vector<Array<Float> > wtVectors(nChan_p);
   for (i=0; i<nChan_p; i++) {
     visPlanes(i).
@@ -479,6 +483,8 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
   ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
   Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
   Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
+  // set the interpolation method: nearest, linear, cubic, cubic spline
+
   IPosition shape(3,nPol_p,nVelChan_p,curNumRow_p);
   This->visCube_p.resize(shape);
   This->flagCube_p.resize(shape);
