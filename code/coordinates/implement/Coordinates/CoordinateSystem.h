@@ -672,9 +672,7 @@ private:
                        const Int precRefValRADEC, const Int precRefPixFloat,
                        const Int precIncSci) const;
     void clearFlags (LogIO& os) const;
-    Bool pixelToVelocity(Double& velocity, Double pixel, const SpectralCoordinate* sc,
-                         MDoppler::Types velocityType, const String& velUnits) const;
-    Bool velocityIncrement(Double& velocityInc,  const SpectralCoordinate* sc,
+    Bool velocityIncrement(Double& velocityInc,  SpectralCoordinate& sc,
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
 };
