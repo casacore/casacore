@@ -1,5 +1,5 @@
 //# PagedImage.cc: defines the PagedImage class (non-template code)
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,6 @@ DataType imagePixelType(const String &fileName)
     if (Table::isReadable(fileName)) {
 	try {
 	    TableDesc desc;
-	    uInt nrow = Table::getLayout(desc, fileName);
 	    ColumnDesc cdesc = desc["map"];
 	    retval = cdesc.dataType();
 	} catch (AipsError x) {
