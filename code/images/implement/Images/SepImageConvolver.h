@@ -1,5 +1,5 @@
 //# SepImageConvolver.h: separable convolution of an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -148,8 +148,6 @@ private:
 //
 
    void checkAxis(uInt axis);
-   void copyAndZero(ImageInterface<T>& out,
-                    ImageInterface<T>& in);
    Bool isTempImage (const ImageInterface<Float>* pIm) const;
    void zero();
    void smoothProfiles (ImageInterface<T>& in,
