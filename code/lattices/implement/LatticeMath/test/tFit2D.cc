@@ -1,5 +1,5 @@
 //# tFit2D.cc: Test nonlinear least squares classes for 2D Gaussian
-//# Copyright (C) 1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -307,7 +307,7 @@ void addNoise (Array<Float>& pixels, Array<Float>& sigma, Double noise)
 //
    Bool deleteIt;
    Float* pData = pixels.getStorage(deleteIt);
-   for (uInt k=0; k<pixels.shape().product(); k++){
+   for (Int k=0; k<pixels.shape().product(); k++){
       pData[k] += noiseGen();
    }
    pixels.putStorage(pData, deleteIt);
