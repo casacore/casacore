@@ -6460,3 +6460,4 @@
 18 552 src mv trial/implement/Tables/MSMDirColumn.h aips/implement/Tables/MSMDirColumn.h
 18 552 src mv trial/implement/Tables/MSMIndColumn.h aips/implement/Tables/MSMIndColumn.h
 18 552 src mv trial/implement/Tables/MSMIndColumn.cc aips/implement/Tables/MSMIndColumn.cc
+18 552 src mv trial/implement/Tables/test/tMemoryStMan.cc aips/implement/Tables/test/tMemoryStMan.cc
