@@ -1,5 +1,5 @@
 //# LELImageCoord.h: The letter class for image coordinates
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,35 +71,54 @@ class LattRegionHolder;
 class LELImageCoord : public LELLattCoord
 {
 public:
-    LELImageCoord();
+  LELImageCoord();
 
-    LELImageCoord (const CoordinateSystem& coords);
+  LELImageCoord (const CoordinateSystem& coords);
 
-    virtual ~LELImageCoord();
+  virtual ~LELImageCoord();
 
-    // Get the coordinates.
-    const CoordinateSystem& coordinates() const;
+  // Get the coordinates.
+  const CoordinateSystem& coordinates() const;
 
-    // Create a SubLattice for an expression node.
-    virtual LatticeExprNode makeSubLattice
+  // Create a SubLattice for an expression node.
+  virtual LatticeExprNode makeSubLattice
                                     (const LatticeExprNode& expr,
 				     const LattRegionHolder& region) const;
 
-    // The class has true coordinates (thus returns True).
-    virtual Bool hasCoordinates() const;
+  // Create an extension for an expression node.
+  virtual LatticeExprNode makeExtendLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& newShape,
+				     const LELLattCoordBase& newCoord) const;
 
-    // The name of the class.
-    virtual String classname() const;
+  // The class has true coordinates (thus returns True).
+  virtual Bool hasCoordinates() const;
 
-    // Check if the coordinates of this and that conform.
-    // It calls doConform on the that object.
-    virtual Bool conform (const LELLattCoordBase& other) const;
+  // Get the coordinates of the spectral axis for the given shape.
+  // It returns the pixel axis number of the spectral coordinates.
+  // -1 indicates that there is no pixel spectral axis.
+  // An exception is thrown if there are no world spectral coordinates.
+  virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+				const IPosition& shape) const;
 
-    // Check if the coordinates of this and that conform.
-    virtual Bool doConform (const LELImageCoord& other) const;
+  // The name of the class.
+  virtual String classname() const;
+
+  // Check how the coordinates of this and that compare.
+  // The return value tells how they compare.
+  // <br>-1: this is subset
+  // <br>0: equal 
+  // <br>1: this is superset
+  // <br>9: invalid (mismatch)
+  virtual Int compare (const LELLattCoordBase& other) const;
+
+  // Check how the coordinates of this and that image compare.
+  // This function is used by <src>conform</src> to make a
+  // double virtual dispatch possible.
+  virtual Int doCompare (const LELImageCoord& other) const;
 
 private:
-    CountedPtr<CoordinateSystem> coords_p;
+  CountedPtr<CoordinateSystem> coords_p;
 };
 
 

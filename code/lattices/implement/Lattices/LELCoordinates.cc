@@ -1,5 +1,5 @@
 //# LELCoordinates.cc: Envelope class for Lattice coordinates
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 
 #include <aips/Lattices/LELCoordinates.h>
+#include <aips/Lattices/LELLattCoordBase.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -77,10 +78,10 @@ Bool LELCoordinates::hasCoordinates() const
 }
 
 // Check if the coordinates of this and that conform.
-Bool LELCoordinates::conform (const LELCoordinates& that) const
+Int LELCoordinates::compare (const LELCoordinates& that) const
 {
     if (coords_p.null()  ||  that.coords_p.null()) {
-        return False;
+        return 9;
     }
-    return coords_p->conform (*(that.coords_p));
+    return coords_p->compare (*(that.coords_p));
 } 

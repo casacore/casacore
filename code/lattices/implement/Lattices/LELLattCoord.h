@@ -1,5 +1,5 @@
 //# LELLattCoord.h: The base letter class for lattice coordinates in LEL
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 //# Forward Declarations
 class LatticeExprNode;
 class LattRegionHolder;
+class IPosition;
 
 
 // <summary>
@@ -76,28 +77,41 @@ class LattRegionHolder;
 class LELLattCoord : public LELLattCoordBase
 {
 public:
-    LELLattCoord();
+  LELLattCoord();
 
-    // A virtual destructor is needed so that it will use the actual
-    // destructor in the derived class.
-    virtual ~LELLattCoord();
+  // A virtual destructor is needed so that it will use the actual
+  // destructor in the derived class.
+  virtual ~LELLattCoord();
 
-    // The class does not have true coordinates.
-    virtual Bool hasCoordinates() const;
+  // The class does not have true coordinates.
+  virtual Bool hasCoordinates() const;
 
-    // Create a SubLattice for an expression node.
-    virtual LatticeExprNode makeSubLattice
+  // Create a SubLattice for an expression node.
+  virtual LatticeExprNode makeSubLattice
                                     (const LatticeExprNode& expr,
 				     const LattRegionHolder& region) const;
 
-    // The name of the class.
-    virtual String classname() const;
+  // Create an extension for an expression node.
+  virtual LatticeExprNode makeExtendLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& newShape,
+				     const LELLattCoordBase& newCoord) const;
 
-    // The coordinates of this and that conform.
-    virtual Bool conform (const LELLattCoordBase& other) const;
+  // Get the coordinates of the spectral axis for the given shape.
+  // This function throws an exception as a Lattice has no coordinates.
+  virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+				const IPosition& shape) const;
 
-    // The coordinates of this and that image conform.
-    virtual Bool doConform (const LELImageCoord& other) const;
+  // The name of the class.
+  virtual String classname() const;
+
+  // Check how the coordinates of this and that compare.
+  virtual Int compare (const LELLattCoordBase& other) const;
+
+  // Check how the coordinates of this and that image compare.
+  // This function is used by <src>conform</src> to make a
+  // double virtual dispatch possible.
+  virtual Int doCompare (const LELImageCoord& other) const;
 };
 
 

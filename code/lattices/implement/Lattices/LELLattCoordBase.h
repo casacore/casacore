@@ -1,5 +1,5 @@
 //# LELLattCoordBase.h: The base letter class for lattice coordinates in LEL
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,8 @@
 
 //# Forward Declarations
 class LELImageCoord;
+class IPosition;
+template<class T> class Vector;
 
 
 // <summary>
@@ -86,13 +88,20 @@ public:
     // The name of the class.
     virtual String classname() const = 0;
 
-    // Check if the coordinates of this and that conform.
-    virtual Bool conform (const LELLattCoordBase& other) const = 0;
+    // Get the coordinates of the spectral axis for the given shape.
+    // It returns the pixel axis number of the spectral coordinates.
+    // -1 indicates that there is no pixel spectral axis.
+    // An exception is thrown if there are no world spectral coordinates.
+    virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+				  const IPosition& shape) const = 0;
 
-    // Check if the coordinates of this and that image conform.
+    // Check how the coordinates of this and that compare.
+    virtual Int compare (const LELLattCoordBase& other) const = 0;
+
+    // Check how the coordinates of this and that image compare.
     // This function is used by <src>conform</src> to make a
     // double virtual dispatch possible.
-    virtual Bool doConform (const LELImageCoord& other) const = 0;
+    virtual Int doCompare (const LELImageCoord& other) const = 0;
 };
 
 

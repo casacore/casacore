@@ -1,5 +1,5 @@
 //# LELCoordinates.h: Envelope class for Lattice coordinates in LEL
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,10 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Lattices/LELLattCoordBase.h>
 #include <aips/Utilities/CountedPtr.h>
+
+//# Forward Declarations
+class LELLattCoordBase;
 
 
 // <summary>
@@ -119,6 +121,7 @@
 class LELCoordinates
 {
 public:
+    // Define the possible comparison results.
     // The default constructor creates a null object.
     LELCoordinates();
 
@@ -143,9 +146,13 @@ public:
     // It returns False if this is a null object.
     Bool hasCoordinates() const;
 
-    // Check if the coordinates of this and that conform.
-    // It returns False if this or that is a null object.
-    Bool conform (const LELCoordinates& that) const;
+    // Check how the coordinates of this and that compare.
+    // The return value tells how they compare.
+    // <br>-1: this is subset
+    // <br>0: equal 
+    // <br>1: this is superset
+    // <br>9: invalid (mismatch)
+    Int compare (const LELCoordinates& other) const;
 
     // Return the underlying letter object.
     // This should in general not be used, but for specific (Image) cases

@@ -1,5 +1,5 @@
 //# LELLattCoord.cc: The base letter class for lattice coordinates
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,42 +42,59 @@ LELLattCoord::~LELLattCoord()
 
 Bool LELLattCoord::hasCoordinates() const
 {
-    return False;
+  return False;
 }
 
 String LELLattCoord::classname() const
 {
-    return "LELLattCoord";
+  return "LELLattCoord";
 }
 
-Bool LELLattCoord::conform (const LELLattCoordBase&) const
+Int LELLattCoord::compare (const LELLattCoordBase&) const
 {
-    return True;
+  return 0;
 }
 
-Bool LELLattCoord::doConform (const LELImageCoord&) const
+Int LELLattCoord::doCompare (const LELImageCoord&) const
 {
-    return True;
+  return 0;
 }
 
 LatticeExprNode LELLattCoord::makeSubLattice
                                     (const LatticeExprNode& expr,
 				     const LattRegionHolder& region) const
 {
-    LatticeRegion latReg (region.toLatticeRegion (expr.shape()));
-    switch (expr.dataType()) {
-    case TpBool:
-        return SubLattice<Bool> (LatticeExpr<Bool>(expr), latReg);
-    case TpFloat:
-        return SubLattice<Float> (LatticeExpr<Float>(expr), latReg);
-    case TpDouble:
-        return SubLattice<Double> (LatticeExpr<Double>(expr), latReg);
-    case TpComplex:
-        return SubLattice<Complex> (LatticeExpr<Complex>(expr), latReg);
-    case TpDComplex:
-        return SubLattice<DComplex> (LatticeExpr<DComplex>(expr), latReg);
-    default:
-        throw (AipsError ("LELLattCoord::makeSubLattice - unknown datatype"));
-    }
-    return LatticeExprNode();
+  LatticeRegion latReg (region.toLatticeRegion (expr.shape()));
+  switch (expr.dataType()) {
+  case TpBool:
+    return SubLattice<Bool> (LatticeExpr<Bool>(expr), latReg);
+  case TpFloat:
+    return SubLattice<Float> (LatticeExpr<Float>(expr), latReg);
+  case TpDouble:
+    return SubLattice<Double> (LatticeExpr<Double>(expr), latReg);
+  case TpComplex:
+    return SubLattice<Complex> (LatticeExpr<Complex>(expr), latReg);
+  case TpDComplex:
+    return SubLattice<DComplex> (LatticeExpr<DComplex>(expr), latReg);
+  default:
+    throw (AipsError ("LELLattCoord::makeSubLattice - unknown datatype"));
+  }
+  return LatticeExprNode();
+}
+
+LatticeExprNode LELLattCoord::makeExtendLattice
+                                    (const LatticeExprNode&,
+				     const IPosition&,
+				     const LELLattCoordBase&) const
+{
+  throw AipsError ("LELCoordinates::getSpectralInfo - "
+		   "cannot extend lattice without coordinates");
+  return LatticeExprNode();
+}
+
+uInt LELLattCoord::getSpectralInfo (Vector<Double>&, const IPosition&) const
+{
+  throw AipsError ("LELCoordinates::getSpectralInfo - "
+		   "no spectral coordinates available");
+  return 0;
 }

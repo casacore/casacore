@@ -29,9 +29,13 @@
 #include <trial/Images/LELImageCoord.h>
 #include <trial/Images/ImageExpr.h>
 #include <trial/Images/SubImage.h>
+#include <trial/Images/ExtendImage.h>
+#include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/LatticeExpr.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 
@@ -47,56 +51,115 @@ LELImageCoord::~LELImageCoord()
 
 const CoordinateSystem& LELImageCoord::coordinates() const
 {
-    return *coords_p;
+  return *coords_p;
 }
 
 Bool LELImageCoord::hasCoordinates() const
 {
-    return True;
+  return True;
 }
 
 String LELImageCoord::classname() const
 {
-    return "LELImageCoord";
+  return "LELImageCoord";
 }
 
-Bool LELImageCoord::conform (const LELLattCoordBase& other) const
+uInt LELImageCoord::getSpectralInfo (Vector<Double>& worldCoordinates,
+				     const IPosition& shape) const
 {
-// Call the virtual doConform function to be able to compare
-// two LELImageCoord objects.
-
-    return other.doConform (*this);
+  // Find the coordinate number of the spectral coordinate.
+  const CoordinateSystem& csys = coordinates();
+  Int which = csys.findCoordinate (Coordinate::SPECTRAL);
+  if (which < 0) {
+    throw AipsError ("LatticeExpr - no spectral coordinate found");
+  }
+  // Get the pixel axis of the spectral coordinate.
+  Vector<Int> pixelAxes = csys.pixelAxes (which);
+  AlwaysAssert (pixelAxes.nelements() == 1, AipsError);
+  if (pixelAxes(0) < 0  ||  pixelAxes(0) >= Int(shape.nelements())) {
+    // No pixel axis, so there is a replacement value for this axis.
+    // We can only get that by converting a pixel position to world.
+    Vector<Double> worlds;
+    AlwaysAssert (csys.toWorld (worlds, IPosition(shape.nelements(), 0)),
+		  AipsError);
+    Vector<Int> worldAxes = csys.worldAxes (which);
+    AlwaysAssert (worldAxes.nelements() == 1, AipsError);
+    worldCoordinates.resize (1);
+    worldCoordinates(0) = worlds(worldAxes(0));
+  } else {
+    // Get the world values for the entire spectral axis.
+    uInt length = shape(pixelAxes(0));
+    const SpectralCoordinate& crd = csys.spectralCoordinate (which);
+    worldCoordinates.resize (length);
+    for (uInt i=0; i<length; i++) {
+      AlwaysAssert (crd.toWorld (worldCoordinates(i), Double(i)), AipsError);
+    }
+  }
+  return pixelAxes(0);
 }
 
-Bool LELImageCoord::doConform (const LELImageCoord& other) const
+Int LELImageCoord::compare (const LELLattCoordBase& other) const
 {
-// This is the real conformance checker.
-
-    return coordinates().nearPixel(other.coordinates());    
+  // Call the virtual doCompare function to be able to compare
+  // two LELImageCoord objects.
+  return other.doCompare (*this);
 }
+
+Int LELImageCoord::doCompare (const LELImageCoord& other) const
+{
+  return ImageUtilities::compareCoordinates (other.coordinates(),
+					     coordinates());
+}
+
 
 LatticeExprNode LELImageCoord::makeSubLattice
                                     (const LatticeExprNode& expr,
 				     const LattRegionHolder& region) const
 {
-    switch (expr.dataType()) {
+  switch (expr.dataType()) {
 /// case TpBool:
 ///     return SubImage<Bool> (ImageExpr<Bool>
 ///                        (LatticeExpr<Bool>(expr), ""), region);
-    case TpFloat:
-        return SubImage<Float> (ImageExpr<Float>
-                           (LatticeExpr<Float>(expr), ""), region);
+  case TpFloat:
+    return SubImage<Float> (ImageExpr<Float>
+                               (LatticeExpr<Float>(expr), ""), region);
 /// case TpDouble:
 ///     return SubImage<Double> (ImageExpr<Double>
-///                        (LatticeExpr<Double>(expr, "")), region);
-    case TpComplex:
-        return SubImage<Complex> (ImageExpr<Complex>
-                           (LatticeExpr<Complex>(expr), ""), region);
+///                               (LatticeExpr<Double>(expr, "")), region);
+  case TpComplex:
+    return SubImage<Complex> (ImageExpr<Complex>
+                               (LatticeExpr<Complex>(expr), ""), region);
 /// case TpDComplex:
 ///     return SubImage<DComplex> (ImageExpr<DComplex>
-///                        (LatticeExpr<DComplex>(expr), ""), region);
-    default:
-        throw (AipsError ("LELImageCoord::makeSubLattice - unknown datatype"));
-    }
-    return LatticeExprNode();
+///                               (LatticeExpr<DComplex>(expr), ""), region);
+  default:
+    throw (AipsError ("LELImageCoord::makeSubLattice - unknown datatype"));
+  }
+  return LatticeExprNode();
 }
+
+
+LatticeExprNode LELImageCoord::makeExtendLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& newShape,
+				     const LELLattCoordBase& newCoord) const
+{
+  // Get new coordinate system.
+  const LELImageCoord* cptr = dynamic_cast<const LELImageCoord*>(&newCoord);
+  AlwaysAssert (cptr != 0, AipsError);
+  const CoordinateSystem& newCsys = cptr->coordinates();
+  switch (expr.dataType()) {
+  case TpFloat:
+    return ExtendImage<Float> (ImageExpr<Float>(LatticeExpr<Float>(expr),
+						""),
+			       newShape, newCsys);
+  case TpComplex:
+    return ExtendImage<Complex> (ImageExpr<Complex>(LatticeExpr<Complex>(expr),
+						    ""),
+				 newShape, newCsys);
+  default:
+    throw (AipsError ("LELImageCoord::makeExtendLattice - unknown datatype"));
+  }
+  return LatticeExprNode();
+}
+
