@@ -1309,7 +1309,7 @@ void FITSTable::fill_row()
 		    *((RecordFieldPtr<Complex> *)row_fields_p[i]);
 		const Complex& val = fitsRef();
 		(*rowRef) = Complex (val.real() * scale + zero,
-				     val.imag());
+				     val.imag() * scale + zero);
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayComplex, AipsError);
 		RecordFieldPtr<Array<Complex> > &rowRef =
@@ -1326,7 +1326,7 @@ void FITSTable::fill_row()
 		    n--;
 		    const Complex& val = fitsRef(n);
 		    data[n] = Complex (val.real() * scale + zero,
-				       val.imag());
+				       val.imag() * scale + zero);
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1341,7 +1341,7 @@ void FITSTable::fill_row()
 		    *((RecordFieldPtr<DComplex> *)row_fields_p[i]);
 		const DComplex& val = fitsRef();
 		(*rowRef) = DComplex (val.real() * scale + zero,
-				      val.imag());
+				      val.imag() * scale + zero);
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
 		RecordFieldPtr<Array<DComplex> > &rowRef =
@@ -1358,7 +1358,7 @@ void FITSTable::fill_row()
 		    n--;
 		    const DComplex& val = fitsRef(n);
 		    data[n] = DComplex (val.real() * scale + zero,
-					val.imag());
+					val.imag() * scale + zero);
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1373,7 +1373,7 @@ void FITSTable::fill_row()
 		    *((RecordFieldPtr<DComplex> *)row_fields_p[i]);
 		const IComplex& val = fitsRef();
 		(*rowRef) = DComplex (val.real() * scale + zero,
-				      val.imag());
+				      val.imag() * scale + zero);
 	    } else {
 		DebugAssert(field_types_p[i] == TpArrayDComplex, AipsError);
 		RecordFieldPtr<Array<DComplex> > &rowRef =
@@ -1390,7 +1390,7 @@ void FITSTable::fill_row()
 		    n--;
 		    const IComplex& val = fitsRef(n);
 		    data[n] = DComplex (val.real() * scale + zero,
-					val.imag());
+					val.imag() * scale + zero);
 		}
 		(*rowRef).putStorage(data, deleteIt);
 	    }
@@ -1632,7 +1632,7 @@ void FITSTable::fill_row()
 			    n--;
 			    const Complex& val = vptr[n];
 			    data[n] = Complex (val.real() * scale + zero,
-					       val.imag());
+					       val.imag() * scale + zero);
 			}
 			(*rowRef).putStorage(data, deleteIt);
 		    }
@@ -1654,7 +1654,7 @@ void FITSTable::fill_row()
 			    n--;
 			    const DComplex& val = vptr[n];
 			    data[n] = DComplex (val.real() * scale + zero,
-						val.imag());
+						val.imag() * scale + zero);
 			}
 			(*rowRef).putStorage(data, deleteIt);
 		    }
