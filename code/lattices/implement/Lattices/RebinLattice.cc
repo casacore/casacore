@@ -49,7 +49,7 @@ RebinLattice<T>::RebinLattice ()
 
 template<class T>
 RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
-                               const Vector<uInt>& bin, Bool doCache)
+                               const Vector<uInt>& bin)
 : itsLatticePtr(lattice.cloneML())
 {
    LogIO os(LogOrigin("RebinLattice", "RebinLattice(...)", WHERE));
@@ -234,7 +234,7 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
                                       const Slicer& section)
 {
    Slicer sectionIn = findOriginalSlicer (section);
-   if (itsLatticePtr->isMasked() || itsDoCache) {
+   if (itsLatticePtr->isMasked()) {
 
 // Get input data
 

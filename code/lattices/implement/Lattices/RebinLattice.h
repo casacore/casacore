@@ -82,8 +82,7 @@ public:
 
   // Constructor.  The bins don't have to fit integrally. Whatever
   // is left over at the end is treated as a full bin.
-  RebinLattice(const MaskedLattice<T>& lattice,
-               const Vector<uInt>& bin, Bool doCache=False);
+  RebinLattice(const MaskedLattice<T>& lattice, const Vector<uInt>& bin);
 
   // Copy constructor (reference semantics)
   RebinLattice(const RebinLattice<T>& other);
@@ -176,9 +175,7 @@ private:
            const Array<T>& dataIn, const Array<Bool>& maskIn) const;
 //
   MaskedLattice<T>* itsLatticePtr;
-  Bool itsDoCache;
   IPosition itsBin;
-//
   Bool itsAllUnity;
 };
 
