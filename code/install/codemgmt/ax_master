@@ -4198,3 +4198,4 @@
 14 065 src mv trial/apps/viewer/viewer.help trialdisplay/apps/viewer/viewer.help
 14 065 src mv trial/apps/viewer/viewer_meta.g trialdisplay/apps/viewer/viewer_meta.g
 14 065 src mv trial/apps/viewer/viewercanvasmanager.help trialdisplay/apps/viewer/viewercanvasmanager.help
+14 065 src mv trial/apps/viewer/viewercanvasprintmanager.help trialdisplay/apps/viewer/viewercanvasprintmanager.help
