@@ -1,4 +1,4 @@
-//# RecordTransformable.h:
+//# RecordTransformable.h: Interface class for converting to/from records
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,6 +33,7 @@
 
 class String;
 class RecordInterface;
+class GlishRecord;
 
 // <summary>Interface class for converting to/from records</summary>
 
@@ -46,28 +47,35 @@ class RecordInterface;
 // </prerequisite>
 //
 // <etymology>
-// This class defines the interface that classes should use if the can be
+// This class defines the interface that a class should use if the can be
 // transformed into a record representation.
 // </etymology>
 //
 // <synopsis>
 // This abstract base class is intended to be publicly inherited by classes
-// that contain functions which can represent the object as a record. A class
-// may contain these functions if:
+// that contain functions which can represent the object as a record (these
+// functions should be called <src>toRecord</src> and
+// <src>fromRecord</src>). Examples of records are: 
 // <ul> 
-// <li> It needs to represent itself as a glish record (using a 
-//      <linkto class="GlishRecord">GlishRecord</linkto>)
-// <li> It needs to save itself to a Table (using a 
-//      <linkto class="TableRecord">TableRecord</linkto>)
+// <li> <linkto class="GlishRecord">GlishRecord</linkto>)
+// <li> <linkto class="TableRecord">TableRecord</linkto>)
 // </ul> 
 //
 // This interface defines two functions that convert between a RecordInterface
 // and the class that inherits these functions.  These functions are often used
-// to parse input that is beyond the programs control ie., user input from
+// to parse input that is beyond the programs control e.g. user input from
 // glish or Table records that may have been generated elsewhere. Hence
 // exceptions should not thrown be thrown by these functions. Instead the
 // function should return False and append an error message to the supplied
 // String when the transformation cannot be accomplished.
+//
+// <note role=warn>
+// At the moment only Records & TableRecords are derived from
+// RecordInterface. In future all records (like GlishRecord) will be derived
+// from this one base. Till then separate to/fromRecord() methods should be
+// provided for the different record types. Implementation of these could
+// be in a separate file to make sure they are only included when needed.
+// </note>
 // </synopsis>
 //
 // <example>
@@ -92,7 +100,7 @@ class RecordInterface;
 //
 // <motivation>
 // This class was designed to standardise the function interface for converting
-// between an object and its Glish representation.
+// between an object and its record representation.
 // </motivation>
 //
 // <todo asof="1998/03/30">
@@ -112,7 +120,10 @@ public:
   // then the error String is unchanged and the function returns
   // True. Otherwise the function returns False and appends an error message to
   // the supplied String giving the reason why the conversion failed.
-  virtual Bool toRecord(String & error, RecordInterface & inRecord) const = 0;
+  // <group>
+  virtual Bool toRecord(String & error, RecordInterface & outRecord) const = 0;
+  virtual Bool toRecord(String & error, GlishRecord & outRecord) const = 0;
+  // </group>
 
   // Initialise the class from a Record representation. The input record should
   // contain the fields that are required by the class. Other fields will be
@@ -120,8 +131,10 @@ public:
   // and the function returns True. Otherwise the function returns False and
   // appends an error message to the supplied String giving the reason why the
   // conversion failed.
-  virtual Bool fromRecord(String & error,
-			  const RecordInterface & outRecord) = 0;
+  // <group>
+  virtual Bool fromRecord(String & error, const RecordInterface & inRecord) = 0;
+  virtual Bool fromRecord(String & error, const GlishRecord & inRecord) = 0;
+  // </group>
 };
 
 #endif
