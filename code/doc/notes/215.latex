@@ -3,7 +3,7 @@
 %%---------------------------------------------------------------------------
  
 \externallabels{../../user/Refman}{../../user/Refman/labels.pl}
-\externallabels{../../xreference/System}{../../xreference/System/labels.pl}
+\externallabels{../../reference/System}{../../reference/System/labels.pl}
 \externallabels{../197}{../197/labels.pl}
 \begin{document}
  
