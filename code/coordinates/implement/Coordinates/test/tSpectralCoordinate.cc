@@ -259,8 +259,8 @@ int main()
             throw(AipsError("Failed rest frequency set/recovery test"));
          }
 //
-         lc.setFrequencySystem(MFrequency::LSR);
-         if (lc.frequencySystem() != MFrequency::LSR) {
+         lc.setFrequencySystem(MFrequency::LSRK);
+         if (lc.frequencySystem() != MFrequency::LSRK) {
             throw(AipsError("Failed frequency system set/recovery test"));
          }
 //
