@@ -115,15 +115,18 @@ public:
 
   // returns the last row that contains an antenna at the specified position,
   // to within the specified tolerance. The reference frame of the supplied
-  // position MUST be the same as the one for the POSITION columns. If not an
+  // position must be the same as the one for the POSITION columns. If not an
   // AipsError is thrown as such an argument will never match any row of the
   // Table. The tolerance is the maximum allowed distance between the two
   // positions and the supplied Quantum must have dimensions of length. This is
   // checked when compiled in debug mode and an AipsError exception is thrown
-  // if the dimensions are wrong. Returns -1 if no match could be found. Falged
-  // rows can never match.
+  // if the dimensions are wrong. Returns -1 if no match could be found. Flaged
+  // rows can never match. If tryRow is non-negative, then that row is tested
+  // to see if it matches before any others are tested. Setting tryRow to a
+  // positive value greater than the table length will throw an exception
+  // (AipsError), when compiled in debug mode.
   Int matchAntenna(const MPosition& antennaPos,
-		   const Quantum<Double>& tolerance);
+		   const Quantum<Double>& tolerance, Int tryRow=-1);
 
   // Same as the previous function except that the antenna name must also
   // match.
@@ -284,10 +287,14 @@ public:
     return RONewMSAntennaColumns::phasedArrayId();}
   // </group>
 
-  // Set the POSITION reference for the position column.
+  // set the position type for the POSITION column. This can only be done when
+  // the table has no rows. Trying to do so at other times will throw an
+  // exception.
   void setPositionRef(MPosition::Types ref);
 
-  // set the POSITION reference for the offset column
+  // set the position type for the OFFSET column. This can only be done when
+  // the table has no rows. Trying to do so at other times will throw an
+  // exception.
   void setOffsetRef(MPosition::Types ref);
 
 protected:

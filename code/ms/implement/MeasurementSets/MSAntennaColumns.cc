@@ -125,8 +125,9 @@ void RONewMSAntennaColumns::attachOptionalCols(const NewMSAntenna& msAntenna)
   }
 }
 
-Int RONewMSAntennaColumns::matchAntenna(const MPosition& antennaPos,
-					const Quantum<Double>& tolerance) {
+Int RONewMSAntennaColumns::
+matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
+	     Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -146,6 +147,18 @@ Int RONewMSAntennaColumns::matchAntenna(const MPosition& antennaPos,
   // Convert the position to meters
   const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
   // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSAntennaColumns::matchDirection(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	matchPosition(tr, antPosInM, tolInM)) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
   while (r > 0) {
     r--;
     if (!flagRow()(r) &&
@@ -296,16 +309,15 @@ void NewMSAntennaColumns::attachOptionalCols(NewMSAntenna& msAntenna)
   }
 }
 
-void NewMSAntennaColumns::setPositionRef(MPosition::Types ref) 
+
+void NewMSAntennaColumns::setPositionRef(MPosition::Types ref)
 {
-  position_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MPosition::showType(ref));
+  positionMeas_p.setDescRefCode(ref);
 }
 
 void NewMSAntennaColumns::setOffsetRef(MPosition::Types ref) 
 {
-  offset_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MPosition::showType(ref));
+  offsetMeas_p.setDescRefCode(ref);
 }
 // Local Variables: 
 // compile-command: "gmake NewMSAntennaColumns"
