@@ -39,7 +39,6 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/ObsInfo.h>
-#include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
@@ -265,12 +264,10 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Attach mask if out is masked.  Don't init mask because it will be overwritten
 
-//       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
-       outPtr = new PagedImage<T>(TiledShape(outShape2), outCoords, String("DCImage"));
+       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
        if (outIsMasked) {
           String maskName("mask0");
-//          TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
-          PagedImage<T>* tmpPtr = dynamic_cast<PagedImage<T>*>(outPtr);
+          TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
           tmpPtr->makeMask(maskName, True, True, False);
        }
 
@@ -328,12 +325,10 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Attach mask if out is masked.  
 
-//       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
-       outPtr = new PagedImage<T>(TiledShape(outShape2), outCoords, "1DImage");  // force to disk
+       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
        if (outIsMasked) {
           String maskName("mask0");
-//          TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
-          PagedImage<T>* tmpPtr = dynamic_cast<PagedImage<T>*>(outPtr);
+          TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
           tmpPtr->makeMask(maskName, True, True, True, True);
        }
 
