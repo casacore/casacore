@@ -49,6 +49,7 @@ class Euler;
 class SolarPos;
 class Aberration;
 class RotMatrix;
+template <class T> class Vector;
 
 //# Typedefs
 
@@ -124,8 +125,8 @@ private:
     BMEAN_BTRUE,
     JTRUE_JMEAN,
     BTRUE_BMEAN,
-    J2000_APP,
-    APP_J2000,
+    J2000_JNAT,
+    JNAT_J2000,
     B1950_APP,
     APP_B1950,
     APP_HADEC,
@@ -134,7 +135,24 @@ private:
     HADEC_APP,
     AZEL_AZELSW,
     AZELSW_AZEL,
-    N_Routes };
+    APP_JNAT,
+    JNAT_APP,
+    N_Routes,
+    // General for Planets
+    R_PLANET0,
+    R_PLANET,
+    // Individual planets. Order should be the same as in MDirection.h
+    R_MERCURY,
+    R_VENUS,
+    R_MARS,
+    R_JUPITER,
+    R_SATURN,
+    R_URANUS,
+    R_NEPTUNE,
+    R_PLUTO,
+    R_SUN,
+    R_MOON
+  };
   
   //# Typedefs
   
@@ -152,6 +170,7 @@ private:
   Aberration *ABERFROM, *ABERTO;
   Nutation *NUTATFROM, *NUTATTO;
   Precession *PRECESFROM, *PRECESTO;
+  Vector<Double> *VEC61, *VEC62, *VEC63;
 
   //# Constructors
   // Copy constructor (not implemented)
