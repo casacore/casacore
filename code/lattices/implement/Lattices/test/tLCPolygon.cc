@@ -124,10 +124,42 @@ main()
 	    x(4)=6; y(4)=3;
 	    doIt (IPosition (2,11,20), x, y);
 	}
+
+	{
+	    // Test some other functions
+            IPosition latticeShape(2,100,200);
+	    Vector<Float> x(4), y(4);
+	    x(0)=3; y(0)=3;
+	    x(1)=6; y(1)=3;
+	    x(2)=6; y(2)=5;
+	    x(3)=3; y(3)=5;
+
+            LCPolygon p1(x, y, latticeShape);
+            LCPolygon p2(p1);
+            AlwaysAssertExit (p2 == p1);
+
+            p2 = p1;
+            AlwaysAssertExit (p2 == p1);
+
+            y = 8;
+            LCPolygon p3(x, y, latticeShape);
+            AlwaysAssertExit (p3 != p1);
+
+            TableRecord rec = p3.toRecord("");
+            LCPolygon* pP3 = LCPolygon::fromRecord(rec,"");
+            AlwaysAssertExit (*pP3 == p3);
+            delete pP3;
+
+            LCRegion* pRegion = p3.cloneRegion();
+            pP3 = (LCPolygon*)pRegion;
+            AlwaysAssertExit (*pP3 == p3);
+            delete pP3;
+	}
+
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
     cout << "OK" << endl;
-    return 0;
+    exit(0);
 }
