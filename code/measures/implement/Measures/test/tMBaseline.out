@@ -1,0 +1,12 @@
+Test measure class MBaseline
+--------------------------------------
+Baseline: [100, 10, 0]
+Baseline: Baseline: [100, 10, 0]
+Baseline reference: Reference for an Baseline with Type: ITRF,
+Frame: Epoch: 33281::22:09:46.8619
+Baseline reference: Reference for an Baseline with Type: J2000
+Test Baseline conversion ...
+--------------------------------------
+Converted Baseline: [100, 10, 0]
+ to Reference for an Baseline with Type: J2000
+ as Baseline: [100, 10, 0]
