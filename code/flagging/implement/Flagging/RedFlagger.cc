@@ -207,10 +207,33 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
        << LogIO::POST;
     return False;
   }
-  msname_p = ms.tableName();
+
+  Bool mosaicOrder = False;
+  Block<Int> sort(1);
+  sort[0] = MS::TIME;
+
+  if(mosaicOrder){
+    sort.resize(4);
+    sort[0] = MS::FIELD_ID;
+    sort[1] = MS::ARRAY_ID;
+    sort[2] = MS::DATA_DESC_ID;
+    sort[3] = MS::TIME;
+  }
+  //else use default sort order
+  
+  Matrix<Int> noselection;
+  Double timeInterval=0;
+  Bool compress=False;
+
+  dataMode_p=mode;
+  if(dataMode_p.matches("none")) {
+    cout << "No data selection applied" << endl;
+
+    vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
+    return True;
+  }
 
   nullSelect_p=False;
-  dataMode_p=mode;
   dataNchan_p=nchan;
   dataStart_p=start;
   dataStep_p=step;
@@ -252,26 +275,14 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     if(mssel_p)
       delete mssel_p; 
     mssel_p=0;
+    
     // check that sorted table exists (it should), if not, make it now.
     if (!ms.keywordSet().isDefined("SORTED_TABLE")) {
-      Bool mosaicOrder = False;
-      Bool compress=False;
-      
-      Block<Int> sort(0);
-      if(mosaicOrder){
-	sort.resize(4);
-	sort[0] = MS::FIELD_ID;
-	sort[1] = MS::ARRAY_ID;
-	sort[2] = MS::DATA_DESC_ID;
-	sort[3] = MS::TIME;
-      }
-      //else use default sort order
-      Matrix<Int> noselection;
-      Double timeInterval=0;
-      VisSet vs(ms,sort,noselection,timeInterval,compress);
+      //      VisSet vs(ms,sort,noselection,timeInterval,compress);
+      vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
     }
     Table sorted=ms.keywordSet().asTable("SORTED_TABLE");
-  
+    
     // Now we make a condition to do the old FIELD_ID, SPECTRAL_WINDOW_ID
     // selection
     TableExprNode condition;
@@ -295,7 +306,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     // Remake the selected ms
     mssel_p = new MeasurementSet(sorted(condition));
     AlwaysAssert(mssel_p, AipsError);
-    
+    msname_p = ms.tableName();
     mssel_p->rename(msname_p+"/SELECTED_TABLE", Table::Scratch);
   
     if(mssel_p->nrow()==0) {
@@ -309,17 +320,16 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     else {
       mssel_p->flush();
       nullSelect_p=False;
-      cout << "Selection is sucessful " << endl;
     }
     /*
-      if (nullSelect_p) {
+    if (nullSelect_p) {
       Table mytab(msname_p+"/FIELD", Table::Old);
       if (mytab.nrow() > 1) {
-      multiFields_p = True;
+	multiFields_p = True;
       } else {
-      multiFields_p = False;
+	multiFields_p = False;
       }
-      }
+    }
     */
     
     Int len = msSelect.length();
@@ -359,35 +369,23 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     }
   } // end if
   
+ 
   // The following lines is similar to Imager.makeVisSet(vs_p, *mssel_p); 
+  /*
   if(vs_p) {
     delete vs_p;
     vs_p=0;
   }
-  
-  Bool mosaicOrder = False;
-  Bool compress=False;
-  
-  Block<Int> sort(0);
-  if(mosaicOrder){
-    sort.resize(4);
-    sort[0] = MS::FIELD_ID;
-    sort[1] = MS::ARRAY_ID;
-    sort[2] = MS::DATA_DESC_ID;
-    sort[3] = MS::TIME;
-  }
-  //else use default sort order
-  
-  Matrix<Int> noselection;
-  Double timeInterval=0;
-  vs_p = new VisSet(*mssel_p,sort,noselection,timeInterval,compress);
+  */
   // Channel selection
+  if(!vs_p)
+    vs_p = new VisSet(*mssel_p,sort,noselection,timeInterval,compress);
   selectDataChannel(*vs_p, dataspectralwindowids_p, dataMode_p,
 		    dataNchan_p, dataStart_p, dataStep_p,
 		    mDataStart_p, mDataStep_p);
-  // Use selected sub set 
+  
   ms = *mssel_p;
-  cout << " Current ms  "  << ms.tableName() << endl;
+  cout << " Current ms  "  << mssel_p->tableName() << endl;
   
   return True;
 }
@@ -711,12 +709,32 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // setup plotting devices
   cleanupPlotters();
   setupPlotters(opt);
-  
+
 // create iterator, visbuffer & chunk manager
   Block<Int> sortCol(1);
   sortCol[0] = MeasurementSet::TIME;
-  VisibilityIterator vi(ms,sortCol,1000000000);
-  //VisibilityIterator vi(ms,sortCol);
+  // Setdata already made a data selection
+  /*
+  VisibilityIterator vi;
+  cout << "before vii copy" << endl;
+  if(vs_p) {
+    vi = VisibilityIterator(vs_p->iter());
+    //vi.origin();
+    
+    cout << "vi has rows " << vi.nRow() << endl;
+  }
+  else {
+    vi = VisibilityIterator(ms, sortCol, 1000000000);
+    cout << "vi created " << endl;
+  }
+  */
+
+  
+
+  VisibilityIterator &vi(vs_p->iter()); 
+
+  //VisibilityIterator vi(ms, sortCol, 1000000000);
+
   VisBuffer vb(vi);
   RFChunkStats chunk(vi,vb,*this,&pgp_screen,&pgp_report);
 
@@ -900,6 +918,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 		    break;
 		}
             }
+
           // also iterate over rows for data passes
           for( Int ir=0; ir<vb.nRow() && ndata; ir++ ) {
             for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
