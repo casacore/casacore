@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/PointShape.h>
+#include <trial/ComponentModels/Flux.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
@@ -99,40 +100,32 @@ const MDirection & PointShape::refDirection() const {
   return itsDir;
 }
 
-Double PointShape::scale(const MDirection & direction, 
-			 const MVAngle & pixelSize) const {
+void PointShape::sample(Flux<Double> & flux, const MDirection & direction, 
+			const MVAngle & pixelSize) const {
   DebugAssert(ok(), AipsError);
   MVDirection dirVal = direction.getValue();
   // Convert direction to the same frame as the reference direction
-  if (direction.getRef().getType() != itsRefFrame) {
+  if ((MDirection::Types) direction.getRef().getType() != itsRefFrame) {
     dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
   }
-  if (itsDirValue.near(dirVal, pixelSize.get()/2.0)) {
-    return 1.0;
+  if (!itsDirValue.near(dirVal, pixelSize.get()/2.0)) {
+    flux.scaleValue(0.0);
   }
-  return 0.0;
 }
 
-void PointShape::visibility(DComplex & result, const Vector<Double> & uvw,
+void PointShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
 			    const Double & frequency) const {
   DebugAssert(ok(), AipsError);
   if (&frequency == 0) {}; // Suppress compiler warning about unused variable
   if (&uvw == 0) {}; // Suppress compiler warning about unused variable
-  result.re = 1.0;
-  result.im = 0.0;
+  if (&flux == 0) {}; // Suppress compiler warning about unused variable
 }
 
-Double PointShape::visibility(const Vector<Double> & uvw,
-			      const Double & frequency) const {
+ComponentShape * PointShape::cloneShape() const {
   DebugAssert(ok(), AipsError);
-  if (&frequency == 0) {}; // Suppress compiler warning about unused variable
-  if (&uvw == 0) {}; // Suppress compiler warning about unused variable
-  return 1.0;
-}
-
-Bool PointShape::isSymmetric() const {
-  DebugAssert(ok(), AipsError);
-  return True;
+  ComponentShape * tmpPtr = new PointShape(*this);
+  AlwaysAssert(tmpPtr != 0, AipsError);
+  return tmpPtr;
 }
 
 uInt PointShape::nShapeParameters() const {

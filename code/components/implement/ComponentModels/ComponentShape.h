@@ -29,14 +29,14 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/Utilities/RecordTransformable.h>
 
 class MDirection;
 class MVAngle;
 class RecordInterface;
 class String;
-class doubleG_COMPLEX;
-typedef doubleG_COMPLEX DComplex;
 template <class T> class Vector;
+template <class T> class Flux;
 
 // <summary>Base class for component shapes</summary>
 
@@ -110,7 +110,7 @@ template <class T> class Vector;
 //   <li> Get the project function working again.
 // </todo>
 
-class ComponentShape
+class ComponentShape: virtual public RecordTransformable
 {
 public:
   // a virtual destructor is needed so that the actual destructor in the
@@ -127,23 +127,12 @@ public:
   virtual void refDirection(MDirection & refDir) const;
   // </group>
 
-  // Return the scaling factor that indicates the proportion of the flux that
-  // is in the specified pixel in the specified direction. The pixels are
-  // assumed to be square.
-  virtual void scale(Double & scaleFactor, const MDirection & direction, 
-		     const MVAngle & pixelSize) const;
-  virtual Double scale(const MDirection & direction, 
-		       const MVAngle & pixelSize) const = 0;
-
-  //# Project the shape onto an Image by sampling the component at the centre
-  //# of each pixel add adding it the existing pixel value. The Image must
-  //# contain one Direction Axis. Because this class does not know the flux,
-  //# polarisation or frequency of the component these terms can be combined
-  //# into a scale factor that is used to pre-multiply the values added to the
-  //# image. If the image has spectral or stokes axes then only a subImage with
-  //# one plane should be supplied.
-  //# virtual void project(ImageInterface<Float> & plane, 
-  //#		       const Double scale) const = 0;
+  // Calculate the flux at the specified direction, in a pixel of specified
+  // size, given the total flux of the component. The total flux of the
+  // component must be supplied in the flux variable and the proportion of the
+  // flux in the specified pixel is returned in the same variable.
+  virtual void sample(Flux<Double> & scaleFactor, const MDirection & direction,
+		      const MVAngle & pixelSize) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
@@ -156,11 +145,17 @@ public:
   // component. This means, for symmetric components where the reference
   // direction is at the centre, that the Fourier transform will always be
   // real.
-  virtual void visibility(DComplex & result, const Vector<Double> & uvw,
+
+  // The total flux of the component must be supplied in the flux variable and
+  // the corresponding visibility is returned in the same variable.
+  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw,
 			  const Double & frequency) const = 0;
 
-  // returns True if the shape is symmetric about the reference direction.
-  virtual Bool isSymmetric() const = 0;
+  // Return a pointer to a copy of the derived object upcast to a
+  // ComponentShape object. The class that uses this function is responsible
+  // for deleting the pointer. This is used to implement a virtual copy
+  // constructor.
+  virtual ComponentShape * cloneShape() const = 0;
 
   // return the number of parameters in this shape and set/get them.
   // <group>
@@ -180,6 +175,13 @@ public:
   virtual Bool toRecord(String & errorMessage,
 			RecordInterface & record) const = 0;
   // </group>
+
+  // Return the shape that the supplied record represents. Returns
+  // ComponentType::UNKNOWN_SHAPE if the shape record could not be parsed
+  // correctly (it then appends an appropriate error message to the
+  // errorMessage String).
+  static ComponentType::Shape getType(String & errorMessage,
+				      const RecordInterface & record);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine

@@ -26,10 +26,10 @@
 //# $Id$
 
 #include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/Flux.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <trial/Tasking/QuantumParameterAccessor.h>
 #include <trial/Measures/DOmeasures.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
@@ -42,6 +42,7 @@
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/Unit.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -49,6 +50,7 @@
 #ifdef __GNUG__
 typedef MeasConvert<MDirection,MVDirection,MCDirection> 
         gpp_measconvert_mdirection_mvdirection_mcdirection;
+typedef Flux<Double> gpp_flux_double;
 #endif
 
 GaussianShape::GaussianShape()
@@ -157,7 +159,7 @@ void GaussianShape::setWidth(const MVAngle & majorAxis,
 void GaussianShape::setWidth(const MVAngle & majorAxis,
 			     const Double axialRatio, 
 			     const MVAngle & positionAngle) {
-  
+
   setWidth(majorAxis, MVAngle(majorAxis.radian()*axialRatio), positionAngle);
 }
 
@@ -217,38 +219,35 @@ MVAngle GaussianShape::positionAngle() const {
   return MVAngle(itsShape.PA());
 }
 
-Double GaussianShape::scale(const MDirection & direction, 
-			    const MVAngle & pixelSize) const {
+void GaussianShape::sample(Flux<Double> & flux, const MDirection & direction, 
+ 			   const MVAngle & pixelSize) const {
   DebugAssert(ok(), AipsError);
   MVDirection dirVal = direction.getValue();
-  if (direction.getRef().getType() != itsRefFrame) {
+  if ((MDirection::Types) direction.getRef().getType() != itsRefFrame) {
     dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
   }
   const Double separation = itsDirValue.separation(dirVal);
   const Double pa = itsDirValue.positionAngle(dirVal);
   const Double pixSize = pixelSize.radian();
-  return pixSize * pixSize * itsShape(separation*sin(pa), separation*cos(pa));
+  const Double scale = pixSize * pixSize * 
+    itsShape(separation*sin(pa), separation*cos(pa));
+  flux.scaleValue(scale);
 }
 
-void GaussianShape::visibility(DComplex & result, const Vector<Double> & uvw,
+void GaussianShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
 			       const Double & frequency) const {
-  DebugAssert(ok(), AipsError);
-  result.re = visibility(uvw, frequency);
-  result.im = 0.0;
-}
-
-Double GaussianShape::visibility(const Vector<Double> & uvw,
-				 const Double & frequency) const {
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
   const Double wavenumber = frequency/C::c;
-  return itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber);
+  flux.scaleValue(itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber));
 }
 
-Bool GaussianShape::isSymmetric() const {
+ComponentShape * GaussianShape::cloneShape() const {
   DebugAssert(ok(), AipsError);
-  return True;
+  ComponentShape * tmpPtr = new GaussianShape(*this);
+  AlwaysAssert(tmpPtr != 0, AipsError);
+  return tmpPtr;
 }
 
 uInt GaussianShape::nShapeParameters() const {
@@ -282,40 +281,107 @@ Bool GaussianShape::fromRecord(String & errorMessage,
 			       const RecordInterface & record) {
   if (!ComponentShape::readDir(errorMessage, record)) return False;
 
-  GlishRecord gRecord;
-  gRecord.fromRecord(record);
   MVAngle majorAxis;
   {
-    QuantumParameterAccessor<Double> qpa("majoraxis", ParameterSet::In,
-					 &gRecord);
-    if (!qpa.copyIn(errorMessage)) return False;
-    if (!qpa().isConform("deg")) {
-      errorMessage += "\nThe 'majoraxis' field does not have angular units";
+    const String fieldString("majorAxis");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "\nThe 'majoraxis' field does not exist";
       return False;
     }
-    majorAxis = MVAngle(qpa());
+    const RecordFieldId field(fieldString);
+    if (record.shape(field) != IPosition(1,1)) {
+	errorMessage += "\nThe 'majoraxis' field have only 1 element";
+	return False;
+    }      
+    Record quantumRecord;
+    try {
+      quantumRecord = record.asRecord(field);
+    }
+    catch (AipsError x) {
+      errorMessage += "\nThe 'majoraxis' field must be a record";
+      return False;
+    } end_try;
+    
+    GlishRecord glishRecord;
+    glishRecord.fromRecord(quantumRecord);
+    if (!measures::isQuantity(glishRecord)) {
+      errorMessage += "\nThe 'majoraxis' field is not a quantity";
+      return False;
+    }
+    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    if (quantum.getFullUnit() != Unit("deg")) {
+      errorMessage += "\nThe 'majoraxis' field must have angular units";
+      return False;
+    }
+    majorAxis = MVAngle(quantum);
   }
   MVAngle minorAxis;
   {
-    QuantumParameterAccessor<Double> qpa("minoraxis", ParameterSet::In,
-					 &gRecord);
-    if (!qpa.copyIn(errorMessage)) return False;
-    if (!qpa().isConform("deg")) {
-      errorMessage += "\nThe 'minoraxis' field does not have angular units";
+    const String fieldString("minorAxis");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "\nThe 'minoraxis' field does not exist";
       return False;
     }
-    minorAxis = MVAngle(qpa());
+    const RecordFieldId field(fieldString);
+    if (record.shape(field) != IPosition(1,1)) {
+	errorMessage += "\nThe 'minoraxis' field have only 1 element";
+	return False;
+    }      
+    Record quantumRecord;
+    try {
+      quantumRecord = record.asRecord(field);
+    }
+    catch (AipsError x) {
+      errorMessage += "\nThe 'minoraxis' field must be a record";
+      return False;
+    } end_try;
+    
+    GlishRecord glishRecord;
+    glishRecord.fromRecord(quantumRecord);
+    if (!measures::isQuantity(glishRecord)) {
+      errorMessage += "\nThe 'minoraxis' field is not a quantity";
+      return False;
+    }
+    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    if (quantum.getFullUnit() != Unit("deg")) {
+      errorMessage += "\nThe 'minoraxis' field must have angular units";
+      return False;
+    }
+    minorAxis = MVAngle(quantum);
   }
   MVAngle pa;
   {
-    QuantumParameterAccessor<Double> qpa("positionangle", ParameterSet::In,
-					 &gRecord);
-    if (!qpa.copyIn(errorMessage)) return False;
-    if (!qpa().isConform("deg")) {
-      errorMessage +="\nThe 'positionangle' field does not have angular units";
+    const String fieldString("positionangle");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "\nThe 'positionangle' field does not exist";
       return False;
     }
-    pa = MVAngle(qpa());
+    const RecordFieldId field(fieldString);
+    if (record.shape(field) != IPosition(1,1)) {
+	errorMessage += "\nThe 'positionangle' field have only 1 element";
+	return False;
+    }      
+    Record quantumRecord;
+    try {
+      quantumRecord = record.asRecord(field);
+    }
+    catch (AipsError x) {
+      errorMessage += "\nThe 'positionangle' field must be a record";
+      return False;
+    } end_try;
+    
+    GlishRecord glishRecord;
+    glishRecord.fromRecord(quantumRecord);
+    if (!measures::isQuantity(glishRecord)) {
+      errorMessage += "\nThe 'positionangle' field is not a quantity";
+      return False;
+    }
+    Quantum<Double> quantum = measures::fromRecord(glishRecord);
+    if (quantum.getFullUnit() != Unit("deg")) {
+      errorMessage += "\nThe 'positionangle' field must have angular units";
+      return False;
+    }
+    pa = MVAngle(quantum);
   }
   setWidth(majorAxis, minorAxis, pa);
   DebugAssert(ok(), AipsError);

@@ -39,9 +39,8 @@
 class MVAngle;
 class RecordInterface;
 class String;
-class doubleG_COMPLEX;
-typedef doubleG_COMPLEX DComplex;
 template <class T> class Vector;
+template <class T> class Flux;
 
 // <summary>A Gaussian model for the spatial distribution of emission</summary>
 
@@ -127,7 +126,7 @@ template <class T> class Vector;
 // Quantity J1934_ra = Quantity(19.0/24*360, "deg") + Quantity(39, "'");
 // Quantity J1934_dec = Quantity(-63, "deg") + Quantity(43, "'");
 // MDirection J1934_dir(J1934_ra, J1934_dec, MDirection::J2000);
-// ComponentFlux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
+// Flux<Double> J1934_flux(6.28, 0.1, 0.15, 0.01);
 // GaussianCompRep J1934(J1934_flux, J1934_dir);
 // // This component can now be projected onto an image
 // CoordinateSystem coords;
@@ -222,18 +221,19 @@ public:
   MVAngle positionAngle() const;
   // </group>
 
-  // Return the scaling factor that indicates the proportion of the flux that
-  // is in the specified pixel in the specified direction. The pixels are
-  // assumed to be square.
+  // Calculate the flux at the specified direction, in a pixel of specified
+  // size, given the total flux of the component. The total flux of the
+  // component must be supplied in the flux variable and the proportion of the
+  // flux in the specified pixel is returned in the same variable.
   //
-  // Curently this function does <em>NOT<\em> integrate the Gaussian over the
+  // Currently this function does <em>NOT<\em> integrate the Gaussian over the
   // area of the sky subtended by the pixel. Instead it simply samples the
   // Gaussian at the centre of the pixel and scales by the pixel area. This is
   // satisfactory for Gaussians that are large compared with the size of the
   // pixel. This function will be updated to deal with small Gaussians sometime
   // in the future.
-  virtual Double scale(const MDirection & direction, 
-		       const MVAngle & pixelSize) const;
+  virtual void sample(Flux<Double> & flux, const MDirection & direction, 
+		      const MVAngle & pixelSize) const;
 
   // Return the Fourier transform of the component at the specified gaussian in
   // the spatial frequency domain. The point is specified by a 3 element vector
@@ -245,15 +245,16 @@ public:
   // The reference position for the transform is the direction of the
   // component. As this component is symmetric about this point the transform
   // is always a real value.
-  // <group>
-  virtual void visibility(DComplex & result, const Vector<Double> & uvw,
-			  const Double & frequency) const;
-  virtual Double visibility(const Vector<Double> & uvw,
-			    const Double & frequency) const;
-  // </group>
 
-  // always returns True as a Gaussian source is symmetric.
-  virtual Bool isSymmetric() const;
+  // The total flux of the component must be supplied in the flux variable and
+  // the corresponding visibility is returned in the same variable.
+  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw,
+			  const Double & frequency) const;
+
+  // Return a pointer to a copy of this object upcast to a ComponentShape
+  // object. The class that uses this function is responsible for deleting the
+  // pointer. This is used to implement a virtual copy constructor.
+  virtual ComponentShape * cloneShape() const;
 
   // set/get the shape parameters associated with the Gaussian. There are three
   // these being in order: the major axis, the minor axis and the position
