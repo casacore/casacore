@@ -4,7 +4,7 @@
  <date> 2000/07/24 </date>
  <avers> 1.4 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> coordinates </package>
  <module> coordsys </module>
  <type> Code Documentation </type>
  <category> New </category>
@@ -27,7 +27,7 @@ of the contents of the coordinate system
  <date> 2000/12/04 </date>
  <avers> 1.5 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> coordinates </package>
  <module> coordsys </module>
  <type> Code Documentation Test </type>
  <category> New </category>
@@ -50,7 +50,7 @@ is used.
  <date> 2000/12/04 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> coordinates </package>
  <module> Coordinates </module>
  <type> Code Documentation Test </type>
  <category> New </category>
@@ -69,7 +69,7 @@ support for relative coordinates (world or pixel)
  <date> 2000/12/04 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> coordinates </package>
  <module> Coordinates </module>
  <type> Code </type>
  <category> Change </category>
@@ -90,7 +90,7 @@ The functions to change these attributes now take no action.
  <date> 2001/01/10 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> coordinates </package>
  <module> Coordinates </module>
  <type> Code </type>
  <category> New </category>
