@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997,1998,1999,2000,2001
+#   Copyright (C) 1997,1998,1999,2000,2001,2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -127,7 +127,7 @@ PGPLOTROOT := /usr
 C++ROOT := /usr/local/gcc
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN
+CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_STDLIB -DAIPS_NO_LEA_MALLOC
 
 # C compiler flags for system debug/optimized compilations.
 CC      := $(C++ROOT)/bin/gcc
