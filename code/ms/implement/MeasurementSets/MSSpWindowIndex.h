@@ -1,5 +1,5 @@
 //# MSSpWindowIndex: index/lookup in a MeasurementSet SPECTRAL_WINDOW subtable
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 //# includes
 #include <aips/aips.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/MeasurementSets/MSSpectralWindow.h>
 #include <aips/MeasurementSets/MSSpWindowColumns.h>
 #include <aips/Arrays/Vector.h>
@@ -89,6 +90,11 @@ public:
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group or groups
   Vector<Int> matchFreqGrp(const Int& freqGrp);
   Vector<Int> matchFreqGrp(const Vector<Int>& freqGrps);
+
+  // Look up SPECTRAL_WINDOW_ID's for a given frequency axis sampling
+  Vector<Int> matchFreq(const Vector<MFrequency>& chanFreq,
+			const Vector<MVFrequency>& chanWidth,
+			const Double& freqTol);
 
 private:
   // Disallow null constructor
