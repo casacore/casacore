@@ -96,14 +96,17 @@ public:
 // Assignment operator
    ImageSourceFinder<T> &operator=(const ImageSourceFinder<T> &other);
 
-// Find strong point sources
-   ComponentList findPointSources (LogIO& os, 
-                                   Int nMax, 
-                                   Double cutoff, Bool absFind);
+// Find strong (point) sources.  If doPoint=False, some rough shape
+// information is returned as well.  Becuase the flux of the component is
+// integrated, this rough shape influences the flux values.
+
+   ComponentList findSources (LogIO& os, 
+                              Int nMax, 
+                              Double cutoff, Bool absFind, Bool doPoint=True);
 
 // Find one source in sky plane.  Exception if no sky
    SkyComponent findSourceInSky (LogIO& os, Vector<Double>& absPixel,
-                                 Double cutoff, Bool absFind);
+                                 Double cutoff, Bool absFind, Bool doPoint=True);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
@@ -111,12 +114,10 @@ public:
 private:
    const ImageInterface<T>* pImage_p;
 
-// Find strong point sources
-   ComponentList findPointSources (LogIO& os, const ImageInterface<T>& image,
-                                   Int nMax, 
-                                   Double cutoff, Bool absFind);
-
-
+// Find strong (point) sources
+   ComponentList findSources (LogIO& os, const ImageInterface<T>& image,
+                              Int nMax, 
+                              Double cutoff, Bool absFind, Bool doPoint);
 };
 
 #endif
