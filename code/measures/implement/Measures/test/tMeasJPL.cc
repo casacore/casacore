@@ -28,15 +28,22 @@
 //# Includes
 #include <aips/aips.h>
 #include <iomanip.h>
-#include <aips/Measures/MeasJPL.h>
-#include <aips/Measures/MVEpoch.h>
-#include <aips/Measures/MeasTable.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Measures.h>
+#include <aips/Measures/MeasJPL.h>
+#include <aips/Measures/MVEpoch.h>
+#include <aips/Measures/MVDirection.h>
+#include <aips/Measures/MeasTable.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MCFrame.h>
+#include <aips/Measures/MEpoch.h>
 
 main() {
+  const MVEpoch dat = 51116;
   try {
-    const MVEpoch dat = 51116;
+    MVDirection mvd1;
+
     cout << "Test measure class MeasJPL" << endl;
     cout << "---------------------------" << endl;
 
@@ -51,6 +58,8 @@ main() {
     cout << "Mercury:    " << val.ac() << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
     cout << "Venus:      " << val.ac() << endl;
+    for (uInt i=0; i<3; i++) mvd1(i) = val(i); mvd1.adjust();
+    cout << "Venus:      " << mvd1 << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::EARTH, dat);
     cout << "Earth:      " << val.ac() << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MARS, dat);
@@ -110,6 +119,35 @@ main() {
     cout << "Nutation:   " << val.ac() << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
     cout << "Libration:  " << val.ac() << endl;
+
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  } end_try;
+  
+  try {
+    const MEpoch mdat(dat, MEpoch::Ref(MEpoch::TDB));
+    MeasFrame frame(mdat);
+    MDirection::Ref venr(MDirection::VENUS, frame);
+    MDirection::Ref sunr(MDirection::SUN, frame);
+    MDirection::Ref moonr(MDirection::MOON, frame);
+    MDirection ven(venr);
+    MDirection sn(sunr);
+    MDirection mon(moonr);
+    MDirection::Convert vc1(ven, MDirection::Ref(MDirection::JNAT));
+    MDirection::Convert vc2(ven, MDirection::Ref(MDirection::APP));
+    MDirection::Convert sc1(sn, MDirection::Ref(MDirection::JNAT));
+    MDirection::Convert sc2(sn, MDirection::Ref(MDirection::APP));
+    MDirection::Convert mc1(mon, MDirection::Ref(MDirection::JNAT));
+    MDirection::Convert mc2(mon, MDirection::Ref(MDirection::APP));
+
+    cout << "Venus JNAT: " << vc1() << endl;
+    cout << "Venus APP:  " << vc2() << endl;
+    cout << "Sun   JNAT: " << sc1() << endl;
+    cout << "Sun   APP:  " << sc2() << endl;
+    cout << "Sun   APP:  " << sc2().getValue().getAngle("deg") << endl;
+    cout << "Moon  JNAT: " << mc1() << endl;
+    cout << "Moon  APP:  " << mc2() << endl;
+    cout << "Moon  APP:  " << mc2().getValue().getAngle("deg") << endl;
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
