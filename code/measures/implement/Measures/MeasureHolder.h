@@ -41,6 +41,9 @@ class MEpoch;
 class MFrequency;
 class MPosition;
 class MRadialVelocity;
+class Muvw;
+class MBaseline;
+class MEarthMagnetic;
 class GlishRecord;
 
 // <summary> A holder for Measures to enable record conversions </summary>
@@ -135,6 +138,9 @@ public:
   Bool isMFrequency() const;
   Bool isMPosition() const;
   Bool isMRadialVelocity() const;
+  Bool isMBaseline() const;
+  Bool isMuvw() const;
+  Bool isMEarthMagnetic() const;
   // </group>
 
   // Get a specific Measure from the holder (with lifetime as long 
@@ -151,6 +157,9 @@ public:
   const MFrequency &asMFrequency() const;
   const MPosition &asMPosition() const;
   const MRadialVelocity &asMRadialVelocity() const;
+  const MBaseline &asMBaseline() const;
+  const Muvw &asMuvw() const;
+  const MEarthMagnetic &asMEarthMagnetic() const;
   // </group>
   // Create a Measure from a record. An error message is generated, and False
   // returned if an invalid record is given. A valid record will return True.

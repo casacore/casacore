@@ -36,6 +36,9 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
@@ -95,6 +98,18 @@ Bool MeasureHolder::isMRadialVelocity() const {
   return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MRadialVelocity::myType());
 }
 
+Bool MeasureHolder::isMBaseline() const {
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MBaseline::myType());
+}
+
+Bool MeasureHolder::isMuvw() const {
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == Muvw::myType());
+}
+
+Bool MeasureHolder::isMEarthMagnetic() const {
+  return ToBool(hold_p.ptr() && hold_p.ptr()->type() == MEarthMagnetic::myType());
+}
+
 const Measure &MeasureHolder::asMeasure() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty MeasureHolder argument for asMeasure"));
@@ -144,6 +159,27 @@ const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
   return (const MRadialVelocity &) *hold_p.ptr();
 }
 
+const MEarthMagnetic &MeasureHolder::asMEarthMagnetic() const {
+  if (!hold_p.ptr() || !isMEarthMagnetic()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMEarthMagnetic"));
+  };
+  return (const MEarthMagnetic &) *hold_p.ptr();
+}
+
+const MBaseline &MeasureHolder::asMBaseline() const {
+  if (!hold_p.ptr() || !isMBaseline()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMBaseline"));
+  };
+  return (const MBaseline &) *hold_p.ptr();
+}
+
+const Muvw &MeasureHolder::asMuvw() const {
+  if (!hold_p.ptr() || !isMuvw()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMuvw"));
+  };
+  return (const Muvw &) *hold_p.ptr();
+}
+
 Bool MeasureHolder::fromRecord(String &error,
 			       const RecordInterface &in) {
   if (in.isDefined(String("type")) &&
@@ -166,6 +202,12 @@ Bool MeasureHolder::fromRecord(String &error,
       hold_p.set(new MPosition());
     } else if (tp == downcase(MRadialVelocity::showMe())) {
       hold_p.set(new MRadialVelocity());
+    } else if (tp == downcase(MBaseline::showMe())) {
+      hold_p.set(new MBaseline());
+    } else if (tp == downcase(Muvw::showMe())) {
+      hold_p.set(new Muvw());
+    } else if (tp == downcase(MEarthMagnetic::showMe())) {
+      hold_p.set(new MEarthMagnetic());
     } else {
       error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
       return False;
