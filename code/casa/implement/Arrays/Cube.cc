@@ -56,6 +56,12 @@ template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3)
     DebugAssert(ok(), ArrayError);
 }
 
+template<class T> Cube<T>::Cube(const IPosition &len, const IPosition &or)
+  : Array<T>(len,or)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 3 && or.nelements() == 3, ArrayError);
+}
 
 template<class T> Cube<T>::Cube(const Cube<T> &other)
 : Array<T>(other)

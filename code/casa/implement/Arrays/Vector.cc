@@ -54,6 +54,12 @@ template<class T> Vector<T>::Vector(uInt Length)
 }
 
 
+template<class T> Vector<T>::Vector(Position &len, IPosition &or)
+  : Array<T>(len,or)
+{
+    AlwaysAssert(len.nelements() == 1 && or.nelements() == 1, ArrayError);
+}
+
 template<class T> Vector<T>::Vector(const Block<T> &other, Int nr)
 : Array<T>(IPosition(1, other.nelements()))
 {
