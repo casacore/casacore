@@ -83,8 +83,6 @@ template void std::__distance<\
 #  else
 #   define AIPS_MAP_AUX_TEMPLATES(T, U)
 #  endif
-# else
-#  define AIPS_MAP_AUX_TEMPLATES(T, U)
 # endif
 # else
 #  define AIPS_MAP_AUX_TEMPLATES(T, U)
