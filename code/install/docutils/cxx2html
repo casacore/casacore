@@ -517,6 +517,7 @@ sub dumpModule {
 	$comment = $proc->skipto($end + 1);
 	$xsummaryx = $out->getsummary($comment, "module " . $module);
 	$out->fixcomment($module,$comment);
+	push(@moduleDoc,$xsummaryx);
 	push(@moduleDoc,@$comment," ");
     }
     $out->createmodule($module,\@moduleDoc);
