@@ -412,8 +412,8 @@ An example:
       //
       // or as (with conversion of reference frame it
       // could have been)
-      // VelocityMachine exec(fr, fu, rfrq, vr, vu,
-      //                      MFrequency::TOPO, frame);
+      // VelocityMachine exec(fr, fu, rfrq, MFrequency::TOPO,
+      //                      vr, vu, frame);
       // Given a current observational frequency of 
       //    5.87432837e-06 eV
       // its velocity will be (in AU/yr)
