@@ -54,8 +54,8 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "}\n";
    print "\\end{htmlonly}\n";
    print "\\input{aips2defs}\n";
-   $pack = $opt_package;
 }
+$pack = $opt_package;
 
 if($opt_glish == 1){
    $pack = "help::pkg.$opt_package";
