@@ -1,5 +1,5 @@
-//# DOdeconvolver: defines classes for deconvolver DO.
-//# Copyright (C) 1996,1997,1998,1999
+//# ImageRegrid.h: Regrid Images
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,17 +30,16 @@
 #define TRIAL_IMAGEREGRID_H
 
 #include <aips/aips.h>
-#include <trial/Tasking/ApplicationObject.h>
-#include <aips/Tasking/Index.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <trial/Lattices/LatticeCleaner.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Mathematics/Interpolate2D.h>
 
+template<class T> class MaskedLattice;
 template<class T> class ImageInterface;
+template<class T> class Lattice;
+template<class T> class Vector;
 
+class DirectionCoordinate;
 
 // <summary>This regrids one image to match the coordinate system of another</summary>
 
@@ -52,13 +51,36 @@ template<class T> class ImageInterface;
 // <prerequisite>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
 //   <li> <linkto class="CoordinateSystem">CoordinateSystem</linkto>
+//   <li> <linkto class="Interpolate2D">Interpolate2D</linkto>
+//   <li> <linkto class="InterpolateArray1D">InterpolateArray1D</linkto>
 // </prerequisite>
 //
 // <etymology>
-// ImageRegrid : hey, it Regrids Images!
+//  Regrids, or resamples, images.  
 // </etymology>
 //
 // <synopsis>
+//  This class enables you to regrid one image to the coordinate
+//  system of another.    You can regrid any or all of the
+//  axes in the image.  A range of interpolation schemes are available.
+//
+//  It will cope with coordinate systems being in different orders
+//  (coordinate, world axes, pixel axes).  The basic approach is to
+//  make a mapping from the input to the output coordinate systems,
+//  but the output CoordinateSystem is preserved.
+//
+//  Any DirectionCoordinate is regridded with a coupled 2D 
+//  interpolation scheme.  All other axes are regridded with
+//  a 1D interpolation scheme.    StokesCoordinates cannot be
+//  regridded.
+//
+//  Multiple passes are made through the data, and the output of 
+//  each pass is the input of the next pass.  The intermediate 
+//  images are stored as TempImages which may be in memory or 
+//  on disk, depending on theri size.
+//
+//  It can also simply insert this image into that one via
+//  an integer shift.
 // </synopsis>
 //
 // <example>
@@ -68,103 +90,115 @@ template<class T> class ImageInterface;
 // </example>
 //
 // <motivation> 
-// This class was written to regrid one image to another.
+// A common image analysis need is to regrid images, e.g. to compare
+// images from different telescopes.
 // </motivation>
 //
 // <thrown>
 // <li> AipsError 
 // </thrown>
 //
-// <todo asof="1999/03/04">
-//   <li> Currently, we can't really regrid as in HGEOM.  The
-//  pixles need to share the same basic grid, we just make one image shape and
-//  reference pixel look like another.
+// <todo asof="1999/04/20">
+//   <li> Reference frame changes (e.g. J2000 -> B1950)
+//   <li> 1D interpolation does not handle input masks
 // </todo>
 
 template <class T> class ImageRegrid
 {
 public:
 
-  // default constructor
+  // Default constructor
   ImageRegrid();
 
-  // constructor which takes the coordinate information required
-  // to specify the template
-  // (use this instead of the actual images, which may be C++/Templated
-  // differently than the data image)
-  //
-  // also, currently outShape does nothing (ie, == templateShape)
-  // interpolation order does nothing
-  // <group>
-  ImageRegrid(const IPosition& templateShape,
-	      const CoordinateSystem& templateCoords,
-	      const uInt interpOrder,
-	      const IPosition& outShape);
-
-  ImageRegrid(const IPosition& templateShape,
-	      const CoordinateSystem& templateCoords);
-  // </group>
-
-  // copy constructor
+  // copy constructor (copy semantics)
   ImageRegrid(const ImageRegrid &other);
 
   // destructor
   ~ImageRegrid();
 
-  // operator=
+  // Assignment copy semantics)
   ImageRegrid<T>& operator=(const ImageRegrid& other);
 
-  // regrid dataImage onto the grid specified in the state data;
-  // If stokesImageConventions == True,  "some restrictions may apply"
-  ImageInterface<T>* regrid(ImageInterface<T>& dataImage, Bool stokesImageConventions=False);
+  // Regrid inImage onto the grid specified by outImage.
+  // If outImage has a writable mask, it will be updated.
+  // Specify which pixel axes of outImage are to be
+  // regridded
+  void regrid(ImageInterface<T>& outImage, 
+              Interpolate2D<T>::Method method,
+              const IPosition& whichOutPixelAxes,
+	      const ImageInterface<T>& inImage);
 
-  // Fits the dataImage to the currently stored template.
-  // If stokesImageConventions == True, "some restrictions may apply"
-  ImageInterface<T>* fitIntoImage(ImageInterface<T>& dataImage, Bool stokesImageConventions=False);
-    
-  // class user sets the template shape and coordinate system
-  void setTemplate (const IPosition& tShape,
-		    const CoordinateSystem& tCoords);
+  // Inserts inImage into outImage.  The alignment is done by
+  // placing the reference pixel of inImage at the specified reference
+  // pixel of outImage.  Only integral shifts are done.
+  // The CoordinateSystem of outImage is overwitten by that of
+  // inImage and the new reference pixel.  If outImage has a mask,
+  // it will be updated.
+  // Returns False if no overlap of images, in which case the
+  // output is not updated.
+  Bool insert(ImageInterface<T>& outImage,
+              const Vector<Double>& outReferencePixel,
+              const ImageInterface<T>& inImage);
 
-  // class user sets HGEOM interpolation order : currently nothing
-  void setInterpOrder (uInt order);
-
-  // class use sets the output image shape : current does nothing
-  void setOutShape (const IPosition& oShape);  
-
-  // Compares one direction Coordinate with another;
-  // returns True if the two describe the same abstract grid (ie, same projection,
-  // tangent point, and cell size, but possibly different reference pixels
-  // and numbers of cells)
-  static Bool convergentDirCoords(const DirectionCoordinate& one, 
-			       const DirectionCoordinate& other);
+  // Print out useful debugging information (level 0 is none,
+  // 1 is some, 2 is too much)
+  void showDebugInfo(Int level=0) {itsShowLevel = level;};
 
  private:
 
-  // Private data
-  // in future: interp order,
-  // actual output image size (templateShape refers to
-  // the coordinate system and is a slight misnomer)
-  IPosition templateShape;
-  const CoordinateSystem * templateCoords_p;
-  uInt interpOrder;
-  IPosition outShape;
-
-  // private methods:
+  Int itsShowLevel;
   
-  // Fit imageData into an image which is consistent in
-  // size and reference pixel with templateShape and templateCoords.
-  // return 0 pointer if reference value or cell sizes are different.
-  // If stokesImageConventions == True, "some restrictions may apply"
-  ImageInterface<T>* fitIntoStokesImage(ImageInterface<T>& dataImage);
+  // Find if any of the mask pixels are bad
+  Bool anyBadPixels(uInt width, const Matrix<Bool>& mask);
 
-  /*      // hgeom algorithm and generic case - don't exist yet
-  ImageInterface<T>* fitIntoGenericImage(ImageInterface<T>& dataImage);
-  ImageInterface<T>* hgeomStokesImage(ImageInterface<T>& dataImage);
-  ImageInterface<T>* hgeomGenericImage(ImageInterface<T>& dataImage);
-  */
+  // Check shape and axes.  Exception if no good.  If pixelAxes
+  // of length 0, set to all axes according to shape
+  void checkAxes(IPosition& outPixelAxes,
+                 const IPosition& inShape,
+                 const IPosition& outShape,
+                 const Vector<Int>& pixelAxisMap,
+                 const CoordinateSystem& outCoords);
 
+  // Copy data and mask
+  void copyDataAndMask(MaskedLattice<T>& out,
+                       MaskedLattice<T>& in) const;
+  // Copy data and mask
+  void copyDataAndMask(MaskedLattice<T>& out,
+                       Lattice<Bool>& outMask,
+                       MaskedLattice<T>& in) const;
+
+  // Find maps between coordinate systems
+  void findMaps (uInt nDim, Vector<Int>& worldAxisMap,
+                 Vector<Int>& worldAxisTranspose,
+                 Vector<Bool>& worldRefChange,
+                 Vector<Int>& pixelAxisMap1,
+                 Vector<Int>& pixelAxisMap2,
+                 const CoordinateSystem& inCoords,
+                 const CoordinateSystem& outCoords) const;
+
+  // Regrid 2 coupled axes
+  void regrid2D (MaskedLattice<T>& outLattice,
+                 const MaskedLattice<T>& inLattice,   
+                 const Coordinate& inCoord,
+                 const Coordinate& outCoord,   
+                 const Vector<Int> inPixelAxes, 
+                 const Vector<Int> outPixelAxes,
+                 const Vector<Int> pixelAxisMap,
+                 Interpolate2D<T>::Method method);
+
+  // Regrid 1 axis
+  void regrid1D (MaskedLattice<T>& outLattice,
+                 const MaskedLattice<T>& inLattice,
+                 const Coordinate& inCoord,
+                 const Coordinate& outCoord,
+                 const Vector<Int>& inPixelAxes,
+                 const Vector<Int>& outPixelAxes,
+                 Int inAxisInCoordinate,
+                 Int outAxisInCoordinate,
+                 const Vector<Int> pixelAxisMap,
+                 Interpolate2D<T>::Method method);
 };
 
  
 #endif
+
