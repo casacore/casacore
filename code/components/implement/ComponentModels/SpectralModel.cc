@@ -34,61 +34,17 @@ SpectralModel::~SpectralModel() {
   DebugAssert(ok(), AipsError);
 }
 
-ComponentType::SpectralShape SpectralModel::spectralShape() const {
-  DebugAssert(ok(), AipsError);
-  return ComponentType::CONSTANT_SPECTRUM;
-}
-
-void SpectralModel::setRefFrequency(const MFrequency & newRefFreq) {
-  // Use newRefFreq for something to suppress a compiler warning
-  if (&newRefFreq == 0) {
-  }
-  DebugAssert(ok(), AipsError);
-}
-  
-const MFrequency & SpectralModel::refFrequency() const {
-  DebugAssert(ok(), AipsError);
-  return MFrequency();
-}
-
 void SpectralModel::refFrequency(MFrequency & refFreq) const {
   DebugAssert(ok(), AipsError);
   refFreq = refFrequency();
 }
 
-Double SpectralModel::scale(const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
-  // Use centerFrequency for something to suppress a compiler warning
-  if (&centerFrequency == 0) {
-  }
-  return 1.0;
-}
-
 void SpectralModel::scale(Double & scaleFactor, 
 			  const MFrequency & centerFrequency) const {
   DebugAssert(ok(), AipsError);
-  scaleFactor = scale(centerFrequency);;
+  scaleFactor = scale(centerFrequency);
 }
 
-Bool SpectralModel::ok() const {
-  return True;
-}
-
-uInt SpectralModel::nSpectralParameters() const {
-  DebugAssert(ok(), AipsError);
-  return 0;
-}
-
-void SpectralModel::
-setSpectralParameters(const Vector<Double> & newSpectralParms) {
-  DebugAssert(newSpectralParms.nelements() == nSpectralParameters(),AipsError);
-  DebugAssert(ok(), AipsError);
-}
-
-void SpectralModel::spectralParameters(Vector<Double> & spectralParms) const {
-  DebugAssert(ok(), AipsError);
-  DebugAssert(spectralParms.nelements() == nSpectralParameters(),AipsError);
-}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SpectralModel"
 // End: 
