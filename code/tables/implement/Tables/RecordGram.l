@@ -1,6 +1,6 @@
 /*
     RecordGram.l: Lexical analyzer for table commands
-    Copyright (C) 2000
+    Copyright (C) 2000,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,10 @@
 #undef YY_DECL
 #define YY_DECL int RecordGramlex (YYSTYPE* lvalp)
 %}
+
+/* states */
+%s EXPRstate
+%s REGEXstate
 
 
 /* The order in the following list is important, since, for example,
@@ -85,6 +89,14 @@ OR        [Oo][Rr]
 NOT       [Nn][Oo][Tt]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}("."{NAME})*
+REGEX1    m"/"[^/]+"/"
+REGEX2    m%[^%]+%
+REGEX3    m#[^#]+#
+REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+PATT1     p\/[^/]+\/
+PATT2     p%[^%]+%
+PATT3     p#[^#]+#
+PATT      {PATT1}|{PATT2}|{PATT3}
 
 
 %%
@@ -190,6 +202,32 @@ NAMEFLD   {NAME}("."{NAME})*
 	    lvalp->val->type = 't';
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
+	  }
+
+ /* regular expression and pattern handling */
+"~"       {
+            BEGIN(REGEXstate);
+            return EQREGEX;
+          }
+"!~"      {
+            BEGIN(REGEXstate);
+            return NEREGEX;
+          }
+<REGEXstate>{REGEX} {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
+	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
+            BEGIN(EXPRstate);
+	    return REGEX;
+	  }
+<REGEXstate>{PATT} {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
+	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
+            BEGIN(EXPRstate);
+	    return PATTERN;
 	  }
 
 {NAME}    {

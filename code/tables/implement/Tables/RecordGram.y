@@ -41,7 +41,13 @@ TableExprNodeSet* settp;
 %token <val> FLDNAME        /* name of field or shorthand for table */
 %token <val> LITERAL
 %token <val> STRINGLITERAL
+%token <val> REGEX
+%token <val> PATTERN
 %token IN
+%token BETWEEN
+%token LIKE
+%token EQREGEX
+%token NEREGEX
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -144,15 +150,82 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $3;
 	   }
+         | arithexpr EQREGEX REGEX {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 == regex(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr NEREGEX REGEX {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 != regex(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr EQREGEX PATTERN {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 == pattern(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr NEREGEX PATTERN {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 != pattern(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr LIKE arithexpr {
+	       $$ = new TableExprNode (*$1 == sqlpattern(*$3));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr NOT LIKE arithexpr {
+	       $$ = new TableExprNode (*$1 != sqlpattern(*$4));
+	       delete $1;
+	       delete $4;
+	   }
          | arithexpr IN arithexpr {
                $$ = new TableExprNode ($1->in (*$3));
                delete $1;
                delete $3;
            }
+         | arithexpr NOT IN arithexpr {
+               TableExprNode node ($1->in (*$4));
+               $$ = new TableExprNode (!node);
+               delete $1;
+               delete $4;
+           }
          | arithexpr IN singlerange {
                $$ = new TableExprNode ($1->in (*$3));
                delete $1;
                delete $3;
+           }
+         | arithexpr NOT IN singlerange {
+               TableExprNode node ($1->in (*$4));
+               $$ = new TableExprNode (!node);
+               delete $1;
+               delete $4;
+           }
+         | arithexpr BETWEEN arithexpr AND arithexpr {
+ 	       TableExprNodeSet set;
+	       set.add (TableExprNodeSetElem(True, *$3, *$5, True));
+               $$ = new TableExprNode ($1->in (set));
+               delete $1;
+               delete $3;
+	       delete $5;
+           }
+         | arithexpr NOT BETWEEN arithexpr AND arithexpr {
+ 	       TableExprNodeSet set;
+	       set.add (TableExprNodeSetElem(True, *$4, *$6, True));
+               TableExprNode node ($1->in (set));
+               $$ = new TableExprNode (!node);
+               delete $1;
+               delete $4;
+	       delete $6;
            }
          ;
 
