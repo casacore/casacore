@@ -62,6 +62,7 @@
    #include <regex.h>
     regex_t expbuf;
 #endif
+int getrc(int douser, char *expr, char *match, char *rcfile, char *line);
 
 #if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
    #define INIT       register char *sp = instring;
@@ -240,7 +241,7 @@ int getrc(int douser, char *expr, char *match, char *rcfile, char *line)
 
 
          /* Compile the regular expression. */
-#if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
+#if defined (AIPS_SVID3) && !(defined(HAVE_LINUX_GLIBC) || defined(AIPS_DARWIN))
          if (compile(pattern, expbuf, &expbuf[EXPSIZ], '\0') != 0) return (4);
 #else
 #if defined(AIPS_DARWIN)
@@ -255,7 +256,7 @@ int getrc(int douser, char *expr, char *match, char *rcfile, char *line)
 
 
          /* Test for regular expression match. */
-#if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
+#if defined (AIPS_SVID3) && !(defined(HAVE_LINUX_GLIBC) || defined(AIPS_DARWIN))
          if (step(expr, expbuf)) {
 #else
 #if defined(AIPS_DARWIN)
