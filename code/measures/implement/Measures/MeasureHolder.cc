@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/MeasureHolder.h>
-#include <trial/Measures/QuantumHolder.h>
+#include <aips/Measures/MeasureHolder.h>
+#include <aips/Measures/QuantumHolder.h>
 #include <aips/Exceptions.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MDirection.h>

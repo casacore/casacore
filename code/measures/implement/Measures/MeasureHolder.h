@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/PtrHolder.h>
-#include <trial/Utilities/RecordTransformable.h>
+#include <aips/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
 class Measure;

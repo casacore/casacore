@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/QuantumHolder.h>
+#include <aips/Measures/QuantumHolder.h>
 #include <aips/Exceptions.h>
 #include <aips/Measures/UnitVal.h>
 #include <aips/Measures/Quantum.h>
