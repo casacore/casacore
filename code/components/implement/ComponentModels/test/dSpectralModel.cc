@@ -1,5 +1,5 @@
 //# dSpectralModel.cc:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 void plotSpectrum(const Flux<Double> & refFlux,
                   const SpectralModel & modelSpectrum) {
   cout << "This is a " 
-       << ComponentType::name(modelSpectrum.spectralShape())
+       << ComponentType::name(modelSpectrum.type())
        << " spectrum with a reference frequency of "
        << modelSpectrum.refFrequency().get("GHz") << endl
        << modelSpectrum.refFrequency().getRef() 
