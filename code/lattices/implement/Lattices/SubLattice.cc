@@ -1,5 +1,5 @@
 //# SubLattice.cc: A subset of a Lattice
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,11 +231,11 @@ template<class T>
 LatticeIterInterface<T>* SubLattice<T>::makeIter
                                (const LatticeNavigator& navigator) const
 {
-  return new SubLatticeIter<T> (navigator);
+  return new LatticeIterInterface<T> (navigator);
   // Make a clone of the navigator to be able to apply our region.
-  LatticeNavigator* navPtr = navigator.clone();
-  const Slicer& section = itsRegionPtr->box();
-  navPtr->subSection (section.start(), section.end(), section.stride());
-  delete navPtr;
-  return iterPtr;
+///  LatticeNavigator* navPtr = navigator.clone();
+///  const Slicer& section = itsRegionPtr->box();
+///  navPtr->subSection (section.start(), section.end(), section.stride());
+///  delete navPtr;
+///  return iterPtr;
 }
