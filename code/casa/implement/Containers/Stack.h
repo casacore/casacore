@@ -87,8 +87,7 @@ extern void throw_empty_Stack_error(const char *msg = 0);
 // </synopsis> 
 //
 // <motivation>
-//    A simple stack was needed for the <linkto class=CanDelete>CanDelete</linkto>
-//    class.
+//    A simple stack was needed for the (now deprecated) CanDelete class.
 // </motivation>
 //
 // <todo asof="28OCT94">
