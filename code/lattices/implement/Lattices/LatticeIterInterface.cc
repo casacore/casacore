@@ -1,5 +1,5 @@
 //# LatticeIterInterface.cc: A base class for concrete Lattice iterators
-//# Copyright (C) 1995,1997
+//# Copyright (C) 1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,8 @@
 
 #include <trial/Lattices/LatticeIterInterface.h>
 #include <aips/Utilities/DefaultValue.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 template <class T>
