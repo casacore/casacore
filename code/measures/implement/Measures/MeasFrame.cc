@@ -35,6 +35,7 @@
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasComet.h>
+#include <aips/iostream.h>
 
 // Representation class
 class FrameRep {

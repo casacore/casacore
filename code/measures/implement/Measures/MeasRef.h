@@ -1,5 +1,5 @@
 //# MeasRef.h: Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,11 +37,7 @@
 //# Forward Declarations
 class String;
 template <class Ms> class MeasRef;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 // <summary> Reference frame for physical measures </summary>
 

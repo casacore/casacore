@@ -1,5 +1,5 @@
 //# MConvertBase.cc:  Conversion of Measures Base
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Measures/MConvertBase.h>
+#include <aips/iostream.h>
 
 //# Constructors
 

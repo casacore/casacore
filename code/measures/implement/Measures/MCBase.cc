@@ -1,5 +1,5 @@
 //# MCBase.cc: Base for specific measure conversions
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,8 +28,8 @@
 //# Includes
 #include <aips/Measures/MCBase.h>
 #include <aips/Utilities/String.h>
-#include <strstream.h>
-#include <iomanip.h>
+#include <aips/strstream.h>
+#include <aips/iomanip.h>
 
 //# Constructors
 

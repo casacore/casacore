@@ -29,6 +29,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Measures/MeasRef.h>
+#include <aips/iostream.h>
 
 
 //# Constructors

@@ -1,5 +1,5 @@
 //# MRBase.cc:  Base for Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Measures/MRBase.h>
+#include <aips/iostream.h>
 
 
 //# Constructors

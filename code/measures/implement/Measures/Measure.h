@@ -1,5 +1,5 @@
 //# Measure.h: Physical quantities within reference frame
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,11 +39,7 @@ class MeasValue;
 class MRBase;
 template <class T> class Quantum;
 template <class T> class Vector;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 // <summary>
 // Physical quantities within reference frame
