@@ -117,6 +117,7 @@ void MSCalEnums::initMaps ()
     theirFieldMap.define (POLY_TYPE, "POLY_TYPE");
     theirFieldMap.define (POLY_MODE, "POLY_MODE");
     theirFieldMap.define (SCALE_FACTOR, "SCALE_FACTOR");
+    theirFieldMap.define (VALID_DOMAIN, "VALID_DOMAIN");
     theirFieldMap.define (N_POLY_AMP, "N_POLY_AMP");
     theirFieldMap.define (N_POLY_PHASE, "N_POLY_PHASE");
     theirFieldMap.define (POLY_COEFF_AMP, "POLY_COEFF_AMP");
@@ -210,6 +211,7 @@ void MSCalEnums::initMaps ()
     theirTypeMap.define (POLY_TYPE, TpString);
     theirTypeMap.define (POLY_MODE, TpString);
     theirTypeMap.define (SCALE_FACTOR, TpComplex);
+    theirTypeMap.define (VALID_DOMAIN, TpDouble);
     theirTypeMap.define (N_POLY_AMP, TpInt);
     theirTypeMap.define (N_POLY_PHASE, TpInt);
     theirTypeMap.define (POLY_COEFF_AMP, TpDouble);
