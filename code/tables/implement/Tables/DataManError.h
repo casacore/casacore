@@ -1,5 +1,5 @@
 //# DataManError.h: Data manager error classes
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,18 +49,13 @@
 // Note that you have to catch AipsError to catch all possible exceptions.
 // </synopsis> 
 
-rtti_dcl_init(DataManError);
 class DataManError : public AipsError {
 public:
     // The default constructor generates the message "Table DataManager error".
     DataManError ();
     // Construct with given message.
     DataManError (const String& message);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManError (ExcpError*);
     ~DataManError ();
-    rtti_dcl_mbrf_p1(DataManError,AipsError);
 };
 
 
@@ -76,16 +71,11 @@ public:
 // If this is thrown, something is terribly wrong.
 // </synopsis> 
 
-rtti_dcl_init(DataManInternalError);
 class DataManInternalError : public DataManError {
 public:
     // Add given message to string "Internal Table DataManager error: ".
     DataManInternalError (const String& message);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManInternalError (ExcpError*);
     ~DataManInternalError ();
-    rtti_dcl_mbrf_p1(DataManInternalError,DataManError);
 };
 
 
@@ -101,17 +91,12 @@ public:
 // This means that the data manager object cannot be recreated.
 // </synopsis> 
 
-rtti_dcl_init(DataManUnknownCtor);
 class DataManUnknownCtor : public DataManError {
 public:
     // This constructor generates a message that a data manager
     // with the given name is unknown (i.e. not registered).
     DataManUnknownCtor (const String& columnName);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManUnknownCtor (ExcpError*);
     ~DataManUnknownCtor ();
-    rtti_dcl_mbrf_p1(DataManUnknownCtor,DataManError);
 };
 
 
@@ -128,18 +113,13 @@ public:
 // In principle this error should never occur.
 // </synopsis> 
 
-rtti_dcl_init(DataManInvDT);
 class DataManInvDT : public DataManError {
 public:
     // The default constructor generates a generic "invalid data type" message.
     DataManInvDT ();
     // Put the name of the offending column in the "invalid data type" message.
     DataManInvDT (const String& columnName);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManInvDT (ExcpError*);
     ~DataManInvDT ();
-    rtti_dcl_mbrf_p1(DataManInvDT,DataManError);
 };
 
 
@@ -159,18 +139,13 @@ public:
 // However, the data manager still tests them for safety.
 // </synopsis> 
 
-rtti_dcl_init(DataManInvOper);
 class DataManInvOper : public DataManError {
 public:
     // The default constructor generates a generic "invalid operation" message.
     DataManInvOper ();
     // Add given message to string "Invalid DataMan operation: ".
     DataManInvOper (const String& message);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManInvOper (ExcpError*);
     ~DataManInvOper ();
-    rtti_dcl_mbrf_p1(DataManInvOper,DataManError);
 };
 
 
@@ -187,17 +162,12 @@ public:
 // which does not know the column name or data type.
 // </synopsis> 
 
-rtti_dcl_init(DataManUnknownVirtualColumn);
 class DataManUnknownVirtualColumn : public DataManError {
 public:
     // Issue a message containing the column name.
     DataManUnknownVirtualColumn (const String& columnName,
 				 const String& engineName);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    DataManUnknownVirtualColumn (ExcpError*);
     ~DataManUnknownVirtualColumn ();
-    rtti_dcl_mbrf_p1(DataManUnknownVirtualColumn,DataManError);
 };
 
 
@@ -215,16 +185,11 @@ public:
 // classes should be studied carefully.
 // </synopsis> 
 
-rtti_dcl_init(TSMError);
 class TSMError : public DataManError {
 public:
     // Issue the message prefixed by "TiledStMan: ".
     TSMError (const String& message);
-    //*display 8
-    // This constructor is needed for the catch clause.
-    TSMError (ExcpError*);
     ~TSMError ();
-    rtti_dcl_mbrf_p1(TSMError,DataManError);
 };
 
 
