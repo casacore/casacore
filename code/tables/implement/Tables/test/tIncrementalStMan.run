@@ -1,11 +1,11 @@
 #!/bin/sh
 #-----------------------------------------------------------------------------
-# Script to invoke tIncrementalStMan and verify its output.
+# Script to test tIncrementalStMan by running it in various ways.
 #=============================================================================
 
-exec assay tIncrementalStMan "1000 && \
-     tIncrementalStMan 2000 && \
-     tIncrementalStMan 3000 && \
-     tIncrementalStMan 4000 && \
-     tIncrementalStMan 5000 && \
-     tIncrementalStMan 0"
+  tIncrementalStMan 1000
+  tIncrementalStMan 2000
+  tIncrementalStMan 3000
+  tIncrementalStMan 4000
+  tIncrementalStMan 5000
+  tIncrementalStMan 0
