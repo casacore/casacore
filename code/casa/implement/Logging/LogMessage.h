@@ -165,7 +165,8 @@ public:
     LogMessage &line(uInt which);
     // </group>
 
-    // Set the source location - usually this will be called with the macro WHERE.
+    // Set the source location - usually this will be called with the
+    // macro WHERE.
     LogMessage &sourceLocation(const SourceLocation *where);
 
     // Get and set the origin of this LogMessage. If you only need the line
