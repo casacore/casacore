@@ -1,5 +1,5 @@
 //# MeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -253,25 +253,23 @@ public:
   // Return the name of each of the subtables. This should be used by the
   // filler to create the subtables in the correct location.
   // <group>
-  String antennaTableName() const {return tableName()+"/ANTENNA";}
-  String dataDescriptionTableName() const {
-    return tableName()+"/DATA_DESCRIPTION";}
-  String dopplerTableName() const { return tableName()+"/DOPPLER";}
-  String feedTableName() const {return tableName()+"/FEED";}
-  String fieldTableName() const {return tableName()+"/FIELD";}
-  String flagCmdTableName() const {return tableName()+"/FLAG_CMD";}
-  String freqOffsetTableName() const {return tableName()+"/FREQ_OFFSET";}
-  String historyTableName() const {return tableName()+"/HISTORY";}
-  String observationTableName() const {return tableName()+"/OBSERVATION";}
-  String pointingTableName() const {return tableName()+"/POINTING";}
-  String polarizationTableName() const {return tableName()+"/POLARIZATION";}
-  String processorTableName() const {return tableName()+"/PROCESSOR";}
-  String sourceTableName() const {return tableName()+"/SOURCE";}
-  String spectralWindowTableName() const {
-    return tableName()+"/SPECTRAL_WINDOW";}
-  String stateTableName() const {return tableName()+"/STATE";}
-  String sysCalTableName() const {return tableName()+"/SYSCAL";}
-  String weatherTableName() const {return tableName()+"/WEATHER";}
+  String antennaTableName() const;
+  String dataDescriptionTableName() const;
+  String dopplerTableName() const;
+  String feedTableName() const;
+  String fieldTableName() const;
+  String flagCmdTableName() const;
+  String freqOffsetTableName() const;
+  String historyTableName() const;
+  String observationTableName() const;
+  String pointingTableName() const;
+  String polarizationTableName() const;
+  String processorTableName() const;
+  String sourceTableName() const;
+  String spectralWindowTableName() const;
+  String stateTableName() const;
+  String sysCalTableName() const;
+  String weatherTableName() const;
   // </group>
     
   // Access functions for the subtables, using the MS-like interface for each
