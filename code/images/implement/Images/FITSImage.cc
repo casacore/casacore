@@ -29,7 +29,7 @@
 
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/MaskSpecifier.h>
