@@ -29,6 +29,7 @@
 #include <trial/Lattices/FITSMask.h>
 
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <trial/Tables/TiledFileAccess.h>
@@ -46,7 +47,9 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile)
   itsLongMagic(0),
   itsHasIntBlanks(False)
 {
-   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat, AipsError);
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat ||
+                itsTiledFilePtr->dataType()==TpDouble,
+                AipsError);
 }
 
 FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
@@ -124,6 +127,10 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
 //
    if (itsTiledFilePtr->dataType()==TpFloat) {
       itsTiledFilePtr->get(itsBuffer, section);
+   } else if (itsTiledFilePtr->dataType()==TpDouble) {
+      Array<Double> tmp(shp);
+      itsTiledFilePtr->get(tmp, section);
+      convertArray(itsBuffer, tmp);
    } else if (itsTiledFilePtr->dataType()==TpInt) {
       itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
                            itsLongMagic, itsHasIntBlanks);

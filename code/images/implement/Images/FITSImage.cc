@@ -43,6 +43,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
 #include <trial/Logging/LoggerHolder.h>
 #include <aips/Logging/LogIO.h>
@@ -198,6 +199,11 @@ Bool FITSImage::doGetSlice(Array<Float>& buffer,
    reopenIfNeeded();
    if (pTiledFile_p->dataType() == TpFloat) {
       pTiledFile_p->get (buffer, section);
+   } else if (pTiledFile_p->dataType() == TpDouble) {
+      Array<Double> tmp;
+      pTiledFile_p->get (tmp, section);
+      buffer.resize(tmp.shape());
+      convertArray(buffer, tmp);
    } else if (pTiledFile_p->dataType() == TpInt) {
       pTiledFile_p->get (buffer, section, scale_p, offset_p,
 			 longMagic_p, hasBlanks_p);
@@ -400,7 +406,9 @@ void FITSImage::setup()
    fileOffset_p = (recno - 1) * recsize;
 //
    dataType_p = TpFloat;
-   if (dataType == FITS::SHORT) {
+   if (dataType == FITS::DOUBLE) {
+      dataType_p = TpDouble;
+   } else if (dataType == FITS::SHORT) {
       dataType_p = TpShort;
    } else if (dataType == FITS::LONG) {
       dataType_p = TpInt;
@@ -415,7 +423,7 @@ void FITSImage::setup()
 // the magic value has been set (suggests there are masked pixels) and 
 // hasBlanks_p was set to T or F by getImageAttributes
 
-      if (dataType_p == TpFloat) hasBlanks_p = True;
+      if (dataType_p==TpFloat || dataType_p== TpDouble) hasBlanks_p = True;
    } else {
 
 // We don't want to use the mask
@@ -450,6 +458,8 @@ void FITSImage::open()
    if (hasBlanks_p) {
       if (dataType_p == TpFloat) {
          pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+      } else if (dataType_p == TpDouble) {
+         pPixelMask_p = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpShort) {
          pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
    				      shortMagic_p, hasBlanks_p);
@@ -459,7 +469,7 @@ void FITSImage::open()
       }
    }
 
-// Okay, it is open now.
+// Ok, it is open now.
 
    isClosed_p = False;
 }
@@ -494,12 +504,15 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     }
     recordsize = infile.fitsrecsize();
 
-// We only handle FLOAT or SHORT
+// Check type
 
     dataType = infile.datatype();
-    if (dataType != FITS::FLOAT && dataType != FITS::SHORT && dataType != FITS::LONG) {
+    if (dataType != FITS::FLOAT && 
+        dataType != FITS::DOUBLE &&
+        dataType != FITS::SHORT && 
+        dataType != FITS::LONG) {
        throw AipsError("FITS file " + name +
-		       " should contain floating point or short integer data");
+		       " should contain float, double, short or long data");
     }
 
 //
@@ -530,6 +543,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 //
     if (dataType==FITS::FLOAT) {
        crackHeaderFloat (cSys, shape, imageInfo, brightnessUnit, miscInfo, os, infile);
+    } else if (dataType==FITS::DOUBLE) {
+       crackHeaderDouble (cSys, shape, imageInfo, brightnessUnit, miscInfo, os, infile);
     } else if (dataType==FITS::LONG) {
        crackHeaderLong (cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                        scale, offset, longMagic, hasBlanks, os, infile);
@@ -581,6 +596,105 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
     header.removeField("bitpix");   
     if (bitpix != -32) {
        throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -32"));
+    }  
+
+// Add naxis into header (not in the keyword list).  People
+// provide headers with funny mixtures of CTYPEi and  naxis so
+// we need to do this
+
+   header.define("naxis", shape.asVector());
+
+// CoordinateSystem
+
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, header, os, shape, dropStokes);
+    ndim = shape.nelements();
+
+// Brightness Unit
+
+    brightnessUnit = ImageFITSConverter::getBrightnessUnit(header, os);
+
+// ImageInfo
+
+    imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
+
+// Get rid of anything else
+        
+    ignore.resize(6);
+    ignore(0) = "^datamax$";
+    ignore(1) = "^datamin$";
+    ignore(2) = "^origin$";
+    ignore(3) = "^extend$";
+    ignore(4) = "^blocked$";
+    ignore(5) = "^blank$";
+    FITSKeywordUtil::removeKeywords(header, ignore);
+
+// MiscInfo is whats left
+
+    miscInfo = header;
+
+// Get and store history.
+
+    Vector<String> lines;
+    String groupType;
+    ConstFitsKeywordList kw = fitsImage.kwlist();
+    kw.first();
+
+// Set the contents of the ImageInterface logger object (history)
+
+    LoggerHolder& log = logger();
+    ImageFITSConverter::restoreHistory(log, kw);
+
+// Try and find the restoring beam in the history cards if
+// its not in the header
+
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(log);
+    }
+}
+
+
+
+void FITSImage::crackHeaderDouble (CoordinateSystem& cSys,
+                                   IPosition& shape, ImageInfo& imageInfo,
+                                   Unit& brightnessUnit, RecordInterface& miscInfo,
+                                   LogIO& os, FitsInput& infile)
+{
+   
+// Shape
+
+    PrimaryArray<Double> fitsImage(infile);
+    Int ndim = fitsImage.dims();
+    shape.resize(ndim);
+    for (Int i=0; i<ndim; i++) {
+       shape(i) = fitsImage.dim(i);
+    }
+
+// Get header
+
+    Vector<String> ignore(0); 
+    Record header;
+    if (!FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore)) {
+       throw (AipsError("Error retrieving keywords from fits header"));
+    }
+
+// BITPIX
+
+    Int bitpix;   
+    header.get("bitpix", bitpix);
+    header.removeField("bitpix");   
+    if (bitpix != -64) {
+       throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -64"));
     }  
 
 // Add naxis into header (not in the keyword list).  People

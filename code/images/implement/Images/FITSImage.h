@@ -69,7 +69,7 @@ class FitsInput;
 
 // <etymology>
 //  This class provides native access to FITS images. 
-//  32bit floating point and 16bit integer FITS images are 
+//  64bit, 32bit floating point, 32 bit and 16bit integer FITS images are 
 //  presently supported.
 // </etymology>
 
@@ -269,6 +269,11 @@ private:
 // Should really be written as a templated function
 // <group>
    void crackHeaderFloat (CoordinateSystem& cSys,
+                          IPosition& shape, ImageInfo& imageInfo,
+                          Unit& brightnessUnit, RecordInterface& miscInfo,
+                          LogIO&os, FitsInput& infile);
+//
+   void crackHeaderDouble (CoordinateSystem& cSys,
                           IPosition& shape, ImageInfo& imageInfo,
                           Unit& brightnessUnit, RecordInterface& miscInfo,
                           LogIO&os, FitsInput& infile);
