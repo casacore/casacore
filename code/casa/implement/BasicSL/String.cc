@@ -268,10 +268,6 @@ Bool String::contains(const RegexBase &r) const {
   return (r.find(c_str(), length(), unused, 0)) != npos;
 }
 
-Bool String::contains(const RegexBase &r, Int pos) const {
-  return (index(r, pos) != npos);
-}
-
 Bool String::matches(const RegexBase &r, Int pos) const {
   String::size_type l = (pos < 0) ? -pos : length() - pos;
   if (l>length()) return False;
