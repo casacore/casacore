@@ -88,6 +88,9 @@
 // An inclusion of the appropiate measure file, will also take care of the
 // connected measure value (in this case <src>MVDirection</src>. However,
 // if only the value suffices, it van be included on its own.<br>
+// When doing actual conversions (see MeasConvert later on), by using the
+// explicit Measure::Convert types, the description of the actual
+// conversions (called MCmeasure, e.g. MCEpoch.h) should be included as well.
 // Some users may want to use special directives available in the detailed
 // calculations (e.g. <src>Nutation::D_Interval</src> to set a non-default
 // nutation interpolation interval). The corresponding header file
