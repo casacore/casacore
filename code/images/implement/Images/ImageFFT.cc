@@ -250,18 +250,6 @@ void ImageFFT::fft(const ImageInterface<Complex>& in,
 
 
 
-const ImageInterface<Complex>& ImageFFT::getComplex()  const
-{
-   if (!itsDone) {
-      LogIO os(LogOrigin("ImageFFT", "getComplex()", WHERE));
-      os << "You must call function fft first" << LogIO::EXCEPTION;
-   }
-//
-   return *itsTempImagePtr;
-}
-
-
-
 void ImageFFT::getComplex(ImageInterface<Complex>& out)  const
 {
    LogIO os(LogOrigin("ImageFFT", "getComplex()", WHERE));
