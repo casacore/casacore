@@ -1,5 +1,5 @@
 //# HashMap.cc: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,7 +95,8 @@ template<class key, class val> val &HashMap<key,val>::operator() (const key &ky)
 	blk[offset] = new List<OrderedPair<key,val> >();
 	++filled_;
     }
-    for (ListIter<OrderedPair<key,val> > iter(blk[offset]); ! iter.atEnd(); iter++)
+    ListIter<OrderedPair<key,val> > iter(blk[offset]);
+    for (; ! iter.atEnd(); iter++)
 	if ( iter.getRight().x() == ky )
 	    break;
 
@@ -116,7 +117,8 @@ template<class key, class val> val &HashMap<key,val>::define (const key &k, cons
 	blk[offset] = new List<OrderedPair<key,val> >();
 	++filled_;
     }
-    for (ListIter<OrderedPair<key,val> > iter(blk[offset]); ! iter.atEnd(); iter++)
+    ListIter<OrderedPair<key,val> > iter(blk[offset]);
+    for (; ! iter.atEnd(); iter++)
 	if ( iter.getRight().x() == k )
 	    break;
 

@@ -593,7 +593,8 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight(DataColumn whichOne)
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
   Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  Int i;
+  for (i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
   for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // we should probably be using the flags for weight interpolation as well
   // but it's not clear how to combine the 4 pol flags into one.
@@ -1036,7 +1037,8 @@ void VisibilityIterator::setInterpolatedVisFlag(const Cube<Complex>& vis,
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
   Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  Int i;
+  for (i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
   for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // set up the Functionals for the interpolation
   Cube<Complex> swapVis,intVis;
@@ -1069,7 +1071,8 @@ void VisibilityIterator::setInterpolatedWeight(const Matrix<Float>& wt)
   // Convert frequencies to float (removing offset to keep accuracy) 
   // so we can multiply them with Complex numbers to do the interpolation.
   Block<Float> xfreq(channelGroupSize_p),sfreq(nVelChan_p); 
-  for (Int i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
+  Int i;
+  for (i=0; i<channelGroupSize_p; i++) xfreq[i]=freq(i)-freq(0);
   for (i=0; i<nVelChan_p; i++) sfreq[i]=selFreq_p(i)-freq(0);
   // set up the Functionals for the interpolation
   Matrix<Float> twt,intWt;
