@@ -213,7 +213,7 @@ the site-specific makedefs may redefine this, for example as
    C++FLAGS += $(EXTRA_C++FLAGS)
 \end{verbatim}
 
-Either way, this example shows three two basic types of command-line variable
+Either way, this example shows three basic types of command-line variable
 substitutions
 
 \begin{itemize}
@@ -286,9 +286,10 @@ Typically this need only include one of the generic \aipspp\ makefiles (see
 \sref{makefiles}).  For example, when creating a new application the minimum
 requirement would be
 
-\begin{verbatim}
-   # $Id$
+\noindent
+\verb+   # $+\verb+Id$+
  
+\begin{verbatim}
    # Use the generic AIPS++ application makefile.
    #---------------------------------------------
    include $(word 1, $(AIPSPATH))/code/install/makefile.app
@@ -310,9 +311,10 @@ For an application you often need to register any required external libraries
 and may also want to define some preprocessor directives as described in
 section \sref{Object libraries}:
  
-\begin{verbatim}
-   # $Id$
+\noindent
+\verb+   # $+\verb+Id$+
  
+\begin{verbatim}
    # Use the generic AIPS++ application makefile.
    #---------------------------------------------
    XLIBLIST := GLISH WCSLIB F77
@@ -327,9 +329,10 @@ The \code{XLIBLIST} and \code{CPPMODU} variables are relevant to the
 The documentation makefile requires arguments to be specified for conversion
 of \LaTeX\ documents to \textsc{html} via \unixexe{latex2html}.  Typically
 
-\begin{verbatim}
-   # $Id$
+\noindent
+\verb+   # $+\verb+Id$+
  
+\begin{verbatim}
    # Declare latex2html flags.
    System := -split 2
    Coding := -split 3
