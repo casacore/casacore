@@ -386,7 +386,6 @@ private:
                      const Bool isBlc) const;
 
    static void unitInit();
-
 };
 
 
