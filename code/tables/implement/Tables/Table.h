@@ -797,7 +797,7 @@ public:
 		    const DataManager& dataManager);
     void addColumn (const TableDesc& tableDesc,
 		    const Record& dataManagerInfo);
-    // <group>
+    // </group>
 
     // Test if columns can be removed.
     // It can if the columns exist and if the data manager it is using
