@@ -155,30 +155,49 @@ IPosition::~IPosition()
 
 IPosition IPosition::nonDegenerate(uInt startingAxis) const
 {
-  DebugAssert(ok(), AipsError);
   if (startingAxis >= size) 
     throw( AipsError("IPosition::nonDegenerate: startingAxis is greater than"
 		     " size of this IPosition."));
-  uInt ctr = startingAxis;
-  if(size <= BufferLength) {
-    for (uInt i=startingAxis;i<size;i++)
-      if (buffer_p[i]!=1) ctr++;
-  } else {
-    for (uInt i=startingAxis;i<size;i++)
-      if (data[i]!=1) ctr++;
+  IPosition ignoreAxes(startingAxis);
+  for (uInt i=0; i<startingAxis; i++) {
+    ignoreAxes(i) = i;
   }
-  if (ctr == size) return *this;
-  if (ctr == 0) ctr = 1;
-  IPosition nondegenerateIP(ctr,1);
-  ctr=0;
-  if(size <= BufferLength) {
-    for (uInt i=0; i<size; i++)
-      if(buffer_p[i] == 1 && i >= startingAxis) ctr++;
-      else nondegenerateIP(i-ctr) = buffer_p[i]; 
-  } else {
-    for (uInt i=0; i<size; i++)
-      if(data[i] == 1 && i >= startingAxis) ctr++;
-      else nondegenerateIP(i-ctr) = data[i];    
+  return nonDegenerate (ignoreAxes);
+}
+IPosition IPosition::nonDegenerate(const IPosition& ignoreAxes) const
+{
+  DebugAssert(ok(), AipsError);
+  // First determine which axes have to be ignored, thus always be kept.
+  // Do not count here, because in theory ignoreAxes can contain the
+  // same axis more than once.
+  // To remove degenerate axes use two passes - first find out how many axes
+  // have to be kept.
+  uInt i;
+  IPosition keepAxes(size, 0);
+  for (i=0; i<ignoreAxes.nelements(); i++) {
+      AlwaysAssert (ignoreAxes(i) < size, AipsError);
+      keepAxes(ignoreAxes(i)) = 1;
+  }
+  // Now count all axes to keep.
+  uInt count=0;
+  for (i=0; i<size; i++) {
+    if (keepAxes(i) == 1) {
+      count++;
+    }else{
+      if (data[i] != 1) {
+	keepAxes(i) = 1;
+        count++;
+      }
+    }
+  }
+  if (count == size) return *this;
+  if (count == 0) count = 1;
+  IPosition nondegenerateIP(count,1);
+  count = 0;
+  for (i=0; i<size; i++) {
+    if (keepAxes(i)) {
+      nondegenerateIP(count++) = data[i];    
+    }
   }
   return nondegenerateIP;
 };

@@ -161,12 +161,17 @@ public:
     Vector<Int> asVector() const;
     // </group>
 
-    // This member function returns an IPosition reference which has all 
+    // This member functions return an IPosition which has
     // degenerate (length==1) axes removed and the dimensionality reduced 
     // appropriately.
     // Only axes greater than startingAxis are considered (normally one 
     // wants to remove trailing axes.
+    // <br>
+    // The functions with argument <src>ignoreAxes</src> do
+    // not consider the axes given in that argument..
+    // <group>
     IPosition nonDegenerate(uInt startingAxis=0) const;
+    IPosition nonDegenerate(const IPosition& ignoreAxes) const;
 
     // Old values are copied on resize if copy==True..
     // If the size increases, values beyond the former size are undefined.
