@@ -40,11 +40,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> 
-        gpp_measconvert_mdirection_mvdirection_mcdirection;
-#endif
-
 PointShape::PointShape() 
   :itsDir(),
    itsDirValue(itsDir.getValue()),

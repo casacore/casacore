@@ -46,12 +46,6 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> 
-        gpp_measconvert_mdirection_mvdirection_mcdirection;
-typedef Flux<Double> gpp_flux_double;
-#endif
-
 GaussianShape::GaussianShape()
   :itsDir(),
    itsDirValue(itsDir.getValue()),

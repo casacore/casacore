@@ -1,5 +1,5 @@
 //# ComponentList.cc:  this defines the ComponentList implementation
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,12 +66,6 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/String.h>
-
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> 
-  gpp_measconvert_mdirection_mvdirection_mcdirection;
-typedef Flux<Double> gpp_flux_double;
-#endif
 
 ComponentList::ComponentList()
   :itsList(),

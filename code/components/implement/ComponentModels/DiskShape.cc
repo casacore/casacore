@@ -1,5 +1,5 @@
 //# DiskShape.cc:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,12 +45,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
-
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> 
-        gpp_measconvert_mdirection_mvdirection_mcdirection;
-typedef Flux<Double> gpp_flux_double;
-#endif
 
 DiskShape::DiskShape()
   :itsDir(),
