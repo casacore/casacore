@@ -1,5 +1,5 @@
 //# SquareMatrix.cc: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 //# Includes
 #include <trial/Arrays/SquareMatrix.h>
 #include <aips/Arrays/MatrixMath.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Exceptions/Error.h>
 
 inline Float real(Float r) { return r;}
