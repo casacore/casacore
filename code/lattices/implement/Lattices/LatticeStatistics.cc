@@ -2326,14 +2326,14 @@ void LatticeStatistics<T>::summStats ()
 // Min/max locations only meaningful for Float images currently.
 
       if (!fixedMinMax_p) {
-         os_p << "Minimum value is ";
+         os_p << "Minimum value ";
          os_p.output() << setw(oWidth) << String(os6);
          if (type==TpFloat) {
             os_p <<  " at " << minPos_p+1;
          }
          os_p << endl;
 //
-         os_p << "Maximum value is ";
+         os_p << "Maximum value ";
          os_p.output() << setw(oWidth) << String(os7);
          if (type==TpFloat) {
             os_p <<  " at " << maxPos_p+1 << endl;
