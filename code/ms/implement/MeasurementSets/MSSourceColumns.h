@@ -102,11 +102,6 @@ public:
     return intervalQuant_p;}
   const ROScalarColumn<String>& name() const {return name_p;}
   const ROScalarColumn<Int>& numLines() const {return numLines_p;}
-  const ROArrayColumn<Double>& position() const {return position_p;}
-  const ROArrayQuantColumn<Double>& positionQuant() const {
-    return positionQuant_p;}
-  const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return positionMeas_p;}
   const ROArrayColumn<Double>& properMotion() const {return properMotion_p;}
   const ROArrayQuantColumn<Double>& properMotionQuant() const {
     return properMotionQuant_p;}
@@ -120,6 +115,11 @@ public:
 
   // Access to optional columns
   // <group>
+  const ROArrayColumn<Double>& position() const {return position_p;}
+  const ROArrayQuantColumn<Double>& positionQuant() const {
+    return positionQuant_p;}
+  const ROScalarMeasColumn<MPosition>& positionMeas() const {
+    return positionMeas_p;}
   const ROScalarColumn<Int>& pulsarId() const {return pulsarId_p;}
   const ROArrayColumn<Double>& restFrequency() const {return restFrequency_p;}
   const ROArrayQuantColumn<Double>& restFrequencyQuant() const {
@@ -162,12 +162,12 @@ private:
   ROScalarColumn<Double> interval_p;
   ROScalarColumn<String> name_p;
   ROScalarColumn<Int> numLines_p;
-  ROArrayColumn<Double> position_p;
   ROArrayColumn<Double> properMotion_p;
   ROScalarColumn<Int> sourceId_p;
   ROScalarColumn<Int> spectralWindowId_p;
   ROScalarColumn<Double> time_p;
   //# optional columns
+  ROArrayColumn<Double> position_p;
   ROScalarColumn<Int> pulsarId_p;
   ROArrayColumn<Double> restFrequency_p;
   ROScalarColumn<TableRecord> sourceModel_p;
@@ -176,19 +176,19 @@ private:
 
   //# Access to Measure columns
   ROScalarMeasColumn<MDirection> directionMeas_p;
-  ROScalarMeasColumn<MPosition> positionMeas_p;
   ROScalarMeasColumn<MEpoch> timeMeas_p;
   //# Optional Measure columns
+  ROScalarMeasColumn<MPosition> positionMeas_p;
   ROArrayMeasColumn<MFrequency> restFrequencyMeas_p;
   ROArrayMeasColumn<MRadialVelocity> sysvelMeas_p;
 
   //# Access to Quantum columns
   ROArrayQuantColumn<Double> directionQuant_p;
   ROScalarQuantColumn<Double> intervalQuant_p;
-  ROArrayQuantColumn<Double> positionQuant_p;
   ROArrayQuantColumn<Double> properMotionQuant_p;
   ROScalarQuantColumn<Double> timeQuant_p;
   //# Optional Quantum columns
+  ROArrayQuantColumn<Double> positionQuant_p;
   ROArrayQuantColumn<Double> restFrequencyQuant_p;
   ROArrayQuantColumn<Double> sysvelQuant_p;
 };
@@ -246,9 +246,6 @@ public:
   ScalarQuantColumn<Double>& intervalQuant() {return intervalQuant_p;}
   ScalarColumn<String>& name() {return name_p;}
   ScalarColumn<Int>& numLines() {return numLines_p;}
-  ArrayColumn<Double>& position() {return position_p;}
-  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
-  ScalarMeasColumn<MPosition>& positionMeas() {return positionMeas_p;}
   ArrayColumn<Double>& properMotion() {return properMotion_p;}
   ArrayQuantColumn<Double>& properMotionQuant() {return properMotionQuant_p;}
   ScalarColumn<Int>& sourceId() {return sourceId_p;}
@@ -260,6 +257,9 @@ public:
 
   // Read-write access to optional columns
   // <group>
+  ArrayColumn<Double>& position() {return position_p;}
+  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
+  ScalarMeasColumn<MPosition>& positionMeas() {return positionMeas_p;}
   ScalarColumn<Int>& pulsarId() {return pulsarId_p;}
   ArrayColumn<Double>& restFrequency() {return restFrequency_p;}
   ArrayQuantColumn<Double>& restFrequencyQuant() {return restFrequencyQuant_p;}
@@ -292,12 +292,6 @@ public:
     return RONewMSSourceColumns::name();}
   const ROScalarColumn<Int>& numLines() const {
     return RONewMSSourceColumns::numLines();}
-  const ROArrayColumn<Double>& position() const {
-    return RONewMSSourceColumns::position();}
-  const ROArrayQuantColumn<Double>& positionQuant() const {
-    return RONewMSSourceColumns::positionQuant();}
-  const ROScalarMeasColumn<MPosition>& positionMeas() const {
-    return RONewMSSourceColumns::positionMeas();}
   const ROArrayColumn<Double>& properMotion() const {
     return RONewMSSourceColumns::properMotion();}
   const ROArrayQuantColumn<Double>& properMotionQuant() const {
@@ -316,6 +310,12 @@ public:
 
   // Read-only access to optional columns
   // <group>
+  const ROArrayColumn<Double>& position() const {
+    return RONewMSSourceColumns::position();}
+  const ROArrayQuantColumn<Double>& positionQuant() const {
+    return RONewMSSourceColumns::positionQuant();}
+  const ROScalarMeasColumn<MPosition>& positionMeas() const {
+    return RONewMSSourceColumns::positionMeas();}
   const ROScalarColumn<Int>& pulsarId() const {
     return RONewMSSourceColumns::pulsarId();}
   const ROArrayColumn<Double>& restFrequency() const {
@@ -384,12 +384,12 @@ private:
   ScalarColumn<Double> interval_p;
   ScalarColumn<String> name_p;
   ScalarColumn<Int> numLines_p;
-  ArrayColumn<Double> position_p;
   ArrayColumn<Double> properMotion_p;
   ScalarColumn<Int> sourceId_p;
   ScalarColumn<Int> spectralWindowId_p;
   ScalarColumn<Double> time_p;
   //# optional columns
+  ArrayColumn<Double> position_p;
   ScalarColumn<Int> pulsarId_p;
   ArrayColumn<Double> restFrequency_p;
   ScalarColumn<TableRecord> sourceModel_p;
@@ -398,19 +398,19 @@ private:
 
   //# Access to Measure columns
   ScalarMeasColumn<MDirection> directionMeas_p;
-  ScalarMeasColumn<MPosition> positionMeas_p;
   ScalarMeasColumn<MEpoch> timeMeas_p;
   //# Optional Measure columns
+  ScalarMeasColumn<MPosition> positionMeas_p;
   ArrayMeasColumn<MFrequency> restFrequencyMeas_p;
   ArrayMeasColumn<MRadialVelocity> sysvelMeas_p;
 
   //# Access to Quantum columns
   ArrayQuantColumn<Double> directionQuant_p;
   ScalarQuantColumn<Double> intervalQuant_p;
-  ArrayQuantColumn<Double> positionQuant_p;
   ArrayQuantColumn<Double> properMotionQuant_p;
   ScalarQuantColumn<Double> timeQuant_p;
   //# Optional Quantum columns
+  ArrayQuantColumn<Double> positionQuant_p;
   ArrayQuantColumn<Double> restFrequencyQuant_p;
   ArrayQuantColumn<Double> sysvelQuant_p;
 };

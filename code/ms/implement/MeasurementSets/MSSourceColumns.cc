@@ -41,29 +41,29 @@ RONewMSSourceColumns::RONewMSSourceColumns(const NewMSSource& msSource):
   interval_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
   name_p(msSource, NewMSSource::columnName(NewMSSource::NAME)),
   numLines_p(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES)),
-  position_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   properMotion_p(msSource, NewMSSource::
 		 columnName(NewMSSource::PROPER_MOTION)),
   sourceId_p(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID)),
   spectralWindowId_p(msSource, NewMSSource::
 		     columnName(NewMSSource::SPECTRAL_WINDOW_ID)),
   time_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
   directionMeas_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  positionMeas_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   timeMeas_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
   directionQuant_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
   intervalQuant_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  positionQuant_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   properMotionQuant_p(msSource, NewMSSource::
 		      columnName(NewMSSource::PROPER_MOTION)),
   timeQuant_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 { 
@@ -79,26 +79,26 @@ RONewMSSourceColumns::RONewMSSourceColumns():
   interval_p(),
   name_p(),
   numLines_p(),
-  position_p(),
   properMotion_p(),
   sourceId_p(),
   spectralWindowId_p(),
   time_p(),
+  position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
   directionMeas_p(),
-  positionMeas_p(),
   timeMeas_p(),
+  positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
   directionQuant_p(),
   intervalQuant_p(),
-  positionQuant_p(),
   properMotionQuant_p(),
   timeQuant_p(),
+  positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 {
@@ -114,7 +114,6 @@ void RONewMSSourceColumns::attach(const NewMSSource& msSource)
   interval_p.attach(msSource, NewMSSource::columnName(NewMSSource::INTERVAL));
   name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
   numLines_p.attach(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES));
-  position_p.attach(msSource, NewMSSource::columnName(NewMSSource::POSITION));
   properMotion_p.attach(msSource, NewMSSource::
 			columnName(NewMSSource::PROPER_MOTION));
   sourceId_p.attach(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID));
@@ -123,15 +122,11 @@ void RONewMSSourceColumns::attach(const NewMSSource& msSource)
   time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
   directionMeas_p.attach(msSource, NewMSSource::
 			 columnName(NewMSSource::DIRECTION));
-  positionMeas_p.attach(msSource, NewMSSource::
-			columnName(NewMSSource::POSITION));
   timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
   directionQuant_p.attach(msSource, NewMSSource::
 			  columnName(NewMSSource::DIRECTION));
   intervalQuant_p.attach(msSource, NewMSSource::
 			 columnName(NewMSSource::INTERVAL));
-  positionQuant_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::POSITION));
   properMotionQuant_p.attach(msSource, NewMSSource::
 			     columnName(NewMSSource::PROPER_MOTION));
   timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
@@ -141,6 +136,12 @@ void RONewMSSourceColumns::attach(const NewMSSource& msSource)
 void RONewMSSourceColumns::attachOptionalCols(const NewMSSource& msSource)
 {
   const ColumnDescSet& cds = msSource.tableDesc().columnDescSet();
+  const String& position = NewMSSource::columnName(NewMSSource::POSITION);
+  if (cds.isDefined(position)) {
+    position_p.attach(msSource, position);
+    positionMeas_p.attach(msSource, position);
+    positionQuant_p.attach(msSource, position);
+  }
   const String& pulsarId = NewMSSource::columnName(NewMSSource::PULSAR_ID);
   if (cds.isDefined(pulsarId)) pulsarId_p.attach(msSource, pulsarId);
   const String& restFrequency = 
@@ -172,29 +173,29 @@ NewMSSourceColumns::NewMSSourceColumns(NewMSSource& msSource):
   interval_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
   name_p(msSource, NewMSSource::columnName(NewMSSource::NAME)),
   numLines_p(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES)),
-  position_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   properMotion_p(msSource, NewMSSource::
 		 columnName(NewMSSource::PROPER_MOTION)),
   sourceId_p(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID)),
   spectralWindowId_p(msSource, NewMSSource::
 		     columnName(NewMSSource::SPECTRAL_WINDOW_ID)),
   time_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
   directionMeas_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
-  positionMeas_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   timeMeas_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
   directionQuant_p(msSource, NewMSSource::columnName(NewMSSource::DIRECTION)),
   intervalQuant_p(msSource, NewMSSource::columnName(NewMSSource::INTERVAL)),
-  positionQuant_p(msSource, NewMSSource::columnName(NewMSSource::POSITION)),
   properMotionQuant_p(msSource, NewMSSource::
 		      columnName(NewMSSource::PROPER_MOTION)),
   timeQuant_p(msSource, NewMSSource::columnName(NewMSSource::TIME)),
+  positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 { 
@@ -211,26 +212,26 @@ NewMSSourceColumns::NewMSSourceColumns():
   interval_p(),
   name_p(),
   numLines_p(),
-  position_p(),
   properMotion_p(),
   sourceId_p(),
   spectralWindowId_p(),
   time_p(),
+  position_p(),
   pulsarId_p(),
   restFrequency_p(),
   sourceModel_p(),
   sysvel_p(),
   transition_p(),
   directionMeas_p(),
-  positionMeas_p(),
   timeMeas_p(),
+  positionMeas_p(),
   restFrequencyMeas_p(),
   sysvelMeas_p(),
   directionQuant_p(),
   intervalQuant_p(),
-  positionQuant_p(),
   properMotionQuant_p(),
   timeQuant_p(),
+  positionQuant_p(),
   restFrequencyQuant_p(),
   sysvelQuant_p()
 {
@@ -247,7 +248,6 @@ void NewMSSourceColumns::attach(NewMSSource& msSource)
   interval_p.attach(msSource, NewMSSource::columnName(NewMSSource::INTERVAL));
   name_p.attach(msSource, NewMSSource::columnName(NewMSSource::NAME));
   numLines_p.attach(msSource, NewMSSource::columnName(NewMSSource::NUM_LINES));
-  position_p.attach(msSource, NewMSSource::columnName(NewMSSource::POSITION));
   properMotion_p.attach(msSource, NewMSSource::
 			columnName(NewMSSource::PROPER_MOTION));
   sourceId_p.attach(msSource, NewMSSource::columnName(NewMSSource::SOURCE_ID));
@@ -256,15 +256,11 @@ void NewMSSourceColumns::attach(NewMSSource& msSource)
   time_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
   directionMeas_p.attach(msSource, NewMSSource::
 			 columnName(NewMSSource::DIRECTION));
-  positionMeas_p.attach(msSource, NewMSSource::
-			columnName(NewMSSource::POSITION));
   timeMeas_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
   directionQuant_p.attach(msSource, NewMSSource::
 			  columnName(NewMSSource::DIRECTION));
   intervalQuant_p.attach(msSource, NewMSSource::
 			 columnName(NewMSSource::INTERVAL));
-  positionQuant_p.attach(msSource, NewMSSource::
-			 columnName(NewMSSource::POSITION));
   properMotionQuant_p.attach(msSource, NewMSSource::
 			     columnName(NewMSSource::PROPER_MOTION));
   timeQuant_p.attach(msSource, NewMSSource::columnName(NewMSSource::TIME));
@@ -274,6 +270,12 @@ void NewMSSourceColumns::attach(NewMSSource& msSource)
 void NewMSSourceColumns::attachOptionalCols(NewMSSource& msSource)
 {
   const ColumnDescSet& cds = msSource.tableDesc().columnDescSet();
+  const String& position = NewMSSource::columnName(NewMSSource::POSITION);
+  if (cds.isDefined(position)) {
+    position_p.attach(msSource, position);
+    positionMeas_p.attach(msSource, position);
+    positionQuant_p.attach(msSource, position);
+  }
   const String& pulsarId = NewMSSource::columnName(NewMSSource::PULSAR_ID);
   if (cds.isDefined(pulsarId)) pulsarId_p.attach(msSource, pulsarId);
   const String& restFrequency =

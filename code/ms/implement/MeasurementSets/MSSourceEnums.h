@@ -81,9 +81,6 @@ public:
     // Number of spectral lines <BR>
     // Int
     NUM_LINES,
-    // Position (e.g. for solar system objects.<BR>
-    // Double(3) - m - POSITION.
-    POSITION,  
     // Proper motion.<BR>
     // Double(2) - rad/s - ?.
     PROPER_MOTION,  
@@ -98,6 +95,9 @@ public:
     TIME,  
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,
+    // Position (e.g. for solar system objects.<BR>
+    // Double(3) - m - POSITION.
+    POSITION,  
     // Pulsar Id <BR>
     // Int
     PULSAR_ID,
