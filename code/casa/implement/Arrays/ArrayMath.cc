@@ -1,5 +1,5 @@
 //# ArrayMath.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1106,9 +1106,16 @@ template<class T> Array<T> pow(const Array<T> &a, const Double &b)
     T *storage = tmp.getStorage(deleteIt);
     T *ts = storage;
 
-    while (ntotal--) {
-	*ts = pow(*ts,(Double)b);
-	ts++;
+    if (b == 2) {
+	while (ntotal--) {
+	    *ts *= *ts;
+	    ts++;
+	}
+    } else {
+	while (ntotal--) {
+	    *ts = pow(*ts,b);
+	    ts++;
+	}
     }
 
     tmp.putStorage(storage, deleteIt); // should be a no-op
