@@ -29,11 +29,13 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
+#include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasRef.h>
@@ -198,7 +200,28 @@ ComponentType::Shape ComponentShape::getType(String& errorMessage,
 
 Vector<Double> ComponentShape::toPixel (const DirectionCoordinate& dirCoord) const
 {
-   throw (AipsError ("ComponentShape::toPixel - requires development for this derived class"));
+   Vector<Double> pixelCen(2);
+   if (!dirCoord.toPixel(pixelCen, itsDir)) {
+      LogIO os(LogOrigin("ComponentShape", "toPixel(...)"));
+      os << "DirectionCoordinate conversion to pixel failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }                                
+   return pixelCen;
+}
+
+
+void ComponentShape::fromPixel (const Vector<Double>& parameters,
+                                const DirectionCoordinate& dirCoord) 
+{
+   LogIO os(LogOrigin("ComponentShape", "fromPixel(...)"));
+   if (parameters.nelements()!=2) {
+      os << "You must give a vector of length 2" << LogIO::EXCEPTION;
+   }
+//
+   if (!dirCoord.toWorld(itsDir, parameters)) {
+      os << "DirectionCoordinate conversion to pixel failed because "
+         << dirCoord.errorMessage() << LogIO::EXCEPTION;
+   }                                
 }
 
 
