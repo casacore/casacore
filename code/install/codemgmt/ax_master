@@ -4817,3 +4817,4 @@
 14 316 src rm trial/apps/dish/dish_sranges.g
 14 316 sys rm libexec/dish_sranges.g
 14 316 src rm trial/apps/dish/dish_statapp.g
+14 316 sys rm libexec/dish_statapp.g
