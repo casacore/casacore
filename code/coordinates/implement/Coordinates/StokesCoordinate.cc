@@ -339,10 +339,6 @@ Bool StokesCoordinate::near(const Coordinate& other,
 Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 
-//
-// Things like increment, refpix refval etc are meaningless to
-// StokesCoordinate
-//
 {
     Bool ok = ToBool(!container.isDefined(fieldName));
     if (ok) {
@@ -355,16 +351,27 @@ Bool StokesCoordinate::save(RecordInterface &container,
 	}
 	subrec.define("stokes", stokes);
 	container.defineRecord(fieldName, subrec);
+//
+// Increment, refpix, refval, pc are meaningless to StokesCoordinate. But 
+// we save them anyway as maybe one day I will make use of them again, 
+// so keep them for  compatibility.
+//
+        subrec.define("crval", referenceValue());
+        subrec.define("crpix", referencePixel());
+        subrec.define("cdelt", increment());
+        subrec.define("pc", linearTransform());
+
+// it never makes sense to set the units
+// subrec.define("units", worldAxisUnits()); 
+
+        container.defineRecord(fieldName, subrec); 
     }
     return ok;
 }
 
+
 StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
                                             const String &fieldName)
-//
-// Things like increment, refpix refval etc are meaningless to
-// StokesCoordinate
-//
 {
     if (! container.isDefined(fieldName)) {
 	return 0;
@@ -387,12 +394,47 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
     for (uInt i=0; i<istokes.nelements(); i++) {
 	istokes(i) = Stokes::type(stokes(i));
     }
-//
+
+// refpix,refval, increment, pc are all meaningless to StokesCoordinate.  So 
+// we don't bother reading them now.  Can be read if need be in the future if
+// they become useful again
+
+/*
+    Vector<Double> crval;
+    subrec.get("crval", crval);
+
+    if (!subrec.isDefined("crpix")) {
+        return 0;
+    }
+    Vector<Double> crpix;
+    subrec.get("crpix", crpix);
+    
+    if (!subrec.isDefined("cdelt")) {
+        return 0;
+    }
+    Vector<Double> cdelt;
+    subrec.get("cdelt", cdelt);
+
+    if (!subrec.isDefined("pc")) {
+        return 0;
+    }
+    Matrix<Double> pc;
+    subrec.get("pc", pc);
+*/
+
     StokesCoordinate* retval = new StokesCoordinate(istokes);
     AlwaysAssert(retval, AipsError);
     retval->setWorldAxisNames(axes);
     AlwaysAssert(retval, AipsError);
-//							  
+//
+// retval->setWorldAxisUnits(units); // It never makes sense to set the units
+//
+/*
+    retval-> setIncrement(cdelt);  
+    retval->setReferenceValue(crval);
+    retval->setReferencePixel(crpix);
+*/
+//
     return retval;
 }
 
