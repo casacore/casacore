@@ -1627,35 +1627,9 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
          refVal(i) = 0.0;
          refPix(i) = Double(pPSF->shape()(i))/2.0;
       }
-
-/*
-      Vector<uInt> keepAxes(smoothAxes_p.nelements());
-      Vector<Double> worldReplacement(smoothAxes_p.nelements());
-      Vector<Double> refVal(smoothAxes_p.nelements());
-      Vector<Double> refPix(smoothAxes_p.nelements());
-      
-      for (uInt i=0; i<keepAxes.nelements(); i++) {
 //
-// A pixel axis always has a world axis.
-//                             
-         Int worldAxis = psfCSys.pixelAxisToWorldAxis(smoothAxes_p(i));
-         keepAxes(i) = worldAxis;
-         worldReplacement(i) = pInImage_p->coordinates().referenceValue()(worldAxis);
-//  
-// The coordinate system is laregely meaningless for the PSF
-// image, so give it a random refpix and refval
-// 
-         refVal(i) = 0.0;
-         refPix(i) = pPSF->shape()(i)/2.0;
-      }
-      CoordinateUtil::removeAxes(psfCSys, worldReplacement, keepAxes, False);  
-*/
+// Save it
 //
-// Save image to disk
-// 
-cout << "psf shape, nPixelAxes, nWorldAxes" << pPSF->shape() << " " << psfCSys.nPixelAxes() 
-     << " " << psfCSys.nWorldAxes() << endl;
-
       psfCSys.setReferenceValue(refVal);
       psfCSys.setReferencePixel(refPix);
       PagedImage<T> psfOut(pPSF->shape(), psfCSys, psfOut_p);
