@@ -70,8 +70,9 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
       Int intWidth = Int(width+0.5);
-      nPixels = intWidth;
-      kernel.resize(min(shape,nPixels));
+      nPixels = intWidth;  
+      const Int n = min(shape,nPixels);
+      kernel.resize(n);
       Double norm;
       if (peakIsUnity)  {
          norm = 1.0;
@@ -79,20 +80,23 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
          norm = Double(intWidth);
       }
 //
-      for (uInt i=0; i<nPixels; i++) {
+      for (uInt i=0; i<n; i++) {
          kernel(i) = 1.0 / norm;
       }
    } else if (kernelType == HANNING) {
+
+// shape is at least 2
+
       nPixels = min(uInt(3),shape);
       kernel.resize(nPixels);
       if (peakIsUnity)  {
          kernel(0) = 0.5;
          kernel(1) = 1.0;
-         if (shape>2) kernel(2) = 0.5;
+         if (nPixels==3) kernel(2) = 0.5;
       } else {
          kernel(0) = 0.25;
          kernel(1) = 0.5;
-         if (shape>2) kernel(2) = 0.25;
+         if (nPixels==3) kernel(2) = 0.25;
       }
    }
    return kernel;
