@@ -3112,3 +3112,4 @@
 12 030 sys rm libexec/numerics.g
 12 030 src mv trial/apps/numerics/interpolate1d.g trial/implement/Mathematics/interpolate1d.g
 13 000 src mv aips/implement/Mathematics/MathFunc.h trial/implement/Mathematics/MathFunc.h
+13 000 src mv aips/implement/Mathematics/MathFunc.cc trial/implement/Mathematics/MathFunc.cc
