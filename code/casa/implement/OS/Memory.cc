@@ -1,5 +1,5 @@
 //# Memory.cc: Memory related information and utilities.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,4 +66,43 @@ void Memory::releaseMemory()
 #elif !defined(AIPS_NO_LEA_MALLOC)
     malloc_trim(0);
 #endif
+}
+
+   //setMemoryOptions uses compiler defines to set the
+   // memory options if needed.  It is intended to be
+   // only called at the start of a program.  Use 
+   // setMemoryOption to tweak the memory options elsewhere.
+void Memory::setMemoryOptions(){
+   #ifdef AIPS_MALLOC_M_MXFAST
+      mallopt(M_MXFAST, AIPS_MALLOC_M_MXFAST);
+   #endif
+   #ifdef AIPS_MALLOC_M_NLBLKS
+      mallopt(M_NLBLKS, AIPS_MALLOC_M_NLBLKS);
+   #endif
+   #ifdef AIPS_MALLOC_M_GRAIN
+      mallopt(M_GRAIN, AIPS_MALLOC_M_GRAIN);
+   #endif
+   #ifdef AIPS_MALLOC_M_KEEP
+      mallopt(M_KEEP, 1);
+   #endif
+   #ifdef AIPS_MALLOC_M_DEBUG
+      mallopt(M_DEBUG, 1);
+   #endif
+     // Following options are from the SGI mallopt
+   #ifdef AIPS_MALLOC_M_BLKSZ
+      mallopt(M_BLKSZ, AIPS_MALLOC_M_BLKSZ);
+   #endif
+   #ifdef AIPS_MALLOC_M_MXCHK
+      mallopt(M_MXCHK, AIPS_MALLOC_M_MXCHK);
+   #endif
+   #ifdef AIPS_MALLOC_M_FREEHD
+      mallopt(M_FREEHD, 1);
+   #endif
+   #ifdef AIPS_MALLOC_M_CLRONFREE
+      mallopt(M_CLRONFREE, AIPS_MALLOC_M_CLRONFREE);
+   #endif
+}
+
+int Memory::setMemoryOption(int cmd, int value){
+   return(mallopt(cmd, value));
 }

@@ -1,5 +1,5 @@
 //# Memory.h: Memory related information and utilities.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,6 +122,15 @@ public:
     // Since this function may be somewhat expensive to call it should not
     // be called too often.
     static void releaseMemory();
+
+    // setMemoryOptions and setMemoryOption are typically front ends for mallopt
+    // which lets the user control some memory allocation parameters.  setMemoryOptions
+    // is intended to be called only once at the start of a program while setMemoryOption
+    // could be called where desired (but see mallopt man page for possible side effects).
+    // Note: these two functions were added to address in a general way a memory
+    // fragmentation problem encountered on by the MIPSpro C++ compiler on the SGI.
+    static void setMemoryOptions();
+    static int  setMemoryOption(int, int);
 };
 
 #endif
