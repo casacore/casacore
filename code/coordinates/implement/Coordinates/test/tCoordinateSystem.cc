@@ -1,5 +1,5 @@
 //# tCoordinateSystem.cc: Test program for CoordinateSystem
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1052,14 +1052,14 @@ void doit2 (CoordinateSystem& cSys)
       throw(AipsError("toWorld consistency test failed"));
    }
 //
-   Vector<Int> failures;
+   Vector<Bool> failures;
    const uInt nBatch = 3;
    Matrix<Double> pixel3(cSys.nPixelAxes(), nBatch);
    Matrix<Double> world3(cSys.nWorldAxes(), nBatch);
    for (uInt i=0; i<nBatch; i++) {
       pixel3.column(i) = cSys.referencePixel();
    }
-   if (cSys.toWorldMany(world3, pixel3, failures) != 0) {
+   if (!cSys.toWorldMany(world3, pixel3, failures)) {
       throw(AipsError(String("toWorldMany conversion failed because ")
                      + cSys.errorMessage()));
    }
@@ -1071,7 +1071,7 @@ void doit2 (CoordinateSystem& cSys)
 //
    failures.resize(0);
    pixel3 = 0.0;
-   if (cSys.toPixelMany(pixel3, world3, failures) != 0) {
+   if (!cSys.toPixelMany(pixel3, world3, failures)) {
       throw(AipsError(String("toPixelMany conversion failed because ")
                      + cSys.errorMessage()));
    }
