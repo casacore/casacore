@@ -254,5 +254,10 @@ inline DComplex min(const DComplex &x, const DComplex &y)
   { return x <= y ? x : y; }
 // </group>
 
+// <summary> fmod </summary>
+// <group name=fmod>
+DComplex fmod(const DComplex &in, const DComplex &f);
+Complex fmod(const Complex &in, const Complex &f);
+// </group>
 
 #endif
