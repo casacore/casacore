@@ -202,10 +202,6 @@ Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
   return True;
 };
 
-Bool MEarthMagnetic::giveMe(const String &in, MEarthMagnetic::Ref &mr) {
-  return MEarthMagnetic::giveMe(mr, in);
-}
-
 Bool MEarthMagnetic::setOffset(const Measure &in) {
   if (in.type() != Register((MEarthMagnetic *)0)) return False;
   ref.set(in);

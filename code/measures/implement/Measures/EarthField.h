@@ -1,4 +1,4 @@
-//# EarthField.h: EarthField class
+//# EarthField.h: EarthField class model claculations
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -37,12 +37,12 @@
 //# Forward Declarations
 
 //# Constants
-// Length of P and Q arrays, half length of CL/SL arrays
+// Length of P and Q arrays, half length of CL/SL arrays in IGRF model
 const Int PQ_LEN = 65;
-// Interval (m) for derivatives
+// Interval (m) for derivatives in IGRF model
 const Double DER_INTV = 10000;
 
-// <summary> EarthField class and calculations </summary>
+// <summary> EarthField class model calculations </summary>
 
 // <use visibility=local>
 
@@ -55,16 +55,16 @@ const Double DER_INTV = 10000;
 // </prerequisite>
 //
 // <etymology>
-// Earth magnetic Field
+// Earth magnetic Field model
 // </etymology>
 //
 // <synopsis>
 // EarthField forms the class for Earth magnetic field calculations. It is a 
-// simple container with the selected method, and the mean epoch.<br>
+// simple container with the selected model, and the mean epoch.<br>
 // The method is selected from one of the following:
 // <ul>
 //   <li> EarthField::STANDARD  (at 1998/05/18 the IGRF definition)
-//   <li> EarthField::IGRF	(IGRF reference field)
+//   <li> EarthField::IGRF	(IGRF reference field model)
 // </ul>
 // Epochs can be specified as the MJD (with defined constants
 // MeasData::MJD2000 and MeasData::MJD1950 or the actual MJD),
@@ -77,12 +77,12 @@ const Double DER_INTV = 10000;
 // Actual EarthField for a certain position on Earth is calculated by the () 
 // operator. Arguments can be:
 // <ul>
-//   <li> MVPosition: a position on Earth (ITRF)
+//   <li> MVPosition: a position on Earth (in the ITRF frame)
 // </ul>
-// The returned value is a 3D vector of the field (nT) in ITRF coordinates.
+// The returned value is a 3D vector of the field (in nT) in ITRF coordinates.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
 // derivative(MVPosition). <br>
-// An EarthField can be re-initialed with a different method and/or other
+// An EarthField can be re-initialised with a different method and/or other
 // epoch with the <src>init()</src> functions (same format as constructors).
 //
 // To bypass the full, lengthy calculation actual returned values are calculated
@@ -93,10 +93,11 @@ const Double DER_INTV = 10000;
 // <linkto class=Aipsrc>Aipsrc</linkto> mechanism:
 // <ul>
 //  <li> measures.earthfield.d_interval: approximation radius
-//	(km is default unit) over which linear approximation
+//	(km is default unit) over which a linear approximation
 //	is used
 // </ul>
-// The field is assumed to be constant over the time-span the class is used.
+// The field model is assumed to be constant over the time-span the class
+// is used.
 //
 // The calculations are based on a routine provided by the IGRF community. See
 // ftp.ngdc.noaa.gov/Solid_Earth/Mainfld_Mag/Models/IAGA, routine IGRFLIB.FOR.
@@ -110,14 +111,14 @@ const Double DER_INTV = 10000;
 //						// for 84/05/17
 //	MPosition pos;
 //      MeasTable::Observatory(pos, "WSRT");	// Obervatory position
-//  // Make sure correct data
+//  // Make sure correct position frame used
 //      MVPosition x(MPosition::Convert(pos, MPosition::ITRF)().getValue());
 //	MVEarthMagnetic now = mine(x);		// get EarthField
 //  </srcblock>
 // </example>
 //
 // <motivation>
-// To have a history container for field calculations
+// To have a container (with history) for field calculations
 // </motivation>
 //
 // <todo asof="1998/05/18">
@@ -133,10 +134,13 @@ public:
   static const Double INTV;
 
   //# Enumerations
-  // Types of known EarthField calculations
+  // Known EarthField calculation models
   enum EarthFieldTypes {
+    // Standard IGRF model
     IGRF,
+    // Make the field equal to zero
     NONE,
+    // Standard default model if none specified
     STANDARD = IGRF
   };
 
@@ -145,8 +149,8 @@ public:
   EarthField();
   // Copy constructor
   EarthField(const EarthField &other);
-  // Constructor with epoch in MJulian days
-  explicit EarthField(EarthFieldTypes type, Double catepoch=51544.5);
+  // Constructor with epoch in MJulian days (default is J2000) 
+  explicit EarthField(EarthFieldTypes model, Double catepoch=51544.5);
   // Copy assignment
   EarthField &operator=(const EarthField &other);
   
@@ -154,16 +158,22 @@ public:
   ~EarthField();
   
   //# Operators
-  // Return the EarthField angles
+  // Return the EarthField components. Note that the value returned has only
+  // a lifetime as long as the EarthField container exists, and no new
+  // derivative is asked for.
   const Vector<Double> &operator()(const MVPosition &pos);
   
   //# General Member Functions
-  // Return derivatives of field (to X, Y, Z)
+  // Return derivatives of field (to X, Y, Z). Note that the value returned
+  // has only a lifetime as long as the EarthField container exists, and
+  // no new components or derivative is calculated. The returned value should
+  // not be deleted.
   const Vector<Double> *derivative(const MVPosition &pos);
-  // Re-initialise EarthField object
+  // Re-initialise EarthField object with specified model and epoch, or
+  // defaults STANDARD and J2000.
   // <group>
   void init();
-  void init(EarthFieldTypes type, Double catepoch=51544.5);
+  void init(EarthFieldTypes model, Double catepoch=51544.5);
   // </group>
   // Refresh calculations
   void refresh();
@@ -184,19 +194,19 @@ public:
   Vector<Double> sl_p;
   // </group>
   // Check position
-  MVPosition checkPos;
+  MVPosition checkPos_p;
   // Cached calculated field components
-  Double pval[3];
+  Double pval_p[3];
   // Cached derivatives
-  Double dval[3][3];
+  Double dval_p[3][3];
   // To reference results, and use a few in interim calculations, results are
   // calculated in a circular buffer.
   // Current result pointer
-  Int lres;
+  Int lres_p;
   // Last calculation
-  Vector<Double> result[4];
+  Vector<Double> result_p[4];
   // Interpolation interval
-  static uInt interval_reg;
+  static uInt interval_reg_p;
 
   //# Member functions
   // Make a copy

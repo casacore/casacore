@@ -1,4 +1,4 @@
-//# EarthField.cc:  EarthField class
+//# EarthField.cc:  EarthField class model calculations
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,7 +28,7 @@
 //# Includes
 #ifdef __GNUG__
 #include <aips/Measures/Quantum.h>
-typedef Quantum<Double> gpp_mvdoppler_bug1;
+typedef Quantum<Double> gpp_earthfield__bug1;
 #endif
 #include <trial/Measures/EarthField.h>
 #include <aips/Measures/MeasTable.h>
@@ -42,13 +42,13 @@ typedef Quantum<Double> gpp_mvdoppler_bug1;
 const Double EarthField::INTV = 50000;
 
 //# Static data
-uInt EarthField::interval_reg = 0;
+uInt EarthField::interval_reg_p = 0;
 
 //# Constructors
 EarthField::EarthField() :
   method_p(EarthField::STANDARD), fixedEpoch_p(MeasData::MJD2000), agh_p(0), 
   p_p(0), q_p(0), cl_p(0), sl_p(0),
-  lres(0) {
+  lres_p(0) {
     fillField();
 }
 
@@ -56,10 +56,10 @@ EarthField::EarthField(const EarthField &other) {
   copy(other);
 }
 
-EarthField::EarthField(EarthFieldTypes type, Double catepoch) :
-  method_p(type), fixedEpoch_p(catepoch),
+EarthField::EarthField(EarthFieldTypes model, Double catepoch) :
+  method_p(model), fixedEpoch_p(catepoch),
   p_p(0), q_p(0), cl_p(0), sl_p(0),
-  lres(0) {
+  lres_p(0) {
     fillField();
   }
 
@@ -74,8 +74,8 @@ void EarthField::init() {
   fillField();
 }
 
-void EarthField::init(EarthFieldTypes type, Double catepoch) {
-  method_p = type;
+void EarthField::init(EarthFieldTypes model, Double catepoch) {
+  method_p = model;
   fixedEpoch_p = catepoch;
   fillField();
 }
@@ -87,53 +87,53 @@ EarthField::~EarthField() {}
 // Calculate EarthField components
 const Vector<Double> &EarthField::operator()(const MVPosition &pos) {
   calcField(pos);
-  Vector<Double> dx((pos-checkPos).getValue());
-  lres++; lres %= 4;
+  Vector<Double> dx((pos-checkPos_p).getValue());
+  lres_p++; lres_p %= 4;
   for (Int i=0; i<3; i++) {
-    result[lres](i) = pval[i] +
-      dx(0)*dval[0][i] + dx(1)*dval[1][i] + dx(2)*dval[2][i];
+    result_p[lres_p](i) = pval_p[i] +
+      dx(0)*dval_p[0][i] + dx(1)*dval_p[1][i] + dx(2)*dval_p[2][i];
   };
-  return result[lres];
+  return result_p[lres_p];
 }
 
 //# Member functions
 const Vector<Double> *EarthField::derivative(const MVPosition &pos) {
   calcField(pos);
-  lres=0;		// Make sure contiguous set
+  lres_p=0;		// Make sure contiguous set
   for (Int j=0; j<3; j++) {
-    lres++; lres %= 4;
+    lres_p++; lres_p %= 4;
     for (Int i=0; i<3; i++) {
-      result[lres](i) = dval[j][i];
+      result_p[lres_p](i) = dval_p[j][i];
     };
   };
-  return &result[1];
+  return &result_p[1];
 }
 
 void EarthField::copy(const EarthField &other) {
   method_p = other.method_p;
   fixedEpoch_p = other.fixedEpoch_p;
   agh_p = other.agh_p;
-  checkPos = other.checkPos;
+  checkPos_p = other.checkPos_p;
   for (Int i=0; i<3; i++) {
-    pval[i] = other.pval[i];
-    for (Int k=0; k<3; k++) dval[i][k] = other.dval[i][k];
+    pval_p[i] = other.pval_p[i];
+    for (Int k=0; k<3; k++) dval_p[i][k] = other.dval_p[i][k];
   };
   for (Int j=0; j<4; j++) {
-    result[j] = other.result[j];
+    result_p[j] = other.result_p[j];
   };
 }
 
 void EarthField::fillField() {
 
   // Get the interpolation interval
-  if (!EarthField::interval_reg) {
-    interval_reg = 
+  if (!EarthField::interval_reg_p) {
+    interval_reg_p = 
       AipsrcValue<Double>::registerRC(String("measures.earthfield.d_interval"),
 				      Unit("km"), Unit("m"),
 				      EarthField::INTV);
   };
 
-  checkPos = MVPosition(1e30, 1e30, 1e30);
+  checkPos_p = MVPosition(1e30, 1e30, 1e30);
   switch (method_p) {
   default:
     agh_p.resize(0);
@@ -144,10 +144,7 @@ void EarthField::fillField() {
     sl_p.resize(2*PQ_LEN);
     break;
   };
-  for (Int j=0; j<4; j++) {
-    result[j].resize(3);
-  };
-
+  for (Int j=0; j<4; j++) result_p[j].resize(3);
 }
 
 void EarthField::refresh() {
@@ -155,14 +152,21 @@ void EarthField::refresh() {
 }
 
 void EarthField::calcField(const MVPosition &pos) {
-  if (!pos.nearAbs(checkPos,
-		   AipsrcValue<Double>::get(EarthField::interval_reg))) {
-    checkPos = pos;
+  if (!pos.nearAbs(checkPos_p,
+		   AipsrcValue<Double>::get(EarthField::interval_reg_p))) {
+    checkPos_p = pos;
     Vector<Double> posmv(3);
     posmv = pos.getValue();
     Vector<Double> posv(3);
     posv = pos.get();
     switch (method_p) {
+    case NONE: {
+      for (uInt j=0; j<3; j++) {
+	pval_p[j] =0;
+	for (uInt i=0; i<3; i++) dval_p[j][i] =0;
+      };
+    }
+    break;
     default: {
       Double slat, clat, slong, clong, x, y, z, ratio, rr, one, two, three;
       Int l, m, n, fn, fm, j, i;
@@ -246,16 +250,16 @@ void EarthField::calcField(const MVPosition &pos) {
 	}; // calculation loop
 	// Rotate from local vertical/meridian to ITRF one
 	if (lp == 0) {
-	  pval[0] = -x*slat*clong + z*clat*clong - y*slong;
-	  pval[1] = -x*slat*slong + z*clat*slong + y*clong;
-	  pval[2] =  x*clat + z*slat;
+	  pval_p[0] = -x*slat*clong + z*clat*clong - y*slong;
+	  pval_p[1] = -x*slat*slong + z*clat*slong + y*clong;
+	  pval_p[2] =  x*clat + z*slat;
 	} else {
-	  dval[lp-1][0] = (-x*slat*clong + z*clat*clong - y*slong -
-			    pval[0])/DER_INTV;
-	  dval[lp-1][1] = (-x*slat*slong + z*clat*slong + y*clong -
-			   pval[1])/DER_INTV;
-	  dval[lp-1][2] = ( x*clat + z*slat -
-			    pval[2])/DER_INTV;
+	  dval_p[lp-1][0] = (-x*slat*clong + z*clat*clong - y*slong -
+			    pval_p[0])/DER_INTV;
+	  dval_p[lp-1][1] = (-x*slat*slong + z*clat*slong + y*clong -
+			   pval_p[1])/DER_INTV;
+	  dval_p[lp-1][2] = ( x*clat + z*slat -
+			    pval_p[2])/DER_INTV;
 	};
 	if (lp < 3) {
 	  if (lp != 0) posmv(lp-1) -= DER_INTV;

@@ -62,23 +62,30 @@ template <class M, class F, class MC> class MeasConvert;
 // </etymology>
 //
 // <synopsis>
-// MEarthMagnetic forms derived Measure class for Earth' magnetic flux density
-// It contains the following magnetic field models:
+// MEarthMagnetic forms derived Measure class for Earth' magnetic flux density.
+// The field can be specified as a model, or as a 3D vector (see
+// <linkto class=MVEarthMagnetic>MVEarthMagnetic</linkto>) with a specified
+// reference frame code. If a model is specified, a possibly specified
+// explicit field will be ignored, since the field will be calculated from
+// the model if a conversion is asked for.<br>
+// The class contains the following magnetic field models:
 // <ul>
 //   <li> IGRF		international reference field
-//   <li> directions	direction types to convert to (e.g. AZEL)
 // </ul>
+// The reference frame type can be any of the types specified in the
+// <linkto class=MDirection>MDirection</linkto> direction types (e.g. AZEL).
 // <note role=warning>
-// The IGRF needs a Table
-// of coefficients (at 5-year interval) </note>
+// The IGRF needs a Table of coefficients (at 5-year interval) </note>
 //
-// Conversion between field models is not supported.
-// The field can be given in any of the standard <linkto class=MDirection>
-// direction</linkto> coordinate systems ny selecting the correct conversion output
-// reference type (e.g. MEarthMagnetic::AZEL). 
+// Conversion between field models is not supported (but not relevant
+// anyway with only one model supported). Conversion to an explicit direction
+// is done by the standard <linkto class=MeasConvert>MeasConvert</linkto>
+// class and rules (see example) using <em>MEarthMagnetic::Convert</em>, 
+// and the reference types (e.g. MEarthMagnetic::AZEL).
 //
-// An <linkto class=EarthFieldMachine> EarthFieldMachine</linkto> has been
-// provided to get e.g. the field in a certain direction at a certain height.
+// An <linkto class=EarthMagneticMachine> EarthMagneticMachine</linkto> has
+// been provided to get e.g. the field in a certain direction at a
+// certain height.
 //
 // </synopsis>
 //
@@ -101,10 +108,11 @@ template <class M, class F, class MC> class MeasConvert;
 // </example>
 //
 // <motivation>
+// To have the Earth' magnetic field in the standard Measure environment.
 // </motivation>
 //
-// <todo asof="1997/02/19">
-//	<li> nothing I know
+// <todo asof="1999806/19">
+//	<li> maybe add other field models if necessary (e.g. dipole)
 // </todo>
 
 class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> >  {
@@ -117,8 +125,8 @@ public:
 //# Enumerations
 // Types of known MEarthMagnetics
 // <note role=tip> The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
+// in the getConvert routine in MCEarthMagnetic. Do not change the order
+// without changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
     enum Types {
@@ -140,10 +148,10 @@ public:
       TECLIPTIC,
       SUPERGAL,
       N_Types,
-      // Models. Firsty one should be IGRF
+      // Models. First one should be IGRF
       IGRF = 32,
       N_Models,
-      // All extra bits
+      // All extra bits (for internal use only)
       EXTRA = 32,
       // Defaults
       DEFAULT=IGRF,
@@ -199,8 +207,6 @@ public:
 // <group>
   static Bool getType(MEarthMagnetic::Types &tp, const String &in);
   Bool giveMe(MEarthMagnetic::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MEarthMagnetic::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

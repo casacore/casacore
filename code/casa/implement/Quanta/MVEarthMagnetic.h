@@ -201,8 +201,8 @@ public:
   // Get the EarthMagnetic angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>
-  Double EarthMagneticAngle(const MVEarthMagnetic &other) const;
-  Quantity EarthMagneticAngle(const MVEarthMagnetic &other, 
+  Double earthMagneticAngle(const MVEarthMagnetic &other) const;
+  Quantity earthMagneticAngle(const MVEarthMagnetic &other, 
 			      const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.

@@ -301,7 +301,7 @@ Quantity MVEarthMagnetic::getLength(const Unit &unit) const {
   return getLength().get(unit);
 }
 
-Double MVEarthMagnetic::EarthMagneticAngle(const MVEarthMagnetic &other) const {
+Double MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other) const {
   Vector<Double> t1(3);
   Vector<Double> t2(3);
   t1 = get();
@@ -317,9 +317,9 @@ Double MVEarthMagnetic::EarthMagneticAngle(const MVEarthMagnetic &other) const {
   };
 }
 
-Quantity MVEarthMagnetic::EarthMagneticAngle(const MVEarthMagnetic &other, 
+Quantity MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other, 
 					     const Unit &unit) const {
-  return Quantity(EarthMagneticAngle(other), "rad").get(unit);
+  return Quantity(earthMagneticAngle(other), "rad").get(unit);
 }
 
 Double MVEarthMagnetic::separation(const MVEarthMagnetic &other) const {
