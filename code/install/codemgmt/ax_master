@@ -2755,3 +2755,4 @@
 10 087 src rm trial/apps/sky/templates
 10 087 src rm trial/apps/simulator
 10 088 src rm aips/implement/Measures/MeasureMath.h
+10 089 src rm trial/implement/MeasurementEquations/CompositeSkyEquation.h
