@@ -28,31 +28,33 @@
 #define AIPS_LELFUNCTIONENUMS_H
 
 
-// <summary>
-// </summary>
-
+// <summary> Each LEL function is described in this enum </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELFunction"> LELFunction</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This enum provides a value for each function accepted
+//  by the Lattice Expression Language classes.
 // </etymology>
 //
 // <synopsis>
+//  Each function name accepted by the bridging class LatticeExprNode
+//  and passed  on to the LELFunction letter classes is labelled internally 
+//  with a value from this enum.  
 // </synopsis> 
 //
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-//
-// <todo asof="1996/07/01">
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -137,25 +139,25 @@ public:
 // max; max(x,y)
    MAX,
 
-// min; min(x)
+// min; min(x) (is a scalar)
    MIN1D,
 
-// max; max(x)
+// max; max(x) (is a scalar)
    MAX1D,
 
-// mean; mean(x)
+// mean; mean(x) (is a scalar)
    MEAN1D,
 
-// sum; sum(x)
+// sum; sum(x) (is a scalar)
    SUM,
 
-// nelements; nelements(x)
+// nelements; nelements(x) (is a scalar)
    NELEM,
 
-// all (true)
+// all (true) (is a scalar)
    ALL,
 
-// any (true)
+// any (true) (is a scalar)
    ANY,
 
 // ntrue 
