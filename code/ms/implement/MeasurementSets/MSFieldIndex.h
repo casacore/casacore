@@ -96,6 +96,8 @@ public:
   Vector<Int> matchSourceId(const Int& sourceId);
   Vector<Int> matchSourceId(const Vector<Int>& sourceIds);
 
+  // Add for field code selection
+  Vector<Int> matchFieldCode(const String& code);
 private:
   // Disallow null constructor
   MSFieldIndex();
