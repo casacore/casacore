@@ -5932,3 +5932,4 @@
 16 339 src mv bima/mirlib aips/mirlib
 16 341 src mv trial/implement/Functionals/NQCombi2Function.cc aips//implement/Functionals/NQCombi2Function.cc
 16 341 src mv trial/implement/Functionals/NQCombiFunction.cc aips//implement/Functionals/NQCombiFunction.cc
+16 341 src mv trial/implement/Functionals/NQCombiFunction.h aips//implement/Functionals/NQCombiFunction.h
