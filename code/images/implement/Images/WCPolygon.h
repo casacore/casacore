@@ -45,7 +45,7 @@ class IPosition;
 
 
 // <summary>
-// Class to define a 2-D polygonal world coordinate region of interest in an image.
+// Class to define a 2-D polygonal world coordinate region in an image.
 // </summary>
 //
 // <use visibility=export>

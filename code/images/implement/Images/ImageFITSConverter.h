@@ -204,6 +204,13 @@ private:
 
 };
 
+
+// <summary>
+// This class is an internal class for ImageFITSConverter.
+// </summary>
+
+// <use visibility=local>
+
 // <synopsis>
 // This class is an internal class used to implement 
 // ImageFitsConverter::FITSToImage - in particular, it has the code which
@@ -220,5 +227,6 @@ public:
                             Bool zeroBlanks=False);
 
 };
+
 
 #endif
