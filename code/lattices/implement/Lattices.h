@@ -419,7 +419,7 @@
 //  <linkto class=LCEllipsoid>ellipsoid</linkto>,
 //  <linkto class=LCPolygon>polygon</linkto>,
 //  <linkto class=LCPixelSet>pixelset</linkto>, and
-//  <linkto class=LCPagedMask>godd/bad mask</linkto>.
+//  <linkto class=LCPagedMask>good/bad mask</linkto>.
 //  Compound region classes can be used to make a
 //  <linkto class=LCUnion>union</linkto>,
 //  <linkto class=LCIntersection>intersection</linkto>,
@@ -500,8 +500,8 @@
 //   the PagedArray's optimized method of iterating. This class is a
 //   "letter" utilized within the LatticeIterator "envelope" and cannot
 //   be instantiated by any user.
-//   <li> Class <linkto class=LCRegion> is the abstract base class for
-//   regions in pixel coordinates.
+//   <li> <linkto class="LCRegion">LCRegion</linkto> - this class is the
+//   (abstract) base class for regions in pixel coordinates.
 //  </ul>
 // </ol>
 // </synopsis>
