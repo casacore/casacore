@@ -1057,6 +1057,7 @@ Bool ImageMoments<T>::createMoments()
       sliceShape(momentAxis_p) = pSmoothedImage->shape()(momentAxis_p);
    }
    IPosition outPos(outDim);
+   Vector<T> smoothSliceRef;
 
 // Iterate through image and do all the wonderful things with each profile
 
@@ -1074,9 +1075,8 @@ Bool ImageMoments<T>::createMoments()
 
 // Fish out smoothed image slice
 
-      Array<T> smoothSlice;
-      Vector<T> smoothSliceRef;
       if (pSmoothedImage) {
+         Array<T> smoothSlice;
          pSmoothedImage->getSlice(smoothSlice, (imageIterator.position()-blc_p),
                                   sliceShape, stride, True);
          smoothSliceRef.reference(smoothSlice);
