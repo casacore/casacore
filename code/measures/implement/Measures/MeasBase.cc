@@ -99,7 +99,7 @@ Bool MeasBase<Mv,Mr>::areYou(const String &tp) const {
 }
 
 template <class Mv, class Mr>
-void MeasBase<Mv,Mr>::assure(const String &tp) const {
+void MeasBase<Mv,Mr>::assured(const String &tp) const {
   if (capitalize(tp) != tellMe()) {
     throw(AipsError("Illegal Measure type in context: " +
 		    tellMe()));
