@@ -5728,3 +5728,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSAntennaColumns.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSAntennaColumns.h
 16 134 src rm aips/implement/MeasurementSets/OldMSAntennaEnums.h
+16 134 src rm aips/implement/MeasurementSets/OldMSArray.cc
