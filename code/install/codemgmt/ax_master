@@ -2804,3 +2804,4 @@
 10 105 src mv doc/html/gettingstarted/gsedtion2.latex doc/html/gettingstarted/gsedition2.latex
 10 105 src rm doc/html/gettingstarted/gettingstarted.tex
 11 008 src mv trial/apps/numerics/fftserver.cc trial/implement/Mathematics/fftserver.cc
+11 008 src mv trial/apps/numerics/fftserver.h trial/implement/Mathematics/fftserver.h
