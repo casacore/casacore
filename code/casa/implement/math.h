@@ -45,4 +45,10 @@ inline Double abs(Double Val) {return fabs(Val);}
 #include <cmath>
 #endif
 
+// The following is not yet part of the cmath include file. Should be
+// removed at some stage
+inline Float pow(Float f1, Float f2) {
+  return Float(pow(Double(f1), Double(f2))); };
+
+
 #endif
