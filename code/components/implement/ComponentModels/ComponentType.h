@@ -1,4 +1,4 @@
-//# ComponentEnums.h: Enumerators common to the Components Module
+//# ComponentType.h: Enumerators common to the Components Module
 //# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,22 +26,30 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COMPONENTENUMS_H)
-#define AIPS_COMPONENTENUMS_H
+#if !defined(AIPS_COMPONENTTYPE_H)
+#define AIPS_COMPONENTTYPE_H
 
 #include <aips/aips.h>
 class String;
 
+// <summary>Enumerators common to the ComponentsModels module</summary>
+
 // <use visibility=export>
 
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tComponentType" demos="">
+// </reviewed>
+
 // <etymology>
-// This class contains the enum defininitions for the componentModels module
+// This class contains the type definitions in the ComponentModels module 
 // </etymology>
 
-// <synopsis>
-// This class does nothing.  It is merely a container for the enumerations
-// used by the ComponentModels module.  These enumerations define the
-// standard component types
+// <synopsis> 
+// This class does nothing.  It is merely a container for the enumerations used
+// by the ComponentModels module.  These enumerations define the standard
+// component types. It also contains static functions which convert between
+// these enumerators and strings. The first element in the enumerator must be
+// represented by zero and every enumerator must contain as the second last and
+// last elements an UNKNOWN and NUMBER element.
 // </synopsis>
 
 // <example>
@@ -49,7 +57,7 @@ class String;
 // use of these enumerations.
 // </example>
 // <todo asof="1997/06/17">
-// Nothing I can think of.
+// <li> Nothing I can think of.
 // </todo>
 //
 
