@@ -31,11 +31,11 @@
 
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeConcat.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Coordinates/CoordinateSystem.h>
 
 class CoordinateSystem;
 template <class T> class ImageSummary;
+template <class T> class ImageInterface;
+template <class T> class MaskedLattice;
 
 
 // <summary>
