@@ -238,7 +238,9 @@ public:
     // exceeds the inspection interval as given in the constructor.
     // If the time passed is too short, False is returned (indicating
     // that no access is needed).
-    Bool inspect();
+    // If <src>always==True</src>, no test on inspection interval is done,
+    // so the inspect is always done.
+    Bool inspect (Bool always=False);
 
     // Test if the file can be locked for read or write.
     Bool canLock (FileLocker::LockType = FileLocker::Write);

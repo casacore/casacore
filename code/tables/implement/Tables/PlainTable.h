@@ -140,7 +140,9 @@ public:
     virtual void unlock();
 
     // Do a release of an AutoLock when the inspection interval has expired.
-    void autoReleaseLock();
+    // <src>always=True</src> means that the inspection is always done,
+    // thus not every 25th call or so.
+    void autoReleaseLock (Bool always = False);
 
     // Flush the table, i.e. write it to disk.
     // Nothing will be done if the table is not writable.

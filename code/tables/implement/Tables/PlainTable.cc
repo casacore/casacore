@@ -396,9 +396,9 @@ void PlainTable::unlock()
     lockPtr_p->release();
 }
 
-void PlainTable::autoReleaseLock()
+void PlainTable::autoReleaseLock (Bool always)
 {
-    lockPtr_p->autoRelease();
+    lockPtr_p->autoRelease (always);
 }
 
 uInt PlainTable::getModifyCounter() const

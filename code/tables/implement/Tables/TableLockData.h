@@ -1,5 +1,5 @@
 //# TableLockData.h: Class to hold table lock data
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,9 @@ public:
 
     // When the inspection interval has expired, inspect if another process
     // needs the lock. If so, release the lock.
-    void autoRelease();
+    // <src>always=True</src> means that the inspection is always done,
+    // thus not every 25th call or so.
+    void autoRelease (Bool always=False);
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
@@ -131,9 +133,9 @@ inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
     return (itsLock == 0  ?  False : itsLock->hasLock (type));
 }
-inline void TableLockData::autoRelease()
+inline void TableLockData::autoRelease (Bool always)
 {
-    if (option() == AutoLocking  &&  itsLock->inspect()) {
+    if (option() == AutoLocking  &&  itsLock->inspect(always)) {
 	release();
     }
 }

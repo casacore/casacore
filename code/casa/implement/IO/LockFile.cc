@@ -207,24 +207,26 @@ Bool LockFile::release (const MemoryIO* info)
     return itsLocker.release();
 }
 
-Bool LockFile::inspect()
+Bool LockFile::inspect (Bool always)
 {
     //# When no lock file, lock requests are not really handled.
     if (itsFileIO == 0) {
 	return False;
     }
 
-    //# Only check elapsed time every n-th request (where n=25 at present),
-    //# as the elapsed time calculation is computationally expensive
-    if (itsInterval > 0 && itsInspectCount++ < 25) {
-      return False;
-    }
-    itsInspectCount = 0;
+    if (!always) {
+      //# Only check elapsed time every n-th request (where n=25 at present),
+      //# as the elapsed time calculation is computationally expensive
+      if (itsInterval > 0 && itsInspectCount++ < 25) {
+	return False;
+      }
+      itsInspectCount = 0;
 
-    //# Only inspect if time interval has passed.
-    if (itsInterval > 0  &&  itsLastTime.age() < itsInterval) {
-      return False;
-    };
+      //# Only inspect if time interval has passed.
+      if (itsInterval > 0  &&  itsLastTime.age() < itsInterval) {
+	return False;
+      };
+    }
 
     //# Get the number of request id's and reset the time.
     uInt nr = getNrReqId();
