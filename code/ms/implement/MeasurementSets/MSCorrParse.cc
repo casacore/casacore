@@ -65,7 +65,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
     cout << "Table is not writable " << endl;
-    exit(0);
+    return NULL;
   } 
 
   IPosition rowShape;
