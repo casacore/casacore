@@ -38,7 +38,6 @@ template<class T>
 ArrayLattice<T>::ArrayLattice()
 : itsWritable (False)
 {
-  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
@@ -46,7 +45,6 @@ ArrayLattice<T>::ArrayLattice (const IPosition& shape)
 : itsData     (shape),
   itsWritable (True)
 {
-  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
@@ -54,7 +52,6 @@ ArrayLattice<T>::ArrayLattice (Array<T>& array)
 : itsData     (array),
   itsWritable (True)
 {
-  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
@@ -62,7 +59,6 @@ ArrayLattice<T>::ArrayLattice (const Array<T>& array)
 : itsData     (array),
   itsWritable (False)
 {
-  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
@@ -70,7 +66,6 @@ ArrayLattice<T>::ArrayLattice (const ArrayLattice<T>&other)
 : itsData     (other.itsData),
   itsWritable (other.itsWritable)
 {
-  itsData.makePermanent();           // avoid double deletion by Cleanup
 }
 
 template<class T>
@@ -82,7 +77,6 @@ ArrayLattice<T>& ArrayLattice<T>::operator= (const ArrayLattice<T>& other)
 {
   if (this != &other) {
     itsData     = other.itsData;
-    itsData.makePermanent();           // avoid double deletion by Cleanup
     itsWritable = other.itsWritable;
   }
   return *this;
