@@ -30,7 +30,7 @@ uInt baselineFit(Lattice<Float> &outImage,
     if (whichAxis >= outImage.ndim()) {
 	throw(AipsError("::baselineFit - whichAxis does not exist in image"));
     }
-    if (fitMask.nelements() != outShape(whichAxis) ||
+    if (fitMask.nelements() != outShape(whichAxis)) {
 	throw(AipsError("::baselineFit - improperly specified mask"));
     }
 
