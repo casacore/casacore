@@ -859,6 +859,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 	     MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
 
   Bool doWsrt = False;
+  String telescopeName;
   {
     MSObservation obsTable(ms.observation());
     if (obsTable.nrow() > 0) {
@@ -866,6 +867,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 					 MSObservation::columnName
 					 (MSObservation::TELESCOPE_NAME));
       doWsrt = inarrayname(0) == "WSRT";
+      telescopeName=inarrayname(0);
     }
   }
 
@@ -916,10 +918,10 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     if (i < spwidMap.nelements()  &&  spwidMap[i] >= 0) {
       *freqsel = 1 + spwidMap[i];
       Vector<Double> freqs = inchanfreq(i);
-      if (doWsrt) {
-	(*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
+      if (telescopeName == "IRAM PDB" || telescopeName == "IRAM_PDB") {
+	(*iffreq)(inx)=0.0;
       } else {
-	(*iffreq)(inx) = 0.0; 
+	(*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
       }
       if (freqs.nelements() > 1) {
 	if (doWsrt) {
