@@ -60,7 +60,7 @@ $pack = $opt_package;
 if($opt_glish == 1){
    $pack = "help::pkg.$opt_package";
    print "pragma include once\n";
-   print "$pack := [=];\n";
+   print "val $pack := [=];\n";
 }
 
 
