@@ -2696,3 +2696,4 @@
 11 413 src rm nrao/fortran/DummyForNRAOLib.f
 11 413 src rm dish/fortran/DummyForDISHlib.f
 11 413 src mv trial/implement/Mathematics/componentmodels.g trial/implement/ComponentModels/componentmodels.g
+11 413 src mv trial/implement/Mathematics/componentmodels.help trial/implement/ComponentModels/componentmodels.help
