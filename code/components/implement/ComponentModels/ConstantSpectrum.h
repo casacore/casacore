@@ -91,15 +91,11 @@ public:
   // <group>
   virtual void setRefFrequency(const MFrequency & newRefFreq);
   virtual const MFrequency & refFrequency() const;
-  virtual void refFrequency(MFrequency & refFreq) const;
   // </group>
 
   // Return the attenuation of the component at the specified frequency. The
   // attenuation is always 1.
   virtual Double scale(const MFrequency & centerFreq) const;
-  virtual void scale(Double & scaleFactor,const MFrequency & centerFreq) const;
-  
-
 
   // return the number of parameters. There are no parameters for this
   // spectral model.
