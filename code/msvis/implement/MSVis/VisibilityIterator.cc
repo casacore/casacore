@@ -35,6 +35,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MVTime.h>
+#include <aips/Measures/MCDirection.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/ExprNode.h>
@@ -45,7 +46,9 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Tables/TableRecord.h>
-
+#ifdef __GNUG__
+typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_visiter_bug1;
+#endif
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>
 
