@@ -305,7 +305,7 @@ EOT
            KIT="$FLEX"
            ;;
 	perl)
-           PERL="perl-5.000.tar.gz" # need to put in a __PERL sometime
+           PERL="__PERL"
            KIT="$PERL"
 	   ;;
         esac
