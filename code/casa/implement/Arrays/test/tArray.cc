@@ -726,6 +726,25 @@ int main()
 	  AlwaysAssertExit(allEQ(mi, 11));
 	}
 
+	{
+	  // Test nonDegenerate on an Array subsection.
+	  IPosition shape0(3,2,3,4);
+	  Array<Float> data(shape0);
+	  indgen(data, Float(0.0));
+	  IPosition blc(3, 0, 0, 0);
+	  IPosition trc(3, 0, 3-1, 4-1);
+	  Array<Float> data2 = data(blc, trc);
+	  IPosition shape1(2,3,4);
+	  Array<Float> data3 = data2.nonDegenerate();
+	  Array<Float> data4 = data2.reform(shape1);
+	  AlwaysAssertExit (allEQ(data3, data4));
+	  Bool deleteIt;
+	  const Float* dataPtr = data2.getStorage (deleteIt);
+	  Array<Float> data5 (shape1, dataPtr);
+	  AlwaysAssertExit (allEQ(data3, data5));
+	  data2.freeStorage (dataPtr, deleteIt);
+	}
+
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
     } 
