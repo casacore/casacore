@@ -35,6 +35,7 @@
 #include <aips/FITS/fits.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
+#include <aips/OS/Path.h>
 
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ScaColDesc.h>
@@ -588,7 +589,9 @@ Bool FITSTable::reopen(const String &fileName)
 {
     clear_self();
 
-    io_p = new FitsInput(fileName.chars(), FITS::Disk);
+    // use the Path class so that ~ is parsed if present in the file name
+    Path filePath(fileName);
+    io_p = new FitsInput(filePath.expandedName().chars(), FITS::Disk);
     AlwaysAssert(io_p, AipsError);
     if (io_p->err() || io_p->eof()) {
 	return False;
@@ -601,35 +604,35 @@ Bool FITSTable::reopen(const String &fileName)
 	{
 	    BytePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(fileName);
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
 	}
     break;
     case FITS::SHORT:
 	{
 	    ShortPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(fileName);
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
 	}
     break;
     case FITS::LONG:
 	{
 	    LongPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(fileName);
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
 	}
     break;
     case FITS::FLOAT:
 	{
 	    FloatPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(fileName);
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
 	}
     break;
     case FITS::DOUBLE:
 	{
 	    DoublePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
-	    if (pa.nelements()) reopenAtFirstHDU(fileName);
+	    if (pa.nelements()) reopenAtFirstHDU(filePath.expandedName().chars());
 	}
     break;
     default:
