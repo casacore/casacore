@@ -37,33 +37,56 @@ template <class T> class Array;
 template <class T> class Lattice;
 class PixelRegion;
 
-
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles access to Lattices </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles access to the pixels in a Lattice
 // </etymology>
 //
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It
+// is used to construct LEL objects that access the pixels in
+// a Lattice. It works with Lattices of type 
+// Float,Double,Complex,DComplex and Bool.  
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
 //
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  An example of how the user
+// would indirectly use this class (through the envelope) is:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Float> x(shape); x.set(1.0);
+// ArrayLattice<Float> y(shape); 
+// y.copyData(x);                 // y = x
+// </srcblock>
 // </example>
 //
 // <motivation>
+// Accessing Lattices is fundamental to manipulating their pixel values
 // </motivation>
 //
-// <todo asof="1996/07/01">
+// <todo asof="1998/01/20">
 // </todo>
+ 
+
 
 
 template <class T> class LELLattice : public LELInterface<T>
@@ -76,7 +99,7 @@ public:
 // Destructor does nothing
   ~LELLattice();
 
-// Get the chunk of the lattice
+// Evaluate the expression; this means get the chunk of the lattice
    virtual void eval(Array<T>& result,
                      const PixelRegion& region) const;
 
