@@ -130,15 +130,17 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  virtual void visibilityLinear(Vector<DComplex> & vis, 
-  				const Vector<Double> & uvw,
-  				const Double & frequency) const;
-  virtual void visibilityCircular(Vector<DComplex> & vis, 
-  				  const Vector<Double> & uvw,
-  				  const Double & frequency) const;
   // set/get the integrated flux of the component. The Vector specifies all the
-  // polarizations of the radiation. The units must be something has the same
-  // dimensions as Jansky's.
+  // polarizations of the radiation. The <src>setFlux</src> and <src>flux</src>
+  // functions expect the flux to be represented using Stokes parameters,
+  // ie. I,Q,U,V respectively. The flux can also be represented using linear
+  // polarisations, ie. XX,XY,YX,YY resp. with the <src>{setF,f}luxLinear</src>
+  // functions (the parrallactic angle is assumed to be zero). Alternately the
+  // flux can be represented using circular polarisations, ie., RR, RL, LR, LL
+  // resp. using the <src>{setF,f}luxCircular</src> functions. It is expected
+  // that these six functions will be coalesced into two once a Measure that
+  // represents flux is available. The units must be something has the same
+  // dimensions as Jansky's.  
   // <group>
   virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
   virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
@@ -152,6 +154,17 @@ public:
   // <group>
   virtual void setDirection(const MDirection & newDirection) = 0;
   virtual void direction(MDirection & compDirection) const = 0;
+  // </group>
+
+  // <group>
+  virtual void visibility(Vector<DComplex> & vis, const Vector<Double> & uvw,
+			  const Double & frequency) const = 0;
+  virtual void visibilityLinear(Vector<DComplex> & vis, 
+   				const Vector<Double> & uvw,
+   				const Double & frequency) const;
+  virtual void visibilityCircular(Vector<DComplex> & vis, 
+   				  const Vector<Double> & uvw,
+   				  const Double & frequency) const;
   // </group>
 
   // set/get the label associated with this component. The default versions do
