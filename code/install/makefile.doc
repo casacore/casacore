@@ -77,7 +77,7 @@ vpath %.texi  $(CODEDIR)
 vpath %.latex $(CODEDIR)
 vpath %.tex   $(CODEDIR)
 
-TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.dir:$(TEXINPUTS)
+override TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.dir:$(TEXINPUTS)
 
 
 # Pattern rules.
