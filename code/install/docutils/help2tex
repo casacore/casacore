@@ -361,7 +361,7 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsubsection{$1 -- Function\\label{$miname.$oiname.$iname}\\index{$mname.$oname.$1}\\index{$1}}
+   \\subsubsection{$1 -- Function\\label{$miname:$oiname.$iname}\\index{$mname.$oname.$1}\\index{$1}}
    \\subsectionM{$oname.$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
