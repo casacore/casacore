@@ -23,3 +23,19 @@ change id: 0086
  category: Change
  summary:  See if it works a second time
 Test if the rac stays in error after the submission about Template class.
+
+change id: 0087
+ author:   Wim Brouw
+ date:     2001/03/21
+ avers:    1.5
+ area:     System
+ package:  trial
+ module:   duplicates
+ type:     Code
+ category: Change
+ summary:  Added an -s switch and more typedef checks
+I added an -s (for system) switch to limit the output of the duplicates program to duplicates that should be removed.
+
+In addition I added more typedef definitions (like e.g. MS, LogicalArray) to be able to detect duplicates whether typedefs are used or not.
+
+In general the use of typedefs should be carefully considered in templates files: there could be an unintended clash of names if typedefs are just used for local convenience.
