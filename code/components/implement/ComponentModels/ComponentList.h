@@ -165,6 +165,7 @@ public:
   Bool ok() const;
 
 private:
+  void writeTable();
   Block<SkyComponent> theList;
   uInt theNelements;
   Table theTable;
