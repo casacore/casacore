@@ -5751,3 +5751,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSObsEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSObsLog.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSObsLog.h
+16 134 src rm aips/implement/MeasurementSets/OldMSObsLogColumns.cc
