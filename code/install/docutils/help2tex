@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/bin/perl
 #
 #   Copyright (C) 1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
@@ -40,8 +40,8 @@ $end_section = "\\vspace{.18in}\n\\hrule";
    
    # OK first we make sure we can tokenize everything by adding an endaips2help
    # token after the \\end{ah}
-$result = &GetOptions('glish', 'noheaders', 'package=s');
-if($opt_noheaders == 0 && $opt_glish == 0){
+$result = &GetOptions('glish', 'noheaders', 'package=s', 'outline');
+if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0){
    print "\\documentclass{book}\n";
    print "\\usepackage{html, longtable, epsfig}\n";
    print "\\begin{document}\n";   
@@ -56,7 +56,6 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "\\input{aips2defs}\n";
 }
 $pack = $opt_package;
-
 
 if($opt_glish == 1){
    $pack = "help::pkg.$opt_package";
@@ -106,7 +105,7 @@ foreach $file (@ARGV) {
       &term_module($objectText);
    }
 }
-if($opt_noheaders == 0 && $opt_glish == 0){
+if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0 ){
    print "\\end{document}\n";
 }
 
@@ -196,7 +195,7 @@ $funItems
    s/\\ahobjs{}//g;
    s/\\ahfuncs{}//g;
    s/\\ahmethods{}//g;
-   if($opt_glish == 0){
+   if($opt_glish == 0 && $opt_outline == 0){
       print;
    }
    print "\n";
@@ -277,6 +276,9 @@ sub make_tex_file{
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.d := '$dum';\n";}
+          if($opt_outline == 1){
+            print "\\>\\htmlref{$mname}{$mname}\\\\\n";
+          }
       }
       if(/\\begin{ahrecord}\s*{($mtext)}/){
         $recname = "$1.";
@@ -303,6 +305,9 @@ sub make_tex_file{
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
+         if($opt_outline == 1){
+           print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         }
          undef @methodsid{$oname};
          undef @constructorsid{$oname};
          undef @constructors{$oname};
@@ -327,6 +332,9 @@ sub make_tex_file{
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
+         if($opt_outline == 1){
+           print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         }
          undef @methodsid{$oname};
          undef @constructorsid{$oname};
          undef @constructors{$oname};
@@ -349,6 +357,9 @@ sub make_tex_file{
             print "$pack.$miname.objs.$oiname.c.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.c.$iname.d := '$dum';\n";}
+         if($opt_outline == 1){
+           print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.constructor}\\\\\n";
+         }
       }
       $recIndent = "";
       if(/\\begin{ahrecord}/){
@@ -373,6 +384,9 @@ sub make_tex_file{
                print "$argroot := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n"; }
+             if($opt_outline == 1){
+                print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.function}\\\\\n";
+             }
          }else{
             push @funcsid, $fname;
             $funcs{$fname} = $dum;
@@ -384,6 +398,9 @@ sub make_tex_file{
                print "$argroot.a := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n";}
+             if($opt_outline == 1){
+                print "\\>\\>\\htmlref{$fname}{$mname:$fname.function}\\\\\n";
+             }
          }
       } 
    
