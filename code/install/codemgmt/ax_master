@@ -2434,3 +2434,5 @@
 11 244 sys rm libexec/aips.g
 11 246 src rm trial/scripts/tutility.g
 11 246 src rm trial/scripts/utility_meta.g
+11 246 sys rm libexec/utility_meta.g
+11 246 sys rm libexec/tutility.g
