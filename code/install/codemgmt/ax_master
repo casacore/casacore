@@ -4376,3 +4376,4 @@
 14 261 src rm trial/apps/image/templates
 14 265 src rm atnf/apps/pksreader
 14 265 src mv atnf/apps/pksmbfits atnf/apps/pksreader
+14 265 src mv atnf/apps/pksreader/pksmbfits.cc atnf/apps/pksreader/pksreader.cc
