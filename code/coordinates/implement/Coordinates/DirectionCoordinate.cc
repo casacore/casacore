@@ -113,7 +113,8 @@ static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj,
 }
 
 DirectionCoordinate::DirectionCoordinate()
-  : type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
+  : Coordinate(),
+    type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
     celprm_p(0), prjprm_p(0), linear_p(1),
     names_p(2), units_p(2)
 {
@@ -142,15 +143,16 @@ DirectionCoordinate::DirectionCoordinate()
 
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
- 			const Projection &projection,
-			Double refLong, Double refLat,
-			Double incLong, Double incLat,
-			const Matrix<Double> &xform,
- 			Double refX, Double refY)
-  : type_p(directionType), projection_p(projection),
-    celprm_p(0), prjprm_p(0), linear_p(1),
-    names_p(axisNames(directionType).copy()),
-    units_p(2)
+                                         const Projection &projection,
+                                         Double refLong, Double refLat,
+                                         Double incLong, Double incLat,
+                                         const Matrix<Double> &xform,
+                                         Double refX, Double refY)
+: Coordinate(),
+  type_p(directionType), projection_p(projection),
+  celprm_p(0), prjprm_p(0), linear_p(1),
+  names_p(axisNames(directionType).copy()),
+  units_p(2)
 {
     // Initially we are in radians
     to_degrees_p[0] = 180.0 / C::pi;
@@ -172,7 +174,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 }
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
-    : type_p(other.type_p), projection_p(other.projection_p),
+    : Coordinate(other),
+      type_p(other.type_p), projection_p(other.projection_p),
       celprm_p(0), prjprm_p(0), linear_p(other.linear_p),
       names_p(other.names_p.copy()), units_p(other.units_p.copy())
 {
@@ -186,9 +189,11 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &other)
 {
     if (this != &other) {
+        Coordinate::operator=(other);
+//
 	type_p = other.type_p;
 	projection_p = other.projection_p;
-
+//
 	copy_celprm_and_prjprm(celprm_p, prjprm_p,
 			       other.celprm_p, other.prjprm_p);
 	linear_p = other.linear_p;
@@ -219,12 +224,6 @@ String DirectionCoordinate::showType() const
 }
 
 
-
-    
-
-
-
-
 uInt DirectionCoordinate::nPixelAxes() const
 {
     return 2;
@@ -236,14 +235,13 @@ uInt DirectionCoordinate::nWorldAxes() const
 }
 
 // Move out of func for exception emulation
-    static String errorMsg;
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 				  const Vector<Double> &pixel) const
 {
-    world.resize(2);
+    if (world.nelements()!=2) world.resize(2);
     AlwaysAssert(pixel.nelements() == 2, AipsError);
 
-    Bool ok = linear_p.reverse(world, pixel, errorMsg);
+    Bool ok = linear_p.reverse(world, pixel, errorMsg_p);
     if (ok) {
 	double lng, lat, phi, theta;
 	double x = world(0), y=world(1); // world contains linear xformed numbers
@@ -255,228 +253,133 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	    world(0) = lng;
 	    world(1) = lat;
 	} else {
-	    errorMsg = "wcslib celrev error: ";
-	    errorMsg += celrev_errmsg[errnum];
+	    errorMsg_p = "wcslib celrev error: ";
+	    errorMsg_p += celrev_errmsg[errnum];
 	}
     }
 
     if (!ok) {
-	set_error(errorMsg);
+	set_error(errorMsg_p);
     }
 
     toOther(world);
     return ok;
 }
 
-    static Vector<Double> tmpstatic(2);
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
 {
-    pixel.resize(2);
-    AlwaysAssert(pixel.nelements() == 2, AipsError);
-
-    tmpstatic(0) = world(0); tmpstatic(1) = world(1);
-    toDegrees(tmpstatic);
+    if (pixel.nelements()!=2) pixel.resize(2);
+    AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
+    if (world_tmp_p.nelements()!=nWorldAxes()) world_tmp_p.resize(nWorldAxes());
+//
+    world_tmp_p(0) = world(0); 
+    world_tmp_p(1) = world(1);
+    toDegrees(world_tmp_p);
 
     double x, y, phi, theta;
-    double lng = tmpstatic(0), lat = tmpstatic(1);
+    double lng = world_tmp_p(0);
+    double lat = world_tmp_p(1);
     int errnum = celfwd(pcodes[projection_p.type()], lng, lat,
 			celprm_p, &phi, &theta, prjprm_p, &x, &y);
-    tmpstatic(0) = x; tmpstatic(1) = y;
+//
+    world_tmp_p(0) = x; 
+    world_tmp_p(1) = y;
     Bool ok = ToBool(errnum == 0);
     if (ok) {
-	ok = linear_p.forward(tmpstatic, pixel, errorMsg);
+	ok = linear_p.forward(world_tmp_p, pixel, errorMsg_p);
     } else {
-        errorMsg = "wcslib celfwd error: ";
-        errorMsg += celfwd_errmsg[errnum];
+        errorMsg_p = "wcslib celfwd error: ";
+        errorMsg_p += celfwd_errmsg[errnum];
     }
 
     if (! ok) {
-	set_error(errorMsg);
+	set_error(errorMsg_p);
     }
 
     return ok;
 }
 
- 
-Bool DirectionCoordinate::toMix(Vector<Double>& out,
-                                const Vector<Double>& in,
-                                Bool longIsWorld) const
+Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
+                                Vector<Double>& pixelOut,
+                                const Vector<Double>& worldIn,
+                                const Vector<Double>& pixelIn,
+                                const Vector<Bool>& worldAxes,
+                                const Vector<Bool>& pixelAxes) const
 {
-    AlwaysAssert(in.nelements() == 2, AipsError);
-    out.resize(2);
+   const uInt nWorld = worldAxes.nelements();
+   const uInt nPixel = pixelAxes.nelements();
+   AlwaysAssert(nWorld==nWorldAxes(), AipsError);
+   AlwaysAssert(nPixel==nPixelAxes(), AipsError);
+   AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
+   AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);
 //
-    LogIO os(LogOrigin("DirectionCoordinate", "toMix", WHERE));
-//
-    Vector<String> saveUnits = worldAxisUnits();
-    DirectionCoordinate dC(*this);
-    Vector<String> units(saveUnits.copy());
-    units(0) = "deg";
-    units(1) = "deg";
-    dC.setWorldAxisUnits(units);
-//
-    Vector<Double> crval = dC.referenceValue();
-    Vector<Double> crpix = dC.referencePixel().ac();
-    Projection proj = dC.projection();
-    Vector<Double> projp = proj.parameters();
-    Vector<String> names = DirectionCoordinate::axisNames(directionType(), True);
-//
-// Construct FITS ctype vector
-//
-    Vector<String> ctype(2);
-    Bool isNCP = False;
-    for (uInt i=0; i<2; i++) {
-       String name = names(i);
-       while (name.length() < 4) {
-           name += "-";
+   for (uInt i=0; i<nPixel; i++) {   
+      if (pixelAxes(i) && worldAxes(i)) {
+         set_error("DirectionCoordinate::toMix - duplicate pixel/world axes");
+         return False;
+      }
+      if (!pixelAxes(i) && !worldAxes(i)) {
+         set_error("DirectionCoordinate::toMix - each coordinate must be either pixel or world");
+         return False;
        }
-       switch(proj.type()) {
-          case Projection::TAN:  // Fallthrough
-          case Projection::ARC:
-              name = name + "-" + proj.name();
-              break;
-          case Projection::SIN:
-
-// This is either "real" SIN or NCP
-
-              AlwaysAssert(projp.nelements() == 2, AipsError);
-              if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
-                  // True SIN
-                  name = name + "-" + proj.name();
-              } else {
-                  // NCP?
-                  // From Greisen and Calabretta
-                  if (::near(projp(0), 0.0) &&
-                      ::near(projp(1), 1.0/tan(crval(1)*C::pi/180.0))) {
-                      // Is NCP
-                      isNCP = True;
-                      name = name + "-NCP";
-                  } else {
-                      // Doesn't appear to be NCP
-                      // Only print this once
-                      if (!isNCP) {
-                          os << LogIO::WARN << "SIN projection with non-zero"
-                              " projp does not appear to be NCP." << endl <<
-                              "However, assuming NCP anyway." << LogIO::POST;
-                      }
-                      name = name + "-NCP";
-                      isNCP = True;
-                  }
-              }
-              break;
-          default:
-             if (i == 0) {
-
-// Only print the message once for long/lat
-
-                os << LogIO::WARN <<proj.name()
-                   << " is not known to standard FITS (it is known to WCS)."
-                   << LogIO::POST;
-             }
-             name = name + "-" + proj.name();
-             break;
-       }
-       ctype(i) = name;
-    }
+   }
 //
-// Initialize
+   if (worldOut.nelements()!=nWorldAxes()) worldOut.resize(nWorldAxes());
+   if (pixelOut.nelements()!=nPixelAxes()) pixelOut.resize(nPixelAxes());
 //
-    char c_ctype[2][9];
-    strncpy (c_ctype[0], ctype(0).chars(), 9);
-    strncpy (c_ctype[1], ctype(1).chars(), 9);
-    struct wcsprm wcs;
-    int iret = wcsset(2, c_ctype, &wcs);
-    if (iret!=0) {
-        String errmsg = "wcs wcsset_error: ";
-        errmsg += wcsset_errmsg[iret];
-        set_error(errmsg);
-        return False;
-    }
+   Vector<Double> in(2);
+   Vector<Double> out(2);
+   if (pixelAxes(0) && pixelAxes(1)) {
 //
-// Set input world/pixel arrays
+// pixel->world
 //
-    int mixpix, mixcel;
-    double vspan[2];
-    double world[2];
-    double pixcrd[2];
-    if (longIsWorld) {
-       mixcel = 1;          // 1 or 2 (a code, not an index)
-       mixpix = 1;          // index into pixcrd array
+      in(0) = pixelIn(0);
+      in(1) = pixelIn(1);
+      if (!toWorld(out,in)) return False;
+      pixelOut(0) = in(0);
+      pixelOut(1) = in(1);
+      worldOut(0) = out(0);
+      worldOut(1) = out(1);
+   } else if (worldAxes(0) && worldAxes(1)) {
 //
-// Latitude span
+// world->pixel
 //
-       vspan[0] = -90.0;
-       vspan[1] =  90.0;
+      in(0) = worldIn(0);
+      in(1) = worldIn(1);
+      if (!toPixel(out,in)) return False;
+      pixelOut(0) = out(0);
+      pixelOut(1) = out(1);
+      worldOut(0) = in(0);
+      worldOut(1) = in(1);
+   } else if (pixelAxes(0) && worldAxes(1)) {
 //
-       Quantum<Double> tmp(in(0), Unit(saveUnits(0)));
-       Double tmp2 = tmp.getValue(Unit("deg"));
-       world[wcs.lng] = (double)tmp2;
-       pixcrd[mixpix] = in(1);
-    } else {
-       mixcel = 2;          // 1 or 2 (a code, not an index)
-       mixpix = 0;          // index into pixcrd array
+// pixel,world->world,pixel
 //
-// Longitude span
+      in(0) = pixelIn(0);
+      in(1) = worldIn(1);
+      if (!toMix2(out, in, False)) return False;
 //
-       vspan[0] = -180.0;
-       vspan[1] =  180.0;
+      pixelOut(0) = in(0);
+      pixelOut(1) = out(1);
+      worldOut(0) = out(0);
+      worldOut(1) = in(1);  
+   } else if (worldAxes(0) && pixelAxes(1)) {
 //
-       Quantum<Double> tmp(in(1), Unit(saveUnits(1)));
-       Double tmp2 = tmp.getValue(Unit("deg"));
-       world[wcs.lat] = (double)tmp2;
-       pixcrd[mixpix] = in(0);
-    }
+// world,pixel->pixel,world
 //
-    double vstep = 1.0;
-    int viter = 2;
-    double c_crval[2];
-    c_crval[0] = crval(0);
-    c_crval[1] = crval(1);
-    double phi, theta;
-    double imgcrd[2];
-/*
-cout << "mixpix, mixcel=" << mixpix << " " << mixcel << endl;
-cout << "vspan, vstep, viter=" << vspan[0] << " " << vspan[1] 
-                               << " " << vstep << " " << viter << endl;
-cout << "world in =" << world[0] << " " << world[1] << endl;
-cout << "pixcrd in =" << pixcrd[0] << " " << pixcrd[1] << endl;
-*/
-// 
-// Do it
+      in(0) = worldIn(0);
+      in(1) = pixelIn(1);
+      if (!toMix2(out, in, True)) return False;
 //
-    linprm lprm = linear_p.linprmWCS();
-    iret = wcsmix(c_ctype, &wcs, mixpix, mixcel, vspan, vstep, 
-                  viter, world, c_crval, celprm_p, &phi, &theta, 
-                  prjprm_p, imgcrd, &lprm, pixcrd);
-    if (iret!=0) {
-        String errmsg = "wcs wcsmix_error: ";
-        errmsg += wcsmix_errmsg[iret];
-        set_error(errmsg);
-        return False;
-    }
-/*
-    cout << "phi,theta out =" << phi << " " << theta << endl;
-    cout << "imgcrd out =" << imgcrd[0] << " " << imgcrd[1] << endl;       
-    cout << "world out =" << world[0] << " " << world[1] << endl;
-    cout << "pixcrd out =" << pixcrd[0] << " " << pixcrd[1] << endl;
-*/
-//
-// Fish out the results
-//
-    if (longIsWorld) {
-       out(0) = pixcrd[0];
-       Double tmp1 = Double(world[wcs.lat]);
-       Quantum<Double> tmp(tmp1, Unit(units(1)));
-       out(1) = tmp.getValue(Unit(saveUnits(1)));
-    } else {
-       Double tmp1 = Double(world[wcs.lng]);
-       Quantum<Double> tmp(tmp1, Unit(units(0)));
-       out(0) = tmp.getValue(Unit(saveUnits(0)));
-       out(1) = pixcrd[1];
-    } 
-//
-    return True;
+      pixelOut(0) = out(0);
+      pixelOut(1) = in(1);
+      worldOut(0) = in(0);
+      worldOut(1) = out(1);
+   }
+   return True;   
 }
+ 
 
 
 
@@ -926,7 +829,6 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
       set_error("Comparison is not with another DirectionCoordinate");
       return False;
    }
-   
      
    DirectionCoordinate* dCoord = (DirectionCoordinate*)pOther;
    
@@ -946,12 +848,14 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
    Vector<Bool> exclude(nPixelAxes());   
    exclude = False;
-   Int j = 0;
    Bool found;
-   uInt i;
-   for (i=0; i<nPixelAxes(); i++) {
-      if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0) 
-        exclude(j++) = True;
+   const uInt nExcl = excludeAxes.nelements();
+   if (nExcl > 0) {
+      Int j = 0;
+      for (uInt i=0; i<nPixelAxes(); i++) {
+         if (linearSearch(found, excludeAxes, Int(i), nExcl) >= 0) 
+           exclude(j++) = True;
+      }
    }
 
 // Check linear transformation
@@ -973,7 +877,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
       set_error("The DirectionCoordinates have differing numbers of axis units");
       return False;
    }
-   for (i=0; i<names_p.nelements(); i++) {
+   for (uInt i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
          if (names_p(i) != dCoord->names_p(i)) {
             oss << "The DirectionCoordinates have differing axis names for axis "
@@ -983,7 +887,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
          }
       }
    }
-   for (i=0; i<units_p.nelements(); i++) {
+   for (uInt i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
          if (units_p(i) != dCoord->units_p(i)) {
             oss << "The DirectionCoordinates have differing axis units for axis "
@@ -1005,7 +909,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // Items 0 and 2 are longitudes, items 1 and 3 are latitiudes
 // So treat them as axes 0 and 1 ???
 
-   for (i=0; i<2; i++) {
+   for (uInt i=0; i<2; i++) {
      if (!exclude(i)) {
         if (!::near(celprm_p->ref[i],dCoord->celprm_p->ref[i],tol)) {
            set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
@@ -1034,7 +938,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
          return False;
        }
    }
-   for (i=0; i<10; i++) {
+   for (uInt i=0; i<10; i++) {
       if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) {
          set_error("The DirectionCoordinates have differing WCS projection structures");
          return False;
@@ -1182,4 +1086,170 @@ void DirectionCoordinate::toOther(Vector<Double> &degrees) const
     degrees(1) /= to_degrees_p[1];
 }
 
+
+Bool DirectionCoordinate::toMix2(Vector<Double>& out,
+                                 const Vector<Double>& in,
+                                 Bool longIsWorld) const
+{
+    AlwaysAssert(in.nelements() == 2, AipsError);
+    out.resize(2);
+//
+    LogIO os(LogOrigin("DirectionCoordinate", "toMix", WHERE));
+//
+    Vector<String> saveUnits = worldAxisUnits();
+    DirectionCoordinate dC(*this);
+    Vector<String> units(saveUnits.copy());
+    units(0) = "deg";
+    units(1) = "deg";
+    dC.setWorldAxisUnits(units);
+//
+    Vector<Double> crval = dC.referenceValue();
+    Vector<Double> crpix = dC.referencePixel().ac();
+    Projection proj = dC.projection();
+    Vector<Double> projp = proj.parameters();
+    Vector<String> names = DirectionCoordinate::axisNames(directionType(), True);
+//
+// Construct FITS ctype vector
+//
+    Vector<String> ctype(2);
+    Bool isNCP = False;
+    for (uInt i=0; i<2; i++) {
+       String name = names(i);
+       while (name.length() < 4) {
+           name += "-";
+       }
+       switch(proj.type()) {
+          case Projection::TAN:  // Fallthrough
+          case Projection::ARC:
+              name = name + "-" + proj.name();
+              break;
+          case Projection::SIN:
+
+// This is either "real" SIN or NCP
+
+              AlwaysAssert(projp.nelements() == 2, AipsError);
+              if (::near(projp(0), 0.0) && ::near(projp(1), 0.0)) {
+                  // True SIN
+                  name = name + "-" + proj.name();
+              } else {
+                  // NCP?
+                  // From Greisen and Calabretta
+                  if (::near(projp(0), 0.0) &&
+                      ::near(projp(1), 1.0/tan(crval(1)*C::pi/180.0))) {
+                      // Is NCP
+                      isNCP = True;
+                      name = name + "-NCP";
+                  } else {
+                      // Doesn't appear to be NCP
+                      // Only print this once
+                      if (!isNCP) {
+                          os << LogIO::WARN << "SIN projection with non-zero"
+                              " projp does not appear to be NCP." << endl <<
+                              "However, assuming NCP anyway." << LogIO::POST;
+                      }
+                      name = name + "-NCP";
+                      isNCP = True;
+                  }
+              }
+              break;
+          default:
+             if (i == 0) {
+
+// Only print the message once for long/lat
+
+                os << LogIO::WARN <<proj.name()
+                   << " is not known to standard FITS (it is known to WCS)."
+                   << LogIO::POST;
+             }
+             name = name + "-" + proj.name();
+             break;
+       }
+       ctype(i) = name;
+    }
+//
+// Initialize
+//
+    char c_ctype[2][9];
+    strncpy (c_ctype[0], ctype(0).chars(), 9);
+    strncpy (c_ctype[1], ctype(1).chars(), 9);
+    struct wcsprm wcs;
+    int iret = wcsset(2, c_ctype, &wcs);
+    if (iret!=0) {
+        errorMsg_p = "wcs wcsset_error: ";
+        errorMsg_p += wcsset_errmsg[iret];
+        set_error(errorMsg_p);
+        return False;
+    }
+//
+// Set input world/pixel arrays
+//
+    int mixpix, mixcel;
+    double vspan[2];
+    double world[2];
+    double pixcrd[2];
+    if (longIsWorld) {
+       mixcel = 1;          // 1 or 2 (a code, not an index)
+       mixpix = 1;          // index into pixcrd array
+//
+// Latitude span
+//
+       vspan[0] = -90.0;
+       vspan[1] =  90.0;
+//
+       Quantum<Double> tmp(in(0), Unit(saveUnits(0)));
+       Double tmp2 = tmp.getValue(Unit("deg"));
+       world[wcs.lng] = (double)tmp2;
+       pixcrd[mixpix] = in(1);
+    } else {
+       mixcel = 2;          // 1 or 2 (a code, not an index)
+       mixpix = 0;          // index into pixcrd array
+//
+// Longitude span
+//
+       vspan[0] = -180.0;
+       vspan[1] =  180.0;
+//
+       Quantum<Double> tmp(in(1), Unit(saveUnits(1)));
+       Double tmp2 = tmp.getValue(Unit("deg"));
+       world[wcs.lat] = (double)tmp2;
+       pixcrd[mixpix] = in(0);
+    }
+//
+    double vstep = 1.0;
+    int viter = 2;
+    double c_crval[2];
+    c_crval[0] = crval(0);
+    c_crval[1] = crval(1);
+    double phi, theta;
+    double imgcrd[2];
+// 
+// Do it
+//
+    linprm lprm = linear_p.linprmWCS();
+    iret = wcsmix(c_ctype, &wcs, mixpix, mixcel, vspan, vstep, 
+                  viter, world, c_crval, celprm_p, &phi, &theta, 
+                  prjprm_p, imgcrd, &lprm, pixcrd);
+    if (iret!=0) {
+        errorMsg_p= "wcs wcsmix_error: ";
+        errorMsg_p += wcsmix_errmsg[iret];
+        set_error(errorMsg_p);
+        return False;
+    }
+//
+// Fish out the results
+//
+    if (longIsWorld) {
+       out(0) = pixcrd[0];
+       Double tmp1 = Double(world[wcs.lat]);
+       Quantum<Double> tmp(tmp1, Unit(units(1)));
+       out(1) = tmp.getValue(Unit(saveUnits(1)));
+    } else {
+       Double tmp1 = Double(world[wcs.lng]);
+       Quantum<Double> tmp(tmp1, Unit(units(0)));
+       out(0) = tmp.getValue(Unit(saveUnits(0)));
+       out(1) = pixcrd[1];
+    } 
+//
+    return True;
+}
 

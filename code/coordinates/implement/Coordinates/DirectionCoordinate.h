@@ -144,17 +144,37 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
-    // Mixed pixel/world coordinate conversion.  Vector in must
-    // be length nWorldAxes (2).  Specify whether longitude
-    // (in(0)) or latitude (in(1)) is the world coordinate . It is
-    // assumed that the other value is the pixel coordinate.
-    // Returns True if the conversion succeeds, otherwise 
-    // it returns False and method
-    // errorMessage returns an error message.   The output 
-    // vectors are appropriately resized.
-    Bool toMix(Vector<Double>& out,
-               const Vector<Double>& in,
-               Bool longIsWorld) const;
+
+    // Mixed pixel/world coordinate conversion.
+    // worldIn and worldAxes are of length nWorldAxes.
+    // pixelIn and pixelAxes are of length nPixelAxes.
+    // worldAxes(i) = True specifies you have given a world
+    // value in worldIn(i) to convert to pixel.
+    // pixelAxes(i)=True specifies you have given a pixel 
+    // value in pixelIn(i) to convert to world.
+    // You cannot specify the same axis via worldAxes
+    // and pixelAxes.
+    // Values in pixelIn are converted to world and
+    // put into worldOut in the appropriate worldAxis
+    // location.  Values in worldIn are copied to
+    // worldOut.   
+    // Values in worldIn are converted to pixel and
+    // put into pixelOut in the appropriate pixelAxis
+    // location.  Values in pixelIn are copied to
+    // pixelOut
+    // Removed axes are handled (for example, a removed pixel
+    // axis with remaining corresponding world axis will
+    // correctly be converted to world using the replacement
+    // value).
+    // Returns True if the conversion succeeds, otherwise it returns False and
+    // <src>errorMessage()</src> contains an error message. The output vectors
+    // are resized.
+    virtual Bool toMix(Vector<Double>& worldOut,
+                       Vector<Double>& pixelOut,
+                       const Vector<Double>& worldIn,
+                       const Vector<Double>& pixelIn,
+                       const Vector<Bool>& worldAxes,
+                       const Vector<Bool>& pixelAxes) const;
 
     // A convenient way to turn the world vector into an MDirection for further
     // processing in the Measures system.
@@ -255,11 +275,14 @@ public:
     // Make a copy of ourself using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
 private:
     // Direction type
     MDirection::Types type_p;
+
     // Projection parameters
     Projection projection_p;
+
     // WCS structures
     // <group>
     celprm *celprm_p;
@@ -279,6 +302,10 @@ private:
     // Current units.
     Vector<String> units_p;
 
+    // Temporaries
+    mutable Vector<Double> world_tmp_p;
+    mutable String errorMsg_p;
+
     // Interconvert between degrees and the current angular unit
     // <group>
     void toDegrees(Vector<Double> &other) const;
@@ -288,6 +315,14 @@ private:
     // Check formatting types
     void checkFormat(Coordinate::formatType& format,
                      const Bool absolute) const;
+
+    // Mixed pixel/world coordinate conversion.  Vector in must
+    // be length nWorldAxes (2).  Specify whether longitude
+    // (in(0)) or latitude (in(1)) is the world coordinate . It is
+    // assumed that the other value is the pixel coordinate.
+    Bool toMix2(Vector<Double>& out, const Vector<Double>& in,
+                Bool longIsWorld) const;
+
 };
 
 #endif
