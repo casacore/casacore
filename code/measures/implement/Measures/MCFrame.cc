@@ -54,7 +54,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
   dirConvB1950(0), dirB1950p(0),
   dirConvApp(0), dirAppp(0),
   radConvLSR(0), radLSRp(0) {
-    myf.setMCFramePoint((void *) this);
+    myf.setMCFramePoint(static_cast<void *>(this));
     myf.setMCFrameDelete(MCFrameDelete);
     myf.setMCFrameGetdbl(MCFrameGetdbl);
     myf.setMCFrameGetmvdir(MCFrameGetmvdir);
@@ -66,20 +66,20 @@ MCFrame::MCFrame(MeasFrame &inf) :
 
 // Destructor
 MCFrame::~MCFrame() {
-  delete (MEpoch::Convert *) epConvTDB;
+  delete static_cast<MEpoch::Convert *>(epConvTDB);
   delete epTDBp;
-  delete (MEpoch::Convert *) epConvLAST;
+  delete static_cast<MEpoch::Convert *>(epConvLAST);
   delete epLASTp;
-  delete (MPosition::Convert *) posConvLong;
+  delete static_cast<MPosition::Convert *>(posConvLong);
   delete posLongp;
   delete posITRFp;
-  delete (MDirection::Convert *) dirConvJ2000;
+  delete static_cast<MDirection::Convert *>(dirConvJ2000);
   delete dirJ2000p;
-  delete (MDirection::Convert *) dirConvB1950;
+  delete static_cast<MDirection::Convert *>(dirConvB1950);
   delete dirB1950p;
-  delete (MDirection::Convert *) dirConvApp;
+  delete static_cast<MDirection::Convert *>(dirConvApp);
   delete dirAppp;
-  delete (MRadialVelocity::Convert *) radConvLSR;
+  delete static_cast<MRadialVelocity::Convert *>(radConvLSR);
   delete radLSRp;
 }
 
@@ -93,7 +93,7 @@ void MCFrame::make(MeasFrame &in) {
     if (!tmp) {};		// to stop compiler warnings
   };
   if (!in.empty()) {
-    ((MCFrame *)(in.getMCFramePoint()))->create();
+    (static_cast<MCFrame *>(in.getMCFramePoint()))->create();
   };
 }
 
@@ -150,13 +150,14 @@ Bool MCFrame::getTDB(Double &tdb) {
   if (myf.epoch()) {
     if (!epTDBp) {
       epTDBp = new Double;
-      *(epTDBp) = (*(MEpoch::Convert *)
-		   (epConvTDB))(myf.epoch()->getData()).getValue().get();
+      *epTDBp = static_cast<MEpoch::Convert *>(epConvTDB)->operator()
+	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
+	getValue().get();
     };
-    tdb = *(epTDBp);
+    tdb = *epTDBp;
     return True;
   };
-  tdb = 0;
+  tdb = 0.0;
   return False;
 }
 
@@ -165,14 +166,15 @@ Bool MCFrame::getLong(Double &tdb) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
-      *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
-      *(posLongp) = posITRFp->get();
+      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
+	getValue();
+      *posLongp = posITRFp->get();
     };
     tdb = MVAngle(posLongp->operator()(1))(-0.5);
     return True;
   };
-  tdb = 0;
+  tdb = 0.0;
   return False;
 }
 
@@ -181,14 +183,15 @@ Bool MCFrame::getLat(Double &tdb) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
-      *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
-      *(posLongp) = posITRFp->get();
+      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
+	getValue();
+      *posLongp = posITRFp->get();
     };
     tdb = posLongp->operator()(2);
     return True;
   };
-  tdb = 0;
+  tdb = 0.0;
   return False;
 }
 
@@ -197,9 +200,10 @@ Bool MCFrame::getITRF(MVPosition &tdb) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
-      *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
-      *(posLongp) = posITRFp->get();
+      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
+	getValue();
+      *posLongp = posITRFp->get();
     };
     tdb = *posITRFp;
     return True;
@@ -213,14 +217,15 @@ Bool MCFrame::getRadius(Double &tdb) {
     if (!posLongp) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
-      *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
-      *(posLongp) = posITRFp->get();
+      *posITRFp = static_cast<MPosition::Convert *>(posConvLong)->operator()
+	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
+	getValue();
+      *posLongp = posITRFp->get();
     };
     tdb = posLongp->operator()(0);
     return True;
   };
-  tdb = 0;
+  tdb = 0.0;
   return False;
 }
 
@@ -228,13 +233,14 @@ Bool MCFrame::getLAST(Double &tdb) {
   if (myf.epoch()) {
     if (!epLASTp) {
       epLASTp = new Double;
-      *(epLASTp) = (*(MEpoch::Convert *)
-		    (epConvLAST))(myf.epoch()->getData()).getValue().get();
+      *epLASTp = static_cast<MEpoch::Convert *>(epConvLAST)->operator()
+	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
+	getValue().get();
     };
-    tdb = fmod(*(epLASTp),1.0);
+    tdb = fmod(*epLASTp, 1.0);
     return True;
   };
-  tdb = 0;
+  tdb = 0.0;
   return False;
 }
 
@@ -248,13 +254,14 @@ Bool MCFrame::getJ2000(MVDirection &tdb) {
   if (myf.direction()) {
     if (!dirJ2000p) {
       dirJ2000p = new MVDirection;
-      *(dirJ2000p) = (*(MDirection::Convert *)
-		      (dirConvJ2000))(myf.direction()->getData()).getValue();
+      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
     };
-    tdb = *(dirJ2000p);
+    tdb = *dirJ2000p;
     return True;
   };
-  tdb = (Double) 0.0;
+  tdb = MVDirection(0.0);
   return False;
 }
 
@@ -262,13 +269,14 @@ Bool MCFrame::getB1950(MVDirection &tdb) {
   if (myf.direction()) {
     if (!dirB1950p) {
       dirB1950p = new MVDirection;
-      *(dirB1950p) = (*(MDirection::Convert *)
-		      (dirConvB1950))(myf.direction()->getData()).getValue();
+      *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
     };
-    tdb = *(dirB1950p);
+    tdb = *dirB1950p;
     return True;
   };
-  tdb = (Double) 0.0;
+  tdb = MVDirection(0.0);
   return False;
 }
 
@@ -276,13 +284,14 @@ Bool MCFrame::getApp(MVDirection &tdb) {
   if (myf.direction()) {
     if (!dirAppp) {
       dirAppp = new MVDirection;
-      *(dirAppp) = (*(MDirection::Convert *)
-		    (dirConvApp))(myf.direction()->getData()).getValue();
+      *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
     };
-    tdb = *(dirAppp);
+    tdb = *dirAppp;
     return True;
   };
-  tdb = (Double) 0.0;
+  tdb = MVDirection(0.0);
   return False;
 }
 
@@ -290,13 +299,15 @@ Bool MCFrame::getLSR(Double &tdb) {
   if (myf.radialVelocity()) {
     if (!radLSRp) {
       radLSRp = new Double;
-      *(radLSRp) = (*(MRadialVelocity::Convert *)
-		    (radConvLSR))(myf.radialVelocity()->getData()).getValue();
+      *radLSRp = static_cast<MRadialVelocity::Convert *>(radConvLSR)->operator()
+	(*dynamic_cast<const MVRadialVelocity *const>(myf.radialVelocity()->
+						      getData())).
+	getValue();
     };
-    tdb = *(radLSRp);
+    tdb = *radLSRp;
     return True;
   };
-  tdb = (Double) 0.0;
+  tdb = 0.0;
   return False;
 }
 
@@ -311,8 +322,8 @@ Bool MCFrame::getCometType(uInt &tdb) {
 
 Bool MCFrame::getComet(MVPosition &tdb) {
   if (myf.comet()) {
-    Double x;
-    if (getTDB(x) && myf.comet()->get(tdb,x)) return True;
+    Double x(0);
+    if (getTDB(x) && myf.comet()->get(tdb, x)) return True;
   };
   tdb = MVPosition(0.0);
   return False;
@@ -369,7 +380,7 @@ void MCFrame::create() {
 void MCFrame::makeEpoch() {
   static const MEpoch::Ref REFTDB 
     = MEpoch::Ref(MEpoch::TDB);
-  delete (MEpoch::Convert *) epConvTDB;
+  delete static_cast<MEpoch::Convert *>(epConvTDB);
   epConvTDB = new MEpoch::Convert(*(myf.epoch()),
 				  REFTDB);
   if (epTDBp) {
@@ -377,7 +388,7 @@ void MCFrame::makeEpoch() {
   };
   if (epConvLAST) {
     myf.lock();
-    delete (MEpoch::Convert *) epConvLAST;
+    delete static_cast<MEpoch::Convert *>(epConvLAST);
     epConvLAST = 0;
   };
   epConvLAST = new MEpoch::Convert(*(myf.epoch()),
@@ -399,7 +410,7 @@ void MCFrame::makeEpoch() {
 void MCFrame::makePosition() {
   static const MPosition::Ref REFLONG 
     = MPosition::Ref(MPosition::ITRF);
-  delete (MPosition::Convert *) posConvLong;
+  delete static_cast<MPosition::Convert *>(posConvLong);
   posConvLong = new MPosition::Convert(*(myf.position()),
 				       REFLONG);
   if (posLongp) {
@@ -419,7 +430,7 @@ void MCFrame::makeDirection() {
     = MDirection::Ref(MDirection::J2000);
   if (dirConvJ2000) {
     myf.lock();
-    delete (MDirection::Convert *) dirConvJ2000;
+    delete static_cast<MDirection::Convert *>(dirConvJ2000);
     dirConvJ2000 = 0;
   };
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
@@ -431,7 +442,7 @@ void MCFrame::makeDirection() {
     = MDirection::Ref(MDirection::B1950);
   if (dirConvB1950) {
     myf.lock();
-    delete (MDirection::Convert *) dirConvB1950;
+    delete static_cast<MDirection::Convert *>(dirConvB1950);
     dirConvB1950 = 0;
   };
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
@@ -441,7 +452,7 @@ void MCFrame::makeDirection() {
 
   if (dirConvApp) {
     myf.lock();
-    delete (MDirection::Convert *) dirConvApp;
+    delete static_cast<MDirection::Convert *>(dirConvApp);
     dirConvApp = 0;
   };
   dirConvApp = new MDirection::Convert(*(myf.direction()),
@@ -467,7 +478,7 @@ void MCFrame::makeDirection() {
 void MCFrame::makeRadialVelocity() {
   static const MRadialVelocity::Ref REFLSR 
     = MRadialVelocity::Ref(MRadialVelocity::LSRK);
-  delete (MRadialVelocity::Convert *) radConvLSR;
+  delete static_cast<MRadialVelocity::Convert *>(radConvLSR);
   radConvLSR = new MRadialVelocity::Convert(*(myf.radialVelocity()),
 					    REFLSR);
   if (radLSRp) {
@@ -479,7 +490,7 @@ void MCFrame::makeComet() {
 }
 
 void MCFrameDelete(void *dmf) {
-  delete (MCFrame *) dmf;
+  delete static_cast<MCFrame *>(dmf);
 }
 
 Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
@@ -487,31 +498,31 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
     switch (tp) {
       
     case MeasFrame::GetTDB:
-      return ((MCFrame *) dmf)->getTDB(result);
+      return static_cast<MCFrame *>(dmf)->getTDB(result);
       break;
       
     case MeasFrame::GetLong:
-      return ((MCFrame *) dmf)->getLong(result);
+      return static_cast<MCFrame *>(dmf)->getLong(result);
       break;
       
     case MeasFrame::GetLat:
-      return ((MCFrame *) dmf)->getLat(result);
+      return static_cast<MCFrame *>(dmf)->getLat(result);
       break;
       
     case MeasFrame::GetRadius:
-      return ((MCFrame *) dmf)->getRadius(result);
+      return static_cast<MCFrame *>(dmf)->getRadius(result);
       break;
       
     case MeasFrame::GetLAST:
-      return ((MCFrame *) dmf)->getLAST(result);
+      return static_cast<MCFrame *>(dmf)->getLAST(result);
       break;
       
     case MeasFrame::GetLASTr:
-      return ((MCFrame *) dmf)->getLASTr(result);
+      return static_cast<MCFrame *>(dmf)->getLASTr(result);
       break;
       
     case MeasFrame::GetLSR:
-      return ((MCFrame *) dmf)->getLSR(result);
+      return static_cast<MCFrame *>(dmf)->getLSR(result);
       break;
       
     default:
@@ -529,15 +540,15 @@ Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result) {
     switch (tp) {
       
     case MeasFrame::GetJ2000:
-      return ((MCFrame *) dmf)->getJ2000(result);
+      return static_cast<MCFrame *>(dmf)->getJ2000(result);
       break;
       
     case MeasFrame::GetB1950:
-      return ((MCFrame *) dmf)->getB1950(result);
+      return static_cast<MCFrame *>(dmf)->getB1950(result);
       break;
       
     case MeasFrame::GetApp:
-      return ((MCFrame *) dmf)->getApp(result);
+      return static_cast<MCFrame *>(dmf)->getApp(result);
       break;
       
     default:
@@ -555,11 +566,11 @@ Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
     switch (tp) {
        
     case MeasFrame::GetITRF:
-      return ((MCFrame *) dmf)->getITRF(result);
+      return static_cast<MCFrame *>(dmf)->getITRF(result);
       break;
        
     case MeasFrame::GetComet:
-      return ((MCFrame *) dmf)->getComet(result);
+      return static_cast<MCFrame *>(dmf)->getComet(result);
       break;
       
     default:
@@ -577,7 +588,7 @@ Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result) {
     switch (tp) {
       
     case MeasFrame::GetCometType:
-      return ((MCFrame *) dmf)->getCometType(result);
+      return static_cast<MCFrame *>(dmf)->getCometType(result);
       break;
       
     default:
