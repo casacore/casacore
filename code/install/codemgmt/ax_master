@@ -2739,3 +2739,5 @@
 10 066 src mv trial/apps/gmisc/gmisc.g trial/implement/Utilities/gmisc.g
 10 072 src rm trial/apps/gmisc/makefile
 10 072 src rm trial/apps/gmisc
+10 075 src rm trial/apps/sky/skyImpl.h
+10 075 src rm trial/apps/sky/skyImpl.cc
