@@ -310,6 +310,9 @@ public:
     // conversions occur.   Some conversions will fail.  These are the
     // ones that require extra frame information (epoch, position) such
     // as to AZEL from J2000 etc.  This will be added later.
+    //
+    // As yet, this functionality is not supported in the mixed pixel/world
+    // conversion routines.
     void setConversionDirectionType (MDirection::Types conversionDirectionType);
 
     // Convert a pixel position to a world position or vice versa. Returns True
