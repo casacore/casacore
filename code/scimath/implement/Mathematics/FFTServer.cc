@@ -45,7 +45,7 @@ FFTServer()
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer(const IPosition & fftSize, 
-	  FFTEnums::TransformType transformType)
+	  const FFTEnums::TransformType transformType)
   :itsSize(fftSize.nelements(), 0),
    itsTransformType(transformType),
    itsWork(fftSize.nelements()),
@@ -100,7 +100,7 @@ operator=(const FFTServer<T,S> & other) {
 
 template<class T, class S> void FFTServer<T,S>::
 resize(const IPosition & fftSize,
-       FFTEnums::TransformType transformType) {
+       const FFTEnums::TransformType transformType) {
   const uInt ndim = fftSize.nelements();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(fftSize.product() > 0, AipsError);
@@ -417,7 +417,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
     resultRowPtr += fftLen;
   }
   // We have finished with the input data array
-  cCopy.freeStorage(dataPtr, dataIsAcopy);
+  cCopy.freeStorage((const S *&) dataPtr, dataIsAcopy);
   // While we have a raw pointer handy do the scaling
   uInt nelem = rResult.nelements();
   T scale = T(1)/T(nelem);
