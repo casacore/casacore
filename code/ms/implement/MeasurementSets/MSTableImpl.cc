@@ -143,8 +143,9 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	case TpDouble:
 	    td.addColumn(ScalarColumnDesc<Double>(colName,colComment));
 	    // Check if this should be a TableMeasure column
-	    if (colMeasure=="Epoch" || colMeasure=="Frequency") { 
-              // Epoch & Frequency are scalar TableMeasures
+	    if (colMeasure=="Epoch" || colMeasure=="Frequency" ||
+		colMeasure=="Doppler") { 
+              // Epoch, Frequency and Doppler are scalar TableMeasures
 	      addMeasColumn(td, colName, colMeasure, refCol);
 	    }
 	    break;
