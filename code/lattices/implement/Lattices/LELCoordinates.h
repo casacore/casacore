@@ -66,7 +66,7 @@
 //  Lattice objects have a member function called <src>lelCoordinates</src>.
 //  This returns a LELCoordinates object.  This object contains a
 //  pointer (actually a CountedPtr) of type
-//  <linkto class=LELLattCoordBase>LELLattCoordBase</klinkto>.  This is the
+//  <linkto class=LELLattCoordBase>LELLattCoordBase</linkto>.  This is the
 //  base class of the letter classes.  For Lattices such as ImageInterface,
 //  this pointer actually points at the derived letter class LELImageCoord.
 //  This class in turn contains a pointer (a CountedPtr) to the actual
