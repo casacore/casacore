@@ -210,7 +210,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	Int i;
 	for (i = 1; i < Int(nElements)-1; i++){
 	  a = c;
-	  b = 2*(xin[i+1] - xin[i-1]);
+	  b = Domain(2)*(xin[i+1] - xin[i-1]);
 	  if (nearAbs(xin[i+1],  xin[i])) 
 	    throw(AipsError("Interpolate1D::setMethod"
 			    " data has repeated x values"));
@@ -255,7 +255,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 			    " data has repeated x values"));
 	  dx = x2-x1;
 	  a = (x2-x_req)/dx; 
-	  b = 1-a;
+	  b = Domain(1)-a;
 	  h = dx*dx/6.;
 	  yout[i][j] = a*y1v + b*y2v + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
 	}
@@ -406,7 +406,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	Int i;
 	for (i = 1; i < Int(nElements)-1; i++){
 	  a = c;
-	  b = 2*(xin[i+1] - xin[i-1]);
+	  b = Domain(2)*(xin[i+1] - xin[i-1]);
 	  if (nearAbs(xin[i+1],  xin[i])) 
 	    throw(AipsError("Interpolate1D::setMethod"
 			    " data has repeated x values"));
@@ -453,7 +453,7 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 			    " data has repeated x values"));
 	  dx = x2-x1;
 	  a = (x2-x_req)/dx; 
-	  b = 1-a;
+	  b = Domain(1)-a;
 	  h = dx*dx/6.;
 	  yout[i][j] = a*y1v + b*y2v + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
 	  if (goodIsTrue) youtFlags[i][j] = f1 && f2;
