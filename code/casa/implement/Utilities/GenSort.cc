@@ -1,5 +1,5 @@
 //# GenSort.cc: General sort functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 
@@ -417,9 +418,6 @@ uInt GenSort<T>::sort (Block<T>& data, uInt nr, Sort::Order ord, int opt)
 
 
 
-
-// Remove eventually - needed for g++
-typedef Vector<uInt> forgnugpp_GenSort;
 
 template<class T>
 uInt GenSortIndirect<T>::sort (Vector<uInt>& indexVector, const Array<T>& data,
