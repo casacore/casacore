@@ -218,8 +218,6 @@ class LatticeNavigator;
 // </motivation>
 
 // <todo asof="1996/07/01">
-//   <li> Remove the latticeCast member when the GNU compiler is 
-//        sufficiently robust.
 //   <li> Make PagedArray cache functions virtual in this base class.
 // </todo>
 
@@ -371,20 +369,6 @@ public:
   // <br>The default implementation creates a LatticeIterInterface object.
   virtual LatticeIterInterface<T>* makeIter
 				(const LatticeNavigator& navigator) const;
-
-  // These functions were put in for the Gnu compiler which presently
-  // (version 2.7.2.1) is unable to automatically cast a derived class to a
-  // base class in a templated global function.
-  // <group>
-  Lattice<T>& latticeCast() {return *this;}
-  const Lattice<T>& latticeCast() const {return *this;}
-  // </group>
-
-  // Short-hand for <src>latticeCast()</src>
-  // <group>
-  Lattice<T>& lc() {return *this;}
-  const Lattice<T>& lc() const {return *this;}
-  // </group>
 
   // The functions (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
