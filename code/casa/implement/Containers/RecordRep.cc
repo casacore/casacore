@@ -351,6 +351,7 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     default:
 	throw (AipsError ("RecordRep::createDataField: unknown data type"));
     }
+    return 0;
 }
 
 void RecordRep::delete_myself (uInt nfields)
