@@ -120,6 +120,11 @@ C++       := $(C++ROOT)/bin/c++ -fno-for-scope -fno-implicit-templates
 C++DBGLVL := -g -DAIPS_ARRAY_INDEX_CHECK
 C++OPTLVL := -O2 -fno-strength-reduce
 
+# Add lib to the runpath. Needed for DEBUG as well because glish can build
+# shared libraries.
+LDOPT := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
+LDDBG := $(LDOPT)
+
 # Use do-it-yourself template instantiation.
 TEMPLATES := diy
 
