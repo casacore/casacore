@@ -1,0 +1,19 @@
+
+change id: 0013
+ author:   Neil Killeen
+ date:     2000/06/16
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   image
+ type:     Code
+ category: Change
+ summary:  image.view statistics  rolldown improved
+The statistics rolldown for the image.view function has
+the added functionality
+
+- buttons 'Full' (generate statistics from full image)
+  and 'Plane' (generate statistics from the current displayed plane)
+
+- the min and max locations are now displayed as well as absolute pixels
+  and formatted world coordinates
