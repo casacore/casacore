@@ -1,5 +1,5 @@
 //# LockFile.cc: Class to handle file locking
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -359,4 +359,42 @@ void LockFile::getReqId()
 					itsReqId.storage(),
 					itsReqId.nelements());
     }
+}
+
+
+uInt LockFile::showLock (uInt& pid, const String& fileName)
+{
+    pid = 0;
+    File f (fileName);
+    if (! f.exists()) {
+        throw AipsError ("FileLocker::showLock - File " + fileName +
+			 " does not exist");
+    }
+    //# Open the lock file as readonly.
+    int fd = FiledesIO::open (fileName, False);
+    if (fd == -1) {
+        throw AipsError ("FileLocker::showLock - File " + fileName +
+			 " could not be opened");
+    }
+    // The first byte is for read/write locking.
+    // The second byte is to see if the file is used in another process.
+    FileLocker fileLocker (fd, 0, 1);
+    FileLocker useLocker  (fd, 1, 1);
+    // Determine if the file is opened in another process.
+    // If not, we can exit immediately.
+    uInt usePid;
+    if (useLocker.canLock (usePid, FileLocker::Write)) {
+        return 0;
+    }
+    // If we cannot readlock, the file is writelocked elsewhere.
+    if (! fileLocker.canLock (pid, FileLocker::Read)) {
+        return 3;
+    }
+    // If we cannot writelock, the file is readlocked elsewhere.
+    if (! fileLocker.canLock (pid, FileLocker::Write)) {
+        return 2;
+    }
+    // Otherwise the file is simply in use.
+    pid = usePid;
+    return 1;
 }

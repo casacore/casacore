@@ -258,6 +258,17 @@ public:
     // Put the info into the file (after the request id's).
     void putInfo (const MemoryIO& info) const;
 
+    // Tell if another process holds a read or write lock on the given file
+    // or has the file opened. It returns:
+    // <br> 3 if write-locked elsewhere.
+    // <br> 2 if read-locked elsewhere.
+    // <br> 1 if opened elsewhere.
+    // <br> 0 if locked nor opened.
+    // <br>It fills in the PID of the process having the file locked or opened.
+    // <br>An exception is thrown if the file does not exist or cannot
+    // be opened.
+    static uInt showLock (uInt& pid, const String& fileName);
+
 private:
     // The copy constructor cannot be used (its semantics are too difficult).
     LockFile (const LockFile&);
