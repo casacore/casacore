@@ -1,5 +1,5 @@
 //# tTable.cc: Test program for the Table classes
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -399,6 +399,22 @@ void b (Bool doExcp)
     seltabset = sortab (sortab.col("arr1")(IPosition(3,1,0,0)) == 97);
     if (seltabset.nrow() != 1) {
 	cout << "seltabset does not contain 1 row" << endl;
+    }
+
+    // Select an empty table and use that as input for a select and sort.
+    {
+      Table selempty1 = sortab (sortab.col("ab") < -10);
+      if (selempty1.nrow() != 0) {
+        cout << "selempty1 is not empty" << endl;
+      }
+      Table selempty2 = selempty1 (selempty1.col("ab") < -10);
+      if (selempty2.nrow() != 0) {
+        cout << "selempty2 is not empty" << endl;
+      }
+      Table sorempty1 = selempty1.sort ("ab");
+      if (sorempty1.nrow() != 0) {
+        cout << "sorempty1 is not empty" << endl;
+      }
     }
 
     // Get a subset of the table via row numbers.
