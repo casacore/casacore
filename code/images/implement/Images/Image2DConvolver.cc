@@ -45,6 +45,7 @@
 #include <trial/Images/TempImage.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
+#include <trial/Images/ImageUtilities.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/Quantum.h>
@@ -225,7 +226,7 @@ T Image2DConvolver<T>::makeKernel(LogIO& os, Array<T>& kernelArray,
 
    Vector<Double> dParameters;
    const CoordinateSystem cSys = imageIn.coordinates();
-   worldWidthsToPixel (os, dParameters, parameters, cSys, axes);
+   ImageUtilities::worldWidthsToPixel (os, dParameters, parameters, cSys, axes);
 
 // Create n-Dim kernel array shape
 
@@ -297,7 +298,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          pixelParameters(2) = parameters(2).getValue(Unit("rad"));
          Vector<Quantum<Double> > worldParameters;
 //
-         skyWidthsPixelToWorld (os, worldParameters, cSys, pixelParameters, axes);
+         ImageUtilities::skyWidthsPixelToWorld (os, worldParameters, cSys, pixelParameters, axes);
 //
          beamOut(0) = worldParameters(0);
          beamOut(1) = worldParameters(1);
@@ -324,7 +325,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
 // Convert restoring beam parameters to pixels.  Output pa is pos +x -> +y in pixel frame.
          
          Vector<Double> dParameters;
-         worldWidthsToPixel (os, dParameters, beamIn, cSys, axes);
+         ImageUtilities::worldWidthsToPixel (os, dParameters, beamIn, cSys, axes);
          
 // Create 2-D beam array shape
 
@@ -396,7 +397,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          pixelParameters(1) = bSolution(4);
          pixelParameters(2) = bSolution(5);
 //
-         skyWidthsPixelToWorld (os, beamOut, cSys, pixelParameters, axes);
+         ImageUtilities::skyWidthsPixelToWorld (os, beamOut, cSys, pixelParameters, axes);
       } else {
          if (autoScale) {
     
@@ -432,191 +433,6 @@ void Image2DConvolver<T>::checkKernelParameters(LogIO& os,
    }
 }
 
-template <class T>
-void Image2DConvolver<T>::worldWidthsToPixel (LogIO& os,
-                                              Vector<Double>& dParameters,
-                                              const Vector<Quantum<Double> >& parameters,
-                                              const CoordinateSystem& cSys,
-                                              const IPosition& pixelAxes) const
-//
-// Convert 2d functional axis widths from world to pixel
-//
-// If one width is in pixels both must be pixels.
-// If axes are not from the same coordinate type units must be pixels.
-//
-// On input, pa is N->E (at ref pix) for celestial planes.
-// Otherwise pa is in pixel coordinate system +x -> +y  
-// On output, pa is positive +x -> +y in pixel frame
-// I hate position angles
-//
-// parameters = major, minor, pa
-//
-{
-   dParameters.resize(parameters.nelements());
-   Int c0, c1, axisInCoordinate0, axisInCoordinate1;
-   cSys.findPixelAxis(c0, axisInCoordinate0, pixelAxes(0));
-   cSys.findPixelAxis(c1, axisInCoordinate1, pixelAxes(1));
-      
-// Find units
-   
-   String majorUnit = parameters(0).getFullUnit().getName();
-   String minorUnit = parameters(1).getFullUnit().getName();
-        
-// This saves me trying to handle mixed pixel/world units which is a pain for coupled coordinates
-    
-   if ( (majorUnit==String("pix") && minorUnit!=String("pix"))  ||
-        (majorUnit!=String("pix") && minorUnit==String("pix")) ) {
-         os << "If pixel units are used, both major and minor axes must have pixel units" << LogIO::EXCEPTION;
-   }
-         
-// Some checks
-      
-   Coordinate::Type type0 = cSys.type(c0);
-   Coordinate::Type type1 = cSys.type(c1);
-   if (type0 != type1) {
-      if (majorUnit!=String("pix") || minorUnit!=String("pix")) {
-         os << "The coordinate types for the convolution axes are different" << endl;
-         os << "Therefore the units of the major and minor axes of " << endl;
-         os << "the convolution kernel widths must both be pixels" << LogIO::EXCEPTION;
-      }
-   }
-   if (type0==Coordinate::DIRECTION && type1==Coordinate::DIRECTION &&  c0!=c1) {
-      os << "The given axes do not come from the same Direction coordinate" << endl;
-      os << "This situation requires further code development" << LogIO::EXCEPTION;
-   }
-   if (type0==Coordinate::STOKES || type1==Coordinate::STOKES) {
-         os << "Cannot convolve Stokes axes" << LogIO::EXCEPTION;
-   }
-      
-// Deal with pixel units separately.    Both are in pixels if either is in pixels.
-
-   if (majorUnit==String("pix")) {
-      dParameters(0) = parameters(0).getValue();                      // Major
-      dParameters(1) = parameters(1).getValue();                      // Minor
-// 
-      if (type0==Coordinate::DIRECTION && type1==Coordinate::DIRECTION) {
-         const DirectionCoordinate& dCoord = cSys.directionCoordinate (c0);
-         MDirection world;
-         dCoord.toWorld(world, dCoord.referencePixel());               // Can't fail
-
-// Use GaussianShape to get the position angle right
-
-         Quantum<Double> tmpMin(1.0, Unit("arcsec"));
-         Quantum<Double> tmpMaj(dParameters(0)/dParameters(1), Unit("arcsec"));
-         GaussianShape gaussShape(world, tmpMaj, tmpMin, parameters(2));        // pa is N->E
-         Vector<Double> pars = gaussShape.toPixel (dCoord);
-         dParameters(2) = pars(4);                                              // pa: +x -> +y
-       } else {
-      
-// Some 'mixed' plane; the pa is already +x -> +y
-   
-         dParameters(2) = parameters(2).getValue(Unit("rad"));                  // pa
-       }
-       return;
-   }
-
-// Continue on if non-pixel units
-
-   if (type0==Coordinate::DIRECTION && type1==Coordinate::DIRECTION) {
-      
-// Check units are angular
-      
-      Unit rad(String("rad"));
-      if (!parameters(0).check(rad.getValue())) {
-         os << "The units of the major axis must be angular" << LogIO::EXCEPTION;
-      }
-      if (!parameters(1).check(rad.getValue())) {
-         os << "The units of the minor axis must be angular" << LogIO::EXCEPTION;
-      }
-                                   
-// Make a Gaussian shape to convert to pixels at reference pixel
-  
-      const DirectionCoordinate& dCoord = cSys.directionCoordinate (c0);
-      MDirection world;
-      dCoord.toWorld(world, dCoord.referencePixel());               // Can't fail
-// 
-      GaussianShape gaussShape(world, parameters(0), parameters(1), parameters(2));
-      Vector<Double> pars = gaussShape.toPixel (dCoord);
-      dParameters(0) = pars(2);
-      dParameters(1) = pars(3);
-      dParameters(2) = pars(4);      // radians; +x -> +y
-   } else {
-
-// The only other coordinates currently available are non-coupled
-// ones and linear except for Tabular, which can be non-regular.
-// Urk.
-   
-      Vector<Double> refVal = cSys.referenceValue();
-      Vector<Double> refPix = cSys.referencePixel();
-// 
-      Vector<String> units = cSys.worldAxisUnits();
-      Int worldAxis0 = cSys.pixelAxisToWorldAxis(pixelAxes(0));
-      Int worldAxis1 = cSys.pixelAxisToWorldAxis(pixelAxes(1));
-      String unit0 = units(worldAxis0);   
-      String unit1 = units(worldAxis1);
-      
-// I will be able to relax this criterion when I get the time
-   
-      if (unit0 != unit1) {
-         os << "Units of the convolution axes must be the same" << LogIO::EXCEPTION;
-      }
-    
-// Find major and minor axes in pixels
-
-      Unit unit(unit0);
-      dParameters(0) = worldWidthToPixel (os, dParameters(2), parameters(0), 
-                                          cSys, refVal, refPix, unit, pixelAxes);
-      dParameters(1) = worldWidthToPixel (os, dParameters(2), parameters(1), 
-                                          cSys, refVal, refPix, unit, pixelAxes);
-      dParameters(2) = parameters(2).getValue(Unit("rad"));                // radians; +x -> +y
-   }
-}   
-
-template <class T>
-Double Image2DConvolver<T>::worldWidthToPixel (LogIO& os, Double positionAngle, 
-                                               const Quantum<Double>& length,
-                                               const CoordinateSystem& cSys,
-                                               const Vector<Double>& refVal,
-                                               const Vector<Double>& refPix,
-                                               const Unit& unit,
-                                               const IPosition& pixelAxes) const
-//
-// convert a world length for a linear (non Direction) coordinate
-// to a length in pixels
-// 
-{
-// Check units are ok
-
-   if (!length.check(unit.getValue())) {
-      ostrstream oss;
-      oss << "The units of the world length (" << length.getFullUnit().getName()
-          << ") are not consistent with those of Coordinate System ("
-          << unit.getName() << ")" << ends;
-      String s(oss);
-      os << s << LogIO::EXCEPTION;
-   }
-// 
-   Int worldAxis0 = cSys.pixelAxisToWorldAxis(pixelAxes(0));
-   Int worldAxis1 = cSys.pixelAxisToWorldAxis(pixelAxes(1));
-//
-   Double w0 = cos(positionAngle) * length.getValue(unit) / 2.0;
-   Double w1 = sin(positionAngle) * length.getValue(unit) / 2.0;
-
-// Find pixel coordinate of tip of axis  relative to reference pixel
-
-   Vector<Double> world = refVal.copy();
-   world(worldAxis0) = world(worldAxis0) + w0;
-   world(worldAxis1) = world(worldAxis1) + w1;
-// 
-   Vector<Double> pixel;
-   if (!cSys.toPixel (pixel, world)) {
-      os << cSys.errorMessage() << LogIO::EXCEPTION;
-   }
-//  
-   pixel -= refPix;
-   Double lengthInPixels = 2.0 * hypot(pixel(pixelAxes(0)), pixel(pixelAxes(1)));
-   return lengthInPixels;
-}
 
 template <class T>
 IPosition Image2DConvolver<T>::shapeOfKernel (VectorKernel::KernelTypes kernelType,
@@ -731,73 +547,4 @@ void Image2DConvolver<T>::fillGaussian (T& maxVal, T& volume,
       }
    } 
 }
-
-template <class T>
-Bool Image2DConvolver<T>::skyWidthsPixelToWorld (LogIO& os, 
-                                                 Vector<Quantum<Double> >& wParameters,
-                                                 const CoordinateSystem& cSys, 
-                                                 const Vector<Double>& pParameters,
-                                                 const IPosition& pixelAxes) const
-//
-// Convert 2d functional axis sizes from pixel to world at the reference pixel
-// Only called if the pixelAxes axes hold the sky
-//
-// On input pa is positive for +x -> +y in pixel frame
-// On output pa is positive N->E
-//
-{
-
-// What coordinates are these axes ?
-
-   Int c0, c1, axisInCoordinate0, axisInCoordinate1;
-   cSys.findPixelAxis(c0, axisInCoordinate0, pixelAxes(0));
-   cSys.findPixelAxis(c1, axisInCoordinate1, pixelAxes(1));   
-                                 
-// See what sort of coordinates we have. Make sure it is called
-// only for the Sky.  More development needed otherwise.
-                                 
-   Coordinate::Type type0 = cSys.type(c0);
-   Coordinate::Type type1 = cSys.type(c1);
-   if (type0!=Coordinate::DIRECTION || type1!=Coordinate::DIRECTION) {
-      os << "Can only be called for axes holding the sky" << LogIO::EXCEPTION;
-   }
-   if (c0!=c1) {
-      os << "The given axes do not come from the same Direction coordinate" << endl;
-      os << "This situation requires further code development" << LogIO::EXCEPTION;
-   }
-      
-// Is the 'x' (first axis) the Longitude or Latitude ?
-          
-   Vector<Int> dirPixelAxes = cSys.pixelAxes(c0);
-   Bool xIsLong = dirPixelAxes(0)==pixelAxes(0) && dirPixelAxes(1)==pixelAxes(1);
-   uInt whereIsX = 0;
-   uInt whereIsY = 1;
-   if (!xIsLong) {
-      whereIsX = 1;
-      whereIsY = 0;
-   }
-   
-// Encode a pretend GaussianShape from these values as a means     
-// of converting to world.         
-
-   const DirectionCoordinate& dCoord = cSys.directionCoordinate(c0);
-   GaussianShape gaussShape;
-   Vector<Double> cParameters(5);
-   cParameters(0) = dCoord.referencePixel()(whereIsX);     // x centre
-   cParameters(1) = dCoord.referencePixel()(whereIsY);     // y centre
-   cParameters(2) = pParameters(0);
-   cParameters(3) = pParameters(1);
-   cParameters(4) = pParameters(2);
-//  
-   Bool flipped = gaussShape.fromPixel (cParameters, dCoord);
-   wParameters.resize(3);
-   wParameters(0) = gaussShape.majorAxis();
-   wParameters(1) = gaussShape.minorAxis();
-   wParameters(2) = gaussShape.positionAngle();
-//
-   return flipped;
-}  
-   
-   
-
 

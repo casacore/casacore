@@ -177,25 +177,6 @@ private:
                             const IPosition& axes) const;
 //
    uInt sizeOfGaussian (Double width, Double nSigma) const;
-//
-   Bool skyWidthsPixelToWorld (LogIO& os,
-                               Vector<Quantum<Double> >& wParameters,
-                               const CoordinateSystem& cSys,
-                               const Vector<Double>& pParameters,
-                               const IPosition& pixelAxes) const;
-//
-   void worldWidthsToPixel (LogIO& os, Vector<Double>& dParameters,
-                            const Vector<Quantum<Double> >& parameters,
-                            const CoordinateSystem& cSys,
-                            const IPosition& pixelAxes) const;
-//
-   Double worldWidthToPixel (LogIO& os, Double positionAngle,  
-                             const Quantum<Double>& length,
-                             const CoordinateSystem& cSys,
-                             const Vector<Double>& refVal,
-                             const Vector<Double>& refPix,
-                             const Unit& unit,
-                             const IPosition& pixelAxes) const;
 };
 
 
