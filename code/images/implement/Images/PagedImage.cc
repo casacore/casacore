@@ -63,7 +63,7 @@
 template <class T> PagedImage<T>::
 PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
 	   Table & table, Bool masking, uInt rowNumber)
-  :ImageInterface<T>(coordinateInfo, True),
+  :ImageInterface<T>(True),
    table_p(table),
    map_p(shape, table, "map", rowNumber), 
    mask_p((PagedArray<Bool> *) 0)
@@ -93,10 +93,9 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
 template <class T> PagedImage<T>::
 PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
 	   const String & filename, Bool masking, uInt rowNumber)
-  :ImageInterface<T>(coordinateInfo, True),
+  :ImageInterface<T>(True),
    mask_p((PagedArray<Bool> *) 0)
 {
-  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const IPosition & shape,  "
 			 "const CoordinateSystem & coordinateInfo, "
@@ -116,6 +115,7 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
   else
     logSink() << "No mask is was created" << LogIO::POST;
   ::defaultValue(defaultvalue_p); 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
 
@@ -183,12 +183,13 @@ PagedImage(const String & filename, uInt rowNumber)
 
 template <class T> PagedImage<T>::
 PagedImage(const PagedImage<T> & other)
-  :ImageInterface<T>(other.coords_p, other.throughmask_p), 
+  :ImageInterface<T>(other.throughmask_p), 
    table_p(other.table_p), 
    map_p(other.map_p), 
    mask_p((PagedArray<Bool> *)0),
    defaultvalue_p(other.defaultvalue_p)
 {
+  AlwaysAssert(setCoordinateInfo(other.coords_p), AipsError);
   log_p = other.log_p;
   if (other.mask_p != 0) 
     mask_p = new PagedArray<Bool>(*(other.mask_p));

@@ -114,24 +114,12 @@ template <class T> Bool ImageInterface<T>::writeThroughMask() const
 }
 
 template <class T> 
-ImageInterface<T>::ImageInterface(): throughmask_p(True)
-{
-  logSink() << LogIO::DEBUGGING << 
-	LogOrigin("ImageInterface<T>", "ImageInterface()", WHERE) <<
-	"Creating ImageInterface with null coordinates and will write"
-	" through any mask";
-
-}
-
-template <class T> 
-ImageInterface<T>::ImageInterface(const CoordinateSystem &coords, Bool masking)
+ImageInterface<T>::ImageInterface(Bool masking)
 : throughmask_p(masking)
 {
   logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface(const CoordinateSystem &coords, Bool masking)",
+	    "ImageInterface(Bool masking)",
 			 WHERE) << LogIO::DEBUGGING <<
-    "Creating ImageInterface with supplied coordinates and masking="
+    "Creating ImageInterfac with masking="
 	    << masking << LogIO::POST;
-  AlwaysAssert(ImageInterface<T>::setCoordinateInfo(coords), 
-	       AipsError);
 }

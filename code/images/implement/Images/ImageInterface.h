@@ -296,11 +296,11 @@ public:
  
  
 protected:
+
+  ImageInterface(Bool masking=True);
+
   LogIO log_p;
-
-  ImageInterface();
-  ImageInterface(const CoordinateSystem &coords, Bool masking);
-
+  // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
   Bool throughmask_p;
   Unit units_p;
