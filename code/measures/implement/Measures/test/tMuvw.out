@@ -77,7 +77,7 @@ radius:         39.8372
 getXRecordValue:[23 m, 23 m, 23 m]
 putVector:      [30, 40, 0], [30, 40, 0]
 VQ constructor: [23, 23, 23]
-Pos constructor:[49.4975, 4.32978e-16, -7.07107]
+Pos constructor:[49.4975, 4.08248, -5.7735]
 Q constructor:  [0, 0, 50]
 QV constructor: [0.57735, 0.57735, 0.57735]
 QV constructor: [19.6299, 19.6299, 19.6299]

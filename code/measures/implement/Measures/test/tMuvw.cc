@@ -1,5 +1,5 @@
 //# tMuvw.cc: This program tests Muvw class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -205,7 +205,8 @@ main()
 	  Muvw::Types tp;
 	  Muvw::Ref mr;
 	  cout << "getType:        " << Muvw::getType(tp, s0) << ", ";
-	  cout << tp << endl;
+	  // next () to stop egcs warning
+	  cout << (uInt)tp << endl;
 	  cout << "giveMe:         " << mb.giveMe(mr, s0) << ", ";
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
