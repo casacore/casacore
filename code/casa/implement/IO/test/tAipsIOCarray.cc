@@ -1,5 +1,5 @@
 //# tAipsIOCarray.cc: This program tests the AipsIOCarray functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -72,6 +72,7 @@ void doit (Bool)
 	io.putend();
     }
     {
+	Int i;
 	Complex cpi[1000];
 	Int ipi[1000];
 	AipsIOCarrayEx1 api[1000];
@@ -80,7 +81,7 @@ void doit (Bool)
 	io.getstart ("tAipsIOCarray");
 	io >> n;
 	getAipsIO (io, n, cpi);
-	for (uInt i=0; i<1000; i++) {
+	for (i=0; i<1000; i++) {
 	    if (cpi[i] != Complex (float(i), float(i+4))) {
 		cout << "Get error in cp[" << i << "]" << endl;
 	    }
@@ -102,6 +103,7 @@ void doit (Bool)
 	io.getend();
     }
     {
+	Int i;
 	Complex* cpi;
 	Int* ipi;
 	AipsIOCarrayEx1* api;
@@ -109,7 +111,7 @@ void doit (Bool)
 	AipsIO io ("tAipsIOCarray_tmp.data");
 	io.getstart ("tAipsIOCarray");
 	getnewAipsIO (io, n, &cpi);
-	for (uInt i=0; i<1000; i++) {
+	for (i=0; i<1000; i++) {
 	    if (cpi[i] != Complex (float(i), float(i+4))) {
 		cout << "Getnew error in cp[" << i << "]" << endl;
 	    }
