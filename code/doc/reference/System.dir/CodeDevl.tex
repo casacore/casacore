@@ -2360,7 +2360,7 @@ Original: 1997/09/14 by Wim Brouw, ATNF.
 \index{UPfind@\exe{UPfind}}
 \index{source files |see{\exe{UPfind}}}
 
-Find files containing patterns. File list to be used in action \code{UP scripts}.
+Find files containing patterns. File list to be used in action \exe{UP scripts}.
 
 \subsubsection*{Synopsis}
 
@@ -2420,3 +2420,74 @@ Original: 2000/09/020 by Wim Brouw, ATNF
 Change source files in \aipspp\ master, using a list of files, probably
 created by \code{UPfind}.
 
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPmove}}
+\label{UPmove}
+\index{UPmove@\exe{UPmove}}
+\index{source files |see{\exe{UPmove}}}
+
+Move source files in \aipspp\ master, using a list of files, probably
+created by \code{UPfind}. The files will be moved from one path to another,
+updating all files referencing these files as well.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPlist}}
+\label{UPlist}
+\index{UPlist@\exe{UPlist}}
+\index{source files |see{\exe{UPlist}}}
+
+List the lines containing the find pattern in the files in the file list
+produced by \code{UPfind}.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPlock}}
+\label{UPlock}
+\index{UPlock@\exe{UPlock}}
+\index{source files |see{\exe{UPlock}}}
+
+Check and report if files as listed in the given file list (probably created
+by \code{UPfind}) are locked.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPtmpl}}
+\label{UPtmpl}
+\index{UPtmpl@\exe{UPtmpl}}
+\index{source files |see{\exe{UPtmpl}}}
+
+Get a list of all files in all \exe{tmplinst} directories.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPsed}}
+\label{UPsed}
+\index{UPsed@\exe{UPsed}}
+\index{source files |see{\exe{UPsed}}}
+
+Apply a \exe{sed} pattern to a file. This script is used  by the other, main,
+\exe{UP} scripts.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPinfo}}
+\label{UPinfo}
+\index{UPinfo@\exe{UPinfo}}
+\index{source files |see{\exe{UPinfo}}}
+
+Obtain general information for the \exe{UP} scripts. This script is a support
+script for the other \exe{UP} scripts.
