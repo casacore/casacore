@@ -258,20 +258,21 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List random things
 
-   os << "Image name     : " << this->name() << endl;
+   os << "Image name       : " << this->name() << endl;
    if (this->hasAMask()) {
-      os << "Image mask     : Present" << endl;
+      os << "Image mask       : Present" << endl;
    } else {
-      os << "Image mask     : Absent" << endl;
+      os << "Image mask       : Absent" << endl;
    }
    if (!this->units().getName().empty()) 
-      os << "Image units    : " << this->units().getName() << endl;
+      os << "Image units      : " << this->units().getName() << endl;
+
 
 // Obtain CoordinateSystem
 
    const CoordinateSystem cSys = pImage_p->coordinates();
 
-// List rest frequency if we can find a spectral axis
+// List rest frequency and reference frame if we can find a spectral axis
 
    Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys);
    if (spectralAxis >= 0) {
@@ -281,9 +282,11 @@ void ImageSummary<T>::list (LogIO& os,
       if (restFreq > 0) {
          os.output().setf(ios::scientific, ios::floatfield);
          os.output().precision(8);
-         os << "Rest Frequency : " << restFreq << " " 
+         os << "Rest Frequency   : " << restFreq << " " 
             << cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate) << endl;
       }
+      MFrequency::Types freqType = cSys.spectralCoordinate(coordinate).frequencySystem();
+      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
    }
    os << endl;
       
