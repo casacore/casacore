@@ -49,7 +49,7 @@ template <class T> class LatticeIterInterface;
 class String;
 class ImageInfo;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 class ostream;
 #endif

@@ -1,5 +1,5 @@
 //# MaskArrIO.h: Write out an ascii representation of a MaskedArray.
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 
 // Forward declarations
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 class ostream;
 class ostream_withassign;

@@ -1,5 +1,5 @@
 //# ExprNodeRep.h: Abstract base class for a node in a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 imported class ostream;
 #endif

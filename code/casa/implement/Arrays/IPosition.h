@@ -1,5 +1,5 @@
 //# IPosition.h: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@ class LogIO;
 template<class T> class Array;
 template<class T> class Vector;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 imported class ostream;
 #endif

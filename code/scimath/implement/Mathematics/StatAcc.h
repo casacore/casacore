@@ -1,5 +1,5 @@
 //# StatAcc.h: Statistics Accumulator
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 template <class T> class Array;
 template <class T> class Block;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 class ostream;
 #endif

@@ -1,5 +1,5 @@
 //# ObsInfo.h: Miscellaneous information related to an observation
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Measures/MEpoch.h>
 
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 class ostream;
 #endif

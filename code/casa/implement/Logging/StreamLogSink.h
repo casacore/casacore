@@ -1,5 +1,5 @@
 //# StreamLogSink.h: Send log messages to an ostream.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Logging/LogSinkInterface.h>
 
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 class ostream;
 #endif

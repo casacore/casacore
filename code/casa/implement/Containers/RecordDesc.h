@@ -1,5 +1,5 @@
 //# RecordDesc.h: Description of the fields in a record object
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 //# Forward Declarations
 class AipsIO;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #else
 imported class ostream;
 #endif

@@ -1,5 +1,5 @@
 //# LogIO.h: ostream-like interface to creating log messages.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 class LogSink;
 class LogOrigin;
 #if defined(AIPS_STDLIB)
-#include <iosfwd.h>
+#include <iosfwd>
 #include <strstream.h>
 #else
 class ostream;
