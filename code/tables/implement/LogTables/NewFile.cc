@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <trial/Tasking/NewFile.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
+#include <trial/Tasking/Choice.h>
 
 #include <aips/OS/File.h>
 #include <aips/OS/RegularFile.h>
@@ -80,17 +80,11 @@ Bool NewFile::valueOK(const String &value, String &error) const
 //
     File thefile(value);
     if (thefile.exists()) {
-	if (!ApplicationEnvironment::hasGUI()) {
-           error = String("File ") + value + 
-                   String(" exists but no GUI available for user removal inquiry");
-           return False;
-        }
-//
 	String text = String("File '") + value + "' already exists. Remove it?";
 	Vector<String> choices(2);
 	choices(0) = "no";
 	choices(1) = "yes";
-	String remove = ApplicationEnvironment::choice(text, choices);
+	String remove = Choice::choice(text, choices);
 	if (remove == "yes") {
 	    Bool removed = False;
 	    String extra_error = "";
