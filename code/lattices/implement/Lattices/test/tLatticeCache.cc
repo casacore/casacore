@@ -74,8 +74,8 @@ void a() {
     LatticeCache<Complex> itc(pi2, cacheSize, tileShape, tileOverlapVec,
 			       ToBool(tileOverlap>0.));      
     MLCG rng(835, 05401);
-    DiscreteUniform randomPos(tileSize, arraySize-tileSize-1, &rng);
-    Uniform randomChoice(0.0, 1.0, &rng);
+    DiscreteUniform randomPos(&rng, tileSize, arraySize-tileSize-1);
+    Uniform randomChoice(&rng, 0.0, 1.0);
     Timer timer;
     timer.mark();
     pi2.set(0.0);
@@ -94,15 +94,15 @@ void a() {
       }
     }
     else {
-      Int i=Int(randomPos());
-      Int j=Int(randomPos());
+      Int i=randomPos.asInt();
+      Int j=randomPos.asInt();
       IPosition myPos=IPosition(2,i,j);
       Double missFraction=0.0;
       cout<<"MissFraction ? ";cin>>missFraction;
       for (Int trial=0;trial<trials;trial++) {
 	if(randomChoice()<missFraction) {
-	  i=Int(randomPos());
-	  j=Int(randomPos());
+	  i=randomPos.asInt();
+	  j=randomPos.asInt();
 	  myPos=IPosition(2,i,j);
 	  //	  cout<<"New tile on trial "<<trial<<" at "<<myPos<<endl;
 	}
@@ -146,28 +146,28 @@ void b() {
     LatticeCache<Float> itc(pi4, cacheSize, tileShape, tileOverlapVec,
 			       ToBool(tileOverlap>0.0));      
     MLCG rng(835, 05401);
-    DiscreteUniform randomPos(tileSize, arraySize-tileSize-1, &rng);
-    DiscreteUniform randomChan(0, 31, &rng);
-    DiscreteUniform randomPol(0, 3, &rng);
-    Uniform randomChoice(0.0, 1.0, &rng);
+    DiscreteUniform randomPos(&rng, tileSize, arraySize-tileSize-1);
+    DiscreteUniform randomChan(&rng, 0, 31);
+    DiscreteUniform randomPol(&rng, 0, 3);
+    Uniform randomChoice(&rng, 0.0, 1.0);
     Timer timer;
     timer.mark();
     pi4.set(0.0);
     cout<<"Time to initialize array = "<<1000.0*timer.real()<<" ms"<<endl;
     timer.mark();
-    Int i=Int(randomPos());
-    Int j=Int(randomPos());
-    Int pol=Int(randomPol());
-    Int chan=Int(randomChan());
+    Int i=randomPos.asInt();
+    Int j=randomPos.asInt();
+    Int pol=randomPol.asInt();
+    Int chan=randomChan.asInt();
     IPosition myPos=IPosition(4,i,j,pol,chan);
     Double missFraction=0.0;
     cout<<"MissFraction ? ";cin>>missFraction;
     for (Int trial=0;trial<trials;trial++) {
       if(randomChoice()<missFraction) {
-	i=Int(randomPos());
-	j=Int(randomPos());
-// 	pol=Int(randomPol());
-// 	chan=Int(randomChan());
+	i=randomPos.asInt();
+	j=randomPos.asInt();
+// 	pol=randomPol.asInt();
+// 	chan=randomChan.asInt();
 	pol=0;
 	chan=0;
         myPos=IPosition(4,i,j,pol,chan);
