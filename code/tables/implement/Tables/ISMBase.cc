@@ -1,5 +1,5 @@
 //# ISMBase.cc: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Tables/ISMIndex.h>
 #include <aips/Tables/BucketCache.h>
 #include <aips/Tables/BucketFile.h>
+#include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
@@ -46,6 +47,8 @@
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
+  version_p         (3),
+  iosfile_p         (0),
   uniqnr_p          (0),
   cache_p           (0),
   file_p            (0),
@@ -65,6 +68,8 @@ ISMBase::ISMBase (const String& dataManagerName,
 		  uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
   dataManName_p     (dataManagerName),
+  version_p         (3),
+  iosfile_p         (0),
   uniqnr_p          (0),
   cache_p           (0),
   file_p            (0),
@@ -83,6 +88,8 @@ ISMBase::ISMBase (const String& dataManagerName,
 ISMBase::ISMBase (const ISMBase& that)
 : DataManager       (),
   dataManName_p     (that.dataManName_p),
+  version_p         (that.version_p),
+  iosfile_p         (0),
   uniqnr_p          (0),
   cache_p           (0),
   file_p            (0),
@@ -107,6 +114,7 @@ ISMBase::~ISMBase()
     delete cache_p;
     delete file_p;
     delete [] tempBuffer_p;
+    delete iosfile_p;
 }
 
 DataManager* ISMBase::clone() const
@@ -241,12 +249,12 @@ void ISMBase::readIndex()
 	tio = new RawIO (&fio);
     }
     AipsIO os (tio);
-    uInt version = os.getstart ("IncrementalStMan");
+    version_p = os.getstart ("IncrementalStMan");
     os >> bucketSize_p;
     os >> nbucketInit_p;
     os >> persCacheSize_p;
     os >> uniqnr_p;
-    if (version > 1) {
+    if (version_p > 1) {
 	os >> nFreeBucket_p;
 	os >> firstFree_p;
     }
@@ -276,7 +284,7 @@ void ISMBase::writeIndex()
 	tio = new RawIO (&fio);
     }
     AipsIO os (tio);
-    os.putstart ("IncrementalStMan", 2);
+    os.putstart ("IncrementalStMan", version_p);
     os << bucketSize_p;
     os << nbuckets;
     os << persCacheSize_p;
@@ -431,6 +439,8 @@ void ISMBase::recreate()
     cache_p = 0;
     delete file_p;
     file_p = 0;
+    delete iosfile_p;
+    iosfile_p = 0;
     nbucketInit_p = 1;
     nFreeBucket_p = 0;
     firstFree_p   = -1;
@@ -513,6 +523,15 @@ void ISMBase::open (uInt tabNrrow, AipsIO& ios)
     for (uInt i=0; i<nrcol; i++) {
 	colSet_p[i]->getFile (nrrow_p);
     }
+}
+
+StManArrayFile* ISMBase::openArrayFile (ByteIO::OpenOption opt)
+{
+    if (iosfile_p == 0) {
+	iosfile_p = new StManArrayFile (fileName() + 'i', opt,
+					1, asCanonical());
+    }
+    return iosfile_p;
 }
 
 void ISMBase::reopenRW()

@@ -1,5 +1,5 @@
 //# ISMBase.h: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_ISMBASE_H)
 #define AIPS_ISMBASE_H
 
-#if defined(_AIX)
-#pragma implementation ("ISMBase.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -43,6 +40,7 @@ class BucketFile;
 class ISMBucket;
 class ISMIndex;
 class ISMColumn;
+class StManArrayFile;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -119,6 +117,9 @@ public:
     // Get the name given to the storage manager (in the constructor).
     virtual String dataManagerName() const;
 
+    // Get the version of the class.
+    uInt version() const;
+
     // Set the cache size (in buckets).
     void setCacheSize (uInt cacheSize);
 
@@ -156,10 +157,6 @@ public:
     // The bucket object is created and deleted by the caching mechanism.
     ISMBucket* nextBucket (uInt& cursor, uInt& bucketStartRow,
 			   uInt& bucketNrrow);
-
-    // Get a pointer to the value for the given column and row.
-    // It also fills the start/end for the row-interval of this value.
-//    void* get (uInt colnr, uInt rownr);
 
     // Get access to the temporary buffer.
     char* tempBuffer() const;
@@ -200,6 +197,10 @@ public:
     // changed in it and it needs to be written when removed from the cache).
     // (used by ISMColumn::putValue).
     void setBucketDirty();
+
+    // Open (if needed) the file for indirect arrays with the given mode.
+    // Return a pointer to the object.
+    StManArrayFile* openArrayFile (ByteIO::OpenOption opt);
 
 
 private:
@@ -298,6 +299,10 @@ private:
     //# Declare member variables.
     // Name of data manager.
     String       dataManName_p;
+    // The version of the class.
+    uInt         version_p;
+    // The file containing the indirect arrays.
+    StManArrayFile* iosfile_p;
     // Unique nr for column in this storage manager.
     uInt         uniqnr_p;
     // The number of rows in the columns.
@@ -335,8 +340,15 @@ private:
 };
 
 
+inline uInt ISMBase::version() const
+{
+    return version_p;
+}
+
 inline uInt ISMBase::cacheSize() const
-    { return cacheSize_p; }
+{
+    return cacheSize_p;
+}
 
 inline uInt ISMBase::uniqueNr()
 {

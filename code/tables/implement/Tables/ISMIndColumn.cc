@@ -1,5 +1,5 @@
 //# ISMIndColumn.cc: Column of Incremental storage manager for indirect arrays
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,9 @@ void ISMIndColumn::clear()
 {
     delete (uLong*)lastValue_p;
     lastValue_p = 0;
-    delete iosfile_p;
+    if (stmanPtr_p->version() < 3) {
+        delete iosfile_p;
+    }
     iosfile_p = 0;
 }
 
@@ -294,12 +296,15 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
     }
     lastValue_p = new uLong;
     //# Open or create the type 1 file to hold the arrays in the column.
-    char strc[8];
-    sprintf (strc, "i%i", seqnr_p);
-    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
-				    fileOption, 1, asCanonical);
-    if (iosfile_p == 0) {
-	throw (AllocError ("ISMIndColumn::doCreate", 1));
+    //# For newer versions one file is maintained by the parent
+    //# for all indirect columns.
+    if (stmanPtr_p->version() >= 3) {
+        iosfile_p = stmanPtr_p->openArrayFile (fileOption);
+    } else {
+        char strc[8];
+	sprintf (strc, "i%i", seqnr_p);
+	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
+					fileOption, 1, asCanonical);
     }
 }
 

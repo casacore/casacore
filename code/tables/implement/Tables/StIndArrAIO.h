@@ -1,5 +1,5 @@
 //# StIndArrAIO.h: AipsIO storage manager for indirect table arrays
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -241,7 +241,11 @@ private:
     IPosition fixedShape_p;
     // Switch indicating if the shape is fixed.
     Bool shapeIsFixed_p;
-    // The file containing the arrays.
+    // The version of the object retrieved from a file.
+    // Versions < 2 use a StManArrayFile of their own.
+    // Newer versions share the one in StManAipsIO.
+    uInt version_p;
+    // The file containing the indirect arrays.
     StManArrayFile* iosfile_p;
 
 

@@ -1,5 +1,5 @@
 //# StManAipsIO.h: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,10 +37,12 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Utilities/String.h>
+#include <aips/IO/ByteIO.h>
 
 //# Forward clarations
 class AipsIO;
 class StManAipsIO;
+class StManArrayFile;
 
 
 // <summary>
@@ -410,6 +412,10 @@ public:
     // This function gets registered in the DataManager "constructor" map.
     static DataManager* makeObject (const String& dataManagerType);
 
+    // Open (if needed) the file for indirect arrays with the given mode.
+    // Return a pointer to the object.
+    StManArrayFile* openArrayFile (ByteIO::OpenOption opt);
+
 
 private:
     // Flush and optionally fsync the data.
@@ -467,6 +473,8 @@ private:
     PtrBlock<StManColumnAipsIO*>  colSet_p;
     // Has anything been put since the last flush?
     Bool   hasPut_p;
+    // The file containing the indirect arrays.
+    StManArrayFile* iosfile_p;
 };
 
 

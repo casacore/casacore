@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/StArrAipsIO.h>
 #include <aips/Tables/StIndArrAIO.h>
+#include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/DataType.h>
@@ -628,7 +629,8 @@ StManAipsIO::StManAipsIO ()
   uniqnr_p    (0),
   nrrow_p     (0),
   colSet_p    (0),
-  hasPut_p    (False)
+  hasPut_p    (False),
+  iosfile_p   (0)
 {}
 
 StManAipsIO::StManAipsIO (const String& storageManagerName)
@@ -637,7 +639,8 @@ StManAipsIO::StManAipsIO (const String& storageManagerName)
   uniqnr_p    (0),
   nrrow_p     (0),
   colSet_p    (0),
-  hasPut_p    (False)
+  hasPut_p    (False),
+  iosfile_p   (0)
 {}
 
 StManAipsIO::~StManAipsIO()
@@ -645,6 +648,7 @@ StManAipsIO::~StManAipsIO()
     for (uInt i=0; i<ncolumn(); i++) {
 	delete colSet_p[i];
     }
+    delete iosfile_p;
 }
 
 DataManager* StManAipsIO::clone() const
@@ -861,6 +865,15 @@ void StManAipsIO::resync (uInt nrrow)
 	colSet_p[i]->getFile (nrrow_p, ios);
     }
     ios.getend();
+}
+
+
+StManArrayFile* StManAipsIO::openArrayFile (ByteIO::OpenOption opt)
+{
+    if (iosfile_p == 0) {
+	iosfile_p = new StManArrayFile (fileName() + 'i', opt);
+    }
+    return iosfile_p;
 }
 
 void StManAipsIO::reopenRW()

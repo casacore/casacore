@@ -1,5 +1,5 @@
 //# StIndArrAIO.cc: Read/write a table column of arrays array using AipsIO
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,6 +48,7 @@ StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO (StManAipsIO* smptr,
 : StManColumnAipsIO (smptr, dataType, True),
   seqnr_p       (smptr->uniqueNr()),
   shapeIsFixed_p(False),
+  version_p     (2),
   iosfile_p     (0)
 {}
 
@@ -58,7 +59,9 @@ StManColumnIndArrayAipsIO::~StManColumnIndArrayAipsIO()
     for (uInt i=0; i<nr; i++) {
 	deleteArray (i);
     }
-    delete iosfile_p;
+    if (version_p <= 1) {
+        delete iosfile_p;
+    }
 }
 
 
@@ -76,12 +79,15 @@ void StManColumnIndArrayAipsIO::doCreate (uInt nrrow)
 
 void StManColumnIndArrayAipsIO::openFile (ByteIO::OpenOption opt)
 {
-    //# Open/create the file holding the arrays in the column.
-    char strc[8];
-    sprintf (strc, "i%i", seqnr_p);
-    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
-    if (iosfile_p == 0) {
-	throw (AllocError ("StManColumnIndArrayAipsIO::openFile", 1));
+    //# For newer versions one file is maintained by the parent
+    //# for all indirect columns.
+    if (version_p > 1) {
+        iosfile_p = stmanPtr_p->openArrayFile (opt);
+    } else {
+        //# Open/create the file holding the arrays in the column.
+        char strc[8];
+	sprintf (strc, "i%i", seqnr_p);
+	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
     }
 }
 
@@ -241,7 +247,7 @@ void StManColumnIndArrayAipsIO::deleteArray (uInt rownr)
 //# Write all data into AipsIO.
 void StManColumnIndArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
 {
-    ios.putstart ("StManColumnIndArrayAipsIO", 1);     // class version 1
+    ios.putstart ("StManColumnIndArrayAipsIO", version_p);
     ios << dtype_p;                    // for backward compatibility
     ios << seqnr_p;
     StManColumnAipsIO::putFile (nrval, ios);
@@ -266,7 +272,7 @@ void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 void StManColumnIndArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
 {
     int dtype;
-    ios.getstart ("StManColumnIndArrayAipsIO");
+    version_p = ios.getstart ("StManColumnIndArrayAipsIO");
     ios >> dtype;                          // for backward compatibility
     ios >> seqnr_p;
     openFile (stmanPtr_p->fileOption());   // open the array file
