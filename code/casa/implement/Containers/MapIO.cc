@@ -1,5 +1,5 @@
 //# MapIO.cc: Classes to perform IO for Map classas
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,51 +27,7 @@
 
 
 #include <aips/Containers/MapIO.h>
-#include <aips/IO/AipsIO.h>
 
-template<class key, class value> AipsIO &operator<<(AipsIO &ios, const Map<key,value> &map) {
-  ConstMapIter<key,value> mapP(map);
-  ios.putstart (rtti_decode(map.id()), Map<key,value>::MapVersion);
-  mapP.toStart();
-  ios << map.ndefined();
-  ios << map.defaultVal();
-  while (mapP.atEnd() != True) {
-    ios << mapP.getKey();
-    ios << mapP.getVal();
-    mapP++;
-  }
-  ios.putend ();
-  return ios;
-}
-
-template<class key, class value> AipsIO &operator>>(AipsIO &ios, Map<key,value> &map) {
-  key k;
-  int len,i;
-  int vers = ios.getstart(rtti_decode(map.id()));
-
-  map.clear();
-  ios >> len;
-  ios >> map.defaultVal();
-  for (i=0; i<len; i++) {
-    ios >> k;
-    ios >> map(k);
-  }
-  ios.getend ();
-
-  return ios;
-}
-
-template<class key, class value> AipsIO &operator<<(AipsIO &ios, const ConstMapIter<key,value> &map) {
-
-  return operator<<(ios,map.container());
-
-}
-
-template<class key, class value> AipsIO &operator>>(AipsIO &ios, MapIter<key,value> &map) {
-
-  return operator>>(ios,map.container());
-
-}
 
 template<class key, class value> ostream &operator<<(ostream &ios, const Map<key,value> &map) {
 #if !defined(AIPS_STUPID_SUN)

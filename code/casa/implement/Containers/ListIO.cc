@@ -26,76 +26,7 @@
 //# $Id$
 
 #include <aips/Containers/ListIO.h>
-#include <aips/IO/AipsIO.h>
 
-//
-//  Inputs a doubly linked list to the specified AipsIO stream.
-//
-template<class t> AipsIO &operator>>(AipsIO &ios, List<t> &list) {
-  t val;
-  uInt len;
-  int vers = ios.getstart(rtti_decode(list.id()), List<t>::ListVersion);
-  ListIter<t> listp = list;
-
-  listp.toStart();
-  while (listp.atEnd() == False)
-    listp.removeRight();
-  ios >> len;
-  for (int i = 0; i<len; i++) {
-    ios >> val;
-    listp.addRight(val);
-    listp++;
-  }
-  ios.getend ();
-  return(ios);
-}
-
-
-//
-//  Outputs a doubly linked list iterator to the specified AipsIO stream.
-//
-#define AIPS_LIST_AIPSIO_OUT(TYPE) 						\
-template<class t> AipsIO &operator<<(AipsIO &ios, const TYPE<t> &list) {	\
-  ConstListIter<t> listp = list;						\
-										\
-  ios.putstart(rtti_decode(list.id()), TYPE<t>::aips_name2(TYPE,Version) );	\
-  ios << list.len() << list.pos();						\
-  listp.toStart();								\
-  while (listp.atEnd() == False) {						\
-    ios << listp.getRight();							\
-    listp++;									\
-  }										\
-  ios.putend ();								\
-  return(ios);									\
-}
-
-AIPS_LIST_AIPSIO_OUT(List)
-AIPS_LIST_AIPSIO_OUT(ConstListIter)
-
-//
-//  Inputs a doubly linked list iterator to the specified AipsIO stream.
-//
-template<class t> AipsIO &operator>>(AipsIO &ios, ListIter<t> &list) {
-  t val;
-  uInt len;
-  uInt pos;
-  int vers = ios.getstart(rtti_decode(((ConstListIter<t>&)list).id()));
-
-  list.assign(new List<t>(), True);
-
-  list.toStart();
-  while (list.atEnd() == False)
-    list.removeRight();
-  ios >> len >> pos;
-  for (int i = 0; i<len; i++) {
-    ios >> val;
-    list.addRight(val);
-    list++;
-  }
-  ios.getend ();
-  list.pos(pos);
-  return(ios);
-}
 
 //
 //  Outputs a doubly linked list to the specified ostream stream.

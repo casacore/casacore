@@ -35,10 +35,6 @@ class AipsIO;
 // <summary> Global IO functions </summary>
 // Input/output
 // <group name=inoutput>
-template<class key, class value> AipsIO &operator<<(AipsIO& ios, const Map<key,value> &map);
-template<class key, class value> AipsIO &operator>>(AipsIO& ios, Map<key,value> &map);
-template<class key, class value> AipsIO &operator<<(AipsIO& ios, const ConstMapIter<key,value> &map);
-template<class key, class value> AipsIO &operator>>(AipsIO& ios, MapIter<key,value> &map);
 template<class key, class value> ostream& operator<<(ostream&, const Map<key,value>&);
 template<class key, class value> ostream &operator<<(ostream &, const ConstMapIter<key,value> &);
 // </group>
