@@ -88,6 +88,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# Set SetupNewTable object to in use.
     tdescPtr_p  = newtab.tableDescPtr();
     colSetPtr_p = newtab.columnSetPtr();
+    colSetPtr_p->linkToTable (this);
     newtab.setInUse();
     //# Create the table directory (and possibly delete existing files)
     //# as needed.
@@ -98,7 +99,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
     lockPtr_p->makeLock (name_p, True, FileLocker::Write);
     lockPtr_p->acquire (0, FileLocker::Write, 1);
-    colSetPtr_p->linkToLockObject (this, lockPtr_p);
+    colSetPtr_p->linkToLockObject (lockPtr_p);
     //# Initialize the data managers.
     Table tab(this, False);
     nrrowToAdd_p = nrrow;
@@ -206,7 +207,8 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     if (colSetPtr_p == 0) {
 	throw (AllocError ("PlainTable(AipsIO&)", 1));
     }
-    colSetPtr_p->linkToLockObject (this, lockPtr_p);
+    colSetPtr_p->linkToTable (this);
+    colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
 	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
     }
