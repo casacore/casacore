@@ -258,7 +258,7 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
    }
 
    // Add its log
-   /////   logger().addParent (&(image.logger()));
+   logger().addParent (image.logger());
 } 
 
 
