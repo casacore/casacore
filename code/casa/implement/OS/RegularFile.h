@@ -149,7 +149,7 @@ public:
 	       Bool setUserWritePermission = True) const;
     // </group>
 
-    // Move the file to the target path using the system command cp.
+    // Move the file to the target path using the system command mv.
     // If the file is a symbolic link, the regular file pointed to
     // will be moved.
     // The target path can be a directory or a file (as in mv).
@@ -157,6 +157,9 @@ public:
     // <br>- the target directory is not writable
     // <br>- or the target file already exists and overwrite==False
     // <br>- or the target file already exists and is not writable
+    // <note role=tip> The system command mv is used instead of the
+    // library function rename to be able to move across file systems.
+    // </note>
     // <group>
     void move (const Path& target, Bool overwrite = True);
     void move (const String& target, Bool overwrite = True);
