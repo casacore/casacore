@@ -121,15 +121,6 @@ public:
 // a mask, then those pixels will be masked, othereise they are just zeroed.
   static void project(ImageInterface<Float>& image, 
 		      const ComponentList& list);
-
-// Make definitions to handle "/beam" and "/pixel" units
-   static Unit defineBrightnessUnits (LogIO& os, const ImageInterface<Float>& im,
-                               Bool integralIsJy);
-
-// Remove the user defined "/beam" and "/pixel" definitions
-   static void undefineBrightnessUnits ();
-
-
 };
 
 #endif
