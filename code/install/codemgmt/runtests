@@ -25,6 +25,7 @@
   fi
  
   AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  AIPSARCH=`echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
   BINTESTD=`echo $AIPSPATH | awk '{printf("%s/%s/bintest",$1,$2)}'`
  
 # Get the current version number.
@@ -37,6 +38,7 @@
     MAILCMD=mail
   fi 
  
+  echo $PATH
 # Do it, sending the results to aips2-inhale.
   {  exec 2>&1
 
@@ -61,16 +63,8 @@
      cat $BINTESTD/runtests.report
      echo ""
      cat $BINTESTD/runtests.log
-  } | $MAILCMD aips2-inhale@nrao.edu
+     echo $PATH
+     testsum.sh $AIPSARCH aips > $BINTESTD/runtests.summary 2>&1
+  } > $BINTESTD/runtests.rptNlog
 
- 
-# Mail a summary to aips2-workers.
-  (echo "runtests: $AIPSPATH" ;
-   echo "" ;
-   echo "A full report can be found in the aips2-inhale email archive or in" ;
-   echo "$BINTESTD on aips2.nrao.edu (for those with access)." ;
-   echo "") |
-     cat - runtests.report |
-     $MAILCMD -s "AIPS++ test results" aips2-workers@nrao.edu
- 
   exit 0
