@@ -188,7 +188,10 @@ class Interpolate2D
                const Array<Bool> &data) const;
   // </group>
 
-// Convert string ("nearest", "linear", "cubic") to Method
+// Recover interpolation method
+   Method interpolationMethod() const {return itsMethod;};
+
+// Convert string ("nearest", "linear", "cubic") to interpolation method
 // Minimum match will do.
   static Interpolate2D::Method stringToMethod(const String &method);
 
