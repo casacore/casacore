@@ -1,5 +1,5 @@
 //# tParam.cc:  the test code for the Param class.
-//# Copyright (C) 1994, 1995
+//# Copyright (C) 1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -77,7 +77,8 @@ main()
     
     // get a Block<double> parameter value; prompt if switch is TRUE
     AlwaysAssertExit(deflt.Put("5.0, 5.0, 5.0"));
-    for (int i=0;i<3;i++) AlwaysAssertExit(5.0 == deflt.GetDoubleArray()[i]);
+    int i;
+    for (i=0;i<3;i++) AlwaysAssertExit(5.0 == deflt.GetDoubleArray()[i]);
     
     // get an Block<Int> parameter value; prompt if switch is TRUE
     for (i=0;i<3;i++) AlwaysAssertExit(5 == deflt.GetIntArray()[i]);
