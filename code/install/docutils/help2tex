@@ -142,7 +142,7 @@ sub fetch_raw_help{
       } else {
         s/\\ahpackage{($mtext)}/
         \\begin{htmlonly}
-        \\htmladdnormallink{Postscript file available}{$psfile}
+        \\htmladdnormallink{Postscript file available}{\\psgzfile}
         \\vspace{.10in}
         \\end{htmlonly}
         $1\\\\
