@@ -202,7 +202,7 @@ private:
   mutable Types nf_p;
   mutable Int order_p;
   mutable String text_p;
-  // </groups>
+  // </group>
   // List of known names
   mutable Vector<String> nam_p;
   // Filled list?
