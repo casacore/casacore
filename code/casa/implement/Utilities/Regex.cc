@@ -31,7 +31,7 @@
 
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/String.h>
-#include <stdexcept>
+#include <aips/stdexcept.h>
 #include <aips/iostream.h>
 
 Regex::Regex() {
@@ -179,14 +179,14 @@ const Char *Regex::transtable() const {
 
 String Regex::fromPattern(const String &pattern) {
     enum CState{stream, bracketopen, escapechar};
-    Int len = 0;
-    Int bracecount = 0;
-    Int inbrcount = 0;
-    Int pattLeng = pattern.length();
+    uInt len = 0;
+    uInt bracecount = 0;
+    uInt inbrcount = 0;
+    uInt pattLeng = pattern.length();
     String result;
     result.alloc(3*pattLeng+1);
     CState state = stream;
-    for (Int i=0; i<pattLeng; i++) {
+    for (uInt i=0; i<pattLeng; i++) {
 	Char c = pattern[i];
 	switch(state) {
 	case stream :
@@ -282,11 +282,11 @@ String Regex::fromPattern(const String &pattern) {
 }
 
 String Regex::fromString(const String &strng) {
-    Int strLeng = strng.length();
+    uInt strLeng = strng.length();
     String result;
     result.alloc(2*strLeng+1);
-    Int len = 0;
-    for (Int i=0; i<strLeng; i++) {
+    uInt len = 0;
+    for (uInt i=0; i<strLeng; i++) {
 	Char c = strng[i];
 	// Escape special characters.
 	switch (c) {
