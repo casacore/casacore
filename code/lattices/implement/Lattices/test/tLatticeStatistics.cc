@@ -38,6 +38,7 @@
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeStatsBase.h>
+#include <trial/Lattices/LatticeUtilities.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Tasking/PGPlotter.h>
 
@@ -45,8 +46,18 @@
 
 
 void doitFloat(LogIO& os);
-void testFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
-                const Vector<Bool>& hasResult, const IPosition& shape);
+void do1DFloat (const Vector<Float>& results,
+                const Vector<Bool>& hasResult, 
+                const Array<Float>& inArr,
+                LogIO& os);
+void do2DFloat (const Vector<Float>& results,
+                const Vector<Bool>& hasResult, 
+                const Array<Float>& inArr,
+                LogIO& os);
+void test1DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
+                  const Vector<Bool>& hasResult, const IPosition& shape);
+void test2DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
+                  const Vector<Bool>& hasResult, const IPosition& shape);
 
 
 int main (int argc, char **argv)
@@ -73,8 +84,7 @@ void doitFloat (LogIO& os)
    shape = 64;
    Array<Float> inArr(shape);
    indgen(inArr);
-   ArrayLattice<Float> inLat(inArr);
-   SubLattice<Float> subLat(inLat);
+//
 //
    Vector<Float> results(LatticeStatsBase::NSTATS);
    Vector<Bool> hasResult(LatticeStatsBase::NSTATS);
@@ -97,46 +107,108 @@ void doitFloat (LogIO& os)
    hasResult(LatticeStatsBase::RMS) = False;
    hasResult(LatticeStatsBase::FLUX) = False;
 
-// Construct statistics object
-   
+// Make 1D Lattice and test
+
+   do1DFloat(results, hasResult, inArr, os);
+
+// Make 2D lattice and test
+
+   do2DFloat(results, hasResult, inArr, os);
+}
+
+
+void do1DFloat (const Vector<Float>& results,
+                const Vector<Bool>& hasResult, 
+                const Array<Float>& inArr, LogIO& os)
+{
+   const IPosition shape = inArr.shape();
+   ArrayLattice<Float> inLat(inArr);
+   SubLattice<Float> subLat(inLat);
    LatticeStatistics<Float> stats(subLat, os, False, False);
 
-// Set axes
+// Test
 
+   test1DFloat (stats, results, hasResult, shape);
+
+// Test copy constructor - feeble test
+     
+   {
+      LatticeStatistics<Float> stats2(stats);
+      test1DFloat (stats2, results, hasResult, shape);
+   }
+
+// Test assignment operator - feeble test
+   
+   {
+      LatticeStatistics<Float> stats2(stats);
+      stats = stats2;
+      test1DFloat (stats, results, hasResult, shape);
+   }
+
+// Test setNewLattice - feeble test
+
+   {
+      AlwaysAssert(stats.setNewLattice(subLat), AipsError);
+      test1DFloat (stats, results, hasResult, shape);
+   }
+}
+
+
+void do2DFloat (const Vector<Float>& results,
+                const Vector<Bool>& hasResult, 
+                const Array<Float>& arr, LogIO& os)
+{
+   uInt nX = arr.shape()(0);
+   uInt nY = 20;
+   IPosition shape(2,nX,nY);
+
+// Fill Lattice with replicated rows
+
+   ArrayLattice<Float> lat(shape);
+   Slicer slice(IPosition(2,0,0),shape,Slicer::endIsLength);
+   LatticeUtilities::replicate (lat, slice, arr);
+   SubLattice<Float> subLat(lat);
+
+// Make LS object and set axes so that we work out stats
+// over first axis as a function of nY replicated rows
+
+   LatticeStatistics<Float> stats(subLat, os, False, False);
    Vector<Int> axes(1);
    axes = 0;
    AlwaysAssert(stats.setAxes(axes), AipsError);
 
 // Test
 
-   testFloat (stats, results, hasResult, shape);
+cerr << "Call test2" << endl;
+   test2DFloat (stats, results, hasResult, shape);
 
 // Test copy constructor - feeble test
      
-    {
-       LatticeStatistics<Float> stats2(stats);
-       testFloat (stats2, results, hasResult, shape);
-    }
+   {
+      LatticeStatistics<Float> stats2(stats);
+      test2DFloat (stats2, results, hasResult, shape);
+   }
 
 // Test assignment operator - feeble test
    
-    {
-       LatticeStatistics<Float> stats2(stats);
-       stats = stats2;
-       testFloat (stats, results, hasResult, shape);
-    }
+   {
+      LatticeStatistics<Float> stats2(stats);
+      stats = stats2;
+      test2DFloat (stats, results, hasResult, shape);
+   }
 
 // Test setNewLattice - feeble test
 
-    {
-       AlwaysAssert(stats.setNewLattice(subLat), AipsError);
-       testFloat (stats, results, hasResult, shape);
-    }
+   {
+      AlwaysAssert(stats.setNewLattice(subLat), AipsError);
+      test2DFloat (stats, results, hasResult, shape);
+   }
 }
 
 
-void testFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
-                const Vector<Bool>& hasResult, const IPosition& shape)
+
+void test1DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
+                  const Vector<Bool>& hasResult, const IPosition& shape)
 {
    AlwaysAssert(stats.displayAxes().nelements()==0, AipsError);
 //
@@ -162,6 +234,7 @@ void testFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
            AlwaysAssert(stats.getStatistic (a, t, True), AipsError);
         }
         if (hasResult(i)) {
+           AlwaysAssert(a.shape()==IPosition(1,1),AipsError);
            AlwaysAssert(near(a(pos),results(i),tol), AipsError);
         }
 //
@@ -172,6 +245,7 @@ void testFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
            AlwaysAssert(stats.getConvertedStatistic (b, t, True), AipsError);
         }
         if (hasResult(i)) {
+           AlwaysAssert(b.shape()==IPosition(1,1),AipsError);
            AlwaysAssert(near(b(pos),results(i),tol), AipsError);
         }
       }
@@ -185,6 +259,72 @@ void testFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
       AlwaysAssert(maxPos(0)=shape(0)-1, AipsError);
    }
 //
+   {
+      Float dMin, dMax;
+      AlwaysAssert(stats.getFullMinMax (dMin, dMax), AipsError);
+      AlwaysAssert(near(results(LatticeStatsBase::MIN),dMin,tol), AipsError);
+      AlwaysAssert(near(results(LatticeStatsBase::MAX),dMax,tol), AipsError);
+   }
+}
+
+
+void test2DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
+                  const Vector<Bool>& hasResult, const IPosition& shape)
+{
+   AlwaysAssert(shape.nelements()==2,AipsError);
+   const Vector<Int> dA = stats.displayAxes();
+   AlwaysAssert(dA.nelements()==1, AipsError);
+   AlwaysAssert(dA(0)==1, AipsError);
+   const uInt nY = shape(1);
+//
+   typedef NumericTraits<Float>::PrecisionType AccumType;
+   Double tol = 1.0e-6;
+//
+   {
+      IPosition pos(2,0,0);
+      Vector<AccumType> data;
+      AlwaysAssert(stats.getStats(data, pos, True), AipsError);
+      AlwaysAssert(data.shape()==IPosition(1,LatticeStatsBase::NSTATS),AipsError);
+   }
+
+// Check stats correct for each row 
+
+   {
+      const Int nStats = LatticeStatsBase::NSTATS;
+      for (Int i=0; i<nStats; i++) {
+        Array<AccumType> a;
+        LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
+        IPosition pos(1,0);
+//
+        if (t==LatticeStatsBase::FLUX) {
+           AlwaysAssert(!stats.getStatistic (a, t, True), AipsError);
+        } else {
+           AlwaysAssert(stats.getStatistic (a, t, True), AipsError);
+        }
+        if (hasResult(i)) {
+           AlwaysAssert(a.shape()==IPosition(1,nY),AipsError);
+           for (uInt j=0; j<nY; j++) {
+              pos(0) = j;
+              AlwaysAssert(near(a(pos),results(i),tol), AipsError);
+           }
+        }
+//
+        Array<Float> b;
+        if (t==LatticeStatsBase::FLUX) {
+           AlwaysAssert(!stats.getConvertedStatistic (b, t, True), AipsError);
+        } else {
+           AlwaysAssert(stats.getConvertedStatistic (b, t, True), AipsError);
+        }
+        if (hasResult(i)) {
+           AlwaysAssert(b.shape()==IPosition(1,nY),AipsError);
+           for (uInt j=0; j<nY; j++) {
+              pos(0) = j;
+              AlwaysAssert(near(b(pos),results(i),tol), AipsError);
+           }
+        }
+      }
+   }
+//  
    {
       Float dMin, dMax;
       AlwaysAssert(stats.getFullMinMax (dMin, dMax), AipsError);
