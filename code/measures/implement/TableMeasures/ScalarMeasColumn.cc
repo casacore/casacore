@@ -66,7 +66,7 @@ ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
   // single value for its data then use a ScalarColumn otherwise an
   // ArrayColumn is needed to store the data component of the Measures.
   M tMeas;
-  itsNvals = tMeas.getValue().getRecordValue().nelements();
+  itsNvals = tMeas.getValue().getTMRecordValue().nelements();
   if (itsNvals == 1) {
     itsScaDataCol = new ROScalarColumn<Double>(tab, columnName);
   } else {
@@ -164,17 +164,6 @@ void ROScalarMeasColumn<M>::attach (const Table& tab,
 template<class M>
 void ROScalarMeasColumn<M>::get (uInt rownr, M& meas) const
 {
-// 17/03/99 - this commented stuff replaced in full by what follows.
-// Purpose was to move from usage of put and getVector function to
-// putValue and getRecordValue
-//    MV measVal;
-//    measVal.putVector((*itsArrDataCol)(rownr));
-//    if (itsVarRefFlag) {
-//	setMeasRef(rownr);
-//    }
-//    meas.set(measVal, itsMeasRef);
-
-  //  typename M::MVType measVal;
   Vector<Quantum<Double> > qvec(itsNvals);
 
 //    cerr << "ROSMC::get ITS UNITS IS: " << itsUnits.getName() << endl;
@@ -476,13 +465,8 @@ void ScalarMeasColumn<M>::put (uInt rownr, const M& meas)
     }
   }
 
-  // 17/03/99 - this commented stuff replaced in full by what follows.
-  // Purpose was to move from usage of put and getVector function to
-  // putValue and getRecordValue
-  //    itsArrDataCol->put(rownr, locMeas.getValue().getVector());
-
   const Vector<Unit>& units = measDesc().getUnits();
-  Vector<Quantum<Double> > qvec = locMeas.getValue().getRecordValue();
+  Vector<Quantum<Double> > qvec = locMeas.getValue().getTMRecordValue();
   if (itsScaDataCol != 0) {
     itsScaDataCol->put (rownr, qvec(0).getValue(units(0)));
   } else {

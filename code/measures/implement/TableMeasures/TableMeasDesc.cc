@@ -40,7 +40,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
 {
   M meas;
   Vector<Quantum<Double> > val;
-  val = meas.getValue().getRecordValue();
+  val = meas.getValue().getTMRecordValue();
   Vector<Unit> u;
   setMeasUnits (meas, val, u);
 }
@@ -52,7 +52,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 { 
   M meas;
   Vector<Quantum<Double> > val;
-  val = meas.getValue().getRecordValue();
+  val = meas.getValue().getTMRecordValue();
   setMeasUnits (meas, val, u);
 }
 
@@ -63,7 +63,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 {
   M meas;
   Vector<Quantum<Double> > val;
-  val = meas.getValue().getRecordValue();
+  val = meas.getValue().getTMRecordValue();
   Vector<Unit> u;
   setMeasUnits (meas, val, u);
 }
@@ -76,7 +76,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 {
   M meas;
   Vector<Quantum<Double> > val;
-  val = meas.getValue().getRecordValue();
+  val = meas.getValue().getTMRecordValue();
   setMeasUnits (meas, val, u);
 }
 

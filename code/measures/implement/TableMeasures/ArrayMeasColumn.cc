@@ -72,7 +72,7 @@ ROArrayMeasColumn<M>::ROArrayMeasColumn (const Table& tab,
 
   // Determine the number of values in the Measure.
   M tMeas;
-  itsNvals = tMeas.getValue().getRecordValue().nelements();
+  itsNvals = tMeas.getValue().getTMRecordValue().nelements();
 
   // Set up the reference code component of the MeasRef. It can be variable
   // and therefore stored in a column which may be either an array or scalar
@@ -627,7 +627,7 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
     const Measure* offptr = mref.offset();
 
     if (refPerElem  &&  offsetPerElem) {
-      qvec = meas_p[i].getValue().getRecordValue();
+      qvec = meas_p[i].getValue().getTMRecordValue();
     } else {
       if (refPerElem) {
 	locMRef.set (refCode);
@@ -641,7 +641,7 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
       }
       typename M::Convert conv(meas_p[i], locMRef);
       M locMeas = conv();
-      qvec = locMeas.getValue().getRecordValue();
+      qvec = locMeas.getValue().getTMRecordValue();
     }
 
     if (refPerElem) {
