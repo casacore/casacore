@@ -2863,6 +2863,17 @@ const RotMatrix &MeasTable::rectToPos() {
     return rot;
 }
 
+const RotMatrix &MeasTable::galToSupergal() {
+    static Bool needInit = True;
+    static RotMatrix rot;
+    if (needInit) {
+        needInit = False;
+	Euler ang(0.0, 1, 0.0, 0);
+	rot = RotMatrix(ang);
+    }
+    return rot;
+}
+
 // Position related routines
 Double MeasTable::WGS84(uInt which) {
     static const Double data[2] = {
