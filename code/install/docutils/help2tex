@@ -94,7 +94,7 @@ if($opt_glish == 1){
 
 
 foreach $file (@ARGV) {
-   &fetch_raw_help($file, 'fh00');
+   &fetch_raw_help($file, 'fh00', $pack);
    foreach $moduleN (split(/beginaips2module/, $theText)){
       $objectText = "";
       foreach $objectN (split(/beginaips2object/, $moduleN)){
@@ -111,7 +111,7 @@ if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0 ){
 }
 
 sub fetch_raw_help{
-   local($filename, $readme)  = @_;
+   local($filename, $readme, $pack)  = @_;
    $readme++;
    open($readme, $filename);
    while(<$readme>){
@@ -133,10 +133,25 @@ sub fetch_raw_help{
       s/\\usepackage.*//g;
       s/\\begin{document}//g;
       s/\\end{document}//g;
+
+      if($opt_glish == 1){
+        if(/\\ahpackage{($mtext)}/mg){
+           $packd = "::d";
+           print "help::pkg.$opt_package$packd := '$1';\n";
+        }
+      } else {
+        s/\\ahpackage{$mtext}/
+        \\begin{htmlonly}
+        \\htmladdnormallink{Postscript file available}{$psfile}
+        \\vspace{.10in}
+        \\end{htmlonly}
+        $1\\\\
+        /g;
+      }
       if(/\\input{($mtext)}/){
          foreach $inputfile(split(/\n/, $_)){
             if($inputfile =~ /\\input{(.*)}/){
-               &fetch_raw_help($1, $readme); 
+               &fetch_raw_help($1, $readme, $pack); 
                $inputfile =~ s/\\input{(.*)}/$itext/g;
             }
          }
@@ -144,7 +159,7 @@ sub fetch_raw_help{
       if(/\\include{($mtext)}/){
          foreach $inputfile(split(/\n/, $_)){
             if($inputfile =~ /\\input{(.*)}/){
-               &fetch_raw_help($1, $readme); 
+               &fetch_raw_help($1, $readme, $pack); 
                $inputfile =~ s/\\include{(.*)}/$itext/g;
             }
          }
@@ -485,6 +500,7 @@ sub make_tex_file{
         $glish_args =~ s/\\aipspp/AIPS++/g;
         print "$argroot.s := '$iname($glish_args)';\n";
      }
+
    
    # substitutions go here
    #  labels must use iname's otherwise things get confused
