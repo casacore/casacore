@@ -6508,3 +6508,4 @@
 18 578 src mv trial/implement/MeasurementComponents/CalHistoryBuffer.cc trial/implement/CalTables/CalHistoryBuffer.cc
 18 587 src mv trial/implement/Tables/MemoryTable.h aips/implement/Tables/MemoryTable.h
 18 587 src mv trial/implement/Tables/MemoryTable.cc aips/implement/Tables/MemoryTable.cc
+18 587 src mv trial/implement/Tables/test/tMemoryTable.cc aips/implement/Tables/test/tMemoryTable.cc
