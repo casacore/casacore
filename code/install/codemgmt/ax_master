@@ -6283,3 +6283,4 @@
 17 276 src rm nrao/apps/e2ecatalog/catalog_tools.g
 17 304 src mv trial/implement/OS/LECanonicalConversion.h aips/implement/OS/LECanonicalConversion.h
 17 304 src mv trial/implement/OS/LECanonicalConversion.cc aips/implement/OS/LECanonicalConversion.cc
+17 304 src mv trial/implement/OS/LECanonicalDataConversion.cc aips/implement/OS/LECanonicalDataConversion.cc
