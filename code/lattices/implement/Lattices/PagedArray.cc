@@ -589,56 +589,60 @@ defaultTileShape(const IPosition & latticeShape) {
   const IPosition stmantile = TiledStMan::makeTileShape(latticeShape);
 
   // If the lattice is small  enough then use the whole lattice
-  if (latticeShape.product() <= stmantile.product()){
-    IPosition temp(latticeShape);
+  if (latticeShape.product() <= stmantile.product())
     return latticeShape;
-  }
   
-  // If the storage manager tile fits evenly assume it's best
-  const uInt ndim = latticeShape.nelements();
-  Bool stmantilefits = True;
-  for (uInt j=0; j < ndim; j++) {
-    if (latticeShape(j) % stmantile(j) != 0) {
-      stmantilefits = False;
-      break;
-    }
-  }
-  if (stmantilefits)
+//# This code segment and the one below it have been commented out by me (Ralph
+//# Marson) on 9-June-1997. This was after much discussion, between Neil
+//# Killeen, Brian Glendenning and myself about the algorithms for choosing
+//# congruent tile shapes, their shortcomings and the penalties
+//# associated with having a tile shape that is not congruent.
+
+//   // If the storage manager tile fits evenly assume it's best
+//   const uInt ndim = latticeShape.nelements();
+//   Bool stmantilefits = True;
+//   for (uInt j=0; j < ndim; j++) {
+//     if (latticeShape(j) % stmantile(j) != 0) {
+//       stmantilefits = False;
+//       break;
+//     }
+//   }
+//   if (stmantilefits)
     return stmantile;
-  // Alas, the storage manager tile does NOT fit evenly. Find
-  // one that does. Algorithm:
-  // 1. Start with a tile of length one on all axes
-  // 2. While (tile.volume() <= stman volume && tile can grow)
-  // 3.    adjust next axis to the next larger size that fits
+//   // Alas, the storage manager tile does NOT fit evenly. Find
+//   // one that does. Algorithm:
+//   // 1. Start with a tile of length one on all axes
+//   // 2. While (tile.volume() <= stman volume && tile can grow)
+//   // 3.    adjust next axis to the next larger size that fits
   
-  // This algorithm should always provide at least a row-cursor
-  // that fits. The worst case is if the first axis is degenerate
-  // and the other axes are all large primes.
-  IPosition tile(ndim, 1);
-  IPosition lastTile(ndim, 1);
-  const Int idealVolume = min(stmantile.product(), latticeShape.product());
-  Int currentAxis = 0;
-  // This condition means that the tile hasn't filled up
-  // the entire shape.
-  while (tile.product() < idealVolume){
-    // Cache the current tile shape in case the next guess is too big
-    lastTile = tile;
-    // Make the current axis the next size larger that fits
-    // Advance until we hit the end or it fits evenly
-    Bool itFits = False;
-    while(!itFits && (tile(currentAxis) < latticeShape(currentAxis))) {
-      tile(currentAxis)++;
-      if ((latticeShape(currentAxis) % tile(currentAxis)) == 0)
-	itFits = True;
-    }
-    // Advance the axis counter so that it wraps (0,1,2,0,1,2,...)
-    currentAxis = (currentAxis + 1) % ndim;
-  }
-  // OK, we have a tile that FITS. We prefer larger tiles to
-  // smaller ones unless they are TOO large. Arbitrarily assume
-  // 10*idealVolume is too large, then we use the last volume.
-  if (tile.product() > 10*idealVolume)
-    return lastTile;
-  else
-    return tile;
+//   // This algorithm should always provide at least a row-cursor
+//   // that fits. The worst case is if the first axis is degenerate
+//   // and the other axes are all large primes.
+//   IPosition tile(ndim, 1);
+//   IPosition lastTile(ndim, 1);
+//   const Int idealVolume = min(stmantile.product(), latticeShape.product());
+//   Int currentAxis = 0;
+//   // This condition means that the tile hasn't filled up
+//   // the entire shape.
+//   while (tile.product() < idealVolume){
+//     // Cache the current tile shape in case the next guess is too big
+//     lastTile = tile;
+//     // Make the current axis the next size larger that fits
+//     // Advance until we hit the end or it fits evenly
+//     Bool itFits = False;
+//     while(!itFits && (tile(currentAxis) < latticeShape(currentAxis))) {
+//       tile(currentAxis)++;
+//       if ((latticeShape(currentAxis) % tile(currentAxis)) == 0)
+// 	itFits = True;
+//     }
+//     // Advance the axis counter so that it wraps (0,1,2,0,1,2,...)
+//     currentAxis = (currentAxis + 1) % ndim;
+//   }
+//   // OK, we have a tile that FITS. We prefer larger tiles to
+//   // smaller ones unless they are TOO large. Arbitrarily assume
+//   // 10*idealVolume is too large, then we use the last volume.
+//   if (tile.product() > 10*idealVolume)
+//     return lastTile;
+//   else
+//     return tile;
 };
