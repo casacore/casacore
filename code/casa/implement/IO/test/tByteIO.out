@@ -1,4 +1,4 @@
-MemoryIO::read beyond end-of-buffer
+MemoryIO::read - incorrect number of bytes read
 MemoryIO::seek before start of object
 MemoryIO::write: buffer cannot be expanded
 MemoryIO::seek: buffer cannot be expanded
