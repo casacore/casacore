@@ -48,25 +48,16 @@ WCLELMask::WCLELMask (const String& command)
   itsLattExpr  (0),
   itsLattNode  (0)
 {
-  try {
-    LatticeExprNode node = ImageExprParse::command (command);
-    const IPosition shapeOut = node.shape();
-    // Get the CoordinateSystem of the expression
-    const LELAttribute& attr = node.getAttribute();
-    const LELLattCoordBase& lattCoord = attr.coordinates().coordinates();
-    if (! lattCoord.hasCoordinates()) {
-      init (node);
-    } else {
-      itsImageExpr = new ImageExpr<Bool> (node, command);
-      const CoordinateSystem& cSys = itsImageExpr->coordinates();
-      uInt naxes = itsImageExpr->ndim();
-      for (uInt i=0; i<naxes; i++) {
-	addAxisDesc (makeAxisDesc (cSys, i));
-      }
-    }
-  } catch (AipsError x) {
-    throw AipsError (x.getMesg() + "\nError in creating WCLELMask");
-  }
+  processCommand();
+}
+
+WCLELMask::WCLELMask (const char* command)
+: itsCommand   (command),
+  itsImageExpr (0),
+  itsLattExpr  (0),
+  itsLattNode  (0)
+{
+  processCommand();
 }
 
 WCLELMask::WCLELMask (const ImageExpr<Bool>& expr)
@@ -113,12 +104,39 @@ WCLELMask::~WCLELMask()
   delete itsLattNode;
 }
 
+void WCLELMask::processCommand()
+{
+  try {
+    LatticeExprNode expr = ImageExprParse::command (itsCommand);
+    init (expr);
+  } catch (AipsError x) {
+    throw AipsError (x.getMesg() + "\n  Error in creating WCLELMask");
+  }
+}
+
 void WCLELMask::init (const LatticeExprNode& expr)
 {
-  if (expr.shape().nelements() == 0) {
-    itsLattNode = new LatticeExprNode(expr);
+  // Get the shape and CoordinateSystem of the expression
+  const IPosition shapeOut = expr.shape();
+  const LELAttribute& attr = expr.getAttribute();
+  const LELLattCoordBase& lattCoord = attr.coordinates().coordinates();
+  if (! lattCoord.hasCoordinates()) {
+    // No coordinates, so it is a lattice expression.
+    if (expr.shape().nelements() == 0) {
+      // Shape is unknown, so keep it as a plain expression.
+      itsLattNode = new LatticeExprNode(expr);
+    } else {
+      // Turn it into a proper lattice type.
+      itsLattExpr = new LatticeExpr<Bool>(expr);
+    }
   } else {
-    itsLattExpr = new LatticeExpr<Bool>(expr);
+    // Coordinates are known, so make it a proper Image type.
+    itsImageExpr = new ImageExpr<Bool> (expr, itsCommand);
+    const CoordinateSystem& cSys = itsImageExpr->coordinates();
+    uInt naxes = itsImageExpr->ndim();
+    for (uInt i=0; i<naxes; i++) {
+      addAxisDesc (makeAxisDesc (cSys, i));
+    }
   }
 }
  

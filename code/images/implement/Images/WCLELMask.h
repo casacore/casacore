@@ -93,7 +93,10 @@ public:
 
   // Construct from the given expression command.
   // The command will be parsed and converted to an ImageExpr.
+  // <group>
   explicit WCLELMask (const String& command);
+  explicit WCLELMask (const char* command);
+  // </group>
 
   // Construct from the given image expression.
   explicit WCLELMask (const ImageExpr<Bool>& expr);
@@ -162,8 +165,12 @@ public:
  
 
 private:
+  // Process the command.
+  void processCommand();
+
   // Initialize as a LatticeExprNode if expression's shape is unknown.
-  // Otherwise as a LatticeExpr<Bool>.
+  // Otherwise as a LatticeExpr<Bool> if coordinates are unknown.
+  // Otherwise as an ImageExpr<Bool>.
   void init (const LatticeExprNode& expr);
 
 
