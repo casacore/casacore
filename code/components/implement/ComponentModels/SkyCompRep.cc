@@ -35,6 +35,7 @@
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Tasking/MeasureParameterAccessor.h>
+#include <trial/Measures/DOmeasures.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
@@ -258,14 +259,6 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
-// Use a QuantumParameterAccessor for this function and complain to Wim about
-// this function not being available in the Measures module!
-void SkyCompRep::toRecord(GlishRecord & record, 
- 			  const Quantum<Double> & quantity) {
-  record.add("value", quantity.getValue());
-  record.add("unit", quantity.getUnit());
-}
-
 // Use functions in the measures class for this.
 Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   // The GlishRecord parameter should really be const but the ParameterAccessor
@@ -278,35 +271,15 @@ Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
-// Use functions in the measures class for this or at the bare minumum use a
-// MeasureParameterAccessor<MDirection> class.
 Bool SkyCompRep::addDir(String & errorMessage, GlishRecord & record) const {
-  GlishRecord dirRec;
-  dirRec.add("type", "direction");
   MDirection compDir;
   direction(compDir);
-  {
-    const String refFrame = MDirection::showType(compDir.getRef().getType());
-    dirRec.add("refer", refFrame);
-  }
-  {
-    const Quantum<Vector<Double> > raDec = compDir.getAngle("deg");
-    const Vector<Double> raDecValue = raDec.getValue();
-    AlwaysAssert(raDecValue.nelements() == 2, AipsError)
-    const String raDecUnit = raDec.getUnit();
-    GlishRecord m;
-    m.add("value", raDecValue(0));
-    m.add("unit", raDecUnit);
-    dirRec.add("m0", m);
-    m.add("value", raDecValue(1));
-    dirRec.add("m1", m);
-  }
+  GlishRecord dirRec = measures::toRecord(compDir);
   record.add("direction", dirRec);
   if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
 }
 
-// Move into the Flux<T> class.
 Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   if (!record.exists("flux")) {
     errorMessage += "\nThe component record does not have a 'flux' field";
@@ -318,128 +291,14 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   }
   Flux<Double> & thisFlux = flux();
   const GlishRecord fluxRec = record.get("flux");
-  {
-    if (!fluxRec.exists("polarisation")) {
-      // FIX THIS UP LATER
-//      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
-//      return False;
-      thisFlux.setPol(ComponentType::STOKES);
-    } else {
-      if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
-	errorMessage += "\nThe 'polarisation' field cannot be a record";
-	return False;
-      }
-      const GlishArray polField = fluxRec.get("polarisation");
-      if (polField.elementType() != GlishArray::STRING) {
-	errorMessage += "\nThe 'polarisation' field must be a string";
-	return False;
-      }
-      // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
-      // is harder to parse but more flexible for the future.
-      if (polField.shape().product() != 1) {
-	errorMessage += String("\nThe 'polarisation' field cannot be an array ");
-	return False;
-      }
-      String polVal;
-      if (!polField.get(polVal)) {
-	errorMessage += String("\nCould not read the 'polarisation' field ") + 
-	  String("in the flux record for an unknown reason");
-	return False;
-      }
-      const ComponentType::Polarisation pol(ComponentType::polarisation(polVal));
-      if (pol == ComponentType::UNKNOWN_POLARISATION) {
-	errorMessage += String("\nThe polarisation type is not known. ") +
-	  String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
-	return False;
-      }
-      thisFlux.setPol(pol);
-    }
-  }
-  {
-    if (!fluxRec.exists("value")) {
-      errorMessage += "\nThe 'flux' record must have a 'value' field";
-      return False;
-    }
-    if (fluxRec.get("value").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'value' field cannot be a record";
-      return False;
-    }
-    const GlishArray valueField = fluxRec.get("value");
-    if (valueField.elementType() == GlishArray::STRING) {
-      errorMessage += "\nThe 'value' field cannot be a string";
-      return False;
-    }
-    const IPosition shape = valueField.shape();
-    if (shape.nelements() != 1 || shape.product() != 4) {
-      errorMessage += String("\nThe 'value' field in the flux record ") + 
-	String("must contain a vector with 4 elements");
-      return False;
-    }
-    // This code needs to be consolidated when the GlishArray bug is resolved.
-    if (thisFlux.pol() == ComponentType::STOKES) {
-      Vector<Double> fluxVal(4);
-      if (!valueField.get(fluxVal.ac())) {
-	errorMessage += String("\nCould not read the 'value' field ") + 
-	  String("in the flux record for an unknown reason");
-	return False;
-      }
-      thisFlux.setValue(fluxVal);
-    } else {
-      Vector<DComplex> fluxVal(4);
-      if (!valueField.get(fluxVal.ac())) {
-	errorMessage += String("\nCould not read the 'value' field ") + 
-	  String("in the flux record for an unknown reason");
-	return False;
-      }
-      thisFlux.setValue(fluxVal);
-    }
-  }
-  {
-    if (!fluxRec.exists("unit")) {
-      errorMessage += "\nThe 'flux' record must have a 'unit' field";
-      return False;
-    }
-    if (fluxRec.get("unit").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'unit' field cannot be a record";
-      return False;
-    }
-    const GlishArray unitField = fluxRec.get("unit");
-    if (unitField.elementType() != GlishArray::STRING) {
-      errorMessage += "\nThe 'unit' field must be a string";
-      return False;
-    }
-    if (unitField.shape().product() != 1) {
-      errorMessage += String("\nThe 'unit' field cannot be an array ");
-      return False;
-    }
-    String unitVal;
-    if (!unitField.get(unitVal)) {
-      errorMessage += String("\nCould not read the 'unit' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
-    }
-    thisFlux.setUnit(Unit(unitVal));
-  }
-  return True;
+  return thisFlux.fromRecord(errorMessage, fluxRec);
 }
 
-// Move into the Flux<T> class.
 Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
   const Flux<Double> & thisFlux = flux();
   GlishRecord fluxRec;
-  if (thisFlux.pol() == ComponentType::STOKES) {
-    Flux<Double> fluxCopy = thisFlux;
-    Vector<Double> fluxVal(4);
-    fluxCopy.value(fluxVal);
-    fluxRec.add("value", GlishArray(fluxVal.ac()));
-    fluxRec.add("polarisation", ComponentType::name(ComponentType::STOKES));
-  } else {
-    fluxRec.add("value", GlishArray(thisFlux.value().ac()));
-    fluxRec.add("polarisation", ComponentType::name(thisFlux.pol()));
-  }
-  fluxRec.add("unit", thisFlux.unit().getName());
+  if (!thisFlux.toRecord(errorMessage, fluxRec)) return False;
   record.add("flux", fluxRec);
-  if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
 }
 
