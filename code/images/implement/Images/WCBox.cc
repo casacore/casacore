@@ -130,7 +130,7 @@ WCBox::WCBox(const Vector<Double>& blcWC,
              const Vector<uInt> blcWorldAxes,
              const Vector<uInt> trcWorldAxes,
              const CoordinateSystem& cSys,
-             const Bool isOffset=False)
+             const Bool isOffset)
 //
 // Constructor from Double vectors
 // blc and trc are in the order specified
@@ -157,7 +157,7 @@ WCBox::WCBox(const Vector<Float>& blcWC,
              const Vector<uInt> blcWorldAxes,
              const Vector<uInt> trcWorldAxes,
              const CoordinateSystem& cSys,
-             const Bool isOffset=False)
+             const Bool isOffset)
 //
 // Constructor from Double vectors
 // blc and trc are in the order specified
@@ -319,7 +319,7 @@ Bool WCBox::operator== (const WCRegion& other) const
 }
 
 
-WCBox* WCBox::cloneRegion() const
+WCRegion* WCBox::cloneRegion() const
 {
    return new WCBox(*this);
 }
