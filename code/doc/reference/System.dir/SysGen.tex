@@ -1999,21 +1999,34 @@ the name of the class \file{.cc} or \file{.h} file and the \code{ident}, for
 example, the instantiation file for the first entry above would be
 \file{Set\_1050.cc}.
 
+\noindent
 Comments in the \file{templates} file are signalled by a ``\code{\#}'' in the
 first field.  Blank lines are also allowed.
 
+\noindent
 Each entry in the \file{templates} can be split over several lines. The first
 line must have the \code{ident} and one or more of the necessary include
 files (.cc or .h). Subsequent lines can be in any order, and have one of the
 following formats:
 \begin{verbatim}
-    = file.h				additional include files
-    template class Name<...>		class specialisation
-    template <...> ...			templated class forward declaration
-    template <> ...			non-templated forward declaration
-    template ret-val function(....)	function specialisation
+    = file.h				 additional include files
+    template class Name<...>		 class specialisation
+    template <...> ...			 templated class forward declaration
+    template <> ...			 non-templated forward declaration
+    template ret-val function(....)	 function specialisation
+    typedef definition name              typedef, for use in next
+    AIPS_[A-Z0-9]*_AUX_TEMPLATES(x, ...) to aid with sub-templates
 \end{verbatim}
 
+\noindent
+The {\em AIPS\_()} macros are provided to aid in the generation of
+auxilliary templates necessary for some compilers for standard
+library templates (like the map and vector e.g.). Since macros
+cannot handle arguments with embedded commas, the \code{typedef}
+option is provided to give macro arguments with commas. See the
+repositories for examples.
+
+\noindent
 Template declarations can be bracketed by \#if
 \#else \#endif. For example:
 
