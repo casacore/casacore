@@ -31,6 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
@@ -50,7 +51,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Arrays/ArrayPosIter.h>
+#include <aips/Utilities/PtrHolder.h>
 
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Fitting/NonLinearFitLM.h>
@@ -101,7 +102,9 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   noExclude_p(True),
   fixedYLimits_p(False),
   overWriteOutput_p(overWriteOutput),
-  error_p("")
+  error_p(""),
+  convertToVelocity_p(False),
+  velocityType_p(MDoppler::RADIO)
 {
    momentAxis_p = momentAxisDefault_p;
    moments_p.resize(1);
@@ -184,6 +187,8 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       fixedYLimits_p = other.fixedYLimits_p;
       overWriteOutput_p = other.overWriteOutput_p;
       error_p = other.error_p;
+      convertToVelocity_p = other.convertToVelocity_p;
+      velocityType_p = other.velocityType_p;
    }
    return *this;
 }
@@ -603,8 +608,12 @@ void ImageMoments<T>::closePlotting()
 {  
    if (plotter_p.isAttached()) plotter_p.detach();
 }
- 
 
+template <class T>
+void ImageMoments<T>::setVelocityType(MDoppler::Types velocityType)
+{
+   velocityType_p = velocityType;
+}
 
 
 
@@ -654,33 +663,38 @@ Bool ImageMoments<T>::createMoments()
       error_p = "Internal status of class is bad.  You have ignored errors";
       return False;
    }
-   
 
-// Find spectral axis and its units
+// Find spectral axis 
 
+   const CoordinateSystem& cSys = pInImage_p->coordinates();
+   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys);
+//
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
-     if (momentAxis_p == -1) {
-       error_p = "There is no spectral axis in this image -- specify the axis";
+     if (spectralAxis==-1) {
+       error_p = "There is no spectral axis in this image -- specify the moment axis";
        return False;
      }
+     momentAxis_p = spectralAxis;
+//
      if (pInImage_p->shape()(momentAxis_p) <= 1) {
         error_p = "Illegal moment axis; it has only 1 pixel";
         goodParameterStatus_p = False;
         return False;
      }
-     worldMomentAxis_p = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
+     worldMomentAxis_p = cSys.pixelAxisToWorldAxis(momentAxis_p);
    }
-   String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis_p);
-//   cout << "momentAxisUnits = " << momentAxisUnits << endl;
+   String momentAxisUnits = cSys.worldAxisUnits()(worldMomentAxis_p);
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
-        << pInImage_p->coordinates().worldAxisNames()(worldMomentAxis_p) << LogIO::POST;
+        << cSys.worldAxisNames()(worldMomentAxis_p) << LogIO::POST;
 
+// If the moment axis is a spectral axis, indicate we want to convert to velocity
+
+   convertToVelocity_p = False;
+   if (momentAxis_p == spectralAxis) convertToVelocity_p = True;
 
 // Check the user's requests are allowed
 
    if (!checkMethod()) return False;
-
 
 // Check that input and output image names aren't the same.
 // if there is only one output image
@@ -730,13 +744,12 @@ Bool ImageMoments<T>::createMoments()
 // routines can only handle convolution when the image fits fully in core
 // at present.
    
+   PtrHolder<ImageInterface<T> > pSmoothedImageHolder;
    ImageInterface<T>* pSmoothedImage = 0;
    String smoothName;
    if (doSmooth_p) {
-      pSmoothedImage = smoothImage(smoothName);
-      if (pSmoothedImage==0) {
-         return False;
-      }
+      if (!smoothImage(pSmoothedImageHolder, smoothName)) return False;
+      pSmoothedImage = pSmoothedImageHolder.ptr();
 
 // Find the auto Y plot range.   The smooth & clip and the window
 // methods only plot the smoothed data.
@@ -779,12 +792,11 @@ Bool ImageMoments<T>::createMoments()
 
 // Account for removal of the collapsed moment axis in the coordinate system.  
 
-   CoordinateSystem outImageCoord = pInImage_p->coordinates();
-   Bool ok = outImageCoord.removeWorldAxis(worldMomentAxis_p,
-                 outImageCoord.referenceValue()(worldMomentAxis_p));
+   CoordinateSystem cSysOut = cSys;
+   Bool ok = cSysOut.removeWorldAxis(worldMomentAxis_p, cSysOut.referenceValue()(worldMomentAxis_p));
    if (!ok) {
       os_p << String("Failed to remove moment axis because ") 
-           << outImageCoord.errorMessage() << LogIO::EXCEPTION;
+           << cSysOut.errorMessage() << LogIO::EXCEPTION;
    }     
 
 
@@ -792,7 +804,6 @@ Bool ImageMoments<T>::createMoments()
 
    PtrBlock<MaskedLattice<T> *> outPt(moments_p.nelements());
    for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
-
 
 // Loop over desired output moments
 
@@ -807,60 +818,49 @@ Bool ImageMoments<T>::createMoments()
 // Value of goodUnits is the same for each output moment image
 
       Unit momentUnits;
-      goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, moments_p(i));
+      goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, 
+                               moments_p(i), convertToVelocity_p);
 //   
 // Create output image(s).  
 //
-      PagedImage<T>* imgp = 0;
       const String in = pInImage_p->name(False);   
-//
+      String outFileName;
       if (moments_p.nelements() == 1) {
-         if (out_p.empty()) out_p = in+suffix;
-         if (!overWriteOutput_p) {
-            NewFile x;
-            String error;
-            if (!x.valueOK(out_p, error)) {
-               os_p << LogIO::NORMAL << error << LogIO::POST;
-               return False;
-            }
+         if (out_p.empty()) {
+            outFileName = in + suffix;
+         } else {
+            outFileName = out_p;
          }
+      } else {
+         if (out_p.empty()) {
+            outFileName = in + suffix;
+         } else {
+            outFileName = out_p + suffix;
+         }
+      }
 //
+      if (!overWriteOutput_p) {
+         NewFile x;
+         String error;
+         if (!x.valueOK(outFileName, error)) {
+            os_p << LogIO::NORMAL << error << LogIO::POST;
+            return False;
+         }
+      }
+
 // Try and make the file.  If we are operating from the DO, a file
 // of this file name could be open somewhere and this will fail.
 
-         imgp = new PagedImage<T>(outImageShape, outImageCoord, out_p);
-         if (imgp==0) {
-            os_p << "Failed to create output file" << LogIO::EXCEPTION;        
-         }
-         os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
-         imgp->setMiscInfo(pInImage_p->miscInfo());
-         imgp->setImageInfo(pInImage_p->imageInfo());
-         imgp->mergeTableLogSink(pInImage_p->logSink());
-      } else {
-         if (out_p.empty()) out_p = in;
-         String name = out_p + suffix;
-//
-         if (!overWriteOutput_p) {
-            NewFile x;
-            String error;
-            if (!x.valueOK(name, error)) {
-               os_p << LogIO::NORMAL << error << LogIO::POST;
-               return False;
-            }
-         }
-//
-         imgp = new PagedImage<T>(outImageShape, outImageCoord, name);
-         if (imgp==0) {
-            os_p << "Failed to create output file" << LogIO::EXCEPTION;        
-         }
-         os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
-         imgp->setMiscInfo(pInImage_p->miscInfo());
-         imgp->setImageInfo(pInImage_p->imageInfo());
-         imgp->mergeTableLogSink(pInImage_p->logSink());
+      PagedImage<T>* imgp = new PagedImage<T>(outImageShape, cSysOut, outFileName);
+      if (imgp==0) {
+         for (uInt j=0; j<i; j++) delete outPt[j];
+         os_p << "Failed to create output file" << LogIO::EXCEPTION;        
       }
-//
+      os_p << LogIO::NORMAL << "Created " << outFileName << LogIO::POST;
+      imgp->setMiscInfo(pInImage_p->miscInfo());
+      imgp->setImageInfo(pInImage_p->imageInfo());
+      imgp->mergeTableLogSink(pInImage_p->logSink());
       imgp->makeMask ("mask0", True, True);
-      outPt[i] = imgp;
 
 // Set output image units if possible
 
@@ -874,6 +874,10 @@ Bool ImageMoments<T>::createMoments()
            giveMessage = False;
         }
       }
+
+// Assign pointer to block
+
+      outPt[i] = imgp;
    } 
 
 
@@ -907,22 +911,41 @@ Bool ImageMoments<T>::createMoments()
 // Create appropriate MomentCalculator object 
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
+   PtrHolder<MomentCalcBase<T> > pMomentCalculatorHolder;
+   try {
+      if (clipMethod || smoothClipMethod) {
+         pMomentCalculatorHolder.set(new MomentClip<T>(pSmoothedImage, *this, os_p, outPt.nelements()),
+                                     False, False);
+      } else if (windowMethod) {
+         pMomentCalculatorHolder.set(new MomentWindow<T>(pSmoothedImage, *this, os_p, outPt.nelements()),
+                                     False, False);
+      } else if (fitMethod) {
+         pMomentCalculatorHolder.set(new MomentFit<T>(*this, os_p, outPt.nelements()), False, False);
+      }
+   } catch (AipsError x) {
 
-   MomentCalcBase<T>* pMomentCalculator = 0;   
-   if (clipMethod || smoothClipMethod) {
-      pMomentCalculator = new MomentClip<T>(pSmoothedImage, *this, os_p, outPt.nelements());
-   } else if (windowMethod) {
-      pMomentCalculator = new MomentWindow<T>(pSmoothedImage, *this, os_p, outPt.nelements());
-   } else if (fitMethod) {
-      pMomentCalculator = new MomentFit<T>(*this, os_p, outPt.nelements());
+// Try and clean up so if we are called by DO, images dont get stuck open in cache
+// If an exception is generated.  Can't use PtrHolder here
+
+      for (i=0; i<outPt.nelements(); i++) delete outPt[i];
    }
+
 
 // Iterate optimally through the image, compute the moments, fill the output lattices
 
+   MomentCalcBase<T>* pMomentCalculator = pMomentCalculatorHolder.ptr();
    ImageMomentsProgress* pProgressMeter = 0;
    if (showProgress_p) pProgressMeter = new ImageMomentsProgress();
-   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator, 
-                                   momentAxis_p, pProgressMeter);
+   try {
+      LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator, momentAxis_p, pProgressMeter);
+   } catch (AipsError x) {
+
+// Try and clean up so if we are called by DO, images dont get stuck open in cache
+// If an exception is generated.  Can't use PtrHolder here
+
+      for (i=0; i<outPt.nelements(); i++) delete outPt[i];
+   }
+
 
 // Clean up
          
@@ -931,12 +954,10 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "There were " <<  pMomentCalculator->nFailedFits() << " failed fits" << LogIO::POST;
       }
    }
-   delete pMomentCalculator;
    if (pProgressMeter != 0) delete pProgressMeter;
    for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
 
    if (pSmoothedImage) {
-      delete pSmoothedImage;
        
 // Remove the smoothed image file if they don't want to save it
  
@@ -1139,52 +1160,6 @@ Bool ImageMoments<T>::checkMethod ()
 }
 
 
-template <class T> 
-void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
-                                  LCPagedMask& maskOut,
-                                  ImageInterface<T>& in)
-//
-// If in is masked, out will be too
-//
-{
-   if (in.isMasked()) {
-      os_p << LogIO::NORMAL << "Copy input (and zero masked pixels) to smoothed image" << LogIO::POST;
-//
-      LatticeIterator<T> outIter(out);
-      Bool deleteDataIn, deleteMaskIn, deleteDataOut;
-      IPosition shape = outIter.woCursor().shape();        
-      Array<T> dataIn(shape);
-      Array<Bool> maskIn(shape);
-//
-      for (outIter.reset(); !outIter.atEnd(); outIter++) {
-         shape = outIter.woCursor().shape();        
-         if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
-         if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
-//
-         in.getSlice(dataIn, outIter.position(), shape);
-         in.getMaskSlice(maskIn, outIter.position(), shape);
-//
-         const T* pDataIn = dataIn.getStorage(deleteDataIn);
-         const Bool* pMaskIn = maskIn.getStorage(deleteMaskIn);
-//
-         Array<T>& dataOut = outIter.woCursor();
-         T* pDataOut = dataOut.getStorage(deleteDataOut);
-//
-         for (Int i=0; i<shape.product(); i++) {
-            pDataOut[i] = pDataIn[i];
-            if (!pMaskIn[i]) pDataOut[i] = 0.0;
-         }
-         maskOut.putSlice(maskIn, outIter.position());         
-//
-         dataIn.freeStorage(pDataIn, deleteDataIn);
-         maskIn.freeStorage(pMaskIn, deleteMaskIn);
-         dataOut.putStorage(pDataOut, deleteDataOut);
-      }
-   } else {
-      os_p << LogIO::NORMAL << "Copy input to smoothed image" << LogIO::POST;
-      out.copyData(in);
-   }
-}
 
 template <class T> 
 void ImageMoments<T>::drawHistogram (const Vector<T>& x,
@@ -1300,7 +1275,8 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
                                    Unit& momentUnits,
                                    const Unit& imageUnits,
                                    const String& momentAxisUnits,
-                                   const Int moment)
+                                   const Int moment,
+                                   Bool convertToVelocity)
 //
 // Set the output image suffixes and units
 //
@@ -1309,18 +1285,20 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
 //                The units of the moment axis
 //   moment       The current selected moment
 //   imageUnits   The brightness units of the input image.
+//   convertToVelocity
+//                The moment axis is the spectral axis and
+//                world coordinates must be converted to km/s
 // Outputs:
-//   momentUnits  The brightness units of the moment
-//                image. Depends upon moment type
+//   momentUnits  The brightness units of the moment image. Depends upon moment type
 //   suffix       suffix for output file name
 //   Bool         True if could set units for moment image, false otherwise
 {
    String temp;
-
+//
    Bool goodUnits = True;
    Bool goodImageUnits = ToBool(!imageUnits.getName().empty());
    Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
-
+//
    if (moment == AVERAGE) {
       suffix = ".average";
       temp = imageUnits.getName();
@@ -1328,14 +1306,17 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    } else if (moment == INTEGRATED) {
       suffix = ".integrated";
       temp = imageUnits.getName() + "." + momentAxisUnits;
+      if (convertToVelocity) temp = imageUnits.getName() + String(".km/s");
       goodUnits = ToBool(goodImageUnits && goodAxisUnits);
    } else if (moment == WEIGHTED_MEAN_COORDINATE) {
-      suffix = ".weighted_mean_coord";
+      suffix = ".weighted_coord";
       temp = momentAxisUnits;
+      if (convertToVelocity) temp = String("km/s");
       goodUnits = goodAxisUnits;
    } else if (moment == WEIGHTED_DISPERSION_COORDINATE) {
       suffix = ".weighted_dispersion_coord";
       temp = momentAxisUnits + "." + momentAxisUnits;
+      if (convertToVelocity) temp = String("km/s");
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN) {
       suffix = ".median";
@@ -1360,6 +1341,7 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    } else if (moment == MAXIMUM_COORDINATE) {
       suffix = ".maximum_Coord";
       temp = momentAxisUnits;
+      if (convertToVelocity) temp = String("km/s");
       goodUnits = goodAxisUnits;
    } else if (moment == MINIMUM) {
       suffix = ".minimum";
@@ -1368,10 +1350,12 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    } else if (moment == MINIMUM_COORDINATE) {
       suffix = ".minimum_coord";
       temp = momentAxisUnits;
+      if (convertToVelocity) temp = String("km/s");
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN_COORDINATE) {
       suffix = ".median_coord";
       temp = momentAxisUnits;
+      if (convertToVelocity) temp = String("km/s");
       goodUnits = goodAxisUnits;
    }
    if (goodUnits) momentUnits.setName(temp);
@@ -1379,15 +1363,15 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
 }
 
 template <class T> 
-
-ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
+Bool ImageMoments<T>::smoothImage (PtrHolder<ImageInterface<T> >& pSmoothedImage,
+                                   String& smoothName)
 //
 // Smooth image.   Input masked pixels are zerod before smoothing.
 // The output smoothed image is masked as well to reflect
 // the input mask.
 //
 // Output
-//   pSmoothedImage Pointer to smoothed Lattice
+//   pSmoothedImage PtrHolder for smoothed Lattice
 //   smoothName     Name of smoothed image file
 //   Bool           True for success
 {
@@ -1397,7 +1381,7 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
    Int axMax = max(smoothAxes_p) + 1;
    if (axMax > Int(pInImage_p->ndim())) {
       error_p = "You have specified an illegal smoothing axis";
-      return 0;
+      return False;
    }
       
 
@@ -1420,9 +1404,12 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       smoothName = smoothOut_p;
    }
 
-   PagedImage<T>* pSmoothedImage = new PagedImage<T>(pInImage_p->shape(), 
-                               pInImage_p->coordinates(), smoothName);
-   pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
+   pSmoothedImage.set(new PagedImage<T>(pInImage_p->shape(), 
+                      pInImage_p->coordinates(), smoothName),
+                      False, False);
+//  
+   ImageInterface<T>* pSmIm = pSmoothedImage.ptr();
+   pSmIm->setMiscInfo(pInImage_p->miscInfo());
    if (!smoothOut_p.empty()) {
       os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
    }
@@ -1434,9 +1421,8 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       VectorKernel::KernelTypes type = VectorKernel::KernelTypes(kernelTypes_p(i));
       sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i), True, 1.0);
    }
-   sic.convolve(*pSmoothedImage);
-//
-   return pSmoothedImage;
+   sic.convolve(*pSmIm);
+   return True;
 }
 
 
@@ -1766,3 +1752,34 @@ Bool ImageMoments<T>::readCursor (PGPlotter& plotter, Float& x,
    return gotCursor;
 }
  
+
+/*
+template <class T> 
+Bool ImageMoments<T>::velocityIncrement(Double& velocityInc, const SpectralCoordinate* sc,
+                                        MDoppler::Types velocityType, const String& velUnits) const
+{  
+   if (sc->nWorldAxes() != 1) return False;
+   Double refPix = sc->referencePixel()(0);
+   
+// Find world values at refPix +/- 0.5 and take difference
+                     
+   Double pixel;
+   pixel = refPix + 0.5;
+   Double velocity1;   
+   if (!pixelToVelocity(velocity1, pixel, sc, velocityType, velUnits)) return False;
+   
+//
+
+   pixel = refPix - 0.5;
+   Double velocity2;
+   if (!pixelToVelocity(velocity2, pixel, sc, velocityType, velUnits)) return False;
+   
+
+// Return increment
+ 
+   velocityInc = velocity1 - velocity2;
+
+   return True;  
+}
+*/      
+
