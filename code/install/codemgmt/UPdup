@@ -96,12 +96,12 @@ foreach i (*)
       -d $i && (-e $i/implement || -e $i/apps)) then 
     if (! $upswQ) echo "Starting package $i..."
     echo "******* Package $i against aips repository" >> $ldir/${tp}.dup
-    duplicates $smod -u $i \
+    duplicates $smod -p $i \
 	$dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
     if (! $upswQ) then
 	echo "******* Package $i against trial repository" >> $ldir/${tp}.dup
     endif
-    duplicates $smod -u $i \
+    duplicates $smod -p $i \
 	$dir/code/trial/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
   endif
 end
