@@ -31,34 +31,33 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 
-TiledStepper::TiledStepper(const IPosition & latticeShape, 
-			   const IPosition & tileShape,
+TiledStepper::TiledStepper(const IPosition& latticeShape, 
+			   const IPosition& tileShape,
 			   const uInt axis)
   :theIndexer(latticeShape),
    theTiler(latticeShape),
-   theCursorPos(latticeShape.nelements(),0),
-   theCursorShape(latticeShape.nelements(),1),
-   theAxisPath(latticeShape.nelements(),0),
+   theSubSection(latticeShape),
+   theBlc(latticeShape.nelements(), 0),
+   theTrc(latticeShape - 1),
+   theInc(latticeShape.nelements(), 1),
+   theTileShape(tileShape),
+   theTilerCursorPos(latticeShape.nelements(), 0),
+   theIndexerCursorPos(latticeShape.nelements(), 0),
+   theCursorShape(latticeShape.nelements(), 1),
+   theAxisPath(latticeShape.nelements(), 0),
+   theAxis(axis),
    theNsteps(0),
    theEnd(False),
    theStart(True)
 {
-  const uInt latDim = latticeShape.nelements();
-  AlwaysAssert(latDim > 0, AipsError);
-  AlwaysAssert(tileShape.nelements() == latDim, AipsError);
-  AlwaysAssert(axis < latDim, AipsError);
-  const uInt cursorLength = latticeShape(axis);
-  IPosition tiledStep(tileShape);
-  tiledStep(axis) = cursorLength;
-  theCursorShape(axis) = cursorLength;
-  const IPosition latOrigin(latDim,0);
-  theTiler.subSection(latOrigin, latticeShape - 1, tiledStep);
-  theIndexer.subSection(latOrigin, tiledStep - 1, IPosition(latDim, 1));
-  for (Int i = 0; i < axis; i++)
+  const uInt nrdim = latticeShape.nelements();
+  AlwaysAssert(nrdim > 0, AipsError);
+  AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
+  AlwaysAssert(axis < nrdim, AipsError);
+  for (Int i=0; i<nrdim; i++) {
     theAxisPath(i) = i;
-  for (Int j = axis+1; j < latDim; j++)
-    theAxisPath(j-1) = j;
-  theAxisPath(latDim-1) = axis;
+  }
+  reset();
   DebugAssert(ok() == True, AipsError);
 };
 
@@ -66,9 +65,16 @@ TiledStepper::TiledStepper(const IPosition & latticeShape,
 TiledStepper::TiledStepper(const TiledStepper & other)
   :theIndexer(other.theIndexer),
    theTiler(other.theTiler),
-   theCursorPos(other.theCursorPos),
+   theSubSection(other.theSubSection),
+   theBlc(other.theBlc),
+   theTrc(other.theTrc),
+   theInc(other.theInc),
+   theTileShape(other.theTileShape),
+   theTilerCursorPos(other.theTilerCursorPos),
+   theIndexerCursorPos(other.theIndexerCursorPos),
    theCursorShape(other.theCursorShape),
    theAxisPath(other.theAxisPath),
+   theAxis(other.theAxis),
    theNsteps(other.theNsteps),
    theEnd(other.theEnd),
    theStart(other.theStart)
@@ -84,9 +90,16 @@ TiledStepper & TiledStepper::operator=(const TiledStepper & other) {
   if (this != &other) { 
     theIndexer = other.theIndexer;
     theTiler = other.theTiler;
-    theCursorPos = other.theCursorPos;
+    theSubSection = other.theSubSection;
+    theBlc = other.theBlc;
+    theTrc = other.theTrc;
+    theInc = other.theInc;
+    theTileShape = other.theTileShape;
+    theTilerCursorPos = other.theTilerCursorPos;
+    theIndexerCursorPos = other.theIndexerCursorPos;
     theCursorShape = other.theCursorShape;
     theAxisPath = other.theAxisPath;
+    theAxis = other.theAxis;
     theNsteps = other.theNsteps;
     theEnd = other.theEnd;
     theStart = other.theStart;
@@ -95,40 +108,74 @@ TiledStepper & TiledStepper::operator=(const TiledStepper & other) {
   return *this;
 };
 
-Bool TiledStepper::operator++(Int) {
+Bool TiledStepper::operator++ (Int)
+{
   DebugAssert(ok() == True, AipsError);
-  if (theEnd) return False;
-  IPosition currentPos(theCursorPos);
-  Bool successful = theIndexer.tiledCursorMove(True, theCursorPos, 
-					       theCursorShape, theAxisPath);
-  while (successful && 
-	 !(theIndexer.absolutePosition(theCursorPos)<theIndexer.fullShape())){
-    successful = theIndexer.tiledCursorMove(True, theCursorPos, 
-					    theCursorShape, theAxisPath);
+  if (theEnd) {
+    return False;
   }
-  if (!successful) { // Move to the next set of tiles
-    IPosition tileOrigin(theIndexer.offset()/theTiler.increment());
-    successful = theTiler.tiledCursorMove(True, tileOrigin, 
-					  theCursorShape, theAxisPath);
-    if (successful) {
-      tileOrigin =  theTiler.absolutePosition(tileOrigin);
+  theStart = False;
+  theNsteps++;
+  IPosition currentPos = theIndexerCursorPos;
+  //# Move to the next position in the tile.
+  //# If at the end of the tile, move to the next tile.
+  if (theIndexer.tiledCursorMove (True, theIndexerCursorPos, 
+				  theCursorShape, theAxisPath)) {
+    return True;
+  }
+  //# Move to the next tile.
+  //# Set end-status if no more tiles.
+  IPosition tilerPos = theTilerCursorPos;
+  while (!theEnd) {
+    if (! theTiler.tiledCursorMove (True, theTilerCursorPos,
+				    theTileShape, theAxisPath)) {
+      theEnd = True;
+      theIndexerCursorPos = currentPos;
+      theTilerCursorPos   = tilerPos;
+      return False;
+    }
+    //# Calculate the boundaries of the tile.
+    IPosition tileblc = theTiler.absolutePosition (theTilerCursorPos);
+    IPosition tiletrc = tileblc + theTileShape - 1;
+//    cout << tileblc << tiletrc << "   ";
+    tileblc(theAxis) = theBlc(theAxis);
+    tiletrc(theAxis) = theTrc(theAxis);
+    Bool empty = False;
+    //# Calculate the first and last pixel in the tile taking the
+    //# increment into account.
+    Int nrdim = tileblc.nelements();
+    for (int i=0; i<nrdim; i++) {
+      if (i != theAxis) {
+	if (tiletrc(i) > theTrc(i)) {
+	  tiletrc(i) = theTrc(i);
+	}
+	if (tileblc(i) <= theBlc(i)) {
+	  tileblc(i) = theBlc(i);
+	}else{
+	  tileblc(i) = (tileblc(i) - theBlc(i) + theInc(i) - 1) / theInc(i)
+	               * theInc(i) + theBlc(i);
+	}
+	tiletrc(i) = (tiletrc(i) - theBlc(i)) / theInc(i)
+	             * theInc(i) + theBlc(i);
+	//# It is possible that the tile does not have any pixel at all
+	//# (e.g. when increment > tileshape).
+//	cout << tileblc << tiletrc << endl;
+	if (tileblc(i) > tiletrc(i)) {
+	  empty = True;
+	  break;
+	}
+      }
+    }
+    //# When pixels in this tile, set to the first pixel.
+    if (!empty) {
       theIndexer.fullSize();
-      theIndexer.subSection(tileOrigin, tileOrigin+theTiler.increment() - 1,
-			    IPosition(theTiler.ndim(), 1));
-      theCursorPos = 0;
+      theIndexer.subSection (tileblc, tiletrc, theInc);
+      theIndexerCursorPos = 0;
+      return True;
     }
   }
-  if (successful && 
-      theIndexer.absolutePosition(theCursorPos) < theIndexer.fullShape()) {
-    theStart = False;// by definition when incrementing
-    theNsteps++;     // increment the counter since we have moved
-  }
-  else {
-    theEnd = True;
-    theCursorPos = currentPos;
-  }
   DebugAssert(ok() == True, AipsError);
-  return successful;
+  return False;
 };
 
 Bool TiledStepper::operator++() {
@@ -136,6 +183,75 @@ Bool TiledStepper::operator++() {
 };
 
 Bool TiledStepper::operator--(Int) {
+  DebugAssert(ok() == True, AipsError);
+  if (theStart) {
+    return False;
+  }
+  theEnd = False;
+  theNsteps++;
+  IPosition currentPos = theIndexerCursorPos;
+  //# Move to the previous position in the tile.
+  //# If at the beginning of the tile, move to the previous tile.
+  if (theIndexer.tiledCursorMove (False, theIndexerCursorPos, 
+				  theCursorShape, theAxisPath)) {
+    return True;
+  }
+  //# Move to the previous tile.
+  //# Set start-status if no more tiles.
+  IPosition tilerPos = theTilerCursorPos;
+  while (!theStart) {
+    if (! theTiler.tiledCursorMove (False, theTilerCursorPos,
+				    theTileShape, theAxisPath)) {
+      theStart = True;
+      theIndexerCursorPos = currentPos;
+      theTilerCursorPos   = tilerPos;
+      return False;
+    }
+    //# Calculate the boundaries of the tile.
+    IPosition tileblc = theTiler.absolutePosition (theTilerCursorPos);
+    IPosition tiletrc = tileblc + theTileShape - 1;
+//    cout << tileblc << tiletrc << "   ";
+    tileblc(theAxis) = theBlc(theAxis);
+    tiletrc(theAxis) = theTrc(theAxis);
+    Bool empty = False;
+    //# Calculate the first and last pixel in the tile taking the
+    //# increment into account.
+    Int nrdim = tileblc.nelements();
+    for (int i=0; i<nrdim; i++) {
+      if (i != theAxis) {
+	if (tiletrc(i) > theTrc(i)) {
+	  tiletrc(i) = theTrc(i);
+	}
+	if (tileblc(i) <= theBlc(i)) {
+	  tileblc(i) = theBlc(i);
+	}else{
+	  tileblc(i) = (tileblc(i) - theBlc(i) + theInc(i) - 1) / theInc(i)
+	               * theInc(i) + theBlc(i);
+	}
+	tiletrc(i) = (tiletrc(i) - theBlc(i)) / theInc(i)
+	             * theInc(i) + theBlc(i);
+	//# It is possible that the tile does not have any pixel at all
+	//# (e.g. when increment > tileshape).
+//	cout << tileblc << tiletrc << endl;
+	if (tileblc(i) > tiletrc(i)) {
+	  empty = True;
+	  break;
+	}
+      }
+    }
+    //# When pixels in this tile, set to the first pixel.
+    if (!empty) {
+      theIndexer.fullSize();
+      theIndexer.subSection (tileblc, tiletrc, theInc);
+      theIndexerCursorPos = (tiletrc - tileblc) / theInc;
+      theIndexerCursorPos(theAxis) = 0;
+      return True;
+    }
+  }
+  DebugAssert(ok() == True, AipsError);
+  return False;
+
+/*
   DebugAssert(ok() == True, AipsError);
   if (theStart) return False;
   Bool successful = theIndexer.tiledCursorMove(False, theCursorPos, 
@@ -164,19 +280,59 @@ Bool TiledStepper::operator--(Int) {
     theStart = True;
   DebugAssert(ok() == True, AipsError);
   return successful;
+*/
 };
 
 Bool TiledStepper::operator--() {
   return operator--(0);
 };
 
-void TiledStepper::reset() {
-  theCursorPos = 0;
+void TiledStepper::reset()
+{
+  //# Make sure the tiler starts on a tile boundary.
+  //# Set theTiler subsection (its increment is always one).
+  //# For theTiler we are not interested in the length of theAxis axis,
+  //# so make it the tile shape for convenience.
+  IPosition tilerBlc = theBlc / theTileShape * theTileShape;
+  IPosition tilerTrc = theTrc;
+  tilerTrc(theAxis) = tilerBlc(theAxis) + theTileShape(theAxis) - 1;
+  theTiler.fullSize();
+  theTiler.subSection (tilerBlc, tilerTrc);
+  theTilerCursorPos = 0;
+  theCursorShape(theAxis) = 1 + (theTrc(theAxis) - theBlc(theAxis))
+                            / theInc(theAxis);
+  //# Calculate the boundaries of the tile.
+  IPosition tileblc = theTiler.absolutePosition (theTilerCursorPos);
+  IPosition tiletrc = tileblc + theTileShape - 1;
+//  cout << tileblc << tiletrc << "   ";
+  tileblc(theAxis) = theBlc(theAxis);
+  tiletrc(theAxis) = theTrc(theAxis);
+  Bool empty = False;
+  //# Calculate the first and last pixel in the tile taking the
+  //# increment into account.
+  Int nrdim = tileblc.nelements();
+  for (int i=0; i<nrdim; i++) {
+    if (i != theAxis) {
+      if (tiletrc(i) > theTrc(i)) {
+	tiletrc(i) = theTrc(i);
+      }
+      if (tileblc(i) <= theBlc(i)) {
+	tileblc(i) = theBlc(i);
+      }else{
+        tileblc(i) = (tileblc(i) - theBlc(i) + theInc(i) - 1) / theInc(i)
+	             * theInc(i) + theBlc(i);
+      }
+      tiletrc(i) = (tiletrc(i) - theBlc(i)) / theInc(i)
+	           * theInc(i) + theBlc(i);
+//      cout << tileblc << tiletrc << endl;
+    }
+  }
+  theIndexer.fullSize();
+  theIndexer.subSection (tileblc, tiletrc, theInc);
+  theIndexerCursorPos = 0;
   theNsteps = 0;
   theEnd = False;
   theStart = True;
-  theIndexer.fullSize();
-  theIndexer.subSection(blc(), tileShape()-1, increment());
   DebugAssert(ok() == True, AipsError);
 };
 
@@ -197,17 +353,26 @@ uInt TiledStepper::nsteps() const {
 
 IPosition TiledStepper::position() const {
   DebugAssert(ok() == True, AipsError);
-  return theIndexer.absolutePosition(theCursorPos);
+//  cout << "position = " << theIndexer.absolutePosition(theIndexerCursorPos)
+//       << endl;
+  return theIndexer.absolutePosition(theIndexerCursorPos);
 };
 
 IPosition TiledStepper::endPosition() const {
   DebugAssert(ok() == True, AipsError);
-  return theIndexer.absolutePosition(theCursorPos + theCursorShape - 1);
+  IPosition last = theIndexerCursorPos;
+  last(theAxis) += (theCursorShape(theAxis) - 1) * theInc(theAxis);
+  return theIndexer.absolutePosition(last);
 };
 
 IPosition TiledStepper::latticeShape() const {
   DebugAssert(ok() == True, AipsError);
-  return theIndexer.fullShape();
+  return theSubSection.fullShape();
+};
+
+IPosition TiledStepper::subLatticeShape() const {
+  DebugAssert(ok() == True, AipsError);
+  return theSubSection.shape();
 };
 
 IPosition TiledStepper::cursorShape() const {
@@ -217,29 +382,64 @@ IPosition TiledStepper::cursorShape() const {
 
 IPosition TiledStepper::tileShape() const {
   DebugAssert(ok() == True, AipsError);
-  return theTiler.increment();
+  return theTileShape;
 };
 
 Bool TiledStepper::hangOver() const {
   return False;
 };
 
-IPosition TiledStepper::blc() const {
-  DebugAssert(ok() == True, AipsError);
-  return theTiler.offset();
+// Function to specify a "section" of the Lattice to Navigate over. A
+// section is defined in terms of the Bottom Left Corner (blc), Top Right
+// Corner (trc), and step size (inc), on ALL of its axes, including
+// degenerate axes.
+void TiledStepper::subSection (const IPosition& blc, const IPosition& trc, 
+			       const IPosition& inc)
+{
+  theSubSection.subSection (blc, trc, inc);
+  theBlc = theSubSection.offset();
+  theInc = theSubSection.increment();
+  theTrc = theBlc + (theSubSection.shape() - 1) * theInc;
+  reset();
 };
 
-IPosition TiledStepper::trc() const {
-  DebugAssert(ok() == True, AipsError);
-  return theTiler.fullShape() - 1;
+// Function to specify a "section" of the Lattice to Navigate over. The step
+// increment is assumed to be one. 
+void TiledStepper::subSection(const IPosition & blc, const IPosition & trc)
+{
+  subSection(blc, trc, IPosition(theIndexer.ndim(), 1));
 };
 
+// Return the bottom left hand corner of the current sub-Lattice. If no
+// sub-Lattice has been defined return blc=0
+IPosition TiledStepper::blc() const{
+  DebugAssert(ok() == True, AipsError);
+  return theBlc;
+};
+
+// Return the top right hand corner of the current sub-Lattice. If no
+// sub-Lattice has been defined return trc=latticeShape-1
+IPosition TiledStepper::trc() const{
+  DebugAssert(ok() == True, AipsError);
+  return theTrc;
+};
+
+// Return the step increment between the current sub-Lattice and the main
+// Lattice. If no sub-Lattice has been defined return inc=1
 IPosition TiledStepper::increment() const {
   DebugAssert(ok() == True, AipsError);
-  return theIndexer.increment();
+  return theInc;
 };
 
-LatticeNavigator * TiledStepper::clone() const {
+const IPosition & TiledStepper::axisPath() const
+{
+  DebugAssert(ok() == True, AipsError);
+  return theAxisPath;
+}
+
+LatticeNavigator * TiledStepper::clone() const
+{
+  DebugAssert(ok() == True, AipsError);
   return new TiledStepper(*this);
 };
 
@@ -346,7 +546,3 @@ TiledStepper * TiledStepper::castToTiler() {
 const TiledStepper * TiledStepper::castToConstTiler() const {
   return this;
 };
-
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 TiledStepper"
-// End: 
