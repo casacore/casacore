@@ -650,6 +650,10 @@ void MSFitsInput::fillObsTables() {
     msHisCol.priority().put(row,"NORMAL");
     msHisCol.origin().put(row,"MSFitsInput::fillObsTables");
     msHisCol.application().put(row,"ms");
+    Vector<String> cliComm(1);
+    cliComm[0]="";
+    msHisCol.cliCommand().put(row,cliComm);
+    msHisCol.appParams().put(row,cliComm);
     msHisCol.message().put(row,history);
     history = (kwp=priGroup_p.nextkw()) ? kwp->comm(): "";
     history = history.before(trailing);
