@@ -90,7 +90,7 @@ main (int argc, char *argv[])
     inp.Version(" ");
     inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
     inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
-    inp.Create("sup", "True", "Supress caught exception messages", "Bool");
+    inp.Create("sup", "False", "Supress expected exception messages", "Bool");
     inp.ReadArguments(argc, argv);
 
     const uInt nx=inp.GetInt("nx");
@@ -107,7 +107,6 @@ main (int argc, char *argv[])
 
 // Bool Lattices
 
-    Array<Bool> BArr(shape);
     Bool BResult;
     ArrayLattice<Bool> aB(shape);
     ArrayLattice<Bool> bB(shape);
