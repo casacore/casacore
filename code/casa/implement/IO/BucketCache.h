@@ -35,11 +35,7 @@
 #include <aips/OS/CanonicalConversion.h>
 
 //# Forward clarations
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 
 
 // <summary>
