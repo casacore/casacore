@@ -1,5 +1,5 @@
 //# tPointShape.cc:  test program for PointShape and componentShape classes
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,10 +59,9 @@ int main() {
       const MDirection dirJ2000(defMVdir);
       const MDirection dirB1950(defMVdir, MDirection::B1950);
       const MVAngle tol = Quantity(1E-3, "mas");
-      defPoint.sample(dirJ2000, tol);
-      AlwaysAssert(near(defPoint.sample(dirJ2000, tol), 1.0, C::dbl_epsilon), 
-  		   AipsError);
-      AlwaysAssert(nearAbs(defPoint.sample(dirB1950, tol), 0.0,
+      AlwaysAssert(near(defPoint.sample(dirJ2000, tol, tol), 1.0, 
+			C::dbl_epsilon), AipsError);
+      AlwaysAssert(nearAbs(defPoint.sample(dirB1950, tol, tol), 0.0,
  			   C::dbl_min), AipsError);
       cout << "Passed the default Point component test" << endl;
     }
@@ -132,11 +131,11 @@ int main() {
       dirs(1) = MVDirection(Quantity(90,"deg"), Quantity(45, "deg"));
       MDirection::Ref ref(shapePtr->refDirection().getRef());
       Vector<Double> scales(2, -1.0);
-      shapePtr->sample(scales, dirs, ref, pixSize);
+      shapePtr->sample(scales, dirs, ref, pixSize, pixSize);
       AlwaysAssert(nearAbs(scales(0), 0.0), AipsError);
       AlwaysAssert(near(scales(1), 1.0), AipsError);
       scales = -1.0;
-      shapePtr->ComponentShape::sample(scales, dirs, ref, pixSize);
+      shapePtr->ComponentShape::sample(scales, dirs, ref, pixSize, pixSize);
       AlwaysAssert(nearAbs(scales(0), 0.0), AipsError);
       AlwaysAssert(near(scales(1), 1.0), AipsError);
       

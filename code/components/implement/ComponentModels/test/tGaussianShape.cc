@@ -1,5 +1,5 @@
 //# tGaussianShape.cc: Test program for the GaussianShape & TwoSidedShape classes
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,16 +70,17 @@ int main() {
       // pixel area. Instead I set the pixel size to be something small enough!
       const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) *
   	square(pixelSize.radian());
-      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize, pixelSize), 
 			peak*0.5, 1E-11), AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
-      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize, pixelSize), 
 			peak, 1E-12), AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
-      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize), 
-			peak*0.5, 1E-11), AipsError);
+      const MVAngle halfPix = pixelSize.radian()/2.0;
+      AlwaysAssert(near(defGaussian.sample(sampleDir, pixelSize, halfPix), 
+			peak*0.25, 1E-11), AipsError);
       cout << "Passed the default Gaussian shape test" << endl;
     }
     {
@@ -112,14 +113,14 @@ int main() {
 	pow(C::pi,-3.) * square(pixelSize.radian());
       for (uInt i = 0; i < 6; i++){
 	sampledDirection = MDirection(sampleDir*pole2src, MDirection::J2000);
- 	AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize), 
+ 	AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize,pixelSize), 
 			  peak*0.5, 1E-11), AipsError);
    	sampleDir *= rotater;
        }
       const MVDirection pole;
       sampledDirection = MDirection(pole*pole2src, MDirection::J2000);
-      AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize), peak), 
-		   AipsError);
+      AlwaysAssert(near(J1934.sample(sampledDirection, pixelSize, pixelSize),
+			peak), AipsError);
       cout << "Passed the arbitrary Gaussian shape test" << endl;
       // test the copy semantics
       GaussianShape othergc(J1934);
@@ -200,7 +201,7 @@ int main() {
       dirs(4) = MVDirection(Quantity(0.,"deg"), Quantity(-0.5, "deg"));
       MDirection::Ref ref(shapePtr->refDirection().getRef());
       Vector<Double> scales(5, -1.0);
-      gc.sample(scales, dirs, ref, pixSize);
+      gc.sample(scales, dirs, ref, pixSize, pixSize);
       const Double peak = 2. * square(6.*60) * C::ln2 * 
 	pow(C::pi,-3.) * square(pixSize.radian());
       AlwaysAssert(near(scales(0), peak), AipsError);
@@ -209,7 +210,7 @@ int main() {
       AlwaysAssert(near(scales(3), peak/2), AipsError);
       AlwaysAssert(near(scales(4), peak/2), AipsError);
       scales = -1.0;
-      gc.TwoSidedShape::sample(scales, dirs, ref, pixSize);
+      gc.TwoSidedShape::sample(scales, dirs, ref, pixSize, pixSize);
       AlwaysAssert(near(scales(0), peak), AipsError);
       AlwaysAssert(near(scales(1), peak/2), AipsError);
       AlwaysAssert(near(scales(2), peak/2), AipsError);
@@ -260,26 +261,26 @@ int main() {
       AlwaysAssert(near(shapePtr->majorAxis().getValue("deg"), 1.0), AipsError);
       AlwaysAssert(near(shapePtr->minorAxis().getValue("deg"), 0.1), AipsError);
       AlwaysAssert(near(shapePtr->positionAngle().getValue("deg"), 10.0), 
-		   AipsError);
+ 		   AipsError);
 #if defined(AIPS_DEBUG)
       v.resize(1);
       try{
- 	shapePtr->setParameters(v);
- 	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
+  	shapePtr->setParameters(v);
+  	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
       }
       catch (AipsError x) {
- 	if(!x.getMesg().contains("newParms.nelements() == nParameters()")) {
- 	  rethrow(x);
- 	}
+  	if(!x.getMesg().contains("newParms.nelements() == nParameters()")) {
+  	  rethrow(x);
+  	}
       }
       try{
- 	shapePtr->parameters(v);
- 	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
+  	shapePtr->parameters(v);
+  	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
       }
       catch (AipsError x) {
- 	if(!x.getMesg().contains("compParms.nelements() == nParameters()")) {
- 	  rethrow(x);
- 	}
+  	if(!x.getMesg().contains("compParms.nelements() == nParameters()")) {
+  	  rethrow(x);
+  	}
       }
 #endif
       cout << "Passed the parameter interface test" << endl;
@@ -422,4 +423,5 @@ int main() {
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tGaussianShape"
-// End: 
+// End:
+
