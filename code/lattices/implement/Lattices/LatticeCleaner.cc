@@ -107,7 +107,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  convertLattice(itsXfr->lc(),psf.lc());
+  convertLattice(itsXfr,psf);
   LatticeFFT::cfft2d(*itsXfr, True);
 
   itsScales.resize(0);
@@ -505,7 +505,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   AlwaysAssert(itsDirty, AipsError);
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
-  convertLattice(dirtyFT.lc(), itsDirty->lc());
+  convertLattice(dirtyFT, itsDirty);
   LatticeFFT::cfft2d(dirtyFT, True);
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
@@ -522,7 +522,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     // Now store the XFR
     // Following doesn't work under egcs
     //    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
-    convertLattice(scaleXfr[scale]->lc(), itsScales[scale]->lc());
+    convertLattice(scaleXfr[scale], itsScales[scale]);
 
     // Now FFT
     LatticeFFT::cfft2d(*scaleXfr[scale], True);
