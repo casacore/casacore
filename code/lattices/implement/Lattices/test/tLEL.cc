@@ -93,12 +93,14 @@ Bool checkBool (LELInterface<Bool>& expr,
 main (int argc, char *argv[])
 {
  try {
+    cout << ">>>" << endl;
     Input inp(1);
     inp.Version(" ");
     inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
     inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
     inp.Create("sup", "False", "Supress expected exception messages", "Bool");
     inp.ReadArguments(argc, argv);
+    cout << "<<<" << endl;
 
     const uInt nx=inp.GetInt("nx");
     const uInt ny=inp.GetInt("ny");
@@ -1710,18 +1712,19 @@ main (int argc, char *argv[])
   {
     cout << endl << "LELFunctionReal1D<Float>" << endl;
     CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
+    CountedPtr<LELInterface<Float> > pExpra = new LELLattice<Float>(aF);
 
     {
     cout << "   Function asin" << endl;     
-    LELFunctionReal1D<Float> expr(LELFunctionEnums::ASIN, pExpr);
-    FResult = asin(bFVal);
+    LELFunctionReal1D<Float> expr(LELFunctionEnums::ASIN, pExpra);
+    FResult = asin(aFVal);
     if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function acos" << endl;     
-    LELFunctionReal1D<Float> expr(LELFunctionEnums::ACOS, pExpr);
-    FResult = acos(bFVal);
+    LELFunctionReal1D<Float> expr(LELFunctionEnums::ACOS, pExpra);
+    FResult = acos(aFVal);
     if (!checkFloat (expr, FResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
@@ -1763,18 +1766,19 @@ main (int argc, char *argv[])
   {
     cout << endl << "LELFunctionReal1D<Double>" << endl;
     CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExpra = new LELLattice<Double>(aD);
 
     {
     cout << "   Function asin" << endl;     
-    LELFunctionReal1D<Double> expr(LELFunctionEnums::ASIN, pExpr);
-    DResult = asin(bDVal);
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::ASIN, pExpra);
+    DResult = asin(aDVal);
     if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
     {
     cout << "   Function acos" << endl;     
-    LELFunctionReal1D<Double> expr(LELFunctionEnums::ACOS, pExpr);
-    DResult = acos(bDVal);
+    LELFunctionReal1D<Double> expr(LELFunctionEnums::ACOS, pExpra);
+    DResult = acos(aDVal);
     if (!checkDouble (expr, DResult, String("LELFunctionReal1D"), shape, False, supress)) ok = False;
     }
 
