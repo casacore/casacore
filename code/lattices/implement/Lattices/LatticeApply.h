@@ -106,7 +106,7 @@ class LatticeRegion;
 // Collapse each line in the y-direction using my collapser function object.
 // <srcblock>
 //    MyLineCollapser collapser;
-//    PagedArray>Float> latticeIn("lattice.file");
+//    PagedArray<Float> latticeIn("lattice.file");
 //    IPosition shape = latticeIn.shape();
 //    shape(1) = 1;
 //    ArrayLattice<Float> latticeOut(shape);
@@ -135,12 +135,12 @@ public:
 // be supplied with the correct shape (the shape of the supplied region).
 // The default region is the entire input lattice.
 // <group>
-    static void lineApply (Lattice<T>& latticeOut, 
+    static void lineApply (MaskedLattice<T>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
 			   LineCollapser<T>& collapser,
 			   uInt collapseAxis,
 			   LatticeProgress* tellProgress = 0);
-    static void lineApply (Lattice<T>& latticeOut, 
+    static void lineApply (MaskedLattice<T>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
 			   const LatticeRegion& region,
 			   LineCollapser<T>& collapser,
@@ -180,13 +180,13 @@ public:
 // plus the number of values resulting from the collapse).
 // The default region is the entire input lattice.
 // <group>
-    static void tiledApply (Lattice<T>& latticeOut,
+    static void tiledApply (MaskedLattice<T>& latticeOut,
 			    const MaskedLattice<T>& latticeIn,
 			    TiledCollapser<T>& collapser,
 			    const IPosition& collapseAxes,
 			    Int newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
-    static void tiledApply (Lattice<T>& latticeOut,
+    static void tiledApply (MaskedLattice<T>& latticeOut,
 			    const MaskedLattice<T>& latticeIn,
 			    const LatticeRegion& region,
 			    TiledCollapser<T>& collapser,
@@ -204,13 +204,17 @@ public:
 // lattices at the location of the collapsed chunk. The output lattices must
 // be supplied with the correct shape (the shape of the supplied region).
 // The default region is the entire input lattice.
+// <note role=warning>
+// These functions are only declared, but not implemented yet.
+// Thus they cannot be used yet.
+// </note>
 // <group>
-    static void tiledMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+    static void tiledMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
 				 TiledCollapser<T>& collapser,
 				 const IPosition& collapseAxes,
 				 LatticeProgress* tellProgress = 0);
-    static void tiledMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+    static void tiledMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
 				 const MaskedLattice<T>& latticeIn,
 				 const LatticeRegion& region,
 				 TiledCollapser<T>& collapser,
