@@ -1,5 +1,5 @@
 //# Spectral2Estimate.cc: Member templates for SpectralEstimate
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,7 +208,7 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
 
 //# Cater for Float only
 template SpectralList const &
-SpectralEstimate::estimate(Vector<Float> const &, Vector<Float> *);
-template void SpectralEstimate::findga(Vector<Float> const &); 
-template uInt SpectralEstimate::window(Vector<Float> const &);
-template void SpectralEstimate::findc2(Vector<Float> const &); 
+SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> *);
+template void SpectralEstimate::findga<Float>(Vector<Float> const &); 
+template uInt SpectralEstimate::window<Float>(Vector<Float> const &);
+template void SpectralEstimate::findc2<Float>(Vector<Float> const &); 

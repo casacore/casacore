@@ -1,5 +1,5 @@
 //# Spectral4Element.cc: Member templates for SpectralElement
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,9 +71,9 @@ void SpectralElement::set(const Vector<MT> &param) {
 }
 
 //# Cater for Double and Float
-template void SpectralElement::set(Vector<Double> const &);
-template void SpectralElement::set(Vector<Float> const &);
-template void SpectralElement::set(SpectralElement::Types tp,
+template void SpectralElement::set<Double>(Vector<Double> const &);
+template void SpectralElement::set<Float>(Vector<Float> const &);
+template void SpectralElement::set<Double>(SpectralElement::Types tp,
 				   Vector<Double> const &);
-template void SpectralElement::set(SpectralElement::Types tp,
+template void SpectralElement::set<Float>(SpectralElement::Types tp,
 				   Vector<Float> const &);

@@ -104,9 +104,9 @@ Bool SpectralFit::fit(const Vector<MT> &y,
 }
 
 //# Cater for Double and Float profiles
-template Bool SpectralFit::fit(Vector<Double> const &,
+template Bool SpectralFit::fit<Double>(Vector<Double> const &,
 			       Vector<Double> const &,
 			       Vector<Bool> const *);
-template Bool SpectralFit::fit(Vector<Float> const &,
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
 			       Vector<Float> const &,
 			       Vector<Bool> const *);

@@ -1,5 +1,5 @@
 //# SpectralList2.cc: Member templates for SpectralList
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,15 +74,15 @@ void SpectralList::residual(Vector<MT> &y, const Vector<MT> &x) const {
 }
 
 //# Use for Double and Float
-template void SpectralList::residual(Vector<Double> &) const;
-template void SpectralList::residual(Vector<Float> &) const;
-template void SpectralList::evaluate(Vector<Double> &) const;
-template void SpectralList::evaluate(Vector<Float> &) const;
-template void SpectralList::residual(Vector<Double> &, 
+template void SpectralList::residual<Double>(Vector<Double> &) const;
+template void SpectralList::residual<Float>(Vector<Float> &) const;
+template void SpectralList::evaluate<Double>(Vector<Double> &) const;
+template void SpectralList::evaluate<Float>(Vector<Float> &) const;
+template void SpectralList::residual<Double>(Vector<Double> &, 
 				     Vector<Double> const &) const; 
-template void SpectralList::residual(Vector<Float> &,
+template void SpectralList::residual<Float>(Vector<Float> &,
 				     Vector<Float> const &) const; 
-template void SpectralList::evaluate(Vector<Double> &, 
+template void SpectralList::evaluate<Double>(Vector<Double> &, 
 				     Vector<Double> const &) const; 
-template void SpectralList::evaluate(Vector<Float> &,
+template void SpectralList::evaluate<Float>(Vector<Float> &,
 				     Vector<Float> const &) const; 
