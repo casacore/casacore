@@ -749,7 +749,7 @@ int main ()
       try {
 	cout << "\nTest conformance, ::min (Array, Array,"
 	     << " MaskedArray)";
-	min (a, ba, c);
+	::min (a, ba, c);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -770,7 +770,7 @@ int main ()
       try {
 	cout << "\nTest conformance, ::min (Array, Array,"
 	     << " MaskedArray)";
-	min (ba, a, c);
+	::min (ba, a, c);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
