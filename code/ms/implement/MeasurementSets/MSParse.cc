@@ -81,6 +81,11 @@ MSParse& MSParse::operator= (const MSParse& that)
     return *this;
 }
 
+Bool MSParse::test (const String& str) const
+{
+    return (shorthand_p == str  ?  True : False);
+}
+
 String& MSParse::shorthand()
 {
     return shorthand_p;
