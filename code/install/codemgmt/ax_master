@@ -6198,3 +6198,4 @@
 17 191 src mv ./aips/implement/Functionals/NQCompoundParam.cc ./aips/implement/Functionals/CompoundParam.cc
 17 191 src mv ./aips/implement/Functionals/NQCompoundParam.h ./aips/implement/Functionals/CompoundParam.h
 17 191 src mv ./aips/implement/Functionals/NQFunction1D.h ./aips/implement/Functionals/Function1D.h
+17 191 src mv ./aips/implement/Functionals/NQFunctionWrapper.cc ./aips/implement/Functionals/FunctionWrapper.cc
