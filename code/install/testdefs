@@ -396,6 +396,24 @@ system :
 	-@ set WARNING $(TCLLIBD) $(TCLLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
+	-@ echo "TKROOT  =$(TKROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(TKROOT) ; $(CheckDir)
+    endif
+	-@ echo "TKDEFS  =$(TKDEFS)"
+	-@ echo "TKINCD  =$(TKINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(TKINCD) ; $(CheckDir)
+    endif
+	-@ echo "TKLIBD  =$(TKLIBD)"
+    ifdef DO_TEST
+	-@ set WARNING $(TKLIBD) ; $(CheckDir)
+    endif
+	-@ echo "TKLIB   =$(TKLIB)"
+    ifdef DO_TEST
+	-@ set WARNING $(TKLIBD) $(TKLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "MotifROOT=$(MotifROOT)"
     ifdef DO_TEST
 	-@ set ADVISORY $(MotifROOT) ; $(CheckDir)
@@ -448,6 +466,24 @@ system :
 	-@ echo "XPMLIB  =$(XPMLIB)"
     ifdef DO_TEST
 	-@ set WARNING $(XPMLIBD) $(XPMLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
+	-@ echo "DVRROOT =$(DVRROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(DVRROOT) ; $(CheckDir)
+    endif
+	-@ echo "DVRDEFS =$(DVRDEFS)"
+	-@ echo "DVRINCD =$(DVRINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(DVRINCD) ; $(CheckDir)
+    endif
+	-@ echo "DVRLIBD =$(DVRLIBD)"
+    ifdef DO_TEST
+	-@ set WARNING $(DVRLIBD) ; $(CheckDir)
+    endif
+	-@ echo "DVRLIB  =$(DVRLIB)"
+    ifdef DO_TEST
+	-@ set WARNING $(DVRLIBD) $(DVRLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "LAPACKROOT=$(LAPACKROOT)"

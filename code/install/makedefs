@@ -174,6 +174,15 @@ TCLINCD   = $(TCLROOT)/include
 TCLLIBD   = $(TCLROOT)/lib
 TCLLIB   := -ltcl
 
+# TK (version to match TCL); TK is invariably used in combination with TCL so
+# unless TK is installed in a different location there is no need to specify
+# TKINCD or TKLIBD.
+TKROOT   :=
+TKDEFS   :=
+TKINCD   :=
+TKLIBD   :=
+TKLIB    := -ltk
+
 # Motif.
 MotifROOT := /usr/local/X11
 MotifDEFS :=
@@ -188,12 +197,19 @@ X11INCD   = $(X11ROOT)/include
 X11LIBD   = $(X11ROOT)/lib
 X11LIB   := -lXt -lXmu -lX11 -lXext
 
-# XPM (X Pixmap) library
+# XPM (X Pixmap) library.
 XPMROOT  := /usr/local/X11
 XPMDEFS  :=
 XPMINCD   = $(XPMROOT)/include
 XPMLIBD   = $(XPMROOT)/lib
 XPMLIB   := -lXpm
+
+# DVR (distributed volume renderer) - optional for display library.
+DVRROOT  := /usr/local/dvr
+DVRDEFS  := -DDVR_AVAILABLE
+DVRINCD   = $(DVRROOT)/src $(DVRROOT)/src/virvo197/src
+DVRLIBD   = $(DVRROOT)/lib $(DVRROOT)/src/virvo197/lib
+DVRLIB   := -ldvr -lbbutils -llistener -lvirvo
 
 # LAPACK (FORTRAN Linear Algebra Package).
 LAPACKROOT := /usr/local
@@ -319,7 +335,7 @@ COFLAGS  := -f
 # the use of module-, and application-directory makefiles only.  Do not
 # redefine it in the site makedefs.
 CPP       = $(C++) -E
-CPPSTD   := 
+CPPSTD   :=
 CPPDBG    = $(CPPSTD) -DAIPS_DEBUG -DAIPS_ARRAY_INDEX_CHECK
 CPPOPT    = $(CPPSTD)
 
