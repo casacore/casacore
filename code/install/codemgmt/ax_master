@@ -4546,3 +4546,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSSpWindowEnums.h aips/implement/MeasurementSets/MSSpWindowEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSState.cc aips/implement/MeasurementSets/MSState.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSState.h aips/implement/MeasurementSets/MSState.h
+14 296 src mv aips/implement/MeasurementSets/NewMSStateColumns.cc aips/implement/MeasurementSets/MSStateColumns.cc
