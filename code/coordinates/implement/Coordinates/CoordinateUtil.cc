@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MEpoch.h>
@@ -54,7 +55,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
-#include <aips/Mathematics/Math.h>
 
 #include <aips/strstream.h>
 
@@ -718,41 +718,79 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
                                           Int coordinateTo, Int coordinateFrom,
                                           const CoordinateSystem& coordsTo,
                                           const CoordinateSystem& coordsFrom)
+{
+   MDirection dirTo, dirFrom;
+   {
+      Coordinate::Type type = Coordinate::DIRECTION;
+      Int afterCoord = -1;
+      Int c = coordsTo.findCoordinate(type, afterCoord);
+      if (c<0) {
+         os << "No Direction coordinate in 'to' CoordinateSystem" << LogIO::EXCEPTION;
+      }
+      const DirectionCoordinate& dCoord = coordsTo.directionCoordinate(c);   
+      const Vector<Double>& rp = dCoord.referencePixel();   
+      Bool ok = dCoord.toWorld(dirTo, rp);
+   }
+//
+   {
+      Coordinate::Type type = Coordinate::DIRECTION;
+      Int afterCoord = -1;
+      Int c = coordsFrom.findCoordinate(type, afterCoord);
+      if (c<0) {
+         os << "No Direction coordinate in 'from' CoordinateSystem" << LogIO::EXCEPTION;
+      }
+      const DirectionCoordinate& dCoord = coordsFrom.directionCoordinate(c);   
+      const Vector<Double>& rp = dCoord.referencePixel();   
+      Bool ok = dCoord.toWorld(dirFrom, rp);
+   }
+//
+   MFrequency::Types typeTo, typeFrom;
+   {
+      Coordinate::Type type = Coordinate::SPECTRAL;
+      Int afterCoord = -1;
+      Int c = coordsTo.findCoordinate(type, afterCoord);
+      if (c<0) {
+         os << "No Spectral coordinate in 'to' CoordinateSystem" << LogIO::EXCEPTION;
+      }
+      const SpectralCoordinate& sCoord = coordsTo.spectralCoordinate(c);   
+      typeTo = sCoord.frequencySystem();
+   }
+   {
+      Coordinate::Type type = Coordinate::SPECTRAL;
+      Int afterCoord = -1;
+      Int c = coordsFrom.findCoordinate(type, afterCoord);
+      if (c<0) {
+         os << "No Spectral coordinate in 'from' CoordinateSystem" << LogIO::EXCEPTION;
+      }
+      const SpectralCoordinate& sCoord = coordsFrom.spectralCoordinate(c);   
+      typeFrom = sCoord.frequencySystem();
+   }
+//
+   return makeFrequencyMachine(os, machine, typeTo, typeFrom,
+                               dirTo, dirFrom, 
+                               coordsTo.obsInfo(),
+                               coordsFrom.obsInfo());
+}
+
+
+Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+                                          MFrequency::Types typeTo, MFrequency::Types typeFrom,
+                                          const MDirection& dirTo, const MDirection& dirFrom,
+                                          const ObsInfo& obsTo, const ObsInfo& obsFrom)
 //
 // We need MDirection type, position on earth and epoch.  But 
 // maybe not all of them...
 //
 {
-   const ObsInfo& obsTo = coordsTo.obsInfo();
-   const ObsInfo& obsFrom = coordsFrom.obsInfo();
-   const SpectralCoordinate& specCoordTo = coordsTo.spectralCoordinate(coordinateTo);
-   const SpectralCoordinate& specCoordFrom = coordsFrom.spectralCoordinate(coordinateFrom);
-//
-// We need to have a DirectionCoordinate without which we can't make any
-// conversions
-
-   Int afterCoord = -1;
-   Int coordinateDirTo = coordsTo.findCoordinate(Coordinate::DIRECTION, afterCoord);
-   if (coordinateDirTo==-1) {
-      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
-      os << "No DirectionCoordinate was found in the input CoordinateSystem" << LogIO::EXCEPTION;
-   }
-   afterCoord = -1;
-   Int coordinateDirFrom = coordsFrom.findCoordinate(Coordinate::DIRECTION, afterCoord);
-   if (coordinateDirFrom==-1) {
-      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
-      os << "No DirectionCoordinate was found in the output CoordinateSystem" << LogIO::EXCEPTION;
-   }
-//
-   const DirectionCoordinate& dirCoordTo = coordsTo.directionCoordinate(coordinateDirTo);
-   const DirectionCoordinate& dirCoordFrom = coordsFrom.directionCoordinate(coordinateDirFrom);
-   Bool dirCoordEqual = dirCoordTo.near(dirCoordFrom);
-
 // See if we need machine
 
-   const MFrequency::Types typeTo = specCoordTo.frequencySystem();
-   const MFrequency::Types typeFrom = specCoordFrom.frequencySystem();
    Bool typesEqual = (typeTo==typeFrom);
+   const Double lonTo = dirTo.getValue().getLong();
+   const Double latTo = dirTo.getValue().getLat();
+   const Double lonFrom = dirFrom.getValue().getLong();
+   const Double latFrom = dirFrom.getValue().getLat();
+   Bool dirCoordEqual = (dirTo.type()==dirFrom.type()) &&
+                        (near(lonTo,lonFrom)) && (near(latTo,latFrom));
 //
    MEpoch epochFrom = obsFrom.obsDate();
    MEpoch epochTo = obsTo.obsDate();
@@ -775,17 +813,8 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 
 // Add Direction
 
-   MDirection MDFrom, MDTo;
-   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
-      os << "DirectionCoordinate coordinate conversion failed because " +
-            dirCoordFrom.errorMessage() << LogIO::EXCEPTION;
-   }
-   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
-      os << "DirectionCoordinate coordinate conversion failed because " +
-            dirCoordTo.errorMessage() << LogIO::EXCEPTION;
-   }
-   frameFrom.set(MDFrom);
-   frameTo.set(MDTo);
+   frameFrom.set(dirFrom);
+   frameTo.set(dirTo);
 
 // Add Epoch   
 
@@ -805,24 +834,24 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 // Add the position 
 
    if (telFrom==String("UNKNOWN")) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "The output CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+      os << "In setting up the frequency conversion machinery, the output ObsInfo" << endl;
+      os << "has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
    }
    if (telTo==String("UNKNOWN")) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "The input CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+      os << "In setting up the frequency conversion machinery, the output ObsInfo" << endl;
+      os << "has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
    }
 //
    MPosition posFrom, posTo;
    Bool found = MeasTable::Observatory(posFrom, telFrom);
    if (!found) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "In setting up the frequency conversion machinery, cannot lookup" << endl;
+      os << "lookup the observatory name " << telFrom << " in the AIPS++" << endl;
       os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
    }
    found = MeasTable::Observatory(posTo, telTo);
    if (!found) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "In setting up the frequency conversion machinery" << endl;
       os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
       os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
    }
@@ -835,16 +864,14 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
    MFrequency::Ref refTo(typeTo, frameTo);
    machine = MFrequency::Convert(refFrom, refTo);
 
-// Test conversion
+// Test a conversion
 
    Bool ok = True;
-   MFrequency MFTo, MFFrom;
-   if (!specCoordFrom.toWorld(MFFrom, specCoordFrom.referencePixel()(0))) {
-      os << "SpectralCoordinate coordinate conversion failed because " +
-            specCoordFrom.errorMessage() << LogIO::EXCEPTION;
-   }
+   MFrequency freqTo;
+   Quantum<Double> freq(1.0e9, Unit(String("Hz")));
+   MFrequency freqFrom(freq, typeFrom);
    try {
-      MFTo = machine(MFFrom);
+      freqTo = machine(freqFrom);
    } catch (AipsError x) {
       ok = False;
    }

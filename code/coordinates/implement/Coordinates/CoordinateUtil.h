@@ -1,5 +1,5 @@
 //# CoordinateUtils.h: static functions dealing with coordinates
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -334,16 +334,27 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
                                    const DirectionCoordinate& dirCoordFrom,
                                    const ObsInfo& obsTo,
                                    const ObsInfo& obsFrom);
+
+// Setup Measures conversion machines for MFrequencies. 
+// Returns True if the machine was needed and set.
+// Returns False if the machine was not needed and not set. 
+// There must be both a Direction and a Spectral
+// Coordinate in the CoordinateSystem when making the Frequency machine. 
+   static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
+                                    Int coordinateTo, Int coordinateFrom, 
+                                    const CoordinateSystem& coordsTo, 
+				    const CoordinateSystem& coordsFrom);
+
 // Setup Measures conversion machines for MFrequencies.
 // Returns True if the machine was needed and set.  Returns False
-// if the machine was not needed and not set.  There must be both a Direction 
-// and a Spectral Coordinate in the CoordinateSystem when making the
-// Frequency machine.
-  static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
-                                   Int coordinateTo, Int coordinateFrom,
-                                   const CoordinateSystem& coordsTo,
-                                   const CoordinateSystem& coordsFrom);
-
+// if the machine was not needed and not set.    
+   static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+                                    MFrequency::Types typeTo, 
+                                    MFrequency::Types typeFrom,
+                                    const MDirection& dirTo, 
+                                    const MDirection& dirFrom,
+                                    const ObsInfo& obsTo, 
+                                    const ObsInfo& obsFrom);
 //
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
