@@ -1,5 +1,5 @@
 //# ArrayError.cc: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995,1997,1999
+//# Copyright (C) 1993,1994,1995,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,6 @@
 
 #include <aips/Arrays/ArrayError.h>
 
-rtti_imp_init(ArrayError);
-rtti_imp_mbrf(ArrayError);
 
 ArrayError::ArrayError() : AipsError("ArrayError") {}
 
@@ -38,23 +36,9 @@ ArrayError::ArrayError(const Char *m) : AipsError(m) {}
 
 ArrayError::ArrayError(const String &m) : AipsError(m) {}
 
-ArrayError::ArrayError(ExcpError *excp) 
-: AipsError(excp)
-{
-    ArrayError *tmp;
-    PCAST(tmp,ArrayError,excp);
-    if (tmp) {
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
-
 ArrayError::~ArrayError() {}
 
 
-rtti_imp_init(ArrayIndexError);
-rtti_imp_mbrf(ArrayIndexError);
 
 ArrayIndexError::ArrayIndexError() : ArrayError("ArrayIndexError") {}
 
@@ -71,20 +55,6 @@ ArrayIndexError::ArrayIndexError(const IPosition &in,
     // Nothing
 }
 
-ArrayIndexError::ArrayIndexError(ExcpError *excp) 
-: ArrayError(excp)
-{
-    ArrayIndexError *tmp;
-    PCAST(tmp,ArrayIndexError,excp);
-    if (tmp) {
-        _equal = True;
-	i = tmp->i;
-	l = tmp->l;
-    } else {
-        _equal = False;
-    }
-}
-
 ArrayIndexError::~ArrayIndexError() {}
 
 IPosition ArrayIndexError::index() const
@@ -98,8 +68,6 @@ IPosition ArrayIndexError::shape() const
 }
 
 
-rtti_imp_init(ArrayConformanceError);
-rtti_imp_mbrf(ArrayConformanceError);
 
 ArrayConformanceError::ArrayConformanceError() 
 : ArrayError("ArrayConformanceError") 
@@ -111,37 +79,9 @@ ArrayConformanceError::ArrayConformanceError(const Char *m) : ArrayError(m) {}
 
 ArrayConformanceError::ArrayConformanceError(const String &m) : ArrayError(m) {}
 
-ArrayConformanceError::ArrayConformanceError(ExcpError *excp)
-: ArrayError(excp)
-{
-    ArrayConformanceError *tmp;
-    PCAST(tmp,ArrayConformanceError,excp);
-    if (tmp) {
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
-
 ArrayConformanceError::~ArrayConformanceError() {}
 
 
-rtti_imp_init(ArrayNDimError);
-rtti_imp_mbrf(ArrayNDimError);
-
-ArrayNDimError::ArrayNDimError(ExcpError *excp) 
-: ArrayConformanceError(excp)
-{
-    ArrayNDimError *tmp;
-    PCAST(tmp,ArrayNDimError,excp);
-    if (tmp) {
-        _equal = True;
-	r1 = tmp->r1;
-	r2 = tmp->r2;
-    } else {
-        _equal = False;
-    }
-}
 
 ArrayNDimError::ArrayNDimError(Int ndim1, Int ndim2, const Char *m)
 : ArrayConformanceError(m),
@@ -158,22 +98,6 @@ void ArrayNDimError::ndims(Int &ndim1, Int &ndim2) const
 }
 
 
-rtti_imp_init(ArrayShapeError);
-rtti_imp_mbrf(ArrayShapeError);
-
-ArrayShapeError::ArrayShapeError(ExcpError *excp) 
-: ArrayConformanceError(excp)
-{
-    ArrayShapeError *tmp;
-    PCAST(tmp,ArrayShapeError,excp);
-    if (tmp) {
-        _equal = True;
-	sh1 = tmp->sh1;
-	sh2 = tmp->sh2;
-    } else {
-        _equal = False;
-    }
-}
 
 ArrayShapeError::ArrayShapeError(const IPosition &s1, const IPosition & s2,
 				 const Char *m)
@@ -191,8 +115,6 @@ void ArrayShapeError::shapes(IPosition &shape1, IPosition &shape2) const
 }
 
 
-rtti_imp_init(ArrayIteratorError);
-rtti_imp_mbrf(ArrayIteratorError);
 
 ArrayIteratorError::ArrayIteratorError() : ArrayError("ArrayIteratorError") {}
 
@@ -200,39 +122,13 @@ ArrayIteratorError::ArrayIteratorError(const Char *m) : ArrayError(m) {}
 
 ArrayIteratorError::ArrayIteratorError(const String &m) : ArrayError(m) {}
 
-ArrayIteratorError::ArrayIteratorError(ExcpError *excp) 
-: ArrayError(excp)
-{
-    ArrayIteratorError *tmp;
-    PCAST(tmp,ArrayIteratorError,excp);
-    if (tmp) {
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
-
 ArrayIteratorError::~ArrayIteratorError() {}
 
 
-rtti_imp_init(ArraySlicerError);
-rtti_imp_mbrf(ArraySlicerError);
 
 ArraySlicerError::ArraySlicerError() : ArrayError("Slicer error") {}
 
 ArraySlicerError::ArraySlicerError(const String &m)
 : ArrayError("Slicer error:" + m) {}
-
-ArraySlicerError::ArraySlicerError(ExcpError *excp) 
-: ArrayError(excp)
-{
-    ArraySlicerError *tmp;
-    PCAST(tmp,ArraySlicerError,excp);
-    if (tmp) {
-        _equal = True;
-    } else {
-        _equal = False;
-    }
-}
 
 ArraySlicerError::~ArraySlicerError() {}
