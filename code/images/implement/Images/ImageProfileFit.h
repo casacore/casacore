@@ -195,17 +195,22 @@ public:
     Bool fit(Int order=-1);
     //</group>
 
-    // Fit all profiles in the region and write out images.
-    // Specify the order of the baseline you would also like to fit for.
+    // Fit all profiles with shapes + optional polynomial in the region and write out images.
     //<group>
     void fit (RecordInterface& rec,  
               Bool xAbsRec,
               const String& xUnitRec,
               const String& dopplerRec,
-              PtrHolder<ImageInterface<Float> >& fit,
-              PtrHolder<ImageInterface<Float> >& resid,
+              ImageInterface<Float>* pFit,
+              ImageInterface<Float>* pResid,
               Int order=-1);
     //</group>
+
+
+    // Fit all profiles with a polynomial in the region and write out images.
+    void fitPolynomial (ImageInterface<Float>* pFit,
+                        ImageInterface<Float>* pResid,
+                        Int order=0);
 
     // Find the residuals (fit or estimate) of the averaged profile
     //<group>
