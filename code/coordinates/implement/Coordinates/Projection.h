@@ -189,6 +189,9 @@ public:
     // Comparison to fractional tolerance. 
     Bool near(const Projection &other, Double tol=1.0e-6) const;
 
+    // Is this projection a 'zenithal' projection
+    static Bool isZenithal (Projection::Type proj);
+
 private:
     Projection::Type which_p;
     Vector<Double> parameters_p;

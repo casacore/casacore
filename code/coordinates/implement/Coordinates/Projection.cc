@@ -209,6 +209,14 @@ Bool Projection::near(const Projection &other, Double tol) const
 }
 
 
+Bool Projection::isZenithal (Projection::Type proj)
+{
+   return Bool(proj==AZP || proj==TAN || proj==SIN ||
+               proj==STG || proj==ARC || proj==ZPN ||
+               proj==ZEA || proj==AIR);
+}
+
+
 void Projection::validate()
 {
     // SIN is a special case - it can have zero or two parameters. Always
@@ -223,3 +231,5 @@ void Projection::validate()
 			" number of parameters"));
     }
 }
+
+
