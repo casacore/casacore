@@ -2287,3 +2287,4 @@
 09 234 src rm aips/glish/glish/TkPGPLOT.cc
 09 234 src rm aips/glish/glish/TkPGPLOT.h
 09 234 src rm aips/glish/sds
+09 237 src mv trial/implement/parallel trial/implement/Parallel
