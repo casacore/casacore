@@ -69,6 +69,8 @@ void FiledesIO::detach()
 
 void FiledesIO::fillRWFlags (int fd)
 {
+    itsReadable = False;
+    itsWritable = False;
     int flags = fcntl (fd, F_GETFL);
     if ((flags & O_RDWR)  ==  O_RDWR) {
 	itsReadable = True;
