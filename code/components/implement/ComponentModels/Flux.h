@@ -33,6 +33,8 @@
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Measures/Unit.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/ComponentModels/ComponentType.h>
 
@@ -210,6 +212,20 @@ public:
     itsFlux = value.getValue();
     itsUnit = value.getFullUnit();
     itsPol = pol;
+    DebugAssert(ok(), AipsError);
+  };
+  // </group>
+
+  // Scale the Flux value by the specified amount
+  // <group>
+  void scaleValue(const T & factor);
+  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
+    itsFlux.ac() *= factor;
+    DebugAssert(ok(), AipsError);
+  };
+  void scaleValue(const Vector<NumericTraits<T>::ConjugateType> & factor) {
+    DebugAssert (factor.nelements() == 4, AipsError);
+    itsFlux.ac() *= factor.ac();
     DebugAssert(ok(), AipsError);
   };
   // </group>
@@ -539,6 +555,19 @@ public:
     out(2).re = (-rr.im - rl.im + lr.im + ll.im)/T(2);
     out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
     out(3) = (rr - rl - lr + ll)/T(2);
+  };
+  // </group>
+
+  // Scale the Flux value by the specified amount
+  // <group>
+  void scaleValue(const T & factor);
+  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->scaleValue(factor);
+  };
+  void scaleValue(const Vector<NumericTraits<T>::ConjugateType> & factor) {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->scaleValue(factor);
   };
   // </group>
 
