@@ -106,14 +106,10 @@ FITSImage::FITSImage (const String& name)
    Bool canonical = True;    
 
 // The tile shape must not be a subchunk in all dimensions
-// It can be nx * ny * 1
-//
-   tileShape_p.resize(shape.nelements());
-   tileShape_p = 1;
-   if (shape.nelements()>0) tileShape_p(0) = shape(0);
-   if (shape.nelements()>1) tileShape_p(1) = shape(1);
+
    DataType type = TpFloat;
    if (dataType==FITS::SHORT) type = TpShort;
+   tileShape_p = TiledFileAccess::makeTileShape(shape);
    pTiledFile_p = new TiledFileAccess(fullName, fileOffset, shape, tileShape_p,
                                       type, maxCacheSize, writable, canonical);
 
