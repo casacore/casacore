@@ -3143,3 +3143,4 @@
 13 030 src mv trial/implement/Lattices/ExprLogicNodeArray.h aips/implement/Tables/ExprLogicNodeArray.h
 13 030 src mv trial/implement/Lattices/ExprLogicNodeArray.cc aips/implement/Tables/ExprLogicNodeArray.cc
 13 030 src mv trial/implement/Lattices/ExprMathNodeArray.cc aips/implement/Tables/ExprMathNodeArray.cc
+13 030 src mv trial/implement/Lattices/ExprMathNodeArray.h aips/implement/Tables/ExprMathNodeArray.h
