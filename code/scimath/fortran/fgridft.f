@@ -4,15 +4,15 @@
      $     support, sampling, convFunc, chanmap, polmap, sumwt)
 
       implicit none
+      integer nrow, irow
       integer nx, ny, npol, nchan, nvispol, nvischan
+      integer support, sampling
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
       logical flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
-      integer nrow, irow
-      integer support, sampling
       integer chanmap(nvischan), polmap(nvischan)
 
       complex nvalue
@@ -78,13 +78,13 @@
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan
+      integer nrow, irow
+      integer support, sampling
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
       logical flag(nvispol, nvischan, nrow)
-      integer nrow, irow
-      integer support, sampling
       integer chanmap(*), polmap(*)
 
       complex nvalue
