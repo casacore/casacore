@@ -50,8 +50,11 @@ int main(int argc, char **argv)
     String name = root + "/code/trial/implement/Images/test/test_image.FITS";
     inp.Create("in", name, "Input FITS file name", "string");
     inp.Create("out", "out.image", "Output AIPS++ Image name", "string");
+    inp.Create("overwrite", "True", "Allow output to be overwritten?",
+                "Bool");
     inp.ReadArguments(argc, argv);
 
+    Bool overwrite=inp.GetBool("overwrite");
     String fitsFile = inp.GetString("in");
     String outFile = inp.GetString("out");
     if(outFile.empty() ) {
@@ -61,15 +64,16 @@ int main(int argc, char **argv)
 
     String error;
     PagedImage<Float>* pOutImage;
-    ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
-                                    AppInfo::memoryInMB());
+    Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
+                                    AppInfo::memoryInMB(), overwrite);
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
-    if (!pOutImage) {
+    if (!ok) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
+    } else {
+       os << "table " << outFile << " write complete " << endl;
     }
-
     delete pOutImage;    
-    os << "table " << outFile << " write complete " << endl;
+
 
   } catch (AipsError x) {
     cout << "exception: " << x.getMesg() << endl;
