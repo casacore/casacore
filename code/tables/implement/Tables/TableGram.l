@@ -97,7 +97,7 @@ AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
 NOT       [Nn][Oo][Tt]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
-NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
+NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
 NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 
@@ -209,6 +209,8 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 "-"       { tableGramPosition() += yyleng; return MINUS; }
 "("       { tableGramPosition() += yyleng; return LPAREN; }
 ")"       { tableGramPosition() += yyleng; return RPAREN; }
+"{"       { tableGramPosition() += yyleng; return LBRACE; }
+"}"       { tableGramPosition() += yyleng; return RBRACE; }
 ","       { tableGramPosition() += yyleng; return COMMA; }
 
 
