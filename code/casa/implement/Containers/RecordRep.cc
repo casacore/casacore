@@ -190,34 +190,34 @@ void RecordRep::checkShape (DataType type, const IPosition& shape,
     IPosition arrShape;
     switch (type) {
     case TpArrayBool:
-	arrShape = static_cast<Array<Bool>*>(value)->shape();
+	arrShape = static_cast<const Array<Bool>*>(value)->shape();
 	break;
     case TpArrayUChar:
-	arrShape = static_cast<Array<uChar>*>(value)->shape();
+	arrShape = static_cast<const Array<uChar>*>(value)->shape();
 	break;
     case TpArrayShort:
-	arrShape = static_cast<Array<Short>*>(value)->shape();
+	arrShape = static_cast<const Array<Short>*>(value)->shape();
 	break;
     case TpArrayInt:
-	arrShape = static_cast<Array<Int>*>(value)->shape();
+	arrShape = static_cast<const Array<Int>*>(value)->shape();
 	break;
     case TpArrayUInt:
-	arrShape = static_cast<Array<uInt>*>(value)->shape();
+	arrShape = static_cast<const Array<uInt>*>(value)->shape();
 	break;
     case TpArrayFloat:
-	arrShape = static_cast<Array<float>*>(value)->shape();
+	arrShape = static_cast<const Array<float>*>(value)->shape();
 	break;
     case TpArrayDouble:
-	arrShape = static_cast<Array<double>*>(value)->shape();
+	arrShape = static_cast<const Array<double>*>(value)->shape();
 	break;
     case TpArrayComplex:
-	arrShape = static_cast<Array<Complex>*>(value)->shape();
+	arrShape = static_cast<const Array<Complex>*>(value)->shape();
 	break;
     case TpArrayDComplex:
-	arrShape = static_cast<Array<DComplex>*>(value)->shape();
+	arrShape = static_cast<const Array<DComplex>*>(value)->shape();
 	break;
     case TpArrayString:
-	arrShape = static_cast<Array<String>*>(value)->shape();
+	arrShape = static_cast<const Array<String>*>(value)->shape();
 	break;
     default:
 	throw (AipsError ("RecordRep::checkShape"));
