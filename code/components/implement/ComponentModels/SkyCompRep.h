@@ -41,6 +41,7 @@ class MDirection;
 class MFrequency;
 class MVAngle;
 class RecordInterface;
+class GlishRecord;
 template <class T> class Vector;
 // template <class T> class ImageInterface;
 
@@ -256,8 +257,12 @@ public:
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
 			  const RecordInterface & record);
+  virtual Bool fromRecord(String & errorMessage, 
+			  const GlishRecord & record);
   virtual Bool toRecord(String & errorMessage, 
 			RecordInterface & record) const;
+  virtual Bool toRecord(String & errorMessage, 
+			GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
