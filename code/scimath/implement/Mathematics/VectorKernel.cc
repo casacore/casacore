@@ -30,12 +30,12 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Images/ImageUtilities.h>
 
 
 
@@ -115,44 +115,24 @@ Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width,
 
 
 
-Vector<Int> VectorKernel::toKernelTypes (const String& kernels)
-//
-// Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the
-// <src>setSmooth</src> function.
-// 
-// Inputs:
-//   kernels   Should contain some of "box", "gauss", "hann"
-//
+Vector<Int> VectorKernel::toKernelTypes (const String& kernels,
+                                         const String& delimiter)
 {
-// Convert to an array of strings
- 
-   const Vector<String> kernelStrings = ImageUtilities::getStrings(kernels);
-            
-// Convert strings to appropriate enumerated value
-            
-   Vector<Int> kernelTypes(kernelStrings.nelements());
-            
-   for (uInt i=0; i<uInt(kernelStrings.nelements()); i++) {
-      String tKernels= kernelStrings(i);
-      tKernels.upcase();
-               
-      if (tKernels.contains("BOX")) {
-         kernelTypes(i) = VectorKernel::BOXCAR;
-      } else if (tKernels.contains("GAUSS")) {
-         kernelTypes(i) = VectorKernel::GAUSSIAN;
-      } else if (tKernels.contains("HANN")) {
-         kernelTypes(i) = VectorKernel::HANNING;
-      }
-   }
-         
-// Return result
-               
-   return kernelTypes;
+   const Vector<String> kernelStrings = stringToVector(kernels, *(delimiter.chars()));
+   return VectorKernel::toKernelTypes(kernelStrings);
 }
  
 
-
+Vector<Int> VectorKernel::toKernelTypes (const Vector<String>& kernels)
+{
+   const uInt n = kernels.nelements();
+   Vector<Int> kernelTypes(n);
+   for (uInt i=0; i<n; i++) {
+      kernelTypes(i) = VectorKernel::toKernelType(kernels(i));
+   }
+   return kernelTypes;
+}
+ 
 
 
 VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
