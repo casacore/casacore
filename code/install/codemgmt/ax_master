@@ -5535,3 +5535,4 @@
 15 211 src rm trial/apps/oldsditerator/templates
 15 211 sys rm libexec/oldsdaverager.g
 15 211 sys rm libexec/oldsditerator.g
+15 211 sys rm bin/oldsditerator
