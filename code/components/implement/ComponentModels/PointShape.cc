@@ -41,25 +41,19 @@
 #include <aips/Utilities/String.h>
 
 PointShape::PointShape() 
-  :itsDir(),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType())
+  :ComponentShape()
 {
   DebugAssert(ok(), AipsError);
 }
 
 PointShape::PointShape(const MDirection& direction)
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType())
+  :ComponentShape(direction)
 {
   DebugAssert(ok(), AipsError);
 }
 
 PointShape::PointShape(const PointShape& other)
-  :itsDir(other.itsDir),
-   itsDirValue(other.itsDirValue),
-   itsRefFrame(other.itsRefFrame)
+  :ComponentShape(other)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -69,11 +63,7 @@ PointShape::~PointShape() {
 }
 
 PointShape& PointShape::operator=(const PointShape& other) {
-  if (this != &other) {
-    itsDir = other.itsDir;
-    itsDirValue = other.itsDirValue;
-    itsRefFrame = other.itsRefFrame;
-  }
+  ComponentShape::operator=(other);
   DebugAssert(ok(), AipsError);
   return *this;
 }
@@ -83,37 +73,48 @@ ComponentType::Shape PointShape::type() const {
   return ComponentType::POINT;
 }
 
-void PointShape::setRefDirection(const MDirection& newRefDir) {
-  itsDir = newRefDir;
-  itsDirValue = newRefDir.getValue();
-  itsRefFrame = (MDirection::Types) newRefDir.getRef().getType();
-  DebugAssert(ok(), AipsError);
-}
-
-const MDirection& PointShape::refDirection() const {
-  DebugAssert(ok(), AipsError);
-  return itsDir;
-}
-
 void PointShape::sample(Flux<Double>& flux, const MDirection& direction, 
 			const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  MVDirection dirVal = direction.getValue();
   // Convert direction to the same frame as the reference direction
-  if ((MDirection::Types) direction.getRef().getType() != itsRefFrame) {
-    dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
-  }
-  if (!itsDirValue.near(dirVal, pixelSize.get()/2.0)) {
-    flux.scaleValue(0.0, 0.0, 0.0, 0.0);
+  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
+    const MVDirection dirVal = 
+      MDirection::Convert(direction, refDirFrame())().getValue();
+    if (refDirValue().separation(dirVal) > pixelSize.radian()/2.0) {
+      flux.scaleValue(0.0, 0.0, 0.0, 0.0);
+    }
+  } else {
+    if (refDirValue().separation(direction.getValue()) > 
+	pixelSize.radian()/2.0) {
+      flux.scaleValue(0.0, 0.0, 0.0, 0.0);
+    }
   }
 }
 
-void PointShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
-			    const Double& frequency) const {
+void PointShape::multiSample(Vector<Double>& scale, 
+			     const Vector<MVDirection>& directions, 
+			     const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  if (&frequency == 0) {}; // Suppress compiler warning about unused variable
-  if (&uvw == 0) {}; // Suppress compiler warning about unused variable
-  if (&flux == 0) {}; // Suppress compiler warning about unused variable
+  const uInt nSamples = directions.nelements();
+  if (scale.nelements() == 0) scale.resize(nSamples);
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+
+  Double separation;
+  const Double pixSize = pixelSize.radian()/2.0;
+  for (uInt i = 0; i < nSamples; i++) {
+    separation = refDirValue().separation(directions(i));
+    if (separation < pixSize) {
+      scale(i) = 1.0;
+    } else {
+      scale(i) = 0.0;
+    }
+  }
+}
+
+void PointShape::visibility(Flux<Double>&, const Vector<Double>&,
+			    const Double&) const {
+  // Nothing needs to be done!
+  DebugAssert(ok(), AipsError);
 }
 
 ComponentShape* PointShape::clone() const {
@@ -144,30 +145,23 @@ void PointShape::parameters(Vector<Double>& compParms) const {
 
 Bool PointShape::fromRecord(String& errorMessage,
 			    const RecordInterface& record) {
-  if (!ComponentShape::readDir(errorMessage, record)) return False;
   DebugAssert(ok(), AipsError);
-  return True;
+  return ComponentShape::fromRecord(errorMessage, record);
 }
 
 Bool PointShape::toRecord(String& errorMessage,
 			  RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), ComponentType::name(type()));
-  if (!ComponentShape::addDir(errorMessage, record)) return False;
-  return True;
+  return ComponentShape::toRecord(errorMessage, record);
 }
 
-Bool PointShape::convertUnit(String& errorMessage,
-			     const RecordInterface& record) {
-  // Suppress compiler warning about unused variables
-  if (&errorMessage == 0) {}; 
-  if (&record == 0) {};
+Bool PointShape::convertUnit(String&, const RecordInterface&) {
   DebugAssert(ok(), AipsError);
   return True;
 }
 
 Bool PointShape::ok() const {
-  return True;
+  return ComponentShape::ok();
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 PointShape"
