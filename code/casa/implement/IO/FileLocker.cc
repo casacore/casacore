@@ -115,11 +115,11 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	    }
 	    if (!itsMsgShown) {
 	      itsMsgShown = True;
-	      cout << "*** It looks as if the statd deamon is not running on your Linux system" << endl;
-	      cout << "*** which means that no locks can be used on NFS files" << endl;
-	      cout << "*** so a lock is always granted and NFS files are not properly shared." << endl;
-	      cout << "*** SUSE 6.1 systems might come without the stad package." << endl;
-	      cout << "*** You can get it from /pub/linux/devel/gcc/knfsd-1.4.1.tar.gz" << endl;
+	      cerr << "*** It looks as if the statd deamon is not running on your Linux system" << endl;
+	      cerr << "*** which means that no locks can be used on NFS files" << endl;
+	      cerr << "*** so a lock is always granted and NFS files are not properly shared." << endl;
+	      cerr << "*** SUSE 6.1 systems might come without the statd package." << endl;
+	      cerr << "*** You can get it from /pub/linux/devel/gcc/knfsd-1.4.1.tar.gz" << endl;
 	    }
 	    return True;
 	}
