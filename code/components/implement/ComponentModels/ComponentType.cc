@@ -1,5 +1,5 @@
 //# ComponentType.cc:  this defines ComponentType.cc
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,9 +45,11 @@ ComponentType::Shape ComponentType::shape(const String & shapeName) {
   String canonicalCase(shapeName);
   canonicalCase.capitalize();
   ComponentType::Shape s;
+  String s2;
   for (uInt i = 0; i < NUMBER_SHAPES; i++) {
     s = static_cast<ComponentType::Shape>(i);
-    if (canonicalCase.matches(ComponentType::name(s))) {
+    s2 = ComponentType::name(s);
+    if (s2.matches(canonicalCase)) {
       return s;
     }
   }
@@ -68,13 +70,15 @@ String ComponentType::name(ComponentType::Polarisation fluxEnum) {
 }
 
 ComponentType::Polarisation ComponentType::polarisation(const String & 
-						 polarisationName) {
+     						        polarisationName) {
   String canonicalCase(polarisationName);
   canonicalCase.capitalize();
   ComponentType::Polarisation s;
+  String s2;
   for (uInt i = 0; i < NUMBER_POLARISATIONS; i++) {
     s = static_cast<ComponentType::Polarisation>(i);
-    if (canonicalCase.matches(ComponentType::name(s))) {
+    s2 = ComponentType::name(s);
+    if (s2.matches(canonicalCase)) {
       return s;
     }
   }
@@ -97,9 +101,11 @@ ComponentType::SpectralShape ComponentType::spectralShape(const String &
   String canonicalCase(spectralName);
   canonicalCase.capitalize();
   ComponentType::SpectralShape s;
+  String s2;
   for (uInt i = 0; i < NUMBER_SPECTRAL_SHAPES; i++) {
     s = static_cast<ComponentType::SpectralShape>(i);
-    if (canonicalCase.matches(ComponentType::name(s))) {
+    s2 = ComponentType::name(s);
+    if (s2.matches(canonicalCase)) {
       return s;
     }
   }
