@@ -38,9 +38,7 @@ class PixelRegion;
 template <class T> class Array;
 
 
-// <summary>
-// Class to allow C++ expressions involving lattices
-// </summary>
+// <summary> Class to allow C++ expressions involving lattices </summary>
 
 // <use visibility=export>
 
