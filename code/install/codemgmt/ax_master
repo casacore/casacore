@@ -2060,3 +2060,5 @@
 08 241 src rm atnf/apps/pks/gfit1dnr
 08 241 src rm atnf/apps/pksBandpass
 08 247 src rm install/alpha_gnu/aips-Tables.defs
+08 249 src rm trial/implement/Images/ImageTiledCache.h
+08 249 src rm trial/implement/Images/ImageTiledCache.cc
