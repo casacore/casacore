@@ -118,14 +118,14 @@ Bool SpectralCoordinate::toPixel(Double& pixel,
    return toPixel(pixel, world_tmp);
 }
  
-Bool SpectralCoordinate::pixelToVelocity (Quantum<Double>& velocity, Double pixel)
+Bool SpectralCoordinate::pixelToVelocity (Quantum<Double>& velocity, Double pixel) const
 {
    Double world;
    if (!toWorld(world, pixel)) return False;
    return frequencyToVelocity (velocity, world);
 }
 
-Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel)
+Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel) const
 {
    Double world;
    if (!toWorld(world, pixel)) return False;
@@ -134,7 +134,7 @@ Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel)
    return True;
 }
 
-Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel)
+Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel) const
 {
    velocity.resize(pixel.nelements());
 
@@ -150,7 +150,7 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
    return True;
 }
 
-Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double frequency)
+Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double frequency)  const
 {
    velocity = pVelocityMachine_p->makeVelocity(frequency);
    MVFrequency mvf(frequency);
@@ -159,7 +159,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double 
 }
 
 
-Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency)
+Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency) const 
 {
    static Quantum<Double> t;
    t = pVelocityMachine_p->makeVelocity(frequency);
@@ -167,7 +167,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency
    return True;
 }
 
-Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency)
+Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency) const
 
 {
    velocity.resize(frequency.nelements());
@@ -176,12 +176,12 @@ Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Ve
    return True;
 }
 
-Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency)
+Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency) const
 {
    return frequencyToVelocity(velocity, frequency.getValue());
 }
 
-Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency)
+Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency) const
 {
    velocity = pVelocityMachine_p->operator()(frequency);
    return True;

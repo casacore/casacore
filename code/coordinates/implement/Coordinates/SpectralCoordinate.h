@@ -315,16 +315,16 @@ public:
     // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
     // is active in the <src>pixelToVelocity</src> functions (because internally
     // the use <src>toWorld</src>) but not in the <src>frequencyToVelocity</src> functions.
-    // <group>  
-    Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel);
-    Bool pixelToVelocity (Double& velocity, Double pixel);
-    Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel);
+    // <group>
+    Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel) const;
+    Bool pixelToVelocity (Double& velocity, Double pixel) const;
+    Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel) const;
 //
-    Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency);
-    Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency);
-    Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency);
-    Bool frequencyToVelocity (Double& velocity, Double frequency);
-    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency) const;
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency) const;
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency) const;
+    Bool frequencyToVelocity (Double& velocity, Double frequency) const;
+    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency) const;
     // </group>
 
     // Functions to convert from velocity (uses the current active
