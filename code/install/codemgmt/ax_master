@@ -2431,3 +2431,5 @@
 09 385 src mv nfra/apps/ms2fits trial/apps/ms2fits
 09 385 src rm nrao/apps/dish/dishavg_viewers.g
 09 385 sys rm libexec/dishavg_viewers.g
+09 386 src rm trial/scripts/unique.g
+09 386 src rm trial/scripts/unique.help
