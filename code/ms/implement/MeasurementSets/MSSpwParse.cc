@@ -61,7 +61,6 @@ const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
     MSDataDescIndex msDDI(ms()->dataDescription());
     String colName = MS::columnName(MS::DATA_DESC_ID);
 
-    os << " vector length " << msDDI.matchSpwId(spwIds).nelements() <<LogIO::POST;
    TableExprNode condition =
        (ms()->col(colName).in(msDDI.matchSpwId(spwIds)));
 
@@ -81,7 +80,7 @@ const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int chann
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
     os << "Table is not writable " << LogIO::POST;
-    exit(0);
+    //    exit(0);
   } 
 
   IPosition rowShape;
@@ -125,7 +124,6 @@ const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int chann
   TableExprNode condition =
     (ms()->col(colName).in(msDDI.matchSpwId(spw)));
   ///////////////////////////////////////////////////////////////
-  os<< " single channel selection "<<LogIO::POST;
   if(node_p->isNull())
     *node_p = condition;
   else
@@ -141,7 +139,7 @@ const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int 
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
     os << "Table is not writable " << endl;
-    exit(0);
+    //    exit(0);
   } 
 
   IPosition rowShape;
@@ -184,8 +182,6 @@ const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int 
 
   TableExprNode condition =
     (ms()->col(colName).in(msDDI.matchSpwId(spw)));
-  ///////////////////////////////////////////////////////////////
-  os<< " Channel range selection "<<LogIO::POST;
 
   if(node_p->isNull())
     *node_p = condition;
@@ -200,7 +196,7 @@ const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Doubl
   LogIO os(LogOrigin("MSSpwParse", "selectVelRangeinASpw()", WHERE)); 
   TableExprNode condition;
   os << " velocity range selection is not available " << LogIO::POST;
-  exit(0);
+  //  exit(0);
   if(node_p->isNull())
     *node_p = condition;
   else
@@ -212,15 +208,46 @@ const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Doubl
 const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Double startFreq, const Double endFreq) 
 {
   LogIO os(LogOrigin("MSSpwParse", "selectFreRangeinASpw()", WHERE)); 
-  TableExprNode condition;
-  os << " frequency range selection is not available " << LogIO::POST;
-  exit(0);
-  if(node_p->isNull())
-    *node_p = condition;
-  else
-    *node_p = *node_p || condition;
+  //////////////////////////////////////////////////////////////////
+
+  Int startChan = 0;
+  Int endChan = 0;
+  ROMSSpWindowColumns msSpwCol( ms()->spectralWindow());
+  Array<Double> freqArray = msSpwCol.chanFreq().getColumn();
+  //ROArrayColumn<Double> freqArray = msSpwCol.chanFreq();
+  IPosition ips = freqArray.shape();
+
+  Array<Double> freq;
+  if(spw < ips(1)) {
+    freq = freqArray(Slicer(IPosition(2, 0, spw), IPosition(2, ips(0)-1, spw), IPosition(2, 1, 1), Slicer::endIsLast));
+    IPosition fps = freq.shape();
+  } else {
+    os <<" spw id is not in range " << LogIO::POST;
+  }
   
-  return node_p;
+  Vector<Double> freqVec(freq.nonDegenerate());
+  Int numChan = freqVec.nelements();
+  for (Int i = 0; i < numChan - 1 ; i++) {
+    if ( freqVec(i)/1000000 == startFreq) {
+      startChan= i + 1;
+    } else if( freqVec(i)/1000000 < startFreq && freqVec(i+1)/1000000 >= startFreq) {
+      startChan = i + 2;
+    }
+  }
+  for (Int i = 0; i < numChan - 1 ; i++) {
+    if ( freqVec(i)/1000000 == endFreq) {
+      endChan= i+1;
+    } else if ( freqVec(i)/1000000 < endFreq && freqVec(i+1)/1000000 > endFreq){
+      endChan = i+1;
+    } else if(freqVec(i+1)/1000000 == endFreq) {
+      endChan = i+2;
+    }
+  }
+  if(startChan > endChan ) {
+    os <<" Start Frequence is greater than End Frequence ! " <<LogIO::POST;
+  }
+  return selectChanRangeinASpw(spw, startChan, endChan);
+  //////////////////////////////////////////////////////////////////
 }
 
 const TableExprNode *MSSpwParse::selectSpwName(const String& name)
