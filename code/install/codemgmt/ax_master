@@ -3227,3 +3227,4 @@
 13 069 src rm aips/implement/MeasurementSets/MSTable2.cc
 13 078 src mv trial/implement/MeasurementSets/MSTable2.cc aips/implement/MeasurementSets/MSTable2.cc
 13 088 src rm trial/apps/megaserver/measures_mega.h
+13 088 src rm trial/apps/megaserver/measures_mega.cc
