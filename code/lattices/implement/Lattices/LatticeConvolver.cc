@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,12 +34,12 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/OS/HostInfo.h>
+#include <iostream.h>
 
-
-
-// This sets the maximum size, in MB by this class to 1/8th of the total
-// memory 
+// This sets the maximum size, in MB of any memory based Lattices created by
+// this class. It was deteremined empirically to be tyhe best value on a
+// 64MByte Linux machine.
+// const Int maxLatSize = 1000;
 const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 
 template<class T> LatticeConvolver<T>::
@@ -170,6 +171,7 @@ circular(Lattice<T> & modelAndResult){
 
 template<class T> void LatticeConvolver<T>::
 convolve(Lattice<T> & result, const Lattice<T> & model) const {
+  //  cerr << "convolve: " << model.shape() << " " << itsXfr.shape() << endl;
   const uInt ndim = itsFFTShape.nelements();
   DebugAssert(result.ndim() == ndim, AipsError);
   DebugAssert(model.ndim() == ndim, AipsError);
@@ -210,7 +212,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       resultPtr = &resultSlice;
     }
     // Do the forward transform
-    LatticeFFT::rcfft(fftModel, *modelPtr);
+    LatticeFFT::rcfft(fftModel, *modelPtr, False);
     { // Multiply the transformed model with the transfer function
       IPosition tileShape(itsXfr.niceCursorShape());
       const IPosition otherTileShape(fftModel.niceCursorShape());
@@ -228,15 +230,39 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       }
     }
     // Do the inverse transform
-    LatticeFFT::crfft(*resultPtr, fftModel);
+    LatticeFFT::crfft(*resultPtr, fftModel,False);
     if (doPadding) { // Unpad the result
       unpad(resultSlice, *resultPtr);
     }
+
+//     {
+//       int kkk=0;
+
+//       for (int i=0;i<resultSlice.shape()(0);i++)
+// 	for (int j=0;j<resultSlice.shape()(1);j++)
+// 	  if (resultSlice(IPosition(4,i,j,0,0)) != 0)
+// 	    {kkk=1;break;}
+
+//       if (kkk==1)
+// 	{
+// 	  for (int i=0;i<resultSlice.shape()(0);i++)
+// 	    {
+// 	      for (int j=0;j<resultSlice.shape()(1);j++)
+// 		cout << "Res: " 
+// 		     << resultSlice(IPosition(4,i,j,0,0)) << " "
+// 		     << endl;
+// 	      cout << endl;
+// 	    }
+// 	  exit(0);
+// 	}
+//     }
+
   }
   if (doPadding) { // cleanup the TempLattice used for padding.
     delete modelPtr;
     modelPtr = resultPtr = 0;
   }
+  //  cerr << "convolve" << endl;
 }
 
 template<class T> void LatticeConvolver<T>::
@@ -322,19 +348,34 @@ unpad(Lattice<T> & result, const Lattice<T> & paddedResult) {
 // itsCachedPsf data members.
 template<class T> void LatticeConvolver<T>::
 makeXfr(const Lattice<T> & psf) {
+  //  cerr << "makeXfr" << endl;
   DebugAssert(itsPsfShape == psf.shape(), AipsError);
   itsFFTShape = calcFFTShape(itsPsfShape, itsModelShape, itsType);
+
+//   for (int i=0;i<psf.shape()(0);i++)
+//     {
+//       for (int j=0;j<psf.shape()(1);j++)
+// 	cout << "PSF: " 
+// 	     << psf(IPosition(4,i,j,0,0)) << " "
+// 						//	     << abs(itsXfr(IPosition(4,i,j,0,0))) << " "
+// 						//	     << arg(itsXfr(IPosition(4,i,j,0,0))) << " "
+// 	     << endl;
+//       cout << endl;
+//     }
+
+
   { // calculate the transfer function
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
+    //    XFRShape(1) = (XFRShape(1)/2+1)*2;
     itsXfr = TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
-      LatticeFFT::rcfft(itsXfr, psf);
+      LatticeFFT::myrcfft(itsXfr, psf,True);
     } else { // need to pad the psf 
       TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
-      LatticeFFT::rcfft(itsXfr, paddedPsf);
+      LatticeFFT::myrcfft(itsXfr, paddedPsf,True);
     }
   }
   // Only cache the psf if it cannot be reconstructed from the transfer
@@ -347,6 +388,7 @@ makeXfr(const Lattice<T> & psf) {
     itsPsf = TempLattice<T>();
     itsCachedPsf = False;
   }
+  //  cerr << "makeXfr" << endl;
 }
 
 // Construct a psf from the transfer function (itsXFR).
