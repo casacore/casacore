@@ -2518,3 +2518,7 @@
 11 365 src rm aips/glish/glish/TkPgplot.h
 11 365 src rm aips/glish/glish/TkSelect.cc
 11 365 src rm aips/glish/glish/TkSelect.h
+11 369 src rm trial/implement/test/tExample1.cc
+11 369 src rm trial/implement/test/tExample2.cc
+11 369 src rm trial/implement/test/tExample3.cc
+11 369 src rm trial/implement/test/tExample4.cc
