@@ -32,8 +32,8 @@
 ByteSinkSource::ByteSinkSource ()
 {}
 
-ByteSinkSource::ByteSinkSource (TypeIO* typeIO)
-: BaseSinkSource (typeIO)
+ByteSinkSource::ByteSinkSource (TypeIO* typeIO, Bool takeOver)
+: BaseSinkSource (typeIO, takeOver)
 {}
 
 ByteSinkSource::ByteSinkSource (const ByteSinkSource& sinkSource)

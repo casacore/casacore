@@ -1,5 +1,5 @@
 //# ByteSink.h: Class for write-only access to data in a given format
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,16 +28,17 @@
 #if !defined(AIPS_BYTESINK_H)
 #define AIPS_BYTESINK_H
 
-
-//# Includes
 #include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
 #include <aips/IO/BaseSinkSource.h>
+//# The following should be a forward declaration. But our Complex & DComplex
+//# classes are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
+#include <aips/Mathematics/Complex.h>
 
+class TypeIO;
+class String;
 
-// <summary> 
-// Class for write-only access to data in a given format.
-// </summary>
+// <summary>Class for write-only access to data in a given format.</summary>
 
 // <use visibility=export>
 
@@ -96,15 +97,16 @@ public:
     // This creates an invalid object, but is present for convenience.
     ByteSink();
 
-    // Construct from given TypeIO object.
-    // The constructor does not copy the object,
-    // but only keeps a pointer to it.
-    ByteSink (TypeIO* typeIO);
+    // Construct from given TypeIO object.  The constructor does not copy the
+    // object, but only keeps a pointer to it. If takeOver is true the this
+    // class will delete the supplied pointer. Otherwise the caller is
+    // responsible for this.
+    ByteSink (TypeIO* typeIO, Bool takeOver=False);
  
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     ByteSink (const ByteSink& sink);
 
-    // Assignment (copy semantics).
+    // The assignment operator uses reference semantics
     ByteSink& operator= (const ByteSink& sink);
 
     // destructor

@@ -1,5 +1,5 @@
 //# ByteSource.h: Class for read-only access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,19 +28,17 @@
 #if !defined(AIPS_BYTESOURCE_H)
 #define AIPS_BYTESOURCE_H
 
-#if defined (_AIX)
-#pragma implementation ("ByteSource.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
 #include <aips/IO/BaseSinkSource.h>
+//# The following should be a forward declaration. But our Complex & DComplex
+//# classes are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
+#include <aips/Mathematics/Complex.h>
 
+class TypeIO;
+class String;
 
-// <summary> 
-// Class for read-only access to data in a given format.
-// </summary>
+// <summary>Class for read-only access to data in a given format.</summary>
 
 // <use visibility=export>
 
@@ -95,15 +93,16 @@ public:
     // This creates an invalid object, but is present for convenience.
     ByteSource();
 
-    // Construct from given TypeIO object.
-    // The constructor does not copy the object,
-    // but only keeps a pointer to it.
-    ByteSource (TypeIO* typeIO);
+    // Construct from given TypeIO object.  The constructor does not copy the
+    // object, but only keeps a pointer to it. If takeOver is true the this
+    // class will delete the supplied pointer. Otherwise the caller is
+    // responsible for this.
+    ByteSource (TypeIO* typeIO, Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     ByteSource (const ByteSource& source);
 
-    // Assignment (copy semantics).
+    // The assignment operator uses reference semantics
     ByteSource& operator= (const ByteSource& source);
 
     // destructor

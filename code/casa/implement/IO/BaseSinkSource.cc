@@ -1,5 +1,5 @@
 //# BaseSinkSource.cc: Shared base class for ByteSink and ByteSource
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,16 +27,14 @@
 
 #include <aips/aips.h>
 #include <aips/IO/BaseSinkSource.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
 
 
 BaseSinkSource::BaseSinkSource()
-: itsTypeIO (0)
+: itsTypeIO ()
 {}
 
-BaseSinkSource::BaseSinkSource (TypeIO* typeIO)
-: itsTypeIO (typeIO)
+BaseSinkSource::BaseSinkSource (TypeIO* typeIO, Bool takeOver)
+: itsTypeIO (typeIO, takeOver)
 {}
 
 BaseSinkSource::BaseSinkSource (const BaseSinkSource& sinkSource)
@@ -55,7 +53,12 @@ BaseSinkSource::~BaseSinkSource()
 {}
 
 
-TypeIO& BaseSinkSource::getTypeIO()
+TypeIO& BaseSinkSource::typeIO()
+{
+    return *itsTypeIO;
+}
+
+const TypeIO& BaseSinkSource::typeIO() const
 {
     return *itsTypeIO;
 }

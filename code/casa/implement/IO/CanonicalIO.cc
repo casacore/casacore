@@ -1,5 +1,5 @@
 //# CanonicalIO.cc: Class for IO in canonical format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,13 +25,12 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
+#include <aips/IO/ByteIO.h>
 
-
-CanonicalIO::CanonicalIO (ByteIO* byteIO, uInt bufferLength)
-: TypeIO          (byteIO), 
+CanonicalIO::CanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
+: TypeIO          (byteIO, takeOver), 
   itsBuffer       (new char[bufferLength]),
   itsBufferLength (bufferLength)
 {}
@@ -45,7 +44,7 @@ CanonicalIO::CanonicalIO (const CanonicalIO& that)
 CanonicalIO& CanonicalIO::operator= (const CanonicalIO& that)
 {
     if (this != &that) {
-	itsByteIO = that.itsByteIO;
+        TypeIO::operator= (that);
 	if (itsBufferLength != that.itsBufferLength) {
 	    delete [] itsBuffer;
 	    itsBufferLength = that.itsBufferLength;

@@ -1,5 +1,5 @@
 //# ByteSource.cc: Class for read-only access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,18 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
 #include <aips/IO/ByteSource.h>
-#include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-
+#include <aips/IO/TypeIO.h>
 
 ByteSource::ByteSource()
 {}
 
-ByteSource::ByteSource (TypeIO* typeIO)
-: BaseSinkSource (typeIO)
+ByteSource::ByteSource (TypeIO* typeIO, Bool takeOver)
+: BaseSinkSource (typeIO, takeOver)
 {    
     if (!isReadable()) {
 	throw (AipsError ("ByteSource is not readable"));

@@ -1,5 +1,5 @@
 //# ByteSink.cc: Class for write-only access to data in a given format
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,19 +25,16 @@
 //#
 //# $Id$
 
-
-#include <aips/aips.h>
 #include <aips/IO/ByteSink.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/IO/TypeIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-
 
 ByteSink::ByteSink()
 {}
 
-ByteSink::ByteSink (TypeIO* typeIO)
-: BaseSinkSource (typeIO)
+ByteSink::ByteSink (TypeIO* typeIO, Bool takeOver)
+: BaseSinkSource (typeIO, takeOver)
 {
     if (!isWritable()) {
 	throw (AipsError ("ByteSink is not writable"));

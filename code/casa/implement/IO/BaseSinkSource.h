@@ -1,5 +1,5 @@
 //# BaseSinkSource.h: Shared base class for ByteSink and ByteSource
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,18 +28,12 @@
 #if !defined(AIPS_BASESINKSOURCE_H)
 #define AIPS_BASESINKSOURCE_H
 
-#if defined (_AIX)
-#pragma implementation ("BaseSinkSource.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/TypeIO.h>
+#include <aips/IO/ByteIO.h>
+#include <aips/Utilities/CountedPtr.h>
 
-
-// <summary>
-// Shared base class for ByteSink and ByteSource.
-// </summary>
+// <summary>Shared base class for ByteSink and ByteSource.</summary>
 
 // <use visibility=export>
 
@@ -88,7 +82,10 @@ class BaseSinkSource
 {
 public: 
     // This functions returns a reference to itsTypeIO.
-    TypeIO& getTypeIO();
+    // <group>
+    TypeIO& typeIO();
+    const TypeIO& typeIO() const;
+    // </group>
 
     // This function sets the position on the given offset.
     // The seek option defines from which position the seek is done.
@@ -106,20 +103,22 @@ public:
 protected:
     BaseSinkSource();
 
-    // Construct using the given TypeIO.
-    BaseSinkSource (TypeIO* typeIO);
+    // Construct using the given TypeIO. If takeOver is true the this class
+    // will delete the supplied pointer. Otherwise the caller is responsible
+    // for this.
+    BaseSinkSource (TypeIO* typeIO, Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     BaseSinkSource (const BaseSinkSource& BaseSinkSource);
 
-    // Assignment (copy semantics).
+    // The assignment operator uses reference semantics
     BaseSinkSource& operator= (const BaseSinkSource& BaseSinkSource);
 
     virtual ~BaseSinkSource();
 
 
     // This variable keeps a pointer to a TypeIO.
-    TypeIO* itsTypeIO;
+    CountedPtr<TypeIO> itsTypeIO;
 };
 
 

@@ -1,5 +1,5 @@
 //# CanonicalIO.h: Class for IO in canonical format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,18 +28,17 @@
 #if !defined(AIPS_CANONICALIO_H)
 #define AIPS_CANONICALIO_H
 
-#if defined (_AIX)
-#pragma implementation ("CanonicalIO.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/TypeIO.h>
+//# The following should be a forward declaration. But our Complex & DComplex
+//# classes are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
+#include <aips/Mathematics/Complex.h>
 
+class ByteIO;
+class String;
 
-// <summary> 
-// Class for IO in canonical format.
-// </summary>
+// <summary>Class for IO in canonical format.</summary>
 
 // <use visibility=export>
 
@@ -76,17 +75,20 @@ public:
     // The read/write functions will use the given ByteIO object
     // as the data store.
     // <p>
-    // The read and write functions use an intermediate buffer
-    // to hold the data in canonical format.
-    // For small arrays it uses a fixed buffer with length
-    // <src>bufferLength</src>. For arrays not fitting in this
-    // buffer, it uses a temporary buffer allocated on the heap.
-    explicit CanonicalIO (ByteIO* byteIO, uInt bufferLength=4096);
+    // The read and write functions use an intermediate buffer to hold the data
+    // in canonical format.  For small arrays it uses a fixed buffer with
+    // length <src>bufferLength</src>. For arrays not fitting in this buffer,
+    // it uses a temporary buffer allocated on the heap.
+    // <p>
+    // If takeOver is True the this class will delete the supplied
+    // pointer. Otherwise the caller is responsible for this.
+    explicit CanonicalIO (ByteIO* byteIO, uInt bufferLength=4096,
+			  Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     CanonicalIO (const CanonicalIO& canonicalIO);
 
-    // Assignment, copy semantics
+    // The assignment operator uses reference semantics
     CanonicalIO& operator= (const CanonicalIO& canonicalIO);
 
     // Destructor, deletes allocated memory.

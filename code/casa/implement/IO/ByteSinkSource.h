@@ -1,5 +1,5 @@
 //# ByteSinkSource.h: Class for read/write access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,20 +28,13 @@
 #if !defined(AIPS_BYTESINKSOURCE_H)
 #define AIPS_BYTESINKSOURCE_H
 
-#if defined (_AIX)
-#pragma implementation ("ByteSinkSource.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
 #include <aips/IO/ByteSink.h>
 #include <aips/IO/ByteSource.h>
 
+class TypeIO;
 
-// <summary> 
-// Class for read/write access to data in a given format.
-// </summary>
+// <summary>Class for read/write access to data in a given format.</summary>
 
 // <use visibility=export>
 
@@ -101,15 +94,16 @@ public:
     // This creates an invalid object, but is present for convenience.
     ByteSinkSource();
 
-    // Construct from given TypeIO object.
-    // The constructor does not copy the object,
-    // but only keeps a pointer to it.
-    ByteSinkSource (TypeIO* typeIO);
+    // Construct from given TypeIO object.  The constructor does not copy the
+    // object, but only keeps a pointer to it. If takeOver is true the this
+    // class will delete the supplied pointer. Otherwise the caller is
+    // responsible for this.
+    ByteSinkSource (TypeIO* typeIO, Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     ByteSinkSource (const ByteSinkSource& sinkSource);
 
-    // Assignment (copy semantics)
+    // The assignment operator uses reference semantics
     ByteSinkSource& operator= (const ByteSinkSource& sinkSource);
 
     ~ByteSinkSource();

@@ -1,5 +1,5 @@
 //# TypeIO.h: Abstract base class for IO of data in a type-dependent format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,20 +28,17 @@
 #if !defined(AIPS_TYPEIO_H)
 #define AIPS_TYPEIO_H
 
-#if defined (_AIX)
-#pragma implementation ("TypeIO.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
+#include <aips/Utilities/CountedPtr.h>
+//# The following should be a forward declaration. But our Complex & DComplex
+//# classes are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
 #include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
 
+class String;
 
-// <summary> 
-// Abstract base class for IO of data in a type-dependent format
-// </summary>
+// <summary>Abstract base class for IO of data in a type-dependent format</summary>
 
 // <use visibility=export>
 
@@ -83,10 +80,16 @@ public:
     // Constructor.
     // The read/write functions will use the given ByteIO object
     // as the data store.
-    explicit TypeIO (ByteIO* byteIO);
+    explicit TypeIO (ByteIO* byteIO, Bool takeOver=False);
 
     virtual ~TypeIO();
     
+    // Functions to return a reference to the ByteIO class.
+    // <group>
+    const ByteIO& byteIO() const;
+    ByteIO& byteIO();
+    // </group>
+
     // Convert the values and write them to the ByteIO object.
     // By default Bools are stored as bits, Complex as 2 floats,
     // DComplex as 2 doubles and String as a length (uInt) and chars.
@@ -145,12 +148,12 @@ public:
 
 protected:    
     // This varable keeps a pointer to a ByteIO.
-    ByteIO* itsByteIO;
+    CountedPtr<ByteIO> itsByteIO;
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     TypeIO (const TypeIO& TypeIO);
 
-    // Assignment (copy semantics).
+    // The assignment operator uses reference semantics
     TypeIO& operator= (const TypeIO& typeIO);
 };
 

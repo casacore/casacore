@@ -1,5 +1,5 @@
 //# RawIO.cc: Class for IO in local format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@
 //# $Id$
 
 #include <aips/IO/RawIO.h>
+#include <aips/IO/ByteIO.h>
 
-
-RawIO::RawIO (ByteIO* byteIO)
-: TypeIO (byteIO)
+RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
+: TypeIO (byteIO, takeOver)
 {}
 
 RawIO::RawIO (const RawIO& that)
@@ -39,7 +39,7 @@ RawIO::RawIO (const RawIO& that)
 RawIO& RawIO::operator= (const RawIO& that)
 {
     if (this != &that) {
-	itsByteIO = that.itsByteIO;
+	TypeIO::operator= (that);
     }
     return *this;
 }

@@ -1,5 +1,5 @@
 //# RawIO.h: Class for IO in local format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,18 +28,17 @@
 #if !defined(AIPS_RAWIO_H)
 #define AIPS_RAWIO_H
 
-#if defined (_AIX)
-#pragma implementation ("RawIO.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/TypeIO.h>
+//# The following should be a forward declaration. But our Complex & DComplex
+//# classes are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
+#include <aips/Mathematics/Complex.h>
 
+class ByteIO;
+class String;
 
-// <summary> 
-// Class for IO in local format.
-// </summary>
+// <summary>Class for IO in local format.</summary>
 
 // <use visibility=export>
 
@@ -72,15 +71,15 @@
 class RawIO: public TypeIO
 {
 public: 
-    // Constructor.
-    // The read/write functions will use the given ByteIO object
-    // as the data store.
-    explicit RawIO (ByteIO* byteIO);
+    // Constructor.  The read/write functions will use the given ByteIO object
+    // as the data store.  If takeOver is True the this class will delete the
+    // supplied pointer. Otherwise the caller is responsible for this.
+    explicit RawIO (ByteIO* byteIO, Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     RawIO (const RawIO& rawIO);
 
-    // Assignment, copy semantics
+    // The assignment operator uses reference semantics
     RawIO& operator= (const RawIO& rawIO);
 
     // Destructor.

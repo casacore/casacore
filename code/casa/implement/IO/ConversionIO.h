@@ -1,5 +1,5 @@
 //# ConversionIO.h: Class for IO in a converted format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,21 +28,19 @@
 #if !defined(AIPS_CONVERSIONIO_H)
 #define AIPS_CONVERSIONIO_H
 
-#if defined (_AIX)
-#pragma implementation ("ConversionIO.cc")
-#endif
-
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/TypeIO.h>
+#include <aips/Utilities/CountedPtr.h>
+//# The following should be a declaration. But our Complex & DComplex classes
+//# are a typedef hence this does not work. Replace the following with
+//# forward declarations when Complex and DComplex are no longer typedefs.
+#include <aips/Mathematics/Complex.h>
 
-//# Forward Declarations
 class DataConversion;
+class ByteIO;
+class String;
 
-
-// <summary> 
-// Class for IO in a converted format.
-// </summary>
+// <summary>Class for IO in a converted format.</summary>
 
 // <use visibility=export>
 
@@ -77,20 +75,23 @@ public:
     // Constructor.
     // The read/write functions will use the given <src>ByteIO</src> object
     // as the data store and the given <src>DataConversion</src> object
-    // as the conversion engine.
+    // as the conversion engine. 
     // <p>
-    // The read and write functions use an intermediate buffer
-    // to hold the data in canonical format.
-    // For small arrays it uses a fixed buffer with length
-    // <src>bufferLength</src>. For arrays not fitting in this
-    // buffer, it uses a temporary buffer allocated on the heap.
+    // The read and write functions use an intermediate buffer to hold the data
+    // in canonical format.  For small arrays it uses a fixed buffer with
+    // length <src>bufferLength</src>. For arrays not fitting in this buffer,
+    // it uses a temporary buffer allocated on the heap.
+    // <p>
+    // If takeOver is True this this class will be responsible for deleting the
+    // DataConversion and ByteIO pointers.  Otherwise it is the callers
+    // responsibility.
     ConversionIO (DataConversion* dataConversion, ByteIO* byteIO,
-		  uInt bufferLength=4096);
+		  uInt bufferLength=4096, Bool takeOver=False);
 
-    // Copy constructor, copy semantics
+    // The copy constructor uses reference semantics
     ConversionIO (const ConversionIO& conversionIO);
 
-    // Assignment, copy semantics
+    // The assignment operator uses reference semantics
     ConversionIO& operator= (const ConversionIO& conversionIO);
 
     // Destructor, deletes allocated memory.
@@ -140,7 +141,7 @@ private:
 
 
     //# The data.
-    DataConversion* itsConversion;
+    CountedPtr<DataConversion> itsConversion;
     uInt itsSizeChar;
     uInt itsSizeuChar;
     uInt itsSizeShort;

@@ -1,5 +1,5 @@
 //# ConversionIO.cc: Class for IO in a converted format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,12 +28,13 @@
 //# Includes
 #include <aips/IO/ConversionIO.h>
 #include <aips/OS/DataConversion.h>
+#include <aips/IO/ByteIO.h>
 
 
 ConversionIO::ConversionIO (DataConversion* dataConversion,
-			    ByteIO* byteIO, uInt bufferLength)
-: TypeIO          (byteIO),
-  itsConversion   (dataConversion),
+			    ByteIO* byteIO, uInt bufferLength, Bool takeOver)
+: TypeIO          (byteIO, takeOver),
+  itsConversion   (dataConversion, takeOver),
   itsBuffer       (new char[bufferLength]),
   itsBufferLength (bufferLength)
 {
@@ -52,7 +53,7 @@ ConversionIO::ConversionIO (const ConversionIO& that)
 ConversionIO& ConversionIO::operator= (const ConversionIO& that)
 {
     if (this != &that) {
-	itsByteIO     = that.itsByteIO;
+	TypeIO::operator= (that);
 	itsConversion = that.itsConversion;
 	if (itsBufferLength != that.itsBufferLength) {
 	    delete [] itsBuffer;

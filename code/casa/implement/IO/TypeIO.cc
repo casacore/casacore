@@ -1,5 +1,5 @@
 //# TypeIO.cc: Abstract base class for IO of data in a type-dependent format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,11 @@
 
 #include <aips/IO/TypeIO.h>
 #include <aips/OS/Conversion.h>
+#include <aips/Utilities/String.h>
+#include <aips/Mathematics/Complex.h>
 
-
-TypeIO::TypeIO (ByteIO* byteIO)
-: itsByteIO(byteIO) 
+TypeIO::TypeIO (ByteIO* byteIO, Bool takeOver)
+: itsByteIO(byteIO, takeOver) 
 {}
 
 TypeIO::TypeIO (const TypeIO& that)
@@ -46,6 +47,14 @@ TypeIO& TypeIO::operator= (const TypeIO& that)
 	itsByteIO = that.itsByteIO;
     }
     return *this;
+}
+
+const ByteIO& TypeIO::byteIO() const {
+  return *itsByteIO;
+}
+
+ByteIO& TypeIO::byteIO() {
+  return *itsByteIO;
 }
 
 Long TypeIO::seek (Long offset, ByteIO::SeekOption option)   
