@@ -121,7 +121,7 @@ public:
   LatticeIndexer(const LatticeIndexer &other);
 
   // the destructor does nothing
-  ~LatticeIndexer();
+  virtual ~LatticeIndexer();
 
   // Assignment operator. Uses copy semantics.
   LatticeIndexer &operator=(const LatticeIndexer &other);
