@@ -175,9 +175,9 @@ a sortab line
 [8, 0]
 #columns in seltab3: 3
 
-TableDesc    version    (Directory **SCRATCH**)
+TableDesc    version 1   (Directory **SCRATCH**)
 ---------
-  Comment: 
+  Comment: A test of class Table
   #Keywords = 0
   #Columns  = 3
    Name=ae   DataType=float
