@@ -2135,3 +2135,4 @@
 11 110 src rm aips/glish/glish/clients/gtk/tkPgplot.cc
 11 110 src rm aips/glish/glish/clients/gtk/tkAgent.cc
 11 110 src rm aips/glish/glish/clients/gtk/tkAgent.h
+11 110 src rm doc/papers/bgadass93.dir/glendenningb1.eps
