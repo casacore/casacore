@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/ComponentShape.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
@@ -91,6 +92,19 @@ void  ComponentShape::sample(Vector<Double>& scale,
   }
 }
 
+void ComponentShape::visibility(Vector<DComplex>& scale, 
+				const Matrix<Double>& uvw,
+				const Double& frequency) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = scale.nelements();
+  DebugAssert(uvw.ncolumn() == nSamples, AipsError);
+  DebugAssert(uvw.nrow() == 3, AipsError);
+
+  for (uInt i = 0; i < nSamples; i++) {
+    scale(i) = visibility(uvw.column(i), frequency);
+  }
+}
+
 Bool ComponentShape::fromRecord(String& errorMessage,
 				const RecordInterface& record) {
   ComponentType::Shape thisType = getType(errorMessage, record);
@@ -99,48 +113,6 @@ Bool ComponentShape::fromRecord(String& errorMessage,
       String(" is not the expected value of '") + 
       ComponentType::name(type()) + String("'\n");
   }
-  if (!readDir(errorMessage, record)) return False;
-  DebugAssert(ok(), AipsError);
-  return True;
-}
-
-Bool ComponentShape::toRecord(String& errorMessage,
-			      RecordInterface& record) const {
-  record.define(RecordFieldId("type"), ComponentType::name(type()));
-  if (!addDir(errorMessage, record)) return False;
-  DebugAssert(ok(), AipsError);
-  return True;
-}
-
-Bool ComponentShape::ok() const {
-  return True;
-}
-
-ComponentType::Shape ComponentShape::getType(String& errorMessage,
-					     const RecordInterface& record) {
-  const String typeString("type");
-  if (!record.isDefined(typeString)) {
-    errorMessage += 
-      String("The 'shape' record does not have a 'type' field.\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }
-  const RecordFieldId type(typeString);
-  if (record.dataType(type) != TpString) {
-    errorMessage += String("The 'type' field, in the shape record,") + 
-      String(" must be a String\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }      
-  if (record.shape(type) != IPosition(1,1)) {
-    errorMessage += String("The 'type' field, in the shape record,") + 
-      String(" must have only 1 element\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }      
-  const String& typeVal = record.asString(type);
-  return ComponentType::shape(typeVal);
-}
-
-Bool ComponentShape::readDir(String& errorMessage,
-			     const RecordInterface& record) {
   const String dirString("direction");
   if (!record.isDefined(dirString)) {
     errorMessage += "The 'direction' field does not exist\n";
@@ -169,11 +141,13 @@ Bool ComponentShape::readDir(String& errorMessage,
     return False;
   }
   setRefDirection(mh.asMDirection());
+  DebugAssert(ok(), AipsError);
   return True;
 }
 
-Bool ComponentShape::addDir(String& errorMessage, 
-			    RecordInterface& record) const {
+Bool ComponentShape::toRecord(String& errorMessage,
+			      RecordInterface& record) const {
+  DebugAssert(ok(), AipsError);
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   Record dirRecord;
   const MeasureHolder mh(refDirection());
@@ -183,6 +157,33 @@ Bool ComponentShape::addDir(String& errorMessage,
   }
   record.defineRecord(RecordFieldId("direction"), dirRecord);
   return True;
+}
+
+Bool ComponentShape::ok() const {
+  return True;
+}
+
+ComponentType::Shape ComponentShape::getType(String& errorMessage,
+					     const RecordInterface& record) {
+  const String typeString("type");
+  if (!record.isDefined(typeString)) {
+    errorMessage += 
+      String("The 'shape' record does not have a 'type' field.\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }
+  const RecordFieldId type(typeString);
+  if (record.dataType(type) != TpString) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must be a String\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }      
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must have only 1 element\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }      
+  const String& typeVal = record.asString(type);
+  return ComponentType::shape(typeVal);
 }
 
 // Local Variables: 
