@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/LatticeIterInterface.h>
+#include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LCRegion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
@@ -38,8 +39,9 @@ SubLattice<T>::SubLattice()
 : itsLatticePtr   (0),
   itsMaskLatPtr   (0),
   itsWritable     (False),
-  itsHasPixelMask (False),
-  itsPixelMask    (0)
+  itsHasLattPMask (False),
+  itsPixelMask    (0),
+  itsOwnPixelMask (0)
 {}
 
 template<class T>
@@ -166,9 +168,10 @@ SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (const SubLattice<T>& other)
-: itsLatticePtr (0),
-  itsMaskLatPtr (0),
-  itsPixelMask  (0)
+: itsLatticePtr   (0),
+  itsMaskLatPtr   (0),
+  itsPixelMask    (0),
+  itsOwnPixelMask (0)
 {
   operator= (other);
 }
@@ -180,6 +183,7 @@ SubLattice<T>::~SubLattice()
   // object as itsLatticePtr, so it does not need to be deleted.
   delete itsLatticePtr;
   delete itsPixelMask;
+  delete itsOwnPixelMask;
 }
 
 template<class T>
@@ -198,7 +202,13 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
     }
     itsWritable = other.itsWritable;
     delete itsPixelMask;
-    itsHasPixelMask = other.itsHasPixelMask;
+    itsPixelMask = 0;
+    delete itsOwnPixelMask;
+    itsOwnPixelMask = 0;
+    if (other.itsOwnPixelMask != 0) {
+      itsOwnPixelMask = other.itsOwnPixelMask->clone();
+    }
+    itsHasLattPMask = other.itsHasLattPMask;
     itsAxesMap = other.itsAxesMap;
   }
   return *this;
@@ -215,8 +225,9 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 			    MaskedLattice<T>* maskLatPtr,
 			    Bool writableIfPossible)
 {
-  itsHasPixelMask = False;
-  itsPixelMask = 0;
+  itsHasLattPMask = False;
+  itsPixelMask    = 0;
+  itsOwnPixelMask = 0;
   if (maskLatPtr == 0) {
     itsLatticePtr = latticePtr;
     itsMaskLatPtr = 0;
@@ -226,7 +237,7 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
       itsMaskLatPtr = 0;
     } else {
       itsMaskLatPtr = maskLatPtr;
-      itsHasPixelMask = itsMaskLatPtr->hasPixelMask();
+      itsHasLattPMask = itsMaskLatPtr->hasPixelMask();
     }
   }
   itsWritable = False;
@@ -342,7 +353,7 @@ void SubLattice<T>::reopen()
 template<class T>
 Bool SubLattice<T>::hasPixelMask() const
 {
-  return itsHasPixelMask;
+  return itsHasLattPMask  ||  itsOwnPixelMask != 0;
 }
 
 template<class T>
@@ -353,24 +364,51 @@ const Lattice<Bool>& SubLattice<T>::pixelMask() const
 template<class T>
 Lattice<Bool>& SubLattice<T>::pixelMask()
 {
-  if (!itsHasPixelMask) {
-    throw (AipsError ("SubLattice::pixelMask - no pixelmask available"));
-  }
-  // Construct the pixelmask (as a subset of the parent pixelmask)
-  // if that is not done yet.
   if (itsPixelMask == 0) {
-    Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
-    itsPixelMask = new SubLattice<Bool> (fullMask, itsRegion, itsWritable,
-					 itsAxesSpec);
+    if (!hasPixelMask()) {
+      throw (AipsError ("SubLattice::pixelMask - no pixelmask available"));
+    }
+    if (itsHasLattPMask) {
+      // Construct the pixelmask (as a subset of the parent pixelmask).
+      Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
+      itsPixelMask = new SubLattice<Bool> (fullMask, itsRegion, itsWritable,
+					   itsAxesSpec);
+      // If there is an own pixelmask, and them.
+      if (itsOwnPixelMask != 0) {
+	Lattice<Bool>* pmask = itsPixelMask;
+	itsPixelMask = new LatticeExpr<Bool> (*pmask && *itsOwnPixelMask);
+	delete pmask;
+      }
+    } else {
+      itsPixelMask = itsOwnPixelMask->clone();
+    }
   }
   return *itsPixelMask;
 }
 
+template<class T>
+void SubLattice<T>::setPixelMask (const Lattice<Bool>& pixelMask,
+				  Bool mayExist)
+{
+  if (!mayExist  &&  itsHasLattPMask) {
+    throw (AipsError ("SubLattice::setPixelMask - "
+		      "underlying lattice has a pixelmask already"));
+  }
+  if (!(shape().isEqual(pixelMask.shape()))) {
+    throw (AipsError ("SubLattice::setPixelMask - "
+		      "shape of pixel mask mismatches sublattice"));
+  }
+  delete itsPixelMask;
+  itsPixelMask = 0;
+  delete itsOwnPixelMask;
+  itsOwnPixelMask = 0;
+  itsOwnPixelMask = pixelMask.clone();
+}
 
 template<class T>
 const LatticeRegion* SubLattice<T>::getRegionPtr() const
 {
-    return &itsRegion;
+  return &itsRegion;
 }
 
 template<class T>
@@ -485,27 +523,52 @@ template<class T>
 Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 				    const Slicer& section)
 {
-  // When lattice has no mask, we can return the region's mask.
+  // If the lattice has no mask, we can return the region and/or pixel mask.
   if (itsMaskLatPtr == 0) {
-    return getRegionDataSlice (buffer, section);
+    if (itsOwnPixelMask == 0) {
+      // Note that if the region has no mask, it will return all True.
+      return getRegionDataSlice (buffer, section);
+    }
+    if (! itsRegion.hasMask()) {
+      return itsOwnPixelMask->getSlice (buffer, section);
+    }
+    // Return AND of region and pixel mask.
+    Bool ref = getRegionDataSlice (buffer, section);
+    andMask (buffer, ref, itsOwnPixelMask->getSlice (section));
+    return False;
   }
   // The lattice has a mask.
-  // If the region has no mask, we can return the lattice's mask.
+  // If there are no other masks, we can return the lattice's mask.
   if (! itsRegion.hasMask()) {
-    return getMaskDataSlice (buffer, section);
+    if (itsOwnPixelMask == 0) {
+      return getMaskDataSlice (buffer, section);
+    }
+    // Return AND of lattice and pixel mask.
+    Bool ref = getMaskDataSlice (buffer, section);
+    andMask (buffer, ref, itsOwnPixelMask->getSlice (section));
+    return False;
   }
-  // They have both a mask, so they have to be ANDed.
-  // Get the lattice's mask.
-  // Make a copy if it references the original mask (because it'll change).
+  // Lattice and region have a mask, so they have to be ANDed.
   Bool ref = getMaskDataSlice (buffer, section);
+  Array<Bool> tmpbuf;
+  getRegionDataSlice (tmpbuf, section);
+  andMask (buffer, ref, tmpbuf);
+  if (itsOwnPixelMask != 0) {
+    andMask (buffer, False, itsOwnPixelMask->getSlice (section));
+  }
+  return False;
+}
+
+template<class T>
+void SubLattice<T>::andMask (Array<Bool>& buffer, Bool ref,
+			     const Array<Bool>& tmpbuf) const
+{
+  // Make a copy if the array is referenced.
   if (ref) {
     Array<Bool> mask;
     mask = buffer;
     buffer.reference (mask);
   }
-  // Get the region's mask.
-  Array<Bool> tmpbuf;
-  getRegionDataSlice (tmpbuf, section);
   // And the masks.
   Bool deleteBuf, deleteTmp;
   const Bool* tmpptr = tmpbuf.getStorage (deleteTmp);
@@ -518,7 +581,6 @@ Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   }
   tmpbuf.freeStorage (tmpptr, deleteTmp);
   buffer.putStorage (bufptr, deleteBuf);
-  return False;
 }
 
 

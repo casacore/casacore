@@ -210,6 +210,15 @@ public:
   virtual Lattice<Bool>& pixelMask();
   // </group>
 
+  // Use the given mask as the pixelmask.
+  // If another mask was already used, the new one will be used instead.
+  // It checks if its shape matches the shape of the sublattice.
+  // <br>If <code>mayExist=False</code>, setting the pixelmask is only
+  // possible if the underlying lattice does not have a pixelmask.
+  // <br>If <code>mayExist=True</code>, the resulting pixelmask is the
+  // AND of the given pixelmask and the pixelmask of the underlying lattice.
+  void setPixelMask (const Lattice<Bool>& pixelMask, Bool mayExist);
+
   // Get a pointer the region/mask object describing this sublattice.
   virtual const LatticeRegion* getRegionPtr() const;
 
@@ -286,12 +295,17 @@ private:
   Bool getMaskDataSlice (Array<Bool>& buffer, const Slicer& section);
   // </group>
 
+  // And tmpbuf into buffer. If buffer is a reference, first a copy is made.
+  void andMask (Array<Bool>& buffer, Bool ref,
+		const Array<Bool>& tmpbuf) const;
+
   Lattice<T>*       itsLatticePtr;
   MaskedLattice<T>* itsMaskLatPtr;
   LatticeRegion     itsRegion;
   Bool              itsWritable;
-  Bool              itsHasPixelMask;
-  SubLattice<Bool>* itsPixelMask;
+  Bool              itsHasLattPMask;   //# has underlying lattice a pixelmask?
+  Lattice<Bool>*    itsPixelMask;      //# AND of lattice and own pixelmask
+  Lattice<Bool>*    itsOwnPixelMask;   //# own pixelmask
   AxesSpecifier     itsAxesSpec;
   AxesMapping       itsAxesMap;
 };
