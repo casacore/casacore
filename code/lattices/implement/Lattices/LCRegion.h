@@ -53,7 +53,8 @@ class RecordInterface;
 
 // <synopsis> 
 // The LCRegion class is the abstract base class for various types
-// of LCRegion's (e.g. LCRegionEllipsoid, LCRegionBox).
+// of LCRegion's (e.g. <linkto class=LCEllipsoid>LCEllipsoid</linkto>,
+// <linkto class=LCBox>LCBox</linkto>).
 // It contains the minimal bounding box of the region and, if needed,
 // a mask with the same shape as the bounding box. A mask element
 // is true if the element is inside the box.
@@ -96,20 +97,27 @@ public:
     // Equality 
     virtual Bool operator== (const LCRegion& other) const;
 
-    // Non-equality.  Be careful, do not use this anywhere in the derived class
-    // structure.  You must use, e.g., <src>if (!LCRegion::operator==(...))</src>
-    // rather than <src>if (LCRegion::operator!=(...))</src> as the
-    // latter will invoke an infinite loop.  It is ok to use when applying to
-    // a concrete class object.
+    // Non-equality.  Be careful, do not use this anywhere in the derived
+    // class structure.  You must use, e.g.,
+    // <src>if (! LCRegion::operator== (...))</src>
+    // rather than <src>if (LCRegion::operator!= (...))</src> as the
+    // latter will invoke an infinite loop.  It is ok to use when applying
+    // to a concrete class object.
     Bool operator!= (const LCRegion& other) const;
-
-    // Region type.  Returns className() of derived class
-    virtual String type() const = 0;
 
     // Make a copy of the derived object.
     // <group>
     virtual Lattice<Bool>* clone() const;
     virtual LCRegion* cloneRegion() const = 0;
+    // </group>
+
+    // Region type.  Returns className() of derived class.
+    virtual String type() const = 0;
+
+    // Get or set the comment.
+    // <group>
+    const String& comment() const;
+    void setComment (const String& comment);
     // </group>
 
     // Does the region have a mask?
@@ -131,7 +139,7 @@ public:
     const IPosition& latticeShape() const;
 
     // Give the bounding box.
-    const Slicer& box() const;
+    const Slicer& boundingBox() const;
 
     // Expand a slicer or position in the region to the full lattice.
     // This converts the positions in the region to positions
@@ -150,6 +158,9 @@ public:
     // Convert correct object from a record.
     static LCRegion* fromRecord (const TableRecord&,
 				 const String& tableName);
+
+    // Return the dimensionality of the region.
+    virtual uInt ndim() const;
 
     // Return the shape of the region (i.e. of its bounding box).
     virtual IPosition shape() const;
@@ -177,10 +188,15 @@ protected:
     // Assignment (copy semantics) is only useful for derived classes.
     LCRegion& operator= (const LCRegion& other);
 
-    // Sometimes it is inconvenient for a derived class to set the box
-    // in the constructor. So it can be set explicitly.
+    // Sometimes it is inconvenient for a derived class to set the bounding
+    // box in the constructor. So it can be set explicitly.
     // It fills in the possibly undefined Slicer values.
-    void setBox (const Slicer& box);
+    // It may even be needed to set the lattice shape.
+    // <group>
+    void setBoundingBox (const Slicer& boundingBox);
+    void setShapeAndBoundingBox (const IPosition& latticeShape,
+				 const Slicer& boundingBox);
+    // </group>
 
     // Do the actual translate in a derived class..
     virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
@@ -192,13 +208,14 @@ protected:
 
 private:
     IPosition itsShape;
-    Slicer    itsBox;
+    Slicer    itsBoundingBox;
+    String    itsComment;
 };
 
 
-inline const Slicer& LCRegion::box() const
+inline const Slicer& LCRegion::boundingBox() const
 {
-    return itsBox;
+    return itsBoundingBox;
 }
 inline const IPosition& LCRegion::latticeShape() const
 {
@@ -211,12 +228,15 @@ inline LCRegion* LCRegion::translate (const IPosition& translateVector) const
 inline LCRegion* LCRegion::translate (const Vector<Float>& translateVector)
                                                                         const
 {
-    return doTranslate (translateVector, itsShape);
+    return translate (translateVector, itsShape);
 }
-inline LCRegion* LCRegion::translate (const Vector<Float>& translateVector,
-				      const IPosition& newLatticeShape) const
+inline const String& LCRegion::comment() const
 {
-    return doTranslate (translateVector, newLatticeShape);
+    return itsComment;
+}
+inline void LCRegion::setComment (const String& comment)
+{
+    itsComment = comment;
 }
 
 inline Bool LCRegion::operator!= (const LCRegion& other) const
@@ -231,5 +251,7 @@ inline Bool LCRegion::operator!= (const LCRegion& other) const
 {
    return ToBool(!operator==(other));
 }
+
+
 
 #endif
