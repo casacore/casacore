@@ -132,13 +132,13 @@ public:
   ROVisibilityIterator(const MeasurementSet& ms, 
 		       const Block<Int>& sortColumns, 
 		       Double timeInterval=0,
-                       Bool resort=False);
+                       Bool resort=True);
 
   // Same as previous constructor, but with multiple MSs to iterate over.
   ROVisibilityIterator(const Block<MeasurementSet>& mss,
 		       const Block<Int>& sortColumns, 
 		       Double timeInterval=0,
-                       Bool resort=False);
+                       Bool resort=True);
 
   // Copy construct. This calls the assigment operator.
   ROVisibilityIterator(const ROVisibilityIterator & other);
@@ -470,7 +470,7 @@ public:
   // need to call origin() before using it to iterate.
   VisibilityIterator();
   VisibilityIterator(MeasurementSet & ms, const Block<Int>& sortColumns, 
-       Double timeInterval=0, Bool resort=False);
+       Double timeInterval=0, Bool resort=True);
   VisibilityIterator(const VisibilityIterator & MSI);
 
   VisibilityIterator & operator=(const VisibilityIterator &MSI);
