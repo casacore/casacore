@@ -35,6 +35,7 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/TableMeasures/ArrayMeasColumn.h>
 #include <aips/TableMeasures/ArrayQuantColumn.h>
+#include <aips/Utilities/String.h>
 
 class NewMSSpectralWindow;
 
@@ -74,7 +75,6 @@ class NewMSSpectralWindow;
 class RONewMSSpWindowColumns
 {
 public:
-
   // Create a columns object that accesses the data in the specified Table
   RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow);
 
@@ -135,6 +135,11 @@ protected:
   void attach(const NewMSSpectralWindow& msSpWindow);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSSpWindowColumns(const RONewMSSpWindowColumns&);
+  RONewMSSpWindowColumns& operator=(const RONewMSSpWindowColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSSpectralWindow& msSpWindow);
   
@@ -210,7 +215,6 @@ private:
 class NewMSSpWindowColumns: public RONewMSSpWindowColumns
 {
 public:
-
   // Create a columns object that accesses the data in the specified Table
   NewMSSpWindowColumns(NewMSSpectralWindow& msSpWindow);
 
@@ -327,6 +331,11 @@ protected:
   void attach(NewMSSpectralWindow& msSpWindow);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSSpWindowColumns(const NewMSSpWindowColumns&);
+  NewMSSpWindowColumns& operator=(const NewMSSpWindowColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMSSpectralWindow& msSpWindow);
   
@@ -365,5 +374,4 @@ private:
   ArrayQuantColumn<Double> resolutionQuant_p;
   ScalarQuantColumn<Double> totalBandwidthQuant_p;
 };
-
 #endif
