@@ -52,6 +52,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Slice.h>
+#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Functionals/Polynomial.h>
 
@@ -147,6 +148,7 @@ void oldArrayTest()
 	AlwaysAssertExit(allEQ (a4, 11.0F));
 
 	Array<Float> ab1(IPosition(4,5,6,7,8));
+	indgen(ab1);
 	Array<Float> ab2 (ab1(IPosition(4,1,2,1,3), IPosition(4,2,2,5,7),
 			     IPosition(4,1,1,2,3)).reform (IPosition(3,2,3,2)));
 	for (uInt i=0; i<2; i++) {
@@ -156,6 +158,36 @@ void oldArrayTest()
 				  ==  &(ab1(IPosition(4,1+i,2,1+j*2,3+k*3))));
 		}
 	    }
+	}
+
+	{
+	  Slicer sl(IPosition(4,1,2,1,3), IPosition(4,2,2,5,5),
+		    IPosition(4,1,1,2,3), Slicer::endIsLast);
+	  Array<Float> absl = ab1(sl);
+	  AlwaysAssertExit (absl.shape() == IPosition(4,2,1,3,1));
+	  for (uInt i=0; i<2; i++) {
+	    for (uInt j=0; j<3; j++) {
+	      for (uInt k=0; k<1; k++) {
+		AlwaysAssertExit (&(absl(IPosition(4,i,0,j,k)))
+				  ==  &(ab1(IPosition(4,1+i,2,1+j*2,3+k*3))));
+	      }
+	    }
+	  }
+	}
+	{
+	  Slicer sl(IPosition(4,1,2,1,3),
+		    IPosition(4,2,2,Slicer::MimicSource,7),
+		    IPosition(4,1,1,2,3), Slicer::endIsLast);
+	  Array<Float> absl = ab1(sl);
+	  AlwaysAssertExit (absl.shape() == IPosition(4,2,1,3,2));
+	  for (uInt i=0; i<2; i++) {
+	    for (uInt j=0; j<3; j++) {
+	      for (uInt k=0; k<2; k++) {
+		AlwaysAssertExit (&(absl(IPosition(4,i,0,j,k)))
+				  ==  &(ab1(IPosition(4,1+i,2,1+j*2,3+k*3))));
+	      }
+	    }
+	  }
 	}
 
 	cout << "OK\n";
