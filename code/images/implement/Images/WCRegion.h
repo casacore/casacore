@@ -29,7 +29,7 @@
 #define AIPS_WCREGION_H
 
 //# Includes
-#include <aips/aips.h>
+#include <aips/Containers/Record.h>
 
 //# Forward Declarations
 class LCRegion;
@@ -50,20 +50,28 @@ class String;
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class=Slicer>Slicer</linkto>
+//   <li> <linkto class=LCRegion>LCRegion</linkto>
 // </prerequisite>
 //
 // <synopsis> 
 // WCRegion is the base class for world coordinate regions.
-// It defines the functionality simply as conversion to an LCRegion.
-// This is because you need an LCRegion to be able to access the
-// pixels in a Lattice.
-//
-// The conversion functions should be flexible in that the
-// supplied CoordinateSystem does not have to be the same
-// as that with which the derived class was constructed. 
-// This means that you can apply a WCRegion from one image
-// to another, provided that operation has some meaning.
+// The axes in a WCRegion have names (e.g. RA, DEC, FREQ) and
+// carry sometimes an associated reference frame with it.
+// An WCRegion object is converted to the appropriate
+// <linkto class=LCRegion>LCRegion</linkto> object when they
+// are used to take a subset from an image.
+// LCRegion's are pixel based and are
+// used to access the correct pixels in the image.
+// The conversion has the following rules:
+// <ol>
+//  <li> All axes of the region must be axes in the image.
+//  <li> An image axis does not have to be an axis in the region.
+//   Thus the image can have a higher dimensionality than the region.
+//   If that is the case, the region is auto-extended to the image's
+//   dimensionality by using the full range for those axes.
+//  <li> The order of the axes in region and image do not have to
+//   be the same. They get reordered as needed.
+// </ol>
 // </synopsis> 
 //
 // <example>
@@ -80,6 +88,7 @@ class String;
 //# <li>
 //# </todo>
 
+
 class WCRegion
 {
 public:
@@ -93,20 +102,69 @@ public:
 
     // Comparison
     // <group>
-    virtual Bool operator==(const WCRegion& other) const = 0;
+    virtual Bool operator==(const WCRegion& other) const;
     Bool operator!=(const WCRegion& other) const;
     // </group>
-
-    // Return region type.  Just returns the class name of
-    // of the derived class
-    virtual String type() const = 0;
 
     // Clone a WCRegion object.
     virtual WCRegion* cloneRegion() const = 0;
 
-    // Convert to an LCRegion using the given coordinate system and shape
-    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
-                                  const IPosition& shape) const = 0;
+    // Return region type.  Just returns the class name of
+    // of the derived class.
+    virtual String type() const = 0;
+
+    // Get the dimensionality (i.e. the number of axes).
+    uInt ndim() const;
+
+    // Get the description of all axes.
+    const Record& getAxesDesc() const;
+
+    // Get the description of the given axis.
+    // It is a record containing some fields describing the axis.
+    const Record& getAxisDesc (uInt axis) const;
+
+    // Return the axis number of the description of an axis in the full
+    // axes description.
+    // -1 is returned if not found.
+    Int axisNr (const Record& desc, const Record& axesDesc) const;
+
+    // Are both axis descriptions equal?
+    Bool isAxisDescEqual (const Record& desc1, const Record& desc2) const;
+
+    // Can the region extend itself?
+    // By default it cannot.
+    virtual Bool canExtend() const;
+
+    // Get or set the comment.
+    // <group>
+    const String& comment() const;
+    void setComment (const String& comment);
+    // </group>
+
+    // Convert to an LCRegion using the given new coordinate system and shape.
+    // An exception is thrown if the region's dimensionality is more
+    // than the length of the shape vector or if an axis in the region
+    // is unknown in the new coordinate system..
+    // When less, the region is extended over the remaining axes.
+    LCRegion* toLCRegion (const CoordinateSystem& cSys,
+			  const IPosition& shape) const;
+
+    // Convert to an LCRegion using the given coordinate system and shape.
+    // This function is meant for internal use by WCCompound objects.
+    // <br>pixelAxesMap(i) is the axis in cSys and shape for region axis i.
+    // <br>outOrder(i) is the axis in the output LCRegion for region axis i.
+    // <br>The length of pixelAxesMap and outOrder is the dimensionality of
+    // the output LCRegion. It can be more than the dimensionality of this
+    // WCRegion object. In that case the region gets extended along the
+    // latter axes. If the region cannot extend itself, this function
+    // will create an LCExtension object to extend the region.
+    // <br>Note that initially pixelAxisMap and outOrder are the same,
+    // but when called for regions in compound regions they may start
+    // to differ. 
+    LCRegion* toLCRegion (const CoordinateSystem& cSys,
+			  const IPosition& shape,
+			  const IPosition& pixelAxesMap,
+			  const IPosition& outOrder) const;
 
     // Convert the (derived) object to a record.
     // The record can be used to make the object persistent.
@@ -125,11 +183,55 @@ public:
 protected:
     // Assignment (copy semantics) makes only sense for a derived class.
     WCRegion& operator= (const WCRegion& other);
+
+    // Add an axis with its description.
+    // An exception is thrown if the axis already exists in this region.
+    void addAxisDesc (const Record& axisDesc);
+
+    // Make a description of a pixel axis in the coordinate system.
+    Record makeAxisDesc (const CoordinateSystem& cSys, uInt pixelAxis) const;
+
+    // Make a description of all pixel axes in the coordinate system
+    // (in pixel axes order).
+    Record makeAxesDesc (const CoordinateSystem& cSys) const;
+
+    // Convert to an LCRegion using the given coordinate system and shape.
+    // <br>pixelAxesMap(i) is the axis in cSys and shape for region axis i.
+    // <br>outOrder(i) is the axis in the output LCRegion for region axis i.
+    // <br>They always have the same length.
+    // If the region can extend itself, the length of pixelAxesMap and
+    // outOrder can be more than the dimensionality of the region.
+    // The latter axes in them are the extension axes.
+    virtual LCRegion* doToLCRegion (const CoordinateSystem& cSys,
+				    const IPosition& shape,
+				    const IPosition& pixelAxesMap,
+				    const IPosition& extendAxes) const = 0;
+
+private:
+    String itsComment;
+    Record itsAxesDesc;
 };
+
 
 inline Bool WCRegion::operator!= (const WCRegion& other) const
 {
    return ToBool(!operator==(other));
+}
+inline uInt WCRegion::ndim() const
+{
+    return itsAxesDesc.nfields();
+}
+inline const String& WCRegion::comment() const
+{
+    return itsComment;
+}
+inline void WCRegion::setComment (const String& comment)
+{
+    itsComment = comment;
+}
+inline const Record& WCRegion::getAxesDesc() const
+{
+    return itsAxesDesc;
 }
 
 
