@@ -197,7 +197,7 @@ Double SpectralElement::getSigma() const {
 
 Double SpectralElement::getFWHM() const {
   checkGauss();
-  return sqrt(32.0*C::ln2)*par_p(2);
+  return sigmaToFWHM(par_p(2));
 }
 
 void SpectralElement::get(Vector<Double> &param) const {
@@ -222,7 +222,7 @@ Double SpectralElement::getSigmaErr() const {
 
 Double SpectralElement::getFWHMErr() const {
   checkGauss();
-  return sqrt(32.0*C::ln2)*err_p(2);
+  return sigmaToFWHM(err_p(2));
 }
 
 void SpectralElement::getError(Vector<Double> &err) const {
@@ -319,7 +319,7 @@ void SpectralElement::setSigma(Double sigma) {
 }
 
 void SpectralElement::setFWHM(Double fwhm) {
-  setSigma(fwhm/sqrt(32.0*C::ln2));
+  setSigma(sigmaFromFWHM(fwhm));
 }
 
 void SpectralElement::setDegree(uInt n) {
@@ -435,3 +435,14 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 
   return os;
 }
+
+Double SpectralElement::sigmaToFWHM (Double sigma) const
+{
+   return sqrt(32.0*C::ln2) * sigma;
+}
+
+Double SpectralElement::sigmaFromFWHM(Double fwhm) const
+{
+   return fwhm / sqrt(32.0*C::ln2);
+}
+

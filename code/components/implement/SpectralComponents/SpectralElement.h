@@ -283,7 +283,8 @@ class SpectralElement : public RecordTransformable {
 
   // Save to a record.  The return will be False and an error
   // message generated only if the SpectralElement is illegal (could not happen)
-  // Error messages are postfixed to error.
+  // Error messages are postfixed to error.   For Gaussian elements,
+  // the width is defined as a FWHM in the record interface.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
@@ -323,6 +324,14 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if illegal sigm
   // </thrown>
   void SpectralElement::check() const;
+
+  // Sigma to FWHM
+  // Convert from sigma to FWHM and vice versa
+  // <group>
+  Double sigmaToFWHM (Double sigma) const;
+  Double sigmaFromFWHM (Double fwhm) const;
+  // </group>
+
 
 };
 
