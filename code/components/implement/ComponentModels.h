@@ -1,5 +1,5 @@
 //# ComponentModels.h: classes that define a functional representation of the sky brightness
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,23 +25,29 @@
 //#
 //# $Id$
 
-#if !defined (TRIAL_COMPONENTMODELS_H>)
-#define <TRIAL_COMPONENTMODELS_H>
+#if !defined (TRIAL_COMPONENTMODELS_H)
+#define TRIAL_COMPONENTMODELS_H
 
-#include <trial/ComponentModels/ComponentList.h>
-#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/DOcomponentlist.h>
-#include <trial/ComponentModels/DiskShape.h>
+
 #include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/GaussianShape.h>
+
+#include <trial/ComponentModels/ComponentShape.h>
+#include <trial/ComponentModels/TwoSidedShape.h>
 #include <trial/ComponentModels/PointShape.h>
+#include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/DiskShape.h>
+
+#include <trial/ComponentModels/SpectralModel.h>
+#include <trial/ComponentModels/ConstantSpectrum.h>
+#include <trial/ComponentModels/SpectralIndex.h>
+
 #include <trial/ComponentModels/SkyCompBase.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/ComponentModels/SpectralModel.h>
+
+#include <trial/ComponentModels/ComponentList.h>
+#include <trial/ComponentModels/DOcomponentlist.h>
 
 // <module>
 //
@@ -63,6 +69,10 @@
 // </etymology>
 //
 // <synopsis>
+
+// This module contains classes which parameterise emmision from the sky using
+// relatively simple functions. 
+
 //#! What does the module do?  How?  For whom?   This should include code
 //#! fragments as appropriate to support text. Code fragments shall be
 //#! delimited by <srcblock> </srcblock> tags.  The synopsis section will
