@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 206 -- AIPS++ In Green Bank}
+  
+
+\author{Joe McMullin}
+
+\date{April 11, 1997}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (77kB).}{../206.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{aips++_gbt.tex}
+\end{document}
