@@ -728,6 +728,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    const IPosition tileShape = pa.niceCursorShape();
    TiledLineStepper ts(pa.shape(), tileShape, fAxis);
    RO_LatticeIterator<Float> it(pa, ts);
+
 //
    Float rm, rmErr, pa0, pa0Err, rChiSq, nTurns;
    uInt j, k, l, m;
@@ -751,6 +752,21 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
                                         String(""), String(""),
                                         True, max(1,Int(nMax/100)));
    }
+
+// As a (temporary?) workaround the cache of the main image is set up in
+// such a way that it can hold the full frequency and stokes axes.
+// The stokes axis is important, otherwise the cache is set up
+// (by the TiledStMan) such that it can hold only 1 stokes
+// with the result that iterating is tremendously slow.
+// We also need to cast the const away from itsInImagePtr.
+
+   const IPosition mainShape = itsInImagePtr->shape();
+   uInt nrtiles = (1 + (mainShape(fAxis)-1) / tileShape(fAxis)) *
+                  (1 + (mainShape(sAxis)-1) / tileShape(sAxis));
+   ImageInterface<Float>* mainImagePtr =
+                          const_cast<ImageInterface<Float>*>(itsInImagePtr);
+   mainImagePtr->setCacheSizeInTiles (nrtiles);
+   
 //
    Bool ok = False;
    IPosition shp;
@@ -852,6 +868,10 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       if (showProgress) pProgressMeter->update(Double(it.nsteps())); 
    }
    if (showProgress) delete pProgressMeter;
+
+
+// Clear the cache of the main image again.
+   mainImagePtr->clearCache();
 }
 
 IPosition ImagePolarimetry::rotationMeasureShape(CoordinateSystem& cSys, Int& fAxis, 
