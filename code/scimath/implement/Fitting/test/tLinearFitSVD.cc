@@ -41,14 +41,11 @@
 #include <aips/iostream.h>
 
 // Some C++ functions
+// To use them in Fitting, have to have parameters and also AutoDiff
 static Double func0(const Vector<Double> &) {return 1;};            // 1
 static Double func1(const Vector<Double> &x) {return x(0);};         // x
 static Double func2(const Vector<Double> &x) {return sin(x(1));};    // sin(y)
 static Double func3(const Vector<Double> &x) {return x(0)*x(0);};    // x^2
-/*static void myfnc(Vector<Double> &y, const Double x) {
-  y(0) = 1;
-  for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
-*/
 
 void checkLinearFit(LinearFitSVD<Double> &fitter) {
   //*********** Test one *************
@@ -133,151 +130,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     AlwaysAssertExit(near(actualChiSquare, sum(yres),
 			  1.0e-5));
     AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
-    
-    //****** Test one A ************
-    /*        // Note: first guess equals zero parameters
-    LinearFitSVD<AutoDiffA<Double> > fitad;
-    Polynomial<AutoDiffA<Double> > sqre(2);
-
-    // perform least-squares fit
-    fitad.setFunction(sqre);
-    solution = fitad.fit(x,primesTable,sigma);
-    covariance = fitad.compuCovariance();
-    
-    cout << "******** test one A *************" << endl;
-    // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
-      cout << "Actual Parameter " << actualParameters(i) << 
-	", Computed Parameter " << solution(i) << endl;
-    };
-    // Print actual covariance and computed covariance
-    for (uInt i = 0; i < combination.nparameters(); i++) {
-      for (uInt j = 0; j < combination.nparameters(); j++) {
-	cout << "Actual Covariance " << actualCovariance(i,j) << 
-	  ", Computed Covariance " << covariance(i,j) << endl;
-      };
-    };
-    cout << "actual ChiSquare " << actualChiSquare << 
-      " Computed ChiSquare " <<
-      fitad.chiSquare() << endl;
-    cout << "Missing rank: " << fitad.fittedNumber()-fitad.getRank() << endl;
-  
-    cout << endl;
-    
-    // Compare actualParameters with the solution vector 
-    AlwaysAssertExit(allNear((Array<Double>&)actualParameters, 
-    			     (Array<Double>&)solution, 1.0e-5));
-    // Compare actualCovariance with the covariance matrix 
-    AlwaysAssertExit(allNear((Array<Double>&)actualCovariance, 
-    			     (Array<Double>&)covariance, 1.0e-5));
-    // Compare actualChiSquare with the chiSquare matrix 
-    AlwaysAssertExit(near(actualChiSquare,
-    			  fitad.chiSquare(), 
-    			  1.0e-5));
-    AlwaysAssertExit(fitad.fittedNumber()-fitad.getRank() == 0);
-   */
-    //****** Test one B ************
-    /*
-    fitter.setFunction(3, &myfnc);
-    solution = fitter.fit(x,primesTable,sigma);
-    covariance = fitter.compuCovariance();
-    
-    // Compare actualParameters with the solution vector 
-    AlwaysAssertExit(allNear((Array<Double>&)actualParameters, 
-    			     (Array<Double>&)solution, 1.0e-5));
-    // Compare actualCovariance with the covariance matrix 
-    AlwaysAssertExit(allNear((Array<Double>&)actualCovariance, 
-    			     (Array<Double>&)covariance, 1.0e-5));
-    // Compare actualChiSquare with the chiSquare matrix 
-    AlwaysAssertExit(near(actualChiSquare,
-    			  fitter.chiSquare(), 
-    			  1.0e-5));
-    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
-
-    cout << "******** test one B *************" << endl;
-    // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nAdjustParameters(); i++) {
-      cout << "Actual Parameter " << actualParameters(i) << 
-	", Computed Parameter " << solution(i) << endl;
-    };
-    // Print actual covariance and computed covariance
-    for (uInt i = 0; i < combination.nAdjustParameters(); i++) {
-      for (uInt j = 0; j < combination.nAdjustParameters(); j++) {
-	cout << "Actual Covariance " << actualCovariance(i,j) << 
-	  ", Computed Covariance " << covariance(i,j) << endl;
-      };
-    };
-    cout << "actual ChiSquare " << actualChiSquare << 
-      " Computed ChiSquare " <<
-      fitter.chiSquare() << endl;
-    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
-  
-    cout << endl;
-     */
-    //****** Test one C ************
-      /*
-    fitter.setFunction(3);
-    Matrix<Double> xx(nPrimes, 3);
-    for (uInt i=0; i<nPrimes; i++) {
-      xx(i,0) = 1;
-      for (uInt j=1; j<3; j++) xx(i,j) = xx(i,j-1)*Double(i+1);
-    };
-    solution = fitter.fit(xx, primesTable, sigma);
-    covariance = fitter.compuCovariance();
-    
-    // Compare actualParameters with the solution vector 
-    AlwaysAssertExit(allNear((Array<Double>&)actualParameters, 
-    			     (Array<Double>&)solution, 1.0e-5));
-    // Compare actualCovariance with the covariance matrix 
-    AlwaysAssertExit(allNear((Array<Double>&)actualCovariance, 
-    			     (Array<Double>&)covariance, 1.0e-5));
-    // Compare actualChiSquare with the chiSquare matrix 
-    AlwaysAssertExit(near(actualChiSquare,
-    			  fitter.chiSquare(), 
-    			  1.0e-5));
-    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
-
-    cout << "******** test one C *************" << endl;
-    // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nAdjustParameters(); i++) {
-      cout << "Actual Parameter " << actualParameters(i) << 
-	", Computed Parameter " << solution(i) << endl;
-    };
-    // Print actual covariance and computed covariance
-    for (uInt i = 0; i < combination.nAdjustParameters(); i++) {
-      for (uInt j = 0; j < combination.nAdjustParameters(); j++) {
-	cout << "Actual Covariance " << actualCovariance(i,j) << 
-	  ", Computed Covariance " << covariance(i,j) << endl;
-      };
-    };
-    cout << "actual ChiSquare " << actualChiSquare << 
-      " Computed ChiSquare " <<
-      fitter.chiSquare() << endl;
-    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
-  
-    cout << endl;
-     */
-    //****** Test one D ************
-      /*    // Try with other collinearity
-    fitter.setCollinearity(1e-6);
-    solution = fitter.fit(xx, primesTable, sigma);
-    covariance = fitter.compuCovariance();
-    
-    // Compare actualParameters with the solution vector 
-    AlwaysAssertExit(allNear((Array<Double>&)actualParameters, 
-    			     (Array<Double>&)solution, 1.0e-5));
-    // Compare actualCovariance with the covariance matrix 
-    AlwaysAssertExit(allNear((Array<Double>&)actualCovariance, 
-    			     (Array<Double>&)covariance, 1.0e-5));
-    // Compare actualChiSquare with the chiSquare matrix 
-    AlwaysAssertExit(near(actualChiSquare,
-    			  fitter.chiSquare(), 
-    			  1.0e-5));
-    AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
-    cout << "******** test one D *************" << endl;
-    cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
-     */
- }
+  }
 
   //****** Test two ************
 
@@ -388,19 +241,21 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
 	z(i) = combination(x.row(i)) + nois;
       };
       sigma = 1.0;
-      cout << "******* test three *************" << endl;
+      cout << endl << "******** test three *************" << endl;
       Vector<Double> z0(2);
       z0[0] = 2; z0[1] = 3;
       cout << "x,y: " << z0[0] << ", " << z0[1] << endl;
       cout << "Expect: " << 4 + 5*z0[0]+ 6*sin(z0[1]) + 0.2*z0[0]*z0[0] <<
 	endl;
       cout << "Got:    " << combination(z0) << endl;
+      // For fitting the functions have to have AutoDiff and parameters
+      // A combi did create problems when cleaning at exit the
+      // static PoolStack data: crashed in memory
       /*
       fitter.setFunction(combination);
       Vector<Double> solution = fitter.fit(x,z,sigma);
       Matrix<Double> covariance = fitter.compuCovariance();    
       
-      cout << endl << "******** test three *************" << endl;
       cout << "Expect f(x,y) = 4 + 5*x+ 6*sin(y) + 0.2*x*x" << endl;
       cout << "Computed " << (Array<Double>&)solution << endl;
       cout << "Std Dev  ";
