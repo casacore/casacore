@@ -165,7 +165,8 @@ class Time;
 //		leading zero fields left empty.
 //	  <li> MVTime::CLEAN modifier for suppressing superfluous periods
 //	  <li> MVTime::NO_[D|H][M] modifier to suppress first field(s)
-//	  <li> MVTime::DIG2 modifier to get +dd.mm.ss.ttt in angle format
+//	  <li> MVTime::DIG2 modifier to get +dd.mm.ss.ttt in angle or
+//		time format(i.e. in range -90 - +90 or -12 - +12)
 //	</ul>
 // </ul>
 // The default formatting can be overwritten by a 

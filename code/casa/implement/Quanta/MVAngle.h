@@ -141,7 +141,8 @@ class MUString;
 //		the output of degrees (or hours): useful for offsets
 //	 <li> <src>MVAngle::NO_DM</src> (or <src>NO_HM</src>), to
 //		suppress the degrees and minutes.
-//	 <li> <src>MVAngle::DIG2</src> to allow only 2 digits for degrees
+//	 <li> <src>MVAngle::DIG2</src> to allow only 2 digits for degrees,
+//		or -12 - +12 range for hours
 //	</ul>
 //	Output in formats like <src>20'</src> can be done via the standard
 //	Quantum output (e.g. <src> stream << angle.get("'") </src>).
@@ -154,7 +155,8 @@ class MUString;
 //		leading zero fields left empty.
 //	  <li> MVAngle::CLEAN modifier for suppressing superfluous periods
 //	  <li> MVAngle::NO_[D|H][M] modifier to suppress first field(s)
-//	  <li> MVAngle::DIG2 modifier to output in +dd.mm.ss.ttt format
+//	  <li> MVAngle::DIG2 modifier to output in +dd.mm.ss.ttt format or
+//		in time format in range -12 to +12h
 //	</ul>
 // </ul>
 // The default formatting can be overwritten by a 

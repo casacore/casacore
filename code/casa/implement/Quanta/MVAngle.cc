@@ -209,6 +209,9 @@ void MVAngle::print(ostream &oss,
     } else {
 	t = val/C::circle;
 	t = (t - floor(t)) * 24.;
+	if (((intyp & MVAngle::DIG2) == MVAngle::DIG2) && t > 12) {
+	  t -= 24.0;
+	};
 	sep = ':';
     };
     if (inprec == 0) inprec = oss.precision();
@@ -217,7 +220,7 @@ void MVAngle::print(ostream &oss,
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
     if (inprec > 6) t1 /= pow(10., Double(inprec-6));
-    if (i1 == MVAngle::ANGLE) {
+    if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
 	  oss << '-';
 	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
@@ -249,11 +252,11 @@ void MVAngle::print(ostream &oss,
 	    };
 	  };
 	} else {
-	    if (h > 99) {
-		oss << "**";
-	    } else {
-		oss << setfill('0') << setw(2) << h;
-	    };
+	  if (h > 99) {
+	    oss << "**";
+	  } else {
+	    oss << setfill('0') << setw(2) << h;
+	  };
 	};
 	if ((inprec > 2) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
 	    oss << sep;
