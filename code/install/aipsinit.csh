@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -52,6 +52,9 @@
 #              If the "aips_bin" keyword is not present, the AIPS++ bin
 #              directory will be added to the start of PATH, following
 #              "." if it comes first.
+#
+#    LD_LIBRARY_PATH   If defined, it will be modified for AIPS++ in the same
+#              manner as for PATH except using the "aips_lib" keyword.
 #
 #    MANPATH   If defined, MANPATH will be modified for AIPS++ in the same
 #              manner as for PATH except using the "aips_doc" keyword.
@@ -111,20 +114,18 @@
   set a_host = `uname -n | awk -F. '{ print $1 }'`
 
 # Look for this host in the AIPS++ hosts database.
+  set a_temp = ""
   if (-f "$a_root/aipshosts") then
      set a_temp = `egrep "^[ 	]*${a_host}[ 	]" "$a_root/aipshosts"`
      if ("$a_temp" == "") then
 #       Look for a DEFAULT entry.
         set a_temp = `egrep "^[ 	]*DEFAULT[ 	]" "$a_root/aipshosts"`
      endif
-  else
-     echo "aipsinit: Please create the $a_root/aipshosts database."
-     set a_temp = ""
   endif
 
 # Request an update to aipshosts.
-  if (! $?AIPSPATH && "$a_temp" == "") then
-     echo "aipsinit: Please add an entry for $a_host to $a_root/aipshosts."
+  if ("$a_temp" == "") then
+     set a_temp = "DEFAULT"
   endif
 
 # Set the architecture and site.
@@ -138,8 +139,12 @@
   endif
 
   if ("$a_arch" == NONE) then
-#    Remove aips_bin and aips_doc from PATH and MANPATH.
+#    Remove aips_bin, aips_lib, and aips_doc from PATH, LD_LIBRARY_PATH,
+#    and MANPATH.
      setenv PATH `echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
+     if ($?LD_LIBRARY_PATH) then
+        setenv LD_LIBRARY_PATH `echo ":${LD_LIBRARY_PATH}:" | sed -e '{s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
+     endif
      if ($?MANPATH) then
         setenv MANPATH `echo ":${MANPATH}:" | sed -e '{s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
      endif
@@ -155,8 +160,12 @@
               set a_arch = sun4
            endif
            breaksw
-        case HPUX:
-           set a_arch = hpux
+        case HP-UX:
+           if (`uname -r` =~ *.*) then
+              set a_arch = hpux
+           else
+              set a_arch = hpux10
+           endif
            breaksw
         case Linux:
            set a_arch = linux
@@ -173,14 +182,30 @@
         endsw
      endif
 
+     set a_nonomatch = 0
+     if ($?nonomatch) set a_nonomatch = 1
+     set nonomatch
+
      if ("$a_site" == "") then
-#       Try to deduce the site name.
-        if ($?nonomatch) then
-           set a_temp = $a_root/$a_arch/*/makedefs
-        else
-           set nonomatch
-           set a_temp = $a_root/$a_arch/*/makedefs
-           unset nonomatch
+        # Sometimes the host name is used as the architecture (eg. dop03_egcs).
+        # So look if such a directory with files exists.
+        set a_temp = $a_root/${a_host}_*/*
+        if ("$a_temp" != "$a_root/${a_host}_*/*") then
+	   set a_arch = $a_host
+	endif
+
+#       Try to deduce the site name by looking for aipsrc or makedefs file
+#       in a subdirectory of the architecture (with possible extension).
+#       The first subdirectory is the site name.
+        set a_temp = $a_root/$a_arch/*/aipsrc
+        if ("$a_temp" == "$a_root/$a_arch/*/aipsrc") then
+           set a_temp = $a_root/$a_arch*/*/aipsrc
+           if ("$a_temp" == "$a_root/$a_arch*/*/aipsrc") then
+              set a_temp = $a_root/$a_arch/*/makedefs
+              if ("$a_temp" == "$a_root/$a_arch/*/makedefs") then
+                 set a_temp = $a_root/$a_arch*/*/makedefs
+              endif
+           endif
         endif
 
         set noglob
@@ -193,13 +218,24 @@
      if ($?aips_ext) then
         if ("$aips_ext" == "_" || "$aips_ext" == " ") then
            set a_arch=`echo $a_arch | sed -e 's/_.*//'`
-        else if ("$aips_ext" != "") then
+	else
            set a_arch=`echo ${a_arch}_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'`
         endif
-
         unset aips_ext
         unsetenv aips_ext
+     else
+        set a_ext = `echo $a_arch | sed -e 's/.*_//'`
+        if ("$a_ext" == "$a_arch") then
+           set a_temp = $a_root/${a_arch}_*/bin
+           set noglob
+           set a_temp = `echo $a_temp[1] | awk '{ print $1 }' | awk -F/ '{ print $(NF-1) }'`
+           set a_ext = `echo $a_temp | sed -e 's/.*_//'`
+           unset noglob
+           if ("$a_ext" != "*") set a_arch = ${a_arch}_$a_ext
+        endif
      endif
+
+     if ("$a_nonomatch" == "1") unset nonomatch
 
 #    Is AIPSPATH already defined?
      if ($?AIPSPATH) then
@@ -242,6 +278,20 @@
      if ("$a_new" != "") setenv PATH "$a_new"
 
 
+#    Reset LD_LIBRARY_PATH.
+     if ("$?LD_LIBRARY_PATH") then
+        set a_new = `echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root/$a_arch/lib #g"`
+
+#       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
+        echo " $a_new " | grep " $a_root/$a_arch/lib " >& /dev/null
+        if ("$status" != 0) set a_new = "$a_root/$a_arch/lib $a_new"
+
+#       Reset it, with sanity check!
+        set a_new = `echo $a_new | sed -e 's# #:#g'`
+        if ("$a_new" != "") setenv LD_LIBRARY_PATH "$a_new"
+     endif
+
+
 #    Reset MANPATH.
      if ("$?MANPATH") then
         set a_new = `echo " $MANPATH " | sed -e 's#::*# #g' -e "s# $a_old/doc # aips_doc #g" -e "s# aips_doc # $a_root/$a_arch/doc #g"`
@@ -259,5 +309,23 @@
      alias aipsinit "set aips_ext = (\!*) ; set a_root = $a_root ; source $a_root/aipsinit.csh"
   endif
 
+# Source possible local AIPS++ initialization files.
+  if (-r $a_root/aips++local.csh) then
+    source $a_root/aips++local.csh
+  endif
+  if (-r $a_root/$a_arch/aips++local.csh) then
+    source $a_root/$a_arch/aips++local.csh
+  endif
+  if (-r $a_root/$a_arch/$a_site/aips++local.csh) then
+    source $a_root/$a_arch/$a_site/aips++local.csh
+  endif
+  if (-r $a_root/$a_arch/$a_site/$a_host/aips++local.csh) then
+    source $a_root/$a_arch/$a_site/$a_host/aips++local.csh
+  endif
+  if (-r $HOME/.aips++local.csh) then
+     echo "Sourcing personal .aips++local.csh file."
+     source $HOME/.aips++local.csh
+  endif
+
 # Clean up.
-  unset a_arch a_host a_new a_och a_old a_root a_site a_temp
+  unset a_arch a_host a_new a_nonomatch a_och a_old a_root a_site a_temp
