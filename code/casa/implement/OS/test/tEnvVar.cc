@@ -1,5 +1,5 @@
 //# tEnvVar.cc: This program tests the EnvironmentVariables class
-//# Copyright (C) 1994, 1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,18 +36,18 @@ int main ()
     uInt ev0Count = ev0.number ();
     if (ev0.number () < 5)
       throw (AipsError ("tEnvVar needs at least5 variables defined "
-                        "in the environment of the parent shell"))
+                        "in the environment of the parent shell"));
     EnvironmentVariables ev1 ("abracadabra=kalamazoo");
     if (ev1.number () != ev0Count + 1)
       throw (AipsError ("failed to add new pair with ev1 ctor"));
     // case is significant, so this adds a new pair to the environment
     EnvironmentVariables ev2 ("ABRACADABRA","KALAMAZOO");  
     if (ev2.number () != ev0Count + 2)
-      throw (AipsError ("failed to add new pair with ev2 ctor"))
+      throw (AipsError ("failed to add new pair with ev2 ctor"));
     if (ev0.name (1) != ev1.name (1))
-      throw (AipsError ("ev0 & ev1 name #1 do not agree"))
+      throw (AipsError ("ev0 & ev1 name #1 do not agree"));
     if (ev0.value (2) != ev1.value (2))
-      throw (AipsError ("ev0 & ev1 value #2 do not agree"))
+      throw (AipsError ("ev0 & ev1 value #2 do not agree"));
     String name4 = ev1.name (4);
     if (ev0.value (name4) != ev2.value (name4))
       throw (AipsError ("value extraction by name failed"));
@@ -64,7 +64,7 @@ int main ()
     if (ev0.value ("sweet") != "potato")
       throw (AipsError ("set & value (sweet) retrieval failed"));
     if (ev0.number () != ev0Count + 3)
-       throw (AipsError ("sets, unsets, and ctor-implicit-sets do not tally"))
+       throw (AipsError ("sets, unsets, and ctor-implicit-sets do not tally"));
   } catch   (AipsError x) {
     cerr << "----------------------- exception! -------------------" << endl;
     cerr << x.getMesg () << endl;
