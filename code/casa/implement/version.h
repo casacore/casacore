@@ -1,5 +1,5 @@
 //# version.h: Version information for AIPS++
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,9 +53,9 @@ class ostream;
 //
 // The available information is:
 // <ul>
-//    <li> <src>major()</src>: Major version of AIPS++, changes about twice
+//    <li> <src>majorVersion()</src>: Major version of AIPS++, changes about twice
 //         a year.
-//    <li> <src>minor()</src>: Minor version of AIPS++, changes about three
+//    <li> <src>minorVersion()</src>: Minor version of AIPS++, changes about three
 //         times a day. (every exhale).
 //    <li> <src>patch()</src>: Patch number of this release. Changes when a
 //         bug-fix patch is created.
@@ -84,7 +84,7 @@ class ostream;
 // If you knew that a format change occurred at release 10.0 you could write
 // code like:
 // <srcBlock>
-// if (VersionInfo::major() >= 10) {
+// if (VersionInfo::majorVersion() >= 10) {
 //    ... process the new way
 // } else {
 //    ... process the old way
@@ -109,10 +109,10 @@ class VersionInfo
 {
 public:
     // Major version of AIPS++, changes about twice a year.
-    static int major();
+    static int majorVersion();
     // Minor version of AIPS++, changes about three times a
     // day (every exhale).
-    static int minor();
+    static int minorVersion();
     // Patch number of this release. Changes when a bug-fix patch is
     // created.
     static int patch();
@@ -131,13 +131,13 @@ public:
 };
 
 //# Inlines ------------------------------------------------------------------
-inline int VersionInfo::major()
+inline int VersionInfo::majorVersion()
 {
     extern const int   aips_major_version;
     return aips_major_version;
 }
 
-inline int VersionInfo::minor()
+inline int VersionInfo::minorVersion()
 {
     extern const int   aips_minor_version;
     return aips_minor_version;

@@ -1,5 +1,5 @@
 //# tversion.cc: "test" the version information.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,15 +27,6 @@
 //# $Id$
 
 #include <aips/aips.h>
-
-// Cure some problems seen on dec alpha - something is defining macros
-// major and minor
-#if defined(major)
-#undef major
-#endif
-#if defined(minor)
-#undef minor
-#endif
 #include <aips/version.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>
@@ -47,11 +38,11 @@ int main()
     // All we can really test is that the major number hasn't gotten
     // smaller than it was on the date the "test" program was written
     // 10/14/96
-    AlwaysAssertExit(VersionInfo::major() >= 7);
+    AlwaysAssertExit(VersionInfo::majorVersion() >= 7);
 
     cout << endl << "Recapitulation (should be consistent with above)" << endl;
-    cout << "Major " << VersionInfo::major() << endl;
-    cout << "Minor " << VersionInfo::minor() << endl;
+    cout << "Major " << VersionInfo::majorVersion() << endl;
+    cout << "Minor " << VersionInfo::minorVersion() << endl;
     cout << "Patch " << VersionInfo::patch() << endl;
     cout << "Date  " << VersionInfo::date() << endl;
     cout << "Extra info " << VersionInfo::info() << endl;

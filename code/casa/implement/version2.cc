@@ -1,5 +1,5 @@
 //# version.h: Version information for AIPS++
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,11 +33,11 @@
 
 void VersionInfo::report(ostream &os)
 {
-    int major1 = major()/10;
-    int major2 = major() - major1*10;
+    int major1 = majorVersion()/10;
+    int major2 = majorVersion() - major1*10;
     os << major1 << "." << major2;
 
-    if (minor() == 0) {
+    if (minorVersion() == 0) {
 	// End user release
 	os << "." << setfill('0') << setw(2) << patch();
     } else {
@@ -46,7 +46,7 @@ void VersionInfo::report(ostream &os)
 	    // Shouldn't happen, but allow it
 	    os << "." << setfill('0') << setw(2) << patch();
 	}
-	os << " (build #" << minor() << ")";
+	os << " (build #" << minorVersion() << ")";
     }
     
     const char *ptr = info();

@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,14 +39,6 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Array.h>
 
-// Cure some problems seen on dec alpha - something is defining macros
-// major and minor
-#if defined(major)
-#undef major
-#endif
-#if defined(minor)
-#undef minor
-#endif
 #include <aips/version.h>
 #include <aips/Logging.h>
 
@@ -139,9 +131,10 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
 
     // ORIGIN
     ostrstream buffer;
-    buffer << setfill('0') << "AIPS++ " << setw(2) << VersionInfo::major() <<
-        "." << setw(3) << VersionInfo::minor()  << "." << setw(2) <<
-        VersionInfo::patch();
+    buffer << setfill('0') << "AIPS++ " << setw(2)
+	   << VersionInfo::majorVersion() << "." << setw(3)
+	   << VersionInfo::minorVersion() << "." << setw(2)
+	   << VersionInfo::patch();
     String version(buffer);
     kw.mk(FITS::ORIGIN, version.chars());
 
