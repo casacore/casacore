@@ -113,9 +113,8 @@ void MSSummary::list (LogIO& os, Bool verbose) const
   listHow (os,verbose);
 
   // These aren't really useful (yet?)
-  //  listArray (os,verbose);
   //  listSource (os,verbose);
-  //  listObsLog (os,verbose);
+  //  listHistory (os,verbose);
   //  listSysCal (os,verbose);
   //  listWeather (os,verbose);
 
@@ -210,19 +209,18 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
     // Make a MS-antenna object
     MSAntenna antennaTable(pMS->antenna());
+    ROMSAntennaColumns antCol(antennaTable);
 
     if (antennaTable.nrow()<=0) {
       os << "The ANTENNA table is empty" << endl;
     }
     else {
       os << "Antennas: " << antennaTable.nrow() << endl;
-      ROScalarColumn<String> antennaNames(antennaTable,
-				MSAntenna::columnName(MSAntenna::NAME));
       String line, leader;
       Int last=-1;
-      for (uInt row=0; row<antennaNames.nrow(); row++) {
+      for (uInt row=0; row<antCol.station().nrow(); row++) {
 	// Build the line
-	line = line + " " + antennaNames(row);
+	line = line + " " + antCol.station()(row);
 	if (line.length()>65) {
 	  // This line is finished, dump it after the line leader
 	  leader = String::toString(last+2) +"-" +String::toString(row+1) +":";
@@ -234,40 +232,13 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
       if (line.length()>0) {
 	// Prepend and dump last line
 	leader =  String::toString(last+2) +"-"
-		+ String::toString(antennaNames.nrow()) +":";
+		+ String::toString(antCol.station().nrow()) +":";
 	os << "   " << leader << line << endl;
       }
     }
     os << LogIO::POST;
   }
 }
-
-
-void MSSummary::listArray (LogIO& os, Bool verbose) const 
-{
-  // Do nothing in terse mode
-  if (verbose) {
-
-    // Make a MS-observation object
-    MSObservation obsTable(pMS->observation());
-
-    if (obsTable.nrow()<=0) {
-      os << "The OBSERVATION table is empty" << endl;
-    }
-    else {
-      os << "Observations: " << obsTable.nrow() << endl;
-      ROScalarColumn<String> arrayNames(obsTable,MSObservation::columnName
-					(MSObservation::TELESCOPE_NAME));
-      os << "   Array names:";
-      for (uInt row=0; row<arrayNames.nrow(); row++) {
-	os << " " << arrayNames(row);
-      }
-      os << endl;
-    }
-  }
-  os<< LogIO::POST;
-}
-
 
 void MSSummary::listFeed (LogIO& os, Bool verbose) const 
 {
@@ -392,7 +363,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
 //v2os << "   Obs Date: " << msOC.obsDate()(0) << endl
 //v2   << "   Tel name: " << msOC.telName()(0);
     if (msc.observation().telescopeName().nrow()>0) {
-      os<<endl << "   Array: " << msc.observation().telescopeName()(0);
+      os<<endl << "Observation: " << msc.observation().telescopeName()(0);
     }
     if (!verbose) os << "(" << msc.antenna().name().nrow() << " antennas)";
     os << endl << endl;
@@ -428,12 +399,12 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
 }
 
 
-void MSSummary::listObsLog (LogIO& os, Bool verbose) const 
+void MSSummary::listHistory (LogIO& os, Bool verbose) const 
 {
   // Do nothing in terse mode
   if (verbose) {
 
-    // Create a MS-obslog-columns object
+    // Create a MS-history object
     ROMSHistoryColumns msHis(pMS->history());
 
     if (msHis.time().nrow()<=0) {
