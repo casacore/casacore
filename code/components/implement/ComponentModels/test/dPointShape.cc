@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# dPointCompRep.cc:
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,42 +34,54 @@
 #include <trial/Images/PagedImage.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-void main() {
-  Quantity J1934_ra = Quantity(19.0/24*360, "deg") + Quantity(39, "'");
-  Quantity J1934_dec = Quantity(-63, "deg") + Quantity(43, "'");
-  MDirection J1934_pos(J1934_ra, J1934_dec, MDirection::J2000);
-  Vector<Double> J1934_flux(4); // Flux has 4 elements (I,Q,U,V)
-  J1934_flux(0) = 6.28;         // Flux is measured in Jy/pixel.
-  J1934_flux(1) = 0.1;
-  J1934_flux(2) = 0.15;
-  J1934_flux(3) = 0.01;
-  PointCompRep J1934(J1934_flux, J1934_pos);
-  // This component can now be projected onto an image
-  CoordinateSystem coords;
-  {
-    Double pixInc = Quantity(1, "''").getValue("rad");
-    Matrix<Double> xform(2,2);
-    xform = 0.0; xform.diagonal() = 1.0;
-    Double refPixel = 32.0;
-    DirectionCoordinate dirCoord(MDirection::J2000,
-				 Projection(Projection::SIN),
-				 J1934_ra.getValue("rad"),
-				 J1934_dec.getValue("rad"),
-				 pixInc , pixInc, xform,
-				 refPixel, refPixel);
-    coords.addCoordinate(dirCoord);
+int main() {
+  try {
+    const Quantity J1934_ra = Quantity(19.0, "h").get("'") + Quantity(39, "'");
+    const Quantity J1934_dec = Quantity(-63, "deg") + Quantity(-43, "'");
+    const MDirection J1934_pos(J1934_ra, J1934_dec, MDirection::J2000);
+    Vector<Double> J1934_flux(4); // Flux has 4 elements (I,Q,U,V)
+    J1934_flux(0) = 6.28;         // Flux is measured in Jy/pixel.
+    J1934_flux(1) = 0.1;
+    J1934_flux(2) = 0.15;
+    J1934_flux(3) = 0.01;
+    const PointCompRep J1934(J1934_flux, J1934_pos);
+    // This component can now be projected onto an image
+    CoordinateSystem coords;
+    {
+      const Double pixInc = Quantity(1, "''").getValue("rad");
+      Matrix<Double> xform(2,2);
+      xform = 0.0; xform.diagonal() = 1.0;
+      const Double refPixel = 32.0;
+      const DirectionCoordinate dirCoord(MDirection::J2000,
+					 Projection(Projection::SIN),
+					 J1934_ra.getValue("rad"),
+					 J1934_dec.getValue("rad"),
+					 pixInc , pixInc, xform,
+					 refPixel, refPixel);
+      coords.addCoordinate(dirCoord);
+    }
+    CoordinateUtil::addIQUVAxis(coords);
+    CoordinateUtil::addFreqAxis(coords);
+    PagedImage<Float> skyModel(IPosition(4,64,64,4,8), coords, 
+			       "dPointCompRep_tmp.image");
+    skyModel.set(0.0f);
+    J1934.project(skyModel);
   }
-  CoordinateUtil::addIQUVAxis(coords);
-  CoordinateUtil::addFreqAxis(coords);
-  PagedImage<Float> skyModel(IPosition(4,64,64,4,8), coords, 
-			     "model_tmp.image");
-  skyModel.set(0.0f);
-  J1934.project(skyModel);
+  catch (AipsError x) {
+    cerr << x.getMesg() << endl;
+    cout << "FAIL" << endl;
+    return 1;
+  } end_try;
+  cout << "OK" << endl;
+  return 0;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 dPointCompRep"
