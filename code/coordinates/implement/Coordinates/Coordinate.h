@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,8 +81,14 @@ class RecordInterface;
 // and for physical units.
 // </synopsis>
 //
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+//
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// This is a base class so there is no direct example, but
+// see the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// for use of the derived classes.
 // </example>
 //
 // <motivation>
@@ -125,12 +131,15 @@ public:
        // DDD:MM:SS.SSS style formatting 
        TIME };
 
+    // Destructor
     virtual ~Coordinate();
 
     // List the type of this Coordinate object. Generally you shouldn't have
     // to call this function, it is used mostly in the CoordinateSystem class.
+    // <group>
     virtual Type type() const = 0;
     virtual String showType() const = 0;
+    // </group>
 
     // How many world/pixel axes are there in this coordinate? While the number
     // of world and pixel axes will generally be the same, it is not a 
@@ -144,9 +153,9 @@ public:
     virtual uInt nWorldAxes() const = 0;
     // </group>
 
-    // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.
+    // Convert a pixel position to a world position or vice versa. Returns True
+    // if the conversion succeeds, otherwise it returns False and method
+    // errorMessage contains an error message.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const = 0;
@@ -157,9 +166,9 @@ public:
 
     // Batch up a lot of transformation. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Return the number of failures.
-    // The failues array will be at least as long as the returned number of 
+    // The failures array will be at least as long as the returned number of 
     // failures, and contains the indicies of the failed transformations.
-    // error() will be set to the error from the FIRST failure. A default
+    // errorMessage() will be set to the error from the FIRST failure. A default
     // implementation is provided that works with the "single" version of
     // toWorld and toPixel, but for maximum efficiency these should be
     // overridden. If failures is longer than the return value, the value
@@ -173,7 +182,7 @@ public:
 			      Vector<Int> &failures) const;
     // </group>
 
-    // Report the value of the requested attributed.
+    // Return the requested attributed.
     // <group>
     virtual Vector<String> worldAxisNames() const = 0;
     virtual Vector<Double> referencePixel() const = 0;
@@ -183,7 +192,7 @@ public:
     virtual Vector<String> worldAxisUnits() const = 0;
     // </group>
 
-    // Set the value of the requested attribute.  Note that these just
+    // Set the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names) = 0;
@@ -193,7 +202,7 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval)  = 0;
     // </group>
 
-    // Change the units. If <src>adjust</src> is True, adjust the increment and
+    // Change the units. If adjust is True, adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and that
     // they must be compatible, e.g. they can't change from time to length.
@@ -211,7 +220,7 @@ public:
 
     // Comparison to fractional tolerance (for floating point values). 
     // Don't compare on specified axes in coordinate. If the comparison
-    // returns False, <src>errorMessage()</src> contains a message.
+    // returns False, errorMessage() contains a message.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
                       Double tol) const = 0;
@@ -222,42 +231,42 @@ public:
 
     // Provide a common interface to getting formatted representations of
     // coordinate values.    Different derived coordinate types are formatted
-    // in different ways.  For example, an RA/DEC  <src>DirectionCoordinate</src>  
-    // uses an HMS.SS/DMS.SS representation. A Galactic Lat/Long <src>DirectionCoordinate</src>
+    // in different ways.  For example, an RA/DEC  DirectionCoordinate
+    // uses an HMS.SS/DMS.SS representation. A Galactic Lat/Long DirectionCoordinate
     // uses floating format in degrees.  Other derived coordinates are formatted with 
     // scientific format or floating format. The derived class format functions
     // provide this functionality.   
     // 
-    // You may specify the format with the <src>format</src> argument and a value
-    // from the <src>enum</src> <src>Coordinate::formatType</src>.  If 
-    // you give it the value <src>Coordinate::DEFAULT</src> then a default
+    // You may specify the format with the format argument and a value
+    // from the enum Coordinate::formatType.  If 
+    // you give it the value Coordinate::DEFAULT then a default
     // is taken.
     //
     // A mechanism for specifying the precision number of significant digits after 
     // decimal point) is provided.  You can specify the precision directly when 
-    // calling <src>format</src> if it is unambiguous how the derived Coordinate is 
+    // calling format if it is unambiguous how the derived Coordinate is 
     // going to be formatted.  For example, a LinearCoordinate is always formatted with 
     // scientific format.  However, if you are using these classes polymorphically, you 
     // don't want to have to know this and some derived Coordinates may be formatted
-    // in multiple ways (such as the <src>DirectionCoordinate</src> examples above).
-    // Therefore, the function <src>getPrecision</src> enables 
+    // in multiple ways (such as the DirectionCoordinate examples above).
+    // Therefore, the function getPrecision enables 
     // you to set default precisions for the different styles of formatting 
     // used variously in the base and derived classes.   This function chooses the 
     // precision from these default values, according to the type of derived 
-    // Coordinate that your object is and what value for <src>format</src> that
+    // Coordinate that your object is and what value for format that
     // you give (refer to the derived classes for details on this).
     // 
     // Some derived classes will format differently depending upon whether
     // you want to format an absolute or offset world value input via 
-    // <src>absolute</src> (e.g. DirectionCoordinates).
+    // absolute (e.g. DirectionCoordinates).
     //
     // Some derived classes will format in units different from that which
     // currently reflect the state of the CoordinateSystem.  The units of
     // the formatted number are returned in <src>units</src>.
     //
     // The default implementation here in this base class is to format only
-    // with scientific or fixed formats.  <src>absolute</src> is ignored.
-    // If <src>precision</src> is negative, a the default precision is used.
+    // with scientific or fixed formats.  absolute is ignored.
+    // If precision is negative, a the default precision is used.
     //
     //<group>
     virtual void getPrecision(Int &precision,
