@@ -32,6 +32,7 @@
 #include <tables/Tables/TableRow.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableLocker.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
@@ -191,6 +192,9 @@ void TableCopy::copySubTables (TableRecord& outKeys,
   for (uInt i=0; i<inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
+      // Lock the subtable in case not locked yet.
+      // Note it will keep the lock if already locked.
+      TableLocker locker(inTab, FileLocker::Read);
       // If the table to be copied has the same root as the main input table,
       // we do not make a copy. This is needed to avoid the recursive copy
       // of SORTED_TABLE in a MeasurementSet.
