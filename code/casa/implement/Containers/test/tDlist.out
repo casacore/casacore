@@ -1,6 +1,3 @@
-ERROR: Dlist<t> is deprecated, List<t> should be used instead
-ERROR: ConstDlistIter<t> is deprecated, ConstListIter<t> should be used instead
-ERROR: DlistIter<t> is deprecated, ListIter<t> should be used instead
 -- -- -- -- -- (1) -- -- -- -- --
 <onePa> - 31.7.16.72.3.
 <onePa> - 3.72.16.7.31.
