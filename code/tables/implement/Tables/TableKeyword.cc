@@ -136,8 +136,8 @@ const Table& TableKeyword::table() const
 	}
 
 	//// Backed out of it again as there seems to be a bug
-       	////*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
-	*table_p = Table(attr_p.name(), option);
+       	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
+	////*table_p = Table(attr_p.name(), option);
     }
     return *table_p;
 }

@@ -82,7 +82,7 @@ void TableLock::init()
     itsOption           = AutoLocking;
     //// defaultlocking does not work in all cases it seems;
     ////  commented below till fixed
-    //// itsIsDefaultLocking = True;
+    itsIsDefaultLocking = True;
   } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
