@@ -3404,106 +3404,41 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 		stokes(k) = Int(tmp - 0.01);
 	    }
 //
-   	    switch (stokes(k)) {
-	    case -8: 
-              stokes(k) = Stokes::YX; 
-              break;
-	    case -7: 
-              stokes(k) = Stokes::XY; 
-              break;
-	    case -6: 
-              stokes(k) = Stokes::YY; 
-              break;
-	    case -5: 
-              stokes(k) = Stokes::XX; 
-              break;
-	    case -4: 
-              stokes(k) = Stokes::LR; 
-              break;	    
-	    case -3: 
-              stokes(k) = Stokes::RL; 
-              break;
-	    case -2: 
-              stokes(k) = Stokes::LL; 
-              break;
-            case -1: 
-              stokes(k) = Stokes::RR; 
-              break;
-            case 0:
-             {
-              if (warnStokes) {
-                 os << LogIO::WARN 
-                    << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
-                 os << "Convention for an image containing a beam.  Putting Stokes=Undefined" << endl;
-                 os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
-              }
-              stokes(k) = Stokes::Undefined;
-              stokesFITSValue = 0;
-              break;
-             }
-            case 1:  
-             {
-                stokes(k) = Stokes::I; 
-                break;
-             }
-	    case 2: 
-              stokes(k) = Stokes::Q; 
-              break;
-	    case 3: 
-              stokes(k) = Stokes::U; 
-              break;
-	    case 4: 
-              stokes(k) = Stokes::V; 
-              break;
-            case 5:
-
-// Percentage linear polarization only just supported
-
-              {
-                 os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial percentage polarization value." << endl;
-                 os << "This is not supported.  Will use fractional polarization instead " << endl;
-                 os << "You must scale the image by 0.01" << LogIO::POST;
-                 stokes(k) = Stokes::PFlinear;
-                 break;
-              }
-            case 6:
-              stokes(k) = Stokes::PFlinear;
-              break;
-            case 7:
-              stokes(k) = Stokes::Pangle;
-              break;
-            case 8:
-
-// Spectral index not supported
-
-              {
-                 if (warnStokes) {
-                    os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectral index value." << endl;
-                    os << "This is not supported. Putting Stokes=Undefined" << LogIO::POST;
-                 }
-                 stokes(k) = Stokes::Undefined;
-                 stokesFITSValue = 8;
-                 break;
-              }
-            case 9:
-
-// Optical depth not supported
-
-              {
-                 if (warnStokes) {
-                    os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
-                    os << "value.  This is not supported. Putting Stokes=Undefined" << LogIO::POST;
-                 }
-                 stokes(k) = Stokes::Undefined;
-                 stokesFITSValue = 9;
-                 break;
-              }
-	    default:
-              {
-              os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
-                 << " was detected; this is not valid. Putting Stokes=Undefined" << endl;
-              stokes(k) = Stokes::Undefined;
-              }
+            if (stokes(k)==0) {
+               if (warnStokes) {
+                  os << LogIO::WARN 
+                     << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
+                  os << "Convention for an image containing a beam.  Putting Stokes=Undefined" << endl;
+                  os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
+               }
+               stokes(k) = Stokes::Undefined;
+               stokesFITSValue = 0;
+            } else if (stokes(k)==5) {           
+               os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial percentage polarization value." << endl;
+               os << "This is not supported.  Will use fractional polarization instead " << endl;
+               os << "You must scale the image by 0.01" << LogIO::POST;
+               stokes(k) = Stokes::PFlinear;
+            } else if (stokes(k)==8) {
+               if (warnStokes) {
+                  os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectral index value." << endl;
+                  os << "This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+               }
+               stokes(k) = Stokes::Undefined;
+               stokesFITSValue = 8;
+            } else if (stokes(k)==9) {
+               if (warnStokes) {
+                  os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
+                  os << "value.  This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+               }
+               stokes(k) = Stokes::Undefined;
+               stokesFITSValue = 9;
+            } else {
+               Stokes::StokesTypes type = Stokes::fromFITSValue(stokes(k));
+               if (type == Stokes::Undefined) {
+                  os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
+                     << " was detected; this is not valid. Putting Stokes=Undefined" << endl;
+               }
+               stokes(k) = type;
 	    }
 	}
 	try {
