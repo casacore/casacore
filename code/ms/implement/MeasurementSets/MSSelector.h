@@ -250,6 +250,8 @@ protected:
   void putAveragedFlag(const Array<Bool>& avFlag,
 		       ArrayColumn<Bool>& col);
 
+  Array<Float> getWeight(const ROArrayColumn<Float>& wtCol) const;
+
   // make the data slicer, pass in the first and the number of correlations
   // to select
   void makeSlicer(Int start, Int nCorr) const;
