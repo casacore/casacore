@@ -1,5 +1,5 @@
 //# ImageProfileFit.h: Class to fit profiles in images
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,10 +159,10 @@ public:
     // depending on what function you called last) into a record.  
     // Only returns False if the field is already defined. Absolute pixel 
     // coordinate units  are 1-rel on output.
-    Bool getElements (RecordInterface& rec,
-                      Bool xAbsOut,
-                      const String& xUnitOut,
-                      const String& dopplerOut);
+    Bool getList (RecordInterface& rec,
+                  Bool xAbsOut,
+                  const String& xUnitOut,
+                  const String& dopplerOut);
 
     // Gets the internal SpectralElements (either estimate or fit
     // depending on what function you called last) into a SpectralList
