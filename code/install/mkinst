@@ -42,7 +42,7 @@
 #   <ident> <.cc file> <.h file> [<extra .h files>] 
 # part has to be on one line (the first line), the first <template declaration>
 # can be on the same line. More declarations (on separate lines) are
-possible.
+# possible.
 # Each declaration line can have either of 5 forms:
 #	template .......
 #	template <> class ....		(template-less forward declaration)
