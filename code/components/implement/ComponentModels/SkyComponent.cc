@@ -1,5 +1,5 @@
 //# SkyComponent.cc:  this defines SkyComponent
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,28 +47,28 @@ SkyComponent::SkyComponent()
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(const ComponentType::Shape & shape)   
+SkyComponent::SkyComponent(const ComponentType::Shape& shape)   
   :itsCompPtr(new SkyCompRep(shape))
 {
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(const ComponentType::Shape & shape,
-			   const ComponentType::SpectralShape & spectralModel) 
+SkyComponent::SkyComponent(const ComponentType::Shape& shape,
+			   const ComponentType::SpectralShape& spectralModel) 
   :itsCompPtr(new SkyCompRep(shape, spectralModel))
 {
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(const Flux<Double> & flux,
-			   const ComponentShape & shape, 
-			   const SpectralModel & spectrum)
+SkyComponent::SkyComponent(const Flux<Double>& flux,
+			   const ComponentShape& shape, 
+			   const SpectralModel& spectrum)
   :itsCompPtr(new SkyCompRep(flux, shape, spectrum))
 {
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(const SkyComponent & other) 
+SkyComponent::SkyComponent(const SkyComponent& other) 
   :itsCompPtr(other.itsCompPtr)
 { 
   DebugAssert(ok(), AipsError);
@@ -78,89 +78,95 @@ SkyComponent::~SkyComponent() {
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
+SkyComponent& SkyComponent::operator=(const SkyComponent& other) {
   if (this != &other)
     itsCompPtr = other.itsCompPtr;
   DebugAssert(ok(), AipsError);
   return *this;
 }
 
-Flux<Double> & SkyComponent::flux() {
+Flux<Double>& SkyComponent::flux() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
 
-const Flux<Double> & SkyComponent::flux() const {
+const Flux<Double>& SkyComponent::flux() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
 
-const ComponentShape & SkyComponent::shape() const {
+const ComponentShape& SkyComponent::shape() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->shape();
 }
 
-ComponentShape & SkyComponent::shape() {
+ComponentShape& SkyComponent::shape() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->shape();
 }
 
-void SkyComponent::setShape(const ComponentShape & newShape) {
+void SkyComponent::setShape(const ComponentShape& newShape) {
   DebugAssert(ok(), AipsError);
   itsCompPtr->setShape(newShape);
 }
 
-const SpectralModel & SkyComponent::spectrum() const {
+const SpectralModel& SkyComponent::spectrum() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
 }
 
-SpectralModel & SkyComponent::spectrum() {
+SpectralModel& SkyComponent::spectrum() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
 }
 
-void SkyComponent::setSpectrum(const SpectralModel & newSpectrum) {
+void SkyComponent::setSpectrum(const SpectralModel& newSpectrum) {
   DebugAssert(ok(), AipsError);
   itsCompPtr->setSpectrum(newSpectrum);
 }
 
-String & SkyComponent::label() {
+String& SkyComponent::label() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->label();
 }
 
-const String & SkyComponent::label() const {
+const String& SkyComponent::label() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->label();
 }
 
-Flux<Double> SkyComponent::sample(const MDirection & direction, 
-			      const MVAngle & pixelSize, 
-			      const MFrequency & centerFrequency) const {
+Flux<Double> SkyComponent::sample(const MDirection& direction, 
+			      const MVAngle& pixelSize, 
+			      const MFrequency& centerFrequency) const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->sample(direction, pixelSize, centerFrequency);
 }
 
-void SkyComponent::project(ImageInterface<Float> & plane) const {
-  itsCompPtr->project(plane);
+void SkyComponent::sample(Matrix<Flux<Double> >& samples,
+			  const Vector<MVDirection>& directions, 
+			  const MeasRef<MDirection>& dirRef, 
+			  const MVAngle& pixelSize, 
+			  const Vector<MVFrequency>& frequencies,
+			  const MeasRef<MFrequency>& freqRef) const {
   DebugAssert(ok(), AipsError);
+  return itsCompPtr->sample(samples, directions, dirRef, pixelSize, 
+			    frequencies, freqRef);
 }
 
-Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
- 				      const Double & frequency) const {
+Flux<Double> SkyComponent::visibility(const Vector<Double>& uvw,
+ 				      const Double& frequency) const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->visibility(uvw, frequency);
 }
 
-Bool SkyComponent::fromRecord(String & errorMessage, 
- 			      const RecordInterface & record) {
+Bool SkyComponent::fromRecord(String& errorMessage, 
+ 			      const RecordInterface& record) {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->fromRecord(errorMessage, record);
 }
 
-Bool SkyComponent::toRecord(String & errorMessage,
- 			    RecordInterface & record) const {
+Bool SkyComponent::toRecord(String& errorMessage,
+ 			    RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->toRecord(errorMessage, record);
 }
@@ -188,5 +194,5 @@ Bool SkyComponent::ok() const {
   return True;
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 SkyComponent"
+// compile-command: "gmake SkyComponent"
 // End: 

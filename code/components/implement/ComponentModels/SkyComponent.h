@@ -1,5 +1,5 @@
 //# SkyComponent.h: this defines SkyComponent.h
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,12 +38,15 @@ class ComponentShape;
 class MDirection;
 class MFrequency;
 class MVAngle;
+class MVDirection;
+class MVFrequency;
 class RecordInterface;
 class SkyCompRep;
 class SpectralModel;
 class String;
-template<class T> class ImageInterface;
+template<class Ms> class MeasRef;
 template<class T> class Flux;
+template<class T> class Matrix;
 template<class T> class Vector;
 
 // <summary>A component of a model of the sky </summary>
@@ -189,17 +192,21 @@ public:
 			      const MVAngle & pixelSize, 
 			      const MFrequency & centerFrequency) const;
 
-  // See the corresponding functions in the
+  // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
-  virtual void project(ImageInterface<Float> & plane) const;
+  virtual void sample(Matrix<Flux<Double> >& samples,
+ 		      const Vector<MVDirection>& directions, 
+ 		      const MeasRef<MDirection>& dirRef, 
+ 		      const MVAngle& pixelSize, 
+		      const Vector<MVFrequency>& frequencies,
+ 		      const MeasRef<MFrequency>& freqRef) const;
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const;
-
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.

@@ -1,5 +1,5 @@
 //# SkyCompRep.h: A model component of the sky brightness
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,9 +40,12 @@ class ComponentShape;
 class MDirection;
 class MFrequency;
 class MVAngle;
+class MVDirection;
+class MVFrequency;
 class RecordInterface;
 class SpectralModel;
-template <class T> class ImageInterface;
+template <class Ms> class MeasRef;
+template <class T> class Matrix;
 template <class T> class Vector;
 
 // <summary>A model component of the sky brightness</summary>
@@ -125,7 +128,7 @@ public:
   // <thrown>
   // <li> AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
   // </thrown>
-  SkyCompRep(const ComponentType::Shape & shape);
+  SkyCompRep(const ComponentType::Shape& shape);
   
   // Construct a SkyCompRep with the user specified model for the shape and
   // spectrum. The resultant component has a shape given by the default
@@ -136,84 +139,89 @@ public:
   // <li> AipsError - if the spectrum is UNKNOWN_SPECTRAL_SHAPE or
   //                  NUMBER_SPECTRAL_SHAPES
   // </thrown>
-  SkyCompRep(const ComponentType::Shape & shape,
- 	     const ComponentType::SpectralShape & spectrum);
+  SkyCompRep(const ComponentType::Shape& shape,
+ 	     const ComponentType::SpectralShape& spectrum);
 
   // Construct a SkyCompRep with a fully specified model for the shape, 
   // spectrum and flux.
-  SkyCompRep(const Flux<Double> & flux,
- 	     const ComponentShape & shape, 
- 	     const SpectralModel & spectrum);
+  SkyCompRep(const Flux<Double>& flux,
+ 	     const ComponentShape& shape, 
+ 	     const SpectralModel& spectrum);
   
   // The copy constructor uses copy semantics
-  SkyCompRep(const SkyCompRep & other);
+  SkyCompRep(const SkyCompRep& other);
   
   // The destructor does not appear to do much
   virtual ~SkyCompRep();
 
   // The assignment operator uses copy semantics.
-  SkyCompRep & operator=(const SkyCompRep & other);
+  SkyCompRep& operator=(const SkyCompRep& other);
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.
   // <group>
-  virtual const Flux<Double> & flux() const;
-  virtual Flux<Double> & flux();
+  virtual const Flux<Double>& flux() const;
+  virtual Flux<Double>& flux();
   // </group>
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.
   // <group>
-  virtual const ComponentShape & shape() const;
-  virtual ComponentShape & shape();
-  virtual void setShape(const ComponentShape & newShape);
-  // </group>
-  
-  // See the corresponding functions in the
-  // <linkto class="SkyCompBase">SkyCompBase</linkto>
-  // class for a description of these functions.
-  // <group>
-  virtual const SpectralModel & spectrum() const;
-  virtual SpectralModel & spectrum();
-  virtual void setSpectrum(const SpectralModel & newSpectrum);
+  virtual const ComponentShape& shape() const;
+  virtual ComponentShape& shape();
+  virtual void setShape(const ComponentShape& newShape);
   // </group>
   
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.
   // <group>
-  virtual String & label();
-  virtual const String & label() const;
+  virtual const SpectralModel& spectrum() const;
+  virtual SpectralModel& spectrum();
+  virtual void setSpectrum(const SpectralModel& newSpectrum);
+  // </group>
+  
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
+  // <group>
+  virtual String& label();
+  virtual const String& label() const;
   // </group>
 
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
-  virtual Flux<Double> sample(const MDirection & direction, 
-			      const MVAngle & pixelSize, 
-			      const MFrequency & centerFrequency) const;
+  virtual Flux<Double> sample(const MDirection& direction, 
+			      const MVAngle& pixelSize, 
+			      const MFrequency& centerFrequency) const;
 
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
-  virtual void project(ImageInterface<Float> & plane) const;
+  virtual void sample(Matrix<Flux<Double> >& samples,
+ 		      const Vector<MVDirection>& directions, 
+ 		      const MeasRef<MDirection>& dirRef, 
+ 		      const MVAngle& pixelSize, 
+		      const Vector<MVFrequency>& frequencies,
+ 		      const MeasRef<MFrequency>& freqRef) const;
 
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
-  virtual Flux<Double> visibility(const Vector<Double> & uvw,
-				  const Double & frequency) const;
+  virtual Flux<Double> visibility(const Vector<Double>& uvw,
+				  const Double& frequency) const;
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.
   // <group>
-  virtual Bool fromRecord(String & errorMessage, 
-			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage, 
-			RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage, 
+			  const RecordInterface& record);
+  virtual Bool toRecord(String& errorMessage, 
+			RecordInterface& record) const;
   // </group>
 
   // See the corresponding function in the

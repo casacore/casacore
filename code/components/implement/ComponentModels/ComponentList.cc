@@ -38,6 +38,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
@@ -135,6 +136,41 @@ Flux<Double> ComponentList::sample(const MDirection& sampleDir,
     result += compFlux.value();
   }
   return Flux<Double>(result, retPol);
+}
+
+void ComponentList::sample(Matrix<Flux<Double> >& samples,
+			   const Vector<MVDirection>& directions, 
+			   const MeasRef<MDirection>& dirRef, 
+			   const MVAngle& pixelSize, 
+			   const Vector<MFrequency::MVType>& frequencies,
+			   const MFrequency::Ref& freqRef) const {
+  const Unit retUnit("Jy");
+  const ComponentType::Polarisation retPol(ComponentType::STOKES);
+  const uInt nFreqs = frequencies.nelements();
+  const uInt nDirs = directions.nelements();
+  for (uInt f = 0; f < nFreqs; f++) { 
+    for (uInt d = 0; d < nDirs; d++) { 
+      Flux<Double>& accumFlux = samples(d, f);
+      accumFlux.scaleValue(0.0);
+      accumFlux.setUnit(retUnit);
+      accumFlux.setPol(retPol);
+    }
+  }
+
+  Matrix<Flux<Double> > compSamples(nDirs, nFreqs);
+  for (uInt i = 0; i < nelements(); i++) {
+    component(i).sample(compSamples, directions, dirRef, pixelSize, 
+			frequencies, freqRef);
+    for (uInt f = 0; f < nFreqs; f++) { 
+      for (uInt d = 0; d < nDirs; d++) { 
+	Flux<Double>& thisFlux = compSamples(d, f);
+	thisFlux.convertUnit(retUnit);
+	thisFlux.convertPol(retPol);
+	Flux<Double>& accumFlux = samples(d, f);
+	accumFlux.setValue(accumFlux.value() + thisFlux.value());
+      }
+    }
+  }
 }
 
 void ComponentList::add(SkyComponent component) {

@@ -43,6 +43,8 @@ class MVFrequency;
 class MVAngle;
 class Unit;
 template <class T> class Vector;
+template <class T> class Matrix;
+template <class Ms> class MeasRef;
 
 // <summary> A class for manipulating groups of components </summary>
 
@@ -149,23 +151,32 @@ public:
   // Read a componentList from an existing table. By default the Table is
   // opened read-write. It is recommended that you create a const ComponentList
   // if you open the Table readOnly.
-  ComponentList(const String & fileName, const Bool readOnly=False);
+  ComponentList(const String& fileName, const Bool readOnly=False);
 
   // The Copy constructor uses reference semantics
-  ComponentList(const ComponentList & other);
+  ComponentList(const ComponentList& other);
 
   // The destructor saves the list to disk if it has a name (assigned using the
   // setName member function)
   ~ComponentList();
   
   // The assignment operator uses reference semantics
-  ComponentList & operator=(const ComponentList & other);
+  ComponentList& operator=(const ComponentList& other);
 
   // Sample all the members of the componentList at the specified
-  // direction. The returned Vector containes all the polarisarions. 
-  Flux<Double> sample(const MDirection & sampleDir,
-		      const MVAngle & pixelSize,
-		      const MFrequency & centerFreq) const;
+  // direction. 
+  Flux<Double> sample(const MDirection& sampleDir,
+		      const MVAngle& pixelSize,
+		      const MFrequency& centerFreq) const;
+
+  // Same as the previous function except that many directions & frequencies
+  // are done at once. 
+  void sample(Matrix<Flux<Double> >& samples,
+	      const Vector<MVDirection>& directions, 
+	      const MeasRef<MDirection>& dirRef, 
+	      const MVAngle& pixelSize, 
+	      const Vector<MVFrequency>& frequencies,
+	      const MeasRef<MFrequency>& freqRef) const;
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
@@ -189,8 +200,8 @@ public:
   //                  elements in the list or is negative.
   // </thrown>
   // <group>
-  void remove(const uInt & index);
-  void remove(const Vector<Int> & indices);
+  void remove(const uInt& index);
+  void remove(const Vector<Int>& indices);
   // </group>
 
   // returns how many components are in the list.
@@ -202,7 +213,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void deselect(const Vector<Int> & index);
+  void deselect(const Vector<Int>& index);
 
   // select the specified component. Throws an exception (AipsError) if any
   // element in the index is out of range, ie. index >= nelements().
@@ -210,7 +221,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void select(const Vector<Int> & index);
+  void select(const Vector<Int>& index);
 
   // Returns a Vector whose indices indicate which components are selected
   Vector<Int> selected() const;
@@ -219,24 +230,24 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setLabel(const Vector<Int> & which,
-		const String & newLabel);
+  void setLabel(const Vector<Int>& which,
+		const String& newLabel);
 
   // set the flux on the specified components to the specified flux
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setFlux(const Vector<Int> & which,
-	       const Flux<Double> & newFlux);
+  void setFlux(const Vector<Int>& which,
+	       const Flux<Double>& newFlux);
 
   // convert the flux on the specified components to the specified units
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertFluxUnit(const Vector<Int> & which,
-		       const Unit & unit);
+  void convertFluxUnit(const Vector<Int>& which,
+		       const Unit& unit);
   
   // convert the flux on the specified components to the specified 
   // polarisation representation
@@ -244,7 +255,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertFluxPol(const Vector<Int> & which,
+  void convertFluxPol(const Vector<Int>& which,
 		      ComponentType::Polarisation pol);
   
   // set the reference direction on the specified components to the specified
@@ -254,8 +265,8 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefDirection(const Vector<Int> & which,
-		       const MVDirection & newDir);
+  void setRefDirection(const Vector<Int>& which,
+		       const MVDirection& newDir);
 
   // set the reference direction frame on the specified components to the
   // specified one. Does not convert the direction values.
@@ -263,7 +274,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefDirectionFrame(const Vector<Int> & which,
+  void setRefDirectionFrame(const Vector<Int>& which,
 			    MDirection::Types newFrame);
 
   // Convert the reference direction frame on the specified components to the
@@ -272,7 +283,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertRefDirection(const Vector<Int> & which,
+  void convertRefDirection(const Vector<Int>& which,
 			   MDirection::Types newFrame);
 
   // set the shape on the specified components to the specified one.
@@ -280,8 +291,8 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setShape(const Vector<Int> & which,
-		const ComponentShape & newShape);
+  void setShape(const Vector<Int>& which,
+		const ComponentShape& newShape);
 
   // set the shape on the specified components to the specified one. However
   // this function unlike the previous one does not change the reference
@@ -290,16 +301,16 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setShapeParms(const Vector<Int> & which,
-		     const ComponentShape & newShape);
+  void setShapeParms(const Vector<Int>& which,
+		     const ComponentShape& newShape);
 
   // set the spectrum on the specified components to the specified one.
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setSpectrum(const Vector<Int> & which,
-		   const SpectralModel & newSpectrum);
+  void setSpectrum(const Vector<Int>& which,
+		   const SpectralModel& newSpectrum);
 
   // set the spectrum on the specified components to the specified one. However
   // this function unlike the previous one does not change the reference
@@ -308,8 +319,8 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setSpectrumParms(const Vector<Int> & which,
-			const SpectralModel & newSpectrum);
+  void setSpectrumParms(const Vector<Int>& which,
+			const SpectralModel& newSpectrum);
 
   // set the reference frequency on the specified components to the specified
   // frequency. The reference frame is not changed, use the
@@ -318,7 +329,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefFrequency(const Vector<Int> & which, const MVFrequency & newFreq);
+  void setRefFrequency(const Vector<Int>& which, const MVFrequency& newFreq);
 
   // set the reference frequency frame on the specified components to the
   // specified one. Does not convert the frequency values.
@@ -326,7 +337,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefFrequencyFrame(const Vector<Int> & which,
+  void setRefFrequencyFrame(const Vector<Int>& which,
 			    MFrequency::Types newFrame);
 
   // set the reference frequency unit on the specified components to the
@@ -335,7 +346,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefFrequencyUnit(const Vector<Int> & which, const Unit & unit);
+  void setRefFrequencyUnit(const Vector<Int>& which, const Unit& unit);
 
   // returns a reference to the specified element in the list.
   // <thrown>
@@ -345,8 +356,8 @@ public:
   //                  elements in the list.
   // </thrown>
   // <group>
-  const SkyComponent & component(const uInt & index) const;
-  SkyComponent & component(const uInt & index);
+  const SkyComponent& component(const uInt& index) const;
+  SkyComponent& component(const uInt& index);
   // </group>
 
   // Make the ComponentList persistant by supplying a filename. If the
@@ -358,7 +369,7 @@ public:
   //                  readonly
   // <li> AipsError - If option is Table::Old as this does not make sense
   // </thrown>
-  void rename(const String & newName, 
+  void rename(const String& newName, 
 	      const Table::TableOption option=Table::New);
 
   // Make a real copy of this componentList. As the copy constructor and the
@@ -373,7 +384,7 @@ public:
   static String name(ComponentList::SortCriteria enumerator);
 
   // Convert a given String to a Type enumerator
-  static ComponentList::SortCriteria type(const String & criteria);
+  static ComponentList::SortCriteria type(const String& criteria);
 
   // Function which checks the internal data of this class for consistant
   // values. Returns True if everything is fine otherwise returns False.
@@ -381,7 +392,7 @@ public:
 
 private:
   // Privarte function to create the Table which will hold the components
-  void createTable(const String & fileName, const Table::TableOption option);
+  void createTable(const String& fileName, const Table::TableOption option);
   // Private function to write the components to disk
   // <thrown>
   // <li> AipsError - If the table is not writable
@@ -393,7 +404,7 @@ private:
   // <li> AipsError - If the table is not readable
   // <li> AipsError - If the table is not writable (and readOnly==False)
   // </thrown>
-  void readTable(const String & fileName, const Bool readOnly);
+  void readTable(const String& fileName, const Bool readOnly);
   Block<SkyComponent> itsList;
   uInt itsNelements;
   Table itsTable;

@@ -33,6 +33,8 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
@@ -167,6 +169,44 @@ Flux<Double> SkyCompRep::sample(const MDirection& direction,
   Flux<Double> flux = itsFlux.copy();
   flux.scaleValue(scale, scale, scale, scale);
   return flux;
+}
+
+void SkyCompRep::sample(Matrix<Flux<Double> >& samples,
+			const Vector<MVDirection>& directions, 
+			const MeasRef<MDirection>& dirRef, 
+			const MVAngle& pixelSize, 
+			const Vector<MVFrequency>& frequencies,
+			const MeasRef<MFrequency>& freqRef) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nDirSamples = directions.nelements();
+  DebugAssert(samples.nrow() == nDirSamples, AipsError);
+  const uInt nFreqSamples = directions.nelements();
+  DebugAssert(samples.ncolumn() == nFreqSamples, AipsError);
+  DebugAssert(pixelSize.radian() > 0.0, AipsError);
+  
+  const Vector<DComplex> fluxVal = itsFlux.value();
+  const Unit fluxUnit = itsFlux.unit();
+  const ComponentType::Polarisation fluxPol = itsFlux.pol();
+  Vector<Double> dirScales(nDirSamples);
+  itsShapePtr->sample(dirScales, directions, dirRef, pixelSize);
+  Vector<Double> freqScales(nFreqSamples);
+  itsSpectrumPtr->sample(freqScales, frequencies, freqRef);
+
+  for (uInt f = 0; f < nFreqSamples; f++) {
+    const Double thisFreqScale = freqScales(f);
+    for (uInt d = 0; d < nDirSamples; d++) {
+      const Double thisScale = dirScales(d) * thisFreqScale;
+      Flux<Double>& thisFlux = samples(d, f);
+      if (near(thisScale, 0.0)) {
+	thisFlux.setValue(0.0);
+      } else {
+	thisFlux.setValue(fluxVal);
+	thisFlux.scaleValue(thisScale);
+      }
+      thisFlux.setUnit(fluxUnit);
+      thisFlux.setPol(fluxPol);
+    }
+  }
 }
 
 Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
@@ -348,146 +388,6 @@ Bool SkyCompRep::ok() const {
     return False;
   }
   return True;
-}
-
-void SkyCompRep::project(ImageInterface<Float>&) const {
-//   const CoordinateSystem coords = image.coordinates();
-//   const IPosition imageShape = image.shape();
-//   const uInt naxis = imageShape.nelements();
-  
-//   // I currently REQUIRE that the image has one direction coordinate (only).
-//   // All other coordinates (ie. polarization and frequency) are optional. 
-//   const Vector<uInt> dirAxes = CoordinateUtil::findDirectionAxes(coords);
-//   AlwaysAssert(dirAxes.nelements() != 0, AipsError);
-//   const uInt nPixAxes = dirAxes.nelements();
-//   Vector<Double> pixelCoord(nPixAxes); pixelCoord = 0.0;
-//   Vector<Double> worldCoord(2);
-
-//   const DirectionCoordinate dirCoord = 
-//     coords.directionCoordinate(coords.findCoordinate(Coordinate::DIRECTION));
-//   MDirection pixelDir(MVDirection(0.0), dirCoord.directionType());
-//   Vector<Quantum<Double> > dirVal(2);
-//   MVAngle pixelSize;
-//   {
-//     Vector<String> units = dirCoord.worldAxisUnits();
-//     dirVal(0).setUnit(units(0));
-//     dirVal(1).setUnit(units(1));
-//     Vector<Double> inc = dirCoord.increment();
-//     Quantum<Double> inc0(abs(inc(0)), units(0));
-//     Quantum<Double> inc1(abs(inc(1)), units(1));
-//     AlwaysAssert(near(inc0, inc1), AipsError);
-//     pixelSize = MVAngle(inc0);
-//   }
-  
-//   // Setup an iterator to step through the image in chunks that can fit into
-//   // memory. Go to a bit of effort to make the chunck size as large as
-//   // possible but still minimize the number of tiles in the cache.
-//   IPosition elementShape = imageShape;
-//   IPosition chunckShape = imageShape;
-//   uInt axis;
-//   {
-//     const IPosition tileShape(image.niceCursorShape());
-//     for (uInt k = 0; k < nPixAxes; k++) {
-//       axis = dirAxes(k);
-//       elementShape(axis) = 1;
-//       chunckShape(axis) = tileShape(axis);
-//     }
-//   }
-
-//   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
-//   // only grid the I polarisation.
-//   Vector<Int> stokes; // Vector stating which polarisations is on each plane
-//   // Find which axis is the stokes pixel axis
-//   const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  
-//   const uInt nStokes = stokes.nelements(); 
-//   if (polAxis >= 0)
-//     AlwaysAssert(imageShape(polAxis) == Int(nStokes), AipsError);
-//   for (uInt p = 0; p < nStokes; p++)
-//     AlwaysAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
-// 		 stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
-// 		 AipsError);
-
-//   Block<IPosition> blc;
-//   Block<IPosition> trc;
-//   if (nStokes > 1) {
-//     blc.resize(nStokes);
-//     blc = IPosition(naxis,0);
-//     trc.resize(nStokes);
-//     trc = elementShape - 1;
-//     for (uInt p = 0; p < nStokes; p++) {
-//       blc[p](polAxis) = p;
-//       trc[p](polAxis) = p;
-//     }
-//   }
-
-//   LatticeIterator<Float> chunkIter(image, chunckShape);
-//   Vector<Double> pixelVal(4);
-//   IPosition chunkOrigin(naxis), elementPosition(naxis);
-//   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-//     ArrayLattice<Float> array(chunkIter.rwCursor());
-//     LatticeIterator<Float> elementIter(array, elementShape);
-//     chunkOrigin = chunkIter.position();
-//     for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
-//       elementPosition = elementIter.position();
-//       for (uInt k = 0; k < nPixAxes; k++) {
-// 	axis = dirAxes(k);
-// 	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
-//       }
-//       if (!dirCoord.toWorld(worldCoord, pixelCoord)) {
-// // I am not sure what to do here, probably this message should be logged.
-// //  	cerr << " SkyCompRep::Pixel at " << pixelCoord 
-// //  	     << " cannot be projected" << endl;
-//       }
-//       else {
-// 	dirVal(0).setValue(worldCoord(0));
-// 	dirVal(1).setValue(worldCoord(1));
-// 	pixelDir.set(MVDirection(dirVal));
-// 	sample(pixelVal, pixelDir, pixelSize);
-// 	if (nStokes == 1) {
-// 	  switch (stokes(0)) {
-// 	  case Stokes::I:
-// 	    elementIter.rwCursor() += Float(pixelVal(0)); break;
-// 	  case Stokes::Q:
-// 	    elementIter.rwCursor() += Float(pixelVal(1)); break;
-// 	  case Stokes::U:
-// 	    elementIter.rwCursor() += Float(pixelVal(2)); break;
-// 	  case Stokes::V:
-// 	    elementIter.rwCursor() += Float(pixelVal(3)); break;
-// 	  }
-// 	}
-// 	else if (elementShape.product() == Int(nStokes))
-// 	  for (uInt p = 0; p < nStokes; p++) {
-// 	    switch (stokes(p)) {
-// 	    case Stokes::I:
-// 	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(0)); break;
-// 	    case Stokes::Q:
-// 	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(1)); break;
-// 	    case Stokes::U:
-// 	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(2)); break;
-// 	    case Stokes::V:
-// 	      elementIter.rwCursor()(blc[p]) += Float(pixelVal(3)); break;
-// 	    }
-// 	  }
-// 	else
-// 	for (uInt p = 0; p < nStokes; p++) {
-// 	  switch (stokes(p)) {
-// 	  case Stokes::I:
-// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(0));
-// 	    break;
-// 	  case Stokes::Q:
-// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(1));
-// 	    break;
-// 	  case Stokes::U:
-// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(2));
-// 	    break;
-// 	  case Stokes::V:
-// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(3));
-// 	    break;
-// 	  }
-// 	}
-//       }
-//     }
-//   }
 }
 
 // Local Variables: 
