@@ -85,7 +85,7 @@ LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Float> >& pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -112,7 +112,7 @@ LatticeExprNode::LatticeExprNode
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -126,7 +126,7 @@ LatticeExprNode::LatticeExprNode
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprDComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -139,7 +139,7 @@ LatticeExprNode::LatticeExprNode(const CountedPtr<LELInterface<Bool> >& pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (CountedPtr<LELInterface<T>>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -153,7 +153,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<Float>* pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -179,7 +179,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<Complex>* pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -192,7 +192,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<DComplex>* pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprDComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -205,7 +205,7 @@ LatticeExprNode::LatticeExprNode(LELInterface<Bool>* pExpr)
 {
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (LELInterface<T>*); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -220,7 +220,7 @@ LatticeExprNode::LatticeExprNode (Int constant)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -234,7 +234,7 @@ LatticeExprNode::LatticeExprNode (Float constant)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -262,7 +262,7 @@ LatticeExprNode::LatticeExprNode (const Complex& constant)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -276,7 +276,7 @@ LatticeExprNode::LatticeExprNode (const DComplex& constant)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprDComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -290,7 +290,18 @@ LatticeExprNode::LatticeExprNode (Bool constant)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (const IPosition& iposition) 
+: donePrepare_p   (False),
+  dtype_p         (TpOther),
+  isInvalid_p     (False),
+  iposition_p     (iposition)
+{ 
+#if defined(AIPS_TRACE)
+  cout << "LatticeExprNode:: IPosition constructor" << endl;
 #endif
 }
 
@@ -304,7 +315,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Float>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -332,7 +343,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Complex>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -346,7 +357,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<DComplex>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprDComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -360,7 +371,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Bool>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (Lattice<T>); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -375,7 +386,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Float>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprFloat_p.nrefs() << endl;
 #endif
 }
 
@@ -403,7 +414,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Complex>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -417,7 +428,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<DComplex>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprDComplex_p.nrefs() << endl;
 #endif
 }
 
@@ -431,7 +442,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Bool>& lattice)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (MaskedLattice<T>); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -445,7 +456,7 @@ LatticeExprNode::LatticeExprNode (const LCRegion& region)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (MaskedLattice<T>); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -459,7 +470,7 @@ LatticeExprNode::LatticeExprNode (const Slicer& slicer)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (MaskedLattice<T>); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -473,7 +484,7 @@ LatticeExprNode::LatticeExprNode (const LattRegionHolder& region)
 
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: constructor (MaskedLattice<T>); pExpr_p.nrefs() = "
-	<< pExprDouble_p.nrefs() << endl;
+	<< pExprBool_p.nrefs() << endl;
 #endif
 }
 
@@ -1318,25 +1329,12 @@ LatticeExprNode rebin (const LatticeExprNode& lat,
    cout << "LatticeExprNode:: 2d function rebin" << endl;
 #endif
 
-   DataType dtype1 = lat.dataType();
-//
-   Block<LatticeExprNode> arg(2);
-   arg[0] = lat;
-   arg[1] = LatticeExprNode(bin.makeFloat());  // Pass bin as Float as no support in LEL for uInt
-   switch (dtype1) {
-   case TpFloat:
-      return new LELFunctionND<Float> (LELFunctionEnums::REBIN, arg);
-   case TpDouble:
-      return new LELFunctionND<Double> (LELFunctionEnums::REBIN, arg);
-   case TpComplex:
-      return new LELFunctionND<Complex> (LELFunctionEnums::REBIN, arg);
-   case TpDComplex:
-      return new LELFunctionND<DComplex> (LELFunctionEnums::REBIN, arg);
-   default:
-      throw (AipsError ("LatticeExprNode::rebin- "
-			"Invalid argument type used in numerical function"));
-   }
-   return LatticeExprNode();
+   const IPosition& binning = bin.getIPosition();
+   const LELLattCoordBase* cbptr =
+                            &(lat.getAttribute().coordinates().coordinates());
+   const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
+   AlwaysAssert (cptr != 0, AipsError);
+   return cptr->makeRebinLattice (lat, binning);
 }
 
 
@@ -2164,6 +2162,15 @@ LELAttribute LatticeExprNode::checkArg (const Block<LatticeExprNode>& arg,
     return attr;
 }
 
+
+const IPosition& LatticeExprNode::getIPosition() const
+{
+   if (dataType() != TpOther) {
+      throw (AipsError ("LatticeExprNode::getIPosition - "
+			"node does not contain an IPosition"));
+   }
+   return iposition_p;
+}
 
 CountedPtr<LELInterface<Float> > LatticeExprNode::makeFloat() const
 {

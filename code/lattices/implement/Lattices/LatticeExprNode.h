@@ -35,6 +35,7 @@
 #include <trial/Lattices/LELBinaryEnums.h>
 #include <trial/Lattices/LELUnaryEnums.h>
 #include <trial/Lattices/LELFunctionEnums.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/DataType.h>
 
@@ -445,6 +446,9 @@ public:
    LatticeExprNode (Bool constant);
 // </group>
 
+// Constructor from an IPosition (containing indices or axes).
+   LatticeExprNode (const IPosition&);
+
 // Lattice expression (gets Lattice pixels) constructors.
 // <group>
    LatticeExprNode (const Lattice<Float>& lattice);
@@ -479,6 +483,10 @@ public:
 
 // Assignment (reference semantics)
    LatticeExprNode& operator= (const LatticeExprNode& other);
+
+// Get the IPosition.
+// It throws an exception if the node does not contain an IPosition.
+   const IPosition& getIPosition() const;
 
 // Convert the expression to another data type.
 // <group>
@@ -688,6 +696,7 @@ private:
    Bool                donePrepare_p;
    DataType            dtype_p;
    Bool                isInvalid_p;
+   IPosition           iposition_p;
    const LELAttribute* pAttr_p;
    CountedPtr<LELInterface<Float> >    pExprFloat_p;
    CountedPtr<LELInterface<Double> >   pExprDouble_p;
