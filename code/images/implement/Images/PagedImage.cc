@@ -47,6 +47,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Tables/SetupNewTab.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
@@ -89,6 +90,35 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
   else
     logSink() << "No mask is was created" << LogIO::POST;
   ::defaultValue(defaultvalue_p); 
+  setTableType();
+};
+
+template <class T> PagedImage<T>::
+PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo, 
+	   const String & filename, const TableLock& lockOptions, Bool masking, uInt rowNumber)
+  :ImageInterface<T>(True),
+   mask_p((PagedArray<Bool> *) 0)
+{
+  logSink() << LogOrigin("PagedImage<T>", 
+			 "PagedImage(const IPosition & shape,  "
+			 "const CoordinateSystem & coordinateInfo, const TableLock& lockoptions, "
+			 "const String & filename, Bool masking, uInt rowNumber)", WHERE);
+  logSink() << LogIO::DEBUGGING
+	    << "Creating an image in row " << rowNumber 
+	    << " of a new table called"
+	    << " '" << filename << "'" << endl
+	    << "The image shape is " << shape << endl;
+  SetupNewTable newtab (filename, TableDesc(), Table::New);
+  table_p = Table(newtab, lockOptions);
+  map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
+  if (masking) {
+    mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber);
+    logSink() << "A mask was created" << LogIO::POST;
+  }
+  else
+    logSink() << "No mask is was created" << LogIO::POST;
+  ::defaultValue(defaultvalue_p); 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 };
 
