@@ -141,8 +141,6 @@ public:
 protected:
   //# The measure's value is represented by this many data components.
   uInt itsNvals;
-  //# Store measure's internal values?
-  Bool itsStoreInternal;
   //# The Measure Column description.
   CountedPtr<TableMeasDescBase> itsDescPtr;
   //# The data column.

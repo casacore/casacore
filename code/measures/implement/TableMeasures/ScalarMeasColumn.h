@@ -175,13 +175,14 @@ public:
   // </group>
     
   // Get the Measure contained in the specified row and convert
-  // it to the reference and offset found in the measure.
-  void convert (uInt rownr, M& meas) const;
+  // it to the reference and offset found in the given measure.
+  M convert (uInt rownr, const M& meas) const
+    { return convert (rownr, meas.getRef()); }
 
   // Get the Measure contained in the specified row and convert
   // it to the given reference.
   // <group>
-  M convert (uInt rownr, const MeasRef<M>& meas) const;
+  M convert (uInt rownr, const MeasRef<M>& measRef) const;
   M convert (uInt rownr, uInt refCode) const;
   // </group>
     

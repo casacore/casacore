@@ -35,9 +35,8 @@
 
 
 template<class M>
-TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
-				 Bool storeInternalValues)
-: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT), storeInternalValues)
+TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
+: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
 {
   M meas;
   Vector<Quantum<Double> > val;
@@ -49,7 +48,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 template<class M>
 TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 				 const Vector<Unit>& u)
-: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT), False)
+: TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
 { 
   M meas;
   Vector<Quantum<Double> > val;
@@ -59,9 +58,8 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 
 template<class M>
 TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
-				 const TableMeasRefDesc& ref,
-				 Bool storeInternalValues)
-: TableMeasDescBase(value, ref, storeInternalValues)
+				 const TableMeasRefDesc& ref)
+: TableMeasDescBase(value, ref)
 {
   M meas;
   Vector<Quantum<Double> > val;
@@ -74,7 +72,7 @@ template<class M>
 TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 				 const TableMeasRefDesc& ref,
 				 const Vector<Unit>& u)
-: TableMeasDescBase(value, ref, False)
+: TableMeasDescBase(value, ref)
 {
   M meas;
   Vector<Quantum<Double> > val;

@@ -93,8 +93,7 @@ public:
 
   // Constructor with value and reference descriptors.
   // Note that setMeasType is always called by the derived class.
-  TableMeasDescBase (const TableMeasValueDesc&, const TableMeasRefDesc&,
-		     Bool storeInternalValues);
+  TableMeasDescBase (const TableMeasValueDesc&, const TableMeasRefDesc&);
 
   // Copy constructor.
   TableMeasDescBase (const TableMeasDescBase& that);
@@ -109,10 +108,6 @@ public:
     
   // Makes the descriptor persistent.
   void write (TableDesc& td);
-
-  // Are the measure's internal values stored?
-  Bool storeInternalValues() const
-    { return itsStoreInternal; }
 
   // Get the name of the underlying column.
   const String& columnName() const
@@ -201,7 +196,6 @@ private:
 
   //# this gives access to the columns Measure type etc
   TableMeasType itsMeasType;
-  Bool          itsStoreInternal;
   Vector<Unit>  itsUnits;
 };
 
