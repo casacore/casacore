@@ -301,7 +301,7 @@
         sed -e 's#::*# #g' \
             -e "s# $a_old/bin # aips_bin #g" \
             -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" \
-            -e "s# aips_bin # $a_root_r/$a_arch_t/bin #g"`
+            -e "s# aips_bin # $a_root_t/$a_arch_t/bin #g"`
      export PATH
 
 #    Ensure that some AIPS++ bin area got into PATH.
