@@ -53,6 +53,7 @@
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCRegion.h>
+#include <trial/Lattices/LatticeUtilities.h>
 #include <trial/Mathematics/InterpolateArray1D.h>
 #include <trial/Mathematics/Interpolate2D.h>
 #include <aips/Measures/MDirection.h>
@@ -100,7 +101,8 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                             typename Interpolate2D::Method method,
                             const IPosition& outPixelAxesU,
                             const ImageInterface<T>& inImage,
-                            Bool replicate, uInt decimate, Bool showProgress)
+                            Bool replicate, uInt decimate, Bool showProgress,
+                            Bool forceRegrid)
 {
    LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
 //
@@ -125,7 +127,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Check user pixel axes specifications
 
    checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap1, outCoords);
-   const uInt nOutPixelAxes = outPixelAxes.nelements();
+   const uInt nOutRegridPixelAxes = outPixelAxes.nelements();
    if (itsShowLevel>0) {
       cerr << "outPixelAxes = " << outPixelAxes << endl;
    }
@@ -142,27 +144,36 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Specify input and output lattices for each regridding pass
 
    MaskedLattice<T>* inPtr = 0;
+   CoordinateSystem inCoords2(inCoords);
+//
    MaskedLattice<T>* outPtr = 0;
    MaskedLattice<T>* finalOutPtr = &outImage;
 //
    Vector<Bool> doneOutPixelAxes(outCoords.nPixelAxes(), True);
-   for (uInt i=0; i<nOutPixelAxes; i++) {
+   for (uInt i=0; i<nOutRegridPixelAxes; i++) {
       doneOutPixelAxes(outPixelAxes(i)) = False;
    }
 
 // Loop over specified pixel axes of output image
-   
-   for (uInt i=0; i<nOutPixelAxes; i++) {
+
+   Bool first = True;   
+   for (uInt i=0; i<nOutRegridPixelAxes; i++) {
       if (!doneOutPixelAxes(outPixelAxes(i))) {
 
 // Set input and output images for this pass. The new  input must be the last 
 // output image.  We end up with at least one temporary image. Could
 // probably improve this. 
 
-        if (!inPtr) {
-           inPtr = inImage.cloneML();
-        } else {
-           delete inPtr;
+        if (first) {
+          inPtr = inImage.cloneML();
+          first = False;
+        } else {      
+
+// If inPtr == 0, it means that in the previous pass, the coordinate
+// information for the regrid axis was identical (in==out) so we didn't
+// actually need to regrid, but just swap in and out pointers.
+
+           if (inPtr) delete inPtr;
            inPtr = outPtr;
            outPtr = 0;
         }
@@ -172,19 +183,35 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // other axis.  After the first pass, the output image is in the
 // final order.  
 
-         CoordinateSystem inCoords2(inCoords);
-         if (i>0) {
-            inCoords2 = outCoords;
-            indgen(pixelAxisMap1, 0);
-            indgen(pixelAxisMap2, 0);
-         } 
          regridOneCoordinate (os, outShape2, doneOutPixelAxes,
                               finalOutPtr,
                               inPtr, outPtr, outCoords, inCoords2,
-                              pixelAxisMap1, pixelAxisMap2, 
                               outPixelAxes(i), inImage, outShape,
                               replicate, decimate, outIsMasked, 
-                              showProgress, method);
+                              showProgress, forceRegrid, method);
+
+// The input CS for the next pass is now the present output
+// CS, except that we overwrite the coordinates not yet regridded
+
+         inCoords2 = outCoords;
+//
+         for (uInt j=0; j<doneOutPixelAxes.nelements(); j++) {
+
+// For every pixel axis that has not yet been regridded, put back
+// the original coordinate (so that its other axes can be regridded)
+
+            if (!doneOutPixelAxes(j)) {
+               Int inCoord2, inAxisInCoord2;
+               inCoords2.findPixelAxis(inCoord2, inAxisInCoord2, j);
+//
+               Int inCoord, inAxisInCoord;
+               inCoords.findPixelAxis(inCoord, inAxisInCoord, pixelAxisMap1(j));
+
+// We might end up replacing the same coordinate more than once with this algorithm
+
+               inCoords2.replaceCoordinate(inCoords.coordinate(inCoord), inCoord2);
+            }
+         }  
       }
    }
 //
@@ -203,15 +230,19 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                                           MaskedLattice<T>* &outPtr,
                                           CoordinateSystem& outCoords,
                                           const CoordinateSystem& inCoords,
-                                          const Vector<Int>& pixelAxisMap1, 
-                                          const Vector<Int>& pixelAxisMap2,
                                           Int outPixelAxis, 
                                           const ImageInterface<T>& inImage,    
                                           const IPosition& outShape,
                                           Bool replicate, uInt decimate,
                                           Bool outIsMasked, Bool showProgress,
+                                          Bool forceRegrid,
                                           typename Interpolate2D::Method method)
 {
+// Find world and pixel axis maps
+
+   Vector<Int> pixelAxisMap1, pixelAxisMap2;
+   findMaps (inImage.ndim(), pixelAxisMap1, pixelAxisMap2, inCoords, outCoords);
+
 // Find equivalent world axis
 
    Int outWorldAxis = outCoords.pixelAxisToWorldAxis(outPixelAxis);
@@ -269,13 +300,36 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
              << LogIO::EXCEPTION;
        }
 
-// Attach mask if out is masked.  Don't init mask because it will be overwritten
+// Get DirectionCoordinates for input and output
 
-       if (allEQ(doneOutPixelAxes, True)) {
+       Vector<String> units(2);
+       units.set("deg");
+       DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
+       DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
 
-// We are on the last pass.  So assign the output pointer directly
-// to the final output image to save an extra copy.
+// See if we really need to regrid this axis.  If the coordinates are the same
+// there is nothing to do apart from swap in and out pointers or copy on last pass
 
+       Bool regridIt = forceRegrid || !(inDir.near(outDir));
+       Bool lastPass = allEQ(doneOutPixelAxes, True);
+//
+       if (!regridIt) {
+          os << "Input and output coordinate information for these axes equal - no regridding needed" << LogIO::POST;
+          if (lastPass) {
+
+// Can't avoid this copy
+
+             LatticeUtilities::copyDataAndMask (os, *finalOutPtr, *inPtr);
+          } else {
+             outPtr = inPtr;
+             inPtr = 0;
+          }
+          return;
+       }
+
+// Regrid
+
+       if (lastPass) {
           outPtr = finalOutPtr;
        } else {
           outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, maxMemoryInMB);
@@ -286,18 +340,15 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
           }
        }
 
-// Get DirectionCoordinates for input and output
+// Set units
 
-       Vector<String> units(2);
-       units.set("deg");
-       DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
-       DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
        if (!inDir.setWorldAxisUnits(units)) {
           os << "Failed to set input DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
        }
        if (!outDir.setWorldAxisUnits(units)) {
           os << "Failed to set output DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
        }
+
 
 // Possibly make Direction reference conversion machine
 
@@ -336,26 +387,9 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        outShape2(outPixelAxes(outAxisInCoordinate)) = 
            outShape(outPixelAxes(outAxisInCoordinate));
 
-       if (allEQ(doneOutPixelAxes, True)) {
-
-// We are on the last pass.  So assign the output pointer directly
-// to the final output image to save an extra copy.
-
-          outPtr = finalOutPtr;
-       } else {
-
-// Attach mask if out is masked.  
-
-          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, maxMemoryInMB);
-          if (outIsMasked) {
-             String maskName("mask0");
-             TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
-             tmpPtr->makeMask(maskName, True, True, True, True);
-          }
-       }
-
-// Set world axis units for input and output coordinates for this pixel
+// Get Coordinates.  Set world axis units for input and output coordinates for this pixel
 // axis to be the same.  We can only do this via the CoordinateSystem (or casting)
+// or by breaking polymorphism like we did for DirectionCoordinate. Ho hum.
 
        Vector<String> inUnits = inCoords.worldAxisUnits();
        Vector<String> outUnits = outCoords.worldAxisUnits();
@@ -363,9 +397,43 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        if (!outCoords.setWorldAxisUnits(outUnits)) {
           os << "Failed to set output CoordinateSystem units" << LogIO::EXCEPTION;
        }
-//
        const Coordinate& inCoord = inCoords.coordinate(inCoordinate);
        const Coordinate& outCoord = outCoords.coordinate(outCoordinate);
+
+// See if we really need to regrid this axis.  If the coordinates are the same
+// there is nothing to do apart from swap in and out pointers or copy on last pass
+
+       IPosition t(1, outAxisInCoordinate);
+       IPosition excludeAxes = IPosition::otherAxes(outCoord.nPixelAxes(), t);
+       Bool regridIt = forceRegrid || !(inCoord.near(outCoord, excludeAxes.asVector()));
+       Bool lastPass = allEQ(doneOutPixelAxes, True);
+//
+       if (!regridIt) {
+          os << "Input and output coordinate information for this axis equal - no regridding needed" << LogIO::POST;
+          if (lastPass) {
+
+// Can't avoid this copy
+
+             LatticeUtilities::copyDataAndMask (os, *finalOutPtr, *inPtr);
+          } else {
+             outPtr = inPtr;
+             inPtr = 0;
+          }
+          return;
+       }
+
+// Regrid
+
+       if (lastPass) {
+          outPtr = finalOutPtr;
+       } else {
+          outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, maxMemoryInMB);
+          if (outIsMasked) {
+             String maskName("mask0");
+             TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
+             tmpPtr->makeMask(maskName, True, True, True, True);
+          }
+       }
 
 // Possibly make Frequency reference conversion machine
 
@@ -521,33 +589,21 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
 }
 
 
- 
+
+
 
 template<class T>
 CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
                                                       const CoordinateSystem& cSysTo,
                                                       const CoordinateSystem& cSysFrom,
                                                       const IPosition& outPixelAxes)
-//
-// For regrid axes
-//   Copy from cSysTo   if Coordinate type provided in cSysTo
-//   Copy from cSysFrom if Coordinate type not provided in cSysTo
-//
-// For non regrid axes
-//   Copy from cSysFrom  
-//
-// The output CoordinateSystem must have the same number and types of 
-// coordinates as the 'from' image.
-//
 {
-   const uInt nCoordsTo = cSysTo.nCoordinates();
    const uInt nCoordsFrom = cSysFrom.nCoordinates();
    const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
 
 // Create output CS.  Copy the output ObsInfo over first.
 
-   CoordinateSystem cSysOut;
-   cSysOut.setObsInfo(cSysFrom.obsInfo());
+   CoordinateSystem cSysOut(cSysFrom);
 
 // If specified axes are empty, set to all
 
@@ -558,91 +614,43 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
       outPixelAxes2 = outPixelAxes;
    }
 
-// Loop over output pixel axes from output CS. 
+// Loop over coordinates in the From CS
 
-   Vector<Bool> usedTo(nCoordsTo, False);
-   Int iCoordFrom, axisInCoordinateFrom;
-   Int iCoordTo;
-   Vector<Bool> done(nCoordsFrom,False);  
-   for (uInt i=0; i<nPixelAxesFrom; i++) {
- 
-// Is this output CS axis one to be regridded ?
+   for (uInt i=0; i<nCoordsFrom; i++) {
+      Coordinate::Type typeFrom = cSysFrom.type(i);
 
+// Are any of this coordinates axes being regridded ?
+
+      Vector<Int> pixelAxes = cSysFrom.pixelAxes(i);
       Bool regridIt = False;                 
-      for (uInt j=0; j<outPixelAxes2.nelements(); j++) {
-         if (Int(i)==outPixelAxes2(j)) {              
-            regridIt = True;  
-            break;
-         }
-      }
-
-// Find out what type of coordinate this axis is and which
-// coordinate it is.
-   
-      cSysFrom.findPixelAxis(iCoordFrom, axisInCoordinateFrom, i);
-      if (!done(iCoordFrom)) {
-         const Coordinate& coordFrom = cSysFrom.coordinate(iCoordFrom);
-         Coordinate::Type type = coordFrom.type();
-//    
-         if (regridIt) {
-
-// This is a regridding axis.   See if this coordinate has been
-// provided in the 'to' CS.  If it has we copy that Coordinate.
-// If it hasn't, we take the Coordinate from the 'from' CS
-
-            Int afterCoord = -1;
-            iCoordTo = cSysTo.findCoordinate(type, afterCoord);    // Trouble with multiple Coordinates
-                                                                   // of this type
-
-// There is a significant limitation here.  If we wish to regrid some 
-// subset of axes from a Coordinate we are in trouble.  E.g. regrid axis 0 
-// from a LinearCoordinate holding more than 1 axis.  Trying to do this will just cause
-// an ugly CoordinateSystem exception when it tries to make the image. I think
-// I have to write a function to recover part of a Coordinate through
-// specified axes to deal with this.  
-
-            if (iCoordTo >= 0) {
-               const Coordinate& coordTo = cSysTo.coordinate(iCoordTo);
-               cSysOut.addCoordinate(coordTo);
-               usedTo(iCoordTo) = True;
-            } else {
-               cSysOut.addCoordinate(coordFrom);
+      for (uInt k=0; k<pixelAxes.nelements(); k++) {
+         for (uInt j=0; j<outPixelAxes2.nelements(); j++) {
+            if (Int(k)==outPixelAxes2(j)) {              
+               regridIt = True;  
             }
-         } else {
-         
-// We don't want to regrid this axis.  Copy the Coordinate from the 
-// 'from' CS
-
-            cSysOut.addCoordinate(coordFrom);
-         }                                   
-//                                           
-         done(iCoordFrom) = True;
+         }
       }
-   }
 
-// Put the output coordinate system into the same transpose
-// order as the input coordinate system
+// We are regridding some axis from this coordinate.
+// Replace it from 'To' if we can find it.
 
-   Vector<Int> wMap, pMap, wTrans, pTrans;
-   Vector<Bool> refChange;
-   cSysOut.worldMap(wMap, wTrans, refChange, cSysFrom);
-   cSysOut.pixelMap(pMap, pTrans, cSysFrom);
-   cSysOut.transpose (wTrans, pTrans);
+      if (regridIt) {
+         Int afterCoord = -1;
+         Int iCoordTo = cSysTo.findCoordinate(typeFrom, afterCoord);    // Trouble with multiple Coordinates      
+         if (cSysTo.pixelAxes(iCoordTo).nelements() != cSysFrom.pixelAxes(i).nelements()) {
+            os << "Wrong number of pixel axes in 'To' CoordinateSystem for coordinate of type " 
+               << cSysTo.showType(iCoordTo) << LogIO::EXCEPTION;
+         }
 //
-   Bool orderTo = False;
-   if (orderTo) {
-      for (uInt i=0; i<nCoordsTo; i++) {
-         if (usedTo(i)) {
-
-// This Coordinate was used in creating cSysOut
-
-
+         if (iCoordTo >= 0) {
+            cSysOut.replaceCoordinate (cSysTo.coordinate(iCoordTo), i); 
          }
       }
    }
-
+//
    return cSysOut;
 }
+
 
 
 template<class T>
