@@ -360,21 +360,11 @@ public:
     // If you actually request a pure pixel to world or world to pixel
     // via <src>toMix</src>, then the functions <src>toWorld</src> or <src>toPixel</src>
     // will be invoked directly (see above) and the extra conversion layer
-    // invoked through function <src>setConversionDirectionType</src> is always active.  
-    //     
-    // However, if you do request a true mixed pixel/world conversion,
-    // then because of the nature of mixed conversions, the extra conversion
-    // layer can only be partly implemented.  If you make a mixed conversion
-    // and <src>useConversionType==True</src>, then the *output* world values are
-    // further converted to the type specified by the 
-    // <src>setConversionDirectionType</src> function.  Any input world value 
-    // must always be in the Direction type specified by the constructor.
-    //
-    // Presently,  for mixed conversions, no extra conversions are done.
-    // At some point the above partial implementation will be activated.
-    // If  <src>useConversionType==False</src>, then no further conversion
-    // of the  *output* world values is done.   This is not a symmetric
-    // situation but it's the best I can do.
+    // invoked through function <src>setConversionDirectionType</src> will be active.  
+    // However, if you request a true mixed pixel/world conversion,
+    // the extra conversion layer is not activated (because of the nature of mixed
+    // conversions).  This situation may change in the future
+    // with a partial implementation added.
     virtual Bool toMix(Vector<Double>& worldOut,
                        Vector<Double>& pixelOut,
                        const Vector<Double>& worldIn,
