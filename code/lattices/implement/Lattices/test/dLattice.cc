@@ -57,7 +57,7 @@ Complex latMean(const Lattice<Complex> & lat) {
     currentSum += sum(iter.cursor());    // 
     nPixels += iter.cursor().nelements();
   }
-  return currentSum/nPixels;
+  return currentSum/Float(nPixels);
 }
 
 void FFT2DReal2Complex(Lattice<Complex> & result, 
