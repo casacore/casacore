@@ -2682,3 +2682,4 @@
 11 403 src mv doc/html/navpages/images3/atnf.gif doc/gif/atnf.gif
 11 406 src mv nrao/apps/vlafiller/vlatoms.g nrao/implement/VLA/vlatoms.g
 11 406 src mv doc/user/Refman.dir/aipsprintcon.ps doc/user/Display.dir/aipsprintcon.ps
+11 406 src mv doc/user/Refman.dir/gplot1d.ps doc/user/Display.dir/gplot1d.ps
