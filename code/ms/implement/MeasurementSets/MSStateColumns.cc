@@ -68,6 +68,7 @@ void RONewMSStateColumns::attach(const NewMSState& msState)
 }
 
 NewMSStateColumns::NewMSStateColumns(NewMSState& msState):
+  RONewMSStateColumns(msState),
   cal_p(msState, NewMSState::columnName(NewMSState::CAL)),
   flagRow_p(msState, NewMSState::columnName(NewMSState::FLAG_ROW)),
   load_p(msState, NewMSState::columnName(NewMSState::LOAD)),
