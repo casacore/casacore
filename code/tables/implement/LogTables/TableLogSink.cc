@@ -1,5 +1,5 @@
 //# TableLogSink.h: save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,6 +71,9 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	  readmeAddLine("Repository for software-generated logging messages");
     }
 
+    // Avoid double deletion by Cleanup.
+    log_table_p.makePermanent();
+
     // Attach the columns
     time_p.attach(log_table_p, columnName(TIME));
     priority_p.attach(log_table_p, columnName(PRIORITY));
@@ -100,6 +103,9 @@ void TableLogSink::copy_other(const TableLogSink &other)
     message_p.reference(other.message_p);
     location_p.reference(other.location_p);
     id_p.reference(other.id_p);
+
+    // Avoid double deletion by Cleanup.
+    log_table_p.makePermanent();
 }
 
 TableLogSink::~TableLogSink()
