@@ -48,7 +48,7 @@
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>
-//   <li> <linkto group="LogiArrayFwd.h#LogicalArray">LogicalArrayFwd</linkto>
+//   <li> <linkto group="LogiArrayFwd.h#LogicalArray forwards">LogicalArrayFwd</linkto>
 // </prerequisite>
 //
 // <etymology>

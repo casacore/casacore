@@ -54,7 +54,7 @@ template<class T> class MaskedArray;
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>
 //   <li> <linkto class=MaskedArray>MaskedArray</linkto>
-//   <li> <linkto class=ArrayIO>ArrayIO</linkto>
+//   <li> <linkto group="ArrayIO.h#Array IO">ArrayIO</linkto>
 // </prerequisite>
 //
 // <etymology>
