@@ -3207,3 +3207,4 @@
 13 058 src mv doc/newsletters/sept99/imagefitter2.ps doc/newsletters/sep99/imagefitter2.ps
 13 058 src mv doc/newsletters/sept99/imageview2.gif doc/newsletters/sep99/imageview2.ps
 13 058 src mv doc/newsletters/sept99/imageview2.gif doc/newsletters/sep99/imageview2.gif
+13 058 src mv doc/newsletters/sept99/makefile doc/newsletters/sep99/makefile
