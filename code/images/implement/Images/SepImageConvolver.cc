@@ -281,8 +281,8 @@ void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
       IPosition shape = outIter.woCursor().shape();
       Array<T> dataIn(shape);
       Array<Bool> maskIn(shape);
-      Lattice<Bool>& maskOut;
-      if (out.isMasked()) maskOut = out.pixelMask();
+      Lattice<Bool>* maskOutPtr;
+      if (out.isMasked()) maskOutPtr = &(out.pixelMask());
 //       
       for (outIter.reset(); !outIter.atEnd(); outIter++) {
          shape = outIter.woCursor().shape();
@@ -302,7 +302,7 @@ void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
             pDataOut[i] = pDataIn[i];
             if (!pMaskIn[i]) pDataOut[i] = 0.0;
          }
-         if (out.isMasked()) maskOut.putSlice(maskIn, outIter.position());
+         if (maskOutPtr != 0) maskOutPtr->putSlice(maskIn, outIter.position());
 //
          dataIn.freeStorage(pDataIn, deleteDataIn);
          maskIn.freeStorage(pMaskIn, deleteMaskIn);
