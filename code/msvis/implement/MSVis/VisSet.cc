@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/MeasurementEquations/VisSet.h>
+#include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -100,6 +101,21 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
     for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
+
+    // Fill the CORRECTED_DATA, MODEL_DATA and IMAGING_WEIGHT
+    // columns when first created.
+    if (init) {
+      for (iter_p->originChunks(); iter_p->moreChunks(); iter_p->nextChunk()) {
+	for (iter_p->origin(); iter_p->more(); (*iter_p)++) {
+	  Cube<Complex> data;
+	  iter_p->setVis(iter_p->visibility(data,VisibilityIterator::Observed),
+		     VisibilityIterator::Corrected);
+	  data=Complex(1.0,0.0);
+	  iter_p->setVis(data,VisibilityIterator::Model);
+	};
+      };
+      iter_p->originChunks();
+    };
 }
 
 VisSet::VisSet(const VisSet& vs,const Block<Int>& columns, 
@@ -313,6 +329,7 @@ void VisSet::addColumns(Table& tab)
       corrDataAccessor.extendHypercube(1,values2);
       imWtAccessor.extendHypercube(1,values3);
     }
+    delete od;
   } else {
   // If there's no id, assume the data is fixed shape throughout
     Int numCorr;
