@@ -382,7 +382,7 @@ template<class T> Array<T> operator-(const Array<T> &a)
     T *storage = tmp.getStorage(zapIt);
     uInt ntotal = tmp.nelements();
 
-    for (Int i=0; i < ntotal; i++) {
+    for (uInt i=0; i < ntotal; i++) {
 	storage[i] = - storage[i];
     }
     tmp.putStorage(storage, zapIt);
@@ -628,19 +628,86 @@ template<class T> Array<T> min(const Array<T> &a, const Array<T> &b)
     return result;
 }
 
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void max(Array<T> &result, const Array<T> &a, 
+			   const T &b)
+{
+    if (result.nelements() == 0 && a.nelements() == 0) {
+	return; // short circuit
+    }
+
+    if (result.nelements() != a.nelements()) {
+	throw(ArrayConformanceError(" void max(Array<T> &result, const Array<T>"
+				    " &a, const T &b) - result and a "
+				    " do not have the same nelements()"));
+    }
+    Bool delr, dela;
+    T *sr = result.getStorage(delr);
+    const T *sa = a.getStorage(dela);
+    uInt n = result.nelements();
+    while (n) {
+	n--;
+	sr[n] = sa[n] > b ? sa[n] : b;
+    }
+    result.putStorage(sr, delr);
+    a.freeStorage(sa, dela);
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void min(Array<T> &result, const Array<T> &a, 
+			   const T &b)
+{
+    if (result.nelements() == 0 && a.nelements() == 0) {
+	return; // short circuit
+    }
+
+    if (result.nelements() != a.nelements()) {
+	throw(ArrayConformanceError(" void min(Array<T> &result, const Array<T>"
+				    " &a, const T &b) - result and a "
+				    " do not have the same nelements()"));
+    }
+    Bool delr, dela;
+    T *sr = result.getStorage(delr);
+    const T *sa = a.getStorage(dela);
+    uInt n = result.nelements();
+    while (n) {
+	n--;
+	sr[n] = sa[n] < b ? sa[n] : b;
+    }
+    result.putStorage(sr, delr);
+    a.freeStorage(sa, dela);
+}
+
+template<class T> Array<T> max(const Array<T> &a, const T &b)
+{
+    Array<T> result(a.shape());
+    max(result, a, b);
+    return result;
+}
+
+template<class T> Array<T> min(const Array<T> &a, const T &b)
+{
+    Array<T> result(a.shape());
+    min(result, a, b);
+    return result;
+}
+
 template<class T>
 void indgen(Array<T> &a, T start, T inc)
 {
     uInt ntotal = a.nelements();
-    if (ntotal == 0) {
-	return;
-    }
-
     Bool deleteIt;
     T *storage = a.getStorage(deleteIt);
+    T *ts = storage;
     
-    for (Int i=0; i < ntotal; i++) {
-	storage[i] = start + i*inc;
+    while (ntotal--) {
+	*ts = start;
+	ts++;
+        start += inc;
     }
 
     a.putStorage(storage, deleteIt);
