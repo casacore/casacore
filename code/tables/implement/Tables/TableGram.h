@@ -87,6 +87,9 @@ int tableGramInput (char* buf, int max_size);
 // A function to remove escaped characters.
 String tableGramRemoveEscapes (const String& in);
 
+// A function to remove quotes from a quoted string.
+String tableGramRemoveQuotes (const String& in);
+
 // </group>
 
 

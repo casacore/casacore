@@ -112,3 +112,24 @@ String tableGramRemoveEscapes (const String& in)
     }
     return out;
 }
+
+String tableGramRemoveQuotes (const String& in)
+{
+    //# A string is formed as "..."'...''...' etc.
+    //# All ... parts will be extracted and concatenated into an output string.
+    String out;
+    String str = in;
+    int leng = str.length();
+    int pos = 0;
+    while (pos < leng) {
+	//# Find next occurrence of leading ' or ""
+	int inx = str.index (str[pos], pos+1);
+	if (inx < 0) {
+	    throw (AipsError ("TableParse - Ill-formed quoted string: " +
+			      str));
+	}
+	out += str.at (pos+1, inx-pos-1);             // add substring
+	pos = inx+1;
+    }
+    return out;
+}
