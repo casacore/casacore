@@ -113,6 +113,14 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return dishDiameter_p.nrow();}
 
+  // returns the last row that contains an antenna at the specified position,
+  // to within the specified tolerance. The tolerance is the maximum allowed
+  // distance between the two positions and the supplied Quantum must have
+  // dimensions of length. This is checked when compiled in debug mode and an
+  // AIpsError exception is thrown if the dimensions are wrong. Returns -1 if
+  // no match could be found.
+  Int matchPosition(const MPosition& antennaPosition,
+		    const Quantum<Double>& tolerance);
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

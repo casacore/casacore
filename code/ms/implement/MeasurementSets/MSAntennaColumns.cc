@@ -31,6 +31,12 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 
+#include <aips/Arrays/Vector.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Quanta/MVPosition.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/UnitVal.h>
+
 RONewMSAntennaColumns::RONewMSAntennaColumns(const NewMSAntenna& msAntenna):
   dishDiameter_p(msAntenna, NewMSAntenna::
 		 columnName(NewMSAntenna::DISH_DIAMETER)),
@@ -114,6 +120,31 @@ void RONewMSAntennaColumns::attachOptionalCols(const NewMSAntenna& msAntenna)
   if (cds.isDefined(phasedArrayId)) {
     phasedArrayId_p.attach(msAntenna, phasedArrayId);
   }
+}
+
+Int RONewMSAntennaColumns::matchPosition(const MPosition& antennaPosition,
+					 const Quantum<Double>& tolerance) {
+  DebugAssert(tolerance.check(UnitVal::LENGTH), AipsError);
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // convert the supplied position to the same reference frame as the ones in
+  // the Table. It would be nice if this converter could be cached somewhere.
+  MPosition::Convert c(antennaPosition, positionMeas().getMeasRef());
+  const MVPosition newPos = c().getValue();
+  const Double tolInM = tolerance.getValue(Unit("m"));
+
+  Vector<Double> rowPos(3); 
+  while (r > 0) {
+    r--;
+    if (flagRow()(r) == False) {
+      position().get(r, rowPos);
+      if (newPos.nearAbs(MVPosition(rowPos), tolInM)) {
+	return r;
+      }
+    }
+  }
+  cerr << "No match" << endl;
+  return -1;
 }
 
 NewMSAntennaColumns::NewMSAntennaColumns(NewMSAntenna& msAntenna):
