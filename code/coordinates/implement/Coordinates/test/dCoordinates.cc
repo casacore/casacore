@@ -55,7 +55,8 @@ int main()
 			      135*C::pi/180.0, 60*C::pi/180.0,    // 5
 			      -1*C::pi/180.0, 1*C::pi/180,        // 6
 			      xform,                              // 7
-			      128, 128);                          // 8
+			      128.0, 128.0,                       // 8
+                              999.0, 999.0);
 
     Vector<String> units(2); units = "deg";                        //  9
     radec.setWorldAxisUnits(units);                               // 10
