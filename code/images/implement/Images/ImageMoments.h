@@ -38,7 +38,6 @@
 template <class T> class Array;
 template <class T> class Matrix;
 template <class T> class Vector;
-template <class T> class MaskedLattice;
 template <class T> class MomentCalcBase;
 template <class T> class SubImage;
 template <class T> class ImageInterface;
@@ -173,12 +172,6 @@ class ostream;
 // moment type is *only* supported with the basic method (i.e. no smoothing,
 // no windowing, no fitting) with a pixel selection range that is either
 // all positive, or all negative.
-// </note>
-//
-// <note role=caution>
-// Note that if the <src>ImageInterface</src> object goes out of scope, this
-// class will retrieve and generate rubbish as it just maintains a pointer
-// to the image.
 // </note>
 //
 // <note role=tip>
@@ -535,6 +528,7 @@ enum KernelTypes {
 private:
 
    LogIO os_p;
+   ImageInterface<T>* pInImage_p;
    Bool showProgress_p;
    Int momentAxisDefault_p;
    T peakSNR_p;
@@ -555,7 +549,6 @@ private:
    Vector<Int> moments_p;
    Vector<T> selectRange_p;
    Vector<Int> smoothAxes_p;
-   ImageInterface<T>* pInImage_p;
    PGPlotter plotter_p;
    Bool overWriteOutput_p;
 
@@ -563,6 +556,11 @@ private:
 // Check that the combination of methods that the user has requested is valid
 // List a handy dandy table if not.
    Bool checkMethod();
+
+// Copy an image and zero its masked values
+   void copyAndZero(ImageInterface<T>& out, 
+                    LCPagedMask& maskOut,
+                    ImageInterface<T>& in);
 
 // Plot a histogram                     
    static void drawHistogram  (const Vector<T>& values,
@@ -624,7 +622,7 @@ private:
   ImageInterface<T>* smoothImage (String& smoothName);
 
 // Smooth one row in situ
-  void smoothProfiles (MaskedLattice<T>& in,
+  void smoothProfiles (ImageInterface<T>& in,
                        const Int& row,
                        const Vector<T>& psf);
 
