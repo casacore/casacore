@@ -216,6 +216,12 @@ void SubLattice<T>::setRegion()
 }
 
 template<class T>
+Bool SubLattice<T>::isPaged() const
+{
+  return itsLatticePtr->isPaged();
+}
+
+template<class T>
 Bool SubLattice<T>::isWritable() const
 {
   return itsWritable;

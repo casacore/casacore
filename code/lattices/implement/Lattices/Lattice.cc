@@ -44,6 +44,12 @@ Lattice<T>::~Lattice()
 }
 
 template <class T>
+Bool Lattice<T>::isPaged() const
+{
+  return False;
+}
+
+template <class T>
 Bool Lattice<T>::isWritable() const
 {
   return True;

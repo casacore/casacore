@@ -188,6 +188,12 @@ Lattice<T>* PagedArray<T>::clone() const
 }
 
 template<class T>
+Bool PagedArray<T>::isPaged() const
+{
+  return True;
+}
+
+template<class T>
 Bool PagedArray<T>::isWritable() const
 {
   // PagedArray is writable if underlying table is already open for write
