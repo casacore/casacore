@@ -937,7 +937,7 @@ void ImageProfileFit::fit (RecordInterface& rec,
 
 // Make fitter and poly element if desired
 
-//   SpectralFit fitter;
+   SpectralFit fitter;
    SpectralElement poly(order);
    SpectralList estimate;
 //
@@ -958,11 +958,9 @@ void ImageProfileFit::fit (RecordInterface& rec,
 
       estimate = estimator.estimate(data);
 
-
 // Set fitter
 
-//      fitter.clear();           // segv if i do this
-      SpectralFit fitter;
+      fitter.clear();
       fitter.addFitElement(estimate);
       if (order >= 0) fitter.addFitElement(poly);
 //
