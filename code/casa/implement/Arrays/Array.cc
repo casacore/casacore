@@ -39,8 +39,8 @@ rtti_imp_mbrf_a1(Array);
 
 
 template<class T> Array<T>::Array()
-: ndimen_p (0),
-  nels_p   (0),
+: nels_p   (0),
+  ndimen_p (0),
   data_p   (new Block<T>(0)),
   contiguous_p (True)
 {
@@ -52,15 +52,15 @@ template<class T> Array<T>::Array()
 //   <item> ArrayShapeError
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape)
-: length_p (Shape),
+: nels_p   (Shape.product()),
+  ndimen_p (Shape.nelements()),
+  length_p (Shape),
   inc_p    (Shape.nelements(), 1),
   originalLength_p(Shape),
-  ndimen_p (Shape.nelements()),
-  nels_p   (Shape.product()),
   data_p   (0),
   contiguous_p (True)
 {
-    for (Int i = 0; i < ndimen_p; i++) {
+    for (uInt i = 0; i < ndimen_p; i++) {
 	if (Shape(i) < 0) {
 	    throw(ArrayShapeError(shape(), Shape,
 	      "Array<T>::Array(const IPosition &)"
@@ -76,15 +76,15 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 //   <item> ArrayShapeError
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
-: length_p (Shape),
+: nels_p   (Shape.product()),
+  ndimen_p (Shape.nelements()),
+  length_p (Shape),
   inc_p    (Shape.nelements(), 1),
   originalLength_p(Shape),
-  ndimen_p (Shape.nelements()),
-  nels_p   (Shape.product()),
   data_p   (0),
   contiguous_p (True)
 {
-    for (Int i = 0; i < ndimen_p; i++) {
+    for (uInt i = 0; i < ndimen_p; i++) {
 	if (Shape(i) < 0) {
 	    throw(ArrayShapeError(shape(), Shape,
 	      "Array<T>::Array(const IPosition &, const T &)"
@@ -99,11 +99,11 @@ template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
 
 
 template<class T> Array<T>::Array(const Array<T> &other)
-: length_p (other.length_p),
+: nels_p   (other.nels_p),
+  ndimen_p (other.ndimen_p),
+  length_p (other.length_p),
   inc_p    (other.inc_p),
   originalLength_p(other.originalLength_p),
-  ndimen_p (other.ndimen_p),
-  nels_p   (other.nels_p),
   begin_p  (other.begin_p),
   contiguous_p (other.contiguous_p)
 {
@@ -114,11 +114,11 @@ template<class T> Array<T>::Array(const Array<T> &other)
 template<class T>
 Array<T>::Array(const IPosition &shape, T *storage, 
 		StorageInitPolicy policy)
-: length_p (shape), 
+: nels_p   (0),
+  ndimen_p (shape.nelements()),
+  length_p (shape), 
   inc_p    (shape.nelements(), 1),
   originalLength_p(shape.nelements(), 0), 
-  ndimen_p (shape.nelements()),
-  nels_p   (0),
   data_p   (0),
   contiguous_p (True)
 {
@@ -128,11 +128,11 @@ Array<T>::Array(const IPosition &shape, T *storage,
 
 template<class T>
 Array<T>::Array (const IPosition &shape, const T *storage)
-: length_p (shape), 
+: nels_p   (0),
+  ndimen_p (shape.nelements()),
+  length_p (shape), 
   inc_p    (shape.nelements(), 1),
   originalLength_p(shape.nelements(), 0), 
-  ndimen_p (shape.nelements()),
-  nels_p   (0),
   data_p   (0),
   contiguous_p (True)
 {
@@ -441,7 +441,7 @@ template<class T> void Array<T>::unique()
 template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 {
     DebugAssert(ok(), ArrayError);
-    if (len.product() != nelements()) {
+    if (len.product() != Int(nelements())) {
 	throw(ArrayConformanceError("Array<T>::reform() - "
 				    "total elements differ"));
     }
@@ -512,7 +512,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 	if (copyAxes(i) >= 0) {
 	    tmp.inc_p(i) = inc_p(copyAxes(i));
 	    tmp.originalLength_p(i) = originalLength_p(copyAxes(i));
-	    for (uInt j=startAxis; j<copyAxes(i); j++) {
+	    for (Int j=startAxis; j<copyAxes(i); j++) {
 		tmp.inc_p(i) *= originalLength_p(j);
 		tmp.originalLength_p(i) *= originalLength_p(j);
 	    }
@@ -564,7 +564,7 @@ Array<T> Array<T>::nonDegenerate (const IPosition &ignoreAxes)
 }
 
 template<class T>
-void Array<T>::nonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+void Array<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 {
     DebugAssert(ok(), ArrayError);
     AlwaysAssert(other.ndim() > 0, AipsError);
@@ -584,7 +584,7 @@ void Array<T>::nonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     // same axis more than once.
     IPosition keepAxes(nd, 0);
     for (i=0; i<ignoreAxes.nelements(); i++) {
-	AlwaysAssert (ignoreAxes(i) < nd, AipsError);
+	AlwaysAssert (ignoreAxes(i) < Int(nd), AipsError);
 	keepAxes(ignoreAxes(i)) = 1;
     }
     // Now count all axes to keep.
@@ -640,15 +640,17 @@ void Array<T>::nonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     }
 }
 
-template<class T> const Array<T> Array<T>::
-addDegenerate(uInt numAxes) const {
+template<class T>
+const Array<T> Array<T>::addDegenerate(uInt numAxes) const
+{
     Array<T> * This = (Array<T> *) this;
     const Array<T> tmp(This->addDegenerate(numAxes));
     return tmp;
 }
 
-template<class T> Array<T> Array<T>::
-addDegenerate(uInt numAxes) {
+template<class T>
+Array<T> Array<T>::addDegenerate(uInt numAxes)
+{
     DebugAssert(ok(), ArrayError);
     Array<T> tmp(*this);
     if (numAxes == 0)
@@ -685,7 +687,7 @@ template<class T> Bool Array<T>::conform(const Array<T> &other) const
     if (ndim() != other.ndim()) {
 	return False;
     }
-    for (int i=0; i < ndim(); i++) {
+    for (uInt i=0; i < ndim(); i++) {
 	if (length_p(i) != other.length_p(i)) {
 	    return False;
 	}
@@ -708,7 +710,7 @@ template<class T> void Array<T>::resize(const IPosition &len)
     // Maybe we don't need to resize; let's see if we can short circuit
     Bool sameShape = True;
     if (len.nelements() == ndim()) {
-	for (Int i=0; i < ndim(); i++) {
+	for (uInt i=0; i < ndim(); i++) {
 	    if (length_p(i) != len(i)) {
 		sameShape = False;
 		break;
@@ -760,7 +762,8 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
 	throw(ArrayError("Array<T>::operator()(b,e,i) - ndim() differs from"
 			 " an iposition size"));
     }
-    for (Int j=0; j < ndim(); j++) {
+    uInt j;
+    for (j=0; j < ndim(); j++) {
 	if (b(j) < 0 || b(j) > e(j)
 	||  e(j) >= length_p(j)  ||  i(j) < 1) {
 	    throw(ArrayError("Array<T>::operator()(b,e,i) - b,e or i "
@@ -853,10 +856,11 @@ template<class T> void Array<T>::validateIndex(const IPosition &i) const
 			     "Array<T>::validateIndex - ndims of index"
 			     " and array differ"));
     }
-    for(Int j=0; j < ndim(); j++)
-	if(i(j) < 0 || i(j) > length_p(j))
+    for (uInt j=0; j < ndim(); j++) {
+	if (i(j) < 0 || i(j) > length_p(j)) {
 	   throw(ArrayIndexError(i, length_p));
-
+	}
+    }
     // OK - normal return
 }
 
@@ -926,7 +930,7 @@ template<class T> Bool Array<T>::ok() const
     if (originalLength_p.nelements() != ndim())
 	return False;
 
-    Int i;
+    uInt i;
     uInt count = 1;
 
     for (i=0; i < ndim(); i++) {
@@ -960,7 +964,7 @@ template<class T> IPosition Array<T>::end() const
     DebugAssert(ok(), ArrayError);
 
     IPosition tmp(ndim());
-    for (Int i=0; i < ndim(); i++) {
+    for (uInt i=0; i < ndim(); i++) {
 	tmp(i) = length_p(i) - 1;
     }
     return tmp;
