@@ -26,382 +26,202 @@
 //# $Id$
 
 #include <aips/Mathematics/extern_fft.h>
-#include <aips/Exceptions/Error.h>
 
-// declarations for FORTRAN functions that actually do ffts
-//  
-// single precision
-//
-extern "C" void scopy_(int *, float *, int *, float *, int *);
-extern "C" void sscal_(int *, float *, float *, int *);
-extern "C" void cfftf_(int *, float *, float *);
-extern "C" void cfftb_(int *, float *, float *);
-extern "C" void cffti_(int *, float *);
-extern "C" void rfftf_(int *, float *, float *);
-extern "C" void rfftb_(int *, float *, float *);
-extern "C" void rffti_(int *, float *);
-
-//
-// double precision
-//
-extern "C" void dcopy_(int *, double *, int *, double *, int *);
-extern "C" void dscal_(int *, double *, double *, int *);
-extern "C" void dcfftf_(int *, double *, double *);
-extern "C" void dcfftb_(int *, double *, double *);
-extern "C" void dcffti_(int *, double *);
-extern "C" void drfftf_(int *, double *, double *);
-extern "C" void drfftb_(int *, double *, double *);
-extern "C" void drffti_(int *, double *);
-
-extern "C" void mfft_(float *re, float *im, int *ntot, int *n, int
-		      *nspan, int *isn, float *worka, float *workb,
-		      float *workc, float *workd, int *worke, int
-		      *workf);
-
-extern "C" void mdfft_(double *re, double *im, int *ntot, int *n, int
-		       *nspan, int *isn, double *worka, double *workb,
-		       double *workc, double *workd, int *worke, int
-		       *workf);
-		       
-//
- // c++ wrapper functions which call FORTRAN routines to do actual FFTs
- //
-void 
-scopy(int *n, float *sx, int *incx, float *sy, int *incy)
-{
-  /* call fortran function */
-  scopy_(n, sx, incx, sy, incy);
+extern "C" {
+  void cffti_(int *, float *);
+  void dcffti_(int *, double *);
+  void cfftf_(int *, float *, float *);
+  void dcfftf_(int *, double *, double *);
+  void cfftb_(int *, float *, float *);
+  void dcfftb_(int *, double *, double *);
 }
 
-void 
-scopy(int *n, double *sx, int *incx, double *sy, int *incy)
-{
-  /* call fortran function */
-  dcopy_(n, sx, incx, sy, incy);
+extern "C" {
+  void rfftf_(int *, float *, float *);
+  void rfftb_(int *, float *, float *);
+  void rffti_(int *, float *);
+  void drfftf_(int *, double *, double *);
+  void drfftb_(int *, double *, double *);
+  void drffti_(int *, double *);
 }
 
-void 
-sscal(int *n, float *scale, float *sx, int *incx)
-{
-  /* call fortran function */
-  sscal_(n, scale, sx, incx);
+extern "C" {
+  void ezffti_(int *, float *);
+  void ezfftf_(int *, float *, float *, float *, float *, float *);
+  void ezfftb_(int * n, float *, float *, float *, float *, float *);
 }
 
-void 
-sscal(int *n, double *scale, double *sx, int *incx)
-{
-  /* call fortran function */
-  dscal_(n, scale, sx, incx);
+extern "C" {
+  void sinti_(int *, float *);
+  void dsinti_(int *, double *);
+  void sint_(int *, float *, float *);
+  void dsint_(int *, double *, double *);
 }
 
-void 
-cfftf(int *n, float *rdata, float *work)
-{
-  /* call fortran function */
-  cfftf_(n, rdata, work);
+extern "C" {
+  void costi_(int *, float *);
+  void dcosti_(int *, double *);
+  void cost_(int *, float *, float *);
+  void dcost_(int *, double *, double *);
 }
 
-void 
-cfftf(int *n, double *rdata, double *work)
-{
-  /* call fortran function */
-  dcfftf_(n, rdata, work);
+extern "C" {
+  void sinqi_(int *, float *);
+  void dsinqi_(int *, double *);
+  void sinqf_(int *, float *, float *);
+  void dsinqf_(int *, double *, double *);
+  void sinqb_(int *, float *, float *);
+  void dsinqb_(int *, double *, double *);
 }
 
-void 
-cfftb(int *n, float *rdata, float *work)
-{
-  /* call fortran function */
-  cfftb_(n, rdata, work);
+extern "C" {
+  void cosqi_(int *, float *);
+  void dcosqi_(int *, double *);
+  void cosqf_(int *, float *, float *);
+  void dcosqf_(int *, double *, double *);
+  void cosqb_(int *, float *, float *);
+  void dcosqb_(int *, double *, double *);
 }
 
-void 
-cfftb(int *n, double *rdata, double *work)
-{
-  /* call fortran function */
-  dcfftb_(n, rdata, work);
+void cffti(Int n, Float * work) {
+  cffti_((int *) &n, (float *) work);
 }
 
-
-void 
-rfftf(int *n, float *rdata, float *work)
-{
-  /* call fortran function */
-  rfftf_(n, rdata, work);
+void cffti(Int n, Double * work) {
+  dcffti_((int *) &n, (double *) work);
 }
 
-void 
-rfftf(int *n, double *rdata, double *work)
-{
-  /* call fortran function */
-  drfftf_(n, rdata, work);
+void  cfftf(Int n, Float * rdata, Float * work) {
+  cfftf_((int *) &n, (float *) rdata, (float *) work);
 }
 
-void 
-rfftb(int *n, float *rdata, float *work)
-{
-  /* call fortran function */
-  rfftb_(n, rdata, work);
+void cfftf(Int n, Double * rdata, Double * work) {
+  dcfftf_((int *) &n, (double *) rdata, (double *) work);
 }
 
-void 
-rfftb(int *n, double *rdata, double *work)
-{
-  /* call fortran function */
-  drfftb_(n, rdata, work);
+void cfftb(Int n, Float * rdata, Float * work) {
+  cfftb_((int *) &n, (float *) rdata, (float *) work);
 }
 
-void 
-cffti(int *n, float *work)
-{
-  /* call fortran function */
-  cffti_(n, work);
+void cfftb(Int n, Double * rdata, Double * work) {
+  dcfftb_((int *) &n, (double *) rdata, (double *) work);
+}
+void rffti(Int n, Float * work) {
+  rffti_((int *) &n, (float *) work);
 }
 
-void 
-cffti(int *n, double *work)
-{
-  /* call fortran function */
-  dcffti_(n, work);
+void rffti(Int n, Double * work) {
+  drffti_((int *) &n, (double *) work);
 }
 
-void 
-rffti(int *n, float *work)
-{
-  /* call fortran function */
-  rffti_(n, work);
+void rfftf(Int n, Float * rdata, Float * work) {
+  rfftf_((int *) &n, (float *) rdata, (float *) work);
 }
 
-void 
-rffti(int *n, double *work)
-{
-  /* call fortran function */
-  drffti_(n, work);
+void rfftf(Int n, Double * rdata, Double * work) {
+  drfftf_((int *) &n, (double *) rdata, (double *) work);
 }
 
-
-// A local helper class used by mfft and mdfft.
-// See those functions for examples of usage.
-
-class TempStore {
-  // Provides reusable temporary storage which can be 
-  // dynamically resized.
-  // The storage always grows, it never shrinks. 
-public:
-  TempStore();
-  TempStore(int s);
-  // copy, NOT reference semantics
-  TempStore(const TempStore&);
-
-  ~TempStore();
-
-  // copy, NOT reference semantics
-  const TempStore& operator=(const TempStore&);
-
-  // Obvious semantics. Does not do bounds checking!
-  char &operator[](int i) { return store[i]; }
-  
-  // return Address of store. If resize > size, 
-  // resizes store, and returns new address.
-
-  char *getAddress(int resize=0);
-
-  // returns the size of store
-  int getSize();
-protected:
-  char *store;
-  int size;
-};
-
-TempStore::TempStore()
-{
-  store = 0;
-  size = 0;
+void rfftb(Int n, Float * rdata, Float * work) {
+  rfftb_((int *) &n, (float *) rdata, (float *) work);
 }
 
-TempStore::TempStore(int s)
-{
-  if (s > 0) {
-    store = new char[s];
-    if (!store) {
-      throw(AipsError("TempStore::TempStore(int):: new returned 0"));
-    }
-    size = s;
-  } else {
-    store = 0;
-    size = 0;
-  }
+void rfftb(Int n, Double * rdata, Double * work) {
+  drfftb_((int *) &n, (double *) rdata, (double *) work);
 }
 
-TempStore::TempStore(const TempStore &other)
-{
-  *this=other;
+void ezffti(Int n, Float * wsave) {
+  ezffti_((int *) &n, (float *) wsave);
 }
 
-
-const TempStore &TempStore::operator=(const TempStore &other)
-{
-  // ok to delete zero pointer, see ARM
-  delete [] store;
-  if (other.size > 0) {
-    store = new char[other.size];
-    if (!store) {
-      throw(AipsError("TempStore::TempStore(int):: new returned 0"));
-    }
-    size = other.size;
-  } else {
-    store = 0;
-    size = 0;
-  }
-  // copy storage
-  for (int i = 0; i < other.size; ++i) {
-    store[i] = other.store[i];
-  }
-  return *this;
+void ezfftf(Int n, Float * r, Float * azero, Float * a, Float * b, 
+	    Float * wsave) {
+  ezfftf_((int *) &n, (float *) r, (float *) azero, (float *) a, (float *) b,
+	  (float *) wsave);
 }
 
-TempStore::~TempStore()
-{
-  delete [] store;
+void ezfftb(Int n, Float * r, Float * azero, Float * a, Float * b, 
+	    Float * wsave) {
+  ezfftb_((int *) &n, (float *) r, (float *) azero, (float *) a, (float *) b,
+	  (float *) wsave);
 }
 
-char *TempStore::getAddress(int resize)
-{
-  if (resize > size) {
-    delete [] store;
-    store = new char[resize];
-    if (!store) {
-      throw(AipsError("TempStore::getAddress(int):: new returned 0"));
-    } 
-    size = resize;
-  }
-  return store;
+void sinti(Int n, Float * wsave) {
+  sinti_((int *) &n, (float *) wsave);
 }
 
-int TempStore::getSize()
-{
-  return size;
+void sinti(Int n, Double * wsave) {
+  dsinti_((int *) &n, (double *) wsave);
 }
 
-/*
-
-   // Testing code for TempStore included here. To use, you
-   // must include iostream.h.
-
-
-   void testTempStore() {
-   static TempStore a;
-   static TempStore b;
-
-   TempStore c(10);
-
-   
-   cout << "Testing constructors and getSize(...)" << endl;
-   cout << " a's size, should be zero: " << a.getSize() << endl;
-   cout << " b's size, should be zero: " << b.getSize() << endl;
-
-   cout << "Testing getAddress(...)" << endl;
-   cout << " a's address, should be zero: " << (void*) a.getAddress(0) << endl;
-   cout << " a's size, should be zero: " << a.getSize() << endl;
-
-   cout << " b's address,  should be nonzero: " << (void*) b.getAddress(5) << endl;
-   cout << " b's size, should be 5: " << b.getSize() << endl;
-
-   cout << " b's address, should be same as last: " << (void*) b.getAddress(4) << endl;
-   cout << " b's size, should still be 5: " << b.getSize() << endl;
-
-   cout << " c's address, should be nonzero: " << (void*) c.getAddress() << endl;
-   cout << " c's size, should be 10: " << c.getSize() << endl;
-
-   cout << " c's address, should be nonzero, and different: " << (void*) c.getAddress(1024) << endl;
-   cout << " c's size, should be 1024: " << c.getSize() << endl;
-
-   cout << " c's address, should be same as last: " << (void*) c.getAddress() << endl;
-   cout << " c's size, should still be 1024: " << c.getSize() << endl;
-
-   cout << endl;
-
-   cout << "Testing copy constructor" << endl;
-
-   TempStore d(c);
-
-   cout << " d's address, should be different than last c: " << (void *) d.getAddress() << endl;
-   cout << " d's size, should be same as c's: " << d.getSize() << endl;
-
-   cout << endl;
-
-   cout << "Testing operator= and operator[]" << endl;
-
-   c = a;
-   cout << " c's address, should now be zero: " << (void *) c.getAddress() << endl;
-   cout << " c's size, should now be zero: " << (void *) c.getSize() << endl;
-
-   char *bstorage=b.getAddress();
-   for (int i = 0; i < b.getSize(); ++i) {
-   b[i] = i + 'a';
-   }
-   b[i] = '\0';
-
-   cout << " address of b's storage: " << (void*) b.getAddress() << endl;
-   cout << " b's storage, should look like abcd... " << bstorage << endl;
-   cout << " b's size, should still be 5: " << b.getSize() << endl;
-
-   TempStore e;
-
-   cout << " e's storage, should be zero: " << (void*) e.getAddress() << endl;
-   cout << " e's size, should be zero: " << e.getSize() << endl;
-   
-   e = b;
-
-   cout << " address of b's storage, should be different than e's:" << (void*) e.getAddress() << endl;
-   cout << " e's storage, should look like e's: " << e.getAddress() << endl;
-   cout << " e's size, should be same as b's:" << e.getSize() << endl;
-
-   }
-
-   */
-// mfft and mdfft invoke FORTRAN fft routines. They use the TempStore
-// class to allocate temporary storage. TempStore allows the storage
-// is reused, or resized dynamically. mfft and mdfft are frequently 
-// called repeatedly with the same value of n; hence this is a useful 
-// optimization, since it avoids the overhead of calls to new/delete.
-// Perhaps we could just use alloca().
-
-// Note that this usage disallows concurrency. If we had more than
-// a single thread of control, we'd be in trouble.
-
-static TempStore WorkArrays[6];
-
-void 
-mfft(float *a, float *b, int *ntot, int *n, int *nspan, int *isn) 
-{
-  mfft_(a, b, ntot, n, nspan, isn, 
-	(float *) WorkArrays[0].getAddress(sizeof(float) * *n),
-	(float *) WorkArrays[1].getAddress(sizeof(float) * *n),
-        (float *) WorkArrays[2].getAddress(sizeof(float) * *n),
-        (float *) WorkArrays[3].getAddress(sizeof(float) * *n),
-        (int *) WorkArrays[4].getAddress(sizeof(int) * *n),
-        (int *) WorkArrays[5].getAddress(sizeof(int) * 16));
-  
-  if (*isn == 0) {
-  // can't happen 
-    throw(AipsError("Static memory limit in mfft_ exceeded."));
-  }
+void sint(Int n, Float * x, Float * wsave) {
+  sint_((int *) &n, (float *) x, (float *) wsave);
 }
 
-void 
-mfft(double *a, double *b, int *ntot, int *n, int *nspan, int *isn) 
-{
-  mdfft_(a, b, ntot, n, nspan, isn, 
-	 (double *) WorkArrays[0].getAddress(sizeof(double) * *n),
-	 (double *) WorkArrays[1].getAddress(sizeof(double) * *n),
-	 (double *) WorkArrays[2].getAddress(sizeof(double) * *n),
-	 (double *) WorkArrays[3].getAddress(sizeof(double) * *n),
-	 (int *) WorkArrays[4].getAddress(sizeof(int) * *n),
-	 (int *) WorkArrays[5].getAddress(sizeof(int) * 16));
-  if (*isn == 0) {
-    // singleton ran out of memory
-    throw(AipsError("Static memory limit in mdfft_ exceeded."));
-  }
+void sint(Int n, Double * x, Double * wsave) {
+   dsint_((int *) &n, (double *) x, (double *) wsave);
 }
 
+void costi(Int n, Float * wsave) {
+  costi_((int *) &n, (float *) wsave);
+}
+
+void costi(Int n, Double * wsave) {
+  dcosti_((int *) &n, (double *) wsave);
+}
+
+void cost(Int n, Float * x, Float * wsave) {
+  cost_((int *) &n, (float *) x, (float *) wsave);
+}
+
+void cost(Int n, Double * x, Double * wsave) {
+  dcost_((int *) &n, (double *) x, (double *) wsave);
+}
+
+void sinqi(Int n, Float * wsave) {
+  sinqi_((int *) &n, (float *) wsave);
+}
+
+void sinqi(Int n, Double * wsave) {
+  dsinqi_((int *) &n, (double *) wsave);
+}
+
+void sinqf(Int n, Float * x, Float * wsave) {
+  sinqf_((int *) &n, (float *) x, (float *) wsave);
+}
+
+void sinqf(Int n, Double * x, Double * wsave) {
+  dsinqf_((int *) &n, (double *) x, (double *) wsave);
+}
+
+void sinqb(Int n, Float * x, Float * wsave) {
+  sinqb_((int *) &n, (float *) x, (float *) wsave);
+}
+
+void sinqb(Int n, Double * x, Double * wsave) {
+  dsinqb_((int *) &n, (double *) x, (double *) wsave);
+}
+
+void cosqi(Int n, Float * wsave) {
+  cosqi_((int *) &n, (float *) wsave);
+}
+
+void cosqi(Int n, Double * wsave) {
+  dcosqi_((int *) &n, (double *) wsave);
+}
+
+void cosqf(Int n, Float * x, Float * wsave) {
+  cosqf_((int *) &n, (float *) x, (float *) wsave);
+}
+
+void cosqf(Int n, Double * x, Double * wsave) {
+  dcosqf_((int *) &n, (double *) x, (double *) wsave);
+}
+
+void cosqb(Int n, Float * x, Float * wsave) {
+  cosqb_((int *) &n, (float *) x, (float *) wsave);
+}
+
+void cosqb(Int n, Double * x, Double * wsave) {
+  dcosqb_((int *) &n, (double *) x, (double *) wsave);
+}
