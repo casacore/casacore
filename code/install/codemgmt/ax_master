@@ -3421,3 +3421,4 @@
 13 264 src mv trial/implement/TableMeasures/TableMeasDescBase.cc aips/implement/TableMeasures/TableMeasDescBase.cc
 13 264 src mv trial/implement/TableMeasures/TableMeasOffsetDesc.h aips/implement/TableMeasures/TableMeasOffsetDesc.h
 13 264 src mv trial/implement/TableMeasures/TableMeasOffsetDesc.cc aips/implement/TableMeasures/TableMeasOffsetDesc.cc
+13 264 src mv trial/implement/TableMeasures/TableMeasRefDesc.cc aips/implement/TableMeasures/TableMeasRefDesc.cc
