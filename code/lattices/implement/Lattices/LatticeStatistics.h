@@ -645,7 +645,7 @@ private:
     typedef typename NumericTraits<T>::PrecisionType PrecisionType;
     Block<PrecisionType > *pSum_p;
     Block<PrecisionType > *pSumSq_p;
-    Block<T>* pNPts_p;
+    Block<PrecisionType>* pNPts_p;
     Block<T>* pMin_p;
     Block<T>* pMax_p;
     Block<Bool>* pInitMinMax_p;
