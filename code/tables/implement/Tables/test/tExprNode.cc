@@ -32,6 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
@@ -40,6 +41,8 @@
 // Test program for class TableExprNode.
 // </summary>
 
+Bool foundError = False;
+
 
 void checkScaBool (TableExprId& exprid, const TableExprNode& expr,
 		   const Bool& value)
@@ -47,7 +50,10 @@ void checkScaBool (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpBool);
   Bool val;
   expr.get (exprid, val);
-  AlwaysAssertExit (val == value);
+  if (val != value) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkScaDouble (TableExprId& exprid, const TableExprNode& expr,
@@ -56,7 +62,10 @@ void checkScaDouble (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpDouble);
   Double val;
   expr.get (exprid, val);
-  AlwaysAssertExit (val == value);
+  if (!near (val,  value, 1.e-10)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkScaDComplex (TableExprId& exprid, const TableExprNode& expr,
@@ -65,7 +74,10 @@ void checkScaDComplex (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpDComplex);
   DComplex val;
   expr.get (exprid, val);
-  AlwaysAssertExit (val == value);
+  if (!near (val,  value, 1.e-10)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkScaString (TableExprId& exprid, const TableExprNode& expr,
@@ -74,7 +86,10 @@ void checkScaString (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpString);
   String val;
   expr.get (exprid, val);
-  AlwaysAssertExit (val == value);
+  if (val != value) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkArrBool (TableExprId& exprid, const TableExprNode& expr,
@@ -83,7 +98,10 @@ void checkArrBool (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpBool);
   Array<Bool> val;
   expr.get (exprid, val);
-  AlwaysAssertExit (allEQ (val, value));
+  if (! allEQ (val, value)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkArrDouble (TableExprId& exprid, const TableExprNode& expr,
@@ -92,7 +110,10 @@ void checkArrDouble (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpDouble);
   Array<Double> val;
   expr.get (exprid, val);
-  AlwaysAssertExit (allNear (val, value, 1.e-10));
+  if (! allNear (val, value, 1.e-10)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkArrDComplex (TableExprId& exprid, const TableExprNode& expr,
@@ -101,7 +122,10 @@ void checkArrDComplex (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpDComplex);
   Array<DComplex> val;
   expr.get (exprid, val);
-  AlwaysAssertExit (allNear (val, value, 1.e-10));
+  if (! allNear (val, value, 1.e-10)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 void checkArrString (TableExprId& exprid, const TableExprNode& expr,
@@ -110,7 +134,10 @@ void checkArrString (TableExprId& exprid, const TableExprNode& expr,
   AlwaysAssertExit (expr.dataType() == TpString);
   Array<String> val;
   expr.get (exprid, val);
-  AlwaysAssertExit (allEQ (val, value));
+  if (! allEQ (val, value)) {
+    foundError = True;
+    cout << "Found value " << val << "; expected " << value << endl;
+  }
 }
 
 
@@ -548,7 +575,7 @@ void doIt()
 }
 
 
-main()
+int main()
 {
   try {
     doIt();
@@ -557,6 +584,9 @@ main()
     exit(1);
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;
+    exit(1);
+  }
+  if (foundError) {
     exit(1);
   }
   cout << "OK" << endl;
