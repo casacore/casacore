@@ -1,5 +1,5 @@
 //# Array.h: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -457,7 +457,7 @@ public:
     // <group>
     T* data()
       { return begin_p; }
-    const T* data() const
+    T* const data() const
       { return begin_p; }
     // </group>
 
@@ -533,7 +533,10 @@ public:
     class ConstIteratorSTL
     {
     public:
-      ConstIteratorSTL (const Array<T>&, Bool isBegin);
+      ConstIteratorSTL()
+	: itsPos(0), itsLineEnd(0), itsLineIncr(0), itsLineAxis(0),
+	  itsArray(0), itsContig(False) {}
+      ConstIteratorSTL (const Array<T>&);
 
       void operator++()
       {
@@ -552,6 +555,12 @@ public:
 	increment();
       }
 
+      bool operator== (const T* const pos) const
+        { return itsPos == pos; }
+
+      bool operator!= (const T* const pos) const
+        { return itsPos != pos; }
+
       bool operator== (const ConstIteratorSTL& other) const
         { return itsPos == other.itsPos; }
 
@@ -560,6 +569,12 @@ public:
 
       const T& operator*() const
         { return *itsPos; }
+
+      const T* const pos() const
+        { return itsPos; }
+
+      void setPos (T* const pos)
+        { itsPos = pos; }
 
     protected:
       // Increment iterator for a non-contiguous array.
@@ -578,10 +593,18 @@ public:
     class IteratorSTL: public ConstIteratorSTL
     {
     public:
-      IteratorSTL (Array<T>& arr, Bool isBegin)
-	: ConstIteratorSTL (arr, isBegin) {}
+      IteratorSTL()
+	: ConstIteratorSTL () {}
+      IteratorSTL (Array<T>& arr)
+	: ConstIteratorSTL (arr) {}
       T& operator*()
         { return *const_cast<T*>(itsPos); }
+
+      bool operator== (const T* const pos) const
+        { return itsPos == pos; }
+
+      bool operator!= (const T* const pos) const
+        { return itsPos != pos; }
 
       bool operator== (const IteratorSTL& other) const
         { return itsPos == other.itsPos; }
@@ -590,6 +613,7 @@ public:
         { return itsPos != other.itsPos; }
 
     };
+
 
 
     // Define the STL-style iterators.
@@ -606,17 +630,29 @@ public:
     typedef T value_type;
     typedef IteratorSTL iterator;
     typedef ConstIteratorSTL const_iterator;
+    typedef const T* const end_iterator;
+    typedef T* contiter;
+    typedef const T* const_contiter;
     // </group>
-    // Get the begin iterator object.
+    // Get the begin iterator object for any array.
     iterator begin()
-        { return iterator (*this, True); }
+        { return iterator (*this); }
     const_iterator begin() const
-        { return const_iterator (*this, True); }
-    const iterator& end()
-        { if (!itsEndIter) itsEndIter = new iterator(*this, False);
-          return *itsEndIter; }
-    const const_iterator& end() const
-        { return const_cast<Array<T>*>(this)->end(); }
+        { return const_iterator (*this); }
+    const T* const end() const
+        { return end_p; }
+    // </group>
+
+    // </group>
+    // Get the begin iterator object for a contiguous array.
+    contiter cbegin()
+        { return begin_p; }
+    const_contiter cbegin() const
+        { return begin_p; }
+    const contiter cend()
+        { return end_p; }
+    const const_contiter cend() const
+        { return end_p; }
     // </group>
 
     // </group>
@@ -659,8 +695,7 @@ protected:
     Bool contiguous_p;
 
     // The end for an STL-style iteration.
-    // It is allocated when used for the first time.
-    mutable iterator* itsEndIter;
+    T* end_p;
 
 
     // Various helper functions.
@@ -669,6 +704,10 @@ protected:
     void validateIndex(const IPosition &) const;
     Bool isStorageContiguous() const;
     // </group>
+
+    // Set the end iterator.
+    void setEndIter()
+      { end_p = begin_p + length_p(ndim()-1) * steps_p(ndim()-1); }
 };
 
 

@@ -38,8 +38,7 @@ template<class T> Array<T>::Array()
 : nels_p   (0),
   ndimen_p (0),
   data_p   (new Block<T>(0)),
-  contiguous_p (True),
-  itsEndIter   (0)
+  contiguous_p (True)
 {
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -55,8 +54,7 @@ template<class T> Array<T>::Array(const IPosition &Shape)
   inc_p    (Shape.nelements(), 1),
   originalLength_p(Shape),
   data_p   (0),
-  contiguous_p (True),
-  itsEndIter   (0)
+  contiguous_p (True)
 {
     for (uInt i = 0; i < ndimen_p; i++) {
 	if (Shape(i) < 0) {
@@ -65,9 +63,9 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 	      " - Negative shape"));
 	}
     }
-    makeSteps();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
+    makeSteps();
     DebugAssert(ok(), ArrayError);
 }
 
@@ -81,8 +79,7 @@ template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
   inc_p    (Shape.nelements(), 1),
   originalLength_p(Shape),
   data_p   (0),
-  contiguous_p (True),
-  itsEndIter   (0)
+  contiguous_p (True)
 {
     for (uInt i = 0; i < ndimen_p; i++) {
 	if (Shape(i) < 0) {
@@ -91,9 +88,9 @@ template<class T> Array<T>::Array(const IPosition &Shape, const T &initialValue)
 	      " - Negative shape"));
 	}
     }
-    makeSteps();
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
+    makeSteps();
     DebugAssert(ok(), ArrayError);
     objset (begin_p, initialValue, nels_p);
 }
@@ -108,7 +105,7 @@ template<class T> Array<T>::Array(const Array<T> &other)
   steps_p  (other.steps_p),
   begin_p  (other.begin_p),
   contiguous_p (other.contiguous_p),
-  itsEndIter   (0)
+  end_p    (other.end_p)
 {
     data_p = other.data_p;
     DebugAssert(ok(), ArrayError);
@@ -123,8 +120,7 @@ Array<T>::Array(const IPosition &shape, T *storage,
   inc_p    (shape.nelements(), 1),
   originalLength_p(shape.nelements(), 0), 
   data_p   (0),
-  contiguous_p (True),
-  itsEndIter   (0)
+  contiguous_p (True)
 {
     takeStorage(shape, storage, policy);
     DebugAssert(ok(), ArrayError);
@@ -138,8 +134,7 @@ Array<T>::Array (const IPosition &shape, const T *storage)
   inc_p    (shape.nelements(), 1),
   originalLength_p(shape.nelements(), 0), 
   data_p   (0),
-  contiguous_p (True),
-  itsEndIter   (0)
+  contiguous_p (True)
 {
     takeStorage(shape, storage);
     DebugAssert(ok(), ArrayError);
@@ -149,15 +144,12 @@ Array<T>::Array (const IPosition &shape, const T *storage)
 
 template<class T> Array<T>::~Array()
 {
-    delete itsEndIter;
 }
 
 
 template<class T> void Array<T>::reference(Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
-    delete itsEndIter;
-    itsEndIter = 0;
 
     nels_p   = other.nels_p;
     ndimen_p = other.ndimen_p;
@@ -172,6 +164,7 @@ template<class T> void Array<T>::reference(Array<T> &other)
     data_p   = other.data_p;
     begin_p  = other.begin_p;
     contiguous_p = other.contiguous_p;
+    end_p    = other.end_p;
 }
 
 template<class T> Array<T> Array<T>::copy() const
@@ -194,7 +187,8 @@ template<class T> Array<T> Array<T>::copy() const
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = vp.begin_p;
-        for (Array<T>::const_iterator iter=begin(); iter!=end(); ++iter) {
+        Array<T>::end_iterator iterend=end();
+        for (Array<T>::const_iterator iter=begin(); iter!=iterend; ++iter) {
 	    *ptr++ = *iter;
 	}
     } else {
@@ -245,7 +239,8 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	} else if (length_p(0) <= 25) {
 	    // If not many elements on a line, it's better to use this loop.
 	    Array<T>::const_iterator from(other.begin());
-	    for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+	    Array<T>::end_iterator iterend=end();
+	    for (Array<T>::iterator iter=begin(); iter!=iterend; ++iter) {
 	        *iter = *from;
 		++from;
 	    }
@@ -342,7 +337,8 @@ template<class T> void Array<T>::set(const T &Value)
 		uInt(originalLength_p(0)*inc_p(1)));
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
-        for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+        Array<T>::end_iterator iterend=end();
+        for (Array<T>::iterator iter=begin(); iter!=iterend; ++iter) {
 	    *iter = Value;
 	}
     } else {
@@ -977,6 +973,7 @@ template<class T> void Array<T>::makeSteps()
         steps_p(i) = inc_p(i) * size;
 	size *= originalLength_p(i);
     }
+    setEndIter();
 }
 
 template<class T> uInt Array<T>::nrefs() const
@@ -1081,7 +1078,8 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = storage;
-        for (Array<T>::const_iterator iter=begin(); iter!=end(); ++iter) {
+	Array<T>::end_iterator iterend=end();
+        for (Array<T>::const_iterator iter=begin(); iter!=iterend; ++iter) {
 	    *ptr++ = *iter;
 	}
     } else {
@@ -1128,7 +1126,8 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         const T* ptr = storage;
-        for (Array<T>::iterator iter=begin(); iter!=end(); ++iter) {
+        Array<T>::end_iterator iterend=end();
+        for (Array<T>::iterator iter=begin(); iter!=iterend; ++iter) {
 	    *iter = *ptr++;
 	}
     } else {
@@ -1166,9 +1165,6 @@ template<class T>
 void Array<T>::takeStorage(const IPosition &shape, T *storage,
 			   StorageInitPolicy policy)
 {
-    delete itsEndIter;
-    itsEndIter = 0;
-
     uInt new_ndimen = shape.nelements();
     uInt new_nels = shape.product();
 
@@ -1234,8 +1230,7 @@ template<class T, class U>
 
 
 template<class T>
-Array<T>::ConstIteratorSTL::ConstIteratorSTL (const Array<T>& arr,
-					      Bool isBegin)
+Array<T>::ConstIteratorSTL::ConstIteratorSTL (const Array<T>& arr)
 : itsLineIncr (0),
   itsCurPos   (arr.ndim(), 0),
   itsArray    (&arr),
@@ -1249,28 +1244,23 @@ Array<T>::ConstIteratorSTL::ConstIteratorSTL (const Array<T>& arr,
     // Set the last cursor position.
     // Handle the case for the end iterator.
     itsLastPos = arr.shape() - 1;
-    if (!isBegin) {
-      itsCurPos = itsLastPos;
-      itsPos = &((*itsArray)(itsLastPos)) + 1;
-    } else {
-      // We have the begin iterator.
-      // If the array is not contiguous, we iterate "line by line" in
-      // the increment function. Optimize for the case where the length
-      // of the lower dimensions is 1. All such dimensions can be included
-      // in the "line".
-      // At the end itsLineAxis gives the axis where the next "line" starts.
-      itsPos = &((*itsArray)(itsCurPos));
-      if (!itsContig) {
-	itsLineAxis = 0;
-	while (itsLineAxis < arr.ndim()-1
-           &&  itsLastPos(itsLineAxis) == 0) {
-	  itsLineAxis++;
-	}
-	itsCurPos(itsLineAxis) = 1;
-	itsLineIncr = &((*itsArray)(itsCurPos)) - itsPos - 1;
-	itsLineEnd = itsPos + itsLastPos(itsLineAxis) * (itsLineIncr+1);
-	itsCurPos(itsLineAxis) = 0;
+    // If the array is not contiguous, we iterate "line by line" in
+    // the increment function. Optimize for the case where the length
+    // of the lower dimensions is 1. All such dimensions can be included
+    // in the "line".
+    // At the end itsLineAxis gives the axis where the next "line" starts.
+    itsPos = &((*itsArray)(itsCurPos));
+    if (!itsContig) {
+      itsLineAxis = 0;
+      while (itsLineAxis < arr.ndim()-1
+	     &&  itsLastPos(itsLineAxis) == 0) {
+	itsLineAxis++;
       }
+      itsCurPos(itsLineAxis) = 1;
+      itsLineIncr = itsArray->steps()(itsLineAxis) - 1;
+      ///&((*itsArray)(itsCurPos)) - itsPos - 1;
+      itsLineEnd = itsPos + itsLastPos(itsLineAxis) * (itsLineIncr+1);
+      itsCurPos(itsLineAxis) = 0;
     }
   }
 }
@@ -1283,14 +1273,15 @@ void Array<T>::ConstIteratorSTL::increment()
   for (axis=itsLineAxis+1; axis<itsCurPos.nelements(); axis++) {
     if (itsCurPos(axis) < itsLastPos(axis)) {
       itsCurPos(axis)++;
+      itsLineEnd += itsArray->steps()(axis);
       break;
     }
     itsCurPos(axis) = 0;
+    itsLineEnd -= itsLastPos(axis) * itsArray->steps()(axis);
   }
   if (axis == itsCurPos.nelements()) {
-    itsPos = &((*itsArray)(itsLastPos)) + 1;
+    itsPos = itsArray->end();
   } else {
-    itsPos = &((*itsArray)(itsCurPos));
-    itsLineEnd = itsPos + itsLastPos(itsLineAxis) * (itsLineIncr+1);
+    itsPos = itsLineEnd - itsLastPos(itsLineAxis) * (itsLineIncr+1);
   }
 }
