@@ -583,17 +583,16 @@ template<class T>
 void PagedImage<T>::attach_logtable()
 {
   // Open logtable as readonly if main table is not writable.
-  TableLogSink *logtable = 0;
   if (table_p.isWritable()) {
-    logtable = new TableLogSink(LogFilter(), name() + "/logtable");
+    logTablePtr_p = new TableLogSink(LogFilter(), name() + "/logtable");
   } else {
-    logtable = new TableLogSink(name() + "/logtable");
+    logTablePtr_p = new TableLogSink(name() + "/logtable");
   }
-  LogSinkInterface *interface = logtable;
-  AlwaysAssert(logtable != 0, AipsError);
+  LogSinkInterface *interface = logTablePtr_p;
+  AlwaysAssert(logTablePtr_p != 0, AipsError);
   // Insert the keyword if it does not exist yet.
   if (! table_p.keywordSet().isDefined ("logtable")) {
-    table_p.rwKeywordSet().defineTable("logtable", logtable->table());
+    table_p.rwKeywordSet().defineTable("logtable", logTablePtr_p->table());
   }
   LogSink tmp;
   tmp.localSink(interface);
