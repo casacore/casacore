@@ -806,7 +806,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
       uInt ntrue = 0;
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -821,7 +821,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<Bool> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -846,7 +846,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
       uInt nfalse = 0;
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -861,7 +861,7 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<Bool> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -960,7 +960,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpFloat:
    {
       LatticeExpr<Float> latExpr(expr);
-      RO_LatticeIterator<Float> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Float> iter(latExpr);
 ////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
@@ -973,7 +973,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpDouble:
    {
       LatticeExpr<Double> latExpr(expr);
-      RO_LatticeIterator<Double> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Double> iter(latExpr);
 ////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
@@ -986,7 +986,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpComplex:
    {
       LatticeExpr<Complex> latExpr(expr);
-      RO_LatticeIterator<Complex> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Complex> iter(latExpr);
 ////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
@@ -999,7 +999,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpDComplex:
    {
       LatticeExpr<DComplex> latExpr(expr);
-      RO_LatticeIterator<DComplex> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<DComplex> iter(latExpr);
 ////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
@@ -1012,7 +1012,7 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpBool:
    {
       LatticeExpr<Bool> latExpr(expr);
-      RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Bool> iter(latExpr);
 ////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
       Array<Bool> mask;
       while (! iter.atEnd()) {
@@ -1779,7 +1779,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    {
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -1795,7 +1795,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -1821,7 +1821,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    {
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
@@ -1837,7 +1837,7 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
