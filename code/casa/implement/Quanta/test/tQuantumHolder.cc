@@ -29,6 +29,8 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Measures/Quantum.h>
 #include <trial/Measures/QuantumHolder.h>
 #include <aips/Containers/Record.h>
@@ -44,11 +46,10 @@ main() {
     Quantity x00(12.5, "km/s");
     Quantum<Float> x01(30.3, "Jy/a");
     Quantum<Int> x02(2, "pc3/d");
-    Quantity r00;
     Record y00;
     GlishRecord z00;
     
-    cout << "Input quantity:              " << x00 << endl;
+    cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
 	cout <<"Record output quantity:      " << q00() << endl;
@@ -72,7 +73,7 @@ main() {
     cout << "Is empty:                    " << q00.isEmpty() << endl;
     cout << "As quantity:                 " << q00.asQuantity() << endl;
 
-    cout << "Input quantity:              " << x01 << endl;
+    cout << "Input quantity:              " << (QBase &)x01 << endl;
     if (QuantumHolder(x01).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
 	cout <<"Record output quantity:      " << q00() << endl;
@@ -82,10 +83,10 @@ main() {
     } else {
       cout << "To error: " << error << endl;
     };
-    cout << "Input quantity:              " << x02 << endl;
+    cout << "Input quantity:              " << (QBase &)x02 << endl;
     if (QuantumHolder(x02).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00() << endl;
+	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -93,11 +94,11 @@ main() {
       cout << "To error: " << error << endl;
     };
     cout << "Error expected:" << endl;
-    cout << "Input quantity:              " << x00 << endl;
+    cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
       y00.renameField("units", RecordFieldId("unit"));
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00() << endl;
+	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
