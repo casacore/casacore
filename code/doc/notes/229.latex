@@ -1650,6 +1650,7 @@ DOPPLER\_ID  & Int & & & Doppler tracking id.\\
 SOURCE\_ID  & Int & & & Source id.\\
 \defline{\em Data}
 TRANSITION\_ID & Int & & & Transition id.\\
+VELDEF & Double & m/s & Doppler & Velocity definition of Doppler shift.\\
 }
 \begin{description}
 
@@ -1668,6 +1669,9 @@ sub-table.
 
 \item[TRANSITION\_ID] This index selects the appropriate line from the
 list of transitions stored for each SOURCE\_ID in the SOURCE table.
+
+\item[VELDEF] Velocity definition of the Doppler shift, e.g., RADIO or
+OPTICAL velocity in m/s.
 
 \end{description}
 
@@ -2521,12 +2525,13 @@ MAIN.
 
 \begin{description}
 
-\item{{\bf 08/14/00:} Add expanded description of Doppler tracking to
+\item{{\bf 2000/08/14:} Add expanded description of Doppler tracking to
 Section 4.0.8; correctly identify SOURCE sub-table as optional; expand
 definition of SPECTRAL\_WINDOW\_ID=-1 in the description of the SOURCE
 sub-table; expand the definition of the REF\_FREQUENCY in the
 SPECTRAL\_WINDOW sub-table description.}
-\item{{\bf 08/28/00:} Make POSITION field in SOURCE table optional.}
+\item{{\bf 2000/08/28:} Make POSITION field in SOURCE table optional.}
+\item{{\bf 2000/09/12:} Add required VELDEF column in DOPPLER table.}
 
 \end{description}
 
