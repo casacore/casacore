@@ -31,7 +31,6 @@
 
 //# Includes
 #include <trial/Images/ImageInterface.h>
-#include <trial/Images/MaskSpecifier.h>
 #include <aips/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
@@ -244,10 +243,6 @@ public:
   // the default pixelmask is unset.
   virtual void setDefaultMask (const String& maskName);
 
-  // Get the name of the default pixelmask.
-  // An empty string is returned if no default pixelmask.
-  virtual String getDefaultMask() const;
-
   // Use the mask as specified.
   // If a mask was already in use, it is replaced by the new one.
   virtual void useMask (MaskSpecifier = MaskSpecifier());
@@ -259,7 +254,7 @@ public:
 
   // Return the current Table name. By default this includes the full path. 
   // the path preceding the file name can be stripped off on request.
-  virtual String name (const Bool stripPath=False) const;
+  virtual String name (Bool stripPath=False) const;
 
   // Return the current TableColumn row number.
   uInt rowNumber() const;
@@ -307,7 +302,7 @@ public:
   // </group>
 
   // Return the table holding the data.
-  Table table();
+  Table& table();
 
   // Flushes the new coordinate system to disk if the table is writable.
   virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
@@ -340,51 +335,13 @@ public:
   // It can fail if, e.g., the underlying table is not writable.
   virtual Bool setImageInfo(const ImageInfo& info);
 
-  // A PagedImage can handle region definition.
-  virtual Bool canDefineRegion() const;
-
-  // Define a region/mask belonging to the image.
-  // The group type determines if it stored as a region or mask.
-  // If overwrite=False, an exception will be thrown if the region
-  // already exists.
-  virtual void defineRegion (const String& name, const ImageRegion& region,
-			     RegionHandler::GroupType,
-			     Bool overwrite = False);
-
-  // Does the image have a region with the given name?
-  virtual Bool hasRegion (const String& regionName,
-			  RegionHandler::GroupType = RegionHandler::Any) const;
-
-  // Get a region/mask belonging to the image from the given group
-  // (which can be Any).
-  // <br>Optionally an exception is thrown if the region does not exist.
-  // A zero pointer is returned if the region does not exist.
-  // The caller has to delete the <src>ImageRegion</src> object created.
-  virtual ImageRegion* getImageRegionPtr
-                            (const String& name,
-			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True) const;
-
-  // Rename a region.
-  // If a region with the new name already exists, it is deleted or
-  // an exception is thrown (depending on <src>overwrite</src>).
-  // The region name is looked up in the given group(s).
-  // <br>An exception is thrown if the old region name does not exist.
-  virtual void renameRegion (const String& newName,
-			     const String& oldName,
-			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool overwrite = False);
-    
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
+  // If a mask removed is the default mask, the image gets unmasked.
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True);
-
-  // Get the names of all regions/masks.
-  virtual Vector<String> regionNames
-                   (RegionHandler::GroupType = RegionHandler::Any) const;
 
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
@@ -442,13 +399,34 @@ public:
   // does not synchronize itself automatically.
   virtual void resync();
 
+  // Flush the data.
+  virtual void flush();
 
-private:  
-  // the default constructor -- useless.
-  PagedImage();
+  // Close the Image and associated files temporarily.
+  // It'll be reopened automatically when needed or when
+  // <src>reopen</src> is called explicitly.
+  // <note role=caution>
+  // The log table cannot be reopened automatically, because once created
+  // it is not handled by this class anymore. One has to do an explicit
+  // <src>reopen</src> to make sure the log table is also reopened.
+  virtual void tempClose();
+
+  // If needed, reopen a temporarily closed Image..
+  virtual void reopen();
+
+
+protected:
+  // Let a derived class reopen the log.
+  virtual void doReopenLogSink();
+
+private:
+  // Function to return the internal Table object to the RegionHandler.
+  static Table& getTable (void* imagePtr, Bool writable);
+
   // This must be called in every constructor and place where the image
   // is attached to a new image.
   void attach_logtable();
+  void open_logtable();
   void restore_units();
   void save_units();
   void check_conformance (const Lattice<T>& other);
@@ -465,10 +443,12 @@ private:
   void makePagedImage (const String& filename, const TableLock& lockOptions,
 		       const MaskSpecifier&, uInt rowNumber);
 
-  Table table_p;
-  PagedArray<T> map_p;
-  TableLogSink* logTablePtr_p;
-  LatticeRegion* regionPtr_p;
+  const Table& table() const;
+
+
+          PagedArray<T>  map_p;
+          TableLogSink*  logTablePtr_p;
+          LatticeRegion* regionPtr_p;
 };
 
 
@@ -489,9 +469,21 @@ template<class T>
 inline void PagedImage<T>::reopenRW()
 {
   //# Open for write if not done yet and if writable.
-  if (!table_p.isWritable()  &&  isWritable()) {
+  if (!table().isWritable()  &&  isWritable()) {
     doReopenRW();
   }
+}
+
+template<class T>
+inline Table& PagedImage<T>::table()
+{
+  return map_p.table();
+}
+
+template<class T>
+inline const Table& PagedImage<T>::table() const
+{
+  return const_cast<PagedImage<T>*>(this)->table();
 }
 
 
