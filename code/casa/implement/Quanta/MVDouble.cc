@@ -1,5 +1,5 @@
 //# MVDouble.cc: to disticguish between internal and external Measure values
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,63 +30,65 @@
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvdouble_bug1;
 #endif
-#include <aips/Measures/MVDouble.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
+#include <aips/Measures/MVDouble.h>
 #include <aips/Mathematics/Math.h>
 
 // MVDouble class
 
 //# Constructors
 MVDouble::MVDouble(Double d) : 
-val(d){}
+  val(d){}
 
 MVDouble::MVDouble(const MVDouble &other) :
-val(other.val) {}
+  val(other.val) {}
 
 MVDouble::MVDouble(const Quantity &other) {
-    val = other.get().getValue();
+  val = other.get().getValue();
 }
 
 MVDouble::MVDouble(const Quantum<Vector<Double> > &other) {
-    Vector<Double> tmp;
-    tmp = other.get().getValue();
-    uInt i = tmp.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = tmp(0);
-    } else {
-	throw (AipsError("Illegal vector length in MVDouble constructor"));
-    };
+  Vector<Double> tmp;
+  tmp = other.get().getValue();
+  uInt i = tmp.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = tmp(0);
+  } else {
+    throw (AipsError("Illegal vector length in MVDouble constructor"));
+  };
 }
 
 MVDouble::MVDouble(const Vector<Double> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = other(0);
-    } else {
-	throw (AipsError("Illegal vector length in MVDouble constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = other(0);
+  } else {
+    throw (AipsError("Illegal vector length in MVDouble constructor"));
+  };
 }
 
 MVDouble::MVDouble(const Vector<Quantity> &other) {
-    uInt i = other.nelements();
-    if (i == 0) {
-	val = 0.0;
-    } else if (i == 1) {
-	val = (other(0)).get().getValue();
-    } else {
-	throw (AipsError("Illegal vector length in MVDouble constructor"));
-    };
+  uInt i = other.nelements();
+  if (i == 0) {
+    val = 0.0;
+  } else if (i == 1) {
+    val = (other(0)).get().getValue();
+  } else {
+    throw (AipsError("Illegal vector length in MVDouble constructor"));
+  };
 }
 
 MVDouble &MVDouble::operator=(const MVDouble &other) {
-    if (this != &other) {
-	val = other.val;
-    }
-    return *this;
+  if (this != &other) {
+    val = other.val;
+  }
+  return *this;
 }
 
 // Destructor
@@ -94,40 +96,52 @@ MVDouble::~MVDouble() {}
 
 // Operators
 MVDouble::operator Double() const {
-    return val;
+  return val;
 }
 
 MVDouble &MVDouble::operator+=(const MVDouble &other) {
-    val += other.val;
-    return *this;
+  val += other.val;
+  return *this;
 }
 
 MVDouble &MVDouble::operator-=(const MVDouble &other) {
-    val -= other.val;
-    return *this;
+  val -= other.val;
+  return *this;
 }
 
 Bool MVDouble::operator==(const MVDouble &other) const {
-    return ToBool(val == other.val);
+  return ToBool(val == other.val);
 }
 
 Bool MVDouble::operator!=(const MVDouble &other) const {
-    return ToBool(val != other.val);
+  return ToBool(val != other.val);
+}
+
+//# Member functions
+
+uInt MVDouble::type() const {
+  return Register((MVDouble *)0);
+}
+
+void MVDouble::assert(const MeasValue &in) {
+  if (in.type() != Register((MVDouble *)0)) {
+    throw(AipsError("Illegal MeasValue type argument: MVDouble"));
+  };
 }
 
 Bool MVDouble::near(const MVDouble &other, Double tol) const {
-    return ::near(val, other.val, tol);
+  return ::near(val, other.val, tol);
 }
 
 Bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
-    return ::nearAbs(val, other.val, tol);
+  return ::nearAbs(val, other.val, tol);
 }
 
 // Member functions
 void MVDouble::print(ostream &os) const {
-    os << val;
+  os << val;
 }
 
 MeasValue *MVDouble::clone() const {
-    return (new MVDouble(*this));
+  return (new MVDouble(*this));
 }

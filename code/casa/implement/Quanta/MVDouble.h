@@ -1,5 +1,5 @@
 //# MVDouble.h: class to distinguish between internal and external Double
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvdouble_bug2;
+#endif
 
 //# Forward Declarations
 imported class ostream;
@@ -83,63 +86,68 @@ imported class ostream;
 
 class MVDouble : public MeasValue {
 
-    public:
-    
-//# Constructors
-// Default constructor: generate a zero value
-    MVDouble();
-// Copy constructor
-    MVDouble(const MVDouble &other);
-// Copy assignment
-    MVDouble &operator=(const MVDouble &other);
-// Constructor from Double
-    explicit MVDouble(Double d);
-// Constructor from Quantum : value taken will be the canonical value
-// <group>
-    MVDouble(const Quantity &other);
-    MVDouble(const Quantum<Vector<Double> > &other);
-// </group>
-// Constructor from Vector. A zero value will be taken for an empty vector,
-// the canonical value for a quantum vector.
-// <thrown>
-//  <li> AipsError if vector length > 1
-// </thrown>
-// <group>
-    MVDouble(const Vector<Double> &other);
-    MVDouble(const Vector<Quantity> &other);
-// </group>
-
-// Destructor
-    ~MVDouble();
-
-//# Operators
-// Conversion operator
-    operator Double() const;
-
-// Addition
-// <group>
-    MVDouble &operator+=(const MVDouble &other);
-    MVDouble &operator-=(const MVDouble &other);
-// </group>
-// Comparisons
-// <group>
-    Bool operator==(const MVDouble &other) const;
-    Bool operator!=(const MVDouble &other) const;
-    Bool near(const MVDouble &other, Double tol = 1e-13) const;
-    Bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
-// </group>
-
-//# General member functions
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-// Adjust value: taken from base class, a NOP.
-
-    private:
-//# Data
-// Value
-    Double val;
+public:
+  
+  //# Constructors
+  // Default constructor: generate a zero value
+  MVDouble();
+  // Copy constructor
+  MVDouble(const MVDouble &other);
+  // Copy assignment
+  MVDouble &operator=(const MVDouble &other);
+  // Constructor from Double
+  explicit MVDouble(Double d);
+  // Constructor from Quantum : value taken will be the canonical value
+  // <group>
+  MVDouble(const Quantity &other);
+  MVDouble(const Quantum<Vector<Double> > &other);
+  // </group>
+  // Constructor from Vector. A zero value will be taken for an empty vector,
+  // the canonical value for a quantum vector.
+  // <thrown>
+  //  <li> AipsError if vector length > 1
+  // </thrown>
+  // <group>
+  MVDouble(const Vector<Double> &other);
+  MVDouble(const Vector<Quantity> &other);
+  // </group>
+  
+  // Destructor
+  ~MVDouble();
+  
+  //# Operators
+  // Conversion operator
+  operator Double() const;
+  
+  // Addition
+  // <group>
+  MVDouble &operator+=(const MVDouble &other);
+  MVDouble &operator-=(const MVDouble &other);
+  // </group>
+  // Comparisons
+  // <group>
+  Bool operator==(const MVDouble &other) const;
+  Bool operator!=(const MVDouble &other) const;
+  Bool near(const MVDouble &other, Double tol = 1e-13) const;
+  Bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
+  // </group>
+  
+  //# General member functions
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  // Adjust value: taken from base class, a NOP.
+  
+private:
+  //# Data
+  // Value
+  Double val;
 };
 
 #endif
