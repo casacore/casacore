@@ -186,3 +186,54 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where count(shape(arr1))=
  7 8
  8 9
  9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab in ab
+    has been executed
+    10 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr1 in ab)
+    has been executed
+    1 rows selected
+2 selected columns:  ab ac
+ 0 1
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=T
+    has been executed
+    10 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=F
+    has been executed
+    0 rows selected
+2 selected columns:  ab ac
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where rownumber()==rowid()+1
+    has been executed
+    10 rows selected
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 2 3
+ 3 4
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
