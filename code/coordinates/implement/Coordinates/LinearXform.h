@@ -142,9 +142,9 @@ public:
     // otherwise False is returned and errorMsg is set.  The output vectors
     // are resized appropriately.
     // <group>
-    inline Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
+    Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
                         String &errorMsg) const;
-    inline Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
+    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
                         String &errorMsg) const;
     // </group>
 
