@@ -211,8 +211,8 @@ ARCHLIBS :=
 # CFITSIO (required by ATNF).
 CFITSIOROOT := /usr/local
 CFITSIODEFS :=
-CFITSIOINCD := $(CFITSIOROOT)/include/cfitsio
-CFITSIOLIBD := $(CFITSIOROOT)/lib
+CFITSIOINCD  = $(CFITSIOROOT)/include/cfitsio
+CFITSIOLIBD  = $(CFITSIOROOT)/lib
 CFITSIOLIB  := -lcfitsio
 
 # RPFITS (required by ATNF).
@@ -229,6 +229,12 @@ MIRLIBINCD  = $(AIPSROOT)/code/bima
 MIRLIBLIBD  = $(AIPSARCH)/lib
 MIRLIBLIB  := -lmir
 
+# Hierarchical Data System - a Starlink data format (required by NPOI).
+HDSROOT  := /usr/local
+HDSDEFS  := -DHAVE_HDS
+HDSINCD   = $(HDSROOT)/include
+HDSLIBD   = $(HDSROOT)/lib
+HDSLIB   := -lhds -lems -lchr -lcnf
 
 #-----------------------------------------------------------------------------
 # Construct library lists and include paths:
