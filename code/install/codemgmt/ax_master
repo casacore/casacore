@@ -2146,3 +2146,4 @@
 11 113 src mv doc/papers/oonski.latex doc/papers/misc/oonski.latex
 11 113 src mv doc/papers/hjadassIIpap.latex doc/papers/misc/hjadassIIpap.latex
 11 113 src rm trial/apps/objectcatalog
+11 113 sys rm libexec/objectcatalog.g
