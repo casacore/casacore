@@ -38,6 +38,23 @@
 template <class T> class LatticeConvolver;
 class IPosition;
 
+// <summary>Lists the different types of Convolutions that can be done</summary>
+// <synopsis>This enumerator is brought out as a separate class because g++
+// currently cannot handle enumerators in a templated class. When it can this
+// class will go away and this enumerator moved into the Convolver
+// class</synopsis>
+class ConvEnums {
+public:
+  enum ConvType {
+    // Linear convolution
+    LINEAR,
+    // Circular Convolution
+    CIRCULAR,
+    // Real to Real transforms with symmetric Arrays.
+    REALSYMMETRIC
+  };
+};
+
 // <summary>A class for doing multi-dimensional convolution</summary>
 
 // <use visibility=export>
@@ -90,53 +107,46 @@ public:
 
   // Create a convolver that is initialised to do linear convolution with the
   // specified transfer function. The size of the image you will convolve with
-  // must be specified. See the synopsis for a description of the fullSize
-  // flag. 
-  LatticeConvolver(const Lattice<T> & psf, const IPosition & imageSize, 
-		   Bool fullSize=False);
+  // must be specified. 
+  LatticeConvolver(const Lattice<T> & psf, const IPosition & imageSize);
 
-  // The copy constructor makes copies (and not references) of all the internal
-  // data.
+  // The copy constructor 
   LatticeConvolver(const LatticeConvolver<T> & other);
 
   // The destructor does nothing.
   ~LatticeConvolver();
 
-  // The assignment operator make copies (and not references) of all the  // internal data.
+  // The assignment operator
   LatticeConvolver<T> & operator=(const LatticeConvolver<T> & other); 
 
   // Perform linear convolution of the model with the previously
-  // specified psf. Return the answer in result. See the synopsis for a
-  // description of the fullSize flag.
-  void linear(Lattice<T> & result, const Lattice<T> & model, 
-	      const Bool fullSize=False);
+  // specified psf. Return the answer in result. 
+  void linear(Lattice<T> & result, const Lattice<T> & model);
 
-  // Perform inplace linear convolution of the model with the previously
-  // specified psf. Return the result in the same Lattice as the model. As the
-  // lattice is not resized hence the fullSize flag is always False.
+  // Perform in-place linear convolution of the model with the previously
+  // specified psf. Return the result in the same Lattice as the model.
   void linear(Lattice<T> & modelAndResult);
 
   // Perform circular convolution of the model with the previously
-  // specified psf. Return the answer in result.
+  // specified psf. Return the answer in result. 
   void circular(Lattice<T> & result, const Lattice<T> & model);
 
-  // Perform inplace circular convolution of the model with the previously
+  // Perform in-place linear convolution of the model with the previously
   // specified psf. Return the result in the same Lattice as the model.
   void circular(Lattice<T> & modelAndResult);
 
-  // Set the point spread function for future convolutions to psf.  Assume that
-  // circular convolution will be done
-  void setPsf(const Lattice<T> & psf);
+  // Perform convolution on the specified model using the currently initialised
+  // convolution type (linear or circular) and image for linear convolution the
+  // initilaised input model shape.
+  // The convolution may be either in-place or not.
+  // <group>
+  //  void convolve(Lattice<T> & modelAndResult) const;
+  //  void convolve(Lattice<T> & result, const Lattice<T> & model) const;
+  // </group>
 
-  // Set the transfer function for future convolutions to psf.  Assume that
-  // linear convolution with a model of size imageSize will be done. See the
-  // synopsis for a description of the fullSize flag.
-  void setPsf(const Lattice<T> & psf, 
-	      const IPosition & imageShape, const Bool fullSize=False); 
-
-  // Return the psf currently used by this convolver. The Lattice will be
-  // resized to the required size regardless of its current one.
-  getPsf(const Lattice<T> & psf);
+  // Return the psf currently used by this convolver. The Lattice must be the
+  // correct shape.
+  void getPsf(Lattice<T> & psf) const;
 
 private:
   //  IPosition itsPsfSize;
