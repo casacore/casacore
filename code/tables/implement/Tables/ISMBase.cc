@@ -249,12 +249,12 @@ void ISMBase::readIndex()
 	tio = new RawIO (&fio);
     }
     AipsIO os (tio);
-    version_p = os.getstart ("IncrementalStMan");
+    uInt version = os.getstart ("IncrementalStMan");
     os >> bucketSize_p;
     os >> nbucketInit_p;
     os >> persCacheSize_p;
     os >> uniqnr_p;
-    if (version_p > 1) {
+    if (version > 1) {
 	os >> nFreeBucket_p;
 	os >> firstFree_p;
     }
@@ -284,7 +284,7 @@ void ISMBase::writeIndex()
 	tio = new RawIO (&fio);
     }
     AipsIO os (tio);
-    os.putstart ("IncrementalStMan", version_p);
+    os.putstart ("IncrementalStMan", 2);
     os << bucketSize_p;
     os << nbuckets;
     os << persCacheSize_p;
@@ -478,7 +478,7 @@ Bool ISMBase::flush (AipsIO& ios, Bool fsync)
 	changed = True;
 	dataChanged_p = False;
     }
-    ios.putstart ("ISM", 1);
+    ios.putstart ("ISM", version_p);
     ios << dataManName_p;
     ios.putend();
     return changed;
@@ -512,7 +512,7 @@ void ISMBase::open (uInt tabNrrow, AipsIO& ios)
     nrrow_p = tabNrrow;
     // Do not check the bucketsize for an existing table.
     checkBucketSize_p = False;
-    ios.getstart ("ISM");
+    version_p = ios.getstart ("ISM");
     ios >> dataManName_p;
     ios.getend();
     init();
