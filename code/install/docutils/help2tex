@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/bin/perl
 #
 #   Copyright (C) 1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
@@ -434,8 +434,10 @@ sub make_tex_file{
      s/\\ahcategory{($mtext)}//g;
      s/\\end{ahdescription}//g;
      s/\\begin{ahdescription}/$tbflabel {Description}\\newline/g;
-     s/\\end{ahrecord}/\\hline/g;
+     s/\\end{ahrecord}/\\hline
+     \\end{longtable}/g;
      s/\\begin{ahrecord}{($mtext)}{($mtext)}/
+       \\begin{longtable}{ll}
        \\hline
        $1 -- Record & $2\\\\/g;
 
