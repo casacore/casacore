@@ -29,7 +29,7 @@
 #include <wcslib/wcs.h>
 #include <wcslib/cel.h>
 #include <wcslib/prj.h>
-#include <wcslib/cylfix.h>
+#include <wcslib/wcsfix.h>
 
 #include <coordinates/Coordinates/DirectionCoordinate.h>
 #include <coordinates/Coordinates/LinearCoordinate.h>
