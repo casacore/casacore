@@ -345,18 +345,34 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
     }
   case cubic:// fit a cubic polynomial to the four nearest points
     {
-      // TODO: implement flags
+      // TODO: implement flags properly - ie don't use flagged points
       polynomialInterpolation(yout, ny, xout, xin, yin, 3);
       for (uInt i=0; i<xout.nelements(); i++) {
+	Domain x_req=xout[i];
+	Bool found;
+	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+	if (where == nElements)
+	  where--;
+	else if (where == 0)
+	  where++;
+	Int ind2 = where;
+	where--;
+	Int ind1 = where; 
+        if (goodIsTrue) {
 	  for (Int j=0; j<ny; j++) {
-             youtFlags[i][j] = yinFlags[i][j];
-          }
+	    youtFlags[i][j] = yinFlags[ind1][j] && yinFlags[ind2][j];
+	  }
+        } else {
+	  for (Int j=0; j<ny; j++) {
+	    youtFlags[i][j] = yinFlags[ind1][j] || yinFlags[ind2][j];
+	  }
+        }
       }
       return;
     }
   case spline: // natural cubic splines
     {
-      // TODO: implement flags
+      // TODO: implement flags properly - ie don't use flagged points
       Block<Range> y2(nElements);
       // The y2 values are initialised here.  I need to calculate the second
       // derivates of the interpolating curve at each x_value.  As described
@@ -409,8 +425,6 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	}
 
 	for (i=0; i<Int(xout.nelements()); i++) {
-          youtFlags[i][j] = yinFlags[i][j];
-//
 	  x_req=xout[i];
 	  Bool found;
 	  uInt where = binarySearchBrackets(found, xin, x_req, nElements);
@@ -425,10 +439,12 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	  x2 = xin[where]; 
 	  y2v = yin[where][j];
 	  y2d = y2[where];
+	  Bool f2 = yinFlags[where][j];
 	  where--;
 	  x1 = xin[where]; 
 	  y1v = yin[where][j];
 	  y1d = y2[where];
+	  Bool f1 = yinFlags[where][j];
 	  if (nearAbs(x1, x2)) 
 	    throw(AipsError("Interpolate1D::operator()"
 			    " data has repeated x values"));
@@ -437,6 +453,8 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	  b = 1-a;
 	  h = dx*dx/6.;
 	  yout[i][j] = a*y1v + b*y2v + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
+	  if (goodIsTrue) youtFlags[i][j] = f1 && f2;
+	  else youtFlags[i][j] = f1 || f2;
 	}
       }
       return;
