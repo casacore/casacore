@@ -1429,12 +1429,12 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
       os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
    }
 
-// Do the convolution
+// Do the convolution.  Conserve flux.
 
    SepImageConvolver<T> sic(*pInImage_p, os_p, True);
    for (uInt i=0; i<smoothAxes_p.nelements(); i++) {
       VectorKernel::KernelTypes type = VectorKernel::KernelTypes(kernelTypes_p(i));
-      sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i));
+      sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i), True, 1.0);
    }
    sic.convolve(*pSmoothedImage);
 //
