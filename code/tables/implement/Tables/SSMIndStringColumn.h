@@ -1,5 +1,4 @@
-//# SSMIndStringColumn.h: A Column for Indirect String Arrays in the 
-//# Standard Storage Manager
+//# SSMIndStringColumn.h: An Indirect String Array Column in the SSM
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -43,24 +42,38 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tSSMStringHandler.cc">
 // </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
-//   <li> <linkto class=SSMColumn>SSMColumn</linkto>
+//   <li> <linkto class=SSMDirColumn>SSMColumn</linkto>
+//   <li> <linkto class=SSMStringHandler>SSMStringHandler</linkto>
 // </prerequisite>
 
 // <etymology>
-// SSMIndStringColumn represents an indirect String Array Column in the 
+// SSMIndStringColumn represents an Indirect String Array Column in the 
 // Standard Storage Manager.
 // </etymology>
 
 // <synopsis>
+// SSMIndStringColumn handles indirect variable shaped string arrays.
+// Note that indirect fixed shape string arrays are handled by
+// <linkto class=SSMDirColumn>SSMDirColumn</linkto>.
+// <p>
+// All string array access is handled by class
+// <linkto class=SSMStringHandler>SSMStringHandler</linkto>, so
+// SSMIndStringColumn is merely an interface to this class.
+// The only thing it does is accessing the bucketnr, offset, and length
+// in the data bucket.
 // </synopsis>
   
 // <motivation>
+// The reason that indirect string arrays are handled here instead of
+// in <linkto class=SSMIndColumn>SSMIndColumn</linkto> is that the string
+// buckets are more disk space efficient when string arrays are frequently
+// updated.
 // </motivation>
 
 //# <todo asof="$DATE:$">
@@ -71,18 +84,21 @@
 class SSMIndStringColumn : public SSMDirColumn
 {
 public:
+  // Create a SSMIndStringColumn object with the given parent.
+  // It initializes the various variables.
+  // It keeps the pointer to its parent (but does not own it).
   SSMIndStringColumn (SSMBase* aParent, int aDataType, uInt aColNr);
   
   virtual ~SSMIndStringColumn();
 
   // Get an array value in the given row.
-  virtual void getArrayStringV   (uInt rownr, Array<String>* dataPtr);
+  // An exception is thrown if no array is defined in this row.
+  virtual void getArrayStringV (uInt rownr, Array<String>* dataPtr);
   
   // Put an array value in the given row.
-  virtual void putArrayStringV   (uInt rownr, const Array<String>* dataPtr);
+  virtual void putArrayStringV (uInt rownr, const Array<String>* dataPtr);
 
-  // Set the shape of the array in the given row and allocate the array
-  // in the file.
+  // Set the shape of the array in the given row.
   void setShape (uInt aRowNr, const IPosition& aShape);
   
   // Get the shape of the array in the given row.
@@ -97,15 +113,15 @@ public:
   // Get the dimensionality of the item in the given row.
   virtual uInt ndim (uInt aRowNr);
 
-private:
 
+private:
   // Forbid copy constructor.
   SSMIndStringColumn (const SSMIndStringColumn&);
   
   // Forbid assignment.
-  SSMIndStringColumn& operator= (const SSMIndStringColumn&);
-  
+  SSMIndStringColumn& operator= (const SSMIndStringColumn&);  
 };
+
 
 #endif
 

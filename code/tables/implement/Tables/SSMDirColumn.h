@@ -42,29 +42,31 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tStandardStMan.cc">
 // </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=SSMBase>SSMBase</linkto>
 //   <li> <linkto class=SSMColumn>SSMColumn</linkto>
+//   <li> <linkto class=SSMStringHandler>SSMStringHandler</linkto>
 // </prerequisite>
 
 // <etymology>
-// SSMDirColumn represents a Direct Array mColumn in the 
+// SSMDirColumn represents a Direct Array Column in the 
 // Standard Storage Manager.
 // </etymology>
 
 // <synopsis>
-// SSMDIRColumn handles the access to a column contaiNING direct
-// arrays of the various data types. It uses class <linkto class=SSMBucket>
-// SSMBucket</linkto> to get and put the data into the correct bucket.
-// <p>
-//
-// <motivation>
-// SSMDirColumn encapsulates all operations on an SSM Column.
-// </motivation>
+// SSMDirColumn handles the access to a column containing direct
+// arrays of the various data types.
+// <br>
+// It is derived from <linkto class=SSMColumn>SSMColumn</linkto>
+// and uses most of its functions. The only thing done differently
+// in this class is that it maintains no cache.
+// Furthermore fixed length strings are not handled specially.
+// All string arrays are stored in the special string buckets.
+// </synopsis>
 
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -74,15 +76,16 @@
 class SSMDirColumn : public SSMColumn
 {
 public:
-  // Create a SSMColumn object with the given parent.
+  // Create a SSMDirColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
   SSMDirColumn (SSMBase* aParent, int aDataType, uInt aColNr);
   
   virtual ~SSMDirColumn();
 
-  // Maximum length of a 'fixed length' string not supported for
-  // string arrays.
+  // An array of 'fixed length' strings is not handled specially,
+  // thus this function is ignored.
+  // It is needed to override the bahviour of the base class.
   virtual void setMaxLength (uInt maxLength);
 
   // Get an array value in the given row.
@@ -114,23 +117,22 @@ public:
   virtual void putArrayDComplexV (uInt rownr, const Array<DComplex>* dataPtr);
   virtual void putArrayStringV   (uInt rownr, const Array<String>* dataPtr);
   // </group>
-  
+
+  // Remove the given row from the data bucket and possibly string bucket.
   virtual void deleteRow(uInt aRowNr);
 
-protected:
-  //# Declare member variables.
 
-  //set the cache && itsData for this row
-  void getValue(uInt aRowNr, void* data);
+protected:
+  // Read the array data for the given row into the data buffer.
+  void getValue (uInt aRowNr, void* data);
   
 private:
-
   // Forbid copy constructor.
   SSMDirColumn (const SSMDirColumn&);
   
   // Forbid assignment.
   SSMDirColumn& operator= (const SSMDirColumn&);
-  
 };
+
 
 #endif

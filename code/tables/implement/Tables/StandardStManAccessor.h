@@ -50,7 +50,7 @@ class ostream;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="" date="" tests="tStandardStMan">
 // </reviewed>
 
 // <prerequisite>
@@ -71,7 +71,11 @@ class ostream;
 // when the cache is too small. The class ROStandardStManAccessor makes
 // it possible to change the cache size in a temporary way.
 // <br>
-// Furthermore this class makes it possible to show the cache size
+// It is also possible to get the cache size.
+// <p>
+// Furthermore it is possible to show some statistics (about the cache
+// and the internals of SSM classes).
+// </synopsis>
 
 // <motivation>
 // In principle a pointer to StandardStMan could be used.
@@ -107,7 +111,7 @@ public:
     // An exception is thrown if the data manager type does not
     // match the type of this ROStandardStManAccessor object.
     ROStandardStManAccessor (const Table& aTable,
-				const String& aDataManagerName);
+			     const String& aDataManagerName);
 
     ~ROStandardStManAccessor();
 
@@ -128,15 +132,15 @@ public:
     // Get the cache size (in buckets).
     uInt getCacheSize() const;
 
-    // Clear the caches used by the hypercubes in this storage manager.
-    // It will flush the caches as needed and remove all buckets from them
-    // resulting in a possibly large drop in memory used.
+    // Clear the cache used by this storage manager.
+    // It will flush the cache as needed and remove all buckets from it
+    // resulting in a drop in memory used.
     void clearCache();
 
-    // Show the statistics for each cache used by this storage manager.
+    // Show the statistics for the cache used by this storage manager.
     void showCacheStatistics (ostream& anOs) const;
 
-    // Show the statistics for the base
+    // Show the statistics for the base class.
     void showBaseStatistics (ostream& anOs) const;
 
     // Show the statistics for each index used by this storage manager.

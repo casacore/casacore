@@ -62,8 +62,77 @@ class SSMStringHandler;
 // </etymology>
 
 // <synopsis>
-// The behaviour of this class is described in
+// The global principles of this class are described in
 // <linkto class="StandardStMan:description">StandardStMan</linkto>.
+// <p>
+// The Standard Storage Manager divides the data file in equally sized
+// chunks called buckets. There are 3 types of buckets:
+// <ul>
+//  <li> Data buckets containing the fixed length data (scalars and
+//       direct arrays of data type Int, Float, Bool, etc.).
+//       For variable shaped data (strings and indirect arrays) they
+//       contain references to the actual data position in the
+//       string buckets or in an external file.
+//  <li> String buckets containing strings and array of strings.
+//  <li> Index buckets containing the index info for the data buckets.
+// </ul>
+// Bucket access is handled by class
+// <linkto class=BucketCache>BucketCache</linkto>.
+// It also keeps a list of free buckets. A bucket is freed when it is
+// not needed anymore (e.g. all data from it are deleted).
+// <p>
+// Data buckets form the main part of the SSM. The data can be viewed as
+// a few streams of buckets, where each stream contains the data of
+// a given number of columns. Each stream has an
+// <linkto class=SSMIndex>SSMIndex</linkto> object describing the
+// number of rows stored in each data bucket of the stream.
+// The SSM starts with a single bucket stream (holding all columns),
+// but when columns are added, new bucket streams might be created.
+// <p>
+// For example, we have an SSM with a bucket size of 100 bytes.
+// There are 5 Int columns (A,B,C,D,E) each taking 4 bytes per row.
+// Column A, B, C, and D are stored in bucket stream 1, while column
+// E is stored in bucket stream 2. So in stream 1 each bucket can hold
+// 6 rows, while in stream 2 each bucket can hold 25 rows.
+// For a 100 row table it will result in 17+4 data buckets.
+// <p>
+// A few classes collaborate to make it work:
+// <ul>
+//  <li> Each bucket stream has an <linkto class=SSMIndex>SSMIndex</linkto>
+//       object to map row number to bucket number.
+//       Note that in principle each bucket in a stream contains the same
+//       number of rows. However, when a row is deleted it is removed
+//       from its bucket shifting the remainder to the left. Data in the
+//       next buckets is not shifted, so that bucket has now one row less.
+//  <li> For each column SSMBase knows to which bucket stream it belongs
+//       and at which offset the column starts in a bucket.
+//       Note that column data in a bucket are adjacent, which is done
+//       to make it easier to use the
+//       <linkto class=ColumnCache>ColumnCache</linkto> object in SSMColumn
+//       and to be able to efficiently store Bool values as bits.
+//  <li> Each column has an <linkto class=SSMColumn>SSMColumn</linkto>
+//       object knowing how many bits each data cell takes in a bucket.
+//       The SSMColumn objects handle all access to data in the columns
+//       (using SSMBase and SSMIndex).
+// </ul>
+// <p>
+// String buckets are used by class
+// <linkto class=SSMStringHandler>SSMStringHandler</linkto> to
+// store scalar strings and fixed and variable shaped arrays of strings.
+// The bucketnr, offset, and length of such string (arrays) are stored
+// in the data buckets.
+// <br>
+// Indirect arrays of other data types are also stored indirectly
+// and their offset is stored in the data buckets. Such arrays are
+// handled by class <linkto class=StIndArray>StIndArray</linkto>
+// which uses an extra file to store the arrays.
+// <p>
+// Index buckets are used by SSMBase to make the SSMIndex data persistent.
+// It uses alternately 2 sets of index buckets. In that way there is
+// always an index availanle in case the system crashes.
+// If possible 2 halfs of a single bucket are used alternately, otherwise 
+// separate buckets are used.
+// </synopsis>
 
 // <motivation>
 // The public interface of SSMBase is quite large, because the other

@@ -46,7 +46,7 @@ class AipsIO;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tStandardStMan.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -57,7 +57,7 @@ class AipsIO;
 
 // <etymology>
 // SSMIndColumn represents a Column in the Standard Storage Manager
-// containing INDirect arrays.
+// containing Indirect arrays.
 // </etymology>
 
 // <synopsis> 
@@ -66,7 +66,7 @@ class AipsIO;
 // to handle indirect arrays. The arrays (shape and data) are stored in
 // a separate file using class <linkto class=StIndArray>StIndArray</linkto>.
 // The file offset of the beginning of the array in stored in the
-// SSM using the standard SSMColumn functions.
+// appropriate data bucket using the standard SSMColumn functions.
 // <p>
 // Note that an indirect array can have a fixed shape. In that case
 // adding a row results in reserving space for the array in the StIndArray
@@ -75,18 +75,22 @@ class AipsIO;
 // So when no data is put or shape is set, a row may contain no array at all.
 // In that case the function <src>isShapeDefined</src> returns False for
 // that row.
+// <p>
+// Indirect arrays containing strings are not handled by this class, but
+// by <linkto class=SSMIndStringColumn>SSMIndStringColumn</linkto>.
+// That class stores those string arrays in the special string buckets
+// instead of using StIndArray. The reason is that the string buckets
+// are more disk space efficient when string arrays are frequently updated.
 // </synopsis> 
 
-// <todo asof="$DATE:$">
+//# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-//   <li> Maybe TpArrayInt, etc. should be used instead of TpInt.
-// </todo>
+//# </todo>
 
 
 class SSMIndColumn : public SSMColumn
 {
 public:
-  
   // Create a column of the given data type.
   // It keeps the pointer to its parent (but does not own it).
   SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr);
@@ -94,8 +98,9 @@ public:
   // Frees up the storage.
   ~SSMIndColumn();
   
-  // Maximum length of a 'fixed length' string not supported for
-  // string arrays.
+  // An array of 'fixed length' strings is not handled specially,
+  // thus this function is ignored.
+  // It is needed to override the bahviour of the base class.
   virtual void setMaxLength (uInt maxLength);
 
   // It can handle access to a slice in a cell.
@@ -229,7 +234,8 @@ public:
 
   // Open an existing file.
   virtual void getFile (uInt aNrRows);
-  
+
+  // Remove the given row from the data bucket and possibly string bucket.
   virtual void deleteRow(uInt aRowNr);
 
 
@@ -251,17 +257,17 @@ private:
   
   // Return a pointer to the array in the given row (for a get).
   StIndArray* getArrayPtr (uInt aRowNr);
+
   
-  // The shape off all arrays in case it is fixed
-  IPosition itsFixedShape;
-  // Switch indicating if the shape is fixed.
+  //# The shape off all arrays in case it is fixed
+  IPosition       itsFixedShape;
+  //# Switch indicating if the shape is fixed.
   Bool            isShapeFixed;
-  // The file containing the arrays.
+  //# The file containing the arrays.
   StManArrayFile* itsIosFile;
-  // The indirect array object.
+  //# The indirect array object.
   StIndArray      itsIndArray;
 };
-
 
 
 #endif

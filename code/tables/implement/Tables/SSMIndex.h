@@ -36,105 +36,145 @@
 //# Forward Declarations
 class SSMBase;
 
+
+// <summary>
+// The bucket index for a group of columns in the Standard Storage Manager.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="tStandardStMan.cc">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=SSMBase>SSMBase</linkto>
+// </prerequisite>
+
+// <etymology>
+// SSMIndex represent the bucket index in the Standard Storage Manager.
+// </etymology>
+
+// <synopsis>
+// In <linkto class=SSMBase>SSMBase</linkto> it is described that an index
+// is used to map row number to data bucket in a bucket stream.
+// This class implements this index. It serves 2 purposes:
+// <ol>
+//  <li> It keeps a block of row numbers giving the last row number
+//       stored in each data bucket.
+//       <br>Note that each bucket does not need to contain the same number
+//       of rows, because rows might be deleted from it.
+//       When all rows are deleted from a bucket, the bucket is removed
+//       from the index and added to the free bucket list.
+//  <li> When a column is deleted, the bucket will have a hole.
+//       SSMIndex maintains a map to know the size and offset of each hole.
+//       Adjacent holes are combined.
+//       When a new column is added <linkto class=SSMBase>SSMBase</linkto>
+//       will scan the SSMIndex objects to find the hole fitting best.
+// </ol>
+// </synopsis>
+  
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //   <li> recreate should recreate the itsLastRow && itsBucketNr as well
 //        (moving them to the front and rearrange the freespace as one
-//        concattenated block) 
+//        concatenated block) 
 // </todo>
 
 class SSMIndex 
 {
 public:
+  // Create the object with the given number of rows per bucket.
+  // Note that the default is needed to create the object for existing
+  // tables.
+  explicit SSMIndex (SSMBase* aPtrSSM, uInt rowsPerBucket=0);
 
-  explicit SSMIndex( SSMBase* aPtrSSM, uInt rowsPerBucket=0);
   ~SSMIndex();
 
   // Read the bucket index from the AipsIO object.
   void get (AipsIO& anOs);
 
   // Write the bucket index into the AipsIO object.
-  void put (AipsIO& anOs);
+  void put (AipsIO& anOs) const;
 
+  // Recreate the object in case all rows are deleted from the table.
   void recreate();
   
-  // return all the bucketnrs used in this index
+  // Return all the bucketnrs used in this index.
   Vector<uInt> getBuckets() const;
 
+  // Return the nr of buckets used.
+  uInt getNrBuckets() const;
 
-  uInt getNrBuckets();
+  // Set nr of columns use this index.
+  void setNrColumns (Int aNrColumns, uInt aSizeUsed);
 
-  // set nr of Columns use this index
-  void setNrColumns(const Int aNrColumns,const uInt aSizeUsed);
-
-  void addRow( uInt aNrRows );
+  // Add some rows.
+  void addRow (uInt aNrRows);
 
   // Show Statistics of index.
   void showStatistics (ostream& anOs) const;
 
-  // Set free space space at offset for a field with the given nr of bits.
-  // This is used when column has been deleted.
-  // return nr of columns still use this index
-  Int removeColumn(const Int anOffset, const uInt nbits);
+  // A column is removed.
+  // Set the free space at offset for a field with the given nr of bits.
+  // It returns the nr of columns still used in this index.
+  Int removeColumn (Int anOffset, uInt nbits);
 
   // Try to find free space for a field with a given length (best fit).
   // -1 is returned if no fit is found.
   // Otherwise it returns the nr of bytes left unused.
-  Int getFree(Int& anOffset, const uInt nbits);
+  Int getFree (Int& anOffset, uInt nbits) const;
 
   // reuse the space at offset for a field with the given nr of bits.
   // This is used when column has been added to this bucket.
-  void addColumn(const Int anOffset, const uInt nbits);
+  void addColumn (Int anOffset, uInt nbits);
 
   // Delete the given row.
-  Int deleteRow(const uInt aRowNumber);
+  Int deleteRow (uInt aRowNumber);
 
   // Get the number of rows that fits in ach bucket.
-  uInt getRowsPerBucket();
+  uInt getRowsPerBucket() const;
 
   // Find the bucket containing the given row.
   // An exception is thrown if not found.
   // It also sets the first and last row number fitting in that bucket.
-  void find( const uInt aRowNumber, 
-	     uInt& aBucketNr, 
-	     uInt& aStartRow,
-	     uInt& anEndRow);
+  void find (uInt aRowNumber, uInt& aBucketNr, uInt& aStartRow,
+	     uInt& anEndRow) const;
 
 private:
-  // get the Index of a given row
+  // Get the index of the bucket containing the given row.
   uInt getIndex (uInt aRowNr) const;
 
 
-  // Pointer to specific Storage Manager.    
+  //# Pointer to specific Storage Manager.    
   SSMBase* itsSSMPtr;
     
-  // Nr of entries used
+  //# Nr of entries used in blocks.
   uInt itsNUsed;
 
-  // Last row nr indexed together with itsBucketNumber
-  Block <uInt> itsLastRow;
+  //# Last row nr indexed together with itsBucketNumber
+  Block<uInt> itsLastRow;
 
+  //# Bucketnumbers indexed together with itsLastRow.
+  //# So itsLastRow[0] contains the last rownumber of the bucket
+  //# in itsBucketNumber[0]
+  Block<uInt> itsBucketNumber;
 
-  // Bucketnumbers indexed together with itsLastRow.
-  // So itsLastRow[0] contains the lastrownumber of the bucket
-  // in itsBucketNumber[0]
-  Block <uInt> itsBucketNumber;
-
-  // Map that contains length/offset pairs for free size (size in bytes)
+  //# Map that contains length/offset pairs for free size (size in bytes).
   SimpleOrderedMap<Int,Int> itsFreeSpace;
 
-  // How many rows will fit in a Bucket ?
+  //# How many rows fit in a bucket?
   uInt itsRowsPerBucket;
 
-  // Nr of Columns that use this index
+  //# Nr of columns using this index.
   Int itsNrColumns;
-
 };
 
 
-inline uInt SSMIndex::getRowsPerBucket()
+inline uInt SSMIndex::getRowsPerBucket() const
 {
   return itsRowsPerBucket;
 }
+
 
 #endif
