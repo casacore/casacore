@@ -152,14 +152,17 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     // (data columns and coordinate columns can be fixed shape or
     // coordinate columns can already be defined).
     stmanPtr_p->checkCubeShape (this, cubeShape);
+    // When the shape is redefined, the cache may already exist.
+    // So delete it first.
+    delete cache_p;
+    cache_p = 0;
     fileOffset_p = filePtr_p->length();
     nrdim_p      = cubeShape.nelements();
     cubeShape_p  = cubeShape;
     tileShape_p  = adjustTileShape (cubeShape, tileShape);
     // Calculate the various variables.
     setup();
-    // Create the cache.
-    // Set the file size.
+    // Create the cache and extend the file.
     makeCache();
     filePtr_p->extend (nrTiles_p * bucketSize_p);
     // Initialize the coordinate columns (as far as needed).
