@@ -264,7 +264,8 @@ FCOPT     = $(FCOPTLVL)
 # Link flags for system debug/optimized compilations; these are passed to
 # the C++ compiler.
 LDDBG    :=
-LDOPT    :=
+# Strip optimized executables
+LDOPT    := -s
 
 # Parser-generators.
 BISON    := bison
