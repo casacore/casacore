@@ -1,5 +1,5 @@
 //# aipsxtype.h: Global initialization for special aips++ types
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,5 @@
 
 // Define the extra non-standard types used by aips++
 // (like proposed uSize, Size)
-
-//# For size_t
-#include <stdlib.h>
 
 #endif
