@@ -64,7 +64,12 @@ class MSHistoryHandler
 
   //Add a string message
 
-  // implicit version
+  // This method does not need construction ...can be called explicitly 
+  //
+  void addMessage(MeasurementSet& ms, String message,
+	     String app="",
+	     String cliComm="", 
+	     String origin="");
 
   // Add message and/or CLI command to the history table
   void addMessage(String message, String cliComm="", String origin="");

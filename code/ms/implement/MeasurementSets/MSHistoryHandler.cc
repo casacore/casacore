@@ -57,11 +57,36 @@ MSHistoryHandler::~MSHistoryHandler(){
 
 }
 
+void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
+				  String app,
+				  String cliComm, 
+				  String origin){
+
+  MSHistory histTable=ms.history();
+  Int row = histTable_p.nrow();
+  MSHistoryColumns msHistCol(histTable);
+  histTable.addRow();
+  Time date;
+  MEpoch now(MVEpoch(date.modifiedJulianDay()), MEpoch::Ref(MEpoch::UTC));
+  msHistCol.timeMeas().put(row, now);
+  msHistCol.observationId().put(row,-1);
+  msHistCol.priority().put(row,"NORMAL");
+  msHistCol.origin().put(row,origin);
+  msHistCol.message().put(row,message);
+  msHistCol.application().put(row,app);
+  Vector<String> cliseq(1);
+  cliseq[0]=cliComm;
+  msHistCol.cliCommand().put(row, cliseq);
+  cliseq[0]="";
+  msHistCol.appParams().put(row, cliseq);
+}
+
+
+
 void MSHistoryHandler::addMessage(String message, String cliComm, 
 				  String origin){
 
   Int row = histTable_p.nrow();
-  ++row;
   histTable_p.addRow();
   Time date;
   MEpoch now(MVEpoch(date.modifiedJulianDay()), MEpoch::Ref(MEpoch::UTC));
@@ -132,7 +157,7 @@ void MSHistoryHandler::cliCommand(LogIO& cliComm){
 void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
 
  Int row = histTable_p.nrow();
- Int numCliComm=sink.nelements();
+ uInt numCliComm=sink.nelements();
  histTable_p.addRow();
  Vector<String> cliComm(numCliComm);
  for (uInt k=0; k< numCliComm; ++k){
