@@ -4214,3 +4214,4 @@
 14 067 src mv trial/implement/DisplayEvents/changelog trialdisplay/implement/DisplayEvents/changelog
 14 067 src rm trial/implement/Display/test
 14 067 src rm trial/implement/Display
+14 067 src rm trial/implement/DisplayCanvas/test
