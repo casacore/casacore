@@ -33,7 +33,7 @@
 //# Operators
 template<class T>
 AutoDiff<T> NQCombiFunction<AutoDiff<T> >::
-eval(Function<AutoDiff<T> >::FunctionArg x) const {
+eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp(0);
   for (uInt i=0; i<nparameters(); ++i) {
     if (param_p[i].nDerivatives() > 0) {

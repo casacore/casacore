@@ -127,7 +127,7 @@ template <class T> class NQCombiFunction : public NQCombiParam<T> {
 
   //# Operators
   // Evaluate the function at <src>x</src>.
-  virtual T eval(Function<T>::FunctionArg x) const;
+  virtual T eval(typename Function<T>::FunctionArg x) const;
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
@@ -169,7 +169,7 @@ public NQCombiParam<AutoDiff<T> > {
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
   // to the coefficients.
-  virtual AutoDiff<T> eval(Function<AutoDiff<T> >::FunctionArg x) const;
+  virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for

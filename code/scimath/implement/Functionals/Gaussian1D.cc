@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T>
-T NQGaussian1D<T>::eval(NQFunction1D<T>::FunctionArg x) const {
+T NQGaussian1D<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
   T value = (x[0] - param_p[CENTER])/param_p[WIDTH]/fwhm2int;
   return param_p[HEIGHT] * exp(-(value*value));
 }

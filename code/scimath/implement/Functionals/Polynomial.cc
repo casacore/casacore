@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQPolynomial<T>::eval(NQFunction1D<T>::FunctionArg x) const {
+T NQPolynomial<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
   Int j = nparameters();
   T accum = param_p[--j];
   while (--j >= 0) {

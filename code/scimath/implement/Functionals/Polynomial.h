@@ -107,7 +107,7 @@ template<class T> class NQPolynomial: public NQPolynomialParam<T> {
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
-  virtual T eval(NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
   
   //# Member functions
   // Return the polynomial which is the derivative of this one. <em>e.g.,</em>
@@ -159,7 +159,7 @@ public NQPolynomialParam<AutoDiff<T> > {
   // Evaluate the polynomial and its derivatives at <src>x</src> <em>wrt</em>
   // to the coefficients.
   // <group>
-  virtual AutoDiff<T> eval(Function<AutoDiff<T> >::FunctionArg x) const;
+  virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   // </group>
 
   //# Member functions

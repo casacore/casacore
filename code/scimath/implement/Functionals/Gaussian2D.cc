@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T>
-T NQGaussian2D<T>::eval(Function<T>::FunctionArg x) const {
+T NQGaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
   T xnorm = x[0] - param_p[XCENTER];
   T ynorm = x[1] - param_p[YCENTER];
   if (param_p[PANGLE] != thePA) {

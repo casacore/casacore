@@ -208,7 +208,7 @@ template<class T> class NQGaussian2D : public NQGaussian2DParam<T> {
   //# Operators  
   // Evaluate the Gaussian at <src>x</src>.
   // <group>
-  virtual T eval(Function<T>::FunctionArg x) const;
+  virtual T eval(typename Function<T>::FunctionArg x) const;
   // </group>
 
   //# Member functions
@@ -264,7 +264,7 @@ public NQGaussian2DParam<AutoDiff<T> > {
   //# Operators    
   // Evaluate the Gaussian and its derivatives at <src>x</src>.
   // <group>
-  virtual AutoDiff<T> eval(Function<AutoDiff<T> >::FunctionArg x) const;
+  virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   // </group>
 
   //# Member functions

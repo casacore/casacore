@@ -34,7 +34,7 @@
 //# Operators
 template<class T>
 AutoDiff<T> NQGaussian1D<AutoDiff<T> >::
-eval(Function<AutoDiff<T> >::FunctionArg x) const {
+eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
   if (param_p[HEIGHT].nDerivatives() > 0) tmp = param_p[HEIGHT];
   else if (param_p[CENTER].nDerivatives() > 0) tmp = param_p[CENTER];

@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQCombiFunction<T>::eval(Function<T>::FunctionArg x) const {
+T NQCombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   T tmp(0);
   for (uInt i = 0; i< nFunctions(); ++i) {
     tmp += param_p[i]*(function(i))(x);
