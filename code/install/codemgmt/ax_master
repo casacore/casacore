@@ -5423,3 +5423,6 @@
 15 205 src rm atnf/implement/PKSIO/PKSMS1reader.cc
 15 205 src rm atnf/implement/PKSIO/PKSMS1writer.h
 15 205 src rm atnf/implement/PKSIO/PKSMS1writer.cc
+15 210 src rm nfra/implement/Wsrt/MSIwos.h
+15 210 src rm nfra/implement/Wsrt/MSIwos.cc
+15 210 src rm nfra/implement/Wsrt/MSIwosFile01.h
