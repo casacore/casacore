@@ -127,72 +127,88 @@ static AipsError funcError ( const String &name )
 {
   return AipsError( String("DDMapper: unrecognized function '")+name+"'");
 }
+
+// -----------------------------------------------------------------------
+// splitExpression
+// helper function, converts vector of strings (or single string
+// w/whitespace separators) into vector of uppercase Strings.
+// -----------------------------------------------------------------------
+Vector<String> splitExpression( const Vector<String> &expr0 )
+{
+  uInt nel = expr0.nelements();
+  if( nel == 1 ) // if only one element, try to split it at whitespace
+  {
+// split expression into array of strings
+    String expr[20];
+    nel = split(expr0(0),expr,20,RXwhite);
+    Vector<String> out(nel);
+    for( uInt i=0; i<nel; i++ )
+      out(i) = upcase( expr[i] );
+    return out;
+  }
+// else just copy vector, converting to uppercase
+  Vector<String> out(nel);
+  for( uInt i=0; i<nel; i++ )
+    out(i) = upcase( expr0(i) );
+  return out;    
+}
   
 // -----------------------------------------------------------------------
 // getDDMapper
 // Parses vector of strings to define a mapper
 // -----------------------------------------------------------------------
-DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0 )
+DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0,Bool throw_excp )
 {
-  const uInt max_nel = 10;
-  String expr[max_nel];
-  uInt nel = expr0.nelements();
+// convert to C array
+  Vector<String> expr( splitExpression(expr0) );
+  uInt nel = expr.nelements();
   
-  if( nel == 1 ) // if only one element, try to split it at whitespace
-  {
-// split expression into array of strings
-    nel = split(expr0(0),expr,max_nel,RXwhite);
-  }
-  else // else just copy vector, converting to uppercase
-  {
-    if( nel>max_nel ) nel=max_nel;
-    for( uInt i=0; i<nel; i++ )
-      expr[i] = upcase( expr0(i) );
-  }
-      
   if( nel == 1 ) // 1 element: assume it's just CORR, and use abs(CORR)
   {
-    return new DDFunc(&abs,expr[0]);
+    return new DDFunc(&abs,expr(0));
   }
   else if( nel == 2 ) // 2 elements: assume FUNC CC
   {
-    DDFunc::FuncSignature func = getFunction(expr[0]);
+    DDFunc::FuncSignature func = getFunction(expr(0));
     if( !func )
-      throw( funcError(expr[0]) );
-    descr = expr[0]+"("+expr[1]+")";
-    return new DDFunc(func,expr[1]);
+      throw( funcError(expr(0)) );
+    descr = expr(0)+"("+expr(1)+")";
+    return new DDFunc(func,expr(1));
   }
   else if( nel == 4 ) // 4 elements: SUM FUNC CC CC or FUNC SUM CC CC
   {
     DDFunc::FuncSignature func;
-    if( expr[0] == "+" || expr[0] == "-" )
+    if( expr(0) == "+" || expr(0) == "-" )
     {
-      func = getFunction(expr[1]);
+      func = getFunction(expr(1));
       if( !func )
-        throw( funcError(expr[1]) );
-      descr = expr[1]+"("+expr[2]+")"+expr[0]+expr[1]+"("+expr[3]+")";
-      if( expr[0] == "+" )
-        return new DDSumFunc(func,expr[2],expr[3]);
+        throw( funcError(expr(1)) );
+      descr = expr(1)+"("+expr(2)+")"+expr(0)+expr(1)+"("+expr(3)+")";
+      if( expr(0) == "+" )
+        return new DDSumFunc(func,expr(2),expr(3));
       else
-        return new DDDiffFunc(func,expr[2],expr[3]);
+        return new DDDiffFunc(func,expr(2),expr(3));
     }
-    if( expr[1] == "+" || expr[1] == "-" )
+    if( expr(1) == "+" || expr(1) == "-" )
     {
-      func = getFunction(expr[0]);
+      func = getFunction(expr(0));
       if( !func )
-        throw( funcError(expr[0]) );
-      descr = expr[0]+"("+expr[2]+expr[1]+expr[3]+")";
-      if( expr[1] == "+" )
-        return new DDFuncSum(func,expr[2],expr[3]);
+        throw( funcError(expr(0)) );
+      descr = expr(0)+"("+expr(2)+expr(1)+expr(3)+")";
+      if( expr(1) == "+" )
+        return new DDFuncSum(func,expr(2),expr(3));
       else
-        return new DDFuncDiff(func,expr[2],expr[3]);
+        return new DDFuncDiff(func,expr(2),expr(3));
     }
   }
 // fall through to error report
-  String err("bad DDMapper expression:");
-  for( uInt i=0; i<nel; i++ )
-    err += String(" ")+expr[i];
-  throw( AipsError(err) );
+  if( throw_excp )
+  {
+    String err("bad DDMapper expression:");
+    for( uInt i=0; i<nel; i++ )
+      err += String(" ")+expr(i);
+    throw( AipsError(err) );
+  }
   return NULL;
 }
 

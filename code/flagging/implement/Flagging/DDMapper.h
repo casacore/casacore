@@ -86,6 +86,26 @@ public:
 };
 
 // <summary>
+// DDDummy: dummy mapper, throws an excpetion if any methods are called
+// </summary>
+// <use visibility=local>
+class DDDummy : public DDMapper
+{
+public:
+  DDDummy ();
+  ~DDDummy ();
+  
+  virtual void puke () const
+              { throw(AipsError("Uninitialized DDMapper used")); }
+  
+  virtual Bool  reset ( const Vector<Int> & )
+              { puke(); return False; }
+  virtual Float map   ( const Cube<Complex> &,uInt,uInt ) const
+              { puke(); return 0.; }
+
+};
+
+// <summary>
 // DDFunc: maps correlation A into func(A)
 // </summary>
 // <use visibility=local>
@@ -111,7 +131,7 @@ public:
 //   DIFF <FUNC> <CC> <CC>
 //   <FUNC> SUM <CC> <CC>
 //   <FUNC> DIFF <CC> <CC>
-  static DDMapper * getMapper ( String &desc,const Vector<String> &expr );
+  static DDMapper * getMapper ( String &desc,const Vector<String> &expr,Bool throw_excp=False );
   
 protected:
   Int icorr;
@@ -175,5 +195,8 @@ public:
   
   virtual Float map   ( const Cube<Complex> &vis,uInt ich,uInt irow ) const;
 };
+
+// helper function to split an expression into elements
+Vector<String> splitExpression( const Vector<String> &expr0 );
 
 #endif
