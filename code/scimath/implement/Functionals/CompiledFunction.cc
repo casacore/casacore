@@ -199,3 +199,43 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+/// for now
+#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffMath.h>
+template class vector<AutoDiff<Double> >;
+
+template
+AutoDiff<Double>
+*fill_n<AutoDiff<Double> *, unsigned int,
+  AutoDiff<Double> >(AutoDiff<Double> *, unsigned int,
+		     AutoDiff<Double> const &);
+template
+void fill<FuncExprData::ExprOperator *,
+  FuncExprData::ExprOperator>(FuncExprData::ExprOperator *,
+			      FuncExprData::ExprOperator *,
+			      FuncExprData::ExprOperator const &);
+template
+void fill<AutoDiff<Double> *,
+  AutoDiff<Double> >(AutoDiff<Double> *, AutoDiff<Double> *,
+		     AutoDiff<Double> const &);
+template
+FuncExprData::ExprOperator 
+*__uninitialized_fill_n_aux<FuncExprData::ExprOperator *, unsigned int,
+  FuncExprData::ExprOperator>(FuncExprData::ExprOperator *, unsigned int,
+			      FuncExprData::ExprOperator const &,
+			      __false_type);
+template
+AutoDiff<Double> 
+*__uninitialized_copy_aux<AutoDiff<Double> *, AutoDiff<Double> *>
+(AutoDiff<Double> *, AutoDiff<Double> *, AutoDiff<Double> *, __false_type);
+template
+AutoDiff<Double> 
+*__uninitialized_fill_n_aux<AutoDiff<Double> *, unsigned int,
+  AutoDiff<Double> >(AutoDiff<Double> *, unsigned int,
+		     AutoDiff<Double> const &, __false_type);
+template
+AutoDiff<Double> 
+*__uninitialized_copy_aux<AutoDiff<Double> const *, AutoDiff<Double> *>
+(AutoDiff<Double> const *, AutoDiff<Double> const *, AutoDiff<Double> *,
+ __false_type);
