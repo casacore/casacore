@@ -543,24 +543,21 @@ private:
     //    world_tmp_p[i] a temporary vector length coord[i]->nWorldAxes()
     //    replacement_values_p[i][j] value to use for this axis if removed
     PtrBlock<Block<Int> *>     world_maps_p;
-    mutable PtrBlock<Vector<Double> *> world_tmps_p;
+    PtrBlock<Vector<Double> *> world_tmps_p;
     PtrBlock<Vector<Double> *> world_replacement_values_p;
 
     // Same meanings as for the world*'s above.
     PtrBlock<Block<Int> *>     pixel_maps_p;
-    mutable PtrBlock<Vector<Double> *> pixel_tmps_p;
+    PtrBlock<Vector<Double> *> pixel_tmps_p;
     PtrBlock<Vector<Double> *> pixel_replacement_values_p;
 
-    // A little temporary for toWorld from IPosition
-    mutable Vector<Double> pixel_tmp_p;
-
     // These temporaries all needed for the toMix function
-    mutable PtrBlock<Vector<Bool> *> worldAxes_tmps_p;
-    mutable PtrBlock<Vector<Bool> *> pixelAxes_tmps_p;
-    mutable PtrBlock<Vector<Double> *> worldOut_tmps_p;
-    mutable PtrBlock<Vector<Double> *> pixelOut_tmps_p;
-    mutable PtrBlock<Vector<Double> *> worldMin_tmps_p;
-    mutable PtrBlock<Vector<Double> *> worldMax_tmps_p;
+    PtrBlock<Vector<Bool> *> worldAxes_tmps_p;
+    PtrBlock<Vector<Bool> *> pixelAxes_tmps_p;
+    PtrBlock<Vector<Double> *> worldOut_tmps_p;
+    PtrBlock<Vector<Double> *> pixelOut_tmps_p;
+    PtrBlock<Vector<Double> *> worldMin_tmps_p;
+    PtrBlock<Vector<Double> *> worldMax_tmps_p;
 
     // Miscellaneous information about the observation associated with this
     // Coordinate System.

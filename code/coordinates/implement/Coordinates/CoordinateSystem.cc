@@ -906,15 +906,14 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const IPosition &pixel) const
 {
-    if (pixel_tmp_p.nelements() != pixel.nelements()) {
-	pixel_tmp_p.resize(pixel.nelements());
-    }
-
-    uInt n = pixel.nelements();
+    static Vector<Double> pixel_tmp;
+    if (pixel_tmp.nelements()!=pixel.nelements()) pixel_tmp.resize(pixel.nelements());
+//
+    const uInt& n = pixel.nelements();
     for (uInt i=0; i<n; i++) {
-	pixel_tmp_p(i) = pixel(i)*1.0;
+	pixel_tmp(i) = pixel(i);
     }
-    return toWorld(world, pixel_tmp_p);
+    return toWorld(world, pixel_tmp);
 }
 
 Bool CoordinateSystem::toPixel(Vector<Double> &pixel, 
