@@ -498,7 +498,8 @@ Float ImagePolarimetry::sigma(Float clip)
 
 void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageInterface<Float>*& rmOutErrorPtr,
                                        ImageInterface<Float>*& pa0OutPtr, ImageInterface<Float>*& pa0OutErrorPtr,
-                                       Int axis,  Float rmMax, Float maxPaErr,                       
+                                       ImageInterface<Float>*& nTurnsOutPtr, ImageInterface<Float>*& chiSqOutPtr,
+                                       Int axis,  Float rmMax, Float maxPaErr,
                                        Float sigma, Float rmFg, Bool showProgress)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "rotationMeasure(...)", WHERE));
@@ -514,6 +515,8 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    CoordinateSystem cSysRM;
    Int fAxis, sAxis;
    IPosition shapeRM = rotationMeasureShape(cSysRM, fAxis, sAxis, os, axis);
+   IPosition shapeNTurns = shapeRM;
+   IPosition shapeChiSq = shapeRM;
 
 // Check RM image shapes
 
@@ -531,12 +534,23 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    CoordinateSystem cSysPA;
    IPosition shapePA = positionAngleShape(cSysPA, fAxis, sAxis, os, axis);
    if (pa0OutPtr && !pa0OutPtr->shape().isEqual(shapePA)) {
-      os << "The provided position angle at zero frequency image has the wrong shape " << pa0OutPtr->shape() << endl;
+      os << "The provided position angle at zero wavelength image has the wrong shape " << pa0OutPtr->shape() << endl;
       os << "It should be of shape " << shapePA << LogIO::EXCEPTION;
    }
    if (pa0OutErrorPtr && !pa0OutErrorPtr->shape().isEqual(shapePA)) {
-      os << "The provided position angle at zero frequency image has the wrong shape " << pa0OutErrorPtr->shape() << endl;
+      os << "The provided position angle at zero wavelength image has the wrong shape " << pa0OutErrorPtr->shape() << endl;
       os << "It should be of shape " << shapePA << LogIO::EXCEPTION;
+   }
+
+// nTurns and chi sq
+
+   if (nTurnsOutPtr && !nTurnsOutPtr->shape().isEqual(shapeNTurns)) {
+      os << "The provided nTurns image has the wrong shape " << nTurnsOutPtr->shape() << endl;
+      os << "It should be of shape " << shapeNTurns << LogIO::EXCEPTION;
+   }
+   if (chiSqOutPtr && !chiSqOutPtr->shape().isEqual(shapeChiSq)) {
+      os << "The provided chi squared image has the wrong shape " << chiSqOutPtr->shape() << endl;
+      os << "It should be of shape " << shapeChiSq << LogIO::EXCEPTION;
    }
 
 // Generate linear polarization position angle image expressions
@@ -580,9 +594,6 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       copyMiscellaneous(*rmOutErrorPtr);
       rmOutErrorPtr->setUnits(Unit("rad/m/m"));
    }      
-
-// Copy miscellaneous things over and set units
-
    if (pa0OutPtr) {
       copyMiscellaneous(*pa0OutPtr);
       pa0OutPtr->setUnits(Unit("deg"));
@@ -591,6 +602,14 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       copyMiscellaneous(*pa0OutErrorPtr);
       pa0OutErrorPtr->setUnits(Unit("deg"));
    }   
+   if (nTurnsOutPtr) {
+      copyMiscellaneous(*nTurnsOutPtr);
+      nTurnsOutPtr->setUnits(Unit(""));
+   }      
+   if (chiSqOutPtr) {
+      copyMiscellaneous(*chiSqOutPtr);
+      chiSqOutPtr->setUnits(Unit(""));
+   }      
 
 // Get lambda squared in m**2
 
@@ -643,7 +662,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
 // Deal with masks.  The outputs are all given a mask if possible as we
 // don't know at this point whether output points will be masked or not
 
-   IPosition whereRM, wherePA;
+   IPosition whereRM;
    Bool isMaskedRM = False;
    Lattice<Bool>* outRMMaskPtr = 0;
    if (rmOutPtr) {
@@ -660,6 +679,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       whereRM = 0;
    }
 //
+   IPosition wherePA;
    Bool isMaskedPa0 = False;
    Lattice<Bool>* outPa0MaskPtr = 0;
    if (pa0OutPtr) {
@@ -676,11 +696,32 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       wherePA = 0;
    }
 //
+   IPosition whereNTurns;
+   Bool isMaskedNTurns = False;
+   Lattice<Bool>* outNTurnsMaskPtr = 0;
+   if (nTurnsOutPtr) {
+      isMaskedNTurns = dealWithMask (outNTurnsMaskPtr, nTurnsOutPtr, os, String("nTurns"));
+      whereNTurns.resize(nTurnsOutPtr->ndim());
+      whereNTurns = 0;
+   }
+//
+   IPosition whereChiSq;
+   Bool isMaskedChiSq = False;
+   Lattice<Bool>* outChiSqMaskPtr = 0;
+   if (chiSqOutPtr) {
+      isMaskedChiSq = dealWithMask (outChiSqMaskPtr, chiSqOutPtr, os, String("chi sqared"));
+      whereChiSq.resize(nTurnsOutPtr->ndim());
+      whereChiSq = 0;
+   }
+//
    Array<Bool> tmpMaskRM(IPosition(shapeRM.nelements(), 1), True);
    Array<Float> tmpValueRM(IPosition(shapeRM.nelements(), 1), 0.0);
    Array<Bool> tmpMaskPA(IPosition(shapePA.nelements(), 1), True);
    Array<Float> tmpValuePA(IPosition(shapePA.nelements(), 1), 0.0);
-
+   Array<Float> tmpValueNTurns(IPosition(shapeNTurns.nelements(), 1), 0.0);
+   Array<Bool> tmpMaskNTurns(IPosition(shapeNTurns.nelements(), 1), True);
+   Array<Float> tmpValueChiSq(IPosition(shapeChiSq.nelements(), 1), 0.0);
+   Array<Bool> tmpMaskChiSq(IPosition(shapeChiSq.nelements(), 1), True);
 
 // Iterate
 
@@ -688,13 +729,15 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    TiledLineStepper ts(pa.shape(), tileShape, fAxis);
    RO_LatticeIterator<Float> it(pa, ts);
 //
-   Float rm, rmErr, pa0, pa0Err, rChiSq;
-   uInt j, k;
+   Float rm, rmErr, pa0, pa0Err, rChiSq, nTurns;
+   uInt j, k, l, m;
 //
    maxPaErr *= C::pi / 180.0;
    maxPaErr = abs(maxPaErr);
    Bool doRM = whereRM.nelements() > 0;
    Bool doPA = wherePA.nelements() > 0;
+   Bool doNTurns = whereNTurns.nelements() > 0;
+   Bool doChiSq = whereChiSq.nelements() > 0;
 //
    ProgressMeter* pProgressMeter = 0;   
    if (showProgress) {
@@ -710,15 +753,12 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    }
 //
    Bool ok = False;
-//   Timer timer;
    IPosition shp;
    for (it.reset(); !it.atEnd(); it++) {
 
 // Find rotation measure for this line
 
-//shp = it.vectorCursor().shape();
-
-      ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, 
+      ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, nTurns,
                                 sortidx, wsqsort, it.vectorCursor(),
                                 pa.getMaskSlice(it.position(),it.cursorShape()),
                                 paerr.getSlice(it.position(),it.cursorShape()),
@@ -730,7 +770,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
 // instead, the path would be regular and then I could buffer, but then the iteration 
 // would be less efficient !!!
 
-      j = k = 0;
+      j = k = l = m = 0;
       for (Int i=0; i<Int(it.position().nelements()); i++) {
          if (doRM && i!=fAxis && i!=sAxis) {
             whereRM(j) = it.position()(i);
@@ -739,6 +779,14 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
          if (doPA && i!=fAxis) {
             wherePA(k) = it.position()(i);
             k++;
+         }
+         if (doNTurns && i!=fAxis && i!=sAxis) {
+            whereNTurns(l) = it.position()(i);
+            l++;
+         }
+         if (doChiSq && i!=fAxis && i!=sAxis) {
+            whereChiSq(m) = it.position()(i);
+            m++;
          }
       }
 //
@@ -758,6 +806,14 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
          tmpMaskPA.set(ok);
          outPa0ErrMaskPtr->putSlice (tmpMaskPA, wherePA);
       }
+      if (isMaskedNTurns) {
+         tmpMaskNTurns.set(ok);
+         outNTurnsMaskPtr->putSlice (tmpMaskNTurns, whereNTurns);
+      }
+      if (isMaskedChiSq) {
+         tmpMaskChiSq.set(ok);
+         outChiSqMaskPtr->putSlice (tmpMaskChiSq, whereChiSq);
+      }
 
 // If the output value is masked, the value itself is 0
 
@@ -765,7 +821,6 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
          tmpValueRM.set(rm);
          rmOutPtr->putSlice(tmpValueRM, whereRM);
       }
-//
       if (rmOutErrorPtr) {
          tmpValueRM.set(rmErr);
          rmOutErrorPtr->putSlice(tmpValueRM, whereRM);
@@ -782,10 +837,20 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
          tmpValuePA.set(pa0Err*180/C::pi);
          pa0OutErrorPtr->putSlice(tmpValuePA, wherePA);
       }
+
+// Number of turns and chi sq
+
+      if (nTurnsOutPtr) {
+         tmpValueNTurns.set(nTurns);
+         nTurnsOutPtr->putSlice(tmpValueNTurns, whereNTurns);
+      }
+      if (chiSqOutPtr) {
+         tmpValueChiSq.set(rChiSq);
+         chiSqOutPtr->putSlice(tmpValueChiSq, whereChiSq);
+      }
 //
       if (showProgress) pProgressMeter->update(Double(it.nsteps())); 
    }
-//   timer.show();
    if (showProgress) delete pProgressMeter;
 }
 
@@ -1304,7 +1369,8 @@ Int ImagePolarimetry::findSpectralCoordinate(const CoordinateSystem& cSys, LogIO
 
 Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                                             Float& pa0Fitted, Float& pa0ErrFitted, 
-                                            Float& rChiSqFitted, const Vector<uInt>& sortidx,
+                                            Float& rChiSqFitted, Float& nTurns,
+                                            const Vector<uInt>& sortidx,
                                             const Vector<Float>& wsq2, const Vector<Float>& pa2, 
                                             const Array<Bool>& paMask2, 
                                             const Array<Float>& paerr2, 
@@ -1357,10 +1423,10 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 
    Bool ok = False;
    if (n==2) {
-      ok = rmSupplementaryFit(rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
+      ok = rmSupplementaryFit(nTurns, rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
                               rChiSqFitted, wsq, pa, paerr);
    } else {
-      ok = rmPrimaryFit(rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
+      ok = rmPrimaryFit(nTurns, rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
                         rChiSqFitted, wsq, pa, paerr, rmMax);
    }
 
@@ -1472,7 +1538,7 @@ LatticeExprNode ImagePolarimetry::makePolIntNode(LogIO& os, Bool debias, Float c
 }
 
 
-Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
+Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErrFitted,
                                     Float& pa0Fitted, Float& pa0ErrFitted, 
                                     Float& rChiSqFitted, const Vector<Float>& wsq, 
                                     const Vector<Float>& pa, const Vector<Float>& paerr, 
@@ -1483,6 +1549,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
    static Vector<Float> storePa0;
    static Vector<Float> storePa0Err;
    static Vector<Float> storeRChiSq;
+   static Vector<Float> storeNTurns;
 
 // Assign position angle to longest wavelength consistent with
 // RM < RMMax
@@ -1513,6 +1580,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
    storePa0.resize(nstore);
    storePa0Err.resize(nstore);
    storeRChiSq.resize(nstore);
+   storeNTurns.resize(nstore);
 
 // Make plotter
 
@@ -1547,30 +1615,30 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
 
 // Make plot
 /*
-   Vector<Float> tt0(pa.copy());
-   tt0 *= Float(180.0) / Float(C::pi);
-   Vector<Float> tt1(fitpa.copy());
-   tt1 *= Float(180.0) / Float(C::pi);
+     Vector<Float> tt0(pa.copy());
+     tt0 *= Float(180.0) / Float(C::pi);
+     Vector<Float> tt1(fitpa.copy());
+     tt1 *= Float(180.0) / Float(C::pi);
 
-   Float minVal, maxVal;
-   minMax(minVal, maxVal, tt0);
-   Float minVal2, maxVal2;
-   minMax(minVal2, maxVal2, tt1);
-   minVal = min(minVal, minVal2);
-   maxVal = max(maxVal, maxVal2);
+     Float minVal, maxVal;
+     minMax(minVal, maxVal, tt0);
+     Float minVal2, maxVal2;
+     minMax(minVal2, maxVal2, tt1);
+     minVal = min(minVal, minVal2);
+     maxVal = max(maxVal, maxVal2);
 //
-   pl.page();
-   pl.sci(1);
-   pl.swin(wsq(0), wsq(n-1), minVal, maxVal);
-   pl.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   ostrstream oss;
-   oss << "h=" << h << ends;
-   pl.lab("wsq (m**2)", "Position Angle (deg)", String(oss));
-   pl.line(wsq, tt0);
+     pl.page();
+     pl.sci(1);
+     pl.swin(wsq(0), wsq(n-1), minVal, maxVal);
+     pl.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+     ostrstream oss;
+     oss << "h=" << h << ends;
+     pl.lab("wsq (m**2)", "Position Angle (deg)", String(oss));
+     pl.line(wsq, tt0);
 
-   pl.sci(7);
-   pl.line(wsq, tt1);
-   pl.pt(wsq, tt1, 17);
+     pl.sci(7);
+     pl.line(wsq, tt1);
+     pl.pt(wsq, tt1, 17);
 */
 
 // Do least squares fit
@@ -1584,6 +1652,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
      storePa0(istore) = pars(2);     // Fitted intrinsic angle
      storePa0Err(istore) = pars(3);  // Error in angle
      storeRChiSq(istore) = pars(4);  // Reduced chi squared
+     storeNTurns(istore) = h;        // Number of turns
      istore++;
    }
 
@@ -1594,6 +1663,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
    minMax(minVal, maxVal, minPos, maxPos, storeRChiSq);
    uInt idx = minPos(0);
 //
+   nTurns = storeNTurns(idx);
    rmFitted = storeRm(idx);
    rmErrFitted = storeRmErr(idx);
    pa0Fitted = storePa0(idx);
@@ -1605,7 +1675,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
 
 
 
-Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
+Bool ImagePolarimetry::rmSupplementaryFit(Float& nTurns, Float& rmFitted, Float& rmErrFitted,
                                           Float& pa0Fitted, Float& pa0ErrFitted, 
                                           Float& rChiSqFitted,  const Vector<Float>& wsq, 
                                           const Vector<Float>& pa, const Vector<Float>& paerr)
@@ -1620,6 +1690,7 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
    static Vector<Float> storePa0(nstore);
    static Vector<Float> storePa0Err(nstore);
    static Vector<Float> storeRChiSq(nstore);
+   static Vector<Float> storeNTurns(nstore);
    const uInt n = wsq.nelements();
 //
    Vector<Float> fitpa(pa.copy());
@@ -1639,6 +1710,7 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
      storePa0(i+2) = pars(2);             // Fitted intrinsic angle
      storePa0Err(i+2) = pars(3);          // Error in angle
      storeRChiSq(i+2) = pars(4);          // Reduced chi squared
+     storeNTurns(i+2) = i;                // nTurns
    }
 
 // Return the fit with the smallest absolute RM
@@ -1648,6 +1720,7 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& rmFitted, Float& rmErrFitted,
    minMax(minVal, maxVal, minPos, maxPos, storeAbsRm);
    uInt idx = minPos(0);
 //
+   nTurns = storeNTurns(idx);
    rmFitted = storeRm(idx);
    rmErrFitted = storeRmErr(idx);
    pa0Fitted = storePa0(idx);

@@ -301,7 +301,8 @@ public:
 // solve for, and the maximum error in the position angle that should
 // be allowed.
    void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
-                        ImageInterface<Float>*& pa0Ptr,  ImageInterface<Float>*& pa0ErrPtr,
+                        ImageInterface<Float>*& pa0Ptr, ImageInterface<Float>*& pa0ErrPtr,
+                        ImageInterface<Float>*& nTurns, ImageInterface<Float>*& rChiSqPtr,
                         Int spectralAxis,  Float rmMax, Float maxPaErr=1.0e30,
                         Float sigma=-1.0, Float rmFg=0.0, Bool showProgress=False);
 
@@ -345,6 +346,7 @@ private:
 // Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
    Bool findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                              Float& pa0Fitted, Float& pa0ErrFitted, Float& rChiSqFitted, 
+                             Float& nTurns,
                              const Vector<uInt>& sortidx, const Vector<Float>& wsq, 
                              const Vector<Float>& pa, 
                              const Array<Bool>& paMask, 
@@ -379,14 +381,14 @@ private:
 
 // Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
 // for primary (n>2) points
-   Bool rmPrimaryFit (Float& rmFitted, Float& rmErrFitted,
+   Bool rmPrimaryFit (Float& nTurns, Float& rmFitted, Float& rmErrFitted,
                       Float& pa0Fitted, Float& pa0ErrFitted,
                       Float& rChiSqFitted, const Vector<Float>& wsq, 
                       const Vector<Float>& pa, const Vector<Float>& paerr, Float rmmax);
 
 // Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
 // for supplementary (n==2) points
-   Bool rmSupplementaryFit (Float& rmFitted, Float& rmErrFitted,
+   Bool rmSupplementaryFit (Float& nTurns, Float& rmFitted, Float& rmErrFitted,
                             Float& pa0Fitted, Float& pa0ErrFitted,
                             Float& rChiSqFitted, const Vector<Float>& wsq, 
                             const Vector<Float>& pa, const Vector<Float>& paerr);
