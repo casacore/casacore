@@ -73,16 +73,19 @@ Vector<Double> MeasTable::resIGRF(0);
 //# Member functions
 Double MeasTable::
 precRate00(const uInt which, const Double tt) {
-  static Double preoblcor[2] = { -0.29965, -0.02524};
+  static Double preoblcor[2] = { -0.29965*C::arcsec,
+				 -0.02524*C::arcsec};
   DebugAssert(which < 2, AipsError);
-  return preoblcor[which]*tt*C::arcsec;
+  return preoblcor[which]*tt;
 }
 
 Double MeasTable::
 frameBias00(const uInt which) {
-  static Double bias[3] = { -0.041775, -0.0068192, -0.0146};
+  static Double bias[3] = { -0.041775*C::arcsec,
+			    -0.0068192*C::arcsec,
+			    -0.0146*C::arcsec};
   DebugAssert(which < 3, AipsError);
-  return bias[which]*C::arcsec;
+  return bias[which];
 }
 
 void MeasTable::
@@ -98,10 +101,10 @@ precessionCoef(Double T,
 
 void MeasTable::
 precessionCoef2000(Polynomial<Double> result[3]) {
-  static const Double PCOEF[3][4] = {
-    { 0.0, 5038.7784, -1.07259, -0.001147},
-    { 0.0,    0.0,     0.05127, -0.007726},
-    { 0.0,   10.5526, -2.38064, -0.001125},
+  static const Double PCOEF[3][6] = {
+    { 2.5976176,2306.0809506, 0.3019015, 0.0179663,-0.0000327,-0.0000002},
+    { 0.0,      2004.1917476,-0.4269353,-0.0418251,-0.0000601,-0.0000001},
+    {-2.5976176,2306.0803226, 1.0947790, 0.0182273,-0.0000470,-0.0000003}
   };
   calcPrecesCoef2000(result, &PCOEF[0]);
 }
@@ -118,13 +121,13 @@ void MeasTable::precessionCoef1950(Double T,
 
 void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			       const Double coef[3][6]) {
-  Int i,j,k,l; Int m=1;
-  for (i=0; i<3; i++) {
+  Int l; Int m=1;
+  for (uInt i=0; i<3; i++) {
     m = -m;
     l = 0;
-    for (j=0; j<3; j++) {
+    for (uInt j=0; j<3; j++) {
       Polynomial<Double> poly(2-j);
-      for (k=0; k<3-j; k++, l++) {
+      for (uInt k=0; k<3-j; k++, l++) {
 	poly.setCoefficient(k,coef[i][l]);
       };
       result[i].setCoefficient(j+1,m*poly(T) * C::arcsec);
@@ -133,9 +136,10 @@ void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
 }
 
 void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
-				   const Double coef[3][4]) {
+				   const Double coef[3][6]) {
   for (uInt i=0; i<3; i++) {
-    for (uInt j=0; j<4; j++) {
+    result[i] = Polynomial<Double>(5);
+    for (uInt j=0; j<6; j++) {
       result[i].setCoefficient(j, coef[i][j]);
     };
   };
@@ -145,12 +149,12 @@ const Polynomial<Double> &MeasTable::fundArg(uInt which) {
   static Bool needInit = True;
   static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
-    {84381.448,   -46.8150,       -0.0059, 0.001813}, 
-    {485866.733,  1717915922.633, 31.310,  0.064}, 
-    {1287099.804, 129596581.224,  -0.577,  -0.012}, 
-    {335778.877,  1739527263.137, -13.257, 0.011}, 
+    {  84381.448,        -46.8150,-0.0059, 0.001813}, 
+    { 485866.733, 1717915922.633, 31.310,  0.064}, 
+    {1287099.804,  129596581.224, -0.577, -0.012}, 
+    { 335778.877, 1739527263.137,-13.257,  0.011}, 
     {1072261.307, 1602961601.328, -6.891,  0.019}, 
-    {450160.280,  -6962890.539,   7.455,   0.008}
+    { 450160.280,   -6962890.539,  7.455,  0.008}
   };
   calcFundArg(needInit, polyArray, &FUND[0]);
   DebugAssert(which < 6, AipsError);
@@ -161,12 +165,12 @@ const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
   static Bool needInit = True;
   static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
-    {84428.26,   -46.846,       -0.0059, 0.00181},
+    {  84428.26,        -46.846,-0.0059, 0.00181},
     {1065976.59, 1717915856.79, 33.09,   0.0518},
-    {1290513.0,  129596579.1,   -0.54,   -0.0120},
-    {40503.2,    1739527290.54, -11.56,  -0.0012},
-    {1262654.95, 1602961611.18, -5.17,   0.0068},
-    {933059.79,  -6962911.23,   7.48,    0.0080}
+    { 1290513.0,  129596579.1,  -0.54,  -0.0120},
+    {   40503.2, 1739527290.54,-11.56,  -0.0012},
+    { 1262654.95,1602961611.18, -5.17,   0.0068},
+    {  933059.79,  -6962911.23,  7.48,   0.0080}
   };
   calcFundArg(needInit, polyArray, &FUND[0]);
   DebugAssert(which < 6, AipsError);
@@ -177,7 +181,7 @@ const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
   static Bool needInit = True;
   static Polynomial<Double> polyArray[6];
   static const Double FUND[6][5] = {
-    {  84381.448,   -46.8150-0.02524,  -0.0059,  0.001813,  0.0},
+    {  84381.448,    -46.8150-0.02524, -0.0059,  0.001813,  0.0},
     { 485868.249036, 1717915923.2178,  31.8792,  0.051635, -0.00024470},
     {1287104.79305,   129596581.0481,  -0.5532,  0.000136, -0.00001149},
     { 335779.526232, 1739527262.8478, -12.7512, -0.001037,  0.00000417},

@@ -398,7 +398,7 @@ private:
   static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			     const Double coeff[3][6]); 
   static void calcPrecesCoef2000(Polynomial<Double> result[3],
-				 const Double coeff[3][4]); 
+				 const Double coeff[3][6]); 
   // </group>
 
   // Calculate fundArg
