@@ -4493,3 +4493,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSFeedEnums.h aips/implement/MeasurementSets/MSFeedEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSField.cc aips/implement/MeasurementSets/MSField.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSField.h aips/implement/MeasurementSets/MSField.h
+14 296 src mv aips/implement/MeasurementSets/NewMSFieldColumns.cc aips/implement/MeasurementSets/MSFieldColumns.cc
