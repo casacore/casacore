@@ -35,12 +35,9 @@
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/Vector.h>
 #include <trial/Lattices/LatticeStatsBase.h>
-#include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/TiledCollapser.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Quanta/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
 
@@ -89,8 +86,6 @@ class ostream;
 // This class can list, plot and retrieve statistics.  When it lists statistics,
 // it always lists all the available statistics.  When you plot statistics,
 // you must specify which ones you would like to see.
-//
-// Note that this class cannot handle complex lattices properly yet (almost there)
 //
 // This class generates a "storage lattice" into which it writes the accumulated
 // statistical sums.  It is from this storage lattice that the plotting and retrieval
@@ -182,10 +177,8 @@ class ostream;
 // </motivation>
 
 // <todo asof="1996/11/26">
-//   <li> Deal with complex lattices at least for statistics retrieval if not
-//        plotting.
+//   <li> Implement plotting for complex lattices
 //   <li> Retrieve statistics at specified location of display axes
-//   <li> Standard errors on statistical quantities
 //   <li> Median, other more exotic statistics. Life made difficult by
 //        accumulation lattice approach
 // </todo>
@@ -459,14 +452,6 @@ protected:
                            const IPosition& pos,
                            const Bool posInLattice);
 
-// Check/set include and exclude pixel ranges
-   Bool setIncludeExclude (Vector<T>& range,
-                           Bool& noInclude,
-                           Bool& noExclude,
-                           const Vector<T>& include,
-                           const Vector<T>& exclude,
-                           ostream& os);
-
 // set stream manipulators
    void setStream (ostream& os, Int oPrec);
 
@@ -560,9 +545,7 @@ protected:
 
 template <class T>
 class StatsTiledCollapser : public TiledCollapser<T>
-
 {
-
 public:
 // Constructor provides pixel selection range and whether that
 // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
@@ -614,116 +597,15 @@ private:
 
     Block<NumericTraits<T>::PrecisionType>* pSum_p;
     Block<NumericTraits<T>::PrecisionType>* pSumSq_p;
-    Block<uInt>* pNPts_p;
+    Block<T>* pNPts_p;
     Block<T>* pMin_p;
     Block<T>* pMax_p;
     Block<Bool>* pInitMinMax_p;
 
     uInt n1_p;
     uInt n3_p;
-
-// Has to be implemented here because of g++ bug not allowing
-// the NumericTraits in the call sequence if in .cc
-    void accumulate(uInt& nPts,
-                    NumericTraits<T>::PrecisionType& sum,
-                    NumericTraits<T>::PrecisionType& sumSq,
-                    T& dataMin,
-                    T& dataMax,
-                    Int& minPos,
-                    Int& maxPos,
-                    Bool& minMaxInit,
-                    Bool fixedMinMax,
-                    T datum,
-                    uInt& pos)
-{
-   nPts++;
-   sum += NumericTraits<T>::PrecisionType(datum);
-   sumSq += NumericTraits<T>::PrecisionType(datum*datum);
-
-// If fixedMinMax, then the min and max will always
-// be given by the inclusion range that the user specified.
-// This will be set outside of here.  We have no
-// more work to do if so.
-
-   if (fixedMinMax) return;
-
-// Set min and max
-   
-   if (minMaxInit) {
-      dataMin = datum;
-      dataMax = datum;
-      minPos = pos;
-      maxPos = pos;
-      minMaxInit = False;
-   } else {
-      if (datum < dataMin) {
-         dataMin = datum;
-         minPos = pos;
-      }
-      if (datum > dataMax) {
-         dataMax = datum;
-         maxPos = pos;
-      }
-   }
-}
-
 };
 
 
-// <summary> Provides a progress meter for the <src>LatticeStatistics</src> class </summary>
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
-//
-// <prerequisite>
-//   <li> <linkto module=Lattices>LatticeProgress</linkto>
-// </prerequisite>
-//
-// <etymology>
-// Display a progress meter for the class  <src>LatticeStatistics</src>
-// </etymology>
-//
-// <synopsis>
-//   Progress meters can be displayed by the <src>LatticeApply</src> class
-//   which is used by <src>LatticeStatistics</src> in order to optimally iterate
-//   through the lattice.  To do this,  one must derive a
-//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls 
-//   methods declared in <src>LatticeProgress</src> and  implemented in 
-//   the derived class.
-// </synopsis>
-// 
-// <motivation>
-//  I like progress meters !
-// </motivation>
-// 
-// <todo asof="1998/01/10">
-// </todo>
- 
-
-class LatticeStatisticsProgress : public LatticeProgress
-{
-public:
-
-// Constructor makes a null object
-    LatticeStatisticsProgress() : itsMeter(0) {};
-
-// Destructor deletes the ProgressMeter pointer
-    virtual ~LatticeStatisticsProgress();
-
-// Initialize this object.  Here we create the ProgressMeter
-// This function is called by the <src>init</src> in LatticeProgress
-    virtual void initDerived();
-
-// Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
-
-// The process has ended so clean things up.
-    virtual void done();
-
-private:
-    ProgressMeter* itsMeter;
-};
 
 #endif
-
