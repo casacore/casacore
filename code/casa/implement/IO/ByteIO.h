@@ -1,5 +1,5 @@
 //# ByteIO.h: Abstract base class for IO on a byte stream
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@ public:
     virtual Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin) = 0;
 
     // Get the length of the byte stream.
-    virtual Long length() = 0;
+    virtual Long length() const = 0;
     
     // Is the byte stream readable?
     virtual Bool isReadable() const = 0;
