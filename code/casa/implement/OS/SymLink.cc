@@ -1,5 +1,5 @@
 //# SymLink.cc: Class to define a Symbolic Link
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,7 +107,8 @@ void SymLink::create (const Path& target, Bool overwrite)
 	// Remove an existing symlink, otherwise symlink fails.
 	remove();
     }
-    if (symlink (target.expandedName(), path().expandedName()) < 0) {
+    if (symlink (target.expandedName().chars(),
+		 path().expandedName().chars()) < 0) {
 	throw (AipsError ("SymLink::create error on " + target.expandedName() +
 			  ": " + strerror(errno)));
     }
@@ -115,7 +116,7 @@ void SymLink::create (const Path& target, Bool overwrite)
 
 void SymLink::remove()
 {
-    unlink (path().expandedName());
+    unlink (path().expandedName().chars());
 }
 
 void SymLink::copy (const Path& target, Bool overwrite) const
@@ -140,7 +141,7 @@ void SymLink::move (const Path& target, Bool overwrite)
     // This function uses the system function mv.	    
     String call("mv ");
     call += path().expandedName() + " " + targetName.expandedName();
-    system (call);
+    system (call.chars());
 }
 
 String SymLink::getSymLink() const
@@ -150,7 +151,7 @@ String SymLink::getSymLink() const
     int length;
     // read the link, and place the result in buf, length is the number
     // of characters placed in buf by readlink
-    length = readlink (path().expandedName(), buf, 2048);
+    length = readlink (path().expandedName().chars(), buf, 2048);
     if (length <= 0) {
 	throw (AipsError ("SymLink: " + path().expandedName() +
 			  " does not exist"));

@@ -1,5 +1,5 @@
 //# DirectoryIterator.cc: Class to define a DirectoryIterator
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,7 +100,7 @@ void DirectoryIterator::init()
 {
     // Set the private directory on the current working directory
     // Open the directory, if this is not possible throw an exception
-    itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName());
+    itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName().chars());
     if (itsDirectoryDescriptor == 0){
 	throw (AipsError ("DirectoryIterator: error on directory " +
 			  itsDirectory.path().expandedName() +

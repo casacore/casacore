@@ -1,5 +1,5 @@
 //# EnvVar.cc: Environment variables class
-//# Copyright (C) 1993,1994,1995,1998,2001
+//# Copyright (C) 1993,1994,1995,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,7 +105,7 @@ String EnvironmentVariables::name(uInt number) {
 
 String EnvironmentVariables::value(const String &name) {
 
-  Char *env = getenv(name);
+  Char *env = getenv(name.chars());
   if (env) return String(env);
   return String();
 }
@@ -125,7 +125,7 @@ String EnvironmentVariables::value(uInt number) {
 
 Bool EnvironmentVariables::isSet(const String &name) {
 
-  if(getenv(name)) return True;
+  if(getenv(name.chars())) return True;
   else return False;
 }
 
@@ -176,11 +176,10 @@ void EnvironmentVariables::unSet(const String &name) {
 Bool EnvironmentVariables::setenv(const String &name, const String &value){
 
   char *ptr,*envnew;
-  int i,found,need,lname,lvalue;
+  int i,found,need,lvalue;
   String snew,ev;
 
   snew=name+"="+value;
-  lname=name.length()+1;
 
   found = 0;
   for (i = 0; environ[i]; i++) {

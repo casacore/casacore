@@ -1,5 +1,5 @@
 //# LockFile.cc: Class to handle file locking
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,16 +102,16 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# If it did not succeed, open as readonly.
     int fd;
     if (!create) {
-	fd = FiledesIO::open (itsName, True, False);
+	fd = FiledesIO::open (itsName.chars(), True, False);
 	if (fd == -1) {
-	    fd = FiledesIO::open (itsName, False);
+	    fd = FiledesIO::open (itsName.chars(), False);
 	    itsWritable  = False;
 	    itsAddToList = False;
 	}
     }else{
 	//# Create a new file with world write access.
 	//# Initialize the values in it.
-	fd = FiledesIO::create (itsName, 0666);
+	fd = FiledesIO::create (itsName.chars(), 0666);
 	putReqId (fd);
     }
     //# Create FileLocker objects for this lock file.
@@ -377,7 +377,7 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 			 " does not exist");
     }
     //# Open the lock file as readonly.
-    int fd = FiledesIO::open (fullName, False);
+    int fd = FiledesIO::open (fullName.chars(), False);
     if (fd == -1) {
         throw AipsError ("FileLocker::showLock - File " + fileName +
 			 " could not be opened");

@@ -1,5 +1,5 @@
 //# ArrayIO.cc: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -218,7 +218,7 @@ template <class T>
 void write_array (const Array<T>& the_array, const String& fileName)
 {
     uInt bytes = the_array.nelements() * sizeof(T);
-    ofstream outfile(fileName, ios::out);
+    ofstream outfile(fileName.chars(), ios::out);
     if(!outfile) {
 	throw (ArrayError
 	       ("write_array error: could not open file " + fileName));
@@ -235,7 +235,7 @@ template <class T>
 void read_array(Array<T>& the_array, const String& fileName)
 {
     uInt bytes = the_array.nelements() * sizeof(T);
-    ifstream infile(fileName, ios::in);
+    ifstream infile(fileName.chars(), ios::in);
     if(!infile) {
 	throw (ArrayError
 	       ("read_array error: could not open file " + fileName));
@@ -624,7 +624,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	if (ix >= 0) {	/// if yes
 	  while ((ix = st.index(',')) >= 0) {
 	    sts = st.before(ix);
-	    istrstream ins(sts); /// Necessary for template
+	    istrstream ins(sts.chars()); /// Necessary for template
 	    ins >> r;				/// expansion
 	    st = st.after(ix);
 	    if (x.nelements() <= cnt) {
@@ -635,7 +635,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	  };
 	  if ((ix = st.index(']')) >= 0) {
 	    sts = st.before(ix);
-	    istrstream ins(sts); /// Necessary for template
+	    istrstream ins(sts.chars()); /// Necessary for template
 	    ins >> r;				/// expansion
 	    st = st.from(ix);
 	    if (x.nelements() <= cnt) {
@@ -652,7 +652,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	    s.putback(st[i1]);	///
 	  };			///
 	} else {
-	  istrstream ins(st); /// Necessary for template
+	  istrstream ins(st.chars()); /// Necessary for template
 	  ins >> r;				/// expansion
 	  if (x.nelements() <= cnt) {
 	    x.resize(2*x.nelements() + 1);

@@ -1,5 +1,5 @@
 //# RegularFile.cc: Manipulate and get information about regular files
-//# Copyright (C) 1993,1994,1995,1996,1997,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,7 +125,7 @@ void RegularFile::create (Bool overwrite)
 			      " already exists"));
 	}
     }
-    int fd = ::creat (itsFile.path().expandedName(), 0644);
+    int fd = ::creat (itsFile.path().expandedName().chars(), 0644);
     if (fd < 0) {
 	throw (AipsError ("RegularFile::create error on " +
 			  itsFile.path().expandedName() +
@@ -139,7 +139,7 @@ void RegularFile::remove()
     if (isSymLink()) {
 	removeSymLinks();
     }    
-    unlink (itsFile.path().expandedName());
+    unlink (itsFile.path().expandedName().chars());
 }
 
 void RegularFile::copy (const Path& target, Bool overwrite,
@@ -150,7 +150,7 @@ void RegularFile::copy (const Path& target, Bool overwrite,
     // This function uses the system function cp.	    
     String call("cp ");
     call += itsFile.path().expandedName() + " " + targetName.expandedName();
-    system (call);
+    system (call.chars());
     if (setUserWritePermission) {
 	File result(targetName.expandedName());
 	if (! result.isWritable()) {
@@ -166,7 +166,7 @@ void RegularFile::move (const Path& target, Bool overwrite)
     // This function uses the system function mv.	    
     String call("mv ");
     call += itsFile.path().expandedName() + " " + targetName.expandedName();
-    system (call);
+    system (call.chars());
 }
 
 uInt RegularFile::size() const
