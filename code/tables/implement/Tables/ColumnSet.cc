@@ -582,6 +582,18 @@ DataManager* ColumnSet::getDataManager (uInt seqnr) const
 }
 
 
+Bool ColumnSet::userLock (FileLocker::LockType type, Bool wait)
+{
+    if (lockPtr_p->option() == TableLock::UserLocking) {
+	if (! plainTablePtr_p->hasLock (type)) {
+	    uInt nattempts = (wait  ?  0 : 1);
+	    plainTablePtr_p->lock (type, nattempts);
+	    return True;
+	}
+    }
+    return False;
+}
+
 void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 {
     if (lockPtr_p->option() != TableLock::AutoLocking) {
