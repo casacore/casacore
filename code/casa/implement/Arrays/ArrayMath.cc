@@ -36,17 +36,6 @@
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Utilities/GenSort.h>
 
-//#### CFront (3.0.2) bug. The following typedefs are needed to get the position
-//#### finding minMax functions to work (the range of types will need to be
-//#### extended if more types are instantiated). This might be true of all
-//#### functions that end up using iterators.
-
-typedef VectorIterator<Float> vif;
-typedef VectorIterator<Bool> vib;
-typedef VectorIterator<Double> vid;
-typedef VectorIterator<Int> vii;
-typedef VectorIterator<Complex> vic;
-
 
 // <thrown>
 //   <item> ArrayError
@@ -56,23 +45,20 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array) 
 {
-    if (minPos.nelements() != array.ndim() ||
-	maxPos.nelements() != array.ndim() ) {
-      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-                       "minPos, maxPos dimensionality inconsistent with array"));
-    }
     if (array.nelements() == 0) {
         throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
 			 "IPosition &maxPos, const Array<T> &array) - "
                          "Array has no elements"));	
     }
+    minPos.resize (array.ndim());
+    maxPos.resize (array.ndim());
 
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ScalarType val;
 
     // Initialize
-    minPos = maxPos = IPosition (array.ndim(), 0);
+    minPos = 0;
+    maxPos = 0;
     minVal = maxVal = array(minPos);
     uInt n = ai.vector().nelements();
 
@@ -104,12 +90,6 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array, const Array<ScalarType> &mask) 
 {
-    if (minPos.nelements() != array.ndim() ||
-	maxPos.nelements() != array.ndim() ) {
-      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-                       "minPos, maxPos dimensionality inconsistent with array"));
-    }
     if (array.nelements() == 0) {
       throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
 		       "IPosition &maxPos, const Array<T> &array) - "
@@ -121,13 +101,16 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
 				  "const Array<T> &mask) - " 
 				  "array and mask do not have the same shape()"));
     } 
+    minPos.resize (array.ndim());
+    maxPos.resize (array.ndim());
 
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ReadOnlyVectorIterator<ScalarType> mi(mask);
     ScalarType val;
 
     // Initialize
-    minPos = maxPos = IPosition (array.ndim(), 0);
+    minPos = 0;
+    maxPos = 0;
     minVal = maxVal = array(minPos) * mask(minPos);
     uInt n = ai.vector().nelements();
 
@@ -159,13 +142,6 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array, const Array<Bool> &mask)
 {
-    if (minPos.nelements() != array.ndim() ||
-	maxPos.nelements() != array.ndim() ) {
-      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array, "
-		       "const Array<Bool> &mask) - "
-                       "minPos, maxPos dimensionality inconsistent with array"));
-    }
     if (array.nelements() == 0) {
       throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
 		       "IPosition &maxPos, const Array<T> &array, "
@@ -178,6 +154,9 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    "const Array<Bool> &mask) - " 
 	    "array and mask do not have the same shape()"));
     } 
+    minPos.resize (array.ndim());
+    maxPos.resize (array.ndim());
+
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ReadOnlyVectorIterator<Bool> mi(mask);
 
