@@ -211,6 +211,8 @@ public:
   virtual void defineRegion (const String& name, const ImageRegion& region,
 			     RegionHandler::GroupType,
 			     Bool overwrite = False);
+  virtual Bool hasRegion (const String& regionName,
+			  RegionHandler::GroupType = RegionHandler::Any) const;
   virtual ImageRegion* getImageRegionPtr
                             (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
@@ -218,13 +220,11 @@ public:
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True);
+  virtual Vector<String> regionNames
+                   (RegionHandler::GroupType = RegionHandler::Any) const;
   virtual void setDefaultMask (const String& regionName);
   virtual String getDefaultMask() const;
   // </group>
-
-  // Does the image have a region with the given name?
-  virtual Bool hasRegion (const String& regionName,
-			  RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Get a region belonging to the image.
   // An exception is thrown if the region does not exist.
