@@ -40,11 +40,6 @@
 ComponentShape::~ComponentShape() {
 }
 
-void ComponentShape::refDirection(MDirection & refDir) const {
-  DebugAssert(ok(), AipsError);
-  refDir = refDirection();
-}
-
 ComponentType::Shape ComponentShape::getType(String & errorMessage,
 					     const RecordInterface & record) {
   const String typeString("type");

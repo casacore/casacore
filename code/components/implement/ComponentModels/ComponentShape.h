@@ -124,7 +124,6 @@ public:
   // <group>
   virtual void setRefDirection(const MDirection & newRefDir) = 0;
   virtual const MDirection & refDirection() const = 0;
-  virtual void refDirection(MDirection & refDir) const;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
