@@ -65,6 +65,43 @@ if (! $ok) exit 1
 #
 # Get specific data
 #
+# Get package specific information
+#
+touch P.$tmp
+if (1) rm -f P*.$tmp
+if (-e UPdup.packages) then
+    set x = (`awk '{print "//",$0}' UPdup.packages`)
+    set pack = ""
+    set expect = 0
+    while ($#x > 0)
+	if ("$x[1]" == "//") then
+	    set expect = 1
+	    if ("$pack" != "") then
+		if (-z $ldir/P$pack.$tmp) rm -f $ldir/P$pack.$tmp
+	    endif
+	    set pack = ""
+	else if (-d $dir/code/$x[1]) then
+	    if ($expect) then
+		set expect = 0
+		set pack = "$x[1]"
+		touch $ldir/P$pack.1
+		if (-e $ldir/P$pack.1) rm -f $ldir/P$pack.*
+		touch $ldir/P$pack.$tmp
+	    else if ("$pack" != "") then
+		echo "-r $x[1]" >> $ldir/P$pack.$tmp
+	    endif
+	else if (! $upswQE) then
+	    echo "Illegal package $x[1] in UPdup.packages; discarded"
+	endif
+	shift x
+    end
+    if ("$pack" != "") then
+	if (-z $ldir/P$pack.$tmp) rm -f $ldir/P$pack.$tmp
+    endif
+    unset x
+    unset pack
+    unset expect
+endif
 
 if ($upswn) exit 0
 #
@@ -95,14 +132,22 @@ foreach i (*)
       "$i" != "include" && "$i" != "test" && \
       -d $i && (-e $i/implement || -e $i/apps)) then 
     if (! $upswQ) echo "Starting package $i..."
-    echo "******* Package $i against aips repository" >> $ldir/${tp}.dup
-    duplicates $smod -p $i \
-	$dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
-    if (! $upswQ) then
-	echo "******* Package $i against trial repository" >> $ldir/${tp}.dup
+    if (-e $ldir/P$i.$tmp) then
+      set x = (`cat $ldir/P$i.$tmp`)
+      set y = (`echo $x | sed -e 's#-r##'`)
+      echo "******* Package $i against $y aips trial" >> $ldir/${tp}.dup
+      duplicates $smod -p $i $x -r aips -r trial >>& $ldir/${tp}.dup
+      unset x
+    else
+      echo "******* Package $i against aips repository" >> $ldir/${tp}.dup
+      duplicates $smod -p $i \
+	 $dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
+      if (! $upswQ) then
+  	echo "******* Package $i against trial repository" >> $ldir/${tp}.dup
+      endif
+      duplicates $smod -p $i \
+	 $dir/code/trial/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
     endif
-    duplicates $smod -p $i \
-	$dir/code/trial/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
   endif
 end
 unset smod
