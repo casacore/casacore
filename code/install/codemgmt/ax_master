@@ -2472,3 +2472,4 @@
 11 312 src mv trial/implement/HDS/HDSLib.cc npoi/implement/HDS/HDSLib.cc
 11 312 src mv trial/implement/HDS/HDSLib.h npoi/implement/HDS/HDSLib.h
 11 312 src mv trial/implement/HDS/test npoi/implement/HDS/test
+11 312 sys rm libexec/hdsfile.g
