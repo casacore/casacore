@@ -335,13 +335,13 @@ IPosition LatticeIndexer::absolutePosition (const IPosition& position) const
 //   return True;
 // }
 
-static LogIO logErr(LogOrigin("LatticeIndexer", "ok()"));
 
 
 // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
 // return True if every thing is fine otherwise return False
 Bool LatticeIndexer::ok() const
 {
+  LogIO logErr(LogOrigin("LatticeIndexer", "ok()"));
   if (itsNdim == 0) {
     logErr << LogIO::SEVERE << "zero dimensions" << LogIO::POST;
     return False;

@@ -475,7 +475,7 @@ Bool LatticeStepper::ok() const
     logErr << LogIO::SEVERE << "cursor shape"
 	   << " (=" << itsCursorShape << ")"
 	   << " has wrong number of dimensions"
-	   << " (ie. not " << latticeDim << ")" << endl;
+	   << " (ie. not " << latticeDim << ")" << LogIO::POST;
     return False;
   }
   for (uInt i=0; i < latticeDim; i++) {
