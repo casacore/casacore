@@ -43,9 +43,13 @@ extern "C" {
 #include <time.h>
 }
 
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
 #include <sys/times.h>
 #include <unistd.h>
+#if defined(AIPS_LINUX)
+#include <sys/timeb.h>
+#include <sys/resource.h>
+#endif
 
 #else
 #include <sys/timeb.h>
@@ -54,10 +58,6 @@ extern "C" int getrusage(int, struct rusage*);
 extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
 
-#endif
-
-#if defined(_AIX)
-#pragma implementation ("Timer.cc")
 #endif
 
 #include <aips/aips.h>
