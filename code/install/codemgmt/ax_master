@@ -5282,3 +5282,4 @@
 15 008 src rm trial/apps/measures/c124001.cat.gz
 15 008 src rm trial/apps/measures/c147001.cat.gz
 15 008 src rm doc/user/Synthesis.latex
+15 019 src rm atnf/apps/rpfitsfiller2/
