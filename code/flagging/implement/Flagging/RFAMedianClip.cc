@@ -1,5 +1,5 @@
 //# RFAMedianClip.cc: this defines RFAMedianClip
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,8 +114,10 @@ void RFATimeMedian::startData ()
   RFADiffMapBase::startData();
   flag_iter.reset();
   if( msl ) delete [] msl;
+// this is a workaround for a compiler bug that we occasionally see
+  uInt tmpnum2 = num(CHAN)*num(IFR);
 // create nchan x nifr median sliders
-  msl = new MedianSlider[num(CHAN)*num(IFR)];
+  msl = new MedianSlider[tmpnum2];
   for(uInt i=0; i<num(CHAN)*num(IFR); i++)
      msl[i] = MedianSlider(halfwin);
 }
