@@ -48,7 +48,7 @@
 // 
 // <summary> A 2-D Specialization of the Array class </summary>
 //
-// Matrix tools are two-dimensional specializations (e.g., more convenient
+// Matrix objects are two-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
 // to look at the Array documentation to see inherited functionality. A
 // tutorial on using the array classes in general is available in the
