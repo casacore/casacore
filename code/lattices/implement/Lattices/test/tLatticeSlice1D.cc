@@ -32,6 +32,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Containers/Block.h>
+#include <trial/Lattices/PixelCurve1D.h> 
 #include <trial/Lattices/MaskedLattice.h> 
 #include <trial/Lattices/LatticeSlice1D.h> 
 #include <trial/Lattices/SubLattice.h>
@@ -45,6 +46,7 @@
 
 void doit1 ();
 void doit2 ();
+void doit3 ();
 
 
 int main (int argc, char **argv) {
@@ -79,6 +81,7 @@ try {
 
    doit1();
    doit2();
+   doit3();
 
 
 } catch (AipsError x) {
@@ -132,9 +135,7 @@ void doit1 ()
       AlwaysAssert(distance.nelements()==nPts, AipsError);
       AlwaysAssert((axis0==0&&axis1==1), AipsError);
    }
-
-// Make input ML
-
+//
    {
       cerr << "Slice in X-Z plane" << endl;
       blc = 0;
@@ -274,4 +275,72 @@ void doit2 ()
 }
       
 
-      
+void doit3 ()
+{
+   uInt nDim = 3;
+   IPosition shape(nDim,20,40,60);
+   TiledShape shape2(shape);
+   TempLattice<Float> inLat(shape2);
+   inLat.set(1.0);
+   SubLattice<Float> inML(inLat, True);
+//
+   LatticeSlice1D<Float> slicer(inML, LatticeSlice1D<Float>::LINEAR);
+   AlwaysAssert(slicer.interpolationMethod()==LatticeSlice1D<Float>::LINEAR, AipsError);
+//
+   Vector<Double> xIn(3), yIn(3);
+   uInt nPts = 100;
+   Vector<Float> data, x, y, distance;
+   Vector<Bool> mask;
+   IPosition coord(nDim,0);
+   uInt axis0, axis1;
+//
+   {
+      cerr << "Polyline slice in X-Y plane" << endl;
+      xIn(0) = 0.0; xIn(1) = 10.0; xIn(2) = 18.0;
+      yIn(0) = 2.3; yIn(1) = 15.4; yIn(2) = 35.0;
+      PixelCurve1D curve(xIn,yIn,nPts);
+      slicer.getSlice (data, mask, curve, 0, 1, coord);
+      AlwaysAssert(data.nelements()==nPts, AipsError);
+      AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
+      AlwaysAssert(allEQ(mask, True), AipsError);
+//
+      slicer.getPosition (axis0, axis1, x, y, distance);
+      AlwaysAssert(x.nelements()==nPts, AipsError);
+      AlwaysAssert(y.nelements()==nPts, AipsError);
+      AlwaysAssert(distance.nelements()==nPts, AipsError);
+      AlwaysAssert((axis0==0&&axis1==1), AipsError);
+   }
+   {
+      cerr << "Polyline slice in X-Z plane" << endl;
+      xIn(0) = 0.0; xIn(1) = 10.0; xIn(2) = 18.0;
+      yIn(0) = 2.3; yIn(1) = 15.4; yIn(2) = 35.0;
+      PixelCurve1D curve(xIn,yIn,nPts);
+      slicer.getSlice (data, mask, curve, 0, 2, coord);
+      AlwaysAssert(data.nelements()==nPts, AipsError);
+      AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
+      AlwaysAssert(allEQ(mask, True), AipsError);
+//
+      slicer.getPosition (axis0, axis1, x, y, distance);
+      AlwaysAssert(x.nelements()==nPts, AipsError);
+      AlwaysAssert(y.nelements()==nPts, AipsError);
+      AlwaysAssert(distance.nelements()==nPts, AipsError);
+      AlwaysAssert((axis0==0&&axis1==2), AipsError);
+   }
+   {
+      cerr << "Polyline slice in Y-Z plane" << endl;
+      xIn(0) = 0.0; xIn(1) = 10.0; xIn(2) = 18.0;
+      yIn(0) = 2.3; yIn(1) = 15.4; yIn(2) = 35.0;
+      PixelCurve1D curve(xIn,yIn,nPts);
+      slicer.getSlice (data, mask, curve, 1, 2, coord);
+      AlwaysAssert(data.nelements()==nPts, AipsError);
+      AlwaysAssert(allNear(data, Float(1.0), Double(1.0e-6)), AipsError);
+      AlwaysAssert(allEQ(mask, True), AipsError);
+//
+      slicer.getPosition (axis0, axis1, x, y, distance);
+      AlwaysAssert(x.nelements()==nPts, AipsError);
+      AlwaysAssert(y.nelements()==nPts, AipsError);
+      AlwaysAssert(distance.nelements()==nPts, AipsError);
+      AlwaysAssert((axis0==1&&axis1==2), AipsError);
+   }
+}
+
