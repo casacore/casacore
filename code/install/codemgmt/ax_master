@@ -4389,3 +4389,4 @@
 14 284 sys rm libexec/simpleimage.g
 14 284 sys rm libexec/simpleimage_meta.g
 14 284 src rm trial/implement/Guiutils/pgplotwidget_meta.g
+14 284 sys rm libexec/pgplotwidget_meta.g
