@@ -2539,3 +2539,4 @@
 11 374 src mv trial/scripts/illegal.g trial/implement/Tasking/illegal.g
 11 374 src mv trial/scripts/app.g trial/implement/Tasking/app.g
 11 374 src mv trial/scripts/assay.g trial/implement/Utilities/assay.g
+11 374 src mv trial/scripts/assay.help trial/implement/Utilities/assay.help
