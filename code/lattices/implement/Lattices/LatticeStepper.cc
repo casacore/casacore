@@ -35,8 +35,8 @@
 // second argument is the shape of the cursor. The cursor will increment
 // initially along first axis, then the second and then the third
 // (ie. axisPath = IPosition(ndim,0,1,2,...))
-LatticeStepper::LatticeStepper(const IPosition &latticeShape,
-			       const IPosition &cursorShape)
+LatticeStepper::LatticeStepper(const IPosition & latticeShape,
+			       const IPosition & cursorShape)
   :theIndexer(latticeShape),
    theCursorPos(latticeShape.nelements(),0),
    theCursorShape(cursorShape),
@@ -57,9 +57,9 @@ LatticeStepper::LatticeStepper(const IPosition &latticeShape,
 
 // Same as the above constructor except that the axis path is explicitly
 // specified. The axis path is described in the synopsis. 
-LatticeStepper::LatticeStepper(const IPosition &latticeShape,
-			       const IPosition &cursorShape,
-			       const IPosition &axisPath)
+LatticeStepper::LatticeStepper(const IPosition & latticeShape,
+			       const IPosition & cursorShape,
+			       const IPosition & axisPath)
   :theIndexer(latticeShape),
    theCursorPos(latticeShape.nelements(), 0),
    theCursorShape(cursorShape),
@@ -76,7 +76,7 @@ LatticeStepper::LatticeStepper(const IPosition &latticeShape,
 };
 
 // the copy constructor which uses copy semantics.
-LatticeStepper::LatticeStepper(const LatticeStepper &other)
+LatticeStepper::LatticeStepper(const LatticeStepper & other)
   :theIndexer(other.theIndexer),
    theCursorPos(other.theCursorPos),
    theCursorShape(other.theCursorShape),
@@ -97,7 +97,7 @@ LatticeStepper::~LatticeStepper()
 };
 
 // The assignment operator which uses copy semantics.
-LatticeStepper &LatticeStepper::operator=(const LatticeStepper &other)
+LatticeStepper & LatticeStepper::operator=(const LatticeStepper & other)
 {
   if (this != &other) { 
     theIndexer = other.theIndexer;
@@ -360,7 +360,7 @@ IPosition LatticeStepper::increment() const {
 };
 
 // Return the axis path.
-const IPosition &LatticeStepper::axisPath() const
+const IPosition & LatticeStepper::axisPath() const
 {
   DebugAssert(ok() == True, AipsError);
   return theAxisPath;
@@ -368,7 +368,7 @@ const IPosition &LatticeStepper::axisPath() const
 
 // Function which returns a pointer to dynamic memory of an exact copy 
 // of this instance.
-LatticeNavigator *LatticeStepper::clone() const
+LatticeNavigator * LatticeStepper::clone() const
 {
   return new LatticeStepper(*this);
 };
@@ -517,12 +517,12 @@ Bool LatticeStepper::niceFit()
     return False;
 };
 
-LatticeStepper *LatticeStepper::castToStepper()
+LatticeStepper * LatticeStepper::castToStepper()
 {
   return this;
 }
 
-const LatticeStepper *LatticeStepper::castToConstStepper() const
+const LatticeStepper * LatticeStepper::castToConstStepper() const
 {
   return this;
 }
