@@ -253,6 +253,15 @@ public:
   // function to return the value of the stored default value.
   const T &defaultValue() const;
 
+  // Function which get and set the units associated with the image
+  // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
+  // False if it cannot set the unit for some reason (e.g. the underlying
+  // file is not writable).
+  // <group>
+  virtual Bool setUnits(const Unit &newUnits);
+  virtual Unit units() const;
+  // </group>
+
   // return the table holding the data
   Table table();
 
