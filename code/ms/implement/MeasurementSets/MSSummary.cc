@@ -626,7 +626,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
   }
 
   if (msDDC.nrow()>0) {
-    os << "DataDescription table rows: "<< msDDC.nrow();
+    os << "Data descriptions: "<< msDDC.nrow();
     os << " ("<<msSWC.nrow()<<" spectral windows and " << msPolC.nrow();
     os << " polarization setups)"<<endl;
 
