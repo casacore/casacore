@@ -1,5 +1,5 @@
 //# ComponentEnums.h: Enumerators common to the Components Module
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,8 +55,8 @@ class String;
 
 class ComponentType {
 public:
-  // The types of all the components
-  enum Type {
+  // The shapes of all the components
+  enum Shape {
     // A simple Point Component
     POINT = 0,
     // A elliptical Gaussian Component
@@ -64,12 +64,12 @@ public:
     // An unknown Component
     UNKNOWN,
     // The number of types in this enumerator
-    NUMBER_TYPES
+    NUMBER_SHAPES
   };
   // Convert the Type enumerator to a string
-  static String name(Type componentEnum);
+  static String name(ComponentType::Shape componentEnum);
   // Convert a given String to a Type enumerator
   //  static Type getType(const String & componentName);
-  static ComponentType::Type type(const String & componentName);
+  static ComponentType::Shape shape(const String & componentName);
 };
 #endif
