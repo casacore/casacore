@@ -434,6 +434,12 @@ String PagedImage<T>::getDefaultMask() const
   return RegionHandler::getDefaultMask (table_p);
 }
 
+template <class T> 
+void PagedImage<T>::useMask (MaskSpecifier spec)
+{
+  applyMaskSpecifier (spec);
+}
+
 template<class T>
 void PagedImage<T>::applyMaskSpecifier (const MaskSpecifier& spec)
 {
