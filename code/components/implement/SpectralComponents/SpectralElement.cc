@@ -123,6 +123,13 @@ Double SpectralElement::operator()(const Double x) const {
   return s;
 }
 
+Double SpectralElement::operator[](const uInt n) const {
+  if (n >= par_p.nelements()) {
+      throw(AipsError("SpectralElement: Illegal index for parameter"));
+  };
+  return par_p(n);
+}
+
 const String *const SpectralElement::allTypes(Int &nall,
 					      const SpectralElement::Types
 					      *&typ) {
@@ -256,14 +263,20 @@ void SpectralElement::check() const {
 }
 
 ostream &operator<<(ostream &os, const SpectralElement &elem) {
+  os << SpectralElement::fromType((elem.getType())) << " element: " << endl;
+
   switch (elem.getType()) {
-    
   case SpectralElement::GAUSSIAN:
-  default:
-    os << SpectralElement::fromType((elem.getType())) << " element: " << endl;;
     os << "  Amplitude: " << elem.getAmpl() << endl;
     os << "  Center:    " << elem.getCenter() << endl;
     os << "  Sigma:     " << elem.getSigma() << endl;
+    break;
+  case SpectralElement::POLYNOMIAL:
+    os << "  Degree:    " << elem.getDegree() << endl;
+  default:
+    for (uInt i=0; i<elem.getOrder(); i++) {
+      os << "  Parameter " << i << ":" << elem[i] << endl;
+    };
     break;
   };
 

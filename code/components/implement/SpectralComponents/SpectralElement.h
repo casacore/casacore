@@ -138,6 +138,11 @@ class SpectralElement : public RecordTransformable {
   SpectralElement &operator=(const SpectralElement &other);
   // Evaluate the value of the element at x
   Double operator()(const Double x) const;
+  // Get parameter n
+  // <thrown>
+  //  <li> AipsError if illegal n
+  // </thrown>
+  Double operator[](const uInt n) const;
 
   //# Member functions
   // Get all the types available as String and codes, and number available
@@ -169,6 +174,8 @@ class SpectralElement : public RecordTransformable {
   // Get the degree of e.g. polynomial
   uInt getDegree() const;
   // </group>
+  // Get the order (i.e. the number of parameters)
+  uInt getOrder() const { return par_p.nelements(); };
 
   // Set data for element
   // <group>
