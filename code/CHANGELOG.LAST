@@ -1,0 +1,13 @@
+
+change id: 0121
+ author:   Wim Brouw
+ date:     2002/04/17
+ avers:    1.7
+ area:     Tool
+ package:  trial
+ module:   functionals
+ type:     Code Documentation
+ category: New
+ summary:  functional tool added
+A functionals tool has been provided, which encapsulates the state (parameters, type, dimension, combination) of a Function in a glish closure.
+Methods in the closure exists to get values and derivatives at single or multiple points, and to manipulate the parameters. Functions that can combine/compound a number of functions exist
