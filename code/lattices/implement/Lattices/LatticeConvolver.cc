@@ -30,27 +30,25 @@
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Tasking/AppInfo.h>
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver()
   :itsPsfShape(IPosition(1,1)),
-   itsModelShape(IPosition(1,0)),
+   itsModelShape(itsPsfShape),
+   itsType(ConvEnums::CIRCULAR),
    itsFFTShape(IPosition(1,1)),
    itsXfr(itsFFTShape),
    itsPsf(),
    itsCachedPsf(False)
 {
-  itsXfr.set(NumericTraits<T>::ConjugateType(0));
-  IPosition XFRShape = itsFFTShape/2;
-  XFRShape(0) = 0;
-  itsXfr.putAt(NumericTraits<T>::ConjugateType(1), XFRShape);
+  itsXfr.set(NumericTraits<T>::ConjugateType(1));
 } 
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf)
   :itsPsfShape(psf.shape()),
-   itsModelShape(psf.ndim(), 0),
+   itsModelShape(itsPsfShape),
+   itsType(ConvEnums::CIRCULAR),
    itsFFTShape(psf.ndim(), 0),
    itsPsf(),
    itsCachedPsf(False)
@@ -63,6 +61,26 @@ template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape) 
   :itsPsfShape(psf.shape()),
    itsModelShape(modelShape),
+   itsType(ConvEnums::LINEAR),
+   itsFFTShape(psf.ndim(), 0),
+   itsPsf(),
+   itsCachedPsf(False)
+{
+  // Check that everything is the same dimension and that none of the
+  // dimensions is zero length.
+  AlwaysAssert(itsPsfShape.nelements() == itsModelShape.nelements(),AipsError);
+  AlwaysAssert(itsPsfShape.product() != 0, AipsError);
+  AlwaysAssert(itsModelShape.product() != 0, AipsError);
+  // looks OK so make the transfer function
+  makeXfr(psf);
+}
+
+template<class T> LatticeConvolver<T>::
+LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
+		 ConvEnums::ConvType type) 
+  :itsPsfShape(psf.shape()),
+   itsModelShape(modelShape),
+   itsType(type),
    itsFFTShape(psf.ndim(), 0),
    itsPsf(),
    itsCachedPsf(False)
@@ -74,6 +92,32 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape)
   AlwaysAssert(itsModelShape.product() != 0, AipsError);
   // looks OK so make the psf
   makeXfr(psf);
+}
+
+template<class T> LatticeConvolver<T>::
+LatticeConvolver(const LatticeConvolver<T> & other)
+  :itsPsfShape(other.itsPsfShape),
+   itsModelShape(other.itsModelShape),
+   itsType(other.itsType),
+   itsFFTShape(other.itsFFTShape),
+   itsXfr(other.itsXfr),
+   itsPsf(other.itsPsf),
+   itsCachedPsf(other.itsCachedPsf)
+{
+}
+
+template<class T> LatticeConvolver<T> & LatticeConvolver<T>::
+operator=(const LatticeConvolver<T> & other) {
+  if (this != &other) {
+    itsModelShape = other.itsModelShape;
+    itsPsfShape = other.itsPsfShape;
+    itsType = other.itsType;
+    itsFFTShape = other.itsFFTShape;
+    itsXfr = other.itsXfr;
+    itsPsf = other.itsPsf;
+    itsCachedPsf = other.itsCachedPsf;
+  }
+  return *this;
 }
 
 template<class T> LatticeConvolver<T>::
@@ -94,38 +138,8 @@ getPsf(Lattice<T> & psf) const {
 
 template<class T> void LatticeConvolver<T>::
 linear(Lattice<T> & result, const Lattice<T> & model) {
-  const uInt ndim = itsFFTShape.nelements();
-  AlwaysAssert(result.ndim() == ndim, AipsError);
-  AlwaysAssert(model.ndim() == ndim, AipsError);
-  // The following restrictions will be relaxed when the LatticeConvolver knows
-  // how to resize itself.
-  const IPosition modelShape = model.shape();
-  AlwaysAssert(modelShape == itsModelShape, AipsError);
-  const IPosition resultShape = result.shape();
-  AlwaysAssert(resultShape == modelShape, AipsError);
-  // Deteremine if we have enough free memoery to avoid disk based temporaries
-  const uInt freeMem = AppInfo::availableMemoryInMB();
-  const uInt reqMem = modelShape.product()*sizeof(T)/1024/1024;
-  // Copy the model into a larger Lattice than has the appropriate padding.
-  // If memory is short make this Lattice disk based and the Complex one that
-  // will shortly be created memory based.
-  TempLattice<T> paddedModel(itsFFTShape, freeMem-2*reqMem);
-  pad(paddedModel, model);
-  // Create a lattice that will hold the transform
-  IPosition XFRShape(itsFFTShape);
-  XFRShape(0) = (XFRShape(0)+2)/2;
-  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape, 
-							freeMem-reqMem);
-  // Do the forward transform
-  LatticeFFT::rcfft(fftModel.lc(), paddedModel.lc());
-  { // Multiply the transformed model with the transfer function
-    LatticeExpr<Complex> product(fftModel*itsXfr);
-    fftModel.copyData(product);
-  } 
-  // Do the inverse transform
-  LatticeFFT::crfft(paddedModel.lc(), fftModel.lc());
-  // Unpad the result
-  unpad(result, paddedModel);
+  resize(model.shape(), ConvEnums::LINEAR);
+  convolve(result, model);
 }
 
 template<class T> void LatticeConvolver<T>::
@@ -135,6 +149,8 @@ linear(Lattice<T> & modelAndResult){
 
 template<class T> void LatticeConvolver<T>::
 circular(Lattice<T> & result, const Lattice<T> & model) {
+  resize(model.shape(), ConvEnums::CIRCULAR);
+  convolve(result, model);
 }
 
 template<class T> void LatticeConvolver<T>::
@@ -143,16 +159,59 @@ circular(Lattice<T> & modelAndResult){
 }
 
 template<class T> void LatticeConvolver<T>::
-convolve(Lattice<T> & modelAndResult) const {
-  
+convolve(Lattice<T> & result, const Lattice<T> & model) const {
+  const uInt ndim = itsFFTShape.nelements();
+  AlwaysAssert(result.ndim() == ndim, AipsError);
+  AlwaysAssert(model.ndim() == ndim, AipsError);
+  const IPosition modelShape = model.shape();
+  const IPosition resultShape = result.shape();
+  AlwaysAssert(resultShape == modelShape, AipsError);
+  AlwaysAssert(modelShape == itsModelShape, AipsError);
+  // Create a lattice that will hold the transform. Do this before creating the
+  // paddedModel TempLattice so that it is more likely to be memory based.
+  IPosition XFRShape(itsFFTShape);
+  XFRShape(0) = (XFRShape(0)+2)/2;
+  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape);
+  // Copy the model into a larger Lattice that has the appropriate padding.
+  // (if necessary)
+  Bool doPadding = False;
+  const Lattice<T> * modelPtr = &model;
+  Lattice<T> * resultPtr = &result;
+  if (itsFFTShape > modelShape) {
+    doPadding = True;
+    modelPtr = resultPtr = new TempLattice<T>(itsFFTShape);
+    pad(*resultPtr, model);
+  } 
+  // Do the forward transform
+  LatticeFFT::rcfft(fftModel.lc(), *modelPtr);
+  { // Multiply the transformed model with the transfer function
+    LatticeExpr<Complex> product(fftModel*itsXfr); 
+    // The LatticeExpr temporary is needed to work around a bug in egcs-1.0.2
+    fftModel.copyData(product);
+  } 
+  // Do the inverse transform
+  LatticeFFT::crfft(*resultPtr, fftModel.lc());
+  if (doPadding) { // Unpad the result
+    unpad(result, *resultPtr);
+    delete modelPtr;
+    resultPtr = modelPtr = 0;
+  }
 }
 
 template<class T> void LatticeConvolver<T>::
-resize(const IPosition & modelShape) {
+convolve(Lattice<T> & modelAndResult) const {
+  convolve(modelAndResult, modelAndResult);
+}
+
+template<class T> void LatticeConvolver<T>::
+resize(const IPosition & modelShape, ConvEnums::ConvType type) {
   const uInt ndim = itsXfr.ndim();
   AlwaysAssert(ndim == modelShape.nelements(), AipsError);
+  itsType = type;
+  itsModelShape = modelShape;
   {
-    const IPosition newFFTShape = calcFFTShape(itsPsfShape, modelShape);
+    const IPosition newFFTShape = 
+      calcFFTShape(itsPsfShape, modelShape, itsType);
     if (newFFTShape == itsFFTShape) return;
   }
   // need to know the psf.
@@ -170,13 +229,18 @@ shape() const {
 }
 
 template<class T> IPosition LatticeConvolver<T>::
+psfShape() const {
+  return itsPsfShape;
+}
+
+template<class T> IPosition LatticeConvolver<T>::
 fftShape() const {
   return itsFFTShape;
 }
 
-template<class T> IPosition LatticeConvolver<T>::
-psfShape() const {
-  return itsPsfShape;
+template<class T> ConvEnums::ConvType LatticeConvolver<T>::
+type() const {
+  return itsType;
 }
 
 // copy the centre portion of the input Lattice to the padded Lattice. No
@@ -213,34 +277,13 @@ unpad(Lattice<T> & result, const Lattice<T> & paddedResult) {
   result.copyData(resultPatch);
 }
 
-template<class T> LatticeConvolver<T>::
-LatticeConvolver(const LatticeConvolver<T> & other)
-  :itsPsfShape(other.itsPsfShape),
-   itsModelShape(other.itsModelShape),
-   itsFFTShape(other.itsFFTShape),
-   itsXfr(other.itsXfr),
-   itsPsf(other.itsPsf),
-   itsCachedPsf(other.itsCachedPsf)
-{
-}
-
-template<class T> LatticeConvolver<T> & LatticeConvolver<T>::
-operator=(const LatticeConvolver<T> & other) {
-  if (this != &other) {
-    itsModelShape = other.itsModelShape;
-    itsPsfShape = other.itsPsfShape;
-    itsFFTShape = other.itsFFTShape;
-    itsXfr = other.itsXfr;
-    itsPsf = other.itsPsf;
-    itsCachedPsf = other.itsCachedPsf;
-  }
-  return *this;
-}
-
+// Requires that the itsType, itsPsfShape and itsModelShape data members are
+// initialised correctly and will initialise the itsFFTShape, itsXfr, itsPsf &
+// itsCachedPsf data members.
 template<class T> void LatticeConvolver<T>::
 makeXfr(const Lattice<T> & psf) {
   DebugAssert(itsPsfShape == psf.shape(), AipsError);
-  itsFFTShape = calcFFTShape(itsPsfShape, itsModelShape);
+  itsFFTShape = calcFFTShape(itsPsfShape, itsModelShape, itsType);
   { // calculate the transfer function
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
@@ -265,6 +308,7 @@ makeXfr(const Lattice<T> & psf) {
   }
 }
 
+// Construct a psf from the transfer function (itsXFR).
 template<class T> void LatticeConvolver<T>::
 makePsf(Lattice<T> & psf) const {
   DebugAssert(itsPsfShape == psf.shape(), AipsError);
@@ -278,11 +322,22 @@ makePsf(Lattice<T> & psf) const {
   }
 }
 
+// Calculate the minimum FFTShape necessary to do a convolution of the
+// specified type with the supplied mode and psf shapes. Will try and avoid odd
+// length FFT's.
 template<class T> IPosition LatticeConvolver<T>::
-calcFFTShape(const IPosition & psfShape, const IPosition & modelShape) {
-  if (modelShape.product() == 0) return psfShape;
-  // Now calculate the minimum fft size required. I spent a fair of of time
-  // working out this formulae (empirically)!
+calcFFTShape(const IPosition & psfShape, const IPosition & modelShape,
+	     ConvEnums::ConvType type) {
+  if (type == ConvEnums::CIRCULAR) {
+    // All the books (eg Bracewell) only define circular convolution for two
+    // Arrays that are the same length. So I always pad the smaller one to make
+    // it the same size as the bigger one.
+    return max(psfShape, modelShape);
+  }
+  // When doing linear convolution the formulae is more complicated.  In
+  // general the shape is given by modelShape + psfShape - 1. But if we are
+  // only to return an Array of size modelShape you can do smaller
+  // transforms. I deduced the following formulae empirically.
   IPosition FFTShape = modelShape + psfShape/2;
   const uInt ndim = FFTShape.nelements();
   for (uInt i = 0; i < ndim; i++) {
