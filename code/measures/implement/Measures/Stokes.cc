@@ -1,5 +1,5 @@
 //# Stokes.cc: Stokes parameter definitions for interface to table data
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,6 +152,8 @@ Int Stokes::FITSValue(StokesTypes which)
    case YY: retval = -6; break;
    case XY: retval = -7; break;
    case YX: retval = -8; break;
+   case PFlinear: retval = 6; break;
+   case Pangle: retval = 7; break;
    default: retval = 100 + Int(which);
    }
    return retval;
@@ -174,6 +176,8 @@ Stokes::StokesTypes Stokes::fromFITSValue(Int which)
    case -6: retval = YY; break;
    case -7: retval = XY; break;
    case -8: retval = YX; break;
+   case 6: retval = PFlinear; break;
+   case 7: retval = Pangle; break;
    default: retval = Stokes::type(which-100);
    }
    return retval;
