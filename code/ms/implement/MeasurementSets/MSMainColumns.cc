@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/NewMSMainColumns.h>
+#include <aips/MeasurementSets/NewMSMainColumns.h>
 #include <aips/MeasurementSets/NewMeasurementSet.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/Muvw.h>
