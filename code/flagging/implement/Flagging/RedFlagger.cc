@@ -360,7 +360,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     }
     if( !sum(active) )
     {
-      os<<LogIO::WARN<<"Unable to process this chunk with any agent.\n"<<LogIO::NORMAL;
+      os<<LogIO::WARN<<"Unable to process this chunk with any agent.\n"<<LogIO::POST;
       continue;
     }
 // initially active agents
@@ -488,19 +488,27 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     }
     if( pgp_report.isAttached() )
     {
-      // select good panel layout
-      uInt nx=3,ny=3;
-      if( RFFlagCube::numInstances() )
+      // setup panel layout
+      Vector<Int> subp(2,3);
+      if( fieldType(opt,RF_PLOTDEV,TpArrayInt) )
       {
-        uInt npan = RFFlagCube::numStatPlots(chunk);
-        if( npan<=3 )
-          nx=ny=2;
-//       else if( npan<=5 )
-//          { nx=3; ny=2; }
-//        else if( npan<=8 )
-//          { nx=3; ny=3; }
+        subp = opt.asArrayInt(RF_PLOTDEV);
       }
-      setReportPanels(nx,ny);
+      else      // guesstimate a good panel layout if not already set explicitly
+      {
+        subp.set(3);  // 3x3 default
+        if( RFFlagCube::numInstances() )
+        {
+          uInt npan = RFFlagCube::numStatPlots(chunk);
+          if( npan<=3 )
+            subp.set(2); // 2x2 if 3 panels or less
+  //       else if( npan<=5 )
+  //          { nx=3; ny=2; }
+  //        else if( npan<=8 )
+  //          { nx=3; ny=3; }
+        }
+      }
+      setReportPanels(subp(0),subp(1));
       plotSummaryReport(pgp_report,chunk,opt);
       plotAgentReports(pgp_report);
     }
@@ -604,11 +612,6 @@ void RedFlagger::setupPlotters ( const RecordInterface &opt )
       pgp_report.scir(c1,c1+nc-1);
       for( uInt c=0; c<nc; c++ )
         pgp_report.scr(c1+c,c*scale,c*scale,c*scale);
-      // setup pane layout
-      Vector<Int> subp(2,3);
-      if( fieldType(opt,RF_PLOTDEV,TpArrayInt) )
-        subp = opt.asArrayInt(RF_PLOTDEV);
-      setReportPanels(subp(0),subp(1));
     }
   }
 }
@@ -635,12 +638,15 @@ void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk
 // generate a short text report in the first pane
   pgp.env(0,1,0,1,0,-2);
   char s[128];
-  sprintf(s,"Flagging report for MS '%s' chunk %d",ms.tableName().chars(),chunk.nchunk());
+  sprintf(s,"Flagging MS '%s' chunk %d (field %s, spw %d)",ms.tableName().chars(),
+        chunk.nchunk(),chunk.visIter().fieldName().chars(),chunk.visIter().spectralWindow());
   pgp.lab("","",s);
 
   Float y0=1,dy=(pgp.qcs(4))(1)*1.5; // dy is text baseline height
   Vector<Float> vec01(2);
   vec01(0)=0; vec01(1)=1;
+  
+// print chunk field, etc.
 
   // print overall flagging stats
   uInt n=0,n0;
