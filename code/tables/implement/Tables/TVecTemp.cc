@@ -40,10 +40,6 @@ TabVecTemp<T>::TabVecTemp (const Vector<T>& vec)
     if (vecPtr_p == 0) {
 	throw (AllocError("TabVecTemp vector", nrel_p));
     }
-    //# Force the origin to be zero.
-    if (vecPtr_p->origin() != 0) {
-	vecPtr_p->reform (IPosition(1,nrel_p), IPosition(1,0));
-    }
     tag_p = TagTemp;
 }
 
