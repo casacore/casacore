@@ -317,6 +317,11 @@ void MSReader::gotoRow(uInt which)
 	itsTabRows[itsDDId].get(ddId);
 	itsRowNumbers[itsDDId] = ddId;
     }
+    Int obsId = itsIds.observationId(which);
+    if (obsId >= 0) {
+	itsTabRows[itsObsId].get(obsId);
+	itsRowNumbers[itsObsId] = obsId;
+    }
     Int polId = itsIds.polarizationId(which);
     if (polId >= 0) {
 	itsTabRows[itsPolId].get(polId);
