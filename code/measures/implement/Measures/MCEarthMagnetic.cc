@@ -84,6 +84,7 @@ FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
 MCEarthMagnetic::MCEarthMagnetic() :
   MVPOS1(0), EFIELD(0), measMath() {
   if (!stateMade_p) {
+    MEarthMagnetic::checkMyTypes();
     MCBase::makeState(MCEarthMagnetic::stateMade_p,
 		      MCEarthMagnetic::FromTo_p[0],
 		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
@@ -433,6 +434,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 
 String MCEarthMagnetic::showState() {
   if (!stateMade_p) {
+    MEarthMagnetic::checkMyTypes();
     MCBase::makeState(MCEarthMagnetic::stateMade_p,
 		      MCEarthMagnetic::FromTo_p[0],
 		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,

@@ -107,50 +107,52 @@ void MDirection::assure(const Measure &in) {
 }
 
 MDirection::Types MDirection::castType(uInt tp) {
-    if ((tp & MDirection::EXTRA) == 0) {
-      AlwaysAssert(tp < MDirection::N_Types, AipsError);
-    } else {
-      AlwaysAssert((tp & ~MDirection::EXTRA) < 
-		   (MDirection::N_Planets - MDirection::MERCURY), AipsError);
-    };
-    return static_cast<MDirection::Types>(tp);
+  MDirection::checkMyTypes();
+  if ((tp & MDirection::EXTRA) == 0) {
+    AlwaysAssert(tp < MDirection::N_Types, AipsError);
+  } else {
+    AlwaysAssert((tp & ~MDirection::EXTRA) < 
+		 (MDirection::N_Planets - MDirection::MERCURY), AipsError);
+  };
+  return static_cast<MDirection::Types>(tp);
 }
 
 const String &MDirection::showType(MDirection::Types tp) {
-    static const String tname[MDirection::N_Types] = {
-	"J2000",
-	"JMEAN",
-	"JTRUE",
-	"APP",
-	"B1950",
-	"BMEAN",
-	"BTRUE",
-	"GALACTIC",
-	"HADEC",
-	"AZEL",
-        "AZELSW",
-	"JNAT",
-	"ECLIPTIC",
-	"MECLIPTIC",
-	"TECLIPTIC",
-	"SUPERGAL",
-	"ITRF",
-	"TOPO" };
-    static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
-	"MERCURY",
-	"VENUS",
-	"MARS",
-	"JUPITER",
-	"SATURN",
-	"URANUS",
-	"NEPTUNE",
-	"PLUTO",
-	"SUN",
-	"MOON",
-	"COMET" };
-
-    if ((tp & MDirection::EXTRA) == 0) return tname[tp];
-    return pname[tp & ~MDirection::EXTRA];
+  static const String tname[MDirection::N_Types] = {
+    "J2000",
+    "JMEAN",
+    "JTRUE",
+    "APP",
+    "B1950",
+    "BMEAN",
+    "BTRUE",
+    "GALACTIC",
+    "HADEC",
+    "AZEL",
+    "AZELSW",
+    "JNAT",
+    "ECLIPTIC",
+    "MECLIPTIC",
+    "TECLIPTIC",
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
+  static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
+    "MERCURY",
+    "VENUS",
+    "MARS",
+    "JUPITER",
+    "SATURN",
+    "URANUS",
+    "NEPTUNE",
+    "PLUTO",
+    "SUN",
+    "MOON",
+    "COMET" };
+  
+  MDirection::checkMyTypes();
+  if ((tp & MDirection::EXTRA) == 0) return tname[tp];
+  return pname[tp & ~MDirection::EXTRA];
 }
 
 const String &MDirection::showType(uInt tp) {
@@ -225,6 +227,7 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     MDirection::MOON,
     MDirection::COMET };
 
+  MDirection::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

@@ -1,5 +1,5 @@
 //# MCEpoch.cc: MEpoch conversion routines
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,6 +64,7 @@ uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
 MCEpoch::MCEpoch() :
   NUTATFROM(0), NUTATTO(0) {
   if (!stateMade_p) {
+    MEpoch::checkMyTypes();
     MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
 		      MEpoch::N_Types, MCEpoch::N_Routes,
 		      MCEpoch::ToRef_p);
@@ -284,6 +285,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 
 String MCEpoch::showState() {
   if (!stateMade_p) {
+    MEpoch::checkMyTypes();
     MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
 		      MEpoch::N_Types, MCEpoch::N_Routes,
 		      MCEpoch::ToRef_p);

@@ -80,6 +80,7 @@ uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
 //# Constructors
 MCBaseline::MCBaseline() : measMath() {
   if (!stateMade_p) {
+    MBaseline::checkMyTypes();
     MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
 		      MBaseline::N_Types, MCBaseline::N_Routes,
 		      MCBaseline::ToRef_p);
@@ -393,6 +394,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 
 String MCBaseline::showState() {
   if (!stateMade_p) {
+    MBaseline::checkMyTypes();
     MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
 		      MBaseline::N_Types, MCBaseline::N_Routes,
 		      MCBaseline::ToRef_p);

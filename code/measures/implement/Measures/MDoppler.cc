@@ -85,6 +85,7 @@ void MDoppler::assure(const Measure &in) {
 }
 
 MDoppler::Types MDoppler::castType(uInt tp) {
+  MDoppler::checkMyTypes();
   AlwaysAssert(tp < MDoppler::N_Types, AipsError);
   return static_cast<MDoppler::Types>(tp);
 }
@@ -96,6 +97,8 @@ const String &MDoppler::showType(MDoppler::Types tp) {
     "RATIO",
     "TRUE",
     "GAMMA"};
+
+  MDoppler::checkMyTypes();
   return tname[tp];
 }
 
@@ -127,6 +130,7 @@ const String *const MDoppler::allMyTypes(Int &nall, Int &nextra,
     MDoppler::BETA,
     MDoppler::BETA };
 
+  MDoppler::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

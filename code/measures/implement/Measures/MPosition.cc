@@ -128,6 +128,7 @@ const String *const MPosition::allMyTypes(Int &nall, Int &nextra,
     MPosition::ITRF,
     MPosition::WGS84 };
 
+  MPosition::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;
@@ -165,6 +166,7 @@ void MPosition::checkMyTypes() {
 }
 
 MPosition::Types MPosition::castType(uInt tp) {
+  MPosition::checkMyTypes();
   AlwaysAssert(tp < MPosition::N_Types, AipsError);
   return static_cast<MPosition::Types>(tp);
 }
@@ -173,6 +175,8 @@ const String &MPosition::showType(MPosition::Types tp) {
   static const String tname[MPosition::N_Types] = {
     "ITRF",
     "WGS84"};
+
+  MPosition::checkMyTypes();
   return tname[tp];
 }
 

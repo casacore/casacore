@@ -93,6 +93,7 @@ void MBaseline::assure(const Measure &in) {
 }
 
 MBaseline::Types MBaseline::castType(uInt tp) {
+  MBaseline::checkMyTypes();
   AlwaysAssert(tp < MBaseline::N_Types, AipsError);
   return static_cast<MBaseline::Types>(tp);
 }
@@ -117,6 +118,8 @@ const String &MBaseline::showType(MBaseline::Types tp) {
     "SUPERGAL",
     "ITRF",
     "TOPO" };
+
+  MBaseline::checkMyTypes();
   return tname[tp];
 }
 
@@ -170,6 +173,7 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     MBaseline::ITRF,
     MBaseline::TOPO };
 
+  MBaseline::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

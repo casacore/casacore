@@ -80,6 +80,7 @@ uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
 //# Constructors
 MCuvw::MCuvw() : measMath() {
   if (!stateMade_p) {
+    Muvw::checkMyTypes();
     MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 		      Muvw::N_Types, MCuvw::N_Routes,
 		      MCuvw::ToRef_p);
@@ -572,6 +573,7 @@ void MCuvw::doConvert(MVuvw &in,
 
 String MCuvw::showState() {
   if (!stateMade_p) {
+    Muvw::checkMyTypes();
     MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 		      Muvw::N_Types, MCuvw::N_Routes,
 		      MCuvw::ToRef_p);

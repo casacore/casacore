@@ -92,6 +92,7 @@ void Muvw::assure(const Measure &in) {
 }
 
 Muvw::Types Muvw::castType(uInt tp) {
+  Muvw::checkMyTypes();
   AlwaysAssert(tp < Muvw::N_Types, AipsError);
   return static_cast<Muvw::Types>(tp);
 }
@@ -116,6 +117,8 @@ const String &Muvw::showType(Muvw::Types tp) {
     "SUPERGAL",
     "ITRF",
     "TOPO" };
+
+  Muvw::checkMyTypes();
   return tname[tp];
 }
 
@@ -169,6 +172,7 @@ const String *const Muvw::allMyTypes(Int &nall, Int &nextra,
     Muvw::ITRF,
     Muvw::TOPO };
 
+  Muvw::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

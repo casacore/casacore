@@ -85,6 +85,7 @@ MCDirection::MCDirection() :
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   VEC61(0), VEC62(0), VEC63(0), measMath() {
   if (!stateMade_p) {
+    MDirection::checkMyTypes();
     MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 		      MDirection::N_Types, MCDirection::N_Routes,
 		      MCDirection::ToRef_p);
@@ -509,6 +510,7 @@ void MCDirection::doConvert(MVDirection &in,
 
 String MCDirection::showState() {
   if (!stateMade_p) {
+    MDirection::checkMyTypes();
     MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 		      MDirection::N_Types, MCDirection::N_Routes,
 		      MCDirection::ToRef_p);

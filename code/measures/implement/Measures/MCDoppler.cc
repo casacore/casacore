@@ -1,5 +1,5 @@
 //# MCDoppler.cc: MDoppler conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@ uInt MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
 //# Constructors
 MCDoppler::MCDoppler() {
   if (!stateMade_p) {
+    MDoppler::checkMyTypes();
     MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
 		      MDoppler::N_Types, MCDoppler::N_Routes,
 		      MCDoppler::ToRef_p);
@@ -151,6 +152,7 @@ void MCDoppler::doConvert(MVDoppler &in,
 
 String MCDoppler::showState() {
   if (!stateMade_p) {
+    MDoppler::checkMyTypes();
     MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
 		      MDoppler::N_Types, MCDoppler::N_Routes,
 		      MCDoppler::ToRef_p);

@@ -90,6 +90,7 @@ void MFrequency::assure(const Measure &in) {
 }
 
 MFrequency::Types MFrequency::castType(uInt tp) {
+  MFrequency::checkMyTypes();
   AlwaysAssert(tp < MFrequency::N_Types, AipsError);
   return static_cast<MFrequency::Types>(tp);
 }
@@ -103,6 +104,8 @@ const String &MFrequency::showType(MFrequency::Types tp) {
     "GEO",	    
     "TOPO",
     "GALACTO"}; 
+
+  MFrequency::checkMyTypes();
   return tname[tp];
 }
 
@@ -132,6 +135,7 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
     MFrequency::TOPO,
     MFrequency::GALACTO };
 
+  MFrequency::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

@@ -99,6 +99,7 @@ void MRadialVelocity::assure(const Measure &in) {
 }
 
 MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
+  MRadialVelocity::checkMyTypes();
   AlwaysAssert(tp < MRadialVelocity::N_Types, AipsError);
   return static_cast<MRadialVelocity::Types>(tp);
 }
@@ -111,6 +112,8 @@ const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
     "GEO",	    
     "TOPO",
     "GALACTO"}; 
+
+  MRadialVelocity::checkMyTypes();
   return tname[tp];
 }
 
@@ -138,6 +141,7 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
     MRadialVelocity::TOPO,
     MRadialVelocity::GALACTO};
 
+  MRadialVelocity::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

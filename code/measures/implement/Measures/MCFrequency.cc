@@ -56,6 +56,7 @@ uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 MCFrequency::MCFrequency() :
   MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
   if (!stateMade_p) {
+    MFrequency::checkMyTypes();
     MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
 		      MFrequency::N_Types, MCFrequency::N_Routes,
 		      MCFrequency::ToRef_p);
@@ -323,6 +324,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
 String MCFrequency::showState() {
   if (!stateMade_p) {
+    MFrequency::checkMyTypes();
     MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
 		      MFrequency::N_Types, MCFrequency::N_Routes,
 		      MCFrequency::ToRef_p);

@@ -87,6 +87,7 @@ void MEpoch::assure(const Measure &in) {
 }
 
 MEpoch::Types MEpoch::castType(uInt tp) {
+  MEpoch::checkMyTypes();
   AlwaysAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
   return static_cast<MEpoch::Types>(tp);
 }
@@ -105,6 +106,8 @@ const String &MEpoch::showType(MEpoch::Types tp) {
     "TCG",
     "TDB",
     "TCB"};
+
+  MEpoch::checkMyTypes();
   return tname[tp & ~MEpoch::EXTRA];
 }
 
@@ -154,6 +157,7 @@ const String *const MEpoch::allMyTypes(Int &nall, Int &nextra,
     MEpoch::TDT,
     MEpoch::UT1 };
 
+  MEpoch::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

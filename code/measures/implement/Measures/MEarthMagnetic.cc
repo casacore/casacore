@@ -104,6 +104,7 @@ void MEarthMagnetic::assure(const Measure &in) {
 }
 
 MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
+  MEarthMagnetic::checkMyTypes();
   if ((tp & MEarthMagnetic::EXTRA) == 0) {
     AlwaysAssert(tp < MEarthMagnetic::N_Types, AipsError);
   } else {
@@ -138,10 +139,9 @@ const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
 			   MEarthMagnetic::IGRF] = {
     "IGRF" };
 
-    if ((tp & MEarthMagnetic::EXTRA) == 0) {
-      return tname[tp];
-    };
-    return pname[tp & ~MEarthMagnetic::EXTRA];
+  MEarthMagnetic::checkMyTypes();
+  if ((tp & MEarthMagnetic::EXTRA) == 0) return tname[tp];
+  return pname[tp & ~MEarthMagnetic::EXTRA];
 }
 
 const String &MEarthMagnetic::showType(uInt tp) {
@@ -196,6 +196,7 @@ const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
     MEarthMagnetic::TOPO,
     MEarthMagnetic::IGRF};
 
+  MEarthMagnetic::checkMyTypes();
   nall   = N_name;
   nextra = N_extra;
   typ    = oname;

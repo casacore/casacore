@@ -45,6 +45,7 @@ uInt MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
 MCPosition::MCPosition() :
   DVEC1(0) {
   if (!stateMade_p) {
+    MPosition::checkMyTypes();
     MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
 		      MPosition::N_Types, MCPosition::N_Routes,
 		      MCPosition::ToRef_p);
@@ -179,6 +180,7 @@ void MCPosition::doConvert(MVPosition &in,
 
 String MCPosition::showState() {
   if (!stateMade_p) {
+    MPosition::checkMyTypes();
     MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
 		      MPosition::N_Types, MCPosition::N_Routes,
 		      MCPosition::ToRef_p);

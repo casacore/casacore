@@ -55,6 +55,7 @@ FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
 MCRadialVelocity::MCRadialVelocity() :
   MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
   if (!stateMade_p) {
+    MRadialVelocity::checkMyTypes();
     MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
 		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 		      MCRadialVelocity::ToRef_p);
@@ -287,6 +288,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
 String MCRadialVelocity::showState() {
   if (!stateMade_p) {
+    MRadialVelocity::checkMyTypes();
     MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
 		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 		      MCRadialVelocity::ToRef_p);
