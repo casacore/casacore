@@ -65,7 +65,7 @@ void doIt (const String& name, double interval)
 	}
 	while (True) {
 	    cout << "1=rlock, 2=wlock, 3=rlockw, 4=wlockw, 5=unlock, "
-		    "6=status, 7=speed, 8=open/close else=end: ";
+		    "6=status, 7=speed, 8=open/close 9=show, else=end: ";
 	    cin >> op;
 	    if (op == 1  ||  op == 3) {
 		uInt nattempt = 1;
@@ -111,6 +111,10 @@ void doIt (const String& name, double interval)
 		timer.show ("Acquiring 500 locks:");
 	    } else if (op == 8) {
 	        RegularFileIO tmp(name);
+	    } else if (op == 9) {
+	        uInt pid;
+		uInt res = LockFile::showLock (pid, name);
+		cout << "result=" << res << ", pid=" << pid << endl;
 	    } else {
 		break;
 	    }
