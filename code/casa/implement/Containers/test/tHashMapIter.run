@@ -1,40 +1,14 @@
 #!/bin/sh
 #-----------------------------------------------------------------------------
-# Script to test the tHashMapIter functions.  All files generated will be deleted
+# Script to test the tHashMap functions.  All files generated will be deleted
 # on exit.
 #=============================================================================
-# Define exit and interrupt handler.
-  trap 'rm -rf tHashMapIter_* words ; \
-        trap 0 ; \
-        exit $STATUS' 0 1 2 3 4 15
 
-  if test ! -f ./words; then
-     if test -f ./words.gz && gunzip -c ./words.gz > words; then :
-     else
-        echo "FAIL (output not verified): tHashMapIter"
-        STATUS=4
-        exit
-     fi
-  fi
-        
-  if test ! -f ./words; then
-     echo "FAIL (output not verified): tHashMapIter"
-     STATUS=4
-     exit
-  fi
-
-  if tHashMapIter > tHashMapIter_out; then
-     if diff tHashMapIter_out tHashMapIter.out; then
-        echo "PASS (output verified): tHashMapIter"
-        STATUS=0
-        exit
-     else
-        echo "FAIL (output not verified): tHashMapIter"
-        STATUS=2
-        exit
-     fi
+# Unzip the input file.
+  if test -f ./tHashMap.in_words.gz && \
+     gunzip -c ./tHashMap.in_words.gz > tHashMap_tmp.words; then :
   else
-     echo "FAIL (execution failure): tHashMapIter"
-     STATUS=1
-     exit
+     exit 3
   fi
+  tHashMapIter
+

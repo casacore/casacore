@@ -3,53 +3,28 @@
 # Script to test the tHashMapIO functions.  All files generated will be deleted
 # on exit.
 #=============================================================================
-# Define exit and interrupt handler.
-  trap 'rm -rf tHashMapIO_* words ; \
-        trap 0 ; \
-        exit $STATUS' 0 1 2 3 4 15
 
-  if test ! -f ./words; then
-     if test -f ./words.gz && gunzip -c ./words.gz > words; then :
-     else
-        echo "FAIL (output not verified): tHashMap"
-        STATUS=4
-        exit
-     fi
-  fi
-        
-  if test ! -f ./words; then
-     echo "FAIL (output not verified): tHashMap"
-     STATUS=4
-     exit
+# Unzip the input file.
+  if test -f ./tHashMap.in_words.gz && \
+     gunzip -c ./tHashMap.in_words.gz > tHashMap_tmp.words; then :
+  else
+     exit 3
   fi
 
   if tHashMapIO; then
-     if test -f tHashMapIO_hm.1st && \
-	test -f tHashMapIO_hm.2nd && \
-	test -f tHashMapIO_hm.3rd
+     if test -f tHashMapIO_tmp.1st && \
+	test -f tHashMapIO_tmp.2nd && \
+	test -f tHashMapIO_tmp.3rd
      then
-	cat tHashMapIO_hm.1st | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_hm.a
-	cat tHashMapIO_hm.1st | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_hm.b
-	cat tHashMapIO_hm.1st | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_hm.c
+	cat tHashMapIO_tmp.1st | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.a
+	cat tHashMapIO_tmp.2nd | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.b
+	cat tHashMapIO_tmp.3rd | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.c
 
-	if diff tHashMapIO_hm.a tHashMapIO_hm.b && \
-	   diff tHashMapIO_hm.b tHashMapIO_hm.c
+	if diff tHashMapIO_tmp.a tHashMapIO_tmp.b && \
+	   diff tHashMapIO_tmp.b tHashMapIO_tmp.c
 	then
-	   echo "PASS (output verified): tHashMapIO"
-	   STATUS=0
-	   exit
-	else
-           echo "FAIL (output not verified): tHashMapIO"
-           STATUS=3
-           exit
+	   exit 0
 	fi
-     else
-        echo "FAIL (output not verified): tHashMapIO"
-        STATUS=2
-        exit
      fi
-  else
-     echo "FAIL (execution failure): tArrayIO2"
-     STATUS=1
-     exit
   fi
+  exit 1
