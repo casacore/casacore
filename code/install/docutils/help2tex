@@ -203,6 +203,8 @@ sub make_tex_file{
          $isObj = 0;
          $terminateObject = 0;
          $mname = $1;
+         $miname = $1;
+         $miname =~ s/\\_/_/g;
          $wlabel = "\\subsection";
          $has_methods = 0;
          $iname = $1;
@@ -211,12 +213,12 @@ sub make_tex_file{
          undef @funcsid;
          undef @objsid;
          if($opt_glish == 1){
-            print "$pack.$mname := [=];\n";
-            print "$pack.$mname.objs := [=];\n";
-            print "$pack.$mname.funs := [=];\n";
+            print "$pack.$miname := [=];\n";
+            print "$pack.$miname.objs := [=];\n";
+            print "$pack.$miname.funs := [=];\n";
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$mname.d := '$dum';\n";}
+            print "$pack.$miname.d := '$dum';\n";}
       }
       if(/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
@@ -231,11 +233,11 @@ sub make_tex_file{
          $iname =~ s/\\_/_/g;
          $oiname = $iname;
          if($opt_glish == 1){
-            print "$pack.$mname.objs.$oiname := [=];\n";
-            print "$pack.$mname.objs.$oiname.m := [=];\n";
+            print "$pack.$miname.objs.$oiname := [=];\n";
+            print "$pack.$miname.objs.$oiname.m := [=];\n";
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$mname.objs.$oiname.d := '$dum';\n";}
+            print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
          undef @methodsid{$oname};
       }
       if(/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/){
@@ -250,9 +252,9 @@ sub make_tex_file{
          $iname =~ s/\\_/_/g;
          $argroot ='';
          if($opt_glish == 1){
-            print "$pack.$mname.objs.$oiname.m.$iname := [=];\n";
+            print "$pack.$miname.objs.$oiname.m.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$mname.objs.$oiname.m.$iname.d := '$dum';\n";}
+            print "$pack.$miname.objs.$oiname.m.$iname.d := '$dum';\n";}
       }
       $recIndent = "";
       if(/\\begin{ahrecord}/){
@@ -273,7 +275,7 @@ sub make_tex_file{
             $wlabel = "\\paragraph";
             $argroot = "$pack.$mname.objs.$oname.m.$iname";
             if($opt_glish == 1){
-               $argroot = "$pack.$mname.objs.$oiname.m.$iname";
+               $argroot = "$pack.$miname.objs.$oiname.m.$iname";
                print "$argroot := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n"; }
@@ -283,6 +285,7 @@ sub make_tex_file{
             $wlabel = "\\subsubsection";
             $argroot = "$pack.$mname.funs.$iname";
             if($opt_glish == 1){
+               $argroot = "$pack.$miname.funs.$iname";
                print "$argroot := [=];\n";
                print "$argroot.a := [=];\n";
                $dum =~ s/[\n\']/ /g;
@@ -333,13 +336,13 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$oname.$1 - $mname.$oname:Method \\label{$mname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
+   \\subsection{$oname.$1 - $mname.$oname:Method \\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
    $2
    \\ahsynopsis{$1}
    /g;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname:Function \\label{$mname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 - $mname:Function \\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    $2
    \\ahsynopsis{$1}
    /g;
@@ -350,12 +353,12 @@ sub make_tex_file{
       s/\\end{ahobject}/$end_section/g;
    
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname:Object \\label{$mname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 - $mname:Object \\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    $2\\\\/g;
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname.$oname:Constructor \\label{$mname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
+   \\subsection{$1 - $mname.$oname:Constructor \\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
    $2
    \\ahsynopsis{$1}
    /g;
