@@ -41,4 +41,7 @@ Expr:  a = fractile(b,0.2)
 Expr:  a = fractilerange(b,0.2)
 Expr:  a = fractilerange(b,0.2,0.6)
 Expr:  a = min(a+10,5)
+Expr:  a = b+sum(kpa[indexin(1,[1:2,8,4:7:2])])
+Expr:  a = b+sum(kpa[index2 in [1:2,10,4:7:3,10]])
+Expr:  a = b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])
 

@@ -1,5 +1,5 @@
 //# tImageExprGram.cc: Test program for image expression parser
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
@@ -101,7 +102,7 @@ void doExpr (const String& expr, const GlishRecord& regions)
 }
 
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
  Bool foundError = False;
 
@@ -128,19 +129,21 @@ main (int argc, char *argv[])
     Bool aBoolVal = False;
     Bool bBoolVal = False;
     IPosition shape(2, nx, ny);
-    ArrayLattice<Double> a(shape);
-    ArrayLattice<Bool> aBool(shape);
+    TiledShape tshp(shape, IPosition(2,(nx+1)/2, (ny+1)/2));
+    PagedArray<Double> a(tshp, "paa");
+    PagedArray<Bool> aBool(tshp, "paab");
     a.set(aVal);
     aBool.set(aBoolVal);
     {
-	PagedArray<Double> b(shape, "b");
-	PagedArray<Double> c(shape, "c");
-	PagedArray<Double> d(shape, "d");
-	PagedArray<Double> e(shape, "e");
-	PagedArray<Double> f(shape, "f");
-	PagedArray<Double> g(shape, "g");
-	PagedArray<Double> h(shape, "h");
-	PagedArray<Bool> bBool(shape, "bBool");
+	PagedArray<Double> b(tshp, "b");
+	PagedArray<Double> c(tshp, "c");
+	PagedArray<Double> d(tshp, "d");
+	PagedArray<Double> e(tshp, "e");
+	PagedArray<Double> f(tshp, "f");
+	PagedArray<Double> g(tshp, "g");
+	PagedArray<Double> h(tshp, "h");
+	PagedArray<Bool> bBool(tshp, "bBool");
+	PagedArray<Double> kpa(tshp, "kpa");
 	
 	b.set(bVal);
 	c.set(cVal);
@@ -150,6 +153,9 @@ main (int argc, char *argv[])
 	g.set(gVal);
 	h.set(hVal);
 	bBool.set(bBoolVal);
+	Array<Double> arr(shape);
+	indgen(arr);
+	kpa.put(arr);
     }
 
     Array<Double> aArr(shape);
@@ -565,7 +571,7 @@ main (int argc, char *argv[])
   }
   {
     {
-	PagedArray<Double> ap (shape, "a");
+	PagedArray<Double> ap (tshp, "a");
 	ap.copyData (a);
     }
     cout << "Expr:  a = min(a+10,5)" << endl;
@@ -579,6 +585,62 @@ main (int argc, char *argv[])
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr << endl;
 	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = b+sum(kpa[indexin(1,[1:2,8,4:7:2])])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("b+sum(kpa[indexin(1,[1:2,8,4:7:2])])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    if (shape(0) > 7) {
+      Int n = shape(1);
+      Double result = 1 + (0+1+7+3+5)*n + 5*shape(0)*n*(n-1)/2;
+      if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+      }
+    }
+  }
+  {
+    cout << "Expr:  a = b+sum(kpa[index2 in [1:2,10,4:7:3,10]])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("b+sum(kpa[index2 in [1:2,10,4:7:3,10]])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    if (shape(1) > 9) {
+      Int n = shape(0);
+      Double result = 1 + (0+1+9+3+6)*n*n + 5*n*(n-1)/2;
+      if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+      }
+    }
+  }
+  {
+    cout << "Expr:  a = b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    if (shape(1) > 9) {
+      Int n = shape(0);
+      Double result = 1 + (0+1+9+3+6)*n*n + 5*n*(n-1)/2;
+      n *= shape(1);
+      result = n*(n-1)/2 - result + 2*1;
+      if (! allNear (aArr, result, 1e-10)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr << endl;
+	foundError = True;
+      }
     }
   }
 
@@ -600,6 +662,8 @@ main (int argc, char *argv[])
  if (Table::isReadable("g")) tab =  Table ("g", Table::Delete);
  if (Table::isReadable("h")) tab =  Table ("h", Table::Delete);
  if (Table::isReadable("bBool")) tab =  Table ("bBool", Table::Delete);
+ if (Table::isReadable("paa")) tab =  Table ("paa", Table::Delete);
+ if (Table::isReadable("paab")) tab =  Table ("paab", Table::Delete);
 
   if (foundError) {
      return 1;
