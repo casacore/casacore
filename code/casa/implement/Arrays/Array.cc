@@ -648,6 +648,45 @@ template<class T> Array<T> Array<T>::nonDegenerate(uInt startingAxis)
     return tmp;
 }
 
+template<class T> 
+const Array<T> Array<T>::addDegenerate(uInt numAxes) const {
+  Array<T> * This = (Array<T> *) this;
+  const Array<T> tmp((*This).addDegenerate(numAxes));
+  return tmp;
+}
+
+template<class T> Array<T> Array<T>::addDegenerate(uInt numAxes)
+{
+    DebugAssert(ok(), ArrayError);
+    Array<T> tmp(*this);
+    if (numAxes == 0)
+      return tmp;
+
+    const uInt newDim = ndim() + numAxes;
+    Block<Int> newLength(newDim), newInc(newDim), newStart(newDim),
+	newOriginal(newDim);
+
+    uInt i;
+    for (i=0; i < ndim(); i++) {
+      newLength[i] = length[i];
+      newStart[i] = start[i];
+      newOriginal[i] = originalLength[i];
+      newInc[i] = inc[i];
+    }
+    for (i=ndim(); i < newDim; i++){
+      newLength[i] = 1;
+      newStart[i] = 0;
+      newOriginal[i] = 1;
+      newInc[i] = 1;
+    }
+    tmp.ndimen = newDim;
+    tmp.length = newLength;
+    tmp.inc = newInc;
+    tmp.start = newStart;
+    tmp.originalLength = newOriginal;
+    return tmp;
+}
+
 template<class T> Bool Array<T>::conform(const Array<T> &other) const
 {
     DebugAssert(ok(), ArrayError);

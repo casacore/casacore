@@ -333,13 +333,23 @@ public:
     // This member function returns an Array reference which has all degenerate
     // (length==1) axes removed and the dimensionality reduced appropriately.
     // If nelements==0 returns a dimension 1 0-length array.
-    // Otherwise returns an array with all length-1 axes remoeved.
+    // Otherwise returns an array with all length-1 axes removed.
     // Only axes greater than startingAxis are considered (normally one wants to
     // remove trailing axes.
     // <group> 
     Array<T> nonDegenerate(uInt startingAxis=0);
     const Array<T> nonDegenerate(uInt startingAxis=0) const;
     // </group> 
+
+    // These member functions return an Array reference with the specified
+    // number of extra axes, all of length one, appended to the end of the
+    // Array. Use these functions rather than the <src>reform</src>
+    // functions to add extra axes, as these functions do not require the
+    // Array to be contiguous in memory.
+    // <group> 
+    Array<T> addDegenerate(uInt numAxes);
+    const Array<T> addDegenerate(uInt numAxes) const;
+    // </group>
 
     // Make this array a different shape. Presently the old values are not
     // copied over to the new array.
