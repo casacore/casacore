@@ -29,8 +29,14 @@
 #include <trial/Flagging/RFChunkStats.h> 
 #include <trial/Flagging/DDMapper.h> 
 #include <aips/Arrays/Cube.h>
-    
+#include <trial/Arrays/RigidVector.h>
+#include <aips/Containers/Block.h>
+
+class RFDataMapper;
 class VisBuffer;
+
+// a row mapper member function maps a row to a single value
+typedef Float (RFDataMapper::*RowMapperFunc)(uInt);
 
 // <summary>
 // RFDataMapper: maps complex visibilities to a single real value
@@ -64,23 +70,28 @@ class VisBuffer;
 class RFDataMapper
 {
 public:
-  // a cube mapper func maps a visbuffer to a data cube
-  typedef Cube<Complex> * (*CubeMapperFunc)(VisBuffer &);
-
+  // type of data mapper: row or individual correlations
+  typedef enum { MAPROW,MAPCORR } MapperType;
+    
   // construct from a column and a DDMapper
   RFDataMapper( const String &col,DDMapper *map );
   // construct from a column and an expression
-  RFDataMapper( const String &col,const Vector<String> &expr );
-  // desctruct
+  RFDataMapper( const Vector<String> &expr,const String &defcol = "" );
+  // destructor
   ~RFDataMapper();
+  
+  // returns type of mapper
+  MapperType type ();
 
   // gets a value from the DDMapper
   Float mapValue ( uInt ich,uInt irow );
+  // gets a value from the row mapper
+  Float mapValue ( uInt irow );
 
   // uses mapper to compute a correlations mask
   RFlagWord corrMask (const VisibilityIterator &vi);
   
-  // gets pointer to viscube from visbuffer
+  // point the datamapper at a visbuffer
   void  setVisBuffer (VisBuffer &vb);
 
   // returns description
@@ -89,23 +100,42 @@ public:
   String descExpression () const;
   
 protected:
-  // static helper function to interpret constructor parameters
-  static CubeMapperFunc getCubeMapper( const String &col );
+  // a cube mapper function maps a visbuffer to a data cube
+  typedef Cube<Complex> * (*CubeMapperFunc)(VisBuffer &);
+
+  // static helper function to interpret constructor parameters into a cube mapper
+  static CubeMapperFunc getCubeMapper( const String &col,Bool throw_excp = False );
       
-  String expr_desc,ddm_desc;        // description of data mapper
-  DDMapper *ddm;          // data mapper
-  Cube<Complex> *pviscube; // pointer to visibilities cube 
+  String expr_desc,desc;           // expression and description of data mapper
+  DDMapper *ddm;                   // data mapper
+  RowMapperFunc rowmapper;         // row mapper
+  Cube<Complex> *pviscube;         // pointer to visibilities cube 
+  Vector<RigidVector<Double,3> > *puvw; // pointer to UVW matrix
   CubeMapperFunc cubemap; // function to map a chunk to a visibility cube
+  MapperType mytype;
+  
+// various row mappers
+  Float dummyRowMapper (uInt);
+  Float U_RowMapper (uInt);
+  Float V_RowMapper (uInt);
+  Float W_RowMapper (uInt);
+  Float AbsU_RowMapper (uInt);
+  Float AbsV_RowMapper (uInt);
+  Float AbsW_RowMapper (uInt);
+  Float UVD_RowMapper (uInt);
 };
 
-inline void RFDataMapper::setVisBuffer ( VisBuffer &vb )
-{ pviscube = (*cubemap)(vb); }
+inline RFDataMapper::MapperType RFDataMapper::type ()
+{ return mytype; }
 
 inline Float RFDataMapper::mapValue ( uInt ich,uInt irow )
 { return ddm->map(*pviscube,ich,irow); }
 
+inline Float RFDataMapper::mapValue ( uInt irow )
+{ return (this->*rowmapper)(irow); }
+
 inline String RFDataMapper::description () const
-{ return ddm_desc; }
+{ return desc; }
 inline String RFDataMapper::descExpression () const
 { return expr_desc; }
 
