@@ -61,7 +61,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
   // Interpolation fraction
   Bool dIt;
   Bool mulfr = True;
-  Double *dta = dval[file].getStorage(dIt);
+  const Double *dta = dval[file].getStorage(dIt);
   if (type == MeasJPL::BARYSOLAR) {
     for (uInt i=0; i<6; i++) res[i] = 0.0;
   } else if (type == MeasJPL::BARYEARTH) {
