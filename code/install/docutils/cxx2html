@@ -51,8 +51,10 @@ BEGIN {
 
 # - - - - Start of the non-substituted section - - - -
 
-use File::Basename;
+@AnyDBM_File::ISA = qw(GDBM_File NDBM_File DB_File SDBM_File ODBM_File);
 use AnyDBM_File;
+
+use File::Basename;
 use POSIX;
 use Path;
 require Class;
