@@ -210,6 +210,9 @@ public:
     LatticeExprNode makeFuncNode (const LatticeExprNode& arg1) const;
     LatticeExprNode makeFuncNode (const LatticeExprNode& arg1,
 				  const LatticeExprNode& arg2) const;
+    LatticeExprNode makeFuncNode (const LatticeExprNode& arg1,
+				  const LatticeExprNode& arg2,
+				  const LatticeExprNode& arg3) const;
     // </group>
 
     // Make a LatticeExprNode object for the lattice name.

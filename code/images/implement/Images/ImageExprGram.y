@@ -181,8 +181,15 @@ simexpr:   LPAREN orexpr RPAREN
          | NAME LPAREN orexpr COMMA orexpr RPAREN {
                $$ = new LatticeExprNode ($1->makeFuncNode (*$3, *$5));
 	       delete $1;
-	       delete $3;	
+	       delete $3;
 	       delete $5;
+	   }
+         | NAME LPAREN orexpr COMMA orexpr COMMA orexpr RPAREN {
+               $$ = new LatticeExprNode ($1->makeFuncNode (*$3, *$5, *$7));
+	       delete $1;
+	       delete $3;
+	       delete $5;
+	       delete $7;
 	   }
          | LATNAME {
 	       $$ = new LatticeExprNode ($1->makeLatticeNode());
