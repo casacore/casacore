@@ -28,5 +28,5 @@
 \newpage
 \end{latexonly}
       
-\input{talkslides.tex}
+\input{../208.dir/talkslides.tex}
 \end{document}
