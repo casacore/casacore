@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# ComponentImager.cc:  this defines ComponentImager which modifies images by ComponentLists
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -56,10 +56,11 @@
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 
-void ComponentImager::
-project(ImageInterface<Float>& image, const ComponentList& list) {
+void ComponentImager::project(ImageInterface<Float>& image, const ComponentList& list) 
+{
   const CoordinateSystem& coords = image.coordinates();
   const IPosition imageShape = image.shape();
+  LogIO os(LogOrigin("ComponentImager", "project(...)", WHERE));
   
   // I currently REQUIRE that:
   // * The list has at least one element.
@@ -154,56 +155,111 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
   }
   IPosition pixelShape = imageShape;
   pixelShape(latAxis) = pixelShape(longAxis) = 1;
-  LatticeStepper pixelStepper(imageShape, pixelShape);
-
+  LatticeStepper pixelStepper(imageShape, pixelShape, LatticeStepper::RESIZE);
   LatticeIterator<Float> chunkIter(image, chunkShape);
   const uInt nDirs = chunkShape(latAxis) * chunkShape(longAxis);
   Matrix<Flux<Double> > pixelVals(nDirs, nFreqs);
   Vector<MVDirection> dirVals(nDirs);
-  Vector<Bool> pixelFlag(nDirs);
+  Vector<Bool> coordIsGood(nDirs);
   const uInt naxis = imageShape.nelements();
   IPosition pixelPosition(naxis);
   Vector<Double> pixelDir(2);
   Vector<Double> worldDir(2);
   uInt d;
+
+// Does the image have a writable mask ?  Output pixel values are
+// only modified if the mask==T  and the coordinate conversions
+// succeeded.  The mask==F on output if the coordinate conversion 
+// fails (usually means a pixel is outside of the valid CoordinateSystem)
+// 
+  uInt maskType = 0;
+  if (image.isMasked()) {
+    if (image.isMaskWritable()) {
+      maskType = 1;                               // get/putMaskSlice
+    } else {
+      if (image.hasPixelMask()) maskType = 2;     // getMaskSLice, putSlice to pixelMask
+    }
+    if (maskType==0) { 
+       os << LogIO::WARN << "The output image is masked, but I cannot access that mask" << LogIO::POST;
+    }
+  }
+/*
+  cerr << "isMasked, hasPixelMask, isMaskWritable" << image.isMasked() << ", " <<
+          image.hasPixelMask() << ", " << image.isMaskWritable() << endl;
+  cerr << "maskType = " << maskType << endl;
+*/
+//
+  Lattice<Bool>* pixelMaskPtr = 0;
+  if (maskType==2) pixelMaskPtr = &image.pixelMask();
+  Array<Bool>* maskPtr = 0;
+//
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-    pixelStepper.subSection(chunkIter.position(),
-			    chunkIter.position() + chunkShape - 1);
-    for (pixelStepper.reset(), d = 0; 
-	 !pixelStepper.atEnd(); pixelStepper++, d++) {
+
+// Iterate through sky plane of cursor and do coordinate conversions
+
+    pixelStepper.subSection(chunkIter.position(), chunkIter.endPosition());
+    for (pixelStepper.reset(), d=0; !pixelStepper.atEnd(); pixelStepper++, d++) {
       pixelPosition = pixelStepper.position();
       pixelDir(0) = pixelPosition(latAxis);
       pixelDir(1) = pixelPosition(longAxis);
       if (!dirCoord.toWorld(worldDir, pixelDir)) {
-// I am not sure what to do here, probably this message should be logged.
-   	cerr << "ComponentImager::Pixel at " << pixelDir 
-   	     << " cannot be projected" << endl;
-	pixelFlag(d) = True;
+
+// These pixels will be masked
+
+	coordIsGood(d) = False;
       } else {
 	dirVals(d) = MVDirection(worldDir(0), worldDir(1));
-	pixelFlag(d) = False;
+	coordIsGood(d) = True;
       }
     }
+
+// Sample model
+
     list.sample(pixelVals, dirVals, dirRef, pixelSize, freqValues, freqRef);
+
+// Modify data by model for this chunk of data
+
     Array<Float>& imageChunk = chunkIter.rwCursor();
-    for (pixelStepper.reset(), d = 0; !pixelStepper.atEnd(); 
-	 pixelStepper++, d++) {
-      if (pixelFlag(d) == False) {
-	pixelPosition = pixelStepper.relativePosition();
-	for (uInt f = 0; f < nFreqs; f++) {
-	  if (freqAxis >= 0) pixelPosition(freqAxis) = f;
-	  const Flux<Double>& thisFlux = pixelVals(d, f);
-	  for (uInt s = 0; s < nStokes; s++) {
-	    if (polAxis >= 0) pixelPosition(polAxis) = s;
-	    imageChunk(pixelPosition) += 
-	      static_cast<Float>(thisFlux.value(s).real());
-	  }
-	}
+
+// Get input mask values if available
+
+    if (maskType!=0) {
+       maskPtr = new Array<Bool>(image.getMaskSlice(chunkIter.position(), 
+                                 chunkIter.cursorShape(), False));
+    }
+//
+    for (pixelStepper.reset(),d=0; !pixelStepper.atEnd(); pixelStepper++,d++) {
+      if (coordIsGood(d)) {
+        pixelPosition = pixelStepper.relativePosition();
+        for (uInt f = 0; f < nFreqs; f++) {
+          if (freqAxis >= 0) pixelPosition(freqAxis) = f;
+          const Flux<Double>& thisFlux = pixelVals(d, f);
+          for (uInt s = 0; s < nStokes; s++) {
+            if (polAxis >= 0) pixelPosition(polAxis) = s;
+//
+            if (maskType==0) {
+              imageChunk(pixelPosition) += 
+                 static_cast<Float>(thisFlux.value(s).real());
+            } else {
+               if ((*maskPtr)(pixelPosition)) {
+                 imageChunk(pixelPosition) += 
+                   static_cast<Float>(thisFlux.value(s).real());
+               }
+            }
+          }
+        }
+      } else {
+        (*maskPtr)(pixelPosition) = False;
       }
     }
+
+// Update output mask in approprate fashion
+
+    if (maskType==1) {
+       image.putMaskSlice(*maskPtr, chunkIter.position());
+    } else if (maskType==2) {
+       pixelMaskPtr->putSlice(*maskPtr, chunkIter.position());
+    }
+    if (maskPtr!=0) delete maskPtr;
   }
 }
-
-// Local Variables: 
-// compile-command: "gmake ComponentImager"
-// End: 
