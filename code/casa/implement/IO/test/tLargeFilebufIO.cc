@@ -1,4 +1,4 @@
-//# tFilebufIO.cc: Test program for class FilebufIO
+//# tLargeFilebufIO.cc: Test program for class LargeFilebufIO
 //# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
