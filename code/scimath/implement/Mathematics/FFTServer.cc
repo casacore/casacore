@@ -1,5 +1,6 @@
+// -*- C++ -*-
 //# FFTServer.cc: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +34,73 @@
 #include <aips/Mathematics/NumericTraits.h>
 #include <aips/Mathematics/FFTPack.h>
 #include <aips/Utilities/Assert.h>
+#include <iostream.h>
+#include <iostream.h>
+#include <aips/OS/Timer.h>
+#include <aips/Arrays/Matrix.h>
+
+#define OBJCOPY0(to,from,n) {\
+    if (n > 0 && (to == 0 || from == 0)) {\
+	throw(AipsError("template<class T> void objcopy(T* to, const T* from,"\
+			"uInt n) - to or from is null"));\
+    }\
+    while (n--) {\
+	*to++ = *from;\
+	from += 1;\
+    }\
+}
+
+#define OBJCOPY(to,from,n,toStride,fromStride) {\
+    if ((n)==0) {\
+	return;\
+    }\
+    if ((to) == 0 || (from) == 0 || (toStride) < 1 || (fromStride) < 1) {\
+	throw(AipsError("template<class T> void objcopy(T* to, const T* from,"\
+			"uInt n, uInt toStride, uInt fromStride) - "\
+			"illegal argument"));\
+    }\
+\
+    if ((toStride) == 1  &&  (fromStride) == 1) {\
+	OBJCOPY0((to),(from),(n));\
+    } else {\
+	while ((n)--) {\
+	    *(to) = *(from);\
+	    (to) += (toStride);\
+	    (from) += (fromStride);\
+	}\
+    }\
+}
+
+//Timer flipTimer;
+//static double flipTime=0.0;
+//static int NoOfFlips=0;
+
+template<class S> Int phaseRotate(Matrix<S> & cData)
+{
+  //  flipTimer.mark();
+  //  NoOfFlips++;
+
+  IPosition shape;
+  shape = cData.shape();
+  Int nAxis = shape.nelements();
+
+  if (nAxis !=2) return False;
+
+  Bool allEven = True;
+  for (Int i=0;i<nAxis;i++) allEven &= !(shape(i)%2);
+  //  cerr << "phase Rotate " << allEven << " " << shape << endl;
+
+  if (allEven)
+    for (Int i=0;i<shape(0);i++)
+      for (Int j=!(i%2);j<shape(1);j+=2)
+	cData(j,i) *= -1;
+  
+  //  flipTime += flipTimer.all();
+  //  cerr << "##Flip timer " << flipTime << " " << flipTime/NoOfFlips << " " << NoOfFlips << endl;
+  return allEven;
+}
+
+template Int phaseRotate<Complex> (Matrix<Complex> &);
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer()
@@ -171,6 +239,9 @@ resize(const IPosition & fftSize,
   itsBuffer.resize(bufferLength);
 }
 
+//
+// FFT:  R->C
+//
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
   if (constInput) {
@@ -182,14 +253,60 @@ fft(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     flip(rData,True,False);
     fft0(cResult, rData, False);
   }
-  flip(cResult,False,True);
+  //  flip(cResult,False,True);
 }
-
+//
+// FFT: R->C
+//
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cResult, const Array<T> & rData) {
  fft(cResult, (Array<T> &) rData, True);
 }
 
+
+
+
+
+//
+// FFT:  R->C
+//
+template<class T, class S> void FFTServer<T,S>::
+myfft(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
+  if (constInput) {
+    Array<T> rCopy = rData.copy();
+    flip(rCopy,True,False);
+    fft0(cResult, rCopy, False);
+  }
+  else {
+    flip(rData,True,False);
+    fft0(cResult, rData, False);
+  }
+  //  flip(cResult,False,True);
+}
+//
+// FFT: R->C
+//
+template<class T, class S> void FFTServer<T,S>::
+myfft(Array<S> & cResult, const Array<T> & rData) {
+ fft(cResult, (Array<T> &) rData, True);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+// FFT: C->R
+//
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   if (constInput) {
@@ -204,17 +321,85 @@ fft(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   flip(rResult, False, False);
 }
 
+//
+// FFT: C->R
+//
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<T> & rResult, const Array<S> & cData) {
   fft(rResult, (Array<S> &) cData, True);
 }
 
+
+
+//
+// FFT: C->R
+//
 template<class T, class S> void FFTServer<T,S>::
-fft(Array<S> & cValues, const Bool toFrequency) {
+myfft(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
+  if (constInput) {
+    Array<S> cCopy = cData.copy();
+    //    flip(cCopy, True, True);
+    fft0(rResult, cCopy, False);
+  }
+  else {
+    //    flip(cData, True, True);
+    fft0(rResult, cData, False);
+  }
+  flip(rResult, False, False);
+}
+
+//
+// FFT: C->R
+//
+template<class T, class S> void FFTServer<T,S>::
+myfft(Array<T> & rResult, const Array<S> & cData) {
+  myfft(rResult, (Array<S> &) cData, True);
+}
+
+
+
+
+
+
+
+
+//
+// FFT: C->C
+//
+
+template<class T, class S> void FFTServer<T,S>::
+fft(Array<S> & cValues, const Bool toFrequency) 
+{
+  //  cerr << "#### Doing a C->C ";
+  Int doFlip;
+
+  doFlip = !phaseRotate((Matrix<S> &)cValues);
+  if (doFlip) flip(cValues, True, False);
+
+  //  if (doFlip) cerr << "...Flipping"; 
+  cerr << endl;
+
+  fft0(cValues, toFrequency);
+
+  doFlip = !phaseRotate((Matrix<S> &)cValues);
+  if (doFlip)  flip(cValues, False, False);
+  /*
   flip(cValues, True, False);
   fft0(cValues, toFrequency);
   flip(cValues, False, False);
+  */
 }
+
+template<class T, class S> void FFTServer<T,S>::
+fft(Array<S> & cValues, uInt doFlip, const Bool toFrequency) {
+  if ((doFlip==1) || (doFlip > 2)) flip(cValues, True, False);
+  fft0(cValues, toFrequency);
+  if (doFlip>=2) flip(cValues, False, False);
+}
+
+//
+// FFT: C->C
+//
 
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
@@ -227,6 +412,20 @@ fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
   fft(cResult, toFrequency);
 }
 
+template<class T, class S> void FFTServer<T,S>::
+fft(Array<S> & cResult, const Array<S> & cData, uInt doFlip, const Bool toFrequency) {
+  if (cResult.nelements() != 0) {
+    AlwaysAssert(cResult.conform(cData), AipsError);
+  }
+  else
+    cResult.resize(cData.shape());
+  cResult = cData;
+  fft(cResult, toFrequency,doFlip);
+}
+
+//
+// FFT0: R->C
+//
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
   // The constInput argument is not used as the input Array is never changed by
@@ -248,10 +447,12 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     cResult.resize(resultShape);
   }
   // Early exit if the Array is all zero;
+  /*
   if (allNearAbs(rData, T(0), NumericTraits<T>::minimum)) {
     cResult = S(0);
     return;
   }
+  */
   // Initialise the work arrays
   if (!shape.isEqual(itsSize) || itsTransformType != FFTEnums::REALTOCOMPLEX)
     resize(shape, FFTEnums::REALTOCOMPLEX);
@@ -266,6 +467,11 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     const T * dataPtr = rData.getStorage(dataIsAcopy);
     T * workPtr = itsWork[0]->storage();
     T * resultPtr = (T *) complexPtr;
+
+    T *to;
+    const T *from;
+    uInt Len;
+
     fftLen = shape(0);
     Bool even = True;
     if (fftLen%2 == 1) even = False;
@@ -276,7 +482,13 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     // Iterate over all the rows
     for (uInt r = 0; r < nrows; r++) {
       // Copy data to the complex array
-      objcopy(resultRowPtr, inputRowPtr, fftLen);
+
+      to=resultRowPtr;
+      from=inputRowPtr;
+      Len=fftLen;
+
+      //      objcopy(resultRowPtr, inputRowPtr, fftLen);
+      OBJCOPY0(to, from, Len);
       // Do the Real->Complex row transforms
       FFTPack::rfftf(fftLen, resultRowPtr, workPtr);
       // Shuffle elements along
@@ -302,6 +514,12 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     T * workPtr = 0;
     S * buffPtr = 0;
     S * rowPtr = 0;
+
+    S *to;
+    S *from;
+    uInt Len, inStride, outStride;
+    
+
     const uInt cElements = resultShape.product();
     uInt nffts, r, stride = resultShape(0);
     for (uInt n = 1; n < ndim; n++) {
@@ -315,11 +533,25 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 	// Copy the data into a temporary buffer. This makes it contigious and
 	// hence it is more likely to fit into cache. With current computers
 	// this speeds up access to the data by a factors of about ten!
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+	to=buffPtr;
+	from=rowPtr;
+	Len=fftLen;
+	outStride=1u;
+	inStride=stride;
+
+	//	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+	OBJCOPY(to, from, Len, outStride, inStride);
+
 	// Do the transform
 	FFTPack::cfftf(fftLen, buffPtr, workPtr);
 	// copy the data back
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+
+	to=rowPtr;
+	Len=fftLen;
+	from=buffPtr; outStride=stride; inStride=1u;
+
+	//	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+	OBJCOPY(to, from, Len, outStride, inStride);
 	// indexing calculations
 	r++;
 	rowPtr++;
@@ -331,12 +563,18 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
   }
   cResult.putStorage(complexPtr, resultIsAcopy);
 }
-  
+
+//
+// FFT0: R->C
+//  
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cResult, const Array<T> & rData) {
   fft0(cResult, (Array<T> &) rData, True);
 }
 
+//
+// FFT0: C->R
+//
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   Array<S> cCopy;
@@ -349,10 +587,12 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   const IPosition rShape = determineShape(rResult.shape(), cCopy);
   rResult.resize(rShape);
   // Early exit if the Array is all zero;
+  /*
   if (allNearAbs(cData, S(0), NumericTraits<S>::minimum)) {
     rResult = T(0);
     return;
   }
+  */
   // resize the server if necessary
   if (!rShape.isEqual(itsSize) || itsTransformType != FFTEnums::REALTOCOMPLEX)
     resize(rShape, FFTEnums::REALTOCOMPLEX);
@@ -365,10 +605,16 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   dataPtr = cCopy.getStorage(dataIsAcopy);
   T * workPtr = 0;
 
+
+
   // Do complex to complex transforms along all other dimensions
   if (ndim > 1) {
     S * buffPtr = itsBuffer.storage();
     S * rowPtr = 0;
+
+    S *to, *from;
+    uInt inStride, outStride, Len;
+
     const uInt cElements = cShape.product();
     uInt n, r, nffts, stride = cShape(0);
     for (n = 1; n < ndim; n++) {
@@ -381,11 +627,26 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
 	// Copy the data into a temporary buffer. This makes it contigious and
 	// hence it is more likely to fit into cache. With current computers
 	// this speeds up access to the data by a factors of about ten!
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+
+	to=buffPtr;
+	from=rowPtr;
+	Len=fftLen;
+	inStride=1u;
+	outStride=stride;
+	//	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+	OBJCOPY(to, from, Len, inStride, outStride);
 	// Do the FFT
 	FFTPack::cfftb(fftLen, buffPtr, workPtr);
 	// copy the data back
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+	
+	to=rowPtr;
+	from=buffPtr;
+	Len=fftLen;
+	inStride=stride;
+	outStride=1u;
+	
+
+	OBJCOPY(to, from, Len, inStride, outStride);
 	// indexing calculations
 	r++;
 	rowPtr++;
@@ -402,6 +663,10 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   workPtr = itsWork[0]->storage();
 
   T * resultRowPtr = resultPtr;
+
+  T *to, *from;
+  uInt Len;
+
   const uInt cStride = cShape(0)*2;
   fftLen = rShape(0);
   const uInt nffts = rShape.product()/fftLen;
@@ -409,7 +674,13 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   for (uInt r = 0; r < nffts; r++) {
     // Copy the data to the real array
     *resultRowPtr = *realDataPtr;
-    objcopy(resultRowPtr+1, realDataPtr+2, fftLen-1);
+
+    to=resultRowPtr+1;
+    from=realDataPtr+2;
+    Len=fftLen-1;
+
+    OBJCOPY0(to, from, Len);
+    //    objcopy(resultRowPtr+1, realDataPtr+2, fftLen-1);
     // Do the Complex->Real row transform
       FFTPack::rfftb(fftLen, resultRowPtr, workPtr);
     // Increment the pointers
@@ -428,17 +699,25 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   rResult.putStorage(resultPtr, resultIsAcopy);
 }
 
+//
+// FFT0: C->R
+//
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<T> & rResult, const Array<S> & cData) {
   fft0(rResult, (Array<S> &) cData, True);
 }
 
+//
+// FFT0: C->C
+//
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cValues, const Bool toFrequency) {
   // Early exit if the Array is all zero;
+  /*
   if (allNearAbs(cValues, S(0), NumericTraits<S>::minimum)){
     return;
   }
+  */
   // resize the server if necessary
   const IPosition shape = cValues.shape();
   if (!shape.isEqual(itsSize) || itsTransformType != FFTEnums::COMPLEX)
@@ -459,6 +738,11 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
   const T scale = T(1)/T(nElements);
   const uInt shape0t2 = shape(0) * 2;
   uInt n, r, nffts, stride = 1u;
+
+  S *to, *from;
+  uInt Len, inStride, outStride;
+
+
   for (n = 0; n < ndim; n++) {
     workPtr = itsWork[n]->storage();
     rowPtr = dataPtr;
@@ -471,7 +755,17 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
       // hence it is more likely to fit into cache. With current computers
       // this speeds up access to the data by a factors of about ten!
       if (n != 0)
-	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+	{
+	  
+	  to=buffPtr;
+	  from=rowPtr;
+	  Len=fftLen;
+	  inStride=stride;
+	  outStride=1u;
+
+	OBJCOPY(to, from, Len, outStride, inStride);
+      //	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+	}
       else
 	buffPtr = rowPtr;
       // Do the FFT
@@ -490,8 +784,17 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
 	}
       }
       // copy the data back
+
+      to=rowPtr;
+      from=buffPtr;
+      Len=fftLen;
+      outStride=stride;
+      inStride=1u;
+
+
       if (n != 0)
-	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+	//	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+	OBJCOPY(to, from, Len, outStride, inStride);
       // indexing calculations
       r++;
       rowPtr++;
@@ -503,6 +806,9 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
   cValues.putStorage(dataPtr, valuesIsAcopy);
 }
 
+//
+// FFT0: C->C
+//
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
   if (cResult.nelements() != 0) {
@@ -625,9 +931,11 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
 
 template<class T, class S> void FFTServer<T,S>::
 flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
+//  cerr << "flip(C)" << endl;
   const IPosition shape = cData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
+
   if (nElements == 1) {
     return;
   }
@@ -649,6 +957,10 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
   uInt stride = 1;
   uInt r;
   uInt n=0;
+
+  uInt Len,toStride,fromStride;
+  S *to, *from;
+
   if (isHermitian) {
     n = 1;
     stride = shape(0);
@@ -665,14 +977,30 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
 	rowPtr2 = rowPtr + stride * rowLen2;
 	rowPtr2o = rowPtr + stride * rowLen2o;
 	if (toZero) {
-	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
-	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
-	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+	  to=buffPtr; from=rowPtr2;Len=rowLen2o;toStride=1u;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
+	  
+	  to=rowPtr2o; from=rowPtr;Len=rowLen2;toStride=stride;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
+
+	  to=rowPtr; from=buffPtr;Len=rowLen2o;toStride=stride;fromStride=1u;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
 	}
 	else {
-	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
-	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
-	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
+	  to=buffPtr; from=rowPtr;Len=rowLen2o;toStride=1u;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
+
+	  to=rowPtr; from=rowPtr2o;Len=rowLen2;toStride=stride;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
+
+	  to=rowPtr2; from=buffPtr; Len=rowLen2o; toStride=stride;fromStride=1u;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
 	}
 	r++;
 	rowPtr++;
@@ -687,6 +1015,7 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
 
 template<class T, class S> void FFTServer<T,S>::
 flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
+//  cerr << "flip(R)" << endl;
   const IPosition shape = rData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
@@ -712,6 +1041,11 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
   uInt stride = 1;
   uInt r;
   uInt n=0;
+
+  uInt Len,toStride,fromStride;
+  T *to, *from;
+
+
   if (isHermitian) {
     n = 1;
     stride = shape(0);
@@ -728,14 +1062,30 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
 	rowPtr2 = rowPtr + stride * rowLen2;
 	rowPtr2o = rowPtr + stride * rowLen2o;
 	if (toZero) {
-	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
-	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
-	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+	  to=buffPtr; from=rowPtr2;Len=rowLen2o;toStride=1u;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
+
+	  to=rowPtr2o; from=rowPtr;Len=rowLen2;toStride=stride;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
+
+	  to=rowPtr; from=buffPtr;Len=rowLen2o;toStride=stride;fromStride=1u;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
 	}
 	else {
-	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
-	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
-	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
+	  to=buffPtr; from=rowPtr;Len=rowLen2o;toStride=1u;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
+
+	  to=rowPtr; from=rowPtr2o; Len=rowLen2;toStride=stride;fromStride=stride;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
+
+	  to=rowPtr2; from=rowPtr; Len=rowLen2o;toStride=stride;fromStride=1u;
+	  OBJCOPY(to,from,Len,toStride,fromStride);
+	  //	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
 	}
 	r++;
 	rowPtr++;
