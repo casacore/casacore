@@ -1,5 +1,5 @@
 //# AutoDiff.cc: an automatic differential class for  parameterized functions
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,88 +115,63 @@ AutoDiff<T>& AutoDiff<T>::operator=(const AutoDiff<T> &other)
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator*=(const AutoDiff<T> &other)
-{ 
-  uInt i;
-
-  if(nderivs == 0) {
+AutoDiff<T>& AutoDiff<T>::operator*=(const AutoDiff<T> &other) { 
+  if (nderivs == 0) {
     gradient_->resize(other.nderivs);
-    for(i = 0 ; i < other.nderivs; i++)
-      (*gradient_)(i) = T(0.0);
-  }    
-
-  for(i = 0 ; i < nderivs; i++)
-    (*gradient_)(i) = other.value_*(*gradient_)(i);
-  for(i = 0; i < other.nderivs; i++)
-    (*gradient_)(i) += value_ * (*other.gradient_)(i);
-
+    for (uInt i = 0 ; i < other.nderivs; i++) (*gradient_)(i) = T(0.0);
+  };
+  // Note that this makes sure it works for this == &other
+  for (uInt i = 0 ; i < nderivs; i++) {
+    (*gradient_)(i) = other.value_*(*gradient_)(i) + 
+      value_ * (*other.gradient_)(i);
+  };
   nderivs = (nderivs > other.nderivs) ? nderivs : other.nderivs;
-
-  value_ = value_ * other.value_;
+  value_ *= other.value_;
   return *this;
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator/=(const AutoDiff<T> &other)
-{ 
-  uInt i;
+AutoDiff<T>& AutoDiff<T>::operator/=(const AutoDiff<T> &other) { 
   T temp = other.value_*other.value_;
-
-  if(nderivs == 0) {
+  if (nderivs == 0) {
     gradient_->resize(other.nderivs);
-    for(i = 0 ; i < other.nderivs; i++)
-      (*gradient_)(i) = T(0.0);
-  }    
-
-  for(i = 0; i < nderivs; i++)
-    (*gradient_)(i) = (*gradient_)(i)/other.value_;
-  for(i = 0 ; i < other.nderivs; i++)
-    (*gradient_)(i) -= value_*(*other.gradient_)(i)/temp;
-
+    for (uInt i = 0 ; i < other.nderivs; i++) (*gradient_)(i) = T(0.0);
+  };
+  // Note that this makes sure it works for this == &other
+  for (uInt i = 0; i < nderivs; i++) {
+    (*gradient_)(i) = (*gradient_)(i)/other.value_ -
+      value_*(*other.gradient_)(i)/temp;
+  };
   nderivs = (nderivs > other.nderivs) ? nderivs : other.nderivs;
-
-  value_ = value_ / other.value_;
+  value_ /= other.value_;
   return *this;
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator+=(const AutoDiff<T> &other)
-{
-  uInt i;
-
-  if(nderivs == 0) {
+AutoDiff<T>& AutoDiff<T>::operator+=(const AutoDiff<T> &other) {
+  if (nderivs == 0) {
     gradient_->resize(other.nderivs);
-    for(i = 0 ; i < other.nderivs; i++)
-      (*gradient_)(i) = T(0.0);
-  }    
-
-  for(i = 0 ; i < other.nderivs; i++) {
+    for (uInt i = 0 ; i < other.nderivs; i++) (*gradient_)(i) = T(0.0);
+  };
+  for (uInt i = 0 ; i < other.nderivs; i++) {
     (*gradient_)(i) += (*other.gradient_)(i);
-  }
-
+  };
   nderivs = (nderivs > other.nderivs) ? nderivs : other.nderivs;
-
-  value_ = value_ + other.value_;
+  value_ += other.value_;
   return *this;
 }
 
 template <class T>
-AutoDiff<T>& AutoDiff<T>::operator-=(const AutoDiff<T> &other)
-{
-  uInt i;
-
-  if(nderivs == 0) {
+AutoDiff<T>& AutoDiff<T>::operator-=(const AutoDiff<T> &other) {
+  if (nderivs == 0) {
     gradient_->resize(other.nderivs);
-    for(i = 0 ; i < other.nderivs; i++)
-      (*gradient_)(i) = T(0.0);
-  }    
-
-  for(i = 0 ; i < other.nderivs; i++)
+    for (uInt i = 0 ; i < other.nderivs; i++) (*gradient_)(i) = T(0.0);
+  };
+  for (uInt i = 0 ; i < other.nderivs; i++) {
     (*gradient_)(i) -= (*other.gradient_)(i);
-
+  };
   nderivs = (nderivs > other.nderivs) ? nderivs : other.nderivs;
-
-  value_ = value_ - other.value_;
+  value_ -= other.value_;
   return *this;
 }
 
