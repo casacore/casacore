@@ -1,5 +1,5 @@
 //# TiledFileHelper.cc: Helper class for tiled access to an array in a file
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,10 +74,8 @@ TiledFileHelper::TiledFileHelper (const String& fileName,
   default:
     throw TableError ("TiledFileHelper: invalid data type");
   }
-  itsDesc.defineHypercolumn ("TiledFileHelper", shape.nelements(),
-			     Vector<String>(1, "DATA"));
   createDirArrColumn ("DATA", dtype, "");
-  TiledStMan::setup();
+  TiledStMan::setup(0);
   fileSet_p[0] = new TSMFile (fileName, writable);
 }
 
