@@ -34,8 +34,9 @@
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
 #
 # Options:
-#   -b     Use the most recent "blessed" release, which is not necessarily
-#          the most recent release.  Good for sites that need stability.
+#   -b     Use the most recently "blessed" release.  Useful for sites
+#          that wish to track development but that also require stable
+#          releases.
 #   -c     Force a cumulative update.
 #   -D     Fetch the latest version which has passed the test suite.
 #   -d     If the "-n" option is specified, don't remake the "docsys" target.

@@ -37,7 +37,7 @@
 # (on aips2.nrao.edu) where it is normally invoked twice a day as a cron job.
 #
 # Options:
-#   -e     Expire mode; outdate old RCS revisions.  Only useful when
+#   -e     Expire mode; "outdates" old RCS revisions.  Only useful when
 #          exhale is creating a new base release; ignored otherwise.
 #
 #   -l     Latchkey mode; the update produced will be invisible to
@@ -1008,7 +1008,7 @@
   then
 #    New prayer: forget about any previous blessings.
      OLDBLESSED=`echo .blessed-master-*.tar.gz`
-     echo
+     echo ""
      echo "exhale: Removing old blessed versions:"
 
      for OLDBLESSING in $OLDBLESSED
