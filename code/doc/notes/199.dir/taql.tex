@@ -12,13 +12,19 @@ Furthermore TaQL has commands to modify data in a subset of a table.
 
 TaQL is modeled after SQL and contains most of SQL's functionality.
 The main features lacking are joins and GROUPBY/HAVING. On the other
-hand does TaQL have full support for arrays and an advanced way
+hand does TaQL have full support for arrays and an advanced way of
 specifying intervals.
 
 The first sections of this document explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
 The Glish interface makes it possible to embed Glish
 variables and expressions in a TaQL command.
+
+The result of a TaQL selection is a so-called reference table.
+It is a table that can be used as any other table, but it does not
+contain data. Instead it contains references to the rows and columns
+in the original table. Thus modifying data in a reference table means
+that effectively the data in the original table is modified.
 
 \section{Syntax}
 TaQL contains four commands.
@@ -60,17 +66,17 @@ table list.
 It can be used to delete some or all rows from the first table
 in the table list.
 \end{itemize}
-\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
-UPDATE, INSERT, and DELETE command in more detail.
-
-The commands and verbs in them are
+The commands and verbs in the commands are
 case-insensitive, but case is important in string values and
 in names of columns and keywords. Whitespace (blanks and tabs) can
 be used at will.
-The various clauses have the following meaning:
+\\\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
+UPDATE, INSERT, and DELETE command in more detail. Hereafter the
+various parts of the SELECT command are explained.
+
 \begin{description}
   \item[ column\_list]
-       is a comma-separated list of column names which have to be selected
+       is a comma-separated list with names of columns that have to be selected
        from the primary table in the table\_list (see below).
        If * or no column\_list is given, all columns will be selected.
        \\In the future it may be possible to use expressions to create
@@ -107,8 +113,8 @@ The various clauses have the following meaning:
        It indicates which tables are used in
        the SELECT command. The first table in the list is the primary
        table and is used for all columns in the other clauses.
-       Usually only one table is used, so the list consists of only one
-       table name. E.g.
+       Usually only one table is used in which case the list consists
+       of only one table name. E.g.
        \begin{verbatim}
        SELECT col1,col2 FROM mytable
            WHERE col1>col2
@@ -123,21 +129,21 @@ The various clauses have the following meaning:
        SELECT FROM mytable,othertable
            WHERE col1>othertable.key
        \end{verbatim}
-       As shown in the example above a qualifying name
+       As shown in the example above a qualifying name (\verb+othertable.+)
        can be used in the WHERE
        clause to specify from which table a keyword has to be taken.
        If no qualifying name is given, the keyword (or column) is taken
        from the primary table (i.e., the first table in the table\_list).
        This means that qualifying names are only needed in special cases.
        The qualifying name can not contain special characters like a slash.
-       Therefore a table\_name needs an explicit shorthand if it contains
-       special characters.
+       Therefore a table\_name needs an explicit shorthand alias
+       if it contains special characters.
        \\The full table\_list syntax is:
        \\
        \texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
        \\The shorthand defaults to the table\_name.
-       In the following example shorthand \texttt{my} is only used
-       for demonstration purposes; it is not really needed.
+       In the following example shorthand \texttt{my} is not really needed.
+       Shorthand \texttt{other} is needed though.
        \begin{verbatim}
        SELECT FROM mytable my, ~user/othertable other
            WHERE my.col1>other.key
@@ -248,7 +254,7 @@ The various clauses have the following meaning:
        equal sort keys is kept in the result. To be compliant with
        SQL dialects the word UNIQUE or NODUPLICATES can be used
        instead of DISTINCT.
-       \\An expression can be simply a scalar column or an element from
+       \\An expression can be a scalar column or a single element from
        an array column. In these cases some optimization is performed
        by reading the entire column directly.
        \\It can also be an arbitrarily complex expression
@@ -290,13 +296,16 @@ The various clauses have the following meaning:
        tables is created.
        \\Another (more SQL compliant) way to define the output table
        is the \htmlref{INTO}{TAQL:INTO} clause.
-       \\It is also possible to specify a set in the GIVING clause
+
+       It is also possible to specify a set in the GIVING clause
        instead of a table name. This can be useful if the result of a
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
-       Such a \htmlref{set}{TAQL:SETS} can contain only one element.
-       The parts of this element can be any expression resulting in a scalar.
-       \\In the main query and in a query in the FROM command the
-       GIVING clause can only result in a table.
+       Such a \htmlref{set}{TAQL:SETS} can contain only one element
+       (which can be a range or interval).
+       The parts of the element have to be expressions resulting in a scalar.
+
+       In the main query and in a query in the FROM command the
+       GIVING clause can only result in a table and not in a set.
        \\To be compliant with SQL dialects, the word SAVETO can be
        used instead of GIVING. Whitespace can be given between SAVE and TO.
  
@@ -316,7 +325,7 @@ Note that the expression result must be
 a boolean scalar if used in the WHERE clause. If used in ORDERBY
 the result can also be a numeric or string scalar. If used in 
 GIVING it can also be a DateTime scalar. If used as a new value in
-the UPDASTE or INSERT command it can also be an array.
+the UPDATE or INSERT command it can also be an array.
 \\The expression in the clause can be as complex as one likes
 using the standard
 \htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}.
@@ -352,7 +361,7 @@ TaQL knows the following data types:
        acting on a date/time. Also operator + and - can be used.
 \end{description}
 Scalars and arbitrarily shaped arrays of these data types can be used.
-Only arrays of Regex arte not possible.
+However, arrays of Regex are not possible.
 \\If an operand or function argument with a non-matching data type
 is used, TaQL can do the following automatic conversions:
 \\- from Double to Complex
@@ -375,12 +384,13 @@ Scalar constants of the various data types can be formed as follows
               \\Some valid units are deg, arcmin, arcsec (or as), rad.
               The units can be scaled by preceeding them with a letter
               (e.g. mrad is millirad).
-         \item A time/position in HMS format.
-              E.g. \texttt{12h34m34.5}
-         \item A position in DMS format.
-              E.g. \texttt{12d34m34.5}
-         \item A dot-separated position.
-              E.g. \texttt{12.34.34.5}
+         \item A time/position in hours in HMS format.
+              E.g. \texttt{12h34m34.5} or \texttt{8h}
+         \item A position in degrees in DMS format.
+              E.g. \texttt{12d34m34.5} or \texttt{8d}
+         \item A position in degrees in dot format. Note that the dots
+              for degrees and minutes must always be present.
+              E.g. \texttt{12.34.34.5} or \texttt{8..34.5}
        \end{itemize}
   \item The imaginary part of a Complex constant is formed by a Double
        constant immediately followed by a lowercase \textbf{i}. A full Complex
@@ -403,33 +413,52 @@ Scalar constants of the various data types can be formed as follows
          "ab'cd"'ef"gh'
              which results in constant  ab'cdef"gh
        \end{verbatim}
-  \item A Regex constant has to be given as \texttt{m/regex/} or
-       \texttt{p/pattern/} after operator \verb+~+ or \verb+!~+.
-       Instead of /, the characters \% and \# can also be used as
-       delimiter, as long as the same delimiter is used on both sides.
-       The delimiter can not be part of the regex or pattern itself.
-       \\A regex is a UNIX-like extended regular expression.
-       \\A pattern is a UNIX-like shell (file name) pattern.
-       \begin{verbatim}
-         name ~ m/[a-zA-Z][a-zA-Z0-9]*/
-         name !~ p#3c*#
-       \end{verbatim}
-
-       An SQL style pattern has to be given as a string after the LIKE
-       operator. E.g.
-       \begin{verbatim}
-         name LIKE '3c%'
-       \end{verbatim}
-       Note that the string after LIKE does not need to be a constant.
-
-       Finally a Regex can be formed from a String
-       by the function \texttt{regex}, \texttt{pattern}, or
-       \texttt{sqlpattern}. (see below). 
-       In this way one can also form a Regex constant. E.g.
-       \begin{verbatim}
-         regex ("[a-zA-Z][a-zA-Z0-9]*")
-       \end{verbatim}
-       Only operator = and != can be used on a regex constructed this way.
+  \item A Regex constant can be given in three flavours:
+	\begin{itemize}
+	\item as a UNIX shell (file name) style pattern.
+	      \\\texttt{p/pattern/} can be used after operator \verb+~+
+	      and \verb+!~+.
+              Instead of a slash, the characters \% and \# can also be used as
+              delimiter, as long as the same delimiter is used on both sides.
+              The delimiter can not be part of the pattern itself.
+              \\Function \texttt{pattern} can be used after operator = and !=.
+	      \\A pattern uses the special character ? for a single
+              arbitrary character
+              and * for zero or more arbitrary characters. Furthermore
+              square brackets can be used for a choice from a set of single
+              characters and braces can be used for a choice from a
+              set of pattern parts. 
+	      \begin{verbatim}
+		name~p/3c*/
+		col=pattern('[_A-Za-z]*')
+		name !~ p#/usr/*.{h,cc}#
+	      \end{verbatim}
+	\item as an SQL style pattern.
+              \\A string constant giving the pattern can be used after
+              operator \texttt{LIKE}.
+              \\Function \texttt{sqlpattern} can be used after operator
+              = and !=.
+	      \\An SQL style pattern uses the special character \_ for
+              a single arbitrary character
+              and \% for zero or more arbitrary characters.
+	      \begin{verbatim}
+		name LIKE '3c%'
+	      \end{verbatim}
+	\item as an extended regular expression.
+	      \\\texttt{m/pattern/} can be used after operator \verb+~+
+	      and \verb+!~+. A slash, \% and \# can be used as delimiter.
+              \\Function \texttt{pattern} can be used after operator = and !=.
+	      It uses many special characters. See class
+              \htmladdnormallink{Regex}
+              {../../aips/implement/Utilities/Regex.html}
+	      for a full description.
+              \begin{verbatim}
+		name ~ m/[a-zA-Z][a-zA-Z0-9]*/
+		name = regex('[a-zA-Z][a-zA-Z0-9]')
+              \end{verbatim}
+	\end{itemize}
+	Note that the functions and operator LIKE work on any string,
+        thus they can be used with any string expression.
   \item A DateTime constant can be formed in 2 ways:
        \begin{enumerate}
          \item From a String constant using the \texttt{datetime} function.
@@ -507,27 +536,27 @@ defined by scalars, but it can also be defined by another set. Thus:
 \begin{verbatim}
      array(F,shape(DATA))
 \end{verbatim}
-creates an array filled with F with the same shape as the DATA array.
+is a boolean array filled with F with the same shape as the DATA array.
 
 
 \subsection{\label{TAQL:OPERATORS}Operators}
 The following operators can be used (with their normal meaning and
 precedence) for scalars:
-\begin{description}
-  \item[] Unary \textbf{+} and \textbf{-}
+\begin{itemize}
+  \item Unary \textbf{+} and \textbf{-}
        \\Can only be used with double and complex operands.
        They do not have a higher precedence than the binary operators.
        E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
-  \item[] Unary \textbf{!} (or \textbf{NOT})
+  \item Unary \textbf{!} (or \textbf{NOT})
        \\Logical NOT operator.
        Can only be used with Bool operands.
-  \item[] Binary \textbf{$\wedge$, *, /, \%, +}, and \textbf{-}
+  \item Binary \verb+^+, *, /, \%, +, and \textbf{-}
        \\\% is the modulo operator.
        E.g. \texttt{3\%1.4} results in \texttt{0.2} and
        \texttt{-10\%3} results in \texttt{-1}.
        \\\verb+^+ is the power operator.
        Note that because of the precedence rules
-       \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+       \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
        \\All operators are left-associative, except \verb+^+ which is
        right-associative; thus \texttt{2}\verb+^+\texttt{1}\verb+^+\texttt{2} results in \texttt{2}.
        \\Operator \% can only be used for double operands, while the others
@@ -540,20 +569,20 @@ precedence) for scalars:
        \\- Subtraction of a double (unit days) from a DateTime
        (resulting in a DateTime).
        \\- Subtraction of 2 DateTimes (resulting in a double with unit days).
-  \item[] \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
+  \item \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
        \\Can be used with any operand as long as their data types conform.
        Operator $>$, $>=$, $<$, and $<=$ cannot be used for Regex.
        They use the norm for Complex values.
        \\To be compliant with SQL $=$ can be used for
        $==$ and $<>$ can be used for $!=$.
-  \item[] \verb+~+, \verb+!~+, and \textbf{LIKE} and
+  \item \verb+~+, \verb+!~+, and \textbf{LIKE} and
 	  \textbf{NOT LIKE}.
        \\\verb+~+ and \verb+!~+ have to be used with regular expression
        \htmlref{constants}{TAQL:CONSTANTS}.
        \\LIKE exists for SQL compliancy. It operates on a string
        giving a pattern with special characters \% (0 or more
-       characters) and \verb+_+ (any character). 
-  \item[] \textbf{EXISTS} and \textbf{NOT EXISTS}
+       characters) and \verb+_+ (any single character). 
+  \item \textbf{EXISTS} and \textbf{NOT EXISTS}
        \\Can be used to test if a subquery finds at least N matching rows.
        The value for N is taken from the LIMIT clause; if LIMIT is
        not given it defaults to 1. The subquery loop stops as soon as
@@ -564,35 +593,35 @@ precedence) for scalars:
        \end{verbatim}
        results in T if at least 2 matching rows in the ANTENNA table
        were found.
-  \item[] \textbf{IN} and \textbf{NOT IN}
+  \item \textbf{IN} and \textbf{NOT IN}
        \\Can be used to test if a value is an element in a set of
        values, ranges, and/or intervals.
        (See the discussion of \htmlref{sets}{TAQL:SETS}).
-  \item[] \textbf{BETWEEN} and \textbf{NOT BETWEEN}
+  \item \textbf{BETWEEN} and \textbf{NOT BETWEEN}
        \\Is a special form of IN with a single closed interval.
        It exists for SQL compliance.
        It can be used to test if a value is between two other values.
        E.g.
        \\\texttt{   col BETWEEN 1 AND 3}  and  \texttt{col in [1=:=3]}
        are the same.
-  \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
+  \item \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
        \\To be compliant with SQL the
        words \texttt{AND} and \texttt{OR} can be used instead of the
        symbols. These words are case insensitive.
        \\Also \textbf{\&} and \textbf{$\mid$} can be used.
        \\These operators can only be used with Bool operands.
-\end{description}
+\end{itemize}
 \begin{description}
   \item The precedence order is:
        \\\verb+^+
        \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
-       \\\texttt{$==, !=, >, >=, <, <=, IN, BETWEEN, EXISTS$},
+       \\\texttt{==, !=, >, >=, <, <=, IN, BETWEEN, EXISTS},
               \verb+~+, \verb+!~+
        \\\texttt{\&\&}
-       \\\texttt{$\mid\mid$}
+       \\\verb+||+
 \end{description}
 All these operators can be used in the same way for arrays
 (also a mix of scalar and array).
