@@ -14,6 +14,7 @@
 \raggedbottom
 
 % Fonts.
+%-------
 \newcommand{\acct}{\textit}
 \newcommand{\code}{\texttt}
 \newcommand{\exe}[1]{\textit{\texttt{#1}}}
@@ -22,23 +23,44 @@
 \newcommand{\url}{\textsl}
 
 % Names.
+%-------
 \newcommand{\aipspp}{{\textsc{aips}\texttt{++}}}
 \newcommand{\cplusplus}{{\textsc{c}\texttt{++}}}
 \newcommand{\gnu}{\textsc{gnu}}
 \newcommand{\rcs}{\textsc{rcs}}
 
 % References.
+%------------
 \renewcommand{\hyperref}[4]{#2p\pageref{#4}#3}
-\newcommand{\aipsexe}[1]{\htmlref{\textit{\texttt{#1}}}{#1}}
-\newcommand{\aipsexee}[2]{\htmlref{\textit{\texttt{#1}}}{#2}}
-\newcommand{\unixexe}[1]{\textit{\texttt{#1}}}
+
+% \aipsexe and \aipsfil produce a link in the HTML output but no page
+% reference in the printed output.
+\newcommand{\aipsexe}[1]{\htmlref{\exe{#1}}{#1}}
+\newcommand{\aipsfil}[1]{\htmlref{\file{#1}}{#1}}
+
+% \exeref and \filref produce a link in the HTML output and a page reference
+% in the printed output.
 \newcommand{\exeref}[1]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#1}}
-\newcommand{\exereff}[2]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#2}}
 \newcommand{\filref}[1]{\hyperref{\file{#1}}{\file{#1} (}{)}{#1}}
+
+% The following two-argument forms of the above commands allow the label to be
+% specified as the second argument.
+\newcommand{\aipsexee}[2]{\htmlref{\exe{#1}}{#2}}
+\newcommand{\aipsfill}[2]{\htmlref{\file{#1}}{#2}}
+\newcommand{\exereff}[2]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#2}}
 \newcommand{\filreff}[2]{\hyperref{\file{#1}}{\file{#1} (}{)}{#2}}
+
+% \unixexe produces no reference.  It is effectively the same as \exe but
+% should be used for unix commands.
+\newcommand{\unixexe}[1]{\textit{\texttt{#1}}}
+
+% \sref produces a "section" symbol followed by a section link in the HTML
+% output, and a section symbol followed by a section number and a page
+% reference in the printed output.
 \newcommand{\sref}[1]{\S\ref{#1}\latex{, p\pageref{#1}}}
 
 % Environments
+%-------------
 \newenvironment{synopsis}{\begin{verse}}{\end{verse}}
 \newenvironment{status}{\begin{verse}}{\end{verse}}
 
