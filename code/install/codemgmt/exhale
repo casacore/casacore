@@ -40,6 +40,12 @@
 #   -l     Latchkey mode; the update produced will be invisible to 'inhale'
 #          unless it is also invoked with the "-l" option.
 #
+#   -F     Force mode; turn off all sanity checks for things like
+#          running under the correct account, the proper site, etc.
+#          DO NOT USE!  This option is only intended for use as a
+#          debugging tool to maintain exhale itself.  DOT NOT USE!
+#          (This option is not listed in any usage instructions.) 
+#
 # The $MSTRFTPD/VERSION file is used as a timestamp file for the update.  It
 # also contains the major and minor version numbers of the most recent update.
 #
@@ -136,33 +142,9 @@
      exit 1
   fi
 
-# Check that we come from Socorro.
-  SITE=`echo $AIPSPATH | awk '{ print $3 }'`
-  if [ "$SITE" != socorro ]
-  then
-     exec 1>&2
-     echo ""
-     echo "exhale: This utility must only be run on the master machine" \
-          "at Socorro, abort!"
-     exit 1
-  fi
-
-# Check that we're being run from the right account.
-  ADMACCNT=aips2adm
-  if [ "$ADMACCNT" != "$LOGNAME" ]
-  then
-     exec 1>&2
-     echo ""
-     echo "exhale: This utility can only be run by $ADMACCNT, not" \
-          "$LOGNAME, abort!"
-     exit 1
-  fi
-
-# Set file protection mask.
-  umask 022
-
 # Parse command options.
   LATCHKEY=""
+  INSANE=""
   while [ "$#" -gt 0 ]
   do
      case $1 in
@@ -170,6 +152,11 @@
         LATCHKEY=1
         echo ""
         echo "exhale: WARNING - using latchkey mode."
+        ;;
+     -F)
+        INSANE=1
+        echo ""
+        echo "exhale: WARNING - no sanity checking!"
         ;;
      *)
         exec 1>&2
@@ -183,6 +170,31 @@
 
      shift
   done
+
+# Check that we come from Socorro.
+  SITE=`echo $AIPSPATH | awk '{ print $3 }'`
+  if [ "$SITE" != socorro -a "$INSANE" = "" ]
+  then
+     exec 1>&2
+     echo ""
+     echo "exhale: This utility must only be run on the master machine" \
+          "at Socorro, abort!"
+     exit 1
+  fi
+
+# Check that we're being run from the right account.
+  ADMACCNT=aips2adm
+  if [ "$ADMACCNT" != "$LOGNAME" -a "$INSANE" = "" ]
+  then
+     exec 1>&2
+     echo ""
+     echo "exhale: This utility can only be run by $ADMACCNT, not" \
+          "$LOGNAME, abort!"
+     exit 1
+  fi
+
+# Set file protection mask.
+  umask 022
 
 
 # Define major AIPS++ directories.
