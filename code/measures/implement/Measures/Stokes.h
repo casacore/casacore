@@ -101,7 +101,18 @@ public:
 	    RCircular, 
 	    LCircular, 
 	    // single dish polarization types
-	    Linear };
+	    Linear,
+	    // Polarized intensity ((Q^2+U^2+V^2)^(1/2))
+	    Ptotal,
+	    // Linearly Polarized intensity ((Q^2+U^2)^(1/2))
+	    Plinear,
+	    // Polarization Fraction (Ptotal/I)
+	    PFtotal,
+	    // Linear Polarization Fraction (Plinear/I)
+	    PFlinear,
+	    // Linear Polarization Angle (0.5 arctan(U/Q)) (in radians)
+	    Pangle
+	};
 
 //      The number of StokesTypes.
 // <note role=warning>
@@ -109,7 +120,7 @@ public:
 // </note>
 	enum {
 	    // The number of StokesTypes.
-	    NumberOfTypes = 28
+	    NumberOfTypes = 33
 	    };
 	
 //		convert Int to StokesTypes, returns Stokes::Undefined if 
@@ -151,3 +162,4 @@ private:
 };
 
 #endif
+
