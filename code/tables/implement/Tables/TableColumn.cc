@@ -1,5 +1,5 @@
 //# TableColumn.cc: Const access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,13 +99,6 @@ const ColumnDesc& ROTableColumn::columnDesc() const
 
 Table ROTableColumn::table() const
     { return Table (baseTabPtr_p, False); }
-
-void ROTableColumn::checkRowNumber (uInt rownr) const
-{
-    if (rownr >= nrow()) {
-	throw (TableError ("TableColumn: row number exceeds #rows"));
-    }
-}
 
 
 Bool ROTableColumn::asBool (uInt rownr) const
