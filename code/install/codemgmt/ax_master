@@ -4128,3 +4128,4 @@
 14 065 src mv trial/apps/gDisplay/GTkColormap.cc trialdisplay/apps/gDisplay/GTkColormap.cc
 14 065 src mv trial/apps/gDisplay/GTkColormap.h trialdisplay/apps/gDisplay/GTkColormap.h
 14 065 src mv trial/apps/gDisplay/GTkDisplayData.cc trialdisplay/apps/gDisplay/GTkDisplayData.cc
+14 065 src mv trial/apps/gDisplay/GTkDisplayData.h trialdisplay/apps/gDisplay/GTkDisplayData.h
