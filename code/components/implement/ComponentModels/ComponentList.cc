@@ -225,6 +225,17 @@ Vector<Int> ComponentList::selected() const {
   return retVal;
 }
 
+void ComponentList::setLabel(const Vector<Int> & whichComponents,
+			     const String & newLabel) {
+  uInt c;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    component(c).label() = newLabel;
+  }
+  DebugAssert(ok(), AipsError);
+}
+
 void ComponentList::setFlux(const Vector<Int> & whichComponents,
 			    const Flux<Double> & newFlux) {
   uInt c;
@@ -304,6 +315,16 @@ void ComponentList::convertRefDirection(const Vector<Int> & whichComponents,
   }
   DebugAssert(ok(), AipsError);
 }
+
+// void ComponentList::changeShape(const Vector<Int> & which,
+// 				ComponentType::Shape newShape) {
+//   uInt c;
+//   for (uInt i = 0; i < whichComponents.nelements(); i++) {
+//     AlwaysAssert(whichComponents(i) >= 0, AipsError);
+//     c = whichComponents(i);
+//   }
+//   DebugAssert(ok(), AipsError);
+// }
 
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
