@@ -58,7 +58,7 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right)
 template<class T>
 Array<T> reorderArray (const Array<T>& array,
 		       const IPosition& newAxisOrder,
-		       Bool alwaysCopy = True)
+		       Bool alwaysCopy)
 {
   const IPosition& shape = array.shape();
   IPosition newShape, incr;
