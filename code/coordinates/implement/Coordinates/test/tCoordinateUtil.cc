@@ -35,8 +35,30 @@
 
 #include <aips/iostream.h>
 
+void test0();
+void test1();
+void test2();
+void test3();
 
-void testCompare()
+int main()
+{
+try {
+   test0();
+   test1();
+   test2();
+   test3();
+}
+   catch (AipsError x) {
+      cerr << "aipserror: error " << x.getMesg() << endl;
+      return 1;
+  }
+ 
+  return 0;
+
+}
+
+
+void test0()
 {
   CoordinateSystem csys2 = CoordinateUtil::defaultCoords2D();
   CoordinateSystem csys3 = CoordinateUtil::defaultCoords3D();
@@ -78,7 +100,7 @@ void testCompare()
   AlwaysAssertExit (stretchAxes.isEqual (IPosition(1,3)));
 }
 
-void testCompare2()
+void test1()
 {
   IPosition newAxes, stretchAxes;
   {
@@ -112,12 +134,8 @@ void testCompare2()
 }
 
 
-int main()
+void test2 ()
 {
-try {
-   testCompare();
-   testCompare2();
-
 // 
 // DirectionCoordinate
 //
@@ -474,14 +492,109 @@ try {
          throw(AipsError("makeCoordinateSystem 6b"));
       }
    }   
-
 }
-   catch (AipsError x) {
-      cerr << "aipserror: error " << x.getMesg() << endl;
-      return 1;
-  }
- 
-  return 0;
 
+
+void test3 ()
+// 
+// Test function dropRemovedAxes.  4D makes Direction, Stokes, Spectral
+//
+{
+
+// No removed axes
+
+   {
+      CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();      
+      CoordinateSystem cSysOut;
+      Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+      AlwaysAssert(dropped==False, AipsError);
+      AlwaysAssert(cSysIn.near(cSysOut), AipsError);
+   }
+
+// Remove world&pixel axis for spectral axis - can be fully dropped
+
+   {
+      CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();      
+      Int pixelAxis, worldAxis, coord;
+      CoordinateUtil::findSpectralAxis(pixelAxis, worldAxis, coord, cSysIn);      
+      cSysIn.removeWorldAxis(worldAxis, 0.0);
+//
+      CoordinateSystem cSysOut;
+      Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+      AlwaysAssert(dropped==True, AipsError);
+      AlwaysAssert(cSysOut.nCoordinates()==(cSysIn.nCoordinates()-1), AipsError);
+      AlwaysAssert(cSysOut.nPixelAxes()==cSysIn.nPixelAxes(), AipsError);
+      AlwaysAssert(cSysOut.nWorldAxes()==cSysIn.nWorldAxes(), AipsError);
+      CoordinateUtil::findSpectralAxis(pixelAxis, worldAxis, coord, cSysOut);
+      AlwaysAssert(coord==-1, AipsError);
+      AlwaysAssert(worldAxis==-1, AipsError);
+      AlwaysAssert(pixelAxis==-1, AipsError);
+   }
+
+// Remove pixel axis only for spectral axis - cannot be fully dropped
+
+   {
+      CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();      
+      Int pixelAxis, worldAxis, coord;
+      CoordinateUtil::findSpectralAxis(pixelAxis, worldAxis, coord, cSysIn);      
+      cSysIn.removePixelAxis(pixelAxis, 0.0);
+//
+      CoordinateSystem cSysOut;
+      Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+      AlwaysAssert(dropped==False, AipsError);
+      AlwaysAssert(cSysOut.nCoordinates()==cSysIn.nCoordinates(), AipsError);
+      AlwaysAssert(cSysOut.nPixelAxes()==cSysIn.nPixelAxes(), AipsError);
+      AlwaysAssert(cSysOut.nWorldAxes()==cSysIn.nWorldAxes(), AipsError);
+      Vector<Int> pixelAxes = cSysOut.pixelAxes(coord);
+      Vector<Int> worldAxes = cSysOut.worldAxes(coord);
+      AlwaysAssert(pixelAxes(0)==-1, AipsError);
+      AlwaysAssert(worldAxes(0)==worldAxis, AipsError);
+   }
+
+// Remove world and pixel axis for half of DirectionCoordinate - cannot be fully dropped
+
+   {
+      CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();      
+      Vector<Int> pixelAxes, worldAxes;
+      Int coord;
+      CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coord, cSysIn);      
+      cSysIn.removeWorldAxis(worldAxes(0), 0.0);
+//
+      CoordinateSystem cSysOut;
+      Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+      AlwaysAssert(dropped==False, AipsError);
+      AlwaysAssert(cSysOut.nCoordinates()==cSysIn.nCoordinates(), AipsError);
+      AlwaysAssert(cSysOut.nPixelAxes()==cSysIn.nPixelAxes(), AipsError);
+      AlwaysAssert(cSysOut.nWorldAxes()==cSysIn.nWorldAxes(), AipsError);
+      Vector<Int> pixelAxesOut = cSysOut.pixelAxes(coord);
+      Vector<Int> worldAxesOut = cSysOut.worldAxes(coord);
+      AlwaysAssert(pixelAxesOut(0)==-1, AipsError);
+      AlwaysAssert(worldAxesOut(0)==-1, AipsError);
+      AlwaysAssert(pixelAxesOut(1)>=0, AipsError);
+      AlwaysAssert(worldAxesOut(1)>=0, AipsError);
+   }
+
+// Remove world and pixel axis for all  of DirectionCoordinate - can be fully dropped
+
+   {
+      CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();      
+      Vector<Int> pixelAxes, worldAxes;
+      Int coord;
+      CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coord, cSysIn);      
+      cSysIn.removeWorldAxis(worldAxes(1), 0.0);
+      cSysIn.removeWorldAxis(worldAxes(0), 0.0);
+//
+      CoordinateSystem cSysOut;
+      Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+      AlwaysAssert(dropped==True, AipsError);
+      AlwaysAssert(cSysOut.nCoordinates()==cSysIn.nCoordinates()-1, AipsError);
+      AlwaysAssert(cSysOut.nPixelAxes()==cSysIn.nPixelAxes(), AipsError);
+      AlwaysAssert(cSysOut.nWorldAxes()==cSysIn.nWorldAxes(), AipsError);
+      CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coord, cSysOut);
+      AlwaysAssert(coord==-1, AipsError);
+      AlwaysAssert(worldAxes.nelements()==0, AipsError);
+      AlwaysAssert(pixelAxes.nelements()==0, AipsError);
+   }
 }
+
 
