@@ -123,6 +123,45 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 
 }
 
+
+
+VisSet::VisSet(MeasurementSet& ms, const Matrix<Int>& chanSelection, 
+	       Double timeInterval)
+:ms_p(ms)
+{
+    LogSink logSink;
+    LogMessage message(LogOrigin("VisSet","VisSet"));
+
+
+    // sort out the channel selection
+    Int nSpw=ms_p.spectralWindow().nrow();
+    MSSpWindowColumns msSpW(ms_p.spectralWindow());
+    selection_p.resize(2,nSpw);
+    // fill in default selection
+    selection_p.row(0)=0; //start
+    selection_p.row(1)=msSpW.numChan().getColumn(); 
+    for (uInt i=0; i<chanSelection.ncolumn(); i++) {
+      Int spw=chanSelection(2,i);
+      if (spw>=0 && spw<nSpw && chanSelection(0,i)>=0 && 
+	  chanSelection(0,i)+chanSelection(1,i)<=selection_p(1,spw)) {
+	// looks like a valid selection, implement it
+	selection_p(0,spw)=chanSelection(0,i);
+	selection_p(1,spw)=chanSelection(1,i);
+      }
+    }
+
+    
+
+    Block<Int> columns(0);
+
+    iter_p=new VisIter(ms_p,columns,timeInterval);
+    for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
+      iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
+    }
+
+
+}
+
 VisSet::VisSet(const VisSet& vs,const Block<Int>& columns, 
 	       Double timeInterval)
 {

@@ -122,6 +122,16 @@ public:
 	 const Matrix<Int>& chanSelection, Double timeInterval=0,
 	 Bool compress=False);
 
+
+
+  // This is a no frills constructor, no re-sorting, the default order is used,
+  // no scratch columns is made even if they don't exist. So if you use
+  // this constructor and plan to use the scratch columns make sure 
+  // that they exist prior to constructing the VisSet this way.
+  VisSet(MeasurementSet & ms, const Matrix<Int>& chanSelection, 
+	 Double timeInterval=0);
+
+
   // Construct from an existing VisSet, this references the underlying
   // MeasurementSet(s) but allows a new iteration order and time interval
   // to be specified.
