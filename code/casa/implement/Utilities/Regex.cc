@@ -235,13 +235,14 @@ const char* Regex::transtable() const
 String Regex::fromPattern (const String& pattern)
 {
     enum CState{stream, bracketopen, escapechar};
-    int len = 0;
-    int bracecount = 0;
-    int inbrcount = 0;
+    Int len = 0;
+    Int bracecount = 0;
+    Int inbrcount = 0;
+    Int pattLeng = pattern.length();
     String result;
-    result.alloc (3 * pattern.length());
+    result.alloc (3 * pattLeng);
     CState state = stream;
-    for (int i=0; i<pattern.length(); i++) {
+    for (Int i=0; i<pattLeng; i++) {
 	char c = pattern[i];
 	switch(state) {
 	case stream :
@@ -338,10 +339,11 @@ String Regex::fromPattern (const String& pattern)
 
 String Regex::fromString (const String& string)
 {
+    Int strLeng = string.length();
     String result;
-    result.alloc (2 * string.length());
-    int len = 0;
-    for (int i=0; i<string.length(); i++) {
+    result.alloc (2 * strLeng);
+    Int len = 0;
+    for (Int i=0; i<strLeng; i++) {
 	char c = string[i];
 	// Escape special characters.
 	switch (c) {

@@ -40,10 +40,10 @@
 
 SortKey::SortKey (const void* dat, ObjCompareFunc* cmpfunc, uInt inc,
 		  int opt)
-: data_p    (dat),
-  cmpFunc_p (cmpfunc),
+: order_p   (opt),
+  data_p    (dat),
   incr_p    (inc),
-  order_p   (opt)
+  cmpFunc_p (cmpfunc)
 {
     if (order_p != Sort::Descending) {
 	order_p = Sort::Ascending;        // make sure order has correct value
@@ -51,24 +51,22 @@ SortKey::SortKey (const void* dat, ObjCompareFunc* cmpfunc, uInt inc,
 }
 
 SortKey::SortKey (const SortKey& that)
-: data_p    (that.data_p),
-  cmpFunc_p (that.cmpFunc_p),
+: order_p   (that.order_p),
+  data_p    (that.data_p),
   incr_p    (that.incr_p),
-  order_p   (that.order_p)
-{ ; }
+  cmpFunc_p (that.cmpFunc_p)
+{}
 
 SortKey::~SortKey()
 {}
-void SortKey::cleanup()
-    { this->SortKey::~SortKey(); }
 
 SortKey& SortKey::operator= (const SortKey& that)
 {
     if (this != &that) {
-	data_p     = that.data_p;
-	cmpFunc_p  = that.cmpFunc_p;
-	incr_p     = that.incr_p;
-	order_p    = that.order_p;
+	order_p   = that.order_p;
+	data_p    = that.data_p;
+	incr_p    = that.incr_p;
+	cmpFunc_p = that.cmpFunc_p;
     }
     return *this;
 }
@@ -112,12 +110,13 @@ Sort::Sort()
 : nrkey_p (0),
   data_p  (0),
   size_p  (0)
-    { ; }
+{}
+
 Sort::Sort (const void* dat, uInt sz)
 : nrkey_p (0),
   data_p  (dat),
   size_p  (sz)
-    { ; }
+{}
 
 Sort::~Sort()
 {
@@ -125,14 +124,21 @@ Sort::~Sort()
 	delete keys_p[i];
     }
 }
+
 void Sort::cleanup()
-    { this->Sort::~Sort(); }
+{
+    this->Sort::~Sort();
+}
 
 
 void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
-    { addKey (dat, dt, inc, ord); }
+{
+    addKey (dat, dt, inc, ord);
+}
 void Sort::sortKey (const void* dat, ObjCompareFunc* cmp, uInt inc, Order ord)
-    { addKey (dat, cmp, inc, ord); }
+{
+    addKey (dat, cmp, inc, ord);
+}
 void Sort::sortKey (uInt off, DataType dt, Order ord)
 {
     if (data_p == 0) {
@@ -172,7 +178,6 @@ void Sort::addKey (const void* dat, ObjCompareFunc* cmp, uInt inc, int ord)
 	throw (AllocError ("SortKey",1));
     }
     keys_p[nrkey_p++] = skptr;
-    skptr->makePermanent();        // Cleanup should not delete it
 }
 
 
@@ -194,7 +199,7 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
     // Choose the sort required.
     int nodup = opt & NoDuplicates;
     int type  = opt - nodup;
-    uInt n;
+    uInt n = 0;
     switch (type) {
     case QuickSort:
 	if (nodup) {
@@ -234,7 +239,7 @@ uInt Sort::insSort (uInt nrrec, uInt* inx) const
 {
     Int  j;
     uInt cur;
-    for (Int i=1; i<nrrec; i++) {
+    for (uInt i=1; i<nrrec; i++) {
 	j   = i;
 	cur = inx[i];
 	while (--j>=0  &&  compare(inx[j], cur) <= 0) {
@@ -253,8 +258,8 @@ uInt Sort::insSortNoDup (uInt nrrec, uInt* inx) const
     Int  j, k;
     uInt cur;
     uInt nr = 1;
-    int  cmp;
-    for (Int i=1; i<nrrec; i++) {
+    int  cmp = 0;
+    for (uInt i=1; i<nrrec; i++) {
 	j   = nr;
 	cur = inx[i];
 	while (--j>=0  &&  (cmp = compare (inx[j], cur)) == 0) {
@@ -380,7 +385,7 @@ int Sort::compare (uInt i1, uInt i2) const
 {
     int seq;
     SortKey* skp;
-    for (Int i=0; i<nrkey_p; i++) {
+    for (uInt i=0; i<nrkey_p; i++) {
 	skp = (SortKey*)(keys_p[i]);        // cast from void* to SortKey*
 	seq = skp->cmpFunc_p (
 	              (char*)skp->data_p + i1*skp->incr_p,

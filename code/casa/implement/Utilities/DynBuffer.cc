@@ -35,21 +35,21 @@
 // If we do not allocate it here, it will be done by newbuf.
 // However, then we may get a huge buffer, which may be not so nice.
 // bufsz may be sufficient for many purposes.
-DynBuffer::DynBuffer (const uInt bsz) :
-                          bufsz   (bsz),
-                          nrbuf   (0),
-                          bufptr  (10),
-			  uselen  (10),
-			  totlen  (10),
-			  maxnrbuf(10)
+DynBuffer::DynBuffer (uInt bsz)
+: bufsz_p   (bsz),
+  nrbuf_p   (0),
+  maxnrbuf_p(10),
+  uselen_p  (10),
+  totlen_p  (10),
+  bufptr_p  (10)
 {
     allocstart ();
-    bufptr[0] = new Char[bufsz];
-    if (bufptr[0] == 0) {
-	throw (AllocError("DynBuffer constructor", bufsz));
+    bufptr_p[0] = new Char[bufsz_p];
+    if (bufptr_p[0] == 0) {
+	throw (AllocError("DynBuffer constructor", bufsz_p));
     }else{
-        totlen[0] = bufsz;
-        nrbuf = 1;
+        totlen_p[0] = bufsz_p;
+        nrbuf_p = 1;
     }
 }
 
@@ -60,12 +60,12 @@ DynBuffer::~DynBuffer ()
 }
 
 
-void DynBuffer::remove (const uInt n)
+void DynBuffer::remove (uInt n)
 {
-    for (uInt i=n; i<nrbuf; i++) {
-	delete [] bufptr[i];
+    for (Int i=n; i<nrbuf_p; i++) {
+	delete [] bufptr_p[i];
     }
-    nrbuf = n;
+    nrbuf_p = n;
     allocstart ();
 }
 
@@ -73,49 +73,49 @@ void DynBuffer::remove (const uInt n)
 // Start the buffers by resetting the current buffer.
 void DynBuffer::allocstart ()
 {
-    curbuf = -1;
-    curtotlen = 0;
-    curuselen = 0;
+    curbuf_p = -1;
+    curtotlen_p = 0;
+    curuselen_p = 0;
 }
     
 
 // Get a new buffer
-uInt DynBuffer::newbuf (const uInt nr, const uInt valsz)
+uInt DynBuffer::newbuf (uInt nr, uInt valsz)
 {
     // Get the nr of free values in the current buffer.
     // If nothing left, use next buffer.
     // Store the used length of the current buffer.
     uInt n;
-    while ((n = (curtotlen - curuselen) / valsz) == 0) {
-	if (curbuf >= 0) {
-            uselen[curbuf] = curuselen;
+    while ((n = (curtotlen_p - curuselen_p) / valsz) == 0) {
+	if (curbuf_p >= 0) {
+            uselen_p[curbuf_p] = curuselen_p;
         }
 
 	// If no more buffers, get new one with required length.
 	// Use a minimum length of bufsz.
 	// Extend the administration blocks if they are full.
-	if (curbuf == nrbuf-1) {
-	    if (nrbuf == maxnrbuf) {
-		maxnrbuf += 10;
-		bufptr.resize (maxnrbuf);
-		totlen.resize (maxnrbuf);
-		uselen.resize (maxnrbuf);
+	if (curbuf_p == nrbuf_p-1) {
+	    if (nrbuf_p == maxnrbuf_p) {
+		maxnrbuf_p += 10;
+		bufptr_p.resize (maxnrbuf_p);
+		totlen_p.resize (maxnrbuf_p);
+		uselen_p.resize (maxnrbuf_p);
 	    }
-	    totlen[nrbuf] = (nr*valsz > bufsz ? nr*valsz : bufsz);
-	    bufptr[nrbuf] = new Char[totlen[nrbuf]];
-	    if (bufptr[nrbuf] == 0) {
-		throw (AllocError("DynBuffer", totlen[nrbuf]));
+	    totlen_p[nrbuf_p] = (nr*valsz > bufsz_p ? nr*valsz : bufsz_p);
+	    bufptr_p[nrbuf_p] = new Char[totlen_p[nrbuf_p]];
+	    if (bufptr_p[nrbuf_p] == 0) {
+		throw (AllocError("DynBuffer", totlen_p[nrbuf_p]));
 		return 0;
 	    }
-	    nrbuf++;
+	    nrbuf_p++;
 	}
 
 	// Okay, we have another buffer.
 	// Set the current lengths and buffer pointer.
-	curbuf++;
-	curuselen = 0;
-	curtotlen = totlen[curbuf];
-	curbufptr = bufptr[curbuf];
+	curbuf_p++;
+	curuselen_p = 0;
+	curtotlen_p = totlen_p[curbuf_p];
+	curbufptr_p = bufptr_p[curbuf_p];
     }
     return (n<nr ? n : nr);                 // #values fitting or needed
 }
@@ -125,21 +125,21 @@ uInt DynBuffer::newbuf (const uInt nr, const uInt valsz)
 // Store used length of last block used.
 void DynBuffer::nextstart ()
 {
-    nextbuf = 0;
-    if (curbuf >= 0) {
-	uselen[curbuf] = curuselen;
+    nextbuf_p = 0;
+    if (curbuf_p >= 0) {
+	uselen_p[curbuf_p] = curuselen_p;
     }
 }
 
 Bool DynBuffer::next (uInt& len, Char*& ptr)
 {
-    if (nextbuf > curbuf) {
+    if (nextbuf_p > curbuf_p) {
 	len = 0;
 	return False;                         // no more buffers
     }else{
-	len = uselen[nextbuf];
-	ptr = bufptr[nextbuf];
-	nextbuf++;
+	len = uselen_p[nextbuf_p];
+	ptr = bufptr_p[nextbuf_p];
+	nextbuf_p++;
 	return True;
     }
 }
