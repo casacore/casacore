@@ -1,5 +1,5 @@
 //# IPosition.h: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,6 +153,10 @@ public:
     // < nrdim and if they are not doubly defined).
     // E.g.: in the 4D case an axis path [0,2] is returned as [0,2,1,3].
     static IPosition makeAxisPath (uInt nrdim, const IPosition& partialPath);
+
+    // Make a list of axes which are the axes not given in <src>axes</src>
+    // up to the given dimension
+    static IPosition otherAxes (uInt nrdim, const IPosition& axes);
 
     // Convert an IPosition to and from an Array<Int>. In either case, the
     // array must be one dimensional.

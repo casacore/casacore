@@ -1,5 +1,5 @@
 //# IPosition.cc: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1122,6 +1122,12 @@ IPosition IPosition::makeAxisPath (uInt nrdim, const IPosition& partialPath)
         }
     }
     return path;
+}
+
+IPosition IPosition::otherAxes (uInt nrdim, const IPosition& axes)
+{
+   AlwaysAssert (nrdim>=axes.nelements(),AipsError);
+   return makeAxisPath(nrdim, axes).getLast(nrdim-axes.nelements());
 }
 
 void IPosition::throwIndexError() const
