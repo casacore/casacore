@@ -42,14 +42,14 @@ Test MeasureHolder extension
 Direction: Direction: [0.999848, 0.0174524, 0]
 Holder:    Direction: [0.999848, 0.0174524, 0]
 Number of values: 2
-0: 0x0
-1: 0x0
-2: 0x0
+0: ok
+1: ok
+2: ok
 Set 0: 1
 Set 1: 1
 Set 2: 0
 Number of values: 2
-2: 0x0
+2: ok
 0: [0.999848, 0.0174524, 0]
 1: [0.984808, 0.173648, 0]
 Direction:                Direction: [0.999848, 0.0174524, 0]
