@@ -84,10 +84,24 @@ class IPosition;
 template <class T> class TiledCollapser
 {
 public:
+    virtual ~TiledCollapser();
+
 // The init function for a derived class.
 // It can be used to check if <src>nOutPixelsPerCollapse</src>
 // corresponds with the number of pixels produced per collapsed chunk.
+// <br><src>processAxis</src> is the axis of the line being passed
+// to the <src>process</src> function.
     virtual void init (uInt nOutPixelsPerCollapse) = 0;
+
+// Can the process function in the derived class handle a null mask pointer?
+// If not, LatticeApply ensures that it'll always pass a mask block,
+// even if the lattice does not have a mask (in that case that mask block
+// contains all True values).
+// <br>The default implementation returns False.
+// <br>The function is there to make optimization possible when no masks
+// are involved. On the other side, it allows the casual user to ignore
+// optimization.
+    virtual Bool canHandleNullMask() const;
 
 // Create and initialize the accumulator.
 // The accumulator can be a cube with shape [n1,n2,n3],
@@ -101,16 +115,31 @@ public:
 // shape and data type.
     virtual void initAccumulator (uInt n1, uInt n3) = 0;
 
-// Collapse the given input data (<src>nrval</src> values with an
-// increment of <src>inIncr</src> elements).
+// Collapse the given input data containing (<src>nrval</src> values
+// with an increment of <src>inIncr</src> elements).
+// <src>inMask</src> is a Bool block representing a mask with the
+// same nr of values and increment as the input data. If a mask
+// value is False, the corresponding input value is masked off.
+// <br>When function <src>canHandleNullMask</src> returned True,
+// it is possible that <src>inMask</src> is a null pointer indicating
+// that the input has no mask, thus all values are valid.
+// <br>
 // The result(s) have to be stored in the accumulator at the given indices.
+// <br><src>startPos</src> gives the lattice position of the first value.
+// The position of other values can be calculated from index and shape
+// using function <src>toPositionInArray</src> in class
+// <linkto class=IPosition>IPosition</linkto>.
     virtual void process (uInt accumIndex1, uInt accumIndex3,
-			  const T* inData, uInt inIncr, uInt nrval) = 0;
+			  const T* inData, const Bool* inMask,
+			  uInt inIncr, uInt nrval,
+			  const IPosition& startPos,
+			  const IPosition& shape) = 0;
 
 // End the accumulator. It should return the accumulator as an
 // Array of datatype T with the given shape.
 // The accumulator should thereafter be deleted when needed.
-    virtual Array<T> endAccumulator (const IPosition& shape) = 0;
+    virtual void endAccumulator (Array<T>& result, Array<Bool>& resultMask,
+				 const IPosition& shape) = 0;
 };
 
 

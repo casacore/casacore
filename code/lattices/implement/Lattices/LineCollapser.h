@@ -1,5 +1,5 @@
 //# LineCollapser.h: Abstract base class to collapse lines for LatticeApply
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,22 +83,46 @@ class IPosition;
 template <class T> class LineCollapser
 {
 public:
+    virtual ~LineCollapser();
+
 // The init function for a derived class.
 // It can be used to check if <src>nOutPixelsPerCollapse</src>
 // corresponds with the number of pixels produced per collapsed line.
     virtual void init (uInt nOutPixelsPerCollapse) = 0;
 
+// Can the process function in the derived class handle a null mask?
+// If not, LatticeApply ensures that it'll always pass a filled mask vector,
+// even if the lattice does not have a mask (in that case that mask
+// contains all True values).
+// <br>The default implementation returns False.
+// <br>The function is there to make optimization possible when no masks
+// are involved. On the other side, it allows the casual user to ignore
+// optimization.
+    virtual Bool canHandleNullMask() const;
+
 // Collapse the given line and return one value from that operation.
 // The position in the Lattice at the start of the line is input
 // as well.
-    virtual T process (const Vector<T>& line,
-		       const IPosition& pos) = 0;
+// <br>When function <src>canHandleNullMask</src> returned True,
+// it is possible that <src>mask</src> is an empty vector indicating
+// that the input has no mask, thus all values are valid.
+// If not empty, the mask has the same length as the line.
+    virtual void process (T& result, Bool& resultMask,
+			  const Vector<T>& line,
+			  const Vector<Bool>& mask,
+			  const IPosition& pos) = 0;
 
 // Collapse the given line and return a line of values from that operation.
 // The position in the Lattice at the start of the line is input
 // as well.
-    virtual Vector<T>& multiProcess (const Vector<T>& line,
-				     const IPosition& pos) = 0;
+// <br>When function <src>canHandleNullMask</src> returned True,
+// it is possible that <src>mask</src> is an empty vector indicating
+// that the input has no mask, thus all values are valid.
+// If not empty, the mask has the same length as the line.
+    virtual void multiProcess (Vector<T>& result, Vector<Bool>& resultMask,
+			       const Vector<T>& line,
+			       const Vector<Bool>& mask,
+			       const IPosition& pos) = 0;
 };
 
 

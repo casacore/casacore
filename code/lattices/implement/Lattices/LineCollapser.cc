@@ -27,3 +27,14 @@
 
 
 #include <trial/Lattices/LineCollapser.h>
+
+
+template<class T>
+LineCollapser<T>::~LineCollapser()
+{}
+
+template<class T>
+Bool LineCollapser<T>::canHandleNullMask() const
+{
+    return False;
+}

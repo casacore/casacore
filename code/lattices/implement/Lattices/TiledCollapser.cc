@@ -27,3 +27,14 @@
 
 
 #include <trial/Lattices/TiledCollapser.h>
+
+
+template<class T>
+TiledCollapser<T>::~TiledCollapser()
+{}
+
+template<class T>
+Bool TiledCollapser<T>::canHandleNullMask() const
+{
+    return False;
+}
