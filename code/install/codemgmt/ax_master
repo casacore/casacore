@@ -5946,3 +5946,4 @@
 16 346 src mv trial/implement/Functionals/NQHyperPlane.h aips/implement/Functionals/NQHyperPlane.h
 16 346 src mv trial/implement/Functionals/NQHyperPlaneParam.h aips/implement/Functionals/NQHyperPlaneParam.h
 16 346 src mv trial/implement/Functionals/NQSinusoid1D.h aips/implement/Functionals/NQSinusoid1D.h
+16 346 src mv trial/implement/Functionals/NQSinusoid1DParam.h aips/implement/Functionals/NQSinusoid1DParam.h
