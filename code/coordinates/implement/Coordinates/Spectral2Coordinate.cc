@@ -43,7 +43,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
                                        MDoppler::Types velType,
                                        const Vector<Double>& velocities,
                                        const String& velUnit,
-                                       Double restFrequency = 0.0)
+                                       Double restFrequency )
 : Coordinate(),
   type_p(freqType),
   restfreq_p(restFrequency),
