@@ -1,5 +1,5 @@
 //# ColumnSet.h: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,6 +197,14 @@ public:
     // When the data manager is unknown, an exception is thrown.
     // A blank name means the data manager is unknown.
     DataManager* findDataManager (const String& dataManagerName) const;
+
+    // Synchronize the columns after it appeared that data in the
+    // main table file have changed.
+    // It cannot deal with changes in number of columns, so it throws an
+    // exception when they have changed.
+    // Keywords in all columns are updated.
+    // The other ColumnSet gives the new data.
+    void syncColumns (const ColumnSet& other);
 
 private:
     // Remove the last data manager (used by addColumn after an exception).
