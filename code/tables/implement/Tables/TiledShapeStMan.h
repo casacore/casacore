@@ -1,5 +1,5 @@
 //# TiledShapeStMan.h: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -270,15 +270,22 @@ private:
     virtual void readHeader (uInt nrrow, Bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt pos, uInt rownr, uInt nrow);
+    void updateRowMap (uInt cubeNr, uInt pos, uInt rownr);
+
+    // Extend the map of row numbers to cube number plus offset
+    // will new empty entries.
+    void extendRowMap (uInt nrow);
 
 
     //# Declare the data members.
     // The default tile shape.
     IPosition defaultTileShape_p;
     // The map of row number to cube and position in cube.
+    Block<uInt> rowMap_p;
     Block<uInt> cubeMap_p;
     Block<uInt> posMap_p;
+    // The nr of elements used in the map blocks.
+    uInt nrUsedRowMap_p;
 };
 
 
