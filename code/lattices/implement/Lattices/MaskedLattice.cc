@@ -138,7 +138,8 @@ Bool MaskedLattice<T>::getMaskSlice (Array<Bool>& buffer, const Slicer& section,
     isARef = doGetMaskSlice (buffer, Slicer(blc,trc,inc,Slicer::endIsLast));
   }
   if (removeDegenerateAxes) {
-    buffer.nonDegenerate();
+    Array<Bool> tmp = buffer.nonDegenerate();
+    buffer.reference (tmp);
   }
   return isARef;
 }
