@@ -2602,3 +2602,5 @@
 11 378 src rm aips/implement/Arrays/specializations
 11 378 src rm trial/implement/Functionals/specializations
 11 382 src rm aips/implement/LinearAlgebra
+11 382 src rm /trial/implement/ComponentModels/csm_func.g
+11 382 src rm /trial/implement/ComponentModels/csm_gui.g
