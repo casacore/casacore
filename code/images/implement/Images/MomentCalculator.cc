@@ -1230,6 +1230,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 
 // Do we need the scale factor for the integrated moment
 
+   Int axis =  iMom.momentAxis_p;
    Bool doIntScaleFactor = False;
    integratedScaleFactor = 1.0;
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
@@ -1251,7 +1252,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 // Find the coordinate for the moment axis
    
    Int coordinate, axisInCoordinate;
-   cSys.findPixelAxis(coordinate, axisInCoordinate,  iMom.momentAxis_p);  
+   cSys.findPixelAxis(coordinate, axisInCoordinate, axis);  
   
 // Find out whether this coordinate is separable or not
   
@@ -1266,7 +1267,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
    if (nPixelAxes == 1 && nWorldAxes == 1) {
       pixelIn = cSys_p.referencePixel();
 //
-      Vector<Double> frequency(iMom.pInImage_p->shape()(iMom.momentAxis_p));
+      Vector<Double> frequency(iMom.pInImage_p->shape()(axis));
       if (doCoordProfile) {
          for (uInt i=0; i<frequency.nelements(); i++) {
             frequency(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
@@ -1302,7 +1303,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
             integratedScaleFactor = abs(vel1.getValue() - vel0.getValue());
             doneIntScale = True;
          }
-     } 
+      } 
    } else {
       os << LogIO::NORMAL
            << "You have asked for a coordinate moment from a non-separable " << endl;
@@ -1316,17 +1317,8 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 // axis is non-separable
 
       const Coordinate& c = cSys.coordinate(coordinate);
-      Vector<Double> pixel(nPixelAxes);
-      Vector<Double> world0(nWorldAxes), world1(nWorldAxes);
-      pixel(axisInCoordinate) = c.referencePixel()(axisInCoordinate) - 0.5;
-      if (!c.toWorld(world0, pixel)) {
-         os << c.errorMessage() << LogIO::EXCEPTION;
-      }
-      pixel(axisInCoordinate) = c.referencePixel()(axisInCoordinate) + 0.5;
-      if (!c.toWorld(world1, pixel)) {
-         os << c.errorMessage() << LogIO::EXCEPTION;
-      }
-      integratedScaleFactor = abs(world1(axisInCoordinate) - world0(axisInCoordinate));
+      Double inc = c.increment()(axisInCoordinate);
+      integratedScaleFactor = abs(inc*inc);
       doneIntScale = True;
    }
 }
