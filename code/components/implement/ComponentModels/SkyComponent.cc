@@ -26,219 +26,147 @@
 //# $Id$
 
 #include <trial/ComponentModels/SkyComponent.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
+#include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/ComponentModels/PointCompRep.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/ArrLatticeIter.h>
-
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Mathematics/Convolver.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/MVDirection.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Utilities/COWPtr.h>
+#include <aips/Logging/LogOrigin.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Utilities/Assert.h>
 
-SkyComponent::~SkyComponent()
+SkyComponent::SkyComponent()
+  :theCompPtr(new PointCompRep) 
 {
+  AlwaysAssert(ok(), AipsError);
 };
 
-void SkyComponent::operator()(ImageInterface<Float> & image) const {
-  const CoordinateSystem coords = image.coordinates();
-  const IPosition imageShape = image.shape();
-  const uInt naxis = imageShape.nelements();
+SkyComponent::SkyComponent(ComponentType::Type type) {
+  switch (type){
+  case ComponentType::POINT:
+    theCompPtr.replace(new PointCompRep); break;
+//   case GAUSSIAN:
+//     theCompPtr.replace(new GaussianCompRep); break;
+  };    
+  AlwaysAssert(ok(), AipsError);
+};
 
-  // I currently REQUIRE that the image has one direction coordinate (only).
-  // All other coordinates (ie. polarization and frequency) are optional. 
-  const Int dirCoordAxis = coords.findCoordinate(Coordinate::DIRECTION);
-  AlwaysAssert(dirCoordAxis >= 0, AipsError);
-  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, dirCoordAxis)
-	       == -1, AipsError);
+SkyComponent::SkyComponent(const SkyComponent & other) 
+  :theCompPtr(other.theCompPtr)
+{ 
+  AlwaysAssert(ok(), AipsError);
+};
 
-  // Check if there is a Stokes Axes and if so which polarizations. Otherwise
-  // only grid the I polarisation
-  Vector<Int> stokes; // Vector stating which polarisations are on which plane
-  uInt nStokes;       // The total number of polarisations
-  Int polAxis;        // The axis on the image with the polarisation
-  { // This could be packaged up as a protected function. 
-    const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
-    if (polCoordAxis >= 0) {
-      AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, polCoordAxis) 
-		   == -1, AipsError);
-      StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
-      stokes = polCoord.stokes();
-      nStokes = stokes.nelements();
-      AlwaysAssert(nStokes > 0, AipsError);
-      Vector<Int> polAxes = coords.pixelAxes(polCoordAxis);
-      AlwaysAssert(polAxes.nelements() == 1, AipsError);
-      polAxis = polAxes(0);
-      if (polAxis >= 0) {
-	AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
-      }
-      else
-	AlwaysAssert(nStokes == 1, AipsError);
-      for (uInt p = 0; p < nStokes; p++)
-	AlwaysAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
-		     stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
-		     AipsError);
-    }
-    else {
-      stokes.resize(1);
-      stokes(0) = Stokes::I;
-      nStokes = 1;
-      polAxis = -1;
-    }
-  }
-  // Setup an iterator to step through the image in chunks that can fit into
-  // memory. Go to a bit of effort to make the chunck size as large as
-  // possible but still minimize the number of tiles in the cache.
-  const Vector<Int> dirAxes = coords.pixelAxes(dirCoordAxis);
-  const uInt nPixAxes = dirAxes.nelements();
-  IPosition elementShape = imageShape;
-  IPosition chunckShape = imageShape;
+SkyComponent::~SkyComponent() {
+  DebugAssert(ok(), AipsError);
+};
+
+SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
+  if (this != &other)
+    theCompPtr = other.theCompPtr;
+  DebugAssert(ok(), AipsError);
+  return *this;
+};
+
+void SkyComponent::sample(Vector<Double> & result, 
+			  const MDirection & samplePos) const {
+  theCompPtr->sample(result, samplePos);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::project(ImageInterface<Float> & plane) const {
+  theCompPtr->project(plane);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::setFlux(const Vector<Double> & newFlux) {
+  theCompPtr->setFlux(newFlux);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::flux(Vector<Double> & compFlux) const {
+  theCompPtr->flux(compFlux);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::setPosition(const MDirection & newPos) {
+  theCompPtr->setPosition(newPos);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::position(MDirection & compPos) const {
+  theCompPtr->position(compPos);
+  DebugAssert(ok(), AipsError);
+};
+
+uInt SkyComponent::nParameters() const {
+  DebugAssert(ok(), AipsError);
+  return theCompPtr->nParameters();
+};
+
+void SkyComponent::setParameters(const Vector<Double> & newParms) {
+  theCompPtr->setParameters(newParms);
+  DebugAssert(ok(), AipsError);
+};
+
+void SkyComponent::parameters(Vector<Double> & compParms) const {
+  theCompPtr->parameters(compParms);
+  DebugAssert(ok(), AipsError);
+};
+
+ComponentType::Type SkyComponent::type() const {
+  DebugAssert(ok(), AipsError);
+  return theCompPtr->type();
+};
+
+SkyComponent SkyComponent::copy() const {
+  DebugAssert(ok(), AipsError);
+  SkyComponent newComp(type());
   {
-    const IPosition tileShape(image.niceCursorShape(image.maxPixels()));
-    Int axis;
-    for (uInt k = 0; k < nPixAxes; k++) {
-      axis = dirAxes(k);
-      if (axis >= 0) {
-	elementShape(axis) = 1;
-	chunckShape(axis) = tileShape(axis);
-      }
-    }
+    Vector<Double> thisFlux;
+    flux(thisFlux);
+    newComp.setFlux(thisFlux);
   }
-  LatticeIterator<Float> chunkIter(image, chunckShape);
-  const DirectionCoordinate dirCoord = 
-    coords.directionCoordinate(dirCoordAxis);
-  Vector<Double> pixelCoord(nPixAxes); 
-  pixelCoord = 0.0;
-  Vector<Double> worldCoord(2); 
-  Int axis;
-  MDirection pixelDir(MVDirection(0.0), dirCoord.directionType());
-  Vector<Quantum<Double> > dirVal(2);
-  dirVal(0).setUnit(dirCoord.worldAxisUnits()(0));
-  dirVal(1).setUnit(dirCoord.worldAxisUnits()(1));
-  StokesVector pixelVal;
-  Block<IPosition> blc(nStokes);
-  Block<IPosition> trc(nStokes);
-  if (nStokes > 1) {
-    blc = IPosition(naxis,0);
-    trc = elementShape - 1;
-    for (uInt p = 0; p < nStokes; p++) {
-      blc[p](polAxis) = p;
-      trc[p](polAxis) = p;
-    }
-  }
-
-  for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-    ArrayLattice<Float> array(chunkIter.cursor());
-    ArrLatticeIter<Float> elementIter(array, elementShape);
-    
-    for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
-      for (uInt k = 0; k < nPixAxes; k++) {
-	axis = dirAxes(k);
-	if (axis >= 0)
-	  pixelCoord(k) = elementIter.position()(axis);
-      }
-      AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True, 
-		   AipsError);
-      dirVal(0).setValue(worldCoord(0));
-      dirVal(1).setValue(worldCoord(1));
-      pixelDir.set(MVDirection(dirVal));
-      pixelVal = operator()(pixelDir);
-      if (nStokes == 1) {
-	switch (stokes(0)) {
-	case Stokes::I:
-	  elementIter.cursor() += pixelVal(0); break;
-	case Stokes::Q:
-	  elementIter.cursor() += pixelVal(1); break;
-	case Stokes::U:
-	  elementIter.cursor() += pixelVal(2); break;
-	case Stokes::V:
-	  elementIter.cursor() += pixelVal(3); break;
-	}
-      }
-      else if (elementShape.product() == nStokes)
-	for (uInt p = 0; p < nStokes; p++) {
-	  switch (stokes(p)) {
-	  case Stokes::I:
-	    elementIter.cursor()(blc[p]) += pixelVal(0); break;
-	  case Stokes::Q:
-	    elementIter.cursor()(blc[p]) += pixelVal(1); break;
-	  case Stokes::U:
-	    elementIter.cursor()(blc[p]) += pixelVal(2); break;
-	  case Stokes::V:
-	    elementIter.cursor()(blc[p]) += pixelVal(3); break;
-	  }
-	}
-      else
-	for (uInt p = 0; p < nStokes; p++) {
-	  switch (stokes(p)) {
-	  case Stokes::I:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(0); break;
-	  case Stokes::Q:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(1); break;
-	  case Stokes::U:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(2); break;
-	  case Stokes::V:
-	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(3); break;
-	  }
-	}
-    }
-  }
-};
-
-void SkyComponent::
-operator()(ImageInterface<Float> & image, 
-	   const ImageInterface<Float> & psf) const {
-  operator()(image);
-  // Start up a convolver and convolve the image with the psf.  Currently
-  // the image and the psf should have the same co-ordinate spacings (This
-  // means the deltas should be the same). However this is not checked
-
-  // Also the dimension of the psf MUST be the same or smaller than the
-  // dimension of the image. The sizes do not need to be the same. I should
-  // also not assume that the RA and Dec axis are the first axies.
-  IPosition psfShape = psf.shape();
-  uInt psfDim = psfShape.nelements();
-  uInt psfNdDim = psfShape.nonDegenerate().nelements();
-  IPosition imageShape = image.shape();
-  IPosition convShape = imageShape.getFirst(psfNdDim);
-  Convolver<Float> convolver;
   {
-    COWPtr< Array<Float> > ptrPsfArray(new Array<Float>);
-    Bool isCopy;
-    isCopy = psf.getSlice(ptrPsfArray, IPosition(psfDim, 0), psfShape, 
-  			  IPosition(psfDim, 1));
-    convolver.setPsf(*ptrPsfArray, convShape);
+    MDirection thisPosition;
+    position(thisPosition);
+    newComp.setPosition(thisPosition);
   }
-  // To avoid using too much memory I will not use the internal iterator
-  // of the convolver class and will iterate through the image using a
-  // latticeIterator
-  LatticeIterator<Float> iter(image, convShape); 
-  for (iter.reset(); !iter.atEnd(); iter++) {
-     convolver.linearConv(iter.cursor(), iter.cursor());
+  {
+    Vector<Double> thisParameters;
+    parameters(thisParameters);
+    newComp.setParameters(thisParameters);
   }
+  return newComp;
 };
 
-Vector<StokesVector> SkyComponent::
-operator()(const Vector<MDirection> & samplePos) const {
-  uInt nsamples = samplePos.nelements();
-  Vector<StokesVector> results(nsamples);
-  for (uInt i = 0; i < nsamples; i++)
-    results(i) = this->operator()(samplePos(i));
-  return results;
+Bool SkyComponent::ok() const {
+  if (theCompPtr.null() == False) {
+    LogIO logErr(LogOrigin("SkyComponent", "ok()"));
+    logErr << LogIO::SEVERE << "Internal pointer is not pointing to anything"
+           << LogIO::POST;
+    return False;
+  }
+  if (theCompPtr->ok() == False) {
+    LogIO logErr(LogOrigin("SkyComponent", "ok()"));
+    logErr << LogIO::SEVERE << "Component representation is not ok"
+           << LogIO::POST;
+    return False;
+  }
+  return True;
+};
+
+SkyComponent::SkyComponent(SkyCompRep * rawPtr)
+  :theCompPtr(rawPtr) {
+};
+
+SkyCompRep * SkyComponent::rawPtr() {
+  return &(*theCompPtr);
+};
+
+const SkyCompRep * SkyComponent::rawPtr() const {
+  return &(*theCompPtr);
 };
 
 // Local Variables: 
