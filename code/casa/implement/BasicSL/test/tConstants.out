@@ -50,15 +50,6 @@ DBL_MAX...............  1.79769e+308
 LDBL_MAX..............  (unprintable)
 
 Machine constants from values.h:
-BITS(Char)............  8
-BITS(uChar)...........  8
-BITS(Short)...........  16
-BITS(uShort)..........  16
-BITS(Int).............  32
-BITS(uInt)............  32
-BITS(Float)...........  32
-BITS(Double)..........  64
-BITS(lDouble).........  96
 HIBITS................  -32768
 HIBITL................  -2147483648
 MAXSHORT..............  32767
@@ -68,8 +59,6 @@ MINFLOAT..............  1.4013e-45
 MINDOUBLE.............  4.94066e-324
 MAXFLOAT..............  3.40282e+38
 MAXDOUBLE.............  1.79769e+308
-FSIGNIF...............  24
-DSIGNIF...............  53
 
 <<< End of machine constants.
 
