@@ -1,5 +1,5 @@
 //# SubLattice.h: A subset of a Lattice or MaskedLattice
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,6 +145,11 @@ public:
   // It is if its parent lattice or its region is masked.
   virtual Bool isMasked() const;
 
+  // A SubLattice is persistent if no region is applied to the parent lattice.
+  // That is true if the region has the same shape as the parent lattice
+  // and the region has no mask.
+  virtual Bool isPersistent() const;
+
   // Is the SubLattice paged to disk?
   virtual Bool isPaged() const;
 
@@ -168,13 +173,9 @@ public:
   // (i.e. axes with a length of one).
   virtual IPosition shape() const;
   
-  // Returns the number of axes in this SubLattice. This includes all
-  // degenerate axes.
-  virtual uInt ndim() const;
-  
-  // Returns the total number of elements in this SubLattice.
-  virtual uInt nelements() const;
-  
+  // Return the name of the parent lattice.
+  virtual String name (const Bool stripPath=False) const;
+
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
