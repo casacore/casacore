@@ -142,7 +142,7 @@ void ProgressMeter::update(Double value, Bool force)
     }
     else{
 
-      cerr << "WARNING: progress meter trying to update beyond range" << endl;
+      //cerr << "WARNING: progress meter trying to update beyond range" << endl;//The user does not need to know that the programmer does not know how to add.
       
     }
 }
