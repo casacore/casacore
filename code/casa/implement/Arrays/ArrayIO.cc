@@ -586,42 +586,76 @@ Bool readArrayBlock(istream &s, Bool &trans,
     };
   } else {
     String st;	///
+    String sts;	///
     uInt chstr = Register((String *)0);	///
     while (how) {
       s >> ws;
       s.get(ch);
       if (ch == ',') {
 	s >> ws;
-      } else if (ch == ']') {
+      } else if (ch == ']' || (Int)ch == EOF) {
 	break;
       } else {
 	s.putback(ch);
       };
-      if (chstr == Register(&r)) {
+      if (chstr == Register(&r)) {	/// all of this extra
 	s >> st;	/// Read string
 	Int ix = st.index(Regex("[],]"));	/// See if any present
 	if (ix >= 0) {	/// if yes
-	  s.putback(' ');
-	  for (Int i1=st.length()-1; i1>=ix; i1--) {	/// set back
+	  while ((ix = st.index(',')) >= 0) {
+	    sts = st.before(ix);
+	    istrstream ins(sts); /// Necessary for template
+	    ins >> r;				/// expansion
+	    st = st.after(ix);
+	    if (x.nelements() <= cnt) {
+	      x.resize(2*x.nelements() + 1);
+	    };
+	    x[cnt] = r;
+	    cnt++;
+	  };
+	  if ((ix = st.index(']')) >= 0) {
+	    sts = st.before(ix);
+	    istrstream ins(sts); /// Necessary for template
+	    ins >> r;				/// expansion
+	    st = st.from(ix);
+	    if (x.nelements() <= cnt) {
+	      x.resize(2*x.nelements() + 1);
+	    };
+	    x[cnt] = r;
+	    cnt++;
+	    for (Int i1=st.length()-1; i1>=0; i1--) {	/// set back
+	      s.putback(st[i1]);	///
+	    };			///
+	    break;
+	  };	  
+	  for (Int i1=st.length()-1; i1>=0; i1--) {	/// set back
 	    s.putback(st[i1]);	///
 	  };			///
-	  st = st.before(ix);	/// keep first part
-	};				///
-	///      s >> r;
-	istrstream instr(st);	/// read data from string
-	instr >> r;			///
-      } else {			///
-	s >> r;			///
-      };			///
-      if (!s.ipfx(0)) {
-	s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
-	how = False;
-      } else {
-	if (x.nelements() <= cnt) {
-	  x.resize(2*x.nelements() + 1);
+	} else {
+	  istrstream ins(st); /// Necessary for template
+	  ins >> r;				/// expansion
+	  if (x.nelements() <= cnt) {
+	    x.resize(2*x.nelements() + 1);
+	  };
+	  x[cnt] = r;
+	  cnt++;
 	};
-	x[cnt] = r;
-	cnt++;
+	if (!s.ipfx(0)) {
+	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
+	  how = False;
+	};
+      } else {
+	s >> r;
+	if (!s.ipfx(0)) {
+	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
+	  how = False;
+	} else {
+	  if (x.nelements() <= cnt) {
+	    x.resize(2*x.nelements() + 1);
+	  };
+	  x[cnt] = r;
+	  cnt++;
+	};
       };
     };
   };

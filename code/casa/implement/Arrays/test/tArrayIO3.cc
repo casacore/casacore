@@ -75,6 +75,11 @@ main (int argc)
 	cout << "--------------------------------------" << endl;
 	cin >> as;
 	cout << as << endl;
+	istrstream ins("[x, y]");
+	cout << "Input Array [x, y] " << endl;
+	cout << "--------------------------------------" << endl;
+	ins >> as;
+	cout << as << endl;
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
