@@ -1,5 +1,5 @@
 //# tFit2D.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <trial/Fitting.h>
+///#include <trial/Fitting.h>
 #include <trial/Fitting/Fit2D.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <aips/Inputs/Input.h>
@@ -37,7 +37,7 @@
 
 int main(int argc, char **argv)
 {
-
+  /*
   try {
  
    Input inputs(1);
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
    Gaussian2D<Double> gauss2d;
    gauss2d.setHeight(3.0);
    gauss2d.setMajorAxis(2.0);
-   gauss2d.setMinorAxis(1.0);
+   gauss2d.setAxialRatio(0.5);
    gauss2d.setPA(-0.1);
    gauss2d.setXcenter(Double(shape(0)/2));
    gauss2d.setYcenter(Double(shape(1)/2));
@@ -104,30 +104,27 @@ int main(int argc, char **argv)
          iMask(i) = 0;
       }
    }
-
-// convert axial ratio to minor axis (availableParameter
-// interface uses axial ratio)
-
-   parameters(4) = parameters(4)*parameters(3);  
-   cout << "      mask   = " << iMask.ac() << endl;
    cout << "True values  = " << parameters.ac() << endl;
+   cout << "      mask   = " << iMask.ac() << endl;
 
-   Vector<Double> startParameters(parameters.copy());
    for (uInt i=0; i<parameters.nelements(); i++) {
-      startParameters(i) = parameters(i) * 0.9;
+      parameters(i) = parameters(i) * 0.9;
    }
-   cout << "Start values = " << startParameters.ac() << endl;
+   cout << "Start values = " << parameters.ac() << endl;
 //
    Fit2D fitter(logger);
-   fitter.addModel (Fit2D::GAUSSIAN, startParameters, parameterMask);
+   fitter.addModel (Fit2D::Gaussian, parameters, parameterMask);
    if (includeRange.nelements()==2) {
       fitter.setIncludeRange(includeRange[0], includeRange[1]);
    }
    if (excludeRange.nelements()==2) {
       fitter.setExcludeRange(excludeRange[0], excludeRange[1]);
    }
+   cout << "Number of models = " << fitter.nModels() << endl;
 //
 
+cout << endl << endl;
+  */
 /*
 cout << "pixels=" << pixels.ac() << endl;
 cout << "mask=" << pixelMask.ac() << endl;
@@ -135,26 +132,20 @@ cout << "sigma=" << sigma.ac() << endl;
 cout << "norm=" << norm << endl;
 cout << endl << endl;
 */
-
+  /*
    Fit2D::ErrorTypes status = fitter.fit(pixels, pixelMask, sigma, norm);
    if (status==Fit2D::OK) {
-      cout << "Solution     = " << fitter.availableSolution().ac() << endl;
-      cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
       cout << "Number of iterations = " << fitter.numberIterations() << endl;
       cout << "Number of points     = " << fitter.numberPoints() << endl;
-//
-/*
-// when i return errors, make a test to 3sigma or summfink
-      if (!allNear(fitter.availableSolution().ac(), parameters.ac(), 1e-6)) {
-         throw (AipsError("Solution not accurate to 1e-6"));
-      }
-*/
-//
-      cout << "Number of models = " << fitter.nModels() << endl;
+      cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
+      cout << "Global available solution = " << fitter.availableSolution().ac() << endl;
+      cout << "Global solution           = " << fitter.solution().ac() << endl;
       for (uInt i=0; i<fitter.nModels(); i++) {
         cout << "Model " << i << " of type " << Fit2D::type(fitter.type(i)) <<
-                " has solution "  << fitter.availableSolution(i).ac() << endl;
+                " has available solution "  << fitter.availableSolution(i).ac() << endl;
 //
+        cout << "Model " << i << " of type " << Fit2D::type(fitter.type(i)) <<
+                " has solution           "  << fitter.solution(i).ac() << endl;
       }
 //
       fitter.residual(resid, pixels);
@@ -198,8 +189,10 @@ cout << endl << endl;
    }
  } catch (AipsError x) {
       cout << "Failed with message " << x.getMesg() << endl;
- } end_try;  
- 
+ } end_try;
+*/
+  cout << "UNTESTED" << endl;
+  return 3;
 }
 
 
