@@ -27,9 +27,10 @@
 #                          520 Edgemont Road
 #                          Charlottesville, VA 22903-2475 USA
 #
-#-----------------------------------------------------------------------------------
-# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-R NAME] [-r #] [-w #] binary
-#-----------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------
+# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-R NAME] [-r #] [-w #] [binary]
+#               [-cvsup data | docs | all]
+#-------------------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
 #
@@ -58,6 +59,10 @@
 #   -w #   Set retry interval for the ftp in seconds, default 900.
 #   binary This retrieves the latest stable/linux_gnu binary from aips2.nrao.edu
 #          it sets the -b and -n options so a build will not happen.
+#
+#   -cvsup data | docs | all  Uses cvsup to retrieve latest data or docs or both
+#          from AIPS++ central.  Note you must have cvsup either set using an aipsrc
+#          variable or in the path.
 #
 # Status return values correspond to the various phases of the operation
 #    0:  success
@@ -175,6 +180,7 @@
   FTPINTVL=900
   PASSIVEFTP=
   BINARY=
+  USECVSUP=
 
   while [ "$#" -gt 0 ]
   do
@@ -190,6 +196,11 @@
      -c)
         MODE=cumulative
         ;;
+     -cvsup)
+         shift
+	 USECVSUP=1
+	 CVSUPGET=$1
+         ;;
      -D)
         DINKUM=dinkum
         ;;
@@ -1113,7 +1124,6 @@
   GOTSYNC=
   for INHOST in $INHOSTS
   do
-     echo "In the loop"
 #    Parse any architecture extension.
      EXTLIST=""
      case $INHOST in
@@ -1174,6 +1184,93 @@
      echo "inhale: Initiating synchronous rebuild$TMP..."
      (aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh ; \
       sneeze $INEXT -l -m $MODE $TARGETS)
+  fi
+
+#
+# Now we look to see if we're going to cvsup the docs or data
+#
+  if [ "$USECVSUP" ]
+  then
+     doit="yes"
+     CVSUP="cvsup -g "
+
+# Ensure that cvsup is installed here.
+
+     for DIREX in `echo $PATH | sed -e 's/:/ /g'` ""
+     do
+       [ -f "$DIREX/cvsup" ] && break
+     done
+
+     if [ "$DIREX" = "" ]
+     then
+       echo ""
+       echo "inhale: cvsup does not appear to be available (check your" \
+            "PATH), abort!"
+       doit="no"
+     fi
+
+     case $CVSUPGET in
+       data)
+         FETCHCVSUP="data"
+       break
+       ;;
+       docs)
+         FETCHCVSUP="docs"
+       break
+       ;;
+       all)
+         FETCHCVSUP="data docs"
+       ;;
+       *)
+       doit="no"
+       break
+       ;;
+     esac
+     if [ $doit = "yes" ]
+     then
+	for fetchme in $FETCHCVSUP
+        do
+            SUPFILE=$AIPSROOT/$fetchme/supfile
+            if [ -f $SUPFILE ]
+	    then
+	       echo "Supfile exists."
+            else
+	       if [ -d $AIPSROOT/$fetchme ]
+	       then
+		  echo "$fetchme directory exists"
+	       else
+		  mkdir $AIPSROOT/$fetchme
+	       fi
+	       echo "Creating supfile."
+# First try to guess the release, default to daily
+	       CVSUPVERS="daily"
+               if [ "$BLESSED" != "" ]
+               then
+	           CVSUPVERS="stable"
+               elif [ "$RELEASE" != "" ]
+               then
+	           CVSUPVERS="released"
+	       else
+	           echo $AIPSROOT | grep weekly
+	           if [ $? eq 0 ] 
+	           then 
+                      CVSUPVERS='weekly'
+	           fi
+               fi
+	       if [ $fetchme = 'data' ]
+	       then
+	           CVSUPVERS="all"
+	       fi
+	       echo "*default host=aips2.nrao.edu compress" > $SUPFILE
+	       echo "*default base=$AIPSROOT" >> $SUPFILE
+	       echo "*default release=$CVSUPVERS" >> $SUPFILE
+	       echo "*default delete use-rel-suffix" >> $SUPFILE
+	       echo "$fetchme" >> $SUPFILE
+
+            fi
+            $CVSUP $SUPFILE
+	done
+     fi
   fi
 
 #-----------------------------------------------------------------------------
