@@ -36,14 +36,11 @@
 #include <aips/Measures/MCBase.h>
 #include <aips/Measures/MConvertBase.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MeasMath.h>
 
 //# Forward Declarations
 class MCDirection;
-class Nutation;
-class Precession;
 class Euler;
-class SolarPos;
-class Aberration;
 class RotMatrix;
 template <class T> class Vector;
 
@@ -79,7 +76,7 @@ template <class T> class Vector;
 // </motivation>
 //
 // <todo asof="1998/09/20">
-//	<li> Use MeasMath routines
+//	<li> Extend MeasMath a bit more
 // </todo>
 
 class MCDirection : public MCBase { 
@@ -172,11 +169,8 @@ private:
   RotMatrix *ROTMAT1;
   Euler *EULER1;
   MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
-  SolarPos *SOLPOSFROM, *SOLPOSTO;
-  Aberration *ABERFROM, *ABERTO;
-  Nutation *NUTATFROM, *NUTATTO;
-  Precession *PRECESFROM, *PRECESTO;
   Vector<Double> *VEC61, *VEC62, *VEC63;
+  MeasMath measMath;
 
   //# State machine data
   // Has state matrix been made

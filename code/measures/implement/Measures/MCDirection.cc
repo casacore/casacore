@@ -38,10 +38,8 @@ typedef Quantum<Double> gpp_direction_bug1;
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Quanta/MVPosition.h>
-#include <aips/Measures/SolarPos.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/Precession.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
@@ -93,11 +91,7 @@ MCDirection::MCDirection() :
   ROTMAT1(0),
   EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
-  SOLPOSFROM(0), SOLPOSTO(0),
-  ABERFROM(0), ABERTO(0),
-  NUTATFROM(0), NUTATTO(0),
-  PRECESFROM(0), PRECESTO(0),
-  VEC61(0), VEC62(0), VEC63(0) {
+  VEC61(0), VEC62(0), VEC63(0), measMath() {
   if (!stateMade_p) {
     MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 		      MDirection::N_Types, MCDirection::N_Routes,
@@ -117,9 +111,9 @@ MCDirection::~MCDirection() {
 void MCDirection::getConvert(MConvertBase &mc,
 			     const MRBase &inref, 
 			     const MRBase &outref) {
-  
-    Int iin  = inref.getType();
-    Int iout = outref.getType();
+
+    uInt iin  = inref.getType();
+    uInt iout = outref.getType();
     if (iin != iout) {
       Bool iplan = ToBool(iin & MDirection::EXTRA);
       Bool oplan = ToBool(iout & MDirection::EXTRA);
@@ -147,14 +141,6 @@ void MCDirection::clearConvert() {
   delete MVPOS1;     MVPOS1 = 0;
   delete MVPOS2;     MVPOS2 = 0;
   delete MVPOS3;     MVPOS3 = 0;
-  delete SOLPOSFROM; SOLPOSFROM = 0;
-  delete SOLPOSTO;   SOLPOSTO = 0;
-  delete ABERFROM;   ABERFROM = 0;
-  delete ABERTO;     ABERTO = 0;
-  delete NUTATFROM;  NUTATFROM = 0;
-  delete NUTATTO;    NUTATTO = 0;
-  delete PRECESFROM; PRECESFROM = 0;
-  delete PRECESTO;   PRECESTO = 0;
   delete VEC61;	     VEC61 = 0;
   delete VEC62;	     VEC62 = 0;
   delete VEC63;	     VEC63 = 0;
@@ -176,89 +162,63 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
   switch (which) {
     
   case J2000_JMEAN:
-    if (PRECESFROM) delete PRECESFROM;
-    PRECESFROM = new Precession(Precession::STANDARD);
+    measMath.createPrecession();
     break;
     
   case B1950_BMEAN:
-    if (PRECESFROM) delete PRECESFROM;
-    PRECESFROM = new Precession(Precession::B1950);
+    measMath.createPrecessionB1950();
     break;
     
   case JMEAN_J2000:
-    if (PRECESTO) delete PRECESTO;
-    PRECESTO = new Precession(Precession::STANDARD);
+    measMath.createPrecession();
     break;
     
   case JMEAN_JTRUE:
-    if (NUTATFROM) delete NUTATFROM;
-    NUTATFROM = new Nutation(Nutation::STANDARD);
+    measMath.createNutation();
     break;
     
   case BMEAN_B1950:
-    if (PRECESTO) delete PRECESTO;
-    PRECESTO = new Precession(Precession::B1950);
+    measMath.createPrecessionB1950();
     break;
     
   case BMEAN_BTRUE:
-    if (NUTATFROM) delete NUTATFROM;
-    NUTATFROM = new Nutation(Nutation::B1950);
+    measMath.createNutationB1950();
     break;
     
   case JTRUE_JMEAN:
-    if (NUTATTO) delete NUTATTO;
-    NUTATTO = new Nutation(Nutation::STANDARD);
+    measMath.createNutation();
     break;
     
   case BTRUE_BMEAN:
-    if (NUTATTO) delete NUTATTO;
-    NUTATTO = new Nutation(Nutation::B1950);
+    measMath.createNutationB1950();
     break;
     
   case J2000_JNAT:
-    if (SOLPOSFROM) delete SOLPOSFROM;
-    SOLPOSFROM = new SolarPos(SolarPos::STANDARD);
+    measMath.createSolarPos();
     break;
     
   case JNAT_APP:
-    if (ABERFROM) delete ABERFROM;
-    ABERFROM = new Aberration(Aberration::STANDARD);
-    if (NUTATFROM) delete NUTATFROM;
-    NUTATFROM = new Nutation(Nutation::STANDARD);
-    if (PRECESFROM) delete PRECESFROM;
-    PRECESFROM = new Precession(Precession::STANDARD);
+    measMath.createAberration();
+    measMath.createPrecNutat();
     break;
     
   case JNAT_J2000:
-    if (SOLPOSTO) delete SOLPOSTO;
-    SOLPOSTO = new SolarPos(SolarPos::STANDARD);
+    measMath.createSolarPos();
     break;
     
   case APP_JNAT:
-    if (ABERTO) delete ABERTO;
-    ABERTO = new Aberration(Aberration::STANDARD);
-    if (NUTATTO) delete NUTATTO;
-    NUTATTO = new Nutation(Nutation::STANDARD);
-    if (PRECESTO) delete PRECESTO;
-    PRECESTO = new Precession(Precession::STANDARD);
+    measMath.createAberration();
+    measMath.createPrecNutat();
     break;
     
   case B1950_APP:
-    if (ABERFROM) delete ABERFROM;
-    ABERFROM = new Aberration(Aberration::B1950);
-    if (NUTATFROM) delete NUTATFROM;
-    NUTATFROM = new Nutation(Nutation::B1950);
-    if (PRECESFROM) delete PRECESFROM;
-    PRECESFROM = new Precession(Precession::B1950);
+    measMath.createAberrationB1950();
+    measMath.createPrecNutatB1950();
     break;
     
   case APP_B1950:
-    if (ABERTO) delete ABERTO;
-    ABERTO = new Aberration(Aberration::B1950);
-    if (NUTATTO) delete NUTATTO;
-    NUTATTO = new Nutation(Nutation::B1950);
-    if (PRECESTO) delete PRECESTO;
-    PRECESTO = new Precession(Precession::B1950);
+    measMath.createAberrationB1950();
+    measMath.createPrecNutatB1950();
     break;
     
   default:
@@ -284,32 +244,19 @@ void MCDirection::doConvert(MVDirection &in,
   Double lengthP = 0;
   MeasTable::Types planID = MeasTable::MERCURY; // to stop warning
   
-  MCFrame::make(inref.getFrame());
-  MCFrame::make(outref.getFrame());
+  measMath.initFrame(inref, outref);
   
   for (Int i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
  
-    case HADEC_ITRF: {
-      ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getLong(g3);
-      *ROTMAT1 = RotMatrix(Euler(g3, (uInt) 3));
-      in *= *ROTMAT1;
-      in(1) = -in(1);
-    };
-    break;
+    case HADEC_ITRF:
+      measMath.applyHADECtoITRF(in);
+      break;
     
-    case ITRF_HADEC: {
-      ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getLong(g3);
-      *ROTMAT1 = RotMatrix(Euler(g3, (uInt) 3));
-      in(1) = -in(1);
-      in = *ROTMAT1 * in;
-    };
-    break;
+    case ITRF_HADEC: 
+      measMath.deapplyHADECtoITRF(in);
+      break;
      
     case GAL_J2000:
       in = MeasData::GALtoJ2000() * in;
@@ -327,289 +274,73 @@ void MCDirection::doConvert(MVDirection &in,
       in = MeasData::B1950toGAL() * in;
       break;
       
-    case J2000_B1950: {
-      // Frame rotation
-      *ROTMAT1 = MeasData::MToB1950(4);
-      in *= *ROTMAT1;
-      in.adjust();
-      // E-terms
-      // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
-      *MVPOS2 = in;
-      do {
-	g1 = *MVPOS2 * *MVPOS1;
-	*MVPOS3 = *MVPOS2 - *MVPOS1 + (g1 * *MVPOS2);
-	MVPOS3->adjust();
-	*MVPOS3 -= in;
-	*MVPOS2 -= *MVPOS3;
-      } while (MVPOS3->radius() > 1e-10);
-      in = *MVPOS2;
-      in.adjust();
-    }
-    break;
+    case J2000_B1950:
+      measMath.applyJ2000toB1950(in);
+      break;
     
-    case B1950_J2000: {
-      // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
-      g1 = in * *MVPOS1;
-      in += g1 * in;
-      in -= *MVPOS1;
-      in.adjust();
-      // Frame rotation
-      *ROTMAT1 = MeasData::MToJ2000(0);
-      in *= *ROTMAT1;
-      in.adjust();
-    }	
-    break;
+    case B1950_J2000:
+      measMath.deapplyJ2000toB1950(in);
+      break;
     
-    case J2000_JMEAN: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Precession
-      *ROTMAT1 = PRECESFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-    }
-    break;
+    case J2000_JMEAN:
+      measMath.applyPrecession(in);
+      break;
     
-    case B1950_BMEAN: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Precession
-      *ROTMAT1 = PRECESFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-    }
-    break;
+    case B1950_BMEAN:
+      measMath.applyPrecessionB1950(in);
+      break;
     
-    case JMEAN_J2000: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-    }
-    break;
+    case JMEAN_J2000:
+      measMath.deapplyPrecession(in);
+      break;
     
-    case JMEAN_JTRUE: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-    }
-    break;
+    case JMEAN_JTRUE:
+      measMath.applyNutation(in);
+      break;
     
-    case BMEAN_B1950: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-    }
-    break;
+    case BMEAN_B1950:
+      measMath.deapplyPrecessionB1950(in);
+      break;
     
-    case BMEAN_BTRUE: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-    }
-    break;
+    case BMEAN_BTRUE:
+      measMath.applyNutationB1950(in);
+      break;
     
-    case JTRUE_JMEAN: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-    }
-    break;
+    case JTRUE_JMEAN:
+      measMath.deapplyNutation(in);
+      break;
     
-    case BTRUE_BMEAN: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-    }
-    break;
+    case BTRUE_BMEAN:
+      measMath.deapplyNutationB1950(in);
+      break;
     
-    case J2000_JNAT: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Solar position in rectangular coordinates
-      *MVPOS1 = SOLPOSFROM->operator()(tdbTime);
-      // Get length and unit vector
-      MVPOS1->adjust(lengthE);
-      g1 = -1.974e-8 / lengthE;
-      g2 = in * *MVPOS1;
-      // Check if near sun
-      if (!nearAbs(g2, 1.0,
-		   1.0-cos(MeasData::SunSemiDiameter()/lengthE))) {
-	*MVPOS1 -= g2 * in;
-	*MVPOS1 *= (g1 / (1.0 - g2));
-	in += *MVPOS1;
-	in.adjust();
-      };
-    }
-    break;
+    case J2000_JNAT:
+      measMath.applySolarPos(in);
+      break;
     
-    case JNAT_APP: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Aberration
-      *MVPOS1 =  ABERFROM->operator()(tdbTime);
-      // Get length
-      lengthE = MVPOS1->radius();
-      // Beta^-1 (g1)
-      g1 = sqrt(1 - lengthE * lengthE);
-      g2 = in * *MVPOS1;
-      in = (g1*in + (1+g2/(1+g1)) * *MVPOS1)*(1.0/(1.0+g2));
-      in.adjust();
-      // Precession
-      *ROTMAT1 = PRECESFROM->operator()(tdbTime);
-      // Nutation
-      *ROTMAT1 *= NUTATFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-    }
-    break;
+    case JNAT_APP:
+      measMath.applyAberration(in);
+      measMath.applyPrecNutat(in);
+      break;
     
-    case APP_JNAT: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);
-      // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-      // Aberration
-      *MVPOS1 = ABERTO->operator()(tdbTime);
-      // Get length
-      lengthE = MVPOS1->radius();
-      // Beta^-1 (g1)
-      g1 = sqrt(1 - lengthE * lengthE);
-      // First guess
-      *MVPOS2 = in - *MVPOS1;
-      // Solve for aberration solution
-      do {
-	g2 = *MVPOS2 * *MVPOS1;
-	*MVPOS3 = ((g1 * *MVPOS2 + 
-		    (1+g2/(1+g1)) * *MVPOS1)*(1.0/(1.0+g2)));
-	MVPOS3->adjust();
-	for (Int j=0; j<3; j++) {
-	  g3 = MVPOS1->operator()(j);
-	  MVPOS2->operator()(j) -= 
-	    (MVPOS3->operator()(j) - in(j))/
-	    (((g1+g3*g3/(1+g1))-
-	      g3*MVPOS3->operator()(j))/(1+g2));
-	};
-	*MVPOS3 -= in;
-      }
-      while (MVPOS3->radius() > 1e-10);
-      in = *MVPOS2;
-      in.adjust();
-    }
-    break;
+    case APP_JNAT:
+      measMath.deapplyPrecNutat(in);
+      measMath.deapplyAberration(in);
+      break;
     
-    case JNAT_J2000: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Solar position in rectangular coordinates
-      *MVPOS1 = SOLPOSTO->operator()(tdbTime);
-      // Get length and unit vector
-      MVPOS1->adjust(lengthE);
-      g1 = -1.974e-8 / lengthE;
-      // Check if near sun
-      g2 = in * *MVPOS1;
-      if (!nearAbs(g2, 1.0,
-		   1.0-cos(MeasData::SunSemiDiameter()/lengthE))) {
-	// First guess
-	*MVPOS2 = in;
-	do {
-	  *MVPOS3 = (*MVPOS1 - g2 * *MVPOS2) * (g1/(1.0 - g2));
-	  MVPOS3->adjust();
-	  for (Int j=0; j<3; j++) {
-	    g3 = MVPOS1->operator()(j);
-	    MVPOS2->operator()(j) -= 
-	      (MVPOS3->operator()(j) + 
-	       MVPOS2->operator()(j) - in(j))/
-	      (1 + (g3 * MVPOS3->operator()(j) -
-		    g1 * (g2 + g3 *
-			  MVPOS2->operator()(j)))/(1-g2));
-	  };
-	  g2 = *MVPOS2 * *MVPOS1;
-	  *MVPOS3 += *MVPOS2;
-	  *MVPOS3 -= in;
-	}
-	while (MVPOS3->radius() > 1e-10);
-	in = *MVPOS2;
-	in.adjust();
-      };
-    }
-    break;
+    case JNAT_J2000:
+      measMath.deapplySolarPos(in);
+      break;
     
-    case B1950_APP: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // E-terms
-      *MVPOS1 = MeasTable::AberETerm(0);
-      g1 = in * *MVPOS1;
-      in += g1 * in;
-      in -= *MVPOS1;
-      in.adjust();
-      // Precession
-      *ROTMAT1 = PRECESFROM->operator()(tdbTime);
-      // Nutation
-      *ROTMAT1 *= NUTATFROM->operator()(tdbTime);
-      in *= *ROTMAT1;
-      // Aberration
-      *MVPOS1 = ABERFROM->operator()(tdbTime);
-      in += *MVPOS1;
-      in.adjust();
-    }
-    break;
+    case B1950_APP:
+      measMath.applyPrecNutatB1950(in);
+      measMath.applyAberrationB1950(in);
+      break;
     
-    case APP_B1950: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      // Aberration
-      *MVPOS1 = ABERTO->operator()(tdbTime);
-      in -= *MVPOS1;
-      in.adjust();
-      // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);
-      // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
-      in = *ROTMAT1 * in;
-      // E-terms
-      // Iterate
-      *MVPOS1 = MeasTable::AberETerm(0);
-      *MVPOS2 = in;
-      do {
-        g1 = *MVPOS2 * *MVPOS1;
-        *MVPOS3 = *MVPOS2 - *MVPOS1 + (g1 * *MVPOS2);
-        MVPOS3->adjust();
-        *MVPOS3 -= in;
-        *MVPOS2 -= *MVPOS3;
-      } while (MVPOS3->radius() > 1e-10);
-      in = *MVPOS2;
-      in.adjust();
-    }
-    break;
+    case APP_B1950:
+      measMath.deapplyAberrationB1950(in);
+      measMath.deapplyPrecNutatB1950(in);
+      break;
     
     case TOPO_HADEC: {
       ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
@@ -836,55 +567,45 @@ void MCDirection::doConvert(MVDirection &in,
     }
     break;
     
-    case R_MERCURY: {
+    case R_MERCURY:
       planID = MeasTable::MERCURY;
-    }
-    break;
+      break;
     
-    case R_VENUS: {
+    case R_VENUS:
       planID = MeasTable::VENUS;
-    }
-    break;
+      break;
     
-    case R_MARS: {
+    case R_MARS:
       planID = MeasTable::MARS;
-    }
-    break;
+      break;
     
-    case R_JUPITER: {
+    case R_JUPITER:
       planID = MeasTable::JUPITER;
-    }
-    break;
+      break;
     
-    case R_SATURN: {
+    case R_SATURN:
       planID = MeasTable::SATURN;
-    }
-    break;
+      break;
     
-    case R_URANUS: {
+    case R_URANUS:
       planID = MeasTable::URANUS;
-    }
-    break;
+      break;
     
-    case R_NEPTUNE: {
+    case R_NEPTUNE:
       planID = MeasTable::NEPTUNE;
-    }
-    break;
+      break;
     
-    case R_PLUTO: {
+    case R_PLUTO:
       planID = MeasTable::PLUTO;
-    }
-    break;
+      break;
     
-    case R_SUN: {
+    case R_SUN:
       planID = MeasTable::SUN;
-    }
-    break;
+      break;
     
-    case R_MOON: {
+    case R_MOON:
       planID = MeasTable::MOON;
-    }
-    break;
+      break;
     
     default:
       break;
