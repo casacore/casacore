@@ -179,7 +179,7 @@ void test1 (LogIO& os, ImageInterface<Float>& im, const DirectionCoordinate& dC)
    ComponentImager::project(im, listIn);
 //
    ImageSourceFinder<Float> sf(im);
-   ComponentList listOut = sf.findPointSources(os, 5, 0.05, False);
+   ComponentList listOut = sf.findSources(os, 5, 0.05, False, True);
 //
    if (listOut.nelements()!=3) {
       os << "Found wrong number of sources" << LogIO::EXCEPTION;
