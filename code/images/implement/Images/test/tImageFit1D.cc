@@ -315,7 +315,7 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
    ImageFit1D<Float>::AbcissaType type = ImageFit1D<Float>::PIXEL;
    if (what==0) {
    } else if (what==1) {
-      type = ImageFit1D<Float>::NATIVE; 
+      type = ImageFit1D<Float>::IM_NATIVE; 
    } else if (what==2) {
       type = ImageFit1D<Float>::VELOCITY; 
    }
