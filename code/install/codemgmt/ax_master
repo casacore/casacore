@@ -6012,3 +6012,4 @@
 17 069 src rm trial/implement/Functionals/Sinusoid1D2.cc
 17 069 src rm trial/implement/Functionals/Sinusoid1DParam.cc
 17 069 src rm trial/implement/Functionals/Sinusoid1DParam.h
+17 069 src rm trial/implement/Functionals/test/tSinusoid1D.cc
