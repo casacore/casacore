@@ -1367,9 +1367,9 @@ uInt ISMColumn::toString (void* out, const void* in, uInt n,
 	if (n > 1) {
 	    leng += readLeng (&strleng, buf + leng, 1);
 	}
-	String& str = ((String*)out)[i];
-	str.alloc (strleng);
-	char* var = (char*)(str.chars());
+	String& str = static_cast<String*>(out)[i];
+	str.resize (strleng);       // resize storage which adds trailing 0
+	char* var = &(str[0]);      // get actual string
 	memcpy (var, buf + leng, strleng);
 #ifdef USE_OLD_STRING
 	var[strleng] = '\0';

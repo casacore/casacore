@@ -390,12 +390,9 @@ void SSMStringHandler::get (String& string, Int bucket, Int offset,
   if (itsCurrentBucket != static_cast<Int>(bucket)) {
     getBucket(bucket);
   }
-
-  string.alloc (length);                          // resize storage
-  Char* data = const_cast<Char*>(string.chars()); // get actual string pointer
-
+  string.resize (length);          // resize storage which adds trailing 0
+  Char* data = &(string[0]);       // get actual string
   getData(length,data,offset);
-
   // terminate string for old strings
 #ifdef USE_OLD_STRING
   data[length] = '\0';  
@@ -441,12 +438,11 @@ void SSMStringHandler::get (Array<String>& string, Int bucket, Int offset,
       
       Int aL=0;
       CanonicalConversion::toLocal(aL,itsIntBuf);
-      aString[i].alloc(aL);
-      Char* aS = const_cast<Char*>(aString[i].chars());
-
+      aString[i].resize (aL);       // resize storage which adds trailing 0
+      Char* aS = &(aString[i][0]);  // get actual string
       // get next string. Beware, offset resetting will be done in
       // getdata, so you don't need to do it here again...
-      getData (aL, aS,offset);
+      getData (aL, aS, offset);
       // terminate string
 #ifdef USE_OLD_STRING
       aS[aL] = '\0';  

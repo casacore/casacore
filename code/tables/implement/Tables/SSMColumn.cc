@@ -273,8 +273,8 @@ void SSMColumn::getStringV (uInt aRowNr, String* aValue)
     // instead of the string bucket.
 
     if (buf[2] <= 8) {
-      aValue->alloc (buf[2]);
-      char* sp = const_cast<char*>(aValue->chars());
+      aValue->resize (buf[2]);       // resize storage which adds trailing 0
+      char* sp = &((*aValue)[0]);    // get actual string
       memcpy (sp, strbuf, buf[2]);
 #ifdef USE_OLD_STRING
       sp[buf[2]] = '\0';
