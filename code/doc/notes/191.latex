@@ -5,25 +5,30 @@
 \parskip=5truept
 \begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-%\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
+\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
 
-%\newcommand{\definetable}[2]
-%{
-%        %\clearpage
-%	\vfill\eject
-%	\subsection{#1}
-%        \vspace{0.15in}
-%        \small
-%	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
-%	\hline
-%	\multicolumn{5}{|c|}{\bf #1}\\ 
-%	\cline{1-5} \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&\mu%lticolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&\multicolumn{1}{|c|}{Co%mments}\\ \cline{1-5}
-%        #2
-%        \hline
-%	\end{tabular}
-%}
+\newcommand{\definetable}[2]
+{
+        %\clearpage
+	\vfill
+        \eject
+	\subsection{#1}
+        \vspace{0.15in}
+        \small
 
-\title{Definition of MeasurementSet \break \aipspp Note 191}
+	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
+	\hline
+	\multicolumn{5}{|c|}{\bf #1}\\ 
+	\cline{1-5} 
+        \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&
+        \multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&
+        \multicolumn{1}{|c|}{Comments}\\ \cline{1-5}
+        #2
+        \hline
+	\end{tabular}
+}
+
+\title{Definition of MeasurementSet \break \aipspp\ Note 191}
 \author{M.H. Wieringa, ATNF\\T.J. Cornwell, NRAO}
 \date{October 4, 1996}
 \maketitle
@@ -189,8 +194,8 @@ implementations of these before specifying a general format.
 \defline{\em Coordinate information}
 ANTENNA1  &      Int    &          &              & First antenna \\
 ANTENNA2  &      Int    &          &              & Second antenna \\
-EXPOSURE  &      Double &       s  &      & The effective integration time \\
-FEED1  &      Int       &          &              & Feed on ANTENNA1 \\
+EXPOSURE  &      Double &       s  &              & The effective integration time \\
+FEED1     &      Int    &          &              & Feed on ANTENNA1 \\
 FEED2  &      Int       &          &              & Feed on ANTENNA2 \\
 INTERVAL  &      Double &      s   &      & Sampling interval \\
 PULSAR\_BIN &       Int &          &              & Pulsar bin number \\
