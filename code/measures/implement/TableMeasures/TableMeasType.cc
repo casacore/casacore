@@ -112,5 +112,5 @@ const String& TableMeasType::refType (uInt refCode) const
 void TableMeasType::toRecord (RecordInterface& rec)
 {
   String error;
-  itsMeasHolder.toRecord (error, rec);
+  itsMeasHolder.toType (error, rec);
 }
