@@ -169,10 +169,10 @@
 // <ul>
 // <li> <src>Fit2D</src>
 // <li> <src>LatticeFit</src>
-// <li> <src>LQLinearFit</src>
-// <li> <src>LQLinearFitSVD</src>
-// <li> <src>LQNonLinearFit</src>
-// <li> <src>LQNonLinearFitLM</src>
+// <li> <src>LinearFit</src>
+// <li> <src>LinearFitSVD</src>
+// <li> <src>NonLinearFit</src>
+// <li> <src>NonLinearFitLM</src>
 // <li> <src>LinearFitConstraint</src>
 // </ul>
 // Note that the basic functions have <em>LSQ</em> in their title; the

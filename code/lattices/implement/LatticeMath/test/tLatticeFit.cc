@@ -44,7 +44,7 @@ int main() {
     // x^2
     Polynomial<AutoDiff<Float> > square(2);
 
-    LQLinearFitSVD<Float> fitter;
+    LinearFitSVD<Float> fitter;
     fitter.setFunction(square);
 
 

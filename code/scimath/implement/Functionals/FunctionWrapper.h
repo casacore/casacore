@@ -56,7 +56,7 @@ template <class T> class WrapperBase;
 // pointer, and an optional parameter list.
 // Parameters are necessary if
 // the function has to be used in a functional fitting process (see
-// <linkto class=LQGenericL2Fit>LQGenericL2Fit</linkto>).
+// <linkto class=GenericL2Fit>GenericL2Fit</linkto>).
 //
 // The general function signature is <src>f(x;p)</src>, where <src>x</src>
 // represents the <em>arguments</em>, and <src>p</src> the parameters.

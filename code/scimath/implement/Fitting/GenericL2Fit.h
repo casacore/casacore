@@ -1,4 +1,4 @@
-//# LQGenericL2Fit.h: Generic base lass for least-squares fit.
+//# GenericL2Fit.h: Generic base lass for least-squares fit.
 //#
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LQGENERICL2FIT_H)
-#define AIPS_LQGENERICL2FIT_H
+#if !defined(AIPS_GENERICL2FIT_H)
+#define AIPS_GENERICL2FIT_H
 
 //# Includes
 #include <aips/aips.h>
@@ -44,7 +44,7 @@ template <class T, class U> class Function;
 // <summary> Generic base lass for least-squares fit.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLQLinearFitSVD.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLinearFitSVD.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -62,8 +62,8 @@ template <class T, class U> class Function;
 //
 // <synopsis>
 // The class acts as a base class for L2-type (least-squares) fitting. 
-// Actual classes (se e.g. <linkto class=LQLinearFit>LQLinearFit</linkto> and
-// <linkto class=LQNonLinearFit>LQNonLinearFit</linkto>.
+// Actual classes (se e.g. <linkto class=LinearFit>LinearFit</linkto> and
+// <linkto class=NonLinearFit>NonLinearFit</linkto>.
 //
 // The following is a brief summary of the linear least-squares fit problem.
 // See module header, <linkto module="Fitting">Fitting</linkto>,
@@ -123,7 +123,7 @@ template <class T, class U> class Function;
 // For small datasets the usage of the calls is:
 // <ul>
 //  <li> Create a functional description of the parameters
-//  <li> Create a fitter: LQGenericL2Fit<T> fitter();
+//  <li> Create a fitter: GenericL2Fit<T> fitter();
 //  <li> Set the functional representation: fitter.setFunction()
 //  <li> Do the fit to the data: fitter.fit(x, data, sigma)
 //  	(or do a number of calls to buildNormalMatrix(x, data, sigma)
@@ -138,7 +138,7 @@ template <class T, class U> class Function;
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LQGenericL2Fit 
+// The following data types can be used to instantiate the GenericL2Fit 
 // templated class:
 // <li> Known classes for FunctionTraits. I.e simple numerical like
 //	<src>Float</src>, <src>Double</src>, <src>Complex</src>,
@@ -157,7 +157,7 @@ template <class T, class U> class Function;
 // the minimum angle allowed.
 //
 // Singular Value Decomposition is supported by the
-// <limkto class=LQGenericL2FitSVD>LQGenericL2FitSVD</linkto> class,
+// <limkto class=GenericL2FitSVD>GenericL2FitSVD</linkto> class,
 // which has a behaviour completely identical to this class (apart from a
 // default collinearity of 1e-8). 
 //
@@ -173,7 +173,7 @@ template <class T, class U> class Function;
 // <example>
 // In the following a polynomial is fitted through the first 20 prime numbers.
 // The data is given in the x vector (1 to 20) and in the primesTable
-// (2, 3, ..., 71) (see tLQGenericL2FitSVD test program). In the following
+// (2, 3, ..., 71) (see tGenericL2FitSVD test program). In the following
 // all four methods to calculate a polynomial through the data is used
 // <srcblock>
 //    	// The list of coordinate x-values
@@ -187,7 +187,7 @@ template <class T, class U> class Function;
 //	Vector<Double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
-//  	LQLinearFit<Double> fitter;
+//  	LinearFit<Double> fitter;
 //	// Linear combination of functions describing 1 + x + x*x
 //    	combination.setCoefficient(0, 1.0);   // 1
 //    	combination.setCoefficient(1, 1.0);     // x
@@ -197,7 +197,7 @@ template <class T, class U> class Function;
 //    	Vector<Double> solution = fitter.fit(x, primesTable, sigma);
 //	// Try with a function with automatic derivatives (note that default 
 //	// polynomial has zero first guess)
-//  	LQLinearFit<AutoDiffA<Double> > fitad;
+//  	LinearFit<AutoDiffA<Double> > fitad;
 //    	Polynomial<AutoDiffA<Double> > sqre(2);
 //    	fitad.setFunction(sqre);
 //    	solution = fitad.fit(x, primesTable, sigma);
@@ -206,7 +206,7 @@ template <class T, class U> class Function;
 // information, and other examples.
 // </example>
 
-template<class T> class LQGenericL2Fit : public FitLSQ {
+template<class T> class GenericL2Fit : public FitLSQ {
  public: 
   //# Constants
   // Default collinearity test for SVD
@@ -216,18 +216,18 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // Create a fitter: the normal way to generate a fitter object. Necessary
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>
-  LQGenericL2Fit();
+  GenericL2Fit();
   // Create a fitter for complex data with non-standard interpretation
   // of the complex values
   // (see <linkto module=Fitting>Fitting</linkto> module).
-  explicit LQGenericL2Fit(LSQ::normType type);
+  explicit GenericL2Fit(LSQ::normType type);
   // Copy constructor (deep copy)
-  LQGenericL2Fit(const LQGenericL2Fit &other);
+  GenericL2Fit(const GenericL2Fit &other);
   // Assignment (deep copy)
-  LQGenericL2Fit &operator=(const LQGenericL2Fit &other);
+  GenericL2Fit &operator=(const GenericL2Fit &other);
 
   // Destructor
-  virtual ~LQGenericL2Fit();
+  virtual ~GenericL2Fit();
 
   // Sets the function to be fitted.  Upon entry, the argument function object 
   // is cloned.  The cloned copy is used in the later fitting process.

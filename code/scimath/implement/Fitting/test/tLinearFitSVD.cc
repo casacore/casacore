@@ -1,4 +1,4 @@
-//# tLQLinearFitSVD.cc: Test linear least squares classes
+//# tLinearFitSVD.cc: Test linear least squares classes
 //# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -50,7 +50,7 @@ static Double func3(const Vector<Double> &x) {return x(0)*x(0);};    // x^2
   for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
 */
 
-void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
+void checkLinearFit(LinearFitSVD<Double> &fitter) {
   //*********** Test one *************
   // fit data to polynomial
   {
@@ -136,7 +136,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
 
     //****** Test one A ************
     /*        // Note: first guess equals zero parameters
-    LQLinearFitSVD<AutoDiffA<Double> > fitad;
+    LinearFitSVD<AutoDiffA<Double> > fitad;
     Polynomial<AutoDiffA<Double> > sqre(2);
 
     // perform least-squares fit
@@ -427,7 +427,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
 
 //****** Test on complex fitting ************
 
-void checkComplexLQLinearFit(LQLinearFitSVD<Complex> &fitter) {
+void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
 
   // fitting polynomial to data
   const uInt n = 1000;
@@ -492,11 +492,11 @@ void checkComplexLQLinearFit(LQLinearFitSVD<Complex> &fitter) {
   AlwaysAssertExit(2*fitter.fittedNumber()-fitter.getRank() == 0);
 }
 int main() {
-  LQLinearFitSVD<Double> fitsvd;
-  checkLQLinearFit(fitsvd);
+  LinearFitSVD<Double> fitsvd;
+  checkLinearFit(fitsvd);
 
-  LQLinearFitSVD<Complex> fit_complex;
-  checkComplexLQLinearFit(fit_complex);
+  LinearFitSVD<Complex> fit_complex;
+  checkComplexLinearFit(fit_complex);
   
   cout << "OK" << endl;
   return 0;

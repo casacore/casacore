@@ -430,7 +430,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
       
 // Create fitter
 
-   LQNonLinearFitLM<T> fitter;
+   NonLinearFitLM<T> fitter;
 
 // Create and set the functionals
 

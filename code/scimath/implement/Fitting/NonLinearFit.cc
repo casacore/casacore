@@ -1,4 +1,4 @@
-//# LQNonLinearFit.cc: Class for non-linear least-squares fit.
+//# NonLinearFit.cc: Class for non-linear least-squares fit.
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,12 +32,12 @@
 //# Constants
 // Default convergence criterium
 template<class T>
-const Double LQNonLinearFit<T>::CRITERIUM = 0.001;
+const Double NonLinearFit<T>::CRITERIUM = 0.001;
 
 //# Constructors
 template<class T>
-LQNonLinearFit<T>::LQNonLinearFit(Bool svd) :
-  LQGenericL2Fit<T>(),
+NonLinearFit<T>::NonLinearFit(Bool svd) :
+  GenericL2Fit<T>(),
   maxiter_p(MAXITER), curiter_p(MAXITER),
   criterium_p(CRITERIUM),
   converge_p(False) {
@@ -46,8 +46,8 @@ LQNonLinearFit<T>::LQNonLinearFit(Bool svd) :
 }
 
 template<class T>
-LQNonLinearFit<T>:: LQNonLinearFit(LSQ::normType type, Bool svd) :
-  LQGenericL2Fit<T>(type),
+NonLinearFit<T>:: NonLinearFit(LSQ::normType type, Bool svd) :
+  GenericL2Fit<T>(type),
   maxiter_p(MAXITER), curiter_p(MAXITER),
   criterium_p(CRITERIUM),
   converge_p(False) {
@@ -57,8 +57,8 @@ LQNonLinearFit<T>:: LQNonLinearFit(LSQ::normType type, Bool svd) :
 }
 
 template<class T>
-LQNonLinearFit<T>::LQNonLinearFit(const LQNonLinearFit &other) :
-  LQGenericL2Fit<T>(other),
+NonLinearFit<T>::NonLinearFit(const NonLinearFit &other) :
+  GenericL2Fit<T>(other),
   maxiter_p(other.maxiter_p),
   curiter_p(other.curiter_p), criterium_p(other.criterium_p),
   converge_p(other.converge_p) {
@@ -74,9 +74,9 @@ LQNonLinearFit<T>::LQNonLinearFit(const LQNonLinearFit &other) :
 }
 
 template<class T>
-LQNonLinearFit<T> &LQNonLinearFit<T>::operator=(const LQNonLinearFit &other) {
+NonLinearFit<T> &NonLinearFit<T>::operator=(const NonLinearFit &other) {
   if (this != &other) {
-    LQGenericL2Fit<T>::operator=(other);
+    GenericL2Fit<T>::operator=(other);
     maxiter_p = other.maxiter_p;
     curiter_p = other.curiter_p;
     criterium_p = other.criterium_p;
@@ -86,10 +86,10 @@ LQNonLinearFit<T> &LQNonLinearFit<T>::operator=(const LQNonLinearFit &other) {
 }
 
 template<class T>
-LQNonLinearFit<T>::~LQNonLinearFit() {}
+NonLinearFit<T>::~NonLinearFit() {}
 
 template<class T>
-void LQNonLinearFit<T>::setMaxIter(uInt maxIter) {
+void NonLinearFit<T>::setMaxIter(uInt maxIter) {
   maxiter_p = (maxIter > 0 ? maxIter : 1);
   curiter_p = (curiter_p > maxiter_p ? maxiter_p : curiter_p);
 }

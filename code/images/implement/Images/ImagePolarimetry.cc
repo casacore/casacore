@@ -724,7 +724,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 // Make fitter
 
    if (itsFitterPtr==0) {
-      itsFitterPtr = new LQLinearFitSVD<Float>;
+      itsFitterPtr = new LinearFitSVD<Float>;
 
 // Create and set the polynomial functional
 // p = c(0) + c(1)*x where x = lambda**2

@@ -1,4 +1,4 @@
-//# LQLinearFitSVD.cc: Linear fit using Singular Value Decomposition.
+//# LinearFitSVD.cc: Linear fit using Singular Value Decomposition.
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,29 +28,29 @@
 #include <trial/Fitting/LinearFitSVD.h>
 
 template<class T>
-LQLinearFitSVD<T>::LQLinearFitSVD() :
-  LQLinearFit<T>() {
+LinearFitSVD<T>::LinearFitSVD() :
+  LinearFit<T>() {
   svd_p = True;
   set(COLLINEARITY);
 }
 
 template<class T>
-LQLinearFitSVD<T>::LQLinearFitSVD(LSQ::normType type) :
-  LQLinearFit<T>(type) {
+LinearFitSVD<T>::LinearFitSVD(LSQ::normType type) :
+  LinearFit<T>(type) {
   svd_p = True;
   set(type);
   set(COLLINEARITY);
 }
 
 template<class T>
-LQLinearFitSVD<T>::LQLinearFitSVD(const LQLinearFitSVD &other) :
-  LQLinearFit<T>(other) {}
+LinearFitSVD<T>::LinearFitSVD(const LinearFitSVD &other) :
+  LinearFit<T>(other) {}
 
 template<class T>
-LQLinearFitSVD<T> &LQLinearFitSVD<T>::operator=(const LQLinearFitSVD &other) {
-  if (this != &other) LQGenericL2Fit<T>::operator=(other);
+LinearFitSVD<T> &LinearFitSVD<T>::operator=(const LinearFitSVD &other) {
+  if (this != &other) GenericL2Fit<T>::operator=(other);
   return *this;
 }
 
 template<class T>
-LQLinearFitSVD<T>::~LQLinearFitSVD() {}
+LinearFitSVD<T>::~LinearFitSVD() {}

@@ -1,4 +1,4 @@
-//# LQNonLinearFit.h: Class for non-linear least-squares fit.
+//# NonLinearFit.h: Class for non-linear least-squares fit.
 //# Copyright (C) 1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LQNONLINEARFIT_H)
-#define AIPS_LQNONLINEARFIT_H
+#if !defined(AIPS_NONLINEARFIT_H)
+#define AIPS_NONLINEARFIT_H
 
 //# Includes
 #include <aips/aips.h>
@@ -38,7 +38,7 @@
 // <summary> Class for non-linear least-squares fit.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLQNonLinearFitLM.cc">
+// <reviewed reviewer="" date="" tests="tNonLinearFitLM.cc">
 // </reviewed>
 //
 // <prerequisite>
@@ -102,7 +102,7 @@
 // For small datasets the usage of the calls is:
 // <ul>
 //  <li> Create a functional description of the parameters
-//  <li> Create a fitter: LQNonLinearFit<T> fitter();
+//  <li> Create a fitter: NonLinearFit<T> fitter();
 //  <li> Set the functional representation: fitter.setFunction()
 //  <li> Do the fit to the data: fitter.fit(x, data, sigma)
 //  	(or do a number of calls to buildNormalMatrix(x, data, sigma)
@@ -117,7 +117,7 @@
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LQNonLinearFit 
+// The following data types can be used to instantiate the NonLinearFit 
 // templated class:
 // <li> Float
 // <li> Double
@@ -151,7 +151,7 @@
 // <example>
 // </example>
 
-template<class T> class LQNonLinearFit : public LQGenericL2Fit<T> {
+template<class T> class NonLinearFit : public GenericL2Fit<T> {
  public: 
   //# Constants
   // Default maximum number of iterations (30)
@@ -164,19 +164,19 @@ template<class T> class LQNonLinearFit : public LQGenericL2Fit<T> {
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>.
   // Create optionally a fitter with SVD behaviour specified.
-  explicit LQNonLinearFit(Bool svd=False);
+  explicit NonLinearFit(Bool svd=False);
   // Create a fitter for complex data with non-standard interpretation
   // of the complex values
   // (see <linkto module=Fitting>Fitting</linkto> module). Additionally
   // the svd switch can be set.
-  explicit LQNonLinearFit(LSQ::normType type, Bool svd=False);
+  explicit NonLinearFit(LSQ::normType type, Bool svd=False);
   // Copy constructor (deep copy)
-  LQNonLinearFit(const LQNonLinearFit &other);
+  NonLinearFit(const NonLinearFit &other);
   // Assignment (deep copy)
-  LQNonLinearFit &operator=(const LQNonLinearFit &other);
+  NonLinearFit &operator=(const NonLinearFit &other);
 
   // Destructor
-  virtual ~LQNonLinearFit();
+  virtual ~NonLinearFit();
 
   // setMaxIter() sets the maximum number of iterations to do before stopping.
   // Default value is 30.

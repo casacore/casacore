@@ -1649,7 +1649,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
 // Create fitter
 
-      LQNonLinearFitLM<T> fitter;
+      NonLinearFitLM<T> fitter;
       Gaussian1D<AutoDiff<T> > gauss;
       fitter.setFunction(gauss);
 

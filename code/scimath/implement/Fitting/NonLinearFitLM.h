@@ -1,4 +1,4 @@
-//# LQNonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
+//# NonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LQNONLINEARFITLM_H)
-#define AIPS_LQNONLINEARFITLM_H
+#if !defined(AIPS_NONLINEARFITLM_H)
+#define AIPS_NONLINEARFITLM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -40,33 +40,33 @@
 // Solve non-linear fit with Levenberg-Marquardt method.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLQNonLinearFitLM.cc" demos="">
+// <reviewed reviewer="" date="" tests="tNonLinearFitLM.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
 // <ol>
-//   <li> <linkto class="LQNonLinearFit">LQNonLinearFit</linkto>
+//   <li> <linkto class="NonLinearFit">NonLinearFit</linkto>
 //   <li> <linkto module="Fitting">Fitting</linkto>
 // </ol>
 // </prerequisite>
 //
 // <etymology>
 // This class uses the Levenberg-Marquardt method to solve the non-linear
-// least-squares fit problem hence LQNonLinearFitLM
+// least-squares fit problem hence NonLinearFitLM
 // </etymology>
 //
 // <synopsis>
-// See the <linkto class=LQNonLinearFit>LQNonLinearFit</linkto> class for a
+// See the <linkto class=NonLinearFit>NonLinearFit</linkto> class for a
 // general description.
 //
-// This class is derived from the general LQNonLinearFit class. It does
+// This class is derived from the general NonLinearFit class. It does
 // a non-linear least-squares fit using the Levenberg-Marquardt method.
 //
 // See Numerical Recipes for more information
 // on the Levenberg-Marquardt method.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LQNonLinearFit 
+// The following data types can be used to instantiate the NonLinearFit 
 // templated class:
 // <li> Float
 // <li> Double
@@ -84,26 +84,26 @@
 // <example>
 // </example>
 
-template<class T> class LQNonLinearFitLM : public LQNonLinearFit<T> {
+template<class T> class NonLinearFitLM : public NonLinearFit<T> {
 public:
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>.
   // Optionally, a fitter with SVD behaviour
-  explicit LQNonLinearFitLM(Bool svd=False);
+  explicit NonLinearFitLM(Bool svd=False);
   // Create a fitter for complex data with non-standard interpretation
   // of the complex values
   // (see <linkto module=Fitting>Fitting</linkto> module). Additionally
   // the svd switch can be set.
-  explicit LQNonLinearFitLM(LSQ::normType type, Bool svd=False);
+  explicit NonLinearFitLM(LSQ::normType type, Bool svd=False);
   // Copy constructor (deep copy)
-  LQNonLinearFitLM(const LQNonLinearFitLM &other);
+  NonLinearFitLM(const NonLinearFitLM &other);
   // Assignment (deep copy)
-  LQNonLinearFitLM &operator=(const LQNonLinearFitLM &other);
+  NonLinearFitLM &operator=(const NonLinearFitLM &other);
   
   // Destructor
-  virtual ~LQNonLinearFitLM();
+  virtual ~NonLinearFitLM();
 
  protected:
   //# Member functions

@@ -41,7 +41,7 @@ class GlishSysEventSource;
 // <reviewed reviewer="" date="" tests="" demos="">
 
 // <prerequisite>
-//   <li> <linkto class=LQLinearFit>LQLinearFit</linkto>
+//   <li> <linkto class=LinearFit>LinearFit</linkto>
 //   <li> <linkto class=Lattice>Lattice</linkto>
 // </prerequisite>
 //
@@ -70,7 +70,7 @@ class GlishSysEventSource;
 //    uInt nchan = myImage.shape()(2); // 0 relative axis number
 //    // Set up the fitter
 //    Polynomial<AutoDiff<Float> > linear(1);    
-//    LQLinearFitSVD<Float> fitter;
+//    LinearFitSVD<Float> fitter;
 //    fitter.setFunction(linear);
 //    Vector<Float> fittedParameters,
 //
@@ -103,7 +103,7 @@ class GlishSysEventSource;
 // <group name="baselineFit">
 uInt baselineFit(Lattice<Float> &outImage,
 		 Vector<Float> &fittedParameters,
-		 LQLinearFit<Float> &fitter, 
+		 LinearFit<Float> &fitter, 
 		 const Lattice<Float> &inImage,
 		 uInt whichAxis,
 		 const Vector<Bool> &fitMask,

@@ -1,4 +1,4 @@
-//# LQNonLinearFitLM.cc: Solve non-linear fit using Levenberg-Marquardt method.
+//# NonLinearFitLM.cc: Solve non-linear fit using Levenberg-Marquardt method.
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,34 +34,34 @@
 #include <aips/typeinfo.h>
 
 template<class T>
-LQNonLinearFitLM<T>::LQNonLinearFitLM(Bool svd) :
-  LQNonLinearFit<T>(svd),
+NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
+  NonLinearFit<T>(svd),
   lamda_p(0.001) {}
 
 template<class T>
-LQNonLinearFitLM<T>::LQNonLinearFitLM(LSQ::normType type, Bool svd) :
-  LQNonLinearFit<T>(type, svd),
+NonLinearFitLM<T>::NonLinearFitLM(LSQ::normType type, Bool svd) :
+  NonLinearFit<T>(type, svd),
   lamda_p(0.001) {}
 
 template<class T>
-LQNonLinearFitLM<T>::LQNonLinearFitLM(const LQNonLinearFitLM &other) :
-  LQNonLinearFit<T>(other),
+NonLinearFitLM<T>::NonLinearFitLM(const NonLinearFitLM &other) :
+  NonLinearFit<T>(other),
   lamda_p(other.lamda_p) {}
 
 template<class T>
-LQNonLinearFitLM<T> &LQNonLinearFitLM<T>::operator=(const LQNonLinearFitLM &other) {
+NonLinearFitLM<T> &NonLinearFitLM<T>::operator=(const NonLinearFitLM &other) {
   if (this != &other) {
-    LQNonLinearFit<T>::operator=(other);
+    NonLinearFit<T>::operator=(other);
     lamda_p = other.lamda_p;
   };
   return *this;
 }
 
 template<class T>
-LQNonLinearFitLM<T>::~LQNonLinearFitLM() {}
+NonLinearFitLM<T>::~NonLinearFitLM() {}
 
 template<class T>
-Bool LQNonLinearFitLM<T>::
+Bool NonLinearFitLM<T>::
 fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol, 
       const Array<typename FunctionTraits<T>::BaseType> &x, 
       const Vector<typename FunctionTraits<T>::BaseType> &y,
@@ -93,7 +93,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     buildMatrix(x, y, sigma, mask);
     // Do an LM loop
     if (!solveLoop(fitit_p, nr_p, sol_p, mu, me)) {
-      throw(AipsError("LQNonLinearFitLM: error in loop solution"));
+      throw(AipsError("NonLinearFitLM: error in loop solution"));
     };
     curiter_p--;
   };

@@ -1,4 +1,4 @@
-//# LQGenericL2Fit.cc: Generic base lass for least-squares fit.
+//# GenericL2Fit.cc: Generic base lass for least-squares fit.
 //#
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -35,10 +35,10 @@
 //# Constants
 // Default svd collinearity
 template<class T>
-const Double LQGenericL2Fit<T>::COLLINEARITY = 1e-8;
+const Double GenericL2Fit<T>::COLLINEARITY = 1e-8;
 
 template<class T>
-LQGenericL2Fit<T>::LQGenericL2Fit() :
+GenericL2Fit<T>::GenericL2Fit() :
   FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
@@ -53,7 +53,7 @@ LQGenericL2Fit<T>::LQGenericL2Fit() :
 }
 
 template<class T>
-LQGenericL2Fit<T>::LQGenericL2Fit(LSQ::normType type) :
+GenericL2Fit<T>::GenericL2Fit(LSQ::normType type) :
   FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
@@ -69,7 +69,7 @@ LQGenericL2Fit<T>::LQGenericL2Fit(LSQ::normType type) :
 }
 
 template<class T>
-LQGenericL2Fit<T>::LQGenericL2Fit(const LQGenericL2Fit &other) :
+GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   FitLSQ(other), aCount_ai(other.aCount_ai),
   svd_p(other.svd_p), ptr_derive_p(0),
   pCount_p(other.pCount_p), ndim_p(other.ndim_p),
@@ -91,7 +91,7 @@ LQGenericL2Fit<T>::LQGenericL2Fit(const LQGenericL2Fit &other) :
 }
 
 template<class T>
-LQGenericL2Fit<T> &LQGenericL2Fit<T>::operator=(const LQGenericL2Fit &other) {
+GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
   if (this != &other) {
     FitLSQ::operator=(other);
     aCount_ai = other.aCount_ai;
@@ -119,12 +119,12 @@ LQGenericL2Fit<T> &LQGenericL2Fit<T>::operator=(const LQGenericL2Fit &other) {
 }
 
 template<class T>
-LQGenericL2Fit<T>::~LQGenericL2Fit() {
+GenericL2Fit<T>::~GenericL2Fit() {
   resetFunction();
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 setFunction(Function<typename FunctionTraits<T>::DiffType> &function) {
   resetFunction();
   ptr_derive_p = function.clone();
@@ -135,20 +135,20 @@ setFunction(Function<typename FunctionTraits<T>::DiffType> &function) {
 }
 
 template<class T>
-void LQGenericL2Fit<T>::asSVD(const Bool svd) {
+void GenericL2Fit<T>::asSVD(const Bool svd) {
   svd_p = svd;
   if (!svd_p) set(0.0);
   else set(COLLINEARITY);
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 setParameterValues(const Vector<typename FunctionTraits<T>::BaseType> &parms) {
   for (uInt i=0; i<pCount_p; ++i) (*ptr_derive_p)[i].value() = parms[i];
 }
 
 template<class T>
-void LQGenericL2Fit<T>::setMaskedParameterValues
+void GenericL2Fit<T>::setMaskedParameterValues
 (const Vector<typename FunctionTraits<T>::BaseType> &parms) {
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = parms[k++];
@@ -156,7 +156,7 @@ void LQGenericL2Fit<T>::setMaskedParameterValues
 }
 
 template<class T>
-Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::
 fit(const Vector<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
     const Vector<typename FunctionTraits<T>::BaseType> &sigma,
@@ -166,7 +166,7 @@ fit(const Vector<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::
 fit(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
     const Vector<typename FunctionTraits<T>::BaseType> &sigma,
@@ -176,7 +176,7 @@ fit(const Matrix<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::
 fit(const Vector<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
     const Vector<Bool> *const mask) {
@@ -187,7 +187,7 @@ fit(const Vector<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::
 fit(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
     const Vector<Bool> *const mask) {
@@ -198,14 +198,14 @@ fit(const Matrix<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::
 fit(const Vector<Bool> *const mask) {
   fit(fsol_p, mask);
   return fsol_p;
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
     const Vector<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
@@ -215,7 +215,7 @@ fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 fit(Vector<typename FunctionTraits<T>::BaseType> &sol, 
     const Matrix<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
@@ -225,7 +225,7 @@ fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 fit(Vector<typename FunctionTraits<T>::BaseType> &sol, 
     const Vector<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y, 
@@ -237,7 +237,7 @@ fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 fit(Vector<typename FunctionTraits<T>::BaseType> &sol, 
     const Matrix<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y, 
@@ -249,17 +249,17 @@ fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
     const Vector<Bool> *const mask) {
-  throw(AipsError("LQGenericL2: A001: not implemented yet; ask Wim Brouw"));
+  throw(AipsError("GenericL2: A001: not implemented yet; ask Wim Brouw"));
   return False;
 }
 
 template<class T>
-const Vector<typename FunctionTraits<T>::BaseType> &LQGenericL2Fit<T>::
+const Vector<typename FunctionTraits<T>::BaseType> &GenericL2Fit<T>::
 errors() const {
-  if (!errors_p) throw(AipsError("LQGenericL2Fit: no solution to get errors"));
+  if (!errors_p) throw(AipsError("GenericL2Fit: no solution to get errors"));
   if (!ferrors_p) {
     ferrors_p = True;
     ferr_p.resize(pCount_p);
@@ -272,7 +272,7 @@ errors() const {
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 errors(Vector<typename FunctionTraits<T>::BaseType> &err) const {
   if (errors_p) {
     if (!ferrors_p) {
@@ -290,14 +290,14 @@ errors(Vector<typename FunctionTraits<T>::BaseType> &err) const {
 }
 
 template<class T>
-Matrix<Double> LQGenericL2Fit<T>::compuCovariance() {
+Matrix<Double> GenericL2Fit<T>::compuCovariance() {
   Matrix<Double> tmp;
   compuCovariance(tmp);
   return tmp;
 }
 
 template<class T>
-void LQGenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
+void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
   if (pCount_p == aCount_ai) getCovariance(cov);
   else {
     Matrix<Double> tmp;
@@ -320,7 +320,7 @@ void LQGenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x, 
 		  const Vector<typename FunctionTraits<T>::BaseType> &y,
 		  const Vector<typename FunctionTraits<T>::BaseType> &sigma,
@@ -329,7 +329,7 @@ buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
 		  const Vector<typename FunctionTraits<T>::BaseType> &y,
 		  const Vector<typename FunctionTraits<T>::BaseType> &sigma,
@@ -338,7 +338,7 @@ buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x, 
 		  const Vector<typename FunctionTraits<T>::BaseType> &y,
 		  const Vector<Bool> *const mask) {
@@ -348,7 +348,7 @@ buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x, 
 		  const Vector<typename FunctionTraits<T>::BaseType> &y,
 		  const Vector<Bool> *const mask) {
@@ -358,7 +358,7 @@ buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 	 const Array<typename FunctionTraits<T>::BaseType> &x,
 	 const Vector<typename FunctionTraits<T>::BaseType> &sol) {
@@ -366,7 +366,7 @@ residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 residual(Vector<typename FunctionTraits<T>::BaseType> &y
 	 , const Array<typename FunctionTraits<T>::BaseType> &x) {
   return buildResidual(y, x,
@@ -375,7 +375,7 @@ residual(Vector<typename FunctionTraits<T>::BaseType> &y
 }
 
 template<class T>
-void LQGenericL2Fit<T>::initfit_p(uInt parcnt) {
+void GenericL2Fit<T>::initfit_p(uInt parcnt) {
   if (needInit_p) {
     needInit_p = False;
     solved_p = False;
@@ -400,14 +400,14 @@ void LQGenericL2Fit<T>::initfit_p(uInt parcnt) {
 }
 
 template<class T>
-uInt LQGenericL2Fit<T>::
+uInt GenericL2Fit<T>::
 testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 	     const Vector<typename FunctionTraits<T>::BaseType> &y,
 	     const Vector<typename FunctionTraits<T>::BaseType> *const sigma) {
   uInt xRows = (x.ndim() == 1 || x.ndim() == 2) ? x.shape()(0) : 0;
   if (xRows != y.nelements() ||
       (sigma && xRows != sigma->nelements())) {
-    throw(AipsError("LQGenericL2Fit::buildNormalMatrix()"
+    throw(AipsError("GenericL2Fit::buildNormalMatrix()"
 		    " -- Illegal argument Array sizes"));
   };
   initfit_p(aCount_ai);
@@ -415,7 +415,7 @@ testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-void LQGenericL2Fit<T>::resetFunction() {
+void GenericL2Fit<T>::resetFunction() {
   delete ptr_derive_p; ptr_derive_p = 0;
   pCount_p = 0;
   ndim_p = 0;
@@ -427,7 +427,7 @@ void LQGenericL2Fit<T>::resetFunction() {
 }
 
 template<class T>
-typename FunctionTraits<T>::BaseType LQGenericL2Fit<T>::
+typename FunctionTraits<T>::BaseType GenericL2Fit<T>::
 getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 	 uInt j, uInt i) const {
   if (ptr_derive_p) {
@@ -447,7 +447,7 @@ getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-void LQGenericL2Fit<T>::
+void GenericL2Fit<T>::
 buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x, 
 	    const Vector<typename FunctionTraits<T>::BaseType> &y,
 	    const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
@@ -478,7 +478,7 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
 }
 
 template<class T>
-Bool LQGenericL2Fit<T>::
+Bool GenericL2Fit<T>::
 buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y, 
 	      const Array<typename FunctionTraits<T>::BaseType> &x,
 	      const Vector<typename FunctionTraits<T>::BaseType> *const sol) {

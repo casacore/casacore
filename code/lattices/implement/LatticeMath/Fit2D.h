@@ -273,7 +273,7 @@ private:
    Bool itsInclude;
    Vector<Float> itsPixelRange;
    CompoundFunction<AutoDiff<Double> > itsFunction;
-   LQNonLinearFitLM<Double> itsFitter;
+   NonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
    Double itsChiSquared;
    String itsErrorMessage;

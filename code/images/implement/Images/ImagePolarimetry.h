@@ -333,7 +333,7 @@ public:
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
-   LQLinearFitSVD<Float>* itsFitterPtr;
+   LinearFitSVD<Float>* itsFitterPtr;
    Float itsOldClip;
 
 // These blocks are always size 4, with IQUV in slots 0,1,2,3

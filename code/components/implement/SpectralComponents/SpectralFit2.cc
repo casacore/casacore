@@ -41,7 +41,7 @@ Bool SpectralFit::fit(const Vector<MT> &y,
 		      const Vector<MT> &x,
 		      const Vector<Bool> *const mask) {
   // The fitter
-  LQNonLinearFitLM<MT> fitter;
+  NonLinearFitLM<MT> fitter;
   iter_p = 0;
   // The functions to fit
   Gaussian1D<AutoDiff<MT> > gauss;

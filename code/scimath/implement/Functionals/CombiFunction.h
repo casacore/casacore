@@ -58,7 +58,7 @@
 // </srcblock>
 // where a = {a(n)} are parameters. If the combi function is used in
 // a functional fitting process (see
-// <linkto class=LQLinearFit>LQLinearFit</linkto>) these parameters canm be
+// <linkto class=LinearFit>LinearFit</linkto>) these parameters canm be
 // solved for. In all aspects they behave as
 // <linkto class=FunctionParam>FunctionParam</linkto> values.
 //

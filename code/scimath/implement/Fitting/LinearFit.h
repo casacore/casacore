@@ -1,4 +1,4 @@
-//# LQLinearFit.h: Class for linear least-squares fit.
+//# LinearFit.h: Class for linear least-squares fit.
 //#
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LQLINEARFIT_H)
-#define AIPS_LQLINEARFIT_H
+#if !defined(AIPS_LINEARFIT_H)
+#define AIPS_LINEARFIT_H
 
 //# Includes
 #include <aips/aips.h>
@@ -38,7 +38,7 @@
 // <summary> Class for linear least-squares fit.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLQLinearFitSVD.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLinearFitSVD.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -114,7 +114,7 @@
 // For small datasets the usage of the calls is:
 // <ul>
 //  <li> Create a functional description of the parameters
-//  <li> Create a fitter: LQLinearFit<T> fitter();
+//  <li> Create a fitter: LinearFit<T> fitter();
 //  <li> Set the functional representation: fitter.setFunction()
 //  <li> Do the fit to the data: fitter.fit(x, data, sigma)
 //  	(or do a number of calls to buildNormalMatrix(x, data, sigma)
@@ -129,7 +129,7 @@
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LQLinearFit 
+// The following data types can be used to instantiate the LinearFit 
 // templated class:
 // <li> Float
 // <li> Double
@@ -148,7 +148,7 @@
 // the minimum angle allowed.
 //
 // Singular Value Decomposition is supported by the
-// <limkto class=LQLinearFitSVD>LQLinearFitSVD</linkto> class,
+// <limkto class=LinearFitSVD>LinearFitSVD</linkto> class,
 // which has a behaviour completely identical to this class (apart from a
 // default collinearity of 1e-8). 
 //
@@ -165,7 +165,7 @@
 //# /// redo example
 // In the following a polynomial is fitted through the first 20 prime numbers.
 // The data is given in the x vector (1 to 20) and in the primesTable
-// (2, 3, ..., 71) (see tLQLinearFitSVD test program). In the following
+// (2, 3, ..., 71) (see tLinearFitSVD test program). In the following
 // all four methods to calculate a polynomial through the data is used
 // <srcblock>
 //    	// The list of coordinate x-values
@@ -179,7 +179,7 @@
 //	Vector<Double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
-//  	LQLinearFit<Double> fitter;
+//  	LinearFit<Double> fitter;
 //	Polynomial<AutoDiff<Double> > combination(2);
 //	// Get the solution
 //	fitter.setFunction(combination);
@@ -202,24 +202,24 @@
 // information, and other examples.
 // </example>
 
-template<class T> class LQLinearFit : public LQGenericL2Fit<T> {
+template<class T> class LinearFit : public GenericL2Fit<T> {
  public: 
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>
-  LQLinearFit();
+  LinearFit();
   // Create a fitter for complex data with non-standard interpretation
   // of the complex values
   // (see <linkto module=Fitting>Fitting</linkto> module).
-  explicit LQLinearFit(LSQ::normType type);
+  explicit LinearFit(LSQ::normType type);
   // Copy constructor (deep copy)
-  LQLinearFit(const LQLinearFit &other);
+  LinearFit(const LinearFit &other);
   // Assignment (deep copy)
-  LQLinearFit &operator=(const LQLinearFit &other);
+  LinearFit &operator=(const LinearFit &other);
 
   // Destructor
-  virtual ~LQLinearFit();
+  virtual ~LinearFit();
   
   //# Member functions
 

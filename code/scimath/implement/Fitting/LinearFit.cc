@@ -1,4 +1,4 @@
-//# LQLinearFit.cc: Class for linear least-squares fit.
+//# LinearFit.cc: Class for linear least-squares fit.
 //#
 //# Copyright (C) 1995,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -35,30 +35,30 @@
 //# Constants
 
 template<class T>
-LQLinearFit<T>::LQLinearFit() :
-  LQGenericL2Fit<T>() {}
+LinearFit<T>::LinearFit() :
+  GenericL2Fit<T>() {}
 
 template<class T>
-LQLinearFit<T>::LQLinearFit(LSQ::normType type) :
-  LQGenericL2Fit<T>(type) {}
+LinearFit<T>::LinearFit(LSQ::normType type) :
+  GenericL2Fit<T>(type) {}
 
 template<class T>
-LQLinearFit<T>::LQLinearFit(const LQLinearFit &other) :
-  LQGenericL2Fit<T>(other) {}
+LinearFit<T>::LinearFit(const LinearFit &other) :
+  GenericL2Fit<T>(other) {}
 
 template<class T>
-LQLinearFit<T> &LQLinearFit<T>::operator=(const LQLinearFit &other) {
+LinearFit<T> &LinearFit<T>::operator=(const LinearFit &other) {
   if (this != &other) {
-    LQGenericL2Fit<T>::operator=(other);
+    GenericL2Fit<T>::operator=(other);
   };
   return *this;
 }
 
 template<class T>
-LQLinearFit<T>::~LQLinearFit() {}
+LinearFit<T>::~LinearFit() {}
 
 template<class T>
-Bool LQLinearFit<T>::
+Bool LinearFit<T>::
 fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol, 
       const Array<typename FunctionTraits<T>::BaseType> &x, 
       const Vector<typename FunctionTraits<T>::BaseType> &y,

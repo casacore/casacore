@@ -1,4 +1,4 @@
-//# tLQNonLinearFitLM.cc: Test nonlinear least squares classes
+//# tNonLinearFitLM.cc: Test nonlinear least squares classes
 //# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,7 +46,7 @@
 extern "C" float dtime(float *p);
 
 int main() {
-  LQNonLinearFitLM<Double> fitter;
+  NonLinearFitLM<Double> fitter;
   Vector<Double> solution;
   Double user_time;
   Double oldChiSquare;
@@ -477,7 +477,7 @@ int main() {
   // angle becomes meaningless as the fitted Gaussian function becomes 
   // circular and the fitting process may fail.
 
-  LQNonLinearFitLM<Double> afitter;
+  NonLinearFitLM<Double> afitter;
 
   // The current parameter values are used as the initial guess.  A 
   // slight perturbation is given to them.

@@ -41,7 +41,7 @@
 
 uInt baselineFit(Lattice<Float> &outImage,
 		 Vector<Float> &fittedParameters,
-		 LQLinearFit<Float> &fitter, 
+		 LinearFit<Float> &fitter, 
 		 const Lattice<Float> &inImage,
 		 uInt whichAxis,
 		 const Vector<Bool> &fitMask,
