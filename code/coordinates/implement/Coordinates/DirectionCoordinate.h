@@ -568,6 +568,7 @@ public:
     Vector<Double> longLatPoles() const;
 
 private:
+
     // Direction type
     MDirection::Types type_p, conversionType_p;
 
