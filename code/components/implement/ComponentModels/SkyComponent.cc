@@ -122,10 +122,10 @@ Flux<Double> SkyComponent::sample(const MDirection & direction,
   return itsCompPtr->sample(direction, pixelSize, centerFrequency);
 }
 
-// void SkyComponent::project(ImageInterface<Float> & plane) const {
-//   itsCompPtr->project(plane);
-//   DebugAssert(ok(), AipsError);
-// }
+void SkyComponent::project(ImageInterface<Float> & plane) const {
+  itsCompPtr->project(plane);
+  DebugAssert(ok(), AipsError);
+}
 
 Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
  				      const Double & frequency) const {

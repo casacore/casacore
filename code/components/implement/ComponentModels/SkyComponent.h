@@ -163,13 +163,13 @@ public:
 			      const MVAngle & pixelSize, 
 			      const MFrequency & centerFrequency) const;
 
-  //# Project the component onto an Image. The default implementation calls the
-  //# sample function once for the centre of each pixel. The image needs
-  //# only have a one (and only one) direction axis. Other axes are optionaland
-  //# if there is no Stokes axes then it is assumed that the polarization is
-  //# Stokes::I. The component is gridded equally onto all other axes of the
-  //# image (ie. spectral axes).
-  //# virtual void project(ImageInterface<Float> & plane) const;
+  // Project the component onto an Image. Calls the sample function once for
+  // the centre of each pixel. The image needs only have a one (and only one)
+  // direction axis. Other axes are optional and if there is no Stokes axes
+  // then it is assumed that the polarization is Stokes::I. If there is no
+  // frequency axis then the frequency is assumed to be the reference
+  // frequency ie., spectrum().refFrequency().
+  virtual void project(ImageInterface<Float> & plane) const;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
