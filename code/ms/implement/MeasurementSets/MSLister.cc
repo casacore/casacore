@@ -230,7 +230,7 @@ void MSLister::getRanges()
   // Assumes items_p has already been set (should add check on this)
   // **SPW**
   
-  MSRange msr(mss_p.selectedTable(),mss_p.dataDescId());		
+  MSRange msr(mss_p);
   ranges_p = msr.range(items_p);		
 
   // Print out the retrieved ranges:
