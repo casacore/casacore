@@ -1,5 +1,5 @@
 //# MSTableImpl.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,6 +57,8 @@
 #include <aips/Measures/MBaseline.h>
 #include <aips/Measures/Muvw.h>
 #include <aips/Measures/MEarthMagnetic.h>
+
+#include <aips/iostream.h>
 
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {

@@ -1,5 +1,5 @@
 //# Matrix2Math.cc: The AIPS++ linear algebra functions (non-templated)
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayError.h>
+#include <aips/iostream.h>
 
 Matrix<Double> Rot3D(Int axis, Double angle) 
 {

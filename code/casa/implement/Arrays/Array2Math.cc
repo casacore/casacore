@@ -1,5 +1,5 @@
 //# Array2Math.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/iostream.h>
 
 static Bool ArrayMinMaxPrinted = False;
 

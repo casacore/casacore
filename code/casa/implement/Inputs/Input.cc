@@ -1,5 +1,5 @@
 //# Input.cc: A linked list of user input parameters
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/iostream.h>
 
 #if defined(TESTBED)
 #define DEBUG 1
@@ -117,7 +118,6 @@ void Input::createPar (Int system, const String& key, const String& value,
     String msg = "Input::createPar: " + key +
       ": Cannot create any more Parameters";
     throw(AipsError(msg));
-    return;
   }
   
   int i = getParam(key);

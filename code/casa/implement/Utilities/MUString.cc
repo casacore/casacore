@@ -1,5 +1,5 @@
 //# MUString.cc: Pointed String class to ais analysis of quantity strings
-//# Copyright (C) 1996,1997,1998,1999,2001
+//# Copyright (C) 1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/Quanta/MUString.h>
 #include <aips/strstream.h>
+#include <aips/iostream.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Regex.h>
 

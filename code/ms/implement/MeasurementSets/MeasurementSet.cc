@@ -47,6 +47,7 @@
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Utilities/String.h>
+#include <aips/iostream.h>
 
 MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
 

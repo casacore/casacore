@@ -1,5 +1,5 @@
 //# Quantum2.cc: class to manipulate phsical, dimensioned quantities
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Quanta/Quantum.h>
+#include <aips/iostream.h>
 
 istream &operator>> (istream &is, Quantity &ku) {
   String str;
