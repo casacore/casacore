@@ -120,9 +120,8 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // Split the pixelAxesMap and outOrder into the parts for the
     // region and the box (which can be more than the box itself
     // because it might be extended).
-    uInt ndout = outOrder.nelements();
     uInt ndreg = ndim() - 1;
-    DebugAssert (ndout == ndim(), AipsError);
+    DebugAssert (outOrder.nelements() == ndim(), AipsError);
     IPosition regPixMap(ndreg);
     IPosition regOutOrd(ndreg);
     IPosition boxPixMap(1, pixelAxesMap(ndreg));
