@@ -1,5 +1,5 @@
-//# tPagedArray1.cc:  tests the PagedArray class
-//# Copyright(C) 1997
+//# tPagedArray.cc:  tests the PagedArray class
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
