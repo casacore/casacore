@@ -5361,3 +5361,4 @@
 15 063 src rm aips/implement/Containers/OrdMapRtti.h
 15 063 src rm aips/implement/Containers/OrdMapRtti.cc
 15 063 src rm aips/implement/Exceptions/Excp.cc
+15 065 src rm aips/implement/Exceptions/Excp2.cc
