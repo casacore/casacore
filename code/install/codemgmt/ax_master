@@ -4185,3 +4185,4 @@
 14 065 src mv trial/apps/viewer/polyregionb1.xbm trialdisplay/apps/viewer/polyregionb1.xbm
 14 065 src mv trial/apps/viewer/polyregionb2.xbm trialdisplay/apps/viewer/polyregionb2.xbm
 14 065 src mv trial/apps/viewer/polyregionb3.xbm trialdisplay/apps/viewer/polyregionb3.xbm
+14 065 src mv trial/apps/viewer/rectregion.xbm trialdisplay/apps/viewer/rectregion.xbm
