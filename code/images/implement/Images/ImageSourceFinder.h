@@ -65,6 +65,9 @@ class LogIO;
 // <synopsis>
 // This class provides methods to find sources in an image.
 // Currently just a simple strong point source finder is available.
+// In finding these point sources, it does make a  rough estimate of
+// gaussian parameters; one can return these if desired, but they
+// are not very precise.
 // </synopsis>
 
 // <example>
@@ -96,10 +99,11 @@ public:
 // Assignment operator
    ImageSourceFinder<T> &operator=(const ImageSourceFinder<T> &other);
 
-// Find strong (point) sources.  If doPoint=False, some rough shape
-// information is returned as well.  Becuase the flux of the component is
-// integrated, this rough shape influences the flux values.
-
+// Find strong (point) sources.  If doPoint=True, the returned components
+// are of type POINT.  If doPoint=False, some rough shape information is 
+// returned as well (and the components are of type GAUSSIAN). Because 
+// the flux of the component is integrated, this rough shape influences the 
+// flux values as well.
    ComponentList findSources (LogIO& os, 
                               Int nMax, 
                               Double cutoff, Bool absFind, Bool doPoint=True);
