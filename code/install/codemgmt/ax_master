@@ -4538,3 +4538,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSSource.h aips/implement/MeasurementSets/MSSource.h
 14 296 src mv aips/implement/MeasurementSets/NewMSSourceColumns.cc aips/implement/MeasurementSets/MSSourceColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSSourceColumns.h aips/implement/MeasurementSets/MSSourceColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSSourceEnums.h aips/implement/MeasurementSets/MSSourceEnums.h
