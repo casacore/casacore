@@ -287,6 +287,14 @@ inline uInt ModcompConversion::fromLocal(void* to, uLong from) {
   return CanonicalConversion::fromLocal (to, (uInt) from);
 }
 
+inline uInt ModcompConversion::fromLocal(void* to, Float from) {
+  return ModcompConversion::fromLocal(to, &from, 1u);
+}
+
+uInt ModcompConversion::fromLocal(void* to, Double from) {
+  return ModcompConversion::fromLocal(to, &from, 1u);
+}
+
 inline uInt ModcompConversion::fromLocal(void* to, const Char* from, uInt nr) {
   return CanonicalConversion::fromLocalChar(to, from, nr);
 }
@@ -318,6 +326,5 @@ inline uInt ModcompConversion::fromLocal(void* to, const Long* from, uInt nr) {
 inline uInt ModcompConversion::fromLocal(void* to, const uLong* from,uInt nr){ 
   return CanonicalConversion::fromLocalUInt(to, from, nr);
 }
-
 
 #endif
