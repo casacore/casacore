@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Logging/LogOrigin.h>
@@ -40,7 +41,6 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QC.h>
-#include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>
@@ -272,11 +272,65 @@ int main()
          }
 //
          restFreq = 1.3;
-         if (!lc.setRestFrequency(restFreq)) {
+         if (!lc.setRestFrequency(restFreq, False)) {
             throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
          }
          if (!near(restFreq, lc.restFrequency())) {
             throw(AipsError("Failed rest frequency set/recovery test"));
+         }
+//
+         Vector<Double> rf(2);
+         rf(0) = lc.restFrequency();
+         rf(1) = restFreq;
+         if (!lc.setRestFrequency(restFreq, True)) {
+            throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
+         }
+         if (!near(restFreq, lc.restFrequency())) {
+            throw(AipsError("Failed rest frequency set/recovery test"));
+         }
+//
+         restFreq = 1.4;
+         rf.resize(3,True);
+         rf(2) = restFreq;
+         if (!lc.setRestFrequency(restFreq, True)) {
+            throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
+         }
+         if (!near(restFreq, lc.restFrequency())) {
+            throw(AipsError("Failed rest frequency set/recovery test"));
+         }
+         const Vector<Double>& restFreqs = lc.restFrequencies();
+         if (restFreqs.nelements() != rf.nelements()) {
+            throw(AipsError("Failed restFrequencies recovery test 1"));
+         }
+         for (uInt i=0; i<rf.nelements(); i++) {
+            if (!near(restFreqs(i), rf(i))) {
+               throw(AipsError("Failed restFrequencies recovery test 2"));
+            }
+         }
+         for (uInt i=0; i<restFreqs.nelements(); i++){
+            lc.selectRestFrequency(i);
+            if (!near(restFreqs(i), lc.restFrequency())) {
+               throw(AipsError("Failed selectRestFrquency test 1"));
+            }
+         }
+         for (uInt i=0; i<restFreqs.nelements(); i++){
+            lc.selectRestFrequency(restFreqs(i));
+            if (!near(restFreqs(i), lc.restFrequency())) {
+               throw(AipsError("Failed selectRestFrquency test 1"));
+            }
+         }
+         rf.resize(2);
+         rf(0) = 1e9;
+         rf(1) = 2e9;
+         lc.setRestFrequencies(rf, 0, False);
+         const Vector<Double>& restFreqs2 = lc.restFrequencies();
+         if (restFreqs2.nelements() != rf.nelements()) {
+            throw(AipsError("Failed setRestFrequencies test 1"));
+         } 
+         for (uInt i=0; i<rf.nelements(); i++) {
+            if (!near(restFreqs(i), rf(i))) {
+               throw(AipsError("Failed setRestFrequencies test 2"));
+            }
          }
 //
          lc.setFrequencySystem(MFrequency::LSRK);
@@ -352,7 +406,7 @@ int main()
          {
             String unit;
             Double val = 1.4e9;
-            lc.setRestFrequency(val);
+            lc.setRestFrequency(val, False);
             lc.setPreferredWorldAxisUnits(lc.worldAxisUnits());
             lc.setPreferredVelocityType (MDoppler::Z);
             String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
@@ -771,7 +825,10 @@ int main()
 //
       {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         TableRecord rec;
+         Vector<Double> rf(2);
+         rf(0) = 1.0e9; rf(1) = 2.0e9;
+         lc.setRestFrequencies(rf, 0, False);
+         Record rec;
          if (!lc.save(rec, "linear")) {
             throw(AipsError("Coordinate saving to Record failed"));  
          }  
@@ -801,7 +858,7 @@ int main()
          LogIO os(or);
 //
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         TableRecord rec;
+         Record rec;
 //         lc.toFITS(rec, 0, os, False, True);
 //
          SpectralCoordinate lc2;
