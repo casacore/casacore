@@ -230,6 +230,13 @@ template<class ScalarType>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
 	    IPosition &maxPos, const Array<ScalarType> &array, 
 	    const Array<Bool> &mask);
+// The array * mask is searched 
+//# See the comments at the beginning of ArrayMath.cc for workarounds for a
+//# CFront "core dump or something nasty like that" bug.
+template<class ScalarType>
+void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
+		  IPosition &maxPos, const Array<ScalarType> &array, 
+		  const Array<ScalarType> &mask);
 // </group>
 
 // 

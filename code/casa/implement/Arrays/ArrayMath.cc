@@ -94,6 +94,61 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 }
 
 
+
+// <thrown>
+//   <item> ArrayError
+// </thrown>
+template<class ScalarType> 
+void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, 
+	    IPosition &minPos, IPosition &maxPos,
+	    const Array<ScalarType> &array, const Array<ScalarType> &mask) 
+{
+    if (minPos.nelements() != array.ndim() ||
+	maxPos.nelements() != array.ndim() ) {
+      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+                       "minPos, maxPos dimensionality inconsistent with array"));
+    }
+    if (array.nelements() == 0) {
+      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+		       "Array has no elements"));	
+    }
+    if (array.shape() != mask.shape()) {
+      throw(ArrayConformanceError("void minMaxMasked(T &min, T &max,"
+				  "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
+				  "const Array<T> &mask) - " 
+				  "array and mask do not have the same shape()"));
+    } 
+
+    ReadOnlyVectorIterator<ScalarType> ai(array);
+    ReadOnlyVectorIterator<ScalarType> mi(mask);
+    ScalarType val;
+
+    // Initialize
+    minPos = maxPos = IPosition (array.ndim(), 0);
+    minVal = maxVal = array(minPos) * mask(minPos);
+    uInt n = ai.vector().nelements();
+
+    while (! ai.pastEnd()) {
+	for (uInt i=0; i<n; i++) {
+	    val = (ai.vector()(i)) * (mi.vector()(i));
+	    if (val < minVal) {
+	        minVal = val;
+		minPos = ai.pos();
+		minPos(0) += i;
+	    }
+	    if (val > maxVal) {
+	        maxVal = val;
+		maxPos = ai.pos();
+		maxPos(0) += i;
+	    }
+	}
+	ai.next(); 
+    }
+}
+
+
 // <thrown>
 //   <item> ArrayError
 //   <item> AipsError
