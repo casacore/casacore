@@ -2112,7 +2112,6 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     if (oneRelative) {
 	offset = 1.0;
     }
-
     Vector<Double> cdelt, crval, crpix;
     Vector<Int> naxes;
     Vector<String> ctype, cunit;
@@ -2195,11 +2194,33 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	return False;
     } end_try;
 
+
+// Make some consistency checks.  We don't rely on naxis, rather we 
+// look at the length of the descriptor vectors.  If some missing 
+// values, give guesses
+
     const Int n = ctype.nelements();
 
-    if (Int(crval.nelements()) != n || Int(crpix.nelements()) != n || 
-	Int(cdelt.nelements()) != n || Int(pc.nrow()) != n || 
-	Int(pc.ncolumn()) != n ||
+    if (Int(crval.nelements()) != n) {
+       Int n2 = crval.nelements();
+       crval.resize(n,True);
+       for (Int i=n2; i<n; i++) crval(i) = 0.0;
+       os << LogIO::WARN << "Padding missing crval values with 0.0" << LogIO::POST;
+    }
+    if (Int(cdelt.nelements()) != n) {
+       Int n2 = cdelt.nelements();
+       cdelt.resize(n,True);
+       for (Int i=n2; i<n; i++) cdelt(i) = 1.0;
+       os << LogIO::WARN << "Padding missing cdelt values with 1.0" << LogIO::POST;
+    }
+    if (Int(crpix.nelements()) != n) {
+       Int n2 = crpix.nelements();
+       crpix.resize(n,True);
+       for (Int i=n2; i<n; i++) crpix(i) = 1.0;
+       os << LogIO::WARN << "Padding missing crpix values with 1.0" << LogIO::POST;
+    }
+//
+    if (Int(pc.nrow()) != n ||  Int(pc.ncolumn()) != n ||
 	(cunit.nelements() > 0 && Int(cunit.nelements()) != n)) {
 	os << LogIO::SEVERE << "Inconsistent number of axes in header";
 	return False;
@@ -2209,14 +2230,16 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
     Int i;
     for (i=0; i<n; i++) {
-	if (ctype(i).contains("RA") || ctype(i).contains("LON")) {
+        String subRA(ctype(i).at(0,2));
+        String subDEC(ctype(i).at(0,3));
+	if (subRA==String("RA") || ctype(i).contains("LON")) {
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
 		    "present in header!";
 		return False;
 	    }
 	    longAxis = i;
-	} else if (ctype(i).contains("DEC") || ctype(i).contains("LAT")) {
+	} else if (subDEC==String("DEC") || ctype(i).contains("LAT")) {
 	    if (latAxis >= 0) {
 		os << LogIO::SEVERE << "More than one latitude axis is "
 		    "present in header!";
