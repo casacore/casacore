@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_FUNCTION__H)
-#define AIPS_FUNCTION__H
+#if !defined(AIPS_FUNCTION_H)
+#define AIPS_FUNCTION_H
 
 //# Includes
 #include <aips/aips.h>
