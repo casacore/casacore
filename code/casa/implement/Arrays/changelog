@@ -4,7 +4,7 @@
  <date> 2001/05/22 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Arrays </module>
  <type> Code </type>
  <category> New </category>
@@ -30,7 +30,7 @@ The following (global) functions have been added:
  <date> 2002/06/21 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Arrays </module>
  <type> Code </type>
  <category> New </category>
@@ -50,7 +50,7 @@ This connection can also be used to go to/from  other sequential STL containers 
  <date> 2002/12/09 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Arrays </module>
  <type> Code Documentation Review </type>
  <category> New </category>
@@ -71,7 +71,7 @@ An STL-like iterator class has been added to the Array class recently as well.
  <date> 2002/12/13 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Arrays </module>
  <type> Code </type>
  <category> New </category>
@@ -91,7 +91,7 @@ If needed, a backward iterator could be added in the future.
  <date> 2003/08/13 </date>
  <avers> 1.9 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Arrays </module>
  <type> Code </type>
  <category> New </category>

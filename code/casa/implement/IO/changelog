@@ -4,7 +4,7 @@
  <date> 2002/08/13 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> IO </module>
  <type> Code </type>
  <category> Change </category>

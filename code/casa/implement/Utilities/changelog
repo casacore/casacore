@@ -4,7 +4,7 @@
  <date> 2000/11/22 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Utilities </module>
  <type> Code Test </type>
  <category> Change </category>
@@ -26,7 +26,7 @@ In addition I have removed the hash() function, which was also not used.
  <date> 2000/12/04 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Utilities </module>
  <type> Code </type>
  <category> Removed </category>
@@ -52,7 +52,7 @@ its thrownFile and thrownLine functions) is also removed.
  <date> 2001/08/12 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Utilities </module>
  <type> Code </type>
  <category> Change </category>
