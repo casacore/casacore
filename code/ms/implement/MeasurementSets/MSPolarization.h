@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSPolarizationEnums.h>
+#include <aips/MeasurementSets/NewMSPolEnums.h>
 
 // <summary> 
 // A Table intended to hold a NewMeasurementSet POLARIZATION table.

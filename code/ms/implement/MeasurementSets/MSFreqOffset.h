@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSFreqOffsetEnums.h>
+#include <aips/MeasurementSets/NewMSFreqOffEnums.h>
 
 // <summary> 
 // A Table intended to hold a NewMeasurementSet FREQ_OFFSET table.

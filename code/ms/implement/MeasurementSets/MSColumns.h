@@ -42,11 +42,11 @@
 #include <aips/MeasurementSets/NewMSFeedColumns.h>
 #include <aips/MeasurementSets/NewMSFieldColumns.h>
 #include <aips/MeasurementSets/NewMSFlagCmdColumns.h>
-#include <aips/MeasurementSets/NewMSFreqOffsetColumns.h>
+#include <aips/MeasurementSets/NewMSFreqOffColumns.h>
 #include <aips/MeasurementSets/NewMSHistoryColumns.h>
-#include <aips/MeasurementSets/NewMSObservationColumns.h>
+#include <aips/MeasurementSets/NewMSObsColumns.h>
 #include <aips/MeasurementSets/NewMSPointingColumns.h>
-#include <aips/MeasurementSets/NewMSPolarizationColumns.h>
+#include <aips/MeasurementSets/NewMSPolColumns.h>
 #include <aips/MeasurementSets/NewMSProcessorColumns.h>
 #include <aips/MeasurementSets/NewMSSourceColumns.h>
 #include <aips/MeasurementSets/NewMSSpWindowColumns.h>
