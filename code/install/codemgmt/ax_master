@@ -5742,3 +5742,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSFeedEnums.h
 16 134 src rm aips/implement/MeasurementSets/OldMSField.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSField.h
+16 134 src rm aips/implement/MeasurementSets/OldMSFieldColumns.cc
