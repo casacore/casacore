@@ -2343,3 +2343,4 @@
 09 329 src rm aips/implement/Graphics/Visualize.h
 09 329 src rm trial/apps/gcontour
 09 329 sys rm libexec/gcontour.g
+09 329 src rm trial/implement/distributed
