@@ -56,13 +56,13 @@ Quantum<Qtype>::Quantum(const Qtype &factor) : QBase(),
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor, const Unit &s) :
-                   QBase(s),
-		   qVal(factor) {}
+  QBase(s),
+  qVal(factor) {}
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor, const QBase &other) :
-                   QBase(other),
-                   qVal(factor) {}
+  QBase(other),
+  qVal(factor) {}
 
 template <class Qtype>
 Quantum<Qtype>::~Quantum() {}
@@ -72,8 +72,8 @@ Quantum<Qtype>::~Quantum() {}
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator=(const Quantum<Qtype> &other) {
     if (this != &other) {
-	qVal=other.qVal;
-	qUnit=other.qUnit;
+      qVal=other.qVal;
+      qUnit=other.qUnit;
     }
     return *this;
 }
@@ -86,7 +86,7 @@ const Quantum<Qtype> &Quantum<Qtype>::operator+() const{
 template <class Qtype>
 Quantum<Qtype> Quantum<Qtype>::operator-() const{
     Quantum<Qtype> loc;
-    loc.qVal = -at_cc(qVal);
+    loc.qVal = -qVal;
     loc.qUnit = qUnit;
     return loc;
 }
@@ -99,14 +99,14 @@ Quantum<Qtype> &Quantum<Qtype>::operator+=(const Quantum<Qtype> &other) {
 			 other.qUnit.getName() + "'"));
     } else {
         Qtype tmp = other.getValue(qUnit);
-	at_c(qVal) += at_cc(tmp);
+	qVal += (tmp);
     }
     return *this;
 }
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator+=(const Qtype &other) {
-    at_c(qVal) += at_cc(other);
+    qVal += other;
     return *this;
 }
 
@@ -118,20 +118,20 @@ Quantum<Qtype> &Quantum<Qtype>::operator-=(const Quantum<Qtype> &other) {
 			 other.qUnit.getName() + "'"));
     } else {
         Qtype tmp = other.getValue(qUnit);
-	at_c(qVal) -= at_cc(tmp);
+	qVal -= (tmp);
     }
     return *this;
 }
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator-=(const Qtype &other) {
-    at_c(qVal) -= at_cc(other);
+    qVal -= (other);
     return *this;
 }
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator*=(const Quantum<Qtype> &other) {
-    at_c(qVal) *= at_cc(other.qVal); 
+    qVal *= (other.qVal); 
     if (!(other.qUnit.getName().empty())) {
 	if (qUnit.getName().empty()) {
 	    qUnit = other.qUnit;
@@ -144,13 +144,13 @@ Quantum<Qtype> &Quantum<Qtype>::operator*=(const Quantum<Qtype> &other) {
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator*=(const Qtype &other) {
-    at_c(qVal) *= at_cc(other);
+    qVal *= (other);
     return *this;
 }
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator/=(const Quantum<Qtype> &other) {
-    at_c(qVal) /= at_cc(other.qVal);
+    qVal /= (other.qVal);
     if (!(other.qUnit.getName().empty())) {
 	if (qUnit.getName().empty()) {
 	    qUnit = Unit(String("(") + other.qUnit.getName() +
@@ -165,7 +165,7 @@ Quantum<Qtype> &Quantum<Qtype>::operator/=(const Quantum<Qtype> &other) {
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator/=(const Qtype &other) {
-    at_c(qVal) /= at_cc(other);
+    qVal /= (other);
     return *this;
 }
 
@@ -199,7 +199,7 @@ Quantum<Qtype> Quantum<Qtype>::operator/(const Quantum<Qtype> &other) const{
 
 template <class Qtype>
 void  Quantum<Qtype>::print(ostream &os) const {
-    os << at_cc(qVal) << " " << qUnit.getName();
+    os << qVal << " " << qUnit.getName();
 }
 
 //# Quantum general member functions
@@ -225,12 +225,12 @@ Qtype Quantum<Qtype>::getValue(const Unit &other) const {
       if (other.getValue() == UnitVal::ANGLE)
 	d1 *= C::day/C::circle;
     };
-    return (Qtype)(at_cc(qVal)/d1);
+    return (Qtype)(qVal/d1);
 }
 
 template <class Qtype>
 Qtype Quantum<Qtype>::getBaseValue() const {
-    return (Qtype)(at_cc(qVal) * qUnit.getValue().getFac());
+    return (Qtype)(qVal * qUnit.getValue().getFac());
 }
 
 template <class Qtype>
@@ -240,7 +240,7 @@ const Unit &Quantum<Qtype>::getFullUnit() const {
 
 template <class Qtype>
 void Quantum<Qtype>::scale(const Qtype &factor) {
-    at_c(qVal) *= at_cc(factor);
+    qVal *= (factor);
 }
 
 template <class Qtype>
@@ -270,7 +270,7 @@ Bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
   };
   //
   // The next statement is necessary once the read return arg is templated
-  //  Qtype tmp = (Qtype)(at_cc(res.getValue()) + val0)
+  //  Qtype tmp = (Qtype)((res.getValue()) + val0)
   res.setValue(val0);
   res.setUnit(unit);
   in.unpush(); return True; 
@@ -304,29 +304,29 @@ template <class Qtype>
 void Quantum<Qtype>::convert(const Unit &s) {
     if (qUnit.getValue() == s.getValue()) {
       // To suppress some warnings, next statement not used
-      //	at_c(qVal) *= (qUnit.getValue().getFac()/s.getValue().getFac());
-      at_c(qVal) = (Qtype) (at_cc(qVal) * 
-			    qUnit.getValue().getFac()/s.getValue().getFac());
+      //	qVal *= (qUnit.getValue().getFac()/s.getValue().getFac());
+      qVal = (Qtype) (qVal * 
+		      qUnit.getValue().getFac()/s.getValue().getFac());
       qUnit = s;
     } else {
       if (qUnit.getValue() == UnitVal::ANGLE && 
 	  s.getValue() == UnitVal::TIME) {
-	at_c(qVal) = (Qtype) (at_cc(qVal) *
-			      qUnit.getValue().getFac()/
-			      s.getValue().getFac() * C::day/C::circle);
+	qVal = (Qtype) (qVal *
+			qUnit.getValue().getFac()/
+			s.getValue().getFac() * C::day/C::circle);
 	qUnit = s;
       } else if (qUnit.getValue() == UnitVal::TIME &&
 		 s.getValue() == UnitVal::ANGLE) {
-	at_c(qVal) = (Qtype) (at_cc(qVal) *
-			      qUnit.getValue().getFac()/
-			      s.getValue().getFac() * C::circle/C::day);
+	qVal = (Qtype) (qVal *
+			qUnit.getValue().getFac()/
+			s.getValue().getFac() * C::circle/C::day);
 	qUnit = s;
       } else {
 	qUnit.setValue(qUnit.getValue() / s.getValue());
 	ostrstream oss;
 	oss << qUnit.getValue().getDim();
 	// Suppress (gcc) warnings:
-	at_c(qVal) = (Qtype) (at_cc(qVal) * 
+	qVal = (Qtype) (qVal * 
 			      qUnit.getValue().getFac());
 	if (s.empty()) {
 	  qUnit = String(oss);
