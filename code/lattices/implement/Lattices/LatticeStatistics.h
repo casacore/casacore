@@ -38,6 +38,7 @@
 #include <trial/Lattices/TiledCollapser.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
 
@@ -47,6 +48,7 @@ template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
 class ostream;
+
 
 
 // <summary>
@@ -290,6 +292,7 @@ public:
 // value of <src>False</src> indicates that the internal state of 
 // the class is bad.
 // <group>
+   Bool getStatistic (Array<T>& stat, LatticeStatsBase::StatisticsTypes type);
    Bool getNPts (Array<T>&);
    Bool getSum (Array<T>&);
    Bool getFluxDensity (Array<T>&);
@@ -297,6 +300,7 @@ public:
    Bool getMin (Array<T>&);
    Bool getMax (Array<T>&);
    Bool getMean (Array<T>&);
+   Bool getMedian (Array<T>&);
    Bool getVariance (Array<T>&);
    Bool getSigma (Array<T>&);
    Bool getRms (Array<T>&);
@@ -343,6 +347,7 @@ protected:
    Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
    Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
    Bool haveLogger_p, showProgress_p, fixedMinMax_p, forceDisk_p;
+   Bool doRobust_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
    String error_p;
 
@@ -356,6 +361,10 @@ protected:
 // computed.  Returns False if beam not available, else True.
 // The implementation here returns False.
    virtual Bool getBeamArea (Double& beamArea) const;
+
+   virtual void listMinMax (ostrstream& osMin,
+                            ostrstream& osMax,
+                            Int oWidth, DataType type);
 
 // List the statistics to the logger.   The implementation here
 // is adequate for all lattices.  See ImageStatistics for an
@@ -405,6 +414,9 @@ protected:
                            Int& iLab,
                            String& label) const;
 
+// Find the median per cursorAxes chunk
+   void generateRobust (); 
+
 // Create a new storage lattice
    Bool generateStorageLattice (); 
 
@@ -420,6 +432,11 @@ protected:
 // lattice subsectioning
    IPosition locInLattice (const IPosition& storagePosition,
                            Bool relativeToParent=True) const;
+
+// Given a location in the lattice and a statistic type, work
+// out where to put it in the storage lattice
+   IPosition locInStorageLattice(const IPosition& latticePosition,
+                                 LatticeStatsBase::StatisticsTypes type) const;
  
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (String& label,
@@ -609,7 +626,4 @@ private:
     uInt n1_p;
     uInt n3_p;
 };
-
-
-
 #endif
