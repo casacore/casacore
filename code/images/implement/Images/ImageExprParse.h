@@ -62,13 +62,104 @@
 // The statements in there use the routines in this file to act
 // upon a reduced rule.
 // <p>
-// The class contains some values used by the parsing process.
-// The only function to be used by a user is the static
-// function ImageExprParse::command which parses an expression.
+// The main function (and the only function to be used by a user) is the
+// static function ImageExprParse::command which parses an expression command.
 // It returns a <linkto class=LatticeExprNode>LatticeExprNode</linkto>
 // object containing the expression represented as a tree.
 // The object can be used as a <src>Lattice(Expr)<T></src> in other operations.
-// </synopsis> 
+// <p>
+// The syntax of the command is similar to that of expressions in C++.
+// E.g.
+// <srcblock>
+//   min(img1, img2) + sin(img3)
+// </srcblock>
+// The following items can be used in an expression:
+// <ul>
+//  <li> Binary operators +, -, *, /, % (modulo), and ^ (power).
+//  <li> Unary operators + and -.
+//  <li> Comparison operators ==, >, >=, <, <=, and !=.
+//  <li> Logical operators &&, ||, and !.
+//  <li> Constant single and double precision values.
+//       <br>No exponent or exponent "e" results in single precision (Float),
+//           while "d" results in double precision (Double).
+//  <li> The imaginary part of a complex value can be given by the suffix "i".
+//       A full complex number can be given by addition. E.g. "3+4i".
+//       The complex is single (Complex) or double (DComplex) precision
+//       depending on the constituting parts.
+//  <li> The special constants pi and e can be given as a double precision
+//       value by means of the functions pi() and e().
+//  <li> Boolean constants T and F can be given.
+//  <li> A lot of functions are available.
+//       They are the same as the ones supported by class
+//       <class linkto=LatticeExprNode>LatticeExprNode</linkto>.
+//  <li> Explicit conversion functions float, double, complex and dcomplex
+//       are available. Conversions are automatically done where needed,
+//       but for performance reasons it may sometimes be better to do
+//       explicit conversions. See also below in the first example.
+//  <li> An image can to be given using its file name. The file name
+//       can contain environment variables and user home directories
+//       using the standard UNIX syntax $ENVVAR and ~username.
+//       There are 3 ways to specify a file name:
+//       <ol>
+//        <li> When the name contains no other special characters than
+//             $, ~, and . it can be given as such.
+//        <li> Backslashes can be used to escape individual special characters.
+//        <li> The full name can be enclosed in quotes (single or double)
+//             to escape the entire name. Adjacent quoted parts
+//             are combined to one name, which can be used to use quotes
+//             in the file name.
+//       </ol>
+//       Note that escaping has to be used too for the file name
+//       T or F (otherwise it is the boolean constant).
+//       E.g.
+//       <srcblock>
+//          image.data
+//          "~noordam/data/image.data"
+//          "~/image.data"
+//          "$HOME/image.data"
+//          $HOME\/image.data
+//          "ab'c"'d"e'          results in  ab'cd"e
+//       </srcblock>
+//       Only input images with data type Float and Complex are supported,
+//       because those data types are the only ones used so far.
+//       Support of Bool, Double, and DComplex is very simple to build in.
+//       The resulting lattice can be of type Bool, Float, Double,
+//       Complex, and DComplex.
+// </ul>
+// When the expression is parsed, it is checked if the images and lattices
+// involved have conforming shapes and coordinates. Note, however, that
+// some functions (e.g. mean) reduce an image to a scalar. Such an image
+// can have a different shape and coordinates.
+// <p>
+// The data types of the images and constants involved can be different.
+// The data type of a subexpression is the common data type (e.g.
+// Float and Double result in Double; Complex and Double result in DComplex).
+// Automatic implicit conversions are done where needed. However, for
+// performance reasons it may sometimes be better to convert explicitly.
+// See below in the first example.
+// <p>
+// The expression evaluator (which is not part of the parser) evaluates
+// the expression in chunks to avoid having to keep large temporary
+// results. A scalar subexpression is evaluated only once to avoid
+// unnecessary (possibly expensive) calculations.
+// <p>
+// Some examples:
+// <dl>
+//  <dt> <src> img1 + min(float(pi()), mean(img2)) </src>
+//  <dd> Suppose img1 and img2 are images with single precision data.
+//       They do not need to have conforming shapes and coordinates,
+//       because only the mean of img2 is used.
+//       <br>Note that pi is explicitly converted to single precision,
+//       because pi() results in a Double. If that was not done,
+//       the expression result would be a Double with the effect that
+//       all data of img1 had to be converted to Double.
+//  <dt> <src> min(img1, (min(img1)+max(img1))/2) </src>
+//  <dd> This example shows that there are 2 min functions. One with a
+//       single argument returning the minimum value of that image.
+//       The other with 2 arguments returning a lattice containing
+//       img1 data clipped at the value of the 2nd argument.
+// </dl>
+// </synopsis>
 
 // <example>
 // <srcblock>
