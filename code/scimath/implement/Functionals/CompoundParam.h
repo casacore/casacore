@@ -1,5 +1,5 @@
 //# NQCompoundParam.h: Parameters for sum of parameterized Functions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,9 +124,6 @@ template<class T> class NQCompoundParam : public Function<T> {
   // Return a reference to a specific Function.
   // <group>
   const Function<T> &function(uInt which) const {
-    DebugAssert(nFunctions() > which, AipsError);
-    return *(functionPtr_p[which]); };
-  Function<T> &function(uInt which) {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); };
   // </group>
