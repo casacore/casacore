@@ -1,5 +1,5 @@
 //# FFTServer.h: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
-
 //# Forward Declarations
 template <class T> class Array;
 
@@ -266,6 +265,9 @@ public:
   // <group>
   void fft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
   void fft(Array<S> & cResult, const Array<T> & rData);
+
+  void myfft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
+  void myfft(Array<S> & cResult, const Array<T> & rData);
   // </group>
 
   // Complex to real fft. The origin of the transform is in the centre of the
@@ -280,6 +282,9 @@ public:
   // <group>
   void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
   void fft(Array<T> & rResult, const Array<S> & cData);
+
+  void myfft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
+  void myfft(Array<T> & rResult, const Array<S> & cData);
   // </group>
 
   // Complex to complex in-place fft. The origin of the transform is in the
@@ -288,6 +293,7 @@ public:
   // transform is performed. If False a backward or frequency to time transform
   // is done. Scaling is always done on the backward transform.
   void fft(Array<S> & cValues, const Bool toFrequency=True);
+  void fft(Array<S> & cValues,uInt doFlip,const Bool toFrequency=True);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
@@ -297,8 +303,8 @@ public:
   // must either either contain no elements or be the same as the input Array,
   // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
   // thrown.
-  void fft(Array<S> & cResult, const Array<S> & cData,
-	   const Bool toFrequency=True);
+  void fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True);
+  void fft(Array<S> & cResult, const Array<S> & cData,uInt doFlip, const Bool toFrequency=True);
 
   // The <src>fft0</src> functions are equivalent to the <src>fft</src>
   // functions described above except that the origin of the transform is the
