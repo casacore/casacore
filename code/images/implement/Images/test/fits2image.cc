@@ -1,5 +1,5 @@
 //# fits2image.cc: conversion to aips++ native tables
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <aips/Tasking/Aipsrc.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/FITS.h>
 #include <aips/Inputs/Input.h>
@@ -44,8 +45,11 @@ int main(int argc, char **argv)
     // Inputs
     Input inp(1);
     inp.Version("2.0: PagedImage with coordinate conversion");
-    inp.Create("in", " ", "Input FITS file name", "string");
-    inp.Create("out", " ", "Output AIPS++ Image name", "string");
+
+    String root = Aipsrc::aipsRoot();
+    String name = root + "/code/trial/implement/Images/test/test_image.FITS";
+    inp.Create("in", name, "Input FITS file name", "string");
+    inp.Create("out", "out.image", "Output AIPS++ Image name", "string");
     inp.ReadArguments(argc, argv);
 
     String fitsFile = inp.GetString("in");
