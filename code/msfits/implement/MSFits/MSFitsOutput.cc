@@ -60,8 +60,6 @@
 
 
 
-static LogIO os;
-
 static String toFITSDate(const MVTime &time)
 {
   String date, timesys;
@@ -88,6 +86,7 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
 				 Bool combineSpw,
 				 Double sensitivity)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeFitsFile"));
   const uInt nrow = ms.nrow();
   String msfile=ms.tableName();
   String outfile;
@@ -221,6 +220,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 				    Bool combineSpw)
 {
   FitsOutput *outfile = 0;
+  LogIO os(LogOrigin("MSFitsOutput", "writeMain"));
   const uInt nrow = rawms.nrow();
   if (nrow == 0) {
     os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
@@ -771,6 +771,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& spwidMap, Int nrspw,
 			   Double refFreq, Int refPixelFreq, Bool combineSpw)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
   ROArrayColumn<Double> inchanfreq(specTable,
 				   MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
@@ -854,6 +855,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 			   Double refFreq)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeAN"));
   MSObservation obsTable(ms.observation());
   ROScalarColumn<String> inarrayname(obsTable,
 				     MSObservation::columnName
@@ -1086,6 +1088,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& fieldidMap, uInt nrfield)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeSU"));
   // Basically we make the FIELD_ID the source ID.
   MSField fieldTable(ms.field());
   ROMSFieldColumns msfc(fieldTable);
@@ -1279,6 +1282,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& spwidMap, uInt nrif,
 			   Bool combineSpw)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeTy"));
   const MSSysCal subtable(syscal);
   ROMSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
@@ -1395,6 +1399,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
 			   Double sensitivity,
 			   Int refPixelFreq, Double refFreq, Double chanbw)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "writeGC"));
 
   // We need to write an entry per antenna, array.
   // The spectral-windows have to be ignored
@@ -1612,6 +1617,7 @@ void MSFitsOutput::getStartHA (Double& startTime, Double& startHA,
 Table MSFitsOutput::handleSysCal (const MeasurementSet& ms,
 				  const Vector<Int>& spwids, Bool isSubset)
 {
+  LogIO os(LogOrigin("MSFitsOutput", "handleSysCal"));
   Table syscal(ms.sysCal());
   // Only take the antennas found in the main table.
   // This is better and also solves an NFRA problem where incorrect
