@@ -39,13 +39,20 @@ void HashMap<key,val>::cleanup() {
 template<class key> HashClass<key>::HashClass() { }
 template<class key> HashClass<key>::~HashClass() { }
 
-template<class key, class val> HashMap<key,val>::HashMap(const HashMap<key,val> &other) :
-    blk(other.blk), func(other.func), used_(other.used_), total_(other.total_),
-    defs_(other.defs_), filled_(other.filled_), maxLoad_(other.maxLoad_),
-    hashClass(other.hashClass ? other.hashClass->clone() : 0), dfltVal(other.dfltVal) {
-	for (uInt i=0; i < blk.nelements(); i++)
-	    if (blk[i])
-		blk[i] = new List<OrderedPair<key,val> >(blk[i]);
+template<class key, class val> HashMap<key,val>::HashMap(const HashMap<key,val> &other)
+: total_(other.total_),
+  used_(other.used_),
+  filled_(other.filled_),
+  defs_(other.defs_),
+  maxLoad_(other.maxLoad_),
+  blk(other.blk),
+  func(other.func),
+  hashClass(other.hashClass ? other.hashClass->clone() : 0),
+  dfltVal(other.dfltVal)
+{
+    for (uInt i=0; i < blk.nelements(); i++)
+        if (blk[i])
+	    blk[i] = new List<OrderedPair<key,val> >(blk[i]);
 }
 
 template<class key, class val> 
@@ -158,7 +165,7 @@ template<class key, class val> Bool HashMap<key,val>::isDefined (const key &ky) 
 template<class key, class val> Block<uInt> HashMap<key,val>::distribution() const {
     Block<uInt> b( availableBuckets() );
 
-    for (int i = 0; i < availableBuckets(); i++) 
+    for (uInt i = 0; i < availableBuckets(); i++) 
 	b[i] = blk[i] ? blk[i]->len() : 0;
 
     return b;

@@ -324,18 +324,30 @@ public:
     HashMap(const val &dflt = defaultHashValue((const val*)0),
 	    uInt size = uInt(defaultSize_), 
 	    Func newfunc = hashFunc,
-	    float maxlf = float(defaultMaxLoad_)) : 
-		blk(size, (List<OrderedPair<key,val> >*)0), func(newfunc),
-		hashClass(0), dfltVal(dflt), used_(size), total_(size),
-		defs_(0), filled_(0), maxLoad_(maxlf) { }
+	    float maxlf = float(defaultMaxLoad_))
+      : total_(size),
+	used_(size),
+	filled_(0),
+	defs_(0),
+	maxLoad_(maxlf),
+	blk(size, (List<OrderedPair<key,val> >*)0),
+	func(newfunc),
+	hashClass(0),
+	dfltVal(dflt)
+      { }
 
     HashMap(const val &dflt, uInt size, const HashClass<key> &newfunc,
-	    float maxlf = float(defaultMaxLoad_)) : 
-		total_(size), used_(size), filled_(0), defs_(0), 
-		maxLoad_(maxlf),
-		blk(size, (List<OrderedPair<key,val> >*)0), func(0),
-		hashClass(newfunc.clone()), dfltVal(dflt)
-		 { }
+	    float maxlf = float(defaultMaxLoad_))
+      : total_(size),
+	used_(size),
+	filled_(0),
+	defs_(0), 
+	maxLoad_(maxlf),
+	blk(size, (List<OrderedPair<key,val> >*)0),
+	func(0),
+	hashClass(newfunc.clone()),
+	dfltVal(dflt)
+      { }
     // </group>
 
 
