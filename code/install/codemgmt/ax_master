@@ -5512,3 +5512,5 @@
 15 211 sys rm libexec/olddparams.g
 15 211 sys rm libexec/oldsdimager.g
 15 211 sys rm libexec/oldsdimager_meta.g
+15 211 src rm trial/apps/olddish/olddish_standard.gp
+15 211 src rm trial/apps/olddish/oldmydish_standard.gp
