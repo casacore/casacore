@@ -112,11 +112,13 @@ public:
   ImageLogger (const String& logTableName, Bool isWritable);
 
   // Copy constructor.
+  // It does not copy the pointers to parents.
   ImageLogger (const ImageLogger&);
 
   ~ImageLogger();
 
   // Assignment.
+  // It removes the current parents and does not copy the pointers to parents.
   ImageLogger& operator= (const ImageLogger&);
 
   // Add a logger from a parent image.
@@ -125,7 +127,7 @@ public:
   // Append the entries of the other logger to this one.
   void append (const ImageLogger& other);
 
-  // Reopen a readonly logtable for read/write.
+  // Reopen a readonly logtable for read/write (if needed).
   void reopenRW();
 
   // Reopen the log table if needed (after a tempClose).
@@ -152,19 +154,30 @@ public:
   Bool isTempClosed() const
     { return itsIsClosed; }
 
-  // Get access to the logger (reopen the log table if needed).
+  // Get access to the logger.
+  // It assumes that it will be used to post a message, so it reopens
+  // the log table for read/write if needed).
   LogIO& logio()
     {
-      if (itsIsClosed) reopen();
+      reopenRW();
       return itsLogger;
     }
 
   // Get access to the log sink (reopen the log table if needed).
+  // It is not assumed you want to write. If you want to do that,
+  // you should first call reopenRW() to ensure you can write.
   LogSink& sink()
     {
       if (itsIsClosed) reopen();
       return itsSink;
     }
+
+  // Clear the log.
+  // It removes the parents and removes all messages from the sink.
+  void clear();
+
+  // Remove all parents.
+  void removeParents();
 
   // Return the block of parents.
   const PtrBlock<ImageLogger*> parents() const
@@ -190,6 +203,7 @@ public:
 
 
 private:
+  // Do the actual reopen.
   void doReopen();
 
 
