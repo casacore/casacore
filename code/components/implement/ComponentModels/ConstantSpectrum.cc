@@ -1,5 +1,5 @@
 //# ConstantSpectrum.cc.cc:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -106,7 +106,8 @@ void ConstantSpectrum::setErrors(const Vector<Double>& newSpectralErrs) {
 
 Vector<Double> ConstantSpectrum::errors() const {
   DebugAssert(ok(), AipsError);
-  return Vector<Double>(0);
+  Vector<Double> tmp(1,0.0);
+  return tmp;
 }
 
 Bool ConstantSpectrum::fromRecord(String& errorMessage, 
