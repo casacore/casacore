@@ -144,7 +144,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
       outShape2(paOut) = inShape(pixelAxisMap1(paOut));
    }
 
-// Specify input and output for each regridding pass
+// Specify input and output lattices for each regridding pass
 
    MaskedLattice<T>* inPtr = 0;
    MaskedLattice<T>* outPtr = 0;
@@ -207,7 +207,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             outShape2(outCoordPixelAxes(0)) = outShape(outCoordPixelAxes(0));
             outShape2(outCoordPixelAxes(1)) = outShape(outCoordPixelAxes(1));
             if (outShape2(outCoordPixelAxes(0))==1 && outShape2(outCoordPixelAxes(1))==1) {
-               os << "You cannot regrid the DirectionCoordinate as its plane is of shape [1,1]" << LogIO::EXCEPTION;
+               os << "You cannot regrid the DirectionCoordinate as it is plane is of shape [1,1]" << LogIO::EXCEPTION;
             }
 
 // Set input and output images for this pass. The new  input must be the last 
@@ -252,6 +252,10 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                              inCoords.obsInfo(), outCoords.obsInfo());
             }
 
+// Get scaling factor to conserve flux in Jy/pixel
+
+           Double scale = findScaleFactor(inImage.units(), inDir, outDir, os);
+
 // Regrid 
 
             if (itsShowLevel>0) {
@@ -259,7 +263,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             }
             regrid2D (*outPtr, *inPtr, inDir, outDir, inCoordPixelAxes,
                       outCoordPixelAxes, pixelAxisMap2, method,
-                      machine, madeIt, showProgress);
+                      machine, madeIt, showProgress, scale);
 
 // Note that we have done two pixel axes in this pass
 
@@ -574,7 +578,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap,
                                Interpolate2D<T>::Method method,
                                MDirection::Convert& machine,
-                               Bool useMachine, Bool showProgress)
+                               Bool useMachine, Bool showProgress, Double scale)
 //
 // If something other than DirectionCoordinate ever needs to use 2D 
 // I will need to generalize this slightly. 
@@ -916,7 +920,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 //                           cerr << "locF, nearLoc, loc, blc, trc = " << in2DPos2 << nearLocT << locT << minT << maxT << endl;
                            cerr << "OK   - Putting " << result << " to image at" << outPos4 << endl;
                         }
-                        outCursorIter.rwMatrixCursor()(i,j) = result;
+                        outCursorIter.rwMatrixCursor()(i,j) = scale * result;
                         if (outIsMasked) {
                            outMaskCursorIterPtr->rwMatrixCursor()(i,j) = True; 
                         }
@@ -1260,7 +1264,7 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
       os << "You have specified more pixel axes than there are dimensions" << LogIO::EXCEPTION;
    }
 
-// FIll in all axes if null pixelAxes given
+// Fill in all axes if null pixelAxes given
 
    if (n1==0) {
       outPixelAxes = IPosition::makeAxisPath(nOut);
@@ -1400,4 +1404,34 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
       }
    }
 }
+
+
+template<class T>
+Double ImageRegrid<T>::findScaleFactor(const Unit& units, 
+                                       const DirectionCoordinate& dirIn,
+                                       const DirectionCoordinate& dirOut,
+                                       LogIO& os) const
+//
+// Direction coordinates have been set to same axis units
+//
+{
+   Double fac = 1.0;
+   String t = units.getName();
+   t.upcase();
+   if (t==String("JY/PIXEL")) {
+      Vector<Double> incIn = dirIn.increment();
+      Vector<Double> incOut = dirOut.increment();
+//
+      fac = abs(incOut(0)*incOut(1) / incIn(0) / incIn(1));
+      os << "Applying Jy/pixel scale factor of " << fac << endl;
+   }
+   return fac;
+}
+
+
+
+
+
+
+
 
