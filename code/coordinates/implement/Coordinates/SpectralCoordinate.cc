@@ -288,41 +288,42 @@ Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
 
 
 
-Bool SpectralCoordinate::near(const Coordinate* pOther,
+Bool SpectralCoordinate::near(const Coordinate& other,
                               Double tol) const
 {
    Vector<Int> excludeAxes;
-   return near(pOther, excludeAxes, tol);
+   return near(other, excludeAxes, tol);
 }
 
 
-Bool SpectralCoordinate::near(const Coordinate* pOther,
+Bool SpectralCoordinate::near(const Coordinate& other,
                               const Vector<Int>& excludeAxes,
                               Double tol) const
 {
-   if (this->type() != pOther->type()) {
+   if (this->type() != other.type()) {
       set_error("Comparison is not with another SpectralCoordinate");
       return False;
    }
 
-   SpectralCoordinate* sCoord = (SpectralCoordinate*)pOther;   
+   const SpectralCoordinate& sCoord = dynamic_cast<const SpectralCoordinate&>(other);
  
-   if (type_p != sCoord->frequencySystem()) {
+   if (type_p != sCoord.frequencySystem()) {
       set_error("The SpectralCoordinates have differing frequency systems");
       return False;
    }
 
-   if (!::near(restfreq_p,sCoord->restFrequency(),tol)) {
+   if (!::near(restfreq_p,sCoord.restFrequency(),tol)) {
       set_error("The SpectralCoordinates have differing rest frequencies");
       return False;
    }
 
 // Leave it to TabularCoordinate to report errors
 
-   const TabularCoordinate* tmp = &(sCoord->worker_p);
-   return worker_p.near(tmp,excludeAxes,tol);
-
-   return True;  
+   const TabularCoordinate& tmp = sCoord.worker_p;
+   Bool ok = worker_p.near(tmp, excludeAxes, tol);
+   if (!ok) set_error(worker_p.errorMessage());
+//
+   return ok;  
 }
 
 

@@ -354,22 +354,22 @@ Vector<Double> TabularCoordinate::worldValues() const
 
 
 
-Bool TabularCoordinate::near(const Coordinate* pOther,
+Bool TabularCoordinate::near(const Coordinate& other,
                              Double tol) const
 
 {
    Vector <Int> excludeAxes;
-   return near(pOther, excludeAxes, tol);
+   return near(other, excludeAxes, tol);
 }
 
 
-Bool TabularCoordinate::near(const Coordinate* pOther,
+Bool TabularCoordinate::near(const Coordinate& other,
                              const Vector<Int>& excludeAxes,
                              Double tol) const
 
 {
-   if (pOther->type() != this->type()) {
-      set_error("Comparison is not with another TabularCoordinate");
+   if (other.type() != this->type()) {
+      set_error(String("Comparison is not with another TabularCoordinate"));
       return False;
    }
 
@@ -386,11 +386,11 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
    
 // Check units and name
 
-   if (unit_p != pOther->worldAxisUnits()(0)) {
+   if (unit_p != other.worldAxisUnits()(0)) {
       set_error("The TabularCoordinates have differing axis units");
       return False;
    }
-   if (name_p != pOther->worldAxisNames()(0)) {
+   if (name_p != other.worldAxisNames()(0)) {
       set_error("The TabularCoordinates have differing world axis names");
       return False;
    }
@@ -400,20 +400,20 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
 // check them.  However, if they differ, that might be faster
 // than working through the table so check them anyway.
 
-   TabularCoordinate* tCoord = (TabularCoordinate*)pOther;
-   if (!::near(crval_p,tCoord->crval_p,tol)) {
+   const TabularCoordinate& tCoord = dynamic_cast<const TabularCoordinate&>(other);
+   if (!::near(crval_p,tCoord.crval_p,tol)) {
       set_error("The TabularCoordinates have differing average reference values");
       return False;
    }
-   if (!::near(crpix_p,tCoord->crpix_p,tol)) {
+   if (!::near(crpix_p,tCoord.crpix_p,tol)) {
       set_error("The TabularCoordinates have differing average reference pixels");
       return False;
    }
-   if (!::near(cdelt_p,tCoord->cdelt_p,tol)) {
+   if (!::near(cdelt_p,tCoord.cdelt_p,tol)) {
       set_error("The TabularCoordinates have differing average increments");
       return False;
    }
-   if (!::near(matrix_p,tCoord->matrix_p,tol)) {
+   if (!::near(matrix_p,tCoord.matrix_p,tol)) {
 
 // It's really just one component of the matrix
 
@@ -426,7 +426,7 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
 // Check the table 
 
    Vector<Double> data1 =   this->pixelValues();
-   Vector<Double> data2 = tCoord->pixelValues();
+   Vector<Double> data2 = tCoord.pixelValues();
    if (data1.nelements() != data2.nelements()) {
       set_error("The TabularCoordinates have differing numbers of entries in the pixel value table");
       return False;
@@ -440,7 +440,7 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
    }
 
    data1 =   this->worldValues();
-   data2 = tCoord->worldValues();
+   data2 = tCoord.worldValues();
    if (data1.nelements() != data2.nelements()) {
       set_error("The TabularCoordinates have differing numbers of entries in the world value table");
       return False;

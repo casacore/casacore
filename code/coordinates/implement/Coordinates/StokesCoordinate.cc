@@ -312,31 +312,31 @@ Bool StokesCoordinate::setReferenceValue(const Vector<Double> &refval)
 }
 
 
-Bool StokesCoordinate::near(const Coordinate* pOther,
+Bool StokesCoordinate::near(const Coordinate& other,
                             Double tol) const
 {
    Vector<Int> excludeAxes;
-   return near(pOther, excludeAxes, tol);
+   return near(other, excludeAxes, tol);
 }
 
-Bool StokesCoordinate::near(const Coordinate* pOther,
+Bool StokesCoordinate::near(const Coordinate& other,
                             const Vector<Int>& excludeAxes,
                             Double tol) const
 {
-   if (pOther->type() != this->type()) {
+   if (other.type() != this->type()) {
       set_error("Comparison is not with another StokesCoordinate");
       return False;
    }
 
-   StokesCoordinate* sCoord = (StokesCoordinate*)pOther;
+   const StokesCoordinate& sCoord = dynamic_cast<const StokesCoordinate&>(other);
 
 // Check name and units
 
-   if (name_p != sCoord->name_p) {
+   if (name_p != sCoord.name_p) {
       set_error("The StokesCoordinates have differing world axis names");
       return False;
    }
-   if (unit_p != sCoord->unit_p) {
+   if (unit_p != sCoord.unit_p) {
       set_error("The StokesCoordinates have differing axis units");
       return False;
    }
@@ -358,7 +358,7 @@ Bool StokesCoordinate::near(const Coordinate* pOther,
 // is ever actually used.
 
    for (Int i=0; i<Int(values_p.nelements()); i++) {
-      if (!::near(values_p[i],sCoord->values_p[i],tol)) {
+      if (!::near(values_p[i],sCoord.values_p[i],tol)) {
          set_error("The StokesCoordinates have different Stokes values on the axis");
          return False;
       }
