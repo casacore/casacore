@@ -27,6 +27,7 @@
 
 #include <aips/MeasurementSets/NewMSDataDescColumns.h>
 #include <aips/MeasurementSets/NewMSDataDescription.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 

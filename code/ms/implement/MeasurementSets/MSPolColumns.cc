@@ -27,10 +27,12 @@
 
 #include <aips/MeasurementSets/NewMSPolColumns.h>
 #include <aips/MeasurementSets/NewMSPolarization.h>
-#include <aips/Utilities/String.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 RONewMSPolarizationColumns::
 RONewMSPolarizationColumns(const NewMSPolarization& msPolarization):
