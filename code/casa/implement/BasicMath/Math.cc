@@ -1,4 +1,4 @@
- //# Math.cc: Implementation of miscellaneous functions in Math.h
+//# Math.cc: Implementation of miscellaneous functions in Math.h
 //# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -122,10 +122,6 @@ Bool nearAbs(Double val1, Double val2, Double tol) {
   return ToBool(tol > abs(val2 - val1));
 }
 
-
-Bool isNaN(Double val) {
-  return ToBool(isnan(val));
-}
 
 Float floatNaN() {
   static Float nanval;
