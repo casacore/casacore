@@ -47,39 +47,83 @@ MSUvDistParse::MSUvDistParse (const MeasurementSet* ms)
 }
 
 const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
-                                            const Double& endUV)
+				    const Double& endUV, const String& unit)
 {
-    // Column accessors
-    ROMSMainColumns msMainCol(*ms());
-    ROMSSpWindowColumns msSpwCol(ms()->spectralWindow());
-    ROMSDataDescColumns msDataDescCol(ms()->dataDescription());
-
-    // Loop over all rows in the MS
-    Vector<Int> rowsel;
-    Int nRowSel = 0;
+  Bool distanceUnit = False;
+  Bool wavelenthUnit = False;
+  Double startPoint;
+  Double endPoint;
+  // Column accessors
+  ROMSMainColumns msMainCol(*ms());
+  ROMSSpWindowColumns msSpwCol(ms()->spectralWindow());
+  ROMSDataDescColumns msDataDescCol(ms()->dataDescription());
+  
+  if(unit.contains("km") || unit.contains("KM") ){
+    startPoint = startUV * 1000;
+    endPoint = endUV * 1000;
+    distanceUnit = True;
+  } else if(unit.contains("m") || unit.contains("M") ){
+    startPoint = startUV;
+    endPoint = endUV;
+    distanceUnit = True;
+  } else if(unit.contains("Ml") || unit.contains("ML") ){
+    startPoint = startUV * 1000000;
+    endPoint = endUV * 1000000;
+    wavelenthUnit = True;
+  } else if(unit.contains("kl") || unit.contains("KL")){
+    startPoint = startUV * 1000;
+    endPoint = endUV * 1000;
+    wavelenthUnit = True;
+  } else if(unit.contains("l") || unit.contains("L") ){
+    startPoint = startUV;
+    endPoint = endUV;
+    wavelenthUnit = True;
+  } else {
+    cout << "please input correct units (km or m) for distance, (ml, kl, or l) for wave length " << endl;
+  }
+  
+  // Loop over all rows in the MS
+  Vector<Int> rowsel;
+  Int nRowSel = 0;
+  if(wavelenthUnit) {
     for (uInt row=0; row<ms()->nrow(); row++) {
-        Int ddid = msMainCol.dataDescId()(row);
-        Int spwid = msDataDescCol.spectralWindowId()(ddid);
-        Double refFreq = msSpwCol.refFrequency()(spwid);
-        Vector<Double> uvw = msMainCol.uvw()(row);
-        Double uvDist = sqrt(uvw(0)*uvw(0) + uvw(1)*uvw(1)) * refFreq / C::c;
-        if ((startUV <= uvDist) && (uvDist <= endUV)) {
-            nRowSel++;
-            rowsel.resize(nRowSel, True);
-            rowsel(nRowSel-1) = row;
-        };
+      Int ddid = msMainCol.dataDescId()(row);
+      Int spwid = msDataDescCol.spectralWindowId()(ddid);
+      Double refFreq = msSpwCol.refFrequency()(spwid);
+      Vector<Double> uvw = msMainCol.uvw()(row);
+      Double uvDist = sqrt(uvw(0)*uvw(0) + uvw(1)*uvw(1)) * refFreq / C::c;
+      if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
+	nRowSel++;
+	rowsel.resize(nRowSel, True);
+	rowsel(nRowSel-1) = row;
+      };
     };
     if(nRowSel == 0)
-        rowsel.resize(nRowSel, True);
+      rowsel.resize(nRowSel, True);
+  }
 
-    TableExprNode condition = (ms()->nodeRownr().in(rowsel));
+  if(distanceUnit) {
+    for (uInt row=0; row<ms()->nrow(); row++) {
+      Vector<Double> uvw = msMainCol.uvw()(row);
+      Double uvDist = sqrt(uvw(0)*uvw(0) + uvw(1)*uvw(1));
+      if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
+	nRowSel++;
+	rowsel.resize(nRowSel, True);
+	rowsel(nRowSel-1) = row;
+      };
+    };
+    if(nRowSel == 0)
+      rowsel.resize(nRowSel, True);
+  }
 
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
+  TableExprNode condition = (ms()->nodeRownr().in(rowsel));
 
-    return node_p;
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
 }
 
 const TableExprNode* MSUvDistParse::node()
