@@ -2019,3 +2019,4 @@
 08 200 src rm trial/implement/Functionals/BinaryTranscendental.cc
 08 200 src rm trial/implement/Functionals/BinaryTranscendental.h
 08 202 src rm trial/implement/Functionals/BinaryArithEnums.h
+08 202 src rm trial/implement/Functionals/Lorentzian1D.cc
