@@ -302,6 +302,16 @@ private:
     // I had trouble making a Block<VADescFitsField>
     VADescFitsField *va_p;
     char *theheap_p;
+
+    // It is necessary to read the PDA to get the primary keywords.
+    // If there is any data there, the FITS classes do not provide any way to
+    // just skip over them to get to the next HDU.  The only way to do that is
+    // to actually read all of the data.  If there is no data, this step is
+    // unnecessary and so this subroutine need only be called after the primary
+    // keywords have been read AND the PDA has some data in it.  Closing the
+    // FitsInput and reopening it is faster in most cases than reading in each
+    // data value.
+    void reopenAtFirstHDU(const String &name);
 };
 
 // <summary>
