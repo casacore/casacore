@@ -209,9 +209,6 @@ public:
 // a bool array telling which indices of an axis are to be used
    INDEXIN,
 
-// bins up a lattice
-   REBIN,
-
 // number of functions
    NFUNCTIONS
 

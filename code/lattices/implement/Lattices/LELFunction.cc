@@ -33,7 +33,6 @@
 #include <trial/Lattices/LatticeFractile.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Lattices/RebinLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Vector.h>
@@ -665,48 +664,6 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       setAttr (exp[0].getAttribute());
       break;
    }
-   case LELFunctionEnums::REBIN:
-   {
-      if (exp.nelements() != 2) {
-         throw (AipsError ("LELFunctionND - "
-			   "function REBIN should have 2 arguments"));
-      }
-
-// The first argument has to be a Lattice.  The second argument a Vector<Float>
-
-      Block<Int> argType(2);
-      argType[0] = whatType(static_cast<T*>(0));
-      argType[1] = TpFloat;
-
-// argument checking to be done
-//      LatticeExprNode::checkArg (exp, argType, False, True);
-
-
-// Find the shape of the input Expression
-
-     LELAttribute attrIn = exp[0].getAttribute();
-     IPosition shapeIn = attrIn.shape();
-
-// Fish out the binning vector
-
-      const Vector<Float> bin = exp[1].getArrayFloat();
-      Vector<uInt> binI(bin.nelements());
-      for (uInt i=0; i<binI.nelements(); i++) binI[i] = uInt(bin[i]+0.5);
- 
-// Find the RebinLattice shape
-
-      IPosition shapeOut = RebinLattice<Float>::rebinShape(shapeIn, binI);
-
-// Set the attribute
-
-      LELAttribute attrOut(attrIn.isMasked(),
-                           shapeOut,
-                           attrIn.tileShape(),         // Wrong for RebinLattice
-                           attrIn.coordinates(),       // Wrong for RebinImage
-                           False);      
-      setAttr (attrOut);
-      break;
-   }
 
    default:
       throw (AipsError ("LELFunctionND::constructor - unknown function"));
@@ -971,35 +928,6 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	 result.value().putStorage (resData, deleteRes);
 	 result.mask().freeStorage (maskData, deleteMask);
       }
-      break;
-   }
-
-   case LELFunctionEnums::REBIN:
-   {
-      if (arg_p[1].shape().nelements() != 1) {
-         throw (AipsError("Binning vector must be 1-dimensional"));
-      }
-      if (arg_p[0].shape().nelements() != uInt(arg_p[1].shape()[0])) {
-         throw (AipsError("Binning vector must be of length lattice dimension"));
-      }
-
-// Convert the binning values to uInt
-
-      const Vector<Float> bin = arg_p[1].getArrayFloat();
-      Vector<uInt> binI(bin.nelements());
-      for (uInt i=0; i<binI.nelements(); i++) binI[i] = uInt(bin[i]+0.5);
-//
-      LatticeExpr<T> expr(arg_p[0]);
-      RebinLattice<T> rl(expr, binI);
-
-// Set results
-
-      result.value() = rl.getSlice(section, False);
-      if (rl.isMasked()) {
-         const Array<Bool>& mask = rl.getMaskSlice(section, False);
-         result.setMask(mask);
-      }
-
       break;
    }
 //	 
