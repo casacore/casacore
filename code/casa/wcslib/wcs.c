@@ -95,7 +95,7 @@ struct wcsprm *wcs;
    }
 
    if (wcs->flag == -1) {
-      wcs->lin.flag = -1
+      wcs->lin.flag = -1;
    }
 
 
