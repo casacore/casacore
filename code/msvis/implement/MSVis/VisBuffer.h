@@ -1,5 +1,5 @@
 //# VisBuffer.h: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,6 +171,7 @@ public:
   Vector<Float>& sigma() {return sigmaOK_p ? sigma_p : fillSigma();}
   const Vector<Float>& sigma() const {return This->sigma();}
 
+  Int& spectralWindow() {return spwOK_p ? spectralWindow_p : This->fillSpW();}
   Int spectralWindow() const {return spwOK_p ? spectralWindow_p : This->fillSpW();}
 
   Vector<Double>& time() {return timeOK_p ? time_p : fillTime();}
