@@ -28,6 +28,7 @@
 //# usage:  image2fits <image ename> <new FITS file name>
 //#
 //-----------------------------------------------------------------------------
+
 #include <aips/aips.h>
 #include <aips/Tasking/Aipsrc.h>
 
@@ -47,6 +48,7 @@
 
 #include <iostream.h>
 
+
 Int main(int argc, char *argv[])
 {
     try {
@@ -57,8 +59,9 @@ Int main(int argc, char *argv[])
         String root = Aipsrc::aipsRoot();
         String name = root + "/code/trial/implement/Images/test/test_image";
 	inp.Create("in", name, "Input AIPS++ Image name", "string");
-	inp.Create("out", "out.fits", "Output FITS file name", "string");
-	inp.Create("overwrite", "False", "Allow output to be overwritten?",
+	inp.Create("out", "image2fits_tmp.out", "Output FITS file name",
+		   "string");
+	inp.Create("overwrite", "True", "Allow output to be overwritten?",
 		   "Bool");
 	inp.Create("verbose", "False", "Verbose?", "Bool");
 	inp.ReadArguments(argc, argv);
