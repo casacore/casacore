@@ -94,6 +94,8 @@ defined in these modules.  The name of the module boss in in
 parenthesis.
 <p>
 <a href="#arraysmodule">Module Arrays</a><br>
+<a href="#modulebasicmath">Module BasicMath</a><br>
+<a href="#modulebasicsl">Module BasicSL</a><br>
 <a href="#modulebenchmarks">Module Benchmarks</a><br>
 <a href="#modulecomponents">Module Components</a><br>
 <a href="#modulecontainers">Module Containers</a><br>
@@ -112,6 +114,7 @@ parenthesis.
 <a href="#moduleio">Module IO</a><br>
 <a href="#moduleionosphere">Module Ionosphere</a><br>
 <a href="#modulelattices">Module Lattices</a><br>
+<a href="#modulelatticemath">Module LatticeMath</a><br>
 <a href="#modulelogging">Module Logging</a><br>
 <a href="#modulelogtables">Module LogTables</a><br>
 <a href="#modulemathematics">Module Mathematics</a><br>
@@ -124,6 +127,7 @@ parenthesis.
 <a href="#moduleparallel">Module Parallel</a><br>
 <a href="#modulequanta">Module Quanta</a><br>
 <a href="#modulespectralcomponents">Module SpectralComponents</a><br>
+<a href="#modulesystem">Module System</a><br>
 <a href="#moduletables">Module Tables</a><br>
 <a href="#moduletablemeasures">Module TableMeasures</a><br>
 <a href="#moduletasking">Module Tasking</a><br>
@@ -167,19 +171,33 @@ and optimally store the data on disk.
 <p>
 <hr>
 <p>
-<dt><a benchmarks="modulebenchmarks"><a href="../tasking/implement/BenchMarks">Module Benchmarks</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a benchmarks="modulebenchmarks"><a href="../tasking/implement/BenchMarks">Module Benchmarks</a> (<a href="mailto:raymond.rusk@nrc-cnrc.gc.ca">Raymond Rusk</a>)</a>
+<dd>
+</dd></dt>
+
+<p>
+<hr>
+<p>
+<dt><a benchmarks="modulebasicmath"><a href="../casa/implement/BasicMath">Module BasicMath</a> (<a href="mailto:dguo@nrao.edu">Dongshan Guo</a>)</a>
 <dd>
 </dd></dt>
 <p>
 <hr>
 <p>
-<dt><a componentmodels="modulecomponentmodels"><a href="../components/implement/ComponentModels.html">Module ComponentModels</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a benchmarks="modulebasicsl"><a href="../casa/implement/BasicSL">Module BasicSL</a> (<a href="mailto:wim.brouw@csiro.au">Wim Brouw</a>)</a>
+<dd>
+</dd></dt>
+
+<p>
+<hr>
+<p>
+<dt><a componentmodels="modulecomponentmodels"><a href="../components/implement/ComponentModels.html">Module ComponentModels</a> (<a href="mailto:sbhatnag@nrao.edu">Sanjay Bhatnagar</a>)</a>
 <dd>
 </dd></dt>
 <p>
 <hr>
 <p>
-<dt><a name="modulecontainers"><a href="../casa/implement/Containers.html">Module Containers</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a name="modulecontainers"><a href="../casa/implement/Containers.html">Module Containers</a> (<a href="mailto:ddebonis@nrao.edu">David DeBonis</a>)</a>
 <dd>
    This module provides non-mathematical containers. These containers are the
    prototypical computer science types of containers -- <linkto
@@ -200,13 +218,13 @@ and optimally store the data on disk.
 <p>
 <hr>
 <p>
-<dt><a coordinates="modulecoordinates"><a href="../coordinates/implement/Coordinates.html">Module Coordinates</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a coordinates="modulecoordinates"><a href="../coordinates/implement/Coordinates.html">Module Coordinates</a> (<a href="mailto:nkilleen@atnf.csiro.au">Neil Killeen</a>)</a>
 <dd>
 </dd></dt>
 <p>
 <hr>
 <p>
-<dt><a datasampling="moduledatasampling"><a href="../synthesis/implement/DataSampling">Module DataSampling</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a datasampling="moduledatasampling"><a href="../synthesis/implement/DataSampling">Module DataSampling</a> (<a href="mailto:wyoung@nrao.edu">Wes Young</a>)</a>
 <dd>
 </dd></dt>
 <p>
@@ -230,7 +248,7 @@ These module provides display procedures available in AIPS++.
 <p>
 <hr>
 <p>
-<dt><a name="moduleexceptions"><a href="../casa/implement/Exceptions.html">Module Exceptions</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a name="moduleexceptions"><a href="../casa/implement/Exceptions.html">Module Exceptions</a> (<a href="mailto:ddebonis@nrao.edu">David DeBonis</a>)</a>
 <dd>
 This module provides the exception handling mechanism used in AIPS++.
 It allows the user to define new exception types and to <src>throw</src>,
@@ -248,7 +266,7 @@ compiler supported exceptions.
 <hr>
 <p>
 <dt><a name="modulefits"><a href="../fits/implement/FITS/FITS.html">Module FITS</a> 
-(<a href="mailto:bgarwood@nrao.edu">Bob Garwood</a>)</a>
+(<a href="mailto:gli@ras.ucalgary.ca">Gary Li</a>)</a>
 <dd>
 Also <a href="../fits/implement/FITS/FITS2.html">FITS2</a>, fits to arrays implementation?
 </dd></dt>
@@ -265,13 +283,13 @@ procedures available in AIPS++.
 <p>
 <hr>
 <p>
-<dt><a flagging="moduleflagging"><a href="../flagging/implement/Flagging">Module Flagging</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a flagging="moduleflagging"><a href="../flagging/implement/Flagging">Module Flagging</a> (<a href="mailto:dguo@nrao.edu">Dongshan Guo</a>)</a>
 <dd>
 </dd></dt>
 <p>
 <hr>
 <p>
-<dt><a name="modulefunctionals"><a href="../scimath/implement/Functionals.html">Module Functionals</a> (<a href="mailto:rmarson@nrao.edu">Ralph Marson</a>)</a>
+<dt><a name="modulefunctionals"><a href="../scimath/implement/Functionals.html">Module Functionals</a> (<a href="mailto:Wim.Brouw@csiro.au">Wim Brouw</a>)</a>
 <dd>
 Functional classes map an input object of some ``Domain'' type into an
 output object of some ``Range'' type. The Domain and Range types will
@@ -371,7 +389,7 @@ Laboratory</a>.
 <p>
 <dt><a name="modulegraphics">
 <a href="../graphics/implement/Graphics.html">Module Graphics</a> 
-(<a href="mailto:dbarnes@atnf.csiro.au">David Barnes</a>)</a>
+(<a href="mailto:dking@nrao.edu">David King</a>)</a>
 <dd>
 This module is (as of February 1997) a work in progress.  It contains a PGPLOT
 wrapper and a test program, and nothing else.  
@@ -443,7 +461,7 @@ on the abstract interface.
 <hr>
 <p>
 <dt><a name="moduleinputs"><a href="../casa/implement/Inputs.html">Module Inputs</a> 
-(<a href="mailto:gvandiep@nfra.nl">Ger van Diepen</a>)</a>
+(<a href="mailto:jmcmulli@nrao.edu">Joe McMullin</a>)</a>
 <dd>
 
 During the AIPS++ prototyping stage a basic command line user
@@ -461,14 +479,14 @@ appropriateness.
 <p>
 <hr>
 <p>
-<dt><a ionosphere="moduleionosphere"><a href="../ionosphere/implement/Ionosphere/">Module Ionosphere</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a ionosphere="moduleionosphere"><a href="../ionosphere/implement/Ionosphere/">Module Ionosphere</a> (<a href="mailto:gli@ras.ucalgary.ca">Gary Li</a>)</a>
 <dd>
 </dd></dt>
 <p>
 <hr>
 <p>
 
-<dt><a name="modulelattices"><a href="../latices/implement/Lattices.html">Module Lattices</a> (<a href="mailto:gvandiep@nfra.nl">Ger van Diepen</a>)</a>
+<dt><a name="modulelattices"><a href="../latices/implement/Lattices.html">Module Lattices</a> (<a href="mailto:nkilleen@atnf.csiro.au">Neil Killeen</a>)</a>
 <dd>
 Lattices are a generalization of arrays. A lattice is an N-dimensional
 arrangement of data on regular orthogonal axes.
@@ -503,7 +521,14 @@ The Lattices module offers a lot of functionality to the user.
 <p>
 <hr>
 <p>
-<dt><a logtables="modulelogtables"><a href="../tables/implement/LogTables.html">Module LogTables</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a benchmarks="modulelatticemath"><a href="../lattices/implement/LatticeMath">Module LatticeMath</a> (<a href="mailto:nkilleen@atnf.csiro.au">Neil Killeen</a>)</a>
+<dd>
+</dd></dt>
+
+<p>
+<hr>
+<p>
+<dt><a logtables="modulelogtables"><a href="../tables/implement/LogTables.html">Module LogTables</a> (<a href="mailto:gvandiep@nfra.nl">Ger van Diepen</a>)</a>
 <dd>
 </dd></dt>
 <p>
@@ -526,7 +551,7 @@ lots more information.
 <hr>
 <p>
 
-<dt><a name="modulemathematics"><a href="../scimath/implement/Mathematics.html">Module Mathematics</a> (<a href="mailto:rmarson@nrao.edu">Ralph Marson</a>)</a>
+<dt><a name="modulemathematics"><a href="../scimath/implement/Mathematics.html">Module Mathematics</a> (<a href="mailto:dguo@nrao.edu">Dongshan Guo</a>)</a>
 <dd>
 This module contains fundamental mathematical operations, data types
 and constants. The classes are of general utility in any scientific
@@ -540,7 +565,7 @@ might be in their own module.
 <p>
 <dt><a name="modulemeasurementcomponents"><a
     href="../synthesis/implement/MeasurementComponents.html">Module MeasurementComponents</a>
-    (<a href="mailto:kgolap@nrao.edu">Kumar Golap</a>)</a>
+    (<a href="mailto:gmoellen@nrao.edu">George Moellenbrock</a>)</a>
 <dd>
 The MeasurementComponents module deals with ...
 </dd></dt>
@@ -565,7 +590,7 @@ The MeasurementSet module deals with tables containing the visibility data.
 <p>
 <hr>
 <p>
-<dt><a msvis="modulemsvis"><a href="../msvis/implement/MSVis">Module MSVis</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a msvis="modulemsvis"><a href="../msvis/implement/MSVis">Module MSVis</a> (<a href="mailto:gmoellen@nrao.edu">George Moellenbrock</a>)</a>
 <dd>
 </dd></dt>
 <p>
@@ -582,7 +607,7 @@ quantities with a reference frame.
 <p>
 
 <dt><a name="moduleos"><a href="../casa/implement/OS.html">Module OS</a> 
-(<a href="mailto:gvandiep@nfra.nl">Ger van Diepen</a>) </a>
+(<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>) </a>
 <dd>
 This module's main purpose is to provide convenient and uniform
 access to operating system features:  environment variables, file
@@ -600,7 +625,7 @@ wrap together into one package.
 <p>
 <hr>
 <p>
-<dt><a parallel="moduleparallel"><a href="../synthesis/implement/Parallel">Module Parallel</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a parallel="moduleparallel"><a href="../synthesis/implement/Parallel">Module Parallel</a> (<a href="mailto:kgolap@nrao.edu">Kumar Golap</a>)</a>
 <dd>
 </dd></dt>
 <p>
@@ -618,7 +643,13 @@ Quantities are handled in the <a href="../casa/implement/Quanta.html#Quantum">Qu
 <p>
 <hr>
 <p>
-<dt><a spectralcomponents="modulespectralcomponents"><a href="../components/implement/SpectralComponents">Module SpectralComponents</a> (<a href="mailto:drs@nrao.edu">Darrell Schiebel</a>)</a>
+<dt><a spectralcomponents="modulespectralcomponents"><a href="../components/implement/SpectralComponents">Module SpectralComponents</a> (<a href="mailto:raymond.rusk@nrc-cnrc.gc.ca">Raymond Rusk</a>)</a>
+<dd>
+</dd></dt>
+<p>
+<hr>
+<p>
+<dt><a benchmarks="modulesystem"><a href="../casa/implement/System">Module System</a> (<a href="mailto:ddebonis@nrao.edu">David DeBonis</a>)</a>
 <dd>
 </dd></dt>
 <p>
