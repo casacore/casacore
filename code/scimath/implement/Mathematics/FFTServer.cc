@@ -1,5 +1,5 @@
 //# FFTServer.cc: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,24 +29,21 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/VectorIter.h>
-#include <memory.h>
-#include <aips/Lattices/Slice.h> 
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <iostream.h>
+#include <aips/Arrays/VectorIter.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Mathematics/extern_fft.h>
 
 //------------------------------------------------------
 
 // Default constructor.
 template<class T, class S>
-FFTServer<T,S>::FFTServer(): temp(1),work(1)
-
+FFTServer<T,S>::FFTServer()
+  :work(1)
 {
   work = T(0.0);
-  temp = T(0.0);
   scale = T(0.0);
   dimension = 1;
   IPosition Nyquist_parms(dimension);
@@ -58,9 +55,8 @@ FFTServer<T,S>::FFTServer(): temp(1),work(1)
 // Copy constructor. 
 template<class T, class S>
 FFTServer<T,S>::FFTServer(const FFTServer<T,S> &other) 
-: FourierTool<T,S>(other)
+  :FourierTool<T,S>(other)
 {
-  temp  = other.temp;
   work  = other.work;
   scale = other.scale;
   dimension = other.dimension;
@@ -69,25 +65,28 @@ FFTServer<T,S>::FFTServer(const FFTServer<T,S> &other)
 
 // Construct with the real Array rdata.
 template<class T, class S>
-FFTServer<T,S>::FFTServer(const Array<T> & rdata): temp(1), work(1)
+FFTServer<T,S>::FFTServer(const Array<T> & rdata)
+  :work(1)
 {
   Set(rdata);
 }
 
 // Construct with the complex Array cdata.
 template<class T, class S>
-FFTServer<T,S>::FFTServer(const Array<S> &cdata, int has_ny): temp(1), work(1)
+FFTServer<T,S>::FFTServer(const Array<S> & cdata)
+  :work(1)
 {
-  Set(cdata, has_ny);
+  Set(cdata);
 }
 
 // Construct with the IPosition object shape.
 // Shape is the size of the array with which
 // to do transforms.
 template<class T, class S>
-FFTServer<T,S>::FFTServer(const IPosition &Shape): temp(1), work(1)
+FFTServer<T,S>::FFTServer(const IPosition & shape)
+  :work(1)
 {
-  Set(Shape);
+  Set(shape);
 }
 
 // Destructor. Currently does nothing.
@@ -99,158 +98,62 @@ FFTServer<T,S>::~FFTServer()
 
 // Reassociate *this with a real array.
 template<class T, class S>
-void
-FFTServer<T,S>::Set(const Array<T> & rdata)
-{
-
-  dimension = rdata.ndim();
-
-  // copy semantics
-  IPosition Shape(rdata.shape());
-
-  int size, i;
-
-  // Set size to maximum size
-  // of dimensions
-  
-  for (i = 1, size = Shape(0); i < dimension; ++i) {
-    if (Shape(i) > size) {
-      size = Shape(i);
-    }
-  }
-
-  // Set size of work array to 4*size + 15
-  IPosition Length(1);
-  Length = 4 * size + 15;
-  work.resize(Length); work = T(0.0);
-
-  // initialize work array to requirements
-  // of {d,f}fftpak.f functions
-  if (dimension == 1) {
-    Bool Delete_w;
-    T *workptr = work.getStorage(Delete_w);
-    // first initialize
-    rffti(&Shape(0), workptr);
-    work.putStorage(workptr, Delete_w);
-  }
-
-  if (dimension > 1) {
-    Length = 2 * size;
-    temp.resize(Length); temp = T(0.0);
-  }
-
-  // Resize Nyquist array
-  Shape(0) = 2;
-  Nyquist.resize(Shape);
-  Nyquist = T(0.0);
+void FFTServer<T,S>::Set(const Array<T> & rdata) {
+  Set(rdata.shape());
 }
 
 // Reassociate *this with a complex Array.
 template<class T, class S>
-void
-FFTServer<T,S>::Set(const Array<S> &cdata, int has_ny)
-{
+void FFTServer<T,S>::Set(const Array<S> & cdata) {
   dimension = cdata.ndim();
+  IPosition shape(cdata.shape());
 
-  IPosition Shape(cdata.shape());
-
-  int nrows, size, i;
-
-  if (has_ny == 0)
-    nrows = Shape(0) * 2;
-  else
-    nrows = (Shape(0) - 1) * 2;
-
-  // set size to max{nrows, size(dimensions
-  // 1 through dimension)}
-
-  for (i = 1, size = nrows; i < dimension; ++i) {
-    if (Shape(i) > size) {
-      size = Shape(i);
-    }
-  }
-
-  // size and initialize work array 
-  // according to requirements
-  // of {d,f}fftpak.f functions
-  IPosition Length(1);
-  Length = 4 * size + 15;
-  work.resize(Length); work = T(0.0);
-  if (dimension == 1) {
-    Bool Delete_w;
-    T *workptr = work.getStorage(Delete_w);
-    // first initialize
-    nrows /= 2;
-    cffti(&nrows, workptr);
-    work.putStorage(workptr, Delete_w);
-  }
-
-  if (dimension > 1) {
-    Length = 2 * size;
-    temp.resize(Length); temp = T(0.0);
-  }
+  // No need to setup the work array as ther fftpack functions are NOT used
+  // when doing Complex <-> Complex transforms. The Singleton algorithm, mfft,
+  // is used instead.
 
   // resize Nyquist array
-  Shape(0) = 2;
-  Nyquist.resize(Shape);
+  shape(0) = 2;
+  Nyquist.resize(shape);
   Nyquist = T(0.0);
 }
 
 // Reassociate *this with an IPosition object.  Shape is the shape of the
 // array for which FFTS are to be done.
 template<class T, class S>
-void
-FFTServer<T,S>::Set(const IPosition &Shape)
-{
-  dimension = Shape.nelements();
-  int size, i; 
-  IPosition shape(Shape);
+void FFTServer<T,S>::Set(const IPosition & fftShape) {
 
-  // set size to size of maximum dimension
-  for (i = 1, size = shape(0); i < dimension; ++i) {
-    if (shape(i) > size) {
-      size = shape(i);
-    }
-  }
+  IPosition shape(fftShape);
+  const Int fftLen = shape(0);
+  dimension = shape.nelements();
 
+  // Set size of work array to 2*fftLen + 15
   // initialize work array to requirements
-  // of {d,f}fftpak.f functions
-  IPosition Length(1);
-  Length = 4 * size + 15;
-  work.resize(Length); work = T(0.0);
-  if (dimension == 1) { // initialize our work array 
-    Bool Delete_w; 
-    T *workptr = work.getStorage(Delete_w);
-    i = shape(0);
-    rffti(&i, workptr); 
-    work.putStorage(workptr, Delete_w); 
-  } 
-  if (dimension > 1) { 
-    Length = 2 * size; 
-    temp.resize(Length); temp = T(0.0); 
-  } 
+  // of {d,f}fftpak.f functions, assuming 
+  // Real <-> Complex transforms.
+  work.resize(IPosition(1, 2 * fftLen + 15)); 
+  work = T(0.0);
+  Bool Delete_w;
+  T * workptr = work.getStorage(Delete_w);
+  rffti((Int *) &fftLen, workptr);
+  work.putStorage(workptr, Delete_w);
 
-  // resize Nyquist array
-  shape(0) = 2; 
-  Nyquist.resize(shape); 
-  Nyquist = T(0.0); 
+  // Resize Nyquist array
+  shape(0) = 2;
+  Nyquist.resize(shape);
+  Nyquist = T(0.0);
 } 
 
 // operator= Copy semantics.
 template<class T, class S>
-FFTServer<T,S> &
-FFTServer<T,S>::operator=(const FFTServer<T,S>& other)
-{
-  if(this == &other) return *this;
-
-  FourierTool<T,S>::operator=(other);  //copy base class members
-  temp.resize(other.temp.shape());
-  work.resize(other.work.shape());
-  temp = other.temp;
-  work = other.work;
-  scale = other.scale;
-  dimension = other.dimension;
-
+FFTServer<T,S> & FFTServer<T,S>::operator=(const FFTServer<T,S> & other) {
+  if (this != &other) {
+    FourierTool<T,S>::operator=(other);  //copy base class members
+    work.resize(other.work.shape());
+    work = other.work;
+    scale = other.scale;
+    dimension = other.dimension;
+  }
   return *this;
 }
 
@@ -258,20 +161,14 @@ FFTServer<T,S>::operator=(const FFTServer<T,S>& other)
 // if dir < 0, backward transformation with normalization. If dir == 0,
 // backward transformation without normalization.
 template<class T, class S>
-void 
-FFTServer<T,S>::fft(Array<T> &rdata, int dir)
-{
-  
-  if (dir <= 0) {
+void FFTServer<T,S>::fft(Array<T> & rdata, Int dir) {
+  if (dir <= 0)
     unpack(rdata);
-  }
-
   // only scale for dir < 0, not dir == 0
   rrfft(rdata, dir, dir < 0 ? 1 : 0);
 
-  if (dir > 0 ) {
+  if (dir > 0 )
     pack(rdata);
-  }
 }
 
 // Real to real n dimensional fft on rdata. Size of rdata should be
@@ -283,17 +180,14 @@ FFTServer<T,S>::fft(Array<T> &rdata, int dir)
 // forward transform; if dir == 0, backward transform without
 // normalization; if dir < 0, backward transform with normalization.
 template<class T, class S>
-void 
-FFTServer<T,S>::nyfft(Array <T> &rdata, int dir)
-{
-  int config = rdata.ndim();
+void FFTServer<T,S>::nyfft(Array <T> & rdata, Int dir) {
+  Int config = rdata.ndim();
   if (config != dimension ) {
     throw(FFTError("FFTServer::nyfft() - error: wrong ffttool for dimension"
 		   " of array"));
   }
   IPosition Shape(dimension);
   Shape = rdata.shape();
-  int nrows = Shape(0);
 
   if (dir <= 0) { // reverse transform
     if (dimension > 1) {
@@ -329,9 +223,7 @@ FFTServer<T,S>::nyfft(Array <T> &rdata, int dir)
 // dir<0, backward transform with scaling.  If center==0, do not shift
 // phase center to origin. If center nonzero, shift image to phase center.
 template<class T, class S>
-void 
-FFTServer<T,S>::cxfft(Array<S> &cdata, int dir, int center)
-{
+void FFTServer<T,S>::cxfft(Array<S> & cdata, Int dir, Int center) {
 // This function makes optimistic optimizations based on the rank
 // of cdata. If cdata is of even rank, then shifting by half in either
 // the time or frequency domains is equivalent to multiplying an element
@@ -342,57 +234,50 @@ FFTServer<T,S>::cxfft(Array<S> &cdata, int dir, int center)
 // O(dimension of cdata * N) in flipimage. Multiplying every second
 // element by -1 is O(N) and avoids half the copies. The optional scaling
 // after a reverse transform is also wrapped in.
-  int canflipsigns;
-  int i;
-  int ndims=cdata.ndim();
-  IPosition shape(cdata.shape());
+  Bool canflipsigns = True;
+  Int i;
+  const Int ndims=cdata.ndim();
+  const IPosition shape(cdata.shape());
   Vector<T> offset(ndims);
 
   if (center) {
-    for (i = 0; i < ndims; ++i) {
+    for (i = 0; i < ndims; i++)
       offset(i) = T(shape(i) / 2);
-    }
-    canflipsigns=1;
-    for (i = 0; i < ndims; ++i) {
-      if (shape(i) % 2) {
+    for (i = 0; i < ndims; i++) {
+      if (shape(i) % 2 == 1) {
 	// some dimension(i) is of odd size
-	canflipsigns=0;
+	canflipsigns = False;
 	break;
       }
     }
-    if (canflipsigns) {
+    if (canflipsigns == True)
       flipsignsfact(cdata, S(1.0));
-    } else {
+    else
       shift(cdata, S(1.0), dir > 0 ? 0 : 1, offset);
-    }
   }
 
   // sets member scale for us, but don't
   // scale cdata
   cndfft(cdata, dir, 0);
 
-  if (center) {
-    if (canflipsigns) {
+  if (center)
+    if (canflipsigns == True)
       flipsignsfact(cdata, dir < 0 ? S(scale) : S(1.0));
-    } else {
-      if (dir < 0) { // normalize after backward transform
+    else {
+      if (dir < 0) // normalize after backward transform
 	shift(cdata, S(scale), 1, offset);
-      } else if (dir == 0) {
+      else if (dir == 0)
 	shift(cdata, S(1.0), 1, offset);
-      } else {
+      else
 	shift(cdata, S(1.0), 0, offset);
-      }
     }
-  }
 }
 
 // Real to complex forwrd transform on rdata. Returns complex array.
 // If first dimension of rdata is odd, then the returned array will be
 // of size ceiling (N/2) complex elements in the first dimension.
 template<class T, class S>
-Array<S> 
-FFTServer<T,S>::rcfft(const Array<T> &rdata)
-{
+Array<S> FFTServer<T,S>::rcfft(const Array<T> & rdata) {
 // <note role=warning> Very inefficient! Current implementation
 // results in repeated copying of the array. Some of the steps should
 // be rolled into one. </note>
@@ -416,9 +301,7 @@ FFTServer<T,S>::rcfft(const Array<T> &rdata)
 // expanded by one. The result will have a first dimension of
 // ceil((N+1)/2) complex elements.
 template<class T, class S>
-Array<S> 
-FFTServer<T,S>::rcnyfft(const Array<T> &rdata)
-{
+Array<S> FFTServer<T,S>::rcnyfft(const Array<T> & rdata) {
 // <note role=warning> Very inefficient! Current implementation
 // results in repeated copying of the array. Some of the steps should
 // be rolled into one. </note>
@@ -444,9 +327,7 @@ FFTServer<T,S>::rcnyfft(const Array<T> &rdata)
 // then the base method shrinkby1 will be invoked on the converted
 // real array before transformation.
 template<class T, class S>
-Array<T>
-FFTServer<T, S>::crfft(Array<S> &cdata, int do_scale, int shrinkodd)
-{
+Array<T> FFTServer<T, S>::crfft(Array<S> & cdata, Int do_scale, Int shrinkodd) {
 // <note role=warning> Very inefficient! Current implementation
 // results in repeated copying of the array. Some of the steps should
 // be rolled into one. </note>
@@ -470,8 +351,7 @@ FFTServer<T, S>::crfft(Array<S> &cdata, int do_scale, int shrinkodd)
 // Otherwise it is shrunk by 2. If do_scale is zero, normalization is
 // not done, otherwise it is.
 template<class T, class S>
-Array<T>
-FFTServer<T, S>::crnyfft(Array<S> &cdata, int do_scale, int shrinkodd)
+Array<T> FFTServer<T, S>::crnyfft(Array<S> & cdata, Int do_scale, Int shrinkodd)
 {
 // <note role=warning> Very inefficient! Current implementation
 // results in repeated copying of the array. Some of the steps should
@@ -497,17 +377,14 @@ FFTServer<T, S>::crnyfft(Array<S> &cdata, int do_scale, int shrinkodd)
 // dimensions, this is equivalent to shifting in either domain by half
 // in every direction.
 template<class T, class S>
-void
-FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor) 
-{
+void FFTServer<T,S>::flipsignsfact(Array<S> & cdata, S factor) {
 // Optimized for Vectors, Matrixes, and Cubes.
-  int ndims=cdata.ndim();
+  Int ndims=cdata.ndim();
   IPosition shape=cdata.shape();
-  IPosition origin=cdata.origin();
   IPosition end=cdata.end();
   IPosition cursor(ndims);
 
-  for (int x=0; x < ndims; ++x) {
+  for (Int x=0; x < ndims; ++x) {
     // all dimensions must be even
     if (shape(x) % 2) {
       throw(FFTError("FFTServer::flipsignsfact(...): dimension of odd size"));
@@ -518,8 +395,8 @@ FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor)
     // Vector
     Vector<S> v;
     v.reference(cdata);
-    int n = end(0);
-    int i = origin(0);
+    Int n = end(0);
+    Int i = 0;
     while (i <= n) {
       v(i++) *= factor;
       v(i++) *= negfactor;
@@ -528,10 +405,10 @@ FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor)
     // Matrix
     Matrix<S> m;
     m.reference(cdata);
-    int n1 = end(0);
-    int n2 = end(1);
-    for (int i1 = origin(0); i1 <= n1; i1++) {
-      for (int i2 = origin(1); i2 <= n2; i2++) {
+    Int n1 = end(0);
+    Int n2 = end(1);
+    for (Int i1 = 0; i1 <= n1; i1++) {
+      for (Int i2 = 0; i2 <= n2; i2++) {
 	if ((i1 + i2) % 2) { // odd exponent
 	  m(i1, i2) *= negfactor;
 	} else {
@@ -543,14 +420,14 @@ FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor)
     // cube
     Cube<S> c;
     c.reference(cdata);
-    int n1 = end(0);
-    int n2 = end(1);
-    int n3 = end(2);
-    int partialsum;
-    for (int i1 = origin(0); i1 <= n1; i1++) {
-      for (int i2 = origin(1); i2 <= n2; i2++) {
+    Int n1 = end(0);
+    Int n2 = end(1);
+    Int n3 = end(2);
+    Int partialsum;
+    for (Int i1 = 0; i1 <= n1; i1++) {
+      for (Int i2 = 0; i2 <= n2; i2++) {
 	partialsum = i1 + i2;
-	for (int i3 = origin(2); i3 <= n3; i3++) {
+	for (Int i3 = 0; i3 <= n3; i3++) {
 	  if ((partialsum + i3) % 2) { // odd exponent
 	    c(i1, i2, i3) *= negfactor;
 	  } else {
@@ -560,13 +437,13 @@ FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor)
       } 
     }
   } else if (ndims > 3) {
-    int i;
-    int sum;
-    ArrayPositionIterator iterator(shape, origin, 0);
+    Int i;
+    Int sum;
+    ArrayPositionIterator iterator(shape, IPosition(ndims, 0), 0);
     while (!iterator.pastEnd()) {
       cursor = iterator.pos();
       for (i = sum = 0; i < ndims; ++i) {
-	sum += cursor(i) - origin(i);
+	sum += cursor(i) - 0;
       }
       if (sum % 2) { // odd exponent
 	cdata(cursor) *= negfactor;
@@ -595,13 +472,11 @@ FFTServer<T,S>::flipsignsfact(Array<S> &cdata, S factor)
 // shifting in the frequency domain is equivalent to multiplying in the
 // frequency domain before the transform, with time set to 0
 // shift is the amount to shift.
-template<class T, class S>
-void
-FFTServer<T,S>::shift(Array<S> &cdata, S factor, 
-                      int timeshift, const Vector<T> &shift) 
-{
-    // Optimized for Vectors, Matrixes, and Cubes.
-  int ndims=cdata.ndim();
+template<class T, class S> 
+void FFTServer<T,S>::shift(Array<S> & cdata, S factor, 
+			   Int timeshift, const Vector<T> & shift) {
+  // Optimized for Vectors, Matrixes, and Cubes.
+  const uInt ndims=cdata.ndim();
   if (shift.nelements() != ndims) {
     throw(FFTError("FFTServer::shift(...): parameter "
                    "Vector<T> shift must have "
@@ -609,12 +484,11 @@ FFTServer<T,S>::shift(Array<S> &cdata, S factor,
                    "parameter Array<S> cdata has "
 		   "dimensions"));
   }
-  IPosition shape=cdata.shape();
-  IPosition origin=cdata.origin();
-  IPosition end=cdata.end();
+  const IPosition shape=cdata.shape();
+  const IPosition end=cdata.end();
   IPosition cursor(ndims);
 
-  for (int i = 0; i < ndims; ++i) {
+  for (uInt i = 0; i < ndims; i++) {
     if (shape(i) == 0) {
     throw(FFTError("FFTServer::shift(..): some dimension"
 		   "of cdata has zero size."));
@@ -625,25 +499,25 @@ FFTServer<T,S>::shift(Array<S> &cdata, S factor,
   if (timeshift) { // multiplying in UV domain; exponent -1
     expmultiplier *= S(-1.0);
   }  // otherwise, multiplying in time domain; exponent +1
-  if (ndims==1) {
+  if (ndims == 1u) {
     // Vector
     Vector<S> v;
     v.reference(cdata);
-    int n = end(0);
+    Int n = end(0);
     S incr = expmultiplier * (shift(0) / shape(0));
     S exponent = S(0.0);			
     // idea is to use repeated addition rather than multiplication
-    for (int i = origin(0) ; i <= n; ++i, exponent += incr) {
+    for (Int i = 0 ; i <= n; ++i, exponent += incr) {
       // Probably should cache these exp values; would probably
       // result in significant performance gains
       v(i) *= factor * exp(exponent);
     }
-  } else if (ndims==2) {
+  } else if (ndims == 2u) {
     // Matrix
     Matrix<S> m;
     m.reference(cdata);
-    int n1 = end(0);
-    int n2 = end(1);
+    Int n1 = end(0);
+    Int n2 = end(1);
     S incr0 = expmultiplier * (shift(0) / shape(0));
     S incr1 = expmultiplier * (shift(1) / shape(1));
     S exponent = S(0.0);
@@ -654,9 +528,9 @@ FFTServer<T,S>::shift(Array<S> &cdata, S factor,
 // and N and M are the sizes of the respective dimensions.  We can avoid
 // the multiplications with repeated additions: i, j, N, M are constant;
 // m varies fastest.
-    for (int i1 = origin(0); i1 <= n1; i1++, outerexponent += incr0) {
+    for (Int i1 = 0; i1 <= n1; i1++, outerexponent += incr0) {
       exponent = outerexponent;
-      for (int i2 = origin(1); i2 <= n2; i2++, exponent += incr1) {
+      for (Int i2 = 0; i2 <= n2; i2++, exponent += incr1) {
 	m(i1, i2) *= factor * exp(exponent);
       }
     }
@@ -664,38 +538,37 @@ FFTServer<T,S>::shift(Array<S> &cdata, S factor,
     // Cube
     Cube<S> c;
     c.reference(cdata);
-    int n1 = end(0);
-    int n2 = end(1);
-    int n3 = end(2);
+    Int n1 = end(0);
+    Int n2 = end(1);
+    Int n3 = end(2);
     S incr0 = expmultiplier * (shift(0) / shape(0));
     S incr1 = expmultiplier * (shift(1) / shape(1));
     S incr2 = expmultiplier * (shift(2) / shape(2));
     S exponent = S(0.0);
     S middleexponent = S(0.0);
     S outerexponent = S(0.0);
-    for (int i1 = origin(0); i1 <= n1; i1++, outerexponent += incr0) {
+    for (Int i1 = 0; i1 <= n1; i1++, outerexponent += incr0) {
       middleexponent = outerexponent;
-      for (int i2 = origin(1); i2 <= n2; i2++, middleexponent += incr1) {
+      for (Int i2 = 0; i2 <= n2; i2++, middleexponent += incr1) {
 	exponent = middleexponent;
-	for (int i3 = origin(2); i3 <= n3; i3++, exponent += incr2) {
+	for (Int i3 = 0; i3 <= n3; i3++, exponent += incr2) {
 	  c(i1, i2, i3) *= factor * exp(exponent);
 	}
       }
     } 
   }  else if (ndims > 3) {
-    int i;
-    int sum;
+    uInt i;
     Vector<T> products(ndims);
     for (i = 0; i < ndims; ++i) {
       products(i) = (shift(i) / shape(i));
     }
     T partialsum;
-    ArrayPositionIterator iterator(shape, origin, 0);
+    ArrayPositionIterator iterator(shape, IPosition(ndims, 0), 0);
     while (!iterator.pastEnd()) {
       cursor = iterator.pos();
       for (partialsum = T(1.0), i = 0; i < ndims; ++i) {
 	// inefficient, since partial sum doesn't change that often
-	partialsum += products(i) * (cursor(i) - origin(i));
+	partialsum += products(i) * cursor(i);
       }
       cdata(cursor) *= factor * exp(expmultiplier * partialsum);
       iterator.next();
@@ -709,9 +582,7 @@ FFTServer<T,S>::shift(Array<S> &cdata, S factor,
 // This function moves weights on to a uv grid in preparation for doing
 // FFT to obtain an antenna pattern packing is also done.
 template<class T, class S>
-void 
-FFTServer<T,S>::uvassign(Array<T> &UV, Array<T> &Weight)
-{
+void FFTServer<T,S>::uvassign(Array<T> & UV, Array<T> & Weight) {
   IPosition UV_Shape(dimension);
   IPosition wt_shape(dimension);
   UV_Shape = UV.shape();
@@ -726,9 +597,7 @@ FFTServer<T,S>::uvassign(Array<T> &UV, Array<T> &Weight)
   VectorIterator<T> uv_iter(UV);
   VectorIterator<T> wt_iter(Weight);
   VectorIterator<T> ny_iter(Nyquist);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   while (! wt_iter.pastEnd()) {
     Vector<T> &uv_temp = uv_iter.vector();
@@ -748,9 +617,7 @@ FFTServer<T,S>::uvassign(Array<T> &UV, Array<T> &Weight)
 // This function moves weights on to a uv grid in preparation for
 // doing FFT to obtain an antenna pattern packing is also done.
 template<class T, class S>
-void 
-FFTServer<T,S>::uvassign(Array<S> &UV, Array<T> &Weight)
-{
+void FFTServer<T,S>::uvassign(Array<S> & UV, Array<T> & Weight) {
   IPosition UV_Shape(dimension);
   IPosition wt_shape(dimension);
   UV_Shape = UV.shape();
@@ -763,9 +630,7 @@ FFTServer<T,S>::uvassign(Array<S> &UV, Array<T> &Weight)
   VectorIterator<S> uv_iter(UV);
   VectorIterator<T> wt_iter(Weight);
   VectorIterator<T> ny_iter(Nyquist);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   while (! wt_iter.pastEnd()) {
     Vector<S> &uv_temp = uv_iter.vector();
@@ -786,9 +651,7 @@ FFTServer<T,S>::uvassign(Array<S> &UV, Array<T> &Weight)
 // preparation for doing FFT to obtain an antenna pattern packing is also
 // done.
 template<class T, class S>
-void 
-FFTServer<T,S>::cxUVassign(Array<S> &UV, Array<T> &Weight)
-{
+void FFTServer<T,S>::cxUVassign(Array<S> & UV, Array<T> & Weight) {
   IPosition UV_Shape(dimension);
   IPosition wt_shape(dimension);
   UV_Shape = UV.shape();
@@ -802,9 +665,7 @@ FFTServer<T,S>::cxUVassign(Array<S> &UV, Array<T> &Weight)
   }
   VectorIterator<S> uv_iter(UV);
   VectorIterator<T> wt_iter(Weight);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   while (! wt_iter.pastEnd()) {
     Vector<S> &uv_temp = uv_iter.vector();
@@ -818,12 +679,10 @@ FFTServer<T,S>::cxUVassign(Array<S> &UV, Array<T> &Weight)
 
 // This function sums up the weights for FFT normalization.
 template<class T, class S>
-T FFTServer<T,S>::wtsum(Array<T> &Weight)
+T FFTServer<T,S>::wtsum(Array<T> & Weight)
 {
   VectorIterator<T> wt_iter(Weight);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   T ret_value = T(0.0);
   while (! wt_iter.pastEnd()) {
@@ -839,12 +698,10 @@ T FFTServer<T,S>::wtsum(Array<T> &Weight)
 // This function sums up the weights from a full complex grid for FFT
 // normalization.
 template<class T, class S>
-T FFTServer<T,S>::cxWtsum(Array<T> &Weight)
+T FFTServer<T,S>::cxWtsum(Array<T> & Weight)
 {
   VectorIterator<T> wt_iter(Weight);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   T ret_value = T(0.0);
   while (! wt_iter.pastEnd()) {
@@ -858,13 +715,11 @@ T FFTServer<T,S>::cxWtsum(Array<T> &Weight)
 
 // This function sums up image weights for FFT normalization
 template<class T, class S>
-T FFTServer<T,S>::imWtsum(Array<T> &Weight)
+T FFTServer<T,S>::imWtsum(Array<T> & Weight)
 
 {
   VectorIterator<T> wt_iter(Weight);
-  Int start_wt, end_wt;
-  wt_iter.vector().origin(start_wt);
-  wt_iter.vector().end(end_wt);
+  Int start_wt = 0, end_wt = wt_iter.vector().nelements()-1;
   
   T ret_value = T(0.0);
   while (! wt_iter.pastEnd()) {
@@ -904,17 +759,13 @@ T FFTServer<T,S>::imWtsum(Array<T> &Weight)
 // coset leader in constant time and space?
 // </todo>
 template<class T, class S>
-void
-FFTServer<T,S>::flipImage(Array<T> &image, int image_type, int parity)
-
-
-{
+void FFTServer<T,S>::flipImage(Array<T> & image, Int image_type, Int parity) {
   ArrayIterator<T> iterator(image, 1);
   Int iterations = image.nelements() / iterator.array().nelements();
-  IPosition Start =  iterator.array().origin();
-  IPosition End   =  iterator.array().end();
   IPosition Middle = iterator.array().shape();
-  int odd = Middle(0) % 2;
+  IPosition Start =  Middle * 0;
+  IPosition End   =  iterator.array().end();
+  Int odd = Middle(0) % 2;
 
   Middle(0) /= 2;
   Middle -= 1;
@@ -969,18 +820,15 @@ FFTServer<T,S>::flipImage(Array<T> &image, int image_type, int parity)
 // odd dimension will be moved to the origin. Otherwise, the center
 // pixel + 1 will end up at the zero pixel.
 template<class T, class S>
-void
-FFTServer<T,S>::exchangeUV(Array<T> &UV, int parity)
-{
-
-  for(Int current_dim = 2; current_dim <= UV.ndim(); current_dim++){
+void FFTServer<T,S>::exchangeUV(Array<T> & UV, Int parity) {
+  for(uInt current_dim = 2; current_dim <= UV.ndim(); current_dim++){
     //iterate dimension "current_dim".
     ArrayIterator<T> iterator(UV, current_dim);
     Array<T> &array = iterator.array();
-    IPosition Start =  array.origin();
-    IPosition End   =  array.end();
     IPosition Middle = array.shape();
-    int odd = Middle(current_dim - 1) % 2;
+    IPosition Start =  Middle * 0;
+    IPosition End   =  array.end();
+    Int odd = Middle(current_dim - 1) % 2;
 
     Middle(current_dim - 1) /= 2;
     Middle -= 1;
@@ -1021,16 +869,15 @@ FFTServer<T,S>::exchangeUV(Array<T> &UV, int parity)
 // pixel.
 
 template<class T, class S>
-void
-FFTServer<T,S>::flipImage(Array<S> &image, int image_type, int parity)
+void FFTServer<T,S>::flipImage(Array<S> & image, Int image_type, Int parity)
 {
   ArrayIterator<S> iterator(image, 1);
   Array<S> &array = iterator.array();
   Int iterations = image.nelements() / iterator.array().nelements();
-  IPosition Start =  array.origin();
-  IPosition End   =  array.end();
   IPosition Middle = array.shape();
-  int odd = Middle(0) % 2;
+  IPosition Start =  Middle * 0;
+  IPosition End   =  array.end();
+  Int odd = Middle(0) % 2;
 
   Middle(0) /= 2;
   Middle -= 1;
@@ -1078,18 +925,17 @@ FFTServer<T,S>::flipImage(Array<S> &image, int image_type, int parity)
 // the zero pixel. Otherwise, the center pixel + 1 will end up at the
 // zero pixel.
 template<class T, class S>
-void
-FFTServer<T,S>::exchangeUV(Array<S> &UV, int parity)
+void FFTServer<T,S>::exchangeUV(Array<S> & UV, Int parity)
 {
 
-  for(Int current_dim = 2; current_dim <= UV.ndim(); current_dim++){
+  for(uInt current_dim = 2; current_dim <= UV.ndim(); current_dim++){
     //iterate dimension "current_dim".
     ArrayIterator<S> iterator(UV, current_dim);
     Array<S> &array = iterator.array();
-    IPosition Start =  array.origin();
-    IPosition End   =  array.end();
     IPosition Middle = array.shape();
-    int odd = Middle(current_dim - 1) % 2;
+    IPosition Start =  Middle * 0;
+    IPosition End   =  array.end();
+    Int odd = Middle(current_dim - 1) % 2;
 
     Middle(current_dim - 1) /= 2;
     Middle -= 1;
@@ -1124,8 +970,7 @@ FFTServer<T,S>::exchangeUV(Array<S> &UV, int parity)
 }
 
 template<class T, class S>
-T FFTServer<T,S>::scaleFactor(void)
-{
+T FFTServer<T,S>::scaleFactor() {
   return scale;
 }
 
@@ -1134,11 +979,10 @@ T FFTServer<T,S>::scaleFactor(void)
 // backward transform. If do_scale zero, do not normalize after
 // backward transform, otherwise do.
 template<class T, class S>
-void
-FFTServer<T,S>::rndfft(Array<T> &rdata, int dir, int do_scale)
+void FFTServer<T,S>::rndfft(Array<T> & rdata, Int dir, Int do_scale)
 {
 
-  if (rdata.ndim() != dimension ) {
+  if (rdata.ndim() != uInt(dimension) ) {
     throw(FFTError("FFTServer::rndfft(...) - error: wrong ffttool for dimension "
 		   " of array"));
   }
@@ -1147,37 +991,36 @@ FFTServer<T,S>::rndfft(Array<T> &rdata, int dir, int do_scale)
   T *wptr = work.getStorage(wdelete);
   T *nptr = Nyquist.getStorage(ndelete);
   T *rptr = rdata.getStorage(rdelete);
-  int nelements = rdata.nelements();
-  int nyelements = Nyquist.nelements();
+  Int nelements = rdata.nelements();
+  Int nyelements = Nyquist.nelements();
 
   T *roff, *noff, *toff;
   T *rend = rptr + nelements;
-  T *nend = nptr + nyelements;
 
   IPosition shape(rdata.shape());
-  int ndims = shape.nelements();
+  Int ndims = shape.nelements();
 
   // nrows is the number along the u
   // axis, not the number of rows...
-  int nrows = shape(0);
+  Int nrows = shape(0);
   if (nrows == 0) {
     throw(FFTError("FFTServer::rndfft(...) first dimension of "
 		   "size zero in rdata"));
   }
   // used by transform loops
-  int i, j;
-  long prod;
-  int upper, current;
-  long roffset, noffset, toffset;
+  Int i, j;
+  Long prod;
+  Int upper, current;
+  Long roffset, noffset;
   
-  int even = !(shape(0) % 2);    
+  Int even = !(shape(0) % 2);    
 
-  int endoneven = even ? nrows : nrows - 1;
-  int skip, x;
+  Int endoneven = even ? nrows : nrows - 1;
+  Int skip, x;
 
   // what the FORTRAN mfft takes. Sign is 
   // sign of complex exponent: -1 is forward.
-  int mfftdir;
+  Int mfftdir;
 
 // Set prod to 2 * true product of dimensions.  In a packed array, the
 // imaginary part of the zero component is missing, and in the even case,
@@ -1285,7 +1128,7 @@ FFTServer<T,S>::rndfft(Array<T> &rdata, int dir, int do_scale)
 // nyskip is the increment between successive elements in this vector, in
 // Nyquist.
 // skip along nyquist array is different than mfftdir in this way:
-    int nyskip = (mfftdir / nrows) * 2;
+    Int nyskip = (mfftdir / nrows) * 2;
 
     for (j = 0; j < upper; ++j) {
       // for all these vectors
@@ -1405,10 +1248,10 @@ FFTServer<T,S>::rndfft(Array<T> &rdata, int dir, int do_scale)
 // a backward transform, otherwise do not normalize.
 template<class T, class S>
 void
-FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
+FFTServer<T,S>::rndnyfft(Array<T> & rdata, Int dir, Int do_scale)
 
 {
-  if (rdata.ndim() != dimension ) {
+  if (rdata.ndim() != uInt(dimension) ) {
     throw(FFTError("FFTServer::rndnyfft(...) - error: wrong ffttool for dimension "
 		   " of array"));
   }
@@ -1417,30 +1260,29 @@ FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
   T *wptr = work.getStorage(wdelete);
   T *rptr = rdata.getStorage(rdelete);
   T *nptr = Nyquist.getStorage(ndelete);
-  int nelements = rdata.nelements();
+  Int nelements = rdata.nelements();
 
   T *roff, *toff, *noff;
   T *rend = rptr + nelements;
-  T *nend = nptr + Nyquist.nelements();
 
   IPosition shape(rdata.shape());
-  int ndims = shape.nelements();
-  int nrows = shape(0);
+  Int ndims = shape.nelements();
+  Int nrows = shape(0);
 
   // used by transform loops
-  int i, j;
-  long prod;
-  int upper, current;
-  long roffset, noffset, toffset;
+  Int i, j;
+  Long prod;
+  Int upper, current;
+  Long roffset, noffset;
 
-  int even = shape(0) % 2 ? 0 : 1;    
+  Int even = shape(0) % 2 ? 0 : 1;    
 
-  int endoneven = even ? nrows : nrows - 1;
-  int skip, x;
+  Int endoneven = even ? nrows : nrows - 1;
+  Int skip, x;
 
 // what the FORTRAN mfft takes. Sign is sign of complex exponent: -1 is
 // forward.
-  int mfftdir;
+  Int mfftdir;
 
 // prod is 2 * true product of dimensions in odd case, we have an extra
 // column
@@ -1449,7 +1291,7 @@ FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
 // subtract two for the first dimension
 
   prod = nrows - !even;
-  int truenumelements = nrows - 2;
+  Int truenumelements = nrows - 2;
   for (i = 1 ; i < ndims; ++i) {
     // get product of all dimensions
     truenumelements *= shape(i);
@@ -1458,14 +1300,13 @@ FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
 
   // initialize work storage
 
-  int tmp = nrows - 2;
+  Int tmp = nrows - 2;
   rffti( &tmp, wptr );
 
   if (dir > 0) { 
     // forward transform
     for ( roff = rptr; roff < rend; roff += nrows ) {
-      rfftf( &tmp, roff, wptr );
-
+      rfftf( &tmp, roff, wptr ); 
       toff = roff + nrows - 2;
 
       // shuffle elements along
@@ -1567,7 +1408,7 @@ FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
       *(noff + 1) = *(roff + nrows - 1);
     }
   } else { // backward, now do rows
-    int tmp = nrows - 2;
+    Int tmp = nrows - 2;
     rffti( &tmp, wptr );
     for ( roff = rptr; roff < rend; roff += nrows ) {
       // shuffle rest along; roff[1] should be zero
@@ -1603,9 +1444,9 @@ FFTServer<T,S>::rndnyfft(Array<T> &rdata, int dir, int do_scale)
 // transform. 
 template<class T, class S>
 void
-FFTServer<T, S>::rrfft(Array<T> &rdata, int dir, int do_scale)
+FFTServer<T, S>::rrfft(Array<T> & rdata, Int dir, Int do_scale)
 {
-  int config = rdata.ndim();
+  Int config = rdata.ndim();
   if (config != dimension ) {
     throw(FFTError("FFTServer::fft() - error: wrong ffttool for dimension "
 		   " of array"));
@@ -1643,31 +1484,31 @@ FFTServer<T, S>::rrfft(Array<T> &rdata, int dir, int do_scale)
 // then do not normalize after a backward transform, otherwise do. Does
 // not do image flipping.
 template<class T, class S>
-void
-FFTServer<T, S>::rcndfft(Array<T> &rdata, Array<T> &cdata, int dir, int do_scale)
+void FFTServer<T, S>::rcndfft(Array<T> & rdata, Array<T> & cdata, 
+			      Int dir, Int do_scale)
 {
   // rdata and cdata must conform
   if (!rdata.conform(cdata)) {
     throw(FFTError("FFTServer<T,S>::rcndfft(...):rdata and cdata no not conform"));
   }
-  int nelems = rdata.nelements();
+  Int nelems = rdata.nelements();
 
   scale = nelems ? 1.0 / nelems : 1.0;
   IPosition Shape(rdata.shape());
   
-  int i;
+  Int i;
   Bool rDelete, cDelete;
   T *rptr = rdata.getStorage(rDelete);
   T *cptr = cdata.getStorage(cDelete);
 
-  int dims = Shape.nelements();
-  int prod = 1;
+  Int dims = Shape.nelements();
+  Int prod = 1;
 // Sense of dir: for FFTServer, if d >= 0, it's a forward transform. This
 // means the sign of the exponential is negative, and that's what mfft
 // takes.  The magnitude (1 here) is the indexing skip. See the FORTRAN.
 
-  int isn = dir > 0 ? -1 : 1;
-  int tmp;
+  Int isn = dir > 0 ? -1 : 1;
+  Int tmp;
   for (i = 0; i < dims; ++i) {
 // for each dimension
     prod *= tmp = Shape(i);
@@ -1681,7 +1522,7 @@ FFTServer<T, S>::rcndfft(Array<T> &rdata, Array<T> &cdata, int dir, int do_scale
     }
   }
   if (dir <= 0 && do_scale) { // backward, do the scale
-    for (int off=0; off < nelems; ++off) {
+    for (Int off=0; off < nelems; ++off) {
       *(rptr + off) *= scale;
       *(cptr + off) *= scale;
     }
@@ -1697,8 +1538,7 @@ FFTServer<T, S>::rcndfft(Array<T> &rdata, Array<T> &cdata, int dir, int do_scale
 // a backward transform. If do_scale is zero, then cdata is not
 // normalized after a backward transform, otherwise it is.
 template<class T, class S>
-void
-FFTServer<T, S>::cndfft(Array<S> &cdata, int dir, int do_scale)
+void FFTServer<T, S>::cndfft(Array<S> & cdata, Int dir, Int do_scale)
 {
   
   IPosition Shape(cdata.shape());
@@ -1706,16 +1546,16 @@ FFTServer<T, S>::cndfft(Array<S> &cdata, int dir, int do_scale)
   Bool Delete;
   S *rptr = cdata.getStorage(Delete);
   
-  int dims = Shape.nelements();
-  int prod = 1;
+  Int dims = Shape.nelements();
+  Int prod = 1;
 // Sense of dir: for FFTServer, if > 0, it's a forward transform. This
 // means the sign of the exponential is negative, and that's what mfft
 // takes.  the magnitude is the indexing skip. See the FORTRAN.
-  int isn = dir > 0 ? -2 : 2;
-  int nelems = cdata.nelements();
+  Int isn = dir > 0 ? -2 : 2;
+  Int nelems = cdata.nelements();
   scale = nelems ? 1.0 / nelems : 1.0;
-  int tmp;
-  for (int i = 0; i < dims; ++i) {
+  Int tmp;
+  for (Int i = 0; i < dims; ++i) {
 // for each dimension
     prod *= tmp = Shape(i);
 // <note role=danger> Assumes that layout of a complex object is re, im,
@@ -1727,10 +1567,12 @@ FFTServer<T, S>::cndfft(Array<S> &cdata, int dir, int do_scale)
     }
   }
   if (dir <= 0 && do_scale) { // backward
-    for (int off=0; off < nelems; ++off) {
+    for (Int off=0; off < nelems; ++off) {
       *(rptr + off) *= scale;
     }
   }
   cdata.putStorage(rptr, Delete);
 }
-
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 FFTServer"
+// End: 
