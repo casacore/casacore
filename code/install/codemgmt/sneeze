@@ -236,7 +236,7 @@
         ;;
      esac
 
-     [ "$2" = "" ] && break
+     [ "" = "$2" ] && break
 
      shift
   done
