@@ -238,6 +238,10 @@ public:
     // A blank name means the data manager is unknown.
     DataManager* findDataManager (const String& dataManagerName) const;
 
+    // Make a unique data manager name by appending a suffix _n if needed
+    // where n is a number that makes the name unique.
+    String uniqueDataManagerName (const String& name) const;
+
     // Synchronize the columns after it appeared that data in the
     // main table file have changed.
     // It cannot deal with changes in number of columns, so it throws an
@@ -263,10 +267,6 @@ private:
     // By default an exception is thrown if the name has already been used.
     Bool checkDataManagerName (const String& name, uInt from,
 			       Bool doTthrow=True) const;
-
-    // Make a unique data manager name by appending a suffix _n if needed
-    // where n is a number that makes the name unique.
-    String uniqueDataManagerName (const String& name) const;
 
     // Do the actual addition of a column.
     void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr,
