@@ -41,24 +41,23 @@ Bool DirectionCoordinate::toWorld(MDirection &world,
 				  const Vector<Double> &pixel) const
 {
     static MVDirection world_tmp;
-    Bool ok = toWorld(world_tmp, pixel);
-    if (ok) {
+    if (toWorld(world_tmp, pixel)) {
        world.set(world_tmp, MDirection::Ref(type_p));
+       return True;
     }
-    return ok;
+    return False;
 }
 
 Bool DirectionCoordinate::toWorld(MVDirection &world, 
 				  const Vector<Double> &pixel) const
 {
     static Vector<Double> world_tmp(2);
-    Bool ok = toWorld(world_tmp, pixel);
-//
-    if (ok) {
+    if (toWorld(world_tmp, pixel)) {
        world.setAngle(world_tmp(0)*to_radians_p[0],
                       world_tmp(1)*to_radians_p[1]);
+       return True;
     }
-    return ok;
+    return False;
 }
 
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
@@ -80,5 +79,3 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //
    return toPixel(pixel, world_tmp);
 }
-
-
