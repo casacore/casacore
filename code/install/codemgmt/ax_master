@@ -1970,3 +1970,4 @@
 08 068 src rm nrao/gbt
 08 068 src rm nrao/NewMeasures
 08 068 src rm nrao/unreliable
+08 069 src mv trial/apps/bimafiller/bimafiller.cc bima/apps/bimafiller/bimafiller.cc
