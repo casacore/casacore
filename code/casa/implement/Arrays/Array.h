@@ -74,7 +74,7 @@ enum StorageInitPolicy {
 // base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
 //
 // Indexing into the array, and positions in general, are given with IPosition
-// (essentially a vector of integers) objects. That is, an N-dimensional 
+// (essentially a vector of integers) tools. That is, an N-dimensional 
 // array requires a length-N IPosition to define a position within the array.
 // Unlike C, indexing is done with (), not []. Also, the storage order
 // is the same as in FORTRAN, i.e. memory varies most rapidly with the first
@@ -336,7 +336,7 @@ public:
     // The functions with argument <src>ignoreAxes</src> do
     // not consider the axes given in that argument..
     // <note role=caution> When the two functions returning void throw
-    // are invoked on a derived object (e.g. Matrix), an exception is
+    // are invoked on a derived tool (e.g. Matrix), an exception is
     // thrown if removing the degenerate axes from other does not result
     // in a correct number of axes.
     // </note>
@@ -517,7 +517,7 @@ public:
     // </group>
 
 protected:
-    // Remove the degenerate axes from the Array object.
+    // Remove the degenerate axes from the Array tool.
     // This is the implementation of the nonDegenerate functions.
     // It has a different name to be able to make it virtual without having
     // the "hide virtual function" message when compiling derived classes.
