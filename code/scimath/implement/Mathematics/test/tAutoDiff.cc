@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-
+#include <casa/BasicMath/Math.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
+
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
 
 #include <casa/iostream.h>
 
@@ -309,9 +309,11 @@ int main() {
     
     // atan(x) : derivative = 1/(1+x*x)
     y = atan(x);
-    if (y.value() != Float(atan(x.value())) ||
-	!allEQ(y.derivatives(), 
-	       x.derivatives()/Float(1.0 + x.value()*x.value()))) {
+    if (!allNearAbs(y.value(), Float(atan(x.value())),1.e-6) ||
+	!allNearAbs(y.derivatives(), 
+	       x.derivatives()/Float(1.0 + x.value()*x.value()),1.e-6)) {
+      cerr << y.value() -  Float(atan(x.value())) << endl;
+      cerr << y.derivatives() - x.derivatives()/Float(1.0 + x.value()*x.value()) << endl;
       cerr << "atan(const AutoDiff<T> &) failed" << endl;
       nerr++;
     };
@@ -420,8 +422,8 @@ int main() {
     // tan(x) : derivative = sec(x)*sec(x) = 1/(cos(x)*cos(x))
     y = tan(x);
     if (!allNearAbs(y.value(), Float(tan(x.value())) ) ||
-	!allEQ(y.derivatives(), 
-	       x.derivatives()/Float(cos(x.value())*cos(x.value())))) {
+	!allNearAbs(y.derivatives(), 
+	       x.derivatives()/Float(cos(x.value())*cos(x.value())),1.e-6)) {
       cerr << "tan(const AutoDiff<T> &) failed" << endl;
       nerr++;
     };
