@@ -154,7 +154,7 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
 
   // Main matching loop
   MVDirection mvdir;
-  Matrix<Double> mdir(1, 2);
+  Matrix<Double> mdir(2, 1);
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
