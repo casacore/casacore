@@ -1,5 +1,5 @@
 //# TiledStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -276,6 +276,10 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 String TiledStMan::dataManagerName() const
     { return hypercolumnName_p; }
 
+void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
+{
+    throw (TSMError ("setShape is not possible for TSM " + hypercolumnName_p));
+}
 
 void TiledStMan::reopenRW()
 {
@@ -671,7 +675,7 @@ void TiledStMan::checkCoordinatesShapes (const TSMCube* hypercube,
 {
     //# Check for all coordinates if their length (if defined)
     //# matches the hypercube shape.
-    for (uInt i=0; i<coordColSet_p.nelements(); i++) {
+    for (uInt i=0; i<nrCoordVector_p; i++) {
 	if (coordColSet_p[i] != 0) {
 	    Int size = hypercube->coordinateSize
 		                            (coordColSet_p[i]->columnName());
@@ -723,9 +727,8 @@ uInt TiledStMan::getBindings (const Vector<String>& columnNames,
 }
 
 
-TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
-				    const IPosition& tileShape,
-				    const Record& values)
+void TiledStMan::checkAddHypercube (const IPosition& cubeShape,
+				    const Record& values) const
 {
     //# Check if the cube shape is correct.
     checkCubeShape (0, cubeShape);
@@ -736,6 +739,12 @@ TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
     if (getCubeIndex (values) >= 0) {
 	throw (TSMError ("addHypercube with already existing id values"));
     }
+}
+
+TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
+				    const IPosition& tileShape,
+				    const Record& values)
+{
     dataChanged_p = True;
     // Pick a TSMFile object for the hypercube.
     // Non-extensible cubes share the first file; others get their own file.
@@ -984,6 +993,9 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	    }else{
 		fileSet_p[i]->getObject (headerFile);
 	    }
+	}else{
+	    delete fileSet_p[i];
+	    fileSet_p[i] = 0;
 	}
     }
     uInt nrCube;
