@@ -96,8 +96,21 @@ public:
 template<class T> class LatticeCleaner
 {
 public:
+  // Call back function
+  typedef Bool LatticeCleaner::InfoCallback(const Bool lastcall,
+					    const Int iteration,
+					    const Int numberIterations,
+					    const Lattice<T>& model,
+					    const Vector<Float>& maxima,
+					    const Block<IPosition>& posMaximum,
+					    const Float strengthOptimum,
+					    const Int optimumScale,
+					    const IPosition& positionOptimum,
+					    const Block<TempLattice<T>* >& residuals);
+
   // Create a cleaner for a specific dirty image and PSF
-  LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty);
+  LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty,
+		 InfoCallback* callback = 0);
 
   // The copy constructor uses reference semantics
   LatticeCleaner(const LatticeCleaner<T> & other);
@@ -131,7 +144,6 @@ private:
   CleanEnums::CleanType itsCleanType;
 
   TempLattice<T>* itsDirty;
-  TempLattice<T>* itsPsf;
   TempLattice<Complex>* itsXfr;
 
   Int itsNscales;
@@ -148,12 +160,29 @@ private:
 
   IPosition itsPositionPeakPsf;
 
+  Vector<Float> itsTotalFluxScale;
+  Float itsTotalFlux;
+
   // Memory to be allocated per TempLattice
   uInt itsMemoryMB;
 
   // Let the user choose whether to stop
   Bool itsChoose;
 
+  // Callback function
+  LatticeCleaner::InfoCallback* itsCallback;
+
+  // Standard callback function
+  Bool standardCallback(const Bool lastcall,
+			const Int iteration,
+			const Int numberIterations,
+			const Lattice<Float>& model,
+			const Vector<Float>& maxima,
+			const Block<IPosition>& posMaximum,
+			const Float strengthOptimum,
+			const Int optimumScale,
+			const IPosition& positionOptimum,
+			const Block<TempLattice<Float>* >& residuals);
   // Stop now?
   Bool stopnow();
 
