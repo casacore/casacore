@@ -1,0 +1,25 @@
+#!/bin/tcsh
+#-----------------------------------------------------------------------------
+# Usage: tfits2ms.run
+#-----------------------------------------------------------------------------
+# This script executes the program tMSConcat to test if new the
+# measurement set concatrenation is working.
+
+# The script supplies the names of all test tables found in the system.
+# It is meant to be run from assay, but can also be used standalone.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+  if ( "$AIPSPATH" == "" ) then
+     echo "UNTESTED: tfits2ms.run (AIPSPATH not defined)"
+     exit 3
+  endif
+  set IN  = '3C273XC1.fits'
+  set AIPSDEMO = `echo $AIPSPATH | awk '{printf("%s/data/demo",$1)}'`
+  set FITS  = `echo $AIPSDEMO $IN | awk '{printf("%s/%s", $1,$2)}'`
+  set MS  = `echo $IN | sed 's/.fits/_tmp.ms/'`
+  echo $AIPSDEMO
+  echo $FITS
+  echo $MS
+  tfits2ms fits=$FITS ms=$MS
