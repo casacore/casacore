@@ -1,0 +1,185 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>How to Make an AIPS++ Release</TITLE>
+</HEAD>
+<BODY>
+
+<B><FONT FACE="Arial" SIZE=4><P ALIGN="CENTER">How to Make an AIPS++ Release</P>
+</B></FONT><I><FONT SIZE=2><P ALIGN="CENTER">B.E. Glendenning</P>
+</I><P>&nbsp;</P>
+</FONT><B><I><FONT FACE="Arial"><P>Introduction</P>
+</B></I></FONT><FONT SIZE=2><P>Making AIPS++ Releases is conceptually fairly simple:</P>
+<OL>
+
+<OL>
+
+<LI>When a release is imminent, tell programmers to be cautious about new checkins.</LI>
+<LI>When the system appears to be sufficiently stable, do an uprev. This changes the major version number of the system, and copies off the base-release from the development system so programmers can get back to normal development.</LI>
+<LI>Make the *.tar.gz files (source and binary) for the base release. Do a test install.</LI>
+<LI>Test the base release (use the test installation), and acquire source-code changes for it. In practice it is unlikely that you will not find problems with the base release, so you should anticipate releasing the system at patch level 1.</LI>
+<LI>Create the patch, rebuild the .tar.gz files, and announce your system to the world.</LI>
+<LI>As new patches come in, repeat steps 4 and 5 as necessary.</LI></OL>
+</OL>
+
+<P>Of course the devil is in the details. Much of the following could and should be automated, although it's really not all that bad.</P>
+</FONT><B><I><FONT FACE="Arial"><P>The Uprev</P>
+</B></I></FONT><FONT SIZE=2><P>Choose the installations from which you are going to generate the initial binaries. For example, in Socorro we used <I>daily/sun4sol_gnu</I> and <I>daily/linux_gnu</I> for AIPS++ 1.1  (beta) release. Make sure that the sources, generated documents, and binaries will be copied during the uprev for these installations by checking the <I>.aipsrc</I> variables </FONT><TT>inhale.base.code.preserve,</TT><FONT SIZE=2> </FONT><TT>sneeze.base.*.preserve, and sneeze.base.docs.preserve</TT><FONT SIZE=2> are not false (this is described under the <I>inhale</I> and <I>sneeze </I>sections of the <I>System</I> manual).</P>
+<P>I recommend that you do a normal cumulative inhale before the uprev as a last chance to find problems - it is easier to fix problems with the normal ai/ao mechanism than by applying patches after the uprev. To speed this cumulative inhale along you may want to consider only building the optimized libraries during this cumulative inhale (by entering "defeat" in the debug column for all libraries in the site makedefs). Remember to set them back after the uprev has happened! To clean out any cruft, you might want to think about deleting libexec/* and all the binaries from architecture/bin/* before this cumulative as well. If you delete the binaries, make sure you do a "gmake allsys" in code/install/codemgt for all architectures to make sure that inhale, sneeze, and friends are available for the inhale! After the inhale completes, exercise it fairly thoroughly. It should at least be equivalent to a "stable" release before proceeding with the uprev.</P>
+<P>To perform the actual uprev, as aips2adm on the AIPS++ master machine (currently tarzan), first manually edit the file <I>~ftp/pub/master/VERSION </I>and increment the major version by one and change the minor version to a dash ("-"). For example, when doing an uprev from version 10 to 11, the VERSION file contained the line:</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier" SIZE=2><P>11.-.00 Fri 1998/10/02 00:30:21 GMT </P></DIR>
+</DIR>
+
+</FONT><FONT SIZE=2><P>Then either wait for exhale to run, or start one manually if you are in a rush. Make sure there is lots of free space available on the aips2adm filesystem. 500M is <I>not</I> enough, 1G is. If you need to free up more space, consider cleaning out the aips2-inhale messages from mail, and moving ~aips2adm/archive to another filesystem are good possibilities. (Actually, the size of the partition should be increased).</P>
+<P>After the inhale, check that the base-release appears to be complete. In the above example, the base release would be a directory named <I>base-11</I> under the top-level directory you have inhaled (that is, it is at the same level as <I>code</I>). For some reason the generated docs directory was not copied into the base release at the last uprev. If this happens again you should copy them (with </FONT><TT>tar | tar</TT><FONT SIZE=2>) into the base-release directory.</P>
+<P>At this point, the base release is ready to use. You can have people start testing it while you prepare the binary release. I suggest you just make a symlink to the base release, perhaps something like <I>/aips++/beta</I>, and tell people to start using it (i.e. just source <I>/aips++/beta/aipsinit.{sh,csh}</I>) and start running it, while you prepare the binary release. Announce to programmers what policy they should adopt for patches, typically to send them to aips2-cop in a shar file rooted at <I>code </I>with a description of what bug or new feature the changed files implement.</P>
+</FONT><B><I><FONT FACE="Arial"><P>Preparing the Initial Binary Release</P>
+</B></I></FONT><FONT SIZE=2><P>Even if you intend to make a public release at patch level 1, it is useful to create an initial binary release to, if nothing else, test the release procedures. You should do the following tasks as <I>aips2mgr</I>.</P>
+<P>I suggest that you first preserve the base release to enable you to recover from errors. You can do this as follows:</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd /aips++/daily/<BR>
+tar czf /somewhere/base-11.original.tar.gz base-11</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>(This assumes that you are using GNU tar that can compress on-the-fly with the &quot;z&quot; option). This compressed tar file will require ~200M if the base release contains two architectures.</P>
+<P>Next strip all the binaries for the base release. You must strip the binaries on the architecture that built them (<I>i.e</I>., you cannot strip Linux binaries on a Solaris system).</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd base-11/sun4sol_gnu/bin<BR>
+strip *   # Errors can be ignored</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>Next we need to make the .tar.gz files for the generated documentation (<I>docs</I>, as opposed to <I>doc</I>!) and the .tar.gz files for the binary architectures you are going to distribute. The docs are easy:</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd /aips++/daily/base-11/code<BR>
+tar cf ~/ttmp/docs-11.000.tar ../docs <BR>
+gzip -best ~/ttmp/docs-11.000.tar</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>Note that these .tar.gz files are made relative to the <I>code</I> directory, and also that it is best to use the </FONT><TT>–best</TT><FONT SIZE=2> option with </FONT><TT>gzip</TT><FONT SIZE=2> for things that users will ftp to minimize their download time (even though it takes considerably longer than compressing at the default level). The <I>docs</I> .tar.gz file will require about 30M.</P>
+<P>Preparing the .tar.gz files for the binaries is almost the same:</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd /aips++/daily/base-11/code<BR>
+tar cf ~/ttmp/bin-sun4sol_gnu-11.000.tar \<BR>
+    --exclude-from ~/ttmp/excludesun4sol \<BR>
+    ../sun4sol_gnu/{aipsrc,bin,doc,lib,libexec,makedefs,VERSION}<BR>
+gzip -best ~/ttmp/bin-sun4sol_gnu-11.000.tar</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>Here the file <I>excludesun4sol </I>contains a list of files that we do not wish to include in the tar file. The </FONT><TT>exclude-from</TT><FONT SIZE=2> switch is a GNU </FONT><TT>tar</TT><FONT SIZE=2> extension. The contents of this file for the 1.1 beta release are given in the appendix.</P>
+<P>Repeat the above recipe for all binary architectures you wish to support. The exclude file, if any, will have to be different for each architecture since the prefix (<I>e.g.</I>, <I>../sun4sol_gnu</I>) differs for each architecture.</P>
+<P>Next we need to create the ftp directories to hold the distribution files, and copy the binary and source files into it.</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd ~aips2adm/pub/RELEASED<BR>
+mkdir aips++1.1<BR>
+cd aips++1.1<BR>
+cp ~aips2adm/pub/code/*11* .   # This copies in all the sources<BR>
+cp ~bglenden/ttmp/{bin,docs}*.tar.gz .  # Copy binary/docs<BR>
+cp /aips++/daily/base-11/code/VERSION .<BR>
+cp /aips++/daily/base-11/code/install/configure .<BR>
+cp /aips++/daily/docs/project/releasenotes11.ps . # daily/docs!<BR>
+gzip –best releasenotes11.ps</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>Edit a file called <I>README</I> to just tell the readers to download the release notes and follow directions. Later you can edit the <I>README</I> to contain late-breaking information.</P>
+<P>Have some people (preferably na&iuml;ve!) make a test installation to test both the instructions and the system. A common problem is that additional shared libraries might have to be distributed with some architectures. In this case, just put the extra .so files in the appropriate architecture’s <I>lib </I>directory, and remake the binary .tar.gz file for that architecture.</P>
+</FONT><B><I><FONT FACE="Arial"><P>Creating a Patch</P>
+</B></I></FONT><FONT SIZE=2><P>Note that AIPS++ patches are <I>cumulative</I>, so if this is not the first patch you should add the new files to the existing patch directory. It makes life much easier for you if you insist that patches be submitted as shar files created with the –B option rooted at the <I>code </I>directory. Despite your insistence, some people will not follow directions.</P>
+<P>OK, suppose that you now have a set of &quot;patch&quot; files under a directory hierarchy rooted at code. As a sanity check it is useful to check that all the files have corresponding files in the standard code directories.  This can happen if the shar files you are sent start a level too high or too low. You can do this as follows:</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier New" SIZE=2><P>cd …/patches/code<BR>
+find . –type f –print &gt; /tmp/files<BR>
+for i in `cat /tmp/files`<BR>
+do<BR>
+    if [ ! -f /aips++/daily/code/$i ] ; then echo "$i" ; fi<BR>
+done</P></DIR>
+</DIR>
+
+</FONT><FONT SIZE=2><P>This will list all the files in the patch that do not have a corresponding file in the master. Of course these could be legitimately new files, but this is a good check to make. Make sure there is a VERSION file in the patch code directory (i.e. parallel to <I>trial</I>, <I>aips</I>, etc.), and increment its patch number by one and set the time.</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier New" SIZE=2><P>cd patches/code/<BR>
+tar cf ~/ttmp/11.000.01.tar .<BR>
+gzip -best ~/ttmp/11.000.01.tar</P></DIR>
+</DIR>
+
+</FONT><FONT SIZE=2><P>Now we have to apply the patch to the base-release and rebuild the binaries and documents. If the rebuild is successful then we will  &quot;publish&quot; the patch. There can be a problem with tar refusing to write a new source file over an older one if the old file is read-only, as the AIPS++ sources generally will be. A trivial script </FONT><TT>applypatch</TT><FONT SIZE=2> will overcome this problem. It can be found in <I>~aips2adm/pub/patches</I>.</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd /aips++/daily/base-11/<BR>
+. aipsinit.sh<BR>
+applypatch …/ttmp/11.000.01.tar.gz</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>OK, now that we have applied the patch, all we should have to do is remake everything.</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd code<BR>
+gmake allsys &gt; ../make.log 2&gt;&amp;1 &amp;</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>If the patch was very large you might want to force a complete rebuild (removing all the libraries is an easy way to do this) before issuing the </FONT><TT>gmake</TT><FONT SIZE=2>. (Of course if you have put any extra required shared libraries in <I>lib</I> you should not remove them!). You need to rebuild all architectures of course.</P>
+<P>Check the log carefully. If the build was not clean, you need to correct the patch until it does build cleanly. After a clean build, you need to get the patched base-release should be well tested internally. After the patch passes, you should copy the .tar.gz file to <I>~aips2adm/pub/patches</I>. This file will be used by any sites that want to patch their base-release directly from the patch. This will not be a common occurrence.</P>
+</FONT><B><I><FONT FACE="Arial"><P>Updating the Binary Release</P>
+</B></I></FONT><FONT SIZE=2><P>We need to update the .tar.gz in pub/RELEASED. First copy the existing files to a safe place. I suggest making a directory called .old (so that it will be hidden) and make a new subdirectory every time there is an update. For example, before we update for patch #1:</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier New" SIZE=2><P>mkdir .old .old/11.00<BR>
+mv * .old/11.00</P></DIR>
+</DIR>
+
+</FONT><FONT SIZE=2><P>Next regenerate the .tar.gz files for all the sources (i.e. with the patch applied).</P><DIR>
+<DIR>
+
+</FONT><TT><P>cd /aips++/daily/base-11/code<BR>
+cp VERSION ~aips2adm/pub/RELEASED/aips++1.1<BR>
+for i in admin aips atnf bima contrib dish doc drao install \<BR>
+nfra nral nrao synthesis tifr trial vlbi<BR>
+do<BR>
+   echo $i # Follow progress<BR>
+   tar cf ~aips2adm/pub/RELEASED/aips++1.1/$i-11.000.tar $I<BR>
+   gzip –best ~aips2adm/pub/RELEASED/aips++1.1/$i-11.000.tar<BR>
+done</P></DIR>
+</DIR>
+
+</TT><FONT SIZE=2><P>Regenerate the docs and binary .tar.gz files the same way you did before. As a sanity check, check the sizes of all the .tar.gz files with their previous size (i.e. in the .<I>old</I> directory). Investigate the cause of any major change, especially if the newer file is smaller than the previous one!</P>
+</FONT><B><I><FONT FACE="Arial"><P>Further Releases</P>
+</B></I></FONT><FONT SIZE=2><P>To create releases beyond patch level #1, you merely have to repeat the procedures outlined in &quot;Creating a Patch&quot; and &quot;Updating the Binary Release&quot; as described above.</P>
+</FONT><B><I><FONT FACE="Arial"><P>Appendix: Excluded Binaries</P>
+</B></I></FONT><FONT SIZE=2><P>For the 1.1 beta release of AIPS++, the following binaries were excluded from the binary .tar.gz file for both (sun4sol and linux) architectures are as follows (except for linux linux_gnu replaces sun4sol_gnu).</P><DIR>
+<DIR>
+
+</FONT><FONT FACE="Courier New" SIZE=2><P>../sun4sol_gnu/bin/otfgridder<BR>
+../sun4sol_gnu/bin/holog<BR>
+../sun4sol_gnu/bin/sdimaging<BR>
+../sun4sol_gnu/bin/mdl2csm<BR>
+../sun4sol_gnu/bin/gbtmsfiller<BR>
+../sun4sol_gnu/bin/ms2scn<BR>
+../sun4sol_gnu/bin/j2convert<BR>
+../sun4sol_gnu/bin/ms2fits<BR>
+../sun4sol_gnu/bin/wsrtfiller<BR>
+../sun4sol_gnu/bin/fits2ms<BR>
+../sun4sol_gnu/bin/gbtfiller<BR>
+../sun4sol_gnu/bin/fillpointings<BR>
+../sun4sol_gnu/bin/gbtlogfiller<BR>
+../sun4sol_gnu/bin/sddfiller<BR>
+../sun4sol_gnu/bin/vlafiller<BR>
+../sun4sol_gnu/bin/atabd<BR>
+../sun4sol_gnu/bin/vlacalflux<BR>
+../sun4sol_gnu/bin/vlacalcat<BR>
+../sun4sol_gnu/bin/gbtspec2table<BR>
+../sun4sol_gnu/bin/duplicates<BR>
+../sun4sol_gnu/bin/unused<BR>
+../sun4sol_gnu/bin/used<BR>
+../sun4sol_gnu/bin/reident</P></DIR>
+</DIR>
+</FONT></BODY>
+</HTML>
