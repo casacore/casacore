@@ -172,7 +172,9 @@ String Regex::fromPattern(const String &pattern) {
     Int bracecount = 0;
     Int inbrcount = 0;
     Int pattLeng = pattern.length();
-    String result(3 * pattLeng, Char(0));
+    String result;
+    result.alloc (3 * pattLeng);
+////    String result(3 * pattLeng, Char(0));
     CState state = stream;
     for (Int i=0; i<pattLeng; i++) {
 	Char c = pattern[i];
@@ -271,7 +273,9 @@ String Regex::fromPattern(const String &pattern) {
 
 String Regex::fromString(const String &strng) {
     Int strLeng = strng.length();
-    String result(2 * strLeng, Char(0));
+    String result;
+    result.alloc (2 * strLeng);
+////    String result(2 * strLeng, Char(0));
     Int len = 0;
     for (Int i=0; i<strLeng; i++) {
 	Char c = strng[i];
