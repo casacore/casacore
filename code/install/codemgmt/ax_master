@@ -3904,3 +3904,4 @@
 14 065 src mv trial/implement/Display/PixelCanvasColorTable.cc trialdisplay/implement/Display/PixelCanvasColorTable.cc
 14 065 src mv trial/implement/Display/SimplePixelCanvasApp.cc trialdisplay/implement/Display/SimplePixelCanvasApp.cc
 14 065 src mv trial/implement/Display/SimpleRGBPixelCanvasApp.cc trialdisplay/implement/Display/SimpleRGBPixelCanvasApp.cc
+14 065 src mv trial/implement/Display/SimpleWorldCanvasApp.cc trialdisplay/implement/Display/SimpleWorldCanvasApp.cc
