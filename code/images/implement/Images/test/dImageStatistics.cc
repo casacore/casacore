@@ -340,6 +340,10 @@ try {
      if (!ok) os << "Error recovering statistics slice " << endl;
      os.post();
 
+// Display statistics
+
+     if (!stats.display()) return 1;
+
 
 // Test copy constructor
      
@@ -350,11 +354,6 @@ try {
 
      os << "Applying assignment" << LogIO::POST;
      stats = stats2;
-
-
-// Display statistics
-
-     if (!stats.display()) return 1;
 
 
    } else {
