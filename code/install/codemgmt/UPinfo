@@ -43,16 +43,14 @@ set clr = 0
 set dbg = 0
 # Set the -g switch
 set gls = 0
+# Set the -f switch
+set fls = 0
 # Set the -t switch
 set upreal = 1
-# Set the -mv switch
-set domv = 0
-# Set the -mk switch
-set upmake = 0
 # Set the -l switch
 set leav = 0
 # Set the -i switch
-set upaoi = 1
+set upinf = 0
 # Set the -h switch
 set hlp = 0
 # Set the -n switch
@@ -68,16 +66,14 @@ while ($# > 0)
 	 set echo
       else if ("$1" == "-g") then
          set gls = 1
+      else if ("$1" == "-f") then
+         set fls = 1
       else if ("$1" == "-t") then
          set upreal = 0
-      else if ("$1" == "-mv") then
-         set domv = 1
-      else if ("$1" == "-mk") then
-         set upmake = 1
       else if ("$1" == "-l") then
          set leav = 1
       else if ("$1" == "-i") then
-         set upaoi = 0
+         set upinf = 1
       else if ("$1" == "-h") then
          set hlp = 1
       else if ("$1" == "-n") then
@@ -98,41 +94,54 @@ end
 if ($hlp) then
   cat << '_EOF_'
 The following UP scripts are available (-h gives this text):
-    UPfind [-c] [-r] [-g] [-d] [-n] <typ>	    
-	   find files according to pattern in files .cc, .h and templates
+    UPfind [-c] [-r] [-g] [-f] [-d] [-n] <typ>	    
+	   find files according to egrep patterns in files .cc, .h and
+	   templates, or generate it from a set of file patterns.
 	   A list of files found is produced in <typ>.raw. Files in a set of
 	   discard rules are removed. The result will be in <typ>.found.
 	   -c	 start afresh for the given <typ>
 	   -r	 only restart the general definitions for given <typ>
 	   -g	 look in .g files rather than .cc, .h and templates
+           -f    generate the list from a set of file patterns
 	   -d    debug mode
+           -n    will only generate the specific data, without executing
 	   <typ> the code belonging to this set of usage (e.g. mx)
-    UPlock <typ>
+    UPlock [-c] [-r] [-d] [-n] <typ>
 	   check if files found with UPfind are locked in the master. The
            resulting list will be in <typ>.locked
-    UPchange [-c] [-r] [-mv] [-t] [-l] [-i] [-mk] [-n] [-d] <typ>
- 	   update all files (ao change ai) as given in <typ>.found created by
-           UPfind.  As a result the <typ>.moved list will contain the found
-           list after a move.
            -c  will clear all relevant information
 	   -r  only restart the general definitions for given <typ>
-           -mv will initiate a move before the change
-           -t  will not execute for real, but only for test
-           -l  will leave the found file names, in default case the file names
-               will be changed according to the change pattern as well.
-           -i  will not check any files in/out, but only work on files in
-               work area
-           -mk will make the changed files to test if correct
+           -d  will show some debug information
+           -n  will only generate the specific data, without executing
+    UPchange [-c] [-r] [-t] [-n] [-d] <typ>
+ 	   update all files (ao change ai) as given in <typ>.found created by
+           UPfind.
+           -c  will clear all relevant information
+	   -r  only restart the general definitions for given <typ>
+	   -t  will not execute for real, but only for test and display the
+	       changes in <typ>.diff 
            -d  will show some debug information
            -n  will only generate the specific data, without executing
            <typ>.done and <typ>.error give lists of files successfully
            done or not.
-    UPtmpl [-c] [-r] [-d] [-n] <typ>
+    UPmove [-c] [-r] [-i] [-t] [-n] [-d] <typ>
+	   Move specified files, and change references to them in system files.
+	   The script uses UPfind and UPchange (see there for details)
+           -c  will clear all relevant information
+	   -r  only restart the general definitions for given <typ>
+	   -i  will calculate all information, but no execution
+           -t  will not execute for real, but only for test
+           -d  will show some debug information
+           -n  will only generate the specific data, without executing
+           <typ>.done and <typ>.error give lists of files successfully
+           done or not.
+     UPtmpl [-c] [-r] [-d] [-n] <typ>
  	   get all files in the tmplinst directories. 
 	   The file list will be in <typ>.tmpinst
            -c  will clear all relevant information
 	   -r  only restart the general definitions for given <typ>
            -d  will show some debug information
+           -n  will only generate the specific data, without executing
 '_EOF_'
   exit 0
 endif
@@ -153,7 +162,6 @@ unset dir
 unset mdir
 unset xao
 unset xai
-unset domv
 #
 set ldir = `pwd`
 if (! -w $ldir) then
@@ -166,17 +174,25 @@ endif
 echo "Getting info..."
 if ($clr) then
   if ("$script" == "UPfind") then 
+    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
     if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
     if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
   endif
   if ("$script" == "UPchange") then
     if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
     if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
+    if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
+  endif 
+  if ("$script" == "UPmove") then
+    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
+    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
+    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
     if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
     if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+    if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
   endif 
-  if ("$script" == "UPtmpl") then
+  if ("$script" == "UPtmpl" || "$script" == "UPlock") then
     if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
   endif 
 endif
@@ -227,9 +243,9 @@ if (! $?xao || ! $?xai) then
    endif
 endif
 
-if ("$script" == "UPchange" && ! $?domv) then
-   set domv = 0
-   echo -n "Need to move files first to new directory (y|n) [n]? "
+if ("$script" == "UPmove") then
+    set domv = 0
+    echo -n "Need to move files first to new directory (y|n) [n]? "
     set repl=($<)
     if ($repl == 'y') then
 	echo "Note: The moving can only be done while logged into aoc, since "
