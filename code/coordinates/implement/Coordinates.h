@@ -1,5 +1,5 @@
 //# Coordinates.h : Classes to interconvert computation positions with physical
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,8 +96,13 @@
 // is provided to determine this mapping.
 //
 // One or more axes from the CoordinateSystem may be removed. Pixel axes and/or
-// world axes may be removed. You are encouraged to leave all the world axes when
-// you remove pixel axes.
+// world axes may be removed. You are encouraged to leave all the world axes
+// when you remove pixel axes.
+// <br>
+// If a world axis is removed, the corresponding pixel axis is also removed.
+// This means that one can be sure that a pixel axis always has a
+// corresponding world axis. The opposite is not necessarily true: a
+// world axis can exist without a pixel axis.
 //
 // 
 //
