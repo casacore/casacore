@@ -6549,3 +6549,4 @@
 18 594 src mv trial/implement/MeasurementComponents/FVisJonesDesc.h trial/implement/CalTables/FVisJonesDesc.h
 18 594 src mv trial/implement/MeasurementComponents/FVisJonesDesc.cc trial/implement/CalTables/FVisJonesDesc.cc
 18 594 src mv trial/implement/MeasurementComponents/SkyJonesDesc.h trial/implement/CalTables/SkyJonesDesc.h
+18 594 src mv trial/implement/MeasurementComponents/CalDescRecord.h trial/implement/CalTables/CalDescRecord.h
