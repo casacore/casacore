@@ -1,5 +1,5 @@
 //# TypeIO.cc: Abstract base class for IO of data in a type-dependent format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ ByteIO& TypeIO::byteIO() {
   return *itsByteIO;
 }
 
-Long TypeIO::seek (Long offset, ByteIO::SeekOption option)   
+Int64 TypeIO::seek (Int64 offset, ByteIO::SeekOption option)   
 {
     return itsByteIO->seek (offset, option);
 }

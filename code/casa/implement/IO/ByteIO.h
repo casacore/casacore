@@ -1,5 +1,5 @@
 //# ByteIO.h: Abstract base class for IO on a byte stream
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,10 +111,10 @@ public:
     // This function sets the position on the given offset.
     // The seek option defines from which file position the seek is done.
     // -1 is returned if not seekable.
-    virtual Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin) = 0;
+    virtual Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin) = 0;
 
     // Get the length of the byte stream.
-    virtual Long length() = 0;
+    virtual Int64 length() = 0;
     
     // Is the byte stream readable?
     virtual Bool isReadable() const = 0;

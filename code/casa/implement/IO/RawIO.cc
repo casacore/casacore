@@ -1,5 +1,5 @@
 //# RawIO.cc: Class for IO in local format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,16 +89,16 @@ uInt RawIO::write (uInt nvalues, const uInt* value)
     return nvalues * sizeof(uInt);
 }
 
-uInt RawIO::write (uInt nvalues, const Long* value)
+uInt RawIO::write (uInt nvalues, const Int64* value)
 {
-    itsByteIO->write (nvalues * sizeof(Long), (void*) value);
-    return nvalues * sizeof(Long);
+    itsByteIO->write (nvalues * sizeof(Int64), (void*) value);
+    return nvalues * sizeof(Int64);
 }
 
-uInt RawIO::write (uInt nvalues, const uLong* value)
+uInt RawIO::write (uInt nvalues, const uInt64* value)
 {
-    itsByteIO->write (nvalues * sizeof(uLong), (void*) value);
-    return nvalues * sizeof(uLong);
+    itsByteIO->write (nvalues * sizeof(uInt64), (void*) value);
+    return nvalues * sizeof(uInt64);
 }
 
 uInt RawIO::write (uInt nvalues, const Float* value)
@@ -170,16 +170,16 @@ uInt RawIO::read (uInt nvalues, uInt* value)
     return nvalues * sizeof(uInt);
 }
 
-uInt RawIO::read (uInt nvalues, Long* value)
+uInt RawIO::read (uInt nvalues, Int64* value)
 {
-    itsByteIO->read (nvalues * sizeof(Long), value);
-    return nvalues * sizeof(Long);
+    itsByteIO->read (nvalues * sizeof(Int64), value);
+    return nvalues * sizeof(Int64);
 }
 
-uInt RawIO::read (uInt nvalues, uLong* value)
+uInt RawIO::read (uInt nvalues, uInt64* value)
 {
-    itsByteIO->read (nvalues * sizeof(uLong), value);
-    return nvalues * sizeof(uLong);
+    itsByteIO->read (nvalues * sizeof(uInt64), value);
+    return nvalues * sizeof(uInt64);
 }
 
 uInt RawIO::read (uInt nvalues, Float* value)

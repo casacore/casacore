@@ -1,5 +1,5 @@
 //# tIBMConversion.h: Test program for class IBMConversion
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,7 +54,7 @@ void checkConversion (int& error)
 	IBMConversion::toLocal (result, val+1, 4);
 	if (result[0] != 'a'  ||  result[1] != ' '
 	||  result[2] != 'd'  ||  result[3] != 's') {
-	    cout << "invalid char to conversion" << result[0]
+	    cout << "invalid char to conversion " << result[0]
 		 << result[1] << result[2] << result[3] << endl;
 	    error = 1;
 	}
@@ -70,7 +70,7 @@ void checkConversion (int& error)
 	unsigned char result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 254) {
-	    cout << "invalid unsigned char to conversion" << result << endl;
+	    cout << "invalid unsigned char to conversion " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -85,7 +85,7 @@ void checkConversion (int& error)
 	short result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 258) {
-	    cout << "invalid short to conversion 1" << result << endl;
+	    cout << "invalid short to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -96,7 +96,7 @@ void checkConversion (int& error)
 	val[1] = -2;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256 + 254)) {
-	    cout << "invalid short to conversion 2" << result << endl;
+	    cout << "invalid short to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -111,7 +111,7 @@ void checkConversion (int& error)
 	unsigned short result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 7*256 + 111) {
-	    cout << "invalid unsigned short to conversion" << result << endl;
+	    cout << "invalid unsigned short to conversion " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -128,7 +128,7 @@ void checkConversion (int& error)
 	int result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 1*256*256*256 + 2*256*256 + 3*256 + 0) {
-	    cout << "invalid int to conversion 1" << result << endl;
+	    cout << "invalid int to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -140,7 +140,7 @@ void checkConversion (int& error)
 	val[1] = -127;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != -(126*256*256*256 + 253*256*256 + 252*256 + 256)) {
-	    cout << "invalid int to conversion 2" << result << endl;
+	    cout << "invalid int to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -158,7 +158,7 @@ void checkConversion (int& error)
 	unsigned int result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 11*256*256*256 + 23*256*256 + 35*256 + 7) {
-	    cout << "invalid unsigned int to conversion" << result << endl;
+	    cout << "invalid unsigned int to conversion " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
@@ -173,28 +173,28 @@ void checkConversion (int& error)
 	val[2] = 54;
 	val[3] = 78;
 	val[4] = 145;
-	long result;
+	Int64 result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
-	    cout << "invalid long to conversion 1" << result << endl;
+	    cout << "invalid Int64 to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
 	if (out[1] != val[1]  ||  out[2] != val[2]
 	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid long from conversion" << endl;
+	    cout << "invalid Int64 from conversion" << endl;
 	    error = 1;
 	}
 	val[1] = -2;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256*256*256 + 201*256*256 + 177*256 + 111)) {
-	    cout << "invalid long to conversion 2" << result << endl;
+	    cout << "invalid Int64 to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
 	if (out[1] != val[1]  ||  out[2] != val[2]
 	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid long from conversion 2" << endl;
+	    cout << "invalid Int64 from conversion 2" << endl;
 	    error = 1;
 	}
     }
@@ -203,16 +203,16 @@ void checkConversion (int& error)
 	val[2] = 54;
 	val[3] = 78;
 	val[4] = 100;
-	unsigned long result;
+	uInt64 result;
 	IBMConversion::toLocal (&result, val+1, 1);
 	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U) {
-	    cout << "invalid unsigned long to conversion" << result << endl;
+	    cout << "invalid uInt64 to conversion " << result << endl;
 	    error = 1;
 	}
 	IBMConversion::fromLocal (out+1, &result, 1);
 	if (out[1] != val[1]  ||  out[2] != val[2]
 	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid unsigned long from conversion" << endl;
+	    cout << "invalid uInt64 from conversion" << endl;
 	    error = 1;
 	}
     }
@@ -359,7 +359,7 @@ void checkDouble (int& error)
     }
 }
 
-main()
+int main()
 {
 ///    showFloat (float(0));
 ///    showFloat (float(1));

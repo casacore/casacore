@@ -1,5 +1,5 @@
 //# CanonicalConversion.cc: A class with static functions to convert canonical format
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -204,12 +204,12 @@ CANONICALCONVERSION_DO (CONVERT_CAN_INT,    SIZE_CAN_INT,
 CANONICALCONVERSION_DO (CONVERT_CAN_UINT,   SIZE_CAN_UINT,
 			toLocalUInt,   fromLocalUInt,
 			byteToLocalUInt,   byteFromLocalUInt,   unsigned int)
-CANONICALCONVERSION_DO (CONVERT_CAN_LONG,   SIZE_CAN_LONG,
-			toLocalLong,   fromLocalLong,
-			byteToLocalLong,   byteFromLocalLong,   long)
-CANONICALCONVERSION_DO (CONVERT_CAN_ULONG,  SIZE_CAN_ULONG,
-			toLocalULong,  fromLocalULong,
-			byteToLocalULong,  byteFromLocalULong,  unsigned long)
+CANONICALCONVERSION_DO (CONVERT_CAN_INT64,  SIZE_CAN_INT64,
+			toLocalInt64,  fromLocalInt64,
+			byteToLocalInt64,  byteFromLocalInt64,  Int64)
+CANONICALCONVERSION_DO (CONVERT_CAN_UINT64, SIZE_CAN_UINT64,
+			toLocalUInt64, fromLocalUInt64,
+			byteToLocalUInt64, byteFromLocalUInt64, uInt64)
 CANONICALCONVERSION_DO (CONVERT_CAN_FLOAT,  SIZE_CAN_FLOAT,
 			toLocalFloat,  fromLocalFloat,
 			byteToLocalFloat,  byteFromLocalFloat,  float)

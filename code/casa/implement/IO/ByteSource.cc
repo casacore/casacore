@@ -1,5 +1,5 @@
 //# ByteSource.cc: Class for read-only access to data in a given format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,13 +97,13 @@ ByteSource& ByteSource::operator>> (uInt& value)
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Long& value)
+ByteSource& ByteSource::operator>> (Int64& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (uLong& value)
+ByteSource& ByteSource::operator>> (uInt64& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
@@ -175,12 +175,12 @@ void ByteSource::read (uInt nvalues, uInt* value)
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Long* value)
+void ByteSource::read (uInt nvalues, Int64* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, uLong* value)
+void ByteSource::read (uInt nvalues, uInt64* value)
 {
     itsTypeIO->read (nvalues, value);
 }

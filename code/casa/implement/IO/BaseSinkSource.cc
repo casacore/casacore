@@ -1,5 +1,5 @@
 //# BaseSinkSource.cc: Shared base class for ByteSink and ByteSource
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ const TypeIO& BaseSinkSource::typeIO() const
     return *itsTypeIO;
 }
 
-Long BaseSinkSource::seek (Long offset, ByteIO::SeekOption option)
+Int64 BaseSinkSource::seek (Int64 offset, ByteIO::SeekOption option)
 {
     return itsTypeIO->seek (offset, option);
 }

@@ -1,5 +1,5 @@
 //# MemoryIO.h: Class for IO in memory
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,7 +102,7 @@
 //    // One can obtain the buffer and its length and use it later.
 //    // (e.g. to write it in a non-AipsIO file).
 //    uChar* bufptr = membuf.getBuffer();
-//    uLong  length = membuf.length();
+//    uInt64 length = membuf.length();
 //
 //    // It can also used to construct another MemoryIO object from it.
 //    // The following memory buffer is static and readonly.
@@ -123,11 +123,11 @@ class MemoryIO: public ByteIO
 {
 public:
     // Construct a dynamic object with the given initial length.
-    explicit MemoryIO (uLong initialSize=65536, uLong expandSize=32768);
+    explicit MemoryIO (uInt64 initialSize=65536, uInt64 expandSize=32768);
 
     // Construct from a buffer with the given length.
     // The buffer is readonly and cannot be expanded.
-    MemoryIO (const void* buffer, uLong size);
+    MemoryIO (const void* buffer, uInt64 size);
 
     // Construct from the given buffer with the given length.
     // The Byte::Option determines how the buffer will be used.
@@ -150,8 +150,8 @@ public:
     // cannot be expanded and the pointer is always valid.
     // <br>When canDelete is True, buffer expansion means that the
     // old buffer gets deleted.
-    MemoryIO (void* buffer, uLong size, ByteIO::OpenOption,
-	      uLong expandSize=0, Bool canDelete=False);
+    MemoryIO (void* buffer, uInt64 size, ByteIO::OpenOption,
+	      uInt64 expandSize=0, Bool canDelete=False);
 
     // Delete the Memory object.
     // The data buffer is not deleted when constructed with the
@@ -177,7 +177,7 @@ public:
     // buffer or when seeking past the end of a readonly buffer.
     // When seeking past the end of a writable buffer, the required
     // amount of bytes is added and initialized to zero.
-    virtual Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin);
+    virtual Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
 
     // Clear the buffer; i.e. set the data length and seek pointer to zero.
     void clear();
@@ -188,13 +188,13 @@ public:
     const uChar* getBuffer() const;
 
     // Get the length of the data in the buffer.
-    virtual Long length();
+    virtual Int64 length();
 
     // Get the allocated length of the buffer.
-    uLong allocated() const;
+    uInt64 allocated() const;
        
     // Get the expand size (0 = not expandable).
-    uLong expandSize() const;
+    uInt64 expandSize() const;
        
     // Is the IO stream readable?
     virtual Bool isReadable() const;
@@ -215,7 +215,7 @@ public:
     // buffer and the MemoryIO object is not expandable.
     // <note role=warning> You should not use the supplied pointer to write
     // more than length data points to the buffer</note>
-    uChar* setBuffer(uInt length);
+    uChar* setBuffer(uInt64 length);
 
     // tell the MemoryIO object how much of its internal buffer is valid
     // data. You only need to use this function if you are directly writing to
@@ -223,7 +223,7 @@ public:
     // function. This function throws an exception if the number of bytes used
     // is greater than the number allocated or if the MemoryIO object is not
     // writeable.
-    void setUsed(uInt bytesUsed);
+    void setUsed(uInt64 bytesUsed);
 
 private:
     //# Copy constructor, should not be used.
@@ -236,13 +236,13 @@ private:
     //# will be used if it results in a larger buffer size. In this way the
     //# buffer does not get reallocated too often.  It returns a false status
     //# when the buffer cannot be expanded. 
-    Bool expand (uLong minSize);
+    Bool expand (uInt64 minSize);
 
     uChar* itsBuffer;
-    uLong  itsAlloc;
-    uLong  itsExpandSize;
-    uLong  itsUsed;
-    uLong  itsPosition;
+    Int64  itsAlloc;
+    Int64  itsExpandSize;
+    Int64  itsUsed;
+    Int64  itsPosition;
     Bool   itsReadable;
     Bool   itsWritable;
     Bool   itsCanDelete;
@@ -257,11 +257,11 @@ inline const uChar* MemoryIO::getBuffer() const
 {
     return itsBuffer;
 }
-inline uLong MemoryIO::allocated() const
+inline uInt64 MemoryIO::allocated() const
 {
     return itsAlloc;
 }
-inline uLong MemoryIO::expandSize() const
+inline uInt64 MemoryIO::expandSize() const
 {
     return itsExpandSize;
 }

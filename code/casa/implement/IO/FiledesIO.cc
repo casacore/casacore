@@ -1,5 +1,5 @@
 //# FiledesIO.cc: Class for IO on a file descriptor
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,7 +98,7 @@ void FiledesIO::fillRWFlags (int fd)
 
 void FiledesIO::fillSeekable()
 {
-    itsSeekable = ToBool (seek (0, ByteIO::Current)  >= 0);
+    itsSeekable = (seek (0, ByteIO::Current)  >= 0);
 }
 
 
@@ -142,7 +142,7 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Long FiledesIO::seek (Long offset, ByteIO::SeekOption dir)
+Int64 FiledesIO::seek (Int64 offset, ByteIO::SeekOption dir)
 {
     switch (dir) {
     case ByteIO::Begin:
@@ -155,13 +155,13 @@ Long FiledesIO::seek (Long offset, ByteIO::SeekOption dir)
     return ::traceLSEEK (itsFile, offset, SEEK_CUR);
 }
 
-Long FiledesIO::length()
+Int64 FiledesIO::length()
 {
     // Get current position to be able to reposition.
-    Long pos = seek (0, ByteIO::Current);
+    Int64 pos = seek (0, ByteIO::Current);
     // Seek to the end of the stream.
     // If it fails, we cannot seek and the current position is the length.
-    Long len = seek (0, ByteIO::End);
+    Int64 len = seek (0, ByteIO::End);
     if (len < 0) {
 	return pos;
     }

@@ -1,5 +1,5 @@
 //# AipsIO.h: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996,1998,2000
+//# Copyright (C) 1993,1994,1995,1996,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -239,8 +239,8 @@ public:
     AipsIO& operator<< (const unsigned short& value);
     AipsIO& operator<< (const int& value);
     AipsIO& operator<< (const unsigned int& value);
-    AipsIO& operator<< (const long& value);
-    AipsIO& operator<< (const unsigned long& value);
+    AipsIO& operator<< (const Int64& value);
+    AipsIO& operator<< (const uInt64& value);
     AipsIO& operator<< (const float& value);
     AipsIO& operator<< (const double& value);
     AipsIO& operator<< (const Complex& value);
@@ -259,8 +259,8 @@ public:
     AipsIO& put (uInt nrval, const unsigned short* values, Bool putNR = True);
     AipsIO& put (uInt nrval, const int* values, Bool putNR = True);
     AipsIO& put (uInt nrval, const unsigned int* values, Bool putNR = True);
-    AipsIO& put (uInt nrval, const long* values, Bool putNR = True);
-    AipsIO& put (uInt nrval, const unsigned long* values, Bool putNR = True);
+    AipsIO& put (uInt nrval, const Int64* values, Bool putNR = True);
+    AipsIO& put (uInt nrval, const uInt64* values, Bool putNR = True);
     AipsIO& put (uInt nrval, const float* values, Bool putNR = True);
     AipsIO& put (uInt nrval, const double* values, Bool putNR = True);
     AipsIO& put (uInt nrval, const Complex* values, Bool putNR = True);
@@ -274,8 +274,8 @@ public:
 
     // Get and set file-offset.
     // <group>
-    long getpos ();
-    long setpos (long offset);
+    Int64 getpos ();
+    Int64 setpos (Int64 offset);
     // </group>
 
     // Get the type of the next object stored.
@@ -302,8 +302,8 @@ public:
     AipsIO& operator>> (unsigned short& value);
     AipsIO& operator>> (int& value);
     AipsIO& operator>> (unsigned int& value);
-    AipsIO& operator>> (long& value);
-    AipsIO& operator>> (unsigned long& value);
+    AipsIO& operator>> (Int64& value);
+    AipsIO& operator>> (uInt64& value);
     AipsIO& operator>> (float& value);
     AipsIO& operator>> (double& value);
     AipsIO& operator>> (Complex& value);
@@ -321,8 +321,8 @@ public:
     AipsIO& get (uInt nrval, unsigned short* values);
     AipsIO& get (uInt nrval, int* values);
     AipsIO& get (uInt nrval, unsigned int* values);
-    AipsIO& get (uInt nrval, long* values);
-    AipsIO& get (uInt nrval, unsigned long* values);
+    AipsIO& get (uInt nrval, Int64* values);
+    AipsIO& get (uInt nrval, uInt64* values);
     AipsIO& get (uInt nrval, float* values);
     AipsIO& get (uInt nrval, double* values);
     AipsIO& get (uInt nrval, Complex* values);
@@ -344,8 +344,8 @@ public:
     AipsIO& getnew (uInt& nrval, unsigned short*& values);
     AipsIO& getnew (uInt& nrval, int*& values);
     AipsIO& getnew (uInt& nrval, unsigned int*& values);
-    AipsIO& getnew (uInt& nrval, long*& values);
-    AipsIO& getnew (uInt& nrval, unsigned long*& values);
+    AipsIO& getnew (uInt& nrval, Int64*& values);
+    AipsIO& getnew (uInt& nrval, uInt64*& values);
     AipsIO& getnew (uInt& nrval, float*& values);
     AipsIO& getnew (uInt& nrval, double*& values);
     AipsIO& getnew (uInt& nrval, Complex*& values);
@@ -406,7 +406,7 @@ private:
     // Object length to be read at each level
     Block<uInt>  objtln_p;
     // Offset of length at each level
-    Block<Long>  objptr_p;
+    Block<Int64>  objptr_p;
     // True = the object type has already been read
     Bool         hasCachedType_p;
     // The cached object type.

@@ -1,5 +1,5 @@
 //# CanonicalIO.cc: Class for IO in canonical format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -173,40 +173,40 @@ uInt CanonicalIO::write(uInt nvalues, const uInt* value)
     return nvalues * SIZE_CAN_UINT;
 }
 
-uInt CanonicalIO::write(uInt nvalues, const Long* value)
+uInt CanonicalIO::write(uInt nvalues, const Int64* value)
 {
-    if (CONVERT_CAN_LONG) {
-	if (nvalues * SIZE_CAN_LONG <= itsBufferLength) {
+    if (CONVERT_CAN_INT64) {
+	if (nvalues * SIZE_CAN_INT64 <= itsBufferLength) {
 	    CanonicalConversion::fromLocal (itsBuffer, value, nvalues);
-	    itsByteIO->write (nvalues * SIZE_CAN_LONG, itsBuffer);
+	    itsByteIO->write (nvalues * SIZE_CAN_INT64, itsBuffer);
     	} else {
-	    char* tempBuffer = new char [nvalues * SIZE_CAN_LONG];
+	    char* tempBuffer = new char [nvalues * SIZE_CAN_INT64];
 	    CanonicalConversion::fromLocal (tempBuffer, value, nvalues);
-	    itsByteIO->write (nvalues * SIZE_CAN_LONG, tempBuffer);
+	    itsByteIO->write (nvalues * SIZE_CAN_INT64, tempBuffer);
 	    delete [] tempBuffer;
 	}
     } else {
-	itsByteIO->write (nvalues * sizeof(Long), value);
+	itsByteIO->write (nvalues * sizeof(Int64), value);
     }
-    return nvalues * SIZE_CAN_LONG;
+    return nvalues * SIZE_CAN_INT64;
 }
 
-uInt CanonicalIO::write(uInt nvalues, const uLong* value)
+uInt CanonicalIO::write(uInt nvalues, const uInt64* value)
 {
-    if (CONVERT_CAN_ULONG) {
-	if (nvalues * SIZE_CAN_ULONG <= itsBufferLength) {
+    if (CONVERT_CAN_UINT64) {
+	if (nvalues * SIZE_CAN_UINT64 <= itsBufferLength) {
 	    CanonicalConversion::fromLocal (itsBuffer, value, nvalues);
-	    itsByteIO->write (nvalues * SIZE_CAN_ULONG, itsBuffer);
+	    itsByteIO->write (nvalues * SIZE_CAN_UINT64, itsBuffer);
     	} else {
-	    char* tempBuffer = new char [nvalues * SIZE_CAN_ULONG];
+	    char* tempBuffer = new char [nvalues * SIZE_CAN_UINT64];
 	    CanonicalConversion::fromLocal (tempBuffer, value, nvalues);
-	    itsByteIO->write (nvalues * SIZE_CAN_ULONG, tempBuffer);
+	    itsByteIO->write (nvalues * SIZE_CAN_UINT64, tempBuffer);
 	    delete [] tempBuffer;
 	}
     } else {
-	itsByteIO->write (nvalues * sizeof(uLong), value);
+	itsByteIO->write (nvalues * sizeof(uInt64), value);
     }
-    return nvalues * SIZE_CAN_ULONG;
+    return nvalues * SIZE_CAN_UINT64;
 }
 
 uInt CanonicalIO::write(uInt nvalues, const float* value)
@@ -374,40 +374,40 @@ uInt CanonicalIO::read (uInt nvalues, uInt* value)
     return nvalues * SIZE_CAN_UINT;
 }
 
-uInt CanonicalIO::read (uInt nvalues, Long* value)
+uInt CanonicalIO::read (uInt nvalues, Int64* value)
 {
-    if (CONVERT_CAN_LONG) {
-	if (nvalues * SIZE_CAN_LONG <= itsBufferLength) {
-	    itsByteIO->read (nvalues * SIZE_CAN_LONG, itsBuffer);
+    if (CONVERT_CAN_INT64) {
+	if (nvalues * SIZE_CAN_INT64 <= itsBufferLength) {
+	    itsByteIO->read (nvalues * SIZE_CAN_INT64, itsBuffer);
 	    CanonicalConversion::toLocal (value, itsBuffer, nvalues);
 	} else {
-	    char* tempBuffer = new char[nvalues * SIZE_CAN_LONG];
-	    itsByteIO->read (nvalues * SIZE_CAN_LONG, tempBuffer);
+	    char* tempBuffer = new char[nvalues * SIZE_CAN_INT64];
+	    itsByteIO->read (nvalues * SIZE_CAN_INT64, tempBuffer);
 	    CanonicalConversion::toLocal (value, tempBuffer, nvalues);
 	    delete [] tempBuffer;
 	}
     } else {
-	itsByteIO->read (nvalues * sizeof(Long), value);
+	itsByteIO->read (nvalues * sizeof(Int64), value);
     }
-    return nvalues * SIZE_CAN_LONG;
+    return nvalues * SIZE_CAN_INT64;
 }
 
-uInt CanonicalIO::read (uInt nvalues, uLong* value)
+uInt CanonicalIO::read (uInt nvalues, uInt64* value)
 {
-    if (CONVERT_CAN_ULONG) {
-	if (nvalues * SIZE_CAN_ULONG <= itsBufferLength) {
-	    itsByteIO->read (nvalues * SIZE_CAN_ULONG, itsBuffer);
+    if (CONVERT_CAN_UINT64) {
+	if (nvalues * SIZE_CAN_UINT64 <= itsBufferLength) {
+	    itsByteIO->read (nvalues * SIZE_CAN_UINT64, itsBuffer);
 	    CanonicalConversion::toLocal(value, itsBuffer, nvalues);
 	} else {
-	    char* tempBuffer = new char[nvalues * SIZE_CAN_ULONG];
-	    itsByteIO->read (nvalues * SIZE_CAN_ULONG, tempBuffer);
+	    char* tempBuffer = new char[nvalues * SIZE_CAN_UINT64];
+	    itsByteIO->read (nvalues * SIZE_CAN_UINT64, tempBuffer);
 	    CanonicalConversion::toLocal (value, tempBuffer, nvalues);
 	    delete [] tempBuffer;
 	}
     } else {
-	itsByteIO->read (nvalues * sizeof(uLong), value);
+	itsByteIO->read (nvalues * sizeof(uInt64), value);
     }
-    return nvalues * SIZE_CAN_ULONG;
+    return nvalues * SIZE_CAN_UINT64;
 }
 
 uInt CanonicalIO::read (uInt nvalues, float* value)

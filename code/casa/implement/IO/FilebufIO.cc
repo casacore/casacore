@@ -1,5 +1,5 @@
 //# FilebufIO.cc: Class for IO on a file using a filebuf object.
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -165,7 +165,7 @@ void FilebufIO::fillRWFlags (int fd)
 
 void FilebufIO::fillSeekable()
 {
-    itsSeekable = ToBool (seek (0, ByteIO::Current)  >= 0);
+    itsSeekable = (seek (0, ByteIO::Current)  >= 0);
 }
 
 
@@ -225,7 +225,7 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
     return bytesRead;
 }
 
-Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
+Int64 FilebufIO::seek (Int64 offset, ByteIO::SeekOption dir)
 {
     // On the SUN a seek (even at the same place) slows down fread
     // tremendously. So lonly seek when needed.
@@ -255,13 +255,13 @@ Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
     return ftell (itsFile);
 }
 
-Long FilebufIO::length()
+Int64 FilebufIO::length()
 {
     // Get current position to be able to reposition.
-    Long pos = seek (0, ByteIO::Current);
+    Int64 pos = seek (0, ByteIO::Current);
     // Seek to the end of the stream.
     // If it fails, we cannot seek and the current position is the length.
-    Long len = seek (0, ByteIO::End);
+    Int64 len = seek (0, ByteIO::End);
     if (len < 0) {
 	return pos;
     }

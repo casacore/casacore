@@ -1,5 +1,5 @@
 //# TypeIO.h: Abstract base class for IO of data in a type-dependent format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,8 +102,8 @@ public:
     virtual uInt write (uInt nvalues, const uShort* value) = 0;
     virtual uInt write (uInt nvalues, const Int* value) = 0;
     virtual uInt write (uInt nvalues, const uInt* value) = 0;
-    virtual uInt write (uInt nvalues, const Long* value) = 0;
-    virtual uInt write (uInt nvalues, const uLong* value) = 0;
+    virtual uInt write (uInt nvalues, const Int64* value) = 0;
+    virtual uInt write (uInt nvalues, const uInt64* value) = 0;
     virtual uInt write (uInt nvalues, const Float* value) = 0;
     virtual uInt write (uInt nvalues, const Double* value) = 0;
     virtual uInt write (uInt nvalues, const Complex* value);
@@ -123,8 +123,8 @@ public:
     virtual uInt read (uInt nvalues, uShort* value) = 0;
     virtual uInt read (uInt nvalues, Int* value) = 0;
     virtual uInt read (uInt nvalues, uInt* value) = 0;
-    virtual uInt read (uInt nvalues, Long* value) = 0;
-    virtual uInt read (uInt nvalues, uLong* value) = 0;
+    virtual uInt read (uInt nvalues, Int64* value) = 0;
+    virtual uInt read (uInt nvalues, uInt64* value) = 0;
     virtual uInt read (uInt nvalues, Float* value) = 0;
     virtual uInt read (uInt nvalues, Double* value) = 0;
     virtual uInt read (uInt nvalues, Complex* value);
@@ -135,7 +135,7 @@ public:
     // This function sets the position on the given offset.
     // The seek option defines from which file position the seek is done.
     // -1 is returned if not seekable.
-    Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin);
+    Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
     
     // Is the TypeIO stream readable?
     Bool isReadable() const;

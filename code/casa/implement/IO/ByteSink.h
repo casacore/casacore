@@ -1,5 +1,5 @@
 //# ByteSink.h: Class for write-only access to data in a given format
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,8 +122,8 @@ public:
     ByteSink& operator<< (uShort value);
     ByteSink& operator<< (Int value);
     ByteSink& operator<< (uInt value);
-    ByteSink& operator<< (Long value);
-    ByteSink& operator<< (uLong value);
+    ByteSink& operator<< (Int64 value);
+    ByteSink& operator<< (uInt64 value);
     ByteSink& operator<< (Float value);
     ByteSink& operator<< (Double value);
     ByteSink& operator<< (const Complex& value);
@@ -142,8 +142,8 @@ public:
     void write (uInt nvalues, const uShort* value);
     void write (uInt nvalues, const Int* value);
     void write (uInt nvalues, const uInt* value);
-    void write (uInt nvalues, const Long* value);
-    void write (uInt nvalues, const uLong* value);
+    void write (uInt nvalues, const Int64* value);
+    void write (uInt nvalues, const uInt64* value);
     void write (uInt nvalues, const Float* value);
     void write (uInt nvalues, const Double* value);
     void write (uInt nvalues, const Complex* value);

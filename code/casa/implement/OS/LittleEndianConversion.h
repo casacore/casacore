@@ -29,6 +29,7 @@
 #define AIPS_LITTLEENDIANCONVERSION_H
 
 //# Includes
+#include <aips/aipstype.h>
 #include <aips/OS/CanonicalConversion.h>
 
 
@@ -73,8 +74,8 @@ public:
     static void toLocal (unsigned short& to, const void* from);
     static void toLocal (int&            to, const void* from);
     static void toLocal (unsigned int&   to, const void* from);
-    static void toLocal (long&           to, const void* from);
-    static void toLocal (unsigned long&  to, const void* from);
+    static void toLocal (Int64&          to, const void* from);
+    static void toLocal (uInt64&         to, const void* from);
     static void toLocal (float&          to, const void* from);
     static void toLocal (double&         to, const void* from);
     // </group>
@@ -94,9 +95,9 @@ public:
 			 unsigned int nr);
     static void toLocal (unsigned int*   to, const void* from,
 			 unsigned int nr);
-    static void toLocal (long*           to, const void* from,
+    static void toLocal (Int64*          to, const void* from,
 			 unsigned int nr);
-    static void toLocal (unsigned long*  to, const void* from,
+    static void toLocal (uInt64*         to, const void* from,
 			 unsigned int nr);
     static void toLocal (float*          to, const void* from,
 			 unsigned int nr);
@@ -113,8 +114,8 @@ public:
     static void fromLocal (void* to, unsigned short from);
     static void fromLocal (void* to, int            from);
     static void fromLocal (void* to, unsigned int   from);
-    static void fromLocal (void* to, long           from);
-    static void fromLocal (void* to, unsigned long  from);
+    static void fromLocal (void* to, Int64          from);
+    static void fromLocal (void* to, uInt64         from);
     static void fromLocal (void* to, float          from);
     static void fromLocal (void* to, double         from);
     // </group>
@@ -134,9 +135,9 @@ public:
 			   unsigned int nr);
     static void fromLocal (void* to, const unsigned int*   from,
 			   unsigned int nr);
-    static void fromLocal (void* to, const long*           from,
+    static void fromLocal (void* to, const Int64*          from,
 			   unsigned int nr);
-    static void fromLocal (void* to, const unsigned long*  from,
+    static void fromLocal (void* to, const uInt64*         from,
 			   unsigned int nr);
     static void fromLocal (void* to, const float*          from,
 			   unsigned int nr);
@@ -221,33 +222,19 @@ inline void LittleEndianConversion::toLocal (unsigned int& to,
 #endif
 }
 
-inline void LittleEndianConversion::toLocal (long& to, const void* from)
+inline void LittleEndianConversion::toLocal (Int64& to, const void* from)
 {
-    if (sizeof(long) != 4) {
-	if (((signed char*)from)[3] < 0) {
-	    to = -1;
-	}else{
-	    to = 0;
-	}
-    }
-#if !defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (((char*)&to)+sizeof(long)-4, from);
-#else
-    CanonicalConversion::move4 (&to, from);
-#endif
+    int tmp;
+    LittleEndianConversion::toLocal (tmp, from);
+    to = tmp;
 }
 
-inline void LittleEndianConversion::toLocal (unsigned long& to,
+inline void LittleEndianConversion::toLocal (uInt64& to,
 					     const void* from)
 {
-    if (sizeof(unsigned long) != 4) {
-	to = 0;
-    }
-#if !defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (((char*)&to)+sizeof(unsigned long)-4, from);
-#else
-    CanonicalConversion::move4 (&to, from);
-#endif
+    unsigned int tmp;
+    LittleEndianConversion::toLocal (tmp, from);
+    to = tmp;
 }
 
 inline void LittleEndianConversion::toLocal (float& to, const void* from)
@@ -314,19 +301,19 @@ inline void LittleEndianConversion::fromLocal (void* to, unsigned int from)
 #endif
 }
 
-inline void LittleEndianConversion::fromLocal (void* to, long from)
+inline void LittleEndianConversion::fromLocal (void* to, Int64 from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (to, ((char*)&from)+sizeof(long)-4);
+    CanonicalConversion::reverse4 (to, ((char*)&from)+sizeof(Int64)-4);
 #else
     CanonicalConversion::move4 (to, &from);
 #endif
 }
 
-inline void LittleEndianConversion::fromLocal (void* to, unsigned long from)
+inline void LittleEndianConversion::fromLocal (void* to, uInt64 from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (to, ((char*)&from)+sizeof(unsigned long)-4);
+    CanonicalConversion::reverse4 (to, ((char*)&from)+sizeof(uInt64)-4);
 #else
     CanonicalConversion::move4 (to, &from);
 #endif

@@ -70,17 +70,17 @@ unsigned int VAXDataConversion::toLocal (unsigned int&   to,
     VAXConversion::toLocal (to, from);
     return SIZE_VAX_UINT;
 }
-unsigned int VAXDataConversion::toLocal (long&           to,
+unsigned int VAXDataConversion::toLocal (Int64&          to,
 					 const void* from) const
 {
     VAXConversion::toLocal (to, from);
-    return SIZE_VAX_LONG;
+    return SIZE_VAX_INT64;
 }
-unsigned int VAXDataConversion::toLocal (unsigned long&  to,
+unsigned int VAXDataConversion::toLocal (uInt64&         to,
 					 const void* from) const
 {
     VAXConversion::toLocal (to, from);
-    return SIZE_VAX_ULONG;
+    return SIZE_VAX_UINT64;
 }
 unsigned int VAXDataConversion::toLocal (float&          to,
 					 const void* from) const
@@ -132,17 +132,17 @@ unsigned int VAXDataConversion::toLocal (unsigned int*   to, const void* from,
     VAXConversion::toLocal (to, from, nr);
     return nr*SIZE_VAX_UINT;
 }
-unsigned int VAXDataConversion::toLocal (long*           to, const void* from,
+unsigned int VAXDataConversion::toLocal (Int64*          to, const void* from,
 					 unsigned int nr) const
 {
     VAXConversion::toLocal (to, from, nr);
-    return nr*SIZE_VAX_LONG;
+    return nr*SIZE_VAX_INT64;
 }
-unsigned int VAXDataConversion::toLocal (unsigned long*  to, const void* from,
+unsigned int VAXDataConversion::toLocal (uInt64*         to, const void* from,
 					 unsigned int nr) const
 {
     VAXConversion::toLocal (to, from, nr);
-    return nr*SIZE_VAX_ULONG;
+    return nr*SIZE_VAX_UINT64;
 }
 unsigned int VAXDataConversion::toLocal (float*          to, const void* from,
 					 unsigned int nr) const
@@ -187,15 +187,15 @@ unsigned int VAXDataConversion::fromLocal (void* to, unsigned int   from) const
     VAXConversion::fromLocal (to, from);
     return SIZE_VAX_UINT;
 }
-unsigned int VAXDataConversion::fromLocal (void* to, long           from) const
+unsigned int VAXDataConversion::fromLocal (void* to, Int64          from) const
 {
     VAXConversion::fromLocal (to, from);
-    return SIZE_VAX_LONG;
+    return SIZE_VAX_INT64;
 }
-unsigned int VAXDataConversion::fromLocal (void* to, unsigned long  from) const
+unsigned int VAXDataConversion::fromLocal (void* to, uInt64         from) const
 {
     VAXConversion::fromLocal (to, from);
-    return SIZE_VAX_ULONG;
+    return SIZE_VAX_UINT64;
 }
 unsigned int VAXDataConversion::fromLocal (void* to, float          from) const
 {
@@ -245,17 +245,17 @@ unsigned int VAXDataConversion::fromLocal (void* to, const unsigned int* from,
     VAXConversion::fromLocal (to, from, nr);
     return nr*SIZE_VAX_UINT;
 }
-unsigned int VAXDataConversion::fromLocal (void* to, const long* from,
+unsigned int VAXDataConversion::fromLocal (void* to, const Int64* from,
 					   unsigned int nr) const
 {
     VAXConversion::fromLocal (to, from, nr);
-    return nr*SIZE_VAX_LONG;
+    return nr*SIZE_VAX_INT64;
 }
-unsigned int VAXDataConversion::fromLocal (void* to, const unsigned long* from,
+unsigned int VAXDataConversion::fromLocal (void* to, const uInt64* from,
 					   unsigned int nr) const
 {
     VAXConversion::fromLocal (to, from, nr);
-    return nr*SIZE_VAX_ULONG;
+    return nr*SIZE_VAX_UINT64;
 }
 unsigned int VAXDataConversion::fromLocal (void* to, const float* from,
 					   unsigned int nr) const
@@ -310,7 +310,7 @@ Bool VAXDataConversion::canCopy (const unsigned short*) const
 Bool VAXDataConversion::canCopy (const int*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(int) == SIZE_VAX_UINT) {
+    if (sizeof(int) == SIZE_VAX_INT) {
 	return True;
     }
 #endif
@@ -327,20 +327,20 @@ Bool VAXDataConversion::canCopy (const unsigned int*) const
     return False;
 }
 
-Bool VAXDataConversion::canCopy (const long*) const
+Bool VAXDataConversion::canCopy (const Int64*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(long) == SIZE_VAX_ULONG) {
+    if (sizeof(Int64) == SIZE_VAX_INT64) {
 	return True;
     }
 #endif
     return False;
 }
 
-Bool VAXDataConversion::canCopy (const unsigned long*) const
+Bool VAXDataConversion::canCopy (const uInt64*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(unsigned long) == SIZE_VAX_ULONG) {
+    if (sizeof(uInt64) == SIZE_VAX_UINT64) {
 	return True;
     }
 #endif
@@ -382,13 +382,13 @@ unsigned int VAXDataConversion::externalSize (const unsigned int*) const
 {
     return SIZE_VAX_UINT;
 }
-unsigned int VAXDataConversion::externalSize (const long*) const
+unsigned int VAXDataConversion::externalSize (const Int64*) const
 {
-    return SIZE_VAX_LONG;
+    return SIZE_VAX_INT64;
 }
-unsigned int VAXDataConversion::externalSize (const unsigned long*) const
+unsigned int VAXDataConversion::externalSize (const uInt64*) const
 {
-    return SIZE_VAX_ULONG;
+    return SIZE_VAX_UINT64;
 }
 unsigned int VAXDataConversion::externalSize (const float*) const
 {

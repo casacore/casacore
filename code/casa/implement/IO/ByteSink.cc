@@ -1,5 +1,5 @@
 //# ByteSink.cc: Class for write-only access to data in a given format
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,13 +97,13 @@ ByteSink& ByteSink::operator<< (uInt value)
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Long value)
+ByteSink& ByteSink::operator<< (Int64 value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (uLong value)
+ByteSink& ByteSink::operator<< (uInt64 value)
 {
     itsTypeIO->write (1, &value);
     return *this;
@@ -182,12 +182,12 @@ void ByteSink::write (uInt nvalues, const uInt* value)
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Long* value)
+void ByteSink::write (uInt nvalues, const Int64* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const uLong* value)
+void ByteSink::write (uInt nvalues, const uInt64* value)
 {
     itsTypeIO->write (nvalues, value);
 }

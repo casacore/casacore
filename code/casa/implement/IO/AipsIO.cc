@@ -1,5 +1,5 @@
 //# AipsIO.cc: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -181,12 +181,12 @@ void AipsIO::close()
 // Note that these functions only return a valid result if a disk file
 // is used (it will not work for IPC).
 
-long AipsIO::getpos()
+Int64 AipsIO::getpos()
 {
     return io_p->seek (0, ByteIO::Current);
 }
 
-long AipsIO::setpos (long pos)
+Int64 AipsIO::setpos (Int64 pos)
 {
     if (level_p != 0) {
         throw (AipsError("AipsIO::setpos cannot be done while "
@@ -251,14 +251,14 @@ AipsIO& AipsIO::operator<< (const unsigned int& var)
     return (*this);
 }
 
-AipsIO& AipsIO::operator<< (const long& var)
+AipsIO& AipsIO::operator<< (const Int64& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
     return (*this);
 }
 
-AipsIO& AipsIO::operator<< (const unsigned long& var)
+AipsIO& AipsIO::operator<< (const uInt64& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
@@ -383,7 +383,7 @@ AipsIO& AipsIO::put (uInt nrv, const unsigned int* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const long* var, Bool putNR)
+AipsIO& AipsIO::put (uInt nrv, const Int64* var, Bool putNR)
 {
     testput();
     if (putNR) {
@@ -393,7 +393,7 @@ AipsIO& AipsIO::put (uInt nrv, const long* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const unsigned long* var, Bool putNR)
+AipsIO& AipsIO::put (uInt nrv, const uInt64* var, Bool putNR)
 {
     testput();
     if (putNR) {
@@ -503,7 +503,7 @@ uInt AipsIO::putend()
     }
     uInt len = objlen_p[level_p];            // object length
     if (seekable_p) {
-	Long pos = getpos();
+	Int64 pos = getpos();
 	io_p->seek (objptr_p[level_p]);
 	operator<< (objlen_p[level_p]);
 	io_p->seek (pos);
@@ -580,7 +580,7 @@ AipsIO& AipsIO::operator>> (unsigned int& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (long& var)
+AipsIO& AipsIO::operator>> (Int64& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -588,7 +588,7 @@ AipsIO& AipsIO::operator>> (long& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (unsigned long& var)
+AipsIO& AipsIO::operator>> (uInt64& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -700,7 +700,7 @@ AipsIO& AipsIO::get (uInt nrv, unsigned int* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, long* var)
+AipsIO& AipsIO::get (uInt nrv, Int64* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -708,7 +708,7 @@ AipsIO& AipsIO::get (uInt nrv, long* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, unsigned long* var)
+AipsIO& AipsIO::get (uInt nrv, uInt64* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -838,23 +838,23 @@ AipsIO& AipsIO::getnew (uInt& nrv, unsigned int*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, long*& var)
+AipsIO& AipsIO::getnew (uInt& nrv, Int64*& var)
 {
     operator>> (nrv);
-    var = new long[nrv];
+    var = new Int64[nrv];
     if (var == 0) {
-	throw (AllocError ("AipsIO get long", nrv));
+	throw (AllocError ("AipsIO get Int64", nrv));
     }
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, unsigned long*& var)
+AipsIO& AipsIO::getnew (uInt& nrv, uInt64*& var)
 {
     operator>> (nrv);
-    var = new unsigned long[nrv];
+    var = new uInt64[nrv];
     if (var == 0) {
-	throw (AllocError ("AipsIO get ulong", nrv));
+	throw (AllocError ("AipsIO get uInt64", nrv));
     }
     get (nrv, var);
     return (*this);

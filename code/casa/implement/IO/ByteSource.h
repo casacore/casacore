@@ -1,5 +1,5 @@
 //# ByteSource.h: Class for read-only access to data in a given format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,8 +118,8 @@ public:
     ByteSource& operator>> (uShort& value);
     ByteSource& operator>> (Int& value);
     ByteSource& operator>> (uInt& value);
-    ByteSource& operator>> (Long& value);
-    ByteSource& operator>> (uLong& value);
+    ByteSource& operator>> (Int64& value);
+    ByteSource& operator>> (uInt64& value);
     ByteSource& operator>> (Float& value);
     ByteSource& operator>> (Double& value);
     ByteSource& operator>> (Complex& value);
@@ -137,8 +137,8 @@ public:
     void read (uInt nvalues, uShort* value);
     void read (uInt nvalues, Int* value);
     void read (uInt nvalues, uInt* value);
-    void read (uInt nvalues, Long* value);
-    void read (uInt nvalues, uLong* value);
+    void read (uInt nvalues, Int64* value);
+    void read (uInt nvalues, uInt64* value);
     void read (uInt nvalues, Float* value);
     void read (uInt nvalues, Double* value);
     void read (uInt nvalues, Complex* value);

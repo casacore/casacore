@@ -1,5 +1,5 @@
 //# ConversionIO.cc: Class for IO in a converted format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,8 +79,8 @@ void ConversionIO::init()
     itsCopyuShort = itsConversion->canCopy (static_cast<uShort*>(0));
     itsCopyInt    = itsConversion->canCopy (static_cast<Int*>(0));
     itsCopyuInt   = itsConversion->canCopy (static_cast<uInt*>(0));
-    itsCopyLong   = itsConversion->canCopy (static_cast<Long*>(0));
-    itsCopyuLong  = itsConversion->canCopy (static_cast<uLong*>(0));
+    itsCopyInt64  = itsConversion->canCopy (static_cast<Int64*>(0));
+    itsCopyuInt64 = itsConversion->canCopy (static_cast<uInt64*>(0));
     itsCopyFloat  = itsConversion->canCopy (static_cast<Float*>(0));
     itsCopyDouble = itsConversion->canCopy (static_cast<Double*>(0));
     itsSizeChar   = itsConversion->externalSize (static_cast<Char*>(0));
@@ -89,8 +89,8 @@ void ConversionIO::init()
     itsSizeuShort = itsConversion->externalSize (static_cast<uShort*>(0));
     itsSizeInt    = itsConversion->externalSize (static_cast<Int*>(0));
     itsSizeuInt   = itsConversion->externalSize (static_cast<uInt*>(0));
-    itsSizeLong   = itsConversion->externalSize (static_cast<Long*>(0));
-    itsSizeuLong  = itsConversion->externalSize (static_cast<uLong*>(0));
+    itsSizeInt64  = itsConversion->externalSize (static_cast<Int64*>(0));
+    itsSizeuInt64 = itsConversion->externalSize (static_cast<uInt64*>(0));
     itsSizeFloat  = itsConversion->externalSize (static_cast<Float*>(0));
     itsSizeDouble = itsConversion->externalSize (static_cast<Double*>(0));
 }
@@ -182,7 +182,7 @@ CONVERSIONIO_DOIT(Short)
 CONVERSIONIO_DOIT(uShort)
 CONVERSIONIO_DOIT(Int)
 CONVERSIONIO_DOIT(uInt)
-CONVERSIONIO_DOIT(Long)
-CONVERSIONIO_DOIT(uLong)
+CONVERSIONIO_DOIT(Int64)
+CONVERSIONIO_DOIT(uInt64)
 CONVERSIONIO_DOIT(Float)
 CONVERSIONIO_DOIT(Double)

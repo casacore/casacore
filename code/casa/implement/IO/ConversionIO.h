@@ -1,5 +1,5 @@
 //# ConversionIO.h: Class for IO in a converted format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,8 +107,8 @@ public:
     virtual uInt write (uInt nvalues, const uShort* data);
     virtual uInt write (uInt nvalues, const Int* data);
     virtual uInt write (uInt nvalues, const uInt* data);
-    virtual uInt write (uInt nvalues, const Long* data);
-    virtual uInt write (uInt nvalues, const uLong* data);
+    virtual uInt write (uInt nvalues, const Int64* data);
+    virtual uInt write (uInt nvalues, const uInt64* data);
     virtual uInt write (uInt nvalues, const Float* data);
     virtual uInt write (uInt nvalues, const Double* data);
     virtual uInt write (uInt nvalues, const Complex* value);
@@ -126,8 +126,8 @@ public:
     virtual uInt read (uInt nvalues, uShort* data);
     virtual uInt read (uInt nvalues, Int* data);
     virtual uInt read (uInt nvalues, uInt* data);
-    virtual uInt read (uInt nvalues, Long* data);
-    virtual uInt read (uInt nvalues, uLong* data);
+    virtual uInt read (uInt nvalues, Int64* data);
+    virtual uInt read (uInt nvalues, uInt64* data);
     virtual uInt read (uInt nvalues, Float* data);
     virtual uInt read (uInt nvalues, Double* data);
     virtual uInt read (uInt nvalues, Complex* value);
@@ -148,8 +148,8 @@ private:
     uInt itsSizeuShort;
     uInt itsSizeInt;
     uInt itsSizeuInt;
-    uInt itsSizeLong;
-    uInt itsSizeuLong;
+    uInt itsSizeInt64;
+    uInt itsSizeuInt64;
     uInt itsSizeFloat;
     uInt itsSizeDouble;
     Bool itsCopyChar;
@@ -158,8 +158,8 @@ private:
     Bool itsCopyuShort;
     Bool itsCopyInt;
     Bool itsCopyuInt;
-    Bool itsCopyLong;
-    Bool itsCopyuLong;
+    Bool itsCopyInt64;
+    Bool itsCopyuInt64;
     Bool itsCopyFloat;
     Bool itsCopyDouble;
     //# The buffer

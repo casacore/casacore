@@ -1,5 +1,5 @@
 //# AipsIOCarray.h: Templated functions to get/put a C-array from/into AipsIO.
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,8 +141,8 @@ AIPSIO_FUNC_SPEC(short)
 AIPSIO_FUNC_SPEC(unsigned short)
 AIPSIO_FUNC_SPEC(int)
 AIPSIO_FUNC_SPEC(unsigned int)
-AIPSIO_FUNC_SPEC(long)
-AIPSIO_FUNC_SPEC(unsigned long)
+AIPSIO_FUNC_SPEC(Int64)
+AIPSIO_FUNC_SPEC(uInt64)
 AIPSIO_FUNC_SPEC(float)
 AIPSIO_FUNC_SPEC(double)
 AIPSIO_FUNC_SPEC(Complex)

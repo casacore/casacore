@@ -1,5 +1,5 @@
 //# FiledesIO.h: Class for IO on a file descriptor
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,10 +110,10 @@ public:
 
     // Reset the position pointer to the given value. It returns the
     // new position.
-    virtual Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin);
+    virtual Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
 
     // Get the length of the byte stream.
-    virtual Long length();
+    virtual Int64 length();
        
     // Is the IO stream readable?
     virtual Bool isReadable() const;

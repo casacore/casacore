@@ -64,12 +64,12 @@ unsigned int CanonicalDataConversion::toLocal (unsigned int& to,
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (long& to,
+unsigned int CanonicalDataConversion::toLocal (Int64& to,
 					       const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned long& to,
+unsigned int CanonicalDataConversion::toLocal (uInt64& to,
 					       const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
@@ -121,13 +121,13 @@ unsigned int CanonicalDataConversion::toLocal (unsigned int* to,
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (long* to,
+unsigned int CanonicalDataConversion::toLocal (Int64* to,
 					       const void* from,
 					       unsigned int nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned long* to,
+unsigned int CanonicalDataConversion::toLocal (uInt64* to,
 					       const void* from,
 					       unsigned int nr) const
 {
@@ -177,12 +177,12 @@ unsigned int CanonicalDataConversion::fromLocal (void* to,
     return CanonicalConversion::fromLocal (to, from);
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 long from) const
+						 Int64 from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 unsigned long from) const
+						 uInt64 from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
@@ -234,13 +234,13 @@ unsigned int CanonicalDataConversion::fromLocal (void* to,
     return CanonicalConversion::fromLocal (to, from, nr);
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const long* from,
+						 const Int64* from,
 						 unsigned int nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
 unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const unsigned long* from,
+						 const uInt64* from,
 						 unsigned int nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
@@ -261,43 +261,43 @@ unsigned int CanonicalDataConversion::fromLocal (void* to,
 
 Bool CanonicalDataConversion::canCopy (const char*) const
 {
-    return ToBool (CONVERT_CAN_CHAR == 0);
+    return (CONVERT_CAN_CHAR == 0);
 }
 Bool CanonicalDataConversion::canCopy (const unsigned char*) const
 {
-    return ToBool (CONVERT_CAN_UCHAR == 0);
+    return (CONVERT_CAN_UCHAR == 0);
 }
 Bool CanonicalDataConversion::canCopy (const short*) const
 {
-    return ToBool (CONVERT_CAN_SHORT == 0);
+    return (CONVERT_CAN_SHORT == 0);
 }
 Bool CanonicalDataConversion::canCopy (const unsigned short*) const
 {
-    return ToBool (CONVERT_CAN_USHORT == 0);
+    return (CONVERT_CAN_USHORT == 0);
 }
 Bool CanonicalDataConversion::canCopy (const int*) const
 {
-    return ToBool (CONVERT_CAN_INT == 0);
+    return (CONVERT_CAN_INT == 0);
 }
 Bool CanonicalDataConversion::canCopy (const unsigned int*) const
 {
-    return ToBool (CONVERT_CAN_UINT == 0);
+    return (CONVERT_CAN_UINT == 0);
 }
-Bool CanonicalDataConversion::canCopy (const long*) const
+Bool CanonicalDataConversion::canCopy (const Int64*) const
 {
-    return ToBool (CONVERT_CAN_LONG == 0);
+    return (CONVERT_CAN_INT64 == 0);
 }
-Bool CanonicalDataConversion::canCopy (const unsigned long*) const
+Bool CanonicalDataConversion::canCopy (const uInt64*) const
 {
-    return ToBool (CONVERT_CAN_ULONG == 0);
+    return (CONVERT_CAN_UINT64 == 0);
 }
 Bool CanonicalDataConversion::canCopy (const float*) const
 {
-    return ToBool (CONVERT_CAN_FLOAT == 0);
+    return (CONVERT_CAN_FLOAT == 0);
 }
 Bool CanonicalDataConversion::canCopy (const double*) const
 {
-    return ToBool (CONVERT_CAN_DOUBLE == 0);
+    return (CONVERT_CAN_DOUBLE == 0);
 }
 
 
@@ -325,13 +325,13 @@ unsigned int CanonicalDataConversion::externalSize (const unsigned int*) const
 {
     return SIZE_CAN_UINT;
 }
-unsigned int CanonicalDataConversion::externalSize (const long*) const
+unsigned int CanonicalDataConversion::externalSize (const Int64*) const
 {
-    return SIZE_CAN_LONG;
+    return SIZE_CAN_INT64;
 }
-unsigned int CanonicalDataConversion::externalSize (const unsigned long*) const
+unsigned int CanonicalDataConversion::externalSize (const uInt64*) const
 {
-    return SIZE_CAN_ULONG;
+    return SIZE_CAN_UINT64;
 }
 unsigned int CanonicalDataConversion::externalSize (const float*) const
 {

@@ -104,9 +104,9 @@ public:
 				  const void* from) const = 0;
     virtual unsigned int toLocal (unsigned int&   to,
 				  const void* from) const = 0;
-    virtual unsigned int toLocal (long&           to,
+    virtual unsigned int toLocal (Int64&          to,
 				  const void* from) const = 0;
-    virtual unsigned int toLocal (unsigned long&  to,
+    virtual unsigned int toLocal (uInt64&         to,
 				  const void* from) const = 0;
     virtual unsigned int toLocal (float&          to,
 				  const void* from) const = 0;
@@ -133,9 +133,9 @@ public:
 				  unsigned int nr) const = 0;
     virtual unsigned int toLocal (unsigned int*   to, const void* from,
 				  unsigned int nr) const = 0;
-    virtual unsigned int toLocal (long*           to, const void* from,
+    virtual unsigned int toLocal (Int64*          to, const void* from,
 				  unsigned int nr) const = 0;
-    virtual unsigned int toLocal (unsigned long*  to, const void* from,
+    virtual unsigned int toLocal (uInt64*         to, const void* from,
 				  unsigned int nr) const = 0;
     virtual unsigned int toLocal (float*          to, const void* from,
 				  unsigned int nr) const = 0;
@@ -156,8 +156,8 @@ public:
     virtual unsigned int fromLocal (void* to, unsigned short from) const = 0;
     virtual unsigned int fromLocal (void* to, int            from) const = 0;
     virtual unsigned int fromLocal (void* to, unsigned int   from) const = 0;
-    virtual unsigned int fromLocal (void* to, long           from) const = 0;
-    virtual unsigned int fromLocal (void* to, unsigned long  from) const = 0;
+    virtual unsigned int fromLocal (void* to, Int64          from) const = 0;
+    virtual unsigned int fromLocal (void* to, uInt64         from) const = 0;
     virtual unsigned int fromLocal (void* to, float          from) const = 0;
     virtual unsigned int fromLocal (void* to, double         from) const = 0;
     // </group>
@@ -181,9 +181,9 @@ public:
 				    unsigned int nr) const = 0;
     virtual unsigned int fromLocal (void* to, const unsigned int*   from,
 				    unsigned int nr) const = 0;
-    virtual unsigned int fromLocal (void* to, const long*           from,
+    virtual unsigned int fromLocal (void* to, const Int64*          from,
 				    unsigned int nr) const = 0;
-    virtual unsigned int fromLocal (void* to, const unsigned long*  from,
+    virtual unsigned int fromLocal (void* to, const uInt64*         from,
 				    unsigned int nr) const = 0;
     virtual unsigned int fromLocal (void* to, const float*          from,
 				    unsigned int nr) const = 0;
@@ -200,8 +200,8 @@ public:
     virtual Bool canCopy (const unsigned short*) const = 0;
     virtual Bool canCopy (const int*) const = 0;
     virtual Bool canCopy (const unsigned int*) const = 0;
-    virtual Bool canCopy (const long*) const = 0;
-    virtual Bool canCopy (const unsigned long*) const = 0;
+    virtual Bool canCopy (const Int64*) const = 0;
+    virtual Bool canCopy (const uInt64*) const = 0;
     virtual Bool canCopy (const float*) const = 0;
     virtual Bool canCopy (const double*) const = 0;
     // </group>
@@ -214,8 +214,8 @@ public:
     virtual unsigned int externalSize (const unsigned short*) const = 0;
     virtual unsigned int externalSize (const int*) const = 0;
     virtual unsigned int externalSize (const unsigned int*) const = 0;
-    virtual unsigned int externalSize (const long*) const = 0;
-    virtual unsigned int externalSize (const unsigned long*) const = 0;
+    virtual unsigned int externalSize (const Int64*) const = 0;
+    virtual unsigned int externalSize (const uInt64*) const = 0;
     virtual unsigned int externalSize (const float*) const = 0;
     virtual unsigned int externalSize (const double*) const = 0;
     // </group>
