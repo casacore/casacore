@@ -6451,3 +6451,4 @@
 18 522 src mv trial/implement/MeasurementComponents/BJonesMRec.h trial/implement/CalTables/BJonesMRec.h
 18 522 src mv trial/implement/MeasurementComponents/FVisJonesMRec.h trial/implement/CalTables/FVisJonesMRec.h
 18 552 src mv trial/implement/Tables/MemoryStMan.h aips/implement/Tables/MemoryStMan.h
+18 552 src mv trial/implement/Tables/MemoryStMan.cc aips/implement/Tables/MemoryStMan.cc
