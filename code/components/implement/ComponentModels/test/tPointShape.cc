@@ -36,6 +36,7 @@
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
