@@ -41,6 +41,7 @@ typedef LELArray<DComplex> gppbug_latticeexpr_dcomplex;
 
 template <class T>
 LatticeExpr<T>::LatticeExpr()
+: lastChunkPtr_p (0)
 {}
 
 template <class T>
