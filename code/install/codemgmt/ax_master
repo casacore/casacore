@@ -2710,3 +2710,5 @@
 10 032 src mv trial/implement/Guiutils/barchart.help aips/implement/Guiutils/barchart.help
 10 037 src rm install/ibmrs
 10 047 src rm atnf/apps/pks
+10 052 src rm nrao/apps/dish/dish_tracewin.g
+10 052 src rm nrao/apps/dish/dish_dialogbox.g
