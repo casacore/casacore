@@ -38,7 +38,6 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/Stokes.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
@@ -261,22 +260,26 @@ void CoordinateUtil::findDirectionAxes(Vector<Int>& pixelAxes,
 }
 
 
-Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, 
-                                   const CoordinateSystem & coords)
+Int CoordinateUtil::findStokesAxis(Vector<Stokes::StokesTypes>& whichPols, 
+                                   const CoordinateSystem& coords)
 {
   const Int coordinate = coords.findCoordinate(Coordinate::STOKES);
-  if (coordinate< 0) {
+  if (coordinate < 0) {
     whichPols.resize(1);
     whichPols(0) = Stokes::I;
     return coordinate;
   }
-  AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, coordinate)
-	       == -1, AipsError);
+  AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, coordinate) == -1, 
+	       AipsError);
   const Vector<Int> pixelAxes = coords.pixelAxes(coordinate);
   AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
-  const StokesCoordinate polCoord = coords.stokesCoordinate(coordinate);
-  whichPols.resize(0);
-  whichPols = polCoord.stokes();
+  const StokesCoordinate& polCoord = coords.stokesCoordinate(coordinate);
+  const Vector<Int> polsAsInts = polCoord.stokes();
+  const uInt nStokes = polsAsInts.nelements();
+  whichPols.resize(nStokes);
+  for (uInt i = 0; i < nStokes; i++) {
+    whichPols(i) = (Stokes::StokesTypes) polsAsInts(i);
+  }
   return pixelAxes(0);
 }
 

@@ -32,6 +32,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Measures/Stokes.h>
 
 class CoordinateSystem;
 class String;
@@ -273,7 +274,8 @@ static void findDirectionAxes(Vector<Int>& pixelAxes, Vector<Int>& worldAxes,
 // is the same as the length of the polarisation axis. If there is no
 // polarisation axis the whichPols returns a unit length Vector containing
 // Stokes::I
-static Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords);
+static Int findStokesAxis(Vector<Stokes::StokesTypes>& whichPols, 
+			  const CoordinateSystem& coords);
 
 // Find the StokesCoordinate in the CoordinateSystem, and then
 // return the most general description of where it is.  
