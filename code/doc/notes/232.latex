@@ -93,7 +93,7 @@ Processors& Roadrunner Time(s)& \multicolumn{2}{c}{Normalized SGI Origin 2000 Ti
  16&             318,320,316&             456,456,481&           392,383,378\\
  32&             275,202,257&             244,251,248&           317,208,206\\
  64&             308,93,278&              277,276,279&           159,159,161\\
-128&                                     283,283,300\\
+128&                       &                         &           283,283,300\\
 \end{tabular}
 
 Figure 3 plots the number of processors versus the median time to completion for the 
