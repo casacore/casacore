@@ -1,5 +1,5 @@
 //# Array.h: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -419,9 +419,14 @@ public:
     // The length of each axis.
     const IPosition &shape() const { return length_p; }
 
-    // A convenience function: end(i) = shape(i) - 1; i.e. this
+    // A convenience function: endPosition(i) = shape(i) - 1; i.e. this
     // is the IPosition of the last element of the Array.
+    // <group>
+    IPosition endPosition() const
+      { return end(); }
+    // end() is deprecated and wil lsoon be removed.
     IPosition end() const;
+    // </group>
 
     // Are the array data contiguous?
     // If they are not contiguous, <src>getStorage</src> (see below)
