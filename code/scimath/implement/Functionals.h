@@ -58,7 +58,6 @@
 //# ND Functions
 #include <aips/Functionals/SumFunction.h>
 #include <aips/Functionals/Gaussian2D.h>
-#include <aips/Functionals/GaussianND.h>
 
 // <module>
 //
