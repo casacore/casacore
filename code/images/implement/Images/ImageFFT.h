@@ -193,12 +193,11 @@ private:
    void copyMask (ImageInterface<Complex>& out,
                   const ImageInterface<Complex>& in) const;
 
-// Copy some bits and pieces from the input to the output
-// images
-   void copyMiscellaneous (ImageInterface<Float>& out,   
-                           const ImageInterface<Float>& in) const;
-   void copyMiscellaneous (ImageInterface<Complex>& out,   
-                           const ImageInterface<Float>& in) const;
+// Copy MiscInfo, ImageInfo, Unit, logSInk to output
+// <group>
+   void copyMiscellaneous (ImageInterface<Float>& out) const;
+   void copyMiscellaneous (ImageInterface<Complex>& out) const;
+// </group>
 
 // FFT the sky
    void fftsky2 (ImageInterface<Complex>& out,
