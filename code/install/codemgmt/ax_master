@@ -2334,3 +2334,4 @@
 09 310 src mv doc/newsletters/feb98/aipstop3.gif doc/newsletters/aipstop3.gif
 09 310 src mv doc/newsletters/feb98/contact.html doc/newsletters/contact.html
 09 310 src mv trial/implement/ComponentModels/ComponentFlux.h trial/implement/ComponentModels/Flux.h
+09 310 src mv trial/implement/ComponentModels/ComponentFlux.cc trial/implement/ComponentModels/Flux.cc
