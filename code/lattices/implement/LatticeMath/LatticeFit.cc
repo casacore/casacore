@@ -29,8 +29,10 @@
 
 #include <aips/Functionals/Function.h>
 #include <aips/Lattices/Lattice.h>
+#include <trial/Lattices/MaskedLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
@@ -38,15 +40,19 @@
 #include <aips/Glish/GlishEvent.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
+#include <trial/Tasking/ProgressMeter.h>
 
-uInt baselineFit(Lattice<Float> &outImage,
-		 Vector<Float> &fittedParameters,
-		 LinearFit<Float> &fitter, 
-		 const Lattice<Float> &inImage,
-		 uInt whichAxis,
-		 const Vector<Bool> &fitMask,
-		 Bool returnResiduals,
-		 GlishSysEventSource *eventStream)
+
+uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
+                              Vector<Float> &fittedParameters,
+                              LinearFit<Float> &fitter, 
+                              const Lattice<Float> &inImage,
+                              uInt whichAxis,
+                              const Vector<Bool> &fitMask,
+                              Bool returnResiduals,
+                              GlishSysEventSource *eventStream)
 {
     IPosition outShape = outImage.shape();
     IPosition inShape = inImage.shape();
@@ -134,3 +140,148 @@ uInt baselineFit(Lattice<Float> &outImage,
     return count;
 }
 
+
+uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
+                             MaskedLattice<Float>* pResid,
+                             MaskedLattice<Float>& in,
+                             Lattice<Float>* pSigma,
+                             LinearFit<Float>& fitter,
+                             uInt axis, Bool showProgress)
+{
+   LogIO os(LogOrigin("LatticeFit", "fitProfiles"));
+//
+   IPosition inShape = in.shape();
+   if (pFit!=0) {
+      AlwaysAssert(inShape.isEqual(pFit->shape()), AipsError);
+   }
+   if (pResid!=0) {
+      AlwaysAssert(inShape.isEqual(pResid->shape()), AipsError);
+   }
+
+// Setup iterators
+
+   IPosition inTileShape = in.niceCursorShape();
+   TiledLineStepper stepper (in.shape(), inTileShape, axis);
+   RO_LatticeIterator<Float> inIter(in, stepper);
+//
+   LatticeIterator<Float>* pFitIter = 0;
+   LatticeIterator<Bool>* pFitMaskIter = 0;
+   LatticeIterator<Float>* pResidIter = 0;
+   LatticeIterator<Bool>* pResidMaskIter = 0;
+//
+   if (pFit) {
+      pFitIter = new LatticeIterator<Float>(*pFit, stepper);
+      if (pFit->hasPixelMask()) {
+         pFitMaskIter = new LatticeIterator<Bool>(pFit->pixelMask(), stepper);
+      }
+   }
+   if (pResid) {
+      pResidIter = new LatticeIterator<Float>(*pResid, stepper);
+      if (pResid->hasPixelMask()) {
+         pResidMaskIter = new LatticeIterator<Bool>(pResid->pixelMask(), stepper);
+      }
+   }
+//
+   Int nProfiles = inShape.product()/inIter.vectorCursor().nelements();
+   ProgressMeter* pProgress = 0;
+   Double meterValue = 0.0;
+   if (showProgress) {
+      pProgress = new ProgressMeter(0.0, Double(nProfiles), "Profile fitting", "Profiles fitted",
+                                     "", "", True, max(1,Int(nProfiles/20)));
+   }
+//
+   const uInt n = inShape(axis);
+   Vector<Float> x(n);
+   Vector<Float> y(n);
+   for (uInt i=0; i<x.nelements(); i++) x[i] = i;
+   const Function<FunctionTraits<Float>::DiffType, FunctionTraits<Float>::DiffType>* pFunc = fitter.fittedFunction();
+//
+   Vector<Bool> inMask;
+   Vector<Float> inSigma;
+   Bool ok = False;
+   uInt nFail = 0;
+//
+   while (!inIter.atEnd()) {  
+            
+// Get data and mask (reflects pixelMask and region mask of SubImage)
+
+      const Vector<Float>& data = inIter.vectorCursor();
+      inMask = in.getMaskSlice(inIter.position(),
+                               inIter.cursorShape(), True);
+//
+      ok = True;
+      if (pSigma) {
+         inSigma = pSigma->getSlice(inIter.position(),
+                                    inIter.cursorShape(), True);
+         try {
+            Vector<Float> sol = fitter.fit(x, data, inSigma, &inMask);
+         } catch (AipsError x) {
+            ok = False;
+         }
+
+      } else {
+         try {
+            Vector<Float> sol = fitter.fit(x, data, &inMask);
+         } catch (AipsError x) {
+            ok = False;
+         }
+      }
+
+// Evaluate
+
+      if (ok) {
+         if (pFit) {
+            for (uInt i=0; i<n;  i++) {
+               pFitIter->rwVectorCursor()[i] = (*pFunc)(x(i)).value();
+            }
+         }
+         if (pFitMaskIter) {
+            pFitMaskIter->rwVectorCursor() = inMask;
+         }
+         if (pResid) {   
+            pResidIter->rwVectorCursor() = data - pFitIter->rwVectorCursor();
+         }
+         if (pResidMaskIter) {
+            pResidMaskIter->rwVectorCursor() = inMask;
+         }
+      } else {
+         nFail++;
+         if (pFit) {
+            pFitIter->rwVectorCursor() = 0.0;
+         }
+         if (pFitMaskIter) {
+            pFitMaskIter->rwVectorCursor() = False;
+         }
+         if (pResid) {
+            pResidIter->rwVectorCursor() = 0.0;
+         }
+         if (pResidMaskIter) {
+            pResidMaskIter->rwVectorCursor() = False;
+         }
+      }                                  
+//
+      inIter++;
+      if (pFitIter) (*pFitIter)++;
+      if (pResidIter) (*pResidIter)++;
+      if (pFitMaskIter) (*pFitMaskIter)++;    
+      if (pResidMaskIter) (*pResidMaskIter)++;
+//          
+      if (pProgress) {
+         meterValue += 1.0;
+         pProgress->update(meterValue);
+      }
+    }     
+//
+    if (pFitIter) delete pFitIter;
+    if (pResidIter) delete pResidIter;
+    if (pFitMaskIter) delete pFitMaskIter;
+    if (pResidMaskIter) delete pResidMaskIter;
+    if (pProgress) delete pProgress;
+//
+    os << "Number of    profiles = " << nProfiles << LogIO::POST;
+    os << "Number of   good fits = " << nProfiles - nFail << LogIO::POST;
+    os << "Number of failed fits = " << nFail << LogIO::POST;
+//
+   return nFail;
+}
+  

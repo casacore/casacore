@@ -30,6 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Lattices/Lattice.h>
+#include <trial/Lattices/MaskedLattice.h>
 #include <trial/Fitting/LinearFit.h>
 
 class GlishSysEventSource;
@@ -50,16 +51,7 @@ class GlishSysEventSource;
 // For every line in the lattice parallel to axis number <src>whichAxis</src>
 // (often axis number 2, typically the frequency axis in a spectral line cube)
 // independently fit the functions in fitter at the positions where
-// <src>fitMask</src> is true. Presently the fit parameters, other than the last
-// one(s) in fitter, are lost.
-//
-// If <src>returnResiduals</src> is True, return data-fit, otherwise return the
-// fit.  For baseline and continuum subtraction, returnResiduals would normally
-// be True.
-//
-// If a GlishSysEventSource is provided, the progress of the fit will be
-// monitored with progress events, which contains a double precision number
-// with a value between 0.0 and 1.0.
+// <src>fitMask</src> is true. 
 // </synopsis> 
 //
 // <example>
@@ -80,7 +72,7 @@ class GlishSysEventSource;
 //
 //    // Do the fit. True means subtract the fit from the model. In this case,
 //    // We overwrite the input with the output.
-//    baselineFit(myImage, fittedParameters,fitter, myImage, 2, fitMask, True);
+//    fitProfiles (myImage, fittedParameters,fitter, myImage, 2, fitMask, True);
 // </srcBlock>
 // </example>
 //
@@ -100,15 +92,36 @@ class GlishSysEventSource;
 // Related <here>fitting functions</here.
 // </linkfrom>
 
-// <group name="baselineFit">
-uInt baselineFit(Lattice<Float> &outImage,
-		 Vector<Float> &fittedParameters,
-		 LinearFit<Float> &fitter, 
-		 const Lattice<Float> &inImage,
+class LatticeFit {
+
+public:
+
+// Fit baseline to lattice.   Presently the fit parameters, other than the last
+// one(s) in fitter, are lost.  If <src>returnResiduals</src> is True, 
+// return data-fit, otherwise return the fit.  For baseline and continuum 
+// subtraction, returnResiduals would normally be True.
+//
+// If a GlishSysEventSource is provided, the progress of the fit will be
+// monitored with progress events, which contains a double precision number
+// with a value between 0.0 and 1.0.
+   static uInt fitProfiles (Lattice<Float>& outImage,
+		 Vector<Float>& fittedParameters,
+		 LinearFit<Float>& fitter, 
+		 const Lattice<Float>& inImage,
 		 uInt whichAxis,
-		 const Vector<Bool> &fitMask,
+		 const Vector<Bool>& fitMask,
 		 Bool returnResiduals,
-		 GlishSysEventSource *eventStream=0);
-// </group>
+		 GlishSysEventSource* eventStream=0);
+
+// Fit baseline to MaskedLattice.  Fit and residuals can be optionally
+// written (leave pointers at zero to not write out these lattices)
+// You can optionally specify a weights lattice (1.0 if not given).
+   static uInt fitProfiles (MaskedLattice<Float>* pOutFit,
+                           MaskedLattice<Float>* pOutResid,
+                           MaskedLattice<Float>& in,
+                           Lattice<Float>* pSigma,
+                           LinearFit<Float>& fitter, 
+                           uInt axis, Bool showProgress=False);
+};
 
 #endif
