@@ -59,7 +59,7 @@ class Slicer;
 // TiledFileAccess is a class that makes it possible to access
 // an arbitrary array in a file using the tiled storage manager classes.
 // It can handle arrays of any type supported by the tiled storage
-// managers. The array can be in local or in canonical format.
+// managers. The array can be in big or little endian canonical format.
 // <p>
 // See <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
 // for a more detailed discussion.
@@ -89,10 +89,19 @@ class TiledFileAccess
 {
 public:
   // Create a TiledFileAccess object.
+  // The data is assumed to be in local canonical format
+  // (thus big endian on e.g. SUN and little endian on e.g. PC).
   TiledFileAccess (const String& fileName, Int64 fileOffset,
 		   const IPosition& shape, const IPosition& tileShape,
-		   DataType dataTtpe, uInt maximumCacheSize=0,
-		   Bool writable=False, Bool canonical=True);
+		   DataType dataType, uInt maximumCacheSize=0,
+		   Bool writable=False);
+
+  // Create a TiledFileAccess object.
+  // The endian format of the data is explicitly given.
+  TiledFileAccess (const String& fileName, Int64 fileOffset,
+		   const IPosition& shape, const IPosition& tileShape,
+		   DataType dataType, uInt maximumCacheSize,
+		   Bool writable, Bool bigEndian);
 
   ~TiledFileAccess();
 

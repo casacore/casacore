@@ -34,6 +34,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/OS/HostInfo.h>
 
 
 TiledFileAccess::TiledFileAccess (const String& fileName,
@@ -42,8 +43,7 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
 				  const IPosition& tileShape,
 				  DataType dataType,
 				  uInt maximumCacheSize,
-				  Bool writable,
-				  Bool canonical)
+				  Bool writable)
 : itsCube     (0),
   itsTSM      (0),
   itsWritable (writable),
@@ -51,10 +51,28 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
 {
   itsLocalPixelSize = ValType::getTypeSize (dataType);
   itsTSM  = new TiledFileHelper (fileName, shape, dataType, maximumCacheSize,
-				 writable, canonical);
+				 writable, HostInfo::bigEndian());
   itsCube = new TSMCube (itsTSM, itsTSM->file(), shape, tileShape, fileOffset);
 }
 
+TiledFileAccess::TiledFileAccess (const String& fileName,
+				  Int64 fileOffset,
+				  const IPosition& shape,
+				  const IPosition& tileShape,
+				  DataType dataType,
+				  uInt maximumCacheSize,
+				  Bool writable,
+				  Bool bigEndian)
+: itsCube     (0),
+  itsTSM      (0),
+  itsWritable (writable),
+  itsDataType (dataType)
+{
+  itsLocalPixelSize = ValType::getTypeSize (dataType);
+  itsTSM  = new TiledFileHelper (fileName, shape, dataType, maximumCacheSize,
+				 writable, bigEndian);
+  itsCube = new TSMCube (itsTSM, itsTSM->file(), shape, tileShape, fileOffset);
+}
 
 TiledFileAccess::~TiledFileAccess()
 {
