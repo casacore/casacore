@@ -32,6 +32,7 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ExprNode.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
@@ -66,16 +67,16 @@ void deleteColumn(const String aColumn, Table&);
 // delete a column && put it back again
 void deleteAndRestore(Table&);
 
-// add aColumn
+// add a Column
 void addColumn(DataType aDataType, Table&);
 
-//add a few direct arrays
+// add a few direct arrays
 void addDirectArrays(Table&);
 
-//add an indirect string array
+// add an indirect string array
 void addIndStringArray(Table&);
 
-//add an indirect array
+// add an indirect array
 void addIndArray(Table&);
 
 // show table info
@@ -84,9 +85,14 @@ void info(const Table& aTable);
 // put/putColumn cache test
 void putColumnTest(Table&);
 
-// Copy the table.
+// Copy the table to a plain table
 void copyTable(const Table&);
 
+// Copy the table to a memory table
+void copyMemoryTable(const Table&);
+
+// Copy a subset of a table to a memory table
+void copyMemoryTableSubSet(const Table&);
 
 
 int main ()
@@ -109,6 +115,16 @@ int main ()
 	addColumn       (TpDComplex, tab);
 	// copy to a plain table
 	copyTable(tab);
+	// copy to a memory table
+	copyMemoryTable(tab);
+	// copy a subset to a memory table
+	copyMemoryTableSubSet(tab);
+	// copy from a plain table
+	{
+	  Table tab2("tMemoryTable_tmp.tabcp");
+	  copyMemoryTable(tab2);
+	  copyMemoryTableSubSet(tab2);
+	}
 	// delete first Column
 	deleteColumn    ("Col-1", tab);
 	// delete last Column
@@ -536,6 +552,25 @@ void copyTable (const Table& aTable)
   cout << "     new name = " << tab.tableName() << endl;
   aTable.copy ("tMemoryTable_tmp.tabcp", Table::New);
   Table tabc("tMemoryTable_tmp.tabcp");
+  cout << "copy name = " << tabc.tableName() << endl;
+  info(tabc);
+}
+
+void copyMemoryTable (const Table& aTable)
+{
+  cout << "Try to copy the table to a MemoryTable" << endl;
+  Table tab(aTable);
+  cout << "name = " << tab.tableName() << endl;
+  Table tabc = tab.copyToMemoryTable ("tMemoryTable.dat");
+  cout << "copy name = " << tabc.tableName() << endl;
+  info(tabc);
+}
+
+void copyMemoryTableSubSet (const Table& aTable)
+{
+  cout << "Try to copy a table subset to a MemoryTable" << endl;
+  Table tab = aTable(aTable.col("Col-3"));
+  Table tabc = tab.copyToMemoryTable ("tMemoryTable.subdat");
   cout << "copy name = " << tabc.tableName() << endl;
   info(tabc);
 }
