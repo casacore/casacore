@@ -650,5 +650,19 @@ void TableDesc::removeIDhypercolumns (const Vector<String>& hcNames)
   }
 }
 
+void TableDesc::removeAllHypercolumnDesc()
+{
+    // Remove all hypercolumns; start at the end to avoid invalid indices.
+    Int nkey = privKey_p->nfields();
+    for (Int i=nkey-1; i>=0; --i) {
+	if (privKey_p->type(i) == TpRecord) {
+	    const String& key = privKey_p->description().name (i);
+	    if (key.index (theHyperPrefix) == 0) {
+	        privKey_p->removeField (i);
+	    }
+	}
+    }
+}
+
 } //# NAMESPACE CASA - END
 
