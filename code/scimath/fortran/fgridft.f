@@ -180,7 +180,7 @@ C
          loc(idim)=nint(pos(idim))
          off(idim)=nint((loc(idim)-pos(idim))*sampling)
       end do
-      phase=2.0D0*pi*dphase*freq/c
+      phase=-2.0D0*pi*dphase*freq/c
       phasor=cmplx(cos(phase), sin(phase))
       return 
       end
