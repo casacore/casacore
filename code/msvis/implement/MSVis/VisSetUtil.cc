@@ -150,6 +150,12 @@ void VisSetUtil::WeightUniform(VisSet& vs,
 	      gwt(ucell,vcell)+=vb.weight()(row);
 	      sumwt+=vb.weight()(row);
 	    }
+	    ucell=Int(-uscale*u+uorigin);
+	    vcell=Int(-vscale*v+vorigin);
+	    if((ucell>0)&&(ucell<nx)&&(vcell>0)&&(vcell<ny)) {
+	      gwt(ucell,vcell)+=vb.weight()(row);
+	      sumwt+=vb.weight()(row);
+	    }
 	  }
 	}
       }
