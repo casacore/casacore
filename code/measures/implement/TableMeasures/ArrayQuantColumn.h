@@ -1,5 +1,5 @@
 //# ArrayQuantColumn.h: Provide access to array quantum columns.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -226,7 +226,7 @@ private:
 //
 // The treatment of Quanta Units in ArrayQuantColumns varies according
 // to how the ArrayQuantColumn was defined.  See 
-// <linkto class=TableQuantumDesc>TableQuantumDesc> for the details.
+// <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> for the details.
 // </synopsis>
 
 // <example>
