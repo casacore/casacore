@@ -715,13 +715,13 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
   // Remember last-filled values for TSM use
   Int lastFillArrayId, lastFillFieldId, lastFillScanNumber;
-  lastFillArrayId=-1; lastFillFieldId=-1, lastFillScanNumber=-1;
+  lastFillArrayId=-1; lastFillFieldId=-1, lastFillScanNumber=0;
   Double lastFillTime=0;
 
   // Keep track of array-specific scanNumbers, FieldIds and FreqIds
   Vector<Int> scanNumber(1);
   Vector<Int> lastFieldId(1), lastFreqId(1);
-  scanNumber=-1; lastFieldId=-1, lastFreqId=-1;
+  scanNumber=0; lastFieldId=-1, lastFreqId=-1;
 
   Int fixToRow=-1;
   Bool lastRowFlag=False;
@@ -772,7 +772,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       scanNumber.resize(nArray_p,True);
       lastFieldId.resize(nArray_p,True);
       lastFreqId.resize(nArray_p,True);
-      scanNumber(nArray_p-1)=-1;
+      scanNumber(nArray_p-1)=0;
       lastFieldId(nArray_p-1)=-1;
       lastFreqId(nArray_p-1)=-1;
     }
@@ -838,6 +838,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // Fill scanNumber if changed since last row
       if (scanNumber(arrayId)!=lastFillScanNumber) {
  	msc.scanNumber().put(row,scanNumber(arrayId));
+        lastFillScanNumber=scanNumber(arrayId);
       }
 
       weight=0.0;
