@@ -756,7 +756,7 @@ static Int isDST () {
 
 // Returns the difference, in seconds, between UTC and local time.
 // Negative values are west of GMT, positive are east.
-#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 Int Time::timeZoneSeconds () {
   extern time_t altzone;	// Not declared in all <time.h> files.
   return isDST () ? -altzone : -timezone;
@@ -772,7 +772,9 @@ Int Time::timeZoneSeconds () {
   // This will not be accurate unless the DST correction is +1 hour.
   // HP/UX and AIX do not have an altzone variable--at least not that I
   // can find--and this is also generic enough that it should work for
-  // most other "reasonable" UNIX-like OS's.
+  // most other "reasonable" UNIX-like OS's.  Note: Linux *had* an
+  // altzone varialbe before the release of libc6 (glibc), but it's gone
+  // now.
   return Int (-timezone + (C::hour * isDST ()));
 }
 #endif
