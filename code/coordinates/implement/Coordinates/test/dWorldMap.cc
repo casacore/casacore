@@ -86,17 +86,18 @@ try {
    {
       cout << "2D [ra,dec] & 3D [ra, dec, spec] " << endl;
       cout << "   [0, 1]   &    [0, 1, -1]" << endl;
-      CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Int iSpec = cSys2.findCoordinate(Coordinate::SPECTRAL);
-      uInt iSpec2 = iSpec;
-      Vector<Int> worldAxes = cSys2.worldAxes(iSpec2);
-      Vector<Int> pixelAxes = cSys2.pixelAxes(iSpec2);
-      cSys2.removeWorldAxis(worldAxes(0), 0.0);
-      cSys2.removePixelAxis(pixelAxes(0), 0.0);
-
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
-      list (ok, map, transpose, cSys1, cSys2);
+      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      if (pSpec >= 0) {
+         Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+         cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
+//
+         CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
+         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         list (ok, map, transpose, cSys1, cSys2);
+      } else {
+         cout << "Spectral missing.  This was not expected" << endl;
+      }
       cout << endl << endl;
    }
 
@@ -111,16 +112,17 @@ try {
       worldOrder(0) = 2; worldOrder(1) = 1; worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys2.transpose(worldOrder, pixelOrder);
-
-      Int iSpec = cSys2.findCoordinate(Coordinate::SPECTRAL);
-      uInt iSpec2 = iSpec;
-      Vector<Int> worldAxes = cSys2.worldAxes(iSpec2);
-      Vector<Int> pixelAxes = cSys2.pixelAxes(iSpec2);
-      cSys2.removeWorldAxis(worldAxes(0), 0.0);
-      cSys2.removePixelAxis(pixelAxes(0), 0.0);
-
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
-      list (ok, map, transpose, cSys1, cSys2);
+//
+      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      if (pSpec >= 0) {
+         Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+         cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
+//
+         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         list (ok, map, transpose, cSys1, cSys2);
+      } else {
+         cout << "Spectral missing.  This was not expected" << endl;
+      }
       cout << endl << endl;
    }
 
@@ -136,16 +138,17 @@ try {
       worldOrder(0) = 2; worldOrder(1) = 1; worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys1.transpose(worldOrder, pixelOrder);
-
-      Int iSpec = cSys1.findCoordinate(Coordinate::SPECTRAL);
-      uInt iSpec2 = iSpec;
-      Vector<Int> worldAxes = cSys1.worldAxes(iSpec2);
-      Vector<Int> pixelAxes = cSys1.pixelAxes(iSpec2);
-      cSys1.removeWorldAxis(worldAxes(0), 0.0);
-      cSys1.removePixelAxis(pixelAxes(0), 0.0);
-
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
-      list (ok, map, transpose, cSys1, cSys2);
+//
+      Int pSpec = CoordinateUtil::findSpectralAxis(cSys1);
+      if (pSpec >= 0) {
+         Int wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
+         cSys1.removeWorldAxis(wSpec, cSys1.referenceValue()(wSpec));
+//
+         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         list (ok, map, transpose, cSys1, cSys2);
+      } else {
+         cout << "Spectral missing.  This was not expected" << endl;
+      }
       cout << endl << endl;
    }
 
