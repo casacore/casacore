@@ -119,6 +119,14 @@ template<class T> class Vector;
 // CoordinateSystem contains two or more of the specified coordinateType then
 // an exception (AipsError) is thrown.
 //
+// Finally a function is provided for removing a list of world axes,
+// and optionally their associated pixel axes from a CoordinateSystem.  
+// This process is made a little awkward by the fact that when you
+// remove one world axis, all the rest shuffle down one, so it is
+// provided here.  Generally, one only needs to remove one axis
+// (in which case you should use the CoordinateSystem::removeWorldAxis and
+// CoordiunateSystem::removcePixelAxis functions), but on occaision,
+// the multiple need is there.
 // </synopsis>
 //
 // <example>
@@ -137,6 +145,22 @@ template<class T> class Vector;
 // <srcblock>
 //   const Int spectralAxis = CoordinateUtil::findSpectralAxis(image.coordinates());
 //   cout << "The spectral axis is of shape " << image.shape()(spectralAxis) << endl;
+// </srcblock>
+// </example>
+//
+// <example>
+// Here we remove the first and last world axes, and their associated
+// pixel axes from a 3D CoordinateSystem.  The reference values and
+// reference pixels are used for the replacement values.
+//     
+// <srcblock>
+//   CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+//   Vector<uInt> worldAxes(2);
+//   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
+//   Vector<Double> worldRep, pixelRep;
+//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, pixelRep, worldAxes, True, True);
+//   cout << "For world axes used " << worldRep.ac() << " for replacement" << endl;
+//   cout << "For pixel axes used " << pixelRep.ac() << " for replacement" << endl;
 // </srcblock>
 // </example>
 //
@@ -184,6 +208,7 @@ static CoordinateSystem defaultCoords4D();
 // AipsError is thrown if dims is not 2, 3, or 4.
 static CoordinateSystem defaultCoords(uInt dims);
 //  </group>
+
 //
 // Find which pixel axis is the frequency axes in the supplied coordinate
 // system and return this. If there is no SpectralCoordinate in the coordinate
@@ -205,6 +230,27 @@ static Vector<uInt> findDirectionAxes(const CoordinateSystem & coords);
 // polarisation axis the whichPols returns a unit length Vector containing
 // Stokes::I
 static Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords);
+
+// Remove a list of world axes, and optionally their associated
+// pixel axes from a <src>CoordinateSystem</src>. The list of world
+// axes to remove is derived from a list giving either axes to remove, 
+// or axes to keep (controlled by whether <src>remove</src> 
+// is <src>True</src> or <src>False</src>.  The replacement values (see functions 
+// <src>CoordinateSYstem::removeWorldAxis</src> 
+// and  <src>CoordinateSystem::removePixelAxis</src>) can be given.
+// If the lengths of the replacement value vectors are not the
+// number world axes to be removed and the number of pixel
+// axes to be removed (these could be different !) then the
+// reference values/pixels will be used (e.g. use zero length
+// vectors).
+static Bool removeAxes(CoordinateSystem& cSys,
+                       Vector<Double>& worldReplacement,
+                       Vector<Double>& pixelReplacement,
+                       const Vector<uInt>& worldAxes,
+                       const Bool remove,
+                       const Bool removePixelAxesToo=True);
+
 };
 
 #endif
+

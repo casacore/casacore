@@ -31,6 +31,7 @@
 #include <trial/Coordinates/Projection.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
@@ -38,6 +39,7 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
@@ -180,6 +182,114 @@ Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, const CoordinateSyst
   return pixelAxes(0);
 }
 
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 CoordinateUtil"
-// End: 
+
+Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
+                                Vector<Double>& worldReplacement,
+                                Vector<Double>& pixelReplacement,
+                                const Vector<uInt>& worldAxes,
+                                const Bool removeThem,
+                                const Bool removePixelAxesToo=True)
+//
+// Remove all the world axes and optionally associated pixel axes
+// derived from the given list (a list to keep or remove).
+// This is awkward because as soon as you remove an 
+// axis, they all shuffle down one !  The replacement values
+// are optional.  If these vectors are the wrong length,
+// (e.g. 0), the reference pixels/values are used.  The used
+// values are returned.
+//
+{
+// Bug out if nothing to do
+
+   if (worldAxes.nelements() == 0) return True;
+
+// Make sure the world axes are valid
+
+   for (uInt i=0; i<worldAxes.nelements(); i++) {
+      if (worldAxes(i) >= cSys.nWorldAxes()) return False;         
+   }
+
+
+// Make a list of the axes to remove ins ascending order
+// with no duplicates
+
+   Vector<uInt> remove(cSys.nWorldAxes());
+   if (removeThem) {
+      remove.resize(worldAxes.nelements());
+      remove = worldAxes;
+      GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
+   } else {
+      for (uInt i=0,j=0; i<cSys.nWorldAxes(); i++) {
+         if (!anyEQ(worldAxes.ac(), i)) remove(j++) = i;
+      }
+      remove.resize(j,True);
+   }
+//   cout << "remove = " << remove.ac() << endl;
+
+// Set the replacement values
+
+   if (worldReplacement.nelements() != worldAxes.nelements()) {
+      worldReplacement.resize(worldAxes.nelements());
+      for (i=0; i<worldAxes.nelements(); i++) {
+         worldReplacement(i) = cSys.referenceValue()(worldAxes(i));
+      }
+   }
+
+// Pixel replacement is much more awkward. 
+
+   Int pixelAxis;
+   if (removePixelAxesToo) {
+      uInt nPixelAxes = 0;
+      for (i=0; i<worldAxes.nelements(); i++) {
+          pixelAxis = cSys.worldAxisToPixelAxis(i);
+          if (pixelAxis != -1) nPixelAxes++;
+      }
+
+      if (pixelReplacement.nelements() != nPixelAxes) {
+
+// Vector is wrong size, give them reference pixels
+
+         pixelReplacement.resize(nPixelAxes);
+         uInt j = 0;
+         for (i=0; i<worldAxes.nelements(); i++) {
+            pixelAxis = cSys.worldAxisToPixelAxis(i);
+            if (pixelAxis != -1) {
+               pixelReplacement(j++) = cSys.referencePixel()(pixelAxis);
+            }
+         }
+      }
+   }
+
+
+// Now for each world axis in the list, get rid of it
+ 
+   uInt worldAxis = remove(0);
+   uInt j = 0;
+   for (i=0; i<remove.nelements(); i++) {
+
+       if (removePixelAxesToo) { 
+
+// Find the corresponding pixel axis (first !)
+
+          pixelAxis = cSys.worldAxisToPixelAxis(worldAxis);
+       }
+
+// Remove the axes
+ 
+        cSys.removeWorldAxis(worldAxis, worldReplacement(i));
+        if (removePixelAxesToo && pixelAxis != -1) {
+           cSys.removePixelAxis(uInt(pixelAxis), pixelReplacement(j++));
+        }
+
+// Find the next world axis to eradicate
+
+        if (i+1<remove.nelements()) worldAxis = remove(i+1) - 1;
+   }
+   return True;
+}      
+
+
+
+
+
+
