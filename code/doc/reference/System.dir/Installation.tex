@@ -22,6 +22,192 @@ to version 2.8 (or later) or contact \acct{aips2-request@nrao.edu} for a patch
 
 % ----------------------------------------------------------------------------
 
+\section{External Developer's Release}
+\label{developers-release}
+\index{developers release}
+\index{installation|see{system, installation}}
+
+This section describes how to create an installation for external developers,
+i.e. developers who are not \aipspp\ onsortium members. This sort
+of \aipspp\ installation differs from the regular consortium
+installation in that:
+\begin{enumerate}
+\item It is intended as a stand-alone installation which allows developers
+      to keep the installation in sync with the master repositories, but
+      does not allow checking code into the system.
+\item It is easy to configure.
+\item It is made available for the most common architectures. Though currently
+      it is {\bf only} available for linux.
+\end{enumerate}
+The developers installation operates by using
+\htmladdnormallinkfoot{CVSup}{http://www.polstra.com/projects/freeware/CVSup/} to
+both bootstrap the installation and keep the documentation, RCS source code
+repository, and data repository in sync with the master repositories at the
+AIPS++ center.
+
+\subsection{Getting Started}
+\label{developer release setting up}
+\index{developer release!setup}
+
+The first step to installing the \aipspp\ external developer's release is to
+install the required software upon which \aipspp\ depends. This includes
+\htmladdnormallinkfoot{CVSup}{http://www.polstra.com/projects/freeware/CVSup/},
+\htmladdnormallinkfoot{RPFITS}{http://www.atnf.csiro.au/computing/software/rpfits.html},
+\htmladdnormallinkfoot{CFITSIO}{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}, and
+\htmladdnormallinkfoot{PGPLOT}{http://astro.caltech.edu/\~{}tjp/pgplot/}. AIPS++
+\htmladdnormallinkfoot{distributes RPMs}{ftp://aips2.nrao.edu/pub/import/Linux/RedHat/}
+RPMs built upon various releases of RedHat Linux which greatly simplify the installation
+of these packages for Linux systems which use RPM. The RPMs are built for specific
+RedHat releases and must be installed as {\em root}. If you're using RPM, you need to
+install:
+\begin{itemize}
+\item \verb+cvsup-16.1-1ds.i386.rpm+
+\item \verb+rpfits-2.4-1ds.i386.rpm+
+\item \verb+cfitsio-2.401-1ds.i386.rpm+
+\item \verb+pgplot-5.2.0-9ds.i386.rpm+
+\item \verb+pgplot-devel-5.2.0-9ds.i386.rpm+
+\item \verb+pgplot-motif-5.2.0-9ds.i386.rpm+
+\end{itemize}
+In addition to these, you need to ensure that a few packages which are normally
+part of a Linux installation are installed:
+\begin{itemize}
+\item \htmladdnormallinkfoot{GNU make}{http://www.gnu.org/software/make/make.html}
+\item either \htmladdnormallinkfoot{Open MOTIF}{http://www.opengroup.org/openmotif/} or
+      \htmladdnormallinkfoot{LessTif}{http://www.lesstif.org/} ({\em or just about any
+      other Motif you might have installed})
+\item \htmladdnormallinkfoot{LAPACK}{http://www.netlib.org/lapack/}
+\item all of the standard header files, e.g. \verb+glibc-devel+
+\item all of the X11 header files, e.g. \verb+XFree86-devel+
+\item \verb+tcl+ and \verb+tk+
+\end{itemize}
+A good way to check is to do something like:
+\begin{verbatim}
+    rpm -qa | egrep '^openmotif|^lesstif|^make|^glibc|^XFree|^lapack|^tcl|^tk'
+\end{verbatim}
+If the output of this seems to list all requirements, then you are in good shape.
+
+Finally, you need to have the gcc 2.95 variety of GNU gcc compiler installed. This is
+necessary because we have found precision problems with g77 in the 2.96 release, and
+we do not yet support the 3.1 release. To simplify this, RPMs for \verb+gcc-2.95.3+
+are also available from the
+\htmladdnormallinkfoot{\aipspp\ ftp site}{ftp://aips2.nrao.edu/pub/import/Linux/RedHat/}.
+You need:
+\begin{itemize}
+\item \verb%gcc+2-2.95.3-52ds.i386.rpm%
+\item \verb%gpp+2-2.95.3-52ds.i386.rpm%
+\item \verb%libgpp+2-2.95.3-52ds.i386.rpm%
+\item \verb%gppshare+2-2.95.3-52ds.i386.rpm%
+\item \verb%g77+2-2.95.3-52ds.i386.rpm%
+\end{itemize}
+{\bf These RPMs install into \verb+/usr/gcc/2.95.3+, e.g. \verb+/usr/gcc/2.95.3/bin/gcc+}, and currently
+they are not relocatable. Otherwise, you can get gcc 2.95 from the
+\htmladdnormallinkfoot{GNU ftp site}{ftp://ftp.gnu.org/pub/gnu/gcc/gcc-2.95.3.tar.gz} and
+install it by hand.
+
+The next step is to select a directory where you would like your \aipspp\ installation
+to reside. For the examples in this section, {\tt /usr/local/aips++} will be
+used; if you choose a differnt location, just substitute your path for
+{\tt /usr/local/aips++}.  So first create the directory for the initial
+CVSup bootstrap file, for example:
+\begin{verbatim}
+    bash$ mkdir -p /usr/local/aips++/sup/files
+\end{verbatim}
+With an editor, create a file in this directory named for the architecture
+being installed, e.g. {\tt /usr/local/aips++/sup/files/linux}. In this file, put:
+\begin{verbatim}
+    *default host=aips2.nrao.edu compress
+    *default base=/usr/local/aips++
+    *default release=linux
+    *default delete use-rel-suffix
+    bootstrap
+\end{verbatim}
+If you chose a root directory other than {\tt /usr/local/aips++} for your
+installation, you should substitute your directory in the line above.
+
+The next step is to fetch the inital state for the repository:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++
+    bash$ cvsup sup/files/linux &
+\end{verbatim}
+A GUI should pop up, when it does you should only need to press the {\em go}
+button, i.e. the button with the little {\bf green triangle} beside the 
+{\em exit} button. This will fetch all of the initial state for \aipspp.
+Now, you are ready to move on to bringing the code repository into sync
+with the master repository.
+
+\subsection{Updating the Code Repository}
+\label{developer release code repository}
+\index{developer release!code repository}
+
+Whether you are updating the code repository for the first time after following
+the {\em getting started} steps or have a working installation that you just
+want to update the steps are the same:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++
+    bash$ cvsup sup/files/rcs
+    bash$ cd code
+    bash$ gmake drupdate
+    bash$ gmake drbuild
+\end{verbatim}
+The \verb+gmake drupdate+ {\em only} needs to be done after the code repository
+has been updated via CVSup. If you run encounter problems while doing the,
+\verb+gmake drbuild+, you only need to make corrections and then rerun
+the \verb+gmake drbuild+.
+
+This procedure can be repeated to bring the installation up to date with
+the master repository at the \aipspp\ center. Subsequent updates will only download
+those portions of the code repository which have been modified or added. It
+{\bf will not} download everything again.
+
+\subsection{Updating the Data Repository}
+\label{developer release data repository}
+\index{developer release!data repository}
+
+In addition to a successful build of the surce code, the \aipspp\ data repository
+is required to run \aipspp. This repository contains all of the data files needed
+to run \aipspp\ as well as some data files used for testing and demos.
+
+To update the data repository, you use CVSup:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++
+    bash$ cvsup sup/files/data
+\end{verbatim}
+This will create a local mirror of the \aipspp\ data repository. This can be
+redone later to update the repository. Subsequent updates will only download
+those portions of the data repository which have been modified or added. It
+{\bf will not} download everything again.
+
+\subsection{Updating the Documentation }
+\label{developer release documentation}
+\index{developer release!documentation}
+
+If you would like to have a local copy of the documentation (which is recommended),
+you use CVSup to get the documentation as well:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++
+    bash$ cvsup sup/files/docs
+\end{verbatim}
+This will create a local mirror of the \aipspp\ documentation and can be
+used to keep the documentation up to date, as with the code and data
+repositories.
+
+\subsection{Final Notes}
+
+CVSup provides an efficient method for maintaining synchroized mirrors, and
+the \aipspp\ external developer's release makes heavy use of it. All of the
+control files for CVSup are kept beneath \verb+sup/files+. These files are
+simple and reasonably straight forward to understand if a bit of time is
+spent with the
+\htmladdnormallinkfoot{CVSup documentation}{http://www.polstra.com/projects/freeware/CVSup/faq.html}.
+In addition to the control files mentioned above, the initial setup script
+also creates a \verb+sup/files/update+ script. This CVSup control script
+can be used to update the code and data repositories as well as the documentation
+with one CVSup invocation. After that, all that remains is the \verb+gmake drupdate+
+to bring the build area into conformance with the updated code repository and
+the \verb+gmake drbuild+ to build \aipspp.
+
+% ----------------------------------------------------------------------------
+
 \section{End-user AIPS++ installations}
 \label{End-user installation}
 \index{system!installation!end-user}
