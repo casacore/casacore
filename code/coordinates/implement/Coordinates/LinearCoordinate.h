@@ -220,6 +220,9 @@ private:
     // The reference value.
     Block<Double> crval_p;
 
+    // Temporary
+    mutable String errorMsg_p;
+
     // Check format type
     void checkFormat(Coordinate::formatType& format,
                      const Bool absolute) const;
