@@ -306,12 +306,12 @@ void RFFlagCube::getMSFlags()
     const Cube<Bool>   & fc( chunk.visBuf().flagCube() );
     for( uInt i=0; i<fr.nelements(); i++ )
     {
-      fl_row(i) &= ~RowAbsent;
+      uInt ifr = chunk.ifrNum(i);
+      fl_row(ifr) &= ~RowAbsent;
       // initial state of lattice is all correlations flagged, so we just
       // ignore flagged rows
       if( !fr(i) )  // row not flagged, or we ignore/reset flags
       {
-        uInt ifr = chunk.ifrNum(i);
         // clear row flag in internal matrix, if needed
         fl_row(ifr) &= ~RowFlagged;
         // fl: row in flag lattice for this ifr
