@@ -1,5 +1,5 @@
 //# SolarPos.cc: Solar position class
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,6 @@
 #include <aips/Measures/SolarPos.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/Polynomial.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Tasking/AipsrcValue.h>
 
