@@ -5782,3 +5782,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSWeatherColumns.h
 16 134 src rm aips/implement/MeasurementSets/OldMSWeatherEnums.h
 16 134 src rm trial/implement/MeasurementSets/test/tOldMSAntennaBuffer.cc
+16 134 src rm trial/implement/MeasurementSets/test/tOldMSDerivedValues.cc
