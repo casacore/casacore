@@ -293,8 +293,8 @@ public:
     // as needed. Vectors must be length <src>nPixelAxes()</src> or
     // <src>nWorldAxes()</src> or memory access errors will occur
     // <group>
-    virtual void makeWorldAbsolute (Vector<Double>& world,
-                                    const Vector<Double>& refVal) const;
+    virtual void makeWorldAbsoluteRef (Vector<Double>& world,
+                                       const Vector<Double>& refVal) const;
     // </group>
 
 
@@ -525,8 +525,8 @@ private:
     void checkFormat(Coordinate::formatType& format,         
                      const Bool absolute) const;
 
-    void makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const; 
-    void makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const; 
+    void makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const; 
+    void makePixelAbsRelMany (Matrix<Double>& value, Bool toAbs) const; 
 
 
 };
