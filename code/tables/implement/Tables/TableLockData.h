@@ -104,6 +104,9 @@ public:
     // be read or written safely?
     Bool hasLock (Bool write) const;
 
+    // Is the table in use (i.e. open) in another process?
+    Bool isMultiUsed() const;
+
 private:
     // Copy constructor is forbidden.
     TableLockData (const TableLockData& that);
@@ -131,6 +134,10 @@ inline void TableLockData::autoRelease()
     if (option() == AutoLocking  &&  itsLock->inspect()) {
 	release();
     }
+}
+inline Bool TableLockData::isMultiUsed() const
+{
+    return itsLock->isMultiUsed();
 }
 
 
