@@ -455,7 +455,6 @@ public:
      // </group>
 
 
-
     // Mixed pixel/world coordinate conversion.
     // <src>worldIn</src> and <src>worldAxes</src> are of length n<src>worldAxes</src>.
     // <src>pixelIn</src> and <src>pixelAxes</src> are of length nPixelAxes.
@@ -534,6 +533,18 @@ public:
     virtual void makeWorldAbsolute (Vector<Double>& world,
                                     const Vector<Double>& refVal) const;
     //</group>
+
+
+    // Batch up a lot of absolute/relative transformations. 
+    // Parameters as above  for 
+    // <src>toWorldMany</src> and <src>toPixelMany</src>
+    // <group>
+    virtual void makePixelRelativeMany (Matrix<Double>& pixel) const;
+    virtual void makePixelAbsoluteMany (Matrix<Double>& pixel) const;
+    virtual void makeWorldRelativeMany (Matrix<Double>& world) const;
+    virtual void makeWorldAbsoluteMany (Matrix<Double>& world) const;
+    // </group>
+
 
     // General coordinate conversion.  Only works if no axes
     // have been removed and no axis reordering has occurred.
@@ -821,6 +832,12 @@ private:
     static void getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Double>& pc,
                                 uInt n, const RecordInterface& header,
                                 const String& sprefix);
+
+    // Many abs/rel conversions
+    // <group>
+    void makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const;
+    void makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const;
+    // </group>
 
     // Do subImage for Stokes
     StokesCoordinate stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,

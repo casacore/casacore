@@ -3667,6 +3667,120 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 }
 
 
+void CoordinateSystem::makeWorldAbsoluteMany (Matrix<Double>& world) const
+{
+   makeWorldAbsRelMany (world, True);
+}
+
+void CoordinateSystem::makeWorldRelativeMany (Matrix<Double>& world) const
+{
+   makeWorldAbsRelMany (world, False);
+}
+
+void CoordinateSystem::makePixelAbsoluteMany (Matrix<Double>& pixel) const
+{
+   makePixelAbsRelMany (pixel, True);
+}
+
+void CoordinateSystem::makePixelRelativeMany (Matrix<Double>& pixel) const
+{
+   makePixelAbsRelMany (pixel, False);
+}
+
+
+
+void CoordinateSystem::makeWorldAbsRelMany (Matrix<Double>& world, Bool abs) const
+{
+    const uInt nTransforms = world.ncolumn();
+
+// Loop over coordinates
+
+    uInt i, k;
+    Int where;
+//
+    const uInt nCoords = coordinates_p.nelements();
+    for (k=0; k<nCoords; k++) {
+
+// Load
+
+	const uInt nWorldAxes = world_maps_p[k]->nelements();
+        Matrix<Double> worldTmp(nWorldAxes,nTransforms);
+	for (i=0; i<nWorldAxes; i++) {
+	    where = world_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+                worldTmp.row(i) = world.row(where);
+	    } else {
+		worldTmp.row(i) = world_replacement_values_p[k]->operator()(i);
+	    }
+	}
+
+// Do conversion using Coordinate specific implementation
+
+        if (abs) {
+  	   coordinates_p[k]->makeWorldAbsoluteMany(worldTmp);
+        } else {
+  	   coordinates_p[k]->makeWorldRelativeMany(worldTmp);
+        }
+
+// Unload
+
+	for (i=0; i<nWorldAxes; i++) {
+	    where = world_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+		world.row(where) = worldTmp.row(i);
+            }
+	}
+    }
+}
+
+
+void CoordinateSystem::makePixelAbsRelMany (Matrix<Double>& pixel, Bool abs) const
+{
+    const uInt nTransforms = pixel.ncolumn();
+
+// Loop over coordinates
+
+    uInt i, k;
+    Int where;
+//
+    const uInt nCoords = coordinates_p.nelements();
+    for (k=0; k<nCoords; k++) {
+
+// Load
+
+	const uInt nPixelAxes = pixel_maps_p[k]->nelements();
+        Matrix<Double> pixelTmp(nPixelAxes,nTransforms);
+	for (i=0; i<nPixelAxes; i++) {
+	    where = pixel_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+                pixelTmp.row(i) = pixel.row(where);
+	    } else {
+		pixelTmp.row(i) = pixel_replacement_values_p[k]->operator()(i);
+	    }
+	}
+
+// Do conversion using Coordinate specific implementation
+
+        if (abs) {
+  	   coordinates_p[k]->makePixelAbsoluteMany(pixelTmp);
+        } else {
+  	   coordinates_p[k]->makePixelRelativeMany(pixelTmp);
+        }
+
+// Unload
+
+	for (i=0; i<nPixelAxes; i++) {
+	    where = pixel_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+		pixel.row(where) = pixelTmp.row(i);
+            }
+	}
+    }
+}
+
+
+
+
 Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
                                                      const Vector<Int>& shape) const
 {
