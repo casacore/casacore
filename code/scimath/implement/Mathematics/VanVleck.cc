@@ -48,7 +48,6 @@ void VanVleck::size(Int npts)
 {
   if (itsSize != npts) {
     itsSize = npts;
-    initInterpolator();
   }
 }
 
