@@ -44,7 +44,7 @@ LatticeRegion::LatticeRegion()
 LatticeRegion::LatticeRegion (const LCRegion& region,
 			      const LatticeRegion* parent)
 : itsRegion (region.cloneRegion()),
-  itsSlicer (region.box()),
+  itsSlicer (region.boundingBox()),
   itsParent (parent),
   itsHasRegionMask (region.hasMask()),
   itsHasParentMask (False)
@@ -54,6 +54,13 @@ LatticeRegion::LatticeRegion (const LCRegion& region,
     }
 }
 
+LatticeRegion::LatticeRegion (LCRegion* region)
+: itsRegion (region),
+  itsSlicer (region->boundingBox()),
+  itsParent (0),
+  itsHasRegionMask (region->hasMask()),
+  itsHasParentMask (False)
+{}
 
 LatticeRegion::LatticeRegion (const Slicer& slicer,
 			      const IPosition& latticeShape)
