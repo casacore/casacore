@@ -34,10 +34,11 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/ColumnsIndex.h>
 
 //# Forward declarations
 class Record;
-class ColumnsIndex;
+// class ColumnsIndex;
 class String;
 
 // <summary>
@@ -75,7 +76,6 @@ class String;
 //         past the last seach, there's no need to search any earlier times.
 //    <li> Need to handle the INTERVAL=-1 case fully
 // </todo>
-
 class MSTableIndex
 {
 public:
@@ -84,8 +84,10 @@ public:
 
     // construct one using the indicated subtable which is part of the parent MS
     // using the indicated index columns.  All index columns must be scalar integer
-    // columns.  TIME and INTERVAL will be used when present. 
-    MSTableIndex(const Table &subTable, const Vector<String> &indexCols);
+    // columns.  TIME and INTERVAL will be used when present.  A compare function
+    // can be provided to over-ride literal matching of column values.
+    MSTableIndex(const Table &subTable, const Vector<String> &indexCols, 
+                 ColumnsIndex::Compare *compareFunction = 0);
 
     // construct one from another
     MSTableIndex(const MSTableIndex &other);
@@ -96,7 +98,8 @@ public:
     virtual MSTableIndex &operator=(const MSTableIndex &other);
 
     // attach this to a subtable using indexCols
-    virtual void attach(const Table &subTable, const Vector<String> &indexCols);
+    virtual void attach(const Table &subTable, const Vector<String> &indexCols,
+                        ColumnsIndex::Compare *compareFunction = 0);
 
     // Call this when an index in an existing row has changed.  There is no need to
     // call this when new rows are added to the table
