@@ -968,6 +968,7 @@ Bool ImageMoments<T>::createMoments()
       }
       stdDeviation_p = noise;
    }
+   cout << "nosie=" << stdDeviation_p << endl;
 
 // Open plot device 
          
@@ -1059,7 +1060,7 @@ Bool ImageMoments<T>::createMoments()
                  smoothSliceRef, doMedianI, doMedianV, doAbsDev);
       } else if (doWindow_p) {
     
-// Window
+// Window, with smoothed or unsmoothed data
 
          doMomWin (calcMoments, imageIterator.vectorCursor(), 
                    smoothSliceRef, doMedianI, doMedianV, doAbsDev, 
@@ -1875,10 +1876,10 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 // Set up pointer to the smoothed or unsmoothed data
 
    const Vector<T>* pData;
-   if (&smoothedData == 0) {
-      pData = &data;
-   } else {
+   if (doSmooth_p) {
       pData = &smoothedData;
+   } else {
+      pData = &data;
    }
 
 
