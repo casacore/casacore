@@ -2250,3 +2250,4 @@
 09 155 src mv trial/implement/Lattices/TiledStepper.cc trial/implement/Lattices/TiledLineStepper.cc
 09 161 src rm aips/implement/Measures/MeasDetail.h
 09 161 src rm aips/implement/Measures/MeasDetail.cc
+09 170 src rm trial/apps/loadMRefData/
