@@ -2442,3 +2442,4 @@
 11 259 src rm trial/apps/gDisplay/templates
 11 260 src mv trial/implement/Images/test/tMathNaN.cc aips/implement/Mathematics/test/tMathNaN.cc
 11 265 src mv trial/implement/Lattices/LCMask.h trial/implement/Lattices/LCPixelSet.h
+11 265 src mv trial/implement/Lattices/LCMask.cc trial/implement/Lattices/LCPixelSet.cc
