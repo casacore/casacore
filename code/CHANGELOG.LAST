@@ -1,0 +1,14 @@
+
+change id: 0091
+ author:   Ralph Marson
+ date:     2001/04/06
+ avers:    1.5
+ area:     Tool
+ package:  nrao
+ module:   vlafiller
+ type:     Code
+ category: New
+ summary:  Shadowed data now flagged
+The vlafiller now calculates when antenna are being flagged and,
+using the new FLAG_CATEGORY called SHADOW, flags this data.
+(This was done a couple of weeks ago but I forgot to add a change entry).
