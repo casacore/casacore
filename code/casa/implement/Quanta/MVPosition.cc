@@ -1,5 +1,5 @@
 //# MVPosition.cc: A 3D vector in space
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -394,8 +394,16 @@ Double MVPosition::separation(const MVPosition &other) const {
 }
 
 Quantity MVPosition::separation(const MVPosition &other, 
-				   const Unit &unit) const {
-    return Quantity(separation(other), "rad").get(unit);
+				const Unit &unit) const {
+  return Quantity(separation(other), "rad").get(unit);
+}
+
+MVPosition MVPosition::crossProduct(const MVPosition &other) const {
+  MVPosition res;
+  res(0) = xyz(1)*other(2) - xyz(2)*other(1);
+  res(1) = xyz(2)*other(0) - xyz(0)*other(2);
+  res(2) = xyz(0)*other(1) - xyz(1)*other(0);
+  return res;
 }
 
 void MVPosition::print(ostream &os) const {

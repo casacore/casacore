@@ -1,5 +1,5 @@
 //# MVPosition.h: A 3D vector in space
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -225,6 +225,9 @@ MVPosition &operator*=(Double right);
     Quantity separation(const MVPosition &other, 
 				   const Unit &unit) const;
 // </group>
+// Produce the cross product
+  MVPosition crossProduct(const MVPosition &other) const;
+
 // Print data
     virtual void print(ostream &os) const;
 // Clone
