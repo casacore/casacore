@@ -47,15 +47,15 @@ TableMeasDescBase::TableMeasDescBase()
 
 TableMeasDescBase::TableMeasDescBase (const TableMeasValueDesc& value,
 				      const TableMeasRefDesc& ref)
-: itsValue(value),
-  itsRef(ref)
+: itsValue (value),
+  itsRef   (ref)
 {}
 
 TableMeasDescBase::TableMeasDescBase (const TableMeasDescBase& that)
-: itsValue(that.itsValue),
-  itsRef(that.itsRef),
-  itsMeasType(that.itsMeasType),
-  itsUnits(that.itsUnits)
+: itsValue    (that.itsValue),
+  itsRef      (that.itsRef),
+  itsMeasType (that.itsMeasType),
+  itsUnits    (that.itsUnits)
 {}
 
 TableMeasDescBase::~TableMeasDescBase()
@@ -78,7 +78,13 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   fnr = columnKeyset.fieldNumber("MEASINFO");
   if (fnr >= 0) {
     measInfo = columnKeyset.asRecord(fnr);
-    mtype = measInfo.asRecord("Type");    	
+    // Older TableMeasures has a separate Type record for itsMeasType.
+    // Newer ones simply have the type field in the MEASINFO.
+    if (measInfo.isDefined("Type")) {
+      mtype = measInfo.asRecord("Type");    	
+    } else {
+      mtype = measInfo;
+    }
   } else {
     throw(AipsError("TableMeasDescBase::reconstruct; MEASINFO record not "
 		    "found for column " + columnName));
@@ -96,7 +102,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   
   String error;
   MeasureHolder measHolder;
-  measHolder.fromRecord (error, mtype);
+  measHolder.fromType (error, mtype);
   
   TableMeasDescBase* p = new TableMeasDescBase();
   p->itsValue = TableMeasValueDesc (tab.tableDesc(), columnName);
@@ -109,10 +115,10 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
 TableMeasDescBase& TableMeasDescBase::operator= (const TableMeasDescBase& that)
 {
   if (this != &that) {
-    itsValue = that.itsValue;
-    itsRef = that.itsRef;
+    itsValue    = that.itsValue;
+    itsRef      = that.itsRef;
     itsMeasType = that.itsMeasType;
-    itsUnits = that.itsUnits;
+    itsUnits    = that.itsUnits;
   }
   return *this;
 }
@@ -120,11 +126,9 @@ TableMeasDescBase& TableMeasDescBase::operator= (const TableMeasDescBase& that)
 void TableMeasDescBase::write (TableDesc& td)
 {
   TableRecord measInfo;
-  TableRecord measType;
 
   // Create a record from the MeasType and add it to measInfo
-  itsMeasType.toRecord (measType);
-  measInfo.defineRecord ("Type", measType);
+  itsMeasType.toRecord (measInfo);
   // Put the units.
   // Use TableQuantumDesc, so the column can be used that way too.
   TableQuantumDesc tqdesc(td, itsValue.columnName(), itsUnits);
