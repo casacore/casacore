@@ -76,9 +76,10 @@ template<class T> class MaskedLattice;
 // 
 // For Gaussians, the parameter Vector consists, in order, of
 // the peak, x location, y location, major axis, minor axis,
-// and position angle of the major axis (in radians,
-// positive +y to +x in the pixel coordinate system in the range
-// -2pi to 2pi).  When the solution is recovered, the
+// and position angle of the major axis (in radians). Consistent
+// with Gaussian2D class, the position angle is positive +y to -x 
+// in the pixel coordinate system ([0,0] in center of image) and 
+// in the range -2pi to 2pi.  When the solution is recovered, the
 // position angle will be in the range 0 to pi (this is consistent
 // behaviour with the Gaussian2D functional).
 //
