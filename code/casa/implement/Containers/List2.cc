@@ -1,5 +1,5 @@
 //# List2.cc: (non-templated) exception functions for list classes
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,12 @@
 #include <aips/Containers/IterError.h>
 
 void throw_list_end_error(){
-  throw(IterBoundaryError("List operation performed with cursor past the end of the list."));
+  throw(IterBoundaryError("List operation performed with cursor past the "
+			  "end of the list."));
 }
 void throw_list_init_error(){
-  IterInitError tmp;
-  throw(tmp);
+  char *zero = 0;
+  throw (IterInitError(zero));
 }
 void throw_list_swapright_same_error() {
   throw(IterError("Attempted 'swapRight' on same list."));
