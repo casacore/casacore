@@ -33,8 +33,10 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
 
-class MDirection;
 class MFrequency;
+class MVFrequency;
+class MDirection;
+class MVDirection;
 class MVAngle;
 class RecordInterface;
 class String;
@@ -42,6 +44,8 @@ class ComponentShape;
 class SpectralModel;
 template <class T> class Flux;
 template <class T> class Vector;
+template <class T> class Matrix;
+template <class Ms> class MeasRef;
 
 // <summary>Base class for model components of the sky brightness</summary>
 
@@ -166,8 +170,8 @@ public:
   // frequency then the flux set using this function is the value at the
   // reference frequency.
   // <group>
-  virtual const Flux<Double> & flux() const = 0;
-  virtual Flux<Double> & flux() = 0;
+  virtual const Flux<Double>& flux() const = 0;
+  virtual Flux<Double>& flux() = 0;
   // </group>
 
   // return a reference to the shape of the component. Because this is a
@@ -176,9 +180,9 @@ public:
   // <src>comp.shape().setRefDirection(newVal)</src>. To change the shape to a
   // different type you must use the <src>setShape</src> function.
   // <group>
-  virtual const ComponentShape & shape() const = 0;
-  virtual ComponentShape & shape() = 0;
-  virtual void setShape(const ComponentShape & newShape) = 0;
+  virtual const ComponentShape& shape() const = 0;
+  virtual ComponentShape& shape() = 0;
+  virtual void setShape(const ComponentShape& newShape) = 0;
   // </group>
   
   // return a reference to the spectrum of the component. Because this is a
@@ -187,23 +191,33 @@ public:
   // <src>refFreq = comp.spectrum().refFrequency()</src>. Touse a different
   // spectral model you must use the <src>setSpectrum</src> function.
   // <group>
-  virtual const SpectralModel & spectrum() const = 0;
-  virtual SpectralModel & spectrum() = 0;
-  virtual void setSpectrum(const SpectralModel & newSpectrum) = 0;
+  virtual const SpectralModel& spectrum() const = 0;
+  virtual SpectralModel& spectrum() = 0;
+  virtual void setSpectrum(const SpectralModel& newSpectrum) = 0;
   // </group>
   
   // return a reference to the label associated with this component. The label
   // is a text string for general use.
   // <group>
-  virtual String & label() = 0;
-  virtual const String & label() const = 0;
+  virtual String& label() = 0;
+  virtual const String& label() const = 0;
   // </group>
 
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified size.
-  virtual Flux<Double> sample(const MDirection & direction, 
-			      const MVAngle & pixelSize, 
-			      const MFrequency & centerFrequency) const = 0;
+  virtual Flux<Double> sample(const MDirection& direction, 
+			      const MVAngle& pixelSize, 
+			      const MFrequency& centerFrequency) const = 0;
+
+  // Same as the previous function except that many directions & frequencies
+  // are done at once. A default implementation is available which calls the
+  // single pixel function.
+  virtual void sample(Matrix<Flux<Double> >& samples,
+ 		      const Vector<MVDirection>& directions, 
+ 		      const MeasRef<MDirection>& dirRef, 
+ 		      const MVAngle& pixelSize, 
+		      const Vector<MVFrequency>& frequencies,
+ 		      const MeasRef<MFrequency>& freqRef) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
@@ -216,8 +230,8 @@ public:
   // component. This means, for symmetric components where the reference
   // direction is at the centre, that the Fourier transform will always be
   // real.
-  virtual Flux<Double> visibility(const Vector<Double> & uvw,
-				  const Double & frequency) const = 0;
+  virtual Flux<Double> visibility(const Vector<Double>& uvw,
+				  const Double& frequency) const = 0;
 
   // This functions convert between a record and a component.  Derived classes
   // can interpret fields in the record in a class specific way. These
@@ -225,10 +239,10 @@ public:
   // False if the record is malformed and append an error message to the
   // supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage, 
-			  const RecordInterface & record) = 0;
-  virtual Bool toRecord(String & errorMessage, 
-			RecordInterface & record) const = 0;
+  virtual Bool fromRecord(String& errorMessage, 
+			  const RecordInterface& record) = 0;
+  virtual Bool toRecord(String& errorMessage, 
+			RecordInterface& record) const = 0;
   // </group>
 
   // Function which checks the internal data of this class for correct
