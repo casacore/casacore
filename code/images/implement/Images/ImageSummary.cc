@@ -837,13 +837,6 @@ void ImageSummary<T>::listHeader (LogIO& os,
          }
          string = sName;
       } else {
-         if (pc->type() == Coordinate::DIRECTION) {
-
-// Convert to radians for formatting for DirectionCoordinate
-
-            units = "rad";
-            pc->setWorldAxisUnits(units);
-         }
          form = Coordinate::DEFAULT;
          pc->getPrecision(prec, form, absolute, precRefValSci, 
                           precRefValFloat, precRefValRADEC);

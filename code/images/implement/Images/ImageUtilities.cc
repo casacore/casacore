@@ -87,29 +87,13 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 
    if (blc.nelements()!=cSysIn.nPixelAxes() || trc.nelements()!=cSysIn.nPixelAxes()) return False;
 
-
-// Make a copy of the coordinates as we are going to muck about with it
-      
-   CoordinateSystem cSys(cSysIn);
-
-// Set angular units in radians
-
-   Vector<String> units = cSys.worldAxisUnits();
-   Int coordinate, axisInCoordinate;
-   for (uInt j=0; j<cSys.nWorldAxes(); j++) {
-      cSys.findWorldAxis(coordinate, axisInCoordinate, j);
-      if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";
-   }
-   if (!cSys.setWorldAxisUnits(units,True)) return False;
-
-
 // Create pixel and world vectors for all pixel axes. Initialize pixel values
 // to reference pixel, but if an axis is a cursor axis (whose coordinate is
 // essentially being averaged) set the pixel to the mean pixel.
 
-   Vector<Double> pix(cSys.nPixelAxes());
-   Vector<Double> world(cSys.nPixelAxes());
-   pix = cSys.referencePixel(); 
+   Vector<Double> pix(cSysIn.nPixelAxes());
+   Vector<Double> world(cSysIn.nPixelAxes());
+   pix = cSysIn.referencePixel(); 
    Bool found;
    uInt i;
    for (i=0; i<pix.nelements(); i++) {
@@ -121,7 +105,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
             
 // Find the world axis for this pixel axis 
             
-   const Int worldAxis = cSys.pixelAxisToWorldAxis(pixelAxis);
+   const Int worldAxis = cSysIn.pixelAxisToWorldAxis(pixelAxis);
 
           
 // Convert to world and format 
@@ -136,9 +120,8 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
          
    for (i=0; i<n1; i++) {
       pix(pixelAxis) = pixels(i);
-
-      if (cSys.toWorld(world,pix)) {
-         sWorld(i) = cSys.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), 
+      if (cSysIn.toWorld(world,pix)) {
+         sWorld(i) = cSysIn.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), 
                                  worldAxis, absolute, prec);
       } else {
          sWorld(i) = "?";
