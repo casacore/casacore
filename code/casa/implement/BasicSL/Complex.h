@@ -1,5 +1,5 @@
 //# Complex.h: Single and double precision complex numbers
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Mathematics/Complexfwd.h>
-#include <complex>
+#include <aips/complex.h>
 
 // <summary>
 // Single precision complex numbers
