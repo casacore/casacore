@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999,2001
+*     Copyright (C) 1999,2001,2002
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -41,7 +41,8 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision xy(2,nrow)
       integer flag(nvispol, nvischan, nrow)
-      real weight(nvischan, nrow), sumwt(npol, nchan)
+      real weight(nvischan, nrow)
+      double precision sumwt(npol, nchan)
       integer irow
       integer support, sampling
       integer chanmap(nvischan), polmap(nvischan)

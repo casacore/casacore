@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999,2001
+*     Copyright (C) 1999,2001,2002
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -43,7 +43,8 @@ C
       double precision dphase(nrow)
       complex phasor
       integer flag(nvispol, nvischan, nrow)
-      real weight(nvischan, nrow), sumwt(npol, nchan)
+      real weight(nvischan, nrow)
+      double precision sumwt(npol, nchan)
       integer rownum
       integer support, sampling
       integer chanmap(nchan), polmap(npol)
