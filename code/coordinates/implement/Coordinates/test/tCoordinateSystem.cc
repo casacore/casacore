@@ -270,15 +270,15 @@ int main()
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
                                                       iDC, iSpC, iTC, iStC, iLC,
                                                       dC, spC, tC, stC, lC);
-//       
-         LogOrigin or("dImageStatistics", "main()", WHERE);
-         LogIO os(or);
+//
+         LogOrigin lO(String("tCoordinateSystem"), String("main()"), WHERE);
+         LogIO os(lO);
          IPosition s1, s2;
          cSys.list(os, MDoppler::RADIO, s1, s2);
       }
 
 
-  } catch (AipsError x) {
+   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }
