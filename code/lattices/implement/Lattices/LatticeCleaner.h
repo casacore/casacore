@@ -243,8 +243,8 @@ private:
   Bool  itsDoSpeedup;  // if false, threshold does not change with iteration
   Float itsNDouble;
 
-  // Stop now?
-  Bool stopnow();
+  //# Stop now?
+  //#//  Bool stopnow();   Removed on 8-Apr-2004 by GvD
 
   // Make an lattice of the specified scale
   void makeScale(Lattice<T>& scale, const Float& scaleSize);

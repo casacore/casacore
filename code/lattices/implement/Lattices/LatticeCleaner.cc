@@ -48,9 +48,7 @@
 #include <trial/Lattices/LatticeExprNode.h>
 
 #include <aips/Tasking/AppInfo.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/ObjectController.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/VectorIter.h>
@@ -975,39 +973,41 @@ Bool LatticeCleaner<T>::destroyMasks()
   return True;
 };
 
-template<class T>
-Bool LatticeCleaner<T>::stopnow() {
-  if(itsChoose) {
-    LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
-    Bool stop = ApplicationEnvironment::stop();
-    if(stop) {
-      os << "Lattice clean stopped at user request" << LogIO::POST;
-      return True;
-    }
-    Vector<String> choices(2);
-    choices(0)="Continue";
-    choices(1)="Stop Now";
-    choices(2)="Don't ask again";
-    String choice =
-      ApplicationEnvironment::choice("Do you want to continue or stop?",
-				     choices);
-    if (choice==choices(0)) {
-      return False;
-    }
-    else if (choice==choices(2)) {
-      itsChoose=False;
-      os << "Continuing: won't ask again" << LogIO::POST;
-      return False;
-    }
-    else {
-      os << "Lattice clean stopped at user request" << LogIO::POST;
-      return True;
-    }
-  }
-  else {
-    return False;
-  }
-}
+//# Removed on 8-Apr-2004 by GvD because it is not used and add Tasking
+//# dependencies to Lattices
+// template<class T>
+// Bool LatticeCleaner<T>::stopnow() {
+//   if(itsChoose) {
+//     LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
+//     Bool stop = ApplicationEnvironment::stop();
+//     if(stop) {
+//       os << "Lattice clean stopped at user request" << LogIO::POST;
+//       return True;
+//     }
+//     Vector<String> choices(2);
+//     choices(0)="Continue";
+//     choices(1)="Stop Now";
+//     choices(2)="Don't ask again";
+//     String choice =
+//       ApplicationEnvironment::choice("Do you want to continue or stop?",
+// 				     choices);
+//     if (choice==choices(0)) {
+//       return False;
+//     }
+//     else if (choice==choices(2)) {
+//       itsChoose=False;
+//       os << "Continuing: won't ask again" << LogIO::POST;
+//       return False;
+//     }
+//     else {
+//       os << "Lattice clean stopped at user request" << LogIO::POST;
+//       return True;
+//     }
+//   }
+//   else {
+//     return False;
+//   }
+// }
 
 
 
