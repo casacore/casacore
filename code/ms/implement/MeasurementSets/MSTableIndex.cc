@@ -48,13 +48,14 @@ MSTableIndex::MSTableIndex()
 {;}
 
 MSTableIndex::MSTableIndex(const Table &subTable,
-				 const Vector<String> &indexCols)
+                           const Vector<String> &indexCols,
+                           ColumnsIndex::Compare* compareFunction)
     : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
       lastTime_p(0.0), lastInterval_p(0.0), lastNearest_p(0), nearestFound_p(False), 
       nearestReady_p(False), nrows_p(0), hasChanged_p(True), index_p(0), 
       hasTime_p(False), hasInterval_p(False)
 {
-    attach(subTable, indexCols);
+    attach(subTable, indexCols, compareFunction);
 }
 
 MSTableIndex::MSTableIndex(const MSTableIndex &other)
@@ -115,7 +116,8 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 }
 
 void MSTableIndex::attach(const Table &subTable,
-			  const Vector<String> &indexCols)
+			  const Vector<String> &indexCols,
+                          ColumnsIndex::Compare* compareFunction)
 {
     clear();
     tab_p = subTable;
@@ -141,7 +143,7 @@ void MSTableIndex::attach(const Table &subTable,
     }
 
     if (indexCols.nelements() > 0) {    
-	index_p = new ColumnsIndex(tab_p, indexCols);
+	index_p = new ColumnsIndex(tab_p, indexCols, compareFunction);
 	AlwaysAssert(index_p, AipsError);
 
 	RecordDesc keyDesc;
