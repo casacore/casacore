@@ -172,25 +172,16 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 // succeeded.  The mask==F on output if the coordinate conversion 
 // fails (usually means a pixel is outside of the valid CoordinateSystem)
 // 
-  uInt maskType = 0;
-  if (image.isMasked()) {
-    if (image.isMaskWritable()) {
-      maskType = 1;                               // get/putMaskSlice
+  Bool doMask = False;
+  if (image.isMasked() && image.hasPixelMask()) {
+    if (image.pixelMask().isWritable()) {
+      doMask = True;
     } else {
-      if (image.hasPixelMask()) maskType = 2;     // getMaskSLice, putSlice to pixelMask
-    }
-    if (maskType==0) { 
-       os << LogIO::WARN << "The output image is masked, but I cannot access that mask" << LogIO::POST;
+       os << LogIO::WARN << "The image is masked, but it cannot be written to" << LogIO::POST;
     }
   }
-/*
-  cerr << "isMasked, hasPixelMask, isMaskWritable" << image.isMasked() << ", " <<
-          image.hasPixelMask() << ", " << image.isMaskWritable() << endl;
-  cerr << "maskType = " << maskType << endl;
-*/
-//
   Lattice<Bool>* pixelMaskPtr = 0;
-  if (maskType==2) pixelMaskPtr = &image.pixelMask();
+  if (doMask) pixelMaskPtr = &image.pixelMask();
   Array<Bool>* maskPtr = 0;
 //
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
@@ -223,43 +214,41 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
 // Get input mask values if available
 
-    if (maskType!=0) {
-       maskPtr = new Array<Bool>(image.getMaskSlice(chunkIter.position(), 
+    if (doMask) {
+       maskPtr = new Array<Bool>(image.getMaskSlice(chunkIter.position(),
                                  chunkIter.cursorShape(), False));
     }
 //
     for (pixelStepper.reset(),d=0; !pixelStepper.atEnd(); pixelStepper++,d++) {
+      pixelPosition = pixelStepper.relativePosition();
       if (coordIsGood(d)) {
-        pixelPosition = pixelStepper.relativePosition();
         for (uInt f = 0; f < nFreqs; f++) {
           if (freqAxis >= 0) pixelPosition(freqAxis) = f;
           const Flux<Double>& thisFlux = pixelVals(d, f);
           for (uInt s = 0; s < nStokes; s++) {
             if (polAxis >= 0) pixelPosition(polAxis) = s;
 //
-            if (maskType==0) {
-              imageChunk(pixelPosition) += 
-                 static_cast<Float>(thisFlux.value(s).real());
-            } else {
+            if (doMask) {
                if ((*maskPtr)(pixelPosition)) {
                  imageChunk(pixelPosition) += 
                    static_cast<Float>(thisFlux.value(s).real());
                }
+            } else {
+              imageChunk(pixelPosition) += 
+                 static_cast<Float>(thisFlux.value(s).real());
             }
           }
         }
       } else {
-        (*maskPtr)(pixelPosition) = False;
+        if (doMask) (*maskPtr)(pixelPosition) = False;
       }
     }
 
 // Update output mask in approprate fashion
 
-    if (maskType==1) {
-       image.putMaskSlice(*maskPtr, chunkIter.position());
-    } else if (maskType==2) {
+    if (doMask) {
        pixelMaskPtr->putSlice(*maskPtr, chunkIter.position());
+       if (maskPtr!=0) delete maskPtr;
     }
-    if (maskPtr!=0) delete maskPtr;
   }
 }
