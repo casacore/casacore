@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1107,10 +1107,10 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	 // The combination of left and right gets a mask if either
 	 // of them has a mask.
 	 Array<Bool> newMask;
-	 Bool makeMask = ToBool (arg_p[1].isInvalidScalar()
-                              || arg_p[1].isMasked()
-			      || arg_p[2].isInvalidScalar()
-			      || arg_p[2].isMasked());
+	 Bool makeMask = (arg_p[1].isInvalidScalar()
+                       || arg_p[1].isMasked()
+		       || arg_p[2].isInvalidScalar()
+		       || arg_p[2].isMasked());
 
 // There are 4 different scalar/array combinations for 1st and 2nd operand.
 // Each of them must handle the optional new mask.
@@ -1119,12 +1119,12 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 
 	 if (arg_p[1].isScalar()) {
 	    arg_p[1].eval (tmp1);
-	    Bool mask1 = ToBool (!arg_p[1].isInvalidScalar());
+	    Bool mask1 = (!arg_p[1].isInvalidScalar());
 	    if (arg_p[2].isScalar()) {
 		// Handle scalar,scalar case.
 	       resData = result.value().getStorage (deleteRes);
 	       arg_p[2].eval (tmp2);
-	       Bool mask2 = ToBool (!arg_p[2].isInvalidScalar());
+	       Bool mask2 = (!arg_p[2].isInvalidScalar());
 	       if (makeMask) {
 		  newMask.resize (result.shape());
 		  maskData = newMask.getStorage (deleteMask);
@@ -1190,7 +1190,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		// Handle array,scalar case.
 	       arg_p[2].eval (tmp2);
 	       if (makeMask) {
-		  Bool mask2 = ToBool (!arg_p[2].isInvalidScalar());
+		  Bool mask2 = (!arg_p[2].isInvalidScalar());
 		  maskData = newMask.getStorage (deleteMask);
 		  for (uInt i=0; i<n; i++) {
 		     if (! tmpbData[i]) {

@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1632,7 +1632,7 @@ LatticeExprNode replace (const LatticeExprNode& arg1,
 Bool LatticeExprNode::areRegions (const LatticeExprNode& left,
 				  const LatticeExprNode& right)
 {
-   return ToBool (left.isRegion() && right.isRegion());
+   return (left.isRegion() && right.isRegion());
 }
 
 LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,

@@ -1,5 +1,5 @@
 //# ColumnsIndex.h: Index to one or more columns in a table
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -399,7 +399,7 @@ private:
 
 inline Bool ColumnsIndex::isUnique() const
 {
-    return (ToBool (itsDataIndex.nelements() == itsUniqueIndex.nelements()));
+    return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
 }
 inline const Table& ColumnsIndex::table() const
 {
