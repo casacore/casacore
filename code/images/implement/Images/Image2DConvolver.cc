@@ -1,5 +1,5 @@
 //# Image2DConvolver.cc:  convolution of an image by given Array
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,6 +49,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
 #include <trial/Tasking/NewFile.h>
 #include <aips/Utilities/String.h>
@@ -102,7 +103,8 @@ ImageInterface<T>* Image2DConvolver<T>::convolve(LogIO& os,
       convolve(os, *pImOut, imageIn, kernelType, pixelAxes, parameters,
                autoScale, scale, True);
    } catch (AipsError x) {
-      delete pImOut; pImOut = 0;
+      delete pImOut; 
+      pImOut = 0;
       os << x.getMesg() << LogIO::EXCEPTION;
    }
 
@@ -122,7 +124,6 @@ void Image2DConvolver<T>::convolve(LogIO& os,
                                    Bool autoScale, Double scale,
                                    Bool copyMiscellaneous)
 {
-
 // Checks
 
    if (parameters.nelements() != 3) {
@@ -263,7 +264,6 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
                                                  const Unit& brightnessUnitIn,
                                                  Bool autoScale, Double scale) const
 {
-
 // Find out if convolution axes hold the sky.  Scaling from
 // Jy/beam and Jy/pixel only really makes sense if this is True
 
@@ -430,6 +430,14 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          }
       }
    }
+
+// Put beam position angle into range +/- 180 in case it has eluded us so far
+
+    if (beamOut.nelements()==3) {
+       MVAngle pa(beamOut(2).getValue(Unit("rad")));
+       pa();
+       beamOut(2) = Quantum<Double>(pa.degree(), Unit("deg"));
+    }
 }
 
 
