@@ -156,15 +156,21 @@ public:
 
 // Constructor takes the image and a <src>LogIO</src> object for logging.
 // You can also specify whether you want to see progress meters or not.
+// You can force the storage image to be disk based, otherwise
+// the decision for core or disk is taken for you.
    ImageHistograms(const ImageInterface<T>& image, 
                    LogIO& os,
-                   Bool showProgress=True);
+                   Bool showProgress=True,
+                   Bool forceDisk=False);
 
 // Constructor takes the image only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of statistics.
-// You can also specify whether you want to see progress meters or not.
+// You can specify whether you want to see progress meters or not.
+// You can force the storage image to be disk based, otherwise
+// the decision for core or disk is taken for you.
    ImageHistograms(const ImageInterface<T>& image, 
-                   Bool showProgress=True);
+                   Bool showProgress=True,
+                   Bool forceDisk=False);
 
 // Copy constructor (copy semantics)
    ImageHistograms(const ImageHistograms<T> &other);
@@ -279,7 +285,7 @@ private:
    ImageStatistics<T>* pStats_p;
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
-   Bool haveLogger_p, showProgress_p;
+   Bool haveLogger_p, showProgress_p, forceDisk_p;
    uInt nBins_p;
    PGPlotter plotter_p;
    Vector<Int> cursorAxes_p, displayAxes_p, nxy_p;

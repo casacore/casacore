@@ -63,9 +63,10 @@
 // Public functions
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
+ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image, 
                                      LogIO &os,
-                                     Bool showProgressU)
+                                     Bool showProgress,
+                                     Bool forceDisk)
 : os_p(os),
   pInImage_p(0),
   pStoreImage_p(0),
@@ -78,7 +79,8 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
   doList_p(False),
   doLog_p(False),
   haveLogger_p(True),
-  showProgress_p(showProgressU),
+  showProgress_p(showProgress),
+  forceDisk_p(forceDisk),
   nBins_p(25)
 //
 // Constructor. 
@@ -88,7 +90,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
    range_p.resize(0);
    blcParent_p.resize(0);
 
-   if (setNewImage(imageU)) {
+   if (setNewImage(image)) {
 
 // Cursor axes defaults to all
    
@@ -101,8 +103,9 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
 
 
 template <class T>
-ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU, 
-                                     Bool showProgressU)
+ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image, 
+                                     Bool showProgress,
+                                     Bool forceDisk)
 : pInImage_p(0),
   pStoreImage_p(0),
   pStats_p(0),
@@ -114,7 +117,8 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
   doList_p(False),
   doLog_p(False),
   haveLogger_p(False),
-  showProgress_p(showProgressU),
+  showProgress_p(showProgress),
+  forceDisk_p(forceDisk),
   nBins_p(25)
 //
 // Constructor. 
@@ -124,7 +128,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
    range_p.resize(0);
    blcParent_p.resize(0);
 
-   if (setNewImage(imageU)) {
+   if (setNewImage(image)) {
 
 // Cursor axes defaults to all
    
@@ -195,6 +199,7 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       nxy_p = other.nxy_p;
       range_p = other.range_p;
       blcParent_p = other.blcParent_p;
+      forceDisk_p = other.forceDisk_p;
    }
    return *this;
 }
@@ -221,7 +226,7 @@ ImageHistograms<T>::~ImageHistograms()
 
 
 template <class T>
-Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
+Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
 //
 // This function sets the cursor axes and the display axes
 //
@@ -239,7 +244,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 // Set cursor arrays (can't assign to potentially zero length array)
 
    cursorAxes_p.resize(0);   
-   cursorAxes_p = axesU;
+   cursorAxes_p = axes;
 
    if (cursorAxes_p.nelements() == 0) {
    
@@ -266,7 +271,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axesU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setNBins (const uInt& nBinsU)
+Bool ImageHistograms<T>::setNBins (const uInt& nBins)
 //
 // Set the number of bins
 //
@@ -280,12 +285,12 @@ Bool ImageHistograms<T>::setNBins (const uInt& nBinsU)
 
    const uInt saveNBins = nBins_p;
 
-   if (nBinsU < 1) {
+   if (nBins < 1) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of bins" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
    } else {
-      nBins_p = nBinsU;
+      nBins_p = nBins;
    }
 
 // Signal that we need a new accumulation image
@@ -297,7 +302,7 @@ Bool ImageHistograms<T>::setNBins (const uInt& nBinsU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& includeU)
+Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& include)
 //
 // Assign the desired inclusion range
 //
@@ -316,7 +321,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& includeU)
 
    Bool noInclude;
    ostrstream os;
-   if (!setInclude(range_p, noInclude, includeU, os)) {
+   if (!setInclude(range_p, noInclude, include, os)) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel inclusion range" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -335,7 +340,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& includeU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setGaussian (const Bool& doGaussU)
+Bool ImageHistograms<T>::setGaussian (const Bool& doGauss)
 //
 // Specify whether there should be a Gaussian overlay or not
 //
@@ -345,14 +350,14 @@ Bool ImageHistograms<T>::setGaussian (const Bool& doGaussU)
       return False;
    }
 
-   doGauss_p = doGaussU;
+   doGauss_p = doGauss;
 
    return True;
 }
 
 
 template <class T>
-Bool ImageHistograms<T>::setForm (const Bool& doLogU, const Bool& doCumuU)
+Bool ImageHistograms<T>::setForm (const Bool& doLog, const Bool& doCumu)
 //
 // Specify whether the form of the histogram should be linear/log
 // or cumulative or not.
@@ -363,15 +368,15 @@ Bool ImageHistograms<T>::setForm (const Bool& doLogU, const Bool& doCumuU)
       return False;
     }
 
-    doLog_p = doLogU;
-    doCumu_p = doCumuU;
+    doLog_p = doLog;
+    doCumu_p = doCumu;
 
     return True;
 }
 
 
 template <class T>
-Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
+Bool ImageHistograms<T>::setStatsList (const Bool& doList)
 //
 // See if user wants to list statistics as well 
 //
@@ -381,15 +386,15 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
       return False;
    }
 
-   doList_p = doListU;
+   doList_p = doList;
 
    return True;
 } 
 
 
 template <class T>
-Bool ImageHistograms<T>::setPlotting(PGPlotter& plotterU,
-                                     const Vector<Int>& nxyU)
+Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
+                                     const Vector<Int>& nxy)
 //
 // Assign the desired PGPLOT device name and number
 // of subplots
@@ -403,7 +408,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotterU,
 
 // Is new plotter attached ?
  
-   if (!plotterU.isAttached()) {
+   if (!plotter.isAttached()) {
       if (haveLogger_p) {
          os_p << LogIO::SEVERE << "Input plotter is not attached" << LogIO::POST;
       }
@@ -416,16 +421,16 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotterU,
 // close the previous device
    
    if (plotter_p.isAttached()) {
-      if (plotter_p.qid() != plotterU.qid()) plotter_p = plotterU;
+      if (plotter_p.qid() != plotter.qid()) plotter_p = plotter;
    } else {
-      plotter_p = plotterU;
+      plotter_p = plotter;
    }
   
 
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
    nxy_p.resize(0);
-   nxy_p = nxyU;
+   nxy_p = nxy;
    ostrstream os;
    if (!ImageUtilities::setNxy(nxy_p, os)) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid number of subplots" << LogIO::POST;
@@ -1231,6 +1236,7 @@ void ImageHistograms<T>::makeHistograms()
 
    uInt memory = AppInfo::memoryInMB();
    Double useMemory = Double(memory)/10.0;
+   if (forceDisk_p) useMemory = 0.0;
    pStoreImage_p = new TempLattice<T>(TiledShape(storeImageShape,
                                        tileShape), useMemory);
 
