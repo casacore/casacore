@@ -4947,3 +4947,4 @@
 15 006 sys rm bin/rpfitsfiller
 15 006 sys rm bin/rpfitsfiller2
 15 006 top rm code/trialdisplay/implement/DisplayDatas/test/templates
+15 006 top rm code/trialdisplay/implement/DisplayDatas/test/tTableAsRaster.cc
