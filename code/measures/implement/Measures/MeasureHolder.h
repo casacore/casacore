@@ -47,7 +47,7 @@ class GlishRecord;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasureHolder" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -187,13 +187,6 @@ private:
 //# Data Members
   // Pointer to a Measure
   PtrHolder<Measure> hold;
-  // The following list can disappear once dynamic_cast available
-  PtrHolder<MDirection> hdir;
-  PtrHolder<MDoppler> hdop;
-  PtrHolder<MEpoch> hepo;
-  PtrHolder<MFrequency> hfrq;
-  PtrHolder<MPosition> hpos;
-  PtrHolder<MRadialVelocity> hrad;
 
 };
 

@@ -27,7 +27,7 @@
 
 //# Includes
 #include <trial/Measures/MeasureHolder.h>
-#include <trial/Measures/QuantityHolder.h>
+#include <trial/Measures/QuantumHolder.h>
 #include <aips/Exceptions.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MDirection.h>
@@ -45,14 +45,11 @@
 #include <aips/Logging/LogOrigin.h>
 
 //# Constructors
-MeasureHolder::MeasureHolder() : hold(),
-  hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {};
+MeasureHolder::MeasureHolder() : hold() {};
 
-MeasureHolder::MeasureHolder(const Measure &in) : hold(in.clone()),
-    hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {}
+MeasureHolder::MeasureHolder(const Measure &in) : hold(in.clone()) {}
 
-MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold(),
-      hdir(), hdop(), hepo(), hfrq(), hpos(), hrad() {
+MeasureHolder::MeasureHolder(const MeasureHolder &other) : hold() {
 	if (other.hold.ptr()) hold.set(other.hold.ptr()->clone());
       }
 
@@ -113,54 +110,42 @@ const MDirection &MeasureHolder::asMDirection() {
   if (!hold.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
-  /// return dynamic_cast<MDirection &>(*hold.ptr());
-  hdir.set(new MDirection(hold.ptr()));
-  return *hdir.ptr();
+  return (const MDirection &) *hold.ptr();
 }
 
 const MDoppler &MeasureHolder::asMDoppler() {
   if (!hold.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
-  /// return dynamic_cast<MDoppler &>(*hold.ptr());
-  hdop.set(new MDoppler(hold.ptr()));
-  return *hdop.ptr();
+  return (const MDoppler &) *hold.ptr();
 }
 
 const MEpoch &MeasureHolder::asMEpoch() {
   if (!hold.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
-  /// return dynamic_cast<MEpoch &>(*hold.ptr());
-  hepo.set(new MEpoch(hold.ptr()));
-  return *hepo.ptr();
+  return (const MEpoch &) *hold.ptr();
 }
 
 const MFrequency &MeasureHolder::asMFrequency() {
   if (!hold.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
-  /// return dynamic_cast<MFrequency &>(*hold.ptr());
-  hfrq.set(new MFrequency(hold.ptr()));
-  return *hfrq.ptr();
+  return (const MFrequency &) *hold.ptr();
 }
 
 const MPosition &MeasureHolder::asMPosition() {
   if (!hold.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
-  /// return dynamic_cast<MPosition &>(*hold.ptr());
-  hpos.set(new MPosition(hold.ptr()));
-  return *hpos.ptr();
+  return (const MPosition &) *hold.ptr();
 }
 
 const MRadialVelocity &MeasureHolder::asMRadialVelocity() {
   if (!hold.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
-  /// return dynamic_cast<MRadialVelocity &>(*hold.ptr());
-  hrad.set(new MRadialVelocity(hold.ptr()));
-  return *hrad.ptr();
+  return (const MRadialVelocity &) *hold.ptr();
 }
 
 Bool MeasureHolder::fromRecord(String &error,
@@ -214,7 +199,7 @@ Bool MeasureHolder::fromRecord(String &error,
 	return False;
       };
     };
-    QuantityHolder q0, q1, q2;
+    QuantumHolder q0, q1, q2;
     Int n;
     if (in.isDefined(String("m0")) &&
 	in.type(in.idToNumber(RecordFieldId("m0"))) == TpRecord) {
@@ -267,17 +252,16 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
     Vector<Quantum<Double> > res = hold.ptr()->getData()->getRecordValue();
     Int n = res.nelements();
     Record val;
-    Bool ok = True;
     if (n > 2) {
-      if (!QuantityHolder(res(2)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(2)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("m2"), val);
     };
     if (n > 1) {
-      if (!QuantityHolder(res(1)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(1)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("m1"), val);
     };
     if (n > 0) {
-      if (!QuantityHolder(res(0)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("m0"), val);
     };
     res.resize(0);
@@ -285,15 +269,15 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
     val = Record();
     n = res.nelements();
     if (n > 2) {
-      if (!QuantityHolder(res(2)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(2)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("ev2"), val);
     };
     if (n > 1) {
-      if (!QuantityHolder(res(1)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(1)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("ev1"), val);
     };
     if (n > 0) {
-      if (!QuantityHolder(res(0)).toRecord(error, val)) return False;
+      if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("ev0"), val);
     };
     return True;
