@@ -743,11 +743,11 @@ class FitsField<FitsBit> : public FitsBase {
 	FitsField(int n = 1);
 	~FitsField();
 
-	FitsField<FitsBit> & operator () () { byte_offset = 0; mask = 1;
+	FitsField<FitsBit> & operator () () { byte_offset = 0; mask = 0200;
 		return *this; }
 
 	FitsField<FitsBit> & operator () (unsigned i) {
-		byte_offset = i / 8; mask = 1 << (i % 8); return *this; }
+	    byte_offset = i / 8; mask = 0200 >> (i % 8); return *this; }
 
 	FitsField<FitsBit> & operator = (unsigned i) {
 	    (*field)[byte_offset] =
