@@ -7,7 +7,7 @@ CHAR_MAX..............  127
 SCHAR_MIN.............  -128
 SCHAR_MAX.............  127
 UCHAR_MAX.............  255
-MB_LEN_MAX............  5
+MB_LEN_MAX............  1
 SHRT_MIN..............  -32768
 SHRT_MAX..............  32767
 USHRT_MAX.............  65535
@@ -20,6 +20,7 @@ ULONG_MAX.............  4294967295
 
 Machine constants from float.h:
 FLT_RADIX.............  2
+FLT_ROUNDS............  1
 FLT_MIN_EXP...........  -125
 DBL_MIN_EXP...........  -1021
 LDBL_MIN_EXP..........  -16381
@@ -34,10 +35,10 @@ DBL_MAX_10_EXP........  308
 LDBL_MAX_10_EXP.......  4932
 FLT_MANT_DIG..........  24
 DBL_MANT_DIG..........  53
-LDBL_MANT_DIG.........  113
+LDBL_MANT_DIG.........  64
 FLT_DIG...............  6
 DBL_DIG...............  15
-LDBL_DIG..............  33
+LDBL_DIG..............  18
 FLT_EPSILON...........  1.19209e-07
 DBL_EPSILON...........  2.22045e-16
 LDBL_EPSILON..........  (unprintable)
@@ -57,21 +58,16 @@ BITS(Int).............  32
 BITS(uInt)............  32
 BITS(Float)...........  32
 BITS(Double)..........  64
-BITS(lDouble).........  128
+BITS(lDouble).........  96
 HIBITS................  -32768
-HIBITL................  2147483648
-HIBITI................  2147483648
+HIBITL................  -2147483648
 MAXSHORT..............  32767
 MAXLONG...............  2147483647
 MAXINT................  2147483647
 MINFLOAT..............  1.4013e-45
-LN_MINFLOAT...........  -103.279
 MINDOUBLE.............  4.94066e-324
-LN_MINDOUBLE..........  -744.44
 MAXFLOAT..............  3.40282e+38
-LN_MAXFLOAT...........  88.7228
 MAXDOUBLE.............  1.79769e+308
-LN_MAXDOUBLE..........  709.783
 FSIGNIF...............  24
 DSIGNIF...............  53
 

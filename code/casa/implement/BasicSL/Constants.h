@@ -196,9 +196,6 @@
 // HIBITL            Value of a long integer with only the high-order
 //                   bit set (in most implementations, 0x80000000).
 //
-// HIBITI            Value of a regular integer with only the high-order
-//                   bit set (usually the same as HIBITS or HIBITL).
-//
 // MAXSHORT          Maximum value of a signed short integer (in most
 //                   implementations, 0x7FFF = 32767).
 //
@@ -209,18 +206,16 @@
 //                   the same as MAXSHORT or MAXLONG).
 //
 // MINFLOAT          Minimum positive value of a single-precision
-// (use C::minfloat in preference to this)
-// LN_MINFLOAT       floating-point number, and its natural logarithm.
+//                   floating-point number (use C::minfloat in preference 
+//                   to this)
 //
 // MINDOUBLE         Minimum positive value of a double-precision
-// (use C::mindouble in preference to this)
-// LN_MINDOUBLE      floating-point number, and its natural logarithm.
+//                   floating-point number (use C::mindouble in preference 
+//                   to this)
 //
-// MAXFLOAT          Maximum value of a single-precision
-// LN_MAXFLOAT       floating- point number, and its natural logarithm.
+// MAXFLOAT          Maximum value of a single-precision floating-point number
 //
-// MAXDOUBLE         Maximum value of a double-precision
-// LN_MAXDOUBLE      floating- point number, and its natural logarithm.
+// MAXDOUBLE         Maximum value of a double-precision floating-point number
 //
 // FSIGNIF           Number of significant bits in the mantissa of a
 //                   single-precision floating-point number.

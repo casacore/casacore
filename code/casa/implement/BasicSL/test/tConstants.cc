@@ -112,18 +112,13 @@ main()
         << "BITS(lDouble).........  " << BITS(lDouble)      << endl
         << "HIBITS................  " << HIBITS             << endl
         << "HIBITL................  " << HIBITL             << endl
-        << "HIBITI................  " << HIBITI             << endl
         << "MAXSHORT..............  " << MAXSHORT           << endl
         << "MAXLONG...............  " << MAXLONG            << endl
         << "MAXINT................  " << MAXINT             << endl
         << "MINFLOAT..............  " << MINFLOAT           << endl
-        << "LN_MINFLOAT...........  " << LN_MINFLOAT        << endl
         << "MINDOUBLE.............  " << MINDOUBLE          << endl
-        << "LN_MINDOUBLE..........  " << LN_MINDOUBLE       << endl
         << "MAXFLOAT..............  " << MAXFLOAT           << endl
-        << "LN_MAXFLOAT...........  " << LN_MAXFLOAT        << endl
         << "MAXDOUBLE.............  " << MAXDOUBLE          << endl
-        << "LN_MAXDOUBLE..........  " << LN_MAXDOUBLE       << endl
         << "FSIGNIF...............  " << FSIGNIF            << endl
         << "DSIGNIF...............  " << DSIGNIF            << endl;
 
