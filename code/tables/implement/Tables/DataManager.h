@@ -1,5 +1,5 @@
 //# DataManager.h: Abstract base classes for a data manager
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -325,9 +325,10 @@ protected:
 
 
 private:
-    uInt        nrcol_p;            //# #columns in this st.man.
-    uInt        seqnr_p;            //# Unique nr of this st.man. in a Table
-    Table*      table_p;            //# Table this data manager belongs to
+    uInt         nrcol_p;            //# #columns in this st.man.
+    uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
+    Table*       table_p;            //# Table this data manager belongs to
+    mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 
 
     // The copy constructor cannot be used for this base class.
@@ -443,6 +444,14 @@ public:
     //   <li> TableUnknownDataManager
     // </thrown>
     static DataManager* unknownDataManager (const String& dataManagerType);
+
+    // Has the object already been cloned?
+    DataManager* getClone() const
+        { return clone_p; }
+
+    // Set the pointer to the clone.
+    void setClone (DataManager* clone) const
+        { clone_p = clone; }
 };
 
 
