@@ -4,7 +4,6 @@
 \setlength{\evensidemargin}{0.0in}
 \setlength{\oddsidemargin}{0.0in}
 \parskip=5truept
-\begin{document}
 \newcommand{\aipspp}{AIPS++\ }
 \newcommand{\defline}[1]{\cline{1-5} 
 \multicolumn{5}{|l|}{#1} \\ 
@@ -30,6 +29,7 @@
 	\end{tabular}
 }
 
+\begin{document}
 \title{Definition of MeasurementSet \break \aipspp\ Note 191}
 \author{M.H. Wieringa, ATNF\\T.J. Cornwell, NRAO}
 \date{October 4, 1996}
