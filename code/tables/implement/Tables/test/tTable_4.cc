@@ -221,7 +221,7 @@ void doTable (Bool ask, const TableDesc& td)
     try {
       if (ask) {
 	cout << "0=end 1=reopen 2=addcols 3=removecols 4=addrow 5=show "
-	        "6=check, 7=refcol: ";
+	        "6=copy, 7=check, 8=refcol: ";
       }
       cin >> op;
       if (op == 1) {
@@ -243,9 +243,9 @@ void doTable (Bool ask, const TableDesc& td)
 	tab.addRow();
 	putData (tab, tab.tableDesc(), n, 1);
 	cout << " Added and initialized 1 row" << endl;
-      } else if (op == 5  ||  op == 7) {
+      } else if (op == 5  ||  op == 8) {
 	Table reftab(tab);
-	if (op == 7) {
+	if (op == 8) {
 	  String str;
 	  if (ask) {
 	    cout << "Column names: ";
@@ -262,11 +262,20 @@ void doTable (Bool ask, const TableDesc& td)
 	  const Record& subrec = rec.subRecord(i);
 	  cout << " Type=" << subrec.asString("TYPE");
 	  cout << " Name=" << subrec.asString("NAME");
+	  cout << " #Spec=" << subrec.subRecord("SPEC").nfields();
 	  cout << " Columns=" << subrec.asArrayString("COLUMNS");
 	  cout << endl;
 	}
 	cout << "Table has " << tab.nrow() << " rows" << endl << endl;
       } else if (op == 6) {
+	SetupNewTable newtab("tTable_4_tmp.datn", tab.tableDesc(), Table::New);
+	newtab.bindCreate (tab.dataManagerInfo());
+	Table ntab (newtab);
+	tab = Table();
+	ntab.rename ("tTable_4_tmp.data", Table::New);
+	tab = ntab;
+	cout << " Recreated table" << endl;
+      } else if (op == 7) {
 	checkData (tab, tab.tableDesc(), 0, tab.nrow());
 	cout << " Checked all data" << endl;
       } else {
