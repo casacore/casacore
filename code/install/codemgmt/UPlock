@@ -29,12 +29,11 @@
 # $Id$
 #
 set script = "UPlock"
-set usage = 'Usage: UPlock <typ>'
+set usage = 'Usage: UPlock [-c] [-r] [-d] [-n] <typ>'
 #
 # UPlock script (must have x allowed)
-# Test for each locked file if it is in the list of files (see UPfind) that
-#      has been found.
-# It checks the <typ>.found (as created with UPfind), and output the
+# Test for each locked file if it is in the list of files
+# <typ>.found (as created with UPfind), and output the
 # result on the <typ>.locked.
 #
 # See UPinfo for details
@@ -63,9 +62,14 @@ if (! -r $uppath/UPinfo) then
 endif
 source $uppath/UPinfo
 if (! $ok) exit 1
+
+if ($nox) exit 0
 #
-# Get specific data
-#                                                                               if (! -r $ldir/${tp}.found) then
+# Get specific data 
+#
+# Execute
+#
+if (! -r $ldir/${tp}.found) then
    echo "No ${tp}.found present. Cannot proceed."
    echo "Execute UPfind first"
    exit (1)
