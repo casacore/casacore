@@ -6463,3 +6463,4 @@
 18 552 src mv trial/implement/Tables/test/tMemoryStMan.cc aips/implement/Tables/test/tMemoryStMan.cc
 18 552 src mv trial/implement/Tables/test/tMemoryStMan.out aips/implement/Tables/test/tMemoryStMan.out
 18 564 src mv trial/implement/MeasurementComponents/CalMainRecord.cc trial/implement/CalTables/CalMainRecord.cc
+18 564 src mv trial/implement/MeasurementComponents/BJonesMRec.cc trial/implement/CalTables/BJonesMRec.cc
