@@ -1,5 +1,5 @@
 //# tTypeIO.cc: Test program for class TypeIO and derived classes
-//# Copyright (C) 1996,2001
+//# Copyright (C) 1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,11 @@
 
 #include <aips/aips.h>
 #include <aips/IO/CanonicalIO.h>
+#include <aips/IO/LECanonicalIO.h>
 #include <aips/IO/RawIO.h>
 #include <aips/IO/ConversionIO.h>
 #include <aips/OS/CanonicalDataConversion.h>
+#include <aips/OS/LECanonicalDataConversion.h>
 #include <aips/OS/IBMDataConversion.h>
 #include <aips/OS/VAXDataConversion.h>
 #include <aips/OS/RawDataConversion.h>
@@ -134,12 +136,19 @@ int main()
     CanonicalIO canonicalIO (&regularFileIO);
     doIt (&canonicalIO);
 
+    LECanonicalIO lecanonicalIO (&regularFileIO);
+    doIt (&lecanonicalIO);
+
     RawIO rawIO (&regularFileIO);
     doIt (&rawIO);
 
     CanonicalDataConversion canConv;
     ConversionIO canConvIO (&canConv, &regularFileIO);
     doIt (&canConvIO);
+    
+    LECanonicalDataConversion lecanConv;
+    ConversionIO lecanConvIO (&lecanConv, &regularFileIO);
+    doIt (&lecanConvIO);
     
     IBMDataConversion ibmConv;
     ConversionIO ibmConvIO (&ibmConv, &regularFileIO);
