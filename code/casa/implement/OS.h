@@ -45,7 +45,7 @@
 #include <aips/OS/DataConversion.h
 #include <aips/OS/CanonicalDataConversion.h
 
-
+#include <aips/OS/Memory.h>
 // <module>
 //
 // <summary>
@@ -98,7 +98,7 @@
 //       <linkto class=IBMConversion:description>IBM/360</linkto> format.
 //       The structure of the framework is shown in the 
 //       <a href=OS/OS_1.html>OMT diagram</a>.
-//  <li>
+//  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
 // </ul>
 
 // </note>
