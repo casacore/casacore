@@ -1,4 +1,4 @@
-//# Program.cc: This program ...
+//# tAipsrc.cc: This program tests the Aipsrc interface
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,41 +34,47 @@ int main(){
   String aipsrcValue, aipsrcFile, aipsrcLine;
 
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl
+  cout << aipsrcKeyword << " " << aipsrcValue << endl
        << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   Aipsrc::reRead();
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl;
+  cout << aipsrcKeyword << " " << aipsrcValue << endl;
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl
+  cout << aipsrcKeyword << " " << aipsrcValue << endl
        << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   aipsrcKeyword = String("bogus.wes.key");
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl;
+  cout << aipsrcKeyword << " " << aipsrcValue << endl;
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl
+  cout << aipsrcKeyword << " " << aipsrcValue << endl
        << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   aipsrcKeyword = String("printer.ps.paper");
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl
+  cout << aipsrcKeyword << " " << aipsrcValue << endl
        << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << aipsrcKeyword << " " << aipsrcValue << endl
+  cout << aipsrcKeyword << " " << aipsrcValue << endl
        << aipsrcFile << endl << aipsrcLine << endl << endl;
 
   aipsrcKeyword = String("printer.psnet.paper");
 
   aipsrcKeyword = String("dummy.abc");
   Aipsrc::find(aipsrcValue, aipsrcFile, aipsrcLine, aipsrcKeyword);
-  cerr << "*" << aipsrcKeyword << "*" << aipsrcValue << "*" << endl
+  cout << "*" << aipsrcKeyword << "*" << aipsrcValue << "*" << endl
        << "*" << aipsrcFile << "*" << endl 
        << "*" << aipsrcLine << "*" << endl;
 
-  Aipsrc::show(cerr);
+  cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
+  cout << "AIPSARCH: " << Aipsrc::aipsArch() << endl;
+  cout << "AIPSSITE: " << Aipsrc::aipsSite() << endl;
+  cout << "AIPSHOST: " << Aipsrc::aipsHost() << endl;
+  cout << "AIPSHOME: " << Aipsrc::aipsHome() << endl;
+
+  Aipsrc::show(cout);
 
   // test the "find with default"
   {
