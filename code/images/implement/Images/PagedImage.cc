@@ -305,6 +305,18 @@ operator=(const PagedImage<T> & other)
   return *this;
 };
 
+template <class T> Lattice<T>* PagedImage<T>::
+clone() const
+{
+  return new PagedImage<T> (*this);
+}
+
+template <class T> Bool PagedImage<T>::
+isWritable() const
+{
+  return map_p.isWritable();
+}
+
 template <class T> void PagedImage<T>::
 rename(const String & newName)
 {
@@ -446,6 +458,12 @@ putSlice(const Array<T> & sourceBuffer, const IPosition & where,
     throw(AipsError("PagedImage<T>::putSlice - throughmask==False but no "
 		    "mask exists."));
   }
+}
+
+template <class T> void PagedImage<T>::
+putSlice(const Array<T> & sourceBuffer, const IPosition & where)
+{
+  Lattice<T>::putSlice(sourceBuffer, where);
 }
 
 // apply a function to all elements of the map
@@ -638,10 +656,8 @@ operator+= (const PagedImage<T> & other)
 	                         maskiter.reset(), othermaskiter.reset(); 
 	 !toiter.atEnd();
 	 toiter++, maskiter++, otheriter++, othermaskiter++) {
-      maskiter.cursor() = maskiter.cursor() || othermaskiter.cursor();
-      maskiter.writeCursor();
-      toiter.cursor()(maskiter.cursor()) += otheriter.cursor();
-      toiter.writeCursor();
+      maskiter.rwCursor() = maskiter.cursor() || othermaskiter.cursor();
+      toiter.rwCursor()(maskiter.cursor()) += otheriter.cursor();
     }
   } else if (!writeThis && writeOther) {
     mask_p = new PagedArray<Bool>(this->shape(), table_p, "mask", 0);
@@ -651,18 +667,15 @@ operator+= (const PagedImage<T> & other)
 	                        maskiter.reset(), othermaskiter.reset(); 
 	 !toiter.atEnd();
 	 toiter++, maskiter++, otheriter++, othermaskiter++) {
-      maskiter.cursor() = othermaskiter.cursor();
-      maskiter.writeCursor();
-      toiter.cursor()(maskiter.cursor()) += otheriter.cursor();
-      toiter.writeCursor();
+      maskiter.writeArray (othermaskiter.cursor());
+      toiter.rwCursor()(othermaskiter.cursor()) += otheriter.cursor();
     }
   } else if(writeThis && !writeOther) {
     LatticeIterator<Bool> maskiter(this->mask(), cursorShape);
     for (toiter.reset(), otheriter.reset(), maskiter.reset(); 
 	 !toiter.atEnd();
 	 toiter++, maskiter++, otheriter++) {
-      toiter.cursor()(maskiter.cursor()) += otheriter.cursor();
-      toiter.writeCursor();
+      toiter.rwCursor()(maskiter.cursor()) += otheriter.cursor();
     }
   } else {
     IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
@@ -671,8 +684,7 @@ operator+= (const PagedImage<T> & other)
     for (toiter.reset(), otheriter.reset(); 
 	 !toiter.atEnd();
 	 toiter++, otheriter++) {
-      toiter.cursor() += otheriter.cursor();
-      toiter.writeCursor();
+      toiter.rwCursor() += otheriter.cursor();
     }
   }
   return *this;
@@ -697,14 +709,12 @@ operator+= (const Lattice<T> & other)
     RO_LatticeIterator<Bool> maskiter(this->mask(), cursorShape);
     for (toiter.reset(), otheriter.reset(), maskiter.reset(); 
 	 !toiter.atEnd(); toiter++, maskiter++, otheriter++) {
-      toiter.cursor()(maskiter.cursor()) += otheriter.cursor();
-      toiter.writeCursor();
+      toiter.rwCursor()(maskiter.cursor()) += otheriter.cursor();
     }
   } else {
     for (toiter.reset(), otheriter.reset(); !toiter.atEnd();
 	 toiter++, otheriter++) {
-      toiter.cursor() += otheriter.cursor();
-      toiter.writeCursor();
+      toiter.rwCursor() += otheriter.cursor();
     }
   }
   return *this;
@@ -727,13 +737,11 @@ operator+= (const T & val)
     RO_LatticeIterator<Bool> maskiter(this->mask(), cursorShape);
     for (toiter.reset(), maskiter.reset(); !toiter.atEnd();
 	 toiter++, maskiter++) {
-      toiter.cursor()(maskiter.cursor()) += val;
-      toiter.writeCursor();
+      toiter.rwCursor()(maskiter.cursor()) += val;
     }
   } else {
     for (toiter.reset(); !toiter.atEnd(); toiter++) {
-      toiter.cursor() += val;
-      toiter.writeCursor();
+      toiter.rwCursor() += val;
     }
   }
   return *this;
