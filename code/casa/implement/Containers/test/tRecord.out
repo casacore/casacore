@@ -1,4 +1,4 @@
-RecordInterface: fieldNumber exceeds #fields
+RecordInterface::define - new fieldNumber exceeds #fields
 Record field  cannot be added: length<1
 Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
