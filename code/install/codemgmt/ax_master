@@ -2336,3 +2336,4 @@
 09 310 src mv trial/implement/ComponentModels/ComponentFlux.h trial/implement/ComponentModels/Flux.h
 09 310 src mv trial/implement/ComponentModels/ComponentFlux.cc trial/implement/ComponentModels/Flux.cc
 09 322 src mv nrao/apps/dishplot/dishplot_ranges.g nrao/apps/dish/dish_ranges.g
+09 326 src rm trial/apps/sky/templates
