@@ -66,6 +66,11 @@ extern Bool aips_debug_on;
 namespace std {};
 #endif
 
+// HP/UX
+#if defined(__hpux__)
+#define AIPS_HPUX
+#endif
+
 // The restrict keyword is supported by some compilers only.
 #if !defined(AIPS_KAICC) && !defined(AIPS_INTELCC)
 #if !defined(restrict)
