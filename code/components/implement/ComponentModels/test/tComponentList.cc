@@ -84,7 +84,7 @@ int main() {
  	  newParameters(0) = Quantity(30, "'").getValue("rad"); 
  	  newParameters(1) = Quantity(15, "'").getValue("rad");
  	  newParameters(2) = Quantity(60, "deg").getValue("rad");
- 	  SkyCompGauss.shape().parameters(newParameters);
+ 	  SkyCompGauss.shape().setParameters(newParameters);
  	}
       }
       {
@@ -186,7 +186,7 @@ int main() {
  	Vector<Double> shapeParms(gammaCrux.shape().nParameters());
  	shapeParms(0) = shapeParms(1) = width.radian();
  	shapeParms(2) = pa.radian();
- 	gammaCrux.shape().parameters(shapeParms);
+	gammaCrux.shape().setParameters(shapeParms);
 	gammaCrux.label() = "Gamma Crux";
 	crux.add(gammaCrux);
 	sampleDirection1 = direction;
@@ -204,9 +204,9 @@ int main() {
 				    - Quantity(56, "''")),
 				   MDirection::J2000);
  	deltaCrux.shape().setRefDirection(direction);
-	deltaCrux.spectrum().setRefFrequency(MFrequency(Quantity(1, "GHz")));
+	deltaCrux.spectrum().setRefFrequency(MFrequency(Quantity(2, "GHz")));
 	Vector<Double> specParms(1, 0.5);
-	deltaCrux.spectrum().parameters(specParms);
+	deltaCrux.spectrum().setParameters(specParms);
 	deltaCrux.label() = "Delta Crux";
  	crux.add(deltaCrux);
  	sampleDirection2 = direction;
@@ -229,19 +229,19 @@ int main() {
       const MVAngle pixelSize(Quantity(1.0, "'"));
       const MVAngle halfSize(pixelSize.radian()/2.0);
       Vector<Double> sampledFlux(4);
-      const MFrequency defaultFreq;
+      const MFrequency defaultFreq(Quantity(4, "GHz"));
       crux.sample(sampleDirection1, pixelSize, pixelSize, defaultFreq)
 	.value(sampledFlux);
-      AlwaysAssert(near(sampledFlux(0), 0.1985720, 1E-6), AipsError);
+      AlwaysAssert(near(sampledFlux(0), 0.001985720, 1E-6), AipsError);
       crux.sample(sampleDirection1, pixelSize, halfSize, defaultFreq)
 	.value(sampledFlux);
-      AlwaysAssert(near(sampledFlux(0), 0.099286, 1E-6), AipsError);
+      AlwaysAssert(near(sampledFlux(0), 0.00099286, 1E-6), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, C::dbl_epsilon), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
       crux.sample(sampleDirection2, pixelSize, pixelSize, defaultFreq)
 	.value(sampledFlux);;
-      AlwaysAssert(near(sampledFlux(0), 0.0769, 1E-10), AipsError);
+      AlwaysAssert(near(sampledFlux(0), 0.108753, 1E-6), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
@@ -437,7 +437,7 @@ int main() {
 		   AipsError);
       cout << "Passed the copy and assignment tests" << endl;
       //      original.rename("junk.model", Table::Scratch);
-      // modified.rename("more_junk.model", Table::Scratch);
+      //      modified.rename("more_junk.model", Table::Scratch);
     }
   } 
   catch (AipsError x) {
