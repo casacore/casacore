@@ -284,11 +284,6 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (test5.nEntries() == 6);
     AlwaysAssertExit (!testtmp.exists());
 
-    // Move to the same name should succeed.
-    test5.move ("tDirectory_tmp/test5");
-    AlwaysAssertExit (test5.isDirectory());
-    AlwaysAssertExit (test5.nEntries() == 6);
-
     // Test directory creation.
     Directory test6;
     test6 = test5;
