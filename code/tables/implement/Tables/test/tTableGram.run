@@ -39,3 +39,7 @@ tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where any(arr
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=T'
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where (ab=ab)=F'
 tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where rownumber()==rowid()+1'
+tTableGram 'select ab,ac from [select from tTableGram_tmp.link/tTable_2.data_v0 where ab > 4] where ab < 6'
+tTableGram 'select ab,ac from [select from tTableGram_tmp.link/tTable_2.data_v0 where ab > 4] TEMPTAB, tTableGram_tmp.link/tTable_2.data_v0 where any([ab,ac] in [select ac from TEMPTAB])'
+tTableGram 'select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ac in [select from tTableGram_tmp.link/tTable_2.data_v0 where ac in [4,6] giving [rowid()]]'
+

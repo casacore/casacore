@@ -237,3 +237,23 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where rownumber()==rowid(
  7 8
  8 9
  9 10
+select ab,ac from [select from tTableGram_tmp.link/tTable_2.data_v0 where ab > 4] where ab < 6
+    has been executed
+    1 rows selected
+2 selected columns:  ab ac
+ 5 6
+select ab,ac from [select from tTableGram_tmp.link/tTable_2.data_v0 where ab > 4] TEMPTAB, tTableGram_tmp.link/tTable_2.data_v0 where any([ab,ac] in [select ac from TEMPTAB])
+    has been executed
+    5 rows selected
+2 selected columns:  ab ac
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ac in [select from tTableGram_tmp.link/tTable_2.data_v0 where ac in [4,6] giving [rowid()]]
+    has been executed
+    2 rows selected
+2 selected columns:  ab ac
+ 2 3
+ 4 5
