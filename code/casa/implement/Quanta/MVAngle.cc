@@ -396,7 +396,11 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
     break;
   };
 
-  if (chk && !in.eos()) tp = 0;	     // incorrect
+  if (chk) {
+
+    in.skipBlank();
+    if (!in.eos()) tp = 0;	     // incorrect
+  };
   switch (tp) {
 
   case 1:
