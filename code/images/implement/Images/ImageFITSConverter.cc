@@ -64,7 +64,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 						  String &error,
 						  const String &imageName,
 						  HDUType &fitsImage,
-						  uInt memoryInMB)
+						  uInt memoryInMB,
+						  Bool zeroBlanks)
 {
     LogIO os(LogOrigin("ImageFITSConverterImpl", "FITSToImage", WHERE));
 
@@ -306,12 +307,25 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
                Array<Bool>& maskCursor = pMaskIter->woCursor();
                Bool deleteMaskPtr;
                Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);   
-               for (uInt i=0; i<maskCursor.nelements(); i++) {
-                  if (isNaN(ptr[i])) {
-                     mPtr[i] = False; 
-                     hasBlanks = True;
-                  } else {
-                     mPtr[i] = True;  
+//
+               if (zeroBlanks) {
+                  for (uInt i=0; i<maskCursor.nelements(); i++) {
+                     if (isNaN(ptr[i])) {
+                        mPtr[i] = False; 
+                        hasBlanks = True;
+                        ptr[i] = 0.0;
+                     } else {
+                        mPtr[i] = True;  
+                     }
+                  }
+               } else {
+                  for (uInt i=0; i<maskCursor.nelements(); i++) {
+                     if (isNaN(ptr[i])) {
+                        mPtr[i] = False; 
+                        hasBlanks = True;
+                     } else {
+                        mPtr[i] = True;  
+                     }
                   }
                }
                maskCursor.putStorage(mPtr, deleteMaskPtr);
