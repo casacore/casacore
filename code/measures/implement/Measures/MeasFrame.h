@@ -133,7 +133,7 @@ template <class Qtype> class Quantum;
 
 class MeasFrame {
 
-    public:
+ public:
   
   //# Friends
   // Output a frame
@@ -146,6 +146,18 @@ class MeasFrame {
   friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
   friend Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
   // </group>
+
+  //# Enumerations
+  // Enumeration for the different farme entries possible. This can be used
+  // to find out if a certain conversion needs the frame. It will be
+  // used in a registration/notify environment to enable bypassing of
+  // some new conversion settings.
+  enum FrameTypes {
+    EPOCH 	= 1,
+    POSITION 	= 2,
+    DIRECTION 	= 4,
+    VELOCITY 	= 8,
+    COMET 	= 16 };
 
   //# Constructors
   // Default constructor
@@ -275,17 +287,6 @@ class MeasFrame {
 private:
   
   //# Enumerations
-  // Enumeration for the different farme entries possible. This can be used
-  // to find out if a certain conversion needs the frame. It will be
-  // used in a registration/notify environment to enable bypassing of
-  // some new conversion settings.
-  enum FrameTypes {
-    EPOCH 	= 1,
-    POSITION 	= 2,
-    DIRECTION 	= 4,
-    VELOCITY 	= 8,
-    COMET 	= 16 };
-
   // Types of known get data routines. The actual work is in MCFrame,
   // using pointers to functions
   enum GetTypes {
