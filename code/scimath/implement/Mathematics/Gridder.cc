@@ -1,5 +1,5 @@
 //# Gridder.cc: Nearest Neighbour Gridder
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/strstream.h>
 
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder() {};
@@ -151,6 +152,18 @@ Range Gridder<Domain, Range>::correct(const IPosition& loc)
     factor*=correctionVectors(dim)(loc(dim));
   }
   return factor;
+}
+
+// Return correction factor. This is the value that
+// must be divided to get a correct flux.
+template <class Domain, class Range>
+void Gridder<Domain, Range>::correctX1D(Vector<Range>& factor,
+					const Int locy)
+{
+  factor=correctionVectors(0);
+  Range yFactor;
+  yFactor=correctionVectors(1)(locy);
+  factor*=yFactor;
 }
 
 // Fill in the cache of corrections. This must be in the

@@ -1,5 +1,5 @@
 //# Gridder.h: Definition for Gridder
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,6 +57,9 @@ public:
 		      Range& value) = 0;
 
   virtual Range correct(const IPosition& loc);
+
+  // Return a correction vector in x for loc y
+  virtual void correctX1D(Vector<Range>& factor, const Int locy);
 
   Vector<Int>& location(Vector<Int>& loc, const Vector<Domain>& pos);
 
