@@ -6382,3 +6382,4 @@
 18 254 src rm doc/cookbook/cookbook.dir/gbt.latex
 18 256 src mv trial/implement/IO/tFilebufIO.cc aips/implement/IO/test/tFilebufIO.cc
 18 303 src mv trial/implement/Arrays/ArrayAccessor.h aips/implement/Arrays/ArrayAccessor.h
+18 303 src mv trial/implement/Arrays/test/dArrayAccessor.cc aips/implement/Arrays/test/dArrayAccessor.cc
