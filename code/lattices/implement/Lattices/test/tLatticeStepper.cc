@@ -90,7 +90,7 @@ int main()
 	try { // test the check for an bad orientation bounds
 	  LatticeStepper demented(latticeShape, stepperShape, badOrientation1);
 	} catch (AipsError x) {
-  	  if (!x.getMesg().contains("ok() == True")){
+  	  if (!x.getMesg().contains("makeAxisPath")){
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
@@ -99,7 +99,7 @@ int main()
 	try { // test the check for an bad orientation contents
 	  LatticeStepper demented(latticeShape, stepperShape, badOrientation2);
 	} catch (AipsError x) {
- 	  if (!x.getMesg().contains("ok() == True")){
+ 	  if (!x.getMesg().contains("makeAxisPath")){
 	    cout << x.getMesg() << endl << "FAIL" << endl;
 	    return 1;
 	  }
@@ -136,9 +136,9 @@ int main()
     AlwaysAssert(s0.position().isEqual(IPosition(4,4,0,0,0)), AipsError);
     AlwaysAssert(s0.endPosition().isEqual(IPosition(4,7,0,0,0)), 
 		 AipsError);
-    ++s0; 
+    s0++; 
     AlwaysAssert(s0.position().isEqual(IPosition(4,8,0,0,0)), AipsError);
-    AlwaysAssert(s0.endPosition().isEqual(IPosition(4,11,0,0,0)), 
+    AlwaysAssert(s0.endPosition().isEqual(IPosition(4,9,0,0,0)), 
 		 AipsError);
     s0++;
     AlwaysAssert(s0.position().isEqual(IPosition(4,0,1,0,0)), AipsError);
@@ -153,11 +153,11 @@ int main()
     for (s0.reset(); !s0.atEnd(); s0++)
       count++;
     // Check the cursor is at the end (note the overhang)
-    AlwaysAssert(s0.endPosition().isEqual(IPosition(4,11,11,3,6)),
+    AlwaysAssert(s0.endPosition().isEqual(IPosition(4,9,11,3,6)),
  		 AipsError);
     AlwaysAssert(count == 12*4*7*3, AipsError);
  
-    for (; !s0.atStart(); --s0)
+    for (; !s0.atStart(); s0--)
       count--;
     // Should end up where we started
     AlwaysAssert(s0.position().isEqual(IPosition(4,0)), AipsError);
@@ -215,7 +215,7 @@ int main()
     AlwaysAssert(s2.axisPath() == stepperOrientation, AipsError);
 
     LatticeStepper method(IPosition(3,4,5,6),IPosition(2,4,5));
-    LatticeNavigator *clonePtr = method.clone();
+    LatticeNavigator* clonePtr = method.clone();
     AlwaysAssert(clonePtr != 0, AipsError);
 
     AlwaysAssert(clonePtr->ok() == True, AipsError);
@@ -227,11 +227,11 @@ int main()
     AlwaysAssert(clonePtr->atStart() == method.atStart(), AipsError);
     AlwaysAssert(clonePtr->atEnd() == method.atEnd(), AipsError);
     AlwaysAssert(clonePtr->hangOver() == method.hangOver(), AipsError);
-    LatticeStepper * stepPtr = clonePtr->castToStepper();
     //  LatticeStepper method(IPosition(3,4,5,6),IPosition(2,4,5));
-    stepPtr->setCursorShape(IPosition(1,4));
-    stepPtr->subSection(IPosition(3,0,1,0), IPosition(3,3,4,3),
+    method.setCursorShape(IPosition(1,4));
+    method.subSection(IPosition(3,0,1,0), IPosition(3,3,4,3),
  			IPosition(3,1,2,3));
+    LatticeNavigator* stepPtr = method.clone();
     AlwaysAssert(stepPtr->blc() == IPosition(3,0,1,0), AipsError);
     AlwaysAssert(stepPtr->trc() == IPosition(3,3,3,3), AipsError);
     AlwaysAssert(stepPtr->increment() == IPosition(3,1,2,3), AipsError);
@@ -241,6 +241,7 @@ int main()
     AlwaysAssert(stepPtr->relativeEndPosition() == IPosition(3,3,0,0), 
 		 AipsError);
     AlwaysAssert(stepPtr->endPosition() == IPosition(3,3,1,0), AipsError);
+    delete clonePtr;
     delete stepPtr;
   } catch  (AipsError x) {
     cout << x.getMesg() << endl << "FAIL" << endl;

@@ -26,9 +26,8 @@
 //# $Id$
 
 #include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/PagedArrIter.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterInterface.h>
+#include <trial/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -49,7 +48,7 @@
 int main() {
   try {
     {
-      PagedArray<Float> pa(IPosition(2,12), "tPagedArray1_tmp.array");
+      PagedArray<Float> pa(IPosition(2,12), "tPagedArray_tmp.table");
       pa.set(10.0);
       Array<Float> arr;
       pa.getSlice(arr, IPosition(2,0), IPosition(2,12), IPosition(2,1));
@@ -64,7 +63,7 @@ int main() {
 		  IPosition(2,1,1), IPosition(2,2,1));
     }
     {
-      PagedArray<Float> pa("tPagedArray1_tmp.array");
+      PagedArray<Float> pa("tPagedArray_tmp.table");
       AlwaysAssert(pa.shape().isEqual(IPosition(2,12)), AipsError);
       Array<Float> arr;
       Slicer sl(IPosition(2,0), IPosition(2,12));
@@ -77,24 +76,26 @@ int main() {
       AlwaysAssert(near(pa(IPosition(2,3,1)), 2.0f), AipsError);
       pa(IPosition(2,11)) = 99.0f;
       pa.putAt(98.0f, IPosition(2,11,10));
-      AlwaysAssert(pa.tableName() == "tPagedArray1_tmp.array", AipsError);
+      AlwaysAssert(pa.tableName() == "tPagedArray_tmp.table", AipsError);
       AlwaysAssert(pa.columnName() == PagedArray<Float>::defaultColumn(), 
 		   AipsError);
       AlwaysAssert(pa.rowNumber() == PagedArray<Float>::defaultRow(),
 		   AipsError);
     }
     {
-      Table pagedTable("tPagedArray1_tmp.array", Table::Update);
+      Table pagedTable("tPagedArray_tmp.table");
       PagedArray<Float> pa(pagedTable);
       AlwaysAssert(near(pa(IPosition(2,11)), 99.0f), AipsError);
       AlwaysAssert(near(pa(IPosition(2,11, 10)), 98.0f), AipsError);
     }
     {
       PagedArray<Int> scratch(IPosition(3,9));
-      PagedArrIter<Int> li(scratch, IPosition(3,1,1,9));
+      LatticeIterator<Int> li(scratch, IPosition(3,1,1,9));
       Int i = 0;
-      for (li.reset(); !li.atEnd(); li++, i++)
+      for (li.reset(); !li.atEnd(); li++, i++) {
 	li.cursor() = i;
+	li.writeCursor();
+      }
       COWPtr<Array<Int> > ptrM;
       scratch.getSlice(ptrM, IPosition(3,0), IPosition(3,9,9,1), 
 		       IPosition(3,1), True);
@@ -108,37 +109,35 @@ int main() {
 
       scratch.getSlice(ptrM, sl, True);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
-      scratch.resize(IPosition(2,8));
-      AlwaysAssert(scratch.shape().isEqual(IPosition(2,8)), AipsError);
+      scratch.resize(IPosition(3,8));
+      AlwaysAssert(scratch.shape().isEqual(IPosition(3,8)), AipsError);
       scratch.set(0);
-      scratch(IPosition(2,7)) = 7;
-      AlwaysAssert(scratch.getAt(IPosition(2,0)) == 0, AipsError);
-      AlwaysAssert(scratch.getAt(IPosition(2,7)) == 7, AipsError);
+      scratch(IPosition(3,7)) = 7;
+      AlwaysAssert(scratch.getAt(IPosition(3,0)) == 0, AipsError);
+      AlwaysAssert(scratch.getAt(IPosition(3,7)) == 7, AipsError);
     }
     {
-      SetupNewTable arraySetup("tPagedArray1_tmp_1.array", 
+      SetupNewTable arraySetup("tPagedArray_tmp_1.table", 
 			       TableDesc(), Table::Scratch);
       Table arrayTable(arraySetup);
       const IPosition latticeShape(4, 128, 128, 4, 32);
       PagedArray<Float> pa(latticeShape, arrayTable);
-      AlwaysAssert(pa.tileShape().isEqual(IPosition(4,32,16,4,16)), AipsError);
       AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape(pa.maxPixels())),
 		   AipsError);
       Array<Float> arr(IPosition(4,1,1,4,32));
       Slicer sl(IPosition(4,0), IPosition(4,1,1,4,32));
       pa.clearCache();
       pa.setCacheSizeFromPath(arr.shape(), IPosition(4,0),
-			      IPosition(4,16,16,4,32) - 1, 
+			      pa.tileShape() - 1, 
 			      IPosition(4,0,1,2,3));
       pa.getSlice(arr, sl);
-      cout << "The actual cache size should be 2 tiles" << endl;
       pa.showCacheStatistics(cout);
 
-      SetupNewTable array1Setup("tPagedArray1_tmp.array", 
+      SetupNewTable array1Setup("tPagedArray_tmp.table", 
 				TableDesc(), Table::New);
       Table array1Table(array1Setup);
-      PagedArray<Float> pa1(latticeShape, array1Table, 
-			    IPosition(4,16,16,4,32));
+      PagedArray<Float> pa1(TiledShape(latticeShape,IPosition(4,16,16,4,32)),
+			    array1Table);
       AlwaysAssert(pa1.tileShape().isEqual(IPosition(4,16,16,4,32)), 
 		   AipsError);
       pa1.clearCache();
@@ -146,7 +145,6 @@ int main() {
 			      IPosition(4,16,16,4,32) - 1, 
 			       IPosition(4,0,1,2,3));
       pa1.getSlice(arr, sl);
-      cout << "The actual Cache size should be 1 tile" << endl;
       pa1.showCacheStatistics(cout);
       pa = pa1;
       AlwaysAssert(pa.tileShape().isEqual(IPosition(4,16,16,4,32)), AipsError);
@@ -158,21 +156,20 @@ int main() {
 
       IPosition lat2Shape = IPosition(4,16);
       PagedArray<Float> pa2(lat2Shape, array1Table, 
-			    PagedArray<Float>::defaultColumn(), 2, 
-			    PagedArray<Float>::defaultTileShape(lat2Shape));
+			    PagedArray<Float>::defaultColumn(), 2);
       arr.resize(lat2Shape);
       indgen(arr);
       pa2.putSlice(arr, IPosition(4,0));
       
       IPosition lat3Shape = IPosition(2,16);
-      PagedArray<Int> pa3(lat3Shape, array1Table, "IntPagedArray", 1, 
-			  lat3Shape);
+      PagedArray<Int> pa3(TiledShape(lat3Shape,lat3Shape),
+			  array1Table, "IntPagedArray", 1);
       Array<Int> iarr(lat3Shape);
       indgen(iarr);
       pa3.putSlice(iarr, IPosition(2,0));
     }
     {
-      Table file("tPagedArray1_tmp.array", Table::Update);
+      Table file("tPagedArray_tmp.table");
       PagedArray<Float> pa1(file);
       AlwaysAssert(pa1.shape().isEqual(IPosition(4,128,128,4,32)), AipsError);
       PagedArray<Float> pa2(file, PagedArray<Float>::defaultColumn(), 2);
@@ -192,25 +189,7 @@ int main() {
 	AlwaysAssert(allEQ(iarr, expected), AipsError);
 	AlwaysAssert(pa4.ok() == True, AipsError);
       }
-      AlwaysAssert(
-      PagedArray<Float>::defaultTileShape(IPosition(2,32)).isEqual(
-                                          IPosition(2,32)), AipsError);
-      AlwaysAssert(
-      PagedArray<Float>::defaultTileShape(IPosition(4,512,512,4,32)).isEqual(
-                                          IPosition(4,32, 16, 4, 16)), 
-                                           AipsError);
-      AlwaysAssert(
-      PagedArray<Float>::defaultTileShape(IPosition(4,521,521,5,31)).isEqual(
-                                          IPosition(4,521,521, 1, 1)), 
-                                          AipsError);
-      AlwaysAssert(
-      PagedArray<Float>::defaultTileShape(IPosition(4,511,513,5,31)).isEqual(
-                                          IPosition(4,73, 3, 5, 31)), 
-                                          AipsError);
       AlwaysAssert(pa3.maximumCacheSize() == 65536, AipsError);
-      LatticeIterInterface<Float> * iterPtr = 
-	pa1.makeIter(LatticeStepper(pa1.shape(), IPosition(4,4)));
-      delete iterPtr;
 
       pa3.resize(IPosition(2,8));
       pa3.set(0);
