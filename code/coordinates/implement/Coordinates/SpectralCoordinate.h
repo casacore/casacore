@@ -252,13 +252,15 @@ private:
     Double restfreq_p;
     TabularCoordinate worker_p;
 
+    mutable Vector<Double> world_tmp_p;
+    mutable Vector<Double> pixel_tmp_p;
+
     // Check format type
     void checkFormat(Coordinate::formatType& format,         
                      const Bool absolute) const;
 
 
-    // Undefined and inaccessible
-};
 
+};
 
 #endif
