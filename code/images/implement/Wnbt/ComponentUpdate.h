@@ -133,14 +133,14 @@ public:
   // ComponentList, using the 'separate' type of solution, and ILM
   // solve. Note that the component list must be a writable one to
   // receive the updates.
-  explicit ComponentUpdate(ComponentList &model);
+  explicit ComponentUpdate(const ComponentList &model);
   // Construct an update machine for the sources in the given
   // ComponentList, using the specified sovables and the separate type.
-  ComponentUpdate(ComponentList &model,
+  ComponentUpdate(const ComponentList &model,
 		  const ComponentUpdate::Solve solve);
   // Construct an update machine for the sources in the given
   // ComponentList, using the specified type of solution and solvables
-  ComponentUpdate(ComponentList &model,
+  ComponentUpdate(const ComponentList &model,
 		  const ComponentUpdate::Solve solve,
 		  const ComponentUpdate::Type tp);
   // Destructor

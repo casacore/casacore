@@ -54,7 +54,7 @@ ComponentUpdate::ComponentUpdate() :
   init();
 }
 
-ComponentUpdate::ComponentUpdate(ComponentList &model) :
+ComponentUpdate::ComponentUpdate(const ComponentList &model) :
   soltp_p(SEPARATE), solve_p(ILM),
   nmodel_p(0),
   dt_p(0),
@@ -62,7 +62,7 @@ ComponentUpdate::ComponentUpdate(ComponentList &model) :
   init();
 }
 
-ComponentUpdate::ComponentUpdate(ComponentList &model,
+ComponentUpdate::ComponentUpdate(const ComponentList &model,
 				 const ComponentUpdate::Solve solve) :
   soltp_p(SEPARATE), solve_p(solve),
   nmodel_p(0),
@@ -71,7 +71,7 @@ ComponentUpdate::ComponentUpdate(ComponentList &model,
   init();
 }
 
-ComponentUpdate::ComponentUpdate(ComponentList &model,
+ComponentUpdate::ComponentUpdate(const ComponentList &model,
 				 const ComponentUpdate::Solve solve,
 				 const ComponentUpdate::Type tp) :
   soltp_p(tp), solve_p(solve),
