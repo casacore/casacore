@@ -128,7 +128,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 {IDENTIFIER} { msAntennaGramPosition() += yyleng;
                cout << "scan " << MSAntennaGramtext << endl;
                lvalp->str = MSAntennaGramtext;
-               cout << "assign " << lvalp->str << endl;
                return IDENTIFIER;
              }
 
