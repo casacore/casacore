@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# ComponentImager.h: this defines ComponentImager, which ...
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -112,6 +112,11 @@ class ComponentList;
 class ComponentImager
 {
 public:
+
+// Project the componentlist onto the image.  If any of the coordinate
+// transformations for a particular pixel fail (e.g. coordinate system
+// is not defined for that pixel) if the image has
+// a mask, then those pixels will be masked, othereise they are just zeroed.
   static void project(ImageInterface<Float>& image, 
 		      const ComponentList& list);
 };
