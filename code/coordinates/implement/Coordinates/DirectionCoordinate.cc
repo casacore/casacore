@@ -204,6 +204,7 @@ uInt DirectionCoordinate::nWorldAxes() const
     return 2;
 }
 
+
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 				  const Vector<Double> &pixel) const
 {
@@ -214,16 +215,15 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 
     Bool ok = linear_p.reverse(world, pixel, errorMsg_p);
     if (ok) {
-	double lng, lat, phi, theta;
-	double x = world(0);
-        double y = world(1);
+	d1_x_p = world(0);
+        d1_y_p = world(1);
 	int errnum = celrev(pcodes[projection_p.type()],
-			    x, y, prjprm_p, &phi, &theta,
-			    celprm_p, &lng, &lat);
+			    d1_x_p, d1_y_p, prjprm_p, &d1_phi_p, &d1_theta_p,
+			    celprm_p, &d1_lng_p, &d1_lat_p);
 	ok = ToBool((errnum == 0));
 	if (ok) {
-	    world(0) = lng;
-	    world(1) = lat;
+	    world(0) = d1_lng_p;
+	    world(1) = d1_lat_p;
 	} else {
 	    errorMsg_p = "wcslib celrev error: ";
 	    errorMsg_p += celrev_errmsg[errnum];
@@ -233,12 +233,18 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	set_error(errorMsg_p);
     }
 
-// Convert to appropriate units from degrees
+// Convert to appropriate units from degrees.  phi and theta
+// may be returned in a different interface somewhen.
+
+//    phi = d1_phi_p / to_degrees_p[0];
+//    theta = d1_theta_p / to_degrees_p[1];
 
     toOther(world);
+    
 //
     return ok;
 }
+
 
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
@@ -251,17 +257,22 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     world_tmp_p(1) = world(1);
     toDegrees(world_tmp_p);
 
-    double x, y, phi, theta;
-    double lng = world_tmp_p(0);
-    double lat = world_tmp_p(1);
-    int errnum = celfwd(pcodes[projection_p.type()], lng, lat,
-			celprm_p, &phi, &theta, prjprm_p, &x, &y);
+    d2_lng_p = world_tmp_p(0);
+    d2_lat_p = world_tmp_p(1);
+    int errnum = celfwd(pcodes[projection_p.type()], d2_lng_p, d2_lat_p,
+			celprm_p, &d2_phi_p, &d2_theta_p, prjprm_p, 
+                        &d2_x_p, &d2_y_p);
 //
-    world_tmp_p(0) = x; 
-    world_tmp_p(1) = y;
+    world_tmp_p(0) = d2_x_p; 
+    world_tmp_p(1) = d2_y_p;
     Bool ok = ToBool(errnum == 0);
     if (ok) {
 	ok = linear_p.forward(world_tmp_p, pixel, errorMsg_p);
+
+// phi and theta may be returned in a different interface somewhen
+
+//        phi = d2_phi_p;
+//        theta = d2_theta_p;
     } else {
         errorMsg_p = "wcslib celfwd error: ";
         errorMsg_p += celfwd_errmsg[errnum];
@@ -335,7 +346,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
       in_tmp_p(0) = pixelIn(0);
       in_tmp_p(1) = worldIn(1);
-      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, worldMax, False)) return False;
+      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, 
+                  worldMax, False)) return False;
 //
       pixelOut(0) = in_tmp_p(0);
       pixelOut(1) = out_tmp_p(1);
@@ -356,7 +368,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
       in_tmp_p(0) = worldIn(0);
       in_tmp_p(1) = pixelIn(1);
-      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, worldMax, True)) return False;
+      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, 
+                  worldMax, True)) return False;
 //
       pixelOut(0) = out_tmp_p(0);
       pixelOut(1) = in_tmp_p(1);
@@ -1189,6 +1202,13 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
        out(0) = mix_world_p[wcs_p->lng] / to_degrees_p[0];
        out(1) = mix_pixcrd_p[1];
     } 
+
+// Phi and theta may be returned in a different interface somewhen
+// Could assign these in toMix rather than pass them out
+// but not very clear
+
+//    phi = mix_phi_p / to_degrees_p[0];
+//    theta = mix_theta_p / to_degrees_p[1];
 //
     return True;
 }
