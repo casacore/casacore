@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+
 #include <trial/Lattices/LCRegionFixed.h>
 
 
@@ -56,19 +57,9 @@ LCRegionFixed& LCRegionFixed::operator= (const LCRegionFixed& other)
 }
 
 Bool LCRegionFixed::operator== (const LCRegion& other) const
-//
-// Call masksEqual if you need to check the mask as well
-//
 {
-
-// Check below us
-
-   if (!LCRegion::operator==(other)) return False;
-
-   return True;
+   return LCRegion::operator== (other);
 }
-    
-
 
 void LCRegionFixed::setMask (const Array<Bool>& mask)
 {
