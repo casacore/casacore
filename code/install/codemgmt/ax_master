@@ -1401,3 +1401,4 @@
 11 075 src mv trial/apps/image/image_standard.gp trial/implement/Images/image_standard.gp
 11 075 src mv doc/html/gettingstarted doc/user/gettingstarted
 11 075 src rm doc/html/navpages/images/communicate10.gif
+11 075 src rm doc/html/navpages/images/aipslabels5_7.gif
