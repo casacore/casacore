@@ -117,7 +117,7 @@ public:
     virtual Long seek (Long offset, ByteIO::SeekOption = ByteIO::Begin) = 0;
 
     // Get the length of the byte stream.
-    virtual Long length() const = 0;
+    virtual Long length() = 0;
     
     // Is the byte stream readable?
     virtual Bool isReadable() const = 0;

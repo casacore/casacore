@@ -192,7 +192,7 @@ public:
     const uChar* getBuffer() const;
 
     // Get the length of the data in the buffer.
-    virtual Long length() const;
+    virtual Long length();
 
     // Get the allocated length of the buffer.
     uLong allocated() const;

@@ -202,7 +202,7 @@ Bool MemoryIO::expand (uLong minSize)
 }
 
 
-Long MemoryIO::length() const
+Long MemoryIO::length()
 {
     return itsUsed;
 }
