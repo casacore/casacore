@@ -1,5 +1,5 @@
 //# Error2.cc: Base class for all AIPS++ errors (non-templated classes)
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,6 @@
 
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
-
-rtti_imp_init(AipsError);
-rtti_imp_mbrf(AipsError);
 
 AipsError::AipsError(const Char *str) : message(str)
 {
@@ -59,9 +56,6 @@ AipsError::~AipsError()
 
 //# Much the same as the class above. This class adds no other exception
 //# fragile member variables.
-rtti_imp_init(AllocError);
-rtti_imp_mbrf(AllocError);
-
 AllocError::AllocError(ExcpError *excp) : AipsError(excp)
 {
     AllocError *tmp;
@@ -81,9 +75,6 @@ AllocError::~AllocError()
 
 //#  This is a relatively uninteresting class, except for the fact that
 //#  it serves as the parent of all IndexErrors.
-rtti_imp_init(IndexError);
-rtti_imp_mbrf(IndexError);
-
 IndexError::IndexError(ExcpError *excp) : AipsError(excp)
 {
     IndexError *tmp;
@@ -101,9 +92,6 @@ IndexError::~IndexError()
 
 //#  This is a relatively uninteresting class, except for the fact that
 //#  it serves as the parent of all DuplError.
-rtti_imp_init(DuplError);
-rtti_imp_mbrf(DuplError);
-
 DuplError::DuplError(ExcpError *excp) : AipsError(excp)
 {
     DuplError *tmp;

@@ -1,5 +1,5 @@
 //# Error.cc: Base class for all AIPS++ errors (templated classes)
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,6 @@
 //#  is derived from the class IndexError. This derivation allows the user
 //#  to catch all index errors with one catch statement. The remainder of
 //#  of the class is very similar to the AipsError class.
-rtti_imp_init_a1(indexError);
-rtti_imp_mbrf_a1(indexError);
-
 template<class t>
 indexError<t>::indexError(t oI, const Char *str) : IndexError(str), oIndex(oI)
 {}
@@ -64,9 +61,6 @@ indexError<t>::~indexError()
 //#  is derived from the class DuplError. This derivation allows the user
 //#  to catch all index errors with one catch statement. The remainder of
 //#  of the class is very similar to the AipsError class.
-rtti_imp_init_a1(duplError);
-rtti_imp_mbrf_a1(duplError);
-
 template<class t>
 duplError<t>::duplError(ExcpError *excp) : DuplError(excp)
 {

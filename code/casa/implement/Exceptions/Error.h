@@ -1,5 +1,5 @@
 //# Error.h: Base class for all AIPS++ errors
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,9 +34,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/String.h>
-#include <aips/RTTI/Typeinfo.h>
 
-rtti_dcl_init(AipsError);
 // <summary>Base class for all AIPS++ library errors</summary>
 // <use visibility=export>
 //
@@ -97,10 +95,8 @@ public:
   // Destructor which does nothing.
   //
   ~AipsError();
-  rtti_dcl_mbrf_p1(AipsError,ExcpError);
 };
 
-rtti_dcl_init(AllocError);
 // <summary>Allocation errors</summary>
 // <use visibility=export>
 //
@@ -153,10 +149,8 @@ public:
   //
   ~AllocError();
 
-  rtti_dcl_mbrf_p1(AllocError,AipsError);
 };
 
-rtti_dcl_init(IndexError);
 // <summary>Base class for all indexing errors</summary>
 // <use visibility=export>
 //
@@ -202,11 +196,9 @@ public:
   // Destructor which does nothing.
   //
   ~IndexError();
-  rtti_dcl_mbrf_p1(IndexError,AipsError);
 };
 
 
-rtti_dcl_init_a1(indexError);
 // <summary>Index errors returning the bad index</summary>
 // <use visibility=export>
 //
@@ -266,12 +258,10 @@ public:
   //
   ~indexError();
 
-  rtti_dcl_mbrf_p1(indexError<t>, IndexError);
 };
 
 
 
-rtti_dcl_init(DuplError);
 // <summary>Duplicate key errors</summary>
 // <use visibility=export>
 //
@@ -315,10 +305,8 @@ public:
   //
   ~DuplError();
 
-  rtti_dcl_mbrf_p1(DuplError, AipsError);
 };
 
-rtti_dcl_init_a1(duplError);
 // <summary>Duplicate key errors where the bad key is returned</summary>
 // <use visibility=export>
 //
@@ -377,7 +365,6 @@ public:
   //
   ~duplError();
 
-  rtti_dcl_mbrf_p1(duplError<t>, DuplError);
 };
 
 
