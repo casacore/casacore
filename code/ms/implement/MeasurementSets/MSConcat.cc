@@ -27,24 +27,34 @@
 
 #include <trial/MeasurementSets/MSConcat.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/MeasurementSets/MSPolColumns.h>
-#include <aips/MeasurementSets/MSFeed.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/ColumnsIndex.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
+#include <aips/Containers/RecordFieldId.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/MeasurementSets/MSAntenna.h>
+#include <aips/MeasurementSets/MSAntennaColumns.h>
+#include <aips/MeasurementSets/MSDataDescColumns.h>
+#include <aips/MeasurementSets/MSFeed.h>
+#include <aips/MeasurementSets/MSField.h>
+#include <aips/MeasurementSets/MSFieldColumns.h>
+#include <aips/MeasurementSets/MSMainColumns.h>
+#include <aips/MeasurementSets/MSPolColumns.h>
+#include <aips/MeasurementSets/MSSpWindowColumns.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/Tables/ColumnsIndex.h>
+#include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableRow.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 MSConcat::MSConcat(MeasurementSet& ms):
   MSColumns(ms),
@@ -101,22 +111,25 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   LogIO log(LogOrigin("MSConcat", "concatenate"));
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
-  ROMSColumns otherCols(otherMS);
+  const ROMSMainColumns otherMainCols(otherMS);
+  const ROMSPolarizationColumns otherPolCols(otherMS.polarization());
+  const ROMSSpWindowColumns otherSpwCols(otherMS.spectralWindow());
+  const ROMSDataDescColumns otherDDCols(otherMS.dataDescription());
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
-      const uInt nShapes = itsMS.dataDescription().nrow();
+      const uInt nShapes = otherDDCols.nrow();
       for (uInt s = 0; s < nShapes; s++) {
-	checkShape(getShape(otherCols, s));
+	checkShape(getShape(otherDDCols, otherSpwCols, otherPolCols, s));
       }
     }
-    checkCategories(otherCols);
+    checkCategories(otherMainCols);
   }
   uInt oldRows = itsMS.antenna().nrow();
   const Block<uInt> newAntIndices = 
     copyAntennaAndFeed(otherMS.antenna(), otherMS.feed());
   {
-    uInt addedRows = itsMS.antenna().nrow() - oldRows;
-    uInt matchedRows = otherMS.antenna().nrow() - addedRows;
+    const uInt addedRows = itsMS.antenna().nrow() - oldRows;
+    const uInt matchedRows = otherMS.antenna().nrow() - addedRows;
     log << "Added " << addedRows 
 	<< " rows and matched " << matchedRows 
 	<< " from the antenna subtable" << endl;
@@ -124,11 +137,22 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   oldRows = itsMS.field().nrow();
   const Block<uInt> newFldIndices = copyField(otherMS.field());
   {
-    uInt addedRows = itsMS.field().nrow() - oldRows;
-    uInt matchedRows = otherMS.field().nrow() - addedRows;
+    const uInt addedRows = itsMS.field().nrow() - oldRows;
+    const uInt matchedRows = otherMS.field().nrow() - addedRows;
     log << "Added " << addedRows 
 	<< " rows and matched " << matchedRows 
 	<< " from the field subtable" << endl;
+  }
+  oldRows = itsMS.dataDescription().nrow();
+  const Block<uInt> newDDIndices = copySpwAndPol(otherMS.spectralWindow(),
+						 otherMS.polarization(),
+						 otherMS.dataDescription());
+  {
+    const uInt addedRows = itsMS.dataDescription().nrow() - oldRows;
+    const uInt matchedRows = otherMS.dataDescription().nrow() - addedRows;
+    log << "Added " << addedRows 
+	<< " rows and matched " << matchedRows 
+	<< " from the data description subtable" << endl;
   }
 }
 
@@ -150,25 +174,25 @@ void MSConcat::checkShape(const IPosition& otherShape) const
   }
 }
 
-IPosition MSConcat::getShape(const ROMSColumns& msCols, uInt whichShape)
-{
-  const ROMSDataDescColumns& ddCol = msCols.dataDescription();
-  DebugAssert(whichShape < ddCol.nrow(), AipsError);
-  const Int polId = ddCol.polarizationId()(whichShape);
-  DebugAssert(polId >= 0 && 
-	      polId < static_cast<Int>(msCols.polarization().nrow()),AipsError);
-  const Int spwId = ddCol.spectralWindowId()(whichShape);
-  DebugAssert(spwId >= 0 && 
-	      spwId < static_cast<Int>(msCols.spectralWindow().nrow()),
+IPosition MSConcat::getShape(const ROMSDataDescColumns& ddCols, 
+			     const ROMSSpWindowColumns& spwCols, 
+			     const ROMSPolarizationColumns& polCols, 
+			     uInt whichShape) {
+  DebugAssert(whichShape < ddCols.nrow(), AipsError);
+  const Int polId = ddCols.polarizationId()(whichShape);
+  DebugAssert(polId >= 0 && polId < static_cast<Int>(polCols.nrow()),
 	      AipsError);
-  const Int nCorr = msCols.polarization().numCorr()(polId);
+  const Int spwId = ddCols.spectralWindowId()(whichShape);
+  DebugAssert(spwId >= 0 && spwId < static_cast<Int>(spwCols.nrow()),
+	      AipsError);
+  const Int nCorr = polCols.numCorr()(polId);
   DebugAssert(nCorr > 0, AipsError);
-  const Int nChan = msCols.spectralWindow().numChan()(spwId);
+  const Int nChan = spwCols.numChan()(spwId);
   DebugAssert(nChan > 0, AipsError);
   return IPosition(2, nCorr, nChan);
 }
 
-void MSConcat::checkCategories(const ROMSColumns& otherCols) const {
+void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
   const Vector<String> cat = flagCategories();
   const Vector<String> otherCat = otherCols.flagCategories();
   const uInt nCat = cat.nelements();
@@ -286,6 +310,103 @@ Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
     }
   }
   return fldMap;
+}
+
+Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
+				    const MSPolarization& otherPol,
+				    const MSDataDescription& otherDD) {
+  const uInt nDDs = otherDD.nrow();
+  Block<uInt> ddMap(nDDs);
+  
+  const ROMSSpWindowColumns otherSpwCols(otherSpw);
+  MSSpectralWindow& spw = itsMS.spectralWindow();
+  MSSpWindowColumns& spwCols = spectralWindow();
+  const ROTableRow otherSpwRow(otherSpw);
+  TableRow spwRow(spw);
+  const ROMSPolarizationColumns otherPolCols(otherPol);
+  MSPolarization& pol = itsMS.polarization();
+  MSPolarizationColumns& polCols = polarization();
+  const ROTableRow otherPolRow(otherPol);
+  TableRow polRow(pol);
+
+  const ROMSDataDescColumns otherDDCols(otherDD);
+  MSDataDescColumns& ddCols = dataDescription();
+  const Quantum<Double> freqTol(0.01, "Hz");
+
+  const String& spwIdxName = 
+    MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID);
+  const String& polIdxName = 
+    MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID);
+  Vector<String> ddIndexCols(2);
+  ddIndexCols(0) = spwIdxName;
+  ddIndexCols(1) = polIdxName;
+  ColumnsIndex ddIndex(itsMS.dataDescription(), ddIndexCols);
+  RecordFieldPtr<Int> newSpwPtr(ddIndex.accessKey(), spwIdxName);
+  RecordFieldPtr<Int> newPolPtr(ddIndex.accessKey(), polIdxName);
+  Vector<Int> corrInt;
+  Vector<Stokes::StokesTypes> corrPol;
+
+  for (uInt d = 0; d < nDDs; d++) {
+    Bool matchedDD = True;
+    DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
+		otherDDCols.spectralWindowId()(d) < 
+		static_cast<Int>(otherSpw.nrow()), AipsError);
+    const uInt otherSpwId = 
+      static_cast<uInt>(otherDDCols.spectralWindowId()(d));
+    DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
+    *newSpwPtr = 
+      spwCols.matchSpw(otherSpwCols.refFrequencyMeas()(otherSpwId),
+		       static_cast<uInt>(otherSpwCols.numChan()(otherSpwId)),
+		       otherSpwCols.totalBandwidthQuant()(otherSpwId),
+		       otherSpwCols.ifConvChain()(otherSpwId), freqTol);
+    
+    if (*newSpwPtr < 0) {
+      // need to add a new entry in the SPECTRAL_WINDOW subtable
+      *newSpwPtr= spw.nrow();
+      spw.addRow();
+      spwRow.putMatchingFields(*newSpwPtr, otherSpwRow.get(otherSpwId));
+      // There cannot be an entry in the DATA_DESCRIPTION Table
+      matchedDD = False;
+    }
+    
+
+    DebugAssert(otherDDCols.polarizationId()(d) >= 0 &&
+		otherDDCols.polarizationId()(d) < 
+		static_cast<Int>(otherPol.nrow()), AipsError);
+    const uInt otherPolId = 
+      static_cast<uInt>(otherDDCols.polarizationId()(d));
+
+    otherPolCols.corrType().get(otherPolId, corrInt, True);
+    const uInt nCorr = corrInt.nelements();
+    corrPol.resize(nCorr);
+    for (uInt p = 0; p < nCorr; p++) {
+      corrPol(p) = Stokes::type(corrInt(p));
+    }
+    *newPolPtr = polCols.match(corrPol);
+    if (*newPolPtr < 0) {
+      // need to add a new entry in the POLARIZATION subtable
+      *newPolPtr= pol.nrow();
+      pol.addRow();
+      polRow.putMatchingFields(*newPolPtr, otherPolRow.get(otherPolId));
+      // Again there cannot be an entry in the DATA_DESCRIPTION Table
+      matchedDD = False;
+    }
+
+    if (matchedDD) {
+      // We need to check if there exists an entry in the DATA_DESCRIPTION
+      // table with the required spectral window and polarization index.
+      ddMap[d] = ddIndex.getRowNumber(matchedDD);
+    }
+    
+    if (!matchedDD) {
+      // Add an entry to the data description sub-table
+      ddMap[d] = ddCols.nrow();
+      itsMS.dataDescription().addRow(1);
+      ddCols.polarizationId().put(ddMap[d], *newPolPtr);
+      ddCols.spectralWindowId().put(ddMap[d], *newSpwPtr);
+    }
+  }
+  return ddMap;
 }
 // Local Variables: 
 // compile-command: "gmake MSConcat"

@@ -35,8 +35,16 @@
 #include <aips/Arrays/IPosition.h>
 
 class TableDesc;
+class ROMSMainColumns;
+class ROMSDataDescColumns;
+class ROMSSpWindowColumns;
+class ROMSPolarizationColumns;
 class MSAntenna;
+class MSDataDescription;
 class MSFeed;
+class MSField;
+class MSPolarization;
+class MSSpectralWindow;
 template <class T> class Block;
 
 // <summary>A class with functions for concatenating MeasurementSets</summary>
@@ -88,12 +96,18 @@ public:
 private:
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
-  static IPosition getShape(const ROMSColumns& msCols, uInt whichShape);
+  static IPosition getShape(const ROMSDataDescColumns& ddCols, 
+			    const ROMSSpWindowColumns& spwCols, 
+			    const ROMSPolarizationColumns& polCols, 
+			    uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
-  void checkCategories(const ROMSColumns& otherCols) const;
+  void checkCategories(const ROMSMainColumns& otherCols) const;
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyField(const MSField& otherFld);
+  Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
+			    const MSPolarization& otherPol,
+			    const MSDataDescription& otherDD);
 
   MeasurementSet itsMS;
   IPosition itsFixedShape;
