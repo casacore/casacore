@@ -1,5 +1,5 @@
 //# tHostInfo.cc: Test the HostInfo class.
-//# Copyright (C) 1997,2001
+//# Copyright (C) 1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,18 +40,31 @@ int main()
     cout << "Process ID: " << HostInfo::processID() << endl;
     Double s = HostInfo::secondsFrom1970();
     cout << "Time in seconds from 1970/1/1: " << s << " (about " <<
-	Int(s/3600.0/24.0/365.25*10 + 0.5)/10.0 << " years)" << endl;
+	Int(s/3600.0/24.0/365.25*10.0 + 0.5)/10.0 << " years)" << endl;
+    cout << "Number of CPUs: " << HostInfo::numCPUs( ) << endl;
+    cout << "Physical Memory: " << HostInfo::memoryTotal( ) <<
+      "K [ " << HostInfo::memoryUsed( ) << " used, " <<
+      HostInfo::memoryFree( ) << " free ]" << endl;
+    cout << "Swap Space: " << HostInfo::swapTotal( ) <<
+      "K [ " << HostInfo::swapUsed( ) << " used, " <<
+      HostInfo::swapFree( ) << " free ]" << endl;
 
     // OK, we can't do much of a test, but we can do a bit of one:
     Int id = HostInfo::processID();
     AlwaysAssertExit(id == HostInfo::processID()); // make sure no chang
+
+    Int cpus = HostInfo::numCPUs( );
+    AlwaysAssertExit(cpus == HostInfo::numCPUs( )); // make sure no chang
+
+    Int memory = HostInfo::memoryTotal( );
+    AlwaysAssertExit(memory == HostInfo::memoryTotal( )); // make sure no chang
 
     Double now = HostInfo::secondsFrom1970();
     sleep(5);
     Double diff = HostInfo::secondsFrom1970() - now;
     // Assume granularity could be as bad as 100ms
     AlwaysAssertExit(diff >= 4.9 && diff <= 5.1);
-    
+
     // No good way to test hostName, other than using the same library call
     // that hostName is built upon!
 
