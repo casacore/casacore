@@ -1,5 +1,5 @@
 //# dPointCompRep.cc:
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointCompRep.h>
+/////#include <trial/ComponentModels/PointCompRep.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
@@ -44,6 +44,8 @@
 
 int main() {
   try {
+
+/*
     const Quantity J1934_ra = Quantity(19.0, "h").get("'") + Quantity(39, "'");
     const Quantity J1934_dec = Quantity(-63, "deg") + Quantity(-43, "'");
     const MDirection J1934_pos(J1934_ra, J1934_dec, MDirection::J2000);
@@ -70,6 +72,8 @@ int main() {
 			       "dPointCompRep_tmp.image");
     skyModel.set(0.0f);
     J1934.project(skyModel);
+
+*/
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;

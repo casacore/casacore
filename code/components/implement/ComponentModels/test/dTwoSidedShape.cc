@@ -1,5 +1,5 @@
 //# dGaussianCompRep.cc:  this defines dGaussianCompRep
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/GaussianCompRep.h>
+//////#include <trial/ComponentModels/GaussianCompRep.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
@@ -46,6 +46,8 @@
 
 int main() {
   try {
+
+/*
     Flux<Double> J0533_flux(2.23, 0.0, 0.0, 0.0);
     const Quantity J0533_ra = Quantity(5.0, "h").get("'") + Quantity(33, "'");
     const Quantity J0533_dec = Quantity(-32, "deg") + Quantity(-18, "'");
@@ -75,6 +77,8 @@ int main() {
 			       "dGaussianCompRep_tmp.image");
     skyModel.set(0.0f);
     J0533.project(skyModel);
+
+*/
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
