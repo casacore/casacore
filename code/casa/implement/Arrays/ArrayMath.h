@@ -392,7 +392,7 @@ template<class T> T fractile(const Array<T> &a, Float fraction,
 // ArrayLogical.h contains the functions ntrue, nfalse, partialNTrue and
 // partialNFalse to count the number of true or false elements in an array.
 // </note>
-// group>
+// <group>
 template<class T> Array<T> partialSums (const Array<T>& array,
 					const IPosition& collapseAxes);
 template<class T> Array<T> partialProducts (const Array<T>& array,
