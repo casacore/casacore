@@ -5618,3 +5618,5 @@
 15 266 src mv trial/implement/Tables/ExprFuncNodeArray.h aips/implement/Tables/ExprFuncNodeArray.h
 15 268 src mv trial/implement/Tables/test/tExprNode.cc aips/implement/Tables/test/tExprNode.cc
 15 271 src rm trial/implement/IDL/IDLexport.h
+15 274 src rm trialdisplay/apps/gDisplay/GTkAnimator.cc
+15 274 src rm trialdisplay/apps/gDisplay/GTkAnimator.h
