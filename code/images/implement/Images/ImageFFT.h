@@ -94,9 +94,11 @@ template<class T> class Vector;
 //      PagedImage<Float> i1(shape, CoordinateUtil::defaultCoords2D(), "imag1");
 //      if (im1.isMasked()) {
 //         LCPagedMask mask1 = LCPagedMask(RegionHandler::makeMask (r1, "mask0"));
+//         mask1.set(True);
 //         r1.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
 //         r1.setDefaultMask("mask0");
 //         LCPagedMask mask2 = LCPagedMask(RegionHandler::makeMask (i1, "mask0"));
+//         mask2.set(True);
 //         i1.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
 //         i1.setDefaultMask("mask0");
 //      }
@@ -106,7 +108,7 @@ template<class T> class Vector;
 //      ImageFFT fft;
 //      fft.fftsky(im1);
 //
-//// The coordinates and mask will be overwritten
+//// The coordinates and mask will be updated
 //
 //      fft.getReal(r1);
 //      fft.getImag(i1);
@@ -160,7 +162,8 @@ public:
 // history and units are copied/updated in the output image
 // from the image that was FFTd.   If the input image is masked,
 // and the output image has a writable mask, the mask will
-// be transferred
+// be transferred. Any output mask should be initialized to
+// True before calling these functions.
 // <group>
    void getComplex (ImageInterface<Complex>& out) const;
    void getReal (ImageInterface<Float>& out) const;
