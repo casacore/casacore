@@ -97,6 +97,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     colSetPtr_p->linkToLockObject (this, lockPtr_p);
     //# Initialize the data managers.
     Table tab(this, False);
+    nrrowToAdd_p = nrrow;
     colSetPtr_p->initDataManagers (nrrow, tab);
     //# Initialize the columns if needed.
     if (initialize  &&  nrrow > 0) {
@@ -104,6 +105,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     }
     //# Nrrow_p has to be set here, otherwise data managers may use the
     //# incorrect number of rows (similar behaviour as in function addRow).
+    nrrowToAdd_p = 0;
     nrrow_p = nrrow;
     //# Release the write lock if UserLocking is used.
     if (lockPtr_p->option() == TableLock::UserLocking) {
