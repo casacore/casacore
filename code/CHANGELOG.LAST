@@ -1,0 +1,24 @@
+
+change id: 0037
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   visplot
+ type:     Code
+ category: Change Bugfix
+ summary:  Usability improvements and new functionality
+
+Many changes as suggested by various people:
+
+	- Antennas and baselines entries can be filled in using graphical
+widgets.
+	- Antenna1 and Antenna2 have disappeared to be replaced just by
+Antennas.
+	- Editing now works on uvslice plot.
+	- Uvslice plots can now be made at n angles at once. 
+	- Can now unflag points in the plot-based editing.
+	- The color code for polarizations is now plotted.
+
+Tim
