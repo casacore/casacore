@@ -859,9 +859,7 @@ Bool ImageMoments<T>::createMoments()
          imgp->mergeTableLogSink(pInImage_p->logSink());
       }
 //
-      LCPagedMask mask(RegionHandler::makeMask (*imgp, "mask0"));
-      imgp->defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
-      imgp->setDefaultMask("mask0");
+      imgp->makeMask ("mask0", True, True);
       outPt[i] = imgp;
 
 // Set output image units if possible
