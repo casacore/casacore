@@ -243,6 +243,20 @@ template<class T> void Cube<T>::makeIndexingConstants()
     zinc_p = inc_p(2)*originalLength_p(0)*originalLength_p(1);
 }
 
+
+template<class T>
+void Cube<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+{
+    Array<T> tmp(*this);
+    tmp.nonDegenerate (other, ignoreAxes);
+    if (tmp.ndim() != 1) {
+	throw (ArrayError ("Cube::nonDegenerate (other, ignoreAxes) - "
+			   "removing degenerate axes from other "
+			   "does not result in cube"))
+    }
+    reference (tmp);
+}
+
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
