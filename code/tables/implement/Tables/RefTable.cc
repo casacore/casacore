@@ -1,5 +1,5 @@
 //# RefTable.cc: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,13 +47,11 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
   changed_p    (False)
 {
     //# Read the file in.
-    //# Disable the default mark for deletion.
     // Set initially to no write in destructor.
     // At the end it is reset. In this way nothing is written if
     // an exception is thrown during initialization.
     noWrite_p = True;
     getRef (ios, opt, lockOptions);
-    unmarkForDelete();
     noWrite_p = False;
 }
 
