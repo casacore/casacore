@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# Get the data from the SetupNewTable object.
     tdescPtr_p   = newtab.tableDescPtr();
     colSetPtr_p  = newtab.columnSetPtr();
-    //# Create the table directory (or delete files) as needed.
+    //# Create the table directory (and possibly delete existing files)
+    //# as needed.
     makeTableDir();
     //# Create the lock object.
     //# When needed, it sets a permanent write lock.
@@ -105,8 +106,11 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     if (lockPtr_p->option() == TableLock::UserLocking) {
 	lockPtr_p->release();
     }
+    //# Unmark for delete when needed.
+    if (! newtab.isMarkedForDelete()) {
+	unmarkForDelete (True, "");
+    }
     //# The destructor can (in principle) write.
-    delete_p  = newtab.isMarkedForDelete();
     noWrite_p = False;
     //# Add it to the table cache.
     tableCache.define (name_p, this);
@@ -171,7 +175,6 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
 	lockPtr_p->release();
     }
     //# The destructor can (in principle) write.
-    unmarkForDelete();
     noWrite_p = False;
     //# Add it to the table cache.
     tableCache.define (name_p, this);
@@ -187,8 +190,9 @@ PlainTable::~PlainTable()
 	}
     }else{
 	//# Check if table can indeed be deleted.
+	//# If not, set delete flag to False.
 	if (isMultiUsed()) {
-	    unmarkForDelete();
+	    unmarkForDelete (False, "");
 	    throw (TableError ("Table " + name_p + " cannot be deleted;"
 			       " it is still used in another process"));
 	}
