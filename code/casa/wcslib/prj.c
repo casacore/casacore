@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,226 +19,42 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
-*
-*=============================================================================
-*
-*   C implementation of the spherical map projections recognized by the FITS
-*   "World Coordinate System" (WCS) convention.
-*
-*   Summary of routines
-*   -------------------
-*   Each projection is implemented via separate functions for the forward,
-*   *fwd(), and reverse, *rev(), transformation.
-*
-*   Initialization routines, *set(), compute intermediate values from the
-*   projection parameters but need not be called explicitly - see the
-*   explanation of prj.flag below.
-*
-*      prjset prjfwd prjrev   Driver routines (see below).
-*
-*      azpset azpfwd azprev   AZP: zenithal/azimuthal perspective
-*      szpset szpfwd szprev   SZP: slant zenithal perspective
-*      tanset tanfwd tanrev   TAN: gnomonic
-*      stgset stgfwd stgrev   STG: stereographic
-*      sinset sinfwd sinrev   SIN: orthographic/synthesis
-*      arcset arcfwd arcrev   ARC: zenithal/azimuthal equidistant
-*      zpnset zpnfwd zpnrev   ZPN: zenithal/azimuthal polynomial
-*      zeaset zeafwd zearev   ZEA: zenithal/azimuthal equal area
-*      airset airfwd airrev   AIR: Airy
-*      cypset cypfwd cyprev   CYP: cylindrical perspective
-*      ceaset ceafwd cearev   CEA: cylindrical equal area
-*      carset carfwd carrev   CAR: Cartesian
-*      merset merfwd merrev   MER: Mercator
-*      sflset sflfwd sflrev   SFL: Sanson-Flamsteed
-*      parset parfwd parrev   PAR: parabolic
-*      molset molfwd molrev   MOL: Mollweide
-*      aitset aitfwd aitrev   AIT: Hammer-Aitoff
-*      copset copfwd coprev   COP: conic perspective
-*      coeset coefwd coerev   COE: conic equal area
-*      codset codfwd codrev   COD: conic equidistant
-*      cooset coofwd coorev   COO: conic orthomorphic
-*      bonset bonfwd bonrev   BON: Bonne
-*      pcoset pcofwd pcorev   PCO: polyconic
-*      tscset tscfwd tscrev   TSC: tangential spherical cube
-*      cscset cscfwd cscrev   CSC: COBE quadrilateralized spherical cube
-*      qscset qscfwd qscrev   QSC: quadrilateralized spherical cube
-*
-*
-*   Driver routines; prjset(), prjfwd() & prjrev()
-*   ----------------------------------------------
-*   A set of driver routines are available for use as a generic interface to
-*   the specific projection routines.  The interfaces to prjfwd() and prjrev()
-*   are the same as those of the forward and reverse transformation routines
-*   for the specific projections (see below).
-*
-*   The interface to prjset() differs slightly from that of the initialization
-*   routines for the specific projections and unlike them it must be invoked
-*   explicitly to use prjfwd() and prjrev().
-*
-*   Given:
-*      pcode[4] const char
-*                        WCS projection code.
-*
-*   Given and/or returned:
-*      prj      prjprm*  Projection parameters (see below).
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*
-*
-*   Initialization routine; *set()
-*   ------------------------------
-*   Initializes members of a prjprm data structure which hold intermediate
-*   values.  Note that this routine need not be called directly; it will be
-*   invoked by prjfwd() and prjrev() if the "flag" structure member is
-*   anything other than a predefined magic value.
-*
-*   Given and/or returned:
-*      prj      prjprm*  Projection parameters (see below).
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid projection parameters.
-*
-*   Forward transformation; *fwd()
-*   -----------------------------
-*   Compute (x,y) coordinates in the plane of projection from native spherical
-*   coordinates (phi,theta).
-*
-*   Given:
-*      phi,     const double
-*      theta             Longitude and latitude of the projected point in
-*                        native spherical coordinates, in degrees.
-*
-*   Given and returned:
-*      prj      prjprm*  Projection parameters (see below).
-*
-*   Returned:
-*      x,y      double*  Projected coordinates.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid projection parameters.
-*                           2: Invalid value of (phi,theta).
-*
-*   Reverse transformation; *rev()
-*   -----------------------------
-*   Compute native spherical coordinates (phi,theta) from (x,y) coordinates in
-*   the plane of projection.
-*
-*   Given:
-*      x,y      const double
-*                        Projected coordinates.
-*
-*   Given and returned:
-*      prj      prjprm*  Projection parameters (see below).
-*
-*   Returned:
-*      phi,     double*  Longitude and latitude of the projected point in
-*      theta             native spherical coordinates, in degrees.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid projection parameters.
-*                           2: Invalid value of (x,y).
-*                           1: Invalid projection parameters.
-*
-*   Projection parameters
-*   ---------------------
-*   The prjprm struct consists of the following:
-*
-*      int flag
-*         This flag must be set to zero whenever any of p[10] or r0 are set
-*         or changed.  This signals the initialization routine to recompute
-*         intermediaries.  flag may also be set to -1 to disable strict bounds
-*         checking for the AZP, SZP, TAN, SIN, ZPN, and COP projections.
-*
-*      double r0
-*         r0; The radius of the generating sphere for the projection, a linear
-*         scaling parameter.  If this is zero, it will be reset to the default
-*         value of 180/pi (the value for FITS WCS).
-*
-*      double p[10]
-*         The first 10 elements contain projection parameters which correspond
-*         to the PROJPn keywords in FITS, so p[0] is PROJP0, and p[9] is
-*         PROJP9.  Many projections use p[1] (PROJP1) and some also use p[2]
-*         (PROJP2).  ZPN is the only projection which uses any of the others.
-*
-*   The remaining members of the prjprm struct are maintained by the
-*   initialization routines and should not be modified.  This is done for the
-*   sake of efficiency and to allow an arbitrary number of contexts to be
-*   maintained simultaneously.
-*
-*      char code[4]
-*         Three-letter projection code.
-*
-*      double phi0, theta0
-*         Native longitude and latitude of the reference point, in degrees.
-*
-*      double w[10]
-*      int n
-*         Intermediate values derived from the projection parameters.
-*
-*      int (*prjfwd)()
-*      int (*prjrev)()
-*         Pointers to the forward and reverse projection routines.
-*
-*   Usage of the p[] array as it applies to each projection is described in
-*   the prologue to each trio of projection routines.
-*
-*   Argument checking
-*   -----------------
-*   Forward routines:
-*
-*      The values of phi and theta (the native longitude and latitude)
-*      normally lie in the range [-180,180] for phi, and [-90,90] for theta.
-*      However, all forward projections will accept any value of phi and will
-*      not normalize it.
-*
-*      The forward projection routines do not explicitly check that theta lies
-*      within the range [-90,90].  They do check for any value of theta which
-*      produces an invalid argument to the projection equations (e.g. leading
-*      to division by zero).  The forward routines for AZP, SZP, TAN, SIN,
-*      ZPN, and COP also return error 2 if (phi,theta) corresponds to the
-*      overlapped (far) side of the projection but also return the
-*      corresponding value of (x,y).  This strict bounds checking may be
-*      relaxed by setting prj->flag to -1 (rather than 0) when these
-*      projections are initialized.
-*
-*   Reverse routines:
-*
-*      Error checking on the projected coordinates (x,y) is limited to that
-*      required to ascertain whether a solution exists.  Where a solution does
-*      exist no check is made that the value of phi and theta obtained lie
-*      within the ranges [-180,180] for phi, and [-90,90] for theta.
-*
-*   Accuracy
-*   --------
-*   Closure to a precision of at least 1E-10 degree of longitude and latitude
-*   has been verified for typical projection parameters on the 1 degree grid
-*   of native longitude and latitude (to within 5 degrees of any latitude
-*   where the projection may diverge).
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
 *===========================================================================*/
 
 #include <math.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "wcsmath.h"
 #include "wcstrig.h"
-#include "proj.h"
+#include "prj.h"
 
-int  npcode = 26;
-char pcodes[26][4] =
+
+/* Projection categories. */
+const int ZENITHAL          = 1;
+const int CYLINDRICAL       = 2;
+const int PSEUDOCYLINDRICAL = 3;
+const int CONVENTIONAL      = 4;
+const int CONIC             = 5;
+const int POLYCONIC         = 6;
+const int QUADCUBE          = 7;
+
+const char prj_categories[8][32] =
+      {"undefined", "zenithal", "cylindrical", "pseudocylindrical",
+       "conventional", "conic", "polyconic", "quadcube"};
+
+
+/* Projection codes. */
+const int  prj_ncode = 26;
+const char prj_codes[26][4] =
       {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
        "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
        "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
@@ -270,92 +86,220 @@ const int TSC = 701;
 const int CSC = 702;
 const int QSC = 703;
 
+
 /* Map error number to error message for each function. */
-const char *prjset_errmsg[] = {
+const char *prj_errmsg[] = {
    0,
-   "Invalid projection parameters"};
-
-const char *prjfwd_errmsg[] = {
-   0,
+   "Null prjprm pointer passed",
    "Invalid projection parameters",
-   "Invalid value of (phi,theta)"};
+   "One or more of the (x,y) coordinates were invalid",
+   "One or more of the (phi,theta) coordinates were invalid"};
 
-const char *prjrev_errmsg[] = {
-   0,
-   "Invalid projection parameters",
-   "Invalid value of (x,y)"};
+int prj_stat;
 
 
-#ifdef COPYSIGN
 #define copysign(X, Y) ((Y) < 0.0 ? -fabs(X) : fabs(X))
-#endif
+
+#define UNDEFINED 987654321.0e99
+#define undefined(value) (value == UNDEFINED)
 
 
+/*============================================================================
+* Generic routines.
+*
+* prjini initializes a prjprm struct to default values.
+*
+* prjset invokes the specific initialization routine based on the projection
+*        code in the prjprm struct.
+*
+* prjx2s invokes the specific deprojection routine based on the pointer-to-
+*        function stored in the prjprm struct.
+*
+* prjs2x invokes the specific projection routine based on the pointer-to-
+*        function stored in the prjprm struct.
+*
+*---------------------------------------------------------------------------*/
 
-/*==========================================================================*/
+int prjini(prj)
 
-int prjset(pcode, prj)
-
-const char pcode[4];
 struct prjprm *prj;
 
 {
-   /* Set pointers to the forward and reverse projection routines. */
-   if (strcmp(pcode, "AZP") == 0) {
+   register int k;
+
+   if (prj == 0) return 1;
+
+   prj->flag = 0;
+
+   strcpy(prj->code, "   ");
+   prj->pv[0]  = 0.0;
+   prj->pv[1]  = UNDEFINED;
+   prj->pv[2]  = UNDEFINED;
+   prj->pv[3]  = UNDEFINED;
+   for (k = 4; k < PVN; prj->pv[k++] = 0.0);
+   prj->r0     = 0.0;
+   prj->phi0   = UNDEFINED;
+   prj->theta0 = UNDEFINED;
+   prj->bounds = 1;
+
+   strcpy(prj->name, "Undefined");
+   prj->category  = 0;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 0;
+   prj->x0 = 0.0;
+   prj->y0 = 0.0;
+   for (k = 0; k < 10; prj->w[k++] = 0.0);
+   prj->n = 0;
+
+   prj->p = prj->pv;
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int prjprt(prj)
+
+const struct prjprm *prj;
+
+{
+   int i, j;
+
+   if (prj == 0) return 1;
+
+   printf("       flag: %d\n",  prj->flag);
+   printf("       code: \"%s\"\n",  prj->code);
+   printf("         r0: %9f\n", prj->r0);
+   printf("         pv:");
+   if (prj->pvrange) {
+      for (j = 0; j < prj->pvrange/100; j++) {
+         printf("   (0)        ");
+      }
+      for (i = 0; i < (prj->pvrange)%100; i++, j++) {
+         if (undefined(prj->pv[prj->pvrange/100 + i])) {
+            printf("  UNDEFINED   ");
+         } else {
+            printf("  %- 11.4g", prj->pv[prj->pvrange/100 + i]);
+         }
+         if (j && j%5 == 0) {
+            printf("\n            ");
+         }
+      }
+      printf("\n");
+   } else {
+      printf(" (not used)\n");
+   }
+   if (undefined(prj->phi0)) {
+      printf("       phi0: UNDEFINED\n");
+   } else {
+      printf("       phi0: %9f\n", prj->phi0);
+   }
+   if (undefined(prj->theta0)) {
+      printf("     theta0: UNDEFINED\n");
+   } else {
+      printf("     theta0: %9f\n", prj->theta0);
+   }
+   printf("     bounds: %d\n",  prj->bounds);
+
+   printf("\n");
+   printf("       name: \"%s\"\n", prj->name);
+   printf("   category: %d (%s)\n", prj->category,
+                                    prj_categories[prj->category]);
+   printf("    pvrange: %d\n", prj->pvrange);
+   printf("  simplezen: %d\n", prj->simplezen);
+   printf("  equiareal: %d\n", prj->equiareal);
+   printf("  conformal: %d\n", prj->conformal);
+   printf("     global: %d\n", prj->global);
+   printf("  divergent: %d\n", prj->divergent);
+   printf("         x0: %f\n", prj->x0);
+   printf("         y0: %f\n", prj->y0);
+   printf("        w[]:");
+   for (i = 0; i < 5; i++) {
+      printf("  %- 11.4g", prj->w[i]);
+   }
+   printf("\n            ");
+   for (i = 5; i < 10; i++) {
+      printf("  %- 11.4g", prj->w[i]);
+   }
+   printf("\n");
+   printf("          n: %d\n", prj->n);
+   printf("     prjx2s: 0x%x\n", (int)prj->prjx2s);
+   printf("     prjs2x: 0x%x\n", (int)prj->prjs2x);
+   printf("          p: 0x%x  (= pv)\n", (int)prj->p);
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int prjset(prj)
+
+struct prjprm *prj;
+
+{
+   if (prj == 0) return 1;
+
+   /* Invoke the relevant initialization routine. */
+   prj->code[3] = '\0';
+   if (strcmp(prj->code, "AZP") == 0) {
       azpset(prj);
-   } else if (strcmp(pcode, "SZP") == 0) {
+   } else if (strcmp(prj->code, "SZP") == 0) {
       szpset(prj);
-   } else if (strcmp(pcode, "TAN") == 0) {
+   } else if (strcmp(prj->code, "TAN") == 0) {
       tanset(prj);
-   } else if (strcmp(pcode, "STG") == 0) {
+   } else if (strcmp(prj->code, "STG") == 0) {
       stgset(prj);
-   } else if (strcmp(pcode, "SIN") == 0) {
+   } else if (strcmp(prj->code, "SIN") == 0) {
       sinset(prj);
-   } else if (strcmp(pcode, "ARC") == 0) {
+   } else if (strcmp(prj->code, "ARC") == 0) {
       arcset(prj);
-   } else if (strcmp(pcode, "ZPN") == 0) {
+   } else if (strcmp(prj->code, "ZPN") == 0) {
       zpnset(prj);
-   } else if (strcmp(pcode, "ZEA") == 0) {
+   } else if (strcmp(prj->code, "ZEA") == 0) {
       zeaset(prj);
-   } else if (strcmp(pcode, "AIR") == 0) {
+   } else if (strcmp(prj->code, "AIR") == 0) {
       airset(prj);
-   } else if (strcmp(pcode, "CYP") == 0) {
+   } else if (strcmp(prj->code, "CYP") == 0) {
       cypset(prj);
-   } else if (strcmp(pcode, "CEA") == 0) {
+   } else if (strcmp(prj->code, "CEA") == 0) {
       ceaset(prj);
-   } else if (strcmp(pcode, "CAR") == 0) {
+   } else if (strcmp(prj->code, "CAR") == 0) {
       carset(prj);
-   } else if (strcmp(pcode, "MER") == 0) {
+   } else if (strcmp(prj->code, "MER") == 0) {
       merset(prj);
-   } else if (strcmp(pcode, "SFL") == 0) {
+   } else if (strcmp(prj->code, "SFL") == 0) {
       sflset(prj);
-   } else if (strcmp(pcode, "PAR") == 0) {
+   } else if (strcmp(prj->code, "PAR") == 0) {
       parset(prj);
-   } else if (strcmp(pcode, "MOL") == 0) {
+   } else if (strcmp(prj->code, "MOL") == 0) {
       molset(prj);
-   } else if (strcmp(pcode, "AIT") == 0) {
+   } else if (strcmp(prj->code, "AIT") == 0) {
       aitset(prj);
-   } else if (strcmp(pcode, "COP") == 0) {
+   } else if (strcmp(prj->code, "COP") == 0) {
       copset(prj);
-   } else if (strcmp(pcode, "COE") == 0) {
+   } else if (strcmp(prj->code, "COE") == 0) {
       coeset(prj);
-   } else if (strcmp(pcode, "COD") == 0) {
+   } else if (strcmp(prj->code, "COD") == 0) {
       codset(prj);
-   } else if (strcmp(pcode, "COO") == 0) {
+   } else if (strcmp(prj->code, "COO") == 0) {
       cooset(prj);
-   } else if (strcmp(pcode, "BON") == 0) {
+   } else if (strcmp(prj->code, "BON") == 0) {
       bonset(prj);
-   } else if (strcmp(pcode, "PCO") == 0) {
+   } else if (strcmp(prj->code, "PCO") == 0) {
       pcoset(prj);
-   } else if (strcmp(pcode, "TSC") == 0) {
+   } else if (strcmp(prj->code, "TSC") == 0) {
       tscset(prj);
-   } else if (strcmp(pcode, "CSC") == 0) {
+   } else if (strcmp(prj->code, "CSC") == 0) {
       cscset(prj);
-   } else if (strcmp(pcode, "QSC") == 0) {
+   } else if (strcmp(prj->code, "QSC") == 0) {
       qscset(prj);
    } else {
       /* Unrecognized projection code. */
-      return 1;
+      return 2;
    }
 
    return 0;
@@ -363,43 +307,94 @@ struct prjprm *prj;
 
 /*--------------------------------------------------------------------------*/
 
-int prjfwd(phi, theta, prj, x, y)
+int prjx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   return prj->prjfwd(phi, theta, prj, x, y);
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag == 0) {
+      if (prjset(prj)) return 2;
+   }
+
+   return prj->prjx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int prjrev(x, y, prj, phi, theta)
+int prjs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double x, y;
 struct prjprm *prj;
-double *phi, *theta;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
-   return prj->prjrev(x, y, prj, phi, theta);
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag == 0) {
+      if (prjset(prj)) return 2;
+   }
+
+   return prj->prjs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat);
+}
+
+/*============================================================================
+* Internal helper routine used by the *set() routines which forces
+* (x,y) = (0,0) at (phi0,theta0).
+*---------------------------------------------------------------------------*/
+
+int offset(prj, phi0, theta0)
+
+struct prjprm *prj;
+const double phi0, theta0;
+
+{
+   int    stat;
+
+   if (prj == 0) return 1;
+
+   if (undefined(prj->phi0) || undefined(prj->theta0)) {
+      /* Set both to the projection-specific default if either undefined. */
+      prj->phi0   = phi0;
+      prj->theta0 = theta0;
+
+      prj->x0 = 0.0;
+      prj->y0 = 0.0;
+
+   } else {
+      if (prj->prjs2x(prj, 1, 1, 1, 1, &(prj->phi0), &(prj->theta0),
+                      &(prj->x0), &(prj->y0), &stat)) {
+         return 2;
+      }
+   }
+
+   return 0;
 }
 
 /*============================================================================
 *   AZP: zenithal/azimuthal perspective projection.
 *
 *   Given:
-*      prj->p[1]    Distance parameter, mu in units of r0.
-*      prj->p[2]    Tilt angle, gamma in degrees.
+*      prj->pv[1]   Distance parameter, mu in units of r0.
+*      prj->pv[2]   Tilt angle, gamma in degrees.
 *
 *   Given and/or returned:
-*      prj->flag    AZP, or -AZP if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
+*      prj->flag     AZP
 *      prj->code    "AZP"
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->x0      Offset in x.
+*      prj->y0      Offset in y.
 *      prj->w[0]    r0*(mu+1)
 *      prj->w[1]    tan(gamma)
 *      prj->w[2]    sec(gamma)
@@ -408,8 +403,8 @@ double *phi, *theta;
 *      prj->w[5]    asin(-1/mu) for |mu| >= 1, -90 otherwise
 *      prj->w[6]    mu*cos(gamma)
 *      prj->w[7]    1 if |mu*cos(gamma)| < 1, 0 otherwise
-*      prj->prjfwd  Pointer to azpfwd().
-*      prj->prjrev  Pointer to azprev().
+*      prj->prjx2s  Pointer to azpx2s().
+*      prj->prjs2x  Pointer to azps2x().
 *===========================================================================*/
 
 int azpset(prj)
@@ -417,170 +412,299 @@ int azpset(prj)
 struct prjprm *prj;
 
 {
-   strcpy(prj->code, "AZP");
-   prj->flag   = copysign(AZP, prj->flag);
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+   if (prj == 0) return 1;
 
+   prj->flag = AZP;
+   strcpy(prj->code, "AZP");
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 0.0;
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   prj->w[0] = prj->r0*(prj->p[1] + 1.0);
+   strcpy(prj->name, "Zenithal/azimuthal perspective");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 102;
+   prj->simplezen = prj->pv[2] == 0.0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = prj->pv[1] <= 1.0;
+
+   prj->w[0] = prj->r0*(prj->pv[1] + 1.0);
    if (prj->w[0] == 0.0) {
-      return 1;
+      return 2;
    }
 
-   prj->w[3] = cosd(prj->p[2]);
+   prj->w[3] = cosd(prj->pv[2]);
    if (prj->w[3] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[2] = 1.0/prj->w[3];
-   prj->w[4] = sind(prj->p[2]);
+   prj->w[4] = sind(prj->pv[2]);
    prj->w[1] = prj->w[4] / prj->w[3];
 
-   if (fabs(prj->p[1]) > 1.0) {
-      prj->w[5] = asind(-1.0/prj->p[1]);
+   if (fabs(prj->pv[1]) > 1.0) {
+      prj->w[5] = asind(-1.0/prj->pv[1]);
    } else {
       prj->w[5] = -90.0;
    }
 
-   prj->w[6] = prj->p[1] * prj->w[3];
+   prj->w[6] = prj->pv[1] * prj->w[3];
    prj->w[7] = (fabs(prj->w[6]) < 1.0) ? 1.0 : 0.0;
 
-   prj->prjfwd = azpfwd;
-   prj->prjrev = azprev;
+   prj->prjx2s = azpx2s;
+   prj->prjs2x = azps2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int azpfwd(phi, theta, prj, x, y)
+int azpx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, b, cphi, cthe, r, s, t;
+   int mx, my, rowlen, rowoff, status;
+   double a, b, q, r, s, t, xj, yj, yc, yc2;
+   const double tol = 1.0e-13;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != AZP) {
-      if (azpset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != AZP) {
+      if (azpset(prj)) return 2;
    }
 
-   cphi = cosd(phi);
-   cthe = cosd(theta);
-
-   s = prj->w[1]*cphi;
-   t = (prj->p[1] + sind(theta)) + cthe*s;
-   if (t == 0.0) {
-      return 2;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   r  =  prj->w[0]*cthe/t;
-   *x =  r*sind(phi);
-   *y = -r*cphi*prj->w[2];
+   status = 0;
 
-   /* Bounds checking. */
-   if (prj->flag > 0) {
-      /* Overlap. */
-      if (theta < prj->w[5]) {
-         return 2;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
       }
+   }
 
-      /* Divergence. */
-      if (prj->w[7] > 0.0) {
-         t = prj->p[1] / sqrt(1.0 + s*s);
 
-         if (fabs(t) <= 1.0) {
-            s = atand(-s);
-            t = asind(t);
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj = *yp + prj->y0;
+
+      yc  = yj*prj->w[3];
+      yc2 = yc*yc;
+
+      q = prj->w[0] + yj*prj->w[4];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + yc2);
+         if (r == 0.0) {
+            *phip = 0.0;
+            *thetap = 90.0;
+            *(statp++) = 0;
+
+         } else {
+            *phip = atan2d(xj, -yc);
+
+            s = r / q;
+            t = s*prj->pv[1]/sqrt(s*s + 1.0);
+
+            s = atan2d(1.0, s);
+
+            if (fabs(t) > 1.0) {
+               if (fabs(t) > 1.0+tol) {
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               t = copysign(90.0, t);
+            } else {
+               t = asind(t);
+            }
+
             a = s - t;
             b = s + t + 180.0;
 
             if (a > 90.0) a -= 360.0;
             if (b > 90.0) b -= 360.0;
 
-            if (theta < ((a > b) ? a : b)) {
-               return 2;
-            }
+            *thetap = (a > b) ? a : b;
+            *(statp++) = 0;
          }
       }
    }
 
-   return 0;
+   return status;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int azprev(x, y, prj, phi, theta)
+int azps2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double x, y;
 struct prjprm *prj;
-double *phi, *theta;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
-   double a, b, r, s, t, ycosg;
-   const double tol = 1.0e-13;
+   int mphi, mtheta, rowlen, rowoff, status;
+   double a, b, cosphi, costhe, r, s, sinphi, sinthe, t;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
 
-   if (abs(prj->flag) != AZP) {
-      if (azpset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != AZP) {
+      if (azpset(prj)) return 2;
    }
 
-   ycosg = y*prj->w[3];
-
-   r = sqrt(x*x + ycosg*ycosg);
-   if (r == 0.0) {
-      *phi   =  0.0;
-      *theta = 90.0;
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      *phi = atan2d(x, -ycosg);
-
-      s = r / (prj->w[0] + y*prj->w[4]);
-      t = s*prj->p[1]/sqrt(s*s + 1.0);
-
-      s = atan2d(1.0, s);
-
-      if (fabs(t) > 1.0) {
-         t = copysign(90.0,t);
-         if (fabs(t) > 1.0+tol) {
-            return 2;
-         }
-      } else {
-         t = asind(t);
-      }
-
-      a = s - t;
-      b = s + t + 180.0;
-
-      if (a > 90.0) a -= 360.0;
-      if (b > 90.0) b -= 360.0;
-
-      *theta = (a > b) ? a : b;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   return 0;
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         s = prj->w[1]*(*yp);
+         t = (prj->pv[1] + sinthe) + costhe*s;
+
+         if (t == 0.0) {
+            *xp = 0.0;
+            *yp = 0.0;
+            *(statp++) = 1;
+            status = 4;
+
+         } else {
+            r = prj->w[0]*costhe/t;
+
+            /* Bounds checking. */
+            istat = 0;
+            if (prj->bounds) {
+               if (*thetap < prj->w[5]) {
+                  /* Overlap. */
+                  istat  = 1;
+                  status = 4;
+
+               } else if (prj->w[7] > 0.0) {
+                  /* Divergence. */
+                  t = prj->pv[1] / sqrt(1.0 + s*s);
+
+                  if (fabs(t) <= 1.0) {
+                     s = atand(-s);
+                     t = asind(t);
+                     a = s - t;
+                     b = s + t + 180.0;
+
+                     if (a > 90.0) a -= 360.0;
+                     if (b > 90.0) b -= 360.0;
+
+                     if (*thetap < ((a > b) ? a : b)) {
+                        istat  = 1;
+                        status = 4;
+                     }
+                  }
+               }
+            }
+
+            *xp =  r*(*xp) - prj->x0;
+            *yp = -r*(*yp)*prj->w[2] - prj->y0;
+            *(statp++) = istat;
+         }
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   SZP: slant zenithal perspective projection.
 *
 *   Given:
-*      prj->p[1]    Distance of the point of projection from the centre of the
+*      prj->pv[1]   Distance of the point of projection from the centre of the
 *                   generating sphere, mu in units of r0.
-*      prj->p[2]    Native longitude, phi_c, and ...
-*      prj->p[3]    Native latitude, theta_c, on the planewards side of the
+*      prj->pv[2]   Native longitude, phi_c, and ...
+*      prj->pv[3]   Native latitude, theta_c, on the planewards side of the
 *                   intersection of the line through the point of projection
 *                   and the centre of the generating sphere, phi_c in degrees.
 *
 *   Given and/or returned:
-*      prj->flag    SZP, or -SZP if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
+*      prj->flag     SZP
 *      prj->code    "SZP"
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    1/r0
 *      prj->w[1]    xp = -mu*cos(theta_c)*sin(phi_c)
 *      prj->w[2]    yp =  mu*cos(theta_c)*cos(phi_c)
@@ -590,8 +714,8 @@ double *phi, *theta;
 *      prj->w[6]    r0*zp
 *      prj->w[7]    (zp - 1)^2
 *      prj->w[8]    asin(1-zp) if |1 - zp| < 1, -90 otherwise
-*      prj->prjfwd  Pointer to szpfwd().
-*      prj->prjrev  Pointer to szprev().
+*      prj->prjx2s  Pointer to szpx2s().
+*      prj->prjs2x  Pointer to szps2x().
 *===========================================================================*/
 
 int szpset(prj)
@@ -599,22 +723,34 @@ int szpset(prj)
 struct prjprm *prj;
 
 {
-   strcpy(prj->code, "SZP");
-   prj->flag   = copysign(SZP, prj->flag);
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+   if (prj == 0) return 1;
 
+   prj->flag = SZP;
+   strcpy(prj->code, "SZP");
+
+   if (undefined(prj->pv[1])) prj->pv[1] =  0.0;
+   if (undefined(prj->pv[2])) prj->pv[2] =  0.0;
+   if (undefined(prj->pv[3])) prj->pv[3] = 90.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
+
+   strcpy(prj->name, "Slant zenithal perspective");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 103;
+   prj->simplezen = prj->pv[3] == 90.0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = prj->pv[1] <= 1.0;
 
    prj->w[0] = 1.0/prj->r0;
 
-   prj->w[3] = prj->p[1] * sind(prj->p[3]) + 1.0;
+   prj->w[3] = prj->pv[1] * sind(prj->pv[3]) + 1.0;
    if (prj->w[3] == 0.0) {
-      return 1;
+      return 2;
    }
 
-   prj->w[1] = -prj->p[1] * cosd(prj->p[3]) * sind(prj->p[2]);
-   prj->w[2] =  prj->p[1] * cosd(prj->p[3]) * cosd(prj->p[2]);
+   prj->w[1] = -prj->pv[1] * cosd(prj->pv[3]) * sind(prj->pv[2]);
+   prj->w[2] =  prj->pv[1] * cosd(prj->pv[3]) * cosd(prj->pv[2]);
    prj->w[4] =  prj->r0 * prj->w[1];
    prj->w[5] =  prj->r0 * prj->w[2];
    prj->w[6] =  prj->r0 * prj->w[3];
@@ -626,158 +762,276 @@ struct prjprm *prj;
       prj->w[8] = -90.0;
    }
 
-   prj->prjfwd = szpfwd;
-   prj->prjrev = szprev;
+   prj->prjx2s = szpx2s;
+   prj->prjs2x = szps2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int szpfwd(phi, theta, prj, x, y)
+int szpx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, b, cphi, cthe, s, sphi, t;
-
-   if (abs(prj->flag) != SZP) {
-      if (szpset(prj)) return 1;
-   }
-
-   cphi = cosd(phi);
-   sphi = sind(phi);
-   cthe = cosd(theta);
-   s = 1.0 - sind(theta);
-
-   t = prj->w[3] - s;
-   if (t == 0.0) {
-      return 2;
-   }
-
-   *x =  (prj->w[6]*cthe*sphi - prj->w[4]*s)/t;
-   *y = -(prj->w[6]*cthe*cphi + prj->w[5]*s)/t;
-
-   /* Bounds checking. */
-   if (prj->flag > 0) {
-      /* Divergence. */
-      if (theta < prj->w[8]) {
-         return 2;
-      }
-
-      /* Overlap. */
-      if (fabs(prj->p[1]) > 1.0) {
-         s = prj->w[1]*sphi - prj->w[2]*cphi;
-         t = 1.0/sqrt(prj->w[7] + s*s);
-
-         if (fabs(t) <= 1.0) {
-            s = atan2d(s, prj->w[3] - 1.0);
-            t = asind(t);
-            a = s - t;
-            b = s + t + 180.0;
-
-            if (a > 90.0) a -= 360.0;
-            if (b > 90.0) b -= 360.0;
-
-            if (theta < ((a > b) ? a : b)) {
-               return 2;
-            }
-         }
-      }
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int szprev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, b, c, d, r2, sth1, sth2, sthe, sxy, t, x1, xp, y1, yp, z;
+   int mx, my, rowlen, rowoff, status;
+   double a, b, c, d, r2, sinth1, sinth2, sinthe, t, x1, xr, xy, y1, yr, z;
    const double tol = 1.0e-13;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != SZP) {
-      if (szpset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != SZP) {
+      if (szpset(prj)) return 2;
    }
 
-   xp = x*prj->w[0];
-   yp = y*prj->w[0];
-   r2 = xp*xp + yp*yp;
-
-   x1 = (xp - prj->w[1])/prj->w[3];
-   y1 = (yp - prj->w[2])/prj->w[3];
-   sxy = xp*x1 + yp*y1;
-
-   if (r2 < 1.0e-10) {
-      /* Use small angle formula. */
-      z = r2/2.0;
-      *theta = 90.0 - R2D*sqrt(r2/(1.0 + sxy));
-
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      t = x1*x1 + y1*y1;
-      a = t + 1.0;
-      b = sxy - t;
-      c = r2 - sxy - sxy + t - 1.0;
-      d = b*b - a*c;
-
-      /* Check for a solution. */
-      if (d < 0.0) {
-         return 2;
-      }
-      d = sqrt(d);
-
-      /* Choose solution closest to pole. */
-      sth1 = (-b + d)/a;
-      sth2 = (-b - d)/a;
-      sthe = (sth1 > sth2) ? sth1 : sth2;
-      if (sthe > 1.0) {
-         if (sthe-1.0 < tol) {
-            sthe = 1.0;
-         } else {
-            sthe = (sth1 < sth2) ? sth1 : sth2;
-         }
-      }
-
-      if (sthe < -1.0) {
-         if (sthe+1.0 > -tol) {
-            sthe = -1.0;
-         }
-      }
-
-      if (sthe > 1.0 || sthe < -1.0) {
-         return 2;
-      }
-
-      *theta = asind(sthe);
-
-      z = 1.0 - sthe;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   *phi = atan2d(xp - x1*z, -(yp - y1*z));
+   status = 0;
 
-   return 0;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xr = (*xp + prj->x0)*prj->w[0];
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xr;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yr = (*yp + prj->y0)*prj->w[0];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xr = *phip;
+         r2 = xr*xr + yr*yr;
+
+         x1 = (xr - prj->w[1])/prj->w[3];
+         y1 = (yr - prj->w[2])/prj->w[3];
+         xy = xr*x1 + yr*y1;
+
+         if (r2 < 1.0e-10) {
+            /* Use small angle formula. */
+            z = r2/2.0;
+            *thetap = 90.0 - R2D*sqrt(r2/(1.0 + xy));
+
+         } else {
+            t = x1*x1 + y1*y1;
+            a = t + 1.0;
+            b = xy - t;
+            c = r2 - xy - xy + t - 1.0;
+            d = b*b - a*c;
+
+            /* Check for a solution. */
+            if (d < 0.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+            d = sqrt(d);
+
+            /* Choose solution closest to pole. */
+            sinth1 = (-b + d)/a;
+            sinth2 = (-b - d)/a;
+            sinthe = (sinth1 > sinth2) ? sinth1 : sinth2;
+            if (sinthe > 1.0) {
+               if (sinthe-1.0 < tol) {
+                  sinthe = 1.0;
+               } else {
+                  sinthe = (sinth1 < sinth2) ? sinth1 : sinth2;
+               }
+            }
+
+            if (sinthe < -1.0) {
+               if (sinthe+1.0 > -tol) {
+                  sinthe = -1.0;
+               }
+            }
+
+            if (sinthe > 1.0 || sinthe < -1.0) {
+               *phip   = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+
+            *thetap = asind(sinthe);
+
+            z = 1.0 - sinthe;
+         }
+
+         *phip = atan2d(xr - x1*z, -(yr - y1*z));
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
 }
+
+/*--------------------------------------------------------------------------*/
+
+int szps2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double a, b, cosphi, r, s, sinphi, t, u, v;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != SZP) {
+      if (szpset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      s = 1.0 - sind(*thetap);
+      t = prj->w[3] - s;
+
+      if (t == 0.0) {
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp = 0.0;
+            *yp = 0.0;
+            *(statp++) = 1;
+         }
+
+         status = 4;
+
+      } else {
+         r = prj->w[6]*cosd(*thetap)/t;
+         u = prj->w[4]*s/t + prj->x0;
+         v = prj->w[5]*s/t + prj->y0;
+
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            /* Bounds checking. */
+            istat = 0;
+            if (prj->bounds) {
+               if (*thetap < prj->w[8]) {
+                  /* Divergence. */
+                  istat  = 1;
+                  status = 4;
+
+               } else if (fabs(prj->pv[1]) > 1.0) {
+                  /* Overlap. */
+                  s = prj->w[1]*(*xp) - prj->w[2]*(*yp);
+                  t = 1.0/sqrt(prj->w[7] + s*s);
+
+                  if (fabs(t) <= 1.0) {
+                     s = atan2d(s, prj->w[3] - 1.0);
+                     t = asind(t);
+                     a = s - t;
+                     b = s + t + 180.0;
+
+                     if (a > 90.0) a -= 360.0;
+                     if (b > 90.0) b -= 360.0;
+
+                     if (*thetap < ((a > b) ? a : b)) {
+                        istat  = 1;
+                        status = 4;
+                     }
+                  }
+               }
+            }
+
+            *xp =  r*(*xp) - u;
+            *yp = -r*(*yp) - v;
+            *(statp++) = istat;
+         }
+      }
+   }
+
+   return status;
+}
+
 
 /*============================================================================
 *   TAN: gnomonic projection.
 *
 *   Given and/or returned:
-*      prj->flag    TAN, or -TAN if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
+*      prj->flag     TAN
 *      prj->code    "TAN"
-*      prj->phi0     0.0
-*      prj->theta0  90.0
-*      prj->prjfwd  Pointer to tanfwd().
-*      prj->prjrev  Pointer to tanrev().
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
+*      prj->prjx2s  Pointer to tanx2s().
+*      prj->prjs2x  Pointer to tans2x().
 *===========================================================================*/
 
 int tanset(prj)
@@ -785,91 +1039,211 @@ int tanset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = TAN;
    strcpy(prj->code, "TAN");
-   prj->flag   = copysign(TAN, prj->flag);
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
 
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   prj->prjfwd = tanfwd;
-   prj->prjrev = tanrev;
+   strcpy(prj->name, "Gnomonic");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 1;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 1;
 
-   return 0;
+   prj->prjx2s = tanx2s;
+   prj->prjs2x = tans2x;
+
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int tanfwd(phi, theta, prj, x, y)
+int tanx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double r, s;
+   int mx, my, rowlen, rowoff;
+   double r, xj, yj, yj2;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != TAN) {
-      if(tanset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != TAN) {
+      if (tanset(prj)) return 2;
    }
 
-   s = sind(theta);
-   if (s == 0.0) {
-      return 2;
-   }
-
-   r =  prj->r0*cosd(theta)/s;
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   if (prj->flag > 0 && s < 0.0) {
-      return 2;
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int tanrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double r;
-
-   if (abs(prj->flag) != TAN) {
-      if (tanset(prj)) return 1;
-   }
-
-   r = sqrt(x*x + y*y);
-   if (r == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = atan2d(x, -y);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
-   *theta = atan2d(prj->r0, r);
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + yj2);
+         if (r == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(xj, -yj);
+         }
+
+         *thetap = atan2d(prj->r0, r);
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int tans2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, r, s, sinphi;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != TAN) {
+      if (tanset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      s = sind(*thetap);
+      if (s == 0.0) {
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp = 0.0;
+            *yp = 0.0;
+            *(statp++) = 1;
+         }
+         status = 4;
+
+      } else {
+         r =  prj->r0*cosd(*thetap)/s;
+
+         istat = 0;
+         if (prj->bounds && s < 0.0) {
+            istat  = 1;
+            status = 4;
+         }
+
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp =  r*(*xp) - prj->x0;
+            *yp = -r*(*yp) - prj->y0;
+            *(statp++) = istat;
+         }
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   STG: stereographic projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
-*      prj->code    "STG"
 *      prj->flag     STG
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->code    "STG"
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    2*r0
 *      prj->w[1]    1/(2*r0)
-*      prj->prjfwd  Pointer to stgfwd().
-*      prj->prjrev  Pointer to stgrev().
+*      prj->prjx2s  Pointer to stgx2s().
+*      prj->prjs2x  Pointer to stgs2x().
 *===========================================================================*/
 
 int stgset(prj)
@@ -877,10 +1251,19 @@ int stgset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = STG;
    strcpy(prj->code, "STG");
-   prj->flag   =  STG;
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+
+   strcpy(prj->name, "Stereographic");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 1;
+   prj->equiareal = 0;
+   prj->conformal = 1;
+   prj->global    = 0;
+   prj->divergent = 1;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -891,85 +1274,194 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = stgfwd;
-   prj->prjrev = stgrev;
+   prj->prjx2s = stgx2s;
+   prj->prjs2x = stgs2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int stgfwd(phi, theta, prj, x, y)
+int stgx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double r, s;
+   int mx, my, rowlen, rowoff;
+   double r, xj, yj, yj2;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != STG) {
-      if (stgset(prj)) return 1;
+      if (stgset(prj)) return 2;
    }
 
-   s = 1.0 + sind(theta);
-   if (s == 0.0) {
-      return 2;
-   }
-
-   r =  prj->w[0]*cosd(theta)/s;
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int stgrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double r;
-
-   if (prj->flag != STG) {
-      if (stgset(prj)) return 1;
-   }
-
-   r = sqrt(x*x + y*y);
-   if (r == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = atan2d(x, -y);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
-   *theta = 90.0 - 2.0*atand(r*prj->w[1]);
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj  = *phip;
+
+         r = sqrt(xj*xj + yj2);
+         if (r == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(xj, -yj);
+         }
+
+         *thetap = 90.0 - 2.0*atand(r*prj->w[1]);
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int stgs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, r, s, sinphi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != STG) {
+      if (stgset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      s = 1.0 + sind(*thetap);
+      if (s == 0.0) {
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp = 0.0;
+            *yp = 0.0;
+            *(statp++) = 1;
+         }
+         status = 4;
+
+      } else {
+         r = prj->w[0]*cosd(*thetap)/s;
+
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp =  r*(*xp) - prj->x0;
+            *yp = -r*(*yp) - prj->y0;
+            *(statp++) = 0;
+         }
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   SIN: orthographic/synthesis projection.
 *
 *   Given:
-*      prj->p[1:2]  Obliqueness parameters, xi and eta.
+*      prj->pv[1:2] Obliqueness parameters, xi and eta.
 *
 *   Given and/or returned:
-*      prj->flag    SIN, or -SIN if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
+*      prj->flag     SIN
 *      prj->code    "SIN"
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    1/r0
 *      prj->w[1]    xi**2 + eta**2
 *      prj->w[2]    xi**2 + eta**2 + 1
 *      prj->w[3]    xi**2 + eta**2 - 1
-*      prj->prjfwd  Pointer to sinfwd().
-*      prj->prjrev  Pointer to sinrev().
+*      prj->prjx2s  Pointer to sinx2s().
+*      prj->prjs2x  Pointer to sins2x().
 *===========================================================================*/
 
 int sinset(prj)
@@ -977,189 +1469,326 @@ int sinset(prj)
 struct prjprm *prj;
 
 {
-   strcpy(prj->code, "SIN");
-   prj->flag   = copysign(SIN, prj->flag);
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+   if (prj == 0) return 1;
 
+   prj->flag = SIN;
+   strcpy(prj->code, "SIN");
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 0.0;
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
+   strcpy(prj->name, "Orthographic/synthesis");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 102;
+   prj->simplezen = (prj->pv[1] == 0.0 && prj->pv[2] == 0.0);
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 0;
+
    prj->w[0] = 1.0/prj->r0;
-   prj->w[1] = prj->p[1]*prj->p[1] + prj->p[2]*prj->p[2];
+   prj->w[1] = prj->pv[1]*prj->pv[1] + prj->pv[2]*prj->pv[2];
    prj->w[2] = prj->w[1] + 1.0;
    prj->w[3] = prj->w[1] - 1.0;
 
-   prj->prjfwd = sinfwd;
-   prj->prjrev = sinrev;
+   prj->prjx2s = sinx2s;
+   prj->prjs2x = sins2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int sinfwd(phi, theta, prj, x, y)
+int sinx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double cphi, cthe, sphi, t, z;
+   int mx, my, rowlen, rowoff, status;
+   const double tol = 1.0e-13;
+   double a, b, c, d, eta, r2, sinth1, sinth2, sinthe, x0, xi, x1, xy, y0,
+          y02, y1, z;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != SIN) {
-      if (sinset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != SIN) {
+      if (sinset(prj)) return 2;
    }
 
-   t = (90.0 - fabs(theta))*D2R;
-   if (t < 1.0e-5) {
-      if (theta > 0.0) {
-         z = t*t/2.0;
-      } else {
-         z = 2.0 - t*t/2.0;
-      }
-      cthe = t;
+   xi  = prj->pv[1];
+   eta = prj->pv[2];
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      z =  1.0 - sind(theta);
-      cthe = cosd(theta);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   cphi = cosd(phi);
-   sphi = sind(phi);
-   *x =  prj->r0*(cthe*sphi + prj->p[1]*z);
-   *y = -prj->r0*(cthe*cphi - prj->p[2]*z);
+   status = 0;
 
-   /* Validate this solution. */
-   if (prj->flag > 0) {
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      x0 = (*xp + prj->x0)*prj->w[0];
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = x0;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      y0 = (*yp + prj->y0)*prj->w[0];
+      y02 = y0*y0;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         /* Compute intermediaries. */
+         x0 = *phip;
+         r2 = x0*x0 + y02;
+
+         if (prj->w[1] == 0.0) {
+            /* Orthographic projection. */
+            if (r2 != 0.0) {
+               *phip = atan2d(x0, -y0);
+            } else {
+               *phip = 0.0;
+            }
+
+            if (r2 < 0.5) {
+               *thetap = acosd(sqrt(r2));
+            } else if (r2 <= 1.0) {
+               *thetap = asind(sqrt(1.0 - r2));
+            } else {
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+
+         } else {
+            /* "Synthesis" projection. */
+            xy = x0*xi + y0*eta;
+
+            if (r2 < 1.0e-10) {
+               /* Use small angle formula. */
+               z = r2/2.0;
+               *thetap = 90.0 - R2D*sqrt(r2/(1.0 + xy));
+
+            } else {
+               a = prj->w[2];
+               b = xy - prj->w[1];
+               c = r2 - xy - xy + prj->w[3];
+               d = b*b - a*c;
+
+               /* Check for a solution. */
+               if (d < 0.0) {
+                  *phip = 0.0;
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               d = sqrt(d);
+
+               /* Choose solution closest to pole. */
+               sinth1 = (-b + d)/a;
+               sinth2 = (-b - d)/a;
+               sinthe = (sinth1 > sinth2) ? sinth1 : sinth2;
+               if (sinthe > 1.0) {
+                  if (sinthe-1.0 < tol) {
+                     sinthe = 1.0;
+                  } else {
+                     sinthe = (sinth1 < sinth2) ? sinth1 : sinth2;
+                  }
+               }
+
+               if (sinthe < -1.0) {
+                  if (sinthe+1.0 > -tol) {
+                     sinthe = -1.0;
+                  }
+               }
+
+               if (sinthe > 1.0 || sinthe < -1.0) {
+                  *phip = 0.0;
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+
+               *thetap = asind(sinthe);
+               z = 1.0 - sinthe;
+            }
+
+            x1 = -y0 + eta*z;
+            y1 =  x0 -  xi*z;
+            if (x1 == 0.0 && y1 == 0.0) {
+               *phip = 0.0;
+            } else {
+               *phip = atan2d(y1,x1);
+            }
+         }
+
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int sins2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, costhe, sinphi, r, t, z, z1, z2;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != SIN) {
+      if (sinset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      t = (90.0 - fabs(*thetap))*D2R;
+      if (t < 1.0e-5) {
+         if (*thetap > 0.0) {
+            z = t*t/2.0;
+         } else {
+            z = 2.0 - t*t/2.0;
+         }
+         costhe = t;
+      } else {
+         z = 1.0 - sind(*thetap);
+         costhe = cosd(*thetap);
+      }
+      r = prj->r0*costhe;
+
       if (prj->w[1] == 0.0) {
          /* Orthographic projection. */
-         if (theta < 0.0) {
-            return 2;
+         istat = 0;
+         if (prj->bounds && *thetap < 0.0) {
+            istat  = 1;
+            status = 4;
          }
+
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *xp =  r*(*xp) - prj->x0;
+            *yp = -r*(*yp) - prj->y0;
+            *(statp++) = istat;
+         }
+
       } else {
          /* "Synthesis" projection. */
-         t = -atand(prj->p[1]*sphi - prj->p[2]*cphi);
-         if (theta < t) {
-            return 2;
-         }
-      }
-   }
+         z *= prj->r0;
+         z1 = prj->pv[1]*z - prj->x0;
+         z2 = prj->pv[2]*z - prj->y0;
 
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int sinrev (x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   const double tol = 1.0e-13;
-   double a, b, c, d, r2, sth1, sth2, sthe, sxy, x0, x1, xp, y0, y1, yp, z;
-
-   if (abs(prj->flag) != SIN) {
-      if (sinset(prj)) return 1;
-   }
-
-   /* Compute intermediaries. */
-   x0 = x*prj->w[0];
-   y0 = y*prj->w[0];
-   r2 = x0*x0 + y0*y0;
-
-   if (prj->w[1] == 0.0) {
-      /* Orthographic projection. */
-      if (r2 != 0.0) {
-         *phi = atan2d(x0, -y0);
-      } else {
-         *phi = 0.0;
-      }
-
-      if (r2 < 0.5) {
-         *theta = acosd(sqrt(r2));
-      } else if (r2 <= 1.0) {
-         *theta = asind(sqrt(1.0 - r2));
-      } else {
-         return 2;
-      }
-
-   } else {
-      /* "Synthesis" projection. */
-      x1 = prj->p[1];
-      y1 = prj->p[2];
-      sxy = x0*x1 + y0*y1;
-
-      if (r2 < 1.0e-10) {
-         /* Use small angle formula. */
-         z = r2/2.0;
-         *theta = 90.0 - R2D*sqrt(r2/(1.0 + sxy));
-
-      } else {
-         a = prj->w[2];
-         b = sxy - prj->w[1];
-         c = r2 - sxy - sxy + prj->w[3];
-         d = b*b - a*c;
-
-         /* Check for a solution. */
-         if (d < 0.0) {
-            return 2;
-         }
-         d = sqrt(d);
-
-         /* Choose solution closest to pole. */
-         sth1 = (-b + d)/a;
-         sth2 = (-b - d)/a;
-         sthe = (sth1 > sth2) ? sth1 : sth2;
-         if (sthe > 1.0) {
-            if (sthe-1.0 < tol) {
-               sthe = 1.0;
-            } else {
-               sthe = (sth1 < sth2) ? sth1 : sth2;
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            istat = 0;
+            if (prj->bounds) {
+               t = -atand(prj->pv[1]*(*xp) - prj->pv[2]*(*yp));
+               if (*thetap < t) {
+                  istat  = 1;
+                  status = 4;
+               }
             }
+
+            *xp =  r*(*xp) + z1;
+            *yp = -r*(*yp) + z2;
+            *(statp++) = istat;
          }
-
-         if (sthe < -1.0) {
-            if (sthe+1.0 > -tol) {
-               sthe = -1.0;
-            }
-         }
-
-         if (sthe > 1.0 || sthe < -1.0) {
-            return 2;
-         }
-
-         *theta = asind(sthe);
-         z = 1.0 - sthe;
-      }
-
-      xp = -y0 + prj->p[2]*z;
-      yp =  x0 - prj->p[1]*z;
-      if (xp == 0.0 && yp == 0.0) {
-         *phi = 0.0;
-      } else {
-         *phi = atan2d(yp,xp);
       }
    }
 
-   return 0;
+   return status;
 }
 
 /*============================================================================
 *   ARC: zenithal/azimuthal equidistant projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
-*      prj->code    "ARC"
 *      prj->flag     ARC
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->code    "ARC"
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
-*      prj->prjfwd  Pointer to arcfwd().
-*      prj->prjrev  Pointer to arcrev().
+*      prj->prjx2s  Pointer to arcx2s().
+*      prj->prjs2x  Pointer to arcs2x().
 *===========================================================================*/
 
 int arcset(prj)
@@ -1167,10 +1796,19 @@ int arcset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = ARC;
    strcpy(prj->code, "ARC");
-   prj->flag   =  ARC;
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+
+   strcpy(prj->name, "Zenithal/azimuthal equidistant");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 1;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -1181,56 +1819,156 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = arcfwd;
-   prj->prjrev = arcrev;
+   prj->prjx2s = arcx2s;
+   prj->prjs2x = arcs2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int arcfwd(phi, theta, prj, x, y)
+int arcx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double r;
+   int mx, my, rowlen, rowoff;
+   double r, xj, yj, yj2;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != ARC) {
-      if (arcset(prj)) return 1;
+      if (arcset(prj)) return 2;
    }
 
-   r =  prj->w[0]*(90.0 - theta);
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int arcrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double r;
-
-   if (prj->flag != ARC) {
-      if (arcset(prj)) return 1;
-   }
-
-   r = sqrt(x*x + y*y);
-   if (r == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = atan2d(x, -y);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
-   *theta = 90.0 - r*prj->w[1];
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + yj2);
+         if (r == 0.0) {
+            *phip = 0.0;
+            *thetap = 90.0;
+         } else {
+            *phip = atan2d(xj, -yj);
+            *thetap = 90.0 - r*prj->w[1];
+         }
+
+         *(statp++) = 0;
+      }
+   }
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int arcs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double cosphi, r, sinphi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != ARC) {
+      if (arcset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      r =  prj->w[0]*(90.0 - *thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - prj->y0;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -1239,21 +1977,23 @@ double *phi, *theta;
 *   ZPN: zenithal/azimuthal polynomial projection.
 *
 *   Given:
-*      prj->p[0:9]  Polynomial coefficients.
+*      prj->pv[]    Polynomial coefficients.
 *
 *   Given and/or returned:
-*      prj->flag    ZPN, or -ZPN if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
+*      prj->flag     ZPN
 *      prj->code    "ZPN"
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->n       Degree of the polynomial, N.
 *      prj->w[0]    Co-latitude of the first point of inflection (N > 2).
 *      prj->w[1]    Radius of the first point of inflection (N > 2).
-*      prj->prjfwd  Pointer to zpnfwd().
-*      prj->prjrev  Pointer to zpnrev().
+*      prj->prjx2s  Pointer to zpnx2s().
+*      prj->prjs2x  Pointer to zpns2x().
 *===========================================================================*/
 
 int zpnset(prj)
@@ -1261,37 +2001,49 @@ int zpnset(prj)
 struct prjprm *prj;
 
 {
-   int   i, j, k;
+   int j, k, m;
    double d, d1, d2, r, zd, zd1, zd2;
    const double tol = 1.0e-13;
 
-   strcpy(prj->code, "ZPN");
-   prj->flag   = copysign(ZPN, prj->flag);
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+   if (prj == 0) return 1;
 
+   strcpy(prj->code, "ZPN");
+   prj->flag = ZPN;
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 0.0;
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
+   if (undefined(prj->pv[3])) prj->pv[3] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
+   strcpy(prj->name, "Zenithal/azimuthal polynomial");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 30;
+   prj->simplezen = 1;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 0;
+
    /* Find the highest non-zero coefficient. */
-   for (k = 9; k >= 0 && prj->p[k] == 0.0; k--);
-   if (k < 0) return 1;
+   for (k = PVN-1; k >= 0 && prj->pv[k] == 0.0; k--);
+   if (k < 0) return 2;
 
    prj->n = k;
 
    if (k >= 3) {
       /* Find the point of inflection closest to the pole. */
       zd1 = 0.0;
-      d1  = prj->p[1];
+      d1  = prj->pv[1];
       if (d1 <= 0.0) {
-         return 1;
+         return 2;
       }
 
       /* Find the point where the derivative first goes negative. */
-      for (i = 0; i < 180; i++) {
-         zd2 = i*D2R;
+      for (j = 0; j < 180; j++) {
+         zd2 = j*D2R;
          d2  = 0.0;
-         for (j = k; j > 0; j--) {
-            d2 = d2*zd2 + j*prj->p[j];
+         for (m = k; m > 0; m--) {
+            d2 = d2*zd2 + m*prj->pv[m];
          }
 
          if (d2 <= 0.0) break;
@@ -1299,17 +2051,18 @@ struct prjprm *prj;
          d1  = d2;
       }
 
-      if (i == 180) {
+      if (j == 180) {
          /* No negative derivative -> no point of inflection. */
          zd = PI;
+         prj->global = 1;
       } else {
          /* Find where the derivative is zero. */
-         for (i = 1; i <= 10; i++) {
+         for (j = 1; j <= 10; j++) {
             zd = zd1 - d1*(zd2-zd1)/(d2-d1);
 
             d = 0.0;
-            for (j = k; j > 0; j--) {
-               d = d*zd + j*prj->p[j];
+            for (m = k; m > 0; m--) {
+               d = d*zd + m*prj->pv[m];
             }
 
             if (fabs(d) < tol) break;
@@ -1325,182 +2078,300 @@ struct prjprm *prj;
       }
 
       r = 0.0;
-      for (j = k; j >= 0; j--) {
-         r = r*zd + prj->p[j];
+      for (m = k; m >= 0; m--) {
+         r = r*zd + prj->pv[m];
       }
       prj->w[0] = zd;
       prj->w[1] = r;
    }
 
-   prj->prjfwd = zpnfwd;
-   prj->prjrev = zpnrev;
+   prj->prjx2s = zpnx2s;
+   prj->prjs2x = zpns2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int zpnfwd(phi, theta, prj, x, y)
+int zpnx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   int   j;
-   double r, s;
-
-   if (abs(prj->flag) != ZPN) {
-      if (zpnset(prj)) return 1;
-   }
-
-   s = (90.0 - theta)*D2R;
-
-   r = 0.0;
-   for (j = 9; j >= 0; j--) {
-      r = r*s + prj->p[j];
-   }
-   r = prj->r0*r;
-
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   if (prj->flag > 0 && s > prj->w[0]) {
-      return 2;
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int zpnrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   int   i, j, k;
-   double a, b, c, d, lambda, r, r1, r2, rt, zd, zd1, zd2;
+   int j, k, m, mx, my, rowlen, rowoff, status;
+   double a, b, c, d, lambda, r, r1, r2, rt, xj, yj, yj2, zd, zd1, zd2;
    const double tol = 1.0e-13;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != ZPN) {
-      if (zpnset(prj)) return 1;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != ZPN) {
+      if (zpnset(prj)) return 2;
    }
 
    k = prj->n;
 
-   r = sqrt(x*x + y*y)/prj->r0;
-
-   if (k < 1) {
-      /* Constant - no solution. */
-      return 1;
-   } else if (k == 1) {
-      /* Linear. */
-      zd = (r - prj->p[0])/prj->p[1];
-   } else if (k == 2) {
-      /* Quadratic. */
-      a = prj->p[2];
-      b = prj->p[1];
-      c = prj->p[0] - r;
-
-      d = b*b - 4.0*a*c;
-      if (d < 0.0) {
-         return 2;
-      }
-      d = sqrt(d);
-
-      /* Choose solution closest to pole. */
-      zd1 = (-b + d)/(2.0*a);
-      zd2 = (-b - d)/(2.0*a);
-      zd  = (zd1<zd2) ? zd1 : zd2;
-      if (zd < -tol) zd = (zd1>zd2) ? zd1 : zd2;
-      if (zd < 0.0) {
-         if (zd < -tol) {
-            return 2;
-         }
-         zd = 0.0;
-      } else if (zd > PI) {
-         if (zd > PI+tol) {
-            return 2;
-         }
-         zd = PI;
-      }
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      /* Higher order - solve iteratively. */
-      zd1 = 0.0;
-      r1  = prj->p[0];
-      zd2 = prj->w[0];
-      r2  = prj->w[1];
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
 
-      if (r < r1) {
-         if (r < r1-tol) {
-            return 2;
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + yj2)/prj->r0;
+         if (r == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(xj, -yj);
          }
-         zd = zd1;
-      } else if (r > r2) {
-         if (r > r2+tol) {
+
+         if (k < 1) {
+            /* Constant - no solution. */
             return 2;
-         }
-         zd = zd2;
-      } else {
-         /* Disect the interval. */
-         for (j = 0; j < 100; j++) {
-            lambda = (r2 - r)/(r2 - r1);
-            if (lambda < 0.1) {
-               lambda = 0.1;
-            } else if (lambda > 0.9) {
-               lambda = 0.9;
+         } else if (k == 1) {
+            /* Linear. */
+            zd = (r - prj->pv[0])/prj->pv[1];
+         } else if (k == 2) {
+            /* Quadratic. */
+            a = prj->pv[2];
+            b = prj->pv[1];
+            c = prj->pv[0] - r;
+
+            d = b*b - 4.0*a*c;
+            if (d < 0.0) {
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
             }
+            d = sqrt(d);
 
-            zd = zd2 - lambda*(zd2 - zd1);
-
-            rt = 0.0;
-            for (i = k; i >= 0; i--) {
-                rt = (rt * zd) + prj->p[i];
+            /* Choose solution closest to pole. */
+            zd1 = (-b + d)/(2.0*a);
+            zd2 = (-b - d)/(2.0*a);
+            zd  = (zd1<zd2) ? zd1 : zd2;
+            if (zd < -tol) zd = (zd1>zd2) ? zd1 : zd2;
+            if (zd < 0.0) {
+               if (zd < -tol) {
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               zd = 0.0;
+            } else if (zd > PI) {
+               if (zd > PI+tol) {
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               zd = PI;
             }
+         } else {
+            /* Higher order - solve iteratively. */
+            zd1 = 0.0;
+            r1  = prj->pv[0];
+            zd2 = prj->w[0];
+            r2  = prj->w[1];
 
-            if (rt < r) {
-                if (r-rt < tol) break;
-                r1 = rt;
-                zd1 = zd;
+            if (r < r1) {
+               if (r < r1-tol) {
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               zd = zd1;
+            } else if (r > r2) {
+               if (r > r2+tol) {
+                  *thetap = 0.0;
+                  *(statp++) = 1;
+                  status = 3;
+                  continue;
+               }
+               zd = zd2;
             } else {
-                if (rt-r < tol) break;
-                r2 = rt;
-                zd2 = zd;
-            }
+               /* Disect the interval. */
+               for (j = 0; j < 100; j++) {
+                  lambda = (r2 - r)/(r2 - r1);
+                  if (lambda < 0.1) {
+                     lambda = 0.1;
+                  } else if (lambda > 0.9) {
+                     lambda = 0.9;
+                  }
 
-            if (fabs(zd2-zd1) < tol) break;
+                  zd = zd2 - lambda*(zd2 - zd1);
+
+                  rt = 0.0;
+                  for (m = k; m >= 0; m--) {
+                      rt = (rt * zd) + prj->pv[m];
+                  }
+
+                  if (rt < r) {
+                     if (r-rt < tol) break;
+                     r1 = rt;
+                     zd1 = zd;
+                  } else {
+                     if (rt-r < tol) break;
+                     r2 = rt;
+                     zd2 = zd;
+                  }
+
+                  if (fabs(zd2-zd1) < tol) break;
+               }
+            }
          }
+
+         *thetap = 90.0 - zd*R2D;
+         *(statp++) = 0;
       }
    }
 
-   if (r == 0.0) {
-      *phi = 0.0;
-   } else {
-      *phi = atan2d(x, -y);
-   }
-   *theta = 90.0 - zd*R2D;
+   return status;
+}
 
-   return 0;
+/*--------------------------------------------------------------------------*/
+
+int zpns2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int m, mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, r, s, sinphi;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != ZPN) {
+      if (zpnset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      s = (90.0 - *thetap)*D2R;
+
+      r = 0.0;
+      for (m = prj->n; m >= 0; m--) {
+         r = r*s + prj->pv[m];
+      }
+      r *= prj->r0;
+
+      istat = 0;
+      if (prj->bounds && s > prj->w[0]) {
+         istat  = 1;
+         status = 4;
+      }
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - prj->y0;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   ZEA: zenithal/azimuthal equal area projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
-*      prj->code    "ZEA"
 *      prj->flag     ZEA
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->code    "ZEA"
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    2*r0
 *      prj->w[1]    1/(2*r0)
-*      prj->prjfwd  Pointer to zeafwd().
-*      prj->prjrev  Pointer to zearev().
+*      prj->prjx2s  Pointer to zeax2s().
+*      prj->prjs2x  Pointer to zeas2x().
 *===========================================================================*/
 
 int zeaset(prj)
@@ -1508,10 +2379,19 @@ int zeaset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = ZEA;
    strcpy(prj->code, "ZEA");
-   prj->flag   =  ZEA;
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
+
+   strcpy(prj->name, "Zenithal/azimuthal equal area");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 1;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -1522,66 +2402,170 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = zeafwd;
-   prj->prjrev = zearev;
+   prj->prjx2s = zeax2s;
+   prj->prjs2x = zeas2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int zeafwd(phi, theta, prj, x, y)
+int zeax2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double r;
-
-   if (prj->flag != ZEA) {
-      if (zeaset(prj)) return 1;
-   }
-
-   r =  prj->w[0]*sind((90.0 - theta)/2.0);
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int zearev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double r, s;
+   int mx, my, rowlen, rowoff, status;
+   double r, s, xj, yj, yj2;
    const double tol = 1.0e-12;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != ZEA) {
-      if (zeaset(prj)) return 1;
+      if (zeaset(prj)) return 2;
    }
 
-   r = sqrt(x*x + y*y);
-   if (r == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = atan2d(x, -y);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   s = r*prj->w[1];
-   if (fabs(s) > 1.0) {
-      if (fabs(r - prj->w[0]) < tol) {
-         *theta = -90.0;
-      } else {
-         return 2;
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
       }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj  = *phip;
+
+         r = sqrt(xj*xj + yj2);
+         if (r == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(xj, -yj);
+         }
+
+         s = r*prj->w[1];
+         if (fabs(s) > 1.0) {
+            if (fabs(r - prj->w[0]) < tol) {
+               *thetap = -90.0;
+            } else {
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         } else {
+            *thetap = 90.0 - 2.0*asind(s);
+         }
+
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int zeas2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double cosphi, r, sinphi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != ZEA) {
+      if (zeaset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      *theta = 90.0 - 2.0*asind(s);
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      r =  prj->w[0]*sind((90.0 - *thetap)/2.0);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - prj->y0;
+         *(statp++) = 0;
+      }
    }
 
    return 0;
@@ -1591,17 +2575,19 @@ double *phi, *theta;
 *   AIR: Airy's projection.
 *
 *   Given:
-*      prj->p[1]    Latitude theta_b within which the error is minimized, in
+*      prj->pv[1]   Latitude theta_b within which the error is minimized, in
 *                   degrees.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to  0.0 if undefined.
+*      prj->theta0  Reset to 90.0 if undefined.
 *
 *   Returned:
-*      prj->code    "AIR"
 *      prj->flag     AIR
-*      prj->phi0     0.0
-*      prj->theta0  90.0
+*      prj->code    "AIR"
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    2*r0
 *      prj->w[1]    ln(cos(xi_b))/tan(xi_b)**2, where xi_b = (90-theta_b)/2
 *      prj->w[2]    1/2 - prj->w[1]
@@ -1610,8 +2596,8 @@ double *phi, *theta;
 *                   radians.
 *      prj->w[5]    prj->w[2]*tol
 *      prj->w[6]    (180/pi)/prj->w[2]
-*      prj->prjfwd  Pointer to airfwd().
-*      prj->prjrev  Pointer to airrev().
+*      prj->prjx2s  Pointer to airx2s().
+*      prj->prjs2x  Pointer to airs2x().
 *===========================================================================*/
 
 int airset(prj)
@@ -1620,25 +2606,35 @@ struct prjprm *prj;
 
 {
    const double tol = 1.0e-4;
-   double cxi;
+   double cosxi;
 
+   if (prj == 0) return 1;
+
+   prj->flag = AIR;
    strcpy(prj->code, "AIR");
-   prj->flag   =  AIR;
-   prj->phi0   =  0.0;
-   prj->theta0 = 90.0;
 
+   if (undefined(prj->pv[1])) prj->pv[1] = 90.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
+   strcpy(prj->name, "Airy's zenithal");
+   prj->category  = ZENITHAL;
+   prj->pvrange   = 101;
+   prj->simplezen = 1;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 1;
+
    prj->w[0] = 2.0*prj->r0;
-   if (prj->p[1] == 90.0) {
+   if (prj->pv[1] == 90.0) {
       prj->w[1] = -0.5;
       prj->w[2] =  1.0;
-   } else if (prj->p[1] > -90.0) {
-      cxi = cosd((90.0 - prj->p[1])/2.0);
-      prj->w[1] = log(cxi)*(cxi*cxi)/(1.0-cxi*cxi);
+   } else if (prj->pv[1] > -90.0) {
+      cosxi = cosd((90.0 - prj->pv[1])/2.0);
+      prj->w[1] = log(cosxi)*(cosxi*cosxi)/(1.0-cosxi*cosxi);
       prj->w[2] = 0.5 - prj->w[1];
    } else {
-      return 1;
+      return 2;
    }
 
    prj->w[3] = prj->w[0] * prj->w[2];
@@ -1646,147 +2642,264 @@ struct prjprm *prj;
    prj->w[5] = prj->w[2]*tol;
    prj->w[6] = R2D/prj->w[2];
 
-   prj->prjfwd = airfwd;
-   prj->prjrev = airrev;
+   prj->prjx2s = airx2s;
+   prj->prjs2x = airs2x;
 
-   return 0;
+   return offset(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int airfwd(phi, theta, prj, x, y)
+int airx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double cxi, r, txi, xi;
-
-   if (prj->flag != AIR) {
-      if (airset(prj)) return 1;
-   }
-
-   if (theta == 90.0) {
-      r = 0.0;
-   } else if (theta > -90.0) {
-      xi = D2R*(90.0 - theta)/2.0;
-      if (xi < prj->w[4]) {
-         r = xi*prj->w[3];
-      } else {
-         cxi = cosd((90.0 - theta)/2.0);
-         txi = sqrt(1.0-cxi*cxi)/cxi;
-         r = -prj->w[0]*(log(cxi)/txi + prj->w[1]*txi);
-      }
-   } else {
-      return 2;
-   }
-
-   *x =  r*sind(phi);
-   *y = -r*cosd(phi);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int airrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   int   j;
-   double cxi, lambda, r, r1, r2, rt, txi, x1, x2, xi;
+   int k, mx, my, rowlen, rowoff, status;
+   double cosxi, lambda, r, r1, r2, rt, tanxi, x1, x2, xi, xj, yj, yj2;
    const double tol = 1.0e-12;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != AIR) {
-      if (airset(prj)) return 1;
+      if (airset(prj)) return 2;
    }
 
-   r = sqrt(x*x + y*y)/prj->w[0];
-
-   if (r == 0.0) {
-      xi = 0.0;
-   } else if (r < prj->w[5]) {
-      xi = r*prj->w[6];
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      /* Find a solution interval. */
-      x1 = 1.0;
-      r1 = 0.0;
-      for (j = 0; j < 30; j++) {
-         x2 = x1/2.0;
-         txi = sqrt(1.0-x2*x2)/x2;
-         r2 = -(log(x2)/txi + prj->w[1]*txi);
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
 
-         if (r2 >= r) break;
-         x1 = x2;
-         r1 = r2;
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
       }
-      if (j == 30) return 2;
+   }
 
-      for (j = 0; j < 100; j++) {
-         /* Weighted division of the interval. */
-         lambda = (r2-r)/(r2-r1);
-         if (lambda < 0.1) {
-            lambda = 0.1;
-         } else if (lambda > 0.9) {
-            lambda = 0.9;
-         }
-         cxi = x2 - lambda*(x2-x1);
 
-         txi = sqrt(1.0-cxi*cxi)/cxi;
-         rt = -(log(cxi)/txi + prj->w[1]*txi);
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj;
 
-         if (rt < r) {
-             if (r-rt < tol) break;
-             r1 = rt;
-             x1 = cxi;
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + yj2)/prj->w[0];
+         if (r == 0.0) {
+            *phip = 0.0;
          } else {
-             if (rt-r < tol) break;
-             r2 = rt;
-             x2 = cxi;
+            *phip = atan2d(xj, -yj);
          }
+
+
+         if (r == 0.0) {
+            xi = 0.0;
+         } else if (r < prj->w[5]) {
+            xi = r*prj->w[6];
+         } else {
+            /* Find a solution interval. */
+            x1 = x2 = 1.0;
+            r1 = r2 = 0.0;
+            for (k = 0; k < 30; k++) {
+               x2 = x1/2.0;
+               tanxi = sqrt(1.0-x2*x2)/x2;
+               r2 = -(log(x2)/tanxi + prj->w[1]*tanxi);
+
+               if (r2 >= r) break;
+               x1 = x2;
+               r1 = r2;
+            }
+            if (k == 30) {
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+
+            for (k = 0; k < 100; k++) {
+               /* Weighted division of the interval. */
+               lambda = (r2-r)/(r2-r1);
+               if (lambda < 0.1) {
+                  lambda = 0.1;
+               } else if (lambda > 0.9) {
+                  lambda = 0.9;
+               }
+               cosxi = x2 - lambda*(x2-x1);
+
+               tanxi = sqrt(1.0-cosxi*cosxi)/cosxi;
+               rt = -(log(cosxi)/tanxi + prj->w[1]*tanxi);
+
+               if (rt < r) {
+                  if (r-rt < tol) break;
+                  r1 = rt;
+                  x1 = cosxi;
+               } else {
+                  if (rt-r < tol) break;
+                  r2 = rt;
+                  x2 = cosxi;
+               }
+            }
+            if (k == 100) {
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+
+            xi = acosd(cosxi);
+         }
+
+         *thetap = 90.0 - 2.0*xi;
+         *(statp++) = 0;
       }
-      if (j == 100) return 2;
-
-      xi = acosd(cxi);
    }
 
-   if (r == 0.0) {
-      *phi = 0.0;
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int airs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, cosxi, r, tanxi, xi, sinphi;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != AIR) {
+      if (airset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      *phi = atan2d(x, -y);
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
-   *theta = 90.0 - 2.0*xi;
 
-   return 0;
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      sinphi = sind(*phip);
+      cosphi = cosd(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      istat = 0;
+
+      if (*thetap == 90.0) {
+         r = 0.0;
+      } else if (*thetap > -90.0) {
+         xi = D2R*(90.0 - *thetap)/2.0;
+         if (xi < prj->w[4]) {
+            r = xi*prj->w[3];
+         } else {
+            cosxi = cosd((90.0 - *thetap)/2.0);
+            tanxi = sqrt(1.0-cosxi*cosxi)/cosxi;
+            r = -prj->w[0]*(log(cosxi)/tanxi + prj->w[1]*tanxi);
+         }
+      } else {
+         r = 0.0;
+         istat  = 1;
+         status = 4;
+      }
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - prj->y0;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   CYP: cylindrical perspective projection.
 *
 *   Given:
-*      prj->p[1]    Distance of point of projection from the centre of the
+*      prj->pv[1]   Distance of point of projection from the centre of the
 *                   generating sphere, mu, in units of r0.
-*      prj->p[2]    Radius of the cylinder of projection, lambda, in units of
+*      prj->pv[2]   Radius of the cylinder of projection, lambda, in units of
 *                   r0.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     CYP
 *      prj->code    "CYP"
-*      prj->flag    CYP
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*lambda*(pi/180)
 *      prj->w[1]    (180/pi)/(r0*lambda)
 *      prj->w[2]    r0*(mu + lambda)
 *      prj->w[3]    1/(r0*(mu + lambda))
-*      prj->prjfwd  Pointer to cypfwd().
-*      prj->prjrev  Pointer to cyprev().
+*      prj->prjx2s  Pointer to cypx2s().
+*      prj->prjs2x  Pointer to cyps2x().
 *===========================================================================*/
 
 int cypset(prj)
@@ -1794,118 +2907,227 @@ int cypset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = CYP;
    strcpy(prj->code, "CYP");
-   prj->flag   = CYP;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 1.0;
+   if (undefined(prj->pv[2])) prj->pv[2] = 1.0;
+
+   strcpy(prj->name, "Cylindrical perspective");
+   prj->category  = CYLINDRICAL;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = prj->pv[1] < -1.0 || 0.0 < prj->pv[1];
+   prj->divergent = !prj->global;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
 
-      prj->w[0] = prj->p[2];
+      prj->w[0] = prj->pv[2];
       if (prj->w[0] == 0.0) {
-         return 1;
+         return 2;
       }
 
       prj->w[1] = 1.0/prj->w[0];
 
-      prj->w[2] = R2D*(prj->p[1] + prj->p[2]);
+      prj->w[2] = R2D*(prj->pv[1] + prj->pv[2]);
       if (prj->w[2] == 0.0) {
-         return 1;
+         return 2;
       }
 
       prj->w[3] = 1.0/prj->w[2];
    } else {
-      prj->w[0] = prj->r0*prj->p[2]*D2R;
+      prj->w[0] = prj->r0*prj->pv[2]*D2R;
       if (prj->w[0] == 0.0) {
-         return 1;
+         return 2;
       }
 
       prj->w[1] = 1.0/prj->w[0];
 
-      prj->w[2] = prj->r0*(prj->p[1] + prj->p[2]);
+      prj->w[2] = prj->r0*(prj->pv[1] + prj->pv[2]);
       if (prj->w[2] == 0.0) {
-         return 1;
+         return 2;
       }
 
       prj->w[3] = 1.0/prj->w[2];
    }
 
-   prj->prjfwd = cypfwd;
-   prj->prjrev = cyprev;
+   prj->prjx2s = cypx2s;
+   prj->prjs2x = cyps2x;
+
+   return offset(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cypx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int mx, my, rowlen, rowoff;
+   double eta, s, t;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != CYP) {
+      if (cypset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1]*(*xp + prj->x0);
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = s;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   thetap = theta;
+   statp = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      eta = prj->w[3]*(*yp + prj->y0);
+      t = atan2d(eta,1.0) + asind(eta*prj->pv[1]/sqrt(eta*eta+1.0));
+
+      for (ix = 0; ix < mx; ix++, thetap += spt) {
+         *thetap = t;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int cypfwd(phi, theta, prj, x, y)
+int cyps2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
-   double s;
+   int mphi, mtheta, rowlen, rowoff, status;
+   double eta, xi;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != CYP) {
-      if (cypset(prj)) return 1;
+      if (cypset(prj)) return 2;
    }
 
-   s = prj->p[1] + cosd(theta);
-   if (s == 0.0) {
-         return 2;
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0]*(*phip) - prj->x0;
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      eta = prj->pv[1] + cosd(*thetap);
+
+      istat = 0;
+      if (eta == 0.0) {
+         istat  = 1;
+         status = 4;
+
+      } else {
+         eta = prj->w[2]*sind(*thetap)/eta;
       }
 
-   *x = prj->w[0]*phi;
-   *y = prj->w[2]*sind(theta)/s;
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int cyprev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double eta;
-
-   if (prj->flag != CYP) {
-      if (cypset(prj)) return 1;
+      eta -= prj->y0;
+      for (iphi = 0; iphi < mphi; iphi++, yp += sxy) {
+         *yp = eta;
+         *(statp++) = istat;
+      }
    }
 
-   *phi   = x*prj->w[1];
-   eta    = y*prj->w[3];
-   *theta = atan2d(eta,1.0) + asind(eta*prj->p[1]/sqrt(eta*eta+1.0));
-
-   return 0;
+   return status;
 }
 
 /*============================================================================
 *   CEA: cylindrical equal area projection.
 *
 *   Given:
-*      prj->p[1]    Square of the cosine of the latitude at which the
+*      prj->pv[1]   Square of the cosine of the latitude at which the
 *                   projection is conformal, lambda.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     CEA
 *      prj->code    "CEA"
-*      prj->flag    CEA
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
 *      prj->w[2]    r0/lambda
 *      prj->w[3]    lambda/r0
-*      prj->prjfwd  Pointer to ceafwd().
-*      prj->prjrev  Pointer to cearev().
+*      prj->prjx2s  Pointer to ceax2s().
+*      prj->prjs2x  Pointer to ceas2x().
 *===========================================================================*/
 
 int ceaset(prj)
@@ -1913,100 +3135,210 @@ int ceaset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = CEA;
    strcpy(prj->code, "CEA");
-   prj->flag   = CEA;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 1.0;
+
+   strcpy(prj->name, "Cylindrical equal area");
+   prj->category  = CYLINDRICAL;
+   prj->pvrange   = 101;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
       prj->w[0] = 1.0;
       prj->w[1] = 1.0;
-      if (prj->p[1] <= 0.0 || prj->p[1] > 1.0) {
-         return 1;
+      if (prj->pv[1] <= 0.0 || prj->pv[1] > 1.0) {
+         return 2;
       }
-      prj->w[2] = prj->r0/prj->p[1];
-      prj->w[3] = prj->p[1]/prj->r0;
+      prj->w[2] = prj->r0/prj->pv[1];
+      prj->w[3] = prj->pv[1]/prj->r0;
    } else {
       prj->w[0] = prj->r0*D2R;
       prj->w[1] = R2D/prj->r0;
-      if (prj->p[1] <= 0.0 || prj->p[1] > 1.0) {
-         return 1;
-      }
-      prj->w[2] = prj->r0/prj->p[1];
-      prj->w[3] = prj->p[1]/prj->r0;
-   }
-
-   prj->prjfwd = ceafwd;
-   prj->prjrev = cearev;
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int ceafwd(phi, theta, prj, x, y)
-
-const double phi, theta;
-struct prjprm *prj;
-double *x, *y;
-
-{
-   if (prj->flag != CEA) {
-      if (ceaset(prj)) return 1;
-   }
-
-   *x = prj->w[0]*phi;
-   *y = prj->w[2]*sind(theta);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int cearev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double s;
-   const double tol = 1.0e-13;
-
-   if (prj->flag != CEA) {
-      if (ceaset(prj)) return 1;
-   }
-
-   s = y*prj->w[3];
-   if (fabs(s) > 1.0) {
-      if (fabs(s) > 1.0+tol) {
+      if (prj->pv[1] <= 0.0 || prj->pv[1] > 1.0) {
          return 2;
       }
-      s = copysign(1.0,s);
+      prj->w[2] = prj->r0/prj->pv[1];
+      prj->w[3] = prj->pv[1]/prj->r0;
    }
 
-   *phi   = x*prj->w[1];
-   *theta = asind(s);
+   prj->prjx2s = ceax2s;
+   prj->prjs2x = ceas2x;
+
+   return offset(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int ceax2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int mx, my, rowlen, rowoff, status;
+   double s;
+   const double tol = 1.0e-13;
+   register int istat, ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != CEA) {
+      if (ceaset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1]*(*xp + prj->x0);
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = s;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   thetap = theta;
+   statp = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      s = prj->w[3]*(*yp + prj->y0);
+
+      istat = 0;
+      if (fabs(s) > 1.0) {
+         if (fabs(s) > 1.0+tol) {
+            s = 0.0;
+            istat  = 1;
+            status = 3;
+         } else {
+            s = copysign(90.0, s);
+         }
+      } else {
+         s = asind(s);
+      }
+
+      for (ix = 0; ix < mx; ix++, thetap += spt) {
+         *thetap = s;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int ceas2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double eta, xi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != CEA) {
+      if (ceaset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0]*(*phip) - prj->x0;
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      eta = prj->w[2]*sind(*thetap) - prj->y0;
+
+      for (iphi = 0; iphi < mphi; iphi++, yp += sxy) {
+         *yp = eta;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
 
 /*============================================================================
-*   CAR: Cartesian projection.
+*   CAR: Plate carree projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     CAR
 *      prj->code    "CAR"
-*      prj->flag    CAR
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
-*      prj->prjfwd  Pointer to carfwd().
-*      prj->prjrev  Pointer to carrev().
+*      prj->prjx2s  Pointer to carx2s().
+*      prj->prjs2x  Pointer to cars2x().
 *===========================================================================*/
 
 int carset(prj)
@@ -2014,10 +3346,19 @@ int carset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = CAR;
    strcpy(prj->code, "CAR");
-   prj->flag   = CAR;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Plate caree");
+   prj->category  = CYLINDRICAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -2028,46 +3369,138 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = carfwd;
-   prj->prjrev = carrev;
+   prj->prjx2s = carx2s;
+   prj->prjs2x = cars2x;
+
+   return offset(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int carx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int mx, my, rowlen, rowoff;
+   double s, t;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != CAR) {
+      if (carset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1]*(*xp + prj->x0);
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = s;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   thetap = theta;
+   statp = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      t = prj->w[1]*(*yp + prj->y0);
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         *thetap = t;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int carfwd(phi, theta, prj, x, y)
+int cars2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
+   int mphi, mtheta, rowlen, rowoff;
+   double eta, xi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != CAR) {
-      if (carset(prj)) return 1;
+      if (carset(prj)) return 2;
    }
 
-   *x = prj->w[0]*phi;
-   *y = prj->w[0]*theta;
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int carrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   if (prj->flag != CAR) {
-      if (carset(prj)) return 1;
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   *phi   = prj->w[1]*x;
-   *theta = prj->w[1]*y;
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0]*(*phip) - prj->x0;
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      eta = prj->w[0]*(*thetap) - prj->y0;
+
+      for (iphi = 0; iphi < mphi; iphi++, yp += sxy) {
+         *yp = eta;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2076,17 +3509,19 @@ double *phi, *theta;
 *   MER: Mercator's projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     MER
 *      prj->code    "MER"
-*      prj->flag    MER
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
-*      prj->prjfwd  Pointer to merfwd().
-*      prj->prjrev  Pointer to merrev().
+*      prj->prjx2s  Pointer to merx2s().
+*      prj->prjs2x  Pointer to mers2x().
 *===========================================================================*/
 
 int merset(prj)
@@ -2094,10 +3529,19 @@ int merset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = MER;
    strcpy(prj->code, "MER");
-   prj->flag   = MER;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Mercator's");
+   prj->category  = CYLINDRICAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 1;
+   prj->global    = 0;
+   prj->divergent = 1;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -2108,69 +3552,169 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = merfwd;
-   prj->prjrev = merrev;
+   prj->prjx2s = merx2s;
+   prj->prjs2x = mers2x;
+
+   return offset(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int merx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int mx, my, rowlen, rowoff;
+   double s, t;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != MER) {
+      if (merset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1]*(*xp + prj->x0);
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = s;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      t = 2.0*atand(exp((*yp + prj->y0)/prj->r0)) - 90.0;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         *thetap = t;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int merfwd(phi, theta, prj, x, y)
+int mers2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
+   int mphi, mtheta, rowlen, rowoff, status;
+   double eta, xi;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != MER) {
-      if (merset(prj)) return 1;
+      if (merset(prj)) return 2;
    }
 
-   if (theta <= -90.0 || theta >= 90.0) {
-      return 2;
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   *x = prj->w[0]*phi;
-   *y = prj->r0*log(tand((90.0+theta)/2.0));
+   status = 0;
 
-   return 0;
-}
 
-/*--------------------------------------------------------------------------*/
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi  = prj->w[0]*(*phip) - prj->x0;
 
-int merrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   if (prj->flag != MER) {
-      if (merset(prj)) return 1;
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
    }
 
-   *phi   = x*prj->w[1];
-   *theta = 2.0*atand(exp(y/prj->r0)) - 90.0;
 
-   return 0;
+   /* Do theta dependence. */
+   thetap = theta;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      istat = 0;
+
+      if (*thetap <= -90.0 || *thetap >= 90.0) {
+         eta = 0.0;
+         istat  = 1;
+         status = 4;
+      } else {
+         eta = prj->r0*log(tand((*thetap+90.0)/2.0)) - prj->y0;
+      }
+
+      for (iphi = 0; iphi < mphi; iphi++, yp += sxy) {
+         *yp = eta;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   SFL: Sanson-Flamsteed ("global sinusoid") projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     SFL
 *      prj->code    "SFL"
-*      prj->flag    SFL
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
-*      prj->prjfwd  Pointer to sflfwd().
-*      prj->prjrev  Pointer to sflrev().
+*      prj->prjx2s  Pointer to sflx2s().
+*      prj->prjs2x  Pointer to sfls2x().
 *===========================================================================*/
 
 int sflset(prj)
@@ -2178,10 +3722,19 @@ int sflset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = SFL;
    strcpy(prj->code, "SFL");
-   prj->flag   = SFL;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Sanson-Flamsteed");
+   prj->category  = PSEUDOCYLINDRICAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -2192,53 +3745,154 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = sflfwd;
-   prj->prjrev = sflrev;
+   prj->prjx2s = sflx2s;
+   prj->prjs2x = sfls2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int sflfwd(phi, theta, prj, x, y)
+int sflx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
+   int mx, my, rowlen, rowoff, status;
+   double s, t, yj;
+   register int istat, ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != SFL) {
-      if (sflset(prj)) return 1;
+      if (sflset(prj)) return 2;
    }
 
-   *x = prj->w[0]*phi*cosd(theta);
-   *y = prj->w[0]*theta;
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int sflrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double w;
-
-   if (prj->flag != SFL) {
-      if (sflset(prj)) return 1;
-   }
-
-   w = cos(y/prj->r0);
-   if (w == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = x*prj->w[1]/cos(y/prj->r0);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
-   *theta = y*prj->w[1];
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1]*(*xp + prj->x0);
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = s;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj = *yp + prj->y0;
+      s = cos(yj/prj->r0);
+
+      istat = 0;
+      if (s == 0.0) {
+         istat  = 1;
+         status = 3;
+      } else {
+         s = 1.0/s;
+      }
+
+      t = prj->w[1]*yj;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         *phip  *= s;
+         *thetap = t;
+         *(statp++) = 0;
+      }
+   }
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int sfls2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double eta, xi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != SFL) {
+      if (sflset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0]*(*phip);
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      xi  = cosd(*thetap);
+      eta = prj->w[0]*(*thetap) - prj->y0;
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp = xi*(*xp) - prj->x0;
+         *yp = eta;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2247,19 +3901,21 @@ double *phi, *theta;
 *   PAR: parabolic projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     PAR
 *      prj->code    "PAR"
-*      prj->flag    PAR
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    (180/pi)/r0
 *      prj->w[2]    pi*r0
 *      prj->w[3]    1/(pi*r0)
-*      prj->prjfwd  Pointer to parfwd().
-*      prj->prjrev  Pointer to parrev().
+*      prj->prjx2s  Pointer to parx2s().
+*      prj->prjs2x  Pointer to pars2x().
 *===========================================================================*/
 
 int parset(prj)
@@ -2267,10 +3923,19 @@ int parset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = PAR;
    strcpy(prj->code, "PAR");
-   prj->flag   = PAR;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Parabolic");
+   prj->category  = PSEUDOCYLINDRICAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -2285,66 +3950,179 @@ struct prjprm *prj;
       prj->w[3] = 1.0/prj->w[2];
    }
 
-   prj->prjfwd = parfwd;
-   prj->prjrev = parrev;
+   prj->prjx2s = parx2s;
+   prj->prjs2x = pars2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int parfwd(phi, theta, prj, x, y)
+int parx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double s;
+   int mx, my, rowlen, rowoff, status;
+   double r, s, t, xj;
+   const double tol = 1.0e-13;
+   register int istat, ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != PAR) {
-      if (parset(prj)) return 1;
+      if (parset(prj)) return 2;
    }
 
-   s = sind(theta/3.0);
-   *x = prj->w[0]*phi*(1.0 - 4.0*s*s);
-   *y = prj->w[2]*s;
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int parrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double s, t;
-
-   if (prj->flag != PAR) {
-      if (parset(prj)) return 1;
-   }
-
-   s = y*prj->w[3];
-   if (s > 1.0 || s < -1.0) {
-      return 2;
-   }
-
-   t = 1.0 - 4.0*s*s;
-   if (t == 0.0) {
-      if (x == 0.0) {
-         *phi = 0.0;
-      } else {
-         return 2;
-      }
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = prj->w[1]*x/t;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   *theta = 3.0*asind(s);
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+      s = prj->w[1]*xj;
+      t = fabs(xj) - tol;
+
+      phip   = phi   + rowoff;
+      thetap = theta + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip   = s;
+         *thetap = t;
+         phip   += rowlen;
+         thetap += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      r = prj->w[3]*(*yp + prj->y0);
+
+      istat = 0;
+      if (r > 1.0 || r < -1.0) {
+         s = 0.0;
+         t = 0.0;
+         istat  = 1;
+         status = 3;
+
+      } else {
+         s = 1.0 - 4.0*r*r;
+         if (s == 0.0) {
+            /* Deferred test. */
+            istat = -1;
+         } else {
+            s = 1.0/s;
+         }
+
+         t = 3.0*asind(r);
+      }
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         if (istat < 0) {
+            if (*thetap < 0.0) {
+               *(statp++) = 0;
+            } else {
+               *(statp++) = 1;
+               status = 3;
+            }
+         }
+
+         *phip  *= s;
+         *thetap = t;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int pars2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double eta, s, xi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != PAR) {
+      if (parset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0]*(*phip);
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      s = sind((*thetap)/3.0);
+      xi = (1.0 - 4.0*s*s);
+      eta = prj->w[2]*s - prj->y0;
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp = xi*(*xp) - prj->x0;
+         *yp = eta;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2353,19 +4131,21 @@ double *phi, *theta;
 *   MOL: Mollweide's projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     MOL
 *      prj->code    "MOL"
-*      prj->flag    MOL
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    sqrt(2)*r0
 *      prj->w[1]    sqrt(2)*r0/90
 *      prj->w[2]    1/(sqrt(2)*r0)
 *      prj->w[3]    90/r0
-*      prj->prjfwd  Pointer to molfwd().
-*      prj->prjrev  Pointer to molrev().
+*      prj->prjx2s  Pointer to molx2s().
+*      prj->prjs2x  Pointer to mols2x().
 *===========================================================================*/
 
 int molset(prj)
@@ -2373,12 +4153,21 @@ int molset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = MOL;
    strcpy(prj->code, "MOL");
-   prj->flag   = MOL;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
 
    if (prj->r0 == 0.0) prj->r0 = R2D;
+
+   strcpy(prj->name, "Mollweide's");
+   prj->category  = PSEUDOCYLINDRICAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    prj->w[0] = SQRT2*prj->r0;
    prj->w[1] = prj->w[0]/90.0;
@@ -2386,111 +4175,231 @@ struct prjprm *prj;
    prj->w[3] = 90.0/prj->r0;
    prj->w[4] = 2.0/PI;
 
-   prj->prjfwd = molfwd;
-   prj->prjrev = molrev;
+   prj->prjx2s = molx2s;
+   prj->prjs2x = mols2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int molfwd(phi, theta, prj, x, y)
+int molx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   int   j;
-   double gamma, resid, u, v, v0, v1;
-   const double tol = 1.0e-13;
-
-   if (prj->flag != MOL) {
-      if (molset(prj)) return 1;
-   }
-
-   if (fabs(theta) == 90.0) {
-      *x = 0.0;
-      *y = copysign(prj->w[0],theta);
-   } else if (theta == 0.0) {
-      *x = prj->w[1]*phi;
-      *y = 0.0;
-   } else {
-      u  = PI*sind(theta);
-      v0 = -PI;
-      v1 =  PI;
-      v  = u;
-      for (j = 0; j < 100; j++) {
-         resid = (v - u) + sin(v);
-         if (resid < 0.0) {
-            if (resid > -tol) break;
-            v0 = v;
-         } else {
-            if (resid < tol) break;
-            v1 = v;
-         }
-         v = (v0 + v1)/2.0;
-      }
-
-      gamma = v/2.0;
-      *x = prj->w[1]*phi*cos(gamma);
-      *y = prj->w[0]*sin(gamma);
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int molrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double s, y0, z;
+   int mx, my, rowlen, rowoff, status;
+   double r, s, t, xj, y0, yj, z;
    const double tol = 1.0e-12;
+   register int istat, ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != MOL) {
-      if (molset(prj)) return 1;
+      if (molset(prj)) return 2;
    }
 
-   y0 = y/prj->r0;
-   s  = 2.0 - y0*y0;
-   if (s <= tol) {
-      if (s < -tol) {
-         return 2;
-      }
-      s = 0.0;
-
-      if (fabs(x) > tol) {
-         return 2;
-      }
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      s = sqrt(s);
-      *phi = prj->w[3]*x/s;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   z = y*prj->w[2];
-   if (fabs(z) > 1.0) {
-      if (fabs(z) > 1.0+tol) {
-         return 2;
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+      s = prj->w[3]*xj;
+      t = fabs(xj) - tol;
+
+      phip   = phi   + rowoff;
+      thetap = theta + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip   = s;
+         *thetap = t;
+         phip   += rowlen;
+         thetap += rowlen;
       }
-      z = copysign(1.0,z) + y0*s/PI;
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj = *yp + prj->y0;
+      y0 = yj/prj->r0;
+      r  = 2.0 - y0*y0;
+
+      istat = 0;
+      if (r <= tol) {
+         if (r < -tol) {
+            istat  = 1;
+            status = 3;
+         } else {
+            /* OK if fabs(x) < tol whence phi = 0.0. */
+            istat = -1;
+         }
+
+         r = 0.0;
+         s = 0.0;
+
+      } else {
+         r = sqrt(r);
+         s = 1.0/r;
+      }
+
+      z = yj*prj->w[2];
+      if (fabs(z) > 1.0) {
+         if (fabs(z) > 1.0+tol) {
+            z = 0.0;
+            istat  = 1;
+            status = 3;
+         } else {
+            z = copysign(1.0, z) + y0*r/PI;
+         }
+      } else {
+         z = asin(z)*prj->w[4] + y0*r/PI;
+      }
+
+      if (fabs(z) > 1.0) {
+         if (fabs(z) > 1.0+tol) {
+            z = 0.0;
+            istat  = 1;
+            status = 3;
+         } else {
+            z = copysign(1.0, z);
+         }
+      }
+
+      t = asind(z);
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         if (istat < 0) {
+            if (*thetap < 0.0) {
+               *(statp++) = 0;
+            } else {
+               *(statp++) = 1;
+               status = 3;
+            }
+         }
+
+         *phip  *= s;
+         *thetap = t;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int mols2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int k, mphi, mtheta, rowlen, rowoff;
+   double eta, gamma, resid, u, v, v0, v1, xi;
+   const double tol = 1.0e-13;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != MOL) {
+      if (molset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      z = asin(z)*prj->w[4] + y0*s/PI;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   if (fabs(z) > 1.0) {
-      if (fabs(z) > 1.0+tol) {
-         return 2;
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[1]*(*phip);
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         xp += rowlen;
       }
-      z = copysign(1.0,z);
    }
 
-   *theta = asind(z);
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      if (fabs(*thetap) == 90.0) {
+         xi  = 0.0;
+         eta = copysign(prj->w[0], *thetap);
+      } else if (*thetap == 0.0) {
+         xi  = 1.0;
+         eta = 0.0;
+      } else {
+         u  = PI*sind(*thetap);
+         v0 = -PI;
+         v1 =  PI;
+         v  = u;
+         for (k = 0; k < 100; k++) {
+            resid = (v - u) + sin(v);
+            if (resid < 0.0) {
+               if (resid > -tol) break;
+               v0 = v;
+            } else {
+               if (resid < tol) break;
+               v1 = v;
+            }
+            v = (v0 + v1)/2.0;
+         }
+
+         gamma = v/2.0;
+         xi  = cos(gamma);
+         eta = prj->w[0]*sin(gamma);
+      }
+
+      eta -= prj->y0;
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp = xi*(*xp) - prj->x0;
+         *yp = eta;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2499,19 +4408,21 @@ double *phi, *theta;
 *   AIT: Hammer-Aitoff projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     AIT
 *      prj->code    "AIT"
-*      prj->flag    AIT
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    2*r0**2
 *      prj->w[1]    1/(2*r0)**2
 *      prj->w[2]    1/(4*r0)**2
 *      prj->w[3]    1/(2*r0)
-*      prj->prjfwd  Pointer to aitfwd().
-*      prj->prjrev  Pointer to aitrev().
+*      prj->prjx2s  Pointer to aitx2s().
+*      prj->prjs2x  Pointer to aits2x().
 *===========================================================================*/
 
 int aitset(prj)
@@ -2519,89 +4430,211 @@ int aitset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = AIT;
    strcpy(prj->code, "AIT");
-   prj->flag   = AIT;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
 
    if (prj->r0 == 0.0) prj->r0 = R2D;
+
+   strcpy(prj->name, "Hammer-Aitoff");
+   prj->category  = CONVENTIONAL;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    prj->w[0] = 2.0*prj->r0*prj->r0;
    prj->w[1] = 1.0/(2.0*prj->w[0]);
    prj->w[2] = prj->w[1]/4.0;
    prj->w[3] = 1.0/(2.0*prj->r0);
 
-   prj->prjfwd = aitfwd;
-   prj->prjrev = aitrev;
+   prj->prjx2s = aitx2s;
+   prj->prjs2x = aits2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int aitfwd(phi, theta, prj, x, y)
+int aitx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double cthe, w;
-
-   if (prj->flag != AIT) {
-      if (aitset(prj)) return 1;
-   }
-
-   cthe = cosd(theta);
-   w = sqrt(prj->w[0]/(1.0 + cthe*cosd(phi/2.0)));
-   *x = 2.0*w*cthe*sind(phi/2.0);
-   *y = w*sind(theta);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int aitrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double s, u, xp, yp, z;
+   int mx, my, rowlen, rowoff, status;
+   double s, t, u, x0, xj, y0, yj, yj2;
    const double tol = 1.0e-13;
+   register int ix, iy, istat, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != AIT) {
-      if (aitset(prj)) return 1;
+      if (aitset(prj)) return 2;
    }
 
-   u = 1.0 - x*x*prj->w[2] - y*y*prj->w[1];
-   if (u < 0.0) {
-      if (u < -tol) {
-         return 2;
-      }
-
-      u = 0.0;
-   }
-
-   z = sqrt(u);
-   s = z*y/prj->r0;
-   if (fabs(s) > 1.0) {
-      if (fabs(s) > 1.0+tol) {
-         return 2;
-      }
-      s = copysign(1.0,s);
-   }
-
-   xp = 2.0*z*z - 1.0;
-   yp = z*x*prj->w[3];
-   if (xp == 0.0 && yp == 0.0) {
-      *phi = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      *phi = 2.0*atan2d(yp, xp);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
-   *theta = asind(s);
+
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+      s  = 1.0 - xj*xj*prj->w[2];
+      t  = xj*prj->w[3];
+
+      phip   = phi   + rowoff;
+      thetap = theta + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip   = s;
+         *thetap = t;
+         phip   += rowlen;
+         thetap += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj  = *yp + prj->y0;
+      yj2 = yj*yj*prj->w[1];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         u = *phip - yj2;
+
+         istat = 0;
+         if (u < 0.0) {
+            if (u < -tol) {
+               istat  = 1;
+               status = 3;
+            }
+
+            u = 0.0;
+         }
+
+         s = sqrt(u);
+         x0 = 2.0*s*s - 1.0;
+         y0 = s*(*thetap);
+         if (x0 == 0.0 && y0 == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = 2.0*atan2d(y0, x0);
+         }
+
+         t = s*yj/prj->r0;
+         if (fabs(t) > 1.0) {
+            if (fabs(t) > 1.0+tol) {
+               istat  = 1;
+               status = 3;
+            }
+            t = copysign(90.0, t);
+
+         } else {
+            t = asind(t);
+         }
+
+         *thetap = t;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int aits2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double cosphi, costhe, sinphi, sinthe, w;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != AIT) {
+      if (aitset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      w = (*phip)/2.0;
+      sinphi = sind(w);
+      cosphi = cosd(w);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinphi;
+         *yp = cosphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         w = sqrt(prj->w[0]/(1.0 + costhe*(*yp)));
+         *xp = 2.0*w*costhe*(*xp) - prj->x0;
+         *yp = w*sinthe - prj->y0;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2610,26 +4643,28 @@ double *phi, *theta;
 *   COP: conic perspective projection.
 *
 *   Given:
-*      prj->p[1]    sigma = (theta2+theta1)/2
-*      prj->p[2]    delta = (theta2-theta1)/2, where theta1 and theta2 are the
+*      prj->pv[1]   sigma = (theta2+theta1)/2
+*      prj->pv[2]   delta = (theta2-theta1)/2, where theta1 and theta2 are the
 *                   latitudes of the standard parallels, in degrees.
 *
 *   Given and/or returned:
-*      prj->flag    COP, or -COP if prj->flag is given < 0.
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to sigma if undefined.
+*      prj->theta0  Reset to sigma if undefined.
 *
 *   Returned:
+*      prj->flag     COP
 *      prj->code    "COP"
-*      prj->phi0     0.0
-*      prj->theta0  sigma
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    C  = sin(sigma)
 *      prj->w[1]    1/C
 *      prj->w[2]    Y0 = r0*cos(delta)*cot(sigma)
 *      prj->w[3]    r0*cos(delta)
 *      prj->w[4]    1/(r0*cos(delta)
 *      prj->w[5]    cot(sigma)
-*      prj->prjfwd  Pointer to copfwd().
-*      prj->prjrev  Pointer to coprev().
+*      prj->prjx2s  Pointer to copx2s().
+*      prj->prjs2x  Pointer to cops2x().
 *===========================================================================*/
 
 int copset(prj)
@@ -2637,117 +4672,235 @@ int copset(prj)
 struct prjprm *prj;
 
 {
-   strcpy(prj->code, "COP");
-   prj->flag   = copysign(COP, prj->flag);
-   prj->phi0   = 0.0;
-   prj->theta0 = prj->p[1];
+   if (prj == 0) return 1;
 
+   prj->flag = COP;
+   strcpy(prj->code, "COP");
+
+   if (undefined(prj->pv[1])) {
+      return 2;
+   }
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   prj->w[0] = sind(prj->p[1]);
+   strcpy(prj->name, "Conic perspective");
+   prj->category  = CONIC;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 0;
+   prj->divergent = 1;
+
+   prj->w[0] = sind(prj->pv[1]);
    if (prj->w[0] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[1] = 1.0/prj->w[0];
 
-   prj->w[3] = prj->r0*cosd(prj->p[2]);
+   prj->w[3] = prj->r0*cosd(prj->pv[2]);
    if (prj->w[3] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[4] = 1.0/prj->w[3];
-   prj->w[5] = 1.0/tand(prj->p[1]);
+   prj->w[5] = 1.0/tand(prj->pv[1]);
 
    prj->w[2] = prj->w[3]*prj->w[5];
 
-   prj->prjfwd = copfwd;
-   prj->prjrev = coprev;
+   prj->prjx2s = copx2s;
+   prj->prjs2x = cops2x;
 
-   return 0;
+   return offset(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int copfwd(phi, theta, prj, x, y)
+int copx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, r, s, t;
+   int mx, my, rowlen, rowoff;
+   double alpha, dy, dy2, r, xj;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
-   if (abs(prj->flag) != COP) {
-      if (copset(prj)) return 1;
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != COP) {
+      if (copset(prj)) return 2;
    }
 
-   t = theta - prj->p[1];
-   s = cosd(t);
-   if (s == 0.0) {
-      return 2;
-   }
-
-   a = prj->w[0]*phi;
-   r = prj->w[2] - prj->w[3]*sind(t)/s;
-
-   *x =             r*sind(a);
-   *y = prj->w[2] - r*cosd(a);
-
-   if (prj->flag > 0 && r*prj->w[0] < 0.0) {
-      return 2;
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int coprev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, dy, r;
-
-   if (abs(prj->flag) != COP) {
-      if (copset(prj)) return 1;
-   }
-
-   dy = prj->w[2] - y;
-   r  = sqrt(x*x + dy*dy);
-   if (prj->p[1] < 0.0) r = -r;
-
-   if (r == 0.0) {
-      a = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      a = atan2d(x/r, dy/r);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   *phi   = a*prj->w[1];
-   *theta = prj->p[1] + atand(prj->w[5] - r*prj->w[4]);
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      dy  = prj->w[2] - (*yp + prj->y0);
+      dy2 = dy*dy;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + dy2);
+         if (prj->pv[1] < 0.0) r = -r;
+
+         if (r == 0.0) {
+            alpha = 0.0;
+         } else {
+            alpha = atan2d(xj/r, dy/r);
+         }
+
+         *phip = alpha*prj->w[1];
+         *thetap = prj->pv[1] + atand(prj->w[5] - r*prj->w[4]);
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cops2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double alpha, cosalpha, r, s, t, sinalpha, y0;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != COP) {
+      if (copset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      alpha = prj->w[0]*(*phip);
+      sinalpha = sind(alpha);
+      cosalpha = cosd(alpha);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinalpha;
+         *yp = cosalpha;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   y0 = prj->y0 - prj->w[2];
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      t = *thetap - prj->pv[1];
+      s = cosd(t);
+
+      istat = 0;
+      if (s == 0.0) {
+         r = 0.0;
+         istat  = 1;
+         status = 4;
+
+      } else {
+         r = prj->w[2] - prj->w[3]*sind(t)/s;
+
+         if (prj->bounds && r*prj->w[0] < 0.0) {
+            istat  = 1;
+            status = 4;
+         }
+      }
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - y0;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   COE: conic equal area projection.
 *
 *   Given:
-*      prj->p[1]    sigma = (theta2+theta1)/2
-*      prj->p[2]    delta = (theta2-theta1)/2, where theta1 and theta2 are the
+*      prj->pv[1]   sigma = (theta2+theta1)/2
+*      prj->pv[2]   delta = (theta2-theta1)/2, where theta1 and theta2 are the
 *                   latitudes of the standard parallels, in degrees.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to sigma if undefined.
+*      prj->theta0  Reset to sigma if undefined.
 *
 *   Returned:
+*      prj->flag     COE
 *      prj->code    "COE"
-*      prj->flag    COE
-*      prj->phi0    0.0
-*      prj->theta0  sigma
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    C = (sin(theta1) + sin(theta2))/2
 *      prj->w[1]    1/C
 *      prj->w[2]    Y0 = chi*sqrt(psi - 2C*sind(sigma))
@@ -2757,8 +4910,8 @@ double *phi, *theta;
 *      prj->w[6]    (1 + sin(theta1)*sin(theta2))*(r0/C)**2
 *      prj->w[7]    C/(2*r0**2)
 *      prj->w[8]    chi*sqrt(psi + 2C)
-*      prj->prjfwd  Pointer to coefwd().
-*      prj->prjrev  Pointer to coerev().
+*      prj->prjx2s  Pointer to coex2s().
+*      prj->prjs2x  Pointer to coes2x().
 *===========================================================================*/
 
 int coeset(prj)
@@ -2768,19 +4921,32 @@ struct prjprm *prj;
 {
    double theta1, theta2;
 
-   strcpy(prj->code, "COE");
-   prj->flag   = COE;
-   prj->phi0   = 0.0;
-   prj->theta0 = prj->p[1];
+   if (prj == 0) return 1;
 
+   prj->flag = COE;
+   strcpy(prj->code, "COE");
+
+   if (undefined(prj->pv[1])) {
+      return 2;
+   }
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   theta1 = prj->p[1] - prj->p[2];
-   theta2 = prj->p[1] + prj->p[2];
+   strcpy(prj->name, "Conic equal area");
+   prj->category  = CONIC;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
+
+   theta1 = prj->pv[1] - prj->pv[2];
+   theta2 = prj->pv[1] + prj->pv[2];
 
    prj->w[0] = (sind(theta1) + sind(theta2))/2.0;
    if (prj->w[0] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[1] = 1.0/prj->w[0];
@@ -2792,83 +4958,185 @@ struct prjprm *prj;
    prj->w[7] = 1.0/(2.0*prj->r0*prj->w[3]);
    prj->w[8] = prj->w[3]*sqrt(prj->w[4] + prj->w[5]);
 
-   prj->w[2] = prj->w[3]*sqrt(prj->w[4] - prj->w[5]*sind(prj->p[1]));
+   prj->w[2] = prj->w[3]*sqrt(prj->w[4] - prj->w[5]*sind(prj->pv[1]));
 
-   prj->prjfwd = coefwd;
-   prj->prjrev = coerev;
+   prj->prjx2s = coex2s;
+   prj->prjs2x = coes2x;
 
-   return 0;
+   return offset(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int coefwd(phi, theta, prj, x, y)
+int coex2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, r;
-
-   if (prj->flag != COE) {
-      if (coeset(prj)) return 1;
-   }
-
-   a = phi*prj->w[0];
-   if (theta == -90.0) {
-      r = prj->w[8];
-   } else {
-      r = prj->w[3]*sqrt(prj->w[4] - prj->w[5]*sind(theta));
-   }
-
-   *x =             r*sind(a);
-   *y = prj->w[2] - r*cosd(a);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int coerev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, dy, r, w;
+   int mx, my, rowlen, rowoff, status;
+   double alpha, dy, dy2, r, t, w, xj;
    const double tol = 1.0e-12;
+   register int ix, iy, istat, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != COE) {
-      if (coeset(prj)) return 1;
+      if (coeset(prj)) return 2;
    }
 
-   dy = prj->w[2] - y;
-   r  = sqrt(x*x + dy*dy);
-   if (prj->p[1] < 0.0) r = -r;
-
-   if (r == 0.0) {
-      a = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      a = atan2d(x/r, dy/r);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   *phi = a*prj->w[1];
-   if (fabs(r - prj->w[8]) < tol) {
-      *theta = -90.0;
-   } else {
-      w = (prj->w[6] - r*r)*prj->w[7];
-      if (fabs(w) > 1.0) {
-         if (fabs(w-1.0) < tol) {
-            *theta = 90.0;
-         } else if (fabs(w+1.0) < tol) {
-            *theta = -90.0;
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      dy  = prj->w[2] - (*yp + prj->y0);
+      dy2 = dy*dy;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + dy2);
+         if (prj->pv[1] < 0.0) r = -r;
+
+         if (r == 0.0) {
+            alpha = 0.0;
          } else {
-            return 2;
+            alpha = atan2d(xj/r, dy/r);
          }
+
+         istat = 0;
+         if (fabs(r - prj->w[8]) < tol) {
+            t = -90.0;
+         } else {
+            w = (prj->w[6] - r*r)*prj->w[7];
+            if (fabs(w) > 1.0) {
+               if (fabs(w-1.0) < tol) {
+                  t = 90.0;
+               } else if (fabs(w+1.0) < tol) {
+                  t = -90.0;
+               } else {
+                  t = 0.0;
+                  istat  = 1;
+                  status = 3;
+               }
+            } else {
+               t = asind(w);
+            }
+         }
+
+         *phip = alpha*prj->w[1];
+         *thetap = t;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int coes2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double alpha, cosalpha, r, sinalpha, y0;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != COE) {
+      if (coeset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      alpha = prj->w[0]*(*phip);
+      sinalpha = sind(alpha);
+      cosalpha = cosd(alpha);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinalpha;
+         *yp = cosalpha;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   y0 = prj->y0 - prj->w[2];
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      if (*thetap == -90.0) {
+         r = prj->w[8];
       } else {
-         *theta = asind(w);
+         r = prj->w[3]*sqrt(prj->w[4] - prj->w[5]*sind(*thetap));
+      }
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - y0;
+         *(statp++) = 0;
       }
    }
 
@@ -2879,24 +5147,26 @@ double *phi, *theta;
 *   COD: conic equidistant projection.
 *
 *   Given:
-*      prj->p[1]    sigma = (theta2+theta1)/2
-*      prj->p[2]    delta = (theta2-theta1)/2, where theta1 and theta2 are the
+*      prj->pv[1]   sigma = (theta2+theta1)/2
+*      prj->pv[2]   delta = (theta2-theta1)/2, where theta1 and theta2 are the
 *                   latitudes of the standard parallels, in degrees.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to sigma if undefined.
+*      prj->theta0  Reset to sigma if undefined.
 *
 *   Returned:
+*      prj->flag     COD
 *      prj->code    "COD"
-*      prj->flag    COD
-*      prj->phi0    0.0
-*      prj->theta0  sigma
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    C = r0*sin(sigma)*sin(delta)/delta
 *      prj->w[1]    1/C
 *      prj->w[2]    Y0 = delta*cot(delta)*cot(sigma)
 *      prj->w[3]    Y0 + sigma
-*      prj->prjfwd  Pointer to codfwd().
-*      prj->prjrev  Pointer to codrev().
+*      prj->prjx2s  Pointer to codx2s().
+*      prj->prjs2x  Pointer to cods2x().
 *===========================================================================*/
 
 int codset(prj)
@@ -2904,84 +5174,192 @@ int codset(prj)
 struct prjprm *prj;
 
 {
-   strcpy(prj->code, "COD");
-   prj->flag   = COD;
-   prj->phi0   = 0.0;
-   prj->theta0 = prj->p[1];
+   if (prj == 0) return 1;
 
+   prj->flag = COD;
+   strcpy(prj->code, "COD");
+
+   if (undefined(prj->pv[1])) {
+      return 2;
+   }
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   if (prj->p[2] == 0.0) {
-      prj->w[0] = prj->r0*sind(prj->p[1])*D2R;
+   strcpy(prj->name, "Conic equidistant");
+   prj->category  = CONIC;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
+
+   if (prj->pv[2] == 0.0) {
+      prj->w[0] = prj->r0*sind(prj->pv[1])*D2R;
    } else {
-      prj->w[0] = prj->r0*sind(prj->p[1])*sind(prj->p[2])/prj->p[2];
+      prj->w[0] = prj->r0*sind(prj->pv[1])*sind(prj->pv[2])/prj->pv[2];
    }
 
    if (prj->w[0] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[1] = 1.0/prj->w[0];
-   prj->w[2] = prj->r0*cosd(prj->p[2])*cosd(prj->p[1])/prj->w[0];
-   prj->w[3] = prj->w[2] + prj->p[1];
+   prj->w[2] = prj->r0*cosd(prj->pv[2])*cosd(prj->pv[1])/prj->w[0];
+   prj->w[3] = prj->w[2] + prj->pv[1];
 
-   prj->prjfwd = codfwd;
-   prj->prjrev = codrev;
+   prj->prjx2s = codx2s;
+   prj->prjs2x = cods2x;
 
-   return 0;
+   return offset(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int codfwd(phi, theta, prj, x, y)
+int codx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, r;
+   int mx, my, rowlen, rowoff;
+   double alpha, dy, dy2, r, xj;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != COD) {
-      if (codset(prj)) return 1;
+      if (codset(prj)) return 2;
    }
 
-   a = prj->w[0]*phi;
-   r = prj->w[3] - theta;
-
-   *x =             r*sind(a);
-   *y = prj->w[2] - r*cosd(a);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int codrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, dy, r;
-
-   if (prj->flag != COD) {
-      if (codset(prj)) return 1;
-   }
-
-   dy = prj->w[2] - y;
-   r  = sqrt(x*x + dy*dy);
-   if (prj->p[1] < 0.0) r = -r;
-
-   if (r == 0.0) {
-      a = 0.0;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      a = atan2d(x/r, dy/r);
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   *phi   = a*prj->w[1];
-   *theta = prj->w[3] - r;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      dy  = prj->w[2] - (*yp + prj->y0);
+      dy2 = dy*dy;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + dy2);
+         if (prj->pv[1] < 0.0) r = -r;
+
+         if (r == 0.0) {
+            alpha = 0.0;
+         } else {
+            alpha = atan2d(xj/r, dy/r);
+         }
+
+         *phip = alpha*prj->w[1];
+         *thetap = prj->w[3] - r;
+         *(statp++) = 0;
+      }
+   }
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cods2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double alpha, cosalpha, r, sinalpha, y0;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != COD) {
+      if (codset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      alpha = prj->w[0]*(*phip);
+      sinalpha = sind(alpha);
+      cosalpha = cosd(alpha);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinalpha;
+         *yp = cosalpha;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   y0 = prj->y0 - prj->w[2];
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      r = prj->w[3] - *thetap;
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - y0;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
@@ -2990,18 +5368,20 @@ double *phi, *theta;
 *   COO: conic orthomorphic projection.
 *
 *   Given:
-*      prj->p[1]    sigma = (theta2+theta1)/2
-*      prj->p[2]    delta = (theta2-theta1)/2, where theta1 and theta2 are the
+*      prj->pv[1]   sigma = (theta2+theta1)/2
+*      prj->pv[2]   delta = (theta2-theta1)/2, where theta1 and theta2 are the
 *                   latitudes of the standard parallels, in degrees.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to sigma if undefined.
+*      prj->theta0  Reset to sigma if undefined.
 *
 *   Returned:
+*      prj->flag     COO
 *      prj->code    "COO"
-*      prj->flag    COO
-*      prj->phi0    0.0
-*      prj->theta0  sigma
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    C = ln(cos(theta2)/cos(theta1))/ln(tan(tau2)/tan(tau1))
 *                       where tau1 = (90 - theta1)/2
 *                             tau2 = (90 - theta2)/2
@@ -3009,8 +5389,8 @@ double *phi, *theta;
 *      prj->w[2]    Y0 = psi*tan((90-sigma)/2)**C
 *      prj->w[3]    psi = (r0*cos(theta1)/C)/tan(tau1)**C
 *      prj->w[4]    1/psi
-*      prj->prjfwd  Pointer to coofwd().
-*      prj->prjrev  Pointer to coorev().
+*      prj->prjx2s  Pointer to coox2s().
+*      prj->prjs2x  Pointer to coos2x().
 *===========================================================================*/
 
 int cooset(prj)
@@ -3020,15 +5400,28 @@ struct prjprm *prj;
 {
    double cos1, cos2, tan1, tan2, theta1, theta2;
 
-   strcpy(prj->code, "COO");
-   prj->flag   = COO;
-   prj->phi0   = 0.0;
-   prj->theta0 = prj->p[1];
+   if (prj == 0) return 1;
 
+   prj->flag = COO;
+   strcpy(prj->code, "COO");
+
+   if (undefined(prj->pv[1])) {
+      return 2;
+   }
+   if (undefined(prj->pv[2])) prj->pv[2] = 0.0;
    if (prj->r0 == 0.0) prj->r0 = R2D;
 
-   theta1 = prj->p[1] - prj->p[2];
-   theta2 = prj->p[1] + prj->p[2];
+   strcpy(prj->name, "Conic orthomorphic");
+   prj->category  = CONIC;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 1;
+   prj->global    = 0;
+   prj->divergent = 1;
+
+   theta1 = prj->pv[1] - prj->pv[2];
+   theta2 = prj->pv[1] + prj->pv[2];
 
    tan1 = tand((90.0 - theta1)/2.0);
    cos1 = cosd(theta1);
@@ -3041,113 +5434,221 @@ struct prjprm *prj;
       prj->w[0] = log(cos2/cos1)/log(tan2/tan1);
    }
    if (prj->w[0] == 0.0) {
-      return 1;
+      return 2;
    }
 
    prj->w[1] = 1.0/prj->w[0];
 
    prj->w[3] = prj->r0*(cos1/prj->w[0])/pow(tan1,prj->w[0]);
    if (prj->w[3] == 0.0) {
-      return 1;
+      return 2;
    }
-   prj->w[2] = prj->w[3]*pow(tand((90.0 - prj->p[1])/2.0),prj->w[0]);
+   prj->w[2] = prj->w[3]*pow(tand((90.0 - prj->pv[1])/2.0),prj->w[0]);
    prj->w[4] = 1.0/prj->w[3];
 
-   prj->prjfwd = coofwd;
-   prj->prjrev = coorev;
+   prj->prjx2s = coox2s;
+   prj->prjs2x = coos2x;
 
-   return 0;
+   return offset(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int coofwd(phi, theta, prj, x, y)
+int coox2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, r;
+   int mx, my, rowlen, rowoff, status;
+   double alpha, dy, dy2, r, t, xj;
+   register int ix, iy, istat, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != COO) {
-      if (cooset(prj)) return 1;
+      if (cooset(prj)) return 2;
    }
 
-   a = prj->w[0]*phi;
-   if (theta == -90.0) {
-      if (prj->w[0] < 0.0) {
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      dy  = prj->w[2] - (*yp + prj->y0);
+      dy2 = dy*dy;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + dy2);
+         if (prj->pv[1] < 0.0) r = -r;
+
+         if (r == 0.0) {
+            alpha = 0.0;
+         } else {
+            alpha = atan2d(xj/r, dy/r);
+         }
+
+         istat = 0;
+         if (r == 0.0) {
+            if (prj->w[0] < 0.0) {
+               t = -90.0;
+            } else {
+               t = 0.0;
+               istat  = 1;
+               status = 3;
+            }
+         } else {
+            t = 90.0 - 2.0*atand(pow(r*prj->w[4],prj->w[1]));
+         }
+
+         *phip = alpha*prj->w[1];
+         *thetap = t;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int coos2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff, status;
+   double alpha, cosalpha, r, sinalpha, y0;
+   register int iphi, itheta, istat, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != COO) {
+      if (cooset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      alpha = prj->w[0]*(*phip);
+      sinalpha = sind(alpha);
+      cosalpha = cosd(alpha);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = sinalpha;
+         *yp = cosalpha;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   y0 = prj->y0 - prj->w[2];
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      istat = 0;
+
+      if (*thetap == -90.0) {
          r = 0.0;
+         if (prj->w[0] >= 0.0) {
+            istat  = 1;
+            status = 4;
+         }
       } else {
-         return 2;
+         r = prj->w[3]*pow(tand((90.0 - *thetap)/2.0),prj->w[0]);
       }
-   } else {
-      r = prj->w[3]*pow(tand((90.0 - theta)/2.0),prj->w[0]);
-   }
 
-   *x =             r*sind(a);
-   *y = prj->w[2] - r*cosd(a);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int coorev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, dy, r;
-
-   if (prj->flag != COO) {
-      if (cooset(prj)) return 1;
-   }
-
-   dy = prj->w[2] - y;
-   r  = sqrt(x*x + dy*dy);
-   if (prj->p[1] < 0.0) r = -r;
-
-   if (r == 0.0) {
-      a = 0.0;
-   } else {
-      a = atan2d(x/r, dy/r);
-   }
-
-   *phi = a*prj->w[1];
-   if (r == 0.0) {
-      if (prj->w[0] < 0.0) {
-         *theta = -90.0;
-      } else {
-         return 2;
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         *xp =  r*(*xp) - prj->x0;
+         *yp = -r*(*yp) - y0;
+         *(statp++) = istat;
       }
-   } else {
-      *theta = 90.0 - 2.0*atand(pow(r*prj->w[4],prj->w[1]));
    }
 
-   return 0;
+   return status;
 }
 
 /*============================================================================
 *   BON: Bonne's projection.
 *
 *   Given:
-*      prj->p[1]    Bonne conformal latitude, theta1, in degrees.
+*      prj->pv[1]   Bonne conformal latitude, theta1, in degrees.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     BON
 *      prj->code    "BON"
-*      prj->flag    BON
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[1]    r0*pi/180
 *      prj->w[2]    Y0 = r0*(cot(theta1) + theta1*pi/180)
-*      prj->prjfwd  Pointer to bonfwd().
-*      prj->prjrev  Pointer to bonrev().
+*      prj->prjx2s  Pointer to bonx2s().
+*      prj->prjs2x  Pointer to bons2x().
 *===========================================================================*/
 
 int bonset(prj)
@@ -3155,91 +5656,202 @@ int bonset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = BON;
    strcpy(prj->code, "BON");
-   prj->flag   = BON;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   if (undefined(prj->pv[1])) {
+      return 2;
+   }
+
+   strcpy(prj->name, "Bonne's");
+   prj->category  = POLYCONIC;
+   prj->pvrange   = 101;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
       prj->w[1] = 1.0;
-      prj->w[2] = prj->r0*cosd(prj->p[1])/sind(prj->p[1]) + prj->p[1];
+      prj->w[2] = prj->r0*cosd(prj->pv[1])/sind(prj->pv[1]) + prj->pv[1];
    } else {
       prj->w[1] = prj->r0*D2R;
-      prj->w[2] = prj->r0*(cosd(prj->p[1])/sind(prj->p[1]) + prj->p[1]*D2R);
+      prj->w[2] = prj->r0*(cosd(prj->pv[1])/sind(prj->pv[1]) +
+                           prj->pv[1]*D2R);
    }
 
-   prj->prjfwd = bonfwd;
-   prj->prjrev = bonrev;
+   prj->prjx2s = bonx2s;
+   prj->prjs2x = bons2x;
+
+   return offset(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int bonx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int mx, my, rowlen, rowoff;
+   double alpha, dy, dy2, costhe, r, s, t, xj;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->pv[1] == 0.0) {
+      /* Sanson-Flamsteed. */
+      return sflx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat);
+   }
+
+   if (prj->flag != BON) {
+      if (bonset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      dy  = prj->w[2] - (*yp + prj->y0);
+      dy2 = dy*dy;
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         r = sqrt(xj*xj + dy2);
+         if (prj->pv[1] < 0.0) r = -r;
+
+         if (r == 0.0) {
+            alpha = 0.0;
+         } else {
+            alpha = atan2d(xj/r, dy/r);
+         }
+
+         t = (prj->w[2] - r)/prj->w[1];
+         costhe = cosd(t);
+         if (costhe == 0.0) {
+            s = 0.0;
+         } else {
+            s = alpha*(r/prj->r0)/costhe;
+         }
+
+         *phip = s;
+         *thetap = t;
+         *(statp++) = 0;
+      }
+   }
 
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int bonfwd(phi, theta, prj, x, y)
+int bons2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
-   double a, r;
+   int mphi, mtheta, rowlen, rowoff;
+   double alpha, r, s, y0;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
 
-   if (prj->p[1] == 0.0) {
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->pv[1] == 0.0) {
       /* Sanson-Flamsteed. */
-      return sflfwd(phi, theta, prj, x, y);
+      return sfls2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat);
    }
 
    if (prj->flag != BON) {
-      if (bonset(prj)) return 1;
+      if (bonset(prj)) return 2;
    }
 
-   r = prj->w[2] - theta*prj->w[1];
-   a = prj->r0*phi*cosd(theta)/r;
-
-   *x =             r*sind(a);
-   *y = prj->w[2] - r*cosd(a);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int bonrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   double a, cthe, dy, r;
-
-   if (prj->p[1] == 0.0) {
-      /* Sanson-Flamsteed. */
-      return sflrev(x, y, prj, phi, theta);
-   }
-
-   if (prj->flag != BON) {
-      if (bonset(prj)) return 1;
-   }
-
-   dy = prj->w[2] - y;
-   r = sqrt(x*x + dy*dy);
-   if (prj->p[1] < 0.0) r = -r;
-
-   if (r == 0.0) {
-      a = 0.0;
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      a = atan2d(x/r, dy/r);
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   *theta = (prj->w[2] - r)/prj->w[1];
-   cthe = cosd(*theta);
-   if (cthe == 0.0) {
-      *phi = 0.0;
-   } else {
-      *phi = a*(r/prj->r0)/cthe;
+   y0 = prj->y0 - prj->w[2];
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      s = prj->r0*(*phip);
+
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = s;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      r = prj->w[2] - prj->w[1]*(*thetap);
+      s = cosd(*thetap)/r;
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         alpha = s*(*xp);
+         *xp =  r*sind(alpha) - prj->x0;
+         *yp = -r*cosd(alpha) - y0;
+         *(statp++) = 0;
+      }
    }
 
    return 0;
@@ -3249,18 +5861,20 @@ double *phi, *theta;
 *   PCO: polyconic projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     PCO
 *      prj->code    "PCO"
-*      prj->flag    PCO
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/180)
 *      prj->w[1]    1/r0
 *      prj->w[2]    2*r0
-*      prj->prjfwd  Pointer to pcofwd().
-*      prj->prjrev  Pointer to pcorev().
+*      prj->prjx2s  Pointer to pcox2s().
+*      prj->prjs2x  Pointer to pcos2x().
 *===========================================================================*/
 
 int pcoset(prj)
@@ -3268,10 +5882,19 @@ int pcoset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = PCO;
    strcpy(prj->code, "PCO");
-   prj->flag   = PCO;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Polyconic");
+   prj->category  = POLYCONIC;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -3284,121 +5907,217 @@ struct prjprm *prj;
       prj->w[2] = 2.0*prj->r0;
    }
 
-   prj->prjfwd = pcofwd;
-   prj->prjrev = pcorev;
+   prj->prjx2s = pcox2s;
+   prj->prjs2x = pcos2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int pcofwd(phi, theta, prj, x, y)
+int pcox2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   double a, cthe, cotthe, sthe;
-
-   if (prj->flag != PCO) {
-      if (pcoset(prj)) return 1;
-   }
-
-   cthe = cosd(theta);
-   sthe = sind(theta);
-   a = phi*sthe;
-
-   if (sthe == 0.0) {
-      *x = prj->w[0]*phi;
-      *y = 0.0;
-   } else {
-      cotthe = cthe/sthe;
-      *x = prj->r0*cotthe*sind(a);
-      *y = prj->r0*(cotthe*(1.0 - cosd(a)) + theta*D2R);
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int pcorev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   int   j;
-   double f, fneg, fpos, lambda, tanthe, theneg, thepos, w, xp, xx, ymthe, yp;
+   int mx, my, rowlen, rowoff;
+   double f, fneg, fpos, lambda, tanthe, the, theneg, thepos, w, x1, xj, xx,
+          yj, ymthe, y1;
    const double tol = 1.0e-12;
+   register int ix, iy, k, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != PCO) {
-      if (pcoset(prj)) return 1;
+      if (pcoset(prj)) return 2;
    }
 
-   w = fabs(y*prj->w[1]);
-   if (w < tol) {
-      *phi = x*prj->w[1];
-      *theta = 0.0;
-   } else if (fabs(w-90.0) < tol) {
-      *phi = 0.0;
-      *theta = copysign(90.0,y);
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      /* Iterative solution using weighted division of the interval. */
-      if (y > 0.0) {
-         thepos =  90.0;
-      } else {
-         thepos = -90.0;
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xj = *xp + prj->x0;
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xj;
+         phip += rowlen;
       }
-      theneg = 0.0;
+   }
 
-      xx = x*x;
-      ymthe = y - prj->w[0]*thepos;
-      fpos = xx + ymthe*ymthe;
-      fneg = -999.0;
 
-      for (j = 0; j < 64; j++) {
-         if (fneg < -100.0) {
-            /* Equal division of the interval. */
-            *theta = (thepos+theneg)/2.0;
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yj = *yp + prj->y0;
+      w  = fabs(yj*prj->w[1]);
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xj = *phip;
+
+         if (w < tol) {
+            *phip = xj*prj->w[1];
+            *thetap = 0.0;
+
+         } else if (fabs(w-90.0) < tol) {
+            *phip = 0.0;
+            *thetap = copysign(90.0, yj);
+
          } else {
-            /* Weighted division of the interval. */
-            lambda = fpos/(fpos-fneg);
-            if (lambda < 0.1) {
-               lambda = 0.1;
-            } else if (lambda > 0.9) {
-               lambda = 0.9;
+            /* Iterative solution using weighted division of the interval. */
+            if (yj > 0.0) {
+               thepos =  90.0;
+            } else {
+               thepos = -90.0;
             }
-            *theta = thepos - lambda*(thepos-theneg);
+            theneg = 0.0;
+
+            xx = xj*xj;
+            ymthe = yj - prj->w[0]*thepos;
+            fpos = xx + ymthe*ymthe;
+            fneg = -999.0;
+
+            for (k = 0; k < 64; k++) {
+               if (fneg < -100.0) {
+                  /* Equal division of the interval. */
+                  the = (thepos+theneg)/2.0;
+               } else {
+                  /* Weighted division of the interval. */
+                  lambda = fpos/(fpos-fneg);
+                  if (lambda < 0.1) {
+                     lambda = 0.1;
+                  } else if (lambda > 0.9) {
+                     lambda = 0.9;
+                  }
+                  the = thepos - lambda*(thepos-theneg);
+               }
+
+               /* Compute the residue. */
+               ymthe = yj - prj->w[0]*(the);
+               tanthe = tand(the);
+               f = xx + ymthe*(ymthe - prj->w[2]/tanthe);
+
+               /* Check for convergence. */
+               if (fabs(f) < tol) break;
+               if (fabs(thepos-theneg) < tol) break;
+
+               /* Redefine the interval. */
+               if (f > 0.0) {
+                  thepos = the;
+                  fpos = f;
+               } else {
+                  theneg = the;
+                  fneg = f;
+               }
+            }
+
+            x1 = prj->r0 - ymthe*tanthe;
+            y1 = xj*tanthe;
+            if (x1 == 0.0 && y1 == 0.0) {
+               *phip = 0.0;
+            } else {
+               *phip = atan2d(y1, x1)/sind(the);
+            }
+
+            *thetap = the;
          }
 
-         /* Compute the residue. */
-         ymthe = y - prj->w[0]*(*theta);
-         tanthe = tand(*theta);
-         f = xx + ymthe*(ymthe - prj->w[2]/tanthe);
-
-         /* Check for convergence. */
-         if (fabs(f) < tol) break;
-         if (fabs(thepos-theneg) < tol) break;
-
-         /* Redefine the interval. */
-         if (f > 0.0) {
-            thepos = *theta;
-            fpos = f;
-         } else {
-            theneg = *theta;
-            fneg = f;
-         }
+         *(statp++) = 0;
       }
+   }
 
-      xp = prj->r0 - ymthe*tanthe;
-      yp = x*tanthe;
-      if (xp == 0.0 && yp == 0.0) {
-         *phi = 0.0;
-      } else {
-         *phi = atan2d(yp, xp)/sind(*theta);
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int pcos2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int mphi, mtheta, rowlen, rowoff;
+   double alpha, costhe, cotthe, sinthe, therad;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != PCO) {
+      if (pcoset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xp = x + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = *phip;
+         xp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      therad = (*thetap)*D2R;
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         if (sinthe == 0.0) {
+            *xp =  prj->w[0]*(*xp) - prj->x0;
+            *yp = -prj->y0;
+         } else {
+            alpha  = (*xp)*sinthe;
+            cotthe = costhe/sinthe;
+            *xp = prj->r0*cotthe*sind(alpha) - prj->x0;
+            *yp = prj->r0*(cotthe*(1.0 - cosd(alpha)) + therad) - prj->y0;
+         }
+
+         *(statp++) = 0;
       }
    }
 
@@ -3409,17 +6128,19 @@ double *phi, *theta;
 *   TSC: tangential spherical cube projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     TSC
 *      prj->code    "TSC"
-*      prj->flag    TSC
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/4)
 *      prj->w[1]    (4/pi)/r0
-*      prj->prjfwd  Pointer to tscfwd().
-*      prj->prjrev  Pointer to tscrev().
+*      prj->prjx2s  Pointer to tscx2s().
+*      prj->prjs2x  Pointer to tscs2x().
 *===========================================================================*/
 
 int tscset(prj)
@@ -3427,10 +6148,19 @@ int tscset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = TSC;
    strcpy(prj->code, "TSC");
-   prj->flag   = TSC;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Tangential spherical cube");
+   prj->category  = QUADCUBE;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -3441,200 +6171,323 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = tscfwd;
-   prj->prjrev = tscrev;
+   prj->prjx2s = tscx2s;
+   prj->prjs2x = tscs2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int tscfwd(phi, theta, prj, x, y)
+int tscx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   int   face;
-   double cthe, l, m, n, rho, x0, xf, y0, yf;
-   const double tol = 1.0e-12;
-
-   if (prj->flag != TSC) {
-      if (tscset(prj)) return 1;
-   }
-
-   cthe = cosd(theta);
-   l = cthe*cosd(phi);
-   m = cthe*sind(phi);
-   n = sind(theta);
-
-   face = 0;
-   rho  = n;
-   if (l > rho) {
-      face = 1;
-      rho  = l;
-   }
-   if (m > rho) {
-      face = 2;
-      rho  = m;
-   }
-   if (-l > rho) {
-      face = 3;
-      rho  = -l;
-   }
-   if (-m > rho) {
-      face = 4;
-      rho  = -m;
-   }
-   if (-n > rho) {
-      face = 5;
-      rho  = -n;
-   }
-
-   if (face == 0) {
-      xf =  m/rho;
-      yf = -l/rho;
-      x0 =  0.0;
-      y0 =  2.0;
-   } else if (face == 1) {
-      xf =  m/rho;
-      yf =  n/rho;
-      x0 =  0.0;
-      y0 =  0.0;
-   } else if (face == 2) {
-      xf = -l/rho;
-      yf =  n/rho;
-      x0 =  2.0;
-      y0 =  0.0;
-   } else if (face == 3) {
-      xf = -m/rho;
-      yf =  n/rho;
-      x0 =  4.0;
-      y0 =  0.0;
-   } else if (face == 4) {
-      xf =  l/rho;
-      yf =  n/rho;
-      x0 =  6.0;
-      y0 =  0.0;
-   } else if (face == 5) {
-      xf =  m/rho;
-      yf =  l/rho;
-      x0 =  0.0;
-      y0 = -2.0;
-   }
-
-   if (fabs(xf) > 1.0) {
-      if (fabs(xf) > 1.0+tol) {
-         return 2;
-      }
-      xf = copysign(1.0,xf);
-   }
-   if (fabs(yf) > 1.0) {
-      if (fabs(yf) > 1.0+tol) {
-         return 2;
-      }
-      yf = copysign(1.0,yf);
-   }
-
-   *x = prj->w[0]*(xf + x0);
-   *y = prj->w[0]*(yf + y0);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int tscrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
+   int mx, my, rowlen, rowoff, status;
    double l, m, n, xf, yf;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != TSC) {
-      if (tscset(prj)) return 1;
+      if (tscset(prj)) return 2;
    }
 
-   xf = x*prj->w[1];
-   yf = y*prj->w[1];
-
-   /* Check bounds. */
-   if (fabs(xf) <= 1.0) {
-      if (fabs(yf) > 3.0) return 2;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      if (fabs(xf) > 7.0) return 2;
-      if (fabs(yf) > 1.0) return 2;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   /* Map negative faces to the other side. */
-   if (xf < -1.0) xf += 8.0;
+   status = 0;
 
-   /* Determine the face. */
-   if (xf > 5.0) {
-      /* face = 4 */
-      xf = xf - 6.0;
-      m  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
-      l  = -m*xf;
-      n  = -m*yf;
-   } else if (xf > 3.0) {
-      /* face = 3 */
-      xf = xf - 4.0;
-      l  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
-      m  =  l*xf;
-      n  = -l*yf;
-   } else if (xf > 1.0) {
-      /* face = 2 */
-      xf = xf - 2.0;
-      m  =  1.0/sqrt(1.0 + xf*xf + yf*yf);
-      l  = -m*xf;
-      n  =  m*yf;
-   } else if (yf > 1.0) {
-      /* face = 0 */
-      yf = yf - 2.0;
-      n  = 1.0/sqrt(1.0 + xf*xf + yf*yf);
-      l  = -n*yf;
-      m  =  n*xf;
-   } else if (yf < -1.0) {
-      /* face = 5 */
-      yf = yf + 2.0;
-      n  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
-      l  = -n*yf;
-      m  = -n*xf;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xf = (*xp + prj->x0)*prj->w[1];
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xf;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yf = (*yp + prj->y0)*prj->w[1];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xf = *phip;
+
+         /* Check bounds. */
+         if (fabs(xf) <= 1.0) {
+            if (fabs(yf) > 3.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         } else {
+            if (fabs(xf) > 7.0 || fabs(yf) > 1.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         }
+
+         /* Map negative faces to the other side. */
+         if (xf < -1.0) xf += 8.0;
+
+         /* Determine the face. */
+         if (xf > 5.0) {
+            /* face = 4 */
+            xf = xf - 6.0;
+            m  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
+            l  = -m*xf;
+            n  = -m*yf;
+         } else if (xf > 3.0) {
+            /* face = 3 */
+            xf = xf - 4.0;
+            l  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
+            m  =  l*xf;
+            n  = -l*yf;
+         } else if (xf > 1.0) {
+            /* face = 2 */
+            xf = xf - 2.0;
+            m  =  1.0/sqrt(1.0 + xf*xf + yf*yf);
+            l  = -m*xf;
+            n  =  m*yf;
+         } else if (yf > 1.0) {
+            /* face = 0 */
+            yf = yf - 2.0;
+            n  = 1.0/sqrt(1.0 + xf*xf + yf*yf);
+            l  = -n*yf;
+            m  =  n*xf;
+         } else if (yf < -1.0) {
+            /* face = 5 */
+            yf = yf + 2.0;
+            n  = -1.0/sqrt(1.0 + xf*xf + yf*yf);
+            l  = -n*yf;
+            m  = -n*xf;
+         } else {
+            /* face = 1 */
+            l  =  1.0/sqrt(1.0 + xf*xf + yf*yf);
+            m  =  l*xf;
+            n  =  l*yf;
+         }
+
+         if (l == 0.0 && m == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(m, l);
+         }
+
+         *thetap = asind(n);
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int tscs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int face, mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, costhe, l, m, n, rho, sinphi, sinthe, x0, xf,
+          y0, yf;
+   const double tol = 1.0e-12;
+   register int iphi, istat, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != TSC) {
+      if (tscset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      /* face = 1 */
-      l  =  1.0/sqrt(1.0 + xf*xf + yf*yf);
-      m  =  l*xf;
-      n  =  l*yf;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   if (l == 0.0 && m == 0.0) {
-      *phi = 0.0;
-   } else {
-      *phi = atan2d(m, l);
-   }
-   *theta = asind(n);
+   status = 0;
 
-   return 0;
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      cosphi = cosd(*phip);
+      sinphi = sind(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = cosphi;
+         *yp = sinphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         l = costhe*(*xp);
+         m = costhe*(*yp);
+         n = sinthe;
+
+         face = 0;
+         rho  = n;
+         if (l > rho) {
+            face = 1;
+            rho  = l;
+         }
+         if (m > rho) {
+            face = 2;
+            rho  = m;
+         }
+         if (-l > rho) {
+            face = 3;
+            rho  = -l;
+         }
+         if (-m > rho) {
+            face = 4;
+            rho  = -m;
+         }
+         if (-n > rho) {
+            face = 5;
+            rho  = -n;
+         }
+
+         switch (face) {
+         case 1:
+            xf =  m/rho;
+            yf =  n/rho;
+            x0 =  0.0;
+            y0 =  0.0;
+            break;
+         case 2:
+            xf = -l/rho;
+            yf =  n/rho;
+            x0 =  2.0;
+            y0 =  0.0;
+            break;
+         case 3:
+            xf = -m/rho;
+            yf =  n/rho;
+            x0 =  4.0;
+            y0 =  0.0;
+            break;
+         case 4:
+            xf =  l/rho;
+            yf =  n/rho;
+            x0 =  6.0;
+            y0 =  0.0;
+            break;
+         case 5:
+            xf =  m/rho;
+            yf =  l/rho;
+            x0 =  0.0;
+            y0 = -2.0;
+            break;
+         default:
+            /* face == 0 */
+            xf =  m/rho;
+            yf = -l/rho;
+            x0 =  0.0;
+            y0 =  2.0;
+            break;
+         }
+
+         istat = 0;
+         if (fabs(xf) > 1.0) {
+            if (fabs(xf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            xf = copysign(1.0, xf);
+         }
+         if (fabs(yf) > 1.0) {
+            if (fabs(yf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            yf = copysign(1.0, yf);
+         }
+
+         *xp = prj->w[0]*(xf + x0) - prj->x0;
+         *yp = prj->w[0]*(yf + y0) - prj->y0;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   CSC: COBE quadrilateralized spherical cube projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     CSC
 *      prj->code    "CSC"
-*      prj->flag    CSC
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/4)
 *      prj->w[1]    (4/pi)/r0
-*      prj->prjfwd  Pointer to cscfwd().
-*      prj->prjrev  Pointer to cscrev().
+*      prj->prjx2s  Pointer to cscx2s().
+*      prj->prjs2x  Pointer to cscs2x().
 *===========================================================================*/
 
 int cscset(prj)
@@ -3642,10 +6495,19 @@ int cscset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = CSC;
    strcpy(prj->code, "CSC");
-   prj->flag   = CSC;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "COBE quadrilateralized spherical cube");
+   prj->category  = QUADCUBE;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 0;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -3656,154 +6518,28 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = cscfwd;
-   prj->prjrev = cscrev;
+   prj->prjx2s = cscx2s;
+   prj->prjs2x = cscs2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int cscfwd(phi, theta, prj, x, y)
+int cscx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   int   face;
-   double cthe, eta, l, m, n, rho, xi;
-   const float tol = 1.0e-7;
-
-   float a, a2, a2b2, a4, ab, b, b2, b4, ca2, cb2, x0, xf, y0, yf;
-   const float gstar  =  1.37484847732;
-   const float mm     =  0.004869491981;
-   const float gamma  = -0.13161671474;
-   const float omega1 = -0.159596235474;
-   const float d0  =  0.0759196200467;
-   const float d1  = -0.0217762490699;
-   const float c00 =  0.141189631152;
-   const float c10 =  0.0809701286525;
-   const float c01 = -0.281528535557;
-   const float c11 =  0.15384112876;
-   const float c20 = -0.178251207466;
-   const float c02 =  0.106959469314;
-
-   if (prj->flag != CSC) {
-      if (cscset(prj)) return 1;
-   }
-
-   cthe = cosd(theta);
-   l = cthe*cosd(phi);
-   m = cthe*sind(phi);
-   n = sind(theta);
-
-   face = 0;
-   rho  = n;
-   if (l > rho) {
-      face = 1;
-      rho  = l;
-   }
-   if (m > rho) {
-      face = 2;
-      rho  = m;
-   }
-   if (-l > rho) {
-      face = 3;
-      rho  = -l;
-   }
-   if (-m > rho) {
-      face = 4;
-      rho  = -m;
-   }
-   if (-n > rho) {
-      face = 5;
-      rho  = -n;
-   }
-
-   if (face == 0) {
-      xi  =  m;
-      eta = -l;
-      x0  =  0.0;
-      y0  =  2.0;
-   } else if (face == 1) {
-      xi  =  m;
-      eta =  n;
-      x0  =  0.0;
-      y0  =  0.0;
-   } else if (face == 2) {
-      xi  = -l;
-      eta =  n;
-      x0  =  2.0;
-      y0  =  0.0;
-   } else if (face == 3) {
-      xi  = -m;
-      eta =  n;
-      x0  =  4.0;
-      y0  =  0.0;
-   } else if (face == 4) {
-      xi  =  l;
-      eta =  n;
-      x0  =  6.0;
-      y0  =  0.0;
-   } else if (face == 5) {
-      xi  =  m;
-      eta =  l;
-      x0  =  0.0;
-      y0  = -2.0;
-   }
-
-   a =  xi/rho;
-   b = eta/rho;
-
-   a2 = a*a;
-   b2 = b*b;
-   ca2 = 1.0 - a2;
-   cb2 = 1.0 - b2;
-
-   /* Avoid floating underflows. */
-   ab   = fabs(a*b);
-   a4   = (a2 > 1.0e-16) ? a2*a2 : 0.0;
-   b4   = (b2 > 1.0e-16) ? b2*b2 : 0.0;
-   a2b2 = (ab > 1.0e-16) ? a2*b2 : 0.0;
-
-   xf = a*(a2 + ca2*(gstar + b2*(gamma*ca2 + mm*a2 +
-          cb2*(c00 + c10*a2 + c01*b2 + c11*a2b2 + c20*a4 + c02*b4)) +
-          a2*(omega1 - ca2*(d0 + d1*a2))));
-   yf = b*(b2 + cb2*(gstar + a2*(gamma*cb2 + mm*b2 +
-          ca2*(c00 + c10*b2 + c01*a2 + c11*a2b2 + c20*b4 + c02*a4)) +
-          b2*(omega1 - cb2*(d0 + d1*b2))));
-
-   if (fabs(xf) > 1.0) {
-      if (fabs(xf) > 1.0+tol) {
-         return 2;
-      }
-      xf = copysign(1.0,xf);
-   }
-   if (fabs(yf) > 1.0) {
-      if (fabs(yf) > 1.0+tol) {
-         return 2;
-      }
-      yf = copysign(1.0,yf);
-   }
-
-   *x = prj->w[0]*(x0 + xf);
-   *y = prj->w[0]*(y0 + yf);
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int cscrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   int   face;
+   int face, mx, my, rowlen, rowoff, status;
    double l, m, n;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
    float     a, b, xf, xx, yf, yy, z0, z1, z2, z3, z4, z5, z6;
    const float p00 = -0.27292696;
@@ -3835,120 +6571,377 @@ double *phi, *theta;
    const float p15 =  0.52032238;
    const float p06 =  0.14381585;
 
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != CSC) {
-      if (cscset(prj)) return 1;
+      if (cscset(prj)) return 2;
    }
 
-   xf = x*prj->w[1];
-   yf = y*prj->w[1];
-
-   /* Check bounds. */
-   if (fabs(xf) <= 1.0) {
-      if (fabs(yf) > 3.0) return 2;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      if (fabs(xf) > 7.0) return 2;
-      if (fabs(yf) > 1.0) return 2;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   /* Map negative faces to the other side. */
-   if (xf < -1.0) xf += 8.0;
+   status = 0;
 
-   /* Determine the face. */
-   if (xf > 5.0) {
-      face = 4;
-      xf = xf - 6.0;
-   } else if (xf > 3.0) {
-      face = 3;
-      xf = xf - 4.0;
-   } else if (xf > 1.0) {
-      face = 2;
-      xf = xf - 2.0;
-   } else if (yf > 1.0) {
-      face = 0;
-      yf = yf - 2.0;
-   } else if (yf < -1.0) {
-      face = 5;
-      yf = yf + 2.0;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xf = (*xp + prj->x0)*prj->w[1];
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xf;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yf = (*yp + prj->y0)*prj->w[1];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xf = *phip;
+
+         /* Check bounds. */
+         if (fabs(xf) <= 1.0) {
+            if (fabs(yf) > 3.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         } else {
+            if (fabs(xf) > 7.0 || fabs(yf) > 1.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         }
+
+         /* Map negative faces to the other side. */
+         if (xf < -1.0) xf += 8.0;
+
+         /* Determine the face. */
+         if (xf > 5.0) {
+            face = 4;
+            xf = xf - 6.0;
+         } else if (xf > 3.0) {
+            face = 3;
+            xf = xf - 4.0;
+         } else if (xf > 1.0) {
+            face = 2;
+            xf = xf - 2.0;
+         } else if (yf > 1.0) {
+            face = 0;
+            yf = yf - 2.0;
+         } else if (yf < -1.0) {
+            face = 5;
+            yf = yf + 2.0;
+         } else {
+            face = 1;
+         }
+
+         xx  =  xf*xf;
+         yy  =  yf*yf;
+
+         z0 = p00 + xx*(p10 + xx*(p20 + xx*(p30 + xx*(p40 + xx*(p50 +
+                    xx*(p60))))));
+         z1 = p01 + xx*(p11 + xx*(p21 + xx*(p31 + xx*(p41 + xx*(p51)))));
+         z2 = p02 + xx*(p12 + xx*(p22 + xx*(p32 + xx*(p42))));
+         z3 = p03 + xx*(p13 + xx*(p23 + xx*(p33)));
+         z4 = p04 + xx*(p14 + xx*(p24));
+         z5 = p05 + xx*(p15);
+         z6 = p06;
+
+         a = z0 + yy*(z1 + yy*(z2 + yy*(z3 + yy*(z4 + yy*(z5 + yy*z6)))));
+         a = xf + xf*(1.0 - xx)*a;
+
+         z0 = p00 + yy*(p10 + yy*(p20 + yy*(p30 + yy*(p40 + yy*(p50 +
+                    yy*(p60))))));
+         z1 = p01 + yy*(p11 + yy*(p21 + yy*(p31 + yy*(p41 + yy*(p51)))));
+         z2 = p02 + yy*(p12 + yy*(p22 + yy*(p32 + yy*(p42))));
+         z3 = p03 + yy*(p13 + yy*(p23 + yy*(p33)));
+         z4 = p04 + yy*(p14 + yy*(p24));
+         z5 = p05 + yy*(p15);
+         z6 = p06;
+
+         b = z0 + xx*(z1 + xx*(z2 + xx*(z3 + xx*(z4 + xx*(z5 + xx*z6)))));
+         b = yf + yf*(1.0 - yy)*b;
+
+         switch (face) {
+         case 1:
+            l =  1.0/sqrt(a*a + b*b + 1.0);
+            m =  a*l;
+            n =  b*l;
+            break;
+         case 2:
+            m =  1.0/sqrt(a*a + b*b + 1.0);
+            l = -a*m;
+            n =  b*m;
+            break;
+         case 3:
+            l = -1.0/sqrt(a*a + b*b + 1.0);
+            m =  a*l;
+            n = -b*l;
+            break;
+         case 4:
+            m = -1.0/sqrt(a*a + b*b + 1.0);
+            l = -a*m;
+            n = -b*m;
+            break;
+         case 5:
+            n = -1.0/sqrt(a*a + b*b + 1.0);
+            l = -b*n;
+            m = -a*n;
+            break;
+         default:
+            /* face == 0 */
+            n =  1.0/sqrt(a*a + b*b + 1.0);
+            l = -b*n;
+            m =  a*n;
+            break;
+         }
+
+         if (l == 0.0 && m == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(m, l);
+         }
+
+         *thetap = asind(n);
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cscs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int face, mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, costhe, eta, l, m, n, rho, sinphi, sinthe, xi;
+   const float tol = 1.0e-7;
+   register int iphi, istat, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+   float a, a2, a2b2, a4, ab, b, b2, b4, ca2, cb2, x0, xf, y0, yf;
+   const float gstar  =  1.37484847732;
+   const float mm     =  0.004869491981;
+   const float gamma  = -0.13161671474;
+   const float omega1 = -0.159596235474;
+   const float d0  =  0.0759196200467;
+   const float d1  = -0.0217762490699;
+   const float c00 =  0.141189631152;
+   const float c10 =  0.0809701286525;
+   const float c01 = -0.281528535557;
+   const float c11 =  0.15384112876;
+   const float c20 = -0.178251207466;
+   const float c02 =  0.106959469314;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != CSC) {
+      if (cscset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      face = 1;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   xx  =  xf*xf;
-   yy  =  yf*yf;
+   status = 0;
 
-   z0 = p00 + xx*(p10 + xx*(p20 + xx*(p30 + xx*(p40 + xx*(p50 + xx*(p60))))));
-   z1 = p01 + xx*(p11 + xx*(p21 + xx*(p31 + xx*(p41 + xx*(p51)))));
-   z2 = p02 + xx*(p12 + xx*(p22 + xx*(p32 + xx*(p42))));
-   z3 = p03 + xx*(p13 + xx*(p23 + xx*(p33)));
-   z4 = p04 + xx*(p14 + xx*(p24));
-   z5 = p05 + xx*(p15);
-   z6 = p06;
 
-   a = z0 + yy*(z1 + yy*(z2 + yy*(z3 + yy*(z4 + yy*(z5 + yy*z6)))));
-   a = xf + xf*(1.0 - xx)*a;
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      cosphi = cosd(*phip);
+      sinphi = sind(*phip);
 
-   z0 = p00 + yy*(p10 + yy*(p20 + yy*(p30 + yy*(p40 + yy*(p50 + yy*(p60))))));
-   z1 = p01 + yy*(p11 + yy*(p21 + yy*(p31 + yy*(p41 + yy*(p51)))));
-   z2 = p02 + yy*(p12 + yy*(p22 + yy*(p32 + yy*(p42))));
-   z3 = p03 + yy*(p13 + yy*(p23 + yy*(p33)));
-   z4 = p04 + yy*(p14 + yy*(p24));
-   z5 = p05 + yy*(p15);
-   z6 = p06;
-
-   b = z0 + xx*(z1 + xx*(z2 + xx*(z3 + xx*(z4 + xx*(z5 + xx*z6)))));
-   b = yf + yf*(1.0 - yy)*b;
-
-   if (face == 0) {
-      n =  1.0/sqrt(a*a + b*b + 1.0);
-      l = -b*n;
-      m =  a*n;
-   } else if (face == 1) {
-      l =  1.0/sqrt(a*a + b*b + 1.0);
-      m =  a*l;
-      n =  b*l;
-   } else if (face == 2) {
-      m =  1.0/sqrt(a*a + b*b + 1.0);
-      l = -a*m;
-      n =  b*m;
-   } else if (face == 3) {
-      l = -1.0/sqrt(a*a + b*b + 1.0);
-      m =  a*l;
-      n = -b*l;
-   } else if (face == 4) {
-      m = -1.0/sqrt(a*a + b*b + 1.0);
-      l = -a*m;
-      n = -b*m;
-   } else if (face == 5) {
-      n = -1.0/sqrt(a*a + b*b + 1.0);
-      l = -b*n;
-      m = -a*n;
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = cosphi;
+         *yp = sinphi;
+         xp += rowlen;
+         yp += rowlen;
+      }
    }
 
-   if (l == 0.0 && m == 0.0) {
-      *phi = 0.0;
-   } else {
-      *phi = atan2d(m, l);
-   }
-   *theta = asind(n);
 
-   return 0;
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         l = costhe*(*xp);
+         m = costhe*(*yp);
+         n = sinthe;
+
+         face = 0;
+         rho  = n;
+         if (l > rho) {
+            face = 1;
+            rho  = l;
+         }
+         if (m > rho) {
+            face = 2;
+            rho  = m;
+         }
+         if (-l > rho) {
+            face = 3;
+            rho  = -l;
+         }
+         if (-m > rho) {
+            face = 4;
+            rho  = -m;
+         }
+         if (-n > rho) {
+            face = 5;
+            rho  = -n;
+         }
+
+         switch (face) {
+         case 1:
+            xi  =  m;
+            eta =  n;
+            x0  =  0.0;
+            y0  =  0.0;
+            break;
+         case 2:
+            xi  = -l;
+            eta =  n;
+            x0  =  2.0;
+            y0  =  0.0;
+            break;
+         case 3:
+            xi  = -m;
+            eta =  n;
+            x0  =  4.0;
+            y0  =  0.0;
+            break;
+         case 4:
+            xi  =  l;
+            eta =  n;
+            x0  =  6.0;
+            y0  =  0.0;
+            break;
+         case 5:
+            xi  =  m;
+            eta =  l;
+            x0  =  0.0;
+            y0  = -2.0;
+            break;
+         default:
+            /* face == 0 */
+            xi  =  m;
+            eta = -l;
+            x0  =  0.0;
+            y0  =  2.0;
+            break;
+         }
+
+         a =  xi/rho;
+         b = eta/rho;
+
+         a2 = a*a;
+         b2 = b*b;
+         ca2 = 1.0 - a2;
+         cb2 = 1.0 - b2;
+
+         /* Avoid floating underflows. */
+         ab   = fabs(a*b);
+         a4   = (a2 > 1.0e-16) ? a2*a2 : 0.0;
+         b4   = (b2 > 1.0e-16) ? b2*b2 : 0.0;
+         a2b2 = (ab > 1.0e-16) ? a2*b2 : 0.0;
+
+         xf = a*(a2 + ca2*(gstar + b2*(gamma*ca2 + mm*a2 +
+                cb2*(c00 + c10*a2 + c01*b2 + c11*a2b2 + c20*a4 + c02*b4)) +
+                a2*(omega1 - ca2*(d0 + d1*a2))));
+         yf = b*(b2 + cb2*(gstar + a2*(gamma*cb2 + mm*b2 +
+                ca2*(c00 + c10*b2 + c01*a2 + c11*a2b2 + c20*b4 + c02*a4)) +
+                b2*(omega1 - cb2*(d0 + d1*b2))));
+
+         istat = 0;
+         if (fabs(xf) > 1.0) {
+            if (fabs(xf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            xf = copysign(1.0, xf);
+         }
+         if (fabs(yf) > 1.0) {
+            if (fabs(yf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            yf = copysign(1.0, yf);
+         }
+
+         *xp = prj->w[0]*(xf + x0) - prj->x0;
+         *yp = prj->w[0]*(yf + y0) - prj->y0;
+         *(statp++) = istat;
+      }
+   }
+
+   return status;
 }
 
 /*============================================================================
 *   QSC: quadrilaterilized spherical cube projection.
 *
 *   Given and/or returned:
-*      prj->r0      r0; reset to 180/pi if 0.
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
 *
 *   Returned:
+*      prj->flag     QSC
 *      prj->code    "QSC"
-*      prj->flag    QSC
-*      prj->phi0    0.0
-*      prj->theta0  0.0
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
 *      prj->w[0]    r0*(pi/4)
 *      prj->w[1]    (4/pi)/r0
-*      prj->prjfwd  Pointer to qscfwd().
-*      prj->prjrev  Pointer to qscrev().
+*      prj->prjx2s  Pointer to qscx2s().
+*      prj->prjs2x  Pointer to qscs2x().
 *===========================================================================*/
 
 int qscset(prj)
@@ -3956,10 +6949,19 @@ int qscset(prj)
 struct prjprm *prj;
 
 {
+   if (prj == 0) return 1;
+
+   prj->flag = QSC;
    strcpy(prj->code, "QSC");
-   prj->flag   = QSC;
-   prj->phi0   = 0.0;
-   prj->theta0 = 0.0;
+
+   strcpy(prj->name, "Quadrilateralized spherical cube");
+   prj->category  = QUADCUBE;
+   prj->pvrange   = 0;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
 
    if (prj->r0 == 0.0) {
       prj->r0 = R2D;
@@ -3970,351 +6972,477 @@ struct prjprm *prj;
       prj->w[1] = 1.0/prj->w[0];
    }
 
-   prj->prjfwd = qscfwd;
-   prj->prjrev = qscrev;
+   prj->prjx2s = qscx2s;
+   prj->prjs2x = qscs2x;
 
-   return 0;
+   return offset(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
 
-int qscfwd(phi, theta, prj, x, y)
+int qscx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
 
-const double phi, theta;
 struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
 
 {
-   int   face;
-   double cthe, eta, l, m, n, omega, p, rho, rhu, t, tau, x0, xf, xi, y0, yf;
-   const double tol = 1.0e-12;
-
-   if (prj->flag != QSC) {
-      if (qscset(prj)) return 1;
-   }
-
-   if (fabs(theta) == 90.0) {
-      *x = 0.0;
-      *y = copysign(2.0*prj->w[0],theta);
-      return 0;
-   }
-
-   cthe = cosd(theta);
-   l = cthe*cosd(phi);
-   m = cthe*sind(phi);
-   n = sind(theta);
-
-   face = 0;
-   rho  = n;
-   if (l > rho) {
-      face = 1;
-      rho  = l;
-   }
-   if (m > rho) {
-      face = 2;
-      rho  = m;
-   }
-   if (-l > rho) {
-      face = 3;
-      rho  = -l;
-   }
-   if (-m > rho) {
-      face = 4;
-      rho  = -m;
-   }
-   if (-n > rho) {
-      face = 5;
-      rho  = -n;
-   }
-
-   rhu = 1.0 - rho;
-
-   if (face == 0) {
-      xi  =  m;
-      eta = -l;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = (90.0 - theta)*D2R;
-         rhu = t*t/2.0;
-      }
-      x0  =  0.0;
-      y0  =  2.0;
-   } else if (face == 1) {
-      xi  =  m;
-      eta =  n;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = theta*D2R;
-         p = fmod(phi,360.0);
-         if (p < -180.0) p += 360.0;
-         if (p >  180.0) p -= 360.0;
-         p *= D2R;
-         rhu = (p*p + t*t)/2.0;
-      }
-      x0  =  0.0;
-      y0  =  0.0;
-   } else if (face == 2) {
-      xi  = -l;
-      eta =  n;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = theta*D2R;
-         p = fmod(phi,360.0);
-         if (p < -180.0) p += 360.0;
-         p = (90.0 - p)*D2R;
-         rhu = (p*p + t*t)/2.0;
-      }
-      x0  =  2.0;
-      y0  =  0.0;
-   } else if (face == 3) {
-      xi  = -m;
-      eta =  n;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = theta*D2R;
-         p = fmod(phi,360.0);
-         if (p < 0.0) p += 360.0;
-         p = (180.0 - p)*D2R;
-         rhu = (p*p + t*t)/2.0;
-      }
-      x0  =  4.0;
-      y0  =  0.0;
-   } else if (face == 4) {
-      xi  =  l;
-      eta =  n;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = theta*D2R;
-         p = fmod(phi,360.0);
-         if (p > 180.0) p -= 360.0;
-         p *= (90.0 + p)*D2R;
-         rhu = (p*p + t*t)/2.0;
-      }
-      x0  =  6;
-      y0  =  0.0;
-   } else if (face == 5) {
-      xi  =  m;
-      eta =  l;
-      if (rhu < 1.0e-8) {
-         /* Small angle formula. */
-         t = (90.0 + theta)*D2R;
-         rhu = t*t/2.0;
-      }
-      x0  =  0.0;
-      y0  = -2;
-   }
-
-   if (xi == 0.0 && eta == 0.0) {
-      xf  = 0.0;
-      yf  = 0.0;
-   } else if (-xi >= fabs(eta)) {
-      omega = eta/xi;
-      tau = 1.0 + omega*omega;
-      xf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
-      yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-   } else if (xi >= fabs(eta)) {
-      omega = eta/xi;
-      tau = 1.0 + omega*omega;
-      xf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
-      yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-   } else if (-eta > fabs(xi)) {
-      omega = xi/eta;
-      tau = 1.0 + omega*omega;
-      yf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
-      xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-   } else if (eta > fabs(xi)) {
-      omega = xi/eta;
-      tau = 1.0 + omega*omega;
-      yf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
-      xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-   }
-
-   if (fabs(xf) > 1.0) {
-      if (fabs(xf) > 1.0+tol) {
-         return 2;
-      }
-      xf = copysign(1.0,xf);
-   }
-   if (fabs(yf) > 1.0) {
-      if (fabs(yf) > 1.0+tol) {
-         return 2;
-      }
-      yf = copysign(1.0,yf);
-   }
-
-   *x = prj->w[0]*(xf + x0);
-   *y = prj->w[0]*(yf + y0);
-
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int qscrev(x, y, prj, phi, theta)
-
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-
-{
-   int   direct, face;
+   int direct, face, mx, my, rowlen, rowoff, status;
    double l, m, n, omega, rho, rhu, tau, xf, yf, w;
    const double tol = 1.0e-12;
+   register int ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
 
+
+   /* Initialize. */
+   if (prj == 0) return 1;
    if (prj->flag != QSC) {
-      if (qscset(prj)) return 1;
+      if (qscset(prj)) return 2;
    }
 
-   xf = x*prj->w[1];
-   yf = y*prj->w[1];
-
-   /* Check bounds. */
-   if (fabs(xf) <= 1.0) {
-      if (fabs(yf) > 3.0) return 2;
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
    } else {
-      if (fabs(xf) > 7.0) return 2;
-      if (fabs(yf) > 1.0) return 2;
+      mx = 1;
+      my = 1;
+      ny = nx;
    }
 
-   /* Map negative faces to the other side. */
-   if (xf < -1.0) xf += 8.0;
+   status = 0;
 
-   /* Determine the face. */
-   if (xf > 5.0) {
-      face = 4;
-      xf = xf - 6.0;
-   } else if (xf > 3.0) {
-      face = 3;
-      xf = xf - 4.0;
-   } else if (xf > 1.0) {
-      face = 2;
-      xf = xf - 2.0;
-   } else if (yf > 1.0) {
-      face = 0;
-      yf = yf - 2.0;
-   } else if (yf < -1.0) {
-      face = 5;
-      yf = yf + 2.0;
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      xf = (*xp + prj->x0)*prj->w[1];
+
+      phip = phi + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip = xf;
+         phip += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yf = (*yp + prj->y0)*prj->w[1];
+
+      for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+         xf = *phip;
+
+         /* Check bounds. */
+         if (fabs(xf) <= 1.0) {
+            if (fabs(yf) > 3.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         } else {
+            if (fabs(xf) > 7.0 || fabs(yf) > 1.0) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+         }
+
+         /* Map negative faces to the other side. */
+         if (xf < -1.0) xf += 8.0;
+
+         /* Determine the face. */
+         if (xf > 5.0) {
+            face = 4;
+            xf -= 6.0;
+         } else if (xf > 3.0) {
+            face = 3;
+            xf -= 4.0;
+         } else if (xf > 1.0) {
+            face = 2;
+            xf -= 2.0;
+         } else if (yf > 1.0) {
+            face = 0;
+            yf -= 2.0;
+         } else if (yf < -1.0) {
+            face = 5;
+            yf += 2.0;
+         } else {
+            face = 1;
+         }
+
+         direct = (fabs(xf) > fabs(yf));
+         if (direct) {
+            if (xf == 0.0) {
+               omega = 0.0;
+               tau = 1.0;
+               rho = 1.0;
+               rhu = 0.0;
+            } else {
+               w = 15.0*yf/xf;
+               omega = sind(w)/(cosd(w) - SQRT2INV);
+               tau = 1.0 + omega*omega;
+               rhu = xf*xf*(1.0 - 1.0/sqrt(1.0 + tau));
+               rho = 1.0 - rhu;
+            }
+         } else {
+            if (yf == 0.0) {
+               omega = 0.0;
+               tau = 1.0;
+               rho = 1.0;
+               rhu = 0.0;
+            } else {
+               w = 15.0*xf/yf;
+               omega = sind(w)/(cosd(w) - SQRT2INV);
+               tau = 1.0 + omega*omega;
+               rhu = yf*yf*(1.0 - 1.0/sqrt(1.0 + tau));
+               rho = 1.0 - rhu;
+            }
+         }
+
+         if (rho < -1.0) {
+            if (rho < -1.0-tol) {
+               *phip = 0.0;
+               *thetap = 0.0;
+               *(statp++) = 1;
+               status = 3;
+               continue;
+            }
+
+            rho = -1.0;
+            rhu =  2.0;
+            w   =  0.0;
+         } else {
+            w = sqrt(rhu*(2.0-rhu)/tau);
+         }
+
+         switch (face) {
+         case 1:
+            l = rho;
+            if (direct) {
+               m = w;
+               if (xf < 0.0) m = -m;
+               n = m*omega;
+            } else {
+               n = w;
+               if (yf < 0.0) n = -n;
+               m = n*omega;
+            }
+            break;
+         case 2:
+            m = rho;
+            if (direct) {
+               l = w;
+               if (xf > 0.0) l = -l;
+               n = -l*omega;
+            } else {
+               n = w;
+               if (yf < 0.0) n = -n;
+               l = -n*omega;
+            }
+            break;
+         case 3:
+            l = -rho;
+            if (direct) {
+               m = w;
+               if (xf > 0.0) m = -m;
+               n = -m*omega;
+            } else {
+               n = w;
+               if (yf < 0.0) n = -n;
+               m = -n*omega;
+            }
+            break;
+         case 4:
+            m = -rho;
+            if (direct) {
+               l = w;
+               if (xf < 0.0) l = -l;
+               n = l*omega;
+            } else {
+               n = w;
+               if (yf < 0.0) n = -n;
+               l = n*omega;
+            }
+            break;
+         case 5:
+            n = -rho;
+            if (direct) {
+               m = w;
+               if (xf < 0.0) m = -m;
+               l = m*omega;
+            } else {
+               l = w;
+               if (yf < 0.0) l = -l;
+               m = l*omega;
+            }
+            break;
+         default:
+            /* face == 0 */
+            n = rho;
+            if (direct) {
+               m = w;
+               if (xf < 0.0) m = -m;
+               l = -m*omega;
+            } else {
+               l = w;
+               if (yf > 0.0) l = -l;
+               m = -l*omega;
+            }
+            break;
+         }
+
+         if (l == 0.0 && m == 0.0) {
+            *phip = 0.0;
+         } else {
+            *phip = atan2d(m, l);
+         }
+
+         *thetap = asind(n);
+         *(statp++) = 0;
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int qscs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int face, mphi, mtheta, rowlen, rowoff, status;
+   double cosphi, costhe, eta, l, m, n, omega, p, rho, rhu, sinphi,
+          sinthe, t, tau, x0, xf, xi, y0, yf;
+   const double tol = 1.0e-12;
+   register int iphi, istat, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != QSC) {
+      if (qscset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      face = 1;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   direct = (fabs(xf) > fabs(yf));
-   if (direct) {
-      if (xf == 0.0) {
-         omega = 0.0;
-         tau = 1.0;
-         rho = 1.0;
-         rhu = 0.0;
-      } else {
-         w = 15.0*yf/xf;
-         omega = sind(w)/(cosd(w) - SQRT2INV);
-         tau = 1.0 + omega*omega;
-         rhu = xf*xf*(1.0 - 1.0/sqrt(1.0 + tau));
-         rho = 1.0 - rhu;
-      }
-   } else {
-      if (yf == 0.0) {
-         omega = 0.0;
-         tau = 1.0;
-         rho = 1.0;
-         rhu = 0.0;
-      } else {
-         w = 15.0*xf/yf;
-         omega = sind(w)/(cosd(w) - SQRT2INV);
-         tau = 1.0 + omega*omega;
-         rhu = yf*yf*(1.0 - 1.0/sqrt(1.0 + tau));
-         rho = 1.0 - rhu;
+   status = 0;
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      cosphi = cosd(*phip);
+      sinphi = sind(*phip);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = cosphi;
+         *yp = sinphi;
+         xp += rowlen;
+         yp += rowlen;
       }
    }
 
-   if (rho < -1.0) {
-      if (rho < -1.0-tol) {
-         return 2;
-      }
 
-      rho = -1.0;
-      rhu =  2.0;
-      w   =  0.0;
-   } else {
-      w = sqrt(rhu*(2.0-rhu)/tau);
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+
+      for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+         if (fabs(*thetap) == 90.0) {
+            *xp = -prj->x0;
+            *yp = copysign(2.0*prj->w[0], *thetap) - prj->y0;
+            *(statp++) = 0;
+            continue;
+         }
+
+         l = costhe*(*xp);
+         m = costhe*(*yp);
+         n = sinthe;
+
+         face = 0;
+         rho  = n;
+         if (l > rho) {
+            face = 1;
+            rho  = l;
+         }
+         if (m > rho) {
+            face = 2;
+            rho  = m;
+         }
+         if (-l > rho) {
+            face = 3;
+            rho  = -l;
+         }
+         if (-m > rho) {
+            face = 4;
+            rho  = -m;
+         }
+         if (-n > rho) {
+            face = 5;
+            rho  = -n;
+         }
+
+         rhu = 1.0 - rho;
+
+         switch (face) {
+         case 1:
+            xi  = m;
+            eta = n;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (*thetap)*D2R;
+               p = atan2(*yp, *xp);
+               rhu = (p*p + t*t)/2.0;
+            }
+            x0 = 0.0;
+            y0 = 0.0;
+            break;
+         case 2:
+            xi  = -l;
+            eta =  n;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (*thetap)*D2R;
+               p = atan2(*yp, *xp) - PI/2.0;
+               rhu = (p*p + t*t)/2.0;
+            }
+            x0 = 2.0;
+            y0 = 0.0;
+            break;
+         case 3:
+            xi  = -m;
+            eta =  n;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (*thetap)*D2R;
+               p = atan2(*yp, *xp);
+               p -= copysign(PI, p);
+               rhu = (p*p + t*t)/2.0;
+            }
+            x0 = 4.0;
+            y0 = 0.0;
+            break;
+         case 4:
+            xi  = l;
+            eta = n;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (*thetap)*D2R;
+               p = atan2(*yp, *xp) + PI/2.0;
+               rhu = (p*p + t*t)/2.0;
+            }
+            x0 = 6;
+            y0 = 0.0;
+            break;
+         case 5:
+            xi  =  m;
+            eta =  l;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (*thetap + 90.0)*D2R;
+               rhu = t*t/2.0;
+            }
+            x0 =  0.0;
+            y0 = -2;
+            break;
+         default:
+            /* face == 0 */
+            xi  =  m;
+            eta = -l;
+            if (rhu < 1.0e-8) {
+               /* Small angle formula. */
+               t = (90.0 - *thetap)*D2R;
+               rhu = t*t/2.0;
+            }
+            x0 = 0.0;
+            y0 = 2.0;
+            break;
+         }
+
+         xf = 0.0;
+         yf = 0.0;
+         if (xi != 0.0 || eta != 0.0) {
+            if (-xi >= fabs(eta)) {
+               omega = eta/xi;
+               tau = 1.0 + omega*omega;
+               xf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
+            } else if (xi >= fabs(eta)) {
+               omega = eta/xi;
+               tau = 1.0 + omega*omega;
+               xf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
+            } else if (-eta > fabs(xi)) {
+               omega = xi/eta;
+               tau = 1.0 + omega*omega;
+               yf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
+            } else if (eta > fabs(xi)) {
+               omega = xi/eta;
+               tau = 1.0 + omega*omega;
+               yf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
+            }
+         }
+
+         istat = 0;
+         if (fabs(xf) > 1.0) {
+            if (fabs(xf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            xf = copysign(1.0, xf);
+         }
+         if (fabs(yf) > 1.0) {
+            if (fabs(yf) > 1.0+tol) {
+               istat  = 1;
+               status = 4;
+            }
+            yf = copysign(1.0, yf);
+         }
+
+         *xp = prj->w[0]*(xf + x0) - prj->x0;
+         *yp = prj->w[0]*(yf + y0) - prj->y0;
+         *(statp++) = istat;
+      }
    }
 
-   if (face == 0) {
-      n = rho;
-      if (direct) {
-         m = w;
-         if (xf < 0.0) m = -m;
-         l = -m*omega;
-      } else {
-         l = w;
-         if (yf > 0.0) l = -l;
-         m = -l*omega;
-      }
-   } else if (face == 1) {
-      l = rho;
-      if (direct) {
-         m = w;
-         if (xf < 0.0) m = -m;
-         n = m*omega;
-      } else {
-         n = w;
-         if (yf < 0.0) n = -n;
-         m = n*omega;
-      }
-   } else if (face == 2) {
-      m = rho;
-      if (direct) {
-         l = w;
-         if (xf > 0.0) l = -l;
-         n = -l*omega;
-      } else {
-         n = w;
-         if (yf < 0.0) n = -n;
-         l = -n*omega;
-      }
-   } else if (face == 3) {
-      l = -rho;
-      if (direct) {
-         m = w;
-         if (xf > 0.0) m = -m;
-         n = -m*omega;
-      } else {
-         n = w;
-         if (yf < 0.0) n = -n;
-         m = -n*omega;
-      }
-   } else if (face == 4) {
-      m = -rho;
-      if (direct) {
-         l = w;
-         if (xf < 0.0) l = -l;
-         n = l*omega;
-      } else {
-         n = w;
-         if (yf < 0.0) n = -n;
-         l = n*omega;
-      }
-   } else if (face == 5) {
-      n = -rho;
-      if (direct) {
-         m = w;
-         if (xf < 0.0) m = -m;
-         l = m*omega;
-      } else {
-         l = w;
-         if (yf < 0.0) l = -l;
-         m = l*omega;
-      }
-   }
-
-   if (l == 0.0 && m == 0.0) {
-      *phi = 0.0;
-   } else {
-      *phi = atan2d(m, l);
-   }
-   *theta = asind(n);
-
-   return 0;
+   return status;
 }

@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,71 +19,11 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
-*
-*=============================================================================
-*
-*   C routines for the spherical coordinate transformations used by the FITS
-*   "World Coordinate System" (WCS) convention.
-*
-*   Summary of routines
-*   -------------------
-*   The spherical coordinate transformations are implemented via separate
-*   functions for the transformation in each direction.
-*
-*   Forward transformation; sphfwd()
-*   --------------------------------
-*   Transform celestial coordinates to the native coordinates of a projection.
-*
-*   Given:
-*      lng,lat  double   Celestial longitude and latitude, in degrees.
-*      eul[5]   double   Euler angles for the transformation:
-*                          0: Celestial longitude of the native pole, in
-*                             degrees.
-*                          1: Celestial colatitude of the native pole, or
-*                             native colatitude of the celestial pole, in
-*                             degrees.
-*                          2: Native longitude of the celestial pole, in
-*                             degrees.
-*                          3: cos(eul[1])
-*                          4: sin(eul[1])
-*
-*   Returned:
-*      phi,     double   Longitude and latitude in the native coordinate
-*      theta             system of the projection, in degrees.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*
-*   Reverse transformation; sphrev()
-*   --------------------------------
-*   Transform native coordinates of a projection to celestial coordinates.
-*
-*   Given:
-*      phi,     double   Longitude and latitude in the native coordinate
-*      theta             system of the projection, in degrees.
-*      eul[5]   double   Euler angles for the transformation:
-*                          0: Celestial longitude of the native pole, in
-*                             degrees.
-*                          1: Celestial colatitude of the native pole, or
-*                             native colatitude of the celestial pole, in
-*                             degrees.
-*                          2: Native longitude of the celestial pole, in
-*                             degrees.
-*                          3: cos(eul[1])
-*                          4: sin(eul[1])
-*
-*   Returned:
-*      lng,lat  double   Celestial longitude and latitude, in degrees.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
@@ -99,124 +39,212 @@
 #endif
 #endif
 
-#ifdef COPYSIGN
 #define copysign(X, Y) ((Y) < 0.0 ? -fabs(X) : fabs(X))
-#endif
 
-const double tol = 1.0e-5;
+#define tol 1.0e-5
 
-int sphfwd (lng, lat, eul, phi, theta)
+/*--------------------------------------------------------------------------*/
 
-const double lat, lng, eul[5];
-double *phi, *theta;
+int sphx2s(eul, nphi, ntheta, spt, sll, phi, theta, lng, lat)
+
+const double eul[5];
+int nphi, ntheta, spt, sll;
+const double phi[], theta[];
+double lng[], lat[];
 
 {
-   double coslat, coslng, dlng, dphi, sinlat, sinlng, x, y, z;
+   int mphi, mtheta, rowlen, rowoff;
+   double cosphi, costhe, costhe3, costhe4, dlng, dphi, sinphi, sinthe,
+          sinthe3, sinthe4, x, y, z;
+   register int iphi, itheta;
+   register double *latp, *lngp, *phip, *thetap;
 
-   coslat = cosd(lat);
-   sinlat = sind(lat);
-
-   dlng = lng - eul[0];
-   coslng = cosd(dlng);
-   sinlng = sind(dlng);
-
-   /* Compute the native longitude. */
-   x = sinlat*eul[4] - coslat*eul[3]*coslng;
-   if (fabs(x) < tol) {
-      /* Rearrange formula to reduce roundoff errors. */
-      x = -cosd(lat+eul[1]) + coslat*eul[3]*(1.0 - coslng);
-   }
-   y = -coslat*sinlng;
-   if (x != 0.0 || y != 0.0) {
-      dphi = atan2d(y, x);
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
    } else {
-      /* Change of origin of longitude. */
-      dphi = dlng - 180.0;
-   }
-   *phi = eul[2] + dphi;
-
-   /* Normalize the native longitude. */
-   if (*phi > 180.0) {
-      *phi -= 360.0;
-   } else if (*phi < -180.0) {
-      *phi += 360.0;
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
    }
 
-   /* Compute the native latitude. */
-   if (fmod(dlng,180.0) == 0.0) {
-      *theta = lat + coslng*eul[1];
-      if (*theta >  90.0) *theta =  180.0 - *theta;
-      if (*theta < -90.0) *theta = -180.0 - *theta;
-   } else {
-      z = sinlat*eul[3] + coslat*eul[4]*coslng;
-      if (fabs(z) > 0.99) {
-         /* Use an alternative formula for greater numerical accuracy. */
-         *theta = copysign(acosd(sqrt(x*x+y*y)), z);
-      } else {
-         *theta = asind(z);
+
+   /* Do phi dependency. */
+   phip = (double *)phi;
+   rowoff = 0;
+   rowlen = nphi*sll;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sll, phip += spt) {
+      dphi = *phip - eul[2];
+
+      lngp = lng + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *lngp = dphi;
+         lngp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependency. */
+   thetap = (double *)theta;
+   lngp = lng;
+   latp = lat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      costhe = cosd(*thetap);
+      sinthe = sind(*thetap);
+      costhe3 = costhe*eul[3];
+      costhe4 = costhe*eul[4];
+      sinthe3 = sinthe*eul[3];
+      sinthe4 = sinthe*eul[4];
+
+      for (iphi = 0; iphi < mphi; iphi++, lngp += sll, latp += sll) {
+         dphi = *lngp;
+         cosphi = cosd(dphi);
+         sinphi = sind(dphi);
+
+         /* Compute the celestial longitude. */
+         x = sinthe4 - costhe3*cosphi;
+         if (fabs(x) < tol) {
+            /* Rearrange formula to reduce roundoff errors. */
+            x = -cosd(*thetap+eul[1]) + costhe3*(1.0 - cosphi);
+         }
+
+         y = -costhe*sinphi;
+         if (x != 0.0 || y != 0.0) {
+            dlng = atan2d(y, x);
+         } else {
+            /* Change of origin of longitude. */
+            dlng = dphi + 180.0;
+         }
+         *lngp = eul[0] + dlng;
+
+         /* Normalize the celestial longitude. */
+         if (eul[0] >= 0.0) {
+            if (*lngp < 0.0) *lngp += 360.0;
+         } else {
+            if (*lngp > 0.0) *lngp -= 360.0;
+         }
+
+         if (*lngp > 360.0) {
+            *lngp -= 360.0;
+         } else if (*lngp < -360.0) {
+            *lngp += 360.0;
+         }
+
+         /* Compute the celestial latitude. */
+         if (fmod(dphi,180.0) == 0.0) {
+            *latp = *thetap + cosphi*eul[1];
+            if (*latp >  90.0) *latp =  180.0 - *latp;
+            if (*latp < -90.0) *latp = -180.0 - *latp;
+         } else {
+            z = sinthe3 + costhe4*cosphi;
+            if (fabs(z) > 0.99) {
+               /* Use an alternative formula for greater accuracy. */
+               *latp = copysign(acosd(sqrt(x*x+y*y)), z);
+            } else {
+               *latp = asind(z);
+            }
+         }
       }
    }
 
    return 0;
 }
 
-/*-----------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------*/
 
-int sphrev (phi, theta, eul, lng, lat)
+int sphs2x(eul, nlng, nlat, sll, spt, lng, lat, phi, theta)
 
-const double phi, theta, eul[5];
-double *lng, *lat;
+const double eul[5];
+int nlat, nlng, sll, spt;
+const double lat[], lng[];
+double phi[], theta[];
 
 {
-   double cosphi, costhe, dlng, dphi, sinphi, sinthe, x, y, z;
+   int mlat, mlng, rowlen, rowoff;
+   double coslat, coslat3, coslat4, coslng, dlng, dphi, sinlat, sinlat3,
+          sinlat4, sinlng, x, y, z;
+   register int ilat, ilng;
+   register double *latp, *lngp, *phip, *thetap;
 
-   costhe = cosd(theta);
-   sinthe = sind(theta);
-
-   dphi = phi - eul[2];
-   cosphi = cosd(dphi);
-   sinphi = sind(dphi);
-
-   /* Compute the celestial longitude. */
-   x = sinthe*eul[4] - costhe*eul[3]*cosphi;
-   if (fabs(x) < tol) {
-      /* Rearrange formula to reduce roundoff errors. */
-      x = -cosd(theta+eul[1]) + costhe*eul[3]*(1.0 - cosphi);
-   }
-   y = -costhe*sinphi;
-   if (x != 0.0 || y != 0.0) {
-      dlng = atan2d(y, x);
+   if (nlat > 0) {
+      mlng = nlng;
+      mlat = nlat;
    } else {
-      /* Change of origin of longitude. */
-      dlng = dphi + 180.0;
-   }
-   *lng = eul[0] + dlng;
-
-   /* Normalize the celestial longitude. */
-   if (eul[0] >= 0.0) {
-      if (*lng < 0.0) *lng += 360.0;
-   } else {
-      if (*lng > 0.0) *lng -= 360.0;
+      mlng = 1;
+      mlat = 1;
+      nlat = nlng;
    }
 
-   if (*lng > 360.0) {
-      *lng -= 360.0;
-   } else if (*lng < -360.0) {
-      *lng += 360.0;
+
+   /* Do lng dependency. */
+   lngp = (double *)lng;
+   rowoff = 0;
+   rowlen = nlng*spt;
+   for (ilng = 0; ilng < nlng; ilng++, rowoff += spt, lngp += sll) {
+      dlng = *lngp - eul[0];
+
+      phip = phi + rowoff;
+      for (ilat = 0; ilat < mlat; ilat++) {
+         *phip = dlng;
+         phip += rowlen;
+      }
    }
 
-   /* Compute the celestial latitude. */
-   if (fmod(dphi,180.0) == 0.0) {
-      *lat = theta + cosphi*eul[1];
-      if (*lat >  90.0) *lat =  180.0 - *lat;
-      if (*lat < -90.0) *lat = -180.0 - *lat;
-   } else {
-      z = sinthe*eul[3] + costhe*eul[4]*cosphi;
-      if (fabs(z) > 0.99) {
-         /* Use an alternative formula for greater numerical accuracy. */
-         *lat = copysign(acosd(sqrt(x*x+y*y)), z);
-      } else {
-         *lat = asind(z);
+
+   /* Do lat dependency. */
+   latp = (double *)lat;
+   phip   = phi;
+   thetap = theta;
+   for (ilat = 0; ilat < nlat; ilat++, latp += sll) {
+      coslat  = cosd(*latp);
+      sinlat  = sind(*latp);
+      coslat3 = coslat*eul[3];
+      coslat4 = coslat*eul[4];
+      sinlat3 = sinlat*eul[3];
+      sinlat4 = sinlat*eul[4];
+
+      for (ilng = 0; ilng < mlng; ilng++, phip += spt, thetap += spt) {
+         dlng = *phip;
+         coslng = cosd(dlng);
+         sinlng = sind(dlng);
+
+         /* Compute the native longitude. */
+         x = sinlat4 - coslat3*coslng;
+         if (fabs(x) < tol) {
+            /* Rearrange formula to reduce roundoff errors. */
+            x = -cosd(*latp+eul[1]) + coslat3*(1.0 - coslng);
+         }
+
+         y = -coslat*sinlng;
+         if (x != 0.0 || y != 0.0) {
+            dphi = atan2d(y, x);
+         } else {
+            /* Change of origin of longitude. */
+            dphi = dlng - 180.0;
+         }
+         *phip = fmod(eul[2] + dphi, 360.0);
+
+         /* Normalize the native longitude. */
+         if (*phip > 180.0) {
+            *phip -= 360.0;
+         } else if (*phip < -180.0) {
+            *phip += 360.0;
+         }
+
+         /* Compute the native latitude. */
+         if (fmod(dlng,180.0) == 0.0) {
+            *thetap = *latp + coslng*eul[1];
+            if (*thetap >  90.0) *thetap =  180.0 - *thetap;
+            if (*thetap < -90.0) *thetap = -180.0 - *thetap;
+         } else {
+            z = sinlat3 + coslat4*coslng;
+            if (fabs(z) > 0.99) {
+               /* Use an alternative formula for greater accuracy. */
+               *thetap = copysign(acosd(sqrt(x*x+y*y)), z);
+            } else {
+               *thetap = asind(z);
+            }
+         }
       }
    }
 

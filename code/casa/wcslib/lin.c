@@ -1,7 +1,7 @@
-/*=============================================================================
+/*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,166 +19,26 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
-*
-*=============================================================================
-*
-*   C routines which implement the FITS World Coordinate System (WCS)
-*   convention.
-*
-*   Summary of routines
-*   -------------------
-*   These utility routines apply the linear transformation defined by the WCS
-*   FITS header cards.  There are separate routines for the image-to-pixel,
-*   linfwd(), and pixel-to-image, linrev(), transformations.
-*
-*   An initialization routine, linset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of lin.flag below.
-*
-*   An auxiliary matrix inversion routine, matinv(), is included.  It uses
-*   LU-triangular factorization with scaled partial pivoting.
-*
-*
-*   Initialization routine; linset()
-*   --------------------------------
-*   Initializes members of a linprm data structure which hold intermediate
-*   values.  Note that this routine need not be called directly; it will be
-*   invoked by linfwd() and linrev() if the "flag" structure member is
-*   anything other than a predefined magic value.
-*
-*   Given and/or returned:
-*      lin      linprm*  Linear transformation parameters (see below).
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Memory allocation error.
-*                           2: PC matrix is singular.
-*
-*   Forward transformation; linfwd()
-*   --------------------------------
-*   Compute pixel coordinates from image coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
-*
-*   Given:
-*      imgcrd   const double[]
-*                        Image (world) coordinate.
-*
-*   Given and returned:
-*      lin      linprm*  Linear transformation parameters (see below).
-*
-*   Returned:
-*      pixcrd   d[]      Pixel coordinate.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: The transformation is not invertible.
-*
-*   Reverse transformation; linrev()
-*   --------------------------------
-*   Compute image coordinates from pixel coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
-*
-*   Given:
-*      pixcrd   const double[]
-*                        Pixel coordinate.
-*
-*   Given and/or returned:
-*      lin      linprm*  Linear transformation parameters (see below).
-*
-*   Returned:
-*      imgcrd   d[]      Image (world) coordinate.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Error.
-*
-*   Linear transformation parameters
-*   --------------------------------
-*   The linprm struct consists of the following:
-*
-*      int flag
-*         This flag must be set to zero whenever any of the following members
-*         are set or modified.  This signals the initialization routine,
-*         linset(), to recompute intermediaries.
-*      int naxis
-*         Number of image axes.
-*      double *crpix
-*         Pointer to the first element of an array of double containing the
-*         coordinate reference pixel, CRPIXn.
-*      double *pc
-*         Pointer to the first element of the PC (pixel coordinate)
-*         transformation matrix.  The expected order is
-*
-*            lin.pc = {PC1_1, PC1_2, PC2_1, PC2_2};
-*
-*         This may be conveniently constructed from a two-dimensional array
-*         via
-*
-*            double m[2][2] = {{PC1_1, PC1_2},
-*                              {PC2_1, PC2_2}};
-*
-*         which is equivalent to,
-*
-*            double m[2][2];
-*            m[0][0] = PC1_1;
-*            m[0][1] = PC1_2;
-*            m[1][0] = PC2_1;
-*            m[1][1] = PC2_2;
-*
-*         for which the storage order is
-*
-*            PC1_1, PC1_2, PC2_1, PC2_2
-*
-*         so it would be legitimate to set lin.pc = *m.
-*      double *cdelt
-*         Pointer to the first element of an array of double containing the
-*         coordinate increments, CDELTn.
-*
-*   The remaining members of the linprm struct are maintained by the
-*   initialization routine and should not be modified.
-*
-*      double *piximg
-*         Pointer to the first element of the matrix containing the product
-*         of the CDELTn diagonal matrix and the PC matrix.
-*      double *imgpix
-*         Pointer to the first element of the inverse of the piximg matrix.
-*
-*   linset allocates storage for the above arrays using malloc().  Note,
-*   however, that these routines do not free this storage so if a linprm
-*   variable has itself been malloc'd then these structure members must be
-*   explicitly freed before the linprm variable is free'd otherwise a memory
-*   leak will result.
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
 *===========================================================================*/
 
+#include <stdio.h>
 #include <math.h>
 #include "lin.h"
 
+const int LINSET = 137;
+
 /* Map error number to error message for each function. */
-const char *linset_errmsg[] = {
+const char *lin_errmsg[] = {
    0,
-   "Memory allocation error",
-   "PC matrix is singular"};
-
-const char *linfwd_errmsg[] = {
-   0,
-   "Memory allocation error",
-   "PC matrix is singular"};
-
-const char *linrev_errmsg[] = {
-   0,
+   "Null linprm pointer passed",
    "Memory allocation error",
    "PC matrix is singular"};
 
@@ -189,35 +49,389 @@ const char *linrev_errmsg[] = {
 #include <malloc.h>
 #endif
 
+/*--------------------------------------------------------------------------*/
+
+int linini(alloc, naxis, lin)
+
+int alloc, naxis;
+struct linprm *lin;
+
+{
+   int i, j, mem;
+   double *pc;
+
+   if (lin == 0) return 1;
+   if (naxis <= 0) {
+      return 2;
+   }
+
+   if (lin->flag == -1 || lin->m_flag != LINSET) {
+      lin->m_flag  = 0;
+      lin->m_naxis = 0;
+      lin->m_crpix = 0;
+      lin->m_pc    = 0;
+      lin->m_cdelt = 0;
+   }
+
+
+   /* Allocate memory for arrays if required. */
+   if (alloc ||
+       lin->crpix == (double *)0 ||
+       lin->pc    == (double *)0 ||
+       lin->cdelt == (double *)0) {
+
+      /* Was sufficient allocated previously? */
+      if (lin->m_flag == LINSET && lin->m_naxis < naxis) {
+         /* No, free it. */
+         linfree(lin);
+      }
+
+      if (alloc || lin->crpix == (double *)0) {
+         if (lin->m_crpix) {
+            /* In case the caller fiddled with it. */
+            lin->crpix = lin->m_crpix;
+
+         } else {
+            mem = naxis * sizeof(double);
+            if ((lin->crpix = (double *)malloc(mem)) == (double *)0) {
+               return 2;
+            }
+
+            lin->m_flag  = LINSET;
+            lin->m_naxis = naxis;
+            lin->m_crpix = lin->crpix;
+         }
+      }
+
+      if (alloc || lin->pc == (double *)0) {
+         if (lin->m_pc) {
+            /* In case the caller fiddled with it. */
+            lin->pc = lin->m_pc;
+
+         } else {
+            mem = naxis * naxis * sizeof(double);
+            if ((lin->pc = (double *)malloc(mem)) == (double *)0) {
+               linfree(lin);
+               return 2;
+            }
+
+            lin->m_flag  = LINSET;
+            lin->m_naxis = naxis;
+            lin->m_pc    = lin->pc;
+         }
+      }
+
+      if (alloc || lin->cdelt == (double *)0) {
+         if (lin->m_cdelt) {
+            /* In case the caller fiddled with it. */
+            lin->cdelt = lin->m_cdelt;
+
+         } else {
+            mem = naxis * sizeof(double);
+            if ((lin->cdelt = (double *)malloc(mem)) == (double *)0) {
+               linfree(lin);
+               return 2;
+            }
+
+            lin->m_flag  = LINSET;
+            lin->m_naxis = naxis;
+            lin->m_cdelt = lin->cdelt;
+         }
+      }
+   }
+
+   /* Free memory allocated by linset(). */
+   if (lin->flag == LINSET) {
+      if (lin->piximg) free(lin->piximg);
+      if (lin->imgpix) free(lin->imgpix);
+   }
+
+   lin->piximg = 0;
+   lin->imgpix = 0;
+   lin->i_naxis = 0;
+
+
+   lin->flag  = 0;
+   lin->naxis = naxis;
+
+
+   /* CRPIXj defaults to 0.0. */
+   for (j = 0; j < naxis; j++) {
+      lin->crpix[j] = 0.0;
+   }
+
+
+   /* PCi_j defaults to the unit matrix. */
+   pc = lin->pc;
+   for (i = 0; i < naxis; i++) {
+      for (j = 0; j < naxis; j++) {
+         if (j == i) {
+            *(pc++) = 1.0;
+         } else {
+            *(pc++) = 0.0;
+         }
+      }
+   }
+
+
+   /* CDELTi defaults to 1.0. */
+   for (i = 0; i < naxis; i++) {
+      lin->cdelt[i] = 1.0;
+   }
+
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int lincpy(alloc, linsrc, lindst)
+
+int alloc;
+const struct linprm *linsrc;
+struct linprm *lindst;
+
+{
+   int i, j, naxis, status;
+   const double *srcp;
+   double *dstp;
+
+   if (linsrc == 0) return 1;
+
+   naxis = linsrc->naxis;
+   if (naxis <= 0) {
+      return 2;
+   }
+
+   if (status = linini(alloc, naxis, lindst)) {
+      return status;
+   }
+
+   srcp = linsrc->crpix;
+   dstp = lindst->crpix;
+   for (j = 0; j < naxis; j++) {
+      *(dstp++) = *(srcp++);
+   }
+
+   srcp = linsrc->pc;
+   dstp = lindst->pc;
+   for (i = 0; i < naxis; i++) {
+      for (j = 0; j < naxis; j++) {
+         *(dstp++) = *(srcp++);
+      }
+   }
+
+   srcp = linsrc->cdelt;
+   dstp = lindst->cdelt;
+   for (i = 0; i < naxis; i++) {
+      *(dstp++) = *(srcp++);
+   }
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int linfree(lin)
+
+struct linprm *lin;
+
+{
+   if (lin == 0) return 1;
+
+   /* Free memory allocated by linini(). */
+   if (lin->m_flag == LINSET) {
+      if (lin->crpix == lin->m_crpix) lin->crpix = 0;
+      if (lin->pc    == lin->m_pc)    lin->pc    = 0;
+      if (lin->cdelt == lin->m_cdelt) lin->cdelt = 0;
+
+      if (lin->m_crpix) free(lin->m_crpix);
+      if (lin->m_pc)    free(lin->m_pc);
+      if (lin->m_cdelt) free(lin->m_cdelt);
+   }
+
+   lin->m_flag  = 0;
+   lin->m_naxis = 0;
+   lin->m_crpix = 0;
+   lin->m_pc    = 0;
+   lin->m_cdelt = 0;
+
+
+   /* Free memory allocated by linset(). */
+   if (lin->flag == LINSET) {
+      if (lin->piximg) free(lin->piximg);
+      if (lin->imgpix) free(lin->imgpix);
+   }
+
+   lin->piximg = 0;
+   lin->imgpix = 0;
+   lin->i_naxis = 0;
+
+   lin->flag = 0;
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int linprt(lin)
+
+const struct linprm *lin;
+
+{
+   int i, j, k;
+
+   if (lin == 0) return 1;
+
+   printf("       flag: %d\n", lin->flag);
+   printf("      naxis: %d\n", lin->naxis);
+   printf("      crpix: 0x%x\n", (int)lin->crpix);
+   printf("            ");
+   for (i = 0; i < lin->naxis; i++) {
+      printf("  %- 11.4g", lin->crpix[i]);
+   }
+   printf("\n");
+
+   k = 0;
+   printf("         pc: 0x%x\n", (int)lin->pc);
+   for (i = 0; i < lin->naxis; i++) {
+      printf("    pc[%d][]:", i);
+      for (j = 0; j < lin->naxis; j++) {
+         printf("  %- 11.4g", lin->pc[k++]);
+      }
+      printf("\n");
+   }
+
+   printf("      cdelt: 0x%x\n", (int)lin->cdelt);
+   printf("            ");
+   for (i = 0; i < lin->naxis; i++) {
+      printf("  %- 11.4g", lin->cdelt[i]);
+   }
+   printf("\n\n");
+
+   printf("      unity: %d\n", lin->unity);
+
+   if (lin->piximg == 0) {
+      printf("     piximg: (null)\n");
+   } else {
+      k = 0;
+      for (i = 0; i < lin->naxis; i++) {
+         printf("piximg[%d][]:", i);
+         for (j = 0; j < lin->naxis; j++) {
+            printf("  %- 11.4g", lin->piximg[k++]);
+         }
+         printf("\n");
+      }
+   }
+
+   if (lin->imgpix == 0) {
+      printf("     imgpix: (null)\n");
+   } else {
+      k = 0;
+      for (i = 0; i < lin->naxis; i++) {
+         printf("imgpix[%d][]:", i);
+         for (j = 0; j < lin->naxis; j++) {
+            printf("  %- 11.4g", lin->imgpix[k++]);
+         }
+         printf("\n");
+      }
+   }
+
+   printf("     m_flag: %d\n", lin->m_flag);
+   printf("    m_naxis: %d\n", lin->m_naxis);
+   printf("    m_crpix: 0x%x", (int)lin->m_crpix);
+   if (lin->m_crpix == lin->crpix) printf("  (= crpix)");
+   printf("\n");
+   printf("       m_pc: 0x%x", (int)lin->m_pc);
+   if (lin->m_pc == lin->pc) printf("  (= pc)");
+   printf("\n");
+   printf("    m_cdelt: 0x%x", (int)lin->m_cdelt);
+   if (lin->m_cdelt == lin->cdelt) printf("  (= cdelt)");
+   printf("\n");
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
 int linset(lin)
 
 struct linprm *lin;
 
 {
-   int i, ij, j, mem, n;
+   int i, j, mem, n, status;
+   double *pc, *piximg;
+
+   if (lin == 0) return 1;
 
    n = lin->naxis;
 
-   /* Allocate memory for internal arrays. */
-   mem = n * n * sizeof(double);
-   lin->piximg = (double*)malloc(mem);
-   if (lin->piximg == (double*)0) return 1;
-
-   lin->imgpix = (double*)malloc(mem);
-   if (lin->imgpix == (double*)0) {
-      free(lin->piximg);
-      return 1;
-   }
-
-   /* Compute the pixel-to-image transformation matrix. */
-   for (i = 0, ij = 0; i < n; i++) {
-      for (j = 0; j < n; j++, ij++) {
-         lin->piximg[ij] = lin->cdelt[i] * lin->pc[ij];
+   /* Check for a unit matrix. */
+   lin->unity = 1;
+   pc = lin->pc;
+   for (i = 0; i < n; i++) {
+      for (j = 0; j < n; j++) {
+         if (j == i) {
+            if (*(pc++) != 1.0) {
+               lin->unity = 0;
+               break;
+            }
+         } else {
+            if (*(pc++) != 0.0) {
+               lin->unity = 0;
+               break;
+            }
+         }
       }
    }
 
-   /* Compute the image-to-pixel transformation matrix. */
-   if (matinv(n, lin->piximg, lin->imgpix)) return 2;
+
+   if (lin->unity) {
+      if (lin->flag == LINSET) {
+         /* Free memory which may have been allocated previously. */
+         if (lin->piximg) free(lin->piximg);
+         if (lin->imgpix) free(lin->imgpix);
+      }
+
+      lin->piximg = (double*)0;
+      lin->imgpix = (double*)0;
+      lin->i_naxis = 0;
+
+   } else {
+      if (lin->flag != LINSET || lin->i_naxis < n) {
+         if (lin->flag == LINSET) {
+            /* Free memory which may have been allocated previously. */
+            if (lin->piximg) free(lin->piximg);
+            if (lin->imgpix) free(lin->imgpix);
+         }
+
+         /* Allocate memory for internal arrays. */
+         mem = n * n * sizeof(double);
+         if ((lin->piximg = (double*)malloc(mem)) == (double*)0) {
+            return 2;
+         }
+
+         if ((lin->imgpix = (double*)malloc(mem)) == (double*)0) {
+            free(lin->piximg);
+            return 2;
+         }
+
+         lin->i_naxis = n;
+      }
+
+      /* Compute the pixel-to-image transformation matrix. */
+      pc     = lin->pc;
+      piximg = lin->piximg;
+      for (i = 0; i < n; i++) {
+         for (j = 0; j < n; j++) {
+            *(piximg++) = lin->cdelt[i] * (*(pc++));
+         }
+      }
+
+      /* Compute the image-to-pixel transformation matrix. */
+      if (status = matinv(n, lin->piximg, lin->imgpix)) return status;
+   }
+
 
    lin->flag = LINSET;
 
@@ -226,30 +440,61 @@ struct linprm *lin;
 
 /*--------------------------------------------------------------------------*/
 
-int linfwd(imgcrd, lin, pixcrd)
+int linp2x(lin, ncoord, nelem, pixcrd, imgcrd)
 
-const double imgcrd[];
 struct linprm *lin;
-double pixcrd[];
+int ncoord, nelem;
+const double pixcrd[];
+double imgcrd[];
 
 {
-   int i, ij, j, n;
+   int i, j, k, n, status;
+   double temp;
+   register double *img, *pix, *piximg;
+
+
+   /* Initialize. */
+   if (lin == 0) return 1;
+   if (lin->flag != LINSET) {
+      if (status = linset(lin)) return status;
+   }
 
    n = lin->naxis;
 
-   if (lin->flag != LINSET) {
-      if (linset(lin)) return 1;
-   }
 
-   for (i = 0, ij = 0; i < n; i++) {
-      pixcrd[i] = 0.0;
-      for (j = 0; j < n; j++, ij++) {
-         pixcrd[i] += lin->imgpix[ij] * imgcrd[j];
+   /* Convert pixel coordinates to intermediate world coordinates. */
+   pix = (double *)pixcrd;
+   img = (double *)imgcrd;
+
+   if (lin->unity) {
+      for (k = 0; k < ncoord; k++) {
+         for (i = 0; i < n; i++) {
+            *(img++) = lin->cdelt[i] * (*(pix++) - lin->crpix[i]);
+         }
+
+         pix += (nelem - n);
+         img += (nelem - n);
       }
-   }
 
-   for (j = 0; j < n; j++) {
-      pixcrd[j] += lin->crpix[j];
+   } else {
+      for (k = 0; k < ncoord; k++) {
+         for (i = 0; i < n; i++) {
+            img[i] = 0.0;
+         }
+
+         for (j = 0; j < n; j++) {
+            /* Column-wise multiplication allows this to be cached. */
+            temp = *(pix++) - lin->crpix[j];
+
+            piximg = lin->piximg + j;
+            for (i = 0; i < n; i++, piximg += n) {
+               img[i] += *piximg * temp;
+            }
+         }
+
+         pix += (nelem - n);
+         img += nelem;
+      }
    }
 
    return 0;
@@ -257,30 +502,57 @@ double pixcrd[];
 
 /*--------------------------------------------------------------------------*/
 
-int linrev(pixcrd, lin, imgcrd)
+int linx2p(lin, ncoord, nelem, imgcrd, pixcrd)
 
-const double pixcrd[];
 struct linprm *lin;
-double imgcrd[];
+int ncoord, nelem;
+const double imgcrd[];
+double pixcrd[];
 
 {
-   int i, ij, j, n;
-   double temp;
+   int i, j, k, n, status;
+   register double *img, *imgpix, *pix;
+
+
+   /* Initialize. */
+   if (lin == 0) return 1;
+   if (lin->flag != LINSET) {
+      if (status = linset(lin)) return status;
+   }
 
    n = lin->naxis;
 
-   if (lin->flag != LINSET) {
-      if (linset(lin)) return 1;
-   }
 
-   for (i = 0; i < n; i++) {
-      imgcrd[i] = 0.0;
-   }
+   /* Convert intermediate world coordinates to pixel coordinates. */
+   img = (double *)imgcrd;
+   pix = (double *)pixcrd;
 
-   for (j = 0; j < n; j++) {
-      temp = pixcrd[j] - lin->crpix[j];
-      for (i = 0, ij = j; i < n; i++, ij+=n) {
-         imgcrd[i] += lin->piximg[ij] * temp;
+   if (lin->unity) {
+      for (k = 0; k < ncoord; k++) {
+         for (j = 0; j < n; j++) {
+            *(pix++) = (*(img++) / lin->cdelt[j]) + lin->crpix[j];
+         }
+
+         pix += (nelem - n);
+         img += (nelem - n);
+      }
+
+   } else {
+      for (k = 0; k < ncoord; k++) {
+         imgpix = lin->imgpix;
+
+         for (j = 0; j < n; j++) {
+            *pix = 0.0;
+            for (i = 0; i < n; i++) {
+               *pix += *imgpix * img[i];
+               imgpix++;
+            }
+
+            *(pix++) += lin->crpix[j];
+         }
+
+         pix += (nelem - n);
+         img += nelem;
       }
    }
 
@@ -291,7 +563,7 @@ double imgcrd[];
 
 int matinv(n, mat, inv)
 
-const int n;
+int n;
 const double mat[];
 double inv[];
 
@@ -303,17 +575,17 @@ double inv[];
 
    /* Allocate memory for internal arrays. */
    mem = n * sizeof(int);
-   if ((mxl = (int*)malloc(mem)) == (int*)0) return 1;
+   if ((mxl = (int*)malloc(mem)) == (int*)0) return 2;
    if ((lxm = (int*)malloc(mem)) == (int*)0) {
       free(mxl);
-      return 1;
+      return 2;
    }
 
    mem = n * sizeof(double);
    if ((rowmax = (double*)malloc(mem)) == (double*)0) {
       free(mxl);
       free(lxm);
-      return 1;
+      return 2;
    }
 
    mem *= n;
@@ -321,7 +593,7 @@ double inv[];
       free(mxl);
       free(lxm);
       free(rowmax);
-      return 1;
+      return 2;
    }
 
 
@@ -345,7 +617,7 @@ double inv[];
          free(lxm);
          free(rowmax);
          free(lu);
-         return 2;
+         return 3;
       }
    }
 

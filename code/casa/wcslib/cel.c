@@ -1,7 +1,7 @@
-/*=============================================================================
+/*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,267 +19,154 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
-*
-*=============================================================================
-*
-*   C routines which implement the FITS World Coordinate System (WCS)
-*   convention.
-*
-*   Summary of routines
-*   -------------------
-*   These routines are provided as drivers for the lower level spherical
-*   coordinate transformation and projection routines.  There are separate
-*   driver routines for the forward, celfwd(), and reverse, celrev(),
-*   transformations.
-*
-*   An initialization routine, celset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of cel.flag below.
-*
-*
-*   Initialization routine; celset()
-*   --------------------------------
-*   Initializes members of a celprm data structure which hold intermediate
-*   values.  Note that this routine need not be called directly; it will be
-*   invoked by celfwd() and celrev() if the "flag" structure member is
-*   anything other than a predefined magic value.
-*
-*   Given:
-*      pcode[4] const char
-*                        WCS projection code (see below).
-*
-*   Given and returned:
-*      cel      celprm*  Spherical coordinate transformation parameters
-*                        (see below).
-*      prj      prjprm*  Projection parameters (usage is described in the
-*                        prologue to "proj.c").
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid coordinate transformation parameters.
-*                           2: Ill-conditioned coordinate transformation
-*                              parameters.
-*
-*   Forward transformation; celfwd()
-*   --------------------------------
-*   Compute (x,y) coordinates in the plane of projection from celestial
-*   coordinates (lng,lat).
-*
-*   Given:
-*      pcode[4] const char
-*                        WCS projection code (see below).
-*      lng,lat  const double
-*                        Celestial longitude and latitude of the projected
-*                        point, in degrees.
-*
-*   Given and returned:
-*      cel      celprm*  Spherical coordinate transformation parameters
-*                        (see below).
-*
-*   Returned:
-*      phi,     double*  Longitude and latitude in the native coordinate
-*      theta             system of the projection, in degrees.
-*
-*   Given and returned:
-*      prj      prjprm*  Projection parameters (usage is described in the
-*                        prologue to "proj.c").
-*
-*   Returned:
-*      x,y      double*  Projected coordinates, "degrees".
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid coordinate transformation parameters.
-*                           2: Invalid projection parameters.
-*                           3: Invalid value of (lng,lat).
-*
-*   Reverse transformation; celrev()
-*   --------------------------------
-*   Compute the celestial coordinates (lng,lat) of the point with projected
-*   coordinates (x,y).
-*
-*   Given:
-*      pcode[4] const char
-*                        WCS projection code (see below).
-*      x,y      const double
-*                        Projected coordinates, "degrees".
-*
-*   Given and returned:
-*      prj      prjprm*  Projection parameters (usage is described in the
-*                        prologue to "proj.c").
-*
-*   Returned:
-*      phi,     double*  Longitude and latitude in the native coordinate
-*      theta             system of the projection, in degrees.
-*
-*   Given and returned:
-*      cel      celprm*  Spherical coordinate transformation parameters
-*                        (see below).
-*
-*   Returned:
-*      lng,lat  double*  Celestial longitude and latitude of the projected
-*                        point, in degrees.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           1: Invalid coordinate transformation parameters.
-*                           2: Invalid projection parameters.
-*                           3: Invalid value of (x,y).
-*
-*   Coordinate transformation parameters
-*   ------------------------------------
-*   The celprm struct consists of the following:
-*
-*      int flag
-*         The celprm struct contains pointers to the forward and reverse
-*         projection routines as well as intermediaries computed from the
-*         reference coordinates (see below).  Whenever the projection code
-*         (pcode) or any of ref[4] are set or changed then this flag must be
-*         set to zero to signal the initialization routine, celset(), to
-*         redetermine the function pointers and recompute intermediaries.
-*         Once this has been done pcode itself is ignored.
-*
-*      double ref[4]
-*         The first pair of values should be set to the celestial longitude
-*         and latitude (usually right ascension and declination) of the
-*         reference point of the projection.  These are given by the CRVALn
-*         keywords in FITS.
-*
-*         The second pair of values are the native longitude of the celestial
-*         pole and the celestial latitude of the native pole and correspond to
-*         the FITS keywords LONPOLE and LATPOLE.
-*
-*         LONPOLE defaults to 0 degrees if the celestial latitude of the
-*         reference point of the projection is greater than the native
-*         latitude, otherwise 180 degrees.  (This is the condition for the
-*         celestial latitude to increase in the same direction as the native
-*         latitude at the reference point.)  ref[2] may be set to 999.0 to
-*         indicate that the correct default should be substituted.
-*
-*         In some circumstances the celestial latitude of the native pole may
-*         be determined by the first three values only to within a sign and
-*         LATPOLE is used to choose between the two solutions.  LATPOLE is
-*         set in ref[3] and the solution closest to this value is used to
-*         reset ref[3].  It is therefore legitimate, for example, to set
-*         ref[3] to 999.0 to choose the more northerly solution - the default
-*         if the LATPOLE card is omitted from the FITS header.  For the
-*         special case where the reference point of the projection is at
-*         native latitude zero, its celestial latitude is zero, and
-*         LONPOLE = +/- 90 then the celestial latitude of the native pole is
-*         not determined by the first three reference values and LATPOLE
-*         specifies it completely.
-*
-*   The remaining members of the celprm struct are maintained by the
-*   initialization routines and should not be modified.  This is done for the
-*   sake of efficiency and to allow an arbitrary number of contexts to be
-*   maintained simultaneously.
-*
-*      double euler[5]
-*         Euler angles and associated intermediaries derived from the
-*         coordinate reference values.
-*
-*
-*   WCS projection codes
-*   --------------------
-*   Zenithals/azimuthals:
-*      AZP: zenithal/azimuthal perspective
-*      TAN: gnomonic
-*      STG: stereographic
-*      SIN: synthesis (generalized orthographic)
-*      ARC: zenithal/azimuthal equidistant
-*      ZPN: zenithal/azimuthal polynomial
-*      ZEA: zenithal/azimuthal equal area
-*      AIR: Airy
-*
-*   Cylindricals:
-*      CYP: cylindrical perspective
-*      CEA: cylindrical equal area
-*      CAR: Cartesian
-*      MER: Mercator
-*
-*   Pseudo-cylindricals:
-*      SFL: Sanson-Flamsteed
-*      PAR: parabolic
-*      MOL: Mollweide
-*
-*   Conventional:
-*      AIT: Hammer-Aitoff
-*
-*   Conics:
-*      COP: conic perspective
-*      COD: conic equidistant
-*      COE: conic equal area
-*      COO: conic orthomorphic
-*
-*   Polyconics:
-*      BON: Bonne
-*      PCO: polyconic
-*
-*   Quad-cubes:
-*      TSC: tangential spherical cube
-*      CSC: COBE quadrilateralized spherical cube
-*      QSC: quadrilateralized spherical cube
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
 *===========================================================================*/
 
 #include <math.h>
+#include <stdio.h>
+
 #include "wcstrig.h"
 #include "sph.h"
 #include "cel.h"
 
+const int CELSET = 137;
+
 /* Map error number to error message for each function. */
-const char *celset_errmsg[] = {
+const char *cel_errmsg[] = {
    0,
-   "Invalid coordinate transformation parameters",
-   "Ill-conditioned coordinate transformation parameters"};
-
-const char *celfwd_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
+   "Null celprm pointer passed",
    "Invalid projection parameters",
-   "Invalid value of (lng,lat)"};
-
-const char *celrev_errmsg[] = {
-   0,
    "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Invalid value of (x,y)"};
+   "Ill-conditioned coordinate transformation parameters",
+   "One or more of the (x,y) coordinates were invalid",
+   "One or more of the (lng,lat) coordinates were invalid"};
 
+#define UNDEFINED 987654321.0e99
+#define undefined(value) (value == UNDEFINED)
 
-int celset(pcode, cel, prj)
+/*--------------------------------------------------------------------------*/
 
-const char pcode[4];
+int celini(cel)
+
 struct celprm *cel;
-struct prjprm *prj;
 
 {
-   int dophip;
+   register int k;
+
+   if (cel == 0) return 1;
+
+   cel->flag = 0;
+
+   cel->offset = 0;
+   cel->phi0   = UNDEFINED;
+   cel->theta0 = UNDEFINED;
+   cel->ref[0] =   0.0;
+   cel->ref[1] =   0.0;
+   cel->ref[2] = 999.0;
+   cel->ref[3] = 999.0;
+
+   for (k = 0; k < 5; cel->euler[k++] = 0.0);
+
+   return prjini(&(cel->prj));
+}
+
+/*--------------------------------------------------------------------------*/
+
+int celprt(cel)
+
+const struct celprm *cel;
+
+{
+   int i;
+
+   if (cel == 0) return 1;
+
+   printf("       flag: %d\n",  cel->flag);
+   printf("     offset: %d\n",  cel->offset);
+   if (undefined(cel->phi0)) {
+      printf("       phi0: UNDEFINED\n");
+   } else {
+      printf("       phi0: %9f\n", cel->phi0);
+   }
+   if (undefined(cel->theta0)) {
+      printf("     theta0: UNDEFINED\n");
+   } else {
+      printf("     theta0: %9f\n", cel->theta0);
+   }
+   printf("        ref:");
+   for (i = 0; i < 4; i++) {
+      printf("  %- 11.4g", cel->ref[i]);
+   }
+   printf("\n");
+   printf("        prj: (see below)\n");
+   printf("      euler:");
+   for (i = 0; i < 5; i++) {
+      printf("  %- 11.4g", cel->euler[i]);
+   }
+   printf("\n");
+   printf("     isolat: %d\n", cel->isolat);
+
+   printf("\n");
+   printf("   prj.*\n");
+   prjprt(&(cel->prj));
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int celset(cel)
+
+struct celprm *cel;
+
+{
+   int dophip, status;
    const double tol = 1.0e-10;
    double clat0, cphip, cthe0, slat0, sphip, sthe0;
    double latp, latp1, latp2;
    double u, v, x, y, z;
+   struct prjprm *celprj;
+
+   if (cel == 0) return 1;
 
    /* Initialize the projection driver routines. */
-   if (prjset(pcode, prj)) {
-      return 1;
+   celprj = &(cel->prj);
+   if (cel->offset) {
+      celprj->phi0   = cel->phi0;
+      celprj->theta0 = cel->theta0;
+   } else {
+      /* Ensure that these are undefined - no fiducial offset. */
+      celprj->phi0   = UNDEFINED;
+      celprj->theta0 = UNDEFINED;
    }
+
+   if (status = prjset(celprj)) {
+      return status;
+   }
+
+   /* Defaults set by the projection routines. */
+   if (undefined(cel->phi0)) {
+      cel->phi0 = celprj->phi0;
+   }
+
+   if (undefined(cel->theta0)) {
+      cel->theta0 = celprj->theta0;
+   }
+
 
    /* Set default for native longitude of the celestial pole? */
    dophip = (cel->ref[2] == 999.0);
 
    /* Compute celestial coordinates of the native pole. */
-   if (prj->theta0 == 90.0) {
-      /* Reference point is at the native pole. */
+   if (cel->theta0 == 90.0) {
+      /* Fiducial point is at the native pole. */
 
       if (dophip) {
          /* Set default for longitude of the celestial pole. */
@@ -292,33 +179,33 @@ struct prjprm *prj;
       cel->euler[0] = cel->ref[0];
       cel->euler[1] = 90.0 - latp;
    } else {
-      /* Reference point away from the native pole. */
+      /* Fiducial point away from the native pole. */
 
       /* Set default for longitude of the celestial pole. */
       if (dophip) {
-         cel->ref[2] = (cel->ref[1] < prj->theta0) ? 180.0 : 0.0;
+         cel->ref[2] = (cel->ref[1] < cel->theta0) ? 180.0 : 0.0;
       }
 
       clat0 = cosd(cel->ref[1]);
       slat0 = sind(cel->ref[1]);
-      cphip = cosd(cel->ref[2]);
-      sphip = sind(cel->ref[2]);
-      cthe0 = cosd(prj->theta0);
-      sthe0 = sind(prj->theta0);
+      cphip = cosd(cel->ref[2] - cel->phi0);
+      sphip = sind(cel->ref[2] - cel->phi0);
+      cthe0 = cosd(cel->theta0);
+      sthe0 = sind(cel->theta0);
 
       x = cthe0*cphip;
       y = sthe0;
       z = sqrt(x*x + y*y);
       if (z == 0.0) {
          if (slat0 != 0.0) {
-            return 1;
+            return 3;
          }
 
          /* latp determined by LATPOLE in this case. */
          latp = cel->ref[3];
       } else {
          if (fabs(slat0/z) > 1.0) {
-            return 1;
+            return 3;
          }
 
          u = atan2d(y,x);
@@ -360,9 +247,9 @@ struct prjprm *prj;
       z = cosd(latp)*clat0;
       if (fabs(z) < tol) {
          if (fabs(clat0) < tol) {
-            /* Celestial pole at the reference point. */
+            /* Celestial pole at the fiducial point. */
             cel->euler[0] = cel->ref[0];
-            cel->euler[1] = 90.0 - prj->theta0;
+            cel->euler[1] = 90.0 - cel->theta0;
          } else if (latp > 0.0) {
             /* Celestial pole at the native north pole.*/
             cel->euler[0] = cel->ref[0] + cel->ref[2] - 180.0;
@@ -376,7 +263,7 @@ struct prjprm *prj;
          x = (sthe0 - sind(latp)*slat0)/z;
          y =  sphip*cthe0/clat0;
          if (x == 0.0 && y == 0.0) {
-            return 1;
+            return 3;
          }
          cel->euler[0] = cel->ref[0] - atan2d(y,x);
       }
@@ -392,11 +279,12 @@ struct prjprm *prj;
    cel->euler[2] = cel->ref[2];
    cel->euler[3] = cosd(cel->euler[1]);
    cel->euler[4] = sind(cel->euler[1]);
+   cel->isolat = (cel->euler[4] == 0.0);
    cel->flag = CELSET;
 
    /* Check for ill-conditioned parameters. */
    if (fabs(latp) > 90.0+tol) {
-      return 2;
+      return 4;
    }
 
    return 0;
@@ -404,58 +292,85 @@ struct prjprm *prj;
 
 /*--------------------------------------------------------------------------*/
 
-int celfwd(pcode, lng, lat, cel, phi, theta, prj, x, y)
+int celx2s(cel, nx, ny, sxy, sll, x, y, phi, theta, lng, lat, stat)
 
-const char pcode[4];
-const double lng, lat;
 struct celprm *cel;
-double *phi, *theta;
-struct prjprm *prj;
-double *x, *y;
+int nx, ny, sxy, sll;
+const double x[], y[];
+double phi[], theta[];
+double lng[], lat[];
+int stat[];
 
 {
-   int    err;
+   int    nphi, status;
+   struct prjprm *celprj;
 
+
+   /* Initialize. */
+   if (cel == 0) return 1;
    if (cel->flag != CELSET) {
-      if (celset(pcode, cel, prj)) return 1;
+      if (status = celset(cel)) return status;
    }
+
+   /* Apply spherical deprojection. */
+   celprj = &(cel->prj);
+   if (status = celprj->prjx2s(celprj, nx, ny, sxy, 1, x, y, phi, theta,
+                               stat)) {
+      if (status == 3) {
+         status = 5;
+      } else {
+         return status;
+      }
+   }
+
+   nphi = (ny > 0) ? (nx*ny) : nx;
 
    /* Compute native coordinates. */
-   sphfwd(lng, lat, cel->euler, phi, theta);
+   sphx2s(cel->euler, nphi, 0, 1, sll, phi, theta, lng, lat);
 
-   /* Apply forward projection. */
-   if (err = prj->prjfwd(*phi, *theta, prj, x, y)) {
-      return err == 1 ? 2 : 3;
-   }
-
-   return 0;
+   return status;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int celrev(pcode, x, y, prj, phi, theta, cel, lng, lat)
+int cels2x(cel, nlng, nlat, sll, sxy, lng, lat, phi, theta, x, y, stat)
 
-const char pcode[4];
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
 struct celprm *cel;
-double *lng, *lat;
+int nlng, nlat, sll, sxy;
+const double lng[], lat[];
+double phi[], theta[];
+double x[], y[];
+int stat[];
 
 {
-   int    err;
+   int    nphi, ntheta, status;
+   struct prjprm *celprj;
 
+
+   /* Initialize. */
+   if (cel == 0) return 1;
    if (cel->flag != CELSET) {
-      if (celset(pcode, cel, prj)) return 1;
-   }
-
-   /* Apply reverse projection. */
-   if (err = prj->prjrev(x, y, prj, phi, theta)) {
-      return err == 1 ? 2 : 3;
+      if (status = celset(cel)) return status;
    }
 
    /* Compute native coordinates. */
-   sphrev(*phi, *theta, cel->euler, lng, lat);
+   sphs2x(cel->euler, nlng, nlat, sll, 1, lng, lat, phi, theta);
+
+   if (cel->isolat) {
+      /* Constant celestial latitude -> constant native latitude. */
+      nphi   = nlng;
+      ntheta = nlat;
+   } else {
+      nphi   = (nlat > 0) ? (nlng*nlat) : nlng;
+      ntheta = 0;
+   }
+
+   /* Apply the spherical projection. */
+   celprj = &(cel->prj);
+   if (status = celprj->prjs2x(celprj, nphi, ntheta, 1, sxy, phi, theta, x, y,
+                               stat)) {
+      return status == 2 ? 2 : 6;
+   }
 
    return 0;
 }

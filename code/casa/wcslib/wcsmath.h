@@ -1,7 +1,7 @@
-/*=============================================================================
+/*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,11 +19,14 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
+*
+*=============================================================================
+*   Definition of mathematical constants used by WCSLIB.
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$

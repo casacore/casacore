@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,19 +19,15 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
 *
-*=============================================================================
-*
-*   The functions defined herein are trigonometric or inverse trigonometric
-*   functions which take or return angular arguments in decimal degrees.
-*
+*   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
-*---------------------------------------------------------------------------*/
+*===========================================================================*/
 
 #include <math.h>
 #include "wcsmath.h"
@@ -39,20 +35,22 @@
 
 double cosd(angle)
 
-const double angle;
+double angle;
 
 {
    double resid;
 
-   resid = fabs(fmod(angle,360.0));
-   if (resid == 0.0) {
-      return 1.0;
-   } else if (resid == 90.0) {
-      return 0.0;
-   } else if (resid == 180.0) {
-      return -1.0;
-   } else if (resid == 270.0) {
-      return 0.0;
+   if (fmod(angle,90.0) == 0.0) {
+      resid = fabs(fmod(angle,360.0));
+      if (resid == 0.0) {
+         return 1.0;
+      } else if (resid == 90.0) {
+         return 0.0;
+      } else if (resid == 180.0) {
+         return -1.0;
+      } else if (resid == 270.0) {
+         return 0.0;
+      }
    }
 
    return cos(angle*D2R);
@@ -62,20 +60,22 @@ const double angle;
 
 double sind(angle)
 
-const double angle;
+double angle;
 
 {
    double resid;
 
-   resid = fmod(angle-90.0,360.0);
-   if (resid == 0.0) {
-      return 1.0;
-   } else if (resid == 90.0) {
-      return 0.0;
-   } else if (resid == 180.0) {
-      return -1.0;
-   } else if (resid == 270.0) {
-      return 0.0;
+   if (fmod(angle,90.0) == 0.0) {
+      resid = fmod(angle-90.0,360.0);
+      if (resid == 0.0) {
+         return 1.0;
+      } else if (resid == 90.0) {
+         return 0.0;
+      } else if (resid == 180.0) {
+         return -1.0;
+      } else if (resid == 270.0) {
+         return 0.0;
+      }
    }
 
    return sin(angle*D2R);
@@ -85,7 +85,7 @@ const double angle;
 
 double tand(angle)
 
-const double angle;
+double angle;
 
 {
    double resid;
@@ -106,7 +106,7 @@ const double angle;
 
 double acosd(v)
 
-const double v;
+double v;
 
 {
    if (v >= 1.0) {
@@ -124,7 +124,7 @@ const double v;
 
 double asind(v)
 
-const double v;
+double v;
 
 {
    if (v <= -1.0) {
@@ -142,7 +142,7 @@ const double v;
 
 double atand(v)
 
-const double v;
+double v;
 
 {
    if (v == -1.0) {
@@ -160,7 +160,7 @@ const double v;
 
 double atan2d(y, x)
 
-const double x, y;
+double x, y;
 
 {
    if (y == 0.0) {

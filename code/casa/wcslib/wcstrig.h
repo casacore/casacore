@@ -1,7 +1,7 @@
-/*=============================================================================
+/*============================================================================
 *
-*   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2001, Mark Calabretta
+*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -19,10 +19,10 @@
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
-*      Postal address: Dr. Mark Calabretta,
-*                      Australia Telescope National Facility,
-*                      P.O. Box 76,
-*                      Epping, NSW, 2121,
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
@@ -32,24 +32,36 @@
 #ifndef WCSLIB_TRIG
 #define WCSLIB_TRIG
 
+#ifdef WCSTRIG_MACRO
+
+/* Macro implementation of the trigd functions. */
+#include "wcsmath.h"
+
+#define cosd(X) cos((X)*D2R)
+#define sind(X) sin((X)*D2R)
+#define tand(X) tan((X)*D2R)
+#define acosd(X) acos(X)*R2D
+#define asind(X) asin(X)*R2D
+#define atand(X) atan(X)*R2D
+#define atan2d(Y,X) atan2(Y,X)*R2D
+
+#else
+
+/* Use WCSLIB wrappers or native trigd functions. */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
 #if __STDC__ || defined(__cplusplus)
-   double cosd(const double);
-   double sind(const double);
-   double tand(const double);
-   double acosd(const double);
-   double asind(const double);
-   double atand(const double);
-   double atan2d(const double, const double);
+   double cosd(double);
+   double sind(double);
+   double tand(double);
+   double acosd(double);
+   double asind(double);
+   double atand(double);
+   double atan2d(double, double);
 #else
    double cosd();
    double sind();
@@ -66,5 +78,7 @@ extern "C" {
 #ifdef __cplusplus
 };
 #endif
+
+#endif /* WCSTRIG_MACRO */
 
 #endif /* WCSLIB_TRIG */
