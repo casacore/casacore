@@ -269,19 +269,23 @@ public:
     // the formatted number are returned in <src>units</src>.
     // You can also use the Quantum interface (see base class Coordinate). 
     // The units can then be anything consistent with DirectionCoordinate units.
+    //
+    // native only applies to FIXED and SCIENTIFIC formatting.  If true
+    // you get radians, else degrees.
     //<group>
     virtual void getPrecision (Int& precision, 
                                Coordinate::formatType& format,
-                               const Bool absolute, 
-                               const Int defPrecScientific,
-                               const Int defPrecFixed,
-                               const Int defPrecTime) const;
+                               Bool absolute, 
+                               Int defPrecScientific,
+                               Int defPrecFixed,
+                               Int defPrecTime) const;
     virtual String format(String& units,
-                          const Coordinate::formatType format, 
-                          const Double worldValue, 
-                          const uInt axis, 
-                          const Bool absolute,
-                          const Int precision = -1) const;
+                          Coordinate::formatType format, 
+                          Double worldValue, 
+                          uInt axis, 
+                          Bool absolute,
+                          Int precision=-1,
+                          Bool native=False) const;
     //</group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
@@ -371,7 +375,7 @@ private:
 
     // Check formatting types
     void checkFormat(Coordinate::formatType& format,
-                     const Bool absolute) const;
+                     Bool absolute) const;
 
     // Mixed pixel/world coordinate conversion.  Vector in must
     // be length nWorldAxes (2).  Specify whether longitude
