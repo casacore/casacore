@@ -51,7 +51,8 @@ TableExprNode *MSSelection::msTableExprNode = 0x0;
 
 MSSelection::MSSelection() : 
   antennaExpr_p(""), corrExpr_p(""), fieldExpr_p(""),
-  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p("")
+  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
+  exprOrder_p(MAX_EXPR, NO_EXPR)
 {
 // Default null constructor 
 // Output to private data:
@@ -62,7 +63,6 @@ MSSelection::MSSelection() :
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
 //
-  priority_p.resize(MAX_EXPR);
 }
 
 //----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ MSSelection::MSSelection (const MSSelection& other)
     this->spwExpr_p     = other.spwExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
-    this->priority_p    = other.priority_p;
+    this->exprOrder_p   = other.exprOrder_p;
   }
 }
 
@@ -128,7 +128,7 @@ MSSelection& MSSelection::operator= (const MSSelection& other)
     this->spwExpr_p     = other.spwExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
-    this->priority_p    = other.priority_p;
+    this->exprOrder_p   = other.exprOrder_p;
   }
 
   return *this;
@@ -149,9 +149,9 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
   //
   TableExprNode condition;
 
-  for(unsigned int i=0; i<priority_p.ndim(); i++)
+  for(uInt i=0; i<exprOrder_p.nelements(); i++)
   {
-    switch(priority_p[i])
+    switch(exprOrder_p[i])
     {
       case ANTENNA_EXPR:
         if(antennaExpr_p != "")
@@ -163,7 +163,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
         break;
       case FIELD_EXPR:
         if(fieldExpr_p != "")
-          condition = condition && msFieldGramParseCommand(ms, fieldExpr_p);
+//          condition = condition && msFieldGramParseCommand(ms, fieldExpr_p);
         break;
       case SPW_EXPR:
         if(spwExpr_p != "")
@@ -175,7 +175,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
         break;
       case UVDIST_EXPR:
         if(uvDistExpr_p != "")
-          condition = condition && msUvDistGramParseCommand(ms, uvDistExpr_p);
+//          condition = condition && msUvDistGramParseCommand(ms, uvDistExpr_p);
         break;
       case NO_EXPR:
       default:
@@ -197,13 +197,28 @@ void MSSelection::clear(void)
   timeExpr_p    = "";
   uvDistExpr_p  = "";
 
-  priority_p = Vector<Int>();
-  priority_p.resize(MAX_EXPR);
+  exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setAntennaExpr(const String& antennaExpr)
+Bool MSSelection::setOrder(MSSelection::MSExprType type)
+{
+  for(uInt i=0; i<exprOrder_p.nelements(); i++)
+  {
+    if(exprOrder_p[i] == NO_EXPR)
+    {
+      exprOrder_p[i] = type;
+      return True;
+    }
+  }
+
+  return False;
+}
+
+//----------------------------------------------------------------------------
+
+Bool MSSelection::setAntennaExpr(const String& antennaExpr)
 {
 // Set the antenna
 // Input:
@@ -211,13 +226,18 @@ void MSSelection::setAntennaExpr(const String& antennaExpr)
 // Output to private data:
 //    antennaExpr_p     String         Supplementary antenna expression
 //
-  antennaExpr_p = antennaExpr;
-  priority_p = ANTENNA_EXPR;
+  if(setOrder(ANTENNA_EXPR))
+  {
+    antennaExpr_p = antennaExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setCorrExpr(const String& corrExpr)
+Bool MSSelection::setCorrExpr(const String& corrExpr)
 {
 // Set the correlator
 // Input:
@@ -225,13 +245,18 @@ void MSSelection::setCorrExpr(const String& corrExpr)
 // Output to private data:
 //    corrExpr_p        String         Supplementary correlator expression
 //
-  corrExpr_p = corrExpr;
-  priority_p = CORR_EXPR;
+  if(setOrder(CORR_EXPR))
+  {
+    corrExpr_p = corrExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setFieldExpr(const String& fieldExpr)
+Bool MSSelection::setFieldExpr(const String& fieldExpr)
 {
 // Set the field
 // Input:
@@ -239,13 +264,18 @@ void MSSelection::setFieldExpr(const String& fieldExpr)
 // Output to private data:
 //    fieldExpr_p       String         Supplementary field expression
 //
-  fieldExpr_p = fieldExpr;
-  priority_p = FIELD_EXPR;
+  if(setOrder(FIELD_EXPR))
+  {
+    fieldExpr_p = fieldExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setSPWExpr(const String& spwExpr)
+Bool MSSelection::setSPWExpr(const String& spwExpr)
 {
 // Set the SPW
 // Input:
@@ -253,13 +283,18 @@ void MSSelection::setSPWExpr(const String& spwExpr)
 // Output to private data:
 //    spwExpr_p         String         Supplementary SPW expression
 //
-  spwExpr_p = spwExpr;
-  priority_p = SPW_EXPR;
+  if(setOrder(SPW_EXPR))
+  {
+    spwExpr_p = spwExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setTimeExpr(const String& timeExpr)
+Bool MSSelection::setTimeExpr(const String& timeExpr)
 {
 // Set the time
 // Input:
@@ -267,13 +302,18 @@ void MSSelection::setTimeExpr(const String& timeExpr)
 // Output to private data:
 //    timeExpr_p        String         Supplementary time expression
 //
-  timeExpr_p = timeExpr;
-  priority_p = TIME_EXPR;
+  if(setOrder(TIME_EXPR))
+  {
+    timeExpr_p = timeExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
 
-void MSSelection::setUVDistExpr(const String& uvDistExpr)
+Bool MSSelection::setUVDistExpr(const String& uvDistExpr)
 {
 // Set the UV distribution
 // Input:
@@ -281,8 +321,13 @@ void MSSelection::setUVDistExpr(const String& uvDistExpr)
 // Output to private data:
 //    uvdistExpr_p      String         Supplementary uvdist expression
 //
-  uvDistExpr_p = uvDistExpr;
-  priority_p = UVDIST_EXPR;
+  if(setOrder(UVDIST_EXPR))
+  {
+    uvDistExpr_p = uvDistExpr;
+    return True;
+  }
+
+  return False;
 }
 
 //----------------------------------------------------------------------------
@@ -304,49 +349,43 @@ void MSSelection::fromSelectionItem(const Record& selectionItem)
   }
   cout << "------------------------------------------------------" << endl;
 
-  priority_p = Vector<Int>();
+  exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
 
   // Extract and set all expressions
   //
   // Antenna expression
   if (definedAndSet(selectionItem,"antenna")) {
     setTimeExpr(selectionItem.asString("antenna"));
-    priority_p = ANTENNA_EXPR;
     cout << timeExpr_p << ", antenna" << endl;
   }
 
   // Correlator expression
   if (definedAndSet(selectionItem,"corr")) {
     setCorrExpr(selectionItem.asString("corr"));
-    priority_p = CORR_EXPR;
     cout << corrExpr_p << ", corr" << endl;
   }
 
   // Field expression
   if (definedAndSet(selectionItem,"field")) {
     setFieldExpr(selectionItem.asString("field"));
-    priority_p = FIELD_EXPR;
     cout << fieldExpr_p << ", field" << endl;
   }
 
   // SPW expression
   if (definedAndSet(selectionItem,"spw")) {
     setSPWExpr(selectionItem.asString("spw"));
-    priority_p = SPW_EXPR;
     cout << spwExpr_p << ", spw" << endl;
   }
 
   // Time expression
   if (definedAndSet(selectionItem,"time")) {
     setTimeExpr(selectionItem.asString("time"));
-    priority_p = TIME_EXPR;
     cout << timeExpr_p << ", time" << endl;
   }
 
   // UV Distribution expression
   if (definedAndSet(selectionItem,"uvdist")) {
     setUVDistExpr(selectionItem.asString("uvdist"));
-    priority_p = UVDIST_EXPR;
     cout << uvDistExpr_p << ", uvdist" << endl;
   }
 }

@@ -32,7 +32,6 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MRadialVelocity.h>
 #include <tables/Tables/ExprNode.h>
@@ -102,12 +101,12 @@ class MSSelection
    MSSelection& operator=(const MSSelection& other);
 
    // Expression accessors
-   void setAntennaExpr(const String& antennaExpr);
-   void setCorrExpr(const String& corrExpr);
-   void setFieldExpr(const String& fieldExpr);
-   void setSPWExpr(const String& spwExpr);
-   void setTimeExpr(const String& timeExpr);
-   void setUVDistExpr(const String& uvDistExpr);
+   Bool setAntennaExpr(const String& antennaExpr);
+   Bool setCorrExpr(const String& corrExpr);
+   Bool setFieldExpr(const String& fieldExpr);
+   Bool setSPWExpr(const String& spwExpr);
+   Bool setTimeExpr(const String& timeExpr);
+   Bool setUVDistExpr(const String& uvDistExpr);
 
    // Clear all subexpression and reset priority
    void clear(void);
@@ -119,6 +118,9 @@ class MSSelection
    static TableExprNode *msTableExprNode;
 
  private:
+   // Set into the order of the selection expression
+   Bool setOrder(MSSelection::MSExprType type);
+
    // Initialize from a Record representing a selection
    // item from the user interface or CLI
    void fromSelectionItem(const Record& selectionItem);
@@ -138,7 +140,7 @@ class MSSelection
    String uvDistExpr_p;
 
    // Priority
-   Vector<Int> priority_p;
+   Vector<Int> exprOrder_p;
 };
 
 } //# NAMESPACE CASA - END
