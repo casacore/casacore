@@ -1,5 +1,5 @@
 //# Functionals.h: A module that represents various function-like classes.
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,7 +90,7 @@
 //   This is the base class for discrete, regularly sampled one-dimensional 
 //   functions. It inherits from <src>Functional<uInt, Range></src>.
 // <li> 
-//   <linkto class="FunctionWithDerivs">FunctionWithDerivs</linkto>:
+//   <linkto class="FuncWithDerivs">FuncWithDerivs</linkto>:
 //   This is the base class for functions which can calculate their
 //   derivatives
 // <li> 
@@ -110,7 +110,7 @@
 //   A 1-dimensional Gaussian. The height, center, and width are the
 //   parameters of the Gaussian.
 // <li> 
-//   <linkto class="Inetrpolate1D">Interpolate1D<T></linkto>:
+//   <linkto class="Interpolate1D">Interpolate1D<T></linkto>:
 //   A 1-dimensional function that will interpolate using a variety of
 //   algorithms between a supplied set of data points.
 // <li> 
