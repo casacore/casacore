@@ -211,6 +211,8 @@ private:
   Vector<String> pols_p;
   Vector<Double> freqs_p;
 
+  // SpWId map from DDIs:
+  Vector<Int> spwins_p;
 
   // Field width variables
   uInt wTime_p, wAnt_p, wIntrf_p, wUVDist_p;
