@@ -4370,3 +4370,5 @@
 14 247 src rm trial/apps/measures/TAI_UTC
 14 258 src rm trial/implement/Tasking/stdtoolguiserver.g
 14 258 src rm trial/implement/Tasking/stdtoolcliserver.g
+14 258 sys rm libexec/stdtoolguiserver.g
+14 258 sys rm libexec/stdtoolcliserver.g
