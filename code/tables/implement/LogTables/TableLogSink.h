@@ -1,5 +1,5 @@
 //# TableLogSink.h: Save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,8 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 class TableDesc;
 
@@ -86,9 +88,14 @@ class TableLogSink : public LogSinkInterface
 {
 public:
     // If <src>fileName</src> exists, attach and append to it, otherwise create
-    // a file with that name. If the table exists, it must have all the required
-    // columns defined by <src>logTableDescription()</src>.
+    // a table with that name. If the table exists, it must have all the
+    // required columns defined by <src>logTableDescription()</src>.
     TableLogSink(const LogFilter &filter, const String &fileName);
+
+    // Open the log table for readonly.
+    // If needed, reopenRW can be used later to define a filter and
+    // to open the logtable for writing.
+    TableLogSink(const String &fileName);
 
     // After copying, both sinks will write to the same <src>Table</src>.
     // <group>
@@ -98,22 +105,33 @@ public:
 
     ~TableLogSink();
 
+    // Reopen the logtable for read/write (if needed).
+    // When it actually reopens, the given filter will be used.
+    void reopenRW (const LogFilter &filter);
+
     // If the message passes the filter, write it to the log table.
     virtual Bool postLocally(const LogMessage &message);
 
     // Access to the actual log table and its columns.
+    // <note role=caution>
+    // Functions <src>time, priority, message, location, objectID</src>
+    // return a null <src>ScalarColumn</src> object when the logtable is
+    // not writable. Using it may result in using a null pointer
+    // causing a core dump. In debug mode it is checked if the object
+    // is not null.
+    // </note>
     // <group>
     const Table &table() const;
     Table &table();
-    const ScalarColumn<Double> &time() const;
+    const ROScalarColumn<Double> &roTime() const;
     ScalarColumn<Double> &time();
-    const ScalarColumn<String> &priority() const;
+    const ROScalarColumn<String> &roPriority() const;
     ScalarColumn<String> &priority();
-    const ScalarColumn<String> &message() const;
+    const ROScalarColumn<String> &roMessage() const;
     ScalarColumn<String> &message();
-    const ScalarColumn<String> &location() const;
+    const ROScalarColumn<String> &roLocation() const;
     ScalarColumn<String> &location();
-    const ScalarColumn<String> &objectID() const;
+    const ROScalarColumn<String> &roObjectID() const;
     ScalarColumn<String> &objectID();
     // </group>
   
@@ -137,6 +155,7 @@ public:
     // Turn the <src>Columns</src> enum into a String which is the actual
     // column name in the <src>Table</src>.
     static String columnName(Columns which);
+
     // Description of the log table. You can use this if, e.g., you do not
     // want to use the storage managers that this class creates by default
     // (currently Miriad).
@@ -163,6 +182,13 @@ private:
 
     Table log_table_p;
     // Message
+    ROScalarColumn<Double>  roTime_p;
+    ROScalarColumn<String>  roPriority_p;
+    ROScalarColumn<String>  roMessage_p;
+    // Origin
+    ROScalarColumn<String>  roLocation_p;
+    // ObjectID
+    ROScalarColumn<String>  roId_p;
     ScalarColumn<Double>  time_p;
     ScalarColumn<String>  priority_p;
     ScalarColumn<String>  message_p;
@@ -176,19 +202,25 @@ private:
 inline const Table &TableLogSink::table() const {return log_table_p;}
 inline Table &TableLogSink::table() {return log_table_p;}
 
-inline const ScalarColumn<Double> &TableLogSink::time() const {return time_p;}
-inline ScalarColumn<Double> &TableLogSink::time() {return time_p;}
-inline const ScalarColumn<String> &TableLogSink::priority() const 
-   {return priority_p;}
-inline ScalarColumn<String> &TableLogSink::priority() {return priority_p;}
-inline const ScalarColumn<String> &TableLogSink::location() const 
-    {return location_p;}
-inline ScalarColumn<String> &TableLogSink::location() {return location_p;}
-inline const ScalarColumn<String> &TableLogSink::objectID() const 
-    {return id_p;}
-inline ScalarColumn<String> &TableLogSink::objectID() {return id_p;}
-inline const ScalarColumn<String> &TableLogSink::message() const
-  {return message_p;}
-inline ScalarColumn<String> &TableLogSink::message() {return message_p;}
+inline const ROScalarColumn<Double> &TableLogSink::roTime() const
+   {return roTime_p;}
+inline ScalarColumn<Double> &TableLogSink::time()
+  {DebugAssert(!time_p.isNull(),AipsError); return time_p;}
+inline const ROScalarColumn<String> &TableLogSink::roPriority() const 
+   {return roPriority_p;}
+inline ScalarColumn<String> &TableLogSink::priority()
+  {DebugAssert(!priority_p.isNull(),AipsError); return priority_p;}
+inline const ROScalarColumn<String> &TableLogSink::roLocation() const 
+  {return roLocation_p;}
+inline ScalarColumn<String> &TableLogSink::location()
+  {DebugAssert(!location_p.isNull(),AipsError); return location_p;}
+inline const ROScalarColumn<String> &TableLogSink::roObjectID() const 
+  {return roId_p;}
+inline ScalarColumn<String> &TableLogSink::objectID()
+  {DebugAssert(!id_p.isNull(),AipsError); return id_p;}
+inline const ROScalarColumn<String> &TableLogSink::roMessage() const
+  {return roMessage_p;}
+inline ScalarColumn<String> &TableLogSink::message()
+  {DebugAssert(!message_p.isNull(),AipsError); return message_p;}
 
 #endif
