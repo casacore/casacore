@@ -712,6 +712,7 @@ Bool SubMS::writeDiffSpwShape(String& columnName){
       Matrix<Bool> chanFlag;
       chanFlag.reference(vb.flag());
       Cube<Complex> averdata(npol_p[spw], nchan_p[spw], rowsnow);
+      averdata.set(Complex(0,0));
       Cube<Float> spWeight;
       if (doSpWeight){
 	spWeight.resize(npol_p[spw], nchan_p[spw], rowsnow);
@@ -826,6 +827,7 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
       outspweight.resize(npol_p[0], nchan_p[0], nrow);
       wgtSpec.reference(mscIn_p->weightSpectrum());
     }
+    
     for (Int row=0; row < nrow; ++row){
 
       data.get(row, indatatmp);
@@ -834,9 +836,11 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
       Int ck=0;
       Int chancounter=0;
       Vector<Int> avcounter(npol_p[0]);
+      outdatatmp.set(0); outwgtspectmp.set(0);
       avcounter.set(0);
-      for (Int k=chanStart_p[0]; k< (nchan_p[0]*chanStep_p[0]+chanStart_p[0]);
-	   k++) {
+      
+     for (Int k=chanStart_p[0]; k< (nchan_p[0]*chanStep_p[0]+chanStart_p[0]);
+	   ++k) {
 
 	if(chancounter == chanStep_p[0]){
 	  outdatatmp.set(0); outwgtspectmp.set(0);
