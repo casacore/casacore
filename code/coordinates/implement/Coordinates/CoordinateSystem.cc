@@ -1027,7 +1027,7 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                world_replacement_values_p[i]->operator()(j);
 // 
 // We have to decide what conversion to do (pixel<->world) for
-// the removed axis.  For coupled axes like DirectionCOordinate,
+// the removed axis.  For coupled axes like DirectionCoordinate,
 // I do for the removed axis whatever I did for
 // the unremoved axis, if there is one...  If both world
 // axes are removed, ultinately it doesn't really matter what
@@ -1862,11 +1862,13 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
 // Generate keywords
 
+    Double longPole, latPole;
     Vector<Double> crval, crpix, cdelt, projp, crota;
     Vector<String> ctype, cunit;
     Matrix<Double> pc;
     Bool isNCP = False;
-    if (!toFITSHeaderGenerateKeywords (os, isNCP, crval, crpix, cdelt, crota, projp, 
+    if (!toFITSHeaderGenerateKeywords (os, isNCP, longPole, latPole, crval, crpix, 
+                                       cdelt, crota, projp, 
                                        ctype, cunit, pc, coordsys, skyCoord, 
                                        longAxis, latAxis, specAxis, stokesAxis,
                                        writeWCS, offset, sprefix)) {
@@ -1906,10 +1908,11 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     }
 
 // Try to work out the epoch/equinox
+// Also LONGPOLE and LATPOLE here.
 
     if (skyCoord >= 0) {
-	MDirection::Types radecsys = 
-	    directionCoordinate(skyCoord).directionType();
+	const DirectionCoordinate& dCoord = directionCoordinate(skyCoord);
+	MDirection::Types radecsys = dCoord.directionType();
 	Double equinox = -1.0;
 	switch(radecsys) {
 	case MDirection::J2000:
@@ -1928,6 +1931,12 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 		header.define("epoch", equinox);
 	    }
 	}
+//
+        header.define("lonpole", longPole);
+        const Projection& proj = dCoord.projection();
+        if (!Projection::isZenithal(proj.type())) {    
+           header.define("latpole", latPole);       // Not relevant for zenithals
+        }
     }
 
 // Actually write the header
@@ -2031,6 +2040,8 @@ Bool CoordinateSystem::toFITSHeaderStokes(Vector<Double>& crval,
 
 Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os, 
                                                      Bool& isNCP,
+                                                     Double& longPole, 
+                                                     Double& latPole,
                                                      Vector<Double>& crval,
                                                      Vector<Double>& crpix,
                                                      Vector<Double>& cdelt,
@@ -2051,7 +2062,10 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
    crpix = coordsys.referencePixel() + offset;
    cdelt = coordsys.increment();
    if (skyCoord >= 0) {
-      projp = coordsys.directionCoordinate(skyCoord).projection().parameters();
+      const DirectionCoordinate dCoord = coordsys.directionCoordinate(skyCoord);
+      projp = dCoord.projection().parameters();
+      longPole = dCoord.longLatPoles()(2);
+      latPole =  dCoord.longLatPoles()(3);
    }
    Vector<String> cctype(2);
    if (skyCoord>=0 && !writeWCS) {
@@ -2392,6 +2406,19 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    toRadX = longu.getValue().getFac()/rad.getValue().getFac();
 	    toRadY = latu.getValue().getFac()/rad.getValue().getFac();
 	}
+
+// FIsh out LONG/LATPOLE
+
+        Double longPole = 999.0;
+        Double latPole = 999.0;
+	if (header.isDefined("lonpole")) {
+           header.get("lonpole", longPole);
+           longPole *= C::pi / 180.0;
+        }
+	if (header.isDefined("latpole")) {
+           header.get("latpole", latPole);
+           latPole *= C::pi / 180.0;
+        }
 	
 // DEFAULT
 
@@ -2456,7 +2483,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 				crval(longAxis)*toRadX,	crval(latAxis)*toRadY,
 				cdelt(longAxis)*toRadX, cdelt(latAxis)*toRadY,
 				dirpc,
-				crpix(longAxis), crpix(latAxis));
+				crpix(longAxis), crpix(latAxis),
+                                longPole, latPole);
 	coordsys.addCoordinate(dir);
     }
 
