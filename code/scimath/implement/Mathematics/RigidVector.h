@@ -144,9 +144,9 @@ template <class T, Int n> class RigidVector {
     friend RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 					    const RigidVector<Float,4>& v);
 public:
-    RigidVector(Int dummy) {
-      for (Int i=0; i<n; i++) v_p[i]=T(0);
-    }
+  //    RigidVector(Int dummy) {
+  //      for (Int i=0; i<n; i++) v_p[i]=T(0);
+  //    }
     // Default constructor
     RigidVector() {
       for (Int i=0; i<n; i++) v_p[i]=T(0);

@@ -131,7 +131,8 @@ SquareMatrix<T,n>::operator+=(const SquareMatrix<T,n>& other) {
 		return *this;
 	    }
 	}
-    case General: 
+//  case General: 
+    default:
 	switch (other.type_p) {
 	    case ScalarId: {
 		for (Int i=0; i<n; i++) a_p[i][i]+=other.a_p[0][0];
@@ -212,7 +213,8 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::operator*=(const SquareMatrix<T,n>& other)
 		    for (Int j=0; j<n; j++) a_p[i][j]*=other.a_p[j][j];
 		return *this;
 	    }
-	    case General: {
+//      case General: 
+	default: {
 		T a[n], tmp;
 		for (Int i=0; i<n; i++) {
 		    for (Int j=0; j<n; j++) a[j]=a_p[i][j];
@@ -348,7 +350,8 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::conj() {
 	    for (Int i=0; i<n; i++) a_p[i][i]=::conj(a_p[i][i]);
 	    return *this;
 	}
-        case General: {
+//      case General: 
+	default: {
 	    for (Int i=0; i<n; i++)
 		for (Int j=0; j<n; j++) a_p[i][j]=::conj(a_p[i][j]);
 	    return *this;
@@ -395,43 +398,44 @@ SquareMatrix<T,n> SquareMatrix<T,n>::adjoint(const SquareMatrix<T,n>& other) {
 
 template <class T, Int n> 
 SquareMatrix<T,n>& SquareMatrix<T,n>::inverse(SquareMatrix<T,n>& result) const {
-    switch (type_p) {
-        case ScalarId: {
-	    result.a_p[0][0]=T(1)/a_p[0][0];
-	    result.type_p=ScalarId;
-	    return result;
+  switch (type_p) {
+    case ScalarId: {
+      result.a_p[0][0]=T(1)/a_p[0][0];
+      result.type_p=ScalarId;
+      return result;
+    }
+    case Diagonal: {
+      for (Int i=0; i<n; i++) result.a_p[i][i]=T(1)/a_p[i][i];
+      result.type_p=Diagonal;
+      return result;
+    }
+//  case General: 
+    default: {
+      switch (n) {
+        case 2: {
+	  T det=a_p[0][0]*a_p[1][1]-a_p[1][0]*a_p[0][1];
+	  result.a_p[0][0]=a_p[1][1]/det;
+	  result.a_p[0][1]=-a_p[0][1]/det;
+	  result.a_p[1][0]=-a_p[1][0]/det;
+	  result.a_p[1][1]=a_p[0][0]/det;
+	  result.type_p=General;
+	  return result;
 	}
-        case Diagonal: {
-	    for (Int i=0; i<n; i++) result.a_p[i][i]=T(1)/a_p[i][i];
-	    result.type_p=Diagonal;
-	    return result;
+        default: {
+	  //		    return result=invert(matrix());
+	  Matrix<T> mat=invert(matrix());
+	  if (mat.nelements()==0) {
+	    cerr<< "invert of singular matrix attempted:"<< 
+	      matrix().arrayCast()
+		<< endl;
+	    result=T(1);
+	  }
+	  else result=mat;
+	  return result;
 	}
-        case General: {
-	    switch (n) {
-	        case 2: {
-		    T det=a_p[0][0]*a_p[1][1]-a_p[1][0]*a_p[0][1];
-		    result.a_p[0][0]=a_p[1][1]/det;
-		    result.a_p[0][1]=-a_p[0][1]/det;
-		    result.a_p[1][0]=-a_p[1][0]/det;
-		    result.a_p[1][1]=a_p[0][0]/det;
-		    result.type_p=General;
-		    return result;
-		}
-		default: {
-//		    return result=invert(matrix());
-		    Matrix<T> mat=invert(matrix());
-		    if (mat.nelements()==0) {
-			cerr<< "invert of singular matrix attempted:"<< 
-			    matrix().arrayCast()
-			    << endl;
-			result=T(1);
-		    }
-		    else result=mat;
-		    return result;
-		}
-	    }
-	}
-    }		    
+      }
+    }
+  }		    
 }		
 
 /*
@@ -482,7 +486,8 @@ Matrix<T>& SquareMatrix<T,n>::matrix(Matrix<T>& result) const {
 	    for (Int i=0; i<n; i++) result(i,i)=a_p[i][i];
 	    return result;
 	}
-        case General: {
+//      case General: 
+        default: {
 	    for (Int i=0; i<n; i++)
 		for (Int j=0; j<n; j++) result(i,j)=a_p[i][j];
 	    return result;
