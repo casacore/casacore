@@ -6,9 +6,9 @@
 \parskip=5truept
 \begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-%\newcommand{\defline}[1]{\cline{1-5} 
-%\multicolumn{5}{|l|}{#1} \\ 
-%\cline{1-5}}
+\newcommand{\defline}[1]{\cline{1-5} 
+\multicolumn{5}{|l|}{#1} \\ 
+\cline{1-5}}
 \newcommand{\definetable}[2]
 {
         \clearpage
@@ -17,8 +17,7 @@
 	\subsection{#1}
         \vspace{0.15in}
         \small
-
-	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
+        \begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
 	\hline
 	\multicolumn{5}{|c|}{\bf #1}\\ 
 	\cline{1-5} 
