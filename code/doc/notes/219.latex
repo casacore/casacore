@@ -17,7 +17,7 @@
 
 \tableofcontents
       
-\section{Introduction}
+\section{Purpose}
 
 This document describes a phased plan to realize the Mosaicing
 specifications as described by Holdaway {\em et al.}
@@ -25,7 +25,7 @@ specifications as described by Holdaway {\em et al.}
 120)}{../specs/120/120.html}
 (hereafter HSCR).
 
-\section{Phase I: Improve sky}
+\section{Current status}
 
 {\tt sky} currently (April 1998) provides simple mosaicing
 capabilities. Specifically, the program can correct for VLA and WSRT
@@ -34,11 +34,30 @@ algorithm.  In the clean-based algorithm, the minor cycles are
 performed using an average PSF, and major cycles using the fully
 correct PSF (including any time-variation). Both these capabilities
 result from an initiative to demonstrate that the synthesis framework
-is capable of supporting mosaicing data reduction. The calibration
-object, {\tt cal}, knows nothing about mosaicing: all prediction
-of model visibilities is done by {\tt sky}. 
+is capable of supporting mosaicing data reduction. 
 
-To build on this, we need to do the following:
+A significant design decision in {\tt sky} is that all deconvolution
+is performed inside {\tt sky}. This is contrary to the model used in
+Miriad mosaicing, whereby the dirty image and PSFs are written out and
+processed separately in another program. The rationale for the choice
+not to do this in {\em sky} is that the ancillary information (arising
+from the MeasurementSet) that must be carried along may be quite
+complicated (internally the VisibilityIterator class is used to
+encapsulate this information).
+
+The calibration object, {\tt cal}, knows nothing about mosaicing: all
+prediction of model visibilities is done by {\tt sky}.
+Visibility-plane calibration is thus independent of whether or not the
+data are mosaiced.
+
+The one key capability yet to be developed fully and demonstrated in the
+synthesis framework is the solution for image plane-based effects such
+as non-isoplanicity or pointing errors.
+
+\section{Phase I: Improve sky}
+
+To build on the current capabilities of {\tt sky}, we need to do the
+following:
 
 \begin{itemize}
 \item Improve the PBSkyJones class hierachy to allow the types of
@@ -47,6 +66,8 @@ PBs with known form. Solveable primary beams will come later.
 \item Optimize the use of FFTs in the Gridded transform (class GridFT)
 to avoid FFTing regions outside the primary beam model (need Image
 region support).
+\item Post-deconvolution primary beam correction, both single field
+and multiple field.
 \item Provide different deconvolution methods: 
 \begin{itemize}
 \item inverse and Wiener filtering (including production of
@@ -59,11 +80,26 @@ PSF).
 \end{itemize}
 
 A suitable concluding milestone for this phase would be to able to
-make mosaics correcting known assymetries in the primary beam model {\em
-e.g.} the VLA primary beam squint when observing circular polarization
-on the Sun. This would test many of the changes mentioned above.
+make mosaics from a very large spectral-line mosaic dataset from
+WSRT. Another milestone would be to correct known assymetries in the
+primary beam model {\em e.g.} the VLA primary beam squint when
+observing circular polarization on the Sun.
 
-\section{Phase II: Simulation capability}
+\section{Phase II: Develop Single Dish OTF imaging in sky}
+
+Single Dish On-The-Fly data reduction can be accomplished using the
+SkyEquation formalizm but to acheive satisfactory performance when
+imaging only OTF data, some changes may be required. In particular,
+a different version of SkyEquation::gradientsChiSquared is probably
+necessary since a Fourier transform is not required.
+
+MeasurementSet V2 is needed in order to hold OTF data in a 
+reasonably compact form.
+
+A concluding milestone would be to construct an OTF image from
+12m spectral data.
+
+\section{Phase III: Simulation capability}
 
 Once the changes above have been made, we can move on to develop
 a simulation capability using the tools refined in the previous
@@ -88,10 +124,11 @@ error in reconstruction.
 divided by rms error in reconstruction.
 \end{description}
 
-\section{Phase III: Mosaicing tools}
+A concluding milestone would be to simulate a simple mosaiced
+observation from one of the consortium telescopes, and make an image
+using sky, and evaluate the imaging performance.
 
-This phase is actually quite independent of I and II and could
-be scheduled concurrently (or ahead).
+\section{Phase IV: Mosaicing tools}
 
 There is a need for a number of basic tools for aiding mosaicing.
 
@@ -111,5 +148,7 @@ are relevant (and with what weight).
 \end{itemize}
 \item Weighting tools
 \end{itemize}
+
+\section{Scheduling}
 
 \end{document}
