@@ -1,5 +1,5 @@
 //# TempLattice.cc:
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,21 +44,33 @@ TempLattice<T>::TempLattice()
 }
 
 template<class T>
-TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB) 
-: itsTablePtr (0),
-  itsIsClosed (False)
+TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB) :
+  itsTablePtr (0), itsIsClosed (False)
 {
-  uInt memoryReq = shape.shape().product()*sizeof(T)/(1024*1024);
-  uInt memoryAvail;
-  if (maxMemoryInMB > 0) {
+  init(shape, Double(maxMemoryInMB));
+}
+
+template<class T>
+TempLattice<T>::TempLattice (const TiledShape& shape, Double maxMemoryInMB) :
+  itsTablePtr (0), itsIsClosed (False)
+{
+  init(shape, maxMemoryInMB);
+}
+
+template<class T>
+void TempLattice<T>::init(const TiledShape& shape, Double maxMemoryInMB) 
+{
+  Double memoryReq = Double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
+  Double memoryAvail;
+  if (maxMemoryInMB > 0.0) {
     memoryAvail = maxMemoryInMB;
   } else {
-    memoryAvail = AppInfo::availableMemoryInMB() / 2;
+    memoryAvail = Double(AppInfo::availableMemoryInMB()) / 2.0;
   }
   if (memoryReq > memoryAvail) {
     // Create a table with a unique name in a work directory.
     // We can use exclusive locking, since nobody else should use the table.
-    itsTableName = AppInfo::workFileName (memoryReq, "TempLattice");
+    itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
     SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
     itsTablePtr = new Table (newtab, TableLock::PermanentLockingWait);
     itsLatticePtr = new PagedArray<T> (shape, *itsTablePtr);
