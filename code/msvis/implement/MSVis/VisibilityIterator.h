@@ -33,14 +33,14 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementEquations/MSDerivedValues.h>
+#include <trial/MeasurementSet/MSDerivedValues.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Measures/MCDoppler.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 #include <trial/MeasurementEquations/StokesVector.h>
-#include <trial/MeasurementEquations/MSIter.h>
+#include <trial/MeasurementSet/MSIter.h>
 
 //# forward decl
 class VisBuffer;
