@@ -1,5 +1,5 @@
 //# Random.h: Random number classes
-//# Copyright (C) 1992,1993,1994,1995
+//# Copyright (C) 1992,1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 
 //# on the alpha long is 64 bits, we redefine it here to make 
 //# this nasty piece of code work
-#ifdef __alpha__
+#if defined(__alpha__) || defined(SGI64)
 #define long int
 #endif
 
@@ -1127,7 +1127,7 @@ inline double Weibull::beta(double x) {
   return tmp;
 };
 
-#ifdef __alpha__
+#if defined(__alpha__) || defined(SGI64)
 #undef long
 #endif
 

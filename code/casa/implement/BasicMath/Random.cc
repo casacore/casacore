@@ -40,7 +40,7 @@
 
 //# on the alpha long is 64 bits, we redefine it here to make 
 //# this nasty piece of code work
-#ifdef __alpha__
+#if defined(__alpha__) || defined(SGI64)
 #define long int
 #endif
 
@@ -619,6 +619,6 @@ double Weibull::operator()()
 {
     return( pow(pBeta * ( - log(1 - pGenerator -> asDouble()) ), pInvAlpha) );
 }
-#ifdef __alpha__
+#if defined(__alpha__) || defined(SGI64)
 #undef long
 #endif
