@@ -47,7 +47,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=Tasking>Tasking</linkto>
+//   <li> <linkto module=Tasking>Tasking</linkto>
 //   <li> <linkto module=OS>OS</linkto>
 // </prerequisite>
 
