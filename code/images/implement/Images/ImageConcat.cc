@@ -23,7 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
+
 
 #include <trial/Images/ImageConcat.h>
 
