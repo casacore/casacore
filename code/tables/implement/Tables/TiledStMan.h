@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,6 +121,9 @@ public:
     // This is the name of the hypercolumn.
     String dataManagerName() const;
 
+    // Set the flag to "data has changed since last flush".
+    void setDataChanged();
+
     // Derive the tile shape from the hypercube shape for the given maximum
     // number of pixels per tile. It is tried to get the same number
     // of tiles for each dimension.
@@ -186,11 +189,11 @@ public:
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache() const;
 
-    // Clear the caches used by the hypercubes in this storage manager.
+    // Empty the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
     // resulting in a possibly large drop in memory used.
     // It also clears the userSetCache flag.
-    void clearCaches();
+    void emptyCaches();
 
     // Show the statistics of all caches used.
     void showCacheStatistics (ostream& os) const;
@@ -244,8 +247,14 @@ public:
     // Get the TSMFile object with the given sequence number.
     TSMFile* getFile (uInt sequenceNumber);
 
+    // Open the storage manager for an existing table.
+    virtual void open (uInt nrrow, AipsIO&);
+
+    // Resync the storage manager with the new file contents.
+    virtual void resync (uInt nrrow);
+
     // Reopen all files used in this storage manager for read/write access.
-    void reopenRW();
+    virtual void reopenRW();
 
     // Create a column in the storage manager on behalf of a table column.
     // <group>
@@ -335,6 +344,14 @@ protected:
     // (in the last dimension) of a hypercube with the given shape.
     uInt addedNrrow (const IPosition& shape, uInt incrInLastDim) const;
 
+    // Flush the caches of all hypercubes.
+    // If data have put and fsync is set, fsync all files.
+    Bool flushCaches (Bool fsync);
+
+    // Let a derived class read the header info.
+    // This is used by the open and resync function.
+    virtual void readHeader (uInt nrrow, Bool firstTime) = 0;
+
     // Create the TSM header file.
     // It creates an AipsIO object for it.
     AipsIO* headerFileCreate();
@@ -348,7 +365,9 @@ protected:
     void headerFilePut (AipsIO& headerFile, uInt nrCube);
 
     // Read the data from the header file.
-    void headerFileGet (AipsIO& headerFile, uInt tabNrrow);
+    // When done for the first time, setup() is called to initialize
+    // the various variables.
+    void headerFileGet (AipsIO& headerFile, uInt tabNrrow, Bool firstTime);
 
     // Close the header file.
     // It deletes the AipsIO object.
@@ -390,17 +409,19 @@ protected:
     // The assembly of all TSMCube objects.
     PtrBlock<TSMCube*> cubeSet_p;
     // The persistent maximum cache size for a hypercube.
-    uInt persMaxCacheSize_p;
+    uInt      persMaxCacheSize_p;
     // The actual maximum cache size for a hypercube.
-    uInt maxCacheSize_p;
+    uInt      maxCacheSize_p;
     // The dimensionality of the hypercolumn.
-    uInt nrdim_p;
+    uInt      nrdim_p;
     // The number of vector coordinates.
-    uInt nrCoordVector_p;
+    uInt      nrCoordVector_p;
     // The fixed cell shape.
     IPosition fixedCellShape_p;
     // The user set the cache size.
     Bool      userSetCache_p;
+    // Has any data changed since the last flush?
+    Bool      dataChanged_p;
 };
 
 
@@ -425,6 +446,8 @@ inline Bool TiledStMan::userSetCache() const
 inline Bool TiledStMan::asCanonical() const
     { return asCanonical_p; }
 
+inline void TiledStMan::setDataChanged()
+    { dataChanged_p = True; }
 
 
 #endif

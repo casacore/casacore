@@ -1,5 +1,5 @@
 //# StManAipsIO.h: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -362,6 +362,11 @@ public:
     uInt nrow() const
 	{ return nrrow_p; }
 
+    // Set the hasPut_p flag. In this way the StManAipsIOColumn objects
+    // can indicate that data have been put.
+    void setHasPut()
+	{ hasPut_p = True; }
+
     // Does the storage manager allow to add rows? (yes)
     Bool canAddRow() const;
 
@@ -380,18 +385,21 @@ public:
 
 
 private:
-    // Flush the data and close the storage manager.
-    // All StManColumnAipsIO objects will write their data and close
-    // themselves.
-    void close (AipsIO&);
+    // Flush and optionally fsync the data.
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    virtual Bool flush (AipsIO&, Bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    void create (uInt nrrow);
+    virtual void create (uInt nrrow);
 
     // Open the storage manager file for an existing table and read in
     // the data and let the StManColumnAipsIO objects read their data.
-    void open (uInt nrrow, AipsIO&);
+    virtual void open (uInt nrrow, AipsIO&);
+
+    // Resync the storage manager with the new file contents.
+    // This is done by clearing the cache.
+    virtual void resync (uInt nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
@@ -430,6 +438,8 @@ private:
     uInt   nrrow_p;
     // The assembly of all columns.
     PtrBlock<StManColumnAipsIO*>  colSet_p;
+    // Has anything been put since the last flush?
+    Bool   hasPut_p;
 };
 
 

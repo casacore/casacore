@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -137,7 +137,8 @@ public:
 
     // Create a reference table out of a file (written by writeRefTable).
     // The referenced table will also be created (if not stored in the cache).
-    RefTable (AipsIO&, const String& name, uInt nrrow, int option);
+    RefTable (AipsIO&, const String& name, uInt nrrow, int option,
+	      const TableLock& lockOptions);
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
@@ -156,6 +157,23 @@ public:
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
 
+    // Get the locking info.
+    virtual const TableLock& lockOptions() const;
+
+    // Merge the given lock info with the existing one.
+    virtual void mergeLock (const TableLock& lockOptions);
+
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    virtual Bool hasLock (Bool write) const;
+
+    // Try to lock the table for read or write access.
+    virtual Bool lock (Bool write, uInt nattempts);
+
+    // Unlock the table. This will also synchronize the table data,
+    // thus force the data to be written to disk.
+    virtual void unlock();
+
     // Flush the table, i.e. write it to disk.
     // Nothing will be done if the table is not writable.
     // A flush can be executed at any time.
@@ -163,26 +181,26 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    void flush();
+    virtual void flush (Bool sync);
+
+    // Get the modify counter.
+    virtual uInt getModifyCounter() const;
 
     // Test if the parent table is opended as writable.
     Bool isWritable() const;
 
     // Read a reference table from a file.
     // The referenced table will also be created (if not stored in the cache).
-    void getRef (AipsIO&, int option);
+    void getRef (AipsIO&, int option, const TableLock& lockOptions);
 
-    // Get access to the table keyword set (in the original table).
+    // Get readonly access to the table keyword set.
     TableRecord& keywordSet();
 
-    // Test if the table needs synchronization.
-    // It does not need it.
-    Bool needToSync() const;
+    // Get read/write access to the table keyword set.
+    // This requires that the table is locked (or it gets locked
+    // when using AutoLocking mode).
+    TableRecord& rwKeywordSet();
 
-    // Synchronize the table and return the number of rows.
-    // It does not need to synchronize.
-    uInt sync (Bool& moreToExpect);
-    
     // Get a column object using its index.
     BaseColumn* getColumn (uInt columnIndex) const;
 
@@ -209,10 +227,6 @@ public:
 
     // Find the data manager with the given name.
     DataManager* findDataManager (const String& dataManagerName) const;
-
-    //# Sort a table.
-//#//    RefTable* doSort (Block<BaseColumn*>&, const Block<Int>& sortOrder,
-//#//		      int Sortoptions);
 
     // Get a vector of row numbers.
     Vector<uInt> rowNumbers() const;
@@ -283,7 +297,7 @@ private:
     void makeRefCol();
 
     // Write a reference table.
-    void writeRefTable();
+    void writeRefTable (Bool sync);
 };
 
 

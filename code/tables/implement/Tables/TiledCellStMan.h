@@ -1,5 +1,5 @@
 //# TiledCellStMan.h: Tiled Cell Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,16 +210,16 @@ private:
     virtual void setupCheck (const TableDesc& tableDesc,
 			     const Vector<String>& dataNames) const;
 
-    // Flush the data and close the storage manager.
-    void close (AipsIO&);
+    // Flush and optionally fsync the data.
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    virtual Bool flush (AipsIO&, Bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    void create (uInt nrrow);
+    virtual void create (uInt nrrow);
 
-    // Open the storage manager file for an existing table and read in
-    // the data and let the TSMColumn objects read their data.
-    void open (uInt nrrow, AipsIO&);
+    // Read the header info.
+    virtual void readHeader (uInt nrrow, Bool firstTime);
 
 
     //# Declare the data members.

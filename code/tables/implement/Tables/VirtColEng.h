@@ -133,27 +133,7 @@ private:
     // The data manager is not a storage manager?
     Bool isStorageManager() const;
 
-    // Initialize the object for a new table containing initially nrrow rows.
-    // It can be used to initialize variables (possibly using data
-    // from other columns in the table).
-    // The default implementation does nothing.
-    virtual void create (uInt initialNrrow);
-
-    // Initialize the object for an existing table containing nrrow rows.
-    // It can be used to read values back (written by close) and/or
-    // to initialize variables (possibly using data from other columns
-    // in the table).
-    // The default implementation does nothing.
-    virtual void open (uInt nrrow, AipsIO& mainTableFile);
-
-    // Let the data manager initialize itself further.
-    // Prepare is called after create/open has been called for all
-    // columns. In this way one can be sure that referenced columns
-    // are read back and partly initialized.
-    // The default implementation does nothing.
-    virtual void prepare();
-
-    // Close the engine object.
+    // Flush the data in the engine object.
     // If the object contains persistent data, this is the place to write them.
     // This can be done in two ways:
     // <ul>
@@ -173,7 +153,34 @@ private:
     // is called AFTER the keywords are written. Thus, in this way the
     // information has to be stored and read back in create, open and/or
     // prepare.
-    virtual void close (AipsIO& mainTableFile);
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    // <br>The default implementation does nothing and returns False.
+    virtual Bool flush (AipsIO&, Bool fsync);
+
+    // Resync the storage manager with the new file contents.
+    // This is done by clearing the cache.
+    // The default implementation does nothing.
+    virtual void resync (uInt nrrow);
+
+    // Initialize the object for a new table containing initially nrrow rows.
+    // It can be used to initialize variables (possibly using data
+    // from other columns in the table).
+    // The default implementation does nothing.
+    virtual void create (uInt initialNrrow);
+
+    // Initialize the object for an existing table containing nrrow rows.
+    // It can be used to read values back (written by close) and/or
+    // to initialize variables (possibly using data from other columns
+    // in the table).
+    // The default implementation does nothing.
+    virtual void open (uInt nrrow, AipsIO& mainTableFile);
+
+    // Let the data manager initialize itself further.
+    // Prepare is called after create/open has been called for all
+    // columns. In this way one can be sure that referenced columns
+    // are read back and partly initialized.
+    // The default implementation does nothing.
+    virtual void prepare();
 
     // Make a column object in the engine on behalf of a table column.
     // This column object class is derived from VirtualScalarColumn

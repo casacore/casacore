@@ -1,5 +1,5 @@
 //# DataManager.h: Abstract base classes for a data manager
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,7 +139,7 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType);
 //   other columns.
 //  <li>
 //   When the table gets written (by the PlainTable destructor),
-//   the close function is called for each data manager. This allows
+//   the flush function is called for each data manager. This allows
 //   the data manager or their column objects to write or flush their data.
 //   The table system takes care of storing the information required
 //   to reconstruct the data managers. It uses the function dataManagerType
@@ -174,7 +174,7 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType);
 //  <li>
 //   For each data manager the open function is called to allow it and
 //   its column objects to read back the information stored in the
-//   close function.
+//   flush function.
 //   Thereafter the prepare function is called for each data manager
 //   to allow it to initialize some variables.
 //   The reason that open and prepare are separated is that in order to
@@ -182,8 +182,8 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType);
 //   So it may be needed that all columns are read back before they
 //   get initialized.
 //  <li>
-//   Similar to a new table the close functions gets called when the
-//   table gets written. Desctruction is also the same as sketched
+//   Similar to a new table the flush functions gets called when the
+//   table gets written. Destruction is also the same as sketched
 //   for new tables.
 // </ul>
 // </synopsis> 
@@ -396,13 +396,14 @@ private:
     void setSeqnr (uInt nr)
 	{ seqnr_p = nr; }
 
-    // Flush the data and close the data manager.
-    // The AipsIO stream represents the main table file and can be
-    // used by virtual column engines to store SMALL amounts of data.
-    virtual void close (AipsIO& ios) = 0;
-
     // Link the data manager to the Table object.
     void linkToTable (Table& tab);
+
+    // Flush and optionally fsync the data.
+    // The AipsIO stream represents the main table file and can be
+    // used by virtual column engines to store SMALL amounts of data.
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    virtual Bool flush (AipsIO& ios, Bool fsync) = 0;
 
     // Let the data manager initialize itself for a new table.
     virtual void create (uInt nrrow) = 0;
@@ -412,6 +413,11 @@ private:
     // used by virtual column engines to retrieve the data stored
     // in the close function.
     virtual void open (uInt nrrow, AipsIO& ios) = 0;
+
+    // Resync the data by rereading cached data from the file.
+    // This is called when a lock is acquired on the file and it appears 
+    // that data in this data manager has been changed by another process.
+    virtual void resync (uInt nrrow) = 0;
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all

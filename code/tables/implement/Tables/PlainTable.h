@@ -37,13 +37,17 @@
 #include <aips/Tables/BaseTable.h>
 #include <aips/Tables/TableCache.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableSyncData.h>
 #include <aips/IO/AipsIO.h>
 
 //# Forward Declarations
 class SetupNewTable;
+class TableLock;
+class TableLockData;
 class ColumnSet;
 class IPosition;
 class AipsIO;
+class MemoryIO;
 
 
 // <summary>
@@ -86,13 +90,14 @@ public:
     // It creates storage manager(s) for unbound columns and initializes
     // all storage managers. The given number of rows is stored in
     // the table and initialized if the flag is set.
-    PlainTable (SetupNewTable&, uInt nrrow, Bool initialize);
+    PlainTable (SetupNewTable&, uInt nrrow, Bool initialize,
+		const TableLock& lockOptions);
 
     // Construct the object for an existing table.
     // It opens the table file, reads the table control information
     // and creates and initializes the required storage managers.
-    PlainTable (AipsIO&, const String& name, const String& type,
-		uInt nrrow, int option, uInt version);
+    PlainTable (AipsIO&, uInt version, const String& name, const String& type,
+		uInt nrrow, int option, const TableLock& lockOptions);
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
@@ -111,6 +116,23 @@ public:
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
 
+    // Get the locking info.
+    virtual const TableLock& lockOptions() const;
+
+    // Merge the given lock info with the existing one.
+    virtual void mergeLock (const TableLock& lockOptions);
+
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    virtual Bool hasLock (Bool write) const;
+
+    // Try to lock the table for read or write access.
+    virtual Bool lock (Bool write, uInt nattempts);
+
+    // Unlock the table. This will also synchronize the table data,
+    // thus force the data to be written to disk.
+    virtual void unlock();
+
     // Flush the table, i.e. write it to disk.
     // Nothing will be done if the table is not writable.
     // A flush can be executed at any time.
@@ -118,7 +140,13 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    virtual void flush();
+    virtual void flush (Bool fsync);
+
+    // Get the modify counter.
+    virtual uInt getModifyCounter() const;
+
+    // Set the table to being changed.
+    void setTableChanged();
 
     // Convert a Table option to an AipsIO file option.
     // This is used by storage managers.
@@ -127,8 +155,13 @@ public:
     // Test if the table is opened as writable.
     Bool isWritable() const;
 
-    // Get access to the table keyword set.
+    // Get readonly access to the table keyword set.
     TableRecord& keywordSet();
+
+    // Get read/write access to the table keyword set.
+    // This requires that the table is locked (or it gets locked
+    // when using AutoLocking mode).
+    TableRecord& rwKeywordSet();
 
     // The rename function in this derived class uses BaseTable::rename
     // to rename the table file. Thereafter the subtables in its
@@ -188,7 +221,10 @@ public:
     static TableCache tableCache;           //# cache of open (plain) tables
 
 private:
-    ColumnSet*    colSetPtr_p;              //# pointer to set of columns
+    ColumnSet*     colSetPtr_p;              //# pointer to set of columns
+    Bool           tableChanged_p;           //# Has the main data changed?
+    TableLockData* lockPtr_p;                //# pointer to lock object
+    TableSyncData  lockSync_p;               //# table synchronization
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
@@ -204,14 +240,32 @@ private:
     virtual void renameSubTables (const String& newName,
 				  const String& oldName);
 
-    // Write the table control information in an AipsIO file and
-    // tell the storage managers to flush and close their files.
-    void putFile();
+    // The callback function when a lock is released.
+    // This flushes the table data, writes the synchronization data
+    // into the MemoryIO object, and returns a pointer to it.
+    // <group>
+    static MemoryIO* releaseCallBack (void* plainTableObject, Bool always);
+    MemoryIO* doReleaseCallBack (Bool always);
+    // </group>
+
+    // When needed, write the table control information in an AipsIO file.
+    // Tell the storage managers to flush and close their files.
+    // It returns a switch to tell if the table control information has
+    // been written.
+    Bool putFile (Bool always);
 
     // Read the table control information from the given AipsIO stream
     // and create and initialize the required storage managers.
     void getFile (AipsIO&);
 };
+
+
+
+inline void PlainTable::setTableChanged()
+{
+    tableChanged_p = True;
+}
+
 
 
 #endif

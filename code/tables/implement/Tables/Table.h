@@ -41,6 +41,7 @@
 //# Forward Declarations
 class SetupNewTable;
 class TableDesc;
+class TableLock;
 class ColumnDesc;
 class TableRecord;
 class TableExprNode;
@@ -57,16 +58,17 @@ template<class T> class PtrBlock;
 
 // <use visibility=export>
 
-// <reviewed reviewer="TPPR" date="08.11.94" tests="none">
+// <reviewed reviewer="TPPR" date="08.11.94" tests="tTable.cc">
 // </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> SetupNewTable
-//   <li> TableDesc
-//   <li> TableColumn 
-//   <li> ScalarColumn
-//   <li> ArrayColumn
+//   <li> <linkto class=SetupNewTable>SetupNewTable</linkto>
+//   <li> <linkto class=TableDesc>TableDesc</linkto>
+//   <li> <linkto class=TableColumn>TableColumn</linkto>
+//   <li> <linkto class=ScalarColumn>ScalarColumn</linkto>
+//   <li> <linkto class=ArrayColumn>ArrayColum</linkto>
+//   <li> <linkto class=TableLock>TableLock</linkto>
 // </prerequisite>
 
 // <synopsis>
@@ -165,11 +167,23 @@ public:
 
     // Create a table object for an existing writable table.
     // The only options allowed are Old, Update, and Delete.
+    // When the name of a table description is given, it is checked
+    // if the table has that description.
+    // Locking options can be given (see class
+    // <linkto class=TableLock>TableLock</linkto>.
+    // When the table with this name was already opened in this process,
+    // the existing and new locking options are merged using
+    // <src>TableLock::merge</src>.
+    // The default locking mechanism is AutoLocking with a default
+    // inspection interval of 5 seconds.
     // <group>
-    Table (const String& tableName, TableOption = Table::Old);
-    // Check if the table description has the given name.
+    explicit Table (const String& tableName, TableOption = Table::Old);
+    Table (const String& tableName, const TableLock& lockOptions,
+	   TableOption = Table::Old);
     Table (const String& tableName, const String& tableDescName,
 	   TableOption = Table::Old);
+    Table (const String& tableName, const String& tableDescName,
+	   const TableLock& lockOptions, TableOption = Table::Old);
     // </group>
 
     // Make a table object for a new table, which can thereafter be used
@@ -181,7 +195,15 @@ public:
     // in the table must already be given here.
     // Optionally the rows can be initialized with the default
     // values as defined in the column descriptions.
-    Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False);
+    // Locking options can be given (see class
+    // <linkto class=TableLock>TableLock</linkto>.
+    // The default locking mechanism is AutoLocking with a default
+    // inspection interval of 5 seconds.
+    // <group>
+    explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False);
+    Table (SetupNewTable&, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False);
+    // </group>
 
     //# Virtually concatenate some tables.
     //# All tables must have the same description.
@@ -211,7 +233,34 @@ public:
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
 
-    // Flush the table, i.e. write it to disk.
+    // Get the locking options.
+    const TableLock& lockOptions() const;
+
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    Bool hasLock (Bool write = True) const;
+
+    // Try to lock the table for read or write access (default is write).
+    // The number of attempts (default = forever) can be specified when
+    // acquiring the lock does not succeed immediately. When nattempts>1,
+    // the system waits 1 second between each attempt, so nattempts
+    // is more or less equal to a wait period in seconds.
+    // The return value is false when acquiring the lock failed.
+    // When <src>PermanentLocking</src> is in effect, a lock is already
+    // present, so nothing will be done.
+    Bool lock (Bool write = True, uInt nattempts = 0);
+
+    // Unlock the table. This will also synchronize the table data,
+    // thus force the data to be written to disk.
+    // When <src>PermanentLocking</src> is in effect, nothing will be done.
+    void unlock();
+
+    // Determine if column or keyword table data have changed
+    // (or is being changed) since the last time this function was called.
+    Bool hasDataChanged();
+
+    // Flush the table, i.e. write out the buffers. When <src>sync=True</src>,
+    // it is ensured that all data are physically written to disk.
     // Nothing will be done if the table is not writable.
     // At any time a flush can be executed, even when the table is marked
     // for delete.
@@ -219,7 +268,7 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    void flush();
+    void flush (Bool sync=False);
 
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
@@ -276,11 +325,13 @@ public:
     Bool isColumnStored (uInt columnIndex) const;
     // </group>
 
-    // Get access to the table keyword set.
-    // <group>
+    // Get readonly access to the table keyword set.
     const TableRecord& keywordSet() const;
-    TableRecord& keywordSet();
-    // </group>
+
+    // Get read/write access to the table keyword set.
+    // This requires that the table is locked (or it gets locked
+    // when using AutoLocking mode).
+    TableRecord& rwKeywordSet();
 
     // Get access to the TableInfo object.
     // <group>
@@ -355,21 +406,6 @@ public:
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const;
     
-    // Test if the table needs synchronization.
-    // Synchronization means that the size of the table is synchronized.
-    // This may be needed when the table is filled by an external proces,
-    // e.g. the data acquisition system of a telescope.
-    Bool needToSync() const;
-
-    // Synchronize the table and return the number of rows.
-    // Also a flag is set telling if more rows can be expected.
-    // Synchronization means that the size of the table is synchronized.
-    // This may be needed when the table is filled by an external proces,
-    // e.g. when a data acquisition system of a telescope extends a table,
-    // another process reading that table needs to call sync now and then
-    // to update its number of rows.
-    uInt sync (Bool& moreToExpect) const;
-    
     // Get the number of rows. This is unsynchronized.
     uInt nrow() const;
 
@@ -390,7 +426,7 @@ public:
     Bool canRemoveRow() const;
 
     // Remove the given row(s).
-    // The latter formm can be useful with the select and rowNumbers functions
+    // The latter form can be useful with the select and rowNumbers functions
     // to remove some selected rows from the table.
     // <br>It will fail for tables not supporting removal of rows.
     // <note role=warning>
@@ -604,13 +640,16 @@ protected:
     //# object gets destructed. That would never be the case if this
     //# internally used Table object was counted.
     Bool        isCounted_p;
+    //# Counter of last call to hasDataChanged.
+    uInt        lastModCounter_p;
 
     // Construct a Table object from a BaseTable*.
     // By default the object gets counted.
     Table (BaseTable*, Bool countIt = True);
 
     // Open an existing table.
-    void open (const String& nam, const String& type, int tableOption);
+    void open (const String& name, const String& type, int tableOption,
+	       const TableLock& lockOptions);
 
 private:
     // Get the pointer to the underlying BaseTable.
@@ -619,7 +658,9 @@ private:
 
     // Look in the cache if the table is already open.
     // If so, check if table option matches.
-    BaseTable* lookCache (const String& name, int tableOption);
+    // If needed reopen the table for read/write and merge the lock options.
+    BaseTable* lookCache (const String& name, int tableOption,
+			  const TableLock& tableInfo);
 
     // Find the data manager with the given name.
     DataManager* findDataManager (const String& datamanagerName) const;
@@ -629,8 +670,17 @@ private:
 
 inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
-inline void Table::flush()
-    { baseTabPtr_p->flush(); }
+inline void Table::flush (Bool sync)
+    { baseTabPtr_p->flush (sync); }
+
+inline const TableLock& Table::lockOptions() const
+    { return baseTabPtr_p->lockOptions(); }
+inline Bool Table::lock (Bool write, uInt nattempts)
+    { return baseTabPtr_p->lock (write, nattempts); }
+inline void Table::unlock()
+    { baseTabPtr_p->unlock(); }
+inline Bool Table::hasLock (Bool write) const
+    { return baseTabPtr_p->hasLock (write); }
 
 inline Bool Table::isWritable() const
     { return baseTabPtr_p->isWritable(); }
@@ -655,10 +705,6 @@ inline void Table::unmarkForDelete()
 inline Bool Table::isMarkedForDelete() const
     { return baseTabPtr_p->isMarkedForDelete(); }
 
-inline Bool Table::needToSync() const
-    { return baseTabPtr_p->needToSync(); }
-inline uInt Table::sync (Bool& moreToExpect) const
-    { return baseTabPtr_p->sync (moreToExpect); }
 inline uInt Table::nrow() const
     { return baseTabPtr_p->nrow(); }
 inline BaseTable* Table::baseTablePtr() const
@@ -667,8 +713,8 @@ inline const TableDesc& Table::tableDesc() const
     { return baseTabPtr_p->tableDesc(); }
 inline const TableRecord& Table::keywordSet() const
     { return baseTabPtr_p->keywordSet(); }
-inline TableRecord& Table::keywordSet()
-    { return baseTabPtr_p->keywordSet(); }
+inline TableRecord& Table::rwKeywordSet()
+    { return baseTabPtr_p->rwKeywordSet(); }
 
 inline TableInfo Table::tableInfo (const String& tableName)
     { return BaseTable::tableInfo (tableName); }

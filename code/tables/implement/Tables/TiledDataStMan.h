@@ -1,5 +1,5 @@
 //# TiledDataStMan.h: Tiled Data Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -413,16 +413,16 @@ private:
     // It also returns the position of the row in that hypercube.
     virtual TSMCube* getHypercube (uInt rownr, IPosition& position);
 
-    // Flush the data and close the storage manager.
-    void close (AipsIO&);
+    // Flush and optionally fsync the data.
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    virtual Bool flush (AipsIO&, Bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    void create (uInt nrrow);
+    virtual void create (uInt nrrow);
 
-    // Open the storage manager file for an existing table and read in
-    // the data and let the TSMColumn objects read their data.
-    void open (uInt nrrow, AipsIO&);
+    // Read the header info.
+    virtual void readHeader (uInt nrrow, Bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
     void updateRowMap (uInt cubeNr, uInt incrInLastDim);

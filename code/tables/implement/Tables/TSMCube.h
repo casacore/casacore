@@ -1,5 +1,5 @@
 //# TSMCube.h: Tiled hypercube in a table
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,19 +127,26 @@ public:
 
     ~TSMCube();
 
-    // Flush all data.
-    void flush();
+    // Flush the data in the cache.
+    void flushCache();
 
-    // Clear the cache.
+    // Clear the cache, so data will be reread.
+    void clearCache();
+
+    // Empty the cache.
     // It will flush the cache as needed and remove all buckets from it
     // resulting in a possibly large drop in memory used.
-    void clearCache();
+    void emptyCache();
 
     // Show the cache statistics.
     void showCacheStatistics (ostream& os) const;
 
     // Put the data of the object into the AipsIO stream.
     void putObject (AipsIO& ios);
+
+    // Get the data of the object from the AipsIO stream.
+    // It returns the data manager sequence number.
+    uInt getObject (AipsIO& ios);
 
     // Is the hypercube extensible?
     Bool isExtensible() const;
@@ -175,7 +182,11 @@ public:
     uInt coordinateSize (const String& coordinateName) const;
 
     // Get the record containing the id and coordinate values.
-    Record& valueRecord();
+    // It is used by TSMIdColumn and TSMCoordColumn.
+    // <group>
+    const Record& valueRecord() const;
+    Record& rwValueRecord();
+    // </group>
 
     // Test if the id values match.
     Bool matches (const PtrBlock<TSMColumn*> idColSet,
@@ -341,10 +352,15 @@ inline const IPosition& TSMCube::tileShape() const
 { 
     return tileShape_p;
 }
-inline Record& TSMCube::valueRecord()
+inline const Record& TSMCube::valueRecord() const
 {
     return values_p;
 }
+inline Record& TSMCube::rwValueRecord()
+{
+    return values_p;
+}
+
 
 
 #endif

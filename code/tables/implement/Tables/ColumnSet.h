@@ -34,13 +34,15 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Tables/TableLockData.h>
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/String.h>
 
-//# Forward clarations
+//# Forward Declarations
 class SetupNewTable;
 class Table;
 class TableDesc;
+class PlainTable;
 class ColumnDesc;
 class PlainColumn;
 class DataManager;
@@ -115,14 +117,21 @@ public:
     // Table object and to initialize themselves.
     void initDataManagers (uInt nrrow, Table& tab);
 
-    // Test if the table needs synchronization.
-    // All data managers will be polled to determine it.
-    Bool needToSync() const;
+    // Link the ColumnSet object to the TableLockData object in the
+    // PlainTable object.
+    void linkToLockObject (PlainTable* plainTableObject,
+			   TableLockData* lockObject);
 
-    // Synchronize the table and return the number of rows.
-    // All data managers will be polled to determine it.
-    uInt sync (Bool& moreToExpect);
-    
+    // Check if the table is locked for read or write.
+    // If manual or permanent locking is in effect, it checks if the
+    // table is properly locked.
+    // If autolocking is in effect, it locks the table when needed.
+    void checkLock (Bool write, Bool wait);
+
+    // Inspect the auto lock when the inspection interval has expired and
+    // release it when another process needs the lock.
+    void autoReleaseLock();
+
     // Do all data managers and engines allow to add rows?
     Bool canAddRow() const;
 
@@ -152,20 +161,29 @@ public:
     // </group>
 
     // Get nr of rows.
-    uInt nrow() const
-	{ return nrrow_p; }
+    uInt nrow() const;
 
     // Initialize rows startRownr till endRownr (inclusive).
     void initialize (uInt startRownr, uInt endRownr);
 
     // Write all the data and let the data managers flush their data.
     // This function is called when a table gets written (i.e. flushed).
-    void putFile (AipsIO&, const String& tableName);
+    void putFile (Bool writeTable, AipsIO&, const String& tableName,
+		  Bool fsync);
 
     // Read the data, reconstruct the data managers, and link those to
     // the table object.
     // This function gets called when an existing table is read back.
-    void getFile (AipsIO&, Table& tab);
+    void getFile (AipsIO&, Table& tab, uInt nrrow);
+
+    // Set the table to being changed.
+    void setTableChanged();
+
+    // Get the data manager change flags (used by PlainTable).
+    Block<Bool>& dataManChanged();
+
+    // Synchronize the data managers when data in them have changed.
+    void resync (uInt nrrow);
 
     // Get the correct data manager.
     // This is used by the column objects to link themselves to the
@@ -198,15 +216,51 @@ private:
     // Do the actual addition of a column.
     void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr);
 
+    // Check if the table is locked for read or write.
+    // If manual or permanent locking is in effect, it checks if the
+    // table is properly locked.
+    // If autolocking is in effect, it locks the table when needed.
+    void doLock (Bool write, Bool wait);
+
 
     //# Declare the variables.
     TableDesc*                      tdescPtr_p;
     uInt                            nrrow_p;        //# #rows
+    PlainTable*                     plainTablePtr_p;
+    TableLockData*                  lockPtr_p;      //# lock object
     SimpleOrderedMap<String,void*>  colMap_p;       //# list of PlainColumns
     uInt                            seqCount_p;     //# sequence number count
     //#                                                 (used for unique seqnr)
     Block<void*>                    blockDataMan_p; //# list of data managers
+    Block<Bool>                     dataManChanged_p; //# data has changed
 };
+
+
+
+inline uInt ColumnSet::nrow() const
+{
+    return nrrow_p;
+}
+inline void ColumnSet::linkToLockObject (PlainTable* plainTableObject,
+					 TableLockData* lockObject)
+{
+    plainTablePtr_p = plainTableObject;
+    lockPtr_p = lockObject;
+}
+inline void ColumnSet::checkLock (Bool write, Bool wait)
+{
+    if (! lockPtr_p->hasLock (write)) {
+	doLock (write, wait);
+    }
+}
+inline void ColumnSet::autoReleaseLock()
+{
+    lockPtr_p->autoRelease();
+}
+inline Block<Bool>& ColumnSet::dataManChanged()
+{
+    return dataManChanged_p;
+}
 
 
 

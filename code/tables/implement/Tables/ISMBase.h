@@ -1,5 +1,5 @@
 //# ISMBase.h: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -205,10 +205,12 @@ private:
     // Assignment cannot be used.
     ISMBase& operator= (const ISMBase& that);
 
-    // Flush the data and close the storage manager.
-    // All StManColumnMirAIO objects will write their data and close
-    // themselves.
-    virtual void close (AipsIO&);
+    // (Re)create the index, file, and cache object.
+    void recreate();
+
+    // Flush and optionally fsync the data.
+    // It returns a True status if it had to flush (i.e. if data have changed).
+    virtual Bool flush (AipsIO&, Bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
@@ -216,9 +218,11 @@ private:
 
     // Open the storage manager file for an existing table, read in
     // the data, and let the ISMColumn objects read their data.
-    // The <src>AipsIO</src> argument is obsolete and will be removed in
-    // the future.
     virtual void open (uInt nrrow, AipsIO&);
+
+    // Resync the storage manager with the new file contents.
+    // This is done by clearing the cache.
+    virtual void resync (uInt nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
@@ -277,8 +281,11 @@ private:
     // Construct the cache object (if not constructed yet).
     void makeCache();
 
-    // Construct the index object (if not constructed yet).
+    // Construct the index object (if not constructed yet) and read it.
     void makeIndex();
+
+    // Read the index (at the end of the file).
+    void readIndex();
 
     // Write the index (at the end of the file).
     void writeIndex();
@@ -303,10 +310,18 @@ private:
     uInt persCacheSize_p;
     // The actual cache size.
     uInt cacheSize_p;
+    // The initial number of buckets in the cache.
+    uInt nbucketInit_p;
+    // The nr of free buckets.
+    uInt nFreeBucket_p;
+    // The first free bucket.
+    Int firstFree_p;
     // The bucket size.
     uInt bucketSize_p;
     // Check a positive bucketsize?
     Bool checkBucketSize_p;
+    // Has the data changed since the last flush?
+    Bool dataChanged_p;
     // The size of a uInt in external format (local or canonical).
     uInt uIntSize_p;
     // Have the data to be stored in canonical or local format.
