@@ -4383,3 +4383,4 @@
 14 265 sys rm bin/pksmeasurementset
 14 276 src rm npoi/apps/Cuttlefish/CuttlefishFactory.cc
 14 276 src rm npoi/apps/Cuttlefish/CuttlefishFactory.h
+14 276 src rm npoi/apps/Cuttlefish/COPYRIGHT
