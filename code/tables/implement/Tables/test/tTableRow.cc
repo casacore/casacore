@@ -41,6 +41,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
@@ -343,7 +344,7 @@ void c (Int nrow)
 }
 
 
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
     uInt nr = 500;
     if (argc > 1) {
