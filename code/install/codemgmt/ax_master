@@ -1989,3 +1989,4 @@
 08 163 src mv trial/implement/Lattices/test/tPagedArray.cc trial/implement/Lattices/test/tPagedArrayOld.cc
 08 163 src mv trial/implement/Lattices/test/tPagedArray1.cc trial/implement/Lattices/test/tPagedArray.cc
 08 170 sys rm libexec/iofits.g
+08 171 src mv nrao/apps/sdcalc/fitting_manager.g nrao/apps/sdcalc/sdbaseline_manager.g
