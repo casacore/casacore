@@ -1,5 +1,5 @@
 //# StIndArray.cc: Read/write indirect arrays
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -91,8 +91,8 @@ void StIndArray::decrementRefCount (StManArrayFile& ios)
 void StIndArray::setShape (StManArrayFile& ios, int dataType,
 			   const IPosition& shape)
 {
-    // Return immediately if the shape is the same.
-    if (shape_p.isEqual (shape)) {
+    // Return immediately if the shape is defined and is the same.
+    if (arrOffset_p != 0  &&  shape_p.isEqual (shape)) {
 	return;
     }
     // Set the shape.
