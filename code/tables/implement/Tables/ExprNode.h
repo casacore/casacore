@@ -58,7 +58,7 @@ template<class T> class Array;
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=Table>Table</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html>TaQL</a>
+//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
 // </prerequisite>
 
 // <etymology>
