@@ -31,6 +31,7 @@
 #include <trial/Lattices/LELScalar.h>
 #include <trial/Lattices/LatticeFractile.h>
 #include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Vector.h>
@@ -807,8 +808,8 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
       uInt ntrue = 0;
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
+	 RO_LatticeIterator<Bool> iter(latExpr);
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
 	    const Bool* data = array.getStorage (deleteIt);
@@ -822,11 +823,11 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
+	 RO_MaskedLatticeIterator<Bool> iter(latExpr);
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
-	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    iter.getMask (mask);
 	    const Bool* data = array.getStorage (deleteIt);
 	    const Bool* maskdata = mask.getStorage (deleteMask);
 	    uInt n = array.nelements();
@@ -847,8 +848,8 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
       uInt nfalse = 0;
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
+	 RO_LatticeIterator<Bool> iter(latExpr);
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
 	    const Bool* data = array.getStorage (deleteIt);
@@ -862,11 +863,11 @@ LELScalar<Double> LELFunctionDouble::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
+	 RO_MaskedLatticeIterator<Bool> iter(latExpr);
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
-	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    iter.getMask (mask);
 	    const Bool* data = array.getStorage (deleteIt);
 	    const Bool* maskdata = mask.getStorage (deleteMask);
 	    uInt n = array.nelements();
@@ -961,11 +962,10 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpFloat:
    {
       LatticeExpr<Float> latExpr(expr);
-      RO_LatticeIterator<Float> iter(latExpr);
-////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+      RO_MaskedLatticeIterator<Float> iter(latExpr);
       Array<Bool> mask;
       while (! iter.atEnd()) {
-	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
+	 iter.getMask (mask);
 	 nelem += nMaskedOn (mask);
 	 iter++;
       }
@@ -974,11 +974,10 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpDouble:
    {
       LatticeExpr<Double> latExpr(expr);
-      RO_LatticeIterator<Double> iter(latExpr);
-////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+      RO_MaskedLatticeIterator<Double> iter(latExpr);
       Array<Bool> mask;
       while (! iter.atEnd()) {
-	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
+	 iter.getMask (mask);
 	 nelem += nMaskedOn (mask);
 	 iter++;
       }
@@ -987,11 +986,10 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpComplex:
    {
       LatticeExpr<Complex> latExpr(expr);
-      RO_LatticeIterator<Complex> iter(latExpr);
-////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+      RO_MaskedLatticeIterator<Complex> iter(latExpr);
       Array<Bool> mask;
       while (! iter.atEnd()) {
-	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
+	 iter.getMask (mask);
 	 nelem += nMaskedOn (mask);
 	 iter++;
       }
@@ -1000,11 +998,10 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpDComplex:
    {
       LatticeExpr<DComplex> latExpr(expr);
-      RO_LatticeIterator<DComplex> iter(latExpr);
-////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+      RO_MaskedLatticeIterator<DComplex> iter(latExpr);
       Array<Bool> mask;
       while (! iter.atEnd()) {
-	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
+	 iter.getMask (mask);
 	 nelem += nMaskedOn (mask);
 	 iter++;
       }
@@ -1013,11 +1010,10 @@ uInt LELFunctionDouble::nMaskedElements (const LatticeExprNode& expr) const
    case TpBool:
    {
       LatticeExpr<Bool> latExpr(expr);
-      RO_LatticeIterator<Bool> iter(latExpr);
-////    RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+      RO_MaskedLatticeIterator<Bool> iter(latExpr);
       Array<Bool> mask;
       while (! iter.atEnd()) {
-	 latExpr.getMaskSlice (mask, iter.position(), iter.cursorShape());
+	 iter.getMask (mask);
 	 nelem += nMaskedOn (mask);
 	 iter++;
       }
@@ -1930,8 +1926,8 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    {
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
+	 RO_LatticeIterator<Bool> iter(latExpr);
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
 	    const Bool* data = array.getStorage (deleteIt);
@@ -1946,11 +1942,11 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_MaskedLatticeIterator<Bool> iter(latExpr);
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
-	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    iter.getMask (mask);
 	    const Bool* data = array.getStorage (deleteIt);
 	    const Bool* maskdata = mask.getStorage (deleteMask);
 	    uInt n = array.nelements();
@@ -1972,8 +1968,8 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
    {
       Bool deleteIt, deleteMask;
       LatticeExpr<Bool> latExpr(arg_p[0]);
-      RO_LatticeIterator<Bool> iter(latExpr);
       if (! arg_p[0].isMasked()) {
+	 RO_LatticeIterator<Bool> iter(latExpr);
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
 	    const Bool* data = array.getStorage (deleteIt);
@@ -1988,11 +1984,11 @@ LELScalar<Bool> LELFunctionBool::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<Bool> maskiter(latExpr, latExpr.niceCursorShape());
+	 RO_MaskedLatticeIterator<Bool> iter(latExpr);
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<Bool>& array = iter.cursor();
-	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    iter.getMask (mask);
 	    const Bool* data = array.getStorage (deleteIt);
 	    const Bool* maskdata = mask.getStorage (deleteMask);
 	    uInt n = array.nelements();
