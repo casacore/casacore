@@ -2149,3 +2149,4 @@
 11 113 sys rm libexec/objectcatalog.g
 11 115 src mv aips/glish/glish/clients/gtk aips/glish/glish/clients/glishtk
 11 115 src rm aips/glish/glish/clients/glishtk/gtk.g
+11 115 src rm aips/glish/glish/clients/glishtk/include/Glish/gtk.h
