@@ -36,7 +36,7 @@
 #include <trial/Functionals/DiracDFunction.h>
 #include <trial/Functionals/GNoiseFunction.h>
 #include <trial/Functionals/KaiserBFunction.h>
-#include <trial/Functionals/SincFunction.h>
+#include <aips/Functionals/SincFunction.h>
 #include <trial/Functionals/FunctionHolder.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Utilities/Assert.h>
