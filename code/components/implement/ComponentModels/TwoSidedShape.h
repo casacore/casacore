@@ -36,7 +36,6 @@
 
 class MDirection;
 class MVAngle;
-class MVDirection;
 class RecordInterface;
 class String;
 template <class Qtype> class Quantum;
@@ -110,23 +109,20 @@ public:
   virtual Double positionAngleInRad() const = 0;
   // </group>
 
-  // Calculate the flux at the specified direction, in a pixel of specified
-  // size, given the total flux of the component. The total flux of the
-  // component must be supplied in the flux variable and the proportion of the
-  // flux in the specified pixel is returned in the same variable.
-  //
-  // Currently this function does <em>NOT<\em> integrate the TwoSided over the
-  // area of the sky subtended by the pixel. Instead it simply samples the
-  // TwoSided at the centre of the pixel and scales by the pixel area. This is
-  // satisfactory for TwoSideds that are large compared with the size of the
-  // pixel. This function will be updated to deal with small TwoSideds sometime
-  // in the future.
-  virtual void sample(Flux<Double>& flux, const MDirection& direction, 
-		      const MVAngle& pixelSize) const = 0;
+  // Calculate the proportion of the flux that is in a pixel of specified size
+  // centered in the specified direction. The returned value will always be
+  // between zero and one (inclusive).
+  virtual Double sample(const MDirection& direction, 
+			const MVAngle& pixelSize) const = 0;
 
-  virtual void multiSample(Vector<Double>& scale, 
- 			   const Vector<MVDirection>& directions, 
- 			   const MVAngle& pixelSize) const = 0;
+  // Calculate the amount of flux that is in the pixels of specified, constant
+  // size centered on the specified directions. The returned values will always
+  // be between zero and one (inclusive). All the supplied directions must have
+  // the same reference frame (that is specified in the refFrame argument).
+  virtual void sample(Vector<Double>& scale, 
+		      const Vector<MDirection::MVType>& directions, 
+		      const MDirection::Ref& refFrame,
+		      const MVAngle& pixelSize) const = 0;
 
   // Return the Fourier transform of the component at the specified twoSided in
   // the spatial frequency domain. The point is specified by a 3 element vector
