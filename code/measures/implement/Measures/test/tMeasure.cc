@@ -1,5 +1,5 @@
 //# tMeasure.cc: This program test Measure functions
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -276,10 +276,12 @@ main()
 							  MRadialVelocity::Ref
 							  (MRadialVelocity::TOPO,
 							   frame))();
-	cout << "and back: " <<
-	    MRadialVelocity::Convert(rvTopo,
-				     MRadialVelocity::GEO)()
-					 .getValue() << endl;
+	// The following necessary for errors in Intel chip
+	Double mrvback(MRadialVelocity::Convert(rvTopo,
+						MRadialVelocity::GEO)()
+		       .getValue());
+	if (nearAbs(mrvback, 0.0)) mrvback = 0;
+	cout << "and back: " << mrvback << endl;
 	rvBary.set(MVRadialVelocity(0.0));
 	cout << "and 0 (BARY) to LSR: " <<
 	    MRadialVelocity::Convert(rvBary,
@@ -292,11 +294,12 @@ main()
 	     MRadialVelocity::Ref
 	     (MRadialVelocity::LSR,
 	      frame))();
-	cout << "and back: " <<
-	    MRadialVelocity::Convert(rvLSR,
-				     MRadialVelocity::BARY)()
-					 .getValue() << endl;
-
+	// The following necessary for errors in Intel chip
+	mrvback = MRadialVelocity::Convert(rvLSR,
+					   MRadialVelocity::BARY)()
+	  .getValue();
+	if (nearAbs(mrvback, 0.0)) mrvback = 0;
+	cout << "and back: " << mrvback << endl;
     }
     
     {
