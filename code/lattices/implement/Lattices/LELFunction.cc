@@ -423,7 +423,7 @@ void LELFunction1D<T>::resync()
 template <class T>
 LELFunctionReal1D<T>::LELFunctionReal1D
                                (const LELFunctionEnums::Function function,
-				const CountedPtr<LELInterface<T> >& exp)
+				const CountedPtr<LELInterface<T> >& expr)
 : function_p(function)
 {
    switch (function_p) {
@@ -431,7 +431,7 @@ LELFunctionReal1D<T>::LELFunctionReal1D
       setAttr(LELAttribute());          // these result in a scalar
       break;
    default:
-      setAttr(exp->getAttribute());
+      setAttr(expr->getAttribute());
    }
    // Fill this variable here, so an exception in setAttr does
    // not leave it undestructed.
