@@ -1,5 +1,5 @@
 //# tSort.cc: Test program for the Sort class
-//# Copyright (C) 1994,1995,1996,1997,1998,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 
 #include <aips/Utilities/Sort.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/stdlib.h>
 #include <aips/iostream.h>
 
@@ -120,10 +121,9 @@ void sortit (int opt)
     cout << endl;
 }
 
-void sortdo (int options, Sort::Order order, Int* data, uInt nrdata)
+void sortdo (int options, Sort& sort, Sort::Order order,
+	     Int* data, uInt nrdata)
 {
-    Sort sort;
-    sort.sortKey (data, TpInt, 0, order);
     Vector<uInt> inxvec;
     uInt nr = sort.sort (inxvec, nrdata, options);
     uInt i;
@@ -147,40 +147,70 @@ void sortdo (int options, Sort::Order order, Int* data, uInt nrdata)
 	    }
 	}
     }
-    Vector<uInt> uniqvec;
-    nr = sort.unique (uniqvec, inxvec);
-    for (i=1; i<nr; i++) {
-	if (data[inxvec(uniqvec(i))] == data[inxvec(uniqvec(i-1))]) {
-	    cout << "Non-unique value on index" << i << endl;
+    if ((options & Sort::NoDuplicates) == 0) {
+        AlwaysAssertExit (nr == nrdata);
+        AlwaysAssertExit (nr == inxvec.nelements());
+    } else {
+        Vector<uInt> inxvec2;
+	sort.sort (inxvec2, nrdata, Sort::QuickSort);
+	Vector<uInt> uniqvec;
+	uInt nr2 = sort.unique (uniqvec, inxvec2);
+        AlwaysAssertExit (nr2 == nr);
+        AlwaysAssertExit (nr2 == uniqvec.nelements());
+	for (i=0; i<nr2; i++) {
+	  if (data[inxvec(i)] != data[inxvec2(uniqvec(i))]) {
+	    cout << "Non matching value on index" << i << endl;
+	  }
+	  if (i > 0) {
+	    if (data[inxvec2(uniqvec(i))] == data[inxvec2(uniqvec(i-1))]) {
+	      cout << "Non-unique value on index" << i << endl;
+	    }
+	  }
 	}
     }
 }
 
+// Test with 1 and 2 keys, because 1 key is short-circuited to GenSort.
 void sortall (int options, Sort::Order order)
 {
     const uInt nrdata = 1000;
     Int data[nrdata];
-    uInt i;
-    for (i=0; i<nrdata; i++) {
-	data[i] = i;
+    Int data2[nrdata];
+    Sort sort;
+    sort.sortKey (data, TpInt, 0, order);
+    Sort sort2;
+    sort2.sortKey (data, TpInt, 0, order);
+    sort2.sortKey (data2, TpInt, 0, order);
+    for (uInt i=0; i<nrdata; i++) {
+      data[i] = i;
+      data2[i] = 0;
     }
-    sortdo (options, order, data, nrdata);
-    for (i=0; i<nrdata; i++) {
-	data[i] = nrdata - i;
+    sortdo (options, sort, order, data, nrdata);
+    sortdo (options, sort2, order, data, nrdata);
+
+    for (uInt i=0; i<nrdata; i++) {
+      data[i] = nrdata - i;
     }
-    sortdo (options, order, data, nrdata);
-    for (i=0; i<nrdata; i++) {
-	data[i] = rand();
+    sortdo (options, sort, order, data, nrdata);
+    sortdo (options, sort2,order,  data, nrdata);
+
+    for (uInt i=0; i<nrdata; i++) {
+      data[i] = rand();
     }
-    sortdo (options, order, data, nrdata);
-    for (i=0; i<nrdata; i++) {
-	data[i] = 1;
+    sortdo (options, sort, order, data, nrdata);
+    sortdo (options, sort2, order, data, nrdata);
+
+    for (uInt i=0; i<nrdata; i++) {
+      data[i] = 1;
     }
-    sortdo (options, order, data, nrdata);
-    for (i=0; i<nrdata; i++) {
-	data[i] = rand()%10;
+    sortdo (options, sort, order, data, nrdata);
+    sortdo (options, sort2, order, data, nrdata);
+
+    for (uInt i=0; i<nrdata; i++) {
+      data[i] = rand()%10;
     }
-    sortdo (options, order, data, nrdata);
+    sortdo (options, sort, order, data, nrdata);
+    sortdo (options, sort2, order, data, nrdata);
 }
 
 
