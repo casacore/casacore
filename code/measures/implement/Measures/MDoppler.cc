@@ -92,9 +92,9 @@ void MDoppler::assert(const Measure &in) {
 const String &MDoppler::showType(uInt tp) {
     static const String tname[MDoppler::N_Types] = {
 	"RADIO", 
-	"Z",
+	"OPTICAL",
 	"RATIO",
-	"BETA",
+	"TRUE",
 	"GAMMA"};
 
     DebugAssert(tp < MDoppler::N_Types, AipsError);
@@ -102,7 +102,7 @@ const String &MDoppler::showType(uInt tp) {
 }
 
 Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
-  static const Int N_name = 7;
+  static const Int N_name = 8;
   static const String tname[N_name] = {
     "RADIO", 
     "Z",
@@ -110,6 +110,7 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
     "BETA",
     "GAMMA",
     "OPTICAL",
+    "TRUE",
     "RELATIVISTIC"};
   
   static const MDoppler::Types oname[N_name] = {
@@ -119,6 +120,7 @@ Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
     MDoppler::BETA,
     MDoppler::GAMMA,
     MDoppler::Z,
+    MDoppler::BETA,
     MDoppler::BETA};
   
   uInt i = Measure::giveMe(in, N_name, tname);

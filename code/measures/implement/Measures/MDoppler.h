@@ -85,6 +85,7 @@ template <class M, class F, class MC> class MeasConvert;
 // <li> MDoppler::BETA  	((1 - F<sup>2</sup>)/(1 + F<sup>2</sup>))
 // <li> MDoppler::GAMMA  	((1 + F<sup>2</sup>)/2F)	*
 // <li> MDoppler::RELATIVISTIC == BETA (== v/c)
+// <li> MDoppler::TRUE == BETA (== v/c)
 // <li> MDoppler::DEFAULT == RADIO
 // <ul>
 // Note that the ones with an '*' have no real interpretation (although the
@@ -149,6 +150,7 @@ public:
 	N_Types,
 	OPTICAL=Z,
 	RELATIVISTIC=BETA,
+	TRUE=BETA,
 	DEFAULT=RADIO };
 
 
