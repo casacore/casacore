@@ -267,6 +267,7 @@ public:
 			      Vector<Int> &failures) const;
     // </group>
 
+
     // Make absolute coordinates relative and vice-versa.
     // Vectors must be length <src>nPixelAxes()</src> or
     // <src>nWorldAxes()</src> or
@@ -276,6 +277,18 @@ public:
     virtual void makeWorldRelative (Vector<Double>& world) const;
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
     // </group>
+
+
+    // Batch up a lot of absolute/relative transformations. 
+    // Parameters as above  for 
+    // <src>toWorldMany</src> and <src>toPixelMany</src>
+    // <group>
+    virtual void makePixelRelativeMany (Matrix<Double>& pixel) const;
+    virtual void makePixelAbsoluteMany (Matrix<Double>& pixel) const;
+    virtual void makeWorldRelativeMany (Matrix<Double>& world) const;
+    virtual void makeWorldAbsoluteMany (Matrix<Double>& world) const;
+    // </group>
+
 
     // Return the requested attributed.
     // <group>
