@@ -47,6 +47,7 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Arrays/Cube.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -64,7 +65,8 @@
 void a();
 void b();
 
-main () {
+int main()
+{
     try {
 	a();
 	b();
