@@ -103,7 +103,7 @@ class SubMS
 
   // This setup a default new ms
   // Can be called directly as its not dependent on any private variable
-  MeasurementSet& setupMS(String msname, Int nchan, Int npol, String telescop, Int obstype=0);
+  MeasurementSet* setupMS(String msname, Int nchan, Int npol, String telescop, Int obstype=0);
   
  
   
@@ -118,11 +118,13 @@ class SubMS
   Bool copyAntenna();
   Bool copyFeed();
   Bool copyObservation();
+  Bool writeDiffSpwShape(String& columnName);
+  Bool writeSimilarSpwShape(String& columnName);
   MSColumns * msc_p;
   MSColumns * mscIn_p;
 
   MeasurementSet ms_p, mssel_p, msOut_p;
-  Vector<Int> spw_p, nchan_p, chanStart_p, chanStep_p, npol_p;
+  Vector<Int> spw_p, nchan_p, chanStart_p, chanStep_p, npol_p, inNumChan_p;
   Vector<Int> fieldid_p;
   Bool averageChannel_p;
   Vector<Int> spwRelabel_p, fieldRelabel_p;

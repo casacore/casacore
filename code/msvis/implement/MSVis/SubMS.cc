@@ -120,11 +120,13 @@ void SubMS::selectSource(Vector<Int> fieldid){
 
 Bool SubMS::makeSubMS(String& msname, String& colname){
 
+  
 
   makeSelection();
   mscIn_p=new MSColumns(mssel_p);
-  msOut_p=setupMS(msname, nchan_p[0], npol_p[0],  
-		  mscIn_p->observation().telescopeName()(0));
+  MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
+				     mscIn_p->observation().telescopeName()(0));
+  msOut_p= *outpointer;
   msc_p=new MSColumns(msOut_p);
   // fill or update
   fillDDTables();
@@ -134,8 +136,10 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
   copyObservation();
   fillMainTable(colname);
   
-  msOut_p.relinquishAutoLocks (True);
-  msOut_p.unlock();
+  //  msOut_p.relinquishAutoLocks (True);
+  //  msOut_p.unlock();
+
+  delete outpointer;
   return True;
 
 }
@@ -190,7 +194,7 @@ Bool SubMS::makeSelection(){
 
 }
 
-MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String telescop, Int obsType ){
+MeasurementSet* SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String telescop, Int obsType ){
 
   
 
@@ -265,7 +269,7 @@ MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String t
     newtab.bindColumn(MS::columnName(MS::SIGMA),tiledStMan5);
 
   // avoid lock overheads by locking the table permanently
-    TableLock lock(TableLock::AutoLocking);
+    TableLock lock(TableLock::PermanentLocking);
     MeasurementSet *ms = new MeasurementSet (newtab,lock);
 
   // Set up the subtables for the UVFITS MS
@@ -293,11 +297,13 @@ MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String t
   }
 
 
-  return *ms;
+  return ms;
 }
 
 
 Bool SubMS::fillDDTables(){
+
+  LogIO os(LogOrigin("SubMS", "fillDDTables()", WHERE));
 
   MSSpWindowColumns& msSpW(msc_p->spectralWindow());
   MSDataDescColumns& msDD(msc_p->dataDescription());
@@ -339,7 +345,10 @@ Bool SubMS::fillDDTables(){
   ROScalarColumn<Double> refFreq(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::REF_FREQUENCY));
   ROArrayColumn<Double> spwResol(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::RESOLUTION));
   ROScalarColumn<Double> totBW(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  inNumChan_p.resize(spw_p.nelements()); 
+
   for(uInt k=0; k < spw_p.nelements(); ++k){
+    inNumChan_p[k]=numChan(spw_p[k]);
     msOut_p.polarization().addRow();
     msOut_p.spectralWindow().addRow();
     msOut_p.dataDescription().addRow();
@@ -349,6 +358,12 @@ Bool SubMS::fillDDTables(){
     msPol.flagRow().put(k,polFlagRow(polId(spw_p[k])));
     spwRelabel_p[spw_p[k]]=k;
     if(nchan_p[k] != numChan(spw_p[k])){
+      Int totchan=nchan_p[k]*chanStep_p[k]+chanStart_p[k];
+      if(totchan >  numChan(spw_p[k])){
+	os << LogIO::SEVERE 
+	   << " Channel settings wrong; exceeding number of channels in spw " 
+	   << spw_p[k]+1 << LogIO::EXCEPTION;
+      }
       doChanAver_p=True; 
       Vector<Double> chanFreqOut(nchan_p[k]);
       Vector<Double> chanFreqIn= chanFreq(spw_p[k]);
@@ -474,7 +489,6 @@ Bool SubMS::fillMainTable(const String& whichCol){
   msc_p->interval().putColumn(mscIn_p->interval());
   msc_p->observationId().putColumn(mscIn_p->observationId());
   msc_p->processorId().putColumn(mscIn_p->processorId());
-  cout << "post procid" << endl;
   msc_p->scanNumber().putColumn(mscIn_p->scanNumber());
   msc_p->stateId().putColumn(mscIn_p->stateId());
   msc_p->time().putColumn(mscIn_p->time());
@@ -484,6 +498,9 @@ Bool SubMS::fillMainTable(const String& whichCol){
   msc_p->sigma().putColumn(mscIn_p->sigma());
 
 
+  Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
+  if(doSpWeight)
+    doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
 
   {
     //relabel data_desc_id  and field_id
@@ -553,91 +570,26 @@ Bool SubMS::fillMainTable(const String& whichCol){
     msc_p->flag().putColumn(mscIn_p->flag());
   }
   else{
-    Int rowsdone=0;
-    Int rowsnow=0;
-    Block<Int> sort(4);
-    sort[0] = MS::FIELD_ID;
-    sort[1] = MS::ARRAY_ID;
-    sort[2] = MS::DATA_DESC_ID;
-    sort[3] = MS::TIME;
-    Matrix<Int> noselection;
 
-    VisSet *vs= new VisSet(mssel_p, sort, noselection);
-    ROVisIter& vi(vs->iter());
-    VisBuffer vb(vi);
-    Vector<Int> spwindex(max(spw_p));
-    spwindex.set(-1);
-    for (uInt k=0; k < spw_p.nelements() ; ++k){
-      spwindex[spw_p[k]]=k;
+
+    Bool sameShape=True;
+    if(inNumChan_p.nelements() > 1){
+      for (uInt k=1; k < inNumChan_p.nelements(); ++k){
+	sameShape= sameShape && (inNumChan_p[k] == inNumChan_p[k-1]);      
+      }
     }
     
-    for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
-      for (vi.origin(); vi.more(); vi++) {
-	rowsnow=vb.nRow();
-	RefRows rowstoadd(rowsdone, rowsdone+rowsnow-1);
-	Int spw=spwindex[vb.spectralWindow()];
-	Cube<Complex> vis;
-	if(columnName== MS::columnName(MS::DATA))
-	  vis.reference(vb.visCube());
-	else if(columnName == "MODEL_DATA" )
-	  vis.reference(vb.modelVisCube());
-	else
-	  vis.reference(vb.correctedVisCube());
-
-	Cube<Bool> inFlag;
-	inFlag.reference(vb.flagCube());
-	Matrix<Bool> chanFlag;
-	chanFlag.reference(vb.flag());
-	Cube<Complex> averdata(npol_p[spw], nchan_p[spw], rowsnow);
-	Cube<Bool> locflag(npol_p[spw], nchan_p[spw], rowsnow);
-	for(Int k=0; k < rowsnow; ++k){
-	  for(Int j=0; j < nchan_p[spw]; ++j){
-	    if(!averageChannel_p){
-	      averdata.xyPlane(k).column(j)=
-		vis.xyPlane(k).column(chanStart_p[spw]+ j*chanStep_p[spw]); 
-	      locflag.xyPlane(k).column(j)=
-		inFlag.xyPlane(k).column(chanStart_p[spw]+ j*chanStep_p[spw]); 
-	    }else{
-	      Vector<Bool> tryFlag(npol_p[spw]);
-	      Vector<Complex> avervis(npol_p[spw]);
-	      avervis.set(Complex(0,0));
-	      tryFlag.set(False);
-
-	      Int counter=0;
-	      for (Int m=0; m < chanStep_p[spw]; ++m){
-		Int chancol=chanStart_p[spw]+ 
-		  j*chanStep_p[spw]+m;
-		if(chanFlag(k, chancol)){
-		  avervis=avervis+vis.xyPlane(k).column(chancol);
-		  ++counter;
-		}
-		/*
-		for (Int pol=0; pol < npol_p[spw]; ++pol){
-		  tryFlag[pol]=tryFlag[pol] | 
-		    inFlag.xyPlane(k).column(chanStart_p[spw]+ 
-					     j*chanStep_p[spw]+m)[pol];
-		  
-		}
-		*/
-		
-	      }
-	      if(counter >0){
-		averdata.xyPlane(k).column(j)=avervis/counter;
-		locflag.xyPlane(k).column(j).set(False);
-	      }
-	      else{
-		averdata.xyPlane(k).column(j).set(0);
-		locflag.xyPlane(k).column(j).set(True);
-	      }
-	      
-	    }
-	  }
-	}
-	rowsdone+=rowsnow;
-	msc_p->data().putColumnCells(rowstoadd, averdata);
-	msc_p->flag().putColumnCells(rowstoadd, locflag);
-
+    if(nchan_p.nelements() > 1){
+      for (uInt k=1; k < nchan_p.nelements(); ++k){
+	sameShape= sameShape && (nchan_p[k] == nchan_p[k-1]);      
       }
+    }
+
+    if(sameShape){
+      writeSimilarSpwShape(columnName);
+    }
+    else{
+      writeDiffSpwShape(columnName);
     }
 
   }
@@ -680,3 +632,256 @@ Bool SubMS::copyObservation(){
   return True;
 
 }
+
+Bool SubMS::writeDiffSpwShape(String& columnName){
+
+  Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
+  if(doSpWeight)
+    doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
+
+
+  Int rowsdone=0;
+  Int rowsnow=0;
+  Block<Int> sort(4);
+  sort[0] = MS::FIELD_ID;
+  sort[1] = MS::ARRAY_ID;
+  sort[2] = MS::DATA_DESC_ID;
+  sort[3] = MS::TIME;
+  Matrix<Int> noselection;
+  
+  VisSet *vs= new VisSet(mssel_p, sort, noselection);
+  ROVisIter& vi(vs->iter());
+  VisBuffer vb(vi);
+  Vector<Int> spwindex(max(spw_p)+1);
+  spwindex.set(-1);
+  for (uInt k=0; k < spw_p.nelements() ; ++k){
+    spwindex[spw_p[k]]=k;
+  }
+  
+  for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
+    for (vi.origin(); vi.more(); vi++) {
+      rowsnow=vb.nRow();
+      RefRows rowstoadd(rowsdone, rowsdone+rowsnow-1);
+      Int spw=spwindex[vb.spectralWindow()];
+      Cube<Complex> vis;
+      if(columnName== MS::columnName(MS::DATA))
+	  vis.reference(vb.visCube());
+      else if(columnName == "MODEL_DATA" )
+	vis.reference(vb.modelVisCube());
+      else
+	vis.reference(vb.correctedVisCube());
+      
+      Cube<Bool> inFlag;
+      Cube<Float> inSpWeight;
+      inFlag.reference(vb.flagCube());
+      Matrix<Bool> chanFlag;
+      chanFlag.reference(vb.flag());
+      Cube<Complex> averdata(npol_p[spw], nchan_p[spw], rowsnow);
+      Cube<Float> spWeight;
+      if (doSpWeight){
+	spWeight.resize(npol_p[spw], nchan_p[spw], rowsnow);
+      }
+      Cube<Bool> locflag(npol_p[spw], nchan_p[spw], rowsnow);
+      Bool idelete;
+      const Bool* iflag=inFlag.getStorage(idelete);
+      const Complex* idata=vis.getStorage(idelete);
+      //      const Float* iweight=inSpWeight.getStorage(idelete);
+      Complex* odata=averdata.getStorage(idelete);
+      Bool* oflag=locflag.getStorage(idelete);
+      // We have to revisit this once visBuffer provides the spectral Weights
+
+      
+      for(Int k=0; k < rowsnow; ++k){
+	for(Int j=0; j < nchan_p[spw]; ++j){
+	  Vector<Int>counter(npol_p[spw]);
+	  counter.set(0);
+	  for (Int pol=0; pol < npol_p[spw]; ++pol){
+	    Int outoffset=k*nchan_p[spw]*npol_p[spw]+j*npol_p[spw]+pol;
+	    if(!averageChannel_p){
+	      averdata.xyPlane(k).column(j)=
+		vis.xyPlane(k).column(chanStart_p[spw]+ j*chanStep_p[spw]); 
+	      locflag.xyPlane(k).column(j)=
+		inFlag.xyPlane(k).column(chanStart_p[spw]+ j*chanStep_p[spw]); 
+	    }
+	    else{  
+	      for (Int m=0; m < chanStep_p[spw]; ++m){
+		Int inoffset=k*inNumChan_p[spw]*npol_p[spw]+
+		  (j*chanStep_p[spw]+m)*npol_p[spw]+ pol;
+		
+		if(!iflag[inoffset]){
+		  odata[outoffset] += idata[inoffset];
+		  ++counter[pol];
+		}
+		
+	      }
+		
+	      
+	    }
+	    
+	    if(averageChannel_p){
+	      if(counter[pol] >0){
+		odata[outoffset] = odata[outoffset]/counter[pol];
+		oflag[outoffset]=False;
+		
+	      }
+	      else{
+		odata[outoffset]=0;
+		oflag[outoffset]=True;
+	      }
+	    }
+	  }
+	  
+	}
+	
+
+
+      }
+      
+      rowsdone+=rowsnow;
+      msc_p->data().putColumnCells(rowstoadd, averdata);
+      msc_p->flag().putColumnCells(rowstoadd, locflag);
+      
+    }
+  }
+  
+  return True;
+  
+  
+}
+
+Bool SubMS::writeSimilarSpwShape(String& columnName){
+
+
+  Int nrow=mssel_p.nrow();
+  ROArrayColumn<Complex> data;
+  ROArrayColumn<Float> wgtSpec;
+  ROArrayColumn<Bool> flag(mscIn_p->flag());
+  if(columnName== MS::columnName(MS::DATA))
+    data.reference(mscIn_p->data());
+  else if(columnName == "MODEL_DATA" )
+    data.reference(mscIn_p->modelData());
+  else
+    data.reference(mscIn_p->correctedData());
+
+
+
+  Bool deleteIptr,  deleteIWptr;
+  Bool deleteIFptr;
+  Matrix<Complex> indatatmp(npol_p[0], inNumChan_p[0]);
+  const Complex *iptr = indatatmp.getStorage(deleteIptr);
+  Matrix<Bool> inflagtmp(npol_p[0], inNumChan_p[0]);
+  const Bool *iflg = inflagtmp.getStorage(deleteIFptr);
+  Vector<Complex> outdatatmp(npol_p[0]);
+  //    const Complex *optr = outdatatmp.getStorage(deleteOptr);
+  Matrix<Float> inwgtspectmp(npol_p[0], inNumChan_p[0]);
+  const Float *inwptr = inwgtspectmp.getStorage(deleteIWptr);
+  Vector<Float> outwgtspectmp(npol_p[0]);
+    //   const Float *owptr = outwgtspectmp.getStorage(deleteOWptr);
+    
+
+    Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
+    if(doSpWeight)
+      doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
+
+
+    Cube<Complex> outdata(npol_p[0], nchan_p[0], nrow);
+    Cube<Bool> outflag(npol_p[0], nchan_p[0], nrow);
+    Cube<Float> outspweight ;
+    if(doSpWeight){ 
+      outspweight.resize(npol_p[0], nchan_p[0], nrow);
+      wgtSpec.reference(mscIn_p->weightSpectrum());
+    }
+    for (Int row=0; row < nrow; ++row){
+
+      data.get(row, indatatmp);
+      flag.get(row, inflagtmp);
+      if(doSpWeight)  wgtSpec.get(row, inwgtspectmp);
+      Int ck=0;
+      Int chancounter=0;
+      Vector<Int> avcounter(npol_p[0]);
+      avcounter.set(0);
+      for (Int k=chanStart_p[0]; k< (nchan_p[0]*chanStep_p[0]+chanStart_p[0]);
+	   k++) {
+
+	if(chancounter == chanStep_p[0]){
+	  outdatatmp.set(0); outwgtspectmp.set(0);
+	  chancounter=0;
+	  avcounter.set(0);
+	}
+	++chancounter;
+	for (Int j=0; j< npol_p[0]; ++j){
+	  Int offset= j + k*npol_p[0];
+	  if(!iflg[offset]){
+	    if(doSpWeight){
+	      outdatatmp[j] += iptr[offset]*inwptr[offset];
+	      outwgtspectmp[j] += inwptr[offset];
+	    }
+	    else{
+	      outdatatmp[j] += iptr[offset];	   
+	      
+	    }
+
+	    ++avcounter[j];
+	  }
+
+
+	  if(chancounter==chanStep_p[0]){
+	    if(avcounter[j] !=0){
+	      if(doSpWeight){
+		outdata(j,ck,row)=outdatatmp[j]/outwgtspectmp[j];	 
+		outspweight(j,ck,row)=outwgtspectmp[j];
+	      }
+	      else{
+		outdata(j,ck,row)=outdatatmp[j]/avcounter[j];	    
+	      }
+	      outflag(j,ck,row)=False;
+	    } 
+	    else{
+	      
+	    outdata(j,ck,row)=0;
+	    outflag(j,ck,row)=True;
+	    if(doSpWeight)outspweight(j,ck,row)=0;
+	    }
+	    
+	  }
+
+	  
+	}
+	
+
+	if(chancounter==chanStep_p[0]){
+	  ++ck;
+	
+ 
+	}
+
+
+      }
+
+      
+    }
+
+    msc_p->data().putColumn(outdata);
+    msc_p->flag().putColumn(outflag);
+    if(doSpWeight)msc_p->weightSpectrum().putColumn(outspweight);
+
+
+    return True;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
