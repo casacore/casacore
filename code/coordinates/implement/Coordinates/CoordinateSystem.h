@@ -259,11 +259,13 @@ public:
 				   Bool adjust = True);
 
     // Comparison function. Any private Double data members are compared
-    // with the specified fractional tolerance.  
+    // with the specified fractional tolerance.  Don't compare on the specified 
+    // pixel axes in the CoordinateSystem.  If the comparison returns
+    // False, <src>errorMessage()</src> contains a message about why.
     virtual Bool near(const Coordinate* pOther, Double tol=1e-6) const;
-    virtual Bool near(const Coordinate* pOther, const Vector<Int>& excludePixelAxes,
+    virtual Bool near(const Coordinate* pOther, 
+                      const Vector<Int>& excludePixelAxes,
                       Double tol=1e-6) const;
- 
 
     // Format a world value with the common format interface (refer to the base 
     // class <linkto class=Coordinate>Coordinate</linkto> for more details on this 
