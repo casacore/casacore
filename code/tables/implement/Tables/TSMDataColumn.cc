@@ -164,40 +164,6 @@ IPosition TSMDataColumn::shape (uInt rownr)
 }
 
 
-void TSMDataColumn::sizeCellCache (TSMCube* hypercube,
-				   const IPosition& start,
-				   const IPosition& end,
-				   const IPosition& stride)
-{
-    // Usually get/put(Slice) will be called sequentially.
-    // Therefore it makes sense to cache all dimensions of the
-    // hypercube, except the last one.
-    const IPosition& cubeShape = hypercube->cubeShape();
-    const IPosition& tileShape = hypercube->tileShape();
-    IPosition blc (start);
-    IPosition trc (end);
-    uInt nr = blc.nelements();
-    // Copy the hypercube shape to the latter dimensions.
-    // (the first dimensions form the cell or slice shape).
-    for (uInt i=stmanPtr_p->nrCoordVector(); i<nr; i++) {
-	blc(i) = 0;
-	trc(i) = cubeShape(i) - 1;
-    }
-    // First the last dimension is excluded, thereafter previous ones
-    // until the cache sizing succeeds.
-    // Trailing dimensions where the tile shape equals 1 can be ignored,
-    // because it makes no sense to cache for them.
-    while (nr > stmanPtr_p->nrCoordVector()) {
-	nr--;
-	trc(nr) = 0;
-	if (tileShape(nr) != 1) {
-	    if (hypercube->sizeCache (blc, trc, stride)) {
-		break;
-	    }
-	}
-    }
-}
-
 void TSMDataColumn::accessCell (uInt rownr, const void* dataPtr, 
 				Bool writeFlag)
 {
@@ -212,10 +178,10 @@ void TSMDataColumn::accessCell (uInt rownr, const void* dataPtr,
     }
     // Size the cache if the user has not done it and if the
     // last access was not to a cell.
-    if (! stmanPtr_p->userSetCache()) {
-	if (lastAccess_p != CellAccess) {
+    if (lastAccess_p != CellAccess) {
+	if (! stmanPtr_p->userSetCache (rownr)) {
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), IPosition(), False);
+				     IPosition(), IPosition(), False, False);
 	    lastAccess_p = CellAccess;
 	}
     }
@@ -242,9 +208,8 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
     }
     // Size the cache if the user has not done it
     // and if the access type or slice shape differs.
-    if (! stmanPtr_p->userSetCache()) {
-	if (lastAccess_p != SliceAccess
-	||  ! lastSlice_p.isEqual (slice)) {
+    if (lastAccess_p != SliceAccess  ||  ! lastSlice_p.isEqual (slice)) {
+	if (! stmanPtr_p->userSetCache (rownr)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
 	    uInt naxis = 0;
@@ -256,7 +221,7 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, False);
+				     IPosition(), axisPath, False, False);
 	    lastAccess_p = SliceAccess;
 	    lastSlice_p.resize (slice.nelements());
 	    lastSlice_p = slice;
@@ -275,9 +240,9 @@ void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
     end -= 1;
     IPosition start (end.nelements(), 0);
     // Size the cache if the user has not done it.
-    if (! stmanPtr_p->userSetCache()) {
+    if (! stmanPtr_p->userSetCache (0)) {
 	hypercube->setCacheSize (end + 1, IPosition(),
-				 IPosition(), IPosition(), False);
+				 IPosition(), IPosition(), False, False);
 	lastAccess_p = ColumnAccess;
     }
     hypercube->accessSection (start, end, (char*)dataPtr, colnr_p,
@@ -307,9 +272,8 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     }
     // Size the cache if the user has not done it
     // and if the access type or slice shape differs.
-    if (! stmanPtr_p->userSetCache()) {
-	if (lastAccess_p != ColumnSliceAccess
-	||  ! lastSlice_p.isEqual (slice)) {
+    if (lastAccess_p != ColumnSliceAccess  ||  ! lastSlice_p.isEqual (slice)) {
+	if (! stmanPtr_p->userSetCache (0)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
 	    uInt naxis = 0;
@@ -325,7 +289,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, False);
+				     IPosition(), axisPath, False, False);
 	    lastAccess_p = ColumnSliceAccess;
 	    lastSlice_p.resize (slice.nelements());
 	    lastSlice_p = slice;
