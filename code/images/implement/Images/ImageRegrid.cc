@@ -58,7 +58,6 @@
 #include <trial/Lattices/LCSlicer.h>
 
 #include <trial/Images/TempImage.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/SubImage.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
