@@ -347,12 +347,12 @@ SFXSHAR  := so
 #                                                          Kernel
 LIBaips      := static static defeat defeat static static
 #                                                          Standard
-LIBdish       = static static defeat defeat defeat defeat
+LIBdish       = defeat static defeat defeat defeat defeat
 LIBsynthesis  = defeat defeat defeat defeat defeat defeat
 LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
 LIBcontrib    = defeat defeat defeat defeat defeat defeat
-LIBtrial      = defeat defeat defeat defeat defeat defeat
+LIBtrial      = static static defeat defeat static static
 #                                                          Consortia
 LIBatnf       = defeat defeat defeat defeat defeat defeat
 LIBbima       = defeat defeat defeat defeat defeat defeat
@@ -380,8 +380,10 @@ LINKbima      := bima aips
 LINKhia       := hia  aips
 LINKnfra      := nfra aips
 LINKnral      := nral aips
-LINKnrao      := nrao aips
 LINKtifr      := tifr aips
+
+# nrao currently requires trial!
+LINKnrao      := nrao trial aips
 
 # Document compilers.
 TEX      := tex
@@ -431,7 +433,7 @@ DOCSYS    := doc
 DOCEXTR   := docscan docextr
 
 # What auxiliary packages to build (contrib trial).
-AUXILIARY :=
+AUXILIARY := trial
 
 # What consortium packages to build (atnf bima hia nfra nral nrao tifr).
 CONSORTIA :=
