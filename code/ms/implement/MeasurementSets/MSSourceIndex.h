@@ -97,6 +97,15 @@ public:
   Vector<Int> matchSourceName(const String& name);
   Vector<Int> matchSourceName(const Vector<String>& names);
 
+protected:
+  // the specialized compare function to pass to the
+  // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1
+  // values for the SPECTRAL_WINDOW_ID
+  static Int compare (const Block<void*>& fieldPtrs,
+                      const Block<void*>& dataPtrs,
+                      const Block<Int>& dataTypes,
+                      Int index);
+  
 private:
   // Pointer to local ROMSSourceColumns object
   ROMSSourceColumns* msSourceCols_p;

@@ -1,5 +1,5 @@
 //# MSFeedIndex: index into a MeasurementSet FEED subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,15 @@ public:
 
   // access to the spectral window ID key, throws an exception if isNull() is False
   Int &spectralWindowId() {return *spwId_p;}
+protected:
+  // the specialized compare function to pass to the
+  // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1
+  // values for the SPECTRAL_WINDOW_ID
+  static Int compare (const Block<void*>& fieldPtrs,
+                      const Block<void*>& dataPtrs,
+                      const Block<Int>& dataTypes,
+                      Int index);
+  
 private:
   RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
 

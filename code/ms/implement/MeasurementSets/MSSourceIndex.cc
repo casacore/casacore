@@ -32,13 +32,14 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/MeasurementSets/MSSource.h>
+#include <aips/Tables/TableError.h>
 
 MSSourceIndex::MSSourceIndex() 
   : MSTableIndex(), msSourceCols_p(0)
 {;}
 
 MSSourceIndex::MSSourceIndex(const MSSource &source)
-  : MSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"))
+    : MSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"), compare)
 { 
   attachIds();
   msSourceCols_p = new ROMSSourceColumns(source);
@@ -64,7 +65,8 @@ MSSourceIndex &MSSourceIndex::operator=(const MSSourceIndex &other)
 
 void MSSourceIndex::attach(const MSSource &source)
 {
-    MSTableIndex::attach(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"));
+    MSTableIndex::attach(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"),
+                         compare);
     attachIds();
 }
 
@@ -115,8 +117,35 @@ Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
   return matchedSourceIds;
 };
 
-
-
-
-
-
+Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
+                            const Block<void*>& dataPtrs,
+                            const Block<Int>& dataTypes,
+                            Int index)
+{
+  // this implementation has been adapted from the default compare function in 
+  // ColumnsIndex.cc.  The support for data types other than Integer have been
+  // removed, since, according to the constructor's documentation, the index 
+  // columns must be of integer type.  At present, this is in practice true in 
+  // this case.   A consequence of this simplified implementation is that is 
+  // supports a -1 value for all IDs, rather than just for SPECTRAL_WINDOW_ID;
+  // since MS2 only allows a -1 value for SPECTRAL_WINDOW_ID, this should not
+  // cause problems for users with valid MS2 datasets.
+  uInt nfield = fieldPtrs.nelements();
+  for (uInt i=0; i<nfield; i++) {
+    if (dataTypes[i] == TpInt) {
+      const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtrs[i]));
+      const Int right = ((const Int*)(dataPtrs[i]))[index];
+      if (right != -1) {        // consider -1 equal to any requested id
+          if (left < right) {
+              return -1;
+          } else if (left > right) {
+              return 1;
+          }
+      }
+    }
+    else {
+      throw (TableError ("MSSourceIndex: non-Integer index type"));
+    }
+  }
+  return 0;
+}
