@@ -1,5 +1,5 @@
 //# tArrayIter1.cc: This program test the Array-based iterators
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -66,8 +66,8 @@ main()
     }
 
     ReadOnlyMatrixIterator<Int> roai(a);
-    for (i = 0; i < 3; i++)
-	a.xyPlane(i) = i;
+    for (Int j = 0; j < 3; j++)
+	a.xyPlane(j) = j;
     count = 0;
     while (!roai.pastEnd()) {
 	AlwaysAssertExit(allEQ (roai.array(), count));
