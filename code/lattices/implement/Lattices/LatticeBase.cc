@@ -69,9 +69,9 @@ uInt LatticeBase::nelements() const
   return shape().product(); 
 }
 
-LatticeCoordinates LatticeBase::latticeCoordinates() const
+LELCoordinates LatticeBase::lelCoordinates() const
 {
-  return LatticeCoordinates();
+  return LELCoordinates();
 }
 
 

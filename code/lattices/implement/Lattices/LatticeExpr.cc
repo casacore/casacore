@@ -142,7 +142,7 @@ IPosition LatticeExpr<T>::doNiceCursorShape (uInt) const
 }
   
 template <class T>
-LatticeCoordinates LatticeExpr<T>::coordinates() const
+LELCoordinates LatticeExpr<T>::lelCoordinates() const
 {
    return expr_p.getAttribute().coordinates();
 }
