@@ -447,7 +447,6 @@ try {
   
 // Clean up SUbImage pointers
 
-      Int nDim = pSubImage2->ndim();
       if (pSubImage2!=0) delete pSubImage2;
 
 
