@@ -2480,3 +2480,4 @@
 11 312 src mv trial/apps/hds/hds.cc npoi/apps/hds/hds.cc
 11 312 src mv nrao/implement/VLA/VLAArchiveInput.h nrao/implement/VLA/VLALogicalRecord.h
 11 312 src mv nrao/implement/VLA/VLAArchiveInput.cc nrao/implement/VLA/VLALogicalRecord.cc
+11 312 src mv nrao/implement/VLA/test/tVLAArchiveInput.cc nrao/implement/VLA/test/tVLALogicalRecord.cc
