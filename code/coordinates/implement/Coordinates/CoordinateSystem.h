@@ -199,21 +199,27 @@ public:
                    const Vector<Int> &newPixelOrder);
 
     // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
-    // from the current <src>CoordinateSystem</src>.  <src>worldAxisMap(i)</src> 
-    // is the location of world axis <src>i</src> (from the
+    // from the current <src>CoordinateSystem</src>
+    // <src>True</src> is returned only if a valid mapping can be made; this
+    // basically means that the world axes in the supplied <src>CoordinateSystem</src>
+    // could be found somewhere (order is unimportant) in the current <src>CoordinateSystem</src>.
+    // <src>worldAxisMap(i)</src> is the location of world axis <src>i</src> (from the
     // supplied <src>CoordinateSystem</src>, <src>cSys</src>,
     // in the current <src>CoordinateSystem</src>.
     // <src>worldAxisTranspose(i)</src> is the location of world axis 
     // <src>i</src> (from the current <src>CoordinateSystem</src>) in the supplied 
     // <src>CoordinateSystem</src>, <src>cSys</src>.  The output vectors
-    // are resized appropriately by this function.   It is allowed that the 
-    // supplied <src>CoordinateSystem</src> has less coordinates/world 
-    // axes than the current <src>CoordinateSystem</src>.
-    // In this case, the <src>worldAxisTranspose</src> vector may contain the
-    // value -1, indicating that this world axis is not present in the
+    // are resized appropriately by this function.  A value of  -1 
+    // in the <src>worldAxisTranspose</src> vector (which may occur even
+    // if the function returns True) indicates that this world axis is not present in the
     // supplied <src>CoordinateSystem</src>.  Conformance (world axis names,
-    // intrinsic units, types) of the <src>CoordinateSystems</src> is checked,
-    // and <src>False</src> is returned if they do not conform.  A message can
+    // intrinsic units, types) of the <src>CoordinateSystems</src> is checked.
+    // The primary target is the supplied <src>CoordinateSystem</src>; 
+    // a valid <src>worldAxisMap</src> can sometimes be made even if the
+    // <src>worldAxisTranspose</src> vector contains values of -1, and this
+    // is considered a success (returns True).  For example if you supply
+    // an [RA,DEC] <src>CoordinateSystem</src> to an [RA,DEC,Frequency]
+    //  <src>CoordinateSystem</src>, this will happen.  If False is returned, a  message can 
     // be recovered with the function <src>errorMessage</src> indicating why.
        Bool worldMap (Vector<Int>& worldAxisMap,
                       Vector<Int>& worldAxisTranspose,
