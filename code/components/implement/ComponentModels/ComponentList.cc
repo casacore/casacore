@@ -142,14 +142,14 @@ ComponentList::
 
       ArrayColumnDesc<Float> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
 				     IPosition(1,4),  ColumnDesc::Direct);
-      fluxCol.keywordSet().define ("Unit", "Jy");
+      fluxCol.rwKeywordSet().define ("Unit", "Jy");
       td.addColumn(fluxCol);
 
       ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
 				     + angleUnits + " ("+refFrame+")",
 				     IPosition(1,2),  ColumnDesc::Direct);
-      dirCol.keywordSet().define ("Unit", angleUnits);
-      dirCol.keywordSet().define ("Frame", refFrame);
+      dirCol.rwKeywordSet().define ("Unit", angleUnits);
+      dirCol.rwKeywordSet().define ("Frame", refFrame);
       td.addColumn(dirCol);
       
       ArrayColumnDesc<Double> 
