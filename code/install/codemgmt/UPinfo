@@ -283,6 +283,11 @@ set rpath =  "${ruser}@${rmaster}"
 set pdir = `pwd | sed -e 's#.*/aips++/#aips++/#'`
 set tmp = $$
 #
+# Get rid of some aliase
+#
+unalias rm
+unalias cp
+#
 # Get info
 #
 if (! $upswQE) echo "Getting info..."
@@ -356,18 +361,18 @@ if (! $?dir) then
 endif 
 
 if (! $?mdir) then
-   set x = "~/aips++"
-   while (! -d $x/code) 
+   set mdir = "~/aips++"
+   while (! -d $mdir/code) 
       if (! $upswQE) then
-        echo "Path to local aips++ tree root is not $x"
+        echo "Path to local aips++ tree root is not $mdir"
       endif
-      echo -n "Specify your local aips++ tree root [$x]: "
+      echo -n "Specify your local aips++ tree root [$mdir]: "
+      set x = "$<"
       if ("$x" != "") then
-	set x = "$<"
+	set mdir = "$x"
       endif
+      unset x
    end
-   set mdir = "$x"
-   unset x
 endif
 
 if ($?xao || ! $?xai) then
