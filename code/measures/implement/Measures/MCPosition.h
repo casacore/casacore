@@ -39,6 +39,7 @@
 
 //# Forward Declarations
 class MCPosition;
+class String;
 template <class T> class Vector;
 
 //# Typedefs
@@ -89,6 +90,10 @@ public:
   
   //# Destructor
   ~MCPosition();
+
+  //# Member functions
+  // Show the state of the conversion engine (mainly for debugging purposes)
+  static String showState();
   
 private:
   //# Enumerations

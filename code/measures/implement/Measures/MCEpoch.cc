@@ -278,6 +278,17 @@ void MCEpoch::doConvert(MVEpoch &in,
 
       default:
 	break;
-      }
-    }
+     }; // switch
+     }; //for
+}
+
+String MCEpoch::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
+		      MEpoch::N_Types, MCEpoch::N_Routes,
+		      MCEpoch::ToRef_p);
+  };
+  return MCBase::showState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
+			   MEpoch::N_Types, MCEpoch::N_Routes,
+			   MCEpoch::ToRef_p);
 }

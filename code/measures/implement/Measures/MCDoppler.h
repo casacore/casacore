@@ -39,6 +39,7 @@
 
 //# Forward Declarations
 class MCDoppler;
+class String;
 
 //# Typedefs
 
@@ -102,6 +103,10 @@ public:
   
   //# Destructor
   ~MCDoppler();
+
+  //# Member functions
+  // Show the state of the conversion engine (mainly for debugging purposes)
+  static String showState();
 
 private:
 

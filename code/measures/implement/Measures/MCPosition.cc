@@ -159,6 +159,17 @@ void MCPosition::doConvert(MVPosition &in,
     default:
       break;
 	
-    }
-  }
+    }; //switch
+  }; // for
+}
+
+String MCPosition::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
+		      MPosition::N_Types, MCPosition::N_Routes,
+		      MCPosition::ToRef_p);
+  };
+  return MCBase::showState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
+			   MPosition::N_Types, MCPosition::N_Routes,
+			   MCPosition::ToRef_p);
 }

@@ -43,6 +43,7 @@ class MDoppler;
 class MVPosition;
 class MVDirection;
 class Aberration;
+class String;
 
 //# Typedefs
 
@@ -99,6 +100,10 @@ public:
   
   //# Destructor
   ~MCFrequency();
+
+  //# Member functions
+  // Show the state of the conversion engine (mainly for debugging purposes)
+  static String showState();
   
 private:
   //# Enumerations

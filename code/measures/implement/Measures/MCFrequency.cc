@@ -320,3 +320,14 @@ void MCFrequency::doConvert(MVFrequency &in,
     }; // switch
   }; //for
 }
+
+String MCFrequency::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
+		      MFrequency::N_Types, MCFrequency::N_Routes,
+		      MCFrequency::ToRef_p);
+  };
+  return MCBase::showState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
+			   MFrequency::N_Types, MCFrequency::N_Routes,
+			   MCFrequency::ToRef_p);
+}

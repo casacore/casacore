@@ -40,6 +40,7 @@
 //# Forward Declarations
 class MCEpoch;
 class Nutation;
+class String;
 
 //# Typedefs
 
@@ -97,6 +98,10 @@ public:
   
   //# Destructor
   ~MCEpoch();
+
+  //# Member functions
+  // Show the state of the conversion engine (mainly for debugging purposes)
+  static String showState();
   
 private:
   //# Enumerations

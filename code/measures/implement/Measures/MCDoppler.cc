@@ -148,3 +148,14 @@ void MCDoppler::doConvert(MVDoppler &in,
     in = t;
   }; // for
 }
+
+String MCDoppler::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
+		      MDoppler::N_Types, MCDoppler::N_Routes,
+		      MCDoppler::ToRef_p);
+  };
+  return MCBase::showState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
+			   MDoppler::N_Types, MCDoppler::N_Routes,
+			   MCDoppler::ToRef_p);
+}

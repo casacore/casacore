@@ -284,3 +284,13 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
   }; // for
 }
 
+String MCRadialVelocity::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
+		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
+		      MCRadialVelocity::ToRef_p);
+  };
+  return MCBase::showState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
+			   MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
+			   MCRadialVelocity::ToRef_p);
+}
