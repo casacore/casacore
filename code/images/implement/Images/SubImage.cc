@@ -227,6 +227,12 @@ Bool SubImage<T>::ok() const
 }
 
 template<class T>
+Bool SubImage<T>::isPaged() const
+{
+  return itsSubLatPtr->isPaged();
+}
+
+template<class T>
 Bool SubImage<T>::isWritable() const
 {
   return itsSubLatPtr->isWritable();

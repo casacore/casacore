@@ -132,6 +132,8 @@ public:
   virtual MaskedImage<T>* cloneMI() const;
   // </group>
 
+  // Is the SubImage paged to disk?
+  virtual Bool isPaged() const;
 
   // Is the SubImage writable?
   virtual Bool isWritable() const;
