@@ -259,6 +259,27 @@ Bool SubLattice<T>::isWritable() const
 }
 
 template<class T>
+Bool SubLattice<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return itsLatticePtr->lock (type, nattempts);
+}
+template<class T>
+void SubLattice<T>::unlock()
+{
+  itsLatticePtr->unlock();
+}
+template<class T>
+Bool SubLattice<T>::hasLock (FileLocker::LockType type) const
+{
+  return itsLatticePtr->hasLock (type);
+}
+template<class T>
+void SubLattice<T>::resync()
+{
+  itsLatticePtr->resync();
+}
+
+template<class T>
 Bool SubLattice<T>::hasPixelMask() const
 {
   return itsHasPixelMask;
@@ -427,21 +448,4 @@ LatticeIterInterface<T>* SubLattice<T>::makeIter
 ///  navPtr->subSection (section.start(), section.end(), section.stride());
 ///  delete navPtr;
 ///  return iterPtr;
-}
-
-template<class T>
-Bool SubLattice<T>::lock (FileLocker::LockType type, uInt nattempts)
-{
-  return itsLatticePtr->lock (type, nattempts);
-}
-template<class T>
-void SubLattice<T>::unlock()
-{
-  itsLatticePtr->unlock();
-  itsRegion.unlock();
-}
-template<class T>
-Bool SubLattice<T>::hasLock (FileLocker::LockType type) const
-{
-  return itsLatticePtr->hasLock (type);
 }

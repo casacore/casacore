@@ -156,6 +156,25 @@ public:
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
 
+  // Handle locking of the SubLattice which is delegated to its parent.
+  // <br>It is strongly recommended to use class
+  // <linkto class=LatticeLocker>LatticeLocker</linkto> to
+  // handle lattice locking. It also contains a more detailed
+  // explanation of the locking process.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  // </group>
+
+  // Resynchronize the Lattice object with the lattice file.
+  // This function is only useful if no read-locking is used, ie.
+  // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+  // In that cases the table system does not acquire a read-lock, thus
+  // does not synchronize itself automatically.
+  // <br>By default the function does not do anything at all.
+  virtual void resync();
+
   // Does the SubLattice have a pixelmask?
   virtual Bool hasPixelMask() const;
 
@@ -208,13 +227,6 @@ public:
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
-
-  // Handle the (un)locking.
-  // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
-  virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
-  // </group>
 
 protected:
   // Set the various pointer needed to construct the object.

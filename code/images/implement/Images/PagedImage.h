@@ -421,11 +421,22 @@ public:
   virtual void showCacheStatistics (ostream& os) const;
 
   // Handle the (un)locking.
+  // Unlocking also unlocks the logtable and a possible mask table.
+  // Locking only locks the image itself.
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();
   virtual Bool hasLock (FileLocker::LockType) const;
   // </group>
+
+  // Resynchronize the PagedImage object with the table contents.
+  // The logtable and possible mask table are also synchronized if
+  // they do not have a readlock.
+  // <br>This function is only useful if no read-locking is used, ie.
+  // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+  // In that cases the table system does not acquire a read-lock, thus
+  // does not synchronize itself automatically.
+  virtual void resync();
 
 
 private:  

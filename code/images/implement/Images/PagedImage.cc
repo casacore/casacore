@@ -915,6 +915,17 @@ Bool PagedImage<T>::hasLock (FileLocker::LockType type) const
 {
   return table_p.hasLock (type);
 }
+template<class T>
+void PagedImage<T>::resync()
+{
+  table_p.resync();
+  if (!logTablePtr_p->table().hasLock (FileLocker::Read)) {
+    logTablePtr_p->table().resync();
+  }
+  if (regionPtr_p != 0  &&  !regionPtr_p->hasLock (FileLocker::Read)) {
+    regionPtr_p->resync();
+  }
+}
 
 
 template<class T>

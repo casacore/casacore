@@ -350,3 +350,9 @@ Bool SubImage<T>::hasLock (FileLocker::LockType type) const
 {
   return itsSubLatPtr->hasLock (type);
 }
+template<class T>
+void SubImage<T>::resync()
+{
+  itsImagePtr->resync();
+  itsSubLatPtr->resync();
+}
