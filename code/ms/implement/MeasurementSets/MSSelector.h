@@ -232,30 +232,30 @@ public:
 
 protected:
   // average and convert data
-  void getAveragedData(Array<Complex>& avData, 
+  void getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
 		       const ROArrayColumn<Complex>& col) const;
 
   // average and convert float data
-  void getAveragedData(Array<Float>& avData, 
+  void getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 		       const ROArrayColumn<Float>& col) const;
 
   // average and convert data, with row Slicer
-  void getAveragedData(Array<Complex>& avData, 
+  void getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
 		       const ROArrayColumn<Complex>& col,
 		       const Slicer & rowSlicer) const;
 
   // average and convert float data, with row Slicer
-  void getAveragedData(Array<Float>& avData, 
+  void getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 		       const ROArrayColumn<Float>& col,
 		       const Slicer & rowSlicer) const;
 
   // "average" flag, at present all output which has a flagged input is flagged
-  void getAveragedFlag(Array<Bool>& avFlag, 
+  Array<Bool> getAveragedFlag(Array<Bool>& avFlag, 
 		       const ROArrayColumn<Bool>& col) const;
 
   // "average" flag, at present all output which has a flagged input is flagged,
   // with row Slicer
-  void getAveragedFlag(Array<Bool>& avFlag, 
+  Array<Bool> getAveragedFlag(Array<Bool>& avFlag, 
 		       const ROArrayColumn<Bool>& col,
 		       const Slicer& rowSlicer) const;
 
