@@ -64,7 +64,7 @@ class RotMatrix;
 // <prerequisite>
 //   <li> <linkto class=Measure>Measure</linkto> class 
 //   <li> <linkto class=MCBase>MCBase</linkto> base class
-//   <li> <linkto class=MConvertBase</linkto> overall conversion class
+//   <li> <linkto class=MConvertBase>overall conversion</linkto>  class
 // </prerequisite>
 //
 // <etymology>
