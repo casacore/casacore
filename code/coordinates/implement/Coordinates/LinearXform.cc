@@ -185,7 +185,7 @@ Bool LinearXform::forward(const Vector<Double> &world,
     const Int max_size = 10;
     uInt naxis = world.nelements();
     AlwaysAssert(naxis <= max_size, AipsError);
-    AlwaysAssert(naxis == pixel.nelements(), AipsError);
+    pixel.resize(naxis);
 
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
@@ -206,14 +206,14 @@ Bool LinearXform::forward(const Vector<Double> &world,
     return True;
 }
 
-Bool LinearXform::reverse(Vector<Double> &world, 
-				const Vector<Double> &pixel, 
-				String &errorMsg) const
+Bool LinearXform::reverse(      Vector<Double> &world, 
+                          const Vector<Double> &pixel, 
+                          String &errorMsg) const
 {
     const Int max_size = 10;
-    uInt naxis = world.nelements();
+    uInt naxis = pixel.nelements();
     AlwaysAssert(naxis <= max_size, AipsError);
-    AlwaysAssert(naxis == pixel.nelements(), AipsError);
+    world.resize(naxis); 
 
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
