@@ -1,5 +1,5 @@
 //# MSIter.cc: Step through MeasurementSet by table
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/iostream.h>
 
 Double MSInterval::interval_p;
 Double MSInterval::offset_p;
