@@ -53,6 +53,9 @@ TwoSidedShape& TwoSidedShape::operator=(const TwoSidedShape& other) {
     itsMajUnit = other.itsMajUnit;
     itsMinUnit = other.itsMinUnit;
     itsPaUnit = other.itsPaUnit;
+    itsMajErr = other.itsMajErr;
+    itsMinErr = other.itsMinErr;
+    itsPaErr = other.itsPaErr;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -201,127 +204,68 @@ Vector<Double> TwoSidedShape::errors() const {
   return compErrors;
 }
 
+Bool TwoSidedShape::fromAngQRecord(Quantum<Double>& retVal, 
+				   String& errorMessage,
+				   const String fieldString, 
+				   const RecordInterface& record) {
+  
+  if (!record.isDefined(fieldString)) {
+    errorMessage += "The '" + fieldString + "' field does not exist\n";
+    return False;
+  }
+  const RecordFieldId field(fieldString);
+  if (!(record.dataType(field) == TpRecord || 
+	((record.dataType(field) == TpString) && 
+	 (record.shape(field) == IPosition(1,1))))) {
+    errorMessage += "The '" + fieldString + "' field must be a record\n";
+    errorMessage += "or a string (but not a vector of strings)\n";
+    return False;
+  }
+  QuantumHolder qHolder;
+  if (record.dataType(field) == TpString) {
+    if (!qHolder.fromString(errorMessage, record.asString(field))) {
+      errorMessage += "Problem parsing the '" + fieldString + "' string\n";
+      return False;
+    }
+  } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
+    errorMessage += "Problem parsing the '" + fieldString +"' record\n";
+    return False;
+  }
+  if (!(qHolder.isScalar() && qHolder.isReal())) {
+    errorMessage += "The '" + fieldString + "' field is not a quantity\n";
+    return False;
+  }
+  retVal = qHolder.asQuantumDouble();
+  if (retVal.getFullUnit() != Unit("rad")) {
+    errorMessage += "The '" + fieldString + 
+      "' field must have angular units\n";
+    return False;
+  }
+}
+
 Bool TwoSidedShape::fromRecord(String& errorMessage,
 			       const RecordInterface& record) {
   if (!ComponentShape::fromRecord(errorMessage, record)) return False;
+  Quantum<Double> majorAxis, minorAxis, pa;
+  if (!fromAngQRecord(majorAxis, errorMessage, "majoraxis", record) ||
+      !fromAngQRecord(minorAxis, errorMessage, "minoraxis", record) ||
+      !fromAngQRecord(pa, errorMessage, "positionangle", record)) {
+    errorMessage += "Shape not changed\n";
+    return False;
+  }
   const Unit rad("rad");
-  Quantum<Double> majorAxis;
-  {
-    const String fieldString("majoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'majoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'majoraxis' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'majoraxis' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'majoraxis' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'majoraxis' field is not a quantity\n";
-      return False;
-    }
-    majorAxis = qHolder.asQuantumDouble();
-    if (majorAxis.getFullUnit() != rad) {
-      errorMessage += "The 'majoraxis' field must have angular units\n";
-      return False;
-    }
-  }
-  Quantum<Double> minorAxis;
-  {
-    const String fieldString("minoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'minoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'minoraxis' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }      
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'minoraxis' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'minoraxis' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'minoraxis' field is not a quantity\n";
-      return False;
-    }
-    minorAxis = qHolder.asQuantumDouble();
-    if (minorAxis.getFullUnit() != rad) {
-      errorMessage += "The 'minoraxis' field must have angular units\n";
-      return False;
-    }
-  }
-  Quantum<Double> pa;
-  {
-    const String fieldString("positionangle");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'positionangle' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'positionangle' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }      
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'positionangle' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'positionangle' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'positionangle' field is not a quantity\n";
-      return False;
-    }
-    pa = qHolder.asQuantumDouble();
-    if (pa.getFullUnit() != rad) {
-      errorMessage += "The 'positionangle' field must have angular units\n";
-      return False;
-    }
-  }
-  const Double minorRad = minorAxis.getValue(rad);
-  const Double majorRad = majorAxis.getValue(rad);
-  if (majorRad < minorRad) {
-    if (near(majorRad, minorRad, 1E-9)) {
-// assume they are meant to be the same and precision has got lost somewhere. 
-      majorAxis.setValue(minorAxis.getValue(majorAxis.getFullUnit()));
-    } else {
-      errorMessage += "The major axis cannot be smaller than the minor axis\n";
-      return False;
-    }
+  if (majorAxis.getValue(rad) < minorAxis.getValue(rad)) {
+    errorMessage += "The major axis cannot be smaller than the minor axis\n";
+    return False;
   }
   setWidth(majorAxis, minorAxis, pa);
+  if (!fromAngQRecord(majorAxis, errorMessage, "majoraxiserror", record) ||
+      !fromAngQRecord(minorAxis, errorMessage, "minoraxiserror", record) ||
+      !fromAngQRecord(pa, errorMessage, "positionangleerror", record)) {
+    errorMessage += "Shape errors not changed\n";
+    return False;
+  }
+  setErrors(majorAxis, minorAxis, pa);
   DebugAssert(ok(), AipsError);
   return True;
 }
@@ -461,7 +405,10 @@ TwoSidedShape::TwoSidedShape()
   :ComponentShape(),
    itsMajUnit("arcmin"),
    itsMinUnit("arcmin"),
-   itsPaUnit("deg")
+   itsPaUnit("deg"),
+   itsMajErr(0, "arcmin"),
+   itsMinErr(0, "arcmin"),
+   itsPaErr(0, "deg")
 {
   DebugAssert(ok(), AipsError);
 }
@@ -473,7 +420,10 @@ TwoSidedShape::TwoSidedShape(const MDirection& direction,
   :ComponentShape(direction),
    itsMajUnit(majorAxisUnit),
    itsMinUnit(minorAxisUnit),
-   itsPaUnit(paUnit)
+   itsPaUnit(paUnit),
+   itsMajErr(0, "arcmin"),
+   itsMinErr(0, "arcmin"),
+   itsPaErr(0, "deg")
 {
 }
 
@@ -481,7 +431,10 @@ TwoSidedShape::TwoSidedShape(const TwoSidedShape& other)
   :ComponentShape(other),
    itsMajUnit(other.itsMajUnit),
    itsMinUnit(other.itsMinUnit),
-   itsPaUnit(other.itsPaUnit)
+   itsPaUnit(other.itsPaUnit),
+   itsMajErr(other.itsMajErr),
+   itsMinErr(other.itsMinErr),
+   itsPaErr(other.itsPaErr)
 {
   DebugAssert(ok(), AipsError);
 }
