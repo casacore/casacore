@@ -1150,9 +1150,16 @@ void ImageStatistics<T>::generateStorageImage()
 
 // The storage image is accessed by vectors along the last axis (when filling),
 // the first axis (when plotting and listing) and N-1D slices (when retrieving
-// statistics for the user) so use the default tile shape
+// statistics for the user).  However, the  latter will be usdd less often than
+// the rest so optimize the tile shape ignoring it. Since the tile
+// size is small on the last axis, this won't impose much of a penalty when
+// accessing by first axis slices
 
-      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable);
+      IPosition tileShape(storeImageShape.nelements(),1);
+      tileShape(0) = storeImageShape(0);
+      tileShape(tileShape.nelements()-1) = storeImageShape(tileShape.nelements()-1);
+  
+      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
       pStoreImage_p->set(Double(0.0));
 
       os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
