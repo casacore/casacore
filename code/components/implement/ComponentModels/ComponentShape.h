@@ -304,6 +304,13 @@ protected:
   // returns True if the quantum is not a non-negative angular quantity
   static Bool badError(const Quantum<Double>& quantum);
 
+  // Turns the specified field in the specified record into an Quantum 
+  // with angular units
+  static Bool fromAngQRecord(Quantum<Double>& returnValue, 
+			     String& errorMessage,
+			     const String& fieldString, 
+			     const RecordInterface& record);
+
 private:
   //# The reference direction of the component
   MDirection itsDir;
