@@ -5943,3 +5943,4 @@
 16 341 src mv trial/implement/Functionals/test/tNQCombiFunction.cc aips/implement/Functionals/test/tNQCombiFunction.cc
 16 341 src mv trial/implement/Functionals/test/tNQCompoundFunction.cc aips/implement/Functionals/test/tNQCompoundFunction.cc
 16 346 src mv trial/implement/Functionals/NQFunctionWrapper.h aips/implement/Functionals/NQFunctionWrapper.h
+16 346 src mv trial/implement/Functionals/NQHyperPlane.h aips/implement/Functionals/NQHyperPlane.h
