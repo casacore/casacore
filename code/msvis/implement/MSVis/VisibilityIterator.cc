@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,9 +45,10 @@ ROVisibilityIterator::ROVisibilityIterator() {}
 // (just to share code between RO version and RW version of iterator)
 ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   const Block<Int>& sortColumns,
-					   Double timeInterval)
+					   Double timeInterval,
+					   Bool resort)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),msIter_p(ms,sortColumns,timeInterval),
+initialized_p(False),msIter_p(ms,sortColumns,timeInterval,resort),
 velSelection_p(False),msIterAtOrigin_p(False)
 {
   This = (ROVisibilityIterator*)this; 
@@ -55,9 +56,10 @@ velSelection_p(False),msIterAtOrigin_p(False)
 
 ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 					   const Block<Int>& sortColumns,
-					   Double timeInterval)
+					   Double timeInterval,
+					   Bool resort)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-initialized_p(False),msIter_p(mss,sortColumns,timeInterval),
+initialized_p(False),msIter_p(mss,sortColumns,timeInterval,resort),
 velSelection_p(False),msIterAtOrigin_p(False)
 {
   This = (ROVisibilityIterator*)this; 
@@ -805,8 +807,9 @@ VisibilityIterator::VisibilityIterator() {}
 
 VisibilityIterator::VisibilityIterator(MeasurementSet &MS, 
 				       const Block<Int>& sortColumns, 
-				       Double timeInterval)
-:ROVisibilityIterator(MS, sortColumns, timeInterval)
+				       Double timeInterval,
+				       Bool resort)
+:ROVisibilityIterator(MS, sortColumns, timeInterval, resort)
 {
 }
 

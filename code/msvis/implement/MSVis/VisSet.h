@@ -1,5 +1,5 @@
 //# VisSet.h: VisSet definitions
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,12 +117,15 @@ public:
   // Note that the contents of these columns are NOT initialized,
   // you should fill them before trying to read the data.
   VisSet(MeasurementSet & ms, const Block<Int>& columns, 
-	 const Matrix<Int>& chanSelection, Double timeInterval=0);
+	 const Matrix<Int>& chanSelection, Double timeInterval=0,
+	 Bool resort=False);
 
   // Construct from an existing VisSet, this references the underlying
   // MeasurementSet(s) but allows a new iteration order and time interval
   // to be specified.
-  VisSet(const VisSet & vs, const Block<Int>& columns, Double timeInterval=0);
+  VisSet(const VisSet & vs, const Block<Int>& columns, Double timeInterval=0,
+	 Bool resort=False);
+
   // Destructor, flushes the data to disk
   ~VisSet();
   // referencing assignment operator

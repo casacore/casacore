@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,8 @@
 
 
 VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns, 
-	       const Matrix<Int>& chanSelection, Double timeInterval)
+	       const Matrix<Int>& chanSelection, Double timeInterval,
+	       Bool reset)
 :ms_p(ms)
 {
     LogSink logSink;
@@ -95,20 +96,20 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     }
 
-    iter_p=VisIter(ms_p,columns,timeInterval);
+    iter_p=VisIter(ms_p,columns,timeInterval,reset);
     for (Int spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 }
 
 VisSet::VisSet(const VisSet& vs,const Block<Int>& columns, 
-	       Double timeInterval)
+	       Double timeInterval, Bool resort)
 {
     ms_p=vs.ms_p;
     selection_p.resize(vs.selection_p.shape());
     selection_p=vs.selection_p;
 
-    iter_p=VisIter(ms_p,columns,timeInterval);
+    iter_p=VisIter(ms_p,columns,timeInterval, resort);
     for (Int spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }

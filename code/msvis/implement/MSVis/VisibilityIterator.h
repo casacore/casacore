@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,12 +131,14 @@ public:
   // interval iteration.
   ROVisibilityIterator(const MeasurementSet& ms, 
 		       const Block<Int>& sortColumns, 
-		       Double timeInterval=0);
+		       Double timeInterval=0,
+                       Bool resort=False);
 
   // Same as previous constructor, but with multiple MSs to iterate over.
   ROVisibilityIterator(const Block<MeasurementSet>& mss,
 		       const Block<Int>& sortColumns, 
-		       Double timeInterval=0);
+		       Double timeInterval=0,
+                       Bool resort=False);
 
   // Copy construct. This calls the assigment operator.
   ROVisibilityIterator(const ROVisibilityIterator & other);
@@ -468,7 +470,7 @@ public:
   // need to call origin() before using it to iterate.
   VisibilityIterator();
   VisibilityIterator(MeasurementSet & ms, const Block<Int>& sortColumns, 
-       Double timeInterval=0);
+       Double timeInterval=0, Bool resort=False);
   VisibilityIterator(const VisibilityIterator & MSI);
 
   VisibilityIterator & operator=(const VisibilityIterator &MSI);
