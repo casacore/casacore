@@ -450,8 +450,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
         for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
           if( iter_mode(ival) == RFA::DRY )
             acc[ival]->startDry();
-//        uInt ntime = vi.nSubIntervals();
-        for( uInt itime=0; itime<ntime && ndry; itime++ )
+        for( uInt itime=0; itime<chunk.num(TIME) && ndry; itime++ )
         {
           progmeter.update(itime+1);
           // now, call individual VisBuffer iterators
