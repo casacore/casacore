@@ -162,7 +162,14 @@ public:
   // calling this.
   void setInterval(Double timeInterval)
   { msIter_p.setInterval(timeInterval);}
- 
+
+  // Set the 'blocking' size for returning data.
+  // With the default (0) only a single integration is returned at a time, this
+  // is what is currently required for the calibration software. With blocking
+  // set, up to nRows can be returned in one go. The chunk 
+  // size determines the actual maximum.
+  void setRowBlocking(Int nRows=0);
+
   // Return False if no more data (in current chunk)
   Bool more() const;
 
@@ -341,7 +348,7 @@ protected:
   Table selTable_p; // currently selected set of rows from curTable
   Int curChanGroup_p, curNumChanGroup_p, channelGroupSize_p, 
       curNumRow_p, curTableNumRow_p, curStartRow_p, curEndRow_p,
-      nChan_p, nPol_p;
+      nChan_p, nPol_p, nRowBlocking_p;
   Bool more_p, newChanGroup_p, initialized_p, msIterAtOrigin_p;
 
   // channel selection

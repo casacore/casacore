@@ -49,7 +49,7 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   Bool resort)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
 initialized_p(False),msIter_p(ms,sortColumns,timeInterval,resort),
-velSelection_p(False),msIterAtOrigin_p(False)
+velSelection_p(False),msIterAtOrigin_p(False),nRowBlocking_p(0)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -60,7 +60,7 @@ ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 					   Bool resort)
 : nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
 initialized_p(False),msIter_p(mss,sortColumns,timeInterval,resort),
-velSelection_p(False),msIterAtOrigin_p(False)
+velSelection_p(False),msIterAtOrigin_p(False),nRowBlocking_p(0)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -86,6 +86,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   curTableNumRow_p=other.curTableNumRow_p;
   curStartRow_p=other.curStartRow_p;
   curEndRow_p=other.curEndRow_p;
+  nRowBlocking_p=other.nRowBlocking_p;
   nChan_p=other.nChan_p;
   nPol_p=other.nPol_p;
   more_p=other.more_p;
@@ -148,6 +149,11 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colUVW.reference(other.colUVW);
 
   return *this;
+}
+
+void ROVisibilityIterator::setRowBlocking(Int nRow)
+{
+  if (nRow>0) nRowBlocking_p=nRow;
 }
 
 void ROVisibilityIterator::origin()
@@ -224,10 +230,16 @@ void ROVisibilityIterator::setSelTable()
 {
   // work out how many rows to return 
   // for the moment we return all rows with the same value for time
-  for (curEndRow_p=curStartRow_p+1; curEndRow_p<curTableNumRow_p && 
-  	 time_p(curEndRow_p)==time_p(curEndRow_p-1); 
-       curEndRow_p++);
-  curEndRow_p--;
+  // unless row blocking is set, in which case we return more rows at once.
+  if (nRowBlocking_p>0) {
+    curEndRow_p = curStartRow_p + nRowBlocking_p;
+    if (curEndRow_p >= curTableNumRow_p) curEndRow_p=curTableNumRow_p-1;
+  } else {
+    for (curEndRow_p=curStartRow_p+1; curEndRow_p<curTableNumRow_p && 
+	   time_p(curEndRow_p)==time_p(curEndRow_p-1); 
+	 curEndRow_p++);
+    curEndRow_p--;
+  }
 
   curNumRow_p=curEndRow_p-curStartRow_p+1;
   Vector<uInt> rows(curNumRow_p);
