@@ -2,7 +2,7 @@
 # testdefs: Test makedefs variable definitions
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-2000,2002
+#   Copyright (C) 1996-2004
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -490,6 +490,11 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LAPACKROOT) ; $(CheckDir)
     endif
+	-@ echo "LAPACKDEFS=$(LAPACKDEFS)"
+	-@ echo "LAPACKINCD=$(LAPACKINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(LAPACKINCD) ; $(CheckDir)
+    endif
 	-@ echo "LAPACKLIBD=$(LAPACKLIBD)"
     ifdef DO_TEST
 	-@ set WARNING $(LAPACKLIBD) ; $(CheckDir)
@@ -502,6 +507,11 @@ system :
 	-@ echo "F77ROOT =$(F77ROOT)"
     ifdef DO_TEST
 	-@ set WARNING $(F77ROOT) ; $(CheckDir)
+    endif
+	-@ echo "F77DEFS =$(F77DEFS)"
+	-@ echo "F77INCD =$(F77INCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(F77INCD) ; $(CheckDir)
     endif
 	-@ echo "F77LIBD =$(F77LIBD)"
     ifdef DO_TEST
@@ -568,6 +578,24 @@ system :
 	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
+	-@ echo "GSDLIBROOT=$(GSDLIBROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(GSDLIBROOT) ; $(CheckDir)
+    endif
+	-@ echo "GSDLIBDEFS=$(GSDLIBDEFS)"
+	-@ echo "GSDLIBINCD=$(GSDLIBINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(GSDLIBINCD) ; $(CheckDir)
+    endif
+	-@ echo "GSDLIBLIBD=$(GSDLIBLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(GSDLIBLIBD) ; $(CheckDir)
+    endif
+	-@ echo "GSDLIBLIB =$(GSDLIBLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(GSDLIBLIBD) $(GSDLIBLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "HDSROOT=$(HDSROOT)"
     ifdef DO_TEST
 	-@ set ADVISORY $(HDSROOT) ; $(CheckDir)
@@ -598,6 +626,7 @@ system :
 	-@ echo "XLIBLIST_shared_contrib=$(XLIBLIST_shared_contrib)"
 	-@ echo "XLIBLIST_shared_trial=$(XLIBLIST_shared_trial)"
 	-@ echo ""
+	-@ echo "XLIBLIST_shared_alma=$(XLIBLIST_shared_alma)"
 	-@ echo "XLIBLIST_shared_atnf=$(XLIBLIST_shared_atnf)"
 	-@ echo "XLIBLIST_shared_bima=$(XLIBLIST_shared_bima)"
 	-@ echo "XLIBLIST_shared_hia =$(XLIBLIST_shared_hia)"
@@ -616,6 +645,11 @@ system :
 	-@ echo ""
 	-@ echo "XLIBPATH=$(XLIBPATH)"
 	-@ echo "XTRNLIBS=$(XTRNLIBS)"
+	-@ echo ""
+	-@ echo "XLIBPATH_shared=$(XLIBPATH_shared)"
+	-@ echo "XTRNLIBS_shared=$(XTRNLIBS_shared)"
+	-@ echo "XTRNLIBS_rpath =$(XTRNLIBS_rpath)"
+	-@ echo ""
 	-@ echo "XTRNDEFS=$(XTRNDEFS)"
 	-@ echo ""
 	-@ echo "AIPSINCL=$(AIPSINCL)"
@@ -626,6 +660,7 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(CO) ; $(CheckExe)
     endif
+	-@ echo "COFLAGS =$(COFLAGS)"
 	-@ echo ""
 	-@ echo "CPP     =$(CPP)"
     ifdef DO_TEST
@@ -663,6 +698,9 @@ system :
 	-@ echo "C++DBG    =$(C++DBG)"
 	-@ echo "C++OPTLVL =$(C++OPTLVL)"
 	-@ echo "C++OPT    =$(C++OPT)"
+	-@ echo ""
+	-@ echo "GLISH_CFLAGS=$(GLISH_CFLAGS)"
+	-@ echo "GLISH_CXXFLAGS=$(GLISH_CXXFLAGS)"
 	-@ echo ""
 	-@ echo "TEMPLATES =$(TEMPLATES)"
 	-@ echo ""
@@ -730,6 +768,10 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LIBdish) ; $(CheckLCV)
     endif
+	-@ echo "LIBdisplay   =$(LIBdisplay)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBdisplay) ; $(CheckLCV)
+    endif
 	-@ echo "LIBsynthesis =$(LIBsynthesis)"
     ifdef DO_TEST
 	-@ set ADVISORY $(LIBsynthesis) ; $(CheckLCV)
@@ -746,6 +788,14 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LIBtrial) ; $(CheckLCV)
     endif
+	-@ echo "LIBtrialdisplay=$(LIBtrialdisplay)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBtrialdisplay) ; $(CheckLCV)
+    endif
+	-@ echo "LIBalma      =$(LIBalma)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBalma) ; $(CheckLCV)
+    endif
 	-@ echo "LIBatnf      =$(LIBatnf)"
     ifdef DO_TEST
 	-@ set WARNING $(LIBatnf) ; $(CheckLCV)
@@ -758,9 +808,17 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(LIBhia) ; $(CheckLCV)
     endif
+	-@ echo "LIBjive      =$(LIBjive)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LIBjive) ; $(CheckLCV)
+    endif
 	-@ echo "LIBnfra      =$(LIBnfra)"
     ifdef DO_TEST
 	-@ set ADVISORY $(LIBnfra) ; $(CheckLCV)
+    endif
+	-@ echo "LIBnpoi      =$(LIBnpoi)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LIBnpoi) ; $(CheckLCV)
     endif
 	-@ echo "LIBnral      =$(LIBnral)"
     ifdef DO_TEST
@@ -783,6 +841,10 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LINKdish) ; $(CheckLink)
     endif
+	-@ echo "LINKdisplay  =$(LINKdisplay)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKdisplay) ; $(CheckLink)
+    endif
 	-@ echo "LINKsynthesis=$(LINKsynthesis)"
     ifdef DO_TEST
 	-@ set ADVISORY $(LINKsynthesis) ; $(CheckLink)
@@ -799,6 +861,14 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LINKtrial) ; $(CheckLink)
     endif
+	-@ echo "LINKtrialdisplay=$(LINKtrialdisplay)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKtrialdisplay) ; $(CheckLink)
+    endif
+	-@ echo "LINKalma     =$(LINKalma)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKalma) ; $(CheckLink)
+    endif
 	-@ echo "LINKatnf     =$(LINKatnf)"
     ifdef DO_TEST
 	-@ set ADVISORY $(LINKatnf) ; $(CheckLink)
@@ -811,9 +881,17 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(LINKhia)  ; $(CheckLink)
     endif
+	-@ echo "LINKjive     =$(LINKjive)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKjive) ; $(CheckLink)
+    endif
 	-@ echo "LINKnfra     =$(LINKnfra)"
     ifdef DO_TEST
 	-@ set ADVISORY $(LINKnfra) ; $(CheckLink)
+    endif
+	-@ echo "LINKnpoi     =$(LINKnpoi)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(LINKnpoi) ; $(CheckLink)
     endif
 	-@ echo "LINKnral     =$(LINKnral)"
     ifdef DO_TEST
@@ -828,6 +906,24 @@ system :
 	-@ set ADVISORY $(LINKtifr) ; $(CheckLink)
     endif
 	-@ echo ""
+	-@ echo "PERL4   =$(PERL4)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PERL4) ; $(CheckExe)
+    endif
+	-@ echo "PERL5   =$(PERL5)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PERL5) ; $(CheckExe)
+    endif
+	-@ echo ""
+	-@ echo "RM      =$(RM)"
+    ifdef DO_TEST
+	-@ set WARNING $(RM) ; $(CheckExe)
+    endif
+	-@ echo ""
+	-@ echo "TEXBINROOT=$(TEXBINROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(TEX) ; $(CheckDir)
+    endif
 	-@ echo "TEX     =$(TEX)"
     ifdef DO_TEST
 	-@ set WARNING $(TEX) ; $(CheckExe)
@@ -848,27 +944,23 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(TEXINDEX) ; $(CheckExe)
     endif
-	-@ echo "LATEX2HTML =$(LATEX2HTML)"
-    ifdef DO_TEST
-	-@ set WARNING $(LATEX2HTML) ; $(CheckExe)
-    endif
 	-@ echo "MAKEINDEX  =$(MAKEINDEX)"
     ifdef DO_TEST
 	-@ set WARNING $(MAKEINDEX) ; $(CheckExe)
     endif
-	-@ echo ""
-	-@ echo "PERL4   =$(PERL4)"
+	-@ echo "LATEX2HTMLBIN=$(LATEX2HTMLBIN)"
     ifdef DO_TEST
-	-@ set ADVISORY $(PERL4) ; $(CheckExe)
+	-@ set WARNING $(LATEX2HTMLBIN) ; $(CheckExe)
     endif
-	-@ echo "PERL5   =$(PERL5)"
+	-@ echo "LATEX2HTMLBIN=$(LATEX2HTMLINIT)"
     ifdef DO_TEST
-	-@ set ADVISORY $(PERL5) ; $(CheckExe)
+	-@ set WARNING $(LATEX2HTMLINIT ; $(CheckExe)
     endif
-	-@ echo ""
-	-@ echo "RM      =$(RM)"
+	-@ echo "LATEX2HTML=$(LATEX2HTML)"
+	-@ echo "ICONSERVER=$(ICONSERVER)"
+	-@ echo "ICONS2LOCAL=$(ICONS2LOCAL)"
     ifdef DO_TEST
-	-@ set WARNING $(RM) ; $(CheckExe)
+	-@ set WARNING $(ICONS2LOCAL ; $(CheckExe)
     endif
 	-@ echo ""
 	-@ echo "TEXROOT   =$(TEXROOT)"
@@ -988,7 +1080,7 @@ system :
 	   fi ; \
 	   echo
     endif
-	-@ echo "DBGPTFIL =$(DBGPTFIL)"
+	-@ echo "MEGASERVE=$(MEGASERVE)"
 	-@ echo "TESTOPT  =$(TESTOPT)"
     ifdef DO_TEST
 	-@ case "$(TESTOPT)" in \
