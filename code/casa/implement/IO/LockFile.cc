@@ -1,5 +1,5 @@
 //# LockFile.cc: Class to handle file locking
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,8 @@
 
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
-		    Bool create, Bool setRequestFlag, Bool mustExist)
+		    Bool create, Bool setRequestFlag, Bool mustExist,
+		    uInt seqnr)
 : itsFileIO    (0),
   itsCanIO     (0),
   itsWritable  (True),
@@ -94,8 +95,8 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# Create FileLocker objects for this lock file.
     //# The first one is for read/write locks.
     //# The second one is to set the file to "in use".
-    itsLocker    = FileLocker (fd, 0, 1);
-    itsUseLocker = FileLocker (fd, 1, 1);
+    itsLocker    = FileLocker (fd, 2*seqnr, 1);
+    itsUseLocker = FileLocker (fd, 2*seqnr+1, 1);
     itsFileIO = new FiledesIO (fd);
     itsCanIO  = new CanonicalIO (itsFileIO);
     // Set the file to in use by acquiring a read lock.
