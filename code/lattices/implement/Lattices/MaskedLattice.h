@@ -305,15 +305,21 @@ public:
   const MaskedLattice<T>& mlc() const {return *this;}
   // </group>
 
+  // The function (in the derived classes) doing the actual work.
+  // These functions are public, so they can be used internally in the
+  // various Lattice classes.
+  // <br>However, doGetMaskSlice does not call Slicer::inferShapeFromSource
+  // to fill in possible unspecified section values. Therefore one
+  // should normally use one of the getMask(Slice) functions. doGetMaskSlice
+  // should be used with care and only when performance is an issue.
+  // <br>The default implementation gets the mask from the region
+  // and fills the buffer with True values if there is no region.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
 protected:
   // Assignment can only be used by derived classes.
   MaskedLattice<T>& operator= (const MaskedLattice<T>&)
     { return *this; }
-
-  // Get a section of the mask.
-  // The default implementation gets the mask from the region
-  // and fills the buffer with True values if there is no region.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
   // Put a section of the mask.
   // The default implementation writes the mask of the region.
