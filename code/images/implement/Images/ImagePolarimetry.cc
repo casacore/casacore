@@ -25,12 +25,16 @@
 //#
 //# $Id$
 
+#include <aips/OS/Timer.h>
+
 #include <trial/Images/ImagePolarimetry.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/MaskArrMath.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
@@ -44,6 +48,7 @@
 #include <trial/Images/ImageFFT.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageSummary.h>
+#include <trial/Images/TempImage.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -59,6 +64,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/GenSort.h>
@@ -79,7 +85,6 @@ ImagePolarimetry::ImagePolarimetry (const ImageInterface<Float>& image)
    itsStokesStatsPtr.resize(4);
    itsStokesPtr.set(0);
    itsStokesStatsPtr.set(0);
-//
    findStokes();
 }
 
@@ -293,15 +298,36 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
       os << "It should be of shape " << shape  << LogIO::EXCEPTION;
    }
 
+// Find spectral coordinate.  
+
+   const CoordinateSystem& cSys = itsInImagePtr->coordinates();
+   Int spectralCoord, fAxis;
+   findFrequencyAxis (spectralCoord, fAxis, cSys, -1);
+
 // Make Complex (Q,U) image
 
    LatticeExprNode node;
    if (zeroZeroLag) {
-      LatticeExprNode node1( (*itsStokesPtr[ImagePolarimetry::Q])
-                               - mean(*itsStokesPtr[ImagePolarimetry::Q]));
-      LatticeExprNode node2( (*itsStokesPtr[ImagePolarimetry::U]) 
-                               - mean(*itsStokesPtr[ImagePolarimetry::U]));
-      node = LatticeExprNode(complex(node1, node2));
+      TempImage<Float> tQ(itsStokesPtr[ImagePolarimetry::Q]->shape(), 
+                          itsStokesPtr[ImagePolarimetry::Q]->coordinates());
+      if (itsStokesPtr[ImagePolarimetry::Q]->isMasked()) {
+        tQ.makeMask(String("mask0"), True, True, False, False);
+      }
+      copyDataAndMask (tQ, *itsStokesPtr[ImagePolarimetry::Q]);
+      subtractProfileMean (tQ, fAxis);
+//
+      TempImage<Float> tU(itsStokesPtr[ImagePolarimetry::U]->shape(), 
+                          itsStokesPtr[ImagePolarimetry::U]->coordinates());
+      if (itsStokesPtr[ImagePolarimetry::U]->isMasked()) {
+        tU.makeMask(String("mask0"), True, True, False, False);
+      }
+      copyDataAndMask (tU, *itsStokesPtr[ImagePolarimetry::U]);
+      subtractProfileMean (tU, fAxis);
+
+// The TempImages will be cloned be LatticeExprNode so it's ok
+// that they go out of scope
+
+      node = LatticeExprNode(complex(tQ, tU));
    } else {
       node = LatticeExprNode(complex(*itsStokesPtr[ImagePolarimetry::Q], 
                                      *itsStokesPtr[ImagePolarimetry::U]));
@@ -309,20 +335,10 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
 
-// Find spectral coordinate
-
-   const CoordinateSystem& cSys = ie.coordinates();
-   Int coord = findSpectralCoordinate(cSys, os, True);
-   Vector<Int> pixelAxes = cSys.pixelAxes(coord);
-
-// Find central frequency
-
-   Vector<Bool> axes(ie.ndim(),False);
-   axes(pixelAxes(0)) = True;
-   Quantum<Double> f = findCentralFrequency(cSys.coordinate(coord), ie.shape()(pixelAxes(0)));
-
 // Do FFT of spectral coordinate
 
+   Vector<Bool> axes(ie.ndim(),False);
+   axes(fAxis) = True;
    ImageFFT fftserver;
    fftserver.fft(ie, axes);
 
@@ -334,10 +350,10 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
 
 // Fiddle time coordinate to be a RotationMeasure coordinate
 
-   fiddleTimeCoordinate(cpol, f, coord);
+   Quantum<Double> f = findCentralFrequency(cSys.coordinate(spectralCoord), ie.shape()(fAxis));
+   fiddleTimeCoordinate(cpol, f, spectralCoord);
 
-// The Stokes coordinate should already be correct, but overwrite it anyway
-// to make sure
+// Set Stokes coordinate to be correct type
 
    fiddleStokesCoordinate(cpol, Stokes::Plinear);
 }
@@ -438,6 +454,11 @@ ImageExpr<Float> ImagePolarimetry::sigmaLinPolPosAng(Bool radians, Float clip, F
       amp(*itsStokesPtr[ImagePolarimetry::U], *itsStokesPtr[ImagePolarimetry::Q])); 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, String("linearlyPolarizedPositionAngleError"));
+   if (radians) {
+      ie.setUnits(Unit("rad"));
+   } else {
+      ie.setUnits(Unit("deg"));
+   }
 
 // Fiddle Stokes coordinate
 
@@ -478,7 +499,7 @@ Float ImagePolarimetry::sigma(Float clip)
 void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageInterface<Float>*& rmOutErrorPtr,
                                        ImageInterface<Float>*& pa0OutPtr, ImageInterface<Float>*& pa0OutErrorPtr,
                                        Int axis,  Float rmMax, Float maxPaErr,                       
-                                       Float sigma, Float rmFg)
+                                       Float sigma, Float rmFg, Bool showProgress)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "rotationMeasure(...)", WHERE));
 
@@ -596,13 +617,6 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Vector<Float> wsqsort(sortidx.nelements());
    for (uInt i=0; i<wsqsort.nelements(); i++) wsqsort(i) = wsq(sortidx(i));
 
-// Copy the input mask to the output if we can
-
-   if (rmOutPtr) copyMask(*rmOutPtr, *itsInImagePtr);
-   if (rmOutErrorPtr) copyMask(*rmOutErrorPtr, *itsInImagePtr);
-   if (pa0OutPtr) copyMask(*pa0OutPtr, *itsInImagePtr);
-   if (pa0OutErrorPtr) copyMask(*pa0OutErrorPtr, *itsInImagePtr);
- 
 // Make fitter
 
    if (itsFitterPtr==0) {
@@ -626,17 +640,14 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
       itsFitterPtr->setFunction(comb);
    }
 
-// Deal with masks
+// Deal with masks.  The outputs are all given a mask if possible as we
+// don't know at this point whether output points will be masked or not
 
    IPosition whereRM, wherePA;
-//
    Bool isMaskedRM = False;
    Lattice<Bool>* outRMMaskPtr = 0;
    if (rmOutPtr) {
-      isMaskedRM = rmOutPtr->isMasked() && rmOutPtr->hasPixelMask() &&
-                   rmOutPtr->pixelMask().isWritable();
-      if (isMaskedRM) outRMMaskPtr = &rmOutPtr->pixelMask();
-//
+      isMaskedRM = dealWithMask (outRMMaskPtr, rmOutPtr, os, String("RM"));
       whereRM.resize(rmOutPtr->ndim());
       whereRM = 0;
    }
@@ -644,10 +655,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Bool isMaskedRMErr = False;
    Lattice<Bool>* outRMErrMaskPtr = 0;
    if (rmOutErrorPtr) {
-      isMaskedRMErr = rmOutErrorPtr->isMasked() && rmOutErrorPtr->hasPixelMask() &&
-                      rmOutErrorPtr->pixelMask().isWritable();
-      if (isMaskedRMErr) outRMErrMaskPtr = &rmOutErrorPtr->pixelMask();
-//
+      isMaskedRMErr = dealWithMask (outRMErrMaskPtr, rmOutErrorPtr, os, String("RM error"));
       whereRM.resize(rmOutErrorPtr->ndim());
       whereRM = 0;
    }
@@ -655,10 +663,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Bool isMaskedPa0 = False;
    Lattice<Bool>* outPa0MaskPtr = 0;
    if (pa0OutPtr) {
-      isMaskedPa0 = pa0OutPtr->isMasked() && pa0OutPtr->hasPixelMask() &&
-                    pa0OutPtr->pixelMask().isWritable();
-      if (isMaskedPa0) outPa0MaskPtr = &pa0OutPtr->pixelMask();
-//
+      isMaskedPa0 = dealWithMask (outPa0MaskPtr, pa0OutPtr, os, String("Position Angle"));
       wherePA.resize(pa0OutPtr->ndim());
       wherePA = 0;
    }
@@ -666,10 +671,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Bool isMaskedPa0Err = False;
    Lattice<Bool>* outPa0ErrMaskPtr = 0;
    if (pa0OutErrorPtr) {
-      isMaskedPa0Err = pa0OutErrorPtr->isMasked() && pa0OutErrorPtr->hasPixelMask() &&
-                       pa0OutErrorPtr->pixelMask().isWritable();
-      if (isMaskedPa0Err) outPa0ErrMaskPtr = &pa0OutErrorPtr->pixelMask();
-//
+      isMaskedPa0Err = dealWithMask (outPa0ErrMaskPtr, pa0OutErrorPtr, os, String("Position Angle error"));
       wherePA.resize(pa0OutErrorPtr->ndim());
       wherePA = 0;
    }
@@ -678,6 +680,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Array<Float> tmpValueRM(IPosition(shapeRM.nelements(), 1), 0.0);
    Array<Bool> tmpMaskPA(IPosition(shapePA.nelements(), 1), True);
    Array<Float> tmpValuePA(IPosition(shapePA.nelements(), 1), 0.0);
+
 
 // Iterate
 
@@ -693,15 +696,33 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
    Bool doRM = whereRM.nelements() > 0;
    Bool doPA = wherePA.nelements() > 0;
 //
+   ProgressMeter* pProgressMeter = 0;   
+   if (showProgress) {
+     Double nMin = 0.0;
+     Double nMax = 1.0;
+     for (Int i=0; i<Int(pa.ndim()); i++) {
+        if (i!=fAxis) nMax *= pa.shape()(i);
+     }
+     pProgressMeter = new ProgressMeter(nMin, nMax, String("Profiles fitted"),
+                                        String("Fitting"),
+                                        String(""), String(""),
+                                        True, max(1,Int(nMax/100)));
+   }
+//
+   Bool ok = False;
+//   Timer timer;
+   IPosition shp;
    for (it.reset(); !it.atEnd(); it++) {
 
 // Find rotation measure for this line
 
-      Bool ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, 
-                                     sortidx, wsqsort, it.vectorCursor(),
-                                     pa.getMaskSlice(it.position(),it.cursorShape()),
-                                     paerr.getSlice(it.position(),it.cursorShape()),
-                                     rmFg, rmMax, maxPaErr);
+//shp = it.vectorCursor().shape();
+
+      ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, 
+                                sortidx, wsqsort, it.vectorCursor(),
+                                pa.getMaskSlice(it.position(),it.cursorShape()),
+                                paerr.getSlice(it.position(),it.cursorShape()),
+                                rmFg, rmMax, maxPaErr);
 
 // Plonk values into output  image.  This is slow and clunky, but should be relatively fast
 // c.f. the fitting.  Could be reimplemented with LatticeApply if need be.  Buffering 
@@ -709,59 +730,63 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
 // instead, the path would be regular and then I could buffer, but then the iteration 
 // would be less efficient !!!
 
-        j = k = 0;
-        for (Int i=0; i<Int(it.position().nelements()); i++) {
-           if (doRM && i!=fAxis && i!=sAxis) {
-              whereRM(j) = it.position()(i);
-              j++;
-           }
-           if (doPA && i!=fAxis) {
-              wherePA(k) = it.position()(i);
-              k++;
-           }
-        }
+      j = k = 0;
+      for (Int i=0; i<Int(it.position().nelements()); i++) {
+         if (doRM && i!=fAxis && i!=sAxis) {
+            whereRM(j) = it.position()(i);
+            j++;
+         }
+         if (doPA && i!=fAxis) {
+            wherePA(k) = it.position()(i);
+            k++;
+         }
+      }
 //
-        if (isMaskedRM) {
-           tmpMaskRM.set(ok);
-           outRMMaskPtr->putSlice (tmpMaskRM, whereRM);
-        }
-        if (isMaskedRMErr) {
-           tmpMaskRM.set(ok);
-           outRMErrMaskPtr->putSlice (tmpMaskRM, whereRM);
-        }
-        if (isMaskedPa0) {
-           tmpMaskPA.set(ok);
-           outPa0MaskPtr->putSlice (tmpMaskPA, wherePA);
-        }
-        if (isMaskedPa0Err) {
-           tmpMaskPA.set(ok);
-           outPa0ErrMaskPtr->putSlice (tmpMaskPA, wherePA);
-        }
+      if (isMaskedRM) {
+         tmpMaskRM.set(ok);
+         outRMMaskPtr->putSlice (tmpMaskRM, whereRM);
+      }
+      if (isMaskedRMErr) {
+         tmpMaskRM.set(ok);
+         outRMErrMaskPtr->putSlice (tmpMaskRM, whereRM);
+      }
+      if (isMaskedPa0) {
+         tmpMaskPA.set(ok);
+         outPa0MaskPtr->putSlice (tmpMaskPA, wherePA);
+      }
+      if (isMaskedPa0Err) {
+         tmpMaskPA.set(ok);
+         outPa0ErrMaskPtr->putSlice (tmpMaskPA, wherePA);
+      }
 
 // If the output value is masked, the value itself is 0
 
-        if (rmOutPtr) {
-           tmpValueRM.set(rm);
-           rmOutPtr->putSlice(tmpValueRM, whereRM);
-        }
+      if (rmOutPtr) {
+         tmpValueRM.set(rm);
+         rmOutPtr->putSlice(tmpValueRM, whereRM);
+      }
 //
-        if (rmOutErrorPtr) {
-           tmpValueRM.set(rmErr);
-           rmOutErrorPtr->putSlice(tmpValueRM, whereRM);
-        }
+      if (rmOutErrorPtr) {
+         tmpValueRM.set(rmErr);
+         rmOutErrorPtr->putSlice(tmpValueRM, whereRM);
+      }
 
 // Position angles in degrees
 
-        if (pa0OutPtr) {
-           tmpValuePA.set(pa0*180/C::pi);
-           pa0OutPtr->putSlice(tmpValuePA, wherePA);
-        }
+      if (pa0OutPtr) {
+         tmpValuePA.set(pa0*180/C::pi);
+         pa0OutPtr->putSlice(tmpValuePA, wherePA);
+      }
 //
-        if (pa0OutErrorPtr) {
-           tmpValuePA.set(pa0Err*180/C::pi);
-           pa0OutErrorPtr->putSlice(tmpValuePA, wherePA);
-        }
+      if (pa0OutErrorPtr) {
+         tmpValuePA.set(pa0Err*180/C::pi);
+         pa0OutErrorPtr->putSlice(tmpValuePA, wherePA);
+      }
+//
+      if (showProgress) pProgressMeter->update(Double(it.nsteps())); 
    }
+//   timer.show();
+   if (showProgress) delete pProgressMeter;
 }
 
 IPosition ImagePolarimetry::rotationMeasureShape(CoordinateSystem& cSys, Int& fAxis, 
@@ -1019,41 +1044,45 @@ void ImagePolarimetry::cleanup()
 }
 
 
-void ImagePolarimetry::copyMask (ImageInterface<Float>& out,
-                                 const ImageInterface<Float>& in) const
+void ImagePolarimetry::copyDataAndMask(ImageInterface<Float>& out, 
+                                       ImageInterface<Float>& in) const
+//
+// Copy the data and mask from input to output. If the input is 
+// masked, the output must already be masked and ready
+//
 {
-   if (in.isMasked()) {
-      if (out.isMasked() && out.hasPixelMask()) {
-         if (!out.pixelMask().isWritable()) {
-            LogIO os(LogOrigin("ImagePolarimetry", "copyMask(...)", WHERE));
-            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
-            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
-            return;
-         }
-      } else {
-         return;
-      }
-   } else {
-      return;
-   }
+// Do we need to stuff about with masks ?
    
+   Bool doMask = in.isMasked() && out.hasPixelMask();
+   Lattice<Bool>* pMaskOut = 0;
+   if (doMask) {
+      pMaskOut = &out.pixelMask();
+      if (!pMaskOut->isWritable()) {
+         doMask = False;
+      }
+   }
+
 // Use the same stepper for input and output.
-    
+   
    IPosition cursorShape = out.niceCursorShape();
    LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
-
+   
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
- 
+
    LatticeIterator<Float> dummyIter(out);
-   RO_LatticeIterator<Float> iter(in, stepper);   
-   Lattice<Bool>& outMask = out.pixelMask();
+   RO_LatticeIterator<Float> iter(in, stepper);
+         
    for (iter.reset(); !iter.atEnd(); iter++) {
-      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()), 
-                       iter.position());
-   }   
-}  
-   
+      out.putSlice (iter.cursor(), iter.position());
+      if (doMask) {
+         pMaskOut->putSlice(in.getMaskSlice(iter.position(),
+                            iter.cursorShape()), iter.position());
+      }
+   }
+}
+
+
 
 void ImagePolarimetry::copyMiscellaneous (ImageInterface<Float>& out) const
 {
@@ -1288,7 +1317,7 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 // rmfg is a user specified foreground RM rad/m/m
 // rmmax is a user specified maximum RM
 //
-{
+{ 
    static Vector<Float> paerr;
    static Vector<Float> pa;
    static Vector<Float> wsq;
@@ -1326,7 +1355,7 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 
 // Treat supplementary and primary points separately
 
-   Bool ok;
+   Bool ok = False;
    if (n==2) {
       ok = rmSupplementaryFit(rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
                               rChiSqFitted, wsq, pa, paerr);
@@ -1704,4 +1733,57 @@ Float ImagePolarimetry::sigma (ImagePolarimetry::StokesTypes index, Float clip)
 //
    itsOldClip = clip2;
    return sigmaA(IPosition(1,0));
+}
+
+
+void ImagePolarimetry::subtractProfileMean (ImageInterface<Float>& im, uInt axis) const
+{
+   const IPosition tileShape = im.niceCursorShape();
+   TiledLineStepper ts(im.shape(), tileShape, axis);
+   LatticeIterator<Float> it(im, ts);
+//
+   Float dMean;
+   if (im.isMasked()) {
+      const Lattice<Bool>& mask = im.pixelMask();
+      for (it.reset(); !it.atEnd(); it++) {
+         const Array<Float>& p = it.cursor();
+         const Array<Bool>& m = mask.getSlice(it.position(), it.cursorShape());
+         const MaskedArray<Float> ma(p, m, True);
+         dMean = mean(ma);
+//
+         it.rwVectorCursor() -= dMean;
+      }
+
+   } else {
+      for (it.reset(); !it.atEnd(); it++) {
+         dMean = mean(it.vectorCursor());
+         it.rwVectorCursor() -= dMean;
+      }
+   }
+}
+
+
+Bool ImagePolarimetry::dealWithMask (Lattice<Bool>*& pMask, ImageInterface<Float>*& pIm, 
+                                     LogIO& os, const String& type) const
+{
+   Bool isMasked = False;
+   if (!pIm->isMasked()) {
+      if (pIm->canDefineRegion()) {
+         pIm->makeMask("mask0", True, True, True, True);
+         isMasked = True;
+      } else {
+         os << LogIO::WARN << "Could not create a mask for the output " << type << " image" << LogIO::POST;
+      }
+   } else {
+      isMasked = True;
+   }
+//
+   if (isMasked) {
+      pMask = &(pIm->pixelMask());
+      if (!pMask->isWritable()) {
+         isMasked = False;
+         os << LogIO::WARN << "The output " << type << " image has a mask but it's not writable" << LogIO::POST;
+      }
+   }
+   return isMasked;
 }
