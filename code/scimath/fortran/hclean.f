@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999
+*     Copyright (C) 1999,2000
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -64,13 +64,14 @@ c   siter	integer		 starting iteration number
 c   iter	integer		 last iteration number we get to in this algorithm
 c   gain	real		 clean loop gain
 c   thres	real		 flux cleaning threshold
+c   cspeedup	real		 if > 0, thres = thres_o * exp( iter/cspeedup )
 c   msgput	pointer to function which outputs the status message
 c   stopnow	pointer to function which determines if it is stopping time
 c      
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       subroutine hclean(limage, limagestep, lpsf, domask, lmask, nx, ny, 
      $     npol, xbeg, xend, ybeg, yend, niter, siter, iter, gain, 
-     $     thres, msgput, stopnow)
+     $     thres, cspeedup, msgput, stopnow)
       
       implicit none
       integer nx, ny, npol, xbeg, xend, ybeg, yend
@@ -79,10 +80,11 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       real limagestep(nx, ny, npol)
       integer domask
       real lpsf(nx, ny), lmask(nx, ny)
-      real gain, thres
+      real gain, thres, cspeedup
       external msgput
       external stopnow
 
+      real cthres
       real peak, mev, maxeig
       real maxVal(4), pv(4)
       integer px, py, pol, ix, iy, cycle
@@ -149,7 +151,12 @@ c     // Output ten lines of information if run to the end
             call msgput(iter, px, py, maxVal)
             call stopnow(yes)
          endif
-         if((yes.EQ.1).OR.(peak.LT.thres)) then
+         if (cspeedup .gt. 0.0) then
+            cthres = thres * 2.0**(real(iter-siter)/cspeedup )
+         else
+            cthres = thres
+         endif
+         if((yes.EQ.1).OR.(peak.LT.cthres)) then
             call msgput(-iter, px, py, maxVal)
             return
          endif
@@ -201,6 +208,9 @@ c
       end do
  100  continue
       call msgput(-niter, px, py, maxVal)
+      if (iter .gt. niter) then
+         iter = niter
+      endif
       return
       end
 
