@@ -1746,7 +1746,7 @@ String CoordinateUtil::axisLabel (const Coordinate& coord, uInt axis,
        base = freqType + String(" ") + axisName + String(" (pixels)");
     }
 //
-    if (doAbs) {
+    if (!doAbs) {
       base = String("Relative ") + base;
     }
   } else if (ctype==Coordinate::STOKES) {
