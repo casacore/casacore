@@ -29,8 +29,8 @@
 #define AIPS_PAGEDARRAY_H
 
 //# Includes
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/Lattice.h>
+#include <aips/Lattices/TiledShape.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TiledStManAccessor.h>

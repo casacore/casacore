@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/Lattice.h>
+#include <aips/Lattices/TiledShape.h>
 #include <aips/Utilities/CountedPtr.h>
 
 //# Forward Declarations

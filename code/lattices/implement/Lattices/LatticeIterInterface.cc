@@ -1,5 +1,5 @@
 //# LatticeIterInterface.cc: A base class for concrete Lattice iterators
-//# Copyright (C) 1995,1997,1998,1999
+//# Copyright (C) 1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeIterInterface.h>
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/LatticeIterInterface.h>
+#include <aips/Lattices/Lattice.h>
+#include <aips/Lattices/LatticeNavigator.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>

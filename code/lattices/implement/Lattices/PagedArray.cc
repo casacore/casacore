@@ -27,10 +27,10 @@
 
 #include <aips/aips.h>
 
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/PagedArrIter.h>
-#include <trial/Lattices/LatticeNavigator.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArrIter.h>
+#include <aips/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/TiledShape.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>

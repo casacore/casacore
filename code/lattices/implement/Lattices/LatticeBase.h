@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LELCoordinates.h>
+#include <aips/Lattices/LELCoordinates.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/IO/FileLocker.h>
 #include <aips/Utilities/String.h>

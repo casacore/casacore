@@ -1,5 +1,5 @@
 //# TempLattice.cc: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/TempLattice.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/TempLattice.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>

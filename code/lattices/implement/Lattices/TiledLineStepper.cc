@@ -1,5 +1,5 @@
 //# TiledLineStepper.cc: defines TiledLineStepper class
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>

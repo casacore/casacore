@@ -1,5 +1,5 @@
 //# PagedArrIter.h: A concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 #define AIPS_PAGEDARRITER_H
 
 //# Includes
-#include <trial/Lattices/LatticeIterInterface.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/LatticeIterInterface.h>
+#include <aips/Lattices/PagedArray.h>
 
 
 // <summary>

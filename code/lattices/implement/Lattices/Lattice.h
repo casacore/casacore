@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LatticeBase.h>
+#include <aips/Lattices/LatticeBase.h>
 #include <aips/Arrays/Slicer.h>
 
 //# Forward Declarations

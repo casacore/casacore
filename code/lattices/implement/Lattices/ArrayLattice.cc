@@ -1,5 +1,5 @@
 //# ArrayLattice.cc: this defines the Lattice wrapper class for Arrays.
-//# Copyright (C) 1995,1997,1998,1999
+//# Copyright (C) 1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/ArrLatticeIter.h>
-#include <trial/Lattices/LatticeIterInterface.h>
-#include <trial/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/ArrayLattice.h>
+#include <aips/Lattices/ArrLatticeIter.h>
+#include <aips/Lattices/LatticeIterInterface.h>
+#include <aips/Lattices/LatticeNavigator.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>

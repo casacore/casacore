@@ -1,5 +1,5 @@
 //# LatticeIndexer.cc: A class for stepping through (sub-)Lattices
-//# Copyright (C) 1994,1996,1997
+//# Copyright (C) 1994,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.,1995
 //# 
 //# This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 //# $Id$
 //
 
-#include <trial/Lattices/LatticeIndexer.h>
+#include <aips/Lattices/LatticeIndexer.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>

@@ -1,5 +1,5 @@
 //# PagedArrIter.cc: a concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/PagedArrIter.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/PagedArrIter.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>

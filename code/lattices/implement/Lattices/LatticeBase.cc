@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeBase.h>
+#include <aips/Lattices/LatticeBase.h>
 #include <aips/Mathematics/Math.h>
 
 

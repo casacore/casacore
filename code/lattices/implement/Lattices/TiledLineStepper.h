@@ -1,5 +1,5 @@
 //# TiledLineStepper.h: Step a Vector cursor optimally through a tiled Lattice
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/LatticeNavigator.h>
-#include <trial/Lattices/LatticeIndexer.h>
+#include <aips/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/LatticeIndexer.h>
 #include <aips/Arrays/IPosition.h>
 
 
