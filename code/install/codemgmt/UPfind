@@ -29,7 +29,7 @@
 # $Id$
 #
 set script = "UPfind"
-set usage = 'Usage: UPfind [-c] [-g] <typ>'
+set usage = 'Usage: UPfind [-c] [-r] [-g] [-d] [-n] <typ>'
 #
 # UPfind script (must have x allowed)
 # Get all files that have to be updated according to an egrep rule
@@ -101,10 +101,15 @@ if (! -r $ldir/${tp}.rm) then
 endif
 
 if (-z $ldir/${tp}.up1) then
-   echo "No ${tp} up1 file created"
+   echo "No ${tp}.up1 file created"
+   if (-e $ldir/${tp}.up1)  rm -f $ldir/${tp}.up1
    exit (1)
 endif
 
+if ($nox) exit 0
+#
+# Execute
+#
 cd $dir/code
 echo "Starting find..."
 if ($gls) then
@@ -130,9 +135,3 @@ echo $a[1] files left in ${tp}.found
 unset a
 
 exit 0
-
-
-
-
-
-
