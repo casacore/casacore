@@ -129,6 +129,11 @@ public:
     MPosition(const MeasValue *dt);
 // </group>
 
+  // <group>
+  MPosition(const MPosition &);
+  MPosition &operator=(const MPosition &);
+  // <group>
+
 //# Destructor
     ~MPosition();
 

@@ -82,6 +82,22 @@ MPosition::MPosition(const MeasValue *dt) :
   MeasBase<MVPosition,MPosition::Ref>(*(MVPosition*)dt,
 				MPosition::DEFAULT) {}
 
+MPosition::MPosition(const MPosition &other)
+: MeasBase<MVPosition, MeasRef<MPosition> > (other)
+{
+  // Nothing
+}
+
+MPosition &MPosition::operator=(const MPosition &other)
+{
+  if (this != &other) {
+    MeasBase<MVPosition, MeasRef<MPosition> > &This = *this;
+    const MeasBase<MVPosition, MeasRef<MPosition> > &Other = other;
+    This = Other;
+  }
+  return *this;
+}
+
 //# Destructor
 MPosition::~MPosition() {}
 
