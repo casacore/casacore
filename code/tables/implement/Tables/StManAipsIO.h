@@ -28,9 +28,6 @@
 #if !defined(AIPS_STMANAIPSIO_H)
 #define AIPS_STMANAIPSIO_H
 
-#if defined(_AIX)
-#pragma implementation ("StManAipsIO.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -260,8 +257,8 @@ protected:
     Block<uInt>  ncum_p;
 
     // Find the extension in which the row number is.
-    // It also sets the columnCache object.
-    uInt findExt (uInt rownr);
+    // If the flag is true, it also sets the columnCache object.
+    uInt findExt (uInt rownr, Bool setCache);
 
     // Get the next extension.
     // For the first iteration extnr should be zero.
