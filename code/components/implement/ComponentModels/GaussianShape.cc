@@ -1,5 +1,5 @@
 //# GaussianShape.cc:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -437,6 +437,10 @@ Bool GaussianShape::fromRecord(String & errorMessage,
     }
   }
   const Unit rad("rad");
+  if (near(majorAxis.getValue(rad), minorAxis.getValue(rad), 1E-6)) {
+// assume they are meant to be the same and precision has got lost somewhere. 
+    majorAxis = minorAxis;
+  }
   if (majorAxis.getValue(rad) < minorAxis.getValue(rad)) {
     errorMessage += "The major axis cannot be smaller than the minor axis\n";
     return False;
