@@ -1,5 +1,5 @@
 //# tTiledStMan.cc: Test program of TiledStMan class
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 // <summary>

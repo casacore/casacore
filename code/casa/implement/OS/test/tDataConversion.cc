@@ -32,7 +32,7 @@
 #include <aips/OS/IBMDataConversion.h>
 #include <aips/OS/VAXDataConversion.h>
 #include <aips/OS/RawDataConversion.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // This program tests the data conversion classes.

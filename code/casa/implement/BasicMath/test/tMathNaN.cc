@@ -34,7 +34,7 @@
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #include <ieeefp.h>
 #endif
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 

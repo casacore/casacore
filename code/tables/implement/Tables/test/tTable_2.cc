@@ -39,7 +39,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/stdio.h>
 
 // <summary>

@@ -37,8 +37,8 @@
 #include <aips/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 // PABLO_IO is used to profile the IO performance of the AIPS++ (in
 // particular to help us locate bottlenecks associated with parallel

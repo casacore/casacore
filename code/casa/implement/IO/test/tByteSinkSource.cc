@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/IO/ByteSinkSource.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/IO/RegularFileIO.h>

@@ -29,7 +29,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/RegularFile.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Test program for the BucketFile class

@@ -1,5 +1,5 @@
 //# ScaRecordColDesc.cc: Class for description of table scalar record columns
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Tables/ScaRecordColData.h>
 #include <aips/Utilities/ValTypeId.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name)

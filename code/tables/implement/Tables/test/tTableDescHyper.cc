@@ -1,5 +1,5 @@
 //# tTableDescHyper.cc: Test program for hypercolumns in TableDesc
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for hypercolumns in TableDesc </summary>
 

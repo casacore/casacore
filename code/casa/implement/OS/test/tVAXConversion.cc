@@ -28,7 +28,7 @@
 
 #include <aips/OS/VAXConversion.h>
 #include <aips/Mathematics/Math.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // This program test the VAX conversion functions.

@@ -41,8 +41,8 @@
 #include <aips/OS/Path.h>
 #include <aips/OS/EnvVar.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 #ifdef PABLO_IO
 #include "IOTrace.h"

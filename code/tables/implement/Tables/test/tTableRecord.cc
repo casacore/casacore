@@ -40,7 +40,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // This program tests the TableRecord and TableRecordRep classes.
 // Its expected output (which only consists of exception text)

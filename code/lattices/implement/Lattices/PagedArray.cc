@@ -45,7 +45,7 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/TableInfo.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 template<class T>

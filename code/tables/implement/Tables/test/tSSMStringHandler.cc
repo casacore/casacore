@@ -38,7 +38,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 
 // <summary>

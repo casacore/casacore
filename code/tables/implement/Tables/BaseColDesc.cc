@@ -33,7 +33,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Arrays/IPosition.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,

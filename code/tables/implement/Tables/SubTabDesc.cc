@@ -31,7 +31,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/TableError.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 SubTableDesc::SubTableDesc (const String& name, const String& comment,
 			    const String& descname, int opt)

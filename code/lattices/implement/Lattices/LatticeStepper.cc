@@ -29,8 +29,8 @@
 #include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,

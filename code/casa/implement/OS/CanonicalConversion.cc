@@ -28,7 +28,7 @@
 
 #include <aips/OS/CanonicalConversion.h>
 #include <assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 unsigned int CanonicalConversion::toLocalChar (void* to, const void* from,

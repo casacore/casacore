@@ -30,7 +30,7 @@
 #include <aips/OS/Time.h>
 
 #include <unistd.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #if defined(AIPS_SOLARIS)
 #include <sys/systeminfo.h>

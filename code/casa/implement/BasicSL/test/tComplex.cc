@@ -32,7 +32,7 @@
 
 #include <assert.h>
 #include <aips/stdio.h>
-#include <fstream.h>
+#include <aips/fstream.h>
 #include <unistd.h>
 
 int main() {

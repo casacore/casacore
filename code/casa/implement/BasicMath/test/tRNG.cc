@@ -27,7 +27,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 #include <aips/Mathematics/Random.h>

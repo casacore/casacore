@@ -1,5 +1,5 @@
 //# tMemory.cc: Test tMemory class.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/OS/Memory.h>
 #include <aips/Utilities/Assert.h>
 

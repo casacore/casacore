@@ -30,7 +30,7 @@
 #include <aips/Tables/DataManager.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Tables/TableError.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 //# Initialize the static variable for the DataManager registration.

@@ -46,7 +46,7 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Interactive test program for adding/removing columns.

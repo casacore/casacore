@@ -29,8 +29,8 @@
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 int main (int argc, char** argv)

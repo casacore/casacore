@@ -43,7 +43,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void testTempClose()

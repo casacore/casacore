@@ -42,9 +42,9 @@
 
 #include <aips/stdio.h>
 #include <aips/string.h>
-#include <iostream.h>
-#include <fstream.h>             // needed for file IO
-#include <strstream.h>           // needed for internal IO
+#include <aips/iostream.h>
+#include <aips/fstream.h>             // needed for file IO
+#include <aips/strstream.h>           // needed for internal IO
 
 
 

@@ -36,7 +36,7 @@
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/GenSort.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // <summary>

@@ -45,8 +45,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Time.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 #include <unistd.h>
 
 // <summary>

@@ -38,9 +38,9 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Quanta/MUString.h>
 #include <aips/Quanta/MVTime.h>
-#include <iostream.h>
-#include <fstream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/fstream.h>
+#include <aips/strstream.h>
 #include <aips/stdlib.h>
 
 // This is the function that does most of the work. It is pretty slow for

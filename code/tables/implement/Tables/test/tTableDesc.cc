@@ -39,7 +39,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for the TableDesc class </summary>
 

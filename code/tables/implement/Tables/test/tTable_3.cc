@@ -42,7 +42,7 @@
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/stdio.h>
 
 

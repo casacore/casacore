@@ -1,5 +1,5 @@
 //# tTimer.cc: Test program for the timing facility
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
-#include <stream.h>
+#include <aips/iostream.h>
 
 int main(void)
 {

@@ -28,7 +28,7 @@
 
 #include <aips/OS/IBMConversion.h>
 #include <aips/Mathematics/Math.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void showFloat (float f)

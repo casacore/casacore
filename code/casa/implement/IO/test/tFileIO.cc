@@ -31,8 +31,8 @@
 #include <aips/IO/LargeFiledesIO.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 
 //OPT=1 EXTRA_CPPFLAGS='-DAIPS_LARGEFILE -D_LARGEFILE64_SOURCE -D_XOPEN_SOURCE=500'

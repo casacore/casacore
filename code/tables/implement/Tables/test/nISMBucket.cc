@@ -1,5 +1,5 @@
 //# nISMBucket.cc :Simulation program for bucket behaviour of IncrementalStman
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,8 +28,8 @@
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Vector.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 // <summary>
 // Simulation program for bucket behaviour of IncrementalStman.

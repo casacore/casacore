@@ -1,5 +1,5 @@
 //# tTableInfo.cc: Test program for class TableInfo
-//# Copyright (C) 1996,2000
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Tables/TableInfo.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 // <summary>

@@ -49,7 +49,7 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/stdio.h>
 
 // <summary>

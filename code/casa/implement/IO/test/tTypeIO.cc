@@ -37,7 +37,7 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Path.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void doIt (TypeIO* io)

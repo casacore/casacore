@@ -31,8 +31,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/RecordInterface.h>
 
-#include <strstream.h>
-#include <iostream.h>
+#include <aips/strstream.h>
+#include <aips/iostream.h>
 #include <aips/stdio.h>                  // needed for sprintf
 
 

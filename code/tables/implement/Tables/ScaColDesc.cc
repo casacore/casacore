@@ -1,5 +1,5 @@
 //# ScaColDesc.cc: Templated class for description of table scalar columns
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Utilities/ValTypeId.h>
 #include <aips/Tables/TableError.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 template<class T>

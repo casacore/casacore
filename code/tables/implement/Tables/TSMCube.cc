@@ -42,7 +42,7 @@
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Conversion.h>
 #include <aips/string.h>                           // for memcpy
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 TSMCube::TSMCube (TiledStMan* stman, TSMFile* file)

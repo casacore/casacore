@@ -34,7 +34,7 @@
 
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 
 void Timer::mark()

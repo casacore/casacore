@@ -30,7 +30,7 @@
 #include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 // The following global function defined for gcc 1.0.3b
 AipsrcValue<Bool> &AipsrcValueBoolInit();

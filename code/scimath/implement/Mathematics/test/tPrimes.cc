@@ -1,5 +1,5 @@
 //# tPrimes.cc: This program tests the Primes class
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 
 #include <aips/Mathematics/Primes.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // Test the non-cache functions.
 

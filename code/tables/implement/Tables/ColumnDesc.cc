@@ -39,7 +39,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)

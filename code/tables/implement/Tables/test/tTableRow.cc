@@ -45,8 +45,8 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 // <summary>
 // Test program for the class (RO)TableRow

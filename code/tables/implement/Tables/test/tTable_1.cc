@@ -1,5 +1,5 @@
 //# tTable_1.cc: Test program for the SetupNewTable class
-//# Copyright (C) 1994,1995,1996,2000
+//# Copyright (C) 1994,1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Exceptions/Error.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 // <summary> Test program for the SetupNewTable class </summary>
 

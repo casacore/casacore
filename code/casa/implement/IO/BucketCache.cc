@@ -29,7 +29,7 @@
 //# Includes
 #include <aips/IO/BucketCache.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 BucketCache::BucketCache (BucketFile* file, Int64 startOffset,

@@ -47,7 +47,7 @@
 #include <aips/OS/DOos.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/DataManError.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)

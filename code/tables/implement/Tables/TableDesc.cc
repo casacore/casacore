@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/OS/File.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 //# This is the implementation of the class TableDesc.
 //#

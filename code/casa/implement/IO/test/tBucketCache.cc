@@ -29,7 +29,7 @@
 #include <aips/IO/BucketFile.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/OS/Timer.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Test program for the BucketCache class

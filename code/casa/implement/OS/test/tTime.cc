@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/OS/Time.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/stdlib.h>
 #include <aips/math.h>
 
