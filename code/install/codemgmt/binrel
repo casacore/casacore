@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/opt/local/bin/perl
 ##
 ## Command line flags:
 ##
@@ -23,8 +23,9 @@
 ## or	-tgt DIRNAME		the directory where files binary release should
 ##				be placed
 ##
-##	-full			produce a full binary distribution, not just the
-##				architecture specific directories
+##	-arch-only
+##	-aro			only produce architecture files, skip source,
+##				documentation, etc.
 ##	
 ##
 require "find.pl";
@@ -67,31 +68,24 @@ $TAR='gtar';
 ##
 ## which architecture files to include, rooted in $ARCH
 ##
-$BIN_FILES = "aipsrc bin doc lib libexec makedefs VERSION";
+$BIN_FILES = "aipsrc bin doc lib libexec makedefs VERSION grfont.dat rgb.txt local";
 
 ##
 ## which code directories to include, rooted in code
 ##
-$CODE_DIRS = "admin aips atnf bima contrib dish doc hia install nfra nral nrao synthesis tifr trial vlbi";
+$CODE_DIRS = "admin aips atnf bima contrib dish display doc hia install nfra nral nrao synthesis tifr trial trialdisplay vlbi jive npoi";
 
 ##
 ## which files to copy directly, rooted in code
 ##
-$COPY_FILES = "VERSION";
-
-##
-## which files to sift through and do substitutions
-## from the FTP directory
-##
-$FTPSUBST_FILES = "install/configure";
-$FTPSITE="aips2.nrao.edu";
-$IMPORTDIR="pub/import";
+$COPY_FILES = "code/VERSION code/install/configure";
 
 ##
 ## maps the possible architectures to machines we can use
 ## for the architecture and the initial PATH
 ##
 %arch_map = ( $APATH[1] => [ hostname(), '' ] );
+$local_host = hostname();
 
 ##
 ## text for the README file
@@ -119,7 +113,7 @@ $skipstrip=0;
 ##
 ## only do architecture files
 ##
-$archonly=1;
+$archonly=0;
 
 chdir $RROOT;
 
@@ -133,19 +127,19 @@ close(IN);
 ##
 ## where is our scratch area
 ##
-$logdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME";
+$tmpdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME";
 
 ##
 ## load aipshosts
 ##
-if ( -e $logdir ) {
-    $logdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME-$$";
-    if ( -e $logdir ) {
+if ( -e $tmpdir ) {
+    $tmpdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME-$$";
+    if ( -e $tmpdir ) {
         $Seed = "aaaa";
-        while ( -e ($logdir="$RROOT/$APATH[1]/tmp/autobeta-$NAME-$Seed") ) { $Seed++; }
+        while ( -e ($tmpdir="$RROOT/$APATH[1]/tmp/autobeta-$NAME-$Seed") ) { $Seed++; }
     }
 }
-die "couldn't create log directory: $logdir" unless mkdir($logdir,0755);
+die "couldn't create work directory: $tmpdir" unless mkdir($tmpdir,0755);
 
 %ahosts = ();
 die "couldn't open aipshosts" unless open(AHOSTS,"< aipshosts");
@@ -174,7 +168,8 @@ while ($_ = @ARGV[0], (/^-/)) {
     /^-exfi$/i && ($EXCLUDE = shift(@ARGV),next);
     /^-target-dir$/i && ($TARGET = shift(@ARGV),next);
     /^-tgt$/i && ($TARGET = shift(@ARGV),next);
-    /^-full$/i && ($archonly = 0,next);
+    /^-arch-only$/i && ($archonly = 1,next);
+    /^-aro$/i && ($archonly = 1,next);
     if ( /^-host$/i ) {
 	shift(@ARGV) =~ m/(\w+)\s*(.*)/;
 	die "unknown host: $1" unless defined $ahosts{$1};
@@ -188,8 +183,8 @@ while ($_ = @ARGV[0], (/^-/)) {
 ##
 ## exclude variables
 ##
-$EXCLUDE_FILE = "$logdir/exclude";
-$EXCLUDED_FILES = "$logdir/excluded";
+$EXCLUDE_FILE = "$tmpdir/exclude";
+$EXCLUDED_FILES = "$tmpdir/excluded";
 @EXCLUDE_ARCH = ();
 @EXCLUDE = ();
 
@@ -247,38 +242,121 @@ if ( -f $EXCLUDE ) {
     close(IN);
 }
 
-print "clearing out old $NAME files in $TARGET\n";
-open(CLEAN,"rm -rf $TARGET/$NAME* 2>&1 |");
-while ( <CLEAN> ) { print "\t$_"; }
-close(CLEAN);
-mkdir("$TARGET/$NAME",0755);
+if ( ! $archonly ) {
+    print "clearing out old $NAME files in $TARGET\n";
+    open(CLEAN,"rm -rf $TARGET/$NAME* 2>&1 |");
+    while ( <CLEAN> ) { print "\t$_"; }
+    close(CLEAN);
+    mkdir("$TARGET/$NAME",0755);
+} else {
+    print "skipping clearing out old $NAME files in $TARGET\n";
+}
 
-chdir "$RROOT/code";
 foreach $arch (keys %arch_map) {
+
+    @backup=();
+    @backupdesc=();
+    @backupdir=();
 
     if ( $skipstrip ) {
 	print "skipping stripping $arch binaries\n";
     } else {
-	opendir(BIN,"../$arch/bin") || die "cannot open $arch/bin";
+
+	# ------------- libraries -------------
+	opendir(LIB,"$arch/lib") || die "cannot open $arch/lib";
+	@files = readdir(LIB);
+	closedir(LIB);
+
+	# collect binaries for $arch
+	@libraries = ();
+	foreach $lib (@files) {
+	    lstat("$arch/lib/$lib");
+	    if ( ! -l _ ) {
+	        if ( -B _ && ! -d _ && ! -z _ ) {
+		    push(@libraries,$lib);
+		}
+	    }
+	}
+
+	print "backing up libraries for $arch\n";
+        $backup = "$tmpdir/arch-lib-backup.tar.gz";
+
+	push( @backup, $backup );
+	push( @backupdesc, "libraries" );
+	push( @backupdir, "$arch/lib" );
+
+	open( TAR, "(cd $arch/lib; tar cf - " . join(' ',@libraries) . " | $ZIP -c > $backup) 2>&1 |" );
+        while ( <TAR> ) { print "\t$_"; }
+	close(TAR);
+
+	print "stripping libraries for $arch\n";
+	if ( $arch_map[1] ) {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . ") 2>&1 |");
+	    }
+	} else {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . ") 2>&1 |");
+	    }
+
+	}
+
+	while ( <REMOTE> ) { print "\t$_"; }
+	close(REMOTE);
+
+	# ------------- binaries  -------------
+	opendir(BIN,"$arch/bin") || die "cannot open $arch/bin";
 	@files = readdir(BIN);
 	closedir(BIN);
 
 	# collect binaries for $arch
 	@binaries = ();
 	foreach $bin (@files) {
-	    stat("../$arch/bin/$bin");
-	    if ( -B _ && ! -d _ && ! -z _ ) {
-		push(@binaries,$bin);
+	    lstat("$arch/bin/$bin");
+	    if ( ! -l _ ) {
+	        if ( -B _ && ! -d _ && ! -z _ ) {
+		    push(@binaries,$bin);
+		}
 	    }
 	}
 
+	print "backing up binaries for $arch\n";
+        $backup = "$tmpdir/arch-bin-backup.tar.gz";
+
+	push( @backup, $backup );
+	push( @backupdesc, "binaries" );
+	push( @backupdir, "$arch/bin" );
+
+	open( TAR, "(cd $arch/bin; tar cf - " . join(' ',@binaries) . " | $ZIP -c > $backup) 2>&1 |" );
+        while ( <TAR> ) { print "\t$_"; }
+	close(TAR);
+
 	print "stripping binaries for $arch\n";
 	if ( $arch_map[1] ) {
-	    open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/bin; $STRIP " .
-		     join(' ',@binaries) . "' 2>&1 |");
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . ") 2>&1 |");
+	    }
 	} else {
-	    open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; cd $RROOT/$arch/bin; $STRIP " .
-		     join(' ',@binaries) . "' 2>&1 |");
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . ") 2>&1 |");
+	    }
+
 	}
 
 	while ( <REMOTE> ) { print "\t$_"; }
@@ -290,71 +368,31 @@ foreach $arch (keys %arch_map) {
 	s/\$ARCH/$arch/;
     }
 
-    ($files = $BIN_FILES) =~ s@(\w+)@../$arch/$1@g;
+    ($files = $BIN_FILES) =~ s@([-a-zA-Z0-9_.]+)@$arch/$1@g;
     tar( $arch, $files, \@exclude );
 
+    foreach $backup ( @backup ) {
+	print "restoring original ", shift(@backupdesc), " for $arch\n";
+	open( UNTAR, "(cd " . shift(@backupdir) . "; $ZIP -d -c $backup | tar xf -) 2>&1 |" );
+	while ( <UNTAR> ) { print "\t$_"; }
+	close(UNTAR);
+	unlink($backup);
+    }
 }
 
 if ( ! $archonly ) {
 
-    tar( "docs", "../docs" );
+    tar( "docs", "docs" );
 
     foreach $dir ( split(/\s+/,$CODE_DIRS) ) {
-	die "bad code directory, $dir" if ! -d $dir;
-	tar( $dir, $dir );
+	die "bad code directory, $dir" if ! -d "code/$dir";
+	tar( $dir, "code/$dir" );
     }
 
     print "copying individual files\n";
     open(CP,"cp $COPY_FILES $TARGET/$NAME 2>&1 |");
     while ( <CP> ) { print "\t$_"; }
     close(CP);
-
-
-    @todo = ();
-    print "doing substitution on $FTPSUBST_FILES\n";
-    foreach $file ( split(/\s+/, $FTPSUBST_FILES) ) {
-	die "can't open $file" unless open(IN, "< $file");
-	while ( <IN> ) {
-	    m@=\s*['"](__[A-Z]+)@ && (push(@todo,$1), next);
-	}
-	close(IN);
-    }
-
-    $ftpcmds = <<"EOF";
-user anonymous binrel\@aips2.nrao.edu
-cd $IMPORTDIR
-dir
-EOF
-
-    open( OUT, "> /tmp/ftp$$" );
-    print OUT $ftpcmds;
-    close( OUT );
-    open( IN, "ftp -n $FTPSITE < /tmp/ftp$$ |" );
-    %match = ();
-    $match = join('|',@todo);
-    while ( <IN> ) {
-	($match{$1} = $_) =~ s/.*?(\S+)\n?$/$1/ if m/($match)/;
-    }
-    unlink( "/tmp/ftp$$" );
-
-    @match=();
-    foreach $key ( keys %match ) { push( @match, $key ) if $match{$key} !~ m/$key/; }
-    die "matching of FTP files failed" unless scalar(@match) > 0;
-    $match = join('|',@match);
-    foreach $file ( split(/\s+/, $FTPSUBST_FILES) ) {
-	die "can't read $file" unless open(IN, "< $file");
-	($outfile = $file) =~ s/.*?(\w+)$/$1/;
-	die "can't write $TARGET/$NAME/$outfile" unless open(OUT, "> $TARGET/$NAME/$outfile");
-	while ( <IN> ) {
-	    if ( m@=\s*['"]($match)@ ) {
-		$i = $1;
-		s@(=\s*['"])$i@$1$match{$i}@;
-	    }
-	    print OUT;
-	}
-	close(IN);
-	close(OUT);
-    }
 
     print "creating readme file\n";
     open(OUT,"> $TARGET/$NAME/README");
@@ -445,4 +483,3 @@ sub wanted {
 	}
     }
 }
-
