@@ -613,21 +613,6 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 			      values);
     }
 
-    // fill source and field table
-    ms.source().addRow(nSources_p);
-    MSSourceColumns& sourcec=msc.source();
-    sourcec.interval().fillColumn(forever);
-    sourcec.spectralWindowId().fillColumn(-1); //not used
-    sourcec.time().fillColumn(Tstart_p);
-    sourcec.calibrationGroup().fillColumn(0);
-    sourcec.code().fillColumn("");
-    sourcec.direction().putColumn(radec_p);
-    sourcec.name().putColumn(srcName_p);
-    Vector<Double> pos(3); pos=0.0;
-    sourcec.position().fillColumn(pos);
-    Vector<Double> pm(2); pm=0.0;
-    sourcec.properMotion().fillColumn(pm);
-    for (Int i=0; i<nSources_p; i++) sourcec.sourceId().put(i,i);
 
     MSFieldColumns& fieldc=msc.field();
     Int nField=0;
@@ -647,34 +632,41 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	}
 	for (Int j=0; j<nMos_p(0,i); j++) {
 	    for (Int k=0; k<nMos_p(1,i); k++) {
+	      if (radecRefFrame_p == "J2000") {
 		direction(0)=MDirection
 		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
 			       spacing / cos(radec_p(1,i)),
-			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing)
-		   // , MDirection::J2000 // add epoch here
-		   );
-		fieldc.sourceId().put(row,i);
-		fieldc.delayDirMeasCol().put(row,direction);
-		fieldc.phaseDirMeasCol().put(row,direction);
-		fieldc.referenceDirMeasCol().put(row,direction);
-		ostrstream name;
-		if (nMos_p(0,i)*nMos_p(1,i)>1) {
-		    name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
-		} else {
-		    name << flush <<srcName_p(i) << ends;
-		}
-		char* pName=name.str();
-		fieldc.name().put(row,String(pName));
-		// os << pName << LogIO::POST;
-		delete pName;
-		row++;
+			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		   MDirection::J2000);
+	      } else {
+		direction(0)=MDirection
+		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			       spacing / cos(radec_p(1,i)),
+			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		   MDirection::B1950);
+	      }
+	      fieldc.sourceId().put(row,i);
+	      fieldc.delayDirMeasCol().put(row,direction);
+	      fieldc.phaseDirMeasCol().put(row,direction);
+	      fieldc.referenceDirMeasCol().put(row,direction);
+	      ostrstream name;
+	      if (nMos_p(0,i)*nMos_p(1,i)>1) {
+		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	      } else {
+		name << flush <<srcName_p(i) << ends;
+	      }
+	      char* pName=name.str();
+	      fieldc.name().put(row,String(pName));
+	      // os << pName << LogIO::POST;
+	      delete pName;
+	      row++;
 	    }
 	}
     }
     
     // init counters past end
     Int FldId = nField-1;
-    Int nSrc = ms.source().nrow();
+    Int nSrc = ms.field().nrow();
     Int SrcId = nSrc-1;
     Int FldCount = nIntFld_p(SrcId);
     Int SpWId = nIntSpW_p.nelements()-1;
@@ -813,7 +805,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		    msc.feed1().put(row,0);
 		    msc.feed2().put(row,0);
 		    msc.interval().put(0,Tint_p);
-		    msc.observationId().put(0,-1);
+		    msc.observationId().put(0,0);
 		    msc.stateId().put(0,-1);
 		  }
 		}
