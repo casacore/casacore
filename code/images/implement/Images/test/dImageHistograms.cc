@@ -1,6 +1,6 @@
 //# dImageHistograms.cc: This program generates histograms from images
 //#
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@
 enum defaults {AXES, REGION, RANGE, NDEFAULTS};
 
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
@@ -165,8 +165,8 @@ try {
  
    Vector<Bool> validInputs(NDEFAULTS);
    validInputs = False;
-   LogOrigin or("imhist", "main()", WHERE);
-   LogIO os(or);
+   LogOrigin lor("imhist", "main()", WHERE);
+   LogIO os(lor);
 
 // Check inputs
 
