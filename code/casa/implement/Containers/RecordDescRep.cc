@@ -498,8 +498,9 @@ Bool RecordDescRep::isDisjoint (const RecordDescRep& other) const
 
 void RecordDescRep::copy_other (const RecordDescRep& other)
 {
+    uInt i;
     // First, we need to free up the storage of any extant sub records
-    for (uInt i=0; i < n_p ; i++) {
+    for (i=0; i < n_p ; i++) {
 	if (sub_records_p[i]) {
 	    delete sub_records_p[i];
 	    sub_records_p[i] = 0;

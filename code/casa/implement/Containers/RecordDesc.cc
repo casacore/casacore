@@ -1,5 +1,5 @@
 //# RecordDesc.cc: Description of the fields in a Record object
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,12 +31,13 @@
 
 ostream& RecordDesc::put (ostream &os) const
 {
+    Int i;
     // There must be a better way to handle indentation, e.g. a manipulator.
     // If control leaves abnormally the indentation might be wrong.
     static Int indentLevel = -1;
     indentLevel++;
     String indentation;
-    for (Int i=0; i < indentLevel*4; i++) {
+    for (i=0; i < indentLevel*4; i++) {
 	indentation += " ";
     }
 

@@ -1,5 +1,5 @@
 //# Primes.cc:  This class provides some prime number operations using a cached table
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,6 +62,7 @@ uInt Primes::aLargerPrimeThan( uInt number )
 
 uInt Primes::nextLargerPrimeThan( uInt number ) 
 {
+    uInt i;
     // This function increments number until it is prime.  It finds the next
     // entry in the table of primes which is larger, and stores this entry's
     // index number.  The table is resized to accomodate another entry, and
@@ -73,7 +74,7 @@ uInt Primes::nextLargerPrimeThan( uInt number )
     }
     while( !isPrime( ++number ) );
     uInt index = cacheTable.nelements();
-    for( uInt i = cacheTable.nelements(); i > 0; i-- ) {
+    for( i = cacheTable.nelements(); i > 0; i-- ) {
 	if ( cacheTable[(i-1)] == number ) {
 	    return number;
 	}

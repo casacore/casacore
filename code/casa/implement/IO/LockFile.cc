@@ -1,5 +1,5 @@
 //# LockFile.cc: Class to handle file locking
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -282,11 +282,12 @@ void LockFile::addReqId()
 
 void LockFile::removeReqId()
 {
+    Int i;
     //# Remove the id and all previous id's from the block.
     //# In principle previous id's should not occur, but it
     //# can happen when a process with an outstanding request died.
     Int nr = itsReqId[0];
-    for (Int i=0; i<nr; i++) {
+    for (i=0; i<nr; i++) {
 	if (Int(itsPid) == itsReqId[2*i+1]
         &&  Int(itsHostId) == itsReqId[2*i+2]) {
 	    break;

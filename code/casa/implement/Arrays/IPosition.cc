@@ -244,9 +244,10 @@ void IPosition::append (const IPosition& other)
 
 void IPosition::prepend (const IPosition& other)
 {
+    uInt i;
     uInt j = size_p;
     resize (size_p + other.size_p);
-    for (uInt i=size_p; j>0;) {
+    for (i=size_p; j>0;) {
 	data_p[--i] = data_p[--j];
     }
     for (i=0; i<other.size_p; i++) {
