@@ -1,5 +1,5 @@
 //# ImageSummary.cc:  list an image header
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -221,7 +221,11 @@ String ImageSummary<T>::name () const
 //
 {
    const Bool stripPath = True;
-   return pImage_p->name(stripPath);
+   String name = pImage_p->name(stripPath);
+   if (name.length()==0) {
+      name = String("Temporary_image");
+   }
+   return name;
 }
 
 
@@ -381,28 +385,19 @@ void ImageSummary<T>::list (LogIO& os,
 //                 formatted nicely (e.g. HH:MM:SS.S)
 //
 {
-
    os << LogIO::NORMAL << endl;
    MEpoch epoch;
    obsDate(epoch);
 
 // List random things
-   
+
    os << "Image name       : " << name() << endl;
-   if (telescope() != "UNKNOWN") {
-      os << "Telescope        : " << telescope() << endl;
-   }
-   if (observer() != "UNKNOWN") {
-      os << "Observer         : " << observer() << endl;
-   }
-   if (epoch.getValue().getDay() != Double(0.0)) { 
-      os << "Date observation : " << obsDate(epoch) << endl;
-   }
+//
    String list = makeMasksString();
    os << "Image mask       : " << list << endl;
-   if (!units().getName().empty()) 
-      os << "Image units      : " << this->units().getName() << endl << endl;
-
+   if (!units().getName().empty()) {
+      os << "Image units      : " << this->units().getName() << endl;
+   }
 
 // List DirectionCoordinate type from the first DirectionCoordinate we find
 
@@ -433,9 +428,17 @@ void ImageSummary<T>::list (LogIO& os,
    Vector<Quantum<Double> > rb = imageInfo_p.restoringBeam();
    if (rb.nelements()>0) {
       os.output() << "Restoring Beam   : " << rb(0) << ", " << rb(1) << ", " << rb(2) << endl;
+   } 
+
+//
+   os << "Telescope        : " << telescope() << endl;
+   os << "Observer         : " << observer() << endl;
+   if (epoch.getValue().getDay() != Double(0.0)) { 
+      os << "Date observation : " << obsDate(epoch) << endl;
+   } else {
+      os << "Date observation : " << "UNKNOWN" << endl;
    }
    os << endl;
-
 
 
 // Determine the widths for all the fields that we want to list
@@ -1208,7 +1211,17 @@ String ImageSummary<T>::makeMasksString() const
    const String defaultMask = defaultMaskName();
    const Vector<String> masks = maskNames();
    const uInt nMasks = masks.nelements();
-   if (nMasks==0) return String("None");
+   if (nMasks==0) {
+
+// Horrid fudge to catch TempImage mask.  We need
+// to redesign some of this masky stuff
+
+      if (pImage_p->hasPixelMask()) {
+         return String("Temporary_Mask");
+      } else {
+         return String("None");
+      }
+   }
 //
    ostrstream oss;
    if (!defaultMask.empty()) oss << defaultMask;
