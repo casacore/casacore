@@ -42,6 +42,7 @@ class RecordInterface;
 class String;
 class ComponentShape;
 class SpectralModel;
+class GlishRecord;
 template <class T> class Flux;
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -239,10 +240,12 @@ public:
   // False if the record is malformed and append an error message to the
   // supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String& errorMessage, 
+  virtual Bool fromRecord(String& errorMessage,
 			  const RecordInterface& record) = 0;
   virtual Bool toRecord(String& errorMessage, 
 			RecordInterface& record) const = 0;
+  virtual Bool fromRecord(String& errorMessage, const GlishRecord& record);
+  virtual Bool toRecord(String& errorMessage, GlishRecord& record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
