@@ -36,7 +36,7 @@
 
 #include <iostream.h>
 
-Int main()
+int main()
 {
   uInt nerr = 0;
    // try {
