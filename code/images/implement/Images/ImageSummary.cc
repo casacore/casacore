@@ -401,7 +401,7 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List CoordinateSystem
 
-   cSys_p.list(os, velocityType, shape(), tileShape());
+   Vector<String> messages = cSys_p.list(os, velocityType, shape(), tileShape(), False);
 }
 
 
