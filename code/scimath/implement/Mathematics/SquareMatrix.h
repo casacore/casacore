@@ -280,13 +280,13 @@ private:
 //#    return result.adjoint();
 //#}
 //#
-// <linkfrom anchor=SqM-global-functions classes="SquareMatrixclass">
+// <linkfrom anchor=SqM_global_functions classes="SquareMatrixclass">
 //     <here> Global functions </here> for SquareMatrix.
 // </linkfrom>
-// <group name=SqM-global-functions>  
 // <summary>
 // Various global math and IO functions.
 // </summary>
+// <group name=SqM_global_functions>
 
 // Calculate direct product of two SquareMatrices.
 SquareMatrix<Complex,4> 
