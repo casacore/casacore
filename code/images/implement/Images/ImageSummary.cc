@@ -270,12 +270,23 @@ void ImageSummary<T>::list (LogIO& os,
       os << "Image mask       : Absent" << endl;
    }
    if (!this->units().getName().empty()) 
-      os << "Image units      : " << this->units().getName() << endl;
+      os << "Image units      : " << this->units().getName() << endl << endl;
 
 
 // Obtain CoordinateSystem
 
    const CoordinateSystem cSys = pImage_p->coordinates();
+
+// List DirectionCoordinate type
+
+   Vector<uInt> directionAxes = CoordinateUtil::findDirectionAxes(cSys);
+   if (directionAxes.nelements() != 0) {
+      Int coordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+      if (coordinate >= 0) {           
+         os << "Direction system : " 
+            << MDirection::showType(cSys.directionCoordinate(uInt(coordinate)).directionType()) << endl;
+      }
+   }
 
 // List rest frequency and reference frame if we can find a spectral axis
 
@@ -284,15 +295,19 @@ void ImageSummary<T>::list (LogIO& os,
       Int coordinate, axisInCoordinate;
       cSys.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
       const Double restFreq = cSys.spectralCoordinate(coordinate).restFrequency();
+
+      MFrequency::Types freqType = cSys.spectralCoordinate(uInt(coordinate)).frequencySystem();
+      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
+      os << "Velocity system  : " << "True" << endl;
+
       if (restFreq > 0) {
          os.output().setf(ios::scientific, ios::floatfield);
          os.output().precision(8);
          os << "Rest Frequency   : " << restFreq << " " 
             << cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate) << endl;
+      } else {
+         os << "Rest Frequency   : Absent" << endl;
       }
-      MFrequency::Types freqType = cSys.spectralCoordinate(coordinate).frequencySystem();
-      os << "Frequency system : " << MFrequency::showType(freqType) << endl;
-      os << "Velocity system  : " << "True" << endl;
    }
    os << endl;
       
