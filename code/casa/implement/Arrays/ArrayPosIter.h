@@ -1,5 +1,5 @@
 //# ArrayPosIter.h: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,6 +81,7 @@ public:
     ArrayPositionIterator(const IPosition &shape,
 			  uInt byDim);
     // </group>
+    virtual ~ArrayPositionIterator() {};
     // Reset the cursor to the beginning of the volume.
     virtual void origin();
     // Returns true of the cursor is at the origin.
