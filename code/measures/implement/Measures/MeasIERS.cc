@@ -1,5 +1,5 @@
 //# MeasIERS.cc: Interface to IERS tables
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -180,13 +180,21 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   if (Aipsrc::find(ldir, rc)) {
     ldir += '/';
   } else {
-    ldir = Aipsrc::aipsHome() + "/data/" + dir + '/';
+    String udir;
+    if (!dir.empty()) udir = dir + '/';
+    ldir = "./";
     if (!Table::isReadable(ldir + name)) {
-      ldir = Aipsrc::aipsRoot() + "/data/" + dir + '/';
+      ldir = "./data/";
       if (!Table::isReadable(ldir + name)) {
-	ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	ldir = Aipsrc::aipsHome() + "/data/" + udir;
 	if (!Table::isReadable(ldir + name)) {
-	  ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+	  ldir = Aipsrc::aipsRoot() + "/data/" + udir;
+	  if (!Table::isReadable(ldir + name)) {
+	    ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	    if (!Table::isReadable(ldir + name)) {
+	      ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+	    };
+	  };
 	};
       };
     };

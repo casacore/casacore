@@ -1,5 +1,5 @@
 //# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,11 @@ class String;
 // Tables are found using the aipsrc 
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
-// (i.e. in $AIPSROOT/data/aips/Measures) Tables are assumed to have the
+// (i.e. they are looked for in (udir in following normally given by
+// program as aips/Measures) '.', './data', '~/aips++/data/udir',
+// '$AIPSROOT/data/udir', '~/aips++/code/trial/apps/measures',
+// '$AIPSROOT/data/udir' (last two only ad interim)).
+// Tables are assumed to have the
 // VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,
 // else an exception will be thrown.<br>
 // The <src>get()</src> method will obtain data from measured and predicted
