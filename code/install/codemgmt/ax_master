@@ -1817,3 +1817,4 @@
 07 584 src rm trial/apps/simulater
 08 003 sys rm bin/aipsview2
 08 003 sys rm bin/display.atoms
+08 003 sys rm bin/fits2image
