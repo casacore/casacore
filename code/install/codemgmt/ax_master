@@ -6446,3 +6446,4 @@
 18 522 src mv trial/implement/MeasurementComponents/VisJonesMRec.h trial/implement/CalTables/VisJonesMRec.h
 18 522 src mv trial/implement/MeasurementComponents/TimeVarMJMRec.h trial/implement/CalTables/TimeVarMJMRec.h
 18 522 src mv trial/implement/MeasurementComponents/TimeVarVJMRec.h trial/implement/CalTables/TimeVarVJMRec.h
+18 522 src mv trial/implement/MeasurementComponents/SolvableMJMRec.h trial/implement/CalTables/SolvableMJMRec.h
