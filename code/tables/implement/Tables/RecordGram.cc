@@ -1,5 +1,5 @@
 //# RecordGram.cc: Grammar for record command lines
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,9 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Tables/TableError.h>
 
+//# stdlib.h is needed for bison 1.28 and needs to be included here
+//# (before the flex/bison files).
+#include <stdlib.h>
 #include <RecordGram.ycc>                  // flex output
 #include <RecordGram.lcc>                  // bison output
 
