@@ -1,5 +1,5 @@
 //# SquareMatrix.cc: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,22 +53,6 @@ SquareMatrix<T,n>::operator=(const SquareMatrix<T,n>& m) {
     return *this;
 }
 //# not accepted out of line by native compiler- moved inline
-//#template <class T, Int n> 
-//#SquareMatrix<T,n>& 
-//#SquareMatrix<T,n>::operator=(const T vec[n]) {
-//#    type_p=Diagonal;
-//#    for (Int i=0; i<n; i++) a_p[i][i]=vec[i];
-//#    return *this;
-//#}
-//#template <class T, Int n> 
-//#SquareMatrix<T,n>& 
-//#SquareMatrix<T,n>::operator=(const T a[n][n]) {
-//#    type_p=General;
-//#    const T* pa=&a[0][0];
-//#    T* pa_p=&a_p[0][0];
-//#    for (Int i=0; i<n*n; i++) *pa_p++=*pa++;
-//#    return *this;
-//#}
 template <class T, Int n> 
 SquareMatrix<T,n>& 
 SquareMatrix<T,n>::operator=(const Vector<T>& v) {
@@ -450,29 +434,17 @@ SquareMatrix<T,n>::real(SquareMatrix<Float,n>& result) const {
     result.type_p=type_p;
     switch(type_p) {
         case ScalarId: {
-#if defined(AIPS_SUN_NATIVE)
-	    result.a_p[0][0]=a_p[0][0].real();
-#else
-	    result.a_p[0][0]=::real(a_p[0][0]);
-#endif
-	    return result;
+	result.a_p[0][0]=::real(a_p[0][0]);
+	return result;
 	}
         case Diagonal: {
-#if defined(AIPS_SUN_NATIVE)
-	    for (Int i=0; i<n; i++) result.a_p[i][i]=a_p[i][i].real();
-#else
-	    for (Int i=0; i<n; i++) result.a_p[i][i]=::real(a_p[i][i]);
-#endif
-	    return result;
+	for (Int i=0; i<n; i++) result.a_p[i][i]=::real(a_p[i][i]);
+	return result;
 	}
 	case General: {
-	    for (Int i=0; i<n; i++)
-#if defined(AIPS_SUN_NATIVE)
-		for (Int j=0; j<n; j++) result.a_p[i][j]=a_p[i][j].real();
-#else
-		for (Int j=0; j<n; j++) result.a_p[i][j]=::real(a_p[i][j]);
-#endif
-	    return result;
+	for (Int i=0; i<n; i++) 
+	for (Int j=0; j<n; j++) result.a_p[i][j]=::real(a_p[i][j]);
+	return result;
 	}
     }
 }
