@@ -1,5 +1,5 @@
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,16 +30,15 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MFrequency.h>
 
-    static Vector<Double> pix(1);
-    static Vector<Double> xy(1);
 Bool SpectralCoordinate::toWorld(MFrequency &world, 
 				 Double pixel) const
 {
-    pix(0) = pixel;
-    Bool ok = toWorld(xy, pix);
+    if (pixel_tmp_p.nelements()!=1) pixel_tmp_p.resize(1);
+    pixel_tmp_p(0) = pixel;
+    Bool ok = toWorld(world_tmp_p, pixel_tmp_p);
     if (ok) {
         Unit units = worldAxisUnits()(0);
-        world = MFrequency(Quantity(xy(0), units), type_p);
+        world = MFrequency(Quantity(world_tmp_p(0), units), type_p);
     }
 
     return ok;
