@@ -1121,6 +1121,11 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
       // Append a flagged, empty row to the FIELD table
       ms_p.field().addRow(); 
       outRow++;
+      Vector<MDirection> nullDir(1);
+      nullDir(0).set(MVDirection(0.0,0.0), MDirection::Ref(epochRefZero));
+      msField.phaseDirMeasCol().put(outRow,nullDir);
+      msField.delayDirMeasCol().put(outRow,nullDir);
+      msField.referenceDirMeasCol().put(outRow,nullDir);
       msField.flagRow().put(outRow,True);
     }
     msField.sourceId().put(fld,-1); // source table not yet filled in
