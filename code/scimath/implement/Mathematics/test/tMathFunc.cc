@@ -1,5 +1,5 @@
 //# tMathFunc.cc: This program tests MathFunc objects
-//# Copyright (C) 1993,1994,1995,1997,1998
+//# Copyright (C) 1993,1994,1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <iostream.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/MathFunc.h>
+#include <trial/Mathematics/MathFunc.h>
 
 #include <aips/Utilities/Assert.h>
 
