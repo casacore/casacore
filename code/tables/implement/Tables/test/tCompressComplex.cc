@@ -53,11 +53,8 @@
 
 
 // First build a description.
-void writeData (Bool autoScale)
+void writeData (Bool isSD, Bool autoScale)
 {
-  // First register the virtual column engine.
-  CompressComplex::registerClass();
-
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
@@ -74,9 +71,15 @@ void writeData (Bool autoScale)
   SetupNewTable newtab("tCompressComplex_tmp.data", td, Table::New);
   // Create the virtual column engine with the scale factors
   // and bind the columns to them.
-  CompressComplex engine1("source1", "target1", "scale1", "offset1",
-			  autoScale);
-  newtab.bindColumn ("source1", engine1);
+  if (isSD) {
+    CompressComplexSD engine1("source1", "target1", "scale1", "offset1",
+			      autoScale);
+    newtab.bindColumn ("source1", engine1);
+  } else {
+    CompressComplex engine1("source1", "target1", "scale1", "offset1",
+			    autoScale);
+    newtab.bindColumn ("source1", engine1);
+  }
   TiledShapeStMan tsm("tileddata", IPosition(4,2,3,4,4));
   newtab.bindColumn ("target1", tsm);
   Table tab(newtab, 10);
@@ -89,28 +92,28 @@ void writeData (Bool autoScale)
 
   Cube<Complex> arrf(IPosition(3,2,3,4));
   uInt i;
-  i=2;
+  i=16;
   for (uInt i2=0; i2<4; i2++) {
     for (uInt i1=0; i1<3; i1++) {
-      for (uInt i0=0; i0<2; i0++) {
-	arrf(i0,i1,i2) = Complex(i,i+36);
-	i += 6;
-      }
+      arrf(0,i1,i2) = Complex(i,i+36);
+      i += 12;
+      arrf(1,i1,i2) = Complex(i,0);
+      i += 12;
     }
   }
   for (i=0; i<10; i++) {
     if (!autoScale) {
       scale1.put (i, 2.);
-      offset1.put (i, 4.);
+      offset1.put (i, 20.);
     }
     if (i != 5) {
       source1.put (i, arrf);
     }
     source2.put (i, arrf);
-    arrf += Complex(6*arrf.nelements(), 6*arrf.nelements());
+    arrf += Complex(12*arrf.nelements(), 12*arrf.nelements());
   }
   // Write the 5th row in Slices.
-  arrf -= Complex(5*6*arrf.nelements(), 5*6*arrf.nelements());
+  arrf -= Complex(5*12*arrf.nelements(), 5*12*arrf.nelements());
   source1.setShape (5, arrf.shape());
   for (i=0; i<3; i++) {
     source1.putSlice (5, Slicer(IPosition(3,0,i,0), IPosition(3,2,1,4)),
@@ -136,6 +139,8 @@ Bool checkData (Bool autoScale)
   ROArrayColumn<Complex> source1 (tab, "source1");
   ROArrayColumn<Complex> source2 (tab, "source2");
   ROArrayColumn<Int> target1 (tab, "target1");
+  ROScalarColumn<Float> scale1 (tab, "scale1");
+  ROScalarColumn<Float> offset1 (tab,"offset1");
   Cube<Int> arri1(IPosition(3,2,3,4));
   Cube<Int> arrvali(IPosition(3,2,3,4));
   Cube<Complex> arrf1(IPosition(3,2,3,4));
@@ -143,11 +148,12 @@ Bool checkData (Bool autoScale)
   uInt i=0;
   for (uInt i2=0; i2<4; i2++) {
     for (uInt i1=0; i1<3; i1++) {
-      for (uInt i0=0; i0<2; i0++) {
-	arrf1(i0,i1,i2) = Complex (2 + 6*i, 2 + 6*i + 36);
-	arri1(i0,i1,i2) = 65536 * (3*i - 1) + (3*i - 1 + 18);
-	i++;
-      }
+      arrf1(0,i1,i2) = Complex (16 + 12*i, 16 + 12*i + 36);
+      arri1(0,i1,i2) = 65536 * (6*i - 2) + (6*i - 2 + 18);
+      i++;
+      arrf1(1,i1,i2) = Complex (16 + 12*i, 0);
+      arri1(1,i1,i2) = 65536 * (6*i - 2) + -10;
+      i++;
     }
   }
   for (i=0; i<10; i++) {
@@ -165,7 +171,24 @@ Bool checkData (Bool autoScale)
 	cout << "error in target1 in row " << i << endl;
 	cout << "Read: " << arrvali << endl;
 	cout << "Expected: " << arri1 << endl;
-      ok = False;
+	ok = False;
+      }
+    } else {
+      Float offs = offset1(i);
+      Float so = (arrvalf(0,2,3).imag() + arrvalf(1,0,0).imag()) / 2;
+      if (!near(offs, so)) {
+	cout << "error in offset1 in row " << i << endl;
+	cout << "Read: " << offs << endl;
+	cout << "Expected: " << so << endl;
+	ok = False;
+      }
+      Float scale = scale1(i);
+      so = (arrvalf(0,2,3).imag() - arrvalf(1,0,0).imag()) / 65534;
+      if (!near(scale, so)) {
+	cout << "error in scale1 in row " << i << endl;
+	cout << "Read: " << scale << endl;
+	cout << "Expected: " << so << endl;
+	ok = False;
       }
     }
     source2.get (i, arrvalf);
@@ -175,8 +198,122 @@ Bool checkData (Bool autoScale)
       cout << "Expected: " << arrf1 << endl;
       ok = False;
     }
-    arrf1 += Complex(6*arrf1.nelements(), 6*arrf1.nelements());
-    arri1 += Int(65536 * 3*arri1.nelements() + 3*arri1.nelements());
+    arrf1 += Complex(12*arrf1.nelements(), 12*arrf1.nelements());
+    arri1 += Int(65536 * 6*arri1.nelements() + 6*arri1.nelements());
+  }
+  return ok;
+}
+
+Bool checkDataSD (bool autoScale)
+{
+  Bool ok = True;
+  // Read back the table.
+  Table tab("tCompressComplex_tmp.data");
+  ROArrayColumn<Complex> source1 (tab, "source1");
+  ROArrayColumn<Complex> source2 (tab, "source2");
+  ROArrayColumn<Int> target1 (tab, "target1");
+  ROScalarColumn<Float> scale1 (tab, "scale1");
+  ROScalarColumn<Float> offset1 (tab,"offset1");
+  Cube<Int> arri1(IPosition(3,2,3,4));
+  Cube<Int> arrvali(IPosition(3,2,3,4));
+  Cube<Complex> arrf1(IPosition(3,2,3,4));
+  Cube<Complex> arrvalf(IPosition(3,2,3,4));
+  uInt i=0;
+  for (uInt i2=0; i2<4; i2++) {
+    for (uInt i1=0; i1<3; i1++) {
+      arrf1(0,i1,i2) = Complex (16 + 12*i, 16 + 12*i + 36);
+      arri1(0,i1,i2) = 65536 * (6*i - 2) + 2*(3*i - 1 + 9) + 1;
+      i++;
+      arrf1(1,i1,i2) = Complex (16 + 12*i, 0);
+      arri1(1,i1,i2) = 2 * 32768 * (6*i - 2);
+      i++;
+    }
+  }
+  cout << "get SD row 0" << endl;
+  source1.get (0, arrvalf);
+  if (!allNear (arrvalf, arrf1, 1e-4)) {
+    cout << "error in source1 in row 0" << endl;
+    cout << "Read: " << arrvalf << endl;
+    cout << "Expected: " << arrf1 << endl;
+    ok = False;
+  }
+  if (!autoScale) {
+    target1.get (0, arrvali);
+    if (!allEQ (arrvali, arri1)) {
+      cout << "error in target1 in row 0" << endl;
+      cout << "Read: " << arrvali << endl;
+      cout << "Expected: " << arri1 << endl;
+      ok = False;
+    }
+  } else {
+    Float offs = offset1(0);
+    Float so = (arrvalf(0,2,3).imag() + arrvalf(0,0,0).real()) / 2;
+    if (!near(offs, so, 1e-4)) {
+      cout << "error in offset1 in row 0" << endl;
+      cout << "Read: " << offs << endl;
+      cout << "Expected: " << so << endl;
+      ok = False;
+    }
+    Float scale = scale1(0);
+    so = (arrvalf(0,2,3).imag() - arrvalf(0,0,0).real()) / 65534;
+    if (!near(scale, so, 1e-4)) {
+      cout << "error in scale1 in row 0" << endl;
+      cout << "Read: " << scale << endl;
+      cout << "Expected: " << so << endl;
+      ok = False;
+    }
+  }
+  i = 1;
+  for (uInt i2=0; i2<4; i2++) {
+    for (uInt i1=0; i1<3; i1++) {
+      arri1(1,i1,i2) = 65536 * (6*i - 2) + -10 + 1;
+      i+=2;
+    }
+  }
+  for (i=1; i<10; i++) {
+    arrf1 += Complex(12*arrf1.nelements(), 12*arrf1.nelements());
+    arri1 += Int(65536 * 6*arri1.nelements() + 6*arri1.nelements());
+    cout << "get SD row " << i << endl;
+    source1.get (i, arrvalf);
+    if (!allNear (arrvalf, arrf1, 1e-4)) {
+      cout << "error in source1 in row " << i << endl;
+      cout << "Read: " << arrvalf << endl;
+      cout << "Expected: " << arrf1 << endl;
+      ok = False;
+    }
+    if (!autoScale) {
+      target1.get (i, arrvali);
+      if (!allEQ (arrvali, arri1)) {
+	cout << "error in target1 in row " << i << endl;
+	cout << "Read: " << arrvali << endl;
+	cout << "Expected: " << arri1 << endl;
+      ok = False;
+      }
+    } else {
+      Float offs = offset1(i);
+      Float so = (arrvalf(0,2,3).imag() + arrvalf(1,0,0).imag()) / 2;
+      if (!near(offs, so, 1e-4)) {
+	cout << "error in offset1 in row " << i << endl;
+	cout << "Read: " << offs << endl;
+	cout << "Expected: " << so << endl;
+	ok = False;
+      }
+      Float scale = scale1(i);
+      so = (arrvalf(0,2,3).imag() - arrvalf(1,0,0).imag()) / 65534;
+      if (!near(scale, so, 1e-4)) {
+	cout << "error in scale1 in row " << i << endl;
+	cout << "Read: " << scale << endl;
+	cout << "Expected: " << so << endl;
+	ok = False;
+      }
+    }
+    source2.get (i, arrvalf);
+    if (!allEQ (arrvalf, arrf1)) {
+      cout << "error in source2 in row " << i << endl;
+      cout << "Read: " << arrvalf << endl;
+      cout << "Expected: " << arrf1 << endl;
+      ok = False;
+    }
   }
   return ok;
 }
@@ -223,13 +360,13 @@ void testSpeed()
 
     Cube<Complex> arrf(IPosition(3,2,3,4));
     uInt i;
-    i=2;
+    i=20;
     for (uInt i2=0; i2<4; i2++) {
       for (uInt i1=0; i1<3; i1++) {
-	for (uInt i0=0; i0<2; i0++) {
-	  arrf(i0,i1,i2) = Complex(i,i+36);
-	  i += 6;
-	}
+	arrf(0,i1,i2) = Complex(i,i+36);
+	i += 6;
+	arrf(1,i1,i2) = Complex(i,0);
+	i += 6;
       }
     }
     for (i=0; i<10; i++) {
@@ -309,10 +446,14 @@ int main ()
 {
   Int sts = 0;
   try {
-    writeData (False);
+    writeData (False, False);
     if (!checkData (False)) sts=1;
-    writeData (True);
+    writeData (False, True);
     if (!checkData (True)) sts=1;
+    writeData (True, False);
+    if (!checkDataSD (False)) sts=1;
+    writeData (True, True);
+    if (!checkDataSD (True)) sts=1;
     testSpeed();
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
