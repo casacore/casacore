@@ -29,6 +29,8 @@
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/FITSImage.h>
+#include <trial/Images/MIRIADImage.h>
+#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandlerTable.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -452,15 +454,25 @@ LatticeExprNode ImageExprParse::makeLRNode() const
 Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 				     const String& name) const
 {
-    if (! Table::isReadable(name)) {
-        try {
-	    FITSImage fimg(name);
-	    node = LatticeExprNode (fimg);
-	} catch (AipsError) {
-	    return False;
-	}
+    if (!Table::isReadable(name)) {
+
+// If its not an aips++ table, try other image types
+
+        ImageUtilities::ImageTypes imageType = ImageUtilities::imageType(name);
+        if (imageType==ImageUtilities::FITS) {
+           FITSImage img(name);
+           node = LatticeExprNode (img);
+        } else if (imageType==ImageUtilities::MIRIAD) {
+           MIRIADImage img(name);
+           node = LatticeExprNode (img);
+        } else {
+           return False;
+        }
 	return True;
     }
+
+// Continue and see if its a PagedArray (aips++ image)
+
     Bool isImage = True;
     Table table(name);
     String type = table.tableInfo().type();
