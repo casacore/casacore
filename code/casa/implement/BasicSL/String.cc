@@ -84,10 +84,11 @@ String::String() : rep(&_nilStrRep)
 
 String::String(ostrstream &os)
   : rep(Snew(os.pcount()+1))
-{
+{   os << ends;
     memcpy(rep->s, os.str(), os.pcount());
     rep->s[os.pcount()] = 0;
-    rep->len = os.pcount();
+    rep->len = strlen(os.str());
+    // rep->len = os.pcount();
     delete [] os.str();
 }
 
