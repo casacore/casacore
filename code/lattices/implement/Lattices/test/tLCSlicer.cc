@@ -1,5 +1,5 @@
 //# tLCSlicer.cc: Test program the LCSlicer class
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -181,7 +181,7 @@ void doIt()
 	vec = 0.25;
 	TableRecord rec;
 	rec.define ("name", "LCSLicer");
-	rec.define ("isRegion", Int(RegionType::Slicer));
+	rec.define ("isRegion", Int(RegionType::ArrSlicer));
 	vec = 0.25;
 	rec.define ("blc", vec);
 	vec = 0.75;
@@ -202,7 +202,7 @@ void doIt()
 }
 
 
-main()
+int main()
 {
     try {
 	doIt();
