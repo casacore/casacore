@@ -1,5 +1,5 @@
 //# Vector.cc: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,6 +202,7 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
         length_p = other.length_p;
 	nels_p = other.nels_p;
 	originalLength_p = length_p;
+	makeSteps();
     }
     objcopy(begin_p, other.begin_p, nels_p, inc_p(0), other.inc_p(0));
     return *this;
@@ -268,6 +269,7 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     vp.length_p(0) = l;
     vp.nels_p = l;
     vp.contiguous_p = vp.isStorageContiguous();
+    vp.makeSteps();
 
     return vp;
 }

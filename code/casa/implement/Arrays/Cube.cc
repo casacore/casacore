@@ -1,5 +1,5 @@
 //# Cube.cc: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,12 +95,14 @@ template<class T> Cube<T>::Cube(const Array<T> &other)
 	length_p(2) = 1; inc_p(2) = 1;
 	originalLength_p(1) = 1;
 	originalLength_p(2) = 1;
+	makeSteps();
     } else if (ndim() == 2) {
 	ndimen_p = 3;
 	length_p.resize(3); inc_p.resize(3);
 	length_p(2) = 1; inc_p(2) = 1;
 	originalLength_p.resize(3);
 	originalLength_p(2) = 1;
+	makeSteps();
     }
     nels_p = length_p.product();
     makeIndexingConstants();
@@ -276,6 +278,7 @@ template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
     tmp.length_p.resize (2);
     tmp.inc_p.resize (2);
     tmp.originalLength_p.resize (2);
+    tmp.makeSteps();
     return tmp; // should match Matrix<T>(const Array<T> &)
 }
 

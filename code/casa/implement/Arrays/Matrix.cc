@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,6 +95,7 @@ template<class T> Matrix<T>::Matrix(const Array<T> &other)
 	length_p(1) = 1;
 	inc_p(1) = 1;
 	originalLength_p(1) = 1;
+	makeSteps();
     }
     nels_p = length_p.product();
     makeIndexingConstants();
@@ -139,11 +140,14 @@ template<class T> void Matrix<T>::reference(Array<T> &other)
     if (other.ndim() == 2) {
 	Array<T>::reference(other);
     } else if (other.ndim() == 1) {
-	length_p(0) = other.length_p(0); length_p(1) = 1;
+	length_p(0) = other.length_p(0);
+	length_p(1) = 1;
 	nels_p = other.nels_p;
 	originalLength_p(0) = other.originalLength_p(0);
 	originalLength_p(1) = 1;
-	inc_p(0) = other.inc_p(0); inc_p(1) = 1;
+	inc_p(0) = other.inc_p(0);
+	inc_p(1) = 1;
+	makeSteps();
 	data_p = other.data_p;
 	begin_p = other.begin_p; 
     } else {
@@ -258,6 +262,7 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
     tmp.contiguous_p = tmp.isStorageContiguous();
+    tmp.makeSteps();
     return tmp; // should match Vector<T>(const Array<T> &)
 }
 
@@ -277,6 +282,7 @@ template<class T> Vector<T> Matrix<T>::column(uInt n)
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
     tmp.contiguous_p = tmp.isStorageContiguous();
+    tmp.makeSteps();
     return tmp; // should match Vector<T>(const Array<T> &)
 
 }
@@ -317,6 +323,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
         tmp.inc_p(0) += inc_p(0)*length_p(0);
 	tmp.contiguous_p = False;
     }
+    tmp.makeSteps();
 	
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
