@@ -84,3 +84,17 @@ Array<DComplex> operator *(const Array<DComplex> &in, Double f) {
 Array<DComplex> operator /(const Array<DComplex> &in, Double f) {
   return in / DComplex(f);
 }
+
+Array<Float> operator *(const Array<Float> &in, Double f) {
+  return in * Float(f);
+}
+Array<Float> operator /(const Array<Float> &in, Double f) {
+  return in / Float(f);
+}
+
+Array<Int> operator *(const Array<Int> &in, Double f) {
+  return in * Int(f);
+}
+Array<Int> operator /(const Array<Int> &in, Double f) {
+  return in / Int(f);
+}

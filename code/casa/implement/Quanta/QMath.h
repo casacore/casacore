@@ -222,6 +222,10 @@ Array<Complex> operator *(const Array<Complex> &in, Double f);
 Array<Complex> operator /(const Array<Complex> &in, Double f);
 Array<DComplex> operator *(const Array<DComplex> &in, Double f);
 Array<DComplex> operator /(const Array<DComplex> &in, Double f);
+Array<Float> operator *(const Array<Float> &in, Double f);
+Array<Float> operator /(const Array<Float> &in, Double f);
+Array<Int> operator *(const Array<Int> &in, Double f);
+Array<Int> operator /(const Array<Int> &in, Double f);
 // </group>
 //# Inline Implementations
 
