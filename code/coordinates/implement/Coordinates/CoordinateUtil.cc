@@ -1,4 +1,4 @@
-//# CoordUtils.cc: 
+//# CoordinateUtils.cc: 
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,20 +26,19 @@
 //# $Id$
 
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/Projection.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Utilities/String.h>
-#include <aips/Utilities/Assert.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/StokesCoordinate.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/Stokes.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 void addDirAxes(CoordinateSystem & coords){
   Matrix<Double> xform(2, 2); xform = 0.0; xform.diagonal() = 1.0;
@@ -117,3 +116,66 @@ CoordinateSystem defaultCoords(uInt dims){
 		    "for a 2, 3 or 4-dimensional image"));
   }
 }
+
+Int findSpectralAxis(const CoordinateSystem & coords) {
+  const Int freqCoordAxis = coords.findCoordinate(Coordinate::SPECTRAL);
+  if (freqCoordAxis < 0) 
+    return freqCoordAxis;
+  AlwaysAssert(coords.findCoordinate(Coordinate::SPECTRAL, freqCoordAxis)
+	       == -1, AipsError);
+  const Vector<Int> pixelAxes = coords.pixelAxes(freqCoordAxis);
+  AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
+  return pixelAxes(0);
+}
+
+Vector<uInt> findDirectionAxes(const CoordinateSystem & coords) {
+  const Int dirCoordAxis = coords.findCoordinate(Coordinate::DIRECTION);
+  Vector<uInt> retVal;
+  if (dirCoordAxis < 0) 
+    return retVal;
+  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, dirCoordAxis)
+	       == -1, AipsError);
+  const Vector<Int> pixelAxes = coords.pixelAxes(dirCoordAxis);
+  AlwaysAssert(pixelAxes.nelements() == 2, AipsError);
+  if ((pixelAxes(0) > 0) && (pixelAxes(1) > 0)) {
+    retVal.resize(2);
+    retVal(0) = pixelAxes(0);
+    retVal(1) = pixelAxes(1);
+  }
+  else if ((pixelAxes(0) > 0) && (pixelAxes(1) < 0)) {
+    retVal.resize(1);
+    retVal(0) = pixelAxes(0);
+  }
+  else if ((pixelAxes(0) < 0) && (pixelAxes(1) > 0)) {
+    retVal.resize(1);
+    retVal(1) = pixelAxes(1);
+  }
+  return retVal;
+}
+
+Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords) {
+  const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
+  if (polCoordAxis < 0) {
+    whichPols.resize(1);
+    whichPols(0) = Stokes::I;
+    return polCoordAxis;
+  }
+  AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, polCoordAxis)
+	       == -1, AipsError);
+  const Vector<Int> pixelAxes = coords.pixelAxes(polCoordAxis);
+  AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
+  if (pixelAxes(0) < 0) {
+    whichPols.resize(1);
+    whichPols(0) = Stokes::I;
+  }
+  else {
+    whichPols.resize(0);
+    StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
+    whichPols = polCoord.stokes();
+  }
+  return pixelAxes(0);
+}
+
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 CoordinateUtil"
+// End: 
