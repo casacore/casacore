@@ -331,7 +331,7 @@
 # Check the files out into the code directory
 
   cd $AIPSROOT
-  cvs checkout $RELEASE -d code aips++/code
+  cvs -r checkout $RELEASE -d code aips++/code
 
 
 
