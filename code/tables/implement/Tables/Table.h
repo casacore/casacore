@@ -255,6 +255,15 @@ public:
     // When <src>PermanentLocking</src> is in effect, nothing will be done.
     void unlock();
 
+    // Determine the number of tables opened with the AutoLock option.
+    static uInt nAutoLocks();
+
+    // Unlock locked tables opened with the AutoLock option.
+    // If <src>all=True</src> all such tables will be unlocked.
+    // If <src>all=False</src> only tables requested by another process
+    // will be unlocked.
+    static void relinquishAutoLocks (Bool all = False);
+
     // Determine if column or keyword table data have changed
     // (or is being changed) since the last time this function was called.
     Bool hasDataChanged();

@@ -301,6 +301,40 @@ Bool Table::hasDataChanged()
     return False;
 }
 
+uInt Table::nAutoLocks()
+{
+    uInt n=0;
+    const TableCache& cache = PlainTable::tableCache;
+    uInt ntab = cache.ntable();
+    for (uInt i=0; i<ntab; i++) {
+	const PlainTable& table = *(cache(i));
+	if (table.lockOptions().option() == TableLock::AutoLocking) {
+	    n++;
+	}
+    }
+    return n;
+}
+
+void Table::relinquishAutoLocks (Bool all)
+{
+    TableCache& cache = PlainTable::tableCache;
+    uInt ntab = cache.ntable();
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *(cache(i));
+	if (table.lockOptions().option() == TableLock::AutoLocking) {
+	    //# Having a read lock is enough.
+	    if (table.hasLock (False)) {
+		if (all) {
+		    table.unlock();
+		}else{
+		    table.autoReleaseLock();
+		}
+	    }
+	}
+    }
+}
+
+
 
 Vector<uInt> Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
