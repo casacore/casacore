@@ -614,7 +614,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
       os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
    t = epochTo.getValue().get();
-   if (t<0.0)) {
+   if (t<0.0) {
       os << "In setting up the DirectionCoordinate conversion machinery" << endl;
       os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
