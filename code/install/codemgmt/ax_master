@@ -3999,3 +3999,4 @@
 14 065 src mv trial/implement/DisplayEvents/PCITFiddler.cc trialdisplay/implement/DisplayEvents/PCITFiddler.cc
 14 065 src mv trial/implement/DisplayEvents/PCInvisTool.cc trialdisplay/implement/DisplayEvents/PCInvisTool.cc
 14 065 src mv trial/implement/DisplayEvents/PCMotionEH.cc trialdisplay/implement/DisplayEvents/PCMotionEH.cc
+14 065 src mv trial/implement/DisplayEvents/PCMotionEvent.cc trialdisplay/implement/DisplayEvents/PCMotionEvent.cc
