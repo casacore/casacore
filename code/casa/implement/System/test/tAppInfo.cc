@@ -29,22 +29,32 @@
 #include <aips/Tasking/AppInfo.h>
 #include <aips/Utilities/Assert.h>
 
+#include <aips/OS/Memory.h>
+
 int main()
 {
     // Not much testing is possible!
+    char *cp = new char[5*1024*1024]; // Eat some memory
 
     uInt mem  = AppInfo::memoryInMB();
+    Int available = AppInfo::availableMemoryInMB();
     uInt ncpu = AppInfo::nProcessors();
     Double tz   = AppInfo::timeZone();
 
     cout << "Memory in MB            : " << mem << endl;
+    cout << "Available memory in MB  : " << available;
+    cout << " (should be 5+ MB less than memory)" << endl;
     cout << "# of processors         : " << ncpu << endl;
     cout << "Timezone offset (hours) : " << tz*24.0 << endl;
 
 
     AlwaysAssertExit(mem == AppInfo::memoryInMB() && mem >= 64);
+    AlwaysAssertExit(available <= mem && available > 0 && 
+		     (mem-available==5 || mem-available==6));
     AlwaysAssertExit(ncpu == AppInfo::nProcessors() && ncpu >= 1);
     AlwaysAssertExit(tz == AppInfo::timeZone() && tz >= -1.0 && tz <= 1.0);
+
+    delete [] cp;
 
     return 0;
 }
