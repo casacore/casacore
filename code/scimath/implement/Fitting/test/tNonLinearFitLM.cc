@@ -1,5 +1,5 @@
 //# tLQNonLinearFitLM.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -201,7 +201,9 @@ int main() {
   // It has to be a NQGaussian1D instantiated with an AutoDiff. 
 
   NQGaussian1D<AutoDiff<Double> > gaussB0;
-  for (uInt i=0; i<3; i++) gaussB0[i] = v[i];
+  for (uInt i=0; i<3; i++) {
+    gaussB0[i] = AutoDiff<Double>(v[i], gaussB0.nparameters(), i);
+  };
   NQCompoundFunction<AutoDiff<Double> > gaussB;
   gaussB.addFunction(gaussB0);
   // Set the function
