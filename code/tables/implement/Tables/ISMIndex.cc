@@ -95,8 +95,11 @@ Int ISMIndex::removeRow (uInt rownr)
     Int emptyBucket = -1;
     if (rows_p[index] == rows_p[index+1]) {
 	emptyBucket = bucketNr_p[index];
-	objmove (&rows_p[index], &rows_p[index+1], nused_p - index);
-	objmove (&bucketNr_p[index], &bucketNr_p[index+1], nused_p - index-1);
+	if (nused_p > index+1) {
+	    objmove (&rows_p[index+1], &rows_p[index+2], nused_p - index - 1);
+	    objmove (&bucketNr_p[index], &bucketNr_p[index+1],
+		     nused_p - index - 1);
+	}
 	rows_p[nused_p] = 0;
 	// There should always be one interval.
 	if (nused_p > 1) {
