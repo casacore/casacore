@@ -169,6 +169,19 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
 {
+
+// Allocate memory in wcs structure 
+
+    wcs_p.flag = -1;
+    int iret = wcsini(1, 2, &wcs_p);
+    if (iret != 0) {
+        String errmsg = "wcs wcsini_error: ";
+        errmsg += wcsini_errmsg[iret];
+        throw(AipsError(errmsg));
+    }
+
+// Now copy to it
+
    operator=(other);
 }
 
@@ -193,9 +206,9 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	to_radians_p = other.to_radians_p.copy();
         rot_p = other.rot_p;
 
-// Copy WCS structure
+// Copy WCS structure.  Flag 0 means don't allocate memory again.
 
-       int err = wcscopy (1, &(other.wcs_p), &wcs_p);
+       int err = wcscopy (0, &(other.wcs_p), &wcs_p);
        if (err != 0) {
           String errmsg = "wcs wcscopy_error: ";
           errmsg += wcscopy_errmsg[err];
