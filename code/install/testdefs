@@ -523,6 +523,7 @@ system :
     ifdef DO_TEST
 	-@ set SERIOUS $(CPP) ; $(CheckExe)
     endif
+	-@ echo "CPPSTD  =$(CPPSTD)"
 	-@ echo "CPPMODU =$(CPPMODU)"
 	-@ echo "CPPDBG  =$(CPPDBG)"
 	-@ echo "CPPOPT  =$(CPPOPT)"
@@ -531,6 +532,7 @@ system :
     ifdef DO_TEST
 	-@ set SERIOUS $(CC) ; $(CheckExe)
     endif
+	-@ echo "CSTD    =$(CSTD)"
 	-@ echo "CDBGLVL =$(CDBGLVL)"
 	-@ echo "CDBG    =$(CDBG)"
 	-@ echo "COPTLVL =$(COPTLVL)"
@@ -548,6 +550,7 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(PTROPTD) ; $(CheckDir)
     endif
+	-@ echo "C++STD    =$(C++STD)"
 	-@ echo "C++DBGLVL =$(C++DBGLVL)"
 	-@ echo "C++DBG    =$(C++DBG)"
 	-@ echo "C++OPTLVL =$(C++OPTLVL)"
@@ -559,15 +562,13 @@ system :
     ifdef DO_TEST
 	-@ set SERIOUS $(FC) ; $(CheckExe)
     endif
+	-@ echo "FCSTD   =$(FCSTD)"
 	-@ echo "FCDBGLVL=$(FCDBGLVL)"
 	-@ echo "FCDBG   =$(FCDBG)"
 	-@ echo "FCOPTLVL=$(FCOPTLVL)"
 	-@ echo "FCOPT   =$(FCOPT)"
 	-@ echo ""
-	-@ echo "LD      =$(LD)"
-    ifdef DO_TEST
-	-@ set SERIOUS $(LD) ; $(CheckExe)
-    endif
+	-@ echo "LDSTD   =$(LDSTD)"
 	-@ echo "LDDBG   =$(LDDBG)"
 	-@ echo "LDOPT   =$(LDOPT)"
 	-@ echo ""
@@ -579,7 +580,6 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(FLEX) ; $(CheckExe)
     endif
-	-@ echo "MKSO    =$(MKSO)"
 	-@ echo "AR      =$(AR)"
     ifdef DO_TEST
 	-@ set SERIOUS $(AR) ; $(CheckExe)
@@ -602,6 +602,11 @@ system :
 	-@ set SERIOUS $(UPDBATCH) 100 10000 ; $(CheckNum)
     endif
 	-@ echo ""
+	-@ echo "LD      =$(LD)"
+    ifdef DO_TEST
+	-@ set SERIOUS $(LD) ; $(CheckExe)
+    endif
+	-@ echo "MKSO    =$(MKSO)"
 	-@ echo "LDSOPTS =$(LDSOPTS)"
 	-@ echo "SFXSTAT =$(SFXSTAT)"
 	-@ echo "SFXSHAR =$(SFXSHAR)"
