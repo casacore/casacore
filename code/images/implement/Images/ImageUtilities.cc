@@ -49,6 +49,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/IO/RegularFileIO.h>
+#include <aips/iostream.h>
 
 /*
 template <class T> 
