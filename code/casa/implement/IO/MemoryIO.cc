@@ -99,13 +99,13 @@ void MemoryIO::write (uInt size, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
-	throw (AipsError ("MemoryIO object is not writable"));
+      throw (AipsError ("MemoryIO::write - MemoryIO object is not writable"));
     }
     // Expand the buffer when needed (and possible).
     uLong minSize = itsPosition + size;
     if (minSize > itsAlloc) {
 	if (! expand (minSize)) {
-	    throw (AipsError ("MemoryIO::write: buffer cannot be expanded"));
+	    throw (AipsError ("MemoryIO::write - buffer cannot be expanded"));
 	}
     }
     // Copy the data and set new position and used.
@@ -159,7 +159,7 @@ Long MemoryIO::seek (Long offset, ByteIO::SeekOption dir)
 	break;
     }
     if (newPos < 0) {
-	throw (AipsError ("MemoryIO::seek before start of object"));
+      throw (AipsError("MemoryIO::seek - cannot seek before start of object"));
     }
     // It is possible to seek past the end of the buffer.
     // This means that the buffer usage increases.
@@ -168,11 +168,12 @@ Long MemoryIO::seek (Long offset, ByteIO::SeekOption dir)
     if (newPos > Long(itsUsed)) {
 	// Throw an exception if not writable.
 	if (!itsWritable) {
-	    throw (AipsError ("MemoryIO::seek past end of readonly object"));
+	    throw (AipsError ("MemoryIO::seek - cannot seek past the end "
+			      "of a readonly object"));
 	}
 	if (newPos > Long(itsAlloc)) {
 	    if (! expand (newPos)) {
-		throw (AipsError("MemoryIO::seek: buffer cannot be expanded"));
+	      throw (AipsError("MemoryIO::seek - buffer cannot be expanded"));
 	    }
 	}
 	for (; Long(itsUsed)<newPos; itsUsed++) {
@@ -231,4 +232,24 @@ Bool MemoryIO::isWritable() const
 Bool MemoryIO::isSeekable() const
 {
     return True;
+}
+
+void MemoryIO::setUsed(uInt bytesUsed) {
+  if (!itsWritable) {
+    throw (AipsError ("MemoryIO::setUsed - object is not writable"));
+  }
+  if (bytesUsed > itsAlloc) {
+    throw(AipsError ("MemoryIO::setUsed - cannot use more than is allocated"));
+  }
+  itsUsed = itsAlloc;
+}
+
+uChar* MemoryIO::setBuffer(uInt length) {
+  if (!itsWritable) {
+    throw (AipsError ("MemoryIO::setBuffer - object is not writable"));
+  }
+  if (!expand (length)) {
+    throw(AipsError ("MemoryIO::setBuffer - buffer cannot be expanded"));
+  }
+  return itsBuffer;
 }
