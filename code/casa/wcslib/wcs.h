@@ -748,15 +748,18 @@
 *         older headers).
 *
 *      char specsys[72], ssysobs[72];
-*      double velosys, vsource, zsource;
+*      double velosys;
 *         Spectral reference frame (standard of rest), SPECSYSa, and the
 *         actual frame in which there is no differential variation in the
 *         spectral coordinate across the field-of-view, SSYSOBSa.  The
 *         relative radial velocity (m/s) between the observer and the selected
 *         standard of rest in the direction of the celestial reference
-*         coordinate, VELOSYSa, and the apparent radial velocity (m/s),
-*         VSOURCEa, and redshift, ZSOURCEa, of the source with respect to the
-*         observer.
+*         coordinate, VELOSYSa.
+*
+*      char ssyssrc[72];
+*      double zsource;
+*         The redshift, ZSOURCEa, of the source and the spectral reference
+*         frame (standard of rest) in which this was measured, SSYSSRCa.
 *
 *      double obsgeo[3];
 *         Location of the observer in a standard terrestrial reference frame,
@@ -992,7 +995,7 @@ struct wcsprm {
    char   specsys[72];
    char   ssysobs[72];
    double velosys;
-   double vsource;
+   char   ssyssrc[72];
    double zsource;
    double obsgeo[3];
    char   dateobs[72];
