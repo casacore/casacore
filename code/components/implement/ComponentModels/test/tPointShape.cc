@@ -52,6 +52,7 @@ int main() {
       // Create a default point shape 
       const PointShape defPoint;
       AlwaysAssert(defPoint.type() == ComponentType::POINT, AipsError);
+      AlwaysAssert(defPoint.ident() == "Point", AipsError);
       AlwaysAssert(defPoint.isSymmetric() == True, AipsError);
       
       const MVDirection defMVdir;
