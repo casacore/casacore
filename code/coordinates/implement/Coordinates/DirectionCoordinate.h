@@ -32,7 +32,6 @@
 
 #include <aips/aips.h>
 #include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/LinearXform.h>
 #include <trial/Coordinates/Projection.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MDirection.h>
@@ -42,6 +41,7 @@
 
 class celprm;
 class prjprm;
+class wcsprm;
 class MVDirection;
 class MVAngle;
 class LogIO;
@@ -416,10 +416,24 @@ public:
     Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
      //</group>
 
-    // Make absolute world coordinates relative and vice-versa (relatuve to
-    // the reference value).  Note that
-    // these functions are independent of the MDirection::Types 
-    // (set either at construction or by function
+    // Batch up a lot of transformations. The first (most rapidly varying) axis
+    // of the matrices contain the coordinates. Returns False if any conversion
+    // failed  and  <src>errorMessage()</src> will hold a message.
+    // The <src>failures</src> array is the length of the number of conversions
+    // (True for failure, False for success)
+    // <group>
+    virtual Bool toWorldMany(Matrix<Double> &world,
+                             const Matrix<Double> &pixel,
+                             Vector<Bool> &failures) const;
+    virtual Bool toPixelMany(Matrix<Double> &pixel,
+                             const Matrix<Double> &world,
+                             Vector<Bool> &failures) const;
+    // </group>
+  
+
+    // Make absolute world coordinates relative and vice-versa (relative to
+    // the reference value).  Note that these functions are independent 
+    // of the MDirection::Types  (set either at construction or by function
     // <src>setReferenceConversion</src>).  The vectors must be
     // of length <src>nWorldAxes</src> or memory access errors will occur
     //<group>
@@ -572,17 +586,11 @@ private:
     // Projection parameters
     Projection projection_p;
 
-    // WCS structures
-    // <group>
-    celprm* celprm_p;
-    prjprm* prjprm_p;
-    wcsprm* wcs_p;
-    char c_ctype_p[2][9];
-    double c_crval_p[2];
-    // </group>
-
-    // Performs the linear part of the transformation.
-    LinearXform linear_p;
+    // WCS structure.  This is mutable because the wcs functions
+    // that do toPixel and toWorld (which have const signature)
+    // require a non const wcs structure.  so either all of these
+    // virtual functions lose their const or we use mutable...
+    mutable wcsprm wcs_p;
 
     // WCS computes in degrees - use this to convert back and forth between
     // current DirectionCoordinate units and degrees or radians
@@ -609,14 +617,6 @@ private:
     // "From" handles conversionType_p -> type_p;
     mutable MDirection::Convert* pConversionMachineTo_p;
     mutable MDirection::Convert* pConversionMachineFrom_p;
-
-    // Some kinds of DirectionCoordinate cannot be used with
-    // the toMix function (e.g. one made with MDirection::SUN)
-    // We find this out at construction time (things are set
-    // up early and cached) so we cart about the flag and
-    // error message until such time as it is needed.  Yuck.
-    Bool canDoToMix_p;
-    String canDoToMixErrorMsg_p;
 
     // Interconvert between degrees and the current angular unit.
     // <group>
@@ -655,32 +655,19 @@ private:
                                  const Matrix<Double> &xform,
                                  Double refX, Double refY, 
                                  Double longPole, Double latPole);
-
-    void make_celprm_and_prjprm(Bool& canDoToMix, String& canDoToMixErrorMsg,
-                                celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
-                                char c_ctype[2][9], double c_crval[2],
-                                const Projection& proj,
-                                MDirection::Types type,
-                                Double refLong, Double refLat,
-                                Double longPole, Double latPole) const;
-
-    void copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
-                                   wcsprm* &pToWcs,
-                                   char toctype[2][9], double tocrval[2],
-                                   const celprm *pFromCel, const prjprm *pFromPrj,
-                                   const wcsprm *pFromWcs,
-                                   const char fromctype[2][9], const double fromcrval[2]) const;
+//
+    void makeWCS(wcsprm& wcs,  const Matrix<Double>& xform,
+                 const Projection& proj, MDirection::Types directionType,
+                 Double refPixLong, Double refPixLat,
+                 Double refLong, Double refLat,
+                 Double incLong, Double incLat,
+                 Double longPole, Double latPole);
+//
+    // Convert PC cards to xform format (required by DC and LinearXform constructors)
+    void pcToXform (Matrix<Double>& xForm, const wcsprm& wcs) const;
+    void xFormToPC (wcsprm& wcs, const Matrix<Double>& xForm) const;
     // </group>
 
-
-    // These are just to help debugging to print out the contents of 
-    // these wcs structures
-    // <group>
-    void listCel () const;
-    void listProj () const;
-    void listWCS ()  const;
-    void listLin(linprm*) const;
-    // </group>
 
    Double putLongInPiRange (Double lon, const String& unit) const;
 
