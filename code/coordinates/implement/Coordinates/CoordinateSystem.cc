@@ -1736,8 +1736,9 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 {
     LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
-    // If we have any tabular axes that aren't pure linear report that the
-    // table will be lost.
+// If we have any tabular axes that aren't pure linear report that the
+// table will be lost.
+
     Int tabCoord = -1;
     while ((tabCoord = findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
 	if (tabularCoordinate(tabCoord).pixelValues().nelements() > 0) {
@@ -1750,10 +1751,9 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
-    // ********** Validation
+// Validation
 
     const Int n = nWorldAxes();
-
     String sprefix = prefix;
     if (header.isDefined(sprefix + "rval") ||
 	header.isDefined(sprefix + "rpix") ||
@@ -1770,21 +1770,24 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	offset = 1.0;
     }
 
-    // ********** Canonicalize units and find sky axes
+// Canonicalize units and find sky axes
+
     CoordinateSystem coordsys = *this;
 
-    // Find the sky coordinate, if any
+// Find the sky coordinate, if any
+
     Int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
     Int longAxis = -1, latAxis = -1;
 
-    // Find the spectral axis, if any
+// Find the spectral axis, if any
+
     Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
     Int specAxis = -1;
     
-    // Find the stokes axis, if any
+// Find the stokes axis, if any
+
     Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
     Int stokesAxis = -1;
-
     Int i;
     for (i=0; i<n ; i++) {
 	Int c, a;
@@ -1802,7 +1805,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
-    // change the units to degrees for the sky axes
+// change the units to degrees for the sky axes
+
     Vector<String> units = coordsys.worldAxisUnits();
     if (longAxis >= 0) units(longAxis) = "deg";
     if (latAxis >= 0) units(latAxis) = "deg";
@@ -1810,154 +1814,30 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     if (stokesAxis >= 0) units(stokesAxis) = "";
     coordsys.setWorldAxisUnits(units);
 
-    // ********** Generate keywords
+// Generate keywords
 
-    // crval
-    Vector<Double> crval = coordsys.referenceValue();
-
-    // crpix
-    Vector<Double> crpix = coordsys.referencePixel() + offset;
-    
-    // cdelt
-    Vector<Double> cdelt = coordsys.increment();
-
-    // projp
-    Vector<Double> projp;
-    if (skyCoord >= 0) {
-	projp = coordsys.directionCoordinate(skyCoord).projection().
-	    parameters();
-    }
-
-    Vector<String> cctype(2);
-    if (skyCoord>=0 && !writeWCS) {
-       if (latAxis>=0) {
-          const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-          cctype = make_Direction_FITS_ctype (dc.projection(), 
-                                              DirectionCoordinate::axisNames(dc.directionType(), 
-                                              True),
-                                              C::pi/180.0*crval(latAxis), True);
-       } else {
-          os << LogIO::SEVERE 
-             << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
-             << LogIO::POST;
-          return False;
-       }
-    }
-
-    // ctype
-    Vector<String> ctype = coordsys.worldAxisNames();
+    Vector<Double> crval, crpix, cdelt, projp, crota;
+    Vector<String> ctype, cunit;
+    Matrix<Double> pc;
     Bool isNCP = False;
-    for (i=0; i < n; i++) {
-	if ((i == longAxis || i == latAxis) && writeWCS) {
-	    const DirectionCoordinate &dc = 
-		coordsys.directionCoordinate(skyCoord);
-	    String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
-	    while (name.length() < 4) {
-		name += "-";
-	    }
-	    name = name + "-" + dc.projection().name();
-	    ctype(i) = name.chars();
-	} else if (i == longAxis || i == latAxis) { // && !writeWCS
-            if (i==longAxis) {
-               ctype(i) = cctype(0);
-            } else {
-               ctype(i) = cctype(1);
-            }
-	} else if (i == specAxis) {
-	    // Nothing - will be handled in SpectralCoordinate
-	} else if (i == stokesAxis) {
-	    ctype(i) = "STOKES  ";
-	} else {
-	    ctype(i).upcase();
-	    if (ctype(i).length() > 8) {
-		ctype(i) = ctype(i).at(0,8);
-	    }
-	    while (ctype(i).length() < 8) {
-		ctype(i) += " ";
-	    }
-	}
-    }
-    
-    // cunit
-    Vector<String> cunit = coordsys.worldAxisUnits();
-    for (i=0; i<n; i++) {
-	cunit(i).upcase();
-	if (cunit(i).length() > 8) {
-	    cunit(i) = cunit(i).at(0,8);
-	}
-	while (cunit(i).length() < 8) {
-	    cunit(i) += " ";
-	}
+    if (!toFITSHeaderGenerateKeywords (os, isNCP, crval, crpix, cdelt, crota, projp, 
+                                       ctype, cunit, pc, coordsys, skyCoord, 
+                                       longAxis, latAxis, specAxis, stokesAxis,
+                                       writeWCS, offset, sprefix)) {
+       return False;
     }
 
+// Special stokes handling
 
-    // pc
-    Matrix<Double> pc = linearTransform();
-
-    // crota: Greisen and Calabretta "Converting Previous Formats"
-    Vector<Double> crota(n);
-    crota = 0;
-    if (longAxis >= 0 && latAxis >= 0) {
-	Double rholong = atan2(pc(latAxis, longAxis)*C::pi/180.0,
-			pc(longAxis, longAxis)*C::pi/180.0)*180.0/C::pi;
-	Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
-			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
-	crota(latAxis) = (rholong + rholat)/2.0;
-	if (!::near(rholong, rholat)) {
-	    os << LogIO::WARN << sprefix + "rota is not very accurate."
-		" PC matrix"
-		" is not a pure rotation.";
-	    if (! writeWCS) {
-		os << endl << "Consider writing the DRAFT WCS convention to"
-		    " avoid losing information.";
-	    }
-	    os << LogIO::POST;
-	}
-    }
-
-    // Special stokes handling
     if (stokesCoord >= 0) {
-	Vector<Int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
-	Int inc = 1;
-	Bool inorder = True;
-	if (stokes.nelements() > 1) {
-	    inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) - 
-		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
-	    for (uInt k=2; k<stokes.nelements(); k++) {
-		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(k))) - 
-		     Stokes::FITSValue(Stokes::StokesTypes(stokes(k-1)))) !=
-		    inc) {
-		    inorder = False;
-		}
-	    }
-	}
-	if (inorder) {
-	    crval(stokesAxis) = 
-		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
-	    crpix(stokesAxis) = 1;
-	    cdelt(stokesAxis) = inc;
-	} else {
-           os << LogIO::SEVERE 
-              <<  "The Stokes coordinate in this CoordinateSystem is too" << endl;
-           os << LogIO::SEVERE 
-              << "complex to convert to the FITS convention" << LogIO::POST;
-           return False;
-
-// The idea here is to write non-standard records, to indicate something
-// funny, and then write the rest of the Stokes axis as non-standard
-// keywords.  Since fromFITSHeader can't decode this anyway, for now
-// return False.
-
-	    // !inorder
-	    crval(stokesAxis) = 
-		Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
-	    crpix(stokesAxis) = 1;
-	    cdelt(stokesAxis) = 1;
-	}
+        if (!toFITSHeaderStokes (crval, crpix, cdelt, os, coordsys,
+                                 stokesAxis, stokesCoord)) return False;
     }
 
-    // If there are more world than pixel axes, we will need to add
-    // degenerate pixel axes and modify the shape.
+
+// If there are more world than pixel axes, we will need to add
+// degenerate pixel axes and modify the shape.
+
     if (Int(nPixelAxes()) < n) {
 	IPosition shapetmp = shape; shape.resize(n);
 	Vector<Double> crpixtmp = crpix.copy(); crpix.resize(n);
@@ -1979,7 +1859,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
-    // Try to work out the epoch/equinox
+// Try to work out the epoch/equinox
+
     if (skyCoord >= 0) {
 	MDirection::Types radecsys = 
 	    directionCoordinate(skyCoord).directionType();
@@ -2003,7 +1884,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
-    // Actually write the header
+// Actually write the header
+
     if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
 	header.define("pc", pc);
     } else if (writeWCS) {
@@ -2040,7 +1922,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 		    opticalVelocity);
     }
 
-    // Write out the obsinfo
+// Write out the obsinfo
+
     String error;
     Bool ok = obsinfo_p.toFITS(error, header);
     if (!ok) {
@@ -2051,6 +1934,155 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     return ok;
 }
 
+
+Bool CoordinateSystem::toFITSHeaderStokes(Vector<Double>& crval,
+                                          Vector<Double>& crpix,
+                                          Vector<Double>& cdelt,
+                                          LogIO& os,
+                                          const CoordinateSystem& coordsys,
+                                          Int stokesAxis, Int stokesCoord) const
+{
+   Vector<Int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
+   Int inc = 1;
+   Bool inorder = True;
+   if (stokes.nelements() > 1) {
+      inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) - 
+            Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
+      for (uInt k=2; k<stokes.nelements(); k++) {
+         if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(k))) - 
+              Stokes::FITSValue(Stokes::StokesTypes(stokes(k-1)))) !=
+              inc) {
+            inorder = False;
+         }
+      }
+   }
+   if (inorder) {
+      crval(stokesAxis) = Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
+      crpix(stokesAxis) = 1;
+      cdelt(stokesAxis) = inc;
+   } else {
+
+// The idea here is to write non-standard records, to indicate something
+// funny, and then write the rest of the Stokes axis as non-standard
+// keywords.  Since fromFITSHeader can't decode this anyway, for now
+// return False.
+
+/*
+      crval(stokesAxis) = Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
+      crpix(stokesAxis) = 1;
+      cdelt(stokesAxis) = 1;
+*/
+
+      os << LogIO::SEVERE 
+         <<  "The Stokes coordinate in this CoordinateSystem is too" << endl;
+      os << LogIO::SEVERE 
+         << "complex to convert to the FITS convention" << LogIO::POST;
+      return False;
+   }
+//
+   return True;
+}
+
+
+Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os, 
+                                                     Bool& isNCP,
+                                                     Vector<Double>& crval,
+                                                     Vector<Double>& crpix,
+                                                     Vector<Double>& cdelt,
+                                                     Vector<Double>& crota,
+                                                     Vector<Double>& projp,
+                                                     Vector<String>& ctype,
+                                                     Vector<String>& cunit,
+                                                     Matrix<Double>& pc,
+						     const CoordinateSystem& coordsys,
+                                                     Int skyCoord, 
+                                                     Int longAxis, Int latAxis,
+                                                     Int specAxis, Int stokesAxis,
+                                                     Bool writeWCS, Double offset,
+                                                     const String& sprefix) const
+{
+   const Int n = nWorldAxes();
+   crval = coordsys.referenceValue();
+   crpix = coordsys.referencePixel() + offset;
+   cdelt = coordsys.increment();
+   if (skyCoord >= 0) {
+      projp = coordsys.directionCoordinate(skyCoord).projection().parameters();
+   }
+   Vector<String> cctype(2);
+   if (skyCoord>=0 && !writeWCS) {
+      if (latAxis>=0) {
+         const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
+         cctype = make_Direction_FITS_ctype (isNCP, dc.projection(), 
+                                             DirectionCoordinate::axisNames(dc.directionType(),
+                                             True),
+                                             C::pi/180.0*crval(latAxis), True);
+      } else {
+         os << LogIO::SEVERE 
+            << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
+            << LogIO::POST;
+         return False;
+      }
+   }
+//
+   ctype = coordsys.worldAxisNames();
+   for (Int i=0; i < n; i++) {
+      if ((i == longAxis || i == latAxis) && writeWCS) {
+         const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
+         String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
+         while (name.length() < 4) name += "-";
+         name = name + "-" + dc.projection().name();
+         ctype(i) = name.chars();
+      } else if (i == longAxis || i == latAxis) { // && !writeWCS
+         if (i==longAxis) {
+            ctype(i) = cctype(0);
+         } else {
+            ctype(i) = cctype(1);
+         }
+      } else if (i == specAxis) {
+	    // Nothing - will be handled in SpectralCoordinate
+      } else if (i == stokesAxis) {
+         ctype(i) = "STOKES  ";
+      } else {
+         ctype(i).upcase();
+         if (ctype(i).length() > 8) {
+            ctype(i) = ctype(i).at(0,8);
+         }
+         while (ctype(i).length() < 8) ctype(i) += " ";
+      }
+   }
+
+//
+   cunit = coordsys.worldAxisUnits();
+   for (Int i=0; i<n; i++) {
+      cunit(i).upcase();
+      if (cunit(i).length() > 8) {
+         cunit(i) = cunit(i).at(0,8);
+      }
+      while (cunit(i).length() < 8) cunit(i) += " ";
+   }
+//
+   pc = linearTransform();
+
+// crota: See Greisen and Calabretta "Converting Previous Formats"
+
+   crota.resize(n);
+   crota = 0;
+   if (longAxis >= 0 && latAxis >= 0) {
+      Double rholong = atan2(pc(latAxis, longAxis)*C::pi/180.0,
+			pc(longAxis, longAxis)*C::pi/180.0)*180.0/C::pi;
+      Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
+			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
+      crota(latAxis) = (rholong + rholat)/2.0;
+      if (!::near(rholong, rholat)) {
+         os << LogIO::WARN << sprefix + "rota is not very accurate." 
+            <<  " PC matrix is not a pure rotation.";
+         if (!writeWCS) {
+            os << endl << "Consider writing the DRAFT WCS convention to avoid losing information.";
+         }
+         os << LogIO::POST;
+      }
+   }
+}
 
 
 Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys, 

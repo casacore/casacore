@@ -35,12 +35,14 @@
 
 #include <aips/Containers/Block.h>
 
+template<class T> class Matrix;
 class DirectionCoordinate;
 class LinearCoordinate;
 class SpectralCoordinate;
 class StokesCoordinate;
 class TabularCoordinate;
 class IPosition;
+class LogIO;
 
 // <summary>
 // Interconvert pixel and image coordinates.
@@ -576,6 +578,30 @@ private:
 
     // Decode CD cards from FITS file header
     static Bool getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
+
+    // Generate FITS keywords
+    Bool toFITSHeaderGenerateKeywords (LogIO& os, Bool& isNCP,
+                                       Vector<Double>& crval,
+                                       Vector<Double>& crpix,
+                                       Vector<Double>& cdelt,
+                                       Vector<Double>& crota,
+                                       Vector<Double>& projp,
+                                       Vector<String>& ctype,
+                                       Vector<String>& cunit,
+                                       Matrix<Double>& pc,
+                                       const CoordinateSystem& coordsys,
+                                       Int skyCoord, Int longAxis, Int latAxis,
+                                       Int specAxis, Int stokesAxis, 
+                                       Bool writeWCS, Double offset,
+                                       const String& sprefix) const;
+
+    // special Stokes processing  for conversion to FITS header
+    Bool toFITSHeaderStokes(Vector<Double>& crval,
+                            Vector<Double>& crpix,
+                            Vector<Double>& cdelt,
+                            LogIO& os,
+                            const CoordinateSystem& coordsys,
+                            Int stokesAxis, Int stokesCoord) const;
 };
 
 #endif
