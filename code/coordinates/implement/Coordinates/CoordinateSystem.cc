@@ -1373,6 +1373,8 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
 	coords[i] = 0;
     }
     for (i=0; i<nc; i++) {
+        // Clean out extant temporaries
+        delete retval->world_tmps_p[i]; delete retval->pixel_tmps_p[i];
 	retval->world_tmps_p[i] = 
 	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
 	AlwaysAssert(retval->world_tmps_p[i], AipsError);
