@@ -1932,3 +1932,4 @@
 08 030 src rm atnf/implement/test/gsdgrid.cc
 08 030 src rm atnf/implement/test/pksms2sdfits.cc
 08 030 src rm atnf/implement/test/sGridder.cc
+08 030 src rm atnf/implement/test/tPKSLoad.cc
