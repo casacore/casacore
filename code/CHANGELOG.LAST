@@ -1,0 +1,29 @@
+
+change id: 0071
+ author:   Ger van Diepen
+ date:     2001/01/24
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: Change
+ summary:  Remove multiple columns and better table information
+The table system has been extended.
+
+1. It is now possible to remove multiple columns. If all columns of a
+   data manager are removed, the entire data manager (and the files it
+   uses) are removed.
+   So the main advantage of removing multiple columns is that it makes it
+   possible to remove an entire data manager. Before it was not possible
+   to remove a column from a tiled stman.
+
+2. The function actualTableDesc() gives the description of the table
+   as it is setup. Thus it gives the actual shapes and data managers
+   and not the ones used when setting up the table description.
+   In case of a reference table only the columns in that table are given.
+
+3. The function dataManagerInfo gives information about the data managers
+   used (type and name) and the columns served by those data managers.
+   The information is returned in a Record.
+   In case of a reference table only the columns in that table are given.
