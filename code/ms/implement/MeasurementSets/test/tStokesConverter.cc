@@ -71,6 +71,22 @@ int main()
 	err++;
 	cerr << "dataout="<<dataout.ac()<<endl;
       }
+
+      Vector<Bool> flagout, flagin(4);
+      flagin.set(False);
+      flagin(2)=True;
+      sc.convert(flagout,flagin);
+      if (flagout(0) || !flagout(1) || !flagout(2) || flagout(3) ||
+	  !flagout(4) || !flagout(5) || !flagout(6)) {
+	err++;
+	cerr << "flagout="<<flagout.ac()<<endl;
+      }
+
+      sc.invert(flagin, flagout);
+      if (!flagin(0) || !flagin(1) || !flagin(2) || !flagin(3)) {
+	err++;
+	cerr << "flagin="<<flagin.ac()<< endl;
+      }
     }
 
     {
