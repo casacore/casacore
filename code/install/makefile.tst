@@ -2,7 +2,7 @@
 # makefile.tst: Generic AIPS++ test program makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -66,7 +66,7 @@ TMPPCKGD := $(ARCHTMPD)/$(PACKAGE)
 # Source lists.
 #--------------
 AIPSEXES := $(basename $(filter %.cc,$(AIPSSRCS)))
-LIBEXECS := $(basename $(filter %.g,$(AIPSSRCS)))
+LIBEXECS := $(basename $(filter %.g %.gp,$(AIPSSRCS)))
 
 PGMREXES := $(basename $(wildcard *.cc))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
@@ -342,6 +342,9 @@ $(BINTESTD)/% : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
 	@ chmod 775 $@
 
 $(BINTESTD)/%.g : $(CODEDIR)/%.g
+	@ cp $< $@
+
+$(BINTESTD)/%.gp : $(CODEDIR)/%.gp
 	@ cp $< $@
 
 # Programmer-oriented pattern rules.
