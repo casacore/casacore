@@ -1,5 +1,5 @@
 //# dGaussianCompRep.cc:  this defines dGaussianCompRep
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/GaussianCompRep.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -45,9 +46,7 @@
 
 int main() {
   try {
-    Vector<Double> J0533_flux(4);
-    J0533_flux = 0.0;
-    J0533_flux(0) = 2.23;
+    Flux<Double> J0533_flux(2.23, 0.0, 0.0, 0.0);
     const Quantity J0533_ra = Quantity(5.0, "h").get("'") + Quantity(33, "'");
     const Quantity J0533_dec = Quantity(-32, "deg") + Quantity(-18, "'");
     const MDirection J0533_pos(J0533_ra, J0533_dec, MDirection::J2000);
