@@ -122,6 +122,12 @@ Bool TempImage<T>::isPaged() const
   return mapPtr_p->isPaged();
 }
 
+template<class T>
+Bool TempImage<T>::canReferenceArray() const
+{
+  return mapPtr_p->canReferenceArray();
+}
+
 template <class T>
 Bool TempImage<T>::isWritable() const
 {  

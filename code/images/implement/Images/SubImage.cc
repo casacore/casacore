@@ -240,6 +240,12 @@ Bool SubImage<T>::isPaged() const
 }
 
 template<class T>
+Bool SubImage<T>::canReferenceArray() const
+{
+  return itsSubLatPtr->canReferenceArray();
+}
+
+template<class T>
 Bool SubImage<T>::isWritable() const
 {
   return itsSubLatPtr->isWritable();
