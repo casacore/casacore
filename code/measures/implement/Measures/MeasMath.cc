@@ -138,7 +138,7 @@ void MeasMath::createPrecessionB1950() {
 void MeasMath::applyPrecessionB1950(MVPosition &in) {
   getInfo(TDB);
   ROTMAT1 = (*PRECESB1950)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in *= ROTMAT1;
 }
 
 void MeasMath::deapplyPrecessionB1950(MVPosition &in) {
