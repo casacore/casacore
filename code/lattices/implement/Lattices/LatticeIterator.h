@@ -507,12 +507,12 @@ public:
 
   //# Make members of parent class known.
 public:
-  using LatticeIterator<T>::isNull;
-  using LatticeIterator<T>::position;
-  using LatticeIterator<T>::endPosition;
-  using LatticeIterator<T>::cursorShape;
+  using RO_LatticeIterator<T>::isNull;
+  using RO_LatticeIterator<T>::position;
+  using RO_LatticeIterator<T>::endPosition;
+  using RO_LatticeIterator<T>::cursorShape;
 protected:
-  using LatticeIterator<T>::itsIterPtr;
+  using RO_LatticeIterator<T>::itsIterPtr;
 };
 
 

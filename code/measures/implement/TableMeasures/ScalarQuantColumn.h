@@ -342,8 +342,8 @@ private:
 
   //# Make members of parent class known.
 protected:
-  using ScalarQuantColumn<T>::unitsCol;
-  using ScalarQuantColumn<T>::itsUnit;
+  using ROScalarQuantColumn<T>::unitsCol;
+  using ROScalarQuantColumn<T>::itsUnit;
 };
 
 

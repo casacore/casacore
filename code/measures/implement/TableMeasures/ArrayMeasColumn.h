@@ -344,14 +344,14 @@ private:
 
   //# Make members of parent class known.
 public:
-  using ArrayMeasColumn<M>::measDesc;
-  using ArrayMeasColumn<M>::table;
+  using ROArrayMeasColumn<M>::measDesc;
+  using ROArrayMeasColumn<M>::table;
 protected:
-  using ArrayMeasColumn<M>::itsDescPtr;
-  using ArrayMeasColumn<M>::itsMeasRef;
-  using ArrayMeasColumn<M>::itsNvals;
-  using ArrayMeasColumn<M>::itsVarRefFlag;
-  using ArrayMeasColumn<M>::itsVarOffFlag;
+  using ROArrayMeasColumn<M>::itsDescPtr;
+  using ROArrayMeasColumn<M>::itsMeasRef;
+  using ROArrayMeasColumn<M>::itsNvals;
+  using ROArrayMeasColumn<M>::itsVarRefFlag;
+  using ROArrayMeasColumn<M>::itsVarOffFlag;
 };
 
 

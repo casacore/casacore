@@ -320,13 +320,13 @@ private:
 
   //# Make members of parent class known.
 public:
-  using ScalarMeasColumn<M>::measDesc;
-  using ScalarMeasColumn<M>::table;
+  using ROScalarMeasColumn<M>::measDesc;
+  using ROScalarMeasColumn<M>::table;
 protected:
-  using ScalarMeasColumn<M>::itsDescPtr;
-  using ScalarMeasColumn<M>::itsMeasRef;
-  using ScalarMeasColumn<M>::itsNvals;
-  using ScalarMeasColumn<M>::itsVarRefFlag;
+  using ROScalarMeasColumn<M>::itsDescPtr;
+  using ROScalarMeasColumn<M>::itsMeasRef;
+  using ROScalarMeasColumn<M>::itsNvals;
+  using ROScalarMeasColumn<M>::itsVarRefFlag;
 };
 
 

@@ -409,9 +409,9 @@ private:
 
   //# Make members of parent class known.
 protected:
-  using ArrayQuantColumn<T>::arrUnitsCol;
-  using ArrayQuantColumn<T>::scaUnitsCol;
-  using ArrayQuantColumn<T>::itsUnit;
+  using ROArrayQuantColumn<T>::arrUnitsCol;
+  using ROArrayQuantColumn<T>::scaUnitsCol;
+  using ROArrayQuantColumn<T>::itsUnit;
 };
 
 
